@@ -1,0 +1,2 @@
+[workspace]
+members = ["atsamd21g18a"]

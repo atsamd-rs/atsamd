@@ -1,0 +1,19 @@
+[package]
+name = "atsamd21g18a"
+description = "Peripheral access API for ATSAMD21G18A microcontrollers (generated using svd2rust)"
+version = "0.1.0"
+authors = ["Wez Furlong <wez@wezfurlong.org>"]
+keywords = ["no-std", "arm", "cortex-m"]
+license = "MIT OR Apache-2.0"
+
+[dependencies]
+bare-metal = "0.1.1"
+cortex-m = "0.4.0"
+vcell = "0.1.0"
+
+[dependencies.cortex-m-rt]
+optional = true
+version = "0.3.0"
+
+[features]
+rt = ["cortex-m-rt"]
