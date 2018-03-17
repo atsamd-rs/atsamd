@@ -8,12 +8,12 @@ license = "MIT OR Apache-2.0"
 
 [dependencies]
 bare-metal = "0.1.1"
-cortex-m = "0.4.0"
+cortex-m = "0.4.3"
 vcell = "0.1.0"
 
 [dependencies.cortex-m-rt]
 optional = true
-version = "0.3.0"
+version = "0.3.13"
 
 [features]
 rt = ["cortex-m-rt"]
