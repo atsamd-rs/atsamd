@@ -10,8 +10,7 @@ use core::fmt::Write;
 use cortex_m_semihosting::hio;
 
 use hal::atsamd21g18a::Peripherals;
-use hal::gpio::GpioExt;
-use hal::hal::digital::OutputPin;
+use hal::prelude::*;
 
 fn main() {
     let mut stdout = hio::hstdout().unwrap();
