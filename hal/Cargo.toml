@@ -13,3 +13,4 @@ path = "../atsamd21g18a"
 
 [features]
 rt = ["atsamd21g18a/rt"]
+unproven = ["embedded-hal/unproven"]

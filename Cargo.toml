@@ -14,7 +14,7 @@ features = ["abort-on-panic"]
 
 [dependencies.atsamd21-hal]
 path = "hal"
-features = ["rt"]
+features = ["rt", "unproven"]
 
 # disable both incremental compilation and parallel codegen to
 # reduce the chances of running into rust-lang/rust#47074

@@ -3,6 +3,9 @@ use atsamd21g18a::port::{PINCFG0_, PINCFG1_, DIRCLR, DIRSET, OUTCLR, OUTSET};
 use core::marker::PhantomData;
 use hal::digital::OutputPin;
 
+#[cfg(feature = "unproven")]
+use hal::digital::InputPin;
+
 pub trait GpioExt {
     type Parts;
     fn split(self) -> Self::Parts;
@@ -202,6 +205,20 @@ macro_rules! pin {
                     bits.bits(1 << $pin_no);
                     bits
                 });
+            }
+        }
+    }
+
+    impl<MODE> InputPin for $PinType<Input<MODE>> {
+        fn is_high(&self) -> bool {
+            unsafe {
+                (((*PORT::ptr()).$in.read().bits()) & (1<<$pin_no)) != 0
+            }
+        }
+
+        fn is_low(&self) -> bool {
+            unsafe {
+                (((*PORT::ptr()).$in.read().bits()) & (1<<$pin_no)) == 0
             }
         }
     }
