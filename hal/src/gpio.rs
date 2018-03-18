@@ -1,5 +1,5 @@
 use atsamd21g18a::PORT;
-use atsamd21g18a::port::{PINCFG0_, PINCFG1_, DIRCLR, DIRSET, OUTCLR, OUTSET};
+use atsamd21g18a::port::{PINCFG0_, PINCFG1_, PMUX0_, PMUX1_, DIRCLR, DIRSET, OUTCLR, OUTSET};
 use core::marker::PhantomData;
 use hal::digital::OutputPin;
 
@@ -58,11 +58,58 @@ macro_rules! pin {
         $dirset:ident, $dirclr:ident, $pincfg:ident, $outset:ident,
         $outclr:ident, $pinmux:ident, $out:ident, $outtgl:ident, $in:ident) => {
 
+    // Helper for pmux peripheral function configuration
+    macro_rules! function {
+        ($FuncType:ty, $func_ident:ident, $variant:ident) => {
+
+        /// Configures the pin to operate with a peripheral
+        pub fn $func_ident(
+            self,
+            port: &mut Port
+        ) -> $PinType<$FuncType> {
+            port.$pincfg()[$pin_no].write(|bits| {
+                bits.pmuxen().set_bit()
+            });
+            port.$pinmux()[$pin_no].modify(|r, w| {
+                unsafe {
+                    // We want to copy the other half of the
+                    // nybble than we want to set below.  It
+                    // is easiest just to copy all of the bits
+                    w.bits(r.bits());
+                }
+                if $pin_no % 2 == 1 {
+                    // Odd-numbered pin
+                    w.pmuxo().$variant()
+                } else {
+                    // Even-numbered pin
+                    w.pmuxe().$variant()
+                }
+            });
+
+            $PinType { _mode: PhantomData }
+        }
+
+        };
+    }
+
     pub struct $PinType<MODE> {
         _mode: PhantomData<MODE>,
     }
 
     impl<MODE> $PinType<MODE> {
+        function!(PfA, into_function_a, a);
+        function!(PfB, into_function_b, b);
+        function!(PfC, into_function_c, c);
+        function!(PfD, into_function_d, d);
+        function!(PfE, into_function_e, e);
+        function!(PfF, into_function_f, f);
+        function!(PfG, into_function_g, g);
+        function!(PfH, into_function_h, h);
+
+        // TODO: datasheet mentions this, but is likely for
+        // a slightly different variant
+        // function!(PfI, into_function_i, i);
+
         /// Configures the pin to operate as a floating input
         pub fn into_floating_input(
             self,
@@ -280,6 +327,9 @@ impl Port {
     fn outclr0(&mut self) -> &OUTCLR {
         unsafe { &(*PORT::ptr()).outclr0 }
     }
+    fn pmux0(&mut self) -> &[PMUX0_; 16] {
+        unsafe { &(*PORT::ptr()).pmux0_ }
+    }
 
     fn dirset1(&mut self) -> &DIRSET {
         unsafe { &(*PORT::ptr()).dirset1 }
@@ -295,6 +345,9 @@ impl Port {
     }
     fn outclr1(&mut self) -> &OUTCLR {
         unsafe { &(*PORT::ptr()).outclr1 }
+    }
+    fn pmux1(&mut self) -> &[PMUX1_; 16] {
+        unsafe { &(*PORT::ptr()).pmux1_ }
     }
 }
 
