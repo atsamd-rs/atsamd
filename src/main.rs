@@ -1,7 +1,7 @@
 #![feature(used)]
 #![no_std]
 
-extern crate atsamd21_hal;
+extern crate atsamd21_hal as hal;
 extern crate cortex_m;
 extern crate cortex_m_rt;
 extern crate cortex_m_semihosting;
@@ -9,7 +9,9 @@ extern crate cortex_m_semihosting;
 use core::fmt::Write;
 use cortex_m_semihosting::hio;
 
-use atsamd21_hal::atsamd21g18a::Peripherals;
+use hal::atsamd21g18a::Peripherals;
+use hal::gpio::GpioExt;
+use hal::hal::digital::OutputPin;
 
 fn main() {
     let mut stdout = hio::hstdout().unwrap();
@@ -17,19 +19,10 @@ fn main() {
 
     let peripherals = Peripherals::take().unwrap();
 
-    // Bit mask for the red LED.  It is attached to
-    // pin A17 and is known as digital 13 in arduino land.
-    const DIGITAL_13: u32 = 1 << 17;
+    let mut pins = peripherals.PORT.split();
 
-    // Set the LED to output mode
-    peripherals.PORT.dirset0.write(|bits| unsafe {
-        bits.bits(DIGITAL_13);
-        bits
-    });
-
-    // Turn on the LED
-    peripherals.PORT.outset0.write(|bits| unsafe {
-        bits.bits(DIGITAL_13);
-        bits
-    });
+    // PA17 is wired to arduino digital pin 13 and is attached
+    // to an LED on the adafruit boards.
+    let mut red_led = pins.pa17.into_open_drain_output(&mut pins.port);
+    red_led.set_low();
 }
