@@ -209,6 +209,7 @@ macro_rules! pin {
         }
     }
 
+    #[cfg(feature = "unproven")]
     impl<MODE> InputPin for $PinType<Input<MODE>> {
         fn is_high(&self) -> bool {
             unsafe {
