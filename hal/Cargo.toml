@@ -1,0 +1,15 @@
+[package]
+name = "atsamd21-hal"
+version = "0.0.0"
+authors = ["Wez Furlong <wez@wezfurlong.org>"]
+
+[dependencies]
+cortex-m = "0.4.3"
+embedded-hal = "0.1.2"
+nb = "0.1.0"
+
+[dependencies.atsamd21g18a]
+path = "../atsamd21g18a"
+
+[features]
+rt = ["atsamd21g18a/rt"]
