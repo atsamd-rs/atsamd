@@ -70,7 +70,7 @@ macro_rules! pin {
             port.$pincfg()[$pin_no].write(|bits| {
                 bits.pmuxen().set_bit()
             });
-            port.$pinmux()[$pin_no].modify(|r, w| {
+            port.$pinmux()[$pin_no/2].modify(|r, w| {
                 unsafe {
                     // We want to copy the other half of the
                     // nybble than we want to set below.  It
