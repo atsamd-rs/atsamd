@@ -16,12 +16,20 @@ fn main() {
     let mut stdout = hio::hstdout().unwrap();
     writeln!(stdout, "Hello, world!").unwrap();
 
-    let peripherals = Peripherals::take().unwrap();
+    let mut peripherals = Peripherals::take().unwrap();
+
+    let clock_config = hal::clock::Configuration::new();
+    let _clocks = clock_config.freeze(
+        &mut peripherals.GCLK,
+        &mut peripherals.PM,
+        &mut peripherals.SYSCTRL,
+        &mut peripherals.NVMCTRL,
+    );
 
     let mut pins = peripherals.PORT.split();
 
     // PA17 is wired to arduino digital pin 13 and is attached
     // to an LED on the adafruit boards.
     let mut red_led = pins.pa17.into_open_drain_output(&mut pins.port);
-    red_led.set_low();
+    red_led.set_high();
 }
