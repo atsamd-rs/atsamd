@@ -9,6 +9,10 @@ cortex-m = "~0.4"
 cortex-m-rt = "~0.4"
 cortex-m-semihosting = "~0.2"
 panic-semihosting = "~0.1"
+panic-abort = "~0.1"
+
+[features]
+use_semihosting = []
 
 [dependencies.atsamd21-hal]
 path = "hal"

@@ -4,18 +4,36 @@
 extern crate atsamd21_hal as hal;
 extern crate cortex_m;
 extern crate cortex_m_rt;
+
+#[cfg(feature = "use_semihosting")]
 extern crate cortex_m_semihosting;
+#[cfg(not(feature = "use_semihosting"))]
+extern crate panic_abort;
+#[cfg(feature = "use_semihosting")]
 extern crate panic_semihosting;
 
-use core::fmt::Write;
-use cortex_m_semihosting::hio;
+#[cfg(feature = "use_semihosting")]
+macro_rules! dbgprint {
+    ($($expr:expr),+) => {
+        {
+            use cortex_m_semihosting::hio;
+            use core::fmt::Write;
+            let mut stdout = hio::hstdout().unwrap();
+            writeln!(stdout, $($expr)*).unwrap();
+        }
+    };
+}
+
+#[cfg(not(feature = "use_semihosting"))]
+macro_rules! dbgprint {
+    ($($expr:expr),+) => {};
+}
 
 use hal::atsamd21g18a::Peripherals;
 use hal::prelude::*;
 
 fn main() {
-    let mut stdout = hio::hstdout().unwrap();
-    writeln!(stdout, "Hello, world!").unwrap();
+    dbgprint!("Hello, world!");
 
     let mut peripherals = Peripherals::take().unwrap();
 
@@ -33,11 +51,11 @@ fn main() {
     // to an LED on the adafruit boards.
     let mut red_led = pins.pa17.into_open_drain_output(&mut pins.port);
 
-    writeln!(stdout, "configure timer").unwrap();
+    dbgprint!("configure timer");
     let mut tc3 = hal::timer::TimerCounter3_16::new(clocks, peripherals.TC3);
-    writeln!(stdout, "start timer").unwrap();
+    dbgprint!("start timer");
     tc3.start(5.hz());
-    writeln!(stdout, "begin loop").unwrap();
+    dbgprint!("begin loop");
 
     loop {
         if tc3.wait().is_ok() {
