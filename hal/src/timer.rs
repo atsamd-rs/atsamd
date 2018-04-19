@@ -58,6 +58,12 @@ impl CountDown for TimerCounter<TC3, Width16> {
         // How many cycles of the clock need to happen to reach our
         // effective value.
         let count = params.effective_freq.0 / timeout.0;
+        if count > u16::max_value() as u32 {
+            panic!(
+                "count {} is out of range for a 16 bit counter (timeout={})",
+                count, timeout.0
+            );
+        }
 
         // Set TOP value for mfrq mode
         mode.cc[0].write(|w| unsafe { w.cc().bits(count as u16) });
