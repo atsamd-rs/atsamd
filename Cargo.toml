@@ -14,12 +14,6 @@ panic-semihosting = "~0.1"
 path = "hal"
 features = ["rt", "unproven"]
 
-# disable both incremental compilation and parallel codegen to
-# reduce the chances of running into rust-lang/rust#47074
-[profile.dev]
-codegen-units = 1
-incremental = false
-
 [profile.release]
 debug = true
 lto = true
