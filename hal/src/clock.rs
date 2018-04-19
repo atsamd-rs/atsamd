@@ -1,5 +1,6 @@
 // Sketching out clock configuration while I figure out
 // how all the pieces fit together and how to model them.
+pub use atsamd21g18a::gclk::clkctrl::GENW as GenericClockGenerator;
 use atsamd21g18a::{GCLK, NVMCTRL, PM, SYSCTRL};
 use time::{Hertz, U32Ext};
 
@@ -12,7 +13,7 @@ pub struct Configuration {
 }
 
 /// Frozen clock configuration record
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Clocks {
     usb: Hertz,
 }
@@ -49,6 +50,13 @@ impl Configuration {
     }
 }
 
+pub struct ClockParams {
+    pub freq: Hertz,
+    pub generator: GenericClockGenerator,
+    pub divider: u16,
+    pub effective_freq: Hertz,
+}
+
 impl Clocks {
     pub fn usb(&self) -> Hertz {
         self.usb
@@ -56,6 +64,37 @@ impl Clocks {
 
     pub fn sysclock(&self) -> Hertz {
         48u32.mhz().into()
+    }
+
+    /// Compute best matching clock for a given frequency
+    pub fn clock_params(&self, desired_freq: Hertz) -> ClockParams {
+        let (freq, generator) = if desired_freq.0 <= 32u32.khz().0 {
+            // GCLK1 is assigned to the 32k osc by our startup
+            (32u32.khz().into(), GenericClockGenerator::GCLK1)
+        } else {
+            // GCLK0 is the CPU clock and is set to 48MHz
+            (self.sysclock(), GenericClockGenerator::GCLK0)
+        };
+
+        let divider = (freq.0 / desired_freq.0.saturating_sub(1)).next_power_of_two();
+        let divider = match divider {
+            1 | 2 | 4 | 8 | 16 | 64 | 256 | 1024 => divider,
+            // There are a couple of gaps, so we round up to the next largest
+            // divider; we'll need to count twice as many but it will work.
+            32 => 64,
+            128 => 256,
+            512 => 1024,
+            // Catch all case; this is lame.  Would be great to detect this
+            // and fail at compile time.
+            _ => 1024,
+        };
+        let effective_freq = Hertz(freq.0 / divider);
+        ClockParams {
+            freq,
+            generator,
+            divider: divider as u16,
+            effective_freq,
+        }
     }
 }
 
