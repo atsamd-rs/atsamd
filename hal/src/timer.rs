@@ -1,34 +1,34 @@
 //! Working with timer counter hardware
-use core::marker::PhantomData;
-
-use atsamd21g18a::tc3::{COUNT16, COUNT32, COUNT8};
-use atsamd21g18a::{TC3, GCLK, PM};
+use atsamd21g18a::tc3::COUNT16;
+#[allow(unused)]
+use atsamd21g18a::{TC3, TC4, TC5, GCLK, PM};
 use hal::timer::{CountDown, Periodic};
 
 use clock::{Clocks, GenericClockGenerator};
 use nb;
 use time::Hertz;
 
-// pub struct Timer<INSTANCE> { }
-
+// Note:
 // TC3 + TC4 can be paired to make a 32-bit counter
 // TC5 + TC6 can be paired to make a 32-bit counter
 
 pub struct Width16;
 pub struct Width32;
 
-pub struct TimerCounter<TC, WIDTH> {
+pub struct TimerCounter<TC> {
     clocks: Clocks,
     timeout: Hertz,
     tc: TC,
-    _count: PhantomData<WIDTH>,
 }
 
-pub type TimerCounter3_16 = TimerCounter<TC3, Width16>;
+macro_rules! tc {
+    ($($TYPE:ident: ($TC:ident, $pm:ident, $ctrl:ident),)+) => {
+        $(
+pub type $TYPE = TimerCounter<$TC>;
 
-impl Periodic for TimerCounter<TC3, Width16> {}
+impl Periodic for TimerCounter<$TC> {}
 
-impl CountDown for TimerCounter<TC3, Width16> {
+impl CountDown for TimerCounter<$TC> {
     type Time = Hertz;
 
     fn start<T>(&mut self, timeout: T)
@@ -38,6 +38,7 @@ impl CountDown for TimerCounter<TC3, Width16> {
         let timeout = timeout.into();
         let params = self.clocks.clock_params(timeout);
         let divider = params.divider;
+        self.timeout = timeout;
         let mode = self.mode();
 
         // Disable the timer while we reconfigure it
@@ -97,8 +98,8 @@ impl CountDown for TimerCounter<TC3, Width16> {
     }
 }
 
-impl TimerCounter<TC3, Width16> {
-    pub fn new(clocks: Clocks, tc: TC3) -> Self {
+impl TimerCounter<$TC> {
+    pub fn new(clocks: Clocks, tc: $TC) -> Self {
         Self::power_on();
 
         // Disable and reset.  We need to do both separately
@@ -121,40 +122,43 @@ impl TimerCounter<TC3, Width16> {
             clocks,
             timeout: Hertz(0),
             tc,
-            _count: PhantomData,
         }
     }
 
     fn power_on() {
         // this is safe because we're constrained to just the tc3 bit
         unsafe {
-            (*PM::ptr()).apbcmask.modify(|_, w| w.tc3_().set_bit());
+            (*PM::ptr()).apbcmask.modify(|_, w| w.$pm().set_bit());
         }
     }
 
+    #[allow(unused)]
     fn power_off() {
         // this is safe because we're constrained to just the tc3 bit
         unsafe {
-            (*PM::ptr()).apbcmask.modify(|_, w| w.tc3_().clear_bit());
+            (*PM::ptr()).apbcmask.modify(|_, w| w.$pm().clear_bit());
         }
     }
 
     fn clock_enable(generator: GenericClockGenerator) {
-        // this is safe because we're constrained to just tc3
+        // this is potentially unsafe because we may mess with a paired
+        // timer!
         unsafe {
             (*GCLK::ptr()).clkctrl.write(|w| {
-                w.id().tcc2_tc3();
+                w.id().$ctrl();
                 w.gen().variant(generator);
                 w.clken().set_bit()
             });
         }
     }
 
+    #[allow(unused)]
     fn clock_disable() {
-        // this is safe because we're constrained to just tc3
+        // this is potentially unsafe because we may mess with a paired
+        // timer!
         unsafe {
             (*GCLK::ptr()).clkctrl.write(|w| {
-                w.id().tcc2_tc3();
+                w.id().$ctrl();
                 w.gen().gclk0();
                 w.clken().clear_bit()
             });
@@ -164,4 +168,14 @@ impl TimerCounter<TC3, Width16> {
     fn mode(&mut self) -> &COUNT16 {
         unsafe { &self.tc.count16 }
     }
+}
+        )+
+    }
+}
+
+tc! {
+    TimerCounter3: (TC3, tc3_, tcc2_tc3),
+    TimerCounter4: (TC4, tc4_, tc4_tc5),
+    // take care: tc4 and tc5 have linked clock generators!
+    // TimerCounter5: (TC5, tc5_, tc4_tc5),
 }

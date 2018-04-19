@@ -52,7 +52,7 @@ fn main() {
     let mut red_led = pins.pa17.into_open_drain_output(&mut pins.port);
 
     dbgprint!("configure timer");
-    let mut tc3 = hal::timer::TimerCounter3_16::new(clocks, peripherals.TC3);
+    let mut tc3 = hal::timer::TimerCounter3::new(clocks, peripherals.TC3);
     dbgprint!("start timer");
     tc3.start(5.hz());
     dbgprint!("begin loop");
