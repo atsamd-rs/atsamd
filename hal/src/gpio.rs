@@ -1,5 +1,5 @@
-use atsamd21g18a::PORT;
 use atsamd21g18a::port::{PINCFG0_, PINCFG1_, PMUX0_, PMUX1_, DIRCLR, DIRSET, OUTCLR, OUTSET};
+use atsamd21g18a::PORT;
 use core::marker::PhantomData;
 use hal::digital::OutputPin;
 
@@ -54,255 +54,241 @@ pub struct PfH;
 pub struct PfI;
 
 macro_rules! pin {
-    ($PinType:ident, $pin_ident:ident, $pin_no:expr, $pin_mode:ty,
-        $dirset:ident, $dirclr:ident, $pincfg:ident, $outset:ident,
-        $outclr:ident, $pinmux:ident, $out:ident, $outtgl:ident, $in:ident) => {
+    (
+        $PinType:ident,
+        $pin_ident:ident,
+        $pin_no:expr,
+        $pin_mode:ty,
+        $dirset:ident,
+        $dirclr:ident,
+        $pincfg:ident,
+        $outset:ident,
+        $outclr:ident,
+        $pinmux:ident,
+        $out:ident,
+        $outtgl:ident,
+        $in:ident
+    ) => {
+        // Helper for pmux peripheral function configuration
+        macro_rules! function {
+                ($FuncType:ty, $func_ident:ident, $variant:ident) => {
 
-    // Helper for pmux peripheral function configuration
-    macro_rules! function {
-        ($FuncType:ty, $func_ident:ident, $variant:ident) => {
+                /// Configures the pin to operate with a peripheral
+                pub fn $func_ident(
+                    self,
+                    port: &mut Port
+                ) -> $PinType<$FuncType> {
+                    port.$pincfg()[$pin_no].write(|bits| {
+                        bits.pmuxen().set_bit()
+                    });
+                    port.$pinmux()[$pin_no/2].modify(|r, w| {
+                        unsafe {
+                            // We want to copy the other half of the
+                            // nybble than we want to set below.  It
+                            // is easiest just to copy all of the bits
+                            w.bits(r.bits());
+                        }
+                        if $pin_no % 2 == 1 {
+                            // Odd-numbered pin
+                            w.pmuxo().$variant()
+                        } else {
+                            // Even-numbered pin
+                            w.pmuxe().$variant()
+                        }
+                    });
 
-        /// Configures the pin to operate with a peripheral
-        pub fn $func_ident(
-            self,
-            port: &mut Port
-        ) -> $PinType<$FuncType> {
-            port.$pincfg()[$pin_no].write(|bits| {
-                bits.pmuxen().set_bit()
-            });
-            port.$pinmux()[$pin_no/2].modify(|r, w| {
-                unsafe {
-                    // We want to copy the other half of the
-                    // nybble than we want to set below.  It
-                    // is easiest just to copy all of the bits
-                    w.bits(r.bits());
+                    $PinType { _mode: PhantomData }
                 }
-                if $pin_no % 2 == 1 {
-                    // Odd-numbered pin
-                    w.pmuxo().$variant()
-                } else {
-                    // Even-numbered pin
-                    w.pmuxe().$variant()
-                }
-            });
 
-            $PinType { _mode: PhantomData }
+                };
+            }
+
+        pub struct $PinType<MODE> {
+            _mode: PhantomData<MODE>,
         }
 
-        };
-    }
+        impl<MODE> $PinType<MODE> {
+            function!(PfA, into_function_a, a);
+            function!(PfB, into_function_b, b);
+            function!(PfC, into_function_c, c);
+            function!(PfD, into_function_d, d);
+            function!(PfE, into_function_e, e);
+            function!(PfF, into_function_f, f);
+            function!(PfG, into_function_g, g);
+            function!(PfH, into_function_h, h);
 
-    pub struct $PinType<MODE> {
-        _mode: PhantomData<MODE>,
-    }
+            // TODO: datasheet mentions this, but is likely for
+            // a slightly different variant
+            // function!(PfI, into_function_i, i);
 
-    impl<MODE> $PinType<MODE> {
-        function!(PfA, into_function_a, a);
-        function!(PfB, into_function_b, b);
-        function!(PfC, into_function_c, c);
-        function!(PfD, into_function_d, d);
-        function!(PfE, into_function_e, e);
-        function!(PfF, into_function_f, f);
-        function!(PfG, into_function_g, g);
-        function!(PfH, into_function_h, h);
+            /// Configures the pin to operate as a floating input
+            pub fn into_floating_input(self, port: &mut Port) -> $PinType<Input<Floating>> {
+                port.$dirclr().write(|bits| unsafe {
+                    bits.bits(1 << $pin_no);
+                    bits
+                });
 
-        // TODO: datasheet mentions this, but is likely for
-        // a slightly different variant
-        // function!(PfI, into_function_i, i);
-
-        /// Configures the pin to operate as a floating input
-        pub fn into_floating_input(
-            self,
-            port: &mut Port
-        ) -> $PinType<Input<Floating>> {
-            port.$dirclr().write(|bits| unsafe {
-                bits.bits(1 << $pin_no);
-                bits
-            });
-
-            port.$pincfg()[$pin_no].write(|bits| {
-                bits.pmuxen().clear_bit();
-                bits.inen().set_bit();
-                bits.pullen().clear_bit();
-                bits.drvstr().clear_bit();
-                bits
-            });
-
-            $PinType { _mode: PhantomData }
-        }
-
-        /// Configures the pin to operate as a pulled down input pin
-        pub fn into_pull_down_input(
-            self,
-            port: &mut Port
-        ) -> $PinType<Input<PullDown>> {
-            port.$dirclr().write(|bits| unsafe {
-                bits.bits(1 << $pin_no);
-                bits
-            });
-
-            port.$pincfg()[$pin_no].write(|bits| {
-                bits.pmuxen().clear_bit();
-                bits.inen().set_bit();
-                bits.pullen().set_bit();
-                bits.drvstr().clear_bit();
-                bits
-            });
-
-            // Pull down
-            port.$outclr().write(|bits| unsafe {
-                bits.bits(1 << $pin_no);
-                bits
-            });
-
-            $PinType { _mode: PhantomData }
-        }
-
-        /// Configures the pin to operate as a pulled up input pin
-        pub fn into_pull_up_input(
-            self,
-            port: &mut Port
-        ) -> $PinType<Input<PullUp>> {
-            port.$dirclr().write(|bits| unsafe {
-                bits.bits(1 << $pin_no);
-                bits
-            });
-
-            port.$pincfg()[$pin_no].write(|bits| {
-                bits.pmuxen().clear_bit();
-                bits.inen().set_bit();
-                bits.pullen().set_bit();
-                bits.drvstr().clear_bit();
-                bits
-            });
-
-            // Pull up
-            port.$outset().write(|bits| unsafe {
-                bits.bits(1 << $pin_no);
-                bits
-            });
-
-            $PinType { _mode: PhantomData }
-        }
-
-        /// Configures the pin to operate as an open drain output
-        pub fn into_open_drain_output(
-            self,
-            port: &mut Port
-        ) -> $PinType<Output<OpenDrain>> {
-            port.$dirset().write(|bits| unsafe {
-                bits.bits(1 << $pin_no);
-                bits
-            });
-
-            port.$pincfg()[$pin_no].write(|bits| {
-                bits.pmuxen().clear_bit();
-                bits.inen().clear_bit();
-                bits.pullen().clear_bit();
-                bits.drvstr().clear_bit();
-                bits
-            });
-
-            $PinType { _mode: PhantomData }
-        }
-
-        /// Configures the pin to operate as a push-pull output
-        pub fn into_push_pull_output(
-            self,
-            port: &mut Port
-        ) -> $PinType<Output<PushPull>> {
-            port.$dirset().write(|bits| unsafe {
-                bits.bits(1 << $pin_no);
-                bits
-            });
-
-            port.$pincfg()[$pin_no].write(|bits| {
-                bits.pmuxen().clear_bit();
-                bits.inen().set_bit();
-                bits.pullen().clear_bit();
-                bits.drvstr().clear_bit();
-                bits
-            });
-
-            $PinType { _mode: PhantomData }
-        }
-
-    }
-
-    impl $PinType<Output<OpenDrain>> {
-        /// Control state of the internal pull up
-        pub fn internal_pull_up(&mut self, port: &mut Port, on: bool) {
-            port.$pincfg()[$pin_no].write(|bits| {
-                if on {
-                    bits.pullen().set_bit();
-                } else {
+                port.$pincfg()[$pin_no].write(|bits| {
+                    bits.pmuxen().clear_bit();
+                    bits.inen().set_bit();
                     bits.pullen().clear_bit();
+                    bits.drvstr().clear_bit();
+                    bits
+                });
+
+                $PinType { _mode: PhantomData }
+            }
+
+            /// Configures the pin to operate as a pulled down input pin
+            pub fn into_pull_down_input(self, port: &mut Port) -> $PinType<Input<PullDown>> {
+                port.$dirclr().write(|bits| unsafe {
+                    bits.bits(1 << $pin_no);
+                    bits
+                });
+
+                port.$pincfg()[$pin_no].write(|bits| {
+                    bits.pmuxen().clear_bit();
+                    bits.inen().set_bit();
+                    bits.pullen().set_bit();
+                    bits.drvstr().clear_bit();
+                    bits
+                });
+
+                // Pull down
+                port.$outclr().write(|bits| unsafe {
+                    bits.bits(1 << $pin_no);
+                    bits
+                });
+
+                $PinType { _mode: PhantomData }
+            }
+
+            /// Configures the pin to operate as a pulled up input pin
+            pub fn into_pull_up_input(self, port: &mut Port) -> $PinType<Input<PullUp>> {
+                port.$dirclr().write(|bits| unsafe {
+                    bits.bits(1 << $pin_no);
+                    bits
+                });
+
+                port.$pincfg()[$pin_no].write(|bits| {
+                    bits.pmuxen().clear_bit();
+                    bits.inen().set_bit();
+                    bits.pullen().set_bit();
+                    bits.drvstr().clear_bit();
+                    bits
+                });
+
+                // Pull up
+                port.$outset().write(|bits| unsafe {
+                    bits.bits(1 << $pin_no);
+                    bits
+                });
+
+                $PinType { _mode: PhantomData }
+            }
+
+            /// Configures the pin to operate as an open drain output
+            pub fn into_open_drain_output(self, port: &mut Port) -> $PinType<Output<OpenDrain>> {
+                port.$dirset().write(|bits| unsafe {
+                    bits.bits(1 << $pin_no);
+                    bits
+                });
+
+                port.$pincfg()[$pin_no].write(|bits| {
+                    bits.pmuxen().clear_bit();
+                    bits.inen().clear_bit();
+                    bits.pullen().clear_bit();
+                    bits.drvstr().clear_bit();
+                    bits
+                });
+
+                $PinType { _mode: PhantomData }
+            }
+
+            /// Configures the pin to operate as a push-pull output
+            pub fn into_push_pull_output(self, port: &mut Port) -> $PinType<Output<PushPull>> {
+                port.$dirset().write(|bits| unsafe {
+                    bits.bits(1 << $pin_no);
+                    bits
+                });
+
+                port.$pincfg()[$pin_no].write(|bits| {
+                    bits.pmuxen().clear_bit();
+                    bits.inen().set_bit();
+                    bits.pullen().clear_bit();
+                    bits.drvstr().clear_bit();
+                    bits
+                });
+
+                $PinType { _mode: PhantomData }
+            }
+        }
+
+        impl $PinType<Output<OpenDrain>> {
+            /// Control state of the internal pull up
+            pub fn internal_pull_up(&mut self, port: &mut Port, on: bool) {
+                port.$pincfg()[$pin_no].write(|bits| {
+                    if on {
+                        bits.pullen().set_bit();
+                    } else {
+                        bits.pullen().clear_bit();
+                    }
+                    bits
+                });
+            }
+        }
+
+        impl<MODE> $PinType<Output<MODE>> {
+            // This should eventually make it into the OutputPin
+            // trait: https://github.com/japaric/embedded-hal/pull/44
+            pub fn toggle(&mut self) {
+                unsafe {
+                    (*PORT::ptr()).$outtgl.write(|bits| {
+                        bits.bits(1 << $pin_no);
+                        bits
+                    });
                 }
-                bits
-            });
-        }
-    }
-
-    impl<MODE> $PinType<Output<MODE>> {
-        // This should eventually make it into the OutputPin
-        // trait: https://github.com/japaric/embedded-hal/pull/44
-        pub fn toggle(&mut self) {
-            unsafe {
-                (*PORT::ptr()).$outtgl.write(|bits| {
-                    bits.bits(1 << $pin_no);
-                    bits
-                });
-            }
-        }
-    }
-
-    #[cfg(feature = "unproven")]
-    impl<MODE> InputPin for $PinType<Input<MODE>> {
-        fn is_high(&self) -> bool {
-            unsafe {
-                (((*PORT::ptr()).$in.read().bits()) & (1<<$pin_no)) != 0
             }
         }
 
-        fn is_low(&self) -> bool {
-            unsafe {
-                (((*PORT::ptr()).$in.read().bits()) & (1<<$pin_no)) == 0
+        #[cfg(feature = "unproven")]
+        impl<MODE> InputPin for $PinType<Input<MODE>> {
+            fn is_high(&self) -> bool {
+                unsafe { (((*PORT::ptr()).$in.read().bits()) & (1 << $pin_no)) != 0 }
             }
-        }
-    }
 
-    impl<MODE> OutputPin for $PinType<Output<MODE>> {
-        fn is_high(&self) -> bool {
-            unsafe {
-                (((*PORT::ptr()).$out.read().bits()) & (1<<$pin_no)) != 0
+            fn is_low(&self) -> bool {
+                unsafe { (((*PORT::ptr()).$in.read().bits()) & (1 << $pin_no)) == 0 }
             }
         }
 
-        fn is_low(&self) -> bool {
-            unsafe {
-                (((*PORT::ptr()).$out.read().bits()) & (1<<$pin_no)) == 0
+        impl<MODE> OutputPin for $PinType<Output<MODE>> {
+            fn is_high(&self) -> bool {
+                unsafe { (((*PORT::ptr()).$out.read().bits()) & (1 << $pin_no)) != 0 }
+            }
+
+            fn is_low(&self) -> bool {
+                unsafe { (((*PORT::ptr()).$out.read().bits()) & (1 << $pin_no)) == 0 }
+            }
+
+            fn set_high(&mut self) {
+                unsafe {
+                    (*PORT::ptr()).$outset.write(|bits| {
+                        bits.bits(1 << $pin_no);
+                        bits
+                    });
+                }
+            }
+
+            fn set_low(&mut self) {
+                unsafe {
+                    (*PORT::ptr()).$outclr.write(|bits| {
+                        bits.bits(1 << $pin_no);
+                        bits
+                    });
+                }
             }
         }
-
-        fn set_high(&mut self) {
-            unsafe {
-                (*PORT::ptr()).$outset.write(|bits| {
-                    bits.bits(1 << $pin_no);
-                    bits
-                });
-            }
-        }
-
-        fn set_low(&mut self) {
-            unsafe {
-                (*PORT::ptr()).$outclr.write(|bits| {
-                    bits.bits(1 << $pin_no);
-                    bits
-                });
-            }
-        }
-    }
-
     };
 }
 
