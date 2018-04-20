@@ -10,5 +10,6 @@ mod calibration;
 pub mod clock;
 pub mod gpio;
 pub mod prelude;
+pub mod sercom;
 pub mod time;
 pub mod timer;
