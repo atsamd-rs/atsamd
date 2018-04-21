@@ -1,6 +1,6 @@
 // Note: section 7.2.3 shows which pins support I2C Hs mode
 use atsamd21g18a::sercom0::I2CM;
-use atsamd21g18a::{SERCOM3, GCLK, PM};
+use atsamd21g18a::{SERCOM1, SERCOM2, SERCOM3, SERCOM4, SERCOM5, GCLK, PM};
 use clock::wait_for_gclk_sync;
 use clock::Clocks;
 use gpio;
@@ -171,35 +171,40 @@ pub enum Sercom5Pad3 {
     Pb23(gpio::Pb23<gpio::PfD>),
 }
 
-pub struct I2CMaster3 {
-    sda: Sercom3Pad0,
-    scl: Sercom3Pad1,
-    sercom: SERCOM3,
-}
-
 const BUS_STATE_IDLE: u8 = 1;
 const BUS_STATE_OWNED: u8 = 2;
 
 const MASTER_ACT_READ: u8 = 2;
 const MASTER_ACT_STOP: u8 = 3;
 
-impl I2CMaster3 {
+macro_rules! i2c {
+    ([
+        $($Type:ident: ($pad0:ident, $pad1:ident, $SERCOM:ident, $powermask:ident, $clock:ident),)+
+    ]) => {
+        $(
+pub struct $Type {
+    sda: $pad0,
+    scl: $pad1,
+    sercom: $SERCOM,
+}
+
+impl $Type {
     pub fn new<F: Into<Hertz>>(
         clocks: &Clocks,
         freq: F,
-        sercom: SERCOM3,
+        sercom: $SERCOM,
         pm: &mut PM,
         gclk: &mut GCLK,
-        sda: Sercom3Pad0,
-        scl: Sercom3Pad1,
+        sda: $pad0,
+        scl: $pad1,
     ) -> Self {
         // Power up the peripheral bus clock.
         // safe because we're exclusively owning SERCOM
-        pm.apbcmask.modify(|_, w| w.sercom3_().set_bit());
+        pm.apbcmask.modify(|_, w| w.$powermask().set_bit());
 
         // Configure clock
         gclk.clkctrl.write(|w| {
-            w.id().sercom3_core();
+            w.id().$clock();
             w.gen().gclk0();
             w.clken().set_bit()
         });
@@ -238,7 +243,7 @@ impl I2CMaster3 {
         Self { sda, scl, sercom }
     }
 
-    pub fn free(self) -> (Sercom3Pad0, Sercom3Pad1, SERCOM3) {
+    pub fn free(self) -> ($pad0, $pad1, $SERCOM) {
         (self.sda, self.scl, self.sercom)
     }
 
@@ -408,17 +413,7 @@ impl I2CMaster3 {
         self.fill_buffer(buffer)
     }
 }
-
-#[derive(Debug)]
-pub enum I2CError {
-    ArbitrationLost,
-    AddressError,
-    BusError,
-    Timeout,
-    Nack,
-}
-
-impl Write for I2CMaster3 {
+impl Write for $Type {
     type Error = I2CError;
 
     /// Sends bytes to slave with address `addr`
@@ -429,7 +424,7 @@ impl Write for I2CMaster3 {
     }
 }
 
-impl Read for I2CMaster3 {
+impl Read for $Type {
     type Error = I2CError;
 
     fn read(&mut self, addr: u8, buffer: &mut [u8]) -> Result<(), Self::Error> {
@@ -439,7 +434,7 @@ impl Read for I2CMaster3 {
     }
 }
 
-impl WriteRead for I2CMaster3 {
+impl WriteRead for $Type {
     type Error = I2CError;
 
     fn write_read(&mut self, addr: u8, bytes: &[u8], buffer: &mut [u8]) -> Result<(), Self::Error> {
@@ -447,4 +442,24 @@ impl WriteRead for I2CMaster3 {
         self.cmd_stop();
         res
     }
+}
+        )+
+    };
+}
+
+i2c!([
+    I2CMaster1: (Sercom1Pad0, Sercom1Pad1, SERCOM1, sercom1_, sercom1_core),
+    I2CMaster2: (Sercom2Pad0, Sercom2Pad1, SERCOM2, sercom2_, sercom2_core),
+    I2CMaster3: (Sercom3Pad0, Sercom3Pad1, SERCOM3, sercom3_, sercom3_core),
+    I2CMaster4: (Sercom4Pad0, Sercom4Pad1, SERCOM4, sercom4_, sercom4_core),
+    I2CMaster5: (Sercom5Pad0, Sercom5Pad1, SERCOM5, sercom5_, sercom5_core),
+]);
+
+#[derive(Debug)]
+pub enum I2CError {
+    ArbitrationLost,
+    AddressError,
+    BusError,
+    Timeout,
+    Nack,
 }
