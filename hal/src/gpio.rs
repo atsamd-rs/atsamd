@@ -78,23 +78,17 @@ macro_rules! pin {
                     self,
                     port: &mut Port
                 ) -> $PinType<$FuncType> {
-                    port.$pincfg()[$pin_no].write(|bits| {
-                        bits.pmuxen().set_bit()
-                    });
-                    port.$pinmux()[$pin_no/2].modify(|r, w| {
-                        unsafe {
-                            // We want to copy the other half of the
-                            // nybble than we want to set below.  It
-                            // is easiest just to copy all of the bits
-                            w.bits(r.bits());
-                        }
-                        if $pin_no % 2 == 1 {
+                    port.$pinmux()[$pin_no >> 1].modify(|_, w| {
+                        if $pin_no & 1 == 1 {
                             // Odd-numbered pin
                             w.pmuxo().$variant()
                         } else {
                             // Even-numbered pin
                             w.pmuxe().$variant()
                         }
+                    });
+                    port.$pincfg()[$pin_no].write(|bits| {
+                        bits.pmuxen().set_bit()
                     });
 
                     $PinType { _mode: PhantomData }

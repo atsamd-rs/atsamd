@@ -124,7 +124,7 @@ fn enable_internal_32kosc(sysctrl: &mut SYSCTRL) {
     }
 }
 
-fn wait_for_gclk_sync(gclk: &mut GCLK) {
+pub(crate) fn wait_for_gclk_sync(gclk: &mut GCLK) {
     while gclk.status.read().syncbusy().bit_is_set() {}
 }
 
@@ -256,4 +256,14 @@ fn set_system_clock_to_48mhz(
     assign_clock_generator_1_as_dfll48_reference(gclk);
     configure_and_enable_dfll48m(sysctrl);
     assign_dfll48m_as_gclk_main(gclk);
+
+    pm.cpusel.write(|w| w.cpudiv().div1());
+    pm.apbasel.write(|w| w.apbadiv().div1());
+    pm.apbbsel.write(|w| w.apbbdiv().div1());
+    pm.apbcsel.write(|w| w.apbcdiv().div1());
+
+    sysctrl.osc8m.modify(|_, w| {
+        w.presc()._0();
+        w.ondemand().clear_bit()
+        });
 }

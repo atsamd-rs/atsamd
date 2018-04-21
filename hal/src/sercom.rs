@@ -1,5 +1,11 @@
 // Note: section 7.2.3 shows which pins support I2C Hs mode
+use atsamd21g18a::sercom0::I2CM;
+use atsamd21g18a::{SERCOM3, GCLK, PM};
+use clock::wait_for_gclk_sync;
+use clock::Clocks;
 use gpio;
+use hal::blocking::i2c::{Read, Write, WriteRead};
+use time::Hertz;
 
 // sercom0[0]:  PA04:D   PA08:C
 // sercom0[1]:  PA05:D   PA09:C
@@ -163,4 +169,310 @@ pub enum Sercom5Pad3 {
     Pb1(gpio::Pb1<gpio::PfD>),
     Pa21(gpio::Pa21<gpio::PfC>),
     Pb23(gpio::Pb23<gpio::PfD>),
+}
+
+pub struct I2CMaster3 {
+    sda: Sercom3Pad0,
+    scl: Sercom3Pad1,
+    sda_out: Option<Sercom3Pad2>,
+    sdc_out: Option<Sercom3Pad3>,
+    sercom: SERCOM3,
+}
+
+const BUS_STATE_IDLE: u8 = 1;
+const BUS_STATE_OWNED: u8 = 2;
+
+const MASTER_ACT_READ: u8 = 2;
+const MASTER_ACT_STOP: u8 = 3;
+
+impl I2CMaster3 {
+    pub fn new<F: Into<Hertz>>(
+        clocks: &Clocks,
+        freq: F,
+        sercom: SERCOM3,
+        pm: &mut PM,
+        gclk: &mut GCLK,
+        sda: Sercom3Pad0,
+        scl: Sercom3Pad1,
+    ) -> Self {
+        // Power up the peripheral bus clock.
+        // safe because we're exclusively owning SERCOM
+        pm.apbcmask.modify(|_, w| w.sercom3_().set_bit());
+
+        // Configure clock
+        gclk.clkctrl.write(|w| {
+            w.id().sercom3_core();
+            w.gen().gclk0();
+            w.clken().set_bit()
+        });
+        wait_for_gclk_sync(gclk);
+
+        unsafe {
+            // reset the sercom instance
+            sercom.i2cm.ctrla.modify(|_, w| w.swrst().set_bit());
+            // wait for reset to complete
+            while sercom.i2cm.syncbusy.read().swrst().bit_is_set()
+                || sercom.i2cm.ctrla.read().swrst().bit_is_set()
+            {}
+
+            // Put the hardware into i2c master mode
+            sercom.i2cm.ctrla.modify(|_, w| w.mode().i2c_master());
+            // wait for configuration to take effect
+            while sercom.i2cm.syncbusy.read().enable().bit_is_set() {}
+
+            // set the baud rate
+            let baud = (clocks.sysclock().0 / (2 * freq.into().0) - 1) as u8;
+            sercom.i2cm.baud.modify(|_, w| w.baud().bits(baud));
+
+            sercom.i2cm.ctrla.modify(|_, w| w.enable().set_bit());
+            // wait for configuration to take effect
+            while sercom.i2cm.syncbusy.read().enable().bit_is_set() {}
+
+            // set the bus idle
+            sercom
+                .i2cm
+                .status
+                .modify(|_, w| w.busstate().bits(BUS_STATE_IDLE));
+            // wait for it to take effect
+            while sercom.i2cm.syncbusy.read().sysop().bit_is_set() {}
+        }
+
+        Self {
+            sda,
+            scl,
+            sercom,
+            sda_out: None,
+            sdc_out: None,
+        }
+    }
+
+    pub fn free(
+        self,
+    ) -> (
+        Sercom3Pad0,
+        Sercom3Pad1,
+        Option<Sercom3Pad2>,
+        Option<Sercom3Pad3>,
+        SERCOM3,
+    ) {
+        (self.sda, self.scl, self.sda_out, self.sdc_out, self.sercom)
+    }
+
+    fn start_tx_write(&mut self, addr: u8) -> Result<(), I2CError> {
+        //self.set_idle();
+
+        loop {
+            match self.i2cm().status.read().busstate().bits() {
+                BUS_STATE_IDLE | BUS_STATE_OWNED => break,
+                _ => continue,
+            }
+        }
+
+        // Signal start and transmit encoded address.
+        unsafe {
+            self.i2cm()
+                .addr
+                .write(|w| w.addr().bits((addr as u16) << 1));
+        }
+
+        // wait for transmission to complete
+        while !self.i2cm().intflag.read().mb().bit_is_set() {}
+
+        let status = self.i2cm().status.read();
+        if status.arblost().bit_is_set() {
+            return Err(I2CError::ArbitrationLost);
+        }
+        if status.buserr().bit_is_set() {
+            return Err(I2CError::BusError);
+        }
+        if status.rxnack().bit_is_set() {
+            return Err(I2CError::AddressError);
+        }
+        Ok(())
+    }
+
+    fn status_to_err(&mut self) -> Result<(), I2CError> {
+        let status = self.i2cm().status.read();
+        if status.arblost().bit_is_set() {
+            return Err(I2CError::ArbitrationLost);
+        }
+        if status.buserr().bit_is_set() {
+            return Err(I2CError::BusError);
+        }
+        if status.rxnack().bit_is_set() {
+            return Err(I2CError::Nack);
+        }
+        if status.lowtout().bit_is_set() || status.sexttout().bit_is_set()
+            || status.mexttout().bit_is_set()
+        {
+            return Err(I2CError::Timeout);
+        }
+
+        Ok(())
+    }
+
+    fn start_tx_read(&mut self, addr: u8) -> Result<(), I2CError> {
+        loop {
+            match self.i2cm().status.read().busstate().bits() {
+                BUS_STATE_IDLE | BUS_STATE_OWNED => break,
+                _ => continue,
+            }
+        }
+
+        self.i2cm().intflag.modify(|_, w| w.error().clear_bit());
+
+        // Signal start (or rep start if appropriate)
+        // and transmit encoded address.
+        unsafe {
+            self.i2cm()
+                .addr
+                .write(|w| w.addr().bits(((addr as u16) << 1) | 1));
+        }
+
+        // wait for transmission to complete
+        loop {
+            let intflag = self.i2cm().intflag.read();
+            // If arbitration was lost, it will be signalled via the mb bit
+            if intflag.mb().bit_is_set() {
+                return Err(I2CError::ArbitrationLost);
+            }
+            if intflag.sb().bit_is_set() || intflag.error().bit_is_set() {
+                break;
+            }
+        }
+
+        self.status_to_err()
+    }
+
+    fn wait_sync(&mut self) {
+        while self.i2cm().syncbusy.read().sysop().bit_is_set() {}
+    }
+
+    fn cmd(&mut self, cmd: u8) {
+        unsafe {
+            self.i2cm().ctrlb.modify(|_, w| w.cmd().bits(cmd));
+        }
+        self.wait_sync();
+    }
+
+    fn cmd_stop(&mut self) {
+        self.cmd(MASTER_ACT_STOP)
+    }
+
+    fn cmd_read(&mut self) {
+        unsafe {
+            self.i2cm().ctrlb.modify(|_, w| {
+                // clear bit means send ack
+                w.ackact().clear_bit();
+                w.cmd().bits(MASTER_ACT_READ)
+            });
+        }
+        self.wait_sync();
+    }
+
+    fn i2cm(&mut self) -> &I2CM {
+        unsafe { &self.sercom.i2cm }
+    }
+
+    fn send_bytes(&mut self, bytes: &[u8]) -> Result<(), I2CError> {
+        for b in bytes {
+            unsafe {
+                self.i2cm().data.write(|w| w.bits(*b));
+            }
+
+            loop {
+                let intflag = self.i2cm().intflag.read();
+                if intflag.mb().bit_is_set() || intflag.error().bit_is_set() {
+                    break;
+                }
+            }
+            self.status_to_err()?;
+        }
+        Ok(())
+    }
+
+    fn read_one(&mut self) -> u8 {
+        while !self.i2cm().intflag.read().sb().bit_is_set() {}
+        self.i2cm().data.read().bits()
+    }
+
+    fn fill_buffer(&mut self, buffer: &mut [u8]) -> Result<(), I2CError> {
+        // Some manual iterator gumph because we need to ack bytes after the first.
+        let mut iter = buffer.iter_mut();
+        *iter.next().expect("buffer len is at least 1") = self.read_one();
+
+        loop {
+            match iter.next() {
+                None => break,
+                Some(dest) => {
+                    // Ack the last byte so that we can receive another one
+                    self.cmd_read();
+                    *dest = self.read_one();
+                }
+            }
+        }
+
+        // arrange to send nack on next command to
+        // stop slave from transmitting more data
+        self.i2cm().ctrlb.modify(|_, w| w.ackact().set_bit());
+
+        Ok(())
+    }
+
+    fn do_write(&mut self, addr: u8, bytes: &[u8]) -> Result<(), I2CError> {
+        self.start_tx_write(addr)?;
+        self.send_bytes(bytes)
+    }
+
+    fn do_read(&mut self, addr: u8, buffer: &mut [u8]) -> Result<(), I2CError> {
+        self.start_tx_read(addr)?;
+        self.fill_buffer(buffer)
+    }
+
+    fn do_write_read(&mut self, addr: u8, bytes: &[u8], buffer: &mut [u8]) -> Result<(), I2CError> {
+        self.start_tx_write(addr)?;
+        self.send_bytes(bytes)?;
+        self.start_tx_read(addr)?;
+        self.fill_buffer(buffer)
+    }
+}
+
+#[derive(Debug)]
+pub enum I2CError {
+    ArbitrationLost,
+    AddressError,
+    BusError,
+    Timeout,
+    Nack,
+}
+
+impl Write for I2CMaster3 {
+    type Error = I2CError;
+
+    /// Sends bytes to slave with address `addr`
+    fn write(&mut self, addr: u8, bytes: &[u8]) -> Result<(), Self::Error> {
+        let res = self.do_write(addr, bytes);
+        self.cmd_stop();
+        res
+    }
+}
+
+impl Read for I2CMaster3 {
+    type Error = I2CError;
+
+    fn read(&mut self, addr: u8, buffer: &mut [u8]) -> Result<(), Self::Error> {
+        let res = self.do_read(addr, buffer);
+        self.cmd_stop();
+        res
+    }
+}
+
+impl WriteRead for I2CMaster3 {
+    type Error = I2CError;
+
+    fn write_read(&mut self, addr: u8, bytes: &[u8], buffer: &mut [u8]) -> Result<(), Self::Error> {
+        let res = self.do_write_read(addr, bytes, buffer);
+        self.cmd_stop();
+        res
+    }
 }
