@@ -4,6 +4,7 @@
 extern crate atsamd21_hal as hal;
 extern crate cortex_m;
 extern crate cortex_m_rt;
+extern crate sx1509;
 
 #[cfg(feature = "use_semihosting")]
 extern crate cortex_m_semihosting;
@@ -63,19 +64,18 @@ fn main() {
         Sercom3Pad0::Pa22(pins.pa22.into_function_c(&mut pins.port)),
         Sercom3Pad1::Pa23(pins.pa23.into_function_c(&mut pins.port)),
     );
+    let mut expander = sx1509::Sx1509::new(&mut i2c, sx1509::DEFAULT_ADDRESS);
 
     dbgprint!("do first write");
     // Let's try to init an sx1509 attached to the i2c bus
-    let res1 = i2c.write(0x3e, &[0x7d, 0x12]);
-    dbgprint!("send reset 1 {:?}", res1.is_ok());
-    let res2 = i2c.write(0x3e, &[0x7d, 0x34]);
-    dbgprint!("send reset 2 {:?}", res2.is_ok());
+    let res1 = expander.software_reset();
+    dbgprint!("send reset {:?}", res1.is_ok());
 
-    let mut buf = [4u8; 2];
-    let res3 = i2c.write_read(0x3e, &[0x13], &mut buf);
-    dbgprint!("read intmaska {:?}", res3.is_ok());
-    dbgprint!("buf0 holds {}", buf[0]);
-    dbgprint!("buf1 holds {}", buf[1]);
+    let res3 = expander.read_16(sx1509::Register::RegInterruptMaskA);
+    match res3 {
+        Err(e) => dbgprint!("read intmaska fail {:?}", e),
+        Ok(val) => dbgprint!("read intmaska {:x}", val),
+    };
 
     dbgprint!("configure timer");
     let mut tc3 = hal::timer::TimerCounter3::new(clocks, peripherals.TC3);
