@@ -174,8 +174,6 @@ pub enum Sercom5Pad3 {
 pub struct I2CMaster3 {
     sda: Sercom3Pad0,
     scl: Sercom3Pad1,
-    sda_out: Option<Sercom3Pad2>,
-    sdc_out: Option<Sercom3Pad3>,
     sercom: SERCOM3,
 }
 
@@ -237,30 +235,14 @@ impl I2CMaster3 {
             while sercom.i2cm.syncbusy.read().sysop().bit_is_set() {}
         }
 
-        Self {
-            sda,
-            scl,
-            sercom,
-            sda_out: None,
-            sdc_out: None,
-        }
+        Self { sda, scl, sercom }
     }
 
-    pub fn free(
-        self,
-    ) -> (
-        Sercom3Pad0,
-        Sercom3Pad1,
-        Option<Sercom3Pad2>,
-        Option<Sercom3Pad3>,
-        SERCOM3,
-    ) {
-        (self.sda, self.scl, self.sda_out, self.sdc_out, self.sercom)
+    pub fn free(self) -> (Sercom3Pad0, Sercom3Pad1, SERCOM3) {
+        (self.sda, self.scl, self.sercom)
     }
 
     fn start_tx_write(&mut self, addr: u8) -> Result<(), I2CError> {
-        //self.set_idle();
-
         loop {
             match self.i2cm().status.read().busstate().bits() {
                 BUS_STATE_IDLE | BUS_STATE_OWNED => break,
@@ -278,17 +260,7 @@ impl I2CMaster3 {
         // wait for transmission to complete
         while !self.i2cm().intflag.read().mb().bit_is_set() {}
 
-        let status = self.i2cm().status.read();
-        if status.arblost().bit_is_set() {
-            return Err(I2CError::ArbitrationLost);
-        }
-        if status.buserr().bit_is_set() {
-            return Err(I2CError::BusError);
-        }
-        if status.rxnack().bit_is_set() {
-            return Err(I2CError::AddressError);
-        }
-        Ok(())
+        self.status_to_err()
     }
 
     fn status_to_err(&mut self) -> Result<(), I2CError> {
