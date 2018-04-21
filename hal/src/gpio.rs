@@ -53,6 +53,9 @@ pub struct PfH;
 /// Peripheral Function I
 pub struct PfI;
 
+// rustfmt wants to keep indenting the nested macro on each run,
+// so disable it for this whole block :-/
+#[cfg_attr(rustfmt, rustfmt_skip)]
 macro_rules! pin {
     (
         $PinType:ident,
@@ -71,31 +74,31 @@ macro_rules! pin {
     ) => {
         // Helper for pmux peripheral function configuration
         macro_rules! function {
-                ($FuncType:ty, $func_ident:ident, $variant:ident) => {
+            ($FuncType:ty, $func_ident:ident, $variant:ident) => {
 
-                /// Configures the pin to operate with a peripheral
-                pub fn $func_ident(
-                    self,
-                    port: &mut Port
-                ) -> $PinType<$FuncType> {
-                    port.$pinmux()[$pin_no >> 1].modify(|_, w| {
-                        if $pin_no & 1 == 1 {
-                            // Odd-numbered pin
-                            w.pmuxo().$variant()
-                        } else {
-                            // Even-numbered pin
-                            w.pmuxe().$variant()
-                        }
-                    });
-                    port.$pincfg()[$pin_no].write(|bits| {
-                        bits.pmuxen().set_bit()
-                    });
+            /// Configures the pin to operate with a peripheral
+            pub fn $func_ident(
+                self,
+                port: &mut Port
+            ) -> $PinType<$FuncType> {
+                port.$pinmux()[$pin_no >> 1].modify(|_, w| {
+                    if $pin_no & 1 == 1 {
+                        // Odd-numbered pin
+                        w.pmuxo().$variant()
+                    } else {
+                        // Even-numbered pin
+                        w.pmuxe().$variant()
+                    }
+                });
+                port.$pincfg()[$pin_no].write(|bits| {
+                    bits.pmuxen().set_bit()
+                });
 
-                    $PinType { _mode: PhantomData }
-                }
-
-                };
+                $PinType { _mode: PhantomData }
             }
+
+            };
+        }
 
         pub struct $PinType<MODE> {
             _mode: PhantomData<MODE>,

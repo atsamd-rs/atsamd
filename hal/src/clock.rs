@@ -265,5 +265,5 @@ fn set_system_clock_to_48mhz(
     sysctrl.osc8m.modify(|_, w| {
         w.presc()._0();
         w.ondemand().clear_bit()
-        });
+    });
 }
