@@ -13,3 +13,4 @@ pub mod prelude;
 pub mod sercom;
 pub mod time;
 pub mod timer;
+pub mod usb;
