@@ -11,6 +11,7 @@ cortex-m-semihosting = "~0.2"
 panic-semihosting = "~0.1"
 panic-abort = "~0.1"
 sx1509 = { git = "https://github.com/wez/sx1509.git" }
+#sx1509 = { path = "../sx1509" }
 
 [features]
 use_semihosting = []

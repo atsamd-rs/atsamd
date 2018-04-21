@@ -68,10 +68,10 @@ fn main() {
 
     dbgprint!("do first write");
     // Let's try to init an sx1509 attached to the i2c bus
-    let res1 = expander.software_reset();
+    let res1 = expander.borrow(&mut i2c).software_reset();
     dbgprint!("send reset {:?}", res1.is_ok());
 
-    let res3 = expander.read_16(sx1509::Register::RegInterruptMaskA);
+    let res3 = expander.borrow(&mut i2c).read_16(sx1509::Register::RegInterruptMaskA);
     match res3 {
         Err(e) => dbgprint!("read intmaska fail {:?}", e),
         Ok(val) => dbgprint!("read intmaska {:x}", val),
