@@ -45,16 +45,20 @@ impl CountDown for TimerCounter<$TC> {
         mode.ctrla.modify(|_, w| w.enable().clear_bit());
         while mode.status.read().syncbusy().bit_is_set() {}
 
+        // Select an appropriate clock source based on the chosen
+        // frequency.
+        Self::clock_enable(params.generator);
+
+        mode.ctrla.write(|w| w.swrst().set_bit());
+        while mode.status.read().syncbusy().bit_is_set() {}
+        while mode.ctrla.read().bits() & 1 != 0 {}
+
         mode.ctrlbset.write(|w| {
             // Count up when the direction bit is zero
             w.dir().clear_bit();
             // Periodic
             w.oneshot().clear_bit()
         });
-
-        // Select an appropriate clock source based on the chosen
-        // frequency.
-        Self::clock_enable(params.generator);
 
         // How many cycles of the clock need to happen to reach our
         // effective value.
@@ -102,22 +106,6 @@ impl TimerCounter<$TC> {
     pub fn new(clocks: &Clocks, tc: $TC) -> Self {
         Self::power_on();
 
-        // Disable and reset.  We need to do both separately
-        // to avoid undefined behavior.
-        // We need the unsafe block because of the union
-        unsafe {
-            tc.count16.ctrla.modify(|_, w| w.enable().clear_bit());
-            while tc.count16.status.read().syncbusy().bit_is_set() {}
-
-            // I wanted to perform a software reset here, but something
-            // about this screws things up in a way that the JLink
-            // cannot see into, so it is a bit of a mystery
-            //tc.count16.ctrla.modify(|_, w| w.swrst().set_bit());
-            //while tc.count16.status.read().syncbusy().bit_is_set() {}
-
-            tc.count16.ctrla.write(|w| w.mode().count16());
-        }
-
         Self {
             clocks: clocks.clone(),
             timeout: Hertz(0),
@@ -130,6 +118,10 @@ impl TimerCounter<$TC> {
         unsafe {
             (*PM::ptr()).apbcmask.modify(|_, w| w.$pm().set_bit());
         }
+    }
+
+    pub fn enable_interrupt(&mut self) {
+        self.mode().intenset.write(|w| w.ovf().set_bit());
     }
 
     #[allow(unused)]

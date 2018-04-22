@@ -30,7 +30,6 @@ macro_rules! dbgprint {
     ($($fmt:expr),+) => {};
 }
 
-use hal::atsamd21g18a::Peripherals;
 use hal::prelude::*;
 use hal::sercom::{I2CMaster3, Sercom3Pad0, Sercom3Pad1};
 use rtfm::{app, Threshold};
@@ -43,7 +42,7 @@ app! {
         static RED_LED: hal::gpio::Pa17<hal::gpio::Output<hal::gpio::OpenDrain>>;
         static I2C: I2CMaster3;
         static SX1509: sx1509::Sx1509<I2CMaster3>;
-        static TC3: hal::timer::TimerCounter3;
+        static TIMER: hal::timer::TimerCounter3;
     },
 
     // Each of the late resources need to be listed in at least
@@ -51,20 +50,28 @@ app! {
     // will fail with an inscrutable error.  We're throwing them
     // all into the idle block for now.
     idle: {
-        resources:[CLOCKS, RED_LED, I2C, SX1509, TC3],
+        resources:[CLOCKS, I2C, SX1509 /*, RED_LED, TIMER*/],
 
+    },
+
+    tasks: {
+        TC3: {
+            path: timer,
+            resources: [TIMER, RED_LED],
+        },
     }
 }
 
-fn idle(_t: &mut Threshold, r: idle::Resources) -> ! {
-    loop {
-        if r.TC3.wait().is_ok() {
-            r.RED_LED.toggle();
-        }
+fn timer(_t: &mut Threshold, mut r: TC3::Resources) {
+    if r.TIMER.wait().is_ok() {
+        r.RED_LED.toggle();
     }
-    // aspiration is to have idle be truly idle and make the timer
-    // stuff wake things up.
-    // loop { rtfm::wfi(); }
+}
+
+fn idle(_t: &mut Threshold, _r: idle::Resources) -> ! {
+    loop {
+        rtfm::wfi();
+    }
 }
 
 fn init(mut p: init::Peripherals /* , r: init::Resources */) -> init::LateResources {
@@ -105,13 +112,15 @@ fn init(mut p: init::Peripherals /* , r: init::Resources */) -> init::LateResour
 
     let mut tc3 = hal::timer::TimerCounter3::new(&clocks, p.device.TC3);
     dbgprint!("start timer");
-    tc3.start(5.hz());
+    tc3.start(2.hz());
+    tc3.enable_interrupt();
 
+    dbgprint!("done init");
     init::LateResources {
         CLOCKS: clocks,
         RED_LED: pins.pa17.into_open_drain_output(&mut pins.port),
         I2C: i2c,
         SX1509: expander,
-        TC3: tc3,
+        TIMER: tc3,
     }
 }
