@@ -30,6 +30,7 @@ macro_rules! dbgprint {
     ($($arg:tt)*) => {{}};
 }
 
+use hal::clock::Clocks;
 use hal::prelude::*;
 use hal::sercom::{I2CMaster3, PadPin};
 use rtfm::{app, Threshold};
@@ -38,7 +39,7 @@ app! {
     device: hal::atsamd21g18a,
 
     resources: {
-        static CLOCKS: hal::clock::Clocks;
+        static CLOCKS: Clocks;
         static RED_LED: hal::gpio::Pa17<hal::gpio::Output<hal::gpio::OpenDrain>>;
         static I2C: I2CMaster3;
         static SX1509: sx1509::Sx1509<I2CMaster3>;
@@ -75,8 +76,7 @@ fn idle(_t: &mut Threshold, _r: idle::Resources) -> ! {
 }
 
 fn init(mut p: init::Peripherals /* , r: init::Resources */) -> init::LateResources {
-    let clock_config = hal::clock::Configuration::new();
-    let clocks = clock_config.freeze(
+    let clocks = Clocks::freeze(
         &mut p.device.GCLK,
         &mut p.device.PM,
         &mut p.device.SYSCTRL,

@@ -4,51 +4,9 @@ pub use atsamd21g18a::gclk::clkctrl::GENW as GenericClockGenerator;
 use atsamd21g18a::{GCLK, NVMCTRL, PM, SYSCTRL};
 use time::{Hertz, U32Ext};
 
-/// Clock configuration builder
-pub struct Configuration {
-    /// Specifies the desired clock frequency for USB
-    // TODO: will also need to configure PM.APBBMASK to
-    // power up USB.  That isn't directly related to clocks.
-    usb: Option<Hertz>,
-}
-
 /// Frozen clock configuration record
 #[derive(Debug, Clone)]
-pub struct Clocks {
-    usb: Hertz,
-}
-
-impl Configuration {
-    pub fn new() -> Self {
-        Self { usb: None }
-    }
-
-    /*
-    /// Enable and specify the USB clock frequency
-    pub fn usb<F: Into<Hertz>>(mut self, freq: F) -> Self {
-        let freq: Hertz = freq.into();
-        self.alloc_freq(freq);
-        self.usb = Some(freq);
-        self
-    }
-*/
-
-    /// Freeze the configuration builder and apply it to
-    /// the appropriate peripherals.
-    pub fn freeze(
-        self,
-        gclk: &mut GCLK,
-        pm: &mut PM,
-        sysctrl: &mut SYSCTRL,
-        nvmctrl: &mut NVMCTRL,
-    ) -> Clocks {
-        set_system_clock_to_48mhz(gclk, pm, sysctrl, nvmctrl);
-
-        Clocks {
-            usb: self.usb.unwrap_or(Hertz(0)),
-        }
-    }
-}
+pub struct Clocks {}
 
 pub struct ClockParams {
     pub freq: Hertz,
@@ -58,8 +16,17 @@ pub struct ClockParams {
 }
 
 impl Clocks {
-    pub fn usb(&self) -> Hertz {
-        self.usb
+    /// Freeze the configuration builder and apply it to
+    /// the appropriate peripherals.
+    pub fn freeze(
+        gclk: &mut GCLK,
+        pm: &mut PM,
+        sysctrl: &mut SYSCTRL,
+        nvmctrl: &mut NVMCTRL,
+    ) -> Clocks {
+        set_system_clock_to_48mhz(gclk, pm, sysctrl, nvmctrl);
+
+        Self {}
     }
 
     pub fn sysclock(&self) -> Hertz {
