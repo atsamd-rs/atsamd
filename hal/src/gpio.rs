@@ -53,6 +53,10 @@ pub struct PfH;
 /// Peripheral Function I
 pub struct PfI;
 
+pub trait IntoFunction<T> {
+    fn into_function(self, port: &mut Port) -> T;
+}
+
 // rustfmt wants to keep indenting the nested macro on each run,
 // so disable it for this whole block :-/
 #[cfg_attr(rustfmt, rustfmt_skip)]
@@ -76,6 +80,7 @@ macro_rules! pin {
         macro_rules! function {
             ($FuncType:ty, $func_ident:ident, $variant:ident) => {
 
+        impl<MODE> $PinType<MODE> {
             /// Configures the pin to operate with a peripheral
             pub fn $func_ident(
                 self,
@@ -96,23 +101,31 @@ macro_rules! pin {
 
                 $PinType { _mode: PhantomData }
             }
+        }
+        impl<MODE> IntoFunction<$PinType<$FuncType>> for $PinType<MODE> {
+            fn into_function(self, port: &mut Port) -> $PinType<$FuncType> {
+                self.$func_ident(port)
+            }
+        }
 
             };
         }
+
 
         pub struct $PinType<MODE> {
             _mode: PhantomData<MODE>,
         }
 
+        function!(PfA, into_function_a, a);
+        function!(PfB, into_function_b, b);
+        function!(PfC, into_function_c, c);
+        function!(PfD, into_function_d, d);
+        function!(PfE, into_function_e, e);
+        function!(PfF, into_function_f, f);
+        function!(PfG, into_function_g, g);
+        function!(PfH, into_function_h, h);
+
         impl<MODE> $PinType<MODE> {
-            function!(PfA, into_function_a, a);
-            function!(PfB, into_function_b, b);
-            function!(PfC, into_function_c, c);
-            function!(PfD, into_function_d, d);
-            function!(PfE, into_function_e, e);
-            function!(PfF, into_function_f, f);
-            function!(PfG, into_function_g, g);
-            function!(PfH, into_function_h, h);
 
             // TODO: datasheet mentions this, but is likely for
             // a slightly different variant

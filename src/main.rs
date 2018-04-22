@@ -31,7 +31,7 @@ macro_rules! dbgprint {
 }
 
 use hal::prelude::*;
-use hal::sercom::{I2CMaster3, Sercom3Pad0, Sercom3Pad1};
+use hal::sercom::{I2CMaster3, PadPin};
 use rtfm::{app, Threshold};
 
 app! {
@@ -91,8 +91,8 @@ fn init(mut p: init::Peripherals /* , r: init::Resources */) -> init::LateResour
         &mut p.device.PM,
         &mut p.device.GCLK,
         // Metro M0 express has I2C on pins PA22, PA23
-        Sercom3Pad0::pa22(pins.pa22, &mut pins.port),
-        Sercom3Pad1::pa23(pins.pa23, &mut pins.port),
+        pins.pa22.into_pad(&mut pins.port),
+        pins.pa23.into_pad(&mut pins.port),
     );
 
     let mut expander = sx1509::Sx1509::new(&mut i2c, sx1509::DEFAULT_ADDRESS);
