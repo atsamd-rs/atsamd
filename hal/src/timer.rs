@@ -49,8 +49,12 @@ impl CountDown for TimerCounter<$TC> {
         // frequency.
         Self::clock_enable(params.generator);
 
+        // Now that we have a clock routed to the peripheral, we
+        // can ask it to perform a reset.
         mode.ctrla.write(|w| w.swrst().set_bit());
         while mode.status.read().syncbusy().bit_is_set() {}
+        // the SVD erroneously marks swrst as write-only, so we
+        // need to manually read the bit here
         while mode.ctrla.read().bits() & 1 != 0 {}
 
         mode.ctrlbset.write(|w| {
@@ -122,6 +126,10 @@ impl TimerCounter<$TC> {
 
     pub fn enable_interrupt(&mut self) {
         self.mode().intenset.write(|w| w.ovf().set_bit());
+    }
+
+    pub fn disable_interrupt(&mut self) {
+        self.mode().intenclr.write(|w| w.ovf().set_bit());
     }
 
     #[allow(unused)]
