@@ -1,17 +1,17 @@
 #![feature(used)]
+#![feature(proc_macro)]
 #![no_std]
 
 extern crate atsamd21_hal as hal;
 extern crate cortex_m;
 extern crate cortex_m_rt;
-extern crate sx1509;
-
-#[cfg(feature = "use_semihosting")]
+extern crate cortex_m_rtfm as rtfm;
 extern crate cortex_m_semihosting;
 #[cfg(not(feature = "use_semihosting"))]
 extern crate panic_abort;
 #[cfg(feature = "use_semihosting")]
 extern crate panic_semihosting;
+extern crate sx1509;
 
 #[cfg(feature = "use_semihosting")]
 macro_rules! dbgprint {
@@ -33,37 +33,61 @@ macro_rules! dbgprint {
 use hal::atsamd21g18a::Peripherals;
 use hal::prelude::*;
 use hal::sercom::{I2CMaster3, Sercom3Pad0, Sercom3Pad1};
+use rtfm::{app, Threshold};
 
-fn main() {
-    dbgprint!("Hello, world!");
+app! {
+    device: hal::atsamd21g18a,
 
-    let mut peripherals = Peripherals::take().unwrap();
+    resources: {
+        static CLOCKS: hal::clock::Clocks;
+        static RED_LED: hal::gpio::Pa17<hal::gpio::Output<hal::gpio::OpenDrain>>;
+        static I2C: I2CMaster3;
+        static SX1509: sx1509::Sx1509<I2CMaster3>;
+        static TC3: hal::timer::TimerCounter3;
+    },
 
+    // Each of the late resources need to be listed in at least
+    // one of these resources:[] blocks otherwise compilation
+    // will fail with an inscrutable error.  We're throwing them
+    // all into the idle block for now.
+    idle: {
+        resources:[CLOCKS, RED_LED, I2C, SX1509, TC3],
+
+    }
+}
+
+fn idle(_t: &mut Threshold, r: idle::Resources) -> ! {
+    loop {
+        if r.TC3.wait().is_ok() {
+            r.RED_LED.toggle();
+        }
+    }
+    // aspiration is to have idle be truly idle and make the timer
+    // stuff wake things up.
+    // loop { rtfm::wfi(); }
+}
+
+fn init(mut p: init::Peripherals /* , r: init::Resources */) -> init::LateResources {
     let clock_config = hal::clock::Configuration::new();
     let clocks = clock_config.freeze(
-        &mut peripherals.GCLK,
-        &mut peripherals.PM,
-        &mut peripherals.SYSCTRL,
-        &mut peripherals.NVMCTRL,
+        &mut p.device.GCLK,
+        &mut p.device.PM,
+        &mut p.device.SYSCTRL,
+        &mut p.device.NVMCTRL,
     );
+    let mut pins = p.device.PORT.split();
 
-    let mut pins = peripherals.PORT.split();
-
-    // PA17 is wired to arduino digital pin 13 and is attached
-    // to an LED on the adafruit boards.
-    let mut red_led = pins.pa17.into_open_drain_output(&mut pins.port);
-
-    dbgprint!("init i2c");
     let mut i2c = I2CMaster3::new(
         &clocks,
         400.khz(),
-        peripherals.SERCOM3,
-        &mut peripherals.PM,
-        &mut peripherals.GCLK,
+        p.device.SERCOM3,
+        &mut p.device.PM,
+        &mut p.device.GCLK,
         // Metro M0 express has I2C on pins PA22, PA23
         Sercom3Pad0::Pa22(pins.pa22.into_function_c(&mut pins.port)),
         Sercom3Pad1::Pa23(pins.pa23.into_function_c(&mut pins.port)),
     );
+
     let mut expander = sx1509::Sx1509::new(&mut i2c, sx1509::DEFAULT_ADDRESS);
 
     dbgprint!("do first write");
@@ -71,21 +95,23 @@ fn main() {
     let res1 = expander.borrow(&mut i2c).software_reset();
     dbgprint!("send reset {:?}", res1.is_ok());
 
-    let res3 = expander.borrow(&mut i2c).read_16(sx1509::Register::RegInterruptMaskA);
+    let res3 = expander
+        .borrow(&mut i2c)
+        .read_16(sx1509::Register::RegInterruptMaskA);
     match res3 {
         Err(e) => dbgprint!("read intmaska fail {:?}", e),
         Ok(val) => dbgprint!("read intmaska {:x}", val),
     };
 
-    dbgprint!("configure timer");
-    let mut tc3 = hal::timer::TimerCounter3::new(clocks, peripherals.TC3);
+    let mut tc3 = hal::timer::TimerCounter3::new(&clocks, p.device.TC3);
     dbgprint!("start timer");
     tc3.start(5.hz());
-    dbgprint!("begin loop");
 
-    loop {
-        if tc3.wait().is_ok() {
-            red_led.toggle();
-        }
+    init::LateResources {
+        CLOCKS: clocks,
+        RED_LED: pins.pa17.into_open_drain_output(&mut pins.port),
+        I2C: i2c,
+        SX1509: expander,
+        TC3: tc3,
     }
 }

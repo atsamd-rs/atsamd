@@ -99,7 +99,7 @@ impl CountDown for TimerCounter<$TC> {
 }
 
 impl TimerCounter<$TC> {
-    pub fn new(clocks: Clocks, tc: $TC) -> Self {
+    pub fn new(clocks: &Clocks, tc: $TC) -> Self {
         Self::power_on();
 
         // Disable and reset.  We need to do both separately
@@ -119,7 +119,7 @@ impl TimerCounter<$TC> {
         }
 
         Self {
-            clocks,
+            clocks: clocks.clone(),
             timeout: Hertz(0),
             tc,
         }
