@@ -4,7 +4,7 @@ use atsamd21g18a::tc3::COUNT16;
 use atsamd21g18a::{TC3, TC4, TC5, GCLK, PM};
 use hal::timer::{CountDown, Periodic};
 
-use clock::{Clocks, GenericClockGenerator};
+use clock::{wait_for_gclk_sync, ClockGenerator, Clocks};
 use nb;
 use time::Hertz;
 
@@ -12,22 +12,28 @@ use time::Hertz;
 // TC3 + TC4 can be paired to make a 32-bit counter
 // TC5 + TC6 can be paired to make a 32-bit counter
 
-pub struct Width16;
-pub struct Width32;
-
 pub struct TimerCounter<TC> {
     clocks: Clocks,
     tc: TC,
+    generator: ClockGenerator,
 }
 
-macro_rules! tc {
-    ($($TYPE:ident: ($TC:ident, $pm:ident, $ctrl:ident),)+) => {
-        $(
-pub type $TYPE = TimerCounter<$TC>;
+pub trait Count16 {
+    fn count16(&self) -> &COUNT16;
+    fn configure(
+        &self,
+        clocks: &Clocks,
+        gclk: &mut GCLK,
+        pm: &mut PM,
+        desired_freq: Hertz,
+    ) -> ClockGenerator;
+}
 
-impl Periodic for TimerCounter<$TC> {}
-
-impl CountDown for TimerCounter<$TC> {
+impl<TC> Periodic for TimerCounter<TC> {}
+impl<TC> CountDown for TimerCounter<TC>
+where
+    TC: Count16,
+{
     type Time = Hertz;
 
     fn start<T>(&mut self, timeout: T)
@@ -35,27 +41,24 @@ impl CountDown for TimerCounter<$TC> {
         T: Into<Hertz>,
     {
         let timeout = timeout.into();
-        let params = self.clocks.clock_params(timeout);
+        let params = self.clocks
+            .constrained_clock_params(self.generator, timeout);
         let divider = params.divider;
-        let mode = self.mode();
+        let count = self.tc.count16();
 
         // Disable the timer while we reconfigure it
-        mode.ctrla.modify(|_, w| w.enable().clear_bit());
-        while mode.status.read().syncbusy().bit_is_set() {}
-
-        // Select an appropriate clock source based on the chosen
-        // frequency.
-        Self::clock_enable(params.generator);
+        count.ctrla.modify(|_, w| w.enable().clear_bit());
+        while count.status.read().syncbusy().bit_is_set() {}
 
         // Now that we have a clock routed to the peripheral, we
         // can ask it to perform a reset.
-        mode.ctrla.write(|w| w.swrst().set_bit());
-        while mode.status.read().syncbusy().bit_is_set() {}
+        count.ctrla.write(|w| w.swrst().set_bit());
+        while count.status.read().syncbusy().bit_is_set() {}
         // the SVD erroneously marks swrst as write-only, so we
         // need to manually read the bit here
-        while mode.ctrla.read().bits() & 1 != 0 {}
+        while count.ctrla.read().bits() & 1 != 0 {}
 
-        mode.ctrlbset.write(|w| {
+        count.ctrlbset.write(|w| {
             // Count up when the direction bit is zero
             w.dir().clear_bit();
             // Periodic
@@ -64,18 +67,18 @@ impl CountDown for TimerCounter<$TC> {
 
         // How many cycles of the clock need to happen to reach our
         // effective value.
-        let count = params.effective_freq.0 / timeout.0;
-        if count > u16::max_value() as u32 {
+        let cycles = params.effective_freq.0 / timeout.0;
+        if cycles > u16::max_value() as u32 {
             panic!(
-                "count {} is out of range for a 16 bit counter (timeout={})",
-                count, timeout.0
+                "cycles {} is out of range for a 16 bit counter (timeout={})",
+                cycles, timeout.0
             );
         }
 
         // Set TOP value for mfrq mode
-        mode.cc[0].write(|w| unsafe { w.cc().bits(count as u16) });
+        count.cc[0].write(|w| unsafe { w.cc().bits(cycles as u16) });
 
-        mode.ctrla.modify(|_, w| {
+        count.ctrla.modify(|_, w| {
             match divider {
                 1 => w.prescaler().div1(),
                 2 => w.prescaler().div2(),
@@ -94,9 +97,10 @@ impl CountDown for TimerCounter<$TC> {
     }
 
     fn wait(&mut self) -> nb::Result<(), !> {
-        if self.mode().intflag.read().ovf().bit_is_set() {
+        let count = self.tc.count16();
+        if count.intflag.read().ovf().bit_is_set() {
             // Writing a 1 clears the flag
-            self.mode().intflag.modify(|_, w| w.ovf().set_bit());
+            count.intflag.modify(|_, w| w.ovf().set_bit());
             Ok(())
         } else {
             Err(nb::Error::WouldBlock)
@@ -104,66 +108,71 @@ impl CountDown for TimerCounter<$TC> {
     }
 }
 
-impl TimerCounter<$TC> {
-    pub fn new(clocks: &Clocks, tc: $TC) -> Self {
-        Self::power_on();
-
-        Self {
-            clocks: clocks.clone(),
-            tc,
-        }
-    }
-
-    fn power_on() {
-        // this is safe because we're constrained to just the tc3 bit
-        unsafe {
-            (*PM::ptr()).apbcmask.modify(|_, w| w.$pm().set_bit());
-        }
-    }
-
+impl<TC> TimerCounter<TC>
+where
+    TC: Count16,
+{
     pub fn enable_interrupt(&mut self) {
-        self.mode().intenset.write(|w| w.ovf().set_bit());
+        self.tc.count16().intenset.write(|w| w.ovf().set_bit());
     }
 
     pub fn disable_interrupt(&mut self) {
-        self.mode().intenclr.write(|w| w.ovf().set_bit());
+        self.tc.count16().intenclr.write(|w| w.ovf().set_bit());
     }
 
-    #[allow(unused)]
-    fn power_off() {
-        // this is safe because we're constrained to just the tc3 bit
+    pub fn new<T: Into<Hertz>>(
+        clocks: &Clocks,
+        tc: TC,
+        gclk: &mut GCLK,
+        pm: &mut PM,
+        desired_freq: T,
+    ) -> Self {
+        let generator = tc.configure(clocks, gclk, pm, desired_freq.into());
+        Self {
+            clocks: clocks.clone(),
+            tc,
+            generator,
+        }
+    }
+}
+
+macro_rules! tc {
+    ($($TYPE:ident: ($TC:ident, $pm:ident, $ctrl:ident),)+) => {
+        $(
+pub type $TYPE = TimerCounter<$TC>;
+
+impl Count16 for $TC {
+    fn count16(&self) -> &COUNT16 {
         unsafe {
-            (*PM::ptr()).apbcmask.modify(|_, w| w.$pm().clear_bit());
+            &self.count16
         }
     }
 
-    fn clock_enable(generator: GenericClockGenerator) {
-        // this is potentially unsafe because we may mess with a paired
-        // timer!
-        unsafe {
-            (*GCLK::ptr()).clkctrl.write(|w| {
+    fn configure(&self, clocks: &Clocks, gclk: &mut GCLK, pm: &mut PM, desired_freq: Hertz) -> ClockGenerator {
+        // this is safe because we're constrained to just the tc3 bit
+        pm.apbcmask.modify(|_, w| w.$pm().set_bit());
+
+        // Select an appropriate clock source based on the chosen
+        // frequency.
+        let freq = desired_freq.into();
+        let params = clocks.clock_params(freq);
+
+        {
+            let count = self.count16();
+
+            // Disable the timer while we reconfigure it
+            count.ctrla.modify(|_, w| w.enable().clear_bit());
+            while count.status.read().syncbusy().bit_is_set() {}
+
+            gclk.clkctrl.write(|w| {
                 w.id().$ctrl();
-                w.gen().variant(generator);
+                w.gen().variant(params.generator.into());
                 w.clken().set_bit()
             });
+            wait_for_gclk_sync(gclk);
         }
-    }
 
-    #[allow(unused)]
-    fn clock_disable() {
-        // this is potentially unsafe because we may mess with a paired
-        // timer!
-        unsafe {
-            (*GCLK::ptr()).clkctrl.write(|w| {
-                w.id().$ctrl();
-                w.gen().gclk0();
-                w.clken().clear_bit()
-            });
-        }
-    }
-
-    fn mode(&mut self) -> &COUNT16 {
-        unsafe { &self.tc.count16 }
+        params.generator
     }
 }
         )+

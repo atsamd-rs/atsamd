@@ -110,9 +110,16 @@ fn init(mut p: init::Peripherals /* , r: init::Resources */) -> init::LateResour
         Ok(val) => dbgprint!("read intmaska {:x}", val),
     };
 
-    let mut tc3 = hal::timer::TimerCounter3::new(&clocks, p.device.TC3);
+    let interval = 1.hz();
+    let mut tc3 = hal::timer::TimerCounter::new(
+        &clocks,
+        p.device.TC3,
+        &mut p.device.GCLK,
+        &mut p.device.PM,
+        interval,
+    );
     dbgprint!("start timer");
-    tc3.start(2.hz());
+    tc3.start(interval);
     tc3.enable_interrupt();
 
     dbgprint!("done init");

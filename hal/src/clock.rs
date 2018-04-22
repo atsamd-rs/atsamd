@@ -2,18 +2,47 @@
 // how all the pieces fit together and how to model them.
 pub use atsamd21g18a::gclk::clkctrl::GENW as GenericClockGenerator;
 use atsamd21g18a::{GCLK, NVMCTRL, PM, SYSCTRL};
-use time::{Hertz, U32Ext};
+use time::Hertz;
 
 /// Frozen clock configuration record
 #[derive(Debug, Clone)]
 pub struct Clocks {}
 
+#[derive(Debug, Clone, Copy)]
 pub struct ClockParams {
-    pub freq: Hertz,
-    pub generator: GenericClockGenerator,
+    pub generator: ClockGenerator,
     pub divider: u16,
     pub effective_freq: Hertz,
 }
+
+#[derive(Debug, Clone, Copy)]
+pub enum ClockGenerator {
+    Osc48m,
+    Osc32k,
+}
+
+impl Into<GenericClockGenerator> for ClockGenerator {
+    fn into(self) -> GenericClockGenerator {
+        match self {
+            // GCLK0 is the CPU clock and is set to 48MHz
+            ClockGenerator::Osc48m => GenericClockGenerator::GCLK0,
+            // GCLK1 is assigned to the 32k osc by our startup
+            ClockGenerator::Osc32k => GenericClockGenerator::GCLK1,
+        }
+    }
+}
+
+impl Into<Hertz> for ClockGenerator {
+    fn into(self) -> Hertz {
+        match self {
+            ClockGenerator::Osc48m => OSC48M,
+            ClockGenerator::Osc32k => OSC32K,
+        }
+    }
+}
+
+const OSC48M: Hertz = Hertz(48_000_000);
+const OSC32K: Hertz = Hertz(32_000);
 
 impl Clocks {
     /// Freeze the configuration builder and apply it to
@@ -30,19 +59,26 @@ impl Clocks {
     }
 
     pub fn sysclock(&self) -> Hertz {
-        48u32.mhz().into()
+        OSC48M
     }
 
     /// Compute best matching clock for a given frequency
     pub fn clock_params(&self, desired_freq: Hertz) -> ClockParams {
-        let (freq, generator) = if desired_freq.0 <= 32u32.khz().0 {
-            // GCLK1 is assigned to the 32k osc by our startup
-            (32u32.khz().into(), GenericClockGenerator::GCLK1)
+        let generator = if desired_freq.0 <= OSC32K.0 {
+            ClockGenerator::Osc32k
         } else {
-            // GCLK0 is the CPU clock and is set to 48MHz
-            (self.sysclock(), GenericClockGenerator::GCLK0)
+            ClockGenerator::Osc48m
         };
 
+        self.constrained_clock_params(generator, desired_freq)
+    }
+
+    pub fn constrained_clock_params(
+        &self,
+        generator: ClockGenerator,
+        desired_freq: Hertz,
+    ) -> ClockParams {
+        let freq: Hertz = generator.into();
         let divider = (freq.0 / desired_freq.0.saturating_sub(1).max(1)).next_power_of_two();
         let divider = match divider {
             1 | 2 | 4 | 8 | 16 | 64 | 256 | 1024 => divider,
@@ -57,7 +93,6 @@ impl Clocks {
         };
         let effective_freq = Hertz(freq.0 / divider);
         ClockParams {
-            freq,
             generator,
             divider: divider as u16,
             effective_freq,
