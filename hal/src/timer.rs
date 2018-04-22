@@ -17,7 +17,6 @@ pub struct Width32;
 
 pub struct TimerCounter<TC> {
     clocks: Clocks,
-    timeout: Hertz,
     tc: TC,
 }
 
@@ -38,7 +37,6 @@ impl CountDown for TimerCounter<$TC> {
         let timeout = timeout.into();
         let params = self.clocks.clock_params(timeout);
         let divider = params.divider;
-        self.timeout = timeout;
         let mode = self.mode();
 
         // Disable the timer while we reconfigure it
@@ -112,7 +110,6 @@ impl TimerCounter<$TC> {
 
         Self {
             clocks: clocks.clone(),
-            timeout: Hertz(0),
             tc,
         }
     }

@@ -43,7 +43,7 @@ impl Clocks {
             (self.sysclock(), GenericClockGenerator::GCLK0)
         };
 
-        let divider = (freq.0 / desired_freq.0.saturating_sub(1)).next_power_of_two();
+        let divider = (freq.0 / desired_freq.0.saturating_sub(1).max(1)).next_power_of_two();
         let divider = match divider {
             1 | 2 | 4 | 8 | 16 | 64 | 256 | 1024 => divider,
             // There are a couple of gaps, so we round up to the next largest
