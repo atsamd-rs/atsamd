@@ -3,33 +3,61 @@ use atsamd21g18a::sercom0::I2CM;
 use atsamd21g18a::{SERCOM1, SERCOM2, SERCOM3, SERCOM4, SERCOM5, GCLK, PM};
 use clock::wait_for_gclk_sync;
 use clock::Clocks;
-use gpio;
+use gpio::{self, Port};
 use hal::blocking::i2c::{Read, Write, WriteRead};
 use time::Hertz;
 
+/// The pad macro helps to define enums for pads and makes it
+/// a little more convenient to initialize them.
+macro_rules! pad {
+    ($(pub enum $PadType:ident {
+        $( $PinType:ident ($new:ident, $Pf:ident, $into:ident),)+
+    })+
+    ) => {
+$(
+pub enum $PadType {
+    $(
+        $PinType(gpio::$PinType<gpio::$Pf>),
+    )+
+}
+
+impl $PadType {
+    $(
+    /// Construct pad from the appropriate pin in any mode
+    pub fn $new<MODE>(pin: gpio::$PinType<MODE>, port: &mut Port) -> Self {
+        $PadType::$PinType(pin.$into(port))
+    }
+
+    )+
+}
+)+
+    };
+}
+
+pad!(
 // sercom0[0]:  PA04:D   PA08:C
 // sercom0[1]:  PA05:D   PA09:C
 // sercom0[2]:  PA06:D   PA10:C
 // sercom0[3]:  PA07:D   PA11:C
 
 pub enum Sercom0Pad0 {
-    Pa4(gpio::Pa4<gpio::PfD>),
-    Pa8(gpio::Pa8<gpio::PfC>),
+    Pa4(pa4, PfD, into_function_d),
+    Pa8(pa8, PfC, into_function_c),
 }
 
 pub enum Sercom0Pad1 {
-    Pa5(gpio::Pa5<gpio::PfD>),
-    Pa9(gpio::Pa9<gpio::PfC>),
+    Pa5(pa5, PfD, into_function_d),
+    Pa9(pa9, PfC, into_function_c),
 }
 
 pub enum Sercom0Pad2 {
-    Pa6(gpio::Pa6<gpio::PfD>),
-    Pa10(gpio::Pa10<gpio::PfC>),
+    Pa6(pa6, PfD, into_function_d),
+    Pa10(pa10, PfC, into_function_c),
 }
 
 pub enum Sercom0Pad3 {
-    Pa7(gpio::Pa7<gpio::PfD>),
-    Pa11(gpio::Pa11<gpio::PfC>),
+    Pa7(pa7, PfD, into_function_d),
+    Pa11(pa11, PfC, into_function_c),
 }
 
 // sercom1[0]:  PA16:C   PA00:D
@@ -38,23 +66,23 @@ pub enum Sercom0Pad3 {
 // sercom1[3]:  PA19:C   PA31:D
 
 pub enum Sercom1Pad0 {
-    Pa0(gpio::Pa0<gpio::PfD>),
-    Pa16(gpio::Pa16<gpio::PfC>),
+    Pa0(pa0, PfD, into_function_d),
+    Pa16(pa16, PfC, into_function_c),
 }
 
 pub enum Sercom1Pad1 {
-    Pa1(gpio::Pa1<gpio::PfD>),
-    Pa17(gpio::Pa17<gpio::PfC>),
+    Pa1(pa1, PfD, into_function_d),
+    Pa17(pa17, PfC, into_function_c),
 }
 
 pub enum Sercom1Pad2 {
-    Pa18(gpio::Pa18<gpio::PfC>),
-    Pa30(gpio::Pa30<gpio::PfD>),
+    Pa18(pa18, PfC, into_function_c),
+    Pa30(pa30, PfD, into_function_d),
 }
 
 pub enum Sercom1Pad3 {
-    Pa19(gpio::Pa19<gpio::PfC>),
-    Pa31(gpio::Pa31<gpio::PfD>),
+    Pa19(pa19, PfC, into_function_c),
+    Pa31(pa31, PfD, into_function_d),
 }
 
 // sercom2[0]:  PA12:C   PA08:D
@@ -63,23 +91,23 @@ pub enum Sercom1Pad3 {
 // sercom2[3]:  PA15:C   PA11:D
 
 pub enum Sercom2Pad0 {
-    Pa8(gpio::Pa8<gpio::PfD>),
-    Pa12(gpio::Pa12<gpio::PfC>),
+    Pa8(pa8, PfD, into_function_d),
+    Pa12(pa12, PfC, into_function_c),
 }
 
 pub enum Sercom2Pad1 {
-    Pa9(gpio::Pa9<gpio::PfD>),
-    Pa13(gpio::Pa13<gpio::PfC>),
+    Pa9(pa9, PfD, into_function_d),
+    Pa13(pa13, PfC, into_function_c),
 }
 
 pub enum Sercom2Pad2 {
-    Pa10(gpio::Pa10<gpio::PfD>),
-    Pa14(gpio::Pa14<gpio::PfC>),
+    Pa10(pa10, PfD, into_function_d),
+    Pa14(pa14, PfC, into_function_c),
 }
 
 pub enum Sercom2Pad3 {
-    Pa11(gpio::Pa11<gpio::PfD>),
-    Pa15(gpio::Pa15<gpio::PfC>),
+    Pa11(pa11, PfD, into_function_d),
+    Pa15(pa15, PfC, into_function_c),
 }
 
 // sercom3[0]:  PA16:D   PA22:C
@@ -88,25 +116,22 @@ pub enum Sercom2Pad3 {
 // sercom3[3]:  PA19:D   PA25:C   PA21:D
 
 pub enum Sercom3Pad0 {
-    Pa16(gpio::Pa16<gpio::PfD>),
-    Pa22(gpio::Pa22<gpio::PfC>),
+    Pa16(pa16, PfD, into_function_d),
+    Pa22(pa22, PfC, into_function_c),
 }
-
 pub enum Sercom3Pad1 {
-    Pa17(gpio::Pa17<gpio::PfD>),
-    Pa23(gpio::Pa23<gpio::PfC>),
+    Pa17(pa17, PfD, into_function_d),
+    Pa23(pa23, PfC, into_function_c),
 }
-
 pub enum Sercom3Pad2 {
-    Pa18(gpio::Pa18<gpio::PfD>),
-    Pa20(gpio::Pa20<gpio::PfD>),
-    Pa24(gpio::Pa24<gpio::PfC>),
+    Pa18(pa18, PfD, into_function_d),
+    Pa20(pa20, PfD, into_function_d),
+    Pa24(pa24, PfC, into_function_c),
 }
-
 pub enum Sercom3Pad3 {
-    Pa19(gpio::Pa19<gpio::PfD>),
-    Pa21(gpio::Pa21<gpio::PfD>),
-    Pa25(gpio::Pa25<gpio::PfC>),
+    Pa19(pa19, PfD, into_function_d),
+    Pa21(pa21, PfD, into_function_d),
+    Pa25(pa25, PfC, into_function_c),
 }
 
 // sercom4[0]:  PA12:D   PB08:D   PB12:C
@@ -115,27 +140,27 @@ pub enum Sercom3Pad3 {
 // sercom4[3]:  PA15:D   PB11:D   PB15:C
 
 pub enum Sercom4Pad0 {
-    Pa12(gpio::Pa12<gpio::PfD>),
-    Pb8(gpio::Pb8<gpio::PfD>),
-    Pb12(gpio::Pb12<gpio::PfC>),
+    Pa12(pa12, PfD, into_function_d),
+    Pb8(pb8, PfD, into_function_d),
+    Pb12(pb12, PfC, into_function_c),
 }
 
 pub enum Sercom4Pad1 {
-    Pa13(gpio::Pa13<gpio::PfD>),
-    Pb9(gpio::Pb9<gpio::PfD>),
-    Pb13(gpio::Pb13<gpio::PfC>),
+    Pa13(pa13, PfD, into_function_d),
+    Pb9(pb9, PfD, into_function_d),
+    Pb13(pb13, PfC, into_function_c),
 }
 
 pub enum Sercom4Pad2 {
-    Pa14(gpio::Pa14<gpio::PfD>),
-    Pb10(gpio::Pb10<gpio::PfD>),
-    Pb14(gpio::Pb14<gpio::PfC>),
+    Pa14(pa14, PfD, into_function_d),
+    Pb10(pb10, PfD, into_function_d),
+    Pb14(pb14, PfC, into_function_c),
 }
 
 pub enum Sercom4Pad3 {
-    Pa15(gpio::Pa15<gpio::PfD>),
-    Pb11(gpio::Pb11<gpio::PfD>),
-    Pb15(gpio::Pb15<gpio::PfC>),
+    Pa15(pa15, PfD, into_function_d),
+    Pb11(pb11, PfD, into_function_d),
+    Pb15(pb15, PfC, into_function_c),
 }
 
 // sercom5[0]:  PA22:D   PB02:D   PB16:C  PB30:D
@@ -144,32 +169,33 @@ pub enum Sercom4Pad3 {
 // sercom5[3]:  PA25:D   PB01:D   PA21:C  PB23:D
 
 pub enum Sercom5Pad0 {
-    Pa22(gpio::Pa22<gpio::PfD>),
-    Pb2(gpio::Pb2<gpio::PfD>),
-    Pb16(gpio::Pb16<gpio::PfC>),
-    Pb30(gpio::Pb30<gpio::PfD>),
+    Pa22(pa22, PfD, into_function_d),
+    Pb2(pb2, PfD, into_function_d),
+    Pb16(pb16, PfC, into_function_c),
+    Pb30(pb30, PfD, into_function_d),
 }
 
 pub enum Sercom5Pad1 {
-    Pa23(gpio::Pa23<gpio::PfD>),
-    Pb3(gpio::Pb3<gpio::PfD>),
-    Pb17(gpio::Pb17<gpio::PfC>),
-    Pb31(gpio::Pb31<gpio::PfD>),
+    Pa23(pa23, PfD, into_function_d),
+    Pb3(pb3, PfD, into_function_d),
+    Pb17(pb17, PfC, into_function_c),
+    Pb31(pb31, PfD, into_function_d),
 }
 
 pub enum Sercom5Pad2 {
-    Pa24(gpio::Pa24<gpio::PfD>),
-    Pb0(gpio::Pb0<gpio::PfD>),
-    Pa20(gpio::Pa20<gpio::PfC>),
-    Pb22(gpio::Pb22<gpio::PfD>),
+    Pa24(pa24, PfD, into_function_d),
+    Pb0(pb0, PfD, into_function_d),
+    Pa20(pa20, PfC, into_function_c),
+    Pb22(pb22, PfD, into_function_d),
 }
 
 pub enum Sercom5Pad3 {
-    Pa25(gpio::Pa25<gpio::PfD>),
-    Pb1(gpio::Pb1<gpio::PfD>),
-    Pa21(gpio::Pa21<gpio::PfC>),
-    Pb23(gpio::Pb23<gpio::PfD>),
+    Pa25(pa25, PfD, into_function_d),
+    Pb1(pb1, PfD, into_function_d),
+    Pa21(pa21, PfC, into_function_c),
+    Pb23(pb23, PfD, into_function_d),
 }
+);
 
 const BUS_STATE_IDLE: u8 = 1;
 const BUS_STATE_OWNED: u8 = 2;
