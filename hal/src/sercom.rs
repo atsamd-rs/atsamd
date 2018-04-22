@@ -1,6 +1,6 @@
 // Note: section 7.2.3 shows which pins support I2C Hs mode
 use atsamd21g18a::sercom0::I2CM;
-use atsamd21g18a::{SERCOM1, SERCOM2, SERCOM3, SERCOM4, SERCOM5, GCLK, PM};
+use atsamd21g18a::{SERCOM0, SERCOM1, SERCOM2, SERCOM3, SERCOM4, SERCOM5, PM};
 use clock::wait_for_gclk_sync;
 use clock::Clocks;
 use gpio::{self, IntoFunction, Port};
@@ -237,21 +237,12 @@ impl $Type {
         freq: F,
         sercom: $SERCOM,
         pm: &mut PM,
-        gclk: &mut GCLK,
         sda: $pad0,
         scl: $pad1,
     ) -> Self {
         // Power up the peripheral bus clock.
         // safe because we're exclusively owning SERCOM
         pm.apbcmask.modify(|_, w| w.$powermask().set_bit());
-
-        // Configure clock
-        gclk.clkctrl.write(|w| {
-            w.id().$clock();
-            w.gen().gclk0();
-            w.clken().set_bit()
-        });
-        wait_for_gclk_sync(gclk);
 
         unsafe {
             // reset the sercom instance
@@ -267,7 +258,8 @@ impl $Type {
             while sercom.i2cm.syncbusy.read().enable().bit_is_set() {}
 
             // set the baud rate
-            let baud = (clocks.sysclock().0 / (2 * freq.into().0) - 1) as u8;
+            let gclk: Hertz = clocks.$clock().unwrap().generator().into();
+            let baud = (gclk.0 / (2 * freq.into().0) - 1) as u8;
             sercom.i2cm.baud.modify(|_, w| w.baud().bits(baud));
 
             sercom.i2cm.ctrla.modify(|_, w| w.enable().set_bit());
@@ -491,6 +483,7 @@ impl WriteRead for $Type {
 }
 
 i2c!([
+    I2CMaster0: (Sercom0Pad0, Sercom0Pad1, SERCOM0, sercom0_, sercom0_core),
     I2CMaster1: (Sercom1Pad0, Sercom1Pad1, SERCOM1, sercom1_, sercom1_core),
     I2CMaster2: (Sercom2Pad0, Sercom2Pad1, SERCOM2, sercom2_, sercom2_core),
     I2CMaster3: (Sercom3Pad0, Sercom3Pad1, SERCOM3, sercom3_, sercom3_core),

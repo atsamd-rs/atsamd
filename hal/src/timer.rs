@@ -1,10 +1,10 @@
 //! Working with timer counter hardware
 use atsamd21g18a::tc3::COUNT16;
 #[allow(unused)]
-use atsamd21g18a::{TC3, TC4, TC5, GCLK, PM};
+use atsamd21g18a::{TC3, TC4, TC5, PM};
 use hal::timer::{CountDown, Periodic};
 
-use clock::{wait_for_gclk_sync, ClockGenerator, Clocks};
+use clock::{self, wait_for_gclk_sync, ClockGenerator, Clocks};
 use nb;
 use time::Hertz;
 
@@ -20,13 +20,10 @@ pub struct TimerCounter<TC> {
 
 pub trait Count16 {
     fn count16(&self) -> &COUNT16;
-    fn configure(
-        &self,
-        clocks: &Clocks,
-        gclk: &mut GCLK,
-        pm: &mut PM,
-        desired_freq: Hertz,
-    ) -> ClockGenerator;
+}
+
+pub trait Configure {
+    fn configure(&self, clocks: &Clocks, pm: &mut PM) -> ClockGenerator;
 }
 
 impl<TC> Periodic for TimerCounter<TC> {}
@@ -119,15 +116,14 @@ where
     pub fn disable_interrupt(&mut self) {
         self.tc.count16().intenclr.write(|w| w.ovf().set_bit());
     }
+}
 
-    pub fn new<T: Into<Hertz>>(
-        clocks: &Clocks,
-        tc: TC,
-        gclk: &mut GCLK,
-        pm: &mut PM,
-        desired_freq: T,
-    ) -> Self {
-        let generator = tc.configure(clocks, gclk, pm, desired_freq.into());
+impl<TC> TimerCounter<TC>
+where
+    TC: Configure,
+{
+    pub fn new(clocks: &Clocks, tc: TC, pm: &mut PM) -> Self {
+        let generator = tc.configure(clocks, pm);
         Self {
             clocks: clocks.clone(),
             tc,
@@ -147,15 +143,16 @@ impl Count16 for $TC {
             &self.count16
         }
     }
+}
 
-    fn configure(&self, clocks: &Clocks, gclk: &mut GCLK, pm: &mut PM, desired_freq: Hertz) -> ClockGenerator {
+impl Configure for $TC {
+    fn configure(&self, clocks: &Clocks, pm: &mut PM) -> ClockGenerator {
         // this is safe because we're constrained to just the tc3 bit
         pm.apbcmask.modify(|_, w| w.$pm().set_bit());
 
         // Select an appropriate clock source based on the chosen
         // frequency.
-        let freq = desired_freq.into();
-        let params = clocks.clock_params(freq);
+        let generator = clocks.$ctrl().unwrap().generator();
 
         {
             let count = self.count16();
@@ -163,16 +160,9 @@ impl Count16 for $TC {
             // Disable the timer while we reconfigure it
             count.ctrla.modify(|_, w| w.enable().clear_bit());
             while count.status.read().syncbusy().bit_is_set() {}
-
-            gclk.clkctrl.write(|w| {
-                w.id().$ctrl();
-                w.gen().variant(params.generator.into());
-                w.clken().set_bit()
-            });
-            wait_for_gclk_sync(gclk);
         }
 
-        params.generator
+        generator
     }
 }
         )+

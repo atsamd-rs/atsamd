@@ -30,7 +30,7 @@ macro_rules! dbgprint {
     ($($arg:tt)*) => {{}};
 }
 
-use hal::clock::Clocks;
+use hal::clock::{ClockConfiguration, Clocks};
 use hal::prelude::*;
 use hal::sercom::{I2CMaster3, PadPin};
 use rtfm::{app, Threshold};
@@ -76,8 +76,10 @@ fn idle(_t: &mut Threshold, _r: idle::Resources) -> ! {
 }
 
 fn init(mut p: init::Peripherals /* , r: init::Resources */) -> init::LateResources {
-    let clocks = Clocks::freeze(
-        &mut p.device.GCLK,
+    let interval = 1.hz();
+
+    let clocks = ClockConfiguration::default().tcc2_tc3(interval).freeze(
+        p.device.GCLK,
         &mut p.device.PM,
         &mut p.device.SYSCTRL,
         &mut p.device.NVMCTRL,
@@ -89,7 +91,6 @@ fn init(mut p: init::Peripherals /* , r: init::Resources */) -> init::LateResour
         400.khz(),
         p.device.SERCOM3,
         &mut p.device.PM,
-        &mut p.device.GCLK,
         // Metro M0 express has I2C on pins PA22, PA23
         pins.pa22.into_pad(&mut pins.port),
         pins.pa23.into_pad(&mut pins.port),
@@ -110,14 +111,7 @@ fn init(mut p: init::Peripherals /* , r: init::Resources */) -> init::LateResour
         Ok(val) => dbgprint!("read intmaska {:x}", val),
     };
 
-    let interval = 1.hz();
-    let mut tc3 = hal::timer::TimerCounter::new(
-        &clocks,
-        p.device.TC3,
-        &mut p.device.GCLK,
-        &mut p.device.PM,
-        interval,
-    );
+    let mut tc3 = hal::timer::TimerCounter::new(&clocks, p.device.TC3, &mut p.device.PM);
     dbgprint!("start timer");
     tc3.start(interval);
     tc3.enable_interrupt();

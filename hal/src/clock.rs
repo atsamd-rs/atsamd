@@ -4,10 +4,6 @@ pub use atsamd21g18a::gclk::clkctrl::GENW as GenericClockGenerator;
 use atsamd21g18a::{GCLK, NVMCTRL, PM, SYSCTRL};
 use time::Hertz;
 
-/// Frozen clock configuration record
-#[derive(Debug, Clone)]
-pub struct Clocks {}
-
 #[derive(Debug, Clone, Copy)]
 pub struct ClockParams {
     pub generator: ClockGenerator,
@@ -41,35 +37,114 @@ impl Into<Hertz> for ClockGenerator {
     }
 }
 
-const OSC48M: Hertz = Hertz(48_000_000);
-const OSC32K: Hertz = Hertz(32_000);
+impl From<Hertz> for ClockGenerator {
+    fn from(freq: Hertz) -> ClockGenerator {
+        if freq.0 <= OSC32K.0 {
+            ClockGenerator::Osc32k
+        } else {
+            ClockGenerator::Osc48m
+        }
+    }
+}
 
-impl Clocks {
+pub const OSC48M: Hertz = Hertz(48_000_000);
+pub const OSC32K: Hertz = Hertz(32_000);
+
+macro_rules! clock_config {
+    ($(($id:ident, $Type:ident),)+) => {
+
+$(
+#[derive(Debug, Clone)]
+pub struct $Type {
+    gen: ClockGenerator,
+}
+
+impl $Type {
+    pub fn generator(&self) -> ClockGenerator {
+        self.gen
+    }
+}
+)+
+
+
+/// Frozen clock configuration record
+#[derive(Debug, Clone)]
+pub struct Clocks {
+    $($id: Option<$Type>,)+
+}
+
+#[derive(Debug, Default)]
+pub struct ClockConfiguration {
+    $($id: Option<ClockGenerator>,)+
+}
+impl ClockConfiguration {
+    $(
+    pub fn $id<F: Into<Hertz>>(mut self, freq: F) -> Self {
+        self.$id = Some(freq.into().into());
+        self
+    }
+    )+
+
     /// Freeze the configuration builder and apply it to
     /// the appropriate peripherals.
     pub fn freeze(
-        gclk: &mut GCLK,
+        self,
+        mut gclk: GCLK,
         pm: &mut PM,
         sysctrl: &mut SYSCTRL,
         nvmctrl: &mut NVMCTRL,
     ) -> Clocks {
-        set_system_clock_to_48mhz(gclk, pm, sysctrl, nvmctrl);
+        set_system_clock_to_48mhz(&mut gclk, pm, sysctrl, nvmctrl);
 
-        Self {}
+        $(
+        if let Some(gen) = self.$id {
+            gclk.clkctrl.write(|w| {
+                w.id().$id();
+                w.gen().variant(gen.into());
+                w.clken().set_bit()
+            });
+            wait_for_gclk_sync(&mut gclk);
+        }
+        )+
+
+        Clocks {
+            $(
+            $id: self.$id.map(|gen| $Type{gen}),
+            )+
+        }
     }
+}
 
+impl Clocks {
+    $(
+    pub fn $id(&self) -> Option<&$Type> {
+        self.$id.as_ref()
+    }
+    )+
+}
+
+    }
+}
+
+clock_config!(
+    (tcc2_tc3, Tcc2Tc3Clock),
+    (tc4_tc5, Tc4Tc5Clock),
+    (sercom0_core, Sercom0CoreClock),
+    (sercom1_core, Sercom1CoreClock),
+    (sercom2_core, Sercom2CoreClock),
+    (sercom3_core, Sercom3CoreClock),
+    (sercom4_core, Sercom4CoreClock),
+    (sercom5_core, Sercom5CoreClock),
+);
+
+impl Clocks {
     pub fn sysclock(&self) -> Hertz {
         OSC48M
     }
 
     /// Compute best matching clock for a given frequency
     pub fn clock_params(&self, desired_freq: Hertz) -> ClockParams {
-        let generator = if desired_freq.0 <= OSC32K.0 {
-            ClockGenerator::Osc32k
-        } else {
-            ClockGenerator::Osc48m
-        };
-
+        let generator = desired_freq.into();
         self.constrained_clock_params(generator, desired_freq)
     }
 
