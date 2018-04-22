@@ -27,7 +27,7 @@ macro_rules! dbgprint {
 
 #[cfg(not(feature = "use_semihosting"))]
 macro_rules! dbgprint {
-    ($($fmt:expr),+) => {};
+    ($($arg:tt)*) => {{}};
 }
 
 use hal::prelude::*;
