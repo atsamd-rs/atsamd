@@ -4,7 +4,7 @@ use atsamd21g18a::tc3::COUNT16;
 use atsamd21g18a::{TC3, TC4, TC5, PM};
 use hal::timer::{CountDown, Periodic};
 
-use clock::{self, wait_for_gclk_sync, ClockGenerator, Clocks};
+use clock;
 use nb;
 use time::Hertz;
 
@@ -13,17 +13,12 @@ use time::Hertz;
 // TC5 + TC6 can be paired to make a 32-bit counter
 
 pub struct TimerCounter<TC> {
-    clocks: Clocks,
+    freq: Hertz,
     tc: TC,
-    generator: ClockGenerator,
 }
 
 pub trait Count16 {
     fn count16(&self) -> &COUNT16;
-}
-
-pub trait Configure {
-    fn configure(&self, clocks: &Clocks, pm: &mut PM) -> ClockGenerator;
 }
 
 impl<TC> Periodic for TimerCounter<TC> {}
@@ -38,8 +33,7 @@ where
         T: Into<Hertz>,
     {
         let timeout = timeout.into();
-        let params = self.clocks
-            .constrained_clock_params(self.generator, timeout);
+        let params = clock::ClockParams::new(self.freq, timeout);
         let divider = params.divider;
         let count = self.tc.count16();
 
@@ -63,6 +57,7 @@ where
         });
 
         // How many cycles of the clock need to happen to reach our
+
         // effective value.
         let cycles = params.effective_freq.0 / timeout.0;
         if cycles > u16::max_value() as u32 {
@@ -118,22 +113,8 @@ where
     }
 }
 
-impl<TC> TimerCounter<TC>
-where
-    TC: Configure,
-{
-    pub fn new(clocks: &Clocks, tc: TC, pm: &mut PM) -> Self {
-        let generator = tc.configure(clocks, pm);
-        Self {
-            clocks: clocks.clone(),
-            tc,
-            generator,
-        }
-    }
-}
-
 macro_rules! tc {
-    ($($TYPE:ident: ($TC:ident, $pm:ident, $ctrl:ident),)+) => {
+    ($($TYPE:ident: ($TC:ident, $pm:ident, $clock:ident),)+) => {
         $(
 pub type $TYPE = TimerCounter<$TC>;
 
@@ -145,24 +126,24 @@ impl Count16 for $TC {
     }
 }
 
-impl Configure for $TC {
-    fn configure(&self, clocks: &Clocks, pm: &mut PM) -> ClockGenerator {
+impl<TC> TimerCounter<TC>
+where
+    TC: Count16,
+{
+    pub fn $pm(clock: &clock::$clock, tc: TC, pm: &mut PM) -> Self {
         // this is safe because we're constrained to just the tc3 bit
         pm.apbcmask.modify(|_, w| w.$pm().set_bit());
-
-        // Select an appropriate clock source based on the chosen
-        // frequency.
-        let generator = clocks.$ctrl().unwrap().generator();
-
         {
-            let count = self.count16();
+            let count = tc.count16();
 
             // Disable the timer while we reconfigure it
             count.ctrla.modify(|_, w| w.enable().clear_bit());
             while count.status.read().syncbusy().bit_is_set() {}
         }
-
-        generator
+        Self {
+            freq: clock.freq(),
+            tc,
+        }
     }
 }
         )+
@@ -170,8 +151,7 @@ impl Configure for $TC {
 }
 
 tc! {
-    TimerCounter3: (TC3, tc3_, tcc2_tc3),
-    TimerCounter4: (TC4, tc4_, tc4_tc5),
-    // take care: tc4 and tc5 have linked clock generators!
-    // TimerCounter5: (TC5, tc5_, tc4_tc5),
+    TimerCounter3: (TC3, tc3_, Tcc2Tc3Clock),
+    TimerCounter4: (TC4, tc4_, Tc4Tc5Clock),
+    TimerCounter5: (TC5, tc5_, Tc4Tc5Clock),
 }

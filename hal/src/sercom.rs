@@ -1,8 +1,7 @@
 // Note: section 7.2.3 shows which pins support I2C Hs mode
 use atsamd21g18a::sercom0::I2CM;
 use atsamd21g18a::{SERCOM0, SERCOM1, SERCOM2, SERCOM3, SERCOM4, SERCOM5, PM};
-use clock::wait_for_gclk_sync;
-use clock::Clocks;
+use clock;
 use gpio::{self, IntoFunction, Port};
 use hal::blocking::i2c::{Read, Write, WriteRead};
 use time::Hertz;
@@ -233,7 +232,7 @@ pub struct $Type {
 
 impl $Type {
     pub fn new<F: Into<Hertz>>(
-        clocks: &Clocks,
+        clock: &clock::$clock,
         freq: F,
         sercom: $SERCOM,
         pm: &mut PM,
@@ -258,7 +257,7 @@ impl $Type {
             while sercom.i2cm.syncbusy.read().enable().bit_is_set() {}
 
             // set the baud rate
-            let gclk: Hertz = clocks.$clock().unwrap().generator().into();
+            let gclk = clock.freq();
             let baud = (gclk.0 / (2 * freq.into().0) - 1) as u8;
             sercom.i2cm.baud.modify(|_, w| w.baud().bits(baud));
 
@@ -483,12 +482,54 @@ impl WriteRead for $Type {
 }
 
 i2c!([
-    I2CMaster0: (Sercom0Pad0, Sercom0Pad1, SERCOM0, sercom0_, sercom0_core),
-    I2CMaster1: (Sercom1Pad0, Sercom1Pad1, SERCOM1, sercom1_, sercom1_core),
-    I2CMaster2: (Sercom2Pad0, Sercom2Pad1, SERCOM2, sercom2_, sercom2_core),
-    I2CMaster3: (Sercom3Pad0, Sercom3Pad1, SERCOM3, sercom3_, sercom3_core),
-    I2CMaster4: (Sercom4Pad0, Sercom4Pad1, SERCOM4, sercom4_, sercom4_core),
-    I2CMaster5: (Sercom5Pad0, Sercom5Pad1, SERCOM5, sercom5_, sercom5_core),
+    I2CMaster0:
+        (
+            Sercom0Pad0,
+            Sercom0Pad1,
+            SERCOM0,
+            sercom0_,
+            Sercom0CoreClock
+        ),
+    I2CMaster1:
+        (
+            Sercom1Pad0,
+            Sercom1Pad1,
+            SERCOM1,
+            sercom1_,
+            Sercom1CoreClock
+        ),
+    I2CMaster2:
+        (
+            Sercom2Pad0,
+            Sercom2Pad1,
+            SERCOM2,
+            sercom2_,
+            Sercom2CoreClock
+        ),
+    I2CMaster3:
+        (
+            Sercom3Pad0,
+            Sercom3Pad1,
+            SERCOM3,
+            sercom3_,
+            Sercom3CoreClock
+        ),
+    I2CMaster4:
+        (
+            Sercom4Pad0,
+            Sercom4Pad1,
+            SERCOM4,
+            sercom4_,
+            Sercom4CoreClock
+        ),
+    I2CMaster5:
+        (
+            Sercom5Pad0,
+            Sercom5Pad1,
+            SERCOM5,
+            sercom5_,
+            Sercom5CoreClock
+        ),
 ]);
 
 #[derive(Debug)]

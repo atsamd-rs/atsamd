@@ -30,7 +30,7 @@ macro_rules! dbgprint {
     ($($arg:tt)*) => {{}};
 }
 
-use hal::clock::{ClockConfiguration, Clocks};
+use hal::clock::GenericClockController;
 use hal::prelude::*;
 use hal::sercom::{I2CMaster3, PadPin};
 use rtfm::{app, Threshold};
@@ -39,7 +39,6 @@ app! {
     device: hal::atsamd21g18a,
 
     resources: {
-        static CLOCKS: Clocks;
         static RED_LED: hal::gpio::Pa17<hal::gpio::Output<hal::gpio::OpenDrain>>;
         static I2C: I2CMaster3;
         static SX1509: sx1509::Sx1509<I2CMaster3>;
@@ -51,7 +50,7 @@ app! {
     // will fail with an inscrutable error.  We're throwing them
     // all into the idle block for now.
     idle: {
-        resources:[CLOCKS, I2C, SX1509 /*, RED_LED, TIMER*/],
+        resources:[I2C, SX1509 /*, RED_LED, TIMER*/],
 
     },
 
@@ -78,16 +77,17 @@ fn idle(_t: &mut Threshold, _r: idle::Resources) -> ! {
 fn init(mut p: init::Peripherals /* , r: init::Resources */) -> init::LateResources {
     let interval = 1.hz();
 
-    let clocks = ClockConfiguration::default().tcc2_tc3(interval).freeze(
+    let mut clocks = GenericClockController::new(
         p.device.GCLK,
         &mut p.device.PM,
         &mut p.device.SYSCTRL,
         &mut p.device.NVMCTRL,
     );
+    let gclk0 = clocks.gclk0();
     let mut pins = p.device.PORT.split();
 
     let mut i2c = I2CMaster3::new(
-        &clocks,
+        &clocks.sercom3_core(&gclk0).unwrap(),
         400.khz(),
         p.device.SERCOM3,
         &mut p.device.PM,
@@ -111,14 +111,17 @@ fn init(mut p: init::Peripherals /* , r: init::Resources */) -> init::LateResour
         Ok(val) => dbgprint!("read intmaska {:x}", val),
     };
 
-    let mut tc3 = hal::timer::TimerCounter::new(&clocks, p.device.TC3, &mut p.device.PM);
+    let mut tc3 = hal::timer::TimerCounter::tc3_(
+        &clocks.tcc2_tc3(&gclk0).unwrap(),
+        p.device.TC3,
+        &mut p.device.PM,
+    );
     dbgprint!("start timer");
     tc3.start(interval);
     tc3.enable_interrupt();
 
     dbgprint!("done init");
     init::LateResources {
-        CLOCKS: clocks,
         RED_LED: pins.pa17.into_open_drain_output(&mut pins.port),
         I2C: i2c,
         SX1509: expander,

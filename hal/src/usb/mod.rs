@@ -1,8 +1,7 @@
 //! USB Device support
 
-use atsamd21g18a::{GCLK, PM, USB};
-use clock::wait_for_gclk_sync;
-use clock::Clocks;
+use atsamd21g18a::{PM, USB};
+use clock;
 use gpio;
 
 /// Emit SOF at 1Khz on this pin when configured as function G
@@ -118,21 +117,13 @@ pub struct DeviceDescriptor {
 
 impl UsbDevice {
     pub fn new(
-        clocks: &Clocks,
+        _clock: &clock::UsbClock,
         pm: &mut PM,
-        gclk: &mut GCLK,
         dm_pad: DmPad,
         dp_pad: DpPad,
         usb: USB,
     ) -> Self {
         pm.apbbmask.modify(|_, w| w.usb_().set_bit());
-
-        gclk.clkctrl.write(|w| {
-            w.id().usb();
-            w.gen().gclk0();
-            w.clken().set_bit()
-        });
-        wait_for_gclk_sync(gclk);
 
         Self {
             dm_pad,
