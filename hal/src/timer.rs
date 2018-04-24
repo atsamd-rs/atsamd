@@ -27,6 +27,9 @@ pub struct TimerCounter<TC> {
     tc: TC,
 }
 
+/// This is a helper trait to make it easier to make most of the
+/// TimerCounter impl generic.  It doesn't make too much sense to
+/// to try to implement this trait outside of this module.
 pub trait Count16 {
     fn count16(&self) -> &COUNT16;
 }
