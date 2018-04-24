@@ -1,3 +1,13 @@
+//! Working with the SERCOM peripherals.
+//!
+//! The atsamd21 hardware has several SERCOM instances that can
+//! be configured to perform a variety of serial communication
+//! tasks.  This configuration is expressed through the use of
+//! type states to make it difficult to misuse.
+//! Each sercom instance is associated with a group of IO pins
+//! referred to as a Pad.  When the pins are set to the appropriate
+//! peripheral function mode they are routed to the sercom pad.
+
 // Note: section 7.2.3 shows which pins support I2C Hs mode
 use atsamd21g18a::sercom0::I2CM;
 use atsamd21g18a::{SERCOM0, SERCOM1, SERCOM2, SERCOM3, SERCOM4, SERCOM5, PM};
@@ -22,6 +32,7 @@ macro_rules! pad {
     })+
     ) => {
 $(
+/// Represents a numbered pad for the associated sercom instance
 pub enum $PadType {
     $(
         $PinType(gpio::$PinType<gpio::$Pf>),
@@ -30,7 +41,9 @@ pub enum $PadType {
 
 impl $PadType {
     $(
-    /// Construct pad from the appropriate pin in any mode
+    /// Construct pad from the appropriate pin in any mode.
+    /// You may find it more convenient to use the `into_pad` trait
+    /// and avoid referencing the pad type.
     pub fn $new<MODE>(pin: gpio::$PinType<MODE>, port: &mut Port) -> Self {
         $PadType::$PinType(pin.into_function(port))
     }
@@ -224,6 +237,8 @@ macro_rules! i2c {
         $($Type:ident: ($pad0:ident, $pad1:ident, $SERCOM:ident, $powermask:ident, $clock:ident),)+
     ]) => {
         $(
+/// Represents the Sercom instance configured to act as an I2C Master.
+/// The embedded_hal blocking I2C traits are implemented by this instance.
 pub struct $Type {
     sda: $pad0,
     scl: $pad1,
@@ -231,6 +246,27 @@ pub struct $Type {
 }
 
 impl $Type {
+    /// Configures the sercom instance to work as an I2C Master.
+    /// The clock is obtained via the `GenericClockGenerator` type.
+    /// `freq` specifies the bus frequency to use for I2C communication.
+    /// There are typically a handful of values that tend to be supported;
+    /// standard mode is 100.khz(), full speed mode is 400.khz().
+    /// The hardware in the atsamd device supports fast mode at 1.mhz()
+    /// and fast mode, but there may be additional hardware configuration
+    /// missing from the current software implementation that prevents that
+    /// from working as-written today.
+    ///
+    /// ```no_run
+    /// let mut i2c = I2CMaster3::new(
+    ///     &clocks.sercom3_core(&gclk0).unwrap(),
+    ///     400.khz(),
+    ///     p.device.SERCOM3,
+    ///     &mut p.device.PM,
+    ///     // Metro M0 express has I2C on pins PA22, PA23
+    ///     pins.pa22.into_pad(&mut pins.port),
+    ///     pins.pa23.into_pad(&mut pins.port),
+    /// );
+    /// ```
     pub fn new<F: Into<Hertz>>(
         clock: &clock::$clock,
         freq: F,
@@ -277,6 +313,8 @@ impl $Type {
         Self { sda, scl, sercom }
     }
 
+    /// Breaks the sercom device up into its constituent pins and the SERCOM
+    /// instance.  Does not make any changes to power management.
     pub fn free(self) -> ($pad0, $pad1, $SERCOM) {
         (self.sda, self.scl, self.sercom)
     }
