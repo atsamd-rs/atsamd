@@ -1,3 +1,12 @@
+//! Working with GPIO pins.
+//! The pins are associated with the PORT hardware.  This module
+//! defines a `split` method on the `PORT` type that is used to safely
+//! reference the individual pin configuration.
+//! The IO pins can be switched into alternate function modes, which
+//! routes the pins to different peripherals depending on the mode
+//! for the pin.   The pin configuration is reflected through the
+//! use of type states to make the interface (ideally, or at least practically)
+//! impossible to misuse.
 use atsamd21g18a::port::{PINCFG0_, PINCFG1_, PMUX0_, PMUX1_, DIRCLR, DIRSET, OUTCLR, OUTSET};
 use atsamd21g18a::PORT;
 use core::marker::PhantomData;
@@ -6,15 +15,25 @@ use hal::digital::OutputPin;
 #[cfg(feature = "unproven")]
 use hal::digital::InputPin;
 
+/// The GpioExt trait allows splitting the PORT hardware into
+/// its constituent pin parts.
 pub trait GpioExt {
     type Parts;
+
+    /// Consume and split the device into its constitent parts
     fn split(self) -> Self::Parts;
 }
 
+/// Represents a pin configured for input.
+/// The MODE type is typically one of `Floating`, `PullDown` or
+/// `PullUp`.
 pub struct Input<MODE> {
     _mode: PhantomData<MODE>,
 }
 
+/// Represents a pin configured for output.
+/// The MODE type is typically one of `PushPull`, or
+/// `OpenDrain`.
 pub struct Output<MODE> {
     _mode: PhantomData<MODE>,
 }
@@ -53,7 +72,15 @@ pub struct PfH;
 /// Peripheral Function I
 pub struct PfI;
 
+/// A trait that makes it easier to generically manage
+/// converting a pin from its current state into some
+/// other functional mode.  The configuration change
+/// requires exclusive access to the Port hardware,
+/// which is why this isn't simply the standard `Into`
+/// trait.
 pub trait IntoFunction<T> {
+    /// Consume the pin and configure it to operate in
+    /// the mode T.
     fn into_function(self, port: &mut Port) -> T;
 }
 
@@ -111,7 +138,7 @@ macro_rules! pin {
             };
         }
 
-
+        /// Represents the IO pin with the matching name.
         pub struct $PinType<MODE> {
             _mode: PhantomData<MODE>,
         }
@@ -251,6 +278,8 @@ macro_rules! pin {
         impl<MODE> $PinType<Output<MODE>> {
             // This should eventually make it into the OutputPin
             // trait: https://github.com/japaric/embedded-hal/pull/44
+            /// Toggle the logic level of the pin; if it is currently
+            /// high, set it low and vice versa.
             pub fn toggle(&mut self) {
                 unsafe {
                     (*PORT::ptr()).$outtgl.write(|bits| {
