@@ -1,5 +1,8 @@
-// Sketching out clock configuration while I figure out
-// how all the pieces fit together and how to model them.
+//! Configuring the system clock sources.
+//! You will typically need to create an instance of `GenericClockController`
+//! before you can set up most of the peripherals on the atsamd21 device.
+//! The other types in this module are used to enforce at compile time
+//! that the peripherals have been correctly configured.
 use atsamd21g18a::gclk::clkctrl::GENR::*;
 use atsamd21g18a::gclk::clkctrl::IDR::*;
 use atsamd21g18a::gclk::genctrl::SRCR::*;
@@ -10,7 +13,11 @@ pub type ClockId = atsamd21g18a::gclk::clkctrl::IDR;
 pub type ClockGenId = atsamd21g18a::gclk::clkctrl::GENR;
 pub type ClockSource = atsamd21g18a::gclk::genctrl::SRCR;
 
-/// Represents a configured clock generator
+/// Represents a configured clock generator.
+/// Can be converted into the effective clock frequency.
+/// Its primary purpose is to be passed in to methods
+/// such as `GenericClockController::tcc2_tc3` to configure
+/// the clock for a peripheral.
 #[derive(Clone, Copy)]
 pub struct GClock {
     gclk: ClockGenId,
@@ -73,6 +80,12 @@ impl State {
     }
 }
 
+/// `GenericClockController` encapsulates the GCLK hardware.
+/// It provides a type safe way to configure the system clocks.
+/// Initializing the `GenericClockController` instance configures
+/// the system to run at 48Mhz by setting gclk1 as a 32khz source
+/// and feeding it into the DFLL48 hardware which in turn drives
+/// gclk0 at 48Mhz.
 pub struct GenericClockController {
     state: State,
     gclks: [Hertz; 8],
@@ -127,6 +140,7 @@ impl GenericClockController {
         }
     }
 
+    /// Returns a `GClock` for gclk0, the system clock generator at 48Mhz
     pub fn gclk0(&mut self) -> GClock {
         GClock {
             gclk: GCLK0,
@@ -134,6 +148,7 @@ impl GenericClockController {
         }
     }
 
+    /// Returns a `GClock` for gclk1, the 32Khz oscillator.
     pub fn gclk1(&mut self) -> GClock {
         GClock {
             gclk: GCLK1,
@@ -141,6 +156,9 @@ impl GenericClockController {
         }
     }
 
+    /// Returns the `GClock` for the specified clock generator.
+    /// If that clock generator has not yet been configured,
+    /// returns None.
     pub fn get_gclk(&mut self, gclk: ClockGenId) -> Option<GClock> {
         let idx = gclk.bits() as usize;
         if self.gclks[idx].0 == 0 {
@@ -153,6 +171,15 @@ impl GenericClockController {
         }
     }
 
+    /// Configures a clock generator with the specified divider and
+    /// source.
+    /// `divider` is a linear divider to be applied to the clock
+    /// source.  While the hardware also supports an exponential divider,
+    /// this function doesn't expose that functionality at this time.
+    /// `improve_duty_cycle` is a boolean that, when set to true, enables
+    /// a 5o/50 duty cycle for odd divider values.
+    /// Returns a `GClock` for the configured clock generator.
+    /// Returns `None` if the clock generator has already been configured.
     pub fn configure_gclk_divider_and_source(
         &mut self,
         gclk: ClockGenId,
@@ -183,12 +210,20 @@ macro_rules! clock_generator {
     ($(($id:ident, $Type:ident, $clock:ident),)+) => {
 
 $(
+/// A typed token that indicates that the clock for the peripheral(s)
+/// with the matching name has been configured.
+/// The effective clock frequency is available via the `freq` method,
+/// or by converting the object into a `Hertz` instance.
+/// The peripheral initialization code will typically require passing
+/// in this object to prove at compile time that the clock has been
+/// correctly initialized.
 #[derive(Debug)]
 pub struct $Type {
     freq: Hertz,
 }
 
 impl $Type {
+    /// Returns the frequency of the configured clock
     pub fn freq(&self) -> Hertz {
         self.freq
     }
@@ -202,6 +237,18 @@ impl Into<Hertz> for $Type {
 
 impl GenericClockController {
     $(
+    /// Configure the clock for peripheral(s) that match the name
+    /// of this function to use the specific clock generator.
+    /// The `GClock` parameter may be one of default clocks
+    /// return from `gclk0()`, `gclk1()` or a clock configured
+    /// by the host application using the `configure_gclk_divider_and_source`
+    /// method.
+    /// Returns a typed token that proves that the clock has been configured;
+    /// the peripheral initialization code will typically require that this
+    /// clock token be passed in to ensure that the clock has been initialized
+    /// appropriately.
+    /// Returns `None` is the specified generic clock has already been
+    /// configured.
     pub fn $id(&mut self, generator: &GClock) -> Option<$Type> {
         let bits : u64 = 1<<$clock.bits() as u64;
         if (self.used_clocks & bits) != 0 {
@@ -231,14 +278,23 @@ clock_generator!(
     (usb, UsbClock, USB),
 );
 
+/// Helper type for computing effective frequency given a source
+/// clock frequency and a desired frequency.
 #[derive(Debug, Clone, Copy)]
 pub struct ClockParams {
+    /// The frequency of the source/input clock
     pub src_freq: Hertz,
+    /// The linear division value.  This is constrained to the range
+    /// of values supported by the hardware.
     pub divider: u16,
+    /// The effective frequency, which is ideally the desired frequency,
+    /// but is produced by dividing the `src_freq` by the `divider`.
     pub effective_freq: Hertz,
 }
 
 impl ClockParams {
+    /// Given a source frequency and a desired frequency, compute the
+    /// `ClockParams` values for the closest matching clock configuration.
     pub fn new(src_freq: Hertz, desired_freq: Hertz) -> Self {
         let divider = (src_freq.0 / desired_freq.0.saturating_sub(1).max(1)).next_power_of_two();
         let divider = match divider {
@@ -261,7 +317,9 @@ impl ClockParams {
     }
 }
 
+/// The frequency of the 48Mhz source.
 pub const OSC48M_FREQ: Hertz = Hertz(48_000_000);
+/// The frequency of the 32Khz source.
 pub const OSC32K_FREQ: Hertz = Hertz(32_000);
 
 fn set_flash_to_half_auto_wait_state(nvmctrl: &mut NVMCTRL) {
