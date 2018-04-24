@@ -12,6 +12,16 @@ use time::Hertz;
 // TC3 + TC4 can be paired to make a 32-bit counter
 // TC5 + TC6 can be paired to make a 32-bit counter
 
+/// A generic hardware timer counter.
+/// The counters are exposed in 16-bit mode only.
+/// The hardware allows configuring the 8-bit mode
+/// and pairing up some instances to run in 32-bit
+/// mode, but that functionality is not currently
+/// exposed by this hal implementation.
+/// TimerCounter implements both the `Periodic` and
+/// the `CountDown` embedded_hal timer traits.
+/// Before a hardware timer can be used, it must first
+/// have a clock configured.
 pub struct TimerCounter<TC> {
     freq: Hertz,
     tc: TC,
@@ -104,10 +114,18 @@ impl<TC> TimerCounter<TC>
 where
     TC: Count16,
 {
+    /// Enable the interrupt generation for this hardware timer.
+    /// This method only sets the clock configuration to trigger
+    /// the interrupt; it does not configure the interrupt controller
+    /// or define an interrupt handler.
     pub fn enable_interrupt(&mut self) {
         self.tc.count16().intenset.write(|w| w.ovf().set_bit());
     }
 
+    /// Disables interrupt generation for this hardware timer.
+    /// This method only sets the clock configuration to prevent
+    /// triggering the interrupt; it does not configure the interrupt
+    /// controller.
     pub fn disable_interrupt(&mut self) {
         self.tc.count16().intenclr.write(|w| w.ovf().set_bit());
     }
@@ -126,11 +144,15 @@ impl Count16 for $TC {
     }
 }
 
-impl<TC> TimerCounter<TC>
-where
-    TC: Count16,
+impl TimerCounter<$TC>
 {
-    pub fn $pm(clock: &clock::$clock, tc: TC, pm: &mut PM) -> Self {
+    /// Configure this timer counter instance.
+    /// The clock is obtained from the `GenericClockController` instance
+    /// and its frequency impacts the resolution and maximum range of
+    /// the timeout values that can be passed to the `start` method.
+    /// Note that some hardware timer instances share the same clock
+    /// generator instance and thus will be clocked at the same rate.
+    pub fn $pm(clock: &clock::$clock, tc: $TC, pm: &mut PM) -> Self {
         // this is safe because we're constrained to just the tc3 bit
         pm.apbcmask.modify(|_, w| w.$pm().set_bit());
         {
