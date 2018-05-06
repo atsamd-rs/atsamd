@@ -1,10 +1,15 @@
 use atsamd21g18a::sercom0::SPI;
 use atsamd21g18a::{SERCOM0, SERCOM1, SERCOM2, SERCOM3, SERCOM4, SERCOM5, PM};
 use clock;
-use gpio::{self, IntoFunction, Port};
+use gpio::Port;
 use hal::spi::{FullDuplex, Mode, Phase, Polarity};
+use nb;
 use sercom::pads::*;
 use time::Hertz;
+
+pub enum Error {
+    Overrun,
+}
 
 /// This is a convenience trait for setting up the SPI pins.
 /// You should not implement this trait yourself.
@@ -119,6 +124,12 @@ impl $Type {
             // wait for configuration to take effect
             while sercom.spi.syncbusy.read().enable().bit_is_set() {}
 
+            // 8 bit data size and enable the receiver
+            sercom.spi.ctrlb.modify(|_, w|{
+                w.chsize().bits(0);
+                w.rxen().clear_bit()
+            });
+
             // set the baud rate
             let gclk = clock.freq();
             let baud = (gclk.0 / (2 * freq.into().0) - 1) as u8;
@@ -131,8 +142,8 @@ impl $Type {
                 };
 
                 match mode.phase {
-                    Phase::CaptureOnFirstTransition=> w.cpha().clear_bit(),
-                    Phase::CaptureOnSecondTransition=>w.cpha().set_bit(),
+                    Phase::CaptureOnFirstTransition => w.cpha().clear_bit(),
+                    Phase::CaptureOnSecondTransition => w.cpha().set_bit(),
                 };
 
                 match &pinout {
@@ -164,6 +175,39 @@ impl $Type {
         unsafe { &self.sercom.spi }
     }
 }
+
+impl FullDuplex<u8> for $Type {
+    type Error = Error;
+
+    fn read(&mut self) -> nb::Result<u8, Error> {
+        let status = self.spi().status.read();
+        if status.bufovf().bit_is_set() {
+            return Err(nb::Error::Other(Error::Overrun));
+        }
+
+        let intflag = self.spi().intflag.read();
+        // rxc is receive complete
+        if intflag.rxc().bit_is_set() {
+            Ok(self.spi().data.read().data().bits() as u8)
+        } else {
+            Err(nb::Error::WouldBlock)
+        }
+    }
+
+    fn send(&mut self, byte: u8) -> nb::Result<(), Error> {
+        let intflag = self.spi().intflag.read();
+        // dre is data register empty
+        if intflag.dre().bit_is_set() {
+            self.spi().data.write(|w| unsafe{w.data().bits(byte as u16)});
+            Ok(())
+        } else {
+            Err(nb::Error::WouldBlock)
+        }
+    }
+}
+
+impl ::hal::blocking::spi::transfer::Default<u8> for $Type {}
+impl ::hal::blocking::spi::write::Default<u8> for $Type {}
 
 
 )+
