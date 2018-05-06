@@ -10,6 +10,8 @@
 
 mod i2c;
 mod pads;
+mod spi;
 
 pub use self::i2c::*;
 pub use self::pads::*;
+pub use self::spi::*;
