@@ -8,6 +8,7 @@ extern crate nb;
 
 mod calibration;
 pub mod clock;
+pub mod delay;
 pub mod gpio;
 pub mod prelude;
 pub mod sercom;
