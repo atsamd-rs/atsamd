@@ -5,6 +5,7 @@ version = "0.1.0"
 authors = ["Wez Furlong <wez@wezfurlong.org>"]
 keywords = ["no-std", "arm", "cortex-m"]
 license = "MIT OR Apache-2.0"
+repository = "https://github.com/wez/atsamd21-rs"
 
 [dependencies]
 bare-metal = "~0.1"
