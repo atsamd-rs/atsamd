@@ -11,6 +11,7 @@ extern crate cortex_m_semihosting;
 extern crate panic_abort;
 #[cfg(feature = "use_semihosting")]
 extern crate panic_semihosting;
+// extern crate ssd1331;
 extern crate sx1509;
 
 #[cfg(feature = "use_semihosting")]
@@ -31,9 +32,22 @@ macro_rules! dbgprint {
 }
 
 use hal::clock::GenericClockController;
+use hal::delay::Delay;
+// use hal::gpio;
 use hal::prelude::*;
-use hal::sercom::{I2CMaster3, PadPin};
+use hal::sercom::{I2CMaster3,
+                  PadPin,
+                  //SPIMaster4,
+                  SPIMaster5};
 use rtfm::{app, Threshold};
+
+/*
+type Display = ssd1331::Ssd1331<
+    SPIMaster4,
+    gpio::Pa7<gpio::Output<gpio::PushPull>>,  // DC
+    gpio::Pa18<gpio::Output<gpio::PushPull>>, // CS
+>;
+*/
 
 app! {
     device: hal::atsamd21g18a,
@@ -41,7 +55,10 @@ app! {
     resources: {
         static RED_LED: hal::gpio::Pa17<hal::gpio::Output<hal::gpio::OpenDrain>>;
         static I2C: I2CMaster3;
+        static FLASH: SPIMaster5;
         static SX1509: sx1509::Sx1509<I2CMaster3>;
+        //static SPI: SPIMaster4;
+        //static SSD1131: Display;
         static TIMER: hal::timer::TimerCounter3;
     },
 
@@ -50,7 +67,13 @@ app! {
     // will fail with an inscrutable error.  We're throwing them
     // all into the idle block for now.
     idle: {
-        resources:[I2C, SX1509 /*, RED_LED, TIMER*/],
+        resources:[
+            I2C,
+            SX1509,
+            // SPI,
+            // SSD1131,
+            FLASH
+        /*, RED_LED, TIMER*/],
 
     },
 
@@ -85,6 +108,101 @@ fn init(mut p: init::Peripherals /* , r: init::Resources */) -> init::LateResour
     );
     let gclk0 = clocks.gclk0();
     let mut pins = p.device.PORT.split();
+
+    let mut delay = Delay::new(p.core.SYST, &mut clocks);
+
+    // in-line query of the on-board SPI flash to determine the JEDEC id
+    let mut flash = SPIMaster5::new(
+        &clocks.sercom5_core(&gclk0).unwrap(),
+        8.mhz(),
+        hal::hal::spi::Mode {
+            phase: hal::hal::spi::Phase::CaptureOnFirstTransition,
+            polarity: hal::hal::spi::Polarity::IdleLow,
+        },
+        p.device.SERCOM5,
+        &mut p.device.PM,
+        // Metro M0 express has flash on these pins
+        hal::sercom::SPI5Pinout::Dipo1Dopo1 {
+            miso: pins.pb3.into_pad(&mut pins.port),
+            mosi: pins.pb22.into_pad(&mut pins.port),
+            sck: pins.pb23.into_pad(&mut pins.port),
+        },
+    );
+    let mut flash_cs = pins.pa13.into_push_pull_output(&mut pins.port);
+    flash_cs.set_high();
+    delay.delay_ms(200u8);
+    flash_cs.set_low();
+
+    let mut buf = [0x9f, 0, 0, 0];
+
+    let res = flash.transfer(&mut buf);
+    dbgprint!("tx result {}", res.is_ok());
+    flash_cs.set_high();
+
+/*
+    let mut spi = SPIMaster4::new(
+        &clocks.sercom4_core(&gclk0).unwrap(),
+        24.mhz(),
+        hal::hal::spi::Mode {
+            phase: hal::hal::spi::Phase::CaptureOnFirstTransition,
+            polarity: hal::hal::spi::Polarity::IdleLow,
+        },
+        p.device.SERCOM4,
+        &mut p.device.PM,
+        // Metro M0 express has SPI on these pins
+        hal::sercom::SPI4Pinout::Dipo0Dopo1 {
+            miso: pins.pa12.into_pad(&mut pins.port),
+            mosi: pins.pb10.into_pad(&mut pins.port),
+            sck: pins.pb11.into_pad(&mut pins.port),
+        },
+    );
+
+    dbgprint!("made spi");
+
+    let mut reset_pin = pins.pa6.into_push_pull_output(&mut pins.port);
+
+    let mut display = Display::new(
+        &mut spi,
+        pins.pa7.into_push_pull_output(&mut pins.port),
+        pins.pa18.into_push_pull_output(&mut pins.port),
+    );
+
+    display.reset(&mut reset_pin, &mut delay);
+    display.borrow(&mut spi).initialize().is_ok();
+
+    use ssd1331::Command;
+    let cmds = [
+        Command::DrawRect {
+            x1: 1,
+            y1: 1,
+            x2: 63,
+            y2: 63,
+            r: 0xff,
+            g: 0xff,
+            b: 0xff,
+            fill_r: 0xa0,
+            fill_g: 0,
+            fill_b: 0xa0,
+        },
+        Command::DrawLine {
+            x1: 0,
+            y1: 0,
+            x2: 10,
+            y2: 10,
+            r: 0x0,
+            g: 0xff,
+            b: 0,
+        },
+    ];
+
+    for cmd in &cmds {
+        let spires = cmd.send(&mut display.borrow(&mut spi));
+        if !spires.is_ok() {
+            dbgprint!("fail: {:?}", cmd);
+        }
+        delay.delay_ms(3u8);
+    }
+*/
 
     let mut i2c = I2CMaster3::new(
         &clocks.sercom3_core(&gclk0).unwrap(),
@@ -126,5 +244,8 @@ fn init(mut p: init::Peripherals /* , r: init::Resources */) -> init::LateResour
         I2C: i2c,
         SX1509: expander,
         TIMER: tc3,
+        // SPI: spi,
+        // SSD1131: display,
+        FLASH: flash,
     }
 }

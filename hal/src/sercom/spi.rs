@@ -1,7 +1,6 @@
 use atsamd21g18a::sercom0::SPI;
 use atsamd21g18a::{SERCOM0, SERCOM1, SERCOM2, SERCOM3, SERCOM4, SERCOM5, PM};
 use clock;
-use gpio::Port;
 use hal::spi::{FullDuplex, Mode, Phase, Polarity};
 use nb;
 use sercom::pads::*;
@@ -11,63 +10,74 @@ pub enum Error {
     Overrun,
 }
 
-/// This is a convenience trait for setting up the SPI pins.
-/// You should not implement this trait yourself.
-pub trait IntoPinout<T> {
-    fn into_pinout(self, port: &mut Port) -> T;
-}
-
 macro_rules! spi_pinout {
     ([$($Type:ident:
         ($pad0:ident, $pad1:ident, $pad2:ident, $pad3:ident),)+
     ]) => {
 $(
-/// The pad ordering below corresponds to these pinouts:
-/// DI, DO, SCK, SS
-/// For slave: MOSI, MISO, SCK, SS
-/// For master: MISO, MOSI, SCK
-/// The variant labeling refers to the value of the DIPO
-/// and DOPO configuration bits.  More combinations than
-/// these are possible, but result in conflicting pin
-/// assignments so are not represented in this interface.
+/// When configured for SPI, in addition to the normal
+/// Sercom pad mapping, the SPI peripheral allows those
+/// pads to be assigned to different combinations of
+/// DI (data-in), DO (data-out), SCK (clock) and SS (slave select)
+/// functions.
+/// The SPIXPinOut types represent concrete pad mappings for a
+/// given SPI Instance.
+/// For slaves, DI is the MOSI function and DO is the MISO function.
+/// For masters, DI is the MISO function and DO is the MOSI function.
+/// The slave configurations all require an SS pin and are constructed
+/// using the enum variants ending with SS.
+/// The master confiugrations do not require an SS pin and are constructed
+/// using the other variants.
+/// The SPI master hardware has support for automatically managing the
+/// SS line to enable a slave, but this interface does not expose that
+/// functionality.
+/// The variant names refer to the Data-in-Data-out configuration that
+/// is used to configure the SPI peripheral.
 pub enum $Type {
-    /*
-    Dipo0Dopo1SS($pad0, $pad2, $pad3, $pad1),
-    Dipo0Dopo2SS($pad0, $pad3, $pad1, $pad2),
-    Dipo2Dopo3SS($pad2, $pad0, $pad3, $pad1),
-    Dipo3Dopo0SS($pad3, $pad0, $pad1, $pad2),
-    */
+    /// Construct a slave pinout with mosi assigned to pad0,
+    /// miso pad2, sck pad3 and ss to pad1.
+    Dipo0Dopo1SS{mosi:$pad0, miso:$pad2, sck:$pad3, ss:$pad1},
+    Dipo0Dopo2SS{mosi:$pad0, miso:$pad3, sck:$pad1, ss:$pad2},
+    Dipo2Dopo3SS{mosi:$pad2, miso:$pad0, sck:$pad3, ss:$pad1},
+    Dipo3Dopo0SS{mosi:$pad3, miso:$pad0, sck:$pad1, ss:$pad2},
 
-    Dipo0Dopo1($pad0, $pad2, $pad3),
-    /*
-    Dipo0Dopo2($pad0, $pad3, $pad1),
+    /// Construct a master pinout with miso assigned to pad0,
+    /// mosi pad2 and sck to pad3
+    Dipo0Dopo1{miso:$pad0, mosi:$pad2, sck:$pad3},
+    Dipo1Dopo1{miso:$pad1, mosi:$pad2, sck:$pad3},
+    Dipo0Dopo2{miso:$pad0, mosi:$pad3, sck:$pad1},
 
-    Dipo1Dopo1($pad1, $pad2, $pad3),
-    Dipo1Dopo3($pad1, $pad0, $pad3),
+    Dipo1Dopo3{miso:$pad1, mosi:$pad0, sck:$pad3},
 
-    Dipo2Dopo0($pad2, $pad0, $pad1),
-    Dipo2Dopo2($pad2, $pad3, $pad1),
-    Dipo2Dopo3($pad2, $pad0, $pad3),
+    Dipo2Dopo0{miso:$pad2, mosi:$pad0, sck:$pad1},
+    Dipo2Dopo2{miso:$pad2, mosi:$pad3, sck:$pad1},
+    Dipo2Dopo3{miso:$pad2, mosi:$pad0, sck:$pad3},
 
-    Dipo3Dopo0($pad3, $pad0, $pad1),
-    */
+    Dipo3Dopo0{miso:$pad3, mosi:$pad0, sck:$pad1},
 }
 
-// TODO: this is sufficient for the Metro M0 express Sercom4
-// which uses (pa12, pb10, pb11), but we should flesh this
-// out for the other pins, or find a way to do that bit
-// via a macro too.
-impl<P0, P2, P3> IntoPinout<$Type> for (P0, P2, P3)
-where
-    P0: PadPin<$pad0>,
-    P2: PadPin<$pad2>,
-    P3: PadPin<$pad3>
-{
-    fn into_pinout(self, port: &mut Port) -> $Type {
-        $Type::Dipo0Dopo1(
-            self.0.into_pad(port),
-            self.1.into_pad(port),
-            self.2.into_pad(port))
+impl $Type {
+    /// Return the data-in, data-out values for
+    /// this pinout configuration
+    fn dipo_dopo(&self) -> (u8, u8) {
+        match self {
+            $Type::Dipo0Dopo1SS{..} => (0, 1),
+            $Type::Dipo0Dopo2SS{..} => (0, 2),
+            $Type::Dipo2Dopo3SS{..} => (2, 3),
+            $Type::Dipo3Dopo0SS{..} => (3, 0),
+
+            $Type::Dipo0Dopo1{..} => (0, 1),
+            $Type::Dipo1Dopo1{..} => (1, 1),
+            $Type::Dipo0Dopo2{..} => (0, 2),
+
+            $Type::Dipo1Dopo3{..} => (1, 3),
+
+            $Type::Dipo2Dopo0{..} => (2, 0),
+            $Type::Dipo2Dopo2{..} => (2, 2),
+            $Type::Dipo2Dopo3{..} => (2, 3),
+
+            $Type::Dipo3Dopo0{..} => (3, 0),
+        }
     }
 }
 
@@ -93,12 +103,19 @@ macro_rules! spi {
     ]) => {
 $(
 
+/// SPIMasterX represents the corresponding SERCOMX instance configured to
+/// act in the role of an SPI Master.
+/// Objects of this type implement the HAL `FullDuplex` and blocking SPI
+/// traits.
 pub struct $Type {
     pinout: $PinOut,
     sercom: $SERCOM,
 }
 
 impl $Type {
+    /// Power on and configure SERCOMX to work as an SPI Master operating
+    /// with the specified frequency and SPI Mode.  The pinout specifies
+    /// which pins are bound to the MISO, MOSI, SCK functions.
     pub fn new<F: Into<Hertz>>(
         clock:&clock::$clock,
         freq: F,
@@ -127,7 +144,7 @@ impl $Type {
             // 8 bit data size and enable the receiver
             sercom.spi.ctrlb.modify(|_, w|{
                 w.chsize().bits(0);
-                w.rxen().clear_bit()
+                w.rxen().set_bit()
             });
 
             // set the baud rate
@@ -146,12 +163,9 @@ impl $Type {
                     Phase::CaptureOnSecondTransition => w.cpha().set_bit(),
                 };
 
-                match &pinout {
-                    $PinOut::Dipo0Dopo1(_,_,_) => {
-                        w.dipo().bits(0);
-                        w.dopo().bits(1);
-                    }
-                }
+                let (dipo, dopo) = pinout.dipo_dopo();
+                w.dipo().bits(dipo);
+                w.dopo().bits(dopo);
 
                 // MSB first
                 w.dord().clear_bit()
@@ -164,13 +178,19 @@ impl $Type {
 
         }
 
-        Self { pinout, sercom }
+        Self {
+            pinout,
+            sercom,
+        }
     }
 
+    /// Tear down the SPI instance and yield the constituent pins and
+    /// SERCOM instance.  No explicit de-initialization is performed.
     pub fn free(self) -> ($PinOut, $SERCOM) {
         (self.pinout, self.sercom)
     }
 
+    /// Helper for accessing the spi member of the sercom instance
     fn spi(&mut self) -> &SPI {
         unsafe { &self.sercom.spi }
     }
