@@ -33,16 +33,16 @@ pub struct RegisterBlock {
     #[doc = "0x30 - Status"]
     pub status: STATUS,
     #[doc = "Count"]
-    pub count: COUNTUnion,
+    pub count: CountUnion,
     #[doc = "0x38 - Pattern"]
     pub patt: PATT,
     _reserved16: [u8; 2usize],
     #[doc = "0x3c - Waveform Control"]
     pub wave: WAVE,
     #[doc = "Period"]
-    pub per: PERUnion,
+    pub per: PerUnion,
     #[doc = "Compare and Capture"]
-    pub cc: CCUnion,
+    pub cc: CcUnion,
     _reserved19: [u8; 16usize],
     #[doc = "0x64 - Pattern Buffer"]
     pub pattb: PATTB,
@@ -50,13 +50,13 @@ pub struct RegisterBlock {
     #[doc = "0x68 - Waveform Control Buffer"]
     pub waveb: WAVEB,
     #[doc = "Period Buffer"]
-    pub perb: PERBUnion,
+    pub perb: PerbUnion,
     #[doc = "Compare and Capture Buffer"]
-    pub ccb: CCBUnion,
+    pub ccb: CcbUnion,
 }
 #[doc = "Count"]
 #[repr(C)]
-pub union COUNTUnion {
+pub union CountUnion {
     #[doc = "0x34 - Count"]
     pub count_dith6: COUNT_DITH6,
     #[doc = "0x34 - Count"]
@@ -68,7 +68,7 @@ pub union COUNTUnion {
 }
 #[doc = "Period"]
 #[repr(C)]
-pub union PERUnion {
+pub union PerUnion {
     #[doc = "0x40 - Period"]
     pub per_dith6: PER_DITH6,
     #[doc = "0x40 - Period"]
@@ -80,7 +80,7 @@ pub union PERUnion {
 }
 #[doc = "Compare and Capture"]
 #[repr(C)]
-pub union CCUnion {
+pub union CcUnion {
     #[doc = "0x44 - Compare and Capture"]
     pub cc_dith6: [CC_DITH6; 4],
     #[doc = "0x44 - Compare and Capture"]
@@ -92,7 +92,7 @@ pub union CCUnion {
 }
 #[doc = "Period Buffer"]
 #[repr(C)]
-pub union PERBUnion {
+pub union PerbUnion {
     #[doc = "0x6c - Period Buffer"]
     pub perb_dith6: PERB_DITH6,
     #[doc = "0x6c - Period Buffer"]
@@ -104,7 +104,7 @@ pub union PERBUnion {
 }
 #[doc = "Compare and Capture Buffer"]
 #[repr(C)]
-pub union CCBUnion {
+pub union CcbUnion {
     #[doc = "0x70 - Compare and Capture Buffer"]
     pub ccb_dith6: [CCB_DITH6; 4],
     #[doc = "0x70 - Compare and Capture Buffer"]
