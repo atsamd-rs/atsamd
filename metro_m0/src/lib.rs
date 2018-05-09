@@ -8,7 +8,7 @@ pub use hal::*;
 
 use gpio::{Floating, Input, Output, Port, PushPull};
 use hal::clock::GenericClockController;
-use hal::sercom::{I2CMaster3, PadPin, SPIMaster5};
+use hal::sercom::{I2CMaster3, PadPin, SPIMaster4, SPIMaster5};
 use hal::time::Hertz;
 
 /// Maps the pins to their arduino names and
@@ -122,6 +122,41 @@ pub fn pins(port: atsamd21g18a::PORT) -> Pins {
         flash_miso: pins.pb3,
         flash_cs: pins.pa13,
     }
+}
+
+/// Convenience for setting up the 2x3 header block for SPI.
+/// This powers up SERCOM4 and configures it for use as an
+/// SPI Master in SPI Mode 0.
+/// Unlike the `flash_spi_master` function, this
+/// one does not accept a CS pin; configuring a pin for CS
+/// is the responsibility of the caller, because it could be
+/// any OutputPin, or even a pulled up line on the slave.
+pub fn spi_master<F: Into<Hertz>>(
+    clocks: &mut GenericClockController,
+    bus_speed: F,
+    sercom4: SERCOM4,
+    pm: &mut PM,
+    sck: gpio::Pb11<Input<Floating>>,
+    mosi: gpio::Pb10<Input<Floating>>,
+    miso: gpio::Pa12<Input<Floating>>,
+    port: &mut Port,
+) -> SPIMaster4 {
+    let gclk0 = clocks.gclk0();
+    SPIMaster4::new(
+        &clocks.sercom4_core(&gclk0).unwrap(),
+        bus_speed.into(),
+        hal::hal::spi::Mode {
+            phase: hal::hal::spi::Phase::CaptureOnFirstTransition,
+            polarity: hal::hal::spi::Polarity::IdleLow,
+        },
+        sercom4,
+        pm,
+        hal::sercom::SPI4Pinout::Dipo0Dopo1 {
+            miso: miso.into_pad(port),
+            mosi: mosi.into_pad(port),
+            sck: sck.into_pad(port),
+        },
+    )
 }
 
 /// Convenience for accessing the on-board SPI Flash device.
