@@ -1,0 +1,20 @@
+[package]
+name = "metro_m0"
+version = "0.0.0"
+authors = ["Wez Furlong <wez@wezfurlong.org>"]
+description = "Board Support crate for the Adafruit Metro M0"
+keywords = ["no-std", "arm", "cortex-m"]
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/wez/atsamd21-rs"
+
+[dependencies]
+cortex-m = "~0.4"
+embedded-hal = "~0.1"
+nb = "~0.1"
+
+[dependencies.atsamd21-hal]
+path = "../hal"
+
+[features]
+rt = ["atsamd21-hal/rt"]
+unproven = ["atsamd21-hal/unproven"]

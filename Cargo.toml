@@ -11,6 +11,7 @@ cortex-m-semihosting = "~0.2"
 cortex-m-rtfm = "~0.3"
 panic-semihosting = "~0.1"
 panic-abort = "~0.1"
+metro_m0 = { path = "metro_m0" }
 sx1509 = { git = "https://github.com/wez/sx1509.git" }
 #sx1509 = { path = "../sx1509" }
 #ssd1331 = { path = "../ssd1331" }

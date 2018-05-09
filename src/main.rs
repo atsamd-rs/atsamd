@@ -139,7 +139,7 @@ fn init(mut p: init::Peripherals /* , r: init::Resources */) -> init::LateResour
     dbgprint!("tx result {}", res.is_ok());
     flash_cs.set_high();
 
-/*
+    /*
     let mut spi = SPIMaster4::new(
         &clocks.sercom4_core(&gclk0).unwrap(),
         24.mhz(),
