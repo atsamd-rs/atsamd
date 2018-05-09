@@ -3,9 +3,12 @@
 extern crate atsamd21_hal as hal;
 
 pub use hal::atsamd21g18a::*;
+use hal::prelude::*;
 pub use hal::*;
 
-use gpio::{Floating, GpioExt, Input, Port};
+use gpio::{Floating, Input, Output, Port, PushPull};
+use hal::clock::GenericClockController;
+use hal::sercom::SPIMaster5;
 
 /// Maps the pins to their arduino names and
 /// the numbers printed on the board.
@@ -118,4 +121,42 @@ pub fn pins(port: atsamd21g18a::PORT) -> Pins {
         flash_miso: pins.pb3,
         flash_cs: pins.pa13,
     }
+}
+
+/// Convenience for accessing the on-board SPI Flash device.
+/// This powers up SERCOM5 and configures it for use as an
+/// SPI Master.
+pub fn flash_spi_master(
+    clocks: &mut GenericClockController,
+    sercom5: SERCOM5,
+    pm: &mut PM,
+    sck: gpio::Pb23<Input<Floating>>,
+    mosi: gpio::Pb22<Input<Floating>>,
+    miso: gpio::Pb3<Input<Floating>>,
+    cs: gpio::Pa13<Input<Floating>>,
+    port: &mut Port,
+) -> (SPIMaster5, gpio::Pa13<Output<PushPull>>) {
+    use hal::sercom::PadPin;
+
+    let gclk0 = clocks.gclk0();
+    let flash = SPIMaster5::new(
+        &clocks.sercom5_core(&gclk0).unwrap(),
+        48.mhz(),
+        hal::hal::spi::Mode {
+            phase: hal::hal::spi::Phase::CaptureOnFirstTransition,
+            polarity: hal::hal::spi::Polarity::IdleLow,
+        },
+        sercom5,
+        pm,
+        hal::sercom::SPI5Pinout::Dipo1Dopo1 {
+            miso: miso.into_pad(port),
+            mosi: mosi.into_pad(port),
+            sck: sck.into_pad(port),
+        },
+    );
+
+    let mut cs = cs.into_push_pull_output(port);
+    cs.set_high();
+
+    (flash, cs)
 }

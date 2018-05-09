@@ -2,11 +2,11 @@
 #![feature(proc_macro)]
 #![no_std]
 
-extern crate atsamd21_hal as hal;
 extern crate cortex_m;
 extern crate cortex_m_rt;
 extern crate cortex_m_rtfm as rtfm;
 extern crate cortex_m_semihosting;
+extern crate metro_m0 as hal;
 #[cfg(not(feature = "use_semihosting"))]
 extern crate panic_abort;
 #[cfg(feature = "use_semihosting")]
@@ -50,7 +50,7 @@ type Display = ssd1331::Ssd1331<
 */
 
 app! {
-    device: hal::atsamd21g18a,
+    device: hal,
 
     resources: {
         static RED_LED: hal::gpio::Pa17<hal::gpio::Output<hal::gpio::OpenDrain>>;
@@ -107,29 +107,21 @@ fn init(mut p: init::Peripherals /* , r: init::Resources */) -> init::LateResour
         &mut p.device.NVMCTRL,
     );
     let gclk0 = clocks.gclk0();
-    let mut pins = p.device.PORT.split();
+    let mut pins = hal::pins(p.device.PORT);
 
     let mut delay = Delay::new(p.core.SYST, &mut clocks);
 
     // in-line query of the on-board SPI flash to determine the JEDEC id
-    let mut flash = SPIMaster5::new(
-        &clocks.sercom5_core(&gclk0).unwrap(),
-        8.mhz(),
-        hal::hal::spi::Mode {
-            phase: hal::hal::spi::Phase::CaptureOnFirstTransition,
-            polarity: hal::hal::spi::Polarity::IdleLow,
-        },
+    let (mut flash, mut flash_cs) = hal::flash_spi_master(
+        &mut clocks,
         p.device.SERCOM5,
         &mut p.device.PM,
-        // Metro M0 express has flash on these pins
-        hal::sercom::SPI5Pinout::Dipo1Dopo1 {
-            miso: pins.pb3.into_pad(&mut pins.port),
-            mosi: pins.pb22.into_pad(&mut pins.port),
-            sck: pins.pb23.into_pad(&mut pins.port),
-        },
+        pins.flash_sck,
+        pins.flash_mosi,
+        pins.flash_miso,
+        pins.flash_cs,
+        &mut pins.port,
     );
-    let mut flash_cs = pins.pa13.into_push_pull_output(&mut pins.port);
-    flash_cs.set_high();
     delay.delay_ms(200u8);
     flash_cs.set_low();
 
@@ -210,8 +202,8 @@ fn init(mut p: init::Peripherals /* , r: init::Resources */) -> init::LateResour
         p.device.SERCOM3,
         &mut p.device.PM,
         // Metro M0 express has I2C on pins PA22, PA23
-        pins.pa22.into_pad(&mut pins.port),
-        pins.pa23.into_pad(&mut pins.port),
+        pins.sda.into_pad(&mut pins.port),
+        pins.scl.into_pad(&mut pins.port),
     );
 
     let mut expander = sx1509::Sx1509::new(&mut i2c, sx1509::DEFAULT_ADDRESS);
@@ -240,7 +232,7 @@ fn init(mut p: init::Peripherals /* , r: init::Resources */) -> init::LateResour
 
     dbgprint!("done init");
     init::LateResources {
-        RED_LED: pins.pa17.into_open_drain_output(&mut pins.port),
+        RED_LED: pins.d13.into_open_drain_output(&mut pins.port),
         I2C: i2c,
         SX1509: expander,
         TIMER: tc3,
