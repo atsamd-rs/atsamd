@@ -49,6 +49,10 @@ app! {
     }
 }
 
+/// This function is called each time the tc3 interrupt triggers.
+/// We use it to toggle the LED.  The `wait()` call is important
+/// because it checks and resets the counter ready for the next
+/// period.
 fn timer(_t: &mut Threshold, mut r: TC3::Resources) {
     if r.TIMER.wait().is_ok() {
         r.RED_LED.toggle();
@@ -61,9 +65,7 @@ fn idle() -> ! {
     }
 }
 
-fn init(mut p: init::Peripherals /* , r: init::Resources */) -> init::LateResources {
-    let interval = 1.hz();
-
+fn init(mut p: init::Peripherals) -> init::LateResources {
     let mut clocks = GenericClockController::new(
         p.device.GCLK,
         &mut p.device.PM,
@@ -79,7 +81,7 @@ fn init(mut p: init::Peripherals /* , r: init::Resources */) -> init::LateResour
         &mut p.device.PM,
     );
     dbgprint!("start timer");
-    tc3.start(interval);
+    tc3.start(1.hz());
     tc3.enable_interrupt();
 
     dbgprint!("done init");
