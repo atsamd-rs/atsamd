@@ -1,6 +1,6 @@
 [package]
 name = "metro_m0"
-version = "0.0.0"
+version = "0.0.1"
 authors = ["Wez Furlong <wez@wezfurlong.org>"]
 description = "Board Support crate for the Adafruit Metro M0"
 keywords = ["no-std", "arm", "cortex-m", "hardware-support", "embedded"]

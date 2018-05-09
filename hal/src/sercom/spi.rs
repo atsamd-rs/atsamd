@@ -61,22 +61,22 @@ impl $Type {
     /// this pinout configuration
     fn dipo_dopo(&self) -> (u8, u8) {
         match self {
-            $Type::Dipo0Dopo1SS{..} => (0, 1),
-            $Type::Dipo0Dopo2SS{..} => (0, 2),
-            $Type::Dipo2Dopo3SS{..} => (2, 3),
-            $Type::Dipo3Dopo0SS{..} => (3, 0),
+            &$Type::Dipo0Dopo1SS{..} => (0, 1),
+            &$Type::Dipo0Dopo2SS{..} => (0, 2),
+            &$Type::Dipo2Dopo3SS{..} => (2, 3),
+            &$Type::Dipo3Dopo0SS{..} => (3, 0),
 
-            $Type::Dipo0Dopo1{..} => (0, 1),
-            $Type::Dipo1Dopo1{..} => (1, 1),
-            $Type::Dipo0Dopo2{..} => (0, 2),
+            &$Type::Dipo0Dopo1{..} => (0, 1),
+            &$Type::Dipo1Dopo1{..} => (1, 1),
+            &$Type::Dipo0Dopo2{..} => (0, 2),
 
-            $Type::Dipo1Dopo3{..} => (1, 3),
+            &$Type::Dipo1Dopo3{..} => (1, 3),
 
-            $Type::Dipo2Dopo0{..} => (2, 0),
-            $Type::Dipo2Dopo2{..} => (2, 2),
-            $Type::Dipo2Dopo3{..} => (2, 3),
+            &$Type::Dipo2Dopo0{..} => (2, 0),
+            &$Type::Dipo2Dopo2{..} => (2, 2),
+            &$Type::Dipo2Dopo3{..} => (2, 3),
 
-            $Type::Dipo3Dopo0{..} => (3, 0),
+            &$Type::Dipo3Dopo0{..} => (3, 0),
         }
     }
 }
