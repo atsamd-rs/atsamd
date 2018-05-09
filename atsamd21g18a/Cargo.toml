@@ -1,11 +1,12 @@
 [package]
 name = "atsamd21g18a"
 description = "Peripheral access API for ATSAMD21G18A microcontrollers (generated using svd2rust)"
-version = "0.2.0"
+version = "0.2.1"
 authors = ["Wez Furlong <wez@wezfurlong.org>", "Blake Johnson <johnsonblake1@gmail.com>"]
 keywords = ["no-std", "arm", "cortex-m"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/wez/atsamd21-rs"
+readme = "README.md"
 
 [dependencies]
 bare-metal = "~0.1"

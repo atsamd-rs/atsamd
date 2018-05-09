@@ -1,11 +1,12 @@
 [package]
 name = "atsamd21-hal"
-version = "0.0.0"
+version = "0.0.1"
 authors = ["Wez Furlong <wez@wezfurlong.org>"]
 description = "HAL and Peripheral access API for ATSAMD21 microcontrollers"
 keywords = ["no-std", "arm", "cortex-m", "hardware-support", "embedded"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/wez/atsamd21-rs"
+readme = "README.md"
 
 [dependencies]
 cortex-m = "~0.4"

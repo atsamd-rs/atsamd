@@ -6,6 +6,7 @@ description = "Board Support crate for the Adafruit Metro M0"
 keywords = ["no-std", "arm", "cortex-m", "hardware-support", "embedded"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/wez/atsamd21-rs"
+readme = "README.md"
 
 [dependencies]
 cortex-m = "~0.4"
