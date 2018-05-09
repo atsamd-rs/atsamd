@@ -1,10 +1,12 @@
-# Datasheet? TL;DR 
+# HAL for working with atsamd21 devices
 
-Block diagram on Page 23 / Section 4
+This crate provides a type-safe API for working with atsamd21 based devices.
+Currently this crate only supports `atsamd21g18a`, but as that is fleshed out
+we'll look at supporting other similar variants (pull requests for this are
+welcomed!).
 
-* Pins are GPIO by default but can be assigned to peripheral functions A-H via PINCFG and PMUX.  Table showing combinations on Page 33 / Section 7.
-* Configurable bus matrix links various peripherals. *AHB-APB* Bridges A-C are controlled by PAC instances 0-2.  It can write-protect a peripheral.
-* DSU provides debugger related services.  Probably don't care about this for now.
-* Clocked peripherals need to be pointed to a clock multiplexer which is in turn pointed to a clock source connected to a running clock.
-* GCLK has 8 generators and m multiplexers
+## Examples?
 
+Check out the repository for examples:
+
+https://github.com/wez/atsamd21-rs/tree/master/examples
