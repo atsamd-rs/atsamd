@@ -8,7 +8,8 @@ pub use hal::*;
 
 use gpio::{Floating, Input, Output, Port, PushPull};
 use hal::clock::GenericClockController;
-use hal::sercom::SPIMaster5;
+use hal::sercom::{I2CMaster3, PadPin, SPIMaster5};
+use hal::time::Hertz;
 
 /// Maps the pins to their arduino names and
 /// the numbers printed on the board.
@@ -136,8 +137,6 @@ pub fn flash_spi_master(
     cs: gpio::Pa13<Input<Floating>>,
     port: &mut Port,
 ) -> (SPIMaster5, gpio::Pa13<Output<PushPull>>) {
-    use hal::sercom::PadPin;
-
     let gclk0 = clocks.gclk0();
     let flash = SPIMaster5::new(
         &clocks.sercom5_core(&gclk0).unwrap(),
@@ -159,4 +158,26 @@ pub fn flash_spi_master(
     cs.set_high();
 
     (flash, cs)
+}
+
+/// Convenience for setting up the labelled SDA, SCL pins to
+/// operate as an I2C master running at the specified frequency.
+pub fn i2c_master<F: Into<Hertz>>(
+    clocks: &mut GenericClockController,
+    bus_speed: F,
+    sercom3: SERCOM3,
+    pm: &mut PM,
+    sda: gpio::Pa22<Input<Floating>>,
+    scl: gpio::Pa23<Input<Floating>>,
+    port: &mut Port,
+) -> I2CMaster3 {
+    let gclk0 = clocks.gclk0();
+    I2CMaster3::new(
+        &clocks.sercom3_core(&gclk0).unwrap(),
+        bus_speed.into(),
+        sercom3,
+        pm,
+        sda.into_pad(port),
+        scl.into_pad(port),
+    )
 }

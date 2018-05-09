@@ -35,10 +35,7 @@ use hal::clock::GenericClockController;
 use hal::delay::Delay;
 // use hal::gpio;
 use hal::prelude::*;
-use hal::sercom::{I2CMaster3,
-                  PadPin,
-                  //SPIMaster4,
-                  SPIMaster5};
+use hal::sercom::{I2CMaster3, SPIMaster5};
 use rtfm::{app, Threshold};
 
 /*
@@ -196,14 +193,14 @@ fn init(mut p: init::Peripherals /* , r: init::Resources */) -> init::LateResour
     }
 */
 
-    let mut i2c = I2CMaster3::new(
-        &clocks.sercom3_core(&gclk0).unwrap(),
+    let mut i2c = hal::i2c_master(
+        &mut clocks,
         400.khz(),
         p.device.SERCOM3,
         &mut p.device.PM,
-        // Metro M0 express has I2C on pins PA22, PA23
-        pins.sda.into_pad(&mut pins.port),
-        pins.scl.into_pad(&mut pins.port),
+        pins.sda,
+        pins.scl,
+        &mut pins.port,
     );
 
     let mut expander = sx1509::Sx1509::new(&mut i2c, sx1509::DEFAULT_ADDRESS);
