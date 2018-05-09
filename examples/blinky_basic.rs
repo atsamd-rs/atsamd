@@ -23,8 +23,8 @@ fn main() {
         &mut peripherals.SYSCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = peripherals.PORT.split();
-    let mut red_led = pins.pa17.into_open_drain_output(&mut pins.port);
+    let mut pins = hal::pins(peripherals.PORT);
+    let mut red_led = pins.d13.into_open_drain_output(&mut pins.port);
     let mut delay = Delay::new(core.SYST, &mut clocks);
     loop {
         delay.delay_ms(200u8);

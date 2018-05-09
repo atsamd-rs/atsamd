@@ -383,6 +383,7 @@ macro_rules! port {
        $($PinTypeB:ident: ($pin_identB:ident, $pin_noB:expr, $pin_modeB:ty),)+
     ]) => {
 
+/// Holds the GPIO Port peripheral and broken out pin instances
 pub struct Parts {
     /// Opaque port reference
     pub port: Port,

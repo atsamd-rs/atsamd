@@ -34,7 +34,7 @@ use hal::prelude::*;
 use rtfm::{app, Threshold};
 
 app! {
-    device: hal::atsamd21g18a,
+    device: hal,
 
     resources: {
         static RED_LED: hal::gpio::Pa17<hal::gpio::Output<hal::gpio::OpenDrain>>;
@@ -71,7 +71,7 @@ fn init(mut p: init::Peripherals /* , r: init::Resources */) -> init::LateResour
         &mut p.device.NVMCTRL,
     );
     let gclk0 = clocks.gclk0();
-    let mut pins = p.device.PORT.split();
+    let mut pins = hal::pins(p.device.PORT);
 
     let mut tc3 = hal::timer::TimerCounter::tc3_(
         &clocks.tcc2_tc3(&gclk0).unwrap(),
@@ -84,7 +84,7 @@ fn init(mut p: init::Peripherals /* , r: init::Resources */) -> init::LateResour
 
     dbgprint!("done init");
     init::LateResources {
-        RED_LED: pins.pa17.into_open_drain_output(&mut pins.port),
+        RED_LED: pins.d13.into_open_drain_output(&mut pins.port),
         TIMER: tc3,
     }
 }
