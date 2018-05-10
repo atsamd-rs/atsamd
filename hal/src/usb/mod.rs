@@ -1,11 +1,11 @@
 //! USB Device support
 
-use atsamd21g18a::usb::DEVICE;
-use atsamd21g18a::{PM, USB};
 use calibration::{usb_transn_cal, usb_transp_cal, usb_trim_cal};
 use clock;
 use core::ptr::null_mut;
 use gpio;
+use target_device::usb::DEVICE;
+use target_device::{PM, USB};
 
 /// Emit SOF at 1Khz on this pin when configured as function G
 pub type SofPad = gpio::Pa23<gpio::PfG>;

@@ -3,15 +3,15 @@
 //! before you can set up most of the peripherals on the atsamd21 device.
 //! The other types in this module are used to enforce at compile time
 //! that the peripherals have been correctly configured.
-use atsamd21g18a::gclk::clkctrl::GENR::*;
-use atsamd21g18a::gclk::clkctrl::IDR::*;
-use atsamd21g18a::gclk::genctrl::SRCR::*;
-use atsamd21g18a::{self, GCLK, NVMCTRL, PM, SYSCTRL};
+use target_device::gclk::clkctrl::GENR::*;
+use target_device::gclk::clkctrl::IDR::*;
+use target_device::gclk::genctrl::SRCR::*;
+use target_device::{self, GCLK, NVMCTRL, PM, SYSCTRL};
 use time::{Hertz, U32Ext};
 
-pub type ClockId = atsamd21g18a::gclk::clkctrl::IDR;
-pub type ClockGenId = atsamd21g18a::gclk::clkctrl::GENR;
-pub type ClockSource = atsamd21g18a::gclk::genctrl::SRCR;
+pub type ClockId = target_device::gclk::clkctrl::IDR;
+pub type ClockGenId = target_device::gclk::clkctrl::GENR;
+pub type ClockSource = target_device::gclk::genctrl::SRCR;
 
 /// Represents a configured clock generator.
 /// Can be converted into the effective clock frequency.

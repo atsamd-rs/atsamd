@@ -1,10 +1,12 @@
 // Note: section 7.2.3 shows which pins support I2C Hs mode
 
-use atsamd21g18a::sercom0::I2CM;
-use atsamd21g18a::{SERCOM0, SERCOM1, SERCOM2, SERCOM3, SERCOM4, SERCOM5, PM};
 use clock;
 use hal::blocking::i2c::{Read, Write, WriteRead};
 use sercom::pads::*;
+use target_device::sercom0::I2CM;
+use target_device::{SERCOM0, SERCOM1, SERCOM2, SERCOM3, PM};
+#[cfg(feature = "samd21g18a")]
+use target_device::{SERCOM4, SERCOM5};
 use time::Hertz;
 
 const BUS_STATE_IDLE: u8 = 1;
@@ -333,6 +335,10 @@ i2c!([
             sercom3_,
             Sercom3CoreClock
         ),
+]);
+
+#[cfg(feature = "samd21g18a")]
+i2c!([
     I2CMaster4:
         (
             Sercom4Pad0,

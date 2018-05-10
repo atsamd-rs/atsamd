@@ -1,8 +1,8 @@
 //! Working with timer counter hardware
-use atsamd21g18a::tc3::COUNT16;
-#[allow(unused)]
-use atsamd21g18a::{TC3, TC4, TC5, PM};
 use hal::timer::{CountDown, Periodic};
+use target_device::tc3::COUNT16;
+#[allow(unused)]
+use target_device::{TC3, TC4, TC5, PM};
 
 use clock;
 use nb;

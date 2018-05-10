@@ -1,9 +1,11 @@
-use atsamd21g18a::sercom0::SPI;
-use atsamd21g18a::{SERCOM0, SERCOM1, SERCOM2, SERCOM3, SERCOM4, SERCOM5, PM};
 use clock;
 use hal::spi::{FullDuplex, Mode, Phase, Polarity};
 use nb;
 use sercom::pads::*;
+use target_device::sercom0::SPI;
+use target_device::{SERCOM0, SERCOM1, SERCOM2, SERCOM3, PM};
+#[cfg(feature = "samd21g18a")]
+use target_device::{SERCOM4, SERCOM5};
 use time::Hertz;
 
 pub enum Error {
@@ -91,6 +93,9 @@ spi_pinout!([
     SPI1Pinout: (Sercom1Pad0, Sercom1Pad1, Sercom1Pad2, Sercom1Pad3),
     SPI2Pinout: (Sercom2Pad0, Sercom2Pad1, Sercom2Pad2, Sercom2Pad3),
     SPI3Pinout: (Sercom3Pad0, Sercom3Pad1, Sercom3Pad2, Sercom3Pad3),
+]);
+#[cfg(feature = "samd21g18a")]
+spi_pinout!([
     SPI4Pinout: (Sercom4Pad0, Sercom4Pad1, Sercom4Pad2, Sercom4Pad3),
     SPI5Pinout: (Sercom5Pad0, Sercom5Pad1, Sercom5Pad2, Sercom5Pad3),
 ]);
@@ -239,6 +244,9 @@ spi!([
     SPIMaster1: (SPI1Pinout, SERCOM1, sercom1_, Sercom1CoreClock),
     SPIMaster2: (SPI2Pinout, SERCOM2, sercom2_, Sercom2CoreClock),
     SPIMaster3: (SPI3Pinout, SERCOM3, sercom3_, Sercom3CoreClock),
+]);
+#[cfg(feature = "samd21g18a")]
+spi!([
     SPIMaster4: (SPI4Pinout, SERCOM4, sercom4_, Sercom4CoreClock),
     SPIMaster5: (SPI5Pinout, SERCOM5, sercom5_, Sercom5CoreClock),
 ]);

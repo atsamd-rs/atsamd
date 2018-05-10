@@ -146,7 +146,10 @@ pub enum Sercom3Pad3 {
     Pa21(pa21, PfD),
     Pa25(pa25, PfC),
 }
+);
 
+#[cfg(feature = "samd21g18a")]
+pad!(
 // sercom4[0]:  PA12:D   PB08:D   PB12:C
 // sercom4[1]:  PA13:D   PB09:D   PB13:C
 // sercom4[2]:  PA14:D   PB10:D   PB14:C
