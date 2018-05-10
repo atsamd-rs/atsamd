@@ -18,5 +18,7 @@ path = "../hal"
 version = "~0.0"
 
 [features]
+# ask the HAL to enable atsamd21g18a support
+default = ["atsamd21-hal/samd21g18a"]
 rt = ["atsamd21-hal/rt"]
 unproven = ["atsamd21-hal/unproven"]

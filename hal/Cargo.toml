@@ -13,10 +13,28 @@ cortex-m = "~0.4"
 embedded-hal = "~0.1"
 nb = "~0.1"
 
+# Each of the supported chips is listed as an optional dependency here.
+# This makes it available when the corresponding feature name is referenced.
+# We use a feature named "samdFOO" to pull in the dependency named "atsamdFOO"
 [dependencies.atsamd21g18a]
 path = "../atsamd21g18a"
 version = "~0.2"
+optional = true
+
+[dependencies.atsamd21e18a]
+path = "../atsamd21e18a"
+version = "~0.2"
+optional = true
 
 [features]
-rt = ["atsamd21g18a/rt"]
+# This section lists our feature name to dependency mapping.  This are separated
+# out so that the board support crates can reference a single feature name to
+# select the appropriate chip, and to keep that separate from the dependency name
+# for the `rt` feature below, which has to list out all possible optional deps.
+# If we simply used feature names that matched the dependency names, enabling the
+# rt feature would link all possible parts in and cause a linker error due to
+# the high degree of similar symbols present in the various parts.
+samd21g18a = ["atsamd21g18a"]
+samd21e18a = ["atsamd21e18a"]
+rt = ["atsamd21g18a/rt", "atsamd21e18a/rt"]
 unproven = ["embedded-hal/unproven"]

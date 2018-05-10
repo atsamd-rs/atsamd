@@ -1,7 +1,11 @@
 #![no_std]
 #![feature(never_type)]
 
+#[cfg(feature = "samd21g18a")]
 pub extern crate atsamd21g18a;
+#[cfg(feature = "samd21e18a")]
+pub extern crate atsamd21e18a;
+
 extern crate cortex_m;
 pub extern crate embedded_hal as hal;
 extern crate nb;
