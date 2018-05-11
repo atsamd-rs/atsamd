@@ -23,9 +23,19 @@ There are a couple of crates provided by this repo:
   using more convenient names; for example, the IO pins are exported using the labels
   printed on the board rather than the more abstract and harder to remember port and
   pin numbers used by the underlying device.
+* [`gemma_m0`](https://docs.rs/gemma_m0/latest/gemma_m0/) is a board support crate
+  for the Adafruit Gemma M0 board.  Similar to the Metro M0 crate, it re-exports the
+  `atsamd21-hal` crate functionality using more convenient names.
 
-The top level of this repo is a cargo workspace that is used to build everything
-in the repo.  The `examples` directory shows examples that execute on the Metro M0.
+Since a couple of different MCUs are used, building the examples requires changing
+directory into one of the board support crate dirs prior to building:
+
+```bash
+$ cd metro_m0
+$ cargo build --examples
+$ cd ../gemma_m0
+$ cargo build --examples
+```
 
 ## License
 

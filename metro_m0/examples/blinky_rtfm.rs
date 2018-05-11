@@ -3,7 +3,6 @@
 #![no_std]
 
 extern crate cortex_m;
-extern crate cortex_m_rt;
 extern crate cortex_m_rtfm as rtfm;
 extern crate cortex_m_semihosting;
 extern crate metro_m0 as hal;
