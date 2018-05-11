@@ -45,10 +45,49 @@ arduino support package:
 ```bash
 $ cd gemma_m0
 $ cargo build --example blinky_basic
-$ arm-none-eabi-objcopy -O binary target/thumbv6m-none-eabi/debug/examples/blinky_basic target/thumbv6m-none-eabi/debug/examples/blinky_basic.bin
+$ arm-none-eabi-objcopy -O binary \
+  target/thumbv6m-none-eabi/debug/examples/blinky_basic \
+  target/thumbv6m-none-eabi/debug/examples/blinky_basic.bin
 $ stty -F /dev/ttyACM1 ospeed 1200
-$ ~/.arduino15/packages/arduino/tools/bossac/1.7.0/bossac -i -d --port=ttyACM1 -U true -i -e -w -v target/thumbv6m-none-eabi/debug/examples/blinky_basic.bin -R
+$ ~/.arduino15/packages/arduino/tools/bossac/1.7.0/bossac -i -d \
+  --port=ttyACM1 -U true -i -e -w -v \
+  target/thumbv6m-none-eabi/debug/examples/blinky_basic.bin -R
 ```
+
+This same technique should work for all of the Adafruit M0 boards, as they
+all ship with a bossac compatible bootloader.
+
+## Getting code onto the device: JLink
+
+If you have a board with a SWD debug header, such as the Metro M0, or if you attached
+the header yourself, you can use your JLink together with gdb.  @wez prefers using
+the JLinkGDBServer, but you can also use OpenOCD.
+
+In one window, run `JLinkGDBServer -if SWD -device ATSAMD21G18`, then in another,
+run these commands from the root of this repo so that you pick up its `.gdbinit`
+file:
+
+```bash
+$ cargo build --manifest-path metro_m0/Cargo.toml --example blinky_basic
+$ arm-none-eabi-gdb metro_m0/target/thumbv6m-none-eabi/debug/examples/blinky_basic
+```
+
+If you prefer or otherwise need to use OpenOCD, then you'd run it in place of
+the JLinkGDBServer and then modify the `.gdbinit` file to comment out the JLink
+section and uncomment the OpenOCD section.
+
+### Semihosting
+
+If you want to enable semihosting to be able to see debugging messages, this will
+enable them in some of the example crates.  Note that when you enable semihosting,
+the resultant firmware will only run when a debugger is attached to your board; it
+will fault the MCU if the debugger is absent:
+
+```bash
+$ cargo build --manifest-path metro_m0/Cargo.toml \
+  --example blinky_basic --features use_semihosting
+```
+
 
 ## License
 
