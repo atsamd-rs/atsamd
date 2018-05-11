@@ -37,6 +37,19 @@ $ cd ../gemma_m0
 $ cargo build --examples
 ```
 
+## Getting code onto the device: Gemma M0
+
+If you want to flash the device using the tools that come with the adafruit
+arduino support package:
+
+```bash
+$ cd gemma_m0
+$ cargo build --example blinky_basic
+$ arm-none-eabi-objcopy -O binary target/thumbv6m-none-eabi/debug/examples/blinky_basic target/thumbv6m-none-eabi/debug/examples/blinky_basic.bin
+$ stty -F /dev/ttyACM1 ospeed 1200
+$ ~/.arduino15/packages/arduino/tools/bossac/1.7.0/bossac -i -d --port=ttyACM1 -U true -i -e -w -v target/thumbv6m-none-eabi/debug/examples/blinky_basic.bin -R
+```
+
 ## License
 
 The included SVD files are sourced from http://packs.download.atmel.com/ and
