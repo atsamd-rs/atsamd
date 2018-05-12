@@ -3,7 +3,7 @@ name = "gemma_m0"
 version = "0.0.1"
 authors = ["Wez Furlong <wez@wezfurlong.org>"]
 description = "Board Support crate for the Adafruit Gemma M0"
-keywords = ["no-std", "arm", "cortex-m", "hardware-support", "embedded"]
+keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/wez/atsamd21-rs"
 readme = "README.md"
@@ -20,14 +20,9 @@ version = "~0.0"
 [dev-dependencies]
 panic-abort = "~0.1"
 
-[dev-dependencies.gemma_m0]
-path = "."
-features = ["rt"]
-
-
 [features]
 # ask the HAL to enable atsamd21e18a support
-default = ["atsamd21-hal/samd21e18a"]
+default = ["rt", "atsamd21-hal/samd21e18a"]
 rt = ["atsamd21-hal/rt"]
 unproven = ["atsamd21-hal/unproven"]
 use_semihosting = []
