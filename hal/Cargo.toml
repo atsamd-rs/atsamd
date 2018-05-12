@@ -1,9 +1,9 @@
 [package]
 name = "atsamd21-hal"
-version = "0.0.2"
+version = "0.0.3"
 authors = ["Wez Furlong <wez@wezfurlong.org>"]
 description = "HAL and Peripheral access API for ATSAMD21 microcontrollers"
-keywords = ["no-std", "arm", "cortex-m", "hardware-support", "embedded"]
+keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/wez/atsamd21-rs"
 readme = "README.md"
@@ -27,6 +27,13 @@ version = "~0.2"
 optional = true
 
 [features]
+# We default to picking one of the target mcus so that a `cargo build` or
+# `cargo package` run for this crate will succeed.  Without this we won't
+# pull in any mcu crate and that would fail.  Board support crates that
+# pull in this hal are likely to want to use default-features=false when
+# adding their dep on "atsamd21-hal".
+default = ["samd21g18a"]
+
 # This section lists our feature name to dependency mapping.  This are separated
 # out so that the board support crates can reference a single feature name to
 # select the appropriate chip, and to keep that separate from the dependency name
@@ -36,5 +43,6 @@ optional = true
 # the high degree of similar symbols present in the various parts.
 samd21g18a = ["atsamd21g18a"]
 samd21e18a = ["atsamd21e18a"]
+
 rt = ["atsamd21g18a/rt", "atsamd21e18a/rt"]
 unproven = ["embedded-hal/unproven"]

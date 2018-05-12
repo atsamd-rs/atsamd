@@ -1,6 +1,6 @@
 [package]
 name = "metro_m0"
-version = "0.0.1"
+version = "0.0.2"
 authors = ["Wez Furlong <wez@wezfurlong.org>"]
 description = "Board Support crate for the Adafruit Metro M0"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
@@ -15,14 +15,15 @@ nb = "~0.1"
 
 [dependencies.atsamd21-hal]
 path = "../hal"
-version = "~0.0"
+version = "~0.0.3"
+default-features = false
 
 [dev-dependencies]
 panic-abort = "~0.1"
 panic-semihosting = "~0.1"
 cortex-m-semihosting = "~0.2"
 cortex-m-rtfm = "~0.3"
-sx1509 = { git = "https://github.com/wez/sx1509.git" }
+sx1509 = "~0.1"
 
 [features]
 # ask the HAL to enable atsamd21g18a support
