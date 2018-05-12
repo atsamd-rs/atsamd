@@ -7,6 +7,7 @@ use target_device::{TC3, TC4, TC5, PM};
 use clock;
 use nb;
 use time::Hertz;
+use void::Void;
 
 // Note:
 // TC3 + TC4 can be paired to make a 32-bit counter
@@ -101,7 +102,7 @@ where
         });
     }
 
-    fn wait(&mut self) -> nb::Result<(), !> {
+    fn wait(&mut self) -> nb::Result<(), Void> {
         let count = self.tc.count16();
         if count.intflag.read().ovf().bit_is_set() {
             // Writing a 1 clears the flag

@@ -1,6 +1,6 @@
 [package]
 name = "atsamd21-hal"
-version = "0.0.3"
+version = "0.1.0"
 authors = ["Wez Furlong <wez@wezfurlong.org>"]
 description = "HAL and Peripheral access API for ATSAMD21 microcontrollers"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
@@ -10,8 +10,12 @@ readme = "README.md"
 
 [dependencies]
 cortex-m = "~0.4"
-embedded-hal = "~0.1"
+embedded-hal = "~0.2"
 nb = "~0.1"
+
+[dependencies.void]
+default-features = false
+version = "1.0.2"
 
 # Each of the supported chips is listed as an optional dependency here.
 # This makes it available when the corresponding feature name is referenced.

@@ -280,17 +280,26 @@ macro_rules! pin {
         }
 
         impl<MODE> $PinType<Output<MODE>> {
-            // This should eventually make it into the OutputPin
-            // trait: https://github.com/japaric/embedded-hal/pull/44
             /// Toggle the logic level of the pin; if it is currently
             /// high, set it low and vice versa.
             pub fn toggle(&mut self) {
+                self.toggle_impl();
+            }
+
+            fn toggle_impl(&mut self) {
                 unsafe {
                     (*PORT::ptr()).$outtgl.write(|bits| {
                         bits.bits(1 << $pin_no);
                         bits
                     });
                 }
+            }
+        }
+
+        #[cfg(feature = "unproven")]
+        impl<MODE> ToggleableOutputPin for $PinType<Output<MODE>> {
+            fn toggle(&mut self) {
+                self.toggle_impl(self);
             }
         }
 
@@ -305,15 +314,19 @@ macro_rules! pin {
             }
         }
 
-        impl<MODE> OutputPin for $PinType<Output<MODE>> {
-            fn is_high(&self) -> bool {
+        #[cfg(feature = "unproven")]
+        impl<MODE> StatefulOutputPin for $PinType<Output<MODE>> {
+            fn is_set_high(&self) -> bool {
                 unsafe { (((*PORT::ptr()).$out.read().bits()) & (1 << $pin_no)) != 0 }
             }
 
-            fn is_low(&self) -> bool {
+            fn is_set_low(&self) -> bool {
                 unsafe { (((*PORT::ptr()).$out.read().bits()) & (1 << $pin_no)) == 0 }
             }
+        }
 
+
+        impl<MODE> OutputPin for $PinType<Output<MODE>> {
             fn set_high(&mut self) {
                 unsafe {
                     (*PORT::ptr()).$outset.write(|bits| {
