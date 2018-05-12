@@ -1,11 +1,11 @@
-# ATSAMD21G18A
+# ATSAMD21E18A
 
-A board support package for the ATSAMD21G18A chip from Microchip (née Atmel)
+A board support package for the ATSAMD21E18A chip from Microchip (née Atmel)
 for Rust Embedded projects.
 
-https://crates.io/crates/atsamd21g18a
+https://crates.io/crates/atsamd21e18a
 
-## [Documentation](https://docs.rs/atsamd21g18a)
+## [Documentation](https://docs.rs/atsamd21e18a)
 
 This source was automatically generated using `svd2rust`, split into smaller
 pieces using `form` and formatted via `rustfmt`.
