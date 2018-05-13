@@ -1,0 +1,7 @@
+language: rust
+rust:
+  - nightly
+cache: cargo
+script:
+  - cargo build --verbose --manifest-path metro_m0/Cargo.toml --examples
+  - cargo build --verbose --manifest-path gemma_m0/Cargo.toml --examples
