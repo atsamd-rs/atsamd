@@ -1,6 +1,6 @@
 [package]
 name = "gemma_m0"
-version = "0.0.1"
+version = "0.1.0"
 authors = ["Wez Furlong <wez@wezfurlong.org>"]
 description = "Board Support crate for the Adafruit Gemma M0"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
