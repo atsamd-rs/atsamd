@@ -27,6 +27,18 @@ There are a couple of crates provided by this repo:
   for the Adafruit Gemma M0 board.  Similar to the Metro M0 crate, it re-exports the
   `atsamd21-hal` crate functionality using more convenient names.
 
+## Building
+
+The atsamd21 devices require untagged union support which means that you will
+need to be using nightly rust.  You'll also need to install support for
+`thumbv6m-none-eabi`:
+
+```bash
+$ rustup install nightly
+$ rustup default nightly
+$ rustup target add thumbv6m-none-eabi
+```
+
 Since a couple of different MCUs are used, building the examples requires changing
 directory into one of the board support crate dirs prior to building:
 
