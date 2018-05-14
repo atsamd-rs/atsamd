@@ -1,5 +1,4 @@
 #![no_std]
-#![feature(never_type)]
 
 #[cfg(feature = "samd21g18a")]
 pub extern crate atsamd21g18a;
