@@ -3,6 +3,8 @@
 This repo holds various things that support/enable working with atmel samd21 based
 devices, such as the Adafruit Metro M0, Trinket M0 and Gemma M0, using Rust.
 
+[![Build Status](https://travis-ci.org/wez/atsamd21-rs.svg?branch=master)](https://travis-ci.org/wez/atsamd21-rs)
+
 There are a couple of crates provided by this repo:
 
 * [`atsamd21g18a`](https://docs.rs/atsamd21g18a/latest/atsamd21g18a/) is an
