@@ -3,13 +3,14 @@ use hal::blocking::serial::write::Default;
 use hal::serial::Write;
 use nb;
 use sercom::pads::*;
-use target_device::{PM, SERCOM0, SERCOM1, SERCOM2, SERCOM3};
+use atsamd21g18a::{PM, SERCOM0, SERCOM1, SERCOM2, SERCOM3, NVIC};
+use atsamd21g18a::interrupt::Interrupt;
 use time::Hertz;
 
 
 pub struct Uart {
-    rx: Sercom0Pad2,
-    tx: Sercom0Pad3,
+    rx: Sercom0Pad3,
+    tx: Sercom0Pad2,
     sercom: SERCOM0,
 }
 
@@ -18,66 +19,64 @@ impl Uart {
         clock: &clock::Sercom0CoreClock,
         freq: F,
         sercom: SERCOM0,
+        nvic: &mut NVIC,
         pm: &mut PM,
-        tx: Sercom0Pad3,
-        rx: Sercom0Pad2,
+        tx: Sercom0Pad2,
+        rx: Sercom0Pad3,
     ) -> Uart {
         pm.apbcmask.modify(|_, w| w.sercom0_().set_bit());
 
         // Lots of union fields which require unsafe access
         unsafe {
-            sercom.usart.ctrla.write(|w| w.swrst().set_bit());
+            // Reset
+            sercom.usart.ctrla.modify(|_, w| w.swrst().set_bit());
             while sercom.usart.syncbusy.read().swrst().bit_is_set()
                 || sercom.usart.ctrla.read().swrst().bit_is_set() {
                 // wait for sync of CTRLA.SWRST
             }
 
-            // Set mode to USART with internal clock
-            sercom.usart.ctrla.write(|w| w.mode().usart_int_clk());
-
             // Unsafe b/c of direct call to bits on rxpo/txpo
-            sercom.usart.ctrla.write(|w| {
-                w.cmode().clear_bit(); // 0 means async
-                w.rxpo().bits(2);
-                w.txpo().bits(3);
-
+            sercom.usart.ctrla.modify(|_, w| {
                 w.dord().set_bit();
-                w.form().bits(0) // 0 is standard USART
-            });
 
-            sercom.usart.ctrlb.write(|w| {
-                w.chsize().bits(0x0); // Character size 0 is 8 bits see Table 25-12 in datasheet
-                w.sbmode().clear_bit() // 0 is one stop bit see sec 25.8.2
+                w.rxpo().bits(0x03); // Uses pad 3 for rx
+                w.txpo().bits(0x01); // Uses pad 2 for tx (and pad 3 for xck)
+
+                w.sampr().bits(0); // 16x oversample
+                w.runstdby().set_bit(); // Run in standby
+                w.form().bits(0); // 0 is no parity bits
+
+                w.mode().usart_int_clk() // Internal clock mode
             });
 
             // Calculate value for BAUD register
             let sample_rate: u32 = 16;
             let fref = clock.freq();
 
-            // Asynchronous fractional mode (Table 24-2 in datasheet)
-            //   BAUD = fref / (sampleRateValue * fbaud)
-            // (multiply by 8, to calculate fractional piece)
-            let baud_times8 = (fref.0 * 8) / (sample_rate * freq.into().0);
+            // Asynchronous arithmetic mode (Table 24-2 in datasheet)
+            let baud = 65536 * (1 - (sample_rate * (freq.into().0/ fref.0))) as u16;
 
-            sercom.usart.baud.baud_fracfp_mode.write(|w| {
-                w.fp().bits((baud_times8 % 8) as u8);
-                w.baud().bits((baud_times8 / 8) as u16)
+            sercom.usart.baud.baud.modify(|_, w| {
+                w.baud().bits(baud)
             });
 
-            sercom.usart.ctrlb.write(|w| {
-                w.txen().set_bit()
-            });
-            // wait for sync of CTRLB
-            while sercom.usart.syncbusy.read().ctrlb().bit_is_set() {}
-
-            sercom.usart.ctrlb.write(|w| {
+            sercom.usart.ctrlb.modify(|_, w| {
+                w.sbmode().clear_bit(); // 0 is one stop bit see sec 25.8.2
+                w.chsize().bits(0x0);
+                w.txen().set_bit();
                 w.rxen().set_bit()
             });
 
-            // wait for sync of CTRLB
             while sercom.usart.syncbusy.read().ctrlb().bit_is_set() {}
 
-            sercom.usart.ctrla.write(|w| w.enable().set_bit());
+            nvic.enable(Interrupt::SERCOM0);
+
+            sercom.usart.intenset.modify(|_, w| {
+                w.rxc().set_bit()
+                //w.txc().set_bit()
+            });
+
+            sercom.usart.ctrla.modify(|_, w| w.enable().set_bit());
             // wait for sync of ENABLE
             while sercom.usart.syncbusy.read().enable().bit_is_set() {}
         }
@@ -103,11 +102,13 @@ impl Write<u8> for Uart {
 
     fn write(&mut self, word: u8) -> nb::Result<(), Self::Error> {
         unsafe {
-            while self.sercom.usart.intflag.read().dre().bit_is_clear() {
-                // Wait fo DATA register to become empty
+            let ready = self.sercom.usart.intflag.read().dre().bit_is_set();
+
+            if !ready {
+                return Err(nb::Error::WouldBlock);
             }
 
-            self.sercom.usart.data.write(|w| unsafe {
+            self.sercom.usart.data.write(|w| {
                 w.bits(word as u16)
             });
         }
