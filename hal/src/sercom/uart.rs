@@ -1,11 +1,11 @@
+use atsamd21g18a::{NVIC, PM, SERCOM0, SERCOM1, SERCOM2, SERCOM3};
+use atsamd21g18a::interrupt::Interrupt;
+use atsamd21g18a::sercom0::USART;
 use clock;
 use hal::blocking::serial::write::Default;
-use hal::serial::{Write, Read};
+use hal::serial::{Read, Write};
 use nb;
 use sercom::pads::*;
-use atsamd21g18a::{PM, SERCOM0, SERCOM1, SERCOM2, SERCOM3, NVIC};
-use atsamd21g18a::sercom0::USART;
-use atsamd21g18a::interrupt::Interrupt;
 use time::Hertz;
 
 
@@ -17,17 +17,28 @@ pub struct Uart {
 
 const SHIFT: u8 = 32;
 
-impl Uart {
+macro_rules! uart {
+    ([
+        $($Type:ident: ($txpad:ident, $rxpad:ident, $SERCOM:ident, $powermask:ident, $clock:ident),)+
+    ]) => {
+        $(
+pub struct $Type {
+    rx: $rxpad,
+    tx: $txpad,
+    sercom: $SERCOM
+}
+
+impl $Type {
     pub fn new<F: Into<Hertz>>(
-        clock: &clock::Sercom0CoreClock,
+        clock: &clock::$clock,
         freq: F,
-        sercom: SERCOM0,
+        sercom: $SERCOM,
         nvic: &mut NVIC,
         pm: &mut PM,
-        tx: Sercom0Pad2,
-        rx: Sercom0Pad3,
-    ) -> Uart {
-        pm.apbcmask.modify(|_, w| w.sercom0_().set_bit());
+        tx: $txpad,
+        rx: $rxpad,
+    ) -> $Type {
+        pm.apbcmask.modify(|_, w| w.$powermask().set_bit());
 
         // Lots of union fields which require unsafe access
         unsafe {
@@ -42,6 +53,7 @@ impl Uart {
             sercom.usart.ctrla.modify(|_, w| {
                 w.dord().set_bit();
 
+                // TODO: There are other valid configs here (i.e. using pad 0 for rx) we should support these
                 w.rxpo().bits(0x03); // Uses pad 3 for rx
                 w.txpo().bits(0x01); // Uses pad 2 for tx (and pad 3 for xck)
 
@@ -57,6 +69,7 @@ impl Uart {
             let sample_rate: u8 = 16;
             let fref = clock.freq().0;
 
+//          TODO: Support fractional BAUD mode
 //            let mul_ratio = (fref.0 * 1000) / (freq.into().0 * 16);
 //
 //            let baud = mul_ratio / 1000;
@@ -68,7 +81,7 @@ impl Uart {
 //            });
 
             // Asynchronous arithmetic mode (Table 24-2 in datasheet)
-            let baud = Self::calulate_baud_value(freq.into().0, fref, sample_rate);
+            let baud = calculate_baud_value(freq.into().0, fref, sample_rate);
 
             sercom.usart.baud.baud.modify(|_, w| {
                 w.baud().bits(baud)
@@ -83,7 +96,7 @@ impl Uart {
 
             while sercom.usart.syncbusy.read().ctrlb().bit_is_set() {}
 
-            nvic.enable(Interrupt::SERCOM0);
+            nvic.enable(Interrupt::$SERCOM);
 
             sercom.usart.intenset.modify(|_, w| {
                 w.rxc().set_bit()
@@ -103,32 +116,9 @@ impl Uart {
         }
     }
 
-    pub fn calulate_baud_value(baudrate: u32, clk_freq: u32, n_samples: u8) -> u16 {
-        let mut ratio: u64 = 0;
-        let mut scale: u64 = 0;
-        let mut baud_calculated: u64 = 0;
-        let mut temp1: u64 = 0;
-
-        temp1 = ((n_samples as u64 * baudrate as u64) << 32);
-        ratio = temp1 / clk_freq as u64;
-        //ratio = long_division(temp1, perip);
-        scale = (1u64 << SHIFT) - ratio;
-        baud_calculated = (65536 * scale) >> SHIFT;
-
-        return baud_calculated as u16;
-    }
-
-    pub fn enable_tx_interrupt(&mut self) {
-        unsafe {
-            self.sercom.usart.intenset.write(|w| {
-                w.txc().set_bit()
-            });
-        }
-    }
-
     fn usart(&self) -> &USART {
         unsafe {
-            return &self.sercom.usart
+            return &self.sercom.usart;
         }
     }
 
@@ -137,7 +127,8 @@ impl Uart {
     }
 }
 
-impl Write<u8> for Uart {
+
+impl Write<u8> for $Type {
     type Error = ();
 
     fn write(&mut self, word: u8) -> nb::Result<(), Self::Error> {
@@ -166,7 +157,7 @@ impl Write<u8> for Uart {
     }
 }
 
-impl Read<u8> for Uart {
+impl Read<u8> for $Type {
     type Error = ();
 
     fn read(&mut self) -> nb::Result<u8, Self::Error> {
@@ -182,4 +173,57 @@ impl Read<u8> for Uart {
     }
 }
 
-impl Default<u8> for Uart {}
+impl Default<u8> for $Type {}
+        )+
+    };
+}
+
+uart!([
+    UART0:
+        (
+            Sercom0Pad2,
+            Sercom0Pad3,
+            SERCOM0,
+            sercom0_,
+            Sercom0CoreClock
+        ),
+    UART1:
+        (
+            Sercom1Pad2,
+            Sercom1Pad3,
+            SERCOM1,
+            sercom1_,
+            Sercom1CoreClock
+        ),
+    UART2:
+        (
+            Sercom2Pad2,
+            Sercom2Pad3,
+            SERCOM2,
+            sercom2_,
+            Sercom2CoreClock
+        ),
+    UART3:
+        (
+            Sercom3Pad2,
+            Sercom3Pad3,
+            SERCOM3,
+            sercom3_,
+            Sercom3CoreClock
+        ),
+]);
+
+fn calculate_baud_value(baudrate: u32, clk_freq: u32, n_samples: u8) -> u16 {
+    let mut ratio: u64 = 0;
+    let mut scale: u64 = 0;
+    let mut baud_calculated: u64 = 0;
+    let mut temp1: u64 = 0;
+
+    temp1 = ((n_samples as u64 * baudrate as u64) << 32);
+    ratio = temp1 / clk_freq as u64;
+//ratio = long_division(temp1, perip);
+    scale = (1u64 << SHIFT) - ratio;
+    baud_calculated = (65536 * scale) >> SHIFT;
+
+    return baud_calculated as u16;
+}
