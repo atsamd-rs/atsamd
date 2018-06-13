@@ -1,6 +1,8 @@
-use atsamd21g18a::{NVIC, PM, SERCOM0, SERCOM1, SERCOM2, SERCOM3};
-use atsamd21g18a::interrupt::Interrupt;
-use atsamd21g18a::sercom0::USART;
+use target_device::{NVIC, PM, SERCOM0, SERCOM1, SERCOM2, SERCOM3};
+#[cfg(feature = "samd21g18a")]
+use target_device::{SERCOM4, SERCOM5};
+use target_device::interrupt::Interrupt;
+use target_device::sercom0::USART;
 use clock;
 use hal::blocking::serial::write::Default;
 use hal::serial::{Read, Write};
