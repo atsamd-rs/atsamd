@@ -213,6 +213,26 @@ uart!([
         ),
 ]);
 
+#[cfg(feature = "samd21g18a")]
+uart!([
+    UART4:
+        (
+            Sercom4Pad2,
+            Sercom4Pad3,
+            SERCOM4,
+            sercom4_,
+            Sercom4CoreClock
+        ),
+    UART5:
+        (
+            Sercom5Pad2,
+            Sercom5Pad3,
+            SERCOM5,
+            sercom5_,
+            Sercom5CoreClock
+        ),
+]);
+
 fn calculate_baud_value(baudrate: u32, clk_freq: u32, n_samples: u8) -> u16 {
     let mut ratio: u64 = 0;
     let mut scale: u64 = 0;
