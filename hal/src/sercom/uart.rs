@@ -10,24 +10,76 @@ use nb;
 use sercom::pads::*;
 use time::Hertz;
 
+macro_rules! uart_pinout {
+    ([$($Type:ident:
+        ($pad0:ident, $pad1:ident, $pad2:ident, $pad3:ident),)+
+    ]) => {
+$(
+/// Similar to SPI Pinout the UART allows selecting any pad for RX and either pad 0 or 2 for TX
+pub enum $Type {
+    /// Construct pinout with rx assigned to pad0,
+    /// TX here must be pad 2
+    /// One entry, can't put both on pad 0
+    Rx0Tx2{rx: $pad0, tx: $pad2},
 
-pub struct Uart {
-    rx: Sercom0Pad3,
-    tx: Sercom0Pad2,
-    sercom: SERCOM0,
+    Rx1Tx0{rx: $pad1, tx: $pad0},
+    Rx1Tx2{rx: $pad1, tx: $pad2},
+
+    /// One entry, can't put both on pad 2
+    Rx2Tx0{rx: $pad2, tx: $pad0},
+
+    Rx3Tx0{rx: $pad3, tx: $pad0},
+    Rx3Tx2{rx: $pad3, tx: $pad2},
 }
 
-const SHIFT: u8 = 32;
+impl $Type {
+    /// Return the txpo and rxpo values for
+    /// this pinout configuration
+    fn rxpo_txpo(&self) -> (u8, u8) {
+        match self {
+            &$Type::Rx0Tx2{..} => (0, 1),
+
+            &$Type::Rx1Tx0{..} => (1, 0),
+            &$Type::Rx1Tx2{..} => (1, 1),
+
+            &$Type::Rx2Tx0{..} => (2, 0),
+
+            &$Type::Rx3Tx0{..} => (3, 0),
+            &$Type::Rx3Tx2{..} => (3, 1),
+        }
+    }
+}
+
+)+
+
+};
+}
+
+uart_pinout!([
+    UART0Pinout: (Sercom0Pad0, Sercom0Pad1, Sercom0Pad2, Sercom0Pad3),
+    UART1Pinout: (Sercom1Pad0, Sercom1Pad1, Sercom1Pad2, Sercom1Pad3),
+    UART2Pinout: (Sercom2Pad0, Sercom2Pad1, Sercom2Pad2, Sercom2Pad3),
+    UART3Pinout: (Sercom3Pad0, Sercom3Pad1, Sercom3Pad2, Sercom3Pad3),
+]);
+#[cfg(feature = "samd21g18a")]
+uart_pinout!([
+    UART4Pinout: (Sercom4Pad0, Sercom4Pad1, Sercom4Pad2, Sercom4Pad3),
+    UART5Pinout: (Sercom5Pad0, Sercom5Pad1, Sercom5Pad2, Sercom5Pad3),
+]);
 
 macro_rules! uart {
     ([
-        $($Type:ident: ($txpad:ident, $rxpad:ident, $SERCOM:ident, $powermask:ident, $clock:ident),)+
+        $($Type:ident: (
+                        $pinout:ident,
+                        $SERCOM:ident,
+                        $powermask:ident,
+                        $clock:ident),)+
     ]) => {
-        $(
+$(
+
 pub struct $Type {
-    rx: $rxpad,
-    tx: $txpad,
-    sercom: $SERCOM
+    pinout: $pinout,
+    sercom: $SERCOM,
 }
 
 impl $Type {
@@ -37,8 +89,7 @@ impl $Type {
         sercom: $SERCOM,
         nvic: &mut NVIC,
         pm: &mut PM,
-        tx: $txpad,
-        rx: $rxpad,
+        pinout: $pinout
     ) -> $Type {
         pm.apbcmask.modify(|_, w| w.$powermask().set_bit());
 
@@ -55,9 +106,9 @@ impl $Type {
             sercom.usart.ctrla.modify(|_, w| {
                 w.dord().set_bit();
 
-                // TODO: There are other valid configs here (i.e. using pad 0 for rx) we should support these
-                w.rxpo().bits(0x03); // Uses pad 3 for rx
-                w.txpo().bits(0x01); // Uses pad 2 for tx (and pad 3 for xck)
+                let (rxpo, txpo) = pinout.rxpo_txpo();
+                w.rxpo().bits(rxpo); // Uses pad 3 for rx
+                w.txpo().bits(txpo); // Uses pad 2 for tx (and pad 3 for xck)
 
                 w.form().bits(0x00);
                 w.sampr().bits(0x00); // 16x oversample fractional
@@ -112,8 +163,7 @@ impl $Type {
         }
 
         Self {
-            rx,
-            tx,
+            pinout,
             sercom,
         }
     }
@@ -176,39 +226,37 @@ impl Read<u8> for $Type {
 }
 
 impl Default<u8> for $Type {}
-        )+
-    };
+
+)+
+
+};
 }
 
 uart!([
     UART0:
         (
-            Sercom0Pad2,
-            Sercom0Pad3,
+            UART0Pinout,
             SERCOM0,
             sercom0_,
             Sercom0CoreClock
         ),
     UART1:
         (
-            Sercom1Pad2,
-            Sercom1Pad3,
+            UART1Pinout,
             SERCOM1,
             sercom1_,
             Sercom1CoreClock
         ),
     UART2:
         (
-            Sercom2Pad2,
-            Sercom2Pad3,
+            UART2Pinout,
             SERCOM2,
             sercom2_,
             Sercom2CoreClock
         ),
     UART3:
         (
-            Sercom3Pad2,
-            Sercom3Pad3,
+            UART3Pinout,
             SERCOM3,
             sercom3_,
             Sercom3CoreClock
@@ -219,21 +267,21 @@ uart!([
 uart!([
     UART4:
         (
-            Sercom4Pad2,
-            Sercom4Pad3,
+            UART4Pinout,
             SERCOM4,
             sercom4_,
             Sercom4CoreClock
         ),
     UART5:
         (
-            Sercom5Pad2,
-            Sercom5Pad3,
+            UART5Pinout,
             SERCOM5,
             sercom5_,
             Sercom5CoreClock
         ),
 ]);
+
+const SHIFT: u8 = 32;
 
 fn calculate_baud_value(baudrate: u32, clk_freq: u32, n_samples: u8) -> u16 {
     let mut ratio: u64 = 0;
@@ -243,9 +291,8 @@ fn calculate_baud_value(baudrate: u32, clk_freq: u32, n_samples: u8) -> u16 {
 
     temp1 = ((n_samples as u64 * baudrate as u64) << 32);
     ratio = temp1 / clk_freq as u64;
-//ratio = long_division(temp1, perip);
     scale = (1u64 << SHIFT) - ratio;
-    baud_calculated = (65536 * scale) >> SHIFT;
+    baud_calculated = (65536u64 * scale) >> SHIFT;
 
     return baud_calculated as u16;
 }
