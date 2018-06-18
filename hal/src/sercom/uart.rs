@@ -78,7 +78,7 @@ macro_rules! uart {
 $(
 
 pub struct $Type {
-    pinout: $pinout,
+    _pinout: $pinout,
     sercom: $SERCOM,
 }
 
@@ -163,7 +163,7 @@ impl $Type {
         }
 
         Self {
-            pinout,
+            _pinout: pinout,
             sercom,
         }
     }
@@ -199,8 +199,6 @@ impl Write<u8> for $Type {
 
     fn flush(&mut self) -> nb::Result<(), Self::Error> {
         // simply await DRE empty
-        let ready = self.usart().intflag.read().dre().bit_is_set();
-
         if !self.dre() {
             return Err(nb::Error::WouldBlock);
         }
@@ -284,15 +282,10 @@ uart!([
 const SHIFT: u8 = 32;
 
 fn calculate_baud_value(baudrate: u32, clk_freq: u32, n_samples: u8) -> u16 {
-    let mut ratio: u64 = 0;
-    let mut scale: u64 = 0;
-    let mut baud_calculated: u64 = 0;
-    let mut temp1: u64 = 0;
-
-    temp1 = ((n_samples as u64 * baudrate as u64) << 32);
-    ratio = temp1 / clk_freq as u64;
-    scale = (1u64 << SHIFT) - ratio;
-    baud_calculated = (65536u64 * scale) >> SHIFT;
+    let sample_rate = (n_samples as u64 * baudrate as u64) << 32;
+    let ratio = sample_rate / clk_freq as u64;
+    let scale = (1u64 << SHIFT) - ratio;
+    let baud_calculated = (65536u64 * scale) >> SHIFT;
 
     return baud_calculated as u16;
 }
