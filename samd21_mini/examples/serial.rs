@@ -9,7 +9,7 @@ extern crate cortex_m_rtfm as rtfm;
 extern crate nb;
 extern crate embedded_hal;
 extern crate panic_abort;
-extern crate sparkfun_samd21_mini as hal;
+extern crate samd21_mini as hal;
 
 use hal::clock::GenericClockController;
 use hal::prelude::*;
