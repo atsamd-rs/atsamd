@@ -17,7 +17,7 @@ use hal::digital::OutputPin;
 use target_device::PORT;
 
 #[cfg(feature = "unproven")]
-use hal::digital::InputPin;
+use hal::digital::{InputPin, ToggleableOutputPin, StatefulOutputPin};
 
 /// The GpioExt trait allows splitting the PORT hardware into
 /// its constituent pin parts.
@@ -299,7 +299,7 @@ macro_rules! pin {
         #[cfg(feature = "unproven")]
         impl<MODE> ToggleableOutputPin for $PinType<Output<MODE>> {
             fn toggle(&mut self) {
-                self.toggle_impl(self);
+                self.toggle_impl();
             }
         }
 

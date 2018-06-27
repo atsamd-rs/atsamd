@@ -4,11 +4,12 @@ use target_device::{SERCOM4, SERCOM5};
 use target_device::interrupt::Interrupt;
 use target_device::sercom0::USART;
 use clock;
-use hal::blocking::serial::write::Default;
-use hal::serial::{Read, Write};
+use hal::blocking::serial::{Write, write::Default};
+use hal::serial;
 use nb;
 use sercom::pads::*;
 use time::Hertz;
+use core::fmt;
 
 macro_rules! uart_pinout {
     ([$($Type:ident:
@@ -180,7 +181,7 @@ impl $Type {
 }
 
 
-impl Write<u8> for $Type {
+impl serial::Write<u8> for $Type {
     type Error = ();
 
     fn write(&mut self, word: u8) -> nb::Result<(), Self::Error> {
@@ -207,7 +208,7 @@ impl Write<u8> for $Type {
     }
 }
 
-impl Read<u8> for $Type {
+impl serial::Read<u8> for $Type {
     type Error = ();
 
     fn read(&mut self) -> nb::Result<u8, Self::Error> {
@@ -224,6 +225,12 @@ impl Read<u8> for $Type {
 }
 
 impl Default<u8> for $Type {}
+
+impl fmt::Write for $Type {
+    fn write_str(&mut self, s: &str) -> fmt::Result {
+        self.bwrite_all(s.as_bytes()).map_err(|_| fmt::Error)
+    }
+}
 
 )+
 
