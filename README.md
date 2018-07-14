@@ -36,8 +36,8 @@ need to be using nightly rust.  You'll also need to install support for
 `thumbv6m-none-eabi`:
 
 ```bash
-$ rustup install nightly
-$ rustup default nightly
+$ rustup install nightly-2018-05-16
+$ rustup default nightly-2018-05-16
 $ rustup target add thumbv6m-none-eabi
 ```
 
