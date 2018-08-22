@@ -9,4 +9,4 @@ other variants in a similar fashion; pull requests for this are welcomed!
 
 Check out the metro_m0 board support crate examples:
 
-https://github.com/wez/atsamd21-rs/tree/master/matro_m0/examples
+https://github.com/wez/atsamd21-rs/tree/master/metro_m0/examples
