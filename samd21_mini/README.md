@@ -1,4 +1,4 @@
-# Adafruit Metro M0 Board Support Crate
+# Sparkfun SAMD21 Mini Breakout
 
 This crate provides a type-safe API for working with the [Sparkfun SAMD21 Mini Breakout](https://www.sparkfun.com/products/13664).
 
