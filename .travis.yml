@@ -1,6 +1,6 @@
 language: rust
 rust:
-  - nightly
+  - nightly-2018-05-16
 cache: cargo
 script:
   - rustup target add thumbv6m-none-eabi
