@@ -7,8 +7,8 @@ pub mod prelude;
 pub use hal::atsamd21g18a::*;
 
 use hal::prelude::*;
+pub use hal::usb;
 pub use hal::*;
-pub use hal::usb as usb;
 
 use gpio::{Floating, Input, Port};
 
@@ -22,7 +22,7 @@ pub struct Pins {
     pub rx: gpio::Pa11<Input<Floating>>,
 
     pub aref: gpio::Pa3<Input<Floating>>,
-    
+
     pub d2: gpio::Pa14<Input<Floating>>,
     pub d3: gpio::Pa9<Input<Floating>>,
     pub d4: gpio::Pa8<Input<Floating>>,

@@ -121,7 +121,7 @@ pub struct USART {
     pub ctrlb: self::usart::CTRLB,
     _reserved2: [u8; 4usize],
     #[doc = "USART Baud Rate"]
-    pub baud: BaudUnion,
+    pub baud: BAUD_UNION,
     #[doc = "0x0e - USART Receive Pulse Length"]
     pub rxpl: self::usart::RXPL,
     _reserved4: [u8; 5usize],
@@ -147,7 +147,7 @@ pub struct USART {
 }
 #[doc = "USART Baud Rate"]
 #[repr(C)]
-pub union BaudUnion {
+pub union BAUD_UNION {
     #[doc = "0x0c - USART Baud Rate"]
     pub baud_usartfp_mode: self::usart::BAUD_USARTFP_MODE,
     #[doc = "0x0c - USART Baud Rate"]

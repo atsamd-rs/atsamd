@@ -1,6 +1,7 @@
 #![feature(used)]
-#![feature(proc_macro)]
+#![feature(proc_macro_gen)]
 #![no_std]
+#![no_main]
 
 extern crate atsamd21_hal as atsamd21;
 extern crate cortex_m;
@@ -10,10 +11,12 @@ extern crate nb;
 extern crate embedded_hal;
 extern crate panic_abort;
 extern crate samd21_mini as hal;
+#[macro_use(entry)]
+extern crate cortex_m_rt;
 
 use hal::clock::GenericClockController;
 use hal::prelude::*;
-use hal::sercom::{PadPin, Sercom0Pad2, Sercom0Pad3, UART0, UART0Pinout};
+use hal::sercom::{PadPin, Sercom0Pad2, Sercom0Pad3, UART0Pinout, UART0};
 use hal::target_device::gclk::clkctrl::GENR;
 use hal::target_device::gclk::genctrl::SRCR;
 use rtfm::{app, Threshold};
@@ -47,20 +50,16 @@ fn int_uart(_t: &mut Threshold, mut r: SERCOM0::Resources) {
         Ok(v) => {
             r.RX_LED.set_high();
             v
-        },
-        Err(_) => {
-            0 as u8
         }
+        Err(_) => 0 as u8,
     };
 
     r.TX_LED.set_low();
     match block!(r.UART.write(data)) {
         Ok(_) => {
             r.TX_LED.set_high();
-        },
-        Err(_) => {
-            unimplemented!()
         }
+        Err(_) => unimplemented!(),
     }
 }
 
@@ -90,11 +89,29 @@ fn init(mut p: init::Peripherals) -> init::LateResources {
     let mut led = pins.led.into_open_drain_output(&mut pins.port);
     led.set_low();
 
-    let rx_pin: Sercom0Pad3 = pins.rx.into_pull_down_input(&mut pins.port).into_pad(&mut pins.port);
-    let tx_pin: Sercom0Pad2 = pins.tx.into_push_pull_output(&mut pins.port).into_pad(&mut pins.port);
-    let uart_clk = clocks.sercom0_core(&gclk2).expect("Could not configure sercom0 core clock");
+    let rx_pin: Sercom0Pad3 = pins
+        .rx
+        .into_pull_down_input(&mut pins.port)
+        .into_pad(&mut pins.port);
+    let tx_pin: Sercom0Pad2 = pins
+        .tx
+        .into_push_pull_output(&mut pins.port)
+        .into_pad(&mut pins.port);
+    let uart_clk = clocks
+        .sercom0_core(&gclk2)
+        .expect("Could not configure sercom0 core clock");
 
-    let uart = UART0::new(&uart_clk, 9600.hz(), p.device.SERCOM0, &mut p.core.NVIC, &mut p.device.PM, UART0Pinout::Rx3Tx2 {rx: rx_pin, tx: tx_pin});
+    let uart = UART0::new(
+        &uart_clk,
+        9600.hz(),
+        p.device.SERCOM0,
+        &mut p.core.NVIC,
+        &mut p.device.PM,
+        UART0Pinout::Rx3Tx2 {
+            rx: rx_pin,
+            tx: tx_pin,
+        },
+    );
 
     let mut rx_led = pins.rx_led.into_open_drain_output(&mut pins.port);
     let mut tx_led = pins.tx_led.into_open_drain_output(&mut pins.port);
@@ -110,3 +127,10 @@ fn init(mut p: init::Peripherals) -> init::LateResources {
         UART: uart,
     }
 }
+
+fn run_app() -> ! {
+    main();
+    loop {}
+}
+
+entry!(run_app);
