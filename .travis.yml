@@ -6,3 +6,4 @@ script:
   - rustup target add thumbv6m-none-eabi
   - cargo build --verbose --manifest-path metro_m0/Cargo.toml --examples
   - cargo build --verbose --manifest-path gemma_m0/Cargo.toml --examples
+  - cargo build --verbose --manifest-path samd21_mini/Cargo.toml --examples
