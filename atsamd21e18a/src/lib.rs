@@ -1,37 +1,213 @@
-#![cfg_attr(feature = "rt", feature(global_asm))]
-#![cfg_attr(feature = "rt", feature(use_extern_macros))]
-#![cfg_attr(feature = "rt", feature(used))]
-#![doc = "Peripheral access API for ATSAMD21E18A microcontrollers (generated using svd2rust v0.12.1)\n\nYou can find an overview of the API [here].\n\n[here]: https://docs.rs/svd2rust/0.12.1/svd2rust/#peripheral-api"]
-#![allow(private_no_mangle_statics)]
+#![doc = "Peripheral access API for ATSAMD21E18A microcontrollers (generated using svd2rust v0.13.1)\n\nYou can find an overview of the API [here].\n\n[here]: https://docs.rs/svd2rust/0.13.1/svd2rust/#peripheral-api"]
 #![deny(missing_docs)]
 #![deny(warnings)]
 #![allow(non_camel_case_types)]
-#![feature(const_fn)]
-#![feature(try_from)]
 #![no_std]
 #![feature(untagged_unions)]
+extern crate bare_metal;
 extern crate cortex_m;
 #[cfg(feature = "rt")]
 extern crate cortex_m_rt;
-#[cfg(feature = "rt")]
-pub use cortex_m_rt::{default_handler, exception};
-extern crate bare_metal;
 extern crate vcell;
 use core::marker::PhantomData;
 use core::ops::Deref;
 #[doc = r" Number available in the NVIC for configuring priority"]
 pub const NVIC_PRIO_BITS: u8 = 2;
-pub use interrupt::Interrupt;
+#[cfg(feature = "rt")]
+extern "C" {
+    fn PM();
+    fn SYSCTRL();
+    fn WDT();
+    fn RTC();
+    fn EIC();
+    fn NVMCTRL();
+    fn DMAC();
+    fn USB();
+    fn EVSYS();
+    fn SERCOM0();
+    fn SERCOM1();
+    fn SERCOM2();
+    fn SERCOM3();
+    fn TCC0();
+    fn TCC1();
+    fn TCC2();
+    fn TC3();
+    fn TC4();
+    fn TC5();
+    fn ADC();
+    fn AC();
+    fn DAC();
+    fn I2S();
+}
+#[doc(hidden)]
+pub union Vector {
+    _handler: unsafe extern "C" fn(),
+    _reserved: u32,
+}
+#[cfg(feature = "rt")]
+#[doc(hidden)]
+#[link_section = ".vector_table.interrupts"]
+#[no_mangle]
+pub static __INTERRUPTS: [Vector; 28] = [
+    Vector { _handler: PM },
+    Vector { _handler: SYSCTRL },
+    Vector { _handler: WDT },
+    Vector { _handler: RTC },
+    Vector { _handler: EIC },
+    Vector { _handler: NVMCTRL },
+    Vector { _handler: DMAC },
+    Vector { _handler: USB },
+    Vector { _handler: EVSYS },
+    Vector { _handler: SERCOM0 },
+    Vector { _handler: SERCOM1 },
+    Vector { _handler: SERCOM2 },
+    Vector { _handler: SERCOM3 },
+    Vector { _reserved: 0 },
+    Vector { _reserved: 0 },
+    Vector { _handler: TCC0 },
+    Vector { _handler: TCC1 },
+    Vector { _handler: TCC2 },
+    Vector { _handler: TC3 },
+    Vector { _handler: TC4 },
+    Vector { _handler: TC5 },
+    Vector { _reserved: 0 },
+    Vector { _reserved: 0 },
+    Vector { _handler: ADC },
+    Vector { _handler: AC },
+    Vector { _handler: DAC },
+    Vector { _reserved: 0 },
+    Vector { _handler: I2S },
+];
+#[doc = r" Macro to override a device specific interrupt handler"]
+#[doc = r""]
+#[doc = r" # Syntax"]
+#[doc = r""]
+#[doc = r" ``` ignore"]
+#[doc = r" interrupt!("]
+#[doc = r"     // Name of the interrupt"]
+#[doc = r"     $Name:ident,"]
+#[doc = r""]
+#[doc = r"     // Path to the interrupt handler (a function)"]
+#[doc = r"     $handler:path,"]
+#[doc = r""]
+#[doc = r"     // Optional, state preserved across invocations of the handler"]
+#[doc = r"     state: $State:ty = $initial_state:expr,"]
+#[doc = r" );"]
+#[doc = r" ```"]
+#[doc = r""]
+#[doc = r" Where `$Name` must match the name of one of the variants of the `Interrupt`"]
+#[doc = r" enum."]
+#[doc = r""]
+#[doc = r" The handler must have signature `fn()` is no state was associated to it;"]
+#[doc = r" otherwise its signature must be `fn(&mut $State)`."]
+#[cfg(feature = "rt")]
+#[macro_export]
+macro_rules! interrupt {
+    ( $ Name : ident , $ handler : path , state : $ State : ty = $ initial_state : expr ) => {
+        #[allow(unsafe_code)]
+        #[deny(private_no_mangle_fns)]
+        #[no_mangle]
+        pub unsafe extern "C" fn $Name() {
+            static mut STATE: $State = $initial_state;
+            let _ = $crate::Interrupt::$Name;
+            let f: fn(&mut $State) = $handler;
+            f(&mut STATE)
+        }
+    };
+    ( $ Name : ident , $ handler : path ) => {
+        #[allow(unsafe_code)]
+        #[deny(private_no_mangle_fns)]
+        #[no_mangle]
+        pub unsafe extern "C" fn $Name() {
+            let _ = $crate::Interrupt::$Name;
+            let f: fn() = $handler;
+            f()
+        }
+    };
+}
+#[doc = r" Enumeration of all the interrupts"]
+pub enum Interrupt {
+    #[doc = "0 - PM"]
+    PM,
+    #[doc = "1 - SYSCTRL"]
+    SYSCTRL,
+    #[doc = "2 - WDT"]
+    WDT,
+    #[doc = "3 - RTC"]
+    RTC,
+    #[doc = "4 - EIC"]
+    EIC,
+    #[doc = "5 - NVMCTRL"]
+    NVMCTRL,
+    #[doc = "6 - DMAC"]
+    DMAC,
+    #[doc = "7 - USB"]
+    USB,
+    #[doc = "8 - EVSYS"]
+    EVSYS,
+    #[doc = "9 - SERCOM0"]
+    SERCOM0,
+    #[doc = "10 - SERCOM1"]
+    SERCOM1,
+    #[doc = "11 - SERCOM2"]
+    SERCOM2,
+    #[doc = "12 - SERCOM3"]
+    SERCOM3,
+    #[doc = "15 - TCC0"]
+    TCC0,
+    #[doc = "16 - TCC1"]
+    TCC1,
+    #[doc = "17 - TCC2"]
+    TCC2,
+    #[doc = "18 - TC3"]
+    TC3,
+    #[doc = "19 - TC4"]
+    TC4,
+    #[doc = "20 - TC5"]
+    TC5,
+    #[doc = "23 - ADC"]
+    ADC,
+    #[doc = "24 - AC"]
+    AC,
+    #[doc = "25 - DAC"]
+    DAC,
+    #[doc = "27 - I2S"]
+    I2S,
+}
+unsafe impl ::bare_metal::Nr for Interrupt {
+    #[inline]
+    fn nr(&self) -> u8 {
+        match *self {
+            Interrupt::PM => 0,
+            Interrupt::SYSCTRL => 1,
+            Interrupt::WDT => 2,
+            Interrupt::RTC => 3,
+            Interrupt::EIC => 4,
+            Interrupt::NVMCTRL => 5,
+            Interrupt::DMAC => 6,
+            Interrupt::USB => 7,
+            Interrupt::EVSYS => 8,
+            Interrupt::SERCOM0 => 9,
+            Interrupt::SERCOM1 => 10,
+            Interrupt::SERCOM2 => 11,
+            Interrupt::SERCOM3 => 12,
+            Interrupt::TCC0 => 15,
+            Interrupt::TCC1 => 16,
+            Interrupt::TCC2 => 17,
+            Interrupt::TC3 => 18,
+            Interrupt::TC4 => 19,
+            Interrupt::TC5 => 20,
+            Interrupt::ADC => 23,
+            Interrupt::AC => 24,
+            Interrupt::DAC => 25,
+            Interrupt::I2S => 27,
+        }
+    }
+}
 #[doc(hidden)]
 pub mod interrupt;
 pub use cortex_m::peripheral::Peripherals as CorePeripherals;
-pub use cortex_m::peripheral::CPUID;
-pub use cortex_m::peripheral::DCB;
-pub use cortex_m::peripheral::DWT;
-pub use cortex_m::peripheral::MPU;
-pub use cortex_m::peripheral::NVIC;
-pub use cortex_m::peripheral::SCB;
-pub use cortex_m::peripheral::SYST;
+pub use cortex_m::peripheral::{CBP, CPUID, DCB, DWT, FPB, FPU, ITM, MPU, NVIC, SCB, SYST, TPIU};
 #[doc = "Analog Comparators"]
 pub struct AC {
     _marker: PhantomData<*const ()>,
@@ -620,6 +796,7 @@ impl Deref for WDT {
 }
 #[doc = "Watchdog Timer"]
 pub mod wdt;
+#[allow(private_no_mangle_statics)]
 #[no_mangle]
 static mut DEVICE_PERIPHERALS: bool = false;
 #[doc = r" All the peripherals"]

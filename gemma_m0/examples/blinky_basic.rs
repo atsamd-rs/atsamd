@@ -1,15 +1,21 @@
 #![feature(used)]
 #![no_std]
+#![no_main]
 
 extern crate gemma_m0 as hal;
 extern crate panic_abort;
+
+#[macro_use(entry)]
+extern crate cortex_m_rt;
 
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
 use hal::prelude::*;
 use hal::{CorePeripherals, Peripherals};
 
-fn main() {
+entry!(main);
+
+fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
     let core = CorePeripherals::take().unwrap();
     let mut clocks = GenericClockController::new(

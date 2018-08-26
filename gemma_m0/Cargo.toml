@@ -9,7 +9,7 @@ repository = "https://github.com/wez/atsamd21-rs"
 readme = "README.md"
 
 [dependencies]
-cortex-m = "~0.4"
+cortex-m = "~0.5"
 embedded-hal = "~0.2"
 nb = "~0.1"
 
@@ -19,11 +19,12 @@ version = "~0.1"
 default-features = false
 
 [dev-dependencies]
-panic-abort = "~0.1"
+panic-abort = "~0.2"
+cortex-m-rt = "~0.5"
 
 [features]
 # ask the HAL to enable atsamd21e18a support
 default = ["rt", "atsamd21-hal/samd21e18a"]
-rt = ["atsamd21-hal/rt"]
+rt = ["atsamd21-hal/samd21e18a-rt"]
 unproven = ["atsamd21-hal/unproven"]
 use_semihosting = []

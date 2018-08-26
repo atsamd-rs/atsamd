@@ -1,6 +1,7 @@
-#![feature(used)]
-#![feature(proc_macro)]
 #![no_std]
+#![no_main]
+#![feature(used)]
+#![feature(proc_macro_gen)]
 
 extern crate cortex_m;
 extern crate cortex_m_rtfm as rtfm;
@@ -10,6 +11,8 @@ extern crate metro_m0 as hal;
 extern crate panic_abort;
 #[cfg(feature = "use_semihosting")]
 extern crate panic_semihosting;
+#[macro_use(entry)]
+extern crate cortex_m_rt;
 
 #[cfg(feature = "use_semihosting")]
 macro_rules! dbgprint {
@@ -89,3 +92,10 @@ fn init(mut p: init::Peripherals) -> init::LateResources {
         TIMER: tc3,
     }
 }
+
+fn run_app() -> ! {
+    main();
+    loop {}
+}
+
+entry!(run_app);

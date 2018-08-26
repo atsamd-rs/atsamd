@@ -9,13 +9,13 @@ repository = "https://github.com/wez/atsamd21-rs"
 readme = "README.md"
 
 [dependencies]
-bare-metal = "~0.1"
-cortex-m = "~0.4"
+bare-metal = "~0.2"
+cortex-m = "~0.5"
 vcell = "~0.1"
 
 [dependencies.cortex-m-rt]
 optional = true
-version = "~0.4"
+version = "~0.5"
 
 [features]
-rt = ["cortex-m-rt"]
+rt = ["cortex-m-rt/device"]
