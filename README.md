@@ -33,11 +33,16 @@ There are a couple of crates provided by this repo:
 
 The atsamd21 devices require untagged union support which means that you will
 need to be using nightly rust.  You'll also need to install support for
-`thumbv6m-none-eabi`:
+`thumbv6m-none-eabi`.  Make sure that you have a new enough version of the
+gcc toolchain; the one installable even on recent versions of ubuntu can
+fail to correctly link the vector table:
 
 ```bash
-$ rustup install nightly-2018-05-16
-$ rustup default nightly-2018-05-16
+$ sudo add-apt-repository ppa:team-gcc-arm-embedded/ppa -y
+$ sudo apt update
+$ sudo apt install gcc-arm-embedded
+$ rustup install nightly
+$ rustup default nightly
 $ rustup target add thumbv6m-none-eabi
 ```
 
