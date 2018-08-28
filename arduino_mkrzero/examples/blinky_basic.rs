@@ -22,6 +22,7 @@ fn main() -> ! {
     let mut pins = hal::pins(peripherals.PORT);
     let mut led = pins.led_builtin.into_open_drain_output(&mut pins.port);
     let mut delay = Delay::new(core.SYST, &mut clocks);
+
     loop {
         delay.delay_ms(200u8);
         led.set_high();
