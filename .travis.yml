@@ -1,6 +1,6 @@
 language: rust
 rust:
-  - nightly
+  - nightly-2018-08-19
 cache: cargo
 addons:
   apt:
