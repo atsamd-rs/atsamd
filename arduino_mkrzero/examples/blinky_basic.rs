@@ -6,7 +6,7 @@ extern crate arduino_mkrzero as hal;
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
 use hal::prelude::*;
-use hal::{CorePeripherals, entry, Peripherals};
+use hal::{entry, CorePeripherals, Peripherals};
 
 entry!(main);
 

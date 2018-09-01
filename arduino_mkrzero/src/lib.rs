@@ -16,8 +16,9 @@ pub use hal::*;
 
 use gpio::{Floating, Input, Port};
 
-// This could possibly be simplified with concat_ident p for the name and P for the type
-// but I couldn't get it to work. Meta attribues (i.e. doc comments) are optional.
+// This could possibly be simplified with concat_ident p for the name and P for
+// the type but I couldn't get it to work. Meta attribues (i.e. doc comments)
+// are optional.
 macro_rules! input_pins {
     // Insert trailing comma if it's missing
     ($( $(#[$attr:meta])* pin $name:ident = $pin_name:ident: $pin_type:ident),+ ) =>
