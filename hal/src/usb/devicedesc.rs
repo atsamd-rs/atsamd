@@ -158,6 +158,14 @@ impl DeviceDescBank {
     pub fn crc_error(&self) -> bool {
         self.status_bk.crc_error()
     }
+
+    pub fn set_address(&mut self, address: *mut u8) {
+        self.addr = address;
+    }
+
+    pub fn get_address(&self) -> *mut u8 {
+        self.addr
+    }
 }
 
 #[derive(Debug)]
@@ -212,3 +220,5 @@ impl Descriptors {
         &mut self.desc[idx].bank[bank]
     }
 }
+
+unsafe impl Send for DeviceDescBank {}

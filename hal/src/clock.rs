@@ -150,14 +150,14 @@ impl GenericClockController {
         // We are now running at 48Mhz
 
         // Reset various dividers back to 1
-        pm.cpusel.write(|w| w.cpudiv().div1());
-        pm.apbasel.write(|w| w.apbadiv().div1());
-        pm.apbbsel.write(|w| w.apbbdiv().div1());
-        pm.apbcsel.write(|w| w.apbcdiv().div1());
         sysctrl.osc8m.modify(|_, w| {
             w.presc()._0();
             w.ondemand().clear_bit()
         });
+        pm.cpusel.write(|w| w.cpudiv().div1());
+        pm.apbasel.write(|w| w.apbadiv().div1());
+        pm.apbbsel.write(|w| w.apbbdiv().div1());
+        pm.apbcsel.write(|w| w.apbcdiv().div1());
 
         Self {
             state,

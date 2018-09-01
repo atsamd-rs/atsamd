@@ -15,6 +15,9 @@ embedded-hal = "~0.2"
 nb = "~0.1"
 mashup = "^0.1.6"
 bitfield = "~0.13"
+cortex-m-semihosting = "~0.2"
+vcell = "*"
+jlink_rtt = "~0.1"
 
 [dependencies.void]
 default-features = false
@@ -33,7 +36,12 @@ path = "../pac/atsamd21e18a"
 version = "~0.3"
 optional = true
 
+[dependencies.usb-device]
+#git = "https://github.com/mvirkkunen/usb-device"
+path = "../../usb-device"
+
 [dev-dependencies]
+panic_rtt = "~0.1"
 panic-abort = "~0.1"
 panic-semihosting = "~0.1"
 cortex-m-semihosting = "~0.2"
@@ -60,3 +68,4 @@ samd21g18a-rt = ["atsamd21g18a", "atsamd21g18a/rt"]
 samd21e18a = ["atsamd21e18a"]
 samd21e18a-rt = ["atsamd21e18a", "atsamd21e18a/rt"]
 unproven = ["embedded-hal/unproven"]
+use_semihosting = []
