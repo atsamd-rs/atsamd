@@ -96,7 +96,6 @@ macro_rules! pin {
         $PinType:ident,
         $pin_ident:ident,
         $pin_no:expr,
-        $pin_mode:ty,
         $dirset:ident,
         $dirclr:ident,
         $pincfg:ident,
@@ -401,9 +400,9 @@ impl Port {
 
 macro_rules! port {
     ([
-       $($PinTypeA:ident: ($pin_identA:ident, $pin_noA:expr, $pin_modeA:ty),)+
+       $($PinTypeA:ident: ($pin_identA:ident, $pin_noA:expr),)+
     ],[
-       $($PinTypeB:ident: ($pin_identB:ident, $pin_noB:expr, $pin_modeB:ty),)+
+       $($PinTypeB:ident: ($pin_identB:ident, $pin_noB:expr),)+
     ]) => {
 
 /// Holds the GPIO Port peripheral and broken out pin instances
@@ -413,12 +412,12 @@ pub struct Parts {
 
     $(
         /// Pin $pin_identA
-        pub $pin_identA: $PinTypeA<$pin_modeA>,
+        pub $pin_identA: $PinTypeA<Input<Floating>>,
     )+
     $(
         /// Pin $pin_identB
         #[cfg(feature = "samd21g18a")]
-        pub $pin_identB: $PinTypeB<$pin_modeB>,
+        pub $pin_identB: $PinTypeB<Input<Floating>>,
     )+
 }
 
@@ -441,12 +440,12 @@ impl GpioExt for PORT {
 }
 
 $(
-    pin!($PinTypeA, $pin_identA, $pin_noA, $pin_modeA, dirset0, dirclr0,
+    pin!($PinTypeA, $pin_identA, $pin_noA, dirset0, dirclr0,
         pincfg0, outset0, outclr0, pmux0, out0, outtgl0, in0);
 )+
 $(
     #[cfg(feature = "samd21g18a")]
-    pin!($PinTypeB, $pin_identB, $pin_noB, $pin_modeB, dirset1, dirclr1,
+    pin!($PinTypeB, $pin_identB, $pin_noB, dirset1, dirclr1,
         pincfg1, outset1, outclr1, pmux1, out1, outtgl1, in1);
 )+
 
@@ -454,69 +453,69 @@ $(
 }
 
 port!([
-    Pa0: (pa0, 0, Input<Floating>),
-    Pa1: (pa1, 1, Input<Floating>),
-    Pa2: (pa2, 2, Input<Floating>),
-    Pa3: (pa3, 3, Input<Floating>),
-    Pa4: (pa4, 4, Input<Floating>),
-    Pa5: (pa5, 5, Input<Floating>),
-    Pa6: (pa6, 6, Input<Floating>),
-    Pa7: (pa7, 7, Input<Floating>),
-    Pa8: (pa8, 8, Input<Floating>),
-    Pa9: (pa9, 9, Input<Floating>),
-    Pa10: (pa10, 10, Input<Floating>),
-    Pa11: (pa11, 11, Input<Floating>),
-    Pa12: (pa12, 12, Input<Floating>),
-    Pa13: (pa13, 13, Input<Floating>),
-    Pa14: (pa14, 14, Input<Floating>),
-    Pa15: (pa15, 15, Input<Floating>),
-    Pa16: (pa16, 16, Input<Floating>),
-    Pa17: (pa17, 17, Input<Floating>),
-    Pa18: (pa18, 18, Input<Floating>),
-    Pa19: (pa19, 19, Input<Floating>),
-    Pa20: (pa20, 20, Input<Floating>),
-    Pa21: (pa21, 21, Input<Floating>),
-    Pa22: (pa22, 22, Input<Floating>),
-    Pa23: (pa23, 23, Input<Floating>),
-    Pa24: (pa24, 24, Input<Floating>),
-    Pa25: (pa25, 25, Input<Floating>),
-    Pa26: (pa26, 26, Input<Floating>),
-    Pa27: (pa27, 27, Input<Floating>),
-    Pa28: (pa28, 28, Input<Floating>),
-    Pa29: (pa29, 29, Input<Floating>),
-    Pa30: (pa30, 30, Input<Floating>),
-    Pa31: (pa31, 31, Input<Floating>),
+    Pa0: (pa0, 0),
+    Pa1: (pa1, 1),
+    Pa2: (pa2, 2),
+    Pa3: (pa3, 3),
+    Pa4: (pa4, 4),
+    Pa5: (pa5, 5),
+    Pa6: (pa6, 6),
+    Pa7: (pa7, 7),
+    Pa8: (pa8, 8),
+    Pa9: (pa9, 9),
+    Pa10: (pa10, 10),
+    Pa11: (pa11, 11),
+    Pa12: (pa12, 12),
+    Pa13: (pa13, 13),
+    Pa14: (pa14, 14),
+    Pa15: (pa15, 15),
+    Pa16: (pa16, 16),
+    Pa17: (pa17, 17),
+    Pa18: (pa18, 18),
+    Pa19: (pa19, 19),
+    Pa20: (pa20, 20),
+    Pa21: (pa21, 21),
+    Pa22: (pa22, 22),
+    Pa23: (pa23, 23),
+    Pa24: (pa24, 24),
+    Pa25: (pa25, 25),
+    Pa26: (pa26, 26),
+    Pa27: (pa27, 27),
+    Pa28: (pa28, 28),
+    Pa29: (pa29, 29),
+    Pa30: (pa30, 30),
+    Pa31: (pa31, 31),
 ],[
-    Pb0: (pb0, 0, Input<Floating>),
-    Pb1: (pb1, 1, Input<Floating>),
-    Pb2: (pb2, 2, Input<Floating>),
-    Pb3: (pb3, 3, Input<Floating>),
-    Pb4: (pb4, 4, Input<Floating>),
-    Pb5: (pb5, 5, Input<Floating>),
-    Pb6: (pb6, 6, Input<Floating>),
-    Pb7: (pb7, 7, Input<Floating>),
-    Pb8: (pb8, 8, Input<Floating>),
-    Pb9: (pb9, 9, Input<Floating>),
-    Pb10: (pb10, 10, Input<Floating>),
-    Pb11: (pb11, 11, Input<Floating>),
-    Pb12: (pb12, 12, Input<Floating>),
-    Pb13: (pb13, 13, Input<Floating>),
-    Pb14: (pb14, 14, Input<Floating>),
-    Pb15: (pb15, 15, Input<Floating>),
-    Pb16: (pb16, 16, Input<Floating>),
-    Pb17: (pb17, 17, Input<Floating>),
-    Pb18: (pb18, 18, Input<Floating>),
-    Pb19: (pb19, 19, Input<Floating>),
-    Pb20: (pb20, 20, Input<Floating>),
-    Pb21: (pb21, 21, Input<Floating>),
-    Pb22: (pb22, 22, Input<Floating>),
-    Pb23: (pb23, 23, Input<Floating>),
-    Pb24: (pb24, 24, Input<Floating>),
-    Pb25: (pb25, 25, Input<Floating>),
-    Pb26: (pb26, 26, Input<Floating>),
-    Pb27: (pb27, 27, Input<Floating>),
-    Pb28: (pb28, 28, Input<Floating>),
-    Pb29: (pb29, 29, Input<Floating>),
-    Pb30: (pb30, 30, Input<Floating>),
-    Pb31: (pb31, 31, Input<Floating>),
+    Pb0: (pb0, 0),
+    Pb1: (pb1, 1),
+    Pb2: (pb2, 2),
+    Pb3: (pb3, 3),
+    Pb4: (pb4, 4),
+    Pb5: (pb5, 5),
+    Pb6: (pb6, 6),
+    Pb7: (pb7, 7),
+    Pb8: (pb8, 8),
+    Pb9: (pb9, 9),
+    Pb10: (pb10, 10),
+    Pb11: (pb11, 11),
+    Pb12: (pb12, 12),
+    Pb13: (pb13, 13),
+    Pb14: (pb14, 14),
+    Pb15: (pb15, 15),
+    Pb16: (pb16, 16),
+    Pb17: (pb17, 17),
+    Pb18: (pb18, 18),
+    Pb19: (pb19, 19),
+    Pb20: (pb20, 20),
+    Pb21: (pb21, 21),
+    Pb22: (pb22, 22),
+    Pb23: (pb23, 23),
+    Pb24: (pb24, 24),
+    Pb25: (pb25, 25),
+    Pb26: (pb26, 26),
+    Pb27: (pb27, 27),
+    Pb28: (pb28, 28),
+    Pb29: (pb29, 29),
+    Pb30: (pb30, 30),
+    Pb31: (pb31, 31),
 ]);
