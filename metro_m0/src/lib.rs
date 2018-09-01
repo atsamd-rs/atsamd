@@ -11,117 +11,104 @@ use hal::clock::GenericClockController;
 use hal::sercom::{I2CMaster3, PadPin, SPIMaster4, SPIMaster5};
 use hal::time::Hertz;
 
+macro_rules! pins {
+    ($( $(#[$attr:meta])* pin $name:ident = $pin_name:ident: $pin_type:ident),+ , ) => {
 /// Maps the pins to their arduino names and
 /// the numbers printed on the board.
 pub struct Pins {
     /// Opaque port reference
     pub port: Port,
 
+    $($(#[$attr])* pub $name: gpio::$pin_type<Input<Floating>>),+
+}
+
+impl Pins {
+    /// Returns the pins for the device
+    pub fn new(port: atsamd21g18a::PORT) -> Self {
+        let pins = port.split();
+        Pins {
+            port: pins.port,
+            $($name: pins.$pin_name),+
+        }
+    }
+}
+
+    }
+}
+
+pins!(
     /// Analog pin 0.  Can act as a true analog output
     /// as it has a DAC (which is not currently supported
     /// by this hal) as well as input.
-    pub a0: gpio::Pa2<Input<Floating>>,
+    pin a0 = pa2: Pa2,
+
     /// Analog Pin 1
-    pub a1: gpio::Pb8<Input<Floating>>,
+    pin a1 = pb8: Pb8,
     /// Analog Pin 2
-    pub a2: gpio::Pb9<Input<Floating>>,
+    pin a2 = pb9: Pb9,
     /// Analog Pin 3
-    pub a3: gpio::Pa4<Input<Floating>>,
+    pin a3 = pa4: Pa4,
     /// Analog Pin 4
-    pub a4: gpio::Pa5<Input<Floating>>,
+    pin a4 = pa5: Pa5,
     /// Analog Pin 5
-    pub a5: gpio::Pb2<Input<Floating>>,
+    pin a5 = pb2: Pb2,
 
     /// Pin 0, rx.  Also analog input (A6)
-    pub d0: gpio::Pa11<Input<Floating>>,
+    pin d0 = pa11: Pa11,
     /// Pin 1, tx.  Also analog input (A7)
-    pub d1: gpio::Pa10<Input<Floating>>,
+    pin d1 = pa10: Pa10,
     /// Pin 2
-    pub d2: gpio::Pa14<Input<Floating>>,
+    pin d2 = pa14: Pa14,
     /// Pin 3, PWM capable
-    pub d3: gpio::Pa9<Input<Floating>>,
+    pin d3 = pa9: Pa9,
     /// Pin 4, PWM capable.  Also analog input (A8)
-    pub d4: gpio::Pa8<Input<Floating>>,
+    pin d4 = pa8: Pa8,
     /// Pin 5, PWM capable.  Also analog input (A9)
-    pub d5: gpio::Pa15<Input<Floating>>,
+    pin d5 = pa15: Pa15,
     /// Pin 6, PWM capable
-    pub d6: gpio::Pa20<Input<Floating>>,
+    pin d6 = pa20: Pa20,
     /// Pin 7
-    pub d7: gpio::Pa21<Input<Floating>>,
+    pin d7 = pa21: Pa21,
     /// Pin 8, PWM capable.  Also analog input (A10)
-    pub d8: gpio::Pa6<Input<Floating>>,
+    pin d8 = pa6: Pa6,
     /// Pin 9, PWM capable.  Also analog input (A11)
-    pub d9: gpio::Pa7<Input<Floating>>,
+    pin d9 = pa7: Pa7,
     /// Pin 10, PWM capable
-    pub d10: gpio::Pa18<Input<Floating>>,
+    pin d10 = pa18: Pa18,
     /// Pin 11, PWM capable
-    pub d11: gpio::Pa16<Input<Floating>>,
+    pin d11 = pa16: Pa16,
     /// Pin 12, PWM capable
-    pub d12: gpio::Pa19<Input<Floating>>,
+    pin d12 = pa19: Pa19,
     /// Digital pin number 13, which is also attached to
     /// the red LED.  PWM capable.
-    pub d13: gpio::Pa17<Input<Floating>>,
-    pub sda: gpio::Pa22<Input<Floating>>,
-    pub scl: gpio::Pa23<Input<Floating>>,
+    pin d13 = pa17: Pa17,
+    pin sda = pa22: Pa22,
+    pin scl = pa23: Pa23,
 
     /// The data line attached to the neopixel.
     /// Is also attached to SWCLK.
-    pub neopixel: gpio::Pa30<Input<Floating>>,
+    pin neopixel = pa30: Pa30,
 
     /// The SPI SCK attached the to 2x3 header
-    pub sck: gpio::Pb11<Input<Floating>>,
+    pin sck = pb11: Pb11,
     /// The SPI MOSI attached the to 2x3 header
-    pub mosi: gpio::Pb10<Input<Floating>>,
+    pin mosi = pb10: Pb10,
     /// The SPI MISO attached the to 2x3 header
-    pub miso: gpio::Pa12<Input<Floating>>,
+    pin miso = pa12: Pa12,
 
     /// The SCK pin attached to the on-board SPI flash
-    pub flash_sck: gpio::Pb23<Input<Floating>>,
+    pin flash_sck = pb23: Pb23,
     /// The MOSI pin attached to the on-board SPI flash
-    pub flash_mosi: gpio::Pb22<Input<Floating>>,
+    pin flash_mosi = pb22: Pb22,
     /// The MISO pin attached to the on-board SPI flash
-    pub flash_miso: gpio::Pb3<Input<Floating>>,
+    pin flash_miso = pb3: Pb3,
     /// The CS pin attached to the on-board SPI flash
-    pub flash_cs: gpio::Pa13<Input<Floating>>,
-}
+    pin flash_cs = pa13: Pa13,
+);
 
 /// Returns the pins for the device
 pub fn pins(port: atsamd21g18a::PORT) -> Pins {
-    let pins = port.split();
-    Pins {
-        port: pins.port,
-        a0: pins.pa2,
-        a1: pins.pb8,
-        a2: pins.pb9,
-        a3: pins.pa4,
-        a4: pins.pa5,
-        a5: pins.pb2,
-        d0: pins.pa11,
-        d1: pins.pa10,
-        d2: pins.pa14,
-        d3: pins.pa9,
-        d4: pins.pa8,
-        d5: pins.pa15,
-        d6: pins.pa20,
-        d7: pins.pa21,
-        d8: pins.pa6,
-        d9: pins.pa7,
-        d10: pins.pa18,
-        d11: pins.pa16,
-        d12: pins.pa19,
-        d13: pins.pa17,
-        sda: pins.pa22,
-        scl: pins.pa23,
-        neopixel: pins.pa30,
-        sck: pins.pb11,
-        mosi: pins.pb10,
-        miso: pins.pa12,
-
-        flash_sck: pins.pb23,
-        flash_mosi: pins.pb22,
-        flash_miso: pins.pb3,
-        flash_cs: pins.pa13,
-    }
+    Pins::new(port)
 }
 
 /// Convenience for setting up the 2x3 header block for SPI.
