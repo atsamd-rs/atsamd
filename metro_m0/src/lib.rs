@@ -11,32 +11,12 @@ use hal::clock::GenericClockController;
 use hal::sercom::{I2CMaster3, PadPin, SPIMaster4, SPIMaster5};
 use hal::time::Hertz;
 
-macro_rules! pins {
-    ($( $(#[$attr:meta])* pin $name:ident = $pin_name:ident: $pin_type:ident),+ , ) => {
-/// Maps the pins to their arduino names and
-/// the numbers printed on the board.
-pub struct Pins {
-    /// Opaque port reference
-    pub port: Port,
+define_pins!(
+    /// Maps the pins to their arduino names and
+    /// the numbers printed on the board.
+    struct Pins,
+    target_device: atsamd21g18a,
 
-    $($(#[$attr])* pub $name: gpio::$pin_type<Input<Floating>>),+
-}
-
-impl Pins {
-    /// Returns the pins for the device
-    pub fn new(port: atsamd21g18a::PORT) -> Self {
-        let pins = port.split();
-        Pins {
-            port: pins.port,
-            $($name: pins.$pin_name),+
-        }
-    }
-}
-
-    }
-}
-
-pins!(
     /// Analog pin 0.  Can act as a true analog output
     /// as it has a DAC (which is not currently supported
     /// by this hal) as well as input.
@@ -105,11 +85,6 @@ pins!(
     /// The CS pin attached to the on-board SPI flash
     pin flash_cs = pa13: Pa13,
 );
-
-/// Returns the pins for the device
-pub fn pins(port: atsamd21g18a::PORT) -> Pins {
-    Pins::new(port)
-}
 
 /// Convenience for setting up the 2x3 header block for SPI.
 /// This powers up SERCOM4 and configures it for use as an

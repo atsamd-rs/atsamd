@@ -519,3 +519,33 @@ port!([
     Pb30: (pb30, 30),
     Pb31: (pb31, 31),
 ]);
+
+/// This macro is a helper for defining a `Pins` type in a board support
+/// crate.  This type is used to provide more meaningful aliases for the
+/// various GPIO pins for a given board.
+#[macro_export]
+macro_rules! define_pins {
+    ($(#[$topattr:meta])* struct $Type:ident,
+     target_device: $target_device:ident,
+     $( $(#[$attr:meta])* pin $name:ident = $pin_name:ident: $pin_type:ident),+ , ) => {
+$(#[$topattr])*
+pub struct $Type {
+    /// Opaque port reference
+    pub port: Port,
+
+    $($(#[$attr])* pub $name: gpio::$pin_type<Input<Floating>>),+
+}
+
+impl Pins {
+    /// Returns the pins for the device
+    pub fn new(port: $target_device::PORT) -> Self {
+        let pins = port.split();
+        Pins {
+            port: pins.port,
+            $($name: pins.$pin_name),+
+        }
+    }
+}
+
+    }
+}

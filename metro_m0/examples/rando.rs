@@ -106,7 +106,7 @@ fn init(mut p: init::Peripherals /* , r: init::Resources */) -> init::LateResour
         &mut p.device.NVMCTRL,
     );
     let gclk0 = clocks.gclk0();
-    let mut pins = hal::pins(p.device.PORT);
+    let mut pins = hal::Pins::new(p.device.PORT);
 
     let mut delay = Delay::new(p.core.SYST, &mut clocks);
 

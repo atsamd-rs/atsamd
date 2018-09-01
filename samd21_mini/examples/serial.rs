@@ -73,7 +73,7 @@ fn idle() -> ! {
 // core: CorePeripherals
 // device: Peripherals
 fn init(mut p: init::Peripherals) -> init::LateResources {
-    let mut pins = hal::pins(p.device.PORT);
+    let mut pins = hal::Pins::new(p.device.PORT);
 
     let mut clocks = GenericClockController::new(
         p.device.GCLK,

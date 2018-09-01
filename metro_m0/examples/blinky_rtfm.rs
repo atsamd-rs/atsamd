@@ -75,7 +75,7 @@ fn init(mut p: init::Peripherals) -> init::LateResources {
         &mut p.device.NVMCTRL,
     );
     let gclk0 = clocks.gclk0();
-    let mut pins = hal::pins(p.device.PORT);
+    let mut pins = hal::Pins::new(p.device.PORT);
 
     let mut tc3 = hal::timer::TimerCounter::tc3_(
         &clocks.tcc2_tc3(&gclk0).unwrap(),

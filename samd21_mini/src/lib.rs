@@ -12,82 +12,40 @@ pub use hal::*;
 
 use gpio::{Floating, Input, Port};
 
-/// Maps the pins to their arduino names and
-/// the numbers printed on the board.
-pub struct Pins {
-    /// Opaque port reference
-    pub port: Port,
+define_pins!(
+    /// Maps the pins to their arduino names and
+    /// the numbers printed on the board.
+    struct Pins,
+    target_device: atsamd21g18a,
 
-    pub tx: gpio::Pa10<Input<Floating>>,
-    pub rx: gpio::Pa11<Input<Floating>>,
+    pin tx = pa10: Pa10,
+    pin rx = pa11: Pa11,
 
-    pub aref: gpio::Pa3<Input<Floating>>,
+    pin aref = pa3: Pa3,
 
-    pub d2: gpio::Pa14<Input<Floating>>,
-    pub d3: gpio::Pa9<Input<Floating>>,
-    pub d4: gpio::Pa8<Input<Floating>>,
-    pub d5: gpio::Pa15<Input<Floating>>,
-    pub d6: gpio::Pa20<Input<Floating>>,
-    pub d7: gpio::Pa21<Input<Floating>>,
-    pub d8: gpio::Pa6<Input<Floating>>,
-    pub d9: gpio::Pa7<Input<Floating>>,
-    pub d10: gpio::Pa18<Input<Floating>>,
-    pub d11: gpio::Pa16<Input<Floating>>,
-    pub d12: gpio::Pa19<Input<Floating>>,
+    pin d2 = pa14: Pa14,
+    pin d3 = pa9: Pa9,
+    pin d4 = pa8: Pa8,
+    pin d5 = pa15: Pa15,
+    pin d6 = pa20: Pa20,
+    pin d7 = pa21: Pa21,
+    pin d8 = pa6: Pa6,
+    pin d9 = pa7: Pa7,
+    pin d10 = pa18: Pa18,
+    pin d11 = pa16: Pa16,
+    pin d12 = pa19: Pa19,
 
-    pub a3: gpio::Pa4<Input<Floating>>,
-    pub a2: gpio::Pb9<Input<Floating>>,
-    pub a1: gpio::Pb8<Input<Floating>>,
-    pub a0: gpio::Pa2<Input<Floating>>,
+    pin a3 = pa4: Pa4,
+    pin a2 = pb9: Pb9,
+    pin a1 = pb8: Pb8,
+    pin a0 = pa2: Pa2,
 
     /// Digital pin number 13, which is also attached to
     /// the red LED.  PWM capable.
-    pub led: gpio::Pa17<Input<Floating>>,
-    pub tx_led: gpio::Pa27<Input<Floating>>,
-    pub rx_led: gpio::Pb3<Input<Floating>>,
+    pin led = pa17: Pa17,
+    pin tx_led = pa27: Pa27,
+    pin rx_led = pb3: Pb3,
 
-    pub dm: gpio::Pa24<Input<Floating>>,
-    pub dp: gpio::Pa25<Input<Floating>>,
-}
-
-pub fn pins(port: atsamd21g18a::PORT) -> Pins {
-    let pins = port.split();
-
-    Pins {
-        port: pins.port,
-        rx: pins.pa11,
-        tx: pins.pa10,
-
-        aref: pins.pa3,
-        d2: pins.pa14,
-        d3: pins.pa9,
-        d4: pins.pa8,
-        d5: pins.pa15,
-        d6: pins.pa20,
-        d7: pins.pa21,
-        d8: pins.pa6,
-        d9: pins.pa7,
-        d10: pins.pa18,
-        d11: pins.pa16,
-        d12: pins.pa19,
-        a3: pins.pa4,
-        a2: pins.pb9,
-        a1: pins.pb8,
-        a0: pins.pa2,
-
-        led: pins.pa17,
-        tx_led: pins.pa27,
-        rx_led: pins.pb3,
-
-        dm: pins.pa24,
-        dp: pins.pa25,
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
-    }
-}
+    pin dm = pa24: Pa24,
+    pin dp = pa25: Pa25,
+);

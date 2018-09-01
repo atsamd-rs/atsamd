@@ -8,33 +8,19 @@ pub use hal::*;
 
 use gpio::{Floating, Input, Port};
 
-/// Maps the pins to their arduino names and
-/// the numbers printed on the board.
-pub struct Pins {
-    /// Opaque port reference
-    pub port: Port,
+define_pins!(
+    /// Maps the pins to their arduino names and
+    /// the numbers printed on the board.
+    struct Pins,
+    target_device: atsamd21e18a,
 
-    pub d0: gpio::Pa4<Input<Floating>>,
-    pub d1: gpio::Pa2<Input<Floating>>,
-    pub d2: gpio::Pa5<Input<Floating>>,
+    pin d0 = pa4: Pa4,
+    pin d1 = pa2: Pa2,
+    pin d2 = pa5: Pa5,
 
     /// Digital pin number 13, which is also attached to
     /// the red LED.  PWM capable.
-    pub d13: gpio::Pa23<Input<Floating>>,
-    pub mosi: gpio::Pa0<Input<Floating>>,
-    pub sck: gpio::Pa1<Input<Floating>>,
-}
-
-/// Returns the pins for the device
-pub fn pins(port: atsamd21e18a::PORT) -> Pins {
-    let pins = port.split();
-    Pins {
-        port: pins.port,
-        d0: pins.pa4,
-        d1: pins.pa2,
-        d2: pins.pa5,
-        d13: pins.pa23,
-        sck: pins.pa1,
-        mosi: pins.pa0,
-    }
-}
+    pin d13 = pa23: Pa23,
+    pin mosi = pa0: Pa0,
+    pin sck = pa1: Pa1,
+);
