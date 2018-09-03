@@ -3,7 +3,7 @@ use hal::spi::{FullDuplex, Mode, Phase, Polarity};
 use nb;
 use sercom::pads::*;
 use target_device::sercom0::SPI;
-use target_device::{SERCOM0, SERCOM1, SERCOM2, SERCOM3, PM};
+use target_device::{PM, SERCOM0, SERCOM1, SERCOM2, SERCOM3};
 #[cfg(feature = "samd21g18a")]
 use target_device::{SERCOM4, SERCOM5};
 use time::Hertz;

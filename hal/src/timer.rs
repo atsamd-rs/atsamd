@@ -2,7 +2,7 @@
 use hal::timer::{CountDown, Periodic};
 use target_device::tc3::COUNT16;
 #[allow(unused)]
-use target_device::{TC3, TC4, TC5, PM};
+use target_device::{PM, TC3, TC4, TC5};
 
 use clock;
 use nb;
