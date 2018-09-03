@@ -95,7 +95,12 @@ pub struct GenericClockController {
 impl GenericClockController {
     /// Reset the clock controller, configure the system to run
     /// at 48Mhz and reset various clock dividers.
-    pub fn new(gclk: GCLK, pm: &mut PM, sysctrl: &mut SYSCTRL, nvmctrl: &mut NVMCTRL) -> Self {
+    pub fn with_internal_32kosc(
+        gclk: GCLK,
+        pm: &mut PM,
+        sysctrl: &mut SYSCTRL,
+        nvmctrl: &mut NVMCTRL,
+    ) -> Self {
         let mut state = State { gclk };
 
         set_flash_to_half_auto_wait_state(nvmctrl);
