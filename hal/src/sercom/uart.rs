@@ -1,15 +1,15 @@
-use target_device::{NVIC, PM, SERCOM0, SERCOM1, SERCOM2, SERCOM3};
-#[cfg(feature = "samd21g18a")]
-use target_device::{SERCOM4, SERCOM5};
-use target_device::Interrupt;
-use target_device::sercom0::USART;
 use clock;
-use hal::blocking::serial::{Write, write::Default};
+use core::fmt;
+use hal::blocking::serial::{write::Default, Write};
 use hal::serial;
 use nb;
 use sercom::pads::*;
+use target_device::sercom0::USART;
+use target_device::Interrupt;
+use target_device::{NVIC, PM, SERCOM0, SERCOM1, SERCOM2, SERCOM3};
+#[cfg(feature = "samd21g18a")]
+use target_device::{SERCOM4, SERCOM5};
 use time::Hertz;
-use core::fmt;
 
 macro_rules! uart_pinout {
     ([$($Type:ident:
@@ -238,52 +238,16 @@ impl fmt::Write for $Type {
 }
 
 uart!([
-    UART0:
-        (
-            UART0Pinout,
-            SERCOM0,
-            sercom0_,
-            Sercom0CoreClock
-        ),
-    UART1:
-        (
-            UART1Pinout,
-            SERCOM1,
-            sercom1_,
-            Sercom1CoreClock
-        ),
-    UART2:
-        (
-            UART2Pinout,
-            SERCOM2,
-            sercom2_,
-            Sercom2CoreClock
-        ),
-    UART3:
-        (
-            UART3Pinout,
-            SERCOM3,
-            sercom3_,
-            Sercom3CoreClock
-        ),
+    UART0: (UART0Pinout, SERCOM0, sercom0_, Sercom0CoreClock),
+    UART1: (UART1Pinout, SERCOM1, sercom1_, Sercom1CoreClock),
+    UART2: (UART2Pinout, SERCOM2, sercom2_, Sercom2CoreClock),
+    UART3: (UART3Pinout, SERCOM3, sercom3_, Sercom3CoreClock),
 ]);
 
 #[cfg(feature = "samd21g18a")]
 uart!([
-    UART4:
-        (
-            UART4Pinout,
-            SERCOM4,
-            sercom4_,
-            Sercom4CoreClock
-        ),
-    UART5:
-        (
-            UART5Pinout,
-            SERCOM5,
-            sercom5_,
-            Sercom5CoreClock
-        ),
+    UART4: (UART4Pinout, SERCOM4, sercom4_, Sercom4CoreClock),
+    UART5: (UART5Pinout, SERCOM5, sercom5_, Sercom5CoreClock),
 ]);
 
 const SHIFT: u8 = 32;

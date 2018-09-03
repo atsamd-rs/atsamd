@@ -4,7 +4,7 @@ use clock;
 use hal::blocking::i2c::{Read, Write, WriteRead};
 use sercom::pads::*;
 use target_device::sercom0::I2CM;
-use target_device::{SERCOM0, SERCOM1, SERCOM2, SERCOM3, PM};
+use target_device::{PM, SERCOM0, SERCOM1, SERCOM2, SERCOM3};
 #[cfg(feature = "samd21g18a")]
 use target_device::{SERCOM4, SERCOM5};
 use time::Hertz;
