@@ -99,7 +99,7 @@ fn idle(_t: &mut Threshold, _r: idle::Resources) -> ! {
 fn init(mut p: init::Peripherals /* , r: init::Resources */) -> init::LateResources {
     let interval = 1.hz();
 
-    let mut clocks = GenericClockController::new(
+    let mut clocks = GenericClockController::with_internal_32kosc(
         p.device.GCLK,
         &mut p.device.PM,
         &mut p.device.SYSCTRL,

@@ -68,7 +68,7 @@ fn idle() -> ! {
 }
 
 fn init(mut p: init::Peripherals) -> init::LateResources {
-    let mut clocks = GenericClockController::new(
+    let mut clocks = GenericClockController::with_internal_32kosc(
         p.device.GCLK,
         &mut p.device.PM,
         &mut p.device.SYSCTRL,
