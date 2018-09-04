@@ -12,7 +12,6 @@ readme = "README.md"
 cortex-m = "~0.5"
 embedded-hal = "~0.2"
 nb = "~0.1"
-mashup = "^0.1.6"
 
 [dependencies.cortex-m-rt]
 version = "~0.5"

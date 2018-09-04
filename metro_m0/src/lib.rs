@@ -1,4 +1,5 @@
 #![no_std]
+#![recursion_limit="1024"]
 
 extern crate atsamd21_hal as hal;
 
@@ -20,70 +21,70 @@ define_pins!(
     /// Analog pin 0.  Can act as a true analog output
     /// as it has a DAC (which is not currently supported
     /// by this hal) as well as input.
-    pin a0 = pa2: Pa2,
+    pin a0 = a2,
 
     /// Analog Pin 1
-    pin a1 = pb8: Pb8,
+    pin a1 = b8,
     /// Analog Pin 2
-    pin a2 = pb9: Pb9,
+    pin a2 = b9,
     /// Analog Pin 3
-    pin a3 = pa4: Pa4,
+    pin a3 = a4,
     /// Analog Pin 4
-    pin a4 = pa5: Pa5,
+    pin a4 = a5,
     /// Analog Pin 5
-    pin a5 = pb2: Pb2,
+    pin a5 = b2,
 
     /// Pin 0, rx.  Also analog input (A6)
-    pin d0 = pa11: Pa11,
+    pin d0 = a11,
     /// Pin 1, tx.  Also analog input (A7)
-    pin d1 = pa10: Pa10,
+    pin d1 = a10,
     /// Pin 2
-    pin d2 = pa14: Pa14,
+    pin d2 = a14,
     /// Pin 3, PWM capable
-    pin d3 = pa9: Pa9,
+    pin d3 = a9,
     /// Pin 4, PWM capable.  Also analog input (A8)
-    pin d4 = pa8: Pa8,
+    pin d4 = a8,
     /// Pin 5, PWM capable.  Also analog input (A9)
-    pin d5 = pa15: Pa15,
+    pin d5 = a15,
     /// Pin 6, PWM capable
-    pin d6 = pa20: Pa20,
+    pin d6 = a20,
     /// Pin 7
-    pin d7 = pa21: Pa21,
+    pin d7 = a21,
     /// Pin 8, PWM capable.  Also analog input (A10)
-    pin d8 = pa6: Pa6,
+    pin d8 = a6,
     /// Pin 9, PWM capable.  Also analog input (A11)
-    pin d9 = pa7: Pa7,
+    pin d9 = a7,
     /// Pin 10, PWM capable
-    pin d10 = pa18: Pa18,
+    pin d10 = a18,
     /// Pin 11, PWM capable
-    pin d11 = pa16: Pa16,
+    pin d11 = a16,
     /// Pin 12, PWM capable
-    pin d12 = pa19: Pa19,
+    pin d12 = a19,
     /// Digital pin number 13, which is also attached to
     /// the red LED.  PWM capable.
-    pin d13 = pa17: Pa17,
-    pin sda = pa22: Pa22,
-    pin scl = pa23: Pa23,
+    pin d13 = a17,
+    pin sda = a22,
+    pin scl = a23,
 
     /// The data line attached to the neopixel.
     /// Is also attached to SWCLK.
-    pin neopixel = pa30: Pa30,
+    pin neopixel = a30,
 
     /// The SPI SCK attached the to 2x3 header
-    pin sck = pb11: Pb11,
+    pin sck = b11,
     /// The SPI MOSI attached the to 2x3 header
-    pin mosi = pb10: Pb10,
+    pin mosi = b10,
     /// The SPI MISO attached the to 2x3 header
-    pin miso = pa12: Pa12,
+    pin miso = a12,
 
     /// The SCK pin attached to the on-board SPI flash
-    pin flash_sck = pb23: Pb23,
+    pin flash_sck = b23,
     /// The MOSI pin attached to the on-board SPI flash
-    pin flash_mosi = pb22: Pb22,
+    pin flash_mosi = b22,
     /// The MISO pin attached to the on-board SPI flash
-    pin flash_miso = pb3: Pb3,
+    pin flash_miso = b3,
     /// The CS pin attached to the on-board SPI flash
-    pin flash_cs = pa13: Pa13,
+    pin flash_cs = a13,
 );
 
 /// Convenience for setting up the 2x3 header block for SPI.

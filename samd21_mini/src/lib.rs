@@ -1,4 +1,5 @@
 #![no_std]
+#![recursion_limit="1024"]
 
 extern crate atsamd21_hal as hal;
 
@@ -18,34 +19,34 @@ define_pins!(
     struct Pins,
     target_device: atsamd21g18a,
 
-    pin tx = pa10: Pa10,
-    pin rx = pa11: Pa11,
+    pin tx = a10,
+    pin rx = a11,
 
-    pin aref = pa3: Pa3,
+    pin aref = a3,
 
-    pin d2 = pa14: Pa14,
-    pin d3 = pa9: Pa9,
-    pin d4 = pa8: Pa8,
-    pin d5 = pa15: Pa15,
-    pin d6 = pa20: Pa20,
-    pin d7 = pa21: Pa21,
-    pin d8 = pa6: Pa6,
-    pin d9 = pa7: Pa7,
-    pin d10 = pa18: Pa18,
-    pin d11 = pa16: Pa16,
-    pin d12 = pa19: Pa19,
+    pin d2 = a14,
+    pin d3 = a9,
+    pin d4 = a8,
+    pin d5 = a15,
+    pin d6 = a20,
+    pin d7 = a21,
+    pin d8 = a6,
+    pin d9 = a7,
+    pin d10 = a18,
+    pin d11 = a16,
+    pin d12 = a19,
 
-    pin a3 = pa4: Pa4,
-    pin a2 = pb9: Pb9,
-    pin a1 = pb8: Pb8,
-    pin a0 = pa2: Pa2,
+    pin a3 = a4,
+    pin a2 = b9,
+    pin a1 = b8,
+    pin a0 = a2,
 
     /// Digital pin number 13, which is also attached to
     /// the red LED.  PWM capable.
-    pin led = pa17: Pa17,
-    pin tx_led = pa27: Pa27,
-    pin rx_led = pb3: Pb3,
+    pin led = a17,
+    pin tx_led = a27,
+    pin rx_led = b3,
 
-    pin dm = pa24: Pa24,
-    pin dp = pa25: Pa25,
+    pin dm = a24,
+    pin dp = a25,
 );

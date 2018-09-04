@@ -2,12 +2,6 @@ language: rust
 rust:
   - nightly
 cache: cargo
-addons:
-  apt:
-    sources:
-      - sourceline: 'ppa:team-gcc-arm-embedded/ppa'
-    packages:
-      - gcc-arm-embedded
 script:
   - rustup target add thumbv6m-none-eabi
   - cargo build --manifest-path metro_m0/Cargo.toml --example blinky_basic

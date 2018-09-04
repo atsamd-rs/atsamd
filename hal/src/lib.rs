@@ -12,6 +12,7 @@ pub use atsamd21e18a as target_device;
 
 extern crate cortex_m;
 pub extern crate embedded_hal as hal;
+pub extern crate mashup;
 extern crate nb;
 extern crate void;
 
