@@ -548,11 +548,11 @@ pub struct $Type {
     $($(#[$attr])* pub $name: gpio::"gen_type_name" $pin_ident <Input<Floating>>),+
 }
 
-impl Pins {
+impl $Type {
     /// Returns the pins for the device
     pub fn new(port: $target_device::PORT) -> Self {
         let pins = port.split();
-        Pins {
+        $Type {
             port: pins.port,
             $($name: pins."gen_pin_name" $pin_ident),+
         }
