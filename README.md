@@ -28,6 +28,9 @@ There are a couple of crates provided by this repo:
 * [`gemma_m0`](https://docs.rs/gemma_m0/latest/gemma_m0/) is a board support crate
   for the Adafruit Gemma M0 board.  Similar to the Metro M0 crate, it re-exports the
   `atsamd21-hal` crate functionality using more convenient names.
+  * [`circuit_playground_express`](https://docs.rs/gemma_m0/latest/circuit_playground_express/) is a board support crate
+  for the Adafruit Circuit Playground Express board.  Similar to the Metro M0 crate, it re-exports the
+  `atsamd21-hal` crate functionality using more convenient names.
 
 ## Building
 
