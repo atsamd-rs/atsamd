@@ -1,0 +1,6 @@
+[loader]
+jlink-device="ATSAMD21G18"
+
+[builder]
+target = "thumbv6m-none-eabi"
+
