@@ -10,6 +10,9 @@ pub extern crate atsamd21e18a;
 #[cfg(feature = "samd21e18a")]
 pub use atsamd21e18a as target_device;
 
+#[macro_use]
+extern crate bitfield;
+
 extern crate cortex_m;
 pub extern crate embedded_hal as hal;
 pub extern crate mashup;

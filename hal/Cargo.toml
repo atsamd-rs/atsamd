@@ -13,6 +13,7 @@ cortex-m = "~0.5"
 embedded-hal = "~0.2"
 nb = "~0.1"
 mashup = "^0.1.6"
+bitfield = "~0.13"
 
 [dependencies.void]
 default-features = false
