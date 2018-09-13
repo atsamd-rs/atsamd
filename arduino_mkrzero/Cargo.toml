@@ -14,7 +14,7 @@ embedded-hal = "~0.2"
 nb = "~0.1"
 
 [dependencies.cortex-m-rt]
-version = "~0.5"
+version = "~0.6"
 optional = true
 
 [dependencies.panic-abort]
@@ -23,7 +23,7 @@ optional = true
 
 [dependencies.atsamd21-hal]
 path = "../hal"
-version = "~0.1"
+version = "~0.2"
 default-features = false
 
 [features]

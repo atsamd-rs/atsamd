@@ -1,6 +1,5 @@
 #![no_std]
 #![no_main]
-#![feature(used)]
 
 extern crate cortex_m;
 extern crate cortex_m_semihosting;
@@ -10,16 +9,13 @@ extern crate panic_abort;
 #[cfg(feature = "use_semihosting")]
 extern crate panic_semihosting;
 
-#[macro_use(entry)]
-extern crate cortex_m_rt;
-
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
 use hal::prelude::*;
-use hal::{CorePeripherals, Peripherals};
+use hal::{entry, CorePeripherals, Peripherals};
 
-entry!(main);
 
+#[entry]
 fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
     let core = CorePeripherals::take().unwrap();

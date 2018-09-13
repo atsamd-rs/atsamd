@@ -1,4 +1,3 @@
-#![feature(used)]
 #![feature(proc_macro_gen)]
 #![no_std]
 #![no_main]
@@ -11,9 +10,8 @@ extern crate nb;
 extern crate embedded_hal;
 extern crate panic_abort;
 extern crate samd21_mini as hal;
-#[macro_use(entry)]
-extern crate cortex_m_rt;
 
+use hal::entry;
 use hal::clock::GenericClockController;
 use hal::prelude::*;
 use hal::sercom::{PadPin, Sercom0Pad2, Sercom0Pad3, UART0Pinout, UART0};
@@ -128,9 +126,8 @@ fn init(mut p: init::Peripherals) -> init::LateResources {
     }
 }
 
+#[entry]
 fn run_app() -> ! {
     main();
     loop {}
 }
-
-entry!(run_app);

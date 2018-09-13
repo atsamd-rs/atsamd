@@ -13,18 +13,21 @@ cortex-m = "~0.5"
 embedded-hal = "~0.2"
 nb = "~0.1"
 
+[dependencies.cortex-m-rt]
+version = "~0.6"
+optional = true
+
 [dependencies.atsamd21-hal]
 path = "../hal"
-version = "~0.1"
+version = "~0.2"
 default-features = false
 
 [dev-dependencies]
 panic-abort = "~0.2"
-cortex-m-rt = "~0.5"
 
 [features]
 # ask the HAL to enable atsamd21e18a support
 default = ["rt", "atsamd21-hal/samd21e18a"]
-rt = ["atsamd21-hal/samd21e18a-rt"]
+rt = ["cortex-m-rt", "atsamd21-hal/samd21e18a-rt"]
 unproven = ["atsamd21-hal/unproven"]
 use_semihosting = []
