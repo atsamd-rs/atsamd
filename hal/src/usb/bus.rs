@@ -379,6 +379,10 @@ impl<'a> Bank<'a, InBank> {
         Ok(size)
     }
 
+    fn is_stalled(&self) -> bool {
+        self.epintflag(self.index()).read().stall1().bit()
+    }
+
     fn set_stall(&mut self, stall: bool) {
         if stall {
             self.epstatusset(self.index())
@@ -486,6 +490,10 @@ impl<'a> Bank<'a, OutBank> {
         desc.set_multi_packet_size(0);
 
         Ok(size)
+    }
+
+    fn is_stalled(&self) -> bool {
+        self.epintflag(self.index()).read().stall0().bit()
     }
 
     fn set_stall(&mut self, stall: bool) {
@@ -985,8 +993,12 @@ impl Inner {
     }
 
     fn is_stalled(&self, ep: u8) -> bool {
-        // TODO: implement me
-        false
+        let ep = EndpointAddress(ep);
+        if ep.is_out() {
+            self.bank0(ep.into()).unwrap().is_stalled()
+        } else {
+            self.bank1(ep.into()).unwrap().is_stalled()
+        }
     }
 
     fn set_stalled(&self, ep: u8, stalled: bool) {
