@@ -14,7 +14,6 @@ use hal::delay::Delay;
 use hal::prelude::*;
 use hal::{entry, CorePeripherals, Peripherals};
 
-
 #[entry]
 fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();

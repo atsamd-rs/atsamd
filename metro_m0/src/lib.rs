@@ -1,5 +1,5 @@
 #![no_std]
-#![recursion_limit="1024"]
+#![recursion_limit = "1024"]
 
 extern crate atsamd21_hal as hal;
 
