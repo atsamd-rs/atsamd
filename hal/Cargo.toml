@@ -37,8 +37,8 @@ version = "~0.3"
 optional = true
 
 [dependencies.usb-device]
-#git = "https://github.com/mvirkkunen/usb-device"
-path = "../../usb-device"
+git = "https://github.com/wez/usb-device"
+branch = "unsafe_atomics"
 
 [dev-dependencies]
 panic_rtt = "~0.1"
