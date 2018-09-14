@@ -186,10 +186,14 @@ impl AllEndpoints {
     }
 }
 
-const BUFFER_SIZE: usize = 512; // FIXME: better at 2K
+// FIXME: replace with more general heap?
+const BUFFER_SIZE: usize = 2048;
+fn buffer() -> &'static mut [u8; BUFFER_SIZE] {
+    singleton!(: [u8; BUFFER_SIZE] = unsafe{mem::uninitialized()}).unwrap()
+}
 
 struct BufferAllocator {
-    buffers: [u8; BUFFER_SIZE], // FIXME: this is on the stack during construction!
+    buffers: &'static mut [u8; BUFFER_SIZE],
     next_buf: u16,
 }
 
@@ -197,7 +201,7 @@ impl BufferAllocator {
     fn new() -> Self {
         Self {
             next_buf: 0,
-            buffers: unsafe { mem::uninitialized() },
+            buffers: buffer(),
         }
     }
 
@@ -221,7 +225,7 @@ impl BufferAllocator {
             return Err(UsbError::SizeOverflow);
         }
 
-        self.next_buf = unsafe { end_addr.offset_from(&self.buffers as *const u8) as u16 };
+        self.next_buf = unsafe { end_addr.offset_from(self.buffers.as_ptr()) as u16 };
 
         Ok(start_addr)
     }

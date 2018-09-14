@@ -50,6 +50,7 @@ macro_rules! dbgprint {
     };
 }
 
+#[macro_use]
 extern crate cortex_m;
 pub extern crate embedded_hal as hal;
 pub extern crate mashup;
