@@ -6,12 +6,14 @@ cargo install --force --git https://github.com/wez/svd2rust --rev e0de96e90d6fd4
 cargo install --force --version 0.99.2 rustfmt-nightly
 cargo install --force --version 0.3.0 form
 
+TOP=$PWD
+
 for chip in atsamd21g18a atsamd21e18a ; do
-  cd $chip
+  cd $TOP/pac/$chip
   CHIP=$(echo $chip | tr a-z A-Z)
   rm -rf src
   mkdir src
-  svd2rust -i ../svd/$CHIP.svd --nightly
+  svd2rust -i $TOP/svd/$CHIP.svd --nightly
   form -i lib.rs -o src
   rm lib.rs
   cargo fmt
@@ -21,5 +23,4 @@ for chip in atsamd21g18a atsamd21e18a ; do
   mv lib.rs src/lib.rs
 
   rustfmt build.rs
-  cd ..
 done

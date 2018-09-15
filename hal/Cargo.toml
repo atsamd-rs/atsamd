@@ -23,12 +23,12 @@ version = "~1.0"
 # This makes it available when the corresponding feature name is referenced.
 # We use a feature named "samdFOO" to pull in the dependency named "atsamdFOO"
 [dependencies.atsamd21g18a]
-path = "../atsamd21g18a"
+path = "../pac/atsamd21g18a"
 version = "~0.3"
 optional = true
 
 [dependencies.atsamd21e18a]
-path = "../atsamd21e18a"
+path = "../pac/atsamd21e18a"
 version = "~0.3"
 optional = true
 
