@@ -22,7 +22,7 @@ version = "~0.2"
 optional = true
 
 [dependencies.atsamd21-hal]
-path = "../hal"
+path = "../../hal"
 version = "~0.2"
 default-features = false
 

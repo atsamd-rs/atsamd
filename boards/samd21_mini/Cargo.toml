@@ -1,8 +1,8 @@
 [package]
-name = "gemma_m0"
+name = "samd21_mini"
 version = "0.1.0"
-authors = ["Wez Furlong <wez@wezfurlong.org>"]
-description = "Board Support crate for the Adafruit Gemma M0"
+authors = ["Ze'ev Klapow <zklapow@gmail.com>"]
+description = "Board Support crate for the Sparkfun SAMD21 Mini Breakout"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/wez/atsamd21-rs"
@@ -18,16 +18,20 @@ version = "~0.6"
 optional = true
 
 [dependencies.atsamd21-hal]
-path = "../hal"
+path = "../../hal"
 version = "~0.2"
 default-features = false
 
 [dev-dependencies]
 panic-abort = "~0.2"
+panic-semihosting = "~0.3"
+cortex-m-semihosting = "~0.3"
+cortex-m-rtfm = "~0.3"
+sx1509 = "~0.2"
 
 [features]
-# ask the HAL to enable atsamd21e18a support
-default = ["rt", "atsamd21-hal/samd21e18a"]
-rt = ["cortex-m-rt", "atsamd21-hal/samd21e18a-rt"]
+# ask the HAL to enable atsamd21g18a support
+default = ["rt", "atsamd21-hal/samd21g18a"]
+rt = ["cortex-m-rt", "atsamd21-hal/samd21g18a-rt"]
 unproven = ["atsamd21-hal/unproven"]
 use_semihosting = []
