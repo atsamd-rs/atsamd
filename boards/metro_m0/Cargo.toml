@@ -37,6 +37,7 @@ default = ["rt", "atsamd21-hal/samd21g18a"]
 rt = ["cortex-m-rt", "atsamd21-hal/samd21g18a-rt"]
 unproven = ["atsamd21-hal/unproven"]
 use_rtt = ["atsamd21-hal/use_rtt"]
+usb = ["atsamd21-hal/usb"]
 
 [profile.dev]
 incremental = false

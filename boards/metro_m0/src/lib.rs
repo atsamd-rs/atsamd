@@ -16,7 +16,10 @@ use gpio::{Floating, Input, IntoFunction, Output, Port, PushPull};
 use hal::clock::GenericClockController;
 use hal::sercom::{I2CMaster3, PadPin, SPIMaster4, SPIMaster5};
 use hal::time::Hertz;
+
+#[cfg(feature = "usb")]
 pub use hal::usb::UsbBus;
+#[cfg(feature = "usb")]
 use usb_device::bus::UsbBusWrapper;
 
 define_pins!(
@@ -192,6 +195,7 @@ pub fn i2c_master<F: Into<Hertz>>(
     )
 }
 
+#[cfg(feature = "usb")]
 pub fn usb_bus(
     usb: USB,
     clocks: &mut GenericClockController,

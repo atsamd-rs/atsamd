@@ -13,6 +13,7 @@ pub mod prelude;
 pub use hal::atsamd21g18a::*;
 
 use hal::prelude::*;
+#[cfg(feature = "usb")]
 pub use hal::usb;
 pub use hal::*;
 

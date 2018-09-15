@@ -44,7 +44,10 @@ extern crate cortex_m;
 pub extern crate embedded_hal as hal;
 pub extern crate mashup;
 extern crate nb;
+
+#[cfg(feature = "usb")]
 pub extern crate usb_device;
+
 extern crate void;
 
 mod calibration;
@@ -55,4 +58,6 @@ pub mod prelude;
 pub mod sercom;
 pub mod time;
 pub mod timer;
+
+#[cfg(feature = "usb")]
 pub mod usb;
