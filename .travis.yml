@@ -5,3 +5,18 @@ cache: cargo
 script:
   - rustup target add thumbv6m-none-eabi
   - ./build-all.sh
+
+after_success: |
+  [ $TRAVIS_BRANCH = master ] &&
+  [ $TRAVIS_PULL_REQUEST = false ] &&
+  ./build-docs.py
+
+deploy:
+  provider: pages
+  skip-cleanup: true
+  github-token: $GITHUB_TOKEN
+  keep-history: true
+  local-dir: doc
+  verbose: true
+  on:
+    branch: master
