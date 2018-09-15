@@ -7,6 +7,7 @@ keywords = ["no-std", "arm", "cortex-m", "embedded-hal", "arduino"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/wez/atsamd21-rs"
 readme = "README.md"
+documentation = "https://wez.github.io/atsamd21-rs/atsamd21g18a/arduino_mkrzero/"
 
 [dependencies]
 cortex-m = "~0.5"

@@ -1,12 +1,13 @@
 [package]
 name = "samd21_mini"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Ze'ev Klapow <zklapow@gmail.com>"]
 description = "Board Support crate for the Sparkfun SAMD21 Mini Breakout"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/wez/atsamd21-rs"
 readme = "README.md"
+documentation = "https://wez.github.io/atsamd21-rs/atsamd21g18a/samd21_mini/"
 
 [dependencies]
 cortex-m = "~0.5"

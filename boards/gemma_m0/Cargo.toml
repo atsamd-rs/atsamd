@@ -1,12 +1,13 @@
 [package]
 name = "gemma_m0"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Wez Furlong <wez@wezfurlong.org>"]
 description = "Board Support crate for the Adafruit Gemma M0"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/wez/atsamd21-rs"
 readme = "README.md"
+documentation = "https://wez.github.io/atsamd21-rs/atsamd21e18a/gemma_m0/"
 
 [dependencies]
 cortex-m = "~0.5"
