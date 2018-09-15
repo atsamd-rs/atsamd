@@ -1,7 +1,7 @@
 [package]
 name = "atsamd21e18a"
 description = "Peripheral access API for ATSAMD21E18A microcontrollers (generated using svd2rust)"
-version = "0.3.0"
+version = "0.3.1"
 authors = ["Wez Furlong <wez@wezfurlong.org>"]
 keywords = ["no-std", "arm", "cortex-m"]
 license = "MIT OR Apache-2.0"
