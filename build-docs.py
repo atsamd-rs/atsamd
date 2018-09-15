@@ -26,7 +26,8 @@ def generate_docs():
 
 def copy_to_docs_dir():
     """ Build out the doc tree from the cargo generated docs """
-    shutil.rmtree('doc')
+    if os.path.exists('doc'):
+        shutil.rmtree('doc')
     os.makedirs('doc')
     for pac in crates_by_pac.keys():
         shutil.copytree('target/%s/thumbv6m-none-eabi/doc' % pac,
