@@ -17,6 +17,5 @@ deploy:
   github-token: $GITHUB_TOKEN
   keep-history: true
   local-dir: doc
-  verbose: true
   on:
     branch: master
