@@ -16,29 +16,12 @@ pub use atsamd21e18a as target_device;
 #[macro_use]
 extern crate bitfield;
 
-pub extern crate jlink_rtt;
 extern crate vcell;
 
-/*
-#[cfg(feature = "use_semihosting")]
-extern crate cortex_m_semihosting;
-#[cfg(feature = "use_semihosting")]
-#[macro_export]
-macro_rules! dbgprint {
-    ($($arg:tt)*) => {
-        {
-            use cortex_m_semihosting::hio;
-            use core::fmt::Write;
-            hio::hstderr().map(|mut stdout| writeln!(stdout, $($arg)*)).ok();
-        }
-    };
-}
-#[cfg(not(feature = "use_semihosting"))]
-#[macro_export]
-macro_rules! dbgprint {
-    ($($arg:tt)*) => {{}};
-}
-*/
+#[cfg(feature = "use_rtt")]
+pub extern crate jlink_rtt;
+
+#[cfg(feature = "use_rtt")]
 #[macro_export]
 macro_rules! dbgprint {
     ($($arg:tt)*) => {
@@ -48,6 +31,12 @@ macro_rules! dbgprint {
             writeln!(out, $($arg)*).ok();
         }
     };
+}
+
+#[cfg(not(feature = "use_rtt"))]
+#[macro_export]
+macro_rules! dbgprint {
+    ($($arg:tt)*) => {{}};
 }
 
 #[macro_use]

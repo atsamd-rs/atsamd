@@ -36,7 +36,7 @@ panic_rtt = "~0.1"
 default = ["rt", "atsamd21-hal/samd21g18a"]
 rt = ["cortex-m-rt", "atsamd21-hal/samd21g18a-rt"]
 unproven = ["atsamd21-hal/unproven"]
-use_semihosting = ["atsamd21-hal/use_semihosting"]
+use_rtt = ["atsamd21-hal/use_rtt"]
 
 [profile.dev]
 incremental = false
