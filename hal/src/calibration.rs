@@ -53,5 +53,5 @@ pub fn usb_transp_cal() -> u8 {
 
 /// USB TRIM calibration value. Should be written to USB PADCAL register.
 pub fn usb_trim_cal() -> u8 {
-    cal_with_errata(4, 23, 7, 7, 3) as u8
+    cal_with_errata(4, 23, 7, 7, 5) as u8
 }

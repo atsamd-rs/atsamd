@@ -2,5 +2,6 @@ target
 *.rs.bk
 [._]*.sw[a-p]
 /target
+/doc
 Cargo.lock
 /.gdb_history

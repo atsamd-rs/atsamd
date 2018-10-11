@@ -1,18 +1,25 @@
 [package]
 name = "atsamd21-hal"
-version = "0.1.0"
+version = "0.2.2"
 authors = ["Wez Furlong <wez@wezfurlong.org>"]
 description = "HAL and Peripheral access API for ATSAMD21 microcontrollers"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/wez/atsamd21-rs"
 readme = "README.md"
+documentation = "https://wez.github.io/atsamd21-rs/atsamd21g18a/atsamd21_hal/"
 
 [dependencies]
 cortex-m = "~0.5"
 embedded-hal = "~0.2"
 nb = "~0.1"
 mashup = "^0.1.6"
+bitfield = "~0.13"
+vcell = "*"
+
+[dependencies.jlink_rtt]
+optional = true
+version = "~0.1"
 
 [dependencies.void]
 default-features = false
@@ -22,16 +29,22 @@ version = "~1.0"
 # This makes it available when the corresponding feature name is referenced.
 # We use a feature named "samdFOO" to pull in the dependency named "atsamdFOO"
 [dependencies.atsamd21g18a]
-path = "../atsamd21g18a"
-version = "~0.2"
+path = "../pac/atsamd21g18a"
+version = "~0.3"
 optional = true
 
 [dependencies.atsamd21e18a]
-path = "../atsamd21e18a"
-version = "~0.2"
+path = "../pac/atsamd21e18a"
+version = "~0.3"
+optional = true
+
+[dependencies.usb-device]
+git = "https://github.com/wez/usb-device"
+branch = "unsafe_atomics"
 optional = true
 
 [dev-dependencies]
+panic_rtt = "~0.1"
 panic-abort = "~0.1"
 panic-semihosting = "~0.1"
 cortex-m-semihosting = "~0.2"
@@ -58,3 +71,5 @@ samd21g18a-rt = ["atsamd21g18a", "atsamd21g18a/rt"]
 samd21e18a = ["atsamd21e18a"]
 samd21e18a-rt = ["atsamd21e18a", "atsamd21e18a/rt"]
 unproven = ["embedded-hal/unproven"]
+use_rtt = ["jlink_rtt"]
+usb = ["usb-device"]
