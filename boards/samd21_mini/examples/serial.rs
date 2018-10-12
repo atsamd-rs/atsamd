@@ -1,4 +1,3 @@
-#![feature(proc_macro_gen)]
 #![no_std]
 #![no_main]
 
