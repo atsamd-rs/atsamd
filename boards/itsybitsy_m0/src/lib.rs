@@ -12,7 +12,10 @@ pub use hal::atsamd21g18a::*;
 use hal::prelude::*;
 pub use hal::*;
 
-use gpio::{Floating, Input, Port};
+use gpio::{Floating, Input, Output, Port, PushPull};
+use hal::clock::GenericClockController;
+use hal::sercom::{I2CMaster3, PadPin, SPIMaster4, SPIMaster5};
+use hal::time::Hertz;
 
 define_pins!(
     /// Maps the pins to their arduino names and
@@ -88,3 +91,122 @@ define_pins!(
     /// The USB D+ pad
     pin usb_dp = a25,
 );
+
+
+/// Convenience for setting up the externally labelled SPI.
+/// This powers up SERCOM4 and configures it for use as an
+/// SPI Master in SPI Mode 0.
+/// Unlike the `flash_spi_master` function, this
+/// one does not accept a CS pin; configuring a pin for CS
+/// is the responsibility of the caller, because it could be
+/// any OutputPin, or even a pulled up line on the slave.
+pub fn spi_master<F: Into<Hertz>>(
+    clocks: &mut GenericClockController,
+    bus_speed: F,
+    sercom4: SERCOM4,
+    pm: &mut PM,
+    sck: gpio::Pb11<Input<Floating>>,
+    mosi: gpio::Pb10<Input<Floating>>,
+    miso: gpio::Pa12<Input<Floating>>,
+    port: &mut Port,
+) -> SPIMaster4 {
+    let gclk0 = clocks.gclk0();
+    SPIMaster4::new(
+        &clocks.sercom4_core(&gclk0).unwrap(),
+        bus_speed.into(),
+        hal::hal::spi::Mode {
+            phase: hal::hal::spi::Phase::CaptureOnFirstTransition,
+            polarity: hal::hal::spi::Polarity::IdleLow,
+        },
+        sercom4,
+        pm,
+        hal::sercom::SPI4Pinout::Dipo0Dopo1 {
+            miso: miso.into_pad(port),
+            mosi: mosi.into_pad(port),
+            sck: sck.into_pad(port),
+        },
+    )
+}
+
+
+/// Convenience for accessing the on-board SPI Flash device.
+/// This powers up SERCOM5 and configures it for use as an
+/// SPI Master.
+pub fn flash_spi_master(
+    clocks: &mut GenericClockController,
+    sercom5: SERCOM5,
+    pm: &mut PM,
+    sck: gpio::Pb23<Input<Floating>>,
+    mosi: gpio::Pb22<Input<Floating>>,
+    miso: gpio::Pb3<Input<Floating>>,
+    cs: gpio::Pa13<Input<Floating>>,
+    port: &mut Port,
+) -> (SPIMaster5, gpio::Pa13<Output<PushPull>>) {
+    let gclk0 = clocks.gclk0();
+    let flash = SPIMaster5::new(
+        &clocks.sercom5_core(&gclk0).unwrap(),
+        48.mhz(),
+        hal::hal::spi::Mode {
+            phase: hal::hal::spi::Phase::CaptureOnFirstTransition,
+            polarity: hal::hal::spi::Polarity::IdleLow,
+        },
+        sercom5,
+        pm,
+        hal::sercom::SPI5Pinout::Dipo1Dopo1 {
+            miso: miso.into_pad(port),
+            mosi: mosi.into_pad(port),
+            sck: sck.into_pad(port),
+        },
+    );
+
+    let mut cs = cs.into_push_pull_output(port);
+    cs.set_high();
+
+    (flash, cs)
+}
+
+
+/// Convenience for setting up the labelled SDA, SCL pins to
+/// operate as an I2C master running at the specified frequency.
+pub fn i2c_master<F: Into<Hertz>>(
+    clocks: &mut GenericClockController,
+    bus_speed: F,
+    sercom3: SERCOM3,
+    pm: &mut PM,
+    sda: gpio::Pa22<Input<Floating>>,
+    scl: gpio::Pa23<Input<Floating>>,
+    port: &mut Port,
+) -> I2CMaster3 {
+    let gclk0 = clocks.gclk0();
+    I2CMaster3::new(
+        &clocks.sercom3_core(&gclk0).unwrap(),
+        bus_speed.into(),
+        sercom3,
+        pm,
+        sda.into_pad(port),
+        scl.into_pad(port),
+    )
+}
+
+
+#[cfg(feature = "usb")]
+pub fn usb_bus(
+    usb: USB,
+    clocks: &mut GenericClockController,
+    pm: &mut PM,
+    dm: gpio::Pa24<Input<Floating>>,
+    dp: gpio::Pa25<Input<Floating>>,
+    port: &mut Port,
+) -> UsbBusWrapper<UsbBus> {
+    let gclk0 = clocks.gclk0();
+    dbgprint!("making usb clock");
+    let usb_clock = &clocks.usb(&gclk0).unwrap();
+    dbgprint!("got clock");
+    UsbBusWrapper::new(UsbBus::new(
+        usb_clock,
+        pm,
+        dm.into_function(port),
+        dp.into_function(port),
+        usb,
+    ))
+}

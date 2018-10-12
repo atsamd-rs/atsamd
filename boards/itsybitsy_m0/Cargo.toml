@@ -25,6 +25,8 @@ default-features = false
 
 [dev-dependencies]
 panic-abort = "~0.2"
+ssd1306 = "~0.2"
+embedded-graphics = "^0.4.0"
 
 [features]
 # ask the HAL to enable atsamd21g18a support
