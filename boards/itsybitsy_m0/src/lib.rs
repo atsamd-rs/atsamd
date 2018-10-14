@@ -46,9 +46,7 @@ define_pins!(
     pin d3 = a9,
     pin d4 = a8,
     pin d5 = a15,
-    pin d6 = a20,
     pin d7 = a21,
-    pin d8 = a6,
     pin d9 = a7,
     pin d10 = a18,
     pin d11 = a16,
@@ -57,11 +55,11 @@ define_pins!(
     /// the red LED.  PWM capable.
     pin d13 = a17,
 
-    /// The SPI MOSI attached the to 2x3 header
+    /// The SPI MOSI
     pin mosi = b10,
-    /// The SPI MISO attached the to 2x3 header
+    /// The SPI MISO
     pin miso = a12,
-    /// The SPI SCK attached the to 2x3 header
+    /// The SPI SCK
     pin sck = b11,
 
     /// The MOSI pin attached to the on-board SPI flash
