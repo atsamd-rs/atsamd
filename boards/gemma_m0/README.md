@@ -1,7 +1,7 @@
-# Adafruit Metro M0 Board Support Crate
+# Adafruit Gemma M0 Board Support Crate
 
-This crate provides a type-safe API for working with the [Adafruit Metro M0
-board](https://www.adafruit.com/product/3505).
+This crate provides a type-safe API for working with the [Adafruit Gemma M0
+board](https://www.adafruit.com/product/3501).
 
 ## Examples?
 
