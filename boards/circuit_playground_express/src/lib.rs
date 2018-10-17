@@ -18,9 +18,9 @@ define_pins!(
     struct Pins,
     target_device: atsamd21g18a,
     /// Pin 0, rx. Also analog input (A6)
-    pin d0 = b9,
+    pin rx = b9,
     /// Pin 1, tx. Also analog input (A7)
-    pin d1 = b8,
+    pin tx = b8,
     /// Pin 4, button A.
     pin d4 = a28,
     /// Pin 5, button B.
