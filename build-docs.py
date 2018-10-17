@@ -11,7 +11,7 @@ import argparse
 # emit misleading docs.
 crates_by_pac = {
     'atsamd21e18a': ['gemma_m0', 'trinket_m0'],
-    'atsamd21g18a': ['metro_m0', 'samd21_mini', 'arduino_mkrzero', 'itsybitsy_m0']
+    'atsamd21g18a': ['metro_m0', 'samd21_mini', 'arduino_mkrzero', 'itsybitsy_m0', 'circuit_playground_express'],
 }
 
 def generate_docs():

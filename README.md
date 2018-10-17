@@ -46,6 +46,9 @@ There are a couple of crates provided by this repo:
   using more convenient names; for example, the IO pins are exported using the labels
   printed on the board rather than the more abstract and harder to remember port and
   pin numbers used by the underlying device.
+* [`circuit_playground_express`](https://wez.github.io/atsamd21-rs/atsamd21g18a/circuit_playground_express/)
+  for the Adafruit Circuit Playground Express board.  Similar to the Metro M0 crate, it re-exports the
+  `atsamd21-hal` crate functionality using more convenient names.
 
 ## Building
 
