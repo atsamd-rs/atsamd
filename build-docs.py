@@ -10,7 +10,7 @@ import argparse
 # get enabled for the HAL module are different and we don't want to
 # emit misleading docs.
 crates_by_pac = {
-    'atsamd21e18a': ['gemma_m0'],
+    'atsamd21e18a': ['gemma_m0', 'trinket_m0'],
     'atsamd21g18a': ['metro_m0', 'samd21_mini', 'arduino_mkrzero', 'itsybitsy_m0', 'circuit_playground_express']
 }
 

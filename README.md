@@ -38,6 +38,9 @@ There are a couple of crates provided by this repo:
 * [`gemma_m0`](https://wez.github.io/atsamd21-rs/atsamd21e18a/gemma_m0/) is a board support crate
   for the Adafruit Gemma M0 board.  Similar to the Metro M0 crate, it re-exports the
   `atsamd21-hal` crate functionality using more convenient names.
+* [`trinket_m0`](https://wez.github.io/atsamd21-rs/atsamd21e18a/trinket_m0/) is a board support crate
+  for the Adafruit Trinket M0 board.  Similar to the Metro M0 crate, it re-exports the
+  `atsamd21-hal` crate functionality using more convenient names.
 * [`itsybitsy_m0`](https://wez.github.io/atsamd21-rs/atsamd21g18a/itsybitsy_m0/) is a board support crate
   for the Adafruit ItsyBitsy M0 board.  It re-exports the `atsamd21-hal` crate functionality
   using more convenient names; for example, the IO pins are exported using the labels
