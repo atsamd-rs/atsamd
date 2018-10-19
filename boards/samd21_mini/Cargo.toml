@@ -5,9 +5,9 @@ authors = ["Ze'ev Klapow <zklapow@gmail.com>"]
 description = "Board Support crate for the Sparkfun SAMD21 Mini Breakout"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/wez/atsamd21-rs"
+repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
-documentation = "https://wez.github.io/atsamd21-rs/atsamd21g18a/samd21_mini/"
+documentation = "https://atsamd-rs.github.io/atsamd/atsamd21g18a/samd21_mini/"
 
 [dependencies]
 cortex-m = "~0.5"

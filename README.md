@@ -3,19 +3,19 @@
 This repo holds various things that support/enable working with atmel samd21 based
 devices, such as the Adafruit Metro M0, Trinket M0 and Gemma M0, using Rust.
 
-[![Build Status](https://travis-ci.org/wez/atsamd21-rs.svg?branch=master)](https://travis-ci.org/wez/atsamd21-rs)
+[![Build Status](https://travis-ci.org/atsamd-rs/atsamd.svg?branch=master)](https://travis-ci.org/atsamd-rs/atsamd)
 
 There are a couple of crates provided by this repo:
 
-* [`atsamd21g18a`](https://wez.github.io/atsamd21-rs/atsamd21g18a/atsamd21g18a/) is an
+* [`atsamd21g18a`](https://atsamd-rs.github.io/atsamd/atsamd21g18a/atsamd21g18a/) is an
   auto-generated crate providing access to the peripherals
   specified for this device by its SVD file.  This is the MCU used in the Metro M0,
   Feather M0 and Circuit Playground express boards from Adafruit.
-* [`atsamd21e18a`](https://wez.github.io/atsamd21-rs/atsamd21e18a/atsamd21e18a/) is an
+* [`atsamd21e18a`](https://atsamd-rs.github.io/atsamd/atsamd21e18a/atsamd21e18a/) is an
   auto-generated crate providing access to the peripherals
   specified for this device by its SVD file.  This is the MCU used in the Trinket M0
   and Gemma M0 boards from Adafruit.
-* [`atsamd21-hal`](https://wez.github.io/atsamd21-rs/atsamd21g18a/atsamd21_hal/) is the result
+* [`atsamd21-hal`](https://atsamd-rs.github.io/atsamd/atsamd21g18a/atsamd21_hal/) is the result
   of reading the datasheet for the device and encoding
   a type-safe layer over the raw `atsamd21g18a` and `atsamd21e18a` crates.  This crate
   implements traits specified by the `embedded-hal` project, making it compatible with
@@ -23,14 +23,14 @@ There are a couple of crates provided by this repo:
 
 In addition to the generic crates, there are also crates for popular ATSAMD21 based development boards. They aim to rename pins to match silk screens or Arduino pin assignments, add helpers for initialization, and re-export the `atsamd21-hal` crate.
 
-* [`arduino_mkrzero`](https://wez.github.io/atsamd21-rs/atsamd21g18a/arduino_mkrzero/)
-* [`circuit_playground_express`](https://wez.github.io/atsamd21-rs/atsamd21g18a/circuit_playground_express/)
-* [`feather_m0`](https://wez.github.io/atsamd21-rs/atsamd21g18a/feather_m0/)
-* [`gemma_m0`](https://wez.github.io/atsamd21-rs/atsamd21e18a/gemma_m0/)
-* [`itsybitsy_m0`](https://wez.github.io/atsamd21-rs/atsamd21g18a/itsybitsy_m0/)
-* [`metro_m0`](https://wez.github.io/atsamd21-rs/atsamd21g18a/metro_m0/)
-* [`samd21_mini`](https://wez.github.io/atsamd21-rs/atsamd21g18a/samd21_mini/)
-* [`trinket_m0`](https://wez.github.io/atsamd21-rs/atsamd21e18a/trinket_m0/)
+* [`arduino_mkrzero`](https://atsamd-rs.github.io/atsamd/atsamd21g18a/arduino_mkrzero/)
+* [`circuit_playground_express`](https://atsamd-rs.github.io/atsamd/atsamd21g18a/circuit_playground_express/)
+* [`feather_m0`](https://atsamd-rs.github.io/atsamd/atsamd21g18a/feather_m0/)
+* [`gemma_m0`](https://atsamd-rs.github.io/atsamd/atsamd21e18a/gemma_m0/)
+* [`itsybitsy_m0`](https://atsamd-rs.github.io/atsamd/atsamd21g18a/itsybitsy_m0/)
+* [`metro_m0`](https://atsamd-rs.github.io/atsamd/atsamd21g18a/metro_m0/)
+* [`samd21_mini`](https://atsamd-rs.github.io/atsamd/atsamd21g18a/samd21_mini/)
+* [`trinket_m0`](https://atsamd-rs.github.io/atsamd/atsamd21e18a/trinket_m0/)
 
 ## Building
 

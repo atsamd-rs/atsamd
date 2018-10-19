@@ -7,4 +7,4 @@ board](https://www.adafruit.com/product/3727).
 
 Check out the repository for examples:
 
-https://github.com/wez/atsamd21-rs/tree/master/boards/itsybitsy_m0/examples
+https://github.com/atsamd-rs/atsamd/tree/master/boards/itsybitsy_m0/examples

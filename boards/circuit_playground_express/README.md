@@ -7,4 +7,4 @@ board](https://www.adafruit.com/product/3333).
 
 Check out the repository for examples:
 
-https://github.com/wez/atsamd21-rs/tree/master/circuit_playground_express/examples
+https://github.com/atsamd-rs/atsamd/tree/master/circuit_playground_express/examples

@@ -5,9 +5,9 @@ authors = ["Wez Furlong <wez@wezfurlong.org>", "David McGillicuddy <contact@djmc
 description = "Board Support crate for the Arduino MKRZERO"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal", "arduino"]
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/wez/atsamd21-rs"
+repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
-documentation = "https://wez.github.io/atsamd21-rs/atsamd21g18a/arduino_mkrzero/"
+documentation = "https://atsamd-rs.github.io/atsamd/atsamd21g18a/arduino_mkrzero/"
 
 [dependencies]
 cortex-m = "~0.5"
