@@ -6,4 +6,4 @@ This crate provides a type-safe API for working with the [Sparkfun SAMD21 Mini B
 
 Check out the repository for examples:
 
-https://github.com/wez/atsamd21-rs/tree/master/samd21_mini/examples
+https://github.com/atsamd-rs/atsamd21-rs/tree/master/samd21_mini/examples

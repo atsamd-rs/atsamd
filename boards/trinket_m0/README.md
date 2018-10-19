@@ -7,4 +7,4 @@ board](https://www.adafruit.com/product/3500).
 
 Check out the repository for examples:
 
-https://github.com/wez/atsamd21-rs/tree/master/boards/trinket_m0/examples
+https://github.com/atsamd-rs/atsamd21-rs/tree/master/boards/trinket_m0/examples
