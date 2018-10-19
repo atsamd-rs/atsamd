@@ -20,35 +20,17 @@ There are a couple of crates provided by this repo:
   a type-safe layer over the raw `atsamd21g18a` and `atsamd21e18a` crates.  This crate
   implements traits specified by the `embedded-hal` project, making it compatible with
   various drivers in the embedded rust ecosystem.
-* [`metro_m0`](https://wez.github.io/atsamd21-rs/atsamd21g18a/metro_m0/) is a board support crate
-  for the Adafruit Metro M0 board.  It re-exports the `atsamd21-hal` crate functionality
-  using more convenient names; for example, the IO pins are exported using the labels
-  printed on the board rather than the more abstract and harder to remember port and
-  pin numbers used by the underlying device.
-* [`samd21_mini`](https://wez.github.io/atsamd21-rs/atsamd21g18a/samd21_mini/) is a board support crate
-  for the SparkFunc SAMD21 Mini board.  It re-exports the `atsamd21-hal` crate functionality
-  using more convenient names; for example, the IO pins are exported using the labels
-  printed on the board rather than the more abstract and harder to remember port and
-  pin numbers used by the underlying device.
-* [`arduino_mkrzero`](https://wez.github.io/atsamd21-rs/atsamd21g18a/arduino_mkrzero/) is a board support crate
-  for the Arduino MKR Zero board.  It re-exports the `atsamd21-hal` crate functionality
-  using more convenient names; for example, the IO pins are exported using the labels
-  printed on the board rather than the more abstract and harder to remember port and
-  pin numbers used by the underlying device.
-* [`gemma_m0`](https://wez.github.io/atsamd21-rs/atsamd21e18a/gemma_m0/) is a board support crate
-  for the Adafruit Gemma M0 board.  Similar to the Metro M0 crate, it re-exports the
-  `atsamd21-hal` crate functionality using more convenient names.
-* [`trinket_m0`](https://wez.github.io/atsamd21-rs/atsamd21e18a/trinket_m0/) is a board support crate
-  for the Adafruit Trinket M0 board.  Similar to the Metro M0 crate, it re-exports the
-  `atsamd21-hal` crate functionality using more convenient names.
-* [`itsybitsy_m0`](https://wez.github.io/atsamd21-rs/atsamd21g18a/itsybitsy_m0/) is a board support crate
-  for the Adafruit ItsyBitsy M0 board.  It re-exports the `atsamd21-hal` crate functionality
-  using more convenient names; for example, the IO pins are exported using the labels
-  printed on the board rather than the more abstract and harder to remember port and
-  pin numbers used by the underlying device.
+
+In addition to the generic crates, there are also crates for popular ATSAMD21 based development boards. They aim to rename pins to match silk screens or Arduino pin assignments, add helpers for initialization, and re-export the `atsamd21-hal` crate.
+
+* [`arduino_mkrzero`](https://wez.github.io/atsamd21-rs/atsamd21g18a/arduino_mkrzero/)
 * [`circuit_playground_express`](https://wez.github.io/atsamd21-rs/atsamd21g18a/circuit_playground_express/)
-  for the Adafruit Circuit Playground Express board.  Similar to the Metro M0 crate, it re-exports the
-  `atsamd21-hal` crate functionality using more convenient names.
+* [`feather_m0`](https://wez.github.io/atsamd21-rs/atsamd21g18a/feather_m0/)
+* [`gemma_m0`](https://wez.github.io/atsamd21-rs/atsamd21e18a/gemma_m0/)
+* [`itsybitsy_m0`](https://wez.github.io/atsamd21-rs/atsamd21g18a/itsybitsy_m0/)
+* [`metro_m0`](https://wez.github.io/atsamd21-rs/atsamd21g18a/metro_m0/)
+* [`samd21_mini`](https://wez.github.io/atsamd21-rs/atsamd21g18a/samd21_mini/)
+* [`trinket_m0`](https://wez.github.io/atsamd21-rs/atsamd21e18a/trinket_m0/)
 
 ## Building
 
