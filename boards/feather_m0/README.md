@@ -1,0 +1,10 @@
+# Adafruit Feather M0 Board Support Crate
+
+This crate provides a type-safe API for working with the [Adafruit Feather M0
+board](https://www.adafruit.com/product/3505).
+
+## Examples?
+
+Check out the repository for examples:
+
+https://github.com/wez/atsamd21-rs/tree/master/feather_m0/examples
