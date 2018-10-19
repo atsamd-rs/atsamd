@@ -1,7 +1,7 @@
 # Adafruit Feather M0 Board Support Crate
 
 This crate provides a type-safe API for working with the [Adafruit Feather M0
-board](https://www.adafruit.com/product/3505).
+board](https://www.adafruit.com/product/2772).
 
 ## Examples?
 
