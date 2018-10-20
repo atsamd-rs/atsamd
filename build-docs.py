@@ -64,22 +64,32 @@ def generate_docs():
                 "hal",
                 os.path.join(doc_build, "hal"))
 
+        exclude = set(crates_by_pac.keys())
+        exclude.remove(pac)
+
         for crate in crates:
             src_crate_dir = os.path.join("boards", crate)
             dest_crate_dir = os.path.join(doc_build, "boards", crate)
             copy_skeleton_crate(src_crate_dir, dest_crate_dir)
 
-        subprocess.call(['cargo', 'doc',
-                        '--target-dir', 'target/%s' % pac,
-                        '--lib',
-                        '--no-deps',
-                        '--manifest-path', '%s/Cargo.toml' % doc_build])
+        cmd = [
+            'cargo', 'doc',
+            '--target-dir', 'target/%s' % pac,
+            '--exclude', ' '.join(exclude),
+            '--all',
+            '--no-deps',
+            '--manifest-path', '%s/Cargo.toml' % doc_build]
+        print(cmd)
+        subprocess.call(cmd)
 
 def copy_to_docs_dir():
     """ Build out the doc tree from the cargo generated docs """
     if os.path.exists('doc'):
         shutil.rmtree('doc')
     os.makedirs('doc')
+    with open("doc/.nojekyll", "w") as f:
+        f.write("")
+
     for pac in crates_by_pac.keys():
         shutil.copytree('target/%s/thumbv6m-none-eabi/doc' % pac,
                         'doc/%s' % pac)
@@ -104,7 +114,7 @@ def generate_all_index_html():
 def push_using_ghp_import():
     """ copy the doc dir to the gh_pages branch and push to github.
     You can `apt install ghp-import` on ubuntu, or pip install it elsewhere. """
-    subprocess.call(['ghp-import', '-n', '-p', 'doc'])
+    subprocess.call(['ghp-import', '-p', 'doc'])
 
 def main():
     parser = argparse.ArgumentParser()
