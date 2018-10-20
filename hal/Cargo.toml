@@ -52,13 +52,6 @@ cortex-m-rtfm = "~0.3"
 sx1509 = "~0.2"
 
 [features]
-# We default to picking one of the target mcus so that a `cargo build` or
-# `cargo package` run for this crate will succeed.  Without this we won't
-# pull in any mcu crate and that would fail.  Board support crates that
-# pull in this hal are likely to want to use default-features=false when
-# adding their dep on "atsamd21-hal".
-default = ["samd21g18a"]
-
 # This section lists our feature name to dependency mapping.  This are separated
 # out so that the board support crates can reference a single feature name to
 # select the appropriate chip, and to keep that separate from the dependency name

@@ -3,5 +3,6 @@ target
 [._]*.sw[a-p]
 /target
 /doc
+/doc-build
 Cargo.lock
 /.gdb_history

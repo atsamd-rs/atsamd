@@ -25,15 +25,55 @@ crates_by_pac = {
     ],
 }
 
+def copy_skeleton_crate(src_dir, dest_dir):
+    os.makedirs(dest_dir)
+    shutil.copy(
+            os.path.join(src_dir, "Cargo.toml"),
+            os.path.join(dest_dir, "Cargo.toml"))
+    shutil.copytree(
+            os.path.join(src_dir, "src"),
+            os.path.join(dest_dir, "src"))
+
 def generate_docs():
-    """ Run cargo doc on each crate to generate the docs """
+    """ Generate a workspace per PAC so that we can more cheaply
+        generate docs for related boards """
     for pac, crates in crates_by_pac.items():
         print(pac, crates)
+
+        doc_build = os.path.join("doc-build", pac)
+        if os.path.exists(doc_build):
+            shutil.rmtree(doc_build)
+        os.makedirs(doc_build)
+
+        # The workspace
+        with open(os.path.join(doc_build, "Cargo.toml"), "w") as f:
+            f.write("[workspace]\n")
+            f.write('members = ["pac/%s", "hal",\n' % pac)
+            for crate in crates:
+                f.write('\t"boards/%s",\n' % crate)
+            f.write("]\n")
+
+        # We need to copy in all PACs even though the deps are
+        # optional, otherwise the doc build will fail
+        for p in crates_by_pac.keys():
+            copy_skeleton_crate(
+                    os.path.join("pac", p),
+                    os.path.join(doc_build, "pac", p))
+
+        copy_skeleton_crate(
+                "hal",
+                os.path.join(doc_build, "hal"))
+
         for crate in crates:
-            subprocess.call(['cargo', 'doc',
-                            '--target-dir', 'target/%s' % pac,
-                            '--lib',
-                            '--manifest-path', 'boards/%s/Cargo.toml' % crate])
+            src_crate_dir = os.path.join("boards", crate)
+            dest_crate_dir = os.path.join(doc_build, "boards", crate)
+            copy_skeleton_crate(src_crate_dir, dest_crate_dir)
+
+        subprocess.call(['cargo', 'doc',
+                        '--target-dir', 'target/%s' % pac,
+                        '--lib',
+                        '--no-deps',
+                        '--manifest-path', '%s/Cargo.toml' % doc_build])
 
 def copy_to_docs_dir():
     """ Build out the doc tree from the cargo generated docs """
