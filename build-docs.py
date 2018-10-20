@@ -9,9 +9,20 @@ import argparse
 # We break this out by peripheral access crate as the features that
 # get enabled for the HAL module are different and we don't want to
 # emit misleading docs.
+# ** Please keep the board names alpha-sorted **
 crates_by_pac = {
-    'atsamd21e18a': ['gemma_m0', 'trinket_m0'],
-    'atsamd21g18a': ['metro_m0', 'samd21_mini', 'arduino_mkrzero', 'itsybitsy_m0', 'circuit_playground_express', 'feather_m0'],
+    'atsamd21e18a': [
+        'gemma_m0',
+        'trinket_m0',
+    ],
+    'atsamd21g18a': [
+        'arduino_mkrzero',
+        'circuit_playground_express',
+        'feather_m0',
+        'itsybitsy_m0',
+        'metro_m0',
+        'samd21_mini',
+    ],
 }
 
 def generate_docs():
