@@ -1,4 +1,4 @@
-# atsamd21 support for Rust
+# atsamd support for Rust
 
 This repo holds various things that support/enable working with atmel samd21 based
 devices, such as the Adafruit Metro M0, Trinket M0 and Gemma M0, using Rust.
@@ -15,7 +15,7 @@ There are a couple of crates provided by this repo:
   auto-generated crate providing access to the peripherals
   specified for this device by its SVD file.  This is the MCU used in the Trinket M0
   and Gemma M0 boards from Adafruit.
-* [`atsamd21-hal`](https://atsamd-rs.github.io/atsamd/atsamd21g18a/atsamd21_hal/) is the result
+* [`atsamd-hal`](https://atsamd-rs.github.io/atsamd/atsamd21g18a/atsamd_hal/) is the result
   of reading the datasheet for the device and encoding
   a type-safe layer over the raw `atsamd21g18a` and `atsamd21e18a` crates.  This crate
   implements traits specified by the `embedded-hal` project, making it compatible with
@@ -31,6 +31,7 @@ In addition to the generic crates, there are also crates for popular ATSAMD21 ba
 * [`metro_m0`](https://atsamd-rs.github.io/atsamd/atsamd21g18a/metro_m0/)
 * [`samd21_mini`](https://atsamd-rs.github.io/atsamd/atsamd21g18a/samd21_mini/)
 * [`trinket_m0`](https://atsamd-rs.github.io/atsamd/atsamd21e18a/trinket_m0/)
+* [`metro_m4`](https://atsamd-rs.github.io/atsamd/atsamd51j19a/metro_m4/)
 
 ## Building
 

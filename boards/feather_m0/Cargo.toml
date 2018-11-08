@@ -18,7 +18,7 @@ nb = "~0.1"
 version = "~0.6"
 optional = true
 
-[dependencies.atsamd21-hal]
+[dependencies.atsamd-hal]
 path = "../../hal"
 version = "~0.3"
 default-features = false

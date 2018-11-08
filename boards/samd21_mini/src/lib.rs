@@ -6,7 +6,7 @@ extern crate cortex_m_rt;
 #[cfg(feature = "rt")]
 pub use cortex_m_rt::entry;
 
-extern crate atsamd21_hal as hal;
+extern crate atsamd_hal as hal;
 
 pub mod prelude;
 

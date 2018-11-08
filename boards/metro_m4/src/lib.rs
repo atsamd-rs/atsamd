@@ -8,17 +8,15 @@ extern crate cortex_m_rt;
 #[cfg(feature = "rt")]
 pub use cortex_m_rt::entry;
 
-pub use hal::atsamd21g18a::*;
+pub use hal::atsamd51j19a::*;
 use hal::prelude::*;
 pub use hal::*;
 
-use gpio::{Floating, Input, Port};
+use gpio::{Floating, Input, IntoFunction, Output, Port, PushPull};
 use hal::clock::GenericClockController;
-use hal::sercom::{I2CMaster3, PadPin, SPIMaster4};
+use hal::sercom::{I2CMaster3, PadPin, SPIMaster4, SPIMaster5};
 use hal::time::Hertz;
 
-#[cfg(feature = "usb")]
-use gpio::IntoFunction;
 #[cfg(feature = "usb")]
 pub use hal::usb::UsbBus;
 #[cfg(feature = "usb")]
@@ -28,7 +26,7 @@ define_pins!(
     /// Maps the pins to their arduino names and
     /// the numbers printed on the board.
     struct Pins,
-    target_device: atsamd21g18a,
+    target_device: atsamd51j19a,
 
     /// Analog pin 0.  Can act as a true analog output
     /// as it has a DAC (which is not currently supported
@@ -46,15 +44,25 @@ define_pins!(
     /// Analog Pin 5
     pin a5 = b2,
 
-    /// Pin 0, rx
+    /// Pin 0, rx.  Also analog input (A6)
     pin d0 = a11,
-    /// Pin 1, tx
+    /// Pin 1, tx.  Also analog input (A7)
     pin d1 = a10,
-    /// Pin 5, PWM capable
+    /// Pin 2
+    pin d2 = a14,
+    /// Pin 3, PWM capable
+    pin d3 = a9,
+    /// Pin 4, PWM capable.  Also analog input (A8)
+    pin d4 = a8,
+    /// Pin 5, PWM capable.  Also analog input (A9)
     pin d5 = a15,
     /// Pin 6, PWM capable
     pin d6 = a20,
-    /// Pin 9, PWM capable.  Also analog input (A7)
+    /// Pin 7
+    pin d7 = a21,
+    /// Pin 8, PWM capable.  Also analog input (A10)
+    pin d8 = a6,
+    /// Pin 9, PWM capable.  Also analog input (A11)
     pin d9 = a7,
     /// Pin 10, PWM capable
     pin d10 = a18,
@@ -62,21 +70,31 @@ define_pins!(
     pin d11 = a16,
     /// Pin 12, PWM capable
     pin d12 = a19,
-    /// Pin 13, which is also attached to
+    /// Digital pin number 13, which is also attached to
     /// the red LED.  PWM capable.
     pin d13 = a17,
-
-    /// The I2C data line
     pin sda = a22,
-    /// The I2C clock line
     pin scl = a23,
 
-    /// The SPI SCK
+    /// The data line attached to the neopixel.
+    /// Is also attached to SWCLK.
+    pin neopixel = a30,
+
+    /// The SPI SCK attached the to 2x3 header
     pin sck = b11,
-    /// The SPI MOSI
+    /// The SPI MOSI attached the to 2x3 header
     pin mosi = b10,
-    /// The SPI MISO
+    /// The SPI MISO attached the to 2x3 header
     pin miso = a12,
+
+    /// The SCK pin attached to the on-board SPI flash
+    pin flash_sck = b23,
+    /// The MOSI pin attached to the on-board SPI flash
+    pin flash_mosi = b22,
+    /// The MISO pin attached to the on-board SPI flash
+    pin flash_miso = b3,
+    /// The CS pin attached to the on-board SPI flash
+    pin flash_cs = a13,
 
     /// The USB D- pad
     pin usb_dm = a24,
@@ -84,9 +102,13 @@ define_pins!(
     pin usb_dp = a25,
 );
 
-/// Convenience for setting up the labelled SPI peripheral.
+/// Convenience for setting up the 2x3 header block for SPI.
 /// This powers up SERCOM4 and configures it for use as an
 /// SPI Master in SPI Mode 0.
+/// Unlike the `flash_spi_master` function, this
+/// one does not accept a CS pin; configuring a pin for CS
+/// is the responsibility of the caller, because it could be
+/// any OutputPin, or even a pulled up line on the slave.
 pub fn spi_master<F: Into<Hertz>>(
     clocks: &mut GenericClockController,
     bus_speed: F,
@@ -113,6 +135,42 @@ pub fn spi_master<F: Into<Hertz>>(
             sck: sck.into_pad(port),
         },
     )
+}
+
+/// Convenience for accessing the on-board SPI Flash device.
+/// This powers up SERCOM5 and configures it for use as an
+/// SPI Master.
+pub fn flash_spi_master(
+    clocks: &mut GenericClockController,
+    sercom5: SERCOM5,
+    pm: &mut PM,
+    sck: gpio::Pb23<Input<Floating>>,
+    mosi: gpio::Pb22<Input<Floating>>,
+    miso: gpio::Pb3<Input<Floating>>,
+    cs: gpio::Pa13<Input<Floating>>,
+    port: &mut Port,
+) -> (SPIMaster5, gpio::Pa13<Output<PushPull>>) {
+    let gclk0 = clocks.gclk0();
+    let flash = SPIMaster5::new(
+        &clocks.sercom5_core(&gclk0).unwrap(),
+        48.mhz(),
+        hal::hal::spi::Mode {
+            phase: hal::hal::spi::Phase::CaptureOnFirstTransition,
+            polarity: hal::hal::spi::Polarity::IdleLow,
+        },
+        sercom5,
+        pm,
+        hal::sercom::SPI5Pinout::Dipo1Dopo1 {
+            miso: miso.into_pad(port),
+            mosi: mosi.into_pad(port),
+            sck: sck.into_pad(port),
+        },
+    );
+
+    let mut cs = cs.into_push_pull_output(port);
+    cs.set_high();
+
+    (flash, cs)
 }
 
 /// Convenience for setting up the labelled SDA, SCL pins to
