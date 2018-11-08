@@ -23,6 +23,7 @@ crates_by_pac = {
         'metro_m0',
         'samd21_mini',
     ],
+    'atsamd51j19a': [],
 }
 
 def copy_skeleton_crate(src_dir, dest_dir):
