@@ -9,7 +9,7 @@
 //! impossible to misuse.
 use target_device::port::{DIRCLR, DIRSET, OUTCLR, OUTSET, PINCFG0_, PMUX0_};
 
-#[cfg(feature = "samd21g18a")]
+#[cfg(any(feature = "samd21g18a", feature = "samd51j19a"))]
 use target_device::port::{PINCFG1_, PMUX1_};
 
 use core::marker::PhantomData;
