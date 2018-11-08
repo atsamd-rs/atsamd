@@ -50,7 +50,14 @@ pub extern crate usb_device;
 extern crate void;
 
 mod calibration;
+
+#[cfg(not(feature = "samd51j19a"))]
 pub mod clock;
+
+#[cfg(feature = "samd51j19a")]
+#[path = "clock51.rs"]
+pub mod clock;
+
 pub mod delay;
 pub mod gpio;
 pub mod prelude;
