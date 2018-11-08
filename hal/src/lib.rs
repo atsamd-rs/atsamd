@@ -58,10 +58,16 @@ pub mod clock;
 #[path = "clock51.rs"]
 pub mod clock;
 
+#[cfg(not(feature = "samd51j19a"))]
+pub mod sercom;
+
+#[cfg(feature = "samd51j19a")]
+#[path = "sercom51/mod.rs"]
+pub mod sercom;
+
 pub mod delay;
 pub mod gpio;
 pub mod prelude;
-pub mod sercom;
 pub mod time;
 pub mod timer;
 
