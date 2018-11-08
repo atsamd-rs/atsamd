@@ -1,0 +1,22 @@
+[package]
+name = "atsamd51j19a"
+description = "Peripheral access API for ATSAMD51J19A microcontrollers (generated using svd2rust)"
+version = "0.3.2"
+authors = ["Wez Furlong <wez@wezfurlong.org>"]
+keywords = ["no-std", "arm", "cortex-m"]
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/atsamd-rs/atsamd"
+readme = "README.md"
+documentation = "https://atsamd-rs.github.io/atsamd/atsamd51j19a/atsamd51j19a/"
+
+[dependencies]
+bare-metal = "~0.2"
+cortex-m = "~0.5"
+vcell = "~0.1"
+
+[dependencies.cortex-m-rt]
+optional = true
+version = "~0.6"
+
+[features]
+rt = ["cortex-m-rt/device"]
