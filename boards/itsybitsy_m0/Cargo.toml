@@ -24,7 +24,7 @@ version = "~0.2"
 default-features = false
 
 [dev-dependencies]
-panic-abort = "~0.2"
+panic-abort = "~0.3"
 ssd1306 = "~0.2"
 embedded-graphics = "^0.4.0"
 
