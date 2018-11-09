@@ -5,7 +5,11 @@ use hal::serial;
 use nb;
 use sercom::pads::*;
 use target_device::sercom0::USART;
-use target_device::Interrupt;
+use target_device::Interrupt::{
+    SERCOM0_0, SERCOM1_0, SERCOM2_0, SERCOM3_0, SERCOM4_0, SERCOM5_0,
+    SERCOM0_1, SERCOM1_1, SERCOM2_1, SERCOM3_1, SERCOM4_1, SERCOM5_1,
+    SERCOM0_2, SERCOM1_2, SERCOM2_2, SERCOM3_2, SERCOM4_2, SERCOM5_2
+};
 use target_device::{NVIC, MCLK, SERCOM0, SERCOM1, SERCOM2, SERCOM3};
 use target_device::{SERCOM4, SERCOM5};
 use time::Hertz;
@@ -72,7 +76,11 @@ macro_rules! uart {
                         $pinout:ident,
                         $SERCOM:ident,
                         $powermask:ident,
-                        $clock:ident),)+
+                        $clock:ident,
+                        $apmask:ident,
+                        $int0: ident,
+                        $int1: ident,
+                        $int2: ident),)+
     ]) => {
 $(
 
@@ -90,7 +98,7 @@ impl $Type {
         mclk: &mut MCLK,
         pinout: $pinout
     ) -> $Type {
-        mclk.apbcmask.modify(|_, w| w.$powermask().set_bit());
+        mclk.$apmask.modify(|_, w| w.$powermask().set_bit());
 
         // Lots of union fields which require unsafe access
         unsafe {
@@ -148,7 +156,9 @@ impl $Type {
 
             while sercom.usart.syncbusy.read().ctrlb().bit_is_set() {}
 
-            nvic.enable(Interrupt::$SERCOM);
+            nvic.enable($int0);
+            nvic.enable($int1);
+            nvic.enable($int2);
 
             sercom.usart.intenset.modify(|_, w| {
                 w.rxc().set_bit()
@@ -236,15 +246,15 @@ impl fmt::Write for $Type {
 }
 
 uart!([
-    UART0: (UART0Pinout, SERCOM0, sercom0_, Sercom0CoreClock),
-    UART1: (UART1Pinout, SERCOM1, sercom1_, Sercom1CoreClock),
-    UART2: (UART2Pinout, SERCOM2, sercom2_, Sercom2CoreClock),
-    UART3: (UART3Pinout, SERCOM3, sercom3_, Sercom3CoreClock),
+    UART0: (UART0Pinout, SERCOM0, sercom0_, Sercom0CoreClock, apbamask, SERCOM0_0, SERCOM0_1, SERCOM0_2),
+    UART1: (UART1Pinout, SERCOM1, sercom1_, Sercom1CoreClock, apbamask, SERCOM1_0, SERCOM1_1, SERCOM1_2),
+    UART2: (UART2Pinout, SERCOM2, sercom2_, Sercom2CoreClock, apbbmask, SERCOM2_0, SERCOM2_1, SERCOM2_2),
+    UART3: (UART3Pinout, SERCOM3, sercom3_, Sercom3CoreClock, apbbmask, SERCOM3_0, SERCOM3_1, SERCOM3_2),
 ]);
 
 uart!([
-    UART4: (UART4Pinout, SERCOM4, sercom4_, Sercom4CoreClock),
-    UART5: (UART5Pinout, SERCOM5, sercom5_, Sercom5CoreClock),
+    UART4: (UART4Pinout, SERCOM4, sercom4_, Sercom4CoreClock, apbdmask, SERCOM4_0, SERCOM4_1, SERCOM4_2),
+    UART5: (UART5Pinout, SERCOM5, sercom5_, Sercom5CoreClock, apbdmask, SERCOM5_0, SERCOM5_1, SERCOM5_2),
 ]);
 
 const SHIFT: u8 = 32;

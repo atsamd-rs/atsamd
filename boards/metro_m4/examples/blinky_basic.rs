@@ -3,7 +3,7 @@
 
 extern crate cortex_m;
 extern crate cortex_m_semihosting;
-extern crate metro_m0 as hal;
+extern crate metro_m4 as hal;
 #[cfg(not(feature = "use_semihosting"))]
 extern crate panic_abort;
 #[cfg(feature = "use_semihosting")]
@@ -20,8 +20,9 @@ fn main() -> ! {
     let core = CorePeripherals::take().unwrap();
     let mut clocks = GenericClockController::with_external_32kosc(
         peripherals.GCLK,
-        &mut peripherals.PM,
-        &mut peripherals.SYSCTRL,
+        &mut peripherals.MCLK,
+        &mut peripherals.OSC32KCTRL,
+        &mut peripherals.OSCCTRL,
         &mut peripherals.NVMCTRL,
     );
     let mut pins = hal::Pins::new(peripherals.PORT);

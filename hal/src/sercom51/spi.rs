@@ -93,7 +93,7 @@ spi_pinout!([
     SPI2Pinout: (Sercom2Pad0, Sercom2Pad1, Sercom2Pad2, Sercom2Pad3),
     SPI3Pinout: (Sercom3Pad0, Sercom3Pad1, Sercom3Pad2, Sercom3Pad3),
 ]);
-#[cfg(feature = "samd21g18a")]
+#[cfg(any(feature = "samd21g18a", feature="samd51j19a"))]
 spi_pinout!([
     SPI4Pinout: (Sercom4Pad0, Sercom4Pad1, Sercom4Pad2, Sercom4Pad3),
     SPI5Pinout: (Sercom5Pad0, Sercom5Pad1, Sercom5Pad2, Sercom5Pad3),
@@ -103,7 +103,7 @@ macro_rules! spi {
     ([
         $($Type:ident: (
                         $PinOut:ident,
-                        $SERCOM:ident, $powermask:ident, $clock:ident),)+
+                        $SERCOM:ident, $powermask:ident, $clock:ident, $apmask:ident),)+
     ]) => {
 $(
 
@@ -130,7 +130,7 @@ impl $Type {
     ) -> Self {
         // Power up the peripheral bus clock.
         // safe because we're exclusively owning SERCOM
-        mclk.apbcmask.modify(|_, w| w.$powermask().set_bit());
+        mclk.$apmask.modify(|_, w| w.$powermask().set_bit());
 
         unsafe {
             // reset the sercom instance
@@ -239,12 +239,12 @@ impl ::hal::blocking::spi::write::Default<u8> for $Type {}
 }
 
 spi!([
-    SPIMaster0: (SPI0Pinout, SERCOM0, sercom0_, Sercom0CoreClock),
-    SPIMaster1: (SPI1Pinout, SERCOM1, sercom1_, Sercom1CoreClock),
-    SPIMaster2: (SPI2Pinout, SERCOM2, sercom2_, Sercom2CoreClock),
-    SPIMaster3: (SPI3Pinout, SERCOM3, sercom3_, Sercom3CoreClock),
+    SPIMaster0: (SPI0Pinout, SERCOM0, sercom0_, Sercom0CoreClock, apbamask),
+    SPIMaster1: (SPI1Pinout, SERCOM1, sercom1_, Sercom1CoreClock, apbamask),
+    SPIMaster2: (SPI2Pinout, SERCOM2, sercom2_, Sercom2CoreClock, apbbmask),
+    SPIMaster3: (SPI3Pinout, SERCOM3, sercom3_, Sercom3CoreClock, apbbmask),
 ]);
 spi!([
-    SPIMaster4: (SPI4Pinout, SERCOM4, sercom4_, Sercom4CoreClock),
-    SPIMaster5: (SPI5Pinout, SERCOM5, sercom5_, Sercom5CoreClock),
+    SPIMaster4: (SPI4Pinout, SERCOM4, sercom4_, Sercom4CoreClock, apbdmask),
+    SPIMaster5: (SPI5Pinout, SERCOM5, sercom5_, Sercom5CoreClock, apbdmask),
 ]);

@@ -6,12 +6,67 @@
 use target_device::gclk::pchctrl::GENR::*;
 use target_device::{self, GCLK, NVMCTRL, OSCCTRL, MCLK, OSC32KCTRL};
 use target_device::gclk::genctrl::SRCR::{XOSC32K, DFLL, OSCULP32K};
-use target_device::gclk::PCHCTRL;
 use time::{Hertz, U32Ext};
 
-//pub type ClockId = target_device::gclk::pchctrl::IDR;
 pub type ClockGenId = target_device::gclk::pchctrl::GENR;
 pub type ClockSource = target_device::gclk::genctrl::SRCR;
+pub enum ClockId {
+    DFLL48 = 0,
+    FDPLL0,
+    FDPLL1,
+    SLOW_32K,
+    EIC,
+    FREQM_MSR,
+    FREQM_REF,
+    SERCOM0_CORE,
+    SERCOM1_CORE,
+    TC0,
+    TC1,
+    USB,
+    EVSYS0,
+    EVSYS1,
+    EVSYS2,
+    EVSYS3,
+    EVSYS4,
+    EVSYS5,
+    EVSYS6,
+    EVSYS7,
+    EVSYS8,
+    EVSYS9,
+    EVSYS10,
+    EVSYS11,
+    SERCOM2_CORE,
+    SERCOM3_CORE,
+    TCC0_TCC1,
+    TC2_TC3,
+    CAN0,
+    CAN1,
+    TCC2_TCC3,
+    TC4_TC5,
+    PDEC,
+    AC,
+    CCL,
+    SERCOM4_CORE,
+    SERCOM5_CORE,
+    SERCOM6_CORE,
+    SERCOM7_CORE,
+    TCC4,
+    TC6_TC7,
+    ADC0,
+    ADC1,
+    DAC,
+    I2S0,
+    I2S1,
+    SDHC0,
+    SDHC1,
+    CM4_TRACE,
+}
+impl ClockId {
+    fn bits(self) -> usize {
+        self as usize
+    }
+}
+use self::ClockId::*;
 
 /// Represents a configured clock generator.
 /// Can be converted into the effective clock frequency.
@@ -53,12 +108,12 @@ impl State {
         src: ClockSource,
         improve_duty_cycle: bool,
     ) {
-        self.gclk.genctrl.write(|w| unsafe {
+        self.gclk.genctrl[gclk.bits() as usize].write(|w| unsafe {
             w.div().bits(divider)
         });
         self.wait_for_sync();
 
-        self.gclk.genctrl.write(|w| unsafe {
+        self.gclk.genctrl[gclk.bits() as usize].write(|w| unsafe {
             w.src().bits(src.bits());
             // divide directly by divider, rather than exponential
             w.divsel().clear_bit();
@@ -68,8 +123,8 @@ impl State {
         self.wait_for_sync();
     }
 
-    fn enable_clock_generator(&mut self, clock: ClockId, generator: ClockGenId, pchctrl: &mut PCHCTRL) {
-        pchctrl.write(|w| unsafe {
+    fn enable_clock_generator(&mut self, clock: ClockId, generator: ClockGenId) {
+        self.gclk.pchctrl[clock.bits()].write(|w| unsafe {
             w.gen().bits(generator.bits());
             w.chen().set_bit()
         });
@@ -97,10 +152,9 @@ impl GenericClockController {
         mclk: &mut MCLK,
         osc32kctrl: &mut OSC32KCTRL,
         oscctrl: &mut OSCCTRL,
-        pchctrl: &mut PCHCTRL,
         nvmctrl: &mut NVMCTRL,
     ) -> Self {
-        Self::new(gclk, mclk,  osc32kctrl, oscctrl, pchctrl, nvmctrl, false)
+        Self::new(gclk, mclk,  osc32kctrl, oscctrl, nvmctrl, false)
     }
 
     /// Reset the clock controller, configure the system to run
@@ -110,10 +164,9 @@ impl GenericClockController {
         mclk: &mut MCLK,
         osc32kctrl: &mut OSC32KCTRL,
         oscctrl: &mut OSCCTRL,
-        pchctrl: &mut PCHCTRL,
         nvmctrl: &mut NVMCTRL,
     ) -> Self {
-        Self::new(gclk, mclk, osc32kctrl, oscctrl, pchctrl, nvmctrl, true)
+        Self::new(gclk, mclk, osc32kctrl, oscctrl, nvmctrl, true)
     }
 
     fn new(
@@ -121,7 +174,6 @@ impl GenericClockController {
         mclk: &mut MCLK,
         osc32kctrl: &mut OSC32KCTRL,
         oscctrl: &mut OSCCTRL,
-        pchctrl: &mut PCHCTRL,
         nvmctrl: &mut NVMCTRL,
         use_external_crystal: bool,
     ) -> Self {
@@ -145,7 +197,7 @@ impl GenericClockController {
         }
 
         // Feed 32khz into the DFLL48
-        state.enable_clock_generator(DFLL, GCLK1, pchctrl);
+        state.enable_clock_generator(DFLL48, GCLK1);
         // Enable the DFLL48
         configure_and_enable_dfll48m(oscctrl, osc32kctrl, use_external_crystal);
         // Feed DFLL48 into the main clock
@@ -292,7 +344,7 @@ impl GenericClockController {
 }
 
 clock_generator!(
-    (tcc2_tc3, Tcc2Tc3Clock, TCC2_TC3),
+    (tc2_tc3, Tc2Tc3Clock, TC2_TC3),
     (tc4_tc5, Tc4Tc5Clock, TC4_TC5),
     (tc6_tc7, Tc6Tc7Clock, TC6_TC7),
     (sercom0_core, Sercom0CoreClock, SERCOM0_CORE),

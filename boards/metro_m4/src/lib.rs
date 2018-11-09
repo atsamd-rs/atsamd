@@ -113,7 +113,7 @@ pub fn spi_master<F: Into<Hertz>>(
     clocks: &mut GenericClockController,
     bus_speed: F,
     sercom4: SERCOM4,
-    pm: &mut PM,
+    mclk: &mut MCLK,
     sck: gpio::Pb11<Input<Floating>>,
     mosi: gpio::Pb10<Input<Floating>>,
     miso: gpio::Pa12<Input<Floating>>,
@@ -128,7 +128,7 @@ pub fn spi_master<F: Into<Hertz>>(
             polarity: hal::hal::spi::Polarity::IdleLow,
         },
         sercom4,
-        pm,
+        mclk,
         hal::sercom::SPI4Pinout::Dipo0Dopo1 {
             miso: miso.into_pad(port),
             mosi: mosi.into_pad(port),
@@ -143,7 +143,7 @@ pub fn spi_master<F: Into<Hertz>>(
 pub fn flash_spi_master(
     clocks: &mut GenericClockController,
     sercom5: SERCOM5,
-    pm: &mut PM,
+    mclk: &mut MCLK,
     sck: gpio::Pb23<Input<Floating>>,
     mosi: gpio::Pb22<Input<Floating>>,
     miso: gpio::Pb3<Input<Floating>>,
@@ -159,7 +159,7 @@ pub fn flash_spi_master(
             polarity: hal::hal::spi::Polarity::IdleLow,
         },
         sercom5,
-        pm,
+        mclk,
         hal::sercom::SPI5Pinout::Dipo1Dopo1 {
             miso: miso.into_pad(port),
             mosi: mosi.into_pad(port),
@@ -179,7 +179,7 @@ pub fn i2c_master<F: Into<Hertz>>(
     clocks: &mut GenericClockController,
     bus_speed: F,
     sercom3: SERCOM3,
-    pm: &mut PM,
+    mclk: &mut MCLK,
     sda: gpio::Pa22<Input<Floating>>,
     scl: gpio::Pa23<Input<Floating>>,
     port: &mut Port,
@@ -189,7 +189,7 @@ pub fn i2c_master<F: Into<Hertz>>(
         &clocks.sercom3_core(&gclk0).unwrap(),
         bus_speed.into(),
         sercom3,
-        pm,
+        mclk,
         sda.into_pad(port),
         scl.into_pad(port),
     )
@@ -199,7 +199,7 @@ pub fn i2c_master<F: Into<Hertz>>(
 pub fn usb_bus(
     usb: USB,
     clocks: &mut GenericClockController,
-    pm: &mut PM,
+    mclk: &mut MCLK,
     dm: gpio::Pa24<Input<Floating>>,
     dp: gpio::Pa25<Input<Floating>>,
     port: &mut Port,
@@ -210,7 +210,7 @@ pub fn usb_bus(
     dbgprint!("got clock");
     UsbBusWrapper::new(UsbBus::new(
         usb_clock,
-        pm,
+        mclk,
         dm.into_function(port),
         dp.into_function(port),
         usb,

@@ -16,7 +16,7 @@ const MASTER_ACT_STOP: u8 = 3;
 
 macro_rules! i2c {
     ([
-        $($Type:ident: ($pad0:ident, $pad1:ident, $SERCOM:ident, $powermask:ident, $clock:ident),)+
+        $($Type:ident: ($pad0:ident, $pad1:ident, $SERCOM:ident, $powermask:ident, $clock:ident, $apmask:ident),)+
     ]) => {
         $(
 /// Represents the Sercom instance configured to act as an I2C Master.
@@ -59,7 +59,7 @@ impl $Type {
     ) -> Self {
         // Power up the peripheral bus clock.
         // safe because we're exclusively owning SERCOM
-        mclk.apbcmask.modify(|_, w| w.$powermask().set_bit());
+        mclk.$apmask.modify(|_, w| w.$powermask().set_bit());
 
         unsafe {
             // reset the sercom instance
@@ -308,7 +308,8 @@ i2c!([
             Sercom0Pad1,
             SERCOM0,
             sercom0_,
-            Sercom0CoreClock
+            Sercom0CoreClock,
+            apbamask
         ),
     I2CMaster1:
         (
@@ -316,7 +317,8 @@ i2c!([
             Sercom1Pad1,
             SERCOM1,
             sercom1_,
-            Sercom1CoreClock
+            Sercom1CoreClock,
+            apbamask
         ),
     I2CMaster2:
         (
@@ -324,7 +326,8 @@ i2c!([
             Sercom2Pad1,
             SERCOM2,
             sercom2_,
-            Sercom2CoreClock
+            Sercom2CoreClock,
+            apbbmask
         ),
     I2CMaster3:
         (
@@ -332,7 +335,8 @@ i2c!([
             Sercom3Pad1,
             SERCOM3,
             sercom3_,
-            Sercom3CoreClock
+            Sercom3CoreClock,
+            apbbmask
         ),
 ]);
 
@@ -343,7 +347,8 @@ i2c!([
             Sercom4Pad1,
             SERCOM4,
             sercom4_,
-            Sercom4CoreClock
+            Sercom4CoreClock,
+            apbdmask
         ),
     I2CMaster5:
         (
@@ -351,7 +356,8 @@ i2c!([
             Sercom5Pad1,
             SERCOM5,
             sercom5_,
-            Sercom5CoreClock
+            Sercom5CoreClock,
+            apbdmask
         ),
 ]);
 

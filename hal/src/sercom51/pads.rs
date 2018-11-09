@@ -88,15 +88,7 @@ pub enum Sercom1Pad1 {
     Pa17(pa17, PfC),
 }
 
-pub enum Sercom1Pad2 {
-    Pa18(pa18, PfC),
-    Pa30(pa30, PfD),
-}
 
-pub enum Sercom1Pad3 {
-    Pa19(pa19, PfC),
-    Pa31(pa31, PfD),
-}
 
 // sercom2[0]:  PA12:C   PA08:D
 // sercom2[1]:  PA13:C   PA09:D
@@ -148,7 +140,7 @@ pub enum Sercom3Pad3 {
 }
 );
 
-#[cfg(feature = "samd21g18a")]
+#[cfg(any(feature = "samd21g18a", feature="samd51j19a"))]
 pad!(
 // sercom4[0]:  PA12:D   PB08:D   PB12:C
 // sercom4[1]:  PA13:D   PB09:D   PB13:C
@@ -179,11 +171,23 @@ pub enum Sercom4Pad3 {
     Pb15(pb15, PfC),
 }
 
-// sercom5[0]:  PA22:D   PB02:D   PB16:C  PB30:D
-// sercom5[1]:  PA23:D   PB03:D   PB17:C  PB31:D
-// sercom5[2]:  PA24:D   PB00:D   PA20:C  PB22:D
-// sercom5[3]:  PA25:D   PB01:D   PA21:C  PB23:D
+pub enum Sercom5Pad2 {
+    Pa24(pa24, PfD),
+    Pb0(pb0, PfD),
+    Pa20(pa20, PfC),
+    Pb22(pb22, PfD),
+}
 
+pub enum Sercom5Pad3 {
+    Pa25(pa25, PfD),
+    Pb1(pb1, PfD),
+    Pa21(pa21, PfC),
+    Pb23(pb23, PfD),
+}
+);
+
+#[cfg(feature = "samd21g18a")]
+pad!(
 pub enum Sercom5Pad0 {
     Pa22(pa22, PfD),
     Pb2(pb2, PfD),
@@ -197,18 +201,48 @@ pub enum Sercom5Pad1 {
     Pb17(pb17, PfC),
     Pb31(pb31, PfD),
 }
+);
 
-pub enum Sercom5Pad2 {
-    Pa24(pa24, PfD),
-    Pb0(pb0, PfD),
-    Pa20(pa20, PfC),
-    Pb22(pb22, PfD),
+#[cfg(any(feature = "samd21g18a", feature = "samd21e18a"))]
+pad!(
+pub enum Sercom1Pad2 {
+    Pa18(pa18, PfC),
+    Pa30(pa30, PfD),
+    Pb22(pb22, PfC),
 }
 
-pub enum Sercom5Pad3 {
-    Pa25(pa25, PfD),
-    Pb1(pb1, PfD),
-    Pa21(pa21, PfC),
-    Pb23(pb23, PfD),
+pub enum Sercom1Pad3 {
+    Pa19(pa19, PfC),
+    Pa31(pa31, PfD),
+    Pb23(pb23, PfC),
+}
+);
+
+#[cfg(feature = "samd51j19a")]
+pad!(
+pub enum Sercom1Pad2 {
+    Pa18(pa18, PfC),
+    Pa30(pa30, PfD),
+    Pb22(pb22, PfC),
+}
+
+pub enum Sercom1Pad3 {
+    Pa19(pa19, PfC),
+    Pa31(pa31, PfD),
+    Pb23(pb23, PfC),
+}
+
+pub enum Sercom5Pad0 {
+    Pa23(pa23, PfD),
+    Pb2(pb2, PfD),
+    Pb31(pb31, PfD),
+    Pb16(pb16, PfC),
+}
+
+pub enum Sercom5Pad1 {
+    Pa22(pa22, PfD),
+    Pb3(pb3, PfD),
+    Pb30(pb30, PfD),
+    Pb17(pb17, PfC),
 }
 );
