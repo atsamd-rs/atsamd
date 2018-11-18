@@ -193,13 +193,13 @@ impl GenericClockController {
                 w.genen().set_bit()
             });
         }
-        while state.gclk.syncbusy.read().genctrl3().bit_is_set() {}
+        while state.gclk.syncbusy.read().genctrl3().is_gclk3() {}
 
         state.gclk.genctrl[0].write(|w| {
             w.src().osculp32k();
             w.genen().set_bit()
         });
-        while state.gclk.syncbusy.read().genctrl0().bit_is_set() {}
+        while state.gclk.syncbusy.read().genctrl0().is_gclk0() {}
 
         unsafe {
             oscctrl.dfllctrla.write(|w| w.bits(0));
@@ -235,7 +235,7 @@ impl GenericClockController {
             });
         }
 
-        while state.gclk.syncbusy.read().genctrl5().bit_is_set() {}
+        while state.gclk.syncbusy.read().genctrl5().is_gclk5() {}
 
         configure_and_enable_dpll0(oscctrl, &mut state.gclk);
         wait_for_dpllrdy(oscctrl);
@@ -246,7 +246,7 @@ impl GenericClockController {
             w.genen().set_bit()
         });
 
-        while state.gclk.syncbusy.read().genctrl0().bit_is_set() {}
+        while state.gclk.syncbusy.read().genctrl0().is_gclk0() {}
 
         mclk.cpudiv.write(|w| {
             w.div().div1()
