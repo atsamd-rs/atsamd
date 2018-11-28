@@ -7,4 +7,4 @@ board](https://www.adafruit.com/product/3501).
 
 Check out the repository for examples:
 
-https://github.com/atsamd-rs/atsamd/tree/master/gemma_m0/examples
+https://github.com/atsamd-rs/atsamd/tree/master/boards/gemma_m0/examples

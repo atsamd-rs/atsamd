@@ -7,4 +7,4 @@ board](https://www.adafruit.com/product/2772).
 
 Check out the repository for examples:
 
-https://github.com/atsamd-rs/atsamd/tree/master/feather_m0/examples
+https://github.com/atsamd-rs/atsamd/tree/master/boards/feather_m0/examples
