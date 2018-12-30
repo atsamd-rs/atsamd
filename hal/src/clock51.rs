@@ -210,11 +210,6 @@ impl GenericClockController {
             });
         }
         while oscctrl.dfllsync.read().dfllmul().bit_is_set() {}
-
-        /*unsafe {
-            oscctrl.dfllctrlb.write(|w| w.bits(0));
-        }*/
-
         while oscctrl.dfllsync.read().dfllctrlb().bit_is_set() {}
         
         oscctrl.dfllctrla.modify(|_, w| w.enable().set_bit());
@@ -485,12 +480,10 @@ fn enable_external_32kosc(osc32kctrl: &mut OSC32KCTRL) {
 }
 
 fn wait_for_dpllrdy(oscctrl: &mut OSCCTRL) {
-    unsafe { ptr::write_volatile(0x41008008 as _, 1 << 16); }
     while oscctrl.dpllstatus0.read().lock().bit_is_clear() ||
         oscctrl.dpllstatus0.read().clkrdy().bit_is_clear() {
             unsafe { ptr::write_volatile(0x41008018 as *mut u32,  (oscctrl.dpllstatus0.read().clkrdy().bit_is_clear() as u32) << 16); }
     }
-    unsafe { ptr::write_volatile(0x41008014 as _, 1 << 16); }
 }
 
 /// Configure the dpll0 to run at 120MHz
