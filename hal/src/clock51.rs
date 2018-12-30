@@ -211,18 +211,19 @@ impl GenericClockController {
         }
         while oscctrl.dfllsync.read().dfllmul().bit_is_set() {}
 
-        unsafe {
+        /*unsafe {
             oscctrl.dfllctrlb.write(|w| w.bits(0));
-        }
+        }*/
+
         while oscctrl.dfllsync.read().dfllctrlb().bit_is_set() {}
         
         oscctrl.dfllctrla.modify(|_, w| w.enable().set_bit());
         while oscctrl.dfllsync.read().enable().bit_is_set() {}
 
         oscctrl.dfllctrlb.write(|w| {
-            w.waitlock();
-            w.ccdis();
-            w.usbcrm().set_bit()
+            w.ccdis().set_bit();
+            w.usbcrm().set_bit();
+            w.waitlock().set_bit()
         });
 
         while oscctrl.status.read().dfllrdy().bit_is_clear() {}
@@ -230,7 +231,7 @@ impl GenericClockController {
         unsafe {
             state.gclk.genctrl[5].write(|w| {
                 w.src().dfll();
-                w.genen();
+                w.genen().set_bit();
                 w.div().bits(24)
             });
         }
@@ -242,7 +243,7 @@ impl GenericClockController {
 
         state.gclk.genctrl[0].write(|w| {
             w.src().dpll0();
-            w.idc();
+            w.idc().set_bit();
             w.genen().set_bit()
         });
 
@@ -495,7 +496,7 @@ fn wait_for_dpllrdy(oscctrl: &mut OSCCTRL) {
 /// Configure the dpll0 to run at 120MHz
 fn configure_and_enable_dpll0(oscctrl: &mut OSCCTRL, gclk: &mut GCLK) {
    gclk.pchctrl[FDPLL0 as usize].write(|w| {
-        w.chen();
+        w.chen().set_bit();
         w.gen().gclk5()
     });
     unsafe {
@@ -509,7 +510,8 @@ fn configure_and_enable_dpll0(oscctrl: &mut OSCCTRL, gclk: &mut GCLK) {
         w.lbypass().set_bit()
     });
     oscctrl.dpllctrla0.write(|w| {
-        w.enable().set_bit()
+        w.enable().set_bit();
+        w.ondemand().clear_bit()
     });
 
 }
