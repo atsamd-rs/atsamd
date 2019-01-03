@@ -1,14 +1,31 @@
 #[doc = r" Register block"]
 #[repr(C)]
-pub union RegisterBlock {
-    #[doc = "0x00 - USART Mode"]
-    pub usart: USART,
-    #[doc = "0x00 - SPI Mode"]
-    pub spi: SPI,
-    #[doc = "0x00 - I2C Slave Mode"]
-    pub i2cs: I2CS,
-    #[doc = "0x00 - I2C Master Mode"]
-    pub i2cm: I2CM,
+pub struct RegisterBlock {}
+impl RegisterBlock {
+    pub fn usart(&self) -> &USART {
+        unsafe { &*(((self as *const Self) as *const u8).add(0u32) as *const USART) }
+    }
+    pub fn usart_mut(&self) -> &mut USART {
+        unsafe { &mut *(((self as *const Self) as *mut u8).add(0u32) as *mut USART) }
+    }
+    pub fn spi(&self) -> &SPI {
+        unsafe { &*(((self as *const Self) as *const u8).add(0u32) as *const SPI) }
+    }
+    pub fn spi_mut(&self) -> &mut SPI {
+        unsafe { &mut *(((self as *const Self) as *mut u8).add(0u32) as *mut SPI) }
+    }
+    pub fn i2cs(&self) -> &I2CS {
+        unsafe { &*(((self as *const Self) as *const u8).add(0u32) as *const I2CS) }
+    }
+    pub fn i2cs_mut(&self) -> &mut I2CS {
+        unsafe { &mut *(((self as *const Self) as *mut u8).add(0u32) as *mut I2CS) }
+    }
+    pub fn i2cm(&self) -> &I2CM {
+        unsafe { &*(((self as *const Self) as *const u8).add(0u32) as *const I2CM) }
+    }
+    pub fn i2cm_mut(&self) -> &mut I2CM {
+        unsafe { &mut *(((self as *const Self) as *mut u8).add(0u32) as *mut I2CM) }
+    }
 }
 #[doc = r" Register block"]
 #[repr(C)]
