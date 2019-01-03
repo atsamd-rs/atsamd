@@ -1,10 +1,19 @@
 #[doc = r" Register block"]
 #[repr(C)]
-pub union RegisterBlock {
-    #[doc = "0x00 - USB is Host"]
-    pub host: HOST,
-    #[doc = "0x00 - USB is Device"]
-    pub device: DEVICE,
+pub struct RegisterBlock {}
+impl RegisterBlock {
+    pub fn host(&self) -> &HOST {
+        unsafe { &*(((self as *const Self) as *const u8).add(0u32) as *const HOST) }
+    }
+    pub fn host_mut(&self) -> &mut HOST {
+        unsafe { &mut *(((self as *const Self) as *mut u8).add(0u32) as *mut HOST) }
+    }
+    pub fn device(&self) -> &DEVICE {
+        unsafe { &*(((self as *const Self) as *const u8).add(0u32) as *const DEVICE) }
+    }
+    pub fn device_mut(&self) -> &mut DEVICE {
+        unsafe { &mut *(((self as *const Self) as *mut u8).add(0u32) as *mut DEVICE) }
+    }
 }
 #[doc = r" Register block"]
 #[repr(C)]

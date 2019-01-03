@@ -391,7 +391,7 @@ impl OUTR {
     }
     #[doc = "Checks if the value of the field is `ASYNC`"]
     #[inline]
-    pub fn is_async(&self) -> bool {
+    pub fn is_async_(&self) -> bool {
         *self == OUTR::ASYNC
     }
     #[doc = "Checks if the value of the field is `SYNC`"]
@@ -856,7 +856,7 @@ impl<'a> _OUTW<'a> {
     }
     #[doc = "The asynchronous output of COMPn is routed to the COMPn I/O port"]
     #[inline]
-    pub fn async(self) -> &'a mut W {
+    pub fn async_(self) -> &'a mut W {
         self.variant(OUTW::ASYNC)
     }
     #[doc = "The synchronous output (including filtering) of COMPn is routed to the COMPn I/O port"]
