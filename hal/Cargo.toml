@@ -30,12 +30,12 @@ version = "~1.0"
 # We use a feature named "samdFOO" to pull in the dependency named "atsamdFOO"
 [dependencies.atsamd21g18a]
 path = "../pac/atsamd21g18a"
-version = "~0.3"
+version = "~0.4"
 optional = true
 
 [dependencies.atsamd21e18a]
 path = "../pac/atsamd21e18a"
-version = "~0.3"
+version = "~0.4"
 optional = true
 
 [dependencies.usb-device]
