@@ -11,6 +11,6 @@ cargo build --manifest-path boards/feather_m0/Cargo.toml --examples
 cargo build --manifest-path boards/gemma_m0/Cargo.toml --examples
 cargo build --manifest-path boards/itsybitsy_m0/Cargo.toml --examples
 cargo build --manifest-path boards/trinket_m0/Cargo.toml --examples
-cargo build --manifest-path boards/samd21_mini/Cargo.toml --examples
+#cargo build --manifest-path boards/samd21_mini/Cargo.toml --example
 cargo build --manifest-path boards/arduino_mkrzero/Cargo.toml --examples
 cargo build --manifest-path boards/circuit_playground_express/Cargo.toml --examples
