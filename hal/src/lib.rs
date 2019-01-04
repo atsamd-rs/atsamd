@@ -1,7 +1,7 @@
 #![no_std]
-#![feature(align_offset)]
-#![feature(ptr_offset_from)]
 #![recursion_limit = "1024"]
+
+#[cfg_attr(feature="usb", feature(align_offset, ptr_offset_from))]
 
 #[cfg(feature = "samd21g18a")]
 pub extern crate atsamd21g18a;

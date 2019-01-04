@@ -1,6 +1,6 @@
 [package]
 name = "gemma_m0"
-version = "0.1.1"
+version = "0.2.0"
 authors = ["Wez Furlong <wez@wezfurlong.org>"]
 description = "Board Support crate for the Adafruit Gemma M0"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
@@ -24,7 +24,7 @@ version = "~0.2"
 default-features = false
 
 [dev-dependencies]
-panic-abort = "~0.3"
+panic-halt = "~0.2"
 
 [features]
 # ask the HAL to enable atsamd21e18a support

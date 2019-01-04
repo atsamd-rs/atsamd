@@ -143,7 +143,7 @@ pub type $TYPE = TimerCounter<$TC>;
 impl Count16 for $TC {
     fn count16(&self) -> &COUNT16 {
         unsafe {
-            &self.count16
+            &self.count16()
         }
     }
 }

@@ -2,7 +2,7 @@
 #![no_main]
 
 extern crate itsybitsy_m0 as hal;
-extern crate panic_abort;
+extern crate panic_halt;
 
 extern crate embedded_graphics;
 extern crate ssd1306;

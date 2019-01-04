@@ -1,6 +1,6 @@
 [package]
 name = "circuit_playground_express"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Paul Sajna <paulsajna@gmail.com>"]
 description = "Board Support crate for the Adafruit Circuit Playground Express"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
@@ -21,7 +21,7 @@ default-features = false
 
 [dev-dependencies]
 panic-halt = "~0.2"
-cortex-m-rt = "~0.5"
+cortex-m-rt = "~0.6"
 
 [features]
 # ask the HAL to enable atsamd21g18a support

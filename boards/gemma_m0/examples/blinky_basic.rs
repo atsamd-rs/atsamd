@@ -2,7 +2,7 @@
 #![no_main]
 
 extern crate gemma_m0 as hal;
-extern crate panic_abort;
+extern crate panic_halt;
 
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
