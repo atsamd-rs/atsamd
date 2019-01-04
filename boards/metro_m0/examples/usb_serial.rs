@@ -18,7 +18,7 @@ use cortex_m_rt::{exception, ExceptionFrame};
 
 use hal::clock::GenericClockController;
 use hal::usb_device::bus::UsbBusWrapper;
-use hal::{CorePeripherals, Peripherals};
+use hal::{interrupt, CorePeripherals, Peripherals};
 
 static mut USB_BUS: Option<UsbBusWrapper<hal::UsbBus>> = None;
 static mut USB_DEV: Option<UsbDevice<hal::UsbBus>> = None;
@@ -261,8 +261,8 @@ fn HardFault(ef: &ExceptionFrame) -> ! {
     panic!("{:#?}", ef);
 }
 
-interrupt!(USB, usb_handler);
-fn usb_handler() {
+#[interrupt]
+fn USB() {
     poll_usb();
 }
 

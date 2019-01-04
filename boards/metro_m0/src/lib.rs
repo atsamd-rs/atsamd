@@ -12,7 +12,9 @@ pub use hal::atsamd21g18a::*;
 use hal::prelude::*;
 pub use hal::*;
 
-use gpio::{Floating, Input, IntoFunction, Output, Port, PushPull};
+#[cfg(feature = "usb")]
+use gpio::IntoFunction;
+use gpio::{Floating, Input, Output, Port, PushPull};
 use hal::clock::GenericClockController;
 use hal::sercom::{I2CMaster3, PadPin, SPIMaster4, SPIMaster5};
 use hal::time::Hertz;
