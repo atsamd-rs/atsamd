@@ -27,9 +27,6 @@ default-features = false
 panic-abort = "~0.3"
 panic-semihosting = "~0.5"
 cortex-m-semihosting = "~0.3"
-cortex-m-rtfm = "~0.3"
-sx1509 = "~0.2"
-panic_rtt = "~0.1"
 
 [features]
 # ask the HAL to enable atsamd21g18a support

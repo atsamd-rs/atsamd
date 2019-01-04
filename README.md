@@ -10,7 +10,8 @@ There are a couple of crates provided by this repo:
 * [`atsamd21g18a`](https://atsamd-rs.github.io/atsamd/atsamd21g18a/atsamd21g18a/) is an
   auto-generated crate providing access to the peripherals
   specified for this device by its SVD file.  This is the MCU used in the Metro M0,
-  Feather M0 and Circuit Playground express boards from Adafruit.
+  Feather M0, Circuit Playground express boards from Adafruit and the SODAQ ONE board
+  from SODAQ.
 * [`atsamd21e18a`](https://atsamd-rs.github.io/atsamd/atsamd21e18a/atsamd21e18a/) is an
   auto-generated crate providing access to the peripherals
   specified for this device by its SVD file.  This is the MCU used in the Trinket M0
@@ -31,6 +32,7 @@ In addition to the generic crates, there are also crates for popular ATSAMD21 ba
 * [`metro_m0`](https://atsamd-rs.github.io/atsamd/atsamd21g18a/metro_m0/)
 * [`samd21_mini`](https://atsamd-rs.github.io/atsamd/atsamd21g18a/samd21_mini/)
 * [`trinket_m0`](https://atsamd-rs.github.io/atsamd/atsamd21e18a/trinket_m0/)
+* [`sodaq_one`](https://atsamd-rs.github.io/atsamd/atsamd21g18a/sodaq_one/)
 
 ## Building
 

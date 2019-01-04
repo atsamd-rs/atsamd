@@ -112,7 +112,7 @@ define_pins!(
     pin mag_int = a19,
 );
 
-/// Convenience for setting up the labelled SPI peripheral.
+/// Convenience for setting up pins D8-D11 for SPI.
 /// This powers up SERCOM0 and configures it for use as an
 /// SPI Master in SPI Mode 0.
 pub fn spi_master<F: Into<Hertz>>(

@@ -22,6 +22,7 @@ crates_by_pac = {
         'itsybitsy_m0',
         'metro_m0',
         'samd21_mini',
+        'sodaq_one',
     ],
     'atsamd51j19a': [],
 }
