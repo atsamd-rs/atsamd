@@ -170,9 +170,7 @@ impl $Type {
     }
 
     fn usart(&self) -> &USART {
-        unsafe {
-            return &self.sercom.usart();
-        }
+        return &self.sercom.usart();
     }
 
     fn dre(&self) -> bool {
