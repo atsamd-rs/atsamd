@@ -1,5 +1,4 @@
 #![no_std]
-#![recursion_limit = "1024"]
 #![cfg_attr(feature = "usb", feature(align_offset, ptr_offset_from))]
 
 #[cfg(feature = "samd21g18a")]
@@ -41,8 +40,8 @@ macro_rules! dbgprint {
 #[cfg_attr(feature = "usb", macro_use)]
 extern crate cortex_m;
 pub extern crate embedded_hal as hal;
-pub extern crate mashup;
 extern crate nb;
+pub extern crate paste;
 
 #[cfg(feature = "usb")]
 pub extern crate usb_device;
