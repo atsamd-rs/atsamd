@@ -1,6 +1,6 @@
 [package]
 name = "itsybitsy_m0"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Ben Bergman <ben@benbergman.ca>"]
 description = "Board Support crate for the Adafruit ItsyBitsy M0"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
@@ -24,7 +24,7 @@ version = "~0.2"
 default-features = false
 
 [dev-dependencies]
-panic-abort = "~0.3"
+panic-halt = "~0.2"
 ssd1306 = "~0.2"
 embedded-graphics = "^0.4.0"
 

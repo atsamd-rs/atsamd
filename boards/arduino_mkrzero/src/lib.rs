@@ -8,8 +8,8 @@ extern crate cortex_m_rt;
 #[cfg(feature = "rt")]
 pub use cortex_m_rt::entry;
 
-#[cfg(feature = "panic_abort")]
-pub extern crate panic_abort;
+#[cfg(feature = "panic_halt")]
+pub extern crate panic_halt;
 
 pub use hal::atsamd21g18a::*;
 use hal::prelude::*;

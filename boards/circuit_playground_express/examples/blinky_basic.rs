@@ -1,11 +1,8 @@
-#![feature(used)]
 #![no_std]
 #![no_main]
 
 extern crate circuit_playground_express as hal;
 extern crate panic_halt;
-
-#[macro_use(entry)]
 extern crate cortex_m_rt;
 
 use hal::clock::GenericClockController;
@@ -13,8 +10,9 @@ use hal::delay::Delay;
 use hal::prelude::*;
 use hal::{CorePeripherals, Peripherals};
 
-entry!(main);
+use cortex_m_rt::entry;
 
+#[entry]
 fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
     let core = CorePeripherals::take().unwrap();

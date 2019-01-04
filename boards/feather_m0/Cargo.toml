@@ -1,6 +1,6 @@
 [package]
 name = "feather_m0"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Ben Bergman <ben@benbergman.ca>"]
 description = "Board Support crate for the Adafruit Feather M0"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
@@ -23,21 +23,41 @@ path = "../../hal"
 version = "~0.2"
 default-features = false
 
+[dependencies.panic-abort]
+version = "~0.3"
+optional = true
+
+[dependencies.panic-halt]
+version = "~0.2"
+optional = true
+
+[dependencies.panic-semihosting]
+version = "~0.5"
+optional = true
+
+[dependencies.panic_rtt]
+version = "~0.1"
+optional = true
+
+[dependencies.cortex-m-rtfm]
+version = "~0.3"
+optional = true
+
 [dev-dependencies]
-panic-abort = "~0.3"
-panic-semihosting = "~0.5"
 cortex-m-semihosting = "~0.3"
-cortex-m-rtfm = "~0.3"
 sx1509 = "~0.2"
-panic_rtt = "~0.1"
 
 [features]
 # ask the HAL to enable atsamd21g18a support
-default = ["rt", "atsamd21-hal/samd21g18a"]
+default = ["rt", "atsamd21-hal/samd21g18a", "panic_halt"]
 rt = ["cortex-m-rt", "atsamd21-hal/samd21g18a-rt"]
 unproven = ["atsamd21-hal/unproven"]
-use_rtt = ["atsamd21-hal/use_rtt"]
+use_rtt = ["atsamd21-hal/use_rtt", "panic_rtt"]
 usb = ["atsamd21-hal/usb"]
+panic_halt = ["panic-halt"]
+panic_abort = ["panic-abort"]
+panic_semihosting = ["panic-semihosting"]
+cortex_m_rtfm = ["cortex-m-rtfm"]
 
 [profile.dev]
 incremental = false

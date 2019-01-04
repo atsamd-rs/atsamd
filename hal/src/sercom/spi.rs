@@ -136,19 +136,19 @@ impl $Type {
 
         unsafe {
             // reset the sercom instance
-            sercom.spi.ctrla.modify(|_, w| w.swrst().set_bit());
+            sercom.spi().ctrla.modify(|_, w| w.swrst().set_bit());
             // wait for reset to complete
-            while sercom.spi.syncbusy.read().swrst().bit_is_set()
-                || sercom.spi.ctrla.read().swrst().bit_is_set()
+            while sercom.spi().syncbusy.read().swrst().bit_is_set()
+                || sercom.spi().ctrla.read().swrst().bit_is_set()
             {}
 
             // Put the hardware into spi master mode
-            sercom.spi.ctrla.modify(|_, w| w.mode().spi_master());
+            sercom.spi().ctrla.modify(|_, w| w.mode().spi_master());
             // wait for configuration to take effect
-            while sercom.spi.syncbusy.read().enable().bit_is_set() {}
+            while sercom.spi().syncbusy.read().enable().bit_is_set() {}
 
             // 8 bit data size and enable the receiver
-            sercom.spi.ctrlb.modify(|_, w|{
+            sercom.spi().ctrlb.modify(|_, w|{
                 w.chsize().bits(0);
                 w.rxen().set_bit()
             });
@@ -156,9 +156,9 @@ impl $Type {
             // set the baud rate
             let gclk = clock.freq();
             let baud = (gclk.0 / (2 * freq.into().0) - 1) as u8;
-            sercom.spi.baud.modify(|_, w| w.baud().bits(baud));
+            sercom.spi().baud.modify(|_, w| w.baud().bits(baud));
 
-            sercom.spi.ctrla.modify(|_, w| {
+            sercom.spi().ctrla.modify(|_, w| {
                 match mode.polarity {
                     Polarity::IdleLow => w.cpol().clear_bit(),
                     Polarity::IdleHigh => w.cpol().set_bit(),
@@ -178,9 +178,9 @@ impl $Type {
             });
 
 
-            sercom.spi.ctrla.modify(|_, w| w.enable().set_bit());
+            sercom.spi().ctrla.modify(|_, w| w.enable().set_bit());
             // wait for configuration to take effect
-            while sercom.spi.syncbusy.read().enable().bit_is_set() {}
+            while sercom.spi().syncbusy.read().enable().bit_is_set() {}
 
         }
 
@@ -198,7 +198,7 @@ impl $Type {
 
     /// Helper for accessing the spi member of the sercom instance
     fn spi(&mut self) -> &SPI {
-        unsafe { &self.sercom.spi }
+        unsafe { &self.sercom.spi() }
     }
 }
 
