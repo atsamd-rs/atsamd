@@ -63,33 +63,33 @@ impl $Type {
 
         unsafe {
             // reset the sercom instance
-            sercom.i2cm.ctrla.modify(|_, w| w.swrst().set_bit());
+            sercom.i2cm().ctrla.modify(|_, w| w.swrst().set_bit());
             // wait for reset to complete
-            while sercom.i2cm.syncbusy.read().swrst().bit_is_set()
-                || sercom.i2cm.ctrla.read().swrst().bit_is_set()
+            while sercom.i2cm().syncbusy.read().swrst().bit_is_set()
+                || sercom.i2cm().ctrla.read().swrst().bit_is_set()
             {}
 
             // Put the hardware into i2c master mode
-            sercom.i2cm.ctrla.modify(|_, w| w.mode().i2c_master());
+            sercom.i2cm().ctrla.modify(|_, w| w.mode().i2c_master());
             // wait for configuration to take effect
-            while sercom.i2cm.syncbusy.read().enable().bit_is_set() {}
+            while sercom.i2cm().syncbusy.read().enable().bit_is_set() {}
 
             // set the baud rate
             let gclk = clock.freq();
             let baud = (gclk.0 / (2 * freq.into().0) - 1) as u8;
-            sercom.i2cm.baud.modify(|_, w| w.baud().bits(baud));
+            sercom.i2cm().baud.modify(|_, w| w.baud().bits(baud));
 
-            sercom.i2cm.ctrla.modify(|_, w| w.enable().set_bit());
+            sercom.i2cm().ctrla.modify(|_, w| w.enable().set_bit());
             // wait for configuration to take effect
-            while sercom.i2cm.syncbusy.read().enable().bit_is_set() {}
+            while sercom.i2cm().syncbusy.read().enable().bit_is_set() {}
 
             // set the bus idle
             sercom
-                .i2cm
+                .i2cm()
                 .status
                 .modify(|_, w| w.busstate().bits(BUS_STATE_IDLE));
             // wait for it to take effect
-            while sercom.i2cm.syncbusy.read().sysop().bit_is_set() {}
+            while sercom.i2cm().syncbusy.read().sysop().bit_is_set() {}
         }
 
         Self { sda, scl, sercom }
@@ -202,7 +202,7 @@ impl $Type {
     }
 
     fn i2cm(&mut self) -> &I2CM {
-        unsafe { &self.sercom.i2cm }
+        self.sercom.i2cm()
     }
 
     fn send_bytes(&mut self, bytes: &[u8]) -> Result<(), I2CError> {

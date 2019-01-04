@@ -316,7 +316,6 @@ impl<'a> _PMUXEW<'a> {
     #[doc = "Peripheral function H selected"]
     #[inline]
     pub fn h(self) -> &'a mut W {
-
         self.variant(PMUXEW::H)
     }
     #[doc = r" Writes raw bits to the field"]
@@ -431,7 +430,7 @@ impl R {
     pub fn bits(&self) -> u8 {
         self.bits
     }
-    #[doc = "Bits 0:3 - Peripheral Multiplexing Even"]
+    #[doc = "Bits 0:3 - Peripheral Multiplexing for Even-Numbered Pin"]
     #[inline]
     pub fn pmuxe(&self) -> PMUXER {
         PMUXER::_from({
@@ -440,7 +439,7 @@ impl R {
             ((self.bits >> OFFSET) & MASK as u8) as u8
         })
     }
-    #[doc = "Bits 4:7 - Peripheral Multiplexing Odd"]
+    #[doc = "Bits 4:7 - Peripheral Multiplexing for Odd-Numbered Pin"]
     #[inline]
     pub fn pmuxo(&self) -> PMUXOR {
         PMUXOR::_from({
@@ -449,7 +448,8 @@ impl R {
             ((self.bits >> OFFSET) & MASK as u8) as u8
         })
     }
-}impl W {
+}
+impl W {
     #[doc = r" Reset value of the register"]
     #[inline]
     pub fn reset_value() -> W {

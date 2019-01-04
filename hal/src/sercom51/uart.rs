@@ -103,14 +103,14 @@ impl $Type {
         // Lots of union fields which require unsafe access
         unsafe {
             // Reset
-            sercom.usart.ctrla.modify(|_, w| w.swrst().set_bit());
-            while sercom.usart.syncbusy.read().swrst().bit_is_set()
-                || sercom.usart.ctrla.read().swrst().bit_is_set() {
+            sercom.usart().ctrla.modify(|_, w| w.swrst().set_bit());
+            while sercom.usart().syncbusy.read().swrst().bit_is_set()
+                || sercom.usart().ctrla.read().swrst().bit_is_set() {
                 // wait for sync of CTRLA.SWRST
             }
 
             // Unsafe b/c of direct call to bits on rxpo/txpo
-            sercom.usart.ctrla.modify(|_, w| {
+            sercom.usart().ctrla.modify(|_, w| {
                 w.dord().set_bit();
 
                 let (rxpo, txpo) = pinout.rxpo_txpo();
@@ -135,7 +135,7 @@ impl $Type {
 //            let baud = mul_ratio / 1000;
 //            let fp = ((mul_ratio - (baud*1000))*8)/1000;
 //
-//            sercom.usart.baud.baud_frac_mode.modify(|_, w| {
+//            sercom.usart().baud.baud_frac_mode.modify(|_, w| {
 //                w.baud().bits(baud as u16);
 //                w.fp().bits(fp as u8)
 //            });
@@ -143,32 +143,32 @@ impl $Type {
             // Asynchronous arithmetic mode (Table 24-2 in datasheet)
             let baud = calculate_baud_value(freq.into().0, fref, sample_rate);
 
-            sercom.usart.baud.baud.modify(|_, w| {
+            sercom.usart().baud().modify(|_, w| {
                 w.baud().bits(baud)
             });
 
-            sercom.usart.ctrlb.modify(|_, w| {
+            sercom.usart().ctrlb.modify(|_, w| {
                 w.sbmode().clear_bit(); // 0 is one stop bit see sec 25.8.2
                 w.chsize().bits(0x0);
                 w.txen().set_bit();
                 w.rxen().set_bit()
             });
 
-            while sercom.usart.syncbusy.read().ctrlb().bit_is_set() {}
+            while sercom.usart().syncbusy.read().ctrlb().bit_is_set() {}
 
             nvic.enable($int0);
             nvic.enable($int1);
             nvic.enable($int2);
 
-            sercom.usart.intenset.modify(|_, w| {
+            sercom.usart().intenset.modify(|_, w| {
                 w.rxc().set_bit()
                 //w.txc().set_bit()
                 //w.dre().set_bit()
             });
 
-            sercom.usart.ctrla.modify(|_, w| w.enable().set_bit());
+            sercom.usart().ctrla.modify(|_, w| w.enable().set_bit());
             // wait for sync of ENABLE
-            while sercom.usart.syncbusy.read().enable().bit_is_set() {}
+            while sercom.usart().syncbusy.read().enable().bit_is_set() {}
         }
 
         Self {
@@ -178,9 +178,7 @@ impl $Type {
     }
 
     fn usart(&self) -> &USART {
-        unsafe {
-            return &self.sercom.usart;
-        }
+        return &self.sercom.usart();
     }
 
     fn dre(&self) -> bool {
@@ -198,7 +196,7 @@ impl serial::Write<u8> for $Type {
                 return Err(nb::Error::WouldBlock);
             }
 
-            self.sercom.usart.data.write(|w| {
+            self.sercom.usart().data.write(|w| {
                 w.bits(word as u32)
             });
         }

@@ -5,7 +5,7 @@
 //! that the peripherals have been correctly configured.
 use target_device::gclk::pchctrl::GENR::*;
 use target_device::{self, GCLK, NVMCTRL, OSCCTRL, MCLK, OSC32KCTRL};
-use target_device::gclk::genctrl::SRCR::{XOSC32K, DFLL, OSCULP32K, DPLL0};
+use target_device::gclk::genctrl::SRCR::*;
 use time::{Hertz, U32Ext};
 use core::ptr;
 
@@ -326,6 +326,8 @@ impl GenericClockController {
             GCLKGEN1 => self.gclks[1],
             DFLL => OSC48M_FREQ,
             DPLL0 => 120.mhz().into(),
+            XOSC0 | XOSC1 | GCLKIN | DPLL1 => unimplemented!(),
+            target_device::gclk::genctrl::SRCR::_Reserved(_) => panic!()
         };
         self.gclks[idx] = Hertz(freq.0 / divider as u32);
         Some(GClock { gclk, freq })

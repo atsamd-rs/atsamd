@@ -240,7 +240,6 @@ impl RWSR {
         *self == RWSR::DUAL
     }
 }
-
 #[doc = r" Value of the field"]
 pub struct AHBNS0R {
     bits: bool,

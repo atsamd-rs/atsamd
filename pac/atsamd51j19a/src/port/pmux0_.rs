@@ -268,7 +268,6 @@ impl PMUXEW {
         }
     }
 }
-
 #[doc = r" Proxy"]
 pub struct _PMUXEW<'a> {
     w: &'a mut W,
@@ -319,7 +318,6 @@ impl<'a> _PMUXEW<'a> {
     pub fn h(self) -> &'a mut W {
         self.variant(PMUXEW::H)
     }
- 
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {

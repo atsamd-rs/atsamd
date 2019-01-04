@@ -32,7 +32,7 @@ pub struct TimerCounter<TC> {
 /// TimerCounter impl generic.  It doesn't make too much sense to
 /// to try to implement this trait outside of this module.
 pub trait Count16 {
-    fn count16(&self) -> &COUNT16;
+    fn count_16(&self) -> &COUNT16;
 }
 
 impl<TC> Periodic for TimerCounter<TC> {}
@@ -49,7 +49,7 @@ where
         let timeout = timeout.into();
         let params = clock::ClockParams::new(self.freq, timeout);
         let divider = params.divider;
-        let count = self.tc.count16();
+        let count = self.tc.count_16();
 
         // Disable the timer while we reconfigure it
         count.ctrla.modify(|_, w| w.enable().clear_bit());
@@ -107,7 +107,7 @@ where
     }
 
     fn wait(&mut self) -> nb::Result<(), Void> {
-        let count = self.tc.count16();
+        let count = self.tc.count_16();
         if count.intflag.read().ovf().bit_is_set() {
             // Writing a 1 clears the flag
             count.intflag.modify(|_, w| w.ovf().set_bit());
@@ -127,7 +127,7 @@ where
     /// the interrupt; it does not configure the interrupt controller
     /// or define an interrupt handler.
     pub fn enable_interrupt(&mut self) {
-        self.tc.count16().intenset.write(|w| w.ovf().set_bit());
+        self.tc.count_16().intenset.write(|w| w.ovf().set_bit());
     }
 
     /// Disables interrupt generation for this hardware timer.
@@ -135,7 +135,7 @@ where
     /// triggering the interrupt; it does not configure the interrupt
     /// controller.
     pub fn disable_interrupt(&mut self) {
-        self.tc.count16().intenclr.write(|w| w.ovf().set_bit());
+        self.tc.count_16().intenclr.write(|w| w.ovf().set_bit());
     }
 }
 
@@ -145,10 +145,8 @@ macro_rules! tc {
 pub type $TYPE = TimerCounter<$TC>;
 
 impl Count16 for $TC {
-    fn count16(&self) -> &COUNT16 {
-        unsafe {
-            &self.count16
-        }
+    fn count_16(&self) -> &COUNT16 {
+        self.count16()
     }
 }
 

@@ -12,6 +12,11 @@ pub extern crate atsamd21e18a;
 #[cfg(feature = "samd21e18a")]
 pub use atsamd21e18a as target_device;
 
+#[cfg(feature = "samd51j19a")]
+pub extern crate atsamd51j19a;
+#[cfg(feature = "samd51j19a")]
+pub use atsamd51j19a as target_device;
+
 #[cfg_attr(feature = "usb", macro_use)]
 extern crate bitfield;
 
@@ -62,6 +67,13 @@ pub mod clock;
 pub mod sercom;
 
 #[cfg(feature = "samd51j19a")]
+#[path = "timer51.rs"]
+pub mod timer;
+
+#[cfg(not(feature = "samd51j19a"))]
+pub mod timer;
+
+#[cfg(feature = "samd51j19a")]
 #[path = "sercom51/mod.rs"]
 pub mod sercom;
 
@@ -69,7 +81,6 @@ pub mod delay;
 pub mod gpio;
 pub mod prelude;
 pub mod time;
-pub mod timer;
 
 #[cfg(feature = "usb")]
 pub mod usb;
