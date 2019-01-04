@@ -20,7 +20,7 @@ version = "~0.2"
 default-features = false
 
 [dev-dependencies]
-panic-abort = "~0.3"
+panic-halt = "~0.2"
 cortex-m-rt = "~0.5"
 
 [features]

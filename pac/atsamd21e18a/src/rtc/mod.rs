@@ -2,23 +2,29 @@
 #[repr(C)]
 pub struct RegisterBlock {}
 impl RegisterBlock {
+    #[doc = "0x00 - Clock/Calendar with Alarm"]
     pub fn mode2(&self) -> &MODE2 {
-        unsafe { &*(((self as *const Self) as *const u8).add(0u32) as *const MODE2) }
+        unsafe { &*(((self as *const Self) as *const u8).add(0usize) as *const MODE2) }
     }
+    #[doc = "0x00 - Clock/Calendar with Alarm"]
     pub fn mode2_mut(&self) -> &mut MODE2 {
-        unsafe { &mut *(((self as *const Self) as *mut u8).add(0u32) as *mut MODE2) }
+        unsafe { &mut *(((self as *const Self) as *mut u8).add(0usize) as *mut MODE2) }
     }
+    #[doc = "0x00 - 16-bit Counter with Two 16-bit Compares"]
     pub fn mode1(&self) -> &MODE1 {
-        unsafe { &*(((self as *const Self) as *const u8).add(0u32) as *const MODE1) }
+        unsafe { &*(((self as *const Self) as *const u8).add(0usize) as *const MODE1) }
     }
+    #[doc = "0x00 - 16-bit Counter with Two 16-bit Compares"]
     pub fn mode1_mut(&self) -> &mut MODE1 {
-        unsafe { &mut *(((self as *const Self) as *mut u8).add(0u32) as *mut MODE1) }
+        unsafe { &mut *(((self as *const Self) as *mut u8).add(0usize) as *mut MODE1) }
     }
+    #[doc = "0x00 - 32-bit Counter with Single 32-bit Compare"]
     pub fn mode0(&self) -> &MODE0 {
-        unsafe { &*(((self as *const Self) as *const u8).add(0u32) as *const MODE0) }
+        unsafe { &*(((self as *const Self) as *const u8).add(0usize) as *const MODE0) }
     }
+    #[doc = "0x00 - 32-bit Counter with Single 32-bit Compare"]
     pub fn mode0_mut(&self) -> &mut MODE0 {
-        unsafe { &mut *(((self as *const Self) as *mut u8).add(0u32) as *mut MODE0) }
+        unsafe { &mut *(((self as *const Self) as *mut u8).add(0usize) as *mut MODE0) }
     }
 }
 #[doc = r" Register block"]
