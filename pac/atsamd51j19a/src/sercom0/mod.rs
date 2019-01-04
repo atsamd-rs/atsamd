@@ -2,29 +2,37 @@
 #[repr(C)]
 pub struct RegisterBlock {}
 impl RegisterBlock {
+    #[doc = "0x00 - USART Mode"]
     pub fn usart(&self) -> &USART {
-        unsafe { &*(((self as *const Self) as *const u8).add(0u32) as *const USART) }
+        unsafe { &*(((self as *const Self) as *const u8).add(0usize) as *const USART) }
     }
+    #[doc = "0x00 - USART Mode"]
     pub fn usart_mut(&self) -> &mut USART {
-        unsafe { &mut *(((self as *const Self) as *mut u8).add(0u32) as *mut USART) }
+        unsafe { &mut *(((self as *const Self) as *mut u8).add(0usize) as *mut USART) }
     }
+    #[doc = "0x00 - SPI Mode"]
     pub fn spi(&self) -> &SPI {
-        unsafe { &*(((self as *const Self) as *const u8).add(0u32) as *const SPI) }
+        unsafe { &*(((self as *const Self) as *const u8).add(0usize) as *const SPI) }
     }
+    #[doc = "0x00 - SPI Mode"]
     pub fn spi_mut(&self) -> &mut SPI {
-        unsafe { &mut *(((self as *const Self) as *mut u8).add(0u32) as *mut SPI) }
+        unsafe { &mut *(((self as *const Self) as *mut u8).add(0usize) as *mut SPI) }
     }
+    #[doc = "0x00 - I2C Slave Mode"]
     pub fn i2cs(&self) -> &I2CS {
-        unsafe { &*(((self as *const Self) as *const u8).add(0u32) as *const I2CS) }
+        unsafe { &*(((self as *const Self) as *const u8).add(0usize) as *const I2CS) }
     }
+    #[doc = "0x00 - I2C Slave Mode"]
     pub fn i2cs_mut(&self) -> &mut I2CS {
-        unsafe { &mut *(((self as *const Self) as *mut u8).add(0u32) as *mut I2CS) }
+        unsafe { &mut *(((self as *const Self) as *mut u8).add(0usize) as *mut I2CS) }
     }
+    #[doc = "0x00 - I2C Master Mode"]
     pub fn i2cm(&self) -> &I2CM {
-        unsafe { &*(((self as *const Self) as *const u8).add(0u32) as *const I2CM) }
+        unsafe { &*(((self as *const Self) as *const u8).add(0usize) as *const I2CM) }
     }
+    #[doc = "0x00 - I2C Master Mode"]
     pub fn i2cm_mut(&self) -> &mut I2CM {
-        unsafe { &mut *(((self as *const Self) as *mut u8).add(0u32) as *mut I2CM) }
+        unsafe { &mut *(((self as *const Self) as *mut u8).add(0usize) as *mut I2CM) }
     }
 }
 #[doc = r" Register block"]

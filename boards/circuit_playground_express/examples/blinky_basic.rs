@@ -3,7 +3,7 @@
 #![no_main]
 
 extern crate circuit_playground_express as hal;
-extern crate panic_abort;
+extern crate panic_halt;
 
 #[macro_use(entry)]
 extern crate cortex_m_rt;
