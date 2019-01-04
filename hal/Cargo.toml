@@ -49,7 +49,6 @@ panic-abort = "~0.3"
 panic-semihosting = "~0.5"
 cortex-m-semihosting = "~0.2"
 cortex-m-rtfm = "~0.3"
-sx1509 = "~0.2"
 
 [features]
 # This section lists our feature name to dependency mapping.  This are separated
