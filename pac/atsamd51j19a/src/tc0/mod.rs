@@ -1,28 +1,36 @@
 #[doc = r" Register block"]
 #[repr(C)]
-pub struct RegisterBlock {}
+pub struct RegisterBlock {
+    _reserved_0_count8: [u8; 56usize],
+}
 impl RegisterBlock {
     #[doc = "0x00 - 32-bit Counter Mode"]
+    #[inline(always)]
     pub fn count32(&self) -> &COUNT32 {
         unsafe { &*(((self as *const Self) as *const u8).add(0usize) as *const COUNT32) }
     }
     #[doc = "0x00 - 32-bit Counter Mode"]
+    #[inline(always)]
     pub fn count32_mut(&self) -> &mut COUNT32 {
         unsafe { &mut *(((self as *const Self) as *mut u8).add(0usize) as *mut COUNT32) }
     }
     #[doc = "0x00 - 16-bit Counter Mode"]
+    #[inline(always)]
     pub fn count16(&self) -> &COUNT16 {
         unsafe { &*(((self as *const Self) as *const u8).add(0usize) as *const COUNT16) }
     }
     #[doc = "0x00 - 16-bit Counter Mode"]
+    #[inline(always)]
     pub fn count16_mut(&self) -> &mut COUNT16 {
         unsafe { &mut *(((self as *const Self) as *mut u8).add(0usize) as *mut COUNT16) }
     }
     #[doc = "0x00 - 8-bit Counter Mode"]
+    #[inline(always)]
     pub fn count8(&self) -> &COUNT8 {
         unsafe { &*(((self as *const Self) as *const u8).add(0usize) as *const COUNT8) }
     }
     #[doc = "0x00 - 8-bit Counter Mode"]
+    #[inline(always)]
     pub fn count8_mut(&self) -> &mut COUNT8 {
         unsafe { &mut *(((self as *const Self) as *mut u8).add(0usize) as *mut COUNT8) }
     }
