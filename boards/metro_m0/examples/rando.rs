@@ -131,69 +131,69 @@ fn init(mut p: init::Peripherals /* , r: init::Resources */) -> init::LateResour
     flash_cs.set_high();
 
     /*
-    let mut spi = SPIMaster4::new(
-        &clocks.sercom4_core(&gclk0).unwrap(),
-        24.mhz(),
-        hal::hal::spi::Mode {
-            phase: hal::hal::spi::Phase::CaptureOnFirstTransition,
-            polarity: hal::hal::spi::Polarity::IdleLow,
-        },
-        p.device.SERCOM4,
-        &mut p.device.PM,
-        // Metro M0 express has SPI on these pins
-        hal::sercom::SPI4Pinout::Dipo0Dopo1 {
-            miso: pins.pa12.into_pad(&mut pins.port),
-            mosi: pins.pb10.into_pad(&mut pins.port),
-            sck: pins.pb11.into_pad(&mut pins.port),
-        },
-    );
+        let mut spi = SPIMaster4::new(
+            &clocks.sercom4_core(&gclk0).unwrap(),
+            24.mhz(),
+            hal::hal::spi::Mode {
+                phase: hal::hal::spi::Phase::CaptureOnFirstTransition,
+                polarity: hal::hal::spi::Polarity::IdleLow,
+            },
+            p.device.SERCOM4,
+            &mut p.device.PM,
+            // Metro M0 express has SPI on these pins
+            hal::sercom::SPI4Pinout::Dipo0Dopo1 {
+                miso: pins.pa12.into_pad(&mut pins.port),
+                mosi: pins.pb10.into_pad(&mut pins.port),
+                sck: pins.pb11.into_pad(&mut pins.port),
+            },
+        );
 
-    dbgprint!("made spi");
+        dbgprint!("made spi");
 
-    let mut reset_pin = pins.pa6.into_push_pull_output(&mut pins.port);
+        let mut reset_pin = pins.pa6.into_push_pull_output(&mut pins.port);
 
-    let mut display = Display::new(
-        &mut spi,
-        pins.pa7.into_push_pull_output(&mut pins.port),
-        pins.pa18.into_push_pull_output(&mut pins.port),
-    );
+        let mut display = Display::new(
+            &mut spi,
+            pins.pa7.into_push_pull_output(&mut pins.port),
+            pins.pa18.into_push_pull_output(&mut pins.port),
+        );
 
-    display.reset(&mut reset_pin, &mut delay);
-    display.borrow(&mut spi).initialize().is_ok();
+        display.reset(&mut reset_pin, &mut delay);
+        display.borrow(&mut spi).initialize().is_ok();
 
-    use ssd1331::Command;
-    let cmds = [
-        Command::DrawRect {
-            x1: 1,
-            y1: 1,
-            x2: 63,
-            y2: 63,
-            r: 0xff,
-            g: 0xff,
-            b: 0xff,
-            fill_r: 0xa0,
-            fill_g: 0,
-            fill_b: 0xa0,
-        },
-        Command::DrawLine {
-            x1: 0,
-            y1: 0,
-            x2: 10,
-            y2: 10,
-            r: 0x0,
-            g: 0xff,
-            b: 0,
-        },
-    ];
+        use ssd1331::Command;
+        let cmds = [
+            Command::DrawRect {
+                x1: 1,
+                y1: 1,
+                x2: 63,
+                y2: 63,
+                r: 0xff,
+                g: 0xff,
+                b: 0xff,
+                fill_r: 0xa0,
+                fill_g: 0,
+                fill_b: 0xa0,
+            },
+            Command::DrawLine {
+                x1: 0,
+                y1: 0,
+                x2: 10,
+                y2: 10,
+                r: 0x0,
+                g: 0xff,
+                b: 0,
+            },
+        ];
 
-    for cmd in &cmds {
-        let spires = cmd.send(&mut display.borrow(&mut spi));
-        if !spires.is_ok() {
-            dbgprint!("fail: {:?}", cmd);
+        for cmd in &cmds {
+            let spires = cmd.send(&mut display.borrow(&mut spi));
+            if !spires.is_ok() {
+                dbgprint!("fail: {:?}", cmd);
+            }
+            delay.delay_ms(3u8);
         }
-        delay.delay_ms(3u8);
-    }
-*/
+    */
 
     let mut i2c = hal::i2c_master(
         &mut clocks,

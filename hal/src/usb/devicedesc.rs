@@ -3,7 +3,7 @@ use core::mem;
 use core::ptr::null_mut;
 type FmtResult = Result<(), FmtError>;
 
-bitfield!{
+bitfield! {
     struct PckSize(u32);
     impl Debug;
     pub byte_count, set_byte_count: 13, 0;
@@ -12,7 +12,7 @@ bitfield!{
     pub auto_zlp, set_auto_zlp : 31;
 }
 
-bitfield!{
+bitfield! {
     struct ExtReg(u16);
     impl Debug;
     pub subpid, set_subpid: 3, 0;
@@ -21,7 +21,7 @@ bitfield!{
     pub remote_wake, set_remote_wake: 12;
 }
 
-bitfield!{
+bitfield! {
     struct StatusBk(u8);
     impl Debug;
     pub crc_error, set_crc_error: 0;

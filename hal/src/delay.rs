@@ -51,7 +51,7 @@ impl DelayMs<u8> for Delay {
 impl DelayUs<u32> for Delay {
     fn delay_us(&mut self, us: u32) {
         // The SysTick Reload Value register supports values between 1 and 0x00FFFFFF.
-        const MAX_RVR: u32 =  0x00FF_FFFF;
+        const MAX_RVR: u32 = 0x00FF_FFFF;
 
         let mut total_rvr = us * (self.sysclock.0 / 1_000_000);
 

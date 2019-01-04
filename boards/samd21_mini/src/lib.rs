@@ -1,5 +1,5 @@
 #![no_std]
-#![recursion_limit="1024"]
+#![recursion_limit = "1024"]
 
 #[cfg(feature = "rt")]
 extern crate cortex_m_rt;
