@@ -529,33 +529,31 @@ macro_rules! define_pins {
      target_device: $target_device:ident,
      $( $(#[$attr:meta])* pin $name:ident = $pin_ident:ident),+ , ) => {
 
-// The `mashup` macro generates the `m` macro which performs the
-// substitutions of e.g. `"gen_pin_name" a22` to `pa22`.
-use $crate::mashup::*;
-mashup!{
-    $(
-        m["gen_pin_name" $pin_ident] = p $pin_ident;
-        m["gen_type_name" $pin_ident] = P $pin_ident;
-    )+
-}
-m!{
+$crate::paste::item! {
+    $(#[$topattr])*
+    pub struct $Type {
+        /// Opaque port reference
+        pub port: Port,
 
-$(#[$topattr])*
-pub struct $Type {
-    /// Opaque port reference
-    pub port: Port,
-
-    $($(#[$attr])* pub $name: gpio::"gen_type_name" $pin_ident <Input<Floating>>),+
+        $(
+            $(#[$attr])*
+            pub $name: gpio::[<P $pin_ident>]<Input<Floating>>
+        ),+
+    }
 }
 
 impl $Type {
     /// Returns the pins for the device
-    pub fn new(port: $target_device::PORT) -> Self {
-        let pins = port.split();
-        $Type {
-            port: pins.port,
-            $($name: pins."gen_pin_name" $pin_ident),+
+    $crate::paste::item! {
+        pub fn new(port: $target_device::PORT) -> Self {
+            let pins = port.split();
+            $Type {
+                port: pins.port,
+                $(
+                $name: pins.[<p $pin_ident>]
+                ),+
+            }
         }
     }
 }
-}}}
+}}

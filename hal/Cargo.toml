@@ -13,7 +13,7 @@ documentation = "https://atsamd-rs.github.io/atsamd/atsamd21g18a/atsamd21_hal/"
 cortex-m = "~0.5"
 embedded-hal = "~0.2"
 nb = "~0.1"
-mashup = "^0.1.6"
+paste = "~0.1"
 bitfield = "~0.13"
 vcell = "*"
 

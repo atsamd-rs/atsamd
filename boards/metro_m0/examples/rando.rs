@@ -2,6 +2,7 @@
 #![no_main]
 
 extern crate cortex_m;
+extern crate cortex_m_rt;
 extern crate cortex_m_semihosting;
 extern crate metro_m0 as hal;
 #[cfg(not(feature = "use_semihosting"))]
@@ -9,7 +10,6 @@ extern crate panic_halt;
 #[cfg(feature = "use_semihosting")]
 extern crate panic_semihosting;
 extern crate rtfm;
-extern crate cortex_m_rt;
 // extern crate ssd1331;
 extern crate sx1509;
 
