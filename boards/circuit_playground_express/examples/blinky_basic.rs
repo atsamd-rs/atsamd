@@ -2,8 +2,8 @@
 #![no_main]
 
 extern crate circuit_playground_express as hal;
-extern crate panic_halt;
 extern crate cortex_m_rt;
+extern crate panic_halt;
 
 use hal::clock::GenericClockController;
 use hal::delay::Delay;

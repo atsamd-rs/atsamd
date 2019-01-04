@@ -10,8 +10,8 @@ extern crate ssd1306;
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
 use hal::prelude::*;
-use hal::{entry, CorePeripherals, Peripherals};
 use hal::time::MegaHertz;
+use hal::{entry, CorePeripherals, Peripherals};
 
 use embedded_graphics::prelude::*;
 use embedded_graphics::primitives::{Circle, Line, Rect};
@@ -41,9 +41,7 @@ fn main() -> ! {
         pins.mosi,
         pins.miso,
         &mut pins.port,
-        );
-
-
+    );
 
     let dc = pins.d9.into_open_drain_output(&mut pins.port);
     let mut rst = pins.d7.into_open_drain_output(&mut pins.port);
@@ -56,35 +54,33 @@ fn main() -> ! {
 
     disp.draw(
         Line::new(Coord::new(8, 16 + 16), Coord::new(8 + 16, 16 + 16))
-        .with_stroke(Some(1u8.into()))
-        .into_iter(),
-        );
+            .with_stroke(Some(1u8.into()))
+            .into_iter(),
+    );
     disp.draw(
         Line::new(Coord::new(8, 16 + 16), Coord::new(8 + 8, 16))
-        .with_stroke(Some(1u8.into()))
-        .into_iter(),
-        );
+            .with_stroke(Some(1u8.into()))
+            .into_iter(),
+    );
     disp.draw(
         Line::new(Coord::new(8 + 16, 16 + 16), Coord::new(8 + 8, 16))
-        .with_stroke(Some(1u8.into()))
-        .into_iter(),
-        );
+            .with_stroke(Some(1u8.into()))
+            .into_iter(),
+    );
 
     disp.draw(
         Rect::new(Coord::new(48, 16), Coord::new(48 + 16, 16 + 16))
-        .with_stroke(Some(1u8.into()))
-        .into_iter(),
-        );
+            .with_stroke(Some(1u8.into()))
+            .into_iter(),
+    );
 
     disp.draw(
         Circle::new(Coord::new(96, 16 + 8), 8)
-        .with_stroke(Some(1u8.into()))
-        .into_iter(),
-        );
+            .with_stroke(Some(1u8.into()))
+            .into_iter(),
+    );
 
     disp.flush().unwrap();
-
-
 
     loop {
         delay.delay_ms(200u8);

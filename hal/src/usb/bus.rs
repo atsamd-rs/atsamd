@@ -246,12 +246,10 @@ pub struct UsbBus {
 /// Generate a method that allows returning the endpoint register
 /// for a given endpoint index.  This helps very slightly with
 /// two inconvenient issues:
-/// - the SVD file translation generates a sequence of elements
-///   like ecfg0, efcg1 rather than an array, so we have to
-///   manually translate the indices
-/// - rust doesn't currently have a great solution for generating
-///   identifier names, so we have to pass in a list of the possible
-///   names.
+/// - the SVD file translation generates a sequence of elements like ecfg0,
+///   efcg1 rather than an array, so we have to manually translate the indices
+/// - rust doesn't currently have a great solution for generating identifier
+///   names, so we have to pass in a list of the possible names.
 macro_rules! ep {
     ($name:ident, $type:ident, $e0:ident, $e1:ident, $e2:ident,
      $e3:ident, $e4:ident, $e5:ident, $e6:ident, $e7:ident) => {

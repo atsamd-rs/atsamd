@@ -15,7 +15,7 @@ use hal::prelude::*;
 use hal::sercom::{PadPin, Sercom0Pad2, Sercom0Pad3, UART0Pinout, UART0};
 use hal::target_device::gclk::clkctrl::GENR;
 use hal::target_device::gclk::genctrl::SRCR;
-use rtfm::{app};
+use rtfm::app;
 
 macro_rules! dbgprint {
     ($($arg:tt)*) => {{}};
@@ -77,10 +77,10 @@ const APP: () = {
         rx_led.set_high();
 
         dbgprint!("done init");
-            BLUE_LED= led;
-            TX_LED= tx_led;
-            RX_LED= rx_led;
-            UART= uart;
+        BLUE_LED = led;
+        TX_LED = tx_led;
+        RX_LED = rx_led;
+        UART = uart;
     }
 
     #[interrupt(resources = [UART, RX_LED, TX_LED])]
