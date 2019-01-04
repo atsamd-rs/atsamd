@@ -1,6 +1,7 @@
 #[doc = r" Register block"]
 #[repr(C)]
 pub struct RegisterBlock {
+    _reserved_0_ssar: [u8; 4usize],
     #[doc = "0x04 - Block Size"]
     pub bsr: BSR,
     #[doc = "0x06 - Block Count"]
@@ -17,8 +18,10 @@ pub struct RegisterBlock {
     pub bdpr: BDPR,
     #[doc = "0x24 - Present State"]
     pub psr: PSR,
+    _reserved_9_hc1: [u8; 1usize],
     #[doc = "0x29 - Power Control"]
     pub pcr: PCR,
+    _reserved_11_bgcr: [u8; 1usize],
     #[doc = "0x2b - Wakeup Control"]
     pub wcr: WCR,
     #[doc = "0x2c - Clock Control"]
@@ -27,8 +30,15 @@ pub struct RegisterBlock {
     pub tcr: TCR,
     #[doc = "0x2f - Software Reset"]
     pub srr: SRR,
+    _reserved_16_nistr: [u8; 2usize],
+    _reserved_17_eistr: [u8; 2usize],
+    _reserved_18_nister: [u8; 2usize],
+    _reserved_19_eister: [u8; 2usize],
+    _reserved_20_nisier: [u8; 2usize],
+    _reserved_21_eisier: [u8; 2usize],
     #[doc = "0x3c - Auto CMD Error Status"]
     pub acesr: ACESR,
+    _reserved_23_hc2: [u8; 2usize],
     #[doc = "0x40 - Capabilities 0"]
     pub ca0r: CA0R,
     #[doc = "0x44 - Capabilities 1"]
@@ -71,162 +81,202 @@ pub struct RegisterBlock {
 }
 impl RegisterBlock {
     #[doc = "0x00 - SDMA System Address / Argument 2"]
+    #[inline(always)]
     pub fn ssar_cmd23(&self) -> &SSAR_CMD23 {
         unsafe { &*(((self as *const Self) as *const u8).add(0usize) as *const SSAR_CMD23) }
     }
     #[doc = "0x00 - SDMA System Address / Argument 2"]
+    #[inline(always)]
     pub fn ssar_cmd23_mut(&self) -> &mut SSAR_CMD23 {
         unsafe { &mut *(((self as *const Self) as *mut u8).add(0usize) as *mut SSAR_CMD23) }
     }
     #[doc = "0x00 - SDMA System Address / Argument 2"]
+    #[inline(always)]
     pub fn ssar(&self) -> &SSAR {
         unsafe { &*(((self as *const Self) as *const u8).add(0usize) as *const SSAR) }
     }
     #[doc = "0x00 - SDMA System Address / Argument 2"]
+    #[inline(always)]
     pub fn ssar_mut(&self) -> &mut SSAR {
         unsafe { &mut *(((self as *const Self) as *mut u8).add(0usize) as *mut SSAR) }
     }
     #[doc = "0x28 - Host Control 1"]
+    #[inline(always)]
     pub fn hc1r_emmc(&self) -> &HC1R_EMMC {
         unsafe { &*(((self as *const Self) as *const u8).add(40usize) as *const HC1R_EMMC) }
     }
     #[doc = "0x28 - Host Control 1"]
+    #[inline(always)]
     pub fn hc1r_emmc_mut(&self) -> &mut HC1R_EMMC {
         unsafe { &mut *(((self as *const Self) as *mut u8).add(40usize) as *mut HC1R_EMMC) }
     }
     #[doc = "0x28 - Host Control 1"]
+    #[inline(always)]
     pub fn hc1r(&self) -> &HC1R {
         unsafe { &*(((self as *const Self) as *const u8).add(40usize) as *const HC1R) }
     }
     #[doc = "0x28 - Host Control 1"]
+    #[inline(always)]
     pub fn hc1r_mut(&self) -> &mut HC1R {
         unsafe { &mut *(((self as *const Self) as *mut u8).add(40usize) as *mut HC1R) }
     }
     #[doc = "0x2a - Block Gap Control"]
+    #[inline(always)]
     pub fn bgcr_emmc(&self) -> &BGCR_EMMC {
         unsafe { &*(((self as *const Self) as *const u8).add(42usize) as *const BGCR_EMMC) }
     }
     #[doc = "0x2a - Block Gap Control"]
+    #[inline(always)]
     pub fn bgcr_emmc_mut(&self) -> &mut BGCR_EMMC {
         unsafe { &mut *(((self as *const Self) as *mut u8).add(42usize) as *mut BGCR_EMMC) }
     }
     #[doc = "0x2a - Block Gap Control"]
+    #[inline(always)]
     pub fn bgcr(&self) -> &BGCR {
         unsafe { &*(((self as *const Self) as *const u8).add(42usize) as *const BGCR) }
     }
     #[doc = "0x2a - Block Gap Control"]
+    #[inline(always)]
     pub fn bgcr_mut(&self) -> &mut BGCR {
         unsafe { &mut *(((self as *const Self) as *mut u8).add(42usize) as *mut BGCR) }
     }
     #[doc = "0x30 - Normal Interrupt Status"]
+    #[inline(always)]
     pub fn nistr_emmc(&self) -> &NISTR_EMMC {
         unsafe { &*(((self as *const Self) as *const u8).add(48usize) as *const NISTR_EMMC) }
     }
     #[doc = "0x30 - Normal Interrupt Status"]
+    #[inline(always)]
     pub fn nistr_emmc_mut(&self) -> &mut NISTR_EMMC {
         unsafe { &mut *(((self as *const Self) as *mut u8).add(48usize) as *mut NISTR_EMMC) }
     }
     #[doc = "0x30 - Normal Interrupt Status"]
+    #[inline(always)]
     pub fn nistr(&self) -> &NISTR {
         unsafe { &*(((self as *const Self) as *const u8).add(48usize) as *const NISTR) }
     }
     #[doc = "0x30 - Normal Interrupt Status"]
+    #[inline(always)]
     pub fn nistr_mut(&self) -> &mut NISTR {
         unsafe { &mut *(((self as *const Self) as *mut u8).add(48usize) as *mut NISTR) }
     }
     #[doc = "0x32 - Error Interrupt Status"]
+    #[inline(always)]
     pub fn eistr_emmc(&self) -> &EISTR_EMMC {
         unsafe { &*(((self as *const Self) as *const u8).add(50usize) as *const EISTR_EMMC) }
     }
     #[doc = "0x32 - Error Interrupt Status"]
+    #[inline(always)]
     pub fn eistr_emmc_mut(&self) -> &mut EISTR_EMMC {
         unsafe { &mut *(((self as *const Self) as *mut u8).add(50usize) as *mut EISTR_EMMC) }
     }
     #[doc = "0x32 - Error Interrupt Status"]
+    #[inline(always)]
     pub fn eistr(&self) -> &EISTR {
         unsafe { &*(((self as *const Self) as *const u8).add(50usize) as *const EISTR) }
     }
     #[doc = "0x32 - Error Interrupt Status"]
+    #[inline(always)]
     pub fn eistr_mut(&self) -> &mut EISTR {
         unsafe { &mut *(((self as *const Self) as *mut u8).add(50usize) as *mut EISTR) }
     }
     #[doc = "0x34 - Normal Interrupt Status Enable"]
+    #[inline(always)]
     pub fn nister_emmc(&self) -> &NISTER_EMMC {
         unsafe { &*(((self as *const Self) as *const u8).add(52usize) as *const NISTER_EMMC) }
     }
     #[doc = "0x34 - Normal Interrupt Status Enable"]
+    #[inline(always)]
     pub fn nister_emmc_mut(&self) -> &mut NISTER_EMMC {
         unsafe { &mut *(((self as *const Self) as *mut u8).add(52usize) as *mut NISTER_EMMC) }
     }
     #[doc = "0x34 - Normal Interrupt Status Enable"]
+    #[inline(always)]
     pub fn nister(&self) -> &NISTER {
         unsafe { &*(((self as *const Self) as *const u8).add(52usize) as *const NISTER) }
     }
     #[doc = "0x34 - Normal Interrupt Status Enable"]
+    #[inline(always)]
     pub fn nister_mut(&self) -> &mut NISTER {
         unsafe { &mut *(((self as *const Self) as *mut u8).add(52usize) as *mut NISTER) }
     }
     #[doc = "0x36 - Error Interrupt Status Enable"]
+    #[inline(always)]
     pub fn eister_emmc(&self) -> &EISTER_EMMC {
         unsafe { &*(((self as *const Self) as *const u8).add(54usize) as *const EISTER_EMMC) }
     }
     #[doc = "0x36 - Error Interrupt Status Enable"]
+    #[inline(always)]
     pub fn eister_emmc_mut(&self) -> &mut EISTER_EMMC {
         unsafe { &mut *(((self as *const Self) as *mut u8).add(54usize) as *mut EISTER_EMMC) }
     }
     #[doc = "0x36 - Error Interrupt Status Enable"]
+    #[inline(always)]
     pub fn eister(&self) -> &EISTER {
         unsafe { &*(((self as *const Self) as *const u8).add(54usize) as *const EISTER) }
     }
     #[doc = "0x36 - Error Interrupt Status Enable"]
+    #[inline(always)]
     pub fn eister_mut(&self) -> &mut EISTER {
         unsafe { &mut *(((self as *const Self) as *mut u8).add(54usize) as *mut EISTER) }
     }
     #[doc = "0x38 - Normal Interrupt Signal Enable"]
+    #[inline(always)]
     pub fn nisier_emmc(&self) -> &NISIER_EMMC {
         unsafe { &*(((self as *const Self) as *const u8).add(56usize) as *const NISIER_EMMC) }
     }
     #[doc = "0x38 - Normal Interrupt Signal Enable"]
+    #[inline(always)]
     pub fn nisier_emmc_mut(&self) -> &mut NISIER_EMMC {
         unsafe { &mut *(((self as *const Self) as *mut u8).add(56usize) as *mut NISIER_EMMC) }
     }
     #[doc = "0x38 - Normal Interrupt Signal Enable"]
+    #[inline(always)]
     pub fn nisier(&self) -> &NISIER {
         unsafe { &*(((self as *const Self) as *const u8).add(56usize) as *const NISIER) }
     }
     #[doc = "0x38 - Normal Interrupt Signal Enable"]
+    #[inline(always)]
     pub fn nisier_mut(&self) -> &mut NISIER {
         unsafe { &mut *(((self as *const Self) as *mut u8).add(56usize) as *mut NISIER) }
     }
     #[doc = "0x3a - Error Interrupt Signal Enable"]
+    #[inline(always)]
     pub fn eisier_emmc(&self) -> &EISIER_EMMC {
         unsafe { &*(((self as *const Self) as *const u8).add(58usize) as *const EISIER_EMMC) }
     }
     #[doc = "0x3a - Error Interrupt Signal Enable"]
+    #[inline(always)]
     pub fn eisier_emmc_mut(&self) -> &mut EISIER_EMMC {
         unsafe { &mut *(((self as *const Self) as *mut u8).add(58usize) as *mut EISIER_EMMC) }
     }
     #[doc = "0x3a - Error Interrupt Signal Enable"]
+    #[inline(always)]
     pub fn eisier(&self) -> &EISIER {
         unsafe { &*(((self as *const Self) as *const u8).add(58usize) as *const EISIER) }
     }
     #[doc = "0x3a - Error Interrupt Signal Enable"]
+    #[inline(always)]
     pub fn eisier_mut(&self) -> &mut EISIER {
         unsafe { &mut *(((self as *const Self) as *mut u8).add(58usize) as *mut EISIER) }
     }
     #[doc = "0x3e - Host Control 2"]
+    #[inline(always)]
     pub fn hc2r_emmc(&self) -> &HC2R_EMMC {
         unsafe { &*(((self as *const Self) as *const u8).add(62usize) as *const HC2R_EMMC) }
     }
     #[doc = "0x3e - Host Control 2"]
+    #[inline(always)]
     pub fn hc2r_emmc_mut(&self) -> &mut HC2R_EMMC {
         unsafe { &mut *(((self as *const Self) as *mut u8).add(62usize) as *mut HC2R_EMMC) }
     }
     #[doc = "0x3e - Host Control 2"]
+    #[inline(always)]
     pub fn hc2r(&self) -> &HC2R {
         unsafe { &*(((self as *const Self) as *const u8).add(62usize) as *const HC2R) }
     }
     #[doc = "0x3e - Host Control 2"]
+    #[inline(always)]
     pub fn hc2r_mut(&self) -> &mut HC2R {
         unsafe { &mut *(((self as *const Self) as *mut u8).add(62usize) as *mut HC2R) }
     }

@@ -1,36 +1,46 @@
 #[doc = r" Register block"]
 #[repr(C)]
-pub struct RegisterBlock {}
+pub struct RegisterBlock {
+    _reserved_0_spi: [u8; 49usize],
+}
 impl RegisterBlock {
     #[doc = "0x00 - USART Mode"]
+    #[inline(always)]
     pub fn usart(&self) -> &USART {
         unsafe { &*(((self as *const Self) as *const u8).add(0usize) as *const USART) }
     }
     #[doc = "0x00 - USART Mode"]
+    #[inline(always)]
     pub fn usart_mut(&self) -> &mut USART {
         unsafe { &mut *(((self as *const Self) as *mut u8).add(0usize) as *mut USART) }
     }
     #[doc = "0x00 - SPI Mode"]
+    #[inline(always)]
     pub fn spi(&self) -> &SPI {
         unsafe { &*(((self as *const Self) as *const u8).add(0usize) as *const SPI) }
     }
     #[doc = "0x00 - SPI Mode"]
+    #[inline(always)]
     pub fn spi_mut(&self) -> &mut SPI {
         unsafe { &mut *(((self as *const Self) as *mut u8).add(0usize) as *mut SPI) }
     }
     #[doc = "0x00 - I2C Slave Mode"]
+    #[inline(always)]
     pub fn i2cs(&self) -> &I2CS {
         unsafe { &*(((self as *const Self) as *const u8).add(0usize) as *const I2CS) }
     }
     #[doc = "0x00 - I2C Slave Mode"]
+    #[inline(always)]
     pub fn i2cs_mut(&self) -> &mut I2CS {
         unsafe { &mut *(((self as *const Self) as *mut u8).add(0usize) as *mut I2CS) }
     }
     #[doc = "0x00 - I2C Master Mode"]
+    #[inline(always)]
     pub fn i2cm(&self) -> &I2CM {
         unsafe { &*(((self as *const Self) as *const u8).add(0usize) as *const I2CM) }
     }
     #[doc = "0x00 - I2C Master Mode"]
+    #[inline(always)]
     pub fn i2cm_mut(&self) -> &mut I2CM {
         unsafe { &mut *(((self as *const Self) as *mut u8).add(0usize) as *mut I2CM) }
     }
@@ -145,6 +155,7 @@ pub struct USART {
     #[doc = "0x04 - USART Control B"]
     pub ctrlb: self::usart::CTRLB,
     _reserved2: [u8; 4usize],
+    _reserved_2_baud: [u8; 2usize],
     #[doc = "0x0e - USART Receive Pulse Length"]
     pub rxpl: self::usart::RXPL,
     _reserved4: [u8; 5usize],
@@ -170,6 +181,7 @@ pub struct USART {
 }
 impl USART {
     #[doc = "0x0c - USART Baud Rate"]
+    #[inline(always)]
     pub fn baud_usartfp_mode(&self) -> &self::usart::BAUD_USARTFP_MODE {
         unsafe {
             &*(((self as *const Self) as *const u8).add(12usize)
@@ -177,6 +189,7 @@ impl USART {
         }
     }
     #[doc = "0x0c - USART Baud Rate"]
+    #[inline(always)]
     pub fn baud_usartfp_mode_mut(&self) -> &mut self::usart::BAUD_USARTFP_MODE {
         unsafe {
             &mut *(((self as *const Self) as *mut u8).add(12usize)
@@ -184,6 +197,7 @@ impl USART {
         }
     }
     #[doc = "0x0c - USART Baud Rate"]
+    #[inline(always)]
     pub fn baud_fracfp_mode(&self) -> &self::usart::BAUD_FRACFP_MODE {
         unsafe {
             &*(((self as *const Self) as *const u8).add(12usize)
@@ -191,6 +205,7 @@ impl USART {
         }
     }
     #[doc = "0x0c - USART Baud Rate"]
+    #[inline(always)]
     pub fn baud_fracfp_mode_mut(&self) -> &mut self::usart::BAUD_FRACFP_MODE {
         unsafe {
             &mut *(((self as *const Self) as *mut u8).add(12usize)
@@ -198,6 +213,7 @@ impl USART {
         }
     }
     #[doc = "0x0c - USART Baud Rate"]
+    #[inline(always)]
     pub fn baud_frac_mode(&self) -> &self::usart::BAUD_FRAC_MODE {
         unsafe {
             &*(((self as *const Self) as *const u8).add(12usize)
@@ -205,6 +221,7 @@ impl USART {
         }
     }
     #[doc = "0x0c - USART Baud Rate"]
+    #[inline(always)]
     pub fn baud_frac_mode_mut(&self) -> &mut self::usart::BAUD_FRAC_MODE {
         unsafe {
             &mut *(((self as *const Self) as *mut u8).add(12usize)
@@ -212,10 +229,12 @@ impl USART {
         }
     }
     #[doc = "0x0c - USART Baud Rate"]
+    #[inline(always)]
     pub fn baud(&self) -> &self::usart::BAUD {
         unsafe { &*(((self as *const Self) as *const u8).add(12usize) as *const self::usart::BAUD) }
     }
     #[doc = "0x0c - USART Baud Rate"]
+    #[inline(always)]
     pub fn baud_mut(&self) -> &mut self::usart::BAUD {
         unsafe { &mut *(((self as *const Self) as *mut u8).add(12usize) as *mut self::usart::BAUD) }
     }

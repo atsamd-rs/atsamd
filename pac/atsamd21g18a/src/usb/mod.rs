@@ -1,20 +1,26 @@
 #[doc = r" Register block"]
 #[repr(C)]
-pub struct RegisterBlock {}
+pub struct RegisterBlock {
+    _reserved_0_host: [u8; 273usize],
+}
 impl RegisterBlock {
     #[doc = "0x00 - USB is Host"]
+    #[inline(always)]
     pub fn host(&self) -> &HOST {
         unsafe { &*(((self as *const Self) as *const u8).add(0usize) as *const HOST) }
     }
     #[doc = "0x00 - USB is Host"]
+    #[inline(always)]
     pub fn host_mut(&self) -> &mut HOST {
         unsafe { &mut *(((self as *const Self) as *mut u8).add(0usize) as *mut HOST) }
     }
     #[doc = "0x00 - USB is Device"]
+    #[inline(always)]
     pub fn device(&self) -> &DEVICE {
         unsafe { &*(((self as *const Self) as *const u8).add(0usize) as *const DEVICE) }
     }
     #[doc = "0x00 - USB is Device"]
+    #[inline(always)]
     pub fn device_mut(&self) -> &mut DEVICE {
         unsafe { &mut *(((self as *const Self) as *mut u8).add(0usize) as *mut DEVICE) }
     }
