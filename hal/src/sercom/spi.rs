@@ -7,7 +7,8 @@ use target_device::{PM, SERCOM0, SERCOM1, SERCOM2, SERCOM3};
 #[cfg(feature = "samd21g18a")]
 use target_device::{SERCOM4, SERCOM5};
 use time::Hertz;
-
+ 
+#[derive(Debug)]
 pub enum Error {
     Overrun,
 }
