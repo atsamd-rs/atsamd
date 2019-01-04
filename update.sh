@@ -3,8 +3,8 @@ set -x
 set -e
 
 cargo install --force --git https://github.com/wez/svd2rust --branch no_unions svd2rust
-cargo install --force --version 0.99.2 rustfmt-nightly
-cargo install --force --version 0.3.0 form
+cargo +nightly install --force --version 1.0.1 rustfmt-nightly
+cargo install --force --version 0.6.0 form
 
 TOP=$PWD
 
