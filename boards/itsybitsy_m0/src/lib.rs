@@ -1,5 +1,5 @@
 #![no_std]
-#![recursion_limit="1024"]
+#![recursion_limit = "1024"]
 
 extern crate atsamd21_hal as hal;
 
@@ -90,7 +90,6 @@ define_pins!(
     pin usb_dp = a25,
 );
 
-
 /// Convenience for setting up the externally labelled SPI.
 /// This powers up SERCOM4 and configures it for use as an
 /// SPI Master in SPI Mode 0.
@@ -125,7 +124,6 @@ pub fn spi_master<F: Into<Hertz>>(
         },
     )
 }
-
 
 /// Convenience for accessing the on-board SPI Flash device.
 /// This powers up SERCOM5 and configures it for use as an
@@ -163,7 +161,6 @@ pub fn flash_spi_master(
     (flash, cs)
 }
 
-
 /// Convenience for setting up the labelled SDA, SCL pins to
 /// operate as an I2C master running at the specified frequency.
 pub fn i2c_master<F: Into<Hertz>>(
@@ -185,7 +182,6 @@ pub fn i2c_master<F: Into<Hertz>>(
         scl.into_pad(port),
     )
 }
-
 
 #[cfg(feature = "usb")]
 pub fn usb_bus(

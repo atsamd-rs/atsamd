@@ -18,11 +18,11 @@ use hal::sercom::{I2CMaster3, PadPin, SPIMaster4};
 use hal::time::Hertz;
 
 #[cfg(feature = "usb")]
+use gpio::IntoFunction;
+#[cfg(feature = "usb")]
 pub use hal::usb::UsbBus;
 #[cfg(feature = "usb")]
 use usb_device::bus::UsbBusWrapper;
-#[cfg(feature = "usb")]
-use gpio::IntoFunction;
 
 define_pins!(
     /// Maps the pins to their arduino names and
