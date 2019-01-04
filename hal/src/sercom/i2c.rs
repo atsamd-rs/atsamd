@@ -203,7 +203,7 @@ impl $Type {
     }
 
     fn i2cm(&mut self) -> &I2CM {
-        unsafe { &self.sercom.i2cm() }
+        &self.sercom.i2cm()
     }
 
     fn send_bytes(&mut self, bytes: &[u8]) -> Result<(), I2CError> {
