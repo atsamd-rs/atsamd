@@ -154,8 +154,6 @@ pub struct USART {
     pub ctrlb: self::usart::CTRLB,
     #[doc = "0x08 - USART Control C"]
     pub ctrlc: self::usart::CTRLC,
-    #[doc = "USART Baud Rate"]
-    pub baud: BAUD_UNION,
     #[doc = "0x0e - USART Receive Pulse Length"]
     pub rxpl: self::usart::RXPL,
     _reserved5: [u8; 5usize],
@@ -184,17 +182,57 @@ pub struct USART {
     #[doc = "0x30 - USART Debug Control"]
     pub dbgctrl: self::usart::DBGCTRL,
 }
-#[doc = "USART Baud Rate"]
-#[repr(C)]
-pub union BAUD_UNION {
+impl USART {
     #[doc = "0x0c - USART Baud Rate"]
-    pub baud_usartfp_mode: self::usart::BAUD_USARTFP_MODE,
+    pub fn baud_usartfp_mode(&self) -> &self::usart::BAUD_USARTFP_MODE {
+        unsafe {
+            &*(((self as *const Self) as *const u8).add(12usize)
+                as *const self::usart::BAUD_USARTFP_MODE)
+        }
+    }
     #[doc = "0x0c - USART Baud Rate"]
-    pub baud_fracfp_mode: self::usart::BAUD_FRACFP_MODE,
+    pub fn baud_usartfp_mode_mut(&self) -> &mut self::usart::BAUD_USARTFP_MODE {
+        unsafe {
+            &mut *(((self as *const Self) as *mut u8).add(12usize)
+                as *mut self::usart::BAUD_USARTFP_MODE)
+        }
+    }
     #[doc = "0x0c - USART Baud Rate"]
-    pub baud_frac_mode: self::usart::BAUD_FRAC_MODE,
+    pub fn baud_fracfp_mode(&self) -> &self::usart::BAUD_FRACFP_MODE {
+        unsafe {
+            &*(((self as *const Self) as *const u8).add(12usize)
+                as *const self::usart::BAUD_FRACFP_MODE)
+        }
+    }
     #[doc = "0x0c - USART Baud Rate"]
-    pub baud: self::usart::BAUD,
+    pub fn baud_fracfp_mode_mut(&self) -> &mut self::usart::BAUD_FRACFP_MODE {
+        unsafe {
+            &mut *(((self as *const Self) as *mut u8).add(12usize)
+                as *mut self::usart::BAUD_FRACFP_MODE)
+        }
+    }
+    #[doc = "0x0c - USART Baud Rate"]
+    pub fn baud_frac_mode(&self) -> &self::usart::BAUD_FRAC_MODE {
+        unsafe {
+            &*(((self as *const Self) as *const u8).add(12usize)
+                as *const self::usart::BAUD_FRAC_MODE)
+        }
+    }
+    #[doc = "0x0c - USART Baud Rate"]
+    pub fn baud_frac_mode_mut(&self) -> &mut self::usart::BAUD_FRAC_MODE {
+        unsafe {
+            &mut *(((self as *const Self) as *mut u8).add(12usize)
+                as *mut self::usart::BAUD_FRAC_MODE)
+        }
+    }
+    #[doc = "0x0c - USART Baud Rate"]
+    pub fn baud(&self) -> &self::usart::BAUD {
+        unsafe { &*(((self as *const Self) as *const u8).add(12usize) as *const self::usart::BAUD) }
+    }
+    #[doc = "0x0c - USART Baud Rate"]
+    pub fn baud_mut(&self) -> &mut self::usart::BAUD {
+        unsafe { &mut *(((self as *const Self) as *mut u8).add(12usize) as *mut self::usart::BAUD) }
+    }
 }
 #[doc = r" Register block"]
 #[doc = "USART Mode"]
