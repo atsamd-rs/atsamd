@@ -21,6 +21,8 @@ use hal::time::Hertz;
 pub use hal::usb::UsbBus;
 #[cfg(feature = "usb")]
 use usb_device::bus::UsbBusWrapper;
+#[cfg(feature = "usb")]
+use gpio::IntoFunction;
 
 define_pins!(
     /// Maps the pins to their arduino names and

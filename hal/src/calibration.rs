@@ -41,16 +41,19 @@ pub fn dfll48m_coarse_cal() -> u8 {
     cal_with_errata(4, 26, 0x3f, 0x3f, 0x1f) as u8
 }
 
+#[cfg(feature = "usb")]
 /// USB TRANSN calibration value. Should be written to USB PADCAL register.
 pub fn usb_transn_cal() -> u8 {
     cal_with_errata(4, 13, 0x1f, 0x1f, 5) as u8
 }
 
+#[cfg(feature = "usb")]
 /// USB TRANSP calibration value. Should be written to USB PADCAL register.
 pub fn usb_transp_cal() -> u8 {
     cal_with_errata(4, 18, 0x1f, 0x1f, 29) as u8
 }
 
+#[cfg(feature = "usb")]
 /// USB TRIM calibration value. Should be written to USB PADCAL register.
 pub fn usb_trim_cal() -> u8 {
     cal_with_errata(4, 23, 7, 7, 5) as u8
