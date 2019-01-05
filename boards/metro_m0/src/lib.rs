@@ -3,18 +3,16 @@
 pub extern crate atsamd21_hal as hal;
 
 #[cfg(feature = "rt")]
-extern crate cortex_m_rt;
-#[cfg(feature = "rt")]
 pub use cortex_m_rt::entry;
 
 use hal::prelude::*;
 pub use hal::target_device::*;
 pub use hal::*;
 
-#[cfg(feature = "usb")]
-use gpio::IntoFunction;
-use gpio::{Floating, Input, Output, Port, PushPull};
 use hal::clock::GenericClockController;
+#[cfg(feature = "usb")]
+use hal::gpio::IntoFunction;
+use hal::gpio::{Floating, Input, Output, Port, PushPull};
 use hal::sercom::{I2CMaster3, PadPin, SPIMaster4, SPIMaster5};
 use hal::time::Hertz;
 
