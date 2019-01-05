@@ -10,8 +10,8 @@ pub use cortex_m_rt::entry;
 #[cfg(feature = "panic_halt")]
 pub extern crate panic_halt;
 
-pub use hal::atsamd21g18a::*;
 use hal::prelude::*;
+pub use hal::target_device::*;
 pub use hal::*;
 
 use gpio::{Floating, Input, Port};
@@ -21,7 +21,7 @@ define_pins!(
     /// Maps the pins to their arduino names and the numbers printed on the board.
     /// Information from: <https://github.com/arduino/ArduinoCore-samd/blob/master/variants/mkrzero/variant.cpp>
     struct Pins,
-    target_device: atsamd21g18a,
+    target_device: target_device,
 
     /// Digital 0: PWM, TC
     pin d0 = a22,

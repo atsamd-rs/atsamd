@@ -1,20 +1,10 @@
 #![no_std]
 #![cfg_attr(feature = "usb", feature(align_offset, ptr_offset_from))]
 
-#[cfg(feature = "samd21g18a")]
-pub extern crate atsamd21g18a;
-#[cfg(feature = "samd21g18a")]
-pub use atsamd21g18a as target_device;
-
-#[cfg(feature = "samd21e18a")]
-pub extern crate atsamd21e18a;
 #[cfg(feature = "samd21e18a")]
 pub use atsamd21e18a as target_device;
-
-#[cfg_attr(feature = "usb", macro_use)]
-extern crate bitfield;
-
-extern crate vcell;
+#[cfg(feature = "samd21g18a")]
+pub use atsamd21g18a as target_device;
 
 #[cfg(feature = "use_rtt")]
 pub extern crate jlink_rtt;
@@ -37,14 +27,8 @@ macro_rules! dbgprint {
     ($($arg:tt)*) => {{}};
 }
 
-#[cfg_attr(feature = "usb", macro_use)]
-extern crate cortex_m;
 pub extern crate embedded_hal as hal;
-extern crate nb;
 pub extern crate paste;
-
-#[cfg(feature = "usb")]
-pub extern crate usb_device;
 
 extern crate void;
 

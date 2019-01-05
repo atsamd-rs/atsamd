@@ -7,8 +7,8 @@ extern crate cortex_m_semihosting;
 extern crate metro_m0 as hal;
 
 use hal::entry;
+use hal::hal::usb::usb_device;
 use hal::prelude::*;
-use hal::usb_device;
 use usb_device::prelude::*;
 
 extern crate panic_rtt;
@@ -17,8 +17,8 @@ extern crate cortex_m_rt;
 use cortex_m_rt::{exception, ExceptionFrame};
 
 use hal::clock::GenericClockController;
-use hal::usb_device::bus::UsbBusWrapper;
 use hal::{interrupt, CorePeripherals, Peripherals};
+use usb_device::bus::UsbBusWrapper;
 
 static mut USB_BUS: Option<UsbBusWrapper<hal::UsbBus>> = None;
 static mut USB_DEV: Option<UsbDevice<hal::UsbBus>> = None;

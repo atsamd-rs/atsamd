@@ -1,6 +1,6 @@
 //! USB Device support
 
-use gpio;
+use crate::gpio;
 
 pub use usb_device;
 

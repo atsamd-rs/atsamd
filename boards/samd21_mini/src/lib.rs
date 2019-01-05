@@ -9,7 +9,7 @@ extern crate atsamd21_hal as hal;
 
 pub mod prelude;
 
-pub use hal::atsamd21g18a::*;
+pub use hal::target_device::*;
 
 use hal::prelude::*;
 #[cfg(feature = "usb")]
@@ -22,7 +22,7 @@ define_pins!(
     /// Maps the pins to their arduino names and
     /// the numbers printed on the board.
     struct Pins,
-    target_device: atsamd21g18a,
+    target_device: target_device,
 
     pin tx = a10,
     pin rx = a11,

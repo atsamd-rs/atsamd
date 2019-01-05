@@ -1,12 +1,12 @@
 //! Working with timer counter hardware
-use hal::timer::{CountDown, Periodic};
-use target_device::tc3::COUNT16;
+use crate::target_device::tc3::COUNT16;
 #[allow(unused)]
-use target_device::{PM, TC3, TC4, TC5};
+use crate::target_device::{PM, TC3, TC4, TC5};
+use hal::timer::{CountDown, Periodic};
 
-use clock;
+use crate::clock;
+use crate::time::Hertz;
 use nb;
-use time::Hertz;
 use void::Void;
 
 // Note:

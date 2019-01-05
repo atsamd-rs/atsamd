@@ -7,14 +7,14 @@
 //! for the pin.   The pin configuration is reflected through the
 //! use of type states to make the interface (ideally, or at least practically)
 //! impossible to misuse.
-use target_device::port::{DIRCLR, DIRSET, OUTCLR, OUTSET, PINCFG0_, PMUX0_};
+use crate::target_device::port::{DIRCLR, DIRSET, OUTCLR, OUTSET, PINCFG0_, PMUX0_};
 
 #[cfg(feature = "samd21g18a")]
-use target_device::port::{PINCFG1_, PMUX1_};
+use crate::target_device::port::{PINCFG1_, PMUX1_};
 
+use crate::target_device::PORT;
 use core::marker::PhantomData;
 use hal::digital::OutputPin;
-use target_device::PORT;
 
 #[cfg(feature = "unproven")]
 use hal::digital::{InputPin, StatefulOutputPin, ToggleableOutputPin};

@@ -2,8 +2,8 @@
 
 extern crate atsamd21_hal as hal;
 
-pub use hal::atsamd21g18a::*;
 use hal::prelude::*;
+pub use hal::target_device::*;
 pub use hal::*;
 
 use gpio::{Floating, Input, Output, Port, PushPull};
@@ -15,7 +15,7 @@ define_pins!(
     /// Maps the pins to their arduino names and
     /// the numbers printed on the board.
     struct Pins,
-    target_device: atsamd21g18a,
+    target_device: target_device,
     /// Pin 0, rx. Also analog input (A6)
     pin rx = b9,
     /// Pin 1, tx. Also analog input (A7)
