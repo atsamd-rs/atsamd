@@ -20,3 +20,4 @@ deploy:
   local-dir: doc
   on:
     branch: master
+    rust: 'nightly'
