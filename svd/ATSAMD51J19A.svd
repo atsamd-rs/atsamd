@@ -21016,7 +21016,7 @@
           <description>Host Control 1</description>
           <addressOffset>0x028</addressOffset>
           <size>8</size>
-          <resetValue>0xE00</resetValue>
+          <resetValue>0x00</resetValue>
           <fields>
             <field>
               <name>LEDCTRL</name>
