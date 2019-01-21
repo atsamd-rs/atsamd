@@ -117,12 +117,13 @@ impl $Type {
                 w.rxpo().bits(rxpo); // Uses pad 3 for rx
                 w.txpo().bits(txpo); // Uses pad 2 for tx (and pad 3 for xck)
 
-                w.form().bits(0x00);
+                w.form().bits(0x00); // No parity
                 w.sampr().bits(0x00); // 16x oversample fractional
                 w.runstdby().set_bit(); // Run in standby
                 w.form().bits(0); // 0 is no parity bits
 
-                w.mode().usart_int_clk() // Internal clock mode
+                w.mode().usart_int_clk(); // Internal clock mode
+                w.cmode().set_bit() // Synchronous mode
             });
 
             // Calculate value for BAUD register
@@ -156,15 +157,15 @@ impl $Type {
 
             while sercom.usart().syncbusy.read().ctrlb().bit_is_set() {}
 
-            nvic.enable($int0);
-            nvic.enable($int1);
-            nvic.enable($int2);
+            //nvic.enable($int0);
+            //nvic.enable($int1);
+            //nvic.enable($int2);
 
-            sercom.usart().intenset.modify(|_, w| {
-                w.rxc().set_bit()
+            //sercom.usart().intenset.modify(|_, w| {
+            //    w.rxc().set_bit()
                 //w.txc().set_bit()
                 //w.dre().set_bit()
-            });
+            //});
 
             sercom.usart().ctrla.modify(|_, w| w.enable().set_bit());
             // wait for sync of ENABLE

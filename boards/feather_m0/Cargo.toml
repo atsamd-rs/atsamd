@@ -48,11 +48,11 @@ cortex-m-semihosting = "~0.3"
 
 [features]
 # ask the HAL to enable atsamd21g18a support
-default = ["rt", "atsamd21-hal/samd21g18a", "panic_halt"]
-rt = ["cortex-m-rt", "atsamd21-hal/samd21g18a-rt"]
-unproven = ["atsamd21-hal/unproven"]
-use_rtt = ["atsamd21-hal/use_rtt", "panic_rtt"]
-usb = ["atsamd21-hal/usb"]
+default = ["rt", "atsamd-hal/samd21g18a", "panic_halt"]
+rt = ["cortex-m-rt", "atsamd-hal/samd21g18a-rt"]
+unproven = ["atsamd-hal/unproven"]
+use_rtt = ["atsamd-hal/use_rtt", "panic_rtt"]
+usb = ["atsamd-hal/usb"]
 panic_halt = ["panic-halt"]
 panic_abort = ["panic-abort"]
 panic_semihosting = ["panic-semihosting"]

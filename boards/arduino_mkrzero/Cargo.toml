@@ -22,15 +22,15 @@ optional = true
 version = "~0.2"
 optional = true
 
-[dependencies.atsamd21-hal]
+[dependencies.atsamd-hal]
 path = "../../hal"
 version = "~0.3"
 default-features = false
 
 [features]
 # ask the HAL to enable atsamd21g18a support
-default = ["rt", "panic_halt", "atsamd21-hal/samd21g18a"]
-rt = ["cortex-m-rt", "atsamd21-hal/samd21g18a-rt"]
+default = ["rt", "panic_halt", "atsamd-hal/samd21g18a"]
+rt = ["cortex-m-rt", "atsamd-hal/samd21g18a-rt"]
 panic_halt = ["panic-halt"]
-unproven = ["atsamd21-hal/unproven"]
+unproven = ["atsamd-hal/unproven"]
 use_semihosting = []
