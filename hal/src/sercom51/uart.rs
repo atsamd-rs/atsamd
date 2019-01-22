@@ -123,7 +123,7 @@ impl $Type {
                 w.form().bits(0); // 0 is no parity bits
 
                 w.mode().usart_int_clk(); // Internal clock mode
-                w.cmode().set_bit() // Synchronous mode
+                w.cmode().clear_bit() // Asynchronous mode
             });
 
             // Calculate value for BAUD register
@@ -166,6 +166,10 @@ impl $Type {
                 //w.txc().set_bit()
                 //w.dre().set_bit()
             //});
+
+            sercom.usart().intenclr.modify(|_, w| {
+                w.bits(0xff)
+            });
 
             sercom.usart().ctrla.modify(|_, w| w.enable().set_bit());
             // wait for sync of ENABLE

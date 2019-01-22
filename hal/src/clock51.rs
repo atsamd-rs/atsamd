@@ -114,9 +114,9 @@ impl State {
             w.div().bits(divider);
             // divide directly by divider, rather than exponential
             w.divsel().clear_bit();
-            //w.idc().bit(improve_duty_cycle);
-            w.genen().set_bit();
-            w.oe().set_bit()
+            w.idc().bit(improve_duty_cycle);
+            w.genen().set_bit()
+            //w.oe().set_bit()
         });
         self.wait_for_sync();
     }
@@ -176,22 +176,26 @@ impl GenericClockController {
         use_external_crystal: bool,
     ) -> Self {
         let mut state = State { gclk };
-        nvmctrl.ctrla.modify(|_, w| w.rws().single());
+
+        set_flash_to_half_auto_wait_state(nvmctrl);
+        enable_gclk_apb(mclk);
         enable_internal_32kosc(osc32kctrl);
         if use_external_crystal {
             enable_external_32kosc(osc32kctrl);
             state.reset_gclk();
-            state.gclk.genctrl[XOSC32K.bits() as usize].write(|w| {
+            /*state.gclk.genctrl[XOSC32K.bits() as usize].write(|w| {
                 w.src().xosc32k();
                 w.genen().set_bit()
-            });
+            });*/
+            state.set_gclk_divider_and_source(GCLK1, 1, XOSC32K, false);
         } else {
             enable_internal_32kosc(osc32kctrl);
             state.reset_gclk();
-            state.gclk.genctrl[OSCULP32K.bits() as usize].write(|w| {
+            /*state.gclk.genctrl[OSCULP32K.bits() as usize].write(|w| {
                 w.src().osculp32k();
                 w.genen().set_bit()
-            });
+            });*/
+            state.set_gclk_divider_and_source(GCLK1, 1, OSCULP32K, false);
         }
         while state.gclk.syncbusy.read().genctrl3().is_gclk3() {}
 
