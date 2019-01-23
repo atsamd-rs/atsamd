@@ -75,6 +75,16 @@ pub struct PfG;
 pub struct PfH;
 /// Peripheral Function I
 pub struct PfI;
+/// Peripheral Function J
+pub struct PfJ;
+/// Peripheral Function K
+pub struct PfK;
+/// Peripheral Function L
+pub struct PfL;
+/// Peripheral Function M
+pub struct PfM;
+/// Peripheral Function N
+pub struct PfN;
 
 /// A trait that makes it easier to generically manage
 /// converting a pin from its current state into some
@@ -154,6 +164,13 @@ macro_rules! pin {
         function!(PfF, into_function_f, f);
         function!(PfG, into_function_g, g);
         function!(PfH, into_function_h, h);
+        function!(PfI, into_function_i, i);
+        function!(PfJ, into_function_j, j);
+        function!(PfK, into_function_k, k);
+        function!(PfL, into_function_l, l);
+        function!(PfM, into_function_m, m);
+        function!(PfN, into_function_n, n);
+
 
         impl<MODE> $PinType<MODE> {
 

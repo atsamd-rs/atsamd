@@ -15862,6 +15862,36 @@
                   <description>Peripheral function H selected</description>
                   <value>0x7</value>
                 </enumeratedValue>
+                <enumeratedValue>
+                  <name>I</name>
+                  <description>Peripheral function I selected</description>
+                  <value>0x8</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>J</name>
+                  <description>Peripheral function J selected</description>
+                  <value>0x9</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>K</name>
+                  <description>Peripheral function K selected</description>
+                  <value>0xA</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>L</name>
+                  <description>Peripheral function L selected</description>
+                  <value>0xB</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>M</name>
+                  <description>Peripheral function M selected</description>
+                  <value>0xC</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>N</name>
+                  <description>Peripheral function N selected</description>
+                  <value>0xD</value>
+                </enumeratedValue>
               </enumeratedValues>
             </field>
             <field>
@@ -15911,6 +15941,37 @@
                   <description>Peripheral function H selected</description>
                   <value>0x7</value>
                 </enumeratedValue>
+                <enumeratedValue>
+                  <name>I</name>
+                  <description>Peripheral function I selected</description>
+                  <value>0x8</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>J</name>
+                  <description>Peripheral function J selected</description>
+                  <value>0x9</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>K</name>
+                  <description>Peripheral function K selected</description>
+                  <value>0xA</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>L</name>
+                  <description>Peripheral function L selected</description>
+                  <value>0xB</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>M</name>
+                  <description>Peripheral function M selected</description>
+                  <value>0xC</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>N</name>
+                  <description>Peripheral function N selected</description>
+                  <value>0xD</value>
+                </enumeratedValue>
+
               </enumeratedValues>
             </field>
           </fields>

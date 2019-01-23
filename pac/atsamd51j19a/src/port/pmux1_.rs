@@ -61,6 +61,18 @@ pub enum PMUXER {
     G,
     #[doc = "Peripheral function H selected"]
     H,
+    #[doc = "Peripheral function I selected"]
+    I,
+    #[doc = "Peripheral function J selected"]
+    J,
+    #[doc = "Peripheral function K selected"]
+    K,
+    #[doc = "Peripheral function L selected"]
+    L,
+    #[doc = "Peripheral function M selected"]
+    M,
+    #[doc = "Peripheral function N selected"]
+    N,
     #[doc = r" Reserved"]
     _Reserved(u8),
 }
@@ -77,6 +89,12 @@ impl PMUXER {
             PMUXER::F => 5,
             PMUXER::G => 6,
             PMUXER::H => 7,
+            PMUXER::I => 8,
+            PMUXER::J => 9,
+            PMUXER::K => 10,
+            PMUXER::L => 11,
+            PMUXER::M => 12,
+            PMUXER::N => 13,
             PMUXER::_Reserved(bits) => bits,
         }
     }
@@ -93,6 +111,12 @@ impl PMUXER {
             5 => PMUXER::F,
             6 => PMUXER::G,
             7 => PMUXER::H,
+            8 => PMUXER::I,
+            9 => PMUXER::J,
+            10 => PMUXER::K,
+            11 => PMUXER::L,
+            12 => PMUXER::M,
+            13 => PMUXER::N,
             i => PMUXER::_Reserved(i),
         }
     }
@@ -136,6 +160,36 @@ impl PMUXER {
     pub fn is_h(&self) -> bool {
         *self == PMUXER::H
     }
+    #[doc = "Checks if the value of the field is `I`"]
+    #[inline]
+    pub fn is_i(&self) -> bool {
+        *self == PMUXER::I
+    }
+    #[doc = "Checks if the value of the field is `J`"]
+    #[inline]
+    pub fn is_j(&self) -> bool {
+        *self == PMUXER::J
+    }
+    #[doc = "Checks if the value of the field is `K`"]
+    #[inline]
+    pub fn is_k(&self) -> bool {
+        *self == PMUXER::K
+    }
+    #[doc = "Checks if the value of the field is `L`"]
+    #[inline]
+    pub fn is_l(&self) -> bool {
+        *self == PMUXER::L
+    }
+    #[doc = "Checks if the value of the field is `M`"]
+    #[inline]
+    pub fn is_m(&self) -> bool {
+        *self == PMUXER::M
+    }
+    #[doc = "Checks if the value of the field is `N`"]
+    #[inline]
+    pub fn is_n(&self) -> bool {
+        *self == PMUXER::N
+    }
 }
 #[doc = "Possible values of the field `PMUXO`"]
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -156,6 +210,18 @@ pub enum PMUXOR {
     G,
     #[doc = "Peripheral function H selected"]
     H,
+    #[doc = "Peripheral function I selected"]
+    I,
+    #[doc = "Peripheral function J selected"]
+    J,
+    #[doc = "Peripheral function K selected"]
+    K,
+    #[doc = "Peripheral function L selected"]
+    L,
+    #[doc = "Peripheral function M selected"]
+    M,
+    #[doc = "Peripheral function N selected"]
+    N,
     #[doc = r" Reserved"]
     _Reserved(u8),
 }
@@ -172,6 +238,12 @@ impl PMUXOR {
             PMUXOR::F => 5,
             PMUXOR::G => 6,
             PMUXOR::H => 7,
+            PMUXOR::I => 8,
+            PMUXOR::J => 9,
+            PMUXOR::K => 10,
+            PMUXOR::L => 11,
+            PMUXOR::M => 12,
+            PMUXOR::N => 13,
             PMUXOR::_Reserved(bits) => bits,
         }
     }
@@ -188,6 +260,12 @@ impl PMUXOR {
             5 => PMUXOR::F,
             6 => PMUXOR::G,
             7 => PMUXOR::H,
+            8 => PMUXOR::I,
+            9 => PMUXOR::J,
+            10 => PMUXOR::K,
+            11 => PMUXOR::L,
+            12 => PMUXOR::M,
+            13 => PMUXOR::N,
             i => PMUXOR::_Reserved(i),
         }
     }
@@ -231,6 +309,36 @@ impl PMUXOR {
     pub fn is_h(&self) -> bool {
         *self == PMUXOR::H
     }
+    #[doc = "Checks if the value of the field is `I`"]
+    #[inline]
+    pub fn is_i(&self) -> bool {
+        *self == PMUXOR::I
+    }
+    #[doc = "Checks if the value of the field is `J`"]
+    #[inline]
+    pub fn is_j(&self) -> bool {
+        *self == PMUXOR::J
+    }
+    #[doc = "Checks if the value of the field is `K`"]
+    #[inline]
+    pub fn is_k(&self) -> bool {
+        *self == PMUXOR::K
+    }
+    #[doc = "Checks if the value of the field is `L`"]
+    #[inline]
+    pub fn is_l(&self) -> bool {
+        *self == PMUXOR::L
+    }
+    #[doc = "Checks if the value of the field is `M`"]
+    #[inline]
+    pub fn is_m(&self) -> bool {
+        *self == PMUXOR::M
+    }
+    #[doc = "Checks if the value of the field is `N`"]
+    #[inline]
+    pub fn is_n(&self) -> bool {
+        *self == PMUXOR::N
+    }
 }
 #[doc = "Values that can be written to the field `PMUXE`"]
 pub enum PMUXEW {
@@ -250,6 +358,18 @@ pub enum PMUXEW {
     G,
     #[doc = "Peripheral function H selected"]
     H,
+    #[doc = "Peripheral function I selected"]
+    I,
+    #[doc = "Peripheral function J selected"]
+    J,
+    #[doc = "Peripheral function K selected"]
+    K,
+    #[doc = "Peripheral function L selected"]
+    L,
+    #[doc = "Peripheral function M selected"]
+    M,
+    #[doc = "Peripheral function N selected"]
+    N,
 }
 impl PMUXEW {
     #[allow(missing_docs)]
@@ -265,6 +385,12 @@ impl PMUXEW {
             PMUXEW::F => 5,
             PMUXEW::G => 6,
             PMUXEW::H => 7,
+            PMUXEW::I => 8,
+            PMUXEW::J => 9,
+            PMUXEW::K => 10,
+            PMUXEW::L => 11,
+            PMUXEW::M => 12,
+            PMUXEW::N => 13,
         }
     }
 }
@@ -318,6 +444,36 @@ impl<'a> _PMUXEW<'a> {
     pub fn h(self) -> &'a mut W {
         self.variant(PMUXEW::H)
     }
+    #[doc = "Peripheral function I selected"]
+    #[inline]
+    pub fn i(self) -> &'a mut W {
+        self.variant(PMUXEW::I)
+    }
+    #[doc = "Peripheral function J selected"]
+    #[inline]
+    pub fn j(self) -> &'a mut W {
+        self.variant(PMUXEW::J)
+    }
+    #[doc = "Peripheral function K selected"]
+    #[inline]
+    pub fn k(self) -> &'a mut W {
+        self.variant(PMUXEW::K)
+    }
+    #[doc = "Peripheral function L selected"]
+    #[inline]
+    pub fn l(self) -> &'a mut W {
+        self.variant(PMUXEW::L)
+    }
+    #[doc = "Peripheral function M selected"]
+    #[inline]
+    pub fn m(self) -> &'a mut W {
+        self.variant(PMUXEW::M)
+    }
+    #[doc = "Peripheral function N selected"]
+    #[inline]
+    pub fn n(self) -> &'a mut W {
+        self.variant(PMUXEW::N)
+    }
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
@@ -346,6 +502,18 @@ pub enum PMUXOW {
     G,
     #[doc = "Peripheral function H selected"]
     H,
+    #[doc = "Peripheral function I selected"]
+    I,
+    #[doc = "Peripheral function J selected"]
+    J,
+    #[doc = "Peripheral function K selected"]
+    K,
+    #[doc = "Peripheral function L selected"]
+    L,
+    #[doc = "Peripheral function M selected"]
+    M,
+    #[doc = "Peripheral function N selected"]
+    N,
 }
 impl PMUXOW {
     #[allow(missing_docs)]
@@ -361,6 +529,12 @@ impl PMUXOW {
             PMUXOW::F => 5,
             PMUXOW::G => 6,
             PMUXOW::H => 7,
+            PMUXOW::I => 8,
+            PMUXOW::J => 9,
+            PMUXOW::K => 10,
+            PMUXOW::L => 11,
+            PMUXOW::M => 12,
+            PMUXOW::N => 13,
         }
     }
 }
@@ -413,6 +587,36 @@ impl<'a> _PMUXOW<'a> {
     #[inline]
     pub fn h(self) -> &'a mut W {
         self.variant(PMUXOW::H)
+    }
+    #[doc = "Peripheral function I selected"]
+    #[inline]
+    pub fn i(self) -> &'a mut W {
+        self.variant(PMUXOW::I)
+    }
+    #[doc = "Peripheral function J selected"]
+    #[inline]
+    pub fn j(self) -> &'a mut W {
+        self.variant(PMUXOW::J)
+    }
+    #[doc = "Peripheral function K selected"]
+    #[inline]
+    pub fn k(self) -> &'a mut W {
+        self.variant(PMUXOW::K)
+    }
+    #[doc = "Peripheral function L selected"]
+    #[inline]
+    pub fn l(self) -> &'a mut W {
+        self.variant(PMUXOW::L)
+    }
+    #[doc = "Peripheral function M selected"]
+    #[inline]
+    pub fn m(self) -> &'a mut W {
+        self.variant(PMUXOW::M)
+    }
+    #[doc = "Peripheral function N selected"]
+    #[inline]
+    pub fn n(self) -> &'a mut W {
+        self.variant(PMUXOW::N)
     }
     #[doc = r" Writes raw bits to the field"]
     #[inline]

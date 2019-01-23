@@ -112,12 +112,14 @@ impl State {
         self.gclk.genctrl[gclk.bits() as usize].write(|w| unsafe {
             w.src().bits(src.bits());
             w.div().bits(divider);
-            // divide directly by divider, rather than exponential
+            // divide directly by divider, rather than 2*(n+1)
             w.divsel().clear_bit();
+            //w.divsel().set_bit();
             w.idc().bit(improve_duty_cycle);
-            w.genen().set_bit()
-            //w.oe().set_bit()
+            w.genen().set_bit();
+            w.oe().set_bit()
         });
+
         self.wait_for_sync();
     }
 
@@ -133,9 +135,9 @@ impl State {
 /// `GenericClockController` encapsulates the GCLK hardware.
 /// It provides a type safe way to configure the system clocks.
 /// Initializing the `GenericClockController` instance configures
-/// the system to run at 48Mhz by setting gclk1 as a 32khz source
-/// and feeding it into the DFLL48 hardware which in turn drives
-/// gclk0 at 48Mhz.
+/// the system to run at 120MHz by taking the DFLL48 
+/// and feeding it into the DPLL0 hardware which multiplies the 
+/// signal by 2.5x.
 pub struct GenericClockController {
     state: State,
     gclks: [Hertz; 12],
@@ -183,18 +185,10 @@ impl GenericClockController {
         if use_external_crystal {
             enable_external_32kosc(osc32kctrl);
             state.reset_gclk();
-            /*state.gclk.genctrl[XOSC32K.bits() as usize].write(|w| {
-                w.src().xosc32k();
-                w.genen().set_bit()
-            });*/
             state.set_gclk_divider_and_source(GCLK1, 1, XOSC32K, false);
         } else {
             enable_internal_32kosc(osc32kctrl);
             state.reset_gclk();
-            /*state.gclk.genctrl[OSCULP32K.bits() as usize].write(|w| {
-                w.src().osculp32k();
-                w.genen().set_bit()
-            });*/
             state.set_gclk_divider_and_source(GCLK1, 1, OSCULP32K, false);
         }
         while state.gclk.syncbusy.read().genctrl3().is_gclk3() {}
@@ -207,26 +201,24 @@ impl GenericClockController {
 
         unsafe {
             oscctrl.dfllctrla.write(|w| w.bits(0));
-            oscctrl.dfllmul.write(|w| {
-                w.cstep().bits(1);
-                w.fstep().bits(1);
-                w.mul().bits(0)
-            });
+            oscctrl.dfllmul.write(|w| w.bits(0));
         }
         while oscctrl.dfllsync.read().dfllmul().bit_is_set() {}
-        while oscctrl.dfllsync.read().dfllctrlb().bit_is_set() {}
-        
-        oscctrl.dfllctrla.modify(|_, w| w.enable().set_bit());
-        while oscctrl.dfllsync.read().enable().bit_is_set() {}
 
-        oscctrl.dfllctrlb.write(|w| {
-            w.ccdis().set_bit();
-            w.usbcrm().set_bit();
-            w.waitlock().set_bit()
+        unsafe { 
+            oscctrl.dfllctrlb.write(|w| w.bits(0));
+        }
+        while oscctrl.dfllctrlb.read().bits() != 0 {}
+
+        oscctrl.dfllctrla.modify(|_, w| {
+        //  w.ondemand().set_bit();
+            w.enable().set_bit()
         });
+        while oscctrl.dfllsync.read().enable().bit_is_set() {}
 
         while oscctrl.status.read().dfllrdy().bit_is_clear() {}
 
+        // GCLK5 set to 2MHz
         unsafe {
             state.gclk.genctrl[5].write(|w| {
                 w.src().dfll();
@@ -240,6 +232,7 @@ impl GenericClockController {
         configure_and_enable_dpll0(oscctrl, &mut state.gclk);
         wait_for_dpllrdy(oscctrl);
 
+        // GCLK0 set to DPLL0 (120MHz)
         state.gclk.genctrl[0].write(|w| {
             w.src().dpll0();
             w.idc().set_bit();
@@ -272,7 +265,7 @@ impl GenericClockController {
         }
     }
 
-    /// Returns a `GClock` for gclk0, the system clock generator at 48Mhz
+    /// Returns a `GClock` for gclk0, the 120MHz oscillator.
     pub fn gclk0(&mut self) -> GClock {
         GClock {
             gclk: GCLK0,
@@ -280,7 +273,7 @@ impl GenericClockController {
         }
     }
 
-    /// Returns a `GClock` for gclk1, the 32Khz oscillator.
+    /// Returns a `GClock` for gclk1, the 32KHz oscillator.
     pub fn gclk1(&mut self) -> GClock {
         GClock {
             gclk: GCLK1,
@@ -309,7 +302,7 @@ impl GenericClockController {
     /// source.  While the hardware also supports an exponential divider,
     /// this function doesn't expose that functionality at this time.
     /// `improve_duty_cycle` is a boolean that, when set to true, enables
-    /// a 5o/50 duty cycle for odd divider values.
+    /// a 50/50 duty cycle for odd divider values.
     /// Returns a `GClock` for the configured clock generator.
     /// Returns `None` if the clock generator has already been configured.
     pub fn configure_gclk_divider_and_source(
@@ -487,9 +480,7 @@ fn enable_external_32kosc(osc32kctrl: &mut OSC32KCTRL) {
 
 fn wait_for_dpllrdy(oscctrl: &mut OSCCTRL) {
     while oscctrl.dpllstatus0.read().lock().bit_is_clear() ||
-        oscctrl.dpllstatus0.read().clkrdy().bit_is_clear() {
-            unsafe { ptr::write_volatile(0x41008018 as *mut u32,  (oscctrl.dpllstatus0.read().clkrdy().bit_is_clear() as u32) << 16); }
-    }
+        oscctrl.dpllstatus0.read().clkrdy().bit_is_clear() {}
 }
 
 /// Configure the dpll0 to run at 120MHz
@@ -505,8 +496,8 @@ fn configure_and_enable_dpll0(oscctrl: &mut OSCCTRL, gclk: &mut GCLK) {
         });
     }
     oscctrl.dpllctrlb0.write(|w| {
-        w.refclk().gclk();
-        w.lbypass().set_bit()
+        w.refclk().gclk()
+       // w.lbypass().set_bit()
     });
     oscctrl.dpllctrla0.write(|w| {
         w.enable().set_bit();
