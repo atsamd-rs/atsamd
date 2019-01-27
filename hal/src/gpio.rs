@@ -164,13 +164,19 @@ macro_rules! pin {
         function!(PfF, into_function_f, f);
         function!(PfG, into_function_g, g);
         function!(PfH, into_function_h, h);
-        function!(PfI, into_function_i, i);
-        function!(PfJ, into_function_j, j);
-        function!(PfK, into_function_k, k);
-        function!(PfL, into_function_l, l);
-        function!(PfM, into_function_m, m);
-        function!(PfN, into_function_n, n);
 
+        #[cfg(feature = "samd51j19a")]
+        function!(PfI, into_function_i, i);
+        #[cfg(feature = "samd51j19a")]
+        function!(PfJ, into_function_j, j);
+        #[cfg(feature = "samd51j19a")]
+        function!(PfK, into_function_k, k);
+        #[cfg(feature = "samd51j19a")]
+        function!(PfL, into_function_l, l);
+        #[cfg(feature = "samd51j19a")]
+        function!(PfM, into_function_m, m);
+        #[cfg(feature = "samd51j19a")]
+        function!(PfN, into_function_n, n);
 
         impl<MODE> $PinType<MODE> {
 
