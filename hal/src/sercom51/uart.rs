@@ -163,15 +163,15 @@ impl $Type {
                 w.maxiter().bits(7)
             });
 
-            //nvic.enable($int0);
-            //nvic.enable($int1);
-            //nvic.enable($int2);
+            nvic.enable($int0);
+            nvic.enable($int1);
+            nvic.enable($int2);
 
-            //sercom.usart().intenset.modify(|_, w| {
-            //    w.rxc().set_bit()
+            sercom.usart().intenset.modify(|_, w| {
+                w.rxc().set_bit()
                 //w.txc().set_bit()
                 //w.dre().set_bit()
-            //});
+            });
 
             sercom.usart().ctrla.modify(|_, w| w.enable().set_bit());
             // wait for sync of ENABLE
