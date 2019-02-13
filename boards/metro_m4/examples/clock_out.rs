@@ -8,16 +8,14 @@ extern crate cortex_m_rt;
 extern crate nb;
 
 use crate::hal::clock::GenericClockController;
-use crate::hal::{Peripherals, CorePeripherals};
-use crate::hal::gclk::genctrl::SRCR::{DFLL, DPLL0, XOSC32K, GCLKGEN1};
-use crate::hal::gclk::pchctrl::GENR::{GCLK1, GCLK2};
-use hal::prelude::*;
+use crate::hal::Peripherals;
+use crate::hal::gclk::genctrl::SRCR::DPLL0;
+use crate::hal::gclk::pchctrl::GENR::GCLK2;
 use cortex_m_rt::entry;
 
 #[entry]
 fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
-    let core = CorePeripherals::take().unwrap();
     let mut clocks = GenericClockController::with_external_32kosc(
         peripherals.GCLK,
         &mut peripherals.MCLK,

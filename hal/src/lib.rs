@@ -54,6 +54,7 @@ pub extern crate usb_device;
 
 extern crate void;
 
+#[cfg(not(feature="samd51j19a"))]
 mod calibration;
 
 #[cfg(not(feature = "samd51j19a"))]

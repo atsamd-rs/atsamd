@@ -9,22 +9,17 @@ extern crate panic_halt;
 #[cfg(feature = "use_semihosting")]
 extern crate panic_semihosting;
 
-#[macro_use(block)]
-extern crate nb;
-
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
 use hal::prelude::*;
 use hal::{entry, CorePeripherals, Peripherals};
-use hal::sercom::{PadPin, Sercom3Pad0, Sercom3Pad1, Sercom3Pad2, Sercom3Pad3, 
-    SPI3Pinout, SPIMaster3};
-use hal::target_device::gclk::pchctrl::{GENR};
-use hal::target_device::gclk::genctrl::{SRCR};
+use hal::sercom::PadPin;
+   
 
 #[entry]
 fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
-    let mut core = CorePeripherals::take().unwrap();
+    let core = CorePeripherals::take().unwrap();
     let mut clocks = GenericClockController::with_external_32kosc(
         peripherals.GCLK,
         &mut peripherals.MCLK,
@@ -56,7 +51,7 @@ fn main() -> ! {
     );
 
     loop {
-        spi.write(b"hello world!");
+        spi.write(b"hello world!").unwrap();
         delay.delay_ms(1000u16);
     }
 

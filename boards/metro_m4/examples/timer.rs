@@ -8,7 +8,7 @@ extern crate cortex_m_rt;
 extern crate nb;
 
 use crate::hal::clock::GenericClockController;
-use crate::hal::{Peripherals, CorePeripherals};
+use crate::hal::Peripherals;
 use crate::hal::timer::TimerCounter;
 use hal::prelude::*;
 use cortex_m_rt::entry;
@@ -17,7 +17,6 @@ use nb::block;
 #[entry]
 fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
-    let core = CorePeripherals::take().unwrap();
     let mut clocks = GenericClockController::with_external_32kosc(
         peripherals.GCLK,
         &mut peripherals.MCLK,

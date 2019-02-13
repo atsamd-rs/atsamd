@@ -7,6 +7,7 @@ use target_device::{MCLK, SERCOM0, SERCOM1, SERCOM2, SERCOM3};
 use target_device::{SERCOM4, SERCOM5};
 use time::Hertz;
 
+#[derive(Debug)]
 pub enum Error {
     Overrun,
 }

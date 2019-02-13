@@ -7,10 +7,10 @@ use target_device::gclk::pchctrl::GENR::*;
 use target_device::{self, GCLK, NVMCTRL, OSCCTRL, MCLK, OSC32KCTRL};
 use target_device::gclk::genctrl::SRCR::*;
 use time::{Hertz, U32Ext};
-use core::ptr;
 
 pub type ClockGenId = target_device::gclk::pchctrl::GENR;
 pub type ClockSource = target_device::gclk::genctrl::SRCR;
+#[allow(bad_style)]
 pub enum ClockId {
     DFLL48 = 0,
     FDPLL0,
