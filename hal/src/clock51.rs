@@ -446,7 +446,7 @@ impl ClockParams {
 pub const OSC48M_FREQ: Hertz = Hertz(48_000_000);
 /// The frequency of the 32Khz source.
 pub const OSC32K_FREQ: Hertz = Hertz(32_000);
-/// The frequency of the 48Mhz source.
+/// The frequency of the 120Mhz source.
 pub const OSC120M_FREQ: Hertz = Hertz(120_000_000);
 
 
