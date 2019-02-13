@@ -35,7 +35,6 @@ pub enum ClockId {
     EVSYS8,
     EVSYS9,
     EVSYS10,
-    EVSYS11,
     SERCOM2_CORE,
     SERCOM3_CORE,
     TCC0_TCC1,

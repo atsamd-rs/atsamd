@@ -151,11 +151,17 @@ impl $Type {
             sercom.usart().ctrlb.modify(|_, w| {
                 w.sbmode().clear_bit(); // 0 is one stop bit see sec 25.8.2
                 w.chsize().bits(0x0);
+                w.pmode().set_bit();
                 w.txen().set_bit();
                 w.rxen().set_bit()
             });
 
             while sercom.usart().syncbusy.read().ctrlb().bit_is_set() {}
+
+            sercom.usart().ctrlc.modify(|_, w| {
+                w.gtime().bits(2);
+                w.maxiter().bits(7)
+            });
 
             //nvic.enable($int0);
             //nvic.enable($int1);
@@ -166,10 +172,6 @@ impl $Type {
                 //w.txc().set_bit()
                 //w.dre().set_bit()
             //});
-
-            sercom.usart().intenclr.modify(|_, w| {
-                w.bits(0xff)
-            });
 
             sercom.usart().ctrla.modify(|_, w| w.enable().set_bit());
             // wait for sync of ENABLE
