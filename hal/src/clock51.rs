@@ -113,7 +113,6 @@ impl State {
             w.div().bits(divider);
             // divide directly by divider, rather than 2*(n+1)
             w.divsel().clear_bit();
-            //w.divsel().set_bit();
             w.idc().bit(improve_duty_cycle);
             w.genen().set_bit();
             w.oe().set_bit()
@@ -211,7 +210,6 @@ impl GenericClockController {
             // GCLK0 set to DPLL0 (120MHz)
             state.gclk.genctrl[0].write(|w| {
                 w.src().dpll0();
-                //w.idc().set_bit();
                 w.div().bits(1);
                 w.oe().set_bit();
                 w.genen().set_bit()
@@ -484,7 +482,6 @@ fn configure_and_enable_dpll0(oscctrl: &mut OSCCTRL, gclk: &mut GCLK) {
     }
     oscctrl.dpllctrlb0.write(|w| {
         w.refclk().gclk()
-       // w.lbypass().set_bit()
     });
     oscctrl.dpllctrla0.write(|w| {
         w.enable().set_bit();

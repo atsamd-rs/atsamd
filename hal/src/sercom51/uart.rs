@@ -119,7 +119,7 @@ impl $Type {
 
                 w.form().bits(0x00); // No parity
                 w.sampr().bits(0x00); // 16x oversample fractional
-                //w.runstdby().set_bit(); // Run in standby
+                w.runstdby().set_bit(); // Run in standby
                 w.form().bits(0); // 0 is no parity bits
 
                 w.mode().usart_int_clk(); // Internal clock mode
