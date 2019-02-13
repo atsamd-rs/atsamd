@@ -181,6 +181,7 @@ impl GenericClockController {
 
         set_flash_to_half_auto_wait_state(nvmctrl);
         enable_gclk_apb(mclk);
+
         if use_external_crystal {
             enable_external_32kosc(osc32kctrl);
             state.reset_gclk();
@@ -190,32 +191,8 @@ impl GenericClockController {
             state.reset_gclk();
             state.set_gclk_divider_and_source(GCLK1, 1, OSCULP32K, false);
         }
-        while state.gclk.syncbusy.read().genctrl3().is_gclk3() {}
 
-        state.gclk.genctrl[0].write(|w| {
-            w.src().osculp32k();
-            w.genen().set_bit()
-        });
         while state.gclk.syncbusy.read().genctrl0().is_gclk0() {}
-
-        unsafe {
-            oscctrl.dfllctrla.write(|w| w.bits(0));
-            oscctrl.dfllmul.write(|w| w.bits(0));
-        }
-        while oscctrl.dfllsync.read().dfllmul().bit_is_set() {}
-
-        unsafe { 
-            oscctrl.dfllctrlb.write(|w| w.bits(0));
-        }
-        while oscctrl.dfllctrlb.read().bits() != 0 {}
-
-        oscctrl.dfllctrla.modify(|_, w| {
-        //  w.ondemand().set_bit();
-            w.enable().set_bit()
-        });
-        while oscctrl.dfllsync.read().enable().bit_is_set() {}
-
-        while oscctrl.status.read().dfllrdy().bit_is_clear() {}
 
         // GCLK5 set to 2MHz
         unsafe {
@@ -231,12 +208,16 @@ impl GenericClockController {
         configure_and_enable_dpll0(oscctrl, &mut state.gclk);
         wait_for_dpllrdy(oscctrl);
 
-        // GCLK0 set to DPLL0 (120MHz)
-        state.gclk.genctrl[0].write(|w| {
-            w.src().dpll0();
-            w.idc().set_bit();
-            w.genen().set_bit()
-        });
+        unsafe {
+            // GCLK0 set to DPLL0 (120MHz)
+            state.gclk.genctrl[0].write(|w| {
+                w.src().dpll0();
+                //w.idc().set_bit();
+                w.div().bits(1);
+                w.oe().set_bit();
+                w.genen().set_bit()
+            });
+        }
 
         while state.gclk.syncbusy.read().genctrl0().is_gclk0() {}
 
@@ -460,8 +441,10 @@ fn enable_gclk_apb(mclk: &mut MCLK) {
 /// Turn on the internal 32hkz oscillator
 fn enable_internal_32kosc(osc32kctrl: &mut OSC32KCTRL) {
     osc32kctrl.osculp32k.modify(|_, w| {
-        w.en32k().set_bit()
+        w.en32k().set_bit();
+        w.en1k().set_bit()
     });
+    osc32kctrl.rtcctrl.write(|w| w.rtcsel().ulp1k());
 }
 
 /// Turn on the external 32hkz oscillator
@@ -470,12 +453,15 @@ fn enable_external_32kosc(osc32kctrl: &mut OSC32KCTRL) {
         w.ondemand().clear_bit();
         // Enable 32khz output
         w.en32k().set_bit();
+        w.en1k().set_bit();
         // Crystal connected to xin32/xout32
         w.xtalen().set_bit();
         w.enable().set_bit();
         w.cgm().xt()
     });
 
+    osc32kctrl.rtcctrl.write(|w| w.rtcsel().xosc1k());
+    
     // Wait for the oscillator to stabilize
     while osc32kctrl.status.read().xosc32krdy().bit_is_clear() {}
 }
