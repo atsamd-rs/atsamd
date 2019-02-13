@@ -248,7 +248,7 @@ impl GenericClockController {
         Self {
             state,
             gclks: [
-                OSC48M_FREQ,
+                OSC120M_FREQ,
                 OSC32K_FREQ,
                 Hertz(0),
                 Hertz(0),
@@ -446,6 +446,9 @@ impl ClockParams {
 pub const OSC48M_FREQ: Hertz = Hertz(48_000_000);
 /// The frequency of the 32Khz source.
 pub const OSC32K_FREQ: Hertz = Hertz(32_000);
+/// The frequency of the 48Mhz source.
+pub const OSC120M_FREQ: Hertz = Hertz(120_000_000);
+
 
 fn set_flash_to_half_auto_wait_state(nvmctrl: &mut NVMCTRL) {
     nvmctrl.ctrla.modify(|_, w| w.rws().half());
