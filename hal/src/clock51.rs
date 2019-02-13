@@ -181,7 +181,6 @@ impl GenericClockController {
 
         set_flash_to_half_auto_wait_state(nvmctrl);
         enable_gclk_apb(mclk);
-        enable_internal_32kosc(osc32kctrl);
         if use_external_crystal {
             enable_external_32kosc(osc32kctrl);
             state.reset_gclk();
