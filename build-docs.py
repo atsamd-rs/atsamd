@@ -24,7 +24,9 @@ crates_by_pac = {
         'samd21_mini',
         'sodaq_one',
     ],
-    'atsamd51j19a': [],
+    'atsamd51j19a': [
+        'metro_m4',     
+    ],
 }
 
 def copy_skeleton_crate(src_dir, dest_dir):
