@@ -5,7 +5,7 @@ rust:
 cache: cargo
 script:
   - rustup target add thumbv6m-none-eabi
-  - rustup target add thumbv7em-none-eabi
+  - rustup target add thumbv7em-none-eabihf
   - ./build-all.sh
 
 after_success: |
