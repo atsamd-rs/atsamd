@@ -15,4 +15,6 @@ cargo build --manifest-path boards/samd21_mini/Cargo.toml --examples
 cargo build --manifest-path boards/arduino_mkrzero/Cargo.toml --examples
 cargo build --manifest-path boards/circuit_playground_express/Cargo.toml --examples
 cargo build --manifest-path boards/sodaq_one/Cargo.toml --examples
-cargo build --manifest-path boards/metro_m4/Cargo.toml --examples
+pushd boards/metro_m4
+cargo build --examples
+popd
