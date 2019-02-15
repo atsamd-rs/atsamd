@@ -111,7 +111,7 @@ impl State {
         self.gclk.genctrl[gclk.bits() as usize].write(|w| unsafe {
             w.src().bits(src.bits());
             w.div().bits(divider);
-            // divide directly by divider, rather than 2*(n+1)
+            // divide directly by divider, rather than 2^(n+1)
             w.divsel().clear_bit();
             w.idc().bit(improve_duty_cycle);
             w.genen().set_bit();
