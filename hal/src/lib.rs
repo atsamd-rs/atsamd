@@ -54,27 +54,27 @@ pub extern crate usb_device;
 
 extern crate void;
 
-#[cfg(not(feature="samd51j19a"))]
+#[cfg(not(feature="samd51"))]
 mod calibration;
 
-#[cfg(not(feature = "samd51j19a"))]
+#[cfg(not(feature = "samd51"))]
 pub mod clock;
 
-#[cfg(feature = "samd51j19a")]
+#[cfg(feature = "samd51")]
 #[path = "clock51.rs"]
 pub mod clock;
 
-#[cfg(not(feature = "samd51j19a"))]
+#[cfg(not(feature = "samd51"))]
 pub mod sercom;
 
-#[cfg(feature = "samd51j19a")]
+#[cfg(feature = "samd51")]
 #[path = "timer51.rs"]
 pub mod timer;
 
-#[cfg(not(feature = "samd51j19a"))]
+#[cfg(not(feature = "samd51"))]
 pub mod timer;
 
-#[cfg(feature = "samd51j19a")]
+#[cfg(feature = "samd51")]
 #[path = "sercom51/mod.rs"]
 pub mod sercom;
 

@@ -93,9 +93,6 @@ spi_pinout!([
     SPI1Pinout: (Sercom1Pad0, Sercom1Pad1, Sercom1Pad2, Sercom1Pad3),
     SPI2Pinout: (Sercom2Pad0, Sercom2Pad1, Sercom2Pad2, Sercom2Pad3),
     SPI3Pinout: (Sercom3Pad0, Sercom3Pad1, Sercom3Pad2, Sercom3Pad3),
-]);
-#[cfg(any(feature = "samd21g18a", feature="samd51j19a"))]
-spi_pinout!([
     SPI4Pinout: (Sercom4Pad0, Sercom4Pad1, Sercom4Pad2, Sercom4Pad3),
     SPI5Pinout: (Sercom5Pad0, Sercom5Pad1, Sercom5Pad2, Sercom5Pad3),
 ]);

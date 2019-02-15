@@ -68,6 +68,7 @@ samd21g18a = ["atsamd21g18a"]
 samd21g18a-rt = ["atsamd21g18a", "atsamd21g18a/rt"]
 samd21e18a = ["atsamd21e18a"]
 samd21e18a-rt = ["atsamd21e18a", "atsamd21e18a/rt"]
+samd51 = [] # Convenience feature for shared configuration of samd51 chips.
 samd51j19a = ["atsamd51j19a"]
 samd51j19a-rt = ["atsamd51j19a", "atsamd51j19a/rt"]
 unproven = ["embedded-hal/unproven"]
