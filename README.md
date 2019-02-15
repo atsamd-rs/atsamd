@@ -1,6 +1,6 @@
 # atsamd support for Rust
 
-This repo holds various things that support/enable working with atmel samd21 based
+This repo holds various things that support/enable working with atmel samd21 and samd51 based
 devices, such as the Adafruit Metro M0, Trinket M0 and Gemma M0, using Rust.
 
 [![Build Status](https://travis-ci.org/atsamd-rs/atsamd.svg?branch=master)](https://travis-ci.org/atsamd-rs/atsamd)
@@ -22,7 +22,7 @@ There are a couple of crates provided by this repo:
   implements traits specified by the `embedded-hal` project, making it compatible with
   various drivers in the embedded rust ecosystem.
 
-In addition to the generic crates, there are also crates for popular ATSAMD21 based development boards. They aim to rename pins to match silk screens or Arduino pin assignments, add helpers for initialization, and re-export the `atsamd-hal` crate.
+In addition to the generic crates, there are also crates for popular ATSAMD21/51 based development boards. They aim to rename pins to match silk screens or Arduino pin assignments, add helpers for initialization, and re-export the `atsamd-hal` crate.
 
 * [`arduino_mkrzero`](https://atsamd-rs.github.io/atsamd/atsamd21g18a/arduino_mkrzero/)
 * [`circuit_playground_express`](https://atsamd-rs.github.io/atsamd/atsamd21g18a/circuit_playground_express/)
@@ -37,9 +37,8 @@ In addition to the generic crates, there are also crates for popular ATSAMD21 ba
 
 ## Building
 
-The atsamd21 devices require untagged union support which means that you will
-need to be using nightly rust.  You'll also need to install support for
-`thumbv6m-none-eabi`.  Make sure that you have a new enough version of the
+ You'll need to install support for
+`thumbv6m-none-eabi` if you're targeting samd21 or `thumbv7em-none-eabihf` if you're targeting samd51.  Make sure that you have a new enough version of the
 gcc toolchain; the one installable even on recent versions of ubuntu can
 fail to correctly link the vector table:
 
@@ -47,10 +46,10 @@ fail to correctly link the vector table:
 $ sudo add-apt-repository ppa:team-gcc-arm-embedded/ppa -y
 $ sudo apt update
 $ sudo apt install gcc-arm-embedded
-$ rustup install nightly
-$ rustup default nightly
 $ rustup target add thumbv6m-none-eabi
+$ rustup target add thumbv7em-none-eabihf
 ```
+
 
 Since a couple of different MCUs are used, building the examples requires changing
 directory into one of the board support crate dirs prior to building:
@@ -79,7 +78,7 @@ $ ~/.arduino15/packages/arduino/tools/bossac/1.7.0/bossac -i -d \
   target/thumbv6m-none-eabi/debug/examples/blinky_basic.bin -R
 ```
 
-This same technique should work for all of the Adafruit M0 boards, as they
+This same technique should work for all of the Adafruit M0/M4 boards, as they
 all ship with a bossac compatible bootloader.
 
 ## Getting code onto the device: JLink
