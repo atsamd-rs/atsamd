@@ -11,6 +11,11 @@ pub extern crate atsamd21e18a;
 #[cfg(feature = "samd21e18a")]
 pub use atsamd21e18a as target_device;
 
+#[cfg(feature = "samd51g19a")]
+pub extern crate atsamd51g19a;
+#[cfg(feature = "samd51g19a")]
+pub use atsamd51g19a as target_device;
+
 #[cfg(feature = "samd51j19a")]
 pub extern crate atsamd51j19a;
 #[cfg(feature = "samd51j19a")]
