@@ -9,6 +9,7 @@ cargo install --force --version 0.6.0 form
 TOP=$PWD
 
 for chip in atsamd21g18a atsamd21e18a atsamd51j19a ; do
+  mkdir -p $TOP/pac/$chip
   cd $TOP/pac/$chip
   CHIP=$(echo $chip | tr a-z A-Z)
   rm -rf src
