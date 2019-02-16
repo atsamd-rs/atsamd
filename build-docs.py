@@ -24,8 +24,11 @@ crates_by_pac = {
         'samd21_mini',
         'sodaq_one',
     ],
+    'atsamd51g19a': [
+        'trellis_m4'
+    ],
     'atsamd51j19a': [
-        'metro_m4',     
+        'metro_m4',
     ],
 }
 
