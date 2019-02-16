@@ -2,7 +2,9 @@
 use hal::timer::{CountDown, Periodic};
 use target_device::tc0::COUNT16;
 #[allow(unused)]
-use target_device::{MCLK, TC3, TC4, TC5};
+use target_device::{MCLK, TC3};
+#[cfg(feature = "samd51j19a")]
+use target_device::{TC4, TC5};
 
 use clock;
 use nb;
@@ -180,6 +182,10 @@ impl TimerCounter<$TC>
 
 tc! {
     TimerCounter3: (TC3, tc3_, Tc2Tc3Clock, apbbmask),
+}
+
+#[cfg(feature = "samd51j19a")]
+tc! {
     TimerCounter4: (TC4, tc4_, Tc4Tc5Clock, apbcmask),
     TimerCounter5: (TC5, tc5_, Tc4Tc5Clock, apbcmask),
 }
