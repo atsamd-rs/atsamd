@@ -10,15 +10,16 @@ There are a couple of crates provided by this repo:
 * [`atsamd21g18a`](https://atsamd-rs.github.io/atsamd/atsamd21g18a/atsamd21g18a/) is an
   auto-generated crate providing access to the peripherals
   specified for this device by its SVD file.  This is the MCU used in the Metro M0,
-  Feather M0, Circuit Playground express boards from Adafruit and the SODAQ ONE board
+  Feather M0, Circuit Playground express boards from Adafruit, the Sparkfun SAMD21 Mini, the Arduino MKR ZERO and the SODAQ ONE board
   from SODAQ.
 * [`atsamd21e18a`](https://atsamd-rs.github.io/atsamd/atsamd21e18a/atsamd21e18a/) is an
   auto-generated crate providing access to the peripherals
   specified for this device by its SVD file.  This is the MCU used in the Trinket M0
   and Gemma M0 boards from Adafruit.
+* [`atsamd51j19a`](https://atsamd-rs.github.io/atsamd/atsamd51j19a/atsamd51j19a/) is an auto-generated crate providing accesss to the peripherals specified for this device by its SVD file. This is the MCU used in the Metro M4 and Feather M4 boards from Adafruit.
 * [`atsamd-hal`](https://atsamd-rs.github.io/atsamd/atsamd21g18a/atsamd_hal/) is the result
   of reading the datasheet for the device and encoding
-  a type-safe layer over the raw `atsamd21g18a` and `atsamd21e18a` crates.  This crate
+  a type-safe layer over the raw `atsamd21g18a`, `atsamd21e18a` and `atsamd51j19a` crates.  This crate
   implements traits specified by the `embedded-hal` project, making it compatible with
   various drivers in the embedded rust ecosystem.
 
