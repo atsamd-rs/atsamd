@@ -8,13 +8,14 @@ extern crate metro_m4 as hal;
 extern crate panic_halt;
 #[cfg(feature = "use_semihosting")]
 extern crate panic_semihosting;
+extern crate nb;
 
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
 use hal::prelude::*;
 use hal::{entry, CorePeripherals, Peripherals};
 use hal::sercom::PadPin;
-   
+use nb::block;
 
 #[entry]
 fn main() -> ! {
@@ -51,7 +52,9 @@ fn main() -> ! {
     );
 
     loop {
-        spi.write(b"hello world!").unwrap();
+        for byte in b"Hello, world!" {
+            block!(spi.send(*byte)).unwrap();
+        }
         delay.delay_ms(1000u16);
     }
 
