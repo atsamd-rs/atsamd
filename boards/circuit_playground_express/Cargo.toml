@@ -16,7 +16,7 @@ nb = "~0.1"
 
 [dependencies.atsamd-hal]
 path = "../../hal"
-version = "~0.3"
+version = "~0.4"
 default-features = false
 
 [dev-dependencies]
