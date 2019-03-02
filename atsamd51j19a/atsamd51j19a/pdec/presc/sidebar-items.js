@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["PRESCR","Possible values of the field `PRESC`"],["PRESCW","Values that can be written to the field `PRESC`"]],"struct":[["R","Value read from the register"],["W","Value to write to the register"],["_PRESCW","Proxy"]]});

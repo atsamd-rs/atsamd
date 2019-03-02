@@ -1,0 +1,1 @@
+initSidebarItems({"macro":[["expr","Paste identifiers within a macro invocation that expands to an expression."]]});

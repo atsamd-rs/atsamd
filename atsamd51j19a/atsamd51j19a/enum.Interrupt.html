@@ -1,0 +1,253 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="API documentation for the Rust `Interrupt` enum in crate `atsamd51j19a`."><meta name="keywords" content="rust, rustlang, rust-lang, Interrupt"><title>atsamd51j19a::Interrupt - Rust</title><link rel="stylesheet" type="text/css" href="../normalize.css"><link rel="stylesheet" type="text/css" href="../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../dark.css"><link rel="stylesheet" type="text/css" href="../light.css" id="themeStyle"><script src="../storage.js"></script><noscript><link rel="stylesheet" href="../noscript.css"></noscript><link rel="shortcut icon" href="../favicon.ico"><style type="text/css">#crate-search{background-image:url("../down-arrow.svg");}</style></head><body class="rustdoc enum"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../atsamd51j19a/index.html'><img src='../rust-logo.png' alt='logo' width='100'></a><p class='location'>Enum Interrupt</p><div class="sidebar-elems"><div class="block items"><a class="sidebar-title" href="#variants">Variants</a><div class="sidebar-links"><a href="#variant.PM">PM</a><a href="#variant.MCLK">MCLK</a><a href="#variant.OSCCTRL_XOSC0">OSCCTRL_XOSC0</a><a href="#variant.OSCCTRL_XOSC1">OSCCTRL_XOSC1</a><a href="#variant.OSCCTRL_DFLL">OSCCTRL_DFLL</a><a href="#variant.OSCCTRL_DPLL0">OSCCTRL_DPLL0</a><a href="#variant.OSCCTRL_DPLL1">OSCCTRL_DPLL1</a><a href="#variant.OSC32KCTRL">OSC32KCTRL</a><a href="#variant.SUPC_OTHER">SUPC_OTHER</a><a href="#variant.SUPC_BODDET">SUPC_BODDET</a><a href="#variant.WDT">WDT</a><a href="#variant.RTC">RTC</a><a href="#variant.EIC_EXTINT_0">EIC_EXTINT_0</a><a href="#variant.EIC_EXTINT_1">EIC_EXTINT_1</a><a href="#variant.EIC_EXTINT_2">EIC_EXTINT_2</a><a href="#variant.EIC_EXTINT_3">EIC_EXTINT_3</a><a href="#variant.EIC_EXTINT_4">EIC_EXTINT_4</a><a href="#variant.EIC_EXTINT_5">EIC_EXTINT_5</a><a href="#variant.EIC_EXTINT_6">EIC_EXTINT_6</a><a href="#variant.EIC_EXTINT_7">EIC_EXTINT_7</a><a href="#variant.EIC_EXTINT_8">EIC_EXTINT_8</a><a href="#variant.EIC_EXTINT_9">EIC_EXTINT_9</a><a href="#variant.EIC_EXTINT_10">EIC_EXTINT_10</a><a href="#variant.EIC_EXTINT_11">EIC_EXTINT_11</a><a href="#variant.EIC_EXTINT_12">EIC_EXTINT_12</a><a href="#variant.EIC_EXTINT_13">EIC_EXTINT_13</a><a href="#variant.EIC_EXTINT_14">EIC_EXTINT_14</a><a href="#variant.EIC_EXTINT_15">EIC_EXTINT_15</a><a href="#variant.FREQM">FREQM</a><a href="#variant.NVMCTRL_0">NVMCTRL_0</a><a href="#variant.NVMCTRL_1">NVMCTRL_1</a><a href="#variant.DMAC_0">DMAC_0</a><a href="#variant.DMAC_1">DMAC_1</a><a href="#variant.DMAC_2">DMAC_2</a><a href="#variant.DMAC_3">DMAC_3</a><a href="#variant.DMAC_OTHER">DMAC_OTHER</a><a href="#variant.EVSYS_0">EVSYS_0</a><a href="#variant.EVSYS_1">EVSYS_1</a><a href="#variant.EVSYS_2">EVSYS_2</a><a href="#variant.EVSYS_3">EVSYS_3</a><a href="#variant.EVSYS_OTHER">EVSYS_OTHER</a><a href="#variant.PAC">PAC</a><a href="#variant.RAMECC">RAMECC</a><a href="#variant.SERCOM0_0">SERCOM0_0</a><a href="#variant.SERCOM0_1">SERCOM0_1</a><a href="#variant.SERCOM0_2">SERCOM0_2</a><a href="#variant.SERCOM0_OTHER">SERCOM0_OTHER</a><a href="#variant.SERCOM1_0">SERCOM1_0</a><a href="#variant.SERCOM1_1">SERCOM1_1</a><a href="#variant.SERCOM1_2">SERCOM1_2</a><a href="#variant.SERCOM1_OTHER">SERCOM1_OTHER</a><a href="#variant.SERCOM2_0">SERCOM2_0</a><a href="#variant.SERCOM2_1">SERCOM2_1</a><a href="#variant.SERCOM2_2">SERCOM2_2</a><a href="#variant.SERCOM2_OTHER">SERCOM2_OTHER</a><a href="#variant.SERCOM3_0">SERCOM3_0</a><a href="#variant.SERCOM3_1">SERCOM3_1</a><a href="#variant.SERCOM3_2">SERCOM3_2</a><a href="#variant.SERCOM3_OTHER">SERCOM3_OTHER</a><a href="#variant.SERCOM4_0">SERCOM4_0</a><a href="#variant.SERCOM4_1">SERCOM4_1</a><a href="#variant.SERCOM4_2">SERCOM4_2</a><a href="#variant.SERCOM4_OTHER">SERCOM4_OTHER</a><a href="#variant.SERCOM5_0">SERCOM5_0</a><a href="#variant.SERCOM5_1">SERCOM5_1</a><a href="#variant.SERCOM5_2">SERCOM5_2</a><a href="#variant.SERCOM5_OTHER">SERCOM5_OTHER</a><a href="#variant.USB_OTHER">USB_OTHER</a><a href="#variant.USB_SOF_HSOF">USB_SOF_HSOF</a><a href="#variant.USB_TRCPT0">USB_TRCPT0</a><a href="#variant.USB_TRCPT1">USB_TRCPT1</a><a href="#variant.TCC0_OTHER">TCC0_OTHER</a><a href="#variant.TCC0_MC0">TCC0_MC0</a><a href="#variant.TCC0_MC1">TCC0_MC1</a><a href="#variant.TCC0_MC2">TCC0_MC2</a><a href="#variant.TCC0_MC3">TCC0_MC3</a><a href="#variant.TCC0_MC4">TCC0_MC4</a><a href="#variant.TCC0_MC5">TCC0_MC5</a><a href="#variant.TCC1_OTHER">TCC1_OTHER</a><a href="#variant.TCC1_MC0">TCC1_MC0</a><a href="#variant.TCC1_MC1">TCC1_MC1</a><a href="#variant.TCC1_MC2">TCC1_MC2</a><a href="#variant.TCC1_MC3">TCC1_MC3</a><a href="#variant.TCC2_OTHER">TCC2_OTHER</a><a href="#variant.TCC2_MC0">TCC2_MC0</a><a href="#variant.TCC2_MC1">TCC2_MC1</a><a href="#variant.TCC2_MC2">TCC2_MC2</a><a href="#variant.TCC3_OTHER">TCC3_OTHER</a><a href="#variant.TCC3_MC0">TCC3_MC0</a><a href="#variant.TCC3_MC1">TCC3_MC1</a><a href="#variant.TCC4_OTHER">TCC4_OTHER</a><a href="#variant.TCC4_MC0">TCC4_MC0</a><a href="#variant.TCC4_MC1">TCC4_MC1</a><a href="#variant.TC0">TC0</a><a href="#variant.TC1">TC1</a><a href="#variant.TC2">TC2</a><a href="#variant.TC3">TC3</a><a href="#variant.TC4">TC4</a><a href="#variant.TC5">TC5</a><a href="#variant.PDEC_OTHER">PDEC_OTHER</a><a href="#variant.PDEC_MC0">PDEC_MC0</a><a href="#variant.PDEC_MC1">PDEC_MC1</a><a href="#variant.ADC0_OTHER">ADC0_OTHER</a><a href="#variant.ADC0_RESRDY">ADC0_RESRDY</a><a href="#variant.ADC1_OTHER">ADC1_OTHER</a><a href="#variant.ADC1_RESRDY">ADC1_RESRDY</a><a href="#variant.AC">AC</a><a href="#variant.DAC_OTHER">DAC_OTHER</a><a href="#variant.DAC_EMPTY_0">DAC_EMPTY_0</a><a href="#variant.DAC_EMPTY_1">DAC_EMPTY_1</a><a href="#variant.DAC_RESRDY_0">DAC_RESRDY_0</a><a href="#variant.DAC_RESRDY_1">DAC_RESRDY_1</a><a href="#variant.I2S">I2S</a><a href="#variant.PCC">PCC</a><a href="#variant.AES">AES</a><a href="#variant.TRNG">TRNG</a><a href="#variant.ICM">ICM</a><a href="#variant.QSPI">QSPI</a><a href="#variant.SDHC0">SDHC0</a></div><a class="sidebar-title" href="#implementations">Trait Implementations</a><div class="sidebar-links"><a href="#impl-Nr">Nr</a></div><a class="sidebar-title" href="#synthetic-implementations">Auto Trait Implementations</a><div class="sidebar-links"><a href="#impl-Send">Send</a><a href="#impl-Sync">Sync</a></div><a class="sidebar-title" href="#blanket-implementations">Blanket Implementations</a><div class="sidebar-links"><a href="#impl-Any">Any</a><a href="#impl-Borrow">Borrow</a><a href="#impl-BorrowMut">BorrowMut</a><a href="#impl-From">From</a><a href="#impl-Into">Into</a><a href="#impl-TryFrom">TryFrom</a><a href="#impl-TryInto">TryInto</a></div></div><p class='location'><a href='index.html'>atsamd51j19a</a></p><script>window.sidebarCurrent = {name: 'Interrupt', ty: 'enum', relpath: ''};</script><script defer src="sidebar-items.js"></script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../settings.html"><img src="../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class='fqn'><span class='out-of-band'><span id='render-detail'><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class='inner'>&#x2212;</span>]</a></span><a class='srclink' href='../src/atsamd51j19a/lib.rs.html#426-665' title='goto source code'>[src]</a></span><span class='in-band'>Enum <a href='index.html'>atsamd51j19a</a>::<wbr><a class="enum" href=''>Interrupt</a></span></h1><div class="docblock type-decl hidden-by-usual-hider"><pre class='rust enum'>pub enum Interrupt {
+    PM,
+    MCLK,
+    OSCCTRL_XOSC0,
+    OSCCTRL_XOSC1,
+    OSCCTRL_DFLL,
+    OSCCTRL_DPLL0,
+    OSCCTRL_DPLL1,
+    OSC32KCTRL,
+    SUPC_OTHER,
+    SUPC_BODDET,
+    WDT,
+    RTC,
+    EIC_EXTINT_0,
+    EIC_EXTINT_1,
+    EIC_EXTINT_2,
+    EIC_EXTINT_3,
+    EIC_EXTINT_4,
+    EIC_EXTINT_5,
+    EIC_EXTINT_6,
+    EIC_EXTINT_7,
+    EIC_EXTINT_8,
+    EIC_EXTINT_9,
+    EIC_EXTINT_10,
+    EIC_EXTINT_11,
+    EIC_EXTINT_12,
+    EIC_EXTINT_13,
+    EIC_EXTINT_14,
+    EIC_EXTINT_15,
+    FREQM,
+    NVMCTRL_0,
+    NVMCTRL_1,
+    DMAC_0,
+    DMAC_1,
+    DMAC_2,
+    DMAC_3,
+    DMAC_OTHER,
+    EVSYS_0,
+    EVSYS_1,
+    EVSYS_2,
+    EVSYS_3,
+    EVSYS_OTHER,
+    PAC,
+    RAMECC,
+    SERCOM0_0,
+    SERCOM0_1,
+    SERCOM0_2,
+    SERCOM0_OTHER,
+    SERCOM1_0,
+    SERCOM1_1,
+    SERCOM1_2,
+    SERCOM1_OTHER,
+    SERCOM2_0,
+    SERCOM2_1,
+    SERCOM2_2,
+    SERCOM2_OTHER,
+    SERCOM3_0,
+    SERCOM3_1,
+    SERCOM3_2,
+    SERCOM3_OTHER,
+    SERCOM4_0,
+    SERCOM4_1,
+    SERCOM4_2,
+    SERCOM4_OTHER,
+    SERCOM5_0,
+    SERCOM5_1,
+    SERCOM5_2,
+    SERCOM5_OTHER,
+    USB_OTHER,
+    USB_SOF_HSOF,
+    USB_TRCPT0,
+    USB_TRCPT1,
+    TCC0_OTHER,
+    TCC0_MC0,
+    TCC0_MC1,
+    TCC0_MC2,
+    TCC0_MC3,
+    TCC0_MC4,
+    TCC0_MC5,
+    TCC1_OTHER,
+    TCC1_MC0,
+    TCC1_MC1,
+    TCC1_MC2,
+    TCC1_MC3,
+    TCC2_OTHER,
+    TCC2_MC0,
+    TCC2_MC1,
+    TCC2_MC2,
+    TCC3_OTHER,
+    TCC3_MC0,
+    TCC3_MC1,
+    TCC4_OTHER,
+    TCC4_MC0,
+    TCC4_MC1,
+    TC0,
+    TC1,
+    TC2,
+    TC3,
+    TC4,
+    TC5,
+    PDEC_OTHER,
+    PDEC_MC0,
+    PDEC_MC1,
+    ADC0_OTHER,
+    ADC0_RESRDY,
+    ADC1_OTHER,
+    ADC1_RESRDY,
+    AC,
+    DAC_OTHER,
+    DAC_EMPTY_0,
+    DAC_EMPTY_1,
+    DAC_RESRDY_0,
+    DAC_RESRDY_1,
+    I2S,
+    PCC,
+    AES,
+    TRNG,
+    ICM,
+    QSPI,
+    SDHC0,
+}</pre></div><div class='docblock'><p>Enumeration of all the interrupts</p>
+</div><h2 id='variants' class='variants small-section-header'>
+                   Variants<a href='#variants' class='anchor'></a></h2>
+<span id="variant.PM" class="variant small-section-header"><a href="#variant.PM" class="anchor field"></a><code id='PM.v'>PM</code></span><div class='docblock'><p>0 - PM</p>
+</div><span id="variant.MCLK" class="variant small-section-header"><a href="#variant.MCLK" class="anchor field"></a><code id='MCLK.v'>MCLK</code></span><div class='docblock'><p>1 - MCLK</p>
+</div><span id="variant.OSCCTRL_XOSC0" class="variant small-section-header"><a href="#variant.OSCCTRL_XOSC0" class="anchor field"></a><code id='OSCCTRL_XOSC0.v'>OSCCTRL_XOSC0</code></span><div class='docblock'><p>2 - OSCCTRL_XOSC0</p>
+</div><span id="variant.OSCCTRL_XOSC1" class="variant small-section-header"><a href="#variant.OSCCTRL_XOSC1" class="anchor field"></a><code id='OSCCTRL_XOSC1.v'>OSCCTRL_XOSC1</code></span><div class='docblock'><p>3 - OSCCTRL_XOSC1</p>
+</div><span id="variant.OSCCTRL_DFLL" class="variant small-section-header"><a href="#variant.OSCCTRL_DFLL" class="anchor field"></a><code id='OSCCTRL_DFLL.v'>OSCCTRL_DFLL</code></span><div class='docblock'><p>4 - OSCCTRL_DFLL</p>
+</div><span id="variant.OSCCTRL_DPLL0" class="variant small-section-header"><a href="#variant.OSCCTRL_DPLL0" class="anchor field"></a><code id='OSCCTRL_DPLL0.v'>OSCCTRL_DPLL0</code></span><div class='docblock'><p>5 - OSCCTRL_DPLL0</p>
+</div><span id="variant.OSCCTRL_DPLL1" class="variant small-section-header"><a href="#variant.OSCCTRL_DPLL1" class="anchor field"></a><code id='OSCCTRL_DPLL1.v'>OSCCTRL_DPLL1</code></span><div class='docblock'><p>6 - OSCCTRL_DPLL1</p>
+</div><span id="variant.OSC32KCTRL" class="variant small-section-header"><a href="#variant.OSC32KCTRL" class="anchor field"></a><code id='OSC32KCTRL.v'>OSC32KCTRL</code></span><div class='docblock'><p>7 - OSC32KCTRL</p>
+</div><span id="variant.SUPC_OTHER" class="variant small-section-header"><a href="#variant.SUPC_OTHER" class="anchor field"></a><code id='SUPC_OTHER.v'>SUPC_OTHER</code></span><div class='docblock'><p>8 - SUPC_OTHER</p>
+</div><span id="variant.SUPC_BODDET" class="variant small-section-header"><a href="#variant.SUPC_BODDET" class="anchor field"></a><code id='SUPC_BODDET.v'>SUPC_BODDET</code></span><div class='docblock'><p>9 - SUPC_BODDET</p>
+</div><span id="variant.WDT" class="variant small-section-header"><a href="#variant.WDT" class="anchor field"></a><code id='WDT.v'>WDT</code></span><div class='docblock'><p>10 - WDT</p>
+</div><span id="variant.RTC" class="variant small-section-header"><a href="#variant.RTC" class="anchor field"></a><code id='RTC.v'>RTC</code></span><div class='docblock'><p>11 - RTC</p>
+</div><span id="variant.EIC_EXTINT_0" class="variant small-section-header"><a href="#variant.EIC_EXTINT_0" class="anchor field"></a><code id='EIC_EXTINT_0.v'>EIC_EXTINT_0</code></span><div class='docblock'><p>12 - EIC_EXTINT_0</p>
+</div><span id="variant.EIC_EXTINT_1" class="variant small-section-header"><a href="#variant.EIC_EXTINT_1" class="anchor field"></a><code id='EIC_EXTINT_1.v'>EIC_EXTINT_1</code></span><div class='docblock'><p>13 - EIC_EXTINT_1</p>
+</div><span id="variant.EIC_EXTINT_2" class="variant small-section-header"><a href="#variant.EIC_EXTINT_2" class="anchor field"></a><code id='EIC_EXTINT_2.v'>EIC_EXTINT_2</code></span><div class='docblock'><p>14 - EIC_EXTINT_2</p>
+</div><span id="variant.EIC_EXTINT_3" class="variant small-section-header"><a href="#variant.EIC_EXTINT_3" class="anchor field"></a><code id='EIC_EXTINT_3.v'>EIC_EXTINT_3</code></span><div class='docblock'><p>15 - EIC_EXTINT_3</p>
+</div><span id="variant.EIC_EXTINT_4" class="variant small-section-header"><a href="#variant.EIC_EXTINT_4" class="anchor field"></a><code id='EIC_EXTINT_4.v'>EIC_EXTINT_4</code></span><div class='docblock'><p>16 - EIC_EXTINT_4</p>
+</div><span id="variant.EIC_EXTINT_5" class="variant small-section-header"><a href="#variant.EIC_EXTINT_5" class="anchor field"></a><code id='EIC_EXTINT_5.v'>EIC_EXTINT_5</code></span><div class='docblock'><p>17 - EIC_EXTINT_5</p>
+</div><span id="variant.EIC_EXTINT_6" class="variant small-section-header"><a href="#variant.EIC_EXTINT_6" class="anchor field"></a><code id='EIC_EXTINT_6.v'>EIC_EXTINT_6</code></span><div class='docblock'><p>18 - EIC_EXTINT_6</p>
+</div><span id="variant.EIC_EXTINT_7" class="variant small-section-header"><a href="#variant.EIC_EXTINT_7" class="anchor field"></a><code id='EIC_EXTINT_7.v'>EIC_EXTINT_7</code></span><div class='docblock'><p>19 - EIC_EXTINT_7</p>
+</div><span id="variant.EIC_EXTINT_8" class="variant small-section-header"><a href="#variant.EIC_EXTINT_8" class="anchor field"></a><code id='EIC_EXTINT_8.v'>EIC_EXTINT_8</code></span><div class='docblock'><p>20 - EIC_EXTINT_8</p>
+</div><span id="variant.EIC_EXTINT_9" class="variant small-section-header"><a href="#variant.EIC_EXTINT_9" class="anchor field"></a><code id='EIC_EXTINT_9.v'>EIC_EXTINT_9</code></span><div class='docblock'><p>21 - EIC_EXTINT_9</p>
+</div><span id="variant.EIC_EXTINT_10" class="variant small-section-header"><a href="#variant.EIC_EXTINT_10" class="anchor field"></a><code id='EIC_EXTINT_10.v'>EIC_EXTINT_10</code></span><div class='docblock'><p>22 - EIC_EXTINT_10</p>
+</div><span id="variant.EIC_EXTINT_11" class="variant small-section-header"><a href="#variant.EIC_EXTINT_11" class="anchor field"></a><code id='EIC_EXTINT_11.v'>EIC_EXTINT_11</code></span><div class='docblock'><p>23 - EIC_EXTINT_11</p>
+</div><span id="variant.EIC_EXTINT_12" class="variant small-section-header"><a href="#variant.EIC_EXTINT_12" class="anchor field"></a><code id='EIC_EXTINT_12.v'>EIC_EXTINT_12</code></span><div class='docblock'><p>24 - EIC_EXTINT_12</p>
+</div><span id="variant.EIC_EXTINT_13" class="variant small-section-header"><a href="#variant.EIC_EXTINT_13" class="anchor field"></a><code id='EIC_EXTINT_13.v'>EIC_EXTINT_13</code></span><div class='docblock'><p>25 - EIC_EXTINT_13</p>
+</div><span id="variant.EIC_EXTINT_14" class="variant small-section-header"><a href="#variant.EIC_EXTINT_14" class="anchor field"></a><code id='EIC_EXTINT_14.v'>EIC_EXTINT_14</code></span><div class='docblock'><p>26 - EIC_EXTINT_14</p>
+</div><span id="variant.EIC_EXTINT_15" class="variant small-section-header"><a href="#variant.EIC_EXTINT_15" class="anchor field"></a><code id='EIC_EXTINT_15.v'>EIC_EXTINT_15</code></span><div class='docblock'><p>27 - EIC_EXTINT_15</p>
+</div><span id="variant.FREQM" class="variant small-section-header"><a href="#variant.FREQM" class="anchor field"></a><code id='FREQM.v'>FREQM</code></span><div class='docblock'><p>28 - FREQM</p>
+</div><span id="variant.NVMCTRL_0" class="variant small-section-header"><a href="#variant.NVMCTRL_0" class="anchor field"></a><code id='NVMCTRL_0.v'>NVMCTRL_0</code></span><div class='docblock'><p>29 - NVMCTRL_0</p>
+</div><span id="variant.NVMCTRL_1" class="variant small-section-header"><a href="#variant.NVMCTRL_1" class="anchor field"></a><code id='NVMCTRL_1.v'>NVMCTRL_1</code></span><div class='docblock'><p>30 - NVMCTRL_1</p>
+</div><span id="variant.DMAC_0" class="variant small-section-header"><a href="#variant.DMAC_0" class="anchor field"></a><code id='DMAC_0.v'>DMAC_0</code></span><div class='docblock'><p>31 - DMAC_0</p>
+</div><span id="variant.DMAC_1" class="variant small-section-header"><a href="#variant.DMAC_1" class="anchor field"></a><code id='DMAC_1.v'>DMAC_1</code></span><div class='docblock'><p>32 - DMAC_1</p>
+</div><span id="variant.DMAC_2" class="variant small-section-header"><a href="#variant.DMAC_2" class="anchor field"></a><code id='DMAC_2.v'>DMAC_2</code></span><div class='docblock'><p>33 - DMAC_2</p>
+</div><span id="variant.DMAC_3" class="variant small-section-header"><a href="#variant.DMAC_3" class="anchor field"></a><code id='DMAC_3.v'>DMAC_3</code></span><div class='docblock'><p>34 - DMAC_3</p>
+</div><span id="variant.DMAC_OTHER" class="variant small-section-header"><a href="#variant.DMAC_OTHER" class="anchor field"></a><code id='DMAC_OTHER.v'>DMAC_OTHER</code></span><div class='docblock'><p>35 - DMAC_OTHER</p>
+</div><span id="variant.EVSYS_0" class="variant small-section-header"><a href="#variant.EVSYS_0" class="anchor field"></a><code id='EVSYS_0.v'>EVSYS_0</code></span><div class='docblock'><p>36 - EVSYS_0</p>
+</div><span id="variant.EVSYS_1" class="variant small-section-header"><a href="#variant.EVSYS_1" class="anchor field"></a><code id='EVSYS_1.v'>EVSYS_1</code></span><div class='docblock'><p>37 - EVSYS_1</p>
+</div><span id="variant.EVSYS_2" class="variant small-section-header"><a href="#variant.EVSYS_2" class="anchor field"></a><code id='EVSYS_2.v'>EVSYS_2</code></span><div class='docblock'><p>38 - EVSYS_2</p>
+</div><span id="variant.EVSYS_3" class="variant small-section-header"><a href="#variant.EVSYS_3" class="anchor field"></a><code id='EVSYS_3.v'>EVSYS_3</code></span><div class='docblock'><p>39 - EVSYS_3</p>
+</div><span id="variant.EVSYS_OTHER" class="variant small-section-header"><a href="#variant.EVSYS_OTHER" class="anchor field"></a><code id='EVSYS_OTHER.v'>EVSYS_OTHER</code></span><div class='docblock'><p>40 - EVSYS_OTHER</p>
+</div><span id="variant.PAC" class="variant small-section-header"><a href="#variant.PAC" class="anchor field"></a><code id='PAC.v'>PAC</code></span><div class='docblock'><p>41 - PAC</p>
+</div><span id="variant.RAMECC" class="variant small-section-header"><a href="#variant.RAMECC" class="anchor field"></a><code id='RAMECC.v'>RAMECC</code></span><div class='docblock'><p>45 - RAMECC</p>
+</div><span id="variant.SERCOM0_0" class="variant small-section-header"><a href="#variant.SERCOM0_0" class="anchor field"></a><code id='SERCOM0_0.v'>SERCOM0_0</code></span><div class='docblock'><p>46 - SERCOM0_0</p>
+</div><span id="variant.SERCOM0_1" class="variant small-section-header"><a href="#variant.SERCOM0_1" class="anchor field"></a><code id='SERCOM0_1.v'>SERCOM0_1</code></span><div class='docblock'><p>47 - SERCOM0_1</p>
+</div><span id="variant.SERCOM0_2" class="variant small-section-header"><a href="#variant.SERCOM0_2" class="anchor field"></a><code id='SERCOM0_2.v'>SERCOM0_2</code></span><div class='docblock'><p>48 - SERCOM0_2</p>
+</div><span id="variant.SERCOM0_OTHER" class="variant small-section-header"><a href="#variant.SERCOM0_OTHER" class="anchor field"></a><code id='SERCOM0_OTHER.v'>SERCOM0_OTHER</code></span><div class='docblock'><p>49 - SERCOM0_OTHER</p>
+</div><span id="variant.SERCOM1_0" class="variant small-section-header"><a href="#variant.SERCOM1_0" class="anchor field"></a><code id='SERCOM1_0.v'>SERCOM1_0</code></span><div class='docblock'><p>50 - SERCOM1_0</p>
+</div><span id="variant.SERCOM1_1" class="variant small-section-header"><a href="#variant.SERCOM1_1" class="anchor field"></a><code id='SERCOM1_1.v'>SERCOM1_1</code></span><div class='docblock'><p>51 - SERCOM1_1</p>
+</div><span id="variant.SERCOM1_2" class="variant small-section-header"><a href="#variant.SERCOM1_2" class="anchor field"></a><code id='SERCOM1_2.v'>SERCOM1_2</code></span><div class='docblock'><p>52 - SERCOM1_2</p>
+</div><span id="variant.SERCOM1_OTHER" class="variant small-section-header"><a href="#variant.SERCOM1_OTHER" class="anchor field"></a><code id='SERCOM1_OTHER.v'>SERCOM1_OTHER</code></span><div class='docblock'><p>53 - SERCOM1_OTHER</p>
+</div><span id="variant.SERCOM2_0" class="variant small-section-header"><a href="#variant.SERCOM2_0" class="anchor field"></a><code id='SERCOM2_0.v'>SERCOM2_0</code></span><div class='docblock'><p>54 - SERCOM2_0</p>
+</div><span id="variant.SERCOM2_1" class="variant small-section-header"><a href="#variant.SERCOM2_1" class="anchor field"></a><code id='SERCOM2_1.v'>SERCOM2_1</code></span><div class='docblock'><p>55 - SERCOM2_1</p>
+</div><span id="variant.SERCOM2_2" class="variant small-section-header"><a href="#variant.SERCOM2_2" class="anchor field"></a><code id='SERCOM2_2.v'>SERCOM2_2</code></span><div class='docblock'><p>56 - SERCOM2_2</p>
+</div><span id="variant.SERCOM2_OTHER" class="variant small-section-header"><a href="#variant.SERCOM2_OTHER" class="anchor field"></a><code id='SERCOM2_OTHER.v'>SERCOM2_OTHER</code></span><div class='docblock'><p>57 - SERCOM2_OTHER</p>
+</div><span id="variant.SERCOM3_0" class="variant small-section-header"><a href="#variant.SERCOM3_0" class="anchor field"></a><code id='SERCOM3_0.v'>SERCOM3_0</code></span><div class='docblock'><p>58 - SERCOM3_0</p>
+</div><span id="variant.SERCOM3_1" class="variant small-section-header"><a href="#variant.SERCOM3_1" class="anchor field"></a><code id='SERCOM3_1.v'>SERCOM3_1</code></span><div class='docblock'><p>59 - SERCOM3_1</p>
+</div><span id="variant.SERCOM3_2" class="variant small-section-header"><a href="#variant.SERCOM3_2" class="anchor field"></a><code id='SERCOM3_2.v'>SERCOM3_2</code></span><div class='docblock'><p>60 - SERCOM3_2</p>
+</div><span id="variant.SERCOM3_OTHER" class="variant small-section-header"><a href="#variant.SERCOM3_OTHER" class="anchor field"></a><code id='SERCOM3_OTHER.v'>SERCOM3_OTHER</code></span><div class='docblock'><p>61 - SERCOM3_OTHER</p>
+</div><span id="variant.SERCOM4_0" class="variant small-section-header"><a href="#variant.SERCOM4_0" class="anchor field"></a><code id='SERCOM4_0.v'>SERCOM4_0</code></span><div class='docblock'><p>62 - SERCOM4_0</p>
+</div><span id="variant.SERCOM4_1" class="variant small-section-header"><a href="#variant.SERCOM4_1" class="anchor field"></a><code id='SERCOM4_1.v'>SERCOM4_1</code></span><div class='docblock'><p>63 - SERCOM4_1</p>
+</div><span id="variant.SERCOM4_2" class="variant small-section-header"><a href="#variant.SERCOM4_2" class="anchor field"></a><code id='SERCOM4_2.v'>SERCOM4_2</code></span><div class='docblock'><p>64 - SERCOM4_2</p>
+</div><span id="variant.SERCOM4_OTHER" class="variant small-section-header"><a href="#variant.SERCOM4_OTHER" class="anchor field"></a><code id='SERCOM4_OTHER.v'>SERCOM4_OTHER</code></span><div class='docblock'><p>65 - SERCOM4_OTHER</p>
+</div><span id="variant.SERCOM5_0" class="variant small-section-header"><a href="#variant.SERCOM5_0" class="anchor field"></a><code id='SERCOM5_0.v'>SERCOM5_0</code></span><div class='docblock'><p>66 - SERCOM5_0</p>
+</div><span id="variant.SERCOM5_1" class="variant small-section-header"><a href="#variant.SERCOM5_1" class="anchor field"></a><code id='SERCOM5_1.v'>SERCOM5_1</code></span><div class='docblock'><p>67 - SERCOM5_1</p>
+</div><span id="variant.SERCOM5_2" class="variant small-section-header"><a href="#variant.SERCOM5_2" class="anchor field"></a><code id='SERCOM5_2.v'>SERCOM5_2</code></span><div class='docblock'><p>68 - SERCOM5_2</p>
+</div><span id="variant.SERCOM5_OTHER" class="variant small-section-header"><a href="#variant.SERCOM5_OTHER" class="anchor field"></a><code id='SERCOM5_OTHER.v'>SERCOM5_OTHER</code></span><div class='docblock'><p>69 - SERCOM5_OTHER</p>
+</div><span id="variant.USB_OTHER" class="variant small-section-header"><a href="#variant.USB_OTHER" class="anchor field"></a><code id='USB_OTHER.v'>USB_OTHER</code></span><div class='docblock'><p>80 - USB_OTHER</p>
+</div><span id="variant.USB_SOF_HSOF" class="variant small-section-header"><a href="#variant.USB_SOF_HSOF" class="anchor field"></a><code id='USB_SOF_HSOF.v'>USB_SOF_HSOF</code></span><div class='docblock'><p>81 - USB_SOF_HSOF</p>
+</div><span id="variant.USB_TRCPT0" class="variant small-section-header"><a href="#variant.USB_TRCPT0" class="anchor field"></a><code id='USB_TRCPT0.v'>USB_TRCPT0</code></span><div class='docblock'><p>82 - USB_TRCPT0</p>
+</div><span id="variant.USB_TRCPT1" class="variant small-section-header"><a href="#variant.USB_TRCPT1" class="anchor field"></a><code id='USB_TRCPT1.v'>USB_TRCPT1</code></span><div class='docblock'><p>83 - USB_TRCPT1</p>
+</div><span id="variant.TCC0_OTHER" class="variant small-section-header"><a href="#variant.TCC0_OTHER" class="anchor field"></a><code id='TCC0_OTHER.v'>TCC0_OTHER</code></span><div class='docblock'><p>85 - TCC0_OTHER</p>
+</div><span id="variant.TCC0_MC0" class="variant small-section-header"><a href="#variant.TCC0_MC0" class="anchor field"></a><code id='TCC0_MC0.v'>TCC0_MC0</code></span><div class='docblock'><p>86 - TCC0_MC0</p>
+</div><span id="variant.TCC0_MC1" class="variant small-section-header"><a href="#variant.TCC0_MC1" class="anchor field"></a><code id='TCC0_MC1.v'>TCC0_MC1</code></span><div class='docblock'><p>87 - TCC0_MC1</p>
+</div><span id="variant.TCC0_MC2" class="variant small-section-header"><a href="#variant.TCC0_MC2" class="anchor field"></a><code id='TCC0_MC2.v'>TCC0_MC2</code></span><div class='docblock'><p>88 - TCC0_MC2</p>
+</div><span id="variant.TCC0_MC3" class="variant small-section-header"><a href="#variant.TCC0_MC3" class="anchor field"></a><code id='TCC0_MC3.v'>TCC0_MC3</code></span><div class='docblock'><p>89 - TCC0_MC3</p>
+</div><span id="variant.TCC0_MC4" class="variant small-section-header"><a href="#variant.TCC0_MC4" class="anchor field"></a><code id='TCC0_MC4.v'>TCC0_MC4</code></span><div class='docblock'><p>90 - TCC0_MC4</p>
+</div><span id="variant.TCC0_MC5" class="variant small-section-header"><a href="#variant.TCC0_MC5" class="anchor field"></a><code id='TCC0_MC5.v'>TCC0_MC5</code></span><div class='docblock'><p>91 - TCC0_MC5</p>
+</div><span id="variant.TCC1_OTHER" class="variant small-section-header"><a href="#variant.TCC1_OTHER" class="anchor field"></a><code id='TCC1_OTHER.v'>TCC1_OTHER</code></span><div class='docblock'><p>92 - TCC1_OTHER</p>
+</div><span id="variant.TCC1_MC0" class="variant small-section-header"><a href="#variant.TCC1_MC0" class="anchor field"></a><code id='TCC1_MC0.v'>TCC1_MC0</code></span><div class='docblock'><p>93 - TCC1_MC0</p>
+</div><span id="variant.TCC1_MC1" class="variant small-section-header"><a href="#variant.TCC1_MC1" class="anchor field"></a><code id='TCC1_MC1.v'>TCC1_MC1</code></span><div class='docblock'><p>94 - TCC1_MC1</p>
+</div><span id="variant.TCC1_MC2" class="variant small-section-header"><a href="#variant.TCC1_MC2" class="anchor field"></a><code id='TCC1_MC2.v'>TCC1_MC2</code></span><div class='docblock'><p>95 - TCC1_MC2</p>
+</div><span id="variant.TCC1_MC3" class="variant small-section-header"><a href="#variant.TCC1_MC3" class="anchor field"></a><code id='TCC1_MC3.v'>TCC1_MC3</code></span><div class='docblock'><p>96 - TCC1_MC3</p>
+</div><span id="variant.TCC2_OTHER" class="variant small-section-header"><a href="#variant.TCC2_OTHER" class="anchor field"></a><code id='TCC2_OTHER.v'>TCC2_OTHER</code></span><div class='docblock'><p>97 - TCC2_OTHER</p>
+</div><span id="variant.TCC2_MC0" class="variant small-section-header"><a href="#variant.TCC2_MC0" class="anchor field"></a><code id='TCC2_MC0.v'>TCC2_MC0</code></span><div class='docblock'><p>98 - TCC2_MC0</p>
+</div><span id="variant.TCC2_MC1" class="variant small-section-header"><a href="#variant.TCC2_MC1" class="anchor field"></a><code id='TCC2_MC1.v'>TCC2_MC1</code></span><div class='docblock'><p>99 - TCC2_MC1</p>
+</div><span id="variant.TCC2_MC2" class="variant small-section-header"><a href="#variant.TCC2_MC2" class="anchor field"></a><code id='TCC2_MC2.v'>TCC2_MC2</code></span><div class='docblock'><p>100 - TCC2_MC2</p>
+</div><span id="variant.TCC3_OTHER" class="variant small-section-header"><a href="#variant.TCC3_OTHER" class="anchor field"></a><code id='TCC3_OTHER.v'>TCC3_OTHER</code></span><div class='docblock'><p>101 - TCC3_OTHER</p>
+</div><span id="variant.TCC3_MC0" class="variant small-section-header"><a href="#variant.TCC3_MC0" class="anchor field"></a><code id='TCC3_MC0.v'>TCC3_MC0</code></span><div class='docblock'><p>102 - TCC3_MC0</p>
+</div><span id="variant.TCC3_MC1" class="variant small-section-header"><a href="#variant.TCC3_MC1" class="anchor field"></a><code id='TCC3_MC1.v'>TCC3_MC1</code></span><div class='docblock'><p>103 - TCC3_MC1</p>
+</div><span id="variant.TCC4_OTHER" class="variant small-section-header"><a href="#variant.TCC4_OTHER" class="anchor field"></a><code id='TCC4_OTHER.v'>TCC4_OTHER</code></span><div class='docblock'><p>104 - TCC4_OTHER</p>
+</div><span id="variant.TCC4_MC0" class="variant small-section-header"><a href="#variant.TCC4_MC0" class="anchor field"></a><code id='TCC4_MC0.v'>TCC4_MC0</code></span><div class='docblock'><p>105 - TCC4_MC0</p>
+</div><span id="variant.TCC4_MC1" class="variant small-section-header"><a href="#variant.TCC4_MC1" class="anchor field"></a><code id='TCC4_MC1.v'>TCC4_MC1</code></span><div class='docblock'><p>106 - TCC4_MC1</p>
+</div><span id="variant.TC0" class="variant small-section-header"><a href="#variant.TC0" class="anchor field"></a><code id='TC0.v'>TC0</code></span><div class='docblock'><p>107 - TC0</p>
+</div><span id="variant.TC1" class="variant small-section-header"><a href="#variant.TC1" class="anchor field"></a><code id='TC1.v'>TC1</code></span><div class='docblock'><p>108 - TC1</p>
+</div><span id="variant.TC2" class="variant small-section-header"><a href="#variant.TC2" class="anchor field"></a><code id='TC2.v'>TC2</code></span><div class='docblock'><p>109 - TC2</p>
+</div><span id="variant.TC3" class="variant small-section-header"><a href="#variant.TC3" class="anchor field"></a><code id='TC3.v'>TC3</code></span><div class='docblock'><p>110 - TC3</p>
+</div><span id="variant.TC4" class="variant small-section-header"><a href="#variant.TC4" class="anchor field"></a><code id='TC4.v'>TC4</code></span><div class='docblock'><p>111 - TC4</p>
+</div><span id="variant.TC5" class="variant small-section-header"><a href="#variant.TC5" class="anchor field"></a><code id='TC5.v'>TC5</code></span><div class='docblock'><p>112 - TC5</p>
+</div><span id="variant.PDEC_OTHER" class="variant small-section-header"><a href="#variant.PDEC_OTHER" class="anchor field"></a><code id='PDEC_OTHER.v'>PDEC_OTHER</code></span><div class='docblock'><p>115 - PDEC_OTHER</p>
+</div><span id="variant.PDEC_MC0" class="variant small-section-header"><a href="#variant.PDEC_MC0" class="anchor field"></a><code id='PDEC_MC0.v'>PDEC_MC0</code></span><div class='docblock'><p>116 - PDEC_MC0</p>
+</div><span id="variant.PDEC_MC1" class="variant small-section-header"><a href="#variant.PDEC_MC1" class="anchor field"></a><code id='PDEC_MC1.v'>PDEC_MC1</code></span><div class='docblock'><p>117 - PDEC_MC1</p>
+</div><span id="variant.ADC0_OTHER" class="variant small-section-header"><a href="#variant.ADC0_OTHER" class="anchor field"></a><code id='ADC0_OTHER.v'>ADC0_OTHER</code></span><div class='docblock'><p>118 - ADC0_OTHER</p>
+</div><span id="variant.ADC0_RESRDY" class="variant small-section-header"><a href="#variant.ADC0_RESRDY" class="anchor field"></a><code id='ADC0_RESRDY.v'>ADC0_RESRDY</code></span><div class='docblock'><p>119 - ADC0_RESRDY</p>
+</div><span id="variant.ADC1_OTHER" class="variant small-section-header"><a href="#variant.ADC1_OTHER" class="anchor field"></a><code id='ADC1_OTHER.v'>ADC1_OTHER</code></span><div class='docblock'><p>120 - ADC1_OTHER</p>
+</div><span id="variant.ADC1_RESRDY" class="variant small-section-header"><a href="#variant.ADC1_RESRDY" class="anchor field"></a><code id='ADC1_RESRDY.v'>ADC1_RESRDY</code></span><div class='docblock'><p>121 - ADC1_RESRDY</p>
+</div><span id="variant.AC" class="variant small-section-header"><a href="#variant.AC" class="anchor field"></a><code id='AC.v'>AC</code></span><div class='docblock'><p>122 - AC</p>
+</div><span id="variant.DAC_OTHER" class="variant small-section-header"><a href="#variant.DAC_OTHER" class="anchor field"></a><code id='DAC_OTHER.v'>DAC_OTHER</code></span><div class='docblock'><p>123 - DAC_OTHER</p>
+</div><span id="variant.DAC_EMPTY_0" class="variant small-section-header"><a href="#variant.DAC_EMPTY_0" class="anchor field"></a><code id='DAC_EMPTY_0.v'>DAC_EMPTY_0</code></span><div class='docblock'><p>124 - DAC_EMPTY_0</p>
+</div><span id="variant.DAC_EMPTY_1" class="variant small-section-header"><a href="#variant.DAC_EMPTY_1" class="anchor field"></a><code id='DAC_EMPTY_1.v'>DAC_EMPTY_1</code></span><div class='docblock'><p>125 - DAC_EMPTY_1</p>
+</div><span id="variant.DAC_RESRDY_0" class="variant small-section-header"><a href="#variant.DAC_RESRDY_0" class="anchor field"></a><code id='DAC_RESRDY_0.v'>DAC_RESRDY_0</code></span><div class='docblock'><p>126 - DAC_RESRDY_0</p>
+</div><span id="variant.DAC_RESRDY_1" class="variant small-section-header"><a href="#variant.DAC_RESRDY_1" class="anchor field"></a><code id='DAC_RESRDY_1.v'>DAC_RESRDY_1</code></span><div class='docblock'><p>127 - DAC_RESRDY_1</p>
+</div><span id="variant.I2S" class="variant small-section-header"><a href="#variant.I2S" class="anchor field"></a><code id='I2S.v'>I2S</code></span><div class='docblock'><p>128 - I2S</p>
+</div><span id="variant.PCC" class="variant small-section-header"><a href="#variant.PCC" class="anchor field"></a><code id='PCC.v'>PCC</code></span><div class='docblock'><p>129 - PCC</p>
+</div><span id="variant.AES" class="variant small-section-header"><a href="#variant.AES" class="anchor field"></a><code id='AES.v'>AES</code></span><div class='docblock'><p>130 - AES</p>
+</div><span id="variant.TRNG" class="variant small-section-header"><a href="#variant.TRNG" class="anchor field"></a><code id='TRNG.v'>TRNG</code></span><div class='docblock'><p>131 - TRNG</p>
+</div><span id="variant.ICM" class="variant small-section-header"><a href="#variant.ICM" class="anchor field"></a><code id='ICM.v'>ICM</code></span><div class='docblock'><p>132 - ICM</p>
+</div><span id="variant.QSPI" class="variant small-section-header"><a href="#variant.QSPI" class="anchor field"></a><code id='QSPI.v'>QSPI</code></span><div class='docblock'><p>134 - QSPI</p>
+</div><span id="variant.SDHC0" class="variant small-section-header"><a href="#variant.SDHC0" class="anchor field"></a><code id='SDHC0.v'>SDHC0</code></span><div class='docblock'><p>135 - SDHC0</p>
+</div><h2 id='implementations' class='small-section-header'>Trait Implementations<a href='#implementations' class='anchor'></a></h2><div id='implementations-list'><h3 id='impl-Nr' class='impl'><code class='in-band'>impl Nr for <a class="enum" href="../atsamd51j19a/enum.Interrupt.html" title="enum atsamd51j19a::Interrupt">Interrupt</a></code><a href='#impl-Nr' class='anchor'></a><a class='srclink' href='../src/atsamd51j19a/lib.rs.html#666-791' title='goto source code'>[src]</a></h3><div class='impl-items'><h4 id='method.nr' class="method hidden"><code id='nr.v'>fn <a href='#method.nr' class='fnname'>nr</a>(&amp;self) -&gt; u8</code><a class='srclink' href='../src/atsamd51j19a/lib.rs.html#668-790' title='goto source code'>[src]</a></h4><div class='docblock hidden'><p>Returns the number associated with an interrupt</p>
+</div></div></div><h2 id='synthetic-implementations' class='small-section-header'>Auto Trait Implementations<a href='#synthetic-implementations' class='anchor'></a></h2><div id='synthetic-implementations-list'><h3 id='impl-Send' class='impl'><code class='in-band'>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Send.html" title="trait core::marker::Send">Send</a> for <a class="enum" href="../atsamd51j19a/enum.Interrupt.html" title="enum atsamd51j19a::Interrupt">Interrupt</a></code><a href='#impl-Send' class='anchor'></a></h3><div class='impl-items'></div><h3 id='impl-Sync' class='impl'><code class='in-band'>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sync.html" title="trait core::marker::Sync">Sync</a> for <a class="enum" href="../atsamd51j19a/enum.Interrupt.html" title="enum atsamd51j19a::Interrupt">Interrupt</a></code><a href='#impl-Sync' class='anchor'></a></h3><div class='impl-items'></div></div><h2 id='blanket-implementations' class='small-section-header'>Blanket Implementations<a href='#blanket-implementations' class='anchor'></a></h2><div id='blanket-implementations-list'><h3 id='impl-From' class='impl'><code class='in-band'>impl&lt;T&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.From.html" title="trait core::convert::From">From</a> for T</code><a href='#impl-From' class='anchor'></a><a class='srclink' href='https://doc.rust-lang.org/nightly/src/core/convert.rs.html#453-455' title='goto source code'>[src]</a></h3><div class='impl-items'><h4 id='method.from' class="method hidden"><code id='from.v'>fn <a href='https://doc.rust-lang.org/nightly/core/convert/trait.From.html#tymethod.from' class='fnname'>from</a>(t: T) -&gt; T</code><a class='srclink' href='https://doc.rust-lang.org/nightly/src/core/convert.rs.html#454' title='goto source code'>[src]</a></h4><div class='docblock hidden'><p>Performs the conversion.</p>
+</div></div><h3 id='impl-TryFrom' class='impl'><code class='in-band'>impl&lt;T, U&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html" title="trait core::convert::TryFrom">TryFrom</a> for T <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;U: <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.Into.html" title="trait core::convert::Into">Into</a>&lt;T&gt;,&nbsp;</span></code><a href='#impl-TryFrom' class='anchor'></a><a class='srclink' href='https://doc.rust-lang.org/nightly/src/core/convert.rs.html#472-478' title='goto source code'>[src]</a></h3><div class='impl-items'><h4 id='associatedtype.Error' class="type"><code id='Error.t'>type <a href='https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html#associatedtype.Error' class="type">Error</a> = <a class="enum" href="https://doc.rust-lang.org/nightly/core/convert/enum.Infallible.html" title="enum core::convert::Infallible">Infallible</a></code></h4><div class='docblock'><p>The type returned in the event of a conversion error.</p>
+</div><h4 id='method.try_from' class="method hidden"><code id='try_from.v'>fn <a href='https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html#tymethod.try_from' class='fnname'>try_from</a>(value: U) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;T, &lt;T as <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html" title="trait core::convert::TryFrom">TryFrom</a>&lt;U&gt;&gt;::<a class="type" href="https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html#associatedtype.Error" title="type core::convert::TryFrom::Error">Error</a>&gt;</code><a class='srclink' href='https://doc.rust-lang.org/nightly/src/core/convert.rs.html#475-477' title='goto source code'>[src]</a></h4><div class='docblock hidden'><p>Performs the conversion.</p>
+</div></div><h3 id='impl-TryInto' class='impl'><code class='in-band'>impl&lt;T, U&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.TryInto.html" title="trait core::convert::TryInto">TryInto</a> for T <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;U: <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html" title="trait core::convert::TryFrom">TryFrom</a>&lt;T&gt;,&nbsp;</span></code><a href='#impl-TryInto' class='anchor'></a><a class='srclink' href='https://doc.rust-lang.org/nightly/src/core/convert.rs.html#460-467' title='goto source code'>[src]</a></h3><div class='impl-items'><h4 id='associatedtype.Error-1' class="type"><code id='Error.t-1'>type <a href='https://doc.rust-lang.org/nightly/core/convert/trait.TryInto.html#associatedtype.Error' class="type">Error</a> = &lt;U as <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html" title="trait core::convert::TryFrom">TryFrom</a>&lt;T&gt;&gt;::<a class="type" href="https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html#associatedtype.Error" title="type core::convert::TryFrom::Error">Error</a></code></h4><div class='docblock'><p>The type returned in the event of a conversion error.</p>
+</div><h4 id='method.try_into' class="method hidden"><code id='try_into.v'>fn <a href='https://doc.rust-lang.org/nightly/core/convert/trait.TryInto.html#tymethod.try_into' class='fnname'>try_into</a>(self) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;U, &lt;U as <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html" title="trait core::convert::TryFrom">TryFrom</a>&lt;T&gt;&gt;::<a class="type" href="https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html#associatedtype.Error" title="type core::convert::TryFrom::Error">Error</a>&gt;</code><a class='srclink' href='https://doc.rust-lang.org/nightly/src/core/convert.rs.html#464-466' title='goto source code'>[src]</a></h4><div class='docblock hidden'><p>Performs the conversion.</p>
+</div></div><h3 id='impl-Into' class='impl'><code class='in-band'>impl&lt;T, U&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.Into.html" title="trait core::convert::Into">Into</a> for T <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;U: <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.From.html" title="trait core::convert::From">From</a>&lt;T&gt;,&nbsp;</span></code><a href='#impl-Into' class='anchor'></a><a class='srclink' href='https://doc.rust-lang.org/nightly/src/core/convert.rs.html#444-449' title='goto source code'>[src]</a></h3><div class='impl-items'><h4 id='method.into' class="method hidden"><code id='into.v'>fn <a href='https://doc.rust-lang.org/nightly/core/convert/trait.Into.html#tymethod.into' class='fnname'>into</a>(self) -&gt; U</code><a class='srclink' href='https://doc.rust-lang.org/nightly/src/core/convert.rs.html#446-448' title='goto source code'>[src]</a></h4><div class='docblock hidden'><p>Performs the conversion.</p>
+</div></div><h3 id='impl-Borrow' class='impl'><code class='in-band'>impl&lt;T&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/borrow/trait.Borrow.html" title="trait core::borrow::Borrow">Borrow</a> for T <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;T: ?<a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>,&nbsp;</span></code><a href='#impl-Borrow' class='anchor'></a><a class='srclink' href='https://doc.rust-lang.org/nightly/src/core/borrow.rs.html#209-211' title='goto source code'>[src]</a></h3><div class='impl-items'><h4 id='method.borrow' class="method hidden"><code id='borrow.v'>fn <a href='https://doc.rust-lang.org/nightly/core/borrow/trait.Borrow.html#tymethod.borrow' class='fnname'>borrow</a>(&amp;self) -&gt; &amp;T</code><a class='srclink' href='https://doc.rust-lang.org/nightly/src/core/borrow.rs.html#210' title='goto source code'>[src]</a></h4><div class='docblock hidden'><p>Immutably borrows from an owned value. <a href="https://doc.rust-lang.org/nightly/core/borrow/trait.Borrow.html#tymethod.borrow">Read more</a></p>
+</div></div><h3 id='impl-BorrowMut' class='impl'><code class='in-band'>impl&lt;T&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/borrow/trait.BorrowMut.html" title="trait core::borrow::BorrowMut">BorrowMut</a> for T <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;T: ?<a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>,&nbsp;</span></code><a href='#impl-BorrowMut' class='anchor'></a><a class='srclink' href='https://doc.rust-lang.org/nightly/src/core/borrow.rs.html#214-216' title='goto source code'>[src]</a></h3><div class='impl-items'><h4 id='method.borrow_mut' class="method hidden"><code id='borrow_mut.v'>fn <a href='https://doc.rust-lang.org/nightly/core/borrow/trait.BorrowMut.html#tymethod.borrow_mut' class='fnname'>borrow_mut</a>(&amp;mut self) -&gt; &amp;mut T</code><a class='srclink' href='https://doc.rust-lang.org/nightly/src/core/borrow.rs.html#215' title='goto source code'>[src]</a></h4><div class='docblock hidden'><p>Mutably borrows from an owned value. <a href="https://doc.rust-lang.org/nightly/core/borrow/trait.BorrowMut.html#tymethod.borrow_mut">Read more</a></p>
+</div></div><h3 id='impl-Any' class='impl'><code class='in-band'>impl&lt;T&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/any/trait.Any.html" title="trait core::any::Any">Any</a> for T <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;T: 'static + ?<a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>,&nbsp;</span></code><a href='#impl-Any' class='anchor'></a><a class='srclink' href='https://doc.rust-lang.org/nightly/src/core/any.rs.html#100-102' title='goto source code'>[src]</a></h3><div class='impl-items'><h4 id='method.type_id' class="method hidden"><code id='type_id.v'>fn <a href='https://doc.rust-lang.org/nightly/core/any/trait.Any.html#tymethod.type_id' class='fnname'>type_id</a>(&amp;self) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/core/any/struct.TypeId.html" title="struct core::any::TypeId">TypeId</a></code><a class='srclink' href='https://doc.rust-lang.org/nightly/src/core/any.rs.html#101' title='goto source code'>[src]</a></h4><div class='docblock hidden'><p>Gets the <code>TypeId</code> of <code>self</code>. <a href="https://doc.rust-lang.org/nightly/core/any/trait.Any.html#tymethod.type_id">Read more</a></p>
+</div></div></div></section><section id="search" class="content hidden"></section><section class="footer"></section><aside id="help" class="hidden"><div><h1 class="hidden">Help</h1><div class="shortcuts"><h2>Keyboard Shortcuts</h2><dl><dt><kbd>?</kbd></dt><dd>Show this help dialog</dd><dt><kbd>S</kbd></dt><dd>Focus the search field</dd><dt><kbd>↑</kbd></dt><dd>Move up in search results</dd><dt><kbd>↓</kbd></dt><dd>Move down in search results</dd><dt><kbd>↹</kbd></dt><dd>Switch tab</dd><dt><kbd>&#9166;</kbd></dt><dd>Go to active search result</dd><dt><kbd>+</kbd></dt><dd>Expand all sections</dd><dt><kbd>-</kbd></dt><dd>Collapse all sections</dd></dl></div><div class="infos"><h2>Search Tricks</h2><p>Prefix searches with a type followed by a colon (e.g., <code>fn:</code>) to restrict the search to a given type.</p><p>Accepted types are: <code>fn</code>, <code>mod</code>, <code>struct</code>, <code>enum</code>, <code>trait</code>, <code>type</code>, <code>macro</code>, and <code>const</code>.</p><p>Search functions by type signature (e.g., <code>vec -> usize</code> or <code>* -> vec</code>)</p><p>Search multiple things at once by splitting your query with comma (e.g., <code>str,u8</code> or <code>String,struct:Vec,test</code>)</p></div></div></aside><script>window.rootPath = "../";window.currentCrate = "atsamd51j19a";</script><script src="../aliases.js"></script><script src="../main.js"></script><script defer src="../search-index.js"></script></body></html>

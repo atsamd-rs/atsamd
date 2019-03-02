@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["WAVEGENR","Possible values of the field `WAVEGEN`"],["WAVEGENW","Values that can be written to the field `WAVEGEN`"]],"struct":[["R","Value read from the register"],["W","Value to write to the register"],["_WAVEGENW","Proxy"]]});

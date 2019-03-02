@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["BERRR","Value of the field"],["CRSTEXTR","Value of the field"],["DONER","Value of the field"],["FAILR","Value of the field"],["PERRR","Value of the field"],["R","Value read from the register"],["W","Value to write to the register"],["_BERRW","Proxy"],["_CRSTEXTW","Proxy"],["_DONEW","Proxy"],["_FAILW","Proxy"],["_PERRW","Proxy"]]});

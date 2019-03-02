@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["CALIBR","Value of the field"],["EN1KR","Value of the field"],["EN32KR","Value of the field"],["R","Value read from the register"],["W","Value to write to the register"],["WRTLOCKR","Value of the field"],["_CALIBW","Proxy"],["_EN1KW","Proxy"],["_EN32KW","Proxy"],["_WRTLOCKW","Proxy"]]});

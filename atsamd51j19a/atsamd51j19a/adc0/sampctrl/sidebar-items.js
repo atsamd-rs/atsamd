@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["OFFCOMPR","Value of the field"],["R","Value read from the register"],["SAMPLENR","Value of the field"],["W","Value to write to the register"],["_OFFCOMPW","Proxy"],["_SAMPLENW","Proxy"]]});

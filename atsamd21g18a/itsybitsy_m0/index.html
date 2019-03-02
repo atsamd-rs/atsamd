@@ -1,0 +1,120 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="API documentation for the Rust `itsybitsy_m0` crate."><meta name="keywords" content="rust, rustlang, rust-lang, itsybitsy_m0"><title>itsybitsy_m0 - Rust</title><link rel="stylesheet" type="text/css" href="../normalize.css"><link rel="stylesheet" type="text/css" href="../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../dark.css"><link rel="stylesheet" type="text/css" href="../light.css" id="themeStyle"><script src="../storage.js"></script><noscript><link rel="stylesheet" href="../noscript.css"></noscript><link rel="shortcut icon" href="../favicon.ico"><style type="text/css">#crate-search{background-image:url("../down-arrow.svg");}</style></head><body class="rustdoc mod"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../itsybitsy_m0/index.html'><img src='../rust-logo.png' alt='logo' width='100'></a><p class='location'>Crate itsybitsy_m0</p><div class="sidebar-elems"><a id='all-types' href='all.html'><p>See all itsybitsy_m0's items</p></a><div class="block items"><ul><li><a href="#reexports">Re-exports</a></li><li><a href="#modules">Modules</a></li><li><a href="#macros">Macros</a></li><li><a href="#structs">Structs</a></li><li><a href="#enums">Enums</a></li><li><a href="#constants">Constants</a></li><li><a href="#functions">Functions</a></li></ul></div><p class='location'></p><script>window.sidebarCurrent = {name: 'itsybitsy_m0', ty: 'mod', relpath: '../'};</script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../settings.html"><img src="../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class='fqn'><span class='out-of-band'><span id='render-detail'><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class='inner'>&#x2212;</span>]</a></span><a class='srclink' href='../src/itsybitsy_m0/lib.rs.html#1-205' title='goto source code'>[src]</a></span><span class='in-band'>Crate <a class="mod" href=''>itsybitsy_m0</a></span></h1><h2 id='reexports' class='section-header'><a href="#reexports">Re-exports</a></h2>
+<table><tr><td><code>pub use cortex_m_rt::entry;</code></td></tr></table><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
+<table><tr class='module-item'><td><a class="mod" href="ac/index.html" title='itsybitsy_m0::ac mod'>ac</a></td><td class='docblock-short'><p>Analog Comparators</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="adc/index.html" title='itsybitsy_m0::adc mod'>adc</a></td><td class='docblock-short'><p>Analog Digital Converter</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="atsamd21g18a/index.html" title='itsybitsy_m0::atsamd21g18a mod'>atsamd21g18a</a></td><td class='docblock-short'><p>Peripheral access API for ATSAMD21G18A microcontrollers (generated using svd2rust v0.13.1)</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="clock/index.html" title='itsybitsy_m0::clock mod'>clock</a></td><td class='docblock-short'><p>Configuring the system clock sources.
+You will typically need to create an instance of <code>GenericClockController</code>
+before you can set up most of the peripherals on the atsamd21 device.
+The other types in this module are used to enforce at compile time
+that the peripherals have been correctly configured.</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="dac/index.html" title='itsybitsy_m0::dac mod'>dac</a></td><td class='docblock-short'><p>Digital Analog Converter</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="delay/index.html" title='itsybitsy_m0::delay mod'>delay</a></td><td class='docblock-short'><p>Delays</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="dmac/index.html" title='itsybitsy_m0::dmac mod'>dmac</a></td><td class='docblock-short'><p>Direct Memory Access Controller</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="dsu/index.html" title='itsybitsy_m0::dsu mod'>dsu</a></td><td class='docblock-short'><p>Device Service Unit</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="eic/index.html" title='itsybitsy_m0::eic mod'>eic</a></td><td class='docblock-short'><p>External Interrupt Controller</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="evsys/index.html" title='itsybitsy_m0::evsys mod'>evsys</a></td><td class='docblock-short'><p>Event System Interface</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="gclk/index.html" title='itsybitsy_m0::gclk mod'>gclk</a></td><td class='docblock-short'><p>Generic Clock Generator</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="gpio/index.html" title='itsybitsy_m0::gpio mod'>gpio</a></td><td class='docblock-short'><p>Working with GPIO pins.
+The pins are associated with the PORT hardware.  This module
+defines a <code>split</code> method on the <code>PORT</code> type that is used to safely
+reference the individual pin configuration.
+The IO pins can be switched into alternate function modes, which
+routes the pins to different peripherals depending on the mode
+for the pin.   The pin configuration is reflected through the
+use of type states to make the interface (ideally, or at least practically)
+impossible to misuse.</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="hal/index.html" title='itsybitsy_m0::hal mod'>hal</a></td><td class='docblock-short'><p>A Hardware Abstraction Layer (HAL) for embedded systems</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="hmatrix/index.html" title='itsybitsy_m0::hmatrix mod'>hmatrix</a></td><td class='docblock-short'><p>HSB Matrix</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="i2s/index.html" title='itsybitsy_m0::i2s mod'>i2s</a></td><td class='docblock-short'><p>Inter-IC Sound Interface</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="mtb/index.html" title='itsybitsy_m0::mtb mod'>mtb</a></td><td class='docblock-short'><p>Cortex-M0+ Micro-Trace Buffer</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="nvmctrl/index.html" title='itsybitsy_m0::nvmctrl mod'>nvmctrl</a></td><td class='docblock-short'><p>Non-Volatile Memory Controller</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="pac0/index.html" title='itsybitsy_m0::pac0 mod'>pac0</a></td><td class='docblock-short'><p>Peripheral Access Controller 0</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="paste/index.html" title='itsybitsy_m0::paste mod'>paste</a></td><td class='docblock-short'><p>The nightly-only <a href="https://doc.rust-lang.org/std/macro.concat_idents.html"><code>concat_idents!</code></a> macro in the Rust standard library is
+notoriously underpowered in that its concatenated identifiers can only refer to
+existing items, they can never be used to define something new.</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="pm/index.html" title='itsybitsy_m0::pm mod'>pm</a></td><td class='docblock-short'><p>Power Manager</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="port/index.html" title='itsybitsy_m0::port mod'>port</a></td><td class='docblock-short'><p>Port Module</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="prelude/index.html" title='itsybitsy_m0::prelude mod'>prelude</a></td><td class='docblock-short'><p>Import the prelude to gain convenient access to helper traits</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="rtc/index.html" title='itsybitsy_m0::rtc mod'>rtc</a></td><td class='docblock-short'><p>Real-Time Counter</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="sercom/index.html" title='itsybitsy_m0::sercom mod'>sercom</a></td><td class='docblock-short'><p>Working with the SERCOM peripherals.</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="sercom0/index.html" title='itsybitsy_m0::sercom0 mod'>sercom0</a></td><td class='docblock-short'><p>Serial Communication Interface 0</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="sysctrl/index.html" title='itsybitsy_m0::sysctrl mod'>sysctrl</a></td><td class='docblock-short'><p>System Control</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="tc3/index.html" title='itsybitsy_m0::tc3 mod'>tc3</a></td><td class='docblock-short'><p>Basic Timer Counter 3</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="tcc0/index.html" title='itsybitsy_m0::tcc0 mod'>tcc0</a></td><td class='docblock-short'><p>Timer Counter Control 0</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="time/index.html" title='itsybitsy_m0::time mod'>time</a></td><td class='docblock-short'><p>Time units</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="timer/index.html" title='itsybitsy_m0::timer mod'>timer</a></td><td class='docblock-short'><p>Working with timer counter hardware</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="usb/index.html" title='itsybitsy_m0::usb mod'>usb</a></td><td class='docblock-short'><p>Universal Serial Bus</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="wdt/index.html" title='itsybitsy_m0::wdt mod'>wdt</a></td><td class='docblock-short'><p>Watchdog Timer</p>
+</td></tr></table><h2 id='macros' class='section-header'><a href="#macros">Macros</a></h2>
+<table><tr class='module-item'><td><a class="macro" href="macro.dbgprint.html" title='itsybitsy_m0::dbgprint macro'>dbgprint</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="macro" href="macro.define_pins.html" title='itsybitsy_m0::define_pins macro'>define_pins</a></td><td class='docblock-short'><p>This macro is a helper for defining a <code>Pins</code> type in a board support
+crate.  This type is used to provide more meaningful aliases for the
+various GPIO pins for a given board.</p>
+</td></tr></table><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
+<table><tr class='module-item'><td><a class="struct" href="struct.AC.html" title='itsybitsy_m0::AC struct'>AC</a></td><td class='docblock-short'><p>Analog Comparators</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ADC.html" title='itsybitsy_m0::ADC struct'>ADC</a></td><td class='docblock-short'><p>Analog Digital Converter</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.CBP.html" title='itsybitsy_m0::CBP struct'>CBP</a></td><td class='docblock-short'><p>Cache and branch predictor maintenance operations</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.CPUID.html" title='itsybitsy_m0::CPUID struct'>CPUID</a></td><td class='docblock-short'><p>CPUID</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.CorePeripherals.html" title='itsybitsy_m0::CorePeripherals struct'>CorePeripherals</a></td><td class='docblock-short'><p>Core peripherals</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.DAC.html" title='itsybitsy_m0::DAC struct'>DAC</a></td><td class='docblock-short'><p>Digital Analog Converter</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.DCB.html" title='itsybitsy_m0::DCB struct'>DCB</a></td><td class='docblock-short'><p>Debug Control Block</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.DMAC.html" title='itsybitsy_m0::DMAC struct'>DMAC</a></td><td class='docblock-short'><p>Direct Memory Access Controller</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.DSU.html" title='itsybitsy_m0::DSU struct'>DSU</a></td><td class='docblock-short'><p>Device Service Unit</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.DWT.html" title='itsybitsy_m0::DWT struct'>DWT</a></td><td class='docblock-short'><p>Data Watchpoint and Trace unit</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.EIC.html" title='itsybitsy_m0::EIC struct'>EIC</a></td><td class='docblock-short'><p>External Interrupt Controller</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.EVSYS.html" title='itsybitsy_m0::EVSYS struct'>EVSYS</a></td><td class='docblock-short'><p>Event System Interface</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.FPB.html" title='itsybitsy_m0::FPB struct'>FPB</a></td><td class='docblock-short'><p>Flash Patch and Breakpoint unit</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.GCLK.html" title='itsybitsy_m0::GCLK struct'>GCLK</a></td><td class='docblock-short'><p>Generic Clock Generator</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.HMATRIX.html" title='itsybitsy_m0::HMATRIX struct'>HMATRIX</a></td><td class='docblock-short'><p>HSB Matrix</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.I2S.html" title='itsybitsy_m0::I2S struct'>I2S</a></td><td class='docblock-short'><p>Inter-IC Sound Interface</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ITM.html" title='itsybitsy_m0::ITM struct'>ITM</a></td><td class='docblock-short'><p>Instrumentation Trace Macrocell</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.MPU.html" title='itsybitsy_m0::MPU struct'>MPU</a></td><td class='docblock-short'><p>Memory Protection Unit</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.MTB.html" title='itsybitsy_m0::MTB struct'>MTB</a></td><td class='docblock-short'><p>Cortex-M0+ Micro-Trace Buffer</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.NVIC.html" title='itsybitsy_m0::NVIC struct'>NVIC</a></td><td class='docblock-short'><p>Nested Vector Interrupt Controller</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.NVMCTRL.html" title='itsybitsy_m0::NVMCTRL struct'>NVMCTRL</a></td><td class='docblock-short'><p>Non-Volatile Memory Controller</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.PAC0.html" title='itsybitsy_m0::PAC0 struct'>PAC0</a></td><td class='docblock-short'><p>Peripheral Access Controller 0</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.PAC1.html" title='itsybitsy_m0::PAC1 struct'>PAC1</a></td><td class='docblock-short'><p>Peripheral Access Controller 1</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.PAC2.html" title='itsybitsy_m0::PAC2 struct'>PAC2</a></td><td class='docblock-short'><p>Peripheral Access Controller 2</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.PM.html" title='itsybitsy_m0::PM struct'>PM</a></td><td class='docblock-short'><p>Power Manager</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.PORT.html" title='itsybitsy_m0::PORT struct'>PORT</a></td><td class='docblock-short'><p>Port Module</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.PORT_IOBUS.html" title='itsybitsy_m0::PORT_IOBUS struct'>PORT_IOBUS</a></td><td class='docblock-short'><p>Port Module (IOBUS)</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.Peripherals.html" title='itsybitsy_m0::Peripherals struct'>Peripherals</a></td><td class='docblock-short'><p>All the peripherals</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.Pins.html" title='itsybitsy_m0::Pins struct'>Pins</a></td><td class='docblock-short'><p>Maps the pins to their arduino names and
+the numbers printed on the board.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.RTC.html" title='itsybitsy_m0::RTC struct'>RTC</a></td><td class='docblock-short'><p>Real-Time Counter</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.SCB.html" title='itsybitsy_m0::SCB struct'>SCB</a></td><td class='docblock-short'><p>System Control Block</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.SERCOM0.html" title='itsybitsy_m0::SERCOM0 struct'>SERCOM0</a></td><td class='docblock-short'><p>Serial Communication Interface 0</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.SERCOM1.html" title='itsybitsy_m0::SERCOM1 struct'>SERCOM1</a></td><td class='docblock-short'><p>Serial Communication Interface 1</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.SERCOM2.html" title='itsybitsy_m0::SERCOM2 struct'>SERCOM2</a></td><td class='docblock-short'><p>Serial Communication Interface 2</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.SERCOM3.html" title='itsybitsy_m0::SERCOM3 struct'>SERCOM3</a></td><td class='docblock-short'><p>Serial Communication Interface 3</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.SERCOM4.html" title='itsybitsy_m0::SERCOM4 struct'>SERCOM4</a></td><td class='docblock-short'><p>Serial Communication Interface 4</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.SERCOM5.html" title='itsybitsy_m0::SERCOM5 struct'>SERCOM5</a></td><td class='docblock-short'><p>Serial Communication Interface 5</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.SYSCTRL.html" title='itsybitsy_m0::SYSCTRL struct'>SYSCTRL</a></td><td class='docblock-short'><p>System Control</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.SYST.html" title='itsybitsy_m0::SYST struct'>SYST</a></td><td class='docblock-short'><p>SysTick: System Timer</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.TC3.html" title='itsybitsy_m0::TC3 struct'>TC3</a></td><td class='docblock-short'><p>Basic Timer Counter 3</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.TC4.html" title='itsybitsy_m0::TC4 struct'>TC4</a></td><td class='docblock-short'><p>Basic Timer Counter 4</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.TC5.html" title='itsybitsy_m0::TC5 struct'>TC5</a></td><td class='docblock-short'><p>Basic Timer Counter 5</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.TCC0.html" title='itsybitsy_m0::TCC0 struct'>TCC0</a></td><td class='docblock-short'><p>Timer Counter Control 0</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.TCC1.html" title='itsybitsy_m0::TCC1 struct'>TCC1</a></td><td class='docblock-short'><p>Timer Counter Control 1</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.TCC2.html" title='itsybitsy_m0::TCC2 struct'>TCC2</a></td><td class='docblock-short'><p>Timer Counter Control 2</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.TPIU.html" title='itsybitsy_m0::TPIU struct'>TPIU</a></td><td class='docblock-short'><p>Trace Port Interface Unit</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.USB.html" title='itsybitsy_m0::USB struct'>USB</a></td><td class='docblock-short'><p>Universal Serial Bus</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.WDT.html" title='itsybitsy_m0::WDT struct'>WDT</a></td><td class='docblock-short'><p>Watchdog Timer</p>
+</td></tr></table><h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
+<table><tr class='module-item'><td><a class="enum" href="enum.Interrupt.html" title='itsybitsy_m0::Interrupt enum'>Interrupt</a></td><td class='docblock-short'><p>Enumeration of all the interrupts</p>
+</td></tr></table><h2 id='constants' class='section-header'><a href="#constants">Constants</a></h2>
+<table><tr class='module-item'><td><a class="constant" href="constant.NVIC_PRIO_BITS.html" title='itsybitsy_m0::NVIC_PRIO_BITS constant'>NVIC_PRIO_BITS</a></td><td class='docblock-short'><p>Number available in the NVIC for configuring priority</p>
+</td></tr></table><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
+<table><tr class='module-item'><td><a class="fn" href="fn.flash_spi_master.html" title='itsybitsy_m0::flash_spi_master fn'>flash_spi_master</a></td><td class='docblock-short'><p>Convenience for accessing the on-board SPI Flash device.
+This powers up SERCOM5 and configures it for use as an
+SPI Master.</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.i2c_master.html" title='itsybitsy_m0::i2c_master fn'>i2c_master</a></td><td class='docblock-short'><p>Convenience for setting up the labelled SDA, SCL pins to
+operate as an I2C master running at the specified frequency.</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.spi_master.html" title='itsybitsy_m0::spi_master fn'>spi_master</a></td><td class='docblock-short'><p>Convenience for setting up the externally labelled SPI.
+This powers up SERCOM4 and configures it for use as an
+SPI Master in SPI Mode 0.
+Unlike the <code>flash_spi_master</code> function, this
+one does not accept a CS pin; configuring a pin for CS
+is the responsibility of the caller, because it could be
+any OutputPin, or even a pulled up line on the slave.</p>
+</td></tr></table></section><section id="search" class="content hidden"></section><section class="footer"></section><aside id="help" class="hidden"><div><h1 class="hidden">Help</h1><div class="shortcuts"><h2>Keyboard Shortcuts</h2><dl><dt><kbd>?</kbd></dt><dd>Show this help dialog</dd><dt><kbd>S</kbd></dt><dd>Focus the search field</dd><dt><kbd>↑</kbd></dt><dd>Move up in search results</dd><dt><kbd>↓</kbd></dt><dd>Move down in search results</dd><dt><kbd>↹</kbd></dt><dd>Switch tab</dd><dt><kbd>&#9166;</kbd></dt><dd>Go to active search result</dd><dt><kbd>+</kbd></dt><dd>Expand all sections</dd><dt><kbd>-</kbd></dt><dd>Collapse all sections</dd></dl></div><div class="infos"><h2>Search Tricks</h2><p>Prefix searches with a type followed by a colon (e.g., <code>fn:</code>) to restrict the search to a given type.</p><p>Accepted types are: <code>fn</code>, <code>mod</code>, <code>struct</code>, <code>enum</code>, <code>trait</code>, <code>type</code>, <code>macro</code>, and <code>const</code>.</p><p>Search functions by type signature (e.g., <code>vec -> usize</code> or <code>* -> vec</code>)</p><p>Search multiple things at once by splitting your query with comma (e.g., <code>str,u8</code> or <code>String,struct:Vec,test</code>)</p></div></div></aside><script>window.rootPath = "../";window.currentCrate = "itsybitsy_m0";</script><script src="../aliases.js"></script><script src="../main.js"></script><script defer src="../search-index.js"></script></body></html>

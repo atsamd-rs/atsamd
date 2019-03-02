@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["URATR","Possible values of the field `URAT`"]],"struct":[["R","Value read from the register"]]});

@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["APBADIVR","Possible values of the field `APBADIV`"],["APBADIVW","Values that can be written to the field `APBADIV`"]],"struct":[["R","Value read from the register"],["W","Value to write to the register"],["_APBADIVW","Proxy"]]});

@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["COARSER","Value of the field"],["DIFFR","Value of the field"],["FINER","Value of the field"],["R","Value read from the register"],["W","Value to write to the register"],["_COARSEW","Proxy"],["_FINEW","Proxy"]]});

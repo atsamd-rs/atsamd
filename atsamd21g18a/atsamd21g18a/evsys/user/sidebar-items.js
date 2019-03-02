@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["CHANNELR","Possible values of the field `CHANNEL`"],["CHANNELW","Values that can be written to the field `CHANNEL`"]],"struct":[["R","Value read from the register"],["USERR","Value of the field"],["W","Value to write to the register"],["_CHANNELW","Proxy"],["_USERW","Proxy"]]});

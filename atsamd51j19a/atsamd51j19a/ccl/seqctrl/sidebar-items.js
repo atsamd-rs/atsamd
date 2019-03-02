@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["SEQSELR","Possible values of the field `SEQSEL`"],["SEQSELW","Values that can be written to the field `SEQSEL`"]],"struct":[["R","Value read from the register"],["W","Value to write to the register"],["_SEQSELW","Proxy"]]});

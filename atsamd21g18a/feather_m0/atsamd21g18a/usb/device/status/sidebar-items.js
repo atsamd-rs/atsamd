@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["LINESTATER","Possible values of the field `LINESTATE`"],["SPEEDR","Possible values of the field `SPEED`"]],"struct":[["R","Value read from the register"]]});

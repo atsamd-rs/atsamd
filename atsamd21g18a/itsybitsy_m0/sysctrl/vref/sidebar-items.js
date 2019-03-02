@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["BGOUTENR","Value of the field"],["CALIBR","Value of the field"],["R","Value read from the register"],["TSENR","Value of the field"],["W","Value to write to the register"],["_BGOUTENW","Proxy"],["_CALIBW","Proxy"],["_TSENW","Proxy"]]});

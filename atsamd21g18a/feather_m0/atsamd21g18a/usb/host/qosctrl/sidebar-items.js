@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["CQOSR","Possible values of the field `CQOS`"],["CQOSW","Values that can be written to the field `CQOS`"],["DQOSR","Possible values of the field `DQOS`"],["DQOSW","Values that can be written to the field `DQOS`"]],"struct":[["R","Value read from the register"],["W","Value to write to the register"],["_CQOSW","Proxy"],["_DQOSW","Proxy"]]});

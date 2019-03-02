@@ -1,0 +1,11 @@
+var ALIASES = {};
+ALIASES["arduino_mkrzero"] = {};
+ALIASES["atsamd21_hal"] = {};
+ALIASES["atsamd21e18a"] = {};
+ALIASES["atsamd21g18a"] = {};
+ALIASES["circuit_playground_express"] = {};
+ALIASES["feather_m0"] = {};
+ALIASES["itsybitsy_m0"] = {};
+ALIASES["metro_m0"] = {};
+ALIASES["samd21_mini"] = {};
+ALIASES["sodaq_one"] = {};

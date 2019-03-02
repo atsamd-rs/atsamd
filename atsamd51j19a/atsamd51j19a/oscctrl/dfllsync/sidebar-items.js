@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["DFLLCTRLBR","Value of the field"],["DFLLMULR","Value of the field"],["DFLLVALR","Value of the field"],["ENABLER","Value of the field"],["R","Value read from the register"]]});

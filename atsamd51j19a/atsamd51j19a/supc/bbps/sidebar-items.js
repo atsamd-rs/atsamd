@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["CONFR","Possible values of the field `CONF`"],["CONFW","Values that can be written to the field `CONF`"]],"struct":[["R","Value read from the register"],["W","Value to write to the register"],["WAKEENR","Value of the field"],["_CONFW","Proxy"],["_WAKEENW","Proxy"]]});

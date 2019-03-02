@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["FLUSHR","Value of the field"],["R","Value read from the register"],["STARTR","Value of the field"],["W","Value to write to the register"],["_FLUSHW","Proxy"],["_STARTW","Proxy"]]});

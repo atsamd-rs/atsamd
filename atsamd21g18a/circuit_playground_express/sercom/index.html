@@ -1,0 +1,190 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="API documentation for the Rust `sercom` mod in crate `circuit_playground_express`."><meta name="keywords" content="rust, rustlang, rust-lang, sercom"><title>circuit_playground_express::sercom - Rust</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc mod"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../circuit_playground_express/index.html'><img src='../../rust-logo.png' alt='logo' width='100'></a><p class='location'>Module sercom</p><div class="sidebar-elems"><div class="block items"><ul><li><a href="#structs">Structs</a></li><li><a href="#enums">Enums</a></li><li><a href="#traits">Traits</a></li></ul></div><p class='location'><a href='../index.html'>circuit_playground_express</a></p><script>window.sidebarCurrent = {name: 'sercom', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class='fqn'><span class='out-of-band'><span id='render-detail'><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class='inner'>&#x2212;</span>]</a></span><a class='srclink' href='../../src/atsamd21_hal/lib.rs.html#56' title='goto source code'>[src]</a></span><span class='in-band'>Module <a href='../index.html'>circuit_playground_express</a>::<wbr><a class="mod" href=''>sercom</a></span></h1><div class='docblock'><p>Working with the SERCOM peripherals.</p>
+<p>The atsamd21 hardware has several SERCOM instances that can
+be configured to perform a variety of serial communication
+tasks.  This configuration is expressed through the use of
+type states to make it difficult to misuse.
+Each sercom instance is associated with a group of IO pins
+referred to as a Pad.  When the pins are set to the appropriate
+peripheral function mode they are routed to the sercom pad.</p>
+</div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
+<table><tr class='module-item'><td><a class="struct" href="struct.I2CMaster0.html" title='circuit_playground_express::sercom::I2CMaster0 struct'>I2CMaster0</a></td><td class='docblock-short'><p>Represents the Sercom instance configured to act as an I2C Master.
+The embedded_hal blocking I2C traits are implemented by this instance.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.I2CMaster1.html" title='circuit_playground_express::sercom::I2CMaster1 struct'>I2CMaster1</a></td><td class='docblock-short'><p>Represents the Sercom instance configured to act as an I2C Master.
+The embedded_hal blocking I2C traits are implemented by this instance.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.I2CMaster2.html" title='circuit_playground_express::sercom::I2CMaster2 struct'>I2CMaster2</a></td><td class='docblock-short'><p>Represents the Sercom instance configured to act as an I2C Master.
+The embedded_hal blocking I2C traits are implemented by this instance.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.I2CMaster3.html" title='circuit_playground_express::sercom::I2CMaster3 struct'>I2CMaster3</a></td><td class='docblock-short'><p>Represents the Sercom instance configured to act as an I2C Master.
+The embedded_hal blocking I2C traits are implemented by this instance.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.I2CMaster4.html" title='circuit_playground_express::sercom::I2CMaster4 struct'>I2CMaster4</a></td><td class='docblock-short'><p>Represents the Sercom instance configured to act as an I2C Master.
+The embedded_hal blocking I2C traits are implemented by this instance.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.I2CMaster5.html" title='circuit_playground_express::sercom::I2CMaster5 struct'>I2CMaster5</a></td><td class='docblock-short'><p>Represents the Sercom instance configured to act as an I2C Master.
+The embedded_hal blocking I2C traits are implemented by this instance.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.SPIMaster0.html" title='circuit_playground_express::sercom::SPIMaster0 struct'>SPIMaster0</a></td><td class='docblock-short'><p>SPIMasterX represents the corresponding SERCOMX instance configured to
+act in the role of an SPI Master.
+Objects of this type implement the HAL <code>FullDuplex</code> and blocking SPI
+traits.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.SPIMaster1.html" title='circuit_playground_express::sercom::SPIMaster1 struct'>SPIMaster1</a></td><td class='docblock-short'><p>SPIMasterX represents the corresponding SERCOMX instance configured to
+act in the role of an SPI Master.
+Objects of this type implement the HAL <code>FullDuplex</code> and blocking SPI
+traits.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.SPIMaster2.html" title='circuit_playground_express::sercom::SPIMaster2 struct'>SPIMaster2</a></td><td class='docblock-short'><p>SPIMasterX represents the corresponding SERCOMX instance configured to
+act in the role of an SPI Master.
+Objects of this type implement the HAL <code>FullDuplex</code> and blocking SPI
+traits.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.SPIMaster3.html" title='circuit_playground_express::sercom::SPIMaster3 struct'>SPIMaster3</a></td><td class='docblock-short'><p>SPIMasterX represents the corresponding SERCOMX instance configured to
+act in the role of an SPI Master.
+Objects of this type implement the HAL <code>FullDuplex</code> and blocking SPI
+traits.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.SPIMaster4.html" title='circuit_playground_express::sercom::SPIMaster4 struct'>SPIMaster4</a></td><td class='docblock-short'><p>SPIMasterX represents the corresponding SERCOMX instance configured to
+act in the role of an SPI Master.
+Objects of this type implement the HAL <code>FullDuplex</code> and blocking SPI
+traits.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.SPIMaster5.html" title='circuit_playground_express::sercom::SPIMaster5 struct'>SPIMaster5</a></td><td class='docblock-short'><p>SPIMasterX represents the corresponding SERCOMX instance configured to
+act in the role of an SPI Master.
+Objects of this type implement the HAL <code>FullDuplex</code> and blocking SPI
+traits.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.UART0.html" title='circuit_playground_express::sercom::UART0 struct'>UART0</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="struct" href="struct.UART1.html" title='circuit_playground_express::sercom::UART1 struct'>UART1</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="struct" href="struct.UART2.html" title='circuit_playground_express::sercom::UART2 struct'>UART2</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="struct" href="struct.UART3.html" title='circuit_playground_express::sercom::UART3 struct'>UART3</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="struct" href="struct.UART4.html" title='circuit_playground_express::sercom::UART4 struct'>UART4</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="struct" href="struct.UART5.html" title='circuit_playground_express::sercom::UART5 struct'>UART5</a></td><td class='docblock-short'></td></tr></table><h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
+<table><tr class='module-item'><td><a class="enum" href="enum.Error.html" title='circuit_playground_express::sercom::Error enum'>Error</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="enum" href="enum.I2CError.html" title='circuit_playground_express::sercom::I2CError enum'>I2CError</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="enum" href="enum.SPI0Pinout.html" title='circuit_playground_express::sercom::SPI0Pinout enum'>SPI0Pinout</a></td><td class='docblock-short'><p>When configured for SPI, in addition to the normal
+Sercom pad mapping, the SPI peripheral allows those
+pads to be assigned to different combinations of
+DI (data-in), DO (data-out), SCK (clock) and SS (slave select)
+functions.
+The SPIXPinOut types represent concrete pad mappings for a
+given SPI Instance.
+For slaves, DI is the MOSI function and DO is the MISO function.
+For masters, DI is the MISO function and DO is the MOSI function.
+The slave configurations all require an SS pin and are constructed
+using the enum variants ending with SS.
+The master confiugrations do not require an SS pin and are constructed
+using the other variants.
+The SPI master hardware has support for automatically managing the
+SS line to enable a slave, but this interface does not expose that
+functionality.
+The variant names refer to the Data-in-Data-out configuration that
+is used to configure the SPI peripheral.</p>
+</td></tr><tr class='module-item'><td><a class="enum" href="enum.SPI1Pinout.html" title='circuit_playground_express::sercom::SPI1Pinout enum'>SPI1Pinout</a></td><td class='docblock-short'><p>When configured for SPI, in addition to the normal
+Sercom pad mapping, the SPI peripheral allows those
+pads to be assigned to different combinations of
+DI (data-in), DO (data-out), SCK (clock) and SS (slave select)
+functions.
+The SPIXPinOut types represent concrete pad mappings for a
+given SPI Instance.
+For slaves, DI is the MOSI function and DO is the MISO function.
+For masters, DI is the MISO function and DO is the MOSI function.
+The slave configurations all require an SS pin and are constructed
+using the enum variants ending with SS.
+The master confiugrations do not require an SS pin and are constructed
+using the other variants.
+The SPI master hardware has support for automatically managing the
+SS line to enable a slave, but this interface does not expose that
+functionality.
+The variant names refer to the Data-in-Data-out configuration that
+is used to configure the SPI peripheral.</p>
+</td></tr><tr class='module-item'><td><a class="enum" href="enum.SPI2Pinout.html" title='circuit_playground_express::sercom::SPI2Pinout enum'>SPI2Pinout</a></td><td class='docblock-short'><p>When configured for SPI, in addition to the normal
+Sercom pad mapping, the SPI peripheral allows those
+pads to be assigned to different combinations of
+DI (data-in), DO (data-out), SCK (clock) and SS (slave select)
+functions.
+The SPIXPinOut types represent concrete pad mappings for a
+given SPI Instance.
+For slaves, DI is the MOSI function and DO is the MISO function.
+For masters, DI is the MISO function and DO is the MOSI function.
+The slave configurations all require an SS pin and are constructed
+using the enum variants ending with SS.
+The master confiugrations do not require an SS pin and are constructed
+using the other variants.
+The SPI master hardware has support for automatically managing the
+SS line to enable a slave, but this interface does not expose that
+functionality.
+The variant names refer to the Data-in-Data-out configuration that
+is used to configure the SPI peripheral.</p>
+</td></tr><tr class='module-item'><td><a class="enum" href="enum.SPI3Pinout.html" title='circuit_playground_express::sercom::SPI3Pinout enum'>SPI3Pinout</a></td><td class='docblock-short'><p>When configured for SPI, in addition to the normal
+Sercom pad mapping, the SPI peripheral allows those
+pads to be assigned to different combinations of
+DI (data-in), DO (data-out), SCK (clock) and SS (slave select)
+functions.
+The SPIXPinOut types represent concrete pad mappings for a
+given SPI Instance.
+For slaves, DI is the MOSI function and DO is the MISO function.
+For masters, DI is the MISO function and DO is the MOSI function.
+The slave configurations all require an SS pin and are constructed
+using the enum variants ending with SS.
+The master confiugrations do not require an SS pin and are constructed
+using the other variants.
+The SPI master hardware has support for automatically managing the
+SS line to enable a slave, but this interface does not expose that
+functionality.
+The variant names refer to the Data-in-Data-out configuration that
+is used to configure the SPI peripheral.</p>
+</td></tr><tr class='module-item'><td><a class="enum" href="enum.SPI4Pinout.html" title='circuit_playground_express::sercom::SPI4Pinout enum'>SPI4Pinout</a></td><td class='docblock-short'><p>When configured for SPI, in addition to the normal
+Sercom pad mapping, the SPI peripheral allows those
+pads to be assigned to different combinations of
+DI (data-in), DO (data-out), SCK (clock) and SS (slave select)
+functions.
+The SPIXPinOut types represent concrete pad mappings for a
+given SPI Instance.
+For slaves, DI is the MOSI function and DO is the MISO function.
+For masters, DI is the MISO function and DO is the MOSI function.
+The slave configurations all require an SS pin and are constructed
+using the enum variants ending with SS.
+The master confiugrations do not require an SS pin and are constructed
+using the other variants.
+The SPI master hardware has support for automatically managing the
+SS line to enable a slave, but this interface does not expose that
+functionality.
+The variant names refer to the Data-in-Data-out configuration that
+is used to configure the SPI peripheral.</p>
+</td></tr><tr class='module-item'><td><a class="enum" href="enum.SPI5Pinout.html" title='circuit_playground_express::sercom::SPI5Pinout enum'>SPI5Pinout</a></td><td class='docblock-short'><p>When configured for SPI, in addition to the normal
+Sercom pad mapping, the SPI peripheral allows those
+pads to be assigned to different combinations of
+DI (data-in), DO (data-out), SCK (clock) and SS (slave select)
+functions.
+The SPIXPinOut types represent concrete pad mappings for a
+given SPI Instance.
+For slaves, DI is the MOSI function and DO is the MISO function.
+For masters, DI is the MISO function and DO is the MOSI function.
+The slave configurations all require an SS pin and are constructed
+using the enum variants ending with SS.
+The master confiugrations do not require an SS pin and are constructed
+using the other variants.
+The SPI master hardware has support for automatically managing the
+SS line to enable a slave, but this interface does not expose that
+functionality.
+The variant names refer to the Data-in-Data-out configuration that
+is used to configure the SPI peripheral.</p>
+</td></tr><tr class='module-item'><td><a class="enum" href="enum.Sercom0Pad0.html" title='circuit_playground_express::sercom::Sercom0Pad0 enum'>Sercom0Pad0</a></td><td class='docblock-short'><p>Represents a numbered pad for the associated sercom instance</p>
+</td></tr><tr class='module-item'><td><a class="enum" href="enum.Sercom0Pad1.html" title='circuit_playground_express::sercom::Sercom0Pad1 enum'>Sercom0Pad1</a></td><td class='docblock-short'><p>Represents a numbered pad for the associated sercom instance</p>
+</td></tr><tr class='module-item'><td><a class="enum" href="enum.Sercom0Pad2.html" title='circuit_playground_express::sercom::Sercom0Pad2 enum'>Sercom0Pad2</a></td><td class='docblock-short'><p>Represents a numbered pad for the associated sercom instance</p>
+</td></tr><tr class='module-item'><td><a class="enum" href="enum.Sercom0Pad3.html" title='circuit_playground_express::sercom::Sercom0Pad3 enum'>Sercom0Pad3</a></td><td class='docblock-short'><p>Represents a numbered pad for the associated sercom instance</p>
+</td></tr><tr class='module-item'><td><a class="enum" href="enum.Sercom1Pad0.html" title='circuit_playground_express::sercom::Sercom1Pad0 enum'>Sercom1Pad0</a></td><td class='docblock-short'><p>Represents a numbered pad for the associated sercom instance</p>
+</td></tr><tr class='module-item'><td><a class="enum" href="enum.Sercom1Pad1.html" title='circuit_playground_express::sercom::Sercom1Pad1 enum'>Sercom1Pad1</a></td><td class='docblock-short'><p>Represents a numbered pad for the associated sercom instance</p>
+</td></tr><tr class='module-item'><td><a class="enum" href="enum.Sercom1Pad2.html" title='circuit_playground_express::sercom::Sercom1Pad2 enum'>Sercom1Pad2</a></td><td class='docblock-short'><p>Represents a numbered pad for the associated sercom instance</p>
+</td></tr><tr class='module-item'><td><a class="enum" href="enum.Sercom1Pad3.html" title='circuit_playground_express::sercom::Sercom1Pad3 enum'>Sercom1Pad3</a></td><td class='docblock-short'><p>Represents a numbered pad for the associated sercom instance</p>
+</td></tr><tr class='module-item'><td><a class="enum" href="enum.Sercom2Pad0.html" title='circuit_playground_express::sercom::Sercom2Pad0 enum'>Sercom2Pad0</a></td><td class='docblock-short'><p>Represents a numbered pad for the associated sercom instance</p>
+</td></tr><tr class='module-item'><td><a class="enum" href="enum.Sercom2Pad1.html" title='circuit_playground_express::sercom::Sercom2Pad1 enum'>Sercom2Pad1</a></td><td class='docblock-short'><p>Represents a numbered pad for the associated sercom instance</p>
+</td></tr><tr class='module-item'><td><a class="enum" href="enum.Sercom2Pad2.html" title='circuit_playground_express::sercom::Sercom2Pad2 enum'>Sercom2Pad2</a></td><td class='docblock-short'><p>Represents a numbered pad for the associated sercom instance</p>
+</td></tr><tr class='module-item'><td><a class="enum" href="enum.Sercom2Pad3.html" title='circuit_playground_express::sercom::Sercom2Pad3 enum'>Sercom2Pad3</a></td><td class='docblock-short'><p>Represents a numbered pad for the associated sercom instance</p>
+</td></tr><tr class='module-item'><td><a class="enum" href="enum.Sercom3Pad0.html" title='circuit_playground_express::sercom::Sercom3Pad0 enum'>Sercom3Pad0</a></td><td class='docblock-short'><p>Represents a numbered pad for the associated sercom instance</p>
+</td></tr><tr class='module-item'><td><a class="enum" href="enum.Sercom3Pad1.html" title='circuit_playground_express::sercom::Sercom3Pad1 enum'>Sercom3Pad1</a></td><td class='docblock-short'><p>Represents a numbered pad for the associated sercom instance</p>
+</td></tr><tr class='module-item'><td><a class="enum" href="enum.Sercom3Pad2.html" title='circuit_playground_express::sercom::Sercom3Pad2 enum'>Sercom3Pad2</a></td><td class='docblock-short'><p>Represents a numbered pad for the associated sercom instance</p>
+</td></tr><tr class='module-item'><td><a class="enum" href="enum.Sercom3Pad3.html" title='circuit_playground_express::sercom::Sercom3Pad3 enum'>Sercom3Pad3</a></td><td class='docblock-short'><p>Represents a numbered pad for the associated sercom instance</p>
+</td></tr><tr class='module-item'><td><a class="enum" href="enum.Sercom4Pad0.html" title='circuit_playground_express::sercom::Sercom4Pad0 enum'>Sercom4Pad0</a></td><td class='docblock-short'><p>Represents a numbered pad for the associated sercom instance</p>
+</td></tr><tr class='module-item'><td><a class="enum" href="enum.Sercom4Pad1.html" title='circuit_playground_express::sercom::Sercom4Pad1 enum'>Sercom4Pad1</a></td><td class='docblock-short'><p>Represents a numbered pad for the associated sercom instance</p>
+</td></tr><tr class='module-item'><td><a class="enum" href="enum.Sercom4Pad2.html" title='circuit_playground_express::sercom::Sercom4Pad2 enum'>Sercom4Pad2</a></td><td class='docblock-short'><p>Represents a numbered pad for the associated sercom instance</p>
+</td></tr><tr class='module-item'><td><a class="enum" href="enum.Sercom4Pad3.html" title='circuit_playground_express::sercom::Sercom4Pad3 enum'>Sercom4Pad3</a></td><td class='docblock-short'><p>Represents a numbered pad for the associated sercom instance</p>
+</td></tr><tr class='module-item'><td><a class="enum" href="enum.Sercom5Pad0.html" title='circuit_playground_express::sercom::Sercom5Pad0 enum'>Sercom5Pad0</a></td><td class='docblock-short'><p>Represents a numbered pad for the associated sercom instance</p>
+</td></tr><tr class='module-item'><td><a class="enum" href="enum.Sercom5Pad1.html" title='circuit_playground_express::sercom::Sercom5Pad1 enum'>Sercom5Pad1</a></td><td class='docblock-short'><p>Represents a numbered pad for the associated sercom instance</p>
+</td></tr><tr class='module-item'><td><a class="enum" href="enum.Sercom5Pad2.html" title='circuit_playground_express::sercom::Sercom5Pad2 enum'>Sercom5Pad2</a></td><td class='docblock-short'><p>Represents a numbered pad for the associated sercom instance</p>
+</td></tr><tr class='module-item'><td><a class="enum" href="enum.Sercom5Pad3.html" title='circuit_playground_express::sercom::Sercom5Pad3 enum'>Sercom5Pad3</a></td><td class='docblock-short'><p>Represents a numbered pad for the associated sercom instance</p>
+</td></tr><tr class='module-item'><td><a class="enum" href="enum.UART0Pinout.html" title='circuit_playground_express::sercom::UART0Pinout enum'>UART0Pinout</a></td><td class='docblock-short'><p>Similar to SPI Pinout the UART allows selecting any pad for RX and either pad 0 or 2 for TX</p>
+</td></tr><tr class='module-item'><td><a class="enum" href="enum.UART1Pinout.html" title='circuit_playground_express::sercom::UART1Pinout enum'>UART1Pinout</a></td><td class='docblock-short'><p>Similar to SPI Pinout the UART allows selecting any pad for RX and either pad 0 or 2 for TX</p>
+</td></tr><tr class='module-item'><td><a class="enum" href="enum.UART2Pinout.html" title='circuit_playground_express::sercom::UART2Pinout enum'>UART2Pinout</a></td><td class='docblock-short'><p>Similar to SPI Pinout the UART allows selecting any pad for RX and either pad 0 or 2 for TX</p>
+</td></tr><tr class='module-item'><td><a class="enum" href="enum.UART3Pinout.html" title='circuit_playground_express::sercom::UART3Pinout enum'>UART3Pinout</a></td><td class='docblock-short'><p>Similar to SPI Pinout the UART allows selecting any pad for RX and either pad 0 or 2 for TX</p>
+</td></tr><tr class='module-item'><td><a class="enum" href="enum.UART4Pinout.html" title='circuit_playground_express::sercom::UART4Pinout enum'>UART4Pinout</a></td><td class='docblock-short'><p>Similar to SPI Pinout the UART allows selecting any pad for RX and either pad 0 or 2 for TX</p>
+</td></tr><tr class='module-item'><td><a class="enum" href="enum.UART5Pinout.html" title='circuit_playground_express::sercom::UART5Pinout enum'>UART5Pinout</a></td><td class='docblock-short'><p>Similar to SPI Pinout the UART allows selecting any pad for RX and either pad 0 or 2 for TX</p>
+</td></tr></table><h2 id='traits' class='section-header'><a href="#traits">Traits</a></h2>
+<table><tr class='module-item'><td><a class="trait" href="trait.PadPin.html" title='circuit_playground_express::sercom::PadPin trait'>PadPin</a></td><td class='docblock-short'><p>The PadPin trait makes it more ergonomic to convert a
+pin into a Sercom pad.  You should not implement this
+trait for yourself; only the implementations in the
+sercom module make sense.</p>
+</td></tr></table></section><section id="search" class="content hidden"></section><section class="footer"></section><aside id="help" class="hidden"><div><h1 class="hidden">Help</h1><div class="shortcuts"><h2>Keyboard Shortcuts</h2><dl><dt><kbd>?</kbd></dt><dd>Show this help dialog</dd><dt><kbd>S</kbd></dt><dd>Focus the search field</dd><dt><kbd>↑</kbd></dt><dd>Move up in search results</dd><dt><kbd>↓</kbd></dt><dd>Move down in search results</dd><dt><kbd>↹</kbd></dt><dd>Switch tab</dd><dt><kbd>&#9166;</kbd></dt><dd>Go to active search result</dd><dt><kbd>+</kbd></dt><dd>Expand all sections</dd><dt><kbd>-</kbd></dt><dd>Collapse all sections</dd></dl></div><div class="infos"><h2>Search Tricks</h2><p>Prefix searches with a type followed by a colon (e.g., <code>fn:</code>) to restrict the search to a given type.</p><p>Accepted types are: <code>fn</code>, <code>mod</code>, <code>struct</code>, <code>enum</code>, <code>trait</code>, <code>type</code>, <code>macro</code>, and <code>const</code>.</p><p>Search functions by type signature (e.g., <code>vec -> usize</code> or <code>* -> vec</code>)</p><p>Search multiple things at once by splitting your query with comma (e.g., <code>str,u8</code> or <code>String,struct:Vec,test</code>)</p></div></div></aside><script>window.rootPath = "../../";window.currentCrate = "circuit_playground_express";</script><script src="../../aliases.js"></script><script src="../../main.js"></script><script defer src="../../search-index.js"></script></body></html>

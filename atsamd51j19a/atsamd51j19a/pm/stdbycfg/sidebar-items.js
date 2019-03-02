@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["RAMCFGR","Possible values of the field `RAMCFG`"],["RAMCFGW","Values that can be written to the field `RAMCFG`"]],"struct":[["FASTWKUPR","Value of the field"],["R","Value read from the register"],["W","Value to write to the register"],["_FASTWKUPW","Proxy"],["_RAMCFGW","Proxy"]]});

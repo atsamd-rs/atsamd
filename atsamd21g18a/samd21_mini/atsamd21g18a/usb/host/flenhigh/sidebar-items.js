@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["FLENHIGHR","Value of the field"],["R","Value read from the register"]]});

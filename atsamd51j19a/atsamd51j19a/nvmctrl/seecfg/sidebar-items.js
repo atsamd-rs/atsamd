@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["WMODER","Possible values of the field `WMODE`"],["WMODEW","Values that can be written to the field `WMODE`"]],"struct":[["APRDISR","Value of the field"],["R","Value read from the register"],["W","Value to write to the register"],["_APRDISW","Proxy"],["_WMODEW","Proxy"]]});

@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["CLKRDYR","Value of the field"],["LOCKR","Value of the field"],["R","Value read from the register"]]});

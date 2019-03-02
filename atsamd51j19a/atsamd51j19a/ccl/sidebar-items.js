@@ -1,0 +1,1 @@
+initSidebarItems({"mod":[["ctrl","Control"],["lutctrl","LUT Control x"],["seqctrl","SEQ Control x"]],"struct":[["CTRL","Control"],["LUTCTRL","LUT Control x"],["RegisterBlock","Register block"],["SEQCTRL","SEQ Control x"]]});

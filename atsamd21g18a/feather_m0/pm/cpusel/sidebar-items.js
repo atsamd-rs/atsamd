@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["CPUDIVR","Possible values of the field `CPUDIV`"],["CPUDIVW","Values that can be written to the field `CPUDIV`"]],"struct":[["R","Value read from the register"],["W","Value to write to the register"],["_CPUDIVW","Proxy"]]});

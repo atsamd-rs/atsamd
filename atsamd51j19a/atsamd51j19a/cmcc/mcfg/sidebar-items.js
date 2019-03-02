@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["MODER","Possible values of the field `MODE`"],["MODEW","Values that can be written to the field `MODE`"]],"struct":[["R","Value read from the register"],["W","Value to write to the register"],["_MODEW","Proxy"]]});

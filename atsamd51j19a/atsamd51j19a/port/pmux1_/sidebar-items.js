@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["PMUXER","Value of the field"],["PMUXOR","Value of the field"],["R","Value read from the register"],["W","Value to write to the register"],["_PMUXEW","Proxy"],["_PMUXOW","Proxy"]]});

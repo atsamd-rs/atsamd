@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["JEPIDCHR","Value of the field"],["JEPUR","Value of the field"],["R","Value read from the register"],["REVISIONR","Value of the field"]]});

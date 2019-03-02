@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["EVENT_CNTR","Value of the field"],["R","Value read from the register"]]});

@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["NMISENSER","Possible values of the field `NMISENSE`"],["NMISENSEW","Values that can be written to the field `NMISENSE`"]],"struct":[["NMIFILTENR","Value of the field"],["R","Value read from the register"],["W","Value to write to the register"],["_NMIFILTENW","Proxy"],["_NMISENSEW","Proxy"]]});

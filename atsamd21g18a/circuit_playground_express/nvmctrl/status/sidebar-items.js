@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["LOADR","Value of the field"],["LOCKER","Value of the field"],["NVMER","Value of the field"],["PRMR","Value of the field"],["PROGER","Value of the field"],["R","Value read from the register"],["SBR","Value of the field"],["W","Value to write to the register"],["_LOADW","Proxy"],["_LOCKEW","Proxy"],["_NVMEW","Proxy"],["_PROGEW","Proxy"]]});

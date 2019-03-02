@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["ABUSYR","Value of the field"],["BTCNTR","Value of the field"],["IDR","Value of the field"],["LVLEX0R","Value of the field"],["LVLEX1R","Value of the field"],["LVLEX2R","Value of the field"],["LVLEX3R","Value of the field"],["R","Value read from the register"]]});

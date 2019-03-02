@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["FAMILYR","Possible values of the field `FAMILY`"],["PROCESSORR","Possible values of the field `PROCESSOR`"],["SERIESR","Possible values of the field `SERIES`"]],"struct":[["DEVSELR","Value of the field"],["DIER","Value of the field"],["R","Value read from the register"],["REVISIONR","Value of the field"]]});

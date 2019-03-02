@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["JEPIDCLR","Value of the field"],["PARTNBHR","Value of the field"],["R","Value read from the register"]]});

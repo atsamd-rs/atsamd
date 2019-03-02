@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["ECCDISR","Value of the field"],["ECCELOGR","Value of the field"],["R","Value read from the register"],["W","Value to write to the register"],["_ECCDISW","Proxy"],["_ECCELOGW","Proxy"]]});

@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["DBGPRESR","Value of the field"],["DCCD0R","Value of the field"],["DCCD1R","Value of the field"],["HPER","Value of the field"],["PROTR","Value of the field"],["R","Value read from the register"]]});

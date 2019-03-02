@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["PERR","Possible values of the field `PER`"],["PERW","Values that can be written to the field `PER`"],["WINDOWR","Possible values of the field `WINDOW`"],["WINDOWW","Values that can be written to the field `WINDOW`"]],"struct":[["R","Value read from the register"],["W","Value to write to the register"],["_PERW","Proxy"],["_WINDOWW","Proxy"]]});

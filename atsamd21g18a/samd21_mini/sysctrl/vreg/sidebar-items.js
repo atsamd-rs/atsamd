@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["FORCELDOR","Value of the field"],["R","Value read from the register"],["RUNSTDBYR","Value of the field"],["W","Value to write to the register"],["_FORCELDOW","Proxy"],["_RUNSTDBYW","Proxy"]]});

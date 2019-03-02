@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["RTCSELR","Possible values of the field `RTCSEL`"],["RTCSELW","Values that can be written to the field `RTCSEL`"]],"struct":[["R","Value read from the register"],["W","Value to write to the register"],["_RTCSELW","Proxy"]]});

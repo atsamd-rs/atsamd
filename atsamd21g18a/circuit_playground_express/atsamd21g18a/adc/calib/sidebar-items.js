@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["BIAS_CALR","Value of the field"],["LINEARITY_CALR","Value of the field"],["R","Value read from the register"],["W","Value to write to the register"],["_BIAS_CALW","Proxy"],["_LINEARITY_CALW","Proxy"]]});

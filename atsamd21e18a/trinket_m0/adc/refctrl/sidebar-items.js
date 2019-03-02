@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["REFSELR","Possible values of the field `REFSEL`"],["REFSELW","Values that can be written to the field `REFSEL`"]],"struct":[["R","Value read from the register"],["REFCOMPR","Value of the field"],["W","Value to write to the register"],["_REFCOMPW","Proxy"],["_REFSELW","Proxy"]]});

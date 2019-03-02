@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["BMAXR","Possible values of the field `BMAX`"],["BMAXW","Values that can be written to the field `BMAX`"]],"struct":[["R","Value read from the register"],["W","Value to write to the register"],["_BMAXW","Proxy"]]});

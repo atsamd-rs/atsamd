@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["ADC0_R","Value of the field"],["ADC1_R","Value of the field"],["DAC_R","Value of the field"],["I2S_R","Value of the field"],["PCC_R","Value of the field"],["R","Value read from the register"],["SERCOM4_R","Value of the field"],["SERCOM5_R","Value of the field"],["TCC4_R","Value of the field"]]});

@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["DATA32BR","Value of the field"],["R","Value read from the register"],["SDASETUPR","Value of the field"],["W","Value to write to the register"],["_DATA32BW","Proxy"],["_SDASETUPW","Proxy"]]});

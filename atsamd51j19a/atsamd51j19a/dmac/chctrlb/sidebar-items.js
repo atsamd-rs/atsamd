@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["CMDR","Possible values of the field `CMD`"],["CMDW","Values that can be written to the field `CMD`"]],"struct":[["R","Value read from the register"],["W","Value to write to the register"],["_CMDW","Proxy"]]});

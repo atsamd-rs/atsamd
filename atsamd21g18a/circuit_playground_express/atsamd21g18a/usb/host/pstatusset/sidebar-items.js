@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["W","Value to write to the register"],["_BK0RDYW","Proxy"],["_BK1RDYW","Proxy"],["_CURBKW","Proxy"],["_DTGLW","Proxy"],["_PFREEZEW","Proxy"]]});

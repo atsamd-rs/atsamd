@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["BIASCOMPR","Value of the field"],["BIASR2RR","Value of the field"],["BIASREFBUFR","Value of the field"],["R","Value read from the register"],["W","Value to write to the register"],["_BIASCOMPW","Proxy"],["_BIASR2RW","Proxy"],["_BIASREFBUFW","Proxy"]]});

@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["DITHERCYBR","Value of the field"],["PERBR","Value of the field"],["R","Value read from the register"],["W","Value to write to the register"],["_DITHERCYBW","Proxy"],["_PERBW","Proxy"]]});

@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["AUTOHALTR","Value of the field"],["AUTOSTOPR","Value of the field"],["R","Value read from the register"],["W","Value to write to the register"],["WATERMARKR","Value of the field"],["_AUTOHALTW","Proxy"],["_AUTOSTOPW","Proxy"],["_WATERMARKW","Proxy"]]});

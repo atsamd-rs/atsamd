@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["AFIRSTR","Value of the field"],["BOOTPROTR","Value of the field"],["BPDISR","Value of the field"],["LOADR","Value of the field"],["PRMR","Value of the field"],["R","Value read from the register"],["READYR","Value of the field"],["SUSPR","Value of the field"]]});

@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["HOURR","Possible values of the field `HOUR`"]],"struct":[["DAYR","Value of the field"],["MINUTER","Value of the field"],["MONTHR","Value of the field"],["R","Value read from the register"],["SECONDR","Value of the field"],["YEARR","Value of the field"]]});

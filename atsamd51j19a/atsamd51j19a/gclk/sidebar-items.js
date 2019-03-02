@@ -1,0 +1,1 @@
+initSidebarItems({"mod":[["ctrla","Control"],["genctrl","Generic Clock Generator Control"],["pchctrl","Peripheral Clock Control"],["syncbusy","Synchronization Busy"]],"struct":[["CTRLA","Control"],["GENCTRL","Generic Clock Generator Control"],["PCHCTRL","Peripheral Clock Control"],["RegisterBlock","Register block"],["SYNCBUSY","Synchronization Busy"]]});

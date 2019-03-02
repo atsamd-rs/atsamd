@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["MAXCUR18VR","Possible values of the field `MAXCUR18V`"],["MAXCUR30VR","Possible values of the field `MAXCUR30V`"],["MAXCUR33VR","Possible values of the field `MAXCUR33V`"]],"struct":[["R","Value read from the register"]]});

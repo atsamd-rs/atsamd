@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["ENABLER","Value of the field"],["R","Value read from the register"],["RAWRMDISR","Value of the field"],["RMDISR","Value of the field"]]});

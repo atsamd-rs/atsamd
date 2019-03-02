@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["CLEARW","Values that can be written to the field `CLEAR`"]],"struct":[["W","Value to write to the register"],["_CLEARW","Proxy"]]});

@@ -1,0 +1,94 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="API documentation for the Rust `clock` mod in crate `feather_m0`."><meta name="keywords" content="rust, rustlang, rust-lang, clock"><title>feather_m0::clock - Rust</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc mod"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../feather_m0/index.html'><img src='../../rust-logo.png' alt='logo' width='100'></a><p class='location'>Module clock</p><div class="sidebar-elems"><div class="block items"><ul><li><a href="#structs">Structs</a></li><li><a href="#constants">Constants</a></li><li><a href="#types">Type Definitions</a></li></ul></div><p class='location'><a href='../index.html'>feather_m0</a></p><script>window.sidebarCurrent = {name: 'clock', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class='fqn'><span class='out-of-band'><span id='render-detail'><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class='inner'>&#x2212;</span>]</a></span><a class='srclink' href='../../src/atsamd21_hal/lib.rs.html#52' title='goto source code'>[src]</a></span><span class='in-band'>Module <a href='../index.html'>feather_m0</a>::<wbr><a class="mod" href=''>clock</a></span></h1><div class='docblock'><p>Configuring the system clock sources.
+You will typically need to create an instance of <code>GenericClockController</code>
+before you can set up most of the peripherals on the atsamd21 device.
+The other types in this module are used to enforce at compile time
+that the peripherals have been correctly configured.</p>
+</div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
+<table><tr class='module-item'><td><a class="struct" href="struct.ClockParams.html" title='feather_m0::clock::ClockParams struct'>ClockParams</a></td><td class='docblock-short'><p>Helper type for computing effective frequency given a source
+clock frequency and a desired frequency.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.GClock.html" title='feather_m0::clock::GClock struct'>GClock</a></td><td class='docblock-short'><p>Represents a configured clock generator.
+Can be converted into the effective clock frequency.
+Its primary purpose is to be passed in to methods
+such as <code>GenericClockController::tcc2_tc3</code> to configure
+the clock for a peripheral.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.GenericClockController.html" title='feather_m0::clock::GenericClockController struct'>GenericClockController</a></td><td class='docblock-short'><p><code>GenericClockController</code> encapsulates the GCLK hardware.
+It provides a type safe way to configure the system clocks.
+Initializing the <code>GenericClockController</code> instance configures
+the system to run at 48Mhz by setting gclk1 as a 32khz source
+and feeding it into the DFLL48 hardware which in turn drives
+gclk0 at 48Mhz.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.Sercom0CoreClock.html" title='feather_m0::clock::Sercom0CoreClock struct'>Sercom0CoreClock</a></td><td class='docblock-short'><p>A typed token that indicates that the clock for the peripheral(s)
+with the matching name has been configured.
+The effective clock frequency is available via the <code>freq</code> method,
+or by converting the object into a <code>Hertz</code> instance.
+The peripheral initialization code will typically require passing
+in this object to prove at compile time that the clock has been
+correctly initialized.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.Sercom1CoreClock.html" title='feather_m0::clock::Sercom1CoreClock struct'>Sercom1CoreClock</a></td><td class='docblock-short'><p>A typed token that indicates that the clock for the peripheral(s)
+with the matching name has been configured.
+The effective clock frequency is available via the <code>freq</code> method,
+or by converting the object into a <code>Hertz</code> instance.
+The peripheral initialization code will typically require passing
+in this object to prove at compile time that the clock has been
+correctly initialized.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.Sercom2CoreClock.html" title='feather_m0::clock::Sercom2CoreClock struct'>Sercom2CoreClock</a></td><td class='docblock-short'><p>A typed token that indicates that the clock for the peripheral(s)
+with the matching name has been configured.
+The effective clock frequency is available via the <code>freq</code> method,
+or by converting the object into a <code>Hertz</code> instance.
+The peripheral initialization code will typically require passing
+in this object to prove at compile time that the clock has been
+correctly initialized.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.Sercom3CoreClock.html" title='feather_m0::clock::Sercom3CoreClock struct'>Sercom3CoreClock</a></td><td class='docblock-short'><p>A typed token that indicates that the clock for the peripheral(s)
+with the matching name has been configured.
+The effective clock frequency is available via the <code>freq</code> method,
+or by converting the object into a <code>Hertz</code> instance.
+The peripheral initialization code will typically require passing
+in this object to prove at compile time that the clock has been
+correctly initialized.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.Sercom4CoreClock.html" title='feather_m0::clock::Sercom4CoreClock struct'>Sercom4CoreClock</a></td><td class='docblock-short'><p>A typed token that indicates that the clock for the peripheral(s)
+with the matching name has been configured.
+The effective clock frequency is available via the <code>freq</code> method,
+or by converting the object into a <code>Hertz</code> instance.
+The peripheral initialization code will typically require passing
+in this object to prove at compile time that the clock has been
+correctly initialized.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.Sercom5CoreClock.html" title='feather_m0::clock::Sercom5CoreClock struct'>Sercom5CoreClock</a></td><td class='docblock-short'><p>A typed token that indicates that the clock for the peripheral(s)
+with the matching name has been configured.
+The effective clock frequency is available via the <code>freq</code> method,
+or by converting the object into a <code>Hertz</code> instance.
+The peripheral initialization code will typically require passing
+in this object to prove at compile time that the clock has been
+correctly initialized.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.Tc4Tc5Clock.html" title='feather_m0::clock::Tc4Tc5Clock struct'>Tc4Tc5Clock</a></td><td class='docblock-short'><p>A typed token that indicates that the clock for the peripheral(s)
+with the matching name has been configured.
+The effective clock frequency is available via the <code>freq</code> method,
+or by converting the object into a <code>Hertz</code> instance.
+The peripheral initialization code will typically require passing
+in this object to prove at compile time that the clock has been
+correctly initialized.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.Tc6Tc7Clock.html" title='feather_m0::clock::Tc6Tc7Clock struct'>Tc6Tc7Clock</a></td><td class='docblock-short'><p>A typed token that indicates that the clock for the peripheral(s)
+with the matching name has been configured.
+The effective clock frequency is available via the <code>freq</code> method,
+or by converting the object into a <code>Hertz</code> instance.
+The peripheral initialization code will typically require passing
+in this object to prove at compile time that the clock has been
+correctly initialized.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.Tcc2Tc3Clock.html" title='feather_m0::clock::Tcc2Tc3Clock struct'>Tcc2Tc3Clock</a></td><td class='docblock-short'><p>A typed token that indicates that the clock for the peripheral(s)
+with the matching name has been configured.
+The effective clock frequency is available via the <code>freq</code> method,
+or by converting the object into a <code>Hertz</code> instance.
+The peripheral initialization code will typically require passing
+in this object to prove at compile time that the clock has been
+correctly initialized.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.UsbClock.html" title='feather_m0::clock::UsbClock struct'>UsbClock</a></td><td class='docblock-short'><p>A typed token that indicates that the clock for the peripheral(s)
+with the matching name has been configured.
+The effective clock frequency is available via the <code>freq</code> method,
+or by converting the object into a <code>Hertz</code> instance.
+The peripheral initialization code will typically require passing
+in this object to prove at compile time that the clock has been
+correctly initialized.</p>
+</td></tr></table><h2 id='constants' class='section-header'><a href="#constants">Constants</a></h2>
+<table><tr class='module-item'><td><a class="constant" href="constant.OSC32K_FREQ.html" title='feather_m0::clock::OSC32K_FREQ constant'>OSC32K_FREQ</a></td><td class='docblock-short'><p>The frequency of the 32Khz source.</p>
+</td></tr><tr class='module-item'><td><a class="constant" href="constant.OSC48M_FREQ.html" title='feather_m0::clock::OSC48M_FREQ constant'>OSC48M_FREQ</a></td><td class='docblock-short'><p>The frequency of the 48Mhz source.</p>
+</td></tr></table><h2 id='types' class='section-header'><a href="#types">Type Definitions</a></h2>
+<table><tr class='module-item'><td><a class="type" href="type.ClockGenId.html" title='feather_m0::clock::ClockGenId type'>ClockGenId</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="type" href="type.ClockId.html" title='feather_m0::clock::ClockId type'>ClockId</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="type" href="type.ClockSource.html" title='feather_m0::clock::ClockSource type'>ClockSource</a></td><td class='docblock-short'></td></tr></table></section><section id="search" class="content hidden"></section><section class="footer"></section><aside id="help" class="hidden"><div><h1 class="hidden">Help</h1><div class="shortcuts"><h2>Keyboard Shortcuts</h2><dl><dt><kbd>?</kbd></dt><dd>Show this help dialog</dd><dt><kbd>S</kbd></dt><dd>Focus the search field</dd><dt><kbd>↑</kbd></dt><dd>Move up in search results</dd><dt><kbd>↓</kbd></dt><dd>Move down in search results</dd><dt><kbd>↹</kbd></dt><dd>Switch tab</dd><dt><kbd>&#9166;</kbd></dt><dd>Go to active search result</dd><dt><kbd>+</kbd></dt><dd>Expand all sections</dd><dt><kbd>-</kbd></dt><dd>Collapse all sections</dd></dl></div><div class="infos"><h2>Search Tricks</h2><p>Prefix searches with a type followed by a colon (e.g., <code>fn:</code>) to restrict the search to a given type.</p><p>Accepted types are: <code>fn</code>, <code>mod</code>, <code>struct</code>, <code>enum</code>, <code>trait</code>, <code>type</code>, <code>macro</code>, and <code>const</code>.</p><p>Search functions by type signature (e.g., <code>vec -> usize</code> or <code>* -> vec</code>)</p><p>Search multiple things at once by splitting your query with comma (e.g., <code>str,u8</code> or <code>String,struct:Vec,test</code>)</p></div></div></aside><script>window.rootPath = "../../";window.currentCrate = "feather_m0";</script><script src="../../aliases.js"></script><script src="../../main.js"></script><script defer src="../../search-index.js"></script></body></html>

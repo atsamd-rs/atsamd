@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["BOUNDARYR","Possible values of the field `BOUNDARY`"],["BOUNDARYW","Values that can be written to the field `BOUNDARY`"]],"struct":[["BLOCKSIZER","Value of the field"],["R","Value read from the register"],["W","Value to write to the register"],["_BLOCKSIZEW","Proxy"],["_BOUNDARYW","Proxy"]]});

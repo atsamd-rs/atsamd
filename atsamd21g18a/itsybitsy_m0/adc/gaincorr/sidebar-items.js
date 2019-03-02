@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["GAINCORRR","Value of the field"],["R","Value read from the register"],["W","Value to write to the register"],["_GAINCORRW","Proxy"]]});

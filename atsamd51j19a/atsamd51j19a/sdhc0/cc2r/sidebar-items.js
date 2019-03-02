@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["FSDCLKDR","Possible values of the field `FSDCLKD`"],["FSDCLKDW","Values that can be written to the field `FSDCLKD`"]],"struct":[["R","Value read from the register"],["W","Value to write to the register"],["_FSDCLKDW","Proxy"]]});
