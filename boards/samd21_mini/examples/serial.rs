@@ -1,7 +1,7 @@
 #![no_std]
 #![no_main]
 
-extern crate atsamd21_hal as atsamd21;
+extern crate atsamd_hal as atsamd21;
 extern crate cortex_m;
 extern crate rtfm;
 #[macro_use]

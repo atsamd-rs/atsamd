@@ -84,15 +84,81 @@ impl ENABLER {
         self.bit()
     }
 }
-#[doc = r" Value of the field"]
-pub struct MODER {
-    bits: u8,
+#[doc = "Possible values of the field `MODE`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum MODER {
+    #[doc = "USART mode with external clock"]
+    USART_EXT_CLK,
+    #[doc = "USART mode with internal clock"]
+    USART_INT_CLK,
+    #[doc = "SPI mode with external clock"]
+    SPI_SLAVE,
+    #[doc = "SPI mode with internal clock"]
+    SPI_MASTER,
+    #[doc = "I2C mode with external clock"]
+    I2C_SLAVE,
+    #[doc = "I2C mode with internal clock"]
+    I2C_MASTER,
+    #[doc = r" Reserved"]
+    _Reserved(u8),
 }
 impl MODER {
     #[doc = r" Value of the field as raw bits"]
     #[inline]
     pub fn bits(&self) -> u8 {
-        self.bits
+        match *self {
+            MODER::USART_EXT_CLK => 0,
+            MODER::USART_INT_CLK => 1,
+            MODER::SPI_SLAVE => 2,
+            MODER::SPI_MASTER => 3,
+            MODER::I2C_SLAVE => 4,
+            MODER::I2C_MASTER => 5,
+            MODER::_Reserved(bits) => bits,
+        }
+    }
+    #[allow(missing_docs)]
+    #[doc(hidden)]
+    #[inline]
+    pub fn _from(value: u8) -> MODER {
+        match value {
+            0 => MODER::USART_EXT_CLK,
+            1 => MODER::USART_INT_CLK,
+            2 => MODER::SPI_SLAVE,
+            3 => MODER::SPI_MASTER,
+            4 => MODER::I2C_SLAVE,
+            5 => MODER::I2C_MASTER,
+            i => MODER::_Reserved(i),
+        }
+    }
+    #[doc = "Checks if the value of the field is `USART_EXT_CLK`"]
+    #[inline]
+    pub fn is_usart_ext_clk(&self) -> bool {
+        *self == MODER::USART_EXT_CLK
+    }
+    #[doc = "Checks if the value of the field is `USART_INT_CLK`"]
+    #[inline]
+    pub fn is_usart_int_clk(&self) -> bool {
+        *self == MODER::USART_INT_CLK
+    }
+    #[doc = "Checks if the value of the field is `SPI_SLAVE`"]
+    #[inline]
+    pub fn is_spi_slave(&self) -> bool {
+        *self == MODER::SPI_SLAVE
+    }
+    #[doc = "Checks if the value of the field is `SPI_MASTER`"]
+    #[inline]
+    pub fn is_spi_master(&self) -> bool {
+        *self == MODER::SPI_MASTER
+    }
+    #[doc = "Checks if the value of the field is `I2C_SLAVE`"]
+    #[inline]
+    pub fn is_i2c_slave(&self) -> bool {
+        *self == MODER::I2C_SLAVE
+    }
+    #[doc = "Checks if the value of the field is `I2C_MASTER`"]
+    #[inline]
+    pub fn is_i2c_master(&self) -> bool {
+        *self == MODER::I2C_MASTER
     }
 }
 #[doc = r" Value of the field"]
@@ -300,11 +366,76 @@ impl<'a> _ENABLEW<'a> {
         self.w
     }
 }
+#[doc = "Values that can be written to the field `MODE`"]
+pub enum MODEW {
+    #[doc = "USART mode with external clock"]
+    USART_EXT_CLK,
+    #[doc = "USART mode with internal clock"]
+    USART_INT_CLK,
+    #[doc = "SPI mode with external clock"]
+    SPI_SLAVE,
+    #[doc = "SPI mode with internal clock"]
+    SPI_MASTER,
+    #[doc = "I2C mode with external clock"]
+    I2C_SLAVE,
+    #[doc = "I2C mode with internal clock"]
+    I2C_MASTER,
+}
+impl MODEW {
+    #[allow(missing_docs)]
+    #[doc(hidden)]
+    #[inline]
+    pub fn _bits(&self) -> u8 {
+        match *self {
+            MODEW::USART_EXT_CLK => 0,
+            MODEW::USART_INT_CLK => 1,
+            MODEW::SPI_SLAVE => 2,
+            MODEW::SPI_MASTER => 3,
+            MODEW::I2C_SLAVE => 4,
+            MODEW::I2C_MASTER => 5,
+        }
+    }
+}
 #[doc = r" Proxy"]
 pub struct _MODEW<'a> {
     w: &'a mut W,
 }
 impl<'a> _MODEW<'a> {
+    #[doc = r" Writes `variant` to the field"]
+    #[inline]
+    pub fn variant(self, variant: MODEW) -> &'a mut W {
+        unsafe { self.bits(variant._bits()) }
+    }
+    #[doc = "USART mode with external clock"]
+    #[inline]
+    pub fn usart_ext_clk(self) -> &'a mut W {
+        self.variant(MODEW::USART_EXT_CLK)
+    }
+    #[doc = "USART mode with internal clock"]
+    #[inline]
+    pub fn usart_int_clk(self) -> &'a mut W {
+        self.variant(MODEW::USART_INT_CLK)
+    }
+    #[doc = "SPI mode with external clock"]
+    #[inline]
+    pub fn spi_slave(self) -> &'a mut W {
+        self.variant(MODEW::SPI_SLAVE)
+    }
+    #[doc = "SPI mode with internal clock"]
+    #[inline]
+    pub fn spi_master(self) -> &'a mut W {
+        self.variant(MODEW::SPI_MASTER)
+    }
+    #[doc = "I2C mode with external clock"]
+    #[inline]
+    pub fn i2c_slave(self) -> &'a mut W {
+        self.variant(MODEW::I2C_SLAVE)
+    }
+    #[doc = "I2C mode with internal clock"]
+    #[inline]
+    pub fn i2c_master(self) -> &'a mut W {
+        self.variant(MODEW::I2C_MASTER)
+    }
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
@@ -527,12 +658,11 @@ impl R {
     #[doc = "Bits 2:4 - Operating Mode"]
     #[inline]
     pub fn mode(&self) -> MODER {
-        let bits = {
+        MODER::_from({
             const MASK: u8 = 7;
             const OFFSET: u8 = 2;
             ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
-        MODER { bits }
+        })
     }
     #[doc = "Bit 7 - Run in Standby"]
     #[inline]

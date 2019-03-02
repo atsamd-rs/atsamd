@@ -1,6 +1,6 @@
 [package]
 name = "metro_m0"
-version = "0.2.2"
+version = "0.2.3"
 authors = ["Wez Furlong <wez@wezfurlong.org>"]
 description = "Board Support crate for the Adafruit Metro M0"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
@@ -19,9 +19,9 @@ panic_rtt = "~0.2"
 version = "~0.6"
 optional = true
 
-[dependencies.atsamd21-hal]
+[dependencies.atsamd-hal]
 path = "../../hal"
-version = "~0.3"
+version = "~0.4"
 default-features = false
 
 [dev-dependencies]
@@ -34,11 +34,11 @@ sx1509 = "~0.2"
 
 [features]
 # ask the HAL to enable atsamd21g18a support
-default = ["rt", "atsamd21-hal/samd21g18a"]
-rt = ["cortex-m-rt", "atsamd21-hal/samd21g18a-rt"]
-unproven = ["atsamd21-hal/unproven"]
-use_rtt = ["atsamd21-hal/use_rtt"]
-usb = ["atsamd21-hal/usb"]
+default = ["rt", "atsamd-hal/samd21g18a"]
+rt = ["cortex-m-rt", "atsamd-hal/samd21g18a-rt"]
+unproven = ["atsamd-hal/unproven"]
+use_rtt = ["atsamd-hal/use_rtt"]
+usb = ["atsamd-hal/usb"]
 
 [profile.dev]
 incremental = false

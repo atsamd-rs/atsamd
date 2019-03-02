@@ -1,13 +1,13 @@
 [package]
-name = "atsamd21-hal"
-version = "0.3.0"
+name = "atsamd-hal"
+version = "0.4.0"
 authors = ["Wez Furlong <wez@wezfurlong.org>"]
 description = "HAL and Peripheral access API for ATSAMD21 microcontrollers"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
-documentation = "https://atsamd-rs.github.io/atsamd/atsamd21g18a/atsamd21_hal/"
+documentation = "https://atsamd-rs.github.io/atsamd/atsamd21g18a/atsamd_hal/"
 
 [dependencies]
 cortex-m = "~0.5"
@@ -38,6 +38,12 @@ path = "../pac/atsamd21e18a"
 version = "~0.4"
 optional = true
 
+[dependencies.atsamd51j19a]
+path = "../pac/atsamd51j19a"
+version = "~0.4"
+optional = true
+
+
 [dependencies.usb-device]
 git = "https://github.com/wez/usb-device"
 branch = "unsafe_atomics"
@@ -62,6 +68,9 @@ samd21g18a = ["atsamd21g18a"]
 samd21g18a-rt = ["atsamd21g18a", "atsamd21g18a/rt"]
 samd21e18a = ["atsamd21e18a"]
 samd21e18a-rt = ["atsamd21e18a", "atsamd21e18a/rt"]
+samd51 = [] # Convenience feature for shared configuration of samd51 chips.
+samd51j19a = ["atsamd51j19a"]
+samd51j19a-rt = ["atsamd51j19a", "atsamd51j19a/rt"]
 unproven = ["embedded-hal/unproven"]
 use_rtt = ["jlink_rtt"]
 usb = ["usb-device"]
