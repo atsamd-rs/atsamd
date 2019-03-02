@@ -1,6 +1,6 @@
 [package]
 name = "sodaq_one"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Robert Hennig <robert.hennig@freylax.de>"]
 description = "Board Support crate for the SODAQ ONE"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
