@@ -1,6 +1,6 @@
 //! Configuring the system clock sources.
 //! You will typically need to create an instance of `GenericClockController`
-//! before you can set up most of the peripherals on the atsamd21 device.
+//! before you can set up most of the peripherals on the atsamd51 device.
 //! The other types in this module are used to enforce at compile time
 //! that the peripherals have been correctly configured.
 use target_device::gclk::pchctrl::GENR::*;
