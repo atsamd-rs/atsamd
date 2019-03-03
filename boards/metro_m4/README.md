@@ -7,4 +7,4 @@ board](https://www.adafruit.com/product/3382).
 
 Check out the repository for examples:
 
-https://github.com/atsamd-rs/atsamd/tree/master/metro_m4/examples
+https://github.com/atsamd-rs/atsamd/tree/master/boards/metro_m4/examples
