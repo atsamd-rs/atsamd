@@ -47,6 +47,7 @@ optional = true
 [dependencies.usb-device]
 git = "https://github.com/wez/usb-device"
 branch = "unsafe_atomics"
+version = "~0.1"
 optional = true
 
 [dev-dependencies]
