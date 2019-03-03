@@ -1,24 +1,34 @@
 language: rust
-rust:
-  - nightly
-  - stable
 cache: cargo
-script:
-  - rustup target add thumbv6m-none-eabi
-  - rustup target add thumbv7em-none-eabihf
-  - ./build-all.sh
 
-after_success: |
-  [ $TRAVIS_BRANCH = master ] &&
-  [ $TRAVIS_PULL_REQUEST = false ] &&
-  ./build-docs.py
+jobs:
+  include:
+    - stage: build
+      script:
+        - rustup target add thumbv6m-none-eabi
+        - rustup target add thumbv7em-none-eabihf
+        - ./build-all.sh
+    - rust: 'nightly'
+      script:
+        - rustup target add thumbv6m-none-eabi
+        - rustup target add thumbv7em-none-eabihf
+        - ./build-all.sh
+    - stage: Document-and-Deploy
+      rust: 'nightly'
+      script:
+        - rustup target add thumbv6m-none-eabi
+        - rustup target add thumbv7em-none-eabihf
+        - ./build-docs.py
+      deploy:
+        provider: pages
+        skip-cleanup: true
+        github-token: $GITHUB_TOKEN
+        keep-history: false
+        local-dir: doc
 
-deploy:
-  provider: pages
-  skip-cleanup: true
-  github-token: $GITHUB_TOKEN
-  keep-history: false
-  local-dir: doc
-  on:
-    branch: master
-    rust: 'nightly'
+stages:
+  - build 
+  - name: document
+    if: branch = master
+  - name: deploy
+    if: branch = master
