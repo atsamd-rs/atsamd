@@ -28,7 +28,5 @@ jobs:
 
 stages:
   - build 
-  - name: document
-    if: branch = master
-  - name: deploy
+  - name: Document-and-Deploy
     if: branch = master
