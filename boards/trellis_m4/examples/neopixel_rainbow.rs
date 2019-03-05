@@ -6,7 +6,7 @@ extern crate trellis_m4 as hal;
 extern crate panic_halt;
 extern crate smart_leds;
 extern crate smart_leds_trait;
-extern crate ws2812_timer_delay as ws2812;
+extern crate ws2812_nop_samd51 as ws2812;
 
 use hal::prelude::*;
 use hal::{entry, Peripherals, CorePeripherals};
@@ -29,13 +29,13 @@ fn main() -> ! {
     );
     let mut pins = hal::Pins::new(peripherals.PORT);
 
-    let gclk0 = clocks.gclk0();
-    let timer_clock = clocks.tc2_tc3(&gclk0).unwrap();
-    let mut timer = TimerCounter::tc3_(&timer_clock, peripherals.TC3, &mut peripherals.MCLK);
-    timer.start(3_000_000u32.hz());
+    //let gclk0 = clocks.gclk0();
+    //let timer_clock = clocks.tc2_tc3(&gclk0).unwrap();
+    //let mut timer = TimerCounter::tc3_(&timer_clock, peripherals.TC3, &mut peripherals.MCLK);
+    //timer.start(3_000_000u32.hz());
 
-    let mut neopixel_pin = pins.neopixel.into_push_pull_output(&mut pins.port);
-    let mut neopixel = ws2812::Ws2812::new(timer, &mut neopixel_pin);
+    let neopixel_pin = pins.neopixel.into_push_pull_output(&mut pins.port);
+    let mut neopixel = ws2812::Ws2812::new(neopixel_pin);
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
     const NUM_LEDS: usize = 32;

@@ -40,6 +40,7 @@ features = ["slow"]
 # ask the HAL to enable atsamd51j19a support
 default = ["rt", "atsamd-hal/samd51j19a", "atsamd-hal/samd51"]
 rt = ["cortex-m-rt", "atsamd-hal/samd51j19a-rt"]
+unproven = ["atsamd-hal/unproven"]
 
 [profile.dev]
 incremental = false

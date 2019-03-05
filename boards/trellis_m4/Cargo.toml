@@ -35,15 +35,13 @@ cortex-m-rtfm = "~0.4"
 panic_rtt = "~0.2"
 smart-leds = { git = "https://github.com/smart-leds-rs/smart-leds" }
 smart-leds-trait = { git = "https://github.com/smart-leds-rs/smart-leds-trait" }
-
-[dev-dependencies.ws2812-timer-delay]
-git = "https://github.com/smart-leds-rs/ws2812-timer-delay-rs" 
-features = ["slow"] 
+ws2812-nop-samd51 = { git = "https://github.com/smart-leds-rs/ws2812-nop-samd51" }
 
 [features]
 # ask the HAL to enable atsamd51g19a support
 default = ["rt", "atsamd-hal/samd51g19a", "atsamd-hal/samd51"]
 rt = ["cortex-m-rt", "atsamd-hal/samd51g19a-rt"]
+unproven = ["atsamd-hal/unproven"]
 
 [profile.dev]
 incremental = false
