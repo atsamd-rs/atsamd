@@ -5,15 +5,14 @@ extern crate cortex_m;
 extern crate metro_m4 as hal;
 extern crate panic_halt;
 extern crate smart_leds;
-extern crate smart_leds_trait;
 extern crate ws2812_timer_delay as ws2812;
 
 use hal::prelude::*;
 use hal::{entry, Peripherals, CorePeripherals};
 use hal::{clock::GenericClockController, delay::Delay, timer::TimerCounter};
 
-use smart_leds_trait::SmartLedsWrite;
-use smart_leds_trait::Color;
+use smart_leds::SmartLedsWrite;
+use smart_leds::Color;
 use smart_leds::brightness;
 
 #[entry]

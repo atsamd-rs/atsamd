@@ -33,13 +33,12 @@ panic-semihosting = "~0.5"
 cortex-m-semihosting = "~0.3"
 cortex-m-rtfm = "~0.4"
 panic_rtt = "~0.2"
-smart-leds = { git = "https://github.com/smart-leds-rs/smart-leds" }
-smart-leds-trait = { git = "https://github.com/smart-leds-rs/smart-leds-trait" }
-ws2812-nop-samd51 = { git = "https://github.com/smart-leds-rs/ws2812-nop-samd51" }
+smart-leds = "~0.1"
+smart-leds-trait = "~0.1" 
 
 [dev-dependencies.ws2812-timer-delay]
-git = "https://github.com/smart-leds-rs/ws2812-timer-delay-rs"
-features = ["slow"]
+version = "~0.1"
+#features = ["slow"]
 
 [features]
 # ask the HAL to enable atsamd51g19a support

@@ -12,8 +12,8 @@ use hal::prelude::*;
 use hal::{entry, Peripherals, CorePeripherals};
 use hal::{clock::GenericClockController, delay::Delay, timer::TimerCounter};
 
-use smart_leds_trait::SmartLedsWrite;
-use smart_leds_trait::Color;
+use smart_leds::SmartLedsWrite;
+use smart_leds::Color;
 use smart_leds::brightness;
 
 #[entry]
