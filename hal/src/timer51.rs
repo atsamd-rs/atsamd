@@ -49,8 +49,23 @@ where
         T: Into<Hertz>,
     {
         let timeout = timeout.into();
-        let params = clock::ClockParams::new(self.freq, timeout);
-        let divider = params.divider;
+        let ticks: u32 = self.freq.0/timeout.0.saturating_sub(1).max(1);
+        let overflow: u16 = ((ticks >> 16) + 1) as u16;
+        let divider = overflow.next_power_of_two();
+        let divider = match divider {
+            1 | 2 | 4 | 8 | 16 | 64 | 256 | 1024 => divider,
+            // There are a couple of gaps, so we round up to the next largest
+            // divider; we'll need to count twice as many but it will work.
+            32 => 64,
+            128 => 256,
+            512 => 1024,
+            // Catch all case; this is lame.  Would be great to detect this
+            // and fail at compile time.
+            _ => 1024,
+        };
+
+        let cycles: u32 = ticks / divider as u32;
+
         let count = self.tc.count_16();
 
         // Disable the timer while we reconfigure it
@@ -73,10 +88,6 @@ where
             w.oneshot().clear_bit()
         });
 
-        // How many cycles of the clock need to happen to reach our
-
-        // effective value.
-        let cycles = params.effective_freq.0 / timeout.0;
         if cycles > u16::max_value() as u32 {
             panic!(
                 "cycles {} is out of range for a 16 bit counter (timeout={})",

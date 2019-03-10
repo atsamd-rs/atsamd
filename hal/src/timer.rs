@@ -53,12 +53,13 @@ where
 
         // Disable the timer while we reconfigure it
         count.ctrla.modify(|_, w| w.enable().clear_bit());
-        while count.status.read().syncbusy().bit_is_set() {}
+        while count.status.read().perbufv().bit_is_set()  {}
 
         // Now that we have a clock routed to the peripheral, we
         // can ask it to perform a reset.
         count.ctrla.write(|w| w.swrst().set_bit());
-        while count.status.read().syncbusy().bit_is_set() {}
+
+        while count.status.read().perbufv().bit_is_set()  {}
         // the SVD erroneously marks swrst as write-only, so we
         // need to manually read the bit here
         while count.ctrla.read().bits() & 1 != 0 {}
@@ -84,6 +85,11 @@ where
         // Set TOP value for mfrq mode
         count.cc[0].write(|w| unsafe { w.cc().bits(cycles as u16) });
 
+        // Enable Match Frequency Waveform generation
+        count.wave.modify(|_, w| {
+            w.wavegen().mfrq()
+        });
+
         count.ctrla.modify(|_, w| {
             match divider {
                 1 => w.prescaler().div1(),
@@ -96,8 +102,6 @@ where
                 1024 => w.prescaler().div1024(),
                 _ => unreachable!(),
             };
-            // Enable Match Frequency Waveform generation
-            w.wavegen().mfrq();
             w.enable().set_bit()
         });
     }
