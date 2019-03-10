@@ -49,9 +49,8 @@ where
         T: Into<Hertz>,
     {
         let timeout = timeout.into();
-        let ticks: u32 = self.freq.0/timeout.0.saturating_sub(1).max(1);
-        let overflow: u16 = ((ticks >> 16) + 1) as u16;
-        let divider = overflow.next_power_of_two();
+        let ticks: u32 = self.freq.0/timeout.0.max(1);
+        let divider = ((ticks >> 16) + 1).next_power_of_two();
         let divider = match divider {
             1 | 2 | 4 | 8 | 16 | 64 | 256 | 1024 => divider,
             // There are a couple of gaps, so we round up to the next largest
@@ -65,6 +64,13 @@ where
         };
 
         let cycles: u32 = ticks / divider as u32;
+
+        if cycles > u16::max_value() as u32 {
+            panic!(
+                "cycles {} is out of range for a 16 bit counter (timeout={})",
+                cycles, timeout.0
+            );
+        }
 
         let count = self.tc.count_16();
 
@@ -87,13 +93,6 @@ where
             // Periodic
             w.oneshot().clear_bit()
         });
-
-        if cycles > u16::max_value() as u32 {
-            panic!(
-                "cycles {} is out of range for a 16 bit counter (timeout={})",
-                cycles, timeout.0
-            );
-        }
 
         // Set TOP value for mfrq mode
         count.cc[0].write(|w| unsafe { w.cc().bits(cycles as u16) });
