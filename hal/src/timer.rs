@@ -74,7 +74,7 @@ where
 
         let count = self.tc.count_16();
 
-         // Disable the timer while we reconfigure it
+        // Disable the timer while we reconfigure it
         count.ctrla.modify(|_, w| w.enable().clear_bit());
         while count.status.read().syncbusy().bit_is_set() {}
 
