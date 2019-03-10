@@ -47,19 +47,33 @@ where
         T: Into<Hertz>,
     {
         let timeout = timeout.into();
-        let params = clock::ClockParams::new(self.freq, timeout);
-        let divider = params.divider;
+        let ticks: u32 = self.freq.0/timeout.0.saturating_sub(1).max(1);
+        let overflow: u16 = ((ticks >> 16) + 1) as u16;
+        let divider = overflow.next_power_of_two();
+        let divider = match divider {
+            1 | 2 | 4 | 8 | 16 | 64 | 256 | 1024 => divider,
+            // There are a couple of gaps, so we round up to the next largest
+            // divider; we'll need to count twice as many but it will work.
+            32 => 64,
+            128 => 256,
+            512 => 1024,
+            // Catch all case; this is lame.  Would be great to detect this
+            // and fail at compile time.
+            _ => 1024,
+        };
+
+        let cycles: u32 = ticks / divider as u32;
+
         let count = self.tc.count_16();
 
-        // Disable the timer while we reconfigure it
+         // Disable the timer while we reconfigure it
         count.ctrla.modify(|_, w| w.enable().clear_bit());
-        while count.status.read().perbufv().bit_is_set()  {}
+        while count.status.read().syncbusy().bit_is_set() {}
 
         // Now that we have a clock routed to the peripheral, we
         // can ask it to perform a reset.
         count.ctrla.write(|w| w.swrst().set_bit());
-
-        while count.status.read().perbufv().bit_is_set()  {}
+        while count.status.read().syncbusy().bit_is_set() {}
         // the SVD erroneously marks swrst as write-only, so we
         // need to manually read the bit here
         while count.ctrla.read().bits() & 1 != 0 {}
@@ -74,7 +88,6 @@ where
         // How many cycles of the clock need to happen to reach our
 
         // effective value.
-        let cycles = params.effective_freq.0 / timeout.0;
         if cycles > u16::max_value() as u32 {
             panic!(
                 "cycles {} is out of range for a 16 bit counter (timeout={})",
@@ -84,11 +97,6 @@ where
 
         // Set TOP value for mfrq mode
         count.cc[0].write(|w| unsafe { w.cc().bits(cycles as u16) });
-
-        // Enable Match Frequency Waveform generation
-        count.wave.modify(|_, w| {
-            w.wavegen().mfrq()
-        });
 
         count.ctrla.modify(|_, w| {
             match divider {
@@ -102,6 +110,8 @@ where
                 1024 => w.prescaler().div1024(),
                 _ => unreachable!(),
             };
+            // Enable Match Frequency Waveform generation
+            w.wavegen().mfrq();
             w.enable().set_bit()
         });
     }
