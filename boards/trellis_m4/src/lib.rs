@@ -8,7 +8,7 @@ extern crate cortex_m_rt;
 
 #[cfg(feature = "keypad-unproven")]
 #[macro_use]
-extern crate keypad;
+pub extern crate keypad;
 
 pub mod pins;
 
