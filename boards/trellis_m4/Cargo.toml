@@ -16,6 +16,7 @@ documentation = "https://atsamd-rs.github.io/atsamd/atsamd51g19a/trellis_m4/"
 [dependencies]
 cortex-m = "~0.5"
 embedded-hal = "~0.2"
+keypad = { version = "~0.1", optional = true }
 nb = "~0.1"
 
 [dependencies.cortex-m-rt]
@@ -41,6 +42,7 @@ ws2812-nop-samd51 = { git = "https://github.com/smart-leds-rs/ws2812-nop-samd51.
 default = ["rt", "atsamd-hal/samd51g19a", "atsamd-hal/samd51"]
 rt = ["cortex-m-rt", "atsamd-hal/samd51g19a-rt"]
 unproven = ["atsamd-hal/unproven"]
+keypad-unproven = ["keypad", "unproven"]
 
 [profile.dev]
 incremental = false
