@@ -6,7 +6,7 @@
 use target_device::gclk::pchctrl::GENR::*;
 use target_device::{self, GCLK, NVMCTRL, OSCCTRL, MCLK, OSC32KCTRL};
 use target_device::gclk::genctrl::SRCR::*;
-use time::{Hertz, U32Ext};
+use time::{Hertz};
 
 pub type ClockGenId = target_device::gclk::pchctrl::GENR;
 pub type ClockSource = target_device::gclk::genctrl::SRCR;
@@ -299,7 +299,7 @@ impl GenericClockController {
             XOSC32K | OSCULP32K => OSC32K_FREQ,
             GCLKGEN1 => self.gclks[1],
             DFLL => OSC48M_FREQ,
-            DPLL0 => 120.mhz().into(),
+            DPLL0 => OSC120M_FREQ,
             XOSC0 | XOSC1 | GCLKIN | DPLL1 => unimplemented!(),
             target_device::gclk::genctrl::SRCR::_Reserved(_) => panic!()
         };
@@ -379,45 +379,6 @@ clock_generator!(
     (sercom5_core, Sercom5CoreClock, SERCOM5_CORE),
     (usb, UsbClock, USB),
 );
-
-/// Helper type for computing effective frequency given a source
-/// clock frequency and a desired frequency.
-#[derive(Debug, Clone, Copy)]
-pub struct ClockParams {
-    /// The frequency of the source/input clock
-    pub src_freq: Hertz,
-    /// The linear division value.  This is constrained to the range
-    /// of values supported by the hardware.
-    pub divider: u16,
-    /// The effective frequency, which is ideally the desired frequency,
-    /// but is produced by dividing the `src_freq` by the `divider`.
-    pub effective_freq: Hertz,
-}
-
-impl ClockParams {
-    /// Given a source frequency and a desired frequency, compute the
-    /// `ClockParams` values for the closest matching clock configuration.
-    pub fn new(src_freq: Hertz, desired_freq: Hertz) -> Self {
-        let divider = (src_freq.0 / desired_freq.0.saturating_sub(1).max(1)).next_power_of_two();
-        let divider = match divider {
-            1 | 2 | 4 | 8 | 16 | 64 | 256 | 1024 => divider,
-            // There are a couple of gaps, so we round up to the next largest
-            // divider; we'll need to count twice as many but it will work.
-            32 => 64,
-            128 => 256,
-            512 => 1024,
-            // Catch all case; this is lame.  Would be great to detect this
-            // and fail at compile time.
-            _ => 1024,
-        };
-        let effective_freq = Hertz(src_freq.0 / divider);
-        Self {
-            src_freq,
-            divider: divider as u16,
-            effective_freq,
-        }
-    }
-}
 
 /// The frequency of the 48Mhz source.
 pub const OSC48M_FREQ: Hertz = Hertz(48_000_000);
