@@ -45,7 +45,7 @@ fn main() -> ! {
     let keypad = hal::Keypad::new(keypad_pins, &mut port);
     let keypad_inputs = keypad.decompose();
     let mut keypad_state = [false; NUM_LEDS];
-    let mut toggle_values = [true; NUM_LEDS];
+    let mut toggle_values = [false; NUM_LEDS];
 
     loop {
         for j in 0..(256 * 5) {
