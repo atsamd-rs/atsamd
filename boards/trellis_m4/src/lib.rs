@@ -3,6 +3,9 @@
 
 extern crate atsamd_hal as hal;
 
+#[cfg(feature = "adxl343")]
+extern crate adxl343;
+
 #[cfg(feature = "rt")]
 extern crate cortex_m_rt;
 
@@ -17,14 +20,18 @@ pub use cortex_m_rt::entry;
 pub use hal::{*, atsamd51g19a::*};
 
 use gpio::{Floating, Input, Port};
+use hal::clock::GenericClockController;
+use hal::sercom::I2CMaster4;
+use hal::time::Hertz;
 
 use hal::prelude::*;
-use hal::clock::GenericClockController;
-use hal::sercom::{I2CMaster4, PadPin};
-use hal::time::Hertz;
 #[cfg(feature = "keypad-unproven")]
 use hal::gpio::{OpenDrain, Output, PullUp};
 
+/// Number of Neopixels on the device
+pub const NEOPIXEL_COUNT: usize = 32;
+
+// TODO(tarcieri): move this to the `pins` module (the macro doesn't work?
 define_pins!(
     /// Maps the pins to their arduino names and
     /// the numbers printed on the board.
@@ -216,21 +223,12 @@ impl Keypad {
 /// Convenience for setting up the labelled SDA, SCL pins to
 /// operate as an I2C master running at the specified frequency.
 pub fn i2c_master<F: Into<Hertz>>(
+    pins: pins::I2C,
     clocks: &mut GenericClockController,
     bus_speed: F,
     sercom4: SERCOM4,
     mclk: &mut MCLK,
-    sda: gpio::Pb8<Input<Floating>>,
-    scl: gpio::Pb9<Input<Floating>>,
     port: &mut Port,
 ) -> I2CMaster4 {
-    let gclk0 = clocks.gclk0();
-    I2CMaster4::new(
-        &clocks.sercom4_core(&gclk0).unwrap(),
-        bus_speed.into(),
-        sercom4,
-        mclk,
-        sda.into_pad(port),
-        scl.into_pad(port),
-    )
+    pins.i2c_master(clocks, bus_speed, sercom4, mclk, port)
 }

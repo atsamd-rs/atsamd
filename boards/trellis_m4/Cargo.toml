@@ -16,17 +16,24 @@ documentation = "https://atsamd-rs.github.io/atsamd/atsamd51g19a/trellis_m4/"
 [dependencies]
 cortex-m = "~0.5"
 embedded-hal = "~0.2"
-keypad = { version = "~0.1", optional = true }
 nb = "~0.1"
 
 [dependencies.cortex-m-rt]
 version = "~0.6"
 optional = true
 
+[dependencies.adxl343]
+version = "~0.2"
+optional = true
+
 [dependencies.atsamd-hal]
 path = "../../hal"
 version = "~0.4"
 default-features = false
+
+[dependencies.keypad]
+version = "~0.1"
+optional = true
 
 [dev-dependencies]
 panic-halt = "~0.2"
@@ -56,6 +63,10 @@ lto = false
 opt-level = "s"
 
 [[example]]
+name = "neopixel_accel"
+required-features = ["adxl343"]
+
+[[example]]
 name = "neopixel_blink"
 
 [[example]]
@@ -64,3 +75,6 @@ name = "neopixel_rainbow"
 [[example]]
 name = "neopixel_keypad"
 required-features = ["keypad"]
+
+[package.metadata.docs.rs]
+features = ["adxl343", "keypad-unproven"]

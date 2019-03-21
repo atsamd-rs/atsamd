@@ -15,9 +15,6 @@ use smart_leds::brightness;
 use smart_leds::Color;
 use smart_leds::SmartLedsWrite;
 
-/// Total number of LEDs on the NeoTrellis M4
-const NUM_LEDS: usize = 32;
-
 /// Main entrypoint
 #[entry]
 fn main() -> ! {
@@ -36,12 +33,12 @@ fn main() -> ! {
     let mut delay = Delay::new(core_peripherals.SYST, &mut clocks);
     let neopixel_pin = pins.neopixel.into_push_pull_output(&mut pins.port);
     let mut neopixel = ws2812::Ws2812::new(neopixel_pin);
-    let mut values = [Color::default(); NUM_LEDS];
+    let mut values = [Color::default(); hal::NEOPIXEL_COUNT];
 
     loop {
         for j in 0..(256 * 5) {
             for (i, value) in values.iter_mut().enumerate() {
-                *value = wheel((((i * 256) as u16 / NUM_LEDS as u16 + j) & 255) as u8);
+                *value = wheel((((i * 256) as u16 / hal::NEOPIXEL_COUNT as u16 + j) & 255) as u8);
             }
 
             neopixel

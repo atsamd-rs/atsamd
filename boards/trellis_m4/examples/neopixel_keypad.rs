@@ -15,9 +15,6 @@ use smart_leds::brightness;
 use smart_leds::{colors, Color};
 use smart_leds::SmartLedsWrite;
 
-/// Total number of LEDs on the NeoTrellis M4
-const NUM_LEDS: usize = 32;
-
 /// Main entrypoint
 #[entry]
 fn main() -> ! {
@@ -39,13 +36,13 @@ fn main() -> ! {
     // neopixels
     let neopixel_pin = neopixel.into_push_pull_output(&mut port);
     let mut neopixel = ws2812::Ws2812::new(neopixel_pin);
-    let mut color_values = [Color::default(); NUM_LEDS];
+    let mut color_values = [Color::default(); hal::NEOPIXEL_COUNT];
 
     // keypad
     let keypad = hal::Keypad::new(keypad_pins, &mut port);
     let keypad_inputs = keypad.decompose();
-    let mut keypad_state = [false; NUM_LEDS];
-    let mut toggle_values = [false; NUM_LEDS];
+    let mut keypad_state = [false; hal::NEOPIXEL_COUNT];
+    let mut toggle_values = [false; hal::NEOPIXEL_COUNT];
 
     loop {
         for j in 0..(256 * 5) {
@@ -65,7 +62,7 @@ fn main() -> ! {
                 }
 
                 *value = if toggle_values[i] {
-                    wheel((((i * 256) as u16 / NUM_LEDS as u16 + j) & 255) as u8)
+                    wheel((((i * 256) as u16 / hal::NEOPIXEL_COUNT as u16 + j) & 255) as u8)
                 } else {
                     colors::GHOST_WHITE
                 };
