@@ -15,6 +15,21 @@ This crate provides a type-safe Rust API for working with the
 - 4-JST hacking port with 3.3V power, ground, and two GPIO (can be I2C/ADC/UART)
 - Analog Devices [ADXL343] triple-axis accelerometer
 
+## Optional `trellis_m4` Cargo Features
+
+The following optional hardware drivers can be enabled as cargo features:
+
+- `adxl343`: [ADXL343] accelerometer support
+- `keypad-unproven`: (alpha) support for button input via the [keypad] crate
+
+To enable them, use the `features` option when adding a crate dependency to
+your Cargo.toml:
+
+```toml
+[dependencies]
+trellis_m4 = { version = "~0.1", features = ["adxl343", "keypad-unproven"] }
+```
+
 ## Examples?
 
 Check out the repository for examples:
@@ -24,3 +39,4 @@ https://github.com/atsamd-rs/atsamd/tree/master/boards/trellis_m4/examples
 [Adafruit NeoTrellis M4 board]: https://www.adafruit.com/product/3938
 [ATSAMD51G19A]: https://www.microchip.com/wwwproducts/en/ATSAMD51G19A
 [ADXL343]: https://www.analog.com/en/products/adxl343.html
+[keypad]: https://crates.io/crates/keypad
