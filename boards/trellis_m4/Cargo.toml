@@ -76,5 +76,9 @@ name = "neopixel_rainbow"
 name = "neopixel_keypad"
 required-features = ["keypad"]
 
+[[example]]
+name = "neopixel_orientation"
+required-features = ["adxl343"]
+
 [package.metadata.docs.rs]
 features = ["adxl343", "keypad-unproven"]

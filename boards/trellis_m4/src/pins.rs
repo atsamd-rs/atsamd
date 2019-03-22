@@ -10,7 +10,7 @@ use hal::time::Hertz;
 use super::{SERCOM2, SERCOM4, MCLK};
 
 #[cfg(feature = "adxl343")]
-use adxl343::Adxl343;
+use super::Adxl343;
 
 /// Sets of pins split apart by category
 pub struct Sets {
@@ -54,7 +54,7 @@ impl Accelerometer {
         sercom: SERCOM2,
         mclk: &mut MCLK,
         port: &mut Port,
-    ) -> Result<Adxl343<I2CMaster2>, I2CError> {
+    ) -> Result<Adxl343, I2CError> {
         Adxl343::new(self.i2c_master(clocks, 100.khz(), sercom, mclk, port))
     }
 

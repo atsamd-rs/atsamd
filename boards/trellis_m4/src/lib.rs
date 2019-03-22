@@ -15,6 +15,13 @@ pub extern crate keypad;
 
 pub mod pins;
 
+#[cfg(feature = "adxl343")]
+pub mod orientation;
+
+/// Adxl343 (preconfigured to use SERCOM2)
+#[cfg(feature = "adxl343")]
+type Adxl343 = adxl343::Adxl343<hal::sercom::I2CMaster2>;
+
 #[cfg(feature = "rt")]
 pub use cortex_m_rt::entry;
 pub use hal::{*, atsamd51g19a::*};
