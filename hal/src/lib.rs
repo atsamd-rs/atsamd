@@ -85,7 +85,7 @@ pub mod sercom;
 #[cfg(all(feature = "unproven", feature="samd51"))]
 pub mod pwm51;
 
-#[cfg(feature = "unproven")]
+#[cfg(all(feature = "unproven", not(feature="samd51")))]
 pub mod pwm;
 
 pub mod delay;
