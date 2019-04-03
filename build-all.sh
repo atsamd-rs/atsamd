@@ -16,7 +16,7 @@ cargo build --manifest-path boards/arduino_mkrzero/Cargo.toml --examples
 cargo build --manifest-path boards/circuit_playground_express/Cargo.toml --examples
 cargo build --manifest-path boards/sodaq_one/Cargo.toml --examples
 pushd boards/metro_m4
-cargo build --examples --features=unproven
+cargo build --features=unproven --examples
 popd
 pushd boards/trellis_m4
 cargo build --features=keypad-unproven --examples
