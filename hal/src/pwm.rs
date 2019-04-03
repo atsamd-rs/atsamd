@@ -81,7 +81,7 @@ pub enum TC2Pinout {
     //Pa0Pa1(Pa0<PfE>, Pa1<PfE>),
     //Pa12Pa13(Pa12<PfE>, Pa13<PfE>),
     //Pa16Pa17(Pa16<PfE>, Pa17<PfE>),
-    Pa16(Pa16<PfE>)
+    Pa17(Pa17<PfE>)
 }
 
 pub struct Pwm2 {
@@ -186,9 +186,7 @@ impl Pwm for Pwm2 {
 
     fn set_duty(&mut self, channel: Self::Channel, duty: Self::Duty) {
         let count = self.tc.count16();
-        while count.syncbusy.read().cc1().bit_is_set() {}
-        count.cc[1].write(|w| unsafe {w.cc().bits(duty)});
-        while count.syncbusy.read().cc1().bit_is_set() {}
+        count.ccbuf[1].write(|w| unsafe {w.ccbuf().bits(duty)});
     }
 
     fn set_period<P>(&mut self, period: P)

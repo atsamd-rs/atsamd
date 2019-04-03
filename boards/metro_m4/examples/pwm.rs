@@ -24,13 +24,13 @@ fn main() -> ! {
     );
     let mut pins = hal::Pins::new(peripherals.PORT);
 
-    let red_led = pins.d13.into_function_e(&mut pins.port);
+    let d12 = pins.d12.into_function_e(&mut pins.port);
     let gclk0 = clocks.gclk0();
     let mut pwm2 = hal::pwm::Pwm2::new(
         &clocks.tc2_tc3(&gclk0).unwrap(),
-        60.hz(),
+        1.khz(),
         peripherals.TC2,
-        hal::pwm::TC2Pinout::Pa16(red_led),
+        hal::pwm::TC2Pinout::Pa17(d12),
         &mut peripherals.MCLK,
     );
 
@@ -39,9 +39,9 @@ fn main() -> ! {
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
     loop {
-        pwm2.set_duty(hal::pwm::Channels::C0, max_duty);
+        pwm2.set_duty(hal::pwm::Channels::C0, max_duty/2);
         delay.delay_ms(1000u16);
-        pwm2.set_duty(hal::pwm::Channels::C0, max_duty/4);
+        pwm2.set_duty(hal::pwm::Channels::C0, max_duty/8);
         delay.delay_ms(1000u16);
     }
 }
