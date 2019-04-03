@@ -82,6 +82,9 @@ pub mod timer;
 #[path = "sercom51/mod.rs"]
 pub mod sercom;
 
+#[cfg(feature = "unproven")]
+pub mod pwm;
+
 pub mod delay;
 pub mod gpio;
 pub mod prelude;
