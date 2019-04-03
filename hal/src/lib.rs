@@ -82,6 +82,9 @@ pub mod timer;
 #[path = "sercom51/mod.rs"]
 pub mod sercom;
 
+#[cfg(all(feature = "unproven", feature="samd51"))]
+pub mod pwm51;
+
 #[cfg(feature = "unproven")]
 pub mod pwm;
 
