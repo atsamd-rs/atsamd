@@ -2,7 +2,7 @@ use gpio::{Pa19, Pa15, PfE};
 use clock;
 use timer::TimerParams;
 use time::Hertz;
-use hal::Pwm;
+use hal::{Pwm, PwmPin};
 
 use target_device::{TC3, PM};
 
@@ -11,12 +11,12 @@ pub enum TC3Pinout {
     Pa19(Pa19<PfE>),
 }
 
-pub enum Channels { 
+pub enum Channel { 
     C0
 }
 
 macro_rules! pwm {
-    ($($TYPE:ident: ($TC:ident, $pinout:ident, $clock:ident, $apmask:ident, $apbits:ident),)+) => {
+    ($($TYPE:ident: ($TC:ident, $pinout:ident, $clock:ident, $apmask:ident, $apbits:ident, $wrapper:ident),)+) => {
         $(
 
 pub struct $TYPE {
@@ -71,7 +71,7 @@ impl $TYPE {
 }
 
 impl Pwm for $TYPE {
-    type Channel = Channels;
+    type Channel = Channel;
     type Time = Hertz;
     type Duty = u16;
 
@@ -134,8 +134,32 @@ impl Pwm for $TYPE {
         count.cc[0].write(|w| unsafe { w.cc().bits(params.cycles as u16) });
     }
 }
+
+pub struct $wrapper {
+    pub pwm: $TYPE,
+} 
+
+impl PwmPin for $wrapper {
+    type Duty = u16;
+    fn disable(&mut self) {
+        self.pwm.disable(Channel::C0);
+    }
+    fn enable(&mut self) {
+        self.pwm.enable(Channel::C0);
+    }
+    fn get_duty(&self) -> Self::Duty {
+        self.pwm.get_duty(Channel::C0)
+    }
+    fn get_max_duty(&self) -> Self::Duty {
+        self.pwm.get_max_duty()
+    }
+    fn set_duty(&mut self, duty: Self::Duty) {
+        self.pwm.set_duty(Channel::C0, duty);
+    }
+}
+
 )+}}
 
 pwm! {
-    Pwm3: (TC3, TC3Pinout, Tcc2Tc3Clock, apbcmask, tc3_),
+    Pwm3: (TC3, TC3Pinout, Tcc2Tc3Clock, apbcmask, tc3_, Pwm3Wrapper),
 }

@@ -1,10 +1,12 @@
-use gpio::{Pa1, Pa5, Pa7, Pa9, Pa11, Pa13, Pa15, Pa17, Pa19, Pa23, Pa25, Pb9,
-    Pb11, Pb13, Pb15, Pb31, PfE};
+use gpio::{Pa1, Pa5, Pa7, Pa9, Pa11, Pa13, Pa15, Pa17, Pa19, Pb31, PfE};
+
+#[cfg(all(not(feature = "samd51g19a"), not(feature = "samd51g18a")))]
+use gpio::{Pa23, Pa25, Pb9, Pb11, Pb13, Pb15};
+
 use clock;
 use timer::TimerParams;
 use time::Hertz;
-use hal::Pwm;
-
+use hal::{Pwm, PwmPin};
 use target_device::{TC0, TC1, TC2, TC3, MCLK};
 
 #[cfg(all(not(feature = "samd51g19a"), not(feature = "samd51g18a")))]
@@ -46,12 +48,12 @@ pub enum TC5Pinout {
     Pb15(Pb15<PfE>),
 }
 
-pub enum Channels { 
+pub enum Channel { 
     C0
 }
 
 macro_rules! pwm {
-    ($($TYPE:ident: ($TC:ident, $pinout:ident, $clock:ident, $apmask:ident, $apbits:ident),)+) => {
+    ($($TYPE:ident: ($TC:ident, $pinout:ident, $clock:ident, $apmask:ident, $apbits:ident, $wrapper:ident),)+) => {
         $(
 
 pub struct $TYPE {
@@ -108,7 +110,7 @@ impl $TYPE {
 }
 
 impl Pwm for $TYPE {
-    type Channel = Channels;
+    type Channel = Channel;
     type Time = Hertz;
     type Duty = u16;
 
@@ -172,17 +174,41 @@ impl Pwm for $TYPE {
         while count.syncbusy.read().cc0().bit_is_set() {}
     }
 }
+
+pub struct $wrapper {
+    pub pwm: $TYPE,
+} 
+
+impl PwmPin for $wrapper {
+    type Duty = u16;
+    fn disable(&mut self) {
+        self.pwm.disable(Channel::C0);
+    }
+    fn enable(&mut self) {
+        self.pwm.enable(Channel::C0);
+    }
+    fn get_duty(&self) -> Self::Duty {
+        self.pwm.get_duty(Channel::C0)
+    }
+    fn get_max_duty(&self) -> Self::Duty {
+        self.pwm.get_max_duty()
+    }
+    fn set_duty(&mut self, duty: Self::Duty) {
+        self.pwm.set_duty(Channel::C0, duty);
+    }
+}
+
 )+}}
 
 pwm! {
-    Pwm0: (TC0, TC0Pinout, Tc0Tc1Clock, apbamask, tc0_),
-    Pwm1: (TC1, TC1Pinout, Tc0Tc1Clock, apbamask, tc1_),
-    Pwm2: (TC2, TC2Pinout, Tc2Tc3Clock, apbbmask, tc2_),
-    Pwm3: (TC3, TC3Pinout, Tc2Tc3Clock, apbbmask, tc3_),
+    Pwm0: (TC0, TC0Pinout, Tc0Tc1Clock, apbamask, tc0_, Pwm0Wrapper),
+    Pwm1: (TC1, TC1Pinout, Tc0Tc1Clock, apbamask, tc1_, Pwm1Wrapper),
+    Pwm2: (TC2, TC2Pinout, Tc2Tc3Clock, apbbmask, tc2_, Pwm2Wrapper),
+    Pwm3: (TC3, TC3Pinout, Tc2Tc3Clock, apbbmask, tc3_, Pwm3Wrapper),
 }
 
 #[cfg(all(not(feature = "samd51g19a"), not(feature = "samd51g18a")))]
 pwm! {
-    Pwm4: (TC4, TC4Pinout, Tc4Tc5Clock, apbcmask, tc4_),
-    Pwm5: (TC5, TC5Pinout, Tc4Tc5Clock, apbcmask, tc5_),
+    Pwm4: (TC4, TC4Pinout, Tc4Tc5Clock, apbcmask, tc4_, Pwm4Wrapper),
+    Pwm5: (TC5, TC5Pinout, Tc4Tc5Clock, apbcmask, tc5_, Pwm5Wrapper),
 }
