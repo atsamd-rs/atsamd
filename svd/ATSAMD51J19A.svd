@@ -7904,7 +7904,7 @@
               <name>GENCTRL0</name>
               <description>Generic Clock Generator Control 0 Synchronization Busy bits</description>
               <bitOffset>2</bitOffset>
-              <bitWidth>1</bitWidth>
+              <bitWidth>12</bitWidth>
               <access>read-only</access>
               <enumeratedValues>
                 <name>GENCTRL0Select</name>
@@ -7974,7 +7974,7 @@
               <name>GENCTRL1</name>
               <description>Generic Clock Generator Control 1 Synchronization Busy bits</description>
               <bitOffset>3</bitOffset>
-              <bitWidth>1</bitWidth>
+              <bitWidth>12</bitWidth>
               <access>read-only</access>
               <enumeratedValues>
                 <name>GENCTRL1Select</name>
@@ -8044,7 +8044,7 @@
               <name>GENCTRL2</name>
               <description>Generic Clock Generator Control 2 Synchronization Busy bits</description>
               <bitOffset>4</bitOffset>
-              <bitWidth>1</bitWidth>
+              <bitWidth>12</bitWidth>
               <access>read-only</access>
               <enumeratedValues>
                 <name>GENCTRL2Select</name>
@@ -8114,7 +8114,7 @@
               <name>GENCTRL3</name>
               <description>Generic Clock Generator Control 3 Synchronization Busy bits</description>
               <bitOffset>5</bitOffset>
-              <bitWidth>1</bitWidth>
+              <bitWidth>12</bitWidth>
               <access>read-only</access>
               <enumeratedValues>
                 <name>GENCTRL3Select</name>
@@ -8184,7 +8184,7 @@
               <name>GENCTRL4</name>
               <description>Generic Clock Generator Control 4 Synchronization Busy bits</description>
               <bitOffset>6</bitOffset>
-              <bitWidth>1</bitWidth>
+              <bitWidth>12</bitWidth>
               <access>read-only</access>
               <enumeratedValues>
                 <name>GENCTRL4Select</name>
@@ -8254,7 +8254,7 @@
               <name>GENCTRL5</name>
               <description>Generic Clock Generator Control 5 Synchronization Busy bits</description>
               <bitOffset>7</bitOffset>
-              <bitWidth>1</bitWidth>
+              <bitWidth>12</bitWidth>
               <access>read-only</access>
               <enumeratedValues>
                 <name>GENCTRL5Select</name>
@@ -8324,7 +8324,7 @@
               <name>GENCTRL6</name>
               <description>Generic Clock Generator Control 6 Synchronization Busy bits</description>
               <bitOffset>8</bitOffset>
-              <bitWidth>1</bitWidth>
+              <bitWidth>12</bitWidth>
               <access>read-only</access>
               <enumeratedValues>
                 <name>GENCTRL6Select</name>
@@ -8394,7 +8394,7 @@
               <name>GENCTRL7</name>
               <description>Generic Clock Generator Control 7 Synchronization Busy bits</description>
               <bitOffset>9</bitOffset>
-              <bitWidth>1</bitWidth>
+              <bitWidth>12</bitWidth>
               <access>read-only</access>
               <enumeratedValues>
                 <name>GENCTRL7Select</name>
@@ -8464,7 +8464,7 @@
               <name>GENCTRL8</name>
               <description>Generic Clock Generator Control 8 Synchronization Busy bits</description>
               <bitOffset>10</bitOffset>
-              <bitWidth>1</bitWidth>
+              <bitWidth>12</bitWidth>
               <access>read-only</access>
               <enumeratedValues>
                 <name>GENCTRL8Select</name>
@@ -8534,7 +8534,7 @@
               <name>GENCTRL9</name>
               <description>Generic Clock Generator Control 9 Synchronization Busy bits</description>
               <bitOffset>11</bitOffset>
-              <bitWidth>1</bitWidth>
+              <bitWidth>12</bitWidth>
               <access>read-only</access>
               <enumeratedValues>
                 <name>GENCTRL9Select</name>
@@ -8604,7 +8604,7 @@
               <name>GENCTRL10</name>
               <description>Generic Clock Generator Control 10 Synchronization Busy bits</description>
               <bitOffset>12</bitOffset>
-              <bitWidth>1</bitWidth>
+              <bitWidth>12</bitWidth>
               <access>read-only</access>
               <enumeratedValues>
                 <name>GENCTRL10Select</name>
@@ -8674,7 +8674,7 @@
               <name>GENCTRL11</name>
               <description>Generic Clock Generator Control 11 Synchronization Busy bits</description>
               <bitOffset>13</bitOffset>
-              <bitWidth>1</bitWidth>
+              <bitWidth>12</bitWidth>
               <access>read-only</access>
               <enumeratedValues>
                 <name>GENCTRL11Select</name>
@@ -11190,6 +11190,24 @@
               <description>NVM Read Wait States</description>
               <bitOffset>8</bitOffset>
               <bitWidth>4</bitWidth>
+              <enumeratedValues>
+                <name>RWSSelect</name>
+                <enumeratedValue>
+                  <name>SINGLE</name>
+                  <description>Single Auto Wait State</description>
+                  <value>0x0</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>HALF</name>
+                  <description>Half Auto Wait State</description>
+                  <value>0x1</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>DUAL</name>
+                  <description>Dual Auto Wait State</description>
+                  <value>0x2</value>
+                </enumeratedValue>
+              </enumeratedValues>
             </field>
             <field>
               <name>AHBNS0</name>
@@ -15802,12 +15820,159 @@
               <description>Peripheral Multiplexing for Even-Numbered Pin</description>
               <bitOffset>0</bitOffset>
               <bitWidth>4</bitWidth>
+              <enumeratedValues>
+                <name>PMUXESelect</name>
+                <enumeratedValue>
+                  <name>A</name>
+                  <description>Peripheral function A selected</description>
+                  <value>0x0</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>B</name>
+                  <description>Peripheral function B selected</description>
+                  <value>0x1</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>C</name>
+                  <description>Peripheral function C selected</description>
+                  <value>0x2</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>D</name>
+                  <description>Peripheral function D selected</description>
+                  <value>0x3</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>E</name>
+                  <description>Peripheral function E selected</description>
+                  <value>0x4</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>F</name>
+                  <description>Peripheral function F selected</description>
+                  <value>0x5</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>G</name>
+                  <description>Peripheral function G selected</description>
+                  <value>0x6</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>H</name>
+                  <description>Peripheral function H selected</description>
+                  <value>0x7</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>I</name>
+                  <description>Peripheral function I selected</description>
+                  <value>0x8</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>J</name>
+                  <description>Peripheral function J selected</description>
+                  <value>0x9</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>K</name>
+                  <description>Peripheral function K selected</description>
+                  <value>0xA</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>L</name>
+                  <description>Peripheral function L selected</description>
+                  <value>0xB</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>M</name>
+                  <description>Peripheral function M selected</description>
+                  <value>0xC</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>N</name>
+                  <description>Peripheral function N selected</description>
+                  <value>0xD</value>
+                </enumeratedValue>
+              </enumeratedValues>
             </field>
             <field>
               <name>PMUXO</name>
               <description>Peripheral Multiplexing for Odd-Numbered Pin</description>
               <bitOffset>4</bitOffset>
               <bitWidth>4</bitWidth>
+              <enumeratedValues>
+                <name>PMUXOSelect</name>
+                <enumeratedValue>
+                  <name>A</name>
+                  <description>Peripheral function A selected</description>
+                  <value>0x0</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>B</name>
+                  <description>Peripheral function B selected</description>
+                  <value>0x1</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>C</name>
+                  <description>Peripheral function C selected</description>
+                  <value>0x2</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>D</name>
+                  <description>Peripheral function D selected</description>
+                  <value>0x3</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>E</name>
+                  <description>Peripheral function E selected</description>
+                  <value>0x4</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>F</name>
+                  <description>Peripheral function F selected</description>
+                  <value>0x5</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>G</name>
+                  <description>Peripheral function G selected</description>
+                  <value>0x6</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>H</name>
+                  <description>Peripheral function H selected</description>
+                  <value>0x7</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>I</name>
+                  <description>Peripheral function I selected</description>
+                  <value>0x8</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>J</name>
+                  <description>Peripheral function J selected</description>
+                  <value>0x9</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>K</name>
+                  <description>Peripheral function K selected</description>
+                  <value>0xA</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>L</name>
+                  <description>Peripheral function L selected</description>
+                  <value>0xB</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>M</name>
+                  <description>Peripheral function M selected</description>
+                  <value>0xC</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>N</name>
+                  <description>Peripheral function N selected</description>
+                  <value>0xD</value>
+                </enumeratedValue>
+
+              </enumeratedValues>
             </field>
           </fields>
         </register>
@@ -20912,7 +21077,7 @@
           <description>Host Control 1</description>
           <addressOffset>0x028</addressOffset>
           <size>8</size>
-          <resetValue>0xE00</resetValue>
+          <resetValue>0x00</resetValue>
           <fields>
             <field>
               <name>LEDCTRL</name>
@@ -21036,7 +21201,7 @@
           <alternateRegister>HC1R</alternateRegister>
           <addressOffset>0x028</addressOffset>
           <size>8</size>
-          <resetValue>0xE00</resetValue>
+          <resetValue>0x0</resetValue>
           <fields>
             <field>
               <name>DW</name>
@@ -25514,6 +25679,39 @@
               <description>Operating Mode</description>
               <bitOffset>2</bitOffset>
               <bitWidth>3</bitWidth>
+              <enumeratedValues>
+                <name>MODESelect</name>
+                <enumeratedValue>
+                  <name>USART_EXT_CLK</name>
+                  <description>USART mode with external clock</description>
+                  <value>0x0</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>USART_INT_CLK</name>
+                  <description>USART mode with internal clock</description>
+                  <value>0x1</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>SPI_SLAVE</name>
+                  <description>SPI mode with external clock</description>
+                  <value>0x2</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>SPI_MASTER</name>
+                  <description>SPI mode with internal clock</description>
+                  <value>0x3</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>I2C_SLAVE</name>
+                  <description>I2C mode with external clock</description>
+                  <value>0x4</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>I2C_MASTER</name>
+                  <description>I2C mode with internal clock</description>
+                  <value>0x5</value>
+                </enumeratedValue>
+              </enumeratedValues>
             </field>
             <field>
               <name>RUNSTDBY</name>
@@ -26329,6 +26527,39 @@
               <description>Operating Mode</description>
               <bitOffset>2</bitOffset>
               <bitWidth>3</bitWidth>
+              <enumeratedValues>
+                <name>MODESelect</name>
+                <enumeratedValue>
+                  <name>USART_EXT_CLK</name>
+                  <description>USART mode with external clock</description>
+                  <value>0x0</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>USART_INT_CLK</name>
+                  <description>USART mode with internal clock</description>
+                  <value>0x1</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>SPI_SLAVE</name>
+                  <description>SPI mode with external clock</description>
+                  <value>0x2</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>SPI_MASTER</name>
+                  <description>SPI mode with internal clock</description>
+                  <value>0x3</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>I2C_SLAVE</name>
+                  <description>I2C mode with external clock</description>
+                  <value>0x4</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>I2C_MASTER</name>
+                  <description>I2C mode with internal clock</description>
+                  <value>0x5</value>
+                </enumeratedValue>
+              </enumeratedValues>
             </field>
             <field>
               <name>RUNSTDBY</name>
@@ -26729,6 +26960,39 @@
               <description>Operating Mode</description>
               <bitOffset>2</bitOffset>
               <bitWidth>3</bitWidth>
+              <enumeratedValues>
+                <name>MODESelect</name>
+                <enumeratedValue>
+                  <name>USART_EXT_CLK</name>
+                  <description>USART mode with external clock</description>
+                  <value>0x0</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>USART_INT_CLK</name>
+                  <description>USART mode with internal clock</description>
+                  <value>0x1</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>SPI_SLAVE</name>
+                  <description>SPI mode with external clock</description>
+                  <value>0x2</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>SPI_MASTER</name>
+                  <description>SPI mode with internal clock</description>
+                  <value>0x3</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>I2C_SLAVE</name>
+                  <description>I2C mode with external clock</description>
+                  <value>0x4</value>
+                </enumeratedValue>
+                <enumeratedValue>
+                  <name>I2C_MASTER</name>
+                  <description>I2C mode with internal clock</description>
+                  <value>0x5</value>
+                </enumeratedValue>
+              </enumeratedValues>
             </field>
             <field>
               <name>RUNSTDBY</name>

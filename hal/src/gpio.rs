@@ -9,7 +9,7 @@
 //! impossible to misuse.
 use crate::target_device::port::{DIRCLR, DIRSET, OUTCLR, OUTSET, PINCFG0_, PMUX0_};
 
-#[cfg(feature = "samd21g18a")]
+#[cfg(any(feature = "samd21g18a", feature = "samd51"))]
 use crate::target_device::port::{PINCFG1_, PMUX1_};
 
 use crate::target_device::PORT;
@@ -75,6 +75,16 @@ pub struct PfG;
 pub struct PfH;
 /// Peripheral Function I
 pub struct PfI;
+/// Peripheral Function J
+pub struct PfJ;
+/// Peripheral Function K
+pub struct PfK;
+/// Peripheral Function L
+pub struct PfL;
+/// Peripheral Function M
+pub struct PfM;
+/// Peripheral Function N
+pub struct PfN;
 
 /// A trait that makes it easier to generically manage
 /// converting a pin from its current state into some
@@ -154,6 +164,19 @@ macro_rules! pin {
         function!(PfF, into_function_f, f);
         function!(PfG, into_function_g, g);
         function!(PfH, into_function_h, h);
+
+        #[cfg(feature = "samd51")]
+        function!(PfI, into_function_i, i);
+        #[cfg(feature = "samd51")]
+        function!(PfJ, into_function_j, j);
+        #[cfg(feature = "samd51")]
+        function!(PfK, into_function_k, k);
+        #[cfg(feature = "samd51")]
+        function!(PfL, into_function_l, l);
+        #[cfg(feature = "samd51")]
+        function!(PfM, into_function_m, m);
+        #[cfg(feature = "samd51")]
+        function!(PfN, into_function_n, n);
 
         impl<MODE> $PinType<MODE> {
 
@@ -372,27 +395,27 @@ impl Port {
         unsafe { &(*PORT::ptr()).pmux0_ }
     }
 
-    #[cfg(feature = "samd21g18a")]
+    #[cfg(any(feature = "samd21g18a", feature = "samd51"))]
     fn dirset1(&mut self) -> &DIRSET {
         unsafe { &(*PORT::ptr()).dirset1 }
     }
-    #[cfg(feature = "samd21g18a")]
+    #[cfg(any(feature = "samd21g18a", feature = "samd51"))]
     fn dirclr1(&mut self) -> &DIRCLR {
         unsafe { &(*PORT::ptr()).dirclr1 }
     }
-    #[cfg(feature = "samd21g18a")]
+    #[cfg(any(feature = "samd21g18a", feature = "samd51"))]
     fn pincfg1(&mut self) -> &[PINCFG1_; 32] {
         unsafe { &(*PORT::ptr()).pincfg1_ }
     }
-    #[cfg(feature = "samd21g18a")]
+    #[cfg(any(feature = "samd21g18a", feature = "samd51"))]
     fn outset1(&mut self) -> &OUTSET {
         unsafe { &(*PORT::ptr()).outset1 }
     }
-    #[cfg(feature = "samd21g18a")]
+    #[cfg(any(feature = "samd21g18a", feature = "samd51"))]
     fn outclr1(&mut self) -> &OUTCLR {
         unsafe { &(*PORT::ptr()).outclr1 }
     }
-    #[cfg(feature = "samd21g18a")]
+    #[cfg(any(feature = "samd21g18a", feature = "samd51"))]
     fn pmux1(&mut self) -> &[PMUX1_; 16] {
         unsafe { &(*PORT::ptr()).pmux1_ }
     }
@@ -416,7 +439,7 @@ pub struct Parts {
     )+
     $(
         /// Pin $pin_identB
-        #[cfg(feature = "samd21g18a")]
+        #[cfg(any(feature = "samd21g18a", feature = "samd51"))]
         pub $pin_identB: $PinTypeB<Input<Floating>>,
     )+
 }
@@ -432,7 +455,7 @@ impl GpioExt for PORT {
                 $pin_identA: $PinTypeA { _mode: PhantomData },
             )+
             $(
-                #[cfg(feature = "samd21g18a")]
+                #[cfg(any(feature = "samd21g18a", feature = "samd51"))]
                 $pin_identB: $PinTypeB { _mode: PhantomData },
             )+
         }
@@ -444,7 +467,7 @@ $(
         pincfg0, outset0, outclr0, pmux0, out0, outtgl0, in0);
 )+
 $(
-    #[cfg(feature = "samd21g18a")]
+    #[cfg(any(feature = "samd21g18a", feature = "samd51"))]
     pin!($PinTypeB, $pin_identB, $pin_noB, dirset1, dirclr1,
         pincfg1, outset1, outclr1, pmux1, out1, outtgl1, in1);
 )+

@@ -1,6 +1,6 @@
 #![no_std]
 
-pub extern crate atsamd21_hal as hal;
+pub extern crate atsamd_hal as hal;
 
 #[cfg(feature = "rt")]
 pub use cortex_m_rt::entry;

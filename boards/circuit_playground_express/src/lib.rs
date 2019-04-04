@@ -1,6 +1,6 @@
 #![no_std]
 
-extern crate atsamd21_hal as hal;
+extern crate atsamd_hal as hal;
 
 use hal::prelude::*;
 pub use hal::target_device::*;
