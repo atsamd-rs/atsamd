@@ -8,12 +8,12 @@ extern crate trellis_m4 as hal;
 extern crate ws2812_nop_samd51 as ws2812;
 
 use hal::prelude::*;
-use hal::{entry, Peripherals, CorePeripherals};
 use hal::{clock::GenericClockController, delay::Delay};
+use hal::{entry, CorePeripherals, Peripherals};
 
 use smart_leds::brightness;
-use smart_leds::{colors, Color};
 use smart_leds::SmartLedsWrite;
+use smart_leds::{colors, Color};
 
 /// Main entrypoint
 #[entry]
@@ -31,15 +31,15 @@ fn main() -> ! {
 
     let mut delay = Delay::new(core_peripherals.SYST, &mut clocks);
 
-    let hal::pins::Sets { neopixel, keypad: keypad_pins, mut port, .. } = hal::Pins::new(peripherals.PORT).split();
+    let mut pins = hal::Pins::new(peripherals.PORT).split();
 
     // neopixels
-    let neopixel_pin = neopixel.into_push_pull_output(&mut port);
+    let neopixel_pin = pins.neopixel.into_push_pull_output(&mut pins.port);
     let mut neopixel = ws2812::Ws2812::new(neopixel_pin);
     let mut color_values = [Color::default(); hal::NEOPIXEL_COUNT];
 
     // keypad
-    let keypad = hal::Keypad::new(keypad_pins, &mut port);
+    let keypad = hal::Keypad::new(pins.keypad, &mut pins.port);
     let keypad_inputs = keypad.decompose();
     let mut keypad_state = [false; hal::NEOPIXEL_COUNT];
     let mut toggle_values = [false; hal::NEOPIXEL_COUNT];

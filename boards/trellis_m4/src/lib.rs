@@ -14,7 +14,7 @@ pub mod pins;
 
 #[cfg(feature = "rt")]
 pub use cortex_m_rt::entry;
-pub use hal::{*, atsamd51g19a::*};
+pub use hal::{atsamd51g19a::*, *};
 pub use pins::Pins;
 
 use gpio::{Input, Port};

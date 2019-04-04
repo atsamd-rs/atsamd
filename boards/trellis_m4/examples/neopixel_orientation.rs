@@ -13,7 +13,7 @@ use hal::adxl343::accelerometer::Orientation;
 use hal::prelude::*;
 use hal::{clock::GenericClockController, delay::Delay};
 use hal::{entry, CorePeripherals, Peripherals};
-use smart_leds::{colors, SmartLedsWrite, Color};
+use smart_leds::{colors, Color, SmartLedsWrite};
 
 #[entry]
 fn main() -> ! {
@@ -36,19 +36,28 @@ fn main() -> ! {
     let mut neopixels = ws2812::Ws2812::new(neopixel_pin);
 
     // accelerometer
-    let adxl343 = pins.accel.open(
-        &mut clocks,
-        peripherals.SERCOM2,
-        &mut peripherals.MCLK,
-        &mut pins.port
-    ).unwrap();
+    let adxl343 = pins
+        .accel
+        .open(
+            &mut clocks,
+            peripherals.SERCOM2,
+            &mut peripherals.MCLK,
+            &mut pins.port,
+        )
+        .unwrap();
 
     let mut accel_tracker = adxl343.try_into_tracker().unwrap();
 
     loop {
         // update tracker's internal `last_orientation`
         accel_tracker.orientation().unwrap();
-        neopixels.write(colors_for_orientation(accel_tracker.last_orientation()).iter().cloned()).unwrap();
+        neopixels
+            .write(
+                colors_for_orientation(accel_tracker.last_orientation())
+                    .iter()
+                    .cloned(),
+            )
+            .unwrap();
         delay.delay_ms(10u8);
     }
 }
@@ -82,12 +91,12 @@ fn colors_for_orientation(orientation: Orientation) -> [Color; hal::NEOPIXEL_COU
             for cell in &mut colors[(hal::NEOPIXEL_COUNT / 2)..] {
                 *cell = green;
             }
-        },
+        }
         Orientation::LandscapeDown => {
             for cell in &mut colors[..(hal::NEOPIXEL_COUNT / 2)] {
                 *cell = green;
             }
-        },
+        }
     }
 
     colors

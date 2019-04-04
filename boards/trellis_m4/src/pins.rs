@@ -1,13 +1,13 @@
 //! NeoTrellis M4 Express pins
 
-#[cfg(feature = "adxl343")]
-use hal::{prelude::*, sercom::I2CError};
-use hal::define_pins;
+use super::{atsamd51g19a, MCLK, SERCOM2, SERCOM4};
 use hal::clock::*;
+use hal::define_pins;
 use hal::gpio::{self, *};
 use hal::sercom::{I2CMaster2, I2CMaster4, PadPin};
 use hal::time::Hertz;
-use super::{atsamd51g19a, SERCOM2, SERCOM4, MCLK};
+#[cfg(feature = "adxl343")]
+use hal::{prelude::*, sercom::I2CError};
 
 #[cfg(feature = "adxl343")]
 use adxl343::Adxl343;
@@ -82,7 +82,11 @@ impl Pins {
             scl: self.accel_scl,
         };
 
-        let analog = Analog { a0: self.a0, a1: self.a1, a2: self.a2 };
+        let analog = Analog {
+            a0: self.a0,
+            a1: self.a1,
+            a2: self.a2,
+        };
 
         let audio = Audio {
             input: self.micin,
@@ -94,7 +98,10 @@ impl Pins {
             di: self.dotstar_di,
         };
 
-        let i2c = I2C { sda: self.sda, scl: self.scl };
+        let i2c = I2C {
+            sda: self.sda,
+            scl: self.scl,
+        };
 
         let keypad = Keypad {
             col0: self.col0,
