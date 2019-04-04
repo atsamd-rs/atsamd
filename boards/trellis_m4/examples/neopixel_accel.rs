@@ -12,6 +12,7 @@ extern crate ws2812_nop_samd51 as ws2812;
 use hal::prelude::*;
 use hal::{entry, Peripherals, CorePeripherals};
 use hal::{clock::GenericClockController, delay::Delay};
+use hal::adxl343::accelerometer::Accelerometer;
 
 use smart_leds::{Color, SmartLedsWrite};
 
@@ -45,7 +46,7 @@ fn main() -> ! {
     ).unwrap();
 
     loop {
-        let ax3 = adxl343.xyz().unwrap();
+        let ax3 = adxl343.acceleration().unwrap();
 
         // RGB indicators of current accelerometer state
         let colors = [
