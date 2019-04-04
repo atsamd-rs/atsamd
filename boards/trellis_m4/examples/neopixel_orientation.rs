@@ -3,8 +3,8 @@
 #![no_std]
 #![no_main]
 
-extern crate panic_halt;
-
+#[allow(unused_imports)]
+use panic_halt;
 use trellis_m4 as hal;
 use ws2812_nop_samd51 as ws2812;
 
