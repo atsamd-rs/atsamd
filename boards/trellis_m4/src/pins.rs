@@ -1,16 +1,128 @@
 //! NeoTrellis M4 Express pins
 
-use crate::gpio::{Floating, Input, Port};
 #[cfg(feature = "adxl343")]
 use hal::{prelude::*, sercom::I2CError};
-use crate::hal::clock::*;
-use crate::hal::gpio::*;
-use crate::hal::sercom::{I2CMaster2, I2CMaster4, PadPin};
-use crate::hal::time::Hertz;
-use super::{SERCOM2, SERCOM4, MCLK};
+use hal::define_pins;
+use hal::clock::*;
+use hal::gpio::{self, *};
+use hal::sercom::{I2CMaster2, I2CMaster4, PadPin};
+use hal::time::Hertz;
+use super::{atsamd51g19a, SERCOM2, SERCOM4, MCLK};
 
 #[cfg(feature = "adxl343")]
 use adxl343::Adxl343;
+
+define_pins!(
+    /// Maps the pins to their arduino names and
+    /// the numbers printed on the board.
+    struct Pins,
+    target_device: atsamd51g19a,
+
+    /// Analog pin 0
+    pin a0 = a2,
+    /// Analog pin 1
+    pin a1 = a5,
+    /// INT pin
+    pin a2 = a4,
+    /// Microphone out
+    pin micout = a6,
+    /// Microphone in
+    pin micin = a7,
+
+    /// SDA
+    pin sda = b8,
+    /// SCL
+    pin scl = b9,
+
+    /// Accelerometer data signal (SDA)
+    pin accel_sda = a12,
+    /// Accelerometer clock signal (SCL)
+    pin accel_scl = a13,
+
+    /// Keypad Column 0
+    pin col0 = a14,
+    /// Keypad Column 1
+    pin col1 = a15,
+    /// Keypad Column 2
+    pin col2 = a16,
+    /// Keypad Column 3
+    pin col3 = a17,
+    /// Keypad Column 4
+    pin col4 = a20,
+    /// Keypad Column 5
+    pin col5 = a21,
+    /// Keypad Column 6
+    pin col6 = a22,
+    /// Keypad Column 7
+    pin col7 = a23,
+
+    /// Keypad Row 0
+    pin row0 = a18,
+    /// Keypad Row 1
+    pin row1 = a19,
+    /// Keypad Row 2
+    pin row2 = b22,
+    /// Keypad Row 3
+    pin row3 = b23,
+
+    /// NeoPixels
+    pin neopixel = a27,
+
+    /// APA102 (RGB LED control) SCK
+    pin dotstar_ci = b2,
+    /// APA102 (RGB LED control) MOSI
+    pin dotstar_di = b3,
+);
+
+impl Pins {
+    /// Split the device pins into subsets
+    pub fn split(self) -> Sets {
+        let accel = Accelerometer {
+            sda: self.accel_sda,
+            scl: self.accel_scl,
+        };
+
+        let analog = Analog { a0: self.a0, a1: self.a1, a2: self.a2 };
+
+        let audio = Audio {
+            input: self.micin,
+            output: self.micout,
+        };
+
+        let dotstar = Dotstar {
+            ci: self.dotstar_ci,
+            di: self.dotstar_di,
+        };
+
+        let i2c = I2C { sda: self.sda, scl: self.scl };
+
+        let keypad = Keypad {
+            col0: self.col0,
+            col1: self.col1,
+            col2: self.col2,
+            col3: self.col3,
+            col4: self.col4,
+            col5: self.col5,
+            col6: self.col6,
+            col7: self.col7,
+            row0: self.row0,
+            row1: self.row1,
+            row2: self.row2,
+            row3: self.row3,
+        };
+
+        Sets {
+            accel,
+            analog,
+            audio,
+            dotstar,
+            i2c,
+            keypad,
+            neopixel: self.neopixel,
+            port: self.port,
+        }
+    }
+}
 
 /// Sets of pins split apart by category
 pub struct Sets {
