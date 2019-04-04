@@ -1,15 +1,14 @@
 #![no_std]
 #![no_main]
 
-extern crate cortex_m;
-extern crate panic_halt;
-extern crate smart_leds;
-extern crate trellis_m4 as hal;
-extern crate ws2812_nop_samd51 as ws2812;
+#[allow(unused_imports)]
+use panic_halt;
+use trellis_m4 as hal;
+use ws2812_nop_samd51 as ws2812;
 
 use hal::prelude::*;
-use hal::{entry, Peripherals, CorePeripherals};
 use hal::{clock::GenericClockController, delay::Delay};
+use hal::{entry, CorePeripherals, Peripherals};
 
 use smart_leds::brightness;
 use smart_leds::Color;
