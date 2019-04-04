@@ -4,7 +4,7 @@
 extern crate atsamd_hal as hal;
 
 #[cfg(feature = "adxl343")]
-extern crate adxl343;
+pub extern crate adxl343;
 
 #[cfg(feature = "rt")]
 extern crate cortex_m_rt;

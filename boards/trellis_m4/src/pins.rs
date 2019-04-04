@@ -54,7 +54,7 @@ impl Accelerometer {
         sercom: SERCOM2,
         mclk: &mut MCLK,
         port: &mut Port,
-    ) -> Result<Adxl343<I2CMaster2>, I2CError> {
+    ) -> Result<Adxl343<I2CMaster2>, adxl343::accelerometer::Error<I2CError>> {
         Adxl343::new(self.i2c_master(clocks, 100.khz(), sercom, mclk, port))
     }
 

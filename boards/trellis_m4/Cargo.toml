@@ -23,7 +23,7 @@ version = "~0.6"
 optional = true
 
 [dependencies.adxl343]
-version = "~0.2"
+version = "~0.4"
 optional = true
 
 [dependencies.atsamd-hal]
@@ -70,11 +70,15 @@ required-features = ["adxl343"]
 name = "neopixel_blink"
 
 [[example]]
+name = "neopixel_orientation"
+required-features = ["adxl343"]
+
+[[example]]
 name = "neopixel_rainbow"
 
 [[example]]
 name = "neopixel_keypad"
-required-features = ["keypad"]
+required-features = ["keypad-unproven"]
 
 [package.metadata.docs.rs]
 features = ["adxl343", "keypad-unproven"]
