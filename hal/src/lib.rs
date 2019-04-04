@@ -34,7 +34,7 @@ macro_rules! dbgprint {
     ($($arg:tt)*) => {{}};
 }
 
-pub use embedded_hal as hal;
+pub extern crate embedded_hal as hal;
 pub use paste;
 
 #[cfg(not(feature="samd51"))]
