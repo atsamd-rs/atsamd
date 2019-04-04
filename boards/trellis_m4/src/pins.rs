@@ -1,12 +1,12 @@
 //! NeoTrellis M4 Express pins
 
-use gpio::{Floating, Input, Port};
+use crate::gpio::{Floating, Input, Port};
 #[cfg(feature = "adxl343")]
 use hal::{prelude::*, sercom::I2CError};
-use hal::clock::*;
-use hal::gpio::*;
-use hal::sercom::{I2CMaster2, I2CMaster4, PadPin};
-use hal::time::Hertz;
+use crate::hal::clock::*;
+use crate::hal::gpio::*;
+use crate::hal::sercom::{I2CMaster2, I2CMaster4, PadPin};
+use crate::hal::time::Hertz;
 use super::{SERCOM2, SERCOM4, MCLK};
 
 #[cfg(feature = "adxl343")]
