@@ -3,11 +3,10 @@
 #![no_std]
 #![no_main]
 
-extern crate cortex_m;
 extern crate panic_halt;
-extern crate smart_leds;
-extern crate trellis_m4 as hal;
-extern crate ws2812_nop_samd51 as ws2812;
+
+use trellis_m4 as hal;
+use ws2812_nop_samd51 as ws2812;
 
 use hal::adxl343::accelerometer::Accelerometer;
 use hal::prelude::*;

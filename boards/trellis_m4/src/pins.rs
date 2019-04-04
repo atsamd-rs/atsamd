@@ -1,6 +1,7 @@
 //! NeoTrellis M4 Express pins
 
-use super::{atsamd51g19a, MCLK, SERCOM2, SERCOM4};
+use super::{atsamd51g19a, hal, MCLK, SERCOM2, SERCOM4};
+
 use hal::clock::*;
 use hal::define_pins;
 use hal::gpio::{self, *};

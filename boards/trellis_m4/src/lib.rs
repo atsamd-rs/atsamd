@@ -1,16 +1,15 @@
 #![no_std]
 #![recursion_limit = "1024"]
 
-extern crate atsamd_hal as hal;
+pub mod pins;
 
 #[cfg(feature = "adxl343")]
-pub extern crate adxl343;
+pub use adxl343;
 
 #[cfg(feature = "keypad-unproven")]
-#[macro_use]
-pub extern crate keypad;
+pub use keypad;
 
-pub mod pins;
+use atsamd_hal as hal;
 
 #[cfg(feature = "rt")]
 pub use cortex_m_rt::entry;
@@ -24,6 +23,8 @@ use hal::time::Hertz;
 
 #[cfg(feature = "keypad-unproven")]
 use hal::gpio::{OpenDrain, Output, PullUp};
+#[cfg(feature = "keypad-unproven")]
+use keypad::{keypad_new, keypad_struct};
 
 /// Number of Neopixels on the device
 pub const NEOPIXEL_COUNT: usize = 32;
