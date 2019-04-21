@@ -57,6 +57,8 @@ define_pins!(
     pin d5 = a16,
     /// Pin 6, PWM capable
     pin d6 = a18,
+    /// Pin 8, Also NEOPIX.
+    pin d8 = b3,
     /// Pin 9, PWM capable.  Also analog input (A7)
     pin d9 = a19,
     /// Pin 10, PWM capable
