@@ -1,4 +1,4 @@
-use gpio::{self, IntoFunction, Port};
+use crate::gpio::{self, IntoFunction, Port};
 
 /// The PadPin trait makes it more ergonomic to convert a
 /// pin into a Sercom pad.  You should not implement this

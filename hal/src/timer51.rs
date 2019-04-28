@@ -1,16 +1,16 @@
 //! Working with timer counter hardware
-use hal::timer::{CountDown, Periodic};
-use target_device::tc0::COUNT16;
+use crate::hal::timer::{CountDown, Periodic};
+use crate::target_device::tc0::COUNT16;
 #[allow(unused)]
-use target_device::{MCLK, TC3};
+use crate::target_device::{MCLK, TC3};
 
 // Only the G variants are missing these timers
 #[cfg(all(not(feature = "samd51g19a"), not(feature = "samd51g18a")))]
-use target_device::{TC4, TC5};
+use crate::target_device::{TC4, TC5};
 
-use clock;
+use crate::clock;
 use nb;
-use time::Hertz;
+use crate::time::Hertz;
 use void::Void;
 
 // Note:

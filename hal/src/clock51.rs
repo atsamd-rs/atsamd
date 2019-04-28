@@ -3,10 +3,10 @@
 //! before you can set up most of the peripherals on the atsamd51 device.
 //! The other types in this module are used to enforce at compile time
 //! that the peripherals have been correctly configured.
-use target_device::gclk::pchctrl::GENR::*;
-use target_device::{self, GCLK, NVMCTRL, OSCCTRL, MCLK, OSC32KCTRL};
-use target_device::gclk::genctrl::SRCR::*;
-use time::{Hertz};
+use crate::target_device::gclk::pchctrl::GENR::*;
+use crate::target_device::{self, GCLK, NVMCTRL, OSCCTRL, MCLK, OSC32KCTRL};
+use crate::target_device::gclk::genctrl::SRCR::*;
+use crate::time::{Hertz};
 
 pub type ClockGenId = target_device::gclk::pchctrl::GENR;
 pub type ClockSource = target_device::gclk::genctrl::SRCR;

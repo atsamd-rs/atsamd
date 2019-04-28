@@ -8,6 +8,7 @@ license = "MIT OR Apache-2.0"
 repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
 documentation = "https://atsamd-rs.github.io/atsamd/atsamd21g18a/metro_m0/"
+edition = "2018"
 
 [dependencies]
 cortex-m = "~0.5"

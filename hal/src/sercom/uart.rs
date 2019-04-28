@@ -1,15 +1,15 @@
-use clock;
+use crate::clock;
+use crate::sercom::pads::*;
+use crate::target_device::sercom0::USART;
+use crate::target_device::Interrupt;
+use crate::target_device::{NVIC, PM, SERCOM0, SERCOM1, SERCOM2, SERCOM3};
+#[cfg(feature = "samd21g18a")]
+use crate::target_device::{SERCOM4, SERCOM5};
+use crate::time::Hertz;
 use core::fmt;
 use hal::blocking::serial::{write::Default, Write};
 use hal::serial;
 use nb;
-use sercom::pads::*;
-use target_device::sercom0::USART;
-use target_device::Interrupt;
-use target_device::{NVIC, PM, SERCOM0, SERCOM1, SERCOM2, SERCOM3};
-#[cfg(feature = "samd21g18a")]
-use target_device::{SERCOM4, SERCOM5};
-use time::Hertz;
 
 macro_rules! uart_pinout {
     ([$($Type:ident:

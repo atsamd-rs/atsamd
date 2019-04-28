@@ -1,2 +1,2 @@
-pub use hal::atsamd21g18a;
 pub use hal::prelude::*;
+pub use hal::target_device as atsamd21g18a;
