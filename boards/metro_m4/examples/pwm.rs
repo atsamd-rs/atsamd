@@ -9,7 +9,7 @@ use hal::clock::GenericClockController;
 use hal::{Peripherals, CorePeripherals};
 use hal::prelude::*;
 use hal::delay::Delay;
-use hal::pwm::{Pwm2, Pwm2Wrapper};
+use hal::pwm::Pwm2;
 use cortex_m_rt::entry;
 
 #[entry]
@@ -27,15 +27,13 @@ fn main() -> ! {
 
     let d12 = pins.d12.into_function_e(&mut pins.port);
     let gclk0 = clocks.gclk0();
-    let pwm2 = Pwm2::new(
+    let mut pwm2 = Pwm2::new(
         &clocks.tc2_tc3(&gclk0).unwrap(),
         1.khz(),
         peripherals.TC2,
         hal::pwm::TC2Pinout::Pa17(d12),
         &mut peripherals.MCLK,
     );
-
-    let mut pwm2 = Pwm2Wrapper { pwm: pwm2 };
 
     let max_duty = pwm2.get_max_duty();
 

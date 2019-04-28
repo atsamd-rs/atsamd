@@ -86,7 +86,7 @@ pub mod sercom;
 #[path = "pwm51.rs"]
 pub mod pwm;
 
-#[cfg(all(feature = "unproven", not(feature="samd51")))]
+#[cfg(not(feature="samd51"))]
 pub mod pwm;
 
 pub mod delay;
