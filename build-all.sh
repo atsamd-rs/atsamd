@@ -18,6 +18,9 @@ cargo build --manifest-path boards/sodaq_one/Cargo.toml --examples
 pushd boards/metro_m4
 cargo build --examples
 popd
+pushd boards/pyportal
+cargo build --examples
+popd
 pushd boards/trellis_m4
 cargo build --examples
 cargo build --features=keypad-unproven --examples
