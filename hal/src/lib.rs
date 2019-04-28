@@ -21,6 +21,12 @@ pub extern crate atsamd51j19a;
 #[cfg(feature = "samd51j19a")]
 pub use atsamd51j19a as target_device;
 
+#[cfg(feature = "samd51j20a")]
+pub extern crate atsamd51j20a;
+#[cfg(feature = "samd51j20a")]
+pub use atsamd51j20a as target_device;
+
+
 #[cfg_attr(feature = "usb", macro_use)]
 extern crate bitfield;
 
