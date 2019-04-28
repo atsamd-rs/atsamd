@@ -1,14 +1,14 @@
 #![no_std]
 #![recursion_limit = "1024"]
 
-extern crate atsamd_hal as hal;
+pub extern crate atsamd_hal as hal;
 
 #[cfg(feature = "rt")]
 extern crate cortex_m_rt;
 #[cfg(feature = "rt")]
 pub use cortex_m_rt::entry;
 
-pub use hal::atsamd51j19a::*;
+pub use hal::target_device::*;
 use hal::prelude::*;
 pub use hal::*;
 
@@ -26,7 +26,7 @@ define_pins!(
     /// Maps the pins to their arduino names and
     /// the numbers printed on the board.
     struct Pins,
-    target_device: atsamd51j19a,
+    target_device: target_device,
 
     /// Analog pin 0.  Can act as a true analog output
     /// as it has a DAC (which is not currently supported

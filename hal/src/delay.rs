@@ -3,9 +3,9 @@
 use cortex_m::peripheral::syst::SystClkSource;
 use cortex_m::peripheral::SYST;
 
-use clock::GenericClockController;
+use crate::clock::GenericClockController;
+use crate::time::Hertz;
 use hal::blocking::delay::{DelayMs, DelayUs};
-use time::Hertz;
 
 /// System timer (SysTick) as a delay provider
 pub struct Delay {

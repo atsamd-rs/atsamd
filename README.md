@@ -37,6 +37,8 @@ In addition to the generic crates, there are also crates for popular ATSAMD21/51
 * [`sodaq_one`](https://atsamd-rs.github.io/atsamd/atsamd21g18a/sodaq_one/)
 * [`metro_m4`](https://atsamd-rs.github.io/atsamd/atsamd51j19a/metro_m4/)
 * [`trellis_m4`](https://atsamd-rs.github.io/atsamd/atsamd51g19a/trellis_m4/)
+* [`feather_m4`](https://atsamd-rs.github.io/atsamd/atsamd51j19a/feather_m4/)
+
 
 ## Building
 

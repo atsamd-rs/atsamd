@@ -1,6 +1,8 @@
+use bitfield::bitfield;
 use core::fmt::{Debug, Error as FmtError, Formatter};
 use core::mem;
 use core::ptr::null_mut;
+
 type FmtResult = Result<(), FmtError>;
 
 bitfield! {

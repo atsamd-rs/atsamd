@@ -1,23 +1,15 @@
 #![no_std]
 #![no_main]
 
-extern crate cortex_m;
-extern crate cortex_m_semihosting;
-#[macro_use]
 extern crate metro_m0 as hal;
-
-use hal::entry;
-use hal::prelude::*;
-use hal::usb_device;
-use usb_device::prelude::*;
-
 extern crate panic_rtt;
 
-extern crate cortex_m_rt;
 use cortex_m_rt::{exception, ExceptionFrame};
-
 use hal::clock::GenericClockController;
-use hal::usb_device::bus::UsbBusWrapper;
+use hal::hal::usb::usb_device::bus::UsbBusWrapper;
+use hal::hal::usb::usb_device::prelude::*;
+use hal::prelude::*;
+use hal::{dbgprint, entry};
 use hal::{interrupt, CorePeripherals, Peripherals};
 
 static mut USB_BUS: Option<UsbBusWrapper<hal::UsbBus>> = None;
@@ -27,9 +19,9 @@ static mut USB_SERIAL: Option<cdc_acm::SerialPort<hal::UsbBus>> = None;
 // Minimal CDC-ACM implementation
 mod cdc_acm {
     use core::cmp::min;
-    use usb_device::class_prelude::*;
-    use usb_device::utils::AtomicMutex;
-    use usb_device::Result;
+    use hal::hal::usb::usb_device::class_prelude::*;
+    use hal::hal::usb::usb_device::utils::AtomicMutex;
+    use hal::hal::usb::usb_device::Result;
 
     pub const USB_CLASS_CDC: u8 = 0x02;
     const USB_CLASS_DATA: u8 = 0x0a;

@@ -13,7 +13,7 @@ use atsamd_hal as hal;
 
 #[cfg(feature = "rt")]
 pub use cortex_m_rt::entry;
-pub use hal::{atsamd51g19a::*, *};
+pub use hal::{target_device::*, *};
 pub use pins::Pins;
 
 use gpio::{Input, Port};

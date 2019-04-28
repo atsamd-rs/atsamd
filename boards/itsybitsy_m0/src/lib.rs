@@ -7,8 +7,8 @@ extern crate cortex_m_rt;
 #[cfg(feature = "rt")]
 pub use cortex_m_rt::entry;
 
-pub use hal::atsamd21g18a::*;
 use hal::prelude::*;
+pub use hal::target_device::*;
 pub use hal::*;
 
 use gpio::{Floating, Input, Output, Port, PushPull};
@@ -20,7 +20,7 @@ define_pins!(
     /// Maps the pins to their arduino names and
     /// the numbers printed on the board.
     struct Pins,
-    target_device: atsamd21g18a,
+    target_device: target_device,
 
     /// Analog pin 0.  Can act as a true analog output
     /// as it has a DAC (which is not currently supported

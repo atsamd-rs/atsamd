@@ -3,11 +3,11 @@
 //! before you can set up most of the peripherals on the atsamd21 device.
 //! The other types in this module are used to enforce at compile time
 //! that the peripherals have been correctly configured.
-use target_device::gclk::clkctrl::GENR::*;
-use target_device::gclk::clkctrl::IDR::*;
-use target_device::gclk::genctrl::SRCR::*;
-use target_device::{self, GCLK, NVMCTRL, PM, SYSCTRL};
-use time::{Hertz, U32Ext};
+use crate::target_device::gclk::clkctrl::GENR::*;
+use crate::target_device::gclk::clkctrl::IDR::*;
+use crate::target_device::gclk::genctrl::SRCR::*;
+use crate::target_device::{self, GCLK, NVMCTRL, PM, SYSCTRL};
+use crate::time::{Hertz, U32Ext};
 
 pub type ClockId = target_device::gclk::clkctrl::IDR;
 pub type ClockGenId = target_device::gclk::clkctrl::GENR;

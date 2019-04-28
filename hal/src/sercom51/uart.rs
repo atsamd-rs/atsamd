@@ -1,18 +1,18 @@
-use clock;
+use crate::clock;
 use core::fmt;
-use hal::blocking::serial::{write::Default, Write};
-use hal::serial;
+use crate::hal::blocking::serial::{write::Default, Write};
+use crate::hal::serial;
 use nb;
-use sercom::pads::*;
-use target_device::sercom0::USART;
-use target_device::Interrupt::{
+use crate::sercom::pads::*;
+use crate::target_device::sercom0::USART;
+use crate::target_device::Interrupt::{
     SERCOM0_0, SERCOM1_0, SERCOM2_0, SERCOM3_0, SERCOM4_0, SERCOM5_0,
     SERCOM0_1, SERCOM1_1, SERCOM2_1, SERCOM3_1, SERCOM4_1, SERCOM5_1,
     SERCOM0_2, SERCOM1_2, SERCOM2_2, SERCOM3_2, SERCOM4_2, SERCOM5_2
 };
-use target_device::{NVIC, MCLK, SERCOM0, SERCOM1, SERCOM2, SERCOM3};
-use target_device::{SERCOM4, SERCOM5};
-use time::Hertz;
+use crate::target_device::{NVIC, MCLK, SERCOM0, SERCOM1, SERCOM2, SERCOM3};
+use crate::target_device::{SERCOM4, SERCOM5};
+use crate::time::Hertz;
 
 macro_rules! uart_pinout {
     ([$($Type:ident:
