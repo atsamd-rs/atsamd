@@ -33,8 +33,8 @@ panic-semihosting = "~0.5"
 panic_rtt = "~0.2"
 cortex-m-semihosting = "~0.3"
 cortex-m-rtfm = "~0.4"
-smart-leds = "~0.1" 
-smart-leds-trait = "~0.1" 
+smart-leds = "~0.1"
+ws2812-nop-samd51 = { git = "https://github.com/smart-leds-rs/ws2812-nop-samd51.git" }
 
 [dev-dependencies.ws2812-timer-delay]
 version = "~0.1"
