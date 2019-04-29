@@ -23,6 +23,7 @@ pub use hal::usb::UsbBus;
 use usb_device::bus::UsbBusWrapper;
 
 define_pins!(
+
     /// Maps the pins to their arduino names and
     /// the numbers printed on the board.
     struct Pins,
@@ -31,75 +32,103 @@ define_pins!(
     /// Analog pin 0.  Can act as a true analog output
     /// as it has a DAC (which is not currently supported
     /// by this hal) as well as input.
-    pin a0 = a2,
+    pin speaker = a2,
+    /// enable speaker amplifier
+    pin speaker_enable = a27,
 
-    /// Analog Pin 1
-    pin a1 = a5,
-    /// Analog Pin 2
-    pin a2 = a6,
-    /// Analog Pin 3
-    pin a3 = a4,
-    /// Analog Pin 4
-    pin a4 = b8,
-    /// Analog Pin 5
-    pin a5 = b9,
+    /// Light sensor
+    pin light = a7,
 
-    /// Pin 0, rx.
-    pin d0 = a23,
-    /// Pin 1, tx.
-    pin d1 = a22,
-    /// Pin 2
-    pin d2 = b17,
-    /// Pin 3 
-    pin d3 = b16,
-    /// Pin 4
-    pin d4 = b13,
-    /// Pin 5
-    pin d5 = b14,
-    /// Pin 6
-    pin d6 = b15,
-    /// Pin 7
-    pin d7 = b12,
-    /// Pin 8
-    pin d8 = a21,
-    /// Pin 9
-    pin d9 = a20,
-    /// Pin 10
-    pin d10 = a18,
-    /// Pin 11
-    pin d11 = a19,
-    /// Pin 12
-    pin d12 = a17,
-    /// Digital pin number 13, which is also attached to
-    /// the red LED.  PWM capable.
-    pin d13 = a16,
-    pin sda = b2,
-    pin scl = b3,
+    // STEMMA I2C connectors
+    /// Pin A1
+    pin a1 = a4,
+    /// Pin A4
+    pin a4 = a5,
 
-    /// The data line attached to the neopixel.
-    /// Is also attached to SWCLK.
+    /// D13 LED
+    pin d13 = b23,
+    /// Neopixel status LED
     pin neopixel = b22,
 
-    /// The SPI SCK attached the to 2x3 header
-    pin sck = a13,
-    /// The SPI MOSI attached the to 2x3 header
+    // TFT(Thin-film-transistor liquid-crystal display) control ports
+    /// TFT Reset
+    pin tft_reset = a0,
+    /// TFT RD
+    pin tft_rd = b4,
+    /// TFT RS
+    pin tft_rs = b5,
+    /// TFT CS
+    pin tft_cs = b6,
+    /// TFT TE
+    pin tft_te = b7,
+    /// TFT WR
+    pin tft_wr = b9,
+    /// TFT Backlight
+    pin tft_backlight = b31,
+
+    /// LCD Data 0
+    pin lcd_data0 = a16,
+    /// LCD Data 1
+    pin lcd_data1 = a17,
+    /// LCD Data 2
+    pin lcd_data2 = a18,
+    /// LCD Data 3
+    pin lcd_data3 = a19,
+    /// LCD Data 4
+    pin lcd_data4 = a20,
+    /// LCD Data 5
+    pin lcd_data5 = a21,
+    /// LCD Data 6
+    pin lcd_data6 = a22,
+    /// LCD Data 7
+    pin lcd_data7 = a23,
+
+    /// Touchscreen pins
+    /// Touch YD
+    pin touch_yd = b0,
+    /// Touch XL
+    pin touch_xl = b1,
+    /// Touch YU
+    pin touch_yu = a6,
+    /// Touch XR
+    pin touch_xr = b8,
+
+    // ESP control - ESP32 WiFi
+    /// Pin ESP CS
+    pin esp_cs = b14,
+    /// Pin ESP GPIO0
+    pin esp_gpio0 = b15,
+    /// Pin ESP Busy
+    pin esp_busy = b16,
+    /// Pin ESP Reset
+    pin esp_reset = b17,
+    /// Pin ESP RTS
+    pin esp_rts = a15,
+
+    // UART - Universal Asynchronous Receiver/Transmitter
+    /// Pin TX
+    pin tx = b12,
+    /// Pin RX
+    pin rx = b13,
+
+    // SPI - Serial Peripheral Interface
+    /// Pin MOSI
     pin mosi = a12,
-    /// The SPI MISO attached the to 2x3 header
+    /// Pin SCK
+    pin sck = a13,
+    /// Pin MISO
     pin miso = a14,
 
-    /// The SCK pin attached to the on-board SPI flash
-    pin flash_sck = b10,
-    /// The MOSI pin attached to the on-board SPI flash
-    pin flash_mosi = a8,
-    /// The MISO pin attached to the on-board SPI flash
-    pin flash_miso = a9,
-    /// The CS pin attached to the on-board SPI flash
-    pin flash_cs = b11,
+    // I2C - ADT7410 Analog Devices temperature sensor
+    /// Pin SDA
+    pin sda = b2,
+    /// Pin SCL
+    pin scl = b3,
 
-    /// The USB D- pad
-    pin usb_dm = a24,
-    /// The USB D+ pad
-    pin usb_dp = a25,
+    /// Pin SD CS
+    pin sd_cs = b30,
+    /// Pin SD card detect
+    pin sd_card_detect = a1,
 );
 
 /// Convenience for setting up the 2x3 header block for SPI.
