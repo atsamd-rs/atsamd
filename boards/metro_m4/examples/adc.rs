@@ -59,7 +59,7 @@ fn main() -> ! {
 
     loop {
         let data: u16 = adc0.read(&mut a0).unwrap();
-        uart.write_fmt(format_args!("{}", data)).unwrap();
+        uart.write_fmt(format_args!("{}\n", data)).unwrap();
         delay.delay_ms(1000u16);
     }
 }
