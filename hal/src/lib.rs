@@ -60,4 +60,3 @@ pub use self::samd21::*;
 
 #[cfg(feature = "usb")]
 pub use self::samd21::usb;
-

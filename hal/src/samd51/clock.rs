@@ -144,7 +144,7 @@ pub struct GenericClockController {
 
 impl GenericClockController {
     /// Reset the clock controller, configure the system to run
-    /// at 48Mhz and reset various clock dividers.
+    /// at 120Mhz and reset various clock dividers.
     pub fn with_internal_32kosc(
         gclk: GCLK,
         mclk: &mut MCLK,
@@ -156,7 +156,7 @@ impl GenericClockController {
     }
 
     /// Reset the clock controller, configure the system to run
-    /// at 48Mhz and reset various clock dividers.
+    /// at 120Mhz and reset various clock dividers.
     pub fn with_external_32kosc(
         gclk: GCLK,
         mclk: &mut MCLK,
@@ -230,7 +230,7 @@ impl GenericClockController {
                 Hertz(0),
                 Hertz(0),
                 Hertz(0),
-                Hertz(0),
+                MegaHertz(2).into(),
                 Hertz(0),
                 Hertz(0),
                 Hertz(0),
@@ -238,7 +238,7 @@ impl GenericClockController {
                 Hertz(0),
                 Hertz(0),
             ],
-            used_clocks: 1u64 << DFLL48.bits(),
+            used_clocks: 1u64 << DPLL0.bits(),
         }
     }
 
@@ -378,6 +378,8 @@ clock_generator!(
     (sercom4_core, Sercom4CoreClock, SERCOM4_CORE),
     (sercom5_core, Sercom5CoreClock, SERCOM5_CORE),
     (usb, UsbClock, USB),
+    (adc0, Adc0Clock, ADC0),
+    (adc1, Adc1Clock, ADC1),
 );
 
 /// The frequency of the 48Mhz source.
