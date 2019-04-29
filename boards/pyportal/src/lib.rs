@@ -2,13 +2,12 @@
 #![recursion_limit = "1024"]
 
 pub mod pins;
-extern crate atsamd_hal as hal;
+use atsamd_hal as hal;
 
-#[cfg(feature = "rt")]
-extern crate cortex_m_rt;
 #[cfg(feature = "rt")]
 pub use cortex_m_rt::entry;
 
+pub use crate::pins::Pins;
 pub use hal::target_device::*;
 pub use hal::*;
 

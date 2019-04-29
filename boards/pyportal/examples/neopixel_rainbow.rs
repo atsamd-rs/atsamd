@@ -28,11 +28,6 @@ fn main() -> ! {
     );
     let mut pins = hal::Pins::new(peripherals.PORT);
 
-    //let gclk0 = clocks.gclk0();
-    //let timer_clock = clocks.tc2_tc3(&gclk0).unwrap();
-    //let mut timer = TimerCounter::tc3_(&timer_clock, peripherals.TC3, &mut
-    // peripherals.MCLK); timer.start(3_000_000u32.hz());
-
     let neopixel_pin = pins.neopixel.into_push_pull_output(&mut pins.port);
     let mut neopixel = ws2812::Ws2812::new(neopixel_pin);
     let mut delay = Delay::new(core.SYST, &mut clocks);

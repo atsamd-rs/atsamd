@@ -1,9 +1,9 @@
 //! PyPortal pins
 
-use super::target_device;
+use super::{hal, target_device};
 
+use crate::hal::gpio::{self, *};
 use hal::define_pins;
-use hal::gpio::{self, *};
 
 define_pins!(
     /// Maps the pins to their arduino names and
