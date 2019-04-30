@@ -30,7 +30,7 @@ fn main() -> ! {
     );
     let mut pins = hal::Pins::new(peripherals.PORT);
     let mut delay = hal::delay::Delay::new(core.SYST, &mut clocks);
-    let mut adc0 = Adc::new(peripherals.ADC0, &mut peripherals.MCLK, &mut clocks);
+    let mut adc0 = Adc::adc0(peripherals.ADC0, &mut peripherals.MCLK, &mut clocks);
     let mut a0 = pins.a0.into_function_b(&mut pins.port);
 
     let gclk0 = clocks.gclk0();

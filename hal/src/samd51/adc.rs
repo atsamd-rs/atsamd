@@ -3,15 +3,21 @@ use crate::target_device::{ADC0, ADC1, MCLK};
 use crate::target_device::gclk::genctrl::SRCR::DFLL;
 use crate::target_device::gclk::pchctrl::GENR::GCLK11;
 use crate::clock::GenericClockController;
-use crate::gpio::{Pa2, PfB};
+use crate::gpio::{
+    Pa2, Pa3, Pa4, Pa5, Pa6, Pa7, Pa8, Pa9, Pa10, Pa11, Pb0, Pb1, Pb2, Pb3, Pb4,
+    Pb5, Pb6, Pb7, Pb8, Pb9, PfB
+};
 
 pub struct Adc<ADC> {
     adc: ADC
 }
 
-impl Adc<ADC0> {
-    pub fn new(adc: ADC0, mclk: &mut MCLK, clocks: &mut GenericClockController) -> Self {
-        mclk.apbdmask.modify(|_, w| w.adc0_().set_bit());
+macro_rules! adc_hal {
+    ($($ADC:ident: ($init:ident, $mclk:ident, $apmask:ident),)+) => {
+        $(
+impl Adc<$ADC> {
+    pub fn $init(adc: $ADC, mclk: &mut MCLK, clocks: &mut GenericClockController) -> Self {
+        mclk.$mclk.modify(|_, w| w.$apmask().set_bit());
         // set to 1/(1/(48000000/32) * 6) = 250000 SPS
         let gclk11 = clocks.configure_gclk_divider_and_source(GCLK11, 1, DFLL, false)
             .expect("adc clock setup failed");
@@ -55,10 +61,10 @@ impl Adc<ADC0> {
     }
 }
 
-impl<WORD, PIN> OneShot<ADC0, WORD, PIN> for Adc<ADC0>
+impl<WORD, PIN> OneShot<$ADC, WORD, PIN> for Adc<$ADC>
 where
    WORD: From<u16>,
-   PIN: Channel<ADC0, ID=u8>,
+   PIN: Channel<$ADC, ID=u8>,
 {
    type Error = ();
 
@@ -73,8 +79,51 @@ where
         Ok(result.into())
    }
 }
+        )+
+    }
+}
 
-impl Channel<ADC0> for Pa2<PfB> {
+macro_rules! adc_pins {
+    ($($pin:ident: ($ADC:ident, $chan:expr),)+) => {
+        $(
+
+impl Channel<$ADC> for $pin<PfB> {
    type ID = u8;
-   fn channel() -> u8 { 0x00 }
+   fn channel() -> u8 { $chan }
+}
+        )+
+    }
+}
+
+adc_hal! {
+    ADC0: (adc0, apbdmask, adc0_),
+    ADC1: (adc1, apbdmask, adc1_),
+}
+
+adc_pins! {
+    Pa2:  (ADC0, 0),
+    Pa3:  (ADC0, 1),
+    Pb8:  (ADC0, 2),
+    Pb9:  (ADC0, 3),
+    Pa4:  (ADC0, 4),
+    Pa5:  (ADC0, 5),
+    Pa6:  (ADC0, 6),
+    Pa7:  (ADC0, 7),
+    Pa8:  (ADC0, 8),
+    Pa9:  (ADC0, 9),
+    Pa10: (ADC0, 10),
+    Pa11: (ADC0, 11),
+    Pb0:  (ADC0, 12),
+    Pb1:  (ADC0, 13),
+    Pb2:  (ADC0, 14),
+    Pb3:  (ADC0, 15),
+    
+    Pb8:  (ADC1, 0),
+    Pb9:  (ADC1, 1),
+    Pa8:  (ADC1, 2),
+    Pa9:  (ADC1, 3),
+    Pb4:  (ADC1, 6),
+    Pb5:  (ADC1, 7),
+    Pb6:  (ADC1, 8),
+    Pb7:  (ADC1, 9),
 }
