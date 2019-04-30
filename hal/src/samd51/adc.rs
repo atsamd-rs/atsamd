@@ -27,11 +27,8 @@ impl Adc<ADC0> {
             w.samplenum()._1();  // No averaging
             unsafe { w.adjres().bits(0) } // adjust result by 0
         });
-        while adc.syncbusy.read().avgctrl().bit_is_set() {}
-        // in arduino-land there's something about an inputctrl gain reg here
-        // https://github.com/adafruit/ArduinoCore-samd/blob/ff2cb608a9d2506b3279dd287628c9962dbba249/cores/arduino/wiring_analog.c#L253
         while adc.syncbusy.read().refctrl().bit_is_set() {}
-        adc.refctrl.modify(|_, w| w.refsel().intvcc1()); // 1.65V voltage reference
+        adc.refctrl.modify(|_, w| w.refsel().intvcc0());
         Self { adc }
     }
 
@@ -47,11 +44,9 @@ impl Adc<ADC0> {
         while self.adc.syncbusy.read().enable().bit_is_set() {}
     }
 
-    fn convert(&mut self, pin: u8) -> u16 {
+    fn convert(&mut self) -> u16 {
         // start conversion
         self.adc.swtrig.modify(|_, w| w.start().set_bit());
-        // clear the data ready flag
-        self.adc.intflag.modify(|_, w| w.resrdy().clear_bit()); 
         // do it again because the datasheet tells us to 
         self.adc.swtrig.modify(|_, w| w.start().set_bit());
         while self.adc.intflag.read().resrdy().bit_is_clear() {}
@@ -68,12 +63,12 @@ where
    type Error = ();
 
    fn read(&mut self, _pin: &mut PIN) -> nb::Result<WORD, Self::Error> {
-        let chan = 1 << PIN::channel();
+        let chan = PIN::channel();
         while self.adc.syncbusy.read().inputctrl().bit_is_set() {}
         // pin must be selected before adc is enabled
-        self.adc.inputctrl.modify(|_, w| unsafe {w.muxpos().bits(chan)});
+        self.adc.inputctrl.modify(|_, w| w.muxpos().bits(chan));
         self.power_up();
-        let result = self.convert(chan);
+        let result = self.convert();
         self.power_down();
         Ok(result.into())
    }
