@@ -52,3 +52,27 @@ lto = false
 debug = true
 lto = false 
 opt-level = "s"
+
+[[example]]
+name = "blinky_basic"
+
+[[example]]
+name = "clock_out"
+
+[[example]]
+name = "neopixel_blink"
+
+[[example]]
+name = "neopixel_rainbow"
+
+[[example]]
+name = "pwm"
+
+[[example]]
+name = "serial"
+
+[[example]]
+name = "spi"
+
+[[example]]
+name = "timer"

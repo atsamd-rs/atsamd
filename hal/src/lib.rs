@@ -64,6 +64,13 @@ pub mod timer;
 #[path = "sercom51/mod.rs"]
 pub mod sercom;
 
+#[cfg(feature="samd51")]
+#[path = "pwm51.rs"]
+pub mod pwm;
+
+#[cfg(not(feature="samd51"))]
+pub mod pwm;
+
 pub mod delay;
 pub mod gpio;
 pub mod prelude;

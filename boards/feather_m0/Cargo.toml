@@ -68,3 +68,9 @@ lto = false
 debug = true
 lto = true
 opt-level = "s"
+
+[[example]]
+name = "blinky_basic"
+
+[[example]]
+name = "pwm"
