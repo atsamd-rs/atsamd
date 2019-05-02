@@ -29,6 +29,7 @@ crates_by_pac = {
     ],
     'atsamd51j19a': [
         'metro_m4',
+        'feather_m4',
     ],
     'atsamd51j20a': [
         'pyportal',

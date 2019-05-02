@@ -24,3 +24,6 @@ popd
 pushd boards/trellis_m4
 cargo build --features=keypad-unproven --examples
 popd
+pushd boards/feather_m4
+cargo build --examples
+popd
