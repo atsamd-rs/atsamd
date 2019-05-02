@@ -1,10 +1,10 @@
-use gpio::{Pa19, Pa15, PfE};
-use clock;
-use timer::TimerParams;
-use time::Hertz;
-use hal::PwmPin;
+use crate::gpio::{Pa19, Pa15, PfE};
+use crate::clock;
+use crate::timer::TimerParams;
+use crate::time::Hertz;
+use crate::hal::PwmPin;
 
-use target_device::{TC3, PM};
+use crate::target_device::{TC3, PM};
 
 pub enum TC3Pinout {
     Pa15(Pa15<PfE>),

@@ -1,16 +1,16 @@
-use gpio::{Pa1, Pa5, Pa7, Pa9, Pa11, Pa13, Pa15, Pa17, Pa19, Pb31, PfE};
+use crate::gpio::{Pa1, Pa5, Pa7, Pa9, Pa11, Pa13, Pa15, Pa17, Pa19, Pb31, PfE};
 
 #[cfg(all(not(feature = "samd51g19a"), not(feature = "samd51g18a")))]
-use gpio::{Pa23, Pa25, Pb9, Pb11, Pb13, Pb15};
+use crate::gpio::{Pa23, Pa25, Pb9, Pb11, Pb13, Pb15};
 
-use clock;
-use timer::TimerParams;
-use time::Hertz;
-use hal::PwmPin;
-use target_device::{TC0, TC1, TC2, TC3, MCLK};
+use crate::clock;
+use crate::timer::TimerParams;
+use crate::time::Hertz;
+use crate::hal::PwmPin;
+use crate::target_device::{TC0, TC1, TC2, TC3, MCLK};
 
 #[cfg(all(not(feature = "samd51g19a"), not(feature = "samd51g18a")))]
-use target_device::{TC4, TC5};
+use crate::target_device::{TC4, TC5};
 
 pub enum TC0Pinout {
     Pa5(Pa5<PfE>),
