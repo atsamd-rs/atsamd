@@ -30,6 +30,9 @@ crates_by_pac = {
     'atsamd51j19a': [
         'metro_m4',
     ],
+    'atsamd51j20a': [
+        'pyportal',
+    ],
 }
 
 def copy_skeleton_crate(src_dir, dest_dir):

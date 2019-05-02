@@ -49,6 +49,11 @@ path = "../pac/atsamd51j19a"
 version = "~0.4"
 optional = true
 
+[dependencies.atsamd51j20a]
+path = "../pac/atsamd51j20a"
+version = "~0.4"
+optional = true
+
 
 #[dependencies.usb-device]
 #git = "https://github.com/wez/usb-device"
@@ -80,6 +85,8 @@ samd51g19a = ["atsamd51g19a"]
 samd51g19a-rt = ["atsamd51g19a", "atsamd51g19a/rt"]
 samd51j19a = ["atsamd51j19a"]
 samd51j19a-rt = ["atsamd51j19a", "atsamd51j19a/rt"]
+samd51j20a = ["atsamd51j20a"]
+samd51j20a-rt = ["atsamd51j20a", "atsamd51j20a/rt"]
 unproven = ["embedded-hal/unproven"]
 use_rtt = ["jlink_rtt"]
 #usb = ["usb-device"]

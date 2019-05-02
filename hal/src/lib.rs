@@ -13,6 +13,9 @@ pub use atsamd51g19a as target_device;
 #[cfg(feature = "samd51j19a")]
 pub use atsamd51j19a as target_device;
 
+#[cfg(feature = "samd51j20a")]
+pub use atsamd51j20a as target_device;
+
 #[cfg(feature = "use_rtt")]
 pub use jlink_rtt;
 
