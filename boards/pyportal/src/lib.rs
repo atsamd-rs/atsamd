@@ -21,7 +21,6 @@ pub use hal::usb::UsbBus;
 #[cfg(feature = "usb")]
 use usb_device::bus::UsbBusWrapper;
 
-/// Convenience for setting up the 2x3 header block for SPI.
 /// This powers up SERCOM2 and configures it for use as an
 /// SPI Master in SPI Mode 0.
 /// Unlike the `flash_spi_master` function, this
