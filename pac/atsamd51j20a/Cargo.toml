@@ -2,7 +2,11 @@
 name = "atsamd51j20a"
 description = "Peripheral access API for ATSAMD5J20A microcontrollers (generated using svd2rust)"
 version = "0.4.0"
-authors = ["Wez Furlong <wez@wezfurlong.org>", "Paul Sajna <sajattack@gmail.com>"]
+authors = [
+   "Wez Furlong <wez@wezfurlong.org>",
+   "Paul Sajna <sajattack@gmail.com>",
+   "Shella Stephens <shella@infracoven.io",
+]
 keywords = ["no-std", "arm", "cortex-m"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/atsamd-rs/atsamd"
