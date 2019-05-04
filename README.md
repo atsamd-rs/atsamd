@@ -16,8 +16,9 @@ There are a couple of crates provided by this repo:
   auto-generated crate providing access to the peripherals
   specified for this device by its SVD file.  This is the MCU used in the Trinket M0
   and Gemma M0 boards from Adafruit.
-* [`atsamd51j19a`](https://atsamd-rs.github.io/atsamd/atsamd51j19a/atsamd51j19a/) is an auto-generated crate providing accesss to the peripherals specified for this device by its SVD file. This is the MCU used in the Metro M4 and Feather M4 boards from Adafruit.
-* [`atsamd51g19a`](https://atsamd-rs.github.io/atsamd/atsamd51g19a/atsamd51g19a/) is an auto-generated crate providing accesss to the peripherals specified for this device by its SVD file. This is the MCU used in the Trellis M4 and ItsyBitsy M4 boards from Adafruit.
+* [`atsamd51j19a`](https://atsamd-rs.github.io/atsamd/atsamd51j19a/atsamd51j19a/) is an auto-generated crate providing access to the peripherals specified for this device by its SVD file. This is the MCU used in the Metro M4 and Feather M4 boards from Adafruit.
+* [`atsamd51j20a`](https://atsamd-rs.github.io/atsamd/atsamd51j20a/atsamd51j20a/) is an auto-generated crate providing access to the peripherals specified for this device by its SVD file. This is the MCU used in the PyPortal board from Adafruit.
+* [`atsamd51g19a`](https://atsamd-rs.github.io/atsamd/atsamd51g19a/atsamd51g19a/) is an auto-generated crate providing access to the peripherals specified for this device by its SVD file. This is the MCU used in the Trellis M4 and ItsyBitsy M4 boards from Adafruit.
 * [`atsamd-hal`](https://atsamd-rs.github.io/atsamd/atsamd21g18a/atsamd_hal/) is the result
   of reading the datasheet for the device and encoding
   a type-safe layer over the raw `atsamd21g18a`, `atsamd21e18a`, `atsamd51j19a`, and `atsamd51g19a` crates.  This crate
