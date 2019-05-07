@@ -74,16 +74,22 @@ pub struct PfG;
 /// Peripheral Function H
 pub struct PfH;
 /// Peripheral Function I
+#[cfg(feature = "samd51")]
 pub struct PfI;
 /// Peripheral Function J
+#[cfg(feature = "samd51")]
 pub struct PfJ;
 /// Peripheral Function K
+#[cfg(feature = "samd51")]
 pub struct PfK;
 /// Peripheral Function L
+#[cfg(feature = "samd51")]
 pub struct PfL;
 /// Peripheral Function M
+#[cfg(feature = "samd51")]
 pub struct PfM;
 /// Peripheral Function N
+#[cfg(feature = "samd51")]
 pub struct PfN;
 
 /// A trait that makes it easier to generically manage
