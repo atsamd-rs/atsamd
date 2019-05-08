@@ -16,13 +16,13 @@ pub use cortex_m_rt::entry;
 pub use hal::{target_device::*, *};
 pub use pins::Pins;
 
-use gpio::{Input, Port};
+use gpio::Port;
 use hal::clock::GenericClockController;
 use hal::sercom::I2CMaster4;
 use hal::time::Hertz;
 
 #[cfg(feature = "keypad-unproven")]
-use hal::gpio::{OpenDrain, Output, PullUp};
+use hal::gpio::{Input, OpenDrain, Output, PullUp};
 #[cfg(feature = "keypad-unproven")]
 use keypad::{keypad_new, keypad_struct};
 
