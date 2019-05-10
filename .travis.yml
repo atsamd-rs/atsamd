@@ -37,6 +37,7 @@ jobs:
   include:
     - stage: Document-and-Deploy
       rust: 'nightly'
+      env: ''
       script:
         - ./build-docs.py
       deploy:
