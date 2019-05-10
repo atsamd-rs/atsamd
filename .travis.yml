@@ -1,23 +1,43 @@
 language: rust
+
 cache: cargo
+
+rust:
+  - stable
+  - nightly
+
+env:
+  - BOARD=metro_m0 EXAMPLES="--example=blinky_basic --example=blinky_rtfm"
+  - BOARD=metro_m4 FEATURES="--features=unproven"
+  - BOARD=feather_m0 FEATURES="--features=unproven"
+  - BOARD=feather_m4
+  - BOARD=gemma_m0
+  - BOARD=itsybitsy_m0
+  - BOARD=trinket_m0
+  - BOARD=samd21_mini
+  - BOARD=arduino_mkrzero
+  - BOARD=circuit_playground_express
+  - BOARD=sodaq_one
+  - BOARD=pyportal
+  - BOARD=trellis_m4 FEATURES="--features=keypad-unproven"
+
+matrix:
+  allow_failures:
+    rust:
+      - nightly
+
+before_install:
+  - rustup target add thumbv6m-none-eabi
+  - rustup target add thumbv7em-none-eabihf
+
+script:
+  - "cargo build --manifest-path=boards/$BOARD/Cargo.toml ${EXAMPLES:---examples} $FEATURES"
 
 jobs:
   include:
-    - stage: build
-      script:
-        - rustup target add thumbv6m-none-eabi
-        - rustup target add thumbv7em-none-eabihf
-        - ./build-all.sh
-    - rust: 'nightly'
-      script:
-        - rustup target add thumbv6m-none-eabi
-        - rustup target add thumbv7em-none-eabihf
-        - ./build-all.sh
     - stage: Document-and-Deploy
       rust: 'nightly'
       script:
-        - rustup target add thumbv6m-none-eabi
-        - rustup target add thumbv7em-none-eabihf
         - ./build-docs.py
       deploy:
         provider: pages
@@ -27,6 +47,6 @@ jobs:
         local-dir: doc
 
 stages:
-  - build 
+  - test
   - name: Document-and-Deploy
     if: (NOT type IN (pull_request)) AND (branch = master)
