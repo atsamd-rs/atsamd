@@ -31,7 +31,8 @@ before_install:
   - rustup target add thumbv7em-none-eabihf
 
 script:
-  - "cargo build --manifest-path=boards/$BOARD/Cargo.toml ${EXAMPLES:---examples} $FEATURES"
+  - "cd boards/$BOARD"
+  - "cargo build ${EXAMPLES:---examples} $FEATURES"
 
 jobs:
   include:
