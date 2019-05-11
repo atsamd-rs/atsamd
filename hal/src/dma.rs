@@ -26,721 +26,1050 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-/// Status codes returned by some DMA functions and/or held in
-/// a channel's jobStatus variable.
-enum ZeroDMAstatus {
-    DMA_STATUS_OK = 0,
-    DMA_STATUS_ERR_NOT_FOUND,
-    DMA_STATUS_ERR_NOT_INITIALIZED,
-    DMA_STATUS_ERR_INVALID_ARG,
-    DMA_STATUS_ERR_IO,
-    DMA_STATUS_ERR_TIMEOUT,
-    DMA_STATUS_BUSY,
-    DMA_STATUS_SUSPEND,
-    DMA_STATUS_ABORTED,
-    DMA_STATUS_JOBSTATUS = -1 // For printStatus() function
+mod controller;
+mod status;
+
+#[cfg(not(feature = "samd51"))]
+use self::controller::samd21::{IRQn, IRQN};
+#[cfg(feature = "samd51")]
+use self::controller::samd51::{ChannelRegisters, IRQn};
+use self::controller::*;
+pub use self::status::Status;
+#[cfg(feature = "samd51")]
+use crate::target_device::dmac::chctrla::{TRIGACTW, TRIGSRCW};
+#[cfg(not(feature = "samd51"))]
+use crate::target_device::dmac::chctrlb::{TRIGACTW, TRIGSRCW};
+use crate::target_device::DMAC;
+use core::{
+    mem,
+    sync::atomic::{self, Ordering},
 };
+use vcell::VolatileCell;
 
-class Adafruit_ZeroDMA {
-  public:
-    Adafruit_ZeroDMA(void);
+/// Maximum number of jobs to resume
+const MAX_JOB_RESUME_COUNT: usize = 10000;
 
-    // DMA channel functions
-    ZeroDMAstatus   allocate(void), // Allocates DMA channel
-                    startJob(void),
-                    free(void);     // Deallocates DMA channel
-    void            trigger(void),
-                    setTrigger(uint8_t trigger),
-                    setAction(dma_transfer_trigger_action action),
-                    setCallback(void (*callback)(Adafruit_ZeroDMA *) = NULL,
-                    dma_callback_type type = DMA_CALLBACK_TRANSFER_DONE),
-                    loop(boolean flag),
-                    suspend(void),
-                    resume(void),
-                    abort(void),
-                    setPriority(dma_priority pri),
-                    printStatus(ZeroDMAstatus s = DMA_STATUS_JOBSTATUS);
-    uint8_t         getChannel(void);
+/// DMA clock source
+#[cfg(feature = "samd51")]
+type ClockSource = crate::target_device::MCLK;
 
-    // DMA descriptor functions
-    DmacDescriptor *addDescriptor(void *src, void *dst, uint32_t count = 0,
-                    dma_beat_size size = DMA_BEAT_SIZE_BYTE,
-                    bool srcInc = true, bool dstInc = true,
-                    uint32_t stepSize = DMA_ADDRESS_INCREMENT_STEP_SIZE_1,
-                    bool stepSel = DMA_STEPSEL_DST);
-    void            changeDescriptor(DmacDescriptor *d, void *src = NULL,
-                    void *dst = NULL, uint32_t count = 0);
+/// DMA clock source
+#[cfg(not(feature = "samd51"))]
+type ClockSource = crate::target_device::PM;
 
-    void            _IRQhandler(uint8_t flags); // DO NOT TOUCH
+/// DMA callback types
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum CallbackType {
+    /// Transfer errors are flagged if a bus error is detected during an AHB
+    /// access or when he DMAC fetches an invalid descriptor.
+    TransferError,
 
-    bool 			isActive();
+    /// Transfer finished successfully
+    TransferDone,
 
-  protected:
-    uint8_t                     channel;
-    volatile enum ZeroDMAstatus jobStatus;
-    bool                        hasDescriptors;
-    bool                        loopFlag;
-    uint8_t                     peripheralTrigger;
-    dma_transfer_trigger_action triggerAction;
-    void                        (*callback[DMA_CALLBACK_N])(Adafruit_ZeroDMA *);
-};
-
-#ifdef DMAC_RESERVED_CHANNELS // SAMD core > 1.2.1
-  #include <dma.h> // _descriptor[] and _writeback[] are extern'd here
-  static volatile uint32_t _channelMask = DMAC_RESERVED_CHANNELS;
-#else
-  #include "utility/dma.h"
-  static volatile uint32_t _channelMask = 0; // Bitmask of allocated channels
-
-  // DMA descriptor list entry point (and writeback buffer) per channel
-  __attribute__((__aligned__(16))) static DmacDescriptor // 128 bit alignment
-    _descriptor[DMAC_CH_NUM] SECTION_DMAC_DESCRIPTOR,
-    _writeback[DMAC_CH_NUM]  SECTION_DMAC_DESCRIPTOR;
-#endif
-
-// Pointer to ZeroDMA object for each channel is needed for the
-// ISR (in C, outside of class context) to access callbacks.
-static Adafruit_ZeroDMA *_dmaPtr[DMAC_CH_NUM] = {0}; // Init to NULL
-
-// Adapted from ASF3 interrupt_sam_nvic.c:
-
-static volatile unsigned long cpu_irq_critical_section_counter = 0;
-static volatile unsigned char cpu_irq_prev_interrupt_state     = 0;
-
-static void cpu_irq_enter_critical(void) {
-    if(!cpu_irq_critical_section_counter) {
-        if(__get_PRIMASK() == 0) { // IRQ enabled?
-            __disable_irq();   // Disable it
-            __DMB();
-            cpu_irq_prev_interrupt_state = 1;
-        } else {
-            // Make sure the to save the prev state as false
-            cpu_irq_prev_interrupt_state = 0;
-        }
-
-    }
-
-    cpu_irq_critical_section_counter++;
+    /// Channel suspended
+    ChannelSuspend,
 }
 
-static void cpu_irq_leave_critical(void) {
+/// DMA callbacks
+#[derive(Copy, Clone, Default)]
+pub struct Callbacks {
+    /// Transfer error
+    pub transfer_error: Option<fn(&mut DMA)>,
+
+    /// Transfer done
+    pub transfer_done: Option<fn(&mut DMA)>,
+
+    /// Channel suspended
+    pub channel_suspend: Option<fn(&mut DMA)>,
+}
+
+/// Direct Memory Access
+pub struct DMA<'desc> {
+    /// DMA controller
+    dmac: DMAC,
+
+    /// Channel
+    channel: Option<ChannelId>,
+
+    /// Job status
+    job_status: VolatileCell<Status>,
+
+    /// Has descriptors?
+    has_descriptors: bool,
+
+    /// Loop flag
+    loop_flag: bool,
+
+    /// Peripheral trigger
+    peripheral_trigger: TRIGSRCW,
+
+    /// Trigger action
+    trigger_action: TRIGACTW,
+
+    /// Callbacks
+    callbacks: Callbacks,
+
+    /// Descriptor list
+    descriptor_list: &'desc DescriptorList,
+}
+
+pub struct InterruptState {
+    /// Bitmask of allocated channels
+    channel_mask: VolatileCell<u32>,
+
+    /// IRQ critical section counter
+    cpu_irq_critical_section_counter: VolatileCell<u32>,
+
+    /// IRQ previous interrupt state
+    cpu_irq_prev_interrupt_state: VolatileCell<u8>,
+}
+
+impl Default for InterruptState {
+    fn default() -> Self {
+        Self {
+            channel_mask: VolatileCell::new(0),
+            cpu_irq_critical_section_counter: VolatileCell::new(0),
+            cpu_irq_prev_interrupt_state: VolatileCell::new(0),
+        }
+    }
+}
+
+/// Enter IRQ critical section
+fn cpu_irq_enter_critical(int_state: &InterruptState) {
+    atomic::compiler_fence(Ordering::Acquire);
+
+    if int_state.cpu_irq_critical_section_counter.get() == 0 {
+        if get_primask() == 0 {
+            // IRQ enabled?
+            disable_irq(); // Disable it
+            dmb();
+            int_state.cpu_irq_prev_interrupt_state.set(1);
+        } else {
+            // Make sure the to save the prev state as false
+            int_state.cpu_irq_prev_interrupt_state.set(0);
+        }
+    }
+
+    int_state
+        .cpu_irq_critical_section_counter
+        .set(int_state.cpu_irq_critical_section_counter.get() + 1);
+    atomic::compiler_fence(Ordering::Acquire);
+}
+
+/// Leave IRQ critical section
+fn cpu_irq_leave_critical(int_state: &InterruptState) {
+    atomic::compiler_fence(Ordering::Acquire);
+
     // Check if the user is trying to leave a critical section
     // when not in a critical section
-    if(cpu_irq_critical_section_counter > 0) {
-        cpu_irq_critical_section_counter--;
+    if int_state.cpu_irq_critical_section_counter.get() > 0 {
+        int_state
+            .cpu_irq_critical_section_counter
+            .set(int_state.cpu_irq_critical_section_counter.get() - 1);
 
         // Only enable global interrupts when the counter
         // reaches 0 and the state of the global interrupt flag
         // was enabled when entering critical state */
-        if((!cpu_irq_critical_section_counter) &&
-             cpu_irq_prev_interrupt_state) {
-            __DMB();
-            __enable_irq();
-        }
-    }
-}
-
-// CONSTRUCTOR -------------------------------------------------------------
-
-// Constructor initializes Adafruit_ZeroDMA basics but does NOT allocate a
-// DMA channel (that's done in allocate()) or start a job (that's done in
-// startJob()).  This is because constructors in a global context are called
-// before a sketch's setup() function, which may have some other hardware
-// initialization of its own, don't want it clobbering us.
-Adafruit_ZeroDMA::Adafruit_ZeroDMA(void) {
-    channel           = 0xFF;  // Channel not yet allocated
-    jobStatus         = DMA_STATUS_OK;
-    hasDescriptors    = false; // No descriptors allocated yet
-    loopFlag          = false;
-    peripheralTrigger = 0;     // Software trigger only by default
-    triggerAction     = DMA_TRIGGER_ACTON_TRANSACTION;
-    memset(callback, 0, sizeof(callback));
-}
-
-// TODO: add destructor? Should stop job, delete descriptors, free channel.
-
-// INTERRUPT SERVICE ROUTINE -----------------------------------------------
-
-// This is a C function that exists outside the Adafruit_ZeroDMA context.
-// DMA channel number is determined from the INTPEND register, from this
-// we get a ZeroDMA object pointer through the _dmaPtr[] array.
-// (It's done this way because jobStatus and callback[] are protected
-// elements in the ZeroDMA object -- we can't touch them in C, but the
-// next function after this, being part of the ZeroDMA class, can.)
-
-#ifdef __SAMD51__
-void DMAC_0_Handler(void) {
-#else
-void DMAC_Handler(void) {
-#endif
-    cpu_irq_enter_critical();
-
-    uint8_t channel = DMAC->INTPEND.bit.ID; // Channel # causing interrupt
-    if(channel < DMAC_CH_NUM) {
-        Adafruit_ZeroDMA *dma;
-        if((dma = _dmaPtr[channel])) { // -> Channel's ZeroDMA object
-#ifdef __SAMD51__
-            // Call IRQ handler with channel #
-            dma->_IRQhandler(channel);
-#else
-            DMAC->CHID.bit.ID = channel;
-            // Call IRQ handler with interrupt flag(s)
-            dma->_IRQhandler(DMAC->CHINTFLAG.reg);
-#endif
+        if int_state.cpu_irq_critical_section_counter.get() == 0
+            && int_state.cpu_irq_prev_interrupt_state.get() == 1
+        {
+            dmb();
+            enable_irq();
         }
     }
 
-    cpu_irq_leave_critical();
+    atomic::compiler_fence(Ordering::Acquire);
 }
 
-#ifdef __SAMD51__
-void DMAC_1_Handler(void) __attribute__((weak, alias("DMAC_0_Handler")));
-void DMAC_2_Handler(void) __attribute__((weak, alias("DMAC_0_Handler")));
-void DMAC_3_Handler(void) __attribute__((weak, alias("DMAC_0_Handler")));
-void DMAC_4_Handler(void) __attribute__((weak, alias("DMAC_0_Handler")));
-#endif
-
-void Adafruit_ZeroDMA::_IRQhandler(uint8_t flags) {
-#ifdef __SAMD51__
-    // 'flags' is initially passed in as channel number,
-    // from which we look up the actual interrupt flags...
-    flags = DMAC->Channel[flags].CHINTFLAG.reg;
-#endif
-    if(flags & DMAC_CHINTENCLR_TERR) {
-        // Clear error flag
-#ifdef __SAMD51__
-        DMAC->Channel[channel].CHINTFLAG.reg = DMAC_CHINTENCLR_TERR;
-#else
-        DMAC->CHINTFLAG.reg = DMAC_CHINTENCLR_TERR;
-#endif
-        jobStatus           = DMA_STATUS_ERR_IO;
-        if(callback[DMA_CALLBACK_TRANSFER_ERROR])
-            callback[DMA_CALLBACK_TRANSFER_ERROR](this);
-    } else if(flags & DMAC_CHINTENCLR_TCMPL) {
-        // Clear transfer complete flag
-#ifdef __SAMD51__
-        DMAC->Channel[channel].CHINTFLAG.reg = DMAC_CHINTENCLR_TCMPL;
-#else
-        DMAC->CHINTFLAG.reg = DMAC_CHINTENCLR_TCMPL;
-#endif
-        jobStatus           = DMA_STATUS_OK;
-        if(callback[DMA_CALLBACK_TRANSFER_DONE])
-            callback[DMA_CALLBACK_TRANSFER_DONE](this);
-    } else if(flags & DMAC_CHINTENCLR_SUSP) {
-        // Clear channel suspend flag
-#ifdef __SAMD51__
-        DMAC->Channel[channel].CHINTFLAG.reg = DMAC_CHINTENCLR_SUSP;
-#else
-        DMAC->CHINTFLAG.reg = DMAC_CHINTENCLR_SUSP;
-#endif
-        jobStatus           = DMA_STATUS_SUSPEND;
-        if(callback[DMA_CALLBACK_CHANNEL_SUSPEND])
-            callback[DMA_CALLBACK_CHANNEL_SUSPEND](this);
-    }
-}
-
-// DMA CHANNEL FUNCTIONS ---------------------------------------------------
-
-// Allocates channel for ZeroDMA object
-ZeroDMAstatus Adafruit_ZeroDMA::allocate(void) {
-
-    if(channel < DMAC_CH_NUM) return DMA_STATUS_OK; // Already alloc'd!
-
-    // Find index of first free DMA channel.  As currently written,
-    // this "does not play well with others" as it assumes _channelMask
-    // is the final arbiter of channels in use (this is true only within
-    // this library -- but other DMA-driven code may have allocated its
-    // own channel(s) elsewhere, sometimes with an equally broken
-    // approach).  A possible alternate approach, I haven't tested this
-    // yet, might be to loop through each channel, set DMAC->CHID.bit.ID
-    // and then test whether CHCTRLA.bit.ENABLE is set?  But for now...
-    for(channel=0; (channel < DMAC_CH_NUM) &&
-      (_channelMask & (1 << channel)); channel++);
-    // Doesn't help that code later does a software reset of the DMA
-    // controller, which would blow out other DMA-using libraries
-    // anyway (or they're just as likely to blow out this one).
-    // I think it's just an all-or-nothing affair...use one library
-    // for DMA everything, never mix and match.
-
-    if(channel >= DMAC_CH_NUM) // No free channel!
-        return DMA_STATUS_ERR_NOT_FOUND;
-
-    cpu_irq_enter_critical();
-
-    if(!_channelMask) { // No channels allocated yet; initialize DMA!
-#if !defined(DMAC_RESERVED_CHANNELS)
-#if (SAML21) || (SAML22) || (SAMC20) || (SAMC21)
-        PM->AHBMASK.bit.DMAC_       = 1;
-#elif defined(__SAMD51__)
-        MCLK->AHBMASK.bit.DMAC_     = 1; // Initialize DMA clocks
-#else
-        PM->AHBMASK.bit.DMAC_       = 1; // Initialize DMA clocks
-        PM->APBBMASK.bit.DMAC_      = 1;
-#endif
-        DMAC->CTRL.bit.DMAENABLE    = 0; // Disable DMA controller
-        DMAC->CTRL.bit.SWRST        = 1; // Perform software reset
-
-        // Initialize descriptor list addresses
-        DMAC->BASEADDR.bit.BASEADDR = (uint32_t)_descriptor;
-        DMAC->WRBADDR.bit.WRBADDR   = (uint32_t)_writeback;
-        memset(_descriptor, 0, sizeof(_descriptor));
-        memset(_writeback , 0, sizeof(_writeback));
-
-        // Re-enable DMA controller with all priority levels
-        DMAC->CTRL.reg = DMAC_CTRL_DMAENABLE | DMAC_CTRL_LVLEN(0xF);
-#endif
-
-        // Enable DMA interrupt at lowest priority
-#ifdef __SAMD51__
-        IRQn_Type irqs[] = { DMAC_0_IRQn, DMAC_1_IRQn, DMAC_2_IRQn,
-          DMAC_3_IRQn, DMAC_4_IRQn };
-        for(uint8_t i=0; i<(sizeof irqs / sizeof irqs[0]); i++) {
-            NVIC_EnableIRQ(irqs[i]);
-            NVIC_SetPriority(irqs[i], (1<<__NVIC_PRIO_BITS)-1);
-        }
-#else
-        NVIC_EnableIRQ(DMAC_IRQn);
-        NVIC_SetPriority(DMAC_IRQn, (1 << __NVIC_PRIO_BITS) - 1);
-#endif
-    }
-
-    _channelMask    |= 1 << channel; // Mark channel as allocated
-    _dmaPtr[channel] = this;         // Channel-index-to-object pointer
-
-    // Reset the allocated channel
-#ifdef __SAMD51__
-    DMAC->Channel[channel].CHCTRLA.bit.ENABLE  = 0;
-    DMAC->Channel[channel].CHCTRLA.bit.SWRST   = 1;
-#else
-    DMAC->CHID.bit.ID         = channel;
-    DMAC->CHCTRLA.bit.ENABLE  = 0;
-    DMAC->CHCTRLA.bit.SWRST   = 1;
-#endif
-
-    // Clear software trigger
-    DMAC->SWTRIGCTRL.reg     &= ~(1 << channel);
-
-    // Configure default behaviors
-#ifdef __SAMD51__
-    DMAC->Channel[channel].CHPRILVL.bit.PRILVL = 0;
-    DMAC->Channel[channel].CHCTRLA.bit.TRIGSRC = peripheralTrigger;
-    DMAC->Channel[channel].CHCTRLA.bit.TRIGACT = triggerAction;
-    DMAC->Channel[channel].CHCTRLA.bit.BURSTLEN =
-      DMAC_CHCTRLA_BURSTLEN_SINGLE_Val; // Single-beat burst length
-#else
-    DMAC->CHCTRLB.bit.LVL     = 0;
-    DMAC->CHCTRLB.bit.TRIGSRC = peripheralTrigger;
-    DMAC->CHCTRLB.bit.TRIGACT = triggerAction;
-#endif
-
-    cpu_irq_leave_critical();
-
-    return DMA_STATUS_OK;
-}
-
-void Adafruit_ZeroDMA::setPriority(dma_priority pri) {
-#ifdef __SAMD51__
-    DMAC->Channel[channel].CHPRILVL.bit.PRILVL = pri;
-#else
-    DMAC->CHCTRLB.bit.LVL = pri;
-#endif
-}
-
-// Deallocate DMA channel
-// TODO: should this delete/deallocate the descriptor list?
-ZeroDMAstatus Adafruit_ZeroDMA::free(void) {
-
-    ZeroDMAstatus status = DMA_STATUS_OK;
-
-    cpu_irq_enter_critical(); // jobStatus is volatile
-
-        if(jobStatus == DMA_STATUS_BUSY) {
-        status = DMA_STATUS_BUSY; // Can't leave when busy
-    } else if((channel < DMAC_CH_NUM) && (_channelMask & (1 << channel))) {
-        // Valid in-use channel; release it
-        _channelMask &= ~(1 << channel); // Clear bit
-        if(!_channelMask) {              // No more channels in use?
-#ifdef __SAMD51__
-            NVIC_DisableIRQ(DMAC_0_IRQn); // Disable DMA interrupt
-            DMAC->CTRL.bit.DMAENABLE = 0; // Disable DMA
-            MCLK->AHBMASK.bit.DMAC_  = 0; // Disable DMA clock
-#else
-            NVIC_DisableIRQ(DMAC_IRQn);   // Disable DMA interrupt
-            DMAC->CTRL.bit.DMAENABLE = 0; // Disable DMA
-            PM->APBBMASK.bit.DMAC_   = 0; // Disable DMA clocks
-            PM->AHBMASK.bit.DMAC_    = 0;
-#endif
-        }
-        _dmaPtr[channel] = NULL;
-        channel          = 0xFF;
-    } else {
-        status = DMA_STATUS_ERR_NOT_INITIALIZED; // Channel not in use
-    }
-
-    cpu_irq_leave_critical();
-
-    return status;
-}
-
-// Start DMA transfer job.  Channel and descriptors should be allocated
-// before calling this.
-ZeroDMAstatus Adafruit_ZeroDMA::startJob(void) {
-    ZeroDMAstatus status = DMA_STATUS_OK;
-
-    cpu_irq_enter_critical(); // Job status is volatile
-
-    if(jobStatus == DMA_STATUS_BUSY) {
-        status = DMA_STATUS_BUSY; // Resource is busy
-    } else if(channel >= DMAC_CH_NUM) {
-        status = DMA_STATUS_ERR_NOT_INITIALIZED; // Channel not in use
-    } else if(!hasDescriptors || (_descriptor[channel].BTCNT.reg <= 0)) {
-        status = DMA_STATUS_ERR_INVALID_ARG; // Bad transfer size
-    } else {
-        uint8_t i, interruptMask = 0;
-        for(i=0; i<DMA_CALLBACK_N; i++)
-            if(callback[i]) interruptMask |= (1 << i);
-        jobStatus            = DMA_STATUS_BUSY;
-#ifdef __SAMD51__
-        DMAC->Channel[channel].CHINTENSET.reg =
-          DMAC_CHINTENSET_MASK &  interruptMask;
-        DMAC->Channel[channel].CHINTENCLR.reg =
-          DMAC_CHINTENCLR_MASK & ~interruptMask;
-        DMAC->Channel[channel].CHCTRLA.bit.ENABLE = 1;
-#else
-        DMAC->CHID.bit.ID    = channel;
-        DMAC->CHINTENSET.reg = DMAC_CHINTENSET_MASK &  interruptMask;
-        DMAC->CHINTENCLR.reg = DMAC_CHINTENCLR_MASK & ~interruptMask;
-        DMAC->CHCTRLA.bit.ENABLE = 1; // Enable the transfer channel
-#endif
-    }
-
-    cpu_irq_leave_critical();
-
-    return status;
-}
-
-// Set and enable callback function for ZeroDMA object. This can be called
-// before or after channel and/or descriptors are allocated, but needs
-// to be called before job is started.
-void Adafruit_ZeroDMA::setCallback(
-  void (*cb)(Adafruit_ZeroDMA *), dma_callback_type type) {
-    callback[type] = cb;
-}
-
-// Suspend/resume don't quite do what I thought -- avoid using for now.
-void Adafruit_ZeroDMA::suspend(void) {
-    cpu_irq_enter_critical();
-#ifdef __SAMD51__
-    DMAC->Channel[channel].CHCTRLB.reg |= DMAC_CHCTRLB_CMD_SUSPEND;
-#else
-    DMAC->CHID.bit.ID  = channel;
-    DMAC->CHCTRLB.reg |= DMAC_CHCTRLB_CMD_SUSPEND;
-#endif
-    cpu_irq_leave_critical();
-}
-
-#define MAX_JOB_RESUME_COUNT 10000
-void Adafruit_ZeroDMA::resume(void) {
-    cpu_irq_enter_critical(); // jobStatus is volatile
-    if(jobStatus == DMA_STATUS_SUSPEND) {
-        int      count;
-        uint32_t bitMask   = 1 << channel;
-#ifdef __SAMD51__
-        DMAC->Channel[channel].CHCTRLB.reg |= DMAC_CHCTRLB_CMD_RESUME;
-#else
-        DMAC->CHID.bit.ID  = channel;
-        DMAC->CHCTRLB.reg |= DMAC_CHCTRLB_CMD_RESUME;
-#endif
-
-        for(count = 0; (count < MAX_JOB_RESUME_COUNT) &&
-          !(DMAC->BUSYCH.reg & bitMask); count++);
-
-        jobStatus = (count < MAX_JOB_RESUME_COUNT) ?
-          DMA_STATUS_BUSY : DMA_STATUS_ERR_TIMEOUT;
-    }
-    cpu_irq_leave_critical();
-}
-
-// Abort is OK though.
-void Adafruit_ZeroDMA::abort(void) {
-    if(channel <= DMAC_CH_NUM) {
-        cpu_irq_enter_critical();
-#ifdef __SAMD51__
-        DMAC->Channel[channel].CHCTRLA.reg = 0; // Disable channel
-#else
-        DMAC->CHID.bit.ID = channel; // Select channel
-        DMAC->CHCTRLA.reg = 0;       // Disable
-#endif
-        jobStatus         = DMA_STATUS_ABORTED;
-        cpu_irq_leave_critical();
-    }
-}
-
-// Set DMA peripheral trigger.
-// This can be done before or after channel is allocated.
-void Adafruit_ZeroDMA::setTrigger(uint8_t trigger) {
-    peripheralTrigger = trigger; // Save value for allocate()
-
-    // If channel already allocated, configure peripheral trigger
-    // (old lib required configure before alloc -- either way OK now)
-    if(channel < DMAC_CH_NUM) {
-        cpu_irq_enter_critical();
-#ifdef __SAMD51__
-        DMAC->Channel[channel].CHCTRLA.bit.TRIGSRC = trigger;
-#else
-        DMAC->CHID.bit.ID         = channel;
-        DMAC->CHCTRLB.bit.TRIGSRC = trigger;
-#endif
-        cpu_irq_leave_critical();
-    }
-}
-
-// Set DMA trigger action.
-// This can be done before or after channel is allocated.
-void Adafruit_ZeroDMA::setAction(dma_transfer_trigger_action action) {
-    triggerAction = action; // Save value for allocate()
-
-    // If channel already allocated, configure trigger action
-    // (old lib required configure before alloc -- either way OK now)
-    if(channel < DMAC_CH_NUM) {
-        cpu_irq_enter_critical();
-#ifdef __SAMD51__
-        DMAC->Channel[channel].CHCTRLA.bit.TRIGACT = action;
-#else
-        DMAC->CHID.bit.ID         = channel;
-        DMAC->CHCTRLB.bit.TRIGACT = action;
-#endif
-        cpu_irq_leave_critical();
-    }
-}
-
-// Issue software trigger. Channel must be allocated & descriptors added!
-void Adafruit_ZeroDMA::trigger(void) {
-    if((channel <= DMAC_CH_NUM) & hasDescriptors)
-        DMAC->SWTRIGCTRL.reg |= (1 << channel);
-}
-
-uint8_t Adafruit_ZeroDMA::getChannel(void) {
-    return channel;
-}
-
-// DMA DESCRIPTOR FUNCTIONS ------------------------------------------------
-
-// Allocates a new DMA descriptor (if needed) and appends it to the
-// channel's descriptor list.  Returns pointer to DmacDescriptor,
-// or NULL on various errors.  You'll want to keep the pointer for
-// later if you need to modify or free the descriptor.
-// Channel must be allocated first!
-DmacDescriptor *Adafruit_ZeroDMA::addDescriptor(
-  void           *src,
-  void           *dst,
-  uint32_t        count,
-  dma_beat_size   size,
-  bool            srcInc,
-  bool            dstInc,
-  uint32_t        stepSize,
-  bool            stepSel) {
-
-    // Channel must be allocated first
-        if(channel >= DMAC_CH_NUM) return NULL;
-
-    // Can't do while job's busy
-    if(jobStatus == DMA_STATUS_BUSY) return NULL;
-
-    DmacDescriptor *desc;
-
-    // Scan descriptor list to find last entry.  If an entry's
-    // DESCADDR value is 0, that's the end of the list and it's
-    // currently un-looped.  If the DESCADDR value is the same
-    // as the first entry, that's the end of the list and it's
-    // looped.  Either way, set the last entry's DESCADDR value
-    // to the new descriptor, and the descriptor's own DESCADDR
-    // will be set later either to 0 or the list head.
-    if(hasDescriptors) {
-        // DMA descriptors must be 128-bit (16 byte) aligned.
-        // memalign() is considered 'obsolete' but it's replacements
-        // (aligned_alloc() or posix_memalign()) are not currently
-        // available in the version of ARM GCC in use, but this is,
-        // so here we are.
-        if(!(desc = (DmacDescriptor *)memalign(16,
-          sizeof(DmacDescriptor))))
-            return NULL;
-        DmacDescriptor *prev = &_descriptor[channel];
-        while(prev->DESCADDR.reg &&
-             (prev->DESCADDR.reg != (uint32_t)&_descriptor[channel])) {
-            prev = (DmacDescriptor *)prev->DESCADDR.reg;
-        }
-        prev->DESCADDR.reg = (uint32_t)desc;
-    } else {
-        desc = &_descriptor[channel];
-    }
-    hasDescriptors = true;
-
-    uint8_t bytesPerBeat; // Beat transfer size IN BYTES
-    switch(size) {
-       default:                  bytesPerBeat = 1; break;
-       case DMA_BEAT_SIZE_HWORD: bytesPerBeat = 2; break;
-       case DMA_BEAT_SIZE_WORD:  bytesPerBeat = 4; break;
-    }
-
-    desc->BTCTRL.bit.VALID    = true;
-    desc->BTCTRL.bit.EVOSEL   = DMA_EVENT_OUTPUT_DISABLE;
-    desc->BTCTRL.bit.BLOCKACT = DMA_BLOCK_ACTION_NOACT;
-    desc->BTCTRL.bit.BEATSIZE = size;
-    desc->BTCTRL.bit.SRCINC   = srcInc;
-    desc->BTCTRL.bit.DSTINC   = dstInc;
-    desc->BTCTRL.bit.STEPSEL  = stepSel;
-    desc->BTCTRL.bit.STEPSIZE = stepSize;
-    desc->BTCNT.reg           = count;
-    desc->SRCADDR.reg         = (uint32_t)src;
-
-    if(srcInc){
-        if(stepSel) {
-            desc->SRCADDR.reg +=
-              bytesPerBeat * count * (1 << stepSize);
-        } else {
-            desc->SRCADDR.reg += bytesPerBeat * count;
+impl<'desc> DMA<'desc> {
+    /// Initialize a new DMA context
+    pub fn new(dmac: DMAC, descriptor_list: &'desc DescriptorList) -> Self {
+        Self {
+            dmac,
+            channel: None, // Channel not yet allocated
+            job_status: VolatileCell::new(Status::Ok),
+            has_descriptors: false, // No descriptors allocated yet
+            loop_flag: false,
+            peripheral_trigger: TRIGSRCW::DISABLE, // Software trigger only by default
+            trigger_action: TRIGACTW::TRANSACTION,
+            callbacks: Callbacks::default(),
+            descriptor_list,
         }
     }
 
-    desc->DSTADDR.reg         = (uint32_t)dst;
+    // TODO(adafruit): Drop impl? Should stop job, delete descriptors, free channel.
 
-    if(dstInc){
-        if(!stepSel) {
-            desc->DSTADDR.reg +=
-              bytesPerBeat * count * (1 << stepSize);
-        } else {
-            desc->DSTADDR.reg += bytesPerBeat * count;
-        }
-    }
+    /// IRQ handler
+    pub fn irq_handler(&mut self, flags: u8) {
+        #[allow(unused_variables)]
+        let channel = self.channel.expect("no channel ID");
 
-    desc->DESCADDR.reg = loopFlag ? (uint32_t)&_descriptor[channel] : 0;
+        // 'flags' is initially passed in as channel number,
+        // from which we look up the actual interrupt flags...
+        let flags = {
+            #[cfg(feature = "samd51")]
+            {
+                self.dmac.chintflag(flags).read().bits()
+            }
 
-    return desc;
-}
+            #[cfg(not(feature = "samd51"))]
+            {
+                flags
+            }
+        };
 
-// Modify DMA descriptor with a new source address, destination address &
-// block transfer count.  All other attributes (including increment enables,
-// etc.) are unchanged.  Mostly for changing the data being pushed to a
-// peripheral (DAC, SPI, whatev.)
-void Adafruit_ZeroDMA::changeDescriptor(DmacDescriptor *desc,
-  void *src, void *dst, uint32_t count) {
+        if flags & CHINTENCLR_TERR != 0 {
+            // Clear error flag
+            #[cfg(feature = "samd51")]
+            {
+                self.dmac
+                    .chintflag(channel)
+                    .write(|reg| reg.terr().clear_bit());
+            }
 
-    uint8_t bytesPerBeat; // Beat transfer size IN BYTES
-    switch(desc->BTCTRL.bit.BEATSIZE) {
-       default:                  bytesPerBeat = 1; break;
-       case DMA_BEAT_SIZE_HWORD: bytesPerBeat = 2; break;
-       case DMA_BEAT_SIZE_WORD:  bytesPerBeat = 4; break;
-    }
+            #[cfg(not(feature = "samd51"))]
+            {
+                self.dmac.chintflag.write(|reg| reg.terr().clear_bit());
+            }
 
-    if(count) desc->BTCNT.reg = count;
+            self.job_status.set(Status::Io);
 
-    if(src) {
-        desc->SRCADDR.reg = (uint32_t)src;
-        if(desc->BTCTRL.bit.SRCINC){
-            if(desc->BTCTRL.bit.STEPSEL) {
-              desc->SRCADDR.reg += desc->BTCNT.reg *
-                bytesPerBeat * (1 << desc->BTCTRL.bit.STEPSIZE);
-            } else {
-              desc->SRCADDR.reg += desc->BTCNT.reg * bytesPerBeat;
+            if let Some(cb) = self.callbacks.transfer_error {
+                cb(self);
+            }
+        } else if flags & CHINTENCLR_TCMPL != 0 {
+            // Clear transfer complete flag
+            #[cfg(feature = "samd51")]
+            {
+                self.dmac
+                    .chintflag(channel)
+                    .write(|reg| reg.tcmpl().set_bit());
+            }
+
+            #[cfg(not(feature = "samd51"))]
+            {
+                self.dmac.chintflag.write(|reg| reg.tcmpl().set_bit());
+            }
+
+            self.job_status.set(Status::Ok);
+
+            if let Some(cb) = self.callbacks.transfer_done {
+                cb(self);
+            }
+        } else if flags & CHINTENCLR_SUSP != 0 {
+            // Clear channel suspend flag
+            #[cfg(feature = "samd51")]
+            {
+                self.dmac
+                    .chintflag(channel)
+                    .write(|reg| reg.susp().set_bit());
+            }
+
+            #[cfg(not(feature = "samd51"))]
+            {
+                self.dmac.chintflag.write(|reg| reg.susp().set_bit());
+            }
+
+            self.job_status.set(Status::Suspend);
+            if let Some(cb) = self.callbacks.channel_suspend {
+                cb(self)
             }
         }
     }
 
-    if(dst) {
-        desc->DSTADDR.reg = (uint32_t)dst;
-        if(desc->BTCTRL.bit.DSTINC){
-            if(!desc->BTCTRL.bit.STEPSEL) {
-              desc->DSTADDR.reg += desc->BTCNT.reg *
-                bytesPerBeat * (1 << desc->BTCTRL.bit.STEPSIZE);
+    // DMA CHANNEL FUNCTIONS ---------------------------------------------------
+
+    /// Allocates channel for DMA object
+    pub fn allocate(
+        &mut self,
+        clock_source: &mut ClockSource,
+        int_state: &InterruptState,
+    ) -> Status {
+        if self.channel.is_some() {
+            return Status::Ok; // Already alloc'd!
+        }
+
+        // Find index of first free DMA channel.  As currently written,
+        // this "does not play well with others" as it assumes the channel mask
+        // is the final arbiter of channels in use (this is true only within
+        // this library -- but other DMA-driven code may have allocated its
+        // own channel(s) elsewhere, sometimes with an equally broken
+        // approach).
+        //
+        // A possible (untested) alternate approach might be to loop through
+        // each channel, set `cmac.chid`'s ID and then test whether `chctrl`'s
+        // ENABLE is set.
+        let mut channel: ChannelId = 0;
+
+        while channel < NUM_CHANNELS as u8 && (int_state.channel_mask.get() & (1 << channel)) == 1 {
+            channel += 1;
+        }
+
+        // Doesn't help that code later does a software reset of the DMA
+        // controller, which would blow out other DMA-using libraries
+        // anyway (or they're just as likely to blow out this one).
+        // I think it's just an all-or-nothing affair...use one library
+        // for DMA everything, never mix and match.
+        if channel >= NUM_CHANNELS as u8 {
+            // No free channel!
+            return Status::NotFound;
+        }
+
+        cpu_irq_enter_critical(int_state);
+
+        if int_state.channel_mask.get() == 0 {
+            // No channels allocated yet; initialize DMA!
+            clock_source.ahbmask.write(|reg| reg.dmac_().set_bit());
+
+            #[cfg(not(feature = "samd51"))]
+            {
+                clock_source.apbbmask.write(|reg| reg.dmac_().set_bit());
+            }
+
+            // Disable DMA controller
+            self.dmac.ctrl.write(|reg| reg.dmaenable().clear_bit());
+
+            // Perform software reset
+            self.dmac.ctrl.write(|reg| reg.swrst().set_bit());
+
+            // Initialize descriptor list addresses
+            self.dmac.baseaddr.write(|reg| unsafe {
+                reg.baseaddr()
+                    .bits(self.descriptor_list.descriptor.as_ptr() as u32)
+            });
+
+            self.dmac.wrbaddr.write(|reg| unsafe {
+                reg.wrbaddr()
+                    .bits(self.descriptor_list.writeback.as_ptr() as u32)
+            });
+
+            // TODO(tarcieri): Wipe decriptor and writeback tables
+            // self.descriptor_list.descriptor[0] = Descriptor::default();
+            // self.descriptor_list.descriptor[0] = Descriptor::default();
+
+            // Re-enable DMA controller with all priority levels
+            self.dmac.ctrl.write(|reg| {
+                reg.dmaenable()
+                    .set_bit()
+                    .lvlen0()
+                    .set_bit()
+                    .lvlen1()
+                    .set_bit()
+                    .lvlen2()
+                    .set_bit()
+                    .lvlen3()
+                    .set_bit()
+            });
+
+            // Enable DMA interrupt at lowest priority
+            #[cfg(feature = "samd51")]
+            {
+                // Enable DMAC IRQs
+                for irq in &[
+                    IRQn::N0,
+                    IRQn::N1,
+                    IRQn::N2,
+                    IRQn::N3,
+                    IRQn::N4,
+                ] {
+                    nvic_enable_irq(*irq);
+                    nvic_set_priority(*irq, (1 << NVIC_PRIO_BITS) - 1);
+                }
+            }
+
+            #[cfg(not(feature = "samd51"))]
+            {
+                // Enable DMAC IRQ
+                nvic_enable_irq(IRQN);
+                nvic_set_priority(IRQN, (1 << NVIC_PRIO_BITS) - 1);
+            }
+        }
+
+        self.channel = Some(channel);
+        int_state
+            .channel_mask
+            .set(int_state.channel_mask.get() | 1 << channel); // Mark channel as allocated
+
+        // Reset the allocated channel
+        #[cfg(feature = "samd51")]
+        {
+            self.dmac
+                .chctrla(channel)
+                .write(|reg| reg.enable().clear_bit().swrst().set_bit());
+        }
+
+        #[cfg(not(feature = "samd51"))]
+        unsafe {
+            self.dmac.chid.write(|reg| reg.id().bits(channel));
+            self.dmac
+                .chctrla
+                .write(|reg| reg.enable().clear_bit().swrst().set_bit());
+        }
+
+        // Clear software trigger
+        self.dmac
+            .swtrigctrl
+            .modify(|reg, value| unsafe { value.bits(reg.bits() & !(1 << channel)) });
+
+        // This type unfortunately does not impl Copy or Clone
+        let peripheral_trigger = match self.peripheral_trigger {
+            TRIGSRCW::DISABLE => TRIGSRCW::DISABLE,
+        };
+
+        // Ditto for this type
+        let trigger_action = match self.trigger_action {
+            #[cfg(not(feature = "samd51"))]
+            TRIGACTW::BEAT => TRIGACTW::BEAT,
+            TRIGACTW::BLOCK => TRIGACTW::BLOCK,
+            #[cfg(feature = "samd51")]
+            TRIGACTW::BURST => TRIGACTW::BURST,
+            TRIGACTW::TRANSACTION => TRIGACTW::TRANSACTION,
+        };
+
+        // Configure default behaviors
+        #[cfg(feature = "samd51")]
+        {
+            self.dmac.chprilvl(channel).write(|reg| reg.prilvl().lvl0());
+            self.dmac.chctrla(channel).write(|reg| {
+                reg.trigsrc()
+                    .variant(peripheral_trigger)
+                    .trigact()
+                    .variant(trigger_action)
+                    .burstlen()
+                    .single()
+            });
+        }
+
+        #[cfg(not(feature = "samd51"))]
+        {
+            self.dmac.chctrlb.write(|reg| reg.lvl().lvl0());
+            self.dmac
+                .chctrlb
+                .write(|reg| reg.trigsrc().variant(peripheral_trigger));
+            self.dmac
+                .chctrlb
+                .write(|reg| reg.trigact().variant(trigger_action));
+        }
+
+        cpu_irq_leave_critical(int_state);
+
+        Status::Ok
+    }
+
+    /// Set priority
+
+    pub fn set_priority(&mut self, pri: Priority) {
+        #[cfg(feature = "samd51")]
+        unsafe {
+            self.dmac
+                .chprilvl(self.channel.expect("no channel ID"))
+                .write(|reg| reg.prilvl().bits(pri as u8));
+        }
+
+        #[cfg(not(feature = "samd51"))]
+        {
+            self.dmac.chctrlb.write(|reg| reg.lvl().bits(pri as u8));
+        }
+    }
+
+    /// Deallocate DMA channel
+    // TODO(adafruit): should this delete/deallocate the descriptor list?
+    pub fn free(
+        &mut self,
+        clock_source: &mut ClockSource,
+        int_state: &InterruptState
+    ) -> Status {
+        cpu_irq_enter_critical(int_state); // job_status is volatile
+
+        let status = if self.job_status.get() == Status::Busy {
+            Status::Busy // Can't leave when busy
+        } else if let Some(channel) = self.channel {
+            if (int_state.channel_mask.get() & (1 << channel)) != 0 {
+                // Valid in-use channel; release it
+                int_state
+                    .channel_mask
+                    .set(int_state.channel_mask.get() & !(1 << channel)); // Clear bit
+
+                if int_state.channel_mask.get() == 0 {
+                    // No more channels in use?
+                    #[cfg(feature = "samd51")]
+                    {
+                        // Disable DMA interrupt
+                        nvic_disable_irq(IRQn::N0);
+
+                        // Disable DMA
+                        self.dmac.ctrl.write(|reg| reg.dmaenable().clear_bit());
+
+                        // Disable DMA clock
+                        clock_source.ahbmask.write(|reg| reg.dmac_().clear_bit());
+                    }
+
+                    #[cfg(not(feature = "samd51"))]
+                    {
+                        // Disable DMA interrupt
+                        nvic_disable_irq(IRQN);
+
+                        // Disable DMA
+                        self.dmac.ctrl.write(|reg| reg.dmaenable().clear_bit());
+
+                        // Disable DMA clocks
+                        clock_source.apbbmask.write(|reg| reg.dmac_().clear_bit());
+                        clock_source.ahbmask.write(|reg| reg.dmac_().clear_bit());
+                    }
+                }
+
+                self.channel = None;
+                Status::Ok
             } else {
-              desc->DSTADDR.reg += desc->BTCNT.reg * bytesPerBeat;
+                Status::NotInitialized // Channel not in mask?
+            }
+        } else {
+            Status::NotInitialized // Channel not in use
+        };
+
+        cpu_irq_leave_critical(int_state);
+
+        status
+    }
+
+    /// Start DMA transfer job.  Channel and descriptors should be allocated
+    /// before calling this.
+    pub fn start_job(&mut self, int_state: &InterruptState) -> Status {
+        cpu_irq_enter_critical(int_state); // Job status is volatile
+
+        let channel = self.channel.expect("no channel ID");
+        let status = if self.job_status.get() == Status::Busy {
+            Status::Busy // Resource is busy
+        } else if self.channel.is_none() {
+            Status::NotInitialized // Channel not in use
+        } else if !self.has_descriptors || self.descriptor_list.descriptor(channel).btcnt.get() <= 0
+        {
+            Status::InvalidArg // Bad transfer size
+        } else {
+            let mut interrupt_mask = 0;
+
+            if self.callbacks.transfer_error.is_some() {
+                interrupt_mask |= 1;
+            }
+
+            if self.callbacks.transfer_done.is_some() {
+                interrupt_mask |= 1 << 1;
+            }
+
+            if self.callbacks.channel_suspend.is_some() {
+                interrupt_mask |= 1 << 2;
+            }
+
+            self.job_status.set(Status::Busy);
+
+            #[cfg(feature = "samd51")]
+            unsafe {
+                self.dmac
+                    .chintenset(channel)
+                    .write(|reg| reg.bits(CHINTENSET_MASK & interrupt_mask));
+                self.dmac
+                    .chintenclr(channel)
+                    .write(|reg| reg.bits(CHINTENCLR_MASK & !interrupt_mask));
+                self.dmac
+                    .chctrla(channel)
+                    .write(|reg| reg.enable().set_bit());
+            }
+
+            #[cfg(not(feature = "samd51"))]
+            unsafe {
+                self.dmac.chid.write(|reg| reg.id().bits(channel));
+                self.dmac
+                    .chintenset
+                    .write(|reg| reg.bits(CHINTENSET_MASK & interrupt_mask));
+                self.dmac
+                    .chintenclr
+                    .write(|reg| reg.bits(CHINTENCLR_MASK & !interrupt_mask));
+                self.dmac.chctrla.write(|reg| reg.enable().set_bit());
+            }
+
+            Status::Ok
+        };
+
+        cpu_irq_leave_critical(int_state);
+
+        status
+    }
+
+    /// Set and enable callback function for DMA object. This can be called
+    /// before or after channel and/or descriptors are allocated, but needs
+    /// to be called before job is started.
+    pub fn set_callback(&mut self, cb_type: CallbackType, cb: fn(&mut DMA)) {
+        match cb_type {
+            CallbackType::TransferError => self.callbacks.transfer_error = Some(cb),
+            CallbackType::TransferDone => self.callbacks.transfer_done = Some(cb),
+            CallbackType::ChannelSuspend => self.callbacks.channel_suspend = Some(cb),
+        }
+    }
+
+    // TODO(adafruit): Suspend/resume don't quite do what I thought -- avoid using for now.
+
+    /// Suspend.
+    ///
+    /// NOTE: Not recommended.
+    pub fn suspend(&mut self, int_state: &InterruptState) {
+        cpu_irq_enter_critical(int_state);
+
+        let channel = self.channel.expect("no channel ID");
+
+        #[cfg(feature = "samd51")]
+        {
+            self.dmac.chctrlb(channel).write(|reg| reg.cmd().suspend());
+        }
+
+        #[cfg(not(feature = "samd51"))]
+        unsafe {
+            self.dmac.chid.write(|reg| reg.id().bits(channel));
+            self.dmac.chctrlb.write(|reg| reg.cmd().suspend());
+        }
+
+        cpu_irq_leave_critical(int_state);
+    }
+
+    /// Resume.
+    ///
+    /// NOTE: Not recommended.
+    pub fn resume(&mut self, int_state: &InterruptState) {
+        cpu_irq_enter_critical(int_state); // job_status is volatile
+
+        if self.job_status.get() == Status::Suspend {
+            if let Some(channel) = self.channel {
+                let bit_mask = 1 << channel;
+
+                #[cfg(feature = "samd51")]
+                {
+                    self.dmac.chctrlb(channel).write(|reg| reg.cmd().resume());
+                }
+
+                #[cfg(not(feature = "samd51"))]
+                unsafe {
+                    self.dmac.chid.write(|reg| reg.id().bits(channel));
+                    self.dmac.chctrlb.write(|reg| reg.cmd().resume())
+                }
+
+                let mut count = 0;
+
+                while count < MAX_JOB_RESUME_COUNT
+                    && !(self.dmac.busych.read().bits() & bit_mask) != 0
+                {
+                    count += 1;
+                }
+
+                if count < MAX_JOB_RESUME_COUNT {
+                    self.job_status.set(Status::Busy);
+                } else {
+                    self.job_status.set(Status::Timeout);
+                }
+            }
+        }
+
+        cpu_irq_leave_critical(int_state);
+    }
+
+    /// Abort
+    pub fn abort(&mut self, int_state: &InterruptState) {
+        if let Some(channel) = self.channel {
+            cpu_irq_enter_critical(int_state);
+
+            #[cfg(feature = "samd51")]
+            unsafe {
+                self.dmac.chctrla(channel).write(|reg| reg.bits(0));
+            }
+
+            #[cfg(not(feature = "samd51"))]
+            unsafe {
+                // Select channel
+                self.dmac.chid.write(|reg| reg.bits(channel));
+
+                // Disable
+                self.dmac.chctrla.write(|reg| reg.bits(0));
+            }
+
+            self.job_status.set(Status::Aborted);
+
+            cpu_irq_leave_critical(int_state);
+        }
+    }
+
+    /// Set DMA peripheral trigger.
+    /// This can be done before or after channel is allocated.
+    pub fn set_trigger(&mut self, trigger: TRIGSRCW, int_state: &InterruptState) {
+        // Save value for `allocate()`
+        self.peripheral_trigger = match self.peripheral_trigger {
+            TRIGSRCW::DISABLE => TRIGSRCW::DISABLE,
+        };
+
+        // If channel already allocated, configure peripheral trigger
+        // (old lib required configure before alloc -- either way OK now)
+        if let Some(channel) = self.channel {
+            cpu_irq_enter_critical(int_state);
+
+            #[cfg(feature = "samd51")]
+            {
+                self.dmac
+                    .chctrla(channel)
+                    .write(|reg| reg.trigsrc().variant(trigger));
+            }
+
+            #[cfg(not(feature = "samd51"))]
+            unsafe {
+                self.dmac.chid.write(|reg| reg.id().bits(channel));
+                self.dmac
+                    .chctrlb
+                    .write(|reg| reg.trigsrc().variant(trigger));
+            }
+
+            cpu_irq_leave_critical(int_state);
+        }
+    }
+
+    /// Set DMA trigger action.
+    /// This can be done before or after channel is allocated.
+    pub fn set_action(&mut self, action: TRIGACTW, int_state: &InterruptState) {
+        // Save value for `allocate()`. Hax because TRIGACTW is non-Copy/Clone
+        self.trigger_action = match action {
+            #[cfg(not(feature = "samd51"))]
+            TRIGACTW::BEAT => TRIGACTW::BEAT,
+            TRIGACTW::BLOCK => TRIGACTW::BLOCK,
+            #[cfg(feature = "samd51")]
+            TRIGACTW::BURST => TRIGACTW::BURST,
+            TRIGACTW::TRANSACTION => TRIGACTW::TRANSACTION,
+        };
+
+        // If channel already allocated, configure trigger action
+        // (old lib required configure before alloc -- either way OK now)
+        if let Some(channel) = self.channel {
+            cpu_irq_enter_critical(int_state);
+
+            #[cfg(feature = "samd51")]
+            {
+                self.dmac
+                    .chctrla(channel)
+                    .write(|reg| reg.trigact().variant(action));
+            }
+
+            #[cfg(not(feature = "samd51"))]
+            unsafe {
+                self.dmac.chid.write(|reg| reg.id().bits(channel));
+                self.dmac.chctrlb.write(|reg| reg.trigact().variant(action));
+            }
+
+            cpu_irq_leave_critical(int_state);
+        }
+    }
+
+    /// Issue software trigger.
+    ///
+    /// Channel must be allocated and descriptors added!
+    pub fn trigger(&mut self) {
+        if let Some(channel) = self.channel {
+            if self.has_descriptors {
+                unsafe {
+                    self.dmac
+                        .swtrigctrl
+                        .modify(|r, w| w.bits(r.bits() | 1 << channel));
+                }
             }
         }
     }
 
-// I think this code is here by accident -- disabling for now.
-#if 0
-    cpu_irq_enter_critical();
-    jobStatus          = DMA_STATUS_OK;
-#ifdef __SAMD51__
-    DMAC->Channel[channel].CHCTRLA.bit.ENABLE = 1;
-#else
-    DMAC->CHID.bit.ID  = channel;
-    DMAC->CHCTRLA.reg |= DMAC_CHCTRLA_ENABLE;
-#endif
-    cpu_irq_leave_critical();
-#endif
-}
+    /// Get the channel ID for this channel
+    pub fn get_channel(&self) -> Option<ChannelId> {
+        self.channel
+    }
 
-// TODO: delete descriptor, delete whole descriptor chain
+    // DMA DESCRIPTOR FUNCTIONS ------------------------------------------------
 
-// Select whether channel's descriptor list should repeat or not.
-// This can be done before or after channel & any descriptors are allocated.
-void Adafruit_ZeroDMA::loop(boolean flag) {
-    // The loop selection is 'sticky' -- that is, you can enable or
-    // disable looping before a descriptor list is built, or after
-    // the fact.  This requires some extra steps in the library code
-    // but avoids a must-do-in-X-order constraint on user.
-    loopFlag = flag;
+    // Allocates a new DMA descriptor (if needed) and appends it to the
+    // channel's descriptor list.  Returns pointer to Descriptor,
+    // or NULL on various errors.  You'll want to keep the pointer for
+    // later if you need to modify or free the descriptor.
+    // Channel must be allocated first!
+    pub fn add_descriptor(
+        &mut self,
+        src: *const u8,
+        dst: *mut u8,
+        count: u16,
+        size: BeatSize,
+        src_inc: bool,
+        dst_inc: bool,
+        step_size: u32,
+        step_sel: bool,
+    ) -> Option<&Descriptor> {
+        // Channel must be allocated first
+        let channel = self.channel?;
 
-    if(hasDescriptors) { // Descriptor list already started?
+        // Can't do while job's busy
+        if self.job_status.get() == Status::Busy {
+            return None;
+        }
+
         // Scan descriptor list to find last entry.  If an entry's
         // DESCADDR value is 0, that's the end of the list and it's
         // currently un-looped.  If the DESCADDR value is the same
         // as the first entry, that's the end of the list and it's
-        // already looped.
-        DmacDescriptor *desc = &_descriptor[channel];
-        while(desc->DESCADDR.reg &&
-             (desc->DESCADDR.reg != (uint32_t)&_descriptor[channel])) {
-            desc = (DmacDescriptor *)desc->DESCADDR.reg;
+        // looped.  Either way, set the last entry's DESCADDR value
+        // to the new descriptor, and the descriptor's own DESCADDR
+        // will be set later either to 0 or the list head.
+        let desc = if self.has_descriptors {
+            // TODO(tarcieri): allocate new descriptor
+            // let desc = [...];
+            // let mut prev = unsafe { &DESCRIPTOR[channel] };
+            //
+            // while prev.descaddr.reg && prev.descaddr.reg != unsafe { &DESCRIPTOR[channel] } {
+            //    prev = prev.descaddr.reg;
+            // }
+            //
+            // prev.descaddr.reg = desc;
+            // desc
+            unimplemented!();
+        } else {
+            self.descriptor_list.descriptor(channel)
+        };
+
+        self.has_descriptors = true;
+
+        // Beat transfer size IN BYTES
+        let bytes_per_beat = match size {
+            BeatSize::Byte => 1,
+            BeatSize::HWord => 2,
+            BeatSize::Word => 4,
+        };
+
+        // TODO(tarcieri): verify all of these reprs are correct
+        let mut btctrl = BTCTRL_VALID
+            | EVENT_OUTPUT_DISABLE
+            | btctrl_beatsize(size as u16)
+            | btctrl_stepsize(step_size as u16);
+
+        if src_inc {
+            btctrl |= BTCTRL_SRCINC;
         }
-        // Loop or unloop descriptor list as appropriate
-        desc->DESCADDR.reg = loopFlag ?
-          (uint32_t)&_descriptor[channel] : 0;
+
+        if dst_inc {
+            btctrl |= BTCTRL_DSTINC;
+        }
+
+        if step_sel {
+            btctrl |= BTCTRL_STEPSEL;
+        }
+
+        desc.btctrl.set(btctrl);
+        desc.btcnt.set(count);
+        desc.srcaddr.set(src as u32);
+
+        if src_inc {
+            if step_sel {
+                desc.srcaddr
+                    .set(desc.srcaddr.get() + (bytes_per_beat * count) as u32 * (1 << step_size));
+            } else {
+                desc.srcaddr
+                    .set(desc.srcaddr.get() + (bytes_per_beat * count) as u32);
+            }
+        }
+
+        desc.dstaddr.set(dst as u32);
+
+        if dst_inc {
+            if !step_sel {
+                desc.dstaddr
+                    .set(desc.dstaddr.get() + (bytes_per_beat * count) as u32 * (1 << step_size));
+            } else {
+                desc.dstaddr
+                    .set(desc.dstaddr.get() + (bytes_per_beat * count) as u32);
+            }
+        }
+
+        if self.loop_flag {
+            desc.descaddr
+                .set((self.descriptor_list.descriptor(channel) as *const Descriptor) as u32);
+        } else {
+            desc.descaddr.set(0);
+        };
+
+        Some(desc)
+    }
+
+    /// Modify DMA descriptor with a new source address, destination address &
+    /// block transfer count.  All other attributes (including increment enables,
+    /// etc.) are unchanged.  Mostly for changing the data being pushed to a
+    /// peripheral (DAC, SPI, whatev.)
+    pub fn change_descriptor(
+        &mut self,
+        desc: &mut Descriptor,
+        src: *const u8,
+        dst: *mut u8,
+        count: u16,
+    ) {
+        // Read the current beat transfer size
+        let size = (desc.btctrl.get() & BTCTRL_BEATSIZE_MASK) >> BTCTRL_BEATSIZE_POS;
+
+        // Beat transfer size IN BYTES
+        let bytes_per_beat = if size == BeatSize::HWord as u16 {
+            2
+        } else if size == BeatSize::Word as u16 {
+            4
+        } else {
+            1
+        };
+
+        if count > 0 {
+            desc.btcnt.set(count);
+        }
+
+        if !src.is_null() {
+            desc.srcaddr.set(src as u32);
+
+            if desc.btctrl.get() & BTCTRL_SRCINC != 0 {
+                if desc.btctrl.get() & BTCTRL_STEPSEL != 0 {
+                    let step_size =
+                        (desc.btctrl.get() & BTCTRL_STEPSIZE_MASK) >> BTCTRL_STEPSIZE_POS;
+
+                    desc.srcaddr.set(
+                        desc.srcaddr.get()
+                            + (desc.btcnt.get() * bytes_per_beat) as u32 * (1 << step_size),
+                    );
+                } else {
+                    desc.srcaddr
+                        .set(desc.srcaddr.get() + (desc.btcnt.get() * bytes_per_beat) as u32);
+                }
+            }
+        }
+
+        if !dst.is_null() {
+            desc.dstaddr.set(dst as u32);
+
+            if desc.btctrl.get() & BTCTRL_DSTINC != 0 {
+                if desc.btctrl.get() & BTCTRL_STEPSEL != 0 {
+                    let step_size =
+                        (desc.btctrl.get() & BTCTRL_STEPSIZE_MASK) >> BTCTRL_STEPSIZE_POS;
+
+                    desc.dstaddr.set(
+                        desc.dstaddr.get()
+                            + (desc.btcnt.get() * bytes_per_beat) as u32 * (1 << step_size),
+                    );
+                } else {
+                    desc.dstaddr
+                        .set(desc.dstaddr.get() + (desc.btcnt.get() * bytes_per_beat) as u32);
+                }
+            }
+        }
+
+        // TODO(adafruit): I think this code is here by accident -- disabling for now.
+        // cpu_irq_enter_critical();
+        // self.job_status.set(Status::DmaStatusOk);
+        // let channel = self.channel.unwrap();
+        //
+        // #[cfg(feature = "samd51")]
+        // DMAC.chctrla(channel).bit.ENABLE = 1;
+        //
+        // #[cfg(not(feature = "samd51"))]
+        // {
+        //    CHID.bit.ID = channel;
+        //    CHCTRLA.reg |= CHCTRLA_ENABLE;
+        // }
+        //
+        // cpu_irq_leave_critical();
+    }
+
+    // TODO(adafruit): delete descriptor, delete whole descriptor chain
+
+    /// Select whether channel's descriptor list should repeat or not.
+    /// This can be done before or after channel & any descriptors are allocated.
+    pub fn enable_loop(&mut self, flag: bool) {
+        // The loop selection is 'sticky' -- that is, you can enable or
+        // disable looping before a descriptor list is built, or after
+        // the fact.  This requires some extra steps in the library code
+        // but avoids a must-do-in-X-order constraint on user.
+        self.loop_flag = flag;
+
+        if self.has_descriptors {
+            // Descriptor list already started?
+            let channel = self.channel.expect("no channel ID");
+
+            // Scan descriptor list to find last entry.  If an entry's
+            // DESCADDR value is 0, that's the end of the list and it's
+            // currently un-looped.  If the DESCADDR value is the same
+            // as the first entry, that's the end of the list and it's
+            // already looped.
+            let mut desc = self.descriptor_list.descriptor(channel);
+
+            loop {
+                let next_desc = desc.descaddr.get();
+
+                if next_desc != 0
+                    && next_desc
+                        != (self.descriptor_list.descriptor(channel) as *const Descriptor) as u32
+                {
+                    desc = unsafe { mem::transmute(next_desc) };
+                } else {
+                    break;
+                }
+            }
+
+            // Loop or unloop descriptor list as appropriate
+            if self.loop_flag {
+                desc.descaddr
+                    .set((self.descriptor_list.descriptor(channel) as *const Descriptor) as u32);
+            } else {
+                desc.descaddr.set(0);
+            };
+        }
+    }
+
+    /// Is this DMA currently active?
+    pub fn is_active(&self) -> bool {
+        if let Some(channel) = self.channel {
+            self.descriptor_list.writeback(channel).btctrl.get() & BTCTRL_VALID != 0
+        } else {
+            false
+        }
     }
 }
 
-// MISCELLANY --------------------------------------------------------------
-
-void Adafruit_ZeroDMA::printStatus(ZeroDMAstatus s) {
-    if(s == DMA_STATUS_JOBSTATUS) s = jobStatus;
-    Serial.print("Status: ");
-    switch(s) {
-       case DMA_STATUS_OK:
-        Serial.println("OK");
-        break;
-       case DMA_STATUS_ERR_NOT_FOUND:
-        Serial.println("NOT FOUND");
-        break;
-       case DMA_STATUS_ERR_NOT_INITIALIZED:
-        Serial.println("NOT INITIALIZED");
-        break;
-       case DMA_STATUS_ERR_INVALID_ARG:
-        Serial.println("INVALID ARGUMENT");
-        break;
-       case DMA_STATUS_ERR_IO:
-        Serial.println("IO ERROR");
-        break;
-       case DMA_STATUS_ERR_TIMEOUT:
-        Serial.println("TIMEOUT");
-        break;
-       case DMA_STATUS_BUSY:
-        Serial.println("BUSY");
-        break;
-       case DMA_STATUS_SUSPEND:
-        Serial.println("SUSPENDED");
-        break;
-       case DMA_STATUS_ABORTED:
-        Serial.println("ABORTED");
-        break;
-       default:
-        Serial.print("Unknown 0x");
-        Serial.println((int)s);
-        break;
-    }
+/// Thunk for `__get_PRIMASK()`
+fn get_primask() -> u32 {
+    // TODO(tarcieri): implement this!
+    unimplemented!();
 }
 
-bool Adafruit_ZeroDMA::isActive(){
-    return _writeback[channel].BTCTRL.bit.VALID;
+/// Thunk for `__enable_irq()`
+fn enable_irq() {
+    // TODO(tarcieri): implement this!
+    unimplemented!();
+}
+
+/// Thunk for `__disable_irq()`
+fn disable_irq() {
+    // TODO(tarcieri): implement this!
+    unimplemented!();
+}
+
+/// Thunk for `__DMB()`
+fn dmb() {
+    // TODO(tarcieri): implement this!
+    unimplemented!();
+}
+
+/// Thunk for `NVIC_EnableIRQ`
+fn nvic_enable_irq(_irq: IRQn) {
+    // TODO(tarcieri): implement this!
+    unimplemented!();
+}
+
+/// Thunk for `NVIC_DisableIRQ`
+fn nvic_disable_irq(_irq: IRQn) {
+    // TODO(tarcieri): implement this!
+    unimplemented!();
+}
+
+/// Thunk for `NVIC_SetPriority`
+fn nvic_set_priority(_irq: IRQn, _priority: u16) {
+    // TODO(tarcieri): implement this!
+    unimplemented!();
 }

@@ -50,6 +50,9 @@ pub mod clock;
 #[path = "clock51.rs"]
 pub mod clock;
 
+#[cfg(feature = "unproven")]
+pub mod dma;
+
 #[cfg(not(feature = "samd51"))]
 pub mod sercom;
 
