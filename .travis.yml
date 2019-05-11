@@ -23,8 +23,7 @@ env:
 
 matrix:
   allow_failures:
-    rust:
-      - nightly
+    - rust: nightly
 
 before_install:
   - rustup target add thumbv6m-none-eabi
