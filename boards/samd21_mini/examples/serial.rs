@@ -12,7 +12,7 @@ extern crate samd21_mini as hal;
 
 use hal::clock::GenericClockController;
 use hal::prelude::*;
-use hal::sercom::{PadPin, Sercom0Pad2, Sercom0Pad3, UART0Pinout, UART0};
+use hal::sercom::{PadPin, Sercom0Pad2, Sercom0Pad3, UART0};
 use hal::target_device::gclk::clkctrl::GENR;
 use hal::target_device::gclk::genctrl::SRCR;
 use rtfm::app;
@@ -26,7 +26,7 @@ const APP: () = {
     static mut BLUE_LED: hal::gpio::Pa17<hal::gpio::Output<hal::gpio::OpenDrain>> = ();
     static mut TX_LED: hal::gpio::Pa27<hal::gpio::Output<hal::gpio::OpenDrain>> = ();
     static mut RX_LED: hal::gpio::Pb3<hal::gpio::Output<hal::gpio::OpenDrain>> = ();
-    static mut UART: UART0 = ();
+    static mut UART: UART0<Sercom0Pad3<hal::gpio::Pa11<hal::gpio::PfC>>, Sercom0Pad2<hal::gpio::Pa10<hal::gpio::PfC>>, (), ()> = ();
 
     #[init]
     fn init() {
@@ -46,11 +46,11 @@ const APP: () = {
         let mut led = pins.led.into_open_drain_output(&mut pins.port);
         led.set_low();
 
-        let rx_pin: Sercom0Pad3 = pins
+        let rx_pin: Sercom0Pad3<_> = pins
             .rx
             .into_pull_down_input(&mut pins.port)
             .into_pad(&mut pins.port);
-        let tx_pin: Sercom0Pad2 = pins
+        let tx_pin: Sercom0Pad2<_> = pins
             .tx
             .into_push_pull_output(&mut pins.port)
             .into_pad(&mut pins.port);
@@ -64,10 +64,7 @@ const APP: () = {
             device.SERCOM0,
             unsafe { &mut hal::CorePeripherals::steal().NVIC },
             &mut device.PM,
-            UART0Pinout::Rx3Tx2 {
-                rx: rx_pin,
-                tx: tx_pin,
-            },
+            (rx_pin, tx_pin)
         );
 
         let mut rx_led = pins.rx_led.into_open_drain_output(&mut pins.port);
