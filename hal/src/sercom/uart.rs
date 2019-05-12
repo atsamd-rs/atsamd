@@ -62,12 +62,14 @@ macro_rules! uart {
 
         padout!((0, 1) => Pad0, Pad2);
 
-        padout!((1, 1) => Pad1, Pad2);
+        padout!((1, 0) => Pad1, Pad0);
         padout!((1, 2) => Pad1, Pad0, Pad2, Pad3);
+        padout!((1, 1) => Pad1, Pad2);
 
         padout!((2, 0) => Pad2, Pad0);
 
         padout!((3, 0) => Pad3, Pad0);
+        padout!((3, 1) => Pad3, Pad2);
 
         $crate::paste::item! {
             pub struct $Type<RX, TX, RTS, CTS> {
