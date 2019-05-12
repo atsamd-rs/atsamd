@@ -70,7 +70,11 @@ pub fn flash_spi_master(
     miso: gpio::Pa16<Input<Floating>>,
     cs: gpio::Pb22<Input<Floating>>,
     port: &mut Port,
-) -> (SPIMaster3, gpio::Pb22<Output<PushPull>>) {
+) -> (SPIMaster3<
+        hal::sercom::Sercom3Pad0<gpio::Pa16<gpio::PfD>>,
+        hal::sercom::Sercom3Pad2<gpio::Pa20<gpio::PfD>>,
+        hal::sercom::Sercom3Pad3<gpio::Pa21<gpio::PfD>>,
+    >, gpio::Pb22<Output<PushPull>>) {
     let gclk0 = clocks.gclk0();
     let flash = SPIMaster3::new(
         &clocks.sercom3_core(&gclk0).unwrap(),
@@ -81,11 +85,7 @@ pub fn flash_spi_master(
         },
         sercom3,
         pm,
-        hal::sercom::SPI3Pinout::Dipo0Dopo1 {
-            miso: miso.into_pad(port),
-            mosi: mosi.into_pad(port),
-            sck: sck.into_pad(port),
-        },
+        (miso.into_pad(port), mosi.into_pad(port), sck.into_pad(port)),
     );
 
     let mut cs = cs.into_push_pull_output(port);
@@ -104,7 +104,10 @@ pub fn i2c_master<F: Into<Hertz>>(
     sda: gpio::Pb2<Input<Floating>>,
     scl: gpio::Pb3<Input<Floating>>,
     port: &mut Port,
-) -> I2CMaster5 {
+) -> I2CMaster5<
+        hal::sercom::Sercom5Pad0<gpio::Pb2<gpio::PfD>>,
+        hal::sercom::Sercom5Pad1<gpio::Pb3<gpio::PfD>>,
+    > {
     let gclk0 = clocks.gclk0();
     I2CMaster5::new(
         &clocks.sercom5_core(&gclk0).unwrap(),
