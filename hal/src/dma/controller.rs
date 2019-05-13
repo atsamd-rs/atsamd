@@ -1,5 +1,18 @@
 //! DMA controller (DMAC)
 
+#[cfg(not(feature = "samd51"))]
+mod samd21;
+#[cfg(feature = "samd51")]
+mod samd51;
+
+#[cfg(not(feature = "samd51"))]
+pub(super) use self::samd21::*;
+#[cfg(feature = "samd51")]
+pub(super) use self::samd51::*;
+use super::error::Error;
+use crate::target_device::{DMAC, NVIC};
+use core::ops::Deref;
+use cortex_m::interrupt::{CriticalSection, Mutex};
 use vcell::VolatileCell;
 
 /// (DMAC_BTCTRL) Source Address Increment Enable
@@ -44,32 +57,11 @@ pub(super) const CHINTENSET_MASK: u8 = 0x07;
 /// Disable event output
 pub(super) const EVENT_OUTPUT_DISABLE: u16 = 0;
 
-/// Number of DMAC channels (SAMD21)
-#[cfg(not(feature = "samd51"))]
-pub(super) const NUM_CHANNELS: usize = 1;
-
-/// Number of DMAC channels (SAMD51)
-#[cfg(feature = "samd51")]
-pub(super) const NUM_CHANNELS: usize = 32;
-
-#[cfg(not(feature = "samd51"))]
-pub(super) const NVIC_PRIO_BITS: u16 = 2;
-
-#[cfg(feature = "samd51")]
-pub(super) const NVIC_PRIO_BITS: u16 = 3;
-
 /// Channel IDs
 pub(super) type ChannelId = u8;
 
-/// Compute BTCTRL value for beat size
-pub(super) fn btctrl_beatsize(size: u16) -> u16 {
-    (0x3 << 8) & (size << 8)
-}
-
-/// Compute BTCTRL value for step size
-pub(super) fn btctrl_stepsize(size: u16) -> u16 {
-    (0x7 << 13) & (size << 13)
-}
+/// Channel mask values
+pub(super) type ChannelMask = u32;
 
 /// Beat sizes
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
@@ -82,6 +74,28 @@ pub enum BeatSize {
 
     /// 32-bit
     Word = 2,
+}
+
+impl BeatSize {
+    /// Get the number of bytes per beat
+    pub fn bytes_per_beat(self) -> usize {
+        match self {
+            BeatSize::Byte => 1,
+            BeatSize::HWord => 2,
+            BeatSize::Word => 4,
+        }
+    }
+}
+
+impl From<u16> for BeatSize {
+    fn from(size: u16) -> BeatSize {
+        match size {
+            0 => BeatSize::Byte,
+            1 => BeatSize::HWord,
+            2 => BeatSize::Word,
+            n => panic!("invalid beat size: {}", n),
+        }
+    }
 }
 
 /// DMA descriptor
@@ -159,112 +173,88 @@ impl Default for Priority {
     }
 }
 
-#[cfg(not(feature = "samd51"))]
-pub(super) mod samd21 {
-    /// IRQ type
-    pub type IRQn = u8;
-
-    /// IRQ value
-    pub const IRQN: IRQn = 6;
+/// DMA controller
+pub(super) struct Controller {
+    /// DMA controller state that should only be accessed from within a
+    /// critical section
+    critical: Mutex<ControllerCritical>,
 }
 
-#[cfg(feature = "samd51")]
-pub(super) mod samd51 {
-    use super::{ChannelId, NUM_CHANNELS};
-    use crate::target_device::dmac;
-    use core::mem;
+impl Controller {
+    /// Create a new DMA controller and initialize the underlying subsystem
+    pub fn new(
+        dmac: DMAC,
+        clock_source: &mut ClockSource,
+        nvic: &mut NVIC,
+        descriptor_list: &DescriptorList,
+    ) -> Result<Self, Error> {
+        init_clock(clock_source);
 
-    /// Size of the DMAC registers for a single channel:
-    ///
-    /// `u32 + (u8 * 8)` = 12 bytes
-    const CHANNEL_REGISTERS_SIZE: u32 = 12;
+        // Disable DMA controller
+        dmac.ctrl.write(|reg| reg.dmaenable().clear_bit());
 
-    /// DMAC IRQn
-    #[repr(u8)]
-    #[derive(Copy, Clone, Debug, Eq, PartialEq)]
-    pub enum IRQn {
-        /// DMAC IRQn 0
-        ///
-        /// - DMAC_SUSP_0, DMAC_TCMPL_0, DMAC_TERR_0
-        N0 = 31,
+        // Perform software reset
+        dmac.ctrl.write(|reg| reg.swrst().set_bit());
 
-        /// DMAC IRQn 1
-        ///
-        /// - DMAC_SUSP_1, DMAC_TCMPL_1, DMAC_TERR_1
-        N1 = 32,
+        // Initialize descriptor list addresses
+        dmac.baseaddr.write(|reg| unsafe {
+            reg.baseaddr()
+                .bits(descriptor_list.descriptor.as_ptr() as u32)
+        });
 
-        /// DMAC IRQn 2
-        ///
-        /// - DMAC_SUSP_2, DMAC_TCMPL_2, DMAC_TERR_2
-        N2 = 33,
+        dmac.wrbaddr.write(|reg| unsafe {
+            reg.wrbaddr()
+                .bits(descriptor_list.writeback.as_ptr() as u32)
+        });
 
-        /// DMAC IRQn 3
-        ///
-        /// - DMAC_SUSP_3, DMAC_TCMPL_3, DMAC_TERR_3
-        N3 = 34,
+        // TODO(tarcieri): Wipe decriptor and writeback tables
+        // self.descriptor_list.descriptor[0] = Descriptor::default();
+        // self.descriptor_list.descriptor[0] = Descriptor::default();
 
-        /// DMAC IRQn 4
-        ///
-        /// - DMAC_SUSP_4, DMAC_SUSP_5, DMAC_SUSP_6, DMAC_SUSP_7, DMAC_SUSP_8, DMAC_SUSP_9,
-        /// - DMAC_SUSP_10, DMAC_SUSP_11, DMAC_SUSP_12, DMAC_SUSP_13, DMAC_SUSP_14, DMAC_SUSP_15,
-        /// - DMAC_SUSP_16, DMAC_SUSP_17, DMAC_SUSP_18, DMAC_SUSP_19, DMAC_SUSP_20, DMAC_SUSP_21,
-        /// - DMAC_SUSP_22, DMAC_SUSP_23, DMAC_SUSP_24, DMAC_SUSP_25, DMAC_SUSP_26, DMAC_SUSP_27,
-        /// - DMAC_SUSP_28, DMAC_SUSP_29, DMAC_SUSP_30, DMAC_SUSP_31
-        /// - DMAC_TCMPL_4, DMAC_TCMPL_5, DMAC_TCMPL_6, DMAC_TCMPL_7, DMAC_TCMPL_8, DMAC_TCMPL_9
-        /// - DMAC_TCMPL_10, DMAC_TCMPL_11, DMAC_TCMPL_12, DMAC_TCMPL_13, DMAC_TCMPL_14, DMAC_TCMPL_15,
-        /// - DMAC_TCMPL_16, DMAC_TCMPL_17, DMAC_TCMPL_18, DMAC_TCMPL_19, DMAC_TCMPL_20, DMAC_TCMPL_21,
-        /// - DMAC_TCMPL_22, DMAC_TCMPL_23, DMAC_TCMPL_24, DMAC_TCMPL_25, DMAC_TCMPL_26, DMAC_TCMPL_27,
-        /// - DMAC_TCMPL_28, DMAC_TCMPL_29, DMAC_TCMPL_30, DMAC_TCMPL_31
-        /// - DMAC_TERR_4, DMAC_TERR_5, DMAC_TERR_6, DMAC_TERR_7, DMAC_TERR_8, DMAC_TERR_9
-        /// - DMAC_TERR_10, DMAC_TERR_11, DMAC_TERR_12, DMAC_TERR_13, DMAC_TERR_14, DMAC_TERR_15,
-        /// - DMAC_TERR_16, DMAC_TERR_17, DMAC_TERR_18, DMAC_TERR_19, DMAC_TERR_20, DMAC_TERR_21,
-        /// - DMAC_TERR_22, DMAC_TERR_23, DMAC_TERR_24, DMAC_TERR_25, DMAC_TERR_26, DMAC_TERR_27,
-        /// - DMAC_TERR_28, DMAC_TERR_29, DMAC_TERR_30, DMAC_TERR_31
-        N4 = 35,
+        // Re-enable DMA controller with all priority levels
+        dmac.ctrl.write(|reg| {
+            reg.dmaenable()
+                .set_bit()
+                .lvlen0()
+                .set_bit()
+                .lvlen1()
+                .set_bit()
+                .lvlen2()
+                .set_bit()
+                .lvlen3()
+                .set_bit()
+        });
+
+        // Enable DMAC IRQ(s)
+        init_interrupts(nvic);
+
+        Ok(Self {
+            critical: Mutex::new(ControllerCritical::new(dmac)),
+        })
     }
 
-    macro_rules! decl_channel_register {
-        ($name:ident, $type:ty) => {
-            fn $name(&self, channel_id: ChannelId) -> &$type;
+    /// Acquire a lock around the critical inner fields
+    pub fn lock(&self) -> Guard {
+        Guard {
+            controller: self,
+            section: unsafe { CriticalSection::new() },
         }
     }
+}
 
-    macro_rules! impl_channel_register {
-        ($name:ident, $type:ty, $base:ident) => {
-            fn $name(&self, channel_id: ChannelId) -> &$type {
-                debug_assert!(
-                    channel_id < NUM_CHANNELS as u8,
-                    "invalid channel ID: {} (max {})",
-                    channel_id,
-                    NUM_CHANNELS
-                );
+/// MutexGuard-like wrapper around the critical DMAC fields
+pub(super) struct Guard<'a> {
+    /// Reference to an underlying controller
+    controller: &'a Controller,
 
-                let base_addr = (&self.$base as *const $type) as u32;
-                unsafe { mem::transmute(base_addr + CHANNEL_REGISTERS_SIZE) }
-            }
-        }
-    }
+    /// Critical section
+    section: CriticalSection,
+}
 
-    /// Extension trait for accessing DMAC channel registers
-    pub(crate) trait ChannelRegisters {
-        decl_channel_register!(chctrla, dmac::CHCTRLA);
-        decl_channel_register!(chctrlb, dmac::CHCTRLB);
-        decl_channel_register!(chprilvl, dmac::CHPRILVL);
-        decl_channel_register!(chevctrl, dmac::CHEVCTRL);
-        decl_channel_register!(chintenclr, dmac::CHINTENCLR);
-        decl_channel_register!(chintenset, dmac::CHINTENSET);
-        decl_channel_register!(chintflag, dmac::CHINTFLAG);
-        decl_channel_register!(chstatus, dmac::CHSTATUS);
-    }
+impl<'a> Deref for Guard<'a> {
+    type Target = ControllerCritical;
 
-    impl ChannelRegisters for dmac::RegisterBlock {
-        impl_channel_register!(chctrla, dmac::CHCTRLA, chctrla0);
-        impl_channel_register!(chctrlb, dmac::CHCTRLB, chctrlb0);
-        impl_channel_register!(chprilvl, dmac::CHPRILVL, chprilvl0);
-        impl_channel_register!(chevctrl, dmac::CHEVCTRL, chevctrl0);
-        impl_channel_register!(chintenclr, dmac::CHINTENCLR, chintenclr0);
-        impl_channel_register!(chintenset, dmac::CHINTENSET, chintenset0);
-        impl_channel_register!(chintflag, dmac::CHINTFLAG, chintflag0);
-        impl_channel_register!(chstatus, dmac::CHSTATUS, chstatus0);
+    fn deref(&self) -> &ControllerCritical {
+        self.controller.critical.borrow(&self.section)
     }
 }
