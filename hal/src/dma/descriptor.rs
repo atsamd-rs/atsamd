@@ -14,13 +14,13 @@ pub struct Descriptor {
     pub btcnt: VolatileCell<u16>,
 
     /// 0x04 - Block Transfer Source Address
-    pub srcaddr: VolatileCell<u32>,
+    pub srcaddr: VolatileCell<*const u8>,
 
     /// 0x08 - Block Transfer Destination Address
-    pub dstaddr: VolatileCell<u32>,
+    pub dstaddr: VolatileCell<*mut u8>,
 
     /// 0x0C - Next Descriptor Address
-    pub descaddr: VolatileCell<u32>,
+    pub descaddr: VolatileCell<*const Descriptor>,
 }
 
 impl Default for Descriptor {
@@ -28,9 +28,9 @@ impl Default for Descriptor {
         Descriptor {
             btctrl: VolatileCell::new(0),
             btcnt: VolatileCell::new(0),
-            srcaddr: VolatileCell::new(0),
-            dstaddr: VolatileCell::new(0),
-            descaddr: VolatileCell::new(0),
+            srcaddr: VolatileCell::new(0 as *const u8),
+            dstaddr: VolatileCell::new(0 as *mut u8),
+            descaddr: VolatileCell::new(0 as *const Descriptor),
         }
     }
 }

@@ -439,7 +439,6 @@ impl<'dmac, 'desc> Channel<'dmac, 'desc> {
 
         desc.btctrl.set(btctrl);
         desc.btcnt.set(count);
-        desc.srcaddr.set(src as u32);
 
         let mut srcaddr = src as u32;
 
@@ -453,7 +452,7 @@ impl<'dmac, 'desc> Channel<'dmac, 'desc> {
             srcaddr += offset as u32;
         }
 
-        desc.srcaddr.set(srcaddr);
+        desc.srcaddr.set(srcaddr as *const u8);
 
         let mut dstaddr = dst as u32;
 
@@ -467,12 +466,12 @@ impl<'dmac, 'desc> Channel<'dmac, 'desc> {
             dstaddr += offset as u32;
         }
 
-        desc.dstaddr.set(dstaddr);
+        desc.dstaddr.set(dstaddr as *mut u8);
 
         desc.descaddr.set(if self.loop_flag {
-            (self.descriptor_list.descriptor(self.channel_id) as *const Descriptor) as u32
+            self.descriptor_list.descriptor(self.channel_id)
         } else {
-            0
+            0 as *const Descriptor
         });
 
         Some(desc)
@@ -513,7 +512,7 @@ impl<'dmac, 'desc> Channel<'dmac, 'desc> {
                 srcaddr += offset as u32;
             }
 
-            desc.srcaddr.set(srcaddr);
+            desc.srcaddr.set(srcaddr as *const u8);
         }
 
         if !dst.is_null() {
@@ -532,7 +531,7 @@ impl<'dmac, 'desc> Channel<'dmac, 'desc> {
                 dstaddr += offset as u32;
             }
 
-            desc.dstaddr.set(dstaddr);
+            desc.dstaddr.set(dstaddr as *mut u8);
         }
     }
 
@@ -559,10 +558,8 @@ impl<'dmac, 'desc> Channel<'dmac, 'desc> {
             loop {
                 let next_desc = desc.descaddr.get();
 
-                if next_desc != 0
-                    && next_desc
-                        != (self.descriptor_list.descriptor(self.channel_id) as *const Descriptor)
-                            as u32
+                if !next_desc.is_null()
+                    && next_desc != self.descriptor_list.descriptor(self.channel_id)
                 {
                     desc = unsafe { mem::transmute(next_desc) };
                 } else {
@@ -572,11 +569,10 @@ impl<'dmac, 'desc> Channel<'dmac, 'desc> {
 
             // Loop or unloop descriptor list as appropriate
             if self.loop_flag {
-                desc.descaddr.set(
-                    (self.descriptor_list.descriptor(self.channel_id) as *const Descriptor) as u32,
-                );
+                desc.descaddr
+                    .set(self.descriptor_list.descriptor(self.channel_id));
             } else {
-                desc.descaddr.set(0);
+                desc.descaddr.set(0 as *const Descriptor);
             };
         }
     }
