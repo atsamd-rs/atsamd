@@ -1,8 +1,7 @@
 //! SAMD51 DMA controller (32 channels)
 
-use super::{ChannelId, ChannelMask};
-use crate::dma::Error;
-use crate::target_device::{dmac, DMAC, Interrupt, NVIC};
+use crate::dma::{channel, Error};
+use crate::target_device::{dmac, Interrupt, DMAC, NVIC};
 use core::{mem, ops::Deref};
 use vcell::VolatileCell;
 
@@ -28,8 +27,10 @@ pub(super) fn init_clock(clock_source: &mut ClockSource) {
 macro_rules! init_interrupt {
     ($nvic:expr, $int:expr) => {
         $nvic.enable($int);
-        unsafe { $nvic.set_priority($int, (1 << NVIC_PRIO_BITS) - 1); }
-    }
+        unsafe {
+            $nvic.set_priority($int, (1 << NVIC_PRIO_BITS) - 1);
+        }
+    };
 }
 
 /// Enable DMA interrupt at lowest priority
@@ -66,32 +67,32 @@ impl ControllerCritical {
     }
 
     /// Read the current state of the channel mask
-    pub fn channel_mask(&self) -> ChannelMask {
+    pub fn channel_mask(&self) -> channel::Mask {
         self.channel_mask.get()
     }
 
     /// Read the current channel flags given a flag value
-    pub fn read_channel_id_and_flags(&self, channel_id: ChannelId) -> (ChannelId, u8) {
+    pub fn read_channel_id_and_flags(&self, channel_id: channel::Id) -> (channel::Id, u8) {
         let flags = self.dmac.chintflag(channel_id).read().bits();
         (channel_id, flags)
     }
 
     /// Clear transfer error (TERR) flag
-    pub fn clear_transfer_error_flag(&self, channel_id: ChannelId) {
+    pub fn clear_transfer_error_flag(&self, channel_id: channel::Id) {
         self.dmac
             .chintflag(channel_id)
             .write(|reg| reg.terr().clear_bit());
     }
 
     /// Clear transfer complete (TCMPL) flag
-    pub fn clear_transfer_complete_flag(&self, channel_id: ChannelId) {
+    pub fn clear_transfer_complete_flag(&self, channel_id: channel::Id) {
         self.dmac
             .chintflag(channel_id)
             .write(|reg| reg.tcmpl().set_bit());
     }
 
     /// Clear channel suspend (SUSP) flag
-    pub fn clear_suspend_flag(&self, channel_id: ChannelId) {
+    pub fn clear_suspend_flag(&self, channel_id: channel::Id) {
         self.dmac
             .chintflag(channel_id)
             .write(|reg| reg.susp().set_bit());
@@ -100,7 +101,7 @@ impl ControllerCritical {
     /// Configure default behaviors
     pub fn configure_default_behaviors(
         &self,
-        channel_id: ChannelId,
+        channel_id: channel::Id,
         peripheral_trigger: dmac::chctrla::TRIGSRCW,
         trigger_action: dmac::chctrla::TRIGACTW,
     ) {
@@ -119,7 +120,7 @@ impl ControllerCritical {
     }
 
     /// Set priority
-    pub fn set_priority(&self, channel_id: ChannelId, priority: super::Priority) {
+    pub fn set_priority(&self, channel_id: channel::Id, priority: super::Priority) {
         unsafe {
             self.dmac
                 .chprilvl(channel_id)
@@ -128,7 +129,7 @@ impl ControllerCritical {
     }
 
     /// Set interrupt mask
-    pub fn set_interrupt_mask(&self, channel_id: ChannelId, interrupt_mask: u8) {
+    pub fn set_interrupt_mask(&self, channel_id: channel::Id, interrupt_mask: u8) {
         unsafe {
             self.dmac
                 .chintenset(channel_id)
@@ -145,21 +146,21 @@ impl ControllerCritical {
     }
 
     /// Set action
-    pub fn set_action(&self, channel_id: ChannelId, action: dmac::chctrla::TRIGACTW) {
+    pub fn set_action(&self, channel_id: channel::Id, action: dmac::chctrla::TRIGACTW) {
         self.dmac
             .chctrla(channel_id)
             .write(|reg| reg.trigact().variant(action));
     }
 
     /// Set trigger
-    pub fn set_trigger(&self, channel_id: ChannelId, trigger: dmac::chctrla::TRIGSRCW) {
+    pub fn set_trigger(&self, channel_id: channel::Id, trigger: dmac::chctrla::TRIGSRCW) {
         self.dmac
             .chctrla(channel_id)
             .write(|reg| reg.trigsrc().variant(trigger));
     }
 
     /// Allocate the given channel
-    pub fn allocate_channel(&self, channel_id: ChannelId) -> Result<(), Error> {
+    pub fn allocate_channel(&self, channel_id: channel::Id) -> Result<(), Error> {
         let channel_mask = self.channel_mask();
 
         if channel_mask & (1 << channel_id) != 0 {
@@ -180,9 +181,9 @@ impl ControllerCritical {
     /// Release the given channel
     pub fn release_channel(
         &self,
-        channel_id: ChannelId,
+        channel_id: channel::Id,
         clock_source: &mut ClockSource,
-        nvic: &mut NVIC
+        nvic: &mut NVIC,
     ) -> Result<(), Error> {
         if self.channel_mask.get() & (1 << channel_id) != 0 {
             // Valid in-use channel; release it
@@ -209,7 +210,7 @@ impl ControllerCritical {
     }
 
     /// Abort DMA operation
-    pub fn abort(&self, channel_id: ChannelId) {
+    pub fn abort(&self, channel_id: channel::Id) {
         unsafe {
             self.dmac.chctrla(channel_id).write(|reg| reg.bits(0));
         }
@@ -218,13 +219,13 @@ impl ControllerCritical {
 
 macro_rules! decl_channel_register {
         ($name:ident, $type:ty) => {
-            fn $name(&self, channel_id: ChannelId) -> &$type;
+            fn $name(&self, channel_id: channel::Id) -> &$type;
         }
     }
 
 macro_rules! impl_channel_register {
         ($name:ident, $type:ty, $base:ident) => {
-            fn $name(&self, channel_id: ChannelId) -> &$type {
+            fn $name(&self, channel_id: channel::Id) -> &$type {
                 debug_assert!(
                     channel_id < NUM_CHANNELS as u8,
                     "invalid channel ID: {} (max {})",

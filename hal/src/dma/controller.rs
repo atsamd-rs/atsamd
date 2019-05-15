@@ -9,59 +9,17 @@ mod samd51;
 pub(super) use self::samd21::*;
 #[cfg(feature = "samd51")]
 pub(super) use self::samd51::*;
+use super::descriptor::DescriptorList;
 use super::error::Error;
 use crate::target_device::{DMAC, NVIC};
 use core::ops::Deref;
 use cortex_m::interrupt::{CriticalSection, Mutex};
-use vcell::VolatileCell;
-
-/// (DMAC_BTCTRL) Source Address Increment Enable
-pub(super) const BTCTRL_SRCINC: u16 = 1 << 10;
-
-/// (DMAC_BTCTRL) Destination Address Increment Enable
-pub(super) const BTCTRL_DSTINC: u16 = 1 << 11;
-
-/// (DMAC_BTCTRL) Step Selection
-pub(super) const BTCTRL_STEPSEL: u16 = 1 << 12;
-
-/// (DMAC_BTCTRL) Beat Size Mask
-pub(super) const BTCTRL_BEATSIZE_MASK: u16 = 3 << BTCTRL_BEATSIZE_POS;
-
-/// (DMAC_BTCTRL) Beat Size Mask
-pub(super) const BTCTRL_BEATSIZE_POS: u16 = 8;
-
-/// (DMAC_BTCTRL) Step Size Mask
-pub(super) const BTCTRL_STEPSIZE_MASK: u16 = 7 << BTCTRL_STEPSIZE_POS;
-
-/// (DMAC_BTCTRL) Step Size Mask
-pub(super) const BTCTRL_STEPSIZE_POS: u16 = 13;
-
-/// (DMAC_BTCTRL) Descriptor Valid
-pub(super) const BTCTRL_VALID: u16 = 1;
 
 /// (DMAC_CHINTENCLR) Mask Register
-pub(super) const CHINTENCLR_MASK: u8 = 0x07;
-
-/// Channel Transfer Error Interrupt Enable
-pub(super) const CHINTENCLR_TERR: u8 = 1;
-
-/// Channel Transfer Complete Interrupt Enable
-pub(super) const CHINTENCLR_TCMPL: u8 = 1 << 1;
-
-/// Channel Suspend Interrupt Enable
-pub(super) const CHINTENCLR_SUSP: u8 = 1 << 2;
+const CHINTENCLR_MASK: u8 = 0x07;
 
 /// (DMAC_CHINTENSET) Mask Register
-pub(super) const CHINTENSET_MASK: u8 = 0x07;
-
-/// Disable event output
-pub(super) const EVENT_OUTPUT_DISABLE: u16 = 0;
-
-/// Channel IDs
-pub(super) type ChannelId = u8;
-
-/// Channel mask values
-pub(super) type ChannelMask = u32;
+const CHINTENSET_MASK: u8 = 0x07;
 
 /// Beat sizes
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
@@ -98,59 +56,6 @@ impl From<u16> for BeatSize {
     }
 }
 
-/// DMA descriptor
-#[repr(align(16))]
-pub struct Descriptor {
-    /// 0x00 - Block Transfer Control
-    pub btctrl: VolatileCell<u16>,
-
-    /// 0x02 - Block Transfer Count
-    pub btcnt: VolatileCell<u16>,
-
-    /// 0x04 - Block Transfer Source Address
-    pub srcaddr: VolatileCell<u32>,
-
-    /// 0x08 - Block Transfer Destination Address
-    pub dstaddr: VolatileCell<u32>,
-
-    /// 0x0C - Next Descriptor Address
-    pub descaddr: VolatileCell<u32>,
-}
-
-impl Default for Descriptor {
-    fn default() -> Descriptor {
-        Descriptor {
-            btctrl: VolatileCell::new(0),
-            btcnt: VolatileCell::new(0),
-            srcaddr: VolatileCell::new(0),
-            dstaddr: VolatileCell::new(0),
-            descaddr: VolatileCell::new(0),
-        }
-    }
-}
-
-/// Descriptor and writeback sections for all DMAC channels
-#[derive(Default)]
-pub struct DescriptorList {
-    /// Descriptor section for DMAC channels
-    pub descriptor: [Descriptor; NUM_CHANNELS],
-
-    /// Writeback section for DMAC channels
-    pub writeback: [Descriptor; NUM_CHANNELS],
-}
-
-impl DescriptorList {
-    /// Get DMAC channel `Descriptor`
-    pub fn descriptor(&self, channel_id: ChannelId) -> &Descriptor {
-        &self.descriptor[channel_id as usize]
-    }
-
-    /// Get DMAC channel writeback `Descriptor`
-    pub fn writeback(&self, channel_id: ChannelId) -> &Descriptor {
-        &self.descriptor[channel_id as usize]
-    }
-}
-
 /// DMA priority
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum Priority {
@@ -173,8 +78,8 @@ impl Default for Priority {
     }
 }
 
-/// DMA controller
-pub(super) struct Controller {
+/// Direct Memory Access controller
+pub struct Controller {
     /// DMA controller state that should only be accessed from within a
     /// critical section
     critical: Mutex<ControllerCritical>,
@@ -234,7 +139,7 @@ impl Controller {
     }
 
     /// Acquire a lock around the critical inner fields
-    pub fn lock(&self) -> Guard {
+    pub(super) fn lock(&self) -> Guard {
         Guard {
             controller: self,
             section: unsafe { CriticalSection::new() },
