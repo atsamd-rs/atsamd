@@ -107,9 +107,9 @@ pub struct Callbacks {
 }
 
 /// Direct Memory Access channel
-pub struct Channel<'desc> {
+pub struct Channel<'dmac, 'desc> {
     /// DMA controller
-    controller: Controller,
+    controller: &'dmac Controller,
 
     /// Channel ID
     channel_id: Id,
@@ -136,10 +136,10 @@ pub struct Channel<'desc> {
     descriptor_list: &'desc DescriptorList,
 }
 
-impl<'desc> Channel<'desc> {
+impl<'dmac, 'desc> Channel<'dmac, 'desc> {
     /// Initialize a DMA channel
     pub fn new(
-        controller: Controller,
+        controller: &'dmac Controller,
         channel_id: Id,
         descriptor_list: &'desc DescriptorList,
     ) -> Result<Self, Error> {
