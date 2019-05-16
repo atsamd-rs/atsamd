@@ -173,7 +173,10 @@ pad!(Sercom4Pad3 {
     Pb15(PfC),
 });
 
-// TODO confirm Sercom5 pad configurations
+// sercom5[0]:  PA23:D   PB02:D   PB31:D   PB16:C
+// sercom5[1]:  PA22:D   PB03:D   PB30:D   PB17:C
+// sercom5[2]:  PA24:D   PB00:D   PA20:C   PB22:D
+// sercom5[3]:  PA25:D   PB01:D   PA21:C   PB23:D
 
 pad!(Sercom5Pad0 {
     Pa23(PfD),
