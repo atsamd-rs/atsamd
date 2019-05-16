@@ -15,7 +15,9 @@ macro_rules! pad {
         $($PinType:ident ($Pf:ident),)+
     }
     ) => {
-/// Represents a numbered pad for the associated sercom instance
+/// Represents a numbered pad for the associated sercom instance. The pad is
+/// generic over any pin, only the PadPin implementations in this the sercom
+/// module make sense.
 pub struct $PadType<PIN>(PIN);
 
 impl<PIN> $PadType<PIN> {
