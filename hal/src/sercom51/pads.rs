@@ -68,7 +68,7 @@ pad!(Sercom0Pad3 {
 // sercom1[0]:  PA16:C   PA00:D
 // sercom1[1]:  PA17:C   PA01:D
 // sercom1[2]:  PA18:C   PA30:D
-// sercom1[3]:  PA19:C   PA31:D
+// sercom1[3]:  PA19:C   PA31:D   PB23:C
 
 pad!(Sercom1Pad0 {
     Pa0(PfD),
