@@ -1,32 +1,52 @@
 use crate::clock;
+use crate::time::Hertz;
+use crate::hal::blocking::serial::{write::Default, Write};
+use crate::hal::serial;
+use nb;
 use crate::sercom::pads::*;
 use crate::target_device::sercom0::USART;
 use crate::target_device::Interrupt;
 use crate::target_device::{NVIC, PM, SERCOM0, SERCOM1, SERCOM2, SERCOM3};
 #[cfg(feature = "samd21g18a")]
 use crate::target_device::{SERCOM4, SERCOM5};
-use crate::time::Hertz;
 use core::fmt;
-use hal::blocking::serial::{write::Default, Write};
-use hal::serial;
-use nb;
 
+/// The RxpoTxpo trait defines a way to get the data in and data out pin out
+/// values for a given UARTXPadout configuration. You should not implement
+/// this trait for yourself; only the implementations in the sercom module make
+/// sense.
 pub trait RxpoTxpo {
     fn rxpo_txpo(&self) -> (u8, u8);
 }
 
+/// Define a UARTX type for the given Sercom.
+///
+/// Also defines the valid "pad to uart function" mappings for this instance so
+/// that construction is restricted to valid configurations.
 macro_rules! uart {
     ($Type:ident: ($Sercom:ident, $SERCOM:ident, $powermask:ident, $clock:ident)) => {
         $crate::paste::item! {
-            /// A padout configuration for the SERCOM in UART mode.
+            /// A pad mapping configuration for the SERCOM in UART mode.
+            ///
+            /// This type can only be constructed using the From implementations 
+            /// in this module, which are restricted to valid configurations.
+            ///
+            /// Defines which sercom pad is mapped to which UART function.
             pub struct [<$Type Padout>]<RX, TX, RTS, CTS> {
-                pub rx: RX,
-                pub tx: TX,
-                pub rts: RTS,
-                pub cts: CTS,
+                rx: RX,
+                tx: TX,
+                rts: RTS,
+                cts: CTS,
             }
         }
 
+        /// Define a From instance for either a tuple of two SercomXPadX
+        /// instances, or a tuple of four SercomXPadX instances that converts
+        /// them into an UARTXPadout instance.
+        ///
+        /// Also defines a RxpoTxpo instance for the constructed padout instance
+        /// that returns the values used to configure the sercom pads for the
+        /// appropriate function in the sercom register file.
         macro_rules! padout {
             ($rxpo_txpo:expr => $pad0:ident, $pad1:ident) => {
                 $crate::paste::item! {
@@ -72,12 +92,27 @@ macro_rules! uart {
         padout!((3, 1) => Pad3, Pad2);
 
         $crate::paste::item! {
+            /// UARTX represents the corresponding SERCOMX instance
+            /// configured to act in the role of a UART Master.
+            /// Objects of this type implement the HAL `serial::Read`,
+            /// `serial::Write` traits.
+            ///
+            /// This type is generic over any valid pad mapping where there is
+            /// a defined "receive pin out transmit pin out" implementation.
             pub struct $Type<RX, TX, RTS, CTS> {
                 padout: [<$Type Padout>]<RX, TX, RTS, CTS>,
                 sercom: $SERCOM,
             }
 
             impl<RX, TX, RTS, CTS> $Type<RX, TX, RTS, CTS> {
+                /// Power on and configure SERCOMX to work as a UART Master operating
+                /// with the specified frequency. The padout specifies
+                /// which pins are bound to the RX, TX and optionally RTS and CTS
+                /// functions.
+                ///
+                /// You can use any tuple of two or four SercomXPadY instances
+                /// for which there exists a From implementation for
+                /// UARTXPadout.
                 pub fn new<F: Into<Hertz>, T: Into<[<$Type Padout>]<RX, TX, RTS, CTS>>>(
                     clock: &clock::$clock,
                     freq: F,
