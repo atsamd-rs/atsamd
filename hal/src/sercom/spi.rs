@@ -21,17 +21,32 @@ pub trait DipoDopo {
     fn dipo_dopo(&self) -> (u8, u8);
 }
 
+/// Define an SPIMasterX type for the given Sercom number.
+///
+/// Also defines the valid "pad to spi function" mappings for this instance so
+/// that construction is restricted to correct configurations.
 macro_rules! spi_master {
     ($Type:ident: ($Sercom:ident, $SERCOM:ident, $powermask:ident, $clock:ident)) => {
         $crate::paste::item! {
-            /// A padout configuration for the SERCOM in SPI master mode.
+            /// A pad mapping configuration for the SERCOM in SPI master mode.
+            ///
+            /// This type can only be constructed using the From implementations
+            /// in this module, which are restricted to valid configurations.
+            ///
+            /// Defines which sercom pad is mapped to which SPI function.
             pub struct [<$Type Padout>]<MISO, MOSI, SCK> {
-                pub miso: MISO,
-                pub mosi: MOSI,
-                pub sck: SCK,
+                miso: MISO,
+                mosi: MOSI,
+                sck: SCK,
             }
         }
 
+        /// Define a From instance for a tuple of SercomXPadX instances that
+        /// converts them into an SPIMasterXPadout instance.
+        ///
+        /// Also defines a DipoDopo instance for the constructed padout instance
+        /// that returns the values used to configure the sercom pads for the
+        /// appropriate function in the sercom register file.
         macro_rules! padout {
             ($dipo_dopo:expr => $pad0:ident, $pad1:ident, $pad2:ident) => {
                 $crate::paste::item! {
@@ -63,10 +78,13 @@ macro_rules! spi_master {
         padout!((3, 0) => Pad3, Pad0, Pad1);
 
         $crate::paste::item! {
-            /// SPIMasterX represents the corresponding SERCOMX instance configured to
-            /// act in the role of an SPI Master.
-            /// Objects of this type implement the HAL `FullDuplex` and blocking SPI
-            /// traits.
+            /// SPIMasterX represents the corresponding SERCOMX instance
+            /// configured to act in the role of an SPI Master.
+            /// Objects of this type implement the HAL `FullDuplex` and blocking
+            /// SPI traits.
+            ///
+            /// This type is generic over any valid pad mapping where there is
+            /// a defined "data in pin out data out pin out" implementation.
             pub struct $Type<MISO, MOSI, SCK> {
                 padout: [<$Type Padout>]<MISO, MOSI, SCK>,
                 sercom: $SERCOM,
@@ -74,8 +92,11 @@ macro_rules! spi_master {
 
             impl<MISO, MOSI, SCK> $Type<MISO, MOSI, SCK> {
                 /// Power on and configure SERCOMX to work as an SPI Master operating
-                /// with the specified frequency and SPI Mode.  The pinout specifies
+                /// with the specified frequency and SPI Mode. The padout specifies
                 /// which pins are bound to the MISO, MOSI, SCK functions.
+                ///
+                /// You can use a tuple of three SercomXPadY instances for which
+                /// there exists a From implementation for SPIMasterXPadout.
                 pub fn new<F: Into<Hertz>, T: Into<[<$Type Padout>]<MISO, MOSI, SCK>>>(
                     clock:&clock::$clock,
                     freq: F,
