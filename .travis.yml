@@ -7,19 +7,19 @@ rust:
   - nightly
 
 env:
-  - BOARD=metro_m0 EXAMPLES="--example=blinky_basic --example=blinky_rtfm"
-  - BOARD=metro_m4 FEATURES="--features=unproven"
-  - BOARD=feather_m0 FEATURES="--features=unproven"
-  - BOARD=feather_m4
-  - BOARD=gemma_m0
-  - BOARD=itsybitsy_m0
-  - BOARD=trinket_m0
-  - BOARD=samd21_mini
-  - BOARD=arduino_mkrzero
-  - BOARD=circuit_playground_express
-  - BOARD=sodaq_one
-  - BOARD=pyportal
-  - BOARD=trellis_m4 FEATURES="--features=keypad-unproven"
+  - CRATE=boards/metro_m0 EXAMPLES="--example=blinky_basic --example=blinky_rtfm"
+  - CRATE=boards/metro_m4 FEATURES="--features=unproven"
+  - CRATE=boards/feather_m0 FEATURES="--features=unproven"
+  - CRATE=boards/feather_m4
+  - CRATE=boards/gemma_m0
+  - CRATE=boards/itsybitsy_m0
+  - CRATE=boards/trinket_m0
+  - CRATE=boards/samd21_mini
+  - CRATE=boards/arduino_mkrzero
+  - CRATE=boards/circuit_playground_express
+  - CRATE=boards/sodaq_one
+  - CRATE=boards/pyportal
+  - CRATE=boards/trellis_m4 FEATURES="--features=keypad-unproven"
 
 matrix:
   allow_failures:
@@ -30,7 +30,7 @@ before_install:
   - rustup target add thumbv7em-none-eabihf
 
 script:
-  - "cd boards/$BOARD"
+  - "cd $CRATE"
   - "cargo build ${EXAMPLES:---examples} $FEATURES"
 
 jobs:
