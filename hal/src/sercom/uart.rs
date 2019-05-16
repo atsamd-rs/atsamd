@@ -33,10 +33,10 @@ macro_rules! uart {
             ///
             /// Defines which sercom pad is mapped to which UART function.
             pub struct [<$Type Padout>]<RX, TX, RTS, CTS> {
-                rx: RX,
-                tx: TX,
-                rts: RTS,
-                cts: CTS,
+                _rx: RX,
+                _tx: TX,
+                _rts: RTS,
+                _cts: CTS,
             }
         }
 
@@ -53,7 +53,7 @@ macro_rules! uart {
                     /// Convert from a tuple of (RX, TX) to UARTXPadout
                     impl<PIN0, PIN1> From<([<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>)> for [<$Type Padout>]<[<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, (), ()> {
                         fn from(pads: ([<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>)) -> [<$Type Padout>]<[<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, (), ()> {
-                            [<$Type Padout>] { rx: pads.0, tx: pads.1, rts: (), cts: () }
+                            [<$Type Padout>] { _rx: pads.0, _tx: pads.1, _rts: (), _cts: () }
                         }
                     }
 
@@ -69,7 +69,7 @@ macro_rules! uart {
                     /// Convert from a tuple of (RX, TX, RTS, CTS) to UARTXPadout
                     impl<PIN0, PIN1, PIN2, PIN3> From<([<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, [<$Sercom $pad2>]<PIN2>, [<$Sercom $pad3>]<PIN3>)> for [<$Type Padout>]<[<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, [<$Sercom $pad2>]<PIN2>, [<$Sercom $pad3>]<PIN3>> {
                         fn from(pads: ([<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, [<$Sercom $pad2>]<PIN2>, [<$Sercom $pad3>]<PIN3>)) -> [<$Type Padout>]<[<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, [<$Sercom $pad2>]<PIN2>, [<$Sercom $pad3>]<PIN3>> {
-                            [<$Type Padout>] { rx: pads.0, tx: pads.1, rts: pads.2, cts: pads.3 }
+                            [<$Type Padout>] { _rx: pads.0, _tx: pads.1, _rts: pads.2, _cts: pads.3 }
                         }
                     }
 

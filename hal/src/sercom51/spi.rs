@@ -34,9 +34,9 @@ macro_rules! spi_master {
             ///
             /// Defines which sercom pad is mapped to which SPI function.
             pub struct [<$Type Padout>]<MISO, MOSI, SCK> {
-                miso: MISO,
-                mosi: MOSI,
-                sck: SCK,
+                _miso: MISO,
+                _mosi: MOSI,
+                _sck: SCK,
             }
         }
 
@@ -52,7 +52,7 @@ macro_rules! spi_master {
                     /// Convert from a tuple of (MISO, MOSI, SCK) to SPIMasterXPadout
                     impl<PIN0, PIN1, PIN2> From<([<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, [<$Sercom $pad2>]<PIN2>)> for [<$Type Padout>]<[<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, [<$Sercom $pad2>]<PIN2>> {
                         fn from(pads: ([<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, [<$Sercom $pad2>]<PIN2>)) -> [<$Type Padout>]<[<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, [<$Sercom $pad2>]<PIN2>> {
-                            [<$Type Padout>] { miso: pads.0, mosi: pads.1, sck: pads.2 }
+                            [<$Type Padout>] { _miso: pads.0, _mosi: pads.1, _sck: pads.2 }
                         }
                     }
 
