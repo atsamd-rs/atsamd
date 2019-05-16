@@ -49,6 +49,7 @@ macro_rules! spi_master {
         macro_rules! padout {
             ($dipo_dopo:expr => $pad0:ident, $pad1:ident, $pad2:ident) => {
                 $crate::paste::item! {
+                    /// Convert from a tuple of (MISO, MOSI, SCK) to SPIMasterXPadout
                     impl<PIN0, PIN1, PIN2> From<([<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, [<$Sercom $pad2>]<PIN2>)> for [<$Type Padout>]<[<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, [<$Sercom $pad2>]<PIN2>> {
                         fn from(pads: ([<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, [<$Sercom $pad2>]<PIN2>)) -> [<$Type Padout>]<[<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, [<$Sercom $pad2>]<PIN2>> {
                             [<$Type Padout>] { miso: pads.0, mosi: pads.1, sck: pads.2 }
