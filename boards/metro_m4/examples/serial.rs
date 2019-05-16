@@ -16,7 +16,7 @@ use hal::clock::GenericClockController;
 use hal::delay::Delay;
 use hal::prelude::*;
 use hal::{entry, CorePeripherals, Peripherals};
-use hal::sercom::{PadPin, Sercom3Pad0, Sercom3Pad1, UART3Pinout, UART3};
+use hal::sercom::{PadPin, Sercom3Pad0, Sercom3Pad1, UART3};
 use hal::target_device::gclk::pchctrl::{GENR};
 use hal::target_device::gclk::genctrl::{SRCR};
 
@@ -37,15 +37,16 @@ fn main() -> ! {
     let mut pins = hal::Pins::new(peripherals.PORT);
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
-    let rx: Sercom3Pad1 = pins
+    let rx: Sercom3Pad1<_> = pins
         .d0
         .into_pull_down_input(&mut pins.port)
         .into_pad(&mut pins.port);
-    let tx: Sercom3Pad0 = pins
+    let tx: Sercom3Pad0<_> = pins
         .d1
         .into_pull_down_input(&mut pins.port)
         .into_pad(&mut pins.port);
-    let uart_clk = clocks.sercom3_core(&gclk2)
+    let uart_clk = clocks
+        .sercom3_core(&gclk2)
         .expect("Could not configure sercom3 clock");
 
     let mut uart = UART3::new(
@@ -54,10 +55,7 @@ fn main() -> ! {
         peripherals.SERCOM3,
         &mut core.NVIC,
         &mut peripherals.MCLK,
-        UART3Pinout::Rx1Tx0 {
-            rx: rx,
-            tx: tx,
-        },
+        (rx, tx),
     );
 
     loop {
