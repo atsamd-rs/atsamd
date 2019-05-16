@@ -14,6 +14,7 @@ const BUS_STATE_OWNED: u8 = 2;
 const MASTER_ACT_READ: u8 = 2;
 const MASTER_ACT_STOP: u8 = 3;
 
+/// Define an I2C master type for the given SERCOM and pad pair.
 macro_rules! i2c {
     ([
         $($Type:ident: ($pad0:ident, $pad1:ident, $SERCOM:ident, $powermask:ident, $clock:ident, $apmask:ident),)+
@@ -21,13 +22,13 @@ macro_rules! i2c {
         $(
 /// Represents the Sercom instance configured to act as an I2C Master.
 /// The embedded_hal blocking I2C traits are implemented by this instance.
-pub struct $Type {
+pub struct $Type<$pad0, $pad1> {
     sda: $pad0,
     scl: $pad1,
     sercom: $SERCOM,
 }
 
-impl $Type {
+impl<$pad0, $pad1> $Type<$pad0, $pad1> {
     /// Configures the sercom instance to work as an I2C Master.
     /// The clock is obtained via the `GenericClockGenerator` type.
     /// `freq` specifies the bus frequency to use for I2C communication.
@@ -267,7 +268,7 @@ impl $Type {
         self.fill_buffer(buffer)
     }
 }
-impl Write for $Type {
+impl<$pad0, $pad1> Write for $Type<$pad0, $pad1> {
     type Error = I2CError;
 
     /// Sends bytes to slave with address `addr`
@@ -278,7 +279,7 @@ impl Write for $Type {
     }
 }
 
-impl Read for $Type {
+impl<$pad0, $pad1> Read for $Type<$pad0, $pad1> {
     type Error = I2CError;
 
     fn read(&mut self, addr: u8, buffer: &mut [u8]) -> Result<(), Self::Error> {
@@ -288,7 +289,7 @@ impl Read for $Type {
     }
 }
 
-impl WriteRead for $Type {
+impl<$pad0, $pad1> WriteRead for $Type<$pad0, $pad1> {
     type Error = I2CError;
 
     fn write_read(&mut self, addr: u8, bytes: &[u8], buffer: &mut [u8]) -> Result<(), Self::Error> {

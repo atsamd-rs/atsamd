@@ -14,6 +14,7 @@ const BUS_STATE_OWNED: u8 = 2;
 const MASTER_ACT_READ: u8 = 2;
 const MASTER_ACT_STOP: u8 = 3;
 
+/// Define an I2C master type for the given SERCOM and pad pair.
 macro_rules! i2c {
     ([
         $($Type:ident: ($pad0:ident, $pad1:ident, $SERCOM:ident, $powermask:ident, $clock:ident),)+
