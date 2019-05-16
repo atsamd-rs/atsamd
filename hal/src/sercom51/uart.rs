@@ -216,6 +216,10 @@ macro_rules! uart {
                     }
                 }
 
+                pub fn free(self) -> ([<$Type Padout>]<RX, TX, RTS, CTS>, $SERCOM) {
+                    (self.padout, self.sercom)
+                }
+
                 fn usart(&self) -> &USART {
                     return &self.sercom.usart();
                 }
