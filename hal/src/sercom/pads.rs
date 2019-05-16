@@ -1,44 +1,5 @@
 use crate::gpio::{self, IntoFunction, Port};
-
-/// The PadPin trait makes it more ergonomic to convert a
-/// pin into a Sercom pad.  You should not implement this
-/// trait for yourself; only the implementations in the
-/// sercom module make sense.
-pub trait PadPin<T> {
-    fn into_pad(self, port: &mut Port) -> T;
-}
-
-/// The pad macro helps to define enums for pads and makes it
-/// a little more convenient to initialize them.
-macro_rules! pad {
-    ($PadType:ident {
-        $($PinType:ident ($Pf:ident),)+
-    }
-    ) => {
-/// Represents a numbered pad for the associated sercom instance. The pad is
-/// generic over any pin, only the PadPin implementations in this the sercom
-/// module make sense.
-pub struct $PadType<PIN>(PIN);
-
-impl<PIN> $PadType<PIN> {
-    /// Construct pad from the appropriate pin in any mode.
-    /// You may find it more convenient to use the `into_pad` trait
-    /// and avoid referencing the pad type.
-    pub fn new(pin: PIN) -> Self {
-        $PadType(pin)
-    }
-}
-
-$(
-    impl<MODE> PadPin<$PadType<gpio::$PinType<gpio::$Pf>>> for gpio::$PinType<MODE> {
-        fn into_pad(self, port: &mut Port) -> $PadType<gpio::$PinType<gpio::$Pf>> {
-            $PadType::new(self.into_function(port))
-        }
-    }
-)+
-
-    };
-}
+pub use crate::pad::PadPin;
 
 // sercom0[0]:  PA04:D   PA08:C
 // sercom0[1]:  PA05:D   PA09:C
