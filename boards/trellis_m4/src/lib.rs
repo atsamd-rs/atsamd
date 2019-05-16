@@ -86,6 +86,9 @@ pub fn i2c_master<F: Into<Hertz>>(
     sercom4: SERCOM4,
     mclk: &mut MCLK,
     port: &mut Port,
-) -> I2CMaster4 {
+) -> I2CMaster4<
+        hal::sercom::Sercom4Pad0<gpio::Pb8<gpio::PfD>>,
+        hal::sercom::Sercom4Pad1<gpio::Pb9<gpio::PfD>>,
+     > {
     pins.i2c_master(clocks, bus_speed, sercom4, mclk, port)
 }
