@@ -93,12 +93,14 @@ $ arm-none-eabi-objcopy -O binary \
   target/thumbv6m-none-eabi/debug/examples/blinky_basic.bin
 $ stty -F /dev/ttyACM1 ospeed 1200
 $ ~/.arduino15/packages/arduino/tools/bossac/1.7.0/bossac -i -d \
-  --port=ttyACM1 -U true -i -e -w -v \
+  --port=ttyACM1 -U -e -w -v \
   target/thumbv6m-none-eabi/debug/examples/blinky_basic.bin -R
 ```
 
 This same technique should work for all of the Adafruit M0/M4 boards, as they
-all ship with a bossac compatible bootloader.
+all ship with a bossac compatible bootloader. Note that M0 devices may need
+`-o 0x2000` and M4 devices may need `-o 0x4000` added to the `bossac` parameter
+lists.
 
 ## Getting code onto the device: JLink
 
