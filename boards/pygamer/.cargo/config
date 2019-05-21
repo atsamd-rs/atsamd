@@ -1,0 +1,6 @@
+# vim:ft=toml:
+[target.thumbv7em-none-eabihf]
+runner = 'arm-none-eabi-gdb'
+
+[build]
+target = "thumbv7em-none-eabihf"
