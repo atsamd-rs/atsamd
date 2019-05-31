@@ -32,7 +32,7 @@ fn main() -> ! {
     let mut neopixel = ws2812::Ws2812::new(neopixel_pin);
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
-    const NUM_LEDS: usize = 1;
+    const NUM_LEDS: usize = 5;
     let mut data = [Color::default(); NUM_LEDS];
 
     loop {
@@ -45,7 +45,7 @@ fn main() -> ! {
             neopixel
                 .write(brightness(data.iter().cloned(), 32))
                 .unwrap();
-            delay.delay_ms(1u8);
+            delay.delay_ms(5u8);
         }
     }
 }
