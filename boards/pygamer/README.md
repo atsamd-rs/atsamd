@@ -1,4 +1,4 @@
-# Adafruit PyPortal Board Support Crate
+# Adafruit PyGamer Board Support Crate
 
 This crate provides a type-safe API for working with the [Adafruit PyGamer
 board](https://www.adafruit.com/product/4242).

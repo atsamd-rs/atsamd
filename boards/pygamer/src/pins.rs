@@ -78,12 +78,12 @@ define_pins!(
     pin rx = b17,
 
     // SPI - Serial Peripheral Interface (connected to sd card slot)
+    /// Pin MISO
+    pin miso = b22,
     /// Pin MOSI
     pin mosi = b23,
     /// Pin SCK
     pin sck = a17,
-    /// Pin MISO
-    pin miso = b22,
 
     // I2C
     /// STEMMA SDA

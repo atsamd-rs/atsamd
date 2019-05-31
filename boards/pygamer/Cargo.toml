@@ -2,7 +2,6 @@
 name = "pygamer"
 version = "0.1.2"
 authors = [
-    "Shella Stephens <shella@infracoven.io",
     "Paul Sajna <sajattack@gmail.com>",
     "Wez Furlong <wez@wezfurlong.org>"
 ]
