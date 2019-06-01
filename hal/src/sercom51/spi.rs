@@ -52,6 +52,7 @@ pub enum $Type {
     Dipo1Dopo3{miso:$pad1, mosi:$pad0, sck:$pad3},
 
     Dipo2Dopo0{miso:$pad2, mosi:$pad0, sck:$pad1},
+    Dipo2Dopo1{miso:$pad2, mosi:$pad1, sck:$pad0},
     Dipo2Dopo2{miso:$pad2, mosi:$pad3, sck:$pad1},
     Dipo2Dopo3{miso:$pad2, mosi:$pad0, sck:$pad3},
 
@@ -75,6 +76,7 @@ impl $Type {
             &$Type::Dipo1Dopo3{..} => (1, 3),
 
             &$Type::Dipo2Dopo0{..} => (2, 0),
+            &$Type::Dipo2Dopo1{..} => (2, 1),
             &$Type::Dipo2Dopo2{..} => (2, 2),
             &$Type::Dipo2Dopo3{..} => (2, 3),
 
