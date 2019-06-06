@@ -36,8 +36,6 @@ define_pins!(
     pin d2 = b3,
     /// Digital pin 3 (also Analog pin 9)
     pin d3 = b2,
-    /// Digital pin 4
-    pin d4 = a14,
     /// Digital pin 5
     pin d5 = a16,
     /// Digital pin 6
@@ -49,19 +47,19 @@ define_pins!(
     /// Digital pin 9
     pin d9 = a19,
     /// Digital pin 10
-    pin d10 = a20
+    pin d10 = a20,
     /// Digital pin 11
-    pin d11 = a21
+    pin d11 = a21,
     /// Digital pin 12
-    pin d12 = a22
+    pin d12 = a22,
     /// D13 LED/JACDAC
     pin d13 = a23,
 
     // TFT(Thin-film-transistor liquid-crystal display) control pins
     /// TFT MOSI
-    pin tft_mosi = b15
+    pin tft_mosi = b15,
     /// TFT SCK
-    pin tft_sck = b13
+    pin tft_sck = b13,
     /// TFT Reset
     pin tft_reset = a0,
     /// TFT DC
@@ -92,7 +90,7 @@ define_pins!(
     pin scl = a13,
 
     // Miscellanea
-    /// SD card chip select
+    /// SD card chip select (also d4)
     pin sd_cs = a14,
     /// Joystick X
     pin joy_x = b6,

@@ -11,10 +11,13 @@ pub use crate::pins::Pins;
 pub use hal::target_device::*;
 pub use hal::*;
 
-use gpio::{Floating, Input, Port};
+use hal::prelude::*;
+use gpio::{Floating, Input, Port, Output, PushPull};
 use hal::clock::GenericClockController;
 use hal::sercom::{I2CMaster2, PadPin, SPIMaster1, SPIMaster4};
 use hal::time::Hertz;
+
+use embedded_hal::digital::v1::OutputPin;
 
 #[cfg(feature = "usb")]
 pub use hal::usb::UsbBus;
@@ -105,7 +108,7 @@ pub fn i2c_master<F: Into<Hertz>>(
     I2CMaster2::new(
         &clocks.sercom2_core(&gclk0).unwrap(),
         bus_speed.into(),
-        sercom5,
+        sercom2,
         mclk,
         sda.into_pad(port),
         scl.into_pad(port),
