@@ -20,6 +20,7 @@ env:
   - CRATE=boards/sodaq_one
   - CRATE=boards/pyportal
   - CRATE=boards/trellis_m4 FEATURES="--features=keypad-unproven"
+  - CRATE=boards/pygamer
 
 matrix:
   allow_failures:
