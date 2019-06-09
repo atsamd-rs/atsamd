@@ -12,12 +12,14 @@ pub use hal::target_device::*;
 pub use hal::*;
 
 use hal::prelude::*;
-use gpio::{Floating, Input, Port, Output, PushPull};
+use gpio::{Floating, Input, Port};
 use hal::clock::GenericClockController;
 use hal::sercom::{I2CMaster2, PadPin, SPIMaster1, SPIMaster4};
 use hal::time::Hertz;
+use hal::timer::TimerCounter;
+use hal::pwm::Pwm2;
 
-use embedded_hal::digital::v1::OutputPin;
+use st7735_lcd::{Orientation, ST7735};
 
 #[cfg(feature = "usb")]
 pub use hal::usb::UsbBus;
@@ -58,39 +60,68 @@ pub fn spi_master<F: Into<Hertz>>(
 }
 
 /// Convenience for accessing the on-board TFT LCD.
-/// This powers up SERCOM4 and configures it for use as an
-/// SPI Master.
-pub fn tft_spi_master(
+pub fn display(
     clocks: &mut GenericClockController,
     sercom4: SERCOM4,
-    pm: &mut MCLK,
-    miso: gpio::Pb14<Input<Floating>>,
-    mosi: gpio::Pb15<Input<Floating>>,
-    sck: gpio::Pb13<Input<Floating>>,
-    cs: gpio::Pb12<Input<Floating>>,
+    mclk: &mut MCLK,
+    accel_irq: gpio::Pb14<Input<Floating>>, // TODO remove once we make miso optional
+    tft_mosi: gpio::Pb15<Input<Floating>>,
+    tft_sck: gpio::Pb13<Input<Floating>>,
+    tft_reset: gpio::Pa0<Input<Floating>>,
+    tft_cs: gpio::Pb12<Input<Floating>>,
+    tft_dc: gpio::Pb5<Input<Floating>>,
+    tft_backlight: gpio::Pa1<Input<Floating>>,
+    timer2: TC2,
+    timer5: TC5,
     port: &mut Port,
-) -> (SPIMaster4, gpio::Pb12<Output<PushPull>>) {
+) -> Result<(ST7735<SPIMaster4, gpio::Pb5<gpio::Output<gpio::PushPull>>, gpio::Pa0<gpio::Output<gpio::PushPull>>, TimerCounter<TC5>>, Pwm2), ()> { 
     let gclk0 = clocks.gclk0();
     let tft_spi = SPIMaster4::new(
-        &clocks.sercom4_core(&gclk0).unwrap(),
-        48.mhz(),
+        &clocks.sercom4_core(&gclk0).ok_or(())?,
+        16.mhz(),
         hal::hal::spi::Mode {
             phase: hal::hal::spi::Phase::CaptureOnFirstTransition,
             polarity: hal::hal::spi::Polarity::IdleLow,
         },
         sercom4,
-        pm,
+        mclk,
         hal::sercom::SPI4Pinout::Dipo2Dopo2 {
-            miso: miso.into_pad(port),
-            mosi: mosi.into_pad(port),
-            sck: sck.into_pad(port),
+            miso: accel_irq.into_pad(port),
+            mosi: tft_mosi.into_pad(port),
+            sck: tft_sck.into_pad(port),
         },
     );
 
-    let mut cs = cs.into_push_pull_output(port);
-    cs.set_high();
+    let mut tft_cs = tft_cs.into_push_pull_output(port);
+    tft_cs.set_low();
 
-    (tft_spi, cs)
+    let tft_dc = tft_dc.into_push_pull_output(port);
+    let tft_reset = tft_reset.into_push_pull_output(port);
+    let gclk0 = clocks.gclk0();
+    let timer5_clock = clocks.tc4_tc5(&gclk0).ok_or(())?;
+    let mut timer5 = hal::timer::TimerCounter::tc5_(
+        &timer5_clock,
+        timer5,
+        mclk
+    );
+    timer5.start(5.hz());
+
+    let mut display = st7735_lcd::ST7735::new(tft_spi, tft_dc, tft_reset, timer5, true, false);
+    display.init()?;
+    display.set_orientation(&Orientation::LandscapeSwapped)?;
+
+    let tft_backlight = tft_backlight.into_function_e(port);
+    let mut pwm2 = Pwm2::new(
+        &clocks.tc2_tc3(&gclk0).ok_or(())?,
+        1.khz(),
+        timer2,
+        hal::pwm::TC2Pinout::Pa1(tft_backlight),
+        mclk,
+    );
+
+    pwm2.set_duty(pwm2.get_max_duty());
+
+    Ok((display, pwm2))
 }
 
 /// Convenience for setting up the labelled SDA, SCL pins to
