@@ -18,6 +18,7 @@ use hal::sercom::{I2CMaster2, PadPin, SPIMaster1, SPIMaster4};
 use hal::time::Hertz;
 use hal::timer::TimerCounter;
 use hal::pwm::Pwm2;
+use cortex_m::peripheral::SYST;
 
 use st7735_lcd::{Orientation, ST7735};
 
@@ -61,7 +62,7 @@ pub fn spi_master<F: Into<Hertz>>(
 
 /// Convenience for accessing the on-board TFT LCD.
 pub fn display(
-    clocks: &mut GenericClockController,
+    mut clocks: &mut GenericClockController,
     sercom4: SERCOM4,
     mclk: &mut MCLK,
     accel_irq: gpio::Pb14<Input<Floating>>, // TODO remove once we make miso optional
@@ -72,9 +73,9 @@ pub fn display(
     tft_dc: gpio::Pb5<Input<Floating>>,
     tft_backlight: gpio::Pa1<Input<Floating>>,
     timer2: TC2,
-    timer5: TC5,
+    syst: SYST,
     port: &mut Port,
-) -> Result<(ST7735<SPIMaster4, gpio::Pb5<gpio::Output<gpio::PushPull>>, gpio::Pa0<gpio::Output<gpio::PushPull>>, TimerCounter<TC5>>, Pwm2), ()> { 
+) -> Result<(ST7735<SPIMaster4, gpio::Pb5<gpio::Output<gpio::PushPull>>, gpio::Pa0<gpio::Output<gpio::PushPull>>>, Pwm2), ()> { 
     let gclk0 = clocks.gclk0();
     let tft_spi = SPIMaster4::new(
         &clocks.sercom4_core(&gclk0).ok_or(())?,
@@ -98,16 +99,10 @@ pub fn display(
     let tft_dc = tft_dc.into_push_pull_output(port);
     let tft_reset = tft_reset.into_push_pull_output(port);
     let gclk0 = clocks.gclk0();
-    let timer5_clock = clocks.tc4_tc5(&gclk0).ok_or(())?;
-    let mut timer5 = hal::timer::TimerCounter::tc5_(
-        &timer5_clock,
-        timer5,
-        mclk
-    );
-    timer5.start(5.hz());
 
-    let mut display = st7735_lcd::ST7735::new(tft_spi, tft_dc, tft_reset, timer5, true, false);
-    display.init()?;
+    let mut display = st7735_lcd::ST7735::new(tft_spi, tft_dc, tft_reset, true, false);
+    let mut delay = hal::delay::Delay::new(syst, &mut clocks);
+    display.init(&mut delay)?;
     display.set_orientation(&Orientation::LandscapeSwapped)?;
 
     let tft_backlight = tft_backlight.into_function_e(port);

@@ -10,13 +10,13 @@ use embedded_graphics::pixelcolor::PixelColorU16;
 use embedded_graphics::primitives::Rect;
 use embedded_graphics::Drawing;
 
-use hal::display;
 use hal::clock::GenericClockController;
-use hal::{entry, Peripherals};
+use hal::{entry, CorePeripherals, Peripherals, display};
 
 #[entry]
 fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
+    let core = CorePeripherals::take().unwrap();
     let mut clocks = GenericClockController::with_internal_32kosc(
         peripherals.GCLK,
         &mut peripherals.MCLK,
@@ -39,7 +39,7 @@ fn main() -> ! {
         pins.tft_dc,
         pins.tft_backlight,
         peripherals.TC2,
-        peripherals.TC5,
+        core.SYST,
         &mut pins.port
     ).unwrap();
 
