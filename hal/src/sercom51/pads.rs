@@ -119,7 +119,6 @@ pub enum Sercom2Pad3 {
 // sercom3[1]:  PA16:D   PA23:C
 // sercom3[2]:  PA18:D   PA24:C   PA20:D
 // sercom3[3]:  PA19:D   PA25:C   PA21:D
-// sercom3[4]:  PA17:0   PA16:1   PA18:2
 
 pub enum Sercom3Pad0 {
     Pa17(pa17, PfD),
