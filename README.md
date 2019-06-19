@@ -67,6 +67,19 @@ $ cd ../gemma_m0
 $ cargo build --examples
 ```
 
+## Building everything locally
+
+If you'd like to build all the same things that the CI would build but on
+your local system, you can run:
+
+```
+$ mkdir -p /tmp/atsamd-virtualenv
+$ virtualenv /tmp/atsamd-virtualenv
+$ source /tmp/atsamd-virtualenv/bin/activate
+$ pip install -r requirements.txt
+$ ./build-all.py
+```
+
 ## Getting code onto the device: Gemma M0
 
 If you want to flash the device using the tools that come with the adafruit
@@ -80,12 +93,14 @@ $ arm-none-eabi-objcopy -O binary \
   target/thumbv6m-none-eabi/debug/examples/blinky_basic.bin
 $ stty -F /dev/ttyACM1 ospeed 1200
 $ ~/.arduino15/packages/arduino/tools/bossac/1.7.0/bossac -i -d \
-  --port=ttyACM1 -U true -i -e -w -v \
+  --port=ttyACM1 -U -e -w -v \
   target/thumbv6m-none-eabi/debug/examples/blinky_basic.bin -R
 ```
 
 This same technique should work for all of the Adafruit M0/M4 boards, as they
-all ship with a bossac compatible bootloader.
+all ship with a bossac compatible bootloader. Note that M0 devices may need
+`-o 0x2000` and M4 devices may need `-o 0x4000` added to the `bossac` parameter
+lists.
 
 ## Getting code onto the device: JLink
 

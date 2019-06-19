@@ -1,23 +1,44 @@
 language: rust
+
 cache: cargo
+
+rust:
+  - stable
+  - nightly
+
+env:
+  - CRATE=boards/metro_m0 EXAMPLES="--example=blinky_basic --example=blinky_rtfm"
+  - CRATE=boards/metro_m4 FEATURES="--features=unproven"
+  - CRATE=boards/feather_m0 FEATURES="--features=unproven"
+  - CRATE=boards/feather_m4
+  - CRATE=boards/gemma_m0
+  - CRATE=boards/itsybitsy_m0
+  - CRATE=boards/trinket_m0
+  - CRATE=boards/samd21_mini
+  - CRATE=boards/arduino_mkrzero
+  - CRATE=boards/circuit_playground_express
+  - CRATE=boards/sodaq_one
+  - CRATE=boards/pyportal
+  - CRATE=boards/trellis_m4 FEATURES="--features=keypad-unproven"
+
+matrix:
+  allow_failures:
+    - rust: nightly
+
+before_install:
+  - rustup target add thumbv6m-none-eabi
+  - rustup target add thumbv7em-none-eabihf
+
+script:
+  - "cd $CRATE"
+  - "cargo build ${EXAMPLES:---examples} $FEATURES"
 
 jobs:
   include:
-    - stage: build
-      script:
-        - rustup target add thumbv6m-none-eabi
-        - rustup target add thumbv7em-none-eabihf
-        - ./build-all.sh
-    - rust: 'nightly'
-      script:
-        - rustup target add thumbv6m-none-eabi
-        - rustup target add thumbv7em-none-eabihf
-        - ./build-all.sh
     - stage: Document-and-Deploy
       rust: 'nightly'
+      env: ''
       script:
-        - rustup target add thumbv6m-none-eabi
-        - rustup target add thumbv7em-none-eabihf
         - ./build-docs.py
       deploy:
         provider: pages
@@ -27,6 +48,6 @@ jobs:
         local-dir: doc
 
 stages:
-  - build 
+  - test
   - name: Document-and-Deploy
     if: (NOT type IN (pull_request)) AND (branch = master)
