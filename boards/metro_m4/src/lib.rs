@@ -118,7 +118,11 @@ pub fn spi_master<F: Into<Hertz>>(
     mosi: gpio::Pa12<Input<Floating>>,
     miso: gpio::Pa14<Input<Floating>>,
     port: &mut Port,
-) -> SPIMaster2 {
+) -> SPIMaster2<
+        hal::sercom::Sercom2Pad2<gpio::Pa14<gpio::PfC>>,
+        hal::sercom::Sercom2Pad0<gpio::Pa12<gpio::PfC>>,
+        hal::sercom::Sercom2Pad1<gpio::Pa13<gpio::PfC>>
+    > {
     let gclk0 = clocks.gclk0();
     SPIMaster2::new(
         &clocks.sercom2_core(&gclk0).unwrap(),
@@ -129,11 +133,7 @@ pub fn spi_master<F: Into<Hertz>>(
         },
         sercom2,
         mclk,
-        hal::sercom::SPI2Pinout::Dipo2Dopo0 {
-            miso: miso.into_pad(port),
-            mosi: mosi.into_pad(port),
-            sck: sck.into_pad(port),
-        },
+        (miso.into_pad(port), mosi.into_pad(port), sck.into_pad(port)),
     )
 }
 
@@ -186,7 +186,10 @@ pub fn i2c_master<F: Into<Hertz>>(
     sda: gpio::Pb2<Input<Floating>>,
     scl: gpio::Pb3<Input<Floating>>,
     port: &mut Port,
-) -> I2CMaster5 {
+) -> I2CMaster5<
+        hal::sercom::Sercom5Pad0<gpio::Pb2<gpio::PfD>>,
+        hal::sercom::Sercom5Pad1<gpio::Pb3<gpio::PfD>>,
+    > {
     let gclk0 = clocks.gclk0();
     I2CMaster5::new(
         &clocks.sercom5_core(&gclk0).unwrap(),

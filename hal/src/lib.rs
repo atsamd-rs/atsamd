@@ -50,7 +50,14 @@ pub mod clock;
 #[path = "clock51.rs"]
 pub mod clock;
 
+#[macro_use]
+mod pad;
+
 #[cfg(not(feature = "samd51"))]
+pub mod sercom;
+
+#[cfg(feature = "samd51")]
+#[path = "sercom51/mod.rs"]
 pub mod sercom;
 
 #[cfg(feature = "samd51")]
@@ -59,10 +66,6 @@ pub mod timer;
 
 #[cfg(not(feature = "samd51"))]
 pub mod timer;
-
-#[cfg(feature = "samd51")]
-#[path = "sercom51/mod.rs"]
-pub mod sercom;
 
 #[cfg(feature="samd51")]
 #[path = "pwm51.rs"]

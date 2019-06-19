@@ -174,7 +174,7 @@ impl Accelerometer {
         sercom: SERCOM2,
         mclk: &mut MCLK,
         port: &mut Port,
-    ) -> Result<Adxl343<I2CMaster2>, adxl343::accelerometer::Error<I2CError>> {
+    ) -> Result<Adxl343<I2CMaster2<hal::sercom::Sercom2Pad0<Pa12<gpio::PfC>>, hal::sercom::Sercom2Pad1<gpio::Pa13<gpio::PfC>>>>, adxl343::accelerometer::Error<I2CError>> {
         Adxl343::new(self.i2c_master(clocks, 100.khz(), sercom, mclk, port))
     }
 
@@ -186,7 +186,10 @@ impl Accelerometer {
         sercom: SERCOM2,
         mclk: &mut MCLK,
         port: &mut Port,
-    ) -> I2CMaster2 {
+    ) -> I2CMaster2<
+            hal::sercom::Sercom2Pad0<Pa12<gpio::PfC>>,
+            hal::sercom::Sercom2Pad1<Pa13<gpio::PfC>>
+        > {
         let gclk0 = clocks.gclk0();
         I2CMaster2::new(
             &clocks.sercom2_core(&gclk0).unwrap(),
@@ -234,7 +237,10 @@ impl I2C {
         sercom4: SERCOM4,
         mclk: &mut MCLK,
         port: &mut Port,
-    ) -> I2CMaster4 {
+    ) -> I2CMaster4<
+            hal::sercom::Sercom4Pad0<gpio::Pb8<gpio::PfD>>,
+            hal::sercom::Sercom4Pad1<gpio::Pb9<gpio::PfD>>,
+        > {
         let gclk0 = clocks.gclk0();
         I2CMaster4::new(
             &clocks.sercom4_core(&gclk0).unwrap(),

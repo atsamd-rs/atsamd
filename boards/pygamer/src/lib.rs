@@ -41,7 +41,7 @@ pub fn spi_master<F: Into<Hertz>>(
     mosi: gpio::Pb23<Input<Floating>>,
     sck: gpio::Pa17<Input<Floating>>,
     port: &mut Port,
-) -> SPIMaster1 {
+) -> SPIMaster1<hal::sercom::Sercom1Pad2<gpio::Pb22<gpio::PfC>>, hal::sercom::Sercom1Pad3<gpio::Pb23<gpio::PfC>>, hal::sercom::Sercom1Pad1<gpio::Pa17<gpio::PfC>>> {
     let gclk0 = clocks.gclk0();
     SPIMaster1::new(
         &clocks.sercom1_core(&gclk0).unwrap(),
@@ -52,11 +52,11 @@ pub fn spi_master<F: Into<Hertz>>(
         },
         sercom1,
         mclk,
-        hal::sercom::SPI1Pinout::Dipo2Dopo2 {
-            miso: miso.into_pad(port),
-            mosi: mosi.into_pad(port),
-            sck: sck.into_pad(port),
-        },
+        (
+            miso.into_pad(port),
+            mosi.into_pad(port),
+            sck.into_pad(port),
+        ),
     )
 }
 
@@ -75,7 +75,18 @@ pub fn display(
     timer2: TC2,
     syst: SYST,
     port: &mut Port,
-) -> Result<(ST7735<SPIMaster4, gpio::Pb5<gpio::Output<gpio::PushPull>>, gpio::Pa0<gpio::Output<gpio::PushPull>>>, Pwm2), ()> { 
+) -> Result<(
+        ST7735<
+            SPIMaster4<
+                hal::sercom::Sercom4Pad2<hal::gpio::Pb14<hal::gpio::PfC>>,
+                hal::sercom::Sercom4Pad3<hal::gpio::Pb15<hal::gpio::PfC>>,
+                hal::sercom::Sercom4Pad1<hal::gpio::Pb13<hal::gpio::PfC>>
+            >,
+            gpio::Pb5<gpio::Output<gpio::PushPull>>,
+            gpio::Pa0<gpio::Output<gpio::PushPull>>
+        >,
+        Pwm2
+    ), ()> {
     let gclk0 = clocks.gclk0();
     let tft_spi = SPIMaster4::new(
         &clocks.sercom4_core(&gclk0).ok_or(())?,
@@ -86,11 +97,11 @@ pub fn display(
         },
         sercom4,
         mclk,
-        hal::sercom::SPI4Pinout::Dipo2Dopo2 {
-            miso: accel_irq.into_pad(port),
-            mosi: tft_mosi.into_pad(port),
-            sck: tft_sck.into_pad(port),
-        },
+        (
+            accel_irq.into_pad(port),
+            tft_mosi.into_pad(port),
+            tft_sck.into_pad(port),
+        ),
     );
 
     let mut tft_cs = tft_cs.into_push_pull_output(port);
@@ -129,7 +140,7 @@ pub fn i2c_master<F: Into<Hertz>>(
     sda: gpio::Pa12<Input<Floating>>,
     scl: gpio::Pa13<Input<Floating>>,
     port: &mut Port,
-) -> I2CMaster2 {
+) -> I2CMaster2<hal::sercom::Sercom2Pad0<gpio::Pa12<gpio::PfC>>, hal::sercom::Sercom2Pad1<gpio::Pa13<gpio::PfC>>> {
     let gclk0 = clocks.gclk0();
     I2CMaster2::new(
         &clocks.sercom2_core(&gclk0).unwrap(),
