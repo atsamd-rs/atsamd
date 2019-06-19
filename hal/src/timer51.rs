@@ -2,7 +2,7 @@
 use crate::hal::timer::{CountDown, Periodic};
 use crate::target_device::tc0::COUNT16;
 #[allow(unused)]
-use crate::target_device::{MCLK, TC3};
+use crate::target_device::{MCLK, TC2, TC3};
 
 // Only the G variants are missing these timers
 #[cfg(all(not(feature = "samd51g19a"), not(feature = "samd51g18a")))]
@@ -215,6 +215,7 @@ impl TimerParams {
 }
 
 tc! {
+    TimerCounter2: (TC2, tc2_, Tc2Tc3Clock, apbbmask),
     TimerCounter3: (TC3, tc3_, Tc2Tc3Clock, apbbmask),
 }
 
