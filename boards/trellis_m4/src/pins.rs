@@ -1,11 +1,11 @@
 //! NeoTrellis M4 Express pins
 
-use super::{target_device, hal, MCLK, SERCOM2, SERCOM4};
+use super::{hal, target_device, MCLK, NVIC, SERCOM2, SERCOM4};
 
 use hal::clock::*;
 use hal::define_pins;
 use hal::gpio::{self, *};
-use hal::sercom::{I2CMaster2, I2CMaster4, PadPin};
+use hal::sercom::{I2CMaster2, I2CMaster4, PadPin, Sercom4Pad0, Sercom4Pad1, UART4};
 use hal::time::Hertz;
 #[cfg(feature = "adxl343")]
 use hal::{prelude::*, sercom::I2CError};
@@ -99,7 +99,7 @@ impl Pins {
             di: self.dotstar_di,
         };
 
-        let i2c = I2C {
+        let jst = JST {
             sda: self.sda,
             scl: self.scl,
         };
@@ -124,7 +124,7 @@ impl Pins {
             analog,
             audio,
             dotstar,
-            i2c,
+            jst,
             keypad,
             neopixel: self.neopixel,
             port: self.port,
@@ -146,8 +146,8 @@ pub struct Sets {
     /// Dotstar (RGB LED) pins
     pub dotstar: Dotstar,
 
-    /// I2C pins
-    pub i2c: I2C,
+    /// JST pins, which can be I2C, SPI, or UART
+    pub jst: JST,
 
     /// Keypad pins
     pub keypad: Keypad,
@@ -174,7 +174,15 @@ impl Accelerometer {
         sercom: SERCOM2,
         mclk: &mut MCLK,
         port: &mut Port,
-    ) -> Result<Adxl343<I2CMaster2<hal::sercom::Sercom2Pad0<Pa12<gpio::PfC>>, hal::sercom::Sercom2Pad1<gpio::Pa13<gpio::PfC>>>>, adxl343::accelerometer::Error<I2CError>> {
+    ) -> Result<
+        Adxl343<
+            I2CMaster2<
+                hal::sercom::Sercom2Pad0<Pa12<gpio::PfC>>,
+                hal::sercom::Sercom2Pad1<gpio::Pa13<gpio::PfC>>,
+            >,
+        >,
+        adxl343::accelerometer::Error<I2CError>,
+    > {
         Adxl343::new(self.i2c_master(clocks, 100.khz(), sercom, mclk, port))
     }
 
@@ -187,9 +195,9 @@ impl Accelerometer {
         mclk: &mut MCLK,
         port: &mut Port,
     ) -> I2CMaster2<
-            hal::sercom::Sercom2Pad0<Pa12<gpio::PfC>>,
-            hal::sercom::Sercom2Pad1<Pa13<gpio::PfC>>
-        > {
+        hal::sercom::Sercom2Pad0<Pa12<gpio::PfC>>,
+        hal::sercom::Sercom2Pad1<Pa13<gpio::PfC>>,
+    > {
         let gclk0 = clocks.gclk0();
         I2CMaster2::new(
             &clocks.sercom2_core(&gclk0).unwrap(),
@@ -221,13 +229,13 @@ pub struct Dotstar {
     pub di: Pb3<Input<Floating>>,
 }
 
-/// I2C pins
-pub struct I2C {
+/// JST pins
+pub struct JST {
     pub sda: Pb8<Input<Floating>>,
     pub scl: Pb9<Input<Floating>>,
 }
 
-impl I2C {
+impl JST {
     /// Convenience for setting up the labelled SDA, SCL pins to
     /// operate as an I2C master running at the specified frequency.
     pub fn i2c_master<F: Into<Hertz>>(
@@ -238,9 +246,9 @@ impl I2C {
         mclk: &mut MCLK,
         port: &mut Port,
     ) -> I2CMaster4<
-            hal::sercom::Sercom4Pad0<gpio::Pb8<gpio::PfD>>,
-            hal::sercom::Sercom4Pad1<gpio::Pb9<gpio::PfD>>,
-        > {
+        Sercom4Pad0<Pb8<PfD>>,
+        Sercom4Pad1<Pb9<PfD>>,
+    > {
         let gclk0 = clocks.gclk0();
         I2CMaster4::new(
             &clocks.sercom4_core(&gclk0).unwrap(),
@@ -249,6 +257,34 @@ impl I2C {
             mclk,
             self.sda.into_pad(port),
             self.scl.into_pad(port),
+        )
+    }
+
+    /// Convenience for setting up the labelled SDA, SCL pins to
+    /// operate as a UART device at the specified baud rate.
+    ///
+    /// Here SCL is the RX pin and SDA is the TX pin.
+    pub fn uart<F: Into<Hertz>>(
+        self,
+        clocks: &mut GenericClockController,
+        baud: F,
+        sercom4: SERCOM4,
+        mclk: &mut MCLK,
+        nvic: &mut NVIC,
+        port: &mut Port,
+    ) -> UART4<Sercom4Pad1<Pb9<PfD>>, Sercom4Pad0<Pb8<PfD>>, (), ()> {
+        let gclk0 = clocks.gclk0();
+
+        let rx: Sercom4Pad1<_> = self.scl.into_pull_down_input(port).into_pad(port);
+        let tx: Sercom4Pad0<_> = self.sda.into_pull_down_input(port).into_pad(port);
+
+        UART4::new(
+            &clocks.sercom4_core(&gclk0).unwrap(),
+            baud.into(),
+            sercom4,
+            nvic,
+            mclk,
+            (rx, tx),
         )
     }
 }

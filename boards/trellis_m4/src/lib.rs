@@ -16,9 +16,11 @@ pub use cortex_m_rt::entry;
 pub use hal::{target_device::*, *};
 pub use pins::Pins;
 
-use gpio::{Input, Port};
+use gpio::Port;
+#[cfg(feature = "keypad-unproven")]
+use gpio::Input;
 use hal::clock::GenericClockController;
-use hal::sercom::I2CMaster4;
+use hal::sercom::{I2CMaster4, UART4};
 use hal::time::Hertz;
 
 #[cfg(feature = "keypad-unproven")]
@@ -80,15 +82,36 @@ impl Keypad {
 /// Convenience for setting up the labelled SDA, SCL pins to
 /// operate as an I2C master running at the specified frequency.
 pub fn i2c_master<F: Into<Hertz>>(
-    pins: pins::I2C,
+    pins: pins::JST,
     clocks: &mut GenericClockController,
     bus_speed: F,
     sercom4: SERCOM4,
     mclk: &mut MCLK,
     port: &mut Port,
 ) -> I2CMaster4<
-        hal::sercom::Sercom4Pad0<gpio::Pb8<gpio::PfD>>,
-        hal::sercom::Sercom4Pad1<gpio::Pb9<gpio::PfD>>,
-     > {
+    hal::sercom::Sercom4Pad0<gpio::Pb8<gpio::PfD>>,
+    hal::sercom::Sercom4Pad1<gpio::Pb9<gpio::PfD>>,
+> {
     pins.i2c_master(clocks, bus_speed, sercom4, mclk, port)
+}
+
+/// Convenience for setting up the labelled SDA, SCL pins in the
+/// JST connector to operate as a UART device at the specified baud rate.
+///
+/// Here SCL is the RX pin and SDA is the TX pin.
+pub fn uart<F: Into<Hertz>>(
+    pins: pins::JST,
+    clocks: &mut GenericClockController,
+    baud: F,
+    sercom4: SERCOM4,
+    mclk: &mut MCLK,
+    nvic: &mut NVIC,
+    port: &mut Port,
+) -> UART4<
+    hal::sercom::Sercom4Pad1<gpio::Pb9<gpio::PfD>>,
+    hal::sercom::Sercom4Pad0<gpio::Pb8<gpio::PfD>>,
+    (),
+    (),
+> {
+    pins.uart(clocks, baud, sercom4, mclk, nvic, port)
 }
