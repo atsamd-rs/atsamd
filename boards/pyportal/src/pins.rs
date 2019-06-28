@@ -87,11 +87,11 @@ define_pins!(
     /// Pin ESP RTS
     pin esp_rts = a15,
 
-    // UART - Universal Asynchronous Receiver/Transmitter
+    // UART - Universal Asynchronous Receiver/Transmitter (connected to ESP32)
     /// Pin TX
-    pin tx = b12,
+    pin esp_tx = b12,
     /// Pin RX
-    pin rx = b13,
+    pin esp_rx = b13,
 
     // SPI - Serial Peripheral Interface
     /// Pin MOSI
@@ -161,9 +161,9 @@ impl Pins {
             rts: self.esp_rts,
         };
 
-        let uart = Uart {
-            tx: self.tx,
-            rx: self.rx,
+        let esp_uart = EspUart {
+            tx: self.esp_tx,
+            rx: self.esp_rx,
         };
 
         let spi = Spi {
@@ -192,7 +192,7 @@ impl Pins {
             spi,
             stemma,
             touchscreen,
-            uart,
+            esp_uart,
             d13: self.d13,
             neopixel: self.neopixel,
         }
@@ -211,7 +211,7 @@ pub struct Sets {
     pub spi: Spi,
     pub stemma: Stemma,
     pub touchscreen: Touchscreen,
-    pub uart: Uart,
+    pub esp_uart: EspUart,
 }
 
 pub struct Display {
@@ -273,7 +273,7 @@ pub struct Touchscreen {
     pub xr: Pb8<Input<Floating>>,
 }
 
-pub struct Uart {
+pub struct EspUart {
     pub tx: Pb12<Input<Floating>>,
     pub rx: Pb13<Input<Floating>>,
 }
