@@ -14,10 +14,10 @@ use crate::target_device::port::{PINCFG1_, PMUX1_};
 
 use crate::target_device::PORT;
 use core::marker::PhantomData;
-use hal::digital::OutputPin;
+use hal::digital::v2::OutputPin;
 
 #[cfg(feature = "unproven")]
-use hal::digital::{InputPin, StatefulOutputPin, ToggleableOutputPin};
+use hal::digital::v2::{InputPin, StatefulOutputPin, ToggleableOutputPin};
 
 /// The GpioExt trait allows splitting the PORT hardware into
 /// its constituent pin parts.
@@ -326,51 +326,66 @@ macro_rules! pin {
 
         #[cfg(feature = "unproven")]
         impl<MODE> ToggleableOutputPin for $PinType<Output<MODE>> {
-            fn toggle(&mut self) {
+            // TODO: switch to ! when it’s stable
+            type Error = ();
+
+            fn toggle(&mut self) -> Result<(), Self::Error> {
                 self.toggle_impl();
+
+                Ok(())
             }
         }
 
         #[cfg(feature = "unproven")]
         impl<MODE> InputPin for $PinType<Input<MODE>> {
-            fn is_high(&self) -> bool {
-                unsafe { (((*PORT::ptr()).$in.read().bits()) & (1 << $pin_no)) != 0 }
+            // TODO: switch to ! when it’s stable
+            type Error = ();
+
+            fn is_high(&self) -> Result<bool, Self::Error> {
+                Ok(unsafe { (((*PORT::ptr()).$in.read().bits()) & (1 << $pin_no)) != 0 })
             }
 
-            fn is_low(&self) -> bool {
-                unsafe { (((*PORT::ptr()).$in.read().bits()) & (1 << $pin_no)) == 0 }
+            fn is_low(&self) -> Result<bool, Self::Error> {
+                Ok(unsafe { (((*PORT::ptr()).$in.read().bits()) & (1 << $pin_no)) == 0 })
             }
         }
 
         #[cfg(feature = "unproven")]
         impl<MODE> StatefulOutputPin for $PinType<Output<MODE>> {
-            fn is_set_high(&self) -> bool {
-                unsafe { (((*PORT::ptr()).$out.read().bits()) & (1 << $pin_no)) != 0 }
+            fn is_set_high(&self) -> Result<bool, Self::Error> {
+                Ok(unsafe { (((*PORT::ptr()).$out.read().bits()) & (1 << $pin_no)) != 0 })
             }
 
-            fn is_set_low(&self) -> bool {
-                unsafe { (((*PORT::ptr()).$out.read().bits()) & (1 << $pin_no)) == 0 }
+            fn is_set_low(&self) -> Result<bool, Self::Error> {
+                Ok(unsafe { (((*PORT::ptr()).$out.read().bits()) & (1 << $pin_no)) == 0 })
             }
         }
 
 
         impl<MODE> OutputPin for $PinType<Output<MODE>> {
-            fn set_high(&mut self) {
+            // TODO: switch to ! when it’s stable
+            type Error = ();
+
+            fn set_high(&mut self) -> Result<(), Self::Error> {
                 unsafe {
                     (*PORT::ptr()).$outset.write(|bits| {
                         bits.bits(1 << $pin_no);
                         bits
                     });
                 }
+
+                Ok(())
             }
 
-            fn set_low(&mut self) {
+            fn set_low(&mut self) -> Result<(), Self::Error> {
                 unsafe {
                     (*PORT::ptr()).$outclr.write(|bits| {
                         bits.bits(1 << $pin_no);
                         bits
                     });
                 }
+
+                Ok(())
             }
         }
     };

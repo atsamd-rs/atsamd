@@ -32,9 +32,9 @@ fn main() -> ! {
     timer.start(9600u32.hz());
     let mut d0 = pins.d0.into_push_pull_output(&mut pins.port);
     loop {
-        d0.set_high();
+        d0.set_high().unwrap();
         block!(timer.wait()).ok();
-        d0.set_low();
+        d0.set_low().unwrap();
         block!(timer.wait()).ok();
     }
 }

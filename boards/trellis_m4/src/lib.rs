@@ -26,6 +26,8 @@ use hal::time::Hertz;
 #[cfg(feature = "keypad-unproven")]
 use hal::gpio::{OpenDrain, Output, PullUp};
 #[cfg(feature = "keypad-unproven")]
+use embedded_hal::digital::v1_compat::{OldInputPin, OldOutputPin};
+#[cfg(feature = "keypad-unproven")]
 use keypad::{keypad_new, keypad_struct};
 
 /// Number of Neopixels on the device
@@ -36,20 +38,20 @@ keypad_struct! {
     #[doc="NeoTrellis M4 Express 8x4 keypad"]
     pub struct Keypad {
         rows: (
-            gpio::Pa18<Input<PullUp>>,
-            gpio::Pa19<Input<PullUp>>,
-            gpio::Pb22<Input<PullUp>>,
-            gpio::Pb23<Input<PullUp>>,
+            OldInputPin<gpio::Pa18<Input<PullUp>>>,
+            OldInputPin<gpio::Pa19<Input<PullUp>>>,
+            OldInputPin<gpio::Pb22<Input<PullUp>>>,
+            OldInputPin<gpio::Pb23<Input<PullUp>>>,
         ),
         columns: (
-            gpio::Pa14<Output<OpenDrain>>,
-            gpio::Pa15<Output<OpenDrain>>,
-            gpio::Pa16<Output<OpenDrain>>,
-            gpio::Pa17<Output<OpenDrain>>,
-            gpio::Pa20<Output<OpenDrain>>,
-            gpio::Pa21<Output<OpenDrain>>,
-            gpio::Pa22<Output<OpenDrain>>,
-            gpio::Pa23<Output<OpenDrain>>,
+            OldOutputPin<gpio::Pa14<Output<OpenDrain>>>,
+            OldOutputPin<gpio::Pa15<Output<OpenDrain>>>,
+            OldOutputPin<gpio::Pa16<Output<OpenDrain>>>,
+            OldOutputPin<gpio::Pa17<Output<OpenDrain>>>,
+            OldOutputPin<gpio::Pa20<Output<OpenDrain>>>,
+            OldOutputPin<gpio::Pa21<Output<OpenDrain>>>,
+            OldOutputPin<gpio::Pa22<Output<OpenDrain>>>,
+            OldOutputPin<gpio::Pa23<Output<OpenDrain>>>,
         ),
     }
 }
@@ -60,20 +62,20 @@ impl Keypad {
     pub fn new(pins: pins::Keypad, port: &mut Port) -> Self {
         keypad_new!(Self {
             rows: (
-                pins.row0.into_pull_up_input(port),
-                pins.row1.into_pull_up_input(port),
-                pins.row2.into_pull_up_input(port),
-                pins.row3.into_pull_up_input(port),
+                pins.row0.into_pull_up_input(port).into(),
+                pins.row1.into_pull_up_input(port).into(),
+                pins.row2.into_pull_up_input(port).into(),
+                pins.row3.into_pull_up_input(port).into(),
             ),
             columns: (
-                pins.col0.into_open_drain_output(port),
-                pins.col1.into_open_drain_output(port),
-                pins.col2.into_open_drain_output(port),
-                pins.col3.into_open_drain_output(port),
-                pins.col4.into_open_drain_output(port),
-                pins.col5.into_open_drain_output(port),
-                pins.col6.into_open_drain_output(port),
-                pins.col7.into_open_drain_output(port),
+                pins.col0.into_open_drain_output(port).into(),
+                pins.col1.into_open_drain_output(port).into(),
+                pins.col2.into_open_drain_output(port).into(),
+                pins.col3.into_open_drain_output(port).into(),
+                pins.col4.into_open_drain_output(port).into(),
+                pins.col5.into_open_drain_output(port).into(),
+                pins.col6.into_open_drain_output(port).into(),
+                pins.col7.into_open_drain_output(port).into(),
             ),
         })
     }

@@ -27,8 +27,8 @@ fn main() -> ! {
     let mut delay = Delay::new(core.SYST, &mut clocks);
     loop {
         delay.delay_ms(200u8);
-        red_led.set_high();
+        red_led.set_high().unwrap();
         delay.delay_ms(200u8);
-        red_led.set_low();
+        red_led.set_low().unwrap();
     }
 }

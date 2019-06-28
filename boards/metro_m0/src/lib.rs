@@ -169,7 +169,10 @@ pub fn flash_spi_master(
     );
 
     let mut cs = cs.into_push_pull_output(port);
-    cs.set_high();
+
+    // We’re confident that set_high won’t error here because on-board
+    // GPIO pins don’t error.
+    cs.set_high().unwrap();
 
     (flash, cs)
 }

@@ -179,7 +179,7 @@ fn main() -> ! {
     /* let mut delay = Delay::new(core.SYST, &mut clocks);
      */
     let mut red_led = pins.d13.into_open_drain_output(&mut pins.port);
-    red_led.set_high();
+    red_led.set_high().unwrap();
 
     dbgprint!("make usb_bus");
 

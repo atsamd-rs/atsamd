@@ -6,6 +6,8 @@ use panic_halt;
 use trellis_m4 as hal;
 use ws2812_nop_samd51 as ws2812;
 
+use embedded_hal::digital::v1_compat::{OldOutputPin};
+
 use hal::prelude::*;
 use hal::{clock::GenericClockController, delay::Delay};
 use hal::{entry, CorePeripherals, Peripherals};
@@ -30,7 +32,7 @@ fn main() -> ! {
 
     let mut pins = hal::Pins::new(peripherals.PORT);
     let mut delay = Delay::new(core_peripherals.SYST, &mut clocks);
-    let neopixel_pin = pins.neopixel.into_push_pull_output(&mut pins.port);
+    let neopixel_pin: OldOutputPin<_> = pins.neopixel.into_push_pull_output(&mut pins.port).into();
     let mut neopixel = ws2812::Ws2812::new(neopixel_pin);
 
     loop {

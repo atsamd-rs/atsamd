@@ -170,7 +170,10 @@ pub fn spi_master<F: Into<Hertz>>(
  *    );
  *
  *    let mut cs = cs.into_push_pull_output(port);
- *    cs.set_high();
+ *
+ *    // We’re confident that set_high won’t error here because on-board
+ *    // GPIO pins don’t error.
+ *    cs.set_high().unwrap();
  *
  *    (flash, cs)
  *}

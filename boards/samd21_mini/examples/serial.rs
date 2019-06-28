@@ -44,7 +44,7 @@ const APP: () = {
         dbgprint!("Initializing serial port");
 
         let mut led = pins.led.into_open_drain_output(&mut pins.port);
-        led.set_low();
+        led.set_low().unwrap();
 
         let rx_pin: Sercom0Pad3<_> = pins
             .rx
@@ -70,8 +70,8 @@ const APP: () = {
         let mut rx_led = pins.rx_led.into_open_drain_output(&mut pins.port);
         let mut tx_led = pins.tx_led.into_open_drain_output(&mut pins.port);
 
-        tx_led.set_high();
-        rx_led.set_high();
+        tx_led.set_high().unwrap();
+        rx_led.set_high().unwrap();
 
         dbgprint!("done init");
         BLUE_LED = led;
@@ -82,19 +82,19 @@ const APP: () = {
 
     #[interrupt(resources = [UART, RX_LED, TX_LED])]
     fn SERCOM0() {
-        resources.RX_LED.set_low();
+        resources.RX_LED.set_low().unwrap();
         let data = match block!(resources.UART.read()) {
             Ok(v) => {
-                resources.RX_LED.set_high();
+                resources.RX_LED.set_high().unwrap();
                 v
             }
             Err(_) => 0 as u8,
         };
 
-        resources.TX_LED.set_low();
+        resources.TX_LED.set_low().unwrap();
         match block!(resources.UART.write(data)) {
             Ok(_) => {
-                resources.TX_LED.set_high();
+                resources.TX_LED.set_high().unwrap();
             }
             Err(_) => unimplemented!(),
         }

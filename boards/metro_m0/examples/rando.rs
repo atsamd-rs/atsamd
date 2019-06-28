@@ -89,13 +89,13 @@ const APP: () = {
             &mut pins.port,
         );
         delay.delay_ms(200u8);
-        flash_cs.set_low();
+        flash_cs.set_low().unwrap();
 
         let mut buf = [0x9f, 0, 0, 0];
 
         let res = flash.transfer(&mut buf);
         dbgprint!("tx result {}", res.is_ok());
-        flash_cs.set_high();
+        flash_cs.set_high().unwrap();
 
         /*
             let mut spi = SPIMaster4::new(

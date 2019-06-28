@@ -8,8 +8,11 @@ use atsamd_hal as hal;
 pub use cortex_m_rt::entry;
 
 pub use crate::pins::Pins;
+
 pub use hal::target_device::*;
 pub use hal::*;
+
+use embedded_hal::digital::v1_compat::{OldOutputPin};
 
 use gpio::{Floating, Input, PfC, Port};
 use hal::clock::GenericClockController;
@@ -81,8 +84,8 @@ pub fn display(
                 hal::sercom::Sercom4Pad3<hal::gpio::Pb15<hal::gpio::PfC>>,
                 hal::sercom::Sercom4Pad1<hal::gpio::Pb13<hal::gpio::PfC>>,
             >,
-            gpio::Pb5<gpio::Output<gpio::PushPull>>,
-            gpio::Pa0<gpio::Output<gpio::PushPull>>,
+            OldOutputPin<gpio::Pb5<gpio::Output<gpio::PushPull>>>,
+            OldOutputPin<gpio::Pa0<gpio::Output<gpio::PushPull>>>,
         >,
         Pwm2,
     ),
@@ -106,10 +109,10 @@ pub fn display(
     );
 
     let mut tft_cs = tft_cs.into_push_pull_output(port);
-    tft_cs.set_low();
+    tft_cs.set_low()?;
 
-    let tft_dc = tft_dc.into_push_pull_output(port);
-    let tft_reset = tft_reset.into_push_pull_output(port);
+    let tft_dc : OldOutputPin<_> = tft_dc.into_push_pull_output(port).into();
+    let tft_reset: OldOutputPin<_> = tft_reset.into_push_pull_output(port).into();
     let gclk0 = clocks.gclk0();
 
     let mut display = st7735_lcd::ST7735::new(tft_spi, tft_dc, tft_reset, true, false);
