@@ -99,7 +99,7 @@ impl Pins {
             di: self.dotstar_di,
         };
 
-        let jst = JST {
+        let stemma = STEMMA {
             sda: self.sda,
             scl: self.scl,
         };
@@ -124,7 +124,7 @@ impl Pins {
             analog,
             audio,
             dotstar,
-            jst,
+            stemma,
             keypad,
             neopixel: self.neopixel,
             port: self.port,
@@ -146,8 +146,8 @@ pub struct Sets {
     /// Dotstar (RGB LED) pins
     pub dotstar: Dotstar,
 
-    /// JST pins, which can be I2C, SPI, or UART
-    pub jst: JST,
+    /// STEMMA JST connector, which can be I2C, SPI, or UART
+    pub stemma: STEMMA,
 
     /// Keypad pins
     pub keypad: Keypad,
@@ -229,13 +229,13 @@ pub struct Dotstar {
     pub di: Pb3<Input<Floating>>,
 }
 
-/// JST pins
-pub struct JST {
+/// STEMMA JST pins
+pub struct STEMMA {
     pub sda: Pb8<Input<Floating>>,
     pub scl: Pb9<Input<Floating>>,
 }
 
-impl JST {
+impl STEMMA {
     /// Convenience for setting up the labelled SDA, SCL pins to
     /// operate as an I2C master running at the specified frequency.
     pub fn i2c_master<F: Into<Hertz>>(
@@ -275,16 +275,13 @@ impl JST {
     ) -> UART4<Sercom4Pad1<Pb9<PfD>>, Sercom4Pad0<Pb8<PfD>>, (), ()> {
         let gclk0 = clocks.gclk0();
 
-        let rx: Sercom4Pad1<_> = self.scl.into_pull_down_input(port).into_pad(port);
-        let tx: Sercom4Pad0<_> = self.sda.into_pull_down_input(port).into_pad(port);
-
         UART4::new(
             &clocks.sercom4_core(&gclk0).unwrap(),
             baud.into(),
             sercom4,
             nvic,
             mclk,
-            (rx, tx),
+            (self.scl.into_pad(port), self.sda.into_pad(port)),
         )
     }
 }

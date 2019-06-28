@@ -12,9 +12,9 @@ pub use hal::target_device::*;
 use hal::prelude::*;
 pub use hal::*;
 
-use gpio::{Floating, Input, Port};
+use gpio::{Floating, Input, Port, PfC};
 use hal::clock::GenericClockController;
-use hal::sercom::{I2CMaster5, PadPin, SPIMaster2};
+use hal::sercom::{I2CMaster5, PadPin, SPIMaster2, UART3};
 use hal::time::Hertz;
 
 #[cfg(feature = "usb")]
@@ -198,5 +198,32 @@ pub fn i2c_master<F: Into<Hertz>>(
         mclk,
         sda.into_pad(port),
         scl.into_pad(port),
+    )
+}
+
+/// Convenience for setting up the labelled RX, TX pins to
+/// operate as a UART device running at the specified baud.
+pub fn uart<F: Into<Hertz>>(
+    clocks: &mut GenericClockController,
+    baud: F,
+    sercom3: SERCOM3,
+    mclk: &mut MCLK,
+    nvic: &mut NVIC,
+    d0: gpio::Pa23<Input<Floating>>,
+    d1: gpio::Pa22<Input<Floating>>,
+    port: &mut Port,
+) -> UART3<
+        hal::sercom::Sercom3Pad1<gpio::Pa23<PfC>>,
+        hal::sercom::Sercom3Pad0<gpio::Pa22<PfC>>, (), ()
+    > {
+    let gclk0 = clocks.gclk0();
+
+    UART3::new(
+        &clocks.sercom3_core(&gclk0).unwrap(),
+        baud.into(),
+        sercom3,
+        nvic,
+        mclk,
+        (d0.into_pad(port), d1.into_pad(port)),
     )
 }
