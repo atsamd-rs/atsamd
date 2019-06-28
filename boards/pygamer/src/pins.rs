@@ -83,7 +83,7 @@ define_pins!(
     /// Pin SCK
     pin sck = a17,
 
-    // I2C
+    // I2C (connected to LIS3DH accelerometer)
     /// STEMMA SDA
     pin sda = a12,
     /// STEMMA SCL 

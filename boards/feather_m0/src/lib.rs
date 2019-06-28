@@ -11,9 +11,9 @@ use hal::prelude::*;
 pub use hal::target_device::*;
 pub use hal::*;
 
-use gpio::{Floating, Input, Port};
+use gpio::{Floating, Input, PfC, Port};
 use hal::clock::GenericClockController;
-use hal::sercom::{I2CMaster3, PadPin, SPIMaster4};
+use hal::sercom::{I2CMaster3, PadPin, SPIMaster4, UART0};
 use hal::time::Hertz;
 
 #[cfg(feature = "usb")]
@@ -96,10 +96,10 @@ pub fn spi_master<F: Into<Hertz>>(
     miso: gpio::Pa12<Input<Floating>>,
     port: &mut Port,
 ) -> SPIMaster4<
-        hal::sercom::Sercom4Pad0<gpio::Pa12<gpio::PfD>>,
-        hal::sercom::Sercom4Pad2<gpio::Pb10<gpio::PfD>>,
-        hal::sercom::Sercom4Pad3<gpio::Pb11<gpio::PfD>>
-    > {
+    hal::sercom::Sercom4Pad0<gpio::Pa12<gpio::PfD>>,
+    hal::sercom::Sercom4Pad2<gpio::Pb10<gpio::PfD>>,
+    hal::sercom::Sercom4Pad3<gpio::Pb11<gpio::PfD>>,
+> {
     let gclk0 = clocks.gclk0();
     SPIMaster4::new(
         &clocks.sercom4_core(&gclk0).unwrap(),
@@ -125,9 +125,9 @@ pub fn i2c_master<F: Into<Hertz>>(
     scl: gpio::Pa23<Input<Floating>>,
     port: &mut Port,
 ) -> I2CMaster3<
-        hal::sercom::Sercom3Pad0<hal::gpio::Pa22<hal::gpio::PfC>>,
-        hal::sercom::Sercom3Pad1<hal::gpio::Pa23<hal::gpio::PfC>>
-    > {
+    hal::sercom::Sercom3Pad0<hal::gpio::Pa22<hal::gpio::PfC>>,
+    hal::sercom::Sercom3Pad1<hal::gpio::Pa23<hal::gpio::PfC>>,
+> {
     let gclk0 = clocks.gclk0();
     I2CMaster3::new(
         &clocks.sercom3_core(&gclk0).unwrap(),
@@ -136,6 +136,35 @@ pub fn i2c_master<F: Into<Hertz>>(
         pm,
         sda.into_pad(port),
         scl.into_pad(port),
+    )
+}
+
+/// Convenience for setting up the labelled RX, TX pins to
+/// operate as a UART device running at the specified baud.
+pub fn uart<F: Into<Hertz>>(
+    clocks: &mut GenericClockController,
+    baud: F,
+    sercom0: SERCOM0,
+    nvic: &mut NVIC,
+    pm: &mut PM,
+    d0: gpio::Pa11<Input<Floating>>,
+    d1: gpio::Pa10<Input<Floating>>,
+    port: &mut Port,
+) -> UART0<
+    hal::sercom::Sercom0Pad3<gpio::Pa11<PfC>>,
+    hal::sercom::Sercom0Pad2<gpio::Pa10<PfC>>,
+    (),
+    (),
+> {
+    let gclk0 = clocks.gclk0();
+
+    UART0::new(
+        &clocks.sercom0_core(&gclk0).unwrap(),
+        baud.into(),
+        sercom0,
+        nvic,
+        pm,
+        (d0.into_pad(port), d1.into_pad(port)),
     )
 }
 

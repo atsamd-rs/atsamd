@@ -11,7 +11,11 @@ use hal::prelude::*;
 pub use hal::target_device::*;
 pub use hal::*;
 
-use gpio::{Floating, Input, Port};
+use gpio::{Floating, Input, PfD, Port};
+
+use hal::clock::GenericClockController;
+use hal::sercom::{PadPin, UART0};
+use hal::time::Hertz;
 
 define_pins!(
     /// Maps the pins to their arduino names and
@@ -19,10 +23,14 @@ define_pins!(
     struct Pins,
     target_device: target_device,
 
+    /// I2C SDA
     pin d0 = a8,
     pin d1 = a2,
+    /// I2C SCL
     pin d2 = a9,
+    /// UART RX
     pin d3 = a7,
+    /// UART TX
     pin d4 = a6,
 
     /// Digital pin number 13, which is also attached to
@@ -42,3 +50,28 @@ define_pins!(
     /// The USB D+ pad
     pin usb_dp = a25,
 );
+
+/// Convenience for setting up the D3 and D4 pins to
+/// operate as UART RX/TX (respectively) running at the specified baud.
+pub fn uart<F: Into<Hertz>>(
+    clocks: &mut GenericClockController,
+    baud: F,
+    sercom0: SERCOM0,
+    nvic: &mut NVIC,
+    pm: &mut PM,
+    d3: gpio::Pa7<Input<Floating>>,
+    d4: gpio::Pa6<Input<Floating>>,
+    port: &mut Port,
+) -> UART0<hal::sercom::Sercom0Pad3<gpio::Pa7<PfD>>, hal::sercom::Sercom0Pad2<gpio::Pa6<PfD>>, (), ()>
+{
+    let gclk0 = clocks.gclk0();
+
+    UART0::new(
+        &clocks.sercom0_core(&gclk0).unwrap(),
+        baud.into(),
+        sercom0,
+        nvic,
+        pm,
+        (d3.into_pad(port), d4.into_pad(port)),
+    )
+}

@@ -82,7 +82,7 @@ impl Keypad {
 /// Convenience for setting up the labelled SDA, SCL pins to
 /// operate as an I2C master running at the specified frequency.
 pub fn i2c_master<F: Into<Hertz>>(
-    pins: pins::JST,
+    pins: pins::STEMMA,
     clocks: &mut GenericClockController,
     bus_speed: F,
     sercom4: SERCOM4,
@@ -96,11 +96,12 @@ pub fn i2c_master<F: Into<Hertz>>(
 }
 
 /// Convenience for setting up the labelled SDA, SCL pins in the
-/// JST connector to operate as a UART device at the specified baud rate.
+/// STEMMA JST connector to operate as a UART device at the specified
+/// baud rate.
 ///
 /// Here SCL is the RX pin and SDA is the TX pin.
 pub fn uart<F: Into<Hertz>>(
-    pins: pins::JST,
+    pins: pins::STEMMA,
     clocks: &mut GenericClockController,
     baud: F,
     sercom4: SERCOM4,
