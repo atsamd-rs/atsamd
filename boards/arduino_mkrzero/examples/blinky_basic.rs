@@ -24,8 +24,8 @@ fn main() -> ! {
 
     loop {
         delay.delay_ms(200u8);
-        led.set_high();
+        led.set_high().unwrap();
         delay.delay_ms(200u8);
-        led.set_low();
+        led.set_low().unwrap();
     }
 }
