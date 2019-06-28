@@ -11,7 +11,6 @@ pub use crate::pins::Pins;
 pub use hal::target_device::*;
 pub use hal::*;
 
-use cortex_m::peripheral::SYST;
 use gpio::{Floating, Input, PfC, Port};
 use hal::clock::GenericClockController;
 use hal::prelude::*;
@@ -61,7 +60,7 @@ pub fn spi_master<F: Into<Hertz>>(
 
 /// Convenience for accessing the on-board TFT LCD.
 pub fn display(
-    mut clocks: &mut GenericClockController,
+    clocks: &mut GenericClockController,
     sercom4: SERCOM4,
     mclk: &mut MCLK,
     accel_irq: gpio::Pb14<Input<Floating>>, // TODO remove once we make miso optional
@@ -72,7 +71,7 @@ pub fn display(
     tft_dc: gpio::Pb5<Input<Floating>>,
     tft_backlight: gpio::Pa1<Input<Floating>>,
     timer2: TC2,
-    syst: SYST,
+    delay: &mut hal::delay::Delay,
     port: &mut Port,
 ) -> Result<
     (
@@ -114,8 +113,7 @@ pub fn display(
     let gclk0 = clocks.gclk0();
 
     let mut display = st7735_lcd::ST7735::new(tft_spi, tft_dc, tft_reset, true, false);
-    let mut delay = hal::delay::Delay::new(syst, &mut clocks);
-    display.init(&mut delay)?;
+    display.init(delay)?;
     display.set_orientation(&Orientation::LandscapeSwapped)?;
 
     let tft_backlight = tft_backlight.into_function_e(port);

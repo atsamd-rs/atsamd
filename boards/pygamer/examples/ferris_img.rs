@@ -24,8 +24,8 @@ fn main() -> ! {
         &mut peripherals.OSCCTRL,
         &mut peripherals.NVMCTRL,
     );
-
     let mut pins = hal::Pins::new(peripherals.PORT);
+    let mut delay = hal::delay::Delay::new(core.SYST, &mut clocks);
 
     let (mut display, _backlight) = display(
         &mut clocks,
@@ -39,16 +39,13 @@ fn main() -> ! {
         pins.tft_dc,
         pins.tft_backlight,
         peripherals.TC2,
-        core.SYST,
+        &mut delay,
         &mut pins.port
     ).unwrap();
 
     let black_backdrop: Rect<PixelColorU16> = Rect::new(Coord::new(0, 0), Coord::new(160, 128)).with_fill(Some(0x0000u16.into()));
-
     display.draw(black_backdrop.into_iter());
-    
     let ferris = Image16BPP::new(include_bytes!("./ferris.raw"), 86, 64).translate(Coord::new(42, 32));
-    
     display.draw(ferris.into_iter());
 
     loop {}
