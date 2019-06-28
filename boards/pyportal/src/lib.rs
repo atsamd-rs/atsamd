@@ -11,9 +11,9 @@ pub use crate::pins::Pins;
 pub use hal::target_device::*;
 pub use hal::*;
 
-use gpio::{Floating, Input, Port};
+use gpio::{Floating, Input, Port, PfC};
 use hal::clock::GenericClockController;
-use hal::sercom::{I2CMaster5, PadPin, SPIMaster2};
+use hal::sercom::{I2CMaster5, PadPin, SPIMaster2, UART4};
 use hal::time::Hertz;
 
 #[cfg(feature = "usb")]
@@ -77,5 +77,31 @@ pub fn i2c_master<F: Into<Hertz>>(
         mclk,
         sda.into_pad(port),
         scl.into_pad(port),
+    )
+}
+
+/// UART is connected to the ESP32 Wi-Fi co-processor
+pub fn esp_uart<F: Into<Hertz>>(
+    clocks: &mut GenericClockController,
+    baud: F,
+    sercom4: SERCOM4,
+    mclk: &mut MCLK,
+    nvic: &mut NVIC,
+    esp_rx: gpio::Pb13<Input<Floating>>,
+    esp_tx: gpio::Pb12<Input<Floating>>,
+    port: &mut Port,
+) -> UART4<
+        hal::sercom::Sercom4Pad1<gpio::Pb13<PfC>>,
+        hal::sercom::Sercom4Pad0<gpio::Pb12<PfC>>, (), ()
+    > {
+    let gclk0 = clocks.gclk0();
+
+    UART4::new(
+        &clocks.sercom4_core(&gclk0).unwrap(),
+        baud.into(),
+        sercom4,
+        nvic,
+        mclk,
+        (esp_rx.into_pad(port), esp_tx.into_pad(port)),
     )
 }
