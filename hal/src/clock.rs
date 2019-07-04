@@ -311,6 +311,7 @@ clock_generator!(
     (sercom4_core, Sercom4CoreClock, SERCOM4_CORE),
     (sercom5_core, Sercom5CoreClock, SERCOM5_CORE),
     (usb, UsbClock, USB),
+    (rtc, RtcClock, RTC),
 );
 
 /// The frequency of the 48Mhz source.
