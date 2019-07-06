@@ -141,7 +141,7 @@ macro_rules! pin {
                         w.pmuxe().$variant()
                     }
                 });
-                port.$pincfg()[$pin_no].write(|bits| {
+                port.$pincfg()[$pin_no].modify(|_, bits| {
                     bits.pmuxen().set_bit()
                 });
 
