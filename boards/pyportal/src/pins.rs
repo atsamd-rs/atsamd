@@ -183,6 +183,7 @@ impl Pins {
         };
 
         Sets {
+            port: self.port,
             display,
             esp,
             light: self.light,
@@ -200,6 +201,7 @@ impl Pins {
 }
 
 pub struct Sets {
+    pub port: Port,
     pub display: Display,
     pub d13: Pb23<Input<Floating>>,
     pub neopixel: Pb22<Input<Floating>>,
