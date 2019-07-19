@@ -40,6 +40,7 @@ In addition to the generic crates, there are also crates for popular ATSAMD21/51
 * [`trellis_m4`](https://atsamd-rs.github.io/atsamd/atsamd51g19a/trellis_m4/)
 * [`feather_m4`](https://atsamd-rs.github.io/atsamd/atsamd51j19a/feather_m4/)
 * [`pyportal`](https://atsamd-rs.github.io/atsamd/atsamd51j20a/pyportal/)
+* [`pygamer`](https://atsamd-rs.github.io/atsamd/atsamd51j19a/pygamer/)
 
 ## Building
 
