@@ -31,11 +31,7 @@ impl R {
     #[doc = "Bits 0:31 - Port Data Input Value"]
     #[inline]
     pub fn in_(&self) -> INR {
-        let bits = {
-            const MASK: u32 = 4294967295;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) as u32
-        };
+        let bits = ((self.bits >> 0) & 0xffff_ffff) as u32;
         INR { bits }
     }
 }

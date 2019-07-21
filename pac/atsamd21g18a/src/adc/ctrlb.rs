@@ -14,10 +14,7 @@ impl super::CTRLB {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
+        self.register.set(f(&R { bits }, &mut W { bits }).bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -32,14 +29,22 @@ impl super::CTRLB {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
+        self.register.set(
+            f(&mut W {
+                bits: Self::reset_value(),
+            })
+            .bits,
+        );
+    }
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub const fn reset_value() -> u16 {
+        0
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.write(|w| w)
+        self.register.set(Self::reset_value())
     }
 }
 #[doc = r" Value of the field"]
@@ -144,9 +149,9 @@ impl RESSELR {
     pub fn bits(&self) -> u8 {
         match *self {
             RESSELR::_12BIT => 0,
-            RESSELR::_16BIT => 1,
-            RESSELR::_10BIT => 2,
-            RESSELR::_8BIT => 3,
+            RESSELR::_16BIT => 0x01,
+            RESSELR::_10BIT => 0x02,
+            RESSELR::_8BIT => 0x03,
         }
     }
     #[allow(missing_docs)]
@@ -208,13 +213,13 @@ impl PRESCALERR {
     pub fn bits(&self) -> u8 {
         match *self {
             PRESCALERR::DIV4 => 0,
-            PRESCALERR::DIV8 => 1,
-            PRESCALERR::DIV16 => 2,
-            PRESCALERR::DIV32 => 3,
-            PRESCALERR::DIV64 => 4,
-            PRESCALERR::DIV128 => 5,
-            PRESCALERR::DIV256 => 6,
-            PRESCALERR::DIV512 => 7,
+            PRESCALERR::DIV8 => 0x01,
+            PRESCALERR::DIV16 => 0x02,
+            PRESCALERR::DIV32 => 0x03,
+            PRESCALERR::DIV64 => 0x04,
+            PRESCALERR::DIV128 => 0x05,
+            PRESCALERR::DIV256 => 0x06,
+            PRESCALERR::DIV512 => 0x07,
         }
     }
     #[allow(missing_docs)]
@@ -290,10 +295,8 @@ impl<'a> _DIFFMODEW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x01 << 0);
+        self.w.bits |= ((value as u16) & 0x01) << 0;
         self.w
     }
 }
@@ -313,10 +316,8 @@ impl<'a> _LEFTADJW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 1;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x01 << 1);
+        self.w.bits |= ((value as u16) & 0x01) << 1;
         self.w
     }
 }
@@ -336,10 +337,8 @@ impl<'a> _FREERUNW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 2;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x01 << 2);
+        self.w.bits |= ((value as u16) & 0x01) << 2;
         self.w
     }
 }
@@ -359,14 +358,13 @@ impl<'a> _CORRENW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 3;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x01 << 3);
+        self.w.bits |= ((value as u16) & 0x01) << 3;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `RESSEL`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum RESSELW {
     #[doc = "12-bit result"]
     _12BIT,
@@ -425,14 +423,13 @@ impl<'a> _RESSELW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 4;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x03 << 4);
+        self.w.bits |= ((value as u16) & 0x03) << 4;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `PRESCALER`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum PRESCALERW {
     #[doc = "Peripheral clock divided by 4"]
     DIV4,
@@ -523,10 +520,8 @@ impl<'a> _PRESCALERW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 7;
-        const OFFSET: u8 = 8;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x07 << 8);
+        self.w.bits |= ((value as u16) & 0x07) << 8;
         self.w
     }
 }
@@ -539,68 +534,39 @@ impl R {
     #[doc = "Bit 0 - Differential Mode"]
     #[inline]
     pub fn diffmode(&self) -> DIFFMODER {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
+        let bits = ((self.bits >> 0) & 0x01) != 0;
         DIFFMODER { bits }
     }
     #[doc = "Bit 1 - Left-Adjusted Result"]
     #[inline]
     pub fn leftadj(&self) -> LEFTADJR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
+        let bits = ((self.bits >> 1) & 0x01) != 0;
         LEFTADJR { bits }
     }
     #[doc = "Bit 2 - Free Running Mode"]
     #[inline]
     pub fn freerun(&self) -> FREERUNR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
+        let bits = ((self.bits >> 2) & 0x01) != 0;
         FREERUNR { bits }
     }
     #[doc = "Bit 3 - Digital Correction Logic Enabled"]
     #[inline]
     pub fn corren(&self) -> CORRENR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 3;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
+        let bits = ((self.bits >> 3) & 0x01) != 0;
         CORRENR { bits }
     }
     #[doc = "Bits 4:5 - Conversion Result Resolution"]
     #[inline]
     pub fn ressel(&self) -> RESSELR {
-        RESSELR::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u16) as u8
-        })
+        RESSELR::_from(((self.bits >> 4) & 0x03) as u8)
     }
     #[doc = "Bits 8:10 - Prescaler Configuration"]
     #[inline]
     pub fn prescaler(&self) -> PRESCALERR {
-        PRESCALERR::_from({
-            const MASK: u8 = 7;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u16) as u8
-        })
+        PRESCALERR::_from(((self.bits >> 8) & 0x07) as u8)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {

@@ -14,10 +14,7 @@ impl super::ALARM {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
+        self.register.set(f(&R { bits }, &mut W { bits }).bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -32,14 +29,22 @@ impl super::ALARM {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
+        self.register.set(
+            f(&mut W {
+                bits: Self::reset_value(),
+            })
+            .bits,
+        );
+    }
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub const fn reset_value() -> u32 {
+        0
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.write(|w| w)
+        self.register.set(Self::reset_value())
     }
 }
 #[doc = r" Value of the field"]
@@ -80,7 +85,7 @@ impl HOURR {
     pub fn bits(&self) -> u8 {
         match *self {
             HOURR::AM => 0,
-            HOURR::PM => 16,
+            HOURR::PM => 0x10,
             HOURR::_Reserved(bits) => bits,
         }
     }
@@ -146,10 +151,8 @@ impl<'a> _SECONDW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 63;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x3f << 0);
+        self.w.bits |= ((value as u32) & 0x3f) << 0;
         self.w
     }
 }
@@ -161,14 +164,13 @@ impl<'a> _MINUTEW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 63;
-        const OFFSET: u8 = 6;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x3f << 6);
+        self.w.bits |= ((value as u32) & 0x3f) << 6;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `HOUR`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum HOURW {
     #[doc = "Morning hour"]
     AM,
@@ -209,10 +211,8 @@ impl<'a> _HOURW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 31;
-        const OFFSET: u8 = 12;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x1f << 12);
+        self.w.bits |= ((value as u32) & 0x1f) << 12;
         self.w
     }
 }
@@ -224,10 +224,8 @@ impl<'a> _DAYW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 31;
-        const OFFSET: u8 = 17;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x1f << 17);
+        self.w.bits |= ((value as u32) & 0x1f) << 17;
         self.w
     }
 }
@@ -239,10 +237,8 @@ impl<'a> _MONTHW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 15;
-        const OFFSET: u8 = 22;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x0f << 22);
+        self.w.bits |= ((value as u32) & 0x0f) << 22;
         self.w
     }
 }
@@ -254,10 +250,8 @@ impl<'a> _YEARW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 63;
-        const OFFSET: u8 = 26;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x3f << 26);
+        self.w.bits |= ((value as u32) & 0x3f) << 26;
         self.w
     }
 }
@@ -270,69 +264,40 @@ impl R {
     #[doc = "Bits 0:5 - Second"]
     #[inline]
     pub fn second(&self) -> SECONDR {
-        let bits = {
-            const MASK: u8 = 63;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
+        let bits = ((self.bits >> 0) & 0x3f) as u8;
         SECONDR { bits }
     }
     #[doc = "Bits 6:11 - Minute"]
     #[inline]
     pub fn minute(&self) -> MINUTER {
-        let bits = {
-            const MASK: u8 = 63;
-            const OFFSET: u8 = 6;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
+        let bits = ((self.bits >> 6) & 0x3f) as u8;
         MINUTER { bits }
     }
     #[doc = "Bits 12:16 - Hour"]
     #[inline]
     pub fn hour(&self) -> HOURR {
-        HOURR::_from({
-            const MASK: u8 = 31;
-            const OFFSET: u8 = 12;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+        HOURR::_from(((self.bits >> 12) & 0x1f) as u8)
     }
     #[doc = "Bits 17:21 - Day"]
     #[inline]
     pub fn day(&self) -> DAYR {
-        let bits = {
-            const MASK: u8 = 31;
-            const OFFSET: u8 = 17;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
+        let bits = ((self.bits >> 17) & 0x1f) as u8;
         DAYR { bits }
     }
     #[doc = "Bits 22:25 - Month"]
     #[inline]
     pub fn month(&self) -> MONTHR {
-        let bits = {
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 22;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
+        let bits = ((self.bits >> 22) & 0x0f) as u8;
         MONTHR { bits }
     }
     #[doc = "Bits 26:31 - Year"]
     #[inline]
     pub fn year(&self) -> YEARR {
-        let bits = {
-            const MASK: u8 = 63;
-            const OFFSET: u8 = 26;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
+        let bits = ((self.bits >> 26) & 0x3f) as u8;
         YEARR { bits }
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {

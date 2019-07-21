@@ -28,67 +28,67 @@ pub struct RegisterBlock {
 }
 #[doc = "Configuration"]
 pub struct CFG {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Configuration"]
 pub mod cfg;
 #[doc = "Control"]
 pub struct CTRL {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Control"]
 pub mod ctrl;
 #[doc = "Status"]
 pub struct SR {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Status"]
 pub mod sr;
 #[doc = "Interrupt Enable"]
 pub struct IER {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Interrupt Enable"]
 pub mod ier;
 #[doc = "Interrupt Disable"]
 pub struct IDR {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Interrupt Disable"]
 pub mod idr;
 #[doc = "Interrupt Mask"]
 pub struct IMR {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Interrupt Mask"]
 pub mod imr;
 #[doc = "Interrupt Status"]
 pub struct ISR {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Interrupt Status"]
 pub mod isr;
 #[doc = "Undefined Access Status"]
 pub struct UASR {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Undefined Access Status"]
 pub mod uasr;
 #[doc = "Region Descriptor Area Start Address"]
 pub struct DSCR {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Region Descriptor Area Start Address"]
 pub mod dscr;
 #[doc = "Region Hash Area Start Address"]
 pub struct HASH {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Region Hash Area Start Address"]
 pub mod hash;
 #[doc = "User Initial Hash Value n"]
 pub struct UIHVAL {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "User Initial Hash Value n"]
 pub mod uihval;

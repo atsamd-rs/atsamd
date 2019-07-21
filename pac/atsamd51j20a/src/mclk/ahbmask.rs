@@ -14,10 +14,7 @@ impl super::AHBMASK {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
+        self.register.set(f(&R { bits }, &mut W { bits }).bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -32,14 +29,22 @@ impl super::AHBMASK {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
+        self.register.set(
+            f(&mut W {
+                bits: Self::reset_value(),
+            })
+            .bits,
+        );
+    }
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub const fn reset_value() -> u32 {
+        0x00ff_ffff
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.write(|w| w)
+        self.register.set(Self::reset_value())
     }
 }
 #[doc = r" Value of the field"]
@@ -478,10 +483,8 @@ impl<'a> _HPB0_W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 0);
+        self.w.bits |= ((value as u32) & 0x01) << 0;
         self.w
     }
 }
@@ -501,10 +504,8 @@ impl<'a> _HPB1_W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 1;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 1);
+        self.w.bits |= ((value as u32) & 0x01) << 1;
         self.w
     }
 }
@@ -524,10 +525,8 @@ impl<'a> _HPB2_W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 2;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 2);
+        self.w.bits |= ((value as u32) & 0x01) << 2;
         self.w
     }
 }
@@ -547,10 +546,8 @@ impl<'a> _HPB3_W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 3;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 3);
+        self.w.bits |= ((value as u32) & 0x01) << 3;
         self.w
     }
 }
@@ -570,10 +567,8 @@ impl<'a> _DSU_W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 4;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 4);
+        self.w.bits |= ((value as u32) & 0x01) << 4;
         self.w
     }
 }
@@ -593,10 +588,8 @@ impl<'a> _HMATRIX_W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 5;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 5);
+        self.w.bits |= ((value as u32) & 0x01) << 5;
         self.w
     }
 }
@@ -616,10 +609,8 @@ impl<'a> _NVMCTRL_W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 6;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 6);
+        self.w.bits |= ((value as u32) & 0x01) << 6;
         self.w
     }
 }
@@ -639,10 +630,8 @@ impl<'a> _HSRAM_W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 7;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 7);
+        self.w.bits |= ((value as u32) & 0x01) << 7;
         self.w
     }
 }
@@ -662,10 +651,8 @@ impl<'a> _CMCC_W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 8;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 8);
+        self.w.bits |= ((value as u32) & 0x01) << 8;
         self.w
     }
 }
@@ -685,10 +672,8 @@ impl<'a> _DMAC_W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 9;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 9);
+        self.w.bits |= ((value as u32) & 0x01) << 9;
         self.w
     }
 }
@@ -708,10 +693,8 @@ impl<'a> _USB_W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 10;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 10);
+        self.w.bits |= ((value as u32) & 0x01) << 10;
         self.w
     }
 }
@@ -731,10 +714,8 @@ impl<'a> _BKUPRAM_W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 11;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 11);
+        self.w.bits |= ((value as u32) & 0x01) << 11;
         self.w
     }
 }
@@ -754,10 +735,8 @@ impl<'a> _PAC_W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 12;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 12);
+        self.w.bits |= ((value as u32) & 0x01) << 12;
         self.w
     }
 }
@@ -777,10 +756,8 @@ impl<'a> _QSPI_W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 13;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 13);
+        self.w.bits |= ((value as u32) & 0x01) << 13;
         self.w
     }
 }
@@ -800,10 +777,8 @@ impl<'a> _SDHC0_W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 15;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 15);
+        self.w.bits |= ((value as u32) & 0x01) << 15;
         self.w
     }
 }
@@ -823,10 +798,8 @@ impl<'a> _ICM_W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 19;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 19);
+        self.w.bits |= ((value as u32) & 0x01) << 19;
         self.w
     }
 }
@@ -846,10 +819,8 @@ impl<'a> _PUKCC_W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 20;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 20);
+        self.w.bits |= ((value as u32) & 0x01) << 20;
         self.w
     }
 }
@@ -869,10 +840,8 @@ impl<'a> _QSPI_2X_W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 21;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 21);
+        self.w.bits |= ((value as u32) & 0x01) << 21;
         self.w
     }
 }
@@ -892,10 +861,8 @@ impl<'a> _NVMCTRL_SMEEPROM_W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 22;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 22);
+        self.w.bits |= ((value as u32) & 0x01) << 22;
         self.w
     }
 }
@@ -915,10 +882,8 @@ impl<'a> _NVMCTRL_CACHE_W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 23;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 23);
+        self.w.bits |= ((value as u32) & 0x01) << 23;
         self.w
     }
 }
@@ -931,210 +896,125 @@ impl R {
     #[doc = "Bit 0 - HPB0 AHB Clock Mask"]
     #[inline]
     pub fn hpb0_(&self) -> HPB0_R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 0) & 0x01) != 0;
         HPB0_R { bits }
     }
     #[doc = "Bit 1 - HPB1 AHB Clock Mask"]
     #[inline]
     pub fn hpb1_(&self) -> HPB1_R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 1) & 0x01) != 0;
         HPB1_R { bits }
     }
     #[doc = "Bit 2 - HPB2 AHB Clock Mask"]
     #[inline]
     pub fn hpb2_(&self) -> HPB2_R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 2) & 0x01) != 0;
         HPB2_R { bits }
     }
     #[doc = "Bit 3 - HPB3 AHB Clock Mask"]
     #[inline]
     pub fn hpb3_(&self) -> HPB3_R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 3;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 3) & 0x01) != 0;
         HPB3_R { bits }
     }
     #[doc = "Bit 4 - DSU AHB Clock Mask"]
     #[inline]
     pub fn dsu_(&self) -> DSU_R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 4) & 0x01) != 0;
         DSU_R { bits }
     }
     #[doc = "Bit 5 - HMATRIX AHB Clock Mask"]
     #[inline]
     pub fn hmatrix_(&self) -> HMATRIX_R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 5;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 5) & 0x01) != 0;
         HMATRIX_R { bits }
     }
     #[doc = "Bit 6 - NVMCTRL AHB Clock Mask"]
     #[inline]
     pub fn nvmctrl_(&self) -> NVMCTRL_R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 6;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 6) & 0x01) != 0;
         NVMCTRL_R { bits }
     }
     #[doc = "Bit 7 - HSRAM AHB Clock Mask"]
     #[inline]
     pub fn hsram_(&self) -> HSRAM_R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 7;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 7) & 0x01) != 0;
         HSRAM_R { bits }
     }
     #[doc = "Bit 8 - CMCC AHB Clock Mask"]
     #[inline]
     pub fn cmcc_(&self) -> CMCC_R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 8) & 0x01) != 0;
         CMCC_R { bits }
     }
     #[doc = "Bit 9 - DMAC AHB Clock Mask"]
     #[inline]
     pub fn dmac_(&self) -> DMAC_R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 9;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 9) & 0x01) != 0;
         DMAC_R { bits }
     }
     #[doc = "Bit 10 - USB AHB Clock Mask"]
     #[inline]
     pub fn usb_(&self) -> USB_R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 10;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 10) & 0x01) != 0;
         USB_R { bits }
     }
     #[doc = "Bit 11 - BKUPRAM AHB Clock Mask"]
     #[inline]
     pub fn bkupram_(&self) -> BKUPRAM_R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 11;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 11) & 0x01) != 0;
         BKUPRAM_R { bits }
     }
     #[doc = "Bit 12 - PAC AHB Clock Mask"]
     #[inline]
     pub fn pac_(&self) -> PAC_R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 12;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 12) & 0x01) != 0;
         PAC_R { bits }
     }
     #[doc = "Bit 13 - QSPI AHB Clock Mask"]
     #[inline]
     pub fn qspi_(&self) -> QSPI_R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 13;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 13) & 0x01) != 0;
         QSPI_R { bits }
     }
     #[doc = "Bit 15 - SDHC0 AHB Clock Mask"]
     #[inline]
     pub fn sdhc0_(&self) -> SDHC0_R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 15;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 15) & 0x01) != 0;
         SDHC0_R { bits }
     }
     #[doc = "Bit 19 - ICM AHB Clock Mask"]
     #[inline]
     pub fn icm_(&self) -> ICM_R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 19;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 19) & 0x01) != 0;
         ICM_R { bits }
     }
     #[doc = "Bit 20 - PUKCC AHB Clock Mask"]
     #[inline]
     pub fn pukcc_(&self) -> PUKCC_R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 20;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 20) & 0x01) != 0;
         PUKCC_R { bits }
     }
     #[doc = "Bit 21 - QSPI_2X AHB Clock Mask"]
     #[inline]
     pub fn qspi_2x_(&self) -> QSPI_2X_R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 21;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 21) & 0x01) != 0;
         QSPI_2X_R { bits }
     }
     #[doc = "Bit 22 - NVMCTRL_SMEEPROM AHB Clock Mask"]
     #[inline]
     pub fn nvmctrl_smeeprom_(&self) -> NVMCTRL_SMEEPROM_R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 22;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 22) & 0x01) != 0;
         NVMCTRL_SMEEPROM_R { bits }
     }
     #[doc = "Bit 23 - NVMCTRL_CACHE AHB Clock Mask"]
     #[inline]
     pub fn nvmctrl_cache_(&self) -> NVMCTRL_CACHE_R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 23;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 23) & 0x01) != 0;
         NVMCTRL_CACHE_R { bits }
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 16777215 }
-    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {

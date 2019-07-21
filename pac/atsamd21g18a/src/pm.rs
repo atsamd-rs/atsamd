@@ -36,85 +36,85 @@ pub struct RegisterBlock {
 }
 #[doc = "Control"]
 pub struct CTRL {
-    register: ::vcell::VolatileCell<u8>,
+    register: vcell::VolatileCell<u8>,
 }
 #[doc = "Control"]
 pub mod ctrl;
 #[doc = "Sleep Mode"]
 pub struct SLEEP {
-    register: ::vcell::VolatileCell<u8>,
+    register: vcell::VolatileCell<u8>,
 }
 #[doc = "Sleep Mode"]
 pub mod sleep;
 #[doc = "CPU Clock Select"]
 pub struct CPUSEL {
-    register: ::vcell::VolatileCell<u8>,
+    register: vcell::VolatileCell<u8>,
 }
 #[doc = "CPU Clock Select"]
 pub mod cpusel;
 #[doc = "APBA Clock Select"]
 pub struct APBASEL {
-    register: ::vcell::VolatileCell<u8>,
+    register: vcell::VolatileCell<u8>,
 }
 #[doc = "APBA Clock Select"]
 pub mod apbasel;
 #[doc = "APBB Clock Select"]
 pub struct APBBSEL {
-    register: ::vcell::VolatileCell<u8>,
+    register: vcell::VolatileCell<u8>,
 }
 #[doc = "APBB Clock Select"]
 pub mod apbbsel;
 #[doc = "APBC Clock Select"]
 pub struct APBCSEL {
-    register: ::vcell::VolatileCell<u8>,
+    register: vcell::VolatileCell<u8>,
 }
 #[doc = "APBC Clock Select"]
 pub mod apbcsel;
 #[doc = "AHB Mask"]
 pub struct AHBMASK {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "AHB Mask"]
 pub mod ahbmask;
 #[doc = "APBA Mask"]
 pub struct APBAMASK {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "APBA Mask"]
 pub mod apbamask;
 #[doc = "APBB Mask"]
 pub struct APBBMASK {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "APBB Mask"]
 pub mod apbbmask;
 #[doc = "APBC Mask"]
 pub struct APBCMASK {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "APBC Mask"]
 pub mod apbcmask;
 #[doc = "Interrupt Enable Clear"]
 pub struct INTENCLR {
-    register: ::vcell::VolatileCell<u8>,
+    register: vcell::VolatileCell<u8>,
 }
 #[doc = "Interrupt Enable Clear"]
 pub mod intenclr;
 #[doc = "Interrupt Enable Set"]
 pub struct INTENSET {
-    register: ::vcell::VolatileCell<u8>,
+    register: vcell::VolatileCell<u8>,
 }
 #[doc = "Interrupt Enable Set"]
 pub mod intenset;
 #[doc = "Interrupt Flag Status and Clear"]
 pub struct INTFLAG {
-    register: ::vcell::VolatileCell<u8>,
+    register: vcell::VolatileCell<u8>,
 }
 #[doc = "Interrupt Flag Status and Clear"]
 pub mod intflag;
 #[doc = "Reset Cause"]
 pub struct RCAUSE {
-    register: ::vcell::VolatileCell<u8>,
+    register: vcell::VolatileCell<u8>,
 }
 #[doc = "Reset Cause"]
 pub mod rcause;

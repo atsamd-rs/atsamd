@@ -14,10 +14,7 @@ impl super::OSC8M {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
+        self.register.set(f(&R { bits }, &mut W { bits }).bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -32,14 +29,22 @@ impl super::OSC8M {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
+        self.register.set(
+            f(&mut W {
+                bits: Self::reset_value(),
+            })
+            .bits,
+        );
+    }
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub const fn reset_value() -> u32 {
+        0x8707_0382
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.write(|w| w)
+        self.register.set(Self::reset_value())
     }
 }
 #[doc = r" Value of the field"]
@@ -123,9 +128,9 @@ impl PRESCR {
     pub fn bits(&self) -> u8 {
         match *self {
             PRESCR::_0 => 0,
-            PRESCR::_1 => 1,
-            PRESCR::_2 => 2,
-            PRESCR::_3 => 3,
+            PRESCR::_1 => 0x01,
+            PRESCR::_2 => 0x02,
+            PRESCR::_3 => 0x03,
         }
     }
     #[allow(missing_docs)]
@@ -190,9 +195,9 @@ impl FRANGER {
     pub fn bits(&self) -> u8 {
         match *self {
             FRANGER::_0 => 0,
-            FRANGER::_1 => 1,
-            FRANGER::_2 => 2,
-            FRANGER::_3 => 3,
+            FRANGER::_1 => 0x01,
+            FRANGER::_2 => 0x02,
+            FRANGER::_3 => 0x03,
         }
     }
     #[allow(missing_docs)]
@@ -244,10 +249,8 @@ impl<'a> _ENABLEW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 1;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 1);
+        self.w.bits |= ((value as u32) & 0x01) << 1;
         self.w
     }
 }
@@ -267,10 +270,8 @@ impl<'a> _RUNSTDBYW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 6;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 6);
+        self.w.bits |= ((value as u32) & 0x01) << 6;
         self.w
     }
 }
@@ -290,14 +291,13 @@ impl<'a> _ONDEMANDW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 7;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 7);
+        self.w.bits |= ((value as u32) & 0x01) << 7;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `PRESC`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum PRESCW {
     #[doc = "1"]
     _0,
@@ -356,10 +356,8 @@ impl<'a> _PRESCW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 8;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x03 << 8);
+        self.w.bits |= ((value as u32) & 0x03) << 8;
         self.w
     }
 }
@@ -371,14 +369,13 @@ impl<'a> _CALIBW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u16) -> &'a mut W {
-        const MASK: u16 = 4095;
-        const OFFSET: u8 = 16;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x0fff << 16);
+        self.w.bits |= ((value as u32) & 0x0fff) << 16;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `FRANGE`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum FRANGEW {
     #[doc = "4 to 6MHz"]
     _0,
@@ -437,10 +434,8 @@ impl<'a> _FRANGEW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 30;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x03 << 30);
+        self.w.bits |= ((value as u32) & 0x03) << 30;
         self.w
     }
 }
@@ -453,68 +448,39 @@ impl R {
     #[doc = "Bit 1 - Oscillator Enable"]
     #[inline]
     pub fn enable(&self) -> ENABLER {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 1) & 0x01) != 0;
         ENABLER { bits }
     }
     #[doc = "Bit 6 - Run in Standby"]
     #[inline]
     pub fn runstdby(&self) -> RUNSTDBYR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 6;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 6) & 0x01) != 0;
         RUNSTDBYR { bits }
     }
     #[doc = "Bit 7 - On Demand Control"]
     #[inline]
     pub fn ondemand(&self) -> ONDEMANDR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 7;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 7) & 0x01) != 0;
         ONDEMANDR { bits }
     }
     #[doc = "Bits 8:9 - Oscillator Prescaler"]
     #[inline]
     pub fn presc(&self) -> PRESCR {
-        PRESCR::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+        PRESCR::_from(((self.bits >> 8) & 0x03) as u8)
     }
     #[doc = "Bits 16:27 - Oscillator Calibration"]
     #[inline]
     pub fn calib(&self) -> CALIBR {
-        let bits = {
-            const MASK: u16 = 4095;
-            const OFFSET: u8 = 16;
-            ((self.bits >> OFFSET) & MASK as u32) as u16
-        };
+        let bits = ((self.bits >> 16) & 0x0fff) as u16;
         CALIBR { bits }
     }
     #[doc = "Bits 30:31 - Oscillator Frequency Range"]
     #[inline]
     pub fn frange(&self) -> FRANGER {
-        FRANGER::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 30;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+        FRANGER::_from(((self.bits >> 30) & 0x03) as u8)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 2265383810 }
-    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {

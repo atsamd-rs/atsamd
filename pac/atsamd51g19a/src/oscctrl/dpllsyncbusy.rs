@@ -62,21 +62,13 @@ impl R {
     #[doc = "Bit 1 - DPLL Enable Synchronization Status"]
     #[inline]
     pub fn enable(&self) -> ENABLER {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 1) & 0x01) != 0;
         ENABLER { bits }
     }
     #[doc = "Bit 2 - DPLL Loop Divider Ratio Synchronization Status"]
     #[inline]
     pub fn dpllratio(&self) -> DPLLRATIOR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 2) & 0x01) != 0;
         DPLLRATIOR { bits }
     }
 }

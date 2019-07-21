@@ -14,10 +14,7 @@ impl super::NMICTRL {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
+        self.register.set(f(&R { bits }, &mut W { bits }).bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -32,14 +29,22 @@ impl super::NMICTRL {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
+        self.register.set(
+            f(&mut W {
+                bits: Self::reset_value(),
+            })
+            .bits,
+        );
+    }
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub const fn reset_value() -> u8 {
+        0
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.write(|w| w)
+        self.register.set(Self::reset_value())
     }
 }
 #[doc = "Possible values of the field `NMISENSE`"]
@@ -66,11 +71,11 @@ impl NMISENSER {
     pub fn bits(&self) -> u8 {
         match *self {
             NMISENSER::NONE => 0,
-            NMISENSER::RISE => 1,
-            NMISENSER::FALL => 2,
-            NMISENSER::BOTH => 3,
-            NMISENSER::HIGH => 4,
-            NMISENSER::LOW => 5,
+            NMISENSER::RISE => 0x01,
+            NMISENSER::FALL => 0x02,
+            NMISENSER::BOTH => 0x03,
+            NMISENSER::HIGH => 0x04,
+            NMISENSER::LOW => 0x05,
             NMISENSER::_Reserved(bits) => bits,
         }
     }
@@ -162,6 +167,7 @@ impl NMIASYNCHR {
     }
 }
 #[doc = "Values that can be written to the field `NMISENSE`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum NMISENSEW {
     #[doc = "No detection"]
     NONE,
@@ -234,10 +240,8 @@ impl<'a> _NMISENSEW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 7;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits &= !(0x07 << 0);
+        self.w.bits |= ((value as u8) & 0x07) << 0;
         self.w
     }
 }
@@ -257,10 +261,8 @@ impl<'a> _NMIFILTENW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 3;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits &= !(0x01 << 3);
+        self.w.bits |= ((value as u8) & 0x01) << 3;
         self.w
     }
 }
@@ -280,10 +282,8 @@ impl<'a> _NMIASYNCHW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 4;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits &= !(0x01 << 4);
+        self.w.bits |= ((value as u8) & 0x01) << 4;
         self.w
     }
 }
@@ -296,39 +296,22 @@ impl R {
     #[doc = "Bits 0:2 - Non-Maskable Interrupt Sense Configuration"]
     #[inline]
     pub fn nmisense(&self) -> NMISENSER {
-        NMISENSER::_from({
-            const MASK: u8 = 7;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u8) as u8
-        })
+        NMISENSER::_from(((self.bits >> 0) & 0x07) as u8)
     }
     #[doc = "Bit 3 - Non-Maskable Interrupt Filter Enable"]
     #[inline]
     pub fn nmifilten(&self) -> NMIFILTENR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 3;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
+        let bits = ((self.bits >> 3) & 0x01) != 0;
         NMIFILTENR { bits }
     }
     #[doc = "Bit 4 - Asynchronous Edge Detection Mode"]
     #[inline]
     pub fn nmiasynch(&self) -> NMIASYNCHR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
+        let bits = ((self.bits >> 4) & 0x01) != 0;
         NMIASYNCHR { bits }
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {

@@ -9,9 +9,22 @@ impl super::IDR {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
+        self.register.set(
+            f(&mut W {
+                bits: Self::reset_value(),
+            })
+            .bits,
+        );
+    }
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub const fn reset_value() -> u32 {
+        0
+    }
+    #[doc = r" Writes the reset value to the register"]
+    #[inline]
+    pub fn reset(&self) {
+        self.register.set(Self::reset_value())
     }
 }
 #[doc = r" Proxy"]
@@ -22,10 +35,8 @@ impl<'a> _RHCW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 15;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x0f << 0);
+        self.w.bits |= ((value as u32) & 0x0f) << 0;
         self.w
     }
 }
@@ -37,10 +48,8 @@ impl<'a> _RDMW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 15;
-        const OFFSET: u8 = 4;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x0f << 4);
+        self.w.bits |= ((value as u32) & 0x0f) << 4;
         self.w
     }
 }
@@ -52,10 +61,8 @@ impl<'a> _RBEW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 15;
-        const OFFSET: u8 = 8;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x0f << 8);
+        self.w.bits |= ((value as u32) & 0x0f) << 8;
         self.w
     }
 }
@@ -67,10 +74,8 @@ impl<'a> _RWCW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 15;
-        const OFFSET: u8 = 12;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x0f << 12);
+        self.w.bits |= ((value as u32) & 0x0f) << 12;
         self.w
     }
 }
@@ -82,10 +87,8 @@ impl<'a> _RECW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 15;
-        const OFFSET: u8 = 16;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x0f << 16);
+        self.w.bits |= ((value as u32) & 0x0f) << 16;
         self.w
     }
 }
@@ -97,10 +100,8 @@ impl<'a> _RSUW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 15;
-        const OFFSET: u8 = 20;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x0f << 20);
+        self.w.bits |= ((value as u32) & 0x0f) << 20;
         self.w
     }
 }
@@ -120,19 +121,12 @@ impl<'a> _URADW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 24;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 24);
+        self.w.bits |= ((value as u32) & 0x01) << 24;
         self.w
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {

@@ -146,61 +146,37 @@ impl R {
     #[doc = "Bit 0 - SERCOM4 APB Protect Enable"]
     #[inline]
     pub fn sercom4_(&self) -> SERCOM4_R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 0) & 0x01) != 0;
         SERCOM4_R { bits }
     }
     #[doc = "Bit 1 - SERCOM5 APB Protect Enable"]
     #[inline]
     pub fn sercom5_(&self) -> SERCOM5_R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 1) & 0x01) != 0;
         SERCOM5_R { bits }
     }
     #[doc = "Bit 7 - ADC0 APB Protect Enable"]
     #[inline]
     pub fn adc0_(&self) -> ADC0_R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 7;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 7) & 0x01) != 0;
         ADC0_R { bits }
     }
     #[doc = "Bit 8 - ADC1 APB Protect Enable"]
     #[inline]
     pub fn adc1_(&self) -> ADC1_R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 8) & 0x01) != 0;
         ADC1_R { bits }
     }
     #[doc = "Bit 9 - DAC APB Protect Enable"]
     #[inline]
     pub fn dac_(&self) -> DAC_R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 9;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 9) & 0x01) != 0;
         DAC_R { bits }
     }
     #[doc = "Bit 11 - PCC APB Protect Enable"]
     #[inline]
     pub fn pcc_(&self) -> PCC_R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 11;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 11) & 0x01) != 0;
         PCC_R { bits }
     }
 }

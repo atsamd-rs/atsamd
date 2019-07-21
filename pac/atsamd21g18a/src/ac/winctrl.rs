@@ -14,10 +14,7 @@ impl super::WINCTRL {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
+        self.register.set(f(&R { bits }, &mut W { bits }).bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -32,14 +29,22 @@ impl super::WINCTRL {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
+        self.register.set(
+            f(&mut W {
+                bits: Self::reset_value(),
+            })
+            .bits,
+        );
+    }
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub const fn reset_value() -> u8 {
+        0
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.write(|w| w)
+        self.register.set(Self::reset_value())
     }
 }
 #[doc = r" Value of the field"]
@@ -81,9 +86,9 @@ impl WINTSEL0R {
     pub fn bits(&self) -> u8 {
         match *self {
             WINTSEL0R::ABOVE => 0,
-            WINTSEL0R::INSIDE => 1,
-            WINTSEL0R::BELOW => 2,
-            WINTSEL0R::OUTSIDE => 3,
+            WINTSEL0R::INSIDE => 0x01,
+            WINTSEL0R::BELOW => 0x02,
+            WINTSEL0R::OUTSIDE => 0x03,
         }
     }
     #[allow(missing_docs)]
@@ -135,14 +140,13 @@ impl<'a> _WEN0W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits &= !(0x01 << 0);
+        self.w.bits |= ((value as u8) & 0x01) << 0;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `WINTSEL0`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum WINTSEL0W {
     #[doc = "Interrupt on signal above window"]
     ABOVE,
@@ -201,10 +205,8 @@ impl<'a> _WINTSEL0W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 1;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits &= !(0x03 << 1);
+        self.w.bits |= ((value as u8) & 0x03) << 1;
         self.w
     }
 }
@@ -217,29 +219,16 @@ impl R {
     #[doc = "Bit 0 - Window 0 Mode Enable"]
     #[inline]
     pub fn wen0(&self) -> WEN0R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
+        let bits = ((self.bits >> 0) & 0x01) != 0;
         WEN0R { bits }
     }
     #[doc = "Bits 1:2 - Window 0 Interrupt Selection"]
     #[inline]
     pub fn wintsel0(&self) -> WINTSEL0R {
-        WINTSEL0R::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u8) as u8
-        })
+        WINTSEL0R::_from(((self.bits >> 1) & 0x03) as u8)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {

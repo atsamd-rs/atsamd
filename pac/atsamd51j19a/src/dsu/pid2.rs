@@ -63,31 +63,19 @@ impl R {
     #[doc = "Bits 0:2 - JEP-106 Identity Code High"]
     #[inline]
     pub fn jepidch(&self) -> JEPIDCHR {
-        let bits = {
-            const MASK: u8 = 7;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
+        let bits = ((self.bits >> 0) & 0x07) as u8;
         JEPIDCHR { bits }
     }
     #[doc = "Bit 3 - JEP-106 Identity Code is used"]
     #[inline]
     pub fn jepu(&self) -> JEPUR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 3;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 3) & 0x01) != 0;
         JEPUR { bits }
     }
     #[doc = "Bits 4:7 - Revision Number"]
     #[inline]
     pub fn revision(&self) -> REVISIONR {
-        let bits = {
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
+        let bits = ((self.bits >> 4) & 0x0f) as u8;
         REVISIONR { bits }
     }
 }

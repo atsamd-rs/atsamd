@@ -14,10 +14,7 @@ impl super::CCB_DITH4 {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
+        self.register.set(f(&R { bits }, &mut W { bits }).bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -32,14 +29,22 @@ impl super::CCB_DITH4 {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
+        self.register.set(
+            f(&mut W {
+                bits: Self::reset_value(),
+            })
+            .bits,
+        );
+    }
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub const fn reset_value() -> u32 {
+        0
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.write(|w| w)
+        self.register.set(Self::reset_value())
     }
 }
 #[doc = r" Value of the field"]
@@ -72,10 +77,8 @@ impl<'a> _DITHERCYBW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 15;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x0f << 0);
+        self.w.bits |= ((value as u32) & 0x0f) << 0;
         self.w
     }
 }
@@ -87,10 +90,8 @@ impl<'a> _CCBW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u32) -> &'a mut W {
-        const MASK: u32 = 1048575;
-        const OFFSET: u8 = 4;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x000f_ffff << 4);
+        self.w.bits |= ((value as u32) & 0x000f_ffff) << 4;
         self.w
     }
 }
@@ -103,30 +104,17 @@ impl R {
     #[doc = "Bits 0:3 - Dithering Buffer Cycle Number"]
     #[inline]
     pub fn dithercyb(&self) -> DITHERCYBR {
-        let bits = {
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
+        let bits = ((self.bits >> 0) & 0x0f) as u8;
         DITHERCYBR { bits }
     }
     #[doc = "Bits 4:23 - Channel Compare/Capture Buffer Value"]
     #[inline]
     pub fn ccb(&self) -> CCBR {
-        let bits = {
-            const MASK: u32 = 1048575;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u32) as u32
-        };
+        let bits = ((self.bits >> 4) & 0x000f_ffff) as u32;
         CCBR { bits }
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {

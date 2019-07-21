@@ -24,55 +24,55 @@ pub struct RegisterBlock {
 }
 #[doc = "Interrupt Enable Clear"]
 pub struct INTENCLR {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Interrupt Enable Clear"]
 pub mod intenclr;
 #[doc = "Interrupt Enable Set"]
 pub struct INTENSET {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Interrupt Enable Set"]
 pub mod intenset;
 #[doc = "Interrupt Flag Status and Clear"]
 pub struct INTFLAG {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Interrupt Flag Status and Clear"]
 pub mod intflag;
 #[doc = "Power and Clocks Status"]
 pub struct STATUS {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Power and Clocks Status"]
 pub mod status;
 #[doc = "RTC Clock Selection"]
 pub struct RTCCTRL {
-    register: ::vcell::VolatileCell<u8>,
+    register: vcell::VolatileCell<u8>,
 }
 #[doc = "RTC Clock Selection"]
 pub mod rtcctrl;
 #[doc = "32kHz External Crystal Oscillator (XOSC32K) Control"]
 pub struct XOSC32K {
-    register: ::vcell::VolatileCell<u16>,
+    register: vcell::VolatileCell<u16>,
 }
 #[doc = "32kHz External Crystal Oscillator (XOSC32K) Control"]
 pub mod xosc32k;
 #[doc = "Clock Failure Detector Control"]
 pub struct CFDCTRL {
-    register: ::vcell::VolatileCell<u8>,
+    register: vcell::VolatileCell<u8>,
 }
 #[doc = "Clock Failure Detector Control"]
 pub mod cfdctrl;
 #[doc = "Event Control"]
 pub struct EVCTRL {
-    register: ::vcell::VolatileCell<u8>,
+    register: vcell::VolatileCell<u8>,
 }
 #[doc = "Event Control"]
 pub mod evctrl;
 #[doc = "32kHz Ultra Low Power Internal Oscillator (OSCULP32K) Control"]
 pub struct OSCULP32K {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "32kHz Ultra Low Power Internal Oscillator (OSCULP32K) Control"]
 pub mod osculp32k;

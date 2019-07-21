@@ -14,10 +14,7 @@ impl super::CHCTRLB {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
+        self.register.set(f(&R { bits }, &mut W { bits }).bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -32,14 +29,22 @@ impl super::CHCTRLB {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
+        self.register.set(
+            f(&mut W {
+                bits: Self::reset_value(),
+            })
+            .bits,
+        );
+    }
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub const fn reset_value() -> u32 {
+        0
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.write(|w| w)
+        self.register.set(Self::reset_value())
     }
 }
 #[doc = "Possible values of the field `EVACT`"]
@@ -68,12 +73,12 @@ impl EVACTR {
     pub fn bits(&self) -> u8 {
         match *self {
             EVACTR::NOACT => 0,
-            EVACTR::TRIG => 1,
-            EVACTR::CTRIG => 2,
-            EVACTR::CBLOCK => 3,
-            EVACTR::SUSPEND => 4,
-            EVACTR::RESUME => 5,
-            EVACTR::SSKIP => 6,
+            EVACTR::TRIG => 0x01,
+            EVACTR::CTRIG => 0x02,
+            EVACTR::CBLOCK => 0x03,
+            EVACTR::SUSPEND => 0x04,
+            EVACTR::RESUME => 0x05,
+            EVACTR::SSKIP => 0x06,
             EVACTR::_Reserved(bits) => bits,
         }
     }
@@ -188,9 +193,9 @@ impl LVLR {
     pub fn bits(&self) -> u8 {
         match *self {
             LVLR::LVL0 => 0,
-            LVLR::LVL1 => 1,
-            LVLR::LVL2 => 2,
-            LVLR::LVL3 => 3,
+            LVLR::LVL1 => 0x01,
+            LVLR::LVL2 => 0x02,
+            LVLR::LVL3 => 0x03,
         }
     }
     #[allow(missing_docs)]
@@ -276,8 +281,8 @@ impl TRIGACTR {
     pub fn bits(&self) -> u8 {
         match *self {
             TRIGACTR::BLOCK => 0,
-            TRIGACTR::BEAT => 2,
-            TRIGACTR::TRANSACTION => 3,
+            TRIGACTR::BEAT => 0x02,
+            TRIGACTR::TRANSACTION => 0x03,
             TRIGACTR::_Reserved(bits) => bits,
         }
     }
@@ -326,8 +331,8 @@ impl CMDR {
     pub fn bits(&self) -> u8 {
         match *self {
             CMDR::NOACT => 0,
-            CMDR::SUSPEND => 1,
-            CMDR::RESUME => 2,
+            CMDR::SUSPEND => 0x01,
+            CMDR::RESUME => 0x02,
             CMDR::_Reserved(bits) => bits,
         }
     }
@@ -359,6 +364,7 @@ impl CMDR {
     }
 }
 #[doc = "Values that can be written to the field `EVACT`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum EVACTW {
     #[doc = "No action"]
     NOACT,
@@ -439,10 +445,8 @@ impl<'a> _EVACTW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 7;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x07 << 0);
+        self.w.bits |= ((value as u32) & 0x07) << 0;
         self.w
     }
 }
@@ -462,10 +466,8 @@ impl<'a> _EVIEW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 3;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 3);
+        self.w.bits |= ((value as u32) & 0x01) << 3;
         self.w
     }
 }
@@ -485,14 +487,13 @@ impl<'a> _EVOEW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 4;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 4);
+        self.w.bits |= ((value as u32) & 0x01) << 4;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `LVL`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum LVLW {
     #[doc = "Channel Priority Level 0"]
     LVL0,
@@ -551,14 +552,13 @@ impl<'a> _LVLW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 5;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x03 << 5);
+        self.w.bits |= ((value as u32) & 0x03) << 5;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `TRIGSRC`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum TRIGSRCW {
     #[doc = "Only software/event triggers"]
     DISABLE,
@@ -591,14 +591,13 @@ impl<'a> _TRIGSRCW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 63;
-        const OFFSET: u8 = 8;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x3f << 8);
+        self.w.bits |= ((value as u32) & 0x3f) << 8;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `TRIGACT`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum TRIGACTW {
     #[doc = "One trigger required for each block transfer"]
     BLOCK,
@@ -647,14 +646,13 @@ impl<'a> _TRIGACTW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 22;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x03 << 22);
+        self.w.bits |= ((value as u32) & 0x03) << 22;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `CMD`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CMDW {
     #[doc = "No action"]
     NOACT,
@@ -703,10 +701,8 @@ impl<'a> _CMDW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 24;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x03 << 24);
+        self.w.bits |= ((value as u32) & 0x03) << 24;
         self.w
     }
 }
@@ -719,75 +715,42 @@ impl R {
     #[doc = "Bits 0:2 - Event Input Action"]
     #[inline]
     pub fn evact(&self) -> EVACTR {
-        EVACTR::_from({
-            const MASK: u8 = 7;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+        EVACTR::_from(((self.bits >> 0) & 0x07) as u8)
     }
     #[doc = "Bit 3 - Channel Event Input Enable"]
     #[inline]
     pub fn evie(&self) -> EVIER {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 3;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 3) & 0x01) != 0;
         EVIER { bits }
     }
     #[doc = "Bit 4 - Channel Event Output Enable"]
     #[inline]
     pub fn evoe(&self) -> EVOER {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 4) & 0x01) != 0;
         EVOER { bits }
     }
     #[doc = "Bits 5:6 - Channel Arbitration Level"]
     #[inline]
     pub fn lvl(&self) -> LVLR {
-        LVLR::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 5;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+        LVLR::_from(((self.bits >> 5) & 0x03) as u8)
     }
     #[doc = "Bits 8:13 - Trigger Source"]
     #[inline]
     pub fn trigsrc(&self) -> TRIGSRCR {
-        TRIGSRCR::_from({
-            const MASK: u8 = 63;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+        TRIGSRCR::_from(((self.bits >> 8) & 0x3f) as u8)
     }
     #[doc = "Bits 22:23 - Trigger Action"]
     #[inline]
     pub fn trigact(&self) -> TRIGACTR {
-        TRIGACTR::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 22;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+        TRIGACTR::_from(((self.bits >> 22) & 0x03) as u8)
     }
     #[doc = "Bits 24:25 - Software Command"]
     #[inline]
     pub fn cmd(&self) -> CMDR {
-        CMDR::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 24;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+        CMDR::_from(((self.bits >> 24) & 0x03) as u8)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {

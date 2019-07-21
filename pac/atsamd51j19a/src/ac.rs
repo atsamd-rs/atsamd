@@ -35,85 +35,85 @@ pub struct RegisterBlock {
 }
 #[doc = "Control A"]
 pub struct CTRLA {
-    register: ::vcell::VolatileCell<u8>,
+    register: vcell::VolatileCell<u8>,
 }
 #[doc = "Control A"]
 pub mod ctrla;
 #[doc = "Control B"]
 pub struct CTRLB {
-    register: ::vcell::VolatileCell<u8>,
+    register: vcell::VolatileCell<u8>,
 }
 #[doc = "Control B"]
 pub mod ctrlb;
 #[doc = "Event Control"]
 pub struct EVCTRL {
-    register: ::vcell::VolatileCell<u16>,
+    register: vcell::VolatileCell<u16>,
 }
 #[doc = "Event Control"]
 pub mod evctrl;
 #[doc = "Interrupt Enable Clear"]
 pub struct INTENCLR {
-    register: ::vcell::VolatileCell<u8>,
+    register: vcell::VolatileCell<u8>,
 }
 #[doc = "Interrupt Enable Clear"]
 pub mod intenclr;
 #[doc = "Interrupt Enable Set"]
 pub struct INTENSET {
-    register: ::vcell::VolatileCell<u8>,
+    register: vcell::VolatileCell<u8>,
 }
 #[doc = "Interrupt Enable Set"]
 pub mod intenset;
 #[doc = "Interrupt Flag Status and Clear"]
 pub struct INTFLAG {
-    register: ::vcell::VolatileCell<u8>,
+    register: vcell::VolatileCell<u8>,
 }
 #[doc = "Interrupt Flag Status and Clear"]
 pub mod intflag;
 #[doc = "Status A"]
 pub struct STATUSA {
-    register: ::vcell::VolatileCell<u8>,
+    register: vcell::VolatileCell<u8>,
 }
 #[doc = "Status A"]
 pub mod statusa;
 #[doc = "Status B"]
 pub struct STATUSB {
-    register: ::vcell::VolatileCell<u8>,
+    register: vcell::VolatileCell<u8>,
 }
 #[doc = "Status B"]
 pub mod statusb;
 #[doc = "Debug Control"]
 pub struct DBGCTRL {
-    register: ::vcell::VolatileCell<u8>,
+    register: vcell::VolatileCell<u8>,
 }
 #[doc = "Debug Control"]
 pub mod dbgctrl;
 #[doc = "Window Control"]
 pub struct WINCTRL {
-    register: ::vcell::VolatileCell<u8>,
+    register: vcell::VolatileCell<u8>,
 }
 #[doc = "Window Control"]
 pub mod winctrl;
 #[doc = "Scaler n"]
 pub struct SCALER {
-    register: ::vcell::VolatileCell<u8>,
+    register: vcell::VolatileCell<u8>,
 }
 #[doc = "Scaler n"]
 pub mod scaler;
 #[doc = "Comparator Control n"]
 pub struct COMPCTRL {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Comparator Control n"]
 pub mod compctrl;
 #[doc = "Synchronization Busy"]
 pub struct SYNCBUSY {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Synchronization Busy"]
 pub mod syncbusy;
 #[doc = "Calibration"]
 pub struct CALIB {
-    register: ::vcell::VolatileCell<u16>,
+    register: vcell::VolatileCell<u16>,
 }
 #[doc = "Calibration"]
 pub mod calib;

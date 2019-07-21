@@ -14,10 +14,7 @@ impl super::DACCTRL {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
+        self.register.set(f(&R { bits }, &mut W { bits }).bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -32,14 +29,22 @@ impl super::DACCTRL {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
+        self.register.set(
+            f(&mut W {
+                bits: Self::reset_value(),
+            })
+            .bits,
+        );
+    }
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub const fn reset_value() -> u16 {
+        0
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.write(|w| w)
+        self.register.set(Self::reset_value())
     }
 }
 #[doc = r" Value of the field"]
@@ -102,8 +107,8 @@ impl CCTRLR {
     pub fn bits(&self) -> u8 {
         match *self {
             CCTRLR::CC100K => 0,
-            CCTRLR::CC1M => 1,
-            CCTRLR::CC12M => 2,
+            CCTRLR::CC1M => 0x01,
+            CCTRLR::CC12M => 0x02,
             CCTRLR::_Reserved(bits) => bits,
         }
     }
@@ -235,10 +240,8 @@ impl<'a> _LEFTADJW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x01 << 0);
+        self.w.bits |= ((value as u16) & 0x01) << 0;
         self.w
     }
 }
@@ -258,14 +261,13 @@ impl<'a> _ENABLEW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 1;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x01 << 1);
+        self.w.bits |= ((value as u16) & 0x01) << 1;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `CCTRL`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CCTRLW {
     #[doc = "GCLK_DAC <= 1.2MHz (100kSPS)"]
     CC100K,
@@ -314,10 +316,8 @@ impl<'a> _CCTRLW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 2;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x03 << 2);
+        self.w.bits |= ((value as u16) & 0x03) << 2;
         self.w
     }
 }
@@ -337,10 +337,8 @@ impl<'a> _FEXTW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 5;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x01 << 5);
+        self.w.bits |= ((value as u16) & 0x01) << 5;
         self.w
     }
 }
@@ -360,10 +358,8 @@ impl<'a> _RUNSTDBYW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 6;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x01 << 6);
+        self.w.bits |= ((value as u16) & 0x01) << 6;
         self.w
     }
 }
@@ -383,10 +379,8 @@ impl<'a> _DITHERW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 7;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x01 << 7);
+        self.w.bits |= ((value as u16) & 0x01) << 7;
         self.w
     }
 }
@@ -398,10 +392,8 @@ impl<'a> _REFRESHW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 15;
-        const OFFSET: u8 = 8;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x0f << 8);
+        self.w.bits |= ((value as u16) & 0x0f) << 8;
         self.w
     }
 }
@@ -413,10 +405,8 @@ impl<'a> _OSRW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 7;
-        const OFFSET: u8 = 13;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x07 << 13);
+        self.w.bits |= ((value as u16) & 0x07) << 13;
         self.w
     }
 }
@@ -429,89 +419,52 @@ impl R {
     #[doc = "Bit 0 - Left Adjusted Data"]
     #[inline]
     pub fn leftadj(&self) -> LEFTADJR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
+        let bits = ((self.bits >> 0) & 0x01) != 0;
         LEFTADJR { bits }
     }
     #[doc = "Bit 1 - Enable DAC0"]
     #[inline]
     pub fn enable(&self) -> ENABLER {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
+        let bits = ((self.bits >> 1) & 0x01) != 0;
         ENABLER { bits }
     }
     #[doc = "Bits 2:3 - Current Control"]
     #[inline]
     pub fn cctrl(&self) -> CCTRLR {
-        CCTRLR::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u16) as u8
-        })
+        CCTRLR::_from(((self.bits >> 2) & 0x03) as u8)
     }
     #[doc = "Bit 5 - Standalone Filter"]
     #[inline]
     pub fn fext(&self) -> FEXTR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 5;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
+        let bits = ((self.bits >> 5) & 0x01) != 0;
         FEXTR { bits }
     }
     #[doc = "Bit 6 - Run in Standby"]
     #[inline]
     pub fn runstdby(&self) -> RUNSTDBYR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 6;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
+        let bits = ((self.bits >> 6) & 0x01) != 0;
         RUNSTDBYR { bits }
     }
     #[doc = "Bit 7 - Dithering Mode"]
     #[inline]
     pub fn dither(&self) -> DITHERR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 7;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
+        let bits = ((self.bits >> 7) & 0x01) != 0;
         DITHERR { bits }
     }
     #[doc = "Bits 8:11 - Refresh period"]
     #[inline]
     pub fn refresh(&self) -> REFRESHR {
-        let bits = {
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u16) as u8
-        };
+        let bits = ((self.bits >> 8) & 0x0f) as u8;
         REFRESHR { bits }
     }
     #[doc = "Bits 13:15 - Sampling Rate"]
     #[inline]
     pub fn osr(&self) -> OSRR {
-        let bits = {
-            const MASK: u8 = 7;
-            const OFFSET: u8 = 13;
-            ((self.bits >> OFFSET) & MASK as u16) as u8
-        };
+        let bits = ((self.bits >> 13) & 0x07) as u8;
         OSRR { bits }
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {

@@ -14,10 +14,7 @@ impl super::CHANNEL {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
+        self.register.set(f(&R { bits }, &mut W { bits }).bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -32,14 +29,22 @@ impl super::CHANNEL {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
+        self.register.set(
+            f(&mut W {
+                bits: Self::reset_value(),
+            })
+            .bits,
+        );
+    }
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub const fn reset_value() -> u32 {
+        0
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.write(|w| w)
+        self.register.set(Self::reset_value())
     }
 }
 #[doc = r" Value of the field"]
@@ -103,8 +108,8 @@ impl PATHR {
     pub fn bits(&self) -> u8 {
         match *self {
             PATHR::SYNCHRONOUS => 0,
-            PATHR::RESYNCHRONIZED => 1,
-            PATHR::ASYNCHRONOUS => 2,
+            PATHR::RESYNCHRONIZED => 0x01,
+            PATHR::ASYNCHRONOUS => 0x02,
             PATHR::_Reserved(bits) => bits,
         }
     }
@@ -153,9 +158,9 @@ impl EDGSELR {
     pub fn bits(&self) -> u8 {
         match *self {
             EDGSELR::NO_EVT_OUTPUT => 0,
-            EDGSELR::RISING_EDGE => 1,
-            EDGSELR::FALLING_EDGE => 2,
-            EDGSELR::BOTH_EDGES => 3,
+            EDGSELR::RISING_EDGE => 0x01,
+            EDGSELR::FALLING_EDGE => 0x02,
+            EDGSELR::BOTH_EDGES => 0x03,
         }
     }
     #[allow(missing_docs)]
@@ -199,10 +204,8 @@ impl<'a> _CHANNELW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 15;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x0f << 0);
+        self.w.bits |= ((value as u32) & 0x0f) << 0;
         self.w
     }
 }
@@ -222,10 +225,8 @@ impl<'a> _SWEVTW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 8;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 8);
+        self.w.bits |= ((value as u32) & 0x01) << 8;
         self.w
     }
 }
@@ -237,14 +238,13 @@ impl<'a> _EVGENW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 127;
-        const OFFSET: u8 = 16;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x7f << 16);
+        self.w.bits |= ((value as u32) & 0x7f) << 16;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `PATH`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum PATHW {
     #[doc = "Synchronous path"]
     SYNCHRONOUS,
@@ -293,14 +293,13 @@ impl<'a> _PATHW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 24;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x03 << 24);
+        self.w.bits |= ((value as u32) & 0x03) << 24;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `EDGSEL`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum EDGSELW {
     #[doc = "No event output when using the resynchronized or synchronous path"]
     NO_EVT_OUTPUT,
@@ -359,10 +358,8 @@ impl<'a> _EDGSELW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 26;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x03 << 26);
+        self.w.bits |= ((value as u32) & 0x03) << 26;
         self.w
     }
 }
@@ -375,58 +372,33 @@ impl R {
     #[doc = "Bits 0:3 - Channel Selection"]
     #[inline]
     pub fn channel(&self) -> CHANNELR {
-        let bits = {
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
+        let bits = ((self.bits >> 0) & 0x0f) as u8;
         CHANNELR { bits }
     }
     #[doc = "Bit 8 - Software Event"]
     #[inline]
     pub fn swevt(&self) -> SWEVTR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 8) & 0x01) != 0;
         SWEVTR { bits }
     }
     #[doc = "Bits 16:22 - Event Generator Selection"]
     #[inline]
     pub fn evgen(&self) -> EVGENR {
-        let bits = {
-            const MASK: u8 = 127;
-            const OFFSET: u8 = 16;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
+        let bits = ((self.bits >> 16) & 0x7f) as u8;
         EVGENR { bits }
     }
     #[doc = "Bits 24:25 - Path Selection"]
     #[inline]
     pub fn path(&self) -> PATHR {
-        PATHR::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 24;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+        PATHR::_from(((self.bits >> 24) & 0x03) as u8)
     }
     #[doc = "Bits 26:27 - Edge Detection Selection"]
     #[inline]
     pub fn edgsel(&self) -> EDGSELR {
-        EDGSELR::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 26;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+        EDGSELR::_from(((self.bits >> 26) & 0x03) as u8)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {

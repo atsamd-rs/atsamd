@@ -14,10 +14,7 @@ impl super::CFG {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
+        self.register.set(f(&R { bits }, &mut W { bits }).bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -32,14 +29,22 @@ impl super::CFG {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
+        self.register.set(
+            f(&mut W {
+                bits: Self::reset_value(),
+            })
+            .bits,
+        );
+    }
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub const fn reset_value() -> u32 {
+        0x02
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.write(|w| w)
+        self.register.set(Self::reset_value())
     }
 }
 #[doc = r" Value of the field"]
@@ -69,7 +74,7 @@ impl DCCDMALEVELR {
     pub fn bits(&self) -> u8 {
         match *self {
             DCCDMALEVELR::EMPTY => 0,
-            DCCDMALEVELR::FULL => 1,
+            DCCDMALEVELR::FULL => 0x01,
             DCCDMALEVELR::_Reserved(bits) => bits,
         }
     }
@@ -123,14 +128,13 @@ impl<'a> _LQOSW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x03 << 0);
+        self.w.bits |= ((value as u32) & 0x03) << 0;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `DCCDMALEVEL`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum DCCDMALEVELW {
     #[doc = "Trigger rises when DCC is empty"]
     EMPTY,
@@ -171,10 +175,8 @@ impl<'a> _DCCDMALEVELW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 2;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x03 << 2);
+        self.w.bits |= ((value as u32) & 0x03) << 2;
         self.w
     }
 }
@@ -194,10 +196,8 @@ impl<'a> _ETBRAMENW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 4;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 4);
+        self.w.bits |= ((value as u32) & 0x01) << 4;
         self.w
     }
 }
@@ -210,39 +210,22 @@ impl R {
     #[doc = "Bits 0:1 - Latency Quality Of Service"]
     #[inline]
     pub fn lqos(&self) -> LQOSR {
-        let bits = {
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
+        let bits = ((self.bits >> 0) & 0x03) as u8;
         LQOSR { bits }
     }
     #[doc = "Bits 2:3 - DMA Trigger Level"]
     #[inline]
     pub fn dccdmalevel(&self) -> DCCDMALEVELR {
-        DCCDMALEVELR::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+        DCCDMALEVELR::_from(((self.bits >> 2) & 0x03) as u8)
     }
     #[doc = "Bit 4 - Trace Control"]
     #[inline]
     pub fn etbramen(&self) -> ETBRAMENR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 4) & 0x01) != 0;
         ETBRAMENR { bits }
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 2 }
-    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {

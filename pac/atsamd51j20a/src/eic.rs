@@ -31,79 +31,79 @@ pub struct RegisterBlock {
 }
 #[doc = "Control A"]
 pub struct CTRLA {
-    register: ::vcell::VolatileCell<u8>,
+    register: vcell::VolatileCell<u8>,
 }
 #[doc = "Control A"]
 pub mod ctrla;
 #[doc = "Non-Maskable Interrupt Control"]
 pub struct NMICTRL {
-    register: ::vcell::VolatileCell<u8>,
+    register: vcell::VolatileCell<u8>,
 }
 #[doc = "Non-Maskable Interrupt Control"]
 pub mod nmictrl;
 #[doc = "Non-Maskable Interrupt Flag Status and Clear"]
 pub struct NMIFLAG {
-    register: ::vcell::VolatileCell<u16>,
+    register: vcell::VolatileCell<u16>,
 }
 #[doc = "Non-Maskable Interrupt Flag Status and Clear"]
 pub mod nmiflag;
 #[doc = "Synchronization Busy"]
 pub struct SYNCBUSY {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Synchronization Busy"]
 pub mod syncbusy;
 #[doc = "Event Control"]
 pub struct EVCTRL {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Event Control"]
 pub mod evctrl;
 #[doc = "Interrupt Enable Clear"]
 pub struct INTENCLR {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Interrupt Enable Clear"]
 pub mod intenclr;
 #[doc = "Interrupt Enable Set"]
 pub struct INTENSET {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Interrupt Enable Set"]
 pub mod intenset;
 #[doc = "Interrupt Flag Status and Clear"]
 pub struct INTFLAG {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Interrupt Flag Status and Clear"]
 pub mod intflag;
 #[doc = "External Interrupt Asynchronous Mode"]
 pub struct ASYNCH {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "External Interrupt Asynchronous Mode"]
 pub mod asynch;
 #[doc = "External Interrupt Sense Configuration"]
 pub struct CONFIG {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "External Interrupt Sense Configuration"]
 pub mod config;
 #[doc = "Debouncer Enable"]
 pub struct DEBOUNCEN {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Debouncer Enable"]
 pub mod debouncen;
 #[doc = "Debouncer Prescaler"]
 pub struct DPRESCALER {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Debouncer Prescaler"]
 pub mod dprescaler;
 #[doc = "Pin State"]
 pub struct PINSTATE {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Pin State"]
 pub mod pinstate;

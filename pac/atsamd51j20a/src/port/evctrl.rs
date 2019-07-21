@@ -14,10 +14,7 @@ impl super::EVCTRL {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
+        self.register.set(f(&R { bits }, &mut W { bits }).bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -32,14 +29,22 @@ impl super::EVCTRL {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
+        self.register.set(
+            f(&mut W {
+                bits: Self::reset_value(),
+            })
+            .bits,
+        );
+    }
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub const fn reset_value() -> u32 {
+        0
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.write(|w| w)
+        self.register.set(Self::reset_value())
     }
 }
 #[doc = r" Value of the field"]
@@ -71,9 +76,9 @@ impl EVACT0R {
     pub fn bits(&self) -> u8 {
         match *self {
             EVACT0R::OUT => 0,
-            EVACT0R::SET => 1,
-            EVACT0R::CLR => 2,
-            EVACT0R::TGL => 3,
+            EVACT0R::SET => 0x01,
+            EVACT0R::CLR => 0x02,
+            EVACT0R::TGL => 0x03,
         }
     }
     #[allow(missing_docs)]
@@ -267,14 +272,13 @@ impl<'a> _PID0W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 31;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x1f << 0);
+        self.w.bits |= ((value as u32) & 0x1f) << 0;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `EVACT0`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum EVACT0W {
     #[doc = "Event output to pin"]
     OUT,
@@ -333,10 +337,8 @@ impl<'a> _EVACT0W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 5;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x03 << 5);
+        self.w.bits |= ((value as u32) & 0x03) << 5;
         self.w
     }
 }
@@ -356,10 +358,8 @@ impl<'a> _PORTEI0W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 7;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 7);
+        self.w.bits |= ((value as u32) & 0x01) << 7;
         self.w
     }
 }
@@ -371,10 +371,8 @@ impl<'a> _PID1W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 31;
-        const OFFSET: u8 = 8;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x1f << 8);
+        self.w.bits |= ((value as u32) & 0x1f) << 8;
         self.w
     }
 }
@@ -386,10 +384,8 @@ impl<'a> _EVACT1W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 13;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x03 << 13);
+        self.w.bits |= ((value as u32) & 0x03) << 13;
         self.w
     }
 }
@@ -409,10 +405,8 @@ impl<'a> _PORTEI1W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 15;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 15);
+        self.w.bits |= ((value as u32) & 0x01) << 15;
         self.w
     }
 }
@@ -424,10 +418,8 @@ impl<'a> _PID2W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 31;
-        const OFFSET: u8 = 16;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x1f << 16);
+        self.w.bits |= ((value as u32) & 0x1f) << 16;
         self.w
     }
 }
@@ -439,10 +431,8 @@ impl<'a> _EVACT2W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 21;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x03 << 21);
+        self.w.bits |= ((value as u32) & 0x03) << 21;
         self.w
     }
 }
@@ -462,10 +452,8 @@ impl<'a> _PORTEI2W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 23;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 23);
+        self.w.bits |= ((value as u32) & 0x01) << 23;
         self.w
     }
 }
@@ -477,10 +465,8 @@ impl<'a> _PID3W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 31;
-        const OFFSET: u8 = 24;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x1f << 24);
+        self.w.bits |= ((value as u32) & 0x1f) << 24;
         self.w
     }
 }
@@ -492,10 +478,8 @@ impl<'a> _EVACT3W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 29;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x03 << 29);
+        self.w.bits |= ((value as u32) & 0x03) << 29;
         self.w
     }
 }
@@ -515,10 +499,8 @@ impl<'a> _PORTEI3W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 31;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 31);
+        self.w.bits |= ((value as u32) & 0x01) << 31;
         self.w
     }
 }
@@ -531,129 +513,76 @@ impl R {
     #[doc = "Bits 0:4 - PORT Event Pin Identifier 0"]
     #[inline]
     pub fn pid0(&self) -> PID0R {
-        let bits = {
-            const MASK: u8 = 31;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
+        let bits = ((self.bits >> 0) & 0x1f) as u8;
         PID0R { bits }
     }
     #[doc = "Bits 5:6 - PORT Event Action 0"]
     #[inline]
     pub fn evact0(&self) -> EVACT0R {
-        EVACT0R::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 5;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+        EVACT0R::_from(((self.bits >> 5) & 0x03) as u8)
     }
     #[doc = "Bit 7 - PORT Event Input Enable 0"]
     #[inline]
     pub fn portei0(&self) -> PORTEI0R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 7;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 7) & 0x01) != 0;
         PORTEI0R { bits }
     }
     #[doc = "Bits 8:12 - PORT Event Pin Identifier 1"]
     #[inline]
     pub fn pid1(&self) -> PID1R {
-        let bits = {
-            const MASK: u8 = 31;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
+        let bits = ((self.bits >> 8) & 0x1f) as u8;
         PID1R { bits }
     }
     #[doc = "Bits 13:14 - PORT Event Action 1"]
     #[inline]
     pub fn evact1(&self) -> EVACT1R {
-        let bits = {
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 13;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
+        let bits = ((self.bits >> 13) & 0x03) as u8;
         EVACT1R { bits }
     }
     #[doc = "Bit 15 - PORT Event Input Enable 1"]
     #[inline]
     pub fn portei1(&self) -> PORTEI1R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 15;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 15) & 0x01) != 0;
         PORTEI1R { bits }
     }
     #[doc = "Bits 16:20 - PORT Event Pin Identifier 2"]
     #[inline]
     pub fn pid2(&self) -> PID2R {
-        let bits = {
-            const MASK: u8 = 31;
-            const OFFSET: u8 = 16;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
+        let bits = ((self.bits >> 16) & 0x1f) as u8;
         PID2R { bits }
     }
     #[doc = "Bits 21:22 - PORT Event Action 2"]
     #[inline]
     pub fn evact2(&self) -> EVACT2R {
-        let bits = {
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 21;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
+        let bits = ((self.bits >> 21) & 0x03) as u8;
         EVACT2R { bits }
     }
     #[doc = "Bit 23 - PORT Event Input Enable 2"]
     #[inline]
     pub fn portei2(&self) -> PORTEI2R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 23;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 23) & 0x01) != 0;
         PORTEI2R { bits }
     }
     #[doc = "Bits 24:28 - PORT Event Pin Identifier 3"]
     #[inline]
     pub fn pid3(&self) -> PID3R {
-        let bits = {
-            const MASK: u8 = 31;
-            const OFFSET: u8 = 24;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
+        let bits = ((self.bits >> 24) & 0x1f) as u8;
         PID3R { bits }
     }
     #[doc = "Bits 29:30 - PORT Event Action 3"]
     #[inline]
     pub fn evact3(&self) -> EVACT3R {
-        let bits = {
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 29;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
+        let bits = ((self.bits >> 29) & 0x03) as u8;
         EVACT3R { bits }
     }
     #[doc = "Bit 31 - PORT Event Input Enable 3"]
     #[inline]
     pub fn portei3(&self) -> PORTEI3R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 31;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 31) & 0x01) != 0;
         PORTEI3R { bits }
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {

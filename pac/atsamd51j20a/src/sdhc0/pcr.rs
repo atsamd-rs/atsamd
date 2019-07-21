@@ -14,10 +14,7 @@ impl super::PCR {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
+        self.register.set(f(&R { bits }, &mut W { bits }).bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -32,14 +29,22 @@ impl super::PCR {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
+        self.register.set(
+            f(&mut W {
+                bits: Self::reset_value(),
+            })
+            .bits,
+        );
+    }
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub const fn reset_value() -> u8 {
+        0x0e
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.write(|w| w)
+        self.register.set(Self::reset_value())
     }
 }
 #[doc = "Possible values of the field `SDBPWR`"]
@@ -106,9 +111,9 @@ impl SDBVSELR {
     #[inline]
     pub fn bits(&self) -> u8 {
         match *self {
-            SDBVSELR::_1V8 => 5,
-            SDBVSELR::_3V0 => 6,
-            SDBVSELR::_3V3 => 7,
+            SDBVSELR::_1V8 => 0x05,
+            SDBVSELR::_3V0 => 0x06,
+            SDBVSELR::_3V3 => 0x07,
             SDBVSELR::_Reserved(bits) => bits,
         }
     }
@@ -140,6 +145,7 @@ impl SDBVSELR {
     }
 }
 #[doc = "Values that can be written to the field `SDBPWR`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum SDBPWRW {
     #[doc = "Power off"]
     OFF,
@@ -190,14 +196,13 @@ impl<'a> _SDBPWRW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits &= !(0x01 << 0);
+        self.w.bits |= ((value as u8) & 0x01) << 0;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `SDBVSEL`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum SDBVSELW {
     #[doc = "1.8V (Typ.)"]
     _1V8,
@@ -246,10 +251,8 @@ impl<'a> _SDBVSELW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 7;
-        const OFFSET: u8 = 1;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits &= !(0x07 << 1);
+        self.w.bits |= ((value as u8) & 0x07) << 1;
         self.w
     }
 }
@@ -262,28 +265,15 @@ impl R {
     #[doc = "Bit 0 - SD Bus Power"]
     #[inline]
     pub fn sdbpwr(&self) -> SDBPWRR {
-        SDBPWRR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        })
+        SDBPWRR::_from(((self.bits >> 0) & 0x01) != 0)
     }
     #[doc = "Bits 1:3 - SD Bus Voltage Select"]
     #[inline]
     pub fn sdbvsel(&self) -> SDBVSELR {
-        SDBVSELR::_from({
-            const MASK: u8 = 7;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u8) as u8
-        })
+        SDBVSELR::_from(((self.bits >> 1) & 0x07) as u8)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 14 }
-    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {

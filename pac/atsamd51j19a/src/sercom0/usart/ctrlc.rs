@@ -14,10 +14,7 @@ impl super::CTRLC {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
+        self.register.set(f(&R { bits }, &mut W { bits }).bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -32,14 +29,22 @@ impl super::CTRLC {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
+        self.register.set(
+            f(&mut W {
+                bits: Self::reset_value(),
+            })
+            .bits,
+        );
+    }
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub const fn reset_value() -> u32 {
+        0
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.write(|w| w)
+        self.register.set(Self::reset_value())
     }
 }
 #[doc = r" Value of the field"]
@@ -147,10 +152,8 @@ impl<'a> _GTIMEW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 7;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x07 << 0);
+        self.w.bits |= ((value as u32) & 0x07) << 0;
         self.w
     }
 }
@@ -162,10 +165,8 @@ impl<'a> _BRKLENW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 8;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x03 << 8);
+        self.w.bits |= ((value as u32) & 0x03) << 8;
         self.w
     }
 }
@@ -177,10 +178,8 @@ impl<'a> _HDRDLYW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 10;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x03 << 10);
+        self.w.bits |= ((value as u32) & 0x03) << 10;
         self.w
     }
 }
@@ -200,10 +199,8 @@ impl<'a> _INACKW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 16;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 16);
+        self.w.bits |= ((value as u32) & 0x01) << 16;
         self.w
     }
 }
@@ -223,10 +220,8 @@ impl<'a> _DSNACKW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 17;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 17);
+        self.w.bits |= ((value as u32) & 0x01) << 17;
         self.w
     }
 }
@@ -238,10 +233,8 @@ impl<'a> _MAXITERW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 7;
-        const OFFSET: u8 = 20;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x07 << 20);
+        self.w.bits |= ((value as u32) & 0x07) << 20;
         self.w
     }
 }
@@ -253,10 +246,8 @@ impl<'a> _DATA32BW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 24;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x03 << 24);
+        self.w.bits |= ((value as u32) & 0x03) << 24;
         self.w
     }
 }
@@ -269,80 +260,47 @@ impl R {
     #[doc = "Bits 0:2 - Guard Time"]
     #[inline]
     pub fn gtime(&self) -> GTIMER {
-        let bits = {
-            const MASK: u8 = 7;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
+        let bits = ((self.bits >> 0) & 0x07) as u8;
         GTIMER { bits }
     }
     #[doc = "Bits 8:9 - LIN Master Break Length"]
     #[inline]
     pub fn brklen(&self) -> BRKLENR {
-        let bits = {
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
+        let bits = ((self.bits >> 8) & 0x03) as u8;
         BRKLENR { bits }
     }
     #[doc = "Bits 10:11 - LIN Master Header Delay"]
     #[inline]
     pub fn hdrdly(&self) -> HDRDLYR {
-        let bits = {
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 10;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
+        let bits = ((self.bits >> 10) & 0x03) as u8;
         HDRDLYR { bits }
     }
     #[doc = "Bit 16 - Inhibit Not Acknowledge"]
     #[inline]
     pub fn inack(&self) -> INACKR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 16;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 16) & 0x01) != 0;
         INACKR { bits }
     }
     #[doc = "Bit 17 - Disable Successive NACK"]
     #[inline]
     pub fn dsnack(&self) -> DSNACKR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 17;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 17) & 0x01) != 0;
         DSNACKR { bits }
     }
     #[doc = "Bits 20:22 - Maximum Iterations"]
     #[inline]
     pub fn maxiter(&self) -> MAXITERR {
-        let bits = {
-            const MASK: u8 = 7;
-            const OFFSET: u8 = 20;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
+        let bits = ((self.bits >> 20) & 0x07) as u8;
         MAXITERR { bits }
     }
     #[doc = "Bits 24:25 - Data 32 Bit"]
     #[inline]
     pub fn data32b(&self) -> DATA32BR {
-        let bits = {
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 24;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
+        let bits = ((self.bits >> 24) & 0x03) as u8;
         DATA32BR { bits }
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {

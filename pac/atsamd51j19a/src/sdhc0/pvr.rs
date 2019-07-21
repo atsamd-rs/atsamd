@@ -14,10 +14,7 @@ impl super::PVR {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
+        self.register.set(f(&R { bits }, &mut W { bits }).bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -32,14 +29,22 @@ impl super::PVR {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
+        self.register.set(
+            f(&mut W {
+                bits: Self::reset_value(),
+            })
+            .bits,
+        );
+    }
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub const fn reset_value() -> u16 {
+        0
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.write(|w| w)
+        self.register.set(Self::reset_value())
     }
 }
 #[doc = r" Value of the field"]
@@ -118,9 +123,9 @@ impl DRVSELR {
     pub fn bits(&self) -> u8 {
         match *self {
             DRVSELR::B => 0,
-            DRVSELR::A => 1,
-            DRVSELR::C => 2,
-            DRVSELR::D => 3,
+            DRVSELR::A => 0x01,
+            DRVSELR::C => 0x02,
+            DRVSELR::D => 0x03,
         }
     }
     #[allow(missing_docs)]
@@ -164,14 +169,13 @@ impl<'a> _SDCLKFSELW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u16) -> &'a mut W {
-        const MASK: u16 = 1023;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x03ff << 0);
+        self.w.bits |= ((value as u16) & 0x03ff) << 0;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `CLKGSEL`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CLKGSELW {
     #[doc = "Host Controller Ver2.00 Compatible Clock Generator (Divider)"]
     DIV,
@@ -222,14 +226,13 @@ impl<'a> _CLKGSELW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 10;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x01 << 10);
+        self.w.bits |= ((value as u16) & 0x01) << 10;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `DRVSEL`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum DRVSELW {
     #[doc = "Driver Type B is Selected"]
     B,
@@ -288,10 +291,8 @@ impl<'a> _DRVSELW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 14;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x03 << 14);
+        self.w.bits |= ((value as u16) & 0x03) << 14;
         self.w
     }
 }
@@ -304,38 +305,21 @@ impl R {
     #[doc = "Bits 0:9 - SDCLK Frequency Select Value for Initialization"]
     #[inline]
     pub fn sdclkfsel(&self) -> SDCLKFSELR {
-        let bits = {
-            const MASK: u16 = 1023;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u16) as u16
-        };
+        let bits = ((self.bits >> 0) & 0x03ff) as u16;
         SDCLKFSELR { bits }
     }
     #[doc = "Bit 10 - Clock Generator Select Value for Initialization"]
     #[inline]
     pub fn clkgsel(&self) -> CLKGSELR {
-        CLKGSELR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 10;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        })
+        CLKGSELR::_from(((self.bits >> 10) & 0x01) != 0)
     }
     #[doc = "Bits 14:15 - Driver Strength Select Value for Initialization"]
     #[inline]
     pub fn drvsel(&self) -> DRVSELR {
-        DRVSELR::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 14;
-            ((self.bits >> OFFSET) & MASK as u16) as u8
-        })
+        DRVSELR::_from(((self.bits >> 14) & 0x03) as u8)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {

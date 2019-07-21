@@ -12,19 +12,19 @@ pub struct RegisterBlock {
 }
 #[doc = "Control"]
 pub struct CTRL {
-    register: ::vcell::VolatileCell<u8>,
+    register: vcell::VolatileCell<u8>,
 }
 #[doc = "Control"]
 pub mod ctrl;
 #[doc = "SEQ Control x"]
 pub struct SEQCTRL {
-    register: ::vcell::VolatileCell<u8>,
+    register: vcell::VolatileCell<u8>,
 }
 #[doc = "SEQ Control x"]
 pub mod seqctrl;
 #[doc = "LUT Control x"]
 pub struct LUTCTRL {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "LUT Control x"]
 pub mod lutctrl;

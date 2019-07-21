@@ -14,10 +14,7 @@ impl super::HC2R {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
+        self.register.set(f(&R { bits }, &mut W { bits }).bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -32,14 +29,22 @@ impl super::HC2R {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
+        self.register.set(
+            f(&mut W {
+                bits: Self::reset_value(),
+            })
+            .bits,
+        );
+    }
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub const fn reset_value() -> u16 {
+        0
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.write(|w| w)
+        self.register.set(Self::reset_value())
     }
 }
 #[doc = "Possible values of the field `UHSMS`"]
@@ -64,10 +69,10 @@ impl UHSMSR {
     pub fn bits(&self) -> u8 {
         match *self {
             UHSMSR::SDR12 => 0,
-            UHSMSR::SDR25 => 1,
-            UHSMSR::SDR50 => 2,
-            UHSMSR::SDR104 => 3,
-            UHSMSR::DDR50 => 4,
+            UHSMSR::SDR25 => 0x01,
+            UHSMSR::SDR50 => 0x02,
+            UHSMSR::SDR104 => 0x03,
+            UHSMSR::DDR50 => 0x04,
             UHSMSR::_Reserved(bits) => bits,
         }
     }
@@ -175,9 +180,9 @@ impl DRVSELR {
     pub fn bits(&self) -> u8 {
         match *self {
             DRVSELR::B => 0,
-            DRVSELR::A => 1,
-            DRVSELR::C => 2,
-            DRVSELR::D => 3,
+            DRVSELR::A => 0x01,
+            DRVSELR::C => 0x02,
+            DRVSELR::D => 0x03,
         }
     }
     #[allow(missing_docs)]
@@ -402,6 +407,7 @@ impl PVALENR {
     }
 }
 #[doc = "Values that can be written to the field `UHSMS`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum UHSMSW {
     #[doc = "SDR12"]
     SDR12,
@@ -466,14 +472,13 @@ impl<'a> _UHSMSW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 7;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x07 << 0);
+        self.w.bits |= ((value as u16) & 0x07) << 0;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `VS18EN`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum VS18ENW {
     #[doc = "3.3V Signaling"]
     S33V,
@@ -524,14 +529,13 @@ impl<'a> _VS18ENW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 3;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x01 << 3);
+        self.w.bits |= ((value as u16) & 0x01) << 3;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `DRVSEL`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum DRVSELW {
     #[doc = "Driver Type B is Selected (Default)"]
     B,
@@ -590,14 +594,13 @@ impl<'a> _DRVSELW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 4;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x03 << 4);
+        self.w.bits |= ((value as u16) & 0x03) << 4;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `EXTUN`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum EXTUNW {
     #[doc = "Not Tuned or Tuning Completed"]
     NO,
@@ -648,14 +651,13 @@ impl<'a> _EXTUNW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 6;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x01 << 6);
+        self.w.bits |= ((value as u16) & 0x01) << 6;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `SLCKSEL`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum SLCKSELW {
     #[doc = "Fixed clock is used to sample data"]
     FIXED,
@@ -706,14 +708,13 @@ impl<'a> _SLCKSELW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 7;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x01 << 7);
+        self.w.bits |= ((value as u16) & 0x01) << 7;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `ASINTEN`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum ASINTENW {
     #[doc = "Disabled"]
     DISABLED,
@@ -764,14 +765,13 @@ impl<'a> _ASINTENW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 14;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x01 << 14);
+        self.w.bits |= ((value as u16) & 0x01) << 14;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `PVALEN`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum PVALENW {
     #[doc = "SDCLK and Driver Strength are controlled by Host Controller"]
     HOST,
@@ -822,10 +822,8 @@ impl<'a> _PVALENW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 15;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x01 << 15);
+        self.w.bits |= ((value as u16) & 0x01) << 15;
         self.w
     }
 }
@@ -838,73 +836,40 @@ impl R {
     #[doc = "Bits 0:2 - UHS Mode Select"]
     #[inline]
     pub fn uhsms(&self) -> UHSMSR {
-        UHSMSR::_from({
-            const MASK: u8 = 7;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u16) as u8
-        })
+        UHSMSR::_from(((self.bits >> 0) & 0x07) as u8)
     }
     #[doc = "Bit 3 - 1.8V Signaling Enable"]
     #[inline]
     pub fn vs18en(&self) -> VS18ENR {
-        VS18ENR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 3;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        })
+        VS18ENR::_from(((self.bits >> 3) & 0x01) != 0)
     }
     #[doc = "Bits 4:5 - Driver Strength Select"]
     #[inline]
     pub fn drvsel(&self) -> DRVSELR {
-        DRVSELR::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u16) as u8
-        })
+        DRVSELR::_from(((self.bits >> 4) & 0x03) as u8)
     }
     #[doc = "Bit 6 - Execute Tuning"]
     #[inline]
     pub fn extun(&self) -> EXTUNR {
-        EXTUNR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 6;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        })
+        EXTUNR::_from(((self.bits >> 6) & 0x01) != 0)
     }
     #[doc = "Bit 7 - Sampling Clock Select"]
     #[inline]
     pub fn slcksel(&self) -> SLCKSELR {
-        SLCKSELR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 7;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        })
+        SLCKSELR::_from(((self.bits >> 7) & 0x01) != 0)
     }
     #[doc = "Bit 14 - Asynchronous Interrupt Enable"]
     #[inline]
     pub fn asinten(&self) -> ASINTENR {
-        ASINTENR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 14;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        })
+        ASINTENR::_from(((self.bits >> 14) & 0x01) != 0)
     }
     #[doc = "Bit 15 - Preset Value Enable"]
     #[inline]
     pub fn pvalen(&self) -> PVALENR {
-        PVALENR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 15;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        })
+        PVALENR::_from(((self.bits >> 15) & 0x01) != 0)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {

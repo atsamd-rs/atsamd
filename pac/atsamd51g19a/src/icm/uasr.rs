@@ -33,10 +33,10 @@ impl URATR {
     pub fn bits(&self) -> u8 {
         match *self {
             URATR::UNSPEC_STRUCT_MEMBER => 0,
-            URATR::CFG_MODIFIED => 1,
-            URATR::DSCR_MODIFIED => 2,
-            URATR::HASH_MODIFIED => 3,
-            URATR::READ_ACCESS => 4,
+            URATR::CFG_MODIFIED => 0x01,
+            URATR::DSCR_MODIFIED => 0x02,
+            URATR::HASH_MODIFIED => 0x03,
+            URATR::READ_ACCESS => 0x04,
             URATR::_Reserved(bits) => bits,
         }
     }
@@ -88,10 +88,6 @@ impl R {
     #[doc = "Bits 0:2 - Undefined Register Access Trace"]
     #[inline]
     pub fn urat(&self) -> URATR {
-        URATR::_from({
-            const MASK: u8 = 7;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+        URATR::_from(((self.bits >> 0) & 0x07) as u8)
     }
 }

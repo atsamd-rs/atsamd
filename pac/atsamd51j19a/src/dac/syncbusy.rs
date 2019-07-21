@@ -146,61 +146,37 @@ impl R {
     #[doc = "Bit 0 - Software Reset"]
     #[inline]
     pub fn swrst(&self) -> SWRSTR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 0) & 0x01) != 0;
         SWRSTR { bits }
     }
     #[doc = "Bit 1 - DAC Enable Status"]
     #[inline]
     pub fn enable(&self) -> ENABLER {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 1) & 0x01) != 0;
         ENABLER { bits }
     }
     #[doc = "Bit 2 - Data DAC 0"]
     #[inline]
     pub fn data0(&self) -> DATA0R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 2) & 0x01) != 0;
         DATA0R { bits }
     }
     #[doc = "Bit 3 - Data DAC 1"]
     #[inline]
     pub fn data1(&self) -> DATA1R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 3;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 3) & 0x01) != 0;
         DATA1R { bits }
     }
     #[doc = "Bit 4 - Data Buffer DAC 0"]
     #[inline]
     pub fn databuf0(&self) -> DATABUF0R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 4) & 0x01) != 0;
         DATABUF0R { bits }
     }
     #[doc = "Bit 5 - Data Buffer DAC 1"]
     #[inline]
     pub fn databuf1(&self) -> DATABUF1R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 5;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 5) & 0x01) != 0;
         DATABUF1R { bits }
     }
 }

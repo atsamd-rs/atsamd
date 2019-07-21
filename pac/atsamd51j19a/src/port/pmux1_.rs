@@ -14,10 +14,7 @@ impl super::PMUX1_ {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
+        self.register.set(f(&R { bits }, &mut W { bits }).bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -32,14 +29,22 @@ impl super::PMUX1_ {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
+        self.register.set(
+            f(&mut W {
+                bits: Self::reset_value(),
+            })
+            .bits,
+        );
+    }
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub const fn reset_value() -> u8 {
+        0
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.write(|w| w)
+        self.register.set(Self::reset_value())
     }
 }
 #[doc = "Possible values of the field `PMUXE`"]
@@ -82,19 +87,19 @@ impl PMUXER {
     pub fn bits(&self) -> u8 {
         match *self {
             PMUXER::A => 0,
-            PMUXER::B => 1,
-            PMUXER::C => 2,
-            PMUXER::D => 3,
-            PMUXER::E => 4,
-            PMUXER::F => 5,
-            PMUXER::G => 6,
-            PMUXER::H => 7,
-            PMUXER::I => 8,
-            PMUXER::J => 9,
-            PMUXER::K => 10,
-            PMUXER::L => 11,
-            PMUXER::M => 12,
-            PMUXER::N => 13,
+            PMUXER::B => 0x01,
+            PMUXER::C => 0x02,
+            PMUXER::D => 0x03,
+            PMUXER::E => 0x04,
+            PMUXER::F => 0x05,
+            PMUXER::G => 0x06,
+            PMUXER::H => 0x07,
+            PMUXER::I => 0x08,
+            PMUXER::J => 0x09,
+            PMUXER::K => 0x0a,
+            PMUXER::L => 0x0b,
+            PMUXER::M => 0x0c,
+            PMUXER::N => 0x0d,
             PMUXER::_Reserved(bits) => bits,
         }
     }
@@ -231,19 +236,19 @@ impl PMUXOR {
     pub fn bits(&self) -> u8 {
         match *self {
             PMUXOR::A => 0,
-            PMUXOR::B => 1,
-            PMUXOR::C => 2,
-            PMUXOR::D => 3,
-            PMUXOR::E => 4,
-            PMUXOR::F => 5,
-            PMUXOR::G => 6,
-            PMUXOR::H => 7,
-            PMUXOR::I => 8,
-            PMUXOR::J => 9,
-            PMUXOR::K => 10,
-            PMUXOR::L => 11,
-            PMUXOR::M => 12,
-            PMUXOR::N => 13,
+            PMUXOR::B => 0x01,
+            PMUXOR::C => 0x02,
+            PMUXOR::D => 0x03,
+            PMUXOR::E => 0x04,
+            PMUXOR::F => 0x05,
+            PMUXOR::G => 0x06,
+            PMUXOR::H => 0x07,
+            PMUXOR::I => 0x08,
+            PMUXOR::J => 0x09,
+            PMUXOR::K => 0x0a,
+            PMUXOR::L => 0x0b,
+            PMUXOR::M => 0x0c,
+            PMUXOR::N => 0x0d,
             PMUXOR::_Reserved(bits) => bits,
         }
     }
@@ -341,6 +346,7 @@ impl PMUXOR {
     }
 }
 #[doc = "Values that can be written to the field `PMUXE`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum PMUXEW {
     #[doc = "Peripheral function A selected"]
     A,
@@ -477,14 +483,13 @@ impl<'a> _PMUXEW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 15;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits &= !(0x0f << 0);
+        self.w.bits |= ((value as u8) & 0x0f) << 0;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `PMUXO`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum PMUXOW {
     #[doc = "Peripheral function A selected"]
     A,
@@ -621,10 +626,8 @@ impl<'a> _PMUXOW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 15;
-        const OFFSET: u8 = 4;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits &= !(0x0f << 4);
+        self.w.bits |= ((value as u8) & 0x0f) << 4;
         self.w
     }
 }
@@ -637,28 +640,15 @@ impl R {
     #[doc = "Bits 0:3 - Peripheral Multiplexing for Even-Numbered Pin"]
     #[inline]
     pub fn pmuxe(&self) -> PMUXER {
-        PMUXER::_from({
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u8) as u8
-        })
+        PMUXER::_from(((self.bits >> 0) & 0x0f) as u8)
     }
     #[doc = "Bits 4:7 - Peripheral Multiplexing for Odd-Numbered Pin"]
     #[inline]
     pub fn pmuxo(&self) -> PMUXOR {
-        PMUXOR::_from({
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u8) as u8
-        })
+        PMUXOR::_from(((self.bits >> 4) & 0x0f) as u8)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {

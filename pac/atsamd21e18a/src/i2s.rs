@@ -26,49 +26,49 @@ pub struct RegisterBlock {
 }
 #[doc = "Control A"]
 pub struct CTRLA {
-    register: ::vcell::VolatileCell<u8>,
+    register: vcell::VolatileCell<u8>,
 }
 #[doc = "Control A"]
 pub mod ctrla;
 #[doc = "Clock Unit n Control"]
 pub struct CLKCTRL {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Clock Unit n Control"]
 pub mod clkctrl;
 #[doc = "Interrupt Enable Clear"]
 pub struct INTENCLR {
-    register: ::vcell::VolatileCell<u16>,
+    register: vcell::VolatileCell<u16>,
 }
 #[doc = "Interrupt Enable Clear"]
 pub mod intenclr;
 #[doc = "Interrupt Enable Set"]
 pub struct INTENSET {
-    register: ::vcell::VolatileCell<u16>,
+    register: vcell::VolatileCell<u16>,
 }
 #[doc = "Interrupt Enable Set"]
 pub mod intenset;
 #[doc = "Interrupt Flag Status and Clear"]
 pub struct INTFLAG {
-    register: ::vcell::VolatileCell<u16>,
+    register: vcell::VolatileCell<u16>,
 }
 #[doc = "Interrupt Flag Status and Clear"]
 pub mod intflag;
 #[doc = "Synchronization Status"]
 pub struct SYNCBUSY {
-    register: ::vcell::VolatileCell<u16>,
+    register: vcell::VolatileCell<u16>,
 }
 #[doc = "Synchronization Status"]
 pub mod syncbusy;
 #[doc = "Serializer n Control"]
 pub struct SERCTRL {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Serializer n Control"]
 pub mod serctrl;
 #[doc = "Data n"]
 pub struct DATA {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Data n"]
 pub mod data;

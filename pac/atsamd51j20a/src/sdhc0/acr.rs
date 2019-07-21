@@ -14,10 +14,7 @@ impl super::ACR {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
+        self.register.set(f(&R { bits }, &mut W { bits }).bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -32,14 +29,22 @@ impl super::ACR {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
+        self.register.set(
+            f(&mut W {
+                bits: Self::reset_value(),
+            })
+            .bits,
+        );
+    }
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub const fn reset_value() -> u32 {
+        0
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.write(|w| w)
+        self.register.set(Self::reset_value())
     }
 }
 #[doc = "Possible values of the field `BMAX`"]
@@ -60,9 +65,9 @@ impl BMAXR {
     pub fn bits(&self) -> u8 {
         match *self {
             BMAXR::INCR16 => 0,
-            BMAXR::INCR8 => 1,
-            BMAXR::INCR4 => 2,
-            BMAXR::SINGLE => 3,
+            BMAXR::INCR8 => 0x01,
+            BMAXR::INCR4 => 0x02,
+            BMAXR::SINGLE => 0x03,
         }
     }
     #[allow(missing_docs)]
@@ -99,6 +104,7 @@ impl BMAXR {
     }
 }
 #[doc = "Values that can be written to the field `BMAX`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum BMAXW {
     #[doc = "`0`"]
     INCR16,
@@ -157,10 +163,8 @@ impl<'a> _BMAXW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x03 << 0);
+        self.w.bits |= ((value as u32) & 0x03) << 0;
         self.w
     }
 }
@@ -173,19 +177,10 @@ impl R {
     #[doc = "Bits 0:1 - AHB Maximum Burst"]
     #[inline]
     pub fn bmax(&self) -> BMAXR {
-        BMAXR::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+        BMAXR::_from(((self.bits >> 0) & 0x03) as u8)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {

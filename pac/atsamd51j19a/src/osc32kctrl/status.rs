@@ -83,31 +83,19 @@ impl R {
     #[doc = "Bit 0 - XOSC32K Ready"]
     #[inline]
     pub fn xosc32krdy(&self) -> XOSC32KRDYR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 0) & 0x01) != 0;
         XOSC32KRDYR { bits }
     }
     #[doc = "Bit 2 - XOSC32K Clock Failure Detector"]
     #[inline]
     pub fn xosc32kfail(&self) -> XOSC32KFAILR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 2) & 0x01) != 0;
         XOSC32KFAILR { bits }
     }
     #[doc = "Bit 3 - XOSC32K Clock switch"]
     #[inline]
     pub fn xosc32ksw(&self) -> XOSC32KSWR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 3;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 3) & 0x01) != 0;
         XOSC32KSWR { bits }
     }
 }

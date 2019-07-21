@@ -188,81 +188,49 @@ impl R {
     #[doc = "Bit 0 - BOD33 Ready"]
     #[inline]
     pub fn bod33rdy(&self) -> BOD33RDYR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 0) & 0x01) != 0;
         BOD33RDYR { bits }
     }
     #[doc = "Bit 1 - BOD33 Detection"]
     #[inline]
     pub fn bod33det(&self) -> BOD33DETR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 1) & 0x01) != 0;
         BOD33DETR { bits }
     }
     #[doc = "Bit 2 - BOD33 Synchronization Ready"]
     #[inline]
     pub fn b33srdy(&self) -> B33SRDYR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 2) & 0x01) != 0;
         B33SRDYR { bits }
     }
     #[doc = "Bit 3 - BOD12 Ready"]
     #[inline]
     pub fn bod12rdy(&self) -> BOD12RDYR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 3;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 3) & 0x01) != 0;
         BOD12RDYR { bits }
     }
     #[doc = "Bit 4 - BOD12 Detection"]
     #[inline]
     pub fn bod12det(&self) -> BOD12DETR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 4) & 0x01) != 0;
         BOD12DETR { bits }
     }
     #[doc = "Bit 5 - BOD12 Synchronization Ready"]
     #[inline]
     pub fn b12srdy(&self) -> B12SRDYR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 5;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 5) & 0x01) != 0;
         B12SRDYR { bits }
     }
     #[doc = "Bit 8 - Voltage Regulator Ready"]
     #[inline]
     pub fn vregrdy(&self) -> VREGRDYR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 8) & 0x01) != 0;
         VREGRDYR { bits }
     }
     #[doc = "Bit 10 - VDDCORE Ready"]
     #[inline]
     pub fn vcorerdy(&self) -> VCORERDYR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 10;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 10) & 0x01) != 0;
         VCORERDYR { bits }
     }
 }

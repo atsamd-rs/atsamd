@@ -1,5 +1,6 @@
-#![doc = "Peripheral access API for ATSAMD51J20A microcontrollers (generated using svd2rust v0.13.1)\n\nYou can find an overview of the API [here].\n\n[here]: https://docs.rs/svd2rust/0.13.1/svd2rust/#peripheral-api"]
+#![doc = "Peripheral access API for ATSAMD51J20A microcontrollers (generated using svd2rust v0.14.0)\n\nYou can find an overview of the API [here].\n\n[here]: https://docs.rs/svd2rust/0.14.0/svd2rust/#peripheral-api"]
 #![deny(missing_docs)]
+#![deny(warnings)]
 #![allow(non_camel_case_types)]
 #![no_std]
 extern crate bare_metal;
@@ -423,6 +424,7 @@ pub static __INTERRUPTS: [Vector; 136] = [
     Vector { _handler: SDHC0 },
 ];
 #[doc = r" Enumeration of all the interrupts"]
+#[derive(Copy, Clone, Debug)]
 pub enum Interrupt {
     #[doc = "0 - PM"]
     PM,
@@ -663,7 +665,7 @@ pub enum Interrupt {
     #[doc = "135 - SDHC0"]
     SDHC0,
 }
-unsafe impl ::bare_metal::Nr for Interrupt {
+unsafe impl bare_metal::Nr for Interrupt {
     #[inline]
     fn nr(&self) -> u8 {
         match *self {
@@ -789,6 +791,7 @@ unsafe impl ::bare_metal::Nr for Interrupt {
         }
     }
 }
+#[cfg(feature = "rt")]
 pub use self::Interrupt as interrupt;
 pub use cortex_m::peripheral::Peripherals as CorePeripherals;
 pub use cortex_m::peripheral::{CBP, CPUID, DCB, DWT, FPB, FPU, ITM, MPU, NVIC, SCB, SYST, TPIU};
@@ -802,7 +805,7 @@ unsafe impl Send for AC {}
 impl AC {
     #[doc = r" Returns a pointer to the register block"]
     pub fn ptr() -> *const ac::RegisterBlock {
-        1107304448 as *const _
+        0x4200_2000 as *const _
     }
 }
 impl Deref for AC {
@@ -821,7 +824,7 @@ unsafe impl Send for ADC0 {}
 impl ADC0 {
     #[doc = r" Returns a pointer to the register block"]
     pub fn ptr() -> *const adc0::RegisterBlock {
-        1124080640 as *const _
+        0x4300_1c00 as *const _
     }
 }
 impl Deref for ADC0 {
@@ -840,7 +843,7 @@ unsafe impl Send for ADC1 {}
 impl ADC1 {
     #[doc = r" Returns a pointer to the register block"]
     pub fn ptr() -> *const adc0::RegisterBlock {
-        1124081664 as *const _
+        0x4300_2000 as *const _
     }
 }
 impl Deref for ADC1 {
@@ -857,7 +860,7 @@ unsafe impl Send for AES {}
 impl AES {
     #[doc = r" Returns a pointer to the register block"]
     pub fn ptr() -> *const aes::RegisterBlock {
-        1107305472 as *const _
+        0x4200_2400 as *const _
     }
 }
 impl Deref for AES {
@@ -876,7 +879,7 @@ unsafe impl Send for CCL {}
 impl CCL {
     #[doc = r" Returns a pointer to the register block"]
     pub fn ptr() -> *const ccl::RegisterBlock {
-        1107310592 as *const _
+        0x4200_3800 as *const _
     }
 }
 impl Deref for CCL {
@@ -895,7 +898,7 @@ unsafe impl Send for CMCC {}
 impl CMCC {
     #[doc = r" Returns a pointer to the register block"]
     pub fn ptr() -> *const cmcc::RegisterBlock {
-        1090543616 as *const _
+        0x4100_6000 as *const _
     }
 }
 impl Deref for CMCC {
@@ -914,7 +917,7 @@ unsafe impl Send for DAC {}
 impl DAC {
     #[doc = r" Returns a pointer to the register block"]
     pub fn ptr() -> *const dac::RegisterBlock {
-        1124082688 as *const _
+        0x4300_2400 as *const _
     }
 }
 impl Deref for DAC {
@@ -933,7 +936,7 @@ unsafe impl Send for DMAC {}
 impl DMAC {
     #[doc = r" Returns a pointer to the register block"]
     pub fn ptr() -> *const dmac::RegisterBlock {
-        1090560000 as *const _
+        0x4100_a000 as *const _
     }
 }
 impl Deref for DMAC {
@@ -952,7 +955,7 @@ unsafe impl Send for DSU {}
 impl DSU {
     #[doc = r" Returns a pointer to the register block"]
     pub fn ptr() -> *const dsu::RegisterBlock {
-        1090527232 as *const _
+        0x4100_2000 as *const _
     }
 }
 impl Deref for DSU {
@@ -971,7 +974,7 @@ unsafe impl Send for EIC {}
 impl EIC {
     #[doc = r" Returns a pointer to the register block"]
     pub fn ptr() -> *const eic::RegisterBlock {
-        1073752064 as *const _
+        0x4000_2800 as *const _
     }
 }
 impl Deref for EIC {
@@ -990,7 +993,7 @@ unsafe impl Send for EVSYS {}
 impl EVSYS {
     #[doc = r" Returns a pointer to the register block"]
     pub fn ptr() -> *const evsys::RegisterBlock {
-        1090576384 as *const _
+        0x4100_e000 as *const _
     }
 }
 impl Deref for EVSYS {
@@ -1009,7 +1012,7 @@ unsafe impl Send for FREQM {}
 impl FREQM {
     #[doc = r" Returns a pointer to the register block"]
     pub fn ptr() -> *const freqm::RegisterBlock {
-        1073753088 as *const _
+        0x4000_2c00 as *const _
     }
 }
 impl Deref for FREQM {
@@ -1028,7 +1031,7 @@ unsafe impl Send for GCLK {}
 impl GCLK {
     #[doc = r" Returns a pointer to the register block"]
     pub fn ptr() -> *const gclk::RegisterBlock {
-        1073748992 as *const _
+        0x4000_1c00 as *const _
     }
 }
 impl Deref for GCLK {
@@ -1047,7 +1050,7 @@ unsafe impl Send for HMATRIX {}
 impl HMATRIX {
     #[doc = r" Returns a pointer to the register block"]
     pub fn ptr() -> *const hmatrix::RegisterBlock {
-        1090568192 as *const _
+        0x4100_c000 as *const _
     }
 }
 impl Deref for HMATRIX {
@@ -1066,7 +1069,7 @@ unsafe impl Send for ICM {}
 impl ICM {
     #[doc = r" Returns a pointer to the register block"]
     pub fn ptr() -> *const icm::RegisterBlock {
-        1107307520 as *const _
+        0x4200_2c00 as *const _
     }
 }
 impl Deref for ICM {
@@ -1085,7 +1088,7 @@ unsafe impl Send for I2S {}
 impl I2S {
     #[doc = r" Returns a pointer to the register block"]
     pub fn ptr() -> *const i2s::RegisterBlock {
-        1124083712 as *const _
+        0x4300_2800 as *const _
     }
 }
 impl Deref for I2S {
@@ -1104,7 +1107,7 @@ unsafe impl Send for MCLK {}
 impl MCLK {
     #[doc = r" Returns a pointer to the register block"]
     pub fn ptr() -> *const mclk::RegisterBlock {
-        1073743872 as *const _
+        0x4000_0800 as *const _
     }
 }
 impl Deref for MCLK {
@@ -1123,7 +1126,7 @@ unsafe impl Send for NVMCTRL {}
 impl NVMCTRL {
     #[doc = r" Returns a pointer to the register block"]
     pub fn ptr() -> *const nvmctrl::RegisterBlock {
-        1090535424 as *const _
+        0x4100_4000 as *const _
     }
 }
 impl Deref for NVMCTRL {
@@ -1142,7 +1145,7 @@ unsafe impl Send for OSCCTRL {}
 impl OSCCTRL {
     #[doc = r" Returns a pointer to the register block"]
     pub fn ptr() -> *const oscctrl::RegisterBlock {
-        1073745920 as *const _
+        0x4000_1000 as *const _
     }
 }
 impl Deref for OSCCTRL {
@@ -1161,7 +1164,7 @@ unsafe impl Send for OSC32KCTRL {}
 impl OSC32KCTRL {
     #[doc = r" Returns a pointer to the register block"]
     pub fn ptr() -> *const osc32kctrl::RegisterBlock {
-        1073746944 as *const _
+        0x4000_1400 as *const _
     }
 }
 impl Deref for OSC32KCTRL {
@@ -1180,7 +1183,7 @@ unsafe impl Send for PAC {}
 impl PAC {
     #[doc = r" Returns a pointer to the register block"]
     pub fn ptr() -> *const pac::RegisterBlock {
-        1073741824 as *const _
+        0x4000_0000 as *const _
     }
 }
 impl Deref for PAC {
@@ -1199,7 +1202,7 @@ unsafe impl Send for PCC {}
 impl PCC {
     #[doc = r" Returns a pointer to the register block"]
     pub fn ptr() -> *const pcc::RegisterBlock {
-        1124084736 as *const _
+        0x4300_2c00 as *const _
     }
 }
 impl Deref for PCC {
@@ -1218,7 +1221,7 @@ unsafe impl Send for PDEC {}
 impl PDEC {
     #[doc = r" Returns a pointer to the register block"]
     pub fn ptr() -> *const pdec::RegisterBlock {
-        1107303424 as *const _
+        0x4200_1c00 as *const _
     }
 }
 impl Deref for PDEC {
@@ -1237,7 +1240,7 @@ unsafe impl Send for PM {}
 impl PM {
     #[doc = r" Returns a pointer to the register block"]
     pub fn ptr() -> *const pm::RegisterBlock {
-        1073742848 as *const _
+        0x4000_0400 as *const _
     }
 }
 impl Deref for PM {
@@ -1256,7 +1259,7 @@ unsafe impl Send for PORT {}
 impl PORT {
     #[doc = r" Returns a pointer to the register block"]
     pub fn ptr() -> *const port::RegisterBlock {
-        1090551808 as *const _
+        0x4100_8000 as *const _
     }
 }
 impl Deref for PORT {
@@ -1275,7 +1278,7 @@ unsafe impl Send for QSPI {}
 impl QSPI {
     #[doc = r" Returns a pointer to the register block"]
     pub fn ptr() -> *const qspi::RegisterBlock {
-        1107309568 as *const _
+        0x4200_3400 as *const _
     }
 }
 impl Deref for QSPI {
@@ -1294,7 +1297,7 @@ unsafe impl Send for RAMECC {}
 impl RAMECC {
     #[doc = r" Returns a pointer to the register block"]
     pub fn ptr() -> *const ramecc::RegisterBlock {
-        1090650112 as *const _
+        0x4102_0000 as *const _
     }
 }
 impl Deref for RAMECC {
@@ -1313,7 +1316,7 @@ unsafe impl Send for RSTC {}
 impl RSTC {
     #[doc = r" Returns a pointer to the register block"]
     pub fn ptr() -> *const rstc::RegisterBlock {
-        1073744896 as *const _
+        0x4000_0c00 as *const _
     }
 }
 impl Deref for RSTC {
@@ -1332,7 +1335,7 @@ unsafe impl Send for RTC {}
 impl RTC {
     #[doc = r" Returns a pointer to the register block"]
     pub fn ptr() -> *const rtc::RegisterBlock {
-        1073751040 as *const _
+        0x4000_2400 as *const _
     }
 }
 impl Deref for RTC {
@@ -1351,7 +1354,7 @@ unsafe impl Send for SDHC0 {}
 impl SDHC0 {
     #[doc = r" Returns a pointer to the register block"]
     pub fn ptr() -> *const sdhc0::RegisterBlock {
-        1157627904 as *const _
+        0x4500_0000 as *const _
     }
 }
 impl Deref for SDHC0 {
@@ -1370,7 +1373,7 @@ unsafe impl Send for SERCOM0 {}
 impl SERCOM0 {
     #[doc = r" Returns a pointer to the register block"]
     pub fn ptr() -> *const sercom0::RegisterBlock {
-        1073754112 as *const _
+        0x4000_3000 as *const _
     }
 }
 impl Deref for SERCOM0 {
@@ -1389,7 +1392,7 @@ unsafe impl Send for SERCOM1 {}
 impl SERCOM1 {
     #[doc = r" Returns a pointer to the register block"]
     pub fn ptr() -> *const sercom0::RegisterBlock {
-        1073755136 as *const _
+        0x4000_3400 as *const _
     }
 }
 impl Deref for SERCOM1 {
@@ -1406,7 +1409,7 @@ unsafe impl Send for SERCOM2 {}
 impl SERCOM2 {
     #[doc = r" Returns a pointer to the register block"]
     pub fn ptr() -> *const sercom0::RegisterBlock {
-        1090592768 as *const _
+        0x4101_2000 as *const _
     }
 }
 impl Deref for SERCOM2 {
@@ -1423,7 +1426,7 @@ unsafe impl Send for SERCOM3 {}
 impl SERCOM3 {
     #[doc = r" Returns a pointer to the register block"]
     pub fn ptr() -> *const sercom0::RegisterBlock {
-        1090600960 as *const _
+        0x4101_4000 as *const _
     }
 }
 impl Deref for SERCOM3 {
@@ -1440,7 +1443,7 @@ unsafe impl Send for SERCOM4 {}
 impl SERCOM4 {
     #[doc = r" Returns a pointer to the register block"]
     pub fn ptr() -> *const sercom0::RegisterBlock {
-        1124073472 as *const _
+        0x4300_0000 as *const _
     }
 }
 impl Deref for SERCOM4 {
@@ -1457,7 +1460,7 @@ unsafe impl Send for SERCOM5 {}
 impl SERCOM5 {
     #[doc = r" Returns a pointer to the register block"]
     pub fn ptr() -> *const sercom0::RegisterBlock {
-        1124074496 as *const _
+        0x4300_0400 as *const _
     }
 }
 impl Deref for SERCOM5 {
@@ -1474,7 +1477,7 @@ unsafe impl Send for SUPC {}
 impl SUPC {
     #[doc = r" Returns a pointer to the register block"]
     pub fn ptr() -> *const supc::RegisterBlock {
-        1073747968 as *const _
+        0x4000_1800 as *const _
     }
 }
 impl Deref for SUPC {
@@ -1493,7 +1496,7 @@ unsafe impl Send for TC0 {}
 impl TC0 {
     #[doc = r" Returns a pointer to the register block"]
     pub fn ptr() -> *const tc0::RegisterBlock {
-        1073756160 as *const _
+        0x4000_3800 as *const _
     }
 }
 impl Deref for TC0 {
@@ -1512,7 +1515,7 @@ unsafe impl Send for TC1 {}
 impl TC1 {
     #[doc = r" Returns a pointer to the register block"]
     pub fn ptr() -> *const tc0::RegisterBlock {
-        1073757184 as *const _
+        0x4000_3c00 as *const _
     }
 }
 impl Deref for TC1 {
@@ -1529,7 +1532,7 @@ unsafe impl Send for TC2 {}
 impl TC2 {
     #[doc = r" Returns a pointer to the register block"]
     pub fn ptr() -> *const tc0::RegisterBlock {
-        1090625536 as *const _
+        0x4101_a000 as *const _
     }
 }
 impl Deref for TC2 {
@@ -1546,7 +1549,7 @@ unsafe impl Send for TC3 {}
 impl TC3 {
     #[doc = r" Returns a pointer to the register block"]
     pub fn ptr() -> *const tc0::RegisterBlock {
-        1090633728 as *const _
+        0x4101_c000 as *const _
     }
 }
 impl Deref for TC3 {
@@ -1563,7 +1566,7 @@ unsafe impl Send for TC4 {}
 impl TC4 {
     #[doc = r" Returns a pointer to the register block"]
     pub fn ptr() -> *const tc0::RegisterBlock {
-        1107301376 as *const _
+        0x4200_1400 as *const _
     }
 }
 impl Deref for TC4 {
@@ -1580,7 +1583,7 @@ unsafe impl Send for TC5 {}
 impl TC5 {
     #[doc = r" Returns a pointer to the register block"]
     pub fn ptr() -> *const tc0::RegisterBlock {
-        1107302400 as *const _
+        0x4200_1800 as *const _
     }
 }
 impl Deref for TC5 {
@@ -1597,7 +1600,7 @@ unsafe impl Send for TCC0 {}
 impl TCC0 {
     #[doc = r" Returns a pointer to the register block"]
     pub fn ptr() -> *const tcc0::RegisterBlock {
-        1090609152 as *const _
+        0x4101_6000 as *const _
     }
 }
 impl Deref for TCC0 {
@@ -1616,7 +1619,7 @@ unsafe impl Send for TCC1 {}
 impl TCC1 {
     #[doc = r" Returns a pointer to the register block"]
     pub fn ptr() -> *const tcc0::RegisterBlock {
-        1090617344 as *const _
+        0x4101_8000 as *const _
     }
 }
 impl Deref for TCC1 {
@@ -1633,7 +1636,7 @@ unsafe impl Send for TCC2 {}
 impl TCC2 {
     #[doc = r" Returns a pointer to the register block"]
     pub fn ptr() -> *const tcc0::RegisterBlock {
-        1107299328 as *const _
+        0x4200_0c00 as *const _
     }
 }
 impl Deref for TCC2 {
@@ -1650,7 +1653,7 @@ unsafe impl Send for TCC3 {}
 impl TCC3 {
     #[doc = r" Returns a pointer to the register block"]
     pub fn ptr() -> *const tcc0::RegisterBlock {
-        1107300352 as *const _
+        0x4200_1000 as *const _
     }
 }
 impl Deref for TCC3 {
@@ -1667,7 +1670,7 @@ unsafe impl Send for TCC4 {}
 impl TCC4 {
     #[doc = r" Returns a pointer to the register block"]
     pub fn ptr() -> *const tcc0::RegisterBlock {
-        1124077568 as *const _
+        0x4300_1000 as *const _
     }
 }
 impl Deref for TCC4 {
@@ -1684,7 +1687,7 @@ unsafe impl Send for TRNG {}
 impl TRNG {
     #[doc = r" Returns a pointer to the register block"]
     pub fn ptr() -> *const trng::RegisterBlock {
-        1107306496 as *const _
+        0x4200_2800 as *const _
     }
 }
 impl Deref for TRNG {
@@ -1703,7 +1706,7 @@ unsafe impl Send for USB {}
 impl USB {
     #[doc = r" Returns a pointer to the register block"]
     pub fn ptr() -> *const usb::RegisterBlock {
-        1090519040 as *const _
+        0x4100_0000 as *const _
     }
 }
 impl Deref for USB {
@@ -1722,7 +1725,7 @@ unsafe impl Send for WDT {}
 impl WDT {
     #[doc = r" Returns a pointer to the register block"]
     pub fn ptr() -> *const wdt::RegisterBlock {
-        1073750016 as *const _
+        0x4000_2000 as *const _
     }
 }
 impl Deref for WDT {
@@ -1733,8 +1736,6 @@ impl Deref for WDT {
 }
 #[doc = "Watchdog Timer"]
 pub mod wdt;
-#[allow(renamed_and_removed_lints)]
-#[allow(private_no_mangle_statics)]
 #[no_mangle]
 static mut DEVICE_PERIPHERALS: bool = false;
 #[doc = r" All the peripherals"]
@@ -1857,7 +1858,6 @@ impl Peripherals {
     }
     #[doc = r" Unchecked version of `Peripherals::take`"]
     pub unsafe fn steal() -> Self {
-        debug_assert!(!DEVICE_PERIPHERALS);
         DEVICE_PERIPHERALS = true;
         Peripherals {
             AC: AC {

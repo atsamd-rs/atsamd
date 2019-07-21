@@ -104,41 +104,25 @@ impl R {
     #[doc = "Bit 0 - Software Reset Synchronization Busy"]
     #[inline]
     pub fn swrst(&self) -> SWRSTR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 0) & 0x01) != 0;
         SWRSTR { bits }
     }
     #[doc = "Bit 1 - SERCOM Enable Synchronization Busy"]
     #[inline]
     pub fn enable(&self) -> ENABLER {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 1) & 0x01) != 0;
         ENABLER { bits }
     }
     #[doc = "Bit 2 - System Operation Synchronization Busy"]
     #[inline]
     pub fn sysop(&self) -> SYSOPR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 2) & 0x01) != 0;
         SYSOPR { bits }
     }
     #[doc = "Bit 4 - Length Synchronization Busy"]
     #[inline]
     pub fn length(&self) -> LENGTHR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 4) & 0x01) != 0;
         LENGTHR { bits }
     }
 }

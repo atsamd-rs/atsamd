@@ -14,10 +14,7 @@ impl super::CTRLBCLR {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
+        self.register.set(f(&R { bits }, &mut W { bits }).bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -32,14 +29,22 @@ impl super::CTRLBCLR {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
+        self.register.set(
+            f(&mut W {
+                bits: Self::reset_value(),
+            })
+            .bits,
+        );
+    }
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub const fn reset_value() -> u8 {
+        0
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.write(|w| w)
+        self.register.set(Self::reset_value())
     }
 }
 #[doc = r" Value of the field"]
@@ -123,9 +128,9 @@ impl IDXCMDR {
     pub fn bits(&self) -> u8 {
         match *self {
             IDXCMDR::DISABLE => 0,
-            IDXCMDR::SET => 1,
-            IDXCMDR::CLEAR => 2,
-            IDXCMDR::HOLD => 3,
+            IDXCMDR::SET => 0x01,
+            IDXCMDR::CLEAR => 0x02,
+            IDXCMDR::HOLD => 0x03,
         }
     }
     #[allow(missing_docs)]
@@ -185,11 +190,11 @@ impl CMDR {
     pub fn bits(&self) -> u8 {
         match *self {
             CMDR::NONE => 0,
-            CMDR::RETRIGGER => 1,
-            CMDR::STOP => 2,
-            CMDR::UPDATE => 3,
-            CMDR::READSYNC => 4,
-            CMDR::DMAOS => 5,
+            CMDR::RETRIGGER => 0x01,
+            CMDR::STOP => 0x02,
+            CMDR::UPDATE => 0x03,
+            CMDR::READSYNC => 0x04,
+            CMDR::DMAOS => 0x05,
             CMDR::_Reserved(bits) => bits,
         }
     }
@@ -254,10 +259,8 @@ impl<'a> _DIRW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits &= !(0x01 << 0);
+        self.w.bits |= ((value as u8) & 0x01) << 0;
         self.w
     }
 }
@@ -277,10 +280,8 @@ impl<'a> _LUPDW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 1;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits &= !(0x01 << 1);
+        self.w.bits |= ((value as u8) & 0x01) << 1;
         self.w
     }
 }
@@ -300,14 +301,13 @@ impl<'a> _ONESHOTW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 2;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits &= !(0x01 << 2);
+        self.w.bits |= ((value as u8) & 0x01) << 2;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `IDXCMD`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum IDXCMDW {
     #[doc = "Command disabled: Index toggles between cycles A and B"]
     DISABLE,
@@ -366,14 +366,13 @@ impl<'a> _IDXCMDW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 3;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits &= !(0x03 << 3);
+        self.w.bits |= ((value as u8) & 0x03) << 3;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `CMD`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CMDW {
     #[doc = "No action"]
     NONE,
@@ -446,10 +445,8 @@ impl<'a> _CMDW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 7;
-        const OFFSET: u8 = 5;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits &= !(0x07 << 5);
+        self.w.bits |= ((value as u8) & 0x07) << 5;
         self.w
     }
 }
@@ -462,58 +459,33 @@ impl R {
     #[doc = "Bit 0 - Counter Direction"]
     #[inline]
     pub fn dir(&self) -> DIRR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
+        let bits = ((self.bits >> 0) & 0x01) != 0;
         DIRR { bits }
     }
     #[doc = "Bit 1 - Lock Update"]
     #[inline]
     pub fn lupd(&self) -> LUPDR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
+        let bits = ((self.bits >> 1) & 0x01) != 0;
         LUPDR { bits }
     }
     #[doc = "Bit 2 - One-Shot"]
     #[inline]
     pub fn oneshot(&self) -> ONESHOTR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
+        let bits = ((self.bits >> 2) & 0x01) != 0;
         ONESHOTR { bits }
     }
     #[doc = "Bits 3:4 - Ramp Index Command"]
     #[inline]
     pub fn idxcmd(&self) -> IDXCMDR {
-        IDXCMDR::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 3;
-            ((self.bits >> OFFSET) & MASK as u8) as u8
-        })
+        IDXCMDR::_from(((self.bits >> 3) & 0x03) as u8)
     }
     #[doc = "Bits 5:7 - TCC Command"]
     #[inline]
     pub fn cmd(&self) -> CMDR {
-        CMDR::_from({
-            const MASK: u8 = 7;
-            const OFFSET: u8 = 5;
-            ((self.bits >> OFFSET) & MASK as u8) as u8
-        })
+        CMDR::_from(((self.bits >> 5) & 0x07) as u8)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {

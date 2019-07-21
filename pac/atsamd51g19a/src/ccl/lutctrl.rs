@@ -14,10 +14,7 @@ impl super::LUTCTRL {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
+        self.register.set(f(&R { bits }, &mut W { bits }).bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -32,14 +29,22 @@ impl super::LUTCTRL {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
+        self.register.set(
+            f(&mut W {
+                bits: Self::reset_value(),
+            })
+            .bits,
+        );
+    }
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub const fn reset_value() -> u32 {
+        0
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.write(|w| w)
+        self.register.set(Self::reset_value())
     }
 }
 #[doc = r" Value of the field"]
@@ -81,8 +86,8 @@ impl FILTSELR {
     pub fn bits(&self) -> u8 {
         match *self {
             FILTSELR::DISABLE => 0,
-            FILTSELR::SYNCH => 1,
-            FILTSELR::FILTER => 2,
+            FILTSELR::SYNCH => 0x01,
+            FILTSELR::FILTER => 0x02,
             FILTSELR::_Reserved(bits) => bits,
         }
     }
@@ -166,15 +171,15 @@ impl INSEL0R {
     pub fn bits(&self) -> u8 {
         match *self {
             INSEL0R::MASK => 0,
-            INSEL0R::FEEDBACK => 1,
-            INSEL0R::LINK => 2,
-            INSEL0R::EVENT => 3,
-            INSEL0R::IO => 4,
-            INSEL0R::AC => 5,
-            INSEL0R::TC => 6,
-            INSEL0R::ALTTC => 7,
-            INSEL0R::TCC => 8,
-            INSEL0R::SERCOM => 9,
+            INSEL0R::FEEDBACK => 0x01,
+            INSEL0R::LINK => 0x02,
+            INSEL0R::EVENT => 0x03,
+            INSEL0R::IO => 0x04,
+            INSEL0R::AC => 0x05,
+            INSEL0R::TC => 0x06,
+            INSEL0R::ALTTC => 0x07,
+            INSEL0R::TCC => 0x08,
+            INSEL0R::SERCOM => 0x09,
             INSEL0R::_Reserved(bits) => bits,
         }
     }
@@ -279,15 +284,15 @@ impl INSEL1R {
     pub fn bits(&self) -> u8 {
         match *self {
             INSEL1R::MASK => 0,
-            INSEL1R::FEEDBACK => 1,
-            INSEL1R::LINK => 2,
-            INSEL1R::EVENT => 3,
-            INSEL1R::IO => 4,
-            INSEL1R::AC => 5,
-            INSEL1R::TC => 6,
-            INSEL1R::ALTTC => 7,
-            INSEL1R::TCC => 8,
-            INSEL1R::SERCOM => 9,
+            INSEL1R::FEEDBACK => 0x01,
+            INSEL1R::LINK => 0x02,
+            INSEL1R::EVENT => 0x03,
+            INSEL1R::IO => 0x04,
+            INSEL1R::AC => 0x05,
+            INSEL1R::TC => 0x06,
+            INSEL1R::ALTTC => 0x07,
+            INSEL1R::TCC => 0x08,
+            INSEL1R::SERCOM => 0x09,
             INSEL1R::_Reserved(bits) => bits,
         }
     }
@@ -392,15 +397,15 @@ impl INSEL2R {
     pub fn bits(&self) -> u8 {
         match *self {
             INSEL2R::MASK => 0,
-            INSEL2R::FEEDBACK => 1,
-            INSEL2R::LINK => 2,
-            INSEL2R::EVENT => 3,
-            INSEL2R::IO => 4,
-            INSEL2R::AC => 5,
-            INSEL2R::TC => 6,
-            INSEL2R::ALTTC => 7,
-            INSEL2R::TCC => 8,
-            INSEL2R::SERCOM => 9,
+            INSEL2R::FEEDBACK => 0x01,
+            INSEL2R::LINK => 0x02,
+            INSEL2R::EVENT => 0x03,
+            INSEL2R::IO => 0x04,
+            INSEL2R::AC => 0x05,
+            INSEL2R::TC => 0x06,
+            INSEL2R::ALTTC => 0x07,
+            INSEL2R::TCC => 0x08,
+            INSEL2R::SERCOM => 0x09,
             INSEL2R::_Reserved(bits) => bits,
         }
     }
@@ -563,14 +568,13 @@ impl<'a> _ENABLEW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 1;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 1);
+        self.w.bits |= ((value as u32) & 0x01) << 1;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `FILTSEL`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum FILTSELW {
     #[doc = "Filter disabled"]
     DISABLE,
@@ -619,10 +623,8 @@ impl<'a> _FILTSELW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 4;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x03 << 4);
+        self.w.bits |= ((value as u32) & 0x03) << 4;
         self.w
     }
 }
@@ -642,14 +644,13 @@ impl<'a> _EDGESELW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 7;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 7);
+        self.w.bits |= ((value as u32) & 0x01) << 7;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `INSEL0`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum INSEL0W {
     #[doc = "Masked input"]
     MASK,
@@ -754,14 +755,13 @@ impl<'a> _INSEL0W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 15;
-        const OFFSET: u8 = 8;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x0f << 8);
+        self.w.bits |= ((value as u32) & 0x0f) << 8;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `INSEL1`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum INSEL1W {
     #[doc = "Masked input"]
     MASK,
@@ -866,14 +866,13 @@ impl<'a> _INSEL1W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 15;
-        const OFFSET: u8 = 12;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x0f << 12);
+        self.w.bits |= ((value as u32) & 0x0f) << 12;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `INSEL2`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum INSEL2W {
     #[doc = "Masked input"]
     MASK,
@@ -978,10 +977,8 @@ impl<'a> _INSEL2W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 15;
-        const OFFSET: u8 = 16;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x0f << 16);
+        self.w.bits |= ((value as u32) & 0x0f) << 16;
         self.w
     }
 }
@@ -1001,10 +998,8 @@ impl<'a> _INVEIW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 20;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 20);
+        self.w.bits |= ((value as u32) & 0x01) << 20;
         self.w
     }
 }
@@ -1024,10 +1019,8 @@ impl<'a> _LUTEIW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 21;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 21);
+        self.w.bits |= ((value as u32) & 0x01) << 21;
         self.w
     }
 }
@@ -1047,10 +1040,8 @@ impl<'a> _LUTEOW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 22;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 22);
+        self.w.bits |= ((value as u32) & 0x01) << 22;
         self.w
     }
 }
@@ -1062,10 +1053,8 @@ impl<'a> _TRUTHW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 255;
-        const OFFSET: u8 = 24;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0xff << 24);
+        self.w.bits |= ((value as u32) & 0xff) << 24;
         self.w
     }
 }
@@ -1078,106 +1067,61 @@ impl R {
     #[doc = "Bit 1 - LUT Enable"]
     #[inline]
     pub fn enable(&self) -> ENABLER {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 1) & 0x01) != 0;
         ENABLER { bits }
     }
     #[doc = "Bits 4:5 - Filter Selection"]
     #[inline]
     pub fn filtsel(&self) -> FILTSELR {
-        FILTSELR::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+        FILTSELR::_from(((self.bits >> 4) & 0x03) as u8)
     }
     #[doc = "Bit 7 - Edge Selection"]
     #[inline]
     pub fn edgesel(&self) -> EDGESELR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 7;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 7) & 0x01) != 0;
         EDGESELR { bits }
     }
     #[doc = "Bits 8:11 - Input Selection 0"]
     #[inline]
     pub fn insel0(&self) -> INSEL0R {
-        INSEL0R::_from({
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+        INSEL0R::_from(((self.bits >> 8) & 0x0f) as u8)
     }
     #[doc = "Bits 12:15 - Input Selection 1"]
     #[inline]
     pub fn insel1(&self) -> INSEL1R {
-        INSEL1R::_from({
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 12;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+        INSEL1R::_from(((self.bits >> 12) & 0x0f) as u8)
     }
     #[doc = "Bits 16:19 - Input Selection 2"]
     #[inline]
     pub fn insel2(&self) -> INSEL2R {
-        INSEL2R::_from({
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 16;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+        INSEL2R::_from(((self.bits >> 16) & 0x0f) as u8)
     }
     #[doc = "Bit 20 - Inverted Event Input Enable"]
     #[inline]
     pub fn invei(&self) -> INVEIR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 20;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 20) & 0x01) != 0;
         INVEIR { bits }
     }
     #[doc = "Bit 21 - LUT Event Input Enable"]
     #[inline]
     pub fn lutei(&self) -> LUTEIR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 21;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 21) & 0x01) != 0;
         LUTEIR { bits }
     }
     #[doc = "Bit 22 - LUT Event Output Enable"]
     #[inline]
     pub fn luteo(&self) -> LUTEOR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 22;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 22) & 0x01) != 0;
         LUTEOR { bits }
     }
     #[doc = "Bits 24:31 - Truth Value"]
     #[inline]
     pub fn truth(&self) -> TRUTHR {
-        let bits = {
-            const MASK: u8 = 255;
-            const OFFSET: u8 = 24;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
+        let bits = ((self.bits >> 24) & 0xff) as u8;
         TRUTHR { bits }
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {

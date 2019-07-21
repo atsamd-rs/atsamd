@@ -14,10 +14,7 @@ impl super::CTRL {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
+        self.register.set(f(&R { bits }, &mut W { bits }).bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -32,14 +29,22 @@ impl super::CTRL {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
+        self.register.set(
+            f(&mut W {
+                bits: Self::reset_value(),
+            })
+            .bits,
+        );
+    }
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub const fn reset_value() -> u16 {
+        0
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.write(|w| w)
+        self.register.set(Self::reset_value())
     }
 }
 #[doc = r" Value of the field"]
@@ -184,10 +189,8 @@ impl<'a> _SWRSTW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x01 << 0);
+        self.w.bits |= ((value as u16) & 0x01) << 0;
         self.w
     }
 }
@@ -207,10 +210,8 @@ impl<'a> _DMAENABLEW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 1;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x01 << 1);
+        self.w.bits |= ((value as u16) & 0x01) << 1;
         self.w
     }
 }
@@ -230,10 +231,8 @@ impl<'a> _LVLEN0W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 8;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x01 << 8);
+        self.w.bits |= ((value as u16) & 0x01) << 8;
         self.w
     }
 }
@@ -253,10 +252,8 @@ impl<'a> _LVLEN1W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 9;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x01 << 9);
+        self.w.bits |= ((value as u16) & 0x01) << 9;
         self.w
     }
 }
@@ -276,10 +273,8 @@ impl<'a> _LVLEN2W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 10;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x01 << 10);
+        self.w.bits |= ((value as u16) & 0x01) << 10;
         self.w
     }
 }
@@ -299,10 +294,8 @@ impl<'a> _LVLEN3W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 11;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x01 << 11);
+        self.w.bits |= ((value as u16) & 0x01) << 11;
         self.w
     }
 }
@@ -315,70 +308,41 @@ impl R {
     #[doc = "Bit 0 - Software Reset"]
     #[inline]
     pub fn swrst(&self) -> SWRSTR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
+        let bits = ((self.bits >> 0) & 0x01) != 0;
         SWRSTR { bits }
     }
     #[doc = "Bit 1 - DMA Enable"]
     #[inline]
     pub fn dmaenable(&self) -> DMAENABLER {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
+        let bits = ((self.bits >> 1) & 0x01) != 0;
         DMAENABLER { bits }
     }
     #[doc = "Bit 8 - Priority Level 0 Enable"]
     #[inline]
     pub fn lvlen0(&self) -> LVLEN0R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
+        let bits = ((self.bits >> 8) & 0x01) != 0;
         LVLEN0R { bits }
     }
     #[doc = "Bit 9 - Priority Level 1 Enable"]
     #[inline]
     pub fn lvlen1(&self) -> LVLEN1R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 9;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
+        let bits = ((self.bits >> 9) & 0x01) != 0;
         LVLEN1R { bits }
     }
     #[doc = "Bit 10 - Priority Level 2 Enable"]
     #[inline]
     pub fn lvlen2(&self) -> LVLEN2R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 10;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
+        let bits = ((self.bits >> 10) & 0x01) != 0;
         LVLEN2R { bits }
     }
     #[doc = "Bit 11 - Priority Level 3 Enable"]
     #[inline]
     pub fn lvlen3(&self) -> LVLEN3R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 11;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
+        let bits = ((self.bits >> 11) & 0x01) != 0;
         LVLEN3R { bits }
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {

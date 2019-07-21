@@ -125,51 +125,31 @@ impl R {
     #[doc = "Bit 0 - Software Reset Synchronization Busy"]
     #[inline]
     pub fn swrst(&self) -> SWRSTR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 0) & 0x01) != 0;
         SWRSTR { bits }
     }
     #[doc = "Bit 1 - SERCOM Enable Synchronization Busy"]
     #[inline]
     pub fn enable(&self) -> ENABLER {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 1) & 0x01) != 0;
         ENABLER { bits }
     }
     #[doc = "Bit 2 - CTRLB Synchronization Busy"]
     #[inline]
     pub fn ctrlb(&self) -> CTRLBR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 2) & 0x01) != 0;
         CTRLBR { bits }
     }
     #[doc = "Bit 3 - RXERRCNT Synchronization Busy"]
     #[inline]
     pub fn rxerrcnt(&self) -> RXERRCNTR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 3;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 3) & 0x01) != 0;
         RXERRCNTR { bits }
     }
     #[doc = "Bit 4 - LENGTH Synchronization Busy"]
     #[inline]
     pub fn length(&self) -> LENGTHR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 4) & 0x01) != 0;
         LENGTHR { bits }
     }
 }

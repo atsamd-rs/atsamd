@@ -188,81 +188,49 @@ impl R {
     #[doc = "Bit 0 - Software Reset Synchronization Status"]
     #[inline]
     pub fn swrst(&self) -> SWRSTR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
+        let bits = ((self.bits >> 0) & 0x01) != 0;
         SWRSTR { bits }
     }
     #[doc = "Bit 1 - Enable Synchronization Status"]
     #[inline]
     pub fn enable(&self) -> ENABLER {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
+        let bits = ((self.bits >> 1) & 0x01) != 0;
         ENABLER { bits }
     }
     #[doc = "Bit 2 - Clock Unit 0 Enable Synchronization Status"]
     #[inline]
     pub fn cken0(&self) -> CKEN0R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
+        let bits = ((self.bits >> 2) & 0x01) != 0;
         CKEN0R { bits }
     }
     #[doc = "Bit 3 - Clock Unit 1 Enable Synchronization Status"]
     #[inline]
     pub fn cken1(&self) -> CKEN1R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 3;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
+        let bits = ((self.bits >> 3) & 0x01) != 0;
         CKEN1R { bits }
     }
     #[doc = "Bit 4 - Serializer 0 Enable Synchronization Status"]
     #[inline]
     pub fn seren0(&self) -> SEREN0R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
+        let bits = ((self.bits >> 4) & 0x01) != 0;
         SEREN0R { bits }
     }
     #[doc = "Bit 5 - Serializer 1 Enable Synchronization Status"]
     #[inline]
     pub fn seren1(&self) -> SEREN1R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 5;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
+        let bits = ((self.bits >> 5) & 0x01) != 0;
         SEREN1R { bits }
     }
     #[doc = "Bit 8 - Data 0 Synchronization Status"]
     #[inline]
     pub fn data0(&self) -> DATA0R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
+        let bits = ((self.bits >> 8) & 0x01) != 0;
         DATA0R { bits }
     }
     #[doc = "Bit 9 - Data 1 Synchronization Status"]
     #[inline]
     pub fn data1(&self) -> DATA1R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 9;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
+        let bits = ((self.bits >> 9) & 0x01) != 0;
         DATA1R { bits }
     }
 }

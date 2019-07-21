@@ -31,11 +31,7 @@ impl R {
     #[doc = "Bits 0:16 - Error Address"]
     #[inline]
     pub fn erraddr(&self) -> ERRADDRR {
-        let bits = {
-            const MASK: u32 = 131071;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) as u32
-        };
+        let bits = ((self.bits >> 0) & 0x0001_ffff) as u32;
         ERRADDRR { bits }
     }
 }

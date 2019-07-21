@@ -42,21 +42,13 @@ impl R {
     #[doc = "Bits 0:3 - ARM CUSMOD"]
     #[inline]
     pub fn cusmod(&self) -> CUSMODR {
-        let bits = {
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
+        let bits = ((self.bits >> 0) & 0x0f) as u8;
         CUSMODR { bits }
     }
     #[doc = "Bits 4:7 - Revision Number"]
     #[inline]
     pub fn revand(&self) -> REVANDR {
-        let bits = {
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
+        let bits = ((self.bits >> 4) & 0x0f) as u8;
         REVANDR { bits }
     }
 }

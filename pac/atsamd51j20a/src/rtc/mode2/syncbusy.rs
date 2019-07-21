@@ -293,131 +293,79 @@ impl R {
     #[doc = "Bit 0 - Software Reset Bit Busy"]
     #[inline]
     pub fn swrst(&self) -> SWRSTR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 0) & 0x01) != 0;
         SWRSTR { bits }
     }
     #[doc = "Bit 1 - Enable Bit Busy"]
     #[inline]
     pub fn enable(&self) -> ENABLER {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 1) & 0x01) != 0;
         ENABLER { bits }
     }
     #[doc = "Bit 2 - FREQCORR Register Busy"]
     #[inline]
     pub fn freqcorr(&self) -> FREQCORRR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 2) & 0x01) != 0;
         FREQCORRR { bits }
     }
     #[doc = "Bit 3 - CLOCK Register Busy"]
     #[inline]
     pub fn clock(&self) -> CLOCKR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 3;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 3) & 0x01) != 0;
         CLOCKR { bits }
     }
     #[doc = "Bit 5 - ALARM 0 Register Busy"]
     #[inline]
     pub fn alarm0(&self) -> ALARM0R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 5;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 5) & 0x01) != 0;
         ALARM0R { bits }
     }
     #[doc = "Bit 6 - ALARM 1 Register Busy"]
     #[inline]
     pub fn alarm1(&self) -> ALARM1R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 6;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 6) & 0x01) != 0;
         ALARM1R { bits }
     }
     #[doc = "Bit 11 - MASK 0 Register Busy"]
     #[inline]
     pub fn mask0(&self) -> MASK0R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 11;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 11) & 0x01) != 0;
         MASK0R { bits }
     }
     #[doc = "Bit 12 - MASK 1 Register Busy"]
     #[inline]
     pub fn mask1(&self) -> MASK1R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 12;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 12) & 0x01) != 0;
         MASK1R { bits }
     }
     #[doc = "Bit 15 - Clock Synchronization Enable Bit Busy"]
     #[inline]
     pub fn clocksync(&self) -> CLOCKSYNCR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 15;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 15) & 0x01) != 0;
         CLOCKSYNCR { bits }
     }
     #[doc = "Bit 16 - General Purpose 0 Register Busy"]
     #[inline]
     pub fn gp0(&self) -> GP0R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 16;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 16) & 0x01) != 0;
         GP0R { bits }
     }
     #[doc = "Bit 17 - General Purpose 1 Register Busy"]
     #[inline]
     pub fn gp1(&self) -> GP1R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 17;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 17) & 0x01) != 0;
         GP1R { bits }
     }
     #[doc = "Bit 18 - General Purpose 2 Register Busy"]
     #[inline]
     pub fn gp2(&self) -> GP2R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 18;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 18) & 0x01) != 0;
         GP2R { bits }
     }
     #[doc = "Bit 19 - General Purpose 3 Register Busy"]
     #[inline]
     pub fn gp3(&self) -> GP3R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 19;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 19) & 0x01) != 0;
         GP3R { bits }
     }
 }

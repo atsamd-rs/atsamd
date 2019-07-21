@@ -14,10 +14,7 @@ impl super::EVCTRL {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
+        self.register.set(f(&R { bits }, &mut W { bits }).bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -32,14 +29,22 @@ impl super::EVCTRL {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
+        self.register.set(
+            f(&mut W {
+                bits: Self::reset_value(),
+            })
+            .bits,
+        );
+    }
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub const fn reset_value() -> u32 {
+        0
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.write(|w| w)
+        self.register.set(Self::reset_value())
     }
 }
 #[doc = "Possible values of the field `EVACT0`"]
@@ -68,13 +73,13 @@ impl EVACT0R {
     pub fn bits(&self) -> u8 {
         match *self {
             EVACT0R::OFF => 0,
-            EVACT0R::RETRIGGER => 1,
-            EVACT0R::COUNTEV => 2,
-            EVACT0R::START => 3,
-            EVACT0R::INC => 4,
-            EVACT0R::COUNT => 5,
-            EVACT0R::STAMP => 6,
-            EVACT0R::FAULT => 7,
+            EVACT0R::RETRIGGER => 0x01,
+            EVACT0R::COUNTEV => 0x02,
+            EVACT0R::START => 0x03,
+            EVACT0R::INC => 0x04,
+            EVACT0R::COUNT => 0x05,
+            EVACT0R::STAMP => 0x06,
+            EVACT0R::FAULT => 0x07,
         }
     }
     #[allow(missing_docs)]
@@ -160,13 +165,13 @@ impl EVACT1R {
     pub fn bits(&self) -> u8 {
         match *self {
             EVACT1R::OFF => 0,
-            EVACT1R::RETRIGGER => 1,
-            EVACT1R::DIR => 2,
-            EVACT1R::STOP => 3,
-            EVACT1R::DEC => 4,
-            EVACT1R::PPW => 5,
-            EVACT1R::PWP => 6,
-            EVACT1R::FAULT => 7,
+            EVACT1R::RETRIGGER => 0x01,
+            EVACT1R::DIR => 0x02,
+            EVACT1R::STOP => 0x03,
+            EVACT1R::DEC => 0x04,
+            EVACT1R::PPW => 0x05,
+            EVACT1R::PWP => 0x06,
+            EVACT1R::FAULT => 0x07,
         }
     }
     #[allow(missing_docs)]
@@ -244,9 +249,9 @@ impl CNTSELR {
     pub fn bits(&self) -> u8 {
         match *self {
             CNTSELR::START => 0,
-            CNTSELR::END => 1,
-            CNTSELR::BETWEEN => 2,
-            CNTSELR::BOUNDARY => 3,
+            CNTSELR::END => 0x01,
+            CNTSELR::BETWEEN => 0x02,
+            CNTSELR::BOUNDARY => 0x03,
         }
     }
     #[allow(missing_docs)]
@@ -682,6 +687,7 @@ impl MCEO5R {
     }
 }
 #[doc = "Values that can be written to the field `EVACT0`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum EVACT0W {
     #[doc = "Event action disabled"]
     OFF,
@@ -772,14 +778,13 @@ impl<'a> _EVACT0W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 7;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x07 << 0);
+        self.w.bits |= ((value as u32) & 0x07) << 0;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `EVACT1`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum EVACT1W {
     #[doc = "Event action disabled"]
     OFF,
@@ -870,14 +875,13 @@ impl<'a> _EVACT1W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 7;
-        const OFFSET: u8 = 3;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x07 << 3);
+        self.w.bits |= ((value as u32) & 0x07) << 3;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `CNTSEL`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CNTSELW {
     #[doc = "An interrupt/event is generated when a new counter cycle starts"]
     START,
@@ -936,10 +940,8 @@ impl<'a> _CNTSELW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 6;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x03 << 6);
+        self.w.bits |= ((value as u32) & 0x03) << 6;
         self.w
     }
 }
@@ -959,10 +961,8 @@ impl<'a> _OVFEOW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 8;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 8);
+        self.w.bits |= ((value as u32) & 0x01) << 8;
         self.w
     }
 }
@@ -982,10 +982,8 @@ impl<'a> _TRGEOW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 9;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 9);
+        self.w.bits |= ((value as u32) & 0x01) << 9;
         self.w
     }
 }
@@ -1005,10 +1003,8 @@ impl<'a> _CNTEOW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 10;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 10);
+        self.w.bits |= ((value as u32) & 0x01) << 10;
         self.w
     }
 }
@@ -1028,10 +1024,8 @@ impl<'a> _TCINV0W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 12;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 12);
+        self.w.bits |= ((value as u32) & 0x01) << 12;
         self.w
     }
 }
@@ -1051,10 +1045,8 @@ impl<'a> _TCINV1W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 13;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 13);
+        self.w.bits |= ((value as u32) & 0x01) << 13;
         self.w
     }
 }
@@ -1074,10 +1066,8 @@ impl<'a> _TCEI0W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 14;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 14);
+        self.w.bits |= ((value as u32) & 0x01) << 14;
         self.w
     }
 }
@@ -1097,10 +1087,8 @@ impl<'a> _TCEI1W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 15;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 15);
+        self.w.bits |= ((value as u32) & 0x01) << 15;
         self.w
     }
 }
@@ -1120,10 +1108,8 @@ impl<'a> _MCEI0W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 16;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 16);
+        self.w.bits |= ((value as u32) & 0x01) << 16;
         self.w
     }
 }
@@ -1143,10 +1129,8 @@ impl<'a> _MCEI1W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 17;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 17);
+        self.w.bits |= ((value as u32) & 0x01) << 17;
         self.w
     }
 }
@@ -1166,10 +1150,8 @@ impl<'a> _MCEI2W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 18;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 18);
+        self.w.bits |= ((value as u32) & 0x01) << 18;
         self.w
     }
 }
@@ -1189,10 +1171,8 @@ impl<'a> _MCEI3W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 19;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 19);
+        self.w.bits |= ((value as u32) & 0x01) << 19;
         self.w
     }
 }
@@ -1212,10 +1192,8 @@ impl<'a> _MCEI4W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 20;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 20);
+        self.w.bits |= ((value as u32) & 0x01) << 20;
         self.w
     }
 }
@@ -1235,10 +1213,8 @@ impl<'a> _MCEI5W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 21;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 21);
+        self.w.bits |= ((value as u32) & 0x01) << 21;
         self.w
     }
 }
@@ -1258,10 +1234,8 @@ impl<'a> _MCEO0W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 24;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 24);
+        self.w.bits |= ((value as u32) & 0x01) << 24;
         self.w
     }
 }
@@ -1281,10 +1255,8 @@ impl<'a> _MCEO1W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 25;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 25);
+        self.w.bits |= ((value as u32) & 0x01) << 25;
         self.w
     }
 }
@@ -1304,10 +1276,8 @@ impl<'a> _MCEO2W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 26;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 26);
+        self.w.bits |= ((value as u32) & 0x01) << 26;
         self.w
     }
 }
@@ -1327,10 +1297,8 @@ impl<'a> _MCEO3W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 27;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 27);
+        self.w.bits |= ((value as u32) & 0x01) << 27;
         self.w
     }
 }
@@ -1350,10 +1318,8 @@ impl<'a> _MCEO4W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 28;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 28);
+        self.w.bits |= ((value as u32) & 0x01) << 28;
         self.w
     }
 }
@@ -1373,10 +1339,8 @@ impl<'a> _MCEO5W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 29;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 29);
+        self.w.bits |= ((value as u32) & 0x01) << 29;
         self.w
     }
 }
@@ -1389,227 +1353,134 @@ impl R {
     #[doc = "Bits 0:2 - Timer/counter Input Event0 Action"]
     #[inline]
     pub fn evact0(&self) -> EVACT0R {
-        EVACT0R::_from({
-            const MASK: u8 = 7;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+        EVACT0R::_from(((self.bits >> 0) & 0x07) as u8)
     }
     #[doc = "Bits 3:5 - Timer/counter Input Event1 Action"]
     #[inline]
     pub fn evact1(&self) -> EVACT1R {
-        EVACT1R::_from({
-            const MASK: u8 = 7;
-            const OFFSET: u8 = 3;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+        EVACT1R::_from(((self.bits >> 3) & 0x07) as u8)
     }
     #[doc = "Bits 6:7 - Timer/counter Output Event Mode"]
     #[inline]
     pub fn cntsel(&self) -> CNTSELR {
-        CNTSELR::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 6;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+        CNTSELR::_from(((self.bits >> 6) & 0x03) as u8)
     }
     #[doc = "Bit 8 - Overflow/Underflow Output Event Enable"]
     #[inline]
     pub fn ovfeo(&self) -> OVFEOR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 8) & 0x01) != 0;
         OVFEOR { bits }
     }
     #[doc = "Bit 9 - Retrigger Output Event Enable"]
     #[inline]
     pub fn trgeo(&self) -> TRGEOR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 9;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 9) & 0x01) != 0;
         TRGEOR { bits }
     }
     #[doc = "Bit 10 - Timer/counter Output Event Enable"]
     #[inline]
     pub fn cnteo(&self) -> CNTEOR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 10;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 10) & 0x01) != 0;
         CNTEOR { bits }
     }
     #[doc = "Bit 12 - Inverted Event 0 Input Enable"]
     #[inline]
     pub fn tcinv0(&self) -> TCINV0R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 12;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 12) & 0x01) != 0;
         TCINV0R { bits }
     }
     #[doc = "Bit 13 - Inverted Event 1 Input Enable"]
     #[inline]
     pub fn tcinv1(&self) -> TCINV1R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 13;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 13) & 0x01) != 0;
         TCINV1R { bits }
     }
     #[doc = "Bit 14 - Timer/counter Event 0 Input Enable"]
     #[inline]
     pub fn tcei0(&self) -> TCEI0R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 14;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 14) & 0x01) != 0;
         TCEI0R { bits }
     }
     #[doc = "Bit 15 - Timer/counter Event 1 Input Enable"]
     #[inline]
     pub fn tcei1(&self) -> TCEI1R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 15;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 15) & 0x01) != 0;
         TCEI1R { bits }
     }
     #[doc = "Bit 16 - Match or Capture Channel 0 Event Input Enable"]
     #[inline]
     pub fn mcei0(&self) -> MCEI0R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 16;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 16) & 0x01) != 0;
         MCEI0R { bits }
     }
     #[doc = "Bit 17 - Match or Capture Channel 1 Event Input Enable"]
     #[inline]
     pub fn mcei1(&self) -> MCEI1R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 17;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 17) & 0x01) != 0;
         MCEI1R { bits }
     }
     #[doc = "Bit 18 - Match or Capture Channel 2 Event Input Enable"]
     #[inline]
     pub fn mcei2(&self) -> MCEI2R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 18;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 18) & 0x01) != 0;
         MCEI2R { bits }
     }
     #[doc = "Bit 19 - Match or Capture Channel 3 Event Input Enable"]
     #[inline]
     pub fn mcei3(&self) -> MCEI3R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 19;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 19) & 0x01) != 0;
         MCEI3R { bits }
     }
     #[doc = "Bit 20 - Match or Capture Channel 4 Event Input Enable"]
     #[inline]
     pub fn mcei4(&self) -> MCEI4R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 20;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 20) & 0x01) != 0;
         MCEI4R { bits }
     }
     #[doc = "Bit 21 - Match or Capture Channel 5 Event Input Enable"]
     #[inline]
     pub fn mcei5(&self) -> MCEI5R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 21;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 21) & 0x01) != 0;
         MCEI5R { bits }
     }
     #[doc = "Bit 24 - Match or Capture Channel 0 Event Output Enable"]
     #[inline]
     pub fn mceo0(&self) -> MCEO0R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 24;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 24) & 0x01) != 0;
         MCEO0R { bits }
     }
     #[doc = "Bit 25 - Match or Capture Channel 1 Event Output Enable"]
     #[inline]
     pub fn mceo1(&self) -> MCEO1R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 25;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 25) & 0x01) != 0;
         MCEO1R { bits }
     }
     #[doc = "Bit 26 - Match or Capture Channel 2 Event Output Enable"]
     #[inline]
     pub fn mceo2(&self) -> MCEO2R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 26;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 26) & 0x01) != 0;
         MCEO2R { bits }
     }
     #[doc = "Bit 27 - Match or Capture Channel 3 Event Output Enable"]
     #[inline]
     pub fn mceo3(&self) -> MCEO3R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 27;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 27) & 0x01) != 0;
         MCEO3R { bits }
     }
     #[doc = "Bit 28 - Match or Capture Channel 4 Event Output Enable"]
     #[inline]
     pub fn mceo4(&self) -> MCEO4R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 28;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 28) & 0x01) != 0;
         MCEO4R { bits }
     }
     #[doc = "Bit 29 - Match or Capture Channel 5 Event Output Enable"]
     #[inline]
     pub fn mceo5(&self) -> MCEO5R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 29;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 29) & 0x01) != 0;
         MCEO5R { bits }
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {

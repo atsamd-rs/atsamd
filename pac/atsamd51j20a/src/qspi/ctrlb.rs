@@ -14,10 +14,7 @@ impl super::CTRLB {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
+        self.register.set(f(&R { bits }, &mut W { bits }).bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -32,14 +29,22 @@ impl super::CTRLB {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
+        self.register.set(
+            f(&mut W {
+                bits: Self::reset_value(),
+            })
+            .bits,
+        );
+    }
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub const fn reset_value() -> u32 {
+        0
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.write(|w| w)
+        self.register.set(Self::reset_value())
     }
 }
 #[doc = "Possible values of the field `MODE`"]
@@ -170,8 +175,8 @@ impl CSMODER {
     pub fn bits(&self) -> u8 {
         match *self {
             CSMODER::NORELOAD => 0,
-            CSMODER::LASTXFER => 1,
-            CSMODER::SYSTEMATICALLY => 2,
+            CSMODER::LASTXFER => 0x01,
+            CSMODER::SYSTEMATICALLY => 0x02,
             CSMODER::_Reserved(bits) => bits,
         }
     }
@@ -232,14 +237,14 @@ impl DATALENR {
     pub fn bits(&self) -> u8 {
         match *self {
             DATALENR::_8BITS => 0,
-            DATALENR::_9BITS => 1,
-            DATALENR::_10BITS => 2,
-            DATALENR::_11BITS => 3,
-            DATALENR::_12BITS => 4,
-            DATALENR::_13BITS => 5,
-            DATALENR::_14BITS => 6,
-            DATALENR::_15BITS => 7,
-            DATALENR::_16BITS => 8,
+            DATALENR::_9BITS => 0x01,
+            DATALENR::_10BITS => 0x02,
+            DATALENR::_11BITS => 0x03,
+            DATALENR::_12BITS => 0x04,
+            DATALENR::_13BITS => 0x05,
+            DATALENR::_14BITS => 0x06,
+            DATALENR::_15BITS => 0x07,
+            DATALENR::_16BITS => 0x08,
             DATALENR::_Reserved(bits) => bits,
         }
     }
@@ -329,6 +334,7 @@ impl DLYCSR {
     }
 }
 #[doc = "Values that can be written to the field `MODE`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum MODEW {
     #[doc = "SPI operating mode"]
     SPI,
@@ -379,10 +385,8 @@ impl<'a> _MODEW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 0);
+        self.w.bits |= ((value as u32) & 0x01) << 0;
         self.w
     }
 }
@@ -402,10 +406,8 @@ impl<'a> _LOOPENW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 1;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 1);
+        self.w.bits |= ((value as u32) & 0x01) << 1;
         self.w
     }
 }
@@ -425,10 +427,8 @@ impl<'a> _WDRBTW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 2;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 2);
+        self.w.bits |= ((value as u32) & 0x01) << 2;
         self.w
     }
 }
@@ -448,14 +448,13 @@ impl<'a> _SMEMREGW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 3;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 3);
+        self.w.bits |= ((value as u32) & 0x01) << 3;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `CSMODE`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CSMODEW {
     #[doc = "The chip select is deasserted if TD has not been reloaded before the end of the current transfer."]
     NORELOAD,
@@ -504,14 +503,13 @@ impl<'a> _CSMODEW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 4;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x03 << 4);
+        self.w.bits |= ((value as u32) & 0x03) << 4;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `DATALEN`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum DATALENW {
     #[doc = "8-bits transfer"]
     _8BITS,
@@ -608,10 +606,8 @@ impl<'a> _DATALENW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 15;
-        const OFFSET: u8 = 8;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x0f << 8);
+        self.w.bits |= ((value as u32) & 0x0f) << 8;
         self.w
     }
 }
@@ -623,10 +619,8 @@ impl<'a> _DLYBCTW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 255;
-        const OFFSET: u8 = 16;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0xff << 16);
+        self.w.bits |= ((value as u32) & 0xff) << 16;
         self.w
     }
 }
@@ -638,10 +632,8 @@ impl<'a> _DLYCSW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 255;
-        const OFFSET: u8 = 24;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0xff << 24);
+        self.w.bits |= ((value as u32) & 0xff) << 24;
         self.w
     }
 }
@@ -654,87 +646,50 @@ impl R {
     #[doc = "Bit 0 - Serial Memory Mode"]
     #[inline]
     pub fn mode(&self) -> MODER {
-        MODER::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        })
+        MODER::_from(((self.bits >> 0) & 0x01) != 0)
     }
     #[doc = "Bit 1 - Local Loopback Enable"]
     #[inline]
     pub fn loopen(&self) -> LOOPENR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 1) & 0x01) != 0;
         LOOPENR { bits }
     }
     #[doc = "Bit 2 - Wait Data Read Before Transfer"]
     #[inline]
     pub fn wdrbt(&self) -> WDRBTR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 2) & 0x01) != 0;
         WDRBTR { bits }
     }
     #[doc = "Bit 3 - Serial Memory reg"]
     #[inline]
     pub fn smemreg(&self) -> SMEMREGR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 3;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 3) & 0x01) != 0;
         SMEMREGR { bits }
     }
     #[doc = "Bits 4:5 - Chip Select Mode"]
     #[inline]
     pub fn csmode(&self) -> CSMODER {
-        CSMODER::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+        CSMODER::_from(((self.bits >> 4) & 0x03) as u8)
     }
     #[doc = "Bits 8:11 - Data Length"]
     #[inline]
     pub fn datalen(&self) -> DATALENR {
-        DATALENR::_from({
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+        DATALENR::_from(((self.bits >> 8) & 0x0f) as u8)
     }
     #[doc = "Bits 16:23 - Delay Between Consecutive Transfers"]
     #[inline]
     pub fn dlybct(&self) -> DLYBCTR {
-        let bits = {
-            const MASK: u8 = 255;
-            const OFFSET: u8 = 16;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
+        let bits = ((self.bits >> 16) & 0xff) as u8;
         DLYBCTR { bits }
     }
     #[doc = "Bits 24:31 - Minimum Inactive CS Delay"]
     #[inline]
     pub fn dlycs(&self) -> DLYCSR {
-        let bits = {
-            const MASK: u8 = 255;
-            const OFFSET: u8 = 24;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
+        let bits = ((self.bits >> 24) & 0xff) as u8;
         DLYCSR { bits }
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {

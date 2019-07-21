@@ -147,71 +147,43 @@ impl R {
     #[doc = "Bit 0 - Active SmartEEPROM Sector"]
     #[inline]
     pub fn asees(&self) -> ASEESR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 0) & 0x01) != 0;
         ASEESR { bits }
     }
     #[doc = "Bit 1 - Page Buffer Loaded"]
     #[inline]
     pub fn load(&self) -> LOADR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 1) & 0x01) != 0;
         LOADR { bits }
     }
     #[doc = "Bit 2 - Busy"]
     #[inline]
     pub fn busy(&self) -> BUSYR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 2) & 0x01) != 0;
         BUSYR { bits }
     }
     #[doc = "Bit 3 - SmartEEPROM Write Access Is Locked"]
     #[inline]
     pub fn lock(&self) -> LOCKR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 3;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 3) & 0x01) != 0;
         LOCKR { bits }
     }
     #[doc = "Bit 4 - SmartEEPROM Write Access To Register Address Space Is Locked"]
     #[inline]
     pub fn rlock(&self) -> RLOCKR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 4) & 0x01) != 0;
         RLOCKR { bits }
     }
     #[doc = "Bits 8:11 - Blocks Number In a Sector"]
     #[inline]
     pub fn sblk(&self) -> SBLKR {
-        let bits = {
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
+        let bits = ((self.bits >> 8) & 0x0f) as u8;
         SBLKR { bits }
     }
     #[doc = "Bits 16:18 - SmartEEPROM Page Size"]
     #[inline]
     pub fn psz(&self) -> PSZR {
-        let bits = {
-            const MASK: u8 = 7;
-            const OFFSET: u8 = 16;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
+        let bits = ((self.bits >> 16) & 0x07) as u8;
         PSZR { bits }
     }
 }

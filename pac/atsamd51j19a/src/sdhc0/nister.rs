@@ -14,10 +14,7 @@ impl super::NISTER {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
+        self.register.set(f(&R { bits }, &mut W { bits }).bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -32,14 +29,22 @@ impl super::NISTER {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
+        self.register.set(
+            f(&mut W {
+                bits: Self::reset_value(),
+            })
+            .bits,
+        );
+    }
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub const fn reset_value() -> u16 {
+        0
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.write(|w| w)
+        self.register.set(Self::reset_value())
     }
 }
 #[doc = "Possible values of the field `CMDC`"]
@@ -466,6 +471,7 @@ impl CINTR {
     }
 }
 #[doc = "Values that can be written to the field `CMDC`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CMDCW {
     #[doc = "Masked"]
     MASKED,
@@ -516,14 +522,13 @@ impl<'a> _CMDCW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x01 << 0);
+        self.w.bits |= ((value as u16) & 0x01) << 0;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `TRFC`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum TRFCW {
     #[doc = "Masked"]
     MASKED,
@@ -574,14 +579,13 @@ impl<'a> _TRFCW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 1;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x01 << 1);
+        self.w.bits |= ((value as u16) & 0x01) << 1;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `BLKGE`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum BLKGEW {
     #[doc = "Masked"]
     MASKED,
@@ -632,14 +636,13 @@ impl<'a> _BLKGEW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 2;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x01 << 2);
+        self.w.bits |= ((value as u16) & 0x01) << 2;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `DMAINT`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum DMAINTW {
     #[doc = "Masked"]
     MASKED,
@@ -690,14 +693,13 @@ impl<'a> _DMAINTW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 3;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x01 << 3);
+        self.w.bits |= ((value as u16) & 0x01) << 3;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `BWRRDY`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum BWRRDYW {
     #[doc = "Masked"]
     MASKED,
@@ -748,14 +750,13 @@ impl<'a> _BWRRDYW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 4;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x01 << 4);
+        self.w.bits |= ((value as u16) & 0x01) << 4;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `BRDRDY`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum BRDRDYW {
     #[doc = "Masked"]
     MASKED,
@@ -806,14 +807,13 @@ impl<'a> _BRDRDYW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 5;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x01 << 5);
+        self.w.bits |= ((value as u16) & 0x01) << 5;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `CINS`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CINSW {
     #[doc = "Masked"]
     MASKED,
@@ -864,14 +864,13 @@ impl<'a> _CINSW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 6;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x01 << 6);
+        self.w.bits |= ((value as u16) & 0x01) << 6;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `CREM`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CREMW {
     #[doc = "Masked"]
     MASKED,
@@ -922,14 +921,13 @@ impl<'a> _CREMW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 7;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x01 << 7);
+        self.w.bits |= ((value as u16) & 0x01) << 7;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `CINT`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CINTW {
     #[doc = "Masked"]
     MASKED,
@@ -980,10 +978,8 @@ impl<'a> _CINTW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 8;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x01 << 8);
+        self.w.bits |= ((value as u16) & 0x01) << 8;
         self.w
     }
 }
@@ -996,91 +992,50 @@ impl R {
     #[doc = "Bit 0 - Command Complete Status Enable"]
     #[inline]
     pub fn cmdc(&self) -> CMDCR {
-        CMDCR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        })
+        CMDCR::_from(((self.bits >> 0) & 0x01) != 0)
     }
     #[doc = "Bit 1 - Transfer Complete Status Enable"]
     #[inline]
     pub fn trfc(&self) -> TRFCR {
-        TRFCR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        })
+        TRFCR::_from(((self.bits >> 1) & 0x01) != 0)
     }
     #[doc = "Bit 2 - Block Gap Event Status Enable"]
     #[inline]
     pub fn blkge(&self) -> BLKGER {
-        BLKGER::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        })
+        BLKGER::_from(((self.bits >> 2) & 0x01) != 0)
     }
     #[doc = "Bit 3 - DMA Interrupt Status Enable"]
     #[inline]
     pub fn dmaint(&self) -> DMAINTR {
-        DMAINTR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 3;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        })
+        DMAINTR::_from(((self.bits >> 3) & 0x01) != 0)
     }
     #[doc = "Bit 4 - Buffer Write Ready Status Enable"]
     #[inline]
     pub fn bwrrdy(&self) -> BWRRDYR {
-        BWRRDYR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        })
+        BWRRDYR::_from(((self.bits >> 4) & 0x01) != 0)
     }
     #[doc = "Bit 5 - Buffer Read Ready Status Enable"]
     #[inline]
     pub fn brdrdy(&self) -> BRDRDYR {
-        BRDRDYR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 5;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        })
+        BRDRDYR::_from(((self.bits >> 5) & 0x01) != 0)
     }
     #[doc = "Bit 6 - Card Insertion Status Enable"]
     #[inline]
     pub fn cins(&self) -> CINSR {
-        CINSR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 6;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        })
+        CINSR::_from(((self.bits >> 6) & 0x01) != 0)
     }
     #[doc = "Bit 7 - Card Removal Status Enable"]
     #[inline]
     pub fn crem(&self) -> CREMR {
-        CREMR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 7;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        })
+        CREMR::_from(((self.bits >> 7) & 0x01) != 0)
     }
     #[doc = "Bit 8 - Card Interrupt Status Enable"]
     #[inline]
     pub fn cint(&self) -> CINTR {
-        CINTR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        })
+        CINTR::_from(((self.bits >> 8) & 0x01) != 0)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {

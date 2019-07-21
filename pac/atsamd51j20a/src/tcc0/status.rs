@@ -14,10 +14,7 @@ impl super::STATUS {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
+        self.register.set(f(&R { bits }, &mut W { bits }).bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -32,14 +29,22 @@ impl super::STATUS {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
+        self.register.set(
+            f(&mut W {
+                bits: Self::reset_value(),
+            })
+            .bits,
+        );
+    }
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub const fn reset_value() -> u32 {
+        0x01
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.write(|w| w)
+        self.register.set(Self::reset_value())
     }
 }
 #[doc = r" Value of the field"]
@@ -625,10 +630,8 @@ impl<'a> _UFSW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 2;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 2);
+        self.w.bits |= ((value as u32) & 0x01) << 2;
         self.w
     }
 }
@@ -648,10 +651,8 @@ impl<'a> _DFSW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 3;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 3);
+        self.w.bits |= ((value as u32) & 0x01) << 3;
         self.w
     }
 }
@@ -671,10 +672,8 @@ impl<'a> _PATTBUFVW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 5;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 5);
+        self.w.bits |= ((value as u32) & 0x01) << 5;
         self.w
     }
 }
@@ -694,10 +693,8 @@ impl<'a> _PERBUFVW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 7;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 7);
+        self.w.bits |= ((value as u32) & 0x01) << 7;
         self.w
     }
 }
@@ -717,10 +714,8 @@ impl<'a> _FAULTAW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 12;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 12);
+        self.w.bits |= ((value as u32) & 0x01) << 12;
         self.w
     }
 }
@@ -740,10 +735,8 @@ impl<'a> _FAULTBW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 13;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 13);
+        self.w.bits |= ((value as u32) & 0x01) << 13;
         self.w
     }
 }
@@ -763,10 +756,8 @@ impl<'a> _FAULT0W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 14;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 14);
+        self.w.bits |= ((value as u32) & 0x01) << 14;
         self.w
     }
 }
@@ -786,10 +777,8 @@ impl<'a> _FAULT1W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 15;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 15);
+        self.w.bits |= ((value as u32) & 0x01) << 15;
         self.w
     }
 }
@@ -809,10 +798,8 @@ impl<'a> _CCBUFV0W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 16;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 16);
+        self.w.bits |= ((value as u32) & 0x01) << 16;
         self.w
     }
 }
@@ -832,10 +819,8 @@ impl<'a> _CCBUFV1W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 17;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 17);
+        self.w.bits |= ((value as u32) & 0x01) << 17;
         self.w
     }
 }
@@ -855,10 +840,8 @@ impl<'a> _CCBUFV2W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 18;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 18);
+        self.w.bits |= ((value as u32) & 0x01) << 18;
         self.w
     }
 }
@@ -878,10 +861,8 @@ impl<'a> _CCBUFV3W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 19;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 19);
+        self.w.bits |= ((value as u32) & 0x01) << 19;
         self.w
     }
 }
@@ -901,10 +882,8 @@ impl<'a> _CCBUFV4W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 20;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 20);
+        self.w.bits |= ((value as u32) & 0x01) << 20;
         self.w
     }
 }
@@ -924,10 +903,8 @@ impl<'a> _CCBUFV5W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 21;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 21);
+        self.w.bits |= ((value as u32) & 0x01) << 21;
         self.w
     }
 }
@@ -940,280 +917,167 @@ impl R {
     #[doc = "Bit 0 - Stop"]
     #[inline]
     pub fn stop(&self) -> STOPR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 0) & 0x01) != 0;
         STOPR { bits }
     }
     #[doc = "Bit 1 - Ramp"]
     #[inline]
     pub fn idx(&self) -> IDXR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 1) & 0x01) != 0;
         IDXR { bits }
     }
     #[doc = "Bit 2 - Non-recoverable Update Fault State"]
     #[inline]
     pub fn ufs(&self) -> UFSR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 2) & 0x01) != 0;
         UFSR { bits }
     }
     #[doc = "Bit 3 - Non-Recoverable Debug Fault State"]
     #[inline]
     pub fn dfs(&self) -> DFSR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 3;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 3) & 0x01) != 0;
         DFSR { bits }
     }
     #[doc = "Bit 4 - Slave"]
     #[inline]
     pub fn slave(&self) -> SLAVER {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 4) & 0x01) != 0;
         SLAVER { bits }
     }
     #[doc = "Bit 5 - Pattern Buffer Valid"]
     #[inline]
     pub fn pattbufv(&self) -> PATTBUFVR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 5;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 5) & 0x01) != 0;
         PATTBUFVR { bits }
     }
     #[doc = "Bit 7 - Period Buffer Valid"]
     #[inline]
     pub fn perbufv(&self) -> PERBUFVR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 7;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 7) & 0x01) != 0;
         PERBUFVR { bits }
     }
     #[doc = "Bit 8 - Recoverable Fault A Input"]
     #[inline]
     pub fn faultain(&self) -> FAULTAINR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 8) & 0x01) != 0;
         FAULTAINR { bits }
     }
     #[doc = "Bit 9 - Recoverable Fault B Input"]
     #[inline]
     pub fn faultbin(&self) -> FAULTBINR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 9;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 9) & 0x01) != 0;
         FAULTBINR { bits }
     }
     #[doc = "Bit 10 - Non-Recoverable Fault0 Input"]
     #[inline]
     pub fn fault0in(&self) -> FAULT0INR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 10;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 10) & 0x01) != 0;
         FAULT0INR { bits }
     }
     #[doc = "Bit 11 - Non-Recoverable Fault1 Input"]
     #[inline]
     pub fn fault1in(&self) -> FAULT1INR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 11;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 11) & 0x01) != 0;
         FAULT1INR { bits }
     }
     #[doc = "Bit 12 - Recoverable Fault A State"]
     #[inline]
     pub fn faulta(&self) -> FAULTAR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 12;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 12) & 0x01) != 0;
         FAULTAR { bits }
     }
     #[doc = "Bit 13 - Recoverable Fault B State"]
     #[inline]
     pub fn faultb(&self) -> FAULTBR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 13;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 13) & 0x01) != 0;
         FAULTBR { bits }
     }
     #[doc = "Bit 14 - Non-Recoverable Fault 0 State"]
     #[inline]
     pub fn fault0(&self) -> FAULT0R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 14;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 14) & 0x01) != 0;
         FAULT0R { bits }
     }
     #[doc = "Bit 15 - Non-Recoverable Fault 1 State"]
     #[inline]
     pub fn fault1(&self) -> FAULT1R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 15;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 15) & 0x01) != 0;
         FAULT1R { bits }
     }
     #[doc = "Bit 16 - Compare Channel 0 Buffer Valid"]
     #[inline]
     pub fn ccbufv0(&self) -> CCBUFV0R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 16;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 16) & 0x01) != 0;
         CCBUFV0R { bits }
     }
     #[doc = "Bit 17 - Compare Channel 1 Buffer Valid"]
     #[inline]
     pub fn ccbufv1(&self) -> CCBUFV1R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 17;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 17) & 0x01) != 0;
         CCBUFV1R { bits }
     }
     #[doc = "Bit 18 - Compare Channel 2 Buffer Valid"]
     #[inline]
     pub fn ccbufv2(&self) -> CCBUFV2R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 18;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 18) & 0x01) != 0;
         CCBUFV2R { bits }
     }
     #[doc = "Bit 19 - Compare Channel 3 Buffer Valid"]
     #[inline]
     pub fn ccbufv3(&self) -> CCBUFV3R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 19;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 19) & 0x01) != 0;
         CCBUFV3R { bits }
     }
     #[doc = "Bit 20 - Compare Channel 4 Buffer Valid"]
     #[inline]
     pub fn ccbufv4(&self) -> CCBUFV4R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 20;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 20) & 0x01) != 0;
         CCBUFV4R { bits }
     }
     #[doc = "Bit 21 - Compare Channel 5 Buffer Valid"]
     #[inline]
     pub fn ccbufv5(&self) -> CCBUFV5R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 21;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 21) & 0x01) != 0;
         CCBUFV5R { bits }
     }
     #[doc = "Bit 24 - Compare Channel 0 Value"]
     #[inline]
     pub fn cmp0(&self) -> CMP0R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 24;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 24) & 0x01) != 0;
         CMP0R { bits }
     }
     #[doc = "Bit 25 - Compare Channel 1 Value"]
     #[inline]
     pub fn cmp1(&self) -> CMP1R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 25;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 25) & 0x01) != 0;
         CMP1R { bits }
     }
     #[doc = "Bit 26 - Compare Channel 2 Value"]
     #[inline]
     pub fn cmp2(&self) -> CMP2R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 26;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 26) & 0x01) != 0;
         CMP2R { bits }
     }
     #[doc = "Bit 27 - Compare Channel 3 Value"]
     #[inline]
     pub fn cmp3(&self) -> CMP3R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 27;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 27) & 0x01) != 0;
         CMP3R { bits }
     }
     #[doc = "Bit 28 - Compare Channel 4 Value"]
     #[inline]
     pub fn cmp4(&self) -> CMP4R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 28;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 28) & 0x01) != 0;
         CMP4R { bits }
     }
     #[doc = "Bit 29 - Compare Channel 5 Value"]
     #[inline]
     pub fn cmp5(&self) -> CMP5R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 29;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 29) & 0x01) != 0;
         CMP5R { bits }
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 1 }
-    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
