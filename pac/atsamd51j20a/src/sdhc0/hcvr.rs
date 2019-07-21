@@ -42,21 +42,13 @@ impl R {
     #[doc = "Bits 0:7 - Spec Version"]
     #[inline]
     pub fn sver(&self) -> SVERR {
-        let bits = {
-            const MASK: u8 = 255;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u16) as u8
-        };
+        let bits = ((self.bits >> 0) & 0xff) as u8;
         SVERR { bits }
     }
     #[doc = "Bits 8:15 - Vendor Version"]
     #[inline]
     pub fn vver(&self) -> VVERR {
-        let bits = {
-            const MASK: u8 = 255;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u16) as u8
-        };
+        let bits = ((self.bits >> 8) & 0xff) as u8;
         VVERR { bits }
     }
 }

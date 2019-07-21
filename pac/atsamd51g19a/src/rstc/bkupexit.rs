@@ -83,31 +83,19 @@ impl R {
     #[doc = "Bit 1 - Real Timer Counter Interrupt"]
     #[inline]
     pub fn rtc(&self) -> RTCR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
+        let bits = ((self.bits >> 1) & 0x01) != 0;
         RTCR { bits }
     }
     #[doc = "Bit 2 - Battery Backup Power Switch"]
     #[inline]
     pub fn bbps(&self) -> BBPSR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
+        let bits = ((self.bits >> 2) & 0x01) != 0;
         BBPSR { bits }
     }
     #[doc = "Bit 7 - Hibernate"]
     #[inline]
     pub fn hib(&self) -> HIBR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 7;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
+        let bits = ((self.bits >> 7) & 0x01) != 0;
         HIBR { bits }
     }
 }

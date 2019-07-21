@@ -9,13 +9,13 @@ pub struct RegisterBlock {
 }
 #[doc = "Reset Cause"]
 pub struct RCAUSE {
-    register: ::vcell::VolatileCell<u8>,
+    register: vcell::VolatileCell<u8>,
 }
 #[doc = "Reset Cause"]
 pub mod rcause;
 #[doc = "Backup Exit Source"]
 pub struct BKUPEXIT {
-    register: ::vcell::VolatileCell<u8>,
+    register: vcell::VolatileCell<u8>,
 }
 #[doc = "Backup Exit Source"]
 pub mod bkupexit;

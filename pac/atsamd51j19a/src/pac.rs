@@ -33,79 +33,79 @@ pub struct RegisterBlock {
 }
 #[doc = "Write control"]
 pub struct WRCTRL {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Write control"]
 pub mod wrctrl;
 #[doc = "Event control"]
 pub struct EVCTRL {
-    register: ::vcell::VolatileCell<u8>,
+    register: vcell::VolatileCell<u8>,
 }
 #[doc = "Event control"]
 pub mod evctrl;
 #[doc = "Interrupt enable clear"]
 pub struct INTENCLR {
-    register: ::vcell::VolatileCell<u8>,
+    register: vcell::VolatileCell<u8>,
 }
 #[doc = "Interrupt enable clear"]
 pub mod intenclr;
 #[doc = "Interrupt enable set"]
 pub struct INTENSET {
-    register: ::vcell::VolatileCell<u8>,
+    register: vcell::VolatileCell<u8>,
 }
 #[doc = "Interrupt enable set"]
 pub mod intenset;
 #[doc = "Bridge interrupt flag status"]
 pub struct INTFLAGAHB {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Bridge interrupt flag status"]
 pub mod intflagahb;
 #[doc = "Peripheral interrupt flag status - Bridge A"]
 pub struct INTFLAGA {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Peripheral interrupt flag status - Bridge A"]
 pub mod intflaga;
 #[doc = "Peripheral interrupt flag status - Bridge B"]
 pub struct INTFLAGB {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Peripheral interrupt flag status - Bridge B"]
 pub mod intflagb;
 #[doc = "Peripheral interrupt flag status - Bridge C"]
 pub struct INTFLAGC {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Peripheral interrupt flag status - Bridge C"]
 pub mod intflagc;
 #[doc = "Peripheral interrupt flag status - Bridge D"]
 pub struct INTFLAGD {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Peripheral interrupt flag status - Bridge D"]
 pub mod intflagd;
 #[doc = "Peripheral write protection status - Bridge A"]
 pub struct STATUSA {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Peripheral write protection status - Bridge A"]
 pub mod statusa;
 #[doc = "Peripheral write protection status - Bridge B"]
 pub struct STATUSB {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Peripheral write protection status - Bridge B"]
 pub mod statusb;
 #[doc = "Peripheral write protection status - Bridge C"]
 pub struct STATUSC {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Peripheral write protection status - Bridge C"]
 pub mod statusc;
 #[doc = "Peripheral write protection status - Bridge D"]
 pub struct STATUSD {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Peripheral write protection status - Bridge D"]
 pub mod statusd;

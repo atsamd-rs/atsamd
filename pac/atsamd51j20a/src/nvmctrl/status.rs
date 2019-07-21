@@ -157,71 +157,43 @@ impl R {
     #[doc = "Bit 0 - Ready to accept a command"]
     #[inline]
     pub fn ready(&self) -> READYR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
+        let bits = ((self.bits >> 0) & 0x01) != 0;
         READYR { bits }
     }
     #[doc = "Bit 1 - Power Reduction Mode"]
     #[inline]
     pub fn prm(&self) -> PRMR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
+        let bits = ((self.bits >> 1) & 0x01) != 0;
         PRMR { bits }
     }
     #[doc = "Bit 2 - NVM Page Buffer Active Loading"]
     #[inline]
     pub fn load(&self) -> LOADR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
+        let bits = ((self.bits >> 2) & 0x01) != 0;
         LOADR { bits }
     }
     #[doc = "Bit 3 - NVM Write Or Erase Operation Is Suspended"]
     #[inline]
     pub fn susp(&self) -> SUSPR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 3;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
+        let bits = ((self.bits >> 3) & 0x01) != 0;
         SUSPR { bits }
     }
     #[doc = "Bit 4 - BANKA First"]
     #[inline]
     pub fn afirst(&self) -> AFIRSTR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
+        let bits = ((self.bits >> 4) & 0x01) != 0;
         AFIRSTR { bits }
     }
     #[doc = "Bit 5 - Boot Loader Protection Disable"]
     #[inline]
     pub fn bpdis(&self) -> BPDISR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 5;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
+        let bits = ((self.bits >> 5) & 0x01) != 0;
         BPDISR { bits }
     }
     #[doc = "Bits 8:11 - Boot Loader Protection Size"]
     #[inline]
     pub fn bootprot(&self) -> BOOTPROTR {
-        let bits = {
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u16) as u8
-        };
+        let bits = ((self.bits >> 8) & 0x0f) as u8;
         BOOTPROTR { bits }
     }
 }

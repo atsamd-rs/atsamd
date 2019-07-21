@@ -335,151 +335,91 @@ impl R {
     #[doc = "Bit 0 - USB APB Protect Enable"]
     #[inline]
     pub fn usb_(&self) -> USB_R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 0) & 0x01) != 0;
         USB_R { bits }
     }
     #[doc = "Bit 1 - DSU APB Protect Enable"]
     #[inline]
     pub fn dsu_(&self) -> DSU_R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 1) & 0x01) != 0;
         DSU_R { bits }
     }
     #[doc = "Bit 2 - NVMCTRL APB Protect Enable"]
     #[inline]
     pub fn nvmctrl_(&self) -> NVMCTRL_R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 2) & 0x01) != 0;
         NVMCTRL_R { bits }
     }
     #[doc = "Bit 3 - CMCC APB Protect Enable"]
     #[inline]
     pub fn cmcc_(&self) -> CMCC_R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 3;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 3) & 0x01) != 0;
         CMCC_R { bits }
     }
     #[doc = "Bit 4 - PORT APB Protect Enable"]
     #[inline]
     pub fn port_(&self) -> PORT_R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 4) & 0x01) != 0;
         PORT_R { bits }
     }
     #[doc = "Bit 5 - DMAC APB Protect Enable"]
     #[inline]
     pub fn dmac_(&self) -> DMAC_R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 5;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 5) & 0x01) != 0;
         DMAC_R { bits }
     }
     #[doc = "Bit 6 - HMATRIX APB Protect Enable"]
     #[inline]
     pub fn hmatrix_(&self) -> HMATRIX_R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 6;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 6) & 0x01) != 0;
         HMATRIX_R { bits }
     }
     #[doc = "Bit 7 - EVSYS APB Protect Enable"]
     #[inline]
     pub fn evsys_(&self) -> EVSYS_R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 7;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 7) & 0x01) != 0;
         EVSYS_R { bits }
     }
     #[doc = "Bit 9 - SERCOM2 APB Protect Enable"]
     #[inline]
     pub fn sercom2_(&self) -> SERCOM2_R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 9;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 9) & 0x01) != 0;
         SERCOM2_R { bits }
     }
     #[doc = "Bit 10 - SERCOM3 APB Protect Enable"]
     #[inline]
     pub fn sercom3_(&self) -> SERCOM3_R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 10;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 10) & 0x01) != 0;
         SERCOM3_R { bits }
     }
     #[doc = "Bit 11 - TCC0 APB Protect Enable"]
     #[inline]
     pub fn tcc0_(&self) -> TCC0_R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 11;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 11) & 0x01) != 0;
         TCC0_R { bits }
     }
     #[doc = "Bit 12 - TCC1 APB Protect Enable"]
     #[inline]
     pub fn tcc1_(&self) -> TCC1_R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 12;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 12) & 0x01) != 0;
         TCC1_R { bits }
     }
     #[doc = "Bit 13 - TC2 APB Protect Enable"]
     #[inline]
     pub fn tc2_(&self) -> TC2_R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 13;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 13) & 0x01) != 0;
         TC2_R { bits }
     }
     #[doc = "Bit 14 - TC3 APB Protect Enable"]
     #[inline]
     pub fn tc3_(&self) -> TC3_R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 14;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 14) & 0x01) != 0;
         TC3_R { bits }
     }
     #[doc = "Bit 16 - RAMECC APB Protect Enable"]
     #[inline]
     pub fn ramecc_(&self) -> RAMECC_R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 16;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 16) & 0x01) != 0;
         RAMECC_R { bits }
     }
 }

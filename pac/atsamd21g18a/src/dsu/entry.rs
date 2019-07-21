@@ -73,31 +73,19 @@ impl R {
     #[doc = "Bit 0 - Entry Present"]
     #[inline]
     pub fn epres(&self) -> EPRESR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 0) & 0x01) != 0;
         EPRESR { bits }
     }
     #[doc = "Bit 1 - Format"]
     #[inline]
     pub fn fmt(&self) -> FMTR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 1) & 0x01) != 0;
         FMTR { bits }
     }
     #[doc = "Bits 12:31 - Address Offset"]
     #[inline]
     pub fn addoff(&self) -> ADDOFFR {
-        let bits = {
-            const MASK: u32 = 1048575;
-            const OFFSET: u8 = 12;
-            ((self.bits >> OFFSET) & MASK as u32) as u32
-        };
+        let bits = ((self.bits >> 12) & 0x000f_ffff) as u32;
         ADDOFFR { bits }
     }
 }

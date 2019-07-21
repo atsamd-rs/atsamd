@@ -343,79 +343,79 @@ pub struct RegisterBlock {
 }
 #[doc = "Control"]
 pub struct CTRLA {
-    register: ::vcell::VolatileCell<u8>,
+    register: vcell::VolatileCell<u8>,
 }
 #[doc = "Control"]
 pub mod ctrla;
 #[doc = "Software Event"]
 pub struct SWEVT {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Software Event"]
 pub mod swevt;
 #[doc = "Priority Control"]
 pub struct PRICTRL {
-    register: ::vcell::VolatileCell<u8>,
+    register: vcell::VolatileCell<u8>,
 }
 #[doc = "Priority Control"]
 pub mod prictrl;
 #[doc = "Channel Pending Interrupt"]
 pub struct INTPEND {
-    register: ::vcell::VolatileCell<u16>,
+    register: vcell::VolatileCell<u16>,
 }
 #[doc = "Channel Pending Interrupt"]
 pub mod intpend;
 #[doc = "Interrupt Status"]
 pub struct INTSTATUS {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Interrupt Status"]
 pub mod intstatus;
 #[doc = "Busy Channels"]
 pub struct BUSYCH {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Busy Channels"]
 pub mod busych;
 #[doc = "Ready Users"]
 pub struct READYUSR {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Ready Users"]
 pub mod readyusr;
 #[doc = "Channel n Control"]
 pub struct CHANNEL {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Channel n Control"]
 pub mod channel;
 #[doc = "Channel n Interrupt Enable Clear"]
 pub struct CHINTENCLR {
-    register: ::vcell::VolatileCell<u8>,
+    register: vcell::VolatileCell<u8>,
 }
 #[doc = "Channel n Interrupt Enable Clear"]
 pub mod chintenclr;
 #[doc = "Channel n Interrupt Enable Set"]
 pub struct CHINTENSET {
-    register: ::vcell::VolatileCell<u8>,
+    register: vcell::VolatileCell<u8>,
 }
 #[doc = "Channel n Interrupt Enable Set"]
 pub mod chintenset;
 #[doc = "Channel n Interrupt Flag Status and Clear"]
 pub struct CHINTFLAG {
-    register: ::vcell::VolatileCell<u8>,
+    register: vcell::VolatileCell<u8>,
 }
 #[doc = "Channel n Interrupt Flag Status and Clear"]
 pub mod chintflag;
 #[doc = "Channel n Status"]
 pub struct CHSTATUS {
-    register: ::vcell::VolatileCell<u8>,
+    register: vcell::VolatileCell<u8>,
 }
 #[doc = "Channel n Status"]
 pub mod chstatus;
 #[doc = "User Multiplexer n"]
 pub struct USER {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "User Multiplexer n"]
 pub mod user;

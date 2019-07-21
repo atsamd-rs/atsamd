@@ -52,21 +52,13 @@ impl R {
     #[doc = "Bit 0 - ADC Busy Status"]
     #[inline]
     pub fn adcbusy(&self) -> ADCBUSYR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
+        let bits = ((self.bits >> 0) & 0x01) != 0;
         ADCBUSYR { bits }
     }
     #[doc = "Bits 2:7 - Window Comparator Counter"]
     #[inline]
     pub fn wcc(&self) -> WCCR {
-        let bits = {
-            const MASK: u8 = 63;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u8) as u8
-        };
+        let bits = ((self.bits >> 2) & 0x3f) as u8;
         WCCR { bits }
     }
 }

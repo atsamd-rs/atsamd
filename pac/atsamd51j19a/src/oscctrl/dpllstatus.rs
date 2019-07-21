@@ -62,21 +62,13 @@ impl R {
     #[doc = "Bit 0 - DPLL Lock Status"]
     #[inline]
     pub fn lock(&self) -> LOCKR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 0) & 0x01) != 0;
         LOCKR { bits }
     }
     #[doc = "Bit 1 - DPLL Clock Ready"]
     #[inline]
     pub fn clkrdy(&self) -> CLKRDYR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 1) & 0x01) != 0;
         CLKRDYR { bits }
     }
 }

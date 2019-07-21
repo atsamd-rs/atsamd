@@ -63,31 +63,19 @@ impl R {
     #[doc = "Bit 0 - ICM Controller Enable Register"]
     #[inline]
     pub fn enable(&self) -> ENABLER {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 0) & 0x01) != 0;
         ENABLER { bits }
     }
     #[doc = "Bits 8:11 - RAW Region Monitoring Disabled Status"]
     #[inline]
     pub fn rawrmdis(&self) -> RAWRMDISR {
-        let bits = {
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
+        let bits = ((self.bits >> 8) & 0x0f) as u8;
         RAWRMDISR { bits }
     }
     #[doc = "Bits 12:15 - Region Monitoring Disabled Status"]
     #[inline]
     pub fn rmdis(&self) -> RMDISR {
-        let bits = {
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 12;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
+        let bits = ((self.bits >> 12) & 0x0f) as u8;
         RMDISR { bits }
     }
 }

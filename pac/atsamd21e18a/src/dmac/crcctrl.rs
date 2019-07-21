@@ -14,10 +14,7 @@ impl super::CRCCTRL {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
+        self.register.set(f(&R { bits }, &mut W { bits }).bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -32,14 +29,22 @@ impl super::CRCCTRL {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
+        self.register.set(
+            f(&mut W {
+                bits: Self::reset_value(),
+            })
+            .bits,
+        );
+    }
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub const fn reset_value() -> u16 {
+        0
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.write(|w| w)
+        self.register.set(Self::reset_value())
     }
 }
 #[doc = "Possible values of the field `CRCBEATSIZE`"]
@@ -60,8 +65,8 @@ impl CRCBEATSIZER {
     pub fn bits(&self) -> u8 {
         match *self {
             CRCBEATSIZER::BYTE => 0,
-            CRCBEATSIZER::HWORD => 1,
-            CRCBEATSIZER::WORD => 2,
+            CRCBEATSIZER::HWORD => 0x01,
+            CRCBEATSIZER::WORD => 0x02,
             CRCBEATSIZER::_Reserved(bits) => bits,
         }
     }
@@ -108,7 +113,7 @@ impl CRCPOLYR {
     pub fn bits(&self) -> u8 {
         match *self {
             CRCPOLYR::CRC16 => 0,
-            CRCPOLYR::CRC32 => 1,
+            CRCPOLYR::CRC32 => 0x01,
             CRCPOLYR::_Reserved(bits) => bits,
         }
     }
@@ -149,7 +154,7 @@ impl CRCSRCR {
     pub fn bits(&self) -> u8 {
         match *self {
             CRCSRCR::NOACT => 0,
-            CRCSRCR::IO => 1,
+            CRCSRCR::IO => 0x01,
             CRCSRCR::_Reserved(bits) => bits,
         }
     }
@@ -175,6 +180,7 @@ impl CRCSRCR {
     }
 }
 #[doc = "Values that can be written to the field `CRCBEATSIZE`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CRCBEATSIZEW {
     #[doc = "8-bit bus transfer"]
     BYTE,
@@ -223,14 +229,13 @@ impl<'a> _CRCBEATSIZEW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x03 << 0);
+        self.w.bits |= ((value as u16) & 0x03) << 0;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `CRCPOLY`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CRCPOLYW {
     #[doc = "CRC-16 (CRC-CCITT)"]
     CRC16,
@@ -271,14 +276,13 @@ impl<'a> _CRCPOLYW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 2;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x03 << 2);
+        self.w.bits |= ((value as u16) & 0x03) << 2;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `CRCSRC`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CRCSRCW {
     #[doc = "No action"]
     NOACT,
@@ -319,10 +323,8 @@ impl<'a> _CRCSRCW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 63;
-        const OFFSET: u8 = 8;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x3f << 8);
+        self.w.bits |= ((value as u16) & 0x3f) << 8;
         self.w
     }
 }
@@ -335,37 +337,20 @@ impl R {
     #[doc = "Bits 0:1 - CRC Beat Size"]
     #[inline]
     pub fn crcbeatsize(&self) -> CRCBEATSIZER {
-        CRCBEATSIZER::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u16) as u8
-        })
+        CRCBEATSIZER::_from(((self.bits >> 0) & 0x03) as u8)
     }
     #[doc = "Bits 2:3 - CRC Polynomial Type"]
     #[inline]
     pub fn crcpoly(&self) -> CRCPOLYR {
-        CRCPOLYR::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u16) as u8
-        })
+        CRCPOLYR::_from(((self.bits >> 2) & 0x03) as u8)
     }
     #[doc = "Bits 8:13 - CRC Input Source"]
     #[inline]
     pub fn crcsrc(&self) -> CRCSRCR {
-        CRCSRCR::_from({
-            const MASK: u8 = 63;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u16) as u8
-        })
+        CRCSRCR::_from(((self.bits >> 8) & 0x3f) as u8)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {

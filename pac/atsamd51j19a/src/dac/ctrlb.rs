@@ -14,10 +14,7 @@ impl super::CTRLB {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
+        self.register.set(f(&R { bits }, &mut W { bits }).bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -32,14 +29,22 @@ impl super::CTRLB {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
+        self.register.set(
+            f(&mut W {
+                bits: Self::reset_value(),
+            })
+            .bits,
+        );
+    }
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub const fn reset_value() -> u8 {
+        0x02
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.write(|w| w)
+        self.register.set(Self::reset_value())
     }
 }
 #[doc = r" Value of the field"]
@@ -81,9 +86,9 @@ impl REFSELR {
     pub fn bits(&self) -> u8 {
         match *self {
             REFSELR::VREFPU => 0,
-            REFSELR::VDDANA => 1,
-            REFSELR::VREFPB => 2,
-            REFSELR::INTREF => 3,
+            REFSELR::VDDANA => 0x01,
+            REFSELR::VREFPB => 0x02,
+            REFSELR::INTREF => 0x03,
         }
     }
     #[allow(missing_docs)]
@@ -135,14 +140,13 @@ impl<'a> _DIFFW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits &= !(0x01 << 0);
+        self.w.bits |= ((value as u8) & 0x01) << 0;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `REFSEL`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum REFSELW {
     #[doc = "External reference unbuffered"]
     VREFPU,
@@ -201,10 +205,8 @@ impl<'a> _REFSELW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 1;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits &= !(0x03 << 1);
+        self.w.bits |= ((value as u8) & 0x03) << 1;
         self.w
     }
 }
@@ -217,29 +219,16 @@ impl R {
     #[doc = "Bit 0 - Differential mode enable"]
     #[inline]
     pub fn diff(&self) -> DIFFR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
+        let bits = ((self.bits >> 0) & 0x01) != 0;
         DIFFR { bits }
     }
     #[doc = "Bits 1:2 - Reference Selection for DAC0/1"]
     #[inline]
     pub fn refsel(&self) -> REFSELR {
-        REFSELR::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u8) as u8
-        })
+        REFSELR::_from(((self.bits >> 1) & 0x03) as u8)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 2 }
-    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {

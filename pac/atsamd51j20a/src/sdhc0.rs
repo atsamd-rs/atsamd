@@ -283,301 +283,301 @@ impl RegisterBlock {
 }
 #[doc = "SDMA System Address / Argument 2"]
 pub struct SSAR {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "SDMA System Address / Argument 2"]
 pub mod ssar;
 #[doc = "SDMA System Address / Argument 2"]
 pub struct SSAR_CMD23 {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "SDMA System Address / Argument 2"]
 pub mod ssar_cmd23;
 #[doc = "Block Size"]
 pub struct BSR {
-    register: ::vcell::VolatileCell<u16>,
+    register: vcell::VolatileCell<u16>,
 }
 #[doc = "Block Size"]
 pub mod bsr;
 #[doc = "Block Count"]
 pub struct BCR {
-    register: ::vcell::VolatileCell<u16>,
+    register: vcell::VolatileCell<u16>,
 }
 #[doc = "Block Count"]
 pub mod bcr;
 #[doc = "Argument 1"]
 pub struct ARG1R {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Argument 1"]
 pub mod arg1r;
 #[doc = "Transfer Mode"]
 pub struct TMR {
-    register: ::vcell::VolatileCell<u16>,
+    register: vcell::VolatileCell<u16>,
 }
 #[doc = "Transfer Mode"]
 pub mod tmr;
 #[doc = "Command"]
 pub struct CR {
-    register: ::vcell::VolatileCell<u16>,
+    register: vcell::VolatileCell<u16>,
 }
 #[doc = "Command"]
 pub mod cr;
 #[doc = "Response"]
 pub struct RR {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Response"]
 pub mod rr;
 #[doc = "Buffer Data Port"]
 pub struct BDPR {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Buffer Data Port"]
 pub mod bdpr;
 #[doc = "Present State"]
 pub struct PSR {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Present State"]
 pub mod psr;
 #[doc = "Host Control 1"]
 pub struct HC1R {
-    register: ::vcell::VolatileCell<u8>,
+    register: vcell::VolatileCell<u8>,
 }
 #[doc = "Host Control 1"]
 pub mod hc1r;
 #[doc = "Host Control 1"]
 pub struct HC1R_EMMC {
-    register: ::vcell::VolatileCell<u8>,
+    register: vcell::VolatileCell<u8>,
 }
 #[doc = "Host Control 1"]
 pub mod hc1r_emmc;
 #[doc = "Power Control"]
 pub struct PCR {
-    register: ::vcell::VolatileCell<u8>,
+    register: vcell::VolatileCell<u8>,
 }
 #[doc = "Power Control"]
 pub mod pcr;
 #[doc = "Block Gap Control"]
 pub struct BGCR {
-    register: ::vcell::VolatileCell<u8>,
+    register: vcell::VolatileCell<u8>,
 }
 #[doc = "Block Gap Control"]
 pub mod bgcr;
 #[doc = "Block Gap Control"]
 pub struct BGCR_EMMC {
-    register: ::vcell::VolatileCell<u8>,
+    register: vcell::VolatileCell<u8>,
 }
 #[doc = "Block Gap Control"]
 pub mod bgcr_emmc;
 #[doc = "Wakeup Control"]
 pub struct WCR {
-    register: ::vcell::VolatileCell<u8>,
+    register: vcell::VolatileCell<u8>,
 }
 #[doc = "Wakeup Control"]
 pub mod wcr;
 #[doc = "Clock Control"]
 pub struct CCR {
-    register: ::vcell::VolatileCell<u16>,
+    register: vcell::VolatileCell<u16>,
 }
 #[doc = "Clock Control"]
 pub mod ccr;
 #[doc = "Timeout Control"]
 pub struct TCR {
-    register: ::vcell::VolatileCell<u8>,
+    register: vcell::VolatileCell<u8>,
 }
 #[doc = "Timeout Control"]
 pub mod tcr;
 #[doc = "Software Reset"]
 pub struct SRR {
-    register: ::vcell::VolatileCell<u8>,
+    register: vcell::VolatileCell<u8>,
 }
 #[doc = "Software Reset"]
 pub mod srr;
 #[doc = "Normal Interrupt Status"]
 pub struct NISTR {
-    register: ::vcell::VolatileCell<u16>,
+    register: vcell::VolatileCell<u16>,
 }
 #[doc = "Normal Interrupt Status"]
 pub mod nistr;
 #[doc = "Normal Interrupt Status"]
 pub struct NISTR_EMMC {
-    register: ::vcell::VolatileCell<u16>,
+    register: vcell::VolatileCell<u16>,
 }
 #[doc = "Normal Interrupt Status"]
 pub mod nistr_emmc;
 #[doc = "Error Interrupt Status"]
 pub struct EISTR {
-    register: ::vcell::VolatileCell<u16>,
+    register: vcell::VolatileCell<u16>,
 }
 #[doc = "Error Interrupt Status"]
 pub mod eistr;
 #[doc = "Error Interrupt Status"]
 pub struct EISTR_EMMC {
-    register: ::vcell::VolatileCell<u16>,
+    register: vcell::VolatileCell<u16>,
 }
 #[doc = "Error Interrupt Status"]
 pub mod eistr_emmc;
 #[doc = "Normal Interrupt Status Enable"]
 pub struct NISTER {
-    register: ::vcell::VolatileCell<u16>,
+    register: vcell::VolatileCell<u16>,
 }
 #[doc = "Normal Interrupt Status Enable"]
 pub mod nister;
 #[doc = "Normal Interrupt Status Enable"]
 pub struct NISTER_EMMC {
-    register: ::vcell::VolatileCell<u16>,
+    register: vcell::VolatileCell<u16>,
 }
 #[doc = "Normal Interrupt Status Enable"]
 pub mod nister_emmc;
 #[doc = "Error Interrupt Status Enable"]
 pub struct EISTER {
-    register: ::vcell::VolatileCell<u16>,
+    register: vcell::VolatileCell<u16>,
 }
 #[doc = "Error Interrupt Status Enable"]
 pub mod eister;
 #[doc = "Error Interrupt Status Enable"]
 pub struct EISTER_EMMC {
-    register: ::vcell::VolatileCell<u16>,
+    register: vcell::VolatileCell<u16>,
 }
 #[doc = "Error Interrupt Status Enable"]
 pub mod eister_emmc;
 #[doc = "Normal Interrupt Signal Enable"]
 pub struct NISIER {
-    register: ::vcell::VolatileCell<u16>,
+    register: vcell::VolatileCell<u16>,
 }
 #[doc = "Normal Interrupt Signal Enable"]
 pub mod nisier;
 #[doc = "Normal Interrupt Signal Enable"]
 pub struct NISIER_EMMC {
-    register: ::vcell::VolatileCell<u16>,
+    register: vcell::VolatileCell<u16>,
 }
 #[doc = "Normal Interrupt Signal Enable"]
 pub mod nisier_emmc;
 #[doc = "Error Interrupt Signal Enable"]
 pub struct EISIER {
-    register: ::vcell::VolatileCell<u16>,
+    register: vcell::VolatileCell<u16>,
 }
 #[doc = "Error Interrupt Signal Enable"]
 pub mod eisier;
 #[doc = "Error Interrupt Signal Enable"]
 pub struct EISIER_EMMC {
-    register: ::vcell::VolatileCell<u16>,
+    register: vcell::VolatileCell<u16>,
 }
 #[doc = "Error Interrupt Signal Enable"]
 pub mod eisier_emmc;
 #[doc = "Auto CMD Error Status"]
 pub struct ACESR {
-    register: ::vcell::VolatileCell<u16>,
+    register: vcell::VolatileCell<u16>,
 }
 #[doc = "Auto CMD Error Status"]
 pub mod acesr;
 #[doc = "Host Control 2"]
 pub struct HC2R {
-    register: ::vcell::VolatileCell<u16>,
+    register: vcell::VolatileCell<u16>,
 }
 #[doc = "Host Control 2"]
 pub mod hc2r;
 #[doc = "Host Control 2"]
 pub struct HC2R_EMMC {
-    register: ::vcell::VolatileCell<u16>,
+    register: vcell::VolatileCell<u16>,
 }
 #[doc = "Host Control 2"]
 pub mod hc2r_emmc;
 #[doc = "Capabilities 0"]
 pub struct CA0R {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Capabilities 0"]
 pub mod ca0r;
 #[doc = "Capabilities 1"]
 pub struct CA1R {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Capabilities 1"]
 pub mod ca1r;
 #[doc = "Maximum Current Capabilities"]
 pub struct MCCAR {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Maximum Current Capabilities"]
 pub mod mccar;
 #[doc = "Force Event for Auto CMD Error Status"]
 pub struct FERACES {
-    register: ::vcell::VolatileCell<u16>,
+    register: vcell::VolatileCell<u16>,
 }
 #[doc = "Force Event for Auto CMD Error Status"]
 pub mod feraces;
 #[doc = "Force Event for Error Interrupt Status"]
 pub struct FEREIS {
-    register: ::vcell::VolatileCell<u16>,
+    register: vcell::VolatileCell<u16>,
 }
 #[doc = "Force Event for Error Interrupt Status"]
 pub mod fereis;
 #[doc = "ADMA Error Status"]
 pub struct AESR {
-    register: ::vcell::VolatileCell<u8>,
+    register: vcell::VolatileCell<u8>,
 }
 #[doc = "ADMA Error Status"]
 pub mod aesr;
 #[doc = "ADMA System Address n"]
 pub struct ASAR {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "ADMA System Address n"]
 pub mod asar;
 #[doc = "Preset Value n"]
 pub struct PVR {
-    register: ::vcell::VolatileCell<u16>,
+    register: vcell::VolatileCell<u16>,
 }
 #[doc = "Preset Value n"]
 pub mod pvr;
 #[doc = "Slot Interrupt Status"]
 pub struct SISR {
-    register: ::vcell::VolatileCell<u16>,
+    register: vcell::VolatileCell<u16>,
 }
 #[doc = "Slot Interrupt Status"]
 pub mod sisr;
 #[doc = "Host Controller Version"]
 pub struct HCVR {
-    register: ::vcell::VolatileCell<u16>,
+    register: vcell::VolatileCell<u16>,
 }
 #[doc = "Host Controller Version"]
 pub mod hcvr;
 #[doc = "MMC Control 1"]
 pub struct MC1R {
-    register: ::vcell::VolatileCell<u8>,
+    register: vcell::VolatileCell<u8>,
 }
 #[doc = "MMC Control 1"]
 pub mod mc1r;
 #[doc = "MMC Control 2"]
 pub struct MC2R {
-    register: ::vcell::VolatileCell<u8>,
+    register: vcell::VolatileCell<u8>,
 }
 #[doc = "MMC Control 2"]
 pub mod mc2r;
 #[doc = "AHB Control"]
 pub struct ACR {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "AHB Control"]
 pub mod acr;
 #[doc = "Clock Control 2"]
 pub struct CC2R {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Clock Control 2"]
 pub mod cc2r;
 #[doc = "Capabilities Control"]
 pub struct CACR {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Capabilities Control"]
 pub mod cacr;
 #[doc = "Debug"]
 pub struct DBGR {
-    register: ::vcell::VolatileCell<u8>,
+    register: vcell::VolatileCell<u8>,
 }
 #[doc = "Debug"]
 pub mod dbgr;

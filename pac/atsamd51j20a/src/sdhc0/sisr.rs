@@ -41,11 +41,7 @@ impl R {
     #[doc = "Bit 0 - Interrupt Signal for Each Slot"]
     #[inline]
     pub fn intssl(&self) -> INTSSLR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
+        let bits = ((self.bits >> 0) & 0x01) != 0;
         INTSSLR { bits }
     }
 }

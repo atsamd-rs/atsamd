@@ -125,51 +125,31 @@ impl R {
     #[doc = "Bit 0 - Protected"]
     #[inline]
     pub fn prot(&self) -> PROTR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
+        let bits = ((self.bits >> 0) & 0x01) != 0;
         PROTR { bits }
     }
     #[doc = "Bit 1 - Debugger Present"]
     #[inline]
     pub fn dbgpres(&self) -> DBGPRESR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
+        let bits = ((self.bits >> 1) & 0x01) != 0;
         DBGPRESR { bits }
     }
     #[doc = "Bit 2 - Debug Communication Channel 0 Dirty"]
     #[inline]
     pub fn dccd0(&self) -> DCCD0R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
+        let bits = ((self.bits >> 2) & 0x01) != 0;
         DCCD0R { bits }
     }
     #[doc = "Bit 3 - Debug Communication Channel 1 Dirty"]
     #[inline]
     pub fn dccd1(&self) -> DCCD1R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 3;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
+        let bits = ((self.bits >> 3) & 0x01) != 0;
         DCCD1R { bits }
     }
     #[doc = "Bit 4 - Hot-Plugging Enable"]
     #[inline]
     pub fn hpe(&self) -> HPER {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
+        let bits = ((self.bits >> 4) & 0x01) != 0;
         HPER { bits }
     }
 }

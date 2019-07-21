@@ -125,51 +125,31 @@ impl R {
     #[doc = "Bit 0 - Software Reset Synchronization Busy"]
     #[inline]
     pub fn swrst(&self) -> SWRSTR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 0) & 0x01) != 0;
         SWRSTR { bits }
     }
     #[doc = "Bit 1 - Enable Synchronization Busy"]
     #[inline]
     pub fn enable(&self) -> ENABLER {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 1) & 0x01) != 0;
         ENABLER { bits }
     }
     #[doc = "Bit 2 - WINCTRL Synchronization Busy"]
     #[inline]
     pub fn winctrl(&self) -> WINCTRLR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 2) & 0x01) != 0;
         WINCTRLR { bits }
     }
     #[doc = "Bit 3 - COMPCTRL 0 Synchronization Busy"]
     #[inline]
     pub fn compctrl0(&self) -> COMPCTRL0R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 3;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 3) & 0x01) != 0;
         COMPCTRL0R { bits }
     }
     #[doc = "Bit 4 - COMPCTRL 1 Synchronization Busy"]
     #[inline]
     pub fn compctrl1(&self) -> COMPCTRL1R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 4) & 0x01) != 0;
         COMPCTRL1R { bits }
     }
 }

@@ -8,13 +8,13 @@ pub struct RegisterBlock {
 }
 #[doc = "Write Protection Clear"]
 pub struct WPCLR {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Write Protection Clear"]
 pub mod wpclr;
 #[doc = "Write Protection Set"]
 pub struct WPSET {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Write Protection Set"]
 pub mod wpset;

@@ -40,8 +40,8 @@ impl TYPELR {
     pub fn bits(&self) -> u8 {
         match *self {
             TYPELR::NONE => 0,
-            TYPELR::SINGLE => 1,
-            TYPELR::DUAL => 2,
+            TYPELR::SINGLE => 0x01,
+            TYPELR::DUAL => 0x02,
             TYPELR::_Reserved(bits) => bits,
         }
     }
@@ -90,8 +90,8 @@ impl TYPEHR {
     pub fn bits(&self) -> u8 {
         match *self {
             TYPEHR::NONE => 0,
-            TYPEHR::SINGLE => 1,
-            TYPEHR::DUAL => 2,
+            TYPEHR::SINGLE => 0x01,
+            TYPEHR::DUAL => 0x02,
             TYPEHR::_Reserved(bits) => bits,
         }
     }
@@ -131,29 +131,17 @@ impl R {
     #[doc = "Bits 0:23 - Error Address"]
     #[inline]
     pub fn addr(&self) -> ADDRR {
-        let bits = {
-            const MASK: u32 = 16777215;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) as u32
-        };
+        let bits = ((self.bits >> 0) & 0x00ff_ffff) as u32;
         ADDRR { bits }
     }
     #[doc = "Bits 28:29 - Low Double-Word Error Type"]
     #[inline]
     pub fn typel(&self) -> TYPELR {
-        TYPELR::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 28;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+        TYPELR::_from(((self.bits >> 28) & 0x03) as u8)
     }
     #[doc = "Bits 30:31 - High Double-Word Error Type"]
     #[inline]
     pub fn typeh(&self) -> TYPEHR {
-        TYPEHR::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 30;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+        TYPEHR::_from(((self.bits >> 30) & 0x03) as u8)
     }
 }

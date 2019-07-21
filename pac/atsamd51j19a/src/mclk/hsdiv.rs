@@ -24,7 +24,7 @@ impl DIVR {
     #[inline]
     pub fn bits(&self) -> u8 {
         match *self {
-            DIVR::DIV1 => 1,
+            DIVR::DIV1 => 0x01,
             DIVR::_Reserved(bits) => bits,
         }
     }
@@ -52,10 +52,6 @@ impl R {
     #[doc = "Bits 0:7 - CPU Clock Division Factor"]
     #[inline]
     pub fn div(&self) -> DIVR {
-        DIVR::_from({
-            const MASK: u8 = 255;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u8) as u8
-        })
+        DIVR::_from(((self.bits >> 0) & 0xff) as u8)
     }
 }

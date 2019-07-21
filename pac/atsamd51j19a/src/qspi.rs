@@ -34,85 +34,85 @@ pub struct RegisterBlock {
 }
 #[doc = "Control A"]
 pub struct CTRLA {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Control A"]
 pub mod ctrla;
 #[doc = "Control B"]
 pub struct CTRLB {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Control B"]
 pub mod ctrlb;
 #[doc = "Baud Rate"]
 pub struct BAUD {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Baud Rate"]
 pub mod baud;
 #[doc = "Receive Data"]
 pub struct RXDATA {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Receive Data"]
 pub mod rxdata;
 #[doc = "Transmit Data"]
 pub struct TXDATA {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Transmit Data"]
 pub mod txdata;
 #[doc = "Interrupt Enable Clear"]
 pub struct INTENCLR {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Interrupt Enable Clear"]
 pub mod intenclr;
 #[doc = "Interrupt Enable Set"]
 pub struct INTENSET {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Interrupt Enable Set"]
 pub mod intenset;
 #[doc = "Interrupt Flag Status and Clear"]
 pub struct INTFLAG {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Interrupt Flag Status and Clear"]
 pub mod intflag;
 #[doc = "Status Register"]
 pub struct STATUS {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Status Register"]
 pub mod status;
 #[doc = "Instruction Address"]
 pub struct INSTRADDR {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Instruction Address"]
 pub mod instraddr;
 #[doc = "Instruction Code"]
 pub struct INSTRCTRL {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Instruction Code"]
 pub mod instrctrl;
 #[doc = "Instruction Frame"]
 pub struct INSTRFRAME {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Instruction Frame"]
 pub mod instrframe;
 #[doc = "Scrambling Mode"]
 pub struct SCRAMBCTRL {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Scrambling Mode"]
 pub mod scrambctrl;
 #[doc = "Scrambling Key"]
 pub struct SCRAMBKEY {
-    register: ::vcell::VolatileCell<u32>,
+    register: vcell::VolatileCell<u32>,
 }
 #[doc = "Scrambling Key"]
 pub mod scrambkey;

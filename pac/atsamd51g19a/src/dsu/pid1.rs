@@ -42,21 +42,13 @@ impl R {
     #[doc = "Bits 0:3 - Part Number High"]
     #[inline]
     pub fn partnbh(&self) -> PARTNBHR {
-        let bits = {
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
+        let bits = ((self.bits >> 0) & 0x0f) as u8;
         PARTNBHR { bits }
     }
     #[doc = "Bits 4:7 - Low part of the JEP-106 Identity Code"]
     #[inline]
     pub fn jepidcl(&self) -> JEPIDCLR {
-        let bits = {
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
+        let bits = ((self.bits >> 4) & 0x0f) as u8;
         JEPIDCLR { bits }
     }
 }

@@ -14,10 +14,7 @@ impl super::EWCTRL {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
+        self.register.set(f(&R { bits }, &mut W { bits }).bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -32,14 +29,22 @@ impl super::EWCTRL {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
+        self.register.set(
+            f(&mut W {
+                bits: Self::reset_value(),
+            })
+            .bits,
+        );
+    }
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub const fn reset_value() -> u8 {
+        0x0b
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.write(|w| w)
+        self.register.set(Self::reset_value())
     }
 }
 #[doc = "Possible values of the field `EWOFFSET`"]
@@ -78,17 +83,17 @@ impl EWOFFSETR {
     pub fn bits(&self) -> u8 {
         match *self {
             EWOFFSETR::_8 => 0,
-            EWOFFSETR::_16 => 1,
-            EWOFFSETR::_32 => 2,
-            EWOFFSETR::_64 => 3,
-            EWOFFSETR::_128 => 4,
-            EWOFFSETR::_256 => 5,
-            EWOFFSETR::_512 => 6,
-            EWOFFSETR::_1K => 7,
-            EWOFFSETR::_2K => 8,
-            EWOFFSETR::_4K => 9,
-            EWOFFSETR::_8K => 10,
-            EWOFFSETR::_16K => 11,
+            EWOFFSETR::_16 => 0x01,
+            EWOFFSETR::_32 => 0x02,
+            EWOFFSETR::_64 => 0x03,
+            EWOFFSETR::_128 => 0x04,
+            EWOFFSETR::_256 => 0x05,
+            EWOFFSETR::_512 => 0x06,
+            EWOFFSETR::_1K => 0x07,
+            EWOFFSETR::_2K => 0x08,
+            EWOFFSETR::_4K => 0x09,
+            EWOFFSETR::_8K => 0x0a,
+            EWOFFSETR::_16K => 0x0b,
             EWOFFSETR::_Reserved(bits) => bits,
         }
     }
@@ -174,6 +179,7 @@ impl EWOFFSETR {
     }
 }
 #[doc = "Values that can be written to the field `EWOFFSET`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum EWOFFSETW {
     #[doc = "8 clock cycles"]
     _8,
@@ -294,10 +300,8 @@ impl<'a> _EWOFFSETW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 15;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits &= !(0x0f << 0);
+        self.w.bits |= ((value as u8) & 0x0f) << 0;
         self.w
     }
 }
@@ -310,19 +314,10 @@ impl R {
     #[doc = "Bits 0:3 - Early Warning Interrupt Time Offset"]
     #[inline]
     pub fn ewoffset(&self) -> EWOFFSETR {
-        EWOFFSETR::_from({
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u8) as u8
-        })
+        EWOFFSETR::_from(((self.bits >> 0) & 0x0f) as u8)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 11 }
-    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {

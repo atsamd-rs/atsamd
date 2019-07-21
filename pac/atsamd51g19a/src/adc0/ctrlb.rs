@@ -14,10 +14,7 @@ impl super::CTRLB {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
+        self.register.set(f(&R { bits }, &mut W { bits }).bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -32,14 +29,22 @@ impl super::CTRLB {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
+        self.register.set(
+            f(&mut W {
+                bits: Self::reset_value(),
+            })
+            .bits,
+        );
+    }
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub const fn reset_value() -> u16 {
+        0
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.write(|w| w)
+        self.register.set(Self::reset_value())
     }
 }
 #[doc = r" Value of the field"]
@@ -123,9 +128,9 @@ impl RESSELR {
     pub fn bits(&self) -> u8 {
         match *self {
             RESSELR::_12BIT => 0,
-            RESSELR::_16BIT => 1,
-            RESSELR::_10BIT => 2,
-            RESSELR::_8BIT => 3,
+            RESSELR::_16BIT => 0x01,
+            RESSELR::_10BIT => 0x02,
+            RESSELR::_8BIT => 0x03,
         }
     }
     #[allow(missing_docs)]
@@ -183,10 +188,10 @@ impl WINMODER {
     pub fn bits(&self) -> u8 {
         match *self {
             WINMODER::DISABLE => 0,
-            WINMODER::MODE1 => 1,
-            WINMODER::MODE2 => 2,
-            WINMODER::MODE3 => 3,
-            WINMODER::MODE4 => 4,
+            WINMODER::MODE1 => 0x01,
+            WINMODER::MODE2 => 0x02,
+            WINMODER::MODE3 => 0x03,
+            WINMODER::MODE4 => 0x04,
             WINMODER::_Reserved(bits) => bits,
         }
     }
@@ -266,10 +271,8 @@ impl<'a> _LEFTADJW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x01 << 0);
+        self.w.bits |= ((value as u16) & 0x01) << 0;
         self.w
     }
 }
@@ -289,10 +292,8 @@ impl<'a> _FREERUNW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 1;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x01 << 1);
+        self.w.bits |= ((value as u16) & 0x01) << 1;
         self.w
     }
 }
@@ -312,14 +313,13 @@ impl<'a> _CORRENW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 2;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x01 << 2);
+        self.w.bits |= ((value as u16) & 0x01) << 2;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `RESSEL`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum RESSELW {
     #[doc = "12-bit result"]
     _12BIT,
@@ -378,14 +378,13 @@ impl<'a> _RESSELW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 3;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x03 << 3);
+        self.w.bits |= ((value as u16) & 0x03) << 3;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `WINMODE`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum WINMODEW {
     #[doc = "No window mode (default)"]
     DISABLE,
@@ -450,10 +449,8 @@ impl<'a> _WINMODEW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 7;
-        const OFFSET: u8 = 8;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x07 << 8);
+        self.w.bits |= ((value as u16) & 0x07) << 8;
         self.w
     }
 }
@@ -473,10 +470,8 @@ impl<'a> _WINSSW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 11;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x01 << 11);
+        self.w.bits |= ((value as u16) & 0x01) << 11;
         self.w
     }
 }
@@ -489,68 +484,39 @@ impl R {
     #[doc = "Bit 0 - Left-Adjusted Result"]
     #[inline]
     pub fn leftadj(&self) -> LEFTADJR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
+        let bits = ((self.bits >> 0) & 0x01) != 0;
         LEFTADJR { bits }
     }
     #[doc = "Bit 1 - Free Running Mode"]
     #[inline]
     pub fn freerun(&self) -> FREERUNR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
+        let bits = ((self.bits >> 1) & 0x01) != 0;
         FREERUNR { bits }
     }
     #[doc = "Bit 2 - Digital Correction Logic Enable"]
     #[inline]
     pub fn corren(&self) -> CORRENR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
+        let bits = ((self.bits >> 2) & 0x01) != 0;
         CORRENR { bits }
     }
     #[doc = "Bits 3:4 - Conversion Result Resolution"]
     #[inline]
     pub fn ressel(&self) -> RESSELR {
-        RESSELR::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 3;
-            ((self.bits >> OFFSET) & MASK as u16) as u8
-        })
+        RESSELR::_from(((self.bits >> 3) & 0x03) as u8)
     }
     #[doc = "Bits 8:10 - Window Monitor Mode"]
     #[inline]
     pub fn winmode(&self) -> WINMODER {
-        WINMODER::_from({
-            const MASK: u8 = 7;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u16) as u8
-        })
+        WINMODER::_from(((self.bits >> 8) & 0x07) as u8)
     }
     #[doc = "Bit 11 - Window Single Sample"]
     #[inline]
     pub fn winss(&self) -> WINSSR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 11;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
+        let bits = ((self.bits >> 11) & 0x01) != 0;
         WINSSR { bits }
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {

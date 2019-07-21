@@ -14,10 +14,7 @@ impl super::AVGCTRL {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
+        self.register.set(f(&R { bits }, &mut W { bits }).bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -32,14 +29,22 @@ impl super::AVGCTRL {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
+        self.register.set(
+            f(&mut W {
+                bits: Self::reset_value(),
+            })
+            .bits,
+        );
+    }
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub const fn reset_value() -> u8 {
+        0
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.write(|w| w)
+        self.register.set(Self::reset_value())
     }
 }
 #[doc = "Possible values of the field `SAMPLENUM`"]
@@ -76,16 +81,16 @@ impl SAMPLENUMR {
     pub fn bits(&self) -> u8 {
         match *self {
             SAMPLENUMR::_1 => 0,
-            SAMPLENUMR::_2 => 1,
-            SAMPLENUMR::_4 => 2,
-            SAMPLENUMR::_8 => 3,
-            SAMPLENUMR::_16 => 4,
-            SAMPLENUMR::_32 => 5,
-            SAMPLENUMR::_64 => 6,
-            SAMPLENUMR::_128 => 7,
-            SAMPLENUMR::_256 => 8,
-            SAMPLENUMR::_512 => 9,
-            SAMPLENUMR::_1024 => 10,
+            SAMPLENUMR::_2 => 0x01,
+            SAMPLENUMR::_4 => 0x02,
+            SAMPLENUMR::_8 => 0x03,
+            SAMPLENUMR::_16 => 0x04,
+            SAMPLENUMR::_32 => 0x05,
+            SAMPLENUMR::_64 => 0x06,
+            SAMPLENUMR::_128 => 0x07,
+            SAMPLENUMR::_256 => 0x08,
+            SAMPLENUMR::_512 => 0x09,
+            SAMPLENUMR::_1024 => 0x0a,
             SAMPLENUMR::_Reserved(bits) => bits,
         }
     }
@@ -176,6 +181,7 @@ impl ADJRESR {
     }
 }
 #[doc = "Values that can be written to the field `SAMPLENUM`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum SAMPLENUMW {
     #[doc = "1 sample"]
     _1,
@@ -288,10 +294,8 @@ impl<'a> _SAMPLENUMW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 15;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits &= !(0x0f << 0);
+        self.w.bits |= ((value as u8) & 0x0f) << 0;
         self.w
     }
 }
@@ -303,10 +307,8 @@ impl<'a> _ADJRESW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 7;
-        const OFFSET: u8 = 4;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits &= !(0x07 << 4);
+        self.w.bits |= ((value as u8) & 0x07) << 4;
         self.w
     }
 }
@@ -319,29 +321,16 @@ impl R {
     #[doc = "Bits 0:3 - Number of Samples to be Collected"]
     #[inline]
     pub fn samplenum(&self) -> SAMPLENUMR {
-        SAMPLENUMR::_from({
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u8) as u8
-        })
+        SAMPLENUMR::_from(((self.bits >> 0) & 0x0f) as u8)
     }
     #[doc = "Bits 4:6 - Adjusting Result / Division Coefficient"]
     #[inline]
     pub fn adjres(&self) -> ADJRESR {
-        let bits = {
-            const MASK: u8 = 7;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u8) as u8
-        };
+        let bits = ((self.bits >> 4) & 0x07) as u8;
         ADJRESR { bits }
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {

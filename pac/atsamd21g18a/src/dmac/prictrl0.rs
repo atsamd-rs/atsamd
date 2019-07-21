@@ -14,10 +14,7 @@ impl super::PRICTRL0 {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
+        self.register.set(f(&R { bits }, &mut W { bits }).bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -32,14 +29,22 @@ impl super::PRICTRL0 {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
+        self.register.set(
+            f(&mut W {
+                bits: Self::reset_value(),
+            })
+            .bits,
+        );
+    }
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub const fn reset_value() -> u32 {
+        0
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.write(|w| w)
+        self.register.set(Self::reset_value())
     }
 }
 #[doc = r" Value of the field"]
@@ -178,10 +183,8 @@ impl<'a> _LVLPRI0W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 15;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x0f << 0);
+        self.w.bits |= ((value as u32) & 0x0f) << 0;
         self.w
     }
 }
@@ -201,10 +204,8 @@ impl<'a> _RRLVLEN0W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 7;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 7);
+        self.w.bits |= ((value as u32) & 0x01) << 7;
         self.w
     }
 }
@@ -216,10 +217,8 @@ impl<'a> _LVLPRI1W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 15;
-        const OFFSET: u8 = 8;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x0f << 8);
+        self.w.bits |= ((value as u32) & 0x0f) << 8;
         self.w
     }
 }
@@ -239,10 +238,8 @@ impl<'a> _RRLVLEN1W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 15;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 15);
+        self.w.bits |= ((value as u32) & 0x01) << 15;
         self.w
     }
 }
@@ -254,10 +251,8 @@ impl<'a> _LVLPRI2W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 15;
-        const OFFSET: u8 = 16;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x0f << 16);
+        self.w.bits |= ((value as u32) & 0x0f) << 16;
         self.w
     }
 }
@@ -277,10 +272,8 @@ impl<'a> _RRLVLEN2W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 23;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 23);
+        self.w.bits |= ((value as u32) & 0x01) << 23;
         self.w
     }
 }
@@ -292,10 +285,8 @@ impl<'a> _LVLPRI3W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 15;
-        const OFFSET: u8 = 24;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x0f << 24);
+        self.w.bits |= ((value as u32) & 0x0f) << 24;
         self.w
     }
 }
@@ -315,10 +306,8 @@ impl<'a> _RRLVLEN3W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 31;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 31);
+        self.w.bits |= ((value as u32) & 0x01) << 31;
         self.w
     }
 }
@@ -331,90 +320,53 @@ impl R {
     #[doc = "Bits 0:3 - Level 0 Channel Priority Number"]
     #[inline]
     pub fn lvlpri0(&self) -> LVLPRI0R {
-        let bits = {
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
+        let bits = ((self.bits >> 0) & 0x0f) as u8;
         LVLPRI0R { bits }
     }
     #[doc = "Bit 7 - Level 0 Round-Robin Scheduling Enable"]
     #[inline]
     pub fn rrlvlen0(&self) -> RRLVLEN0R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 7;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 7) & 0x01) != 0;
         RRLVLEN0R { bits }
     }
     #[doc = "Bits 8:11 - Level 1 Channel Priority Number"]
     #[inline]
     pub fn lvlpri1(&self) -> LVLPRI1R {
-        let bits = {
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
+        let bits = ((self.bits >> 8) & 0x0f) as u8;
         LVLPRI1R { bits }
     }
     #[doc = "Bit 15 - Level 1 Round-Robin Scheduling Enable"]
     #[inline]
     pub fn rrlvlen1(&self) -> RRLVLEN1R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 15;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 15) & 0x01) != 0;
         RRLVLEN1R { bits }
     }
     #[doc = "Bits 16:19 - Level 2 Channel Priority Number"]
     #[inline]
     pub fn lvlpri2(&self) -> LVLPRI2R {
-        let bits = {
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 16;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
+        let bits = ((self.bits >> 16) & 0x0f) as u8;
         LVLPRI2R { bits }
     }
     #[doc = "Bit 23 - Level 2 Round-Robin Scheduling Enable"]
     #[inline]
     pub fn rrlvlen2(&self) -> RRLVLEN2R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 23;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 23) & 0x01) != 0;
         RRLVLEN2R { bits }
     }
     #[doc = "Bits 24:27 - Level 3 Channel Priority Number"]
     #[inline]
     pub fn lvlpri3(&self) -> LVLPRI3R {
-        let bits = {
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 24;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
+        let bits = ((self.bits >> 24) & 0x0f) as u8;
         LVLPRI3R { bits }
     }
     #[doc = "Bit 31 - Level 3 Round-Robin Scheduling Enable"]
     #[inline]
     pub fn rrlvlen3(&self) -> RRLVLEN3R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 31;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 31) & 0x01) != 0;
         RRLVLEN3R { bits }
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {

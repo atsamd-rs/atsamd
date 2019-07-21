@@ -14,10 +14,7 @@ impl super::WINCTRL {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
+        self.register.set(f(&R { bits }, &mut W { bits }).bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -32,14 +29,22 @@ impl super::WINCTRL {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
+        self.register.set(
+            f(&mut W {
+                bits: Self::reset_value(),
+            })
+            .bits,
+        );
+    }
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub const fn reset_value() -> u8 {
+        0
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.write(|w| w)
+        self.register.set(Self::reset_value())
     }
 }
 #[doc = "Possible values of the field `WINMODE`"]
@@ -64,10 +69,10 @@ impl WINMODER {
     pub fn bits(&self) -> u8 {
         match *self {
             WINMODER::DISABLE => 0,
-            WINMODER::MODE1 => 1,
-            WINMODER::MODE2 => 2,
-            WINMODER::MODE3 => 3,
-            WINMODER::MODE4 => 4,
+            WINMODER::MODE1 => 0x01,
+            WINMODER::MODE2 => 0x02,
+            WINMODER::MODE3 => 0x03,
+            WINMODER::MODE4 => 0x04,
             WINMODER::_Reserved(bits) => bits,
         }
     }
@@ -111,6 +116,7 @@ impl WINMODER {
     }
 }
 #[doc = "Values that can be written to the field `WINMODE`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum WINMODEW {
     #[doc = "No window mode (default)"]
     DISABLE,
@@ -175,10 +181,8 @@ impl<'a> _WINMODEW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 7;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits &= !(0x07 << 0);
+        self.w.bits |= ((value as u8) & 0x07) << 0;
         self.w
     }
 }
@@ -191,19 +195,10 @@ impl R {
     #[doc = "Bits 0:2 - Window Monitor Mode"]
     #[inline]
     pub fn winmode(&self) -> WINMODER {
-        WINMODER::_from({
-            const MASK: u8 = 7;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u8) as u8
-        })
+        WINMODER::_from(((self.bits >> 0) & 0x07) as u8)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {

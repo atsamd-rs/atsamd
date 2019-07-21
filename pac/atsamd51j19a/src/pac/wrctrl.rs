@@ -14,10 +14,7 @@ impl super::WRCTRL {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
+        self.register.set(f(&R { bits }, &mut W { bits }).bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -32,14 +29,22 @@ impl super::WRCTRL {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
+        self.register.set(
+            f(&mut W {
+                bits: Self::reset_value(),
+            })
+            .bits,
+        );
+    }
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub const fn reset_value() -> u32 {
+        0
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.write(|w| w)
+        self.register.set(Self::reset_value())
     }
 }
 #[doc = r" Value of the field"]
@@ -73,9 +78,9 @@ impl KEYR {
     pub fn bits(&self) -> u8 {
         match *self {
             KEYR::OFF => 0,
-            KEYR::CLR => 1,
-            KEYR::SET => 2,
-            KEYR::SETLCK => 3,
+            KEYR::CLR => 0x01,
+            KEYR::SET => 0x02,
+            KEYR::SETLCK => 0x03,
             KEYR::_Reserved(bits) => bits,
         }
     }
@@ -120,14 +125,13 @@ impl<'a> _PERIDW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u16) -> &'a mut W {
-        const MASK: u16 = 65535;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0xffff << 0);
+        self.w.bits |= ((value as u32) & 0xffff) << 0;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `KEY`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum KEYW {
     #[doc = "No action"]
     OFF,
@@ -184,10 +188,8 @@ impl<'a> _KEYW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 255;
-        const OFFSET: u8 = 16;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0xff << 16);
+        self.w.bits |= ((value as u32) & 0xff) << 16;
         self.w
     }
 }
@@ -200,29 +202,16 @@ impl R {
     #[doc = "Bits 0:15 - Peripheral identifier"]
     #[inline]
     pub fn perid(&self) -> PERIDR {
-        let bits = {
-            const MASK: u16 = 65535;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) as u16
-        };
+        let bits = ((self.bits >> 0) & 0xffff) as u16;
         PERIDR { bits }
     }
     #[doc = "Bits 16:23 - Peripheral access control key"]
     #[inline]
     pub fn key(&self) -> KEYR {
-        KEYR::_from({
-            const MASK: u8 = 255;
-            const OFFSET: u8 = 16;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+        KEYR::_from(((self.bits >> 16) & 0xff) as u8)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {

@@ -14,10 +14,7 @@ impl super::CFG {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
+        self.register.set(f(&R { bits }, &mut W { bits }).bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -32,14 +29,22 @@ impl super::CFG {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
+        self.register.set(
+            f(&mut W {
+                bits: Self::reset_value(),
+            })
+            .bits,
+        );
+    }
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub const fn reset_value() -> u32 {
+        0x20
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.write(|w| w)
+        self.register.set(Self::reset_value())
     }
 }
 #[doc = r" Value of the field"]
@@ -110,12 +115,12 @@ impl CSIZESWR {
     pub fn bits(&self) -> u8 {
         match *self {
             CSIZESWR::CONF_CSIZE_1KB => 0,
-            CSIZESWR::CONF_CSIZE_2KB => 1,
-            CSIZESWR::CONF_CSIZE_4KB => 2,
-            CSIZESWR::CONF_CSIZE_8KB => 3,
-            CSIZESWR::CONF_CSIZE_16KB => 4,
-            CSIZESWR::CONF_CSIZE_32KB => 5,
-            CSIZESWR::CONF_CSIZE_64KB => 6,
+            CSIZESWR::CONF_CSIZE_2KB => 0x01,
+            CSIZESWR::CONF_CSIZE_4KB => 0x02,
+            CSIZESWR::CONF_CSIZE_8KB => 0x03,
+            CSIZESWR::CONF_CSIZE_16KB => 0x04,
+            CSIZESWR::CONF_CSIZE_32KB => 0x05,
+            CSIZESWR::CONF_CSIZE_64KB => 0x06,
             CSIZESWR::_Reserved(bits) => bits,
         }
     }
@@ -186,10 +191,8 @@ impl<'a> _ICDISW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 1;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 1);
+        self.w.bits |= ((value as u32) & 0x01) << 1;
         self.w
     }
 }
@@ -209,14 +212,13 @@ impl<'a> _DCDISW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 2;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 2);
+        self.w.bits |= ((value as u32) & 0x01) << 2;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `CSIZESW`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CSIZESWW {
     #[doc = "the Cache Size is configured to 1KB"]
     CONF_CSIZE_1KB,
@@ -297,10 +299,8 @@ impl<'a> _CSIZESWW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 7;
-        const OFFSET: u8 = 4;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x07 << 4);
+        self.w.bits |= ((value as u32) & 0x07) << 4;
         self.w
     }
 }
@@ -313,39 +313,22 @@ impl R {
     #[doc = "Bit 1 - Instruction Cache Disable"]
     #[inline]
     pub fn icdis(&self) -> ICDISR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 1) & 0x01) != 0;
         ICDISR { bits }
     }
     #[doc = "Bit 2 - Data Cache Disable"]
     #[inline]
     pub fn dcdis(&self) -> DCDISR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 2) & 0x01) != 0;
         DCDISR { bits }
     }
     #[doc = "Bits 4:6 - Cache size configured by software"]
     #[inline]
     pub fn csizesw(&self) -> CSIZESWR {
-        CSIZESWR::_from({
-            const MASK: u8 = 7;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+        CSIZESWR::_from(((self.bits >> 4) & 0x07) as u8)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 32 }
-    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {

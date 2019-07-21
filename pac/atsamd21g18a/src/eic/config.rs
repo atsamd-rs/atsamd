@@ -14,10 +14,7 @@ impl super::CONFIG {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
+        self.register.set(f(&R { bits }, &mut W { bits }).bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -32,14 +29,22 @@ impl super::CONFIG {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
+        self.register.set(
+            f(&mut W {
+                bits: Self::reset_value(),
+            })
+            .bits,
+        );
+    }
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub const fn reset_value() -> u32 {
+        0
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.write(|w| w)
+        self.register.set(Self::reset_value())
     }
 }
 #[doc = "Possible values of the field `SENSE0`"]
@@ -66,11 +71,11 @@ impl SENSE0R {
     pub fn bits(&self) -> u8 {
         match *self {
             SENSE0R::NONE => 0,
-            SENSE0R::RISE => 1,
-            SENSE0R::FALL => 2,
-            SENSE0R::BOTH => 3,
-            SENSE0R::HIGH => 4,
-            SENSE0R::LOW => 5,
+            SENSE0R::RISE => 0x01,
+            SENSE0R::FALL => 0x02,
+            SENSE0R::BOTH => 0x03,
+            SENSE0R::HIGH => 0x04,
+            SENSE0R::LOW => 0x05,
             SENSE0R::_Reserved(bits) => bits,
         }
     }
@@ -164,11 +169,11 @@ impl SENSE1R {
     pub fn bits(&self) -> u8 {
         match *self {
             SENSE1R::NONE => 0,
-            SENSE1R::RISE => 1,
-            SENSE1R::FALL => 2,
-            SENSE1R::BOTH => 3,
-            SENSE1R::HIGH => 4,
-            SENSE1R::LOW => 5,
+            SENSE1R::RISE => 0x01,
+            SENSE1R::FALL => 0x02,
+            SENSE1R::BOTH => 0x03,
+            SENSE1R::HIGH => 0x04,
+            SENSE1R::LOW => 0x05,
             SENSE1R::_Reserved(bits) => bits,
         }
     }
@@ -262,11 +267,11 @@ impl SENSE2R {
     pub fn bits(&self) -> u8 {
         match *self {
             SENSE2R::NONE => 0,
-            SENSE2R::RISE => 1,
-            SENSE2R::FALL => 2,
-            SENSE2R::BOTH => 3,
-            SENSE2R::HIGH => 4,
-            SENSE2R::LOW => 5,
+            SENSE2R::RISE => 0x01,
+            SENSE2R::FALL => 0x02,
+            SENSE2R::BOTH => 0x03,
+            SENSE2R::HIGH => 0x04,
+            SENSE2R::LOW => 0x05,
             SENSE2R::_Reserved(bits) => bits,
         }
     }
@@ -360,11 +365,11 @@ impl SENSE3R {
     pub fn bits(&self) -> u8 {
         match *self {
             SENSE3R::NONE => 0,
-            SENSE3R::RISE => 1,
-            SENSE3R::FALL => 2,
-            SENSE3R::BOTH => 3,
-            SENSE3R::HIGH => 4,
-            SENSE3R::LOW => 5,
+            SENSE3R::RISE => 0x01,
+            SENSE3R::FALL => 0x02,
+            SENSE3R::BOTH => 0x03,
+            SENSE3R::HIGH => 0x04,
+            SENSE3R::LOW => 0x05,
             SENSE3R::_Reserved(bits) => bits,
         }
     }
@@ -458,11 +463,11 @@ impl SENSE4R {
     pub fn bits(&self) -> u8 {
         match *self {
             SENSE4R::NONE => 0,
-            SENSE4R::RISE => 1,
-            SENSE4R::FALL => 2,
-            SENSE4R::BOTH => 3,
-            SENSE4R::HIGH => 4,
-            SENSE4R::LOW => 5,
+            SENSE4R::RISE => 0x01,
+            SENSE4R::FALL => 0x02,
+            SENSE4R::BOTH => 0x03,
+            SENSE4R::HIGH => 0x04,
+            SENSE4R::LOW => 0x05,
             SENSE4R::_Reserved(bits) => bits,
         }
     }
@@ -556,11 +561,11 @@ impl SENSE5R {
     pub fn bits(&self) -> u8 {
         match *self {
             SENSE5R::NONE => 0,
-            SENSE5R::RISE => 1,
-            SENSE5R::FALL => 2,
-            SENSE5R::BOTH => 3,
-            SENSE5R::HIGH => 4,
-            SENSE5R::LOW => 5,
+            SENSE5R::RISE => 0x01,
+            SENSE5R::FALL => 0x02,
+            SENSE5R::BOTH => 0x03,
+            SENSE5R::HIGH => 0x04,
+            SENSE5R::LOW => 0x05,
             SENSE5R::_Reserved(bits) => bits,
         }
     }
@@ -654,11 +659,11 @@ impl SENSE6R {
     pub fn bits(&self) -> u8 {
         match *self {
             SENSE6R::NONE => 0,
-            SENSE6R::RISE => 1,
-            SENSE6R::FALL => 2,
-            SENSE6R::BOTH => 3,
-            SENSE6R::HIGH => 4,
-            SENSE6R::LOW => 5,
+            SENSE6R::RISE => 0x01,
+            SENSE6R::FALL => 0x02,
+            SENSE6R::BOTH => 0x03,
+            SENSE6R::HIGH => 0x04,
+            SENSE6R::LOW => 0x05,
             SENSE6R::_Reserved(bits) => bits,
         }
     }
@@ -752,11 +757,11 @@ impl SENSE7R {
     pub fn bits(&self) -> u8 {
         match *self {
             SENSE7R::NONE => 0,
-            SENSE7R::RISE => 1,
-            SENSE7R::FALL => 2,
-            SENSE7R::BOTH => 3,
-            SENSE7R::HIGH => 4,
-            SENSE7R::LOW => 5,
+            SENSE7R::RISE => 0x01,
+            SENSE7R::FALL => 0x02,
+            SENSE7R::BOTH => 0x03,
+            SENSE7R::HIGH => 0x04,
+            SENSE7R::LOW => 0x05,
             SENSE7R::_Reserved(bits) => bits,
         }
     }
@@ -827,6 +832,7 @@ impl FILTEN7R {
     }
 }
 #[doc = "Values that can be written to the field `SENSE0`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum SENSE0W {
     #[doc = "No detection"]
     NONE,
@@ -899,10 +905,8 @@ impl<'a> _SENSE0W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 7;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x07 << 0);
+        self.w.bits |= ((value as u32) & 0x07) << 0;
         self.w
     }
 }
@@ -922,14 +926,13 @@ impl<'a> _FILTEN0W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 3;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 3);
+        self.w.bits |= ((value as u32) & 0x01) << 3;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `SENSE1`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum SENSE1W {
     #[doc = "No detection"]
     NONE,
@@ -1002,10 +1005,8 @@ impl<'a> _SENSE1W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 7;
-        const OFFSET: u8 = 4;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x07 << 4);
+        self.w.bits |= ((value as u32) & 0x07) << 4;
         self.w
     }
 }
@@ -1025,14 +1026,13 @@ impl<'a> _FILTEN1W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 7;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 7);
+        self.w.bits |= ((value as u32) & 0x01) << 7;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `SENSE2`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum SENSE2W {
     #[doc = "No detection"]
     NONE,
@@ -1105,10 +1105,8 @@ impl<'a> _SENSE2W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 7;
-        const OFFSET: u8 = 8;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x07 << 8);
+        self.w.bits |= ((value as u32) & 0x07) << 8;
         self.w
     }
 }
@@ -1128,14 +1126,13 @@ impl<'a> _FILTEN2W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 11;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 11);
+        self.w.bits |= ((value as u32) & 0x01) << 11;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `SENSE3`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum SENSE3W {
     #[doc = "No detection"]
     NONE,
@@ -1208,10 +1205,8 @@ impl<'a> _SENSE3W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 7;
-        const OFFSET: u8 = 12;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x07 << 12);
+        self.w.bits |= ((value as u32) & 0x07) << 12;
         self.w
     }
 }
@@ -1231,14 +1226,13 @@ impl<'a> _FILTEN3W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 15;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 15);
+        self.w.bits |= ((value as u32) & 0x01) << 15;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `SENSE4`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum SENSE4W {
     #[doc = "No detection"]
     NONE,
@@ -1311,10 +1305,8 @@ impl<'a> _SENSE4W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 7;
-        const OFFSET: u8 = 16;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x07 << 16);
+        self.w.bits |= ((value as u32) & 0x07) << 16;
         self.w
     }
 }
@@ -1334,14 +1326,13 @@ impl<'a> _FILTEN4W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 19;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 19);
+        self.w.bits |= ((value as u32) & 0x01) << 19;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `SENSE5`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum SENSE5W {
     #[doc = "No detection"]
     NONE,
@@ -1414,10 +1405,8 @@ impl<'a> _SENSE5W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 7;
-        const OFFSET: u8 = 20;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x07 << 20);
+        self.w.bits |= ((value as u32) & 0x07) << 20;
         self.w
     }
 }
@@ -1437,14 +1426,13 @@ impl<'a> _FILTEN5W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 23;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 23);
+        self.w.bits |= ((value as u32) & 0x01) << 23;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `SENSE6`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum SENSE6W {
     #[doc = "No detection"]
     NONE,
@@ -1517,10 +1505,8 @@ impl<'a> _SENSE6W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 7;
-        const OFFSET: u8 = 24;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x07 << 24);
+        self.w.bits |= ((value as u32) & 0x07) << 24;
         self.w
     }
 }
@@ -1540,14 +1526,13 @@ impl<'a> _FILTEN6W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 27;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 27);
+        self.w.bits |= ((value as u32) & 0x01) << 27;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `SENSE7`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum SENSE7W {
     #[doc = "No detection"]
     NONE,
@@ -1620,10 +1605,8 @@ impl<'a> _SENSE7W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 7;
-        const OFFSET: u8 = 28;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x07 << 28);
+        self.w.bits |= ((value as u32) & 0x07) << 28;
         self.w
     }
 }
@@ -1643,10 +1626,8 @@ impl<'a> _FILTEN7W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 31;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 31);
+        self.w.bits |= ((value as u32) & 0x01) << 31;
         self.w
     }
 }
@@ -1659,162 +1640,93 @@ impl R {
     #[doc = "Bits 0:2 - Input Sense 0 Configuration"]
     #[inline]
     pub fn sense0(&self) -> SENSE0R {
-        SENSE0R::_from({
-            const MASK: u8 = 7;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+        SENSE0R::_from(((self.bits >> 0) & 0x07) as u8)
     }
     #[doc = "Bit 3 - Filter 0 Enable"]
     #[inline]
     pub fn filten0(&self) -> FILTEN0R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 3;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 3) & 0x01) != 0;
         FILTEN0R { bits }
     }
     #[doc = "Bits 4:6 - Input Sense 1 Configuration"]
     #[inline]
     pub fn sense1(&self) -> SENSE1R {
-        SENSE1R::_from({
-            const MASK: u8 = 7;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+        SENSE1R::_from(((self.bits >> 4) & 0x07) as u8)
     }
     #[doc = "Bit 7 - Filter 1 Enable"]
     #[inline]
     pub fn filten1(&self) -> FILTEN1R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 7;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 7) & 0x01) != 0;
         FILTEN1R { bits }
     }
     #[doc = "Bits 8:10 - Input Sense 2 Configuration"]
     #[inline]
     pub fn sense2(&self) -> SENSE2R {
-        SENSE2R::_from({
-            const MASK: u8 = 7;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+        SENSE2R::_from(((self.bits >> 8) & 0x07) as u8)
     }
     #[doc = "Bit 11 - Filter 2 Enable"]
     #[inline]
     pub fn filten2(&self) -> FILTEN2R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 11;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 11) & 0x01) != 0;
         FILTEN2R { bits }
     }
     #[doc = "Bits 12:14 - Input Sense 3 Configuration"]
     #[inline]
     pub fn sense3(&self) -> SENSE3R {
-        SENSE3R::_from({
-            const MASK: u8 = 7;
-            const OFFSET: u8 = 12;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+        SENSE3R::_from(((self.bits >> 12) & 0x07) as u8)
     }
     #[doc = "Bit 15 - Filter 3 Enable"]
     #[inline]
     pub fn filten3(&self) -> FILTEN3R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 15;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 15) & 0x01) != 0;
         FILTEN3R { bits }
     }
     #[doc = "Bits 16:18 - Input Sense 4 Configuration"]
     #[inline]
     pub fn sense4(&self) -> SENSE4R {
-        SENSE4R::_from({
-            const MASK: u8 = 7;
-            const OFFSET: u8 = 16;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+        SENSE4R::_from(((self.bits >> 16) & 0x07) as u8)
     }
     #[doc = "Bit 19 - Filter 4 Enable"]
     #[inline]
     pub fn filten4(&self) -> FILTEN4R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 19;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 19) & 0x01) != 0;
         FILTEN4R { bits }
     }
     #[doc = "Bits 20:22 - Input Sense 5 Configuration"]
     #[inline]
     pub fn sense5(&self) -> SENSE5R {
-        SENSE5R::_from({
-            const MASK: u8 = 7;
-            const OFFSET: u8 = 20;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+        SENSE5R::_from(((self.bits >> 20) & 0x07) as u8)
     }
     #[doc = "Bit 23 - Filter 5 Enable"]
     #[inline]
     pub fn filten5(&self) -> FILTEN5R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 23;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 23) & 0x01) != 0;
         FILTEN5R { bits }
     }
     #[doc = "Bits 24:26 - Input Sense 6 Configuration"]
     #[inline]
     pub fn sense6(&self) -> SENSE6R {
-        SENSE6R::_from({
-            const MASK: u8 = 7;
-            const OFFSET: u8 = 24;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+        SENSE6R::_from(((self.bits >> 24) & 0x07) as u8)
     }
     #[doc = "Bit 27 - Filter 6 Enable"]
     #[inline]
     pub fn filten6(&self) -> FILTEN6R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 27;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 27) & 0x01) != 0;
         FILTEN6R { bits }
     }
     #[doc = "Bits 28:30 - Input Sense 7 Configuration"]
     #[inline]
     pub fn sense7(&self) -> SENSE7R {
-        SENSE7R::_from({
-            const MASK: u8 = 7;
-            const OFFSET: u8 = 28;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+        SENSE7R::_from(((self.bits >> 28) & 0x07) as u8)
     }
     #[doc = "Bit 31 - Filter 7 Enable"]
     #[inline]
     pub fn filten7(&self) -> FILTEN7R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 31;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 31) & 0x01) != 0;
         FILTEN7R { bits }
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {

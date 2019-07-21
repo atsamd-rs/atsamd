@@ -140,8 +140,8 @@ impl MAXBLKLR {
     pub fn bits(&self) -> u8 {
         match *self {
             MAXBLKLR::_512 => 0,
-            MAXBLKLR::_1024 => 1,
-            MAXBLKLR::_2048 => 2,
+            MAXBLKLR::_1024 => 0x01,
+            MAXBLKLR::_2048 => 0x02,
             MAXBLKLR::_Reserved(bits) => bits,
         }
     }
@@ -658,7 +658,7 @@ impl SLTYPER {
     pub fn bits(&self) -> u8 {
         match *self {
             SLTYPER::REMOVABLE => 0,
-            SLTYPER::EMBEDDED => 1,
+            SLTYPER::EMBEDDED => 0x01,
             SLTYPER::_Reserved(bits) => bits,
         }
     }
@@ -692,136 +692,76 @@ impl R {
     #[doc = "Bits 0:5 - Timeout Clock Frequency"]
     #[inline]
     pub fn teoclkf(&self) -> TEOCLKFR {
-        TEOCLKFR::_from({
-            const MASK: u8 = 63;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+        TEOCLKFR::_from(((self.bits >> 0) & 0x3f) as u8)
     }
     #[doc = "Bit 7 - Timeout Clock Unit"]
     #[inline]
     pub fn teoclku(&self) -> TEOCLKUR {
-        TEOCLKUR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 7;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        })
+        TEOCLKUR::_from(((self.bits >> 7) & 0x01) != 0)
     }
     #[doc = "Bits 8:15 - Base Clock Frequency"]
     #[inline]
     pub fn baseclkf(&self) -> BASECLKFR {
-        BASECLKFR::_from({
-            const MASK: u8 = 255;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+        BASECLKFR::_from(((self.bits >> 8) & 0xff) as u8)
     }
     #[doc = "Bits 16:17 - Max Block Length"]
     #[inline]
     pub fn maxblkl(&self) -> MAXBLKLR {
-        MAXBLKLR::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 16;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+        MAXBLKLR::_from(((self.bits >> 16) & 0x03) as u8)
     }
     #[doc = "Bit 18 - 8-bit Support for Embedded Device"]
     #[inline]
     pub fn ed8sup(&self) -> ED8SUPR {
-        ED8SUPR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 18;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        })
+        ED8SUPR::_from(((self.bits >> 18) & 0x01) != 0)
     }
     #[doc = "Bit 19 - ADMA2 Support"]
     #[inline]
     pub fn adma2sup(&self) -> ADMA2SUPR {
-        ADMA2SUPR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 19;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        })
+        ADMA2SUPR::_from(((self.bits >> 19) & 0x01) != 0)
     }
     #[doc = "Bit 21 - High Speed Support"]
     #[inline]
     pub fn hssup(&self) -> HSSUPR {
-        HSSUPR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 21;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        })
+        HSSUPR::_from(((self.bits >> 21) & 0x01) != 0)
     }
     #[doc = "Bit 22 - SDMA Support"]
     #[inline]
     pub fn sdmasup(&self) -> SDMASUPR {
-        SDMASUPR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 22;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        })
+        SDMASUPR::_from(((self.bits >> 22) & 0x01) != 0)
     }
     #[doc = "Bit 23 - Suspend/Resume Support"]
     #[inline]
     pub fn srsup(&self) -> SRSUPR {
-        SRSUPR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 23;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        })
+        SRSUPR::_from(((self.bits >> 23) & 0x01) != 0)
     }
     #[doc = "Bit 24 - Voltage Support 3.3V"]
     #[inline]
     pub fn v33vsup(&self) -> V33VSUPR {
-        V33VSUPR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 24;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        })
+        V33VSUPR::_from(((self.bits >> 24) & 0x01) != 0)
     }
     #[doc = "Bit 25 - Voltage Support 3.0V"]
     #[inline]
     pub fn v30vsup(&self) -> V30VSUPR {
-        V30VSUPR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 25;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        })
+        V30VSUPR::_from(((self.bits >> 25) & 0x01) != 0)
     }
     #[doc = "Bit 26 - Voltage Support 1.8V"]
     #[inline]
     pub fn v18vsup(&self) -> V18VSUPR {
-        V18VSUPR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 26;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        })
+        V18VSUPR::_from(((self.bits >> 26) & 0x01) != 0)
     }
     #[doc = "Bit 28 - 64-Bit System Bus Support"]
     #[inline]
     pub fn sb64sup(&self) -> SB64SUPR {
-        SB64SUPR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 28;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        })
+        SB64SUPR::_from(((self.bits >> 28) & 0x01) != 0)
     }
     #[doc = "Bit 29 - Asynchronous Interrupt Support"]
     #[inline]
     pub fn asintsup(&self) -> ASINTSUPR {
-        ASINTSUPR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 29;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        })
+        ASINTSUPR::_from(((self.bits >> 29) & 0x01) != 0)
     }
     #[doc = "Bits 30:31 - Slot Type"]
     #[inline]
     pub fn sltype(&self) -> SLTYPER {
-        SLTYPER::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 30;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+        SLTYPER::_from(((self.bits >> 30) & 0x03) as u8)
     }
 }

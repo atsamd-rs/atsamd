@@ -14,10 +14,7 @@ impl super::HC1R {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
+        self.register.set(f(&R { bits }, &mut W { bits }).bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -32,14 +29,22 @@ impl super::HC1R {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
+        self.register.set(
+            f(&mut W {
+                bits: Self::reset_value(),
+            })
+            .bits,
+        );
+    }
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub const fn reset_value() -> u8 {
+        0
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.write(|w| w)
+        self.register.set(Self::reset_value())
     }
 }
 #[doc = "Possible values of the field `LEDCTRL`"]
@@ -199,7 +204,7 @@ impl DMASELR {
     pub fn bits(&self) -> u8 {
         match *self {
             DMASELR::SDMA => 0,
-            DMASELR::_32BIT => 2,
+            DMASELR::_32BIT => 0x02,
             DMASELR::_Reserved(bits) => bits,
         }
     }
@@ -319,6 +324,7 @@ impl CARDDSELR {
     }
 }
 #[doc = "Values that can be written to the field `LEDCTRL`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum LEDCTRLW {
     #[doc = "LED off"]
     OFF,
@@ -369,14 +375,13 @@ impl<'a> _LEDCTRLW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits &= !(0x01 << 0);
+        self.w.bits |= ((value as u8) & 0x01) << 0;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `DW`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum DWW {
     #[doc = "1-bit mode"]
     _1BIT,
@@ -427,14 +432,13 @@ impl<'a> _DWW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 1;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits &= !(0x01 << 1);
+        self.w.bits |= ((value as u8) & 0x01) << 1;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `HSEN`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum HSENW {
     #[doc = "Normal Speed mode"]
     NORMAL,
@@ -485,14 +489,13 @@ impl<'a> _HSENW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 2;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits &= !(0x01 << 2);
+        self.w.bits |= ((value as u8) & 0x01) << 2;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `DMASEL`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum DMASELW {
     #[doc = "SDMA is selected"]
     SDMA,
@@ -533,14 +536,13 @@ impl<'a> _DMASELW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 3;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits &= !(0x03 << 3);
+        self.w.bits |= ((value as u8) & 0x03) << 3;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `CARDDTL`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CARDDTLW {
     #[doc = "No Card"]
     NO,
@@ -591,14 +593,13 @@ impl<'a> _CARDDTLW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 6;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits &= !(0x01 << 6);
+        self.w.bits |= ((value as u8) & 0x01) << 6;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `CARDDSEL`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CARDDSELW {
     #[doc = "SDCD# is selected (for normal use)"]
     NORMAL,
@@ -649,10 +650,8 @@ impl<'a> _CARDDSELW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 7;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits &= !(0x01 << 7);
+        self.w.bits |= ((value as u8) & 0x01) << 7;
         self.w
     }
 }
@@ -665,64 +664,35 @@ impl R {
     #[doc = "Bit 0 - LED Control"]
     #[inline]
     pub fn ledctrl(&self) -> LEDCTRLR {
-        LEDCTRLR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        })
+        LEDCTRLR::_from(((self.bits >> 0) & 0x01) != 0)
     }
     #[doc = "Bit 1 - Data Width"]
     #[inline]
     pub fn dw(&self) -> DWR {
-        DWR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        })
+        DWR::_from(((self.bits >> 1) & 0x01) != 0)
     }
     #[doc = "Bit 2 - High Speed Enable"]
     #[inline]
     pub fn hsen(&self) -> HSENR {
-        HSENR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        })
+        HSENR::_from(((self.bits >> 2) & 0x01) != 0)
     }
     #[doc = "Bits 3:4 - DMA Select"]
     #[inline]
     pub fn dmasel(&self) -> DMASELR {
-        DMASELR::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 3;
-            ((self.bits >> OFFSET) & MASK as u8) as u8
-        })
+        DMASELR::_from(((self.bits >> 3) & 0x03) as u8)
     }
     #[doc = "Bit 6 - Card Detect Test Level"]
     #[inline]
     pub fn carddtl(&self) -> CARDDTLR {
-        CARDDTLR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 6;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        })
+        CARDDTLR::_from(((self.bits >> 6) & 0x01) != 0)
     }
     #[doc = "Bit 7 - Card Detect Signal Selection"]
     #[inline]
     pub fn carddsel(&self) -> CARDDSELR {
-        CARDDSELR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 7;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        })
+        CARDDSELR::_from(((self.bits >> 7) & 0x01) != 0)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {

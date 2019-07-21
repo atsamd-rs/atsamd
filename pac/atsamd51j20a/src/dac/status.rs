@@ -104,41 +104,25 @@ impl R {
     #[doc = "Bit 0 - DAC 0 Startup Ready"]
     #[inline]
     pub fn ready0(&self) -> READY0R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
+        let bits = ((self.bits >> 0) & 0x01) != 0;
         READY0R { bits }
     }
     #[doc = "Bit 1 - DAC 1 Startup Ready"]
     #[inline]
     pub fn ready1(&self) -> READY1R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
+        let bits = ((self.bits >> 1) & 0x01) != 0;
         READY1R { bits }
     }
     #[doc = "Bit 2 - DAC 0 End of Conversion"]
     #[inline]
     pub fn eoc0(&self) -> EOC0R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
+        let bits = ((self.bits >> 2) & 0x01) != 0;
         EOC0R { bits }
     }
     #[doc = "Bit 3 - DAC 1 End of Conversion"]
     #[inline]
     pub fn eoc1(&self) -> EOC1R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 3;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
+        let bits = ((self.bits >> 3) & 0x01) != 0;
         EOC1R { bits }
     }
 }

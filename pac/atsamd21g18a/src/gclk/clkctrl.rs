@@ -14,10 +14,7 @@ impl super::CLKCTRL {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
+        self.register.set(f(&R { bits }, &mut W { bits }).bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -32,14 +29,22 @@ impl super::CLKCTRL {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
+        self.register.set(
+            f(&mut W {
+                bits: Self::reset_value(),
+            })
+            .bits,
+        );
+    }
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub const fn reset_value() -> u16 {
+        0
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.write(|w| w)
+        self.register.set(Self::reset_value())
     }
 }
 #[doc = "Possible values of the field `ID`"]
@@ -126,41 +131,41 @@ impl IDR {
     pub fn bits(&self) -> u8 {
         match *self {
             IDR::DFLL48 => 0,
-            IDR::FDPLL => 1,
-            IDR::FDPLL32K => 2,
-            IDR::WDT => 3,
-            IDR::RTC => 4,
-            IDR::EIC => 5,
-            IDR::USB => 6,
-            IDR::EVSYS_0 => 7,
-            IDR::EVSYS_1 => 8,
-            IDR::EVSYS_2 => 9,
-            IDR::EVSYS_3 => 10,
-            IDR::EVSYS_4 => 11,
-            IDR::EVSYS_5 => 12,
-            IDR::EVSYS_6 => 13,
-            IDR::EVSYS_7 => 14,
-            IDR::EVSYS_8 => 15,
-            IDR::EVSYS_9 => 16,
-            IDR::EVSYS_10 => 17,
-            IDR::EVSYS_11 => 18,
-            IDR::SERCOMX_SLOW => 19,
-            IDR::SERCOM0_CORE => 20,
-            IDR::SERCOM1_CORE => 21,
-            IDR::SERCOM2_CORE => 22,
-            IDR::SERCOM3_CORE => 23,
-            IDR::SERCOM4_CORE => 24,
-            IDR::SERCOM5_CORE => 25,
-            IDR::TCC0_TCC1 => 26,
-            IDR::TCC2_TC3 => 27,
-            IDR::TC4_TC5 => 28,
-            IDR::TC6_TC7 => 29,
-            IDR::ADC => 30,
-            IDR::AC_DIG => 31,
-            IDR::AC_ANA => 32,
-            IDR::DAC => 33,
-            IDR::I2S_0 => 35,
-            IDR::I2S_1 => 36,
+            IDR::FDPLL => 0x01,
+            IDR::FDPLL32K => 0x02,
+            IDR::WDT => 0x03,
+            IDR::RTC => 0x04,
+            IDR::EIC => 0x05,
+            IDR::USB => 0x06,
+            IDR::EVSYS_0 => 0x07,
+            IDR::EVSYS_1 => 0x08,
+            IDR::EVSYS_2 => 0x09,
+            IDR::EVSYS_3 => 0x0a,
+            IDR::EVSYS_4 => 0x0b,
+            IDR::EVSYS_5 => 0x0c,
+            IDR::EVSYS_6 => 0x0d,
+            IDR::EVSYS_7 => 0x0e,
+            IDR::EVSYS_8 => 0x0f,
+            IDR::EVSYS_9 => 0x10,
+            IDR::EVSYS_10 => 0x11,
+            IDR::EVSYS_11 => 0x12,
+            IDR::SERCOMX_SLOW => 0x13,
+            IDR::SERCOM0_CORE => 0x14,
+            IDR::SERCOM1_CORE => 0x15,
+            IDR::SERCOM2_CORE => 0x16,
+            IDR::SERCOM3_CORE => 0x17,
+            IDR::SERCOM4_CORE => 0x18,
+            IDR::SERCOM5_CORE => 0x19,
+            IDR::TCC0_TCC1 => 0x1a,
+            IDR::TCC2_TC3 => 0x1b,
+            IDR::TC4_TC5 => 0x1c,
+            IDR::TC6_TC7 => 0x1d,
+            IDR::ADC => 0x1e,
+            IDR::AC_DIG => 0x1f,
+            IDR::AC_ANA => 0x20,
+            IDR::DAC => 0x21,
+            IDR::I2S_0 => 0x23,
+            IDR::I2S_1 => 0x24,
             IDR::_Reserved(bits) => bits,
         }
     }
@@ -419,14 +424,14 @@ impl GENR {
     pub fn bits(&self) -> u8 {
         match *self {
             GENR::GCLK0 => 0,
-            GENR::GCLK1 => 1,
-            GENR::GCLK2 => 2,
-            GENR::GCLK3 => 3,
-            GENR::GCLK4 => 4,
-            GENR::GCLK5 => 5,
-            GENR::GCLK6 => 6,
-            GENR::GCLK7 => 7,
-            GENR::GCLK8 => 8,
+            GENR::GCLK1 => 0x01,
+            GENR::GCLK2 => 0x02,
+            GENR::GCLK3 => 0x03,
+            GENR::GCLK4 => 0x04,
+            GENR::GCLK5 => 0x05,
+            GENR::GCLK6 => 0x06,
+            GENR::GCLK7 => 0x07,
+            GENR::GCLK8 => 0x08,
             GENR::_Reserved(bits) => bits,
         }
     }
@@ -536,6 +541,7 @@ impl WRTLOCKR {
     }
 }
 #[doc = "Values that can be written to the field `ID`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum IDW {
     #[doc = "DFLL48"]
     DFLL48,
@@ -848,14 +854,13 @@ impl<'a> _IDW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 63;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x3f << 0);
+        self.w.bits |= ((value as u16) & 0x3f) << 0;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `GEN`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum GENW {
     #[doc = "Generic clock generator 0"]
     GCLK0,
@@ -952,10 +957,8 @@ impl<'a> _GENW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 15;
-        const OFFSET: u8 = 8;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x0f << 8);
+        self.w.bits |= ((value as u16) & 0x0f) << 8;
         self.w
     }
 }
@@ -975,10 +978,8 @@ impl<'a> _CLKENW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 14;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x01 << 14);
+        self.w.bits |= ((value as u16) & 0x01) << 14;
         self.w
     }
 }
@@ -998,10 +999,8 @@ impl<'a> _WRTLOCKW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 15;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x01 << 15);
+        self.w.bits |= ((value as u16) & 0x01) << 15;
         self.w
     }
 }
@@ -1014,48 +1013,27 @@ impl R {
     #[doc = "Bits 0:5 - Generic Clock Selection ID"]
     #[inline]
     pub fn id(&self) -> IDR {
-        IDR::_from({
-            const MASK: u8 = 63;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u16) as u8
-        })
+        IDR::_from(((self.bits >> 0) & 0x3f) as u8)
     }
     #[doc = "Bits 8:11 - Generic Clock Generator"]
     #[inline]
     pub fn gen(&self) -> GENR {
-        GENR::_from({
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u16) as u8
-        })
+        GENR::_from(((self.bits >> 8) & 0x0f) as u8)
     }
     #[doc = "Bit 14 - Clock Enable"]
     #[inline]
     pub fn clken(&self) -> CLKENR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 14;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
+        let bits = ((self.bits >> 14) & 0x01) != 0;
         CLKENR { bits }
     }
     #[doc = "Bit 15 - Write Lock"]
     #[inline]
     pub fn wrtlock(&self) -> WRTLOCKR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 15;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
+        let bits = ((self.bits >> 15) & 0x01) != 0;
         WRTLOCKR { bits }
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {

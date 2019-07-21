@@ -14,10 +14,7 @@ impl super::FCTRLA {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
+        self.register.set(f(&R { bits }, &mut W { bits }).bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -32,14 +29,22 @@ impl super::FCTRLA {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
+        self.register.set(
+            f(&mut W {
+                bits: Self::reset_value(),
+            })
+            .bits,
+        );
+    }
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub const fn reset_value() -> u32 {
+        0
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.write(|w| w)
+        self.register.set(Self::reset_value())
     }
 }
 #[doc = "Possible values of the field `SRC`"]
@@ -60,9 +65,9 @@ impl SRCR {
     pub fn bits(&self) -> u8 {
         match *self {
             SRCR::DISABLE => 0,
-            SRCR::ENABLE => 1,
-            SRCR::INVERT => 2,
-            SRCR::ALTFAULT => 3,
+            SRCR::ENABLE => 0x01,
+            SRCR::INVERT => 0x02,
+            SRCR::ALTFAULT => 0x03,
         }
     }
     #[allow(missing_docs)]
@@ -158,9 +163,9 @@ impl BLANKR {
     pub fn bits(&self) -> u8 {
         match *self {
             BLANKR::START => 0,
-            BLANKR::RISE => 1,
-            BLANKR::FALL => 2,
-            BLANKR::BOTH => 3,
+            BLANKR::RISE => 0x01,
+            BLANKR::FALL => 0x02,
+            BLANKR::BOTH => 0x03,
         }
     }
     #[allow(missing_docs)]
@@ -235,9 +240,9 @@ impl HALTR {
     pub fn bits(&self) -> u8 {
         match *self {
             HALTR::DISABLE => 0,
-            HALTR::HW => 1,
-            HALTR::SW => 2,
-            HALTR::NR => 3,
+            HALTR::HW => 0x01,
+            HALTR::SW => 0x02,
+            HALTR::NR => 0x03,
         }
     }
     #[allow(missing_docs)]
@@ -291,9 +296,9 @@ impl CHSELR {
     pub fn bits(&self) -> u8 {
         match *self {
             CHSELR::CC0 => 0,
-            CHSELR::CC1 => 1,
-            CHSELR::CC2 => 2,
-            CHSELR::CC3 => 3,
+            CHSELR::CC1 => 0x01,
+            CHSELR::CC2 => 0x02,
+            CHSELR::CC3 => 0x03,
         }
     }
     #[allow(missing_docs)]
@@ -355,13 +360,13 @@ impl CAPTURER {
     pub fn bits(&self) -> u8 {
         match *self {
             CAPTURER::DISABLE => 0,
-            CAPTURER::CAPT => 1,
-            CAPTURER::CAPTMIN => 2,
-            CAPTURER::CAPTMAX => 3,
-            CAPTURER::LOCMIN => 4,
-            CAPTURER::LOCMAX => 5,
-            CAPTURER::DERIV0 => 6,
-            CAPTURER::CAPTMARK => 7,
+            CAPTURER::CAPT => 0x01,
+            CAPTURER::CAPTMIN => 0x02,
+            CAPTURER::CAPTMAX => 0x03,
+            CAPTURER::LOCMIN => 0x04,
+            CAPTURER::LOCMAX => 0x05,
+            CAPTURER::DERIV0 => 0x06,
+            CAPTURER::CAPTMARK => 0x07,
         }
     }
     #[allow(missing_docs)]
@@ -465,6 +470,7 @@ impl FILTERVALR {
     }
 }
 #[doc = "Values that can be written to the field `SRC`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum SRCW {
     #[doc = "Fault input disabled"]
     DISABLE,
@@ -523,10 +529,8 @@ impl<'a> _SRCW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x03 << 0);
+        self.w.bits |= ((value as u32) & 0x03) << 0;
         self.w
     }
 }
@@ -546,10 +550,8 @@ impl<'a> _KEEPW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 3;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 3);
+        self.w.bits |= ((value as u32) & 0x01) << 3;
         self.w
     }
 }
@@ -569,14 +571,13 @@ impl<'a> _QUALW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 4;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 4);
+        self.w.bits |= ((value as u32) & 0x01) << 4;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `BLANK`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum BLANKW {
     #[doc = "Blanking applied from start of the ramp"]
     START,
@@ -635,10 +636,8 @@ impl<'a> _BLANKW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 5;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x03 << 5);
+        self.w.bits |= ((value as u32) & 0x03) << 5;
         self.w
     }
 }
@@ -658,14 +657,13 @@ impl<'a> _RESTARTW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 7;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 7);
+        self.w.bits |= ((value as u32) & 0x01) << 7;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `HALT`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum HALTW {
     #[doc = "Halt action disabled"]
     DISABLE,
@@ -724,14 +722,13 @@ impl<'a> _HALTW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 8;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x03 << 8);
+        self.w.bits |= ((value as u32) & 0x03) << 8;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `CHSEL`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CHSELW {
     #[doc = "Capture value stored in channel 0"]
     CC0,
@@ -790,14 +787,13 @@ impl<'a> _CHSELW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 10;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x03 << 10);
+        self.w.bits |= ((value as u32) & 0x03) << 10;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `CAPTURE`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CAPTUREW {
     #[doc = "No capture"]
     DISABLE,
@@ -888,10 +884,8 @@ impl<'a> _CAPTUREW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 7;
-        const OFFSET: u8 = 12;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x07 << 12);
+        self.w.bits |= ((value as u32) & 0x07) << 12;
         self.w
     }
 }
@@ -911,10 +905,8 @@ impl<'a> _BLANKPRESCW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 15;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x01 << 15);
+        self.w.bits |= ((value as u32) & 0x01) << 15;
         self.w
     }
 }
@@ -926,10 +918,8 @@ impl<'a> _BLANKVALW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 255;
-        const OFFSET: u8 = 16;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0xff << 16);
+        self.w.bits |= ((value as u32) & 0xff) << 16;
         self.w
     }
 }
@@ -941,10 +931,8 @@ impl<'a> _FILTERVALW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 15;
-        const OFFSET: u8 = 24;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits &= !(0x0f << 24);
+        self.w.bits |= ((value as u32) & 0x0f) << 24;
         self.w
     }
 }
@@ -957,115 +945,66 @@ impl R {
     #[doc = "Bits 0:1 - Fault A Source"]
     #[inline]
     pub fn src(&self) -> SRCR {
-        SRCR::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+        SRCR::_from(((self.bits >> 0) & 0x03) as u8)
     }
     #[doc = "Bit 3 - Fault A Keeper"]
     #[inline]
     pub fn keep(&self) -> KEEPR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 3;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 3) & 0x01) != 0;
         KEEPR { bits }
     }
     #[doc = "Bit 4 - Fault A Qualification"]
     #[inline]
     pub fn qual(&self) -> QUALR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 4) & 0x01) != 0;
         QUALR { bits }
     }
     #[doc = "Bits 5:6 - Fault A Blanking Mode"]
     #[inline]
     pub fn blank(&self) -> BLANKR {
-        BLANKR::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 5;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+        BLANKR::_from(((self.bits >> 5) & 0x03) as u8)
     }
     #[doc = "Bit 7 - Fault A Restart"]
     #[inline]
     pub fn restart(&self) -> RESTARTR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 7;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 7) & 0x01) != 0;
         RESTARTR { bits }
     }
     #[doc = "Bits 8:9 - Fault A Halt Mode"]
     #[inline]
     pub fn halt(&self) -> HALTR {
-        HALTR::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+        HALTR::_from(((self.bits >> 8) & 0x03) as u8)
     }
     #[doc = "Bits 10:11 - Fault A Capture Channel"]
     #[inline]
     pub fn chsel(&self) -> CHSELR {
-        CHSELR::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 10;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+        CHSELR::_from(((self.bits >> 10) & 0x03) as u8)
     }
     #[doc = "Bits 12:14 - Fault A Capture Action"]
     #[inline]
     pub fn capture(&self) -> CAPTURER {
-        CAPTURER::_from({
-            const MASK: u8 = 7;
-            const OFFSET: u8 = 12;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+        CAPTURER::_from(((self.bits >> 12) & 0x07) as u8)
     }
     #[doc = "Bit 15 - Fault A Blanking Prescaler"]
     #[inline]
     pub fn blankpresc(&self) -> BLANKPRESCR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 15;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 15) & 0x01) != 0;
         BLANKPRESCR { bits }
     }
     #[doc = "Bits 16:23 - Fault A Blanking Time"]
     #[inline]
     pub fn blankval(&self) -> BLANKVALR {
-        let bits = {
-            const MASK: u8 = 255;
-            const OFFSET: u8 = 16;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
+        let bits = ((self.bits >> 16) & 0xff) as u8;
         BLANKVALR { bits }
     }
     #[doc = "Bits 24:27 - Fault A Filter Value"]
     #[inline]
     pub fn filterval(&self) -> FILTERVALR {
-        let bits = {
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 24;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
+        let bits = ((self.bits >> 24) & 0x0f) as u8;
         FILTERVALR { bits }
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {

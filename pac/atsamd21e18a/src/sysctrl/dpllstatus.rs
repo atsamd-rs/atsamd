@@ -104,41 +104,25 @@ impl R {
     #[doc = "Bit 0 - DPLL Lock Status"]
     #[inline]
     pub fn lock(&self) -> LOCKR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
+        let bits = ((self.bits >> 0) & 0x01) != 0;
         LOCKR { bits }
     }
     #[doc = "Bit 1 - Output Clock Ready"]
     #[inline]
     pub fn clkrdy(&self) -> CLKRDYR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
+        let bits = ((self.bits >> 1) & 0x01) != 0;
         CLKRDYR { bits }
     }
     #[doc = "Bit 2 - DPLL Enable"]
     #[inline]
     pub fn enable(&self) -> ENABLER {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
+        let bits = ((self.bits >> 2) & 0x01) != 0;
         ENABLER { bits }
     }
     #[doc = "Bit 3 - Divider Enable"]
     #[inline]
     pub fn div(&self) -> DIVR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 3;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
+        let bits = ((self.bits >> 3) & 0x01) != 0;
         DIVR { bits }
     }
 }

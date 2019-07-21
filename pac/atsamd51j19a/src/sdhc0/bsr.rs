@@ -14,10 +14,7 @@ impl super::BSR {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
+        self.register.set(f(&R { bits }, &mut W { bits }).bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -32,14 +29,22 @@ impl super::BSR {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
+        self.register.set(
+            f(&mut W {
+                bits: Self::reset_value(),
+            })
+            .bits,
+        );
+    }
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub const fn reset_value() -> u16 {
+        0
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.write(|w| w)
+        self.register.set(Self::reset_value())
     }
 }
 #[doc = r" Value of the field"]
@@ -79,13 +84,13 @@ impl BOUNDARYR {
     pub fn bits(&self) -> u8 {
         match *self {
             BOUNDARYR::_4K => 0,
-            BOUNDARYR::_8K => 1,
-            BOUNDARYR::_16K => 2,
-            BOUNDARYR::_32K => 3,
-            BOUNDARYR::_64K => 4,
-            BOUNDARYR::_128K => 5,
-            BOUNDARYR::_256K => 6,
-            BOUNDARYR::_512K => 7,
+            BOUNDARYR::_8K => 0x01,
+            BOUNDARYR::_16K => 0x02,
+            BOUNDARYR::_32K => 0x03,
+            BOUNDARYR::_64K => 0x04,
+            BOUNDARYR::_128K => 0x05,
+            BOUNDARYR::_256K => 0x06,
+            BOUNDARYR::_512K => 0x07,
         }
     }
     #[allow(missing_docs)]
@@ -153,14 +158,13 @@ impl<'a> _BLOCKSIZEW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u16) -> &'a mut W {
-        const MASK: u16 = 1023;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x03ff << 0);
+        self.w.bits |= ((value as u16) & 0x03ff) << 0;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `BOUNDARY`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum BOUNDARYW {
     #[doc = "4k bytes"]
     _4K,
@@ -251,10 +255,8 @@ impl<'a> _BOUNDARYW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 7;
-        const OFFSET: u8 = 12;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits &= !(0x07 << 12);
+        self.w.bits |= ((value as u16) & 0x07) << 12;
         self.w
     }
 }
@@ -267,29 +269,16 @@ impl R {
     #[doc = "Bits 0:9 - Transfer Block Size"]
     #[inline]
     pub fn blocksize(&self) -> BLOCKSIZER {
-        let bits = {
-            const MASK: u16 = 1023;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u16) as u16
-        };
+        let bits = ((self.bits >> 0) & 0x03ff) as u16;
         BLOCKSIZER { bits }
     }
     #[doc = "Bits 12:14 - SDMA Buffer Boundary"]
     #[inline]
     pub fn boundary(&self) -> BOUNDARYR {
-        BOUNDARYR::_from({
-            const MASK: u8 = 7;
-            const OFFSET: u8 = 12;
-            ((self.bits >> OFFSET) & MASK as u16) as u8
-        })
+        BOUNDARYR::_from(((self.bits >> 12) & 0x07) as u8)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {

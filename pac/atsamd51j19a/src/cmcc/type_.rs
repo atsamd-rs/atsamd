@@ -71,8 +71,8 @@ impl WAYNUMR {
     pub fn bits(&self) -> u8 {
         match *self {
             WAYNUMR::DMAPPED => 0,
-            WAYNUMR::ARCH2WAY => 1,
-            WAYNUMR::ARCH4WAY => 2,
+            WAYNUMR::ARCH2WAY => 0x01,
+            WAYNUMR::ARCH4WAY => 0x02,
             WAYNUMR::_Reserved(bits) => bits,
         }
     }
@@ -150,12 +150,12 @@ impl CSIZER {
     pub fn bits(&self) -> u8 {
         match *self {
             CSIZER::CSIZE_1KB => 0,
-            CSIZER::CSIZE_2KB => 1,
-            CSIZER::CSIZE_4KB => 2,
-            CSIZER::CSIZE_8KB => 3,
-            CSIZER::CSIZE_16KB => 4,
-            CSIZER::CSIZE_32KB => 5,
-            CSIZER::CSIZE_64KB => 6,
+            CSIZER::CSIZE_2KB => 0x01,
+            CSIZER::CSIZE_4KB => 0x02,
+            CSIZER::CSIZE_8KB => 0x03,
+            CSIZER::CSIZE_16KB => 0x04,
+            CSIZER::CSIZE_32KB => 0x05,
+            CSIZER::CSIZE_64KB => 0x06,
             CSIZER::_Reserved(bits) => bits,
         }
     }
@@ -234,11 +234,11 @@ impl CLSIZER {
     pub fn bits(&self) -> u8 {
         match *self {
             CLSIZER::CLSIZE_4B => 0,
-            CLSIZER::CLSIZE_8B => 1,
-            CLSIZER::CLSIZE_16B => 2,
-            CLSIZER::CLSIZE_32B => 3,
-            CLSIZER::CLSIZE_64B => 4,
-            CLSIZER::CLSIZE_128B => 5,
+            CLSIZER::CLSIZE_8B => 0x01,
+            CLSIZER::CLSIZE_16B => 0x02,
+            CLSIZER::CLSIZE_32B => 0x03,
+            CLSIZER::CLSIZE_64B => 0x04,
+            CLSIZER::CLSIZE_128B => 0x05,
             CLSIZER::_Reserved(bits) => bits,
         }
     }
@@ -296,58 +296,34 @@ impl R {
     #[doc = "Bit 1 - dynamic Clock Gating supported"]
     #[inline]
     pub fn gclk(&self) -> GCLKR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 1) & 0x01) != 0;
         GCLKR { bits }
     }
     #[doc = "Bit 4 - Round Robin Policy supported"]
     #[inline]
     pub fn rrp(&self) -> RRPR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 4) & 0x01) != 0;
         RRPR { bits }
     }
     #[doc = "Bits 5:6 - Number of Way"]
     #[inline]
     pub fn waynum(&self) -> WAYNUMR {
-        WAYNUMR::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 5;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+        WAYNUMR::_from(((self.bits >> 5) & 0x03) as u8)
     }
     #[doc = "Bit 7 - Lock Down supported"]
     #[inline]
     pub fn lckdown(&self) -> LCKDOWNR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 7;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 7) & 0x01) != 0;
         LCKDOWNR { bits }
     }
     #[doc = "Bits 8:10 - Cache Size"]
     #[inline]
     pub fn csize(&self) -> CSIZER {
-        CSIZER::_from({
-            const MASK: u8 = 7;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+        CSIZER::_from(((self.bits >> 8) & 0x07) as u8)
     }
     #[doc = "Bits 11:13 - Cache Line Size"]
     #[inline]
     pub fn clsize(&self) -> CLSIZER {
-        CLSIZER::_from({
-            const MASK: u8 = 7;
-            const OFFSET: u8 = 11;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+        CLSIZER::_from(((self.bits >> 11) & 0x07) as u8)
     }
 }

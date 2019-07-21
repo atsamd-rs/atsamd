@@ -41,11 +41,7 @@ impl R {
     #[doc = "Bit 0 - System Memory Present"]
     #[inline]
     pub fn smemp(&self) -> SMEMPR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 0) & 0x01) != 0;
         SMEMPR { bits }
     }
 }

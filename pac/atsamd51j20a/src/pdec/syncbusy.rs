@@ -209,91 +209,55 @@ impl R {
     #[doc = "Bit 0 - Software Reset Synchronization Busy"]
     #[inline]
     pub fn swrst(&self) -> SWRSTR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 0) & 0x01) != 0;
         SWRSTR { bits }
     }
     #[doc = "Bit 1 - Enable Synchronization Busy"]
     #[inline]
     pub fn enable(&self) -> ENABLER {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 1) & 0x01) != 0;
         ENABLER { bits }
     }
     #[doc = "Bit 2 - Control B Synchronization Busy"]
     #[inline]
     pub fn ctrlb(&self) -> CTRLBR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 2) & 0x01) != 0;
         CTRLBR { bits }
     }
     #[doc = "Bit 3 - Status Synchronization Busy"]
     #[inline]
     pub fn status(&self) -> STATUSR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 3;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 3) & 0x01) != 0;
         STATUSR { bits }
     }
     #[doc = "Bit 4 - Prescaler Synchronization Busy"]
     #[inline]
     pub fn presc(&self) -> PRESCR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 4) & 0x01) != 0;
         PRESCR { bits }
     }
     #[doc = "Bit 5 - Filter Synchronization Busy"]
     #[inline]
     pub fn filter(&self) -> FILTERR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 5;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 5) & 0x01) != 0;
         FILTERR { bits }
     }
     #[doc = "Bit 6 - Count Synchronization Busy"]
     #[inline]
     pub fn count(&self) -> COUNTR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 6;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 6) & 0x01) != 0;
         COUNTR { bits }
     }
     #[doc = "Bit 7 - Compare Channel 0 Synchronization Busy"]
     #[inline]
     pub fn cc0(&self) -> CC0R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 7;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 7) & 0x01) != 0;
         CC0R { bits }
     }
     #[doc = "Bit 8 - Compare Channel 1 Synchronization Busy"]
     #[inline]
     pub fn cc1(&self) -> CC1R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
+        let bits = ((self.bits >> 8) & 0x01) != 0;
         CC1R { bits }
     }
 }
