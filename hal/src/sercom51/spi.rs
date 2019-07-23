@@ -209,6 +209,8 @@ macro_rules! spi_master {
 
             impl<MISO, MOSI, SCK> ::hal::blocking::spi::transfer::Default<u8> for $Type<MISO, MOSI, SCK> {}
             impl<MISO, MOSI, SCK> ::hal::blocking::spi::write::Default<u8> for $Type<MISO, MOSI, SCK> {}
+            #[cfg(feature = "unproven")]
+            impl<MISO, MOSI, SCK> ::hal::blocking::spi::write_iter::Default<u8> for $Type<MISO, MOSI, SCK> {}
         }
     };
 }
