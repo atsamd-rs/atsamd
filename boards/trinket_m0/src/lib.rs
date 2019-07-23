@@ -45,6 +45,11 @@ define_pins!(
     pin swdio = a31,
     pin swdclk = a30,
 
+    /// USB host enable pin
+    pin usb_host_enable = a28,
+
+    /// The USB SOF 1kHz pad
+    pin usb_sof = a23,
     /// The USB D- pad
     pin usb_dm = a24,
     /// The USB D+ pad
