@@ -41,7 +41,7 @@ pub extern crate embedded_hal as hal;
 pub use paste;
 
 #[cfg(not(feature="samd51"))]
-mod calibration;
+pub mod calibration;
 
 #[cfg(not(feature = "samd51"))]
 pub mod clock;
