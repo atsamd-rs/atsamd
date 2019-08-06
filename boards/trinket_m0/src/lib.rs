@@ -14,7 +14,7 @@ pub use hal::*;
 use gpio::{Floating, Input, PfD, Port};
 
 use hal::clock::GenericClockController;
-use hal::sercom::{PadPin, UART0};
+use hal::sercom::{I2CMaster2, PadPin, UART0};
 use hal::time::Hertz;
 
 define_pins!(
@@ -78,5 +78,31 @@ pub fn uart<F: Into<Hertz>>(
         nvic,
         pm,
         (d3.into_pad(port), d4.into_pad(port)),
+    )
+}
+
+/// Convenience for setting up the D0 and D2 pins to operate as I²C
+/// SDA/SDL (respectively) running at the specified baud.
+pub fn i2c_master<F: Into<Hertz>>(
+    clocks: &mut GenericClockController,
+    bus_speed: F,
+    sercom2: SERCOM2,
+    pm: &mut PM,
+    sda: gpio::Pa8<Input<Floating>>,
+    scl: gpio::Pa9<Input<Floating>>,
+    port: &mut Port,
+) -> I2CMaster2<
+    hal::sercom::Sercom2Pad0<gpio::Pa8<gpio::PfD>>,
+    hal::sercom::Sercom2Pad1<gpio::Pa9<gpio::PfD>>,
+> {
+    let gclk0 = clocks.gclk0();
+
+    I2CMaster2::new(
+        &clocks.sercom2_core(&gclk0).unwrap(),
+        bus_speed.into(),
+        sercom2,
+        pm,
+        sda.into_pad(port),
+        scl.into_pad(port),
     )
 }
