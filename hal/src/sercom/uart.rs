@@ -186,12 +186,6 @@ macro_rules! uart {
 
                         nvic.enable(Interrupt::$SERCOM);
 
-                        sercom.usart().intenset.modify(|_, w| {
-                            w.rxc().set_bit()
-                            //w.txc().set_bit()
-                            //w.dre().set_bit()
-                        });
-
                         sercom.usart().ctrla.modify(|_, w| w.enable().set_bit());
                         // wait for sync of ENABLE
                         while sercom.usart().syncbusy.read().enable().bit_is_set() {}
