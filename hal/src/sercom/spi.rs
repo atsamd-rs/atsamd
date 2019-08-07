@@ -5,7 +5,7 @@ use nb;
 use crate::sercom::pads::*;
 use crate::target_device::sercom0::SPI;
 use crate::target_device::{PM, SERCOM0, SERCOM1, SERCOM2, SERCOM3};
-#[cfg(feature = "samd21g18a")]
+#[cfg(any(feature = "samd21g18a", feature="samd21j18a"))]
 use crate::target_device::{SERCOM4, SERCOM5};
 
 #[derive(Debug)]
@@ -225,7 +225,7 @@ spi_master!(SPIMaster0: (Sercom0, SERCOM0, sercom0_, Sercom0CoreClock));
 spi_master!(SPIMaster1: (Sercom1, SERCOM1, sercom1_, Sercom1CoreClock));
 spi_master!(SPIMaster2: (Sercom2, SERCOM2, sercom2_, Sercom2CoreClock));
 spi_master!(SPIMaster3: (Sercom3, SERCOM3, sercom3_, Sercom3CoreClock));
-#[cfg(feature = "samd21g18a")]
+#[cfg(any(feature = "samd21g18a", feature="samd21j18a"))]
 spi_master!(SPIMaster4: (Sercom4, SERCOM4, sercom4_, Sercom4CoreClock));
-#[cfg(feature = "samd21g18a")]
+#[cfg(any(feature = "samd21g18a", feature="samd21j18a"))]
 spi_master!(SPIMaster5: (Sercom5, SERCOM5, sercom5_, Sercom5CoreClock));

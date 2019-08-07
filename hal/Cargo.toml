@@ -39,6 +39,11 @@ path = "../pac/atsamd21e18a"
 version = "~0.5"
 optional = true
 
+[dependencies.atsamd21j18a]
+path = "../pac/atsamd21j18a"
+version = "~0.5"
+optional = true
+
 [dependencies.atsamd51g19a]
 path = "../pac/atsamd51g19a"
 version = "~0.5"
@@ -80,6 +85,8 @@ samd21g18a = ["atsamd21g18a"]
 samd21g18a-rt = ["atsamd21g18a", "atsamd21g18a/rt"]
 samd21e18a = ["atsamd21e18a"]
 samd21e18a-rt = ["atsamd21e18a", "atsamd21e18a/rt"]
+samd21j18a = ["atsamd21j18a"]
+samd21j18a-rt = ["atsamd21j18a", "atsamd21j18a/rt"]
 samd51 = [] # Convenience feature for shared configuration of samd51 chips.
 samd51g19a = ["atsamd51g19a"]
 samd51g19a-rt = ["atsamd51g19a", "atsamd51g19a/rt"]
