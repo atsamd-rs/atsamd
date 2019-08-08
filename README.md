@@ -16,12 +16,16 @@ There are a couple of crates provided by this repo:
   auto-generated crate providing access to the peripherals
   specified for this device by its SVD file.  This is the MCU used in the Trinket M0
   and Gemma M0 boards from Adafruit.
+* [`atsamd21j18a`](https://atsamd-rs.github.io/atsamd/atsamd21j18a/atsamd21j18a/) is an
+  auto-generated crate providing access to the peripherals
+  specified for this device by its SVD file.  This is the MCU used in the SARA AFF
+  boards from Sodaq.
 * [`atsamd51j19a`](https://atsamd-rs.github.io/atsamd/atsamd51j19a/atsamd51j19a/) is an auto-generated crate providing access to the peripherals specified for this device by its SVD file. This is the MCU used in the Metro M4 and Feather M4 boards from Adafruit.
 * [`atsamd51j20a`](https://atsamd-rs.github.io/atsamd/atsamd51j20a/atsamd51j20a/) is an auto-generated crate providing access to the peripherals specified for this device by its SVD file. This is the MCU used in the PyPortal board from Adafruit.
 * [`atsamd51g19a`](https://atsamd-rs.github.io/atsamd/atsamd51g19a/atsamd51g19a/) is an auto-generated crate providing access to the peripherals specified for this device by its SVD file. This is the MCU used in the Trellis M4 and ItsyBitsy M4 boards from Adafruit.
 * [`atsamd-hal`](https://atsamd-rs.github.io/atsamd/atsamd21g18a/atsamd_hal/) is the result
   of reading the datasheet for the device and encoding
-  a type-safe layer over the raw `atsamd21g18a`, `atsamd21e18a`, `atsamd51j19a`, and `atsamd51g19a` crates.  This crate
+  a type-safe layer over the raw `atsamd21g18a`, `atsamd21e18a`, `atsamd21j18a`, `atsamd51j19a`, and `atsamd51g19a` crates.  This crate
   implements traits specified by the `embedded-hal` project, making it compatible with
   various drivers in the embedded rust ecosystem.
 
@@ -41,6 +45,7 @@ In addition to the generic crates, there are also crates for popular ATSAMD21/51
 * [`feather_m4`](https://atsamd-rs.github.io/atsamd/atsamd51j19a/feather_m4/)
 * [`pyportal`](https://atsamd-rs.github.io/atsamd/atsamd51j20a/pyportal/)
 * [`pygamer`](https://atsamd-rs.github.io/atsamd/atsamd51j19a/pygamer/)
+* [`sodaq_sara_aff`](https://atsamd-rs.github.io/atsamd/atsamd21j18a/sodaq_sara_aff/)
 
 ## Building
 
