@@ -1,42 +1,71 @@
-#[doc = "Reader of register WINCTRL"]
-pub type R = crate::R<u8, super::WINCTRL>;
-#[doc = "Writer for register WINCTRL"]
-pub type W = crate::W<u8, super::WINCTRL>;
-#[doc = "Register WINCTRL `reset()`'s with value 0"]
-impl crate::ResetValue for super::WINCTRL {
-    type Type = u8;
-    #[inline(always)]
-    fn reset_value() -> Self::Type {
-        0
+#[doc = r" Value read from the register"]
+pub struct R {
+    bits: u8,
+}
+#[doc = r" Value to write to the register"]
+pub struct W {
+    bits: u8,
+}
+impl super::WINCTRL {
+    #[doc = r" Modifies the contents of the register"]
+    #[inline]
+    pub fn modify<F>(&self, f: F)
+    where
+        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
+    {
+        let bits = self.register.get();
+        let r = R { bits };
+        let mut w = W { bits };
+        f(&r, &mut w);
+        self.register.set(w.bits);
+    }
+    #[doc = r" Reads the contents of the register"]
+    #[inline]
+    pub fn read(&self) -> R {
+        R {
+            bits: self.register.get(),
+        }
+    }
+    #[doc = r" Writes to the register"]
+    #[inline]
+    pub fn write<F>(&self, f: F)
+    where
+        F: FnOnce(&mut W) -> &mut W,
+    {
+        let mut w = W::reset_value();
+        f(&mut w);
+        self.register.set(w.bits);
+    }
+    #[doc = r" Writes the reset value to the register"]
+    #[inline]
+    pub fn reset(&self) {
+        self.write(|w| w)
     }
 }
-#[doc = "Reader of field `WEN0`"]
-pub type WEN0_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `WEN0`"]
-pub struct WEN0_W<'a> {
-    w: &'a mut W,
+#[doc = r" Value of the field"]
+pub struct WEN0R {
+    bits: bool,
 }
-impl<'a> WEN0_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
+impl WEN0R {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bit(&self) -> bool {
+        self.bits
     }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
+    #[doc = r" Returns `true` if the bit is clear (0)"]
+    #[inline]
+    pub fn bit_is_clear(&self) -> bool {
+        !self.bit()
     }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | ((value as u8) & 0x01);
-        self.w
+    #[doc = r" Returns `true` if the bit is set (1)"]
+    #[inline]
+    pub fn bit_is_set(&self) -> bool {
+        self.bit()
     }
 }
 #[doc = "Possible values of the field `WINTSEL0`"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum WINTSEL0_A {
+pub enum WINTSEL0R {
     #[doc = "Interrupt on signal above window"]
     ABOVE,
     #[doc = "Interrupt on signal inside window"]
@@ -46,113 +75,185 @@ pub enum WINTSEL0_A {
     #[doc = "Interrupt on signal outside window"]
     OUTSIDE,
 }
-impl crate::ToBits<u8> for WINTSEL0_A {
-    #[inline(always)]
-    fn _bits(&self) -> u8 {
+impl WINTSEL0R {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bits(&self) -> u8 {
         match *self {
-            WINTSEL0_A::ABOVE => 0,
-            WINTSEL0_A::INSIDE => 1,
-            WINTSEL0_A::BELOW => 2,
-            WINTSEL0_A::OUTSIDE => 3,
+            WINTSEL0R::ABOVE => 0,
+            WINTSEL0R::INSIDE => 1,
+            WINTSEL0R::BELOW => 2,
+            WINTSEL0R::OUTSIDE => 3,
         }
     }
-}
-#[doc = "Reader of field `WINTSEL0`"]
-pub type WINTSEL0_R = crate::R<u8, WINTSEL0_A>;
-impl WINTSEL0_R {
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> WINTSEL0_A {
-        match self.bits {
-            0 => WINTSEL0_A::ABOVE,
-            1 => WINTSEL0_A::INSIDE,
-            2 => WINTSEL0_A::BELOW,
-            3 => WINTSEL0_A::OUTSIDE,
+    #[allow(missing_docs)]
+    #[doc(hidden)]
+    #[inline]
+    pub fn _from(value: u8) -> WINTSEL0R {
+        match value {
+            0 => WINTSEL0R::ABOVE,
+            1 => WINTSEL0R::INSIDE,
+            2 => WINTSEL0R::BELOW,
+            3 => WINTSEL0R::OUTSIDE,
             _ => unreachable!(),
         }
     }
     #[doc = "Checks if the value of the field is `ABOVE`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_above(&self) -> bool {
-        *self == WINTSEL0_A::ABOVE
+        *self == WINTSEL0R::ABOVE
     }
     #[doc = "Checks if the value of the field is `INSIDE`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_inside(&self) -> bool {
-        *self == WINTSEL0_A::INSIDE
+        *self == WINTSEL0R::INSIDE
     }
     #[doc = "Checks if the value of the field is `BELOW`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_below(&self) -> bool {
-        *self == WINTSEL0_A::BELOW
+        *self == WINTSEL0R::BELOW
     }
     #[doc = "Checks if the value of the field is `OUTSIDE`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_outside(&self) -> bool {
-        *self == WINTSEL0_A::OUTSIDE
+        *self == WINTSEL0R::OUTSIDE
     }
 }
-#[doc = "Write proxy for field `WINTSEL0`"]
-pub struct WINTSEL0_W<'a> {
+#[doc = r" Proxy"]
+pub struct _WEN0W<'a> {
     w: &'a mut W,
 }
-impl<'a> WINTSEL0_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: WINTSEL0_A) -> &'a mut W {
-        use crate::ToBits;
+impl<'a> _WEN0W<'a> {
+    #[doc = r" Sets the field bit"]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r" Clears the field bit"]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r" Writes raw bits to the field"]
+    #[inline]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        const MASK: bool = true;
+        const OFFSET: u8 = 0;
+        self.w.bits &= !((MASK as u8) << OFFSET);
+        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w
+    }
+}
+#[doc = "Values that can be written to the field `WINTSEL0`"]
+pub enum WINTSEL0W {
+    #[doc = "Interrupt on signal above window"]
+    ABOVE,
+    #[doc = "Interrupt on signal inside window"]
+    INSIDE,
+    #[doc = "Interrupt on signal below window"]
+    BELOW,
+    #[doc = "Interrupt on signal outside window"]
+    OUTSIDE,
+}
+impl WINTSEL0W {
+    #[allow(missing_docs)]
+    #[doc(hidden)]
+    #[inline]
+    pub fn _bits(&self) -> u8 {
+        match *self {
+            WINTSEL0W::ABOVE => 0,
+            WINTSEL0W::INSIDE => 1,
+            WINTSEL0W::BELOW => 2,
+            WINTSEL0W::OUTSIDE => 3,
+        }
+    }
+}
+#[doc = r" Proxy"]
+pub struct _WINTSEL0W<'a> {
+    w: &'a mut W,
+}
+impl<'a> _WINTSEL0W<'a> {
+    #[doc = r" Writes `variant` to the field"]
+    #[inline]
+    pub fn variant(self, variant: WINTSEL0W) -> &'a mut W {
         {
             self.bits(variant._bits())
         }
     }
     #[doc = "Interrupt on signal above window"]
-    #[inline(always)]
+    #[inline]
     pub fn above(self) -> &'a mut W {
-        self.variant(WINTSEL0_A::ABOVE)
+        self.variant(WINTSEL0W::ABOVE)
     }
     #[doc = "Interrupt on signal inside window"]
-    #[inline(always)]
+    #[inline]
     pub fn inside(self) -> &'a mut W {
-        self.variant(WINTSEL0_A::INSIDE)
+        self.variant(WINTSEL0W::INSIDE)
     }
     #[doc = "Interrupt on signal below window"]
-    #[inline(always)]
+    #[inline]
     pub fn below(self) -> &'a mut W {
-        self.variant(WINTSEL0_A::BELOW)
+        self.variant(WINTSEL0W::BELOW)
     }
     #[doc = "Interrupt on signal outside window"]
-    #[inline(always)]
+    #[inline]
     pub fn outside(self) -> &'a mut W {
-        self.variant(WINTSEL0_A::OUTSIDE)
+        self.variant(WINTSEL0W::OUTSIDE)
     }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
+    #[doc = r" Writes raw bits to the field"]
+    #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x03 << 1)) | (((value as u8) & 0x03) << 1);
+        const MASK: u8 = 3;
+        const OFFSET: u8 = 1;
+        self.w.bits &= !((MASK as u8) << OFFSET);
+        self.w.bits |= ((value & MASK) as u8) << OFFSET;
         self.w
     }
 }
 impl R {
+    #[doc = r" Value of the register as raw bits"]
+    #[inline]
+    pub fn bits(&self) -> u8 {
+        self.bits
+    }
     #[doc = "Bit 0 - Window 0 Mode Enable"]
-    #[inline(always)]
-    pub fn wen0(&self) -> WEN0_R {
-        WEN0_R::new((self.bits & 0x01) != 0)
+    #[inline]
+    pub fn wen0(&self) -> WEN0R {
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
+        WEN0R { bits }
     }
     #[doc = "Bits 1:2 - Window 0 Interrupt Selection"]
-    #[inline(always)]
-    pub fn wintsel0(&self) -> WINTSEL0_R {
-        WINTSEL0_R::new(((self.bits >> 1) & 0x03) as u8)
+    #[inline]
+    pub fn wintsel0(&self) -> WINTSEL0R {
+        WINTSEL0R::_from({
+            const MASK: u8 = 3;
+            const OFFSET: u8 = 1;
+            ((self.bits >> OFFSET) & MASK as u8) as u8
+        })
     }
 }
 impl W {
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub fn reset_value() -> W {
+        W { bits: 0 }
+    }
+    #[doc = r" Writes raw bits to the register"]
+    #[inline]
+    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
+        self.bits = bits;
+        self
+    }
     #[doc = "Bit 0 - Window 0 Mode Enable"]
-    #[inline(always)]
-    pub fn wen0(&mut self) -> WEN0_W {
-        WEN0_W { w: self }
+    #[inline]
+    pub fn wen0(&mut self) -> _WEN0W {
+        _WEN0W { w: self }
     }
     #[doc = "Bits 1:2 - Window 0 Interrupt Selection"]
-    #[inline(always)]
-    pub fn wintsel0(&mut self) -> WINTSEL0_W {
-        WINTSEL0_W { w: self }
+    #[inline]
+    pub fn wintsel0(&mut self) -> _WINTSEL0W {
+        _WINTSEL0W { w: self }
     }
 }

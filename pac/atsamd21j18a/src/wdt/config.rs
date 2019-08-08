@@ -1,18 +1,50 @@
-#[doc = "Reader of register CONFIG"]
-pub type R = crate::R<u8, super::CONFIG>;
-#[doc = "Writer for register CONFIG"]
-pub type W = crate::W<u8, super::CONFIG>;
-#[doc = "Register CONFIG `reset()`'s with value 0xbb"]
-impl crate::ResetValue for super::CONFIG {
-    type Type = u8;
-    #[inline(always)]
-    fn reset_value() -> Self::Type {
-        0xbb
+#[doc = r" Value read from the register"]
+pub struct R {
+    bits: u8,
+}
+#[doc = r" Value to write to the register"]
+pub struct W {
+    bits: u8,
+}
+impl super::CONFIG {
+    #[doc = r" Modifies the contents of the register"]
+    #[inline]
+    pub fn modify<F>(&self, f: F)
+    where
+        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
+    {
+        let bits = self.register.get();
+        let r = R { bits };
+        let mut w = W { bits };
+        f(&r, &mut w);
+        self.register.set(w.bits);
+    }
+    #[doc = r" Reads the contents of the register"]
+    #[inline]
+    pub fn read(&self) -> R {
+        R {
+            bits: self.register.get(),
+        }
+    }
+    #[doc = r" Writes to the register"]
+    #[inline]
+    pub fn write<F>(&self, f: F)
+    where
+        F: FnOnce(&mut W) -> &mut W,
+    {
+        let mut w = W::reset_value();
+        f(&mut w);
+        self.register.set(w.bits);
+    }
+    #[doc = r" Writes the reset value to the register"]
+    #[inline]
+    pub fn reset(&self) {
+        self.write(|w| w)
     }
 }
 #[doc = "Possible values of the field `PER`"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum PER_A {
+pub enum PERR {
     #[doc = "8 clock cycles"]
     _8,
     #[doc = "16 clock cycles"]
@@ -37,191 +69,243 @@ pub enum PER_A {
     _8K,
     #[doc = "16384 clock cycles"]
     _16K,
+    #[doc = r" Reserved"]
+    _Reserved(u8),
 }
-impl crate::ToBits<u8> for PER_A {
-    #[inline(always)]
-    fn _bits(&self) -> u8 {
+impl PERR {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bits(&self) -> u8 {
         match *self {
-            PER_A::_8 => 0,
-            PER_A::_16 => 1,
-            PER_A::_32 => 2,
-            PER_A::_64 => 3,
-            PER_A::_128 => 4,
-            PER_A::_256 => 5,
-            PER_A::_512 => 6,
-            PER_A::_1K => 7,
-            PER_A::_2K => 8,
-            PER_A::_4K => 9,
-            PER_A::_8K => 10,
-            PER_A::_16K => 11,
+            PERR::_8 => 0,
+            PERR::_16 => 1,
+            PERR::_32 => 2,
+            PERR::_64 => 3,
+            PERR::_128 => 4,
+            PERR::_256 => 5,
+            PERR::_512 => 6,
+            PERR::_1K => 7,
+            PERR::_2K => 8,
+            PERR::_4K => 9,
+            PERR::_8K => 10,
+            PERR::_16K => 11,
+            PERR::_Reserved(bits) => bits,
         }
     }
-}
-#[doc = "Reader of field `PER`"]
-pub type PER_R = crate::R<u8, PER_A>;
-impl PER_R {
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> crate::Variant<u8, PER_A> {
-        use crate::Variant::*;
-        match self.bits {
-            0 => Val(PER_A::_8),
-            1 => Val(PER_A::_16),
-            2 => Val(PER_A::_32),
-            3 => Val(PER_A::_64),
-            4 => Val(PER_A::_128),
-            5 => Val(PER_A::_256),
-            6 => Val(PER_A::_512),
-            7 => Val(PER_A::_1K),
-            8 => Val(PER_A::_2K),
-            9 => Val(PER_A::_4K),
-            10 => Val(PER_A::_8K),
-            11 => Val(PER_A::_16K),
-            i => Res(i),
+    #[allow(missing_docs)]
+    #[doc(hidden)]
+    #[inline]
+    pub fn _from(value: u8) -> PERR {
+        match value {
+            0 => PERR::_8,
+            1 => PERR::_16,
+            2 => PERR::_32,
+            3 => PERR::_64,
+            4 => PERR::_128,
+            5 => PERR::_256,
+            6 => PERR::_512,
+            7 => PERR::_1K,
+            8 => PERR::_2K,
+            9 => PERR::_4K,
+            10 => PERR::_8K,
+            11 => PERR::_16K,
+            i => PERR::_Reserved(i),
         }
     }
     #[doc = "Checks if the value of the field is `_8`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_8(&self) -> bool {
-        *self == PER_A::_8
+        *self == PERR::_8
     }
     #[doc = "Checks if the value of the field is `_16`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_16(&self) -> bool {
-        *self == PER_A::_16
+        *self == PERR::_16
     }
     #[doc = "Checks if the value of the field is `_32`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_32(&self) -> bool {
-        *self == PER_A::_32
+        *self == PERR::_32
     }
     #[doc = "Checks if the value of the field is `_64`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_64(&self) -> bool {
-        *self == PER_A::_64
+        *self == PERR::_64
     }
     #[doc = "Checks if the value of the field is `_128`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_128(&self) -> bool {
-        *self == PER_A::_128
+        *self == PERR::_128
     }
     #[doc = "Checks if the value of the field is `_256`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_256(&self) -> bool {
-        *self == PER_A::_256
+        *self == PERR::_256
     }
     #[doc = "Checks if the value of the field is `_512`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_512(&self) -> bool {
-        *self == PER_A::_512
+        *self == PERR::_512
     }
     #[doc = "Checks if the value of the field is `_1K`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_1k(&self) -> bool {
-        *self == PER_A::_1K
+        *self == PERR::_1K
     }
     #[doc = "Checks if the value of the field is `_2K`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_2k(&self) -> bool {
-        *self == PER_A::_2K
+        *self == PERR::_2K
     }
     #[doc = "Checks if the value of the field is `_4K`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_4k(&self) -> bool {
-        *self == PER_A::_4K
+        *self == PERR::_4K
     }
     #[doc = "Checks if the value of the field is `_8K`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_8k(&self) -> bool {
-        *self == PER_A::_8K
+        *self == PERR::_8K
     }
     #[doc = "Checks if the value of the field is `_16K`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_16k(&self) -> bool {
-        *self == PER_A::_16K
-    }
-}
-#[doc = "Write proxy for field `PER`"]
-pub struct PER_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> PER_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: PER_A) -> &'a mut W {
-        use crate::ToBits;
-        unsafe { self.bits(variant._bits()) }
-    }
-    #[doc = "8 clock cycles"]
-    #[inline(always)]
-    pub fn _8(self) -> &'a mut W {
-        self.variant(PER_A::_8)
-    }
-    #[doc = "16 clock cycles"]
-    #[inline(always)]
-    pub fn _16(self) -> &'a mut W {
-        self.variant(PER_A::_16)
-    }
-    #[doc = "32 clock cycles"]
-    #[inline(always)]
-    pub fn _32(self) -> &'a mut W {
-        self.variant(PER_A::_32)
-    }
-    #[doc = "64 clock cycles"]
-    #[inline(always)]
-    pub fn _64(self) -> &'a mut W {
-        self.variant(PER_A::_64)
-    }
-    #[doc = "128 clock cycles"]
-    #[inline(always)]
-    pub fn _128(self) -> &'a mut W {
-        self.variant(PER_A::_128)
-    }
-    #[doc = "256 clock cycles"]
-    #[inline(always)]
-    pub fn _256(self) -> &'a mut W {
-        self.variant(PER_A::_256)
-    }
-    #[doc = "512 clock cycles"]
-    #[inline(always)]
-    pub fn _512(self) -> &'a mut W {
-        self.variant(PER_A::_512)
-    }
-    #[doc = "1024 clock cycles"]
-    #[inline(always)]
-    pub fn _1k(self) -> &'a mut W {
-        self.variant(PER_A::_1K)
-    }
-    #[doc = "2048 clock cycles"]
-    #[inline(always)]
-    pub fn _2k(self) -> &'a mut W {
-        self.variant(PER_A::_2K)
-    }
-    #[doc = "4096 clock cycles"]
-    #[inline(always)]
-    pub fn _4k(self) -> &'a mut W {
-        self.variant(PER_A::_4K)
-    }
-    #[doc = "8192 clock cycles"]
-    #[inline(always)]
-    pub fn _8k(self) -> &'a mut W {
-        self.variant(PER_A::_8K)
-    }
-    #[doc = "16384 clock cycles"]
-    #[inline(always)]
-    pub fn _16k(self) -> &'a mut W {
-        self.variant(PER_A::_16K)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x0f) | ((value as u8) & 0x0f);
-        self.w
+        *self == PERR::_16K
     }
 }
 #[doc = "Possible values of the field `WINDOW`"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum WINDOW_A {
+pub enum WINDOWR {
+    #[doc = "8 clock cycles"]
+    _8,
+    #[doc = "16 clock cycles"]
+    _16,
+    #[doc = "32 clock cycles"]
+    _32,
+    #[doc = "64 clock cycles"]
+    _64,
+    #[doc = "128 clock cycles"]
+    _128,
+    #[doc = "256 clock cycles"]
+    _256,
+    #[doc = "512 clock cycles"]
+    _512,
+    #[doc = "1024 clock cycles"]
+    _1K,
+    #[doc = "2048 clock cycles"]
+    _2K,
+    #[doc = "4096 clock cycles"]
+    _4K,
+    #[doc = "8192 clock cycles"]
+    _8K,
+    #[doc = "16384 clock cycles"]
+    _16K,
+    #[doc = r" Reserved"]
+    _Reserved(u8),
+}
+impl WINDOWR {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bits(&self) -> u8 {
+        match *self {
+            WINDOWR::_8 => 0,
+            WINDOWR::_16 => 1,
+            WINDOWR::_32 => 2,
+            WINDOWR::_64 => 3,
+            WINDOWR::_128 => 4,
+            WINDOWR::_256 => 5,
+            WINDOWR::_512 => 6,
+            WINDOWR::_1K => 7,
+            WINDOWR::_2K => 8,
+            WINDOWR::_4K => 9,
+            WINDOWR::_8K => 10,
+            WINDOWR::_16K => 11,
+            WINDOWR::_Reserved(bits) => bits,
+        }
+    }
+    #[allow(missing_docs)]
+    #[doc(hidden)]
+    #[inline]
+    pub fn _from(value: u8) -> WINDOWR {
+        match value {
+            0 => WINDOWR::_8,
+            1 => WINDOWR::_16,
+            2 => WINDOWR::_32,
+            3 => WINDOWR::_64,
+            4 => WINDOWR::_128,
+            5 => WINDOWR::_256,
+            6 => WINDOWR::_512,
+            7 => WINDOWR::_1K,
+            8 => WINDOWR::_2K,
+            9 => WINDOWR::_4K,
+            10 => WINDOWR::_8K,
+            11 => WINDOWR::_16K,
+            i => WINDOWR::_Reserved(i),
+        }
+    }
+    #[doc = "Checks if the value of the field is `_8`"]
+    #[inline]
+    pub fn is_8(&self) -> bool {
+        *self == WINDOWR::_8
+    }
+    #[doc = "Checks if the value of the field is `_16`"]
+    #[inline]
+    pub fn is_16(&self) -> bool {
+        *self == WINDOWR::_16
+    }
+    #[doc = "Checks if the value of the field is `_32`"]
+    #[inline]
+    pub fn is_32(&self) -> bool {
+        *self == WINDOWR::_32
+    }
+    #[doc = "Checks if the value of the field is `_64`"]
+    #[inline]
+    pub fn is_64(&self) -> bool {
+        *self == WINDOWR::_64
+    }
+    #[doc = "Checks if the value of the field is `_128`"]
+    #[inline]
+    pub fn is_128(&self) -> bool {
+        *self == WINDOWR::_128
+    }
+    #[doc = "Checks if the value of the field is `_256`"]
+    #[inline]
+    pub fn is_256(&self) -> bool {
+        *self == WINDOWR::_256
+    }
+    #[doc = "Checks if the value of the field is `_512`"]
+    #[inline]
+    pub fn is_512(&self) -> bool {
+        *self == WINDOWR::_512
+    }
+    #[doc = "Checks if the value of the field is `_1K`"]
+    #[inline]
+    pub fn is_1k(&self) -> bool {
+        *self == WINDOWR::_1K
+    }
+    #[doc = "Checks if the value of the field is `_2K`"]
+    #[inline]
+    pub fn is_2k(&self) -> bool {
+        *self == WINDOWR::_2K
+    }
+    #[doc = "Checks if the value of the field is `_4K`"]
+    #[inline]
+    pub fn is_4k(&self) -> bool {
+        *self == WINDOWR::_4K
+    }
+    #[doc = "Checks if the value of the field is `_8K`"]
+    #[inline]
+    pub fn is_8k(&self) -> bool {
+        *self == WINDOWR::_8K
+    }
+    #[doc = "Checks if the value of the field is `_16K`"]
+    #[inline]
+    pub fn is_16k(&self) -> bool {
+        *self == WINDOWR::_16K
+    }
+}
+#[doc = "Values that can be written to the field `PER`"]
+pub enum PERW {
     #[doc = "8 clock cycles"]
     _8,
     #[doc = "16 clock cycles"]
@@ -247,208 +331,280 @@ pub enum WINDOW_A {
     #[doc = "16384 clock cycles"]
     _16K,
 }
-impl crate::ToBits<u8> for WINDOW_A {
-    #[inline(always)]
-    fn _bits(&self) -> u8 {
+impl PERW {
+    #[allow(missing_docs)]
+    #[doc(hidden)]
+    #[inline]
+    pub fn _bits(&self) -> u8 {
         match *self {
-            WINDOW_A::_8 => 0,
-            WINDOW_A::_16 => 1,
-            WINDOW_A::_32 => 2,
-            WINDOW_A::_64 => 3,
-            WINDOW_A::_128 => 4,
-            WINDOW_A::_256 => 5,
-            WINDOW_A::_512 => 6,
-            WINDOW_A::_1K => 7,
-            WINDOW_A::_2K => 8,
-            WINDOW_A::_4K => 9,
-            WINDOW_A::_8K => 10,
-            WINDOW_A::_16K => 11,
+            PERW::_8 => 0,
+            PERW::_16 => 1,
+            PERW::_32 => 2,
+            PERW::_64 => 3,
+            PERW::_128 => 4,
+            PERW::_256 => 5,
+            PERW::_512 => 6,
+            PERW::_1K => 7,
+            PERW::_2K => 8,
+            PERW::_4K => 9,
+            PERW::_8K => 10,
+            PERW::_16K => 11,
         }
     }
 }
-#[doc = "Reader of field `WINDOW`"]
-pub type WINDOW_R = crate::R<u8, WINDOW_A>;
-impl WINDOW_R {
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> crate::Variant<u8, WINDOW_A> {
-        use crate::Variant::*;
-        match self.bits {
-            0 => Val(WINDOW_A::_8),
-            1 => Val(WINDOW_A::_16),
-            2 => Val(WINDOW_A::_32),
-            3 => Val(WINDOW_A::_64),
-            4 => Val(WINDOW_A::_128),
-            5 => Val(WINDOW_A::_256),
-            6 => Val(WINDOW_A::_512),
-            7 => Val(WINDOW_A::_1K),
-            8 => Val(WINDOW_A::_2K),
-            9 => Val(WINDOW_A::_4K),
-            10 => Val(WINDOW_A::_8K),
-            11 => Val(WINDOW_A::_16K),
-            i => Res(i),
-        }
-    }
-    #[doc = "Checks if the value of the field is `_8`"]
-    #[inline(always)]
-    pub fn is_8(&self) -> bool {
-        *self == WINDOW_A::_8
-    }
-    #[doc = "Checks if the value of the field is `_16`"]
-    #[inline(always)]
-    pub fn is_16(&self) -> bool {
-        *self == WINDOW_A::_16
-    }
-    #[doc = "Checks if the value of the field is `_32`"]
-    #[inline(always)]
-    pub fn is_32(&self) -> bool {
-        *self == WINDOW_A::_32
-    }
-    #[doc = "Checks if the value of the field is `_64`"]
-    #[inline(always)]
-    pub fn is_64(&self) -> bool {
-        *self == WINDOW_A::_64
-    }
-    #[doc = "Checks if the value of the field is `_128`"]
-    #[inline(always)]
-    pub fn is_128(&self) -> bool {
-        *self == WINDOW_A::_128
-    }
-    #[doc = "Checks if the value of the field is `_256`"]
-    #[inline(always)]
-    pub fn is_256(&self) -> bool {
-        *self == WINDOW_A::_256
-    }
-    #[doc = "Checks if the value of the field is `_512`"]
-    #[inline(always)]
-    pub fn is_512(&self) -> bool {
-        *self == WINDOW_A::_512
-    }
-    #[doc = "Checks if the value of the field is `_1K`"]
-    #[inline(always)]
-    pub fn is_1k(&self) -> bool {
-        *self == WINDOW_A::_1K
-    }
-    #[doc = "Checks if the value of the field is `_2K`"]
-    #[inline(always)]
-    pub fn is_2k(&self) -> bool {
-        *self == WINDOW_A::_2K
-    }
-    #[doc = "Checks if the value of the field is `_4K`"]
-    #[inline(always)]
-    pub fn is_4k(&self) -> bool {
-        *self == WINDOW_A::_4K
-    }
-    #[doc = "Checks if the value of the field is `_8K`"]
-    #[inline(always)]
-    pub fn is_8k(&self) -> bool {
-        *self == WINDOW_A::_8K
-    }
-    #[doc = "Checks if the value of the field is `_16K`"]
-    #[inline(always)]
-    pub fn is_16k(&self) -> bool {
-        *self == WINDOW_A::_16K
-    }
-}
-#[doc = "Write proxy for field `WINDOW`"]
-pub struct WINDOW_W<'a> {
+#[doc = r" Proxy"]
+pub struct _PERW<'a> {
     w: &'a mut W,
 }
-impl<'a> WINDOW_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: WINDOW_A) -> &'a mut W {
-        use crate::ToBits;
+impl<'a> _PERW<'a> {
+    #[doc = r" Writes `variant` to the field"]
+    #[inline]
+    pub fn variant(self, variant: PERW) -> &'a mut W {
         unsafe { self.bits(variant._bits()) }
     }
     #[doc = "8 clock cycles"]
-    #[inline(always)]
+    #[inline]
     pub fn _8(self) -> &'a mut W {
-        self.variant(WINDOW_A::_8)
+        self.variant(PERW::_8)
     }
     #[doc = "16 clock cycles"]
-    #[inline(always)]
+    #[inline]
     pub fn _16(self) -> &'a mut W {
-        self.variant(WINDOW_A::_16)
+        self.variant(PERW::_16)
     }
     #[doc = "32 clock cycles"]
-    #[inline(always)]
+    #[inline]
     pub fn _32(self) -> &'a mut W {
-        self.variant(WINDOW_A::_32)
+        self.variant(PERW::_32)
     }
     #[doc = "64 clock cycles"]
-    #[inline(always)]
+    #[inline]
     pub fn _64(self) -> &'a mut W {
-        self.variant(WINDOW_A::_64)
+        self.variant(PERW::_64)
     }
     #[doc = "128 clock cycles"]
-    #[inline(always)]
+    #[inline]
     pub fn _128(self) -> &'a mut W {
-        self.variant(WINDOW_A::_128)
+        self.variant(PERW::_128)
     }
     #[doc = "256 clock cycles"]
-    #[inline(always)]
+    #[inline]
     pub fn _256(self) -> &'a mut W {
-        self.variant(WINDOW_A::_256)
+        self.variant(PERW::_256)
     }
     #[doc = "512 clock cycles"]
-    #[inline(always)]
+    #[inline]
     pub fn _512(self) -> &'a mut W {
-        self.variant(WINDOW_A::_512)
+        self.variant(PERW::_512)
     }
     #[doc = "1024 clock cycles"]
-    #[inline(always)]
+    #[inline]
     pub fn _1k(self) -> &'a mut W {
-        self.variant(WINDOW_A::_1K)
+        self.variant(PERW::_1K)
     }
     #[doc = "2048 clock cycles"]
-    #[inline(always)]
+    #[inline]
     pub fn _2k(self) -> &'a mut W {
-        self.variant(WINDOW_A::_2K)
+        self.variant(PERW::_2K)
     }
     #[doc = "4096 clock cycles"]
-    #[inline(always)]
+    #[inline]
     pub fn _4k(self) -> &'a mut W {
-        self.variant(WINDOW_A::_4K)
+        self.variant(PERW::_4K)
     }
     #[doc = "8192 clock cycles"]
-    #[inline(always)]
+    #[inline]
     pub fn _8k(self) -> &'a mut W {
-        self.variant(WINDOW_A::_8K)
+        self.variant(PERW::_8K)
     }
     #[doc = "16384 clock cycles"]
-    #[inline(always)]
+    #[inline]
     pub fn _16k(self) -> &'a mut W {
-        self.variant(WINDOW_A::_16K)
+        self.variant(PERW::_16K)
     }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
+    #[doc = r" Writes raw bits to the field"]
+    #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x0f << 4)) | (((value as u8) & 0x0f) << 4);
+        const MASK: u8 = 15;
+        const OFFSET: u8 = 0;
+        self.w.bits &= !((MASK as u8) << OFFSET);
+        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w
+    }
+}
+#[doc = "Values that can be written to the field `WINDOW`"]
+pub enum WINDOWW {
+    #[doc = "8 clock cycles"]
+    _8,
+    #[doc = "16 clock cycles"]
+    _16,
+    #[doc = "32 clock cycles"]
+    _32,
+    #[doc = "64 clock cycles"]
+    _64,
+    #[doc = "128 clock cycles"]
+    _128,
+    #[doc = "256 clock cycles"]
+    _256,
+    #[doc = "512 clock cycles"]
+    _512,
+    #[doc = "1024 clock cycles"]
+    _1K,
+    #[doc = "2048 clock cycles"]
+    _2K,
+    #[doc = "4096 clock cycles"]
+    _4K,
+    #[doc = "8192 clock cycles"]
+    _8K,
+    #[doc = "16384 clock cycles"]
+    _16K,
+}
+impl WINDOWW {
+    #[allow(missing_docs)]
+    #[doc(hidden)]
+    #[inline]
+    pub fn _bits(&self) -> u8 {
+        match *self {
+            WINDOWW::_8 => 0,
+            WINDOWW::_16 => 1,
+            WINDOWW::_32 => 2,
+            WINDOWW::_64 => 3,
+            WINDOWW::_128 => 4,
+            WINDOWW::_256 => 5,
+            WINDOWW::_512 => 6,
+            WINDOWW::_1K => 7,
+            WINDOWW::_2K => 8,
+            WINDOWW::_4K => 9,
+            WINDOWW::_8K => 10,
+            WINDOWW::_16K => 11,
+        }
+    }
+}
+#[doc = r" Proxy"]
+pub struct _WINDOWW<'a> {
+    w: &'a mut W,
+}
+impl<'a> _WINDOWW<'a> {
+    #[doc = r" Writes `variant` to the field"]
+    #[inline]
+    pub fn variant(self, variant: WINDOWW) -> &'a mut W {
+        unsafe { self.bits(variant._bits()) }
+    }
+    #[doc = "8 clock cycles"]
+    #[inline]
+    pub fn _8(self) -> &'a mut W {
+        self.variant(WINDOWW::_8)
+    }
+    #[doc = "16 clock cycles"]
+    #[inline]
+    pub fn _16(self) -> &'a mut W {
+        self.variant(WINDOWW::_16)
+    }
+    #[doc = "32 clock cycles"]
+    #[inline]
+    pub fn _32(self) -> &'a mut W {
+        self.variant(WINDOWW::_32)
+    }
+    #[doc = "64 clock cycles"]
+    #[inline]
+    pub fn _64(self) -> &'a mut W {
+        self.variant(WINDOWW::_64)
+    }
+    #[doc = "128 clock cycles"]
+    #[inline]
+    pub fn _128(self) -> &'a mut W {
+        self.variant(WINDOWW::_128)
+    }
+    #[doc = "256 clock cycles"]
+    #[inline]
+    pub fn _256(self) -> &'a mut W {
+        self.variant(WINDOWW::_256)
+    }
+    #[doc = "512 clock cycles"]
+    #[inline]
+    pub fn _512(self) -> &'a mut W {
+        self.variant(WINDOWW::_512)
+    }
+    #[doc = "1024 clock cycles"]
+    #[inline]
+    pub fn _1k(self) -> &'a mut W {
+        self.variant(WINDOWW::_1K)
+    }
+    #[doc = "2048 clock cycles"]
+    #[inline]
+    pub fn _2k(self) -> &'a mut W {
+        self.variant(WINDOWW::_2K)
+    }
+    #[doc = "4096 clock cycles"]
+    #[inline]
+    pub fn _4k(self) -> &'a mut W {
+        self.variant(WINDOWW::_4K)
+    }
+    #[doc = "8192 clock cycles"]
+    #[inline]
+    pub fn _8k(self) -> &'a mut W {
+        self.variant(WINDOWW::_8K)
+    }
+    #[doc = "16384 clock cycles"]
+    #[inline]
+    pub fn _16k(self) -> &'a mut W {
+        self.variant(WINDOWW::_16K)
+    }
+    #[doc = r" Writes raw bits to the field"]
+    #[inline]
+    pub unsafe fn bits(self, value: u8) -> &'a mut W {
+        const MASK: u8 = 15;
+        const OFFSET: u8 = 4;
+        self.w.bits &= !((MASK as u8) << OFFSET);
+        self.w.bits |= ((value & MASK) as u8) << OFFSET;
         self.w
     }
 }
 impl R {
+    #[doc = r" Value of the register as raw bits"]
+    #[inline]
+    pub fn bits(&self) -> u8 {
+        self.bits
+    }
     #[doc = "Bits 0:3 - Time-Out Period"]
-    #[inline(always)]
-    pub fn per(&self) -> PER_R {
-        PER_R::new((self.bits & 0x0f) as u8)
+    #[inline]
+    pub fn per(&self) -> PERR {
+        PERR::_from({
+            const MASK: u8 = 15;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u8) as u8
+        })
     }
     #[doc = "Bits 4:7 - Window Mode Time-Out Period"]
-    #[inline(always)]
-    pub fn window(&self) -> WINDOW_R {
-        WINDOW_R::new(((self.bits >> 4) & 0x0f) as u8)
+    #[inline]
+    pub fn window(&self) -> WINDOWR {
+        WINDOWR::_from({
+            const MASK: u8 = 15;
+            const OFFSET: u8 = 4;
+            ((self.bits >> OFFSET) & MASK as u8) as u8
+        })
     }
 }
 impl W {
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub fn reset_value() -> W {
+        W { bits: 187 }
+    }
+    #[doc = r" Writes raw bits to the register"]
+    #[inline]
+    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
+        self.bits = bits;
+        self
+    }
     #[doc = "Bits 0:3 - Time-Out Period"]
-    #[inline(always)]
-    pub fn per(&mut self) -> PER_W {
-        PER_W { w: self }
+    #[inline]
+    pub fn per(&mut self) -> _PERW {
+        _PERW { w: self }
     }
     #[doc = "Bits 4:7 - Window Mode Time-Out Period"]
-    #[inline(always)]
-    pub fn window(&mut self) -> WINDOW_W {
-        WINDOW_W { w: self }
+    #[inline]
+    pub fn window(&mut self) -> _WINDOWW {
+        _WINDOWW { w: self }
     }
 }

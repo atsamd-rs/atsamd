@@ -1,47 +1,126 @@
-#[doc = "Reader of register STATUS"]
-pub type R = crate::R<u8, super::STATUS>;
-#[doc = "Writer for register STATUS"]
-pub type W = crate::W<u8, super::STATUS>;
-#[doc = "Register STATUS `reset()`'s with value 0"]
-impl crate::ResetValue for super::STATUS {
-    type Type = u8;
-    #[inline(always)]
-    fn reset_value() -> Self::Type {
-        0
+#[doc = r" Value read from the register"]
+pub struct R {
+    bits: u8,
+}
+#[doc = r" Value to write to the register"]
+pub struct W {
+    bits: u8,
+}
+impl super::STATUS {
+    #[doc = r" Modifies the contents of the register"]
+    #[inline]
+    pub fn modify<F>(&self, f: F)
+    where
+        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
+    {
+        let bits = self.register.get();
+        let r = R { bits };
+        let mut w = W { bits };
+        f(&r, &mut w);
+        self.register.set(w.bits);
+    }
+    #[doc = r" Reads the contents of the register"]
+    #[inline]
+    pub fn read(&self) -> R {
+        R {
+            bits: self.register.get(),
+        }
+    }
+    #[doc = r" Writes to the register"]
+    #[inline]
+    pub fn write<F>(&self, f: F)
+    where
+        F: FnOnce(&mut W) -> &mut W,
+    {
+        let mut w = W::reset_value();
+        f(&mut w);
+        self.register.set(w.bits);
+    }
+    #[doc = r" Writes the reset value to the register"]
+    #[inline]
+    pub fn reset(&self) {
+        self.write(|w| w)
     }
 }
-#[doc = "Reader of field `SPEED`"]
-pub type SPEED_R = crate::R<u8, u8>;
-#[doc = "Write proxy for field `SPEED`"]
-pub struct SPEED_W<'a> {
+#[doc = r" Value of the field"]
+pub struct SPEEDR {
+    bits: u8,
+}
+impl SPEEDR {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bits(&self) -> u8 {
+        self.bits
+    }
+}
+#[doc = r" Value of the field"]
+pub struct LINESTATER {
+    bits: u8,
+}
+impl LINESTATER {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bits(&self) -> u8 {
+        self.bits
+    }
+}
+#[doc = r" Proxy"]
+pub struct _SPEEDW<'a> {
     w: &'a mut W,
 }
-impl<'a> SPEED_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
+impl<'a> _SPEEDW<'a> {
+    #[doc = r" Writes raw bits to the field"]
+    #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x03 << 2)) | (((value as u8) & 0x03) << 2);
+        const MASK: u8 = 3;
+        const OFFSET: u8 = 2;
+        self.w.bits &= !((MASK as u8) << OFFSET);
+        self.w.bits |= ((value & MASK) as u8) << OFFSET;
         self.w
     }
 }
-#[doc = "Reader of field `LINESTATE`"]
-pub type LINESTATE_R = crate::R<u8, u8>;
 impl R {
+    #[doc = r" Value of the register as raw bits"]
+    #[inline]
+    pub fn bits(&self) -> u8 {
+        self.bits
+    }
     #[doc = "Bits 2:3 - Speed Status"]
-    #[inline(always)]
-    pub fn speed(&self) -> SPEED_R {
-        SPEED_R::new(((self.bits >> 2) & 0x03) as u8)
+    #[inline]
+    pub fn speed(&self) -> SPEEDR {
+        let bits = {
+            const MASK: u8 = 3;
+            const OFFSET: u8 = 2;
+            ((self.bits >> OFFSET) & MASK as u8) as u8
+        };
+        SPEEDR { bits }
     }
     #[doc = "Bits 6:7 - USB Line State Status"]
-    #[inline(always)]
-    pub fn linestate(&self) -> LINESTATE_R {
-        LINESTATE_R::new(((self.bits >> 6) & 0x03) as u8)
+    #[inline]
+    pub fn linestate(&self) -> LINESTATER {
+        let bits = {
+            const MASK: u8 = 3;
+            const OFFSET: u8 = 6;
+            ((self.bits >> OFFSET) & MASK as u8) as u8
+        };
+        LINESTATER { bits }
     }
 }
 impl W {
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub fn reset_value() -> W {
+        W { bits: 0 }
+    }
+    #[doc = r" Writes raw bits to the register"]
+    #[inline]
+    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
+        self.bits = bits;
+        self
+    }
     #[doc = "Bits 2:3 - Speed Status"]
-    #[inline(always)]
-    pub fn speed(&mut self) -> SPEED_W {
-        SPEED_W { w: self }
+    #[inline]
+    pub fn speed(&mut self) -> _SPEEDW {
+        _SPEEDW { w: self }
     }
 }

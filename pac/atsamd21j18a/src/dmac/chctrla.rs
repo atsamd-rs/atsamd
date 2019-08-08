@@ -1,84 +1,182 @@
-#[doc = "Reader of register CHCTRLA"]
-pub type R = crate::R<u8, super::CHCTRLA>;
-#[doc = "Writer for register CHCTRLA"]
-pub type W = crate::W<u8, super::CHCTRLA>;
-#[doc = "Register CHCTRLA `reset()`'s with value 0"]
-impl crate::ResetValue for super::CHCTRLA {
-    type Type = u8;
-    #[inline(always)]
-    fn reset_value() -> Self::Type {
-        0
+#[doc = r" Value read from the register"]
+pub struct R {
+    bits: u8,
+}
+#[doc = r" Value to write to the register"]
+pub struct W {
+    bits: u8,
+}
+impl super::CHCTRLA {
+    #[doc = r" Modifies the contents of the register"]
+    #[inline]
+    pub fn modify<F>(&self, f: F)
+    where
+        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
+    {
+        let bits = self.register.get();
+        let r = R { bits };
+        let mut w = W { bits };
+        f(&r, &mut w);
+        self.register.set(w.bits);
+    }
+    #[doc = r" Reads the contents of the register"]
+    #[inline]
+    pub fn read(&self) -> R {
+        R {
+            bits: self.register.get(),
+        }
+    }
+    #[doc = r" Writes to the register"]
+    #[inline]
+    pub fn write<F>(&self, f: F)
+    where
+        F: FnOnce(&mut W) -> &mut W,
+    {
+        let mut w = W::reset_value();
+        f(&mut w);
+        self.register.set(w.bits);
+    }
+    #[doc = r" Writes the reset value to the register"]
+    #[inline]
+    pub fn reset(&self) {
+        self.write(|w| w)
     }
 }
-#[doc = "Reader of field `SWRST`"]
-pub type SWRST_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `SWRST`"]
-pub struct SWRST_W<'a> {
+#[doc = r" Value of the field"]
+pub struct SWRSTR {
+    bits: bool,
+}
+impl SWRSTR {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bit(&self) -> bool {
+        self.bits
+    }
+    #[doc = r" Returns `true` if the bit is clear (0)"]
+    #[inline]
+    pub fn bit_is_clear(&self) -> bool {
+        !self.bit()
+    }
+    #[doc = r" Returns `true` if the bit is set (1)"]
+    #[inline]
+    pub fn bit_is_set(&self) -> bool {
+        self.bit()
+    }
+}
+#[doc = r" Value of the field"]
+pub struct ENABLER {
+    bits: bool,
+}
+impl ENABLER {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bit(&self) -> bool {
+        self.bits
+    }
+    #[doc = r" Returns `true` if the bit is clear (0)"]
+    #[inline]
+    pub fn bit_is_clear(&self) -> bool {
+        !self.bit()
+    }
+    #[doc = r" Returns `true` if the bit is set (1)"]
+    #[inline]
+    pub fn bit_is_set(&self) -> bool {
+        self.bit()
+    }
+}
+#[doc = r" Proxy"]
+pub struct _SWRSTW<'a> {
     w: &'a mut W,
 }
-impl<'a> SWRST_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
+impl<'a> _SWRSTW<'a> {
+    #[doc = r" Sets the field bit"]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
+    #[doc = r" Clears the field bit"]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
+    #[doc = r" Writes raw bits to the field"]
+    #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | ((value as u8) & 0x01);
+        const MASK: bool = true;
+        const OFFSET: u8 = 0;
+        self.w.bits &= !((MASK as u8) << OFFSET);
+        self.w.bits |= ((value & MASK) as u8) << OFFSET;
         self.w
     }
 }
-#[doc = "Reader of field `ENABLE`"]
-pub type ENABLE_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `ENABLE`"]
-pub struct ENABLE_W<'a> {
+#[doc = r" Proxy"]
+pub struct _ENABLEW<'a> {
     w: &'a mut W,
 }
-impl<'a> ENABLE_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
+impl<'a> _ENABLEW<'a> {
+    #[doc = r" Sets the field bit"]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
+    #[doc = r" Clears the field bit"]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
+    #[doc = r" Writes raw bits to the field"]
+    #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | (((value as u8) & 0x01) << 1);
+        const MASK: bool = true;
+        const OFFSET: u8 = 1;
+        self.w.bits &= !((MASK as u8) << OFFSET);
+        self.w.bits |= ((value & MASK) as u8) << OFFSET;
         self.w
     }
 }
 impl R {
+    #[doc = r" Value of the register as raw bits"]
+    #[inline]
+    pub fn bits(&self) -> u8 {
+        self.bits
+    }
     #[doc = "Bit 0 - Channel Software Reset"]
-    #[inline(always)]
-    pub fn swrst(&self) -> SWRST_R {
-        SWRST_R::new((self.bits & 0x01) != 0)
+    #[inline]
+    pub fn swrst(&self) -> SWRSTR {
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
+        SWRSTR { bits }
     }
     #[doc = "Bit 1 - Channel Enable"]
-    #[inline(always)]
-    pub fn enable(&self) -> ENABLE_R {
-        ENABLE_R::new(((self.bits >> 1) & 0x01) != 0)
+    #[inline]
+    pub fn enable(&self) -> ENABLER {
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 1;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
+        ENABLER { bits }
     }
 }
 impl W {
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub fn reset_value() -> W {
+        W { bits: 0 }
+    }
+    #[doc = r" Writes raw bits to the register"]
+    #[inline]
+    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
+        self.bits = bits;
+        self
+    }
     #[doc = "Bit 0 - Channel Software Reset"]
-    #[inline(always)]
-    pub fn swrst(&mut self) -> SWRST_W {
-        SWRST_W { w: self }
+    #[inline]
+    pub fn swrst(&mut self) -> _SWRSTW {
+        _SWRSTW { w: self }
     }
     #[doc = "Bit 1 - Channel Enable"]
-    #[inline(always)]
-    pub fn enable(&mut self) -> ENABLE_W {
-        ENABLE_W { w: self }
+    #[inline]
+    pub fn enable(&mut self) -> _ENABLEW {
+        _ENABLEW { w: self }
     }
 }

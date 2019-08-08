@@ -1,18 +1,50 @@
-#[doc = "Reader of register QOSCTRL"]
-pub type R = crate::R<u8, super::QOSCTRL>;
-#[doc = "Writer for register QOSCTRL"]
-pub type W = crate::W<u8, super::QOSCTRL>;
-#[doc = "Register QOSCTRL `reset()`'s with value 0x15"]
-impl crate::ResetValue for super::QOSCTRL {
-    type Type = u8;
-    #[inline(always)]
-    fn reset_value() -> Self::Type {
-        0x15
+#[doc = r" Value read from the register"]
+pub struct R {
+    bits: u8,
+}
+#[doc = r" Value to write to the register"]
+pub struct W {
+    bits: u8,
+}
+impl super::QOSCTRL {
+    #[doc = r" Modifies the contents of the register"]
+    #[inline]
+    pub fn modify<F>(&self, f: F)
+    where
+        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
+    {
+        let bits = self.register.get();
+        let r = R { bits };
+        let mut w = W { bits };
+        f(&r, &mut w);
+        self.register.set(w.bits);
+    }
+    #[doc = r" Reads the contents of the register"]
+    #[inline]
+    pub fn read(&self) -> R {
+        R {
+            bits: self.register.get(),
+        }
+    }
+    #[doc = r" Writes to the register"]
+    #[inline]
+    pub fn write<F>(&self, f: F)
+    where
+        F: FnOnce(&mut W) -> &mut W,
+    {
+        let mut w = W::reset_value();
+        f(&mut w);
+        self.register.set(w.bits);
+    }
+    #[doc = r" Writes the reset value to the register"]
+    #[inline]
+    pub fn reset(&self) {
+        self.write(|w| w)
     }
 }
 #[doc = "Possible values of the field `WRBQOS`"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum WRBQOS_A {
+pub enum WRBQOSR {
     #[doc = "Background (no sensitive operation)"]
     DISABLE,
     #[doc = "Sensitive Bandwidth"]
@@ -22,95 +54,53 @@ pub enum WRBQOS_A {
     #[doc = "Critical Latency"]
     HIGH,
 }
-impl crate::ToBits<u8> for WRBQOS_A {
-    #[inline(always)]
-    fn _bits(&self) -> u8 {
+impl WRBQOSR {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bits(&self) -> u8 {
         match *self {
-            WRBQOS_A::DISABLE => 0,
-            WRBQOS_A::LOW => 1,
-            WRBQOS_A::MEDIUM => 2,
-            WRBQOS_A::HIGH => 3,
+            WRBQOSR::DISABLE => 0,
+            WRBQOSR::LOW => 1,
+            WRBQOSR::MEDIUM => 2,
+            WRBQOSR::HIGH => 3,
         }
     }
-}
-#[doc = "Reader of field `WRBQOS`"]
-pub type WRBQOS_R = crate::R<u8, WRBQOS_A>;
-impl WRBQOS_R {
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> WRBQOS_A {
-        match self.bits {
-            0 => WRBQOS_A::DISABLE,
-            1 => WRBQOS_A::LOW,
-            2 => WRBQOS_A::MEDIUM,
-            3 => WRBQOS_A::HIGH,
+    #[allow(missing_docs)]
+    #[doc(hidden)]
+    #[inline]
+    pub fn _from(value: u8) -> WRBQOSR {
+        match value {
+            0 => WRBQOSR::DISABLE,
+            1 => WRBQOSR::LOW,
+            2 => WRBQOSR::MEDIUM,
+            3 => WRBQOSR::HIGH,
             _ => unreachable!(),
         }
     }
     #[doc = "Checks if the value of the field is `DISABLE`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_disable(&self) -> bool {
-        *self == WRBQOS_A::DISABLE
+        *self == WRBQOSR::DISABLE
     }
     #[doc = "Checks if the value of the field is `LOW`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_low(&self) -> bool {
-        *self == WRBQOS_A::LOW
+        *self == WRBQOSR::LOW
     }
     #[doc = "Checks if the value of the field is `MEDIUM`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_medium(&self) -> bool {
-        *self == WRBQOS_A::MEDIUM
+        *self == WRBQOSR::MEDIUM
     }
     #[doc = "Checks if the value of the field is `HIGH`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_high(&self) -> bool {
-        *self == WRBQOS_A::HIGH
-    }
-}
-#[doc = "Write proxy for field `WRBQOS`"]
-pub struct WRBQOS_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> WRBQOS_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: WRBQOS_A) -> &'a mut W {
-        use crate::ToBits;
-        {
-            self.bits(variant._bits())
-        }
-    }
-    #[doc = "Background (no sensitive operation)"]
-    #[inline(always)]
-    pub fn disable(self) -> &'a mut W {
-        self.variant(WRBQOS_A::DISABLE)
-    }
-    #[doc = "Sensitive Bandwidth"]
-    #[inline(always)]
-    pub fn low(self) -> &'a mut W {
-        self.variant(WRBQOS_A::LOW)
-    }
-    #[doc = "Sensitive Latency"]
-    #[inline(always)]
-    pub fn medium(self) -> &'a mut W {
-        self.variant(WRBQOS_A::MEDIUM)
-    }
-    #[doc = "Critical Latency"]
-    #[inline(always)]
-    pub fn high(self) -> &'a mut W {
-        self.variant(WRBQOS_A::HIGH)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x03) | ((value as u8) & 0x03);
-        self.w
+        *self == WRBQOSR::HIGH
     }
 }
 #[doc = "Possible values of the field `FQOS`"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum FQOS_A {
+pub enum FQOSR {
     #[doc = "Background (no sensitive operation)"]
     DISABLE,
     #[doc = "Sensitive Bandwidth"]
@@ -120,95 +110,53 @@ pub enum FQOS_A {
     #[doc = "Critical Latency"]
     HIGH,
 }
-impl crate::ToBits<u8> for FQOS_A {
-    #[inline(always)]
-    fn _bits(&self) -> u8 {
+impl FQOSR {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bits(&self) -> u8 {
         match *self {
-            FQOS_A::DISABLE => 0,
-            FQOS_A::LOW => 1,
-            FQOS_A::MEDIUM => 2,
-            FQOS_A::HIGH => 3,
+            FQOSR::DISABLE => 0,
+            FQOSR::LOW => 1,
+            FQOSR::MEDIUM => 2,
+            FQOSR::HIGH => 3,
         }
     }
-}
-#[doc = "Reader of field `FQOS`"]
-pub type FQOS_R = crate::R<u8, FQOS_A>;
-impl FQOS_R {
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> FQOS_A {
-        match self.bits {
-            0 => FQOS_A::DISABLE,
-            1 => FQOS_A::LOW,
-            2 => FQOS_A::MEDIUM,
-            3 => FQOS_A::HIGH,
+    #[allow(missing_docs)]
+    #[doc(hidden)]
+    #[inline]
+    pub fn _from(value: u8) -> FQOSR {
+        match value {
+            0 => FQOSR::DISABLE,
+            1 => FQOSR::LOW,
+            2 => FQOSR::MEDIUM,
+            3 => FQOSR::HIGH,
             _ => unreachable!(),
         }
     }
     #[doc = "Checks if the value of the field is `DISABLE`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_disable(&self) -> bool {
-        *self == FQOS_A::DISABLE
+        *self == FQOSR::DISABLE
     }
     #[doc = "Checks if the value of the field is `LOW`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_low(&self) -> bool {
-        *self == FQOS_A::LOW
+        *self == FQOSR::LOW
     }
     #[doc = "Checks if the value of the field is `MEDIUM`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_medium(&self) -> bool {
-        *self == FQOS_A::MEDIUM
+        *self == FQOSR::MEDIUM
     }
     #[doc = "Checks if the value of the field is `HIGH`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_high(&self) -> bool {
-        *self == FQOS_A::HIGH
-    }
-}
-#[doc = "Write proxy for field `FQOS`"]
-pub struct FQOS_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> FQOS_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: FQOS_A) -> &'a mut W {
-        use crate::ToBits;
-        {
-            self.bits(variant._bits())
-        }
-    }
-    #[doc = "Background (no sensitive operation)"]
-    #[inline(always)]
-    pub fn disable(self) -> &'a mut W {
-        self.variant(FQOS_A::DISABLE)
-    }
-    #[doc = "Sensitive Bandwidth"]
-    #[inline(always)]
-    pub fn low(self) -> &'a mut W {
-        self.variant(FQOS_A::LOW)
-    }
-    #[doc = "Sensitive Latency"]
-    #[inline(always)]
-    pub fn medium(self) -> &'a mut W {
-        self.variant(FQOS_A::MEDIUM)
-    }
-    #[doc = "Critical Latency"]
-    #[inline(always)]
-    pub fn high(self) -> &'a mut W {
-        self.variant(FQOS_A::HIGH)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x03 << 2)) | (((value as u8) & 0x03) << 2);
-        self.w
+        *self == FQOSR::HIGH
     }
 }
 #[doc = "Possible values of the field `DQOS`"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum DQOS_A {
+pub enum DQOSR {
     #[doc = "Background (no sensitive operation)"]
     DISABLE,
     #[doc = "Sensitive Bandwidth"]
@@ -218,123 +166,307 @@ pub enum DQOS_A {
     #[doc = "Critical Latency"]
     HIGH,
 }
-impl crate::ToBits<u8> for DQOS_A {
-    #[inline(always)]
-    fn _bits(&self) -> u8 {
+impl DQOSR {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bits(&self) -> u8 {
         match *self {
-            DQOS_A::DISABLE => 0,
-            DQOS_A::LOW => 1,
-            DQOS_A::MEDIUM => 2,
-            DQOS_A::HIGH => 3,
+            DQOSR::DISABLE => 0,
+            DQOSR::LOW => 1,
+            DQOSR::MEDIUM => 2,
+            DQOSR::HIGH => 3,
         }
     }
-}
-#[doc = "Reader of field `DQOS`"]
-pub type DQOS_R = crate::R<u8, DQOS_A>;
-impl DQOS_R {
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> DQOS_A {
-        match self.bits {
-            0 => DQOS_A::DISABLE,
-            1 => DQOS_A::LOW,
-            2 => DQOS_A::MEDIUM,
-            3 => DQOS_A::HIGH,
+    #[allow(missing_docs)]
+    #[doc(hidden)]
+    #[inline]
+    pub fn _from(value: u8) -> DQOSR {
+        match value {
+            0 => DQOSR::DISABLE,
+            1 => DQOSR::LOW,
+            2 => DQOSR::MEDIUM,
+            3 => DQOSR::HIGH,
             _ => unreachable!(),
         }
     }
     #[doc = "Checks if the value of the field is `DISABLE`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_disable(&self) -> bool {
-        *self == DQOS_A::DISABLE
+        *self == DQOSR::DISABLE
     }
     #[doc = "Checks if the value of the field is `LOW`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_low(&self) -> bool {
-        *self == DQOS_A::LOW
+        *self == DQOSR::LOW
     }
     #[doc = "Checks if the value of the field is `MEDIUM`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_medium(&self) -> bool {
-        *self == DQOS_A::MEDIUM
+        *self == DQOSR::MEDIUM
     }
     #[doc = "Checks if the value of the field is `HIGH`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_high(&self) -> bool {
-        *self == DQOS_A::HIGH
+        *self == DQOSR::HIGH
     }
 }
-#[doc = "Write proxy for field `DQOS`"]
-pub struct DQOS_W<'a> {
+#[doc = "Values that can be written to the field `WRBQOS`"]
+pub enum WRBQOSW {
+    #[doc = "Background (no sensitive operation)"]
+    DISABLE,
+    #[doc = "Sensitive Bandwidth"]
+    LOW,
+    #[doc = "Sensitive Latency"]
+    MEDIUM,
+    #[doc = "Critical Latency"]
+    HIGH,
+}
+impl WRBQOSW {
+    #[allow(missing_docs)]
+    #[doc(hidden)]
+    #[inline]
+    pub fn _bits(&self) -> u8 {
+        match *self {
+            WRBQOSW::DISABLE => 0,
+            WRBQOSW::LOW => 1,
+            WRBQOSW::MEDIUM => 2,
+            WRBQOSW::HIGH => 3,
+        }
+    }
+}
+#[doc = r" Proxy"]
+pub struct _WRBQOSW<'a> {
     w: &'a mut W,
 }
-impl<'a> DQOS_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: DQOS_A) -> &'a mut W {
-        use crate::ToBits;
+impl<'a> _WRBQOSW<'a> {
+    #[doc = r" Writes `variant` to the field"]
+    #[inline]
+    pub fn variant(self, variant: WRBQOSW) -> &'a mut W {
         {
             self.bits(variant._bits())
         }
     }
     #[doc = "Background (no sensitive operation)"]
-    #[inline(always)]
+    #[inline]
     pub fn disable(self) -> &'a mut W {
-        self.variant(DQOS_A::DISABLE)
+        self.variant(WRBQOSW::DISABLE)
     }
     #[doc = "Sensitive Bandwidth"]
-    #[inline(always)]
+    #[inline]
     pub fn low(self) -> &'a mut W {
-        self.variant(DQOS_A::LOW)
+        self.variant(WRBQOSW::LOW)
     }
     #[doc = "Sensitive Latency"]
-    #[inline(always)]
+    #[inline]
     pub fn medium(self) -> &'a mut W {
-        self.variant(DQOS_A::MEDIUM)
+        self.variant(WRBQOSW::MEDIUM)
     }
     #[doc = "Critical Latency"]
-    #[inline(always)]
+    #[inline]
     pub fn high(self) -> &'a mut W {
-        self.variant(DQOS_A::HIGH)
+        self.variant(WRBQOSW::HIGH)
     }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
+    #[doc = r" Writes raw bits to the field"]
+    #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x03 << 4)) | (((value as u8) & 0x03) << 4);
+        const MASK: u8 = 3;
+        const OFFSET: u8 = 0;
+        self.w.bits &= !((MASK as u8) << OFFSET);
+        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w
+    }
+}
+#[doc = "Values that can be written to the field `FQOS`"]
+pub enum FQOSW {
+    #[doc = "Background (no sensitive operation)"]
+    DISABLE,
+    #[doc = "Sensitive Bandwidth"]
+    LOW,
+    #[doc = "Sensitive Latency"]
+    MEDIUM,
+    #[doc = "Critical Latency"]
+    HIGH,
+}
+impl FQOSW {
+    #[allow(missing_docs)]
+    #[doc(hidden)]
+    #[inline]
+    pub fn _bits(&self) -> u8 {
+        match *self {
+            FQOSW::DISABLE => 0,
+            FQOSW::LOW => 1,
+            FQOSW::MEDIUM => 2,
+            FQOSW::HIGH => 3,
+        }
+    }
+}
+#[doc = r" Proxy"]
+pub struct _FQOSW<'a> {
+    w: &'a mut W,
+}
+impl<'a> _FQOSW<'a> {
+    #[doc = r" Writes `variant` to the field"]
+    #[inline]
+    pub fn variant(self, variant: FQOSW) -> &'a mut W {
+        {
+            self.bits(variant._bits())
+        }
+    }
+    #[doc = "Background (no sensitive operation)"]
+    #[inline]
+    pub fn disable(self) -> &'a mut W {
+        self.variant(FQOSW::DISABLE)
+    }
+    #[doc = "Sensitive Bandwidth"]
+    #[inline]
+    pub fn low(self) -> &'a mut W {
+        self.variant(FQOSW::LOW)
+    }
+    #[doc = "Sensitive Latency"]
+    #[inline]
+    pub fn medium(self) -> &'a mut W {
+        self.variant(FQOSW::MEDIUM)
+    }
+    #[doc = "Critical Latency"]
+    #[inline]
+    pub fn high(self) -> &'a mut W {
+        self.variant(FQOSW::HIGH)
+    }
+    #[doc = r" Writes raw bits to the field"]
+    #[inline]
+    pub fn bits(self, value: u8) -> &'a mut W {
+        const MASK: u8 = 3;
+        const OFFSET: u8 = 2;
+        self.w.bits &= !((MASK as u8) << OFFSET);
+        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w
+    }
+}
+#[doc = "Values that can be written to the field `DQOS`"]
+pub enum DQOSW {
+    #[doc = "Background (no sensitive operation)"]
+    DISABLE,
+    #[doc = "Sensitive Bandwidth"]
+    LOW,
+    #[doc = "Sensitive Latency"]
+    MEDIUM,
+    #[doc = "Critical Latency"]
+    HIGH,
+}
+impl DQOSW {
+    #[allow(missing_docs)]
+    #[doc(hidden)]
+    #[inline]
+    pub fn _bits(&self) -> u8 {
+        match *self {
+            DQOSW::DISABLE => 0,
+            DQOSW::LOW => 1,
+            DQOSW::MEDIUM => 2,
+            DQOSW::HIGH => 3,
+        }
+    }
+}
+#[doc = r" Proxy"]
+pub struct _DQOSW<'a> {
+    w: &'a mut W,
+}
+impl<'a> _DQOSW<'a> {
+    #[doc = r" Writes `variant` to the field"]
+    #[inline]
+    pub fn variant(self, variant: DQOSW) -> &'a mut W {
+        {
+            self.bits(variant._bits())
+        }
+    }
+    #[doc = "Background (no sensitive operation)"]
+    #[inline]
+    pub fn disable(self) -> &'a mut W {
+        self.variant(DQOSW::DISABLE)
+    }
+    #[doc = "Sensitive Bandwidth"]
+    #[inline]
+    pub fn low(self) -> &'a mut W {
+        self.variant(DQOSW::LOW)
+    }
+    #[doc = "Sensitive Latency"]
+    #[inline]
+    pub fn medium(self) -> &'a mut W {
+        self.variant(DQOSW::MEDIUM)
+    }
+    #[doc = "Critical Latency"]
+    #[inline]
+    pub fn high(self) -> &'a mut W {
+        self.variant(DQOSW::HIGH)
+    }
+    #[doc = r" Writes raw bits to the field"]
+    #[inline]
+    pub fn bits(self, value: u8) -> &'a mut W {
+        const MASK: u8 = 3;
+        const OFFSET: u8 = 4;
+        self.w.bits &= !((MASK as u8) << OFFSET);
+        self.w.bits |= ((value & MASK) as u8) << OFFSET;
         self.w
     }
 }
 impl R {
+    #[doc = r" Value of the register as raw bits"]
+    #[inline]
+    pub fn bits(&self) -> u8 {
+        self.bits
+    }
     #[doc = "Bits 0:1 - Write-Back Quality of Service"]
-    #[inline(always)]
-    pub fn wrbqos(&self) -> WRBQOS_R {
-        WRBQOS_R::new((self.bits & 0x03) as u8)
+    #[inline]
+    pub fn wrbqos(&self) -> WRBQOSR {
+        WRBQOSR::_from({
+            const MASK: u8 = 3;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u8) as u8
+        })
     }
     #[doc = "Bits 2:3 - Fetch Quality of Service"]
-    #[inline(always)]
-    pub fn fqos(&self) -> FQOS_R {
-        FQOS_R::new(((self.bits >> 2) & 0x03) as u8)
+    #[inline]
+    pub fn fqos(&self) -> FQOSR {
+        FQOSR::_from({
+            const MASK: u8 = 3;
+            const OFFSET: u8 = 2;
+            ((self.bits >> OFFSET) & MASK as u8) as u8
+        })
     }
     #[doc = "Bits 4:5 - Data Transfer Quality of Service"]
-    #[inline(always)]
-    pub fn dqos(&self) -> DQOS_R {
-        DQOS_R::new(((self.bits >> 4) & 0x03) as u8)
+    #[inline]
+    pub fn dqos(&self) -> DQOSR {
+        DQOSR::_from({
+            const MASK: u8 = 3;
+            const OFFSET: u8 = 4;
+            ((self.bits >> OFFSET) & MASK as u8) as u8
+        })
     }
 }
 impl W {
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub fn reset_value() -> W {
+        W { bits: 21 }
+    }
+    #[doc = r" Writes raw bits to the register"]
+    #[inline]
+    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
+        self.bits = bits;
+        self
+    }
     #[doc = "Bits 0:1 - Write-Back Quality of Service"]
-    #[inline(always)]
-    pub fn wrbqos(&mut self) -> WRBQOS_W {
-        WRBQOS_W { w: self }
+    #[inline]
+    pub fn wrbqos(&mut self) -> _WRBQOSW {
+        _WRBQOSW { w: self }
     }
     #[doc = "Bits 2:3 - Fetch Quality of Service"]
-    #[inline(always)]
-    pub fn fqos(&mut self) -> FQOS_W {
-        FQOS_W { w: self }
+    #[inline]
+    pub fn fqos(&mut self) -> _FQOSW {
+        _FQOSW { w: self }
     }
     #[doc = "Bits 4:5 - Data Transfer Quality of Service"]
-    #[inline(always)]
-    pub fn dqos(&mut self) -> DQOS_W {
-        DQOS_W { w: self }
+    #[inline]
+    pub fn dqos(&mut self) -> _DQOSW {
+        _DQOSW { w: self }
     }
 }

@@ -1,90 +1,113 @@
-#[doc = "Reader of register CTRLBCLR"]
-pub type R = crate::R<u8, super::CTRLBCLR>;
-#[doc = "Writer for register CTRLBCLR"]
-pub type W = crate::W<u8, super::CTRLBCLR>;
-#[doc = "Register CTRLBCLR `reset()`'s with value 0"]
-impl crate::ResetValue for super::CTRLBCLR {
-    type Type = u8;
-    #[inline(always)]
-    fn reset_value() -> Self::Type {
-        0
+#[doc = r" Value read from the register"]
+pub struct R {
+    bits: u8,
+}
+#[doc = r" Value to write to the register"]
+pub struct W {
+    bits: u8,
+}
+impl super::CTRLBCLR {
+    #[doc = r" Modifies the contents of the register"]
+    #[inline]
+    pub fn modify<F>(&self, f: F)
+    where
+        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
+    {
+        let bits = self.register.get();
+        let r = R { bits };
+        let mut w = W { bits };
+        f(&r, &mut w);
+        self.register.set(w.bits);
+    }
+    #[doc = r" Reads the contents of the register"]
+    #[inline]
+    pub fn read(&self) -> R {
+        R {
+            bits: self.register.get(),
+        }
+    }
+    #[doc = r" Writes to the register"]
+    #[inline]
+    pub fn write<F>(&self, f: F)
+    where
+        F: FnOnce(&mut W) -> &mut W,
+    {
+        let mut w = W::reset_value();
+        f(&mut w);
+        self.register.set(w.bits);
+    }
+    #[doc = r" Writes the reset value to the register"]
+    #[inline]
+    pub fn reset(&self) {
+        self.write(|w| w)
     }
 }
-#[doc = "Reader of field `DIR`"]
-pub type DIR_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `DIR`"]
-pub struct DIR_W<'a> {
-    w: &'a mut W,
+#[doc = r" Value of the field"]
+pub struct DIRR {
+    bits: bool,
 }
-impl<'a> DIR_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
+impl DIRR {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bit(&self) -> bool {
+        self.bits
     }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
+    #[doc = r" Returns `true` if the bit is clear (0)"]
+    #[inline]
+    pub fn bit_is_clear(&self) -> bool {
+        !self.bit()
     }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | ((value as u8) & 0x01);
-        self.w
+    #[doc = r" Returns `true` if the bit is set (1)"]
+    #[inline]
+    pub fn bit_is_set(&self) -> bool {
+        self.bit()
     }
 }
-#[doc = "Reader of field `LUPD`"]
-pub type LUPD_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `LUPD`"]
-pub struct LUPD_W<'a> {
-    w: &'a mut W,
+#[doc = r" Value of the field"]
+pub struct LUPDR {
+    bits: bool,
 }
-impl<'a> LUPD_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
+impl LUPDR {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bit(&self) -> bool {
+        self.bits
     }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
+    #[doc = r" Returns `true` if the bit is clear (0)"]
+    #[inline]
+    pub fn bit_is_clear(&self) -> bool {
+        !self.bit()
     }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | (((value as u8) & 0x01) << 1);
-        self.w
+    #[doc = r" Returns `true` if the bit is set (1)"]
+    #[inline]
+    pub fn bit_is_set(&self) -> bool {
+        self.bit()
     }
 }
-#[doc = "Reader of field `ONESHOT`"]
-pub type ONESHOT_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `ONESHOT`"]
-pub struct ONESHOT_W<'a> {
-    w: &'a mut W,
+#[doc = r" Value of the field"]
+pub struct ONESHOTR {
+    bits: bool,
 }
-impl<'a> ONESHOT_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
+impl ONESHOTR {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bit(&self) -> bool {
+        self.bits
     }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
+    #[doc = r" Returns `true` if the bit is clear (0)"]
+    #[inline]
+    pub fn bit_is_clear(&self) -> bool {
+        !self.bit()
     }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 2)) | (((value as u8) & 0x01) << 2);
-        self.w
+    #[doc = r" Returns `true` if the bit is set (1)"]
+    #[inline]
+    pub fn bit_is_set(&self) -> bool {
+        self.bit()
     }
 }
 #[doc = "Possible values of the field `IDXCMD`"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum IDXCMD_A {
+pub enum IDXCMDR {
     #[doc = "Command disabled: Index toggles between cycles A and B"]
     DISABLE,
     #[doc = "Set index: cycle B will be forced in the next cycle"]
@@ -94,95 +117,255 @@ pub enum IDXCMD_A {
     #[doc = "Hold index: the next cycle will be the same as the current cycle"]
     HOLD,
 }
-impl crate::ToBits<u8> for IDXCMD_A {
-    #[inline(always)]
-    fn _bits(&self) -> u8 {
+impl IDXCMDR {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bits(&self) -> u8 {
         match *self {
-            IDXCMD_A::DISABLE => 0,
-            IDXCMD_A::SET => 1,
-            IDXCMD_A::CLEAR => 2,
-            IDXCMD_A::HOLD => 3,
+            IDXCMDR::DISABLE => 0,
+            IDXCMDR::SET => 1,
+            IDXCMDR::CLEAR => 2,
+            IDXCMDR::HOLD => 3,
         }
     }
-}
-#[doc = "Reader of field `IDXCMD`"]
-pub type IDXCMD_R = crate::R<u8, IDXCMD_A>;
-impl IDXCMD_R {
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> IDXCMD_A {
-        match self.bits {
-            0 => IDXCMD_A::DISABLE,
-            1 => IDXCMD_A::SET,
-            2 => IDXCMD_A::CLEAR,
-            3 => IDXCMD_A::HOLD,
+    #[allow(missing_docs)]
+    #[doc(hidden)]
+    #[inline]
+    pub fn _from(value: u8) -> IDXCMDR {
+        match value {
+            0 => IDXCMDR::DISABLE,
+            1 => IDXCMDR::SET,
+            2 => IDXCMDR::CLEAR,
+            3 => IDXCMDR::HOLD,
             _ => unreachable!(),
         }
     }
     #[doc = "Checks if the value of the field is `DISABLE`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_disable(&self) -> bool {
-        *self == IDXCMD_A::DISABLE
+        *self == IDXCMDR::DISABLE
     }
     #[doc = "Checks if the value of the field is `SET`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_set(&self) -> bool {
-        *self == IDXCMD_A::SET
+        *self == IDXCMDR::SET
     }
     #[doc = "Checks if the value of the field is `CLEAR`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_clear(&self) -> bool {
-        *self == IDXCMD_A::CLEAR
+        *self == IDXCMDR::CLEAR
     }
     #[doc = "Checks if the value of the field is `HOLD`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_hold(&self) -> bool {
-        *self == IDXCMD_A::HOLD
+        *self == IDXCMDR::HOLD
     }
 }
-#[doc = "Write proxy for field `IDXCMD`"]
-pub struct IDXCMD_W<'a> {
+#[doc = "Possible values of the field `CMD`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum CMDR {
+    #[doc = "No action"]
+    NONE,
+    #[doc = "Clear start, restart or retrigger"]
+    RETRIGGER,
+    #[doc = "Force stop"]
+    STOP,
+    #[doc = "Force update of double buffered registers"]
+    UPDATE,
+    #[doc = "Force COUNT read synchronization"]
+    READSYNC,
+    #[doc = r" Reserved"]
+    _Reserved(u8),
+}
+impl CMDR {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bits(&self) -> u8 {
+        match *self {
+            CMDR::NONE => 0,
+            CMDR::RETRIGGER => 1,
+            CMDR::STOP => 2,
+            CMDR::UPDATE => 3,
+            CMDR::READSYNC => 4,
+            CMDR::_Reserved(bits) => bits,
+        }
+    }
+    #[allow(missing_docs)]
+    #[doc(hidden)]
+    #[inline]
+    pub fn _from(value: u8) -> CMDR {
+        match value {
+            0 => CMDR::NONE,
+            1 => CMDR::RETRIGGER,
+            2 => CMDR::STOP,
+            3 => CMDR::UPDATE,
+            4 => CMDR::READSYNC,
+            i => CMDR::_Reserved(i),
+        }
+    }
+    #[doc = "Checks if the value of the field is `NONE`"]
+    #[inline]
+    pub fn is_none(&self) -> bool {
+        *self == CMDR::NONE
+    }
+    #[doc = "Checks if the value of the field is `RETRIGGER`"]
+    #[inline]
+    pub fn is_retrigger(&self) -> bool {
+        *self == CMDR::RETRIGGER
+    }
+    #[doc = "Checks if the value of the field is `STOP`"]
+    #[inline]
+    pub fn is_stop(&self) -> bool {
+        *self == CMDR::STOP
+    }
+    #[doc = "Checks if the value of the field is `UPDATE`"]
+    #[inline]
+    pub fn is_update(&self) -> bool {
+        *self == CMDR::UPDATE
+    }
+    #[doc = "Checks if the value of the field is `READSYNC`"]
+    #[inline]
+    pub fn is_readsync(&self) -> bool {
+        *self == CMDR::READSYNC
+    }
+}
+#[doc = r" Proxy"]
+pub struct _DIRW<'a> {
     w: &'a mut W,
 }
-impl<'a> IDXCMD_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: IDXCMD_A) -> &'a mut W {
-        use crate::ToBits;
+impl<'a> _DIRW<'a> {
+    #[doc = r" Sets the field bit"]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r" Clears the field bit"]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r" Writes raw bits to the field"]
+    #[inline]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        const MASK: bool = true;
+        const OFFSET: u8 = 0;
+        self.w.bits &= !((MASK as u8) << OFFSET);
+        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w
+    }
+}
+#[doc = r" Proxy"]
+pub struct _LUPDW<'a> {
+    w: &'a mut W,
+}
+impl<'a> _LUPDW<'a> {
+    #[doc = r" Sets the field bit"]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r" Clears the field bit"]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r" Writes raw bits to the field"]
+    #[inline]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        const MASK: bool = true;
+        const OFFSET: u8 = 1;
+        self.w.bits &= !((MASK as u8) << OFFSET);
+        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w
+    }
+}
+#[doc = r" Proxy"]
+pub struct _ONESHOTW<'a> {
+    w: &'a mut W,
+}
+impl<'a> _ONESHOTW<'a> {
+    #[doc = r" Sets the field bit"]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r" Clears the field bit"]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r" Writes raw bits to the field"]
+    #[inline]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        const MASK: bool = true;
+        const OFFSET: u8 = 2;
+        self.w.bits &= !((MASK as u8) << OFFSET);
+        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w
+    }
+}
+#[doc = "Values that can be written to the field `IDXCMD`"]
+pub enum IDXCMDW {
+    #[doc = "Command disabled: Index toggles between cycles A and B"]
+    DISABLE,
+    #[doc = "Set index: cycle B will be forced in the next cycle"]
+    SET,
+    #[doc = "Clear index: cycle A will be forced in the next cycle"]
+    CLEAR,
+    #[doc = "Hold index: the next cycle will be the same as the current cycle"]
+    HOLD,
+}
+impl IDXCMDW {
+    #[allow(missing_docs)]
+    #[doc(hidden)]
+    #[inline]
+    pub fn _bits(&self) -> u8 {
+        match *self {
+            IDXCMDW::DISABLE => 0,
+            IDXCMDW::SET => 1,
+            IDXCMDW::CLEAR => 2,
+            IDXCMDW::HOLD => 3,
+        }
+    }
+}
+#[doc = r" Proxy"]
+pub struct _IDXCMDW<'a> {
+    w: &'a mut W,
+}
+impl<'a> _IDXCMDW<'a> {
+    #[doc = r" Writes `variant` to the field"]
+    #[inline]
+    pub fn variant(self, variant: IDXCMDW) -> &'a mut W {
         {
             self.bits(variant._bits())
         }
     }
     #[doc = "Command disabled: Index toggles between cycles A and B"]
-    #[inline(always)]
+    #[inline]
     pub fn disable(self) -> &'a mut W {
-        self.variant(IDXCMD_A::DISABLE)
+        self.variant(IDXCMDW::DISABLE)
     }
     #[doc = "Set index: cycle B will be forced in the next cycle"]
-    #[inline(always)]
+    #[inline]
     pub fn set(self) -> &'a mut W {
-        self.variant(IDXCMD_A::SET)
+        self.variant(IDXCMDW::SET)
     }
     #[doc = "Clear index: cycle A will be forced in the next cycle"]
-    #[inline(always)]
+    #[inline]
     pub fn clear(self) -> &'a mut W {
-        self.variant(IDXCMD_A::CLEAR)
+        self.variant(IDXCMDW::CLEAR)
     }
     #[doc = "Hold index: the next cycle will be the same as the current cycle"]
-    #[inline(always)]
+    #[inline]
     pub fn hold(self) -> &'a mut W {
-        self.variant(IDXCMD_A::HOLD)
+        self.variant(IDXCMDW::HOLD)
     }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
+    #[doc = r" Writes raw bits to the field"]
+    #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x03 << 3)) | (((value as u8) & 0x03) << 3);
+        const MASK: u8 = 3;
+        const OFFSET: u8 = 3;
+        self.w.bits &= !((MASK as u8) << OFFSET);
+        self.w.bits |= ((value & MASK) as u8) << OFFSET;
         self.w
     }
 }
-#[doc = "Possible values of the field `CMD`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum CMD_A {
+#[doc = "Values that can be written to the field `CMD`"]
+pub enum CMDW {
     #[doc = "No action"]
     NONE,
     #[doc = "Clear start, restart or retrigger"]
@@ -194,154 +377,155 @@ pub enum CMD_A {
     #[doc = "Force COUNT read synchronization"]
     READSYNC,
 }
-impl crate::ToBits<u8> for CMD_A {
-    #[inline(always)]
-    fn _bits(&self) -> u8 {
+impl CMDW {
+    #[allow(missing_docs)]
+    #[doc(hidden)]
+    #[inline]
+    pub fn _bits(&self) -> u8 {
         match *self {
-            CMD_A::NONE => 0,
-            CMD_A::RETRIGGER => 1,
-            CMD_A::STOP => 2,
-            CMD_A::UPDATE => 3,
-            CMD_A::READSYNC => 4,
+            CMDW::NONE => 0,
+            CMDW::RETRIGGER => 1,
+            CMDW::STOP => 2,
+            CMDW::UPDATE => 3,
+            CMDW::READSYNC => 4,
         }
     }
 }
-#[doc = "Reader of field `CMD`"]
-pub type CMD_R = crate::R<u8, CMD_A>;
-impl CMD_R {
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> crate::Variant<u8, CMD_A> {
-        use crate::Variant::*;
-        match self.bits {
-            0 => Val(CMD_A::NONE),
-            1 => Val(CMD_A::RETRIGGER),
-            2 => Val(CMD_A::STOP),
-            3 => Val(CMD_A::UPDATE),
-            4 => Val(CMD_A::READSYNC),
-            i => Res(i),
-        }
-    }
-    #[doc = "Checks if the value of the field is `NONE`"]
-    #[inline(always)]
-    pub fn is_none(&self) -> bool {
-        *self == CMD_A::NONE
-    }
-    #[doc = "Checks if the value of the field is `RETRIGGER`"]
-    #[inline(always)]
-    pub fn is_retrigger(&self) -> bool {
-        *self == CMD_A::RETRIGGER
-    }
-    #[doc = "Checks if the value of the field is `STOP`"]
-    #[inline(always)]
-    pub fn is_stop(&self) -> bool {
-        *self == CMD_A::STOP
-    }
-    #[doc = "Checks if the value of the field is `UPDATE`"]
-    #[inline(always)]
-    pub fn is_update(&self) -> bool {
-        *self == CMD_A::UPDATE
-    }
-    #[doc = "Checks if the value of the field is `READSYNC`"]
-    #[inline(always)]
-    pub fn is_readsync(&self) -> bool {
-        *self == CMD_A::READSYNC
-    }
-}
-#[doc = "Write proxy for field `CMD`"]
-pub struct CMD_W<'a> {
+#[doc = r" Proxy"]
+pub struct _CMDW<'a> {
     w: &'a mut W,
 }
-impl<'a> CMD_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: CMD_A) -> &'a mut W {
-        use crate::ToBits;
+impl<'a> _CMDW<'a> {
+    #[doc = r" Writes `variant` to the field"]
+    #[inline]
+    pub fn variant(self, variant: CMDW) -> &'a mut W {
         unsafe { self.bits(variant._bits()) }
     }
     #[doc = "No action"]
-    #[inline(always)]
+    #[inline]
     pub fn none(self) -> &'a mut W {
-        self.variant(CMD_A::NONE)
+        self.variant(CMDW::NONE)
     }
     #[doc = "Clear start, restart or retrigger"]
-    #[inline(always)]
+    #[inline]
     pub fn retrigger(self) -> &'a mut W {
-        self.variant(CMD_A::RETRIGGER)
+        self.variant(CMDW::RETRIGGER)
     }
     #[doc = "Force stop"]
-    #[inline(always)]
+    #[inline]
     pub fn stop(self) -> &'a mut W {
-        self.variant(CMD_A::STOP)
+        self.variant(CMDW::STOP)
     }
     #[doc = "Force update of double buffered registers"]
-    #[inline(always)]
+    #[inline]
     pub fn update(self) -> &'a mut W {
-        self.variant(CMD_A::UPDATE)
+        self.variant(CMDW::UPDATE)
     }
     #[doc = "Force COUNT read synchronization"]
-    #[inline(always)]
+    #[inline]
     pub fn readsync(self) -> &'a mut W {
-        self.variant(CMD_A::READSYNC)
+        self.variant(CMDW::READSYNC)
     }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
+    #[doc = r" Writes raw bits to the field"]
+    #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x07 << 5)) | (((value as u8) & 0x07) << 5);
+        const MASK: u8 = 7;
+        const OFFSET: u8 = 5;
+        self.w.bits &= !((MASK as u8) << OFFSET);
+        self.w.bits |= ((value & MASK) as u8) << OFFSET;
         self.w
     }
 }
 impl R {
+    #[doc = r" Value of the register as raw bits"]
+    #[inline]
+    pub fn bits(&self) -> u8 {
+        self.bits
+    }
     #[doc = "Bit 0 - Counter Direction"]
-    #[inline(always)]
-    pub fn dir(&self) -> DIR_R {
-        DIR_R::new((self.bits & 0x01) != 0)
+    #[inline]
+    pub fn dir(&self) -> DIRR {
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
+        DIRR { bits }
     }
     #[doc = "Bit 1 - Lock Update"]
-    #[inline(always)]
-    pub fn lupd(&self) -> LUPD_R {
-        LUPD_R::new(((self.bits >> 1) & 0x01) != 0)
+    #[inline]
+    pub fn lupd(&self) -> LUPDR {
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 1;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
+        LUPDR { bits }
     }
     #[doc = "Bit 2 - One-Shot"]
-    #[inline(always)]
-    pub fn oneshot(&self) -> ONESHOT_R {
-        ONESHOT_R::new(((self.bits >> 2) & 0x01) != 0)
+    #[inline]
+    pub fn oneshot(&self) -> ONESHOTR {
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 2;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
+        ONESHOTR { bits }
     }
     #[doc = "Bits 3:4 - Ramp Index Command"]
-    #[inline(always)]
-    pub fn idxcmd(&self) -> IDXCMD_R {
-        IDXCMD_R::new(((self.bits >> 3) & 0x03) as u8)
+    #[inline]
+    pub fn idxcmd(&self) -> IDXCMDR {
+        IDXCMDR::_from({
+            const MASK: u8 = 3;
+            const OFFSET: u8 = 3;
+            ((self.bits >> OFFSET) & MASK as u8) as u8
+        })
     }
     #[doc = "Bits 5:7 - TCC Command"]
-    #[inline(always)]
-    pub fn cmd(&self) -> CMD_R {
-        CMD_R::new(((self.bits >> 5) & 0x07) as u8)
+    #[inline]
+    pub fn cmd(&self) -> CMDR {
+        CMDR::_from({
+            const MASK: u8 = 7;
+            const OFFSET: u8 = 5;
+            ((self.bits >> OFFSET) & MASK as u8) as u8
+        })
     }
 }
 impl W {
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub fn reset_value() -> W {
+        W { bits: 0 }
+    }
+    #[doc = r" Writes raw bits to the register"]
+    #[inline]
+    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
+        self.bits = bits;
+        self
+    }
     #[doc = "Bit 0 - Counter Direction"]
-    #[inline(always)]
-    pub fn dir(&mut self) -> DIR_W {
-        DIR_W { w: self }
+    #[inline]
+    pub fn dir(&mut self) -> _DIRW {
+        _DIRW { w: self }
     }
     #[doc = "Bit 1 - Lock Update"]
-    #[inline(always)]
-    pub fn lupd(&mut self) -> LUPD_W {
-        LUPD_W { w: self }
+    #[inline]
+    pub fn lupd(&mut self) -> _LUPDW {
+        _LUPDW { w: self }
     }
     #[doc = "Bit 2 - One-Shot"]
-    #[inline(always)]
-    pub fn oneshot(&mut self) -> ONESHOT_W {
-        ONESHOT_W { w: self }
+    #[inline]
+    pub fn oneshot(&mut self) -> _ONESHOTW {
+        _ONESHOTW { w: self }
     }
     #[doc = "Bits 3:4 - Ramp Index Command"]
-    #[inline(always)]
-    pub fn idxcmd(&mut self) -> IDXCMD_W {
-        IDXCMD_W { w: self }
+    #[inline]
+    pub fn idxcmd(&mut self) -> _IDXCMDW {
+        _IDXCMDW { w: self }
     }
     #[doc = "Bits 5:7 - TCC Command"]
-    #[inline(always)]
-    pub fn cmd(&mut self) -> CMD_W {
-        CMD_W { w: self }
+    #[inline]
+    pub fn cmd(&mut self) -> _CMDW {
+        _CMDW { w: self }
     }
 }

@@ -1,145 +1,269 @@
-#[doc = "Reader of register PINCFG1_%s"]
-pub type R = crate::R<u8, super::PINCFG1_>;
-#[doc = "Writer for register PINCFG1_%s"]
-pub type W = crate::W<u8, super::PINCFG1_>;
-#[doc = "Register PINCFG1_%s `reset()`'s with value 0"]
-impl crate::ResetValue for super::PINCFG1_ {
-    type Type = u8;
-    #[inline(always)]
-    fn reset_value() -> Self::Type {
-        0
+#[doc = r" Value read from the register"]
+pub struct R {
+    bits: u8,
+}
+#[doc = r" Value to write to the register"]
+pub struct W {
+    bits: u8,
+}
+impl super::PINCFG1_ {
+    #[doc = r" Modifies the contents of the register"]
+    #[inline]
+    pub fn modify<F>(&self, f: F)
+    where
+        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
+    {
+        let bits = self.register.get();
+        let r = R { bits };
+        let mut w = W { bits };
+        f(&r, &mut w);
+        self.register.set(w.bits);
+    }
+    #[doc = r" Reads the contents of the register"]
+    #[inline]
+    pub fn read(&self) -> R {
+        R {
+            bits: self.register.get(),
+        }
+    }
+    #[doc = r" Writes to the register"]
+    #[inline]
+    pub fn write<F>(&self, f: F)
+    where
+        F: FnOnce(&mut W) -> &mut W,
+    {
+        let mut w = W::reset_value();
+        f(&mut w);
+        self.register.set(w.bits);
+    }
+    #[doc = r" Writes the reset value to the register"]
+    #[inline]
+    pub fn reset(&self) {
+        self.write(|w| w)
     }
 }
-#[doc = "Reader of field `PMUXEN`"]
-pub type PMUXEN_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `PMUXEN`"]
-pub struct PMUXEN_W<'a> {
+#[doc = r" Value of the field"]
+pub struct PMUXENR {
+    bits: bool,
+}
+impl PMUXENR {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bit(&self) -> bool {
+        self.bits
+    }
+    #[doc = r" Returns `true` if the bit is clear (0)"]
+    #[inline]
+    pub fn bit_is_clear(&self) -> bool {
+        !self.bit()
+    }
+    #[doc = r" Returns `true` if the bit is set (1)"]
+    #[inline]
+    pub fn bit_is_set(&self) -> bool {
+        self.bit()
+    }
+}
+#[doc = r" Value of the field"]
+pub struct INENR {
+    bits: bool,
+}
+impl INENR {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bit(&self) -> bool {
+        self.bits
+    }
+    #[doc = r" Returns `true` if the bit is clear (0)"]
+    #[inline]
+    pub fn bit_is_clear(&self) -> bool {
+        !self.bit()
+    }
+    #[doc = r" Returns `true` if the bit is set (1)"]
+    #[inline]
+    pub fn bit_is_set(&self) -> bool {
+        self.bit()
+    }
+}
+#[doc = r" Value of the field"]
+pub struct PULLENR {
+    bits: bool,
+}
+impl PULLENR {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bit(&self) -> bool {
+        self.bits
+    }
+    #[doc = r" Returns `true` if the bit is clear (0)"]
+    #[inline]
+    pub fn bit_is_clear(&self) -> bool {
+        !self.bit()
+    }
+    #[doc = r" Returns `true` if the bit is set (1)"]
+    #[inline]
+    pub fn bit_is_set(&self) -> bool {
+        self.bit()
+    }
+}
+#[doc = r" Proxy"]
+pub struct _PMUXENW<'a> {
     w: &'a mut W,
 }
-impl<'a> PMUXEN_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
+impl<'a> _PMUXENW<'a> {
+    #[doc = r" Sets the field bit"]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
+    #[doc = r" Clears the field bit"]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
+    #[doc = r" Writes raw bits to the field"]
+    #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | ((value as u8) & 0x01);
+        const MASK: bool = true;
+        const OFFSET: u8 = 0;
+        self.w.bits &= !((MASK as u8) << OFFSET);
+        self.w.bits |= ((value & MASK) as u8) << OFFSET;
         self.w
     }
 }
-#[doc = "Reader of field `INEN`"]
-pub type INEN_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `INEN`"]
-pub struct INEN_W<'a> {
+#[doc = r" Proxy"]
+pub struct _INENW<'a> {
     w: &'a mut W,
 }
-impl<'a> INEN_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
+impl<'a> _INENW<'a> {
+    #[doc = r" Sets the field bit"]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
+    #[doc = r" Clears the field bit"]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
+    #[doc = r" Writes raw bits to the field"]
+    #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | (((value as u8) & 0x01) << 1);
+        const MASK: bool = true;
+        const OFFSET: u8 = 1;
+        self.w.bits &= !((MASK as u8) << OFFSET);
+        self.w.bits |= ((value & MASK) as u8) << OFFSET;
         self.w
     }
 }
-#[doc = "Reader of field `PULLEN`"]
-pub type PULLEN_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `PULLEN`"]
-pub struct PULLEN_W<'a> {
+#[doc = r" Proxy"]
+pub struct _PULLENW<'a> {
     w: &'a mut W,
 }
-impl<'a> PULLEN_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
+impl<'a> _PULLENW<'a> {
+    #[doc = r" Sets the field bit"]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
+    #[doc = r" Clears the field bit"]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
+    #[doc = r" Writes raw bits to the field"]
+    #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 2)) | (((value as u8) & 0x01) << 2);
+        const MASK: bool = true;
+        const OFFSET: u8 = 2;
+        self.w.bits &= !((MASK as u8) << OFFSET);
+        self.w.bits |= ((value & MASK) as u8) << OFFSET;
         self.w
     }
 }
-#[doc = "Write proxy for field `DRVSTR`"]
-pub struct DRVSTR_W<'a> {
+#[doc = r" Proxy"]
+pub struct _DRVSTRW<'a> {
     w: &'a mut W,
 }
-impl<'a> DRVSTR_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
+impl<'a> _DRVSTRW<'a> {
+    #[doc = r" Sets the field bit"]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
+    #[doc = r" Clears the field bit"]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
+    #[doc = r" Writes raw bits to the field"]
+    #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 6)) | (((value as u8) & 0x01) << 6);
+        const MASK: bool = true;
+        const OFFSET: u8 = 6;
+        self.w.bits &= !((MASK as u8) << OFFSET);
+        self.w.bits |= ((value & MASK) as u8) << OFFSET;
         self.w
     }
 }
 impl R {
+    #[doc = r" Value of the register as raw bits"]
+    #[inline]
+    pub fn bits(&self) -> u8 {
+        self.bits
+    }
     #[doc = "Bit 0 - Peripheral Multiplexer Enable"]
-    #[inline(always)]
-    pub fn pmuxen(&self) -> PMUXEN_R {
-        PMUXEN_R::new((self.bits & 0x01) != 0)
+    #[inline]
+    pub fn pmuxen(&self) -> PMUXENR {
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
+        PMUXENR { bits }
     }
     #[doc = "Bit 1 - Input Enable"]
-    #[inline(always)]
-    pub fn inen(&self) -> INEN_R {
-        INEN_R::new(((self.bits >> 1) & 0x01) != 0)
+    #[inline]
+    pub fn inen(&self) -> INENR {
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 1;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
+        INENR { bits }
     }
     #[doc = "Bit 2 - Pull Enable"]
-    #[inline(always)]
-    pub fn pullen(&self) -> PULLEN_R {
-        PULLEN_R::new(((self.bits >> 2) & 0x01) != 0)
+    #[inline]
+    pub fn pullen(&self) -> PULLENR {
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 2;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
+        PULLENR { bits }
     }
 }
 impl W {
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub fn reset_value() -> W {
+        W { bits: 0 }
+    }
+    #[doc = r" Writes raw bits to the register"]
+    #[inline]
+    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
+        self.bits = bits;
+        self
+    }
     #[doc = "Bit 0 - Peripheral Multiplexer Enable"]
-    #[inline(always)]
-    pub fn pmuxen(&mut self) -> PMUXEN_W {
-        PMUXEN_W { w: self }
+    #[inline]
+    pub fn pmuxen(&mut self) -> _PMUXENW {
+        _PMUXENW { w: self }
     }
     #[doc = "Bit 1 - Input Enable"]
-    #[inline(always)]
-    pub fn inen(&mut self) -> INEN_W {
-        INEN_W { w: self }
+    #[inline]
+    pub fn inen(&mut self) -> _INENW {
+        _INENW { w: self }
     }
     #[doc = "Bit 2 - Pull Enable"]
-    #[inline(always)]
-    pub fn pullen(&mut self) -> PULLEN_W {
-        PULLEN_W { w: self }
+    #[inline]
+    pub fn pullen(&mut self) -> _PULLENW {
+        _PULLENW { w: self }
     }
     #[doc = "Bit 6 - Output Driver Strength Selection"]
-    #[inline(always)]
-    pub fn drvstr(&mut self) -> DRVSTR_W {
-        DRVSTR_W { w: self }
+    #[inline]
+    pub fn drvstr(&mut self) -> _DRVSTRW {
+        _DRVSTRW { w: self }
     }
 }
