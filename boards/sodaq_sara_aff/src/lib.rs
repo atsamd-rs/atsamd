@@ -25,114 +25,79 @@ define_pins!(
 
     /// Arduino header digital pins
     /// RX
-    pin d0 = 	b31,
-
+    pin d0 = b31,
     /// TX
-    pin d1 = 	b30,
-
+    pin d1 = b30,
     /// DAC
-    pin d2 = 	a2,
-
+    pin d2 = a2,
     /// SCOM1PAD3
-    pin d3 = 	a19,
-
-    /// AIN12
-    pin d4 = 	b4,
-
+    pin d3 = a19,
     /// AIN14
-    pin d5 = 	b6,
-
+    pin d5 = b6,
     /// AIN15
-    pin d6 = 	b7,
-
+    pin d6 = b7,
     /// AIN2
-    pin d7 = 	b8,
-
+    pin d7 = b8,
     /// SCOM4PAD2
-    pin d8 = 	b10,
-
+    pin d8 = b10,
     /// SCOM4PAD3
-    pin d9 = 	b11,
-
+    pin d9 = b11,
     /// SS
-    pin d10 =	a23,
-
+    pin d10 = a23,
     /// MOSI
-    pin d11 =	a20,
-
+    pin d11 = a20,
     /// MISO
-    pin d12 =	a22,
-
+    pin d12 = a22,
     /// LED_BUILTIN / SCK   
-    pin d13 =	a21,
+    pin d13 = a21,
 
     /// Arduino header analog pins
     /// A0  
-    pin a0 =	b0,
-
+    pin a0 = b0,
     /// A1  
-    pin a1 =	b1,
-
+    pin a1 = b1,
     /// A2  
-    pin a2 =	b3,
-
+    pin a2 = b3,
     /// A3  
-    pin a3 =	b4,
-
+    pin a3 = b4,
     /// A4  / SDA(I2C1)
-    pin a4 =	a8,
-
+    pin a4 = a8,
     /// A5 / SCL(I2C1) 
-    pin a5 =	a9,
+    pin a5 = a9,
 
     /// Other pins
     /// GROVE1
-    pin d14 = 	a10,
-
+    pin d14 = a10,
     /// GROVE2
-    pin d15 = 	a11,
-
+    pin d15 = a11,
     /// LED_RED 
-    pin d16 = 	a12,
-
+    pin d16 = a12,
     /// LED_GREEN
-    pin d17 =	b15,
-
+    pin d17 = b15,
     /// LED_BLUE
-    pin d18 =   a13,
-
+    pin d18 = a13,
     /// ACCEL_INT1
-    pin d19 =	a14,
-
+    pin d19 = a14,
     /// ACCEL_INT2
-    pin d20 =	a15,
-
+    pin d20 = a15,
     /// MAG_INT
-    pin d21 =	a18,
-
+    pin d21 = a18,
     /// USB_DETECT
-    pin d22 =	b16,
-
+    pin d22 = b16,
     /// SARA_STATUS
-    pin d23 =	b22,
-
+    pin d23 = b22,
     /// CHG_STAT
-    pin d24 =	a4
-
+    pin d24 = a4,
     /// GPS_TIMEPULSE
-    pin d25 =	a7,
-
+    pin d25 = a7,
     /// GPS_ENABLE
-    pin d26 =	a28,
-
+    pin d26 = a28,
     /// SARA_ENABLE 
-    pin d27 =	a27,
-
+    pin d27 = a27,
     /// SARA_RESET
-    pin d28 =	b14,
-
+    pin d28 = b14,
     /// SARA_TX_ENABLE
-    pin d29 =	b13,
+    pin d29 = b13,
 );
 
 /// Convenience for setting up the D2 and D0 pins to
