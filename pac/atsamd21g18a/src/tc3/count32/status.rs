@@ -83,19 +83,31 @@ impl R {
     #[doc = "Bit 3 - Stop"]
     #[inline]
     pub fn stop(&self) -> STOPR {
-        let bits = ((self.bits >> 3) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 3;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         STOPR { bits }
     }
     #[doc = "Bit 4 - Slave"]
     #[inline]
     pub fn slave(&self) -> SLAVER {
-        let bits = ((self.bits >> 4) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 4;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         SLAVER { bits }
     }
     #[doc = "Bit 7 - Synchronization Busy"]
     #[inline]
     pub fn syncbusy(&self) -> SYNCBUSYR {
-        let bits = ((self.bits >> 7) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 7;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         SYNCBUSYR { bits }
     }
 }

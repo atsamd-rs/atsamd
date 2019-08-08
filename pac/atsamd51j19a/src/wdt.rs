@@ -22,49 +22,49 @@ pub struct RegisterBlock {
 }
 #[doc = "Control"]
 pub struct CTRLA {
-    register: vcell::VolatileCell<u8>,
+    register: ::vcell::VolatileCell<u8>,
 }
 #[doc = "Control"]
 pub mod ctrla;
 #[doc = "Configuration"]
 pub struct CONFIG {
-    register: vcell::VolatileCell<u8>,
+    register: ::vcell::VolatileCell<u8>,
 }
 #[doc = "Configuration"]
 pub mod config;
 #[doc = "Early Warning Interrupt Control"]
 pub struct EWCTRL {
-    register: vcell::VolatileCell<u8>,
+    register: ::vcell::VolatileCell<u8>,
 }
 #[doc = "Early Warning Interrupt Control"]
 pub mod ewctrl;
 #[doc = "Interrupt Enable Clear"]
 pub struct INTENCLR {
-    register: vcell::VolatileCell<u8>,
+    register: ::vcell::VolatileCell<u8>,
 }
 #[doc = "Interrupt Enable Clear"]
 pub mod intenclr;
 #[doc = "Interrupt Enable Set"]
 pub struct INTENSET {
-    register: vcell::VolatileCell<u8>,
+    register: ::vcell::VolatileCell<u8>,
 }
 #[doc = "Interrupt Enable Set"]
 pub mod intenset;
 #[doc = "Interrupt Flag Status and Clear"]
 pub struct INTFLAG {
-    register: vcell::VolatileCell<u8>,
+    register: ::vcell::VolatileCell<u8>,
 }
 #[doc = "Interrupt Flag Status and Clear"]
 pub mod intflag;
 #[doc = "Synchronization Busy"]
 pub struct SYNCBUSY {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Synchronization Busy"]
 pub mod syncbusy;
 #[doc = "Clear"]
 pub struct CLEAR {
-    register: vcell::VolatileCell<u8>,
+    register: ::vcell::VolatileCell<u8>,
 }
 #[doc = "Clear"]
 pub mod clear;

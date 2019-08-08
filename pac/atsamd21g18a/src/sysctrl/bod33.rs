@@ -14,7 +14,10 @@ impl super::BOD33 {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        self.register.set(f(&R { bits }, &mut W { bits }).bits);
+        let r = R { bits };
+        let mut w = W { bits };
+        f(&r, &mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -29,22 +32,14 @@ impl super::BOD33 {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        self.register.set(
-            f(&mut W {
-                bits: Self::reset_value(),
-            })
-            .bits,
-        );
-    }
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub const fn reset_value() -> u32 {
-        0
+        let mut w = W::reset_value();
+        f(&mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.register.set(Self::reset_value())
+        self.write(|w| w)
     }
 }
 #[doc = r" Value of the field"]
@@ -107,8 +102,8 @@ impl ACTIONR {
     pub fn bits(&self) -> u8 {
         match *self {
             ACTIONR::NONE => 0,
-            ACTIONR::RESET => 0x01,
-            ACTIONR::INTERRUPT => 0x02,
+            ACTIONR::RESET => 1,
+            ACTIONR::INTERRUPT => 2,
             ACTIONR::_Reserved(bits) => bits,
         }
     }
@@ -244,21 +239,21 @@ impl PSELR {
     pub fn bits(&self) -> u8 {
         match *self {
             PSELR::DIV2 => 0,
-            PSELR::DIV4 => 0x01,
-            PSELR::DIV8 => 0x02,
-            PSELR::DIV16 => 0x03,
-            PSELR::DIV32 => 0x04,
-            PSELR::DIV64 => 0x05,
-            PSELR::DIV128 => 0x06,
-            PSELR::DIV256 => 0x07,
-            PSELR::DIV512 => 0x08,
-            PSELR::DIV1K => 0x09,
-            PSELR::DIV2K => 0x0a,
-            PSELR::DIV4K => 0x0b,
-            PSELR::DIV8K => 0x0c,
-            PSELR::DIV16K => 0x0d,
-            PSELR::DIV32K => 0x0e,
-            PSELR::DIV64K => 0x0f,
+            PSELR::DIV4 => 1,
+            PSELR::DIV8 => 2,
+            PSELR::DIV16 => 3,
+            PSELR::DIV32 => 4,
+            PSELR::DIV64 => 5,
+            PSELR::DIV128 => 6,
+            PSELR::DIV256 => 7,
+            PSELR::DIV512 => 8,
+            PSELR::DIV1K => 9,
+            PSELR::DIV2K => 10,
+            PSELR::DIV4K => 11,
+            PSELR::DIV8K => 12,
+            PSELR::DIV16K => 13,
+            PSELR::DIV32K => 14,
+            PSELR::DIV64K => 15,
         }
     }
     #[allow(missing_docs)]
@@ -393,8 +388,10 @@ impl<'a> _ENABLEW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 1);
-        self.w.bits |= ((value as u32) & 0x01) << 1;
+        const MASK: bool = true;
+        const OFFSET: u8 = 1;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -414,13 +411,14 @@ impl<'a> _HYSTW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 2);
-        self.w.bits |= ((value as u32) & 0x01) << 2;
+        const MASK: bool = true;
+        const OFFSET: u8 = 2;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `ACTION`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum ACTIONW {
     #[doc = "No action"]
     NONE,
@@ -469,8 +467,10 @@ impl<'a> _ACTIONW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x03 << 3);
-        self.w.bits |= ((value as u32) & 0x03) << 3;
+        const MASK: u8 = 3;
+        const OFFSET: u8 = 3;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -490,8 +490,10 @@ impl<'a> _RUNSTDBYW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 6);
-        self.w.bits |= ((value as u32) & 0x01) << 6;
+        const MASK: bool = true;
+        const OFFSET: u8 = 6;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -511,8 +513,10 @@ impl<'a> _MODEW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 8);
-        self.w.bits |= ((value as u32) & 0x01) << 8;
+        const MASK: bool = true;
+        const OFFSET: u8 = 8;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -532,13 +536,14 @@ impl<'a> _CENW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 9);
-        self.w.bits |= ((value as u32) & 0x01) << 9;
+        const MASK: bool = true;
+        const OFFSET: u8 = 9;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `PSEL`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum PSELW {
     #[doc = "Divide clock by 2"]
     DIV2,
@@ -693,8 +698,10 @@ impl<'a> _PSELW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x0f << 12);
-        self.w.bits |= ((value as u32) & 0x0f) << 12;
+        const MASK: u8 = 15;
+        const OFFSET: u8 = 12;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -706,8 +713,10 @@ impl<'a> _LEVELW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x3f << 16);
-        self.w.bits |= ((value as u32) & 0x3f) << 16;
+        const MASK: u8 = 63;
+        const OFFSET: u8 = 16;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -720,51 +729,88 @@ impl R {
     #[doc = "Bit 1 - Enable"]
     #[inline]
     pub fn enable(&self) -> ENABLER {
-        let bits = ((self.bits >> 1) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 1;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         ENABLER { bits }
     }
     #[doc = "Bit 2 - Hysteresis"]
     #[inline]
     pub fn hyst(&self) -> HYSTR {
-        let bits = ((self.bits >> 2) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 2;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         HYSTR { bits }
     }
     #[doc = "Bits 3:4 - BOD33 Action"]
     #[inline]
     pub fn action(&self) -> ACTIONR {
-        ACTIONR::_from(((self.bits >> 3) & 0x03) as u8)
+        ACTIONR::_from({
+            const MASK: u8 = 3;
+            const OFFSET: u8 = 3;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
     #[doc = "Bit 6 - Run in Standby"]
     #[inline]
     pub fn runstdby(&self) -> RUNSTDBYR {
-        let bits = ((self.bits >> 6) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 6;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         RUNSTDBYR { bits }
     }
     #[doc = "Bit 8 - Operation Mode"]
     #[inline]
     pub fn mode(&self) -> MODER {
-        let bits = ((self.bits >> 8) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 8;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         MODER { bits }
     }
     #[doc = "Bit 9 - Clock Enable"]
     #[inline]
     pub fn cen(&self) -> CENR {
-        let bits = ((self.bits >> 9) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 9;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         CENR { bits }
     }
     #[doc = "Bits 12:15 - Prescaler Select"]
     #[inline]
     pub fn psel(&self) -> PSELR {
-        PSELR::_from(((self.bits >> 12) & 0x0f) as u8)
+        PSELR::_from({
+            const MASK: u8 = 15;
+            const OFFSET: u8 = 12;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
     #[doc = "Bits 16:21 - BOD33 Threshold Level"]
     #[inline]
     pub fn level(&self) -> LEVELR {
-        let bits = ((self.bits >> 16) & 0x3f) as u8;
+        let bits = {
+            const MASK: u8 = 63;
+            const OFFSET: u8 = 16;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        };
         LEVELR { bits }
     }
 }
 impl W {
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub fn reset_value() -> W {
+        W { bits: 0 }
+    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {

@@ -14,7 +14,10 @@ impl super::WEXCTRL {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        self.register.set(f(&R { bits }, &mut W { bits }).bits);
+        let r = R { bits };
+        let mut w = W { bits };
+        f(&r, &mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -29,22 +32,14 @@ impl super::WEXCTRL {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        self.register.set(
-            f(&mut W {
-                bits: Self::reset_value(),
-            })
-            .bits,
-        );
-    }
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub const fn reset_value() -> u32 {
-        0
+        let mut w = W::reset_value();
+        f(&mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.register.set(Self::reset_value())
+        self.write(|w| w)
     }
 }
 #[doc = r" Value of the field"]
@@ -172,8 +167,10 @@ impl<'a> _OTMXW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x03 << 0);
-        self.w.bits |= ((value as u32) & 0x03) << 0;
+        const MASK: u8 = 3;
+        const OFFSET: u8 = 0;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -193,8 +190,10 @@ impl<'a> _DTIEN0W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 8);
-        self.w.bits |= ((value as u32) & 0x01) << 8;
+        const MASK: bool = true;
+        const OFFSET: u8 = 8;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -214,8 +213,10 @@ impl<'a> _DTIEN1W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 9);
-        self.w.bits |= ((value as u32) & 0x01) << 9;
+        const MASK: bool = true;
+        const OFFSET: u8 = 9;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -235,8 +236,10 @@ impl<'a> _DTIEN2W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 10);
-        self.w.bits |= ((value as u32) & 0x01) << 10;
+        const MASK: bool = true;
+        const OFFSET: u8 = 10;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -256,8 +259,10 @@ impl<'a> _DTIEN3W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 11);
-        self.w.bits |= ((value as u32) & 0x01) << 11;
+        const MASK: bool = true;
+        const OFFSET: u8 = 11;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -269,8 +274,10 @@ impl<'a> _DTLSW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0xff << 16);
-        self.w.bits |= ((value as u32) & 0xff) << 16;
+        const MASK: u8 = 255;
+        const OFFSET: u8 = 16;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -282,8 +289,10 @@ impl<'a> _DTHSW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0xff << 24);
-        self.w.bits |= ((value as u32) & 0xff) << 24;
+        const MASK: u8 = 255;
+        const OFFSET: u8 = 24;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -296,47 +305,80 @@ impl R {
     #[doc = "Bits 0:1 - Output Matrix"]
     #[inline]
     pub fn otmx(&self) -> OTMXR {
-        let bits = ((self.bits >> 0) & 0x03) as u8;
+        let bits = {
+            const MASK: u8 = 3;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        };
         OTMXR { bits }
     }
     #[doc = "Bit 8 - Dead-time Insertion Generator 0 Enable"]
     #[inline]
     pub fn dtien0(&self) -> DTIEN0R {
-        let bits = ((self.bits >> 8) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 8;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         DTIEN0R { bits }
     }
     #[doc = "Bit 9 - Dead-time Insertion Generator 1 Enable"]
     #[inline]
     pub fn dtien1(&self) -> DTIEN1R {
-        let bits = ((self.bits >> 9) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 9;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         DTIEN1R { bits }
     }
     #[doc = "Bit 10 - Dead-time Insertion Generator 2 Enable"]
     #[inline]
     pub fn dtien2(&self) -> DTIEN2R {
-        let bits = ((self.bits >> 10) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 10;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         DTIEN2R { bits }
     }
     #[doc = "Bit 11 - Dead-time Insertion Generator 3 Enable"]
     #[inline]
     pub fn dtien3(&self) -> DTIEN3R {
-        let bits = ((self.bits >> 11) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 11;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         DTIEN3R { bits }
     }
     #[doc = "Bits 16:23 - Dead-time Low Side Outputs Value"]
     #[inline]
     pub fn dtls(&self) -> DTLSR {
-        let bits = ((self.bits >> 16) & 0xff) as u8;
+        let bits = {
+            const MASK: u8 = 255;
+            const OFFSET: u8 = 16;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        };
         DTLSR { bits }
     }
     #[doc = "Bits 24:31 - Dead-time High Side Outputs Value"]
     #[inline]
     pub fn dths(&self) -> DTHSR {
-        let bits = ((self.bits >> 24) & 0xff) as u8;
+        let bits = {
+            const MASK: u8 = 255;
+            const OFFSET: u8 = 24;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        };
         DTHSR { bits }
     }
 }
 impl W {
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub fn reset_value() -> W {
+        W { bits: 0 }
+    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {

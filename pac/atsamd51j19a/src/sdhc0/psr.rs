@@ -616,73 +616,129 @@ impl R {
     #[doc = "Bit 0 - Command Inhibit (CMD)"]
     #[inline]
     pub fn cmdinhc(&self) -> CMDINHCR {
-        CMDINHCR::_from(((self.bits >> 0) & 0x01) != 0)
+        CMDINHCR::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        })
     }
     #[doc = "Bit 1 - Command Inhibit (DAT)"]
     #[inline]
     pub fn cmdinhd(&self) -> CMDINHDR {
-        CMDINHDR::_from(((self.bits >> 1) & 0x01) != 0)
+        CMDINHDR::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 1;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        })
     }
     #[doc = "Bit 2 - DAT Line Active"]
     #[inline]
     pub fn dlact(&self) -> DLACTR {
-        DLACTR::_from(((self.bits >> 2) & 0x01) != 0)
+        DLACTR::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 2;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        })
     }
     #[doc = "Bit 3 - Re-Tuning Request"]
     #[inline]
     pub fn rtreq(&self) -> RTREQR {
-        RTREQR::_from(((self.bits >> 3) & 0x01) != 0)
+        RTREQR::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 3;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        })
     }
     #[doc = "Bit 8 - Write Transfer Active"]
     #[inline]
     pub fn wtact(&self) -> WTACTR {
-        WTACTR::_from(((self.bits >> 8) & 0x01) != 0)
+        WTACTR::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 8;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        })
     }
     #[doc = "Bit 9 - Read Transfer Active"]
     #[inline]
     pub fn rtact(&self) -> RTACTR {
-        RTACTR::_from(((self.bits >> 9) & 0x01) != 0)
+        RTACTR::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 9;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        })
     }
     #[doc = "Bit 10 - Buffer Write Enable"]
     #[inline]
     pub fn bufwren(&self) -> BUFWRENR {
-        BUFWRENR::_from(((self.bits >> 10) & 0x01) != 0)
+        BUFWRENR::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 10;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        })
     }
     #[doc = "Bit 11 - Buffer Read Enable"]
     #[inline]
     pub fn bufrden(&self) -> BUFRDENR {
-        BUFRDENR::_from(((self.bits >> 11) & 0x01) != 0)
+        BUFRDENR::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 11;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        })
     }
     #[doc = "Bit 16 - Card Inserted"]
     #[inline]
     pub fn cardins(&self) -> CARDINSR {
-        CARDINSR::_from(((self.bits >> 16) & 0x01) != 0)
+        CARDINSR::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 16;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        })
     }
     #[doc = "Bit 17 - Card State Stable"]
     #[inline]
     pub fn cardss(&self) -> CARDSSR {
-        CARDSSR::_from(((self.bits >> 17) & 0x01) != 0)
+        CARDSSR::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 17;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        })
     }
     #[doc = "Bit 18 - Card Detect Pin Level"]
     #[inline]
     pub fn carddpl(&self) -> CARDDPLR {
-        CARDDPLR::_from(((self.bits >> 18) & 0x01) != 0)
+        CARDDPLR::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 18;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        })
     }
     #[doc = "Bit 19 - Write Protect Pin Level"]
     #[inline]
     pub fn wrppl(&self) -> WRPPLR {
-        WRPPLR::_from(((self.bits >> 19) & 0x01) != 0)
+        WRPPLR::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 19;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        })
     }
-    #[doc = "Bits 20:23 - DAT\\[3:0\\] Line Level"]
+    #[doc = "Bits 20:23 - DAT[3:0] Line Level"]
     #[inline]
     pub fn datll(&self) -> DATLLR {
-        let bits = ((self.bits >> 20) & 0x0f) as u8;
+        let bits = {
+            const MASK: u8 = 15;
+            const OFFSET: u8 = 20;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        };
         DATLLR { bits }
     }
     #[doc = "Bit 24 - CMD Line Level"]
     #[inline]
     pub fn cmdll(&self) -> CMDLLR {
-        let bits = ((self.bits >> 24) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 24;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         CMDLLR { bits }
     }
 }

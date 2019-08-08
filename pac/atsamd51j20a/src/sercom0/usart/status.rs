@@ -14,7 +14,10 @@ impl super::STATUS {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        self.register.set(f(&R { bits }, &mut W { bits }).bits);
+        let r = R { bits };
+        let mut w = W { bits };
+        f(&r, &mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -29,22 +32,14 @@ impl super::STATUS {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        self.register.set(
-            f(&mut W {
-                bits: Self::reset_value(),
-            })
-            .bits,
-        );
-    }
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub const fn reset_value() -> u16 {
-        0
+        let mut w = W::reset_value();
+        f(&mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.register.set(Self::reset_value())
+        self.write(|w| w)
     }
 }
 #[doc = r" Value of the field"]
@@ -231,8 +226,10 @@ impl<'a> _PERRW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 0);
-        self.w.bits |= ((value as u16) & 0x01) << 0;
+        const MASK: bool = true;
+        const OFFSET: u8 = 0;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
@@ -252,8 +249,10 @@ impl<'a> _FERRW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 1);
-        self.w.bits |= ((value as u16) & 0x01) << 1;
+        const MASK: bool = true;
+        const OFFSET: u8 = 1;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
@@ -273,8 +272,10 @@ impl<'a> _BUFOVFW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 2);
-        self.w.bits |= ((value as u16) & 0x01) << 2;
+        const MASK: bool = true;
+        const OFFSET: u8 = 2;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
@@ -294,8 +295,10 @@ impl<'a> _ISFW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 4);
-        self.w.bits |= ((value as u16) & 0x01) << 4;
+        const MASK: bool = true;
+        const OFFSET: u8 = 4;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
@@ -315,8 +318,10 @@ impl<'a> _COLLW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 5);
-        self.w.bits |= ((value as u16) & 0x01) << 5;
+        const MASK: bool = true;
+        const OFFSET: u8 = 5;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
@@ -336,8 +341,10 @@ impl<'a> _ITERW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 7);
-        self.w.bits |= ((value as u16) & 0x01) << 7;
+        const MASK: bool = true;
+        const OFFSET: u8 = 7;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
@@ -350,53 +357,90 @@ impl R {
     #[doc = "Bit 0 - Parity Error"]
     #[inline]
     pub fn perr(&self) -> PERRR {
-        let bits = ((self.bits >> 0) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        };
         PERRR { bits }
     }
     #[doc = "Bit 1 - Frame Error"]
     #[inline]
     pub fn ferr(&self) -> FERRR {
-        let bits = ((self.bits >> 1) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 1;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        };
         FERRR { bits }
     }
     #[doc = "Bit 2 - Buffer Overflow"]
     #[inline]
     pub fn bufovf(&self) -> BUFOVFR {
-        let bits = ((self.bits >> 2) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 2;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        };
         BUFOVFR { bits }
     }
     #[doc = "Bit 3 - Clear To Send"]
     #[inline]
     pub fn cts(&self) -> CTSR {
-        let bits = ((self.bits >> 3) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 3;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        };
         CTSR { bits }
     }
     #[doc = "Bit 4 - Inconsistent Sync Field"]
     #[inline]
     pub fn isf(&self) -> ISFR {
-        let bits = ((self.bits >> 4) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 4;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        };
         ISFR { bits }
     }
     #[doc = "Bit 5 - Collision Detected"]
     #[inline]
     pub fn coll(&self) -> COLLR {
-        let bits = ((self.bits >> 5) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 5;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        };
         COLLR { bits }
     }
     #[doc = "Bit 6 - Transmitter Empty"]
     #[inline]
     pub fn txe(&self) -> TXER {
-        let bits = ((self.bits >> 6) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 6;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        };
         TXER { bits }
     }
     #[doc = "Bit 7 - Maximum Number of Repetitions Reached"]
     #[inline]
     pub fn iter(&self) -> ITERR {
-        let bits = ((self.bits >> 7) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 7;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        };
         ITERR { bits }
     }
 }
 impl W {
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub fn reset_value() -> W {
+        W { bits: 0 }
+    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {

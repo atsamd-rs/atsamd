@@ -31,7 +31,11 @@ impl R {
     #[doc = "Bits 0:23 - Measurement Value"]
     #[inline]
     pub fn value(&self) -> VALUER {
-        let bits = ((self.bits >> 0) & 0x00ff_ffff) as u32;
+        let bits = {
+            const MASK: u32 = 16777215;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u32) as u32
+        };
         VALUER { bits }
     }
 }

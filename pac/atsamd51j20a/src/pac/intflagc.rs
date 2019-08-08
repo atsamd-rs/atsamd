@@ -14,7 +14,10 @@ impl super::INTFLAGC {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        self.register.set(f(&R { bits }, &mut W { bits }).bits);
+        let r = R { bits };
+        let mut w = W { bits };
+        f(&r, &mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -29,22 +32,14 @@ impl super::INTFLAGC {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        self.register.set(
-            f(&mut W {
-                bits: Self::reset_value(),
-            })
-            .bits,
-        );
-    }
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub const fn reset_value() -> u32 {
-        0
+        let mut w = W::reset_value();
+        f(&mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.register.set(Self::reset_value())
+        self.write(|w| w)
     }
 }
 #[doc = r" Value of the field"]
@@ -315,8 +310,10 @@ impl<'a> _TCC2_W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 3);
-        self.w.bits |= ((value as u32) & 0x01) << 3;
+        const MASK: bool = true;
+        const OFFSET: u8 = 3;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -336,8 +333,10 @@ impl<'a> _TCC3_W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 4);
-        self.w.bits |= ((value as u32) & 0x01) << 4;
+        const MASK: bool = true;
+        const OFFSET: u8 = 4;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -357,8 +356,10 @@ impl<'a> _TC4_W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 5);
-        self.w.bits |= ((value as u32) & 0x01) << 5;
+        const MASK: bool = true;
+        const OFFSET: u8 = 5;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -378,8 +379,10 @@ impl<'a> _TC5_W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 6);
-        self.w.bits |= ((value as u32) & 0x01) << 6;
+        const MASK: bool = true;
+        const OFFSET: u8 = 6;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -399,8 +402,10 @@ impl<'a> _PDEC_W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 7);
-        self.w.bits |= ((value as u32) & 0x01) << 7;
+        const MASK: bool = true;
+        const OFFSET: u8 = 7;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -420,8 +425,10 @@ impl<'a> _AC_W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 8);
-        self.w.bits |= ((value as u32) & 0x01) << 8;
+        const MASK: bool = true;
+        const OFFSET: u8 = 8;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -441,8 +448,10 @@ impl<'a> _AES_W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 9);
-        self.w.bits |= ((value as u32) & 0x01) << 9;
+        const MASK: bool = true;
+        const OFFSET: u8 = 9;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -462,8 +471,10 @@ impl<'a> _TRNG_W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 10);
-        self.w.bits |= ((value as u32) & 0x01) << 10;
+        const MASK: bool = true;
+        const OFFSET: u8 = 10;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -483,8 +494,10 @@ impl<'a> _ICM_W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 11);
-        self.w.bits |= ((value as u32) & 0x01) << 11;
+        const MASK: bool = true;
+        const OFFSET: u8 = 11;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -504,8 +517,10 @@ impl<'a> _PUKCC_W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 12);
-        self.w.bits |= ((value as u32) & 0x01) << 12;
+        const MASK: bool = true;
+        const OFFSET: u8 = 12;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -525,8 +540,10 @@ impl<'a> _QSPI_W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 13);
-        self.w.bits |= ((value as u32) & 0x01) << 13;
+        const MASK: bool = true;
+        const OFFSET: u8 = 13;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -546,8 +563,10 @@ impl<'a> _CCL_W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 14);
-        self.w.bits |= ((value as u32) & 0x01) << 14;
+        const MASK: bool = true;
+        const OFFSET: u8 = 14;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -560,77 +579,130 @@ impl R {
     #[doc = "Bit 3 - TCC2"]
     #[inline]
     pub fn tcc2_(&self) -> TCC2_R {
-        let bits = ((self.bits >> 3) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 3;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         TCC2_R { bits }
     }
     #[doc = "Bit 4 - TCC3"]
     #[inline]
     pub fn tcc3_(&self) -> TCC3_R {
-        let bits = ((self.bits >> 4) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 4;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         TCC3_R { bits }
     }
     #[doc = "Bit 5 - TC4"]
     #[inline]
     pub fn tc4_(&self) -> TC4_R {
-        let bits = ((self.bits >> 5) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 5;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         TC4_R { bits }
     }
     #[doc = "Bit 6 - TC5"]
     #[inline]
     pub fn tc5_(&self) -> TC5_R {
-        let bits = ((self.bits >> 6) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 6;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         TC5_R { bits }
     }
     #[doc = "Bit 7 - PDEC"]
     #[inline]
     pub fn pdec_(&self) -> PDEC_R {
-        let bits = ((self.bits >> 7) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 7;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         PDEC_R { bits }
     }
     #[doc = "Bit 8 - AC"]
     #[inline]
     pub fn ac_(&self) -> AC_R {
-        let bits = ((self.bits >> 8) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 8;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         AC_R { bits }
     }
     #[doc = "Bit 9 - AES"]
     #[inline]
     pub fn aes_(&self) -> AES_R {
-        let bits = ((self.bits >> 9) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 9;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         AES_R { bits }
     }
     #[doc = "Bit 10 - TRNG"]
     #[inline]
     pub fn trng_(&self) -> TRNG_R {
-        let bits = ((self.bits >> 10) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 10;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         TRNG_R { bits }
     }
     #[doc = "Bit 11 - ICM"]
     #[inline]
     pub fn icm_(&self) -> ICM_R {
-        let bits = ((self.bits >> 11) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 11;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         ICM_R { bits }
     }
     #[doc = "Bit 12 - PUKCC"]
     #[inline]
     pub fn pukcc_(&self) -> PUKCC_R {
-        let bits = ((self.bits >> 12) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 12;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         PUKCC_R { bits }
     }
     #[doc = "Bit 13 - QSPI"]
     #[inline]
     pub fn qspi_(&self) -> QSPI_R {
-        let bits = ((self.bits >> 13) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 13;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         QSPI_R { bits }
     }
     #[doc = "Bit 14 - CCL"]
     #[inline]
     pub fn ccl_(&self) -> CCL_R {
-        let bits = ((self.bits >> 14) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 14;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         CCL_R { bits }
     }
 }
 impl W {
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub fn reset_value() -> W {
+        W { bits: 0 }
+    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {

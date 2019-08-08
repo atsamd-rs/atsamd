@@ -14,7 +14,10 @@ impl super::DPLLCTRLB {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        self.register.set(f(&R { bits }, &mut W { bits }).bits);
+        let r = R { bits };
+        let mut w = W { bits };
+        f(&r, &mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -29,22 +32,14 @@ impl super::DPLLCTRLB {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        self.register.set(
-            f(&mut W {
-                bits: Self::reset_value(),
-            })
-            .bits,
-        );
-    }
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub const fn reset_value() -> u32 {
-        0
+        let mut w = W::reset_value();
+        f(&mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.register.set(Self::reset_value())
+        self.write(|w| w)
     }
 }
 #[doc = "Possible values of the field `FILTER`"]
@@ -65,9 +60,9 @@ impl FILTERR {
     pub fn bits(&self) -> u8 {
         match *self {
             FILTERR::DEFAULT => 0,
-            FILTERR::LBFILT => 0x01,
-            FILTERR::HBFILT => 0x02,
-            FILTERR::HDFILT => 0x03,
+            FILTERR::LBFILT => 1,
+            FILTERR::HBFILT => 2,
+            FILTERR::HDFILT => 3,
         }
     }
     #[allow(missing_docs)]
@@ -163,8 +158,8 @@ impl REFCLKR {
     pub fn bits(&self) -> u8 {
         match *self {
             REFCLKR::REF0 => 0,
-            REFCLKR::REF1 => 0x01,
-            REFCLKR::GCLK => 0x02,
+            REFCLKR::REF1 => 1,
+            REFCLKR::GCLK => 2,
             REFCLKR::_Reserved(bits) => bits,
         }
     }
@@ -217,10 +212,10 @@ impl LTIMER {
     pub fn bits(&self) -> u8 {
         match *self {
             LTIMER::DEFAULT => 0,
-            LTIMER::_8MS => 0x04,
-            LTIMER::_9MS => 0x05,
-            LTIMER::_10MS => 0x06,
-            LTIMER::_11MS => 0x07,
+            LTIMER::_8MS => 4,
+            LTIMER::_9MS => 5,
+            LTIMER::_10MS => 6,
+            LTIMER::_11MS => 7,
             LTIMER::_Reserved(bits) => bits,
         }
     }
@@ -296,7 +291,6 @@ impl DIVR {
     }
 }
 #[doc = "Values that can be written to the field `FILTER`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum FILTERW {
     #[doc = "Default filter mode"]
     DEFAULT,
@@ -355,8 +349,10 @@ impl<'a> _FILTERW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x03 << 0);
-        self.w.bits |= ((value as u32) & 0x03) << 0;
+        const MASK: u8 = 3;
+        const OFFSET: u8 = 0;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -376,8 +372,10 @@ impl<'a> _LPENW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 2);
-        self.w.bits |= ((value as u32) & 0x01) << 2;
+        const MASK: bool = true;
+        const OFFSET: u8 = 2;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -397,13 +395,14 @@ impl<'a> _WUFW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 3);
-        self.w.bits |= ((value as u32) & 0x01) << 3;
+        const MASK: bool = true;
+        const OFFSET: u8 = 3;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `REFCLK`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum REFCLKW {
     #[doc = "CLK_DPLL_REF0 clock reference"]
     REF0,
@@ -452,13 +451,14 @@ impl<'a> _REFCLKW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x03 << 4);
-        self.w.bits |= ((value as u32) & 0x03) << 4;
+        const MASK: u8 = 3;
+        const OFFSET: u8 = 4;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `LTIME`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum LTIMEW {
     #[doc = "No time-out"]
     DEFAULT,
@@ -523,8 +523,10 @@ impl<'a> _LTIMEW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x07 << 8);
-        self.w.bits |= ((value as u32) & 0x07) << 8;
+        const MASK: u8 = 7;
+        const OFFSET: u8 = 8;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -544,8 +546,10 @@ impl<'a> _LBYPASSW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 12);
-        self.w.bits |= ((value as u32) & 0x01) << 12;
+        const MASK: bool = true;
+        const OFFSET: u8 = 12;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -557,8 +561,10 @@ impl<'a> _DIVW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u16) -> &'a mut W {
-        self.w.bits &= !(0x07ff << 16);
-        self.w.bits |= ((value as u32) & 0x07ff) << 16;
+        const MASK: u16 = 2047;
+        const OFFSET: u8 = 16;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -571,44 +577,77 @@ impl R {
     #[doc = "Bits 0:1 - Proportional Integral Filter Selection"]
     #[inline]
     pub fn filter(&self) -> FILTERR {
-        FILTERR::_from(((self.bits >> 0) & 0x03) as u8)
+        FILTERR::_from({
+            const MASK: u8 = 3;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
     #[doc = "Bit 2 - Low-Power Enable"]
     #[inline]
     pub fn lpen(&self) -> LPENR {
-        let bits = ((self.bits >> 2) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 2;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         LPENR { bits }
     }
     #[doc = "Bit 3 - Wake Up Fast"]
     #[inline]
     pub fn wuf(&self) -> WUFR {
-        let bits = ((self.bits >> 3) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 3;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         WUFR { bits }
     }
     #[doc = "Bits 4:5 - Reference Clock Selection"]
     #[inline]
     pub fn refclk(&self) -> REFCLKR {
-        REFCLKR::_from(((self.bits >> 4) & 0x03) as u8)
+        REFCLKR::_from({
+            const MASK: u8 = 3;
+            const OFFSET: u8 = 4;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
     #[doc = "Bits 8:10 - Lock Time"]
     #[inline]
     pub fn ltime(&self) -> LTIMER {
-        LTIMER::_from(((self.bits >> 8) & 0x07) as u8)
+        LTIMER::_from({
+            const MASK: u8 = 7;
+            const OFFSET: u8 = 8;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
     #[doc = "Bit 12 - Lock Bypass"]
     #[inline]
     pub fn lbypass(&self) -> LBYPASSR {
-        let bits = ((self.bits >> 12) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 12;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         LBYPASSR { bits }
     }
     #[doc = "Bits 16:26 - Clock Divider"]
     #[inline]
     pub fn div(&self) -> DIVR {
-        let bits = ((self.bits >> 16) & 0x07ff) as u16;
+        let bits = {
+            const MASK: u16 = 2047;
+            const OFFSET: u8 = 16;
+            ((self.bits >> OFFSET) & MASK as u32) as u16
+        };
         DIVR { bits }
     }
 }
 impl W {
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub fn reset_value() -> W {
+        W { bits: 0 }
+    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {

@@ -230,61 +230,101 @@ impl R {
     #[doc = "Bit 0 - Input Control"]
     #[inline]
     pub fn inputctrl(&self) -> INPUTCTRLR {
-        let bits = ((self.bits >> 0) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         INPUTCTRLR { bits }
     }
     #[doc = "Bit 1 - Control B"]
     #[inline]
     pub fn ctrlb(&self) -> CTRLBR {
-        let bits = ((self.bits >> 1) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 1;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         CTRLBR { bits }
     }
     #[doc = "Bit 2 - Reference Control"]
     #[inline]
     pub fn refctrl(&self) -> REFCTRLR {
-        let bits = ((self.bits >> 2) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 2;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         REFCTRLR { bits }
     }
     #[doc = "Bit 3 - Average Control"]
     #[inline]
     pub fn avgctrl(&self) -> AVGCTRLR {
-        let bits = ((self.bits >> 3) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 3;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         AVGCTRLR { bits }
     }
     #[doc = "Bit 4 - Sampling Time Control"]
     #[inline]
     pub fn sampctrl(&self) -> SAMPCTRLR {
-        let bits = ((self.bits >> 4) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 4;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         SAMPCTRLR { bits }
     }
     #[doc = "Bit 5 - Window Monitor Lower Threshold"]
     #[inline]
     pub fn winlt(&self) -> WINLTR {
-        let bits = ((self.bits >> 5) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 5;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         WINLTR { bits }
     }
     #[doc = "Bit 6 - Window Monitor Upper Threshold"]
     #[inline]
     pub fn winut(&self) -> WINUTR {
-        let bits = ((self.bits >> 6) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 6;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         WINUTR { bits }
     }
     #[doc = "Bit 7 - Gain Correction"]
     #[inline]
     pub fn gaincorr(&self) -> GAINCORRR {
-        let bits = ((self.bits >> 7) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 7;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         GAINCORRR { bits }
     }
     #[doc = "Bit 8 - Offset Correction"]
     #[inline]
     pub fn offsetcorr(&self) -> OFFSETCORRR {
-        let bits = ((self.bits >> 8) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 8;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         OFFSETCORRR { bits }
     }
     #[doc = "Bit 31 - DMA Sequencing Busy"]
     #[inline]
     pub fn busy(&self) -> BUSYR {
-        let bits = ((self.bits >> 31) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 31;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         BUSYR { bits }
     }
 }

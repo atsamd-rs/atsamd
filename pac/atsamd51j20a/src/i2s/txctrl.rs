@@ -14,7 +14,10 @@ impl super::TXCTRL {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        self.register.set(f(&R { bits }, &mut W { bits }).bits);
+        let r = R { bits };
+        let mut w = W { bits };
+        f(&r, &mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -29,22 +32,14 @@ impl super::TXCTRL {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        self.register.set(
-            f(&mut W {
-                bits: Self::reset_value(),
-            })
-            .bits,
-        );
-    }
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub const fn reset_value() -> u32 {
-        0
+        let mut w = W::reset_value();
+        f(&mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.register.set(Self::reset_value())
+        self.write(|w| w)
     }
 }
 #[doc = "Possible values of the field `TXDEFAULT`"]
@@ -65,8 +60,8 @@ impl TXDEFAULTR {
     pub fn bits(&self) -> u8 {
         match *self {
             TXDEFAULTR::ZERO => 0,
-            TXDEFAULTR::ONE => 0x01,
-            TXDEFAULTR::HIZ => 0x03,
+            TXDEFAULTR::ONE => 1,
+            TXDEFAULTR::HIZ => 3,
             TXDEFAULTR::_Reserved(bits) => bits,
         }
     }
@@ -217,13 +212,13 @@ impl DATASIZER {
     pub fn bits(&self) -> u8 {
         match *self {
             DATASIZER::_32 => 0,
-            DATASIZER::_24 => 0x01,
-            DATASIZER::_20 => 0x02,
-            DATASIZER::_18 => 0x03,
-            DATASIZER::_16 => 0x04,
-            DATASIZER::_16C => 0x05,
-            DATASIZER::_8 => 0x06,
-            DATASIZER::_8C => 0x07,
+            DATASIZER::_24 => 1,
+            DATASIZER::_20 => 2,
+            DATASIZER::_18 => 3,
+            DATASIZER::_16 => 4,
+            DATASIZER::_16C => 5,
+            DATASIZER::_8 => 6,
+            DATASIZER::_8C => 7,
         }
     }
     #[allow(missing_docs)]
@@ -348,9 +343,9 @@ impl EXTENDR {
     pub fn bits(&self) -> u8 {
         match *self {
             EXTENDR::ZERO => 0,
-            EXTENDR::ONE => 0x01,
-            EXTENDR::MSBIT => 0x02,
-            EXTENDR::LSBIT => 0x03,
+            EXTENDR::ONE => 1,
+            EXTENDR::MSBIT => 2,
+            EXTENDR::LSBIT => 3,
         }
     }
     #[allow(missing_docs)]
@@ -696,7 +691,6 @@ impl DMAR {
     }
 }
 #[doc = "Values that can be written to the field `TXDEFAULT`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum TXDEFAULTW {
     #[doc = "Output Default Value is 0"]
     ZERO,
@@ -745,13 +739,14 @@ impl<'a> _TXDEFAULTW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x03 << 2);
-        self.w.bits |= ((value as u32) & 0x03) << 2;
+        const MASK: u8 = 3;
+        const OFFSET: u8 = 2;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `TXSAME`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum TXSAMEW {
     #[doc = "Zero data transmitted in case of underrun"]
     ZERO,
@@ -802,13 +797,14 @@ impl<'a> _TXSAMEW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 4);
-        self.w.bits |= ((value as u32) & 0x01) << 4;
+        const MASK: bool = true;
+        const OFFSET: u8 = 4;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `SLOTADJ`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum SLOTADJW {
     #[doc = "Data is right adjusted in slot"]
     RIGHT,
@@ -859,13 +855,14 @@ impl<'a> _SLOTADJW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 7);
-        self.w.bits |= ((value as u32) & 0x01) << 7;
+        const MASK: bool = true;
+        const OFFSET: u8 = 7;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `DATASIZE`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum DATASIZEW {
     #[doc = "32 bits"]
     _32,
@@ -956,13 +953,14 @@ impl<'a> _DATASIZEW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x07 << 8);
-        self.w.bits |= ((value as u32) & 0x07) << 8;
+        const MASK: u8 = 7;
+        const OFFSET: u8 = 8;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `WORDADJ`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum WORDADJW {
     #[doc = "Data is right adjusted in word"]
     RIGHT,
@@ -1013,13 +1011,14 @@ impl<'a> _WORDADJW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 12);
-        self.w.bits |= ((value as u32) & 0x01) << 12;
+        const MASK: bool = true;
+        const OFFSET: u8 = 12;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `EXTEND`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum EXTENDW {
     #[doc = "Extend with zeroes"]
     ZERO,
@@ -1078,13 +1077,14 @@ impl<'a> _EXTENDW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x03 << 13);
-        self.w.bits |= ((value as u32) & 0x03) << 13;
+        const MASK: u8 = 3;
+        const OFFSET: u8 = 13;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `BITREV`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum BITREVW {
     #[doc = "Transfer Data Most Significant Bit (MSB) first (default for I2S protocol)"]
     MSBIT,
@@ -1135,8 +1135,10 @@ impl<'a> _BITREVW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 15);
-        self.w.bits |= ((value as u32) & 0x01) << 15;
+        const MASK: bool = true;
+        const OFFSET: u8 = 15;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -1156,8 +1158,10 @@ impl<'a> _SLOTDIS0W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 16);
-        self.w.bits |= ((value as u32) & 0x01) << 16;
+        const MASK: bool = true;
+        const OFFSET: u8 = 16;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -1177,8 +1181,10 @@ impl<'a> _SLOTDIS1W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 17);
-        self.w.bits |= ((value as u32) & 0x01) << 17;
+        const MASK: bool = true;
+        const OFFSET: u8 = 17;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -1198,8 +1204,10 @@ impl<'a> _SLOTDIS2W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 18);
-        self.w.bits |= ((value as u32) & 0x01) << 18;
+        const MASK: bool = true;
+        const OFFSET: u8 = 18;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -1219,8 +1227,10 @@ impl<'a> _SLOTDIS3W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 19);
-        self.w.bits |= ((value as u32) & 0x01) << 19;
+        const MASK: bool = true;
+        const OFFSET: u8 = 19;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -1240,8 +1250,10 @@ impl<'a> _SLOTDIS4W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 20);
-        self.w.bits |= ((value as u32) & 0x01) << 20;
+        const MASK: bool = true;
+        const OFFSET: u8 = 20;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -1261,8 +1273,10 @@ impl<'a> _SLOTDIS5W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 21);
-        self.w.bits |= ((value as u32) & 0x01) << 21;
+        const MASK: bool = true;
+        const OFFSET: u8 = 21;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -1282,8 +1296,10 @@ impl<'a> _SLOTDIS6W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 22);
-        self.w.bits |= ((value as u32) & 0x01) << 22;
+        const MASK: bool = true;
+        const OFFSET: u8 = 22;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -1303,13 +1319,14 @@ impl<'a> _SLOTDIS7W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 23);
-        self.w.bits |= ((value as u32) & 0x01) << 23;
+        const MASK: bool = true;
+        const OFFSET: u8 = 23;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `MONO`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum MONOW {
     #[doc = "Normal mode"]
     STEREO,
@@ -1360,13 +1377,14 @@ impl<'a> _MONOW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 24);
-        self.w.bits |= ((value as u32) & 0x01) << 24;
+        const MASK: bool = true;
+        const OFFSET: u8 = 24;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `DMA`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum DMAW {
     #[doc = "Single DMA channel"]
     SINGLE,
@@ -1417,8 +1435,10 @@ impl<'a> _DMAW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 25);
-        self.w.bits |= ((value as u32) & 0x01) << 25;
+        const MASK: bool = true;
+        const OFFSET: u8 = 25;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -1431,98 +1451,171 @@ impl R {
     #[doc = "Bits 2:3 - Line Default Line when Slot Disabled"]
     #[inline]
     pub fn txdefault(&self) -> TXDEFAULTR {
-        TXDEFAULTR::_from(((self.bits >> 2) & 0x03) as u8)
+        TXDEFAULTR::_from({
+            const MASK: u8 = 3;
+            const OFFSET: u8 = 2;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
     #[doc = "Bit 4 - Transmit Data when Underrun"]
     #[inline]
     pub fn txsame(&self) -> TXSAMER {
-        TXSAMER::_from(((self.bits >> 4) & 0x01) != 0)
+        TXSAMER::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 4;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        })
     }
     #[doc = "Bit 7 - Data Slot Formatting Adjust"]
     #[inline]
     pub fn slotadj(&self) -> SLOTADJR {
-        SLOTADJR::_from(((self.bits >> 7) & 0x01) != 0)
+        SLOTADJR::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 7;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        })
     }
     #[doc = "Bits 8:10 - Data Word Size"]
     #[inline]
     pub fn datasize(&self) -> DATASIZER {
-        DATASIZER::_from(((self.bits >> 8) & 0x07) as u8)
+        DATASIZER::_from({
+            const MASK: u8 = 7;
+            const OFFSET: u8 = 8;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
     #[doc = "Bit 12 - Data Word Formatting Adjust"]
     #[inline]
     pub fn wordadj(&self) -> WORDADJR {
-        WORDADJR::_from(((self.bits >> 12) & 0x01) != 0)
+        WORDADJR::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 12;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        })
     }
     #[doc = "Bits 13:14 - Data Formatting Bit Extension"]
     #[inline]
     pub fn extend(&self) -> EXTENDR {
-        EXTENDR::_from(((self.bits >> 13) & 0x03) as u8)
+        EXTENDR::_from({
+            const MASK: u8 = 3;
+            const OFFSET: u8 = 13;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
     #[doc = "Bit 15 - Data Formatting Bit Reverse"]
     #[inline]
     pub fn bitrev(&self) -> BITREVR {
-        BITREVR::_from(((self.bits >> 15) & 0x01) != 0)
+        BITREVR::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 15;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        })
     }
     #[doc = "Bit 16 - Slot 0 Disabled for this Serializer"]
     #[inline]
     pub fn slotdis0(&self) -> SLOTDIS0R {
-        let bits = ((self.bits >> 16) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 16;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         SLOTDIS0R { bits }
     }
     #[doc = "Bit 17 - Slot 1 Disabled for this Serializer"]
     #[inline]
     pub fn slotdis1(&self) -> SLOTDIS1R {
-        let bits = ((self.bits >> 17) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 17;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         SLOTDIS1R { bits }
     }
     #[doc = "Bit 18 - Slot 2 Disabled for this Serializer"]
     #[inline]
     pub fn slotdis2(&self) -> SLOTDIS2R {
-        let bits = ((self.bits >> 18) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 18;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         SLOTDIS2R { bits }
     }
     #[doc = "Bit 19 - Slot 3 Disabled for this Serializer"]
     #[inline]
     pub fn slotdis3(&self) -> SLOTDIS3R {
-        let bits = ((self.bits >> 19) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 19;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         SLOTDIS3R { bits }
     }
     #[doc = "Bit 20 - Slot 4 Disabled for this Serializer"]
     #[inline]
     pub fn slotdis4(&self) -> SLOTDIS4R {
-        let bits = ((self.bits >> 20) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 20;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         SLOTDIS4R { bits }
     }
     #[doc = "Bit 21 - Slot 5 Disabled for this Serializer"]
     #[inline]
     pub fn slotdis5(&self) -> SLOTDIS5R {
-        let bits = ((self.bits >> 21) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 21;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         SLOTDIS5R { bits }
     }
     #[doc = "Bit 22 - Slot 6 Disabled for this Serializer"]
     #[inline]
     pub fn slotdis6(&self) -> SLOTDIS6R {
-        let bits = ((self.bits >> 22) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 22;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         SLOTDIS6R { bits }
     }
     #[doc = "Bit 23 - Slot 7 Disabled for this Serializer"]
     #[inline]
     pub fn slotdis7(&self) -> SLOTDIS7R {
-        let bits = ((self.bits >> 23) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 23;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         SLOTDIS7R { bits }
     }
     #[doc = "Bit 24 - Mono Mode"]
     #[inline]
     pub fn mono(&self) -> MONOR {
-        MONOR::_from(((self.bits >> 24) & 0x01) != 0)
+        MONOR::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 24;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        })
     }
     #[doc = "Bit 25 - Single or Multiple DMA Channels"]
     #[inline]
     pub fn dma(&self) -> DMAR {
-        DMAR::_from(((self.bits >> 25) & 0x01) != 0)
+        DMAR::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 25;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        })
     }
 }
 impl W {
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub fn reset_value() -> W {
+        W { bits: 0 }
+    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {

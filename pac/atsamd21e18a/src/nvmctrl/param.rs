@@ -48,13 +48,13 @@ impl PSZR {
     pub fn bits(&self) -> u8 {
         match *self {
             PSZR::_8 => 0,
-            PSZR::_16 => 0x01,
-            PSZR::_32 => 0x02,
-            PSZR::_64 => 0x03,
-            PSZR::_128 => 0x04,
-            PSZR::_256 => 0x05,
-            PSZR::_512 => 0x06,
-            PSZR::_1024 => 0x07,
+            PSZR::_16 => 1,
+            PSZR::_32 => 2,
+            PSZR::_64 => 3,
+            PSZR::_128 => 4,
+            PSZR::_256 => 5,
+            PSZR::_512 => 6,
+            PSZR::_1024 => 7,
         }
     }
     #[allow(missing_docs)]
@@ -123,12 +123,20 @@ impl R {
     #[doc = "Bits 0:15 - NVM Pages"]
     #[inline]
     pub fn nvmp(&self) -> NVMPR {
-        let bits = ((self.bits >> 0) & 0xffff) as u16;
+        let bits = {
+            const MASK: u16 = 65535;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u32) as u16
+        };
         NVMPR { bits }
     }
     #[doc = "Bits 16:18 - Page Size"]
     #[inline]
     pub fn psz(&self) -> PSZR {
-        PSZR::_from(((self.bits >> 16) & 0x07) as u8)
+        PSZR::_from({
+            const MASK: u8 = 7;
+            const OFFSET: u8 = 16;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
 }

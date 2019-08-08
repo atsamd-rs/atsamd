@@ -14,7 +14,10 @@ impl super::CTRLB {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        self.register.set(f(&R { bits }, &mut W { bits }).bits);
+        let r = R { bits };
+        let mut w = W { bits };
+        f(&r, &mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -29,22 +32,14 @@ impl super::CTRLB {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        self.register.set(
-            f(&mut W {
-                bits: Self::reset_value(),
-            })
-            .bits,
-        );
-    }
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub const fn reset_value() -> u16 {
-        0x01
+        let mut w = W::reset_value();
+        f(&mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.register.set(Self::reset_value())
+        self.write(|w| w)
     }
 }
 #[doc = r" Value of the field"]
@@ -107,9 +102,9 @@ impl SPDCONFR {
     pub fn bits(&self) -> u8 {
         match *self {
             SPDCONFR::FS => 0,
-            SPDCONFR::LS => 0x01,
-            SPDCONFR::HS => 0x02,
-            SPDCONFR::HSTM => 0x03,
+            SPDCONFR::LS => 1,
+            SPDCONFR::HS => 2,
+            SPDCONFR::HSTM => 3,
         }
     }
     #[allow(missing_docs)]
@@ -289,9 +284,9 @@ impl LPMHDSKR {
     pub fn bits(&self) -> u8 {
         match *self {
             LPMHDSKR::NO => 0,
-            LPMHDSKR::ACK => 0x01,
-            LPMHDSKR::NYET => 0x02,
-            LPMHDSKR::STALL => 0x03,
+            LPMHDSKR::ACK => 1,
+            LPMHDSKR::NYET => 2,
+            LPMHDSKR::STALL => 3,
         }
     }
     #[allow(missing_docs)]
@@ -343,8 +338,10 @@ impl<'a> _DETACHW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 0);
-        self.w.bits |= ((value as u16) & 0x01) << 0;
+        const MASK: bool = true;
+        const OFFSET: u8 = 0;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
@@ -364,13 +361,14 @@ impl<'a> _UPRSMW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 1);
-        self.w.bits |= ((value as u16) & 0x01) << 1;
+        const MASK: bool = true;
+        const OFFSET: u8 = 1;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `SPDCONF`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum SPDCONFW {
     #[doc = "FS : Full Speed"]
     FS,
@@ -429,8 +427,10 @@ impl<'a> _SPDCONFW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x03 << 2);
-        self.w.bits |= ((value as u16) & 0x03) << 2;
+        const MASK: u8 = 3;
+        const OFFSET: u8 = 2;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
@@ -450,8 +450,10 @@ impl<'a> _NREPLYW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 4);
-        self.w.bits |= ((value as u16) & 0x01) << 4;
+        const MASK: bool = true;
+        const OFFSET: u8 = 4;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
@@ -471,8 +473,10 @@ impl<'a> _TSTJW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 5);
-        self.w.bits |= ((value as u16) & 0x01) << 5;
+        const MASK: bool = true;
+        const OFFSET: u8 = 5;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
@@ -492,8 +496,10 @@ impl<'a> _TSTKW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 6);
-        self.w.bits |= ((value as u16) & 0x01) << 6;
+        const MASK: bool = true;
+        const OFFSET: u8 = 6;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
@@ -513,8 +519,10 @@ impl<'a> _TSTPCKTW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 7);
-        self.w.bits |= ((value as u16) & 0x01) << 7;
+        const MASK: bool = true;
+        const OFFSET: u8 = 7;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
@@ -534,8 +542,10 @@ impl<'a> _OPMODE2W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 8);
-        self.w.bits |= ((value as u16) & 0x01) << 8;
+        const MASK: bool = true;
+        const OFFSET: u8 = 8;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
@@ -555,13 +565,14 @@ impl<'a> _GNAKW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 9);
-        self.w.bits |= ((value as u16) & 0x01) << 9;
+        const MASK: bool = true;
+        const OFFSET: u8 = 9;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `LPMHDSK`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum LPMHDSKW {
     #[doc = "No handshake. LPM is not supported"]
     NO,
@@ -620,8 +631,10 @@ impl<'a> _LPMHDSKW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x03 << 10);
-        self.w.bits |= ((value as u16) & 0x03) << 10;
+        const MASK: u8 = 3;
+        const OFFSET: u8 = 10;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
@@ -634,63 +647,108 @@ impl R {
     #[doc = "Bit 0 - Detach"]
     #[inline]
     pub fn detach(&self) -> DETACHR {
-        let bits = ((self.bits >> 0) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        };
         DETACHR { bits }
     }
     #[doc = "Bit 1 - Upstream Resume"]
     #[inline]
     pub fn uprsm(&self) -> UPRSMR {
-        let bits = ((self.bits >> 1) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 1;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        };
         UPRSMR { bits }
     }
     #[doc = "Bits 2:3 - Speed Configuration"]
     #[inline]
     pub fn spdconf(&self) -> SPDCONFR {
-        SPDCONFR::_from(((self.bits >> 2) & 0x03) as u8)
+        SPDCONFR::_from({
+            const MASK: u8 = 3;
+            const OFFSET: u8 = 2;
+            ((self.bits >> OFFSET) & MASK as u16) as u8
+        })
     }
     #[doc = "Bit 4 - No Reply"]
     #[inline]
     pub fn nreply(&self) -> NREPLYR {
-        let bits = ((self.bits >> 4) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 4;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        };
         NREPLYR { bits }
     }
     #[doc = "Bit 5 - Test mode J"]
     #[inline]
     pub fn tstj(&self) -> TSTJR {
-        let bits = ((self.bits >> 5) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 5;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        };
         TSTJR { bits }
     }
     #[doc = "Bit 6 - Test mode K"]
     #[inline]
     pub fn tstk(&self) -> TSTKR {
-        let bits = ((self.bits >> 6) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 6;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        };
         TSTKR { bits }
     }
     #[doc = "Bit 7 - Test packet mode"]
     #[inline]
     pub fn tstpckt(&self) -> TSTPCKTR {
-        let bits = ((self.bits >> 7) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 7;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        };
         TSTPCKTR { bits }
     }
     #[doc = "Bit 8 - Specific Operational Mode"]
     #[inline]
     pub fn opmode2(&self) -> OPMODE2R {
-        let bits = ((self.bits >> 8) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 8;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        };
         OPMODE2R { bits }
     }
     #[doc = "Bit 9 - Global NAK"]
     #[inline]
     pub fn gnak(&self) -> GNAKR {
-        let bits = ((self.bits >> 9) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 9;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        };
         GNAKR { bits }
     }
     #[doc = "Bits 10:11 - Link Power Management Handshake"]
     #[inline]
     pub fn lpmhdsk(&self) -> LPMHDSKR {
-        LPMHDSKR::_from(((self.bits >> 10) & 0x03) as u8)
+        LPMHDSKR::_from({
+            const MASK: u8 = 3;
+            const OFFSET: u8 = 10;
+            ((self.bits >> OFFSET) & MASK as u16) as u8
+        })
     }
 }
 impl W {
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub fn reset_value() -> W {
+        W { bits: 1 }
+    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {

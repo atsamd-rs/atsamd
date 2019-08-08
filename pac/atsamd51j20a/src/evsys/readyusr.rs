@@ -272,73 +272,121 @@ impl R {
     #[doc = "Bit 0 - Ready User for Channel 0"]
     #[inline]
     pub fn readyusr0(&self) -> READYUSR0R {
-        let bits = ((self.bits >> 0) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         READYUSR0R { bits }
     }
     #[doc = "Bit 1 - Ready User for Channel 1"]
     #[inline]
     pub fn readyusr1(&self) -> READYUSR1R {
-        let bits = ((self.bits >> 1) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 1;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         READYUSR1R { bits }
     }
     #[doc = "Bit 2 - Ready User for Channel 2"]
     #[inline]
     pub fn readyusr2(&self) -> READYUSR2R {
-        let bits = ((self.bits >> 2) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 2;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         READYUSR2R { bits }
     }
     #[doc = "Bit 3 - Ready User for Channel 3"]
     #[inline]
     pub fn readyusr3(&self) -> READYUSR3R {
-        let bits = ((self.bits >> 3) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 3;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         READYUSR3R { bits }
     }
     #[doc = "Bit 4 - Ready User for Channel 4"]
     #[inline]
     pub fn readyusr4(&self) -> READYUSR4R {
-        let bits = ((self.bits >> 4) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 4;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         READYUSR4R { bits }
     }
     #[doc = "Bit 5 - Ready User for Channel 5"]
     #[inline]
     pub fn readyusr5(&self) -> READYUSR5R {
-        let bits = ((self.bits >> 5) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 5;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         READYUSR5R { bits }
     }
     #[doc = "Bit 6 - Ready User for Channel 6"]
     #[inline]
     pub fn readyusr6(&self) -> READYUSR6R {
-        let bits = ((self.bits >> 6) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 6;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         READYUSR6R { bits }
     }
     #[doc = "Bit 7 - Ready User for Channel 7"]
     #[inline]
     pub fn readyusr7(&self) -> READYUSR7R {
-        let bits = ((self.bits >> 7) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 7;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         READYUSR7R { bits }
     }
     #[doc = "Bit 8 - Ready User for Channel 8"]
     #[inline]
     pub fn readyusr8(&self) -> READYUSR8R {
-        let bits = ((self.bits >> 8) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 8;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         READYUSR8R { bits }
     }
     #[doc = "Bit 9 - Ready User for Channel 9"]
     #[inline]
     pub fn readyusr9(&self) -> READYUSR9R {
-        let bits = ((self.bits >> 9) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 9;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         READYUSR9R { bits }
     }
     #[doc = "Bit 10 - Ready User for Channel 10"]
     #[inline]
     pub fn readyusr10(&self) -> READYUSR10R {
-        let bits = ((self.bits >> 10) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 10;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         READYUSR10R { bits }
     }
     #[doc = "Bit 11 - Ready User for Channel 11"]
     #[inline]
     pub fn readyusr11(&self) -> READYUSR11R {
-        let bits = ((self.bits >> 11) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 11;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         READYUSR11R { bits }
     }
 }

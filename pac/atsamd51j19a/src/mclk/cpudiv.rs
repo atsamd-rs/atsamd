@@ -14,7 +14,10 @@ impl super::CPUDIV {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        self.register.set(f(&R { bits }, &mut W { bits }).bits);
+        let r = R { bits };
+        let mut w = W { bits };
+        f(&r, &mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -29,22 +32,14 @@ impl super::CPUDIV {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        self.register.set(
-            f(&mut W {
-                bits: Self::reset_value(),
-            })
-            .bits,
-        );
-    }
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub const fn reset_value() -> u8 {
-        0x01
+        let mut w = W::reset_value();
+        f(&mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.register.set(Self::reset_value())
+        self.write(|w| w)
     }
 }
 #[doc = "Possible values of the field `DIV`"]
@@ -74,14 +69,14 @@ impl DIVR {
     #[inline]
     pub fn bits(&self) -> u8 {
         match *self {
-            DIVR::DIV1 => 0x01,
-            DIVR::DIV2 => 0x02,
-            DIVR::DIV4 => 0x04,
-            DIVR::DIV8 => 0x08,
-            DIVR::DIV16 => 0x10,
-            DIVR::DIV32 => 0x20,
-            DIVR::DIV64 => 0x40,
-            DIVR::DIV128 => 0x80,
+            DIVR::DIV1 => 1,
+            DIVR::DIV2 => 2,
+            DIVR::DIV4 => 4,
+            DIVR::DIV8 => 8,
+            DIVR::DIV16 => 16,
+            DIVR::DIV32 => 32,
+            DIVR::DIV64 => 64,
+            DIVR::DIV128 => 128,
             DIVR::_Reserved(bits) => bits,
         }
     }
@@ -143,7 +138,6 @@ impl DIVR {
     }
 }
 #[doc = "Values that can be written to the field `DIV`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum DIVW {
     #[doc = "Divide by 1"]
     DIV1,
@@ -232,8 +226,10 @@ impl<'a> _DIVW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0xff << 0);
-        self.w.bits |= ((value as u8) & 0xff) << 0;
+        const MASK: u8 = 255;
+        const OFFSET: u8 = 0;
+        self.w.bits &= !((MASK as u8) << OFFSET);
+        self.w.bits |= ((value & MASK) as u8) << OFFSET;
         self.w
     }
 }
@@ -246,10 +242,19 @@ impl R {
     #[doc = "Bits 0:7 - Low-Power Clock Division Factor"]
     #[inline]
     pub fn div(&self) -> DIVR {
-        DIVR::_from(((self.bits >> 0) & 0xff) as u8)
+        DIVR::_from({
+            const MASK: u8 = 255;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u8) as u8
+        })
     }
 }
 impl W {
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub fn reset_value() -> W {
+        W { bits: 1 }
+    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {

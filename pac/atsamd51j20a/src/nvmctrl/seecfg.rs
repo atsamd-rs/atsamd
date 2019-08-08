@@ -14,7 +14,10 @@ impl super::SEECFG {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        self.register.set(f(&R { bits }, &mut W { bits }).bits);
+        let r = R { bits };
+        let mut w = W { bits };
+        f(&r, &mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -29,22 +32,14 @@ impl super::SEECFG {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        self.register.set(
-            f(&mut W {
-                bits: Self::reset_value(),
-            })
-            .bits,
-        );
-    }
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub const fn reset_value() -> u8 {
-        0
+        let mut w = W::reset_value();
+        f(&mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.register.set(Self::reset_value())
+        self.write(|w| w)
     }
 }
 #[doc = "Possible values of the field `WMODE`"]
@@ -116,7 +111,6 @@ impl APRDISR {
     }
 }
 #[doc = "Values that can be written to the field `WMODE`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum WMODEW {
     #[doc = "A NVM write command is issued after each write in the pagebuffer"]
     UNBUFFERED,
@@ -167,8 +161,10 @@ impl<'a> _WMODEW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 0);
-        self.w.bits |= ((value as u8) & 0x01) << 0;
+        const MASK: bool = true;
+        const OFFSET: u8 = 0;
+        self.w.bits &= !((MASK as u8) << OFFSET);
+        self.w.bits |= ((value & MASK) as u8) << OFFSET;
         self.w
     }
 }
@@ -188,8 +184,10 @@ impl<'a> _APRDISW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 1);
-        self.w.bits |= ((value as u8) & 0x01) << 1;
+        const MASK: bool = true;
+        const OFFSET: u8 = 1;
+        self.w.bits &= !((MASK as u8) << OFFSET);
+        self.w.bits |= ((value & MASK) as u8) << OFFSET;
         self.w
     }
 }
@@ -202,16 +200,29 @@ impl R {
     #[doc = "Bit 0 - Write Mode"]
     #[inline]
     pub fn wmode(&self) -> WMODER {
-        WMODER::_from(((self.bits >> 0) & 0x01) != 0)
+        WMODER::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        })
     }
     #[doc = "Bit 1 - Automatic Page Reallocation Disable"]
     #[inline]
     pub fn aprdis(&self) -> APRDISR {
-        let bits = ((self.bits >> 1) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 1;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         APRDISR { bits }
     }
 }
 impl W {
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub fn reset_value() -> W {
+        W { bits: 0 }
+    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {

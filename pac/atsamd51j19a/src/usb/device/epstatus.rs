@@ -167,43 +167,71 @@ impl R {
     #[doc = "Bit 0 - Data Toggle Out"]
     #[inline]
     pub fn dtglout(&self) -> DTGLOUTR {
-        let bits = ((self.bits >> 0) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         DTGLOUTR { bits }
     }
     #[doc = "Bit 1 - Data Toggle In"]
     #[inline]
     pub fn dtglin(&self) -> DTGLINR {
-        let bits = ((self.bits >> 1) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 1;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         DTGLINR { bits }
     }
     #[doc = "Bit 2 - Current Bank"]
     #[inline]
     pub fn curbk(&self) -> CURBKR {
-        let bits = ((self.bits >> 2) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 2;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         CURBKR { bits }
     }
     #[doc = "Bit 4 - Stall 0 Request"]
     #[inline]
     pub fn stallrq0(&self) -> STALLRQ0R {
-        let bits = ((self.bits >> 4) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 4;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         STALLRQ0R { bits }
     }
     #[doc = "Bit 5 - Stall 1 Request"]
     #[inline]
     pub fn stallrq1(&self) -> STALLRQ1R {
-        let bits = ((self.bits >> 5) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 5;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         STALLRQ1R { bits }
     }
     #[doc = "Bit 6 - Bank 0 ready"]
     #[inline]
     pub fn bk0rdy(&self) -> BK0RDYR {
-        let bits = ((self.bits >> 6) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 6;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         BK0RDYR { bits }
     }
     #[doc = "Bit 7 - Bank 1 ready"]
     #[inline]
     pub fn bk1rdy(&self) -> BK1RDYR {
-        let bits = ((self.bits >> 7) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 7;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         BK1RDYR { bits }
     }
 }

@@ -86,37 +86,61 @@ impl R {
     #[doc = "Bits 0:7 - Device Select"]
     #[inline]
     pub fn devsel(&self) -> DEVSELR {
-        let bits = ((self.bits >> 0) & 0xff) as u8;
+        let bits = {
+            const MASK: u8 = 255;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        };
         DEVSELR { bits }
     }
     #[doc = "Bits 8:11 - Revision"]
     #[inline]
     pub fn revision(&self) -> REVISIONR {
-        let bits = ((self.bits >> 8) & 0x0f) as u8;
+        let bits = {
+            const MASK: u8 = 15;
+            const OFFSET: u8 = 8;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        };
         REVISIONR { bits }
     }
     #[doc = "Bits 12:15 - Die Identification"]
     #[inline]
     pub fn die(&self) -> DIER {
-        let bits = ((self.bits >> 12) & 0x0f) as u8;
+        let bits = {
+            const MASK: u8 = 15;
+            const OFFSET: u8 = 12;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        };
         DIER { bits }
     }
     #[doc = "Bits 16:21 - Product Series"]
     #[inline]
     pub fn series(&self) -> SERIESR {
-        let bits = ((self.bits >> 16) & 0x3f) as u8;
+        let bits = {
+            const MASK: u8 = 63;
+            const OFFSET: u8 = 16;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        };
         SERIESR { bits }
     }
     #[doc = "Bits 23:27 - Product Family"]
     #[inline]
     pub fn family(&self) -> FAMILYR {
-        let bits = ((self.bits >> 23) & 0x1f) as u8;
+        let bits = {
+            const MASK: u8 = 31;
+            const OFFSET: u8 = 23;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        };
         FAMILYR { bits }
     }
     #[doc = "Bits 28:31 - Processor"]
     #[inline]
     pub fn processor(&self) -> PROCESSORR {
-        let bits = ((self.bits >> 28) & 0x0f) as u8;
+        let bits = {
+            const MASK: u8 = 15;
+            const OFFSET: u8 = 28;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        };
         PROCESSORR { bits }
     }
 }

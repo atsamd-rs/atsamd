@@ -29,8 +29,8 @@ impl SPEEDR {
     pub fn bits(&self) -> u8 {
         match *self {
             SPEEDR::FS => 0,
-            SPEEDR::LS => 0x01,
-            SPEEDR::HS => 0x02,
+            SPEEDR::LS => 1,
+            SPEEDR::HS => 2,
             SPEEDR::_Reserved(bits) => bits,
         }
     }
@@ -79,8 +79,8 @@ impl LINESTATER {
     pub fn bits(&self) -> u8 {
         match *self {
             LINESTATER::_0 => 0,
-            LINESTATER::_1 => 0x01,
-            LINESTATER::_2 => 0x02,
+            LINESTATER::_1 => 1,
+            LINESTATER::_2 => 2,
             LINESTATER::_Reserved(bits) => bits,
         }
     }
@@ -120,11 +120,19 @@ impl R {
     #[doc = "Bits 2:3 - Speed Status"]
     #[inline]
     pub fn speed(&self) -> SPEEDR {
-        SPEEDR::_from(((self.bits >> 2) & 0x03) as u8)
+        SPEEDR::_from({
+            const MASK: u8 = 3;
+            const OFFSET: u8 = 2;
+            ((self.bits >> OFFSET) & MASK as u8) as u8
+        })
     }
     #[doc = "Bits 6:7 - USB Line State Status"]
     #[inline]
     pub fn linestate(&self) -> LINESTATER {
-        LINESTATER::_from(((self.bits >> 6) & 0x03) as u8)
+        LINESTATER::_from({
+            const MASK: u8 = 3;
+            const OFFSET: u8 = 6;
+            ((self.bits >> OFFSET) & MASK as u8) as u8
+        })
     }
 }

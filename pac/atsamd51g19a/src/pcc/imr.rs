@@ -62,13 +62,21 @@ impl R {
     #[doc = "Bit 0 - Data Ready Interrupt Mask"]
     #[inline]
     pub fn drdy(&self) -> DRDYR {
-        let bits = ((self.bits >> 0) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         DRDYR { bits }
     }
     #[doc = "Bit 1 - Overrun Error Interrupt Mask"]
     #[inline]
     pub fn ovre(&self) -> OVRER {
-        let bits = ((self.bits >> 1) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 1;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         OVRER { bits }
     }
 }

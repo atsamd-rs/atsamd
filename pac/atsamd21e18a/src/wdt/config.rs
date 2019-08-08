@@ -14,7 +14,10 @@ impl super::CONFIG {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        self.register.set(f(&R { bits }, &mut W { bits }).bits);
+        let r = R { bits };
+        let mut w = W { bits };
+        f(&r, &mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -29,22 +32,14 @@ impl super::CONFIG {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        self.register.set(
-            f(&mut W {
-                bits: Self::reset_value(),
-            })
-            .bits,
-        );
-    }
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub const fn reset_value() -> u8 {
-        0xbb
+        let mut w = W::reset_value();
+        f(&mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.register.set(Self::reset_value())
+        self.write(|w| w)
     }
 }
 #[doc = "Possible values of the field `PER`"]
@@ -83,17 +78,17 @@ impl PERR {
     pub fn bits(&self) -> u8 {
         match *self {
             PERR::_8 => 0,
-            PERR::_16 => 0x01,
-            PERR::_32 => 0x02,
-            PERR::_64 => 0x03,
-            PERR::_128 => 0x04,
-            PERR::_256 => 0x05,
-            PERR::_512 => 0x06,
-            PERR::_1K => 0x07,
-            PERR::_2K => 0x08,
-            PERR::_4K => 0x09,
-            PERR::_8K => 0x0a,
-            PERR::_16K => 0x0b,
+            PERR::_16 => 1,
+            PERR::_32 => 2,
+            PERR::_64 => 3,
+            PERR::_128 => 4,
+            PERR::_256 => 5,
+            PERR::_512 => 6,
+            PERR::_1K => 7,
+            PERR::_2K => 8,
+            PERR::_4K => 9,
+            PERR::_8K => 10,
+            PERR::_16K => 11,
             PERR::_Reserved(bits) => bits,
         }
     }
@@ -214,17 +209,17 @@ impl WINDOWR {
     pub fn bits(&self) -> u8 {
         match *self {
             WINDOWR::_8 => 0,
-            WINDOWR::_16 => 0x01,
-            WINDOWR::_32 => 0x02,
-            WINDOWR::_64 => 0x03,
-            WINDOWR::_128 => 0x04,
-            WINDOWR::_256 => 0x05,
-            WINDOWR::_512 => 0x06,
-            WINDOWR::_1K => 0x07,
-            WINDOWR::_2K => 0x08,
-            WINDOWR::_4K => 0x09,
-            WINDOWR::_8K => 0x0a,
-            WINDOWR::_16K => 0x0b,
+            WINDOWR::_16 => 1,
+            WINDOWR::_32 => 2,
+            WINDOWR::_64 => 3,
+            WINDOWR::_128 => 4,
+            WINDOWR::_256 => 5,
+            WINDOWR::_512 => 6,
+            WINDOWR::_1K => 7,
+            WINDOWR::_2K => 8,
+            WINDOWR::_4K => 9,
+            WINDOWR::_8K => 10,
+            WINDOWR::_16K => 11,
             WINDOWR::_Reserved(bits) => bits,
         }
     }
@@ -310,7 +305,6 @@ impl WINDOWR {
     }
 }
 #[doc = "Values that can be written to the field `PER`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum PERW {
     #[doc = "8 clock cycles"]
     _8,
@@ -431,13 +425,14 @@ impl<'a> _PERW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x0f << 0);
-        self.w.bits |= ((value as u8) & 0x0f) << 0;
+        const MASK: u8 = 15;
+        const OFFSET: u8 = 0;
+        self.w.bits &= !((MASK as u8) << OFFSET);
+        self.w.bits |= ((value & MASK) as u8) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `WINDOW`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum WINDOWW {
     #[doc = "8 clock cycles"]
     _8,
@@ -558,8 +553,10 @@ impl<'a> _WINDOWW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x0f << 4);
-        self.w.bits |= ((value as u8) & 0x0f) << 4;
+        const MASK: u8 = 15;
+        const OFFSET: u8 = 4;
+        self.w.bits &= !((MASK as u8) << OFFSET);
+        self.w.bits |= ((value & MASK) as u8) << OFFSET;
         self.w
     }
 }
@@ -572,15 +569,28 @@ impl R {
     #[doc = "Bits 0:3 - Time-Out Period"]
     #[inline]
     pub fn per(&self) -> PERR {
-        PERR::_from(((self.bits >> 0) & 0x0f) as u8)
+        PERR::_from({
+            const MASK: u8 = 15;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u8) as u8
+        })
     }
     #[doc = "Bits 4:7 - Window Mode Time-Out Period"]
     #[inline]
     pub fn window(&self) -> WINDOWR {
-        WINDOWR::_from(((self.bits >> 4) & 0x0f) as u8)
+        WINDOWR::_from({
+            const MASK: u8 = 15;
+            const OFFSET: u8 = 4;
+            ((self.bits >> OFFSET) & MASK as u8) as u8
+        })
     }
 }
 impl W {
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub fn reset_value() -> W {
+        W { bits: 187 }
+    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {

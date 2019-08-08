@@ -31,7 +31,11 @@ impl R {
     #[doc = "Bits 0:7 - Backup Input Value"]
     #[inline]
     pub fn bkin(&self) -> BKINR {
-        let bits = ((self.bits >> 0) & 0xff) as u8;
+        let bits = {
+            const MASK: u8 = 255;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        };
         BKINR { bits }
     }
 }

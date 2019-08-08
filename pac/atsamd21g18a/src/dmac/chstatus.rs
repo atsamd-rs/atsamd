@@ -83,19 +83,31 @@ impl R {
     #[doc = "Bit 0 - Channel Pending"]
     #[inline]
     pub fn pend(&self) -> PENDR {
-        let bits = ((self.bits >> 0) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         PENDR { bits }
     }
     #[doc = "Bit 1 - Channel Busy"]
     #[inline]
     pub fn busy(&self) -> BUSYR {
-        let bits = ((self.bits >> 1) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 1;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         BUSYR { bits }
     }
     #[doc = "Bit 2 - Channel Fetch Error"]
     #[inline]
     pub fn ferr(&self) -> FERRR {
-        let bits = ((self.bits >> 2) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 2;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         FERRR { bits }
     }
 }

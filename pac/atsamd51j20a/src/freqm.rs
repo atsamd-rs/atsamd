@@ -23,55 +23,55 @@ pub struct RegisterBlock {
 }
 #[doc = "Control A Register"]
 pub struct CTRLA {
-    register: vcell::VolatileCell<u8>,
+    register: ::vcell::VolatileCell<u8>,
 }
 #[doc = "Control A Register"]
 pub mod ctrla;
 #[doc = "Control B Register"]
 pub struct CTRLB {
-    register: vcell::VolatileCell<u8>,
+    register: ::vcell::VolatileCell<u8>,
 }
 #[doc = "Control B Register"]
 pub mod ctrlb;
 #[doc = "Config A register"]
 pub struct CFGA {
-    register: vcell::VolatileCell<u16>,
+    register: ::vcell::VolatileCell<u16>,
 }
 #[doc = "Config A register"]
 pub mod cfga;
 #[doc = "Interrupt Enable Clear Register"]
 pub struct INTENCLR {
-    register: vcell::VolatileCell<u8>,
+    register: ::vcell::VolatileCell<u8>,
 }
 #[doc = "Interrupt Enable Clear Register"]
 pub mod intenclr;
 #[doc = "Interrupt Enable Set Register"]
 pub struct INTENSET {
-    register: vcell::VolatileCell<u8>,
+    register: ::vcell::VolatileCell<u8>,
 }
 #[doc = "Interrupt Enable Set Register"]
 pub mod intenset;
 #[doc = "Interrupt Flag Register"]
 pub struct INTFLAG {
-    register: vcell::VolatileCell<u8>,
+    register: ::vcell::VolatileCell<u8>,
 }
 #[doc = "Interrupt Flag Register"]
 pub mod intflag;
 #[doc = "Status Register"]
 pub struct STATUS {
-    register: vcell::VolatileCell<u8>,
+    register: ::vcell::VolatileCell<u8>,
 }
 #[doc = "Status Register"]
 pub mod status;
 #[doc = "Synchronization Busy Register"]
 pub struct SYNCBUSY {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Synchronization Busy Register"]
 pub mod syncbusy;
 #[doc = "Count Value Register"]
 pub struct VALUE {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Count Value Register"]
 pub mod value;

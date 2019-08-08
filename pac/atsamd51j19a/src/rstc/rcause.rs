@@ -188,49 +188,81 @@ impl R {
     #[doc = "Bit 0 - Power On Reset"]
     #[inline]
     pub fn por(&self) -> PORR {
-        let bits = ((self.bits >> 0) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         PORR { bits }
     }
     #[doc = "Bit 1 - Brown Out CORE Detector Reset"]
     #[inline]
     pub fn bodcore(&self) -> BODCORER {
-        let bits = ((self.bits >> 1) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 1;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         BODCORER { bits }
     }
     #[doc = "Bit 2 - Brown Out VDD Detector Reset"]
     #[inline]
     pub fn bodvdd(&self) -> BODVDDR {
-        let bits = ((self.bits >> 2) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 2;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         BODVDDR { bits }
     }
     #[doc = "Bit 3 - NVM Reset"]
     #[inline]
     pub fn nvm(&self) -> NVMR {
-        let bits = ((self.bits >> 3) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 3;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         NVMR { bits }
     }
     #[doc = "Bit 4 - External Reset"]
     #[inline]
     pub fn ext(&self) -> EXTR {
-        let bits = ((self.bits >> 4) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 4;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         EXTR { bits }
     }
     #[doc = "Bit 5 - Watchdog Reset"]
     #[inline]
     pub fn wdt(&self) -> WDTR {
-        let bits = ((self.bits >> 5) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 5;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         WDTR { bits }
     }
     #[doc = "Bit 6 - System Reset Request"]
     #[inline]
     pub fn syst(&self) -> SYSTR {
-        let bits = ((self.bits >> 6) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 6;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         SYSTR { bits }
     }
     #[doc = "Bit 7 - Backup Reset"]
     #[inline]
     pub fn backup(&self) -> BACKUPR {
-        let bits = ((self.bits >> 7) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 7;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         BACKUPR { bits }
     }
 }

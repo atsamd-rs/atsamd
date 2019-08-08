@@ -60,7 +60,7 @@ impl SERIESR {
     pub fn bits(&self) -> u8 {
         match *self {
             SERIESR::_0 => 0,
-            SERIESR::_1 => 0x01,
+            SERIESR::_1 => 1,
             SERIESR::_Reserved(bits) => bits,
         }
     }
@@ -101,7 +101,7 @@ impl FAMILYR {
     pub fn bits(&self) -> u8 {
         match *self {
             FAMILYR::_0 => 0,
-            FAMILYR::_1 => 0x01,
+            FAMILYR::_1 => 1,
             FAMILYR::_Reserved(bits) => bits,
         }
     }
@@ -149,12 +149,12 @@ impl PROCESSORR {
     #[inline]
     pub fn bits(&self) -> u8 {
         match *self {
-            PROCESSORR::CM0P => 0x01,
-            PROCESSORR::CM23 => 0x02,
-            PROCESSORR::CM3 => 0x03,
-            PROCESSORR::CM4 => 0x05,
-            PROCESSORR::CM4F => 0x06,
-            PROCESSORR::CM33 => 0x07,
+            PROCESSORR::CM0P => 1,
+            PROCESSORR::CM23 => 2,
+            PROCESSORR::CM3 => 3,
+            PROCESSORR::CM4 => 5,
+            PROCESSORR::CM4F => 6,
+            PROCESSORR::CM33 => 7,
             PROCESSORR::_Reserved(bits) => bits,
         }
     }
@@ -212,34 +212,58 @@ impl R {
     #[doc = "Bits 0:7 - Device Select"]
     #[inline]
     pub fn devsel(&self) -> DEVSELR {
-        let bits = ((self.bits >> 0) & 0xff) as u8;
+        let bits = {
+            const MASK: u8 = 255;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        };
         DEVSELR { bits }
     }
     #[doc = "Bits 8:11 - Revision Number"]
     #[inline]
     pub fn revision(&self) -> REVISIONR {
-        let bits = ((self.bits >> 8) & 0x0f) as u8;
+        let bits = {
+            const MASK: u8 = 15;
+            const OFFSET: u8 = 8;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        };
         REVISIONR { bits }
     }
     #[doc = "Bits 12:15 - Die Number"]
     #[inline]
     pub fn die(&self) -> DIER {
-        let bits = ((self.bits >> 12) & 0x0f) as u8;
+        let bits = {
+            const MASK: u8 = 15;
+            const OFFSET: u8 = 12;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        };
         DIER { bits }
     }
     #[doc = "Bits 16:21 - Series"]
     #[inline]
     pub fn series(&self) -> SERIESR {
-        SERIESR::_from(((self.bits >> 16) & 0x3f) as u8)
+        SERIESR::_from({
+            const MASK: u8 = 63;
+            const OFFSET: u8 = 16;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
     #[doc = "Bits 23:27 - Family"]
     #[inline]
     pub fn family(&self) -> FAMILYR {
-        FAMILYR::_from(((self.bits >> 23) & 0x1f) as u8)
+        FAMILYR::_from({
+            const MASK: u8 = 31;
+            const OFFSET: u8 = 23;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
     #[doc = "Bits 28:31 - Processor"]
     #[inline]
     pub fn processor(&self) -> PROCESSORR {
-        PROCESSORR::_from(((self.bits >> 28) & 0x0f) as u8)
+        PROCESSORR::_from({
+            const MASK: u8 = 15;
+            const OFFSET: u8 = 28;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
 }

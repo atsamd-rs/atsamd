@@ -14,7 +14,10 @@ impl super::INPUTCTRL {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        self.register.set(f(&R { bits }, &mut W { bits }).bits);
+        let r = R { bits };
+        let mut w = W { bits };
+        f(&r, &mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -29,22 +32,14 @@ impl super::INPUTCTRL {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        self.register.set(
-            f(&mut W {
-                bits: Self::reset_value(),
-            })
-            .bits,
-        );
-    }
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub const fn reset_value() -> u16 {
-        0
+        let mut w = W::reset_value();
+        f(&mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.register.set(Self::reset_value())
+        self.write(|w| w)
     }
 }
 #[doc = "Possible values of the field `MUXPOS`"]
@@ -121,37 +116,37 @@ impl MUXPOSR {
     pub fn bits(&self) -> u8 {
         match *self {
             MUXPOSR::AIN0 => 0,
-            MUXPOSR::AIN1 => 0x01,
-            MUXPOSR::AIN2 => 0x02,
-            MUXPOSR::AIN3 => 0x03,
-            MUXPOSR::AIN4 => 0x04,
-            MUXPOSR::AIN5 => 0x05,
-            MUXPOSR::AIN6 => 0x06,
-            MUXPOSR::AIN7 => 0x07,
-            MUXPOSR::AIN8 => 0x08,
-            MUXPOSR::AIN9 => 0x09,
-            MUXPOSR::AIN10 => 0x0a,
-            MUXPOSR::AIN11 => 0x0b,
-            MUXPOSR::AIN12 => 0x0c,
-            MUXPOSR::AIN13 => 0x0d,
-            MUXPOSR::AIN14 => 0x0e,
-            MUXPOSR::AIN15 => 0x0f,
-            MUXPOSR::AIN16 => 0x10,
-            MUXPOSR::AIN17 => 0x11,
-            MUXPOSR::AIN18 => 0x12,
-            MUXPOSR::AIN19 => 0x13,
-            MUXPOSR::AIN20 => 0x14,
-            MUXPOSR::AIN21 => 0x15,
-            MUXPOSR::AIN22 => 0x16,
-            MUXPOSR::AIN23 => 0x17,
-            MUXPOSR::SCALEDCOREVCC => 0x18,
-            MUXPOSR::SCALEDVBAT => 0x19,
-            MUXPOSR::SCALEDIOVCC => 0x1a,
-            MUXPOSR::BANDGAP => 0x1b,
-            MUXPOSR::PTAT => 0x1c,
-            MUXPOSR::CTAT => 0x1d,
-            MUXPOSR::DAC => 0x1e,
-            MUXPOSR::PTC => 0x1f,
+            MUXPOSR::AIN1 => 1,
+            MUXPOSR::AIN2 => 2,
+            MUXPOSR::AIN3 => 3,
+            MUXPOSR::AIN4 => 4,
+            MUXPOSR::AIN5 => 5,
+            MUXPOSR::AIN6 => 6,
+            MUXPOSR::AIN7 => 7,
+            MUXPOSR::AIN8 => 8,
+            MUXPOSR::AIN9 => 9,
+            MUXPOSR::AIN10 => 10,
+            MUXPOSR::AIN11 => 11,
+            MUXPOSR::AIN12 => 12,
+            MUXPOSR::AIN13 => 13,
+            MUXPOSR::AIN14 => 14,
+            MUXPOSR::AIN15 => 15,
+            MUXPOSR::AIN16 => 16,
+            MUXPOSR::AIN17 => 17,
+            MUXPOSR::AIN18 => 18,
+            MUXPOSR::AIN19 => 19,
+            MUXPOSR::AIN20 => 20,
+            MUXPOSR::AIN21 => 21,
+            MUXPOSR::AIN22 => 22,
+            MUXPOSR::AIN23 => 23,
+            MUXPOSR::SCALEDCOREVCC => 24,
+            MUXPOSR::SCALEDVBAT => 25,
+            MUXPOSR::SCALEDIOVCC => 26,
+            MUXPOSR::BANDGAP => 27,
+            MUXPOSR::PTAT => 28,
+            MUXPOSR::CTAT => 29,
+            MUXPOSR::DAC => 30,
+            MUXPOSR::PTC => 31,
         }
     }
     #[allow(missing_docs)]
@@ -406,14 +401,14 @@ impl MUXNEGR {
     pub fn bits(&self) -> u8 {
         match *self {
             MUXNEGR::AIN0 => 0,
-            MUXNEGR::AIN1 => 0x01,
-            MUXNEGR::AIN2 => 0x02,
-            MUXNEGR::AIN3 => 0x03,
-            MUXNEGR::AIN4 => 0x04,
-            MUXNEGR::AIN5 => 0x05,
-            MUXNEGR::AIN6 => 0x06,
-            MUXNEGR::AIN7 => 0x07,
-            MUXNEGR::GND => 0x18,
+            MUXNEGR::AIN1 => 1,
+            MUXNEGR::AIN2 => 2,
+            MUXNEGR::AIN3 => 3,
+            MUXNEGR::AIN4 => 4,
+            MUXNEGR::AIN5 => 5,
+            MUXNEGR::AIN6 => 6,
+            MUXNEGR::AIN7 => 7,
+            MUXNEGR::GND => 24,
             MUXNEGR::_Reserved(bits) => bits,
         }
     }
@@ -502,7 +497,6 @@ impl DSEQSTOPR {
     }
 }
 #[doc = "Values that can be written to the field `MUXPOS`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum MUXPOSW {
     #[doc = "ADC AIN0 Pin"]
     AIN0,
@@ -785,8 +779,10 @@ impl<'a> _MUXPOSW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x1f << 0);
-        self.w.bits |= ((value as u16) & 0x1f) << 0;
+        const MASK: u8 = 31;
+        const OFFSET: u8 = 0;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
@@ -806,13 +802,14 @@ impl<'a> _DIFFMODEW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 7);
-        self.w.bits |= ((value as u16) & 0x01) << 7;
+        const MASK: bool = true;
+        const OFFSET: u8 = 7;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `MUXNEG`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum MUXNEGW {
     #[doc = "ADC AIN0 Pin"]
     AIN0,
@@ -909,8 +906,10 @@ impl<'a> _MUXNEGW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x1f << 8);
-        self.w.bits |= ((value as u16) & 0x1f) << 8;
+        const MASK: u8 = 31;
+        const OFFSET: u8 = 8;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
@@ -930,8 +929,10 @@ impl<'a> _DSEQSTOPW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 15);
-        self.w.bits |= ((value as u16) & 0x01) << 15;
+        const MASK: bool = true;
+        const OFFSET: u8 = 15;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
@@ -944,27 +945,48 @@ impl R {
     #[doc = "Bits 0:4 - Positive Mux Input Selection"]
     #[inline]
     pub fn muxpos(&self) -> MUXPOSR {
-        MUXPOSR::_from(((self.bits >> 0) & 0x1f) as u8)
+        MUXPOSR::_from({
+            const MASK: u8 = 31;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u16) as u8
+        })
     }
     #[doc = "Bit 7 - Differential Mode"]
     #[inline]
     pub fn diffmode(&self) -> DIFFMODER {
-        let bits = ((self.bits >> 7) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 7;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        };
         DIFFMODER { bits }
     }
     #[doc = "Bits 8:12 - Negative Mux Input Selection"]
     #[inline]
     pub fn muxneg(&self) -> MUXNEGR {
-        MUXNEGR::_from(((self.bits >> 8) & 0x1f) as u8)
+        MUXNEGR::_from({
+            const MASK: u8 = 31;
+            const OFFSET: u8 = 8;
+            ((self.bits >> OFFSET) & MASK as u16) as u8
+        })
     }
     #[doc = "Bit 15 - Stop DMA Sequencing"]
     #[inline]
     pub fn dseqstop(&self) -> DSEQSTOPR {
-        let bits = ((self.bits >> 15) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 15;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        };
         DSEQSTOPR { bits }
     }
 }
 impl W {
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub fn reset_value() -> W {
+        W { bits: 0 }
+    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {

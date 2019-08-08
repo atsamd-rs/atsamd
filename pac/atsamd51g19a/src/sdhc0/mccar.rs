@@ -31,9 +31,9 @@ impl MAXCUR33VR {
     pub fn bits(&self) -> u8 {
         match *self {
             MAXCUR33VR::OTHER => 0,
-            MAXCUR33VR::_4MA => 0x01,
-            MAXCUR33VR::_8MA => 0x02,
-            MAXCUR33VR::_12MA => 0x03,
+            MAXCUR33VR::_4MA => 1,
+            MAXCUR33VR::_8MA => 2,
+            MAXCUR33VR::_12MA => 3,
             MAXCUR33VR::_Reserved(bits) => bits,
         }
     }
@@ -90,9 +90,9 @@ impl MAXCUR30VR {
     pub fn bits(&self) -> u8 {
         match *self {
             MAXCUR30VR::OTHER => 0,
-            MAXCUR30VR::_4MA => 0x01,
-            MAXCUR30VR::_8MA => 0x02,
-            MAXCUR30VR::_12MA => 0x03,
+            MAXCUR30VR::_4MA => 1,
+            MAXCUR30VR::_8MA => 2,
+            MAXCUR30VR::_12MA => 3,
             MAXCUR30VR::_Reserved(bits) => bits,
         }
     }
@@ -149,9 +149,9 @@ impl MAXCUR18VR {
     pub fn bits(&self) -> u8 {
         match *self {
             MAXCUR18VR::OTHER => 0,
-            MAXCUR18VR::_4MA => 0x01,
-            MAXCUR18VR::_8MA => 0x02,
-            MAXCUR18VR::_12MA => 0x03,
+            MAXCUR18VR::_4MA => 1,
+            MAXCUR18VR::_8MA => 2,
+            MAXCUR18VR::_12MA => 3,
             MAXCUR18VR::_Reserved(bits) => bits,
         }
     }
@@ -197,16 +197,28 @@ impl R {
     #[doc = "Bits 0:7 - Maximum Current for 3.3V"]
     #[inline]
     pub fn maxcur33v(&self) -> MAXCUR33VR {
-        MAXCUR33VR::_from(((self.bits >> 0) & 0xff) as u8)
+        MAXCUR33VR::_from({
+            const MASK: u8 = 255;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
     #[doc = "Bits 8:15 - Maximum Current for 3.0V"]
     #[inline]
     pub fn maxcur30v(&self) -> MAXCUR30VR {
-        MAXCUR30VR::_from(((self.bits >> 8) & 0xff) as u8)
+        MAXCUR30VR::_from({
+            const MASK: u8 = 255;
+            const OFFSET: u8 = 8;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
     #[doc = "Bits 16:23 - Maximum Current for 1.8V"]
     #[inline]
     pub fn maxcur18v(&self) -> MAXCUR18VR {
-        MAXCUR18VR::_from(((self.bits >> 16) & 0xff) as u8)
+        MAXCUR18VR::_from({
+            const MASK: u8 = 255;
+            const OFFSET: u8 = 16;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
 }

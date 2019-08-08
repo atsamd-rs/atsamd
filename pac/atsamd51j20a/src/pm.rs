@@ -25,55 +25,55 @@ pub struct RegisterBlock {
 }
 #[doc = "Control A"]
 pub struct CTRLA {
-    register: vcell::VolatileCell<u8>,
+    register: ::vcell::VolatileCell<u8>,
 }
 #[doc = "Control A"]
 pub mod ctrla;
 #[doc = "Sleep Configuration"]
 pub struct SLEEPCFG {
-    register: vcell::VolatileCell<u8>,
+    register: ::vcell::VolatileCell<u8>,
 }
 #[doc = "Sleep Configuration"]
 pub mod sleepcfg;
 #[doc = "Interrupt Enable Clear"]
 pub struct INTENCLR {
-    register: vcell::VolatileCell<u8>,
+    register: ::vcell::VolatileCell<u8>,
 }
 #[doc = "Interrupt Enable Clear"]
 pub mod intenclr;
 #[doc = "Interrupt Enable Set"]
 pub struct INTENSET {
-    register: vcell::VolatileCell<u8>,
+    register: ::vcell::VolatileCell<u8>,
 }
 #[doc = "Interrupt Enable Set"]
 pub mod intenset;
 #[doc = "Interrupt Flag Status and Clear"]
 pub struct INTFLAG {
-    register: vcell::VolatileCell<u8>,
+    register: ::vcell::VolatileCell<u8>,
 }
 #[doc = "Interrupt Flag Status and Clear"]
 pub mod intflag;
 #[doc = "Standby Configuration"]
 pub struct STDBYCFG {
-    register: vcell::VolatileCell<u8>,
+    register: ::vcell::VolatileCell<u8>,
 }
 #[doc = "Standby Configuration"]
 pub mod stdbycfg;
 #[doc = "Hibernate Configuration"]
 pub struct HIBCFG {
-    register: vcell::VolatileCell<u8>,
+    register: ::vcell::VolatileCell<u8>,
 }
 #[doc = "Hibernate Configuration"]
 pub mod hibcfg;
 #[doc = "Backup Configuration"]
 pub struct BKUPCFG {
-    register: vcell::VolatileCell<u8>,
+    register: ::vcell::VolatileCell<u8>,
 }
 #[doc = "Backup Configuration"]
 pub mod bkupcfg;
 #[doc = "Power Switch Acknowledge Delay"]
 pub struct PWSAKDLY {
-    register: vcell::VolatileCell<u8>,
+    register: ::vcell::VolatileCell<u8>,
 }
 #[doc = "Power Switch Acknowledge Delay"]
 pub mod pwsakdly;

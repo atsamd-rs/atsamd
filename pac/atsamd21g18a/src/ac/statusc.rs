@@ -71,8 +71,8 @@ impl WSTATE0R {
     pub fn bits(&self) -> u8 {
         match *self {
             WSTATE0R::ABOVE => 0,
-            WSTATE0R::INSIDE => 0x01,
-            WSTATE0R::BELOW => 0x02,
+            WSTATE0R::INSIDE => 1,
+            WSTATE0R::BELOW => 2,
             WSTATE0R::_Reserved(bits) => bits,
         }
     }
@@ -112,18 +112,30 @@ impl R {
     #[doc = "Bit 0 - Comparator 0 Current State"]
     #[inline]
     pub fn state0(&self) -> STATE0R {
-        let bits = ((self.bits >> 0) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         STATE0R { bits }
     }
     #[doc = "Bit 1 - Comparator 1 Current State"]
     #[inline]
     pub fn state1(&self) -> STATE1R {
-        let bits = ((self.bits >> 1) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 1;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         STATE1R { bits }
     }
     #[doc = "Bits 4:5 - Window 0 Current State"]
     #[inline]
     pub fn wstate0(&self) -> WSTATE0R {
-        WSTATE0R::_from(((self.bits >> 4) & 0x03) as u8)
+        WSTATE0R::_from({
+            const MASK: u8 = 3;
+            const OFFSET: u8 = 4;
+            ((self.bits >> OFFSET) & MASK as u8) as u8
+        })
     }
 }

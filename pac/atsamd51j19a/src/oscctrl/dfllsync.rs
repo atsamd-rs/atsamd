@@ -104,25 +104,41 @@ impl R {
     #[doc = "Bit 1 - ENABLE Synchronization Busy"]
     #[inline]
     pub fn enable(&self) -> ENABLER {
-        let bits = ((self.bits >> 1) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 1;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         ENABLER { bits }
     }
     #[doc = "Bit 2 - DFLLCTRLB Synchronization Busy"]
     #[inline]
     pub fn dfllctrlb(&self) -> DFLLCTRLBR {
-        let bits = ((self.bits >> 2) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 2;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         DFLLCTRLBR { bits }
     }
     #[doc = "Bit 3 - DFLLVAL Synchronization Busy"]
     #[inline]
     pub fn dfllval(&self) -> DFLLVALR {
-        let bits = ((self.bits >> 3) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 3;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         DFLLVALR { bits }
     }
     #[doc = "Bit 4 - DFLLMUL Synchronization Busy"]
     #[inline]
     pub fn dfllmul(&self) -> DFLLMULR {
-        let bits = ((self.bits >> 4) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 4;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         DFLLMULR { bits }
     }
 }

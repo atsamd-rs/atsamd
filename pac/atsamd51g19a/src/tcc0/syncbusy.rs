@@ -314,85 +314,141 @@ impl R {
     #[doc = "Bit 0 - Swrst Busy"]
     #[inline]
     pub fn swrst(&self) -> SWRSTR {
-        let bits = ((self.bits >> 0) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         SWRSTR { bits }
     }
     #[doc = "Bit 1 - Enable Busy"]
     #[inline]
     pub fn enable(&self) -> ENABLER {
-        let bits = ((self.bits >> 1) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 1;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         ENABLER { bits }
     }
     #[doc = "Bit 2 - Ctrlb Busy"]
     #[inline]
     pub fn ctrlb(&self) -> CTRLBR {
-        let bits = ((self.bits >> 2) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 2;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         CTRLBR { bits }
     }
     #[doc = "Bit 3 - Status Busy"]
     #[inline]
     pub fn status(&self) -> STATUSR {
-        let bits = ((self.bits >> 3) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 3;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         STATUSR { bits }
     }
     #[doc = "Bit 4 - Count Busy"]
     #[inline]
     pub fn count(&self) -> COUNTR {
-        let bits = ((self.bits >> 4) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 4;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         COUNTR { bits }
     }
     #[doc = "Bit 5 - Pattern Busy"]
     #[inline]
     pub fn patt(&self) -> PATTR {
-        let bits = ((self.bits >> 5) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 5;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         PATTR { bits }
     }
     #[doc = "Bit 6 - Wave Busy"]
     #[inline]
     pub fn wave(&self) -> WAVER {
-        let bits = ((self.bits >> 6) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 6;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         WAVER { bits }
     }
     #[doc = "Bit 7 - Period Busy"]
     #[inline]
     pub fn per(&self) -> PERR {
-        let bits = ((self.bits >> 7) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 7;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         PERR { bits }
     }
     #[doc = "Bit 8 - Compare Channel 0 Busy"]
     #[inline]
     pub fn cc0(&self) -> CC0R {
-        let bits = ((self.bits >> 8) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 8;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         CC0R { bits }
     }
     #[doc = "Bit 9 - Compare Channel 1 Busy"]
     #[inline]
     pub fn cc1(&self) -> CC1R {
-        let bits = ((self.bits >> 9) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 9;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         CC1R { bits }
     }
     #[doc = "Bit 10 - Compare Channel 2 Busy"]
     #[inline]
     pub fn cc2(&self) -> CC2R {
-        let bits = ((self.bits >> 10) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 10;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         CC2R { bits }
     }
     #[doc = "Bit 11 - Compare Channel 3 Busy"]
     #[inline]
     pub fn cc3(&self) -> CC3R {
-        let bits = ((self.bits >> 11) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 11;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         CC3R { bits }
     }
     #[doc = "Bit 12 - Compare Channel 4 Busy"]
     #[inline]
     pub fn cc4(&self) -> CC4R {
-        let bits = ((self.bits >> 12) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 12;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         CC4R { bits }
     }
     #[doc = "Bit 13 - Compare Channel 5 Busy"]
     #[inline]
     pub fn cc5(&self) -> CC5R {
-        let bits = ((self.bits >> 13) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 13;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         CC5R { bits }
     }
 }

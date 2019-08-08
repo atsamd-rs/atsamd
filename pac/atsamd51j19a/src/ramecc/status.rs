@@ -41,7 +41,11 @@ impl R {
     #[doc = "Bit 0 - ECC Disable"]
     #[inline]
     pub fn eccdis(&self) -> ECCDISR {
-        let bits = ((self.bits >> 0) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         ECCDISR { bits }
     }
 }

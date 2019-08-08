@@ -14,7 +14,10 @@ impl super::PCHCTRL {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        self.register.set(f(&R { bits }, &mut W { bits }).bits);
+        let r = R { bits };
+        let mut w = W { bits };
+        f(&r, &mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -29,22 +32,14 @@ impl super::PCHCTRL {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        self.register.set(
-            f(&mut W {
-                bits: Self::reset_value(),
-            })
-            .bits,
-        );
-    }
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub const fn reset_value() -> u32 {
-        0
+        let mut w = W::reset_value();
+        f(&mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.register.set(Self::reset_value())
+        self.write(|w| w)
     }
 }
 #[doc = "Possible values of the field `GEN`"]
@@ -83,17 +78,17 @@ impl GENR {
     pub fn bits(&self) -> u8 {
         match *self {
             GENR::GCLK0 => 0,
-            GENR::GCLK1 => 0x01,
-            GENR::GCLK2 => 0x02,
-            GENR::GCLK3 => 0x03,
-            GENR::GCLK4 => 0x04,
-            GENR::GCLK5 => 0x05,
-            GENR::GCLK6 => 0x06,
-            GENR::GCLK7 => 0x07,
-            GENR::GCLK8 => 0x08,
-            GENR::GCLK9 => 0x09,
-            GENR::GCLK10 => 0x0a,
-            GENR::GCLK11 => 0x0b,
+            GENR::GCLK1 => 1,
+            GENR::GCLK2 => 2,
+            GENR::GCLK3 => 3,
+            GENR::GCLK4 => 4,
+            GENR::GCLK5 => 5,
+            GENR::GCLK6 => 6,
+            GENR::GCLK7 => 7,
+            GENR::GCLK8 => 8,
+            GENR::GCLK9 => 9,
+            GENR::GCLK10 => 10,
+            GENR::GCLK11 => 11,
             GENR::_Reserved(bits) => bits,
         }
     }
@@ -221,7 +216,6 @@ impl WRTLOCKR {
     }
 }
 #[doc = "Values that can be written to the field `GEN`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum GENW {
     #[doc = "Generic clock generator 0"]
     GCLK0,
@@ -342,8 +336,10 @@ impl<'a> _GENW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x0f << 0);
-        self.w.bits |= ((value as u32) & 0x0f) << 0;
+        const MASK: u8 = 15;
+        const OFFSET: u8 = 0;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -363,8 +359,10 @@ impl<'a> _CHENW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 6);
-        self.w.bits |= ((value as u32) & 0x01) << 6;
+        const MASK: bool = true;
+        const OFFSET: u8 = 6;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -384,8 +382,10 @@ impl<'a> _WRTLOCKW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 7);
-        self.w.bits |= ((value as u32) & 0x01) << 7;
+        const MASK: bool = true;
+        const OFFSET: u8 = 7;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -398,22 +398,39 @@ impl R {
     #[doc = "Bits 0:3 - Generic Clock Generator"]
     #[inline]
     pub fn gen(&self) -> GENR {
-        GENR::_from(((self.bits >> 0) & 0x0f) as u8)
+        GENR::_from({
+            const MASK: u8 = 15;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
     #[doc = "Bit 6 - Channel Enable"]
     #[inline]
     pub fn chen(&self) -> CHENR {
-        let bits = ((self.bits >> 6) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 6;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         CHENR { bits }
     }
     #[doc = "Bit 7 - Write Lock"]
     #[inline]
     pub fn wrtlock(&self) -> WRTLOCKR {
-        let bits = ((self.bits >> 7) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 7;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         WRTLOCKR { bits }
     }
 }
 impl W {
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub fn reset_value() -> W {
+        W { bits: 0 }
+    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {

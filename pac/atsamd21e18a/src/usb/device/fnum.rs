@@ -63,19 +63,31 @@ impl R {
     #[doc = "Bits 0:2 - Micro Frame Number"]
     #[inline]
     pub fn mfnum(&self) -> MFNUMR {
-        let bits = ((self.bits >> 0) & 0x07) as u8;
+        let bits = {
+            const MASK: u8 = 7;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u16) as u8
+        };
         MFNUMR { bits }
     }
     #[doc = "Bits 3:13 - Frame Number"]
     #[inline]
     pub fn fnum(&self) -> FNUMR {
-        let bits = ((self.bits >> 3) & 0x07ff) as u16;
+        let bits = {
+            const MASK: u16 = 2047;
+            const OFFSET: u8 = 3;
+            ((self.bits >> OFFSET) & MASK as u16) as u16
+        };
         FNUMR { bits }
     }
     #[doc = "Bit 15 - Frame Number CRC Error"]
     #[inline]
     pub fn fncerr(&self) -> FNCERRR {
-        let bits = ((self.bits >> 15) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 15;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        };
         FNCERRR { bits }
     }
 }

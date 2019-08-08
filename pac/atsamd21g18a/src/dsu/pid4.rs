@@ -42,13 +42,21 @@ impl R {
     #[doc = "Bits 0:3 - JEP-106 Continuation Code"]
     #[inline]
     pub fn jepcc(&self) -> JEPCCR {
-        let bits = ((self.bits >> 0) & 0x0f) as u8;
+        let bits = {
+            const MASK: u8 = 15;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        };
         JEPCCR { bits }
     }
     #[doc = "Bits 4:7 - 4KB Count"]
     #[inline]
     pub fn fkbc(&self) -> FKBCR {
-        let bits = ((self.bits >> 4) & 0x0f) as u8;
+        let bits = {
+            const MASK: u8 = 15;
+            const OFFSET: u8 = 4;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        };
         FKBCR { bits }
     }
 }

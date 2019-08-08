@@ -41,7 +41,11 @@ impl R {
     #[doc = "Bit 0 - Cache Controller Status"]
     #[inline]
     pub fn csts(&self) -> CSTSR {
-        let bits = ((self.bits >> 0) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         CSTSR { bits }
     }
 }

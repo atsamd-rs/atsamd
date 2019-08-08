@@ -31,7 +31,11 @@ impl R {
     #[doc = "Bits 0:15 - Region Lock Bits"]
     #[inline]
     pub fn lock(&self) -> LOCKR {
-        let bits = ((self.bits >> 0) & 0xffff) as u16;
+        let bits = {
+            const MASK: u16 = 65535;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u16) as u16
+        };
         LOCKR { bits }
     }
 }

@@ -14,7 +14,10 @@ impl super::PADCAL {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        self.register.set(f(&R { bits }, &mut W { bits }).bits);
+        let r = R { bits };
+        let mut w = W { bits };
+        f(&r, &mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -29,22 +32,14 @@ impl super::PADCAL {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        self.register.set(
-            f(&mut W {
-                bits: Self::reset_value(),
-            })
-            .bits,
-        );
-    }
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub const fn reset_value() -> u16 {
-        0
+        let mut w = W::reset_value();
+        f(&mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.register.set(Self::reset_value())
+        self.write(|w| w)
     }
 }
 #[doc = r" Value of the field"]
@@ -88,8 +83,10 @@ impl<'a> _TRANSPW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x1f << 0);
-        self.w.bits |= ((value as u16) & 0x1f) << 0;
+        const MASK: u8 = 31;
+        const OFFSET: u8 = 0;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
@@ -101,8 +98,10 @@ impl<'a> _TRANSNW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x1f << 6);
-        self.w.bits |= ((value as u16) & 0x1f) << 6;
+        const MASK: u8 = 31;
+        const OFFSET: u8 = 6;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
@@ -114,8 +113,10 @@ impl<'a> _TRIMW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x07 << 12);
-        self.w.bits |= ((value as u16) & 0x07) << 12;
+        const MASK: u8 = 7;
+        const OFFSET: u8 = 12;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
@@ -128,23 +129,40 @@ impl R {
     #[doc = "Bits 0:4 - USB Pad Transp calibration"]
     #[inline]
     pub fn transp(&self) -> TRANSPR {
-        let bits = ((self.bits >> 0) & 0x1f) as u8;
+        let bits = {
+            const MASK: u8 = 31;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u16) as u8
+        };
         TRANSPR { bits }
     }
     #[doc = "Bits 6:10 - USB Pad Transn calibration"]
     #[inline]
     pub fn transn(&self) -> TRANSNR {
-        let bits = ((self.bits >> 6) & 0x1f) as u8;
+        let bits = {
+            const MASK: u8 = 31;
+            const OFFSET: u8 = 6;
+            ((self.bits >> OFFSET) & MASK as u16) as u8
+        };
         TRANSNR { bits }
     }
     #[doc = "Bits 12:14 - USB Pad Trim calibration"]
     #[inline]
     pub fn trim(&self) -> TRIMR {
-        let bits = ((self.bits >> 12) & 0x07) as u8;
+        let bits = {
+            const MASK: u8 = 7;
+            const OFFSET: u8 = 12;
+            ((self.bits >> OFFSET) & MASK as u16) as u8
+        };
         TRIMR { bits }
     }
 }
 impl W {
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub fn reset_value() -> W {
+        W { bits: 0 }
+    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {

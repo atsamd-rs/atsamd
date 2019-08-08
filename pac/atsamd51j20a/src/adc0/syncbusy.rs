@@ -272,73 +272,121 @@ impl R {
     #[doc = "Bit 0 - SWRST Synchronization Busy"]
     #[inline]
     pub fn swrst(&self) -> SWRSTR {
-        let bits = ((self.bits >> 0) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         SWRSTR { bits }
     }
     #[doc = "Bit 1 - ENABLE Synchronization Busy"]
     #[inline]
     pub fn enable(&self) -> ENABLER {
-        let bits = ((self.bits >> 1) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 1;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         ENABLER { bits }
     }
     #[doc = "Bit 2 - Input Control Synchronization Busy"]
     #[inline]
     pub fn inputctrl(&self) -> INPUTCTRLR {
-        let bits = ((self.bits >> 2) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 2;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         INPUTCTRLR { bits }
     }
     #[doc = "Bit 3 - Control B Synchronization Busy"]
     #[inline]
     pub fn ctrlb(&self) -> CTRLBR {
-        let bits = ((self.bits >> 3) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 3;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         CTRLBR { bits }
     }
     #[doc = "Bit 4 - Reference Control Synchronization Busy"]
     #[inline]
     pub fn refctrl(&self) -> REFCTRLR {
-        let bits = ((self.bits >> 4) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 4;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         REFCTRLR { bits }
     }
     #[doc = "Bit 5 - Average Control Synchronization Busy"]
     #[inline]
     pub fn avgctrl(&self) -> AVGCTRLR {
-        let bits = ((self.bits >> 5) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 5;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         AVGCTRLR { bits }
     }
     #[doc = "Bit 6 - Sampling Time Control Synchronization Busy"]
     #[inline]
     pub fn sampctrl(&self) -> SAMPCTRLR {
-        let bits = ((self.bits >> 6) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 6;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         SAMPCTRLR { bits }
     }
     #[doc = "Bit 7 - Window Monitor Lower Threshold Synchronization Busy"]
     #[inline]
     pub fn winlt(&self) -> WINLTR {
-        let bits = ((self.bits >> 7) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 7;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         WINLTR { bits }
     }
     #[doc = "Bit 8 - Window Monitor Upper Threshold Synchronization Busy"]
     #[inline]
     pub fn winut(&self) -> WINUTR {
-        let bits = ((self.bits >> 8) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 8;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         WINUTR { bits }
     }
     #[doc = "Bit 9 - Gain Correction Synchronization Busy"]
     #[inline]
     pub fn gaincorr(&self) -> GAINCORRR {
-        let bits = ((self.bits >> 9) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 9;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         GAINCORRR { bits }
     }
     #[doc = "Bit 10 - Offset Correction Synchronization Busy"]
     #[inline]
     pub fn offsetcorr(&self) -> OFFSETCORRR {
-        let bits = ((self.bits >> 10) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 10;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         OFFSETCORRR { bits }
     }
     #[doc = "Bit 11 - Software Trigger Synchronization Busy"]
     #[inline]
     pub fn swtrig(&self) -> SWTRIGR {
-        let bits = ((self.bits >> 11) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 11;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         SWTRIGR { bits }
     }
 }

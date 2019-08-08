@@ -14,7 +14,10 @@ impl super::FNUM {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        self.register.set(f(&R { bits }, &mut W { bits }).bits);
+        let r = R { bits };
+        let mut w = W { bits };
+        f(&r, &mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -29,22 +32,14 @@ impl super::FNUM {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        self.register.set(
-            f(&mut W {
-                bits: Self::reset_value(),
-            })
-            .bits,
-        );
-    }
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub const fn reset_value() -> u16 {
-        0
+        let mut w = W::reset_value();
+        f(&mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.register.set(Self::reset_value())
+        self.write(|w| w)
     }
 }
 #[doc = r" Value of the field"]
@@ -77,8 +72,10 @@ impl<'a> _MFNUMW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x07 << 0);
-        self.w.bits |= ((value as u16) & 0x07) << 0;
+        const MASK: u8 = 7;
+        const OFFSET: u8 = 0;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
@@ -90,8 +87,10 @@ impl<'a> _FNUMW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u16) -> &'a mut W {
-        self.w.bits &= !(0x07ff << 3);
-        self.w.bits |= ((value as u16) & 0x07ff) << 3;
+        const MASK: u16 = 2047;
+        const OFFSET: u8 = 3;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
@@ -104,17 +103,30 @@ impl R {
     #[doc = "Bits 0:2 - Micro Frame Number"]
     #[inline]
     pub fn mfnum(&self) -> MFNUMR {
-        let bits = ((self.bits >> 0) & 0x07) as u8;
+        let bits = {
+            const MASK: u8 = 7;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u16) as u8
+        };
         MFNUMR { bits }
     }
     #[doc = "Bits 3:13 - Frame Number"]
     #[inline]
     pub fn fnum(&self) -> FNUMR {
-        let bits = ((self.bits >> 3) & 0x07ff) as u16;
+        let bits = {
+            const MASK: u16 = 2047;
+            const OFFSET: u8 = 3;
+            ((self.bits >> OFFSET) & MASK as u16) as u16
+        };
         FNUMR { bits }
     }
 }
 impl W {
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub fn reset_value() -> W {
+        W { bits: 0 }
+    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {

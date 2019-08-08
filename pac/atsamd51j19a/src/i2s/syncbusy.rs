@@ -188,49 +188,81 @@ impl R {
     #[doc = "Bit 0 - Software Reset Synchronization Status"]
     #[inline]
     pub fn swrst(&self) -> SWRSTR {
-        let bits = ((self.bits >> 0) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        };
         SWRSTR { bits }
     }
     #[doc = "Bit 1 - Enable Synchronization Status"]
     #[inline]
     pub fn enable(&self) -> ENABLER {
-        let bits = ((self.bits >> 1) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 1;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        };
         ENABLER { bits }
     }
     #[doc = "Bit 2 - Clock Unit 0 Enable Synchronization Status"]
     #[inline]
     pub fn cken0(&self) -> CKEN0R {
-        let bits = ((self.bits >> 2) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 2;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        };
         CKEN0R { bits }
     }
     #[doc = "Bit 3 - Clock Unit 1 Enable Synchronization Status"]
     #[inline]
     pub fn cken1(&self) -> CKEN1R {
-        let bits = ((self.bits >> 3) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 3;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        };
         CKEN1R { bits }
     }
     #[doc = "Bit 4 - Tx Serializer Enable Synchronization Status"]
     #[inline]
     pub fn txen(&self) -> TXENR {
-        let bits = ((self.bits >> 4) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 4;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        };
         TXENR { bits }
     }
     #[doc = "Bit 5 - Rx Serializer Enable Synchronization Status"]
     #[inline]
     pub fn rxen(&self) -> RXENR {
-        let bits = ((self.bits >> 5) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 5;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        };
         RXENR { bits }
     }
     #[doc = "Bit 8 - Tx Data Synchronization Status"]
     #[inline]
     pub fn txdata(&self) -> TXDATAR {
-        let bits = ((self.bits >> 8) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 8;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        };
         TXDATAR { bits }
     }
     #[doc = "Bit 9 - Rx Data Synchronization Status"]
     #[inline]
     pub fn rxdata(&self) -> RXDATAR {
-        let bits = ((self.bits >> 9) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 9;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        };
         RXDATAR { bits }
     }
 }
