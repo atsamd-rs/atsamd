@@ -14,7 +14,10 @@ impl super::CHCTRLA {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        self.register.set(f(&R { bits }, &mut W { bits }).bits);
+        let r = R { bits };
+        let mut w = W { bits };
+        f(&r, &mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -29,22 +32,14 @@ impl super::CHCTRLA {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        self.register.set(
-            f(&mut W {
-                bits: Self::reset_value(),
-            })
-            .bits,
-        );
-    }
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub const fn reset_value() -> u32 {
-        0
+        let mut w = W::reset_value();
+        f(&mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.register.set(Self::reset_value())
+        self.write(|w| w)
     }
 }
 #[doc = r" Value of the field"]
@@ -160,8 +155,8 @@ impl TRIGACTR {
     pub fn bits(&self) -> u8 {
         match *self {
             TRIGACTR::BLOCK => 0,
-            TRIGACTR::BURST => 0x02,
-            TRIGACTR::TRANSACTION => 0x03,
+            TRIGACTR::BURST => 2,
+            TRIGACTR::TRANSACTION => 3,
             TRIGACTR::_Reserved(bits) => bits,
         }
     }
@@ -234,21 +229,21 @@ impl BURSTLENR {
     pub fn bits(&self) -> u8 {
         match *self {
             BURSTLENR::SINGLE => 0,
-            BURSTLENR::_2BEAT => 0x01,
-            BURSTLENR::_3BEAT => 0x02,
-            BURSTLENR::_4BEAT => 0x03,
-            BURSTLENR::_5BEAT => 0x04,
-            BURSTLENR::_6BEAT => 0x05,
-            BURSTLENR::_7BEAT => 0x06,
-            BURSTLENR::_8BEAT => 0x07,
-            BURSTLENR::_9BEAT => 0x08,
-            BURSTLENR::_10BEAT => 0x09,
-            BURSTLENR::_11BEAT => 0x0a,
-            BURSTLENR::_12BEAT => 0x0b,
-            BURSTLENR::_13BEAT => 0x0c,
-            BURSTLENR::_14BEAT => 0x0d,
-            BURSTLENR::_15BEAT => 0x0e,
-            BURSTLENR::_16BEAT => 0x0f,
+            BURSTLENR::_2BEAT => 1,
+            BURSTLENR::_3BEAT => 2,
+            BURSTLENR::_4BEAT => 3,
+            BURSTLENR::_5BEAT => 4,
+            BURSTLENR::_6BEAT => 5,
+            BURSTLENR::_7BEAT => 6,
+            BURSTLENR::_8BEAT => 7,
+            BURSTLENR::_9BEAT => 8,
+            BURSTLENR::_10BEAT => 9,
+            BURSTLENR::_11BEAT => 10,
+            BURSTLENR::_12BEAT => 11,
+            BURSTLENR::_13BEAT => 12,
+            BURSTLENR::_14BEAT => 13,
+            BURSTLENR::_15BEAT => 14,
+            BURSTLENR::_16BEAT => 15,
         }
     }
     #[allow(missing_docs)]
@@ -374,9 +369,9 @@ impl THRESHOLDR {
     pub fn bits(&self) -> u8 {
         match *self {
             THRESHOLDR::_1BEAT => 0,
-            THRESHOLDR::_2BEATS => 0x01,
-            THRESHOLDR::_4BEATS => 0x02,
-            THRESHOLDR::_8BEATS => 0x03,
+            THRESHOLDR::_2BEATS => 1,
+            THRESHOLDR::_4BEATS => 2,
+            THRESHOLDR::_8BEATS => 3,
         }
     }
     #[allow(missing_docs)]
@@ -428,8 +423,10 @@ impl<'a> _SWRSTW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 0);
-        self.w.bits |= ((value as u32) & 0x01) << 0;
+        const MASK: bool = true;
+        const OFFSET: u8 = 0;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -449,8 +446,10 @@ impl<'a> _ENABLEW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 1);
-        self.w.bits |= ((value as u32) & 0x01) << 1;
+        const MASK: bool = true;
+        const OFFSET: u8 = 1;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -470,13 +469,14 @@ impl<'a> _RUNSTDBYW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 6);
-        self.w.bits |= ((value as u32) & 0x01) << 6;
+        const MASK: bool = true;
+        const OFFSET: u8 = 6;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `TRIGSRC`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum TRIGSRCW {
     #[doc = "Only software/event triggers"]
     DISABLE,
@@ -509,13 +509,14 @@ impl<'a> _TRIGSRCW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x7f << 8);
-        self.w.bits |= ((value as u32) & 0x7f) << 8;
+        const MASK: u8 = 127;
+        const OFFSET: u8 = 8;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `TRIGACT`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum TRIGACTW {
     #[doc = "One trigger required for each block transfer"]
     BLOCK,
@@ -564,13 +565,14 @@ impl<'a> _TRIGACTW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x03 << 20);
-        self.w.bits |= ((value as u32) & 0x03) << 20;
+        const MASK: u8 = 3;
+        const OFFSET: u8 = 20;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `BURSTLEN`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum BURSTLENW {
     #[doc = "Single-beat burst length"]
     SINGLE,
@@ -725,13 +727,14 @@ impl<'a> _BURSTLENW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x0f << 24);
-        self.w.bits |= ((value as u32) & 0x0f) << 24;
+        const MASK: u8 = 15;
+        const OFFSET: u8 = 24;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `THRESHOLD`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum THRESHOLDW {
     #[doc = "Destination write starts after each beat source address read"]
     _1BEAT,
@@ -790,8 +793,10 @@ impl<'a> _THRESHOLDW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x03 << 28);
-        self.w.bits |= ((value as u32) & 0x03) << 28;
+        const MASK: u8 = 3;
+        const OFFSET: u8 = 28;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -804,43 +809,76 @@ impl R {
     #[doc = "Bit 0 - Channel Software Reset"]
     #[inline]
     pub fn swrst(&self) -> SWRSTR {
-        let bits = ((self.bits >> 0) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         SWRSTR { bits }
     }
     #[doc = "Bit 1 - Channel Enable"]
     #[inline]
     pub fn enable(&self) -> ENABLER {
-        let bits = ((self.bits >> 1) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 1;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         ENABLER { bits }
     }
     #[doc = "Bit 6 - Channel Run in Standby"]
     #[inline]
     pub fn runstdby(&self) -> RUNSTDBYR {
-        let bits = ((self.bits >> 6) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 6;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         RUNSTDBYR { bits }
     }
     #[doc = "Bits 8:14 - Trigger Source"]
     #[inline]
     pub fn trigsrc(&self) -> TRIGSRCR {
-        TRIGSRCR::_from(((self.bits >> 8) & 0x7f) as u8)
+        TRIGSRCR::_from({
+            const MASK: u8 = 127;
+            const OFFSET: u8 = 8;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
     #[doc = "Bits 20:21 - Trigger Action"]
     #[inline]
     pub fn trigact(&self) -> TRIGACTR {
-        TRIGACTR::_from(((self.bits >> 20) & 0x03) as u8)
+        TRIGACTR::_from({
+            const MASK: u8 = 3;
+            const OFFSET: u8 = 20;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
     #[doc = "Bits 24:27 - Burst Length"]
     #[inline]
     pub fn burstlen(&self) -> BURSTLENR {
-        BURSTLENR::_from(((self.bits >> 24) & 0x0f) as u8)
+        BURSTLENR::_from({
+            const MASK: u8 = 15;
+            const OFFSET: u8 = 24;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
     #[doc = "Bits 28:29 - FIFO Threshold"]
     #[inline]
     pub fn threshold(&self) -> THRESHOLDR {
-        THRESHOLDR::_from(((self.bits >> 28) & 0x03) as u8)
+        THRESHOLDR::_from({
+            const MASK: u8 = 3;
+            const OFFSET: u8 = 28;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
 }
 impl W {
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub fn reset_value() -> W {
+        W { bits: 0 }
+    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {

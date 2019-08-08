@@ -31,7 +31,11 @@ impl R {
     #[doc = "Bits 0:7 - Frame Length"]
     #[inline]
     pub fn flenhigh(&self) -> FLENHIGHR {
-        let bits = ((self.bits >> 0) & 0xff) as u8;
+        let bits = {
+            const MASK: u8 = 255;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u8) as u8
+        };
         FLENHIGHR { bits }
     }
 }

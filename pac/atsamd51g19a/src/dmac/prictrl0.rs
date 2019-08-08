@@ -14,7 +14,10 @@ impl super::PRICTRL0 {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        self.register.set(f(&R { bits }, &mut W { bits }).bits);
+        let r = R { bits };
+        let mut w = W { bits };
+        f(&r, &mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -29,22 +32,14 @@ impl super::PRICTRL0 {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        self.register.set(
-            f(&mut W {
-                bits: Self::reset_value(),
-            })
-            .bits,
-        );
-    }
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub const fn reset_value() -> u32 {
-        0x4040_4040
+        let mut w = W::reset_value();
+        f(&mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.register.set(Self::reset_value())
+        self.write(|w| w)
     }
 }
 #[doc = r" Value of the field"]
@@ -76,9 +71,9 @@ impl QOS0R {
     pub fn bits(&self) -> u8 {
         match *self {
             QOS0R::REGULAR => 0,
-            QOS0R::SHORTAGE => 0x01,
-            QOS0R::SENSITIVE => 0x02,
-            QOS0R::CRITICAL => 0x03,
+            QOS0R::SHORTAGE => 1,
+            QOS0R::SENSITIVE => 2,
+            QOS0R::CRITICAL => 3,
         }
     }
     #[allow(missing_docs)]
@@ -164,9 +159,9 @@ impl QOS1R {
     pub fn bits(&self) -> u8 {
         match *self {
             QOS1R::REGULAR => 0,
-            QOS1R::SHORTAGE => 0x01,
-            QOS1R::SENSITIVE => 0x02,
-            QOS1R::CRITICAL => 0x03,
+            QOS1R::SHORTAGE => 1,
+            QOS1R::SENSITIVE => 2,
+            QOS1R::CRITICAL => 3,
         }
     }
     #[allow(missing_docs)]
@@ -252,9 +247,9 @@ impl QOS2R {
     pub fn bits(&self) -> u8 {
         match *self {
             QOS2R::REGULAR => 0,
-            QOS2R::SHORTAGE => 0x01,
-            QOS2R::SENSITIVE => 0x02,
-            QOS2R::CRITICAL => 0x03,
+            QOS2R::SHORTAGE => 1,
+            QOS2R::SENSITIVE => 2,
+            QOS2R::CRITICAL => 3,
         }
     }
     #[allow(missing_docs)]
@@ -340,9 +335,9 @@ impl QOS3R {
     pub fn bits(&self) -> u8 {
         match *self {
             QOS3R::REGULAR => 0,
-            QOS3R::SHORTAGE => 0x01,
-            QOS3R::SENSITIVE => 0x02,
-            QOS3R::CRITICAL => 0x03,
+            QOS3R::SHORTAGE => 1,
+            QOS3R::SENSITIVE => 2,
+            QOS3R::CRITICAL => 3,
         }
     }
     #[allow(missing_docs)]
@@ -407,13 +402,14 @@ impl<'a> _LVLPRI0W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x1f << 0);
-        self.w.bits |= ((value as u32) & 0x1f) << 0;
+        const MASK: u8 = 31;
+        const OFFSET: u8 = 0;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `QOS0`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum QOS0W {
     #[doc = "Regular delivery"]
     REGULAR,
@@ -472,8 +468,10 @@ impl<'a> _QOS0W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x03 << 5);
-        self.w.bits |= ((value as u32) & 0x03) << 5;
+        const MASK: u8 = 3;
+        const OFFSET: u8 = 5;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -493,8 +491,10 @@ impl<'a> _RRLVLEN0W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 7);
-        self.w.bits |= ((value as u32) & 0x01) << 7;
+        const MASK: bool = true;
+        const OFFSET: u8 = 7;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -506,13 +506,14 @@ impl<'a> _LVLPRI1W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x1f << 8);
-        self.w.bits |= ((value as u32) & 0x1f) << 8;
+        const MASK: u8 = 31;
+        const OFFSET: u8 = 8;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `QOS1`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum QOS1W {
     #[doc = "Regular delivery"]
     REGULAR,
@@ -571,8 +572,10 @@ impl<'a> _QOS1W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x03 << 13);
-        self.w.bits |= ((value as u32) & 0x03) << 13;
+        const MASK: u8 = 3;
+        const OFFSET: u8 = 13;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -592,8 +595,10 @@ impl<'a> _RRLVLEN1W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 15);
-        self.w.bits |= ((value as u32) & 0x01) << 15;
+        const MASK: bool = true;
+        const OFFSET: u8 = 15;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -605,13 +610,14 @@ impl<'a> _LVLPRI2W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x1f << 16);
-        self.w.bits |= ((value as u32) & 0x1f) << 16;
+        const MASK: u8 = 31;
+        const OFFSET: u8 = 16;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `QOS2`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum QOS2W {
     #[doc = "Regular delivery"]
     REGULAR,
@@ -670,8 +676,10 @@ impl<'a> _QOS2W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x03 << 21);
-        self.w.bits |= ((value as u32) & 0x03) << 21;
+        const MASK: u8 = 3;
+        const OFFSET: u8 = 21;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -691,8 +699,10 @@ impl<'a> _RRLVLEN2W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 23);
-        self.w.bits |= ((value as u32) & 0x01) << 23;
+        const MASK: bool = true;
+        const OFFSET: u8 = 23;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -704,13 +714,14 @@ impl<'a> _LVLPRI3W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x1f << 24);
-        self.w.bits |= ((value as u32) & 0x1f) << 24;
+        const MASK: u8 = 31;
+        const OFFSET: u8 = 24;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `QOS3`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum QOS3W {
     #[doc = "Regular delivery"]
     REGULAR,
@@ -769,8 +780,10 @@ impl<'a> _QOS3W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x03 << 29);
-        self.w.bits |= ((value as u32) & 0x03) << 29;
+        const MASK: u8 = 3;
+        const OFFSET: u8 = 29;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -790,8 +803,10 @@ impl<'a> _RRLVLEN3W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 31);
-        self.w.bits |= ((value as u32) & 0x01) << 31;
+        const MASK: bool = true;
+        const OFFSET: u8 = 31;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -804,73 +819,126 @@ impl R {
     #[doc = "Bits 0:4 - Level 0 Channel Priority Number"]
     #[inline]
     pub fn lvlpri0(&self) -> LVLPRI0R {
-        let bits = ((self.bits >> 0) & 0x1f) as u8;
+        let bits = {
+            const MASK: u8 = 31;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        };
         LVLPRI0R { bits }
     }
     #[doc = "Bits 5:6 - Level 0 Quality of Service"]
     #[inline]
     pub fn qos0(&self) -> QOS0R {
-        QOS0R::_from(((self.bits >> 5) & 0x03) as u8)
+        QOS0R::_from({
+            const MASK: u8 = 3;
+            const OFFSET: u8 = 5;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
     #[doc = "Bit 7 - Level 0 Round-Robin Scheduling Enable"]
     #[inline]
     pub fn rrlvlen0(&self) -> RRLVLEN0R {
-        let bits = ((self.bits >> 7) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 7;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         RRLVLEN0R { bits }
     }
     #[doc = "Bits 8:12 - Level 1 Channel Priority Number"]
     #[inline]
     pub fn lvlpri1(&self) -> LVLPRI1R {
-        let bits = ((self.bits >> 8) & 0x1f) as u8;
+        let bits = {
+            const MASK: u8 = 31;
+            const OFFSET: u8 = 8;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        };
         LVLPRI1R { bits }
     }
     #[doc = "Bits 13:14 - Level 1 Quality of Service"]
     #[inline]
     pub fn qos1(&self) -> QOS1R {
-        QOS1R::_from(((self.bits >> 13) & 0x03) as u8)
+        QOS1R::_from({
+            const MASK: u8 = 3;
+            const OFFSET: u8 = 13;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
     #[doc = "Bit 15 - Level 1 Round-Robin Scheduling Enable"]
     #[inline]
     pub fn rrlvlen1(&self) -> RRLVLEN1R {
-        let bits = ((self.bits >> 15) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 15;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         RRLVLEN1R { bits }
     }
     #[doc = "Bits 16:20 - Level 2 Channel Priority Number"]
     #[inline]
     pub fn lvlpri2(&self) -> LVLPRI2R {
-        let bits = ((self.bits >> 16) & 0x1f) as u8;
+        let bits = {
+            const MASK: u8 = 31;
+            const OFFSET: u8 = 16;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        };
         LVLPRI2R { bits }
     }
     #[doc = "Bits 21:22 - Level 2 Quality of Service"]
     #[inline]
     pub fn qos2(&self) -> QOS2R {
-        QOS2R::_from(((self.bits >> 21) & 0x03) as u8)
+        QOS2R::_from({
+            const MASK: u8 = 3;
+            const OFFSET: u8 = 21;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
     #[doc = "Bit 23 - Level 2 Round-Robin Scheduling Enable"]
     #[inline]
     pub fn rrlvlen2(&self) -> RRLVLEN2R {
-        let bits = ((self.bits >> 23) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 23;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         RRLVLEN2R { bits }
     }
     #[doc = "Bits 24:28 - Level 3 Channel Priority Number"]
     #[inline]
     pub fn lvlpri3(&self) -> LVLPRI3R {
-        let bits = ((self.bits >> 24) & 0x1f) as u8;
+        let bits = {
+            const MASK: u8 = 31;
+            const OFFSET: u8 = 24;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        };
         LVLPRI3R { bits }
     }
     #[doc = "Bits 29:30 - Level 3 Quality of Service"]
     #[inline]
     pub fn qos3(&self) -> QOS3R {
-        QOS3R::_from(((self.bits >> 29) & 0x03) as u8)
+        QOS3R::_from({
+            const MASK: u8 = 3;
+            const OFFSET: u8 = 29;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
     #[doc = "Bit 31 - Level 3 Round-Robin Scheduling Enable"]
     #[inline]
     pub fn rrlvlen3(&self) -> RRLVLEN3R {
-        let bits = ((self.bits >> 31) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 31;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         RRLVLEN3R { bits }
     }
 }
 impl W {
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub fn reset_value() -> W {
+        W { bits: 1077952576 }
+    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {

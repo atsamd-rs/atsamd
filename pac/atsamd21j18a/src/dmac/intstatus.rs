@@ -1,88 +1,392 @@
-#[doc = "Reader of register INTSTATUS"]
-pub type R = crate::R<u32, super::INTSTATUS>;
-#[doc = "Reader of field `CHINT0`"]
-pub type CHINT0_R = crate::R<bool, bool>;
-#[doc = "Reader of field `CHINT1`"]
-pub type CHINT1_R = crate::R<bool, bool>;
-#[doc = "Reader of field `CHINT2`"]
-pub type CHINT2_R = crate::R<bool, bool>;
-#[doc = "Reader of field `CHINT3`"]
-pub type CHINT3_R = crate::R<bool, bool>;
-#[doc = "Reader of field `CHINT4`"]
-pub type CHINT4_R = crate::R<bool, bool>;
-#[doc = "Reader of field `CHINT5`"]
-pub type CHINT5_R = crate::R<bool, bool>;
-#[doc = "Reader of field `CHINT6`"]
-pub type CHINT6_R = crate::R<bool, bool>;
-#[doc = "Reader of field `CHINT7`"]
-pub type CHINT7_R = crate::R<bool, bool>;
-#[doc = "Reader of field `CHINT8`"]
-pub type CHINT8_R = crate::R<bool, bool>;
-#[doc = "Reader of field `CHINT9`"]
-pub type CHINT9_R = crate::R<bool, bool>;
-#[doc = "Reader of field `CHINT10`"]
-pub type CHINT10_R = crate::R<bool, bool>;
-#[doc = "Reader of field `CHINT11`"]
-pub type CHINT11_R = crate::R<bool, bool>;
+#[doc = r" Value read from the register"]
+pub struct R {
+    bits: u32,
+}
+impl super::INTSTATUS {
+    #[doc = r" Reads the contents of the register"]
+    #[inline]
+    pub fn read(&self) -> R {
+        R {
+            bits: self.register.get(),
+        }
+    }
+}
+#[doc = r" Value of the field"]
+pub struct CHINT0R {
+    bits: bool,
+}
+impl CHINT0R {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bit(&self) -> bool {
+        self.bits
+    }
+    #[doc = r" Returns `true` if the bit is clear (0)"]
+    #[inline]
+    pub fn bit_is_clear(&self) -> bool {
+        !self.bit()
+    }
+    #[doc = r" Returns `true` if the bit is set (1)"]
+    #[inline]
+    pub fn bit_is_set(&self) -> bool {
+        self.bit()
+    }
+}
+#[doc = r" Value of the field"]
+pub struct CHINT1R {
+    bits: bool,
+}
+impl CHINT1R {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bit(&self) -> bool {
+        self.bits
+    }
+    #[doc = r" Returns `true` if the bit is clear (0)"]
+    #[inline]
+    pub fn bit_is_clear(&self) -> bool {
+        !self.bit()
+    }
+    #[doc = r" Returns `true` if the bit is set (1)"]
+    #[inline]
+    pub fn bit_is_set(&self) -> bool {
+        self.bit()
+    }
+}
+#[doc = r" Value of the field"]
+pub struct CHINT2R {
+    bits: bool,
+}
+impl CHINT2R {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bit(&self) -> bool {
+        self.bits
+    }
+    #[doc = r" Returns `true` if the bit is clear (0)"]
+    #[inline]
+    pub fn bit_is_clear(&self) -> bool {
+        !self.bit()
+    }
+    #[doc = r" Returns `true` if the bit is set (1)"]
+    #[inline]
+    pub fn bit_is_set(&self) -> bool {
+        self.bit()
+    }
+}
+#[doc = r" Value of the field"]
+pub struct CHINT3R {
+    bits: bool,
+}
+impl CHINT3R {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bit(&self) -> bool {
+        self.bits
+    }
+    #[doc = r" Returns `true` if the bit is clear (0)"]
+    #[inline]
+    pub fn bit_is_clear(&self) -> bool {
+        !self.bit()
+    }
+    #[doc = r" Returns `true` if the bit is set (1)"]
+    #[inline]
+    pub fn bit_is_set(&self) -> bool {
+        self.bit()
+    }
+}
+#[doc = r" Value of the field"]
+pub struct CHINT4R {
+    bits: bool,
+}
+impl CHINT4R {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bit(&self) -> bool {
+        self.bits
+    }
+    #[doc = r" Returns `true` if the bit is clear (0)"]
+    #[inline]
+    pub fn bit_is_clear(&self) -> bool {
+        !self.bit()
+    }
+    #[doc = r" Returns `true` if the bit is set (1)"]
+    #[inline]
+    pub fn bit_is_set(&self) -> bool {
+        self.bit()
+    }
+}
+#[doc = r" Value of the field"]
+pub struct CHINT5R {
+    bits: bool,
+}
+impl CHINT5R {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bit(&self) -> bool {
+        self.bits
+    }
+    #[doc = r" Returns `true` if the bit is clear (0)"]
+    #[inline]
+    pub fn bit_is_clear(&self) -> bool {
+        !self.bit()
+    }
+    #[doc = r" Returns `true` if the bit is set (1)"]
+    #[inline]
+    pub fn bit_is_set(&self) -> bool {
+        self.bit()
+    }
+}
+#[doc = r" Value of the field"]
+pub struct CHINT6R {
+    bits: bool,
+}
+impl CHINT6R {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bit(&self) -> bool {
+        self.bits
+    }
+    #[doc = r" Returns `true` if the bit is clear (0)"]
+    #[inline]
+    pub fn bit_is_clear(&self) -> bool {
+        !self.bit()
+    }
+    #[doc = r" Returns `true` if the bit is set (1)"]
+    #[inline]
+    pub fn bit_is_set(&self) -> bool {
+        self.bit()
+    }
+}
+#[doc = r" Value of the field"]
+pub struct CHINT7R {
+    bits: bool,
+}
+impl CHINT7R {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bit(&self) -> bool {
+        self.bits
+    }
+    #[doc = r" Returns `true` if the bit is clear (0)"]
+    #[inline]
+    pub fn bit_is_clear(&self) -> bool {
+        !self.bit()
+    }
+    #[doc = r" Returns `true` if the bit is set (1)"]
+    #[inline]
+    pub fn bit_is_set(&self) -> bool {
+        self.bit()
+    }
+}
+#[doc = r" Value of the field"]
+pub struct CHINT8R {
+    bits: bool,
+}
+impl CHINT8R {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bit(&self) -> bool {
+        self.bits
+    }
+    #[doc = r" Returns `true` if the bit is clear (0)"]
+    #[inline]
+    pub fn bit_is_clear(&self) -> bool {
+        !self.bit()
+    }
+    #[doc = r" Returns `true` if the bit is set (1)"]
+    #[inline]
+    pub fn bit_is_set(&self) -> bool {
+        self.bit()
+    }
+}
+#[doc = r" Value of the field"]
+pub struct CHINT9R {
+    bits: bool,
+}
+impl CHINT9R {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bit(&self) -> bool {
+        self.bits
+    }
+    #[doc = r" Returns `true` if the bit is clear (0)"]
+    #[inline]
+    pub fn bit_is_clear(&self) -> bool {
+        !self.bit()
+    }
+    #[doc = r" Returns `true` if the bit is set (1)"]
+    #[inline]
+    pub fn bit_is_set(&self) -> bool {
+        self.bit()
+    }
+}
+#[doc = r" Value of the field"]
+pub struct CHINT10R {
+    bits: bool,
+}
+impl CHINT10R {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bit(&self) -> bool {
+        self.bits
+    }
+    #[doc = r" Returns `true` if the bit is clear (0)"]
+    #[inline]
+    pub fn bit_is_clear(&self) -> bool {
+        !self.bit()
+    }
+    #[doc = r" Returns `true` if the bit is set (1)"]
+    #[inline]
+    pub fn bit_is_set(&self) -> bool {
+        self.bit()
+    }
+}
+#[doc = r" Value of the field"]
+pub struct CHINT11R {
+    bits: bool,
+}
+impl CHINT11R {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bit(&self) -> bool {
+        self.bits
+    }
+    #[doc = r" Returns `true` if the bit is clear (0)"]
+    #[inline]
+    pub fn bit_is_clear(&self) -> bool {
+        !self.bit()
+    }
+    #[doc = r" Returns `true` if the bit is set (1)"]
+    #[inline]
+    pub fn bit_is_set(&self) -> bool {
+        self.bit()
+    }
+}
 impl R {
+    #[doc = r" Value of the register as raw bits"]
+    #[inline]
+    pub fn bits(&self) -> u32 {
+        self.bits
+    }
     #[doc = "Bit 0 - Channel 0 Pending Interrupt"]
-    #[inline(always)]
-    pub fn chint0(&self) -> CHINT0_R {
-        CHINT0_R::new((self.bits & 0x01) != 0)
+    #[inline]
+    pub fn chint0(&self) -> CHINT0R {
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
+        CHINT0R { bits }
     }
     #[doc = "Bit 1 - Channel 1 Pending Interrupt"]
-    #[inline(always)]
-    pub fn chint1(&self) -> CHINT1_R {
-        CHINT1_R::new(((self.bits >> 1) & 0x01) != 0)
+    #[inline]
+    pub fn chint1(&self) -> CHINT1R {
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 1;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
+        CHINT1R { bits }
     }
     #[doc = "Bit 2 - Channel 2 Pending Interrupt"]
-    #[inline(always)]
-    pub fn chint2(&self) -> CHINT2_R {
-        CHINT2_R::new(((self.bits >> 2) & 0x01) != 0)
+    #[inline]
+    pub fn chint2(&self) -> CHINT2R {
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 2;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
+        CHINT2R { bits }
     }
     #[doc = "Bit 3 - Channel 3 Pending Interrupt"]
-    #[inline(always)]
-    pub fn chint3(&self) -> CHINT3_R {
-        CHINT3_R::new(((self.bits >> 3) & 0x01) != 0)
+    #[inline]
+    pub fn chint3(&self) -> CHINT3R {
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 3;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
+        CHINT3R { bits }
     }
     #[doc = "Bit 4 - Channel 4 Pending Interrupt"]
-    #[inline(always)]
-    pub fn chint4(&self) -> CHINT4_R {
-        CHINT4_R::new(((self.bits >> 4) & 0x01) != 0)
+    #[inline]
+    pub fn chint4(&self) -> CHINT4R {
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 4;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
+        CHINT4R { bits }
     }
     #[doc = "Bit 5 - Channel 5 Pending Interrupt"]
-    #[inline(always)]
-    pub fn chint5(&self) -> CHINT5_R {
-        CHINT5_R::new(((self.bits >> 5) & 0x01) != 0)
+    #[inline]
+    pub fn chint5(&self) -> CHINT5R {
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 5;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
+        CHINT5R { bits }
     }
     #[doc = "Bit 6 - Channel 6 Pending Interrupt"]
-    #[inline(always)]
-    pub fn chint6(&self) -> CHINT6_R {
-        CHINT6_R::new(((self.bits >> 6) & 0x01) != 0)
+    #[inline]
+    pub fn chint6(&self) -> CHINT6R {
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 6;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
+        CHINT6R { bits }
     }
     #[doc = "Bit 7 - Channel 7 Pending Interrupt"]
-    #[inline(always)]
-    pub fn chint7(&self) -> CHINT7_R {
-        CHINT7_R::new(((self.bits >> 7) & 0x01) != 0)
+    #[inline]
+    pub fn chint7(&self) -> CHINT7R {
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 7;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
+        CHINT7R { bits }
     }
     #[doc = "Bit 8 - Channel 8 Pending Interrupt"]
-    #[inline(always)]
-    pub fn chint8(&self) -> CHINT8_R {
-        CHINT8_R::new(((self.bits >> 8) & 0x01) != 0)
+    #[inline]
+    pub fn chint8(&self) -> CHINT8R {
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 8;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
+        CHINT8R { bits }
     }
     #[doc = "Bit 9 - Channel 9 Pending Interrupt"]
-    #[inline(always)]
-    pub fn chint9(&self) -> CHINT9_R {
-        CHINT9_R::new(((self.bits >> 9) & 0x01) != 0)
+    #[inline]
+    pub fn chint9(&self) -> CHINT9R {
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 9;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
+        CHINT9R { bits }
     }
     #[doc = "Bit 10 - Channel 10 Pending Interrupt"]
-    #[inline(always)]
-    pub fn chint10(&self) -> CHINT10_R {
-        CHINT10_R::new(((self.bits >> 10) & 0x01) != 0)
+    #[inline]
+    pub fn chint10(&self) -> CHINT10R {
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 10;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
+        CHINT10R { bits }
     }
     #[doc = "Bit 11 - Channel 11 Pending Interrupt"]
-    #[inline(always)]
-    pub fn chint11(&self) -> CHINT11_R {
-        CHINT11_R::new(((self.bits >> 11) & 0x01) != 0)
+    #[inline]
+    pub fn chint11(&self) -> CHINT11R {
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 11;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
+        CHINT11R { bits }
     }
 }

@@ -692,193 +692,321 @@ impl R {
     #[doc = "Bit 0 - Busy Channel 0"]
     #[inline]
     pub fn busych0(&self) -> BUSYCH0R {
-        let bits = ((self.bits >> 0) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         BUSYCH0R { bits }
     }
     #[doc = "Bit 1 - Busy Channel 1"]
     #[inline]
     pub fn busych1(&self) -> BUSYCH1R {
-        let bits = ((self.bits >> 1) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 1;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         BUSYCH1R { bits }
     }
     #[doc = "Bit 2 - Busy Channel 2"]
     #[inline]
     pub fn busych2(&self) -> BUSYCH2R {
-        let bits = ((self.bits >> 2) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 2;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         BUSYCH2R { bits }
     }
     #[doc = "Bit 3 - Busy Channel 3"]
     #[inline]
     pub fn busych3(&self) -> BUSYCH3R {
-        let bits = ((self.bits >> 3) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 3;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         BUSYCH3R { bits }
     }
     #[doc = "Bit 4 - Busy Channel 4"]
     #[inline]
     pub fn busych4(&self) -> BUSYCH4R {
-        let bits = ((self.bits >> 4) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 4;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         BUSYCH4R { bits }
     }
     #[doc = "Bit 5 - Busy Channel 5"]
     #[inline]
     pub fn busych5(&self) -> BUSYCH5R {
-        let bits = ((self.bits >> 5) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 5;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         BUSYCH5R { bits }
     }
     #[doc = "Bit 6 - Busy Channel 6"]
     #[inline]
     pub fn busych6(&self) -> BUSYCH6R {
-        let bits = ((self.bits >> 6) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 6;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         BUSYCH6R { bits }
     }
     #[doc = "Bit 7 - Busy Channel 7"]
     #[inline]
     pub fn busych7(&self) -> BUSYCH7R {
-        let bits = ((self.bits >> 7) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 7;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         BUSYCH7R { bits }
     }
     #[doc = "Bit 8 - Busy Channel 8"]
     #[inline]
     pub fn busych8(&self) -> BUSYCH8R {
-        let bits = ((self.bits >> 8) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 8;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         BUSYCH8R { bits }
     }
     #[doc = "Bit 9 - Busy Channel 9"]
     #[inline]
     pub fn busych9(&self) -> BUSYCH9R {
-        let bits = ((self.bits >> 9) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 9;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         BUSYCH9R { bits }
     }
     #[doc = "Bit 10 - Busy Channel 10"]
     #[inline]
     pub fn busych10(&self) -> BUSYCH10R {
-        let bits = ((self.bits >> 10) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 10;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         BUSYCH10R { bits }
     }
     #[doc = "Bit 11 - Busy Channel 11"]
     #[inline]
     pub fn busych11(&self) -> BUSYCH11R {
-        let bits = ((self.bits >> 11) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 11;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         BUSYCH11R { bits }
     }
     #[doc = "Bit 12 - Busy Channel 12"]
     #[inline]
     pub fn busych12(&self) -> BUSYCH12R {
-        let bits = ((self.bits >> 12) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 12;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         BUSYCH12R { bits }
     }
     #[doc = "Bit 13 - Busy Channel 13"]
     #[inline]
     pub fn busych13(&self) -> BUSYCH13R {
-        let bits = ((self.bits >> 13) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 13;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         BUSYCH13R { bits }
     }
     #[doc = "Bit 14 - Busy Channel 14"]
     #[inline]
     pub fn busych14(&self) -> BUSYCH14R {
-        let bits = ((self.bits >> 14) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 14;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         BUSYCH14R { bits }
     }
     #[doc = "Bit 15 - Busy Channel 15"]
     #[inline]
     pub fn busych15(&self) -> BUSYCH15R {
-        let bits = ((self.bits >> 15) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 15;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         BUSYCH15R { bits }
     }
     #[doc = "Bit 16 - Busy Channel 16"]
     #[inline]
     pub fn busych16(&self) -> BUSYCH16R {
-        let bits = ((self.bits >> 16) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 16;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         BUSYCH16R { bits }
     }
     #[doc = "Bit 17 - Busy Channel 17"]
     #[inline]
     pub fn busych17(&self) -> BUSYCH17R {
-        let bits = ((self.bits >> 17) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 17;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         BUSYCH17R { bits }
     }
     #[doc = "Bit 18 - Busy Channel 18"]
     #[inline]
     pub fn busych18(&self) -> BUSYCH18R {
-        let bits = ((self.bits >> 18) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 18;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         BUSYCH18R { bits }
     }
     #[doc = "Bit 19 - Busy Channel 19"]
     #[inline]
     pub fn busych19(&self) -> BUSYCH19R {
-        let bits = ((self.bits >> 19) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 19;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         BUSYCH19R { bits }
     }
     #[doc = "Bit 20 - Busy Channel 20"]
     #[inline]
     pub fn busych20(&self) -> BUSYCH20R {
-        let bits = ((self.bits >> 20) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 20;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         BUSYCH20R { bits }
     }
     #[doc = "Bit 21 - Busy Channel 21"]
     #[inline]
     pub fn busych21(&self) -> BUSYCH21R {
-        let bits = ((self.bits >> 21) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 21;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         BUSYCH21R { bits }
     }
     #[doc = "Bit 22 - Busy Channel 22"]
     #[inline]
     pub fn busych22(&self) -> BUSYCH22R {
-        let bits = ((self.bits >> 22) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 22;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         BUSYCH22R { bits }
     }
     #[doc = "Bit 23 - Busy Channel 23"]
     #[inline]
     pub fn busych23(&self) -> BUSYCH23R {
-        let bits = ((self.bits >> 23) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 23;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         BUSYCH23R { bits }
     }
     #[doc = "Bit 24 - Busy Channel 24"]
     #[inline]
     pub fn busych24(&self) -> BUSYCH24R {
-        let bits = ((self.bits >> 24) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 24;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         BUSYCH24R { bits }
     }
     #[doc = "Bit 25 - Busy Channel 25"]
     #[inline]
     pub fn busych25(&self) -> BUSYCH25R {
-        let bits = ((self.bits >> 25) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 25;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         BUSYCH25R { bits }
     }
     #[doc = "Bit 26 - Busy Channel 26"]
     #[inline]
     pub fn busych26(&self) -> BUSYCH26R {
-        let bits = ((self.bits >> 26) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 26;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         BUSYCH26R { bits }
     }
     #[doc = "Bit 27 - Busy Channel 27"]
     #[inline]
     pub fn busych27(&self) -> BUSYCH27R {
-        let bits = ((self.bits >> 27) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 27;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         BUSYCH27R { bits }
     }
     #[doc = "Bit 28 - Busy Channel 28"]
     #[inline]
     pub fn busych28(&self) -> BUSYCH28R {
-        let bits = ((self.bits >> 28) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 28;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         BUSYCH28R { bits }
     }
     #[doc = "Bit 29 - Busy Channel 29"]
     #[inline]
     pub fn busych29(&self) -> BUSYCH29R {
-        let bits = ((self.bits >> 29) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 29;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         BUSYCH29R { bits }
     }
     #[doc = "Bit 30 - Busy Channel 30"]
     #[inline]
     pub fn busych30(&self) -> BUSYCH30R {
-        let bits = ((self.bits >> 30) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 30;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         BUSYCH30R { bits }
     }
     #[doc = "Bit 31 - Busy Channel 31"]
     #[inline]
     pub fn busych31(&self) -> BUSYCH31R {
-        let bits = ((self.bits >> 31) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 31;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         BUSYCH31R { bits }
     }
 }

@@ -14,7 +14,10 @@ impl super::CTRLB {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        self.register.set(f(&R { bits }, &mut W { bits }).bits);
+        let r = R { bits };
+        let mut w = W { bits };
+        f(&r, &mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -29,22 +32,14 @@ impl super::CTRLB {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        self.register.set(
-            f(&mut W {
-                bits: Self::reset_value(),
-            })
-            .bits,
-        );
-    }
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub const fn reset_value() -> u32 {
-        0
+        let mut w = W::reset_value();
+        f(&mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.register.set(Self::reset_value())
+        self.write(|w| w)
     }
 }
 #[doc = "Possible values of the field `RWS`"]
@@ -65,8 +60,8 @@ impl RWSR {
     pub fn bits(&self) -> u8 {
         match *self {
             RWSR::SINGLE => 0,
-            RWSR::HALF => 0x01,
-            RWSR::DUAL => 0x02,
+            RWSR::HALF => 1,
+            RWSR::DUAL => 2,
             RWSR::_Reserved(bits) => bits,
         }
     }
@@ -136,8 +131,8 @@ impl SLEEPPRMR {
     pub fn bits(&self) -> u8 {
         match *self {
             SLEEPPRMR::WAKEONACCESS => 0,
-            SLEEPPRMR::WAKEUPINSTANT => 0x01,
-            SLEEPPRMR::DISABLED => 0x03,
+            SLEEPPRMR::WAKEUPINSTANT => 1,
+            SLEEPPRMR::DISABLED => 3,
             SLEEPPRMR::_Reserved(bits) => bits,
         }
     }
@@ -186,8 +181,8 @@ impl READMODER {
     pub fn bits(&self) -> u8 {
         match *self {
             READMODER::NO_MISS_PENALTY => 0,
-            READMODER::LOW_POWER => 0x01,
-            READMODER::DETERMINISTIC => 0x02,
+            READMODER::LOW_POWER => 1,
+            READMODER::DETERMINISTIC => 2,
             READMODER::_Reserved(bits) => bits,
         }
     }
@@ -240,7 +235,6 @@ impl CACHEDISR {
     }
 }
 #[doc = "Values that can be written to the field `RWS`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum RWSW {
     #[doc = "Single Auto Wait State"]
     SINGLE,
@@ -289,8 +283,10 @@ impl<'a> _RWSW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x0f << 1);
-        self.w.bits |= ((value as u32) & 0x0f) << 1;
+        const MASK: u8 = 15;
+        const OFFSET: u8 = 1;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -310,13 +306,14 @@ impl<'a> _MANWW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 7);
-        self.w.bits |= ((value as u32) & 0x01) << 7;
+        const MASK: bool = true;
+        const OFFSET: u8 = 7;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `SLEEPPRM`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum SLEEPPRMW {
     #[doc = "NVM block enters low-power mode when entering sleep.NVM block exits low-power mode upon first access."]
     WAKEONACCESS,
@@ -365,13 +362,14 @@ impl<'a> _SLEEPPRMW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x03 << 8);
-        self.w.bits |= ((value as u32) & 0x03) << 8;
+        const MASK: u8 = 3;
+        const OFFSET: u8 = 8;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `READMODE`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum READMODEW {
     #[doc = "The NVM Controller (cache system) does not insert wait states on a cache miss. Gives the best system performance."]
     NO_MISS_PENALTY,
@@ -420,8 +418,10 @@ impl<'a> _READMODEW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x03 << 16);
-        self.w.bits |= ((value as u32) & 0x03) << 16;
+        const MASK: u8 = 3;
+        const OFFSET: u8 = 16;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -441,8 +441,10 @@ impl<'a> _CACHEDISW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 18);
-        self.w.bits |= ((value as u32) & 0x01) << 18;
+        const MASK: bool = true;
+        const OFFSET: u8 = 18;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -455,32 +457,57 @@ impl R {
     #[doc = "Bits 1:4 - NVM Read Wait States"]
     #[inline]
     pub fn rws(&self) -> RWSR {
-        RWSR::_from(((self.bits >> 1) & 0x0f) as u8)
+        RWSR::_from({
+            const MASK: u8 = 15;
+            const OFFSET: u8 = 1;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
     #[doc = "Bit 7 - Manual Write"]
     #[inline]
     pub fn manw(&self) -> MANWR {
-        let bits = ((self.bits >> 7) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 7;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         MANWR { bits }
     }
     #[doc = "Bits 8:9 - Power Reduction Mode during Sleep"]
     #[inline]
     pub fn sleepprm(&self) -> SLEEPPRMR {
-        SLEEPPRMR::_from(((self.bits >> 8) & 0x03) as u8)
+        SLEEPPRMR::_from({
+            const MASK: u8 = 3;
+            const OFFSET: u8 = 8;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
     #[doc = "Bits 16:17 - NVMCTRL Read Mode"]
     #[inline]
     pub fn readmode(&self) -> READMODER {
-        READMODER::_from(((self.bits >> 16) & 0x03) as u8)
+        READMODER::_from({
+            const MASK: u8 = 3;
+            const OFFSET: u8 = 16;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
     #[doc = "Bit 18 - Cache Disable"]
     #[inline]
     pub fn cachedis(&self) -> CACHEDISR {
-        let bits = ((self.bits >> 18) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 18;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         CACHEDISR { bits }
     }
 }
 impl W {
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub fn reset_value() -> W {
+        W { bits: 0 }
+    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {

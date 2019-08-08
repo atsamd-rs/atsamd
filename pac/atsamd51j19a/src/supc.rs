@@ -26,67 +26,67 @@ pub struct RegisterBlock {
 }
 #[doc = "Interrupt Enable Clear"]
 pub struct INTENCLR {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Interrupt Enable Clear"]
 pub mod intenclr;
 #[doc = "Interrupt Enable Set"]
 pub struct INTENSET {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Interrupt Enable Set"]
 pub mod intenset;
 #[doc = "Interrupt Flag Status and Clear"]
 pub struct INTFLAG {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Interrupt Flag Status and Clear"]
 pub mod intflag;
 #[doc = "Power and Clocks Status"]
 pub struct STATUS {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Power and Clocks Status"]
 pub mod status;
 #[doc = "BOD33 Control"]
 pub struct BOD33 {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "BOD33 Control"]
 pub mod bod33;
 #[doc = "BOD12 Control"]
 pub struct BOD12 {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "BOD12 Control"]
 pub mod bod12;
 #[doc = "VREG Control"]
 pub struct VREG {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "VREG Control"]
 pub mod vreg;
 #[doc = "VREF Control"]
 pub struct VREF {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "VREF Control"]
 pub mod vref;
 #[doc = "Battery Backup Power Switch"]
 pub struct BBPS {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Battery Backup Power Switch"]
 pub mod bbps;
 #[doc = "Backup Output Control"]
 pub struct BKOUT {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Backup Output Control"]
 pub mod bkout;
 #[doc = "Backup Input Control"]
 pub struct BKIN {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Backup Input Control"]
 pub mod bkin;

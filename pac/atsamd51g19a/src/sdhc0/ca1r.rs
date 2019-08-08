@@ -331,18 +331,18 @@ impl TCNTRTR {
     pub fn bits(&self) -> u8 {
         match *self {
             TCNTRTR::DISABLED => 0,
-            TCNTRTR::_1S => 0x01,
-            TCNTRTR::_2S => 0x02,
-            TCNTRTR::_4S => 0x03,
-            TCNTRTR::_8S => 0x04,
-            TCNTRTR::_16S => 0x05,
-            TCNTRTR::_32S => 0x06,
-            TCNTRTR::_64S => 0x07,
-            TCNTRTR::_128S => 0x08,
-            TCNTRTR::_256S => 0x09,
-            TCNTRTR::_512S => 0x0a,
-            TCNTRTR::_1024S => 0x0b,
-            TCNTRTR::OTHER => 0x0f,
+            TCNTRTR::_1S => 1,
+            TCNTRTR::_2S => 2,
+            TCNTRTR::_4S => 3,
+            TCNTRTR::_8S => 4,
+            TCNTRTR::_16S => 5,
+            TCNTRTR::_32S => 6,
+            TCNTRTR::_64S => 7,
+            TCNTRTR::_128S => 8,
+            TCNTRTR::_256S => 9,
+            TCNTRTR::_512S => 10,
+            TCNTRTR::_1024S => 11,
+            TCNTRTR::OTHER => 15,
             TCNTRTR::_Reserved(bits) => bits,
         }
     }
@@ -521,46 +521,82 @@ impl R {
     #[doc = "Bit 0 - SDR50 Support"]
     #[inline]
     pub fn sdr50sup(&self) -> SDR50SUPR {
-        SDR50SUPR::_from(((self.bits >> 0) & 0x01) != 0)
+        SDR50SUPR::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        })
     }
     #[doc = "Bit 1 - SDR104 Support"]
     #[inline]
     pub fn sdr104sup(&self) -> SDR104SUPR {
-        SDR104SUPR::_from(((self.bits >> 1) & 0x01) != 0)
+        SDR104SUPR::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 1;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        })
     }
     #[doc = "Bit 2 - DDR50 Support"]
     #[inline]
     pub fn ddr50sup(&self) -> DDR50SUPR {
-        DDR50SUPR::_from(((self.bits >> 2) & 0x01) != 0)
+        DDR50SUPR::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 2;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        })
     }
     #[doc = "Bit 4 - Driver Type A Support"]
     #[inline]
     pub fn drvasup(&self) -> DRVASUPR {
-        DRVASUPR::_from(((self.bits >> 4) & 0x01) != 0)
+        DRVASUPR::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 4;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        })
     }
     #[doc = "Bit 5 - Driver Type C Support"]
     #[inline]
     pub fn drvcsup(&self) -> DRVCSUPR {
-        DRVCSUPR::_from(((self.bits >> 5) & 0x01) != 0)
+        DRVCSUPR::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 5;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        })
     }
     #[doc = "Bit 6 - Driver Type D Support"]
     #[inline]
     pub fn drvdsup(&self) -> DRVDSUPR {
-        DRVDSUPR::_from(((self.bits >> 6) & 0x01) != 0)
+        DRVDSUPR::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 6;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        })
     }
     #[doc = "Bits 8:11 - Timer Count for Re-Tuning"]
     #[inline]
     pub fn tcntrt(&self) -> TCNTRTR {
-        TCNTRTR::_from(((self.bits >> 8) & 0x0f) as u8)
+        TCNTRTR::_from({
+            const MASK: u8 = 15;
+            const OFFSET: u8 = 8;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
     #[doc = "Bit 13 - Use Tuning for SDR50"]
     #[inline]
     pub fn tsdr50(&self) -> TSDR50R {
-        TSDR50R::_from(((self.bits >> 13) & 0x01) != 0)
+        TSDR50R::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 13;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        })
     }
     #[doc = "Bits 16:23 - Clock Multiplier"]
     #[inline]
     pub fn clkmult(&self) -> CLKMULTR {
-        CLKMULTR::_from(((self.bits >> 16) & 0xff) as u8)
+        CLKMULTR::_from({
+            const MASK: u8 = 255;
+            const OFFSET: u8 = 16;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
 }

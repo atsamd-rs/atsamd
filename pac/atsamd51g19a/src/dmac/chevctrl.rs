@@ -14,7 +14,10 @@ impl super::CHEVCTRL {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        self.register.set(f(&R { bits }, &mut W { bits }).bits);
+        let r = R { bits };
+        let mut w = W { bits };
+        f(&r, &mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -29,22 +32,14 @@ impl super::CHEVCTRL {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        self.register.set(
-            f(&mut W {
-                bits: Self::reset_value(),
-            })
-            .bits,
-        );
-    }
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub const fn reset_value() -> u8 {
-        0
+        let mut w = W::reset_value();
+        f(&mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.register.set(Self::reset_value())
+        self.write(|w| w)
     }
 }
 #[doc = "Possible values of the field `EVACT`"]
@@ -73,13 +68,13 @@ impl EVACTR {
     pub fn bits(&self) -> u8 {
         match *self {
             EVACTR::NOACT => 0,
-            EVACTR::TRIG => 0x01,
-            EVACTR::CTRIG => 0x02,
-            EVACTR::CBLOCK => 0x03,
-            EVACTR::SUSPEND => 0x04,
-            EVACTR::RESUME => 0x05,
-            EVACTR::SSKIP => 0x06,
-            EVACTR::INCPRI => 0x07,
+            EVACTR::TRIG => 1,
+            EVACTR::CTRIG => 2,
+            EVACTR::CBLOCK => 3,
+            EVACTR::SUSPEND => 4,
+            EVACTR::RESUME => 5,
+            EVACTR::SSKIP => 6,
+            EVACTR::INCPRI => 7,
         }
     }
     #[allow(missing_docs)]
@@ -155,7 +150,7 @@ impl EVOMODER {
     pub fn bits(&self) -> u8 {
         match *self {
             EVOMODER::DEFAULT => 0,
-            EVOMODER::TRIGACT => 0x01,
+            EVOMODER::TRIGACT => 1,
             EVOMODER::_Reserved(bits) => bits,
         }
     }
@@ -223,7 +218,6 @@ impl EVOER {
     }
 }
 #[doc = "Values that can be written to the field `EVACT`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum EVACTW {
     #[doc = "No action"]
     NOACT,
@@ -314,13 +308,14 @@ impl<'a> _EVACTW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x07 << 0);
-        self.w.bits |= ((value as u8) & 0x07) << 0;
+        const MASK: u8 = 7;
+        const OFFSET: u8 = 0;
+        self.w.bits &= !((MASK as u8) << OFFSET);
+        self.w.bits |= ((value & MASK) as u8) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `EVOMODE`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum EVOMODEW {
     #[doc = "Block event output selection. Refer to BTCTRL.EVOSEL for available selections."]
     DEFAULT,
@@ -361,8 +356,10 @@ impl<'a> _EVOMODEW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x03 << 4);
-        self.w.bits |= ((value as u8) & 0x03) << 4;
+        const MASK: u8 = 3;
+        const OFFSET: u8 = 4;
+        self.w.bits &= !((MASK as u8) << OFFSET);
+        self.w.bits |= ((value & MASK) as u8) << OFFSET;
         self.w
     }
 }
@@ -382,8 +379,10 @@ impl<'a> _EVIEW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 6);
-        self.w.bits |= ((value as u8) & 0x01) << 6;
+        const MASK: bool = true;
+        const OFFSET: u8 = 6;
+        self.w.bits &= !((MASK as u8) << OFFSET);
+        self.w.bits |= ((value & MASK) as u8) << OFFSET;
         self.w
     }
 }
@@ -403,8 +402,10 @@ impl<'a> _EVOEW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 7);
-        self.w.bits |= ((value as u8) & 0x01) << 7;
+        const MASK: bool = true;
+        const OFFSET: u8 = 7;
+        self.w.bits &= !((MASK as u8) << OFFSET);
+        self.w.bits |= ((value & MASK) as u8) << OFFSET;
         self.w
     }
 }
@@ -417,27 +418,48 @@ impl R {
     #[doc = "Bits 0:2 - Channel Event Input Action"]
     #[inline]
     pub fn evact(&self) -> EVACTR {
-        EVACTR::_from(((self.bits >> 0) & 0x07) as u8)
+        EVACTR::_from({
+            const MASK: u8 = 7;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u8) as u8
+        })
     }
     #[doc = "Bits 4:5 - Channel Event Output Mode"]
     #[inline]
     pub fn evomode(&self) -> EVOMODER {
-        EVOMODER::_from(((self.bits >> 4) & 0x03) as u8)
+        EVOMODER::_from({
+            const MASK: u8 = 3;
+            const OFFSET: u8 = 4;
+            ((self.bits >> OFFSET) & MASK as u8) as u8
+        })
     }
     #[doc = "Bit 6 - Channel Event Input Enable"]
     #[inline]
     pub fn evie(&self) -> EVIER {
-        let bits = ((self.bits >> 6) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 6;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         EVIER { bits }
     }
     #[doc = "Bit 7 - Channel Event Output Enable"]
     #[inline]
     pub fn evoe(&self) -> EVOER {
-        let bits = ((self.bits >> 7) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 7;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         EVOER { bits }
     }
 }
 impl W {
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub fn reset_value() -> W {
+        W { bits: 0 }
+    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {

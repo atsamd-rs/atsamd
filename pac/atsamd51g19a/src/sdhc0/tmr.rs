@@ -14,7 +14,10 @@ impl super::TMR {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        self.register.set(f(&R { bits }, &mut W { bits }).bits);
+        let r = R { bits };
+        let mut w = W { bits };
+        f(&r, &mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -29,22 +32,14 @@ impl super::TMR {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        self.register.set(
-            f(&mut W {
-                bits: Self::reset_value(),
-            })
-            .bits,
-        );
-    }
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub const fn reset_value() -> u16 {
-        0
+        let mut w = W::reset_value();
+        f(&mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.register.set(Self::reset_value())
+        self.write(|w| w)
     }
 }
 #[doc = "Possible values of the field `DMAEN`"]
@@ -159,8 +154,8 @@ impl ACMDENR {
     pub fn bits(&self) -> u8 {
         match *self {
             ACMDENR::DISABLED => 0,
-            ACMDENR::CMD12 => 0x01,
-            ACMDENR::CMD23 => 0x02,
+            ACMDENR::CMD12 => 1,
+            ACMDENR::CMD23 => 2,
             ACMDENR::_Reserved(bits) => bits,
         }
     }
@@ -286,7 +281,6 @@ impl MSBSELR {
     }
 }
 #[doc = "Values that can be written to the field `DMAEN`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum DMAENW {
     #[doc = "No data transfer or Non DMA data transfer"]
     DISABLE,
@@ -337,13 +331,14 @@ impl<'a> _DMAENW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 0);
-        self.w.bits |= ((value as u16) & 0x01) << 0;
+        const MASK: bool = true;
+        const OFFSET: u8 = 0;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `BCEN`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum BCENW {
     #[doc = "Disable"]
     DISABLE,
@@ -394,13 +389,14 @@ impl<'a> _BCENW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 1);
-        self.w.bits |= ((value as u16) & 0x01) << 1;
+        const MASK: bool = true;
+        const OFFSET: u8 = 1;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `ACMDEN`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum ACMDENW {
     #[doc = "Auto Command Disabled"]
     DISABLED,
@@ -449,13 +445,14 @@ impl<'a> _ACMDENW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x03 << 2);
-        self.w.bits |= ((value as u16) & 0x03) << 2;
+        const MASK: u8 = 3;
+        const OFFSET: u8 = 2;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `DTDSEL`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum DTDSELW {
     #[doc = "Write (Host to Card)"]
     WRITE,
@@ -506,13 +503,14 @@ impl<'a> _DTDSELW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 4);
-        self.w.bits |= ((value as u16) & 0x01) << 4;
+        const MASK: bool = true;
+        const OFFSET: u8 = 4;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `MSBSEL`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum MSBSELW {
     #[doc = "Single Block"]
     SINGLE,
@@ -563,8 +561,10 @@ impl<'a> _MSBSELW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 5);
-        self.w.bits |= ((value as u16) & 0x01) << 5;
+        const MASK: bool = true;
+        const OFFSET: u8 = 5;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
@@ -577,30 +577,55 @@ impl R {
     #[doc = "Bit 0 - DMA Enable"]
     #[inline]
     pub fn dmaen(&self) -> DMAENR {
-        DMAENR::_from(((self.bits >> 0) & 0x01) != 0)
+        DMAENR::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        })
     }
     #[doc = "Bit 1 - Block Count Enable"]
     #[inline]
     pub fn bcen(&self) -> BCENR {
-        BCENR::_from(((self.bits >> 1) & 0x01) != 0)
+        BCENR::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 1;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        })
     }
     #[doc = "Bits 2:3 - Auto Command Enable"]
     #[inline]
     pub fn acmden(&self) -> ACMDENR {
-        ACMDENR::_from(((self.bits >> 2) & 0x03) as u8)
+        ACMDENR::_from({
+            const MASK: u8 = 3;
+            const OFFSET: u8 = 2;
+            ((self.bits >> OFFSET) & MASK as u16) as u8
+        })
     }
     #[doc = "Bit 4 - Data Transfer Direction Selection"]
     #[inline]
     pub fn dtdsel(&self) -> DTDSELR {
-        DTDSELR::_from(((self.bits >> 4) & 0x01) != 0)
+        DTDSELR::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 4;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        })
     }
     #[doc = "Bit 5 - Multi/Single Block Selection"]
     #[inline]
     pub fn msbsel(&self) -> MSBSELR {
-        MSBSELR::_from(((self.bits >> 5) & 0x01) != 0)
+        MSBSELR::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 5;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        })
     }
 }
 impl W {
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub fn reset_value() -> W {
+        W { bits: 0 }
+    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {

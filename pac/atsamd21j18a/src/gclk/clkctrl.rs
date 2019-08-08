@@ -1,18 +1,542 @@
-#[doc = "Reader of register CLKCTRL"]
-pub type R = crate::R<u16, super::CLKCTRL>;
-#[doc = "Writer for register CLKCTRL"]
-pub type W = crate::W<u16, super::CLKCTRL>;
-#[doc = "Register CLKCTRL `reset()`'s with value 0"]
-impl crate::ResetValue for super::CLKCTRL {
-    type Type = u16;
-    #[inline(always)]
-    fn reset_value() -> Self::Type {
-        0
+#[doc = r" Value read from the register"]
+pub struct R {
+    bits: u16,
+}
+#[doc = r" Value to write to the register"]
+pub struct W {
+    bits: u16,
+}
+impl super::CLKCTRL {
+    #[doc = r" Modifies the contents of the register"]
+    #[inline]
+    pub fn modify<F>(&self, f: F)
+    where
+        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
+    {
+        let bits = self.register.get();
+        let r = R { bits };
+        let mut w = W { bits };
+        f(&r, &mut w);
+        self.register.set(w.bits);
+    }
+    #[doc = r" Reads the contents of the register"]
+    #[inline]
+    pub fn read(&self) -> R {
+        R {
+            bits: self.register.get(),
+        }
+    }
+    #[doc = r" Writes to the register"]
+    #[inline]
+    pub fn write<F>(&self, f: F)
+    where
+        F: FnOnce(&mut W) -> &mut W,
+    {
+        let mut w = W::reset_value();
+        f(&mut w);
+        self.register.set(w.bits);
+    }
+    #[doc = r" Writes the reset value to the register"]
+    #[inline]
+    pub fn reset(&self) {
+        self.write(|w| w)
     }
 }
 #[doc = "Possible values of the field `ID`"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum ID_A {
+pub enum IDR {
+    #[doc = "DFLL48"]
+    DFLL48,
+    #[doc = "FDPLL"]
+    FDPLL,
+    #[doc = "FDPLL32K"]
+    FDPLL32K,
+    #[doc = "WDT"]
+    WDT,
+    #[doc = "RTC"]
+    RTC,
+    #[doc = "EIC"]
+    EIC,
+    #[doc = "USB"]
+    USB,
+    #[doc = "EVSYS_0"]
+    EVSYS_0,
+    #[doc = "EVSYS_1"]
+    EVSYS_1,
+    #[doc = "EVSYS_2"]
+    EVSYS_2,
+    #[doc = "EVSYS_3"]
+    EVSYS_3,
+    #[doc = "EVSYS_4"]
+    EVSYS_4,
+    #[doc = "EVSYS_5"]
+    EVSYS_5,
+    #[doc = "EVSYS_6"]
+    EVSYS_6,
+    #[doc = "EVSYS_7"]
+    EVSYS_7,
+    #[doc = "EVSYS_8"]
+    EVSYS_8,
+    #[doc = "EVSYS_9"]
+    EVSYS_9,
+    #[doc = "EVSYS_10"]
+    EVSYS_10,
+    #[doc = "EVSYS_11"]
+    EVSYS_11,
+    #[doc = "SERCOMX_SLOW"]
+    SERCOMX_SLOW,
+    #[doc = "SERCOM0_CORE"]
+    SERCOM0_CORE,
+    #[doc = "SERCOM1_CORE"]
+    SERCOM1_CORE,
+    #[doc = "SERCOM2_CORE"]
+    SERCOM2_CORE,
+    #[doc = "SERCOM3_CORE"]
+    SERCOM3_CORE,
+    #[doc = "SERCOM4_CORE"]
+    SERCOM4_CORE,
+    #[doc = "SERCOM5_CORE"]
+    SERCOM5_CORE,
+    #[doc = "TCC0_TCC1"]
+    TCC0_TCC1,
+    #[doc = "TCC2_TC3"]
+    TCC2_TC3,
+    #[doc = "TC4_TC5"]
+    TC4_TC5,
+    #[doc = "TC6_TC7"]
+    TC6_TC7,
+    #[doc = "ADC"]
+    ADC,
+    #[doc = "AC_DIG"]
+    AC_DIG,
+    #[doc = "AC_ANA"]
+    AC_ANA,
+    #[doc = "DAC"]
+    DAC,
+    #[doc = "I2S_0"]
+    I2S_0,
+    #[doc = "I2S_1"]
+    I2S_1,
+    #[doc = r" Reserved"]
+    _Reserved(u8),
+}
+impl IDR {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bits(&self) -> u8 {
+        match *self {
+            IDR::DFLL48 => 0,
+            IDR::FDPLL => 1,
+            IDR::FDPLL32K => 2,
+            IDR::WDT => 3,
+            IDR::RTC => 4,
+            IDR::EIC => 5,
+            IDR::USB => 6,
+            IDR::EVSYS_0 => 7,
+            IDR::EVSYS_1 => 8,
+            IDR::EVSYS_2 => 9,
+            IDR::EVSYS_3 => 10,
+            IDR::EVSYS_4 => 11,
+            IDR::EVSYS_5 => 12,
+            IDR::EVSYS_6 => 13,
+            IDR::EVSYS_7 => 14,
+            IDR::EVSYS_8 => 15,
+            IDR::EVSYS_9 => 16,
+            IDR::EVSYS_10 => 17,
+            IDR::EVSYS_11 => 18,
+            IDR::SERCOMX_SLOW => 19,
+            IDR::SERCOM0_CORE => 20,
+            IDR::SERCOM1_CORE => 21,
+            IDR::SERCOM2_CORE => 22,
+            IDR::SERCOM3_CORE => 23,
+            IDR::SERCOM4_CORE => 24,
+            IDR::SERCOM5_CORE => 25,
+            IDR::TCC0_TCC1 => 26,
+            IDR::TCC2_TC3 => 27,
+            IDR::TC4_TC5 => 28,
+            IDR::TC6_TC7 => 29,
+            IDR::ADC => 30,
+            IDR::AC_DIG => 31,
+            IDR::AC_ANA => 32,
+            IDR::DAC => 33,
+            IDR::I2S_0 => 35,
+            IDR::I2S_1 => 36,
+            IDR::_Reserved(bits) => bits,
+        }
+    }
+    #[allow(missing_docs)]
+    #[doc(hidden)]
+    #[inline]
+    pub fn _from(value: u8) -> IDR {
+        match value {
+            0 => IDR::DFLL48,
+            1 => IDR::FDPLL,
+            2 => IDR::FDPLL32K,
+            3 => IDR::WDT,
+            4 => IDR::RTC,
+            5 => IDR::EIC,
+            6 => IDR::USB,
+            7 => IDR::EVSYS_0,
+            8 => IDR::EVSYS_1,
+            9 => IDR::EVSYS_2,
+            10 => IDR::EVSYS_3,
+            11 => IDR::EVSYS_4,
+            12 => IDR::EVSYS_5,
+            13 => IDR::EVSYS_6,
+            14 => IDR::EVSYS_7,
+            15 => IDR::EVSYS_8,
+            16 => IDR::EVSYS_9,
+            17 => IDR::EVSYS_10,
+            18 => IDR::EVSYS_11,
+            19 => IDR::SERCOMX_SLOW,
+            20 => IDR::SERCOM0_CORE,
+            21 => IDR::SERCOM1_CORE,
+            22 => IDR::SERCOM2_CORE,
+            23 => IDR::SERCOM3_CORE,
+            24 => IDR::SERCOM4_CORE,
+            25 => IDR::SERCOM5_CORE,
+            26 => IDR::TCC0_TCC1,
+            27 => IDR::TCC2_TC3,
+            28 => IDR::TC4_TC5,
+            29 => IDR::TC6_TC7,
+            30 => IDR::ADC,
+            31 => IDR::AC_DIG,
+            32 => IDR::AC_ANA,
+            33 => IDR::DAC,
+            35 => IDR::I2S_0,
+            36 => IDR::I2S_1,
+            i => IDR::_Reserved(i),
+        }
+    }
+    #[doc = "Checks if the value of the field is `DFLL48`"]
+    #[inline]
+    pub fn is_dfll48(&self) -> bool {
+        *self == IDR::DFLL48
+    }
+    #[doc = "Checks if the value of the field is `FDPLL`"]
+    #[inline]
+    pub fn is_fdpll(&self) -> bool {
+        *self == IDR::FDPLL
+    }
+    #[doc = "Checks if the value of the field is `FDPLL32K`"]
+    #[inline]
+    pub fn is_fdpll32k(&self) -> bool {
+        *self == IDR::FDPLL32K
+    }
+    #[doc = "Checks if the value of the field is `WDT`"]
+    #[inline]
+    pub fn is_wdt(&self) -> bool {
+        *self == IDR::WDT
+    }
+    #[doc = "Checks if the value of the field is `RTC`"]
+    #[inline]
+    pub fn is_rtc(&self) -> bool {
+        *self == IDR::RTC
+    }
+    #[doc = "Checks if the value of the field is `EIC`"]
+    #[inline]
+    pub fn is_eic(&self) -> bool {
+        *self == IDR::EIC
+    }
+    #[doc = "Checks if the value of the field is `USB`"]
+    #[inline]
+    pub fn is_usb(&self) -> bool {
+        *self == IDR::USB
+    }
+    #[doc = "Checks if the value of the field is `EVSYS_0`"]
+    #[inline]
+    pub fn is_evsys_0(&self) -> bool {
+        *self == IDR::EVSYS_0
+    }
+    #[doc = "Checks if the value of the field is `EVSYS_1`"]
+    #[inline]
+    pub fn is_evsys_1(&self) -> bool {
+        *self == IDR::EVSYS_1
+    }
+    #[doc = "Checks if the value of the field is `EVSYS_2`"]
+    #[inline]
+    pub fn is_evsys_2(&self) -> bool {
+        *self == IDR::EVSYS_2
+    }
+    #[doc = "Checks if the value of the field is `EVSYS_3`"]
+    #[inline]
+    pub fn is_evsys_3(&self) -> bool {
+        *self == IDR::EVSYS_3
+    }
+    #[doc = "Checks if the value of the field is `EVSYS_4`"]
+    #[inline]
+    pub fn is_evsys_4(&self) -> bool {
+        *self == IDR::EVSYS_4
+    }
+    #[doc = "Checks if the value of the field is `EVSYS_5`"]
+    #[inline]
+    pub fn is_evsys_5(&self) -> bool {
+        *self == IDR::EVSYS_5
+    }
+    #[doc = "Checks if the value of the field is `EVSYS_6`"]
+    #[inline]
+    pub fn is_evsys_6(&self) -> bool {
+        *self == IDR::EVSYS_6
+    }
+    #[doc = "Checks if the value of the field is `EVSYS_7`"]
+    #[inline]
+    pub fn is_evsys_7(&self) -> bool {
+        *self == IDR::EVSYS_7
+    }
+    #[doc = "Checks if the value of the field is `EVSYS_8`"]
+    #[inline]
+    pub fn is_evsys_8(&self) -> bool {
+        *self == IDR::EVSYS_8
+    }
+    #[doc = "Checks if the value of the field is `EVSYS_9`"]
+    #[inline]
+    pub fn is_evsys_9(&self) -> bool {
+        *self == IDR::EVSYS_9
+    }
+    #[doc = "Checks if the value of the field is `EVSYS_10`"]
+    #[inline]
+    pub fn is_evsys_10(&self) -> bool {
+        *self == IDR::EVSYS_10
+    }
+    #[doc = "Checks if the value of the field is `EVSYS_11`"]
+    #[inline]
+    pub fn is_evsys_11(&self) -> bool {
+        *self == IDR::EVSYS_11
+    }
+    #[doc = "Checks if the value of the field is `SERCOMX_SLOW`"]
+    #[inline]
+    pub fn is_sercomx_slow(&self) -> bool {
+        *self == IDR::SERCOMX_SLOW
+    }
+    #[doc = "Checks if the value of the field is `SERCOM0_CORE`"]
+    #[inline]
+    pub fn is_sercom0_core(&self) -> bool {
+        *self == IDR::SERCOM0_CORE
+    }
+    #[doc = "Checks if the value of the field is `SERCOM1_CORE`"]
+    #[inline]
+    pub fn is_sercom1_core(&self) -> bool {
+        *self == IDR::SERCOM1_CORE
+    }
+    #[doc = "Checks if the value of the field is `SERCOM2_CORE`"]
+    #[inline]
+    pub fn is_sercom2_core(&self) -> bool {
+        *self == IDR::SERCOM2_CORE
+    }
+    #[doc = "Checks if the value of the field is `SERCOM3_CORE`"]
+    #[inline]
+    pub fn is_sercom3_core(&self) -> bool {
+        *self == IDR::SERCOM3_CORE
+    }
+    #[doc = "Checks if the value of the field is `SERCOM4_CORE`"]
+    #[inline]
+    pub fn is_sercom4_core(&self) -> bool {
+        *self == IDR::SERCOM4_CORE
+    }
+    #[doc = "Checks if the value of the field is `SERCOM5_CORE`"]
+    #[inline]
+    pub fn is_sercom5_core(&self) -> bool {
+        *self == IDR::SERCOM5_CORE
+    }
+    #[doc = "Checks if the value of the field is `TCC0_TCC1`"]
+    #[inline]
+    pub fn is_tcc0_tcc1(&self) -> bool {
+        *self == IDR::TCC0_TCC1
+    }
+    #[doc = "Checks if the value of the field is `TCC2_TC3`"]
+    #[inline]
+    pub fn is_tcc2_tc3(&self) -> bool {
+        *self == IDR::TCC2_TC3
+    }
+    #[doc = "Checks if the value of the field is `TC4_TC5`"]
+    #[inline]
+    pub fn is_tc4_tc5(&self) -> bool {
+        *self == IDR::TC4_TC5
+    }
+    #[doc = "Checks if the value of the field is `TC6_TC7`"]
+    #[inline]
+    pub fn is_tc6_tc7(&self) -> bool {
+        *self == IDR::TC6_TC7
+    }
+    #[doc = "Checks if the value of the field is `ADC`"]
+    #[inline]
+    pub fn is_adc(&self) -> bool {
+        *self == IDR::ADC
+    }
+    #[doc = "Checks if the value of the field is `AC_DIG`"]
+    #[inline]
+    pub fn is_ac_dig(&self) -> bool {
+        *self == IDR::AC_DIG
+    }
+    #[doc = "Checks if the value of the field is `AC_ANA`"]
+    #[inline]
+    pub fn is_ac_ana(&self) -> bool {
+        *self == IDR::AC_ANA
+    }
+    #[doc = "Checks if the value of the field is `DAC`"]
+    #[inline]
+    pub fn is_dac(&self) -> bool {
+        *self == IDR::DAC
+    }
+    #[doc = "Checks if the value of the field is `I2S_0`"]
+    #[inline]
+    pub fn is_i2s_0(&self) -> bool {
+        *self == IDR::I2S_0
+    }
+    #[doc = "Checks if the value of the field is `I2S_1`"]
+    #[inline]
+    pub fn is_i2s_1(&self) -> bool {
+        *self == IDR::I2S_1
+    }
+}
+#[doc = "Possible values of the field `GEN`"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum GENR {
+    #[doc = "Generic clock generator 0"]
+    GCLK0,
+    #[doc = "Generic clock generator 1"]
+    GCLK1,
+    #[doc = "Generic clock generator 2"]
+    GCLK2,
+    #[doc = "Generic clock generator 3"]
+    GCLK3,
+    #[doc = "Generic clock generator 4"]
+    GCLK4,
+    #[doc = "Generic clock generator 5"]
+    GCLK5,
+    #[doc = "Generic clock generator 6"]
+    GCLK6,
+    #[doc = "Generic clock generator 7"]
+    GCLK7,
+    #[doc = "Generic clock generator 8"]
+    GCLK8,
+    #[doc = r" Reserved"]
+    _Reserved(u8),
+}
+impl GENR {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bits(&self) -> u8 {
+        match *self {
+            GENR::GCLK0 => 0,
+            GENR::GCLK1 => 1,
+            GENR::GCLK2 => 2,
+            GENR::GCLK3 => 3,
+            GENR::GCLK4 => 4,
+            GENR::GCLK5 => 5,
+            GENR::GCLK6 => 6,
+            GENR::GCLK7 => 7,
+            GENR::GCLK8 => 8,
+            GENR::_Reserved(bits) => bits,
+        }
+    }
+    #[allow(missing_docs)]
+    #[doc(hidden)]
+    #[inline]
+    pub fn _from(value: u8) -> GENR {
+        match value {
+            0 => GENR::GCLK0,
+            1 => GENR::GCLK1,
+            2 => GENR::GCLK2,
+            3 => GENR::GCLK3,
+            4 => GENR::GCLK4,
+            5 => GENR::GCLK5,
+            6 => GENR::GCLK6,
+            7 => GENR::GCLK7,
+            8 => GENR::GCLK8,
+            i => GENR::_Reserved(i),
+        }
+    }
+    #[doc = "Checks if the value of the field is `GCLK0`"]
+    #[inline]
+    pub fn is_gclk0(&self) -> bool {
+        *self == GENR::GCLK0
+    }
+    #[doc = "Checks if the value of the field is `GCLK1`"]
+    #[inline]
+    pub fn is_gclk1(&self) -> bool {
+        *self == GENR::GCLK1
+    }
+    #[doc = "Checks if the value of the field is `GCLK2`"]
+    #[inline]
+    pub fn is_gclk2(&self) -> bool {
+        *self == GENR::GCLK2
+    }
+    #[doc = "Checks if the value of the field is `GCLK3`"]
+    #[inline]
+    pub fn is_gclk3(&self) -> bool {
+        *self == GENR::GCLK3
+    }
+    #[doc = "Checks if the value of the field is `GCLK4`"]
+    #[inline]
+    pub fn is_gclk4(&self) -> bool {
+        *self == GENR::GCLK4
+    }
+    #[doc = "Checks if the value of the field is `GCLK5`"]
+    #[inline]
+    pub fn is_gclk5(&self) -> bool {
+        *self == GENR::GCLK5
+    }
+    #[doc = "Checks if the value of the field is `GCLK6`"]
+    #[inline]
+    pub fn is_gclk6(&self) -> bool {
+        *self == GENR::GCLK6
+    }
+    #[doc = "Checks if the value of the field is `GCLK7`"]
+    #[inline]
+    pub fn is_gclk7(&self) -> bool {
+        *self == GENR::GCLK7
+    }
+    #[doc = "Checks if the value of the field is `GCLK8`"]
+    #[inline]
+    pub fn is_gclk8(&self) -> bool {
+        *self == GENR::GCLK8
+    }
+}
+#[doc = r" Value of the field"]
+pub struct CLKENR {
+    bits: bool,
+}
+impl CLKENR {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bit(&self) -> bool {
+        self.bits
+    }
+    #[doc = r" Returns `true` if the bit is clear (0)"]
+    #[inline]
+    pub fn bit_is_clear(&self) -> bool {
+        !self.bit()
+    }
+    #[doc = r" Returns `true` if the bit is set (1)"]
+    #[inline]
+    pub fn bit_is_set(&self) -> bool {
+        self.bit()
+    }
+}
+#[doc = r" Value of the field"]
+pub struct WRTLOCKR {
+    bits: bool,
+}
+impl WRTLOCKR {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bit(&self) -> bool {
+        self.bits
+    }
+    #[doc = r" Returns `true` if the bit is clear (0)"]
+    #[inline]
+    pub fn bit_is_clear(&self) -> bool {
+        !self.bit()
+    }
+    #[doc = r" Returns `true` if the bit is set (1)"]
+    #[inline]
+    pub fn bit_is_set(&self) -> bool {
+        self.bit()
+    }
+}
+#[doc = "Values that can be written to the field `ID`"]
+pub enum IDW {
     #[doc = "DFLL48"]
     DFLL48,
     #[doc = "FDPLL"]
@@ -86,478 +610,253 @@ pub enum ID_A {
     #[doc = "I2S_1"]
     I2S_1,
 }
-impl crate::ToBits<u8> for ID_A {
-    #[inline(always)]
-    fn _bits(&self) -> u8 {
+impl IDW {
+    #[allow(missing_docs)]
+    #[doc(hidden)]
+    #[inline]
+    pub fn _bits(&self) -> u8 {
         match *self {
-            ID_A::DFLL48 => 0,
-            ID_A::FDPLL => 1,
-            ID_A::FDPLL32K => 2,
-            ID_A::WDT => 3,
-            ID_A::RTC => 4,
-            ID_A::EIC => 5,
-            ID_A::USB => 6,
-            ID_A::EVSYS_0 => 7,
-            ID_A::EVSYS_1 => 8,
-            ID_A::EVSYS_2 => 9,
-            ID_A::EVSYS_3 => 10,
-            ID_A::EVSYS_4 => 11,
-            ID_A::EVSYS_5 => 12,
-            ID_A::EVSYS_6 => 13,
-            ID_A::EVSYS_7 => 14,
-            ID_A::EVSYS_8 => 15,
-            ID_A::EVSYS_9 => 16,
-            ID_A::EVSYS_10 => 17,
-            ID_A::EVSYS_11 => 18,
-            ID_A::SERCOMX_SLOW => 19,
-            ID_A::SERCOM0_CORE => 20,
-            ID_A::SERCOM1_CORE => 21,
-            ID_A::SERCOM2_CORE => 22,
-            ID_A::SERCOM3_CORE => 23,
-            ID_A::SERCOM4_CORE => 24,
-            ID_A::SERCOM5_CORE => 25,
-            ID_A::TCC0_TCC1 => 26,
-            ID_A::TCC2_TC3 => 27,
-            ID_A::TC4_TC5 => 28,
-            ID_A::TC6_TC7 => 29,
-            ID_A::ADC => 30,
-            ID_A::AC_DIG => 31,
-            ID_A::AC_ANA => 32,
-            ID_A::DAC => 33,
-            ID_A::I2S_0 => 35,
-            ID_A::I2S_1 => 36,
+            IDW::DFLL48 => 0,
+            IDW::FDPLL => 1,
+            IDW::FDPLL32K => 2,
+            IDW::WDT => 3,
+            IDW::RTC => 4,
+            IDW::EIC => 5,
+            IDW::USB => 6,
+            IDW::EVSYS_0 => 7,
+            IDW::EVSYS_1 => 8,
+            IDW::EVSYS_2 => 9,
+            IDW::EVSYS_3 => 10,
+            IDW::EVSYS_4 => 11,
+            IDW::EVSYS_5 => 12,
+            IDW::EVSYS_6 => 13,
+            IDW::EVSYS_7 => 14,
+            IDW::EVSYS_8 => 15,
+            IDW::EVSYS_9 => 16,
+            IDW::EVSYS_10 => 17,
+            IDW::EVSYS_11 => 18,
+            IDW::SERCOMX_SLOW => 19,
+            IDW::SERCOM0_CORE => 20,
+            IDW::SERCOM1_CORE => 21,
+            IDW::SERCOM2_CORE => 22,
+            IDW::SERCOM3_CORE => 23,
+            IDW::SERCOM4_CORE => 24,
+            IDW::SERCOM5_CORE => 25,
+            IDW::TCC0_TCC1 => 26,
+            IDW::TCC2_TC3 => 27,
+            IDW::TC4_TC5 => 28,
+            IDW::TC6_TC7 => 29,
+            IDW::ADC => 30,
+            IDW::AC_DIG => 31,
+            IDW::AC_ANA => 32,
+            IDW::DAC => 33,
+            IDW::I2S_0 => 35,
+            IDW::I2S_1 => 36,
         }
     }
 }
-#[doc = "Reader of field `ID`"]
-pub type ID_R = crate::R<u8, ID_A>;
-impl ID_R {
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> crate::Variant<u8, ID_A> {
-        use crate::Variant::*;
-        match self.bits {
-            0 => Val(ID_A::DFLL48),
-            1 => Val(ID_A::FDPLL),
-            2 => Val(ID_A::FDPLL32K),
-            3 => Val(ID_A::WDT),
-            4 => Val(ID_A::RTC),
-            5 => Val(ID_A::EIC),
-            6 => Val(ID_A::USB),
-            7 => Val(ID_A::EVSYS_0),
-            8 => Val(ID_A::EVSYS_1),
-            9 => Val(ID_A::EVSYS_2),
-            10 => Val(ID_A::EVSYS_3),
-            11 => Val(ID_A::EVSYS_4),
-            12 => Val(ID_A::EVSYS_5),
-            13 => Val(ID_A::EVSYS_6),
-            14 => Val(ID_A::EVSYS_7),
-            15 => Val(ID_A::EVSYS_8),
-            16 => Val(ID_A::EVSYS_9),
-            17 => Val(ID_A::EVSYS_10),
-            18 => Val(ID_A::EVSYS_11),
-            19 => Val(ID_A::SERCOMX_SLOW),
-            20 => Val(ID_A::SERCOM0_CORE),
-            21 => Val(ID_A::SERCOM1_CORE),
-            22 => Val(ID_A::SERCOM2_CORE),
-            23 => Val(ID_A::SERCOM3_CORE),
-            24 => Val(ID_A::SERCOM4_CORE),
-            25 => Val(ID_A::SERCOM5_CORE),
-            26 => Val(ID_A::TCC0_TCC1),
-            27 => Val(ID_A::TCC2_TC3),
-            28 => Val(ID_A::TC4_TC5),
-            29 => Val(ID_A::TC6_TC7),
-            30 => Val(ID_A::ADC),
-            31 => Val(ID_A::AC_DIG),
-            32 => Val(ID_A::AC_ANA),
-            33 => Val(ID_A::DAC),
-            35 => Val(ID_A::I2S_0),
-            36 => Val(ID_A::I2S_1),
-            i => Res(i),
-        }
-    }
-    #[doc = "Checks if the value of the field is `DFLL48`"]
-    #[inline(always)]
-    pub fn is_dfll48(&self) -> bool {
-        *self == ID_A::DFLL48
-    }
-    #[doc = "Checks if the value of the field is `FDPLL`"]
-    #[inline(always)]
-    pub fn is_fdpll(&self) -> bool {
-        *self == ID_A::FDPLL
-    }
-    #[doc = "Checks if the value of the field is `FDPLL32K`"]
-    #[inline(always)]
-    pub fn is_fdpll32k(&self) -> bool {
-        *self == ID_A::FDPLL32K
-    }
-    #[doc = "Checks if the value of the field is `WDT`"]
-    #[inline(always)]
-    pub fn is_wdt(&self) -> bool {
-        *self == ID_A::WDT
-    }
-    #[doc = "Checks if the value of the field is `RTC`"]
-    #[inline(always)]
-    pub fn is_rtc(&self) -> bool {
-        *self == ID_A::RTC
-    }
-    #[doc = "Checks if the value of the field is `EIC`"]
-    #[inline(always)]
-    pub fn is_eic(&self) -> bool {
-        *self == ID_A::EIC
-    }
-    #[doc = "Checks if the value of the field is `USB`"]
-    #[inline(always)]
-    pub fn is_usb(&self) -> bool {
-        *self == ID_A::USB
-    }
-    #[doc = "Checks if the value of the field is `EVSYS_0`"]
-    #[inline(always)]
-    pub fn is_evsys_0(&self) -> bool {
-        *self == ID_A::EVSYS_0
-    }
-    #[doc = "Checks if the value of the field is `EVSYS_1`"]
-    #[inline(always)]
-    pub fn is_evsys_1(&self) -> bool {
-        *self == ID_A::EVSYS_1
-    }
-    #[doc = "Checks if the value of the field is `EVSYS_2`"]
-    #[inline(always)]
-    pub fn is_evsys_2(&self) -> bool {
-        *self == ID_A::EVSYS_2
-    }
-    #[doc = "Checks if the value of the field is `EVSYS_3`"]
-    #[inline(always)]
-    pub fn is_evsys_3(&self) -> bool {
-        *self == ID_A::EVSYS_3
-    }
-    #[doc = "Checks if the value of the field is `EVSYS_4`"]
-    #[inline(always)]
-    pub fn is_evsys_4(&self) -> bool {
-        *self == ID_A::EVSYS_4
-    }
-    #[doc = "Checks if the value of the field is `EVSYS_5`"]
-    #[inline(always)]
-    pub fn is_evsys_5(&self) -> bool {
-        *self == ID_A::EVSYS_5
-    }
-    #[doc = "Checks if the value of the field is `EVSYS_6`"]
-    #[inline(always)]
-    pub fn is_evsys_6(&self) -> bool {
-        *self == ID_A::EVSYS_6
-    }
-    #[doc = "Checks if the value of the field is `EVSYS_7`"]
-    #[inline(always)]
-    pub fn is_evsys_7(&self) -> bool {
-        *self == ID_A::EVSYS_7
-    }
-    #[doc = "Checks if the value of the field is `EVSYS_8`"]
-    #[inline(always)]
-    pub fn is_evsys_8(&self) -> bool {
-        *self == ID_A::EVSYS_8
-    }
-    #[doc = "Checks if the value of the field is `EVSYS_9`"]
-    #[inline(always)]
-    pub fn is_evsys_9(&self) -> bool {
-        *self == ID_A::EVSYS_9
-    }
-    #[doc = "Checks if the value of the field is `EVSYS_10`"]
-    #[inline(always)]
-    pub fn is_evsys_10(&self) -> bool {
-        *self == ID_A::EVSYS_10
-    }
-    #[doc = "Checks if the value of the field is `EVSYS_11`"]
-    #[inline(always)]
-    pub fn is_evsys_11(&self) -> bool {
-        *self == ID_A::EVSYS_11
-    }
-    #[doc = "Checks if the value of the field is `SERCOMX_SLOW`"]
-    #[inline(always)]
-    pub fn is_sercomx_slow(&self) -> bool {
-        *self == ID_A::SERCOMX_SLOW
-    }
-    #[doc = "Checks if the value of the field is `SERCOM0_CORE`"]
-    #[inline(always)]
-    pub fn is_sercom0_core(&self) -> bool {
-        *self == ID_A::SERCOM0_CORE
-    }
-    #[doc = "Checks if the value of the field is `SERCOM1_CORE`"]
-    #[inline(always)]
-    pub fn is_sercom1_core(&self) -> bool {
-        *self == ID_A::SERCOM1_CORE
-    }
-    #[doc = "Checks if the value of the field is `SERCOM2_CORE`"]
-    #[inline(always)]
-    pub fn is_sercom2_core(&self) -> bool {
-        *self == ID_A::SERCOM2_CORE
-    }
-    #[doc = "Checks if the value of the field is `SERCOM3_CORE`"]
-    #[inline(always)]
-    pub fn is_sercom3_core(&self) -> bool {
-        *self == ID_A::SERCOM3_CORE
-    }
-    #[doc = "Checks if the value of the field is `SERCOM4_CORE`"]
-    #[inline(always)]
-    pub fn is_sercom4_core(&self) -> bool {
-        *self == ID_A::SERCOM4_CORE
-    }
-    #[doc = "Checks if the value of the field is `SERCOM5_CORE`"]
-    #[inline(always)]
-    pub fn is_sercom5_core(&self) -> bool {
-        *self == ID_A::SERCOM5_CORE
-    }
-    #[doc = "Checks if the value of the field is `TCC0_TCC1`"]
-    #[inline(always)]
-    pub fn is_tcc0_tcc1(&self) -> bool {
-        *self == ID_A::TCC0_TCC1
-    }
-    #[doc = "Checks if the value of the field is `TCC2_TC3`"]
-    #[inline(always)]
-    pub fn is_tcc2_tc3(&self) -> bool {
-        *self == ID_A::TCC2_TC3
-    }
-    #[doc = "Checks if the value of the field is `TC4_TC5`"]
-    #[inline(always)]
-    pub fn is_tc4_tc5(&self) -> bool {
-        *self == ID_A::TC4_TC5
-    }
-    #[doc = "Checks if the value of the field is `TC6_TC7`"]
-    #[inline(always)]
-    pub fn is_tc6_tc7(&self) -> bool {
-        *self == ID_A::TC6_TC7
-    }
-    #[doc = "Checks if the value of the field is `ADC`"]
-    #[inline(always)]
-    pub fn is_adc(&self) -> bool {
-        *self == ID_A::ADC
-    }
-    #[doc = "Checks if the value of the field is `AC_DIG`"]
-    #[inline(always)]
-    pub fn is_ac_dig(&self) -> bool {
-        *self == ID_A::AC_DIG
-    }
-    #[doc = "Checks if the value of the field is `AC_ANA`"]
-    #[inline(always)]
-    pub fn is_ac_ana(&self) -> bool {
-        *self == ID_A::AC_ANA
-    }
-    #[doc = "Checks if the value of the field is `DAC`"]
-    #[inline(always)]
-    pub fn is_dac(&self) -> bool {
-        *self == ID_A::DAC
-    }
-    #[doc = "Checks if the value of the field is `I2S_0`"]
-    #[inline(always)]
-    pub fn is_i2s_0(&self) -> bool {
-        *self == ID_A::I2S_0
-    }
-    #[doc = "Checks if the value of the field is `I2S_1`"]
-    #[inline(always)]
-    pub fn is_i2s_1(&self) -> bool {
-        *self == ID_A::I2S_1
-    }
-}
-#[doc = "Write proxy for field `ID`"]
-pub struct ID_W<'a> {
+#[doc = r" Proxy"]
+pub struct _IDW<'a> {
     w: &'a mut W,
 }
-impl<'a> ID_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: ID_A) -> &'a mut W {
-        use crate::ToBits;
+impl<'a> _IDW<'a> {
+    #[doc = r" Writes `variant` to the field"]
+    #[inline]
+    pub fn variant(self, variant: IDW) -> &'a mut W {
         unsafe { self.bits(variant._bits()) }
     }
     #[doc = "DFLL48"]
-    #[inline(always)]
+    #[inline]
     pub fn dfll48(self) -> &'a mut W {
-        self.variant(ID_A::DFLL48)
+        self.variant(IDW::DFLL48)
     }
     #[doc = "FDPLL"]
-    #[inline(always)]
+    #[inline]
     pub fn fdpll(self) -> &'a mut W {
-        self.variant(ID_A::FDPLL)
+        self.variant(IDW::FDPLL)
     }
     #[doc = "FDPLL32K"]
-    #[inline(always)]
+    #[inline]
     pub fn fdpll32k(self) -> &'a mut W {
-        self.variant(ID_A::FDPLL32K)
+        self.variant(IDW::FDPLL32K)
     }
     #[doc = "WDT"]
-    #[inline(always)]
+    #[inline]
     pub fn wdt(self) -> &'a mut W {
-        self.variant(ID_A::WDT)
+        self.variant(IDW::WDT)
     }
     #[doc = "RTC"]
-    #[inline(always)]
+    #[inline]
     pub fn rtc(self) -> &'a mut W {
-        self.variant(ID_A::RTC)
+        self.variant(IDW::RTC)
     }
     #[doc = "EIC"]
-    #[inline(always)]
+    #[inline]
     pub fn eic(self) -> &'a mut W {
-        self.variant(ID_A::EIC)
+        self.variant(IDW::EIC)
     }
     #[doc = "USB"]
-    #[inline(always)]
+    #[inline]
     pub fn usb(self) -> &'a mut W {
-        self.variant(ID_A::USB)
+        self.variant(IDW::USB)
     }
     #[doc = "EVSYS_0"]
-    #[inline(always)]
+    #[inline]
     pub fn evsys_0(self) -> &'a mut W {
-        self.variant(ID_A::EVSYS_0)
+        self.variant(IDW::EVSYS_0)
     }
     #[doc = "EVSYS_1"]
-    #[inline(always)]
+    #[inline]
     pub fn evsys_1(self) -> &'a mut W {
-        self.variant(ID_A::EVSYS_1)
+        self.variant(IDW::EVSYS_1)
     }
     #[doc = "EVSYS_2"]
-    #[inline(always)]
+    #[inline]
     pub fn evsys_2(self) -> &'a mut W {
-        self.variant(ID_A::EVSYS_2)
+        self.variant(IDW::EVSYS_2)
     }
     #[doc = "EVSYS_3"]
-    #[inline(always)]
+    #[inline]
     pub fn evsys_3(self) -> &'a mut W {
-        self.variant(ID_A::EVSYS_3)
+        self.variant(IDW::EVSYS_3)
     }
     #[doc = "EVSYS_4"]
-    #[inline(always)]
+    #[inline]
     pub fn evsys_4(self) -> &'a mut W {
-        self.variant(ID_A::EVSYS_4)
+        self.variant(IDW::EVSYS_4)
     }
     #[doc = "EVSYS_5"]
-    #[inline(always)]
+    #[inline]
     pub fn evsys_5(self) -> &'a mut W {
-        self.variant(ID_A::EVSYS_5)
+        self.variant(IDW::EVSYS_5)
     }
     #[doc = "EVSYS_6"]
-    #[inline(always)]
+    #[inline]
     pub fn evsys_6(self) -> &'a mut W {
-        self.variant(ID_A::EVSYS_6)
+        self.variant(IDW::EVSYS_6)
     }
     #[doc = "EVSYS_7"]
-    #[inline(always)]
+    #[inline]
     pub fn evsys_7(self) -> &'a mut W {
-        self.variant(ID_A::EVSYS_7)
+        self.variant(IDW::EVSYS_7)
     }
     #[doc = "EVSYS_8"]
-    #[inline(always)]
+    #[inline]
     pub fn evsys_8(self) -> &'a mut W {
-        self.variant(ID_A::EVSYS_8)
+        self.variant(IDW::EVSYS_8)
     }
     #[doc = "EVSYS_9"]
-    #[inline(always)]
+    #[inline]
     pub fn evsys_9(self) -> &'a mut W {
-        self.variant(ID_A::EVSYS_9)
+        self.variant(IDW::EVSYS_9)
     }
     #[doc = "EVSYS_10"]
-    #[inline(always)]
+    #[inline]
     pub fn evsys_10(self) -> &'a mut W {
-        self.variant(ID_A::EVSYS_10)
+        self.variant(IDW::EVSYS_10)
     }
     #[doc = "EVSYS_11"]
-    #[inline(always)]
+    #[inline]
     pub fn evsys_11(self) -> &'a mut W {
-        self.variant(ID_A::EVSYS_11)
+        self.variant(IDW::EVSYS_11)
     }
     #[doc = "SERCOMX_SLOW"]
-    #[inline(always)]
+    #[inline]
     pub fn sercomx_slow(self) -> &'a mut W {
-        self.variant(ID_A::SERCOMX_SLOW)
+        self.variant(IDW::SERCOMX_SLOW)
     }
     #[doc = "SERCOM0_CORE"]
-    #[inline(always)]
+    #[inline]
     pub fn sercom0_core(self) -> &'a mut W {
-        self.variant(ID_A::SERCOM0_CORE)
+        self.variant(IDW::SERCOM0_CORE)
     }
     #[doc = "SERCOM1_CORE"]
-    #[inline(always)]
+    #[inline]
     pub fn sercom1_core(self) -> &'a mut W {
-        self.variant(ID_A::SERCOM1_CORE)
+        self.variant(IDW::SERCOM1_CORE)
     }
     #[doc = "SERCOM2_CORE"]
-    #[inline(always)]
+    #[inline]
     pub fn sercom2_core(self) -> &'a mut W {
-        self.variant(ID_A::SERCOM2_CORE)
+        self.variant(IDW::SERCOM2_CORE)
     }
     #[doc = "SERCOM3_CORE"]
-    #[inline(always)]
+    #[inline]
     pub fn sercom3_core(self) -> &'a mut W {
-        self.variant(ID_A::SERCOM3_CORE)
+        self.variant(IDW::SERCOM3_CORE)
     }
     #[doc = "SERCOM4_CORE"]
-    #[inline(always)]
+    #[inline]
     pub fn sercom4_core(self) -> &'a mut W {
-        self.variant(ID_A::SERCOM4_CORE)
+        self.variant(IDW::SERCOM4_CORE)
     }
     #[doc = "SERCOM5_CORE"]
-    #[inline(always)]
+    #[inline]
     pub fn sercom5_core(self) -> &'a mut W {
-        self.variant(ID_A::SERCOM5_CORE)
+        self.variant(IDW::SERCOM5_CORE)
     }
     #[doc = "TCC0_TCC1"]
-    #[inline(always)]
+    #[inline]
     pub fn tcc0_tcc1(self) -> &'a mut W {
-        self.variant(ID_A::TCC0_TCC1)
+        self.variant(IDW::TCC0_TCC1)
     }
     #[doc = "TCC2_TC3"]
-    #[inline(always)]
+    #[inline]
     pub fn tcc2_tc3(self) -> &'a mut W {
-        self.variant(ID_A::TCC2_TC3)
+        self.variant(IDW::TCC2_TC3)
     }
     #[doc = "TC4_TC5"]
-    #[inline(always)]
+    #[inline]
     pub fn tc4_tc5(self) -> &'a mut W {
-        self.variant(ID_A::TC4_TC5)
+        self.variant(IDW::TC4_TC5)
     }
     #[doc = "TC6_TC7"]
-    #[inline(always)]
+    #[inline]
     pub fn tc6_tc7(self) -> &'a mut W {
-        self.variant(ID_A::TC6_TC7)
+        self.variant(IDW::TC6_TC7)
     }
     #[doc = "ADC"]
-    #[inline(always)]
+    #[inline]
     pub fn adc(self) -> &'a mut W {
-        self.variant(ID_A::ADC)
+        self.variant(IDW::ADC)
     }
     #[doc = "AC_DIG"]
-    #[inline(always)]
+    #[inline]
     pub fn ac_dig(self) -> &'a mut W {
-        self.variant(ID_A::AC_DIG)
+        self.variant(IDW::AC_DIG)
     }
     #[doc = "AC_ANA"]
-    #[inline(always)]
+    #[inline]
     pub fn ac_ana(self) -> &'a mut W {
-        self.variant(ID_A::AC_ANA)
+        self.variant(IDW::AC_ANA)
     }
     #[doc = "DAC"]
-    #[inline(always)]
+    #[inline]
     pub fn dac(self) -> &'a mut W {
-        self.variant(ID_A::DAC)
+        self.variant(IDW::DAC)
     }
     #[doc = "I2S_0"]
-    #[inline(always)]
+    #[inline]
     pub fn i2s_0(self) -> &'a mut W {
-        self.variant(ID_A::I2S_0)
+        self.variant(IDW::I2S_0)
     }
     #[doc = "I2S_1"]
-    #[inline(always)]
+    #[inline]
     pub fn i2s_1(self) -> &'a mut W {
-        self.variant(ID_A::I2S_1)
+        self.variant(IDW::I2S_1)
     }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
+    #[doc = r" Writes raw bits to the field"]
+    #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x3f) | ((value as u16) & 0x3f);
+        const MASK: u8 = 63;
+        const OFFSET: u8 = 0;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
-#[doc = "Possible values of the field `GEN`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum GEN_A {
+#[doc = "Values that can be written to the field `GEN`"]
+pub enum GENW {
     #[doc = "Generic clock generator 0"]
     GCLK0,
     #[doc = "Generic clock generator 1"]
@@ -577,240 +876,210 @@ pub enum GEN_A {
     #[doc = "Generic clock generator 8"]
     GCLK8,
 }
-impl crate::ToBits<u8> for GEN_A {
-    #[inline(always)]
-    fn _bits(&self) -> u8 {
+impl GENW {
+    #[allow(missing_docs)]
+    #[doc(hidden)]
+    #[inline]
+    pub fn _bits(&self) -> u8 {
         match *self {
-            GEN_A::GCLK0 => 0,
-            GEN_A::GCLK1 => 1,
-            GEN_A::GCLK2 => 2,
-            GEN_A::GCLK3 => 3,
-            GEN_A::GCLK4 => 4,
-            GEN_A::GCLK5 => 5,
-            GEN_A::GCLK6 => 6,
-            GEN_A::GCLK7 => 7,
-            GEN_A::GCLK8 => 8,
+            GENW::GCLK0 => 0,
+            GENW::GCLK1 => 1,
+            GENW::GCLK2 => 2,
+            GENW::GCLK3 => 3,
+            GENW::GCLK4 => 4,
+            GENW::GCLK5 => 5,
+            GENW::GCLK6 => 6,
+            GENW::GCLK7 => 7,
+            GENW::GCLK8 => 8,
         }
     }
 }
-#[doc = "Reader of field `GEN`"]
-pub type GEN_R = crate::R<u8, GEN_A>;
-impl GEN_R {
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> crate::Variant<u8, GEN_A> {
-        use crate::Variant::*;
-        match self.bits {
-            0 => Val(GEN_A::GCLK0),
-            1 => Val(GEN_A::GCLK1),
-            2 => Val(GEN_A::GCLK2),
-            3 => Val(GEN_A::GCLK3),
-            4 => Val(GEN_A::GCLK4),
-            5 => Val(GEN_A::GCLK5),
-            6 => Val(GEN_A::GCLK6),
-            7 => Val(GEN_A::GCLK7),
-            8 => Val(GEN_A::GCLK8),
-            i => Res(i),
-        }
-    }
-    #[doc = "Checks if the value of the field is `GCLK0`"]
-    #[inline(always)]
-    pub fn is_gclk0(&self) -> bool {
-        *self == GEN_A::GCLK0
-    }
-    #[doc = "Checks if the value of the field is `GCLK1`"]
-    #[inline(always)]
-    pub fn is_gclk1(&self) -> bool {
-        *self == GEN_A::GCLK1
-    }
-    #[doc = "Checks if the value of the field is `GCLK2`"]
-    #[inline(always)]
-    pub fn is_gclk2(&self) -> bool {
-        *self == GEN_A::GCLK2
-    }
-    #[doc = "Checks if the value of the field is `GCLK3`"]
-    #[inline(always)]
-    pub fn is_gclk3(&self) -> bool {
-        *self == GEN_A::GCLK3
-    }
-    #[doc = "Checks if the value of the field is `GCLK4`"]
-    #[inline(always)]
-    pub fn is_gclk4(&self) -> bool {
-        *self == GEN_A::GCLK4
-    }
-    #[doc = "Checks if the value of the field is `GCLK5`"]
-    #[inline(always)]
-    pub fn is_gclk5(&self) -> bool {
-        *self == GEN_A::GCLK5
-    }
-    #[doc = "Checks if the value of the field is `GCLK6`"]
-    #[inline(always)]
-    pub fn is_gclk6(&self) -> bool {
-        *self == GEN_A::GCLK6
-    }
-    #[doc = "Checks if the value of the field is `GCLK7`"]
-    #[inline(always)]
-    pub fn is_gclk7(&self) -> bool {
-        *self == GEN_A::GCLK7
-    }
-    #[doc = "Checks if the value of the field is `GCLK8`"]
-    #[inline(always)]
-    pub fn is_gclk8(&self) -> bool {
-        *self == GEN_A::GCLK8
-    }
-}
-#[doc = "Write proxy for field `GEN`"]
-pub struct GEN_W<'a> {
+#[doc = r" Proxy"]
+pub struct _GENW<'a> {
     w: &'a mut W,
 }
-impl<'a> GEN_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: GEN_A) -> &'a mut W {
-        use crate::ToBits;
+impl<'a> _GENW<'a> {
+    #[doc = r" Writes `variant` to the field"]
+    #[inline]
+    pub fn variant(self, variant: GENW) -> &'a mut W {
         unsafe { self.bits(variant._bits()) }
     }
     #[doc = "Generic clock generator 0"]
-    #[inline(always)]
+    #[inline]
     pub fn gclk0(self) -> &'a mut W {
-        self.variant(GEN_A::GCLK0)
+        self.variant(GENW::GCLK0)
     }
     #[doc = "Generic clock generator 1"]
-    #[inline(always)]
+    #[inline]
     pub fn gclk1(self) -> &'a mut W {
-        self.variant(GEN_A::GCLK1)
+        self.variant(GENW::GCLK1)
     }
     #[doc = "Generic clock generator 2"]
-    #[inline(always)]
+    #[inline]
     pub fn gclk2(self) -> &'a mut W {
-        self.variant(GEN_A::GCLK2)
+        self.variant(GENW::GCLK2)
     }
     #[doc = "Generic clock generator 3"]
-    #[inline(always)]
+    #[inline]
     pub fn gclk3(self) -> &'a mut W {
-        self.variant(GEN_A::GCLK3)
+        self.variant(GENW::GCLK3)
     }
     #[doc = "Generic clock generator 4"]
-    #[inline(always)]
+    #[inline]
     pub fn gclk4(self) -> &'a mut W {
-        self.variant(GEN_A::GCLK4)
+        self.variant(GENW::GCLK4)
     }
     #[doc = "Generic clock generator 5"]
-    #[inline(always)]
+    #[inline]
     pub fn gclk5(self) -> &'a mut W {
-        self.variant(GEN_A::GCLK5)
+        self.variant(GENW::GCLK5)
     }
     #[doc = "Generic clock generator 6"]
-    #[inline(always)]
+    #[inline]
     pub fn gclk6(self) -> &'a mut W {
-        self.variant(GEN_A::GCLK6)
+        self.variant(GENW::GCLK6)
     }
     #[doc = "Generic clock generator 7"]
-    #[inline(always)]
+    #[inline]
     pub fn gclk7(self) -> &'a mut W {
-        self.variant(GEN_A::GCLK7)
+        self.variant(GENW::GCLK7)
     }
     #[doc = "Generic clock generator 8"]
-    #[inline(always)]
+    #[inline]
     pub fn gclk8(self) -> &'a mut W {
-        self.variant(GEN_A::GCLK8)
+        self.variant(GENW::GCLK8)
     }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
+    #[doc = r" Writes raw bits to the field"]
+    #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x0f << 8)) | (((value as u16) & 0x0f) << 8);
+        const MASK: u8 = 15;
+        const OFFSET: u8 = 8;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
-#[doc = "Reader of field `CLKEN`"]
-pub type CLKEN_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `CLKEN`"]
-pub struct CLKEN_W<'a> {
+#[doc = r" Proxy"]
+pub struct _CLKENW<'a> {
     w: &'a mut W,
 }
-impl<'a> CLKEN_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
+impl<'a> _CLKENW<'a> {
+    #[doc = r" Sets the field bit"]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
+    #[doc = r" Clears the field bit"]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
+    #[doc = r" Writes raw bits to the field"]
+    #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 14)) | (((value as u16) & 0x01) << 14);
+        const MASK: bool = true;
+        const OFFSET: u8 = 14;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
-#[doc = "Reader of field `WRTLOCK`"]
-pub type WRTLOCK_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `WRTLOCK`"]
-pub struct WRTLOCK_W<'a> {
+#[doc = r" Proxy"]
+pub struct _WRTLOCKW<'a> {
     w: &'a mut W,
 }
-impl<'a> WRTLOCK_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
+impl<'a> _WRTLOCKW<'a> {
+    #[doc = r" Sets the field bit"]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
+    #[doc = r" Clears the field bit"]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
+    #[doc = r" Writes raw bits to the field"]
+    #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 15)) | (((value as u16) & 0x01) << 15);
+        const MASK: bool = true;
+        const OFFSET: u8 = 15;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
 impl R {
+    #[doc = r" Value of the register as raw bits"]
+    #[inline]
+    pub fn bits(&self) -> u16 {
+        self.bits
+    }
     #[doc = "Bits 0:5 - Generic Clock Selection ID"]
-    #[inline(always)]
-    pub fn id(&self) -> ID_R {
-        ID_R::new((self.bits & 0x3f) as u8)
+    #[inline]
+    pub fn id(&self) -> IDR {
+        IDR::_from({
+            const MASK: u8 = 63;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u16) as u8
+        })
     }
     #[doc = "Bits 8:11 - Generic Clock Generator"]
-    #[inline(always)]
-    pub fn gen(&self) -> GEN_R {
-        GEN_R::new(((self.bits >> 8) & 0x0f) as u8)
+    #[inline]
+    pub fn gen(&self) -> GENR {
+        GENR::_from({
+            const MASK: u8 = 15;
+            const OFFSET: u8 = 8;
+            ((self.bits >> OFFSET) & MASK as u16) as u8
+        })
     }
     #[doc = "Bit 14 - Clock Enable"]
-    #[inline(always)]
-    pub fn clken(&self) -> CLKEN_R {
-        CLKEN_R::new(((self.bits >> 14) & 0x01) != 0)
+    #[inline]
+    pub fn clken(&self) -> CLKENR {
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 14;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        };
+        CLKENR { bits }
     }
     #[doc = "Bit 15 - Write Lock"]
-    #[inline(always)]
-    pub fn wrtlock(&self) -> WRTLOCK_R {
-        WRTLOCK_R::new(((self.bits >> 15) & 0x01) != 0)
+    #[inline]
+    pub fn wrtlock(&self) -> WRTLOCKR {
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 15;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        };
+        WRTLOCKR { bits }
     }
 }
 impl W {
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub fn reset_value() -> W {
+        W { bits: 0 }
+    }
+    #[doc = r" Writes raw bits to the register"]
+    #[inline]
+    pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {
+        self.bits = bits;
+        self
+    }
     #[doc = "Bits 0:5 - Generic Clock Selection ID"]
-    #[inline(always)]
-    pub fn id(&mut self) -> ID_W {
-        ID_W { w: self }
+    #[inline]
+    pub fn id(&mut self) -> _IDW {
+        _IDW { w: self }
     }
     #[doc = "Bits 8:11 - Generic Clock Generator"]
-    #[inline(always)]
-    pub fn gen(&mut self) -> GEN_W {
-        GEN_W { w: self }
+    #[inline]
+    pub fn gen(&mut self) -> _GENW {
+        _GENW { w: self }
     }
     #[doc = "Bit 14 - Clock Enable"]
-    #[inline(always)]
-    pub fn clken(&mut self) -> CLKEN_W {
-        CLKEN_W { w: self }
+    #[inline]
+    pub fn clken(&mut self) -> _CLKENW {
+        _CLKENW { w: self }
     }
     #[doc = "Bit 15 - Write Lock"]
-    #[inline(always)]
-    pub fn wrtlock(&mut self) -> WRTLOCK_W {
-        WRTLOCK_W { w: self }
+    #[inline]
+    pub fn wrtlock(&mut self) -> _WRTLOCKW {
+        _WRTLOCKW { w: self }
     }
 }

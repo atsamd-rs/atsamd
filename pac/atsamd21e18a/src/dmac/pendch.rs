@@ -272,73 +272,121 @@ impl R {
     #[doc = "Bit 0 - Pending Channel 0"]
     #[inline]
     pub fn pendch0(&self) -> PENDCH0R {
-        let bits = ((self.bits >> 0) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         PENDCH0R { bits }
     }
     #[doc = "Bit 1 - Pending Channel 1"]
     #[inline]
     pub fn pendch1(&self) -> PENDCH1R {
-        let bits = ((self.bits >> 1) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 1;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         PENDCH1R { bits }
     }
     #[doc = "Bit 2 - Pending Channel 2"]
     #[inline]
     pub fn pendch2(&self) -> PENDCH2R {
-        let bits = ((self.bits >> 2) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 2;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         PENDCH2R { bits }
     }
     #[doc = "Bit 3 - Pending Channel 3"]
     #[inline]
     pub fn pendch3(&self) -> PENDCH3R {
-        let bits = ((self.bits >> 3) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 3;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         PENDCH3R { bits }
     }
     #[doc = "Bit 4 - Pending Channel 4"]
     #[inline]
     pub fn pendch4(&self) -> PENDCH4R {
-        let bits = ((self.bits >> 4) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 4;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         PENDCH4R { bits }
     }
     #[doc = "Bit 5 - Pending Channel 5"]
     #[inline]
     pub fn pendch5(&self) -> PENDCH5R {
-        let bits = ((self.bits >> 5) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 5;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         PENDCH5R { bits }
     }
     #[doc = "Bit 6 - Pending Channel 6"]
     #[inline]
     pub fn pendch6(&self) -> PENDCH6R {
-        let bits = ((self.bits >> 6) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 6;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         PENDCH6R { bits }
     }
     #[doc = "Bit 7 - Pending Channel 7"]
     #[inline]
     pub fn pendch7(&self) -> PENDCH7R {
-        let bits = ((self.bits >> 7) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 7;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         PENDCH7R { bits }
     }
     #[doc = "Bit 8 - Pending Channel 8"]
     #[inline]
     pub fn pendch8(&self) -> PENDCH8R {
-        let bits = ((self.bits >> 8) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 8;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         PENDCH8R { bits }
     }
     #[doc = "Bit 9 - Pending Channel 9"]
     #[inline]
     pub fn pendch9(&self) -> PENDCH9R {
-        let bits = ((self.bits >> 9) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 9;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         PENDCH9R { bits }
     }
     #[doc = "Bit 10 - Pending Channel 10"]
     #[inline]
     pub fn pendch10(&self) -> PENDCH10R {
-        let bits = ((self.bits >> 10) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 10;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         PENDCH10R { bits }
     }
     #[doc = "Bit 11 - Pending Channel 11"]
     #[inline]
     pub fn pendch11(&self) -> PENDCH11R {
-        let bits = ((self.bits >> 11) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 11;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         PENDCH11R { bits }
     }
 }

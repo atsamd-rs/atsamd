@@ -14,7 +14,10 @@ impl super::CTRLA {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        self.register.set(f(&R { bits }, &mut W { bits }).bits);
+        let r = R { bits };
+        let mut w = W { bits };
+        f(&r, &mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -29,22 +32,14 @@ impl super::CTRLA {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        self.register.set(
-            f(&mut W {
-                bits: Self::reset_value(),
-            })
-            .bits,
-        );
-    }
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub const fn reset_value() -> u32 {
-        0
+        let mut w = W::reset_value();
+        f(&mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.register.set(Self::reset_value())
+        self.write(|w| w)
     }
 }
 #[doc = r" Value of the field"]
@@ -86,8 +81,8 @@ impl MODER {
     pub fn bits(&self) -> u8 {
         match *self {
             MODER::COUNT16 => 0,
-            MODER::COUNT8 => 0x01,
-            MODER::COUNT32 => 0x02,
+            MODER::COUNT8 => 1,
+            MODER::COUNT32 => 2,
             MODER::_Reserved(bits) => bits,
         }
     }
@@ -136,8 +131,8 @@ impl PRESCSYNCR {
     pub fn bits(&self) -> u8 {
         match *self {
             PRESCSYNCR::GCLK => 0,
-            PRESCSYNCR::PRESC => 0x01,
-            PRESCSYNCR::RESYNC => 0x02,
+            PRESCSYNCR::PRESC => 1,
+            PRESCSYNCR::RESYNC => 2,
             PRESCSYNCR::_Reserved(bits) => bits,
         }
     }
@@ -236,13 +231,13 @@ impl PRESCALERR {
     pub fn bits(&self) -> u8 {
         match *self {
             PRESCALERR::DIV1 => 0,
-            PRESCALERR::DIV2 => 0x01,
-            PRESCALERR::DIV4 => 0x02,
-            PRESCALERR::DIV8 => 0x03,
-            PRESCALERR::DIV16 => 0x04,
-            PRESCALERR::DIV64 => 0x05,
-            PRESCALERR::DIV256 => 0x06,
-            PRESCALERR::DIV1024 => 0x07,
+            PRESCALERR::DIV2 => 1,
+            PRESCALERR::DIV4 => 2,
+            PRESCALERR::DIV8 => 3,
+            PRESCALERR::DIV16 => 4,
+            PRESCALERR::DIV64 => 5,
+            PRESCALERR::DIV256 => 6,
+            PRESCALERR::DIV1024 => 7,
         }
     }
     #[allow(missing_docs)]
@@ -425,8 +420,8 @@ impl CAPTMODE0R {
     pub fn bits(&self) -> u8 {
         match *self {
             CAPTMODE0R::DEFAULT => 0,
-            CAPTMODE0R::CAPTMIN => 0x01,
-            CAPTMODE0R::CAPTMAX => 0x02,
+            CAPTMODE0R::CAPTMIN => 1,
+            CAPTMODE0R::CAPTMAX => 2,
             CAPTMODE0R::_Reserved(bits) => bits,
         }
     }
@@ -475,8 +470,8 @@ impl CAPTMODE1R {
     pub fn bits(&self) -> u8 {
         match *self {
             CAPTMODE1R::DEFAULT => 0,
-            CAPTMODE1R::CAPTMIN => 0x01,
-            CAPTMODE1R::CAPTMAX => 0x02,
+            CAPTMODE1R::CAPTMIN => 1,
+            CAPTMODE1R::CAPTMAX => 2,
             CAPTMODE1R::_Reserved(bits) => bits,
         }
     }
@@ -523,8 +518,10 @@ impl<'a> _SWRSTW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 0);
-        self.w.bits |= ((value as u32) & 0x01) << 0;
+        const MASK: bool = true;
+        const OFFSET: u8 = 0;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -544,13 +541,14 @@ impl<'a> _ENABLEW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 1);
-        self.w.bits |= ((value as u32) & 0x01) << 1;
+        const MASK: bool = true;
+        const OFFSET: u8 = 1;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `MODE`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum MODEW {
     #[doc = "Counter in 16-bit mode"]
     COUNT16,
@@ -599,13 +597,14 @@ impl<'a> _MODEW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x03 << 2);
-        self.w.bits |= ((value as u32) & 0x03) << 2;
+        const MASK: u8 = 3;
+        const OFFSET: u8 = 2;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `PRESCSYNC`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum PRESCSYNCW {
     #[doc = "Reload or reset the counter on next generic clock"]
     GCLK,
@@ -654,8 +653,10 @@ impl<'a> _PRESCSYNCW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x03 << 4);
-        self.w.bits |= ((value as u32) & 0x03) << 4;
+        const MASK: u8 = 3;
+        const OFFSET: u8 = 4;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -675,8 +676,10 @@ impl<'a> _RUNSTDBYW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 6);
-        self.w.bits |= ((value as u32) & 0x01) << 6;
+        const MASK: bool = true;
+        const OFFSET: u8 = 6;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -696,13 +699,14 @@ impl<'a> _ONDEMANDW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 7);
-        self.w.bits |= ((value as u32) & 0x01) << 7;
+        const MASK: bool = true;
+        const OFFSET: u8 = 7;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `PRESCALER`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum PRESCALERW {
     #[doc = "Prescaler: GCLK_TC"]
     DIV1,
@@ -793,8 +797,10 @@ impl<'a> _PRESCALERW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x07 << 8);
-        self.w.bits |= ((value as u32) & 0x07) << 8;
+        const MASK: u8 = 7;
+        const OFFSET: u8 = 8;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -814,8 +820,10 @@ impl<'a> _ALOCKW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 11);
-        self.w.bits |= ((value as u32) & 0x01) << 11;
+        const MASK: bool = true;
+        const OFFSET: u8 = 11;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -835,8 +843,10 @@ impl<'a> _CAPTEN0W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 16);
-        self.w.bits |= ((value as u32) & 0x01) << 16;
+        const MASK: bool = true;
+        const OFFSET: u8 = 16;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -856,8 +866,10 @@ impl<'a> _CAPTEN1W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 17);
-        self.w.bits |= ((value as u32) & 0x01) << 17;
+        const MASK: bool = true;
+        const OFFSET: u8 = 17;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -877,8 +889,10 @@ impl<'a> _COPEN0W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 20);
-        self.w.bits |= ((value as u32) & 0x01) << 20;
+        const MASK: bool = true;
+        const OFFSET: u8 = 20;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -898,13 +912,14 @@ impl<'a> _COPEN1W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 21);
-        self.w.bits |= ((value as u32) & 0x01) << 21;
+        const MASK: bool = true;
+        const OFFSET: u8 = 21;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `CAPTMODE0`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CAPTMODE0W {
     #[doc = "Default capture"]
     DEFAULT,
@@ -953,13 +968,14 @@ impl<'a> _CAPTMODE0W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x03 << 24);
-        self.w.bits |= ((value as u32) & 0x03) << 24;
+        const MASK: u8 = 3;
+        const OFFSET: u8 = 24;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `CAPTMODE1`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CAPTMODE1W {
     #[doc = "Default capture"]
     DEFAULT,
@@ -1008,8 +1024,10 @@ impl<'a> _CAPTMODE1W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x03 << 27);
-        self.w.bits |= ((value as u32) & 0x03) << 27;
+        const MASK: u8 = 3;
+        const OFFSET: u8 = 27;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -1022,78 +1040,135 @@ impl R {
     #[doc = "Bit 1 - Enable"]
     #[inline]
     pub fn enable(&self) -> ENABLER {
-        let bits = ((self.bits >> 1) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 1;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         ENABLER { bits }
     }
     #[doc = "Bits 2:3 - Timer Counter Mode"]
     #[inline]
     pub fn mode(&self) -> MODER {
-        MODER::_from(((self.bits >> 2) & 0x03) as u8)
+        MODER::_from({
+            const MASK: u8 = 3;
+            const OFFSET: u8 = 2;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
     #[doc = "Bits 4:5 - Prescaler and Counter Synchronization"]
     #[inline]
     pub fn prescsync(&self) -> PRESCSYNCR {
-        PRESCSYNCR::_from(((self.bits >> 4) & 0x03) as u8)
+        PRESCSYNCR::_from({
+            const MASK: u8 = 3;
+            const OFFSET: u8 = 4;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
     #[doc = "Bit 6 - Run during Standby"]
     #[inline]
     pub fn runstdby(&self) -> RUNSTDBYR {
-        let bits = ((self.bits >> 6) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 6;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         RUNSTDBYR { bits }
     }
     #[doc = "Bit 7 - Clock On Demand"]
     #[inline]
     pub fn ondemand(&self) -> ONDEMANDR {
-        let bits = ((self.bits >> 7) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 7;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         ONDEMANDR { bits }
     }
     #[doc = "Bits 8:10 - Prescaler"]
     #[inline]
     pub fn prescaler(&self) -> PRESCALERR {
-        PRESCALERR::_from(((self.bits >> 8) & 0x07) as u8)
+        PRESCALERR::_from({
+            const MASK: u8 = 7;
+            const OFFSET: u8 = 8;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
     #[doc = "Bit 11 - Auto Lock"]
     #[inline]
     pub fn alock(&self) -> ALOCKR {
-        let bits = ((self.bits >> 11) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 11;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         ALOCKR { bits }
     }
     #[doc = "Bit 16 - Capture Channel 0 Enable"]
     #[inline]
     pub fn capten0(&self) -> CAPTEN0R {
-        let bits = ((self.bits >> 16) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 16;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         CAPTEN0R { bits }
     }
     #[doc = "Bit 17 - Capture Channel 1 Enable"]
     #[inline]
     pub fn capten1(&self) -> CAPTEN1R {
-        let bits = ((self.bits >> 17) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 17;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         CAPTEN1R { bits }
     }
     #[doc = "Bit 20 - Capture On Pin 0 Enable"]
     #[inline]
     pub fn copen0(&self) -> COPEN0R {
-        let bits = ((self.bits >> 20) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 20;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         COPEN0R { bits }
     }
     #[doc = "Bit 21 - Capture On Pin 1 Enable"]
     #[inline]
     pub fn copen1(&self) -> COPEN1R {
-        let bits = ((self.bits >> 21) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 21;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         COPEN1R { bits }
     }
     #[doc = "Bits 24:25 - Capture Mode Channel 0"]
     #[inline]
     pub fn captmode0(&self) -> CAPTMODE0R {
-        CAPTMODE0R::_from(((self.bits >> 24) & 0x03) as u8)
+        CAPTMODE0R::_from({
+            const MASK: u8 = 3;
+            const OFFSET: u8 = 24;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
     #[doc = "Bits 27:28 - Capture mode Channel 1"]
     #[inline]
     pub fn captmode1(&self) -> CAPTMODE1R {
-        CAPTMODE1R::_from(((self.bits >> 27) & 0x03) as u8)
+        CAPTMODE1R::_from({
+            const MASK: u8 = 3;
+            const OFFSET: u8 = 27;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
 }
 impl W {
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub fn reset_value() -> W {
+        W { bits: 0 }
+    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {

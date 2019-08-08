@@ -14,7 +14,10 @@ impl super::COMPCTRL {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        self.register.set(f(&R { bits }, &mut W { bits }).bits);
+        let r = R { bits };
+        let mut w = W { bits };
+        f(&r, &mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -29,22 +32,14 @@ impl super::COMPCTRL {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        self.register.set(
-            f(&mut W {
-                bits: Self::reset_value(),
-            })
-            .bits,
-        );
-    }
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub const fn reset_value() -> u32 {
-        0
+        let mut w = W::reset_value();
+        f(&mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.register.set(Self::reset_value())
+        self.write(|w| w)
     }
 }
 #[doc = r" Value of the field"]
@@ -107,9 +102,9 @@ impl INTSELR {
     pub fn bits(&self) -> u8 {
         match *self {
             INTSELR::TOGGLE => 0,
-            INTSELR::RISING => 0x01,
-            INTSELR::FALLING => 0x02,
-            INTSELR::EOC => 0x03,
+            INTSELR::RISING => 1,
+            INTSELR::FALLING => 2,
+            INTSELR::EOC => 3,
         }
     }
     #[allow(missing_docs)]
@@ -192,13 +187,13 @@ impl MUXNEGR {
     pub fn bits(&self) -> u8 {
         match *self {
             MUXNEGR::PIN0 => 0,
-            MUXNEGR::PIN1 => 0x01,
-            MUXNEGR::PIN2 => 0x02,
-            MUXNEGR::PIN3 => 0x03,
-            MUXNEGR::GND => 0x04,
-            MUXNEGR::VSCALE => 0x05,
-            MUXNEGR::BANDGAP => 0x06,
-            MUXNEGR::DAC => 0x07,
+            MUXNEGR::PIN1 => 1,
+            MUXNEGR::PIN2 => 2,
+            MUXNEGR::PIN3 => 3,
+            MUXNEGR::GND => 4,
+            MUXNEGR::VSCALE => 5,
+            MUXNEGR::BANDGAP => 6,
+            MUXNEGR::DAC => 7,
         }
     }
     #[allow(missing_docs)]
@@ -280,10 +275,10 @@ impl MUXPOSR {
     pub fn bits(&self) -> u8 {
         match *self {
             MUXPOSR::PIN0 => 0,
-            MUXPOSR::PIN1 => 0x01,
-            MUXPOSR::PIN2 => 0x02,
-            MUXPOSR::PIN3 => 0x03,
-            MUXPOSR::VSCALE => 0x04,
+            MUXPOSR::PIN1 => 1,
+            MUXPOSR::PIN2 => 2,
+            MUXPOSR::PIN3 => 3,
+            MUXPOSR::VSCALE => 4,
             MUXPOSR::_Reserved(bits) => bits,
         }
     }
@@ -360,7 +355,7 @@ impl SPEEDR {
     #[inline]
     pub fn bits(&self) -> u8 {
         match *self {
-            SPEEDR::HIGH => 0x03,
+            SPEEDR::HIGH => 3,
             SPEEDR::_Reserved(bits) => bits,
         }
     }
@@ -418,8 +413,8 @@ impl HYSTR {
     pub fn bits(&self) -> u8 {
         match *self {
             HYSTR::HYST50 => 0,
-            HYSTR::HYST100 => 0x01,
-            HYSTR::HYST150 => 0x02,
+            HYSTR::HYST100 => 1,
+            HYSTR::HYST150 => 2,
             HYSTR::_Reserved(bits) => bits,
         }
     }
@@ -468,8 +463,8 @@ impl FLENR {
     pub fn bits(&self) -> u8 {
         match *self {
             FLENR::OFF => 0,
-            FLENR::MAJ3 => 0x01,
-            FLENR::MAJ5 => 0x02,
+            FLENR::MAJ3 => 1,
+            FLENR::MAJ5 => 2,
             FLENR::_Reserved(bits) => bits,
         }
     }
@@ -518,8 +513,8 @@ impl OUTR {
     pub fn bits(&self) -> u8 {
         match *self {
             OUTR::OFF => 0,
-            OUTR::ASYNC => 0x01,
-            OUTR::SYNC => 0x02,
+            OUTR::ASYNC => 1,
+            OUTR::SYNC => 2,
             OUTR::_Reserved(bits) => bits,
         }
     }
@@ -541,7 +536,7 @@ impl OUTR {
     }
     #[doc = "Checks if the value of the field is `ASYNC`"]
     #[inline]
-    pub fn is_async(&self) -> bool {
+    pub fn is_async_(&self) -> bool {
         *self == OUTR::ASYNC
     }
     #[doc = "Checks if the value of the field is `SYNC`"]
@@ -566,8 +561,10 @@ impl<'a> _ENABLEW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 1);
-        self.w.bits |= ((value as u32) & 0x01) << 1;
+        const MASK: bool = true;
+        const OFFSET: u8 = 1;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -587,13 +584,14 @@ impl<'a> _SINGLEW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 2);
-        self.w.bits |= ((value as u32) & 0x01) << 2;
+        const MASK: bool = true;
+        const OFFSET: u8 = 2;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `INTSEL`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum INTSELW {
     #[doc = "Interrupt on comparator output toggle"]
     TOGGLE,
@@ -652,8 +650,10 @@ impl<'a> _INTSELW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x03 << 3);
-        self.w.bits |= ((value as u32) & 0x03) << 3;
+        const MASK: u8 = 3;
+        const OFFSET: u8 = 3;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -673,13 +673,14 @@ impl<'a> _RUNSTDBYW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 6);
-        self.w.bits |= ((value as u32) & 0x01) << 6;
+        const MASK: bool = true;
+        const OFFSET: u8 = 6;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `MUXNEG`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum MUXNEGW {
     #[doc = "I/O pin 0"]
     PIN0,
@@ -770,13 +771,14 @@ impl<'a> _MUXNEGW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x07 << 8);
-        self.w.bits |= ((value as u32) & 0x07) << 8;
+        const MASK: u8 = 7;
+        const OFFSET: u8 = 8;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `MUXPOS`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum MUXPOSW {
     #[doc = "I/O pin 0"]
     PIN0,
@@ -841,8 +843,10 @@ impl<'a> _MUXPOSW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x07 << 12);
-        self.w.bits |= ((value as u32) & 0x07) << 12;
+        const MASK: u8 = 7;
+        const OFFSET: u8 = 12;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -862,13 +866,14 @@ impl<'a> _SWAPW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 15);
-        self.w.bits |= ((value as u32) & 0x01) << 15;
+        const MASK: bool = true;
+        const OFFSET: u8 = 15;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `SPEED`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum SPEEDW {
     #[doc = "High speed"]
     HIGH,
@@ -901,8 +906,10 @@ impl<'a> _SPEEDW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x03 << 16);
-        self.w.bits |= ((value as u32) & 0x03) << 16;
+        const MASK: u8 = 3;
+        const OFFSET: u8 = 16;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -922,13 +929,14 @@ impl<'a> _HYSTENW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 19);
-        self.w.bits |= ((value as u32) & 0x01) << 19;
+        const MASK: bool = true;
+        const OFFSET: u8 = 19;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `HYST`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum HYSTW {
     #[doc = "50mV"]
     HYST50,
@@ -977,13 +985,14 @@ impl<'a> _HYSTW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x03 << 20);
-        self.w.bits |= ((value as u32) & 0x03) << 20;
+        const MASK: u8 = 3;
+        const OFFSET: u8 = 20;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `FLEN`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum FLENW {
     #[doc = "No filtering"]
     OFF,
@@ -1032,13 +1041,14 @@ impl<'a> _FLENW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x07 << 24);
-        self.w.bits |= ((value as u32) & 0x07) << 24;
+        const MASK: u8 = 7;
+        const OFFSET: u8 = 24;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `OUT`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum OUTW {
     #[doc = "The output of COMPn is not routed to the COMPn I/O port"]
     OFF,
@@ -1076,7 +1086,7 @@ impl<'a> _OUTW<'a> {
     }
     #[doc = "The asynchronous output of COMPn is routed to the COMPn I/O port"]
     #[inline]
-    pub fn async(self) -> &'a mut W {
+    pub fn async_(self) -> &'a mut W {
         self.variant(OUTW::ASYNC)
     }
     #[doc = "The synchronous output (including filtering) of COMPn is routed to the COMPn I/O port"]
@@ -1087,8 +1097,10 @@ impl<'a> _OUTW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x03 << 28);
-        self.w.bits |= ((value as u32) & 0x03) << 28;
+        const MASK: u8 = 3;
+        const OFFSET: u8 = 28;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -1101,70 +1113,123 @@ impl R {
     #[doc = "Bit 1 - Enable"]
     #[inline]
     pub fn enable(&self) -> ENABLER {
-        let bits = ((self.bits >> 1) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 1;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         ENABLER { bits }
     }
     #[doc = "Bit 2 - Single-Shot Mode"]
     #[inline]
     pub fn single(&self) -> SINGLER {
-        let bits = ((self.bits >> 2) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 2;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         SINGLER { bits }
     }
     #[doc = "Bits 3:4 - Interrupt Selection"]
     #[inline]
     pub fn intsel(&self) -> INTSELR {
-        INTSELR::_from(((self.bits >> 3) & 0x03) as u8)
+        INTSELR::_from({
+            const MASK: u8 = 3;
+            const OFFSET: u8 = 3;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
     #[doc = "Bit 6 - Run in Standby"]
     #[inline]
     pub fn runstdby(&self) -> RUNSTDBYR {
-        let bits = ((self.bits >> 6) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 6;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         RUNSTDBYR { bits }
     }
     #[doc = "Bits 8:10 - Negative Input Mux Selection"]
     #[inline]
     pub fn muxneg(&self) -> MUXNEGR {
-        MUXNEGR::_from(((self.bits >> 8) & 0x07) as u8)
+        MUXNEGR::_from({
+            const MASK: u8 = 7;
+            const OFFSET: u8 = 8;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
     #[doc = "Bits 12:14 - Positive Input Mux Selection"]
     #[inline]
     pub fn muxpos(&self) -> MUXPOSR {
-        MUXPOSR::_from(((self.bits >> 12) & 0x07) as u8)
+        MUXPOSR::_from({
+            const MASK: u8 = 7;
+            const OFFSET: u8 = 12;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
     #[doc = "Bit 15 - Swap Inputs and Invert"]
     #[inline]
     pub fn swap(&self) -> SWAPR {
-        let bits = ((self.bits >> 15) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 15;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         SWAPR { bits }
     }
     #[doc = "Bits 16:17 - Speed Selection"]
     #[inline]
     pub fn speed(&self) -> SPEEDR {
-        SPEEDR::_from(((self.bits >> 16) & 0x03) as u8)
+        SPEEDR::_from({
+            const MASK: u8 = 3;
+            const OFFSET: u8 = 16;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
     #[doc = "Bit 19 - Hysteresis Enable"]
     #[inline]
     pub fn hysten(&self) -> HYSTENR {
-        let bits = ((self.bits >> 19) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 19;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         HYSTENR { bits }
     }
     #[doc = "Bits 20:21 - Hysteresis Level"]
     #[inline]
     pub fn hyst(&self) -> HYSTR {
-        HYSTR::_from(((self.bits >> 20) & 0x03) as u8)
+        HYSTR::_from({
+            const MASK: u8 = 3;
+            const OFFSET: u8 = 20;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
     #[doc = "Bits 24:26 - Filter Length"]
     #[inline]
     pub fn flen(&self) -> FLENR {
-        FLENR::_from(((self.bits >> 24) & 0x07) as u8)
+        FLENR::_from({
+            const MASK: u8 = 7;
+            const OFFSET: u8 = 24;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
     #[doc = "Bits 28:29 - Output"]
     #[inline]
     pub fn out(&self) -> OUTR {
-        OUTR::_from(((self.bits >> 28) & 0x03) as u8)
+        OUTR::_from({
+            const MASK: u8 = 3;
+            const OFFSET: u8 = 28;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
 }
 impl W {
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub fn reset_value() -> W {
+        W { bits: 0 }
+    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {

@@ -31,7 +31,11 @@ impl R {
     #[doc = "Bits 0:15 - Receive Data"]
     #[inline]
     pub fn data(&self) -> DATAR {
-        let bits = ((self.bits >> 0) & 0xffff) as u16;
+        let bits = {
+            const MASK: u16 = 65535;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u32) as u16
+        };
         DATAR { bits }
     }
 }

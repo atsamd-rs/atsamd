@@ -1,8 +1,19 @@
-#[doc = "Reader of register FSMSTATUS"]
-pub type R = crate::R<u8, super::FSMSTATUS>;
+#[doc = r" Value read from the register"]
+pub struct R {
+    bits: u8,
+}
+impl super::FSMSTATUS {
+    #[doc = r" Reads the contents of the register"]
+    #[inline]
+    pub fn read(&self) -> R {
+        R {
+            bits: self.register.get(),
+        }
+    }
+}
 #[doc = "Possible values of the field `FSMSTATE`"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum FSMSTATE_A {
+pub enum FSMSTATER {
     #[doc = "OFF (L3). It corresponds to the powered-off, disconnected, and disabled state"]
     OFF,
     #[doc = "ON (L0). It corresponds to the Idle and Active states"]
@@ -17,79 +28,88 @@ pub enum FSMSTATE_A {
     UPRESUME,
     #[doc = "RESET. USB lines Reset."]
     RESET,
+    #[doc = r" Reserved"]
+    _Reserved(u8),
 }
-impl crate::ToBits<u8> for FSMSTATE_A {
-    #[inline(always)]
-    fn _bits(&self) -> u8 {
+impl FSMSTATER {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bits(&self) -> u8 {
         match *self {
-            FSMSTATE_A::OFF => 1,
-            FSMSTATE_A::ON => 2,
-            FSMSTATE_A::SUSPEND => 4,
-            FSMSTATE_A::SLEEP => 8,
-            FSMSTATE_A::DNRESUME => 16,
-            FSMSTATE_A::UPRESUME => 32,
-            FSMSTATE_A::RESET => 64,
+            FSMSTATER::OFF => 1,
+            FSMSTATER::ON => 2,
+            FSMSTATER::SUSPEND => 4,
+            FSMSTATER::SLEEP => 8,
+            FSMSTATER::DNRESUME => 16,
+            FSMSTATER::UPRESUME => 32,
+            FSMSTATER::RESET => 64,
+            FSMSTATER::_Reserved(bits) => bits,
         }
     }
-}
-#[doc = "Reader of field `FSMSTATE`"]
-pub type FSMSTATE_R = crate::R<u8, FSMSTATE_A>;
-impl FSMSTATE_R {
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> crate::Variant<u8, FSMSTATE_A> {
-        use crate::Variant::*;
-        match self.bits {
-            1 => Val(FSMSTATE_A::OFF),
-            2 => Val(FSMSTATE_A::ON),
-            4 => Val(FSMSTATE_A::SUSPEND),
-            8 => Val(FSMSTATE_A::SLEEP),
-            16 => Val(FSMSTATE_A::DNRESUME),
-            32 => Val(FSMSTATE_A::UPRESUME),
-            64 => Val(FSMSTATE_A::RESET),
-            i => Res(i),
+    #[allow(missing_docs)]
+    #[doc(hidden)]
+    #[inline]
+    pub fn _from(value: u8) -> FSMSTATER {
+        match value {
+            1 => FSMSTATER::OFF,
+            2 => FSMSTATER::ON,
+            4 => FSMSTATER::SUSPEND,
+            8 => FSMSTATER::SLEEP,
+            16 => FSMSTATER::DNRESUME,
+            32 => FSMSTATER::UPRESUME,
+            64 => FSMSTATER::RESET,
+            i => FSMSTATER::_Reserved(i),
         }
     }
     #[doc = "Checks if the value of the field is `OFF`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_off(&self) -> bool {
-        *self == FSMSTATE_A::OFF
+        *self == FSMSTATER::OFF
     }
     #[doc = "Checks if the value of the field is `ON`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_on(&self) -> bool {
-        *self == FSMSTATE_A::ON
+        *self == FSMSTATER::ON
     }
     #[doc = "Checks if the value of the field is `SUSPEND`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_suspend(&self) -> bool {
-        *self == FSMSTATE_A::SUSPEND
+        *self == FSMSTATER::SUSPEND
     }
     #[doc = "Checks if the value of the field is `SLEEP`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_sleep(&self) -> bool {
-        *self == FSMSTATE_A::SLEEP
+        *self == FSMSTATER::SLEEP
     }
     #[doc = "Checks if the value of the field is `DNRESUME`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_dnresume(&self) -> bool {
-        *self == FSMSTATE_A::DNRESUME
+        *self == FSMSTATER::DNRESUME
     }
     #[doc = "Checks if the value of the field is `UPRESUME`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_upresume(&self) -> bool {
-        *self == FSMSTATE_A::UPRESUME
+        *self == FSMSTATER::UPRESUME
     }
     #[doc = "Checks if the value of the field is `RESET`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_reset(&self) -> bool {
-        *self == FSMSTATE_A::RESET
+        *self == FSMSTATER::RESET
     }
 }
 impl R {
+    #[doc = r" Value of the register as raw bits"]
+    #[inline]
+    pub fn bits(&self) -> u8 {
+        self.bits
+    }
     #[doc = "Bits 0:6 - Fine State Machine Status"]
-    #[inline(always)]
-    pub fn fsmstate(&self) -> FSMSTATE_R {
-        FSMSTATE_R::new((self.bits & 0x7f) as u8)
+    #[inline]
+    pub fn fsmstate(&self) -> FSMSTATER {
+        FSMSTATER::_from({
+            const MASK: u8 = 127;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u8) as u8
+        })
     }
 }

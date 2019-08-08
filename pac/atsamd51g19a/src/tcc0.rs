@@ -251,223 +251,223 @@ impl RegisterBlock {
 }
 #[doc = "Control A"]
 pub struct CTRLA {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Control A"]
 pub mod ctrla;
 #[doc = "Control B Clear"]
 pub struct CTRLBCLR {
-    register: vcell::VolatileCell<u8>,
+    register: ::vcell::VolatileCell<u8>,
 }
 #[doc = "Control B Clear"]
 pub mod ctrlbclr;
 #[doc = "Control B Set"]
 pub struct CTRLBSET {
-    register: vcell::VolatileCell<u8>,
+    register: ::vcell::VolatileCell<u8>,
 }
 #[doc = "Control B Set"]
 pub mod ctrlbset;
 #[doc = "Synchronization Busy"]
 pub struct SYNCBUSY {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Synchronization Busy"]
 pub mod syncbusy;
 #[doc = "Recoverable Fault A Configuration"]
 pub struct FCTRLA {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Recoverable Fault A Configuration"]
 pub mod fctrla;
 #[doc = "Recoverable Fault B Configuration"]
 pub struct FCTRLB {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Recoverable Fault B Configuration"]
 pub mod fctrlb;
 #[doc = "Waveform Extension Configuration"]
 pub struct WEXCTRL {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Waveform Extension Configuration"]
 pub mod wexctrl;
 #[doc = "Driver Control"]
 pub struct DRVCTRL {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Driver Control"]
 pub mod drvctrl;
 #[doc = "Debug Control"]
 pub struct DBGCTRL {
-    register: vcell::VolatileCell<u8>,
+    register: ::vcell::VolatileCell<u8>,
 }
 #[doc = "Debug Control"]
 pub mod dbgctrl;
 #[doc = "Event Control"]
 pub struct EVCTRL {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Event Control"]
 pub mod evctrl;
 #[doc = "Interrupt Enable Clear"]
 pub struct INTENCLR {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Interrupt Enable Clear"]
 pub mod intenclr;
 #[doc = "Interrupt Enable Set"]
 pub struct INTENSET {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Interrupt Enable Set"]
 pub mod intenset;
 #[doc = "Interrupt Flag Status and Clear"]
 pub struct INTFLAG {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Interrupt Flag Status and Clear"]
 pub mod intflag;
 #[doc = "Status"]
 pub struct STATUS {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Status"]
 pub mod status;
 #[doc = "Count"]
 pub struct COUNT {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Count"]
 pub mod count;
 #[doc = "Count"]
 pub struct COUNT_DITH4 {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Count"]
 pub mod count_dith4;
 #[doc = "Count"]
 pub struct COUNT_DITH5 {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Count"]
 pub mod count_dith5;
 #[doc = "Count"]
 pub struct COUNT_DITH6 {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Count"]
 pub mod count_dith6;
 #[doc = "Pattern"]
 pub struct PATT {
-    register: vcell::VolatileCell<u16>,
+    register: ::vcell::VolatileCell<u16>,
 }
 #[doc = "Pattern"]
 pub mod patt;
 #[doc = "Waveform Control"]
 pub struct WAVE {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Waveform Control"]
 pub mod wave;
 #[doc = "Period"]
 pub struct PER {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Period"]
 pub mod per;
 #[doc = "Period"]
 pub struct PER_DITH4 {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Period"]
 pub mod per_dith4;
 #[doc = "Period"]
 pub struct PER_DITH5 {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Period"]
 pub mod per_dith5;
 #[doc = "Period"]
 pub struct PER_DITH6 {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Period"]
 pub mod per_dith6;
 #[doc = "Compare and Capture"]
 pub struct CC {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Compare and Capture"]
 pub mod cc;
 #[doc = "Compare and Capture"]
 pub struct CC_DITH4 {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Compare and Capture"]
 pub mod cc_dith4;
 #[doc = "Compare and Capture"]
 pub struct CC_DITH5 {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Compare and Capture"]
 pub mod cc_dith5;
 #[doc = "Compare and Capture"]
 pub struct CC_DITH6 {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Compare and Capture"]
 pub mod cc_dith6;
 #[doc = "Pattern Buffer"]
 pub struct PATTBUF {
-    register: vcell::VolatileCell<u16>,
+    register: ::vcell::VolatileCell<u16>,
 }
 #[doc = "Pattern Buffer"]
 pub mod pattbuf;
 #[doc = "Period Buffer"]
 pub struct PERBUF {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Period Buffer"]
 pub mod perbuf;
 #[doc = "Period Buffer"]
 pub struct PERBUF_DITH4 {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Period Buffer"]
 pub mod perbuf_dith4;
 #[doc = "Period Buffer"]
 pub struct PERBUF_DITH5 {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Period Buffer"]
 pub mod perbuf_dith5;
 #[doc = "Period Buffer"]
 pub struct PERBUF_DITH6 {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Period Buffer"]
 pub mod perbuf_dith6;
 #[doc = "Compare and Capture Buffer"]
 pub struct CCBUF {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Compare and Capture Buffer"]
 pub mod ccbuf;
 #[doc = "Compare and Capture Buffer"]
 pub struct CCBUF_DITH4 {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Compare and Capture Buffer"]
 pub mod ccbuf_dith4;
 #[doc = "Compare and Capture Buffer"]
 pub struct CCBUF_DITH5 {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Compare and Capture Buffer"]
 pub mod ccbuf_dith5;
 #[doc = "Compare and Capture Buffer"]
 pub struct CCBUF_DITH6 {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Compare and Capture Buffer"]
 pub mod ccbuf_dith6;

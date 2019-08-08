@@ -107,43 +107,71 @@ impl R {
     #[doc = "Bits 0:3 - Region Hash Completed"]
     #[inline]
     pub fn rhc(&self) -> RHCR {
-        let bits = ((self.bits >> 0) & 0x0f) as u8;
+        let bits = {
+            const MASK: u8 = 15;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        };
         RHCR { bits }
     }
     #[doc = "Bits 4:7 - Region Digest Mismatch"]
     #[inline]
     pub fn rdm(&self) -> RDMR {
-        let bits = ((self.bits >> 4) & 0x0f) as u8;
+        let bits = {
+            const MASK: u8 = 15;
+            const OFFSET: u8 = 4;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        };
         RDMR { bits }
     }
     #[doc = "Bits 8:11 - Region Bus Error"]
     #[inline]
     pub fn rbe(&self) -> RBER {
-        let bits = ((self.bits >> 8) & 0x0f) as u8;
+        let bits = {
+            const MASK: u8 = 15;
+            const OFFSET: u8 = 8;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        };
         RBER { bits }
     }
     #[doc = "Bits 12:15 - Region Wrap Condition Detected"]
     #[inline]
     pub fn rwc(&self) -> RWCR {
-        let bits = ((self.bits >> 12) & 0x0f) as u8;
+        let bits = {
+            const MASK: u8 = 15;
+            const OFFSET: u8 = 12;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        };
         RWCR { bits }
     }
     #[doc = "Bits 16:19 - Region End bit Condition Detected"]
     #[inline]
     pub fn rec(&self) -> RECR {
-        let bits = ((self.bits >> 16) & 0x0f) as u8;
+        let bits = {
+            const MASK: u8 = 15;
+            const OFFSET: u8 = 16;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        };
         RECR { bits }
     }
     #[doc = "Bits 20:23 - Region Status Updated Detected"]
     #[inline]
     pub fn rsu(&self) -> RSUR {
-        let bits = ((self.bits >> 20) & 0x0f) as u8;
+        let bits = {
+            const MASK: u8 = 15;
+            const OFFSET: u8 = 20;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        };
         RSUR { bits }
     }
     #[doc = "Bit 24 - Undefined Register Access Detection Status"]
     #[inline]
     pub fn urad(&self) -> URADR {
-        let bits = ((self.bits >> 24) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 24;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         URADR { bits }
     }
 }

@@ -62,13 +62,21 @@ impl R {
     #[doc = "Bit 0 - Ready User"]
     #[inline]
     pub fn rdyusr(&self) -> RDYUSRR {
-        let bits = ((self.bits >> 0) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         RDYUSRR { bits }
     }
     #[doc = "Bit 1 - Busy Channel"]
     #[inline]
     pub fn busych(&self) -> BUSYCHR {
-        let bits = ((self.bits >> 1) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 1;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         BUSYCHR { bits }
     }
 }

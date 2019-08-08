@@ -59,91 +59,91 @@ pub struct RegisterBlock {
 }
 #[doc = "Data Direction"]
 pub struct DIR {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Data Direction"]
 pub mod dir;
 #[doc = "Data Direction Clear"]
 pub struct DIRCLR {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Data Direction Clear"]
 pub mod dirclr;
 #[doc = "Data Direction Set"]
 pub struct DIRSET {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Data Direction Set"]
 pub mod dirset;
 #[doc = "Data Direction Toggle"]
 pub struct DIRTGL {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Data Direction Toggle"]
 pub mod dirtgl;
 #[doc = "Data Output Value"]
 pub struct OUT {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Data Output Value"]
 pub mod out;
 #[doc = "Data Output Value Clear"]
 pub struct OUTCLR {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Data Output Value Clear"]
 pub mod outclr;
 #[doc = "Data Output Value Set"]
 pub struct OUTSET {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Data Output Value Set"]
 pub mod outset;
 #[doc = "Data Output Value Toggle"]
 pub struct OUTTGL {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Data Output Value Toggle"]
 pub mod outtgl;
 #[doc = "Data Input Value"]
 pub struct IN {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Data Input Value"]
 pub mod in_;
 #[doc = "Control"]
 pub struct CTRL {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Control"]
 pub mod ctrl;
 #[doc = "Write Configuration"]
 pub struct WRCONFIG {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Write Configuration"]
 pub mod wrconfig;
 #[doc = "Peripheral Multiplexing n - Group 0"]
 pub struct PMUX0_ {
-    register: vcell::VolatileCell<u8>,
+    register: ::vcell::VolatileCell<u8>,
 }
 #[doc = "Peripheral Multiplexing n - Group 0"]
 pub mod pmux0_;
 #[doc = "Peripheral Multiplexing n - Group 1"]
 pub struct PMUX1_ {
-    register: vcell::VolatileCell<u8>,
+    register: ::vcell::VolatileCell<u8>,
 }
 #[doc = "Peripheral Multiplexing n - Group 1"]
 pub mod pmux1_;
 #[doc = "Pin Configuration n - Group 0"]
 pub struct PINCFG0_ {
-    register: vcell::VolatileCell<u8>,
+    register: ::vcell::VolatileCell<u8>,
 }
 #[doc = "Pin Configuration n - Group 0"]
 pub mod pincfg0_;
 #[doc = "Pin Configuration n - Group 1"]
 pub struct PINCFG1_ {
-    register: vcell::VolatileCell<u8>,
+    register: ::vcell::VolatileCell<u8>,
 }
 #[doc = "Pin Configuration n - Group 1"]
 pub mod pincfg1_;

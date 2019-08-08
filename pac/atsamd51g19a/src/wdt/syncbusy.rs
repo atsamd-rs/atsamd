@@ -104,25 +104,41 @@ impl R {
     #[doc = "Bit 1 - Enable Synchronization Busy"]
     #[inline]
     pub fn enable(&self) -> ENABLER {
-        let bits = ((self.bits >> 1) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 1;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         ENABLER { bits }
     }
     #[doc = "Bit 2 - Window Enable Synchronization Busy"]
     #[inline]
     pub fn wen(&self) -> WENR {
-        let bits = ((self.bits >> 2) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 2;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         WENR { bits }
     }
     #[doc = "Bit 3 - Always-On Synchronization Busy"]
     #[inline]
     pub fn alwayson(&self) -> ALWAYSONR {
-        let bits = ((self.bits >> 3) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 3;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         ALWAYSONR { bits }
     }
     #[doc = "Bit 4 - Clear Synchronization Busy"]
     #[inline]
     pub fn clear(&self) -> CLEARR {
-        let bits = ((self.bits >> 4) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 4;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         CLEARR { bits }
     }
 }

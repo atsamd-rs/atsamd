@@ -125,31 +125,51 @@ impl R {
     #[doc = "Bit 0 - Data Toggle"]
     #[inline]
     pub fn dtgl(&self) -> DTGLR {
-        let bits = ((self.bits >> 0) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         DTGLR { bits }
     }
     #[doc = "Bit 2 - Current Bank"]
     #[inline]
     pub fn curbk(&self) -> CURBKR {
-        let bits = ((self.bits >> 2) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 2;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         CURBKR { bits }
     }
     #[doc = "Bit 4 - Pipe Freeze"]
     #[inline]
     pub fn pfreeze(&self) -> PFREEZER {
-        let bits = ((self.bits >> 4) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 4;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         PFREEZER { bits }
     }
     #[doc = "Bit 6 - Bank 0 ready"]
     #[inline]
     pub fn bk0rdy(&self) -> BK0RDYR {
-        let bits = ((self.bits >> 6) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 6;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         BK0RDYR { bits }
     }
     #[doc = "Bit 7 - Bank 1 ready"]
     #[inline]
     pub fn bk1rdy(&self) -> BK1RDYR {
-        let bits = ((self.bits >> 7) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 7;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         BK1RDYR { bits }
     }
 }

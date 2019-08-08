@@ -272,73 +272,121 @@ impl R {
     #[doc = "Bit 0 - Channel 0 Pending Interrupt"]
     #[inline]
     pub fn chint0(&self) -> CHINT0R {
-        let bits = ((self.bits >> 0) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         CHINT0R { bits }
     }
     #[doc = "Bit 1 - Channel 1 Pending Interrupt"]
     #[inline]
     pub fn chint1(&self) -> CHINT1R {
-        let bits = ((self.bits >> 1) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 1;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         CHINT1R { bits }
     }
     #[doc = "Bit 2 - Channel 2 Pending Interrupt"]
     #[inline]
     pub fn chint2(&self) -> CHINT2R {
-        let bits = ((self.bits >> 2) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 2;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         CHINT2R { bits }
     }
     #[doc = "Bit 3 - Channel 3 Pending Interrupt"]
     #[inline]
     pub fn chint3(&self) -> CHINT3R {
-        let bits = ((self.bits >> 3) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 3;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         CHINT3R { bits }
     }
     #[doc = "Bit 4 - Channel 4 Pending Interrupt"]
     #[inline]
     pub fn chint4(&self) -> CHINT4R {
-        let bits = ((self.bits >> 4) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 4;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         CHINT4R { bits }
     }
     #[doc = "Bit 5 - Channel 5 Pending Interrupt"]
     #[inline]
     pub fn chint5(&self) -> CHINT5R {
-        let bits = ((self.bits >> 5) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 5;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         CHINT5R { bits }
     }
     #[doc = "Bit 6 - Channel 6 Pending Interrupt"]
     #[inline]
     pub fn chint6(&self) -> CHINT6R {
-        let bits = ((self.bits >> 6) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 6;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         CHINT6R { bits }
     }
     #[doc = "Bit 7 - Channel 7 Pending Interrupt"]
     #[inline]
     pub fn chint7(&self) -> CHINT7R {
-        let bits = ((self.bits >> 7) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 7;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         CHINT7R { bits }
     }
     #[doc = "Bit 8 - Channel 8 Pending Interrupt"]
     #[inline]
     pub fn chint8(&self) -> CHINT8R {
-        let bits = ((self.bits >> 8) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 8;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         CHINT8R { bits }
     }
     #[doc = "Bit 9 - Channel 9 Pending Interrupt"]
     #[inline]
     pub fn chint9(&self) -> CHINT9R {
-        let bits = ((self.bits >> 9) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 9;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         CHINT9R { bits }
     }
     #[doc = "Bit 10 - Channel 10 Pending Interrupt"]
     #[inline]
     pub fn chint10(&self) -> CHINT10R {
-        let bits = ((self.bits >> 10) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 10;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         CHINT10R { bits }
     }
     #[doc = "Bit 11 - Channel 11 Pending Interrupt"]
     #[inline]
     pub fn chint11(&self) -> CHINT11R {
-        let bits = ((self.bits >> 11) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 11;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         CHINT11R { bits }
     }
 }

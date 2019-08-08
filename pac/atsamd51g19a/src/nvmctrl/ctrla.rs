@@ -14,7 +14,10 @@ impl super::CTRLA {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        self.register.set(f(&R { bits }, &mut W { bits }).bits);
+        let r = R { bits };
+        let mut w = W { bits };
+        f(&r, &mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -29,22 +32,14 @@ impl super::CTRLA {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        self.register.set(
-            f(&mut W {
-                bits: Self::reset_value(),
-            })
-            .bits,
-        );
-    }
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub const fn reset_value() -> u16 {
-        0x04
+        let mut w = W::reset_value();
+        f(&mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.register.set(Self::reset_value())
+        self.write(|w| w)
     }
 }
 #[doc = r" Value of the field"]
@@ -107,9 +102,9 @@ impl WMODER {
     pub fn bits(&self) -> u8 {
         match *self {
             WMODER::MAN => 0,
-            WMODER::ADW => 0x01,
-            WMODER::AQW => 0x02,
-            WMODER::AP => 0x03,
+            WMODER::ADW => 1,
+            WMODER::AQW => 2,
+            WMODER::AP => 3,
         }
     }
     #[allow(missing_docs)]
@@ -163,8 +158,8 @@ impl PRMR {
     pub fn bits(&self) -> u8 {
         match *self {
             PRMR::SEMIAUTO => 0,
-            PRMR::FULLAUTO => 0x01,
-            PRMR::MANUAL => 0x03,
+            PRMR::FULLAUTO => 1,
+            PRMR::MANUAL => 3,
             PRMR::_Reserved(bits) => bits,
         }
     }
@@ -213,8 +208,8 @@ impl RWSR {
     pub fn bits(&self) -> u8 {
         match *self {
             RWSR::SINGLE => 0,
-            RWSR::HALF => 0x01,
-            RWSR::DUAL => 0x02,
+            RWSR::HALF => 1,
+            RWSR::DUAL => 2,
             RWSR::_Reserved(bits) => bits,
         }
     }
@@ -345,8 +340,10 @@ impl<'a> _AUTOWSW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 2);
-        self.w.bits |= ((value as u16) & 0x01) << 2;
+        const MASK: bool = true;
+        const OFFSET: u8 = 2;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
@@ -366,13 +363,14 @@ impl<'a> _SUSPENW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 3);
-        self.w.bits |= ((value as u16) & 0x01) << 3;
+        const MASK: bool = true;
+        const OFFSET: u8 = 3;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `WMODE`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum WMODEW {
     #[doc = "Manual Write"]
     MAN,
@@ -431,13 +429,14 @@ impl<'a> _WMODEW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x03 << 4);
-        self.w.bits |= ((value as u16) & 0x03) << 4;
+        const MASK: u8 = 3;
+        const OFFSET: u8 = 4;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `PRM`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum PRMW {
     #[doc = "NVM block enters low-power mode when entering standby mode. NVM block enters low-power mode when SPRM command is issued. NVM block exits low-power mode upon first access."]
     SEMIAUTO,
@@ -486,13 +485,14 @@ impl<'a> _PRMW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x03 << 6);
-        self.w.bits |= ((value as u16) & 0x03) << 6;
+        const MASK: u8 = 3;
+        const OFFSET: u8 = 6;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `RWS`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum RWSW {
     #[doc = "Single Auto Wait State"]
     SINGLE,
@@ -541,8 +541,10 @@ impl<'a> _RWSW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x0f << 8);
-        self.w.bits |= ((value as u16) & 0x0f) << 8;
+        const MASK: u8 = 15;
+        const OFFSET: u8 = 8;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
@@ -562,8 +564,10 @@ impl<'a> _AHBNS0W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 12);
-        self.w.bits |= ((value as u16) & 0x01) << 12;
+        const MASK: bool = true;
+        const OFFSET: u8 = 12;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
@@ -583,8 +587,10 @@ impl<'a> _AHBNS1W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 13);
-        self.w.bits |= ((value as u16) & 0x01) << 13;
+        const MASK: bool = true;
+        const OFFSET: u8 = 13;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
@@ -604,8 +610,10 @@ impl<'a> _CACHEDIS0W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 14);
-        self.w.bits |= ((value as u16) & 0x01) << 14;
+        const MASK: bool = true;
+        const OFFSET: u8 = 14;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
@@ -625,8 +633,10 @@ impl<'a> _CACHEDIS1W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 15);
-        self.w.bits |= ((value as u16) & 0x01) << 15;
+        const MASK: bool = true;
+        const OFFSET: u8 = 15;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
@@ -639,56 +649,97 @@ impl R {
     #[doc = "Bit 2 - Auto Wait State Enable"]
     #[inline]
     pub fn autows(&self) -> AUTOWSR {
-        let bits = ((self.bits >> 2) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 2;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        };
         AUTOWSR { bits }
     }
     #[doc = "Bit 3 - Suspend Enable"]
     #[inline]
     pub fn suspen(&self) -> SUSPENR {
-        let bits = ((self.bits >> 3) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 3;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        };
         SUSPENR { bits }
     }
     #[doc = "Bits 4:5 - Write Mode"]
     #[inline]
     pub fn wmode(&self) -> WMODER {
-        WMODER::_from(((self.bits >> 4) & 0x03) as u8)
+        WMODER::_from({
+            const MASK: u8 = 3;
+            const OFFSET: u8 = 4;
+            ((self.bits >> OFFSET) & MASK as u16) as u8
+        })
     }
     #[doc = "Bits 6:7 - Power Reduction Mode during Sleep"]
     #[inline]
     pub fn prm(&self) -> PRMR {
-        PRMR::_from(((self.bits >> 6) & 0x03) as u8)
+        PRMR::_from({
+            const MASK: u8 = 3;
+            const OFFSET: u8 = 6;
+            ((self.bits >> OFFSET) & MASK as u16) as u8
+        })
     }
     #[doc = "Bits 8:11 - NVM Read Wait States"]
     #[inline]
     pub fn rws(&self) -> RWSR {
-        RWSR::_from(((self.bits >> 8) & 0x0f) as u8)
+        RWSR::_from({
+            const MASK: u8 = 15;
+            const OFFSET: u8 = 8;
+            ((self.bits >> OFFSET) & MASK as u16) as u8
+        })
     }
     #[doc = "Bit 12 - Force AHB0 access to NONSEQ, burst transfers are continuously rearbitrated"]
     #[inline]
     pub fn ahbns0(&self) -> AHBNS0R {
-        let bits = ((self.bits >> 12) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 12;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        };
         AHBNS0R { bits }
     }
     #[doc = "Bit 13 - Force AHB1 access to NONSEQ, burst transfers are continuously rearbitrated"]
     #[inline]
     pub fn ahbns1(&self) -> AHBNS1R {
-        let bits = ((self.bits >> 13) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 13;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        };
         AHBNS1R { bits }
     }
     #[doc = "Bit 14 - AHB0 Cache Disable"]
     #[inline]
     pub fn cachedis0(&self) -> CACHEDIS0R {
-        let bits = ((self.bits >> 14) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 14;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        };
         CACHEDIS0R { bits }
     }
     #[doc = "Bit 15 - AHB1 Cache Disable"]
     #[inline]
     pub fn cachedis1(&self) -> CACHEDIS1R {
-        let bits = ((self.bits >> 15) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 15;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        };
         CACHEDIS1R { bits }
     }
 }
 impl W {
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub fn reset_value() -> W {
+        W { bits: 4 }
+    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {

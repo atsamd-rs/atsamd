@@ -1,40 +1,105 @@
-#[doc = "Reader of register RXPL"]
-pub type R = crate::R<u8, super::RXPL>;
-#[doc = "Writer for register RXPL"]
-pub type W = crate::W<u8, super::RXPL>;
-#[doc = "Register RXPL `reset()`'s with value 0"]
-impl crate::ResetValue for super::RXPL {
-    type Type = u8;
-    #[inline(always)]
-    fn reset_value() -> Self::Type {
-        0
+#[doc = r" Value read from the register"]
+pub struct R {
+    bits: u8,
+}
+#[doc = r" Value to write to the register"]
+pub struct W {
+    bits: u8,
+}
+impl super::RXPL {
+    #[doc = r" Modifies the contents of the register"]
+    #[inline]
+    pub fn modify<F>(&self, f: F)
+    where
+        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
+    {
+        let bits = self.register.get();
+        let r = R { bits };
+        let mut w = W { bits };
+        f(&r, &mut w);
+        self.register.set(w.bits);
+    }
+    #[doc = r" Reads the contents of the register"]
+    #[inline]
+    pub fn read(&self) -> R {
+        R {
+            bits: self.register.get(),
+        }
+    }
+    #[doc = r" Writes to the register"]
+    #[inline]
+    pub fn write<F>(&self, f: F)
+    where
+        F: FnOnce(&mut W) -> &mut W,
+    {
+        let mut w = W::reset_value();
+        f(&mut w);
+        self.register.set(w.bits);
+    }
+    #[doc = r" Writes the reset value to the register"]
+    #[inline]
+    pub fn reset(&self) {
+        self.write(|w| w)
     }
 }
-#[doc = "Reader of field `RXPL`"]
-pub type RXPL_R = crate::R<u8, u8>;
-#[doc = "Write proxy for field `RXPL`"]
-pub struct RXPL_W<'a> {
+#[doc = r" Value of the field"]
+pub struct RXPLR {
+    bits: u8,
+}
+impl RXPLR {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bits(&self) -> u8 {
+        self.bits
+    }
+}
+#[doc = r" Proxy"]
+pub struct _RXPLW<'a> {
     w: &'a mut W,
 }
-impl<'a> RXPL_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
+impl<'a> _RXPLW<'a> {
+    #[doc = r" Writes raw bits to the field"]
+    #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0xff) | ((value as u8) & 0xff);
+        const MASK: u8 = 255;
+        const OFFSET: u8 = 0;
+        self.w.bits &= !((MASK as u8) << OFFSET);
+        self.w.bits |= ((value & MASK) as u8) << OFFSET;
         self.w
     }
 }
 impl R {
+    #[doc = r" Value of the register as raw bits"]
+    #[inline]
+    pub fn bits(&self) -> u8 {
+        self.bits
+    }
     #[doc = "Bits 0:7 - Receive Pulse Length"]
-    #[inline(always)]
-    pub fn rxpl(&self) -> RXPL_R {
-        RXPL_R::new((self.bits & 0xff) as u8)
+    #[inline]
+    pub fn rxpl(&self) -> RXPLR {
+        let bits = {
+            const MASK: u8 = 255;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u8) as u8
+        };
+        RXPLR { bits }
     }
 }
 impl W {
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub fn reset_value() -> W {
+        W { bits: 0 }
+    }
+    #[doc = r" Writes raw bits to the register"]
+    #[inline]
+    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
+        self.bits = bits;
+        self
+    }
     #[doc = "Bits 0:7 - Receive Pulse Length"]
-    #[inline(always)]
-    pub fn rxpl(&mut self) -> RXPL_W {
-        RXPL_W { w: self }
+    #[inline]
+    pub fn rxpl(&mut self) -> _RXPLW {
+        _RXPLW { w: self }
     }
 }

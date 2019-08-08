@@ -14,31 +14,31 @@ pub struct RegisterBlock {
 }
 #[doc = "Control"]
 pub struct CTRL {
-    register: vcell::VolatileCell<u8>,
+    register: ::vcell::VolatileCell<u8>,
 }
 #[doc = "Control"]
 pub mod ctrl;
 #[doc = "Status"]
 pub struct STATUS {
-    register: vcell::VolatileCell<u8>,
+    register: ::vcell::VolatileCell<u8>,
 }
 #[doc = "Status"]
 pub mod status;
 #[doc = "Generic Clock Control"]
 pub struct CLKCTRL {
-    register: vcell::VolatileCell<u16>,
+    register: ::vcell::VolatileCell<u16>,
 }
 #[doc = "Generic Clock Control"]
 pub mod clkctrl;
 #[doc = "Generic Clock Generator Control"]
 pub struct GENCTRL {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Generic Clock Generator Control"]
 pub mod genctrl;
 #[doc = "Generic Clock Generator Division"]
 pub struct GENDIV {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Generic Clock Generator Division"]
 pub mod gendiv;

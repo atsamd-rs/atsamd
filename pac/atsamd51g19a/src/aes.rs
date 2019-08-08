@@ -36,85 +36,85 @@ pub struct RegisterBlock {
 }
 #[doc = "Control A"]
 pub struct CTRLA {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Control A"]
 pub mod ctrla;
 #[doc = "Control B"]
 pub struct CTRLB {
-    register: vcell::VolatileCell<u8>,
+    register: ::vcell::VolatileCell<u8>,
 }
 #[doc = "Control B"]
 pub mod ctrlb;
 #[doc = "Interrupt Enable Clear"]
 pub struct INTENCLR {
-    register: vcell::VolatileCell<u8>,
+    register: ::vcell::VolatileCell<u8>,
 }
 #[doc = "Interrupt Enable Clear"]
 pub mod intenclr;
 #[doc = "Interrupt Enable Set"]
 pub struct INTENSET {
-    register: vcell::VolatileCell<u8>,
+    register: ::vcell::VolatileCell<u8>,
 }
 #[doc = "Interrupt Enable Set"]
 pub mod intenset;
 #[doc = "Interrupt Flag Status"]
 pub struct INTFLAG {
-    register: vcell::VolatileCell<u8>,
+    register: ::vcell::VolatileCell<u8>,
 }
 #[doc = "Interrupt Flag Status"]
 pub mod intflag;
 #[doc = "Data buffer pointer"]
 pub struct DATABUFPTR {
-    register: vcell::VolatileCell<u8>,
+    register: ::vcell::VolatileCell<u8>,
 }
 #[doc = "Data buffer pointer"]
 pub mod databufptr;
 #[doc = "Debug control"]
 pub struct DBGCTRL {
-    register: vcell::VolatileCell<u8>,
+    register: ::vcell::VolatileCell<u8>,
 }
 #[doc = "Debug control"]
 pub mod dbgctrl;
 #[doc = "Keyword n"]
 pub struct KEYWORD {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Keyword n"]
 pub mod keyword;
 #[doc = "Indata"]
 pub struct INDATA {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Indata"]
 pub mod indata;
 #[doc = "Initialisation Vector n"]
 pub struct INTVECTV {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Initialisation Vector n"]
 pub mod intvectv;
 #[doc = "Hash key n"]
 pub struct HASHKEY {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Hash key n"]
 pub mod hashkey;
 #[doc = "Galois Hash n"]
 pub struct GHASH {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Galois Hash n"]
 pub mod ghash;
 #[doc = "Cipher Length"]
 pub struct CIPLEN {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Cipher Length"]
 pub mod ciplen;
 #[doc = "Random Seed"]
 pub struct RANDSEED {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Random Seed"]
 pub mod randseed;

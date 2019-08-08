@@ -147,43 +147,71 @@ impl R {
     #[doc = "Bit 0 - Level 0 Channel Trigger Request Executing"]
     #[inline]
     pub fn lvlex0(&self) -> LVLEX0R {
-        let bits = ((self.bits >> 0) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         LVLEX0R { bits }
     }
     #[doc = "Bit 1 - Level 1 Channel Trigger Request Executing"]
     #[inline]
     pub fn lvlex1(&self) -> LVLEX1R {
-        let bits = ((self.bits >> 1) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 1;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         LVLEX1R { bits }
     }
     #[doc = "Bit 2 - Level 2 Channel Trigger Request Executing"]
     #[inline]
     pub fn lvlex2(&self) -> LVLEX2R {
-        let bits = ((self.bits >> 2) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 2;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         LVLEX2R { bits }
     }
     #[doc = "Bit 3 - Level 3 Channel Trigger Request Executing"]
     #[inline]
     pub fn lvlex3(&self) -> LVLEX3R {
-        let bits = ((self.bits >> 3) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 3;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         LVLEX3R { bits }
     }
     #[doc = "Bits 8:12 - Active Channel ID"]
     #[inline]
     pub fn id(&self) -> IDR {
-        let bits = ((self.bits >> 8) & 0x1f) as u8;
+        let bits = {
+            const MASK: u8 = 31;
+            const OFFSET: u8 = 8;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        };
         IDR { bits }
     }
     #[doc = "Bit 15 - Active Channel Busy"]
     #[inline]
     pub fn abusy(&self) -> ABUSYR {
-        let bits = ((self.bits >> 15) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 15;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         ABUSYR { bits }
     }
     #[doc = "Bits 16:31 - Active Channel Block Transfer Count"]
     #[inline]
     pub fn btcnt(&self) -> BTCNTR {
-        let bits = ((self.bits >> 16) & 0xffff) as u16;
+        let bits = {
+            const MASK: u16 = 65535;
+            const OFFSET: u8 = 16;
+            ((self.bits >> OFFSET) & MASK as u32) as u16
+        };
         BTCNTR { bits }
     }
 }

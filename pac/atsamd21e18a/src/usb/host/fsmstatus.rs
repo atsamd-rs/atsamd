@@ -36,13 +36,13 @@ impl FSMSTATER {
     #[inline]
     pub fn bits(&self) -> u8 {
         match *self {
-            FSMSTATER::OFF => 0x01,
-            FSMSTATER::ON => 0x02,
-            FSMSTATER::SUSPEND => 0x04,
-            FSMSTATER::SLEEP => 0x08,
-            FSMSTATER::DNRESUME => 0x10,
-            FSMSTATER::UPRESUME => 0x20,
-            FSMSTATER::RESET => 0x40,
+            FSMSTATER::OFF => 1,
+            FSMSTATER::ON => 2,
+            FSMSTATER::SUSPEND => 4,
+            FSMSTATER::SLEEP => 8,
+            FSMSTATER::DNRESUME => 16,
+            FSMSTATER::UPRESUME => 32,
+            FSMSTATER::RESET => 64,
             FSMSTATER::_Reserved(bits) => bits,
         }
     }
@@ -106,6 +106,10 @@ impl R {
     #[doc = "Bits 0:6 - Fine State Machine Status"]
     #[inline]
     pub fn fsmstate(&self) -> FSMSTATER {
-        FSMSTATER::_from(((self.bits >> 0) & 0x7f) as u8)
+        FSMSTATER::_from({
+            const MASK: u8 = 127;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u8) as u8
+        })
     }
 }

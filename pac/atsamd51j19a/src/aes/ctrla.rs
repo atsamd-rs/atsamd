@@ -14,7 +14,10 @@ impl super::CTRLA {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        self.register.set(f(&R { bits }, &mut W { bits }).bits);
+        let r = R { bits };
+        let mut w = W { bits };
+        f(&r, &mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -29,22 +32,14 @@ impl super::CTRLA {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        self.register.set(
-            f(&mut W {
-                bits: Self::reset_value(),
-            })
-            .bits,
-        );
-    }
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub const fn reset_value() -> u32 {
-        0
+        let mut w = W::reset_value();
+        f(&mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.register.set(Self::reset_value())
+        self.write(|w| w)
     }
 }
 #[doc = r" Value of the field"]
@@ -115,12 +110,12 @@ impl AESMODER {
     pub fn bits(&self) -> u8 {
         match *self {
             AESMODER::ECB => 0,
-            AESMODER::CBC => 0x01,
-            AESMODER::OFB => 0x02,
-            AESMODER::CFB => 0x03,
-            AESMODER::COUNTER => 0x04,
-            AESMODER::CCM => 0x05,
-            AESMODER::GCM => 0x06,
+            AESMODER::CBC => 1,
+            AESMODER::OFB => 2,
+            AESMODER::CFB => 3,
+            AESMODER::COUNTER => 4,
+            AESMODER::CCM => 5,
+            AESMODER::GCM => 6,
             AESMODER::_Reserved(bits) => bits,
         }
     }
@@ -197,10 +192,10 @@ impl CFBSR {
     pub fn bits(&self) -> u8 {
         match *self {
             CFBSR::_128BIT => 0,
-            CFBSR::_64BIT => 0x01,
-            CFBSR::_32BIT => 0x02,
-            CFBSR::_16BIT => 0x03,
-            CFBSR::_8BIT => 0x04,
+            CFBSR::_64BIT => 1,
+            CFBSR::_32BIT => 2,
+            CFBSR::_16BIT => 3,
+            CFBSR::_8BIT => 4,
             CFBSR::_Reserved(bits) => bits,
         }
     }
@@ -261,8 +256,8 @@ impl KEYSIZER {
     pub fn bits(&self) -> u8 {
         match *self {
             KEYSIZER::_128BIT => 0,
-            KEYSIZER::_192BIT => 0x01,
-            KEYSIZER::_256BIT => 0x02,
+            KEYSIZER::_192BIT => 1,
+            KEYSIZER::_256BIT => 2,
             KEYSIZER::_Reserved(bits) => bits,
         }
     }
@@ -555,8 +550,10 @@ impl<'a> _SWRSTW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 0);
-        self.w.bits |= ((value as u32) & 0x01) << 0;
+        const MASK: bool = true;
+        const OFFSET: u8 = 0;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -576,13 +573,14 @@ impl<'a> _ENABLEW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 1);
-        self.w.bits |= ((value as u32) & 0x01) << 1;
+        const MASK: bool = true;
+        const OFFSET: u8 = 1;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `AESMODE`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum AESMODEW {
     #[doc = "Electronic code book mode"]
     ECB,
@@ -663,13 +661,14 @@ impl<'a> _AESMODEW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x07 << 2);
-        self.w.bits |= ((value as u32) & 0x07) << 2;
+        const MASK: u8 = 7;
+        const OFFSET: u8 = 2;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `CFBS`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CFBSW {
     #[doc = "128-bit Input data block for Encryption/Decryption in Cipher Feedback mode"]
     _128BIT,
@@ -734,13 +733,14 @@ impl<'a> _CFBSW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x07 << 5);
-        self.w.bits |= ((value as u32) & 0x07) << 5;
+        const MASK: u8 = 7;
+        const OFFSET: u8 = 5;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `KEYSIZE`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum KEYSIZEW {
     #[doc = "128-bit Key for Encryption / Decryption"]
     _128BIT,
@@ -789,13 +789,14 @@ impl<'a> _KEYSIZEW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x03 << 8);
-        self.w.bits |= ((value as u32) & 0x03) << 8;
+        const MASK: u8 = 3;
+        const OFFSET: u8 = 8;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `CIPHER`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CIPHERW {
     #[doc = "Decryption"]
     DEC,
@@ -846,13 +847,14 @@ impl<'a> _CIPHERW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 10);
-        self.w.bits |= ((value as u32) & 0x01) << 10;
+        const MASK: bool = true;
+        const OFFSET: u8 = 10;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `STARTMODE`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum STARTMODEW {
     #[doc = "Start Encryption / Decryption in Manual mode"]
     MANUAL,
@@ -903,13 +905,14 @@ impl<'a> _STARTMODEW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 11);
-        self.w.bits |= ((value as u32) & 0x01) << 11;
+        const MASK: bool = true;
+        const OFFSET: u8 = 11;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `LOD`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum LODW {
     #[doc = "No effect"]
     NONE,
@@ -960,13 +963,14 @@ impl<'a> _LODW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 12);
-        self.w.bits |= ((value as u32) & 0x01) << 12;
+        const MASK: bool = true;
+        const OFFSET: u8 = 12;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `KEYGEN`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum KEYGENW {
     #[doc = "No effect"]
     NONE,
@@ -1017,13 +1021,14 @@ impl<'a> _KEYGENW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 13);
-        self.w.bits |= ((value as u32) & 0x01) << 13;
+        const MASK: bool = true;
+        const OFFSET: u8 = 13;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `XORKEY`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum XORKEYW {
     #[doc = "No effect"]
     NONE,
@@ -1074,8 +1079,10 @@ impl<'a> _XORKEYW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 14);
-        self.w.bits |= ((value as u32) & 0x01) << 14;
+        const MASK: bool = true;
+        const OFFSET: u8 = 14;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -1087,8 +1094,10 @@ impl<'a> _CTYPEW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x0f << 16);
-        self.w.bits |= ((value as u32) & 0x0f) << 16;
+        const MASK: u8 = 15;
+        const OFFSET: u8 = 16;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -1101,63 +1110,112 @@ impl R {
     #[doc = "Bit 0 - Software Reset"]
     #[inline]
     pub fn swrst(&self) -> SWRSTR {
-        let bits = ((self.bits >> 0) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         SWRSTR { bits }
     }
     #[doc = "Bit 1 - Enable"]
     #[inline]
     pub fn enable(&self) -> ENABLER {
-        let bits = ((self.bits >> 1) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 1;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         ENABLER { bits }
     }
     #[doc = "Bits 2:4 - AES Modes of operation"]
     #[inline]
     pub fn aesmode(&self) -> AESMODER {
-        AESMODER::_from(((self.bits >> 2) & 0x07) as u8)
+        AESMODER::_from({
+            const MASK: u8 = 7;
+            const OFFSET: u8 = 2;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
     #[doc = "Bits 5:7 - Cipher Feedback Block Size"]
     #[inline]
     pub fn cfbs(&self) -> CFBSR {
-        CFBSR::_from(((self.bits >> 5) & 0x07) as u8)
+        CFBSR::_from({
+            const MASK: u8 = 7;
+            const OFFSET: u8 = 5;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
     #[doc = "Bits 8:9 - Encryption Key Size"]
     #[inline]
     pub fn keysize(&self) -> KEYSIZER {
-        KEYSIZER::_from(((self.bits >> 8) & 0x03) as u8)
+        KEYSIZER::_from({
+            const MASK: u8 = 3;
+            const OFFSET: u8 = 8;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
     #[doc = "Bit 10 - Cipher Mode"]
     #[inline]
     pub fn cipher(&self) -> CIPHERR {
-        CIPHERR::_from(((self.bits >> 10) & 0x01) != 0)
+        CIPHERR::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 10;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        })
     }
     #[doc = "Bit 11 - Start Mode Select"]
     #[inline]
     pub fn startmode(&self) -> STARTMODER {
-        STARTMODER::_from(((self.bits >> 11) & 0x01) != 0)
+        STARTMODER::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 11;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        })
     }
     #[doc = "Bit 12 - Last Output Data Mode"]
     #[inline]
     pub fn lod(&self) -> LODR {
-        LODR::_from(((self.bits >> 12) & 0x01) != 0)
+        LODR::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 12;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        })
     }
     #[doc = "Bit 13 - Last Key Generation"]
     #[inline]
     pub fn keygen(&self) -> KEYGENR {
-        KEYGENR::_from(((self.bits >> 13) & 0x01) != 0)
+        KEYGENR::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 13;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        })
     }
     #[doc = "Bit 14 - XOR Key Operation"]
     #[inline]
     pub fn xorkey(&self) -> XORKEYR {
-        XORKEYR::_from(((self.bits >> 14) & 0x01) != 0)
+        XORKEYR::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 14;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        })
     }
     #[doc = "Bits 16:19 - Counter Measure Type"]
     #[inline]
     pub fn ctype(&self) -> CTYPER {
-        let bits = ((self.bits >> 16) & 0x0f) as u8;
+        let bits = {
+            const MASK: u8 = 15;
+            const OFFSET: u8 = 16;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        };
         CTYPER { bits }
     }
 }
 impl W {
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub fn reset_value() -> W {
+        W { bits: 0 }
+    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {

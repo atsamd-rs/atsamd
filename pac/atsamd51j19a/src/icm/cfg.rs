@@ -14,7 +14,10 @@ impl super::CFG {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        self.register.set(f(&R { bits }, &mut W { bits }).bits);
+        let r = R { bits };
+        let mut w = W { bits };
+        f(&r, &mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -29,22 +32,14 @@ impl super::CFG {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        self.register.set(
-            f(&mut W {
-                bits: Self::reset_value(),
-            })
-            .bits,
-        );
-    }
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub const fn reset_value() -> u32 {
-        0
+        let mut w = W::reset_value();
+        f(&mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.register.set(Self::reset_value())
+        self.write(|w| w)
     }
 }
 #[doc = r" Value of the field"]
@@ -202,8 +197,8 @@ impl UALGOR {
     pub fn bits(&self) -> u8 {
         match *self {
             UALGOR::SHA1 => 0,
-            UALGOR::SHA256 => 0x01,
-            UALGOR::SHA224 => 0x04,
+            UALGOR::SHA256 => 1,
+            UALGOR::SHA224 => 4,
             UALGOR::_Reserved(bits) => bits,
         }
     }
@@ -272,8 +267,10 @@ impl<'a> _WBDISW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 0);
-        self.w.bits |= ((value as u32) & 0x01) << 0;
+        const MASK: bool = true;
+        const OFFSET: u8 = 0;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -293,8 +290,10 @@ impl<'a> _EOMDISW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 1);
-        self.w.bits |= ((value as u32) & 0x01) << 1;
+        const MASK: bool = true;
+        const OFFSET: u8 = 1;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -314,8 +313,10 @@ impl<'a> _SLBDISW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 2);
-        self.w.bits |= ((value as u32) & 0x01) << 2;
+        const MASK: bool = true;
+        const OFFSET: u8 = 2;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -327,8 +328,10 @@ impl<'a> _BBCW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x0f << 4);
-        self.w.bits |= ((value as u32) & 0x0f) << 4;
+        const MASK: u8 = 15;
+        const OFFSET: u8 = 4;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -348,8 +351,10 @@ impl<'a> _ASCDW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 8);
-        self.w.bits |= ((value as u32) & 0x01) << 8;
+        const MASK: bool = true;
+        const OFFSET: u8 = 8;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -369,8 +374,10 @@ impl<'a> _DUALBUFFW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 9);
-        self.w.bits |= ((value as u32) & 0x01) << 9;
+        const MASK: bool = true;
+        const OFFSET: u8 = 9;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -390,13 +397,14 @@ impl<'a> _UIHASHW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 12);
-        self.w.bits |= ((value as u32) & 0x01) << 12;
+        const MASK: bool = true;
+        const OFFSET: u8 = 12;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `UALGO`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum UALGOW {
     #[doc = "SHA1 Algorithm"]
     SHA1,
@@ -445,8 +453,10 @@ impl<'a> _UALGOW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x07 << 13);
-        self.w.bits |= ((value as u32) & 0x07) << 13;
+        const MASK: u8 = 7;
+        const OFFSET: u8 = 13;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -458,8 +468,10 @@ impl<'a> _HAPROTW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x3f << 16);
-        self.w.bits |= ((value as u32) & 0x3f) << 16;
+        const MASK: u8 = 63;
+        const OFFSET: u8 = 16;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -471,8 +483,10 @@ impl<'a> _DAPROTW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x3f << 24);
-        self.w.bits |= ((value as u32) & 0x3f) << 24;
+        const MASK: u8 = 63;
+        const OFFSET: u8 = 24;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -485,64 +499,109 @@ impl R {
     #[doc = "Bit 0 - Write Back Disable"]
     #[inline]
     pub fn wbdis(&self) -> WBDISR {
-        let bits = ((self.bits >> 0) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         WBDISR { bits }
     }
     #[doc = "Bit 1 - End of Monitoring Disable"]
     #[inline]
     pub fn eomdis(&self) -> EOMDISR {
-        let bits = ((self.bits >> 1) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 1;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         EOMDISR { bits }
     }
     #[doc = "Bit 2 - Secondary List Branching Disable"]
     #[inline]
     pub fn slbdis(&self) -> SLBDISR {
-        let bits = ((self.bits >> 2) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 2;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         SLBDISR { bits }
     }
     #[doc = "Bits 4:7 - Bus Burden Control"]
     #[inline]
     pub fn bbc(&self) -> BBCR {
-        let bits = ((self.bits >> 4) & 0x0f) as u8;
+        let bits = {
+            const MASK: u8 = 15;
+            const OFFSET: u8 = 4;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        };
         BBCR { bits }
     }
     #[doc = "Bit 8 - Automatic Switch To Compare Digest"]
     #[inline]
     pub fn ascd(&self) -> ASCDR {
-        let bits = ((self.bits >> 8) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 8;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         ASCDR { bits }
     }
     #[doc = "Bit 9 - Dual Input Buffer"]
     #[inline]
     pub fn dualbuff(&self) -> DUALBUFFR {
-        let bits = ((self.bits >> 9) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 9;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         DUALBUFFR { bits }
     }
     #[doc = "Bit 12 - User Initial Hash Value"]
     #[inline]
     pub fn uihash(&self) -> UIHASHR {
-        let bits = ((self.bits >> 12) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 12;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         UIHASHR { bits }
     }
     #[doc = "Bits 13:15 - User SHA Algorithm"]
     #[inline]
     pub fn ualgo(&self) -> UALGOR {
-        UALGOR::_from(((self.bits >> 13) & 0x07) as u8)
+        UALGOR::_from({
+            const MASK: u8 = 7;
+            const OFFSET: u8 = 13;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
     #[doc = "Bits 16:21 - Region Hash Area Protection"]
     #[inline]
     pub fn haprot(&self) -> HAPROTR {
-        let bits = ((self.bits >> 16) & 0x3f) as u8;
+        let bits = {
+            const MASK: u8 = 63;
+            const OFFSET: u8 = 16;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        };
         HAPROTR { bits }
     }
     #[doc = "Bits 24:29 - Region Descriptor Area Protection"]
     #[inline]
     pub fn daprot(&self) -> DAPROTR {
-        let bits = ((self.bits >> 24) & 0x3f) as u8;
+        let bits = {
+            const MASK: u8 = 63;
+            const OFFSET: u8 = 24;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        };
         DAPROTR { bits }
     }
 }
 impl W {
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub fn reset_value() -> W {
+        W { bits: 0 }
+    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {

@@ -14,7 +14,10 @@ impl super::CTRLB {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        self.register.set(f(&R { bits }, &mut W { bits }).bits);
+        let r = R { bits };
+        let mut w = W { bits };
+        f(&r, &mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -29,22 +32,14 @@ impl super::CTRLB {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        self.register.set(
-            f(&mut W {
-                bits: Self::reset_value(),
-            })
-            .bits,
-        );
-    }
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub const fn reset_value() -> u16 {
-        0
+        let mut w = W::reset_value();
+        f(&mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.register.set(Self::reset_value())
+        self.write(|w| w)
     }
 }
 #[doc = r" Value of the field"]
@@ -199,13 +194,13 @@ impl DEBFR {
     pub fn bits(&self) -> u8 {
         match *self {
             DEBFR::DIV2 => 0,
-            DEBFR::DIV4 => 0x01,
-            DEBFR::DIV8 => 0x02,
-            DEBFR::DIV16 => 0x03,
-            DEBFR::DIV32 => 0x04,
-            DEBFR::DIV64 => 0x05,
-            DEBFR::DIV128 => 0x06,
-            DEBFR::DIV256 => 0x07,
+            DEBFR::DIV4 => 1,
+            DEBFR::DIV8 => 2,
+            DEBFR::DIV16 => 3,
+            DEBFR::DIV32 => 4,
+            DEBFR::DIV64 => 5,
+            DEBFR::DIV128 => 6,
+            DEBFR::DIV256 => 7,
         }
     }
     #[allow(missing_docs)]
@@ -291,13 +286,13 @@ impl ACTFR {
     pub fn bits(&self) -> u8 {
         match *self {
             ACTFR::DIV2 => 0,
-            ACTFR::DIV4 => 0x01,
-            ACTFR::DIV8 => 0x02,
-            ACTFR::DIV16 => 0x03,
-            ACTFR::DIV32 => 0x04,
-            ACTFR::DIV64 => 0x05,
-            ACTFR::DIV128 => 0x06,
-            ACTFR::DIV256 => 0x07,
+            ACTFR::DIV4 => 1,
+            ACTFR::DIV8 => 2,
+            ACTFR::DIV16 => 3,
+            ACTFR::DIV32 => 4,
+            ACTFR::DIV64 => 5,
+            ACTFR::DIV128 => 6,
+            ACTFR::DIV256 => 7,
         }
     }
     #[allow(missing_docs)]
@@ -373,8 +368,10 @@ impl<'a> _GP0ENW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 0);
-        self.w.bits |= ((value as u16) & 0x01) << 0;
+        const MASK: bool = true;
+        const OFFSET: u8 = 0;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
@@ -394,8 +391,10 @@ impl<'a> _GP2ENW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 1);
-        self.w.bits |= ((value as u16) & 0x01) << 1;
+        const MASK: bool = true;
+        const OFFSET: u8 = 1;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
@@ -415,8 +414,10 @@ impl<'a> _DEBMAJW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 4);
-        self.w.bits |= ((value as u16) & 0x01) << 4;
+        const MASK: bool = true;
+        const OFFSET: u8 = 4;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
@@ -436,8 +437,10 @@ impl<'a> _DEBASYNCW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 5);
-        self.w.bits |= ((value as u16) & 0x01) << 5;
+        const MASK: bool = true;
+        const OFFSET: u8 = 5;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
@@ -457,8 +460,10 @@ impl<'a> _RTCOUTW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 6);
-        self.w.bits |= ((value as u16) & 0x01) << 6;
+        const MASK: bool = true;
+        const OFFSET: u8 = 6;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
@@ -478,13 +483,14 @@ impl<'a> _DMAENW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 7);
-        self.w.bits |= ((value as u16) & 0x01) << 7;
+        const MASK: bool = true;
+        const OFFSET: u8 = 7;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `DEBF`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum DEBFW {
     #[doc = "CLK_RTC_DEB = CLK_RTC/2"]
     DIV2,
@@ -575,13 +581,14 @@ impl<'a> _DEBFW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x07 << 8);
-        self.w.bits |= ((value as u16) & 0x07) << 8;
+        const MASK: u8 = 7;
+        const OFFSET: u8 = 8;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `ACTF`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum ACTFW {
     #[doc = "CLK_RTC_OUT = CLK_RTC/2"]
     DIV2,
@@ -672,8 +679,10 @@ impl<'a> _ACTFW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x07 << 12);
-        self.w.bits |= ((value as u16) & 0x07) << 12;
+        const MASK: u8 = 7;
+        const OFFSET: u8 = 12;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
@@ -686,51 +695,88 @@ impl R {
     #[doc = "Bit 0 - General Purpose 0 Enable"]
     #[inline]
     pub fn gp0en(&self) -> GP0ENR {
-        let bits = ((self.bits >> 0) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        };
         GP0ENR { bits }
     }
     #[doc = "Bit 1 - General Purpose 2 Enable"]
     #[inline]
     pub fn gp2en(&self) -> GP2ENR {
-        let bits = ((self.bits >> 1) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 1;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        };
         GP2ENR { bits }
     }
     #[doc = "Bit 4 - Debouncer Majority Enable"]
     #[inline]
     pub fn debmaj(&self) -> DEBMAJR {
-        let bits = ((self.bits >> 4) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 4;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        };
         DEBMAJR { bits }
     }
     #[doc = "Bit 5 - Debouncer Asynchronous Enable"]
     #[inline]
     pub fn debasync(&self) -> DEBASYNCR {
-        let bits = ((self.bits >> 5) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 5;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        };
         DEBASYNCR { bits }
     }
     #[doc = "Bit 6 - RTC Output Enable"]
     #[inline]
     pub fn rtcout(&self) -> RTCOUTR {
-        let bits = ((self.bits >> 6) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 6;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        };
         RTCOUTR { bits }
     }
     #[doc = "Bit 7 - DMA Enable"]
     #[inline]
     pub fn dmaen(&self) -> DMAENR {
-        let bits = ((self.bits >> 7) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 7;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        };
         DMAENR { bits }
     }
     #[doc = "Bits 8:10 - Debounce Freqnuency"]
     #[inline]
     pub fn debf(&self) -> DEBFR {
-        DEBFR::_from(((self.bits >> 8) & 0x07) as u8)
+        DEBFR::_from({
+            const MASK: u8 = 7;
+            const OFFSET: u8 = 8;
+            ((self.bits >> OFFSET) & MASK as u16) as u8
+        })
     }
     #[doc = "Bits 12:14 - Active Layer Freqnuency"]
     #[inline]
     pub fn actf(&self) -> ACTFR {
-        ACTFR::_from(((self.bits >> 12) & 0x07) as u8)
+        ACTFR::_from({
+            const MASK: u8 = 7;
+            const OFFSET: u8 = 12;
+            ((self.bits >> OFFSET) & MASK as u16) as u8
+        })
     }
 }
 impl W {
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub fn reset_value() -> W {
+        W { bits: 0 }
+    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {

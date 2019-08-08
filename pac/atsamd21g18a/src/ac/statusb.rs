@@ -83,19 +83,31 @@ impl R {
     #[doc = "Bit 0 - Comparator 0 Ready"]
     #[inline]
     pub fn ready0(&self) -> READY0R {
-        let bits = ((self.bits >> 0) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         READY0R { bits }
     }
     #[doc = "Bit 1 - Comparator 1 Ready"]
     #[inline]
     pub fn ready1(&self) -> READY1R {
-        let bits = ((self.bits >> 1) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 1;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         READY1R { bits }
     }
     #[doc = "Bit 7 - Synchronization Busy"]
     #[inline]
     pub fn syncbusy(&self) -> SYNCBUSYR {
-        let bits = ((self.bits >> 7) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 7;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         SYNCBUSYR { bits }
     }
 }

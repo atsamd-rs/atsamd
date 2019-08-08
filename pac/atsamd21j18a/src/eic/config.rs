@@ -1,18 +1,50 @@
-#[doc = "Reader of register CONFIG%s"]
-pub type R = crate::R<u32, super::CONFIG>;
-#[doc = "Writer for register CONFIG%s"]
-pub type W = crate::W<u32, super::CONFIG>;
-#[doc = "Register CONFIG%s `reset()`'s with value 0"]
-impl crate::ResetValue for super::CONFIG {
-    type Type = u32;
-    #[inline(always)]
-    fn reset_value() -> Self::Type {
-        0
+#[doc = r" Value read from the register"]
+pub struct R {
+    bits: u32,
+}
+#[doc = r" Value to write to the register"]
+pub struct W {
+    bits: u32,
+}
+impl super::CONFIG {
+    #[doc = r" Modifies the contents of the register"]
+    #[inline]
+    pub fn modify<F>(&self, f: F)
+    where
+        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
+    {
+        let bits = self.register.get();
+        let r = R { bits };
+        let mut w = W { bits };
+        f(&r, &mut w);
+        self.register.set(w.bits);
+    }
+    #[doc = r" Reads the contents of the register"]
+    #[inline]
+    pub fn read(&self) -> R {
+        R {
+            bits: self.register.get(),
+        }
+    }
+    #[doc = r" Writes to the register"]
+    #[inline]
+    pub fn write<F>(&self, f: F)
+    where
+        F: FnOnce(&mut W) -> &mut W,
+    {
+        let mut w = W::reset_value();
+        f(&mut w);
+        self.register.set(w.bits);
+    }
+    #[doc = r" Writes the reset value to the register"]
+    #[inline]
+    pub fn reset(&self) {
+        self.write(|w| w)
     }
 }
 #[doc = "Possible values of the field `SENSE0`"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum SENSE0_A {
+pub enum SENSE0R {
     #[doc = "No detection"]
     NONE,
     #[doc = "Rising-edge detection"]
@@ -25,143 +57,92 @@ pub enum SENSE0_A {
     HIGH,
     #[doc = "Low-level detection"]
     LOW,
+    #[doc = r" Reserved"]
+    _Reserved(u8),
 }
-impl crate::ToBits<u8> for SENSE0_A {
-    #[inline(always)]
-    fn _bits(&self) -> u8 {
+impl SENSE0R {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bits(&self) -> u8 {
         match *self {
-            SENSE0_A::NONE => 0,
-            SENSE0_A::RISE => 1,
-            SENSE0_A::FALL => 2,
-            SENSE0_A::BOTH => 3,
-            SENSE0_A::HIGH => 4,
-            SENSE0_A::LOW => 5,
+            SENSE0R::NONE => 0,
+            SENSE0R::RISE => 1,
+            SENSE0R::FALL => 2,
+            SENSE0R::BOTH => 3,
+            SENSE0R::HIGH => 4,
+            SENSE0R::LOW => 5,
+            SENSE0R::_Reserved(bits) => bits,
         }
     }
-}
-#[doc = "Reader of field `SENSE0`"]
-pub type SENSE0_R = crate::R<u8, SENSE0_A>;
-impl SENSE0_R {
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> crate::Variant<u8, SENSE0_A> {
-        use crate::Variant::*;
-        match self.bits {
-            0 => Val(SENSE0_A::NONE),
-            1 => Val(SENSE0_A::RISE),
-            2 => Val(SENSE0_A::FALL),
-            3 => Val(SENSE0_A::BOTH),
-            4 => Val(SENSE0_A::HIGH),
-            5 => Val(SENSE0_A::LOW),
-            i => Res(i),
+    #[allow(missing_docs)]
+    #[doc(hidden)]
+    #[inline]
+    pub fn _from(value: u8) -> SENSE0R {
+        match value {
+            0 => SENSE0R::NONE,
+            1 => SENSE0R::RISE,
+            2 => SENSE0R::FALL,
+            3 => SENSE0R::BOTH,
+            4 => SENSE0R::HIGH,
+            5 => SENSE0R::LOW,
+            i => SENSE0R::_Reserved(i),
         }
     }
     #[doc = "Checks if the value of the field is `NONE`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_none(&self) -> bool {
-        *self == SENSE0_A::NONE
+        *self == SENSE0R::NONE
     }
     #[doc = "Checks if the value of the field is `RISE`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_rise(&self) -> bool {
-        *self == SENSE0_A::RISE
+        *self == SENSE0R::RISE
     }
     #[doc = "Checks if the value of the field is `FALL`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_fall(&self) -> bool {
-        *self == SENSE0_A::FALL
+        *self == SENSE0R::FALL
     }
     #[doc = "Checks if the value of the field is `BOTH`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_both(&self) -> bool {
-        *self == SENSE0_A::BOTH
+        *self == SENSE0R::BOTH
     }
     #[doc = "Checks if the value of the field is `HIGH`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_high(&self) -> bool {
-        *self == SENSE0_A::HIGH
+        *self == SENSE0R::HIGH
     }
     #[doc = "Checks if the value of the field is `LOW`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_low(&self) -> bool {
-        *self == SENSE0_A::LOW
+        *self == SENSE0R::LOW
     }
 }
-#[doc = "Write proxy for field `SENSE0`"]
-pub struct SENSE0_W<'a> {
-    w: &'a mut W,
+#[doc = r" Value of the field"]
+pub struct FILTEN0R {
+    bits: bool,
 }
-impl<'a> SENSE0_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: SENSE0_A) -> &'a mut W {
-        use crate::ToBits;
-        unsafe { self.bits(variant._bits()) }
+impl FILTEN0R {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bit(&self) -> bool {
+        self.bits
     }
-    #[doc = "No detection"]
-    #[inline(always)]
-    pub fn none(self) -> &'a mut W {
-        self.variant(SENSE0_A::NONE)
+    #[doc = r" Returns `true` if the bit is clear (0)"]
+    #[inline]
+    pub fn bit_is_clear(&self) -> bool {
+        !self.bit()
     }
-    #[doc = "Rising-edge detection"]
-    #[inline(always)]
-    pub fn rise(self) -> &'a mut W {
-        self.variant(SENSE0_A::RISE)
-    }
-    #[doc = "Falling-edge detection"]
-    #[inline(always)]
-    pub fn fall(self) -> &'a mut W {
-        self.variant(SENSE0_A::FALL)
-    }
-    #[doc = "Both-edges detection"]
-    #[inline(always)]
-    pub fn both(self) -> &'a mut W {
-        self.variant(SENSE0_A::BOTH)
-    }
-    #[doc = "High-level detection"]
-    #[inline(always)]
-    pub fn high(self) -> &'a mut W {
-        self.variant(SENSE0_A::HIGH)
-    }
-    #[doc = "Low-level detection"]
-    #[inline(always)]
-    pub fn low(self) -> &'a mut W {
-        self.variant(SENSE0_A::LOW)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x07) | ((value as u32) & 0x07);
-        self.w
-    }
-}
-#[doc = "Reader of field `FILTEN0`"]
-pub type FILTEN0_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `FILTEN0`"]
-pub struct FILTEN0_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> FILTEN0_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 3)) | (((value as u32) & 0x01) << 3);
-        self.w
+    #[doc = r" Returns `true` if the bit is set (1)"]
+    #[inline]
+    pub fn bit_is_set(&self) -> bool {
+        self.bit()
     }
 }
 #[doc = "Possible values of the field `SENSE1`"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum SENSE1_A {
+pub enum SENSE1R {
     #[doc = "No detection"]
     NONE,
     #[doc = "Rising edge detection"]
@@ -174,143 +155,92 @@ pub enum SENSE1_A {
     HIGH,
     #[doc = "Low level detection"]
     LOW,
+    #[doc = r" Reserved"]
+    _Reserved(u8),
 }
-impl crate::ToBits<u8> for SENSE1_A {
-    #[inline(always)]
-    fn _bits(&self) -> u8 {
+impl SENSE1R {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bits(&self) -> u8 {
         match *self {
-            SENSE1_A::NONE => 0,
-            SENSE1_A::RISE => 1,
-            SENSE1_A::FALL => 2,
-            SENSE1_A::BOTH => 3,
-            SENSE1_A::HIGH => 4,
-            SENSE1_A::LOW => 5,
+            SENSE1R::NONE => 0,
+            SENSE1R::RISE => 1,
+            SENSE1R::FALL => 2,
+            SENSE1R::BOTH => 3,
+            SENSE1R::HIGH => 4,
+            SENSE1R::LOW => 5,
+            SENSE1R::_Reserved(bits) => bits,
         }
     }
-}
-#[doc = "Reader of field `SENSE1`"]
-pub type SENSE1_R = crate::R<u8, SENSE1_A>;
-impl SENSE1_R {
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> crate::Variant<u8, SENSE1_A> {
-        use crate::Variant::*;
-        match self.bits {
-            0 => Val(SENSE1_A::NONE),
-            1 => Val(SENSE1_A::RISE),
-            2 => Val(SENSE1_A::FALL),
-            3 => Val(SENSE1_A::BOTH),
-            4 => Val(SENSE1_A::HIGH),
-            5 => Val(SENSE1_A::LOW),
-            i => Res(i),
+    #[allow(missing_docs)]
+    #[doc(hidden)]
+    #[inline]
+    pub fn _from(value: u8) -> SENSE1R {
+        match value {
+            0 => SENSE1R::NONE,
+            1 => SENSE1R::RISE,
+            2 => SENSE1R::FALL,
+            3 => SENSE1R::BOTH,
+            4 => SENSE1R::HIGH,
+            5 => SENSE1R::LOW,
+            i => SENSE1R::_Reserved(i),
         }
     }
     #[doc = "Checks if the value of the field is `NONE`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_none(&self) -> bool {
-        *self == SENSE1_A::NONE
+        *self == SENSE1R::NONE
     }
     #[doc = "Checks if the value of the field is `RISE`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_rise(&self) -> bool {
-        *self == SENSE1_A::RISE
+        *self == SENSE1R::RISE
     }
     #[doc = "Checks if the value of the field is `FALL`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_fall(&self) -> bool {
-        *self == SENSE1_A::FALL
+        *self == SENSE1R::FALL
     }
     #[doc = "Checks if the value of the field is `BOTH`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_both(&self) -> bool {
-        *self == SENSE1_A::BOTH
+        *self == SENSE1R::BOTH
     }
     #[doc = "Checks if the value of the field is `HIGH`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_high(&self) -> bool {
-        *self == SENSE1_A::HIGH
+        *self == SENSE1R::HIGH
     }
     #[doc = "Checks if the value of the field is `LOW`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_low(&self) -> bool {
-        *self == SENSE1_A::LOW
+        *self == SENSE1R::LOW
     }
 }
-#[doc = "Write proxy for field `SENSE1`"]
-pub struct SENSE1_W<'a> {
-    w: &'a mut W,
+#[doc = r" Value of the field"]
+pub struct FILTEN1R {
+    bits: bool,
 }
-impl<'a> SENSE1_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: SENSE1_A) -> &'a mut W {
-        use crate::ToBits;
-        unsafe { self.bits(variant._bits()) }
+impl FILTEN1R {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bit(&self) -> bool {
+        self.bits
     }
-    #[doc = "No detection"]
-    #[inline(always)]
-    pub fn none(self) -> &'a mut W {
-        self.variant(SENSE1_A::NONE)
+    #[doc = r" Returns `true` if the bit is clear (0)"]
+    #[inline]
+    pub fn bit_is_clear(&self) -> bool {
+        !self.bit()
     }
-    #[doc = "Rising edge detection"]
-    #[inline(always)]
-    pub fn rise(self) -> &'a mut W {
-        self.variant(SENSE1_A::RISE)
-    }
-    #[doc = "Falling edge detection"]
-    #[inline(always)]
-    pub fn fall(self) -> &'a mut W {
-        self.variant(SENSE1_A::FALL)
-    }
-    #[doc = "Both edges detection"]
-    #[inline(always)]
-    pub fn both(self) -> &'a mut W {
-        self.variant(SENSE1_A::BOTH)
-    }
-    #[doc = "High level detection"]
-    #[inline(always)]
-    pub fn high(self) -> &'a mut W {
-        self.variant(SENSE1_A::HIGH)
-    }
-    #[doc = "Low level detection"]
-    #[inline(always)]
-    pub fn low(self) -> &'a mut W {
-        self.variant(SENSE1_A::LOW)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x07 << 4)) | (((value as u32) & 0x07) << 4);
-        self.w
-    }
-}
-#[doc = "Reader of field `FILTEN1`"]
-pub type FILTEN1_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `FILTEN1`"]
-pub struct FILTEN1_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> FILTEN1_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 7)) | (((value as u32) & 0x01) << 7);
-        self.w
+    #[doc = r" Returns `true` if the bit is set (1)"]
+    #[inline]
+    pub fn bit_is_set(&self) -> bool {
+        self.bit()
     }
 }
 #[doc = "Possible values of the field `SENSE2`"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum SENSE2_A {
+pub enum SENSE2R {
     #[doc = "No detection"]
     NONE,
     #[doc = "Rising edge detection"]
@@ -323,143 +253,92 @@ pub enum SENSE2_A {
     HIGH,
     #[doc = "Low level detection"]
     LOW,
+    #[doc = r" Reserved"]
+    _Reserved(u8),
 }
-impl crate::ToBits<u8> for SENSE2_A {
-    #[inline(always)]
-    fn _bits(&self) -> u8 {
+impl SENSE2R {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bits(&self) -> u8 {
         match *self {
-            SENSE2_A::NONE => 0,
-            SENSE2_A::RISE => 1,
-            SENSE2_A::FALL => 2,
-            SENSE2_A::BOTH => 3,
-            SENSE2_A::HIGH => 4,
-            SENSE2_A::LOW => 5,
+            SENSE2R::NONE => 0,
+            SENSE2R::RISE => 1,
+            SENSE2R::FALL => 2,
+            SENSE2R::BOTH => 3,
+            SENSE2R::HIGH => 4,
+            SENSE2R::LOW => 5,
+            SENSE2R::_Reserved(bits) => bits,
         }
     }
-}
-#[doc = "Reader of field `SENSE2`"]
-pub type SENSE2_R = crate::R<u8, SENSE2_A>;
-impl SENSE2_R {
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> crate::Variant<u8, SENSE2_A> {
-        use crate::Variant::*;
-        match self.bits {
-            0 => Val(SENSE2_A::NONE),
-            1 => Val(SENSE2_A::RISE),
-            2 => Val(SENSE2_A::FALL),
-            3 => Val(SENSE2_A::BOTH),
-            4 => Val(SENSE2_A::HIGH),
-            5 => Val(SENSE2_A::LOW),
-            i => Res(i),
+    #[allow(missing_docs)]
+    #[doc(hidden)]
+    #[inline]
+    pub fn _from(value: u8) -> SENSE2R {
+        match value {
+            0 => SENSE2R::NONE,
+            1 => SENSE2R::RISE,
+            2 => SENSE2R::FALL,
+            3 => SENSE2R::BOTH,
+            4 => SENSE2R::HIGH,
+            5 => SENSE2R::LOW,
+            i => SENSE2R::_Reserved(i),
         }
     }
     #[doc = "Checks if the value of the field is `NONE`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_none(&self) -> bool {
-        *self == SENSE2_A::NONE
+        *self == SENSE2R::NONE
     }
     #[doc = "Checks if the value of the field is `RISE`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_rise(&self) -> bool {
-        *self == SENSE2_A::RISE
+        *self == SENSE2R::RISE
     }
     #[doc = "Checks if the value of the field is `FALL`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_fall(&self) -> bool {
-        *self == SENSE2_A::FALL
+        *self == SENSE2R::FALL
     }
     #[doc = "Checks if the value of the field is `BOTH`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_both(&self) -> bool {
-        *self == SENSE2_A::BOTH
+        *self == SENSE2R::BOTH
     }
     #[doc = "Checks if the value of the field is `HIGH`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_high(&self) -> bool {
-        *self == SENSE2_A::HIGH
+        *self == SENSE2R::HIGH
     }
     #[doc = "Checks if the value of the field is `LOW`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_low(&self) -> bool {
-        *self == SENSE2_A::LOW
+        *self == SENSE2R::LOW
     }
 }
-#[doc = "Write proxy for field `SENSE2`"]
-pub struct SENSE2_W<'a> {
-    w: &'a mut W,
+#[doc = r" Value of the field"]
+pub struct FILTEN2R {
+    bits: bool,
 }
-impl<'a> SENSE2_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: SENSE2_A) -> &'a mut W {
-        use crate::ToBits;
-        unsafe { self.bits(variant._bits()) }
+impl FILTEN2R {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bit(&self) -> bool {
+        self.bits
     }
-    #[doc = "No detection"]
-    #[inline(always)]
-    pub fn none(self) -> &'a mut W {
-        self.variant(SENSE2_A::NONE)
+    #[doc = r" Returns `true` if the bit is clear (0)"]
+    #[inline]
+    pub fn bit_is_clear(&self) -> bool {
+        !self.bit()
     }
-    #[doc = "Rising edge detection"]
-    #[inline(always)]
-    pub fn rise(self) -> &'a mut W {
-        self.variant(SENSE2_A::RISE)
-    }
-    #[doc = "Falling edge detection"]
-    #[inline(always)]
-    pub fn fall(self) -> &'a mut W {
-        self.variant(SENSE2_A::FALL)
-    }
-    #[doc = "Both edges detection"]
-    #[inline(always)]
-    pub fn both(self) -> &'a mut W {
-        self.variant(SENSE2_A::BOTH)
-    }
-    #[doc = "High level detection"]
-    #[inline(always)]
-    pub fn high(self) -> &'a mut W {
-        self.variant(SENSE2_A::HIGH)
-    }
-    #[doc = "Low level detection"]
-    #[inline(always)]
-    pub fn low(self) -> &'a mut W {
-        self.variant(SENSE2_A::LOW)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x07 << 8)) | (((value as u32) & 0x07) << 8);
-        self.w
-    }
-}
-#[doc = "Reader of field `FILTEN2`"]
-pub type FILTEN2_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `FILTEN2`"]
-pub struct FILTEN2_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> FILTEN2_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 11)) | (((value as u32) & 0x01) << 11);
-        self.w
+    #[doc = r" Returns `true` if the bit is set (1)"]
+    #[inline]
+    pub fn bit_is_set(&self) -> bool {
+        self.bit()
     }
 }
 #[doc = "Possible values of the field `SENSE3`"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum SENSE3_A {
+pub enum SENSE3R {
     #[doc = "No detection"]
     NONE,
     #[doc = "Rising edge detection"]
@@ -472,143 +351,92 @@ pub enum SENSE3_A {
     HIGH,
     #[doc = "Low level detection"]
     LOW,
+    #[doc = r" Reserved"]
+    _Reserved(u8),
 }
-impl crate::ToBits<u8> for SENSE3_A {
-    #[inline(always)]
-    fn _bits(&self) -> u8 {
+impl SENSE3R {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bits(&self) -> u8 {
         match *self {
-            SENSE3_A::NONE => 0,
-            SENSE3_A::RISE => 1,
-            SENSE3_A::FALL => 2,
-            SENSE3_A::BOTH => 3,
-            SENSE3_A::HIGH => 4,
-            SENSE3_A::LOW => 5,
+            SENSE3R::NONE => 0,
+            SENSE3R::RISE => 1,
+            SENSE3R::FALL => 2,
+            SENSE3R::BOTH => 3,
+            SENSE3R::HIGH => 4,
+            SENSE3R::LOW => 5,
+            SENSE3R::_Reserved(bits) => bits,
         }
     }
-}
-#[doc = "Reader of field `SENSE3`"]
-pub type SENSE3_R = crate::R<u8, SENSE3_A>;
-impl SENSE3_R {
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> crate::Variant<u8, SENSE3_A> {
-        use crate::Variant::*;
-        match self.bits {
-            0 => Val(SENSE3_A::NONE),
-            1 => Val(SENSE3_A::RISE),
-            2 => Val(SENSE3_A::FALL),
-            3 => Val(SENSE3_A::BOTH),
-            4 => Val(SENSE3_A::HIGH),
-            5 => Val(SENSE3_A::LOW),
-            i => Res(i),
+    #[allow(missing_docs)]
+    #[doc(hidden)]
+    #[inline]
+    pub fn _from(value: u8) -> SENSE3R {
+        match value {
+            0 => SENSE3R::NONE,
+            1 => SENSE3R::RISE,
+            2 => SENSE3R::FALL,
+            3 => SENSE3R::BOTH,
+            4 => SENSE3R::HIGH,
+            5 => SENSE3R::LOW,
+            i => SENSE3R::_Reserved(i),
         }
     }
     #[doc = "Checks if the value of the field is `NONE`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_none(&self) -> bool {
-        *self == SENSE3_A::NONE
+        *self == SENSE3R::NONE
     }
     #[doc = "Checks if the value of the field is `RISE`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_rise(&self) -> bool {
-        *self == SENSE3_A::RISE
+        *self == SENSE3R::RISE
     }
     #[doc = "Checks if the value of the field is `FALL`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_fall(&self) -> bool {
-        *self == SENSE3_A::FALL
+        *self == SENSE3R::FALL
     }
     #[doc = "Checks if the value of the field is `BOTH`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_both(&self) -> bool {
-        *self == SENSE3_A::BOTH
+        *self == SENSE3R::BOTH
     }
     #[doc = "Checks if the value of the field is `HIGH`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_high(&self) -> bool {
-        *self == SENSE3_A::HIGH
+        *self == SENSE3R::HIGH
     }
     #[doc = "Checks if the value of the field is `LOW`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_low(&self) -> bool {
-        *self == SENSE3_A::LOW
+        *self == SENSE3R::LOW
     }
 }
-#[doc = "Write proxy for field `SENSE3`"]
-pub struct SENSE3_W<'a> {
-    w: &'a mut W,
+#[doc = r" Value of the field"]
+pub struct FILTEN3R {
+    bits: bool,
 }
-impl<'a> SENSE3_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: SENSE3_A) -> &'a mut W {
-        use crate::ToBits;
-        unsafe { self.bits(variant._bits()) }
+impl FILTEN3R {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bit(&self) -> bool {
+        self.bits
     }
-    #[doc = "No detection"]
-    #[inline(always)]
-    pub fn none(self) -> &'a mut W {
-        self.variant(SENSE3_A::NONE)
+    #[doc = r" Returns `true` if the bit is clear (0)"]
+    #[inline]
+    pub fn bit_is_clear(&self) -> bool {
+        !self.bit()
     }
-    #[doc = "Rising edge detection"]
-    #[inline(always)]
-    pub fn rise(self) -> &'a mut W {
-        self.variant(SENSE3_A::RISE)
-    }
-    #[doc = "Falling edge detection"]
-    #[inline(always)]
-    pub fn fall(self) -> &'a mut W {
-        self.variant(SENSE3_A::FALL)
-    }
-    #[doc = "Both edges detection"]
-    #[inline(always)]
-    pub fn both(self) -> &'a mut W {
-        self.variant(SENSE3_A::BOTH)
-    }
-    #[doc = "High level detection"]
-    #[inline(always)]
-    pub fn high(self) -> &'a mut W {
-        self.variant(SENSE3_A::HIGH)
-    }
-    #[doc = "Low level detection"]
-    #[inline(always)]
-    pub fn low(self) -> &'a mut W {
-        self.variant(SENSE3_A::LOW)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x07 << 12)) | (((value as u32) & 0x07) << 12);
-        self.w
-    }
-}
-#[doc = "Reader of field `FILTEN3`"]
-pub type FILTEN3_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `FILTEN3`"]
-pub struct FILTEN3_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> FILTEN3_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 15)) | (((value as u32) & 0x01) << 15);
-        self.w
+    #[doc = r" Returns `true` if the bit is set (1)"]
+    #[inline]
+    pub fn bit_is_set(&self) -> bool {
+        self.bit()
     }
 }
 #[doc = "Possible values of the field `SENSE4`"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum SENSE4_A {
+pub enum SENSE4R {
     #[doc = "No detection"]
     NONE,
     #[doc = "Rising edge detection"]
@@ -621,143 +449,92 @@ pub enum SENSE4_A {
     HIGH,
     #[doc = "Low level detection"]
     LOW,
+    #[doc = r" Reserved"]
+    _Reserved(u8),
 }
-impl crate::ToBits<u8> for SENSE4_A {
-    #[inline(always)]
-    fn _bits(&self) -> u8 {
+impl SENSE4R {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bits(&self) -> u8 {
         match *self {
-            SENSE4_A::NONE => 0,
-            SENSE4_A::RISE => 1,
-            SENSE4_A::FALL => 2,
-            SENSE4_A::BOTH => 3,
-            SENSE4_A::HIGH => 4,
-            SENSE4_A::LOW => 5,
+            SENSE4R::NONE => 0,
+            SENSE4R::RISE => 1,
+            SENSE4R::FALL => 2,
+            SENSE4R::BOTH => 3,
+            SENSE4R::HIGH => 4,
+            SENSE4R::LOW => 5,
+            SENSE4R::_Reserved(bits) => bits,
         }
     }
-}
-#[doc = "Reader of field `SENSE4`"]
-pub type SENSE4_R = crate::R<u8, SENSE4_A>;
-impl SENSE4_R {
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> crate::Variant<u8, SENSE4_A> {
-        use crate::Variant::*;
-        match self.bits {
-            0 => Val(SENSE4_A::NONE),
-            1 => Val(SENSE4_A::RISE),
-            2 => Val(SENSE4_A::FALL),
-            3 => Val(SENSE4_A::BOTH),
-            4 => Val(SENSE4_A::HIGH),
-            5 => Val(SENSE4_A::LOW),
-            i => Res(i),
+    #[allow(missing_docs)]
+    #[doc(hidden)]
+    #[inline]
+    pub fn _from(value: u8) -> SENSE4R {
+        match value {
+            0 => SENSE4R::NONE,
+            1 => SENSE4R::RISE,
+            2 => SENSE4R::FALL,
+            3 => SENSE4R::BOTH,
+            4 => SENSE4R::HIGH,
+            5 => SENSE4R::LOW,
+            i => SENSE4R::_Reserved(i),
         }
     }
     #[doc = "Checks if the value of the field is `NONE`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_none(&self) -> bool {
-        *self == SENSE4_A::NONE
+        *self == SENSE4R::NONE
     }
     #[doc = "Checks if the value of the field is `RISE`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_rise(&self) -> bool {
-        *self == SENSE4_A::RISE
+        *self == SENSE4R::RISE
     }
     #[doc = "Checks if the value of the field is `FALL`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_fall(&self) -> bool {
-        *self == SENSE4_A::FALL
+        *self == SENSE4R::FALL
     }
     #[doc = "Checks if the value of the field is `BOTH`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_both(&self) -> bool {
-        *self == SENSE4_A::BOTH
+        *self == SENSE4R::BOTH
     }
     #[doc = "Checks if the value of the field is `HIGH`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_high(&self) -> bool {
-        *self == SENSE4_A::HIGH
+        *self == SENSE4R::HIGH
     }
     #[doc = "Checks if the value of the field is `LOW`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_low(&self) -> bool {
-        *self == SENSE4_A::LOW
+        *self == SENSE4R::LOW
     }
 }
-#[doc = "Write proxy for field `SENSE4`"]
-pub struct SENSE4_W<'a> {
-    w: &'a mut W,
+#[doc = r" Value of the field"]
+pub struct FILTEN4R {
+    bits: bool,
 }
-impl<'a> SENSE4_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: SENSE4_A) -> &'a mut W {
-        use crate::ToBits;
-        unsafe { self.bits(variant._bits()) }
+impl FILTEN4R {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bit(&self) -> bool {
+        self.bits
     }
-    #[doc = "No detection"]
-    #[inline(always)]
-    pub fn none(self) -> &'a mut W {
-        self.variant(SENSE4_A::NONE)
+    #[doc = r" Returns `true` if the bit is clear (0)"]
+    #[inline]
+    pub fn bit_is_clear(&self) -> bool {
+        !self.bit()
     }
-    #[doc = "Rising edge detection"]
-    #[inline(always)]
-    pub fn rise(self) -> &'a mut W {
-        self.variant(SENSE4_A::RISE)
-    }
-    #[doc = "Falling edge detection"]
-    #[inline(always)]
-    pub fn fall(self) -> &'a mut W {
-        self.variant(SENSE4_A::FALL)
-    }
-    #[doc = "Both edges detection"]
-    #[inline(always)]
-    pub fn both(self) -> &'a mut W {
-        self.variant(SENSE4_A::BOTH)
-    }
-    #[doc = "High level detection"]
-    #[inline(always)]
-    pub fn high(self) -> &'a mut W {
-        self.variant(SENSE4_A::HIGH)
-    }
-    #[doc = "Low level detection"]
-    #[inline(always)]
-    pub fn low(self) -> &'a mut W {
-        self.variant(SENSE4_A::LOW)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x07 << 16)) | (((value as u32) & 0x07) << 16);
-        self.w
-    }
-}
-#[doc = "Reader of field `FILTEN4`"]
-pub type FILTEN4_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `FILTEN4`"]
-pub struct FILTEN4_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> FILTEN4_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 19)) | (((value as u32) & 0x01) << 19);
-        self.w
+    #[doc = r" Returns `true` if the bit is set (1)"]
+    #[inline]
+    pub fn bit_is_set(&self) -> bool {
+        self.bit()
     }
 }
 #[doc = "Possible values of the field `SENSE5`"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum SENSE5_A {
+pub enum SENSE5R {
     #[doc = "No detection"]
     NONE,
     #[doc = "Rising edge detection"]
@@ -770,143 +547,92 @@ pub enum SENSE5_A {
     HIGH,
     #[doc = "Low level detection"]
     LOW,
+    #[doc = r" Reserved"]
+    _Reserved(u8),
 }
-impl crate::ToBits<u8> for SENSE5_A {
-    #[inline(always)]
-    fn _bits(&self) -> u8 {
+impl SENSE5R {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bits(&self) -> u8 {
         match *self {
-            SENSE5_A::NONE => 0,
-            SENSE5_A::RISE => 1,
-            SENSE5_A::FALL => 2,
-            SENSE5_A::BOTH => 3,
-            SENSE5_A::HIGH => 4,
-            SENSE5_A::LOW => 5,
+            SENSE5R::NONE => 0,
+            SENSE5R::RISE => 1,
+            SENSE5R::FALL => 2,
+            SENSE5R::BOTH => 3,
+            SENSE5R::HIGH => 4,
+            SENSE5R::LOW => 5,
+            SENSE5R::_Reserved(bits) => bits,
         }
     }
-}
-#[doc = "Reader of field `SENSE5`"]
-pub type SENSE5_R = crate::R<u8, SENSE5_A>;
-impl SENSE5_R {
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> crate::Variant<u8, SENSE5_A> {
-        use crate::Variant::*;
-        match self.bits {
-            0 => Val(SENSE5_A::NONE),
-            1 => Val(SENSE5_A::RISE),
-            2 => Val(SENSE5_A::FALL),
-            3 => Val(SENSE5_A::BOTH),
-            4 => Val(SENSE5_A::HIGH),
-            5 => Val(SENSE5_A::LOW),
-            i => Res(i),
+    #[allow(missing_docs)]
+    #[doc(hidden)]
+    #[inline]
+    pub fn _from(value: u8) -> SENSE5R {
+        match value {
+            0 => SENSE5R::NONE,
+            1 => SENSE5R::RISE,
+            2 => SENSE5R::FALL,
+            3 => SENSE5R::BOTH,
+            4 => SENSE5R::HIGH,
+            5 => SENSE5R::LOW,
+            i => SENSE5R::_Reserved(i),
         }
     }
     #[doc = "Checks if the value of the field is `NONE`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_none(&self) -> bool {
-        *self == SENSE5_A::NONE
+        *self == SENSE5R::NONE
     }
     #[doc = "Checks if the value of the field is `RISE`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_rise(&self) -> bool {
-        *self == SENSE5_A::RISE
+        *self == SENSE5R::RISE
     }
     #[doc = "Checks if the value of the field is `FALL`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_fall(&self) -> bool {
-        *self == SENSE5_A::FALL
+        *self == SENSE5R::FALL
     }
     #[doc = "Checks if the value of the field is `BOTH`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_both(&self) -> bool {
-        *self == SENSE5_A::BOTH
+        *self == SENSE5R::BOTH
     }
     #[doc = "Checks if the value of the field is `HIGH`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_high(&self) -> bool {
-        *self == SENSE5_A::HIGH
+        *self == SENSE5R::HIGH
     }
     #[doc = "Checks if the value of the field is `LOW`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_low(&self) -> bool {
-        *self == SENSE5_A::LOW
+        *self == SENSE5R::LOW
     }
 }
-#[doc = "Write proxy for field `SENSE5`"]
-pub struct SENSE5_W<'a> {
-    w: &'a mut W,
+#[doc = r" Value of the field"]
+pub struct FILTEN5R {
+    bits: bool,
 }
-impl<'a> SENSE5_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: SENSE5_A) -> &'a mut W {
-        use crate::ToBits;
-        unsafe { self.bits(variant._bits()) }
+impl FILTEN5R {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bit(&self) -> bool {
+        self.bits
     }
-    #[doc = "No detection"]
-    #[inline(always)]
-    pub fn none(self) -> &'a mut W {
-        self.variant(SENSE5_A::NONE)
+    #[doc = r" Returns `true` if the bit is clear (0)"]
+    #[inline]
+    pub fn bit_is_clear(&self) -> bool {
+        !self.bit()
     }
-    #[doc = "Rising edge detection"]
-    #[inline(always)]
-    pub fn rise(self) -> &'a mut W {
-        self.variant(SENSE5_A::RISE)
-    }
-    #[doc = "Falling edge detection"]
-    #[inline(always)]
-    pub fn fall(self) -> &'a mut W {
-        self.variant(SENSE5_A::FALL)
-    }
-    #[doc = "Both edges detection"]
-    #[inline(always)]
-    pub fn both(self) -> &'a mut W {
-        self.variant(SENSE5_A::BOTH)
-    }
-    #[doc = "High level detection"]
-    #[inline(always)]
-    pub fn high(self) -> &'a mut W {
-        self.variant(SENSE5_A::HIGH)
-    }
-    #[doc = "Low level detection"]
-    #[inline(always)]
-    pub fn low(self) -> &'a mut W {
-        self.variant(SENSE5_A::LOW)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x07 << 20)) | (((value as u32) & 0x07) << 20);
-        self.w
-    }
-}
-#[doc = "Reader of field `FILTEN5`"]
-pub type FILTEN5_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `FILTEN5`"]
-pub struct FILTEN5_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> FILTEN5_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 23)) | (((value as u32) & 0x01) << 23);
-        self.w
+    #[doc = r" Returns `true` if the bit is set (1)"]
+    #[inline]
+    pub fn bit_is_set(&self) -> bool {
+        self.bit()
     }
 }
 #[doc = "Possible values of the field `SENSE6`"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum SENSE6_A {
+pub enum SENSE6R {
     #[doc = "No detection"]
     NONE,
     #[doc = "Rising edge detection"]
@@ -919,143 +645,292 @@ pub enum SENSE6_A {
     HIGH,
     #[doc = "Low level detection"]
     LOW,
+    #[doc = r" Reserved"]
+    _Reserved(u8),
 }
-impl crate::ToBits<u8> for SENSE6_A {
-    #[inline(always)]
-    fn _bits(&self) -> u8 {
+impl SENSE6R {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bits(&self) -> u8 {
         match *self {
-            SENSE6_A::NONE => 0,
-            SENSE6_A::RISE => 1,
-            SENSE6_A::FALL => 2,
-            SENSE6_A::BOTH => 3,
-            SENSE6_A::HIGH => 4,
-            SENSE6_A::LOW => 5,
+            SENSE6R::NONE => 0,
+            SENSE6R::RISE => 1,
+            SENSE6R::FALL => 2,
+            SENSE6R::BOTH => 3,
+            SENSE6R::HIGH => 4,
+            SENSE6R::LOW => 5,
+            SENSE6R::_Reserved(bits) => bits,
         }
     }
-}
-#[doc = "Reader of field `SENSE6`"]
-pub type SENSE6_R = crate::R<u8, SENSE6_A>;
-impl SENSE6_R {
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> crate::Variant<u8, SENSE6_A> {
-        use crate::Variant::*;
-        match self.bits {
-            0 => Val(SENSE6_A::NONE),
-            1 => Val(SENSE6_A::RISE),
-            2 => Val(SENSE6_A::FALL),
-            3 => Val(SENSE6_A::BOTH),
-            4 => Val(SENSE6_A::HIGH),
-            5 => Val(SENSE6_A::LOW),
-            i => Res(i),
+    #[allow(missing_docs)]
+    #[doc(hidden)]
+    #[inline]
+    pub fn _from(value: u8) -> SENSE6R {
+        match value {
+            0 => SENSE6R::NONE,
+            1 => SENSE6R::RISE,
+            2 => SENSE6R::FALL,
+            3 => SENSE6R::BOTH,
+            4 => SENSE6R::HIGH,
+            5 => SENSE6R::LOW,
+            i => SENSE6R::_Reserved(i),
         }
     }
     #[doc = "Checks if the value of the field is `NONE`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_none(&self) -> bool {
-        *self == SENSE6_A::NONE
+        *self == SENSE6R::NONE
     }
     #[doc = "Checks if the value of the field is `RISE`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_rise(&self) -> bool {
-        *self == SENSE6_A::RISE
+        *self == SENSE6R::RISE
     }
     #[doc = "Checks if the value of the field is `FALL`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_fall(&self) -> bool {
-        *self == SENSE6_A::FALL
+        *self == SENSE6R::FALL
     }
     #[doc = "Checks if the value of the field is `BOTH`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_both(&self) -> bool {
-        *self == SENSE6_A::BOTH
+        *self == SENSE6R::BOTH
     }
     #[doc = "Checks if the value of the field is `HIGH`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_high(&self) -> bool {
-        *self == SENSE6_A::HIGH
+        *self == SENSE6R::HIGH
     }
     #[doc = "Checks if the value of the field is `LOW`"]
-    #[inline(always)]
+    #[inline]
     pub fn is_low(&self) -> bool {
-        *self == SENSE6_A::LOW
+        *self == SENSE6R::LOW
     }
 }
-#[doc = "Write proxy for field `SENSE6`"]
-pub struct SENSE6_W<'a> {
-    w: &'a mut W,
+#[doc = r" Value of the field"]
+pub struct FILTEN6R {
+    bits: bool,
 }
-impl<'a> SENSE6_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: SENSE6_A) -> &'a mut W {
-        use crate::ToBits;
-        unsafe { self.bits(variant._bits()) }
+impl FILTEN6R {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bit(&self) -> bool {
+        self.bits
     }
-    #[doc = "No detection"]
-    #[inline(always)]
-    pub fn none(self) -> &'a mut W {
-        self.variant(SENSE6_A::NONE)
+    #[doc = r" Returns `true` if the bit is clear (0)"]
+    #[inline]
+    pub fn bit_is_clear(&self) -> bool {
+        !self.bit()
     }
-    #[doc = "Rising edge detection"]
-    #[inline(always)]
-    pub fn rise(self) -> &'a mut W {
-        self.variant(SENSE6_A::RISE)
-    }
-    #[doc = "Falling edge detection"]
-    #[inline(always)]
-    pub fn fall(self) -> &'a mut W {
-        self.variant(SENSE6_A::FALL)
-    }
-    #[doc = "Both edges detection"]
-    #[inline(always)]
-    pub fn both(self) -> &'a mut W {
-        self.variant(SENSE6_A::BOTH)
-    }
-    #[doc = "High level detection"]
-    #[inline(always)]
-    pub fn high(self) -> &'a mut W {
-        self.variant(SENSE6_A::HIGH)
-    }
-    #[doc = "Low level detection"]
-    #[inline(always)]
-    pub fn low(self) -> &'a mut W {
-        self.variant(SENSE6_A::LOW)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x07 << 24)) | (((value as u32) & 0x07) << 24);
-        self.w
-    }
-}
-#[doc = "Reader of field `FILTEN6`"]
-pub type FILTEN6_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `FILTEN6`"]
-pub struct FILTEN6_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> FILTEN6_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 27)) | (((value as u32) & 0x01) << 27);
-        self.w
+    #[doc = r" Returns `true` if the bit is set (1)"]
+    #[inline]
+    pub fn bit_is_set(&self) -> bool {
+        self.bit()
     }
 }
 #[doc = "Possible values of the field `SENSE7`"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum SENSE7_A {
+pub enum SENSE7R {
+    #[doc = "No detection"]
+    NONE,
+    #[doc = "Rising edge detection"]
+    RISE,
+    #[doc = "Falling edge detection"]
+    FALL,
+    #[doc = "Both edges detection"]
+    BOTH,
+    #[doc = "High level detection"]
+    HIGH,
+    #[doc = "Low level detection"]
+    LOW,
+    #[doc = r" Reserved"]
+    _Reserved(u8),
+}
+impl SENSE7R {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bits(&self) -> u8 {
+        match *self {
+            SENSE7R::NONE => 0,
+            SENSE7R::RISE => 1,
+            SENSE7R::FALL => 2,
+            SENSE7R::BOTH => 3,
+            SENSE7R::HIGH => 4,
+            SENSE7R::LOW => 5,
+            SENSE7R::_Reserved(bits) => bits,
+        }
+    }
+    #[allow(missing_docs)]
+    #[doc(hidden)]
+    #[inline]
+    pub fn _from(value: u8) -> SENSE7R {
+        match value {
+            0 => SENSE7R::NONE,
+            1 => SENSE7R::RISE,
+            2 => SENSE7R::FALL,
+            3 => SENSE7R::BOTH,
+            4 => SENSE7R::HIGH,
+            5 => SENSE7R::LOW,
+            i => SENSE7R::_Reserved(i),
+        }
+    }
+    #[doc = "Checks if the value of the field is `NONE`"]
+    #[inline]
+    pub fn is_none(&self) -> bool {
+        *self == SENSE7R::NONE
+    }
+    #[doc = "Checks if the value of the field is `RISE`"]
+    #[inline]
+    pub fn is_rise(&self) -> bool {
+        *self == SENSE7R::RISE
+    }
+    #[doc = "Checks if the value of the field is `FALL`"]
+    #[inline]
+    pub fn is_fall(&self) -> bool {
+        *self == SENSE7R::FALL
+    }
+    #[doc = "Checks if the value of the field is `BOTH`"]
+    #[inline]
+    pub fn is_both(&self) -> bool {
+        *self == SENSE7R::BOTH
+    }
+    #[doc = "Checks if the value of the field is `HIGH`"]
+    #[inline]
+    pub fn is_high(&self) -> bool {
+        *self == SENSE7R::HIGH
+    }
+    #[doc = "Checks if the value of the field is `LOW`"]
+    #[inline]
+    pub fn is_low(&self) -> bool {
+        *self == SENSE7R::LOW
+    }
+}
+#[doc = r" Value of the field"]
+pub struct FILTEN7R {
+    bits: bool,
+}
+impl FILTEN7R {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bit(&self) -> bool {
+        self.bits
+    }
+    #[doc = r" Returns `true` if the bit is clear (0)"]
+    #[inline]
+    pub fn bit_is_clear(&self) -> bool {
+        !self.bit()
+    }
+    #[doc = r" Returns `true` if the bit is set (1)"]
+    #[inline]
+    pub fn bit_is_set(&self) -> bool {
+        self.bit()
+    }
+}
+#[doc = "Values that can be written to the field `SENSE0`"]
+pub enum SENSE0W {
+    #[doc = "No detection"]
+    NONE,
+    #[doc = "Rising-edge detection"]
+    RISE,
+    #[doc = "Falling-edge detection"]
+    FALL,
+    #[doc = "Both-edges detection"]
+    BOTH,
+    #[doc = "High-level detection"]
+    HIGH,
+    #[doc = "Low-level detection"]
+    LOW,
+}
+impl SENSE0W {
+    #[allow(missing_docs)]
+    #[doc(hidden)]
+    #[inline]
+    pub fn _bits(&self) -> u8 {
+        match *self {
+            SENSE0W::NONE => 0,
+            SENSE0W::RISE => 1,
+            SENSE0W::FALL => 2,
+            SENSE0W::BOTH => 3,
+            SENSE0W::HIGH => 4,
+            SENSE0W::LOW => 5,
+        }
+    }
+}
+#[doc = r" Proxy"]
+pub struct _SENSE0W<'a> {
+    w: &'a mut W,
+}
+impl<'a> _SENSE0W<'a> {
+    #[doc = r" Writes `variant` to the field"]
+    #[inline]
+    pub fn variant(self, variant: SENSE0W) -> &'a mut W {
+        unsafe { self.bits(variant._bits()) }
+    }
+    #[doc = "No detection"]
+    #[inline]
+    pub fn none(self) -> &'a mut W {
+        self.variant(SENSE0W::NONE)
+    }
+    #[doc = "Rising-edge detection"]
+    #[inline]
+    pub fn rise(self) -> &'a mut W {
+        self.variant(SENSE0W::RISE)
+    }
+    #[doc = "Falling-edge detection"]
+    #[inline]
+    pub fn fall(self) -> &'a mut W {
+        self.variant(SENSE0W::FALL)
+    }
+    #[doc = "Both-edges detection"]
+    #[inline]
+    pub fn both(self) -> &'a mut W {
+        self.variant(SENSE0W::BOTH)
+    }
+    #[doc = "High-level detection"]
+    #[inline]
+    pub fn high(self) -> &'a mut W {
+        self.variant(SENSE0W::HIGH)
+    }
+    #[doc = "Low-level detection"]
+    #[inline]
+    pub fn low(self) -> &'a mut W {
+        self.variant(SENSE0W::LOW)
+    }
+    #[doc = r" Writes raw bits to the field"]
+    #[inline]
+    pub unsafe fn bits(self, value: u8) -> &'a mut W {
+        const MASK: u8 = 7;
+        const OFFSET: u8 = 0;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w
+    }
+}
+#[doc = r" Proxy"]
+pub struct _FILTEN0W<'a> {
+    w: &'a mut W,
+}
+impl<'a> _FILTEN0W<'a> {
+    #[doc = r" Sets the field bit"]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r" Clears the field bit"]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r" Writes raw bits to the field"]
+    #[inline]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        const MASK: bool = true;
+        const OFFSET: u8 = 3;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w
+    }
+}
+#[doc = "Values that can be written to the field `SENSE1`"]
+pub enum SENSE1W {
     #[doc = "No detection"]
     NONE,
     #[doc = "Rising edge detection"]
@@ -1069,300 +944,961 @@ pub enum SENSE7_A {
     #[doc = "Low level detection"]
     LOW,
 }
-impl crate::ToBits<u8> for SENSE7_A {
-    #[inline(always)]
-    fn _bits(&self) -> u8 {
+impl SENSE1W {
+    #[allow(missing_docs)]
+    #[doc(hidden)]
+    #[inline]
+    pub fn _bits(&self) -> u8 {
         match *self {
-            SENSE7_A::NONE => 0,
-            SENSE7_A::RISE => 1,
-            SENSE7_A::FALL => 2,
-            SENSE7_A::BOTH => 3,
-            SENSE7_A::HIGH => 4,
-            SENSE7_A::LOW => 5,
+            SENSE1W::NONE => 0,
+            SENSE1W::RISE => 1,
+            SENSE1W::FALL => 2,
+            SENSE1W::BOTH => 3,
+            SENSE1W::HIGH => 4,
+            SENSE1W::LOW => 5,
         }
     }
 }
-#[doc = "Reader of field `SENSE7`"]
-pub type SENSE7_R = crate::R<u8, SENSE7_A>;
-impl SENSE7_R {
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> crate::Variant<u8, SENSE7_A> {
-        use crate::Variant::*;
-        match self.bits {
-            0 => Val(SENSE7_A::NONE),
-            1 => Val(SENSE7_A::RISE),
-            2 => Val(SENSE7_A::FALL),
-            3 => Val(SENSE7_A::BOTH),
-            4 => Val(SENSE7_A::HIGH),
-            5 => Val(SENSE7_A::LOW),
-            i => Res(i),
-        }
-    }
-    #[doc = "Checks if the value of the field is `NONE`"]
-    #[inline(always)]
-    pub fn is_none(&self) -> bool {
-        *self == SENSE7_A::NONE
-    }
-    #[doc = "Checks if the value of the field is `RISE`"]
-    #[inline(always)]
-    pub fn is_rise(&self) -> bool {
-        *self == SENSE7_A::RISE
-    }
-    #[doc = "Checks if the value of the field is `FALL`"]
-    #[inline(always)]
-    pub fn is_fall(&self) -> bool {
-        *self == SENSE7_A::FALL
-    }
-    #[doc = "Checks if the value of the field is `BOTH`"]
-    #[inline(always)]
-    pub fn is_both(&self) -> bool {
-        *self == SENSE7_A::BOTH
-    }
-    #[doc = "Checks if the value of the field is `HIGH`"]
-    #[inline(always)]
-    pub fn is_high(&self) -> bool {
-        *self == SENSE7_A::HIGH
-    }
-    #[doc = "Checks if the value of the field is `LOW`"]
-    #[inline(always)]
-    pub fn is_low(&self) -> bool {
-        *self == SENSE7_A::LOW
-    }
-}
-#[doc = "Write proxy for field `SENSE7`"]
-pub struct SENSE7_W<'a> {
+#[doc = r" Proxy"]
+pub struct _SENSE1W<'a> {
     w: &'a mut W,
 }
-impl<'a> SENSE7_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: SENSE7_A) -> &'a mut W {
-        use crate::ToBits;
+impl<'a> _SENSE1W<'a> {
+    #[doc = r" Writes `variant` to the field"]
+    #[inline]
+    pub fn variant(self, variant: SENSE1W) -> &'a mut W {
         unsafe { self.bits(variant._bits()) }
     }
     #[doc = "No detection"]
-    #[inline(always)]
+    #[inline]
     pub fn none(self) -> &'a mut W {
-        self.variant(SENSE7_A::NONE)
+        self.variant(SENSE1W::NONE)
     }
     #[doc = "Rising edge detection"]
-    #[inline(always)]
+    #[inline]
     pub fn rise(self) -> &'a mut W {
-        self.variant(SENSE7_A::RISE)
+        self.variant(SENSE1W::RISE)
     }
     #[doc = "Falling edge detection"]
-    #[inline(always)]
+    #[inline]
     pub fn fall(self) -> &'a mut W {
-        self.variant(SENSE7_A::FALL)
+        self.variant(SENSE1W::FALL)
     }
     #[doc = "Both edges detection"]
-    #[inline(always)]
+    #[inline]
     pub fn both(self) -> &'a mut W {
-        self.variant(SENSE7_A::BOTH)
+        self.variant(SENSE1W::BOTH)
     }
     #[doc = "High level detection"]
-    #[inline(always)]
+    #[inline]
     pub fn high(self) -> &'a mut W {
-        self.variant(SENSE7_A::HIGH)
+        self.variant(SENSE1W::HIGH)
     }
     #[doc = "Low level detection"]
-    #[inline(always)]
+    #[inline]
     pub fn low(self) -> &'a mut W {
-        self.variant(SENSE7_A::LOW)
+        self.variant(SENSE1W::LOW)
     }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
+    #[doc = r" Writes raw bits to the field"]
+    #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x07 << 28)) | (((value as u32) & 0x07) << 28);
+        const MASK: u8 = 7;
+        const OFFSET: u8 = 4;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
-#[doc = "Reader of field `FILTEN7`"]
-pub type FILTEN7_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `FILTEN7`"]
-pub struct FILTEN7_W<'a> {
+#[doc = r" Proxy"]
+pub struct _FILTEN1W<'a> {
     w: &'a mut W,
 }
-impl<'a> FILTEN7_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
+impl<'a> _FILTEN1W<'a> {
+    #[doc = r" Sets the field bit"]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
+    #[doc = r" Clears the field bit"]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
+    #[doc = r" Writes raw bits to the field"]
+    #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 31)) | (((value as u32) & 0x01) << 31);
+        const MASK: bool = true;
+        const OFFSET: u8 = 7;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w
+    }
+}
+#[doc = "Values that can be written to the field `SENSE2`"]
+pub enum SENSE2W {
+    #[doc = "No detection"]
+    NONE,
+    #[doc = "Rising edge detection"]
+    RISE,
+    #[doc = "Falling edge detection"]
+    FALL,
+    #[doc = "Both edges detection"]
+    BOTH,
+    #[doc = "High level detection"]
+    HIGH,
+    #[doc = "Low level detection"]
+    LOW,
+}
+impl SENSE2W {
+    #[allow(missing_docs)]
+    #[doc(hidden)]
+    #[inline]
+    pub fn _bits(&self) -> u8 {
+        match *self {
+            SENSE2W::NONE => 0,
+            SENSE2W::RISE => 1,
+            SENSE2W::FALL => 2,
+            SENSE2W::BOTH => 3,
+            SENSE2W::HIGH => 4,
+            SENSE2W::LOW => 5,
+        }
+    }
+}
+#[doc = r" Proxy"]
+pub struct _SENSE2W<'a> {
+    w: &'a mut W,
+}
+impl<'a> _SENSE2W<'a> {
+    #[doc = r" Writes `variant` to the field"]
+    #[inline]
+    pub fn variant(self, variant: SENSE2W) -> &'a mut W {
+        unsafe { self.bits(variant._bits()) }
+    }
+    #[doc = "No detection"]
+    #[inline]
+    pub fn none(self) -> &'a mut W {
+        self.variant(SENSE2W::NONE)
+    }
+    #[doc = "Rising edge detection"]
+    #[inline]
+    pub fn rise(self) -> &'a mut W {
+        self.variant(SENSE2W::RISE)
+    }
+    #[doc = "Falling edge detection"]
+    #[inline]
+    pub fn fall(self) -> &'a mut W {
+        self.variant(SENSE2W::FALL)
+    }
+    #[doc = "Both edges detection"]
+    #[inline]
+    pub fn both(self) -> &'a mut W {
+        self.variant(SENSE2W::BOTH)
+    }
+    #[doc = "High level detection"]
+    #[inline]
+    pub fn high(self) -> &'a mut W {
+        self.variant(SENSE2W::HIGH)
+    }
+    #[doc = "Low level detection"]
+    #[inline]
+    pub fn low(self) -> &'a mut W {
+        self.variant(SENSE2W::LOW)
+    }
+    #[doc = r" Writes raw bits to the field"]
+    #[inline]
+    pub unsafe fn bits(self, value: u8) -> &'a mut W {
+        const MASK: u8 = 7;
+        const OFFSET: u8 = 8;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w
+    }
+}
+#[doc = r" Proxy"]
+pub struct _FILTEN2W<'a> {
+    w: &'a mut W,
+}
+impl<'a> _FILTEN2W<'a> {
+    #[doc = r" Sets the field bit"]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r" Clears the field bit"]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r" Writes raw bits to the field"]
+    #[inline]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        const MASK: bool = true;
+        const OFFSET: u8 = 11;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w
+    }
+}
+#[doc = "Values that can be written to the field `SENSE3`"]
+pub enum SENSE3W {
+    #[doc = "No detection"]
+    NONE,
+    #[doc = "Rising edge detection"]
+    RISE,
+    #[doc = "Falling edge detection"]
+    FALL,
+    #[doc = "Both edges detection"]
+    BOTH,
+    #[doc = "High level detection"]
+    HIGH,
+    #[doc = "Low level detection"]
+    LOW,
+}
+impl SENSE3W {
+    #[allow(missing_docs)]
+    #[doc(hidden)]
+    #[inline]
+    pub fn _bits(&self) -> u8 {
+        match *self {
+            SENSE3W::NONE => 0,
+            SENSE3W::RISE => 1,
+            SENSE3W::FALL => 2,
+            SENSE3W::BOTH => 3,
+            SENSE3W::HIGH => 4,
+            SENSE3W::LOW => 5,
+        }
+    }
+}
+#[doc = r" Proxy"]
+pub struct _SENSE3W<'a> {
+    w: &'a mut W,
+}
+impl<'a> _SENSE3W<'a> {
+    #[doc = r" Writes `variant` to the field"]
+    #[inline]
+    pub fn variant(self, variant: SENSE3W) -> &'a mut W {
+        unsafe { self.bits(variant._bits()) }
+    }
+    #[doc = "No detection"]
+    #[inline]
+    pub fn none(self) -> &'a mut W {
+        self.variant(SENSE3W::NONE)
+    }
+    #[doc = "Rising edge detection"]
+    #[inline]
+    pub fn rise(self) -> &'a mut W {
+        self.variant(SENSE3W::RISE)
+    }
+    #[doc = "Falling edge detection"]
+    #[inline]
+    pub fn fall(self) -> &'a mut W {
+        self.variant(SENSE3W::FALL)
+    }
+    #[doc = "Both edges detection"]
+    #[inline]
+    pub fn both(self) -> &'a mut W {
+        self.variant(SENSE3W::BOTH)
+    }
+    #[doc = "High level detection"]
+    #[inline]
+    pub fn high(self) -> &'a mut W {
+        self.variant(SENSE3W::HIGH)
+    }
+    #[doc = "Low level detection"]
+    #[inline]
+    pub fn low(self) -> &'a mut W {
+        self.variant(SENSE3W::LOW)
+    }
+    #[doc = r" Writes raw bits to the field"]
+    #[inline]
+    pub unsafe fn bits(self, value: u8) -> &'a mut W {
+        const MASK: u8 = 7;
+        const OFFSET: u8 = 12;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w
+    }
+}
+#[doc = r" Proxy"]
+pub struct _FILTEN3W<'a> {
+    w: &'a mut W,
+}
+impl<'a> _FILTEN3W<'a> {
+    #[doc = r" Sets the field bit"]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r" Clears the field bit"]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r" Writes raw bits to the field"]
+    #[inline]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        const MASK: bool = true;
+        const OFFSET: u8 = 15;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w
+    }
+}
+#[doc = "Values that can be written to the field `SENSE4`"]
+pub enum SENSE4W {
+    #[doc = "No detection"]
+    NONE,
+    #[doc = "Rising edge detection"]
+    RISE,
+    #[doc = "Falling edge detection"]
+    FALL,
+    #[doc = "Both edges detection"]
+    BOTH,
+    #[doc = "High level detection"]
+    HIGH,
+    #[doc = "Low level detection"]
+    LOW,
+}
+impl SENSE4W {
+    #[allow(missing_docs)]
+    #[doc(hidden)]
+    #[inline]
+    pub fn _bits(&self) -> u8 {
+        match *self {
+            SENSE4W::NONE => 0,
+            SENSE4W::RISE => 1,
+            SENSE4W::FALL => 2,
+            SENSE4W::BOTH => 3,
+            SENSE4W::HIGH => 4,
+            SENSE4W::LOW => 5,
+        }
+    }
+}
+#[doc = r" Proxy"]
+pub struct _SENSE4W<'a> {
+    w: &'a mut W,
+}
+impl<'a> _SENSE4W<'a> {
+    #[doc = r" Writes `variant` to the field"]
+    #[inline]
+    pub fn variant(self, variant: SENSE4W) -> &'a mut W {
+        unsafe { self.bits(variant._bits()) }
+    }
+    #[doc = "No detection"]
+    #[inline]
+    pub fn none(self) -> &'a mut W {
+        self.variant(SENSE4W::NONE)
+    }
+    #[doc = "Rising edge detection"]
+    #[inline]
+    pub fn rise(self) -> &'a mut W {
+        self.variant(SENSE4W::RISE)
+    }
+    #[doc = "Falling edge detection"]
+    #[inline]
+    pub fn fall(self) -> &'a mut W {
+        self.variant(SENSE4W::FALL)
+    }
+    #[doc = "Both edges detection"]
+    #[inline]
+    pub fn both(self) -> &'a mut W {
+        self.variant(SENSE4W::BOTH)
+    }
+    #[doc = "High level detection"]
+    #[inline]
+    pub fn high(self) -> &'a mut W {
+        self.variant(SENSE4W::HIGH)
+    }
+    #[doc = "Low level detection"]
+    #[inline]
+    pub fn low(self) -> &'a mut W {
+        self.variant(SENSE4W::LOW)
+    }
+    #[doc = r" Writes raw bits to the field"]
+    #[inline]
+    pub unsafe fn bits(self, value: u8) -> &'a mut W {
+        const MASK: u8 = 7;
+        const OFFSET: u8 = 16;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w
+    }
+}
+#[doc = r" Proxy"]
+pub struct _FILTEN4W<'a> {
+    w: &'a mut W,
+}
+impl<'a> _FILTEN4W<'a> {
+    #[doc = r" Sets the field bit"]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r" Clears the field bit"]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r" Writes raw bits to the field"]
+    #[inline]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        const MASK: bool = true;
+        const OFFSET: u8 = 19;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w
+    }
+}
+#[doc = "Values that can be written to the field `SENSE5`"]
+pub enum SENSE5W {
+    #[doc = "No detection"]
+    NONE,
+    #[doc = "Rising edge detection"]
+    RISE,
+    #[doc = "Falling edge detection"]
+    FALL,
+    #[doc = "Both edges detection"]
+    BOTH,
+    #[doc = "High level detection"]
+    HIGH,
+    #[doc = "Low level detection"]
+    LOW,
+}
+impl SENSE5W {
+    #[allow(missing_docs)]
+    #[doc(hidden)]
+    #[inline]
+    pub fn _bits(&self) -> u8 {
+        match *self {
+            SENSE5W::NONE => 0,
+            SENSE5W::RISE => 1,
+            SENSE5W::FALL => 2,
+            SENSE5W::BOTH => 3,
+            SENSE5W::HIGH => 4,
+            SENSE5W::LOW => 5,
+        }
+    }
+}
+#[doc = r" Proxy"]
+pub struct _SENSE5W<'a> {
+    w: &'a mut W,
+}
+impl<'a> _SENSE5W<'a> {
+    #[doc = r" Writes `variant` to the field"]
+    #[inline]
+    pub fn variant(self, variant: SENSE5W) -> &'a mut W {
+        unsafe { self.bits(variant._bits()) }
+    }
+    #[doc = "No detection"]
+    #[inline]
+    pub fn none(self) -> &'a mut W {
+        self.variant(SENSE5W::NONE)
+    }
+    #[doc = "Rising edge detection"]
+    #[inline]
+    pub fn rise(self) -> &'a mut W {
+        self.variant(SENSE5W::RISE)
+    }
+    #[doc = "Falling edge detection"]
+    #[inline]
+    pub fn fall(self) -> &'a mut W {
+        self.variant(SENSE5W::FALL)
+    }
+    #[doc = "Both edges detection"]
+    #[inline]
+    pub fn both(self) -> &'a mut W {
+        self.variant(SENSE5W::BOTH)
+    }
+    #[doc = "High level detection"]
+    #[inline]
+    pub fn high(self) -> &'a mut W {
+        self.variant(SENSE5W::HIGH)
+    }
+    #[doc = "Low level detection"]
+    #[inline]
+    pub fn low(self) -> &'a mut W {
+        self.variant(SENSE5W::LOW)
+    }
+    #[doc = r" Writes raw bits to the field"]
+    #[inline]
+    pub unsafe fn bits(self, value: u8) -> &'a mut W {
+        const MASK: u8 = 7;
+        const OFFSET: u8 = 20;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w
+    }
+}
+#[doc = r" Proxy"]
+pub struct _FILTEN5W<'a> {
+    w: &'a mut W,
+}
+impl<'a> _FILTEN5W<'a> {
+    #[doc = r" Sets the field bit"]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r" Clears the field bit"]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r" Writes raw bits to the field"]
+    #[inline]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        const MASK: bool = true;
+        const OFFSET: u8 = 23;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w
+    }
+}
+#[doc = "Values that can be written to the field `SENSE6`"]
+pub enum SENSE6W {
+    #[doc = "No detection"]
+    NONE,
+    #[doc = "Rising edge detection"]
+    RISE,
+    #[doc = "Falling edge detection"]
+    FALL,
+    #[doc = "Both edges detection"]
+    BOTH,
+    #[doc = "High level detection"]
+    HIGH,
+    #[doc = "Low level detection"]
+    LOW,
+}
+impl SENSE6W {
+    #[allow(missing_docs)]
+    #[doc(hidden)]
+    #[inline]
+    pub fn _bits(&self) -> u8 {
+        match *self {
+            SENSE6W::NONE => 0,
+            SENSE6W::RISE => 1,
+            SENSE6W::FALL => 2,
+            SENSE6W::BOTH => 3,
+            SENSE6W::HIGH => 4,
+            SENSE6W::LOW => 5,
+        }
+    }
+}
+#[doc = r" Proxy"]
+pub struct _SENSE6W<'a> {
+    w: &'a mut W,
+}
+impl<'a> _SENSE6W<'a> {
+    #[doc = r" Writes `variant` to the field"]
+    #[inline]
+    pub fn variant(self, variant: SENSE6W) -> &'a mut W {
+        unsafe { self.bits(variant._bits()) }
+    }
+    #[doc = "No detection"]
+    #[inline]
+    pub fn none(self) -> &'a mut W {
+        self.variant(SENSE6W::NONE)
+    }
+    #[doc = "Rising edge detection"]
+    #[inline]
+    pub fn rise(self) -> &'a mut W {
+        self.variant(SENSE6W::RISE)
+    }
+    #[doc = "Falling edge detection"]
+    #[inline]
+    pub fn fall(self) -> &'a mut W {
+        self.variant(SENSE6W::FALL)
+    }
+    #[doc = "Both edges detection"]
+    #[inline]
+    pub fn both(self) -> &'a mut W {
+        self.variant(SENSE6W::BOTH)
+    }
+    #[doc = "High level detection"]
+    #[inline]
+    pub fn high(self) -> &'a mut W {
+        self.variant(SENSE6W::HIGH)
+    }
+    #[doc = "Low level detection"]
+    #[inline]
+    pub fn low(self) -> &'a mut W {
+        self.variant(SENSE6W::LOW)
+    }
+    #[doc = r" Writes raw bits to the field"]
+    #[inline]
+    pub unsafe fn bits(self, value: u8) -> &'a mut W {
+        const MASK: u8 = 7;
+        const OFFSET: u8 = 24;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w
+    }
+}
+#[doc = r" Proxy"]
+pub struct _FILTEN6W<'a> {
+    w: &'a mut W,
+}
+impl<'a> _FILTEN6W<'a> {
+    #[doc = r" Sets the field bit"]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r" Clears the field bit"]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r" Writes raw bits to the field"]
+    #[inline]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        const MASK: bool = true;
+        const OFFSET: u8 = 27;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w
+    }
+}
+#[doc = "Values that can be written to the field `SENSE7`"]
+pub enum SENSE7W {
+    #[doc = "No detection"]
+    NONE,
+    #[doc = "Rising edge detection"]
+    RISE,
+    #[doc = "Falling edge detection"]
+    FALL,
+    #[doc = "Both edges detection"]
+    BOTH,
+    #[doc = "High level detection"]
+    HIGH,
+    #[doc = "Low level detection"]
+    LOW,
+}
+impl SENSE7W {
+    #[allow(missing_docs)]
+    #[doc(hidden)]
+    #[inline]
+    pub fn _bits(&self) -> u8 {
+        match *self {
+            SENSE7W::NONE => 0,
+            SENSE7W::RISE => 1,
+            SENSE7W::FALL => 2,
+            SENSE7W::BOTH => 3,
+            SENSE7W::HIGH => 4,
+            SENSE7W::LOW => 5,
+        }
+    }
+}
+#[doc = r" Proxy"]
+pub struct _SENSE7W<'a> {
+    w: &'a mut W,
+}
+impl<'a> _SENSE7W<'a> {
+    #[doc = r" Writes `variant` to the field"]
+    #[inline]
+    pub fn variant(self, variant: SENSE7W) -> &'a mut W {
+        unsafe { self.bits(variant._bits()) }
+    }
+    #[doc = "No detection"]
+    #[inline]
+    pub fn none(self) -> &'a mut W {
+        self.variant(SENSE7W::NONE)
+    }
+    #[doc = "Rising edge detection"]
+    #[inline]
+    pub fn rise(self) -> &'a mut W {
+        self.variant(SENSE7W::RISE)
+    }
+    #[doc = "Falling edge detection"]
+    #[inline]
+    pub fn fall(self) -> &'a mut W {
+        self.variant(SENSE7W::FALL)
+    }
+    #[doc = "Both edges detection"]
+    #[inline]
+    pub fn both(self) -> &'a mut W {
+        self.variant(SENSE7W::BOTH)
+    }
+    #[doc = "High level detection"]
+    #[inline]
+    pub fn high(self) -> &'a mut W {
+        self.variant(SENSE7W::HIGH)
+    }
+    #[doc = "Low level detection"]
+    #[inline]
+    pub fn low(self) -> &'a mut W {
+        self.variant(SENSE7W::LOW)
+    }
+    #[doc = r" Writes raw bits to the field"]
+    #[inline]
+    pub unsafe fn bits(self, value: u8) -> &'a mut W {
+        const MASK: u8 = 7;
+        const OFFSET: u8 = 28;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w
+    }
+}
+#[doc = r" Proxy"]
+pub struct _FILTEN7W<'a> {
+    w: &'a mut W,
+}
+impl<'a> _FILTEN7W<'a> {
+    #[doc = r" Sets the field bit"]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r" Clears the field bit"]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r" Writes raw bits to the field"]
+    #[inline]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        const MASK: bool = true;
+        const OFFSET: u8 = 31;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
 impl R {
+    #[doc = r" Value of the register as raw bits"]
+    #[inline]
+    pub fn bits(&self) -> u32 {
+        self.bits
+    }
     #[doc = "Bits 0:2 - Input Sense 0 Configuration"]
-    #[inline(always)]
-    pub fn sense0(&self) -> SENSE0_R {
-        SENSE0_R::new((self.bits & 0x07) as u8)
+    #[inline]
+    pub fn sense0(&self) -> SENSE0R {
+        SENSE0R::_from({
+            const MASK: u8 = 7;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
     #[doc = "Bit 3 - Filter 0 Enable"]
-    #[inline(always)]
-    pub fn filten0(&self) -> FILTEN0_R {
-        FILTEN0_R::new(((self.bits >> 3) & 0x01) != 0)
+    #[inline]
+    pub fn filten0(&self) -> FILTEN0R {
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 3;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
+        FILTEN0R { bits }
     }
     #[doc = "Bits 4:6 - Input Sense 1 Configuration"]
-    #[inline(always)]
-    pub fn sense1(&self) -> SENSE1_R {
-        SENSE1_R::new(((self.bits >> 4) & 0x07) as u8)
+    #[inline]
+    pub fn sense1(&self) -> SENSE1R {
+        SENSE1R::_from({
+            const MASK: u8 = 7;
+            const OFFSET: u8 = 4;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
     #[doc = "Bit 7 - Filter 1 Enable"]
-    #[inline(always)]
-    pub fn filten1(&self) -> FILTEN1_R {
-        FILTEN1_R::new(((self.bits >> 7) & 0x01) != 0)
+    #[inline]
+    pub fn filten1(&self) -> FILTEN1R {
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 7;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
+        FILTEN1R { bits }
     }
     #[doc = "Bits 8:10 - Input Sense 2 Configuration"]
-    #[inline(always)]
-    pub fn sense2(&self) -> SENSE2_R {
-        SENSE2_R::new(((self.bits >> 8) & 0x07) as u8)
+    #[inline]
+    pub fn sense2(&self) -> SENSE2R {
+        SENSE2R::_from({
+            const MASK: u8 = 7;
+            const OFFSET: u8 = 8;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
     #[doc = "Bit 11 - Filter 2 Enable"]
-    #[inline(always)]
-    pub fn filten2(&self) -> FILTEN2_R {
-        FILTEN2_R::new(((self.bits >> 11) & 0x01) != 0)
+    #[inline]
+    pub fn filten2(&self) -> FILTEN2R {
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 11;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
+        FILTEN2R { bits }
     }
     #[doc = "Bits 12:14 - Input Sense 3 Configuration"]
-    #[inline(always)]
-    pub fn sense3(&self) -> SENSE3_R {
-        SENSE3_R::new(((self.bits >> 12) & 0x07) as u8)
+    #[inline]
+    pub fn sense3(&self) -> SENSE3R {
+        SENSE3R::_from({
+            const MASK: u8 = 7;
+            const OFFSET: u8 = 12;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
     #[doc = "Bit 15 - Filter 3 Enable"]
-    #[inline(always)]
-    pub fn filten3(&self) -> FILTEN3_R {
-        FILTEN3_R::new(((self.bits >> 15) & 0x01) != 0)
+    #[inline]
+    pub fn filten3(&self) -> FILTEN3R {
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 15;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
+        FILTEN3R { bits }
     }
     #[doc = "Bits 16:18 - Input Sense 4 Configuration"]
-    #[inline(always)]
-    pub fn sense4(&self) -> SENSE4_R {
-        SENSE4_R::new(((self.bits >> 16) & 0x07) as u8)
+    #[inline]
+    pub fn sense4(&self) -> SENSE4R {
+        SENSE4R::_from({
+            const MASK: u8 = 7;
+            const OFFSET: u8 = 16;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
     #[doc = "Bit 19 - Filter 4 Enable"]
-    #[inline(always)]
-    pub fn filten4(&self) -> FILTEN4_R {
-        FILTEN4_R::new(((self.bits >> 19) & 0x01) != 0)
+    #[inline]
+    pub fn filten4(&self) -> FILTEN4R {
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 19;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
+        FILTEN4R { bits }
     }
     #[doc = "Bits 20:22 - Input Sense 5 Configuration"]
-    #[inline(always)]
-    pub fn sense5(&self) -> SENSE5_R {
-        SENSE5_R::new(((self.bits >> 20) & 0x07) as u8)
+    #[inline]
+    pub fn sense5(&self) -> SENSE5R {
+        SENSE5R::_from({
+            const MASK: u8 = 7;
+            const OFFSET: u8 = 20;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
     #[doc = "Bit 23 - Filter 5 Enable"]
-    #[inline(always)]
-    pub fn filten5(&self) -> FILTEN5_R {
-        FILTEN5_R::new(((self.bits >> 23) & 0x01) != 0)
+    #[inline]
+    pub fn filten5(&self) -> FILTEN5R {
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 23;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
+        FILTEN5R { bits }
     }
     #[doc = "Bits 24:26 - Input Sense 6 Configuration"]
-    #[inline(always)]
-    pub fn sense6(&self) -> SENSE6_R {
-        SENSE6_R::new(((self.bits >> 24) & 0x07) as u8)
+    #[inline]
+    pub fn sense6(&self) -> SENSE6R {
+        SENSE6R::_from({
+            const MASK: u8 = 7;
+            const OFFSET: u8 = 24;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
     #[doc = "Bit 27 - Filter 6 Enable"]
-    #[inline(always)]
-    pub fn filten6(&self) -> FILTEN6_R {
-        FILTEN6_R::new(((self.bits >> 27) & 0x01) != 0)
+    #[inline]
+    pub fn filten6(&self) -> FILTEN6R {
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 27;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
+        FILTEN6R { bits }
     }
     #[doc = "Bits 28:30 - Input Sense 7 Configuration"]
-    #[inline(always)]
-    pub fn sense7(&self) -> SENSE7_R {
-        SENSE7_R::new(((self.bits >> 28) & 0x07) as u8)
+    #[inline]
+    pub fn sense7(&self) -> SENSE7R {
+        SENSE7R::_from({
+            const MASK: u8 = 7;
+            const OFFSET: u8 = 28;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
     #[doc = "Bit 31 - Filter 7 Enable"]
-    #[inline(always)]
-    pub fn filten7(&self) -> FILTEN7_R {
-        FILTEN7_R::new(((self.bits >> 31) & 0x01) != 0)
+    #[inline]
+    pub fn filten7(&self) -> FILTEN7R {
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 31;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
+        FILTEN7R { bits }
     }
 }
 impl W {
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub fn reset_value() -> W {
+        W { bits: 0 }
+    }
+    #[doc = r" Writes raw bits to the register"]
+    #[inline]
+    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+        self.bits = bits;
+        self
+    }
     #[doc = "Bits 0:2 - Input Sense 0 Configuration"]
-    #[inline(always)]
-    pub fn sense0(&mut self) -> SENSE0_W {
-        SENSE0_W { w: self }
+    #[inline]
+    pub fn sense0(&mut self) -> _SENSE0W {
+        _SENSE0W { w: self }
     }
     #[doc = "Bit 3 - Filter 0 Enable"]
-    #[inline(always)]
-    pub fn filten0(&mut self) -> FILTEN0_W {
-        FILTEN0_W { w: self }
+    #[inline]
+    pub fn filten0(&mut self) -> _FILTEN0W {
+        _FILTEN0W { w: self }
     }
     #[doc = "Bits 4:6 - Input Sense 1 Configuration"]
-    #[inline(always)]
-    pub fn sense1(&mut self) -> SENSE1_W {
-        SENSE1_W { w: self }
+    #[inline]
+    pub fn sense1(&mut self) -> _SENSE1W {
+        _SENSE1W { w: self }
     }
     #[doc = "Bit 7 - Filter 1 Enable"]
-    #[inline(always)]
-    pub fn filten1(&mut self) -> FILTEN1_W {
-        FILTEN1_W { w: self }
+    #[inline]
+    pub fn filten1(&mut self) -> _FILTEN1W {
+        _FILTEN1W { w: self }
     }
     #[doc = "Bits 8:10 - Input Sense 2 Configuration"]
-    #[inline(always)]
-    pub fn sense2(&mut self) -> SENSE2_W {
-        SENSE2_W { w: self }
+    #[inline]
+    pub fn sense2(&mut self) -> _SENSE2W {
+        _SENSE2W { w: self }
     }
     #[doc = "Bit 11 - Filter 2 Enable"]
-    #[inline(always)]
-    pub fn filten2(&mut self) -> FILTEN2_W {
-        FILTEN2_W { w: self }
+    #[inline]
+    pub fn filten2(&mut self) -> _FILTEN2W {
+        _FILTEN2W { w: self }
     }
     #[doc = "Bits 12:14 - Input Sense 3 Configuration"]
-    #[inline(always)]
-    pub fn sense3(&mut self) -> SENSE3_W {
-        SENSE3_W { w: self }
+    #[inline]
+    pub fn sense3(&mut self) -> _SENSE3W {
+        _SENSE3W { w: self }
     }
     #[doc = "Bit 15 - Filter 3 Enable"]
-    #[inline(always)]
-    pub fn filten3(&mut self) -> FILTEN3_W {
-        FILTEN3_W { w: self }
+    #[inline]
+    pub fn filten3(&mut self) -> _FILTEN3W {
+        _FILTEN3W { w: self }
     }
     #[doc = "Bits 16:18 - Input Sense 4 Configuration"]
-    #[inline(always)]
-    pub fn sense4(&mut self) -> SENSE4_W {
-        SENSE4_W { w: self }
+    #[inline]
+    pub fn sense4(&mut self) -> _SENSE4W {
+        _SENSE4W { w: self }
     }
     #[doc = "Bit 19 - Filter 4 Enable"]
-    #[inline(always)]
-    pub fn filten4(&mut self) -> FILTEN4_W {
-        FILTEN4_W { w: self }
+    #[inline]
+    pub fn filten4(&mut self) -> _FILTEN4W {
+        _FILTEN4W { w: self }
     }
     #[doc = "Bits 20:22 - Input Sense 5 Configuration"]
-    #[inline(always)]
-    pub fn sense5(&mut self) -> SENSE5_W {
-        SENSE5_W { w: self }
+    #[inline]
+    pub fn sense5(&mut self) -> _SENSE5W {
+        _SENSE5W { w: self }
     }
     #[doc = "Bit 23 - Filter 5 Enable"]
-    #[inline(always)]
-    pub fn filten5(&mut self) -> FILTEN5_W {
-        FILTEN5_W { w: self }
+    #[inline]
+    pub fn filten5(&mut self) -> _FILTEN5W {
+        _FILTEN5W { w: self }
     }
     #[doc = "Bits 24:26 - Input Sense 6 Configuration"]
-    #[inline(always)]
-    pub fn sense6(&mut self) -> SENSE6_W {
-        SENSE6_W { w: self }
+    #[inline]
+    pub fn sense6(&mut self) -> _SENSE6W {
+        _SENSE6W { w: self }
     }
     #[doc = "Bit 27 - Filter 6 Enable"]
-    #[inline(always)]
-    pub fn filten6(&mut self) -> FILTEN6_W {
-        FILTEN6_W { w: self }
+    #[inline]
+    pub fn filten6(&mut self) -> _FILTEN6W {
+        _FILTEN6W { w: self }
     }
     #[doc = "Bits 28:30 - Input Sense 7 Configuration"]
-    #[inline(always)]
-    pub fn sense7(&mut self) -> SENSE7_W {
-        SENSE7_W { w: self }
+    #[inline]
+    pub fn sense7(&mut self) -> _SENSE7W {
+        _SENSE7W { w: self }
     }
     #[doc = "Bit 31 - Filter 7 Enable"]
-    #[inline(always)]
-    pub fn filten7(&mut self) -> FILTEN7_W {
-        FILTEN7_W { w: self }
+    #[inline]
+    pub fn filten7(&mut self) -> _FILTEN7W {
+        _FILTEN7W { w: self }
     }
 }

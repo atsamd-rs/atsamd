@@ -52,13 +52,21 @@ impl R {
     #[doc = "Bit 0 - Write Protection Violation Source"]
     #[inline]
     pub fn wpvs(&self) -> WPVSR {
-        let bits = ((self.bits >> 0) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         WPVSR { bits }
     }
     #[doc = "Bits 8:23 - Write Protection Violation Status"]
     #[inline]
     pub fn wpvsrc(&self) -> WPVSRCR {
-        let bits = ((self.bits >> 8) & 0xffff) as u16;
+        let bits = {
+            const MASK: u16 = 65535;
+            const OFFSET: u8 = 8;
+            ((self.bits >> OFFSET) & MASK as u32) as u16
+        };
         WPVSRCR { bits }
     }
 }

@@ -188,49 +188,81 @@ impl R {
     #[doc = "Bit 0 - Protected"]
     #[inline]
     pub fn prot(&self) -> PROTR {
-        let bits = ((self.bits >> 0) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         PROTR { bits }
     }
     #[doc = "Bit 1 - Debugger Present"]
     #[inline]
     pub fn dbgpres(&self) -> DBGPRESR {
-        let bits = ((self.bits >> 1) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 1;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         DBGPRESR { bits }
     }
     #[doc = "Bit 2 - Debug Communication Channel 0 Dirty"]
     #[inline]
     pub fn dccd0(&self) -> DCCD0R {
-        let bits = ((self.bits >> 2) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 2;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         DCCD0R { bits }
     }
     #[doc = "Bit 3 - Debug Communication Channel 1 Dirty"]
     #[inline]
     pub fn dccd1(&self) -> DCCD1R {
-        let bits = ((self.bits >> 3) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 3;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         DCCD1R { bits }
     }
     #[doc = "Bit 4 - Hot-Plugging Enable"]
     #[inline]
     pub fn hpe(&self) -> HPER {
-        let bits = ((self.bits >> 4) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 4;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         HPER { bits }
     }
     #[doc = "Bit 5 - Chip Erase Locked"]
     #[inline]
     pub fn celck(&self) -> CELCKR {
-        let bits = ((self.bits >> 5) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 5;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         CELCKR { bits }
     }
     #[doc = "Bit 6 - Test Debug Communication Channel 0 Dirty"]
     #[inline]
     pub fn tdccd0(&self) -> TDCCD0R {
-        let bits = ((self.bits >> 6) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 6;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         TDCCD0R { bits }
     }
     #[doc = "Bit 7 - Test Debug Communication Channel 1 Dirty"]
     #[inline]
     pub fn tdccd1(&self) -> TDCCD1R {
-        let bits = ((self.bits >> 7) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 7;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         TDCCD1R { bits }
     }
 }

@@ -1,60 +1,268 @@
-#[doc = "Reader of register EPINTSMRY"]
-pub type R = crate::R<u16, super::EPINTSMRY>;
-#[doc = "Reader of field `EPINT0`"]
-pub type EPINT0_R = crate::R<bool, bool>;
-#[doc = "Reader of field `EPINT1`"]
-pub type EPINT1_R = crate::R<bool, bool>;
-#[doc = "Reader of field `EPINT2`"]
-pub type EPINT2_R = crate::R<bool, bool>;
-#[doc = "Reader of field `EPINT3`"]
-pub type EPINT3_R = crate::R<bool, bool>;
-#[doc = "Reader of field `EPINT4`"]
-pub type EPINT4_R = crate::R<bool, bool>;
-#[doc = "Reader of field `EPINT5`"]
-pub type EPINT5_R = crate::R<bool, bool>;
-#[doc = "Reader of field `EPINT6`"]
-pub type EPINT6_R = crate::R<bool, bool>;
-#[doc = "Reader of field `EPINT7`"]
-pub type EPINT7_R = crate::R<bool, bool>;
+#[doc = r" Value read from the register"]
+pub struct R {
+    bits: u16,
+}
+impl super::EPINTSMRY {
+    #[doc = r" Reads the contents of the register"]
+    #[inline]
+    pub fn read(&self) -> R {
+        R {
+            bits: self.register.get(),
+        }
+    }
+}
+#[doc = r" Value of the field"]
+pub struct EPINT0R {
+    bits: bool,
+}
+impl EPINT0R {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bit(&self) -> bool {
+        self.bits
+    }
+    #[doc = r" Returns `true` if the bit is clear (0)"]
+    #[inline]
+    pub fn bit_is_clear(&self) -> bool {
+        !self.bit()
+    }
+    #[doc = r" Returns `true` if the bit is set (1)"]
+    #[inline]
+    pub fn bit_is_set(&self) -> bool {
+        self.bit()
+    }
+}
+#[doc = r" Value of the field"]
+pub struct EPINT1R {
+    bits: bool,
+}
+impl EPINT1R {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bit(&self) -> bool {
+        self.bits
+    }
+    #[doc = r" Returns `true` if the bit is clear (0)"]
+    #[inline]
+    pub fn bit_is_clear(&self) -> bool {
+        !self.bit()
+    }
+    #[doc = r" Returns `true` if the bit is set (1)"]
+    #[inline]
+    pub fn bit_is_set(&self) -> bool {
+        self.bit()
+    }
+}
+#[doc = r" Value of the field"]
+pub struct EPINT2R {
+    bits: bool,
+}
+impl EPINT2R {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bit(&self) -> bool {
+        self.bits
+    }
+    #[doc = r" Returns `true` if the bit is clear (0)"]
+    #[inline]
+    pub fn bit_is_clear(&self) -> bool {
+        !self.bit()
+    }
+    #[doc = r" Returns `true` if the bit is set (1)"]
+    #[inline]
+    pub fn bit_is_set(&self) -> bool {
+        self.bit()
+    }
+}
+#[doc = r" Value of the field"]
+pub struct EPINT3R {
+    bits: bool,
+}
+impl EPINT3R {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bit(&self) -> bool {
+        self.bits
+    }
+    #[doc = r" Returns `true` if the bit is clear (0)"]
+    #[inline]
+    pub fn bit_is_clear(&self) -> bool {
+        !self.bit()
+    }
+    #[doc = r" Returns `true` if the bit is set (1)"]
+    #[inline]
+    pub fn bit_is_set(&self) -> bool {
+        self.bit()
+    }
+}
+#[doc = r" Value of the field"]
+pub struct EPINT4R {
+    bits: bool,
+}
+impl EPINT4R {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bit(&self) -> bool {
+        self.bits
+    }
+    #[doc = r" Returns `true` if the bit is clear (0)"]
+    #[inline]
+    pub fn bit_is_clear(&self) -> bool {
+        !self.bit()
+    }
+    #[doc = r" Returns `true` if the bit is set (1)"]
+    #[inline]
+    pub fn bit_is_set(&self) -> bool {
+        self.bit()
+    }
+}
+#[doc = r" Value of the field"]
+pub struct EPINT5R {
+    bits: bool,
+}
+impl EPINT5R {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bit(&self) -> bool {
+        self.bits
+    }
+    #[doc = r" Returns `true` if the bit is clear (0)"]
+    #[inline]
+    pub fn bit_is_clear(&self) -> bool {
+        !self.bit()
+    }
+    #[doc = r" Returns `true` if the bit is set (1)"]
+    #[inline]
+    pub fn bit_is_set(&self) -> bool {
+        self.bit()
+    }
+}
+#[doc = r" Value of the field"]
+pub struct EPINT6R {
+    bits: bool,
+}
+impl EPINT6R {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bit(&self) -> bool {
+        self.bits
+    }
+    #[doc = r" Returns `true` if the bit is clear (0)"]
+    #[inline]
+    pub fn bit_is_clear(&self) -> bool {
+        !self.bit()
+    }
+    #[doc = r" Returns `true` if the bit is set (1)"]
+    #[inline]
+    pub fn bit_is_set(&self) -> bool {
+        self.bit()
+    }
+}
+#[doc = r" Value of the field"]
+pub struct EPINT7R {
+    bits: bool,
+}
+impl EPINT7R {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bit(&self) -> bool {
+        self.bits
+    }
+    #[doc = r" Returns `true` if the bit is clear (0)"]
+    #[inline]
+    pub fn bit_is_clear(&self) -> bool {
+        !self.bit()
+    }
+    #[doc = r" Returns `true` if the bit is set (1)"]
+    #[inline]
+    pub fn bit_is_set(&self) -> bool {
+        self.bit()
+    }
+}
 impl R {
+    #[doc = r" Value of the register as raw bits"]
+    #[inline]
+    pub fn bits(&self) -> u16 {
+        self.bits
+    }
     #[doc = "Bit 0 - End Point 0 Interrupt"]
-    #[inline(always)]
-    pub fn epint0(&self) -> EPINT0_R {
-        EPINT0_R::new((self.bits & 0x01) != 0)
+    #[inline]
+    pub fn epint0(&self) -> EPINT0R {
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        };
+        EPINT0R { bits }
     }
     #[doc = "Bit 1 - End Point 1 Interrupt"]
-    #[inline(always)]
-    pub fn epint1(&self) -> EPINT1_R {
-        EPINT1_R::new(((self.bits >> 1) & 0x01) != 0)
+    #[inline]
+    pub fn epint1(&self) -> EPINT1R {
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 1;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        };
+        EPINT1R { bits }
     }
     #[doc = "Bit 2 - End Point 2 Interrupt"]
-    #[inline(always)]
-    pub fn epint2(&self) -> EPINT2_R {
-        EPINT2_R::new(((self.bits >> 2) & 0x01) != 0)
+    #[inline]
+    pub fn epint2(&self) -> EPINT2R {
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 2;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        };
+        EPINT2R { bits }
     }
     #[doc = "Bit 3 - End Point 3 Interrupt"]
-    #[inline(always)]
-    pub fn epint3(&self) -> EPINT3_R {
-        EPINT3_R::new(((self.bits >> 3) & 0x01) != 0)
+    #[inline]
+    pub fn epint3(&self) -> EPINT3R {
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 3;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        };
+        EPINT3R { bits }
     }
     #[doc = "Bit 4 - End Point 4 Interrupt"]
-    #[inline(always)]
-    pub fn epint4(&self) -> EPINT4_R {
-        EPINT4_R::new(((self.bits >> 4) & 0x01) != 0)
+    #[inline]
+    pub fn epint4(&self) -> EPINT4R {
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 4;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        };
+        EPINT4R { bits }
     }
     #[doc = "Bit 5 - End Point 5 Interrupt"]
-    #[inline(always)]
-    pub fn epint5(&self) -> EPINT5_R {
-        EPINT5_R::new(((self.bits >> 5) & 0x01) != 0)
+    #[inline]
+    pub fn epint5(&self) -> EPINT5R {
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 5;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        };
+        EPINT5R { bits }
     }
     #[doc = "Bit 6 - End Point 6 Interrupt"]
-    #[inline(always)]
-    pub fn epint6(&self) -> EPINT6_R {
-        EPINT6_R::new(((self.bits >> 6) & 0x01) != 0)
+    #[inline]
+    pub fn epint6(&self) -> EPINT6R {
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 6;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        };
+        EPINT6R { bits }
     }
     #[doc = "Bit 7 - End Point 7 Interrupt"]
-    #[inline(always)]
-    pub fn epint7(&self) -> EPINT7_R {
-        EPINT7_R::new(((self.bits >> 7) & 0x01) != 0)
+    #[inline]
+    pub fn epint7(&self) -> EPINT7R {
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 7;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        };
+        EPINT7R { bits }
     }
 }

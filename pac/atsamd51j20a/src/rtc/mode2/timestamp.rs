@@ -49,7 +49,7 @@ impl HOURR {
     pub fn bits(&self) -> u8 {
         match *self {
             HOURR::AM => 0,
-            HOURR::PM => 0x10,
+            HOURR::PM => 16,
             HOURR::_Reserved(bits) => bits,
         }
     }
@@ -116,36 +116,60 @@ impl R {
     #[doc = "Bits 0:5 - Second Timestamp Value"]
     #[inline]
     pub fn second(&self) -> SECONDR {
-        let bits = ((self.bits >> 0) & 0x3f) as u8;
+        let bits = {
+            const MASK: u8 = 63;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        };
         SECONDR { bits }
     }
     #[doc = "Bits 6:11 - Minute Timestamp Value"]
     #[inline]
     pub fn minute(&self) -> MINUTER {
-        let bits = ((self.bits >> 6) & 0x3f) as u8;
+        let bits = {
+            const MASK: u8 = 63;
+            const OFFSET: u8 = 6;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        };
         MINUTER { bits }
     }
     #[doc = "Bits 12:16 - Hour Timestamp Value"]
     #[inline]
     pub fn hour(&self) -> HOURR {
-        HOURR::_from(((self.bits >> 12) & 0x1f) as u8)
+        HOURR::_from({
+            const MASK: u8 = 31;
+            const OFFSET: u8 = 12;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
     #[doc = "Bits 17:21 - Day Timestamp Value"]
     #[inline]
     pub fn day(&self) -> DAYR {
-        let bits = ((self.bits >> 17) & 0x1f) as u8;
+        let bits = {
+            const MASK: u8 = 31;
+            const OFFSET: u8 = 17;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        };
         DAYR { bits }
     }
     #[doc = "Bits 22:25 - Month Timestamp Value"]
     #[inline]
     pub fn month(&self) -> MONTHR {
-        let bits = ((self.bits >> 22) & 0x0f) as u8;
+        let bits = {
+            const MASK: u8 = 15;
+            const OFFSET: u8 = 22;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        };
         MONTHR { bits }
     }
     #[doc = "Bits 26:31 - Year Timestamp Value"]
     #[inline]
     pub fn year(&self) -> YEARR {
-        let bits = ((self.bits >> 26) & 0x3f) as u8;
+        let bits = {
+            const MASK: u8 = 63;
+            const OFFSET: u8 = 26;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        };
         YEARR { bits }
     }
 }

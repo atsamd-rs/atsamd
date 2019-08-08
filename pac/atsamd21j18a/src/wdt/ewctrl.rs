@@ -1,18 +1,180 @@
-#[doc = "Reader of register EWCTRL"]
-pub type R = crate::R<u8, super::EWCTRL>;
-#[doc = "Writer for register EWCTRL"]
-pub type W = crate::W<u8, super::EWCTRL>;
-#[doc = "Register EWCTRL `reset()`'s with value 0x0b"]
-impl crate::ResetValue for super::EWCTRL {
-    type Type = u8;
-    #[inline(always)]
-    fn reset_value() -> Self::Type {
-        0x0b
+#[doc = r" Value read from the register"]
+pub struct R {
+    bits: u8,
+}
+#[doc = r" Value to write to the register"]
+pub struct W {
+    bits: u8,
+}
+impl super::EWCTRL {
+    #[doc = r" Modifies the contents of the register"]
+    #[inline]
+    pub fn modify<F>(&self, f: F)
+    where
+        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
+    {
+        let bits = self.register.get();
+        let r = R { bits };
+        let mut w = W { bits };
+        f(&r, &mut w);
+        self.register.set(w.bits);
+    }
+    #[doc = r" Reads the contents of the register"]
+    #[inline]
+    pub fn read(&self) -> R {
+        R {
+            bits: self.register.get(),
+        }
+    }
+    #[doc = r" Writes to the register"]
+    #[inline]
+    pub fn write<F>(&self, f: F)
+    where
+        F: FnOnce(&mut W) -> &mut W,
+    {
+        let mut w = W::reset_value();
+        f(&mut w);
+        self.register.set(w.bits);
+    }
+    #[doc = r" Writes the reset value to the register"]
+    #[inline]
+    pub fn reset(&self) {
+        self.write(|w| w)
     }
 }
 #[doc = "Possible values of the field `EWOFFSET`"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum EWOFFSET_A {
+pub enum EWOFFSETR {
+    #[doc = "8 clock cycles"]
+    _8,
+    #[doc = "16 clock cycles"]
+    _16,
+    #[doc = "32 clock cycles"]
+    _32,
+    #[doc = "64 clock cycles"]
+    _64,
+    #[doc = "128 clock cycles"]
+    _128,
+    #[doc = "256 clock cycles"]
+    _256,
+    #[doc = "512 clock cycles"]
+    _512,
+    #[doc = "1024 clock cycles"]
+    _1K,
+    #[doc = "2048 clock cycles"]
+    _2K,
+    #[doc = "4096 clock cycles"]
+    _4K,
+    #[doc = "8192 clock cycles"]
+    _8K,
+    #[doc = "16384 clock cycles"]
+    _16K,
+    #[doc = r" Reserved"]
+    _Reserved(u8),
+}
+impl EWOFFSETR {
+    #[doc = r" Value of the field as raw bits"]
+    #[inline]
+    pub fn bits(&self) -> u8 {
+        match *self {
+            EWOFFSETR::_8 => 0,
+            EWOFFSETR::_16 => 1,
+            EWOFFSETR::_32 => 2,
+            EWOFFSETR::_64 => 3,
+            EWOFFSETR::_128 => 4,
+            EWOFFSETR::_256 => 5,
+            EWOFFSETR::_512 => 6,
+            EWOFFSETR::_1K => 7,
+            EWOFFSETR::_2K => 8,
+            EWOFFSETR::_4K => 9,
+            EWOFFSETR::_8K => 10,
+            EWOFFSETR::_16K => 11,
+            EWOFFSETR::_Reserved(bits) => bits,
+        }
+    }
+    #[allow(missing_docs)]
+    #[doc(hidden)]
+    #[inline]
+    pub fn _from(value: u8) -> EWOFFSETR {
+        match value {
+            0 => EWOFFSETR::_8,
+            1 => EWOFFSETR::_16,
+            2 => EWOFFSETR::_32,
+            3 => EWOFFSETR::_64,
+            4 => EWOFFSETR::_128,
+            5 => EWOFFSETR::_256,
+            6 => EWOFFSETR::_512,
+            7 => EWOFFSETR::_1K,
+            8 => EWOFFSETR::_2K,
+            9 => EWOFFSETR::_4K,
+            10 => EWOFFSETR::_8K,
+            11 => EWOFFSETR::_16K,
+            i => EWOFFSETR::_Reserved(i),
+        }
+    }
+    #[doc = "Checks if the value of the field is `_8`"]
+    #[inline]
+    pub fn is_8(&self) -> bool {
+        *self == EWOFFSETR::_8
+    }
+    #[doc = "Checks if the value of the field is `_16`"]
+    #[inline]
+    pub fn is_16(&self) -> bool {
+        *self == EWOFFSETR::_16
+    }
+    #[doc = "Checks if the value of the field is `_32`"]
+    #[inline]
+    pub fn is_32(&self) -> bool {
+        *self == EWOFFSETR::_32
+    }
+    #[doc = "Checks if the value of the field is `_64`"]
+    #[inline]
+    pub fn is_64(&self) -> bool {
+        *self == EWOFFSETR::_64
+    }
+    #[doc = "Checks if the value of the field is `_128`"]
+    #[inline]
+    pub fn is_128(&self) -> bool {
+        *self == EWOFFSETR::_128
+    }
+    #[doc = "Checks if the value of the field is `_256`"]
+    #[inline]
+    pub fn is_256(&self) -> bool {
+        *self == EWOFFSETR::_256
+    }
+    #[doc = "Checks if the value of the field is `_512`"]
+    #[inline]
+    pub fn is_512(&self) -> bool {
+        *self == EWOFFSETR::_512
+    }
+    #[doc = "Checks if the value of the field is `_1K`"]
+    #[inline]
+    pub fn is_1k(&self) -> bool {
+        *self == EWOFFSETR::_1K
+    }
+    #[doc = "Checks if the value of the field is `_2K`"]
+    #[inline]
+    pub fn is_2k(&self) -> bool {
+        *self == EWOFFSETR::_2K
+    }
+    #[doc = "Checks if the value of the field is `_4K`"]
+    #[inline]
+    pub fn is_4k(&self) -> bool {
+        *self == EWOFFSETR::_4K
+    }
+    #[doc = "Checks if the value of the field is `_8K`"]
+    #[inline]
+    pub fn is_8k(&self) -> bool {
+        *self == EWOFFSETR::_8K
+    }
+    #[doc = "Checks if the value of the field is `_16K`"]
+    #[inline]
+    pub fn is_16k(&self) -> bool {
+        *self == EWOFFSETR::_16K
+    }
+}
+#[doc = "Values that can be written to the field `EWOFFSET`"]
+pub enum EWOFFSETW {
     #[doc = "8 clock cycles"]
     _8,
     #[doc = "16 clock cycles"]
@@ -38,198 +200,138 @@ pub enum EWOFFSET_A {
     #[doc = "16384 clock cycles"]
     _16K,
 }
-impl crate::ToBits<u8> for EWOFFSET_A {
-    #[inline(always)]
-    fn _bits(&self) -> u8 {
+impl EWOFFSETW {
+    #[allow(missing_docs)]
+    #[doc(hidden)]
+    #[inline]
+    pub fn _bits(&self) -> u8 {
         match *self {
-            EWOFFSET_A::_8 => 0,
-            EWOFFSET_A::_16 => 1,
-            EWOFFSET_A::_32 => 2,
-            EWOFFSET_A::_64 => 3,
-            EWOFFSET_A::_128 => 4,
-            EWOFFSET_A::_256 => 5,
-            EWOFFSET_A::_512 => 6,
-            EWOFFSET_A::_1K => 7,
-            EWOFFSET_A::_2K => 8,
-            EWOFFSET_A::_4K => 9,
-            EWOFFSET_A::_8K => 10,
-            EWOFFSET_A::_16K => 11,
+            EWOFFSETW::_8 => 0,
+            EWOFFSETW::_16 => 1,
+            EWOFFSETW::_32 => 2,
+            EWOFFSETW::_64 => 3,
+            EWOFFSETW::_128 => 4,
+            EWOFFSETW::_256 => 5,
+            EWOFFSETW::_512 => 6,
+            EWOFFSETW::_1K => 7,
+            EWOFFSETW::_2K => 8,
+            EWOFFSETW::_4K => 9,
+            EWOFFSETW::_8K => 10,
+            EWOFFSETW::_16K => 11,
         }
     }
 }
-#[doc = "Reader of field `EWOFFSET`"]
-pub type EWOFFSET_R = crate::R<u8, EWOFFSET_A>;
-impl EWOFFSET_R {
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> crate::Variant<u8, EWOFFSET_A> {
-        use crate::Variant::*;
-        match self.bits {
-            0 => Val(EWOFFSET_A::_8),
-            1 => Val(EWOFFSET_A::_16),
-            2 => Val(EWOFFSET_A::_32),
-            3 => Val(EWOFFSET_A::_64),
-            4 => Val(EWOFFSET_A::_128),
-            5 => Val(EWOFFSET_A::_256),
-            6 => Val(EWOFFSET_A::_512),
-            7 => Val(EWOFFSET_A::_1K),
-            8 => Val(EWOFFSET_A::_2K),
-            9 => Val(EWOFFSET_A::_4K),
-            10 => Val(EWOFFSET_A::_8K),
-            11 => Val(EWOFFSET_A::_16K),
-            i => Res(i),
-        }
-    }
-    #[doc = "Checks if the value of the field is `_8`"]
-    #[inline(always)]
-    pub fn is_8(&self) -> bool {
-        *self == EWOFFSET_A::_8
-    }
-    #[doc = "Checks if the value of the field is `_16`"]
-    #[inline(always)]
-    pub fn is_16(&self) -> bool {
-        *self == EWOFFSET_A::_16
-    }
-    #[doc = "Checks if the value of the field is `_32`"]
-    #[inline(always)]
-    pub fn is_32(&self) -> bool {
-        *self == EWOFFSET_A::_32
-    }
-    #[doc = "Checks if the value of the field is `_64`"]
-    #[inline(always)]
-    pub fn is_64(&self) -> bool {
-        *self == EWOFFSET_A::_64
-    }
-    #[doc = "Checks if the value of the field is `_128`"]
-    #[inline(always)]
-    pub fn is_128(&self) -> bool {
-        *self == EWOFFSET_A::_128
-    }
-    #[doc = "Checks if the value of the field is `_256`"]
-    #[inline(always)]
-    pub fn is_256(&self) -> bool {
-        *self == EWOFFSET_A::_256
-    }
-    #[doc = "Checks if the value of the field is `_512`"]
-    #[inline(always)]
-    pub fn is_512(&self) -> bool {
-        *self == EWOFFSET_A::_512
-    }
-    #[doc = "Checks if the value of the field is `_1K`"]
-    #[inline(always)]
-    pub fn is_1k(&self) -> bool {
-        *self == EWOFFSET_A::_1K
-    }
-    #[doc = "Checks if the value of the field is `_2K`"]
-    #[inline(always)]
-    pub fn is_2k(&self) -> bool {
-        *self == EWOFFSET_A::_2K
-    }
-    #[doc = "Checks if the value of the field is `_4K`"]
-    #[inline(always)]
-    pub fn is_4k(&self) -> bool {
-        *self == EWOFFSET_A::_4K
-    }
-    #[doc = "Checks if the value of the field is `_8K`"]
-    #[inline(always)]
-    pub fn is_8k(&self) -> bool {
-        *self == EWOFFSET_A::_8K
-    }
-    #[doc = "Checks if the value of the field is `_16K`"]
-    #[inline(always)]
-    pub fn is_16k(&self) -> bool {
-        *self == EWOFFSET_A::_16K
-    }
-}
-#[doc = "Write proxy for field `EWOFFSET`"]
-pub struct EWOFFSET_W<'a> {
+#[doc = r" Proxy"]
+pub struct _EWOFFSETW<'a> {
     w: &'a mut W,
 }
-impl<'a> EWOFFSET_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: EWOFFSET_A) -> &'a mut W {
-        use crate::ToBits;
+impl<'a> _EWOFFSETW<'a> {
+    #[doc = r" Writes `variant` to the field"]
+    #[inline]
+    pub fn variant(self, variant: EWOFFSETW) -> &'a mut W {
         unsafe { self.bits(variant._bits()) }
     }
     #[doc = "8 clock cycles"]
-    #[inline(always)]
+    #[inline]
     pub fn _8(self) -> &'a mut W {
-        self.variant(EWOFFSET_A::_8)
+        self.variant(EWOFFSETW::_8)
     }
     #[doc = "16 clock cycles"]
-    #[inline(always)]
+    #[inline]
     pub fn _16(self) -> &'a mut W {
-        self.variant(EWOFFSET_A::_16)
+        self.variant(EWOFFSETW::_16)
     }
     #[doc = "32 clock cycles"]
-    #[inline(always)]
+    #[inline]
     pub fn _32(self) -> &'a mut W {
-        self.variant(EWOFFSET_A::_32)
+        self.variant(EWOFFSETW::_32)
     }
     #[doc = "64 clock cycles"]
-    #[inline(always)]
+    #[inline]
     pub fn _64(self) -> &'a mut W {
-        self.variant(EWOFFSET_A::_64)
+        self.variant(EWOFFSETW::_64)
     }
     #[doc = "128 clock cycles"]
-    #[inline(always)]
+    #[inline]
     pub fn _128(self) -> &'a mut W {
-        self.variant(EWOFFSET_A::_128)
+        self.variant(EWOFFSETW::_128)
     }
     #[doc = "256 clock cycles"]
-    #[inline(always)]
+    #[inline]
     pub fn _256(self) -> &'a mut W {
-        self.variant(EWOFFSET_A::_256)
+        self.variant(EWOFFSETW::_256)
     }
     #[doc = "512 clock cycles"]
-    #[inline(always)]
+    #[inline]
     pub fn _512(self) -> &'a mut W {
-        self.variant(EWOFFSET_A::_512)
+        self.variant(EWOFFSETW::_512)
     }
     #[doc = "1024 clock cycles"]
-    #[inline(always)]
+    #[inline]
     pub fn _1k(self) -> &'a mut W {
-        self.variant(EWOFFSET_A::_1K)
+        self.variant(EWOFFSETW::_1K)
     }
     #[doc = "2048 clock cycles"]
-    #[inline(always)]
+    #[inline]
     pub fn _2k(self) -> &'a mut W {
-        self.variant(EWOFFSET_A::_2K)
+        self.variant(EWOFFSETW::_2K)
     }
     #[doc = "4096 clock cycles"]
-    #[inline(always)]
+    #[inline]
     pub fn _4k(self) -> &'a mut W {
-        self.variant(EWOFFSET_A::_4K)
+        self.variant(EWOFFSETW::_4K)
     }
     #[doc = "8192 clock cycles"]
-    #[inline(always)]
+    #[inline]
     pub fn _8k(self) -> &'a mut W {
-        self.variant(EWOFFSET_A::_8K)
+        self.variant(EWOFFSETW::_8K)
     }
     #[doc = "16384 clock cycles"]
-    #[inline(always)]
+    #[inline]
     pub fn _16k(self) -> &'a mut W {
-        self.variant(EWOFFSET_A::_16K)
+        self.variant(EWOFFSETW::_16K)
     }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
+    #[doc = r" Writes raw bits to the field"]
+    #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x0f) | ((value as u8) & 0x0f);
+        const MASK: u8 = 15;
+        const OFFSET: u8 = 0;
+        self.w.bits &= !((MASK as u8) << OFFSET);
+        self.w.bits |= ((value & MASK) as u8) << OFFSET;
         self.w
     }
 }
 impl R {
+    #[doc = r" Value of the register as raw bits"]
+    #[inline]
+    pub fn bits(&self) -> u8 {
+        self.bits
+    }
     #[doc = "Bits 0:3 - Early Warning Interrupt Time Offset"]
-    #[inline(always)]
-    pub fn ewoffset(&self) -> EWOFFSET_R {
-        EWOFFSET_R::new((self.bits & 0x0f) as u8)
+    #[inline]
+    pub fn ewoffset(&self) -> EWOFFSETR {
+        EWOFFSETR::_from({
+            const MASK: u8 = 15;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u8) as u8
+        })
     }
 }
 impl W {
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub fn reset_value() -> W {
+        W { bits: 11 }
+    }
+    #[doc = r" Writes raw bits to the register"]
+    #[inline]
+    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
+        self.bits = bits;
+        self
+    }
     #[doc = "Bits 0:3 - Early Warning Interrupt Time Offset"]
-    #[inline(always)]
-    pub fn ewoffset(&mut self) -> EWOFFSET_W {
-        EWOFFSET_W { w: self }
+    #[inline]
+    pub fn ewoffset(&mut self) -> _EWOFFSETW {
+        _EWOFFSETW { w: self }
     }
 }

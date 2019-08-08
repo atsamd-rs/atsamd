@@ -14,7 +14,10 @@ impl super::CR {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        self.register.set(f(&R { bits }, &mut W { bits }).bits);
+        let r = R { bits };
+        let mut w = W { bits };
+        f(&r, &mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -29,22 +32,14 @@ impl super::CR {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        self.register.set(
-            f(&mut W {
-                bits: Self::reset_value(),
-            })
-            .bits,
-        );
-    }
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub const fn reset_value() -> u16 {
-        0
+        let mut w = W::reset_value();
+        f(&mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.register.set(Self::reset_value())
+        self.write(|w| w)
     }
 }
 #[doc = "Possible values of the field `RESPTYP`"]
@@ -65,9 +60,9 @@ impl RESPTYPR {
     pub fn bits(&self) -> u8 {
         match *self {
             RESPTYPR::NONE => 0,
-            RESPTYPR::_136_BIT => 0x01,
-            RESPTYPR::_48_BIT => 0x02,
-            RESPTYPR::_48_BIT_BUSY => 0x03,
+            RESPTYPR::_136_BIT => 1,
+            RESPTYPR::_48_BIT => 2,
+            RESPTYPR::_48_BIT_BUSY => 3,
         }
     }
     #[allow(missing_docs)]
@@ -262,9 +257,9 @@ impl CMDTYPR {
     pub fn bits(&self) -> u8 {
         match *self {
             CMDTYPR::NORMAL => 0,
-            CMDTYPR::SUSPEND => 0x01,
-            CMDTYPR::RESUME => 0x02,
-            CMDTYPR::ABORT => 0x03,
+            CMDTYPR::SUSPEND => 1,
+            CMDTYPR::RESUME => 2,
+            CMDTYPR::ABORT => 3,
         }
     }
     #[allow(missing_docs)]
@@ -312,7 +307,6 @@ impl CMDIDXR {
     }
 }
 #[doc = "Values that can be written to the field `RESPTYP`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum RESPTYPW {
     #[doc = "No response"]
     NONE,
@@ -371,13 +365,14 @@ impl<'a> _RESPTYPW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x03 << 0);
-        self.w.bits |= ((value as u16) & 0x03) << 0;
+        const MASK: u8 = 3;
+        const OFFSET: u8 = 0;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `CMDCCEN`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CMDCCENW {
     #[doc = "Disable"]
     DISABLE,
@@ -428,13 +423,14 @@ impl<'a> _CMDCCENW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 3);
-        self.w.bits |= ((value as u16) & 0x01) << 3;
+        const MASK: bool = true;
+        const OFFSET: u8 = 3;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `CMDICEN`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CMDICENW {
     #[doc = "Disable"]
     DISABLE,
@@ -485,13 +481,14 @@ impl<'a> _CMDICENW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 4);
-        self.w.bits |= ((value as u16) & 0x01) << 4;
+        const MASK: bool = true;
+        const OFFSET: u8 = 4;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `DPSEL`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum DPSELW {
     #[doc = "No Data Present"]
     NO_DATA,
@@ -542,13 +539,14 @@ impl<'a> _DPSELW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 5);
-        self.w.bits |= ((value as u16) & 0x01) << 5;
+        const MASK: bool = true;
+        const OFFSET: u8 = 5;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `CMDTYP`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CMDTYPW {
     #[doc = "Other commands"]
     NORMAL,
@@ -607,8 +605,10 @@ impl<'a> _CMDTYPW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x03 << 6);
-        self.w.bits |= ((value as u16) & 0x03) << 6;
+        const MASK: u8 = 3;
+        const OFFSET: u8 = 6;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
@@ -620,8 +620,10 @@ impl<'a> _CMDIDXW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x3f << 8);
-        self.w.bits |= ((value as u16) & 0x3f) << 8;
+        const MASK: u8 = 63;
+        const OFFSET: u8 = 8;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
@@ -634,36 +636,65 @@ impl R {
     #[doc = "Bits 0:1 - Response Type"]
     #[inline]
     pub fn resptyp(&self) -> RESPTYPR {
-        RESPTYPR::_from(((self.bits >> 0) & 0x03) as u8)
+        RESPTYPR::_from({
+            const MASK: u8 = 3;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u16) as u8
+        })
     }
     #[doc = "Bit 3 - Command CRC Check Enable"]
     #[inline]
     pub fn cmdccen(&self) -> CMDCCENR {
-        CMDCCENR::_from(((self.bits >> 3) & 0x01) != 0)
+        CMDCCENR::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 3;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        })
     }
     #[doc = "Bit 4 - Command Index Check Enable"]
     #[inline]
     pub fn cmdicen(&self) -> CMDICENR {
-        CMDICENR::_from(((self.bits >> 4) & 0x01) != 0)
+        CMDICENR::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 4;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        })
     }
     #[doc = "Bit 5 - Data Present Select"]
     #[inline]
     pub fn dpsel(&self) -> DPSELR {
-        DPSELR::_from(((self.bits >> 5) & 0x01) != 0)
+        DPSELR::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 5;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        })
     }
     #[doc = "Bits 6:7 - Command Type"]
     #[inline]
     pub fn cmdtyp(&self) -> CMDTYPR {
-        CMDTYPR::_from(((self.bits >> 6) & 0x03) as u8)
+        CMDTYPR::_from({
+            const MASK: u8 = 3;
+            const OFFSET: u8 = 6;
+            ((self.bits >> OFFSET) & MASK as u16) as u8
+        })
     }
     #[doc = "Bits 8:13 - Command Index"]
     #[inline]
     pub fn cmdidx(&self) -> CMDIDXR {
-        let bits = ((self.bits >> 8) & 0x3f) as u8;
+        let bits = {
+            const MASK: u8 = 63;
+            const OFFSET: u8 = 8;
+            ((self.bits >> OFFSET) & MASK as u16) as u8
+        };
         CMDIDXR { bits }
     }
 }
 impl W {
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub fn reset_value() -> W {
+        W { bits: 0 }
+    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {

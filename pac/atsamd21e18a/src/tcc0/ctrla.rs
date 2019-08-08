@@ -14,7 +14,10 @@ impl super::CTRLA {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        self.register.set(f(&R { bits }, &mut W { bits }).bits);
+        let r = R { bits };
+        let mut w = W { bits };
+        f(&r, &mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -29,22 +32,14 @@ impl super::CTRLA {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        self.register.set(
-            f(&mut W {
-                bits: Self::reset_value(),
-            })
-            .bits,
-        );
-    }
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub const fn reset_value() -> u32 {
-        0
+        let mut w = W::reset_value();
+        f(&mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.register.set(Self::reset_value())
+        self.write(|w| w)
     }
 }
 #[doc = r" Value of the field"]
@@ -107,9 +102,9 @@ impl RESOLUTIONR {
     pub fn bits(&self) -> u8 {
         match *self {
             RESOLUTIONR::NONE => 0,
-            RESOLUTIONR::DITH4 => 0x01,
-            RESOLUTIONR::DITH5 => 0x02,
-            RESOLUTIONR::DITH6 => 0x03,
+            RESOLUTIONR::DITH4 => 1,
+            RESOLUTIONR::DITH5 => 2,
+            RESOLUTIONR::DITH6 => 3,
         }
     }
     #[allow(missing_docs)]
@@ -171,13 +166,13 @@ impl PRESCALERR {
     pub fn bits(&self) -> u8 {
         match *self {
             PRESCALERR::DIV1 => 0,
-            PRESCALERR::DIV2 => 0x01,
-            PRESCALERR::DIV4 => 0x02,
-            PRESCALERR::DIV8 => 0x03,
-            PRESCALERR::DIV16 => 0x04,
-            PRESCALERR::DIV64 => 0x05,
-            PRESCALERR::DIV256 => 0x06,
-            PRESCALERR::DIV1024 => 0x07,
+            PRESCALERR::DIV2 => 1,
+            PRESCALERR::DIV4 => 2,
+            PRESCALERR::DIV8 => 3,
+            PRESCALERR::DIV16 => 4,
+            PRESCALERR::DIV64 => 5,
+            PRESCALERR::DIV256 => 6,
+            PRESCALERR::DIV1024 => 7,
         }
     }
     #[allow(missing_docs)]
@@ -276,8 +271,8 @@ impl PRESCSYNCR {
     pub fn bits(&self) -> u8 {
         match *self {
             PRESCSYNCR::GCLK => 0,
-            PRESCSYNCR::PRESC => 0x01,
-            PRESCSYNCR::RESYNC => 0x02,
+            PRESCSYNCR::PRESC => 1,
+            PRESCSYNCR::RESYNC => 2,
             PRESCSYNCR::_Reserved(bits) => bits,
         }
     }
@@ -429,8 +424,10 @@ impl<'a> _SWRSTW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 0);
-        self.w.bits |= ((value as u32) & 0x01) << 0;
+        const MASK: bool = true;
+        const OFFSET: u8 = 0;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -450,13 +447,14 @@ impl<'a> _ENABLEW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 1);
-        self.w.bits |= ((value as u32) & 0x01) << 1;
+        const MASK: bool = true;
+        const OFFSET: u8 = 1;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `RESOLUTION`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum RESOLUTIONW {
     #[doc = "Dithering is disabled"]
     NONE,
@@ -515,13 +513,14 @@ impl<'a> _RESOLUTIONW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x03 << 5);
-        self.w.bits |= ((value as u32) & 0x03) << 5;
+        const MASK: u8 = 3;
+        const OFFSET: u8 = 5;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `PRESCALER`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum PRESCALERW {
     #[doc = "No division"]
     DIV1,
@@ -612,8 +611,10 @@ impl<'a> _PRESCALERW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x07 << 8);
-        self.w.bits |= ((value as u32) & 0x07) << 8;
+        const MASK: u8 = 7;
+        const OFFSET: u8 = 8;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -633,13 +634,14 @@ impl<'a> _RUNSTDBYW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 11);
-        self.w.bits |= ((value as u32) & 0x01) << 11;
+        const MASK: bool = true;
+        const OFFSET: u8 = 11;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `PRESCSYNC`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum PRESCSYNCW {
     #[doc = "Reload or reset counter on next GCLK"]
     GCLK,
@@ -688,8 +690,10 @@ impl<'a> _PRESCSYNCW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x03 << 12);
-        self.w.bits |= ((value as u32) & 0x03) << 12;
+        const MASK: u8 = 3;
+        const OFFSET: u8 = 12;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -709,8 +713,10 @@ impl<'a> _ALOCKW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 14);
-        self.w.bits |= ((value as u32) & 0x01) << 14;
+        const MASK: bool = true;
+        const OFFSET: u8 = 14;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -730,8 +736,10 @@ impl<'a> _CPTEN0W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 24);
-        self.w.bits |= ((value as u32) & 0x01) << 24;
+        const MASK: bool = true;
+        const OFFSET: u8 = 24;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -751,8 +759,10 @@ impl<'a> _CPTEN1W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 25);
-        self.w.bits |= ((value as u32) & 0x01) << 25;
+        const MASK: bool = true;
+        const OFFSET: u8 = 25;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -772,8 +782,10 @@ impl<'a> _CPTEN2W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 26);
-        self.w.bits |= ((value as u32) & 0x01) << 26;
+        const MASK: bool = true;
+        const OFFSET: u8 = 26;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -793,8 +805,10 @@ impl<'a> _CPTEN3W<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 27);
-        self.w.bits |= ((value as u32) & 0x01) << 27;
+        const MASK: bool = true;
+        const OFFSET: u8 = 27;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -807,68 +821,117 @@ impl R {
     #[doc = "Bit 0 - Software Reset"]
     #[inline]
     pub fn swrst(&self) -> SWRSTR {
-        let bits = ((self.bits >> 0) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         SWRSTR { bits }
     }
     #[doc = "Bit 1 - Enable"]
     #[inline]
     pub fn enable(&self) -> ENABLER {
-        let bits = ((self.bits >> 1) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 1;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         ENABLER { bits }
     }
     #[doc = "Bits 5:6 - Enhanced Resolution"]
     #[inline]
     pub fn resolution(&self) -> RESOLUTIONR {
-        RESOLUTIONR::_from(((self.bits >> 5) & 0x03) as u8)
+        RESOLUTIONR::_from({
+            const MASK: u8 = 3;
+            const OFFSET: u8 = 5;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
     #[doc = "Bits 8:10 - Prescaler"]
     #[inline]
     pub fn prescaler(&self) -> PRESCALERR {
-        PRESCALERR::_from(((self.bits >> 8) & 0x07) as u8)
+        PRESCALERR::_from({
+            const MASK: u8 = 7;
+            const OFFSET: u8 = 8;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
     #[doc = "Bit 11 - Run in Standby"]
     #[inline]
     pub fn runstdby(&self) -> RUNSTDBYR {
-        let bits = ((self.bits >> 11) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 11;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         RUNSTDBYR { bits }
     }
     #[doc = "Bits 12:13 - Prescaler and Counter Synchronization Selection"]
     #[inline]
     pub fn prescsync(&self) -> PRESCSYNCR {
-        PRESCSYNCR::_from(((self.bits >> 12) & 0x03) as u8)
+        PRESCSYNCR::_from({
+            const MASK: u8 = 3;
+            const OFFSET: u8 = 12;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
     #[doc = "Bit 14 - Auto Lock"]
     #[inline]
     pub fn alock(&self) -> ALOCKR {
-        let bits = ((self.bits >> 14) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 14;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         ALOCKR { bits }
     }
     #[doc = "Bit 24 - Capture Channel 0 Enable"]
     #[inline]
     pub fn cpten0(&self) -> CPTEN0R {
-        let bits = ((self.bits >> 24) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 24;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         CPTEN0R { bits }
     }
     #[doc = "Bit 25 - Capture Channel 1 Enable"]
     #[inline]
     pub fn cpten1(&self) -> CPTEN1R {
-        let bits = ((self.bits >> 25) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 25;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         CPTEN1R { bits }
     }
     #[doc = "Bit 26 - Capture Channel 2 Enable"]
     #[inline]
     pub fn cpten2(&self) -> CPTEN2R {
-        let bits = ((self.bits >> 26) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 26;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         CPTEN2R { bits }
     }
     #[doc = "Bit 27 - Capture Channel 3 Enable"]
     #[inline]
     pub fn cpten3(&self) -> CPTEN3R {
-        let bits = ((self.bits >> 27) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 27;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         CPTEN3R { bits }
     }
 }
 impl W {
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub fn reset_value() -> W {
+        W { bits: 0 }
+    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {

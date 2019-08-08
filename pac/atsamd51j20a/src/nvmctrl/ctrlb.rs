@@ -9,26 +9,12 @@ impl super::CTRLB {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        self.register.set(
-            f(&mut W {
-                bits: Self::reset_value(),
-            })
-            .bits,
-        );
-    }
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub const fn reset_value() -> u16 {
-        0
-    }
-    #[doc = r" Writes the reset value to the register"]
-    #[inline]
-    pub fn reset(&self) {
-        self.register.set(Self::reset_value())
+        let mut w = W::reset_value();
+        f(&mut w);
+        self.register.set(w.bits);
     }
 }
 #[doc = "Values that can be written to the field `CMD`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CMDW {
     #[doc = "Erase Page - Only supported in the USER and AUX pages."]
     EP,
@@ -245,13 +231,14 @@ impl<'a> _CMDW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x7f << 0);
-        self.w.bits |= ((value as u16) & 0x7f) << 0;
+        const MASK: u8 = 127;
+        const OFFSET: u8 = 0;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `CMDEX`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CMDEXW {
     #[doc = "Execution Key"]
     KEY,
@@ -284,12 +271,19 @@ impl<'a> _CMDEXW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0xff << 8);
-        self.w.bits |= ((value as u16) & 0xff) << 8;
+        const MASK: u8 = 255;
+        const OFFSET: u8 = 8;
+        self.w.bits &= !((MASK as u16) << OFFSET);
+        self.w.bits |= ((value & MASK) as u16) << OFFSET;
         self.w
     }
 }
 impl W {
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub fn reset_value() -> W {
+        W { bits: 0 }
+    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {

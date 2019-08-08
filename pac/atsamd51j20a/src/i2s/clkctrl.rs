@@ -14,7 +14,10 @@ impl super::CLKCTRL {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        self.register.set(f(&R { bits }, &mut W { bits }).bits);
+        let r = R { bits };
+        let mut w = W { bits };
+        f(&r, &mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -29,22 +32,14 @@ impl super::CLKCTRL {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        self.register.set(
-            f(&mut W {
-                bits: Self::reset_value(),
-            })
-            .bits,
-        );
-    }
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub const fn reset_value() -> u32 {
-        0
+        let mut w = W::reset_value();
+        f(&mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.register.set(Self::reset_value())
+        self.write(|w| w)
     }
 }
 #[doc = "Possible values of the field `SLOTSIZE`"]
@@ -65,9 +60,9 @@ impl SLOTSIZER {
     pub fn bits(&self) -> u8 {
         match *self {
             SLOTSIZER::_8 => 0,
-            SLOTSIZER::_16 => 0x01,
-            SLOTSIZER::_24 => 0x02,
-            SLOTSIZER::_32 => 0x03,
+            SLOTSIZER::_16 => 1,
+            SLOTSIZER::_24 => 2,
+            SLOTSIZER::_32 => 3,
         }
     }
     #[allow(missing_docs)]
@@ -132,9 +127,9 @@ impl FSWIDTHR {
     pub fn bits(&self) -> u8 {
         match *self {
             FSWIDTHR::SLOT => 0,
-            FSWIDTHR::HALF => 0x01,
-            FSWIDTHR::BIT => 0x02,
-            FSWIDTHR::BURST => 0x03,
+            FSWIDTHR::HALF => 1,
+            FSWIDTHR::BIT => 2,
+            FSWIDTHR::BURST => 3,
         }
     }
     #[allow(missing_docs)]
@@ -486,7 +481,6 @@ impl MCKOUTDIVR {
     }
 }
 #[doc = "Values that can be written to the field `SLOTSIZE`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum SLOTSIZEW {
     #[doc = "8-bit Slot for Clock Unit n"]
     _8,
@@ -545,8 +539,10 @@ impl<'a> _SLOTSIZEW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x03 << 0);
-        self.w.bits |= ((value as u32) & 0x03) << 0;
+        const MASK: u8 = 3;
+        const OFFSET: u8 = 0;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -558,13 +554,14 @@ impl<'a> _NBSLOTSW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x07 << 2);
-        self.w.bits |= ((value as u32) & 0x07) << 2;
+        const MASK: u8 = 7;
+        const OFFSET: u8 = 2;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `FSWIDTH`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum FSWIDTHW {
     #[doc = "Frame Sync Pulse is 1 Slot wide (default for I2S protocol)"]
     SLOT,
@@ -623,13 +620,14 @@ impl<'a> _FSWIDTHW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x03 << 5);
-        self.w.bits |= ((value as u32) & 0x03) << 5;
+        const MASK: u8 = 3;
+        const OFFSET: u8 = 5;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `BITDELAY`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum BITDELAYW {
     #[doc = "Left Justified (0 Bit Delay)"]
     LJ,
@@ -680,13 +678,14 @@ impl<'a> _BITDELAYW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 7);
-        self.w.bits |= ((value as u32) & 0x01) << 7;
+        const MASK: bool = true;
+        const OFFSET: u8 = 7;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `FSSEL`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum FSSELW {
     #[doc = "Divided Serial Clock n is used as Frame Sync n source"]
     SCKDIV,
@@ -737,8 +736,10 @@ impl<'a> _FSSELW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 8);
-        self.w.bits |= ((value as u32) & 0x01) << 8;
+        const MASK: bool = true;
+        const OFFSET: u8 = 8;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -758,8 +759,10 @@ impl<'a> _FSINVW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 9);
-        self.w.bits |= ((value as u32) & 0x01) << 9;
+        const MASK: bool = true;
+        const OFFSET: u8 = 9;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -779,13 +782,14 @@ impl<'a> _FSOUTINVW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 10);
-        self.w.bits |= ((value as u32) & 0x01) << 10;
+        const MASK: bool = true;
+        const OFFSET: u8 = 10;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `SCKSEL`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum SCKSELW {
     #[doc = "Divided Master Clock n is used as Serial Clock n source"]
     MCKDIV,
@@ -836,8 +840,10 @@ impl<'a> _SCKSELW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 11);
-        self.w.bits |= ((value as u32) & 0x01) << 11;
+        const MASK: bool = true;
+        const OFFSET: u8 = 11;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -857,13 +863,14 @@ impl<'a> _SCKOUTINVW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 12);
-        self.w.bits |= ((value as u32) & 0x01) << 12;
+        const MASK: bool = true;
+        const OFFSET: u8 = 12;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `MCKSEL`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum MCKSELW {
     #[doc = "GCLK_I2S_n is used as Master Clock n source"]
     GCLK,
@@ -914,8 +921,10 @@ impl<'a> _MCKSELW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 13);
-        self.w.bits |= ((value as u32) & 0x01) << 13;
+        const MASK: bool = true;
+        const OFFSET: u8 = 13;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -935,8 +944,10 @@ impl<'a> _MCKENW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 14);
-        self.w.bits |= ((value as u32) & 0x01) << 14;
+        const MASK: bool = true;
+        const OFFSET: u8 = 14;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -956,8 +967,10 @@ impl<'a> _MCKOUTINVW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 15);
-        self.w.bits |= ((value as u32) & 0x01) << 15;
+        const MASK: bool = true;
+        const OFFSET: u8 = 15;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -969,8 +982,10 @@ impl<'a> _MCKDIVW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x3f << 16);
-        self.w.bits |= ((value as u32) & 0x3f) << 16;
+        const MASK: u8 = 63;
+        const OFFSET: u8 = 16;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -982,8 +997,10 @@ impl<'a> _MCKOUTDIVW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x3f << 24);
-        self.w.bits |= ((value as u32) & 0x3f) << 24;
+        const MASK: u8 = 63;
+        const OFFSET: u8 = 24;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -996,83 +1013,144 @@ impl R {
     #[doc = "Bits 0:1 - Slot Size"]
     #[inline]
     pub fn slotsize(&self) -> SLOTSIZER {
-        SLOTSIZER::_from(((self.bits >> 0) & 0x03) as u8)
+        SLOTSIZER::_from({
+            const MASK: u8 = 3;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
     #[doc = "Bits 2:4 - Number of Slots in Frame"]
     #[inline]
     pub fn nbslots(&self) -> NBSLOTSR {
-        let bits = ((self.bits >> 2) & 0x07) as u8;
+        let bits = {
+            const MASK: u8 = 7;
+            const OFFSET: u8 = 2;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        };
         NBSLOTSR { bits }
     }
     #[doc = "Bits 5:6 - Frame Sync Width"]
     #[inline]
     pub fn fswidth(&self) -> FSWIDTHR {
-        FSWIDTHR::_from(((self.bits >> 5) & 0x03) as u8)
+        FSWIDTHR::_from({
+            const MASK: u8 = 3;
+            const OFFSET: u8 = 5;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        })
     }
     #[doc = "Bit 7 - Data Delay from Frame Sync"]
     #[inline]
     pub fn bitdelay(&self) -> BITDELAYR {
-        BITDELAYR::_from(((self.bits >> 7) & 0x01) != 0)
+        BITDELAYR::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 7;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        })
     }
     #[doc = "Bit 8 - Frame Sync Select"]
     #[inline]
     pub fn fssel(&self) -> FSSELR {
-        FSSELR::_from(((self.bits >> 8) & 0x01) != 0)
+        FSSELR::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 8;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        })
     }
     #[doc = "Bit 9 - Frame Sync Invert"]
     #[inline]
     pub fn fsinv(&self) -> FSINVR {
-        let bits = ((self.bits >> 9) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 9;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         FSINVR { bits }
     }
     #[doc = "Bit 10 - Frame Sync Output Invert"]
     #[inline]
     pub fn fsoutinv(&self) -> FSOUTINVR {
-        let bits = ((self.bits >> 10) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 10;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         FSOUTINVR { bits }
     }
     #[doc = "Bit 11 - Serial Clock Select"]
     #[inline]
     pub fn scksel(&self) -> SCKSELR {
-        SCKSELR::_from(((self.bits >> 11) & 0x01) != 0)
+        SCKSELR::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 11;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        })
     }
     #[doc = "Bit 12 - Serial Clock Output Invert"]
     #[inline]
     pub fn sckoutinv(&self) -> SCKOUTINVR {
-        let bits = ((self.bits >> 12) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 12;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         SCKOUTINVR { bits }
     }
     #[doc = "Bit 13 - Master Clock Select"]
     #[inline]
     pub fn mcksel(&self) -> MCKSELR {
-        MCKSELR::_from(((self.bits >> 13) & 0x01) != 0)
+        MCKSELR::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 13;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        })
     }
     #[doc = "Bit 14 - Master Clock Enable"]
     #[inline]
     pub fn mcken(&self) -> MCKENR {
-        let bits = ((self.bits >> 14) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 14;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         MCKENR { bits }
     }
     #[doc = "Bit 15 - Master Clock Output Invert"]
     #[inline]
     pub fn mckoutinv(&self) -> MCKOUTINVR {
-        let bits = ((self.bits >> 15) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 15;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         MCKOUTINVR { bits }
     }
     #[doc = "Bits 16:21 - Master Clock Division Factor"]
     #[inline]
     pub fn mckdiv(&self) -> MCKDIVR {
-        let bits = ((self.bits >> 16) & 0x3f) as u8;
+        let bits = {
+            const MASK: u8 = 63;
+            const OFFSET: u8 = 16;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        };
         MCKDIVR { bits }
     }
     #[doc = "Bits 24:29 - Master Clock Output Division Factor"]
     #[inline]
     pub fn mckoutdiv(&self) -> MCKOUTDIVR {
-        let bits = ((self.bits >> 24) & 0x3f) as u8;
+        let bits = {
+            const MASK: u8 = 63;
+            const OFFSET: u8 = 24;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        };
         MCKOUTDIVR { bits }
     }
 }
 impl W {
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub fn reset_value() -> W {
+        W { bits: 0 }
+    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {

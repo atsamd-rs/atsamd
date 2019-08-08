@@ -31,7 +31,11 @@ impl R {
     #[doc = "Bits 0:7 - Preamble Byte 3"]
     #[inline]
     pub fn preambleb3(&self) -> PREAMBLEB3R {
-        let bits = ((self.bits >> 0) & 0xff) as u8;
+        let bits = {
+            const MASK: u8 = 255;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u32) as u8
+        };
         PREAMBLEB3R { bits }
     }
 }

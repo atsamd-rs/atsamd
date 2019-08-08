@@ -14,7 +14,10 @@ impl super::ADDR {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        self.register.set(f(&R { bits }, &mut W { bits }).bits);
+        let r = R { bits };
+        let mut w = W { bits };
+        f(&r, &mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -29,22 +32,14 @@ impl super::ADDR {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        self.register.set(
-            f(&mut W {
-                bits: Self::reset_value(),
-            })
-            .bits,
-        );
-    }
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub const fn reset_value() -> u32 {
-        0
+        let mut w = W::reset_value();
+        f(&mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.register.set(Self::reset_value())
+        self.write(|w| w)
     }
 }
 #[doc = r" Value of the field"]
@@ -127,8 +122,10 @@ impl<'a> _GENCENW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 0);
-        self.w.bits |= ((value as u32) & 0x01) << 0;
+        const MASK: bool = true;
+        const OFFSET: u8 = 0;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -140,8 +137,10 @@ impl<'a> _ADDRW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u16) -> &'a mut W {
-        self.w.bits &= !(0x03ff << 1);
-        self.w.bits |= ((value as u32) & 0x03ff) << 1;
+        const MASK: u16 = 1023;
+        const OFFSET: u8 = 1;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -161,8 +160,10 @@ impl<'a> _TENBITENW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 15);
-        self.w.bits |= ((value as u32) & 0x01) << 15;
+        const MASK: bool = true;
+        const OFFSET: u8 = 15;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -174,8 +175,10 @@ impl<'a> _ADDRMASKW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u16) -> &'a mut W {
-        self.w.bits &= !(0x03ff << 17);
-        self.w.bits |= ((value as u32) & 0x03ff) << 17;
+        const MASK: u16 = 1023;
+        const OFFSET: u8 = 17;
+        self.w.bits &= !((MASK as u32) << OFFSET);
+        self.w.bits |= ((value & MASK) as u32) << OFFSET;
         self.w
     }
 }
@@ -188,29 +191,50 @@ impl R {
     #[doc = "Bit 0 - General Call Address Enable"]
     #[inline]
     pub fn gencen(&self) -> GENCENR {
-        let bits = ((self.bits >> 0) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         GENCENR { bits }
     }
     #[doc = "Bits 1:10 - Address Value"]
     #[inline]
     pub fn addr(&self) -> ADDRR {
-        let bits = ((self.bits >> 1) & 0x03ff) as u16;
+        let bits = {
+            const MASK: u16 = 1023;
+            const OFFSET: u8 = 1;
+            ((self.bits >> OFFSET) & MASK as u32) as u16
+        };
         ADDRR { bits }
     }
     #[doc = "Bit 15 - Ten Bit Addressing Enable"]
     #[inline]
     pub fn tenbiten(&self) -> TENBITENR {
-        let bits = ((self.bits >> 15) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 15;
+            ((self.bits >> OFFSET) & MASK as u32) != 0
+        };
         TENBITENR { bits }
     }
     #[doc = "Bits 17:26 - Address Mask"]
     #[inline]
     pub fn addrmask(&self) -> ADDRMASKR {
-        let bits = ((self.bits >> 17) & 0x03ff) as u16;
+        let bits = {
+            const MASK: u16 = 1023;
+            const OFFSET: u8 = 17;
+            ((self.bits >> OFFSET) & MASK as u32) as u16
+        };
         ADDRMASKR { bits }
     }
 }
 impl W {
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub fn reset_value() -> W {
+        W { bits: 0 }
+    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {

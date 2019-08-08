@@ -14,7 +14,10 @@ impl super::SLEEPCFG {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        self.register.set(f(&R { bits }, &mut W { bits }).bits);
+        let r = R { bits };
+        let mut w = W { bits };
+        f(&r, &mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -29,22 +32,14 @@ impl super::SLEEPCFG {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        self.register.set(
-            f(&mut W {
-                bits: Self::reset_value(),
-            })
-            .bits,
-        );
-    }
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub const fn reset_value() -> u8 {
-        0x02
+        let mut w = W::reset_value();
+        f(&mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.register.set(Self::reset_value())
+        self.write(|w| w)
     }
 }
 #[doc = "Possible values of the field `SLEEPMODE`"]
@@ -73,12 +68,12 @@ impl SLEEPMODER {
     pub fn bits(&self) -> u8 {
         match *self {
             SLEEPMODER::IDLE0 => 0,
-            SLEEPMODER::IDLE1 => 0x01,
-            SLEEPMODER::IDLE2 => 0x02,
-            SLEEPMODER::STANDBY => 0x04,
-            SLEEPMODER::HIBERNATE => 0x05,
-            SLEEPMODER::BACKUP => 0x06,
-            SLEEPMODER::OFF => 0x07,
+            SLEEPMODER::IDLE1 => 1,
+            SLEEPMODER::IDLE2 => 2,
+            SLEEPMODER::STANDBY => 4,
+            SLEEPMODER::HIBERNATE => 5,
+            SLEEPMODER::BACKUP => 6,
+            SLEEPMODER::OFF => 7,
             SLEEPMODER::_Reserved(bits) => bits,
         }
     }
@@ -134,7 +129,6 @@ impl SLEEPMODER {
     }
 }
 #[doc = "Values that can be written to the field `SLEEPMODE`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum SLEEPMODEW {
     #[doc = "CPU clock is OFF"]
     IDLE0,
@@ -215,8 +209,10 @@ impl<'a> _SLEEPMODEW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x07 << 0);
-        self.w.bits |= ((value as u8) & 0x07) << 0;
+        const MASK: u8 = 7;
+        const OFFSET: u8 = 0;
+        self.w.bits &= !((MASK as u8) << OFFSET);
+        self.w.bits |= ((value & MASK) as u8) << OFFSET;
         self.w
     }
 }
@@ -229,10 +225,19 @@ impl R {
     #[doc = "Bits 0:2 - Sleep Mode"]
     #[inline]
     pub fn sleepmode(&self) -> SLEEPMODER {
-        SLEEPMODER::_from(((self.bits >> 0) & 0x07) as u8)
+        SLEEPMODER::_from({
+            const MASK: u8 = 7;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u8) as u8
+        })
     }
 }
 impl W {
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub fn reset_value() -> W {
+        W { bits: 2 }
+    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {

@@ -14,7 +14,10 @@ impl super::QOSCTRL {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        self.register.set(f(&R { bits }, &mut W { bits }).bits);
+        let r = R { bits };
+        let mut w = W { bits };
+        f(&r, &mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -29,22 +32,14 @@ impl super::QOSCTRL {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        self.register.set(
-            f(&mut W {
-                bits: Self::reset_value(),
-            })
-            .bits,
-        );
-    }
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub const fn reset_value() -> u8 {
-        0x15
+        let mut w = W::reset_value();
+        f(&mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.register.set(Self::reset_value())
+        self.write(|w| w)
     }
 }
 #[doc = "Possible values of the field `WRBQOS`"]
@@ -65,9 +60,9 @@ impl WRBQOSR {
     pub fn bits(&self) -> u8 {
         match *self {
             WRBQOSR::DISABLE => 0,
-            WRBQOSR::LOW => 0x01,
-            WRBQOSR::MEDIUM => 0x02,
-            WRBQOSR::HIGH => 0x03,
+            WRBQOSR::LOW => 1,
+            WRBQOSR::MEDIUM => 2,
+            WRBQOSR::HIGH => 3,
         }
     }
     #[allow(missing_docs)]
@@ -121,9 +116,9 @@ impl FQOSR {
     pub fn bits(&self) -> u8 {
         match *self {
             FQOSR::DISABLE => 0,
-            FQOSR::LOW => 0x01,
-            FQOSR::MEDIUM => 0x02,
-            FQOSR::HIGH => 0x03,
+            FQOSR::LOW => 1,
+            FQOSR::MEDIUM => 2,
+            FQOSR::HIGH => 3,
         }
     }
     #[allow(missing_docs)]
@@ -177,9 +172,9 @@ impl DQOSR {
     pub fn bits(&self) -> u8 {
         match *self {
             DQOSR::DISABLE => 0,
-            DQOSR::LOW => 0x01,
-            DQOSR::MEDIUM => 0x02,
-            DQOSR::HIGH => 0x03,
+            DQOSR::LOW => 1,
+            DQOSR::MEDIUM => 2,
+            DQOSR::HIGH => 3,
         }
     }
     #[allow(missing_docs)]
@@ -216,7 +211,6 @@ impl DQOSR {
     }
 }
 #[doc = "Values that can be written to the field `WRBQOS`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum WRBQOSW {
     #[doc = "Background (no sensitive operation)"]
     DISABLE,
@@ -275,13 +269,14 @@ impl<'a> _WRBQOSW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x03 << 0);
-        self.w.bits |= ((value as u8) & 0x03) << 0;
+        const MASK: u8 = 3;
+        const OFFSET: u8 = 0;
+        self.w.bits &= !((MASK as u8) << OFFSET);
+        self.w.bits |= ((value & MASK) as u8) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `FQOS`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum FQOSW {
     #[doc = "Background (no sensitive operation)"]
     DISABLE,
@@ -340,13 +335,14 @@ impl<'a> _FQOSW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x03 << 2);
-        self.w.bits |= ((value as u8) & 0x03) << 2;
+        const MASK: u8 = 3;
+        const OFFSET: u8 = 2;
+        self.w.bits &= !((MASK as u8) << OFFSET);
+        self.w.bits |= ((value & MASK) as u8) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `DQOS`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum DQOSW {
     #[doc = "Background (no sensitive operation)"]
     DISABLE,
@@ -405,8 +401,10 @@ impl<'a> _DQOSW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits &= !(0x03 << 4);
-        self.w.bits |= ((value as u8) & 0x03) << 4;
+        const MASK: u8 = 3;
+        const OFFSET: u8 = 4;
+        self.w.bits &= !((MASK as u8) << OFFSET);
+        self.w.bits |= ((value & MASK) as u8) << OFFSET;
         self.w
     }
 }
@@ -419,20 +417,37 @@ impl R {
     #[doc = "Bits 0:1 - Write-Back Quality of Service"]
     #[inline]
     pub fn wrbqos(&self) -> WRBQOSR {
-        WRBQOSR::_from(((self.bits >> 0) & 0x03) as u8)
+        WRBQOSR::_from({
+            const MASK: u8 = 3;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u8) as u8
+        })
     }
     #[doc = "Bits 2:3 - Fetch Quality of Service"]
     #[inline]
     pub fn fqos(&self) -> FQOSR {
-        FQOSR::_from(((self.bits >> 2) & 0x03) as u8)
+        FQOSR::_from({
+            const MASK: u8 = 3;
+            const OFFSET: u8 = 2;
+            ((self.bits >> OFFSET) & MASK as u8) as u8
+        })
     }
     #[doc = "Bits 4:5 - Data Transfer Quality of Service"]
     #[inline]
     pub fn dqos(&self) -> DQOSR {
-        DQOSR::_from(((self.bits >> 4) & 0x03) as u8)
+        DQOSR::_from({
+            const MASK: u8 = 3;
+            const OFFSET: u8 = 4;
+            ((self.bits >> OFFSET) & MASK as u8) as u8
+        })
     }
 }
 impl W {
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub fn reset_value() -> W {
+        W { bits: 21 }
+    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {

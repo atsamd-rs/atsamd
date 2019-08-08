@@ -29,8 +29,8 @@ impl ERRSTR {
     pub fn bits(&self) -> u8 {
         match *self {
             ERRSTR::STOP => 0,
-            ERRSTR::FDS => 0x01,
-            ERRSTR::TFR => 0x03,
+            ERRSTR::FDS => 1,
+            ERRSTR::TFR => 3,
             ERRSTR::_Reserved(bits) => bits,
         }
     }
@@ -117,11 +117,19 @@ impl R {
     #[doc = "Bits 0:1 - ADMA Error State"]
     #[inline]
     pub fn errst(&self) -> ERRSTR {
-        ERRSTR::_from(((self.bits >> 0) & 0x03) as u8)
+        ERRSTR::_from({
+            const MASK: u8 = 3;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u8) as u8
+        })
     }
     #[doc = "Bit 2 - ADMA Length Mismatch Error"]
     #[inline]
     pub fn lmis(&self) -> LMISR {
-        LMISR::_from(((self.bits >> 2) & 0x01) != 0)
+        LMISR::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 2;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        })
     }
 }

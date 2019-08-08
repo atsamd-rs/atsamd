@@ -146,37 +146,61 @@ impl R {
     #[doc = "Bit 0 - Power On Reset"]
     #[inline]
     pub fn por(&self) -> PORR {
-        let bits = ((self.bits >> 0) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         PORR { bits }
     }
     #[doc = "Bit 1 - Brown Out 12 Detector Reset"]
     #[inline]
     pub fn bod12(&self) -> BOD12R {
-        let bits = ((self.bits >> 1) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 1;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         BOD12R { bits }
     }
     #[doc = "Bit 2 - Brown Out 33 Detector Reset"]
     #[inline]
     pub fn bod33(&self) -> BOD33R {
-        let bits = ((self.bits >> 2) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 2;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         BOD33R { bits }
     }
     #[doc = "Bit 4 - External Reset"]
     #[inline]
     pub fn ext(&self) -> EXTR {
-        let bits = ((self.bits >> 4) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 4;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         EXTR { bits }
     }
     #[doc = "Bit 5 - Watchdog Reset"]
     #[inline]
     pub fn wdt(&self) -> WDTR {
-        let bits = ((self.bits >> 5) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 5;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         WDTR { bits }
     }
     #[doc = "Bit 6 - System Reset Request"]
     #[inline]
     pub fn syst(&self) -> SYSTR {
-        let bits = ((self.bits >> 6) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 6;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         SYSTR { bits }
     }
 }

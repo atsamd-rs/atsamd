@@ -302,31 +302,55 @@ impl R {
     #[doc = "Bit 0 - Auto CMD12 Not Executed"]
     #[inline]
     pub fn acmd12ne(&self) -> ACMD12NER {
-        ACMD12NER::_from(((self.bits >> 0) & 0x01) != 0)
+        ACMD12NER::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        })
     }
     #[doc = "Bit 1 - Auto CMD Timeout Error"]
     #[inline]
     pub fn acmdteo(&self) -> ACMDTEOR {
-        ACMDTEOR::_from(((self.bits >> 1) & 0x01) != 0)
+        ACMDTEOR::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 1;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        })
     }
     #[doc = "Bit 2 - Auto CMD CRC Error"]
     #[inline]
     pub fn acmdcrc(&self) -> ACMDCRCR {
-        ACMDCRCR::_from(((self.bits >> 2) & 0x01) != 0)
+        ACMDCRCR::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 2;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        })
     }
     #[doc = "Bit 3 - Auto CMD End Bit Error"]
     #[inline]
     pub fn acmdend(&self) -> ACMDENDR {
-        ACMDENDR::_from(((self.bits >> 3) & 0x01) != 0)
+        ACMDENDR::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 3;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        })
     }
     #[doc = "Bit 4 - Auto CMD Index Error"]
     #[inline]
     pub fn acmdidx(&self) -> ACMDIDXR {
-        ACMDIDXR::_from(((self.bits >> 4) & 0x01) != 0)
+        ACMDIDXR::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 4;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        })
     }
     #[doc = "Bit 7 - Command not Issued By Auto CMD12 Error"]
     #[inline]
     pub fn cmdni(&self) -> CMDNIR {
-        CMDNIR::_from(((self.bits >> 7) & 0x01) != 0)
+        CMDNIR::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 7;
+            ((self.bits >> OFFSET) & MASK as u16) != 0
+        })
     }
 }

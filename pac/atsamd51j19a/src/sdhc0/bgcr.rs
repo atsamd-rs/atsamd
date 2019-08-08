@@ -14,7 +14,10 @@ impl super::BGCR {
         for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
     {
         let bits = self.register.get();
-        self.register.set(f(&R { bits }, &mut W { bits }).bits);
+        let r = R { bits };
+        let mut w = W { bits };
+        f(&r, &mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Reads the contents of the register"]
     #[inline]
@@ -29,22 +32,14 @@ impl super::BGCR {
     where
         F: FnOnce(&mut W) -> &mut W,
     {
-        self.register.set(
-            f(&mut W {
-                bits: Self::reset_value(),
-            })
-            .bits,
-        );
-    }
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub const fn reset_value() -> u8 {
-        0
+        let mut w = W::reset_value();
+        f(&mut w);
+        self.register.set(w.bits);
     }
     #[doc = r" Writes the reset value to the register"]
     #[inline]
     pub fn reset(&self) {
-        self.register.set(Self::reset_value())
+        self.write(|w| w)
     }
 }
 #[doc = "Possible values of the field `STPBGR`"]
@@ -236,7 +231,6 @@ impl INTBGR {
     }
 }
 #[doc = "Values that can be written to the field `STPBGR`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum STPBGRW {
     #[doc = "Transfer"]
     TRANSFER,
@@ -287,13 +281,14 @@ impl<'a> _STPBGRW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 0);
-        self.w.bits |= ((value as u8) & 0x01) << 0;
+        const MASK: bool = true;
+        const OFFSET: u8 = 0;
+        self.w.bits &= !((MASK as u8) << OFFSET);
+        self.w.bits |= ((value & MASK) as u8) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `CONTR`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CONTRW {
     #[doc = "Not affected"]
     GO_ON,
@@ -344,13 +339,14 @@ impl<'a> _CONTRW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 1);
-        self.w.bits |= ((value as u8) & 0x01) << 1;
+        const MASK: bool = true;
+        const OFFSET: u8 = 1;
+        self.w.bits &= !((MASK as u8) << OFFSET);
+        self.w.bits |= ((value & MASK) as u8) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `RWCTRL`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum RWCTRLW {
     #[doc = "Disable Read Wait Control"]
     DISABLE,
@@ -401,13 +397,14 @@ impl<'a> _RWCTRLW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 2);
-        self.w.bits |= ((value as u8) & 0x01) << 2;
+        const MASK: bool = true;
+        const OFFSET: u8 = 2;
+        self.w.bits &= !((MASK as u8) << OFFSET);
+        self.w.bits |= ((value & MASK) as u8) << OFFSET;
         self.w
     }
 }
 #[doc = "Values that can be written to the field `INTBG`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum INTBGW {
     #[doc = "Disabled"]
     DISABLED,
@@ -458,8 +455,10 @@ impl<'a> _INTBGW<'a> {
     #[doc = r" Writes raw bits to the field"]
     #[inline]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits &= !(0x01 << 3);
-        self.w.bits |= ((value as u8) & 0x01) << 3;
+        const MASK: bool = true;
+        const OFFSET: u8 = 3;
+        self.w.bits &= !((MASK as u8) << OFFSET);
+        self.w.bits |= ((value & MASK) as u8) << OFFSET;
         self.w
     }
 }
@@ -472,25 +471,46 @@ impl R {
     #[doc = "Bit 0 - Stop at Block Gap Request"]
     #[inline]
     pub fn stpbgr(&self) -> STPBGRR {
-        STPBGRR::_from(((self.bits >> 0) & 0x01) != 0)
+        STPBGRR::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 0;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        })
     }
     #[doc = "Bit 1 - Continue Request"]
     #[inline]
     pub fn contr(&self) -> CONTRR {
-        CONTRR::_from(((self.bits >> 1) & 0x01) != 0)
+        CONTRR::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 1;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        })
     }
     #[doc = "Bit 2 - Read Wait Control"]
     #[inline]
     pub fn rwctrl(&self) -> RWCTRLR {
-        RWCTRLR::_from(((self.bits >> 2) & 0x01) != 0)
+        RWCTRLR::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 2;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        })
     }
     #[doc = "Bit 3 - Interrupt at Block Gap"]
     #[inline]
     pub fn intbg(&self) -> INTBGR {
-        INTBGR::_from(((self.bits >> 3) & 0x01) != 0)
+        INTBGR::_from({
+            const MASK: bool = true;
+            const OFFSET: u8 = 3;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        })
     }
 }
 impl W {
+    #[doc = r" Reset value of the register"]
+    #[inline]
+    pub fn reset_value() -> W {
+        W { bits: 0 }
+    }
     #[doc = r" Writes raw bits to the register"]
     #[inline]
     pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {

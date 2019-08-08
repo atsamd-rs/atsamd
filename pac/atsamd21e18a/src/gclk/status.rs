@@ -41,7 +41,11 @@ impl R {
     #[doc = "Bit 7 - Synchronization Busy Status"]
     #[inline]
     pub fn syncbusy(&self) -> SYNCBUSYR {
-        let bits = ((self.bits >> 7) & 0x01) != 0;
+        let bits = {
+            const MASK: bool = true;
+            const OFFSET: u8 = 7;
+            ((self.bits >> OFFSET) & MASK as u8) != 0
+        };
         SYNCBUSYR { bits }
     }
 }

@@ -15,25 +15,25 @@ pub struct RegisterBlock {
 }
 #[doc = "Control"]
 pub struct CTRLA {
-    register: vcell::VolatileCell<u8>,
+    register: ::vcell::VolatileCell<u8>,
 }
 #[doc = "Control"]
 pub mod ctrla;
 #[doc = "Synchronization Busy"]
 pub struct SYNCBUSY {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Synchronization Busy"]
 pub mod syncbusy;
 #[doc = "Generic Clock Generator Control"]
 pub struct GENCTRL {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Generic Clock Generator Control"]
 pub mod genctrl;
 #[doc = "Peripheral Clock Control"]
 pub struct PCHCTRL {
-    register: vcell::VolatileCell<u32>,
+    register: ::vcell::VolatileCell<u32>,
 }
 #[doc = "Peripheral Clock Control"]
 pub mod pchctrl;
