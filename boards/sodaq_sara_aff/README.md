@@ -1,4 +1,4 @@
-# Adafruit Gemma M0 Board Support Crate
+# Sodaq SARA AFF Board Support Crate
 
 This crate provides a type-safe API for working with the [Sodaq SARA AFF
 board](https://learn.sodaq.com/Boards/Sara_AFF).

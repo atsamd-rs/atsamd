@@ -23,84 +23,80 @@ define_pins!(
     struct Pins,
     target_device: target_device,
 
-    /// Arduino header digital pins
-    /// RX
-    pin d0 = b31,
-    /// TX
-    pin d1 = b30,
-    /// DAC
+    /// arduino header digital pins
+    /// rx/ d0
+    pin rx = b31,
+    /// tx / d1
+    pin tx = b30,
+    /// dac
     pin d2 = a2,
-    /// SCOM1PAD3
+    /// scom1pad3
     pin d3 = a19,
-    /// AIN14
+    /// ain14
     pin d5 = b6,
-    /// AIN15
+    /// ain15
     pin d6 = b7,
-    /// AIN2
+    /// ain2
     pin d7 = b8,
-    /// SCOM4PAD2
+    /// scom4pad2
     pin d8 = b10,
-    /// SCOM4PAD3
+    /// scom4pad3
     pin d9 = b11,
-    /// SS
+    /// ss
     pin d10 = a23,
-    /// MOSI
+    /// mosi
     pin d11 = a20,
-    /// MISO
+    /// miso
     pin d12 = a22,
-    /// LED_BUILTIN / SCK   
+    /// led_builtin 
     pin d13 = a21,
 
-    /// Arduino header analog pins
-    /// A0  
+    /// arduino header analog pins
     pin a0 = b0,
-    /// A1  
     pin a1 = b1,
-    /// A2  
     pin a2 = b3,
-    /// A3  
     pin a3 = b4,
-    /// A4  / SDA(I2C1)
-    pin a4 = a8,
-    /// A5 / SCL(I2C1) 
-    pin a5 = a9,
 
-    /// Other pins
-    /// GROVE1
+    /// grove1
     pin d14 = a10,
-    /// GROVE2
+    /// grove2
     pin d15 = a11,
-    /// LED_RED 
-    pin d16 = a12,
-    /// LED_GREEN
-    pin d17 = b15,
-    /// LED_BLUE
-    pin d18 = a13,
-    /// ACCEL_INT1
-    pin d19 = a14,
-    /// ACCEL_INT2
-    pin d20 = a15,
-    /// MAG_INT
-    pin d21 = a18,
-    /// USB_DETECT
-    pin d22 = b16,
-    /// SARA_STATUS
-    pin d23 = b22,
-    /// CHG_STAT
-    pin d24 = a4,
-    /// GPS_TIMEPULSE
-    pin d25 = a7,
-    /// GPS_ENABLE
-    pin d26 = a28,
-    /// SARA_ENABLE 
-    pin d27 = a27,
-    /// SARA_RESET
-    pin d28 = b14,
-    /// SARA_TX_ENABLE
-    pin d29 = b13,
+
+    /// leds
+    pin led_red  = a12,
+    pin led_green = b15,
+    pin led_blue = a13,
+
+    /// accelelero & magneto
+    pin acc_int1 = a14,
+    pin acc_int2 = a15,
+    pin mag_int = a18,
+
+    /// usb_detect
+    pin usb_det = b16,
+    /// chg_stat
+    pin chg_stat = a4,
+
+    /// gps 
+    pin gps_tp = a7,
+    pin gps_en = a28,
+	
+	// u-blox sara
+    pin sara_enable = a27,
+    pin sara_reset = b14,
+    pin sara_tx_enable = b13,
+    pin sara_status = b22,
+	pin sara_tx = a6,
+	pin sara_rx = a5,
+
+	/// i2c
+	pin sda = a16,
+	pin scl = a17,
+    pin sda1 = a8,
+    pin scl1 = a9,
 );
 
-/// Convenience for setting up the D2 and D0 pins to
+/// Convenience for setting up the serial communication pins
 /// operate as UART RX/TX (respectively) running at the specified baud.
 pub fn uart<F: Into<Hertz>>(
     clocks: &mut GenericClockController,
@@ -108,10 +104,10 @@ pub fn uart<F: Into<Hertz>>(
     sercom0: SERCOM0,
     nvic: &mut NVIC,
     pm: &mut PM,
-    d2: gpio::Pa5<Input<Floating>>,
-    d0: gpio::Pa4<Input<Floating>>,
+    sara_rx: gpio::Pa5<Input<Floating>>,
+    sara_tx: gpio::Pa6<Input<Floating>>,
     port: &mut Port,
-) -> UART0<hal::sercom::Sercom0Pad1<gpio::Pa5<PfD>>, hal::sercom::Sercom0Pad0<gpio::Pa4<PfD>>, (), ()>
+) -> UART0<hal::sercom::Sercom0Pad1<gpio::Pa5<PfD>>, hal::sercom::Sercom0Pad2<gpio::Pa6<PfD>>, (), ()>
 {
     let gclk0 = clocks.gclk0();
 
@@ -121,6 +117,6 @@ pub fn uart<F: Into<Hertz>>(
         sercom0,
         nvic,
         pm,
-        (d2.into_pad(port), d0.into_pad(port)),
+        (sara_rx.into_pad(port), sara_tx.into_pad(port)),
     )
 }
