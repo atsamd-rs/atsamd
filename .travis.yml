@@ -18,6 +18,7 @@ env:
   - CRATE=boards/arduino_mkrzero
   - CRATE=boards/circuit_playground_express
   - CRATE=boards/sodaq_one
+  - CRATE=boards/sodaq_sara_aff
   - CRATE=boards/pyportal
   - CRATE=boards/trellis_m4 FEATURES="--features=keypad-unproven"
   - CRATE=boards/pygamer
