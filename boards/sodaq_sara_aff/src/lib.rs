@@ -14,7 +14,7 @@ pub use hal::*;
 use gpio::{Floating, Input, PfD, Port};
 
 use hal::clock::GenericClockController;
-use hal::sercom::{PadPin, UART0};
+use hal::sercom::{PadPin, UART5};
 use hal::time::Hertz;
 
 define_pins!(
@@ -42,13 +42,13 @@ define_pins!(
     pin d8 = b10,
     /// scom4pad3
     pin d9 = b11,
-    /// ss
-    pin d10 = a23,
-    /// mosi
-    pin d11 = a20,
-    /// miso
-    pin d12 = a22,
-    /// led_builtin 
+
+    /// SPI
+    pin ss = a23,
+    pin mosi = a20,
+    pin miso = a22,
+
+    /// led_builtin + SCK
     pin d13 = a21,
 
     /// arduino header analog pins
@@ -101,22 +101,22 @@ define_pins!(
 pub fn uart<F: Into<Hertz>>(
     clocks: &mut GenericClockController,
     baud: F,
-    sercom0: SERCOM0,
+    sercom5: SERCOM5,
     nvic: &mut NVIC,
     pm: &mut PM,
-    sara_rx: gpio::Pa5<Input<Floating>>,
-    sara_tx: gpio::Pa6<Input<Floating>>,
+    rx: gpio::Pb31<Input<Floating>>,
+    tx: gpio::Pb30<Input<Floating>>,
     port: &mut Port,
-) -> UART0<hal::sercom::Sercom0Pad1<gpio::Pa5<PfD>>, hal::sercom::Sercom0Pad2<gpio::Pa6<PfD>>, (), ()>
+) -> UART5<hal::sercom::Sercom5Pad1<gpio::Pb31<PfD>>, hal::sercom::Sercom5Pad0<gpio::Pb30<PfD>>, (), ()>
 {
     let gclk0 = clocks.gclk0();
 
-    UART0::new(
-        &clocks.sercom0_core(&gclk0).unwrap(),
+    UART5::new(
+        &clocks.sercom5_core(&gclk0).unwrap(),
         baud.into(),
-        sercom0,
+        sercom5,
         nvic,
         pm,
-        (sara_rx.into_pad(port), sara_tx.into_pad(port)),
+        (rx.into_pad(port), tx.into_pad(port)),
     )
 }
