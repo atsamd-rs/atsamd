@@ -15,6 +15,9 @@ crates_by_pac = {
         'gemma_m0',
         'trinket_m0',
     ],
+    'atsamd21j18a': [
+        'sodaq_sara_aff',
+    ],
     'atsamd21g18a': [
         'arduino_mkrzero',
         'circuit_playground_express',
