@@ -1,6 +1,6 @@
 [package]
 name = "metro_m4"
-version = "0.2.0"
+version = "0.3.0"
 authors = ["Paul Sajna <sajattack@gmail.com>", "Wez Furlong <wez@wezfurlong.org>"]
 description = "Board Support crate for the Adafruit Metro M4"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
@@ -10,7 +10,7 @@ readme = "README.md"
 documentation = "https://atsamd-rs.github.io/atsamd/atsamd51j19a/metro_m4/"
 
 [dependencies]
-cortex-m = "~0.5"
+cortex-m = "~0.6"
 embedded-hal = "~0.2"
 nb = "~0.1"
 
@@ -20,7 +20,7 @@ optional = true
 
 [dependencies.atsamd-hal]
 path = "../../hal"
-version = "~0.5"
+version = "~0.6"
 default-features = false
 
 [dev-dependencies]

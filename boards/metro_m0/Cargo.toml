@@ -1,6 +1,6 @@
 [package]
 name = "metro_m0"
-version = "0.3.0"
+version = "0.4.0"
 authors = ["Wez Furlong <wez@wezfurlong.org>"]
 description = "Board Support crate for the Adafruit Metro M0"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
@@ -11,10 +11,9 @@ documentation = "https://atsamd-rs.github.io/atsamd/atsamd21g18a/metro_m0/"
 edition = "2018"
 
 [dependencies]
-cortex-m = "~0.5"
+cortex-m = "~0.6"
 embedded-hal = "~0.2"
 nb = "~0.1"
-panic_rtt = "~0.2"
 
 [dependencies.cortex-m-rt]
 version = "~0.6"
@@ -22,7 +21,7 @@ optional = true
 
 [dependencies.atsamd-hal]
 path = "../../hal"
-version = "~0.5"
+version = "~0.6"
 default-features = false
 
 [dev-dependencies]

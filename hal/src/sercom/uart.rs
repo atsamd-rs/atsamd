@@ -6,7 +6,7 @@ use nb;
 use crate::sercom::pads::*;
 use crate::target_device::sercom0::USART;
 use crate::target_device::Interrupt;
-use crate::target_device::{NVIC, PM, SERCOM0, SERCOM1, SERCOM2, SERCOM3};
+use crate::target_device::{PM, SERCOM0, SERCOM1, SERCOM2, SERCOM3};
 #[cfg(any(feature = "samd21g18a", feature="samd21j18a"))]
 use crate::target_device::{SERCOM4, SERCOM5};
 use core::fmt;
@@ -119,7 +119,6 @@ macro_rules! uart {
                     clock: &clock::$clock,
                     freq: F,
                     sercom: $SERCOM,
-                    nvic: &mut NVIC,
                     pm: &mut PM,
                     padout: T
                 ) -> $Type<RX, TX, RTS, CTS> where
@@ -183,8 +182,6 @@ macro_rules! uart {
                         });
 
                         while sercom.usart().syncbusy.read().ctrlb().bit_is_set() {}
-
-                        nvic.enable(Interrupt::$SERCOM);
 
                         sercom.usart().ctrla.modify(|_, w| w.enable().set_bit());
                         // wait for sync of ENABLE

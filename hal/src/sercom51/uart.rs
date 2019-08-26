@@ -10,7 +10,7 @@ use crate::target_device::Interrupt::{
     SERCOM0_1, SERCOM1_1, SERCOM2_1, SERCOM3_1, SERCOM4_1, SERCOM5_1,
     SERCOM0_2, SERCOM1_2, SERCOM2_2, SERCOM3_2, SERCOM4_2, SERCOM5_2
 };
-use crate::target_device::{NVIC, MCLK, SERCOM0, SERCOM1, SERCOM2, SERCOM3};
+use crate::target_device::{MCLK, SERCOM0, SERCOM1, SERCOM2, SERCOM3};
 use crate::target_device::{SERCOM4, SERCOM5};
 use core::fmt;
 
@@ -123,7 +123,6 @@ macro_rules! uart {
                     clock: &clock::$clock,
                     freq: F,
                     sercom: $SERCOM,
-                    nvic: &mut NVIC,
                     mclk: &mut MCLK,
                     padout: T,
                 ) -> Self where
@@ -194,10 +193,6 @@ macro_rules! uart {
                             w.gtime().bits(2);
                             w.maxiter().bits(7)
                         });
-
-                        nvic.enable($int0);
-                        nvic.enable($int1);
-                        nvic.enable($int2);
 
                         sercom.usart().ctrla.modify(|_, w| w.enable().set_bit());
                         // wait for sync of ENABLE
