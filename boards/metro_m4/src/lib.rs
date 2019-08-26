@@ -211,7 +211,6 @@ pub fn uart<F: Into<Hertz>>(
     baud: F,
     sercom3: SERCOM3,
     mclk: &mut MCLK,
-    nvic: &mut NVIC,
     d0: gpio::Pa23<Input<Floating>>,
     d1: gpio::Pa22<Input<Floating>>,
     port: &mut Port,
@@ -225,7 +224,6 @@ pub fn uart<F: Into<Hertz>>(
         &clocks.sercom3_core(&gclk0).unwrap(),
         baud.into(),
         sercom3,
-        nvic,
         mclk,
         (d0.into_pad(port), d1.into_pad(port)),
     )

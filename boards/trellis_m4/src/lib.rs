@@ -108,7 +108,6 @@ pub fn uart<F: Into<Hertz>>(
     baud: F,
     sercom4: SERCOM4,
     mclk: &mut MCLK,
-    nvic: &mut NVIC,
     port: &mut Port,
 ) -> UART4<
     hal::sercom::Sercom4Pad1<gpio::Pb9<gpio::PfD>>,
@@ -116,5 +115,5 @@ pub fn uart<F: Into<Hertz>>(
     (),
     (),
 > {
-    pins.uart(clocks, baud, sercom4, mclk, nvic, port)
+    pins.uart(clocks, baud, sercom4, mclk, port)
 }

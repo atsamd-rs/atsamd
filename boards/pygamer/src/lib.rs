@@ -165,7 +165,6 @@ pub fn uart<F: Into<Hertz>>(
     baud: F,
     sercom5: SERCOM5,
     mclk: &mut MCLK,
-    nvic: &mut NVIC,
     rx: gpio::Pb17<Input<Floating>>,
     tx: gpio::Pb16<Input<Floating>>,
     port: &mut Port,
@@ -181,7 +180,6 @@ pub fn uart<F: Into<Hertz>>(
         &clocks.sercom5_core(&gclk0).unwrap(),
         baud.into(),
         sercom5,
-        nvic,
         mclk,
         (rx.into_pad(port), tx.into_pad(port)),
     )

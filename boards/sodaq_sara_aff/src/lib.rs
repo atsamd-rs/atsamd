@@ -102,7 +102,6 @@ pub fn uart<F: Into<Hertz>>(
     clocks: &mut GenericClockController,
     baud: F,
     sercom5: SERCOM5,
-    nvic: &mut NVIC,
     pm: &mut PM,
     rx: gpio::Pb31<Input<Floating>>,
     tx: gpio::Pb30<Input<Floating>>,
@@ -115,7 +114,6 @@ pub fn uart<F: Into<Hertz>>(
         &clocks.sercom5_core(&gclk0).unwrap(),
         baud.into(),
         sercom5,
-        nvic,
         pm,
         (rx.into_pad(port), tx.into_pad(port)),
     )

@@ -5,11 +5,6 @@ use crate::hal::serial;
 use nb;
 use crate::sercom::pads::*;
 use crate::target_device::sercom0::USART;
-use crate::target_device::Interrupt::{
-    SERCOM0_0, SERCOM1_0, SERCOM2_0, SERCOM3_0, SERCOM4_0, SERCOM5_0,
-    SERCOM0_1, SERCOM1_1, SERCOM2_1, SERCOM3_1, SERCOM4_1, SERCOM5_1,
-    SERCOM0_2, SERCOM1_2, SERCOM2_2, SERCOM3_2, SERCOM4_2, SERCOM5_2
-};
 use crate::target_device::{MCLK, SERCOM0, SERCOM1, SERCOM2, SERCOM3};
 use crate::target_device::{SERCOM4, SERCOM5};
 use core::fmt;

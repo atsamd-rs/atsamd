@@ -86,7 +86,6 @@ pub fn esp_uart<F: Into<Hertz>>(
     baud: F,
     sercom4: SERCOM4,
     mclk: &mut MCLK,
-    nvic: &mut NVIC,
     esp_rx: gpio::Pb13<Input<Floating>>,
     esp_tx: gpio::Pb12<Input<Floating>>,
     port: &mut Port,
@@ -100,7 +99,6 @@ pub fn esp_uart<F: Into<Hertz>>(
         &clocks.sercom4_core(&gclk0).unwrap(),
         baud.into(),
         sercom4,
-        nvic,
         mclk,
         (esp_rx.into_pad(port), esp_tx.into_pad(port)),
     )

@@ -5,7 +5,6 @@ use crate::hal::serial;
 use nb;
 use crate::sercom::pads::*;
 use crate::target_device::sercom0::USART;
-use crate::target_device::Interrupt;
 use crate::target_device::{PM, SERCOM0, SERCOM1, SERCOM2, SERCOM3};
 #[cfg(any(feature = "samd21g18a", feature="samd21j18a"))]
 use crate::target_device::{SERCOM4, SERCOM5};

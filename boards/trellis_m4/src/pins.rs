@@ -1,6 +1,6 @@
 //! NeoTrellis M4 Express pins
 
-use super::{hal, target_device, MCLK, NVIC, SERCOM2, SERCOM4};
+use super::{hal, target_device, MCLK, SERCOM2, SERCOM4};
 
 use hal::clock::*;
 use hal::define_pins;
@@ -270,7 +270,6 @@ impl STEMMA {
         baud: F,
         sercom4: SERCOM4,
         mclk: &mut MCLK,
-        nvic: &mut NVIC,
         port: &mut Port,
     ) -> UART4<Sercom4Pad1<Pb9<PfD>>, Sercom4Pad0<Pb8<PfD>>, (), ()> {
         let gclk0 = clocks.gclk0();
@@ -279,7 +278,6 @@ impl STEMMA {
             &clocks.sercom4_core(&gclk0).unwrap(),
             baud.into(),
             sercom4,
-            nvic,
             mclk,
             (self.scl.into_pad(port), self.sda.into_pad(port)),
         )
