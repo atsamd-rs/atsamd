@@ -56,6 +56,9 @@ define_pins!(
     pin flash_miso = a16,
     /// The CS pin attached to the on-board SPI flash
     pin flash_cs = b22,
+
+    pin accel_sda = a0,
+    pin accel_scl = a1,
 );
 
 /// Convenience for accessing the on-board SPI Flash device.
