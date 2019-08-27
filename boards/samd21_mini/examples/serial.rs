@@ -62,7 +62,6 @@ const APP: () = {
             &uart_clk,
             9600.hz(),
             device.SERCOM0,
-            unsafe { &mut hal::CorePeripherals::steal().NVIC },
             &mut device.PM,
             (rx_pin, tx_pin)
         );

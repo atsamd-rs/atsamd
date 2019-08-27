@@ -53,7 +53,6 @@ fn main() -> ! {
         &uart_clk,
         9600.hz(),
         peripherals.SERCOM3,
-        &mut core.NVIC,
         &mut peripherals.MCLK,
         (rx, tx),
     );
