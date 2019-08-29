@@ -21,7 +21,7 @@ impl Adc<$ADC> {
         // set to 1/(1/(48000000/32) * 6) = 250000 SPS
         let gclk11 = clocks.configure_gclk_divider_and_source(GCLK11, 1, DFLL, false)
             .expect("adc clock setup failed");
-        clocks.adc0(&gclk11).expect("adc clock setup failed");
+        clocks.$init(&gclk11).expect("adc clock setup failed");
         adc.ctrla.modify(|_, w| w.prescaler().div32());
         adc.ctrlb.modify(|_, w| w.ressel()._12bit());
         while adc.syncbusy.read().ctrlb().bit_is_set() {}
