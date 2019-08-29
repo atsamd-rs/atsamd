@@ -12,15 +12,14 @@ use hal::prelude::*;
 use hal::clock::GenericClockController;
 use hal::{Peripherals, CorePeripherals};
 use hal::adc::Adc;
-use hal::sercom::{PadPin, Sercom3Pad0, Sercom3Pad1, UART3Pinout, UART3};
+use hal::sercom::{PadPin, Sercom3Pad0, Sercom3Pad1, UART3};
 
-use embedded_hal::adc::OneShot;
 use cortex_m_rt::entry;
 
 #[entry]
 fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
-    let mut core = CorePeripherals::take().unwrap();
+    let core = CorePeripherals::take().unwrap();
     let mut clocks = GenericClockController::with_external_32kosc(
         peripherals.GCLK,
         &mut peripherals.MCLK,
@@ -34,11 +33,11 @@ fn main() -> ! {
     let mut a0 = pins.a0.into_function_b(&mut pins.port);
 
     let gclk0 = clocks.gclk0();
-    let rx: Sercom3Pad1 = pins
+    let rx: Sercom3Pad1<_> = pins
         .d0
         .into_pull_down_input(&mut pins.port)
         .into_pad(&mut pins.port);
-    let tx: Sercom3Pad0 = pins
+    let tx: Sercom3Pad0<_> = pins
         .d1
         .into_pull_down_input(&mut pins.port)
         .into_pad(&mut pins.port);
@@ -49,12 +48,8 @@ fn main() -> ! {
         &uart_clk,
         9600.hz(),
         peripherals.SERCOM3,
-        &mut core.NVIC,
         &mut peripherals.MCLK,
-        UART3Pinout::Rx1Tx0 {
-            rx: rx,
-            tx: tx,
-        },
+        (rx, tx)
     );
 
     loop {
