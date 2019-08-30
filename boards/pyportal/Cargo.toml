@@ -1,6 +1,6 @@
 [package]
 name = "pyportal"
-version = "0.2.0"
+version = "0.3.0"
 authors = [
     "Shella Stephens <shella@infracoven.io",
     "Paul Sajna <sajattack@gmail.com>",
@@ -25,7 +25,7 @@ optional = true
 
 [dependencies.atsamd-hal]
 path = "../../hal"
-version = "~0.6"
+version = "~0.7"
 default-features = false
 
 [dev-dependencies]
