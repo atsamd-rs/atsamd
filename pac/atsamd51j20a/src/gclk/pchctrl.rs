@@ -1,455 +1,302 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u32,
-}
-#[doc = r" Value to write to the register"]
-pub struct W {
-    bits: u32,
-}
-impl super::PCHCTRL {
-    #[doc = r" Modifies the contents of the register"]
-    #[inline]
-    pub fn modify<F>(&self, f: F)
-    where
-        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
-    {
-        let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-    #[doc = r" Writes to the register"]
-    #[inline]
-    pub fn write<F>(&self, f: F)
-    where
-        F: FnOnce(&mut W) -> &mut W,
-    {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Writes the reset value to the register"]
-    #[inline]
-    pub fn reset(&self) {
-        self.write(|w| w)
+#[doc = "Reader of register PCHCTRL%s"]
+pub type R = crate::R<u32, super::PCHCTRL>;
+#[doc = "Writer for register PCHCTRL%s"]
+pub type W = crate::W<u32, super::PCHCTRL>;
+#[doc = "Register PCHCTRL%s `reset()`'s with value 0"]
+impl crate::ResetValue for super::PCHCTRL {
+    type Type = u32;
+    #[inline(always)]
+    fn reset_value() -> Self::Type {
+        0
     }
 }
-#[doc = "Possible values of the field `GEN`"]
+#[doc = "Generic Clock Generator\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum GENR {
-    #[doc = "Generic clock generator 0"]
+pub enum GEN_A {
+    #[doc = "0: Generic clock generator 0"]
     GCLK0,
-    #[doc = "Generic clock generator 1"]
+    #[doc = "1: Generic clock generator 1"]
     GCLK1,
-    #[doc = "Generic clock generator 2"]
+    #[doc = "2: Generic clock generator 2"]
     GCLK2,
-    #[doc = "Generic clock generator 3"]
+    #[doc = "3: Generic clock generator 3"]
     GCLK3,
-    #[doc = "Generic clock generator 4"]
+    #[doc = "4: Generic clock generator 4"]
     GCLK4,
-    #[doc = "Generic clock generator 5"]
+    #[doc = "5: Generic clock generator 5"]
     GCLK5,
-    #[doc = "Generic clock generator 6"]
+    #[doc = "6: Generic clock generator 6"]
     GCLK6,
-    #[doc = "Generic clock generator 7"]
+    #[doc = "7: Generic clock generator 7"]
     GCLK7,
-    #[doc = "Generic clock generator 8"]
+    #[doc = "8: Generic clock generator 8"]
     GCLK8,
-    #[doc = "Generic clock generator 9"]
+    #[doc = "9: Generic clock generator 9"]
     GCLK9,
-    #[doc = "Generic clock generator 10"]
+    #[doc = "10: Generic clock generator 10"]
     GCLK10,
-    #[doc = "Generic clock generator 11"]
+    #[doc = "11: Generic clock generator 11"]
     GCLK11,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
 }
-impl GENR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            GENR::GCLK0 => 0,
-            GENR::GCLK1 => 1,
-            GENR::GCLK2 => 2,
-            GENR::GCLK3 => 3,
-            GENR::GCLK4 => 4,
-            GENR::GCLK5 => 5,
-            GENR::GCLK6 => 6,
-            GENR::GCLK7 => 7,
-            GENR::GCLK8 => 8,
-            GENR::GCLK9 => 9,
-            GENR::GCLK10 => 10,
-            GENR::GCLK11 => 11,
-            GENR::_Reserved(bits) => bits,
+impl From<GEN_A> for u8 {
+    #[inline(always)]
+    fn from(variant: GEN_A) -> Self {
+        match variant {
+            GEN_A::GCLK0 => 0,
+            GEN_A::GCLK1 => 1,
+            GEN_A::GCLK2 => 2,
+            GEN_A::GCLK3 => 3,
+            GEN_A::GCLK4 => 4,
+            GEN_A::GCLK5 => 5,
+            GEN_A::GCLK6 => 6,
+            GEN_A::GCLK7 => 7,
+            GEN_A::GCLK8 => 8,
+            GEN_A::GCLK9 => 9,
+            GEN_A::GCLK10 => 10,
+            GEN_A::GCLK11 => 11,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> GENR {
-        match value {
-            0 => GENR::GCLK0,
-            1 => GENR::GCLK1,
-            2 => GENR::GCLK2,
-            3 => GENR::GCLK3,
-            4 => GENR::GCLK4,
-            5 => GENR::GCLK5,
-            6 => GENR::GCLK6,
-            7 => GENR::GCLK7,
-            8 => GENR::GCLK8,
-            9 => GENR::GCLK9,
-            10 => GENR::GCLK10,
-            11 => GENR::GCLK11,
-            i => GENR::_Reserved(i),
+}
+#[doc = "Reader of field `GEN`"]
+pub type GEN_R = crate::R<u8, GEN_A>;
+impl GEN_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, GEN_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(GEN_A::GCLK0),
+            1 => Val(GEN_A::GCLK1),
+            2 => Val(GEN_A::GCLK2),
+            3 => Val(GEN_A::GCLK3),
+            4 => Val(GEN_A::GCLK4),
+            5 => Val(GEN_A::GCLK5),
+            6 => Val(GEN_A::GCLK6),
+            7 => Val(GEN_A::GCLK7),
+            8 => Val(GEN_A::GCLK8),
+            9 => Val(GEN_A::GCLK9),
+            10 => Val(GEN_A::GCLK10),
+            11 => Val(GEN_A::GCLK11),
+            i => Res(i),
         }
     }
     #[doc = "Checks if the value of the field is `GCLK0`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_gclk0(&self) -> bool {
-        *self == GENR::GCLK0
+        *self == GEN_A::GCLK0
     }
     #[doc = "Checks if the value of the field is `GCLK1`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_gclk1(&self) -> bool {
-        *self == GENR::GCLK1
+        *self == GEN_A::GCLK1
     }
     #[doc = "Checks if the value of the field is `GCLK2`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_gclk2(&self) -> bool {
-        *self == GENR::GCLK2
+        *self == GEN_A::GCLK2
     }
     #[doc = "Checks if the value of the field is `GCLK3`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_gclk3(&self) -> bool {
-        *self == GENR::GCLK3
+        *self == GEN_A::GCLK3
     }
     #[doc = "Checks if the value of the field is `GCLK4`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_gclk4(&self) -> bool {
-        *self == GENR::GCLK4
+        *self == GEN_A::GCLK4
     }
     #[doc = "Checks if the value of the field is `GCLK5`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_gclk5(&self) -> bool {
-        *self == GENR::GCLK5
+        *self == GEN_A::GCLK5
     }
     #[doc = "Checks if the value of the field is `GCLK6`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_gclk6(&self) -> bool {
-        *self == GENR::GCLK6
+        *self == GEN_A::GCLK6
     }
     #[doc = "Checks if the value of the field is `GCLK7`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_gclk7(&self) -> bool {
-        *self == GENR::GCLK7
+        *self == GEN_A::GCLK7
     }
     #[doc = "Checks if the value of the field is `GCLK8`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_gclk8(&self) -> bool {
-        *self == GENR::GCLK8
+        *self == GEN_A::GCLK8
     }
     #[doc = "Checks if the value of the field is `GCLK9`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_gclk9(&self) -> bool {
-        *self == GENR::GCLK9
+        *self == GEN_A::GCLK9
     }
     #[doc = "Checks if the value of the field is `GCLK10`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_gclk10(&self) -> bool {
-        *self == GENR::GCLK10
+        *self == GEN_A::GCLK10
     }
     #[doc = "Checks if the value of the field is `GCLK11`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_gclk11(&self) -> bool {
-        *self == GENR::GCLK11
+        *self == GEN_A::GCLK11
     }
 }
-#[doc = r" Value of the field"]
-pub struct CHENR {
-    bits: bool,
-}
-impl CHENR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct WRTLOCKR {
-    bits: bool,
-}
-impl WRTLOCKR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = "Values that can be written to the field `GEN`"]
-pub enum GENW {
-    #[doc = "Generic clock generator 0"]
-    GCLK0,
-    #[doc = "Generic clock generator 1"]
-    GCLK1,
-    #[doc = "Generic clock generator 2"]
-    GCLK2,
-    #[doc = "Generic clock generator 3"]
-    GCLK3,
-    #[doc = "Generic clock generator 4"]
-    GCLK4,
-    #[doc = "Generic clock generator 5"]
-    GCLK5,
-    #[doc = "Generic clock generator 6"]
-    GCLK6,
-    #[doc = "Generic clock generator 7"]
-    GCLK7,
-    #[doc = "Generic clock generator 8"]
-    GCLK8,
-    #[doc = "Generic clock generator 9"]
-    GCLK9,
-    #[doc = "Generic clock generator 10"]
-    GCLK10,
-    #[doc = "Generic clock generator 11"]
-    GCLK11,
-}
-impl GENW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            GENW::GCLK0 => 0,
-            GENW::GCLK1 => 1,
-            GENW::GCLK2 => 2,
-            GENW::GCLK3 => 3,
-            GENW::GCLK4 => 4,
-            GENW::GCLK5 => 5,
-            GENW::GCLK6 => 6,
-            GENW::GCLK7 => 7,
-            GENW::GCLK8 => 8,
-            GENW::GCLK9 => 9,
-            GENW::GCLK10 => 10,
-            GENW::GCLK11 => 11,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _GENW<'a> {
+#[doc = "Write proxy for field `GEN`"]
+pub struct GEN_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _GENW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: GENW) -> &'a mut W {
-        unsafe { self.bits(variant._bits()) }
+impl<'a> GEN_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: GEN_A) -> &'a mut W {
+        unsafe { self.bits(variant.into()) }
     }
     #[doc = "Generic clock generator 0"]
-    #[inline]
+    #[inline(always)]
     pub fn gclk0(self) -> &'a mut W {
-        self.variant(GENW::GCLK0)
+        self.variant(GEN_A::GCLK0)
     }
     #[doc = "Generic clock generator 1"]
-    #[inline]
+    #[inline(always)]
     pub fn gclk1(self) -> &'a mut W {
-        self.variant(GENW::GCLK1)
+        self.variant(GEN_A::GCLK1)
     }
     #[doc = "Generic clock generator 2"]
-    #[inline]
+    #[inline(always)]
     pub fn gclk2(self) -> &'a mut W {
-        self.variant(GENW::GCLK2)
+        self.variant(GEN_A::GCLK2)
     }
     #[doc = "Generic clock generator 3"]
-    #[inline]
+    #[inline(always)]
     pub fn gclk3(self) -> &'a mut W {
-        self.variant(GENW::GCLK3)
+        self.variant(GEN_A::GCLK3)
     }
     #[doc = "Generic clock generator 4"]
-    #[inline]
+    #[inline(always)]
     pub fn gclk4(self) -> &'a mut W {
-        self.variant(GENW::GCLK4)
+        self.variant(GEN_A::GCLK4)
     }
     #[doc = "Generic clock generator 5"]
-    #[inline]
+    #[inline(always)]
     pub fn gclk5(self) -> &'a mut W {
-        self.variant(GENW::GCLK5)
+        self.variant(GEN_A::GCLK5)
     }
     #[doc = "Generic clock generator 6"]
-    #[inline]
+    #[inline(always)]
     pub fn gclk6(self) -> &'a mut W {
-        self.variant(GENW::GCLK6)
+        self.variant(GEN_A::GCLK6)
     }
     #[doc = "Generic clock generator 7"]
-    #[inline]
+    #[inline(always)]
     pub fn gclk7(self) -> &'a mut W {
-        self.variant(GENW::GCLK7)
+        self.variant(GEN_A::GCLK7)
     }
     #[doc = "Generic clock generator 8"]
-    #[inline]
+    #[inline(always)]
     pub fn gclk8(self) -> &'a mut W {
-        self.variant(GENW::GCLK8)
+        self.variant(GEN_A::GCLK8)
     }
     #[doc = "Generic clock generator 9"]
-    #[inline]
+    #[inline(always)]
     pub fn gclk9(self) -> &'a mut W {
-        self.variant(GENW::GCLK9)
+        self.variant(GEN_A::GCLK9)
     }
     #[doc = "Generic clock generator 10"]
-    #[inline]
+    #[inline(always)]
     pub fn gclk10(self) -> &'a mut W {
-        self.variant(GENW::GCLK10)
+        self.variant(GEN_A::GCLK10)
     }
     #[doc = "Generic clock generator 11"]
-    #[inline]
+    #[inline(always)]
     pub fn gclk11(self) -> &'a mut W {
-        self.variant(GENW::GCLK11)
+        self.variant(GEN_A::GCLK11)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 15;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !0x0f) | ((value as u32) & 0x0f);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _CHENW<'a> {
+#[doc = "Reader of field `CHEN`"]
+pub type CHEN_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `CHEN`"]
+pub struct CHEN_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _CHENW<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> CHEN_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 6;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 6)) | (((value as u32) & 0x01) << 6);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _WRTLOCKW<'a> {
+#[doc = "Reader of field `WRTLOCK`"]
+pub type WRTLOCK_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `WRTLOCK`"]
+pub struct WRTLOCK_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _WRTLOCKW<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> WRTLOCK_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 7;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 7)) | (((value as u32) & 0x01) << 7);
         self.w
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u32 {
-        self.bits
-    }
     #[doc = "Bits 0:3 - Generic Clock Generator"]
-    #[inline]
-    pub fn gen(&self) -> GENR {
-        GENR::_from({
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+    #[inline(always)]
+    pub fn gen(&self) -> GEN_R {
+        GEN_R::new((self.bits & 0x0f) as u8)
     }
     #[doc = "Bit 6 - Channel Enable"]
-    #[inline]
-    pub fn chen(&self) -> CHENR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 6;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        CHENR { bits }
+    #[inline(always)]
+    pub fn chen(&self) -> CHEN_R {
+        CHEN_R::new(((self.bits >> 6) & 0x01) != 0)
     }
     #[doc = "Bit 7 - Write Lock"]
-    #[inline]
-    pub fn wrtlock(&self) -> WRTLOCKR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 7;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        WRTLOCKR { bits }
+    #[inline(always)]
+    pub fn wrtlock(&self) -> WRTLOCK_R {
+        WRTLOCK_R::new(((self.bits >> 7) & 0x01) != 0)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
-    #[doc = r" Writes raw bits to the register"]
-    #[inline]
-    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.bits = bits;
-        self
-    }
     #[doc = "Bits 0:3 - Generic Clock Generator"]
-    #[inline]
-    pub fn gen(&mut self) -> _GENW {
-        _GENW { w: self }
+    #[inline(always)]
+    pub fn gen(&mut self) -> GEN_W {
+        GEN_W { w: self }
     }
     #[doc = "Bit 6 - Channel Enable"]
-    #[inline]
-    pub fn chen(&mut self) -> _CHENW {
-        _CHENW { w: self }
+    #[inline(always)]
+    pub fn chen(&mut self) -> CHEN_W {
+        CHEN_W { w: self }
     }
     #[doc = "Bit 7 - Write Lock"]
-    #[inline]
-    pub fn wrtlock(&mut self) -> _WRTLOCKW {
-        _WRTLOCKW { w: self }
+    #[inline(always)]
+    pub fn wrtlock(&mut self) -> WRTLOCK_W {
+        WRTLOCK_W { w: self }
     }
 }

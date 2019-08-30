@@ -1,372 +1,214 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u32,
-}
-#[doc = r" Value to write to the register"]
-pub struct W {
-    bits: u32,
-}
-impl super::CLOCK {
-    #[doc = r" Modifies the contents of the register"]
-    #[inline]
-    pub fn modify<F>(&self, f: F)
-    where
-        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
-    {
-        let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-    #[doc = r" Writes to the register"]
-    #[inline]
-    pub fn write<F>(&self, f: F)
-    where
-        F: FnOnce(&mut W) -> &mut W,
-    {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Writes the reset value to the register"]
-    #[inline]
-    pub fn reset(&self) {
-        self.write(|w| w)
+#[doc = "Reader of register CLOCK"]
+pub type R = crate::R<u32, super::CLOCK>;
+#[doc = "Writer for register CLOCK"]
+pub type W = crate::W<u32, super::CLOCK>;
+#[doc = "Register CLOCK `reset()`'s with value 0"]
+impl crate::ResetValue for super::CLOCK {
+    type Type = u32;
+    #[inline(always)]
+    fn reset_value() -> Self::Type {
+        0
     }
 }
-#[doc = r" Value of the field"]
-pub struct SECONDR {
-    bits: u8,
+#[doc = "Reader of field `SECOND`"]
+pub type SECOND_R = crate::R<u8, u8>;
+#[doc = "Write proxy for field `SECOND`"]
+pub struct SECOND_W<'a> {
+    w: &'a mut W,
 }
-impl SECONDR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
+impl<'a> SECOND_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub unsafe fn bits(self, value: u8) -> &'a mut W {
+        self.w.bits = (self.w.bits & !0x3f) | ((value as u32) & 0x3f);
+        self.w
     }
 }
-#[doc = r" Value of the field"]
-pub struct MINUTER {
-    bits: u8,
+#[doc = "Reader of field `MINUTE`"]
+pub type MINUTE_R = crate::R<u8, u8>;
+#[doc = "Write proxy for field `MINUTE`"]
+pub struct MINUTE_W<'a> {
+    w: &'a mut W,
 }
-impl MINUTER {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
+impl<'a> MINUTE_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub unsafe fn bits(self, value: u8) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x3f << 6)) | (((value as u32) & 0x3f) << 6);
+        self.w
     }
 }
-#[doc = "Possible values of the field `HOUR`"]
+#[doc = "Hour\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum HOURR {
-    #[doc = "AM when CLKREP in 12-hour"]
+pub enum HOUR_A {
+    #[doc = "0: AM when CLKREP in 12-hour"]
     AM,
-    #[doc = "PM when CLKREP in 12-hour"]
+    #[doc = "16: PM when CLKREP in 12-hour"]
     PM,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
 }
-impl HOURR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            HOURR::AM => 0,
-            HOURR::PM => 16,
-            HOURR::_Reserved(bits) => bits,
+impl From<HOUR_A> for u8 {
+    #[inline(always)]
+    fn from(variant: HOUR_A) -> Self {
+        match variant {
+            HOUR_A::AM => 0,
+            HOUR_A::PM => 16,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> HOURR {
-        match value {
-            0 => HOURR::AM,
-            16 => HOURR::PM,
-            i => HOURR::_Reserved(i),
+}
+#[doc = "Reader of field `HOUR`"]
+pub type HOUR_R = crate::R<u8, HOUR_A>;
+impl HOUR_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, HOUR_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(HOUR_A::AM),
+            16 => Val(HOUR_A::PM),
+            i => Res(i),
         }
     }
     #[doc = "Checks if the value of the field is `AM`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_am(&self) -> bool {
-        *self == HOURR::AM
+        *self == HOUR_A::AM
     }
     #[doc = "Checks if the value of the field is `PM`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_pm(&self) -> bool {
-        *self == HOURR::PM
+        *self == HOUR_A::PM
     }
 }
-#[doc = r" Value of the field"]
-pub struct DAYR {
-    bits: u8,
-}
-impl DAYR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
-}
-#[doc = r" Value of the field"]
-pub struct MONTHR {
-    bits: u8,
-}
-impl MONTHR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
-}
-#[doc = r" Value of the field"]
-pub struct YEARR {
-    bits: u8,
-}
-impl YEARR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
-}
-#[doc = r" Proxy"]
-pub struct _SECONDW<'a> {
+#[doc = "Write proxy for field `HOUR`"]
+pub struct HOUR_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _SECONDW<'a> {
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 63;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
-        self.w
-    }
-}
-#[doc = r" Proxy"]
-pub struct _MINUTEW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _MINUTEW<'a> {
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 63;
-        const OFFSET: u8 = 6;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
-        self.w
-    }
-}
-#[doc = "Values that can be written to the field `HOUR`"]
-pub enum HOURW {
-    #[doc = "AM when CLKREP in 12-hour"]
-    AM,
-    #[doc = "PM when CLKREP in 12-hour"]
-    PM,
-}
-impl HOURW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            HOURW::AM => 0,
-            HOURW::PM => 16,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _HOURW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _HOURW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: HOURW) -> &'a mut W {
-        unsafe { self.bits(variant._bits()) }
+impl<'a> HOUR_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: HOUR_A) -> &'a mut W {
+        unsafe { self.bits(variant.into()) }
     }
     #[doc = "AM when CLKREP in 12-hour"]
-    #[inline]
+    #[inline(always)]
     pub fn am(self) -> &'a mut W {
-        self.variant(HOURW::AM)
+        self.variant(HOUR_A::AM)
     }
     #[doc = "PM when CLKREP in 12-hour"]
-    #[inline]
+    #[inline(always)]
     pub fn pm(self) -> &'a mut W {
-        self.variant(HOURW::PM)
+        self.variant(HOUR_A::PM)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 31;
-        const OFFSET: u8 = 12;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x1f << 12)) | (((value as u32) & 0x1f) << 12);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _DAYW<'a> {
+#[doc = "Reader of field `DAY`"]
+pub type DAY_R = crate::R<u8, u8>;
+#[doc = "Write proxy for field `DAY`"]
+pub struct DAY_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _DAYW<'a> {
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+impl<'a> DAY_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 31;
-        const OFFSET: u8 = 17;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x1f << 17)) | (((value as u32) & 0x1f) << 17);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _MONTHW<'a> {
+#[doc = "Reader of field `MONTH`"]
+pub type MONTH_R = crate::R<u8, u8>;
+#[doc = "Write proxy for field `MONTH`"]
+pub struct MONTH_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _MONTHW<'a> {
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+impl<'a> MONTH_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 15;
-        const OFFSET: u8 = 22;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x0f << 22)) | (((value as u32) & 0x0f) << 22);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _YEARW<'a> {
+#[doc = "Reader of field `YEAR`"]
+pub type YEAR_R = crate::R<u8, u8>;
+#[doc = "Write proxy for field `YEAR`"]
+pub struct YEAR_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _YEARW<'a> {
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+impl<'a> YEAR_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 63;
-        const OFFSET: u8 = 26;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x3f << 26)) | (((value as u32) & 0x3f) << 26);
         self.w
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u32 {
-        self.bits
-    }
     #[doc = "Bits 0:5 - Second"]
-    #[inline]
-    pub fn second(&self) -> SECONDR {
-        let bits = {
-            const MASK: u8 = 63;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
-        SECONDR { bits }
+    #[inline(always)]
+    pub fn second(&self) -> SECOND_R {
+        SECOND_R::new((self.bits & 0x3f) as u8)
     }
     #[doc = "Bits 6:11 - Minute"]
-    #[inline]
-    pub fn minute(&self) -> MINUTER {
-        let bits = {
-            const MASK: u8 = 63;
-            const OFFSET: u8 = 6;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
-        MINUTER { bits }
+    #[inline(always)]
+    pub fn minute(&self) -> MINUTE_R {
+        MINUTE_R::new(((self.bits >> 6) & 0x3f) as u8)
     }
     #[doc = "Bits 12:16 - Hour"]
-    #[inline]
-    pub fn hour(&self) -> HOURR {
-        HOURR::_from({
-            const MASK: u8 = 31;
-            const OFFSET: u8 = 12;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+    #[inline(always)]
+    pub fn hour(&self) -> HOUR_R {
+        HOUR_R::new(((self.bits >> 12) & 0x1f) as u8)
     }
     #[doc = "Bits 17:21 - Day"]
-    #[inline]
-    pub fn day(&self) -> DAYR {
-        let bits = {
-            const MASK: u8 = 31;
-            const OFFSET: u8 = 17;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
-        DAYR { bits }
+    #[inline(always)]
+    pub fn day(&self) -> DAY_R {
+        DAY_R::new(((self.bits >> 17) & 0x1f) as u8)
     }
     #[doc = "Bits 22:25 - Month"]
-    #[inline]
-    pub fn month(&self) -> MONTHR {
-        let bits = {
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 22;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
-        MONTHR { bits }
+    #[inline(always)]
+    pub fn month(&self) -> MONTH_R {
+        MONTH_R::new(((self.bits >> 22) & 0x0f) as u8)
     }
     #[doc = "Bits 26:31 - Year"]
-    #[inline]
-    pub fn year(&self) -> YEARR {
-        let bits = {
-            const MASK: u8 = 63;
-            const OFFSET: u8 = 26;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
-        YEARR { bits }
+    #[inline(always)]
+    pub fn year(&self) -> YEAR_R {
+        YEAR_R::new(((self.bits >> 26) & 0x3f) as u8)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
-    #[doc = r" Writes raw bits to the register"]
-    #[inline]
-    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.bits = bits;
-        self
-    }
     #[doc = "Bits 0:5 - Second"]
-    #[inline]
-    pub fn second(&mut self) -> _SECONDW {
-        _SECONDW { w: self }
+    #[inline(always)]
+    pub fn second(&mut self) -> SECOND_W {
+        SECOND_W { w: self }
     }
     #[doc = "Bits 6:11 - Minute"]
-    #[inline]
-    pub fn minute(&mut self) -> _MINUTEW {
-        _MINUTEW { w: self }
+    #[inline(always)]
+    pub fn minute(&mut self) -> MINUTE_W {
+        MINUTE_W { w: self }
     }
     #[doc = "Bits 12:16 - Hour"]
-    #[inline]
-    pub fn hour(&mut self) -> _HOURW {
-        _HOURW { w: self }
+    #[inline(always)]
+    pub fn hour(&mut self) -> HOUR_W {
+        HOUR_W { w: self }
     }
     #[doc = "Bits 17:21 - Day"]
-    #[inline]
-    pub fn day(&mut self) -> _DAYW {
-        _DAYW { w: self }
+    #[inline(always)]
+    pub fn day(&mut self) -> DAY_W {
+        DAY_W { w: self }
     }
     #[doc = "Bits 22:25 - Month"]
-    #[inline]
-    pub fn month(&mut self) -> _MONTHW {
-        _MONTHW { w: self }
+    #[inline(always)]
+    pub fn month(&mut self) -> MONTH_W {
+        MONTH_W { w: self }
     }
     #[doc = "Bits 26:31 - Year"]
-    #[inline]
-    pub fn year(&mut self) -> _YEARW {
-        _YEARW { w: self }
+    #[inline(always)]
+    pub fn year(&mut self) -> YEAR_W {
+        YEAR_W { w: self }
     }
 }

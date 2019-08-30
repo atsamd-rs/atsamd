@@ -1,242 +1,146 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u32,
-}
-#[doc = r" Value to write to the register"]
-pub struct W {
-    bits: u32,
-}
-impl super::WRCTRL {
-    #[doc = r" Modifies the contents of the register"]
-    #[inline]
-    pub fn modify<F>(&self, f: F)
-    where
-        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
-    {
-        let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-    #[doc = r" Writes to the register"]
-    #[inline]
-    pub fn write<F>(&self, f: F)
-    where
-        F: FnOnce(&mut W) -> &mut W,
-    {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Writes the reset value to the register"]
-    #[inline]
-    pub fn reset(&self) {
-        self.write(|w| w)
+#[doc = "Reader of register WRCTRL"]
+pub type R = crate::R<u32, super::WRCTRL>;
+#[doc = "Writer for register WRCTRL"]
+pub type W = crate::W<u32, super::WRCTRL>;
+#[doc = "Register WRCTRL `reset()`'s with value 0"]
+impl crate::ResetValue for super::WRCTRL {
+    type Type = u32;
+    #[inline(always)]
+    fn reset_value() -> Self::Type {
+        0
     }
 }
-#[doc = r" Value of the field"]
-pub struct PERIDR {
-    bits: u16,
-}
-impl PERIDR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u16 {
-        self.bits
-    }
-}
-#[doc = "Possible values of the field `KEY`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum KEYR {
-    #[doc = "No action"]
-    OFF,
-    #[doc = "Clear protection"]
-    CLR,
-    #[doc = "Set protection"]
-    SET,
-    #[doc = "Set and lock protection"]
-    SETLCK,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
-}
-impl KEYR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            KEYR::OFF => 0,
-            KEYR::CLR => 1,
-            KEYR::SET => 2,
-            KEYR::SETLCK => 3,
-            KEYR::_Reserved(bits) => bits,
-        }
-    }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> KEYR {
-        match value {
-            0 => KEYR::OFF,
-            1 => KEYR::CLR,
-            2 => KEYR::SET,
-            3 => KEYR::SETLCK,
-            i => KEYR::_Reserved(i),
-        }
-    }
-    #[doc = "Checks if the value of the field is `OFF`"]
-    #[inline]
-    pub fn is_off(&self) -> bool {
-        *self == KEYR::OFF
-    }
-    #[doc = "Checks if the value of the field is `CLR`"]
-    #[inline]
-    pub fn is_clr(&self) -> bool {
-        *self == KEYR::CLR
-    }
-    #[doc = "Checks if the value of the field is `SET`"]
-    #[inline]
-    pub fn is_set(&self) -> bool {
-        *self == KEYR::SET
-    }
-    #[doc = "Checks if the value of the field is `SETLCK`"]
-    #[inline]
-    pub fn is_setlck(&self) -> bool {
-        *self == KEYR::SETLCK
-    }
-}
-#[doc = r" Proxy"]
-pub struct _PERIDW<'a> {
+#[doc = "Reader of field `PERID`"]
+pub type PERID_R = crate::R<u16, u16>;
+#[doc = "Write proxy for field `PERID`"]
+pub struct PERID_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _PERIDW<'a> {
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+impl<'a> PERID_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u16) -> &'a mut W {
-        const MASK: u16 = 65535;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !0xffff) | ((value as u32) & 0xffff);
         self.w
     }
 }
-#[doc = "Values that can be written to the field `KEY`"]
-pub enum KEYW {
-    #[doc = "No action"]
+#[doc = "Peripheral access control key\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum KEY_A {
+    #[doc = "0: No action"]
     OFF,
-    #[doc = "Clear protection"]
+    #[doc = "1: Clear protection"]
     CLR,
-    #[doc = "Set protection"]
+    #[doc = "2: Set protection"]
     SET,
-    #[doc = "Set and lock protection"]
+    #[doc = "3: Set and lock protection"]
     SETLCK,
 }
-impl KEYW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            KEYW::OFF => 0,
-            KEYW::CLR => 1,
-            KEYW::SET => 2,
-            KEYW::SETLCK => 3,
+impl From<KEY_A> for u8 {
+    #[inline(always)]
+    fn from(variant: KEY_A) -> Self {
+        match variant {
+            KEY_A::OFF => 0,
+            KEY_A::CLR => 1,
+            KEY_A::SET => 2,
+            KEY_A::SETLCK => 3,
         }
     }
 }
-#[doc = r" Proxy"]
-pub struct _KEYW<'a> {
+#[doc = "Reader of field `KEY`"]
+pub type KEY_R = crate::R<u8, KEY_A>;
+impl KEY_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, KEY_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(KEY_A::OFF),
+            1 => Val(KEY_A::CLR),
+            2 => Val(KEY_A::SET),
+            3 => Val(KEY_A::SETLCK),
+            i => Res(i),
+        }
+    }
+    #[doc = "Checks if the value of the field is `OFF`"]
+    #[inline(always)]
+    pub fn is_off(&self) -> bool {
+        *self == KEY_A::OFF
+    }
+    #[doc = "Checks if the value of the field is `CLR`"]
+    #[inline(always)]
+    pub fn is_clr(&self) -> bool {
+        *self == KEY_A::CLR
+    }
+    #[doc = "Checks if the value of the field is `SET`"]
+    #[inline(always)]
+    pub fn is_set(&self) -> bool {
+        *self == KEY_A::SET
+    }
+    #[doc = "Checks if the value of the field is `SETLCK`"]
+    #[inline(always)]
+    pub fn is_setlck(&self) -> bool {
+        *self == KEY_A::SETLCK
+    }
+}
+#[doc = "Write proxy for field `KEY`"]
+pub struct KEY_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _KEYW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: KEYW) -> &'a mut W {
-        unsafe { self.bits(variant._bits()) }
+impl<'a> KEY_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: KEY_A) -> &'a mut W {
+        unsafe { self.bits(variant.into()) }
     }
     #[doc = "No action"]
-    #[inline]
+    #[inline(always)]
     pub fn off(self) -> &'a mut W {
-        self.variant(KEYW::OFF)
+        self.variant(KEY_A::OFF)
     }
     #[doc = "Clear protection"]
-    #[inline]
+    #[inline(always)]
     pub fn clr(self) -> &'a mut W {
-        self.variant(KEYW::CLR)
+        self.variant(KEY_A::CLR)
     }
     #[doc = "Set protection"]
-    #[inline]
+    #[inline(always)]
     pub fn set(self) -> &'a mut W {
-        self.variant(KEYW::SET)
+        self.variant(KEY_A::SET)
     }
     #[doc = "Set and lock protection"]
-    #[inline]
+    #[inline(always)]
     pub fn setlck(self) -> &'a mut W {
-        self.variant(KEYW::SETLCK)
+        self.variant(KEY_A::SETLCK)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 255;
-        const OFFSET: u8 = 16;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0xff << 16)) | (((value as u32) & 0xff) << 16);
         self.w
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u32 {
-        self.bits
-    }
     #[doc = "Bits 0:15 - Peripheral identifier"]
-    #[inline]
-    pub fn perid(&self) -> PERIDR {
-        let bits = {
-            const MASK: u16 = 65535;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) as u16
-        };
-        PERIDR { bits }
+    #[inline(always)]
+    pub fn perid(&self) -> PERID_R {
+        PERID_R::new((self.bits & 0xffff) as u16)
     }
     #[doc = "Bits 16:23 - Peripheral access control key"]
-    #[inline]
-    pub fn key(&self) -> KEYR {
-        KEYR::_from({
-            const MASK: u8 = 255;
-            const OFFSET: u8 = 16;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+    #[inline(always)]
+    pub fn key(&self) -> KEY_R {
+        KEY_R::new(((self.bits >> 16) & 0xff) as u8)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
-    #[doc = r" Writes raw bits to the register"]
-    #[inline]
-    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.bits = bits;
-        self
-    }
     #[doc = "Bits 0:15 - Peripheral identifier"]
-    #[inline]
-    pub fn perid(&mut self) -> _PERIDW {
-        _PERIDW { w: self }
+    #[inline(always)]
+    pub fn perid(&mut self) -> PERID_W {
+        PERID_W { w: self }
     }
     #[doc = "Bits 16:23 - Peripheral access control key"]
-    #[inline]
-    pub fn key(&mut self) -> _KEYW {
-        _KEYW { w: self }
+    #[inline(always)]
+    pub fn key(&mut self) -> KEY_W {
+        KEY_W { w: self }
     }
 }

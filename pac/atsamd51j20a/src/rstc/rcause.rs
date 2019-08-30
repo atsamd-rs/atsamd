@@ -1,268 +1,60 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u8,
-}
-impl super::RCAUSE {
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-}
-#[doc = r" Value of the field"]
-pub struct PORR {
-    bits: bool,
-}
-impl PORR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct BODCORER {
-    bits: bool,
-}
-impl BODCORER {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct BODVDDR {
-    bits: bool,
-}
-impl BODVDDR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct NVMR {
-    bits: bool,
-}
-impl NVMR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct EXTR {
-    bits: bool,
-}
-impl EXTR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct WDTR {
-    bits: bool,
-}
-impl WDTR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct SYSTR {
-    bits: bool,
-}
-impl SYSTR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct BACKUPR {
-    bits: bool,
-}
-impl BACKUPR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
+#[doc = "Reader of register RCAUSE"]
+pub type R = crate::R<u8, super::RCAUSE>;
+#[doc = "Reader of field `POR`"]
+pub type POR_R = crate::R<bool, bool>;
+#[doc = "Reader of field `BODCORE`"]
+pub type BODCORE_R = crate::R<bool, bool>;
+#[doc = "Reader of field `BODVDD`"]
+pub type BODVDD_R = crate::R<bool, bool>;
+#[doc = "Reader of field `NVM`"]
+pub type NVM_R = crate::R<bool, bool>;
+#[doc = "Reader of field `EXT`"]
+pub type EXT_R = crate::R<bool, bool>;
+#[doc = "Reader of field `WDT`"]
+pub type WDT_R = crate::R<bool, bool>;
+#[doc = "Reader of field `SYST`"]
+pub type SYST_R = crate::R<bool, bool>;
+#[doc = "Reader of field `BACKUP`"]
+pub type BACKUP_R = crate::R<bool, bool>;
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
     #[doc = "Bit 0 - Power On Reset"]
-    #[inline]
-    pub fn por(&self) -> PORR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
-        PORR { bits }
+    #[inline(always)]
+    pub fn por(&self) -> POR_R {
+        POR_R::new((self.bits & 0x01) != 0)
     }
     #[doc = "Bit 1 - Brown Out CORE Detector Reset"]
-    #[inline]
-    pub fn bodcore(&self) -> BODCORER {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
-        BODCORER { bits }
+    #[inline(always)]
+    pub fn bodcore(&self) -> BODCORE_R {
+        BODCORE_R::new(((self.bits >> 1) & 0x01) != 0)
     }
     #[doc = "Bit 2 - Brown Out VDD Detector Reset"]
-    #[inline]
-    pub fn bodvdd(&self) -> BODVDDR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
-        BODVDDR { bits }
+    #[inline(always)]
+    pub fn bodvdd(&self) -> BODVDD_R {
+        BODVDD_R::new(((self.bits >> 2) & 0x01) != 0)
     }
     #[doc = "Bit 3 - NVM Reset"]
-    #[inline]
-    pub fn nvm(&self) -> NVMR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 3;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
-        NVMR { bits }
+    #[inline(always)]
+    pub fn nvm(&self) -> NVM_R {
+        NVM_R::new(((self.bits >> 3) & 0x01) != 0)
     }
     #[doc = "Bit 4 - External Reset"]
-    #[inline]
-    pub fn ext(&self) -> EXTR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
-        EXTR { bits }
+    #[inline(always)]
+    pub fn ext(&self) -> EXT_R {
+        EXT_R::new(((self.bits >> 4) & 0x01) != 0)
     }
     #[doc = "Bit 5 - Watchdog Reset"]
-    #[inline]
-    pub fn wdt(&self) -> WDTR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 5;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
-        WDTR { bits }
+    #[inline(always)]
+    pub fn wdt(&self) -> WDT_R {
+        WDT_R::new(((self.bits >> 5) & 0x01) != 0)
     }
     #[doc = "Bit 6 - System Reset Request"]
-    #[inline]
-    pub fn syst(&self) -> SYSTR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 6;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
-        SYSTR { bits }
+    #[inline(always)]
+    pub fn syst(&self) -> SYST_R {
+        SYST_R::new(((self.bits >> 6) & 0x01) != 0)
     }
     #[doc = "Bit 7 - Backup Reset"]
-    #[inline]
-    pub fn backup(&self) -> BACKUPR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 7;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
-        BACKUPR { bits }
+    #[inline(always)]
+    pub fn backup(&self) -> BACKUP_R {
+        BACKUP_R::new(((self.bits >> 7) & 0x01) != 0)
     }
 }

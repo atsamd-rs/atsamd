@@ -1,440 +1,312 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u16,
-}
-#[doc = r" Value to write to the register"]
-pub struct W {
-    bits: u16,
-}
-impl super::CTRLA {
-    #[doc = r" Modifies the contents of the register"]
-    #[inline]
-    pub fn modify<F>(&self, f: F)
-    where
-        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
-    {
-        let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-    #[doc = r" Writes to the register"]
-    #[inline]
-    pub fn write<F>(&self, f: F)
-    where
-        F: FnOnce(&mut W) -> &mut W,
-    {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Writes the reset value to the register"]
-    #[inline]
-    pub fn reset(&self) {
-        self.write(|w| w)
+#[doc = "Reader of register CTRLA"]
+pub type R = crate::R<u16, super::CTRLA>;
+#[doc = "Writer for register CTRLA"]
+pub type W = crate::W<u16, super::CTRLA>;
+#[doc = "Register CTRLA `reset()`'s with value 0"]
+impl crate::ResetValue for super::CTRLA {
+    type Type = u16;
+    #[inline(always)]
+    fn reset_value() -> Self::Type {
+        0
     }
 }
-#[doc = "Possible values of the field `CMD`"]
+#[doc = "Command\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum CMDR {
-    #[doc = "Erase Row - Erases the row addressed by the ADDR register."]
+pub enum CMD_A {
+    #[doc = "2: Erase Row - Erases the row addressed by the ADDR register."]
     ER,
-    #[doc = "Write Page - Writes the contents of the page buffer to the page addressed by the ADDR register."]
+    #[doc = "4: Write Page - Writes the contents of the page buffer to the page addressed by the ADDR register."]
     WP,
-    #[doc = "Erase Auxiliary Row - Erases the auxiliary row addressed by the ADDR register. This command can be given only when the security bit is not set and only to the user configuration row."]
+    #[doc = "5: Erase Auxiliary Row - Erases the auxiliary row addressed by the ADDR register. This command can be given only when the security bit is not set and only to the user configuration row."]
     EAR,
-    #[doc = "Write Auxiliary Page - Writes the contents of the page buffer to the page addressed by the ADDR register. This command can be given only when the security bit is not set and only to the user configuration row."]
+    #[doc = "6: Write Auxiliary Page - Writes the contents of the page buffer to the page addressed by the ADDR register. This command can be given only when the security bit is not set and only to the user configuration row."]
     WAP,
-    #[doc = "Security Flow Command"]
+    #[doc = "10: Security Flow Command"]
     SF,
-    #[doc = "Write lockbits"]
+    #[doc = "15: Write lockbits"]
     WL,
-    #[doc = "Lock Region - Locks the region containing the address location in the ADDR register."]
+    #[doc = "64: Lock Region - Locks the region containing the address location in the ADDR register."]
     LR,
-    #[doc = "Unlock Region - Unlocks the region containing the address location in the ADDR register."]
+    #[doc = "65: Unlock Region - Unlocks the region containing the address location in the ADDR register."]
     UR,
-    #[doc = "Sets the power reduction mode."]
+    #[doc = "66: Sets the power reduction mode."]
     SPRM,
-    #[doc = "Clears the power reduction mode."]
+    #[doc = "67: Clears the power reduction mode."]
     CPRM,
-    #[doc = "Page Buffer Clear - Clears the page buffer."]
+    #[doc = "68: Page Buffer Clear - Clears the page buffer."]
     PBC,
-    #[doc = "Set Security Bit - Sets the security bit by writing 0x00 to the first byte in the lockbit row."]
+    #[doc = "69: Set Security Bit - Sets the security bit by writing 0x00 to the first byte in the lockbit row."]
     SSB,
-    #[doc = "Invalidates all cache lines."]
+    #[doc = "70: Invalidates all cache lines."]
     INVALL,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
 }
-impl CMDR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            CMDR::ER => 2,
-            CMDR::WP => 4,
-            CMDR::EAR => 5,
-            CMDR::WAP => 6,
-            CMDR::SF => 10,
-            CMDR::WL => 15,
-            CMDR::LR => 64,
-            CMDR::UR => 65,
-            CMDR::SPRM => 66,
-            CMDR::CPRM => 67,
-            CMDR::PBC => 68,
-            CMDR::SSB => 69,
-            CMDR::INVALL => 70,
-            CMDR::_Reserved(bits) => bits,
+impl From<CMD_A> for u8 {
+    #[inline(always)]
+    fn from(variant: CMD_A) -> Self {
+        match variant {
+            CMD_A::ER => 2,
+            CMD_A::WP => 4,
+            CMD_A::EAR => 5,
+            CMD_A::WAP => 6,
+            CMD_A::SF => 10,
+            CMD_A::WL => 15,
+            CMD_A::LR => 64,
+            CMD_A::UR => 65,
+            CMD_A::SPRM => 66,
+            CMD_A::CPRM => 67,
+            CMD_A::PBC => 68,
+            CMD_A::SSB => 69,
+            CMD_A::INVALL => 70,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> CMDR {
-        match value {
-            2 => CMDR::ER,
-            4 => CMDR::WP,
-            5 => CMDR::EAR,
-            6 => CMDR::WAP,
-            10 => CMDR::SF,
-            15 => CMDR::WL,
-            64 => CMDR::LR,
-            65 => CMDR::UR,
-            66 => CMDR::SPRM,
-            67 => CMDR::CPRM,
-            68 => CMDR::PBC,
-            69 => CMDR::SSB,
-            70 => CMDR::INVALL,
-            i => CMDR::_Reserved(i),
+}
+#[doc = "Reader of field `CMD`"]
+pub type CMD_R = crate::R<u8, CMD_A>;
+impl CMD_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, CMD_A> {
+        use crate::Variant::*;
+        match self.bits {
+            2 => Val(CMD_A::ER),
+            4 => Val(CMD_A::WP),
+            5 => Val(CMD_A::EAR),
+            6 => Val(CMD_A::WAP),
+            10 => Val(CMD_A::SF),
+            15 => Val(CMD_A::WL),
+            64 => Val(CMD_A::LR),
+            65 => Val(CMD_A::UR),
+            66 => Val(CMD_A::SPRM),
+            67 => Val(CMD_A::CPRM),
+            68 => Val(CMD_A::PBC),
+            69 => Val(CMD_A::SSB),
+            70 => Val(CMD_A::INVALL),
+            i => Res(i),
         }
     }
     #[doc = "Checks if the value of the field is `ER`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_er(&self) -> bool {
-        *self == CMDR::ER
+        *self == CMD_A::ER
     }
     #[doc = "Checks if the value of the field is `WP`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_wp(&self) -> bool {
-        *self == CMDR::WP
+        *self == CMD_A::WP
     }
     #[doc = "Checks if the value of the field is `EAR`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_ear(&self) -> bool {
-        *self == CMDR::EAR
+        *self == CMD_A::EAR
     }
     #[doc = "Checks if the value of the field is `WAP`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_wap(&self) -> bool {
-        *self == CMDR::WAP
+        *self == CMD_A::WAP
     }
     #[doc = "Checks if the value of the field is `SF`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_sf(&self) -> bool {
-        *self == CMDR::SF
+        *self == CMD_A::SF
     }
     #[doc = "Checks if the value of the field is `WL`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_wl(&self) -> bool {
-        *self == CMDR::WL
+        *self == CMD_A::WL
     }
     #[doc = "Checks if the value of the field is `LR`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_lr(&self) -> bool {
-        *self == CMDR::LR
+        *self == CMD_A::LR
     }
     #[doc = "Checks if the value of the field is `UR`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_ur(&self) -> bool {
-        *self == CMDR::UR
+        *self == CMD_A::UR
     }
     #[doc = "Checks if the value of the field is `SPRM`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_sprm(&self) -> bool {
-        *self == CMDR::SPRM
+        *self == CMD_A::SPRM
     }
     #[doc = "Checks if the value of the field is `CPRM`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_cprm(&self) -> bool {
-        *self == CMDR::CPRM
+        *self == CMD_A::CPRM
     }
     #[doc = "Checks if the value of the field is `PBC`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_pbc(&self) -> bool {
-        *self == CMDR::PBC
+        *self == CMD_A::PBC
     }
     #[doc = "Checks if the value of the field is `SSB`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_ssb(&self) -> bool {
-        *self == CMDR::SSB
+        *self == CMD_A::SSB
     }
     #[doc = "Checks if the value of the field is `INVALL`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_invall(&self) -> bool {
-        *self == CMDR::INVALL
+        *self == CMD_A::INVALL
     }
 }
-#[doc = "Possible values of the field `CMDEX`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum CMDEXR {
-    #[doc = "Execution Key"]
-    KEY,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
-}
-impl CMDEXR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            CMDEXR::KEY => 165,
-            CMDEXR::_Reserved(bits) => bits,
-        }
-    }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> CMDEXR {
-        match value {
-            165 => CMDEXR::KEY,
-            i => CMDEXR::_Reserved(i),
-        }
-    }
-    #[doc = "Checks if the value of the field is `KEY`"]
-    #[inline]
-    pub fn is_key(&self) -> bool {
-        *self == CMDEXR::KEY
-    }
-}
-#[doc = "Values that can be written to the field `CMD`"]
-pub enum CMDW {
-    #[doc = "Erase Row - Erases the row addressed by the ADDR register."]
-    ER,
-    #[doc = "Write Page - Writes the contents of the page buffer to the page addressed by the ADDR register."]
-    WP,
-    #[doc = "Erase Auxiliary Row - Erases the auxiliary row addressed by the ADDR register. This command can be given only when the security bit is not set and only to the user configuration row."]
-    EAR,
-    #[doc = "Write Auxiliary Page - Writes the contents of the page buffer to the page addressed by the ADDR register. This command can be given only when the security bit is not set and only to the user configuration row."]
-    WAP,
-    #[doc = "Security Flow Command"]
-    SF,
-    #[doc = "Write lockbits"]
-    WL,
-    #[doc = "Lock Region - Locks the region containing the address location in the ADDR register."]
-    LR,
-    #[doc = "Unlock Region - Unlocks the region containing the address location in the ADDR register."]
-    UR,
-    #[doc = "Sets the power reduction mode."]
-    SPRM,
-    #[doc = "Clears the power reduction mode."]
-    CPRM,
-    #[doc = "Page Buffer Clear - Clears the page buffer."]
-    PBC,
-    #[doc = "Set Security Bit - Sets the security bit by writing 0x00 to the first byte in the lockbit row."]
-    SSB,
-    #[doc = "Invalidates all cache lines."]
-    INVALL,
-}
-impl CMDW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            CMDW::ER => 2,
-            CMDW::WP => 4,
-            CMDW::EAR => 5,
-            CMDW::WAP => 6,
-            CMDW::SF => 10,
-            CMDW::WL => 15,
-            CMDW::LR => 64,
-            CMDW::UR => 65,
-            CMDW::SPRM => 66,
-            CMDW::CPRM => 67,
-            CMDW::PBC => 68,
-            CMDW::SSB => 69,
-            CMDW::INVALL => 70,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _CMDW<'a> {
+#[doc = "Write proxy for field `CMD`"]
+pub struct CMD_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _CMDW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: CMDW) -> &'a mut W {
-        unsafe { self.bits(variant._bits()) }
+impl<'a> CMD_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: CMD_A) -> &'a mut W {
+        unsafe { self.bits(variant.into()) }
     }
     #[doc = "Erase Row - Erases the row addressed by the ADDR register."]
-    #[inline]
+    #[inline(always)]
     pub fn er(self) -> &'a mut W {
-        self.variant(CMDW::ER)
+        self.variant(CMD_A::ER)
     }
     #[doc = "Write Page - Writes the contents of the page buffer to the page addressed by the ADDR register."]
-    #[inline]
+    #[inline(always)]
     pub fn wp(self) -> &'a mut W {
-        self.variant(CMDW::WP)
+        self.variant(CMD_A::WP)
     }
     #[doc = "Erase Auxiliary Row - Erases the auxiliary row addressed by the ADDR register. This command can be given only when the security bit is not set and only to the user configuration row."]
-    #[inline]
+    #[inline(always)]
     pub fn ear(self) -> &'a mut W {
-        self.variant(CMDW::EAR)
+        self.variant(CMD_A::EAR)
     }
     #[doc = "Write Auxiliary Page - Writes the contents of the page buffer to the page addressed by the ADDR register. This command can be given only when the security bit is not set and only to the user configuration row."]
-    #[inline]
+    #[inline(always)]
     pub fn wap(self) -> &'a mut W {
-        self.variant(CMDW::WAP)
+        self.variant(CMD_A::WAP)
     }
     #[doc = "Security Flow Command"]
-    #[inline]
+    #[inline(always)]
     pub fn sf(self) -> &'a mut W {
-        self.variant(CMDW::SF)
+        self.variant(CMD_A::SF)
     }
     #[doc = "Write lockbits"]
-    #[inline]
+    #[inline(always)]
     pub fn wl(self) -> &'a mut W {
-        self.variant(CMDW::WL)
+        self.variant(CMD_A::WL)
     }
     #[doc = "Lock Region - Locks the region containing the address location in the ADDR register."]
-    #[inline]
+    #[inline(always)]
     pub fn lr(self) -> &'a mut W {
-        self.variant(CMDW::LR)
+        self.variant(CMD_A::LR)
     }
     #[doc = "Unlock Region - Unlocks the region containing the address location in the ADDR register."]
-    #[inline]
+    #[inline(always)]
     pub fn ur(self) -> &'a mut W {
-        self.variant(CMDW::UR)
+        self.variant(CMD_A::UR)
     }
     #[doc = "Sets the power reduction mode."]
-    #[inline]
+    #[inline(always)]
     pub fn sprm(self) -> &'a mut W {
-        self.variant(CMDW::SPRM)
+        self.variant(CMD_A::SPRM)
     }
     #[doc = "Clears the power reduction mode."]
-    #[inline]
+    #[inline(always)]
     pub fn cprm(self) -> &'a mut W {
-        self.variant(CMDW::CPRM)
+        self.variant(CMD_A::CPRM)
     }
     #[doc = "Page Buffer Clear - Clears the page buffer."]
-    #[inline]
+    #[inline(always)]
     pub fn pbc(self) -> &'a mut W {
-        self.variant(CMDW::PBC)
+        self.variant(CMD_A::PBC)
     }
     #[doc = "Set Security Bit - Sets the security bit by writing 0x00 to the first byte in the lockbit row."]
-    #[inline]
+    #[inline(always)]
     pub fn ssb(self) -> &'a mut W {
-        self.variant(CMDW::SSB)
+        self.variant(CMD_A::SSB)
     }
     #[doc = "Invalidates all cache lines."]
-    #[inline]
+    #[inline(always)]
     pub fn invall(self) -> &'a mut W {
-        self.variant(CMDW::INVALL)
+        self.variant(CMD_A::INVALL)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 127;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits = (self.w.bits & !0x7f) | ((value as u16) & 0x7f);
         self.w
     }
 }
-#[doc = "Values that can be written to the field `CMDEX`"]
-pub enum CMDEXW {
-    #[doc = "Execution Key"]
+#[doc = "Command Execution\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum CMDEX_A {
+    #[doc = "165: Execution Key"]
     KEY,
 }
-impl CMDEXW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            CMDEXW::KEY => 165,
+impl From<CMDEX_A> for u8 {
+    #[inline(always)]
+    fn from(variant: CMDEX_A) -> Self {
+        match variant {
+            CMDEX_A::KEY => 165,
         }
     }
 }
-#[doc = r" Proxy"]
-pub struct _CMDEXW<'a> {
+#[doc = "Reader of field `CMDEX`"]
+pub type CMDEX_R = crate::R<u8, CMDEX_A>;
+impl CMDEX_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, CMDEX_A> {
+        use crate::Variant::*;
+        match self.bits {
+            165 => Val(CMDEX_A::KEY),
+            i => Res(i),
+        }
+    }
+    #[doc = "Checks if the value of the field is `KEY`"]
+    #[inline(always)]
+    pub fn is_key(&self) -> bool {
+        *self == CMDEX_A::KEY
+    }
+}
+#[doc = "Write proxy for field `CMDEX`"]
+pub struct CMDEX_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _CMDEXW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: CMDEXW) -> &'a mut W {
-        unsafe { self.bits(variant._bits()) }
+impl<'a> CMDEX_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: CMDEX_A) -> &'a mut W {
+        unsafe { self.bits(variant.into()) }
     }
     #[doc = "Execution Key"]
-    #[inline]
+    #[inline(always)]
     pub fn key(self) -> &'a mut W {
-        self.variant(CMDEXW::KEY)
+        self.variant(CMDEX_A::KEY)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 255;
-        const OFFSET: u8 = 8;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits = (self.w.bits & !(0xff << 8)) | (((value as u16) & 0xff) << 8);
         self.w
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u16 {
-        self.bits
-    }
     #[doc = "Bits 0:6 - Command"]
-    #[inline]
-    pub fn cmd(&self) -> CMDR {
-        CMDR::_from({
-            const MASK: u8 = 127;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u16) as u8
-        })
+    #[inline(always)]
+    pub fn cmd(&self) -> CMD_R {
+        CMD_R::new((self.bits & 0x7f) as u8)
     }
     #[doc = "Bits 8:15 - Command Execution"]
-    #[inline]
-    pub fn cmdex(&self) -> CMDEXR {
-        CMDEXR::_from({
-            const MASK: u8 = 255;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u16) as u8
-        })
+    #[inline(always)]
+    pub fn cmdex(&self) -> CMDEX_R {
+        CMDEX_R::new(((self.bits >> 8) & 0xff) as u8)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
-    #[doc = r" Writes raw bits to the register"]
-    #[inline]
-    pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {
-        self.bits = bits;
-        self
-    }
     #[doc = "Bits 0:6 - Command"]
-    #[inline]
-    pub fn cmd(&mut self) -> _CMDW {
-        _CMDW { w: self }
+    #[inline(always)]
+    pub fn cmd(&mut self) -> CMD_W {
+        CMD_W { w: self }
     }
     #[doc = "Bits 8:15 - Command Execution"]
-    #[inline]
-    pub fn cmdex(&mut self) -> _CMDEXW {
-        _CMDEXW { w: self }
+    #[inline(always)]
+    pub fn cmdex(&mut self) -> CMDEX_W {
+        CMDEX_W { w: self }
     }
 }

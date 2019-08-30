@@ -1,602 +1,494 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u32,
-}
-impl super::CA1R {
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-}
-#[doc = "Possible values of the field `SDR50SUP`"]
+#[doc = "Reader of register CA1R"]
+pub type R = crate::R<u32, super::CA1R>;
+#[doc = "SDR50 Support\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum SDR50SUPR {
-    #[doc = "SDR50 is Not Supported"]
+pub enum SDR50SUP_A {
+    #[doc = "0: SDR50 is Not Supported"]
     NO,
-    #[doc = "SDR50 is Supported"]
+    #[doc = "1: SDR50 is Supported"]
     YES,
 }
-impl SDR50SUPR {
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        match *self {
-            SDR50SUPR::NO => false,
-            SDR50SUPR::YES => true,
+impl From<SDR50SUP_A> for bool {
+    #[inline(always)]
+    fn from(variant: SDR50SUP_A) -> Self {
+        match variant {
+            SDR50SUP_A::NO => false,
+            SDR50SUP_A::YES => true,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: bool) -> SDR50SUPR {
-        match value {
-            false => SDR50SUPR::NO,
-            true => SDR50SUPR::YES,
+}
+#[doc = "Reader of field `SDR50SUP`"]
+pub type SDR50SUP_R = crate::R<bool, SDR50SUP_A>;
+impl SDR50SUP_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> SDR50SUP_A {
+        match self.bits {
+            false => SDR50SUP_A::NO,
+            true => SDR50SUP_A::YES,
         }
     }
     #[doc = "Checks if the value of the field is `NO`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_no(&self) -> bool {
-        *self == SDR50SUPR::NO
+        *self == SDR50SUP_A::NO
     }
     #[doc = "Checks if the value of the field is `YES`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_yes(&self) -> bool {
-        *self == SDR50SUPR::YES
+        *self == SDR50SUP_A::YES
     }
 }
-#[doc = "Possible values of the field `SDR104SUP`"]
+#[doc = "SDR104 Support\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum SDR104SUPR {
-    #[doc = "SDR104 is Not Supported"]
+pub enum SDR104SUP_A {
+    #[doc = "0: SDR104 is Not Supported"]
     NO,
-    #[doc = "SDR104 is Supported"]
+    #[doc = "1: SDR104 is Supported"]
     YES,
 }
-impl SDR104SUPR {
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        match *self {
-            SDR104SUPR::NO => false,
-            SDR104SUPR::YES => true,
+impl From<SDR104SUP_A> for bool {
+    #[inline(always)]
+    fn from(variant: SDR104SUP_A) -> Self {
+        match variant {
+            SDR104SUP_A::NO => false,
+            SDR104SUP_A::YES => true,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: bool) -> SDR104SUPR {
-        match value {
-            false => SDR104SUPR::NO,
-            true => SDR104SUPR::YES,
+}
+#[doc = "Reader of field `SDR104SUP`"]
+pub type SDR104SUP_R = crate::R<bool, SDR104SUP_A>;
+impl SDR104SUP_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> SDR104SUP_A {
+        match self.bits {
+            false => SDR104SUP_A::NO,
+            true => SDR104SUP_A::YES,
         }
     }
     #[doc = "Checks if the value of the field is `NO`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_no(&self) -> bool {
-        *self == SDR104SUPR::NO
+        *self == SDR104SUP_A::NO
     }
     #[doc = "Checks if the value of the field is `YES`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_yes(&self) -> bool {
-        *self == SDR104SUPR::YES
+        *self == SDR104SUP_A::YES
     }
 }
-#[doc = "Possible values of the field `DDR50SUP`"]
+#[doc = "DDR50 Support\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum DDR50SUPR {
-    #[doc = "DDR50 is Not Supported"]
+pub enum DDR50SUP_A {
+    #[doc = "0: DDR50 is Not Supported"]
     NO,
-    #[doc = "DDR50 is Supported"]
+    #[doc = "1: DDR50 is Supported"]
     YES,
 }
-impl DDR50SUPR {
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        match *self {
-            DDR50SUPR::NO => false,
-            DDR50SUPR::YES => true,
+impl From<DDR50SUP_A> for bool {
+    #[inline(always)]
+    fn from(variant: DDR50SUP_A) -> Self {
+        match variant {
+            DDR50SUP_A::NO => false,
+            DDR50SUP_A::YES => true,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: bool) -> DDR50SUPR {
-        match value {
-            false => DDR50SUPR::NO,
-            true => DDR50SUPR::YES,
+}
+#[doc = "Reader of field `DDR50SUP`"]
+pub type DDR50SUP_R = crate::R<bool, DDR50SUP_A>;
+impl DDR50SUP_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> DDR50SUP_A {
+        match self.bits {
+            false => DDR50SUP_A::NO,
+            true => DDR50SUP_A::YES,
         }
     }
     #[doc = "Checks if the value of the field is `NO`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_no(&self) -> bool {
-        *self == DDR50SUPR::NO
+        *self == DDR50SUP_A::NO
     }
     #[doc = "Checks if the value of the field is `YES`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_yes(&self) -> bool {
-        *self == DDR50SUPR::YES
+        *self == DDR50SUP_A::YES
     }
 }
-#[doc = "Possible values of the field `DRVASUP`"]
+#[doc = "Driver Type A Support\n\nValue on reset: 1"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum DRVASUPR {
-    #[doc = "Driver Type A is Not Supported"]
+pub enum DRVASUP_A {
+    #[doc = "0: Driver Type A is Not Supported"]
     NO,
-    #[doc = "Driver Type A is Supported"]
+    #[doc = "1: Driver Type A is Supported"]
     YES,
 }
-impl DRVASUPR {
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        match *self {
-            DRVASUPR::NO => false,
-            DRVASUPR::YES => true,
+impl From<DRVASUP_A> for bool {
+    #[inline(always)]
+    fn from(variant: DRVASUP_A) -> Self {
+        match variant {
+            DRVASUP_A::NO => false,
+            DRVASUP_A::YES => true,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: bool) -> DRVASUPR {
-        match value {
-            false => DRVASUPR::NO,
-            true => DRVASUPR::YES,
+}
+#[doc = "Reader of field `DRVASUP`"]
+pub type DRVASUP_R = crate::R<bool, DRVASUP_A>;
+impl DRVASUP_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> DRVASUP_A {
+        match self.bits {
+            false => DRVASUP_A::NO,
+            true => DRVASUP_A::YES,
         }
     }
     #[doc = "Checks if the value of the field is `NO`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_no(&self) -> bool {
-        *self == DRVASUPR::NO
+        *self == DRVASUP_A::NO
     }
     #[doc = "Checks if the value of the field is `YES`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_yes(&self) -> bool {
-        *self == DRVASUPR::YES
+        *self == DRVASUP_A::YES
     }
 }
-#[doc = "Possible values of the field `DRVCSUP`"]
+#[doc = "Driver Type C Support\n\nValue on reset: 1"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum DRVCSUPR {
-    #[doc = "Driver Type C is Not Supported"]
+pub enum DRVCSUP_A {
+    #[doc = "0: Driver Type C is Not Supported"]
     NO,
-    #[doc = "Driver Type C is Supported"]
+    #[doc = "1: Driver Type C is Supported"]
     YES,
 }
-impl DRVCSUPR {
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        match *self {
-            DRVCSUPR::NO => false,
-            DRVCSUPR::YES => true,
+impl From<DRVCSUP_A> for bool {
+    #[inline(always)]
+    fn from(variant: DRVCSUP_A) -> Self {
+        match variant {
+            DRVCSUP_A::NO => false,
+            DRVCSUP_A::YES => true,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: bool) -> DRVCSUPR {
-        match value {
-            false => DRVCSUPR::NO,
-            true => DRVCSUPR::YES,
+}
+#[doc = "Reader of field `DRVCSUP`"]
+pub type DRVCSUP_R = crate::R<bool, DRVCSUP_A>;
+impl DRVCSUP_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> DRVCSUP_A {
+        match self.bits {
+            false => DRVCSUP_A::NO,
+            true => DRVCSUP_A::YES,
         }
     }
     #[doc = "Checks if the value of the field is `NO`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_no(&self) -> bool {
-        *self == DRVCSUPR::NO
+        *self == DRVCSUP_A::NO
     }
     #[doc = "Checks if the value of the field is `YES`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_yes(&self) -> bool {
-        *self == DRVCSUPR::YES
+        *self == DRVCSUP_A::YES
     }
 }
-#[doc = "Possible values of the field `DRVDSUP`"]
+#[doc = "Driver Type D Support\n\nValue on reset: 1"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum DRVDSUPR {
-    #[doc = "Driver Type D is Not Supported"]
+pub enum DRVDSUP_A {
+    #[doc = "0: Driver Type D is Not Supported"]
     NO,
-    #[doc = "Driver Type D is Supported"]
+    #[doc = "1: Driver Type D is Supported"]
     YES,
 }
-impl DRVDSUPR {
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        match *self {
-            DRVDSUPR::NO => false,
-            DRVDSUPR::YES => true,
+impl From<DRVDSUP_A> for bool {
+    #[inline(always)]
+    fn from(variant: DRVDSUP_A) -> Self {
+        match variant {
+            DRVDSUP_A::NO => false,
+            DRVDSUP_A::YES => true,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: bool) -> DRVDSUPR {
-        match value {
-            false => DRVDSUPR::NO,
-            true => DRVDSUPR::YES,
+}
+#[doc = "Reader of field `DRVDSUP`"]
+pub type DRVDSUP_R = crate::R<bool, DRVDSUP_A>;
+impl DRVDSUP_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> DRVDSUP_A {
+        match self.bits {
+            false => DRVDSUP_A::NO,
+            true => DRVDSUP_A::YES,
         }
     }
     #[doc = "Checks if the value of the field is `NO`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_no(&self) -> bool {
-        *self == DRVDSUPR::NO
+        *self == DRVDSUP_A::NO
     }
     #[doc = "Checks if the value of the field is `YES`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_yes(&self) -> bool {
-        *self == DRVDSUPR::YES
+        *self == DRVDSUP_A::YES
     }
 }
-#[doc = "Possible values of the field `TCNTRT`"]
+#[doc = "Timer Count for Re-Tuning\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum TCNTRTR {
-    #[doc = "Re-Tuning Timer disabled"]
+pub enum TCNTRT_A {
+    #[doc = "0: Re-Tuning Timer disabled"]
     DISABLED,
-    #[doc = "1 second"]
+    #[doc = "1: 1 second"]
     _1S,
-    #[doc = "2 seconds"]
+    #[doc = "2: 2 seconds"]
     _2S,
-    #[doc = "4 seconds"]
+    #[doc = "3: 4 seconds"]
     _4S,
-    #[doc = "8 seconds"]
+    #[doc = "4: 8 seconds"]
     _8S,
-    #[doc = "16 seconds"]
+    #[doc = "5: 16 seconds"]
     _16S,
-    #[doc = "32 seconds"]
+    #[doc = "6: 32 seconds"]
     _32S,
-    #[doc = "64 seconds"]
+    #[doc = "7: 64 seconds"]
     _64S,
-    #[doc = "128 seconds"]
+    #[doc = "8: 128 seconds"]
     _128S,
-    #[doc = "256 seconds"]
+    #[doc = "9: 256 seconds"]
     _256S,
-    #[doc = "512 seconds"]
+    #[doc = "10: 512 seconds"]
     _512S,
-    #[doc = "1024 seconds"]
+    #[doc = "11: 1024 seconds"]
     _1024S,
-    #[doc = "Get information from other source"]
+    #[doc = "15: Get information from other source"]
     OTHER,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
 }
-impl TCNTRTR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            TCNTRTR::DISABLED => 0,
-            TCNTRTR::_1S => 1,
-            TCNTRTR::_2S => 2,
-            TCNTRTR::_4S => 3,
-            TCNTRTR::_8S => 4,
-            TCNTRTR::_16S => 5,
-            TCNTRTR::_32S => 6,
-            TCNTRTR::_64S => 7,
-            TCNTRTR::_128S => 8,
-            TCNTRTR::_256S => 9,
-            TCNTRTR::_512S => 10,
-            TCNTRTR::_1024S => 11,
-            TCNTRTR::OTHER => 15,
-            TCNTRTR::_Reserved(bits) => bits,
+impl From<TCNTRT_A> for u8 {
+    #[inline(always)]
+    fn from(variant: TCNTRT_A) -> Self {
+        match variant {
+            TCNTRT_A::DISABLED => 0,
+            TCNTRT_A::_1S => 1,
+            TCNTRT_A::_2S => 2,
+            TCNTRT_A::_4S => 3,
+            TCNTRT_A::_8S => 4,
+            TCNTRT_A::_16S => 5,
+            TCNTRT_A::_32S => 6,
+            TCNTRT_A::_64S => 7,
+            TCNTRT_A::_128S => 8,
+            TCNTRT_A::_256S => 9,
+            TCNTRT_A::_512S => 10,
+            TCNTRT_A::_1024S => 11,
+            TCNTRT_A::OTHER => 15,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> TCNTRTR {
-        match value {
-            0 => TCNTRTR::DISABLED,
-            1 => TCNTRTR::_1S,
-            2 => TCNTRTR::_2S,
-            3 => TCNTRTR::_4S,
-            4 => TCNTRTR::_8S,
-            5 => TCNTRTR::_16S,
-            6 => TCNTRTR::_32S,
-            7 => TCNTRTR::_64S,
-            8 => TCNTRTR::_128S,
-            9 => TCNTRTR::_256S,
-            10 => TCNTRTR::_512S,
-            11 => TCNTRTR::_1024S,
-            15 => TCNTRTR::OTHER,
-            i => TCNTRTR::_Reserved(i),
+}
+#[doc = "Reader of field `TCNTRT`"]
+pub type TCNTRT_R = crate::R<u8, TCNTRT_A>;
+impl TCNTRT_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, TCNTRT_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(TCNTRT_A::DISABLED),
+            1 => Val(TCNTRT_A::_1S),
+            2 => Val(TCNTRT_A::_2S),
+            3 => Val(TCNTRT_A::_4S),
+            4 => Val(TCNTRT_A::_8S),
+            5 => Val(TCNTRT_A::_16S),
+            6 => Val(TCNTRT_A::_32S),
+            7 => Val(TCNTRT_A::_64S),
+            8 => Val(TCNTRT_A::_128S),
+            9 => Val(TCNTRT_A::_256S),
+            10 => Val(TCNTRT_A::_512S),
+            11 => Val(TCNTRT_A::_1024S),
+            15 => Val(TCNTRT_A::OTHER),
+            i => Res(i),
         }
     }
     #[doc = "Checks if the value of the field is `DISABLED`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_disabled(&self) -> bool {
-        *self == TCNTRTR::DISABLED
+        *self == TCNTRT_A::DISABLED
     }
     #[doc = "Checks if the value of the field is `_1S`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_1s(&self) -> bool {
-        *self == TCNTRTR::_1S
+        *self == TCNTRT_A::_1S
     }
     #[doc = "Checks if the value of the field is `_2S`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_2s(&self) -> bool {
-        *self == TCNTRTR::_2S
+        *self == TCNTRT_A::_2S
     }
     #[doc = "Checks if the value of the field is `_4S`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_4s(&self) -> bool {
-        *self == TCNTRTR::_4S
+        *self == TCNTRT_A::_4S
     }
     #[doc = "Checks if the value of the field is `_8S`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_8s(&self) -> bool {
-        *self == TCNTRTR::_8S
+        *self == TCNTRT_A::_8S
     }
     #[doc = "Checks if the value of the field is `_16S`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_16s(&self) -> bool {
-        *self == TCNTRTR::_16S
+        *self == TCNTRT_A::_16S
     }
     #[doc = "Checks if the value of the field is `_32S`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_32s(&self) -> bool {
-        *self == TCNTRTR::_32S
+        *self == TCNTRT_A::_32S
     }
     #[doc = "Checks if the value of the field is `_64S`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_64s(&self) -> bool {
-        *self == TCNTRTR::_64S
+        *self == TCNTRT_A::_64S
     }
     #[doc = "Checks if the value of the field is `_128S`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_128s(&self) -> bool {
-        *self == TCNTRTR::_128S
+        *self == TCNTRT_A::_128S
     }
     #[doc = "Checks if the value of the field is `_256S`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_256s(&self) -> bool {
-        *self == TCNTRTR::_256S
+        *self == TCNTRT_A::_256S
     }
     #[doc = "Checks if the value of the field is `_512S`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_512s(&self) -> bool {
-        *self == TCNTRTR::_512S
+        *self == TCNTRT_A::_512S
     }
     #[doc = "Checks if the value of the field is `_1024S`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_1024s(&self) -> bool {
-        *self == TCNTRTR::_1024S
+        *self == TCNTRT_A::_1024S
     }
     #[doc = "Checks if the value of the field is `OTHER`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_other(&self) -> bool {
-        *self == TCNTRTR::OTHER
+        *self == TCNTRT_A::OTHER
     }
 }
-#[doc = "Possible values of the field `TSDR50`"]
+#[doc = "Use Tuning for SDR50\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum TSDR50R {
-    #[doc = "SDR50 does not require tuning"]
+pub enum TSDR50_A {
+    #[doc = "0: SDR50 does not require tuning"]
     NO,
-    #[doc = "SDR50 requires tuning"]
+    #[doc = "1: SDR50 requires tuning"]
     YES,
 }
-impl TSDR50R {
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        match *self {
-            TSDR50R::NO => false,
-            TSDR50R::YES => true,
+impl From<TSDR50_A> for bool {
+    #[inline(always)]
+    fn from(variant: TSDR50_A) -> Self {
+        match variant {
+            TSDR50_A::NO => false,
+            TSDR50_A::YES => true,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: bool) -> TSDR50R {
-        match value {
-            false => TSDR50R::NO,
-            true => TSDR50R::YES,
+}
+#[doc = "Reader of field `TSDR50`"]
+pub type TSDR50_R = crate::R<bool, TSDR50_A>;
+impl TSDR50_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> TSDR50_A {
+        match self.bits {
+            false => TSDR50_A::NO,
+            true => TSDR50_A::YES,
         }
     }
     #[doc = "Checks if the value of the field is `NO`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_no(&self) -> bool {
-        *self == TSDR50R::NO
+        *self == TSDR50_A::NO
     }
     #[doc = "Checks if the value of the field is `YES`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_yes(&self) -> bool {
-        *self == TSDR50R::YES
+        *self == TSDR50_A::YES
     }
 }
-#[doc = "Possible values of the field `CLKMULT`"]
+#[doc = "Clock Multiplier\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum CLKMULTR {
-    #[doc = "Clock Multiplier is Not Supported"]
+pub enum CLKMULT_A {
+    #[doc = "0: Clock Multiplier is Not Supported"]
     NO,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
 }
-impl CLKMULTR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            CLKMULTR::NO => 0,
-            CLKMULTR::_Reserved(bits) => bits,
+impl From<CLKMULT_A> for u8 {
+    #[inline(always)]
+    fn from(variant: CLKMULT_A) -> Self {
+        match variant {
+            CLKMULT_A::NO => 0,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> CLKMULTR {
-        match value {
-            0 => CLKMULTR::NO,
-            i => CLKMULTR::_Reserved(i),
+}
+#[doc = "Reader of field `CLKMULT`"]
+pub type CLKMULT_R = crate::R<u8, CLKMULT_A>;
+impl CLKMULT_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, CLKMULT_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(CLKMULT_A::NO),
+            i => Res(i),
         }
     }
     #[doc = "Checks if the value of the field is `NO`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_no(&self) -> bool {
-        *self == CLKMULTR::NO
+        *self == CLKMULT_A::NO
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u32 {
-        self.bits
-    }
     #[doc = "Bit 0 - SDR50 Support"]
-    #[inline]
-    pub fn sdr50sup(&self) -> SDR50SUPR {
-        SDR50SUPR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        })
+    #[inline(always)]
+    pub fn sdr50sup(&self) -> SDR50SUP_R {
+        SDR50SUP_R::new((self.bits & 0x01) != 0)
     }
     #[doc = "Bit 1 - SDR104 Support"]
-    #[inline]
-    pub fn sdr104sup(&self) -> SDR104SUPR {
-        SDR104SUPR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        })
+    #[inline(always)]
+    pub fn sdr104sup(&self) -> SDR104SUP_R {
+        SDR104SUP_R::new(((self.bits >> 1) & 0x01) != 0)
     }
     #[doc = "Bit 2 - DDR50 Support"]
-    #[inline]
-    pub fn ddr50sup(&self) -> DDR50SUPR {
-        DDR50SUPR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        })
+    #[inline(always)]
+    pub fn ddr50sup(&self) -> DDR50SUP_R {
+        DDR50SUP_R::new(((self.bits >> 2) & 0x01) != 0)
     }
     #[doc = "Bit 4 - Driver Type A Support"]
-    #[inline]
-    pub fn drvasup(&self) -> DRVASUPR {
-        DRVASUPR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        })
+    #[inline(always)]
+    pub fn drvasup(&self) -> DRVASUP_R {
+        DRVASUP_R::new(((self.bits >> 4) & 0x01) != 0)
     }
     #[doc = "Bit 5 - Driver Type C Support"]
-    #[inline]
-    pub fn drvcsup(&self) -> DRVCSUPR {
-        DRVCSUPR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 5;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        })
+    #[inline(always)]
+    pub fn drvcsup(&self) -> DRVCSUP_R {
+        DRVCSUP_R::new(((self.bits >> 5) & 0x01) != 0)
     }
     #[doc = "Bit 6 - Driver Type D Support"]
-    #[inline]
-    pub fn drvdsup(&self) -> DRVDSUPR {
-        DRVDSUPR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 6;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        })
+    #[inline(always)]
+    pub fn drvdsup(&self) -> DRVDSUP_R {
+        DRVDSUP_R::new(((self.bits >> 6) & 0x01) != 0)
     }
     #[doc = "Bits 8:11 - Timer Count for Re-Tuning"]
-    #[inline]
-    pub fn tcntrt(&self) -> TCNTRTR {
-        TCNTRTR::_from({
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+    #[inline(always)]
+    pub fn tcntrt(&self) -> TCNTRT_R {
+        TCNTRT_R::new(((self.bits >> 8) & 0x0f) as u8)
     }
     #[doc = "Bit 13 - Use Tuning for SDR50"]
-    #[inline]
-    pub fn tsdr50(&self) -> TSDR50R {
-        TSDR50R::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 13;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        })
+    #[inline(always)]
+    pub fn tsdr50(&self) -> TSDR50_R {
+        TSDR50_R::new(((self.bits >> 13) & 0x01) != 0)
     }
     #[doc = "Bits 16:23 - Clock Multiplier"]
-    #[inline]
-    pub fn clkmult(&self) -> CLKMULTR {
-        CLKMULTR::_from({
-            const MASK: u8 = 255;
-            const OFFSET: u8 = 16;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+    #[inline(always)]
+    pub fn clkmult(&self) -> CLKMULT_R {
+        CLKMULT_R::new(((self.bits >> 16) & 0xff) as u8)
     }
 }

@@ -1,146 +1,64 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u8,
-}
-#[doc = r" Value to write to the register"]
-pub struct W {
-    bits: u8,
-}
-impl super::HIBCFG {
-    #[doc = r" Modifies the contents of the register"]
-    #[inline]
-    pub fn modify<F>(&self, f: F)
-    where
-        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
-    {
-        let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-    #[doc = r" Writes to the register"]
-    #[inline]
-    pub fn write<F>(&self, f: F)
-    where
-        F: FnOnce(&mut W) -> &mut W,
-    {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Writes the reset value to the register"]
-    #[inline]
-    pub fn reset(&self) {
-        self.write(|w| w)
+#[doc = "Reader of register HIBCFG"]
+pub type R = crate::R<u8, super::HIBCFG>;
+#[doc = "Writer for register HIBCFG"]
+pub type W = crate::W<u8, super::HIBCFG>;
+#[doc = "Register HIBCFG `reset()`'s with value 0"]
+impl crate::ResetValue for super::HIBCFG {
+    type Type = u8;
+    #[inline(always)]
+    fn reset_value() -> Self::Type {
+        0
     }
 }
-#[doc = r" Value of the field"]
-pub struct RAMCFGR {
-    bits: u8,
-}
-impl RAMCFGR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
-}
-#[doc = r" Value of the field"]
-pub struct BRAMCFGR {
-    bits: u8,
-}
-impl BRAMCFGR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
-}
-#[doc = r" Proxy"]
-pub struct _RAMCFGW<'a> {
+#[doc = "Reader of field `RAMCFG`"]
+pub type RAMCFG_R = crate::R<u8, u8>;
+#[doc = "Write proxy for field `RAMCFG`"]
+pub struct RAMCFG_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _RAMCFGW<'a> {
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+impl<'a> RAMCFG_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits = (self.w.bits & !0x03) | ((value as u8) & 0x03);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _BRAMCFGW<'a> {
+#[doc = "Reader of field `BRAMCFG`"]
+pub type BRAMCFG_R = crate::R<u8, u8>;
+#[doc = "Write proxy for field `BRAMCFG`"]
+pub struct BRAMCFG_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _BRAMCFGW<'a> {
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+impl<'a> BRAMCFG_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 2;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x03 << 2)) | (((value as u8) & 0x03) << 2);
         self.w
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
     #[doc = "Bits 0:1 - Ram Configuration"]
-    #[inline]
-    pub fn ramcfg(&self) -> RAMCFGR {
-        let bits = {
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u8) as u8
-        };
-        RAMCFGR { bits }
+    #[inline(always)]
+    pub fn ramcfg(&self) -> RAMCFG_R {
+        RAMCFG_R::new((self.bits & 0x03) as u8)
     }
     #[doc = "Bits 2:3 - Backup Ram Configuration"]
-    #[inline]
-    pub fn bramcfg(&self) -> BRAMCFGR {
-        let bits = {
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u8) as u8
-        };
-        BRAMCFGR { bits }
+    #[inline(always)]
+    pub fn bramcfg(&self) -> BRAMCFG_R {
+        BRAMCFG_R::new(((self.bits >> 2) & 0x03) as u8)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
-    #[doc = r" Writes raw bits to the register"]
-    #[inline]
-    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
-        self.bits = bits;
-        self
-    }
     #[doc = "Bits 0:1 - Ram Configuration"]
-    #[inline]
-    pub fn ramcfg(&mut self) -> _RAMCFGW {
-        _RAMCFGW { w: self }
+    #[inline(always)]
+    pub fn ramcfg(&mut self) -> RAMCFG_W {
+        RAMCFG_W { w: self }
     }
     #[doc = "Bits 2:3 - Backup Ram Configuration"]
-    #[inline]
-    pub fn bramcfg(&mut self) -> _BRAMCFGW {
-        _BRAMCFGW { w: self }
+    #[inline(always)]
+    pub fn bramcfg(&mut self) -> BRAMCFG_W {
+        BRAMCFG_W { w: self }
     }
 }

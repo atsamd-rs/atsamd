@@ -1,1012 +1,228 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u32,
-}
-impl super::BUSYCH {
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-}
-#[doc = r" Value of the field"]
-pub struct BUSYCH0R {
-    bits: bool,
-}
-impl BUSYCH0R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct BUSYCH1R {
-    bits: bool,
-}
-impl BUSYCH1R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct BUSYCH2R {
-    bits: bool,
-}
-impl BUSYCH2R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct BUSYCH3R {
-    bits: bool,
-}
-impl BUSYCH3R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct BUSYCH4R {
-    bits: bool,
-}
-impl BUSYCH4R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct BUSYCH5R {
-    bits: bool,
-}
-impl BUSYCH5R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct BUSYCH6R {
-    bits: bool,
-}
-impl BUSYCH6R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct BUSYCH7R {
-    bits: bool,
-}
-impl BUSYCH7R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct BUSYCH8R {
-    bits: bool,
-}
-impl BUSYCH8R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct BUSYCH9R {
-    bits: bool,
-}
-impl BUSYCH9R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct BUSYCH10R {
-    bits: bool,
-}
-impl BUSYCH10R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct BUSYCH11R {
-    bits: bool,
-}
-impl BUSYCH11R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct BUSYCH12R {
-    bits: bool,
-}
-impl BUSYCH12R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct BUSYCH13R {
-    bits: bool,
-}
-impl BUSYCH13R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct BUSYCH14R {
-    bits: bool,
-}
-impl BUSYCH14R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct BUSYCH15R {
-    bits: bool,
-}
-impl BUSYCH15R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct BUSYCH16R {
-    bits: bool,
-}
-impl BUSYCH16R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct BUSYCH17R {
-    bits: bool,
-}
-impl BUSYCH17R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct BUSYCH18R {
-    bits: bool,
-}
-impl BUSYCH18R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct BUSYCH19R {
-    bits: bool,
-}
-impl BUSYCH19R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct BUSYCH20R {
-    bits: bool,
-}
-impl BUSYCH20R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct BUSYCH21R {
-    bits: bool,
-}
-impl BUSYCH21R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct BUSYCH22R {
-    bits: bool,
-}
-impl BUSYCH22R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct BUSYCH23R {
-    bits: bool,
-}
-impl BUSYCH23R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct BUSYCH24R {
-    bits: bool,
-}
-impl BUSYCH24R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct BUSYCH25R {
-    bits: bool,
-}
-impl BUSYCH25R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct BUSYCH26R {
-    bits: bool,
-}
-impl BUSYCH26R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct BUSYCH27R {
-    bits: bool,
-}
-impl BUSYCH27R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct BUSYCH28R {
-    bits: bool,
-}
-impl BUSYCH28R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct BUSYCH29R {
-    bits: bool,
-}
-impl BUSYCH29R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct BUSYCH30R {
-    bits: bool,
-}
-impl BUSYCH30R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct BUSYCH31R {
-    bits: bool,
-}
-impl BUSYCH31R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
+#[doc = "Reader of register BUSYCH"]
+pub type R = crate::R<u32, super::BUSYCH>;
+#[doc = "Reader of field `BUSYCH0`"]
+pub type BUSYCH0_R = crate::R<bool, bool>;
+#[doc = "Reader of field `BUSYCH1`"]
+pub type BUSYCH1_R = crate::R<bool, bool>;
+#[doc = "Reader of field `BUSYCH2`"]
+pub type BUSYCH2_R = crate::R<bool, bool>;
+#[doc = "Reader of field `BUSYCH3`"]
+pub type BUSYCH3_R = crate::R<bool, bool>;
+#[doc = "Reader of field `BUSYCH4`"]
+pub type BUSYCH4_R = crate::R<bool, bool>;
+#[doc = "Reader of field `BUSYCH5`"]
+pub type BUSYCH5_R = crate::R<bool, bool>;
+#[doc = "Reader of field `BUSYCH6`"]
+pub type BUSYCH6_R = crate::R<bool, bool>;
+#[doc = "Reader of field `BUSYCH7`"]
+pub type BUSYCH7_R = crate::R<bool, bool>;
+#[doc = "Reader of field `BUSYCH8`"]
+pub type BUSYCH8_R = crate::R<bool, bool>;
+#[doc = "Reader of field `BUSYCH9`"]
+pub type BUSYCH9_R = crate::R<bool, bool>;
+#[doc = "Reader of field `BUSYCH10`"]
+pub type BUSYCH10_R = crate::R<bool, bool>;
+#[doc = "Reader of field `BUSYCH11`"]
+pub type BUSYCH11_R = crate::R<bool, bool>;
+#[doc = "Reader of field `BUSYCH12`"]
+pub type BUSYCH12_R = crate::R<bool, bool>;
+#[doc = "Reader of field `BUSYCH13`"]
+pub type BUSYCH13_R = crate::R<bool, bool>;
+#[doc = "Reader of field `BUSYCH14`"]
+pub type BUSYCH14_R = crate::R<bool, bool>;
+#[doc = "Reader of field `BUSYCH15`"]
+pub type BUSYCH15_R = crate::R<bool, bool>;
+#[doc = "Reader of field `BUSYCH16`"]
+pub type BUSYCH16_R = crate::R<bool, bool>;
+#[doc = "Reader of field `BUSYCH17`"]
+pub type BUSYCH17_R = crate::R<bool, bool>;
+#[doc = "Reader of field `BUSYCH18`"]
+pub type BUSYCH18_R = crate::R<bool, bool>;
+#[doc = "Reader of field `BUSYCH19`"]
+pub type BUSYCH19_R = crate::R<bool, bool>;
+#[doc = "Reader of field `BUSYCH20`"]
+pub type BUSYCH20_R = crate::R<bool, bool>;
+#[doc = "Reader of field `BUSYCH21`"]
+pub type BUSYCH21_R = crate::R<bool, bool>;
+#[doc = "Reader of field `BUSYCH22`"]
+pub type BUSYCH22_R = crate::R<bool, bool>;
+#[doc = "Reader of field `BUSYCH23`"]
+pub type BUSYCH23_R = crate::R<bool, bool>;
+#[doc = "Reader of field `BUSYCH24`"]
+pub type BUSYCH24_R = crate::R<bool, bool>;
+#[doc = "Reader of field `BUSYCH25`"]
+pub type BUSYCH25_R = crate::R<bool, bool>;
+#[doc = "Reader of field `BUSYCH26`"]
+pub type BUSYCH26_R = crate::R<bool, bool>;
+#[doc = "Reader of field `BUSYCH27`"]
+pub type BUSYCH27_R = crate::R<bool, bool>;
+#[doc = "Reader of field `BUSYCH28`"]
+pub type BUSYCH28_R = crate::R<bool, bool>;
+#[doc = "Reader of field `BUSYCH29`"]
+pub type BUSYCH29_R = crate::R<bool, bool>;
+#[doc = "Reader of field `BUSYCH30`"]
+pub type BUSYCH30_R = crate::R<bool, bool>;
+#[doc = "Reader of field `BUSYCH31`"]
+pub type BUSYCH31_R = crate::R<bool, bool>;
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u32 {
-        self.bits
-    }
     #[doc = "Bit 0 - Busy Channel 0"]
-    #[inline]
-    pub fn busych0(&self) -> BUSYCH0R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        BUSYCH0R { bits }
+    #[inline(always)]
+    pub fn busych0(&self) -> BUSYCH0_R {
+        BUSYCH0_R::new((self.bits & 0x01) != 0)
     }
     #[doc = "Bit 1 - Busy Channel 1"]
-    #[inline]
-    pub fn busych1(&self) -> BUSYCH1R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        BUSYCH1R { bits }
+    #[inline(always)]
+    pub fn busych1(&self) -> BUSYCH1_R {
+        BUSYCH1_R::new(((self.bits >> 1) & 0x01) != 0)
     }
     #[doc = "Bit 2 - Busy Channel 2"]
-    #[inline]
-    pub fn busych2(&self) -> BUSYCH2R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        BUSYCH2R { bits }
+    #[inline(always)]
+    pub fn busych2(&self) -> BUSYCH2_R {
+        BUSYCH2_R::new(((self.bits >> 2) & 0x01) != 0)
     }
     #[doc = "Bit 3 - Busy Channel 3"]
-    #[inline]
-    pub fn busych3(&self) -> BUSYCH3R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 3;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        BUSYCH3R { bits }
+    #[inline(always)]
+    pub fn busych3(&self) -> BUSYCH3_R {
+        BUSYCH3_R::new(((self.bits >> 3) & 0x01) != 0)
     }
     #[doc = "Bit 4 - Busy Channel 4"]
-    #[inline]
-    pub fn busych4(&self) -> BUSYCH4R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        BUSYCH4R { bits }
+    #[inline(always)]
+    pub fn busych4(&self) -> BUSYCH4_R {
+        BUSYCH4_R::new(((self.bits >> 4) & 0x01) != 0)
     }
     #[doc = "Bit 5 - Busy Channel 5"]
-    #[inline]
-    pub fn busych5(&self) -> BUSYCH5R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 5;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        BUSYCH5R { bits }
+    #[inline(always)]
+    pub fn busych5(&self) -> BUSYCH5_R {
+        BUSYCH5_R::new(((self.bits >> 5) & 0x01) != 0)
     }
     #[doc = "Bit 6 - Busy Channel 6"]
-    #[inline]
-    pub fn busych6(&self) -> BUSYCH6R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 6;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        BUSYCH6R { bits }
+    #[inline(always)]
+    pub fn busych6(&self) -> BUSYCH6_R {
+        BUSYCH6_R::new(((self.bits >> 6) & 0x01) != 0)
     }
     #[doc = "Bit 7 - Busy Channel 7"]
-    #[inline]
-    pub fn busych7(&self) -> BUSYCH7R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 7;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        BUSYCH7R { bits }
+    #[inline(always)]
+    pub fn busych7(&self) -> BUSYCH7_R {
+        BUSYCH7_R::new(((self.bits >> 7) & 0x01) != 0)
     }
     #[doc = "Bit 8 - Busy Channel 8"]
-    #[inline]
-    pub fn busych8(&self) -> BUSYCH8R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        BUSYCH8R { bits }
+    #[inline(always)]
+    pub fn busych8(&self) -> BUSYCH8_R {
+        BUSYCH8_R::new(((self.bits >> 8) & 0x01) != 0)
     }
     #[doc = "Bit 9 - Busy Channel 9"]
-    #[inline]
-    pub fn busych9(&self) -> BUSYCH9R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 9;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        BUSYCH9R { bits }
+    #[inline(always)]
+    pub fn busych9(&self) -> BUSYCH9_R {
+        BUSYCH9_R::new(((self.bits >> 9) & 0x01) != 0)
     }
     #[doc = "Bit 10 - Busy Channel 10"]
-    #[inline]
-    pub fn busych10(&self) -> BUSYCH10R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 10;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        BUSYCH10R { bits }
+    #[inline(always)]
+    pub fn busych10(&self) -> BUSYCH10_R {
+        BUSYCH10_R::new(((self.bits >> 10) & 0x01) != 0)
     }
     #[doc = "Bit 11 - Busy Channel 11"]
-    #[inline]
-    pub fn busych11(&self) -> BUSYCH11R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 11;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        BUSYCH11R { bits }
+    #[inline(always)]
+    pub fn busych11(&self) -> BUSYCH11_R {
+        BUSYCH11_R::new(((self.bits >> 11) & 0x01) != 0)
     }
     #[doc = "Bit 12 - Busy Channel 12"]
-    #[inline]
-    pub fn busych12(&self) -> BUSYCH12R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 12;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        BUSYCH12R { bits }
+    #[inline(always)]
+    pub fn busych12(&self) -> BUSYCH12_R {
+        BUSYCH12_R::new(((self.bits >> 12) & 0x01) != 0)
     }
     #[doc = "Bit 13 - Busy Channel 13"]
-    #[inline]
-    pub fn busych13(&self) -> BUSYCH13R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 13;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        BUSYCH13R { bits }
+    #[inline(always)]
+    pub fn busych13(&self) -> BUSYCH13_R {
+        BUSYCH13_R::new(((self.bits >> 13) & 0x01) != 0)
     }
     #[doc = "Bit 14 - Busy Channel 14"]
-    #[inline]
-    pub fn busych14(&self) -> BUSYCH14R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 14;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        BUSYCH14R { bits }
+    #[inline(always)]
+    pub fn busych14(&self) -> BUSYCH14_R {
+        BUSYCH14_R::new(((self.bits >> 14) & 0x01) != 0)
     }
     #[doc = "Bit 15 - Busy Channel 15"]
-    #[inline]
-    pub fn busych15(&self) -> BUSYCH15R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 15;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        BUSYCH15R { bits }
+    #[inline(always)]
+    pub fn busych15(&self) -> BUSYCH15_R {
+        BUSYCH15_R::new(((self.bits >> 15) & 0x01) != 0)
     }
     #[doc = "Bit 16 - Busy Channel 16"]
-    #[inline]
-    pub fn busych16(&self) -> BUSYCH16R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 16;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        BUSYCH16R { bits }
+    #[inline(always)]
+    pub fn busych16(&self) -> BUSYCH16_R {
+        BUSYCH16_R::new(((self.bits >> 16) & 0x01) != 0)
     }
     #[doc = "Bit 17 - Busy Channel 17"]
-    #[inline]
-    pub fn busych17(&self) -> BUSYCH17R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 17;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        BUSYCH17R { bits }
+    #[inline(always)]
+    pub fn busych17(&self) -> BUSYCH17_R {
+        BUSYCH17_R::new(((self.bits >> 17) & 0x01) != 0)
     }
     #[doc = "Bit 18 - Busy Channel 18"]
-    #[inline]
-    pub fn busych18(&self) -> BUSYCH18R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 18;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        BUSYCH18R { bits }
+    #[inline(always)]
+    pub fn busych18(&self) -> BUSYCH18_R {
+        BUSYCH18_R::new(((self.bits >> 18) & 0x01) != 0)
     }
     #[doc = "Bit 19 - Busy Channel 19"]
-    #[inline]
-    pub fn busych19(&self) -> BUSYCH19R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 19;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        BUSYCH19R { bits }
+    #[inline(always)]
+    pub fn busych19(&self) -> BUSYCH19_R {
+        BUSYCH19_R::new(((self.bits >> 19) & 0x01) != 0)
     }
     #[doc = "Bit 20 - Busy Channel 20"]
-    #[inline]
-    pub fn busych20(&self) -> BUSYCH20R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 20;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        BUSYCH20R { bits }
+    #[inline(always)]
+    pub fn busych20(&self) -> BUSYCH20_R {
+        BUSYCH20_R::new(((self.bits >> 20) & 0x01) != 0)
     }
     #[doc = "Bit 21 - Busy Channel 21"]
-    #[inline]
-    pub fn busych21(&self) -> BUSYCH21R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 21;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        BUSYCH21R { bits }
+    #[inline(always)]
+    pub fn busych21(&self) -> BUSYCH21_R {
+        BUSYCH21_R::new(((self.bits >> 21) & 0x01) != 0)
     }
     #[doc = "Bit 22 - Busy Channel 22"]
-    #[inline]
-    pub fn busych22(&self) -> BUSYCH22R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 22;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        BUSYCH22R { bits }
+    #[inline(always)]
+    pub fn busych22(&self) -> BUSYCH22_R {
+        BUSYCH22_R::new(((self.bits >> 22) & 0x01) != 0)
     }
     #[doc = "Bit 23 - Busy Channel 23"]
-    #[inline]
-    pub fn busych23(&self) -> BUSYCH23R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 23;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        BUSYCH23R { bits }
+    #[inline(always)]
+    pub fn busych23(&self) -> BUSYCH23_R {
+        BUSYCH23_R::new(((self.bits >> 23) & 0x01) != 0)
     }
     #[doc = "Bit 24 - Busy Channel 24"]
-    #[inline]
-    pub fn busych24(&self) -> BUSYCH24R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 24;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        BUSYCH24R { bits }
+    #[inline(always)]
+    pub fn busych24(&self) -> BUSYCH24_R {
+        BUSYCH24_R::new(((self.bits >> 24) & 0x01) != 0)
     }
     #[doc = "Bit 25 - Busy Channel 25"]
-    #[inline]
-    pub fn busych25(&self) -> BUSYCH25R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 25;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        BUSYCH25R { bits }
+    #[inline(always)]
+    pub fn busych25(&self) -> BUSYCH25_R {
+        BUSYCH25_R::new(((self.bits >> 25) & 0x01) != 0)
     }
     #[doc = "Bit 26 - Busy Channel 26"]
-    #[inline]
-    pub fn busych26(&self) -> BUSYCH26R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 26;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        BUSYCH26R { bits }
+    #[inline(always)]
+    pub fn busych26(&self) -> BUSYCH26_R {
+        BUSYCH26_R::new(((self.bits >> 26) & 0x01) != 0)
     }
     #[doc = "Bit 27 - Busy Channel 27"]
-    #[inline]
-    pub fn busych27(&self) -> BUSYCH27R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 27;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        BUSYCH27R { bits }
+    #[inline(always)]
+    pub fn busych27(&self) -> BUSYCH27_R {
+        BUSYCH27_R::new(((self.bits >> 27) & 0x01) != 0)
     }
     #[doc = "Bit 28 - Busy Channel 28"]
-    #[inline]
-    pub fn busych28(&self) -> BUSYCH28R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 28;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        BUSYCH28R { bits }
+    #[inline(always)]
+    pub fn busych28(&self) -> BUSYCH28_R {
+        BUSYCH28_R::new(((self.bits >> 28) & 0x01) != 0)
     }
     #[doc = "Bit 29 - Busy Channel 29"]
-    #[inline]
-    pub fn busych29(&self) -> BUSYCH29R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 29;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        BUSYCH29R { bits }
+    #[inline(always)]
+    pub fn busych29(&self) -> BUSYCH29_R {
+        BUSYCH29_R::new(((self.bits >> 29) & 0x01) != 0)
     }
     #[doc = "Bit 30 - Busy Channel 30"]
-    #[inline]
-    pub fn busych30(&self) -> BUSYCH30R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 30;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        BUSYCH30R { bits }
+    #[inline(always)]
+    pub fn busych30(&self) -> BUSYCH30_R {
+        BUSYCH30_R::new(((self.bits >> 30) & 0x01) != 0)
     }
     #[doc = "Bit 31 - Busy Channel 31"]
-    #[inline]
-    pub fn busych31(&self) -> BUSYCH31R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 31;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        BUSYCH31R { bits }
+    #[inline(always)]
+    pub fn busych31(&self) -> BUSYCH31_R {
+        BUSYCH31_R::new(((self.bits >> 31) & 0x01) != 0)
     }
 }

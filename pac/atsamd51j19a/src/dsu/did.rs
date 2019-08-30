@@ -1,269 +1,199 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u32,
-}
-impl super::DID {
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-}
-#[doc = r" Value of the field"]
-pub struct DEVSELR {
-    bits: u8,
-}
-impl DEVSELR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
-}
-#[doc = r" Value of the field"]
-pub struct REVISIONR {
-    bits: u8,
-}
-impl REVISIONR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
-}
-#[doc = r" Value of the field"]
-pub struct DIER {
-    bits: u8,
-}
-impl DIER {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
-}
-#[doc = "Possible values of the field `SERIES`"]
+#[doc = "Reader of register DID"]
+pub type R = crate::R<u32, super::DID>;
+#[doc = "Reader of field `DEVSEL`"]
+pub type DEVSEL_R = crate::R<u8, u8>;
+#[doc = "Reader of field `REVISION`"]
+pub type REVISION_R = crate::R<u8, u8>;
+#[doc = "Reader of field `DIE`"]
+pub type DIE_R = crate::R<u8, u8>;
+#[doc = "Series\n\nValue on reset: 6"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum SERIESR {
-    #[doc = "Cortex-M0+ processor, basic feature set"]
+pub enum SERIES_A {
+    #[doc = "0: Cortex-M0+ processor, basic feature set"]
     _0,
-    #[doc = "Cortex-M0+ processor, USB"]
+    #[doc = "1: Cortex-M0+ processor, USB"]
     _1,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
 }
-impl SERIESR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            SERIESR::_0 => 0,
-            SERIESR::_1 => 1,
-            SERIESR::_Reserved(bits) => bits,
+impl From<SERIES_A> for u8 {
+    #[inline(always)]
+    fn from(variant: SERIES_A) -> Self {
+        match variant {
+            SERIES_A::_0 => 0,
+            SERIES_A::_1 => 1,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> SERIESR {
-        match value {
-            0 => SERIESR::_0,
-            1 => SERIESR::_1,
-            i => SERIESR::_Reserved(i),
+}
+#[doc = "Reader of field `SERIES`"]
+pub type SERIES_R = crate::R<u8, SERIES_A>;
+impl SERIES_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, SERIES_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(SERIES_A::_0),
+            1 => Val(SERIES_A::_1),
+            i => Res(i),
         }
     }
     #[doc = "Checks if the value of the field is `_0`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_0(&self) -> bool {
-        *self == SERIESR::_0
+        *self == SERIES_A::_0
     }
     #[doc = "Checks if the value of the field is `_1`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_1(&self) -> bool {
-        *self == SERIESR::_1
+        *self == SERIES_A::_1
     }
 }
-#[doc = "Possible values of the field `FAMILY`"]
+#[doc = "Family\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum FAMILYR {
-    #[doc = "General purpose microcontroller"]
+pub enum FAMILY_A {
+    #[doc = "0: General purpose microcontroller"]
     _0,
-    #[doc = "PicoPower"]
+    #[doc = "1: PicoPower"]
     _1,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
 }
-impl FAMILYR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            FAMILYR::_0 => 0,
-            FAMILYR::_1 => 1,
-            FAMILYR::_Reserved(bits) => bits,
+impl From<FAMILY_A> for u8 {
+    #[inline(always)]
+    fn from(variant: FAMILY_A) -> Self {
+        match variant {
+            FAMILY_A::_0 => 0,
+            FAMILY_A::_1 => 1,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> FAMILYR {
-        match value {
-            0 => FAMILYR::_0,
-            1 => FAMILYR::_1,
-            i => FAMILYR::_Reserved(i),
+}
+#[doc = "Reader of field `FAMILY`"]
+pub type FAMILY_R = crate::R<u8, FAMILY_A>;
+impl FAMILY_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, FAMILY_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(FAMILY_A::_0),
+            1 => Val(FAMILY_A::_1),
+            i => Res(i),
         }
     }
     #[doc = "Checks if the value of the field is `_0`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_0(&self) -> bool {
-        *self == FAMILYR::_0
+        *self == FAMILY_A::_0
     }
     #[doc = "Checks if the value of the field is `_1`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_1(&self) -> bool {
-        *self == FAMILYR::_1
+        *self == FAMILY_A::_1
     }
 }
-#[doc = "Possible values of the field `PROCESSOR`"]
+#[doc = "Processor\n\nValue on reset: 6"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum PROCESSORR {
-    #[doc = "Cortex-M0+"]
+pub enum PROCESSOR_A {
+    #[doc = "1: Cortex-M0+"]
     CM0P,
-    #[doc = "Cortex-M23"]
+    #[doc = "2: Cortex-M23"]
     CM23,
-    #[doc = "Cortex-M3"]
+    #[doc = "3: Cortex-M3"]
     CM3,
-    #[doc = "Cortex-M4"]
+    #[doc = "5: Cortex-M4"]
     CM4,
-    #[doc = "Cortex-M4 with FPU"]
+    #[doc = "6: Cortex-M4 with FPU"]
     CM4F,
-    #[doc = "Cortex-M33"]
+    #[doc = "7: Cortex-M33"]
     CM33,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
 }
-impl PROCESSORR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            PROCESSORR::CM0P => 1,
-            PROCESSORR::CM23 => 2,
-            PROCESSORR::CM3 => 3,
-            PROCESSORR::CM4 => 5,
-            PROCESSORR::CM4F => 6,
-            PROCESSORR::CM33 => 7,
-            PROCESSORR::_Reserved(bits) => bits,
+impl From<PROCESSOR_A> for u8 {
+    #[inline(always)]
+    fn from(variant: PROCESSOR_A) -> Self {
+        match variant {
+            PROCESSOR_A::CM0P => 1,
+            PROCESSOR_A::CM23 => 2,
+            PROCESSOR_A::CM3 => 3,
+            PROCESSOR_A::CM4 => 5,
+            PROCESSOR_A::CM4F => 6,
+            PROCESSOR_A::CM33 => 7,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> PROCESSORR {
-        match value {
-            1 => PROCESSORR::CM0P,
-            2 => PROCESSORR::CM23,
-            3 => PROCESSORR::CM3,
-            5 => PROCESSORR::CM4,
-            6 => PROCESSORR::CM4F,
-            7 => PROCESSORR::CM33,
-            i => PROCESSORR::_Reserved(i),
+}
+#[doc = "Reader of field `PROCESSOR`"]
+pub type PROCESSOR_R = crate::R<u8, PROCESSOR_A>;
+impl PROCESSOR_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, PROCESSOR_A> {
+        use crate::Variant::*;
+        match self.bits {
+            1 => Val(PROCESSOR_A::CM0P),
+            2 => Val(PROCESSOR_A::CM23),
+            3 => Val(PROCESSOR_A::CM3),
+            5 => Val(PROCESSOR_A::CM4),
+            6 => Val(PROCESSOR_A::CM4F),
+            7 => Val(PROCESSOR_A::CM33),
+            i => Res(i),
         }
     }
     #[doc = "Checks if the value of the field is `CM0P`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_cm0p(&self) -> bool {
-        *self == PROCESSORR::CM0P
+        *self == PROCESSOR_A::CM0P
     }
     #[doc = "Checks if the value of the field is `CM23`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_cm23(&self) -> bool {
-        *self == PROCESSORR::CM23
+        *self == PROCESSOR_A::CM23
     }
     #[doc = "Checks if the value of the field is `CM3`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_cm3(&self) -> bool {
-        *self == PROCESSORR::CM3
+        *self == PROCESSOR_A::CM3
     }
     #[doc = "Checks if the value of the field is `CM4`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_cm4(&self) -> bool {
-        *self == PROCESSORR::CM4
+        *self == PROCESSOR_A::CM4
     }
     #[doc = "Checks if the value of the field is `CM4F`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_cm4f(&self) -> bool {
-        *self == PROCESSORR::CM4F
+        *self == PROCESSOR_A::CM4F
     }
     #[doc = "Checks if the value of the field is `CM33`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_cm33(&self) -> bool {
-        *self == PROCESSORR::CM33
+        *self == PROCESSOR_A::CM33
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u32 {
-        self.bits
-    }
     #[doc = "Bits 0:7 - Device Select"]
-    #[inline]
-    pub fn devsel(&self) -> DEVSELR {
-        let bits = {
-            const MASK: u8 = 255;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
-        DEVSELR { bits }
+    #[inline(always)]
+    pub fn devsel(&self) -> DEVSEL_R {
+        DEVSEL_R::new((self.bits & 0xff) as u8)
     }
     #[doc = "Bits 8:11 - Revision Number"]
-    #[inline]
-    pub fn revision(&self) -> REVISIONR {
-        let bits = {
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
-        REVISIONR { bits }
+    #[inline(always)]
+    pub fn revision(&self) -> REVISION_R {
+        REVISION_R::new(((self.bits >> 8) & 0x0f) as u8)
     }
     #[doc = "Bits 12:15 - Die Number"]
-    #[inline]
-    pub fn die(&self) -> DIER {
-        let bits = {
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 12;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
-        DIER { bits }
+    #[inline(always)]
+    pub fn die(&self) -> DIE_R {
+        DIE_R::new(((self.bits >> 12) & 0x0f) as u8)
     }
     #[doc = "Bits 16:21 - Series"]
-    #[inline]
-    pub fn series(&self) -> SERIESR {
-        SERIESR::_from({
-            const MASK: u8 = 63;
-            const OFFSET: u8 = 16;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+    #[inline(always)]
+    pub fn series(&self) -> SERIES_R {
+        SERIES_R::new(((self.bits >> 16) & 0x3f) as u8)
     }
     #[doc = "Bits 23:27 - Family"]
-    #[inline]
-    pub fn family(&self) -> FAMILYR {
-        FAMILYR::_from({
-            const MASK: u8 = 31;
-            const OFFSET: u8 = 23;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+    #[inline(always)]
+    pub fn family(&self) -> FAMILY_R {
+        FAMILY_R::new(((self.bits >> 23) & 0x1f) as u8)
     }
     #[doc = "Bits 28:31 - Processor"]
-    #[inline]
-    pub fn processor(&self) -> PROCESSORR {
-        PROCESSORR::_from({
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 28;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+    #[inline(always)]
+    pub fn processor(&self) -> PROCESSOR_R {
+        PROCESSOR_R::new(((self.bits >> 28) & 0x0f) as u8)
     }
 }

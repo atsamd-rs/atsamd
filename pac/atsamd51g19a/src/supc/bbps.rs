@@ -1,242 +1,138 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u32,
-}
-#[doc = r" Value to write to the register"]
-pub struct W {
-    bits: u32,
-}
-impl super::BBPS {
-    #[doc = r" Modifies the contents of the register"]
-    #[inline]
-    pub fn modify<F>(&self, f: F)
-    where
-        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
-    {
-        let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-    #[doc = r" Writes to the register"]
-    #[inline]
-    pub fn write<F>(&self, f: F)
-    where
-        F: FnOnce(&mut W) -> &mut W,
-    {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Writes the reset value to the register"]
-    #[inline]
-    pub fn reset(&self) {
-        self.write(|w| w)
+#[doc = "Reader of register BBPS"]
+pub type R = crate::R<u32, super::BBPS>;
+#[doc = "Writer for register BBPS"]
+pub type W = crate::W<u32, super::BBPS>;
+#[doc = "Register BBPS `reset()`'s with value 0"]
+impl crate::ResetValue for super::BBPS {
+    type Type = u32;
+    #[inline(always)]
+    fn reset_value() -> Self::Type {
+        0
     }
 }
-#[doc = "Possible values of the field `CONF`"]
+#[doc = "Battery Backup Configuration\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum CONFR {
-    #[doc = "The power switch is handled by the BOD33"]
+pub enum CONF_A {
+    #[doc = "0: The power switch is handled by the BOD33"]
     BOD33,
-    #[doc = "In Backup Domain, the backup domain is always supplied by battery backup power"]
+    #[doc = "1: In Backup Domain, the backup domain is always supplied by battery backup power"]
     FORCED,
 }
-impl CONFR {
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        match *self {
-            CONFR::BOD33 => false,
-            CONFR::FORCED => true,
+impl From<CONF_A> for bool {
+    #[inline(always)]
+    fn from(variant: CONF_A) -> Self {
+        match variant {
+            CONF_A::BOD33 => false,
+            CONF_A::FORCED => true,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: bool) -> CONFR {
-        match value {
-            false => CONFR::BOD33,
-            true => CONFR::FORCED,
+}
+#[doc = "Reader of field `CONF`"]
+pub type CONF_R = crate::R<bool, CONF_A>;
+impl CONF_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> CONF_A {
+        match self.bits {
+            false => CONF_A::BOD33,
+            true => CONF_A::FORCED,
         }
     }
     #[doc = "Checks if the value of the field is `BOD33`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_bod33(&self) -> bool {
-        *self == CONFR::BOD33
+        *self == CONF_A::BOD33
     }
     #[doc = "Checks if the value of the field is `FORCED`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_forced(&self) -> bool {
-        *self == CONFR::FORCED
+        *self == CONF_A::FORCED
     }
 }
-#[doc = r" Value of the field"]
-pub struct WAKEENR {
-    bits: bool,
-}
-impl WAKEENR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = "Values that can be written to the field `CONF`"]
-pub enum CONFW {
-    #[doc = "The power switch is handled by the BOD33"]
-    BOD33,
-    #[doc = "In Backup Domain, the backup domain is always supplied by battery backup power"]
-    FORCED,
-}
-impl CONFW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> bool {
-        match *self {
-            CONFW::BOD33 => false,
-            CONFW::FORCED => true,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _CONFW<'a> {
+#[doc = "Write proxy for field `CONF`"]
+pub struct CONF_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _CONFW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: CONFW) -> &'a mut W {
+impl<'a> CONF_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: CONF_A) -> &'a mut W {
         {
-            self.bit(variant._bits())
+            self.bit(variant.into())
         }
     }
     #[doc = "The power switch is handled by the BOD33"]
-    #[inline]
+    #[inline(always)]
     pub fn bod33(self) -> &'a mut W {
-        self.variant(CONFW::BOD33)
+        self.variant(CONF_A::BOD33)
     }
     #[doc = "In Backup Domain, the backup domain is always supplied by battery backup power"]
-    #[inline]
+    #[inline(always)]
     pub fn forced(self) -> &'a mut W {
-        self.variant(CONFW::FORCED)
+        self.variant(CONF_A::FORCED)
     }
-    #[doc = r" Sets the field bit"]
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !0x01) | ((value as u32) & 0x01);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _WAKEENW<'a> {
+#[doc = "Reader of field `WAKEEN`"]
+pub type WAKEEN_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `WAKEEN`"]
+pub struct WAKEEN_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _WAKEENW<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> WAKEEN_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 2;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 2)) | (((value as u32) & 0x01) << 2);
         self.w
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u32 {
-        self.bits
-    }
     #[doc = "Bit 0 - Battery Backup Configuration"]
-    #[inline]
-    pub fn conf(&self) -> CONFR {
-        CONFR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        })
+    #[inline(always)]
+    pub fn conf(&self) -> CONF_R {
+        CONF_R::new((self.bits & 0x01) != 0)
     }
     #[doc = "Bit 2 - Wake Enable"]
-    #[inline]
-    pub fn wakeen(&self) -> WAKEENR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        WAKEENR { bits }
+    #[inline(always)]
+    pub fn wakeen(&self) -> WAKEEN_R {
+        WAKEEN_R::new(((self.bits >> 2) & 0x01) != 0)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
-    #[doc = r" Writes raw bits to the register"]
-    #[inline]
-    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.bits = bits;
-        self
-    }
     #[doc = "Bit 0 - Battery Backup Configuration"]
-    #[inline]
-    pub fn conf(&mut self) -> _CONFW {
-        _CONFW { w: self }
+    #[inline(always)]
+    pub fn conf(&mut self) -> CONF_W {
+        CONF_W { w: self }
     }
     #[doc = "Bit 2 - Wake Enable"]
-    #[inline]
-    pub fn wakeen(&mut self) -> _WAKEENW {
-        _WAKEENW { w: self }
+    #[inline(always)]
+    pub fn wakeen(&mut self) -> WAKEEN_W {
+        WAKEEN_W { w: self }
     }
 }

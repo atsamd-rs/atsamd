@@ -1,681 +1,420 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u32,
-}
-#[doc = r" Value to write to the register"]
-pub struct W {
-    bits: u32,
-}
-impl super::GENCTRL {
-    #[doc = r" Modifies the contents of the register"]
-    #[inline]
-    pub fn modify<F>(&self, f: F)
-    where
-        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
-    {
-        let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-    #[doc = r" Writes to the register"]
-    #[inline]
-    pub fn write<F>(&self, f: F)
-    where
-        F: FnOnce(&mut W) -> &mut W,
-    {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Writes the reset value to the register"]
-    #[inline]
-    pub fn reset(&self) {
-        self.write(|w| w)
+#[doc = "Reader of register GENCTRL%s"]
+pub type R = crate::R<u32, super::GENCTRL>;
+#[doc = "Writer for register GENCTRL%s"]
+pub type W = crate::W<u32, super::GENCTRL>;
+#[doc = "Register GENCTRL%s `reset()`'s with value 0"]
+impl crate::ResetValue for super::GENCTRL {
+    type Type = u32;
+    #[inline(always)]
+    fn reset_value() -> Self::Type {
+        0
     }
 }
-#[doc = "Possible values of the field `SRC`"]
+#[doc = "Source Select\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum SRCR {
-    #[doc = "XOSC0 oscillator output"]
+pub enum SRC_A {
+    #[doc = "0: XOSC0 oscillator output"]
     XOSC0,
-    #[doc = "XOSC1 oscillator output"]
+    #[doc = "1: XOSC1 oscillator output"]
     XOSC1,
-    #[doc = "Generator input pad"]
+    #[doc = "2: Generator input pad"]
     GCLKIN,
-    #[doc = "Generic clock generator 1 output"]
+    #[doc = "3: Generic clock generator 1 output"]
     GCLKGEN1,
-    #[doc = "OSCULP32K oscillator output"]
+    #[doc = "4: OSCULP32K oscillator output"]
     OSCULP32K,
-    #[doc = "XOSC32K oscillator output"]
+    #[doc = "5: XOSC32K oscillator output"]
     XOSC32K,
-    #[doc = "DFLL output"]
+    #[doc = "6: DFLL output"]
     DFLL,
-    #[doc = "DPLL0 output"]
+    #[doc = "7: DPLL0 output"]
     DPLL0,
-    #[doc = "DPLL1 output"]
+    #[doc = "8: DPLL1 output"]
     DPLL1,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
 }
-impl SRCR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            SRCR::XOSC0 => 0,
-            SRCR::XOSC1 => 1,
-            SRCR::GCLKIN => 2,
-            SRCR::GCLKGEN1 => 3,
-            SRCR::OSCULP32K => 4,
-            SRCR::XOSC32K => 5,
-            SRCR::DFLL => 6,
-            SRCR::DPLL0 => 7,
-            SRCR::DPLL1 => 8,
-            SRCR::_Reserved(bits) => bits,
+impl From<SRC_A> for u8 {
+    #[inline(always)]
+    fn from(variant: SRC_A) -> Self {
+        match variant {
+            SRC_A::XOSC0 => 0,
+            SRC_A::XOSC1 => 1,
+            SRC_A::GCLKIN => 2,
+            SRC_A::GCLKGEN1 => 3,
+            SRC_A::OSCULP32K => 4,
+            SRC_A::XOSC32K => 5,
+            SRC_A::DFLL => 6,
+            SRC_A::DPLL0 => 7,
+            SRC_A::DPLL1 => 8,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> SRCR {
-        match value {
-            0 => SRCR::XOSC0,
-            1 => SRCR::XOSC1,
-            2 => SRCR::GCLKIN,
-            3 => SRCR::GCLKGEN1,
-            4 => SRCR::OSCULP32K,
-            5 => SRCR::XOSC32K,
-            6 => SRCR::DFLL,
-            7 => SRCR::DPLL0,
-            8 => SRCR::DPLL1,
-            i => SRCR::_Reserved(i),
+}
+#[doc = "Reader of field `SRC`"]
+pub type SRC_R = crate::R<u8, SRC_A>;
+impl SRC_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, SRC_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(SRC_A::XOSC0),
+            1 => Val(SRC_A::XOSC1),
+            2 => Val(SRC_A::GCLKIN),
+            3 => Val(SRC_A::GCLKGEN1),
+            4 => Val(SRC_A::OSCULP32K),
+            5 => Val(SRC_A::XOSC32K),
+            6 => Val(SRC_A::DFLL),
+            7 => Val(SRC_A::DPLL0),
+            8 => Val(SRC_A::DPLL1),
+            i => Res(i),
         }
     }
     #[doc = "Checks if the value of the field is `XOSC0`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_xosc0(&self) -> bool {
-        *self == SRCR::XOSC0
+        *self == SRC_A::XOSC0
     }
     #[doc = "Checks if the value of the field is `XOSC1`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_xosc1(&self) -> bool {
-        *self == SRCR::XOSC1
+        *self == SRC_A::XOSC1
     }
     #[doc = "Checks if the value of the field is `GCLKIN`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_gclkin(&self) -> bool {
-        *self == SRCR::GCLKIN
+        *self == SRC_A::GCLKIN
     }
     #[doc = "Checks if the value of the field is `GCLKGEN1`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_gclkgen1(&self) -> bool {
-        *self == SRCR::GCLKGEN1
+        *self == SRC_A::GCLKGEN1
     }
     #[doc = "Checks if the value of the field is `OSCULP32K`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_osculp32k(&self) -> bool {
-        *self == SRCR::OSCULP32K
+        *self == SRC_A::OSCULP32K
     }
     #[doc = "Checks if the value of the field is `XOSC32K`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_xosc32k(&self) -> bool {
-        *self == SRCR::XOSC32K
+        *self == SRC_A::XOSC32K
     }
     #[doc = "Checks if the value of the field is `DFLL`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_dfll(&self) -> bool {
-        *self == SRCR::DFLL
+        *self == SRC_A::DFLL
     }
     #[doc = "Checks if the value of the field is `DPLL0`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_dpll0(&self) -> bool {
-        *self == SRCR::DPLL0
+        *self == SRC_A::DPLL0
     }
     #[doc = "Checks if the value of the field is `DPLL1`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_dpll1(&self) -> bool {
-        *self == SRCR::DPLL1
+        *self == SRC_A::DPLL1
     }
 }
-#[doc = r" Value of the field"]
-pub struct GENENR {
-    bits: bool,
-}
-impl GENENR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct IDCR {
-    bits: bool,
-}
-impl IDCR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct OOVR {
-    bits: bool,
-}
-impl OOVR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct OER {
-    bits: bool,
-}
-impl OER {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct DIVSELR {
-    bits: bool,
-}
-impl DIVSELR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct RUNSTDBYR {
-    bits: bool,
-}
-impl RUNSTDBYR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct DIVR {
-    bits: u16,
-}
-impl DIVR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u16 {
-        self.bits
-    }
-}
-#[doc = "Values that can be written to the field `SRC`"]
-pub enum SRCW {
-    #[doc = "XOSC0 oscillator output"]
-    XOSC0,
-    #[doc = "XOSC1 oscillator output"]
-    XOSC1,
-    #[doc = "Generator input pad"]
-    GCLKIN,
-    #[doc = "Generic clock generator 1 output"]
-    GCLKGEN1,
-    #[doc = "OSCULP32K oscillator output"]
-    OSCULP32K,
-    #[doc = "XOSC32K oscillator output"]
-    XOSC32K,
-    #[doc = "DFLL output"]
-    DFLL,
-    #[doc = "DPLL0 output"]
-    DPLL0,
-    #[doc = "DPLL1 output"]
-    DPLL1,
-}
-impl SRCW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            SRCW::XOSC0 => 0,
-            SRCW::XOSC1 => 1,
-            SRCW::GCLKIN => 2,
-            SRCW::GCLKGEN1 => 3,
-            SRCW::OSCULP32K => 4,
-            SRCW::XOSC32K => 5,
-            SRCW::DFLL => 6,
-            SRCW::DPLL0 => 7,
-            SRCW::DPLL1 => 8,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _SRCW<'a> {
+#[doc = "Write proxy for field `SRC`"]
+pub struct SRC_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _SRCW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: SRCW) -> &'a mut W {
-        unsafe { self.bits(variant._bits()) }
+impl<'a> SRC_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: SRC_A) -> &'a mut W {
+        unsafe { self.bits(variant.into()) }
     }
     #[doc = "XOSC0 oscillator output"]
-    #[inline]
+    #[inline(always)]
     pub fn xosc0(self) -> &'a mut W {
-        self.variant(SRCW::XOSC0)
+        self.variant(SRC_A::XOSC0)
     }
     #[doc = "XOSC1 oscillator output"]
-    #[inline]
+    #[inline(always)]
     pub fn xosc1(self) -> &'a mut W {
-        self.variant(SRCW::XOSC1)
+        self.variant(SRC_A::XOSC1)
     }
     #[doc = "Generator input pad"]
-    #[inline]
+    #[inline(always)]
     pub fn gclkin(self) -> &'a mut W {
-        self.variant(SRCW::GCLKIN)
+        self.variant(SRC_A::GCLKIN)
     }
     #[doc = "Generic clock generator 1 output"]
-    #[inline]
+    #[inline(always)]
     pub fn gclkgen1(self) -> &'a mut W {
-        self.variant(SRCW::GCLKGEN1)
+        self.variant(SRC_A::GCLKGEN1)
     }
     #[doc = "OSCULP32K oscillator output"]
-    #[inline]
+    #[inline(always)]
     pub fn osculp32k(self) -> &'a mut W {
-        self.variant(SRCW::OSCULP32K)
+        self.variant(SRC_A::OSCULP32K)
     }
     #[doc = "XOSC32K oscillator output"]
-    #[inline]
+    #[inline(always)]
     pub fn xosc32k(self) -> &'a mut W {
-        self.variant(SRCW::XOSC32K)
+        self.variant(SRC_A::XOSC32K)
     }
     #[doc = "DFLL output"]
-    #[inline]
+    #[inline(always)]
     pub fn dfll(self) -> &'a mut W {
-        self.variant(SRCW::DFLL)
+        self.variant(SRC_A::DFLL)
     }
     #[doc = "DPLL0 output"]
-    #[inline]
+    #[inline(always)]
     pub fn dpll0(self) -> &'a mut W {
-        self.variant(SRCW::DPLL0)
+        self.variant(SRC_A::DPLL0)
     }
     #[doc = "DPLL1 output"]
-    #[inline]
+    #[inline(always)]
     pub fn dpll1(self) -> &'a mut W {
-        self.variant(SRCW::DPLL1)
+        self.variant(SRC_A::DPLL1)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 15;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !0x0f) | ((value as u32) & 0x0f);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _GENENW<'a> {
+#[doc = "Reader of field `GENEN`"]
+pub type GENEN_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `GENEN`"]
+pub struct GENEN_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _GENENW<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> GENEN_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 8;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 8)) | (((value as u32) & 0x01) << 8);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _IDCW<'a> {
+#[doc = "Reader of field `IDC`"]
+pub type IDC_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `IDC`"]
+pub struct IDC_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _IDCW<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> IDC_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 9;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 9)) | (((value as u32) & 0x01) << 9);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _OOVW<'a> {
+#[doc = "Reader of field `OOV`"]
+pub type OOV_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `OOV`"]
+pub struct OOV_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _OOVW<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> OOV_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 10;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 10)) | (((value as u32) & 0x01) << 10);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _OEW<'a> {
+#[doc = "Reader of field `OE`"]
+pub type OE_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `OE`"]
+pub struct OE_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _OEW<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> OE_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 11;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 11)) | (((value as u32) & 0x01) << 11);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _DIVSELW<'a> {
+#[doc = "Reader of field `DIVSEL`"]
+pub type DIVSEL_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `DIVSEL`"]
+pub struct DIVSEL_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _DIVSELW<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> DIVSEL_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 12;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 12)) | (((value as u32) & 0x01) << 12);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _RUNSTDBYW<'a> {
+#[doc = "Reader of field `RUNSTDBY`"]
+pub type RUNSTDBY_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `RUNSTDBY`"]
+pub struct RUNSTDBY_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _RUNSTDBYW<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> RUNSTDBY_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 13;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 13)) | (((value as u32) & 0x01) << 13);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _DIVW<'a> {
+#[doc = "Reader of field `DIV`"]
+pub type DIV_R = crate::R<u16, u16>;
+#[doc = "Write proxy for field `DIV`"]
+pub struct DIV_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _DIVW<'a> {
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+impl<'a> DIV_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u16) -> &'a mut W {
-        const MASK: u16 = 65535;
-        const OFFSET: u8 = 16;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0xffff << 16)) | (((value as u32) & 0xffff) << 16);
         self.w
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u32 {
-        self.bits
-    }
     #[doc = "Bits 0:3 - Source Select"]
-    #[inline]
-    pub fn src(&self) -> SRCR {
-        SRCR::_from({
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+    #[inline(always)]
+    pub fn src(&self) -> SRC_R {
+        SRC_R::new((self.bits & 0x0f) as u8)
     }
     #[doc = "Bit 8 - Generic Clock Generator Enable"]
-    #[inline]
-    pub fn genen(&self) -> GENENR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        GENENR { bits }
+    #[inline(always)]
+    pub fn genen(&self) -> GENEN_R {
+        GENEN_R::new(((self.bits >> 8) & 0x01) != 0)
     }
     #[doc = "Bit 9 - Improve Duty Cycle"]
-    #[inline]
-    pub fn idc(&self) -> IDCR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 9;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        IDCR { bits }
+    #[inline(always)]
+    pub fn idc(&self) -> IDC_R {
+        IDC_R::new(((self.bits >> 9) & 0x01) != 0)
     }
     #[doc = "Bit 10 - Output Off Value"]
-    #[inline]
-    pub fn oov(&self) -> OOVR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 10;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        OOVR { bits }
+    #[inline(always)]
+    pub fn oov(&self) -> OOV_R {
+        OOV_R::new(((self.bits >> 10) & 0x01) != 0)
     }
     #[doc = "Bit 11 - Output Enable"]
-    #[inline]
-    pub fn oe(&self) -> OER {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 11;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        OER { bits }
+    #[inline(always)]
+    pub fn oe(&self) -> OE_R {
+        OE_R::new(((self.bits >> 11) & 0x01) != 0)
     }
     #[doc = "Bit 12 - Divide Selection"]
-    #[inline]
-    pub fn divsel(&self) -> DIVSELR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 12;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        DIVSELR { bits }
+    #[inline(always)]
+    pub fn divsel(&self) -> DIVSEL_R {
+        DIVSEL_R::new(((self.bits >> 12) & 0x01) != 0)
     }
     #[doc = "Bit 13 - Run in Standby"]
-    #[inline]
-    pub fn runstdby(&self) -> RUNSTDBYR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 13;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        RUNSTDBYR { bits }
+    #[inline(always)]
+    pub fn runstdby(&self) -> RUNSTDBY_R {
+        RUNSTDBY_R::new(((self.bits >> 13) & 0x01) != 0)
     }
     #[doc = "Bits 16:31 - Division Factor"]
-    #[inline]
-    pub fn div(&self) -> DIVR {
-        let bits = {
-            const MASK: u16 = 65535;
-            const OFFSET: u8 = 16;
-            ((self.bits >> OFFSET) & MASK as u32) as u16
-        };
-        DIVR { bits }
+    #[inline(always)]
+    pub fn div(&self) -> DIV_R {
+        DIV_R::new(((self.bits >> 16) & 0xffff) as u16)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
-    #[doc = r" Writes raw bits to the register"]
-    #[inline]
-    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.bits = bits;
-        self
-    }
     #[doc = "Bits 0:3 - Source Select"]
-    #[inline]
-    pub fn src(&mut self) -> _SRCW {
-        _SRCW { w: self }
+    #[inline(always)]
+    pub fn src(&mut self) -> SRC_W {
+        SRC_W { w: self }
     }
     #[doc = "Bit 8 - Generic Clock Generator Enable"]
-    #[inline]
-    pub fn genen(&mut self) -> _GENENW {
-        _GENENW { w: self }
+    #[inline(always)]
+    pub fn genen(&mut self) -> GENEN_W {
+        GENEN_W { w: self }
     }
     #[doc = "Bit 9 - Improve Duty Cycle"]
-    #[inline]
-    pub fn idc(&mut self) -> _IDCW {
-        _IDCW { w: self }
+    #[inline(always)]
+    pub fn idc(&mut self) -> IDC_W {
+        IDC_W { w: self }
     }
     #[doc = "Bit 10 - Output Off Value"]
-    #[inline]
-    pub fn oov(&mut self) -> _OOVW {
-        _OOVW { w: self }
+    #[inline(always)]
+    pub fn oov(&mut self) -> OOV_W {
+        OOV_W { w: self }
     }
     #[doc = "Bit 11 - Output Enable"]
-    #[inline]
-    pub fn oe(&mut self) -> _OEW {
-        _OEW { w: self }
+    #[inline(always)]
+    pub fn oe(&mut self) -> OE_W {
+        OE_W { w: self }
     }
     #[doc = "Bit 12 - Divide Selection"]
-    #[inline]
-    pub fn divsel(&mut self) -> _DIVSELW {
-        _DIVSELW { w: self }
+    #[inline(always)]
+    pub fn divsel(&mut self) -> DIVSEL_W {
+        DIVSEL_W { w: self }
     }
     #[doc = "Bit 13 - Run in Standby"]
-    #[inline]
-    pub fn runstdby(&mut self) -> _RUNSTDBYW {
-        _RUNSTDBYW { w: self }
+    #[inline(always)]
+    pub fn runstdby(&mut self) -> RUNSTDBY_W {
+        RUNSTDBY_W { w: self }
     }
     #[doc = "Bits 16:31 - Division Factor"]
-    #[inline]
-    pub fn div(&mut self) -> _DIVW {
-        _DIVW { w: self }
+    #[inline(always)]
+    pub fn div(&mut self) -> DIV_W {
+        DIV_W { w: self }
     }
 }

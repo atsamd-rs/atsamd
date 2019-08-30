@@ -1,1280 +1,908 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u32,
-}
-#[doc = r" Value to write to the register"]
-pub struct W {
-    bits: u32,
-}
-impl super::CTRLA {
-    #[doc = r" Modifies the contents of the register"]
-    #[inline]
-    pub fn modify<F>(&self, f: F)
-    where
-        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
-    {
-        let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-    #[doc = r" Writes to the register"]
-    #[inline]
-    pub fn write<F>(&self, f: F)
-    where
-        F: FnOnce(&mut W) -> &mut W,
-    {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Writes the reset value to the register"]
-    #[inline]
-    pub fn reset(&self) {
-        self.write(|w| w)
+#[doc = "Reader of register CTRLA"]
+pub type R = crate::R<u32, super::CTRLA>;
+#[doc = "Writer for register CTRLA"]
+pub type W = crate::W<u32, super::CTRLA>;
+#[doc = "Register CTRLA `reset()`'s with value 0"]
+impl crate::ResetValue for super::CTRLA {
+    type Type = u32;
+    #[inline(always)]
+    fn reset_value() -> Self::Type {
+        0
     }
 }
-#[doc = r" Value of the field"]
-pub struct SWRSTR {
-    bits: bool,
+#[doc = "Reader of field `SWRST`"]
+pub type SWRST_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `SWRST`"]
+pub struct SWRST_W<'a> {
+    w: &'a mut W,
 }
-impl SWRSTR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
+impl<'a> SWRST_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
     }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
     }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct ENABLER {
-    bits: bool,
-}
-impl ENABLER {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !0x01) | ((value as u32) & 0x01);
+        self.w
     }
 }
-#[doc = "Possible values of the field `AESMODE`"]
+#[doc = "Reader of field `ENABLE`"]
+pub type ENABLE_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `ENABLE`"]
+pub struct ENABLE_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> ENABLE_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 1)) | (((value as u32) & 0x01) << 1);
+        self.w
+    }
+}
+#[doc = "AES Modes of operation\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum AESMODER {
-    #[doc = "Electronic code book mode"]
+pub enum AESMODE_A {
+    #[doc = "0: Electronic code book mode"]
     ECB,
-    #[doc = "Cipher block chaining mode"]
+    #[doc = "1: Cipher block chaining mode"]
     CBC,
-    #[doc = "Output feedback mode"]
+    #[doc = "2: Output feedback mode"]
     OFB,
-    #[doc = "Cipher feedback mode"]
+    #[doc = "3: Cipher feedback mode"]
     CFB,
-    #[doc = "Counter mode"]
+    #[doc = "4: Counter mode"]
     COUNTER,
-    #[doc = "CCM mode"]
+    #[doc = "5: CCM mode"]
     CCM,
-    #[doc = "Galois counter mode"]
+    #[doc = "6: Galois counter mode"]
     GCM,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
 }
-impl AESMODER {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            AESMODER::ECB => 0,
-            AESMODER::CBC => 1,
-            AESMODER::OFB => 2,
-            AESMODER::CFB => 3,
-            AESMODER::COUNTER => 4,
-            AESMODER::CCM => 5,
-            AESMODER::GCM => 6,
-            AESMODER::_Reserved(bits) => bits,
+impl From<AESMODE_A> for u8 {
+    #[inline(always)]
+    fn from(variant: AESMODE_A) -> Self {
+        match variant {
+            AESMODE_A::ECB => 0,
+            AESMODE_A::CBC => 1,
+            AESMODE_A::OFB => 2,
+            AESMODE_A::CFB => 3,
+            AESMODE_A::COUNTER => 4,
+            AESMODE_A::CCM => 5,
+            AESMODE_A::GCM => 6,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> AESMODER {
-        match value {
-            0 => AESMODER::ECB,
-            1 => AESMODER::CBC,
-            2 => AESMODER::OFB,
-            3 => AESMODER::CFB,
-            4 => AESMODER::COUNTER,
-            5 => AESMODER::CCM,
-            6 => AESMODER::GCM,
-            i => AESMODER::_Reserved(i),
+}
+#[doc = "Reader of field `AESMODE`"]
+pub type AESMODE_R = crate::R<u8, AESMODE_A>;
+impl AESMODE_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, AESMODE_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(AESMODE_A::ECB),
+            1 => Val(AESMODE_A::CBC),
+            2 => Val(AESMODE_A::OFB),
+            3 => Val(AESMODE_A::CFB),
+            4 => Val(AESMODE_A::COUNTER),
+            5 => Val(AESMODE_A::CCM),
+            6 => Val(AESMODE_A::GCM),
+            i => Res(i),
         }
     }
     #[doc = "Checks if the value of the field is `ECB`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_ecb(&self) -> bool {
-        *self == AESMODER::ECB
+        *self == AESMODE_A::ECB
     }
     #[doc = "Checks if the value of the field is `CBC`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_cbc(&self) -> bool {
-        *self == AESMODER::CBC
+        *self == AESMODE_A::CBC
     }
     #[doc = "Checks if the value of the field is `OFB`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_ofb(&self) -> bool {
-        *self == AESMODER::OFB
+        *self == AESMODE_A::OFB
     }
     #[doc = "Checks if the value of the field is `CFB`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_cfb(&self) -> bool {
-        *self == AESMODER::CFB
+        *self == AESMODE_A::CFB
     }
     #[doc = "Checks if the value of the field is `COUNTER`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_counter(&self) -> bool {
-        *self == AESMODER::COUNTER
+        *self == AESMODE_A::COUNTER
     }
     #[doc = "Checks if the value of the field is `CCM`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_ccm(&self) -> bool {
-        *self == AESMODER::CCM
+        *self == AESMODE_A::CCM
     }
     #[doc = "Checks if the value of the field is `GCM`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_gcm(&self) -> bool {
-        *self == AESMODER::GCM
+        *self == AESMODE_A::GCM
     }
 }
-#[doc = "Possible values of the field `CFBS`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum CFBSR {
-    #[doc = "128-bit Input data block for Encryption/Decryption in Cipher Feedback mode"]
-    _128BIT,
-    #[doc = "64-bit Input data block for Encryption/Decryption in Cipher Feedback mode"]
-    _64BIT,
-    #[doc = "32-bit Input data block for Encryption/Decryption in Cipher Feedback mode"]
-    _32BIT,
-    #[doc = "16-bit Input data block for Encryption/Decryption in Cipher Feedback mode"]
-    _16BIT,
-    #[doc = "8-bit Input data block for Encryption/Decryption in Cipher Feedback mode"]
-    _8BIT,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
+#[doc = "Write proxy for field `AESMODE`"]
+pub struct AESMODE_W<'a> {
+    w: &'a mut W,
 }
-impl CFBSR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            CFBSR::_128BIT => 0,
-            CFBSR::_64BIT => 1,
-            CFBSR::_32BIT => 2,
-            CFBSR::_16BIT => 3,
-            CFBSR::_8BIT => 4,
-            CFBSR::_Reserved(bits) => bits,
+impl<'a> AESMODE_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: AESMODE_A) -> &'a mut W {
+        unsafe { self.bits(variant.into()) }
+    }
+    #[doc = "Electronic code book mode"]
+    #[inline(always)]
+    pub fn ecb(self) -> &'a mut W {
+        self.variant(AESMODE_A::ECB)
+    }
+    #[doc = "Cipher block chaining mode"]
+    #[inline(always)]
+    pub fn cbc(self) -> &'a mut W {
+        self.variant(AESMODE_A::CBC)
+    }
+    #[doc = "Output feedback mode"]
+    #[inline(always)]
+    pub fn ofb(self) -> &'a mut W {
+        self.variant(AESMODE_A::OFB)
+    }
+    #[doc = "Cipher feedback mode"]
+    #[inline(always)]
+    pub fn cfb(self) -> &'a mut W {
+        self.variant(AESMODE_A::CFB)
+    }
+    #[doc = "Counter mode"]
+    #[inline(always)]
+    pub fn counter(self) -> &'a mut W {
+        self.variant(AESMODE_A::COUNTER)
+    }
+    #[doc = "CCM mode"]
+    #[inline(always)]
+    pub fn ccm(self) -> &'a mut W {
+        self.variant(AESMODE_A::CCM)
+    }
+    #[doc = "Galois counter mode"]
+    #[inline(always)]
+    pub fn gcm(self) -> &'a mut W {
+        self.variant(AESMODE_A::GCM)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub unsafe fn bits(self, value: u8) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x07 << 2)) | (((value as u32) & 0x07) << 2);
+        self.w
+    }
+}
+#[doc = "Cipher Feedback Block Size\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum CFBS_A {
+    #[doc = "0: 128-bit Input data block for Encryption/Decryption in Cipher Feedback mode"]
+    _128BIT,
+    #[doc = "1: 64-bit Input data block for Encryption/Decryption in Cipher Feedback mode"]
+    _64BIT,
+    #[doc = "2: 32-bit Input data block for Encryption/Decryption in Cipher Feedback mode"]
+    _32BIT,
+    #[doc = "3: 16-bit Input data block for Encryption/Decryption in Cipher Feedback mode"]
+    _16BIT,
+    #[doc = "4: 8-bit Input data block for Encryption/Decryption in Cipher Feedback mode"]
+    _8BIT,
+}
+impl From<CFBS_A> for u8 {
+    #[inline(always)]
+    fn from(variant: CFBS_A) -> Self {
+        match variant {
+            CFBS_A::_128BIT => 0,
+            CFBS_A::_64BIT => 1,
+            CFBS_A::_32BIT => 2,
+            CFBS_A::_16BIT => 3,
+            CFBS_A::_8BIT => 4,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> CFBSR {
-        match value {
-            0 => CFBSR::_128BIT,
-            1 => CFBSR::_64BIT,
-            2 => CFBSR::_32BIT,
-            3 => CFBSR::_16BIT,
-            4 => CFBSR::_8BIT,
-            i => CFBSR::_Reserved(i),
+}
+#[doc = "Reader of field `CFBS`"]
+pub type CFBS_R = crate::R<u8, CFBS_A>;
+impl CFBS_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, CFBS_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(CFBS_A::_128BIT),
+            1 => Val(CFBS_A::_64BIT),
+            2 => Val(CFBS_A::_32BIT),
+            3 => Val(CFBS_A::_16BIT),
+            4 => Val(CFBS_A::_8BIT),
+            i => Res(i),
         }
     }
     #[doc = "Checks if the value of the field is `_128BIT`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_128bit(&self) -> bool {
-        *self == CFBSR::_128BIT
+        *self == CFBS_A::_128BIT
     }
     #[doc = "Checks if the value of the field is `_64BIT`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_64bit(&self) -> bool {
-        *self == CFBSR::_64BIT
+        *self == CFBS_A::_64BIT
     }
     #[doc = "Checks if the value of the field is `_32BIT`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_32bit(&self) -> bool {
-        *self == CFBSR::_32BIT
+        *self == CFBS_A::_32BIT
     }
     #[doc = "Checks if the value of the field is `_16BIT`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_16bit(&self) -> bool {
-        *self == CFBSR::_16BIT
+        *self == CFBS_A::_16BIT
     }
     #[doc = "Checks if the value of the field is `_8BIT`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_8bit(&self) -> bool {
-        *self == CFBSR::_8BIT
+        *self == CFBS_A::_8BIT
     }
 }
-#[doc = "Possible values of the field `KEYSIZE`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum KEYSIZER {
-    #[doc = "128-bit Key for Encryption / Decryption"]
-    _128BIT,
-    #[doc = "192-bit Key for Encryption / Decryption"]
-    _192BIT,
-    #[doc = "256-bit Key for Encryption / Decryption"]
-    _256BIT,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
+#[doc = "Write proxy for field `CFBS`"]
+pub struct CFBS_W<'a> {
+    w: &'a mut W,
 }
-impl KEYSIZER {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            KEYSIZER::_128BIT => 0,
-            KEYSIZER::_192BIT => 1,
-            KEYSIZER::_256BIT => 2,
-            KEYSIZER::_Reserved(bits) => bits,
+impl<'a> CFBS_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: CFBS_A) -> &'a mut W {
+        unsafe { self.bits(variant.into()) }
+    }
+    #[doc = "128-bit Input data block for Encryption/Decryption in Cipher Feedback mode"]
+    #[inline(always)]
+    pub fn _128bit(self) -> &'a mut W {
+        self.variant(CFBS_A::_128BIT)
+    }
+    #[doc = "64-bit Input data block for Encryption/Decryption in Cipher Feedback mode"]
+    #[inline(always)]
+    pub fn _64bit(self) -> &'a mut W {
+        self.variant(CFBS_A::_64BIT)
+    }
+    #[doc = "32-bit Input data block for Encryption/Decryption in Cipher Feedback mode"]
+    #[inline(always)]
+    pub fn _32bit(self) -> &'a mut W {
+        self.variant(CFBS_A::_32BIT)
+    }
+    #[doc = "16-bit Input data block for Encryption/Decryption in Cipher Feedback mode"]
+    #[inline(always)]
+    pub fn _16bit(self) -> &'a mut W {
+        self.variant(CFBS_A::_16BIT)
+    }
+    #[doc = "8-bit Input data block for Encryption/Decryption in Cipher Feedback mode"]
+    #[inline(always)]
+    pub fn _8bit(self) -> &'a mut W {
+        self.variant(CFBS_A::_8BIT)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub unsafe fn bits(self, value: u8) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x07 << 5)) | (((value as u32) & 0x07) << 5);
+        self.w
+    }
+}
+#[doc = "Encryption Key Size\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum KEYSIZE_A {
+    #[doc = "0: 128-bit Key for Encryption / Decryption"]
+    _128BIT,
+    #[doc = "1: 192-bit Key for Encryption / Decryption"]
+    _192BIT,
+    #[doc = "2: 256-bit Key for Encryption / Decryption"]
+    _256BIT,
+}
+impl From<KEYSIZE_A> for u8 {
+    #[inline(always)]
+    fn from(variant: KEYSIZE_A) -> Self {
+        match variant {
+            KEYSIZE_A::_128BIT => 0,
+            KEYSIZE_A::_192BIT => 1,
+            KEYSIZE_A::_256BIT => 2,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> KEYSIZER {
-        match value {
-            0 => KEYSIZER::_128BIT,
-            1 => KEYSIZER::_192BIT,
-            2 => KEYSIZER::_256BIT,
-            i => KEYSIZER::_Reserved(i),
+}
+#[doc = "Reader of field `KEYSIZE`"]
+pub type KEYSIZE_R = crate::R<u8, KEYSIZE_A>;
+impl KEYSIZE_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, KEYSIZE_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(KEYSIZE_A::_128BIT),
+            1 => Val(KEYSIZE_A::_192BIT),
+            2 => Val(KEYSIZE_A::_256BIT),
+            i => Res(i),
         }
     }
     #[doc = "Checks if the value of the field is `_128BIT`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_128bit(&self) -> bool {
-        *self == KEYSIZER::_128BIT
+        *self == KEYSIZE_A::_128BIT
     }
     #[doc = "Checks if the value of the field is `_192BIT`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_192bit(&self) -> bool {
-        *self == KEYSIZER::_192BIT
+        *self == KEYSIZE_A::_192BIT
     }
     #[doc = "Checks if the value of the field is `_256BIT`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_256bit(&self) -> bool {
-        *self == KEYSIZER::_256BIT
+        *self == KEYSIZE_A::_256BIT
     }
 }
-#[doc = "Possible values of the field `CIPHER`"]
+#[doc = "Write proxy for field `KEYSIZE`"]
+pub struct KEYSIZE_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> KEYSIZE_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: KEYSIZE_A) -> &'a mut W {
+        unsafe { self.bits(variant.into()) }
+    }
+    #[doc = "128-bit Key for Encryption / Decryption"]
+    #[inline(always)]
+    pub fn _128bit(self) -> &'a mut W {
+        self.variant(KEYSIZE_A::_128BIT)
+    }
+    #[doc = "192-bit Key for Encryption / Decryption"]
+    #[inline(always)]
+    pub fn _192bit(self) -> &'a mut W {
+        self.variant(KEYSIZE_A::_192BIT)
+    }
+    #[doc = "256-bit Key for Encryption / Decryption"]
+    #[inline(always)]
+    pub fn _256bit(self) -> &'a mut W {
+        self.variant(KEYSIZE_A::_256BIT)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub unsafe fn bits(self, value: u8) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x03 << 8)) | (((value as u32) & 0x03) << 8);
+        self.w
+    }
+}
+#[doc = "Cipher Mode\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum CIPHERR {
-    #[doc = "Decryption"]
+pub enum CIPHER_A {
+    #[doc = "0: Decryption"]
     DEC,
-    #[doc = "Encryption"]
+    #[doc = "1: Encryption"]
     ENC,
 }
-impl CIPHERR {
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        match *self {
-            CIPHERR::DEC => false,
-            CIPHERR::ENC => true,
+impl From<CIPHER_A> for bool {
+    #[inline(always)]
+    fn from(variant: CIPHER_A) -> Self {
+        match variant {
+            CIPHER_A::DEC => false,
+            CIPHER_A::ENC => true,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: bool) -> CIPHERR {
-        match value {
-            false => CIPHERR::DEC,
-            true => CIPHERR::ENC,
+}
+#[doc = "Reader of field `CIPHER`"]
+pub type CIPHER_R = crate::R<bool, CIPHER_A>;
+impl CIPHER_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> CIPHER_A {
+        match self.bits {
+            false => CIPHER_A::DEC,
+            true => CIPHER_A::ENC,
         }
     }
     #[doc = "Checks if the value of the field is `DEC`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_dec(&self) -> bool {
-        *self == CIPHERR::DEC
+        *self == CIPHER_A::DEC
     }
     #[doc = "Checks if the value of the field is `ENC`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_enc(&self) -> bool {
-        *self == CIPHERR::ENC
+        *self == CIPHER_A::ENC
     }
 }
-#[doc = "Possible values of the field `STARTMODE`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum STARTMODER {
-    #[doc = "Start Encryption / Decryption in Manual mode"]
-    MANUAL,
-    #[doc = "Start Encryption / Decryption in Auto mode"]
-    AUTO,
+#[doc = "Write proxy for field `CIPHER`"]
+pub struct CIPHER_W<'a> {
+    w: &'a mut W,
 }
-impl STARTMODER {
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        match *self {
-            STARTMODER::MANUAL => false,
-            STARTMODER::AUTO => true,
+impl<'a> CIPHER_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: CIPHER_A) -> &'a mut W {
+        {
+            self.bit(variant.into())
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: bool) -> STARTMODER {
-        match value {
-            false => STARTMODER::MANUAL,
-            true => STARTMODER::AUTO,
+    #[doc = "Decryption"]
+    #[inline(always)]
+    pub fn dec(self) -> &'a mut W {
+        self.variant(CIPHER_A::DEC)
+    }
+    #[doc = "Encryption"]
+    #[inline(always)]
+    pub fn enc(self) -> &'a mut W {
+        self.variant(CIPHER_A::ENC)
+    }
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 10)) | (((value as u32) & 0x01) << 10);
+        self.w
+    }
+}
+#[doc = "Start Mode Select\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum STARTMODE_A {
+    #[doc = "0: Start Encryption / Decryption in Manual mode"]
+    MANUAL,
+    #[doc = "1: Start Encryption / Decryption in Auto mode"]
+    AUTO,
+}
+impl From<STARTMODE_A> for bool {
+    #[inline(always)]
+    fn from(variant: STARTMODE_A) -> Self {
+        match variant {
+            STARTMODE_A::MANUAL => false,
+            STARTMODE_A::AUTO => true,
+        }
+    }
+}
+#[doc = "Reader of field `STARTMODE`"]
+pub type STARTMODE_R = crate::R<bool, STARTMODE_A>;
+impl STARTMODE_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> STARTMODE_A {
+        match self.bits {
+            false => STARTMODE_A::MANUAL,
+            true => STARTMODE_A::AUTO,
         }
     }
     #[doc = "Checks if the value of the field is `MANUAL`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_manual(&self) -> bool {
-        *self == STARTMODER::MANUAL
+        *self == STARTMODE_A::MANUAL
     }
     #[doc = "Checks if the value of the field is `AUTO`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_auto(&self) -> bool {
-        *self == STARTMODER::AUTO
+        *self == STARTMODE_A::AUTO
     }
 }
-#[doc = "Possible values of the field `LOD`"]
+#[doc = "Write proxy for field `STARTMODE`"]
+pub struct STARTMODE_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> STARTMODE_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: STARTMODE_A) -> &'a mut W {
+        {
+            self.bit(variant.into())
+        }
+    }
+    #[doc = "Start Encryption / Decryption in Manual mode"]
+    #[inline(always)]
+    pub fn manual(self) -> &'a mut W {
+        self.variant(STARTMODE_A::MANUAL)
+    }
+    #[doc = "Start Encryption / Decryption in Auto mode"]
+    #[inline(always)]
+    pub fn auto(self) -> &'a mut W {
+        self.variant(STARTMODE_A::AUTO)
+    }
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 11)) | (((value as u32) & 0x01) << 11);
+        self.w
+    }
+}
+#[doc = "Last Output Data Mode\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum LODR {
-    #[doc = "No effect"]
+pub enum LOD_A {
+    #[doc = "0: No effect"]
     NONE,
+    #[doc = "1: Start encryption in Last Output Data mode"]
+    LAST,
+}
+impl From<LOD_A> for bool {
+    #[inline(always)]
+    fn from(variant: LOD_A) -> Self {
+        match variant {
+            LOD_A::NONE => false,
+            LOD_A::LAST => true,
+        }
+    }
+}
+#[doc = "Reader of field `LOD`"]
+pub type LOD_R = crate::R<bool, LOD_A>;
+impl LOD_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> LOD_A {
+        match self.bits {
+            false => LOD_A::NONE,
+            true => LOD_A::LAST,
+        }
+    }
+    #[doc = "Checks if the value of the field is `NONE`"]
+    #[inline(always)]
+    pub fn is_none(&self) -> bool {
+        *self == LOD_A::NONE
+    }
+    #[doc = "Checks if the value of the field is `LAST`"]
+    #[inline(always)]
+    pub fn is_last(&self) -> bool {
+        *self == LOD_A::LAST
+    }
+}
+#[doc = "Write proxy for field `LOD`"]
+pub struct LOD_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> LOD_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: LOD_A) -> &'a mut W {
+        {
+            self.bit(variant.into())
+        }
+    }
+    #[doc = "No effect"]
+    #[inline(always)]
+    pub fn none(self) -> &'a mut W {
+        self.variant(LOD_A::NONE)
+    }
     #[doc = "Start encryption in Last Output Data mode"]
+    #[inline(always)]
+    pub fn last(self) -> &'a mut W {
+        self.variant(LOD_A::LAST)
+    }
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 12)) | (((value as u32) & 0x01) << 12);
+        self.w
+    }
+}
+#[doc = "Last Key Generation\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum KEYGEN_A {
+    #[doc = "0: No effect"]
+    NONE,
+    #[doc = "1: Start Computation of the last NK words of the expanded key"]
     LAST,
 }
-impl LODR {
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        match *self {
-            LODR::NONE => false,
-            LODR::LAST => true,
+impl From<KEYGEN_A> for bool {
+    #[inline(always)]
+    fn from(variant: KEYGEN_A) -> Self {
+        match variant {
+            KEYGEN_A::NONE => false,
+            KEYGEN_A::LAST => true,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: bool) -> LODR {
-        match value {
-            false => LODR::NONE,
-            true => LODR::LAST,
+}
+#[doc = "Reader of field `KEYGEN`"]
+pub type KEYGEN_R = crate::R<bool, KEYGEN_A>;
+impl KEYGEN_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> KEYGEN_A {
+        match self.bits {
+            false => KEYGEN_A::NONE,
+            true => KEYGEN_A::LAST,
         }
     }
     #[doc = "Checks if the value of the field is `NONE`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_none(&self) -> bool {
-        *self == LODR::NONE
+        *self == KEYGEN_A::NONE
     }
     #[doc = "Checks if the value of the field is `LAST`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_last(&self) -> bool {
-        *self == LODR::LAST
+        *self == KEYGEN_A::LAST
     }
 }
-#[doc = "Possible values of the field `KEYGEN`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum KEYGENR {
+#[doc = "Write proxy for field `KEYGEN`"]
+pub struct KEYGEN_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> KEYGEN_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: KEYGEN_A) -> &'a mut W {
+        {
+            self.bit(variant.into())
+        }
+    }
     #[doc = "No effect"]
-    NONE,
+    #[inline(always)]
+    pub fn none(self) -> &'a mut W {
+        self.variant(KEYGEN_A::NONE)
+    }
     #[doc = "Start Computation of the last NK words of the expanded key"]
-    LAST,
-}
-impl KEYGENR {
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
+    #[inline(always)]
+    pub fn last(self) -> &'a mut W {
+        self.variant(KEYGEN_A::LAST)
     }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
     }
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        match *self {
-            KEYGENR::NONE => false,
-            KEYGENR::LAST => true,
-        }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: bool) -> KEYGENR {
-        match value {
-            false => KEYGENR::NONE,
-            true => KEYGENR::LAST,
-        }
-    }
-    #[doc = "Checks if the value of the field is `NONE`"]
-    #[inline]
-    pub fn is_none(&self) -> bool {
-        *self == KEYGENR::NONE
-    }
-    #[doc = "Checks if the value of the field is `LAST`"]
-    #[inline]
-    pub fn is_last(&self) -> bool {
-        *self == KEYGENR::LAST
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 13)) | (((value as u32) & 0x01) << 13);
+        self.w
     }
 }
-#[doc = "Possible values of the field `XORKEY`"]
+#[doc = "XOR Key Operation\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum XORKEYR {
-    #[doc = "No effect"]
+pub enum XORKEY_A {
+    #[doc = "0: No effect"]
     NONE,
-    #[doc = "The user keyword gets XORed with the previous keyword register content."]
+    #[doc = "1: The user keyword gets XORed with the previous keyword register content."]
     XOR,
 }
-impl XORKEYR {
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        match *self {
-            XORKEYR::NONE => false,
-            XORKEYR::XOR => true,
+impl From<XORKEY_A> for bool {
+    #[inline(always)]
+    fn from(variant: XORKEY_A) -> Self {
+        match variant {
+            XORKEY_A::NONE => false,
+            XORKEY_A::XOR => true,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: bool) -> XORKEYR {
-        match value {
-            false => XORKEYR::NONE,
-            true => XORKEYR::XOR,
+}
+#[doc = "Reader of field `XORKEY`"]
+pub type XORKEY_R = crate::R<bool, XORKEY_A>;
+impl XORKEY_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> XORKEY_A {
+        match self.bits {
+            false => XORKEY_A::NONE,
+            true => XORKEY_A::XOR,
         }
     }
     #[doc = "Checks if the value of the field is `NONE`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_none(&self) -> bool {
-        *self == XORKEYR::NONE
+        *self == XORKEY_A::NONE
     }
     #[doc = "Checks if the value of the field is `XOR`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_xor(&self) -> bool {
-        *self == XORKEYR::XOR
+        *self == XORKEY_A::XOR
     }
 }
-#[doc = r" Value of the field"]
-pub struct CTYPER {
-    bits: u8,
-}
-impl CTYPER {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
-}
-#[doc = r" Proxy"]
-pub struct _SWRSTW<'a> {
+#[doc = "Write proxy for field `XORKEY`"]
+pub struct XORKEY_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _SWRSTW<'a> {
-    #[doc = r" Sets the field bit"]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r" Clears the field bit"]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
-        self.w
-    }
-}
-#[doc = r" Proxy"]
-pub struct _ENABLEW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _ENABLEW<'a> {
-    #[doc = r" Sets the field bit"]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r" Clears the field bit"]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 1;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
-        self.w
-    }
-}
-#[doc = "Values that can be written to the field `AESMODE`"]
-pub enum AESMODEW {
-    #[doc = "Electronic code book mode"]
-    ECB,
-    #[doc = "Cipher block chaining mode"]
-    CBC,
-    #[doc = "Output feedback mode"]
-    OFB,
-    #[doc = "Cipher feedback mode"]
-    CFB,
-    #[doc = "Counter mode"]
-    COUNTER,
-    #[doc = "CCM mode"]
-    CCM,
-    #[doc = "Galois counter mode"]
-    GCM,
-}
-impl AESMODEW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            AESMODEW::ECB => 0,
-            AESMODEW::CBC => 1,
-            AESMODEW::OFB => 2,
-            AESMODEW::CFB => 3,
-            AESMODEW::COUNTER => 4,
-            AESMODEW::CCM => 5,
-            AESMODEW::GCM => 6,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _AESMODEW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _AESMODEW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: AESMODEW) -> &'a mut W {
-        unsafe { self.bits(variant._bits()) }
-    }
-    #[doc = "Electronic code book mode"]
-    #[inline]
-    pub fn ecb(self) -> &'a mut W {
-        self.variant(AESMODEW::ECB)
-    }
-    #[doc = "Cipher block chaining mode"]
-    #[inline]
-    pub fn cbc(self) -> &'a mut W {
-        self.variant(AESMODEW::CBC)
-    }
-    #[doc = "Output feedback mode"]
-    #[inline]
-    pub fn ofb(self) -> &'a mut W {
-        self.variant(AESMODEW::OFB)
-    }
-    #[doc = "Cipher feedback mode"]
-    #[inline]
-    pub fn cfb(self) -> &'a mut W {
-        self.variant(AESMODEW::CFB)
-    }
-    #[doc = "Counter mode"]
-    #[inline]
-    pub fn counter(self) -> &'a mut W {
-        self.variant(AESMODEW::COUNTER)
-    }
-    #[doc = "CCM mode"]
-    #[inline]
-    pub fn ccm(self) -> &'a mut W {
-        self.variant(AESMODEW::CCM)
-    }
-    #[doc = "Galois counter mode"]
-    #[inline]
-    pub fn gcm(self) -> &'a mut W {
-        self.variant(AESMODEW::GCM)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 7;
-        const OFFSET: u8 = 2;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
-        self.w
-    }
-}
-#[doc = "Values that can be written to the field `CFBS`"]
-pub enum CFBSW {
-    #[doc = "128-bit Input data block for Encryption/Decryption in Cipher Feedback mode"]
-    _128BIT,
-    #[doc = "64-bit Input data block for Encryption/Decryption in Cipher Feedback mode"]
-    _64BIT,
-    #[doc = "32-bit Input data block for Encryption/Decryption in Cipher Feedback mode"]
-    _32BIT,
-    #[doc = "16-bit Input data block for Encryption/Decryption in Cipher Feedback mode"]
-    _16BIT,
-    #[doc = "8-bit Input data block for Encryption/Decryption in Cipher Feedback mode"]
-    _8BIT,
-}
-impl CFBSW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            CFBSW::_128BIT => 0,
-            CFBSW::_64BIT => 1,
-            CFBSW::_32BIT => 2,
-            CFBSW::_16BIT => 3,
-            CFBSW::_8BIT => 4,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _CFBSW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _CFBSW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: CFBSW) -> &'a mut W {
-        unsafe { self.bits(variant._bits()) }
-    }
-    #[doc = "128-bit Input data block for Encryption/Decryption in Cipher Feedback mode"]
-    #[inline]
-    pub fn _128bit(self) -> &'a mut W {
-        self.variant(CFBSW::_128BIT)
-    }
-    #[doc = "64-bit Input data block for Encryption/Decryption in Cipher Feedback mode"]
-    #[inline]
-    pub fn _64bit(self) -> &'a mut W {
-        self.variant(CFBSW::_64BIT)
-    }
-    #[doc = "32-bit Input data block for Encryption/Decryption in Cipher Feedback mode"]
-    #[inline]
-    pub fn _32bit(self) -> &'a mut W {
-        self.variant(CFBSW::_32BIT)
-    }
-    #[doc = "16-bit Input data block for Encryption/Decryption in Cipher Feedback mode"]
-    #[inline]
-    pub fn _16bit(self) -> &'a mut W {
-        self.variant(CFBSW::_16BIT)
-    }
-    #[doc = "8-bit Input data block for Encryption/Decryption in Cipher Feedback mode"]
-    #[inline]
-    pub fn _8bit(self) -> &'a mut W {
-        self.variant(CFBSW::_8BIT)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 7;
-        const OFFSET: u8 = 5;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
-        self.w
-    }
-}
-#[doc = "Values that can be written to the field `KEYSIZE`"]
-pub enum KEYSIZEW {
-    #[doc = "128-bit Key for Encryption / Decryption"]
-    _128BIT,
-    #[doc = "192-bit Key for Encryption / Decryption"]
-    _192BIT,
-    #[doc = "256-bit Key for Encryption / Decryption"]
-    _256BIT,
-}
-impl KEYSIZEW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            KEYSIZEW::_128BIT => 0,
-            KEYSIZEW::_192BIT => 1,
-            KEYSIZEW::_256BIT => 2,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _KEYSIZEW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _KEYSIZEW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: KEYSIZEW) -> &'a mut W {
-        unsafe { self.bits(variant._bits()) }
-    }
-    #[doc = "128-bit Key for Encryption / Decryption"]
-    #[inline]
-    pub fn _128bit(self) -> &'a mut W {
-        self.variant(KEYSIZEW::_128BIT)
-    }
-    #[doc = "192-bit Key for Encryption / Decryption"]
-    #[inline]
-    pub fn _192bit(self) -> &'a mut W {
-        self.variant(KEYSIZEW::_192BIT)
-    }
-    #[doc = "256-bit Key for Encryption / Decryption"]
-    #[inline]
-    pub fn _256bit(self) -> &'a mut W {
-        self.variant(KEYSIZEW::_256BIT)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 8;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
-        self.w
-    }
-}
-#[doc = "Values that can be written to the field `CIPHER`"]
-pub enum CIPHERW {
-    #[doc = "Decryption"]
-    DEC,
-    #[doc = "Encryption"]
-    ENC,
-}
-impl CIPHERW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> bool {
-        match *self {
-            CIPHERW::DEC => false,
-            CIPHERW::ENC => true,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _CIPHERW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _CIPHERW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: CIPHERW) -> &'a mut W {
+impl<'a> XORKEY_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: XORKEY_A) -> &'a mut W {
         {
-            self.bit(variant._bits())
-        }
-    }
-    #[doc = "Decryption"]
-    #[inline]
-    pub fn dec(self) -> &'a mut W {
-        self.variant(CIPHERW::DEC)
-    }
-    #[doc = "Encryption"]
-    #[inline]
-    pub fn enc(self) -> &'a mut W {
-        self.variant(CIPHERW::ENC)
-    }
-    #[doc = r" Sets the field bit"]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r" Clears the field bit"]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 10;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
-        self.w
-    }
-}
-#[doc = "Values that can be written to the field `STARTMODE`"]
-pub enum STARTMODEW {
-    #[doc = "Start Encryption / Decryption in Manual mode"]
-    MANUAL,
-    #[doc = "Start Encryption / Decryption in Auto mode"]
-    AUTO,
-}
-impl STARTMODEW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> bool {
-        match *self {
-            STARTMODEW::MANUAL => false,
-            STARTMODEW::AUTO => true,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _STARTMODEW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _STARTMODEW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: STARTMODEW) -> &'a mut W {
-        {
-            self.bit(variant._bits())
-        }
-    }
-    #[doc = "Start Encryption / Decryption in Manual mode"]
-    #[inline]
-    pub fn manual(self) -> &'a mut W {
-        self.variant(STARTMODEW::MANUAL)
-    }
-    #[doc = "Start Encryption / Decryption in Auto mode"]
-    #[inline]
-    pub fn auto(self) -> &'a mut W {
-        self.variant(STARTMODEW::AUTO)
-    }
-    #[doc = r" Sets the field bit"]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r" Clears the field bit"]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 11;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
-        self.w
-    }
-}
-#[doc = "Values that can be written to the field `LOD`"]
-pub enum LODW {
-    #[doc = "No effect"]
-    NONE,
-    #[doc = "Start encryption in Last Output Data mode"]
-    LAST,
-}
-impl LODW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> bool {
-        match *self {
-            LODW::NONE => false,
-            LODW::LAST => true,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _LODW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _LODW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: LODW) -> &'a mut W {
-        {
-            self.bit(variant._bits())
+            self.bit(variant.into())
         }
     }
     #[doc = "No effect"]
-    #[inline]
+    #[inline(always)]
     pub fn none(self) -> &'a mut W {
-        self.variant(LODW::NONE)
-    }
-    #[doc = "Start encryption in Last Output Data mode"]
-    #[inline]
-    pub fn last(self) -> &'a mut W {
-        self.variant(LODW::LAST)
-    }
-    #[doc = r" Sets the field bit"]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r" Clears the field bit"]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 12;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
-        self.w
-    }
-}
-#[doc = "Values that can be written to the field `KEYGEN`"]
-pub enum KEYGENW {
-    #[doc = "No effect"]
-    NONE,
-    #[doc = "Start Computation of the last NK words of the expanded key"]
-    LAST,
-}
-impl KEYGENW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> bool {
-        match *self {
-            KEYGENW::NONE => false,
-            KEYGENW::LAST => true,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _KEYGENW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _KEYGENW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: KEYGENW) -> &'a mut W {
-        {
-            self.bit(variant._bits())
-        }
-    }
-    #[doc = "No effect"]
-    #[inline]
-    pub fn none(self) -> &'a mut W {
-        self.variant(KEYGENW::NONE)
-    }
-    #[doc = "Start Computation of the last NK words of the expanded key"]
-    #[inline]
-    pub fn last(self) -> &'a mut W {
-        self.variant(KEYGENW::LAST)
-    }
-    #[doc = r" Sets the field bit"]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r" Clears the field bit"]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 13;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
-        self.w
-    }
-}
-#[doc = "Values that can be written to the field `XORKEY`"]
-pub enum XORKEYW {
-    #[doc = "No effect"]
-    NONE,
-    #[doc = "The user keyword gets XORed with the previous keyword register content."]
-    XOR,
-}
-impl XORKEYW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> bool {
-        match *self {
-            XORKEYW::NONE => false,
-            XORKEYW::XOR => true,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _XORKEYW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _XORKEYW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: XORKEYW) -> &'a mut W {
-        {
-            self.bit(variant._bits())
-        }
-    }
-    #[doc = "No effect"]
-    #[inline]
-    pub fn none(self) -> &'a mut W {
-        self.variant(XORKEYW::NONE)
+        self.variant(XORKEY_A::NONE)
     }
     #[doc = "The user keyword gets XORed with the previous keyword register content."]
-    #[inline]
+    #[inline(always)]
     pub fn xor(self) -> &'a mut W {
-        self.variant(XORKEYW::XOR)
+        self.variant(XORKEY_A::XOR)
     }
-    #[doc = r" Sets the field bit"]
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 14;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 14)) | (((value as u32) & 0x01) << 14);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _CTYPEW<'a> {
+#[doc = "Reader of field `CTYPE`"]
+pub type CTYPE_R = crate::R<u8, u8>;
+#[doc = "Write proxy for field `CTYPE`"]
+pub struct CTYPE_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _CTYPEW<'a> {
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+impl<'a> CTYPE_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 15;
-        const OFFSET: u8 = 16;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x0f << 16)) | (((value as u32) & 0x0f) << 16);
         self.w
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u32 {
-        self.bits
-    }
     #[doc = "Bit 0 - Software Reset"]
-    #[inline]
-    pub fn swrst(&self) -> SWRSTR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        SWRSTR { bits }
+    #[inline(always)]
+    pub fn swrst(&self) -> SWRST_R {
+        SWRST_R::new((self.bits & 0x01) != 0)
     }
     #[doc = "Bit 1 - Enable"]
-    #[inline]
-    pub fn enable(&self) -> ENABLER {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        ENABLER { bits }
+    #[inline(always)]
+    pub fn enable(&self) -> ENABLE_R {
+        ENABLE_R::new(((self.bits >> 1) & 0x01) != 0)
     }
     #[doc = "Bits 2:4 - AES Modes of operation"]
-    #[inline]
-    pub fn aesmode(&self) -> AESMODER {
-        AESMODER::_from({
-            const MASK: u8 = 7;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+    #[inline(always)]
+    pub fn aesmode(&self) -> AESMODE_R {
+        AESMODE_R::new(((self.bits >> 2) & 0x07) as u8)
     }
     #[doc = "Bits 5:7 - Cipher Feedback Block Size"]
-    #[inline]
-    pub fn cfbs(&self) -> CFBSR {
-        CFBSR::_from({
-            const MASK: u8 = 7;
-            const OFFSET: u8 = 5;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+    #[inline(always)]
+    pub fn cfbs(&self) -> CFBS_R {
+        CFBS_R::new(((self.bits >> 5) & 0x07) as u8)
     }
     #[doc = "Bits 8:9 - Encryption Key Size"]
-    #[inline]
-    pub fn keysize(&self) -> KEYSIZER {
-        KEYSIZER::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+    #[inline(always)]
+    pub fn keysize(&self) -> KEYSIZE_R {
+        KEYSIZE_R::new(((self.bits >> 8) & 0x03) as u8)
     }
     #[doc = "Bit 10 - Cipher Mode"]
-    #[inline]
-    pub fn cipher(&self) -> CIPHERR {
-        CIPHERR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 10;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        })
+    #[inline(always)]
+    pub fn cipher(&self) -> CIPHER_R {
+        CIPHER_R::new(((self.bits >> 10) & 0x01) != 0)
     }
     #[doc = "Bit 11 - Start Mode Select"]
-    #[inline]
-    pub fn startmode(&self) -> STARTMODER {
-        STARTMODER::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 11;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        })
+    #[inline(always)]
+    pub fn startmode(&self) -> STARTMODE_R {
+        STARTMODE_R::new(((self.bits >> 11) & 0x01) != 0)
     }
     #[doc = "Bit 12 - Last Output Data Mode"]
-    #[inline]
-    pub fn lod(&self) -> LODR {
-        LODR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 12;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        })
+    #[inline(always)]
+    pub fn lod(&self) -> LOD_R {
+        LOD_R::new(((self.bits >> 12) & 0x01) != 0)
     }
     #[doc = "Bit 13 - Last Key Generation"]
-    #[inline]
-    pub fn keygen(&self) -> KEYGENR {
-        KEYGENR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 13;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        })
+    #[inline(always)]
+    pub fn keygen(&self) -> KEYGEN_R {
+        KEYGEN_R::new(((self.bits >> 13) & 0x01) != 0)
     }
     #[doc = "Bit 14 - XOR Key Operation"]
-    #[inline]
-    pub fn xorkey(&self) -> XORKEYR {
-        XORKEYR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 14;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        })
+    #[inline(always)]
+    pub fn xorkey(&self) -> XORKEY_R {
+        XORKEY_R::new(((self.bits >> 14) & 0x01) != 0)
     }
     #[doc = "Bits 16:19 - Counter Measure Type"]
-    #[inline]
-    pub fn ctype(&self) -> CTYPER {
-        let bits = {
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 16;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
-        CTYPER { bits }
+    #[inline(always)]
+    pub fn ctype(&self) -> CTYPE_R {
+        CTYPE_R::new(((self.bits >> 16) & 0x0f) as u8)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
-    #[doc = r" Writes raw bits to the register"]
-    #[inline]
-    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.bits = bits;
-        self
-    }
     #[doc = "Bit 0 - Software Reset"]
-    #[inline]
-    pub fn swrst(&mut self) -> _SWRSTW {
-        _SWRSTW { w: self }
+    #[inline(always)]
+    pub fn swrst(&mut self) -> SWRST_W {
+        SWRST_W { w: self }
     }
     #[doc = "Bit 1 - Enable"]
-    #[inline]
-    pub fn enable(&mut self) -> _ENABLEW {
-        _ENABLEW { w: self }
+    #[inline(always)]
+    pub fn enable(&mut self) -> ENABLE_W {
+        ENABLE_W { w: self }
     }
     #[doc = "Bits 2:4 - AES Modes of operation"]
-    #[inline]
-    pub fn aesmode(&mut self) -> _AESMODEW {
-        _AESMODEW { w: self }
+    #[inline(always)]
+    pub fn aesmode(&mut self) -> AESMODE_W {
+        AESMODE_W { w: self }
     }
     #[doc = "Bits 5:7 - Cipher Feedback Block Size"]
-    #[inline]
-    pub fn cfbs(&mut self) -> _CFBSW {
-        _CFBSW { w: self }
+    #[inline(always)]
+    pub fn cfbs(&mut self) -> CFBS_W {
+        CFBS_W { w: self }
     }
     #[doc = "Bits 8:9 - Encryption Key Size"]
-    #[inline]
-    pub fn keysize(&mut self) -> _KEYSIZEW {
-        _KEYSIZEW { w: self }
+    #[inline(always)]
+    pub fn keysize(&mut self) -> KEYSIZE_W {
+        KEYSIZE_W { w: self }
     }
     #[doc = "Bit 10 - Cipher Mode"]
-    #[inline]
-    pub fn cipher(&mut self) -> _CIPHERW {
-        _CIPHERW { w: self }
+    #[inline(always)]
+    pub fn cipher(&mut self) -> CIPHER_W {
+        CIPHER_W { w: self }
     }
     #[doc = "Bit 11 - Start Mode Select"]
-    #[inline]
-    pub fn startmode(&mut self) -> _STARTMODEW {
-        _STARTMODEW { w: self }
+    #[inline(always)]
+    pub fn startmode(&mut self) -> STARTMODE_W {
+        STARTMODE_W { w: self }
     }
     #[doc = "Bit 12 - Last Output Data Mode"]
-    #[inline]
-    pub fn lod(&mut self) -> _LODW {
-        _LODW { w: self }
+    #[inline(always)]
+    pub fn lod(&mut self) -> LOD_W {
+        LOD_W { w: self }
     }
     #[doc = "Bit 13 - Last Key Generation"]
-    #[inline]
-    pub fn keygen(&mut self) -> _KEYGENW {
-        _KEYGENW { w: self }
+    #[inline(always)]
+    pub fn keygen(&mut self) -> KEYGEN_W {
+        KEYGEN_W { w: self }
     }
     #[doc = "Bit 14 - XOR Key Operation"]
-    #[inline]
-    pub fn xorkey(&mut self) -> _XORKEYW {
-        _XORKEYW { w: self }
+    #[inline(always)]
+    pub fn xorkey(&mut self) -> XORKEY_W {
+        XORKEY_W { w: self }
     }
     #[doc = "Bits 16:19 - Counter Measure Type"]
-    #[inline]
-    pub fn ctype(&mut self) -> _CTYPEW {
-        _CTYPEW { w: self }
+    #[inline(always)]
+    pub fn ctype(&mut self) -> CTYPE_W {
+        CTYPE_W { w: self }
     }
 }

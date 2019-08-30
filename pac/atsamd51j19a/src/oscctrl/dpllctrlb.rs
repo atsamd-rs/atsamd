@@ -1,655 +1,416 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u32,
-}
-#[doc = r" Value to write to the register"]
-pub struct W {
-    bits: u32,
-}
-impl super::DPLLCTRLB {
-    #[doc = r" Modifies the contents of the register"]
-    #[inline]
-    pub fn modify<F>(&self, f: F)
-    where
-        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
-    {
-        let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-    #[doc = r" Writes to the register"]
-    #[inline]
-    pub fn write<F>(&self, f: F)
-    where
-        F: FnOnce(&mut W) -> &mut W,
-    {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Writes the reset value to the register"]
-    #[inline]
-    pub fn reset(&self) {
-        self.write(|w| w)
+#[doc = "Reader of register DPLLCTRLB%s"]
+pub type R = crate::R<u32, super::DPLLCTRLB>;
+#[doc = "Writer for register DPLLCTRLB%s"]
+pub type W = crate::W<u32, super::DPLLCTRLB>;
+#[doc = "Register DPLLCTRLB%s `reset()`'s with value 0x20"]
+impl crate::ResetValue for super::DPLLCTRLB {
+    type Type = u32;
+    #[inline(always)]
+    fn reset_value() -> Self::Type {
+        0x20
     }
 }
-#[doc = r" Value of the field"]
-pub struct FILTERR {
-    bits: u8,
+#[doc = "Reader of field `FILTER`"]
+pub type FILTER_R = crate::R<u8, u8>;
+#[doc = "Write proxy for field `FILTER`"]
+pub struct FILTER_W<'a> {
+    w: &'a mut W,
 }
-impl FILTERR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
+impl<'a> FILTER_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub unsafe fn bits(self, value: u8) -> &'a mut W {
+        self.w.bits = (self.w.bits & !0x0f) | ((value as u32) & 0x0f);
+        self.w
     }
 }
-#[doc = r" Value of the field"]
-pub struct WUFR {
-    bits: bool,
+#[doc = "Reader of field `WUF`"]
+pub type WUF_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `WUF`"]
+pub struct WUF_W<'a> {
+    w: &'a mut W,
 }
-impl WUFR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
+impl<'a> WUF_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
     }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
     }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 4)) | (((value as u32) & 0x01) << 4);
+        self.w
     }
 }
-#[doc = "Possible values of the field `REFCLK`"]
+#[doc = "Reference Clock Selection\n\nValue on reset: 1"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum REFCLKR {
-    #[doc = "Dedicated GCLK clock reference"]
+pub enum REFCLK_A {
+    #[doc = "0: Dedicated GCLK clock reference"]
     GCLK,
-    #[doc = "XOSC32K clock reference"]
+    #[doc = "1: XOSC32K clock reference"]
     XOSC32,
-    #[doc = "XOSC0 clock reference"]
+    #[doc = "2: XOSC0 clock reference"]
     XOSC0,
-    #[doc = "XOSC1 clock reference"]
+    #[doc = "3: XOSC1 clock reference"]
     XOSC1,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
 }
-impl REFCLKR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            REFCLKR::GCLK => 0,
-            REFCLKR::XOSC32 => 1,
-            REFCLKR::XOSC0 => 2,
-            REFCLKR::XOSC1 => 3,
-            REFCLKR::_Reserved(bits) => bits,
+impl From<REFCLK_A> for u8 {
+    #[inline(always)]
+    fn from(variant: REFCLK_A) -> Self {
+        match variant {
+            REFCLK_A::GCLK => 0,
+            REFCLK_A::XOSC32 => 1,
+            REFCLK_A::XOSC0 => 2,
+            REFCLK_A::XOSC1 => 3,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> REFCLKR {
-        match value {
-            0 => REFCLKR::GCLK,
-            1 => REFCLKR::XOSC32,
-            2 => REFCLKR::XOSC0,
-            3 => REFCLKR::XOSC1,
-            i => REFCLKR::_Reserved(i),
+}
+#[doc = "Reader of field `REFCLK`"]
+pub type REFCLK_R = crate::R<u8, REFCLK_A>;
+impl REFCLK_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, REFCLK_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(REFCLK_A::GCLK),
+            1 => Val(REFCLK_A::XOSC32),
+            2 => Val(REFCLK_A::XOSC0),
+            3 => Val(REFCLK_A::XOSC1),
+            i => Res(i),
         }
     }
     #[doc = "Checks if the value of the field is `GCLK`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_gclk(&self) -> bool {
-        *self == REFCLKR::GCLK
+        *self == REFCLK_A::GCLK
     }
     #[doc = "Checks if the value of the field is `XOSC32`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_xosc32(&self) -> bool {
-        *self == REFCLKR::XOSC32
+        *self == REFCLK_A::XOSC32
     }
     #[doc = "Checks if the value of the field is `XOSC0`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_xosc0(&self) -> bool {
-        *self == REFCLKR::XOSC0
+        *self == REFCLK_A::XOSC0
     }
     #[doc = "Checks if the value of the field is `XOSC1`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_xosc1(&self) -> bool {
-        *self == REFCLKR::XOSC1
+        *self == REFCLK_A::XOSC1
     }
 }
-#[doc = "Possible values of the field `LTIME`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum LTIMER {
-    #[doc = "No time-out. Automatic lock"]
-    DEFAULT,
-    #[doc = "Time-out if no lock within 800us"]
-    _800US,
-    #[doc = "Time-out if no lock within 900us"]
-    _900US,
-    #[doc = "Time-out if no lock within 1ms"]
-    _1MS,
-    #[doc = "Time-out if no lock within 1.1ms"]
-    _1P1MS,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
+#[doc = "Write proxy for field `REFCLK`"]
+pub struct REFCLK_W<'a> {
+    w: &'a mut W,
 }
-impl LTIMER {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            LTIMER::DEFAULT => 0,
-            LTIMER::_800US => 4,
-            LTIMER::_900US => 5,
-            LTIMER::_1MS => 6,
-            LTIMER::_1P1MS => 7,
-            LTIMER::_Reserved(bits) => bits,
+impl<'a> REFCLK_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: REFCLK_A) -> &'a mut W {
+        unsafe { self.bits(variant.into()) }
+    }
+    #[doc = "Dedicated GCLK clock reference"]
+    #[inline(always)]
+    pub fn gclk(self) -> &'a mut W {
+        self.variant(REFCLK_A::GCLK)
+    }
+    #[doc = "XOSC32K clock reference"]
+    #[inline(always)]
+    pub fn xosc32(self) -> &'a mut W {
+        self.variant(REFCLK_A::XOSC32)
+    }
+    #[doc = "XOSC0 clock reference"]
+    #[inline(always)]
+    pub fn xosc0(self) -> &'a mut W {
+        self.variant(REFCLK_A::XOSC0)
+    }
+    #[doc = "XOSC1 clock reference"]
+    #[inline(always)]
+    pub fn xosc1(self) -> &'a mut W {
+        self.variant(REFCLK_A::XOSC1)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub unsafe fn bits(self, value: u8) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x07 << 5)) | (((value as u32) & 0x07) << 5);
+        self.w
+    }
+}
+#[doc = "Lock Time\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum LTIME_A {
+    #[doc = "0: No time-out. Automatic lock"]
+    DEFAULT,
+    #[doc = "4: Time-out if no lock within 800us"]
+    _800US,
+    #[doc = "5: Time-out if no lock within 900us"]
+    _900US,
+    #[doc = "6: Time-out if no lock within 1ms"]
+    _1MS,
+    #[doc = "7: Time-out if no lock within 1.1ms"]
+    _1P1MS,
+}
+impl From<LTIME_A> for u8 {
+    #[inline(always)]
+    fn from(variant: LTIME_A) -> Self {
+        match variant {
+            LTIME_A::DEFAULT => 0,
+            LTIME_A::_800US => 4,
+            LTIME_A::_900US => 5,
+            LTIME_A::_1MS => 6,
+            LTIME_A::_1P1MS => 7,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> LTIMER {
-        match value {
-            0 => LTIMER::DEFAULT,
-            4 => LTIMER::_800US,
-            5 => LTIMER::_900US,
-            6 => LTIMER::_1MS,
-            7 => LTIMER::_1P1MS,
-            i => LTIMER::_Reserved(i),
+}
+#[doc = "Reader of field `LTIME`"]
+pub type LTIME_R = crate::R<u8, LTIME_A>;
+impl LTIME_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, LTIME_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(LTIME_A::DEFAULT),
+            4 => Val(LTIME_A::_800US),
+            5 => Val(LTIME_A::_900US),
+            6 => Val(LTIME_A::_1MS),
+            7 => Val(LTIME_A::_1P1MS),
+            i => Res(i),
         }
     }
     #[doc = "Checks if the value of the field is `DEFAULT`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_default(&self) -> bool {
-        *self == LTIMER::DEFAULT
+        *self == LTIME_A::DEFAULT
     }
     #[doc = "Checks if the value of the field is `_800US`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_800us(&self) -> bool {
-        *self == LTIMER::_800US
+        *self == LTIME_A::_800US
     }
     #[doc = "Checks if the value of the field is `_900US`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_900us(&self) -> bool {
-        *self == LTIMER::_900US
+        *self == LTIME_A::_900US
     }
     #[doc = "Checks if the value of the field is `_1MS`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_1ms(&self) -> bool {
-        *self == LTIMER::_1MS
+        *self == LTIME_A::_1MS
     }
     #[doc = "Checks if the value of the field is `_1P1MS`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_1p1ms(&self) -> bool {
-        *self == LTIMER::_1P1MS
+        *self == LTIME_A::_1P1MS
     }
 }
-#[doc = r" Value of the field"]
-pub struct LBYPASSR {
-    bits: bool,
-}
-impl LBYPASSR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct DCOFILTERR {
-    bits: u8,
-}
-impl DCOFILTERR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
-}
-#[doc = r" Value of the field"]
-pub struct DCOENR {
-    bits: bool,
-}
-impl DCOENR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct DIVR {
-    bits: u16,
-}
-impl DIVR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u16 {
-        self.bits
-    }
-}
-#[doc = r" Proxy"]
-pub struct _FILTERW<'a> {
+#[doc = "Write proxy for field `LTIME`"]
+pub struct LTIME_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _FILTERW<'a> {
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 15;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
-        self.w
-    }
-}
-#[doc = r" Proxy"]
-pub struct _WUFW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _WUFW<'a> {
-    #[doc = r" Sets the field bit"]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r" Clears the field bit"]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 4;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
-        self.w
-    }
-}
-#[doc = "Values that can be written to the field `REFCLK`"]
-pub enum REFCLKW {
-    #[doc = "Dedicated GCLK clock reference"]
-    GCLK,
-    #[doc = "XOSC32K clock reference"]
-    XOSC32,
-    #[doc = "XOSC0 clock reference"]
-    XOSC0,
-    #[doc = "XOSC1 clock reference"]
-    XOSC1,
-}
-impl REFCLKW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            REFCLKW::GCLK => 0,
-            REFCLKW::XOSC32 => 1,
-            REFCLKW::XOSC0 => 2,
-            REFCLKW::XOSC1 => 3,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _REFCLKW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _REFCLKW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: REFCLKW) -> &'a mut W {
-        unsafe { self.bits(variant._bits()) }
-    }
-    #[doc = "Dedicated GCLK clock reference"]
-    #[inline]
-    pub fn gclk(self) -> &'a mut W {
-        self.variant(REFCLKW::GCLK)
-    }
-    #[doc = "XOSC32K clock reference"]
-    #[inline]
-    pub fn xosc32(self) -> &'a mut W {
-        self.variant(REFCLKW::XOSC32)
-    }
-    #[doc = "XOSC0 clock reference"]
-    #[inline]
-    pub fn xosc0(self) -> &'a mut W {
-        self.variant(REFCLKW::XOSC0)
-    }
-    #[doc = "XOSC1 clock reference"]
-    #[inline]
-    pub fn xosc1(self) -> &'a mut W {
-        self.variant(REFCLKW::XOSC1)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 7;
-        const OFFSET: u8 = 5;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
-        self.w
-    }
-}
-#[doc = "Values that can be written to the field `LTIME`"]
-pub enum LTIMEW {
-    #[doc = "No time-out. Automatic lock"]
-    DEFAULT,
-    #[doc = "Time-out if no lock within 800us"]
-    _800US,
-    #[doc = "Time-out if no lock within 900us"]
-    _900US,
-    #[doc = "Time-out if no lock within 1ms"]
-    _1MS,
-    #[doc = "Time-out if no lock within 1.1ms"]
-    _1P1MS,
-}
-impl LTIMEW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            LTIMEW::DEFAULT => 0,
-            LTIMEW::_800US => 4,
-            LTIMEW::_900US => 5,
-            LTIMEW::_1MS => 6,
-            LTIMEW::_1P1MS => 7,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _LTIMEW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _LTIMEW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: LTIMEW) -> &'a mut W {
-        unsafe { self.bits(variant._bits()) }
+impl<'a> LTIME_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: LTIME_A) -> &'a mut W {
+        unsafe { self.bits(variant.into()) }
     }
     #[doc = "No time-out. Automatic lock"]
-    #[inline]
+    #[inline(always)]
     pub fn default(self) -> &'a mut W {
-        self.variant(LTIMEW::DEFAULT)
+        self.variant(LTIME_A::DEFAULT)
     }
     #[doc = "Time-out if no lock within 800us"]
-    #[inline]
+    #[inline(always)]
     pub fn _800us(self) -> &'a mut W {
-        self.variant(LTIMEW::_800US)
+        self.variant(LTIME_A::_800US)
     }
     #[doc = "Time-out if no lock within 900us"]
-    #[inline]
+    #[inline(always)]
     pub fn _900us(self) -> &'a mut W {
-        self.variant(LTIMEW::_900US)
+        self.variant(LTIME_A::_900US)
     }
     #[doc = "Time-out if no lock within 1ms"]
-    #[inline]
+    #[inline(always)]
     pub fn _1ms(self) -> &'a mut W {
-        self.variant(LTIMEW::_1MS)
+        self.variant(LTIME_A::_1MS)
     }
     #[doc = "Time-out if no lock within 1.1ms"]
-    #[inline]
+    #[inline(always)]
     pub fn _1p1ms(self) -> &'a mut W {
-        self.variant(LTIMEW::_1P1MS)
+        self.variant(LTIME_A::_1P1MS)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 7;
-        const OFFSET: u8 = 8;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x07 << 8)) | (((value as u32) & 0x07) << 8);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _LBYPASSW<'a> {
+#[doc = "Reader of field `LBYPASS`"]
+pub type LBYPASS_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `LBYPASS`"]
+pub struct LBYPASS_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _LBYPASSW<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> LBYPASS_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 11;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 11)) | (((value as u32) & 0x01) << 11);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _DCOFILTERW<'a> {
+#[doc = "Reader of field `DCOFILTER`"]
+pub type DCOFILTER_R = crate::R<u8, u8>;
+#[doc = "Write proxy for field `DCOFILTER`"]
+pub struct DCOFILTER_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _DCOFILTERW<'a> {
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+impl<'a> DCOFILTER_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 7;
-        const OFFSET: u8 = 12;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x07 << 12)) | (((value as u32) & 0x07) << 12);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _DCOENW<'a> {
+#[doc = "Reader of field `DCOEN`"]
+pub type DCOEN_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `DCOEN`"]
+pub struct DCOEN_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _DCOENW<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> DCOEN_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 15;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 15)) | (((value as u32) & 0x01) << 15);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _DIVW<'a> {
+#[doc = "Reader of field `DIV`"]
+pub type DIV_R = crate::R<u16, u16>;
+#[doc = "Write proxy for field `DIV`"]
+pub struct DIV_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _DIVW<'a> {
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+impl<'a> DIV_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u16) -> &'a mut W {
-        const MASK: u16 = 2047;
-        const OFFSET: u8 = 16;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x07ff << 16)) | (((value as u32) & 0x07ff) << 16);
         self.w
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u32 {
-        self.bits
-    }
     #[doc = "Bits 0:3 - Proportional Integral Filter Selection"]
-    #[inline]
-    pub fn filter(&self) -> FILTERR {
-        let bits = {
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
-        FILTERR { bits }
+    #[inline(always)]
+    pub fn filter(&self) -> FILTER_R {
+        FILTER_R::new((self.bits & 0x0f) as u8)
     }
     #[doc = "Bit 4 - Wake Up Fast"]
-    #[inline]
-    pub fn wuf(&self) -> WUFR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        WUFR { bits }
+    #[inline(always)]
+    pub fn wuf(&self) -> WUF_R {
+        WUF_R::new(((self.bits >> 4) & 0x01) != 0)
     }
     #[doc = "Bits 5:7 - Reference Clock Selection"]
-    #[inline]
-    pub fn refclk(&self) -> REFCLKR {
-        REFCLKR::_from({
-            const MASK: u8 = 7;
-            const OFFSET: u8 = 5;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+    #[inline(always)]
+    pub fn refclk(&self) -> REFCLK_R {
+        REFCLK_R::new(((self.bits >> 5) & 0x07) as u8)
     }
     #[doc = "Bits 8:10 - Lock Time"]
-    #[inline]
-    pub fn ltime(&self) -> LTIMER {
-        LTIMER::_from({
-            const MASK: u8 = 7;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+    #[inline(always)]
+    pub fn ltime(&self) -> LTIME_R {
+        LTIME_R::new(((self.bits >> 8) & 0x07) as u8)
     }
     #[doc = "Bit 11 - Lock Bypass"]
-    #[inline]
-    pub fn lbypass(&self) -> LBYPASSR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 11;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        LBYPASSR { bits }
+    #[inline(always)]
+    pub fn lbypass(&self) -> LBYPASS_R {
+        LBYPASS_R::new(((self.bits >> 11) & 0x01) != 0)
     }
     #[doc = "Bits 12:14 - Sigma-Delta DCO Filter Selection"]
-    #[inline]
-    pub fn dcofilter(&self) -> DCOFILTERR {
-        let bits = {
-            const MASK: u8 = 7;
-            const OFFSET: u8 = 12;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
-        DCOFILTERR { bits }
+    #[inline(always)]
+    pub fn dcofilter(&self) -> DCOFILTER_R {
+        DCOFILTER_R::new(((self.bits >> 12) & 0x07) as u8)
     }
     #[doc = "Bit 15 - DCO Filter Enable"]
-    #[inline]
-    pub fn dcoen(&self) -> DCOENR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 15;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        DCOENR { bits }
+    #[inline(always)]
+    pub fn dcoen(&self) -> DCOEN_R {
+        DCOEN_R::new(((self.bits >> 15) & 0x01) != 0)
     }
     #[doc = "Bits 16:26 - Clock Divider"]
-    #[inline]
-    pub fn div(&self) -> DIVR {
-        let bits = {
-            const MASK: u16 = 2047;
-            const OFFSET: u8 = 16;
-            ((self.bits >> OFFSET) & MASK as u32) as u16
-        };
-        DIVR { bits }
+    #[inline(always)]
+    pub fn div(&self) -> DIV_R {
+        DIV_R::new(((self.bits >> 16) & 0x07ff) as u16)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 32 }
-    }
-    #[doc = r" Writes raw bits to the register"]
-    #[inline]
-    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.bits = bits;
-        self
-    }
     #[doc = "Bits 0:3 - Proportional Integral Filter Selection"]
-    #[inline]
-    pub fn filter(&mut self) -> _FILTERW {
-        _FILTERW { w: self }
+    #[inline(always)]
+    pub fn filter(&mut self) -> FILTER_W {
+        FILTER_W { w: self }
     }
     #[doc = "Bit 4 - Wake Up Fast"]
-    #[inline]
-    pub fn wuf(&mut self) -> _WUFW {
-        _WUFW { w: self }
+    #[inline(always)]
+    pub fn wuf(&mut self) -> WUF_W {
+        WUF_W { w: self }
     }
     #[doc = "Bits 5:7 - Reference Clock Selection"]
-    #[inline]
-    pub fn refclk(&mut self) -> _REFCLKW {
-        _REFCLKW { w: self }
+    #[inline(always)]
+    pub fn refclk(&mut self) -> REFCLK_W {
+        REFCLK_W { w: self }
     }
     #[doc = "Bits 8:10 - Lock Time"]
-    #[inline]
-    pub fn ltime(&mut self) -> _LTIMEW {
-        _LTIMEW { w: self }
+    #[inline(always)]
+    pub fn ltime(&mut self) -> LTIME_W {
+        LTIME_W { w: self }
     }
     #[doc = "Bit 11 - Lock Bypass"]
-    #[inline]
-    pub fn lbypass(&mut self) -> _LBYPASSW {
-        _LBYPASSW { w: self }
+    #[inline(always)]
+    pub fn lbypass(&mut self) -> LBYPASS_W {
+        LBYPASS_W { w: self }
     }
     #[doc = "Bits 12:14 - Sigma-Delta DCO Filter Selection"]
-    #[inline]
-    pub fn dcofilter(&mut self) -> _DCOFILTERW {
-        _DCOFILTERW { w: self }
+    #[inline(always)]
+    pub fn dcofilter(&mut self) -> DCOFILTER_W {
+        DCOFILTER_W { w: self }
     }
     #[doc = "Bit 15 - DCO Filter Enable"]
-    #[inline]
-    pub fn dcoen(&mut self) -> _DCOENW {
-        _DCOENW { w: self }
+    #[inline(always)]
+    pub fn dcoen(&mut self) -> DCOEN_W {
+        DCOEN_W { w: self }
     }
     #[doc = "Bits 16:26 - Clock Divider"]
-    #[inline]
-    pub fn div(&mut self) -> _DIVW {
-        _DIVW { w: self }
+    #[inline(always)]
+    pub fn div(&mut self) -> DIV_W {
+        DIV_W { w: self }
     }
 }

@@ -1,421 +1,280 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u8,
-}
-#[doc = r" Value to write to the register"]
-pub struct W {
-    bits: u8,
-}
-impl super::SRR {
-    #[doc = r" Modifies the contents of the register"]
-    #[inline]
-    pub fn modify<F>(&self, f: F)
-    where
-        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
-    {
-        let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-    #[doc = r" Writes to the register"]
-    #[inline]
-    pub fn write<F>(&self, f: F)
-    where
-        F: FnOnce(&mut W) -> &mut W,
-    {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Writes the reset value to the register"]
-    #[inline]
-    pub fn reset(&self) {
-        self.write(|w| w)
+#[doc = "Reader of register SRR"]
+pub type R = crate::R<u8, super::SRR>;
+#[doc = "Writer for register SRR"]
+pub type W = crate::W<u8, super::SRR>;
+#[doc = "Register SRR `reset()`'s with value 0"]
+impl crate::ResetValue for super::SRR {
+    type Type = u8;
+    #[inline(always)]
+    fn reset_value() -> Self::Type {
+        0
     }
 }
-#[doc = "Possible values of the field `SWRSTALL`"]
+#[doc = "Software Reset For All\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum SWRSTALLR {
-    #[doc = "Work"]
+pub enum SWRSTALL_A {
+    #[doc = "0: Work"]
     WORK,
-    #[doc = "Reset"]
+    #[doc = "1: Reset"]
     RESET,
 }
-impl SWRSTALLR {
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        match *self {
-            SWRSTALLR::WORK => false,
-            SWRSTALLR::RESET => true,
+impl From<SWRSTALL_A> for bool {
+    #[inline(always)]
+    fn from(variant: SWRSTALL_A) -> Self {
+        match variant {
+            SWRSTALL_A::WORK => false,
+            SWRSTALL_A::RESET => true,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: bool) -> SWRSTALLR {
-        match value {
-            false => SWRSTALLR::WORK,
-            true => SWRSTALLR::RESET,
+}
+#[doc = "Reader of field `SWRSTALL`"]
+pub type SWRSTALL_R = crate::R<bool, SWRSTALL_A>;
+impl SWRSTALL_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> SWRSTALL_A {
+        match self.bits {
+            false => SWRSTALL_A::WORK,
+            true => SWRSTALL_A::RESET,
         }
     }
     #[doc = "Checks if the value of the field is `WORK`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_work(&self) -> bool {
-        *self == SWRSTALLR::WORK
+        *self == SWRSTALL_A::WORK
     }
     #[doc = "Checks if the value of the field is `RESET`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_reset(&self) -> bool {
-        *self == SWRSTALLR::RESET
+        *self == SWRSTALL_A::RESET
     }
 }
-#[doc = "Possible values of the field `SWRSTCMD`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum SWRSTCMDR {
-    #[doc = "Work"]
-    WORK,
-    #[doc = "Reset"]
-    RESET,
-}
-impl SWRSTCMDR {
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        match *self {
-            SWRSTCMDR::WORK => false,
-            SWRSTCMDR::RESET => true,
-        }
-    }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: bool) -> SWRSTCMDR {
-        match value {
-            false => SWRSTCMDR::WORK,
-            true => SWRSTCMDR::RESET,
-        }
-    }
-    #[doc = "Checks if the value of the field is `WORK`"]
-    #[inline]
-    pub fn is_work(&self) -> bool {
-        *self == SWRSTCMDR::WORK
-    }
-    #[doc = "Checks if the value of the field is `RESET`"]
-    #[inline]
-    pub fn is_reset(&self) -> bool {
-        *self == SWRSTCMDR::RESET
-    }
-}
-#[doc = "Possible values of the field `SWRSTDAT`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum SWRSTDATR {
-    #[doc = "Work"]
-    WORK,
-    #[doc = "Reset"]
-    RESET,
-}
-impl SWRSTDATR {
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        match *self {
-            SWRSTDATR::WORK => false,
-            SWRSTDATR::RESET => true,
-        }
-    }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: bool) -> SWRSTDATR {
-        match value {
-            false => SWRSTDATR::WORK,
-            true => SWRSTDATR::RESET,
-        }
-    }
-    #[doc = "Checks if the value of the field is `WORK`"]
-    #[inline]
-    pub fn is_work(&self) -> bool {
-        *self == SWRSTDATR::WORK
-    }
-    #[doc = "Checks if the value of the field is `RESET`"]
-    #[inline]
-    pub fn is_reset(&self) -> bool {
-        *self == SWRSTDATR::RESET
-    }
-}
-#[doc = "Values that can be written to the field `SWRSTALL`"]
-pub enum SWRSTALLW {
-    #[doc = "Work"]
-    WORK,
-    #[doc = "Reset"]
-    RESET,
-}
-impl SWRSTALLW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> bool {
-        match *self {
-            SWRSTALLW::WORK => false,
-            SWRSTALLW::RESET => true,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _SWRSTALLW<'a> {
+#[doc = "Write proxy for field `SWRSTALL`"]
+pub struct SWRSTALL_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _SWRSTALLW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: SWRSTALLW) -> &'a mut W {
+impl<'a> SWRSTALL_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: SWRSTALL_A) -> &'a mut W {
         {
-            self.bit(variant._bits())
+            self.bit(variant.into())
         }
     }
     #[doc = "Work"]
-    #[inline]
+    #[inline(always)]
     pub fn work(self) -> &'a mut W {
-        self.variant(SWRSTALLW::WORK)
+        self.variant(SWRSTALL_A::WORK)
     }
     #[doc = "Reset"]
-    #[inline]
+    #[inline(always)]
     pub fn reset(self) -> &'a mut W {
-        self.variant(SWRSTALLW::RESET)
+        self.variant(SWRSTALL_A::RESET)
     }
-    #[doc = r" Sets the field bit"]
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits = (self.w.bits & !0x01) | ((value as u8) & 0x01);
         self.w
     }
 }
-#[doc = "Values that can be written to the field `SWRSTCMD`"]
-pub enum SWRSTCMDW {
-    #[doc = "Work"]
+#[doc = "Software Reset For CMD Line\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum SWRSTCMD_A {
+    #[doc = "0: Work"]
     WORK,
-    #[doc = "Reset"]
+    #[doc = "1: Reset"]
     RESET,
 }
-impl SWRSTCMDW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> bool {
-        match *self {
-            SWRSTCMDW::WORK => false,
-            SWRSTCMDW::RESET => true,
+impl From<SWRSTCMD_A> for bool {
+    #[inline(always)]
+    fn from(variant: SWRSTCMD_A) -> Self {
+        match variant {
+            SWRSTCMD_A::WORK => false,
+            SWRSTCMD_A::RESET => true,
         }
     }
 }
-#[doc = r" Proxy"]
-pub struct _SWRSTCMDW<'a> {
+#[doc = "Reader of field `SWRSTCMD`"]
+pub type SWRSTCMD_R = crate::R<bool, SWRSTCMD_A>;
+impl SWRSTCMD_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> SWRSTCMD_A {
+        match self.bits {
+            false => SWRSTCMD_A::WORK,
+            true => SWRSTCMD_A::RESET,
+        }
+    }
+    #[doc = "Checks if the value of the field is `WORK`"]
+    #[inline(always)]
+    pub fn is_work(&self) -> bool {
+        *self == SWRSTCMD_A::WORK
+    }
+    #[doc = "Checks if the value of the field is `RESET`"]
+    #[inline(always)]
+    pub fn is_reset(&self) -> bool {
+        *self == SWRSTCMD_A::RESET
+    }
+}
+#[doc = "Write proxy for field `SWRSTCMD`"]
+pub struct SWRSTCMD_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _SWRSTCMDW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: SWRSTCMDW) -> &'a mut W {
+impl<'a> SWRSTCMD_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: SWRSTCMD_A) -> &'a mut W {
         {
-            self.bit(variant._bits())
+            self.bit(variant.into())
         }
     }
     #[doc = "Work"]
-    #[inline]
+    #[inline(always)]
     pub fn work(self) -> &'a mut W {
-        self.variant(SWRSTCMDW::WORK)
+        self.variant(SWRSTCMD_A::WORK)
     }
     #[doc = "Reset"]
-    #[inline]
+    #[inline(always)]
     pub fn reset(self) -> &'a mut W {
-        self.variant(SWRSTCMDW::RESET)
+        self.variant(SWRSTCMD_A::RESET)
     }
-    #[doc = r" Sets the field bit"]
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 1;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 1)) | (((value as u8) & 0x01) << 1);
         self.w
     }
 }
-#[doc = "Values that can be written to the field `SWRSTDAT`"]
-pub enum SWRSTDATW {
-    #[doc = "Work"]
+#[doc = "Software Reset For DAT Line\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum SWRSTDAT_A {
+    #[doc = "0: Work"]
     WORK,
-    #[doc = "Reset"]
+    #[doc = "1: Reset"]
     RESET,
 }
-impl SWRSTDATW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> bool {
-        match *self {
-            SWRSTDATW::WORK => false,
-            SWRSTDATW::RESET => true,
+impl From<SWRSTDAT_A> for bool {
+    #[inline(always)]
+    fn from(variant: SWRSTDAT_A) -> Self {
+        match variant {
+            SWRSTDAT_A::WORK => false,
+            SWRSTDAT_A::RESET => true,
         }
     }
 }
-#[doc = r" Proxy"]
-pub struct _SWRSTDATW<'a> {
+#[doc = "Reader of field `SWRSTDAT`"]
+pub type SWRSTDAT_R = crate::R<bool, SWRSTDAT_A>;
+impl SWRSTDAT_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> SWRSTDAT_A {
+        match self.bits {
+            false => SWRSTDAT_A::WORK,
+            true => SWRSTDAT_A::RESET,
+        }
+    }
+    #[doc = "Checks if the value of the field is `WORK`"]
+    #[inline(always)]
+    pub fn is_work(&self) -> bool {
+        *self == SWRSTDAT_A::WORK
+    }
+    #[doc = "Checks if the value of the field is `RESET`"]
+    #[inline(always)]
+    pub fn is_reset(&self) -> bool {
+        *self == SWRSTDAT_A::RESET
+    }
+}
+#[doc = "Write proxy for field `SWRSTDAT`"]
+pub struct SWRSTDAT_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _SWRSTDATW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: SWRSTDATW) -> &'a mut W {
+impl<'a> SWRSTDAT_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: SWRSTDAT_A) -> &'a mut W {
         {
-            self.bit(variant._bits())
+            self.bit(variant.into())
         }
     }
     #[doc = "Work"]
-    #[inline]
+    #[inline(always)]
     pub fn work(self) -> &'a mut W {
-        self.variant(SWRSTDATW::WORK)
+        self.variant(SWRSTDAT_A::WORK)
     }
     #[doc = "Reset"]
-    #[inline]
+    #[inline(always)]
     pub fn reset(self) -> &'a mut W {
-        self.variant(SWRSTDATW::RESET)
+        self.variant(SWRSTDAT_A::RESET)
     }
-    #[doc = r" Sets the field bit"]
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 2;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 2)) | (((value as u8) & 0x01) << 2);
         self.w
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
     #[doc = "Bit 0 - Software Reset For All"]
-    #[inline]
-    pub fn swrstall(&self) -> SWRSTALLR {
-        SWRSTALLR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        })
+    #[inline(always)]
+    pub fn swrstall(&self) -> SWRSTALL_R {
+        SWRSTALL_R::new((self.bits & 0x01) != 0)
     }
     #[doc = "Bit 1 - Software Reset For CMD Line"]
-    #[inline]
-    pub fn swrstcmd(&self) -> SWRSTCMDR {
-        SWRSTCMDR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        })
+    #[inline(always)]
+    pub fn swrstcmd(&self) -> SWRSTCMD_R {
+        SWRSTCMD_R::new(((self.bits >> 1) & 0x01) != 0)
     }
     #[doc = "Bit 2 - Software Reset For DAT Line"]
-    #[inline]
-    pub fn swrstdat(&self) -> SWRSTDATR {
-        SWRSTDATR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        })
+    #[inline(always)]
+    pub fn swrstdat(&self) -> SWRSTDAT_R {
+        SWRSTDAT_R::new(((self.bits >> 2) & 0x01) != 0)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
-    #[doc = r" Writes raw bits to the register"]
-    #[inline]
-    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
-        self.bits = bits;
-        self
-    }
     #[doc = "Bit 0 - Software Reset For All"]
-    #[inline]
-    pub fn swrstall(&mut self) -> _SWRSTALLW {
-        _SWRSTALLW { w: self }
+    #[inline(always)]
+    pub fn swrstall(&mut self) -> SWRSTALL_W {
+        SWRSTALL_W { w: self }
     }
     #[doc = "Bit 1 - Software Reset For CMD Line"]
-    #[inline]
-    pub fn swrstcmd(&mut self) -> _SWRSTCMDW {
-        _SWRSTCMDW { w: self }
+    #[inline(always)]
+    pub fn swrstcmd(&mut self) -> SWRSTCMD_W {
+        SWRSTCMD_W { w: self }
     }
     #[doc = "Bit 2 - Software Reset For DAT Line"]
-    #[inline]
-    pub fn swrstdat(&mut self) -> _SWRSTDATW {
-        _SWRSTDATW { w: self }
+    #[inline(always)]
+    pub fn swrstdat(&mut self) -> SWRSTDAT_W {
+        SWRSTDAT_W { w: self }
     }
 }

@@ -1,4 +1,4 @@
-#[doc = r" Register block"]
+#[doc = r"Register block"]
 #[repr(C)]
 pub struct RegisterBlock {
     _reserved_0_host: [u8; 273usize],
@@ -25,7 +25,7 @@ impl RegisterBlock {
         unsafe { &mut *(((self as *const Self) as *mut u8).add(0usize) as *mut DEVICE) }
     }
 }
-#[doc = r" Register block"]
+#[doc = r"Register block"]
 #[repr(C)]
 pub struct DEVICE {
     #[doc = "0x00 - Control A"]
@@ -194,10 +194,10 @@ pub struct DEVICE {
     #[doc = "0x1e9 - DEVICE End Point Interrupt Set Flag"]
     pub epintenset7: self::device::EPINTENSET,
 }
-#[doc = r" Register block"]
+#[doc = r"Register block"]
 #[doc = "USB is Device"]
 pub mod device;
-#[doc = r" Register block"]
+#[doc = r"Register block"]
 #[repr(C)]
 pub struct HOST {
     #[doc = "0x00 - Control A"]
@@ -384,6 +384,6 @@ pub struct HOST {
     #[doc = "0x1e9 - HOST Pipe Interrupt Flag Set"]
     pub pintenset7: self::host::PINTENSET,
 }
-#[doc = r" Register block"]
+#[doc = r"Register block"]
 #[doc = "USB is Host"]
 pub mod host;

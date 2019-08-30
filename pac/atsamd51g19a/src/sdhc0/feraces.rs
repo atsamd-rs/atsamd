@@ -1,407 +1,378 @@
-#[doc = r" Value to write to the register"]
-pub struct W {
-    bits: u16,
-}
-impl super::FERACES {
-    #[doc = r" Writes to the register"]
-    #[inline]
-    pub fn write<F>(&self, f: F)
-    where
-        F: FnOnce(&mut W) -> &mut W,
-    {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
+#[doc = "Writer for register FERACES"]
+pub type W = crate::W<u16, super::FERACES>;
+#[doc = "Register FERACES `reset()`'s with value 0"]
+impl crate::ResetValue for super::FERACES {
+    type Type = u16;
+    #[inline(always)]
+    fn reset_value() -> Self::Type {
+        0
     }
 }
-#[doc = "Values that can be written to the field `ACMD12NE`"]
-pub enum ACMD12NEW {
-    #[doc = "No Interrupt"]
+#[doc = "Force Event for Auto CMD12 Not Executed\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum ACMD12NE_AW {
+    #[doc = "0: No Interrupt"]
     NO,
-    #[doc = "Interrupt is generated"]
+    #[doc = "1: Interrupt is generated"]
     YES,
 }
-impl ACMD12NEW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> bool {
-        match *self {
-            ACMD12NEW::NO => false,
-            ACMD12NEW::YES => true,
+impl From<ACMD12NE_AW> for bool {
+    #[inline(always)]
+    fn from(variant: ACMD12NE_AW) -> Self {
+        match variant {
+            ACMD12NE_AW::NO => false,
+            ACMD12NE_AW::YES => true,
         }
     }
 }
-#[doc = r" Proxy"]
-pub struct _ACMD12NEW<'a> {
+#[doc = "Write proxy for field `ACMD12NE`"]
+pub struct ACMD12NE_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _ACMD12NEW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: ACMD12NEW) -> &'a mut W {
+impl<'a> ACMD12NE_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: ACMD12NE_AW) -> &'a mut W {
         {
-            self.bit(variant._bits())
+            self.bit(variant.into())
         }
     }
     #[doc = "No Interrupt"]
-    #[inline]
+    #[inline(always)]
     pub fn no(self) -> &'a mut W {
-        self.variant(ACMD12NEW::NO)
+        self.variant(ACMD12NE_AW::NO)
     }
     #[doc = "Interrupt is generated"]
-    #[inline]
+    #[inline(always)]
     pub fn yes(self) -> &'a mut W {
-        self.variant(ACMD12NEW::YES)
+        self.variant(ACMD12NE_AW::YES)
     }
-    #[doc = r" Sets the field bit"]
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits = (self.w.bits & !0x01) | ((value as u16) & 0x01);
         self.w
     }
 }
-#[doc = "Values that can be written to the field `ACMDTEO`"]
-pub enum ACMDTEOW {
-    #[doc = "No Interrupt"]
+#[doc = "Force Event for Auto CMD Timeout Error\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum ACMDTEO_AW {
+    #[doc = "0: No Interrupt"]
     NO,
-    #[doc = "Interrupt is generated"]
+    #[doc = "1: Interrupt is generated"]
     YES,
 }
-impl ACMDTEOW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> bool {
-        match *self {
-            ACMDTEOW::NO => false,
-            ACMDTEOW::YES => true,
+impl From<ACMDTEO_AW> for bool {
+    #[inline(always)]
+    fn from(variant: ACMDTEO_AW) -> Self {
+        match variant {
+            ACMDTEO_AW::NO => false,
+            ACMDTEO_AW::YES => true,
         }
     }
 }
-#[doc = r" Proxy"]
-pub struct _ACMDTEOW<'a> {
+#[doc = "Write proxy for field `ACMDTEO`"]
+pub struct ACMDTEO_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _ACMDTEOW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: ACMDTEOW) -> &'a mut W {
+impl<'a> ACMDTEO_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: ACMDTEO_AW) -> &'a mut W {
         {
-            self.bit(variant._bits())
+            self.bit(variant.into())
         }
     }
     #[doc = "No Interrupt"]
-    #[inline]
+    #[inline(always)]
     pub fn no(self) -> &'a mut W {
-        self.variant(ACMDTEOW::NO)
+        self.variant(ACMDTEO_AW::NO)
     }
     #[doc = "Interrupt is generated"]
-    #[inline]
+    #[inline(always)]
     pub fn yes(self) -> &'a mut W {
-        self.variant(ACMDTEOW::YES)
+        self.variant(ACMDTEO_AW::YES)
     }
-    #[doc = r" Sets the field bit"]
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 1;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 1)) | (((value as u16) & 0x01) << 1);
         self.w
     }
 }
-#[doc = "Values that can be written to the field `ACMDCRC`"]
-pub enum ACMDCRCW {
-    #[doc = "No Interrupt"]
+#[doc = "Force Event for Auto CMD CRC Error\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum ACMDCRC_AW {
+    #[doc = "0: No Interrupt"]
     NO,
-    #[doc = "Interrupt is generated"]
+    #[doc = "1: Interrupt is generated"]
     YES,
 }
-impl ACMDCRCW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> bool {
-        match *self {
-            ACMDCRCW::NO => false,
-            ACMDCRCW::YES => true,
+impl From<ACMDCRC_AW> for bool {
+    #[inline(always)]
+    fn from(variant: ACMDCRC_AW) -> Self {
+        match variant {
+            ACMDCRC_AW::NO => false,
+            ACMDCRC_AW::YES => true,
         }
     }
 }
-#[doc = r" Proxy"]
-pub struct _ACMDCRCW<'a> {
+#[doc = "Write proxy for field `ACMDCRC`"]
+pub struct ACMDCRC_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _ACMDCRCW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: ACMDCRCW) -> &'a mut W {
+impl<'a> ACMDCRC_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: ACMDCRC_AW) -> &'a mut W {
         {
-            self.bit(variant._bits())
+            self.bit(variant.into())
         }
     }
     #[doc = "No Interrupt"]
-    #[inline]
+    #[inline(always)]
     pub fn no(self) -> &'a mut W {
-        self.variant(ACMDCRCW::NO)
+        self.variant(ACMDCRC_AW::NO)
     }
     #[doc = "Interrupt is generated"]
-    #[inline]
+    #[inline(always)]
     pub fn yes(self) -> &'a mut W {
-        self.variant(ACMDCRCW::YES)
+        self.variant(ACMDCRC_AW::YES)
     }
-    #[doc = r" Sets the field bit"]
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 2;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 2)) | (((value as u16) & 0x01) << 2);
         self.w
     }
 }
-#[doc = "Values that can be written to the field `ACMDEND`"]
-pub enum ACMDENDW {
-    #[doc = "No Interrupt"]
+#[doc = "Force Event for Auto CMD End Bit Error\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum ACMDEND_AW {
+    #[doc = "0: No Interrupt"]
     NO,
-    #[doc = "Interrupt is generated"]
+    #[doc = "1: Interrupt is generated"]
     YES,
 }
-impl ACMDENDW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> bool {
-        match *self {
-            ACMDENDW::NO => false,
-            ACMDENDW::YES => true,
+impl From<ACMDEND_AW> for bool {
+    #[inline(always)]
+    fn from(variant: ACMDEND_AW) -> Self {
+        match variant {
+            ACMDEND_AW::NO => false,
+            ACMDEND_AW::YES => true,
         }
     }
 }
-#[doc = r" Proxy"]
-pub struct _ACMDENDW<'a> {
+#[doc = "Write proxy for field `ACMDEND`"]
+pub struct ACMDEND_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _ACMDENDW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: ACMDENDW) -> &'a mut W {
+impl<'a> ACMDEND_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: ACMDEND_AW) -> &'a mut W {
         {
-            self.bit(variant._bits())
+            self.bit(variant.into())
         }
     }
     #[doc = "No Interrupt"]
-    #[inline]
+    #[inline(always)]
     pub fn no(self) -> &'a mut W {
-        self.variant(ACMDENDW::NO)
+        self.variant(ACMDEND_AW::NO)
     }
     #[doc = "Interrupt is generated"]
-    #[inline]
+    #[inline(always)]
     pub fn yes(self) -> &'a mut W {
-        self.variant(ACMDENDW::YES)
+        self.variant(ACMDEND_AW::YES)
     }
-    #[doc = r" Sets the field bit"]
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 3;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 3)) | (((value as u16) & 0x01) << 3);
         self.w
     }
 }
-#[doc = "Values that can be written to the field `ACMDIDX`"]
-pub enum ACMDIDXW {
-    #[doc = "No Interrupt"]
+#[doc = "Force Event for Auto CMD Index Error\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum ACMDIDX_AW {
+    #[doc = "0: No Interrupt"]
     NO,
-    #[doc = "Interrupt is generated"]
+    #[doc = "1: Interrupt is generated"]
     YES,
 }
-impl ACMDIDXW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> bool {
-        match *self {
-            ACMDIDXW::NO => false,
-            ACMDIDXW::YES => true,
+impl From<ACMDIDX_AW> for bool {
+    #[inline(always)]
+    fn from(variant: ACMDIDX_AW) -> Self {
+        match variant {
+            ACMDIDX_AW::NO => false,
+            ACMDIDX_AW::YES => true,
         }
     }
 }
-#[doc = r" Proxy"]
-pub struct _ACMDIDXW<'a> {
+#[doc = "Write proxy for field `ACMDIDX`"]
+pub struct ACMDIDX_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _ACMDIDXW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: ACMDIDXW) -> &'a mut W {
+impl<'a> ACMDIDX_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: ACMDIDX_AW) -> &'a mut W {
         {
-            self.bit(variant._bits())
+            self.bit(variant.into())
         }
     }
     #[doc = "No Interrupt"]
-    #[inline]
+    #[inline(always)]
     pub fn no(self) -> &'a mut W {
-        self.variant(ACMDIDXW::NO)
+        self.variant(ACMDIDX_AW::NO)
     }
     #[doc = "Interrupt is generated"]
-    #[inline]
+    #[inline(always)]
     pub fn yes(self) -> &'a mut W {
-        self.variant(ACMDIDXW::YES)
+        self.variant(ACMDIDX_AW::YES)
     }
-    #[doc = r" Sets the field bit"]
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 4;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 4)) | (((value as u16) & 0x01) << 4);
         self.w
     }
 }
-#[doc = "Values that can be written to the field `CMDNI`"]
-pub enum CMDNIW {
-    #[doc = "No Interrupt"]
+#[doc = "Force Event for Command Not Issued By Auto CMD12 Error\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum CMDNI_AW {
+    #[doc = "0: No Interrupt"]
     NO,
-    #[doc = "Interrupt is generated"]
+    #[doc = "1: Interrupt is generated"]
     YES,
 }
-impl CMDNIW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> bool {
-        match *self {
-            CMDNIW::NO => false,
-            CMDNIW::YES => true,
+impl From<CMDNI_AW> for bool {
+    #[inline(always)]
+    fn from(variant: CMDNI_AW) -> Self {
+        match variant {
+            CMDNI_AW::NO => false,
+            CMDNI_AW::YES => true,
         }
     }
 }
-#[doc = r" Proxy"]
-pub struct _CMDNIW<'a> {
+#[doc = "Write proxy for field `CMDNI`"]
+pub struct CMDNI_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _CMDNIW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: CMDNIW) -> &'a mut W {
+impl<'a> CMDNI_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: CMDNI_AW) -> &'a mut W {
         {
-            self.bit(variant._bits())
+            self.bit(variant.into())
         }
     }
     #[doc = "No Interrupt"]
-    #[inline]
+    #[inline(always)]
     pub fn no(self) -> &'a mut W {
-        self.variant(CMDNIW::NO)
+        self.variant(CMDNI_AW::NO)
     }
     #[doc = "Interrupt is generated"]
-    #[inline]
+    #[inline(always)]
     pub fn yes(self) -> &'a mut W {
-        self.variant(CMDNIW::YES)
+        self.variant(CMDNI_AW::YES)
     }
-    #[doc = r" Sets the field bit"]
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 7;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 7)) | (((value as u16) & 0x01) << 7);
         self.w
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
-    #[doc = r" Writes raw bits to the register"]
-    #[inline]
-    pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {
-        self.bits = bits;
-        self
-    }
     #[doc = "Bit 0 - Force Event for Auto CMD12 Not Executed"]
-    #[inline]
-    pub fn acmd12ne(&mut self) -> _ACMD12NEW {
-        _ACMD12NEW { w: self }
+    #[inline(always)]
+    pub fn acmd12ne(&mut self) -> ACMD12NE_W {
+        ACMD12NE_W { w: self }
     }
     #[doc = "Bit 1 - Force Event for Auto CMD Timeout Error"]
-    #[inline]
-    pub fn acmdteo(&mut self) -> _ACMDTEOW {
-        _ACMDTEOW { w: self }
+    #[inline(always)]
+    pub fn acmdteo(&mut self) -> ACMDTEO_W {
+        ACMDTEO_W { w: self }
     }
     #[doc = "Bit 2 - Force Event for Auto CMD CRC Error"]
-    #[inline]
-    pub fn acmdcrc(&mut self) -> _ACMDCRCW {
-        _ACMDCRCW { w: self }
+    #[inline(always)]
+    pub fn acmdcrc(&mut self) -> ACMDCRC_W {
+        ACMDCRC_W { w: self }
     }
     #[doc = "Bit 3 - Force Event for Auto CMD End Bit Error"]
-    #[inline]
-    pub fn acmdend(&mut self) -> _ACMDENDW {
-        _ACMDENDW { w: self }
+    #[inline(always)]
+    pub fn acmdend(&mut self) -> ACMDEND_W {
+        ACMDEND_W { w: self }
     }
     #[doc = "Bit 4 - Force Event for Auto CMD Index Error"]
-    #[inline]
-    pub fn acmdidx(&mut self) -> _ACMDIDXW {
-        _ACMDIDXW { w: self }
+    #[inline(always)]
+    pub fn acmdidx(&mut self) -> ACMDIDX_W {
+        ACMDIDX_W { w: self }
     }
     #[doc = "Bit 7 - Force Event for Command Not Issued By Auto CMD12 Error"]
-    #[inline]
-    pub fn cmdni(&mut self) -> _CMDNIW {
-        _CMDNIW { w: self }
+    #[inline(always)]
+    pub fn cmdni(&mut self) -> CMDNI_W {
+        CMDNI_W { w: self }
     }
 }

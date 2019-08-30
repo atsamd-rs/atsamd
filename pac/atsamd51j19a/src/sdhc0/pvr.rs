@@ -1,360 +1,235 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u16,
-}
-#[doc = r" Value to write to the register"]
-pub struct W {
-    bits: u16,
-}
-impl super::PVR {
-    #[doc = r" Modifies the contents of the register"]
-    #[inline]
-    pub fn modify<F>(&self, f: F)
-    where
-        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
-    {
-        let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-    #[doc = r" Writes to the register"]
-    #[inline]
-    pub fn write<F>(&self, f: F)
-    where
-        F: FnOnce(&mut W) -> &mut W,
-    {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Writes the reset value to the register"]
-    #[inline]
-    pub fn reset(&self) {
-        self.write(|w| w)
+#[doc = "Reader of register PVR%s"]
+pub type R = crate::R<u16, super::PVR>;
+#[doc = "Writer for register PVR%s"]
+pub type W = crate::W<u16, super::PVR>;
+#[doc = "Register PVR%s `reset()`'s with value 0"]
+impl crate::ResetValue for super::PVR {
+    type Type = u16;
+    #[inline(always)]
+    fn reset_value() -> Self::Type {
+        0
     }
 }
-#[doc = r" Value of the field"]
-pub struct SDCLKFSELR {
-    bits: u16,
+#[doc = "Reader of field `SDCLKFSEL`"]
+pub type SDCLKFSEL_R = crate::R<u16, u16>;
+#[doc = "Write proxy for field `SDCLKFSEL`"]
+pub struct SDCLKFSEL_W<'a> {
+    w: &'a mut W,
 }
-impl SDCLKFSELR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u16 {
-        self.bits
+impl<'a> SDCLKFSEL_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub unsafe fn bits(self, value: u16) -> &'a mut W {
+        self.w.bits = (self.w.bits & !0x03ff) | ((value as u16) & 0x03ff);
+        self.w
     }
 }
-#[doc = "Possible values of the field `CLKGSEL`"]
+#[doc = "Clock Generator Select Value for Initialization\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum CLKGSELR {
-    #[doc = "Host Controller Ver2.00 Compatible Clock Generator (Divider)"]
+pub enum CLKGSEL_A {
+    #[doc = "0: Host Controller Ver2.00 Compatible Clock Generator (Divider)"]
     DIV,
-    #[doc = "Programmable Clock Generator"]
+    #[doc = "1: Programmable Clock Generator"]
     PROG,
 }
-impl CLKGSELR {
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        match *self {
-            CLKGSELR::DIV => false,
-            CLKGSELR::PROG => true,
+impl From<CLKGSEL_A> for bool {
+    #[inline(always)]
+    fn from(variant: CLKGSEL_A) -> Self {
+        match variant {
+            CLKGSEL_A::DIV => false,
+            CLKGSEL_A::PROG => true,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: bool) -> CLKGSELR {
-        match value {
-            false => CLKGSELR::DIV,
-            true => CLKGSELR::PROG,
+}
+#[doc = "Reader of field `CLKGSEL`"]
+pub type CLKGSEL_R = crate::R<bool, CLKGSEL_A>;
+impl CLKGSEL_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> CLKGSEL_A {
+        match self.bits {
+            false => CLKGSEL_A::DIV,
+            true => CLKGSEL_A::PROG,
         }
     }
     #[doc = "Checks if the value of the field is `DIV`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_div(&self) -> bool {
-        *self == CLKGSELR::DIV
+        *self == CLKGSEL_A::DIV
     }
     #[doc = "Checks if the value of the field is `PROG`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_prog(&self) -> bool {
-        *self == CLKGSELR::PROG
+        *self == CLKGSEL_A::PROG
     }
 }
-#[doc = "Possible values of the field `DRVSEL`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum DRVSELR {
-    #[doc = "Driver Type B is Selected"]
-    B,
-    #[doc = "Driver Type A is Selected"]
-    A,
-    #[doc = "Driver Type C is Selected"]
-    C,
-    #[doc = "Driver Type D is Selected"]
-    D,
+#[doc = "Write proxy for field `CLKGSEL`"]
+pub struct CLKGSEL_W<'a> {
+    w: &'a mut W,
 }
-impl DRVSELR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            DRVSELR::B => 0,
-            DRVSELR::A => 1,
-            DRVSELR::C => 2,
-            DRVSELR::D => 3,
+impl<'a> CLKGSEL_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: CLKGSEL_A) -> &'a mut W {
+        {
+            self.bit(variant.into())
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> DRVSELR {
-        match value {
-            0 => DRVSELR::B,
-            1 => DRVSELR::A,
-            2 => DRVSELR::C,
-            3 => DRVSELR::D,
+    #[doc = "Host Controller Ver2.00 Compatible Clock Generator (Divider)"]
+    #[inline(always)]
+    pub fn div(self) -> &'a mut W {
+        self.variant(CLKGSEL_A::DIV)
+    }
+    #[doc = "Programmable Clock Generator"]
+    #[inline(always)]
+    pub fn prog(self) -> &'a mut W {
+        self.variant(CLKGSEL_A::PROG)
+    }
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 10)) | (((value as u16) & 0x01) << 10);
+        self.w
+    }
+}
+#[doc = "Driver Strength Select Value for Initialization\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum DRVSEL_A {
+    #[doc = "0: Driver Type B is Selected"]
+    B,
+    #[doc = "1: Driver Type A is Selected"]
+    A,
+    #[doc = "2: Driver Type C is Selected"]
+    C,
+    #[doc = "3: Driver Type D is Selected"]
+    D,
+}
+impl From<DRVSEL_A> for u8 {
+    #[inline(always)]
+    fn from(variant: DRVSEL_A) -> Self {
+        match variant {
+            DRVSEL_A::B => 0,
+            DRVSEL_A::A => 1,
+            DRVSEL_A::C => 2,
+            DRVSEL_A::D => 3,
+        }
+    }
+}
+#[doc = "Reader of field `DRVSEL`"]
+pub type DRVSEL_R = crate::R<u8, DRVSEL_A>;
+impl DRVSEL_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> DRVSEL_A {
+        match self.bits {
+            0 => DRVSEL_A::B,
+            1 => DRVSEL_A::A,
+            2 => DRVSEL_A::C,
+            3 => DRVSEL_A::D,
             _ => unreachable!(),
         }
     }
     #[doc = "Checks if the value of the field is `B`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_b(&self) -> bool {
-        *self == DRVSELR::B
+        *self == DRVSEL_A::B
     }
     #[doc = "Checks if the value of the field is `A`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_a(&self) -> bool {
-        *self == DRVSELR::A
+        *self == DRVSEL_A::A
     }
     #[doc = "Checks if the value of the field is `C`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_c(&self) -> bool {
-        *self == DRVSELR::C
+        *self == DRVSEL_A::C
     }
     #[doc = "Checks if the value of the field is `D`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_d(&self) -> bool {
-        *self == DRVSELR::D
+        *self == DRVSEL_A::D
     }
 }
-#[doc = r" Proxy"]
-pub struct _SDCLKFSELW<'a> {
+#[doc = "Write proxy for field `DRVSEL`"]
+pub struct DRVSEL_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _SDCLKFSELW<'a> {
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub unsafe fn bits(self, value: u16) -> &'a mut W {
-        const MASK: u16 = 1023;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
-        self.w
-    }
-}
-#[doc = "Values that can be written to the field `CLKGSEL`"]
-pub enum CLKGSELW {
-    #[doc = "Host Controller Ver2.00 Compatible Clock Generator (Divider)"]
-    DIV,
-    #[doc = "Programmable Clock Generator"]
-    PROG,
-}
-impl CLKGSELW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> bool {
-        match *self {
-            CLKGSELW::DIV => false,
-            CLKGSELW::PROG => true,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _CLKGSELW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _CLKGSELW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: CLKGSELW) -> &'a mut W {
+impl<'a> DRVSEL_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: DRVSEL_A) -> &'a mut W {
         {
-            self.bit(variant._bits())
-        }
-    }
-    #[doc = "Host Controller Ver2.00 Compatible Clock Generator (Divider)"]
-    #[inline]
-    pub fn div(self) -> &'a mut W {
-        self.variant(CLKGSELW::DIV)
-    }
-    #[doc = "Programmable Clock Generator"]
-    #[inline]
-    pub fn prog(self) -> &'a mut W {
-        self.variant(CLKGSELW::PROG)
-    }
-    #[doc = r" Sets the field bit"]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r" Clears the field bit"]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 10;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
-        self.w
-    }
-}
-#[doc = "Values that can be written to the field `DRVSEL`"]
-pub enum DRVSELW {
-    #[doc = "Driver Type B is Selected"]
-    B,
-    #[doc = "Driver Type A is Selected"]
-    A,
-    #[doc = "Driver Type C is Selected"]
-    C,
-    #[doc = "Driver Type D is Selected"]
-    D,
-}
-impl DRVSELW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            DRVSELW::B => 0,
-            DRVSELW::A => 1,
-            DRVSELW::C => 2,
-            DRVSELW::D => 3,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _DRVSELW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _DRVSELW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: DRVSELW) -> &'a mut W {
-        {
-            self.bits(variant._bits())
+            self.bits(variant.into())
         }
     }
     #[doc = "Driver Type B is Selected"]
-    #[inline]
+    #[inline(always)]
     pub fn b(self) -> &'a mut W {
-        self.variant(DRVSELW::B)
+        self.variant(DRVSEL_A::B)
     }
     #[doc = "Driver Type A is Selected"]
-    #[inline]
+    #[inline(always)]
     pub fn a(self) -> &'a mut W {
-        self.variant(DRVSELW::A)
+        self.variant(DRVSEL_A::A)
     }
     #[doc = "Driver Type C is Selected"]
-    #[inline]
+    #[inline(always)]
     pub fn c(self) -> &'a mut W {
-        self.variant(DRVSELW::C)
+        self.variant(DRVSEL_A::C)
     }
     #[doc = "Driver Type D is Selected"]
-    #[inline]
+    #[inline(always)]
     pub fn d(self) -> &'a mut W {
-        self.variant(DRVSELW::D)
+        self.variant(DRVSEL_A::D)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 14;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x03 << 14)) | (((value as u16) & 0x03) << 14);
         self.w
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u16 {
-        self.bits
-    }
     #[doc = "Bits 0:9 - SDCLK Frequency Select Value for Initialization"]
-    #[inline]
-    pub fn sdclkfsel(&self) -> SDCLKFSELR {
-        let bits = {
-            const MASK: u16 = 1023;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u16) as u16
-        };
-        SDCLKFSELR { bits }
+    #[inline(always)]
+    pub fn sdclkfsel(&self) -> SDCLKFSEL_R {
+        SDCLKFSEL_R::new((self.bits & 0x03ff) as u16)
     }
     #[doc = "Bit 10 - Clock Generator Select Value for Initialization"]
-    #[inline]
-    pub fn clkgsel(&self) -> CLKGSELR {
-        CLKGSELR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 10;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        })
+    #[inline(always)]
+    pub fn clkgsel(&self) -> CLKGSEL_R {
+        CLKGSEL_R::new(((self.bits >> 10) & 0x01) != 0)
     }
     #[doc = "Bits 14:15 - Driver Strength Select Value for Initialization"]
-    #[inline]
-    pub fn drvsel(&self) -> DRVSELR {
-        DRVSELR::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 14;
-            ((self.bits >> OFFSET) & MASK as u16) as u8
-        })
+    #[inline(always)]
+    pub fn drvsel(&self) -> DRVSEL_R {
+        DRVSEL_R::new(((self.bits >> 14) & 0x03) as u8)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
-    #[doc = r" Writes raw bits to the register"]
-    #[inline]
-    pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {
-        self.bits = bits;
-        self
-    }
     #[doc = "Bits 0:9 - SDCLK Frequency Select Value for Initialization"]
-    #[inline]
-    pub fn sdclkfsel(&mut self) -> _SDCLKFSELW {
-        _SDCLKFSELW { w: self }
+    #[inline(always)]
+    pub fn sdclkfsel(&mut self) -> SDCLKFSEL_W {
+        SDCLKFSEL_W { w: self }
     }
     #[doc = "Bit 10 - Clock Generator Select Value for Initialization"]
-    #[inline]
-    pub fn clkgsel(&mut self) -> _CLKGSELW {
-        _CLKGSELW { w: self }
+    #[inline(always)]
+    pub fn clkgsel(&mut self) -> CLKGSEL_W {
+        CLKGSEL_W { w: self }
     }
     #[doc = "Bits 14:15 - Driver Strength Select Value for Initialization"]
-    #[inline]
-    pub fn drvsel(&mut self) -> _DRVSELW {
-        _DRVSELW { w: self }
+    #[inline(always)]
+    pub fn drvsel(&mut self) -> DRVSEL_W {
+        DRVSEL_W { w: self }
     }
 }

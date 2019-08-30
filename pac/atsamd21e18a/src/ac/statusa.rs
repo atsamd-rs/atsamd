@@ -1,141 +1,73 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u8,
-}
-impl super::STATUSA {
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-}
-#[doc = r" Value of the field"]
-pub struct STATE0R {
-    bits: bool,
-}
-impl STATE0R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct STATE1R {
-    bits: bool,
-}
-impl STATE1R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = "Possible values of the field `WSTATE0`"]
+#[doc = "Reader of register STATUSA"]
+pub type R = crate::R<u8, super::STATUSA>;
+#[doc = "Reader of field `STATE0`"]
+pub type STATE0_R = crate::R<bool, bool>;
+#[doc = "Reader of field `STATE1`"]
+pub type STATE1_R = crate::R<bool, bool>;
+#[doc = "Window 0 Current State\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum WSTATE0R {
-    #[doc = "Signal is above window"]
+pub enum WSTATE0_A {
+    #[doc = "0: Signal is above window"]
     ABOVE,
-    #[doc = "Signal is inside window"]
+    #[doc = "1: Signal is inside window"]
     INSIDE,
-    #[doc = "Signal is below window"]
+    #[doc = "2: Signal is below window"]
     BELOW,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
 }
-impl WSTATE0R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            WSTATE0R::ABOVE => 0,
-            WSTATE0R::INSIDE => 1,
-            WSTATE0R::BELOW => 2,
-            WSTATE0R::_Reserved(bits) => bits,
+impl From<WSTATE0_A> for u8 {
+    #[inline(always)]
+    fn from(variant: WSTATE0_A) -> Self {
+        match variant {
+            WSTATE0_A::ABOVE => 0,
+            WSTATE0_A::INSIDE => 1,
+            WSTATE0_A::BELOW => 2,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> WSTATE0R {
-        match value {
-            0 => WSTATE0R::ABOVE,
-            1 => WSTATE0R::INSIDE,
-            2 => WSTATE0R::BELOW,
-            i => WSTATE0R::_Reserved(i),
+}
+#[doc = "Reader of field `WSTATE0`"]
+pub type WSTATE0_R = crate::R<u8, WSTATE0_A>;
+impl WSTATE0_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, WSTATE0_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(WSTATE0_A::ABOVE),
+            1 => Val(WSTATE0_A::INSIDE),
+            2 => Val(WSTATE0_A::BELOW),
+            i => Res(i),
         }
     }
     #[doc = "Checks if the value of the field is `ABOVE`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_above(&self) -> bool {
-        *self == WSTATE0R::ABOVE
+        *self == WSTATE0_A::ABOVE
     }
     #[doc = "Checks if the value of the field is `INSIDE`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_inside(&self) -> bool {
-        *self == WSTATE0R::INSIDE
+        *self == WSTATE0_A::INSIDE
     }
     #[doc = "Checks if the value of the field is `BELOW`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_below(&self) -> bool {
-        *self == WSTATE0R::BELOW
+        *self == WSTATE0_A::BELOW
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
     #[doc = "Bit 0 - Comparator 0 Current State"]
-    #[inline]
-    pub fn state0(&self) -> STATE0R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
-        STATE0R { bits }
+    #[inline(always)]
+    pub fn state0(&self) -> STATE0_R {
+        STATE0_R::new((self.bits & 0x01) != 0)
     }
     #[doc = "Bit 1 - Comparator 1 Current State"]
-    #[inline]
-    pub fn state1(&self) -> STATE1R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
-        STATE1R { bits }
+    #[inline(always)]
+    pub fn state1(&self) -> STATE1_R {
+        STATE1_R::new(((self.bits >> 1) & 0x01) != 0)
     }
     #[doc = "Bits 4:5 - Window 0 Current State"]
-    #[inline]
-    pub fn wstate0(&self) -> WSTATE0R {
-        WSTATE0R::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u8) as u8
-        })
+    #[inline(always)]
+    pub fn wstate0(&self) -> WSTATE0_R {
+        WSTATE0_R::new(((self.bits >> 4) & 0x03) as u8)
     }
 }

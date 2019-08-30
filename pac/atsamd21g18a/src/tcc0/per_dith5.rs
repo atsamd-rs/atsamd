@@ -1,146 +1,64 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u32,
-}
-#[doc = r" Value to write to the register"]
-pub struct W {
-    bits: u32,
-}
-impl super::PER_DITH5 {
-    #[doc = r" Modifies the contents of the register"]
-    #[inline]
-    pub fn modify<F>(&self, f: F)
-    where
-        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
-    {
-        let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-    #[doc = r" Writes to the register"]
-    #[inline]
-    pub fn write<F>(&self, f: F)
-    where
-        F: FnOnce(&mut W) -> &mut W,
-    {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Writes the reset value to the register"]
-    #[inline]
-    pub fn reset(&self) {
-        self.write(|w| w)
+#[doc = "Reader of register PER_DITH5"]
+pub type R = crate::R<u32, super::PER_DITH5>;
+#[doc = "Writer for register PER_DITH5"]
+pub type W = crate::W<u32, super::PER_DITH5>;
+#[doc = "Register PER_DITH5 `reset()`'s with value 0xffff_ffff"]
+impl crate::ResetValue for super::PER_DITH5 {
+    type Type = u32;
+    #[inline(always)]
+    fn reset_value() -> Self::Type {
+        0xffff_ffff
     }
 }
-#[doc = r" Value of the field"]
-pub struct DITHERCYR {
-    bits: u8,
-}
-impl DITHERCYR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
-}
-#[doc = r" Value of the field"]
-pub struct PERR {
-    bits: u32,
-}
-impl PERR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u32 {
-        self.bits
-    }
-}
-#[doc = r" Proxy"]
-pub struct _DITHERCYW<'a> {
+#[doc = "Reader of field `DITHERCY`"]
+pub type DITHERCY_R = crate::R<u8, u8>;
+#[doc = "Write proxy for field `DITHERCY`"]
+pub struct DITHERCY_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _DITHERCYW<'a> {
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+impl<'a> DITHERCY_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 31;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !0x1f) | ((value as u32) & 0x1f);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _PERW<'a> {
+#[doc = "Reader of field `PER`"]
+pub type PER_R = crate::R<u32, u32>;
+#[doc = "Write proxy for field `PER`"]
+pub struct PER_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _PERW<'a> {
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+impl<'a> PER_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u32) -> &'a mut W {
-        const MASK: u32 = 524287;
-        const OFFSET: u8 = 5;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x0007_ffff << 5)) | (((value as u32) & 0x0007_ffff) << 5);
         self.w
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u32 {
-        self.bits
-    }
     #[doc = "Bits 0:4 - Dithering Cycle Number"]
-    #[inline]
-    pub fn dithercy(&self) -> DITHERCYR {
-        let bits = {
-            const MASK: u8 = 31;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
-        DITHERCYR { bits }
+    #[inline(always)]
+    pub fn dithercy(&self) -> DITHERCY_R {
+        DITHERCY_R::new((self.bits & 0x1f) as u8)
     }
     #[doc = "Bits 5:23 - Period Value"]
-    #[inline]
-    pub fn per(&self) -> PERR {
-        let bits = {
-            const MASK: u32 = 524287;
-            const OFFSET: u8 = 5;
-            ((self.bits >> OFFSET) & MASK as u32) as u32
-        };
-        PERR { bits }
+    #[inline(always)]
+    pub fn per(&self) -> PER_R {
+        PER_R::new(((self.bits >> 5) & 0x0007_ffff) as u32)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 4294967295 }
-    }
-    #[doc = r" Writes raw bits to the register"]
-    #[inline]
-    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.bits = bits;
-        self
-    }
     #[doc = "Bits 0:4 - Dithering Cycle Number"]
-    #[inline]
-    pub fn dithercy(&mut self) -> _DITHERCYW {
-        _DITHERCYW { w: self }
+    #[inline(always)]
+    pub fn dithercy(&mut self) -> DITHERCY_W {
+        DITHERCY_W { w: self }
     }
     #[doc = "Bits 5:23 - Period Value"]
-    #[inline]
-    pub fn per(&mut self) -> _PERW {
-        _PERW { w: self }
+    #[inline(always)]
+    pub fn per(&mut self) -> PER_W {
+        PER_W { w: self }
     }
 }

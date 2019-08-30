@@ -1,4 +1,4 @@
-#[doc = r" Register block"]
+#[doc = r"Register block"]
 #[repr(C)]
 pub struct RegisterBlock {
     _reserved_0_mode0: [u8; 29usize],
@@ -35,7 +35,7 @@ impl RegisterBlock {
         unsafe { &mut *(((self as *const Self) as *mut u8).add(0usize) as *mut MODE0) }
     }
 }
-#[doc = r" Register block"]
+#[doc = r"Register block"]
 #[repr(C)]
 pub struct MODE0 {
     #[doc = "0x00 - MODE0 Control"]
@@ -64,10 +64,10 @@ pub struct MODE0 {
     #[doc = "0x18 - MODE0 Compare n Value"]
     pub comp: [self::mode0::COMP; 1],
 }
-#[doc = r" Register block"]
+#[doc = r"Register block"]
 #[doc = "32-bit Counter with Single 32-bit Compare"]
 pub mod mode0;
-#[doc = r" Register block"]
+#[doc = r"Register block"]
 #[repr(C)]
 pub struct MODE1 {
     #[doc = "0x00 - MODE1 Control"]
@@ -99,10 +99,10 @@ pub struct MODE1 {
     #[doc = "0x18 - MODE1 Compare n Value"]
     pub comp: [self::mode1::COMP; 2],
 }
-#[doc = r" Register block"]
+#[doc = r"Register block"]
 #[doc = "16-bit Counter with Two 16-bit Compares"]
 pub mod mode1;
-#[doc = r" Register block"]
+#[doc = r"Register block"]
 #[repr(C)]
 pub struct MODE2 {
     #[doc = "0x00 - MODE2 Control"]
@@ -133,6 +133,6 @@ pub struct MODE2 {
     #[doc = "0x1c - MODE2 Alarm n Mask"]
     pub mask0: self::mode2::MASK,
 }
-#[doc = r" Register block"]
+#[doc = r"Register block"]
 #[doc = "Clock/Calendar with Alarm"]
 pub mod mode2;

@@ -1,85 +1,66 @@
-#[doc = r" Value to write to the register"]
-pub struct W {
-    bits: u8,
-}
-impl super::CTRLB {
-    #[doc = r" Writes to the register"]
-    #[inline]
-    pub fn write<F>(&self, f: F)
-    where
-        F: FnOnce(&mut W) -> &mut W,
-    {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
+#[doc = "Writer for register CTRLB"]
+pub type W = crate::W<u8, super::CTRLB>;
+#[doc = "Register CTRLB `reset()`'s with value 0"]
+impl crate::ResetValue for super::CTRLB {
+    type Type = u8;
+    #[inline(always)]
+    fn reset_value() -> Self::Type {
+        0
     }
 }
-#[doc = r" Proxy"]
-pub struct _START0W<'a> {
+#[doc = "Write proxy for field `START0`"]
+pub struct START0_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _START0W<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> START0_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits = (self.w.bits & !0x01) | ((value as u8) & 0x01);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _START1W<'a> {
+#[doc = "Write proxy for field `START1`"]
+pub struct START1_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _START1W<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> START1_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 1;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 1)) | (((value as u8) & 0x01) << 1);
         self.w
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
-    #[doc = r" Writes raw bits to the register"]
-    #[inline]
-    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
-        self.bits = bits;
-        self
-    }
     #[doc = "Bit 0 - Comparator 0 Start Comparison"]
-    #[inline]
-    pub fn start0(&mut self) -> _START0W {
-        _START0W { w: self }
+    #[inline(always)]
+    pub fn start0(&mut self) -> START0_W {
+        START0_W { w: self }
     }
     #[doc = "Bit 1 - Comparator 1 Start Comparison"]
-    #[inline]
-    pub fn start1(&mut self) -> _START1W {
-        _START1W { w: self }
+    #[inline(always)]
+    pub fn start1(&mut self) -> START1_W {
+        START1_W { w: self }
     }
 }

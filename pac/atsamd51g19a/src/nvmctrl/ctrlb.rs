@@ -1,303 +1,278 @@
-#[doc = r" Value to write to the register"]
-pub struct W {
-    bits: u16,
-}
-impl super::CTRLB {
-    #[doc = r" Writes to the register"]
-    #[inline]
-    pub fn write<F>(&self, f: F)
-    where
-        F: FnOnce(&mut W) -> &mut W,
-    {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
+#[doc = "Writer for register CTRLB"]
+pub type W = crate::W<u16, super::CTRLB>;
+#[doc = "Register CTRLB `reset()`'s with value 0"]
+impl crate::ResetValue for super::CTRLB {
+    type Type = u16;
+    #[inline(always)]
+    fn reset_value() -> Self::Type {
+        0
     }
 }
-#[doc = "Values that can be written to the field `CMD`"]
-pub enum CMDW {
-    #[doc = "Erase Page - Only supported in the USER and AUX pages."]
+#[doc = "Command\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum CMD_AW {
+    #[doc = "0: Erase Page - Only supported in the USER and AUX pages."]
     EP,
-    #[doc = "Erase Block - Erases the block addressed by the ADDR register, not supported in the user page"]
+    #[doc = "1: Erase Block - Erases the block addressed by the ADDR register, not supported in the user page"]
     EB,
-    #[doc = "Write Page - Writes the contents of the page buffer to the page addressed by the ADDR register, not supported in the user page"]
+    #[doc = "3: Write Page - Writes the contents of the page buffer to the page addressed by the ADDR register, not supported in the user page"]
     WP,
-    #[doc = "Write Quad Word - Writes a 128-bit word at the location addressed by the ADDR register."]
+    #[doc = "4: Write Quad Word - Writes a 128-bit word at the location addressed by the ADDR register."]
     WQW,
-    #[doc = "Software Reset - Power-Cycle the NVM memory and replay the device automatic calibration procedure and resets the module configuration registers"]
+    #[doc = "16: Software Reset - Power-Cycle the NVM memory and replay the device automatic calibration procedure and resets the module configuration registers"]
     SWRST,
-    #[doc = "Lock Region - Locks the region containing the address location in the ADDR register."]
+    #[doc = "17: Lock Region - Locks the region containing the address location in the ADDR register."]
     LR,
-    #[doc = "Unlock Region - Unlocks the region containing the address location in the ADDR register."]
+    #[doc = "18: Unlock Region - Unlocks the region containing the address location in the ADDR register."]
     UR,
-    #[doc = "Sets the power reduction mode."]
+    #[doc = "19: Sets the power reduction mode."]
     SPRM,
-    #[doc = "Clears the power reduction mode."]
+    #[doc = "20: Clears the power reduction mode."]
     CPRM,
-    #[doc = "Page Buffer Clear - Clears the page buffer."]
+    #[doc = "21: Page Buffer Clear - Clears the page buffer."]
     PBC,
-    #[doc = "Set Security Bit"]
+    #[doc = "22: Set Security Bit"]
     SSB,
-    #[doc = "Bank swap and system reset, if SMEE is used also reallocate SMEE data into the opposite BANK"]
+    #[doc = "23: Bank swap and system reset, if SMEE is used also reallocate SMEE data into the opposite BANK"]
     BKSWRST,
-    #[doc = "Chip Erase Lock - DSU.CE command is not available"]
+    #[doc = "24: Chip Erase Lock - DSU.CE command is not available"]
     CELCK,
-    #[doc = "Chip Erase Unlock - DSU.CE command is available"]
+    #[doc = "25: Chip Erase Unlock - DSU.CE command is available"]
     CEULCK,
-    #[doc = "Sets STATUS.BPDIS, Boot loader protection is discarded until CBPDIS is issued or next start-up sequence"]
+    #[doc = "26: Sets STATUS.BPDIS, Boot loader protection is discarded until CBPDIS is issued or next start-up sequence"]
     SBPDIS,
-    #[doc = "Clears STATUS.BPDIS, Boot loader protection is not discarded"]
+    #[doc = "27: Clears STATUS.BPDIS, Boot loader protection is not discarded"]
     CBPDIS,
-    #[doc = "Activate SmartEEPROM Sector 0, deactivate Sector 1"]
+    #[doc = "48: Activate SmartEEPROM Sector 0, deactivate Sector 1"]
     ASEES0,
-    #[doc = "Activate SmartEEPROM Sector 1, deactivate Sector 0"]
+    #[doc = "49: Activate SmartEEPROM Sector 1, deactivate Sector 0"]
     ASEES1,
-    #[doc = "Starts SmartEEPROM sector reallocation algorithm"]
+    #[doc = "50: Starts SmartEEPROM sector reallocation algorithm"]
     SEERALOC,
-    #[doc = "Flush SMEE data when in buffered mode"]
+    #[doc = "51: Flush SMEE data when in buffered mode"]
     SEEFLUSH,
-    #[doc = "Lock access to SmartEEPROM data from any mean"]
+    #[doc = "52: Lock access to SmartEEPROM data from any mean"]
     LSEE,
-    #[doc = "Unlock access to SmartEEPROM data"]
+    #[doc = "53: Unlock access to SmartEEPROM data"]
     USEE,
-    #[doc = "Lock access to the SmartEEPROM Register Address Space (above 64KB)"]
+    #[doc = "54: Lock access to the SmartEEPROM Register Address Space (above 64KB)"]
     LSEER,
-    #[doc = "Unlock access to the SmartEEPROM Register Address Space (above 64KB)"]
+    #[doc = "55: Unlock access to the SmartEEPROM Register Address Space (above 64KB)"]
     USEER,
 }
-impl CMDW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            CMDW::EP => 0,
-            CMDW::EB => 1,
-            CMDW::WP => 3,
-            CMDW::WQW => 4,
-            CMDW::SWRST => 16,
-            CMDW::LR => 17,
-            CMDW::UR => 18,
-            CMDW::SPRM => 19,
-            CMDW::CPRM => 20,
-            CMDW::PBC => 21,
-            CMDW::SSB => 22,
-            CMDW::BKSWRST => 23,
-            CMDW::CELCK => 24,
-            CMDW::CEULCK => 25,
-            CMDW::SBPDIS => 26,
-            CMDW::CBPDIS => 27,
-            CMDW::ASEES0 => 48,
-            CMDW::ASEES1 => 49,
-            CMDW::SEERALOC => 50,
-            CMDW::SEEFLUSH => 51,
-            CMDW::LSEE => 52,
-            CMDW::USEE => 53,
-            CMDW::LSEER => 54,
-            CMDW::USEER => 55,
+impl From<CMD_AW> for u8 {
+    #[inline(always)]
+    fn from(variant: CMD_AW) -> Self {
+        match variant {
+            CMD_AW::EP => 0,
+            CMD_AW::EB => 1,
+            CMD_AW::WP => 3,
+            CMD_AW::WQW => 4,
+            CMD_AW::SWRST => 16,
+            CMD_AW::LR => 17,
+            CMD_AW::UR => 18,
+            CMD_AW::SPRM => 19,
+            CMD_AW::CPRM => 20,
+            CMD_AW::PBC => 21,
+            CMD_AW::SSB => 22,
+            CMD_AW::BKSWRST => 23,
+            CMD_AW::CELCK => 24,
+            CMD_AW::CEULCK => 25,
+            CMD_AW::SBPDIS => 26,
+            CMD_AW::CBPDIS => 27,
+            CMD_AW::ASEES0 => 48,
+            CMD_AW::ASEES1 => 49,
+            CMD_AW::SEERALOC => 50,
+            CMD_AW::SEEFLUSH => 51,
+            CMD_AW::LSEE => 52,
+            CMD_AW::USEE => 53,
+            CMD_AW::LSEER => 54,
+            CMD_AW::USEER => 55,
         }
     }
 }
-#[doc = r" Proxy"]
-pub struct _CMDW<'a> {
+#[doc = "Write proxy for field `CMD`"]
+pub struct CMD_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _CMDW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: CMDW) -> &'a mut W {
-        unsafe { self.bits(variant._bits()) }
+impl<'a> CMD_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: CMD_AW) -> &'a mut W {
+        unsafe { self.bits(variant.into()) }
     }
     #[doc = "Erase Page - Only supported in the USER and AUX pages."]
-    #[inline]
+    #[inline(always)]
     pub fn ep(self) -> &'a mut W {
-        self.variant(CMDW::EP)
+        self.variant(CMD_AW::EP)
     }
     #[doc = "Erase Block - Erases the block addressed by the ADDR register, not supported in the user page"]
-    #[inline]
+    #[inline(always)]
     pub fn eb(self) -> &'a mut W {
-        self.variant(CMDW::EB)
+        self.variant(CMD_AW::EB)
     }
     #[doc = "Write Page - Writes the contents of the page buffer to the page addressed by the ADDR register, not supported in the user page"]
-    #[inline]
+    #[inline(always)]
     pub fn wp(self) -> &'a mut W {
-        self.variant(CMDW::WP)
+        self.variant(CMD_AW::WP)
     }
     #[doc = "Write Quad Word - Writes a 128-bit word at the location addressed by the ADDR register."]
-    #[inline]
+    #[inline(always)]
     pub fn wqw(self) -> &'a mut W {
-        self.variant(CMDW::WQW)
+        self.variant(CMD_AW::WQW)
     }
     #[doc = "Software Reset - Power-Cycle the NVM memory and replay the device automatic calibration procedure and resets the module configuration registers"]
-    #[inline]
+    #[inline(always)]
     pub fn swrst(self) -> &'a mut W {
-        self.variant(CMDW::SWRST)
+        self.variant(CMD_AW::SWRST)
     }
     #[doc = "Lock Region - Locks the region containing the address location in the ADDR register."]
-    #[inline]
+    #[inline(always)]
     pub fn lr(self) -> &'a mut W {
-        self.variant(CMDW::LR)
+        self.variant(CMD_AW::LR)
     }
     #[doc = "Unlock Region - Unlocks the region containing the address location in the ADDR register."]
-    #[inline]
+    #[inline(always)]
     pub fn ur(self) -> &'a mut W {
-        self.variant(CMDW::UR)
+        self.variant(CMD_AW::UR)
     }
     #[doc = "Sets the power reduction mode."]
-    #[inline]
+    #[inline(always)]
     pub fn sprm(self) -> &'a mut W {
-        self.variant(CMDW::SPRM)
+        self.variant(CMD_AW::SPRM)
     }
     #[doc = "Clears the power reduction mode."]
-    #[inline]
+    #[inline(always)]
     pub fn cprm(self) -> &'a mut W {
-        self.variant(CMDW::CPRM)
+        self.variant(CMD_AW::CPRM)
     }
     #[doc = "Page Buffer Clear - Clears the page buffer."]
-    #[inline]
+    #[inline(always)]
     pub fn pbc(self) -> &'a mut W {
-        self.variant(CMDW::PBC)
+        self.variant(CMD_AW::PBC)
     }
     #[doc = "Set Security Bit"]
-    #[inline]
+    #[inline(always)]
     pub fn ssb(self) -> &'a mut W {
-        self.variant(CMDW::SSB)
+        self.variant(CMD_AW::SSB)
     }
     #[doc = "Bank swap and system reset, if SMEE is used also reallocate SMEE data into the opposite BANK"]
-    #[inline]
+    #[inline(always)]
     pub fn bkswrst(self) -> &'a mut W {
-        self.variant(CMDW::BKSWRST)
+        self.variant(CMD_AW::BKSWRST)
     }
     #[doc = "Chip Erase Lock - DSU.CE command is not available"]
-    #[inline]
+    #[inline(always)]
     pub fn celck(self) -> &'a mut W {
-        self.variant(CMDW::CELCK)
+        self.variant(CMD_AW::CELCK)
     }
     #[doc = "Chip Erase Unlock - DSU.CE command is available"]
-    #[inline]
+    #[inline(always)]
     pub fn ceulck(self) -> &'a mut W {
-        self.variant(CMDW::CEULCK)
+        self.variant(CMD_AW::CEULCK)
     }
     #[doc = "Sets STATUS.BPDIS, Boot loader protection is discarded until CBPDIS is issued or next start-up sequence"]
-    #[inline]
+    #[inline(always)]
     pub fn sbpdis(self) -> &'a mut W {
-        self.variant(CMDW::SBPDIS)
+        self.variant(CMD_AW::SBPDIS)
     }
     #[doc = "Clears STATUS.BPDIS, Boot loader protection is not discarded"]
-    #[inline]
+    #[inline(always)]
     pub fn cbpdis(self) -> &'a mut W {
-        self.variant(CMDW::CBPDIS)
+        self.variant(CMD_AW::CBPDIS)
     }
     #[doc = "Activate SmartEEPROM Sector 0, deactivate Sector 1"]
-    #[inline]
+    #[inline(always)]
     pub fn asees0(self) -> &'a mut W {
-        self.variant(CMDW::ASEES0)
+        self.variant(CMD_AW::ASEES0)
     }
     #[doc = "Activate SmartEEPROM Sector 1, deactivate Sector 0"]
-    #[inline]
+    #[inline(always)]
     pub fn asees1(self) -> &'a mut W {
-        self.variant(CMDW::ASEES1)
+        self.variant(CMD_AW::ASEES1)
     }
     #[doc = "Starts SmartEEPROM sector reallocation algorithm"]
-    #[inline]
+    #[inline(always)]
     pub fn seeraloc(self) -> &'a mut W {
-        self.variant(CMDW::SEERALOC)
+        self.variant(CMD_AW::SEERALOC)
     }
     #[doc = "Flush SMEE data when in buffered mode"]
-    #[inline]
+    #[inline(always)]
     pub fn seeflush(self) -> &'a mut W {
-        self.variant(CMDW::SEEFLUSH)
+        self.variant(CMD_AW::SEEFLUSH)
     }
     #[doc = "Lock access to SmartEEPROM data from any mean"]
-    #[inline]
+    #[inline(always)]
     pub fn lsee(self) -> &'a mut W {
-        self.variant(CMDW::LSEE)
+        self.variant(CMD_AW::LSEE)
     }
     #[doc = "Unlock access to SmartEEPROM data"]
-    #[inline]
+    #[inline(always)]
     pub fn usee(self) -> &'a mut W {
-        self.variant(CMDW::USEE)
+        self.variant(CMD_AW::USEE)
     }
     #[doc = "Lock access to the SmartEEPROM Register Address Space (above 64KB)"]
-    #[inline]
+    #[inline(always)]
     pub fn lseer(self) -> &'a mut W {
-        self.variant(CMDW::LSEER)
+        self.variant(CMD_AW::LSEER)
     }
     #[doc = "Unlock access to the SmartEEPROM Register Address Space (above 64KB)"]
-    #[inline]
+    #[inline(always)]
     pub fn useer(self) -> &'a mut W {
-        self.variant(CMDW::USEER)
+        self.variant(CMD_AW::USEER)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 127;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits = (self.w.bits & !0x7f) | ((value as u16) & 0x7f);
         self.w
     }
 }
-#[doc = "Values that can be written to the field `CMDEX`"]
-pub enum CMDEXW {
-    #[doc = "Execution Key"]
+#[doc = "Command Execution\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum CMDEX_AW {
+    #[doc = "165: Execution Key"]
     KEY,
 }
-impl CMDEXW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            CMDEXW::KEY => 165,
+impl From<CMDEX_AW> for u8 {
+    #[inline(always)]
+    fn from(variant: CMDEX_AW) -> Self {
+        match variant {
+            CMDEX_AW::KEY => 165,
         }
     }
 }
-#[doc = r" Proxy"]
-pub struct _CMDEXW<'a> {
+#[doc = "Write proxy for field `CMDEX`"]
+pub struct CMDEX_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _CMDEXW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: CMDEXW) -> &'a mut W {
-        unsafe { self.bits(variant._bits()) }
+impl<'a> CMDEX_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: CMDEX_AW) -> &'a mut W {
+        unsafe { self.bits(variant.into()) }
     }
     #[doc = "Execution Key"]
-    #[inline]
+    #[inline(always)]
     pub fn key(self) -> &'a mut W {
-        self.variant(CMDEXW::KEY)
+        self.variant(CMDEX_AW::KEY)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 255;
-        const OFFSET: u8 = 8;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits = (self.w.bits & !(0xff << 8)) | (((value as u16) & 0xff) << 8);
         self.w
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
-    #[doc = r" Writes raw bits to the register"]
-    #[inline]
-    pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {
-        self.bits = bits;
-        self
-    }
     #[doc = "Bits 0:6 - Command"]
-    #[inline]
-    pub fn cmd(&mut self) -> _CMDW {
-        _CMDW { w: self }
+    #[inline(always)]
+    pub fn cmd(&mut self) -> CMD_W {
+        CMD_W { w: self }
     }
     #[doc = "Bits 8:15 - Command Execution"]
-    #[inline]
-    pub fn cmdex(&mut self) -> _CMDEXW {
-        _CMDEXW { w: self }
+    #[inline(always)]
+    pub fn cmdex(&mut self) -> CMDEX_W {
+        CMDEX_W { w: self }
     }
 }

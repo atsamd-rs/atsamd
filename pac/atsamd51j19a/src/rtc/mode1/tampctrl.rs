@@ -1,1334 +1,891 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u32,
-}
-#[doc = r" Value to write to the register"]
-pub struct W {
-    bits: u32,
-}
-impl super::TAMPCTRL {
-    #[doc = r" Modifies the contents of the register"]
-    #[inline]
-    pub fn modify<F>(&self, f: F)
-    where
-        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
-    {
-        let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-    #[doc = r" Writes to the register"]
-    #[inline]
-    pub fn write<F>(&self, f: F)
-    where
-        F: FnOnce(&mut W) -> &mut W,
-    {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Writes the reset value to the register"]
-    #[inline]
-    pub fn reset(&self) {
-        self.write(|w| w)
+#[doc = "Reader of register TAMPCTRL"]
+pub type R = crate::R<u32, super::TAMPCTRL>;
+#[doc = "Writer for register TAMPCTRL"]
+pub type W = crate::W<u32, super::TAMPCTRL>;
+#[doc = "Register TAMPCTRL `reset()`'s with value 0"]
+impl crate::ResetValue for super::TAMPCTRL {
+    type Type = u32;
+    #[inline(always)]
+    fn reset_value() -> Self::Type {
+        0
     }
 }
-#[doc = "Possible values of the field `IN0ACT`"]
+#[doc = "Tamper Input 0 Action\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum IN0ACTR {
-    #[doc = "Off (Disabled)"]
+pub enum IN0ACT_A {
+    #[doc = "0: Off (Disabled)"]
     OFF,
-    #[doc = "Wake without timestamp"]
+    #[doc = "1: Wake without timestamp"]
     WAKE,
-    #[doc = "Capture timestamp"]
+    #[doc = "2: Capture timestamp"]
     CAPTURE,
-    #[doc = "Compare IN0 to OUT"]
+    #[doc = "3: Compare IN0 to OUT"]
     ACTL,
 }
-impl IN0ACTR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            IN0ACTR::OFF => 0,
-            IN0ACTR::WAKE => 1,
-            IN0ACTR::CAPTURE => 2,
-            IN0ACTR::ACTL => 3,
+impl From<IN0ACT_A> for u8 {
+    #[inline(always)]
+    fn from(variant: IN0ACT_A) -> Self {
+        match variant {
+            IN0ACT_A::OFF => 0,
+            IN0ACT_A::WAKE => 1,
+            IN0ACT_A::CAPTURE => 2,
+            IN0ACT_A::ACTL => 3,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> IN0ACTR {
-        match value {
-            0 => IN0ACTR::OFF,
-            1 => IN0ACTR::WAKE,
-            2 => IN0ACTR::CAPTURE,
-            3 => IN0ACTR::ACTL,
+}
+#[doc = "Reader of field `IN0ACT`"]
+pub type IN0ACT_R = crate::R<u8, IN0ACT_A>;
+impl IN0ACT_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> IN0ACT_A {
+        match self.bits {
+            0 => IN0ACT_A::OFF,
+            1 => IN0ACT_A::WAKE,
+            2 => IN0ACT_A::CAPTURE,
+            3 => IN0ACT_A::ACTL,
             _ => unreachable!(),
         }
     }
     #[doc = "Checks if the value of the field is `OFF`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_off(&self) -> bool {
-        *self == IN0ACTR::OFF
+        *self == IN0ACT_A::OFF
     }
     #[doc = "Checks if the value of the field is `WAKE`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_wake(&self) -> bool {
-        *self == IN0ACTR::WAKE
+        *self == IN0ACT_A::WAKE
     }
     #[doc = "Checks if the value of the field is `CAPTURE`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_capture(&self) -> bool {
-        *self == IN0ACTR::CAPTURE
+        *self == IN0ACT_A::CAPTURE
     }
     #[doc = "Checks if the value of the field is `ACTL`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_actl(&self) -> bool {
-        *self == IN0ACTR::ACTL
+        *self == IN0ACT_A::ACTL
     }
 }
-#[doc = "Possible values of the field `IN1ACT`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum IN1ACTR {
-    #[doc = "Off (Disabled)"]
-    OFF,
-    #[doc = "Wake without timestamp"]
-    WAKE,
-    #[doc = "Capture timestamp"]
-    CAPTURE,
-    #[doc = "Compare IN1 to OUT"]
-    ACTL,
-}
-impl IN1ACTR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            IN1ACTR::OFF => 0,
-            IN1ACTR::WAKE => 1,
-            IN1ACTR::CAPTURE => 2,
-            IN1ACTR::ACTL => 3,
-        }
-    }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> IN1ACTR {
-        match value {
-            0 => IN1ACTR::OFF,
-            1 => IN1ACTR::WAKE,
-            2 => IN1ACTR::CAPTURE,
-            3 => IN1ACTR::ACTL,
-            _ => unreachable!(),
-        }
-    }
-    #[doc = "Checks if the value of the field is `OFF`"]
-    #[inline]
-    pub fn is_off(&self) -> bool {
-        *self == IN1ACTR::OFF
-    }
-    #[doc = "Checks if the value of the field is `WAKE`"]
-    #[inline]
-    pub fn is_wake(&self) -> bool {
-        *self == IN1ACTR::WAKE
-    }
-    #[doc = "Checks if the value of the field is `CAPTURE`"]
-    #[inline]
-    pub fn is_capture(&self) -> bool {
-        *self == IN1ACTR::CAPTURE
-    }
-    #[doc = "Checks if the value of the field is `ACTL`"]
-    #[inline]
-    pub fn is_actl(&self) -> bool {
-        *self == IN1ACTR::ACTL
-    }
-}
-#[doc = "Possible values of the field `IN2ACT`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum IN2ACTR {
-    #[doc = "Off (Disabled)"]
-    OFF,
-    #[doc = "Wake without timestamp"]
-    WAKE,
-    #[doc = "Capture timestamp"]
-    CAPTURE,
-    #[doc = "Compare IN2 to OUT"]
-    ACTL,
-}
-impl IN2ACTR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            IN2ACTR::OFF => 0,
-            IN2ACTR::WAKE => 1,
-            IN2ACTR::CAPTURE => 2,
-            IN2ACTR::ACTL => 3,
-        }
-    }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> IN2ACTR {
-        match value {
-            0 => IN2ACTR::OFF,
-            1 => IN2ACTR::WAKE,
-            2 => IN2ACTR::CAPTURE,
-            3 => IN2ACTR::ACTL,
-            _ => unreachable!(),
-        }
-    }
-    #[doc = "Checks if the value of the field is `OFF`"]
-    #[inline]
-    pub fn is_off(&self) -> bool {
-        *self == IN2ACTR::OFF
-    }
-    #[doc = "Checks if the value of the field is `WAKE`"]
-    #[inline]
-    pub fn is_wake(&self) -> bool {
-        *self == IN2ACTR::WAKE
-    }
-    #[doc = "Checks if the value of the field is `CAPTURE`"]
-    #[inline]
-    pub fn is_capture(&self) -> bool {
-        *self == IN2ACTR::CAPTURE
-    }
-    #[doc = "Checks if the value of the field is `ACTL`"]
-    #[inline]
-    pub fn is_actl(&self) -> bool {
-        *self == IN2ACTR::ACTL
-    }
-}
-#[doc = "Possible values of the field `IN3ACT`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum IN3ACTR {
-    #[doc = "Off (Disabled)"]
-    OFF,
-    #[doc = "Wake without timestamp"]
-    WAKE,
-    #[doc = "Capture timestamp"]
-    CAPTURE,
-    #[doc = "Compare IN3 to OUT"]
-    ACTL,
-}
-impl IN3ACTR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            IN3ACTR::OFF => 0,
-            IN3ACTR::WAKE => 1,
-            IN3ACTR::CAPTURE => 2,
-            IN3ACTR::ACTL => 3,
-        }
-    }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> IN3ACTR {
-        match value {
-            0 => IN3ACTR::OFF,
-            1 => IN3ACTR::WAKE,
-            2 => IN3ACTR::CAPTURE,
-            3 => IN3ACTR::ACTL,
-            _ => unreachable!(),
-        }
-    }
-    #[doc = "Checks if the value of the field is `OFF`"]
-    #[inline]
-    pub fn is_off(&self) -> bool {
-        *self == IN3ACTR::OFF
-    }
-    #[doc = "Checks if the value of the field is `WAKE`"]
-    #[inline]
-    pub fn is_wake(&self) -> bool {
-        *self == IN3ACTR::WAKE
-    }
-    #[doc = "Checks if the value of the field is `CAPTURE`"]
-    #[inline]
-    pub fn is_capture(&self) -> bool {
-        *self == IN3ACTR::CAPTURE
-    }
-    #[doc = "Checks if the value of the field is `ACTL`"]
-    #[inline]
-    pub fn is_actl(&self) -> bool {
-        *self == IN3ACTR::ACTL
-    }
-}
-#[doc = "Possible values of the field `IN4ACT`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum IN4ACTR {
-    #[doc = "Off (Disabled)"]
-    OFF,
-    #[doc = "Wake without timestamp"]
-    WAKE,
-    #[doc = "Capture timestamp"]
-    CAPTURE,
-    #[doc = "Compare IN4 to OUT"]
-    ACTL,
-}
-impl IN4ACTR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            IN4ACTR::OFF => 0,
-            IN4ACTR::WAKE => 1,
-            IN4ACTR::CAPTURE => 2,
-            IN4ACTR::ACTL => 3,
-        }
-    }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> IN4ACTR {
-        match value {
-            0 => IN4ACTR::OFF,
-            1 => IN4ACTR::WAKE,
-            2 => IN4ACTR::CAPTURE,
-            3 => IN4ACTR::ACTL,
-            _ => unreachable!(),
-        }
-    }
-    #[doc = "Checks if the value of the field is `OFF`"]
-    #[inline]
-    pub fn is_off(&self) -> bool {
-        *self == IN4ACTR::OFF
-    }
-    #[doc = "Checks if the value of the field is `WAKE`"]
-    #[inline]
-    pub fn is_wake(&self) -> bool {
-        *self == IN4ACTR::WAKE
-    }
-    #[doc = "Checks if the value of the field is `CAPTURE`"]
-    #[inline]
-    pub fn is_capture(&self) -> bool {
-        *self == IN4ACTR::CAPTURE
-    }
-    #[doc = "Checks if the value of the field is `ACTL`"]
-    #[inline]
-    pub fn is_actl(&self) -> bool {
-        *self == IN4ACTR::ACTL
-    }
-}
-#[doc = r" Value of the field"]
-pub struct TAMLVL0R {
-    bits: bool,
-}
-impl TAMLVL0R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct TAMLVL1R {
-    bits: bool,
-}
-impl TAMLVL1R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct TAMLVL2R {
-    bits: bool,
-}
-impl TAMLVL2R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct TAMLVL3R {
-    bits: bool,
-}
-impl TAMLVL3R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct TAMLVL4R {
-    bits: bool,
-}
-impl TAMLVL4R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct DEBNC0R {
-    bits: bool,
-}
-impl DEBNC0R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct DEBNC1R {
-    bits: bool,
-}
-impl DEBNC1R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct DEBNC2R {
-    bits: bool,
-}
-impl DEBNC2R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct DEBNC3R {
-    bits: bool,
-}
-impl DEBNC3R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct DEBNC4R {
-    bits: bool,
-}
-impl DEBNC4R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = "Values that can be written to the field `IN0ACT`"]
-pub enum IN0ACTW {
-    #[doc = "Off (Disabled)"]
-    OFF,
-    #[doc = "Wake without timestamp"]
-    WAKE,
-    #[doc = "Capture timestamp"]
-    CAPTURE,
-    #[doc = "Compare IN0 to OUT"]
-    ACTL,
-}
-impl IN0ACTW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            IN0ACTW::OFF => 0,
-            IN0ACTW::WAKE => 1,
-            IN0ACTW::CAPTURE => 2,
-            IN0ACTW::ACTL => 3,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _IN0ACTW<'a> {
+#[doc = "Write proxy for field `IN0ACT`"]
+pub struct IN0ACT_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _IN0ACTW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: IN0ACTW) -> &'a mut W {
+impl<'a> IN0ACT_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: IN0ACT_A) -> &'a mut W {
         {
-            self.bits(variant._bits())
+            self.bits(variant.into())
         }
     }
     #[doc = "Off (Disabled)"]
-    #[inline]
+    #[inline(always)]
     pub fn off(self) -> &'a mut W {
-        self.variant(IN0ACTW::OFF)
+        self.variant(IN0ACT_A::OFF)
     }
     #[doc = "Wake without timestamp"]
-    #[inline]
+    #[inline(always)]
     pub fn wake(self) -> &'a mut W {
-        self.variant(IN0ACTW::WAKE)
+        self.variant(IN0ACT_A::WAKE)
     }
     #[doc = "Capture timestamp"]
-    #[inline]
+    #[inline(always)]
     pub fn capture(self) -> &'a mut W {
-        self.variant(IN0ACTW::CAPTURE)
+        self.variant(IN0ACT_A::CAPTURE)
     }
     #[doc = "Compare IN0 to OUT"]
-    #[inline]
+    #[inline(always)]
     pub fn actl(self) -> &'a mut W {
-        self.variant(IN0ACTW::ACTL)
+        self.variant(IN0ACT_A::ACTL)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !0x03) | ((value as u32) & 0x03);
         self.w
     }
 }
-#[doc = "Values that can be written to the field `IN1ACT`"]
-pub enum IN1ACTW {
-    #[doc = "Off (Disabled)"]
+#[doc = "Tamper Input 1 Action\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum IN1ACT_A {
+    #[doc = "0: Off (Disabled)"]
     OFF,
-    #[doc = "Wake without timestamp"]
+    #[doc = "1: Wake without timestamp"]
     WAKE,
-    #[doc = "Capture timestamp"]
+    #[doc = "2: Capture timestamp"]
     CAPTURE,
+    #[doc = "3: Compare IN1 to OUT"]
+    ACTL,
+}
+impl From<IN1ACT_A> for u8 {
+    #[inline(always)]
+    fn from(variant: IN1ACT_A) -> Self {
+        match variant {
+            IN1ACT_A::OFF => 0,
+            IN1ACT_A::WAKE => 1,
+            IN1ACT_A::CAPTURE => 2,
+            IN1ACT_A::ACTL => 3,
+        }
+    }
+}
+#[doc = "Reader of field `IN1ACT`"]
+pub type IN1ACT_R = crate::R<u8, IN1ACT_A>;
+impl IN1ACT_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> IN1ACT_A {
+        match self.bits {
+            0 => IN1ACT_A::OFF,
+            1 => IN1ACT_A::WAKE,
+            2 => IN1ACT_A::CAPTURE,
+            3 => IN1ACT_A::ACTL,
+            _ => unreachable!(),
+        }
+    }
+    #[doc = "Checks if the value of the field is `OFF`"]
+    #[inline(always)]
+    pub fn is_off(&self) -> bool {
+        *self == IN1ACT_A::OFF
+    }
+    #[doc = "Checks if the value of the field is `WAKE`"]
+    #[inline(always)]
+    pub fn is_wake(&self) -> bool {
+        *self == IN1ACT_A::WAKE
+    }
+    #[doc = "Checks if the value of the field is `CAPTURE`"]
+    #[inline(always)]
+    pub fn is_capture(&self) -> bool {
+        *self == IN1ACT_A::CAPTURE
+    }
+    #[doc = "Checks if the value of the field is `ACTL`"]
+    #[inline(always)]
+    pub fn is_actl(&self) -> bool {
+        *self == IN1ACT_A::ACTL
+    }
+}
+#[doc = "Write proxy for field `IN1ACT`"]
+pub struct IN1ACT_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> IN1ACT_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: IN1ACT_A) -> &'a mut W {
+        {
+            self.bits(variant.into())
+        }
+    }
+    #[doc = "Off (Disabled)"]
+    #[inline(always)]
+    pub fn off(self) -> &'a mut W {
+        self.variant(IN1ACT_A::OFF)
+    }
+    #[doc = "Wake without timestamp"]
+    #[inline(always)]
+    pub fn wake(self) -> &'a mut W {
+        self.variant(IN1ACT_A::WAKE)
+    }
+    #[doc = "Capture timestamp"]
+    #[inline(always)]
+    pub fn capture(self) -> &'a mut W {
+        self.variant(IN1ACT_A::CAPTURE)
+    }
     #[doc = "Compare IN1 to OUT"]
-    ACTL,
-}
-impl IN1ACTW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            IN1ACTW::OFF => 0,
-            IN1ACTW::WAKE => 1,
-            IN1ACTW::CAPTURE => 2,
-            IN1ACTW::ACTL => 3,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _IN1ACTW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _IN1ACTW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: IN1ACTW) -> &'a mut W {
-        {
-            self.bits(variant._bits())
-        }
-    }
-    #[doc = "Off (Disabled)"]
-    #[inline]
-    pub fn off(self) -> &'a mut W {
-        self.variant(IN1ACTW::OFF)
-    }
-    #[doc = "Wake without timestamp"]
-    #[inline]
-    pub fn wake(self) -> &'a mut W {
-        self.variant(IN1ACTW::WAKE)
-    }
-    #[doc = "Capture timestamp"]
-    #[inline]
-    pub fn capture(self) -> &'a mut W {
-        self.variant(IN1ACTW::CAPTURE)
-    }
-    #[doc = "Compare IN1 to OUT"]
-    #[inline]
+    #[inline(always)]
     pub fn actl(self) -> &'a mut W {
-        self.variant(IN1ACTW::ACTL)
+        self.variant(IN1ACT_A::ACTL)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 2;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x03 << 2)) | (((value as u32) & 0x03) << 2);
         self.w
     }
 }
-#[doc = "Values that can be written to the field `IN2ACT`"]
-pub enum IN2ACTW {
-    #[doc = "Off (Disabled)"]
+#[doc = "Tamper Input 2 Action\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum IN2ACT_A {
+    #[doc = "0: Off (Disabled)"]
     OFF,
-    #[doc = "Wake without timestamp"]
+    #[doc = "1: Wake without timestamp"]
     WAKE,
-    #[doc = "Capture timestamp"]
+    #[doc = "2: Capture timestamp"]
     CAPTURE,
-    #[doc = "Compare IN2 to OUT"]
+    #[doc = "3: Compare IN2 to OUT"]
     ACTL,
 }
-impl IN2ACTW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            IN2ACTW::OFF => 0,
-            IN2ACTW::WAKE => 1,
-            IN2ACTW::CAPTURE => 2,
-            IN2ACTW::ACTL => 3,
+impl From<IN2ACT_A> for u8 {
+    #[inline(always)]
+    fn from(variant: IN2ACT_A) -> Self {
+        match variant {
+            IN2ACT_A::OFF => 0,
+            IN2ACT_A::WAKE => 1,
+            IN2ACT_A::CAPTURE => 2,
+            IN2ACT_A::ACTL => 3,
         }
     }
 }
-#[doc = r" Proxy"]
-pub struct _IN2ACTW<'a> {
+#[doc = "Reader of field `IN2ACT`"]
+pub type IN2ACT_R = crate::R<u8, IN2ACT_A>;
+impl IN2ACT_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> IN2ACT_A {
+        match self.bits {
+            0 => IN2ACT_A::OFF,
+            1 => IN2ACT_A::WAKE,
+            2 => IN2ACT_A::CAPTURE,
+            3 => IN2ACT_A::ACTL,
+            _ => unreachable!(),
+        }
+    }
+    #[doc = "Checks if the value of the field is `OFF`"]
+    #[inline(always)]
+    pub fn is_off(&self) -> bool {
+        *self == IN2ACT_A::OFF
+    }
+    #[doc = "Checks if the value of the field is `WAKE`"]
+    #[inline(always)]
+    pub fn is_wake(&self) -> bool {
+        *self == IN2ACT_A::WAKE
+    }
+    #[doc = "Checks if the value of the field is `CAPTURE`"]
+    #[inline(always)]
+    pub fn is_capture(&self) -> bool {
+        *self == IN2ACT_A::CAPTURE
+    }
+    #[doc = "Checks if the value of the field is `ACTL`"]
+    #[inline(always)]
+    pub fn is_actl(&self) -> bool {
+        *self == IN2ACT_A::ACTL
+    }
+}
+#[doc = "Write proxy for field `IN2ACT`"]
+pub struct IN2ACT_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _IN2ACTW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: IN2ACTW) -> &'a mut W {
+impl<'a> IN2ACT_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: IN2ACT_A) -> &'a mut W {
         {
-            self.bits(variant._bits())
+            self.bits(variant.into())
         }
     }
     #[doc = "Off (Disabled)"]
-    #[inline]
+    #[inline(always)]
     pub fn off(self) -> &'a mut W {
-        self.variant(IN2ACTW::OFF)
+        self.variant(IN2ACT_A::OFF)
     }
     #[doc = "Wake without timestamp"]
-    #[inline]
+    #[inline(always)]
     pub fn wake(self) -> &'a mut W {
-        self.variant(IN2ACTW::WAKE)
+        self.variant(IN2ACT_A::WAKE)
     }
     #[doc = "Capture timestamp"]
-    #[inline]
+    #[inline(always)]
     pub fn capture(self) -> &'a mut W {
-        self.variant(IN2ACTW::CAPTURE)
+        self.variant(IN2ACT_A::CAPTURE)
     }
     #[doc = "Compare IN2 to OUT"]
-    #[inline]
+    #[inline(always)]
     pub fn actl(self) -> &'a mut W {
-        self.variant(IN2ACTW::ACTL)
+        self.variant(IN2ACT_A::ACTL)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 4;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x03 << 4)) | (((value as u32) & 0x03) << 4);
         self.w
     }
 }
-#[doc = "Values that can be written to the field `IN3ACT`"]
-pub enum IN3ACTW {
-    #[doc = "Off (Disabled)"]
+#[doc = "Tamper Input 3 Action\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum IN3ACT_A {
+    #[doc = "0: Off (Disabled)"]
     OFF,
-    #[doc = "Wake without timestamp"]
+    #[doc = "1: Wake without timestamp"]
     WAKE,
-    #[doc = "Capture timestamp"]
+    #[doc = "2: Capture timestamp"]
     CAPTURE,
-    #[doc = "Compare IN3 to OUT"]
+    #[doc = "3: Compare IN3 to OUT"]
     ACTL,
 }
-impl IN3ACTW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            IN3ACTW::OFF => 0,
-            IN3ACTW::WAKE => 1,
-            IN3ACTW::CAPTURE => 2,
-            IN3ACTW::ACTL => 3,
+impl From<IN3ACT_A> for u8 {
+    #[inline(always)]
+    fn from(variant: IN3ACT_A) -> Self {
+        match variant {
+            IN3ACT_A::OFF => 0,
+            IN3ACT_A::WAKE => 1,
+            IN3ACT_A::CAPTURE => 2,
+            IN3ACT_A::ACTL => 3,
         }
     }
 }
-#[doc = r" Proxy"]
-pub struct _IN3ACTW<'a> {
+#[doc = "Reader of field `IN3ACT`"]
+pub type IN3ACT_R = crate::R<u8, IN3ACT_A>;
+impl IN3ACT_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> IN3ACT_A {
+        match self.bits {
+            0 => IN3ACT_A::OFF,
+            1 => IN3ACT_A::WAKE,
+            2 => IN3ACT_A::CAPTURE,
+            3 => IN3ACT_A::ACTL,
+            _ => unreachable!(),
+        }
+    }
+    #[doc = "Checks if the value of the field is `OFF`"]
+    #[inline(always)]
+    pub fn is_off(&self) -> bool {
+        *self == IN3ACT_A::OFF
+    }
+    #[doc = "Checks if the value of the field is `WAKE`"]
+    #[inline(always)]
+    pub fn is_wake(&self) -> bool {
+        *self == IN3ACT_A::WAKE
+    }
+    #[doc = "Checks if the value of the field is `CAPTURE`"]
+    #[inline(always)]
+    pub fn is_capture(&self) -> bool {
+        *self == IN3ACT_A::CAPTURE
+    }
+    #[doc = "Checks if the value of the field is `ACTL`"]
+    #[inline(always)]
+    pub fn is_actl(&self) -> bool {
+        *self == IN3ACT_A::ACTL
+    }
+}
+#[doc = "Write proxy for field `IN3ACT`"]
+pub struct IN3ACT_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _IN3ACTW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: IN3ACTW) -> &'a mut W {
+impl<'a> IN3ACT_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: IN3ACT_A) -> &'a mut W {
         {
-            self.bits(variant._bits())
+            self.bits(variant.into())
         }
     }
     #[doc = "Off (Disabled)"]
-    #[inline]
+    #[inline(always)]
     pub fn off(self) -> &'a mut W {
-        self.variant(IN3ACTW::OFF)
+        self.variant(IN3ACT_A::OFF)
     }
     #[doc = "Wake without timestamp"]
-    #[inline]
+    #[inline(always)]
     pub fn wake(self) -> &'a mut W {
-        self.variant(IN3ACTW::WAKE)
+        self.variant(IN3ACT_A::WAKE)
     }
     #[doc = "Capture timestamp"]
-    #[inline]
+    #[inline(always)]
     pub fn capture(self) -> &'a mut W {
-        self.variant(IN3ACTW::CAPTURE)
+        self.variant(IN3ACT_A::CAPTURE)
     }
     #[doc = "Compare IN3 to OUT"]
-    #[inline]
+    #[inline(always)]
     pub fn actl(self) -> &'a mut W {
-        self.variant(IN3ACTW::ACTL)
+        self.variant(IN3ACT_A::ACTL)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 6;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x03 << 6)) | (((value as u32) & 0x03) << 6);
         self.w
     }
 }
-#[doc = "Values that can be written to the field `IN4ACT`"]
-pub enum IN4ACTW {
-    #[doc = "Off (Disabled)"]
+#[doc = "Tamper Input 4 Action\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum IN4ACT_A {
+    #[doc = "0: Off (Disabled)"]
     OFF,
-    #[doc = "Wake without timestamp"]
+    #[doc = "1: Wake without timestamp"]
     WAKE,
-    #[doc = "Capture timestamp"]
+    #[doc = "2: Capture timestamp"]
     CAPTURE,
-    #[doc = "Compare IN4 to OUT"]
+    #[doc = "3: Compare IN4 to OUT"]
     ACTL,
 }
-impl IN4ACTW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            IN4ACTW::OFF => 0,
-            IN4ACTW::WAKE => 1,
-            IN4ACTW::CAPTURE => 2,
-            IN4ACTW::ACTL => 3,
+impl From<IN4ACT_A> for u8 {
+    #[inline(always)]
+    fn from(variant: IN4ACT_A) -> Self {
+        match variant {
+            IN4ACT_A::OFF => 0,
+            IN4ACT_A::WAKE => 1,
+            IN4ACT_A::CAPTURE => 2,
+            IN4ACT_A::ACTL => 3,
         }
     }
 }
-#[doc = r" Proxy"]
-pub struct _IN4ACTW<'a> {
+#[doc = "Reader of field `IN4ACT`"]
+pub type IN4ACT_R = crate::R<u8, IN4ACT_A>;
+impl IN4ACT_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> IN4ACT_A {
+        match self.bits {
+            0 => IN4ACT_A::OFF,
+            1 => IN4ACT_A::WAKE,
+            2 => IN4ACT_A::CAPTURE,
+            3 => IN4ACT_A::ACTL,
+            _ => unreachable!(),
+        }
+    }
+    #[doc = "Checks if the value of the field is `OFF`"]
+    #[inline(always)]
+    pub fn is_off(&self) -> bool {
+        *self == IN4ACT_A::OFF
+    }
+    #[doc = "Checks if the value of the field is `WAKE`"]
+    #[inline(always)]
+    pub fn is_wake(&self) -> bool {
+        *self == IN4ACT_A::WAKE
+    }
+    #[doc = "Checks if the value of the field is `CAPTURE`"]
+    #[inline(always)]
+    pub fn is_capture(&self) -> bool {
+        *self == IN4ACT_A::CAPTURE
+    }
+    #[doc = "Checks if the value of the field is `ACTL`"]
+    #[inline(always)]
+    pub fn is_actl(&self) -> bool {
+        *self == IN4ACT_A::ACTL
+    }
+}
+#[doc = "Write proxy for field `IN4ACT`"]
+pub struct IN4ACT_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _IN4ACTW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: IN4ACTW) -> &'a mut W {
+impl<'a> IN4ACT_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: IN4ACT_A) -> &'a mut W {
         {
-            self.bits(variant._bits())
+            self.bits(variant.into())
         }
     }
     #[doc = "Off (Disabled)"]
-    #[inline]
+    #[inline(always)]
     pub fn off(self) -> &'a mut W {
-        self.variant(IN4ACTW::OFF)
+        self.variant(IN4ACT_A::OFF)
     }
     #[doc = "Wake without timestamp"]
-    #[inline]
+    #[inline(always)]
     pub fn wake(self) -> &'a mut W {
-        self.variant(IN4ACTW::WAKE)
+        self.variant(IN4ACT_A::WAKE)
     }
     #[doc = "Capture timestamp"]
-    #[inline]
+    #[inline(always)]
     pub fn capture(self) -> &'a mut W {
-        self.variant(IN4ACTW::CAPTURE)
+        self.variant(IN4ACT_A::CAPTURE)
     }
     #[doc = "Compare IN4 to OUT"]
-    #[inline]
+    #[inline(always)]
     pub fn actl(self) -> &'a mut W {
-        self.variant(IN4ACTW::ACTL)
+        self.variant(IN4ACT_A::ACTL)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 8;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x03 << 8)) | (((value as u32) & 0x03) << 8);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _TAMLVL0W<'a> {
+#[doc = "Reader of field `TAMLVL0`"]
+pub type TAMLVL0_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `TAMLVL0`"]
+pub struct TAMLVL0_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _TAMLVL0W<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> TAMLVL0_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 16;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 16)) | (((value as u32) & 0x01) << 16);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _TAMLVL1W<'a> {
+#[doc = "Reader of field `TAMLVL1`"]
+pub type TAMLVL1_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `TAMLVL1`"]
+pub struct TAMLVL1_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _TAMLVL1W<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> TAMLVL1_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 17;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 17)) | (((value as u32) & 0x01) << 17);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _TAMLVL2W<'a> {
+#[doc = "Reader of field `TAMLVL2`"]
+pub type TAMLVL2_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `TAMLVL2`"]
+pub struct TAMLVL2_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _TAMLVL2W<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> TAMLVL2_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 18;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 18)) | (((value as u32) & 0x01) << 18);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _TAMLVL3W<'a> {
+#[doc = "Reader of field `TAMLVL3`"]
+pub type TAMLVL3_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `TAMLVL3`"]
+pub struct TAMLVL3_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _TAMLVL3W<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> TAMLVL3_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 19;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 19)) | (((value as u32) & 0x01) << 19);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _TAMLVL4W<'a> {
+#[doc = "Reader of field `TAMLVL4`"]
+pub type TAMLVL4_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `TAMLVL4`"]
+pub struct TAMLVL4_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _TAMLVL4W<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> TAMLVL4_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 20;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 20)) | (((value as u32) & 0x01) << 20);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _DEBNC0W<'a> {
+#[doc = "Reader of field `DEBNC0`"]
+pub type DEBNC0_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `DEBNC0`"]
+pub struct DEBNC0_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _DEBNC0W<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> DEBNC0_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 24;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 24)) | (((value as u32) & 0x01) << 24);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _DEBNC1W<'a> {
+#[doc = "Reader of field `DEBNC1`"]
+pub type DEBNC1_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `DEBNC1`"]
+pub struct DEBNC1_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _DEBNC1W<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> DEBNC1_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 25;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 25)) | (((value as u32) & 0x01) << 25);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _DEBNC2W<'a> {
+#[doc = "Reader of field `DEBNC2`"]
+pub type DEBNC2_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `DEBNC2`"]
+pub struct DEBNC2_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _DEBNC2W<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> DEBNC2_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 26;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 26)) | (((value as u32) & 0x01) << 26);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _DEBNC3W<'a> {
+#[doc = "Reader of field `DEBNC3`"]
+pub type DEBNC3_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `DEBNC3`"]
+pub struct DEBNC3_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _DEBNC3W<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> DEBNC3_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 27;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 27)) | (((value as u32) & 0x01) << 27);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _DEBNC4W<'a> {
+#[doc = "Reader of field `DEBNC4`"]
+pub type DEBNC4_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `DEBNC4`"]
+pub struct DEBNC4_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _DEBNC4W<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> DEBNC4_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 28;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 28)) | (((value as u32) & 0x01) << 28);
         self.w
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u32 {
-        self.bits
-    }
     #[doc = "Bits 0:1 - Tamper Input 0 Action"]
-    #[inline]
-    pub fn in0act(&self) -> IN0ACTR {
-        IN0ACTR::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+    #[inline(always)]
+    pub fn in0act(&self) -> IN0ACT_R {
+        IN0ACT_R::new((self.bits & 0x03) as u8)
     }
     #[doc = "Bits 2:3 - Tamper Input 1 Action"]
-    #[inline]
-    pub fn in1act(&self) -> IN1ACTR {
-        IN1ACTR::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+    #[inline(always)]
+    pub fn in1act(&self) -> IN1ACT_R {
+        IN1ACT_R::new(((self.bits >> 2) & 0x03) as u8)
     }
     #[doc = "Bits 4:5 - Tamper Input 2 Action"]
-    #[inline]
-    pub fn in2act(&self) -> IN2ACTR {
-        IN2ACTR::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+    #[inline(always)]
+    pub fn in2act(&self) -> IN2ACT_R {
+        IN2ACT_R::new(((self.bits >> 4) & 0x03) as u8)
     }
     #[doc = "Bits 6:7 - Tamper Input 3 Action"]
-    #[inline]
-    pub fn in3act(&self) -> IN3ACTR {
-        IN3ACTR::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 6;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+    #[inline(always)]
+    pub fn in3act(&self) -> IN3ACT_R {
+        IN3ACT_R::new(((self.bits >> 6) & 0x03) as u8)
     }
     #[doc = "Bits 8:9 - Tamper Input 4 Action"]
-    #[inline]
-    pub fn in4act(&self) -> IN4ACTR {
-        IN4ACTR::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+    #[inline(always)]
+    pub fn in4act(&self) -> IN4ACT_R {
+        IN4ACT_R::new(((self.bits >> 8) & 0x03) as u8)
     }
     #[doc = "Bit 16 - Tamper Level Select 0"]
-    #[inline]
-    pub fn tamlvl0(&self) -> TAMLVL0R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 16;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        TAMLVL0R { bits }
+    #[inline(always)]
+    pub fn tamlvl0(&self) -> TAMLVL0_R {
+        TAMLVL0_R::new(((self.bits >> 16) & 0x01) != 0)
     }
     #[doc = "Bit 17 - Tamper Level Select 1"]
-    #[inline]
-    pub fn tamlvl1(&self) -> TAMLVL1R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 17;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        TAMLVL1R { bits }
+    #[inline(always)]
+    pub fn tamlvl1(&self) -> TAMLVL1_R {
+        TAMLVL1_R::new(((self.bits >> 17) & 0x01) != 0)
     }
     #[doc = "Bit 18 - Tamper Level Select 2"]
-    #[inline]
-    pub fn tamlvl2(&self) -> TAMLVL2R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 18;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        TAMLVL2R { bits }
+    #[inline(always)]
+    pub fn tamlvl2(&self) -> TAMLVL2_R {
+        TAMLVL2_R::new(((self.bits >> 18) & 0x01) != 0)
     }
     #[doc = "Bit 19 - Tamper Level Select 3"]
-    #[inline]
-    pub fn tamlvl3(&self) -> TAMLVL3R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 19;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        TAMLVL3R { bits }
+    #[inline(always)]
+    pub fn tamlvl3(&self) -> TAMLVL3_R {
+        TAMLVL3_R::new(((self.bits >> 19) & 0x01) != 0)
     }
     #[doc = "Bit 20 - Tamper Level Select 4"]
-    #[inline]
-    pub fn tamlvl4(&self) -> TAMLVL4R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 20;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        TAMLVL4R { bits }
+    #[inline(always)]
+    pub fn tamlvl4(&self) -> TAMLVL4_R {
+        TAMLVL4_R::new(((self.bits >> 20) & 0x01) != 0)
     }
     #[doc = "Bit 24 - Debouncer Enable 0"]
-    #[inline]
-    pub fn debnc0(&self) -> DEBNC0R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 24;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        DEBNC0R { bits }
+    #[inline(always)]
+    pub fn debnc0(&self) -> DEBNC0_R {
+        DEBNC0_R::new(((self.bits >> 24) & 0x01) != 0)
     }
     #[doc = "Bit 25 - Debouncer Enable 1"]
-    #[inline]
-    pub fn debnc1(&self) -> DEBNC1R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 25;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        DEBNC1R { bits }
+    #[inline(always)]
+    pub fn debnc1(&self) -> DEBNC1_R {
+        DEBNC1_R::new(((self.bits >> 25) & 0x01) != 0)
     }
     #[doc = "Bit 26 - Debouncer Enable 2"]
-    #[inline]
-    pub fn debnc2(&self) -> DEBNC2R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 26;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        DEBNC2R { bits }
+    #[inline(always)]
+    pub fn debnc2(&self) -> DEBNC2_R {
+        DEBNC2_R::new(((self.bits >> 26) & 0x01) != 0)
     }
     #[doc = "Bit 27 - Debouncer Enable 3"]
-    #[inline]
-    pub fn debnc3(&self) -> DEBNC3R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 27;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        DEBNC3R { bits }
+    #[inline(always)]
+    pub fn debnc3(&self) -> DEBNC3_R {
+        DEBNC3_R::new(((self.bits >> 27) & 0x01) != 0)
     }
     #[doc = "Bit 28 - Debouncer Enable 4"]
-    #[inline]
-    pub fn debnc4(&self) -> DEBNC4R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 28;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        DEBNC4R { bits }
+    #[inline(always)]
+    pub fn debnc4(&self) -> DEBNC4_R {
+        DEBNC4_R::new(((self.bits >> 28) & 0x01) != 0)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
-    #[doc = r" Writes raw bits to the register"]
-    #[inline]
-    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.bits = bits;
-        self
-    }
     #[doc = "Bits 0:1 - Tamper Input 0 Action"]
-    #[inline]
-    pub fn in0act(&mut self) -> _IN0ACTW {
-        _IN0ACTW { w: self }
+    #[inline(always)]
+    pub fn in0act(&mut self) -> IN0ACT_W {
+        IN0ACT_W { w: self }
     }
     #[doc = "Bits 2:3 - Tamper Input 1 Action"]
-    #[inline]
-    pub fn in1act(&mut self) -> _IN1ACTW {
-        _IN1ACTW { w: self }
+    #[inline(always)]
+    pub fn in1act(&mut self) -> IN1ACT_W {
+        IN1ACT_W { w: self }
     }
     #[doc = "Bits 4:5 - Tamper Input 2 Action"]
-    #[inline]
-    pub fn in2act(&mut self) -> _IN2ACTW {
-        _IN2ACTW { w: self }
+    #[inline(always)]
+    pub fn in2act(&mut self) -> IN2ACT_W {
+        IN2ACT_W { w: self }
     }
     #[doc = "Bits 6:7 - Tamper Input 3 Action"]
-    #[inline]
-    pub fn in3act(&mut self) -> _IN3ACTW {
-        _IN3ACTW { w: self }
+    #[inline(always)]
+    pub fn in3act(&mut self) -> IN3ACT_W {
+        IN3ACT_W { w: self }
     }
     #[doc = "Bits 8:9 - Tamper Input 4 Action"]
-    #[inline]
-    pub fn in4act(&mut self) -> _IN4ACTW {
-        _IN4ACTW { w: self }
+    #[inline(always)]
+    pub fn in4act(&mut self) -> IN4ACT_W {
+        IN4ACT_W { w: self }
     }
     #[doc = "Bit 16 - Tamper Level Select 0"]
-    #[inline]
-    pub fn tamlvl0(&mut self) -> _TAMLVL0W {
-        _TAMLVL0W { w: self }
+    #[inline(always)]
+    pub fn tamlvl0(&mut self) -> TAMLVL0_W {
+        TAMLVL0_W { w: self }
     }
     #[doc = "Bit 17 - Tamper Level Select 1"]
-    #[inline]
-    pub fn tamlvl1(&mut self) -> _TAMLVL1W {
-        _TAMLVL1W { w: self }
+    #[inline(always)]
+    pub fn tamlvl1(&mut self) -> TAMLVL1_W {
+        TAMLVL1_W { w: self }
     }
     #[doc = "Bit 18 - Tamper Level Select 2"]
-    #[inline]
-    pub fn tamlvl2(&mut self) -> _TAMLVL2W {
-        _TAMLVL2W { w: self }
+    #[inline(always)]
+    pub fn tamlvl2(&mut self) -> TAMLVL2_W {
+        TAMLVL2_W { w: self }
     }
     #[doc = "Bit 19 - Tamper Level Select 3"]
-    #[inline]
-    pub fn tamlvl3(&mut self) -> _TAMLVL3W {
-        _TAMLVL3W { w: self }
+    #[inline(always)]
+    pub fn tamlvl3(&mut self) -> TAMLVL3_W {
+        TAMLVL3_W { w: self }
     }
     #[doc = "Bit 20 - Tamper Level Select 4"]
-    #[inline]
-    pub fn tamlvl4(&mut self) -> _TAMLVL4W {
-        _TAMLVL4W { w: self }
+    #[inline(always)]
+    pub fn tamlvl4(&mut self) -> TAMLVL4_W {
+        TAMLVL4_W { w: self }
     }
     #[doc = "Bit 24 - Debouncer Enable 0"]
-    #[inline]
-    pub fn debnc0(&mut self) -> _DEBNC0W {
-        _DEBNC0W { w: self }
+    #[inline(always)]
+    pub fn debnc0(&mut self) -> DEBNC0_W {
+        DEBNC0_W { w: self }
     }
     #[doc = "Bit 25 - Debouncer Enable 1"]
-    #[inline]
-    pub fn debnc1(&mut self) -> _DEBNC1W {
-        _DEBNC1W { w: self }
+    #[inline(always)]
+    pub fn debnc1(&mut self) -> DEBNC1_W {
+        DEBNC1_W { w: self }
     }
     #[doc = "Bit 26 - Debouncer Enable 2"]
-    #[inline]
-    pub fn debnc2(&mut self) -> _DEBNC2W {
-        _DEBNC2W { w: self }
+    #[inline(always)]
+    pub fn debnc2(&mut self) -> DEBNC2_W {
+        DEBNC2_W { w: self }
     }
     #[doc = "Bit 27 - Debouncer Enable 3"]
-    #[inline]
-    pub fn debnc3(&mut self) -> _DEBNC3W {
-        _DEBNC3W { w: self }
+    #[inline(always)]
+    pub fn debnc3(&mut self) -> DEBNC3_W {
+        DEBNC3_W { w: self }
     }
     #[doc = "Bit 28 - Debouncer Enable 4"]
-    #[inline]
-    pub fn debnc4(&mut self) -> _DEBNC4W {
-        _DEBNC4W { w: self }
+    #[inline(always)]
+    pub fn debnc4(&mut self) -> DEBNC4_W {
+        DEBNC4_W { w: self }
     }
 }

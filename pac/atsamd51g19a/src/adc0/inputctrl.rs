@@ -1,1016 +1,759 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u16,
-}
-#[doc = r" Value to write to the register"]
-pub struct W {
-    bits: u16,
-}
-impl super::INPUTCTRL {
-    #[doc = r" Modifies the contents of the register"]
-    #[inline]
-    pub fn modify<F>(&self, f: F)
-    where
-        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
-    {
-        let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-    #[doc = r" Writes to the register"]
-    #[inline]
-    pub fn write<F>(&self, f: F)
-    where
-        F: FnOnce(&mut W) -> &mut W,
-    {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Writes the reset value to the register"]
-    #[inline]
-    pub fn reset(&self) {
-        self.write(|w| w)
+#[doc = "Reader of register INPUTCTRL"]
+pub type R = crate::R<u16, super::INPUTCTRL>;
+#[doc = "Writer for register INPUTCTRL"]
+pub type W = crate::W<u16, super::INPUTCTRL>;
+#[doc = "Register INPUTCTRL `reset()`'s with value 0"]
+impl crate::ResetValue for super::INPUTCTRL {
+    type Type = u16;
+    #[inline(always)]
+    fn reset_value() -> Self::Type {
+        0
     }
 }
-#[doc = "Possible values of the field `MUXPOS`"]
+#[doc = "Positive Mux Input Selection\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum MUXPOSR {
-    #[doc = "ADC AIN0 Pin"]
+pub enum MUXPOS_A {
+    #[doc = "0: ADC AIN0 Pin"]
     AIN0,
-    #[doc = "ADC AIN1 Pin"]
+    #[doc = "1: ADC AIN1 Pin"]
     AIN1,
-    #[doc = "ADC AIN2 Pin"]
+    #[doc = "2: ADC AIN2 Pin"]
     AIN2,
-    #[doc = "ADC AIN3 Pin"]
+    #[doc = "3: ADC AIN3 Pin"]
     AIN3,
-    #[doc = "ADC AIN4 Pin"]
+    #[doc = "4: ADC AIN4 Pin"]
     AIN4,
-    #[doc = "ADC AIN5 Pin"]
+    #[doc = "5: ADC AIN5 Pin"]
     AIN5,
-    #[doc = "ADC AIN6 Pin"]
+    #[doc = "6: ADC AIN6 Pin"]
     AIN6,
-    #[doc = "ADC AIN7 Pin"]
+    #[doc = "7: ADC AIN7 Pin"]
     AIN7,
-    #[doc = "ADC AIN8 Pin"]
+    #[doc = "8: ADC AIN8 Pin"]
     AIN8,
-    #[doc = "ADC AIN9 Pin"]
+    #[doc = "9: ADC AIN9 Pin"]
     AIN9,
-    #[doc = "ADC AIN10 Pin"]
+    #[doc = "10: ADC AIN10 Pin"]
     AIN10,
-    #[doc = "ADC AIN11 Pin"]
+    #[doc = "11: ADC AIN11 Pin"]
     AIN11,
-    #[doc = "ADC AIN12 Pin"]
+    #[doc = "12: ADC AIN12 Pin"]
     AIN12,
-    #[doc = "ADC AIN13 Pin"]
+    #[doc = "13: ADC AIN13 Pin"]
     AIN13,
-    #[doc = "ADC AIN14 Pin"]
+    #[doc = "14: ADC AIN14 Pin"]
     AIN14,
-    #[doc = "ADC AIN15 Pin"]
+    #[doc = "15: ADC AIN15 Pin"]
     AIN15,
-    #[doc = "ADC AIN16 Pin"]
+    #[doc = "16: ADC AIN16 Pin"]
     AIN16,
-    #[doc = "ADC AIN17 Pin"]
+    #[doc = "17: ADC AIN17 Pin"]
     AIN17,
-    #[doc = "ADC AIN18 Pin"]
+    #[doc = "18: ADC AIN18 Pin"]
     AIN18,
-    #[doc = "ADC AIN19 Pin"]
+    #[doc = "19: ADC AIN19 Pin"]
     AIN19,
-    #[doc = "ADC AIN20 Pin"]
+    #[doc = "20: ADC AIN20 Pin"]
     AIN20,
-    #[doc = "ADC AIN21 Pin"]
+    #[doc = "21: ADC AIN21 Pin"]
     AIN21,
-    #[doc = "ADC AIN22 Pin"]
+    #[doc = "22: ADC AIN22 Pin"]
     AIN22,
-    #[doc = "ADC AIN23 Pin"]
+    #[doc = "23: ADC AIN23 Pin"]
     AIN23,
-    #[doc = "1/4 Scaled Core Supply"]
+    #[doc = "24: 1/4 Scaled Core Supply"]
     SCALEDCOREVCC,
-    #[doc = "1/4 Scaled VBAT Supply"]
+    #[doc = "25: 1/4 Scaled VBAT Supply"]
     SCALEDVBAT,
-    #[doc = "1/4 Scaled I/O Supply"]
+    #[doc = "26: 1/4 Scaled I/O Supply"]
     SCALEDIOVCC,
-    #[doc = "Bandgap Voltage"]
+    #[doc = "27: Bandgap Voltage"]
     BANDGAP,
-    #[doc = "Temperature Sensor"]
+    #[doc = "28: Temperature Sensor"]
     PTAT,
-    #[doc = "Temperature Sensor"]
+    #[doc = "29: Temperature Sensor"]
     CTAT,
-    #[doc = "DAC Output"]
+    #[doc = "30: DAC Output"]
     DAC,
-    #[doc = "PTC output (only on ADC0)"]
+    #[doc = "31: PTC output (only on ADC0)"]
     PTC,
 }
-impl MUXPOSR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            MUXPOSR::AIN0 => 0,
-            MUXPOSR::AIN1 => 1,
-            MUXPOSR::AIN2 => 2,
-            MUXPOSR::AIN3 => 3,
-            MUXPOSR::AIN4 => 4,
-            MUXPOSR::AIN5 => 5,
-            MUXPOSR::AIN6 => 6,
-            MUXPOSR::AIN7 => 7,
-            MUXPOSR::AIN8 => 8,
-            MUXPOSR::AIN9 => 9,
-            MUXPOSR::AIN10 => 10,
-            MUXPOSR::AIN11 => 11,
-            MUXPOSR::AIN12 => 12,
-            MUXPOSR::AIN13 => 13,
-            MUXPOSR::AIN14 => 14,
-            MUXPOSR::AIN15 => 15,
-            MUXPOSR::AIN16 => 16,
-            MUXPOSR::AIN17 => 17,
-            MUXPOSR::AIN18 => 18,
-            MUXPOSR::AIN19 => 19,
-            MUXPOSR::AIN20 => 20,
-            MUXPOSR::AIN21 => 21,
-            MUXPOSR::AIN22 => 22,
-            MUXPOSR::AIN23 => 23,
-            MUXPOSR::SCALEDCOREVCC => 24,
-            MUXPOSR::SCALEDVBAT => 25,
-            MUXPOSR::SCALEDIOVCC => 26,
-            MUXPOSR::BANDGAP => 27,
-            MUXPOSR::PTAT => 28,
-            MUXPOSR::CTAT => 29,
-            MUXPOSR::DAC => 30,
-            MUXPOSR::PTC => 31,
+impl From<MUXPOS_A> for u8 {
+    #[inline(always)]
+    fn from(variant: MUXPOS_A) -> Self {
+        match variant {
+            MUXPOS_A::AIN0 => 0,
+            MUXPOS_A::AIN1 => 1,
+            MUXPOS_A::AIN2 => 2,
+            MUXPOS_A::AIN3 => 3,
+            MUXPOS_A::AIN4 => 4,
+            MUXPOS_A::AIN5 => 5,
+            MUXPOS_A::AIN6 => 6,
+            MUXPOS_A::AIN7 => 7,
+            MUXPOS_A::AIN8 => 8,
+            MUXPOS_A::AIN9 => 9,
+            MUXPOS_A::AIN10 => 10,
+            MUXPOS_A::AIN11 => 11,
+            MUXPOS_A::AIN12 => 12,
+            MUXPOS_A::AIN13 => 13,
+            MUXPOS_A::AIN14 => 14,
+            MUXPOS_A::AIN15 => 15,
+            MUXPOS_A::AIN16 => 16,
+            MUXPOS_A::AIN17 => 17,
+            MUXPOS_A::AIN18 => 18,
+            MUXPOS_A::AIN19 => 19,
+            MUXPOS_A::AIN20 => 20,
+            MUXPOS_A::AIN21 => 21,
+            MUXPOS_A::AIN22 => 22,
+            MUXPOS_A::AIN23 => 23,
+            MUXPOS_A::SCALEDCOREVCC => 24,
+            MUXPOS_A::SCALEDVBAT => 25,
+            MUXPOS_A::SCALEDIOVCC => 26,
+            MUXPOS_A::BANDGAP => 27,
+            MUXPOS_A::PTAT => 28,
+            MUXPOS_A::CTAT => 29,
+            MUXPOS_A::DAC => 30,
+            MUXPOS_A::PTC => 31,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> MUXPOSR {
-        match value {
-            0 => MUXPOSR::AIN0,
-            1 => MUXPOSR::AIN1,
-            2 => MUXPOSR::AIN2,
-            3 => MUXPOSR::AIN3,
-            4 => MUXPOSR::AIN4,
-            5 => MUXPOSR::AIN5,
-            6 => MUXPOSR::AIN6,
-            7 => MUXPOSR::AIN7,
-            8 => MUXPOSR::AIN8,
-            9 => MUXPOSR::AIN9,
-            10 => MUXPOSR::AIN10,
-            11 => MUXPOSR::AIN11,
-            12 => MUXPOSR::AIN12,
-            13 => MUXPOSR::AIN13,
-            14 => MUXPOSR::AIN14,
-            15 => MUXPOSR::AIN15,
-            16 => MUXPOSR::AIN16,
-            17 => MUXPOSR::AIN17,
-            18 => MUXPOSR::AIN18,
-            19 => MUXPOSR::AIN19,
-            20 => MUXPOSR::AIN20,
-            21 => MUXPOSR::AIN21,
-            22 => MUXPOSR::AIN22,
-            23 => MUXPOSR::AIN23,
-            24 => MUXPOSR::SCALEDCOREVCC,
-            25 => MUXPOSR::SCALEDVBAT,
-            26 => MUXPOSR::SCALEDIOVCC,
-            27 => MUXPOSR::BANDGAP,
-            28 => MUXPOSR::PTAT,
-            29 => MUXPOSR::CTAT,
-            30 => MUXPOSR::DAC,
-            31 => MUXPOSR::PTC,
+}
+#[doc = "Reader of field `MUXPOS`"]
+pub type MUXPOS_R = crate::R<u8, MUXPOS_A>;
+impl MUXPOS_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> MUXPOS_A {
+        match self.bits {
+            0 => MUXPOS_A::AIN0,
+            1 => MUXPOS_A::AIN1,
+            2 => MUXPOS_A::AIN2,
+            3 => MUXPOS_A::AIN3,
+            4 => MUXPOS_A::AIN4,
+            5 => MUXPOS_A::AIN5,
+            6 => MUXPOS_A::AIN6,
+            7 => MUXPOS_A::AIN7,
+            8 => MUXPOS_A::AIN8,
+            9 => MUXPOS_A::AIN9,
+            10 => MUXPOS_A::AIN10,
+            11 => MUXPOS_A::AIN11,
+            12 => MUXPOS_A::AIN12,
+            13 => MUXPOS_A::AIN13,
+            14 => MUXPOS_A::AIN14,
+            15 => MUXPOS_A::AIN15,
+            16 => MUXPOS_A::AIN16,
+            17 => MUXPOS_A::AIN17,
+            18 => MUXPOS_A::AIN18,
+            19 => MUXPOS_A::AIN19,
+            20 => MUXPOS_A::AIN20,
+            21 => MUXPOS_A::AIN21,
+            22 => MUXPOS_A::AIN22,
+            23 => MUXPOS_A::AIN23,
+            24 => MUXPOS_A::SCALEDCOREVCC,
+            25 => MUXPOS_A::SCALEDVBAT,
+            26 => MUXPOS_A::SCALEDIOVCC,
+            27 => MUXPOS_A::BANDGAP,
+            28 => MUXPOS_A::PTAT,
+            29 => MUXPOS_A::CTAT,
+            30 => MUXPOS_A::DAC,
+            31 => MUXPOS_A::PTC,
             _ => unreachable!(),
         }
     }
     #[doc = "Checks if the value of the field is `AIN0`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_ain0(&self) -> bool {
-        *self == MUXPOSR::AIN0
+        *self == MUXPOS_A::AIN0
     }
     #[doc = "Checks if the value of the field is `AIN1`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_ain1(&self) -> bool {
-        *self == MUXPOSR::AIN1
+        *self == MUXPOS_A::AIN1
     }
     #[doc = "Checks if the value of the field is `AIN2`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_ain2(&self) -> bool {
-        *self == MUXPOSR::AIN2
+        *self == MUXPOS_A::AIN2
     }
     #[doc = "Checks if the value of the field is `AIN3`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_ain3(&self) -> bool {
-        *self == MUXPOSR::AIN3
+        *self == MUXPOS_A::AIN3
     }
     #[doc = "Checks if the value of the field is `AIN4`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_ain4(&self) -> bool {
-        *self == MUXPOSR::AIN4
+        *self == MUXPOS_A::AIN4
     }
     #[doc = "Checks if the value of the field is `AIN5`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_ain5(&self) -> bool {
-        *self == MUXPOSR::AIN5
+        *self == MUXPOS_A::AIN5
     }
     #[doc = "Checks if the value of the field is `AIN6`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_ain6(&self) -> bool {
-        *self == MUXPOSR::AIN6
+        *self == MUXPOS_A::AIN6
     }
     #[doc = "Checks if the value of the field is `AIN7`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_ain7(&self) -> bool {
-        *self == MUXPOSR::AIN7
+        *self == MUXPOS_A::AIN7
     }
     #[doc = "Checks if the value of the field is `AIN8`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_ain8(&self) -> bool {
-        *self == MUXPOSR::AIN8
+        *self == MUXPOS_A::AIN8
     }
     #[doc = "Checks if the value of the field is `AIN9`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_ain9(&self) -> bool {
-        *self == MUXPOSR::AIN9
+        *self == MUXPOS_A::AIN9
     }
     #[doc = "Checks if the value of the field is `AIN10`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_ain10(&self) -> bool {
-        *self == MUXPOSR::AIN10
+        *self == MUXPOS_A::AIN10
     }
     #[doc = "Checks if the value of the field is `AIN11`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_ain11(&self) -> bool {
-        *self == MUXPOSR::AIN11
+        *self == MUXPOS_A::AIN11
     }
     #[doc = "Checks if the value of the field is `AIN12`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_ain12(&self) -> bool {
-        *self == MUXPOSR::AIN12
+        *self == MUXPOS_A::AIN12
     }
     #[doc = "Checks if the value of the field is `AIN13`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_ain13(&self) -> bool {
-        *self == MUXPOSR::AIN13
+        *self == MUXPOS_A::AIN13
     }
     #[doc = "Checks if the value of the field is `AIN14`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_ain14(&self) -> bool {
-        *self == MUXPOSR::AIN14
+        *self == MUXPOS_A::AIN14
     }
     #[doc = "Checks if the value of the field is `AIN15`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_ain15(&self) -> bool {
-        *self == MUXPOSR::AIN15
+        *self == MUXPOS_A::AIN15
     }
     #[doc = "Checks if the value of the field is `AIN16`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_ain16(&self) -> bool {
-        *self == MUXPOSR::AIN16
+        *self == MUXPOS_A::AIN16
     }
     #[doc = "Checks if the value of the field is `AIN17`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_ain17(&self) -> bool {
-        *self == MUXPOSR::AIN17
+        *self == MUXPOS_A::AIN17
     }
     #[doc = "Checks if the value of the field is `AIN18`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_ain18(&self) -> bool {
-        *self == MUXPOSR::AIN18
+        *self == MUXPOS_A::AIN18
     }
     #[doc = "Checks if the value of the field is `AIN19`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_ain19(&self) -> bool {
-        *self == MUXPOSR::AIN19
+        *self == MUXPOS_A::AIN19
     }
     #[doc = "Checks if the value of the field is `AIN20`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_ain20(&self) -> bool {
-        *self == MUXPOSR::AIN20
+        *self == MUXPOS_A::AIN20
     }
     #[doc = "Checks if the value of the field is `AIN21`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_ain21(&self) -> bool {
-        *self == MUXPOSR::AIN21
+        *self == MUXPOS_A::AIN21
     }
     #[doc = "Checks if the value of the field is `AIN22`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_ain22(&self) -> bool {
-        *self == MUXPOSR::AIN22
+        *self == MUXPOS_A::AIN22
     }
     #[doc = "Checks if the value of the field is `AIN23`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_ain23(&self) -> bool {
-        *self == MUXPOSR::AIN23
+        *self == MUXPOS_A::AIN23
     }
     #[doc = "Checks if the value of the field is `SCALEDCOREVCC`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_scaledcorevcc(&self) -> bool {
-        *self == MUXPOSR::SCALEDCOREVCC
+        *self == MUXPOS_A::SCALEDCOREVCC
     }
     #[doc = "Checks if the value of the field is `SCALEDVBAT`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_scaledvbat(&self) -> bool {
-        *self == MUXPOSR::SCALEDVBAT
+        *self == MUXPOS_A::SCALEDVBAT
     }
     #[doc = "Checks if the value of the field is `SCALEDIOVCC`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_scalediovcc(&self) -> bool {
-        *self == MUXPOSR::SCALEDIOVCC
+        *self == MUXPOS_A::SCALEDIOVCC
     }
     #[doc = "Checks if the value of the field is `BANDGAP`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_bandgap(&self) -> bool {
-        *self == MUXPOSR::BANDGAP
+        *self == MUXPOS_A::BANDGAP
     }
     #[doc = "Checks if the value of the field is `PTAT`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_ptat(&self) -> bool {
-        *self == MUXPOSR::PTAT
+        *self == MUXPOS_A::PTAT
     }
     #[doc = "Checks if the value of the field is `CTAT`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_ctat(&self) -> bool {
-        *self == MUXPOSR::CTAT
+        *self == MUXPOS_A::CTAT
     }
     #[doc = "Checks if the value of the field is `DAC`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_dac(&self) -> bool {
-        *self == MUXPOSR::DAC
+        *self == MUXPOS_A::DAC
     }
     #[doc = "Checks if the value of the field is `PTC`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_ptc(&self) -> bool {
-        *self == MUXPOSR::PTC
+        *self == MUXPOS_A::PTC
     }
 }
-#[doc = r" Value of the field"]
-pub struct DIFFMODER {
-    bits: bool,
+#[doc = "Write proxy for field `MUXPOS`"]
+pub struct MUXPOS_W<'a> {
+    w: &'a mut W,
 }
-impl DIFFMODER {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = "Possible values of the field `MUXNEG`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum MUXNEGR {
-    #[doc = "ADC AIN0 Pin"]
-    AIN0,
-    #[doc = "ADC AIN1 Pin"]
-    AIN1,
-    #[doc = "ADC AIN2 Pin"]
-    AIN2,
-    #[doc = "ADC AIN3 Pin"]
-    AIN3,
-    #[doc = "ADC AIN4 Pin"]
-    AIN4,
-    #[doc = "ADC AIN5 Pin"]
-    AIN5,
-    #[doc = "ADC AIN6 Pin"]
-    AIN6,
-    #[doc = "ADC AIN7 Pin"]
-    AIN7,
-    #[doc = "Internal Ground"]
-    GND,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
-}
-impl MUXNEGR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            MUXNEGR::AIN0 => 0,
-            MUXNEGR::AIN1 => 1,
-            MUXNEGR::AIN2 => 2,
-            MUXNEGR::AIN3 => 3,
-            MUXNEGR::AIN4 => 4,
-            MUXNEGR::AIN5 => 5,
-            MUXNEGR::AIN6 => 6,
-            MUXNEGR::AIN7 => 7,
-            MUXNEGR::GND => 24,
-            MUXNEGR::_Reserved(bits) => bits,
+impl<'a> MUXPOS_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: MUXPOS_A) -> &'a mut W {
+        {
+            self.bits(variant.into())
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> MUXNEGR {
-        match value {
-            0 => MUXNEGR::AIN0,
-            1 => MUXNEGR::AIN1,
-            2 => MUXNEGR::AIN2,
-            3 => MUXNEGR::AIN3,
-            4 => MUXNEGR::AIN4,
-            5 => MUXNEGR::AIN5,
-            6 => MUXNEGR::AIN6,
-            7 => MUXNEGR::AIN7,
-            24 => MUXNEGR::GND,
-            i => MUXNEGR::_Reserved(i),
+    #[doc = "ADC AIN0 Pin"]
+    #[inline(always)]
+    pub fn ain0(self) -> &'a mut W {
+        self.variant(MUXPOS_A::AIN0)
+    }
+    #[doc = "ADC AIN1 Pin"]
+    #[inline(always)]
+    pub fn ain1(self) -> &'a mut W {
+        self.variant(MUXPOS_A::AIN1)
+    }
+    #[doc = "ADC AIN2 Pin"]
+    #[inline(always)]
+    pub fn ain2(self) -> &'a mut W {
+        self.variant(MUXPOS_A::AIN2)
+    }
+    #[doc = "ADC AIN3 Pin"]
+    #[inline(always)]
+    pub fn ain3(self) -> &'a mut W {
+        self.variant(MUXPOS_A::AIN3)
+    }
+    #[doc = "ADC AIN4 Pin"]
+    #[inline(always)]
+    pub fn ain4(self) -> &'a mut W {
+        self.variant(MUXPOS_A::AIN4)
+    }
+    #[doc = "ADC AIN5 Pin"]
+    #[inline(always)]
+    pub fn ain5(self) -> &'a mut W {
+        self.variant(MUXPOS_A::AIN5)
+    }
+    #[doc = "ADC AIN6 Pin"]
+    #[inline(always)]
+    pub fn ain6(self) -> &'a mut W {
+        self.variant(MUXPOS_A::AIN6)
+    }
+    #[doc = "ADC AIN7 Pin"]
+    #[inline(always)]
+    pub fn ain7(self) -> &'a mut W {
+        self.variant(MUXPOS_A::AIN7)
+    }
+    #[doc = "ADC AIN8 Pin"]
+    #[inline(always)]
+    pub fn ain8(self) -> &'a mut W {
+        self.variant(MUXPOS_A::AIN8)
+    }
+    #[doc = "ADC AIN9 Pin"]
+    #[inline(always)]
+    pub fn ain9(self) -> &'a mut W {
+        self.variant(MUXPOS_A::AIN9)
+    }
+    #[doc = "ADC AIN10 Pin"]
+    #[inline(always)]
+    pub fn ain10(self) -> &'a mut W {
+        self.variant(MUXPOS_A::AIN10)
+    }
+    #[doc = "ADC AIN11 Pin"]
+    #[inline(always)]
+    pub fn ain11(self) -> &'a mut W {
+        self.variant(MUXPOS_A::AIN11)
+    }
+    #[doc = "ADC AIN12 Pin"]
+    #[inline(always)]
+    pub fn ain12(self) -> &'a mut W {
+        self.variant(MUXPOS_A::AIN12)
+    }
+    #[doc = "ADC AIN13 Pin"]
+    #[inline(always)]
+    pub fn ain13(self) -> &'a mut W {
+        self.variant(MUXPOS_A::AIN13)
+    }
+    #[doc = "ADC AIN14 Pin"]
+    #[inline(always)]
+    pub fn ain14(self) -> &'a mut W {
+        self.variant(MUXPOS_A::AIN14)
+    }
+    #[doc = "ADC AIN15 Pin"]
+    #[inline(always)]
+    pub fn ain15(self) -> &'a mut W {
+        self.variant(MUXPOS_A::AIN15)
+    }
+    #[doc = "ADC AIN16 Pin"]
+    #[inline(always)]
+    pub fn ain16(self) -> &'a mut W {
+        self.variant(MUXPOS_A::AIN16)
+    }
+    #[doc = "ADC AIN17 Pin"]
+    #[inline(always)]
+    pub fn ain17(self) -> &'a mut W {
+        self.variant(MUXPOS_A::AIN17)
+    }
+    #[doc = "ADC AIN18 Pin"]
+    #[inline(always)]
+    pub fn ain18(self) -> &'a mut W {
+        self.variant(MUXPOS_A::AIN18)
+    }
+    #[doc = "ADC AIN19 Pin"]
+    #[inline(always)]
+    pub fn ain19(self) -> &'a mut W {
+        self.variant(MUXPOS_A::AIN19)
+    }
+    #[doc = "ADC AIN20 Pin"]
+    #[inline(always)]
+    pub fn ain20(self) -> &'a mut W {
+        self.variant(MUXPOS_A::AIN20)
+    }
+    #[doc = "ADC AIN21 Pin"]
+    #[inline(always)]
+    pub fn ain21(self) -> &'a mut W {
+        self.variant(MUXPOS_A::AIN21)
+    }
+    #[doc = "ADC AIN22 Pin"]
+    #[inline(always)]
+    pub fn ain22(self) -> &'a mut W {
+        self.variant(MUXPOS_A::AIN22)
+    }
+    #[doc = "ADC AIN23 Pin"]
+    #[inline(always)]
+    pub fn ain23(self) -> &'a mut W {
+        self.variant(MUXPOS_A::AIN23)
+    }
+    #[doc = "1/4 Scaled Core Supply"]
+    #[inline(always)]
+    pub fn scaledcorevcc(self) -> &'a mut W {
+        self.variant(MUXPOS_A::SCALEDCOREVCC)
+    }
+    #[doc = "1/4 Scaled VBAT Supply"]
+    #[inline(always)]
+    pub fn scaledvbat(self) -> &'a mut W {
+        self.variant(MUXPOS_A::SCALEDVBAT)
+    }
+    #[doc = "1/4 Scaled I/O Supply"]
+    #[inline(always)]
+    pub fn scalediovcc(self) -> &'a mut W {
+        self.variant(MUXPOS_A::SCALEDIOVCC)
+    }
+    #[doc = "Bandgap Voltage"]
+    #[inline(always)]
+    pub fn bandgap(self) -> &'a mut W {
+        self.variant(MUXPOS_A::BANDGAP)
+    }
+    #[doc = "Temperature Sensor"]
+    #[inline(always)]
+    pub fn ptat(self) -> &'a mut W {
+        self.variant(MUXPOS_A::PTAT)
+    }
+    #[doc = "Temperature Sensor"]
+    #[inline(always)]
+    pub fn ctat(self) -> &'a mut W {
+        self.variant(MUXPOS_A::CTAT)
+    }
+    #[doc = "DAC Output"]
+    #[inline(always)]
+    pub fn dac(self) -> &'a mut W {
+        self.variant(MUXPOS_A::DAC)
+    }
+    #[doc = "PTC output (only on ADC0)"]
+    #[inline(always)]
+    pub fn ptc(self) -> &'a mut W {
+        self.variant(MUXPOS_A::PTC)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bits(self, value: u8) -> &'a mut W {
+        self.w.bits = (self.w.bits & !0x1f) | ((value as u16) & 0x1f);
+        self.w
+    }
+}
+#[doc = "Reader of field `DIFFMODE`"]
+pub type DIFFMODE_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `DIFFMODE`"]
+pub struct DIFFMODE_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> DIFFMODE_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 7)) | (((value as u16) & 0x01) << 7);
+        self.w
+    }
+}
+#[doc = "Negative Mux Input Selection\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum MUXNEG_A {
+    #[doc = "0: ADC AIN0 Pin"]
+    AIN0,
+    #[doc = "1: ADC AIN1 Pin"]
+    AIN1,
+    #[doc = "2: ADC AIN2 Pin"]
+    AIN2,
+    #[doc = "3: ADC AIN3 Pin"]
+    AIN3,
+    #[doc = "4: ADC AIN4 Pin"]
+    AIN4,
+    #[doc = "5: ADC AIN5 Pin"]
+    AIN5,
+    #[doc = "6: ADC AIN6 Pin"]
+    AIN6,
+    #[doc = "7: ADC AIN7 Pin"]
+    AIN7,
+    #[doc = "24: Internal Ground"]
+    GND,
+}
+impl From<MUXNEG_A> for u8 {
+    #[inline(always)]
+    fn from(variant: MUXNEG_A) -> Self {
+        match variant {
+            MUXNEG_A::AIN0 => 0,
+            MUXNEG_A::AIN1 => 1,
+            MUXNEG_A::AIN2 => 2,
+            MUXNEG_A::AIN3 => 3,
+            MUXNEG_A::AIN4 => 4,
+            MUXNEG_A::AIN5 => 5,
+            MUXNEG_A::AIN6 => 6,
+            MUXNEG_A::AIN7 => 7,
+            MUXNEG_A::GND => 24,
+        }
+    }
+}
+#[doc = "Reader of field `MUXNEG`"]
+pub type MUXNEG_R = crate::R<u8, MUXNEG_A>;
+impl MUXNEG_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, MUXNEG_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(MUXNEG_A::AIN0),
+            1 => Val(MUXNEG_A::AIN1),
+            2 => Val(MUXNEG_A::AIN2),
+            3 => Val(MUXNEG_A::AIN3),
+            4 => Val(MUXNEG_A::AIN4),
+            5 => Val(MUXNEG_A::AIN5),
+            6 => Val(MUXNEG_A::AIN6),
+            7 => Val(MUXNEG_A::AIN7),
+            24 => Val(MUXNEG_A::GND),
+            i => Res(i),
         }
     }
     #[doc = "Checks if the value of the field is `AIN0`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_ain0(&self) -> bool {
-        *self == MUXNEGR::AIN0
+        *self == MUXNEG_A::AIN0
     }
     #[doc = "Checks if the value of the field is `AIN1`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_ain1(&self) -> bool {
-        *self == MUXNEGR::AIN1
+        *self == MUXNEG_A::AIN1
     }
     #[doc = "Checks if the value of the field is `AIN2`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_ain2(&self) -> bool {
-        *self == MUXNEGR::AIN2
+        *self == MUXNEG_A::AIN2
     }
     #[doc = "Checks if the value of the field is `AIN3`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_ain3(&self) -> bool {
-        *self == MUXNEGR::AIN3
+        *self == MUXNEG_A::AIN3
     }
     #[doc = "Checks if the value of the field is `AIN4`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_ain4(&self) -> bool {
-        *self == MUXNEGR::AIN4
+        *self == MUXNEG_A::AIN4
     }
     #[doc = "Checks if the value of the field is `AIN5`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_ain5(&self) -> bool {
-        *self == MUXNEGR::AIN5
+        *self == MUXNEG_A::AIN5
     }
     #[doc = "Checks if the value of the field is `AIN6`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_ain6(&self) -> bool {
-        *self == MUXNEGR::AIN6
+        *self == MUXNEG_A::AIN6
     }
     #[doc = "Checks if the value of the field is `AIN7`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_ain7(&self) -> bool {
-        *self == MUXNEGR::AIN7
+        *self == MUXNEG_A::AIN7
     }
     #[doc = "Checks if the value of the field is `GND`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_gnd(&self) -> bool {
-        *self == MUXNEGR::GND
+        *self == MUXNEG_A::GND
     }
 }
-#[doc = r" Value of the field"]
-pub struct DSEQSTOPR {
-    bits: bool,
-}
-impl DSEQSTOPR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = "Values that can be written to the field `MUXPOS`"]
-pub enum MUXPOSW {
-    #[doc = "ADC AIN0 Pin"]
-    AIN0,
-    #[doc = "ADC AIN1 Pin"]
-    AIN1,
-    #[doc = "ADC AIN2 Pin"]
-    AIN2,
-    #[doc = "ADC AIN3 Pin"]
-    AIN3,
-    #[doc = "ADC AIN4 Pin"]
-    AIN4,
-    #[doc = "ADC AIN5 Pin"]
-    AIN5,
-    #[doc = "ADC AIN6 Pin"]
-    AIN6,
-    #[doc = "ADC AIN7 Pin"]
-    AIN7,
-    #[doc = "ADC AIN8 Pin"]
-    AIN8,
-    #[doc = "ADC AIN9 Pin"]
-    AIN9,
-    #[doc = "ADC AIN10 Pin"]
-    AIN10,
-    #[doc = "ADC AIN11 Pin"]
-    AIN11,
-    #[doc = "ADC AIN12 Pin"]
-    AIN12,
-    #[doc = "ADC AIN13 Pin"]
-    AIN13,
-    #[doc = "ADC AIN14 Pin"]
-    AIN14,
-    #[doc = "ADC AIN15 Pin"]
-    AIN15,
-    #[doc = "ADC AIN16 Pin"]
-    AIN16,
-    #[doc = "ADC AIN17 Pin"]
-    AIN17,
-    #[doc = "ADC AIN18 Pin"]
-    AIN18,
-    #[doc = "ADC AIN19 Pin"]
-    AIN19,
-    #[doc = "ADC AIN20 Pin"]
-    AIN20,
-    #[doc = "ADC AIN21 Pin"]
-    AIN21,
-    #[doc = "ADC AIN22 Pin"]
-    AIN22,
-    #[doc = "ADC AIN23 Pin"]
-    AIN23,
-    #[doc = "1/4 Scaled Core Supply"]
-    SCALEDCOREVCC,
-    #[doc = "1/4 Scaled VBAT Supply"]
-    SCALEDVBAT,
-    #[doc = "1/4 Scaled I/O Supply"]
-    SCALEDIOVCC,
-    #[doc = "Bandgap Voltage"]
-    BANDGAP,
-    #[doc = "Temperature Sensor"]
-    PTAT,
-    #[doc = "Temperature Sensor"]
-    CTAT,
-    #[doc = "DAC Output"]
-    DAC,
-    #[doc = "PTC output (only on ADC0)"]
-    PTC,
-}
-impl MUXPOSW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            MUXPOSW::AIN0 => 0,
-            MUXPOSW::AIN1 => 1,
-            MUXPOSW::AIN2 => 2,
-            MUXPOSW::AIN3 => 3,
-            MUXPOSW::AIN4 => 4,
-            MUXPOSW::AIN5 => 5,
-            MUXPOSW::AIN6 => 6,
-            MUXPOSW::AIN7 => 7,
-            MUXPOSW::AIN8 => 8,
-            MUXPOSW::AIN9 => 9,
-            MUXPOSW::AIN10 => 10,
-            MUXPOSW::AIN11 => 11,
-            MUXPOSW::AIN12 => 12,
-            MUXPOSW::AIN13 => 13,
-            MUXPOSW::AIN14 => 14,
-            MUXPOSW::AIN15 => 15,
-            MUXPOSW::AIN16 => 16,
-            MUXPOSW::AIN17 => 17,
-            MUXPOSW::AIN18 => 18,
-            MUXPOSW::AIN19 => 19,
-            MUXPOSW::AIN20 => 20,
-            MUXPOSW::AIN21 => 21,
-            MUXPOSW::AIN22 => 22,
-            MUXPOSW::AIN23 => 23,
-            MUXPOSW::SCALEDCOREVCC => 24,
-            MUXPOSW::SCALEDVBAT => 25,
-            MUXPOSW::SCALEDIOVCC => 26,
-            MUXPOSW::BANDGAP => 27,
-            MUXPOSW::PTAT => 28,
-            MUXPOSW::CTAT => 29,
-            MUXPOSW::DAC => 30,
-            MUXPOSW::PTC => 31,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _MUXPOSW<'a> {
+#[doc = "Write proxy for field `MUXNEG`"]
+pub struct MUXNEG_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _MUXPOSW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: MUXPOSW) -> &'a mut W {
-        {
-            self.bits(variant._bits())
-        }
+impl<'a> MUXNEG_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: MUXNEG_A) -> &'a mut W {
+        unsafe { self.bits(variant.into()) }
     }
     #[doc = "ADC AIN0 Pin"]
-    #[inline]
+    #[inline(always)]
     pub fn ain0(self) -> &'a mut W {
-        self.variant(MUXPOSW::AIN0)
+        self.variant(MUXNEG_A::AIN0)
     }
     #[doc = "ADC AIN1 Pin"]
-    #[inline]
+    #[inline(always)]
     pub fn ain1(self) -> &'a mut W {
-        self.variant(MUXPOSW::AIN1)
+        self.variant(MUXNEG_A::AIN1)
     }
     #[doc = "ADC AIN2 Pin"]
-    #[inline]
+    #[inline(always)]
     pub fn ain2(self) -> &'a mut W {
-        self.variant(MUXPOSW::AIN2)
+        self.variant(MUXNEG_A::AIN2)
     }
     #[doc = "ADC AIN3 Pin"]
-    #[inline]
+    #[inline(always)]
     pub fn ain3(self) -> &'a mut W {
-        self.variant(MUXPOSW::AIN3)
+        self.variant(MUXNEG_A::AIN3)
     }
     #[doc = "ADC AIN4 Pin"]
-    #[inline]
+    #[inline(always)]
     pub fn ain4(self) -> &'a mut W {
-        self.variant(MUXPOSW::AIN4)
+        self.variant(MUXNEG_A::AIN4)
     }
     #[doc = "ADC AIN5 Pin"]
-    #[inline]
+    #[inline(always)]
     pub fn ain5(self) -> &'a mut W {
-        self.variant(MUXPOSW::AIN5)
+        self.variant(MUXNEG_A::AIN5)
     }
     #[doc = "ADC AIN6 Pin"]
-    #[inline]
+    #[inline(always)]
     pub fn ain6(self) -> &'a mut W {
-        self.variant(MUXPOSW::AIN6)
+        self.variant(MUXNEG_A::AIN6)
     }
     #[doc = "ADC AIN7 Pin"]
-    #[inline]
+    #[inline(always)]
     pub fn ain7(self) -> &'a mut W {
-        self.variant(MUXPOSW::AIN7)
-    }
-    #[doc = "ADC AIN8 Pin"]
-    #[inline]
-    pub fn ain8(self) -> &'a mut W {
-        self.variant(MUXPOSW::AIN8)
-    }
-    #[doc = "ADC AIN9 Pin"]
-    #[inline]
-    pub fn ain9(self) -> &'a mut W {
-        self.variant(MUXPOSW::AIN9)
-    }
-    #[doc = "ADC AIN10 Pin"]
-    #[inline]
-    pub fn ain10(self) -> &'a mut W {
-        self.variant(MUXPOSW::AIN10)
-    }
-    #[doc = "ADC AIN11 Pin"]
-    #[inline]
-    pub fn ain11(self) -> &'a mut W {
-        self.variant(MUXPOSW::AIN11)
-    }
-    #[doc = "ADC AIN12 Pin"]
-    #[inline]
-    pub fn ain12(self) -> &'a mut W {
-        self.variant(MUXPOSW::AIN12)
-    }
-    #[doc = "ADC AIN13 Pin"]
-    #[inline]
-    pub fn ain13(self) -> &'a mut W {
-        self.variant(MUXPOSW::AIN13)
-    }
-    #[doc = "ADC AIN14 Pin"]
-    #[inline]
-    pub fn ain14(self) -> &'a mut W {
-        self.variant(MUXPOSW::AIN14)
-    }
-    #[doc = "ADC AIN15 Pin"]
-    #[inline]
-    pub fn ain15(self) -> &'a mut W {
-        self.variant(MUXPOSW::AIN15)
-    }
-    #[doc = "ADC AIN16 Pin"]
-    #[inline]
-    pub fn ain16(self) -> &'a mut W {
-        self.variant(MUXPOSW::AIN16)
-    }
-    #[doc = "ADC AIN17 Pin"]
-    #[inline]
-    pub fn ain17(self) -> &'a mut W {
-        self.variant(MUXPOSW::AIN17)
-    }
-    #[doc = "ADC AIN18 Pin"]
-    #[inline]
-    pub fn ain18(self) -> &'a mut W {
-        self.variant(MUXPOSW::AIN18)
-    }
-    #[doc = "ADC AIN19 Pin"]
-    #[inline]
-    pub fn ain19(self) -> &'a mut W {
-        self.variant(MUXPOSW::AIN19)
-    }
-    #[doc = "ADC AIN20 Pin"]
-    #[inline]
-    pub fn ain20(self) -> &'a mut W {
-        self.variant(MUXPOSW::AIN20)
-    }
-    #[doc = "ADC AIN21 Pin"]
-    #[inline]
-    pub fn ain21(self) -> &'a mut W {
-        self.variant(MUXPOSW::AIN21)
-    }
-    #[doc = "ADC AIN22 Pin"]
-    #[inline]
-    pub fn ain22(self) -> &'a mut W {
-        self.variant(MUXPOSW::AIN22)
-    }
-    #[doc = "ADC AIN23 Pin"]
-    #[inline]
-    pub fn ain23(self) -> &'a mut W {
-        self.variant(MUXPOSW::AIN23)
-    }
-    #[doc = "1/4 Scaled Core Supply"]
-    #[inline]
-    pub fn scaledcorevcc(self) -> &'a mut W {
-        self.variant(MUXPOSW::SCALEDCOREVCC)
-    }
-    #[doc = "1/4 Scaled VBAT Supply"]
-    #[inline]
-    pub fn scaledvbat(self) -> &'a mut W {
-        self.variant(MUXPOSW::SCALEDVBAT)
-    }
-    #[doc = "1/4 Scaled I/O Supply"]
-    #[inline]
-    pub fn scalediovcc(self) -> &'a mut W {
-        self.variant(MUXPOSW::SCALEDIOVCC)
-    }
-    #[doc = "Bandgap Voltage"]
-    #[inline]
-    pub fn bandgap(self) -> &'a mut W {
-        self.variant(MUXPOSW::BANDGAP)
-    }
-    #[doc = "Temperature Sensor"]
-    #[inline]
-    pub fn ptat(self) -> &'a mut W {
-        self.variant(MUXPOSW::PTAT)
-    }
-    #[doc = "Temperature Sensor"]
-    #[inline]
-    pub fn ctat(self) -> &'a mut W {
-        self.variant(MUXPOSW::CTAT)
-    }
-    #[doc = "DAC Output"]
-    #[inline]
-    pub fn dac(self) -> &'a mut W {
-        self.variant(MUXPOSW::DAC)
-    }
-    #[doc = "PTC output (only on ADC0)"]
-    #[inline]
-    pub fn ptc(self) -> &'a mut W {
-        self.variant(MUXPOSW::PTC)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 31;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
-        self.w
-    }
-}
-#[doc = r" Proxy"]
-pub struct _DIFFMODEW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _DIFFMODEW<'a> {
-    #[doc = r" Sets the field bit"]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r" Clears the field bit"]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 7;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
-        self.w
-    }
-}
-#[doc = "Values that can be written to the field `MUXNEG`"]
-pub enum MUXNEGW {
-    #[doc = "ADC AIN0 Pin"]
-    AIN0,
-    #[doc = "ADC AIN1 Pin"]
-    AIN1,
-    #[doc = "ADC AIN2 Pin"]
-    AIN2,
-    #[doc = "ADC AIN3 Pin"]
-    AIN3,
-    #[doc = "ADC AIN4 Pin"]
-    AIN4,
-    #[doc = "ADC AIN5 Pin"]
-    AIN5,
-    #[doc = "ADC AIN6 Pin"]
-    AIN6,
-    #[doc = "ADC AIN7 Pin"]
-    AIN7,
-    #[doc = "Internal Ground"]
-    GND,
-}
-impl MUXNEGW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            MUXNEGW::AIN0 => 0,
-            MUXNEGW::AIN1 => 1,
-            MUXNEGW::AIN2 => 2,
-            MUXNEGW::AIN3 => 3,
-            MUXNEGW::AIN4 => 4,
-            MUXNEGW::AIN5 => 5,
-            MUXNEGW::AIN6 => 6,
-            MUXNEGW::AIN7 => 7,
-            MUXNEGW::GND => 24,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _MUXNEGW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _MUXNEGW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: MUXNEGW) -> &'a mut W {
-        unsafe { self.bits(variant._bits()) }
-    }
-    #[doc = "ADC AIN0 Pin"]
-    #[inline]
-    pub fn ain0(self) -> &'a mut W {
-        self.variant(MUXNEGW::AIN0)
-    }
-    #[doc = "ADC AIN1 Pin"]
-    #[inline]
-    pub fn ain1(self) -> &'a mut W {
-        self.variant(MUXNEGW::AIN1)
-    }
-    #[doc = "ADC AIN2 Pin"]
-    #[inline]
-    pub fn ain2(self) -> &'a mut W {
-        self.variant(MUXNEGW::AIN2)
-    }
-    #[doc = "ADC AIN3 Pin"]
-    #[inline]
-    pub fn ain3(self) -> &'a mut W {
-        self.variant(MUXNEGW::AIN3)
-    }
-    #[doc = "ADC AIN4 Pin"]
-    #[inline]
-    pub fn ain4(self) -> &'a mut W {
-        self.variant(MUXNEGW::AIN4)
-    }
-    #[doc = "ADC AIN5 Pin"]
-    #[inline]
-    pub fn ain5(self) -> &'a mut W {
-        self.variant(MUXNEGW::AIN5)
-    }
-    #[doc = "ADC AIN6 Pin"]
-    #[inline]
-    pub fn ain6(self) -> &'a mut W {
-        self.variant(MUXNEGW::AIN6)
-    }
-    #[doc = "ADC AIN7 Pin"]
-    #[inline]
-    pub fn ain7(self) -> &'a mut W {
-        self.variant(MUXNEGW::AIN7)
+        self.variant(MUXNEG_A::AIN7)
     }
     #[doc = "Internal Ground"]
-    #[inline]
+    #[inline(always)]
     pub fn gnd(self) -> &'a mut W {
-        self.variant(MUXNEGW::GND)
+        self.variant(MUXNEG_A::GND)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 31;
-        const OFFSET: u8 = 8;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x1f << 8)) | (((value as u16) & 0x1f) << 8);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _DSEQSTOPW<'a> {
+#[doc = "Reader of field `DSEQSTOP`"]
+pub type DSEQSTOP_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `DSEQSTOP`"]
+pub struct DSEQSTOP_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _DSEQSTOPW<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> DSEQSTOP_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 15;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 15)) | (((value as u16) & 0x01) << 15);
         self.w
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u16 {
-        self.bits
-    }
     #[doc = "Bits 0:4 - Positive Mux Input Selection"]
-    #[inline]
-    pub fn muxpos(&self) -> MUXPOSR {
-        MUXPOSR::_from({
-            const MASK: u8 = 31;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u16) as u8
-        })
+    #[inline(always)]
+    pub fn muxpos(&self) -> MUXPOS_R {
+        MUXPOS_R::new((self.bits & 0x1f) as u8)
     }
     #[doc = "Bit 7 - Differential Mode"]
-    #[inline]
-    pub fn diffmode(&self) -> DIFFMODER {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 7;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
-        DIFFMODER { bits }
+    #[inline(always)]
+    pub fn diffmode(&self) -> DIFFMODE_R {
+        DIFFMODE_R::new(((self.bits >> 7) & 0x01) != 0)
     }
     #[doc = "Bits 8:12 - Negative Mux Input Selection"]
-    #[inline]
-    pub fn muxneg(&self) -> MUXNEGR {
-        MUXNEGR::_from({
-            const MASK: u8 = 31;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u16) as u8
-        })
+    #[inline(always)]
+    pub fn muxneg(&self) -> MUXNEG_R {
+        MUXNEG_R::new(((self.bits >> 8) & 0x1f) as u8)
     }
     #[doc = "Bit 15 - Stop DMA Sequencing"]
-    #[inline]
-    pub fn dseqstop(&self) -> DSEQSTOPR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 15;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
-        DSEQSTOPR { bits }
+    #[inline(always)]
+    pub fn dseqstop(&self) -> DSEQSTOP_R {
+        DSEQSTOP_R::new(((self.bits >> 15) & 0x01) != 0)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
-    #[doc = r" Writes raw bits to the register"]
-    #[inline]
-    pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {
-        self.bits = bits;
-        self
-    }
     #[doc = "Bits 0:4 - Positive Mux Input Selection"]
-    #[inline]
-    pub fn muxpos(&mut self) -> _MUXPOSW {
-        _MUXPOSW { w: self }
+    #[inline(always)]
+    pub fn muxpos(&mut self) -> MUXPOS_W {
+        MUXPOS_W { w: self }
     }
     #[doc = "Bit 7 - Differential Mode"]
-    #[inline]
-    pub fn diffmode(&mut self) -> _DIFFMODEW {
-        _DIFFMODEW { w: self }
+    #[inline(always)]
+    pub fn diffmode(&mut self) -> DIFFMODE_W {
+        DIFFMODE_W { w: self }
     }
     #[doc = "Bits 8:12 - Negative Mux Input Selection"]
-    #[inline]
-    pub fn muxneg(&mut self) -> _MUXNEGW {
-        _MUXNEGW { w: self }
+    #[inline(always)]
+    pub fn muxneg(&mut self) -> MUXNEG_W {
+        MUXNEG_W { w: self }
     }
     #[doc = "Bit 15 - Stop DMA Sequencing"]
-    #[inline]
-    pub fn dseqstop(&mut self) -> _DSEQSTOPW {
-        _DSEQSTOPW { w: self }
+    #[inline(always)]
+    pub fn dseqstop(&mut self) -> DSEQSTOP_W {
+        DSEQSTOP_W { w: self }
     }
 }

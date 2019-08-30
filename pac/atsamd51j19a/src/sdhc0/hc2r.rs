@@ -1,949 +1,683 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u16,
-}
-#[doc = r" Value to write to the register"]
-pub struct W {
-    bits: u16,
-}
-impl super::HC2R {
-    #[doc = r" Modifies the contents of the register"]
-    #[inline]
-    pub fn modify<F>(&self, f: F)
-    where
-        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
-    {
-        let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-    #[doc = r" Writes to the register"]
-    #[inline]
-    pub fn write<F>(&self, f: F)
-    where
-        F: FnOnce(&mut W) -> &mut W,
-    {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Writes the reset value to the register"]
-    #[inline]
-    pub fn reset(&self) {
-        self.write(|w| w)
+#[doc = "Reader of register HC2R"]
+pub type R = crate::R<u16, super::HC2R>;
+#[doc = "Writer for register HC2R"]
+pub type W = crate::W<u16, super::HC2R>;
+#[doc = "Register HC2R `reset()`'s with value 0"]
+impl crate::ResetValue for super::HC2R {
+    type Type = u16;
+    #[inline(always)]
+    fn reset_value() -> Self::Type {
+        0
     }
 }
-#[doc = "Possible values of the field `UHSMS`"]
+#[doc = "UHS Mode Select\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum UHSMSR {
-    #[doc = "SDR12"]
+pub enum UHSMS_A {
+    #[doc = "0: SDR12"]
     SDR12,
-    #[doc = "SDR25"]
+    #[doc = "1: SDR25"]
     SDR25,
-    #[doc = "SDR50"]
+    #[doc = "2: SDR50"]
     SDR50,
-    #[doc = "SDR104"]
+    #[doc = "3: SDR104"]
     SDR104,
-    #[doc = "DDR50"]
+    #[doc = "4: DDR50"]
     DDR50,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
 }
-impl UHSMSR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            UHSMSR::SDR12 => 0,
-            UHSMSR::SDR25 => 1,
-            UHSMSR::SDR50 => 2,
-            UHSMSR::SDR104 => 3,
-            UHSMSR::DDR50 => 4,
-            UHSMSR::_Reserved(bits) => bits,
+impl From<UHSMS_A> for u8 {
+    #[inline(always)]
+    fn from(variant: UHSMS_A) -> Self {
+        match variant {
+            UHSMS_A::SDR12 => 0,
+            UHSMS_A::SDR25 => 1,
+            UHSMS_A::SDR50 => 2,
+            UHSMS_A::SDR104 => 3,
+            UHSMS_A::DDR50 => 4,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> UHSMSR {
-        match value {
-            0 => UHSMSR::SDR12,
-            1 => UHSMSR::SDR25,
-            2 => UHSMSR::SDR50,
-            3 => UHSMSR::SDR104,
-            4 => UHSMSR::DDR50,
-            i => UHSMSR::_Reserved(i),
+}
+#[doc = "Reader of field `UHSMS`"]
+pub type UHSMS_R = crate::R<u8, UHSMS_A>;
+impl UHSMS_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, UHSMS_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(UHSMS_A::SDR12),
+            1 => Val(UHSMS_A::SDR25),
+            2 => Val(UHSMS_A::SDR50),
+            3 => Val(UHSMS_A::SDR104),
+            4 => Val(UHSMS_A::DDR50),
+            i => Res(i),
         }
     }
     #[doc = "Checks if the value of the field is `SDR12`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_sdr12(&self) -> bool {
-        *self == UHSMSR::SDR12
+        *self == UHSMS_A::SDR12
     }
     #[doc = "Checks if the value of the field is `SDR25`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_sdr25(&self) -> bool {
-        *self == UHSMSR::SDR25
+        *self == UHSMS_A::SDR25
     }
     #[doc = "Checks if the value of the field is `SDR50`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_sdr50(&self) -> bool {
-        *self == UHSMSR::SDR50
+        *self == UHSMS_A::SDR50
     }
     #[doc = "Checks if the value of the field is `SDR104`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_sdr104(&self) -> bool {
-        *self == UHSMSR::SDR104
+        *self == UHSMS_A::SDR104
     }
     #[doc = "Checks if the value of the field is `DDR50`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_ddr50(&self) -> bool {
-        *self == UHSMSR::DDR50
+        *self == UHSMS_A::DDR50
     }
 }
-#[doc = "Possible values of the field `VS18EN`"]
+#[doc = "Write proxy for field `UHSMS`"]
+pub struct UHSMS_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> UHSMS_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: UHSMS_A) -> &'a mut W {
+        unsafe { self.bits(variant.into()) }
+    }
+    #[doc = "SDR12"]
+    #[inline(always)]
+    pub fn sdr12(self) -> &'a mut W {
+        self.variant(UHSMS_A::SDR12)
+    }
+    #[doc = "SDR25"]
+    #[inline(always)]
+    pub fn sdr25(self) -> &'a mut W {
+        self.variant(UHSMS_A::SDR25)
+    }
+    #[doc = "SDR50"]
+    #[inline(always)]
+    pub fn sdr50(self) -> &'a mut W {
+        self.variant(UHSMS_A::SDR50)
+    }
+    #[doc = "SDR104"]
+    #[inline(always)]
+    pub fn sdr104(self) -> &'a mut W {
+        self.variant(UHSMS_A::SDR104)
+    }
+    #[doc = "DDR50"]
+    #[inline(always)]
+    pub fn ddr50(self) -> &'a mut W {
+        self.variant(UHSMS_A::DDR50)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub unsafe fn bits(self, value: u8) -> &'a mut W {
+        self.w.bits = (self.w.bits & !0x07) | ((value as u16) & 0x07);
+        self.w
+    }
+}
+#[doc = "1.8V Signaling Enable\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum VS18ENR {
-    #[doc = "3.3V Signaling"]
+pub enum VS18EN_A {
+    #[doc = "0: 3.3V Signaling"]
     S33V,
-    #[doc = "1.8V Signaling"]
+    #[doc = "1: 1.8V Signaling"]
     S18V,
 }
-impl VS18ENR {
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        match *self {
-            VS18ENR::S33V => false,
-            VS18ENR::S18V => true,
+impl From<VS18EN_A> for bool {
+    #[inline(always)]
+    fn from(variant: VS18EN_A) -> Self {
+        match variant {
+            VS18EN_A::S33V => false,
+            VS18EN_A::S18V => true,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: bool) -> VS18ENR {
-        match value {
-            false => VS18ENR::S33V,
-            true => VS18ENR::S18V,
+}
+#[doc = "Reader of field `VS18EN`"]
+pub type VS18EN_R = crate::R<bool, VS18EN_A>;
+impl VS18EN_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> VS18EN_A {
+        match self.bits {
+            false => VS18EN_A::S33V,
+            true => VS18EN_A::S18V,
         }
     }
     #[doc = "Checks if the value of the field is `S33V`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_s33v(&self) -> bool {
-        *self == VS18ENR::S33V
+        *self == VS18EN_A::S33V
     }
     #[doc = "Checks if the value of the field is `S18V`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_s18v(&self) -> bool {
-        *self == VS18ENR::S18V
+        *self == VS18EN_A::S18V
     }
 }
-#[doc = "Possible values of the field `DRVSEL`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum DRVSELR {
-    #[doc = "Driver Type B is Selected (Default)"]
-    B,
-    #[doc = "Driver Type A is Selected"]
-    A,
-    #[doc = "Driver Type C is Selected"]
-    C,
-    #[doc = "Driver Type D is Selected"]
-    D,
+#[doc = "Write proxy for field `VS18EN`"]
+pub struct VS18EN_W<'a> {
+    w: &'a mut W,
 }
-impl DRVSELR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            DRVSELR::B => 0,
-            DRVSELR::A => 1,
-            DRVSELR::C => 2,
-            DRVSELR::D => 3,
+impl<'a> VS18EN_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: VS18EN_A) -> &'a mut W {
+        {
+            self.bit(variant.into())
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> DRVSELR {
-        match value {
-            0 => DRVSELR::B,
-            1 => DRVSELR::A,
-            2 => DRVSELR::C,
-            3 => DRVSELR::D,
+    #[doc = "3.3V Signaling"]
+    #[inline(always)]
+    pub fn s33v(self) -> &'a mut W {
+        self.variant(VS18EN_A::S33V)
+    }
+    #[doc = "1.8V Signaling"]
+    #[inline(always)]
+    pub fn s18v(self) -> &'a mut W {
+        self.variant(VS18EN_A::S18V)
+    }
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 3)) | (((value as u16) & 0x01) << 3);
+        self.w
+    }
+}
+#[doc = "Driver Strength Select\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum DRVSEL_A {
+    #[doc = "0: Driver Type B is Selected (Default)"]
+    B,
+    #[doc = "1: Driver Type A is Selected"]
+    A,
+    #[doc = "2: Driver Type C is Selected"]
+    C,
+    #[doc = "3: Driver Type D is Selected"]
+    D,
+}
+impl From<DRVSEL_A> for u8 {
+    #[inline(always)]
+    fn from(variant: DRVSEL_A) -> Self {
+        match variant {
+            DRVSEL_A::B => 0,
+            DRVSEL_A::A => 1,
+            DRVSEL_A::C => 2,
+            DRVSEL_A::D => 3,
+        }
+    }
+}
+#[doc = "Reader of field `DRVSEL`"]
+pub type DRVSEL_R = crate::R<u8, DRVSEL_A>;
+impl DRVSEL_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> DRVSEL_A {
+        match self.bits {
+            0 => DRVSEL_A::B,
+            1 => DRVSEL_A::A,
+            2 => DRVSEL_A::C,
+            3 => DRVSEL_A::D,
             _ => unreachable!(),
         }
     }
     #[doc = "Checks if the value of the field is `B`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_b(&self) -> bool {
-        *self == DRVSELR::B
+        *self == DRVSEL_A::B
     }
     #[doc = "Checks if the value of the field is `A`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_a(&self) -> bool {
-        *self == DRVSELR::A
+        *self == DRVSEL_A::A
     }
     #[doc = "Checks if the value of the field is `C`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_c(&self) -> bool {
-        *self == DRVSELR::C
+        *self == DRVSEL_A::C
     }
     #[doc = "Checks if the value of the field is `D`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_d(&self) -> bool {
-        *self == DRVSELR::D
+        *self == DRVSEL_A::D
     }
 }
-#[doc = "Possible values of the field `EXTUN`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum EXTUNR {
-    #[doc = "Not Tuned or Tuning Completed"]
-    NO,
-    #[doc = "Execute Tuning"]
-    REQUESTED,
+#[doc = "Write proxy for field `DRVSEL`"]
+pub struct DRVSEL_W<'a> {
+    w: &'a mut W,
 }
-impl EXTUNR {
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        match *self {
-            EXTUNR::NO => false,
-            EXTUNR::REQUESTED => true,
+impl<'a> DRVSEL_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: DRVSEL_A) -> &'a mut W {
+        {
+            self.bits(variant.into())
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: bool) -> EXTUNR {
-        match value {
-            false => EXTUNR::NO,
-            true => EXTUNR::REQUESTED,
+    #[doc = "Driver Type B is Selected (Default)"]
+    #[inline(always)]
+    pub fn b(self) -> &'a mut W {
+        self.variant(DRVSEL_A::B)
+    }
+    #[doc = "Driver Type A is Selected"]
+    #[inline(always)]
+    pub fn a(self) -> &'a mut W {
+        self.variant(DRVSEL_A::A)
+    }
+    #[doc = "Driver Type C is Selected"]
+    #[inline(always)]
+    pub fn c(self) -> &'a mut W {
+        self.variant(DRVSEL_A::C)
+    }
+    #[doc = "Driver Type D is Selected"]
+    #[inline(always)]
+    pub fn d(self) -> &'a mut W {
+        self.variant(DRVSEL_A::D)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bits(self, value: u8) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x03 << 4)) | (((value as u16) & 0x03) << 4);
+        self.w
+    }
+}
+#[doc = "Execute Tuning\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum EXTUN_A {
+    #[doc = "0: Not Tuned or Tuning Completed"]
+    NO,
+    #[doc = "1: Execute Tuning"]
+    REQUESTED,
+}
+impl From<EXTUN_A> for bool {
+    #[inline(always)]
+    fn from(variant: EXTUN_A) -> Self {
+        match variant {
+            EXTUN_A::NO => false,
+            EXTUN_A::REQUESTED => true,
+        }
+    }
+}
+#[doc = "Reader of field `EXTUN`"]
+pub type EXTUN_R = crate::R<bool, EXTUN_A>;
+impl EXTUN_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> EXTUN_A {
+        match self.bits {
+            false => EXTUN_A::NO,
+            true => EXTUN_A::REQUESTED,
         }
     }
     #[doc = "Checks if the value of the field is `NO`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_no(&self) -> bool {
-        *self == EXTUNR::NO
+        *self == EXTUN_A::NO
     }
     #[doc = "Checks if the value of the field is `REQUESTED`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_requested(&self) -> bool {
-        *self == EXTUNR::REQUESTED
+        *self == EXTUN_A::REQUESTED
     }
 }
-#[doc = "Possible values of the field `SLCKSEL`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum SLCKSELR {
-    #[doc = "Fixed clock is used to sample data"]
-    FIXED,
-    #[doc = "Tuned clock is used to sample data"]
-    TUNED,
+#[doc = "Write proxy for field `EXTUN`"]
+pub struct EXTUN_W<'a> {
+    w: &'a mut W,
 }
-impl SLCKSELR {
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        match *self {
-            SLCKSELR::FIXED => false,
-            SLCKSELR::TUNED => true,
+impl<'a> EXTUN_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: EXTUN_A) -> &'a mut W {
+        {
+            self.bit(variant.into())
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: bool) -> SLCKSELR {
-        match value {
-            false => SLCKSELR::FIXED,
-            true => SLCKSELR::TUNED,
+    #[doc = "Not Tuned or Tuning Completed"]
+    #[inline(always)]
+    pub fn no(self) -> &'a mut W {
+        self.variant(EXTUN_A::NO)
+    }
+    #[doc = "Execute Tuning"]
+    #[inline(always)]
+    pub fn requested(self) -> &'a mut W {
+        self.variant(EXTUN_A::REQUESTED)
+    }
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 6)) | (((value as u16) & 0x01) << 6);
+        self.w
+    }
+}
+#[doc = "Sampling Clock Select\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum SLCKSEL_A {
+    #[doc = "0: Fixed clock is used to sample data"]
+    FIXED,
+    #[doc = "1: Tuned clock is used to sample data"]
+    TUNED,
+}
+impl From<SLCKSEL_A> for bool {
+    #[inline(always)]
+    fn from(variant: SLCKSEL_A) -> Self {
+        match variant {
+            SLCKSEL_A::FIXED => false,
+            SLCKSEL_A::TUNED => true,
+        }
+    }
+}
+#[doc = "Reader of field `SLCKSEL`"]
+pub type SLCKSEL_R = crate::R<bool, SLCKSEL_A>;
+impl SLCKSEL_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> SLCKSEL_A {
+        match self.bits {
+            false => SLCKSEL_A::FIXED,
+            true => SLCKSEL_A::TUNED,
         }
     }
     #[doc = "Checks if the value of the field is `FIXED`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_fixed(&self) -> bool {
-        *self == SLCKSELR::FIXED
+        *self == SLCKSEL_A::FIXED
     }
     #[doc = "Checks if the value of the field is `TUNED`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_tuned(&self) -> bool {
-        *self == SLCKSELR::TUNED
+        *self == SLCKSEL_A::TUNED
     }
 }
-#[doc = "Possible values of the field `ASINTEN`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum ASINTENR {
-    #[doc = "Disabled"]
-    DISABLED,
-    #[doc = "Enabled"]
-    ENABLED,
+#[doc = "Write proxy for field `SLCKSEL`"]
+pub struct SLCKSEL_W<'a> {
+    w: &'a mut W,
 }
-impl ASINTENR {
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        match *self {
-            ASINTENR::DISABLED => false,
-            ASINTENR::ENABLED => true,
+impl<'a> SLCKSEL_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: SLCKSEL_A) -> &'a mut W {
+        {
+            self.bit(variant.into())
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: bool) -> ASINTENR {
-        match value {
-            false => ASINTENR::DISABLED,
-            true => ASINTENR::ENABLED,
+    #[doc = "Fixed clock is used to sample data"]
+    #[inline(always)]
+    pub fn fixed(self) -> &'a mut W {
+        self.variant(SLCKSEL_A::FIXED)
+    }
+    #[doc = "Tuned clock is used to sample data"]
+    #[inline(always)]
+    pub fn tuned(self) -> &'a mut W {
+        self.variant(SLCKSEL_A::TUNED)
+    }
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 7)) | (((value as u16) & 0x01) << 7);
+        self.w
+    }
+}
+#[doc = "Asynchronous Interrupt Enable\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum ASINTEN_A {
+    #[doc = "0: Disabled"]
+    DISABLED,
+    #[doc = "1: Enabled"]
+    ENABLED,
+}
+impl From<ASINTEN_A> for bool {
+    #[inline(always)]
+    fn from(variant: ASINTEN_A) -> Self {
+        match variant {
+            ASINTEN_A::DISABLED => false,
+            ASINTEN_A::ENABLED => true,
+        }
+    }
+}
+#[doc = "Reader of field `ASINTEN`"]
+pub type ASINTEN_R = crate::R<bool, ASINTEN_A>;
+impl ASINTEN_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> ASINTEN_A {
+        match self.bits {
+            false => ASINTEN_A::DISABLED,
+            true => ASINTEN_A::ENABLED,
         }
     }
     #[doc = "Checks if the value of the field is `DISABLED`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_disabled(&self) -> bool {
-        *self == ASINTENR::DISABLED
+        *self == ASINTEN_A::DISABLED
     }
     #[doc = "Checks if the value of the field is `ENABLED`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_enabled(&self) -> bool {
-        *self == ASINTENR::ENABLED
+        *self == ASINTEN_A::ENABLED
     }
 }
-#[doc = "Possible values of the field `PVALEN`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum PVALENR {
-    #[doc = "SDCLK and Driver Strength are controlled by Host Controller"]
-    HOST,
-    #[doc = "Automatic Selection by Preset Value is Enabled"]
-    AUTO,
+#[doc = "Write proxy for field `ASINTEN`"]
+pub struct ASINTEN_W<'a> {
+    w: &'a mut W,
 }
-impl PVALENR {
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        match *self {
-            PVALENR::HOST => false,
-            PVALENR::AUTO => true,
+impl<'a> ASINTEN_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: ASINTEN_A) -> &'a mut W {
+        {
+            self.bit(variant.into())
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: bool) -> PVALENR {
-        match value {
-            false => PVALENR::HOST,
-            true => PVALENR::AUTO,
+    #[doc = "Disabled"]
+    #[inline(always)]
+    pub fn disabled(self) -> &'a mut W {
+        self.variant(ASINTEN_A::DISABLED)
+    }
+    #[doc = "Enabled"]
+    #[inline(always)]
+    pub fn enabled(self) -> &'a mut W {
+        self.variant(ASINTEN_A::ENABLED)
+    }
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 14)) | (((value as u16) & 0x01) << 14);
+        self.w
+    }
+}
+#[doc = "Preset Value Enable\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum PVALEN_A {
+    #[doc = "0: SDCLK and Driver Strength are controlled by Host Controller"]
+    HOST,
+    #[doc = "1: Automatic Selection by Preset Value is Enabled"]
+    AUTO,
+}
+impl From<PVALEN_A> for bool {
+    #[inline(always)]
+    fn from(variant: PVALEN_A) -> Self {
+        match variant {
+            PVALEN_A::HOST => false,
+            PVALEN_A::AUTO => true,
+        }
+    }
+}
+#[doc = "Reader of field `PVALEN`"]
+pub type PVALEN_R = crate::R<bool, PVALEN_A>;
+impl PVALEN_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> PVALEN_A {
+        match self.bits {
+            false => PVALEN_A::HOST,
+            true => PVALEN_A::AUTO,
         }
     }
     #[doc = "Checks if the value of the field is `HOST`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_host(&self) -> bool {
-        *self == PVALENR::HOST
+        *self == PVALEN_A::HOST
     }
     #[doc = "Checks if the value of the field is `AUTO`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_auto(&self) -> bool {
-        *self == PVALENR::AUTO
+        *self == PVALEN_A::AUTO
     }
 }
-#[doc = "Values that can be written to the field `UHSMS`"]
-pub enum UHSMSW {
-    #[doc = "SDR12"]
-    SDR12,
-    #[doc = "SDR25"]
-    SDR25,
-    #[doc = "SDR50"]
-    SDR50,
-    #[doc = "SDR104"]
-    SDR104,
-    #[doc = "DDR50"]
-    DDR50,
-}
-impl UHSMSW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            UHSMSW::SDR12 => 0,
-            UHSMSW::SDR25 => 1,
-            UHSMSW::SDR50 => 2,
-            UHSMSW::SDR104 => 3,
-            UHSMSW::DDR50 => 4,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _UHSMSW<'a> {
+#[doc = "Write proxy for field `PVALEN`"]
+pub struct PVALEN_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _UHSMSW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: UHSMSW) -> &'a mut W {
-        unsafe { self.bits(variant._bits()) }
-    }
-    #[doc = "SDR12"]
-    #[inline]
-    pub fn sdr12(self) -> &'a mut W {
-        self.variant(UHSMSW::SDR12)
-    }
-    #[doc = "SDR25"]
-    #[inline]
-    pub fn sdr25(self) -> &'a mut W {
-        self.variant(UHSMSW::SDR25)
-    }
-    #[doc = "SDR50"]
-    #[inline]
-    pub fn sdr50(self) -> &'a mut W {
-        self.variant(UHSMSW::SDR50)
-    }
-    #[doc = "SDR104"]
-    #[inline]
-    pub fn sdr104(self) -> &'a mut W {
-        self.variant(UHSMSW::SDR104)
-    }
-    #[doc = "DDR50"]
-    #[inline]
-    pub fn ddr50(self) -> &'a mut W {
-        self.variant(UHSMSW::DDR50)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 7;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
-        self.w
-    }
-}
-#[doc = "Values that can be written to the field `VS18EN`"]
-pub enum VS18ENW {
-    #[doc = "3.3V Signaling"]
-    S33V,
-    #[doc = "1.8V Signaling"]
-    S18V,
-}
-impl VS18ENW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> bool {
-        match *self {
-            VS18ENW::S33V => false,
-            VS18ENW::S18V => true,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _VS18ENW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _VS18ENW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: VS18ENW) -> &'a mut W {
+impl<'a> PVALEN_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: PVALEN_A) -> &'a mut W {
         {
-            self.bit(variant._bits())
-        }
-    }
-    #[doc = "3.3V Signaling"]
-    #[inline]
-    pub fn s33v(self) -> &'a mut W {
-        self.variant(VS18ENW::S33V)
-    }
-    #[doc = "1.8V Signaling"]
-    #[inline]
-    pub fn s18v(self) -> &'a mut W {
-        self.variant(VS18ENW::S18V)
-    }
-    #[doc = r" Sets the field bit"]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r" Clears the field bit"]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 3;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
-        self.w
-    }
-}
-#[doc = "Values that can be written to the field `DRVSEL`"]
-pub enum DRVSELW {
-    #[doc = "Driver Type B is Selected (Default)"]
-    B,
-    #[doc = "Driver Type A is Selected"]
-    A,
-    #[doc = "Driver Type C is Selected"]
-    C,
-    #[doc = "Driver Type D is Selected"]
-    D,
-}
-impl DRVSELW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            DRVSELW::B => 0,
-            DRVSELW::A => 1,
-            DRVSELW::C => 2,
-            DRVSELW::D => 3,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _DRVSELW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _DRVSELW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: DRVSELW) -> &'a mut W {
-        {
-            self.bits(variant._bits())
-        }
-    }
-    #[doc = "Driver Type B is Selected (Default)"]
-    #[inline]
-    pub fn b(self) -> &'a mut W {
-        self.variant(DRVSELW::B)
-    }
-    #[doc = "Driver Type A is Selected"]
-    #[inline]
-    pub fn a(self) -> &'a mut W {
-        self.variant(DRVSELW::A)
-    }
-    #[doc = "Driver Type C is Selected"]
-    #[inline]
-    pub fn c(self) -> &'a mut W {
-        self.variant(DRVSELW::C)
-    }
-    #[doc = "Driver Type D is Selected"]
-    #[inline]
-    pub fn d(self) -> &'a mut W {
-        self.variant(DRVSELW::D)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 4;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
-        self.w
-    }
-}
-#[doc = "Values that can be written to the field `EXTUN`"]
-pub enum EXTUNW {
-    #[doc = "Not Tuned or Tuning Completed"]
-    NO,
-    #[doc = "Execute Tuning"]
-    REQUESTED,
-}
-impl EXTUNW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> bool {
-        match *self {
-            EXTUNW::NO => false,
-            EXTUNW::REQUESTED => true,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _EXTUNW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _EXTUNW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: EXTUNW) -> &'a mut W {
-        {
-            self.bit(variant._bits())
-        }
-    }
-    #[doc = "Not Tuned or Tuning Completed"]
-    #[inline]
-    pub fn no(self) -> &'a mut W {
-        self.variant(EXTUNW::NO)
-    }
-    #[doc = "Execute Tuning"]
-    #[inline]
-    pub fn requested(self) -> &'a mut W {
-        self.variant(EXTUNW::REQUESTED)
-    }
-    #[doc = r" Sets the field bit"]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r" Clears the field bit"]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 6;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
-        self.w
-    }
-}
-#[doc = "Values that can be written to the field `SLCKSEL`"]
-pub enum SLCKSELW {
-    #[doc = "Fixed clock is used to sample data"]
-    FIXED,
-    #[doc = "Tuned clock is used to sample data"]
-    TUNED,
-}
-impl SLCKSELW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> bool {
-        match *self {
-            SLCKSELW::FIXED => false,
-            SLCKSELW::TUNED => true,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _SLCKSELW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _SLCKSELW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: SLCKSELW) -> &'a mut W {
-        {
-            self.bit(variant._bits())
-        }
-    }
-    #[doc = "Fixed clock is used to sample data"]
-    #[inline]
-    pub fn fixed(self) -> &'a mut W {
-        self.variant(SLCKSELW::FIXED)
-    }
-    #[doc = "Tuned clock is used to sample data"]
-    #[inline]
-    pub fn tuned(self) -> &'a mut W {
-        self.variant(SLCKSELW::TUNED)
-    }
-    #[doc = r" Sets the field bit"]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r" Clears the field bit"]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 7;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
-        self.w
-    }
-}
-#[doc = "Values that can be written to the field `ASINTEN`"]
-pub enum ASINTENW {
-    #[doc = "Disabled"]
-    DISABLED,
-    #[doc = "Enabled"]
-    ENABLED,
-}
-impl ASINTENW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> bool {
-        match *self {
-            ASINTENW::DISABLED => false,
-            ASINTENW::ENABLED => true,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _ASINTENW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _ASINTENW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: ASINTENW) -> &'a mut W {
-        {
-            self.bit(variant._bits())
-        }
-    }
-    #[doc = "Disabled"]
-    #[inline]
-    pub fn disabled(self) -> &'a mut W {
-        self.variant(ASINTENW::DISABLED)
-    }
-    #[doc = "Enabled"]
-    #[inline]
-    pub fn enabled(self) -> &'a mut W {
-        self.variant(ASINTENW::ENABLED)
-    }
-    #[doc = r" Sets the field bit"]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r" Clears the field bit"]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 14;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
-        self.w
-    }
-}
-#[doc = "Values that can be written to the field `PVALEN`"]
-pub enum PVALENW {
-    #[doc = "SDCLK and Driver Strength are controlled by Host Controller"]
-    HOST,
-    #[doc = "Automatic Selection by Preset Value is Enabled"]
-    AUTO,
-}
-impl PVALENW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> bool {
-        match *self {
-            PVALENW::HOST => false,
-            PVALENW::AUTO => true,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _PVALENW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _PVALENW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: PVALENW) -> &'a mut W {
-        {
-            self.bit(variant._bits())
+            self.bit(variant.into())
         }
     }
     #[doc = "SDCLK and Driver Strength are controlled by Host Controller"]
-    #[inline]
+    #[inline(always)]
     pub fn host(self) -> &'a mut W {
-        self.variant(PVALENW::HOST)
+        self.variant(PVALEN_A::HOST)
     }
     #[doc = "Automatic Selection by Preset Value is Enabled"]
-    #[inline]
+    #[inline(always)]
     pub fn auto(self) -> &'a mut W {
-        self.variant(PVALENW::AUTO)
+        self.variant(PVALEN_A::AUTO)
     }
-    #[doc = r" Sets the field bit"]
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 15;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 15)) | (((value as u16) & 0x01) << 15);
         self.w
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u16 {
-        self.bits
-    }
     #[doc = "Bits 0:2 - UHS Mode Select"]
-    #[inline]
-    pub fn uhsms(&self) -> UHSMSR {
-        UHSMSR::_from({
-            const MASK: u8 = 7;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u16) as u8
-        })
+    #[inline(always)]
+    pub fn uhsms(&self) -> UHSMS_R {
+        UHSMS_R::new((self.bits & 0x07) as u8)
     }
     #[doc = "Bit 3 - 1.8V Signaling Enable"]
-    #[inline]
-    pub fn vs18en(&self) -> VS18ENR {
-        VS18ENR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 3;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        })
+    #[inline(always)]
+    pub fn vs18en(&self) -> VS18EN_R {
+        VS18EN_R::new(((self.bits >> 3) & 0x01) != 0)
     }
     #[doc = "Bits 4:5 - Driver Strength Select"]
-    #[inline]
-    pub fn drvsel(&self) -> DRVSELR {
-        DRVSELR::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u16) as u8
-        })
+    #[inline(always)]
+    pub fn drvsel(&self) -> DRVSEL_R {
+        DRVSEL_R::new(((self.bits >> 4) & 0x03) as u8)
     }
     #[doc = "Bit 6 - Execute Tuning"]
-    #[inline]
-    pub fn extun(&self) -> EXTUNR {
-        EXTUNR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 6;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        })
+    #[inline(always)]
+    pub fn extun(&self) -> EXTUN_R {
+        EXTUN_R::new(((self.bits >> 6) & 0x01) != 0)
     }
     #[doc = "Bit 7 - Sampling Clock Select"]
-    #[inline]
-    pub fn slcksel(&self) -> SLCKSELR {
-        SLCKSELR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 7;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        })
+    #[inline(always)]
+    pub fn slcksel(&self) -> SLCKSEL_R {
+        SLCKSEL_R::new(((self.bits >> 7) & 0x01) != 0)
     }
     #[doc = "Bit 14 - Asynchronous Interrupt Enable"]
-    #[inline]
-    pub fn asinten(&self) -> ASINTENR {
-        ASINTENR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 14;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        })
+    #[inline(always)]
+    pub fn asinten(&self) -> ASINTEN_R {
+        ASINTEN_R::new(((self.bits >> 14) & 0x01) != 0)
     }
     #[doc = "Bit 15 - Preset Value Enable"]
-    #[inline]
-    pub fn pvalen(&self) -> PVALENR {
-        PVALENR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 15;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        })
+    #[inline(always)]
+    pub fn pvalen(&self) -> PVALEN_R {
+        PVALEN_R::new(((self.bits >> 15) & 0x01) != 0)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
-    #[doc = r" Writes raw bits to the register"]
-    #[inline]
-    pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {
-        self.bits = bits;
-        self
-    }
     #[doc = "Bits 0:2 - UHS Mode Select"]
-    #[inline]
-    pub fn uhsms(&mut self) -> _UHSMSW {
-        _UHSMSW { w: self }
+    #[inline(always)]
+    pub fn uhsms(&mut self) -> UHSMS_W {
+        UHSMS_W { w: self }
     }
     #[doc = "Bit 3 - 1.8V Signaling Enable"]
-    #[inline]
-    pub fn vs18en(&mut self) -> _VS18ENW {
-        _VS18ENW { w: self }
+    #[inline(always)]
+    pub fn vs18en(&mut self) -> VS18EN_W {
+        VS18EN_W { w: self }
     }
     #[doc = "Bits 4:5 - Driver Strength Select"]
-    #[inline]
-    pub fn drvsel(&mut self) -> _DRVSELW {
-        _DRVSELW { w: self }
+    #[inline(always)]
+    pub fn drvsel(&mut self) -> DRVSEL_W {
+        DRVSEL_W { w: self }
     }
     #[doc = "Bit 6 - Execute Tuning"]
-    #[inline]
-    pub fn extun(&mut self) -> _EXTUNW {
-        _EXTUNW { w: self }
+    #[inline(always)]
+    pub fn extun(&mut self) -> EXTUN_W {
+        EXTUN_W { w: self }
     }
     #[doc = "Bit 7 - Sampling Clock Select"]
-    #[inline]
-    pub fn slcksel(&mut self) -> _SLCKSELW {
-        _SLCKSELW { w: self }
+    #[inline(always)]
+    pub fn slcksel(&mut self) -> SLCKSEL_W {
+        SLCKSEL_W { w: self }
     }
     #[doc = "Bit 14 - Asynchronous Interrupt Enable"]
-    #[inline]
-    pub fn asinten(&mut self) -> _ASINTENW {
-        _ASINTENW { w: self }
+    #[inline(always)]
+    pub fn asinten(&mut self) -> ASINTEN_W {
+        ASINTEN_W { w: self }
     }
     #[doc = "Bit 15 - Preset Value Enable"]
-    #[inline]
-    pub fn pvalen(&mut self) -> _PVALENW {
-        _PVALENW { w: self }
+    #[inline(always)]
+    pub fn pvalen(&mut self) -> PVALEN_W {
+        PVALEN_W { w: self }
     }
 }

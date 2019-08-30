@@ -1,294 +1,184 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u8,
-}
-#[doc = r" Value to write to the register"]
-pub struct W {
-    bits: u8,
-}
-impl super::NMICTRL {
-    #[doc = r" Modifies the contents of the register"]
-    #[inline]
-    pub fn modify<F>(&self, f: F)
-    where
-        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
-    {
-        let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-    #[doc = r" Writes to the register"]
-    #[inline]
-    pub fn write<F>(&self, f: F)
-    where
-        F: FnOnce(&mut W) -> &mut W,
-    {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Writes the reset value to the register"]
-    #[inline]
-    pub fn reset(&self) {
-        self.write(|w| w)
+#[doc = "Reader of register NMICTRL"]
+pub type R = crate::R<u8, super::NMICTRL>;
+#[doc = "Writer for register NMICTRL"]
+pub type W = crate::W<u8, super::NMICTRL>;
+#[doc = "Register NMICTRL `reset()`'s with value 0"]
+impl crate::ResetValue for super::NMICTRL {
+    type Type = u8;
+    #[inline(always)]
+    fn reset_value() -> Self::Type {
+        0
     }
 }
-#[doc = "Possible values of the field `NMISENSE`"]
+#[doc = "Non-Maskable Interrupt Sense\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum NMISENSER {
-    #[doc = "No detection"]
+pub enum NMISENSE_A {
+    #[doc = "0: No detection"]
     NONE,
-    #[doc = "Rising-edge detection"]
+    #[doc = "1: Rising-edge detection"]
     RISE,
-    #[doc = "Falling-edge detection"]
+    #[doc = "2: Falling-edge detection"]
     FALL,
-    #[doc = "Both-edges detection"]
+    #[doc = "3: Both-edges detection"]
     BOTH,
-    #[doc = "High-level detection"]
+    #[doc = "4: High-level detection"]
     HIGH,
-    #[doc = "Low-level detection"]
+    #[doc = "5: Low-level detection"]
     LOW,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
 }
-impl NMISENSER {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            NMISENSER::NONE => 0,
-            NMISENSER::RISE => 1,
-            NMISENSER::FALL => 2,
-            NMISENSER::BOTH => 3,
-            NMISENSER::HIGH => 4,
-            NMISENSER::LOW => 5,
-            NMISENSER::_Reserved(bits) => bits,
+impl From<NMISENSE_A> for u8 {
+    #[inline(always)]
+    fn from(variant: NMISENSE_A) -> Self {
+        match variant {
+            NMISENSE_A::NONE => 0,
+            NMISENSE_A::RISE => 1,
+            NMISENSE_A::FALL => 2,
+            NMISENSE_A::BOTH => 3,
+            NMISENSE_A::HIGH => 4,
+            NMISENSE_A::LOW => 5,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> NMISENSER {
-        match value {
-            0 => NMISENSER::NONE,
-            1 => NMISENSER::RISE,
-            2 => NMISENSER::FALL,
-            3 => NMISENSER::BOTH,
-            4 => NMISENSER::HIGH,
-            5 => NMISENSER::LOW,
-            i => NMISENSER::_Reserved(i),
+}
+#[doc = "Reader of field `NMISENSE`"]
+pub type NMISENSE_R = crate::R<u8, NMISENSE_A>;
+impl NMISENSE_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, NMISENSE_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(NMISENSE_A::NONE),
+            1 => Val(NMISENSE_A::RISE),
+            2 => Val(NMISENSE_A::FALL),
+            3 => Val(NMISENSE_A::BOTH),
+            4 => Val(NMISENSE_A::HIGH),
+            5 => Val(NMISENSE_A::LOW),
+            i => Res(i),
         }
     }
     #[doc = "Checks if the value of the field is `NONE`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_none(&self) -> bool {
-        *self == NMISENSER::NONE
+        *self == NMISENSE_A::NONE
     }
     #[doc = "Checks if the value of the field is `RISE`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_rise(&self) -> bool {
-        *self == NMISENSER::RISE
+        *self == NMISENSE_A::RISE
     }
     #[doc = "Checks if the value of the field is `FALL`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_fall(&self) -> bool {
-        *self == NMISENSER::FALL
+        *self == NMISENSE_A::FALL
     }
     #[doc = "Checks if the value of the field is `BOTH`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_both(&self) -> bool {
-        *self == NMISENSER::BOTH
+        *self == NMISENSE_A::BOTH
     }
     #[doc = "Checks if the value of the field is `HIGH`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_high(&self) -> bool {
-        *self == NMISENSER::HIGH
+        *self == NMISENSE_A::HIGH
     }
     #[doc = "Checks if the value of the field is `LOW`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_low(&self) -> bool {
-        *self == NMISENSER::LOW
+        *self == NMISENSE_A::LOW
     }
 }
-#[doc = r" Value of the field"]
-pub struct NMIFILTENR {
-    bits: bool,
-}
-impl NMIFILTENR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = "Values that can be written to the field `NMISENSE`"]
-pub enum NMISENSEW {
-    #[doc = "No detection"]
-    NONE,
-    #[doc = "Rising-edge detection"]
-    RISE,
-    #[doc = "Falling-edge detection"]
-    FALL,
-    #[doc = "Both-edges detection"]
-    BOTH,
-    #[doc = "High-level detection"]
-    HIGH,
-    #[doc = "Low-level detection"]
-    LOW,
-}
-impl NMISENSEW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            NMISENSEW::NONE => 0,
-            NMISENSEW::RISE => 1,
-            NMISENSEW::FALL => 2,
-            NMISENSEW::BOTH => 3,
-            NMISENSEW::HIGH => 4,
-            NMISENSEW::LOW => 5,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _NMISENSEW<'a> {
+#[doc = "Write proxy for field `NMISENSE`"]
+pub struct NMISENSE_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _NMISENSEW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: NMISENSEW) -> &'a mut W {
-        unsafe { self.bits(variant._bits()) }
+impl<'a> NMISENSE_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: NMISENSE_A) -> &'a mut W {
+        unsafe { self.bits(variant.into()) }
     }
     #[doc = "No detection"]
-    #[inline]
+    #[inline(always)]
     pub fn none(self) -> &'a mut W {
-        self.variant(NMISENSEW::NONE)
+        self.variant(NMISENSE_A::NONE)
     }
     #[doc = "Rising-edge detection"]
-    #[inline]
+    #[inline(always)]
     pub fn rise(self) -> &'a mut W {
-        self.variant(NMISENSEW::RISE)
+        self.variant(NMISENSE_A::RISE)
     }
     #[doc = "Falling-edge detection"]
-    #[inline]
+    #[inline(always)]
     pub fn fall(self) -> &'a mut W {
-        self.variant(NMISENSEW::FALL)
+        self.variant(NMISENSE_A::FALL)
     }
     #[doc = "Both-edges detection"]
-    #[inline]
+    #[inline(always)]
     pub fn both(self) -> &'a mut W {
-        self.variant(NMISENSEW::BOTH)
+        self.variant(NMISENSE_A::BOTH)
     }
     #[doc = "High-level detection"]
-    #[inline]
+    #[inline(always)]
     pub fn high(self) -> &'a mut W {
-        self.variant(NMISENSEW::HIGH)
+        self.variant(NMISENSE_A::HIGH)
     }
     #[doc = "Low-level detection"]
-    #[inline]
+    #[inline(always)]
     pub fn low(self) -> &'a mut W {
-        self.variant(NMISENSEW::LOW)
+        self.variant(NMISENSE_A::LOW)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 7;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits = (self.w.bits & !0x07) | ((value as u8) & 0x07);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _NMIFILTENW<'a> {
+#[doc = "Reader of field `NMIFILTEN`"]
+pub type NMIFILTEN_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `NMIFILTEN`"]
+pub struct NMIFILTEN_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _NMIFILTENW<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> NMIFILTEN_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 3;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 3)) | (((value as u8) & 0x01) << 3);
         self.w
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
     #[doc = "Bits 0:2 - Non-Maskable Interrupt Sense"]
-    #[inline]
-    pub fn nmisense(&self) -> NMISENSER {
-        NMISENSER::_from({
-            const MASK: u8 = 7;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u8) as u8
-        })
+    #[inline(always)]
+    pub fn nmisense(&self) -> NMISENSE_R {
+        NMISENSE_R::new((self.bits & 0x07) as u8)
     }
     #[doc = "Bit 3 - Non-Maskable Interrupt Filter Enable"]
-    #[inline]
-    pub fn nmifilten(&self) -> NMIFILTENR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 3;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
-        NMIFILTENR { bits }
+    #[inline(always)]
+    pub fn nmifilten(&self) -> NMIFILTEN_R {
+        NMIFILTEN_R::new(((self.bits >> 3) & 0x01) != 0)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
-    #[doc = r" Writes raw bits to the register"]
-    #[inline]
-    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
-        self.bits = bits;
-        self
-    }
     #[doc = "Bits 0:2 - Non-Maskable Interrupt Sense"]
-    #[inline]
-    pub fn nmisense(&mut self) -> _NMISENSEW {
-        _NMISENSEW { w: self }
+    #[inline(always)]
+    pub fn nmisense(&mut self) -> NMISENSE_W {
+        NMISENSE_W { w: self }
     }
     #[doc = "Bit 3 - Non-Maskable Interrupt Filter Enable"]
-    #[inline]
-    pub fn nmifilten(&mut self) -> _NMIFILTENW {
-        _NMIFILTENW { w: self }
+    #[inline(always)]
+    pub fn nmifilten(&mut self) -> NMIFILTEN_W {
+        NMIFILTEN_W { w: self }
     }
 }

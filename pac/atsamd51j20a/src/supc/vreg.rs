@@ -1,401 +1,230 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u32,
-}
-#[doc = r" Value to write to the register"]
-pub struct W {
-    bits: u32,
-}
-impl super::VREG {
-    #[doc = r" Modifies the contents of the register"]
-    #[inline]
-    pub fn modify<F>(&self, f: F)
-    where
-        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
-    {
-        let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-    #[doc = r" Writes to the register"]
-    #[inline]
-    pub fn write<F>(&self, f: F)
-    where
-        F: FnOnce(&mut W) -> &mut W,
-    {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Writes the reset value to the register"]
-    #[inline]
-    pub fn reset(&self) {
-        self.write(|w| w)
+#[doc = "Reader of register VREG"]
+pub type R = crate::R<u32, super::VREG>;
+#[doc = "Writer for register VREG"]
+pub type W = crate::W<u32, super::VREG>;
+#[doc = "Register VREG `reset()`'s with value 0x02"]
+impl crate::ResetValue for super::VREG {
+    type Type = u32;
+    #[inline(always)]
+    fn reset_value() -> Self::Type {
+        0x02
     }
 }
-#[doc = r" Value of the field"]
-pub struct ENABLER {
-    bits: bool,
+#[doc = "Reader of field `ENABLE`"]
+pub type ENABLE_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `ENABLE`"]
+pub struct ENABLE_W<'a> {
+    w: &'a mut W,
 }
-impl ENABLER {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
+impl<'a> ENABLE_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
     }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
     }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 1)) | (((value as u32) & 0x01) << 1);
+        self.w
     }
 }
-#[doc = "Possible values of the field `SEL`"]
+#[doc = "Voltage Regulator Selection\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum SELR {
-    #[doc = "LDO selection"]
+pub enum SEL_A {
+    #[doc = "0: LDO selection"]
     LDO,
-    #[doc = "Buck selection"]
+    #[doc = "1: Buck selection"]
     BUCK,
 }
-impl SELR {
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        match *self {
-            SELR::LDO => false,
-            SELR::BUCK => true,
+impl From<SEL_A> for bool {
+    #[inline(always)]
+    fn from(variant: SEL_A) -> Self {
+        match variant {
+            SEL_A::LDO => false,
+            SEL_A::BUCK => true,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: bool) -> SELR {
-        match value {
-            false => SELR::LDO,
-            true => SELR::BUCK,
+}
+#[doc = "Reader of field `SEL`"]
+pub type SEL_R = crate::R<bool, SEL_A>;
+impl SEL_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> SEL_A {
+        match self.bits {
+            false => SEL_A::LDO,
+            true => SEL_A::BUCK,
         }
     }
     #[doc = "Checks if the value of the field is `LDO`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_ldo(&self) -> bool {
-        *self == SELR::LDO
+        *self == SEL_A::LDO
     }
     #[doc = "Checks if the value of the field is `BUCK`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_buck(&self) -> bool {
-        *self == SELR::BUCK
+        *self == SEL_A::BUCK
     }
 }
-#[doc = r" Value of the field"]
-pub struct RUNBKUPR {
-    bits: bool,
-}
-impl RUNBKUPR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct VSENR {
-    bits: bool,
-}
-impl VSENR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct VSPERR {
-    bits: u8,
-}
-impl VSPERR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
-}
-#[doc = r" Proxy"]
-pub struct _ENABLEW<'a> {
+#[doc = "Write proxy for field `SEL`"]
+pub struct SEL_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _ENABLEW<'a> {
-    #[doc = r" Sets the field bit"]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r" Clears the field bit"]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 1;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
-        self.w
-    }
-}
-#[doc = "Values that can be written to the field `SEL`"]
-pub enum SELW {
-    #[doc = "LDO selection"]
-    LDO,
-    #[doc = "Buck selection"]
-    BUCK,
-}
-impl SELW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> bool {
-        match *self {
-            SELW::LDO => false,
-            SELW::BUCK => true,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _SELW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _SELW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: SELW) -> &'a mut W {
+impl<'a> SEL_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: SEL_A) -> &'a mut W {
         {
-            self.bit(variant._bits())
+            self.bit(variant.into())
         }
     }
     #[doc = "LDO selection"]
-    #[inline]
+    #[inline(always)]
     pub fn ldo(self) -> &'a mut W {
-        self.variant(SELW::LDO)
+        self.variant(SEL_A::LDO)
     }
     #[doc = "Buck selection"]
-    #[inline]
+    #[inline(always)]
     pub fn buck(self) -> &'a mut W {
-        self.variant(SELW::BUCK)
+        self.variant(SEL_A::BUCK)
     }
-    #[doc = r" Sets the field bit"]
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 2;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 2)) | (((value as u32) & 0x01) << 2);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _RUNBKUPW<'a> {
+#[doc = "Reader of field `RUNBKUP`"]
+pub type RUNBKUP_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `RUNBKUP`"]
+pub struct RUNBKUP_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _RUNBKUPW<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> RUNBKUP_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 7;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 7)) | (((value as u32) & 0x01) << 7);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _VSENW<'a> {
+#[doc = "Reader of field `VSEN`"]
+pub type VSEN_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `VSEN`"]
+pub struct VSEN_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _VSENW<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> VSEN_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 16;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 16)) | (((value as u32) & 0x01) << 16);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _VSPERW<'a> {
+#[doc = "Reader of field `VSPER`"]
+pub type VSPER_R = crate::R<u8, u8>;
+#[doc = "Write proxy for field `VSPER`"]
+pub struct VSPER_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _VSPERW<'a> {
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+impl<'a> VSPER_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 7;
-        const OFFSET: u8 = 24;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x07 << 24)) | (((value as u32) & 0x07) << 24);
         self.w
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u32 {
-        self.bits
-    }
     #[doc = "Bit 1 - Enable"]
-    #[inline]
-    pub fn enable(&self) -> ENABLER {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        ENABLER { bits }
+    #[inline(always)]
+    pub fn enable(&self) -> ENABLE_R {
+        ENABLE_R::new(((self.bits >> 1) & 0x01) != 0)
     }
     #[doc = "Bit 2 - Voltage Regulator Selection"]
-    #[inline]
-    pub fn sel(&self) -> SELR {
-        SELR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        })
+    #[inline(always)]
+    pub fn sel(&self) -> SEL_R {
+        SEL_R::new(((self.bits >> 2) & 0x01) != 0)
     }
     #[doc = "Bit 7 - Run in Backup mode"]
-    #[inline]
-    pub fn runbkup(&self) -> RUNBKUPR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 7;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        RUNBKUPR { bits }
+    #[inline(always)]
+    pub fn runbkup(&self) -> RUNBKUP_R {
+        RUNBKUP_R::new(((self.bits >> 7) & 0x01) != 0)
     }
     #[doc = "Bit 16 - Voltage Scaling Enable"]
-    #[inline]
-    pub fn vsen(&self) -> VSENR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 16;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        VSENR { bits }
+    #[inline(always)]
+    pub fn vsen(&self) -> VSEN_R {
+        VSEN_R::new(((self.bits >> 16) & 0x01) != 0)
     }
     #[doc = "Bits 24:26 - Voltage Scaling Period"]
-    #[inline]
-    pub fn vsper(&self) -> VSPERR {
-        let bits = {
-            const MASK: u8 = 7;
-            const OFFSET: u8 = 24;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
-        VSPERR { bits }
+    #[inline(always)]
+    pub fn vsper(&self) -> VSPER_R {
+        VSPER_R::new(((self.bits >> 24) & 0x07) as u8)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 2 }
-    }
-    #[doc = r" Writes raw bits to the register"]
-    #[inline]
-    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.bits = bits;
-        self
-    }
     #[doc = "Bit 1 - Enable"]
-    #[inline]
-    pub fn enable(&mut self) -> _ENABLEW {
-        _ENABLEW { w: self }
+    #[inline(always)]
+    pub fn enable(&mut self) -> ENABLE_W {
+        ENABLE_W { w: self }
     }
     #[doc = "Bit 2 - Voltage Regulator Selection"]
-    #[inline]
-    pub fn sel(&mut self) -> _SELW {
-        _SELW { w: self }
+    #[inline(always)]
+    pub fn sel(&mut self) -> SEL_W {
+        SEL_W { w: self }
     }
     #[doc = "Bit 7 - Run in Backup mode"]
-    #[inline]
-    pub fn runbkup(&mut self) -> _RUNBKUPW {
-        _RUNBKUPW { w: self }
+    #[inline(always)]
+    pub fn runbkup(&mut self) -> RUNBKUP_W {
+        RUNBKUP_W { w: self }
     }
     #[doc = "Bit 16 - Voltage Scaling Enable"]
-    #[inline]
-    pub fn vsen(&mut self) -> _VSENW {
-        _VSENW { w: self }
+    #[inline(always)]
+    pub fn vsen(&mut self) -> VSEN_W {
+        VSEN_W { w: self }
     }
     #[doc = "Bits 24:26 - Voltage Scaling Period"]
-    #[inline]
-    pub fn vsper(&mut self) -> _VSPERW {
-        _VSPERW { w: self }
+    #[inline(always)]
+    pub fn vsper(&mut self) -> VSPER_W {
+        VSPER_W { w: self }
     }
 }

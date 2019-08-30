@@ -1,474 +1,340 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u8,
-}
-#[doc = r" Value to write to the register"]
-pub struct W {
-    bits: u8,
-}
-impl super::PMUX0_ {
-    #[doc = r" Modifies the contents of the register"]
-    #[inline]
-    pub fn modify<F>(&self, f: F)
-    where
-        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
-    {
-        let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-    #[doc = r" Writes to the register"]
-    #[inline]
-    pub fn write<F>(&self, f: F)
-    where
-        F: FnOnce(&mut W) -> &mut W,
-    {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Writes the reset value to the register"]
-    #[inline]
-    pub fn reset(&self) {
-        self.write(|w| w)
+#[doc = "Reader of register PMUX0_%s"]
+pub type R = crate::R<u8, super::PMUX0_>;
+#[doc = "Writer for register PMUX0_%s"]
+pub type W = crate::W<u8, super::PMUX0_>;
+#[doc = "Register PMUX0_%s `reset()`'s with value 0"]
+impl crate::ResetValue for super::PMUX0_ {
+    type Type = u8;
+    #[inline(always)]
+    fn reset_value() -> Self::Type {
+        0
     }
 }
-#[doc = "Possible values of the field `PMUXE`"]
+#[doc = "Peripheral Multiplexing Even\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum PMUXER {
-    #[doc = "Peripheral function A selected"]
+pub enum PMUXE_A {
+    #[doc = "0: Peripheral function A selected"]
     A,
-    #[doc = "Peripheral function B selected"]
+    #[doc = "1: Peripheral function B selected"]
     B,
-    #[doc = "Peripheral function C selected"]
+    #[doc = "2: Peripheral function C selected"]
     C,
-    #[doc = "Peripheral function D selected"]
+    #[doc = "3: Peripheral function D selected"]
     D,
-    #[doc = "Peripheral function E selected"]
+    #[doc = "4: Peripheral function E selected"]
     E,
-    #[doc = "Peripheral function F selected"]
+    #[doc = "5: Peripheral function F selected"]
     F,
-    #[doc = "Peripheral function G selected"]
+    #[doc = "6: Peripheral function G selected"]
     G,
-    #[doc = "Peripheral function H selected"]
+    #[doc = "7: Peripheral function H selected"]
     H,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
 }
-impl PMUXER {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            PMUXER::A => 0,
-            PMUXER::B => 1,
-            PMUXER::C => 2,
-            PMUXER::D => 3,
-            PMUXER::E => 4,
-            PMUXER::F => 5,
-            PMUXER::G => 6,
-            PMUXER::H => 7,
-            PMUXER::_Reserved(bits) => bits,
+impl From<PMUXE_A> for u8 {
+    #[inline(always)]
+    fn from(variant: PMUXE_A) -> Self {
+        match variant {
+            PMUXE_A::A => 0,
+            PMUXE_A::B => 1,
+            PMUXE_A::C => 2,
+            PMUXE_A::D => 3,
+            PMUXE_A::E => 4,
+            PMUXE_A::F => 5,
+            PMUXE_A::G => 6,
+            PMUXE_A::H => 7,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> PMUXER {
-        match value {
-            0 => PMUXER::A,
-            1 => PMUXER::B,
-            2 => PMUXER::C,
-            3 => PMUXER::D,
-            4 => PMUXER::E,
-            5 => PMUXER::F,
-            6 => PMUXER::G,
-            7 => PMUXER::H,
-            i => PMUXER::_Reserved(i),
+}
+#[doc = "Reader of field `PMUXE`"]
+pub type PMUXE_R = crate::R<u8, PMUXE_A>;
+impl PMUXE_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, PMUXE_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(PMUXE_A::A),
+            1 => Val(PMUXE_A::B),
+            2 => Val(PMUXE_A::C),
+            3 => Val(PMUXE_A::D),
+            4 => Val(PMUXE_A::E),
+            5 => Val(PMUXE_A::F),
+            6 => Val(PMUXE_A::G),
+            7 => Val(PMUXE_A::H),
+            i => Res(i),
         }
     }
     #[doc = "Checks if the value of the field is `A`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_a(&self) -> bool {
-        *self == PMUXER::A
+        *self == PMUXE_A::A
     }
     #[doc = "Checks if the value of the field is `B`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_b(&self) -> bool {
-        *self == PMUXER::B
+        *self == PMUXE_A::B
     }
     #[doc = "Checks if the value of the field is `C`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_c(&self) -> bool {
-        *self == PMUXER::C
+        *self == PMUXE_A::C
     }
     #[doc = "Checks if the value of the field is `D`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_d(&self) -> bool {
-        *self == PMUXER::D
+        *self == PMUXE_A::D
     }
     #[doc = "Checks if the value of the field is `E`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_e(&self) -> bool {
-        *self == PMUXER::E
+        *self == PMUXE_A::E
     }
     #[doc = "Checks if the value of the field is `F`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_f(&self) -> bool {
-        *self == PMUXER::F
+        *self == PMUXE_A::F
     }
     #[doc = "Checks if the value of the field is `G`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_g(&self) -> bool {
-        *self == PMUXER::G
+        *self == PMUXE_A::G
     }
     #[doc = "Checks if the value of the field is `H`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_h(&self) -> bool {
-        *self == PMUXER::H
+        *self == PMUXE_A::H
     }
 }
-#[doc = "Possible values of the field `PMUXO`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum PMUXOR {
-    #[doc = "Peripheral function A selected"]
-    A,
-    #[doc = "Peripheral function B selected"]
-    B,
-    #[doc = "Peripheral function C selected"]
-    C,
-    #[doc = "Peripheral function D selected"]
-    D,
-    #[doc = "Peripheral function E selected"]
-    E,
-    #[doc = "Peripheral function F selected"]
-    F,
-    #[doc = "Peripheral function G selected"]
-    G,
-    #[doc = "Peripheral function H selected"]
-    H,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
-}
-impl PMUXOR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            PMUXOR::A => 0,
-            PMUXOR::B => 1,
-            PMUXOR::C => 2,
-            PMUXOR::D => 3,
-            PMUXOR::E => 4,
-            PMUXOR::F => 5,
-            PMUXOR::G => 6,
-            PMUXOR::H => 7,
-            PMUXOR::_Reserved(bits) => bits,
-        }
-    }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> PMUXOR {
-        match value {
-            0 => PMUXOR::A,
-            1 => PMUXOR::B,
-            2 => PMUXOR::C,
-            3 => PMUXOR::D,
-            4 => PMUXOR::E,
-            5 => PMUXOR::F,
-            6 => PMUXOR::G,
-            7 => PMUXOR::H,
-            i => PMUXOR::_Reserved(i),
-        }
-    }
-    #[doc = "Checks if the value of the field is `A`"]
-    #[inline]
-    pub fn is_a(&self) -> bool {
-        *self == PMUXOR::A
-    }
-    #[doc = "Checks if the value of the field is `B`"]
-    #[inline]
-    pub fn is_b(&self) -> bool {
-        *self == PMUXOR::B
-    }
-    #[doc = "Checks if the value of the field is `C`"]
-    #[inline]
-    pub fn is_c(&self) -> bool {
-        *self == PMUXOR::C
-    }
-    #[doc = "Checks if the value of the field is `D`"]
-    #[inline]
-    pub fn is_d(&self) -> bool {
-        *self == PMUXOR::D
-    }
-    #[doc = "Checks if the value of the field is `E`"]
-    #[inline]
-    pub fn is_e(&self) -> bool {
-        *self == PMUXOR::E
-    }
-    #[doc = "Checks if the value of the field is `F`"]
-    #[inline]
-    pub fn is_f(&self) -> bool {
-        *self == PMUXOR::F
-    }
-    #[doc = "Checks if the value of the field is `G`"]
-    #[inline]
-    pub fn is_g(&self) -> bool {
-        *self == PMUXOR::G
-    }
-    #[doc = "Checks if the value of the field is `H`"]
-    #[inline]
-    pub fn is_h(&self) -> bool {
-        *self == PMUXOR::H
-    }
-}
-#[doc = "Values that can be written to the field `PMUXE`"]
-pub enum PMUXEW {
-    #[doc = "Peripheral function A selected"]
-    A,
-    #[doc = "Peripheral function B selected"]
-    B,
-    #[doc = "Peripheral function C selected"]
-    C,
-    #[doc = "Peripheral function D selected"]
-    D,
-    #[doc = "Peripheral function E selected"]
-    E,
-    #[doc = "Peripheral function F selected"]
-    F,
-    #[doc = "Peripheral function G selected"]
-    G,
-    #[doc = "Peripheral function H selected"]
-    H,
-}
-impl PMUXEW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            PMUXEW::A => 0,
-            PMUXEW::B => 1,
-            PMUXEW::C => 2,
-            PMUXEW::D => 3,
-            PMUXEW::E => 4,
-            PMUXEW::F => 5,
-            PMUXEW::G => 6,
-            PMUXEW::H => 7,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _PMUXEW<'a> {
+#[doc = "Write proxy for field `PMUXE`"]
+pub struct PMUXE_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _PMUXEW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: PMUXEW) -> &'a mut W {
-        unsafe { self.bits(variant._bits()) }
+impl<'a> PMUXE_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: PMUXE_A) -> &'a mut W {
+        unsafe { self.bits(variant.into()) }
     }
     #[doc = "Peripheral function A selected"]
-    #[inline]
+    #[inline(always)]
     pub fn a(self) -> &'a mut W {
-        self.variant(PMUXEW::A)
+        self.variant(PMUXE_A::A)
     }
     #[doc = "Peripheral function B selected"]
-    #[inline]
+    #[inline(always)]
     pub fn b(self) -> &'a mut W {
-        self.variant(PMUXEW::B)
+        self.variant(PMUXE_A::B)
     }
     #[doc = "Peripheral function C selected"]
-    #[inline]
+    #[inline(always)]
     pub fn c(self) -> &'a mut W {
-        self.variant(PMUXEW::C)
+        self.variant(PMUXE_A::C)
     }
     #[doc = "Peripheral function D selected"]
-    #[inline]
+    #[inline(always)]
     pub fn d(self) -> &'a mut W {
-        self.variant(PMUXEW::D)
+        self.variant(PMUXE_A::D)
     }
     #[doc = "Peripheral function E selected"]
-    #[inline]
+    #[inline(always)]
     pub fn e(self) -> &'a mut W {
-        self.variant(PMUXEW::E)
+        self.variant(PMUXE_A::E)
     }
     #[doc = "Peripheral function F selected"]
-    #[inline]
+    #[inline(always)]
     pub fn f(self) -> &'a mut W {
-        self.variant(PMUXEW::F)
+        self.variant(PMUXE_A::F)
     }
     #[doc = "Peripheral function G selected"]
-    #[inline]
+    #[inline(always)]
     pub fn g(self) -> &'a mut W {
-        self.variant(PMUXEW::G)
+        self.variant(PMUXE_A::G)
     }
     #[doc = "Peripheral function H selected"]
-    #[inline]
+    #[inline(always)]
     pub fn h(self) -> &'a mut W {
-        self.variant(PMUXEW::H)
+        self.variant(PMUXE_A::H)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 15;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits = (self.w.bits & !0x0f) | ((value as u8) & 0x0f);
         self.w
     }
 }
-#[doc = "Values that can be written to the field `PMUXO`"]
-pub enum PMUXOW {
-    #[doc = "Peripheral function A selected"]
+#[doc = "Peripheral Multiplexing Odd\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum PMUXO_A {
+    #[doc = "0: Peripheral function A selected"]
     A,
-    #[doc = "Peripheral function B selected"]
+    #[doc = "1: Peripheral function B selected"]
     B,
-    #[doc = "Peripheral function C selected"]
+    #[doc = "2: Peripheral function C selected"]
     C,
-    #[doc = "Peripheral function D selected"]
+    #[doc = "3: Peripheral function D selected"]
     D,
-    #[doc = "Peripheral function E selected"]
+    #[doc = "4: Peripheral function E selected"]
     E,
-    #[doc = "Peripheral function F selected"]
+    #[doc = "5: Peripheral function F selected"]
     F,
-    #[doc = "Peripheral function G selected"]
+    #[doc = "6: Peripheral function G selected"]
     G,
-    #[doc = "Peripheral function H selected"]
+    #[doc = "7: Peripheral function H selected"]
     H,
 }
-impl PMUXOW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            PMUXOW::A => 0,
-            PMUXOW::B => 1,
-            PMUXOW::C => 2,
-            PMUXOW::D => 3,
-            PMUXOW::E => 4,
-            PMUXOW::F => 5,
-            PMUXOW::G => 6,
-            PMUXOW::H => 7,
+impl From<PMUXO_A> for u8 {
+    #[inline(always)]
+    fn from(variant: PMUXO_A) -> Self {
+        match variant {
+            PMUXO_A::A => 0,
+            PMUXO_A::B => 1,
+            PMUXO_A::C => 2,
+            PMUXO_A::D => 3,
+            PMUXO_A::E => 4,
+            PMUXO_A::F => 5,
+            PMUXO_A::G => 6,
+            PMUXO_A::H => 7,
         }
     }
 }
-#[doc = r" Proxy"]
-pub struct _PMUXOW<'a> {
+#[doc = "Reader of field `PMUXO`"]
+pub type PMUXO_R = crate::R<u8, PMUXO_A>;
+impl PMUXO_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, PMUXO_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(PMUXO_A::A),
+            1 => Val(PMUXO_A::B),
+            2 => Val(PMUXO_A::C),
+            3 => Val(PMUXO_A::D),
+            4 => Val(PMUXO_A::E),
+            5 => Val(PMUXO_A::F),
+            6 => Val(PMUXO_A::G),
+            7 => Val(PMUXO_A::H),
+            i => Res(i),
+        }
+    }
+    #[doc = "Checks if the value of the field is `A`"]
+    #[inline(always)]
+    pub fn is_a(&self) -> bool {
+        *self == PMUXO_A::A
+    }
+    #[doc = "Checks if the value of the field is `B`"]
+    #[inline(always)]
+    pub fn is_b(&self) -> bool {
+        *self == PMUXO_A::B
+    }
+    #[doc = "Checks if the value of the field is `C`"]
+    #[inline(always)]
+    pub fn is_c(&self) -> bool {
+        *self == PMUXO_A::C
+    }
+    #[doc = "Checks if the value of the field is `D`"]
+    #[inline(always)]
+    pub fn is_d(&self) -> bool {
+        *self == PMUXO_A::D
+    }
+    #[doc = "Checks if the value of the field is `E`"]
+    #[inline(always)]
+    pub fn is_e(&self) -> bool {
+        *self == PMUXO_A::E
+    }
+    #[doc = "Checks if the value of the field is `F`"]
+    #[inline(always)]
+    pub fn is_f(&self) -> bool {
+        *self == PMUXO_A::F
+    }
+    #[doc = "Checks if the value of the field is `G`"]
+    #[inline(always)]
+    pub fn is_g(&self) -> bool {
+        *self == PMUXO_A::G
+    }
+    #[doc = "Checks if the value of the field is `H`"]
+    #[inline(always)]
+    pub fn is_h(&self) -> bool {
+        *self == PMUXO_A::H
+    }
+}
+#[doc = "Write proxy for field `PMUXO`"]
+pub struct PMUXO_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _PMUXOW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: PMUXOW) -> &'a mut W {
-        unsafe { self.bits(variant._bits()) }
+impl<'a> PMUXO_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: PMUXO_A) -> &'a mut W {
+        unsafe { self.bits(variant.into()) }
     }
     #[doc = "Peripheral function A selected"]
-    #[inline]
+    #[inline(always)]
     pub fn a(self) -> &'a mut W {
-        self.variant(PMUXOW::A)
+        self.variant(PMUXO_A::A)
     }
     #[doc = "Peripheral function B selected"]
-    #[inline]
+    #[inline(always)]
     pub fn b(self) -> &'a mut W {
-        self.variant(PMUXOW::B)
+        self.variant(PMUXO_A::B)
     }
     #[doc = "Peripheral function C selected"]
-    #[inline]
+    #[inline(always)]
     pub fn c(self) -> &'a mut W {
-        self.variant(PMUXOW::C)
+        self.variant(PMUXO_A::C)
     }
     #[doc = "Peripheral function D selected"]
-    #[inline]
+    #[inline(always)]
     pub fn d(self) -> &'a mut W {
-        self.variant(PMUXOW::D)
+        self.variant(PMUXO_A::D)
     }
     #[doc = "Peripheral function E selected"]
-    #[inline]
+    #[inline(always)]
     pub fn e(self) -> &'a mut W {
-        self.variant(PMUXOW::E)
+        self.variant(PMUXO_A::E)
     }
     #[doc = "Peripheral function F selected"]
-    #[inline]
+    #[inline(always)]
     pub fn f(self) -> &'a mut W {
-        self.variant(PMUXOW::F)
+        self.variant(PMUXO_A::F)
     }
     #[doc = "Peripheral function G selected"]
-    #[inline]
+    #[inline(always)]
     pub fn g(self) -> &'a mut W {
-        self.variant(PMUXOW::G)
+        self.variant(PMUXO_A::G)
     }
     #[doc = "Peripheral function H selected"]
-    #[inline]
+    #[inline(always)]
     pub fn h(self) -> &'a mut W {
-        self.variant(PMUXOW::H)
+        self.variant(PMUXO_A::H)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 15;
-        const OFFSET: u8 = 4;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x0f << 4)) | (((value as u8) & 0x0f) << 4);
         self.w
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
     #[doc = "Bits 0:3 - Peripheral Multiplexing Even"]
-    #[inline]
-    pub fn pmuxe(&self) -> PMUXER {
-        PMUXER::_from({
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u8) as u8
-        })
+    #[inline(always)]
+    pub fn pmuxe(&self) -> PMUXE_R {
+        PMUXE_R::new((self.bits & 0x0f) as u8)
     }
     #[doc = "Bits 4:7 - Peripheral Multiplexing Odd"]
-    #[inline]
-    pub fn pmuxo(&self) -> PMUXOR {
-        PMUXOR::_from({
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u8) as u8
-        })
+    #[inline(always)]
+    pub fn pmuxo(&self) -> PMUXO_R {
+        PMUXO_R::new(((self.bits >> 4) & 0x0f) as u8)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
-    #[doc = r" Writes raw bits to the register"]
-    #[inline]
-    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
-        self.bits = bits;
-        self
-    }
     #[doc = "Bits 0:3 - Peripheral Multiplexing Even"]
-    #[inline]
-    pub fn pmuxe(&mut self) -> _PMUXEW {
-        _PMUXEW { w: self }
+    #[inline(always)]
+    pub fn pmuxe(&mut self) -> PMUXE_W {
+        PMUXE_W { w: self }
     }
     #[doc = "Bits 4:7 - Peripheral Multiplexing Odd"]
-    #[inline]
-    pub fn pmuxo(&mut self) -> _PMUXOW {
-        _PMUXOW { w: self }
+    #[inline(always)]
+    pub fn pmuxo(&mut self) -> PMUXO_W {
+        PMUXO_W { w: self }
     }
 }

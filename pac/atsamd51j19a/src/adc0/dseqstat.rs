@@ -1,330 +1,74 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u32,
-}
-impl super::DSEQSTAT {
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-}
-#[doc = r" Value of the field"]
-pub struct INPUTCTRLR {
-    bits: bool,
-}
-impl INPUTCTRLR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct CTRLBR {
-    bits: bool,
-}
-impl CTRLBR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct REFCTRLR {
-    bits: bool,
-}
-impl REFCTRLR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct AVGCTRLR {
-    bits: bool,
-}
-impl AVGCTRLR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct SAMPCTRLR {
-    bits: bool,
-}
-impl SAMPCTRLR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct WINLTR {
-    bits: bool,
-}
-impl WINLTR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct WINUTR {
-    bits: bool,
-}
-impl WINUTR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct GAINCORRR {
-    bits: bool,
-}
-impl GAINCORRR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct OFFSETCORRR {
-    bits: bool,
-}
-impl OFFSETCORRR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct BUSYR {
-    bits: bool,
-}
-impl BUSYR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
+#[doc = "Reader of register DSEQSTAT"]
+pub type R = crate::R<u32, super::DSEQSTAT>;
+#[doc = "Reader of field `INPUTCTRL`"]
+pub type INPUTCTRL_R = crate::R<bool, bool>;
+#[doc = "Reader of field `CTRLB`"]
+pub type CTRLB_R = crate::R<bool, bool>;
+#[doc = "Reader of field `REFCTRL`"]
+pub type REFCTRL_R = crate::R<bool, bool>;
+#[doc = "Reader of field `AVGCTRL`"]
+pub type AVGCTRL_R = crate::R<bool, bool>;
+#[doc = "Reader of field `SAMPCTRL`"]
+pub type SAMPCTRL_R = crate::R<bool, bool>;
+#[doc = "Reader of field `WINLT`"]
+pub type WINLT_R = crate::R<bool, bool>;
+#[doc = "Reader of field `WINUT`"]
+pub type WINUT_R = crate::R<bool, bool>;
+#[doc = "Reader of field `GAINCORR`"]
+pub type GAINCORR_R = crate::R<bool, bool>;
+#[doc = "Reader of field `OFFSETCORR`"]
+pub type OFFSETCORR_R = crate::R<bool, bool>;
+#[doc = "Reader of field `BUSY`"]
+pub type BUSY_R = crate::R<bool, bool>;
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u32 {
-        self.bits
-    }
     #[doc = "Bit 0 - Input Control"]
-    #[inline]
-    pub fn inputctrl(&self) -> INPUTCTRLR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        INPUTCTRLR { bits }
+    #[inline(always)]
+    pub fn inputctrl(&self) -> INPUTCTRL_R {
+        INPUTCTRL_R::new((self.bits & 0x01) != 0)
     }
     #[doc = "Bit 1 - Control B"]
-    #[inline]
-    pub fn ctrlb(&self) -> CTRLBR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        CTRLBR { bits }
+    #[inline(always)]
+    pub fn ctrlb(&self) -> CTRLB_R {
+        CTRLB_R::new(((self.bits >> 1) & 0x01) != 0)
     }
     #[doc = "Bit 2 - Reference Control"]
-    #[inline]
-    pub fn refctrl(&self) -> REFCTRLR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        REFCTRLR { bits }
+    #[inline(always)]
+    pub fn refctrl(&self) -> REFCTRL_R {
+        REFCTRL_R::new(((self.bits >> 2) & 0x01) != 0)
     }
     #[doc = "Bit 3 - Average Control"]
-    #[inline]
-    pub fn avgctrl(&self) -> AVGCTRLR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 3;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        AVGCTRLR { bits }
+    #[inline(always)]
+    pub fn avgctrl(&self) -> AVGCTRL_R {
+        AVGCTRL_R::new(((self.bits >> 3) & 0x01) != 0)
     }
     #[doc = "Bit 4 - Sampling Time Control"]
-    #[inline]
-    pub fn sampctrl(&self) -> SAMPCTRLR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        SAMPCTRLR { bits }
+    #[inline(always)]
+    pub fn sampctrl(&self) -> SAMPCTRL_R {
+        SAMPCTRL_R::new(((self.bits >> 4) & 0x01) != 0)
     }
     #[doc = "Bit 5 - Window Monitor Lower Threshold"]
-    #[inline]
-    pub fn winlt(&self) -> WINLTR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 5;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        WINLTR { bits }
+    #[inline(always)]
+    pub fn winlt(&self) -> WINLT_R {
+        WINLT_R::new(((self.bits >> 5) & 0x01) != 0)
     }
     #[doc = "Bit 6 - Window Monitor Upper Threshold"]
-    #[inline]
-    pub fn winut(&self) -> WINUTR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 6;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        WINUTR { bits }
+    #[inline(always)]
+    pub fn winut(&self) -> WINUT_R {
+        WINUT_R::new(((self.bits >> 6) & 0x01) != 0)
     }
     #[doc = "Bit 7 - Gain Correction"]
-    #[inline]
-    pub fn gaincorr(&self) -> GAINCORRR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 7;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        GAINCORRR { bits }
+    #[inline(always)]
+    pub fn gaincorr(&self) -> GAINCORR_R {
+        GAINCORR_R::new(((self.bits >> 7) & 0x01) != 0)
     }
     #[doc = "Bit 8 - Offset Correction"]
-    #[inline]
-    pub fn offsetcorr(&self) -> OFFSETCORRR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        OFFSETCORRR { bits }
+    #[inline(always)]
+    pub fn offsetcorr(&self) -> OFFSETCORR_R {
+        OFFSETCORR_R::new(((self.bits >> 8) & 0x01) != 0)
     }
     #[doc = "Bit 31 - DMA Sequencing Busy"]
-    #[inline]
-    pub fn busy(&self) -> BUSYR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 31;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        BUSYR { bits }
+    #[inline(always)]
+    pub fn busy(&self) -> BUSY_R {
+        BUSY_R::new(((self.bits >> 31) & 0x01) != 0)
     }
 }
