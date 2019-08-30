@@ -9,8 +9,8 @@ extern crate nb;
 
 use crate::hal::clock::GenericClockController;
 use crate::hal::Peripherals;
-use crate::hal::gclk::genctrl::SRCR::DPLL0;
-use crate::hal::gclk::pchctrl::GENR::GCLK2;
+use crate::hal::gclk::genctrl::SRC_A::DPLL0;
+use crate::hal::gclk::pchctrl::GEN_A::GCLK2;
 use cortex_m_rt::entry;
 
 #[entry]
