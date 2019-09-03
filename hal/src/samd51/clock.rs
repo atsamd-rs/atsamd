@@ -6,7 +6,7 @@
 use crate::target_device::gclk::pchctrl::GEN_A::*;
 use crate::target_device::{self, GCLK, NVMCTRL, OSCCTRL, MCLK, OSC32KCTRL};
 use crate::target_device::gclk::genctrl::SRC_A::*;
-use crate::time::{Hertz};
+use crate::time::{Hertz, MegaHertz};
 
 pub type ClockGenId = target_device::gclk::pchctrl::GEN_A;
 pub type ClockSource = target_device::gclk::genctrl::SRC_A;
@@ -238,7 +238,7 @@ impl GenericClockController {
                 Hertz(0),
                 Hertz(0),
             ],
-            used_clocks: 1u64 << DPLL0.bits(),
+            used_clocks: 1u64 << u8::from(DPLL0),
         }
     }
 

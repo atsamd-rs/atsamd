@@ -1,7 +1,7 @@
 use crate::hal::adc::{Channel, OneShot};
 use crate::target_device::{ADC0, ADC1, MCLK};
-use crate::target_device::gclk::genctrl::SRCR::DFLL;
-use crate::target_device::gclk::pchctrl::GENR::GCLK11;
+use crate::target_device::gclk::genctrl::SRC_A::DFLL;
+use crate::target_device::gclk::pchctrl::GEN_A::GCLK11;
 use crate::clock::GenericClockController;
 use crate::gpio::{
     Pa2, Pa3, Pa4, Pa5, Pa6, Pa7, Pa8, Pa9, Pa10, Pa11, Pb0, Pb1, Pb2, Pb3, Pb4,
