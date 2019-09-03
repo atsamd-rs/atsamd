@@ -8,7 +8,7 @@ extern crate cortex_m_rt;
 extern crate nb;
 
 use crate::hal::clock::GenericClockController;
-use crate::hal::Peripherals;
+use crate::hal::pac::Peripherals;
 use crate::hal::timer::TimerCounter;
 use hal::prelude::*;
 use cortex_m_rt::entry;

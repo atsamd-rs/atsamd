@@ -11,7 +11,8 @@ use embedded_graphics::primitives::Rect;
 use embedded_graphics::Drawing;
 
 use hal::clock::GenericClockController;
-use hal::{entry, CorePeripherals, Peripherals, display};
+use hal::{entry, display};
+use hal::pac::{CorePeripherals, Peripherals};
 
 #[entry]
 fn main() -> ! {

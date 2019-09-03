@@ -13,7 +13,8 @@ extern crate nb;
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
 use hal::prelude::*;
-use hal::{entry, CorePeripherals, Peripherals};
+use hal::entry;
+use hal::pac::{CorePeripherals, Peripherals};
 use hal::sercom::PadPin;
 use nb::block;
 

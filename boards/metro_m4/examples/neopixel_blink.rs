@@ -9,7 +9,8 @@ extern crate embedded_hal;
 extern crate ws2812_timer_delay as ws2812;
 
 use hal::prelude::*;
-use hal::{entry, Peripherals, CorePeripherals};
+use hal::entry;
+use hal::pac::{Peripherals, CorePeripherals};
 use hal::{clock::GenericClockController, delay::Delay};
 use hal::{timer::TimerCounter};
 use embedded_hal::digital::v1_compat::OldOutputPin;

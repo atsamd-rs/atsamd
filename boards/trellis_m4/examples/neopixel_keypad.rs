@@ -6,12 +6,12 @@ use panic_halt;
 use trellis_m4 as hal;
 use ws2812_nop_samd51 as ws2812;
 
-use embedded_hal::digital::v1_compat::{OldOutputPin};
-use embedded_hal::digital::v2::{InputPin};
+use embedded_hal::digital::v2::{InputPin, OutputPin};
 
 use hal::prelude::*;
 use hal::{clock::GenericClockController, delay::Delay};
-use hal::{entry, CorePeripherals, Peripherals};
+use hal::entry;
+use hal::pac::{CorePeripherals, Peripherals};
 
 use smart_leds::brightness;
 use smart_leds::SmartLedsWrite;
@@ -36,7 +36,7 @@ fn main() -> ! {
     let mut pins = hal::Pins::new(peripherals.PORT).split();
 
     // neopixels
-    let neopixel_pin: OldOutputPin<_> = pins.neopixel.into_push_pull_output(&mut pins.port).into();
+    let neopixel_pin = pins.neopixel.into_push_pull_output(&mut pins.port).into();
     let mut neopixel = ws2812::Ws2812::new(neopixel_pin);
     let mut color_values = [Color::default(); hal::NEOPIXEL_COUNT];
 
@@ -51,7 +51,7 @@ fn main() -> ! {
             for (i, value) in color_values.iter_mut().enumerate() {
                 let keypad_column = i % 8;
                 let keypad_row = i / 8;
-                let keypad_button: &InputPin<Error = ()> = &keypad_inputs[keypad_row][keypad_column];
+                let keypad_button = &keypad_inputs[keypad_row][keypad_column];
 
                 if keypad_button.is_high().unwrap() {
                     keypad_state[i] = true;

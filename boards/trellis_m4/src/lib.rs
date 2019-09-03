@@ -31,7 +31,7 @@ use hal::time::Hertz;
 #[cfg(feature = "keypad-unproven")]
 use hal::gpio::{OpenDrain, Output, PullUp};
 #[cfg(feature = "keypad-unproven")]
-use embedded_hal::digital::v2::{InputPin, OutputPin};
+use embedded_hal::digital::v1_compat::{OldInputPin, OldOutputPin};
 #[cfg(feature = "keypad-unproven")]
 use keypad::{keypad_new, keypad_struct};
 
@@ -43,20 +43,20 @@ keypad_struct! {
     #[doc="NeoTrellis M4 Express 8x4 keypad"]
     pub struct Keypad {
         rows: (
-            InputPin<gpio::Pa18<Input<PullUp>>>,
-            InputPin<gpio::Pa19<Input<PullUp>>>,
-            InputPin<gpio::Pb22<Input<PullUp>>>,
-            InputPin<gpio::Pb23<Input<PullUp>>>,
+            OldInputPin<gpio::Pa18<Input<PullUp>>>,
+            OldInputPin<gpio::Pa19<Input<PullUp>>>,
+            OldInputPin<gpio::Pb22<Input<PullUp>>>,
+            OldInputPin<gpio::Pb23<Input<PullUp>>>,
         ),
         columns: (
-            OutputPin<gpio::Pa14<Output<OpenDrain>>>,
-            OutputPin<gpio::Pa15<Output<OpenDrain>>>,
-            OutputPin<gpio::Pa16<Output<OpenDrain>>>,
-            OutputPin<gpio::Pa17<Output<OpenDrain>>>,
-            OutputPin<gpio::Pa20<Output<OpenDrain>>>,
-            OutputPin<gpio::Pa21<Output<OpenDrain>>>,
-            OutputPin<gpio::Pa22<Output<OpenDrain>>>,
-            OutputPin<gpio::Pa23<Output<OpenDrain>>>,
+            OldOutputPin<gpio::Pa14<Output<OpenDrain>>>,
+            OldOutputPin<gpio::Pa15<Output<OpenDrain>>>,
+            OldOutputPin<gpio::Pa16<Output<OpenDrain>>>,
+            OldOutputPin<gpio::Pa17<Output<OpenDrain>>>,
+            OldOutputPin<gpio::Pa20<Output<OpenDrain>>>,
+            OldOutputPin<gpio::Pa21<Output<OpenDrain>>>,
+            OldOutputPin<gpio::Pa22<Output<OpenDrain>>>,
+            OldOutputPin<gpio::Pa23<Output<OpenDrain>>>,
         ),
     }
 }

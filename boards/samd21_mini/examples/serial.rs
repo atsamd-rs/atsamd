@@ -21,7 +21,7 @@ macro_rules! dbgprint {
     ($($arg:tt)*) => {{}};
 }
 
-#[app(device=hal)]
+#[app(device=hal::pac)]
 const APP: () = {
     static mut BLUE_LED: hal::gpio::Pa17<hal::gpio::Output<hal::gpio::OpenDrain>> = ();
     static mut TX_LED: hal::gpio::Pa27<hal::gpio::Output<hal::gpio::OpenDrain>> = ();

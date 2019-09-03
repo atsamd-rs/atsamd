@@ -32,7 +32,7 @@ use hal::clock::GenericClockController;
 use hal::prelude::*;
 use rtfm::app;
 
-#[app(device=hal)]
+#[app(device=hal::pac)]
 const APP: () = {
     static mut RED_LED: hal::gpio::Pa17<hal::gpio::Output<hal::gpio::OpenDrain>> = ();
     static mut TIMER: hal::timer::TimerCounter3 = ();
