@@ -12,7 +12,8 @@ extern crate embedded_hal;
 
 use hal::clock::GenericClockController;
 use hal::prelude::*;
-use hal::{entry, CorePeripherals, Peripherals};
+use hal::entry;
+use hal::pac::{CorePeripherals, Peripherals};
 use hal::adc::Adc;
 use cortex_m_semihosting::hprintln;
 

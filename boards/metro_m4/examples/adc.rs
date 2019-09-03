@@ -10,11 +10,10 @@ use core::fmt::Write;
 
 use hal::prelude::*;
 use hal::clock::GenericClockController;
-use hal::{Peripherals, CorePeripherals};
+use hal::entry;
+use hal::pac::{Peripherals, CorePeripherals};
 use hal::adc::Adc;
 use hal::sercom::{PadPin, Sercom3Pad0, Sercom3Pad1, UART3};
-
-use cortex_m_rt::entry;
 
 #[entry]
 fn main() -> ! {
