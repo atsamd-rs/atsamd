@@ -44,21 +44,20 @@ macro_rules! dbgprint {
     ($($arg:tt)*) => {{}};
 }
 
-#[cfg(feature="samd51")]
+#[macro_use]
+pub mod common;
+pub use self::common::*;
+
+#[cfg(feature="samd51")] 
 pub mod samd51;
+#[cfg(feature="samd51")] 
+pub use self::samd51::*;
 
 #[cfg(not(feature="samd51"))]
 pub mod samd21;
-
-pub mod common;
-
-#[cfg(feature="samd51")]
-pub use self::samd51::*;
-
 #[cfg(not(feature="samd51"))]
 pub use self::samd21::*;
 
 #[cfg(feature = "usb")]
 pub use self::samd21::usb;
 
-pub use self::common::*;
