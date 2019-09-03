@@ -1,0 +1,121 @@
+use crate::hal::adc::{Channel, OneShot};
+use crate::target_device::{ADC, PM};
+use crate::clock::GenericClockController;
+use crate::gpio::{
+    Pa2, Pa3, Pa4, Pa5, Pa6, Pa7, Pa8, Pa9, Pa10, Pa11, Pb0, Pb1, Pb2, Pb3, Pb4, 
+    Pb5, Pb6, Pb7, Pb8, Pb9, PfB
+};
+
+pub struct Adc<ADC> {
+    adc: ADC
+}
+
+impl Adc<ADC> {
+    pub fn adc(adc: ADC, pm: &mut PM, clocks: &mut GenericClockController) -> Self {
+        pm.apbcmask.modify(|_, w| w.adc_().set_bit());
+        // set to 1/(1/(48000000/32) * 6) = 250000 SPS
+        let gclk0 = clocks.gclk0();
+        clocks.adc(&gclk0).expect("adc clock setup failed");
+        while adc.status.read().syncbusy().bit_is_set() {}
+        adc.ctrla.modify(|_, w| w.swrst().set_bit());
+        while adc.status.read().syncbusy().bit_is_set() {}
+        adc.ctrlb.modify(|_, w| {
+            w.prescaler().div32();
+            w.ressel()._12bit()
+        });
+        while adc.status.read().syncbusy().bit_is_set() {}
+        adc.sampctrl.modify(|_, w| unsafe { w.samplen().bits(5) }); //sample length
+        while adc.status.read().syncbusy().bit_is_set() {}
+        adc.inputctrl.modify(|_, w| w.muxneg().gnd()); // No negative input (internal gnd) 
+        while adc.status.read().syncbusy().bit_is_set() {}
+        adc.avgctrl.modify(|_, w| {
+            w.samplenum()._1(); // No averaging
+            unsafe { w.adjres().bits(0) } // adjust result by 0
+        });
+        while adc.status.read().syncbusy().bit_is_set() {}
+        adc.inputctrl.modify(|_, w| w.gain()._1x());
+        while adc.status.read().syncbusy().bit_is_set() {}
+        adc.refctrl.modify(|_, w| w.refsel().intvcc1());
+        while adc.status.read().syncbusy().bit_is_set() {}
+        Self { adc }
+    }
+
+    fn power_up(&mut self) {
+        while self.adc.status.read().syncbusy().bit_is_set() {}
+        self.adc.ctrla.modify(|_, w| w.enable().set_bit());
+        while self.adc.status.read().syncbusy().bit_is_set() {}
+    }
+
+    fn power_down(&mut self) {
+        while self.adc.status.read().syncbusy().bit_is_set() {}
+        self.adc.ctrla.modify(|_, w| w.enable().clear_bit());
+        while self.adc.status.read().syncbusy().bit_is_set() {}
+    }
+
+    fn convert(&mut self) -> u16 {
+        self.adc.swtrig.modify(|_, w| w.start().set_bit());
+        while self.adc.intflag.read().resrdy().bit_is_clear() {}
+        while self.adc.status.read().syncbusy().bit_is_set() {}
+        // Clear the interrupt flag
+        self.adc.intflag.modify(|_, w| w.resrdy().set_bit());
+        // Start conversion again, since The first conversion after the reference is changed must not be used.
+        self.adc.swtrig.modify(|_, w| w.start().set_bit());
+        while self.adc.intflag.read().resrdy().bit_is_clear() {}
+        while self.adc.status.read().syncbusy().bit_is_set() {}
+        let result = self.adc.result.read().result().bits();
+        result
+    }
+}
+
+impl<WORD, PIN> OneShot<ADC, WORD, PIN> for Adc<ADC>
+where
+   WORD: From<u16>,
+   PIN: Channel<ADC, ID=u8>,
+{
+   type Error = ();
+
+   fn read(&mut self, _pin: &mut PIN) -> nb::Result<WORD, Self::Error> {
+        let chan = PIN::channel();
+        while self.adc.status.read().syncbusy().bit_is_set() {}
+        self.adc.inputctrl.modify(|_, w| unsafe{ w.muxpos().bits(chan) });
+        self.power_up();
+        let result = self.convert();
+        self.power_down();
+        Ok(result.into())
+    }
+}
+ 
+macro_rules! adc_pins {
+    ($($pin:ident: $chan:expr),+) => {
+        $(
+
+impl Channel<ADC> for $pin<PfB> {
+   type ID = u8;
+   fn channel() -> u8 { $chan }
+}
+        )+
+    }
+}
+
+adc_pins! {
+    Pa2: 0,
+    Pa3: 1,
+    Pb8: 2,
+    Pb9: 3,
+    Pa4: 4,
+    Pa5: 5,
+    Pa6: 6,
+    Pa7: 7,
+    Pb0: 8,
+    Pb1: 9,
+    Pb2: 10,
+    Pb3: 11,
+    Pb4: 12,
+    Pb5: 13,
+    Pb6: 14,
+    Pb7: 15,
+    Pa8: 16,
+    Pa9: 17,
+    Pa10: 18,
+    Pa11: 19
+}

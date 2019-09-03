@@ -76,3 +76,6 @@ name = "spi"
 
 [[example]]
 name = "timer"
+
+[[example]]
+name = "adc"
