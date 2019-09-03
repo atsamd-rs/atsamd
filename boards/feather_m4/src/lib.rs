@@ -8,9 +8,12 @@ extern crate cortex_m_rt;
 #[cfg(feature = "rt")]
 pub use cortex_m_rt::entry;
 
-pub use target_device::*;
 use hal::prelude::*;
-pub use hal::*;
+use hal::*;
+
+pub use hal::target_device as pac;
+pub use hal::common::*;
+pub use hal::samd51::*;
 
 use gpio::{Floating, Input, Port, PfC};
 use hal::clock::GenericClockController;
@@ -95,8 +98,8 @@ define_pins!(
 pub fn spi_master<F: Into<Hertz>>(
     clocks: &mut GenericClockController,
     bus_speed: F,
-    sercom1: SERCOM1,
-    mclk: &mut MCLK,
+    sercom1: pac::SERCOM1,
+    mclk: &mut pac::MCLK,
     sck: gpio::Pa17<Input<Floating>>,
     mosi: gpio::Pb23<Input<Floating>>,
     miso: gpio::Pb22<Input<Floating>>,
@@ -125,8 +128,8 @@ pub fn spi_master<F: Into<Hertz>>(
 pub fn i2c_master<F: Into<Hertz>>(
     clocks: &mut GenericClockController,
     bus_speed: F,
-    sercom2: SERCOM2,
-    mclk: &mut MCLK,
+    sercom2: pac::SERCOM2,
+    mclk: &mut pac::MCLK,
     sda: gpio::Pa12<Input<Floating>>,
     scl: gpio::Pa13<Input<Floating>>,
     port: &mut Port,
@@ -150,8 +153,8 @@ pub fn i2c_master<F: Into<Hertz>>(
 pub fn uart<F: Into<Hertz>>(
     clocks: &mut GenericClockController,
     baud: F,
-    sercom5: SERCOM5,
-    mclk: &mut MCLK,
+    sercom5: pac::SERCOM5,
+    mclk: &mut pac::MCLK,
     d0: gpio::Pb17<Input<Floating>>,
     d1: gpio::Pb16<Input<Floating>>,
     port: &mut Port,

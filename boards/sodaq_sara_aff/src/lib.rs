@@ -8,8 +8,11 @@ extern crate cortex_m_rt;
 pub use cortex_m_rt::entry;
 
 use hal::prelude::*;
-pub use hal::target_device::*;
-pub use hal::*;
+use hal::*;
+
+pub use hal::target_device as pac;
+pub use hal::common::*;
+pub use hal::samd21::*;
 
 use gpio::{Floating, Input, PfD, Port};
 
@@ -101,8 +104,8 @@ define_pins!(
 pub fn uart<F: Into<Hertz>>(
     clocks: &mut GenericClockController,
     baud: F,
-    sercom5: SERCOM5,
-    pm: &mut PM,
+    sercom5: pac::SERCOM5,
+    pm: &mut pac::PM,
     rx: gpio::Pb31<Input<Floating>>,
     tx: gpio::Pb30<Input<Floating>>,
     port: &mut Port,

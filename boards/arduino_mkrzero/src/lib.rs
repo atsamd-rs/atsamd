@@ -11,8 +11,11 @@ pub use cortex_m_rt::entry;
 pub extern crate panic_halt;
 
 use hal::prelude::*;
-pub use hal::target_device::*;
-pub use hal::*;
+use hal::*;
+
+pub use hal::target_device as pac;
+pub use hal::common::*;
+pub use hal::samd21::*;
 
 use gpio::{Floating, Input, Port};
 

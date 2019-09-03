@@ -3,8 +3,11 @@
 extern crate atsamd_hal as hal;
 
 use hal::prelude::*;
-pub use hal::target_device::*;
-pub use hal::*;
+use hal::*;
+
+pub use hal::target_device as pac;
+pub use hal::common::*;
+pub use hal::samd21::*;
 
 use gpio::{Floating, Input, Output, Port, PushPull};
 use hal::clock::GenericClockController;
@@ -66,8 +69,8 @@ define_pins!(
 /// SPI Master.
 pub fn flash_spi_master(
     clocks: &mut GenericClockController,
-    sercom3: SERCOM3,
-    pm: &mut PM,
+    sercom3: pac::SERCOM3,
+    pm: &mut pac::PM,
     sck: gpio::Pa21<Input<Floating>>,
     mosi: gpio::Pa20<Input<Floating>>,
     miso: gpio::Pa16<Input<Floating>>,
@@ -105,8 +108,8 @@ pub fn flash_spi_master(
 pub fn i2c_master<F: Into<Hertz>>(
     clocks: &mut GenericClockController,
     bus_speed: F,
-    sercom5: SERCOM5,
-    pm: &mut PM,
+    sercom5: pac::SERCOM5,
+    pm: &mut pac::PM,
     sda: gpio::Pb2<Input<Floating>>,
     scl: gpio::Pb3<Input<Floating>>,
     port: &mut Port,

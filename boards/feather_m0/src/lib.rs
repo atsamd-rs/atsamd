@@ -8,8 +8,11 @@ extern crate cortex_m_rt;
 pub use cortex_m_rt::entry;
 
 use hal::prelude::*;
-pub use hal::target_device::*;
-pub use hal::*;
+use hal::*;
+
+pub use hal::target_device as pac;
+pub use hal::common::*;
+pub use hal::samd21::*;
 
 use gpio::{Floating, Input, PfC, Port};
 use hal::clock::GenericClockController;
@@ -89,8 +92,8 @@ define_pins!(
 pub fn spi_master<F: Into<Hertz>>(
     clocks: &mut GenericClockController,
     bus_speed: F,
-    sercom4: SERCOM4,
-    pm: &mut PM,
+    sercom4: pac::SERCOM4,
+    pm: &mut pac::PM,
     sck: gpio::Pb11<Input<Floating>>,
     mosi: gpio::Pb10<Input<Floating>>,
     miso: gpio::Pa12<Input<Floating>>,
@@ -119,8 +122,8 @@ pub fn spi_master<F: Into<Hertz>>(
 pub fn i2c_master<F: Into<Hertz>>(
     clocks: &mut GenericClockController,
     bus_speed: F,
-    sercom3: SERCOM3,
-    pm: &mut PM,
+    sercom3: pac::SERCOM3,
+    pm: &mut pac::PM,
     sda: gpio::Pa22<Input<Floating>>,
     scl: gpio::Pa23<Input<Floating>>,
     port: &mut Port,
@@ -144,8 +147,8 @@ pub fn i2c_master<F: Into<Hertz>>(
 pub fn uart<F: Into<Hertz>>(
     clocks: &mut GenericClockController,
     baud: F,
-    sercom0: SERCOM0,
-    pm: &mut PM,
+    sercom0: pac::SERCOM0,
+    pm: &mut pac::PM,
     d0: gpio::Pa11<Input<Floating>>,
     d1: gpio::Pa10<Input<Floating>>,
     port: &mut Port,
@@ -168,9 +171,9 @@ pub fn uart<F: Into<Hertz>>(
 
 #[cfg(feature = "usb")]
 pub fn usb_bus(
-    usb: USB,
+    usb: pac::USB,
     clocks: &mut GenericClockController,
-    pm: &mut PM,
+    pm: &mut pac::PM,
     dm: gpio::Pa24<Input<Floating>>,
     dp: gpio::Pa25<Input<Floating>>,
     port: &mut Port,
