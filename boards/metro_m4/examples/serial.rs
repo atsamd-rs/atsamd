@@ -18,8 +18,8 @@ use hal::prelude::*;
 use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::sercom::{PadPin, Sercom3Pad0, Sercom3Pad1, UART3};
-use hal::target_device::gclk::pchctrl::{GEN_A};
-use hal::target_device::gclk::genctrl::{SRC_A};
+use hal::pac::gclk::pchctrl::{GEN_A};
+use hal::pac::gclk::genctrl::{SRC_A};
 
 #[entry]
 fn main() -> ! {
