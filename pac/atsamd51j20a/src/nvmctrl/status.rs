@@ -1,227 +1,53 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u16,
-}
-impl super::STATUS {
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-}
-#[doc = r" Value of the field"]
-pub struct READYR {
-    bits: bool,
-}
-impl READYR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct PRMR {
-    bits: bool,
-}
-impl PRMR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct LOADR {
-    bits: bool,
-}
-impl LOADR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct SUSPR {
-    bits: bool,
-}
-impl SUSPR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct AFIRSTR {
-    bits: bool,
-}
-impl AFIRSTR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct BPDISR {
-    bits: bool,
-}
-impl BPDISR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct BOOTPROTR {
-    bits: u8,
-}
-impl BOOTPROTR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
-}
+#[doc = "Reader of register STATUS"]
+pub type R = crate::R<u16, super::STATUS>;
+#[doc = "Reader of field `READY`"]
+pub type READY_R = crate::R<bool, bool>;
+#[doc = "Reader of field `PRM`"]
+pub type PRM_R = crate::R<bool, bool>;
+#[doc = "Reader of field `LOAD`"]
+pub type LOAD_R = crate::R<bool, bool>;
+#[doc = "Reader of field `SUSP`"]
+pub type SUSP_R = crate::R<bool, bool>;
+#[doc = "Reader of field `AFIRST`"]
+pub type AFIRST_R = crate::R<bool, bool>;
+#[doc = "Reader of field `BPDIS`"]
+pub type BPDIS_R = crate::R<bool, bool>;
+#[doc = "Reader of field `BOOTPROT`"]
+pub type BOOTPROT_R = crate::R<u8, u8>;
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u16 {
-        self.bits
-    }
     #[doc = "Bit 0 - Ready to accept a command"]
-    #[inline]
-    pub fn ready(&self) -> READYR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
-        READYR { bits }
+    #[inline(always)]
+    pub fn ready(&self) -> READY_R {
+        READY_R::new((self.bits & 0x01) != 0)
     }
     #[doc = "Bit 1 - Power Reduction Mode"]
-    #[inline]
-    pub fn prm(&self) -> PRMR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
-        PRMR { bits }
+    #[inline(always)]
+    pub fn prm(&self) -> PRM_R {
+        PRM_R::new(((self.bits >> 1) & 0x01) != 0)
     }
     #[doc = "Bit 2 - NVM Page Buffer Active Loading"]
-    #[inline]
-    pub fn load(&self) -> LOADR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
-        LOADR { bits }
+    #[inline(always)]
+    pub fn load(&self) -> LOAD_R {
+        LOAD_R::new(((self.bits >> 2) & 0x01) != 0)
     }
     #[doc = "Bit 3 - NVM Write Or Erase Operation Is Suspended"]
-    #[inline]
-    pub fn susp(&self) -> SUSPR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 3;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
-        SUSPR { bits }
+    #[inline(always)]
+    pub fn susp(&self) -> SUSP_R {
+        SUSP_R::new(((self.bits >> 3) & 0x01) != 0)
     }
     #[doc = "Bit 4 - BANKA First"]
-    #[inline]
-    pub fn afirst(&self) -> AFIRSTR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
-        AFIRSTR { bits }
+    #[inline(always)]
+    pub fn afirst(&self) -> AFIRST_R {
+        AFIRST_R::new(((self.bits >> 4) & 0x01) != 0)
     }
     #[doc = "Bit 5 - Boot Loader Protection Disable"]
-    #[inline]
-    pub fn bpdis(&self) -> BPDISR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 5;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
-        BPDISR { bits }
+    #[inline(always)]
+    pub fn bpdis(&self) -> BPDIS_R {
+        BPDIS_R::new(((self.bits >> 5) & 0x01) != 0)
     }
     #[doc = "Bits 8:11 - Boot Loader Protection Size"]
-    #[inline]
-    pub fn bootprot(&self) -> BOOTPROTR {
-        let bits = {
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u16) as u8
-        };
-        BOOTPROTR { bits }
+    #[inline(always)]
+    pub fn bootprot(&self) -> BOOTPROT_R {
+        BOOTPROT_R::new(((self.bits >> 8) & 0x0f) as u8)
     }
 }

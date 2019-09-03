@@ -11,9 +11,14 @@ pub use keypad;
 
 use atsamd_hal as hal;
 
+use hal::*;
+
+pub use hal::target_device as pac;
+pub use hal::common::*;
+pub use hal::samd51::*;
+
 #[cfg(feature = "rt")]
 pub use cortex_m_rt::entry;
-pub use hal::{target_device::*, *};
 pub use pins::Pins;
 
 use gpio::Port;
@@ -87,8 +92,8 @@ pub fn i2c_master<F: Into<Hertz>>(
     pins: pins::STEMMA,
     clocks: &mut GenericClockController,
     bus_speed: F,
-    sercom4: SERCOM4,
-    mclk: &mut MCLK,
+    sercom4: pac::SERCOM4,
+    mclk: &mut pac::MCLK,
     port: &mut Port,
 ) -> I2CMaster4<
     hal::sercom::Sercom4Pad0<gpio::Pb8<gpio::PfD>>,
@@ -106,8 +111,8 @@ pub fn uart<F: Into<Hertz>>(
     pins: pins::STEMMA,
     clocks: &mut GenericClockController,
     baud: F,
-    sercom4: SERCOM4,
-    mclk: &mut MCLK,
+    sercom4: pac::SERCOM4,
+    mclk: &mut pac::MCLK,
     port: &mut Port,
 ) -> UART4<
     hal::sercom::Sercom4Pad1<gpio::Pb9<gpio::PfD>>,

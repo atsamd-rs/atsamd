@@ -1,184 +1,108 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u8,
-}
-#[doc = r" Value to write to the register"]
-pub struct W {
-    bits: u8,
-}
-impl super::CHCTRLB {
-    #[doc = r" Modifies the contents of the register"]
-    #[inline]
-    pub fn modify<F>(&self, f: F)
-    where
-        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
-    {
-        let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-    #[doc = r" Writes to the register"]
-    #[inline]
-    pub fn write<F>(&self, f: F)
-    where
-        F: FnOnce(&mut W) -> &mut W,
-    {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Writes the reset value to the register"]
-    #[inline]
-    pub fn reset(&self) {
-        self.write(|w| w)
+#[doc = "Reader of register CHCTRLB%s"]
+pub type R = crate::R<u8, super::CHCTRLB>;
+#[doc = "Writer for register CHCTRLB%s"]
+pub type W = crate::W<u8, super::CHCTRLB>;
+#[doc = "Register CHCTRLB%s `reset()`'s with value 0"]
+impl crate::ResetValue for super::CHCTRLB {
+    type Type = u8;
+    #[inline(always)]
+    fn reset_value() -> Self::Type {
+        0
     }
 }
-#[doc = "Possible values of the field `CMD`"]
+#[doc = "Software Command\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum CMDR {
-    #[doc = "No action"]
+pub enum CMD_A {
+    #[doc = "0: No action"]
     NOACT,
-    #[doc = "Channel suspend operation"]
+    #[doc = "1: Channel suspend operation"]
     SUSPEND,
-    #[doc = "Channel resume operation"]
+    #[doc = "2: Channel resume operation"]
     RESUME,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
 }
-impl CMDR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            CMDR::NOACT => 0,
-            CMDR::SUSPEND => 1,
-            CMDR::RESUME => 2,
-            CMDR::_Reserved(bits) => bits,
+impl From<CMD_A> for u8 {
+    #[inline(always)]
+    fn from(variant: CMD_A) -> Self {
+        match variant {
+            CMD_A::NOACT => 0,
+            CMD_A::SUSPEND => 1,
+            CMD_A::RESUME => 2,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> CMDR {
-        match value {
-            0 => CMDR::NOACT,
-            1 => CMDR::SUSPEND,
-            2 => CMDR::RESUME,
-            i => CMDR::_Reserved(i),
+}
+#[doc = "Reader of field `CMD`"]
+pub type CMD_R = crate::R<u8, CMD_A>;
+impl CMD_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, CMD_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(CMD_A::NOACT),
+            1 => Val(CMD_A::SUSPEND),
+            2 => Val(CMD_A::RESUME),
+            i => Res(i),
         }
     }
     #[doc = "Checks if the value of the field is `NOACT`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_noact(&self) -> bool {
-        *self == CMDR::NOACT
+        *self == CMD_A::NOACT
     }
     #[doc = "Checks if the value of the field is `SUSPEND`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_suspend(&self) -> bool {
-        *self == CMDR::SUSPEND
+        *self == CMD_A::SUSPEND
     }
     #[doc = "Checks if the value of the field is `RESUME`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_resume(&self) -> bool {
-        *self == CMDR::RESUME
+        *self == CMD_A::RESUME
     }
 }
-#[doc = "Values that can be written to the field `CMD`"]
-pub enum CMDW {
-    #[doc = "No action"]
-    NOACT,
-    #[doc = "Channel suspend operation"]
-    SUSPEND,
-    #[doc = "Channel resume operation"]
-    RESUME,
-}
-impl CMDW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            CMDW::NOACT => 0,
-            CMDW::SUSPEND => 1,
-            CMDW::RESUME => 2,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _CMDW<'a> {
+#[doc = "Write proxy for field `CMD`"]
+pub struct CMD_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _CMDW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: CMDW) -> &'a mut W {
-        unsafe { self.bits(variant._bits()) }
+impl<'a> CMD_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: CMD_A) -> &'a mut W {
+        unsafe { self.bits(variant.into()) }
     }
     #[doc = "No action"]
-    #[inline]
+    #[inline(always)]
     pub fn noact(self) -> &'a mut W {
-        self.variant(CMDW::NOACT)
+        self.variant(CMD_A::NOACT)
     }
     #[doc = "Channel suspend operation"]
-    #[inline]
+    #[inline(always)]
     pub fn suspend(self) -> &'a mut W {
-        self.variant(CMDW::SUSPEND)
+        self.variant(CMD_A::SUSPEND)
     }
     #[doc = "Channel resume operation"]
-    #[inline]
+    #[inline(always)]
     pub fn resume(self) -> &'a mut W {
-        self.variant(CMDW::RESUME)
+        self.variant(CMD_A::RESUME)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits = (self.w.bits & !0x03) | ((value as u8) & 0x03);
         self.w
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
     #[doc = "Bits 0:1 - Software Command"]
-    #[inline]
-    pub fn cmd(&self) -> CMDR {
-        CMDR::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u8) as u8
-        })
+    #[inline(always)]
+    pub fn cmd(&self) -> CMD_R {
+        CMD_R::new((self.bits & 0x03) as u8)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
-    #[doc = r" Writes raw bits to the register"]
-    #[inline]
-    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
-        self.bits = bits;
-        self
-    }
     #[doc = "Bits 0:1 - Software Command"]
-    #[inline]
-    pub fn cmd(&mut self) -> _CMDW {
-        _CMDW { w: self }
+    #[inline(always)]
+    pub fn cmd(&mut self) -> CMD_W {
+        CMD_W { w: self }
     }
 }

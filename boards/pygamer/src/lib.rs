@@ -7,18 +7,21 @@ use atsamd_hal as hal;
 #[cfg(feature = "rt")]
 pub use cortex_m_rt::entry;
 
+use hal::*;
+
 pub use crate::pins::Pins;
+pub use hal::target_device as pac;
+pub use hal::common::*;
+pub use hal::samd51::*;
 
-pub use hal::target_device::*;
-pub use hal::*;
-
-use embedded_hal::digital::v1_compat::{OldOutputPin};
-
-use gpio::{Floating, Input, PfC, Port};
+use gpio::{Floating, Input, PushPull, Output, PfC, Port};
 use hal::clock::GenericClockController;
 use hal::prelude::*;
 use hal::pwm::Pwm2;
-use hal::sercom::{I2CMaster2, PadPin, SPIMaster1, SPIMaster4, UART5};
+use hal::sercom::{
+    I2CMaster2, PadPin, SPIMaster1, SPIMaster4, UART5, Sercom4Pad1, Sercom4Pad2,
+    Sercom4Pad3
+};
 use hal::time::Hertz;
 
 use st7735_lcd::{Orientation, ST7735};
@@ -36,8 +39,8 @@ use usb_device::bus::UsbBusWrapper;
 pub fn spi_master<F: Into<Hertz>>(
     clocks: &mut GenericClockController,
     bus_speed: F,
-    sercom1: SERCOM1,
-    mclk: &mut MCLK,
+    sercom1: pac::SERCOM1,
+    mclk: &mut pac::MCLK,
     miso: gpio::Pb22<Input<Floating>>,
     mosi: gpio::Pb23<Input<Floating>>,
     sck: gpio::Pa17<Input<Floating>>,
@@ -64,8 +67,8 @@ pub fn spi_master<F: Into<Hertz>>(
 /// Convenience for accessing the on-board TFT LCD.
 pub fn display(
     clocks: &mut GenericClockController,
-    sercom4: SERCOM4,
-    mclk: &mut MCLK,
+    sercom4: pac::SERCOM4,
+    mclk: &mut pac::MCLK,
     accel_irq: gpio::Pb14<Input<Floating>>, // TODO remove once we make miso optional
     tft_mosi: gpio::Pb15<Input<Floating>>,
     tft_sck: gpio::Pb13<Input<Floating>>,
@@ -73,22 +76,20 @@ pub fn display(
     tft_cs: gpio::Pb12<Input<Floating>>,
     tft_dc: gpio::Pb5<Input<Floating>>,
     tft_backlight: gpio::Pa1<Input<Floating>>,
-    timer2: TC2,
+    timer2: pac::TC2,
     delay: &mut hal::delay::Delay,
     port: &mut Port,
 ) -> Result<
     (
         ST7735<
             SPIMaster4<
-                hal::sercom::Sercom4Pad2<hal::gpio::Pb14<hal::gpio::PfC>>,
-                hal::sercom::Sercom4Pad3<hal::gpio::Pb15<hal::gpio::PfC>>,
-                hal::sercom::Sercom4Pad1<hal::gpio::Pb13<hal::gpio::PfC>>,
-            >,
-            OldOutputPin<gpio::Pb5<gpio::Output<gpio::PushPull>>>,
-            OldOutputPin<gpio::Pa0<gpio::Output<gpio::PushPull>>>,
+                Sercom4Pad2<gpio::Pb14<gpio::PfC>>,
+                Sercom4Pad3<gpio::Pb15<gpio::PfC>>,
+                Sercom4Pad1<gpio::Pb13<gpio::PfC>>>,
+                gpio::Pb5<Output<PushPull>>,
+                gpio::Pa0<Output<PushPull>>
         >,
-        Pwm2,
-    ),
+        atsamd_hal::samd51::pwm::Pwm2),
     (),
 > {
     let gclk0 = clocks.gclk0();
@@ -111,8 +112,8 @@ pub fn display(
     let mut tft_cs = tft_cs.into_push_pull_output(port);
     tft_cs.set_low()?;
 
-    let tft_dc : OldOutputPin<_> = tft_dc.into_push_pull_output(port).into();
-    let tft_reset: OldOutputPin<_> = tft_reset.into_push_pull_output(port).into();
+    let tft_dc = tft_dc.into_push_pull_output(port);
+    let tft_reset = tft_reset.into_push_pull_output(port);
     let gclk0 = clocks.gclk0();
 
     let mut display = st7735_lcd::ST7735::new(tft_spi, tft_dc, tft_reset, true, false);
@@ -138,8 +139,8 @@ pub fn display(
 pub fn i2c_master<F: Into<Hertz>>(
     clocks: &mut GenericClockController,
     bus_speed: F,
-    sercom2: SERCOM2,
-    mclk: &mut MCLK,
+    sercom2: pac::SERCOM2,
+    mclk: &mut pac::MCLK,
     sda: gpio::Pa12<Input<Floating>>,
     scl: gpio::Pa13<Input<Floating>>,
     port: &mut Port,
@@ -163,8 +164,8 @@ pub fn i2c_master<F: Into<Hertz>>(
 pub fn uart<F: Into<Hertz>>(
     clocks: &mut GenericClockController,
     baud: F,
-    sercom5: SERCOM5,
-    mclk: &mut MCLK,
+    sercom5: pac::SERCOM5,
+    mclk: &mut pac::MCLK,
     rx: gpio::Pb17<Input<Floating>>,
     tx: gpio::Pb16<Input<Floating>>,
     port: &mut Port,

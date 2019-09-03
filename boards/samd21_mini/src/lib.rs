@@ -7,14 +7,15 @@ pub use cortex_m_rt::entry;
 
 extern crate atsamd_hal as hal;
 
-pub mod prelude;
-
-pub use hal::target_device::*;
+pub use hal::target_device as pac;
+pub use hal::common::*;
+pub use hal::samd21::*;
 
 use hal::prelude::*;
+use hal::*;
+
 #[cfg(feature = "usb")]
 pub use hal::usb;
-pub use hal::*;
 
 use gpio::{Floating, Input, Port};
 

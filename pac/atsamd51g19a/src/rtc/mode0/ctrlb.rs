@@ -1,826 +1,546 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u16,
-}
-#[doc = r" Value to write to the register"]
-pub struct W {
-    bits: u16,
-}
-impl super::CTRLB {
-    #[doc = r" Modifies the contents of the register"]
-    #[inline]
-    pub fn modify<F>(&self, f: F)
-    where
-        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
-    {
-        let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-    #[doc = r" Writes to the register"]
-    #[inline]
-    pub fn write<F>(&self, f: F)
-    where
-        F: FnOnce(&mut W) -> &mut W,
-    {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Writes the reset value to the register"]
-    #[inline]
-    pub fn reset(&self) {
-        self.write(|w| w)
+#[doc = "Reader of register CTRLB"]
+pub type R = crate::R<u16, super::CTRLB>;
+#[doc = "Writer for register CTRLB"]
+pub type W = crate::W<u16, super::CTRLB>;
+#[doc = "Register CTRLB `reset()`'s with value 0"]
+impl crate::ResetValue for super::CTRLB {
+    type Type = u16;
+    #[inline(always)]
+    fn reset_value() -> Self::Type {
+        0
     }
 }
-#[doc = r" Value of the field"]
-pub struct GP0ENR {
-    bits: bool,
+#[doc = "Reader of field `GP0EN`"]
+pub type GP0EN_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `GP0EN`"]
+pub struct GP0EN_W<'a> {
+    w: &'a mut W,
 }
-impl GP0ENR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
+impl<'a> GP0EN_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
     }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
     }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct GP2ENR {
-    bits: bool,
-}
-impl GP2ENR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !0x01) | ((value as u16) & 0x01);
+        self.w
     }
 }
-#[doc = r" Value of the field"]
-pub struct DEBMAJR {
-    bits: bool,
+#[doc = "Reader of field `GP2EN`"]
+pub type GP2EN_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `GP2EN`"]
+pub struct GP2EN_W<'a> {
+    w: &'a mut W,
 }
-impl DEBMAJR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
+impl<'a> GP2EN_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
     }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
     }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct DEBASYNCR {
-    bits: bool,
-}
-impl DEBASYNCR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 1)) | (((value as u16) & 0x01) << 1);
+        self.w
     }
 }
-#[doc = r" Value of the field"]
-pub struct RTCOUTR {
-    bits: bool,
+#[doc = "Reader of field `DEBMAJ`"]
+pub type DEBMAJ_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `DEBMAJ`"]
+pub struct DEBMAJ_W<'a> {
+    w: &'a mut W,
 }
-impl RTCOUTR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
+impl<'a> DEBMAJ_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
     }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
     }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct DMAENR {
-    bits: bool,
-}
-impl DMAENR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 4)) | (((value as u16) & 0x01) << 4);
+        self.w
     }
 }
-#[doc = "Possible values of the field `DEBF`"]
+#[doc = "Reader of field `DEBASYNC`"]
+pub type DEBASYNC_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `DEBASYNC`"]
+pub struct DEBASYNC_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> DEBASYNC_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 5)) | (((value as u16) & 0x01) << 5);
+        self.w
+    }
+}
+#[doc = "Reader of field `RTCOUT`"]
+pub type RTCOUT_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `RTCOUT`"]
+pub struct RTCOUT_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> RTCOUT_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 6)) | (((value as u16) & 0x01) << 6);
+        self.w
+    }
+}
+#[doc = "Reader of field `DMAEN`"]
+pub type DMAEN_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `DMAEN`"]
+pub struct DMAEN_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> DMAEN_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 7)) | (((value as u16) & 0x01) << 7);
+        self.w
+    }
+}
+#[doc = "Debounce Freqnuency\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum DEBFR {
-    #[doc = "CLK_RTC_DEB = CLK_RTC/2"]
+pub enum DEBF_A {
+    #[doc = "0: CLK_RTC_DEB = CLK_RTC/2"]
     DIV2,
-    #[doc = "CLK_RTC_DEB = CLK_RTC/4"]
+    #[doc = "1: CLK_RTC_DEB = CLK_RTC/4"]
     DIV4,
-    #[doc = "CLK_RTC_DEB = CLK_RTC/8"]
+    #[doc = "2: CLK_RTC_DEB = CLK_RTC/8"]
     DIV8,
-    #[doc = "CLK_RTC_DEB = CLK_RTC/16"]
+    #[doc = "3: CLK_RTC_DEB = CLK_RTC/16"]
     DIV16,
-    #[doc = "CLK_RTC_DEB = CLK_RTC/32"]
+    #[doc = "4: CLK_RTC_DEB = CLK_RTC/32"]
     DIV32,
-    #[doc = "CLK_RTC_DEB = CLK_RTC/64"]
+    #[doc = "5: CLK_RTC_DEB = CLK_RTC/64"]
     DIV64,
-    #[doc = "CLK_RTC_DEB = CLK_RTC/128"]
+    #[doc = "6: CLK_RTC_DEB = CLK_RTC/128"]
     DIV128,
-    #[doc = "CLK_RTC_DEB = CLK_RTC/256"]
+    #[doc = "7: CLK_RTC_DEB = CLK_RTC/256"]
     DIV256,
 }
-impl DEBFR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            DEBFR::DIV2 => 0,
-            DEBFR::DIV4 => 1,
-            DEBFR::DIV8 => 2,
-            DEBFR::DIV16 => 3,
-            DEBFR::DIV32 => 4,
-            DEBFR::DIV64 => 5,
-            DEBFR::DIV128 => 6,
-            DEBFR::DIV256 => 7,
+impl From<DEBF_A> for u8 {
+    #[inline(always)]
+    fn from(variant: DEBF_A) -> Self {
+        match variant {
+            DEBF_A::DIV2 => 0,
+            DEBF_A::DIV4 => 1,
+            DEBF_A::DIV8 => 2,
+            DEBF_A::DIV16 => 3,
+            DEBF_A::DIV32 => 4,
+            DEBF_A::DIV64 => 5,
+            DEBF_A::DIV128 => 6,
+            DEBF_A::DIV256 => 7,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> DEBFR {
-        match value {
-            0 => DEBFR::DIV2,
-            1 => DEBFR::DIV4,
-            2 => DEBFR::DIV8,
-            3 => DEBFR::DIV16,
-            4 => DEBFR::DIV32,
-            5 => DEBFR::DIV64,
-            6 => DEBFR::DIV128,
-            7 => DEBFR::DIV256,
+}
+#[doc = "Reader of field `DEBF`"]
+pub type DEBF_R = crate::R<u8, DEBF_A>;
+impl DEBF_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> DEBF_A {
+        match self.bits {
+            0 => DEBF_A::DIV2,
+            1 => DEBF_A::DIV4,
+            2 => DEBF_A::DIV8,
+            3 => DEBF_A::DIV16,
+            4 => DEBF_A::DIV32,
+            5 => DEBF_A::DIV64,
+            6 => DEBF_A::DIV128,
+            7 => DEBF_A::DIV256,
             _ => unreachable!(),
         }
     }
     #[doc = "Checks if the value of the field is `DIV2`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_div2(&self) -> bool {
-        *self == DEBFR::DIV2
+        *self == DEBF_A::DIV2
     }
     #[doc = "Checks if the value of the field is `DIV4`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_div4(&self) -> bool {
-        *self == DEBFR::DIV4
+        *self == DEBF_A::DIV4
     }
     #[doc = "Checks if the value of the field is `DIV8`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_div8(&self) -> bool {
-        *self == DEBFR::DIV8
+        *self == DEBF_A::DIV8
     }
     #[doc = "Checks if the value of the field is `DIV16`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_div16(&self) -> bool {
-        *self == DEBFR::DIV16
+        *self == DEBF_A::DIV16
     }
     #[doc = "Checks if the value of the field is `DIV32`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_div32(&self) -> bool {
-        *self == DEBFR::DIV32
+        *self == DEBF_A::DIV32
     }
     #[doc = "Checks if the value of the field is `DIV64`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_div64(&self) -> bool {
-        *self == DEBFR::DIV64
+        *self == DEBF_A::DIV64
     }
     #[doc = "Checks if the value of the field is `DIV128`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_div128(&self) -> bool {
-        *self == DEBFR::DIV128
+        *self == DEBF_A::DIV128
     }
     #[doc = "Checks if the value of the field is `DIV256`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_div256(&self) -> bool {
-        *self == DEBFR::DIV256
+        *self == DEBF_A::DIV256
     }
 }
-#[doc = "Possible values of the field `ACTF`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum ACTFR {
-    #[doc = "CLK_RTC_OUT = CLK_RTC/2"]
-    DIV2,
-    #[doc = "CLK_RTC_OUT = CLK_RTC/4"]
-    DIV4,
-    #[doc = "CLK_RTC_OUT = CLK_RTC/8"]
-    DIV8,
-    #[doc = "CLK_RTC_OUT = CLK_RTC/16"]
-    DIV16,
-    #[doc = "CLK_RTC_OUT = CLK_RTC/32"]
-    DIV32,
-    #[doc = "CLK_RTC_OUT = CLK_RTC/64"]
-    DIV64,
-    #[doc = "CLK_RTC_OUT = CLK_RTC/128"]
-    DIV128,
-    #[doc = "CLK_RTC_OUT = CLK_RTC/256"]
-    DIV256,
+#[doc = "Write proxy for field `DEBF`"]
+pub struct DEBF_W<'a> {
+    w: &'a mut W,
 }
-impl ACTFR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            ACTFR::DIV2 => 0,
-            ACTFR::DIV4 => 1,
-            ACTFR::DIV8 => 2,
-            ACTFR::DIV16 => 3,
-            ACTFR::DIV32 => 4,
-            ACTFR::DIV64 => 5,
-            ACTFR::DIV128 => 6,
-            ACTFR::DIV256 => 7,
+impl<'a> DEBF_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: DEBF_A) -> &'a mut W {
+        {
+            self.bits(variant.into())
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> ACTFR {
-        match value {
-            0 => ACTFR::DIV2,
-            1 => ACTFR::DIV4,
-            2 => ACTFR::DIV8,
-            3 => ACTFR::DIV16,
-            4 => ACTFR::DIV32,
-            5 => ACTFR::DIV64,
-            6 => ACTFR::DIV128,
-            7 => ACTFR::DIV256,
+    #[doc = "CLK_RTC_DEB = CLK_RTC/2"]
+    #[inline(always)]
+    pub fn div2(self) -> &'a mut W {
+        self.variant(DEBF_A::DIV2)
+    }
+    #[doc = "CLK_RTC_DEB = CLK_RTC/4"]
+    #[inline(always)]
+    pub fn div4(self) -> &'a mut W {
+        self.variant(DEBF_A::DIV4)
+    }
+    #[doc = "CLK_RTC_DEB = CLK_RTC/8"]
+    #[inline(always)]
+    pub fn div8(self) -> &'a mut W {
+        self.variant(DEBF_A::DIV8)
+    }
+    #[doc = "CLK_RTC_DEB = CLK_RTC/16"]
+    #[inline(always)]
+    pub fn div16(self) -> &'a mut W {
+        self.variant(DEBF_A::DIV16)
+    }
+    #[doc = "CLK_RTC_DEB = CLK_RTC/32"]
+    #[inline(always)]
+    pub fn div32(self) -> &'a mut W {
+        self.variant(DEBF_A::DIV32)
+    }
+    #[doc = "CLK_RTC_DEB = CLK_RTC/64"]
+    #[inline(always)]
+    pub fn div64(self) -> &'a mut W {
+        self.variant(DEBF_A::DIV64)
+    }
+    #[doc = "CLK_RTC_DEB = CLK_RTC/128"]
+    #[inline(always)]
+    pub fn div128(self) -> &'a mut W {
+        self.variant(DEBF_A::DIV128)
+    }
+    #[doc = "CLK_RTC_DEB = CLK_RTC/256"]
+    #[inline(always)]
+    pub fn div256(self) -> &'a mut W {
+        self.variant(DEBF_A::DIV256)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bits(self, value: u8) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x07 << 8)) | (((value as u16) & 0x07) << 8);
+        self.w
+    }
+}
+#[doc = "Active Layer Freqnuency\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum ACTF_A {
+    #[doc = "0: CLK_RTC_OUT = CLK_RTC/2"]
+    DIV2,
+    #[doc = "1: CLK_RTC_OUT = CLK_RTC/4"]
+    DIV4,
+    #[doc = "2: CLK_RTC_OUT = CLK_RTC/8"]
+    DIV8,
+    #[doc = "3: CLK_RTC_OUT = CLK_RTC/16"]
+    DIV16,
+    #[doc = "4: CLK_RTC_OUT = CLK_RTC/32"]
+    DIV32,
+    #[doc = "5: CLK_RTC_OUT = CLK_RTC/64"]
+    DIV64,
+    #[doc = "6: CLK_RTC_OUT = CLK_RTC/128"]
+    DIV128,
+    #[doc = "7: CLK_RTC_OUT = CLK_RTC/256"]
+    DIV256,
+}
+impl From<ACTF_A> for u8 {
+    #[inline(always)]
+    fn from(variant: ACTF_A) -> Self {
+        match variant {
+            ACTF_A::DIV2 => 0,
+            ACTF_A::DIV4 => 1,
+            ACTF_A::DIV8 => 2,
+            ACTF_A::DIV16 => 3,
+            ACTF_A::DIV32 => 4,
+            ACTF_A::DIV64 => 5,
+            ACTF_A::DIV128 => 6,
+            ACTF_A::DIV256 => 7,
+        }
+    }
+}
+#[doc = "Reader of field `ACTF`"]
+pub type ACTF_R = crate::R<u8, ACTF_A>;
+impl ACTF_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> ACTF_A {
+        match self.bits {
+            0 => ACTF_A::DIV2,
+            1 => ACTF_A::DIV4,
+            2 => ACTF_A::DIV8,
+            3 => ACTF_A::DIV16,
+            4 => ACTF_A::DIV32,
+            5 => ACTF_A::DIV64,
+            6 => ACTF_A::DIV128,
+            7 => ACTF_A::DIV256,
             _ => unreachable!(),
         }
     }
     #[doc = "Checks if the value of the field is `DIV2`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_div2(&self) -> bool {
-        *self == ACTFR::DIV2
+        *self == ACTF_A::DIV2
     }
     #[doc = "Checks if the value of the field is `DIV4`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_div4(&self) -> bool {
-        *self == ACTFR::DIV4
+        *self == ACTF_A::DIV4
     }
     #[doc = "Checks if the value of the field is `DIV8`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_div8(&self) -> bool {
-        *self == ACTFR::DIV8
+        *self == ACTF_A::DIV8
     }
     #[doc = "Checks if the value of the field is `DIV16`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_div16(&self) -> bool {
-        *self == ACTFR::DIV16
+        *self == ACTF_A::DIV16
     }
     #[doc = "Checks if the value of the field is `DIV32`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_div32(&self) -> bool {
-        *self == ACTFR::DIV32
+        *self == ACTF_A::DIV32
     }
     #[doc = "Checks if the value of the field is `DIV64`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_div64(&self) -> bool {
-        *self == ACTFR::DIV64
+        *self == ACTF_A::DIV64
     }
     #[doc = "Checks if the value of the field is `DIV128`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_div128(&self) -> bool {
-        *self == ACTFR::DIV128
+        *self == ACTF_A::DIV128
     }
     #[doc = "Checks if the value of the field is `DIV256`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_div256(&self) -> bool {
-        *self == ACTFR::DIV256
+        *self == ACTF_A::DIV256
     }
 }
-#[doc = r" Proxy"]
-pub struct _GP0ENW<'a> {
+#[doc = "Write proxy for field `ACTF`"]
+pub struct ACTF_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _GP0ENW<'a> {
-    #[doc = r" Sets the field bit"]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r" Clears the field bit"]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
-        self.w
-    }
-}
-#[doc = r" Proxy"]
-pub struct _GP2ENW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _GP2ENW<'a> {
-    #[doc = r" Sets the field bit"]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r" Clears the field bit"]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 1;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
-        self.w
-    }
-}
-#[doc = r" Proxy"]
-pub struct _DEBMAJW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _DEBMAJW<'a> {
-    #[doc = r" Sets the field bit"]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r" Clears the field bit"]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 4;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
-        self.w
-    }
-}
-#[doc = r" Proxy"]
-pub struct _DEBASYNCW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _DEBASYNCW<'a> {
-    #[doc = r" Sets the field bit"]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r" Clears the field bit"]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 5;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
-        self.w
-    }
-}
-#[doc = r" Proxy"]
-pub struct _RTCOUTW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _RTCOUTW<'a> {
-    #[doc = r" Sets the field bit"]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r" Clears the field bit"]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 6;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
-        self.w
-    }
-}
-#[doc = r" Proxy"]
-pub struct _DMAENW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _DMAENW<'a> {
-    #[doc = r" Sets the field bit"]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r" Clears the field bit"]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 7;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
-        self.w
-    }
-}
-#[doc = "Values that can be written to the field `DEBF`"]
-pub enum DEBFW {
-    #[doc = "CLK_RTC_DEB = CLK_RTC/2"]
-    DIV2,
-    #[doc = "CLK_RTC_DEB = CLK_RTC/4"]
-    DIV4,
-    #[doc = "CLK_RTC_DEB = CLK_RTC/8"]
-    DIV8,
-    #[doc = "CLK_RTC_DEB = CLK_RTC/16"]
-    DIV16,
-    #[doc = "CLK_RTC_DEB = CLK_RTC/32"]
-    DIV32,
-    #[doc = "CLK_RTC_DEB = CLK_RTC/64"]
-    DIV64,
-    #[doc = "CLK_RTC_DEB = CLK_RTC/128"]
-    DIV128,
-    #[doc = "CLK_RTC_DEB = CLK_RTC/256"]
-    DIV256,
-}
-impl DEBFW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            DEBFW::DIV2 => 0,
-            DEBFW::DIV4 => 1,
-            DEBFW::DIV8 => 2,
-            DEBFW::DIV16 => 3,
-            DEBFW::DIV32 => 4,
-            DEBFW::DIV64 => 5,
-            DEBFW::DIV128 => 6,
-            DEBFW::DIV256 => 7,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _DEBFW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _DEBFW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: DEBFW) -> &'a mut W {
+impl<'a> ACTF_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: ACTF_A) -> &'a mut W {
         {
-            self.bits(variant._bits())
-        }
-    }
-    #[doc = "CLK_RTC_DEB = CLK_RTC/2"]
-    #[inline]
-    pub fn div2(self) -> &'a mut W {
-        self.variant(DEBFW::DIV2)
-    }
-    #[doc = "CLK_RTC_DEB = CLK_RTC/4"]
-    #[inline]
-    pub fn div4(self) -> &'a mut W {
-        self.variant(DEBFW::DIV4)
-    }
-    #[doc = "CLK_RTC_DEB = CLK_RTC/8"]
-    #[inline]
-    pub fn div8(self) -> &'a mut W {
-        self.variant(DEBFW::DIV8)
-    }
-    #[doc = "CLK_RTC_DEB = CLK_RTC/16"]
-    #[inline]
-    pub fn div16(self) -> &'a mut W {
-        self.variant(DEBFW::DIV16)
-    }
-    #[doc = "CLK_RTC_DEB = CLK_RTC/32"]
-    #[inline]
-    pub fn div32(self) -> &'a mut W {
-        self.variant(DEBFW::DIV32)
-    }
-    #[doc = "CLK_RTC_DEB = CLK_RTC/64"]
-    #[inline]
-    pub fn div64(self) -> &'a mut W {
-        self.variant(DEBFW::DIV64)
-    }
-    #[doc = "CLK_RTC_DEB = CLK_RTC/128"]
-    #[inline]
-    pub fn div128(self) -> &'a mut W {
-        self.variant(DEBFW::DIV128)
-    }
-    #[doc = "CLK_RTC_DEB = CLK_RTC/256"]
-    #[inline]
-    pub fn div256(self) -> &'a mut W {
-        self.variant(DEBFW::DIV256)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 7;
-        const OFFSET: u8 = 8;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
-        self.w
-    }
-}
-#[doc = "Values that can be written to the field `ACTF`"]
-pub enum ACTFW {
-    #[doc = "CLK_RTC_OUT = CLK_RTC/2"]
-    DIV2,
-    #[doc = "CLK_RTC_OUT = CLK_RTC/4"]
-    DIV4,
-    #[doc = "CLK_RTC_OUT = CLK_RTC/8"]
-    DIV8,
-    #[doc = "CLK_RTC_OUT = CLK_RTC/16"]
-    DIV16,
-    #[doc = "CLK_RTC_OUT = CLK_RTC/32"]
-    DIV32,
-    #[doc = "CLK_RTC_OUT = CLK_RTC/64"]
-    DIV64,
-    #[doc = "CLK_RTC_OUT = CLK_RTC/128"]
-    DIV128,
-    #[doc = "CLK_RTC_OUT = CLK_RTC/256"]
-    DIV256,
-}
-impl ACTFW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            ACTFW::DIV2 => 0,
-            ACTFW::DIV4 => 1,
-            ACTFW::DIV8 => 2,
-            ACTFW::DIV16 => 3,
-            ACTFW::DIV32 => 4,
-            ACTFW::DIV64 => 5,
-            ACTFW::DIV128 => 6,
-            ACTFW::DIV256 => 7,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _ACTFW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _ACTFW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: ACTFW) -> &'a mut W {
-        {
-            self.bits(variant._bits())
+            self.bits(variant.into())
         }
     }
     #[doc = "CLK_RTC_OUT = CLK_RTC/2"]
-    #[inline]
+    #[inline(always)]
     pub fn div2(self) -> &'a mut W {
-        self.variant(ACTFW::DIV2)
+        self.variant(ACTF_A::DIV2)
     }
     #[doc = "CLK_RTC_OUT = CLK_RTC/4"]
-    #[inline]
+    #[inline(always)]
     pub fn div4(self) -> &'a mut W {
-        self.variant(ACTFW::DIV4)
+        self.variant(ACTF_A::DIV4)
     }
     #[doc = "CLK_RTC_OUT = CLK_RTC/8"]
-    #[inline]
+    #[inline(always)]
     pub fn div8(self) -> &'a mut W {
-        self.variant(ACTFW::DIV8)
+        self.variant(ACTF_A::DIV8)
     }
     #[doc = "CLK_RTC_OUT = CLK_RTC/16"]
-    #[inline]
+    #[inline(always)]
     pub fn div16(self) -> &'a mut W {
-        self.variant(ACTFW::DIV16)
+        self.variant(ACTF_A::DIV16)
     }
     #[doc = "CLK_RTC_OUT = CLK_RTC/32"]
-    #[inline]
+    #[inline(always)]
     pub fn div32(self) -> &'a mut W {
-        self.variant(ACTFW::DIV32)
+        self.variant(ACTF_A::DIV32)
     }
     #[doc = "CLK_RTC_OUT = CLK_RTC/64"]
-    #[inline]
+    #[inline(always)]
     pub fn div64(self) -> &'a mut W {
-        self.variant(ACTFW::DIV64)
+        self.variant(ACTF_A::DIV64)
     }
     #[doc = "CLK_RTC_OUT = CLK_RTC/128"]
-    #[inline]
+    #[inline(always)]
     pub fn div128(self) -> &'a mut W {
-        self.variant(ACTFW::DIV128)
+        self.variant(ACTF_A::DIV128)
     }
     #[doc = "CLK_RTC_OUT = CLK_RTC/256"]
-    #[inline]
+    #[inline(always)]
     pub fn div256(self) -> &'a mut W {
-        self.variant(ACTFW::DIV256)
+        self.variant(ACTF_A::DIV256)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 7;
-        const OFFSET: u8 = 12;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x07 << 12)) | (((value as u16) & 0x07) << 12);
         self.w
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u16 {
-        self.bits
-    }
     #[doc = "Bit 0 - General Purpose 0 Enable"]
-    #[inline]
-    pub fn gp0en(&self) -> GP0ENR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
-        GP0ENR { bits }
+    #[inline(always)]
+    pub fn gp0en(&self) -> GP0EN_R {
+        GP0EN_R::new((self.bits & 0x01) != 0)
     }
     #[doc = "Bit 1 - General Purpose 2 Enable"]
-    #[inline]
-    pub fn gp2en(&self) -> GP2ENR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
-        GP2ENR { bits }
+    #[inline(always)]
+    pub fn gp2en(&self) -> GP2EN_R {
+        GP2EN_R::new(((self.bits >> 1) & 0x01) != 0)
     }
     #[doc = "Bit 4 - Debouncer Majority Enable"]
-    #[inline]
-    pub fn debmaj(&self) -> DEBMAJR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
-        DEBMAJR { bits }
+    #[inline(always)]
+    pub fn debmaj(&self) -> DEBMAJ_R {
+        DEBMAJ_R::new(((self.bits >> 4) & 0x01) != 0)
     }
     #[doc = "Bit 5 - Debouncer Asynchronous Enable"]
-    #[inline]
-    pub fn debasync(&self) -> DEBASYNCR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 5;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
-        DEBASYNCR { bits }
+    #[inline(always)]
+    pub fn debasync(&self) -> DEBASYNC_R {
+        DEBASYNC_R::new(((self.bits >> 5) & 0x01) != 0)
     }
     #[doc = "Bit 6 - RTC Output Enable"]
-    #[inline]
-    pub fn rtcout(&self) -> RTCOUTR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 6;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
-        RTCOUTR { bits }
+    #[inline(always)]
+    pub fn rtcout(&self) -> RTCOUT_R {
+        RTCOUT_R::new(((self.bits >> 6) & 0x01) != 0)
     }
     #[doc = "Bit 7 - DMA Enable"]
-    #[inline]
-    pub fn dmaen(&self) -> DMAENR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 7;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
-        DMAENR { bits }
+    #[inline(always)]
+    pub fn dmaen(&self) -> DMAEN_R {
+        DMAEN_R::new(((self.bits >> 7) & 0x01) != 0)
     }
     #[doc = "Bits 8:10 - Debounce Freqnuency"]
-    #[inline]
-    pub fn debf(&self) -> DEBFR {
-        DEBFR::_from({
-            const MASK: u8 = 7;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u16) as u8
-        })
+    #[inline(always)]
+    pub fn debf(&self) -> DEBF_R {
+        DEBF_R::new(((self.bits >> 8) & 0x07) as u8)
     }
     #[doc = "Bits 12:14 - Active Layer Freqnuency"]
-    #[inline]
-    pub fn actf(&self) -> ACTFR {
-        ACTFR::_from({
-            const MASK: u8 = 7;
-            const OFFSET: u8 = 12;
-            ((self.bits >> OFFSET) & MASK as u16) as u8
-        })
+    #[inline(always)]
+    pub fn actf(&self) -> ACTF_R {
+        ACTF_R::new(((self.bits >> 12) & 0x07) as u8)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
-    #[doc = r" Writes raw bits to the register"]
-    #[inline]
-    pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {
-        self.bits = bits;
-        self
-    }
     #[doc = "Bit 0 - General Purpose 0 Enable"]
-    #[inline]
-    pub fn gp0en(&mut self) -> _GP0ENW {
-        _GP0ENW { w: self }
+    #[inline(always)]
+    pub fn gp0en(&mut self) -> GP0EN_W {
+        GP0EN_W { w: self }
     }
     #[doc = "Bit 1 - General Purpose 2 Enable"]
-    #[inline]
-    pub fn gp2en(&mut self) -> _GP2ENW {
-        _GP2ENW { w: self }
+    #[inline(always)]
+    pub fn gp2en(&mut self) -> GP2EN_W {
+        GP2EN_W { w: self }
     }
     #[doc = "Bit 4 - Debouncer Majority Enable"]
-    #[inline]
-    pub fn debmaj(&mut self) -> _DEBMAJW {
-        _DEBMAJW { w: self }
+    #[inline(always)]
+    pub fn debmaj(&mut self) -> DEBMAJ_W {
+        DEBMAJ_W { w: self }
     }
     #[doc = "Bit 5 - Debouncer Asynchronous Enable"]
-    #[inline]
-    pub fn debasync(&mut self) -> _DEBASYNCW {
-        _DEBASYNCW { w: self }
+    #[inline(always)]
+    pub fn debasync(&mut self) -> DEBASYNC_W {
+        DEBASYNC_W { w: self }
     }
     #[doc = "Bit 6 - RTC Output Enable"]
-    #[inline]
-    pub fn rtcout(&mut self) -> _RTCOUTW {
-        _RTCOUTW { w: self }
+    #[inline(always)]
+    pub fn rtcout(&mut self) -> RTCOUT_W {
+        RTCOUT_W { w: self }
     }
     #[doc = "Bit 7 - DMA Enable"]
-    #[inline]
-    pub fn dmaen(&mut self) -> _DMAENW {
-        _DMAENW { w: self }
+    #[inline(always)]
+    pub fn dmaen(&mut self) -> DMAEN_W {
+        DMAEN_W { w: self }
     }
     #[doc = "Bits 8:10 - Debounce Freqnuency"]
-    #[inline]
-    pub fn debf(&mut self) -> _DEBFW {
-        _DEBFW { w: self }
+    #[inline(always)]
+    pub fn debf(&mut self) -> DEBF_W {
+        DEBF_W { w: self }
     }
     #[doc = "Bits 12:14 - Active Layer Freqnuency"]
-    #[inline]
-    pub fn actf(&mut self) -> _ACTFW {
-        _ACTFW { w: self }
+    #[inline(always)]
+    pub fn actf(&mut self) -> ACTF_W {
+        ACTF_W { w: self }
     }
 }

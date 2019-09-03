@@ -1,97 +1,77 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u32,
-}
-impl super::UASR {
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-}
-#[doc = "Possible values of the field `URAT`"]
+#[doc = "Reader of register UASR"]
+pub type R = crate::R<u32, super::UASR>;
+#[doc = "Undefined Register Access Trace\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum URATR {
-    #[doc = "Unspecified structure member set to one detected when the descriptor is loaded"]
+pub enum URAT_A {
+    #[doc = "0: Unspecified structure member set to one detected when the descriptor is loaded"]
     UNSPEC_STRUCT_MEMBER,
-    #[doc = "CFG modified during active monitoring"]
+    #[doc = "1: CFG modified during active monitoring"]
     CFG_MODIFIED,
-    #[doc = "DSCR modified during active monitoring"]
+    #[doc = "2: DSCR modified during active monitoring"]
     DSCR_MODIFIED,
-    #[doc = "HASH modified during active monitoring"]
+    #[doc = "3: HASH modified during active monitoring"]
     HASH_MODIFIED,
-    #[doc = "Write-only register read access"]
+    #[doc = "4: Write-only register read access"]
     READ_ACCESS,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
 }
-impl URATR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            URATR::UNSPEC_STRUCT_MEMBER => 0,
-            URATR::CFG_MODIFIED => 1,
-            URATR::DSCR_MODIFIED => 2,
-            URATR::HASH_MODIFIED => 3,
-            URATR::READ_ACCESS => 4,
-            URATR::_Reserved(bits) => bits,
+impl From<URAT_A> for u8 {
+    #[inline(always)]
+    fn from(variant: URAT_A) -> Self {
+        match variant {
+            URAT_A::UNSPEC_STRUCT_MEMBER => 0,
+            URAT_A::CFG_MODIFIED => 1,
+            URAT_A::DSCR_MODIFIED => 2,
+            URAT_A::HASH_MODIFIED => 3,
+            URAT_A::READ_ACCESS => 4,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> URATR {
-        match value {
-            0 => URATR::UNSPEC_STRUCT_MEMBER,
-            1 => URATR::CFG_MODIFIED,
-            2 => URATR::DSCR_MODIFIED,
-            3 => URATR::HASH_MODIFIED,
-            4 => URATR::READ_ACCESS,
-            i => URATR::_Reserved(i),
+}
+#[doc = "Reader of field `URAT`"]
+pub type URAT_R = crate::R<u8, URAT_A>;
+impl URAT_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, URAT_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(URAT_A::UNSPEC_STRUCT_MEMBER),
+            1 => Val(URAT_A::CFG_MODIFIED),
+            2 => Val(URAT_A::DSCR_MODIFIED),
+            3 => Val(URAT_A::HASH_MODIFIED),
+            4 => Val(URAT_A::READ_ACCESS),
+            i => Res(i),
         }
     }
     #[doc = "Checks if the value of the field is `UNSPEC_STRUCT_MEMBER`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_unspec_struct_member(&self) -> bool {
-        *self == URATR::UNSPEC_STRUCT_MEMBER
+        *self == URAT_A::UNSPEC_STRUCT_MEMBER
     }
     #[doc = "Checks if the value of the field is `CFG_MODIFIED`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_cfg_modified(&self) -> bool {
-        *self == URATR::CFG_MODIFIED
+        *self == URAT_A::CFG_MODIFIED
     }
     #[doc = "Checks if the value of the field is `DSCR_MODIFIED`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_dscr_modified(&self) -> bool {
-        *self == URATR::DSCR_MODIFIED
+        *self == URAT_A::DSCR_MODIFIED
     }
     #[doc = "Checks if the value of the field is `HASH_MODIFIED`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_hash_modified(&self) -> bool {
-        *self == URATR::HASH_MODIFIED
+        *self == URAT_A::HASH_MODIFIED
     }
     #[doc = "Checks if the value of the field is `READ_ACCESS`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_read_access(&self) -> bool {
-        *self == URATR::READ_ACCESS
+        *self == URAT_A::READ_ACCESS
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u32 {
-        self.bits
-    }
     #[doc = "Bits 0:2 - Undefined Register Access Trace"]
-    #[inline]
-    pub fn urat(&self) -> URATR {
-        URATR::_from({
-            const MASK: u8 = 7;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+    #[inline(always)]
+    pub fn urat(&self) -> URAT_R {
+        URAT_R::new((self.bits & 0x07) as u8)
     }
 }

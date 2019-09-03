@@ -1,144 +1,32 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u8,
-}
-impl super::DFLLSYNC {
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-}
-#[doc = r" Value of the field"]
-pub struct ENABLER {
-    bits: bool,
-}
-impl ENABLER {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct DFLLCTRLBR {
-    bits: bool,
-}
-impl DFLLCTRLBR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct DFLLVALR {
-    bits: bool,
-}
-impl DFLLVALR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct DFLLMULR {
-    bits: bool,
-}
-impl DFLLMULR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
+#[doc = "Reader of register DFLLSYNC"]
+pub type R = crate::R<u8, super::DFLLSYNC>;
+#[doc = "Reader of field `ENABLE`"]
+pub type ENABLE_R = crate::R<bool, bool>;
+#[doc = "Reader of field `DFLLCTRLB`"]
+pub type DFLLCTRLB_R = crate::R<bool, bool>;
+#[doc = "Reader of field `DFLLVAL`"]
+pub type DFLLVAL_R = crate::R<bool, bool>;
+#[doc = "Reader of field `DFLLMUL`"]
+pub type DFLLMUL_R = crate::R<bool, bool>;
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
     #[doc = "Bit 1 - ENABLE Synchronization Busy"]
-    #[inline]
-    pub fn enable(&self) -> ENABLER {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
-        ENABLER { bits }
+    #[inline(always)]
+    pub fn enable(&self) -> ENABLE_R {
+        ENABLE_R::new(((self.bits >> 1) & 0x01) != 0)
     }
     #[doc = "Bit 2 - DFLLCTRLB Synchronization Busy"]
-    #[inline]
-    pub fn dfllctrlb(&self) -> DFLLCTRLBR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
-        DFLLCTRLBR { bits }
+    #[inline(always)]
+    pub fn dfllctrlb(&self) -> DFLLCTRLB_R {
+        DFLLCTRLB_R::new(((self.bits >> 2) & 0x01) != 0)
     }
     #[doc = "Bit 3 - DFLLVAL Synchronization Busy"]
-    #[inline]
-    pub fn dfllval(&self) -> DFLLVALR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 3;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
-        DFLLVALR { bits }
+    #[inline(always)]
+    pub fn dfllval(&self) -> DFLLVAL_R {
+        DFLLVAL_R::new(((self.bits >> 3) & 0x01) != 0)
     }
     #[doc = "Bit 4 - DFLLMUL Synchronization Busy"]
-    #[inline]
-    pub fn dfllmul(&self) -> DFLLMULR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
-        DFLLMULR { bits }
+    #[inline(always)]
+    pub fn dfllmul(&self) -> DFLLMUL_R {
+        DFLLMUL_R::new(((self.bits >> 4) & 0x01) != 0)
     }
 }

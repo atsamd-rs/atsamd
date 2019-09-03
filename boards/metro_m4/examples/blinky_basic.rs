@@ -12,7 +12,8 @@ extern crate panic_semihosting;
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
 use hal::prelude::*;
-use hal::{entry, CorePeripherals, Peripherals};
+use hal::entry;
+use hal::pac::{CorePeripherals, Peripherals};
 
 #[entry]
 fn main() -> ! {

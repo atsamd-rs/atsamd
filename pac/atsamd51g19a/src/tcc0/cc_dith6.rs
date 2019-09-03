@@ -1,146 +1,64 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u32,
-}
-#[doc = r" Value to write to the register"]
-pub struct W {
-    bits: u32,
-}
-impl super::CC_DITH6 {
-    #[doc = r" Modifies the contents of the register"]
-    #[inline]
-    pub fn modify<F>(&self, f: F)
-    where
-        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
-    {
-        let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-    #[doc = r" Writes to the register"]
-    #[inline]
-    pub fn write<F>(&self, f: F)
-    where
-        F: FnOnce(&mut W) -> &mut W,
-    {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Writes the reset value to the register"]
-    #[inline]
-    pub fn reset(&self) {
-        self.write(|w| w)
+#[doc = "Reader of register CC%s_DITH6"]
+pub type R = crate::R<u32, super::CC_DITH6>;
+#[doc = "Writer for register CC%s_DITH6"]
+pub type W = crate::W<u32, super::CC_DITH6>;
+#[doc = "Register CC%s_DITH6 `reset()`'s with value 0"]
+impl crate::ResetValue for super::CC_DITH6 {
+    type Type = u32;
+    #[inline(always)]
+    fn reset_value() -> Self::Type {
+        0
     }
 }
-#[doc = r" Value of the field"]
-pub struct DITHERR {
-    bits: u8,
-}
-impl DITHERR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
-}
-#[doc = r" Value of the field"]
-pub struct CCR {
-    bits: u32,
-}
-impl CCR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u32 {
-        self.bits
-    }
-}
-#[doc = r" Proxy"]
-pub struct _DITHERW<'a> {
+#[doc = "Reader of field `DITHER`"]
+pub type DITHER_R = crate::R<u8, u8>;
+#[doc = "Write proxy for field `DITHER`"]
+pub struct DITHER_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _DITHERW<'a> {
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+impl<'a> DITHER_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 63;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !0x3f) | ((value as u32) & 0x3f);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _CCW<'a> {
+#[doc = "Reader of field `CC`"]
+pub type CC_R = crate::R<u32, u32>;
+#[doc = "Write proxy for field `CC`"]
+pub struct CC_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _CCW<'a> {
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+impl<'a> CC_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u32) -> &'a mut W {
-        const MASK: u32 = 262143;
-        const OFFSET: u8 = 6;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x0003_ffff << 6)) | (((value as u32) & 0x0003_ffff) << 6);
         self.w
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u32 {
-        self.bits
-    }
     #[doc = "Bits 0:5 - Dithering Cycle Number"]
-    #[inline]
-    pub fn dither(&self) -> DITHERR {
-        let bits = {
-            const MASK: u8 = 63;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
-        DITHERR { bits }
+    #[inline(always)]
+    pub fn dither(&self) -> DITHER_R {
+        DITHER_R::new((self.bits & 0x3f) as u8)
     }
     #[doc = "Bits 6:23 - Channel Compare/Capture Value"]
-    #[inline]
-    pub fn cc(&self) -> CCR {
-        let bits = {
-            const MASK: u32 = 262143;
-            const OFFSET: u8 = 6;
-            ((self.bits >> OFFSET) & MASK as u32) as u32
-        };
-        CCR { bits }
+    #[inline(always)]
+    pub fn cc(&self) -> CC_R {
+        CC_R::new(((self.bits >> 6) & 0x0003_ffff) as u32)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
-    #[doc = r" Writes raw bits to the register"]
-    #[inline]
-    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.bits = bits;
-        self
-    }
     #[doc = "Bits 0:5 - Dithering Cycle Number"]
-    #[inline]
-    pub fn dither(&mut self) -> _DITHERW {
-        _DITHERW { w: self }
+    #[inline(always)]
+    pub fn dither(&mut self) -> DITHER_W {
+        DITHER_W { w: self }
     }
     #[doc = "Bits 6:23 - Channel Compare/Capture Value"]
-    #[inline]
-    pub fn cc(&mut self) -> _CCW {
-        _CCW { w: self }
+    #[inline(always)]
+    pub fn cc(&mut self) -> CC_W {
+        CC_W { w: self }
     }
 }

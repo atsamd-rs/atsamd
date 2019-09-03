@@ -1,827 +1,663 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u32,
-}
-impl super::CA0R {
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-}
-#[doc = "Possible values of the field `TEOCLKF`"]
+#[doc = "Reader of register CA0R"]
+pub type R = crate::R<u32, super::CA0R>;
+#[doc = "Timeout Clock Frequency\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum TEOCLKFR {
-    #[doc = "Get information via another method"]
+pub enum TEOCLKF_A {
+    #[doc = "0: Get information via another method"]
     OTHER,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
 }
-impl TEOCLKFR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            TEOCLKFR::OTHER => 0,
-            TEOCLKFR::_Reserved(bits) => bits,
+impl From<TEOCLKF_A> for u8 {
+    #[inline(always)]
+    fn from(variant: TEOCLKF_A) -> Self {
+        match variant {
+            TEOCLKF_A::OTHER => 0,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> TEOCLKFR {
-        match value {
-            0 => TEOCLKFR::OTHER,
-            i => TEOCLKFR::_Reserved(i),
+}
+#[doc = "Reader of field `TEOCLKF`"]
+pub type TEOCLKF_R = crate::R<u8, TEOCLKF_A>;
+impl TEOCLKF_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, TEOCLKF_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(TEOCLKF_A::OTHER),
+            i => Res(i),
         }
     }
     #[doc = "Checks if the value of the field is `OTHER`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_other(&self) -> bool {
-        *self == TEOCLKFR::OTHER
+        *self == TEOCLKF_A::OTHER
     }
 }
-#[doc = "Possible values of the field `TEOCLKU`"]
+#[doc = "Timeout Clock Unit\n\nValue on reset: 1"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum TEOCLKUR {
-    #[doc = "kHz"]
+pub enum TEOCLKU_A {
+    #[doc = "0: kHz"]
     KHZ,
-    #[doc = "MHz"]
+    #[doc = "1: MHz"]
     MHZ,
 }
-impl TEOCLKUR {
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        match *self {
-            TEOCLKUR::KHZ => false,
-            TEOCLKUR::MHZ => true,
+impl From<TEOCLKU_A> for bool {
+    #[inline(always)]
+    fn from(variant: TEOCLKU_A) -> Self {
+        match variant {
+            TEOCLKU_A::KHZ => false,
+            TEOCLKU_A::MHZ => true,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: bool) -> TEOCLKUR {
-        match value {
-            false => TEOCLKUR::KHZ,
-            true => TEOCLKUR::MHZ,
+}
+#[doc = "Reader of field `TEOCLKU`"]
+pub type TEOCLKU_R = crate::R<bool, TEOCLKU_A>;
+impl TEOCLKU_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> TEOCLKU_A {
+        match self.bits {
+            false => TEOCLKU_A::KHZ,
+            true => TEOCLKU_A::MHZ,
         }
     }
     #[doc = "Checks if the value of the field is `KHZ`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_khz(&self) -> bool {
-        *self == TEOCLKUR::KHZ
+        *self == TEOCLKU_A::KHZ
     }
     #[doc = "Checks if the value of the field is `MHZ`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_mhz(&self) -> bool {
-        *self == TEOCLKUR::MHZ
+        *self == TEOCLKU_A::MHZ
     }
 }
-#[doc = "Possible values of the field `BASECLKF`"]
+#[doc = "Base Clock Frequency\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum BASECLKFR {
-    #[doc = "Get information via another method"]
+pub enum BASECLKF_A {
+    #[doc = "0: Get information via another method"]
     OTHER,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
 }
-impl BASECLKFR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            BASECLKFR::OTHER => 0,
-            BASECLKFR::_Reserved(bits) => bits,
+impl From<BASECLKF_A> for u8 {
+    #[inline(always)]
+    fn from(variant: BASECLKF_A) -> Self {
+        match variant {
+            BASECLKF_A::OTHER => 0,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> BASECLKFR {
-        match value {
-            0 => BASECLKFR::OTHER,
-            i => BASECLKFR::_Reserved(i),
+}
+#[doc = "Reader of field `BASECLKF`"]
+pub type BASECLKF_R = crate::R<u8, BASECLKF_A>;
+impl BASECLKF_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, BASECLKF_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(BASECLKF_A::OTHER),
+            i => Res(i),
         }
     }
     #[doc = "Checks if the value of the field is `OTHER`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_other(&self) -> bool {
-        *self == BASECLKFR::OTHER
+        *self == BASECLKF_A::OTHER
     }
 }
-#[doc = "Possible values of the field `MAXBLKL`"]
+#[doc = "Max Block Length\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum MAXBLKLR {
-    #[doc = "512 bytes"]
+pub enum MAXBLKL_A {
+    #[doc = "0: 512 bytes"]
     _512,
-    #[doc = "1024 bytes"]
+    #[doc = "1: 1024 bytes"]
     _1024,
-    #[doc = "2048 bytes"]
+    #[doc = "2: 2048 bytes"]
     _2048,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
 }
-impl MAXBLKLR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            MAXBLKLR::_512 => 0,
-            MAXBLKLR::_1024 => 1,
-            MAXBLKLR::_2048 => 2,
-            MAXBLKLR::_Reserved(bits) => bits,
+impl From<MAXBLKL_A> for u8 {
+    #[inline(always)]
+    fn from(variant: MAXBLKL_A) -> Self {
+        match variant {
+            MAXBLKL_A::_512 => 0,
+            MAXBLKL_A::_1024 => 1,
+            MAXBLKL_A::_2048 => 2,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> MAXBLKLR {
-        match value {
-            0 => MAXBLKLR::_512,
-            1 => MAXBLKLR::_1024,
-            2 => MAXBLKLR::_2048,
-            i => MAXBLKLR::_Reserved(i),
+}
+#[doc = "Reader of field `MAXBLKL`"]
+pub type MAXBLKL_R = crate::R<u8, MAXBLKL_A>;
+impl MAXBLKL_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, MAXBLKL_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(MAXBLKL_A::_512),
+            1 => Val(MAXBLKL_A::_1024),
+            2 => Val(MAXBLKL_A::_2048),
+            i => Res(i),
         }
     }
     #[doc = "Checks if the value of the field is `_512`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_512(&self) -> bool {
-        *self == MAXBLKLR::_512
+        *self == MAXBLKL_A::_512
     }
     #[doc = "Checks if the value of the field is `_1024`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_1024(&self) -> bool {
-        *self == MAXBLKLR::_1024
+        *self == MAXBLKL_A::_1024
     }
     #[doc = "Checks if the value of the field is `_2048`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_2048(&self) -> bool {
-        *self == MAXBLKLR::_2048
+        *self == MAXBLKL_A::_2048
     }
 }
-#[doc = "Possible values of the field `ED8SUP`"]
+#[doc = "8-bit Support for Embedded Device\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum ED8SUPR {
-    #[doc = "8-bit Bus Width not Supported"]
+pub enum ED8SUP_A {
+    #[doc = "0: 8-bit Bus Width not Supported"]
     NO,
-    #[doc = "8-bit Bus Width Supported"]
+    #[doc = "1: 8-bit Bus Width Supported"]
     YES,
 }
-impl ED8SUPR {
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        match *self {
-            ED8SUPR::NO => false,
-            ED8SUPR::YES => true,
+impl From<ED8SUP_A> for bool {
+    #[inline(always)]
+    fn from(variant: ED8SUP_A) -> Self {
+        match variant {
+            ED8SUP_A::NO => false,
+            ED8SUP_A::YES => true,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: bool) -> ED8SUPR {
-        match value {
-            false => ED8SUPR::NO,
-            true => ED8SUPR::YES,
+}
+#[doc = "Reader of field `ED8SUP`"]
+pub type ED8SUP_R = crate::R<bool, ED8SUP_A>;
+impl ED8SUP_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> ED8SUP_A {
+        match self.bits {
+            false => ED8SUP_A::NO,
+            true => ED8SUP_A::YES,
         }
     }
     #[doc = "Checks if the value of the field is `NO`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_no(&self) -> bool {
-        *self == ED8SUPR::NO
+        *self == ED8SUP_A::NO
     }
     #[doc = "Checks if the value of the field is `YES`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_yes(&self) -> bool {
-        *self == ED8SUPR::YES
+        *self == ED8SUP_A::YES
     }
 }
-#[doc = "Possible values of the field `ADMA2SUP`"]
+#[doc = "ADMA2 Support\n\nValue on reset: 1"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum ADMA2SUPR {
-    #[doc = "ADMA2 not Supported"]
+pub enum ADMA2SUP_A {
+    #[doc = "0: ADMA2 not Supported"]
     NO,
-    #[doc = "ADMA2 Supported"]
+    #[doc = "1: ADMA2 Supported"]
     YES,
 }
-impl ADMA2SUPR {
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        match *self {
-            ADMA2SUPR::NO => false,
-            ADMA2SUPR::YES => true,
+impl From<ADMA2SUP_A> for bool {
+    #[inline(always)]
+    fn from(variant: ADMA2SUP_A) -> Self {
+        match variant {
+            ADMA2SUP_A::NO => false,
+            ADMA2SUP_A::YES => true,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: bool) -> ADMA2SUPR {
-        match value {
-            false => ADMA2SUPR::NO,
-            true => ADMA2SUPR::YES,
+}
+#[doc = "Reader of field `ADMA2SUP`"]
+pub type ADMA2SUP_R = crate::R<bool, ADMA2SUP_A>;
+impl ADMA2SUP_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> ADMA2SUP_A {
+        match self.bits {
+            false => ADMA2SUP_A::NO,
+            true => ADMA2SUP_A::YES,
         }
     }
     #[doc = "Checks if the value of the field is `NO`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_no(&self) -> bool {
-        *self == ADMA2SUPR::NO
+        *self == ADMA2SUP_A::NO
     }
     #[doc = "Checks if the value of the field is `YES`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_yes(&self) -> bool {
-        *self == ADMA2SUPR::YES
+        *self == ADMA2SUP_A::YES
     }
 }
-#[doc = "Possible values of the field `HSSUP`"]
+#[doc = "High Speed Support\n\nValue on reset: 1"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum HSSUPR {
-    #[doc = "High Speed not Supported"]
+pub enum HSSUP_A {
+    #[doc = "0: High Speed not Supported"]
     NO,
-    #[doc = "High Speed Supported"]
+    #[doc = "1: High Speed Supported"]
     YES,
 }
-impl HSSUPR {
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        match *self {
-            HSSUPR::NO => false,
-            HSSUPR::YES => true,
+impl From<HSSUP_A> for bool {
+    #[inline(always)]
+    fn from(variant: HSSUP_A) -> Self {
+        match variant {
+            HSSUP_A::NO => false,
+            HSSUP_A::YES => true,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: bool) -> HSSUPR {
-        match value {
-            false => HSSUPR::NO,
-            true => HSSUPR::YES,
+}
+#[doc = "Reader of field `HSSUP`"]
+pub type HSSUP_R = crate::R<bool, HSSUP_A>;
+impl HSSUP_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> HSSUP_A {
+        match self.bits {
+            false => HSSUP_A::NO,
+            true => HSSUP_A::YES,
         }
     }
     #[doc = "Checks if the value of the field is `NO`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_no(&self) -> bool {
-        *self == HSSUPR::NO
+        *self == HSSUP_A::NO
     }
     #[doc = "Checks if the value of the field is `YES`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_yes(&self) -> bool {
-        *self == HSSUPR::YES
+        *self == HSSUP_A::YES
     }
 }
-#[doc = "Possible values of the field `SDMASUP`"]
+#[doc = "SDMA Support\n\nValue on reset: 1"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum SDMASUPR {
-    #[doc = "SDMA not Supported"]
+pub enum SDMASUP_A {
+    #[doc = "0: SDMA not Supported"]
     NO,
-    #[doc = "SDMA Supported"]
+    #[doc = "1: SDMA Supported"]
     YES,
 }
-impl SDMASUPR {
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        match *self {
-            SDMASUPR::NO => false,
-            SDMASUPR::YES => true,
+impl From<SDMASUP_A> for bool {
+    #[inline(always)]
+    fn from(variant: SDMASUP_A) -> Self {
+        match variant {
+            SDMASUP_A::NO => false,
+            SDMASUP_A::YES => true,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: bool) -> SDMASUPR {
-        match value {
-            false => SDMASUPR::NO,
-            true => SDMASUPR::YES,
+}
+#[doc = "Reader of field `SDMASUP`"]
+pub type SDMASUP_R = crate::R<bool, SDMASUP_A>;
+impl SDMASUP_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> SDMASUP_A {
+        match self.bits {
+            false => SDMASUP_A::NO,
+            true => SDMASUP_A::YES,
         }
     }
     #[doc = "Checks if the value of the field is `NO`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_no(&self) -> bool {
-        *self == SDMASUPR::NO
+        *self == SDMASUP_A::NO
     }
     #[doc = "Checks if the value of the field is `YES`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_yes(&self) -> bool {
-        *self == SDMASUPR::YES
+        *self == SDMASUP_A::YES
     }
 }
-#[doc = "Possible values of the field `SRSUP`"]
+#[doc = "Suspend/Resume Support\n\nValue on reset: 1"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum SRSUPR {
-    #[doc = "Suspend/Resume not Supported"]
+pub enum SRSUP_A {
+    #[doc = "0: Suspend/Resume not Supported"]
     NO,
-    #[doc = "Suspend/Resume Supported"]
+    #[doc = "1: Suspend/Resume Supported"]
     YES,
 }
-impl SRSUPR {
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        match *self {
-            SRSUPR::NO => false,
-            SRSUPR::YES => true,
+impl From<SRSUP_A> for bool {
+    #[inline(always)]
+    fn from(variant: SRSUP_A) -> Self {
+        match variant {
+            SRSUP_A::NO => false,
+            SRSUP_A::YES => true,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: bool) -> SRSUPR {
-        match value {
-            false => SRSUPR::NO,
-            true => SRSUPR::YES,
+}
+#[doc = "Reader of field `SRSUP`"]
+pub type SRSUP_R = crate::R<bool, SRSUP_A>;
+impl SRSUP_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> SRSUP_A {
+        match self.bits {
+            false => SRSUP_A::NO,
+            true => SRSUP_A::YES,
         }
     }
     #[doc = "Checks if the value of the field is `NO`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_no(&self) -> bool {
-        *self == SRSUPR::NO
+        *self == SRSUP_A::NO
     }
     #[doc = "Checks if the value of the field is `YES`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_yes(&self) -> bool {
-        *self == SRSUPR::YES
+        *self == SRSUP_A::YES
     }
 }
-#[doc = "Possible values of the field `V33VSUP`"]
+#[doc = "Voltage Support 3.3V\n\nValue on reset: 1"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum V33VSUPR {
-    #[doc = "3.3V Not Supported"]
+pub enum V33VSUP_A {
+    #[doc = "0: 3.3V Not Supported"]
     NO,
-    #[doc = "3.3V Supported"]
+    #[doc = "1: 3.3V Supported"]
     YES,
 }
-impl V33VSUPR {
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        match *self {
-            V33VSUPR::NO => false,
-            V33VSUPR::YES => true,
+impl From<V33VSUP_A> for bool {
+    #[inline(always)]
+    fn from(variant: V33VSUP_A) -> Self {
+        match variant {
+            V33VSUP_A::NO => false,
+            V33VSUP_A::YES => true,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: bool) -> V33VSUPR {
-        match value {
-            false => V33VSUPR::NO,
-            true => V33VSUPR::YES,
+}
+#[doc = "Reader of field `V33VSUP`"]
+pub type V33VSUP_R = crate::R<bool, V33VSUP_A>;
+impl V33VSUP_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> V33VSUP_A {
+        match self.bits {
+            false => V33VSUP_A::NO,
+            true => V33VSUP_A::YES,
         }
     }
     #[doc = "Checks if the value of the field is `NO`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_no(&self) -> bool {
-        *self == V33VSUPR::NO
+        *self == V33VSUP_A::NO
     }
     #[doc = "Checks if the value of the field is `YES`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_yes(&self) -> bool {
-        *self == V33VSUPR::YES
+        *self == V33VSUP_A::YES
     }
 }
-#[doc = "Possible values of the field `V30VSUP`"]
+#[doc = "Voltage Support 3.0V\n\nValue on reset: 1"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum V30VSUPR {
-    #[doc = "3.0V Not Supported"]
+pub enum V30VSUP_A {
+    #[doc = "0: 3.0V Not Supported"]
     NO,
-    #[doc = "3.0V Supported"]
+    #[doc = "1: 3.0V Supported"]
     YES,
 }
-impl V30VSUPR {
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        match *self {
-            V30VSUPR::NO => false,
-            V30VSUPR::YES => true,
+impl From<V30VSUP_A> for bool {
+    #[inline(always)]
+    fn from(variant: V30VSUP_A) -> Self {
+        match variant {
+            V30VSUP_A::NO => false,
+            V30VSUP_A::YES => true,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: bool) -> V30VSUPR {
-        match value {
-            false => V30VSUPR::NO,
-            true => V30VSUPR::YES,
+}
+#[doc = "Reader of field `V30VSUP`"]
+pub type V30VSUP_R = crate::R<bool, V30VSUP_A>;
+impl V30VSUP_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> V30VSUP_A {
+        match self.bits {
+            false => V30VSUP_A::NO,
+            true => V30VSUP_A::YES,
         }
     }
     #[doc = "Checks if the value of the field is `NO`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_no(&self) -> bool {
-        *self == V30VSUPR::NO
+        *self == V30VSUP_A::NO
     }
     #[doc = "Checks if the value of the field is `YES`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_yes(&self) -> bool {
-        *self == V30VSUPR::YES
+        *self == V30VSUP_A::YES
     }
 }
-#[doc = "Possible values of the field `V18VSUP`"]
+#[doc = "Voltage Support 1.8V\n\nValue on reset: 1"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum V18VSUPR {
-    #[doc = "1.8V Not Supported"]
+pub enum V18VSUP_A {
+    #[doc = "0: 1.8V Not Supported"]
     NO,
-    #[doc = "1.8V Supported"]
+    #[doc = "1: 1.8V Supported"]
     YES,
 }
-impl V18VSUPR {
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        match *self {
-            V18VSUPR::NO => false,
-            V18VSUPR::YES => true,
+impl From<V18VSUP_A> for bool {
+    #[inline(always)]
+    fn from(variant: V18VSUP_A) -> Self {
+        match variant {
+            V18VSUP_A::NO => false,
+            V18VSUP_A::YES => true,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: bool) -> V18VSUPR {
-        match value {
-            false => V18VSUPR::NO,
-            true => V18VSUPR::YES,
+}
+#[doc = "Reader of field `V18VSUP`"]
+pub type V18VSUP_R = crate::R<bool, V18VSUP_A>;
+impl V18VSUP_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> V18VSUP_A {
+        match self.bits {
+            false => V18VSUP_A::NO,
+            true => V18VSUP_A::YES,
         }
     }
     #[doc = "Checks if the value of the field is `NO`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_no(&self) -> bool {
-        *self == V18VSUPR::NO
+        *self == V18VSUP_A::NO
     }
     #[doc = "Checks if the value of the field is `YES`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_yes(&self) -> bool {
-        *self == V18VSUPR::YES
+        *self == V18VSUP_A::YES
     }
 }
-#[doc = "Possible values of the field `SB64SUP`"]
+#[doc = "64-Bit System Bus Support\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum SB64SUPR {
-    #[doc = "32-bit Address Descriptors and System Bus"]
+pub enum SB64SUP_A {
+    #[doc = "0: 32-bit Address Descriptors and System Bus"]
     NO,
-    #[doc = "64-bit Address Descriptors and System Bus"]
+    #[doc = "1: 64-bit Address Descriptors and System Bus"]
     YES,
 }
-impl SB64SUPR {
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        match *self {
-            SB64SUPR::NO => false,
-            SB64SUPR::YES => true,
+impl From<SB64SUP_A> for bool {
+    #[inline(always)]
+    fn from(variant: SB64SUP_A) -> Self {
+        match variant {
+            SB64SUP_A::NO => false,
+            SB64SUP_A::YES => true,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: bool) -> SB64SUPR {
-        match value {
-            false => SB64SUPR::NO,
-            true => SB64SUPR::YES,
+}
+#[doc = "Reader of field `SB64SUP`"]
+pub type SB64SUP_R = crate::R<bool, SB64SUP_A>;
+impl SB64SUP_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> SB64SUP_A {
+        match self.bits {
+            false => SB64SUP_A::NO,
+            true => SB64SUP_A::YES,
         }
     }
     #[doc = "Checks if the value of the field is `NO`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_no(&self) -> bool {
-        *self == SB64SUPR::NO
+        *self == SB64SUP_A::NO
     }
     #[doc = "Checks if the value of the field is `YES`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_yes(&self) -> bool {
-        *self == SB64SUPR::YES
+        *self == SB64SUP_A::YES
     }
 }
-#[doc = "Possible values of the field `ASINTSUP`"]
+#[doc = "Asynchronous Interrupt Support\n\nValue on reset: 1"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum ASINTSUPR {
-    #[doc = "Asynchronous Interrupt not Supported"]
+pub enum ASINTSUP_A {
+    #[doc = "0: Asynchronous Interrupt not Supported"]
     NO,
-    #[doc = "Asynchronous Interrupt supported"]
+    #[doc = "1: Asynchronous Interrupt supported"]
     YES,
 }
-impl ASINTSUPR {
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        match *self {
-            ASINTSUPR::NO => false,
-            ASINTSUPR::YES => true,
+impl From<ASINTSUP_A> for bool {
+    #[inline(always)]
+    fn from(variant: ASINTSUP_A) -> Self {
+        match variant {
+            ASINTSUP_A::NO => false,
+            ASINTSUP_A::YES => true,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: bool) -> ASINTSUPR {
-        match value {
-            false => ASINTSUPR::NO,
-            true => ASINTSUPR::YES,
+}
+#[doc = "Reader of field `ASINTSUP`"]
+pub type ASINTSUP_R = crate::R<bool, ASINTSUP_A>;
+impl ASINTSUP_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> ASINTSUP_A {
+        match self.bits {
+            false => ASINTSUP_A::NO,
+            true => ASINTSUP_A::YES,
         }
     }
     #[doc = "Checks if the value of the field is `NO`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_no(&self) -> bool {
-        *self == ASINTSUPR::NO
+        *self == ASINTSUP_A::NO
     }
     #[doc = "Checks if the value of the field is `YES`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_yes(&self) -> bool {
-        *self == ASINTSUPR::YES
+        *self == ASINTSUP_A::YES
     }
 }
-#[doc = "Possible values of the field `SLTYPE`"]
+#[doc = "Slot Type\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum SLTYPER {
-    #[doc = "Removable Card Slot"]
+pub enum SLTYPE_A {
+    #[doc = "0: Removable Card Slot"]
     REMOVABLE,
-    #[doc = "Embedded Slot for One Device"]
+    #[doc = "1: Embedded Slot for One Device"]
     EMBEDDED,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
 }
-impl SLTYPER {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            SLTYPER::REMOVABLE => 0,
-            SLTYPER::EMBEDDED => 1,
-            SLTYPER::_Reserved(bits) => bits,
+impl From<SLTYPE_A> for u8 {
+    #[inline(always)]
+    fn from(variant: SLTYPE_A) -> Self {
+        match variant {
+            SLTYPE_A::REMOVABLE => 0,
+            SLTYPE_A::EMBEDDED => 1,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> SLTYPER {
-        match value {
-            0 => SLTYPER::REMOVABLE,
-            1 => SLTYPER::EMBEDDED,
-            i => SLTYPER::_Reserved(i),
+}
+#[doc = "Reader of field `SLTYPE`"]
+pub type SLTYPE_R = crate::R<u8, SLTYPE_A>;
+impl SLTYPE_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, SLTYPE_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(SLTYPE_A::REMOVABLE),
+            1 => Val(SLTYPE_A::EMBEDDED),
+            i => Res(i),
         }
     }
     #[doc = "Checks if the value of the field is `REMOVABLE`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_removable(&self) -> bool {
-        *self == SLTYPER::REMOVABLE
+        *self == SLTYPE_A::REMOVABLE
     }
     #[doc = "Checks if the value of the field is `EMBEDDED`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_embedded(&self) -> bool {
-        *self == SLTYPER::EMBEDDED
+        *self == SLTYPE_A::EMBEDDED
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u32 {
-        self.bits
-    }
     #[doc = "Bits 0:5 - Timeout Clock Frequency"]
-    #[inline]
-    pub fn teoclkf(&self) -> TEOCLKFR {
-        TEOCLKFR::_from({
-            const MASK: u8 = 63;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+    #[inline(always)]
+    pub fn teoclkf(&self) -> TEOCLKF_R {
+        TEOCLKF_R::new((self.bits & 0x3f) as u8)
     }
     #[doc = "Bit 7 - Timeout Clock Unit"]
-    #[inline]
-    pub fn teoclku(&self) -> TEOCLKUR {
-        TEOCLKUR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 7;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        })
+    #[inline(always)]
+    pub fn teoclku(&self) -> TEOCLKU_R {
+        TEOCLKU_R::new(((self.bits >> 7) & 0x01) != 0)
     }
     #[doc = "Bits 8:15 - Base Clock Frequency"]
-    #[inline]
-    pub fn baseclkf(&self) -> BASECLKFR {
-        BASECLKFR::_from({
-            const MASK: u8 = 255;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+    #[inline(always)]
+    pub fn baseclkf(&self) -> BASECLKF_R {
+        BASECLKF_R::new(((self.bits >> 8) & 0xff) as u8)
     }
     #[doc = "Bits 16:17 - Max Block Length"]
-    #[inline]
-    pub fn maxblkl(&self) -> MAXBLKLR {
-        MAXBLKLR::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 16;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+    #[inline(always)]
+    pub fn maxblkl(&self) -> MAXBLKL_R {
+        MAXBLKL_R::new(((self.bits >> 16) & 0x03) as u8)
     }
     #[doc = "Bit 18 - 8-bit Support for Embedded Device"]
-    #[inline]
-    pub fn ed8sup(&self) -> ED8SUPR {
-        ED8SUPR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 18;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        })
+    #[inline(always)]
+    pub fn ed8sup(&self) -> ED8SUP_R {
+        ED8SUP_R::new(((self.bits >> 18) & 0x01) != 0)
     }
     #[doc = "Bit 19 - ADMA2 Support"]
-    #[inline]
-    pub fn adma2sup(&self) -> ADMA2SUPR {
-        ADMA2SUPR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 19;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        })
+    #[inline(always)]
+    pub fn adma2sup(&self) -> ADMA2SUP_R {
+        ADMA2SUP_R::new(((self.bits >> 19) & 0x01) != 0)
     }
     #[doc = "Bit 21 - High Speed Support"]
-    #[inline]
-    pub fn hssup(&self) -> HSSUPR {
-        HSSUPR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 21;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        })
+    #[inline(always)]
+    pub fn hssup(&self) -> HSSUP_R {
+        HSSUP_R::new(((self.bits >> 21) & 0x01) != 0)
     }
     #[doc = "Bit 22 - SDMA Support"]
-    #[inline]
-    pub fn sdmasup(&self) -> SDMASUPR {
-        SDMASUPR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 22;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        })
+    #[inline(always)]
+    pub fn sdmasup(&self) -> SDMASUP_R {
+        SDMASUP_R::new(((self.bits >> 22) & 0x01) != 0)
     }
     #[doc = "Bit 23 - Suspend/Resume Support"]
-    #[inline]
-    pub fn srsup(&self) -> SRSUPR {
-        SRSUPR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 23;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        })
+    #[inline(always)]
+    pub fn srsup(&self) -> SRSUP_R {
+        SRSUP_R::new(((self.bits >> 23) & 0x01) != 0)
     }
     #[doc = "Bit 24 - Voltage Support 3.3V"]
-    #[inline]
-    pub fn v33vsup(&self) -> V33VSUPR {
-        V33VSUPR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 24;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        })
+    #[inline(always)]
+    pub fn v33vsup(&self) -> V33VSUP_R {
+        V33VSUP_R::new(((self.bits >> 24) & 0x01) != 0)
     }
     #[doc = "Bit 25 - Voltage Support 3.0V"]
-    #[inline]
-    pub fn v30vsup(&self) -> V30VSUPR {
-        V30VSUPR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 25;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        })
+    #[inline(always)]
+    pub fn v30vsup(&self) -> V30VSUP_R {
+        V30VSUP_R::new(((self.bits >> 25) & 0x01) != 0)
     }
     #[doc = "Bit 26 - Voltage Support 1.8V"]
-    #[inline]
-    pub fn v18vsup(&self) -> V18VSUPR {
-        V18VSUPR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 26;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        })
+    #[inline(always)]
+    pub fn v18vsup(&self) -> V18VSUP_R {
+        V18VSUP_R::new(((self.bits >> 26) & 0x01) != 0)
     }
     #[doc = "Bit 28 - 64-Bit System Bus Support"]
-    #[inline]
-    pub fn sb64sup(&self) -> SB64SUPR {
-        SB64SUPR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 28;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        })
+    #[inline(always)]
+    pub fn sb64sup(&self) -> SB64SUP_R {
+        SB64SUP_R::new(((self.bits >> 28) & 0x01) != 0)
     }
     #[doc = "Bit 29 - Asynchronous Interrupt Support"]
-    #[inline]
-    pub fn asintsup(&self) -> ASINTSUPR {
-        ASINTSUPR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 29;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        })
+    #[inline(always)]
+    pub fn asintsup(&self) -> ASINTSUP_R {
+        ASINTSUP_R::new(((self.bits >> 29) & 0x01) != 0)
     }
     #[doc = "Bits 30:31 - Slot Type"]
-    #[inline]
-    pub fn sltype(&self) -> SLTYPER {
-        SLTYPER::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 30;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+    #[inline(always)]
+    pub fn sltype(&self) -> SLTYPE_R {
+        SLTYPE_R::new(((self.bits >> 30) & 0x03) as u8)
     }
 }

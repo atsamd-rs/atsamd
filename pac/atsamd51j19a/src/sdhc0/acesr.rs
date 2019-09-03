@@ -1,356 +1,268 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u16,
-}
-impl super::ACESR {
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-}
-#[doc = "Possible values of the field `ACMD12NE`"]
+#[doc = "Reader of register ACESR"]
+pub type R = crate::R<u16, super::ACESR>;
+#[doc = "Auto CMD12 Not Executed\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum ACMD12NER {
-    #[doc = "Executed"]
+pub enum ACMD12NE_A {
+    #[doc = "0: Executed"]
     EXEC,
-    #[doc = "Not executed"]
+    #[doc = "1: Not executed"]
     NOT_EXEC,
 }
-impl ACMD12NER {
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        match *self {
-            ACMD12NER::EXEC => false,
-            ACMD12NER::NOT_EXEC => true,
+impl From<ACMD12NE_A> for bool {
+    #[inline(always)]
+    fn from(variant: ACMD12NE_A) -> Self {
+        match variant {
+            ACMD12NE_A::EXEC => false,
+            ACMD12NE_A::NOT_EXEC => true,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: bool) -> ACMD12NER {
-        match value {
-            false => ACMD12NER::EXEC,
-            true => ACMD12NER::NOT_EXEC,
+}
+#[doc = "Reader of field `ACMD12NE`"]
+pub type ACMD12NE_R = crate::R<bool, ACMD12NE_A>;
+impl ACMD12NE_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> ACMD12NE_A {
+        match self.bits {
+            false => ACMD12NE_A::EXEC,
+            true => ACMD12NE_A::NOT_EXEC,
         }
     }
     #[doc = "Checks if the value of the field is `EXEC`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_exec(&self) -> bool {
-        *self == ACMD12NER::EXEC
+        *self == ACMD12NE_A::EXEC
     }
     #[doc = "Checks if the value of the field is `NOT_EXEC`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_not_exec(&self) -> bool {
-        *self == ACMD12NER::NOT_EXEC
+        *self == ACMD12NE_A::NOT_EXEC
     }
 }
-#[doc = "Possible values of the field `ACMDTEO`"]
+#[doc = "Auto CMD Timeout Error\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum ACMDTEOR {
-    #[doc = "No error"]
+pub enum ACMDTEO_A {
+    #[doc = "0: No error"]
     NO,
-    #[doc = "Timeout"]
+    #[doc = "1: Timeout"]
     YES,
 }
-impl ACMDTEOR {
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        match *self {
-            ACMDTEOR::NO => false,
-            ACMDTEOR::YES => true,
+impl From<ACMDTEO_A> for bool {
+    #[inline(always)]
+    fn from(variant: ACMDTEO_A) -> Self {
+        match variant {
+            ACMDTEO_A::NO => false,
+            ACMDTEO_A::YES => true,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: bool) -> ACMDTEOR {
-        match value {
-            false => ACMDTEOR::NO,
-            true => ACMDTEOR::YES,
+}
+#[doc = "Reader of field `ACMDTEO`"]
+pub type ACMDTEO_R = crate::R<bool, ACMDTEO_A>;
+impl ACMDTEO_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> ACMDTEO_A {
+        match self.bits {
+            false => ACMDTEO_A::NO,
+            true => ACMDTEO_A::YES,
         }
     }
     #[doc = "Checks if the value of the field is `NO`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_no(&self) -> bool {
-        *self == ACMDTEOR::NO
+        *self == ACMDTEO_A::NO
     }
     #[doc = "Checks if the value of the field is `YES`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_yes(&self) -> bool {
-        *self == ACMDTEOR::YES
+        *self == ACMDTEO_A::YES
     }
 }
-#[doc = "Possible values of the field `ACMDCRC`"]
+#[doc = "Auto CMD CRC Error\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum ACMDCRCR {
-    #[doc = "No error"]
+pub enum ACMDCRC_A {
+    #[doc = "0: No error"]
     NO,
-    #[doc = "CRC Error Generated"]
+    #[doc = "1: CRC Error Generated"]
     YES,
 }
-impl ACMDCRCR {
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        match *self {
-            ACMDCRCR::NO => false,
-            ACMDCRCR::YES => true,
+impl From<ACMDCRC_A> for bool {
+    #[inline(always)]
+    fn from(variant: ACMDCRC_A) -> Self {
+        match variant {
+            ACMDCRC_A::NO => false,
+            ACMDCRC_A::YES => true,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: bool) -> ACMDCRCR {
-        match value {
-            false => ACMDCRCR::NO,
-            true => ACMDCRCR::YES,
+}
+#[doc = "Reader of field `ACMDCRC`"]
+pub type ACMDCRC_R = crate::R<bool, ACMDCRC_A>;
+impl ACMDCRC_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> ACMDCRC_A {
+        match self.bits {
+            false => ACMDCRC_A::NO,
+            true => ACMDCRC_A::YES,
         }
     }
     #[doc = "Checks if the value of the field is `NO`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_no(&self) -> bool {
-        *self == ACMDCRCR::NO
+        *self == ACMDCRC_A::NO
     }
     #[doc = "Checks if the value of the field is `YES`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_yes(&self) -> bool {
-        *self == ACMDCRCR::YES
+        *self == ACMDCRC_A::YES
     }
 }
-#[doc = "Possible values of the field `ACMDEND`"]
+#[doc = "Auto CMD End Bit Error\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum ACMDENDR {
-    #[doc = "No error"]
+pub enum ACMDEND_A {
+    #[doc = "0: No error"]
     NO,
-    #[doc = "End Bit Error Generated"]
+    #[doc = "1: End Bit Error Generated"]
     YES,
 }
-impl ACMDENDR {
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        match *self {
-            ACMDENDR::NO => false,
-            ACMDENDR::YES => true,
+impl From<ACMDEND_A> for bool {
+    #[inline(always)]
+    fn from(variant: ACMDEND_A) -> Self {
+        match variant {
+            ACMDEND_A::NO => false,
+            ACMDEND_A::YES => true,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: bool) -> ACMDENDR {
-        match value {
-            false => ACMDENDR::NO,
-            true => ACMDENDR::YES,
+}
+#[doc = "Reader of field `ACMDEND`"]
+pub type ACMDEND_R = crate::R<bool, ACMDEND_A>;
+impl ACMDEND_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> ACMDEND_A {
+        match self.bits {
+            false => ACMDEND_A::NO,
+            true => ACMDEND_A::YES,
         }
     }
     #[doc = "Checks if the value of the field is `NO`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_no(&self) -> bool {
-        *self == ACMDENDR::NO
+        *self == ACMDEND_A::NO
     }
     #[doc = "Checks if the value of the field is `YES`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_yes(&self) -> bool {
-        *self == ACMDENDR::YES
+        *self == ACMDEND_A::YES
     }
 }
-#[doc = "Possible values of the field `ACMDIDX`"]
+#[doc = "Auto CMD Index Error\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum ACMDIDXR {
-    #[doc = "No error"]
+pub enum ACMDIDX_A {
+    #[doc = "0: No error"]
     NO,
-    #[doc = "Error"]
+    #[doc = "1: Error"]
     YES,
 }
-impl ACMDIDXR {
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        match *self {
-            ACMDIDXR::NO => false,
-            ACMDIDXR::YES => true,
+impl From<ACMDIDX_A> for bool {
+    #[inline(always)]
+    fn from(variant: ACMDIDX_A) -> Self {
+        match variant {
+            ACMDIDX_A::NO => false,
+            ACMDIDX_A::YES => true,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: bool) -> ACMDIDXR {
-        match value {
-            false => ACMDIDXR::NO,
-            true => ACMDIDXR::YES,
+}
+#[doc = "Reader of field `ACMDIDX`"]
+pub type ACMDIDX_R = crate::R<bool, ACMDIDX_A>;
+impl ACMDIDX_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> ACMDIDX_A {
+        match self.bits {
+            false => ACMDIDX_A::NO,
+            true => ACMDIDX_A::YES,
         }
     }
     #[doc = "Checks if the value of the field is `NO`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_no(&self) -> bool {
-        *self == ACMDIDXR::NO
+        *self == ACMDIDX_A::NO
     }
     #[doc = "Checks if the value of the field is `YES`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_yes(&self) -> bool {
-        *self == ACMDIDXR::YES
+        *self == ACMDIDX_A::YES
     }
 }
-#[doc = "Possible values of the field `CMDNI`"]
+#[doc = "Command not Issued By Auto CMD12 Error\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum CMDNIR {
-    #[doc = "No error"]
+pub enum CMDNI_A {
+    #[doc = "0: No error"]
     OK,
-    #[doc = "Not Issued"]
+    #[doc = "1: Not Issued"]
     NOT_ISSUED,
 }
-impl CMDNIR {
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        match *self {
-            CMDNIR::OK => false,
-            CMDNIR::NOT_ISSUED => true,
+impl From<CMDNI_A> for bool {
+    #[inline(always)]
+    fn from(variant: CMDNI_A) -> Self {
+        match variant {
+            CMDNI_A::OK => false,
+            CMDNI_A::NOT_ISSUED => true,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: bool) -> CMDNIR {
-        match value {
-            false => CMDNIR::OK,
-            true => CMDNIR::NOT_ISSUED,
+}
+#[doc = "Reader of field `CMDNI`"]
+pub type CMDNI_R = crate::R<bool, CMDNI_A>;
+impl CMDNI_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> CMDNI_A {
+        match self.bits {
+            false => CMDNI_A::OK,
+            true => CMDNI_A::NOT_ISSUED,
         }
     }
     #[doc = "Checks if the value of the field is `OK`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_ok(&self) -> bool {
-        *self == CMDNIR::OK
+        *self == CMDNI_A::OK
     }
     #[doc = "Checks if the value of the field is `NOT_ISSUED`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_not_issued(&self) -> bool {
-        *self == CMDNIR::NOT_ISSUED
+        *self == CMDNI_A::NOT_ISSUED
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u16 {
-        self.bits
-    }
     #[doc = "Bit 0 - Auto CMD12 Not Executed"]
-    #[inline]
-    pub fn acmd12ne(&self) -> ACMD12NER {
-        ACMD12NER::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        })
+    #[inline(always)]
+    pub fn acmd12ne(&self) -> ACMD12NE_R {
+        ACMD12NE_R::new((self.bits & 0x01) != 0)
     }
     #[doc = "Bit 1 - Auto CMD Timeout Error"]
-    #[inline]
-    pub fn acmdteo(&self) -> ACMDTEOR {
-        ACMDTEOR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        })
+    #[inline(always)]
+    pub fn acmdteo(&self) -> ACMDTEO_R {
+        ACMDTEO_R::new(((self.bits >> 1) & 0x01) != 0)
     }
     #[doc = "Bit 2 - Auto CMD CRC Error"]
-    #[inline]
-    pub fn acmdcrc(&self) -> ACMDCRCR {
-        ACMDCRCR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        })
+    #[inline(always)]
+    pub fn acmdcrc(&self) -> ACMDCRC_R {
+        ACMDCRC_R::new(((self.bits >> 2) & 0x01) != 0)
     }
     #[doc = "Bit 3 - Auto CMD End Bit Error"]
-    #[inline]
-    pub fn acmdend(&self) -> ACMDENDR {
-        ACMDENDR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 3;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        })
+    #[inline(always)]
+    pub fn acmdend(&self) -> ACMDEND_R {
+        ACMDEND_R::new(((self.bits >> 3) & 0x01) != 0)
     }
     #[doc = "Bit 4 - Auto CMD Index Error"]
-    #[inline]
-    pub fn acmdidx(&self) -> ACMDIDXR {
-        ACMDIDXR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        })
+    #[inline(always)]
+    pub fn acmdidx(&self) -> ACMDIDX_R {
+        ACMDIDX_R::new(((self.bits >> 4) & 0x01) != 0)
     }
     #[doc = "Bit 7 - Command not Issued By Auto CMD12 Error"]
-    #[inline]
-    pub fn cmdni(&self) -> CMDNIR {
-        CMDNIR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 7;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        })
+    #[inline(always)]
+    pub fn cmdni(&self) -> CMDNI_R {
+        CMDNI_R::new(((self.bits >> 7) & 0x01) != 0)
     }
 }

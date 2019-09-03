@@ -1,723 +1,427 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u32,
-}
-#[doc = r" Value to write to the register"]
-pub struct W {
-    bits: u32,
-}
-impl super::EVCTRL {
-    #[doc = r" Modifies the contents of the register"]
-    #[inline]
-    pub fn modify<F>(&self, f: F)
-    where
-        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
-    {
-        let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-    #[doc = r" Writes to the register"]
-    #[inline]
-    pub fn write<F>(&self, f: F)
-    where
-        F: FnOnce(&mut W) -> &mut W,
-    {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Writes the reset value to the register"]
-    #[inline]
-    pub fn reset(&self) {
-        self.write(|w| w)
+#[doc = "Reader of register EVCTRL%s"]
+pub type R = crate::R<u32, super::EVCTRL>;
+#[doc = "Writer for register EVCTRL%s"]
+pub type W = crate::W<u32, super::EVCTRL>;
+#[doc = "Register EVCTRL%s `reset()`'s with value 0"]
+impl crate::ResetValue for super::EVCTRL {
+    type Type = u32;
+    #[inline(always)]
+    fn reset_value() -> Self::Type {
+        0
     }
 }
-#[doc = r" Value of the field"]
-pub struct PID0R {
-    bits: u8,
+#[doc = "Reader of field `PID0`"]
+pub type PID0_R = crate::R<u8, u8>;
+#[doc = "Write proxy for field `PID0`"]
+pub struct PID0_W<'a> {
+    w: &'a mut W,
 }
-impl PID0R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
+impl<'a> PID0_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub unsafe fn bits(self, value: u8) -> &'a mut W {
+        self.w.bits = (self.w.bits & !0x1f) | ((value as u32) & 0x1f);
+        self.w
     }
 }
-#[doc = "Possible values of the field `EVACT0`"]
+#[doc = "PORT Event Action 0\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum EVACT0R {
-    #[doc = "Event output to pin"]
+pub enum EVACT0_A {
+    #[doc = "0: Event output to pin"]
     OUT,
-    #[doc = "Set output register of pin on event"]
+    #[doc = "1: Set output register of pin on event"]
     SET,
-    #[doc = "Clear output register of pin on event"]
+    #[doc = "2: Clear output register of pin on event"]
     CLR,
-    #[doc = "Toggle output register of pin on event"]
+    #[doc = "3: Toggle output register of pin on event"]
     TGL,
 }
-impl EVACT0R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            EVACT0R::OUT => 0,
-            EVACT0R::SET => 1,
-            EVACT0R::CLR => 2,
-            EVACT0R::TGL => 3,
+impl From<EVACT0_A> for u8 {
+    #[inline(always)]
+    fn from(variant: EVACT0_A) -> Self {
+        match variant {
+            EVACT0_A::OUT => 0,
+            EVACT0_A::SET => 1,
+            EVACT0_A::CLR => 2,
+            EVACT0_A::TGL => 3,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> EVACT0R {
-        match value {
-            0 => EVACT0R::OUT,
-            1 => EVACT0R::SET,
-            2 => EVACT0R::CLR,
-            3 => EVACT0R::TGL,
+}
+#[doc = "Reader of field `EVACT0`"]
+pub type EVACT0_R = crate::R<u8, EVACT0_A>;
+impl EVACT0_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> EVACT0_A {
+        match self.bits {
+            0 => EVACT0_A::OUT,
+            1 => EVACT0_A::SET,
+            2 => EVACT0_A::CLR,
+            3 => EVACT0_A::TGL,
             _ => unreachable!(),
         }
     }
     #[doc = "Checks if the value of the field is `OUT`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_out(&self) -> bool {
-        *self == EVACT0R::OUT
+        *self == EVACT0_A::OUT
     }
     #[doc = "Checks if the value of the field is `SET`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_set(&self) -> bool {
-        *self == EVACT0R::SET
+        *self == EVACT0_A::SET
     }
     #[doc = "Checks if the value of the field is `CLR`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_clr(&self) -> bool {
-        *self == EVACT0R::CLR
+        *self == EVACT0_A::CLR
     }
     #[doc = "Checks if the value of the field is `TGL`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_tgl(&self) -> bool {
-        *self == EVACT0R::TGL
+        *self == EVACT0_A::TGL
     }
 }
-#[doc = r" Value of the field"]
-pub struct PORTEI0R {
-    bits: bool,
-}
-impl PORTEI0R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct PID1R {
-    bits: u8,
-}
-impl PID1R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
-}
-#[doc = r" Value of the field"]
-pub struct EVACT1R {
-    bits: u8,
-}
-impl EVACT1R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
-}
-#[doc = r" Value of the field"]
-pub struct PORTEI1R {
-    bits: bool,
-}
-impl PORTEI1R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct PID2R {
-    bits: u8,
-}
-impl PID2R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
-}
-#[doc = r" Value of the field"]
-pub struct EVACT2R {
-    bits: u8,
-}
-impl EVACT2R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
-}
-#[doc = r" Value of the field"]
-pub struct PORTEI2R {
-    bits: bool,
-}
-impl PORTEI2R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct PID3R {
-    bits: u8,
-}
-impl PID3R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
-}
-#[doc = r" Value of the field"]
-pub struct EVACT3R {
-    bits: u8,
-}
-impl EVACT3R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
-}
-#[doc = r" Value of the field"]
-pub struct PORTEI3R {
-    bits: bool,
-}
-impl PORTEI3R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Proxy"]
-pub struct _PID0W<'a> {
+#[doc = "Write proxy for field `EVACT0`"]
+pub struct EVACT0_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _PID0W<'a> {
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 31;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
-        self.w
-    }
-}
-#[doc = "Values that can be written to the field `EVACT0`"]
-pub enum EVACT0W {
-    #[doc = "Event output to pin"]
-    OUT,
-    #[doc = "Set output register of pin on event"]
-    SET,
-    #[doc = "Clear output register of pin on event"]
-    CLR,
-    #[doc = "Toggle output register of pin on event"]
-    TGL,
-}
-impl EVACT0W {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            EVACT0W::OUT => 0,
-            EVACT0W::SET => 1,
-            EVACT0W::CLR => 2,
-            EVACT0W::TGL => 3,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _EVACT0W<'a> {
-    w: &'a mut W,
-}
-impl<'a> _EVACT0W<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: EVACT0W) -> &'a mut W {
+impl<'a> EVACT0_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: EVACT0_A) -> &'a mut W {
         {
-            self.bits(variant._bits())
+            self.bits(variant.into())
         }
     }
     #[doc = "Event output to pin"]
-    #[inline]
+    #[inline(always)]
     pub fn out(self) -> &'a mut W {
-        self.variant(EVACT0W::OUT)
+        self.variant(EVACT0_A::OUT)
     }
     #[doc = "Set output register of pin on event"]
-    #[inline]
+    #[inline(always)]
     pub fn set(self) -> &'a mut W {
-        self.variant(EVACT0W::SET)
+        self.variant(EVACT0_A::SET)
     }
     #[doc = "Clear output register of pin on event"]
-    #[inline]
+    #[inline(always)]
     pub fn clr(self) -> &'a mut W {
-        self.variant(EVACT0W::CLR)
+        self.variant(EVACT0_A::CLR)
     }
     #[doc = "Toggle output register of pin on event"]
-    #[inline]
+    #[inline(always)]
     pub fn tgl(self) -> &'a mut W {
-        self.variant(EVACT0W::TGL)
+        self.variant(EVACT0_A::TGL)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 5;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x03 << 5)) | (((value as u32) & 0x03) << 5);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _PORTEI0W<'a> {
+#[doc = "Reader of field `PORTEI0`"]
+pub type PORTEI0_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `PORTEI0`"]
+pub struct PORTEI0_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _PORTEI0W<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> PORTEI0_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 7;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 7)) | (((value as u32) & 0x01) << 7);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _PID1W<'a> {
+#[doc = "Reader of field `PID1`"]
+pub type PID1_R = crate::R<u8, u8>;
+#[doc = "Write proxy for field `PID1`"]
+pub struct PID1_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _PID1W<'a> {
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+impl<'a> PID1_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 31;
-        const OFFSET: u8 = 8;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x1f << 8)) | (((value as u32) & 0x1f) << 8);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _EVACT1W<'a> {
+#[doc = "Reader of field `EVACT1`"]
+pub type EVACT1_R = crate::R<u8, u8>;
+#[doc = "Write proxy for field `EVACT1`"]
+pub struct EVACT1_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _EVACT1W<'a> {
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+impl<'a> EVACT1_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 13;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x03 << 13)) | (((value as u32) & 0x03) << 13);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _PORTEI1W<'a> {
+#[doc = "Reader of field `PORTEI1`"]
+pub type PORTEI1_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `PORTEI1`"]
+pub struct PORTEI1_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _PORTEI1W<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> PORTEI1_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 15;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 15)) | (((value as u32) & 0x01) << 15);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _PID2W<'a> {
+#[doc = "Reader of field `PID2`"]
+pub type PID2_R = crate::R<u8, u8>;
+#[doc = "Write proxy for field `PID2`"]
+pub struct PID2_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _PID2W<'a> {
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+impl<'a> PID2_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 31;
-        const OFFSET: u8 = 16;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x1f << 16)) | (((value as u32) & 0x1f) << 16);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _EVACT2W<'a> {
+#[doc = "Reader of field `EVACT2`"]
+pub type EVACT2_R = crate::R<u8, u8>;
+#[doc = "Write proxy for field `EVACT2`"]
+pub struct EVACT2_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _EVACT2W<'a> {
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+impl<'a> EVACT2_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 21;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x03 << 21)) | (((value as u32) & 0x03) << 21);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _PORTEI2W<'a> {
+#[doc = "Reader of field `PORTEI2`"]
+pub type PORTEI2_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `PORTEI2`"]
+pub struct PORTEI2_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _PORTEI2W<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> PORTEI2_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 23;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 23)) | (((value as u32) & 0x01) << 23);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _PID3W<'a> {
+#[doc = "Reader of field `PID3`"]
+pub type PID3_R = crate::R<u8, u8>;
+#[doc = "Write proxy for field `PID3`"]
+pub struct PID3_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _PID3W<'a> {
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+impl<'a> PID3_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 31;
-        const OFFSET: u8 = 24;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x1f << 24)) | (((value as u32) & 0x1f) << 24);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _EVACT3W<'a> {
+#[doc = "Reader of field `EVACT3`"]
+pub type EVACT3_R = crate::R<u8, u8>;
+#[doc = "Write proxy for field `EVACT3`"]
+pub struct EVACT3_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _EVACT3W<'a> {
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+impl<'a> EVACT3_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 29;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x03 << 29)) | (((value as u32) & 0x03) << 29);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _PORTEI3W<'a> {
+#[doc = "Reader of field `PORTEI3`"]
+pub type PORTEI3_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `PORTEI3`"]
+pub struct PORTEI3_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _PORTEI3W<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> PORTEI3_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 31;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 31)) | (((value as u32) & 0x01) << 31);
         self.w
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u32 {
-        self.bits
-    }
     #[doc = "Bits 0:4 - PORT Event Pin Identifier 0"]
-    #[inline]
-    pub fn pid0(&self) -> PID0R {
-        let bits = {
-            const MASK: u8 = 31;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
-        PID0R { bits }
+    #[inline(always)]
+    pub fn pid0(&self) -> PID0_R {
+        PID0_R::new((self.bits & 0x1f) as u8)
     }
     #[doc = "Bits 5:6 - PORT Event Action 0"]
-    #[inline]
-    pub fn evact0(&self) -> EVACT0R {
-        EVACT0R::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 5;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+    #[inline(always)]
+    pub fn evact0(&self) -> EVACT0_R {
+        EVACT0_R::new(((self.bits >> 5) & 0x03) as u8)
     }
     #[doc = "Bit 7 - PORT Event Input Enable 0"]
-    #[inline]
-    pub fn portei0(&self) -> PORTEI0R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 7;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        PORTEI0R { bits }
+    #[inline(always)]
+    pub fn portei0(&self) -> PORTEI0_R {
+        PORTEI0_R::new(((self.bits >> 7) & 0x01) != 0)
     }
     #[doc = "Bits 8:12 - PORT Event Pin Identifier 1"]
-    #[inline]
-    pub fn pid1(&self) -> PID1R {
-        let bits = {
-            const MASK: u8 = 31;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
-        PID1R { bits }
+    #[inline(always)]
+    pub fn pid1(&self) -> PID1_R {
+        PID1_R::new(((self.bits >> 8) & 0x1f) as u8)
     }
     #[doc = "Bits 13:14 - PORT Event Action 1"]
-    #[inline]
-    pub fn evact1(&self) -> EVACT1R {
-        let bits = {
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 13;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
-        EVACT1R { bits }
+    #[inline(always)]
+    pub fn evact1(&self) -> EVACT1_R {
+        EVACT1_R::new(((self.bits >> 13) & 0x03) as u8)
     }
     #[doc = "Bit 15 - PORT Event Input Enable 1"]
-    #[inline]
-    pub fn portei1(&self) -> PORTEI1R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 15;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        PORTEI1R { bits }
+    #[inline(always)]
+    pub fn portei1(&self) -> PORTEI1_R {
+        PORTEI1_R::new(((self.bits >> 15) & 0x01) != 0)
     }
     #[doc = "Bits 16:20 - PORT Event Pin Identifier 2"]
-    #[inline]
-    pub fn pid2(&self) -> PID2R {
-        let bits = {
-            const MASK: u8 = 31;
-            const OFFSET: u8 = 16;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
-        PID2R { bits }
+    #[inline(always)]
+    pub fn pid2(&self) -> PID2_R {
+        PID2_R::new(((self.bits >> 16) & 0x1f) as u8)
     }
     #[doc = "Bits 21:22 - PORT Event Action 2"]
-    #[inline]
-    pub fn evact2(&self) -> EVACT2R {
-        let bits = {
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 21;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
-        EVACT2R { bits }
+    #[inline(always)]
+    pub fn evact2(&self) -> EVACT2_R {
+        EVACT2_R::new(((self.bits >> 21) & 0x03) as u8)
     }
     #[doc = "Bit 23 - PORT Event Input Enable 2"]
-    #[inline]
-    pub fn portei2(&self) -> PORTEI2R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 23;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        PORTEI2R { bits }
+    #[inline(always)]
+    pub fn portei2(&self) -> PORTEI2_R {
+        PORTEI2_R::new(((self.bits >> 23) & 0x01) != 0)
     }
     #[doc = "Bits 24:28 - PORT Event Pin Identifier 3"]
-    #[inline]
-    pub fn pid3(&self) -> PID3R {
-        let bits = {
-            const MASK: u8 = 31;
-            const OFFSET: u8 = 24;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
-        PID3R { bits }
+    #[inline(always)]
+    pub fn pid3(&self) -> PID3_R {
+        PID3_R::new(((self.bits >> 24) & 0x1f) as u8)
     }
     #[doc = "Bits 29:30 - PORT Event Action 3"]
-    #[inline]
-    pub fn evact3(&self) -> EVACT3R {
-        let bits = {
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 29;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
-        EVACT3R { bits }
+    #[inline(always)]
+    pub fn evact3(&self) -> EVACT3_R {
+        EVACT3_R::new(((self.bits >> 29) & 0x03) as u8)
     }
     #[doc = "Bit 31 - PORT Event Input Enable 3"]
-    #[inline]
-    pub fn portei3(&self) -> PORTEI3R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 31;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        PORTEI3R { bits }
+    #[inline(always)]
+    pub fn portei3(&self) -> PORTEI3_R {
+        PORTEI3_R::new(((self.bits >> 31) & 0x01) != 0)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
-    #[doc = r" Writes raw bits to the register"]
-    #[inline]
-    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.bits = bits;
-        self
-    }
     #[doc = "Bits 0:4 - PORT Event Pin Identifier 0"]
-    #[inline]
-    pub fn pid0(&mut self) -> _PID0W {
-        _PID0W { w: self }
+    #[inline(always)]
+    pub fn pid0(&mut self) -> PID0_W {
+        PID0_W { w: self }
     }
     #[doc = "Bits 5:6 - PORT Event Action 0"]
-    #[inline]
-    pub fn evact0(&mut self) -> _EVACT0W {
-        _EVACT0W { w: self }
+    #[inline(always)]
+    pub fn evact0(&mut self) -> EVACT0_W {
+        EVACT0_W { w: self }
     }
     #[doc = "Bit 7 - PORT Event Input Enable 0"]
-    #[inline]
-    pub fn portei0(&mut self) -> _PORTEI0W {
-        _PORTEI0W { w: self }
+    #[inline(always)]
+    pub fn portei0(&mut self) -> PORTEI0_W {
+        PORTEI0_W { w: self }
     }
     #[doc = "Bits 8:12 - PORT Event Pin Identifier 1"]
-    #[inline]
-    pub fn pid1(&mut self) -> _PID1W {
-        _PID1W { w: self }
+    #[inline(always)]
+    pub fn pid1(&mut self) -> PID1_W {
+        PID1_W { w: self }
     }
     #[doc = "Bits 13:14 - PORT Event Action 1"]
-    #[inline]
-    pub fn evact1(&mut self) -> _EVACT1W {
-        _EVACT1W { w: self }
+    #[inline(always)]
+    pub fn evact1(&mut self) -> EVACT1_W {
+        EVACT1_W { w: self }
     }
     #[doc = "Bit 15 - PORT Event Input Enable 1"]
-    #[inline]
-    pub fn portei1(&mut self) -> _PORTEI1W {
-        _PORTEI1W { w: self }
+    #[inline(always)]
+    pub fn portei1(&mut self) -> PORTEI1_W {
+        PORTEI1_W { w: self }
     }
     #[doc = "Bits 16:20 - PORT Event Pin Identifier 2"]
-    #[inline]
-    pub fn pid2(&mut self) -> _PID2W {
-        _PID2W { w: self }
+    #[inline(always)]
+    pub fn pid2(&mut self) -> PID2_W {
+        PID2_W { w: self }
     }
     #[doc = "Bits 21:22 - PORT Event Action 2"]
-    #[inline]
-    pub fn evact2(&mut self) -> _EVACT2W {
-        _EVACT2W { w: self }
+    #[inline(always)]
+    pub fn evact2(&mut self) -> EVACT2_W {
+        EVACT2_W { w: self }
     }
     #[doc = "Bit 23 - PORT Event Input Enable 2"]
-    #[inline]
-    pub fn portei2(&mut self) -> _PORTEI2W {
-        _PORTEI2W { w: self }
+    #[inline(always)]
+    pub fn portei2(&mut self) -> PORTEI2_W {
+        PORTEI2_W { w: self }
     }
     #[doc = "Bits 24:28 - PORT Event Pin Identifier 3"]
-    #[inline]
-    pub fn pid3(&mut self) -> _PID3W {
-        _PID3W { w: self }
+    #[inline(always)]
+    pub fn pid3(&mut self) -> PID3_W {
+        PID3_W { w: self }
     }
     #[doc = "Bits 29:30 - PORT Event Action 3"]
-    #[inline]
-    pub fn evact3(&mut self) -> _EVACT3W {
-        _EVACT3W { w: self }
+    #[inline(always)]
+    pub fn evact3(&mut self) -> EVACT3_W {
+        EVACT3_W { w: self }
     }
     #[doc = "Bit 31 - PORT Event Input Enable 3"]
-    #[inline]
-    pub fn portei3(&mut self) -> _PORTEI3W {
-        _PORTEI3W { w: self }
+    #[inline(always)]
+    pub fn portei3(&mut self) -> PORTEI3_W {
+        PORTEI3_W { w: self }
     }
 }

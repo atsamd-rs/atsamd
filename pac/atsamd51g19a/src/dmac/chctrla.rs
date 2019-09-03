@@ -1,923 +1,656 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u32,
-}
-#[doc = r" Value to write to the register"]
-pub struct W {
-    bits: u32,
-}
-impl super::CHCTRLA {
-    #[doc = r" Modifies the contents of the register"]
-    #[inline]
-    pub fn modify<F>(&self, f: F)
-    where
-        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
-    {
-        let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-    #[doc = r" Writes to the register"]
-    #[inline]
-    pub fn write<F>(&self, f: F)
-    where
-        F: FnOnce(&mut W) -> &mut W,
-    {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Writes the reset value to the register"]
-    #[inline]
-    pub fn reset(&self) {
-        self.write(|w| w)
+#[doc = "Reader of register CHCTRLA%s"]
+pub type R = crate::R<u32, super::CHCTRLA>;
+#[doc = "Writer for register CHCTRLA%s"]
+pub type W = crate::W<u32, super::CHCTRLA>;
+#[doc = "Register CHCTRLA%s `reset()`'s with value 0"]
+impl crate::ResetValue for super::CHCTRLA {
+    type Type = u32;
+    #[inline(always)]
+    fn reset_value() -> Self::Type {
+        0
     }
 }
-#[doc = r" Value of the field"]
-pub struct SWRSTR {
-    bits: bool,
+#[doc = "Reader of field `SWRST`"]
+pub type SWRST_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `SWRST`"]
+pub struct SWRST_W<'a> {
+    w: &'a mut W,
 }
-impl SWRSTR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
+impl<'a> SWRST_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
     }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
     }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct ENABLER {
-    bits: bool,
-}
-impl ENABLER {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !0x01) | ((value as u32) & 0x01);
+        self.w
     }
 }
-#[doc = r" Value of the field"]
-pub struct RUNSTDBYR {
-    bits: bool,
+#[doc = "Reader of field `ENABLE`"]
+pub type ENABLE_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `ENABLE`"]
+pub struct ENABLE_W<'a> {
+    w: &'a mut W,
 }
-impl RUNSTDBYR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
+impl<'a> ENABLE_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
     }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
     }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 1)) | (((value as u32) & 0x01) << 1);
+        self.w
     }
 }
-#[doc = "Possible values of the field `TRIGSRC`"]
+#[doc = "Reader of field `RUNSTDBY`"]
+pub type RUNSTDBY_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `RUNSTDBY`"]
+pub struct RUNSTDBY_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> RUNSTDBY_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 6)) | (((value as u32) & 0x01) << 6);
+        self.w
+    }
+}
+#[doc = "Trigger Source\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum TRIGSRCR {
-    #[doc = "Only software/event triggers"]
+pub enum TRIGSRC_A {
+    #[doc = "0: Only software/event triggers"]
     DISABLE,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
 }
-impl TRIGSRCR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            TRIGSRCR::DISABLE => 0,
-            TRIGSRCR::_Reserved(bits) => bits,
+impl From<TRIGSRC_A> for u8 {
+    #[inline(always)]
+    fn from(variant: TRIGSRC_A) -> Self {
+        match variant {
+            TRIGSRC_A::DISABLE => 0,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> TRIGSRCR {
-        match value {
-            0 => TRIGSRCR::DISABLE,
-            i => TRIGSRCR::_Reserved(i),
+}
+#[doc = "Reader of field `TRIGSRC`"]
+pub type TRIGSRC_R = crate::R<u8, TRIGSRC_A>;
+impl TRIGSRC_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, TRIGSRC_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(TRIGSRC_A::DISABLE),
+            i => Res(i),
         }
     }
     #[doc = "Checks if the value of the field is `DISABLE`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_disable(&self) -> bool {
-        *self == TRIGSRCR::DISABLE
+        *self == TRIGSRC_A::DISABLE
     }
 }
-#[doc = "Possible values of the field `TRIGACT`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum TRIGACTR {
-    #[doc = "One trigger required for each block transfer"]
-    BLOCK,
-    #[doc = "One trigger required for each burst transfer"]
-    BURST,
-    #[doc = "One trigger required for each transaction"]
-    TRANSACTION,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
+#[doc = "Write proxy for field `TRIGSRC`"]
+pub struct TRIGSRC_W<'a> {
+    w: &'a mut W,
 }
-impl TRIGACTR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            TRIGACTR::BLOCK => 0,
-            TRIGACTR::BURST => 2,
-            TRIGACTR::TRANSACTION => 3,
-            TRIGACTR::_Reserved(bits) => bits,
+impl<'a> TRIGSRC_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: TRIGSRC_A) -> &'a mut W {
+        unsafe { self.bits(variant.into()) }
+    }
+    #[doc = "Only software/event triggers"]
+    #[inline(always)]
+    pub fn disable(self) -> &'a mut W {
+        self.variant(TRIGSRC_A::DISABLE)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub unsafe fn bits(self, value: u8) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x7f << 8)) | (((value as u32) & 0x7f) << 8);
+        self.w
+    }
+}
+#[doc = "Trigger Action\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum TRIGACT_A {
+    #[doc = "0: One trigger required for each block transfer"]
+    BLOCK,
+    #[doc = "2: One trigger required for each burst transfer"]
+    BURST,
+    #[doc = "3: One trigger required for each transaction"]
+    TRANSACTION,
+}
+impl From<TRIGACT_A> for u8 {
+    #[inline(always)]
+    fn from(variant: TRIGACT_A) -> Self {
+        match variant {
+            TRIGACT_A::BLOCK => 0,
+            TRIGACT_A::BURST => 2,
+            TRIGACT_A::TRANSACTION => 3,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> TRIGACTR {
-        match value {
-            0 => TRIGACTR::BLOCK,
-            2 => TRIGACTR::BURST,
-            3 => TRIGACTR::TRANSACTION,
-            i => TRIGACTR::_Reserved(i),
+}
+#[doc = "Reader of field `TRIGACT`"]
+pub type TRIGACT_R = crate::R<u8, TRIGACT_A>;
+impl TRIGACT_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, TRIGACT_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(TRIGACT_A::BLOCK),
+            2 => Val(TRIGACT_A::BURST),
+            3 => Val(TRIGACT_A::TRANSACTION),
+            i => Res(i),
         }
     }
     #[doc = "Checks if the value of the field is `BLOCK`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_block(&self) -> bool {
-        *self == TRIGACTR::BLOCK
+        *self == TRIGACT_A::BLOCK
     }
     #[doc = "Checks if the value of the field is `BURST`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_burst(&self) -> bool {
-        *self == TRIGACTR::BURST
+        *self == TRIGACT_A::BURST
     }
     #[doc = "Checks if the value of the field is `TRANSACTION`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_transaction(&self) -> bool {
-        *self == TRIGACTR::TRANSACTION
+        *self == TRIGACT_A::TRANSACTION
     }
 }
-#[doc = "Possible values of the field `BURSTLEN`"]
+#[doc = "Write proxy for field `TRIGACT`"]
+pub struct TRIGACT_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> TRIGACT_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: TRIGACT_A) -> &'a mut W {
+        unsafe { self.bits(variant.into()) }
+    }
+    #[doc = "One trigger required for each block transfer"]
+    #[inline(always)]
+    pub fn block(self) -> &'a mut W {
+        self.variant(TRIGACT_A::BLOCK)
+    }
+    #[doc = "One trigger required for each burst transfer"]
+    #[inline(always)]
+    pub fn burst(self) -> &'a mut W {
+        self.variant(TRIGACT_A::BURST)
+    }
+    #[doc = "One trigger required for each transaction"]
+    #[inline(always)]
+    pub fn transaction(self) -> &'a mut W {
+        self.variant(TRIGACT_A::TRANSACTION)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub unsafe fn bits(self, value: u8) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x03 << 20)) | (((value as u32) & 0x03) << 20);
+        self.w
+    }
+}
+#[doc = "Burst Length\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum BURSTLENR {
-    #[doc = "Single-beat burst length"]
+pub enum BURSTLEN_A {
+    #[doc = "0: Single-beat burst length"]
     SINGLE,
-    #[doc = "2-beats burst length"]
+    #[doc = "1: 2-beats burst length"]
     _2BEAT,
-    #[doc = "3-beats burst length"]
+    #[doc = "2: 3-beats burst length"]
     _3BEAT,
-    #[doc = "4-beats burst length"]
+    #[doc = "3: 4-beats burst length"]
     _4BEAT,
-    #[doc = "5-beats burst length"]
+    #[doc = "4: 5-beats burst length"]
     _5BEAT,
-    #[doc = "6-beats burst length"]
+    #[doc = "5: 6-beats burst length"]
     _6BEAT,
-    #[doc = "7-beats burst length"]
+    #[doc = "6: 7-beats burst length"]
     _7BEAT,
-    #[doc = "8-beats burst length"]
+    #[doc = "7: 8-beats burst length"]
     _8BEAT,
-    #[doc = "9-beats burst length"]
+    #[doc = "8: 9-beats burst length"]
     _9BEAT,
-    #[doc = "10-beats burst length"]
+    #[doc = "9: 10-beats burst length"]
     _10BEAT,
-    #[doc = "11-beats burst length"]
+    #[doc = "10: 11-beats burst length"]
     _11BEAT,
-    #[doc = "12-beats burst length"]
+    #[doc = "11: 12-beats burst length"]
     _12BEAT,
-    #[doc = "13-beats burst length"]
+    #[doc = "12: 13-beats burst length"]
     _13BEAT,
-    #[doc = "14-beats burst length"]
+    #[doc = "13: 14-beats burst length"]
     _14BEAT,
-    #[doc = "15-beats burst length"]
+    #[doc = "14: 15-beats burst length"]
     _15BEAT,
-    #[doc = "16-beats burst length"]
+    #[doc = "15: 16-beats burst length"]
     _16BEAT,
 }
-impl BURSTLENR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            BURSTLENR::SINGLE => 0,
-            BURSTLENR::_2BEAT => 1,
-            BURSTLENR::_3BEAT => 2,
-            BURSTLENR::_4BEAT => 3,
-            BURSTLENR::_5BEAT => 4,
-            BURSTLENR::_6BEAT => 5,
-            BURSTLENR::_7BEAT => 6,
-            BURSTLENR::_8BEAT => 7,
-            BURSTLENR::_9BEAT => 8,
-            BURSTLENR::_10BEAT => 9,
-            BURSTLENR::_11BEAT => 10,
-            BURSTLENR::_12BEAT => 11,
-            BURSTLENR::_13BEAT => 12,
-            BURSTLENR::_14BEAT => 13,
-            BURSTLENR::_15BEAT => 14,
-            BURSTLENR::_16BEAT => 15,
+impl From<BURSTLEN_A> for u8 {
+    #[inline(always)]
+    fn from(variant: BURSTLEN_A) -> Self {
+        match variant {
+            BURSTLEN_A::SINGLE => 0,
+            BURSTLEN_A::_2BEAT => 1,
+            BURSTLEN_A::_3BEAT => 2,
+            BURSTLEN_A::_4BEAT => 3,
+            BURSTLEN_A::_5BEAT => 4,
+            BURSTLEN_A::_6BEAT => 5,
+            BURSTLEN_A::_7BEAT => 6,
+            BURSTLEN_A::_8BEAT => 7,
+            BURSTLEN_A::_9BEAT => 8,
+            BURSTLEN_A::_10BEAT => 9,
+            BURSTLEN_A::_11BEAT => 10,
+            BURSTLEN_A::_12BEAT => 11,
+            BURSTLEN_A::_13BEAT => 12,
+            BURSTLEN_A::_14BEAT => 13,
+            BURSTLEN_A::_15BEAT => 14,
+            BURSTLEN_A::_16BEAT => 15,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> BURSTLENR {
-        match value {
-            0 => BURSTLENR::SINGLE,
-            1 => BURSTLENR::_2BEAT,
-            2 => BURSTLENR::_3BEAT,
-            3 => BURSTLENR::_4BEAT,
-            4 => BURSTLENR::_5BEAT,
-            5 => BURSTLENR::_6BEAT,
-            6 => BURSTLENR::_7BEAT,
-            7 => BURSTLENR::_8BEAT,
-            8 => BURSTLENR::_9BEAT,
-            9 => BURSTLENR::_10BEAT,
-            10 => BURSTLENR::_11BEAT,
-            11 => BURSTLENR::_12BEAT,
-            12 => BURSTLENR::_13BEAT,
-            13 => BURSTLENR::_14BEAT,
-            14 => BURSTLENR::_15BEAT,
-            15 => BURSTLENR::_16BEAT,
+}
+#[doc = "Reader of field `BURSTLEN`"]
+pub type BURSTLEN_R = crate::R<u8, BURSTLEN_A>;
+impl BURSTLEN_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> BURSTLEN_A {
+        match self.bits {
+            0 => BURSTLEN_A::SINGLE,
+            1 => BURSTLEN_A::_2BEAT,
+            2 => BURSTLEN_A::_3BEAT,
+            3 => BURSTLEN_A::_4BEAT,
+            4 => BURSTLEN_A::_5BEAT,
+            5 => BURSTLEN_A::_6BEAT,
+            6 => BURSTLEN_A::_7BEAT,
+            7 => BURSTLEN_A::_8BEAT,
+            8 => BURSTLEN_A::_9BEAT,
+            9 => BURSTLEN_A::_10BEAT,
+            10 => BURSTLEN_A::_11BEAT,
+            11 => BURSTLEN_A::_12BEAT,
+            12 => BURSTLEN_A::_13BEAT,
+            13 => BURSTLEN_A::_14BEAT,
+            14 => BURSTLEN_A::_15BEAT,
+            15 => BURSTLEN_A::_16BEAT,
             _ => unreachable!(),
         }
     }
     #[doc = "Checks if the value of the field is `SINGLE`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_single(&self) -> bool {
-        *self == BURSTLENR::SINGLE
+        *self == BURSTLEN_A::SINGLE
     }
     #[doc = "Checks if the value of the field is `_2BEAT`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_2beat(&self) -> bool {
-        *self == BURSTLENR::_2BEAT
+        *self == BURSTLEN_A::_2BEAT
     }
     #[doc = "Checks if the value of the field is `_3BEAT`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_3beat(&self) -> bool {
-        *self == BURSTLENR::_3BEAT
+        *self == BURSTLEN_A::_3BEAT
     }
     #[doc = "Checks if the value of the field is `_4BEAT`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_4beat(&self) -> bool {
-        *self == BURSTLENR::_4BEAT
+        *self == BURSTLEN_A::_4BEAT
     }
     #[doc = "Checks if the value of the field is `_5BEAT`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_5beat(&self) -> bool {
-        *self == BURSTLENR::_5BEAT
+        *self == BURSTLEN_A::_5BEAT
     }
     #[doc = "Checks if the value of the field is `_6BEAT`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_6beat(&self) -> bool {
-        *self == BURSTLENR::_6BEAT
+        *self == BURSTLEN_A::_6BEAT
     }
     #[doc = "Checks if the value of the field is `_7BEAT`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_7beat(&self) -> bool {
-        *self == BURSTLENR::_7BEAT
+        *self == BURSTLEN_A::_7BEAT
     }
     #[doc = "Checks if the value of the field is `_8BEAT`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_8beat(&self) -> bool {
-        *self == BURSTLENR::_8BEAT
+        *self == BURSTLEN_A::_8BEAT
     }
     #[doc = "Checks if the value of the field is `_9BEAT`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_9beat(&self) -> bool {
-        *self == BURSTLENR::_9BEAT
+        *self == BURSTLEN_A::_9BEAT
     }
     #[doc = "Checks if the value of the field is `_10BEAT`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_10beat(&self) -> bool {
-        *self == BURSTLENR::_10BEAT
+        *self == BURSTLEN_A::_10BEAT
     }
     #[doc = "Checks if the value of the field is `_11BEAT`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_11beat(&self) -> bool {
-        *self == BURSTLENR::_11BEAT
+        *self == BURSTLEN_A::_11BEAT
     }
     #[doc = "Checks if the value of the field is `_12BEAT`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_12beat(&self) -> bool {
-        *self == BURSTLENR::_12BEAT
+        *self == BURSTLEN_A::_12BEAT
     }
     #[doc = "Checks if the value of the field is `_13BEAT`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_13beat(&self) -> bool {
-        *self == BURSTLENR::_13BEAT
+        *self == BURSTLEN_A::_13BEAT
     }
     #[doc = "Checks if the value of the field is `_14BEAT`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_14beat(&self) -> bool {
-        *self == BURSTLENR::_14BEAT
+        *self == BURSTLEN_A::_14BEAT
     }
     #[doc = "Checks if the value of the field is `_15BEAT`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_15beat(&self) -> bool {
-        *self == BURSTLENR::_15BEAT
+        *self == BURSTLEN_A::_15BEAT
     }
     #[doc = "Checks if the value of the field is `_16BEAT`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_16beat(&self) -> bool {
-        *self == BURSTLENR::_16BEAT
+        *self == BURSTLEN_A::_16BEAT
     }
 }
-#[doc = "Possible values of the field `THRESHOLD`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum THRESHOLDR {
-    #[doc = "Destination write starts after each beat source address read"]
-    _1BEAT,
-    #[doc = "Destination write starts after 2-beats source address read"]
-    _2BEATS,
-    #[doc = "Destination write starts after 4-beats source address read"]
-    _4BEATS,
-    #[doc = "Destination write starts after 8-beats source address read"]
-    _8BEATS,
+#[doc = "Write proxy for field `BURSTLEN`"]
+pub struct BURSTLEN_W<'a> {
+    w: &'a mut W,
 }
-impl THRESHOLDR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            THRESHOLDR::_1BEAT => 0,
-            THRESHOLDR::_2BEATS => 1,
-            THRESHOLDR::_4BEATS => 2,
-            THRESHOLDR::_8BEATS => 3,
+impl<'a> BURSTLEN_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: BURSTLEN_A) -> &'a mut W {
+        {
+            self.bits(variant.into())
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> THRESHOLDR {
-        match value {
-            0 => THRESHOLDR::_1BEAT,
-            1 => THRESHOLDR::_2BEATS,
-            2 => THRESHOLDR::_4BEATS,
-            3 => THRESHOLDR::_8BEATS,
+    #[doc = "Single-beat burst length"]
+    #[inline(always)]
+    pub fn single(self) -> &'a mut W {
+        self.variant(BURSTLEN_A::SINGLE)
+    }
+    #[doc = "2-beats burst length"]
+    #[inline(always)]
+    pub fn _2beat(self) -> &'a mut W {
+        self.variant(BURSTLEN_A::_2BEAT)
+    }
+    #[doc = "3-beats burst length"]
+    #[inline(always)]
+    pub fn _3beat(self) -> &'a mut W {
+        self.variant(BURSTLEN_A::_3BEAT)
+    }
+    #[doc = "4-beats burst length"]
+    #[inline(always)]
+    pub fn _4beat(self) -> &'a mut W {
+        self.variant(BURSTLEN_A::_4BEAT)
+    }
+    #[doc = "5-beats burst length"]
+    #[inline(always)]
+    pub fn _5beat(self) -> &'a mut W {
+        self.variant(BURSTLEN_A::_5BEAT)
+    }
+    #[doc = "6-beats burst length"]
+    #[inline(always)]
+    pub fn _6beat(self) -> &'a mut W {
+        self.variant(BURSTLEN_A::_6BEAT)
+    }
+    #[doc = "7-beats burst length"]
+    #[inline(always)]
+    pub fn _7beat(self) -> &'a mut W {
+        self.variant(BURSTLEN_A::_7BEAT)
+    }
+    #[doc = "8-beats burst length"]
+    #[inline(always)]
+    pub fn _8beat(self) -> &'a mut W {
+        self.variant(BURSTLEN_A::_8BEAT)
+    }
+    #[doc = "9-beats burst length"]
+    #[inline(always)]
+    pub fn _9beat(self) -> &'a mut W {
+        self.variant(BURSTLEN_A::_9BEAT)
+    }
+    #[doc = "10-beats burst length"]
+    #[inline(always)]
+    pub fn _10beat(self) -> &'a mut W {
+        self.variant(BURSTLEN_A::_10BEAT)
+    }
+    #[doc = "11-beats burst length"]
+    #[inline(always)]
+    pub fn _11beat(self) -> &'a mut W {
+        self.variant(BURSTLEN_A::_11BEAT)
+    }
+    #[doc = "12-beats burst length"]
+    #[inline(always)]
+    pub fn _12beat(self) -> &'a mut W {
+        self.variant(BURSTLEN_A::_12BEAT)
+    }
+    #[doc = "13-beats burst length"]
+    #[inline(always)]
+    pub fn _13beat(self) -> &'a mut W {
+        self.variant(BURSTLEN_A::_13BEAT)
+    }
+    #[doc = "14-beats burst length"]
+    #[inline(always)]
+    pub fn _14beat(self) -> &'a mut W {
+        self.variant(BURSTLEN_A::_14BEAT)
+    }
+    #[doc = "15-beats burst length"]
+    #[inline(always)]
+    pub fn _15beat(self) -> &'a mut W {
+        self.variant(BURSTLEN_A::_15BEAT)
+    }
+    #[doc = "16-beats burst length"]
+    #[inline(always)]
+    pub fn _16beat(self) -> &'a mut W {
+        self.variant(BURSTLEN_A::_16BEAT)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bits(self, value: u8) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x0f << 24)) | (((value as u32) & 0x0f) << 24);
+        self.w
+    }
+}
+#[doc = "FIFO Threshold\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum THRESHOLD_A {
+    #[doc = "0: Destination write starts after each beat source address read"]
+    _1BEAT,
+    #[doc = "1: Destination write starts after 2-beats source address read"]
+    _2BEATS,
+    #[doc = "2: Destination write starts after 4-beats source address read"]
+    _4BEATS,
+    #[doc = "3: Destination write starts after 8-beats source address read"]
+    _8BEATS,
+}
+impl From<THRESHOLD_A> for u8 {
+    #[inline(always)]
+    fn from(variant: THRESHOLD_A) -> Self {
+        match variant {
+            THRESHOLD_A::_1BEAT => 0,
+            THRESHOLD_A::_2BEATS => 1,
+            THRESHOLD_A::_4BEATS => 2,
+            THRESHOLD_A::_8BEATS => 3,
+        }
+    }
+}
+#[doc = "Reader of field `THRESHOLD`"]
+pub type THRESHOLD_R = crate::R<u8, THRESHOLD_A>;
+impl THRESHOLD_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> THRESHOLD_A {
+        match self.bits {
+            0 => THRESHOLD_A::_1BEAT,
+            1 => THRESHOLD_A::_2BEATS,
+            2 => THRESHOLD_A::_4BEATS,
+            3 => THRESHOLD_A::_8BEATS,
             _ => unreachable!(),
         }
     }
     #[doc = "Checks if the value of the field is `_1BEAT`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_1beat(&self) -> bool {
-        *self == THRESHOLDR::_1BEAT
+        *self == THRESHOLD_A::_1BEAT
     }
     #[doc = "Checks if the value of the field is `_2BEATS`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_2beats(&self) -> bool {
-        *self == THRESHOLDR::_2BEATS
+        *self == THRESHOLD_A::_2BEATS
     }
     #[doc = "Checks if the value of the field is `_4BEATS`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_4beats(&self) -> bool {
-        *self == THRESHOLDR::_4BEATS
+        *self == THRESHOLD_A::_4BEATS
     }
     #[doc = "Checks if the value of the field is `_8BEATS`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_8beats(&self) -> bool {
-        *self == THRESHOLDR::_8BEATS
+        *self == THRESHOLD_A::_8BEATS
     }
 }
-#[doc = r" Proxy"]
-pub struct _SWRSTW<'a> {
+#[doc = "Write proxy for field `THRESHOLD`"]
+pub struct THRESHOLD_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _SWRSTW<'a> {
-    #[doc = r" Sets the field bit"]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r" Clears the field bit"]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
-        self.w
-    }
-}
-#[doc = r" Proxy"]
-pub struct _ENABLEW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _ENABLEW<'a> {
-    #[doc = r" Sets the field bit"]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r" Clears the field bit"]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 1;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
-        self.w
-    }
-}
-#[doc = r" Proxy"]
-pub struct _RUNSTDBYW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _RUNSTDBYW<'a> {
-    #[doc = r" Sets the field bit"]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r" Clears the field bit"]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 6;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
-        self.w
-    }
-}
-#[doc = "Values that can be written to the field `TRIGSRC`"]
-pub enum TRIGSRCW {
-    #[doc = "Only software/event triggers"]
-    DISABLE,
-}
-impl TRIGSRCW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            TRIGSRCW::DISABLE => 0,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _TRIGSRCW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _TRIGSRCW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: TRIGSRCW) -> &'a mut W {
-        unsafe { self.bits(variant._bits()) }
-    }
-    #[doc = "Only software/event triggers"]
-    #[inline]
-    pub fn disable(self) -> &'a mut W {
-        self.variant(TRIGSRCW::DISABLE)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 127;
-        const OFFSET: u8 = 8;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
-        self.w
-    }
-}
-#[doc = "Values that can be written to the field `TRIGACT`"]
-pub enum TRIGACTW {
-    #[doc = "One trigger required for each block transfer"]
-    BLOCK,
-    #[doc = "One trigger required for each burst transfer"]
-    BURST,
-    #[doc = "One trigger required for each transaction"]
-    TRANSACTION,
-}
-impl TRIGACTW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            TRIGACTW::BLOCK => 0,
-            TRIGACTW::BURST => 2,
-            TRIGACTW::TRANSACTION => 3,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _TRIGACTW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _TRIGACTW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: TRIGACTW) -> &'a mut W {
-        unsafe { self.bits(variant._bits()) }
-    }
-    #[doc = "One trigger required for each block transfer"]
-    #[inline]
-    pub fn block(self) -> &'a mut W {
-        self.variant(TRIGACTW::BLOCK)
-    }
-    #[doc = "One trigger required for each burst transfer"]
-    #[inline]
-    pub fn burst(self) -> &'a mut W {
-        self.variant(TRIGACTW::BURST)
-    }
-    #[doc = "One trigger required for each transaction"]
-    #[inline]
-    pub fn transaction(self) -> &'a mut W {
-        self.variant(TRIGACTW::TRANSACTION)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 20;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
-        self.w
-    }
-}
-#[doc = "Values that can be written to the field `BURSTLEN`"]
-pub enum BURSTLENW {
-    #[doc = "Single-beat burst length"]
-    SINGLE,
-    #[doc = "2-beats burst length"]
-    _2BEAT,
-    #[doc = "3-beats burst length"]
-    _3BEAT,
-    #[doc = "4-beats burst length"]
-    _4BEAT,
-    #[doc = "5-beats burst length"]
-    _5BEAT,
-    #[doc = "6-beats burst length"]
-    _6BEAT,
-    #[doc = "7-beats burst length"]
-    _7BEAT,
-    #[doc = "8-beats burst length"]
-    _8BEAT,
-    #[doc = "9-beats burst length"]
-    _9BEAT,
-    #[doc = "10-beats burst length"]
-    _10BEAT,
-    #[doc = "11-beats burst length"]
-    _11BEAT,
-    #[doc = "12-beats burst length"]
-    _12BEAT,
-    #[doc = "13-beats burst length"]
-    _13BEAT,
-    #[doc = "14-beats burst length"]
-    _14BEAT,
-    #[doc = "15-beats burst length"]
-    _15BEAT,
-    #[doc = "16-beats burst length"]
-    _16BEAT,
-}
-impl BURSTLENW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            BURSTLENW::SINGLE => 0,
-            BURSTLENW::_2BEAT => 1,
-            BURSTLENW::_3BEAT => 2,
-            BURSTLENW::_4BEAT => 3,
-            BURSTLENW::_5BEAT => 4,
-            BURSTLENW::_6BEAT => 5,
-            BURSTLENW::_7BEAT => 6,
-            BURSTLENW::_8BEAT => 7,
-            BURSTLENW::_9BEAT => 8,
-            BURSTLENW::_10BEAT => 9,
-            BURSTLENW::_11BEAT => 10,
-            BURSTLENW::_12BEAT => 11,
-            BURSTLENW::_13BEAT => 12,
-            BURSTLENW::_14BEAT => 13,
-            BURSTLENW::_15BEAT => 14,
-            BURSTLENW::_16BEAT => 15,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _BURSTLENW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _BURSTLENW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: BURSTLENW) -> &'a mut W {
+impl<'a> THRESHOLD_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: THRESHOLD_A) -> &'a mut W {
         {
-            self.bits(variant._bits())
-        }
-    }
-    #[doc = "Single-beat burst length"]
-    #[inline]
-    pub fn single(self) -> &'a mut W {
-        self.variant(BURSTLENW::SINGLE)
-    }
-    #[doc = "2-beats burst length"]
-    #[inline]
-    pub fn _2beat(self) -> &'a mut W {
-        self.variant(BURSTLENW::_2BEAT)
-    }
-    #[doc = "3-beats burst length"]
-    #[inline]
-    pub fn _3beat(self) -> &'a mut W {
-        self.variant(BURSTLENW::_3BEAT)
-    }
-    #[doc = "4-beats burst length"]
-    #[inline]
-    pub fn _4beat(self) -> &'a mut W {
-        self.variant(BURSTLENW::_4BEAT)
-    }
-    #[doc = "5-beats burst length"]
-    #[inline]
-    pub fn _5beat(self) -> &'a mut W {
-        self.variant(BURSTLENW::_5BEAT)
-    }
-    #[doc = "6-beats burst length"]
-    #[inline]
-    pub fn _6beat(self) -> &'a mut W {
-        self.variant(BURSTLENW::_6BEAT)
-    }
-    #[doc = "7-beats burst length"]
-    #[inline]
-    pub fn _7beat(self) -> &'a mut W {
-        self.variant(BURSTLENW::_7BEAT)
-    }
-    #[doc = "8-beats burst length"]
-    #[inline]
-    pub fn _8beat(self) -> &'a mut W {
-        self.variant(BURSTLENW::_8BEAT)
-    }
-    #[doc = "9-beats burst length"]
-    #[inline]
-    pub fn _9beat(self) -> &'a mut W {
-        self.variant(BURSTLENW::_9BEAT)
-    }
-    #[doc = "10-beats burst length"]
-    #[inline]
-    pub fn _10beat(self) -> &'a mut W {
-        self.variant(BURSTLENW::_10BEAT)
-    }
-    #[doc = "11-beats burst length"]
-    #[inline]
-    pub fn _11beat(self) -> &'a mut W {
-        self.variant(BURSTLENW::_11BEAT)
-    }
-    #[doc = "12-beats burst length"]
-    #[inline]
-    pub fn _12beat(self) -> &'a mut W {
-        self.variant(BURSTLENW::_12BEAT)
-    }
-    #[doc = "13-beats burst length"]
-    #[inline]
-    pub fn _13beat(self) -> &'a mut W {
-        self.variant(BURSTLENW::_13BEAT)
-    }
-    #[doc = "14-beats burst length"]
-    #[inline]
-    pub fn _14beat(self) -> &'a mut W {
-        self.variant(BURSTLENW::_14BEAT)
-    }
-    #[doc = "15-beats burst length"]
-    #[inline]
-    pub fn _15beat(self) -> &'a mut W {
-        self.variant(BURSTLENW::_15BEAT)
-    }
-    #[doc = "16-beats burst length"]
-    #[inline]
-    pub fn _16beat(self) -> &'a mut W {
-        self.variant(BURSTLENW::_16BEAT)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 15;
-        const OFFSET: u8 = 24;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
-        self.w
-    }
-}
-#[doc = "Values that can be written to the field `THRESHOLD`"]
-pub enum THRESHOLDW {
-    #[doc = "Destination write starts after each beat source address read"]
-    _1BEAT,
-    #[doc = "Destination write starts after 2-beats source address read"]
-    _2BEATS,
-    #[doc = "Destination write starts after 4-beats source address read"]
-    _4BEATS,
-    #[doc = "Destination write starts after 8-beats source address read"]
-    _8BEATS,
-}
-impl THRESHOLDW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            THRESHOLDW::_1BEAT => 0,
-            THRESHOLDW::_2BEATS => 1,
-            THRESHOLDW::_4BEATS => 2,
-            THRESHOLDW::_8BEATS => 3,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _THRESHOLDW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _THRESHOLDW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: THRESHOLDW) -> &'a mut W {
-        {
-            self.bits(variant._bits())
+            self.bits(variant.into())
         }
     }
     #[doc = "Destination write starts after each beat source address read"]
-    #[inline]
+    #[inline(always)]
     pub fn _1beat(self) -> &'a mut W {
-        self.variant(THRESHOLDW::_1BEAT)
+        self.variant(THRESHOLD_A::_1BEAT)
     }
     #[doc = "Destination write starts after 2-beats source address read"]
-    #[inline]
+    #[inline(always)]
     pub fn _2beats(self) -> &'a mut W {
-        self.variant(THRESHOLDW::_2BEATS)
+        self.variant(THRESHOLD_A::_2BEATS)
     }
     #[doc = "Destination write starts after 4-beats source address read"]
-    #[inline]
+    #[inline(always)]
     pub fn _4beats(self) -> &'a mut W {
-        self.variant(THRESHOLDW::_4BEATS)
+        self.variant(THRESHOLD_A::_4BEATS)
     }
     #[doc = "Destination write starts after 8-beats source address read"]
-    #[inline]
+    #[inline(always)]
     pub fn _8beats(self) -> &'a mut W {
-        self.variant(THRESHOLDW::_8BEATS)
+        self.variant(THRESHOLD_A::_8BEATS)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 28;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x03 << 28)) | (((value as u32) & 0x03) << 28);
         self.w
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u32 {
-        self.bits
-    }
     #[doc = "Bit 0 - Channel Software Reset"]
-    #[inline]
-    pub fn swrst(&self) -> SWRSTR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        SWRSTR { bits }
+    #[inline(always)]
+    pub fn swrst(&self) -> SWRST_R {
+        SWRST_R::new((self.bits & 0x01) != 0)
     }
     #[doc = "Bit 1 - Channel Enable"]
-    #[inline]
-    pub fn enable(&self) -> ENABLER {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        ENABLER { bits }
+    #[inline(always)]
+    pub fn enable(&self) -> ENABLE_R {
+        ENABLE_R::new(((self.bits >> 1) & 0x01) != 0)
     }
     #[doc = "Bit 6 - Channel Run in Standby"]
-    #[inline]
-    pub fn runstdby(&self) -> RUNSTDBYR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 6;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        RUNSTDBYR { bits }
+    #[inline(always)]
+    pub fn runstdby(&self) -> RUNSTDBY_R {
+        RUNSTDBY_R::new(((self.bits >> 6) & 0x01) != 0)
     }
     #[doc = "Bits 8:14 - Trigger Source"]
-    #[inline]
-    pub fn trigsrc(&self) -> TRIGSRCR {
-        TRIGSRCR::_from({
-            const MASK: u8 = 127;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+    #[inline(always)]
+    pub fn trigsrc(&self) -> TRIGSRC_R {
+        TRIGSRC_R::new(((self.bits >> 8) & 0x7f) as u8)
     }
     #[doc = "Bits 20:21 - Trigger Action"]
-    #[inline]
-    pub fn trigact(&self) -> TRIGACTR {
-        TRIGACTR::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 20;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+    #[inline(always)]
+    pub fn trigact(&self) -> TRIGACT_R {
+        TRIGACT_R::new(((self.bits >> 20) & 0x03) as u8)
     }
     #[doc = "Bits 24:27 - Burst Length"]
-    #[inline]
-    pub fn burstlen(&self) -> BURSTLENR {
-        BURSTLENR::_from({
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 24;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+    #[inline(always)]
+    pub fn burstlen(&self) -> BURSTLEN_R {
+        BURSTLEN_R::new(((self.bits >> 24) & 0x0f) as u8)
     }
     #[doc = "Bits 28:29 - FIFO Threshold"]
-    #[inline]
-    pub fn threshold(&self) -> THRESHOLDR {
-        THRESHOLDR::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 28;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+    #[inline(always)]
+    pub fn threshold(&self) -> THRESHOLD_R {
+        THRESHOLD_R::new(((self.bits >> 28) & 0x03) as u8)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
-    #[doc = r" Writes raw bits to the register"]
-    #[inline]
-    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.bits = bits;
-        self
-    }
     #[doc = "Bit 0 - Channel Software Reset"]
-    #[inline]
-    pub fn swrst(&mut self) -> _SWRSTW {
-        _SWRSTW { w: self }
+    #[inline(always)]
+    pub fn swrst(&mut self) -> SWRST_W {
+        SWRST_W { w: self }
     }
     #[doc = "Bit 1 - Channel Enable"]
-    #[inline]
-    pub fn enable(&mut self) -> _ENABLEW {
-        _ENABLEW { w: self }
+    #[inline(always)]
+    pub fn enable(&mut self) -> ENABLE_W {
+        ENABLE_W { w: self }
     }
     #[doc = "Bit 6 - Channel Run in Standby"]
-    #[inline]
-    pub fn runstdby(&mut self) -> _RUNSTDBYW {
-        _RUNSTDBYW { w: self }
+    #[inline(always)]
+    pub fn runstdby(&mut self) -> RUNSTDBY_W {
+        RUNSTDBY_W { w: self }
     }
     #[doc = "Bits 8:14 - Trigger Source"]
-    #[inline]
-    pub fn trigsrc(&mut self) -> _TRIGSRCW {
-        _TRIGSRCW { w: self }
+    #[inline(always)]
+    pub fn trigsrc(&mut self) -> TRIGSRC_W {
+        TRIGSRC_W { w: self }
     }
     #[doc = "Bits 20:21 - Trigger Action"]
-    #[inline]
-    pub fn trigact(&mut self) -> _TRIGACTW {
-        _TRIGACTW { w: self }
+    #[inline(always)]
+    pub fn trigact(&mut self) -> TRIGACT_W {
+        TRIGACT_W { w: self }
     }
     #[doc = "Bits 24:27 - Burst Length"]
-    #[inline]
-    pub fn burstlen(&mut self) -> _BURSTLENW {
-        _BURSTLENW { w: self }
+    #[inline(always)]
+    pub fn burstlen(&mut self) -> BURSTLEN_W {
+        BURSTLEN_W { w: self }
     }
     #[doc = "Bits 28:29 - FIFO Threshold"]
-    #[inline]
-    pub fn threshold(&mut self) -> _THRESHOLDW {
-        _THRESHOLDW { w: self }
+    #[inline(always)]
+    pub fn threshold(&mut self) -> THRESHOLD_W {
+        THRESHOLD_W { w: self }
     }
 }

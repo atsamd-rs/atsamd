@@ -1,421 +1,280 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u8,
-}
-#[doc = r" Value to write to the register"]
-pub struct W {
-    bits: u8,
-}
-impl super::WCR {
-    #[doc = r" Modifies the contents of the register"]
-    #[inline]
-    pub fn modify<F>(&self, f: F)
-    where
-        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
-    {
-        let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-    #[doc = r" Writes to the register"]
-    #[inline]
-    pub fn write<F>(&self, f: F)
-    where
-        F: FnOnce(&mut W) -> &mut W,
-    {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Writes the reset value to the register"]
-    #[inline]
-    pub fn reset(&self) {
-        self.write(|w| w)
+#[doc = "Reader of register WCR"]
+pub type R = crate::R<u8, super::WCR>;
+#[doc = "Writer for register WCR"]
+pub type W = crate::W<u8, super::WCR>;
+#[doc = "Register WCR `reset()`'s with value 0"]
+impl crate::ResetValue for super::WCR {
+    type Type = u8;
+    #[inline(always)]
+    fn reset_value() -> Self::Type {
+        0
     }
 }
-#[doc = "Possible values of the field `WKENCINT`"]
+#[doc = "Wakeup Event Enable on Card Interrupt\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum WKENCINTR {
-    #[doc = "Disable"]
+pub enum WKENCINT_A {
+    #[doc = "0: Disable"]
     DISABLE,
-    #[doc = "Enable"]
+    #[doc = "1: Enable"]
     ENABLE,
 }
-impl WKENCINTR {
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        match *self {
-            WKENCINTR::DISABLE => false,
-            WKENCINTR::ENABLE => true,
+impl From<WKENCINT_A> for bool {
+    #[inline(always)]
+    fn from(variant: WKENCINT_A) -> Self {
+        match variant {
+            WKENCINT_A::DISABLE => false,
+            WKENCINT_A::ENABLE => true,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: bool) -> WKENCINTR {
-        match value {
-            false => WKENCINTR::DISABLE,
-            true => WKENCINTR::ENABLE,
+}
+#[doc = "Reader of field `WKENCINT`"]
+pub type WKENCINT_R = crate::R<bool, WKENCINT_A>;
+impl WKENCINT_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> WKENCINT_A {
+        match self.bits {
+            false => WKENCINT_A::DISABLE,
+            true => WKENCINT_A::ENABLE,
         }
     }
     #[doc = "Checks if the value of the field is `DISABLE`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_disable(&self) -> bool {
-        *self == WKENCINTR::DISABLE
+        *self == WKENCINT_A::DISABLE
     }
     #[doc = "Checks if the value of the field is `ENABLE`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_enable(&self) -> bool {
-        *self == WKENCINTR::ENABLE
+        *self == WKENCINT_A::ENABLE
     }
 }
-#[doc = "Possible values of the field `WKENCINS`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum WKENCINSR {
-    #[doc = "Disable"]
-    DISABLE,
-    #[doc = "Enable"]
-    ENABLE,
-}
-impl WKENCINSR {
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        match *self {
-            WKENCINSR::DISABLE => false,
-            WKENCINSR::ENABLE => true,
-        }
-    }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: bool) -> WKENCINSR {
-        match value {
-            false => WKENCINSR::DISABLE,
-            true => WKENCINSR::ENABLE,
-        }
-    }
-    #[doc = "Checks if the value of the field is `DISABLE`"]
-    #[inline]
-    pub fn is_disable(&self) -> bool {
-        *self == WKENCINSR::DISABLE
-    }
-    #[doc = "Checks if the value of the field is `ENABLE`"]
-    #[inline]
-    pub fn is_enable(&self) -> bool {
-        *self == WKENCINSR::ENABLE
-    }
-}
-#[doc = "Possible values of the field `WKENCREM`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum WKENCREMR {
-    #[doc = "Disable"]
-    DISABLE,
-    #[doc = "Enable"]
-    ENABLE,
-}
-impl WKENCREMR {
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        match *self {
-            WKENCREMR::DISABLE => false,
-            WKENCREMR::ENABLE => true,
-        }
-    }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: bool) -> WKENCREMR {
-        match value {
-            false => WKENCREMR::DISABLE,
-            true => WKENCREMR::ENABLE,
-        }
-    }
-    #[doc = "Checks if the value of the field is `DISABLE`"]
-    #[inline]
-    pub fn is_disable(&self) -> bool {
-        *self == WKENCREMR::DISABLE
-    }
-    #[doc = "Checks if the value of the field is `ENABLE`"]
-    #[inline]
-    pub fn is_enable(&self) -> bool {
-        *self == WKENCREMR::ENABLE
-    }
-}
-#[doc = "Values that can be written to the field `WKENCINT`"]
-pub enum WKENCINTW {
-    #[doc = "Disable"]
-    DISABLE,
-    #[doc = "Enable"]
-    ENABLE,
-}
-impl WKENCINTW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> bool {
-        match *self {
-            WKENCINTW::DISABLE => false,
-            WKENCINTW::ENABLE => true,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _WKENCINTW<'a> {
+#[doc = "Write proxy for field `WKENCINT`"]
+pub struct WKENCINT_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _WKENCINTW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: WKENCINTW) -> &'a mut W {
+impl<'a> WKENCINT_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: WKENCINT_A) -> &'a mut W {
         {
-            self.bit(variant._bits())
+            self.bit(variant.into())
         }
     }
     #[doc = "Disable"]
-    #[inline]
+    #[inline(always)]
     pub fn disable(self) -> &'a mut W {
-        self.variant(WKENCINTW::DISABLE)
+        self.variant(WKENCINT_A::DISABLE)
     }
     #[doc = "Enable"]
-    #[inline]
+    #[inline(always)]
     pub fn enable(self) -> &'a mut W {
-        self.variant(WKENCINTW::ENABLE)
+        self.variant(WKENCINT_A::ENABLE)
     }
-    #[doc = r" Sets the field bit"]
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits = (self.w.bits & !0x01) | ((value as u8) & 0x01);
         self.w
     }
 }
-#[doc = "Values that can be written to the field `WKENCINS`"]
-pub enum WKENCINSW {
-    #[doc = "Disable"]
+#[doc = "Wakeup Event Enable on Card Insertion\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum WKENCINS_A {
+    #[doc = "0: Disable"]
     DISABLE,
-    #[doc = "Enable"]
+    #[doc = "1: Enable"]
     ENABLE,
 }
-impl WKENCINSW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> bool {
-        match *self {
-            WKENCINSW::DISABLE => false,
-            WKENCINSW::ENABLE => true,
+impl From<WKENCINS_A> for bool {
+    #[inline(always)]
+    fn from(variant: WKENCINS_A) -> Self {
+        match variant {
+            WKENCINS_A::DISABLE => false,
+            WKENCINS_A::ENABLE => true,
         }
     }
 }
-#[doc = r" Proxy"]
-pub struct _WKENCINSW<'a> {
+#[doc = "Reader of field `WKENCINS`"]
+pub type WKENCINS_R = crate::R<bool, WKENCINS_A>;
+impl WKENCINS_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> WKENCINS_A {
+        match self.bits {
+            false => WKENCINS_A::DISABLE,
+            true => WKENCINS_A::ENABLE,
+        }
+    }
+    #[doc = "Checks if the value of the field is `DISABLE`"]
+    #[inline(always)]
+    pub fn is_disable(&self) -> bool {
+        *self == WKENCINS_A::DISABLE
+    }
+    #[doc = "Checks if the value of the field is `ENABLE`"]
+    #[inline(always)]
+    pub fn is_enable(&self) -> bool {
+        *self == WKENCINS_A::ENABLE
+    }
+}
+#[doc = "Write proxy for field `WKENCINS`"]
+pub struct WKENCINS_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _WKENCINSW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: WKENCINSW) -> &'a mut W {
+impl<'a> WKENCINS_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: WKENCINS_A) -> &'a mut W {
         {
-            self.bit(variant._bits())
+            self.bit(variant.into())
         }
     }
     #[doc = "Disable"]
-    #[inline]
+    #[inline(always)]
     pub fn disable(self) -> &'a mut W {
-        self.variant(WKENCINSW::DISABLE)
+        self.variant(WKENCINS_A::DISABLE)
     }
     #[doc = "Enable"]
-    #[inline]
+    #[inline(always)]
     pub fn enable(self) -> &'a mut W {
-        self.variant(WKENCINSW::ENABLE)
+        self.variant(WKENCINS_A::ENABLE)
     }
-    #[doc = r" Sets the field bit"]
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 1;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 1)) | (((value as u8) & 0x01) << 1);
         self.w
     }
 }
-#[doc = "Values that can be written to the field `WKENCREM`"]
-pub enum WKENCREMW {
-    #[doc = "Disable"]
+#[doc = "Wakeup Event Enable on Card Removal\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum WKENCREM_A {
+    #[doc = "0: Disable"]
     DISABLE,
-    #[doc = "Enable"]
+    #[doc = "1: Enable"]
     ENABLE,
 }
-impl WKENCREMW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> bool {
-        match *self {
-            WKENCREMW::DISABLE => false,
-            WKENCREMW::ENABLE => true,
+impl From<WKENCREM_A> for bool {
+    #[inline(always)]
+    fn from(variant: WKENCREM_A) -> Self {
+        match variant {
+            WKENCREM_A::DISABLE => false,
+            WKENCREM_A::ENABLE => true,
         }
     }
 }
-#[doc = r" Proxy"]
-pub struct _WKENCREMW<'a> {
+#[doc = "Reader of field `WKENCREM`"]
+pub type WKENCREM_R = crate::R<bool, WKENCREM_A>;
+impl WKENCREM_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> WKENCREM_A {
+        match self.bits {
+            false => WKENCREM_A::DISABLE,
+            true => WKENCREM_A::ENABLE,
+        }
+    }
+    #[doc = "Checks if the value of the field is `DISABLE`"]
+    #[inline(always)]
+    pub fn is_disable(&self) -> bool {
+        *self == WKENCREM_A::DISABLE
+    }
+    #[doc = "Checks if the value of the field is `ENABLE`"]
+    #[inline(always)]
+    pub fn is_enable(&self) -> bool {
+        *self == WKENCREM_A::ENABLE
+    }
+}
+#[doc = "Write proxy for field `WKENCREM`"]
+pub struct WKENCREM_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _WKENCREMW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: WKENCREMW) -> &'a mut W {
+impl<'a> WKENCREM_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: WKENCREM_A) -> &'a mut W {
         {
-            self.bit(variant._bits())
+            self.bit(variant.into())
         }
     }
     #[doc = "Disable"]
-    #[inline]
+    #[inline(always)]
     pub fn disable(self) -> &'a mut W {
-        self.variant(WKENCREMW::DISABLE)
+        self.variant(WKENCREM_A::DISABLE)
     }
     #[doc = "Enable"]
-    #[inline]
+    #[inline(always)]
     pub fn enable(self) -> &'a mut W {
-        self.variant(WKENCREMW::ENABLE)
+        self.variant(WKENCREM_A::ENABLE)
     }
-    #[doc = r" Sets the field bit"]
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 2;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 2)) | (((value as u8) & 0x01) << 2);
         self.w
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
     #[doc = "Bit 0 - Wakeup Event Enable on Card Interrupt"]
-    #[inline]
-    pub fn wkencint(&self) -> WKENCINTR {
-        WKENCINTR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        })
+    #[inline(always)]
+    pub fn wkencint(&self) -> WKENCINT_R {
+        WKENCINT_R::new((self.bits & 0x01) != 0)
     }
     #[doc = "Bit 1 - Wakeup Event Enable on Card Insertion"]
-    #[inline]
-    pub fn wkencins(&self) -> WKENCINSR {
-        WKENCINSR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        })
+    #[inline(always)]
+    pub fn wkencins(&self) -> WKENCINS_R {
+        WKENCINS_R::new(((self.bits >> 1) & 0x01) != 0)
     }
     #[doc = "Bit 2 - Wakeup Event Enable on Card Removal"]
-    #[inline]
-    pub fn wkencrem(&self) -> WKENCREMR {
-        WKENCREMR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        })
+    #[inline(always)]
+    pub fn wkencrem(&self) -> WKENCREM_R {
+        WKENCREM_R::new(((self.bits >> 2) & 0x01) != 0)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
-    #[doc = r" Writes raw bits to the register"]
-    #[inline]
-    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
-        self.bits = bits;
-        self
-    }
     #[doc = "Bit 0 - Wakeup Event Enable on Card Interrupt"]
-    #[inline]
-    pub fn wkencint(&mut self) -> _WKENCINTW {
-        _WKENCINTW { w: self }
+    #[inline(always)]
+    pub fn wkencint(&mut self) -> WKENCINT_W {
+        WKENCINT_W { w: self }
     }
     #[doc = "Bit 1 - Wakeup Event Enable on Card Insertion"]
-    #[inline]
-    pub fn wkencins(&mut self) -> _WKENCINSW {
-        _WKENCINSW { w: self }
+    #[inline(always)]
+    pub fn wkencins(&mut self) -> WKENCINS_W {
+        WKENCINS_W { w: self }
     }
     #[doc = "Bit 2 - Wakeup Event Enable on Card Removal"]
-    #[inline]
-    pub fn wkencrem(&mut self) -> _WKENCREMW {
-        _WKENCREMW { w: self }
+    #[inline(always)]
+    pub fn wkencrem(&mut self) -> WKENCREM_W {
+        WKENCREM_W { w: self }
     }
 }

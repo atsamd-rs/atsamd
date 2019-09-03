@@ -1,542 +1,360 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u32,
-}
-#[doc = r" Value to write to the register"]
-pub struct W {
-    bits: u32,
-}
-impl super::CTRLB {
-    #[doc = r" Modifies the contents of the register"]
-    #[inline]
-    pub fn modify<F>(&self, f: F)
-    where
-        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
-    {
-        let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-    #[doc = r" Writes to the register"]
-    #[inline]
-    pub fn write<F>(&self, f: F)
-    where
-        F: FnOnce(&mut W) -> &mut W,
-    {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Writes the reset value to the register"]
-    #[inline]
-    pub fn reset(&self) {
-        self.write(|w| w)
+#[doc = "Reader of register CTRLB"]
+pub type R = crate::R<u32, super::CTRLB>;
+#[doc = "Writer for register CTRLB"]
+pub type W = crate::W<u32, super::CTRLB>;
+#[doc = "Register CTRLB `reset()`'s with value 0"]
+impl crate::ResetValue for super::CTRLB {
+    type Type = u32;
+    #[inline(always)]
+    fn reset_value() -> Self::Type {
+        0
     }
 }
-#[doc = "Possible values of the field `RWS`"]
+#[doc = "NVM Read Wait States\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum RWSR {
-    #[doc = "Single Auto Wait State"]
+pub enum RWS_A {
+    #[doc = "0: Single Auto Wait State"]
     SINGLE,
-    #[doc = "Half Auto Wait State"]
+    #[doc = "1: Half Auto Wait State"]
     HALF,
-    #[doc = "Dual Auto Wait State"]
+    #[doc = "2: Dual Auto Wait State"]
     DUAL,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
 }
-impl RWSR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            RWSR::SINGLE => 0,
-            RWSR::HALF => 1,
-            RWSR::DUAL => 2,
-            RWSR::_Reserved(bits) => bits,
+impl From<RWS_A> for u8 {
+    #[inline(always)]
+    fn from(variant: RWS_A) -> Self {
+        match variant {
+            RWS_A::SINGLE => 0,
+            RWS_A::HALF => 1,
+            RWS_A::DUAL => 2,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> RWSR {
-        match value {
-            0 => RWSR::SINGLE,
-            1 => RWSR::HALF,
-            2 => RWSR::DUAL,
-            i => RWSR::_Reserved(i),
+}
+#[doc = "Reader of field `RWS`"]
+pub type RWS_R = crate::R<u8, RWS_A>;
+impl RWS_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, RWS_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(RWS_A::SINGLE),
+            1 => Val(RWS_A::HALF),
+            2 => Val(RWS_A::DUAL),
+            i => Res(i),
         }
     }
     #[doc = "Checks if the value of the field is `SINGLE`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_single(&self) -> bool {
-        *self == RWSR::SINGLE
+        *self == RWS_A::SINGLE
     }
     #[doc = "Checks if the value of the field is `HALF`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_half(&self) -> bool {
-        *self == RWSR::HALF
+        *self == RWS_A::HALF
     }
     #[doc = "Checks if the value of the field is `DUAL`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_dual(&self) -> bool {
-        *self == RWSR::DUAL
+        *self == RWS_A::DUAL
     }
 }
-#[doc = r" Value of the field"]
-pub struct MANWR {
-    bits: bool,
+#[doc = "Write proxy for field `RWS`"]
+pub struct RWS_W<'a> {
+    w: &'a mut W,
 }
-impl MANWR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
+impl<'a> RWS_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: RWS_A) -> &'a mut W {
+        unsafe { self.bits(variant.into()) }
     }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
+    #[doc = "Single Auto Wait State"]
+    #[inline(always)]
+    pub fn single(self) -> &'a mut W {
+        self.variant(RWS_A::SINGLE)
     }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
+    #[doc = "Half Auto Wait State"]
+    #[inline(always)]
+    pub fn half(self) -> &'a mut W {
+        self.variant(RWS_A::HALF)
+    }
+    #[doc = "Dual Auto Wait State"]
+    #[inline(always)]
+    pub fn dual(self) -> &'a mut W {
+        self.variant(RWS_A::DUAL)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub unsafe fn bits(self, value: u8) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x0f << 1)) | (((value as u32) & 0x0f) << 1);
+        self.w
     }
 }
-#[doc = "Possible values of the field `SLEEPPRM`"]
+#[doc = "Reader of field `MANW`"]
+pub type MANW_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `MANW`"]
+pub struct MANW_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> MANW_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 7)) | (((value as u32) & 0x01) << 7);
+        self.w
+    }
+}
+#[doc = "Power Reduction Mode during Sleep\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum SLEEPPRMR {
-    #[doc = "NVM block enters low-power mode when entering sleep.NVM block exits low-power mode upon first access."]
+pub enum SLEEPPRM_A {
+    #[doc = "0: NVM block enters low-power mode when entering sleep.NVM block exits low-power mode upon first access."]
     WAKEONACCESS,
-    #[doc = "NVM block enters low-power mode when entering sleep.NVM block exits low-power mode when exiting sleep."]
+    #[doc = "1: NVM block enters low-power mode when entering sleep.NVM block exits low-power mode when exiting sleep."]
     WAKEUPINSTANT,
-    #[doc = "Auto power reduction disabled."]
+    #[doc = "3: Auto power reduction disabled."]
     DISABLED,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
 }
-impl SLEEPPRMR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            SLEEPPRMR::WAKEONACCESS => 0,
-            SLEEPPRMR::WAKEUPINSTANT => 1,
-            SLEEPPRMR::DISABLED => 3,
-            SLEEPPRMR::_Reserved(bits) => bits,
+impl From<SLEEPPRM_A> for u8 {
+    #[inline(always)]
+    fn from(variant: SLEEPPRM_A) -> Self {
+        match variant {
+            SLEEPPRM_A::WAKEONACCESS => 0,
+            SLEEPPRM_A::WAKEUPINSTANT => 1,
+            SLEEPPRM_A::DISABLED => 3,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> SLEEPPRMR {
-        match value {
-            0 => SLEEPPRMR::WAKEONACCESS,
-            1 => SLEEPPRMR::WAKEUPINSTANT,
-            3 => SLEEPPRMR::DISABLED,
-            i => SLEEPPRMR::_Reserved(i),
+}
+#[doc = "Reader of field `SLEEPPRM`"]
+pub type SLEEPPRM_R = crate::R<u8, SLEEPPRM_A>;
+impl SLEEPPRM_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, SLEEPPRM_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(SLEEPPRM_A::WAKEONACCESS),
+            1 => Val(SLEEPPRM_A::WAKEUPINSTANT),
+            3 => Val(SLEEPPRM_A::DISABLED),
+            i => Res(i),
         }
     }
     #[doc = "Checks if the value of the field is `WAKEONACCESS`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_wakeonaccess(&self) -> bool {
-        *self == SLEEPPRMR::WAKEONACCESS
+        *self == SLEEPPRM_A::WAKEONACCESS
     }
     #[doc = "Checks if the value of the field is `WAKEUPINSTANT`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_wakeupinstant(&self) -> bool {
-        *self == SLEEPPRMR::WAKEUPINSTANT
+        *self == SLEEPPRM_A::WAKEUPINSTANT
     }
     #[doc = "Checks if the value of the field is `DISABLED`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_disabled(&self) -> bool {
-        *self == SLEEPPRMR::DISABLED
+        *self == SLEEPPRM_A::DISABLED
     }
 }
-#[doc = "Possible values of the field `READMODE`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum READMODER {
-    #[doc = "The NVM Controller (cache system) does not insert wait states on a cache miss. Gives the best system performance."]
-    NO_MISS_PENALTY,
-    #[doc = "Reduces power consumption of the cache system, but inserts a wait state each time there is a cache miss. This mode may not be relevant if CPU performance is required, as the application will be stalled and may lead to increase run time."]
-    LOW_POWER,
-    #[doc = "The cache system ensures that a cache hit or miss takes the same amount of time, determined by the number of programmed flash wait states. This mode can be used for real-time applications that require deterministic execution timings."]
-    DETERMINISTIC,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
+#[doc = "Write proxy for field `SLEEPPRM`"]
+pub struct SLEEPPRM_W<'a> {
+    w: &'a mut W,
 }
-impl READMODER {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            READMODER::NO_MISS_PENALTY => 0,
-            READMODER::LOW_POWER => 1,
-            READMODER::DETERMINISTIC => 2,
-            READMODER::_Reserved(bits) => bits,
+impl<'a> SLEEPPRM_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: SLEEPPRM_A) -> &'a mut W {
+        unsafe { self.bits(variant.into()) }
+    }
+    #[doc = "NVM block enters low-power mode when entering sleep.NVM block exits low-power mode upon first access."]
+    #[inline(always)]
+    pub fn wakeonaccess(self) -> &'a mut W {
+        self.variant(SLEEPPRM_A::WAKEONACCESS)
+    }
+    #[doc = "NVM block enters low-power mode when entering sleep.NVM block exits low-power mode when exiting sleep."]
+    #[inline(always)]
+    pub fn wakeupinstant(self) -> &'a mut W {
+        self.variant(SLEEPPRM_A::WAKEUPINSTANT)
+    }
+    #[doc = "Auto power reduction disabled."]
+    #[inline(always)]
+    pub fn disabled(self) -> &'a mut W {
+        self.variant(SLEEPPRM_A::DISABLED)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub unsafe fn bits(self, value: u8) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x03 << 8)) | (((value as u32) & 0x03) << 8);
+        self.w
+    }
+}
+#[doc = "NVMCTRL Read Mode\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum READMODE_A {
+    #[doc = "0: The NVM Controller (cache system) does not insert wait states on a cache miss. Gives the best system performance."]
+    NO_MISS_PENALTY,
+    #[doc = "1: Reduces power consumption of the cache system, but inserts a wait state each time there is a cache miss. This mode may not be relevant if CPU performance is required, as the application will be stalled and may lead to increase run time."]
+    LOW_POWER,
+    #[doc = "2: The cache system ensures that a cache hit or miss takes the same amount of time, determined by the number of programmed flash wait states. This mode can be used for real-time applications that require deterministic execution timings."]
+    DETERMINISTIC,
+}
+impl From<READMODE_A> for u8 {
+    #[inline(always)]
+    fn from(variant: READMODE_A) -> Self {
+        match variant {
+            READMODE_A::NO_MISS_PENALTY => 0,
+            READMODE_A::LOW_POWER => 1,
+            READMODE_A::DETERMINISTIC => 2,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> READMODER {
-        match value {
-            0 => READMODER::NO_MISS_PENALTY,
-            1 => READMODER::LOW_POWER,
-            2 => READMODER::DETERMINISTIC,
-            i => READMODER::_Reserved(i),
+}
+#[doc = "Reader of field `READMODE`"]
+pub type READMODE_R = crate::R<u8, READMODE_A>;
+impl READMODE_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, READMODE_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(READMODE_A::NO_MISS_PENALTY),
+            1 => Val(READMODE_A::LOW_POWER),
+            2 => Val(READMODE_A::DETERMINISTIC),
+            i => Res(i),
         }
     }
     #[doc = "Checks if the value of the field is `NO_MISS_PENALTY`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_no_miss_penalty(&self) -> bool {
-        *self == READMODER::NO_MISS_PENALTY
+        *self == READMODE_A::NO_MISS_PENALTY
     }
     #[doc = "Checks if the value of the field is `LOW_POWER`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_low_power(&self) -> bool {
-        *self == READMODER::LOW_POWER
+        *self == READMODE_A::LOW_POWER
     }
     #[doc = "Checks if the value of the field is `DETERMINISTIC`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_deterministic(&self) -> bool {
-        *self == READMODER::DETERMINISTIC
+        *self == READMODE_A::DETERMINISTIC
     }
 }
-#[doc = r" Value of the field"]
-pub struct CACHEDISR {
-    bits: bool,
-}
-impl CACHEDISR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = "Values that can be written to the field `RWS`"]
-pub enum RWSW {
-    #[doc = "Single Auto Wait State"]
-    SINGLE,
-    #[doc = "Half Auto Wait State"]
-    HALF,
-    #[doc = "Dual Auto Wait State"]
-    DUAL,
-}
-impl RWSW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            RWSW::SINGLE => 0,
-            RWSW::HALF => 1,
-            RWSW::DUAL => 2,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _RWSW<'a> {
+#[doc = "Write proxy for field `READMODE`"]
+pub struct READMODE_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _RWSW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: RWSW) -> &'a mut W {
-        unsafe { self.bits(variant._bits()) }
-    }
-    #[doc = "Single Auto Wait State"]
-    #[inline]
-    pub fn single(self) -> &'a mut W {
-        self.variant(RWSW::SINGLE)
-    }
-    #[doc = "Half Auto Wait State"]
-    #[inline]
-    pub fn half(self) -> &'a mut W {
-        self.variant(RWSW::HALF)
-    }
-    #[doc = "Dual Auto Wait State"]
-    #[inline]
-    pub fn dual(self) -> &'a mut W {
-        self.variant(RWSW::DUAL)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 15;
-        const OFFSET: u8 = 1;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
-        self.w
-    }
-}
-#[doc = r" Proxy"]
-pub struct _MANWW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _MANWW<'a> {
-    #[doc = r" Sets the field bit"]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r" Clears the field bit"]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 7;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
-        self.w
-    }
-}
-#[doc = "Values that can be written to the field `SLEEPPRM`"]
-pub enum SLEEPPRMW {
-    #[doc = "NVM block enters low-power mode when entering sleep.NVM block exits low-power mode upon first access."]
-    WAKEONACCESS,
-    #[doc = "NVM block enters low-power mode when entering sleep.NVM block exits low-power mode when exiting sleep."]
-    WAKEUPINSTANT,
-    #[doc = "Auto power reduction disabled."]
-    DISABLED,
-}
-impl SLEEPPRMW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            SLEEPPRMW::WAKEONACCESS => 0,
-            SLEEPPRMW::WAKEUPINSTANT => 1,
-            SLEEPPRMW::DISABLED => 3,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _SLEEPPRMW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _SLEEPPRMW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: SLEEPPRMW) -> &'a mut W {
-        unsafe { self.bits(variant._bits()) }
-    }
-    #[doc = "NVM block enters low-power mode when entering sleep.NVM block exits low-power mode upon first access."]
-    #[inline]
-    pub fn wakeonaccess(self) -> &'a mut W {
-        self.variant(SLEEPPRMW::WAKEONACCESS)
-    }
-    #[doc = "NVM block enters low-power mode when entering sleep.NVM block exits low-power mode when exiting sleep."]
-    #[inline]
-    pub fn wakeupinstant(self) -> &'a mut W {
-        self.variant(SLEEPPRMW::WAKEUPINSTANT)
-    }
-    #[doc = "Auto power reduction disabled."]
-    #[inline]
-    pub fn disabled(self) -> &'a mut W {
-        self.variant(SLEEPPRMW::DISABLED)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 8;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
-        self.w
-    }
-}
-#[doc = "Values that can be written to the field `READMODE`"]
-pub enum READMODEW {
-    #[doc = "The NVM Controller (cache system) does not insert wait states on a cache miss. Gives the best system performance."]
-    NO_MISS_PENALTY,
-    #[doc = "Reduces power consumption of the cache system, but inserts a wait state each time there is a cache miss. This mode may not be relevant if CPU performance is required, as the application will be stalled and may lead to increase run time."]
-    LOW_POWER,
-    #[doc = "The cache system ensures that a cache hit or miss takes the same amount of time, determined by the number of programmed flash wait states. This mode can be used for real-time applications that require deterministic execution timings."]
-    DETERMINISTIC,
-}
-impl READMODEW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            READMODEW::NO_MISS_PENALTY => 0,
-            READMODEW::LOW_POWER => 1,
-            READMODEW::DETERMINISTIC => 2,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _READMODEW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _READMODEW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: READMODEW) -> &'a mut W {
-        unsafe { self.bits(variant._bits()) }
+impl<'a> READMODE_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: READMODE_A) -> &'a mut W {
+        unsafe { self.bits(variant.into()) }
     }
     #[doc = "The NVM Controller (cache system) does not insert wait states on a cache miss. Gives the best system performance."]
-    #[inline]
+    #[inline(always)]
     pub fn no_miss_penalty(self) -> &'a mut W {
-        self.variant(READMODEW::NO_MISS_PENALTY)
+        self.variant(READMODE_A::NO_MISS_PENALTY)
     }
     #[doc = "Reduces power consumption of the cache system, but inserts a wait state each time there is a cache miss. This mode may not be relevant if CPU performance is required, as the application will be stalled and may lead to increase run time."]
-    #[inline]
+    #[inline(always)]
     pub fn low_power(self) -> &'a mut W {
-        self.variant(READMODEW::LOW_POWER)
+        self.variant(READMODE_A::LOW_POWER)
     }
     #[doc = "The cache system ensures that a cache hit or miss takes the same amount of time, determined by the number of programmed flash wait states. This mode can be used for real-time applications that require deterministic execution timings."]
-    #[inline]
+    #[inline(always)]
     pub fn deterministic(self) -> &'a mut W {
-        self.variant(READMODEW::DETERMINISTIC)
+        self.variant(READMODE_A::DETERMINISTIC)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 16;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x03 << 16)) | (((value as u32) & 0x03) << 16);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _CACHEDISW<'a> {
+#[doc = "Reader of field `CACHEDIS`"]
+pub type CACHEDIS_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `CACHEDIS`"]
+pub struct CACHEDIS_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _CACHEDISW<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> CACHEDIS_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 18;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 18)) | (((value as u32) & 0x01) << 18);
         self.w
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u32 {
-        self.bits
-    }
     #[doc = "Bits 1:4 - NVM Read Wait States"]
-    #[inline]
-    pub fn rws(&self) -> RWSR {
-        RWSR::_from({
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+    #[inline(always)]
+    pub fn rws(&self) -> RWS_R {
+        RWS_R::new(((self.bits >> 1) & 0x0f) as u8)
     }
     #[doc = "Bit 7 - Manual Write"]
-    #[inline]
-    pub fn manw(&self) -> MANWR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 7;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        MANWR { bits }
+    #[inline(always)]
+    pub fn manw(&self) -> MANW_R {
+        MANW_R::new(((self.bits >> 7) & 0x01) != 0)
     }
     #[doc = "Bits 8:9 - Power Reduction Mode during Sleep"]
-    #[inline]
-    pub fn sleepprm(&self) -> SLEEPPRMR {
-        SLEEPPRMR::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+    #[inline(always)]
+    pub fn sleepprm(&self) -> SLEEPPRM_R {
+        SLEEPPRM_R::new(((self.bits >> 8) & 0x03) as u8)
     }
     #[doc = "Bits 16:17 - NVMCTRL Read Mode"]
-    #[inline]
-    pub fn readmode(&self) -> READMODER {
-        READMODER::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 16;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+    #[inline(always)]
+    pub fn readmode(&self) -> READMODE_R {
+        READMODE_R::new(((self.bits >> 16) & 0x03) as u8)
     }
     #[doc = "Bit 18 - Cache Disable"]
-    #[inline]
-    pub fn cachedis(&self) -> CACHEDISR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 18;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        CACHEDISR { bits }
+    #[inline(always)]
+    pub fn cachedis(&self) -> CACHEDIS_R {
+        CACHEDIS_R::new(((self.bits >> 18) & 0x01) != 0)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
-    #[doc = r" Writes raw bits to the register"]
-    #[inline]
-    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.bits = bits;
-        self
-    }
     #[doc = "Bits 1:4 - NVM Read Wait States"]
-    #[inline]
-    pub fn rws(&mut self) -> _RWSW {
-        _RWSW { w: self }
+    #[inline(always)]
+    pub fn rws(&mut self) -> RWS_W {
+        RWS_W { w: self }
     }
     #[doc = "Bit 7 - Manual Write"]
-    #[inline]
-    pub fn manw(&mut self) -> _MANWW {
-        _MANWW { w: self }
+    #[inline(always)]
+    pub fn manw(&mut self) -> MANW_W {
+        MANW_W { w: self }
     }
     #[doc = "Bits 8:9 - Power Reduction Mode during Sleep"]
-    #[inline]
-    pub fn sleepprm(&mut self) -> _SLEEPPRMW {
-        _SLEEPPRMW { w: self }
+    #[inline(always)]
+    pub fn sleepprm(&mut self) -> SLEEPPRM_W {
+        SLEEPPRM_W { w: self }
     }
     #[doc = "Bits 16:17 - NVMCTRL Read Mode"]
-    #[inline]
-    pub fn readmode(&mut self) -> _READMODEW {
-        _READMODEW { w: self }
+    #[inline(always)]
+    pub fn readmode(&mut self) -> READMODE_W {
+        READMODE_W { w: self }
     }
     #[doc = "Bit 18 - Cache Disable"]
-    #[inline]
-    pub fn cachedis(&mut self) -> _CACHEDISW {
-        _CACHEDISW { w: self }
+    #[inline(always)]
+    pub fn cachedis(&mut self) -> CACHEDIS_W {
+        CACHEDIS_W { w: self }
     }
 }

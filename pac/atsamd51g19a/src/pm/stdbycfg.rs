@@ -1,225 +1,132 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u8,
-}
-#[doc = r" Value to write to the register"]
-pub struct W {
-    bits: u8,
-}
-impl super::STDBYCFG {
-    #[doc = r" Modifies the contents of the register"]
-    #[inline]
-    pub fn modify<F>(&self, f: F)
-    where
-        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
-    {
-        let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-    #[doc = r" Writes to the register"]
-    #[inline]
-    pub fn write<F>(&self, f: F)
-    where
-        F: FnOnce(&mut W) -> &mut W,
-    {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Writes the reset value to the register"]
-    #[inline]
-    pub fn reset(&self) {
-        self.write(|w| w)
+#[doc = "Reader of register STDBYCFG"]
+pub type R = crate::R<u8, super::STDBYCFG>;
+#[doc = "Writer for register STDBYCFG"]
+pub type W = crate::W<u8, super::STDBYCFG>;
+#[doc = "Register STDBYCFG `reset()`'s with value 0"]
+impl crate::ResetValue for super::STDBYCFG {
+    type Type = u8;
+    #[inline(always)]
+    fn reset_value() -> Self::Type {
+        0
     }
 }
-#[doc = "Possible values of the field `RAMCFG`"]
+#[doc = "Ram Configuration\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum RAMCFGR {
-    #[doc = "All the RAMs are retained"]
+pub enum RAMCFG_A {
+    #[doc = "0: All the RAMs are retained"]
     RET,
-    #[doc = "Only the first 32K bytes are retained"]
+    #[doc = "1: Only the first 32K bytes are retained"]
     PARTIAL,
-    #[doc = "All the RAMs are OFF"]
+    #[doc = "2: All the RAMs are OFF"]
     OFF,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
 }
-impl RAMCFGR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            RAMCFGR::RET => 0,
-            RAMCFGR::PARTIAL => 1,
-            RAMCFGR::OFF => 2,
-            RAMCFGR::_Reserved(bits) => bits,
+impl From<RAMCFG_A> for u8 {
+    #[inline(always)]
+    fn from(variant: RAMCFG_A) -> Self {
+        match variant {
+            RAMCFG_A::RET => 0,
+            RAMCFG_A::PARTIAL => 1,
+            RAMCFG_A::OFF => 2,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> RAMCFGR {
-        match value {
-            0 => RAMCFGR::RET,
-            1 => RAMCFGR::PARTIAL,
-            2 => RAMCFGR::OFF,
-            i => RAMCFGR::_Reserved(i),
+}
+#[doc = "Reader of field `RAMCFG`"]
+pub type RAMCFG_R = crate::R<u8, RAMCFG_A>;
+impl RAMCFG_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, RAMCFG_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(RAMCFG_A::RET),
+            1 => Val(RAMCFG_A::PARTIAL),
+            2 => Val(RAMCFG_A::OFF),
+            i => Res(i),
         }
     }
     #[doc = "Checks if the value of the field is `RET`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_ret(&self) -> bool {
-        *self == RAMCFGR::RET
+        *self == RAMCFG_A::RET
     }
     #[doc = "Checks if the value of the field is `PARTIAL`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_partial(&self) -> bool {
-        *self == RAMCFGR::PARTIAL
+        *self == RAMCFG_A::PARTIAL
     }
     #[doc = "Checks if the value of the field is `OFF`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_off(&self) -> bool {
-        *self == RAMCFGR::OFF
+        *self == RAMCFG_A::OFF
     }
 }
-#[doc = r" Value of the field"]
-pub struct FASTWKUPR {
-    bits: u8,
-}
-impl FASTWKUPR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
-}
-#[doc = "Values that can be written to the field `RAMCFG`"]
-pub enum RAMCFGW {
-    #[doc = "All the RAMs are retained"]
-    RET,
-    #[doc = "Only the first 32K bytes are retained"]
-    PARTIAL,
-    #[doc = "All the RAMs are OFF"]
-    OFF,
-}
-impl RAMCFGW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            RAMCFGW::RET => 0,
-            RAMCFGW::PARTIAL => 1,
-            RAMCFGW::OFF => 2,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _RAMCFGW<'a> {
+#[doc = "Write proxy for field `RAMCFG`"]
+pub struct RAMCFG_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _RAMCFGW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: RAMCFGW) -> &'a mut W {
-        unsafe { self.bits(variant._bits()) }
+impl<'a> RAMCFG_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: RAMCFG_A) -> &'a mut W {
+        unsafe { self.bits(variant.into()) }
     }
     #[doc = "All the RAMs are retained"]
-    #[inline]
+    #[inline(always)]
     pub fn ret(self) -> &'a mut W {
-        self.variant(RAMCFGW::RET)
+        self.variant(RAMCFG_A::RET)
     }
     #[doc = "Only the first 32K bytes are retained"]
-    #[inline]
+    #[inline(always)]
     pub fn partial(self) -> &'a mut W {
-        self.variant(RAMCFGW::PARTIAL)
+        self.variant(RAMCFG_A::PARTIAL)
     }
     #[doc = "All the RAMs are OFF"]
-    #[inline]
+    #[inline(always)]
     pub fn off(self) -> &'a mut W {
-        self.variant(RAMCFGW::OFF)
+        self.variant(RAMCFG_A::OFF)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits = (self.w.bits & !0x03) | ((value as u8) & 0x03);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _FASTWKUPW<'a> {
+#[doc = "Reader of field `FASTWKUP`"]
+pub type FASTWKUP_R = crate::R<u8, u8>;
+#[doc = "Write proxy for field `FASTWKUP`"]
+pub struct FASTWKUP_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _FASTWKUPW<'a> {
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+impl<'a> FASTWKUP_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 4;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x03 << 4)) | (((value as u8) & 0x03) << 4);
         self.w
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
     #[doc = "Bits 0:1 - Ram Configuration"]
-    #[inline]
-    pub fn ramcfg(&self) -> RAMCFGR {
-        RAMCFGR::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u8) as u8
-        })
+    #[inline(always)]
+    pub fn ramcfg(&self) -> RAMCFG_R {
+        RAMCFG_R::new((self.bits & 0x03) as u8)
     }
     #[doc = "Bits 4:5 - Fast Wakeup"]
-    #[inline]
-    pub fn fastwkup(&self) -> FASTWKUPR {
-        let bits = {
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u8) as u8
-        };
-        FASTWKUPR { bits }
+    #[inline(always)]
+    pub fn fastwkup(&self) -> FASTWKUP_R {
+        FASTWKUP_R::new(((self.bits >> 4) & 0x03) as u8)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
-    #[doc = r" Writes raw bits to the register"]
-    #[inline]
-    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
-        self.bits = bits;
-        self
-    }
     #[doc = "Bits 0:1 - Ram Configuration"]
-    #[inline]
-    pub fn ramcfg(&mut self) -> _RAMCFGW {
-        _RAMCFGW { w: self }
+    #[inline(always)]
+    pub fn ramcfg(&mut self) -> RAMCFG_W {
+        RAMCFG_W { w: self }
     }
     #[doc = "Bits 4:5 - Fast Wakeup"]
-    #[inline]
-    pub fn fastwkup(&mut self) -> _FASTWKUPW {
-        _FASTWKUPW { w: self }
+    #[inline(always)]
+    pub fn fastwkup(&mut self) -> FASTWKUP_W {
+        FASTWKUP_W { w: self }
     }
 }

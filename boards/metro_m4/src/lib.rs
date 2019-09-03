@@ -8,9 +8,12 @@ extern crate cortex_m_rt;
 #[cfg(feature = "rt")]
 pub use cortex_m_rt::entry;
 
-pub use hal::target_device::*;
 use hal::prelude::*;
-pub use hal::*;
+use hal::*;
+
+pub use hal::target_device as pac;
+pub use hal::common::*;
+pub use hal::samd51::*;
 
 use gpio::{Floating, Input, Port, PfC};
 use hal::clock::GenericClockController;
@@ -112,8 +115,8 @@ define_pins!(
 pub fn spi_master<F: Into<Hertz>>(
     clocks: &mut GenericClockController,
     bus_speed: F,
-    sercom2: SERCOM2,
-    mclk: &mut MCLK,
+    sercom2: pac::SERCOM2,
+    mclk: &mut pac::MCLK,
     sck: gpio::Pa13<Input<Floating>>,
     mosi: gpio::Pa12<Input<Floating>>,
     miso: gpio::Pa14<Input<Floating>>,
@@ -137,55 +140,13 @@ pub fn spi_master<F: Into<Hertz>>(
     )
 }
 
-// Convenience for accessing the on-board SPI Flash device.
-// This is commented out because it should use the QSPI peripheral, not a sercom,
-// so we will need to add hal around the QSPI peripheral if we want this feature.
-//
-/*
- *pub fn flash_spi_master(
- *    clocks: &mut GenericClockController,
- *    sercom0: SERCOM0,
- *    mclk: &mut MCLK,
- *    sck: gpio::Pb10<Input<Floating>>,
- *    mosi: gpio::Pa8<Input<Floating>>,
- *    miso: gpio::Pa9<Input<Floating>>,
- *    cs: gpio::Pb11<Input<Floating>>,
- *    port: &mut Port,
- *) -> (SPIMaster0, gpio::Pb11<Output<PushPull>>) {
- *    let gclk0 = clocks.gclk0();
- *    let flash = SPIMaster0::new(
- *        &clocks.sercom0_core(&gclk0).unwrap(),
- *        48.mhz(),
- *        hal::hal::spi::Mode {
- *            phase: hal::hal::spi::Phase::CaptureOnFirstTransition,
- *            polarity: hal::hal::spi::Polarity::IdleLow,
- *        },
- *        sercom0,
- *        mclk,
- *        hal::sercom::SPI0Pinout::Dipo1Dopo3 {
- *            miso: miso.into_pad(port),
- *            mosi: mosi.into_pad(port),
- *            sck: sck.into_pad(port),
- *        },
- *    );
- *
- *    let mut cs = cs.into_push_pull_output(port);
- *
- *    // We’re confident that set_high won’t error here because on-board
- *    // GPIO pins don’t error.
- *    cs.set_high().unwrap();
- *
- *    (flash, cs)
- *}
- */
-
 /// Convenience for setting up the labelled SDA, SCL pins to
 /// operate as an I2C master running at the specified frequency.
 pub fn i2c_master<F: Into<Hertz>>(
     clocks: &mut GenericClockController,
     bus_speed: F,
-    sercom5: SERCOM5,
-    mclk: &mut MCLK,
+    sercom5: pac::SERCOM5,
+    mclk: &mut pac::MCLK,
     sda: gpio::Pb2<Input<Floating>>,
     scl: gpio::Pb3<Input<Floating>>,
     port: &mut Port,
@@ -209,8 +170,8 @@ pub fn i2c_master<F: Into<Hertz>>(
 pub fn uart<F: Into<Hertz>>(
     clocks: &mut GenericClockController,
     baud: F,
-    sercom3: SERCOM3,
-    mclk: &mut MCLK,
+    sercom3: pac::SERCOM3,
+    mclk: &mut pac::MCLK,
     d0: gpio::Pa23<Input<Floating>>,
     d1: gpio::Pa22<Input<Floating>>,
     port: &mut Port,

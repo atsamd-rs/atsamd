@@ -11,7 +11,8 @@ use hal::clock::GenericClockController;
 use hal::delay::Delay;
 use hal::prelude::*;
 use hal::time::KiloHertz;
-use hal::{entry, CorePeripherals, Peripherals};
+use hal::entry;
+use hal::pac::{CorePeripherals, Peripherals};
 
 use embedded_graphics::prelude::*;
 use embedded_graphics::primitives::{Circle, Line, Rect};

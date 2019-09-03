@@ -1,182 +1,84 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u8,
-}
-#[doc = r" Value to write to the register"]
-pub struct W {
-    bits: u8,
-}
-impl super::INTENCLR {
-    #[doc = r" Modifies the contents of the register"]
-    #[inline]
-    pub fn modify<F>(&self, f: F)
-    where
-        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
-    {
-        let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-    #[doc = r" Writes to the register"]
-    #[inline]
-    pub fn write<F>(&self, f: F)
-    where
-        F: FnOnce(&mut W) -> &mut W,
-    {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Writes the reset value to the register"]
-    #[inline]
-    pub fn reset(&self) {
-        self.write(|w| w)
+#[doc = "Reader of register INTENCLR"]
+pub type R = crate::R<u8, super::INTENCLR>;
+#[doc = "Writer for register INTENCLR"]
+pub type W = crate::W<u8, super::INTENCLR>;
+#[doc = "Register INTENCLR `reset()`'s with value 0"]
+impl crate::ResetValue for super::INTENCLR {
+    type Type = u8;
+    #[inline(always)]
+    fn reset_value() -> Self::Type {
+        0
     }
 }
-#[doc = r" Value of the field"]
-pub struct SINGLEER {
-    bits: bool,
-}
-impl SINGLEER {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct DUALER {
-    bits: bool,
-}
-impl DUALER {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Proxy"]
-pub struct _SINGLEEW<'a> {
+#[doc = "Reader of field `SINGLEE`"]
+pub type SINGLEE_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `SINGLEE`"]
+pub struct SINGLEE_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _SINGLEEW<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> SINGLEE_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits = (self.w.bits & !0x01) | ((value as u8) & 0x01);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _DUALEW<'a> {
+#[doc = "Reader of field `DUALE`"]
+pub type DUALE_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `DUALE`"]
+pub struct DUALE_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _DUALEW<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> DUALE_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 1;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 1)) | (((value as u8) & 0x01) << 1);
         self.w
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
     #[doc = "Bit 0 - Single Bit ECC Error Interrupt Enable Clear"]
-    #[inline]
-    pub fn singlee(&self) -> SINGLEER {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
-        SINGLEER { bits }
+    #[inline(always)]
+    pub fn singlee(&self) -> SINGLEE_R {
+        SINGLEE_R::new((self.bits & 0x01) != 0)
     }
     #[doc = "Bit 1 - Dual Bit ECC Error Interrupt Enable Clear"]
-    #[inline]
-    pub fn duale(&self) -> DUALER {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
-        DUALER { bits }
+    #[inline(always)]
+    pub fn duale(&self) -> DUALE_R {
+        DUALE_R::new(((self.bits >> 1) & 0x01) != 0)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
-    #[doc = r" Writes raw bits to the register"]
-    #[inline]
-    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
-        self.bits = bits;
-        self
-    }
     #[doc = "Bit 0 - Single Bit ECC Error Interrupt Enable Clear"]
-    #[inline]
-    pub fn singlee(&mut self) -> _SINGLEEW {
-        _SINGLEEW { w: self }
+    #[inline(always)]
+    pub fn singlee(&mut self) -> SINGLEE_W {
+        SINGLEE_W { w: self }
     }
     #[doc = "Bit 1 - Dual Bit ECC Error Interrupt Enable Clear"]
-    #[inline]
-    pub fn duale(&mut self) -> _DUALEW {
-        _DUALEW { w: self }
+    #[inline(always)]
+    pub fn duale(&mut self) -> DUALE_W {
+        DUALE_W { w: self }
     }
 }

@@ -1,187 +1,88 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u16,
-}
-#[doc = r" Value to write to the register"]
-pub struct W {
-    bits: u16,
-}
-impl super::CALIB {
-    #[doc = r" Modifies the contents of the register"]
-    #[inline]
-    pub fn modify<F>(&self, f: F)
-    where
-        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
-    {
-        let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-    #[doc = r" Writes to the register"]
-    #[inline]
-    pub fn write<F>(&self, f: F)
-    where
-        F: FnOnce(&mut W) -> &mut W,
-    {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Writes the reset value to the register"]
-    #[inline]
-    pub fn reset(&self) {
-        self.write(|w| w)
+#[doc = "Reader of register CALIB"]
+pub type R = crate::R<u16, super::CALIB>;
+#[doc = "Writer for register CALIB"]
+pub type W = crate::W<u16, super::CALIB>;
+#[doc = "Register CALIB `reset()`'s with value 0"]
+impl crate::ResetValue for super::CALIB {
+    type Type = u16;
+    #[inline(always)]
+    fn reset_value() -> Self::Type {
+        0
     }
 }
-#[doc = r" Value of the field"]
-pub struct BIASCOMPR {
-    bits: u8,
-}
-impl BIASCOMPR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
-}
-#[doc = r" Value of the field"]
-pub struct BIASR2RR {
-    bits: u8,
-}
-impl BIASR2RR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
-}
-#[doc = r" Value of the field"]
-pub struct BIASREFBUFR {
-    bits: u8,
-}
-impl BIASREFBUFR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
-}
-#[doc = r" Proxy"]
-pub struct _BIASCOMPW<'a> {
+#[doc = "Reader of field `BIASCOMP`"]
+pub type BIASCOMP_R = crate::R<u8, u8>;
+#[doc = "Write proxy for field `BIASCOMP`"]
+pub struct BIASCOMP_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _BIASCOMPW<'a> {
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+impl<'a> BIASCOMP_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 7;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits = (self.w.bits & !0x07) | ((value as u16) & 0x07);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _BIASR2RW<'a> {
+#[doc = "Reader of field `BIASR2R`"]
+pub type BIASR2R_R = crate::R<u8, u8>;
+#[doc = "Write proxy for field `BIASR2R`"]
+pub struct BIASR2R_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _BIASR2RW<'a> {
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+impl<'a> BIASR2R_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 7;
-        const OFFSET: u8 = 4;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x07 << 4)) | (((value as u16) & 0x07) << 4);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _BIASREFBUFW<'a> {
+#[doc = "Reader of field `BIASREFBUF`"]
+pub type BIASREFBUF_R = crate::R<u8, u8>;
+#[doc = "Write proxy for field `BIASREFBUF`"]
+pub struct BIASREFBUF_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _BIASREFBUFW<'a> {
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+impl<'a> BIASREFBUF_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 7;
-        const OFFSET: u8 = 8;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x07 << 8)) | (((value as u16) & 0x07) << 8);
         self.w
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u16 {
-        self.bits
-    }
     #[doc = "Bits 0:2 - Bias Comparator Scaling"]
-    #[inline]
-    pub fn biascomp(&self) -> BIASCOMPR {
-        let bits = {
-            const MASK: u8 = 7;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u16) as u8
-        };
-        BIASCOMPR { bits }
+    #[inline(always)]
+    pub fn biascomp(&self) -> BIASCOMP_R {
+        BIASCOMP_R::new((self.bits & 0x07) as u8)
     }
     #[doc = "Bits 4:6 - Bias R2R Ampli scaling"]
-    #[inline]
-    pub fn biasr2r(&self) -> BIASR2RR {
-        let bits = {
-            const MASK: u8 = 7;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u16) as u8
-        };
-        BIASR2RR { bits }
+    #[inline(always)]
+    pub fn biasr2r(&self) -> BIASR2R_R {
+        BIASR2R_R::new(((self.bits >> 4) & 0x07) as u8)
     }
     #[doc = "Bits 8:10 - Bias Reference Buffer Scaling"]
-    #[inline]
-    pub fn biasrefbuf(&self) -> BIASREFBUFR {
-        let bits = {
-            const MASK: u8 = 7;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u16) as u8
-        };
-        BIASREFBUFR { bits }
+    #[inline(always)]
+    pub fn biasrefbuf(&self) -> BIASREFBUF_R {
+        BIASREFBUF_R::new(((self.bits >> 8) & 0x07) as u8)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
-    #[doc = r" Writes raw bits to the register"]
-    #[inline]
-    pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {
-        self.bits = bits;
-        self
-    }
     #[doc = "Bits 0:2 - Bias Comparator Scaling"]
-    #[inline]
-    pub fn biascomp(&mut self) -> _BIASCOMPW {
-        _BIASCOMPW { w: self }
+    #[inline(always)]
+    pub fn biascomp(&mut self) -> BIASCOMP_W {
+        BIASCOMP_W { w: self }
     }
     #[doc = "Bits 4:6 - Bias R2R Ampli scaling"]
-    #[inline]
-    pub fn biasr2r(&mut self) -> _BIASR2RW {
-        _BIASR2RW { w: self }
+    #[inline(always)]
+    pub fn biasr2r(&mut self) -> BIASR2R_W {
+        BIASR2R_W { w: self }
     }
     #[doc = "Bits 8:10 - Bias Reference Buffer Scaling"]
-    #[inline]
-    pub fn biasrefbuf(&mut self) -> _BIASREFBUFW {
-        _BIASREFBUFW { w: self }
+    #[inline(always)]
+    pub fn biasrefbuf(&mut self) -> BIASREFBUF_W {
+        BIASREFBUF_W { w: self }
     }
 }

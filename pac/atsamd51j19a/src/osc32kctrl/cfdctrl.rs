@@ -1,241 +1,118 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u8,
-}
-#[doc = r" Value to write to the register"]
-pub struct W {
-    bits: u8,
-}
-impl super::CFDCTRL {
-    #[doc = r" Modifies the contents of the register"]
-    #[inline]
-    pub fn modify<F>(&self, f: F)
-    where
-        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
-    {
-        let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-    #[doc = r" Writes to the register"]
-    #[inline]
-    pub fn write<F>(&self, f: F)
-    where
-        F: FnOnce(&mut W) -> &mut W,
-    {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Writes the reset value to the register"]
-    #[inline]
-    pub fn reset(&self) {
-        self.write(|w| w)
+#[doc = "Reader of register CFDCTRL"]
+pub type R = crate::R<u8, super::CFDCTRL>;
+#[doc = "Writer for register CFDCTRL"]
+pub type W = crate::W<u8, super::CFDCTRL>;
+#[doc = "Register CFDCTRL `reset()`'s with value 0"]
+impl crate::ResetValue for super::CFDCTRL {
+    type Type = u8;
+    #[inline(always)]
+    fn reset_value() -> Self::Type {
+        0
     }
 }
-#[doc = r" Value of the field"]
-pub struct CFDENR {
-    bits: bool,
-}
-impl CFDENR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct SWBACKR {
-    bits: bool,
-}
-impl SWBACKR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct CFDPRESCR {
-    bits: bool,
-}
-impl CFDPRESCR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Proxy"]
-pub struct _CFDENW<'a> {
+#[doc = "Reader of field `CFDEN`"]
+pub type CFDEN_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `CFDEN`"]
+pub struct CFDEN_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _CFDENW<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> CFDEN_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits = (self.w.bits & !0x01) | ((value as u8) & 0x01);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _SWBACKW<'a> {
+#[doc = "Reader of field `SWBACK`"]
+pub type SWBACK_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `SWBACK`"]
+pub struct SWBACK_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _SWBACKW<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> SWBACK_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 1;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 1)) | (((value as u8) & 0x01) << 1);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _CFDPRESCW<'a> {
+#[doc = "Reader of field `CFDPRESC`"]
+pub type CFDPRESC_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `CFDPRESC`"]
+pub struct CFDPRESC_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _CFDPRESCW<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> CFDPRESC_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 2;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 2)) | (((value as u8) & 0x01) << 2);
         self.w
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
     #[doc = "Bit 0 - Clock Failure Detector Enable"]
-    #[inline]
-    pub fn cfden(&self) -> CFDENR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
-        CFDENR { bits }
+    #[inline(always)]
+    pub fn cfden(&self) -> CFDEN_R {
+        CFDEN_R::new((self.bits & 0x01) != 0)
     }
     #[doc = "Bit 1 - Clock Switch Back"]
-    #[inline]
-    pub fn swback(&self) -> SWBACKR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
-        SWBACKR { bits }
+    #[inline(always)]
+    pub fn swback(&self) -> SWBACK_R {
+        SWBACK_R::new(((self.bits >> 1) & 0x01) != 0)
     }
     #[doc = "Bit 2 - Clock Failure Detector Prescaler"]
-    #[inline]
-    pub fn cfdpresc(&self) -> CFDPRESCR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
-        CFDPRESCR { bits }
+    #[inline(always)]
+    pub fn cfdpresc(&self) -> CFDPRESC_R {
+        CFDPRESC_R::new(((self.bits >> 2) & 0x01) != 0)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
-    #[doc = r" Writes raw bits to the register"]
-    #[inline]
-    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
-        self.bits = bits;
-        self
-    }
     #[doc = "Bit 0 - Clock Failure Detector Enable"]
-    #[inline]
-    pub fn cfden(&mut self) -> _CFDENW {
-        _CFDENW { w: self }
+    #[inline(always)]
+    pub fn cfden(&mut self) -> CFDEN_W {
+        CFDEN_W { w: self }
     }
     #[doc = "Bit 1 - Clock Switch Back"]
-    #[inline]
-    pub fn swback(&mut self) -> _SWBACKW {
-        _SWBACKW { w: self }
+    #[inline(always)]
+    pub fn swback(&mut self) -> SWBACK_W {
+        SWBACK_W { w: self }
     }
     #[doc = "Bit 2 - Clock Failure Detector Prescaler"]
-    #[inline]
-    pub fn cfdpresc(&mut self) -> _CFDPRESCW {
-        _CFDPRESCW { w: self }
+    #[inline(always)]
+    pub fn cfdpresc(&mut self) -> CFDPRESC_W {
+        CFDPRESC_W { w: self }
     }
 }

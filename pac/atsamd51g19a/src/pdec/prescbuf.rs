@@ -1,320 +1,220 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u8,
-}
-#[doc = r" Value to write to the register"]
-pub struct W {
-    bits: u8,
-}
-impl super::PRESCBUF {
-    #[doc = r" Modifies the contents of the register"]
-    #[inline]
-    pub fn modify<F>(&self, f: F)
-    where
-        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
-    {
-        let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-    #[doc = r" Writes to the register"]
-    #[inline]
-    pub fn write<F>(&self, f: F)
-    where
-        F: FnOnce(&mut W) -> &mut W,
-    {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Writes the reset value to the register"]
-    #[inline]
-    pub fn reset(&self) {
-        self.write(|w| w)
+#[doc = "Reader of register PRESCBUF"]
+pub type R = crate::R<u8, super::PRESCBUF>;
+#[doc = "Writer for register PRESCBUF"]
+pub type W = crate::W<u8, super::PRESCBUF>;
+#[doc = "Register PRESCBUF `reset()`'s with value 0"]
+impl crate::ResetValue for super::PRESCBUF {
+    type Type = u8;
+    #[inline(always)]
+    fn reset_value() -> Self::Type {
+        0
     }
 }
-#[doc = "Possible values of the field `PRESCBUF`"]
+#[doc = "Prescaler Buffer Value\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum PRESCBUFR {
-    #[doc = "No division"]
+pub enum PRESCBUF_A {
+    #[doc = "0: No division"]
     DIV1,
-    #[doc = "Divide by 2"]
+    #[doc = "1: Divide by 2"]
     DIV2,
-    #[doc = "Divide by 4"]
+    #[doc = "2: Divide by 4"]
     DIV4,
-    #[doc = "Divide by 8"]
+    #[doc = "3: Divide by 8"]
     DIV8,
-    #[doc = "Divide by 16"]
+    #[doc = "4: Divide by 16"]
     DIV16,
-    #[doc = "Divide by 32"]
+    #[doc = "5: Divide by 32"]
     DIV32,
-    #[doc = "Divide by 64"]
+    #[doc = "6: Divide by 64"]
     DIV64,
-    #[doc = "Divide by 128"]
+    #[doc = "7: Divide by 128"]
     DIV128,
-    #[doc = "Divide by 256"]
+    #[doc = "8: Divide by 256"]
     DIV256,
-    #[doc = "Divide by 512"]
+    #[doc = "9: Divide by 512"]
     DIV512,
-    #[doc = "Divide by 1024"]
+    #[doc = "10: Divide by 1024"]
     DIV1024,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
 }
-impl PRESCBUFR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            PRESCBUFR::DIV1 => 0,
-            PRESCBUFR::DIV2 => 1,
-            PRESCBUFR::DIV4 => 2,
-            PRESCBUFR::DIV8 => 3,
-            PRESCBUFR::DIV16 => 4,
-            PRESCBUFR::DIV32 => 5,
-            PRESCBUFR::DIV64 => 6,
-            PRESCBUFR::DIV128 => 7,
-            PRESCBUFR::DIV256 => 8,
-            PRESCBUFR::DIV512 => 9,
-            PRESCBUFR::DIV1024 => 10,
-            PRESCBUFR::_Reserved(bits) => bits,
+impl From<PRESCBUF_A> for u8 {
+    #[inline(always)]
+    fn from(variant: PRESCBUF_A) -> Self {
+        match variant {
+            PRESCBUF_A::DIV1 => 0,
+            PRESCBUF_A::DIV2 => 1,
+            PRESCBUF_A::DIV4 => 2,
+            PRESCBUF_A::DIV8 => 3,
+            PRESCBUF_A::DIV16 => 4,
+            PRESCBUF_A::DIV32 => 5,
+            PRESCBUF_A::DIV64 => 6,
+            PRESCBUF_A::DIV128 => 7,
+            PRESCBUF_A::DIV256 => 8,
+            PRESCBUF_A::DIV512 => 9,
+            PRESCBUF_A::DIV1024 => 10,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> PRESCBUFR {
-        match value {
-            0 => PRESCBUFR::DIV1,
-            1 => PRESCBUFR::DIV2,
-            2 => PRESCBUFR::DIV4,
-            3 => PRESCBUFR::DIV8,
-            4 => PRESCBUFR::DIV16,
-            5 => PRESCBUFR::DIV32,
-            6 => PRESCBUFR::DIV64,
-            7 => PRESCBUFR::DIV128,
-            8 => PRESCBUFR::DIV256,
-            9 => PRESCBUFR::DIV512,
-            10 => PRESCBUFR::DIV1024,
-            i => PRESCBUFR::_Reserved(i),
+}
+#[doc = "Reader of field `PRESCBUF`"]
+pub type PRESCBUF_R = crate::R<u8, PRESCBUF_A>;
+impl PRESCBUF_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, PRESCBUF_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(PRESCBUF_A::DIV1),
+            1 => Val(PRESCBUF_A::DIV2),
+            2 => Val(PRESCBUF_A::DIV4),
+            3 => Val(PRESCBUF_A::DIV8),
+            4 => Val(PRESCBUF_A::DIV16),
+            5 => Val(PRESCBUF_A::DIV32),
+            6 => Val(PRESCBUF_A::DIV64),
+            7 => Val(PRESCBUF_A::DIV128),
+            8 => Val(PRESCBUF_A::DIV256),
+            9 => Val(PRESCBUF_A::DIV512),
+            10 => Val(PRESCBUF_A::DIV1024),
+            i => Res(i),
         }
     }
     #[doc = "Checks if the value of the field is `DIV1`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_div1(&self) -> bool {
-        *self == PRESCBUFR::DIV1
+        *self == PRESCBUF_A::DIV1
     }
     #[doc = "Checks if the value of the field is `DIV2`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_div2(&self) -> bool {
-        *self == PRESCBUFR::DIV2
+        *self == PRESCBUF_A::DIV2
     }
     #[doc = "Checks if the value of the field is `DIV4`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_div4(&self) -> bool {
-        *self == PRESCBUFR::DIV4
+        *self == PRESCBUF_A::DIV4
     }
     #[doc = "Checks if the value of the field is `DIV8`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_div8(&self) -> bool {
-        *self == PRESCBUFR::DIV8
+        *self == PRESCBUF_A::DIV8
     }
     #[doc = "Checks if the value of the field is `DIV16`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_div16(&self) -> bool {
-        *self == PRESCBUFR::DIV16
+        *self == PRESCBUF_A::DIV16
     }
     #[doc = "Checks if the value of the field is `DIV32`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_div32(&self) -> bool {
-        *self == PRESCBUFR::DIV32
+        *self == PRESCBUF_A::DIV32
     }
     #[doc = "Checks if the value of the field is `DIV64`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_div64(&self) -> bool {
-        *self == PRESCBUFR::DIV64
+        *self == PRESCBUF_A::DIV64
     }
     #[doc = "Checks if the value of the field is `DIV128`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_div128(&self) -> bool {
-        *self == PRESCBUFR::DIV128
+        *self == PRESCBUF_A::DIV128
     }
     #[doc = "Checks if the value of the field is `DIV256`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_div256(&self) -> bool {
-        *self == PRESCBUFR::DIV256
+        *self == PRESCBUF_A::DIV256
     }
     #[doc = "Checks if the value of the field is `DIV512`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_div512(&self) -> bool {
-        *self == PRESCBUFR::DIV512
+        *self == PRESCBUF_A::DIV512
     }
     #[doc = "Checks if the value of the field is `DIV1024`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_div1024(&self) -> bool {
-        *self == PRESCBUFR::DIV1024
+        *self == PRESCBUF_A::DIV1024
     }
 }
-#[doc = "Values that can be written to the field `PRESCBUF`"]
-pub enum PRESCBUFW {
-    #[doc = "No division"]
-    DIV1,
-    #[doc = "Divide by 2"]
-    DIV2,
-    #[doc = "Divide by 4"]
-    DIV4,
-    #[doc = "Divide by 8"]
-    DIV8,
-    #[doc = "Divide by 16"]
-    DIV16,
-    #[doc = "Divide by 32"]
-    DIV32,
-    #[doc = "Divide by 64"]
-    DIV64,
-    #[doc = "Divide by 128"]
-    DIV128,
-    #[doc = "Divide by 256"]
-    DIV256,
-    #[doc = "Divide by 512"]
-    DIV512,
-    #[doc = "Divide by 1024"]
-    DIV1024,
-}
-impl PRESCBUFW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            PRESCBUFW::DIV1 => 0,
-            PRESCBUFW::DIV2 => 1,
-            PRESCBUFW::DIV4 => 2,
-            PRESCBUFW::DIV8 => 3,
-            PRESCBUFW::DIV16 => 4,
-            PRESCBUFW::DIV32 => 5,
-            PRESCBUFW::DIV64 => 6,
-            PRESCBUFW::DIV128 => 7,
-            PRESCBUFW::DIV256 => 8,
-            PRESCBUFW::DIV512 => 9,
-            PRESCBUFW::DIV1024 => 10,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _PRESCBUFW<'a> {
+#[doc = "Write proxy for field `PRESCBUF`"]
+pub struct PRESCBUF_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _PRESCBUFW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: PRESCBUFW) -> &'a mut W {
-        unsafe { self.bits(variant._bits()) }
+impl<'a> PRESCBUF_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: PRESCBUF_A) -> &'a mut W {
+        unsafe { self.bits(variant.into()) }
     }
     #[doc = "No division"]
-    #[inline]
+    #[inline(always)]
     pub fn div1(self) -> &'a mut W {
-        self.variant(PRESCBUFW::DIV1)
+        self.variant(PRESCBUF_A::DIV1)
     }
     #[doc = "Divide by 2"]
-    #[inline]
+    #[inline(always)]
     pub fn div2(self) -> &'a mut W {
-        self.variant(PRESCBUFW::DIV2)
+        self.variant(PRESCBUF_A::DIV2)
     }
     #[doc = "Divide by 4"]
-    #[inline]
+    #[inline(always)]
     pub fn div4(self) -> &'a mut W {
-        self.variant(PRESCBUFW::DIV4)
+        self.variant(PRESCBUF_A::DIV4)
     }
     #[doc = "Divide by 8"]
-    #[inline]
+    #[inline(always)]
     pub fn div8(self) -> &'a mut W {
-        self.variant(PRESCBUFW::DIV8)
+        self.variant(PRESCBUF_A::DIV8)
     }
     #[doc = "Divide by 16"]
-    #[inline]
+    #[inline(always)]
     pub fn div16(self) -> &'a mut W {
-        self.variant(PRESCBUFW::DIV16)
+        self.variant(PRESCBUF_A::DIV16)
     }
     #[doc = "Divide by 32"]
-    #[inline]
+    #[inline(always)]
     pub fn div32(self) -> &'a mut W {
-        self.variant(PRESCBUFW::DIV32)
+        self.variant(PRESCBUF_A::DIV32)
     }
     #[doc = "Divide by 64"]
-    #[inline]
+    #[inline(always)]
     pub fn div64(self) -> &'a mut W {
-        self.variant(PRESCBUFW::DIV64)
+        self.variant(PRESCBUF_A::DIV64)
     }
     #[doc = "Divide by 128"]
-    #[inline]
+    #[inline(always)]
     pub fn div128(self) -> &'a mut W {
-        self.variant(PRESCBUFW::DIV128)
+        self.variant(PRESCBUF_A::DIV128)
     }
     #[doc = "Divide by 256"]
-    #[inline]
+    #[inline(always)]
     pub fn div256(self) -> &'a mut W {
-        self.variant(PRESCBUFW::DIV256)
+        self.variant(PRESCBUF_A::DIV256)
     }
     #[doc = "Divide by 512"]
-    #[inline]
+    #[inline(always)]
     pub fn div512(self) -> &'a mut W {
-        self.variant(PRESCBUFW::DIV512)
+        self.variant(PRESCBUF_A::DIV512)
     }
     #[doc = "Divide by 1024"]
-    #[inline]
+    #[inline(always)]
     pub fn div1024(self) -> &'a mut W {
-        self.variant(PRESCBUFW::DIV1024)
+        self.variant(PRESCBUF_A::DIV1024)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 15;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits = (self.w.bits & !0x0f) | ((value as u8) & 0x0f);
         self.w
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
     #[doc = "Bits 0:3 - Prescaler Buffer Value"]
-    #[inline]
-    pub fn prescbuf(&self) -> PRESCBUFR {
-        PRESCBUFR::_from({
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u8) as u8
-        })
+    #[inline(always)]
+    pub fn prescbuf(&self) -> PRESCBUF_R {
+        PRESCBUF_R::new((self.bits & 0x0f) as u8)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
-    #[doc = r" Writes raw bits to the register"]
-    #[inline]
-    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
-        self.bits = bits;
-        self
-    }
     #[doc = "Bits 0:3 - Prescaler Buffer Value"]
-    #[inline]
-    pub fn prescbuf(&mut self) -> _PRESCBUFW {
-        _PRESCBUFW { w: self }
+    #[inline(always)]
+    pub fn prescbuf(&mut self) -> PRESCBUF_W {
+        PRESCBUF_W { w: self }
     }
 }

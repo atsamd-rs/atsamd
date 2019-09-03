@@ -1,860 +1,577 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u32,
-}
-#[doc = r" Value to write to the register"]
-pub struct W {
-    bits: u32,
-}
-impl super::BOD12 {
-    #[doc = r" Modifies the contents of the register"]
-    #[inline]
-    pub fn modify<F>(&self, f: F)
-    where
-        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
-    {
-        let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-    #[doc = r" Writes to the register"]
-    #[inline]
-    pub fn write<F>(&self, f: F)
-    where
-        F: FnOnce(&mut W) -> &mut W,
-    {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Writes the reset value to the register"]
-    #[inline]
-    pub fn reset(&self) {
-        self.write(|w| w)
+#[doc = "Reader of register BOD12"]
+pub type R = crate::R<u32, super::BOD12>;
+#[doc = "Writer for register BOD12"]
+pub type W = crate::W<u32, super::BOD12>;
+#[doc = "Register BOD12 `reset()`'s with value 0"]
+impl crate::ResetValue for super::BOD12 {
+    type Type = u32;
+    #[inline(always)]
+    fn reset_value() -> Self::Type {
+        0
     }
 }
-#[doc = r" Value of the field"]
-pub struct ENABLER {
-    bits: bool,
+#[doc = "Reader of field `ENABLE`"]
+pub type ENABLE_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `ENABLE`"]
+pub struct ENABLE_W<'a> {
+    w: &'a mut W,
 }
-impl ENABLER {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
+impl<'a> ENABLE_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
     }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
     }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct HYSTR {
-    bits: bool,
-}
-impl HYSTR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 1)) | (((value as u32) & 0x01) << 1);
+        self.w
     }
 }
-#[doc = "Possible values of the field `ACTION`"]
+#[doc = "Reader of field `HYST`"]
+pub type HYST_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `HYST`"]
+pub struct HYST_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> HYST_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 2)) | (((value as u32) & 0x01) << 2);
+        self.w
+    }
+}
+#[doc = "Action when Threshold Crossed\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum ACTIONR {
-    #[doc = "No action"]
+pub enum ACTION_A {
+    #[doc = "0: No action"]
     NONE,
-    #[doc = "The BOD12 generates a reset"]
+    #[doc = "1: The BOD12 generates a reset"]
     RESET,
-    #[doc = "The BOD12 generates an interrupt"]
+    #[doc = "2: The BOD12 generates an interrupt"]
     INT,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
 }
-impl ACTIONR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            ACTIONR::NONE => 0,
-            ACTIONR::RESET => 1,
-            ACTIONR::INT => 2,
-            ACTIONR::_Reserved(bits) => bits,
+impl From<ACTION_A> for u8 {
+    #[inline(always)]
+    fn from(variant: ACTION_A) -> Self {
+        match variant {
+            ACTION_A::NONE => 0,
+            ACTION_A::RESET => 1,
+            ACTION_A::INT => 2,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> ACTIONR {
-        match value {
-            0 => ACTIONR::NONE,
-            1 => ACTIONR::RESET,
-            2 => ACTIONR::INT,
-            i => ACTIONR::_Reserved(i),
+}
+#[doc = "Reader of field `ACTION`"]
+pub type ACTION_R = crate::R<u8, ACTION_A>;
+impl ACTION_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, ACTION_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(ACTION_A::NONE),
+            1 => Val(ACTION_A::RESET),
+            2 => Val(ACTION_A::INT),
+            i => Res(i),
         }
     }
     #[doc = "Checks if the value of the field is `NONE`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_none(&self) -> bool {
-        *self == ACTIONR::NONE
+        *self == ACTION_A::NONE
     }
     #[doc = "Checks if the value of the field is `RESET`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_reset(&self) -> bool {
-        *self == ACTIONR::RESET
+        *self == ACTION_A::RESET
     }
     #[doc = "Checks if the value of the field is `INT`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_int(&self) -> bool {
-        *self == ACTIONR::INT
+        *self == ACTION_A::INT
     }
 }
-#[doc = r" Value of the field"]
-pub struct STDBYCFGR {
-    bits: bool,
+#[doc = "Write proxy for field `ACTION`"]
+pub struct ACTION_W<'a> {
+    w: &'a mut W,
 }
-impl STDBYCFGR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
+impl<'a> ACTION_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: ACTION_A) -> &'a mut W {
+        unsafe { self.bits(variant.into()) }
     }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
+    #[doc = "No action"]
+    #[inline(always)]
+    pub fn none(self) -> &'a mut W {
+        self.variant(ACTION_A::NONE)
     }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
+    #[doc = "The BOD12 generates a reset"]
+    #[inline(always)]
+    pub fn reset(self) -> &'a mut W {
+        self.variant(ACTION_A::RESET)
     }
-}
-#[doc = r" Value of the field"]
-pub struct RUNSTDBYR {
-    bits: bool,
-}
-impl RUNSTDBYR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
+    #[doc = "The BOD12 generates an interrupt"]
+    #[inline(always)]
+    pub fn int(self) -> &'a mut W {
+        self.variant(ACTION_A::INT)
     }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub unsafe fn bits(self, value: u8) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x03 << 3)) | (((value as u32) & 0x03) << 3);
+        self.w
     }
 }
-#[doc = r" Value of the field"]
-pub struct ACTCFGR {
-    bits: bool,
+#[doc = "Reader of field `STDBYCFG`"]
+pub type STDBYCFG_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `STDBYCFG`"]
+pub struct STDBYCFG_W<'a> {
+    w: &'a mut W,
 }
-impl ACTCFGR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
+impl<'a> STDBYCFG_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
     }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
     }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 5)) | (((value as u32) & 0x01) << 5);
+        self.w
     }
 }
-#[doc = "Possible values of the field `PSEL`"]
+#[doc = "Reader of field `RUNSTDBY`"]
+pub type RUNSTDBY_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `RUNSTDBY`"]
+pub struct RUNSTDBY_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> RUNSTDBY_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 6)) | (((value as u32) & 0x01) << 6);
+        self.w
+    }
+}
+#[doc = "Reader of field `ACTCFG`"]
+pub type ACTCFG_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `ACTCFG`"]
+pub struct ACTCFG_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> ACTCFG_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 8)) | (((value as u32) & 0x01) << 8);
+        self.w
+    }
+}
+#[doc = "Prescaler Select\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum PSELR {
-    #[doc = "Divide clock by 2"]
+pub enum PSEL_A {
+    #[doc = "0: Divide clock by 2"]
     DIV2,
-    #[doc = "Divide clock by 4"]
+    #[doc = "1: Divide clock by 4"]
     DIV4,
-    #[doc = "Divide clock by 8"]
+    #[doc = "2: Divide clock by 8"]
     DIV8,
-    #[doc = "Divide clock by 16"]
+    #[doc = "3: Divide clock by 16"]
     DIV16,
-    #[doc = "Divide clock by 32"]
+    #[doc = "4: Divide clock by 32"]
     DIV32,
-    #[doc = "Divide clock by 64"]
+    #[doc = "5: Divide clock by 64"]
     DIV64,
-    #[doc = "Divide clock by 128"]
+    #[doc = "6: Divide clock by 128"]
     DIV128,
-    #[doc = "Divide clock by 256"]
+    #[doc = "7: Divide clock by 256"]
     DIV256,
-    #[doc = "Divide clock by 512"]
+    #[doc = "8: Divide clock by 512"]
     DIV512,
-    #[doc = "Divide clock by 1024"]
+    #[doc = "9: Divide clock by 1024"]
     DIV1024,
-    #[doc = "Divide clock by 2048"]
+    #[doc = "10: Divide clock by 2048"]
     DIV2048,
-    #[doc = "Divide clock by 4096"]
+    #[doc = "11: Divide clock by 4096"]
     DIV4096,
-    #[doc = "Divide clock by 8192"]
+    #[doc = "12: Divide clock by 8192"]
     DIV8192,
-    #[doc = "Divide clock by 16384"]
+    #[doc = "13: Divide clock by 16384"]
     DIV16384,
-    #[doc = "Divide clock by 32768"]
+    #[doc = "14: Divide clock by 32768"]
     DIV32768,
-    #[doc = "Divide clock by 65536"]
+    #[doc = "15: Divide clock by 65536"]
     DIV65536,
 }
-impl PSELR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            PSELR::DIV2 => 0,
-            PSELR::DIV4 => 1,
-            PSELR::DIV8 => 2,
-            PSELR::DIV16 => 3,
-            PSELR::DIV32 => 4,
-            PSELR::DIV64 => 5,
-            PSELR::DIV128 => 6,
-            PSELR::DIV256 => 7,
-            PSELR::DIV512 => 8,
-            PSELR::DIV1024 => 9,
-            PSELR::DIV2048 => 10,
-            PSELR::DIV4096 => 11,
-            PSELR::DIV8192 => 12,
-            PSELR::DIV16384 => 13,
-            PSELR::DIV32768 => 14,
-            PSELR::DIV65536 => 15,
+impl From<PSEL_A> for u8 {
+    #[inline(always)]
+    fn from(variant: PSEL_A) -> Self {
+        match variant {
+            PSEL_A::DIV2 => 0,
+            PSEL_A::DIV4 => 1,
+            PSEL_A::DIV8 => 2,
+            PSEL_A::DIV16 => 3,
+            PSEL_A::DIV32 => 4,
+            PSEL_A::DIV64 => 5,
+            PSEL_A::DIV128 => 6,
+            PSEL_A::DIV256 => 7,
+            PSEL_A::DIV512 => 8,
+            PSEL_A::DIV1024 => 9,
+            PSEL_A::DIV2048 => 10,
+            PSEL_A::DIV4096 => 11,
+            PSEL_A::DIV8192 => 12,
+            PSEL_A::DIV16384 => 13,
+            PSEL_A::DIV32768 => 14,
+            PSEL_A::DIV65536 => 15,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> PSELR {
-        match value {
-            0 => PSELR::DIV2,
-            1 => PSELR::DIV4,
-            2 => PSELR::DIV8,
-            3 => PSELR::DIV16,
-            4 => PSELR::DIV32,
-            5 => PSELR::DIV64,
-            6 => PSELR::DIV128,
-            7 => PSELR::DIV256,
-            8 => PSELR::DIV512,
-            9 => PSELR::DIV1024,
-            10 => PSELR::DIV2048,
-            11 => PSELR::DIV4096,
-            12 => PSELR::DIV8192,
-            13 => PSELR::DIV16384,
-            14 => PSELR::DIV32768,
-            15 => PSELR::DIV65536,
+}
+#[doc = "Reader of field `PSEL`"]
+pub type PSEL_R = crate::R<u8, PSEL_A>;
+impl PSEL_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> PSEL_A {
+        match self.bits {
+            0 => PSEL_A::DIV2,
+            1 => PSEL_A::DIV4,
+            2 => PSEL_A::DIV8,
+            3 => PSEL_A::DIV16,
+            4 => PSEL_A::DIV32,
+            5 => PSEL_A::DIV64,
+            6 => PSEL_A::DIV128,
+            7 => PSEL_A::DIV256,
+            8 => PSEL_A::DIV512,
+            9 => PSEL_A::DIV1024,
+            10 => PSEL_A::DIV2048,
+            11 => PSEL_A::DIV4096,
+            12 => PSEL_A::DIV8192,
+            13 => PSEL_A::DIV16384,
+            14 => PSEL_A::DIV32768,
+            15 => PSEL_A::DIV65536,
             _ => unreachable!(),
         }
     }
     #[doc = "Checks if the value of the field is `DIV2`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_div2(&self) -> bool {
-        *self == PSELR::DIV2
+        *self == PSEL_A::DIV2
     }
     #[doc = "Checks if the value of the field is `DIV4`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_div4(&self) -> bool {
-        *self == PSELR::DIV4
+        *self == PSEL_A::DIV4
     }
     #[doc = "Checks if the value of the field is `DIV8`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_div8(&self) -> bool {
-        *self == PSELR::DIV8
+        *self == PSEL_A::DIV8
     }
     #[doc = "Checks if the value of the field is `DIV16`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_div16(&self) -> bool {
-        *self == PSELR::DIV16
+        *self == PSEL_A::DIV16
     }
     #[doc = "Checks if the value of the field is `DIV32`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_div32(&self) -> bool {
-        *self == PSELR::DIV32
+        *self == PSEL_A::DIV32
     }
     #[doc = "Checks if the value of the field is `DIV64`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_div64(&self) -> bool {
-        *self == PSELR::DIV64
+        *self == PSEL_A::DIV64
     }
     #[doc = "Checks if the value of the field is `DIV128`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_div128(&self) -> bool {
-        *self == PSELR::DIV128
+        *self == PSEL_A::DIV128
     }
     #[doc = "Checks if the value of the field is `DIV256`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_div256(&self) -> bool {
-        *self == PSELR::DIV256
+        *self == PSEL_A::DIV256
     }
     #[doc = "Checks if the value of the field is `DIV512`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_div512(&self) -> bool {
-        *self == PSELR::DIV512
+        *self == PSEL_A::DIV512
     }
     #[doc = "Checks if the value of the field is `DIV1024`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_div1024(&self) -> bool {
-        *self == PSELR::DIV1024
+        *self == PSEL_A::DIV1024
     }
     #[doc = "Checks if the value of the field is `DIV2048`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_div2048(&self) -> bool {
-        *self == PSELR::DIV2048
+        *self == PSEL_A::DIV2048
     }
     #[doc = "Checks if the value of the field is `DIV4096`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_div4096(&self) -> bool {
-        *self == PSELR::DIV4096
+        *self == PSEL_A::DIV4096
     }
     #[doc = "Checks if the value of the field is `DIV8192`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_div8192(&self) -> bool {
-        *self == PSELR::DIV8192
+        *self == PSEL_A::DIV8192
     }
     #[doc = "Checks if the value of the field is `DIV16384`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_div16384(&self) -> bool {
-        *self == PSELR::DIV16384
+        *self == PSEL_A::DIV16384
     }
     #[doc = "Checks if the value of the field is `DIV32768`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_div32768(&self) -> bool {
-        *self == PSELR::DIV32768
+        *self == PSEL_A::DIV32768
     }
     #[doc = "Checks if the value of the field is `DIV65536`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_div65536(&self) -> bool {
-        *self == PSELR::DIV65536
+        *self == PSEL_A::DIV65536
     }
 }
-#[doc = r" Value of the field"]
-pub struct LEVELR {
-    bits: u8,
-}
-impl LEVELR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
-}
-#[doc = r" Proxy"]
-pub struct _ENABLEW<'a> {
+#[doc = "Write proxy for field `PSEL`"]
+pub struct PSEL_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _ENABLEW<'a> {
-    #[doc = r" Sets the field bit"]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r" Clears the field bit"]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 1;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
-        self.w
-    }
-}
-#[doc = r" Proxy"]
-pub struct _HYSTW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _HYSTW<'a> {
-    #[doc = r" Sets the field bit"]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r" Clears the field bit"]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 2;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
-        self.w
-    }
-}
-#[doc = "Values that can be written to the field `ACTION`"]
-pub enum ACTIONW {
-    #[doc = "No action"]
-    NONE,
-    #[doc = "The BOD12 generates a reset"]
-    RESET,
-    #[doc = "The BOD12 generates an interrupt"]
-    INT,
-}
-impl ACTIONW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            ACTIONW::NONE => 0,
-            ACTIONW::RESET => 1,
-            ACTIONW::INT => 2,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _ACTIONW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _ACTIONW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: ACTIONW) -> &'a mut W {
-        unsafe { self.bits(variant._bits()) }
-    }
-    #[doc = "No action"]
-    #[inline]
-    pub fn none(self) -> &'a mut W {
-        self.variant(ACTIONW::NONE)
-    }
-    #[doc = "The BOD12 generates a reset"]
-    #[inline]
-    pub fn reset(self) -> &'a mut W {
-        self.variant(ACTIONW::RESET)
-    }
-    #[doc = "The BOD12 generates an interrupt"]
-    #[inline]
-    pub fn int(self) -> &'a mut W {
-        self.variant(ACTIONW::INT)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 3;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
-        self.w
-    }
-}
-#[doc = r" Proxy"]
-pub struct _STDBYCFGW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _STDBYCFGW<'a> {
-    #[doc = r" Sets the field bit"]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r" Clears the field bit"]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 5;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
-        self.w
-    }
-}
-#[doc = r" Proxy"]
-pub struct _RUNSTDBYW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _RUNSTDBYW<'a> {
-    #[doc = r" Sets the field bit"]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r" Clears the field bit"]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 6;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
-        self.w
-    }
-}
-#[doc = r" Proxy"]
-pub struct _ACTCFGW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _ACTCFGW<'a> {
-    #[doc = r" Sets the field bit"]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r" Clears the field bit"]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 8;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
-        self.w
-    }
-}
-#[doc = "Values that can be written to the field `PSEL`"]
-pub enum PSELW {
-    #[doc = "Divide clock by 2"]
-    DIV2,
-    #[doc = "Divide clock by 4"]
-    DIV4,
-    #[doc = "Divide clock by 8"]
-    DIV8,
-    #[doc = "Divide clock by 16"]
-    DIV16,
-    #[doc = "Divide clock by 32"]
-    DIV32,
-    #[doc = "Divide clock by 64"]
-    DIV64,
-    #[doc = "Divide clock by 128"]
-    DIV128,
-    #[doc = "Divide clock by 256"]
-    DIV256,
-    #[doc = "Divide clock by 512"]
-    DIV512,
-    #[doc = "Divide clock by 1024"]
-    DIV1024,
-    #[doc = "Divide clock by 2048"]
-    DIV2048,
-    #[doc = "Divide clock by 4096"]
-    DIV4096,
-    #[doc = "Divide clock by 8192"]
-    DIV8192,
-    #[doc = "Divide clock by 16384"]
-    DIV16384,
-    #[doc = "Divide clock by 32768"]
-    DIV32768,
-    #[doc = "Divide clock by 65536"]
-    DIV65536,
-}
-impl PSELW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            PSELW::DIV2 => 0,
-            PSELW::DIV4 => 1,
-            PSELW::DIV8 => 2,
-            PSELW::DIV16 => 3,
-            PSELW::DIV32 => 4,
-            PSELW::DIV64 => 5,
-            PSELW::DIV128 => 6,
-            PSELW::DIV256 => 7,
-            PSELW::DIV512 => 8,
-            PSELW::DIV1024 => 9,
-            PSELW::DIV2048 => 10,
-            PSELW::DIV4096 => 11,
-            PSELW::DIV8192 => 12,
-            PSELW::DIV16384 => 13,
-            PSELW::DIV32768 => 14,
-            PSELW::DIV65536 => 15,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _PSELW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _PSELW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: PSELW) -> &'a mut W {
+impl<'a> PSEL_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: PSEL_A) -> &'a mut W {
         {
-            self.bits(variant._bits())
+            self.bits(variant.into())
         }
     }
     #[doc = "Divide clock by 2"]
-    #[inline]
+    #[inline(always)]
     pub fn div2(self) -> &'a mut W {
-        self.variant(PSELW::DIV2)
+        self.variant(PSEL_A::DIV2)
     }
     #[doc = "Divide clock by 4"]
-    #[inline]
+    #[inline(always)]
     pub fn div4(self) -> &'a mut W {
-        self.variant(PSELW::DIV4)
+        self.variant(PSEL_A::DIV4)
     }
     #[doc = "Divide clock by 8"]
-    #[inline]
+    #[inline(always)]
     pub fn div8(self) -> &'a mut W {
-        self.variant(PSELW::DIV8)
+        self.variant(PSEL_A::DIV8)
     }
     #[doc = "Divide clock by 16"]
-    #[inline]
+    #[inline(always)]
     pub fn div16(self) -> &'a mut W {
-        self.variant(PSELW::DIV16)
+        self.variant(PSEL_A::DIV16)
     }
     #[doc = "Divide clock by 32"]
-    #[inline]
+    #[inline(always)]
     pub fn div32(self) -> &'a mut W {
-        self.variant(PSELW::DIV32)
+        self.variant(PSEL_A::DIV32)
     }
     #[doc = "Divide clock by 64"]
-    #[inline]
+    #[inline(always)]
     pub fn div64(self) -> &'a mut W {
-        self.variant(PSELW::DIV64)
+        self.variant(PSEL_A::DIV64)
     }
     #[doc = "Divide clock by 128"]
-    #[inline]
+    #[inline(always)]
     pub fn div128(self) -> &'a mut W {
-        self.variant(PSELW::DIV128)
+        self.variant(PSEL_A::DIV128)
     }
     #[doc = "Divide clock by 256"]
-    #[inline]
+    #[inline(always)]
     pub fn div256(self) -> &'a mut W {
-        self.variant(PSELW::DIV256)
+        self.variant(PSEL_A::DIV256)
     }
     #[doc = "Divide clock by 512"]
-    #[inline]
+    #[inline(always)]
     pub fn div512(self) -> &'a mut W {
-        self.variant(PSELW::DIV512)
+        self.variant(PSEL_A::DIV512)
     }
     #[doc = "Divide clock by 1024"]
-    #[inline]
+    #[inline(always)]
     pub fn div1024(self) -> &'a mut W {
-        self.variant(PSELW::DIV1024)
+        self.variant(PSEL_A::DIV1024)
     }
     #[doc = "Divide clock by 2048"]
-    #[inline]
+    #[inline(always)]
     pub fn div2048(self) -> &'a mut W {
-        self.variant(PSELW::DIV2048)
+        self.variant(PSEL_A::DIV2048)
     }
     #[doc = "Divide clock by 4096"]
-    #[inline]
+    #[inline(always)]
     pub fn div4096(self) -> &'a mut W {
-        self.variant(PSELW::DIV4096)
+        self.variant(PSEL_A::DIV4096)
     }
     #[doc = "Divide clock by 8192"]
-    #[inline]
+    #[inline(always)]
     pub fn div8192(self) -> &'a mut W {
-        self.variant(PSELW::DIV8192)
+        self.variant(PSEL_A::DIV8192)
     }
     #[doc = "Divide clock by 16384"]
-    #[inline]
+    #[inline(always)]
     pub fn div16384(self) -> &'a mut W {
-        self.variant(PSELW::DIV16384)
+        self.variant(PSEL_A::DIV16384)
     }
     #[doc = "Divide clock by 32768"]
-    #[inline]
+    #[inline(always)]
     pub fn div32768(self) -> &'a mut W {
-        self.variant(PSELW::DIV32768)
+        self.variant(PSEL_A::DIV32768)
     }
     #[doc = "Divide clock by 65536"]
-    #[inline]
+    #[inline(always)]
     pub fn div65536(self) -> &'a mut W {
-        self.variant(PSELW::DIV65536)
+        self.variant(PSEL_A::DIV65536)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 15;
-        const OFFSET: u8 = 12;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x0f << 12)) | (((value as u32) & 0x0f) << 12);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _LEVELW<'a> {
+#[doc = "Reader of field `LEVEL`"]
+pub type LEVEL_R = crate::R<u8, u8>;
+#[doc = "Write proxy for field `LEVEL`"]
+pub struct LEVEL_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _LEVELW<'a> {
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+impl<'a> LEVEL_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 63;
-        const OFFSET: u8 = 16;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x3f << 16)) | (((value as u32) & 0x3f) << 16);
         self.w
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u32 {
-        self.bits
-    }
     #[doc = "Bit 1 - Enable"]
-    #[inline]
-    pub fn enable(&self) -> ENABLER {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        ENABLER { bits }
+    #[inline(always)]
+    pub fn enable(&self) -> ENABLE_R {
+        ENABLE_R::new(((self.bits >> 1) & 0x01) != 0)
     }
     #[doc = "Bit 2 - Hysteresis Enable"]
-    #[inline]
-    pub fn hyst(&self) -> HYSTR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        HYSTR { bits }
+    #[inline(always)]
+    pub fn hyst(&self) -> HYST_R {
+        HYST_R::new(((self.bits >> 2) & 0x01) != 0)
     }
     #[doc = "Bits 3:4 - Action when Threshold Crossed"]
-    #[inline]
-    pub fn action(&self) -> ACTIONR {
-        ACTIONR::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 3;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+    #[inline(always)]
+    pub fn action(&self) -> ACTION_R {
+        ACTION_R::new(((self.bits >> 3) & 0x03) as u8)
     }
     #[doc = "Bit 5 - Configuration in Standby mode"]
-    #[inline]
-    pub fn stdbycfg(&self) -> STDBYCFGR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 5;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        STDBYCFGR { bits }
+    #[inline(always)]
+    pub fn stdbycfg(&self) -> STDBYCFG_R {
+        STDBYCFG_R::new(((self.bits >> 5) & 0x01) != 0)
     }
     #[doc = "Bit 6 - Run during Standby"]
-    #[inline]
-    pub fn runstdby(&self) -> RUNSTDBYR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 6;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        RUNSTDBYR { bits }
+    #[inline(always)]
+    pub fn runstdby(&self) -> RUNSTDBY_R {
+        RUNSTDBY_R::new(((self.bits >> 6) & 0x01) != 0)
     }
     #[doc = "Bit 8 - Configuration in Active mode"]
-    #[inline]
-    pub fn actcfg(&self) -> ACTCFGR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        ACTCFGR { bits }
+    #[inline(always)]
+    pub fn actcfg(&self) -> ACTCFG_R {
+        ACTCFG_R::new(((self.bits >> 8) & 0x01) != 0)
     }
     #[doc = "Bits 12:15 - Prescaler Select"]
-    #[inline]
-    pub fn psel(&self) -> PSELR {
-        PSELR::_from({
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 12;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+    #[inline(always)]
+    pub fn psel(&self) -> PSEL_R {
+        PSEL_R::new(((self.bits >> 12) & 0x0f) as u8)
     }
     #[doc = "Bits 16:21 - Threshold Level"]
-    #[inline]
-    pub fn level(&self) -> LEVELR {
-        let bits = {
-            const MASK: u8 = 63;
-            const OFFSET: u8 = 16;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
-        LEVELR { bits }
+    #[inline(always)]
+    pub fn level(&self) -> LEVEL_R {
+        LEVEL_R::new(((self.bits >> 16) & 0x3f) as u8)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
-    #[doc = r" Writes raw bits to the register"]
-    #[inline]
-    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.bits = bits;
-        self
-    }
     #[doc = "Bit 1 - Enable"]
-    #[inline]
-    pub fn enable(&mut self) -> _ENABLEW {
-        _ENABLEW { w: self }
+    #[inline(always)]
+    pub fn enable(&mut self) -> ENABLE_W {
+        ENABLE_W { w: self }
     }
     #[doc = "Bit 2 - Hysteresis Enable"]
-    #[inline]
-    pub fn hyst(&mut self) -> _HYSTW {
-        _HYSTW { w: self }
+    #[inline(always)]
+    pub fn hyst(&mut self) -> HYST_W {
+        HYST_W { w: self }
     }
     #[doc = "Bits 3:4 - Action when Threshold Crossed"]
-    #[inline]
-    pub fn action(&mut self) -> _ACTIONW {
-        _ACTIONW { w: self }
+    #[inline(always)]
+    pub fn action(&mut self) -> ACTION_W {
+        ACTION_W { w: self }
     }
     #[doc = "Bit 5 - Configuration in Standby mode"]
-    #[inline]
-    pub fn stdbycfg(&mut self) -> _STDBYCFGW {
-        _STDBYCFGW { w: self }
+    #[inline(always)]
+    pub fn stdbycfg(&mut self) -> STDBYCFG_W {
+        STDBYCFG_W { w: self }
     }
     #[doc = "Bit 6 - Run during Standby"]
-    #[inline]
-    pub fn runstdby(&mut self) -> _RUNSTDBYW {
-        _RUNSTDBYW { w: self }
+    #[inline(always)]
+    pub fn runstdby(&mut self) -> RUNSTDBY_W {
+        RUNSTDBY_W { w: self }
     }
     #[doc = "Bit 8 - Configuration in Active mode"]
-    #[inline]
-    pub fn actcfg(&mut self) -> _ACTCFGW {
-        _ACTCFGW { w: self }
+    #[inline(always)]
+    pub fn actcfg(&mut self) -> ACTCFG_W {
+        ACTCFG_W { w: self }
     }
     #[doc = "Bits 12:15 - Prescaler Select"]
-    #[inline]
-    pub fn psel(&mut self) -> _PSELW {
-        _PSELW { w: self }
+    #[inline(always)]
+    pub fn psel(&mut self) -> PSEL_W {
+        PSEL_W { w: self }
     }
     #[doc = "Bits 16:21 - Threshold Level"]
-    #[inline]
-    pub fn level(&mut self) -> _LEVELW {
-        _LEVELW { w: self }
+    #[inline(always)]
+    pub fn level(&mut self) -> LEVEL_W {
+        LEVEL_W { w: self }
     }
 }

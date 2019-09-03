@@ -1,135 +1,103 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u8,
-}
-impl super::AESR {
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-}
-#[doc = "Possible values of the field `ERRST`"]
+#[doc = "Reader of register AESR"]
+pub type R = crate::R<u8, super::AESR>;
+#[doc = "ADMA Error State\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum ERRSTR {
-    #[doc = "ST_STOP (Stop DMA)"]
+pub enum ERRST_A {
+    #[doc = "0: ST_STOP (Stop DMA)"]
     STOP,
-    #[doc = "ST_FDS (Fetch Descriptor)"]
+    #[doc = "1: ST_FDS (Fetch Descriptor)"]
     FDS,
-    #[doc = "ST_TFR (Transfer Data)"]
+    #[doc = "3: ST_TFR (Transfer Data)"]
     TFR,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
 }
-impl ERRSTR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            ERRSTR::STOP => 0,
-            ERRSTR::FDS => 1,
-            ERRSTR::TFR => 3,
-            ERRSTR::_Reserved(bits) => bits,
+impl From<ERRST_A> for u8 {
+    #[inline(always)]
+    fn from(variant: ERRST_A) -> Self {
+        match variant {
+            ERRST_A::STOP => 0,
+            ERRST_A::FDS => 1,
+            ERRST_A::TFR => 3,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> ERRSTR {
-        match value {
-            0 => ERRSTR::STOP,
-            1 => ERRSTR::FDS,
-            3 => ERRSTR::TFR,
-            i => ERRSTR::_Reserved(i),
+}
+#[doc = "Reader of field `ERRST`"]
+pub type ERRST_R = crate::R<u8, ERRST_A>;
+impl ERRST_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, ERRST_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(ERRST_A::STOP),
+            1 => Val(ERRST_A::FDS),
+            3 => Val(ERRST_A::TFR),
+            i => Res(i),
         }
     }
     #[doc = "Checks if the value of the field is `STOP`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_stop(&self) -> bool {
-        *self == ERRSTR::STOP
+        *self == ERRST_A::STOP
     }
     #[doc = "Checks if the value of the field is `FDS`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_fds(&self) -> bool {
-        *self == ERRSTR::FDS
+        *self == ERRST_A::FDS
     }
     #[doc = "Checks if the value of the field is `TFR`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_tfr(&self) -> bool {
-        *self == ERRSTR::TFR
+        *self == ERRST_A::TFR
     }
 }
-#[doc = "Possible values of the field `LMIS`"]
+#[doc = "ADMA Length Mismatch Error\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum LMISR {
-    #[doc = "No Error"]
+pub enum LMIS_A {
+    #[doc = "0: No Error"]
     NO,
-    #[doc = "Error"]
+    #[doc = "1: Error"]
     YES,
 }
-impl LMISR {
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        match *self {
-            LMISR::NO => false,
-            LMISR::YES => true,
+impl From<LMIS_A> for bool {
+    #[inline(always)]
+    fn from(variant: LMIS_A) -> Self {
+        match variant {
+            LMIS_A::NO => false,
+            LMIS_A::YES => true,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: bool) -> LMISR {
-        match value {
-            false => LMISR::NO,
-            true => LMISR::YES,
+}
+#[doc = "Reader of field `LMIS`"]
+pub type LMIS_R = crate::R<bool, LMIS_A>;
+impl LMIS_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> LMIS_A {
+        match self.bits {
+            false => LMIS_A::NO,
+            true => LMIS_A::YES,
         }
     }
     #[doc = "Checks if the value of the field is `NO`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_no(&self) -> bool {
-        *self == LMISR::NO
+        *self == LMIS_A::NO
     }
     #[doc = "Checks if the value of the field is `YES`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_yes(&self) -> bool {
-        *self == LMISR::YES
+        *self == LMIS_A::YES
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
     #[doc = "Bits 0:1 - ADMA Error State"]
-    #[inline]
-    pub fn errst(&self) -> ERRSTR {
-        ERRSTR::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u8) as u8
-        })
+    #[inline(always)]
+    pub fn errst(&self) -> ERRST_R {
+        ERRST_R::new((self.bits & 0x03) as u8)
     }
     #[doc = "Bit 2 - ADMA Length Mismatch Error"]
-    #[inline]
-    pub fn lmis(&self) -> LMISR {
-        LMISR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        })
+    #[inline(always)]
+    pub fn lmis(&self) -> LMIS_R {
+        LMIS_R::new(((self.bits >> 2) & 0x01) != 0)
     }
 }

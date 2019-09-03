@@ -1,146 +1,64 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u16,
-}
-#[doc = r" Value to write to the register"]
-pub struct W {
-    bits: u16,
-}
-impl super::CALIB {
-    #[doc = r" Modifies the contents of the register"]
-    #[inline]
-    pub fn modify<F>(&self, f: F)
-    where
-        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
-    {
-        let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-    #[doc = r" Writes to the register"]
-    #[inline]
-    pub fn write<F>(&self, f: F)
-    where
-        F: FnOnce(&mut W) -> &mut W,
-    {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Writes the reset value to the register"]
-    #[inline]
-    pub fn reset(&self) {
-        self.write(|w| w)
+#[doc = "Reader of register CALIB"]
+pub type R = crate::R<u16, super::CALIB>;
+#[doc = "Writer for register CALIB"]
+pub type W = crate::W<u16, super::CALIB>;
+#[doc = "Register CALIB `reset()`'s with value 0"]
+impl crate::ResetValue for super::CALIB {
+    type Type = u16;
+    #[inline(always)]
+    fn reset_value() -> Self::Type {
+        0
     }
 }
-#[doc = r" Value of the field"]
-pub struct LINEARITY_CALR {
-    bits: u8,
-}
-impl LINEARITY_CALR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
-}
-#[doc = r" Value of the field"]
-pub struct BIAS_CALR {
-    bits: u8,
-}
-impl BIAS_CALR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
-}
-#[doc = r" Proxy"]
-pub struct _LINEARITY_CALW<'a> {
+#[doc = "Reader of field `LINEARITY_CAL`"]
+pub type LINEARITY_CAL_R = crate::R<u8, u8>;
+#[doc = "Write proxy for field `LINEARITY_CAL`"]
+pub struct LINEARITY_CAL_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _LINEARITY_CALW<'a> {
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+impl<'a> LINEARITY_CAL_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 255;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits = (self.w.bits & !0xff) | ((value as u16) & 0xff);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _BIAS_CALW<'a> {
+#[doc = "Reader of field `BIAS_CAL`"]
+pub type BIAS_CAL_R = crate::R<u8, u8>;
+#[doc = "Write proxy for field `BIAS_CAL`"]
+pub struct BIAS_CAL_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _BIAS_CALW<'a> {
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+impl<'a> BIAS_CAL_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 7;
-        const OFFSET: u8 = 8;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x07 << 8)) | (((value as u16) & 0x07) << 8);
         self.w
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u16 {
-        self.bits
-    }
     #[doc = "Bits 0:7 - Linearity Calibration Value"]
-    #[inline]
-    pub fn linearity_cal(&self) -> LINEARITY_CALR {
-        let bits = {
-            const MASK: u8 = 255;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u16) as u8
-        };
-        LINEARITY_CALR { bits }
+    #[inline(always)]
+    pub fn linearity_cal(&self) -> LINEARITY_CAL_R {
+        LINEARITY_CAL_R::new((self.bits & 0xff) as u8)
     }
     #[doc = "Bits 8:10 - Bias Calibration Value"]
-    #[inline]
-    pub fn bias_cal(&self) -> BIAS_CALR {
-        let bits = {
-            const MASK: u8 = 7;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u16) as u8
-        };
-        BIAS_CALR { bits }
+    #[inline(always)]
+    pub fn bias_cal(&self) -> BIAS_CAL_R {
+        BIAS_CAL_R::new(((self.bits >> 8) & 0x07) as u8)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
-    #[doc = r" Writes raw bits to the register"]
-    #[inline]
-    pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {
-        self.bits = bits;
-        self
-    }
     #[doc = "Bits 0:7 - Linearity Calibration Value"]
-    #[inline]
-    pub fn linearity_cal(&mut self) -> _LINEARITY_CALW {
-        _LINEARITY_CALW { w: self }
+    #[inline(always)]
+    pub fn linearity_cal(&mut self) -> LINEARITY_CAL_W {
+        LINEARITY_CAL_W { w: self }
     }
     #[doc = "Bits 8:10 - Bias Calibration Value"]
-    #[inline]
-    pub fn bias_cal(&mut self) -> _BIAS_CALW {
-        _BIAS_CALW { w: self }
+    #[inline(always)]
+    pub fn bias_cal(&mut self) -> BIAS_CAL_W {
+        BIAS_CAL_W { w: self }
     }
 }

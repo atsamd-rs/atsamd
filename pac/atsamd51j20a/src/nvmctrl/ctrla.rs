@@ -1,794 +1,511 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u16,
-}
-#[doc = r" Value to write to the register"]
-pub struct W {
-    bits: u16,
-}
-impl super::CTRLA {
-    #[doc = r" Modifies the contents of the register"]
-    #[inline]
-    pub fn modify<F>(&self, f: F)
-    where
-        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
-    {
-        let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-    #[doc = r" Writes to the register"]
-    #[inline]
-    pub fn write<F>(&self, f: F)
-    where
-        F: FnOnce(&mut W) -> &mut W,
-    {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Writes the reset value to the register"]
-    #[inline]
-    pub fn reset(&self) {
-        self.write(|w| w)
+#[doc = "Reader of register CTRLA"]
+pub type R = crate::R<u16, super::CTRLA>;
+#[doc = "Writer for register CTRLA"]
+pub type W = crate::W<u16, super::CTRLA>;
+#[doc = "Register CTRLA `reset()`'s with value 0x04"]
+impl crate::ResetValue for super::CTRLA {
+    type Type = u16;
+    #[inline(always)]
+    fn reset_value() -> Self::Type {
+        0x04
     }
 }
-#[doc = r" Value of the field"]
-pub struct AUTOWSR {
-    bits: bool,
+#[doc = "Reader of field `AUTOWS`"]
+pub type AUTOWS_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `AUTOWS`"]
+pub struct AUTOWS_W<'a> {
+    w: &'a mut W,
 }
-impl AUTOWSR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
+impl<'a> AUTOWS_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
     }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
     }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct SUSPENR {
-    bits: bool,
-}
-impl SUSPENR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 2)) | (((value as u16) & 0x01) << 2);
+        self.w
     }
 }
-#[doc = "Possible values of the field `WMODE`"]
+#[doc = "Reader of field `SUSPEN`"]
+pub type SUSPEN_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `SUSPEN`"]
+pub struct SUSPEN_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> SUSPEN_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 3)) | (((value as u16) & 0x01) << 3);
+        self.w
+    }
+}
+#[doc = "Write Mode\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum WMODER {
-    #[doc = "Manual Write"]
+pub enum WMODE_A {
+    #[doc = "0: Manual Write"]
     MAN,
-    #[doc = "Automatic Double Word Write"]
+    #[doc = "1: Automatic Double Word Write"]
     ADW,
-    #[doc = "Automatic Quad Word"]
+    #[doc = "2: Automatic Quad Word"]
     AQW,
-    #[doc = "Automatic Page Write"]
+    #[doc = "3: Automatic Page Write"]
     AP,
 }
-impl WMODER {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            WMODER::MAN => 0,
-            WMODER::ADW => 1,
-            WMODER::AQW => 2,
-            WMODER::AP => 3,
+impl From<WMODE_A> for u8 {
+    #[inline(always)]
+    fn from(variant: WMODE_A) -> Self {
+        match variant {
+            WMODE_A::MAN => 0,
+            WMODE_A::ADW => 1,
+            WMODE_A::AQW => 2,
+            WMODE_A::AP => 3,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> WMODER {
-        match value {
-            0 => WMODER::MAN,
-            1 => WMODER::ADW,
-            2 => WMODER::AQW,
-            3 => WMODER::AP,
+}
+#[doc = "Reader of field `WMODE`"]
+pub type WMODE_R = crate::R<u8, WMODE_A>;
+impl WMODE_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> WMODE_A {
+        match self.bits {
+            0 => WMODE_A::MAN,
+            1 => WMODE_A::ADW,
+            2 => WMODE_A::AQW,
+            3 => WMODE_A::AP,
             _ => unreachable!(),
         }
     }
     #[doc = "Checks if the value of the field is `MAN`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_man(&self) -> bool {
-        *self == WMODER::MAN
+        *self == WMODE_A::MAN
     }
     #[doc = "Checks if the value of the field is `ADW`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_adw(&self) -> bool {
-        *self == WMODER::ADW
+        *self == WMODE_A::ADW
     }
     #[doc = "Checks if the value of the field is `AQW`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_aqw(&self) -> bool {
-        *self == WMODER::AQW
+        *self == WMODE_A::AQW
     }
     #[doc = "Checks if the value of the field is `AP`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_ap(&self) -> bool {
-        *self == WMODER::AP
+        *self == WMODE_A::AP
     }
 }
-#[doc = "Possible values of the field `PRM`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum PRMR {
-    #[doc = "NVM block enters low-power mode when entering standby mode. NVM block enters low-power mode when SPRM command is issued. NVM block exits low-power mode upon first access."]
-    SEMIAUTO,
-    #[doc = "NVM block enters low-power mode when entering standby mode. NVM block enters low-power mode when SPRM command is issued. NVM block exits low-power mode when system is not in standby mode."]
-    FULLAUTO,
-    #[doc = "NVM block does not enter low-power mode when entering standby mode. NVM block enters low-power mode when SPRM command is issued. NVM block exits low-power mode upon first access."]
-    MANUAL,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
+#[doc = "Write proxy for field `WMODE`"]
+pub struct WMODE_W<'a> {
+    w: &'a mut W,
 }
-impl PRMR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            PRMR::SEMIAUTO => 0,
-            PRMR::FULLAUTO => 1,
-            PRMR::MANUAL => 3,
-            PRMR::_Reserved(bits) => bits,
+impl<'a> WMODE_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: WMODE_A) -> &'a mut W {
+        {
+            self.bits(variant.into())
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> PRMR {
-        match value {
-            0 => PRMR::SEMIAUTO,
-            1 => PRMR::FULLAUTO,
-            3 => PRMR::MANUAL,
-            i => PRMR::_Reserved(i),
+    #[doc = "Manual Write"]
+    #[inline(always)]
+    pub fn man(self) -> &'a mut W {
+        self.variant(WMODE_A::MAN)
+    }
+    #[doc = "Automatic Double Word Write"]
+    #[inline(always)]
+    pub fn adw(self) -> &'a mut W {
+        self.variant(WMODE_A::ADW)
+    }
+    #[doc = "Automatic Quad Word"]
+    #[inline(always)]
+    pub fn aqw(self) -> &'a mut W {
+        self.variant(WMODE_A::AQW)
+    }
+    #[doc = "Automatic Page Write"]
+    #[inline(always)]
+    pub fn ap(self) -> &'a mut W {
+        self.variant(WMODE_A::AP)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bits(self, value: u8) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x03 << 4)) | (((value as u16) & 0x03) << 4);
+        self.w
+    }
+}
+#[doc = "Power Reduction Mode during Sleep\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum PRM_A {
+    #[doc = "0: NVM block enters low-power mode when entering standby mode. NVM block enters low-power mode when SPRM command is issued. NVM block exits low-power mode upon first access."]
+    SEMIAUTO,
+    #[doc = "1: NVM block enters low-power mode when entering standby mode. NVM block enters low-power mode when SPRM command is issued. NVM block exits low-power mode when system is not in standby mode."]
+    FULLAUTO,
+    #[doc = "3: NVM block does not enter low-power mode when entering standby mode. NVM block enters low-power mode when SPRM command is issued. NVM block exits low-power mode upon first access."]
+    MANUAL,
+}
+impl From<PRM_A> for u8 {
+    #[inline(always)]
+    fn from(variant: PRM_A) -> Self {
+        match variant {
+            PRM_A::SEMIAUTO => 0,
+            PRM_A::FULLAUTO => 1,
+            PRM_A::MANUAL => 3,
+        }
+    }
+}
+#[doc = "Reader of field `PRM`"]
+pub type PRM_R = crate::R<u8, PRM_A>;
+impl PRM_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, PRM_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(PRM_A::SEMIAUTO),
+            1 => Val(PRM_A::FULLAUTO),
+            3 => Val(PRM_A::MANUAL),
+            i => Res(i),
         }
     }
     #[doc = "Checks if the value of the field is `SEMIAUTO`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_semiauto(&self) -> bool {
-        *self == PRMR::SEMIAUTO
+        *self == PRM_A::SEMIAUTO
     }
     #[doc = "Checks if the value of the field is `FULLAUTO`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_fullauto(&self) -> bool {
-        *self == PRMR::FULLAUTO
+        *self == PRM_A::FULLAUTO
     }
     #[doc = "Checks if the value of the field is `MANUAL`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_manual(&self) -> bool {
-        *self == PRMR::MANUAL
+        *self == PRM_A::MANUAL
     }
 }
-#[doc = "Possible values of the field `RWS`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum RWSR {
-    #[doc = "Single Auto Wait State"]
-    SINGLE,
-    #[doc = "Half Auto Wait State"]
-    HALF,
-    #[doc = "Dual Auto Wait State"]
-    DUAL,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
+#[doc = "Write proxy for field `PRM`"]
+pub struct PRM_W<'a> {
+    w: &'a mut W,
 }
-impl RWSR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            RWSR::SINGLE => 0,
-            RWSR::HALF => 1,
-            RWSR::DUAL => 2,
-            RWSR::_Reserved(bits) => bits,
+impl<'a> PRM_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: PRM_A) -> &'a mut W {
+        unsafe { self.bits(variant.into()) }
+    }
+    #[doc = "NVM block enters low-power mode when entering standby mode. NVM block enters low-power mode when SPRM command is issued. NVM block exits low-power mode upon first access."]
+    #[inline(always)]
+    pub fn semiauto(self) -> &'a mut W {
+        self.variant(PRM_A::SEMIAUTO)
+    }
+    #[doc = "NVM block enters low-power mode when entering standby mode. NVM block enters low-power mode when SPRM command is issued. NVM block exits low-power mode when system is not in standby mode."]
+    #[inline(always)]
+    pub fn fullauto(self) -> &'a mut W {
+        self.variant(PRM_A::FULLAUTO)
+    }
+    #[doc = "NVM block does not enter low-power mode when entering standby mode. NVM block enters low-power mode when SPRM command is issued. NVM block exits low-power mode upon first access."]
+    #[inline(always)]
+    pub fn manual(self) -> &'a mut W {
+        self.variant(PRM_A::MANUAL)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub unsafe fn bits(self, value: u8) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x03 << 6)) | (((value as u16) & 0x03) << 6);
+        self.w
+    }
+}
+#[doc = "NVM Read Wait States\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum RWS_A {
+    #[doc = "0: Single Auto Wait State"]
+    SINGLE,
+    #[doc = "1: Half Auto Wait State"]
+    HALF,
+    #[doc = "2: Dual Auto Wait State"]
+    DUAL,
+}
+impl From<RWS_A> for u8 {
+    #[inline(always)]
+    fn from(variant: RWS_A) -> Self {
+        match variant {
+            RWS_A::SINGLE => 0,
+            RWS_A::HALF => 1,
+            RWS_A::DUAL => 2,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> RWSR {
-        match value {
-            0 => RWSR::SINGLE,
-            1 => RWSR::HALF,
-            2 => RWSR::DUAL,
-            i => RWSR::_Reserved(i),
+}
+#[doc = "Reader of field `RWS`"]
+pub type RWS_R = crate::R<u8, RWS_A>;
+impl RWS_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, RWS_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(RWS_A::SINGLE),
+            1 => Val(RWS_A::HALF),
+            2 => Val(RWS_A::DUAL),
+            i => Res(i),
         }
     }
     #[doc = "Checks if the value of the field is `SINGLE`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_single(&self) -> bool {
-        *self == RWSR::SINGLE
+        *self == RWS_A::SINGLE
     }
     #[doc = "Checks if the value of the field is `HALF`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_half(&self) -> bool {
-        *self == RWSR::HALF
+        *self == RWS_A::HALF
     }
     #[doc = "Checks if the value of the field is `DUAL`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_dual(&self) -> bool {
-        *self == RWSR::DUAL
+        *self == RWS_A::DUAL
     }
 }
-#[doc = r" Value of the field"]
-pub struct AHBNS0R {
-    bits: bool,
-}
-impl AHBNS0R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct AHBNS1R {
-    bits: bool,
-}
-impl AHBNS1R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct CACHEDIS0R {
-    bits: bool,
-}
-impl CACHEDIS0R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct CACHEDIS1R {
-    bits: bool,
-}
-impl CACHEDIS1R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Proxy"]
-pub struct _AUTOWSW<'a> {
+#[doc = "Write proxy for field `RWS`"]
+pub struct RWS_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _AUTOWSW<'a> {
-    #[doc = r" Sets the field bit"]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r" Clears the field bit"]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 2;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
-        self.w
-    }
-}
-#[doc = r" Proxy"]
-pub struct _SUSPENW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _SUSPENW<'a> {
-    #[doc = r" Sets the field bit"]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r" Clears the field bit"]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 3;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
-        self.w
-    }
-}
-#[doc = "Values that can be written to the field `WMODE`"]
-pub enum WMODEW {
-    #[doc = "Manual Write"]
-    MAN,
-    #[doc = "Automatic Double Word Write"]
-    ADW,
-    #[doc = "Automatic Quad Word"]
-    AQW,
-    #[doc = "Automatic Page Write"]
-    AP,
-}
-impl WMODEW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            WMODEW::MAN => 0,
-            WMODEW::ADW => 1,
-            WMODEW::AQW => 2,
-            WMODEW::AP => 3,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _WMODEW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _WMODEW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: WMODEW) -> &'a mut W {
-        {
-            self.bits(variant._bits())
-        }
-    }
-    #[doc = "Manual Write"]
-    #[inline]
-    pub fn man(self) -> &'a mut W {
-        self.variant(WMODEW::MAN)
-    }
-    #[doc = "Automatic Double Word Write"]
-    #[inline]
-    pub fn adw(self) -> &'a mut W {
-        self.variant(WMODEW::ADW)
-    }
-    #[doc = "Automatic Quad Word"]
-    #[inline]
-    pub fn aqw(self) -> &'a mut W {
-        self.variant(WMODEW::AQW)
-    }
-    #[doc = "Automatic Page Write"]
-    #[inline]
-    pub fn ap(self) -> &'a mut W {
-        self.variant(WMODEW::AP)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 4;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
-        self.w
-    }
-}
-#[doc = "Values that can be written to the field `PRM`"]
-pub enum PRMW {
-    #[doc = "NVM block enters low-power mode when entering standby mode. NVM block enters low-power mode when SPRM command is issued. NVM block exits low-power mode upon first access."]
-    SEMIAUTO,
-    #[doc = "NVM block enters low-power mode when entering standby mode. NVM block enters low-power mode when SPRM command is issued. NVM block exits low-power mode when system is not in standby mode."]
-    FULLAUTO,
-    #[doc = "NVM block does not enter low-power mode when entering standby mode. NVM block enters low-power mode when SPRM command is issued. NVM block exits low-power mode upon first access."]
-    MANUAL,
-}
-impl PRMW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            PRMW::SEMIAUTO => 0,
-            PRMW::FULLAUTO => 1,
-            PRMW::MANUAL => 3,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _PRMW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _PRMW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: PRMW) -> &'a mut W {
-        unsafe { self.bits(variant._bits()) }
-    }
-    #[doc = "NVM block enters low-power mode when entering standby mode. NVM block enters low-power mode when SPRM command is issued. NVM block exits low-power mode upon first access."]
-    #[inline]
-    pub fn semiauto(self) -> &'a mut W {
-        self.variant(PRMW::SEMIAUTO)
-    }
-    #[doc = "NVM block enters low-power mode when entering standby mode. NVM block enters low-power mode when SPRM command is issued. NVM block exits low-power mode when system is not in standby mode."]
-    #[inline]
-    pub fn fullauto(self) -> &'a mut W {
-        self.variant(PRMW::FULLAUTO)
-    }
-    #[doc = "NVM block does not enter low-power mode when entering standby mode. NVM block enters low-power mode when SPRM command is issued. NVM block exits low-power mode upon first access."]
-    #[inline]
-    pub fn manual(self) -> &'a mut W {
-        self.variant(PRMW::MANUAL)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 6;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
-        self.w
-    }
-}
-#[doc = "Values that can be written to the field `RWS`"]
-pub enum RWSW {
-    #[doc = "Single Auto Wait State"]
-    SINGLE,
-    #[doc = "Half Auto Wait State"]
-    HALF,
-    #[doc = "Dual Auto Wait State"]
-    DUAL,
-}
-impl RWSW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            RWSW::SINGLE => 0,
-            RWSW::HALF => 1,
-            RWSW::DUAL => 2,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _RWSW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _RWSW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: RWSW) -> &'a mut W {
-        unsafe { self.bits(variant._bits()) }
+impl<'a> RWS_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: RWS_A) -> &'a mut W {
+        unsafe { self.bits(variant.into()) }
     }
     #[doc = "Single Auto Wait State"]
-    #[inline]
+    #[inline(always)]
     pub fn single(self) -> &'a mut W {
-        self.variant(RWSW::SINGLE)
+        self.variant(RWS_A::SINGLE)
     }
     #[doc = "Half Auto Wait State"]
-    #[inline]
+    #[inline(always)]
     pub fn half(self) -> &'a mut W {
-        self.variant(RWSW::HALF)
+        self.variant(RWS_A::HALF)
     }
     #[doc = "Dual Auto Wait State"]
-    #[inline]
+    #[inline(always)]
     pub fn dual(self) -> &'a mut W {
-        self.variant(RWSW::DUAL)
+        self.variant(RWS_A::DUAL)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 15;
-        const OFFSET: u8 = 8;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x0f << 8)) | (((value as u16) & 0x0f) << 8);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _AHBNS0W<'a> {
+#[doc = "Reader of field `AHBNS0`"]
+pub type AHBNS0_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `AHBNS0`"]
+pub struct AHBNS0_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _AHBNS0W<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> AHBNS0_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 12;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 12)) | (((value as u16) & 0x01) << 12);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _AHBNS1W<'a> {
+#[doc = "Reader of field `AHBNS1`"]
+pub type AHBNS1_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `AHBNS1`"]
+pub struct AHBNS1_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _AHBNS1W<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> AHBNS1_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 13;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 13)) | (((value as u16) & 0x01) << 13);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _CACHEDIS0W<'a> {
+#[doc = "Reader of field `CACHEDIS0`"]
+pub type CACHEDIS0_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `CACHEDIS0`"]
+pub struct CACHEDIS0_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _CACHEDIS0W<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> CACHEDIS0_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 14;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 14)) | (((value as u16) & 0x01) << 14);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _CACHEDIS1W<'a> {
+#[doc = "Reader of field `CACHEDIS1`"]
+pub type CACHEDIS1_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `CACHEDIS1`"]
+pub struct CACHEDIS1_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _CACHEDIS1W<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> CACHEDIS1_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 15;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 15)) | (((value as u16) & 0x01) << 15);
         self.w
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u16 {
-        self.bits
-    }
     #[doc = "Bit 2 - Auto Wait State Enable"]
-    #[inline]
-    pub fn autows(&self) -> AUTOWSR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
-        AUTOWSR { bits }
+    #[inline(always)]
+    pub fn autows(&self) -> AUTOWS_R {
+        AUTOWS_R::new(((self.bits >> 2) & 0x01) != 0)
     }
     #[doc = "Bit 3 - Suspend Enable"]
-    #[inline]
-    pub fn suspen(&self) -> SUSPENR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 3;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
-        SUSPENR { bits }
+    #[inline(always)]
+    pub fn suspen(&self) -> SUSPEN_R {
+        SUSPEN_R::new(((self.bits >> 3) & 0x01) != 0)
     }
     #[doc = "Bits 4:5 - Write Mode"]
-    #[inline]
-    pub fn wmode(&self) -> WMODER {
-        WMODER::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u16) as u8
-        })
+    #[inline(always)]
+    pub fn wmode(&self) -> WMODE_R {
+        WMODE_R::new(((self.bits >> 4) & 0x03) as u8)
     }
     #[doc = "Bits 6:7 - Power Reduction Mode during Sleep"]
-    #[inline]
-    pub fn prm(&self) -> PRMR {
-        PRMR::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 6;
-            ((self.bits >> OFFSET) & MASK as u16) as u8
-        })
+    #[inline(always)]
+    pub fn prm(&self) -> PRM_R {
+        PRM_R::new(((self.bits >> 6) & 0x03) as u8)
     }
     #[doc = "Bits 8:11 - NVM Read Wait States"]
-    #[inline]
-    pub fn rws(&self) -> RWSR {
-        RWSR::_from({
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u16) as u8
-        })
+    #[inline(always)]
+    pub fn rws(&self) -> RWS_R {
+        RWS_R::new(((self.bits >> 8) & 0x0f) as u8)
     }
     #[doc = "Bit 12 - Force AHB0 access to NONSEQ, burst transfers are continuously rearbitrated"]
-    #[inline]
-    pub fn ahbns0(&self) -> AHBNS0R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 12;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
-        AHBNS0R { bits }
+    #[inline(always)]
+    pub fn ahbns0(&self) -> AHBNS0_R {
+        AHBNS0_R::new(((self.bits >> 12) & 0x01) != 0)
     }
     #[doc = "Bit 13 - Force AHB1 access to NONSEQ, burst transfers are continuously rearbitrated"]
-    #[inline]
-    pub fn ahbns1(&self) -> AHBNS1R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 13;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
-        AHBNS1R { bits }
+    #[inline(always)]
+    pub fn ahbns1(&self) -> AHBNS1_R {
+        AHBNS1_R::new(((self.bits >> 13) & 0x01) != 0)
     }
     #[doc = "Bit 14 - AHB0 Cache Disable"]
-    #[inline]
-    pub fn cachedis0(&self) -> CACHEDIS0R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 14;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
-        CACHEDIS0R { bits }
+    #[inline(always)]
+    pub fn cachedis0(&self) -> CACHEDIS0_R {
+        CACHEDIS0_R::new(((self.bits >> 14) & 0x01) != 0)
     }
     #[doc = "Bit 15 - AHB1 Cache Disable"]
-    #[inline]
-    pub fn cachedis1(&self) -> CACHEDIS1R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 15;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
-        CACHEDIS1R { bits }
+    #[inline(always)]
+    pub fn cachedis1(&self) -> CACHEDIS1_R {
+        CACHEDIS1_R::new(((self.bits >> 15) & 0x01) != 0)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 4 }
-    }
-    #[doc = r" Writes raw bits to the register"]
-    #[inline]
-    pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {
-        self.bits = bits;
-        self
-    }
     #[doc = "Bit 2 - Auto Wait State Enable"]
-    #[inline]
-    pub fn autows(&mut self) -> _AUTOWSW {
-        _AUTOWSW { w: self }
+    #[inline(always)]
+    pub fn autows(&mut self) -> AUTOWS_W {
+        AUTOWS_W { w: self }
     }
     #[doc = "Bit 3 - Suspend Enable"]
-    #[inline]
-    pub fn suspen(&mut self) -> _SUSPENW {
-        _SUSPENW { w: self }
+    #[inline(always)]
+    pub fn suspen(&mut self) -> SUSPEN_W {
+        SUSPEN_W { w: self }
     }
     #[doc = "Bits 4:5 - Write Mode"]
-    #[inline]
-    pub fn wmode(&mut self) -> _WMODEW {
-        _WMODEW { w: self }
+    #[inline(always)]
+    pub fn wmode(&mut self) -> WMODE_W {
+        WMODE_W { w: self }
     }
     #[doc = "Bits 6:7 - Power Reduction Mode during Sleep"]
-    #[inline]
-    pub fn prm(&mut self) -> _PRMW {
-        _PRMW { w: self }
+    #[inline(always)]
+    pub fn prm(&mut self) -> PRM_W {
+        PRM_W { w: self }
     }
     #[doc = "Bits 8:11 - NVM Read Wait States"]
-    #[inline]
-    pub fn rws(&mut self) -> _RWSW {
-        _RWSW { w: self }
+    #[inline(always)]
+    pub fn rws(&mut self) -> RWS_W {
+        RWS_W { w: self }
     }
     #[doc = "Bit 12 - Force AHB0 access to NONSEQ, burst transfers are continuously rearbitrated"]
-    #[inline]
-    pub fn ahbns0(&mut self) -> _AHBNS0W {
-        _AHBNS0W { w: self }
+    #[inline(always)]
+    pub fn ahbns0(&mut self) -> AHBNS0_W {
+        AHBNS0_W { w: self }
     }
     #[doc = "Bit 13 - Force AHB1 access to NONSEQ, burst transfers are continuously rearbitrated"]
-    #[inline]
-    pub fn ahbns1(&mut self) -> _AHBNS1W {
-        _AHBNS1W { w: self }
+    #[inline(always)]
+    pub fn ahbns1(&mut self) -> AHBNS1_W {
+        AHBNS1_W { w: self }
     }
     #[doc = "Bit 14 - AHB0 Cache Disable"]
-    #[inline]
-    pub fn cachedis0(&mut self) -> _CACHEDIS0W {
-        _CACHEDIS0W { w: self }
+    #[inline(always)]
+    pub fn cachedis0(&mut self) -> CACHEDIS0_W {
+        CACHEDIS0_W { w: self }
     }
     #[doc = "Bit 15 - AHB1 Cache Disable"]
-    #[inline]
-    pub fn cachedis1(&mut self) -> _CACHEDIS1W {
-        _CACHEDIS1W { w: self }
+    #[inline(always)]
+    pub fn cachedis1(&mut self) -> CACHEDIS1_W {
+        CACHEDIS1_W { w: self }
     }
 }

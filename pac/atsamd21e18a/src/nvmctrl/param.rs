@@ -1,142 +1,110 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u32,
-}
-impl super::PARAM {
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-}
-#[doc = r" Value of the field"]
-pub struct NVMPR {
-    bits: u16,
-}
-impl NVMPR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u16 {
-        self.bits
-    }
-}
-#[doc = "Possible values of the field `PSZ`"]
+#[doc = "Reader of register PARAM"]
+pub type R = crate::R<u32, super::PARAM>;
+#[doc = "Reader of field `NVMP`"]
+pub type NVMP_R = crate::R<u16, u16>;
+#[doc = "Page Size\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum PSZR {
-    #[doc = "8 bytes"]
+pub enum PSZ_A {
+    #[doc = "0: 8 bytes"]
     _8,
-    #[doc = "16 bytes"]
+    #[doc = "1: 16 bytes"]
     _16,
-    #[doc = "32 bytes"]
+    #[doc = "2: 32 bytes"]
     _32,
-    #[doc = "64 bytes"]
+    #[doc = "3: 64 bytes"]
     _64,
-    #[doc = "128 bytes"]
+    #[doc = "4: 128 bytes"]
     _128,
-    #[doc = "256 bytes"]
+    #[doc = "5: 256 bytes"]
     _256,
-    #[doc = "512 bytes"]
+    #[doc = "6: 512 bytes"]
     _512,
-    #[doc = "1024 bytes"]
+    #[doc = "7: 1024 bytes"]
     _1024,
 }
-impl PSZR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            PSZR::_8 => 0,
-            PSZR::_16 => 1,
-            PSZR::_32 => 2,
-            PSZR::_64 => 3,
-            PSZR::_128 => 4,
-            PSZR::_256 => 5,
-            PSZR::_512 => 6,
-            PSZR::_1024 => 7,
+impl From<PSZ_A> for u8 {
+    #[inline(always)]
+    fn from(variant: PSZ_A) -> Self {
+        match variant {
+            PSZ_A::_8 => 0,
+            PSZ_A::_16 => 1,
+            PSZ_A::_32 => 2,
+            PSZ_A::_64 => 3,
+            PSZ_A::_128 => 4,
+            PSZ_A::_256 => 5,
+            PSZ_A::_512 => 6,
+            PSZ_A::_1024 => 7,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> PSZR {
-        match value {
-            0 => PSZR::_8,
-            1 => PSZR::_16,
-            2 => PSZR::_32,
-            3 => PSZR::_64,
-            4 => PSZR::_128,
-            5 => PSZR::_256,
-            6 => PSZR::_512,
-            7 => PSZR::_1024,
+}
+#[doc = "Reader of field `PSZ`"]
+pub type PSZ_R = crate::R<u8, PSZ_A>;
+impl PSZ_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> PSZ_A {
+        match self.bits {
+            0 => PSZ_A::_8,
+            1 => PSZ_A::_16,
+            2 => PSZ_A::_32,
+            3 => PSZ_A::_64,
+            4 => PSZ_A::_128,
+            5 => PSZ_A::_256,
+            6 => PSZ_A::_512,
+            7 => PSZ_A::_1024,
             _ => unreachable!(),
         }
     }
     #[doc = "Checks if the value of the field is `_8`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_8(&self) -> bool {
-        *self == PSZR::_8
+        *self == PSZ_A::_8
     }
     #[doc = "Checks if the value of the field is `_16`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_16(&self) -> bool {
-        *self == PSZR::_16
+        *self == PSZ_A::_16
     }
     #[doc = "Checks if the value of the field is `_32`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_32(&self) -> bool {
-        *self == PSZR::_32
+        *self == PSZ_A::_32
     }
     #[doc = "Checks if the value of the field is `_64`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_64(&self) -> bool {
-        *self == PSZR::_64
+        *self == PSZ_A::_64
     }
     #[doc = "Checks if the value of the field is `_128`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_128(&self) -> bool {
-        *self == PSZR::_128
+        *self == PSZ_A::_128
     }
     #[doc = "Checks if the value of the field is `_256`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_256(&self) -> bool {
-        *self == PSZR::_256
+        *self == PSZ_A::_256
     }
     #[doc = "Checks if the value of the field is `_512`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_512(&self) -> bool {
-        *self == PSZR::_512
+        *self == PSZ_A::_512
     }
     #[doc = "Checks if the value of the field is `_1024`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_1024(&self) -> bool {
-        *self == PSZR::_1024
+        *self == PSZ_A::_1024
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u32 {
-        self.bits
-    }
     #[doc = "Bits 0:15 - NVM Pages"]
-    #[inline]
-    pub fn nvmp(&self) -> NVMPR {
-        let bits = {
-            const MASK: u16 = 65535;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) as u16
-        };
-        NVMPR { bits }
+    #[inline(always)]
+    pub fn nvmp(&self) -> NVMP_R {
+        NVMP_R::new((self.bits & 0xffff) as u16)
     }
     #[doc = "Bits 16:18 - Page Size"]
-    #[inline]
-    pub fn psz(&self) -> PSZR {
-        PSZR::_from({
-            const MASK: u8 = 7;
-            const OFFSET: u8 = 16;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+    #[inline(always)]
+    pub fn psz(&self) -> PSZ_R {
+        PSZ_R::new(((self.bits >> 16) & 0x07) as u8)
     }
 }

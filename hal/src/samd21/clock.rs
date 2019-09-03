@@ -3,15 +3,15 @@
 //! before you can set up most of the peripherals on the atsamd21 device.
 //! The other types in this module are used to enforce at compile time
 //! that the peripherals have been correctly configured.
-use crate::target_device::gclk::clkctrl::GENR::*;
-use crate::target_device::gclk::clkctrl::IDR::*;
-use crate::target_device::gclk::genctrl::SRCR::*;
+use crate::target_device::gclk::clkctrl::GEN_A::*;
+use crate::target_device::gclk::clkctrl::ID_A::*;
+use crate::target_device::gclk::genctrl::SRC_A::*;
 use crate::target_device::{self, GCLK, NVMCTRL, PM, SYSCTRL};
 use crate::time::{Hertz, U32Ext};
 
-pub type ClockId = target_device::gclk::clkctrl::IDR;
-pub type ClockGenId = target_device::gclk::clkctrl::GENR;
-pub type ClockSource = target_device::gclk::genctrl::SRCR;
+pub type ClockId = target_device::gclk::clkctrl::ID_A;
+pub type ClockGenId = target_device::gclk::clkctrl::GEN_A;
+pub type ClockSource = target_device::gclk::genctrl::SRC_A;
 
 /// Represents a configured clock generator.
 /// Can be converted into the effective clock frequency.
@@ -54,14 +54,14 @@ impl State {
         improve_duty_cycle: bool,
     ) {
         self.gclk.gendiv.write(|w| unsafe {
-            w.id().bits(gclk.bits());
+            w.id().bits(u8::from(gclk));
             w.div().bits(divider)
         });
         self.wait_for_sync();
 
         self.gclk.genctrl.write(|w| unsafe {
-            w.id().bits(gclk.bits());
-            w.src().bits(src.bits());
+            w.id().bits(u8::from(gclk));
+            w.src().bits(u8::from(src));
             // divide directly by divider, rather than exponential
             w.divsel().clear_bit();
             w.idc().bit(improve_duty_cycle);
@@ -72,8 +72,8 @@ impl State {
 
     fn enable_clock_generator(&mut self, clock: ClockId, generator: ClockGenId) {
         self.gclk.clkctrl.write(|w| unsafe {
-            w.id().bits(clock.bits());
-            w.gen().bits(generator.bits());
+            w.id().bits(u8::from(clock));
+            w.gen().bits(u8::from(generator));
             w.clken().set_bit()
         });
         self.wait_for_sync();
@@ -171,7 +171,7 @@ impl GenericClockController {
                 Hertz(0),
                 Hertz(0),
             ],
-            used_clocks: 1u64 << DFLL48M.bits(),
+            used_clocks: 1u64 << u8::from(DFLL48M),
         }
     }
 
@@ -195,7 +195,7 @@ impl GenericClockController {
     /// If that clock generator has not yet been configured,
     /// returns None.
     pub fn get_gclk(&mut self, gclk: ClockGenId) -> Option<GClock> {
-        let idx = gclk.bits() as usize;
+        let idx = u8::from(gclk) as usize;
         if self.gclks[idx].0 == 0 {
             None
         } else {
@@ -222,7 +222,7 @@ impl GenericClockController {
         src: ClockSource,
         improve_duty_cycle: bool,
     ) -> Option<GClock> {
-        let idx = gclk.bits() as usize;
+        let idx = u8::from(gclk) as usize;
         if self.gclks[idx].0 != 0 {
             return None;
         }
@@ -234,7 +234,7 @@ impl GenericClockController {
             OSC8M => 8.mhz().into(),
             DFLL48M => OSC48M_FREQ,
             DPLL96M => 96.mhz().into(),
-            GCLKIN | XOSC | _ => unimplemented!(),
+            GCLKIN | XOSC => unimplemented!(),
         };
         self.gclks[idx] = Hertz(freq.0 / divider as u32);
         Some(GClock { gclk, freq })
@@ -285,14 +285,14 @@ impl GenericClockController {
     /// Returns `None` is the specified generic clock has already been
     /// configured.
     pub fn $id(&mut self, generator: &GClock) -> Option<$Type> {
-        let bits : u64 = 1<<$clock.bits() as u64;
+        let bits : u64 = 1<<u8::from($clock) as u64;
         if (self.used_clocks & bits) != 0 {
             return None;
         }
         self.used_clocks |= bits;
 
         self.state.enable_clock_generator($clock, generator.gclk);
-        let freq = self.gclks[generator.gclk.bits() as usize];
+        let freq = self.gclks[u8::from(generator.gclk) as usize];
         Some($Type{freq})
     }
     )+

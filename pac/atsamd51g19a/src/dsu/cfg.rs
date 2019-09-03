@@ -1,267 +1,152 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u32,
-}
-#[doc = r" Value to write to the register"]
-pub struct W {
-    bits: u32,
-}
-impl super::CFG {
-    #[doc = r" Modifies the contents of the register"]
-    #[inline]
-    pub fn modify<F>(&self, f: F)
-    where
-        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
-    {
-        let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-    #[doc = r" Writes to the register"]
-    #[inline]
-    pub fn write<F>(&self, f: F)
-    where
-        F: FnOnce(&mut W) -> &mut W,
-    {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Writes the reset value to the register"]
-    #[inline]
-    pub fn reset(&self) {
-        self.write(|w| w)
+#[doc = "Reader of register CFG"]
+pub type R = crate::R<u32, super::CFG>;
+#[doc = "Writer for register CFG"]
+pub type W = crate::W<u32, super::CFG>;
+#[doc = "Register CFG `reset()`'s with value 0x02"]
+impl crate::ResetValue for super::CFG {
+    type Type = u32;
+    #[inline(always)]
+    fn reset_value() -> Self::Type {
+        0x02
     }
 }
-#[doc = r" Value of the field"]
-pub struct LQOSR {
-    bits: u8,
+#[doc = "Reader of field `LQOS`"]
+pub type LQOS_R = crate::R<u8, u8>;
+#[doc = "Write proxy for field `LQOS`"]
+pub struct LQOS_W<'a> {
+    w: &'a mut W,
 }
-impl LQOSR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
+impl<'a> LQOS_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub unsafe fn bits(self, value: u8) -> &'a mut W {
+        self.w.bits = (self.w.bits & !0x03) | ((value as u32) & 0x03);
+        self.w
     }
 }
-#[doc = "Possible values of the field `DCCDMALEVEL`"]
+#[doc = "DMA Trigger Level\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum DCCDMALEVELR {
-    #[doc = "Trigger rises when DCC is empty"]
+pub enum DCCDMALEVEL_A {
+    #[doc = "0: Trigger rises when DCC is empty"]
     EMPTY,
-    #[doc = "Trigger rises when DCC is full"]
+    #[doc = "1: Trigger rises when DCC is full"]
     FULL,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
 }
-impl DCCDMALEVELR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            DCCDMALEVELR::EMPTY => 0,
-            DCCDMALEVELR::FULL => 1,
-            DCCDMALEVELR::_Reserved(bits) => bits,
+impl From<DCCDMALEVEL_A> for u8 {
+    #[inline(always)]
+    fn from(variant: DCCDMALEVEL_A) -> Self {
+        match variant {
+            DCCDMALEVEL_A::EMPTY => 0,
+            DCCDMALEVEL_A::FULL => 1,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> DCCDMALEVELR {
-        match value {
-            0 => DCCDMALEVELR::EMPTY,
-            1 => DCCDMALEVELR::FULL,
-            i => DCCDMALEVELR::_Reserved(i),
+}
+#[doc = "Reader of field `DCCDMALEVEL`"]
+pub type DCCDMALEVEL_R = crate::R<u8, DCCDMALEVEL_A>;
+impl DCCDMALEVEL_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, DCCDMALEVEL_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(DCCDMALEVEL_A::EMPTY),
+            1 => Val(DCCDMALEVEL_A::FULL),
+            i => Res(i),
         }
     }
     #[doc = "Checks if the value of the field is `EMPTY`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_empty(&self) -> bool {
-        *self == DCCDMALEVELR::EMPTY
+        *self == DCCDMALEVEL_A::EMPTY
     }
     #[doc = "Checks if the value of the field is `FULL`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_full(&self) -> bool {
-        *self == DCCDMALEVELR::FULL
+        *self == DCCDMALEVEL_A::FULL
     }
 }
-#[doc = r" Value of the field"]
-pub struct ETBRAMENR {
-    bits: bool,
-}
-impl ETBRAMENR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Proxy"]
-pub struct _LQOSW<'a> {
+#[doc = "Write proxy for field `DCCDMALEVEL`"]
+pub struct DCCDMALEVEL_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _LQOSW<'a> {
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
-        self.w
-    }
-}
-#[doc = "Values that can be written to the field `DCCDMALEVEL`"]
-pub enum DCCDMALEVELW {
-    #[doc = "Trigger rises when DCC is empty"]
-    EMPTY,
-    #[doc = "Trigger rises when DCC is full"]
-    FULL,
-}
-impl DCCDMALEVELW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            DCCDMALEVELW::EMPTY => 0,
-            DCCDMALEVELW::FULL => 1,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _DCCDMALEVELW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _DCCDMALEVELW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: DCCDMALEVELW) -> &'a mut W {
-        unsafe { self.bits(variant._bits()) }
+impl<'a> DCCDMALEVEL_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: DCCDMALEVEL_A) -> &'a mut W {
+        unsafe { self.bits(variant.into()) }
     }
     #[doc = "Trigger rises when DCC is empty"]
-    #[inline]
+    #[inline(always)]
     pub fn empty(self) -> &'a mut W {
-        self.variant(DCCDMALEVELW::EMPTY)
+        self.variant(DCCDMALEVEL_A::EMPTY)
     }
     #[doc = "Trigger rises when DCC is full"]
-    #[inline]
+    #[inline(always)]
     pub fn full(self) -> &'a mut W {
-        self.variant(DCCDMALEVELW::FULL)
+        self.variant(DCCDMALEVEL_A::FULL)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 2;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x03 << 2)) | (((value as u32) & 0x03) << 2);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _ETBRAMENW<'a> {
+#[doc = "Reader of field `ETBRAMEN`"]
+pub type ETBRAMEN_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `ETBRAMEN`"]
+pub struct ETBRAMEN_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _ETBRAMENW<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> ETBRAMEN_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 4;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 4)) | (((value as u32) & 0x01) << 4);
         self.w
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u32 {
-        self.bits
-    }
     #[doc = "Bits 0:1 - Latency Quality Of Service"]
-    #[inline]
-    pub fn lqos(&self) -> LQOSR {
-        let bits = {
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
-        LQOSR { bits }
+    #[inline(always)]
+    pub fn lqos(&self) -> LQOS_R {
+        LQOS_R::new((self.bits & 0x03) as u8)
     }
     #[doc = "Bits 2:3 - DMA Trigger Level"]
-    #[inline]
-    pub fn dccdmalevel(&self) -> DCCDMALEVELR {
-        DCCDMALEVELR::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+    #[inline(always)]
+    pub fn dccdmalevel(&self) -> DCCDMALEVEL_R {
+        DCCDMALEVEL_R::new(((self.bits >> 2) & 0x03) as u8)
     }
     #[doc = "Bit 4 - Trace Control"]
-    #[inline]
-    pub fn etbramen(&self) -> ETBRAMENR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        ETBRAMENR { bits }
+    #[inline(always)]
+    pub fn etbramen(&self) -> ETBRAMEN_R {
+        ETBRAMEN_R::new(((self.bits >> 4) & 0x01) != 0)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 2 }
-    }
-    #[doc = r" Writes raw bits to the register"]
-    #[inline]
-    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.bits = bits;
-        self
-    }
     #[doc = "Bits 0:1 - Latency Quality Of Service"]
-    #[inline]
-    pub fn lqos(&mut self) -> _LQOSW {
-        _LQOSW { w: self }
+    #[inline(always)]
+    pub fn lqos(&mut self) -> LQOS_W {
+        LQOS_W { w: self }
     }
     #[doc = "Bits 2:3 - DMA Trigger Level"]
-    #[inline]
-    pub fn dccdmalevel(&mut self) -> _DCCDMALEVELW {
-        _DCCDMALEVELW { w: self }
+    #[inline(always)]
+    pub fn dccdmalevel(&mut self) -> DCCDMALEVEL_W {
+        DCCDMALEVEL_W { w: self }
     }
     #[doc = "Bit 4 - Trace Control"]
-    #[inline]
-    pub fn etbramen(&mut self) -> _ETBRAMENW {
-        _ETBRAMENW { w: self }
+    #[inline(always)]
+    pub fn etbramen(&mut self) -> ETBRAMEN_W {
+        ETBRAMEN_W { w: self }
     }
 }

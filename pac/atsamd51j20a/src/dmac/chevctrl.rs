@@ -1,489 +1,325 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u8,
-}
-#[doc = r" Value to write to the register"]
-pub struct W {
-    bits: u8,
-}
-impl super::CHEVCTRL {
-    #[doc = r" Modifies the contents of the register"]
-    #[inline]
-    pub fn modify<F>(&self, f: F)
-    where
-        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
-    {
-        let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-    #[doc = r" Writes to the register"]
-    #[inline]
-    pub fn write<F>(&self, f: F)
-    where
-        F: FnOnce(&mut W) -> &mut W,
-    {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Writes the reset value to the register"]
-    #[inline]
-    pub fn reset(&self) {
-        self.write(|w| w)
+#[doc = "Reader of register CHEVCTRL%s"]
+pub type R = crate::R<u8, super::CHEVCTRL>;
+#[doc = "Writer for register CHEVCTRL%s"]
+pub type W = crate::W<u8, super::CHEVCTRL>;
+#[doc = "Register CHEVCTRL%s `reset()`'s with value 0"]
+impl crate::ResetValue for super::CHEVCTRL {
+    type Type = u8;
+    #[inline(always)]
+    fn reset_value() -> Self::Type {
+        0
     }
 }
-#[doc = "Possible values of the field `EVACT`"]
+#[doc = "Channel Event Input Action\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum EVACTR {
-    #[doc = "No action"]
+pub enum EVACT_A {
+    #[doc = "0: No action"]
     NOACT,
-    #[doc = "Transfer and periodic transfer trigger"]
+    #[doc = "1: Transfer and periodic transfer trigger"]
     TRIG,
-    #[doc = "Conditional transfer trigger"]
+    #[doc = "2: Conditional transfer trigger"]
     CTRIG,
-    #[doc = "Conditional block transfer"]
+    #[doc = "3: Conditional block transfer"]
     CBLOCK,
-    #[doc = "Channel suspend operation"]
+    #[doc = "4: Channel suspend operation"]
     SUSPEND,
-    #[doc = "Channel resume operation"]
+    #[doc = "5: Channel resume operation"]
     RESUME,
-    #[doc = "Skip next block suspend action"]
+    #[doc = "6: Skip next block suspend action"]
     SSKIP,
-    #[doc = "Increase priority"]
+    #[doc = "7: Increase priority"]
     INCPRI,
 }
-impl EVACTR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            EVACTR::NOACT => 0,
-            EVACTR::TRIG => 1,
-            EVACTR::CTRIG => 2,
-            EVACTR::CBLOCK => 3,
-            EVACTR::SUSPEND => 4,
-            EVACTR::RESUME => 5,
-            EVACTR::SSKIP => 6,
-            EVACTR::INCPRI => 7,
+impl From<EVACT_A> for u8 {
+    #[inline(always)]
+    fn from(variant: EVACT_A) -> Self {
+        match variant {
+            EVACT_A::NOACT => 0,
+            EVACT_A::TRIG => 1,
+            EVACT_A::CTRIG => 2,
+            EVACT_A::CBLOCK => 3,
+            EVACT_A::SUSPEND => 4,
+            EVACT_A::RESUME => 5,
+            EVACT_A::SSKIP => 6,
+            EVACT_A::INCPRI => 7,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> EVACTR {
-        match value {
-            0 => EVACTR::NOACT,
-            1 => EVACTR::TRIG,
-            2 => EVACTR::CTRIG,
-            3 => EVACTR::CBLOCK,
-            4 => EVACTR::SUSPEND,
-            5 => EVACTR::RESUME,
-            6 => EVACTR::SSKIP,
-            7 => EVACTR::INCPRI,
+}
+#[doc = "Reader of field `EVACT`"]
+pub type EVACT_R = crate::R<u8, EVACT_A>;
+impl EVACT_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> EVACT_A {
+        match self.bits {
+            0 => EVACT_A::NOACT,
+            1 => EVACT_A::TRIG,
+            2 => EVACT_A::CTRIG,
+            3 => EVACT_A::CBLOCK,
+            4 => EVACT_A::SUSPEND,
+            5 => EVACT_A::RESUME,
+            6 => EVACT_A::SSKIP,
+            7 => EVACT_A::INCPRI,
             _ => unreachable!(),
         }
     }
     #[doc = "Checks if the value of the field is `NOACT`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_noact(&self) -> bool {
-        *self == EVACTR::NOACT
+        *self == EVACT_A::NOACT
     }
     #[doc = "Checks if the value of the field is `TRIG`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_trig(&self) -> bool {
-        *self == EVACTR::TRIG
+        *self == EVACT_A::TRIG
     }
     #[doc = "Checks if the value of the field is `CTRIG`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_ctrig(&self) -> bool {
-        *self == EVACTR::CTRIG
+        *self == EVACT_A::CTRIG
     }
     #[doc = "Checks if the value of the field is `CBLOCK`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_cblock(&self) -> bool {
-        *self == EVACTR::CBLOCK
+        *self == EVACT_A::CBLOCK
     }
     #[doc = "Checks if the value of the field is `SUSPEND`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_suspend(&self) -> bool {
-        *self == EVACTR::SUSPEND
+        *self == EVACT_A::SUSPEND
     }
     #[doc = "Checks if the value of the field is `RESUME`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_resume(&self) -> bool {
-        *self == EVACTR::RESUME
+        *self == EVACT_A::RESUME
     }
     #[doc = "Checks if the value of the field is `SSKIP`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_sskip(&self) -> bool {
-        *self == EVACTR::SSKIP
+        *self == EVACT_A::SSKIP
     }
     #[doc = "Checks if the value of the field is `INCPRI`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_incpri(&self) -> bool {
-        *self == EVACTR::INCPRI
+        *self == EVACT_A::INCPRI
     }
 }
-#[doc = "Possible values of the field `EVOMODE`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum EVOMODER {
-    #[doc = "Block event output selection. Refer to BTCTRL.EVOSEL for available selections."]
-    DEFAULT,
-    #[doc = "Ongoing trigger action"]
-    TRIGACT,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
+#[doc = "Write proxy for field `EVACT`"]
+pub struct EVACT_W<'a> {
+    w: &'a mut W,
 }
-impl EVOMODER {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            EVOMODER::DEFAULT => 0,
-            EVOMODER::TRIGACT => 1,
-            EVOMODER::_Reserved(bits) => bits,
+impl<'a> EVACT_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: EVACT_A) -> &'a mut W {
+        {
+            self.bits(variant.into())
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> EVOMODER {
-        match value {
-            0 => EVOMODER::DEFAULT,
-            1 => EVOMODER::TRIGACT,
-            i => EVOMODER::_Reserved(i),
+    #[doc = "No action"]
+    #[inline(always)]
+    pub fn noact(self) -> &'a mut W {
+        self.variant(EVACT_A::NOACT)
+    }
+    #[doc = "Transfer and periodic transfer trigger"]
+    #[inline(always)]
+    pub fn trig(self) -> &'a mut W {
+        self.variant(EVACT_A::TRIG)
+    }
+    #[doc = "Conditional transfer trigger"]
+    #[inline(always)]
+    pub fn ctrig(self) -> &'a mut W {
+        self.variant(EVACT_A::CTRIG)
+    }
+    #[doc = "Conditional block transfer"]
+    #[inline(always)]
+    pub fn cblock(self) -> &'a mut W {
+        self.variant(EVACT_A::CBLOCK)
+    }
+    #[doc = "Channel suspend operation"]
+    #[inline(always)]
+    pub fn suspend(self) -> &'a mut W {
+        self.variant(EVACT_A::SUSPEND)
+    }
+    #[doc = "Channel resume operation"]
+    #[inline(always)]
+    pub fn resume(self) -> &'a mut W {
+        self.variant(EVACT_A::RESUME)
+    }
+    #[doc = "Skip next block suspend action"]
+    #[inline(always)]
+    pub fn sskip(self) -> &'a mut W {
+        self.variant(EVACT_A::SSKIP)
+    }
+    #[doc = "Increase priority"]
+    #[inline(always)]
+    pub fn incpri(self) -> &'a mut W {
+        self.variant(EVACT_A::INCPRI)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bits(self, value: u8) -> &'a mut W {
+        self.w.bits = (self.w.bits & !0x07) | ((value as u8) & 0x07);
+        self.w
+    }
+}
+#[doc = "Channel Event Output Mode\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum EVOMODE_A {
+    #[doc = "0: Block event output selection. Refer to BTCTRL.EVOSEL for available selections."]
+    DEFAULT,
+    #[doc = "1: Ongoing trigger action"]
+    TRIGACT,
+}
+impl From<EVOMODE_A> for u8 {
+    #[inline(always)]
+    fn from(variant: EVOMODE_A) -> Self {
+        match variant {
+            EVOMODE_A::DEFAULT => 0,
+            EVOMODE_A::TRIGACT => 1,
+        }
+    }
+}
+#[doc = "Reader of field `EVOMODE`"]
+pub type EVOMODE_R = crate::R<u8, EVOMODE_A>;
+impl EVOMODE_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, EVOMODE_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(EVOMODE_A::DEFAULT),
+            1 => Val(EVOMODE_A::TRIGACT),
+            i => Res(i),
         }
     }
     #[doc = "Checks if the value of the field is `DEFAULT`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_default(&self) -> bool {
-        *self == EVOMODER::DEFAULT
+        *self == EVOMODE_A::DEFAULT
     }
     #[doc = "Checks if the value of the field is `TRIGACT`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_trigact(&self) -> bool {
-        *self == EVOMODER::TRIGACT
+        *self == EVOMODE_A::TRIGACT
     }
 }
-#[doc = r" Value of the field"]
-pub struct EVIER {
-    bits: bool,
-}
-impl EVIER {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct EVOER {
-    bits: bool,
-}
-impl EVOER {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = "Values that can be written to the field `EVACT`"]
-pub enum EVACTW {
-    #[doc = "No action"]
-    NOACT,
-    #[doc = "Transfer and periodic transfer trigger"]
-    TRIG,
-    #[doc = "Conditional transfer trigger"]
-    CTRIG,
-    #[doc = "Conditional block transfer"]
-    CBLOCK,
-    #[doc = "Channel suspend operation"]
-    SUSPEND,
-    #[doc = "Channel resume operation"]
-    RESUME,
-    #[doc = "Skip next block suspend action"]
-    SSKIP,
-    #[doc = "Increase priority"]
-    INCPRI,
-}
-impl EVACTW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            EVACTW::NOACT => 0,
-            EVACTW::TRIG => 1,
-            EVACTW::CTRIG => 2,
-            EVACTW::CBLOCK => 3,
-            EVACTW::SUSPEND => 4,
-            EVACTW::RESUME => 5,
-            EVACTW::SSKIP => 6,
-            EVACTW::INCPRI => 7,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _EVACTW<'a> {
+#[doc = "Write proxy for field `EVOMODE`"]
+pub struct EVOMODE_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _EVACTW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: EVACTW) -> &'a mut W {
-        {
-            self.bits(variant._bits())
-        }
-    }
-    #[doc = "No action"]
-    #[inline]
-    pub fn noact(self) -> &'a mut W {
-        self.variant(EVACTW::NOACT)
-    }
-    #[doc = "Transfer and periodic transfer trigger"]
-    #[inline]
-    pub fn trig(self) -> &'a mut W {
-        self.variant(EVACTW::TRIG)
-    }
-    #[doc = "Conditional transfer trigger"]
-    #[inline]
-    pub fn ctrig(self) -> &'a mut W {
-        self.variant(EVACTW::CTRIG)
-    }
-    #[doc = "Conditional block transfer"]
-    #[inline]
-    pub fn cblock(self) -> &'a mut W {
-        self.variant(EVACTW::CBLOCK)
-    }
-    #[doc = "Channel suspend operation"]
-    #[inline]
-    pub fn suspend(self) -> &'a mut W {
-        self.variant(EVACTW::SUSPEND)
-    }
-    #[doc = "Channel resume operation"]
-    #[inline]
-    pub fn resume(self) -> &'a mut W {
-        self.variant(EVACTW::RESUME)
-    }
-    #[doc = "Skip next block suspend action"]
-    #[inline]
-    pub fn sskip(self) -> &'a mut W {
-        self.variant(EVACTW::SSKIP)
-    }
-    #[doc = "Increase priority"]
-    #[inline]
-    pub fn incpri(self) -> &'a mut W {
-        self.variant(EVACTW::INCPRI)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 7;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
-        self.w
-    }
-}
-#[doc = "Values that can be written to the field `EVOMODE`"]
-pub enum EVOMODEW {
-    #[doc = "Block event output selection. Refer to BTCTRL.EVOSEL for available selections."]
-    DEFAULT,
-    #[doc = "Ongoing trigger action"]
-    TRIGACT,
-}
-impl EVOMODEW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            EVOMODEW::DEFAULT => 0,
-            EVOMODEW::TRIGACT => 1,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _EVOMODEW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _EVOMODEW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: EVOMODEW) -> &'a mut W {
-        unsafe { self.bits(variant._bits()) }
+impl<'a> EVOMODE_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: EVOMODE_A) -> &'a mut W {
+        unsafe { self.bits(variant.into()) }
     }
     #[doc = "Block event output selection. Refer to BTCTRL.EVOSEL for available selections."]
-    #[inline]
+    #[inline(always)]
     pub fn default(self) -> &'a mut W {
-        self.variant(EVOMODEW::DEFAULT)
+        self.variant(EVOMODE_A::DEFAULT)
     }
     #[doc = "Ongoing trigger action"]
-    #[inline]
+    #[inline(always)]
     pub fn trigact(self) -> &'a mut W {
-        self.variant(EVOMODEW::TRIGACT)
+        self.variant(EVOMODE_A::TRIGACT)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 4;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x03 << 4)) | (((value as u8) & 0x03) << 4);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _EVIEW<'a> {
+#[doc = "Reader of field `EVIE`"]
+pub type EVIE_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `EVIE`"]
+pub struct EVIE_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _EVIEW<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> EVIE_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 6;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 6)) | (((value as u8) & 0x01) << 6);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _EVOEW<'a> {
+#[doc = "Reader of field `EVOE`"]
+pub type EVOE_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `EVOE`"]
+pub struct EVOE_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _EVOEW<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> EVOE_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 7;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 7)) | (((value as u8) & 0x01) << 7);
         self.w
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
     #[doc = "Bits 0:2 - Channel Event Input Action"]
-    #[inline]
-    pub fn evact(&self) -> EVACTR {
-        EVACTR::_from({
-            const MASK: u8 = 7;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u8) as u8
-        })
+    #[inline(always)]
+    pub fn evact(&self) -> EVACT_R {
+        EVACT_R::new((self.bits & 0x07) as u8)
     }
     #[doc = "Bits 4:5 - Channel Event Output Mode"]
-    #[inline]
-    pub fn evomode(&self) -> EVOMODER {
-        EVOMODER::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u8) as u8
-        })
+    #[inline(always)]
+    pub fn evomode(&self) -> EVOMODE_R {
+        EVOMODE_R::new(((self.bits >> 4) & 0x03) as u8)
     }
     #[doc = "Bit 6 - Channel Event Input Enable"]
-    #[inline]
-    pub fn evie(&self) -> EVIER {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 6;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
-        EVIER { bits }
+    #[inline(always)]
+    pub fn evie(&self) -> EVIE_R {
+        EVIE_R::new(((self.bits >> 6) & 0x01) != 0)
     }
     #[doc = "Bit 7 - Channel Event Output Enable"]
-    #[inline]
-    pub fn evoe(&self) -> EVOER {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 7;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
-        EVOER { bits }
+    #[inline(always)]
+    pub fn evoe(&self) -> EVOE_R {
+        EVOE_R::new(((self.bits >> 7) & 0x01) != 0)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
-    #[doc = r" Writes raw bits to the register"]
-    #[inline]
-    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
-        self.bits = bits;
-        self
-    }
     #[doc = "Bits 0:2 - Channel Event Input Action"]
-    #[inline]
-    pub fn evact(&mut self) -> _EVACTW {
-        _EVACTW { w: self }
+    #[inline(always)]
+    pub fn evact(&mut self) -> EVACT_W {
+        EVACT_W { w: self }
     }
     #[doc = "Bits 4:5 - Channel Event Output Mode"]
-    #[inline]
-    pub fn evomode(&mut self) -> _EVOMODEW {
-        _EVOMODEW { w: self }
+    #[inline(always)]
+    pub fn evomode(&mut self) -> EVOMODE_W {
+        EVOMODE_W { w: self }
     }
     #[doc = "Bit 6 - Channel Event Input Enable"]
-    #[inline]
-    pub fn evie(&mut self) -> _EVIEW {
-        _EVIEW { w: self }
+    #[inline(always)]
+    pub fn evie(&mut self) -> EVIE_W {
+        EVIE_W { w: self }
     }
     #[doc = "Bit 7 - Channel Event Output Enable"]
-    #[inline]
-    pub fn evoe(&mut self) -> _EVOEW {
-        _EVOEW { w: self }
+    #[inline(always)]
+    pub fn evoe(&mut self) -> EVOE_W {
+        EVOE_W { w: self }
     }
 }

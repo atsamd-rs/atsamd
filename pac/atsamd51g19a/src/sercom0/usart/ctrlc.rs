@@ -1,387 +1,204 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u32,
-}
-#[doc = r" Value to write to the register"]
-pub struct W {
-    bits: u32,
-}
-impl super::CTRLC {
-    #[doc = r" Modifies the contents of the register"]
-    #[inline]
-    pub fn modify<F>(&self, f: F)
-    where
-        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
-    {
-        let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-    #[doc = r" Writes to the register"]
-    #[inline]
-    pub fn write<F>(&self, f: F)
-    where
-        F: FnOnce(&mut W) -> &mut W,
-    {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Writes the reset value to the register"]
-    #[inline]
-    pub fn reset(&self) {
-        self.write(|w| w)
+#[doc = "Reader of register CTRLC"]
+pub type R = crate::R<u32, super::CTRLC>;
+#[doc = "Writer for register CTRLC"]
+pub type W = crate::W<u32, super::CTRLC>;
+#[doc = "Register CTRLC `reset()`'s with value 0"]
+impl crate::ResetValue for super::CTRLC {
+    type Type = u32;
+    #[inline(always)]
+    fn reset_value() -> Self::Type {
+        0
     }
 }
-#[doc = r" Value of the field"]
-pub struct GTIMER {
-    bits: u8,
-}
-impl GTIMER {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
-}
-#[doc = r" Value of the field"]
-pub struct BRKLENR {
-    bits: u8,
-}
-impl BRKLENR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
-}
-#[doc = r" Value of the field"]
-pub struct HDRDLYR {
-    bits: u8,
-}
-impl HDRDLYR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
-}
-#[doc = r" Value of the field"]
-pub struct INACKR {
-    bits: bool,
-}
-impl INACKR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct DSNACKR {
-    bits: bool,
-}
-impl DSNACKR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct MAXITERR {
-    bits: u8,
-}
-impl MAXITERR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
-}
-#[doc = r" Value of the field"]
-pub struct DATA32BR {
-    bits: u8,
-}
-impl DATA32BR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
-}
-#[doc = r" Proxy"]
-pub struct _GTIMEW<'a> {
+#[doc = "Reader of field `GTIME`"]
+pub type GTIME_R = crate::R<u8, u8>;
+#[doc = "Write proxy for field `GTIME`"]
+pub struct GTIME_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _GTIMEW<'a> {
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+impl<'a> GTIME_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 7;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !0x07) | ((value as u32) & 0x07);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _BRKLENW<'a> {
+#[doc = "Reader of field `BRKLEN`"]
+pub type BRKLEN_R = crate::R<u8, u8>;
+#[doc = "Write proxy for field `BRKLEN`"]
+pub struct BRKLEN_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _BRKLENW<'a> {
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+impl<'a> BRKLEN_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 8;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x03 << 8)) | (((value as u32) & 0x03) << 8);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _HDRDLYW<'a> {
+#[doc = "Reader of field `HDRDLY`"]
+pub type HDRDLY_R = crate::R<u8, u8>;
+#[doc = "Write proxy for field `HDRDLY`"]
+pub struct HDRDLY_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _HDRDLYW<'a> {
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+impl<'a> HDRDLY_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 10;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x03 << 10)) | (((value as u32) & 0x03) << 10);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _INACKW<'a> {
+#[doc = "Reader of field `INACK`"]
+pub type INACK_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `INACK`"]
+pub struct INACK_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _INACKW<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> INACK_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 16;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 16)) | (((value as u32) & 0x01) << 16);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _DSNACKW<'a> {
+#[doc = "Reader of field `DSNACK`"]
+pub type DSNACK_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `DSNACK`"]
+pub struct DSNACK_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _DSNACKW<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> DSNACK_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 17;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 17)) | (((value as u32) & 0x01) << 17);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _MAXITERW<'a> {
+#[doc = "Reader of field `MAXITER`"]
+pub type MAXITER_R = crate::R<u8, u8>;
+#[doc = "Write proxy for field `MAXITER`"]
+pub struct MAXITER_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _MAXITERW<'a> {
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+impl<'a> MAXITER_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 7;
-        const OFFSET: u8 = 20;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x07 << 20)) | (((value as u32) & 0x07) << 20);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _DATA32BW<'a> {
+#[doc = "Reader of field `DATA32B`"]
+pub type DATA32B_R = crate::R<u8, u8>;
+#[doc = "Write proxy for field `DATA32B`"]
+pub struct DATA32B_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _DATA32BW<'a> {
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+impl<'a> DATA32B_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 24;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x03 << 24)) | (((value as u32) & 0x03) << 24);
         self.w
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u32 {
-        self.bits
-    }
     #[doc = "Bits 0:2 - Guard Time"]
-    #[inline]
-    pub fn gtime(&self) -> GTIMER {
-        let bits = {
-            const MASK: u8 = 7;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
-        GTIMER { bits }
+    #[inline(always)]
+    pub fn gtime(&self) -> GTIME_R {
+        GTIME_R::new((self.bits & 0x07) as u8)
     }
     #[doc = "Bits 8:9 - LIN Master Break Length"]
-    #[inline]
-    pub fn brklen(&self) -> BRKLENR {
-        let bits = {
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
-        BRKLENR { bits }
+    #[inline(always)]
+    pub fn brklen(&self) -> BRKLEN_R {
+        BRKLEN_R::new(((self.bits >> 8) & 0x03) as u8)
     }
     #[doc = "Bits 10:11 - LIN Master Header Delay"]
-    #[inline]
-    pub fn hdrdly(&self) -> HDRDLYR {
-        let bits = {
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 10;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
-        HDRDLYR { bits }
+    #[inline(always)]
+    pub fn hdrdly(&self) -> HDRDLY_R {
+        HDRDLY_R::new(((self.bits >> 10) & 0x03) as u8)
     }
     #[doc = "Bit 16 - Inhibit Not Acknowledge"]
-    #[inline]
-    pub fn inack(&self) -> INACKR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 16;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        INACKR { bits }
+    #[inline(always)]
+    pub fn inack(&self) -> INACK_R {
+        INACK_R::new(((self.bits >> 16) & 0x01) != 0)
     }
     #[doc = "Bit 17 - Disable Successive NACK"]
-    #[inline]
-    pub fn dsnack(&self) -> DSNACKR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 17;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        DSNACKR { bits }
+    #[inline(always)]
+    pub fn dsnack(&self) -> DSNACK_R {
+        DSNACK_R::new(((self.bits >> 17) & 0x01) != 0)
     }
     #[doc = "Bits 20:22 - Maximum Iterations"]
-    #[inline]
-    pub fn maxiter(&self) -> MAXITERR {
-        let bits = {
-            const MASK: u8 = 7;
-            const OFFSET: u8 = 20;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
-        MAXITERR { bits }
+    #[inline(always)]
+    pub fn maxiter(&self) -> MAXITER_R {
+        MAXITER_R::new(((self.bits >> 20) & 0x07) as u8)
     }
     #[doc = "Bits 24:25 - Data 32 Bit"]
-    #[inline]
-    pub fn data32b(&self) -> DATA32BR {
-        let bits = {
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 24;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
-        DATA32BR { bits }
+    #[inline(always)]
+    pub fn data32b(&self) -> DATA32B_R {
+        DATA32B_R::new(((self.bits >> 24) & 0x03) as u8)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
-    #[doc = r" Writes raw bits to the register"]
-    #[inline]
-    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.bits = bits;
-        self
-    }
     #[doc = "Bits 0:2 - Guard Time"]
-    #[inline]
-    pub fn gtime(&mut self) -> _GTIMEW {
-        _GTIMEW { w: self }
+    #[inline(always)]
+    pub fn gtime(&mut self) -> GTIME_W {
+        GTIME_W { w: self }
     }
     #[doc = "Bits 8:9 - LIN Master Break Length"]
-    #[inline]
-    pub fn brklen(&mut self) -> _BRKLENW {
-        _BRKLENW { w: self }
+    #[inline(always)]
+    pub fn brklen(&mut self) -> BRKLEN_W {
+        BRKLEN_W { w: self }
     }
     #[doc = "Bits 10:11 - LIN Master Header Delay"]
-    #[inline]
-    pub fn hdrdly(&mut self) -> _HDRDLYW {
-        _HDRDLYW { w: self }
+    #[inline(always)]
+    pub fn hdrdly(&mut self) -> HDRDLY_W {
+        HDRDLY_W { w: self }
     }
     #[doc = "Bit 16 - Inhibit Not Acknowledge"]
-    #[inline]
-    pub fn inack(&mut self) -> _INACKW {
-        _INACKW { w: self }
+    #[inline(always)]
+    pub fn inack(&mut self) -> INACK_W {
+        INACK_W { w: self }
     }
     #[doc = "Bit 17 - Disable Successive NACK"]
-    #[inline]
-    pub fn dsnack(&mut self) -> _DSNACKW {
-        _DSNACKW { w: self }
+    #[inline(always)]
+    pub fn dsnack(&mut self) -> DSNACK_W {
+        DSNACK_W { w: self }
     }
     #[doc = "Bits 20:22 - Maximum Iterations"]
-    #[inline]
-    pub fn maxiter(&mut self) -> _MAXITERW {
-        _MAXITERW { w: self }
+    #[inline(always)]
+    pub fn maxiter(&mut self) -> MAXITER_W {
+        MAXITER_W { w: self }
     }
     #[doc = "Bits 24:25 - Data 32 Bit"]
-    #[inline]
-    pub fn data32b(&mut self) -> _DATA32BW {
-        _DATA32BW { w: self }
+    #[inline(always)]
+    pub fn data32b(&mut self) -> DATA32B_W {
+        DATA32B_W { w: self }
     }
 }

@@ -1,762 +1,534 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u8,
-}
-#[doc = r" Value to write to the register"]
-pub struct W {
-    bits: u8,
-}
-impl super::HC1R {
-    #[doc = r" Modifies the contents of the register"]
-    #[inline]
-    pub fn modify<F>(&self, f: F)
-    where
-        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
-    {
-        let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-    #[doc = r" Writes to the register"]
-    #[inline]
-    pub fn write<F>(&self, f: F)
-    where
-        F: FnOnce(&mut W) -> &mut W,
-    {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Writes the reset value to the register"]
-    #[inline]
-    pub fn reset(&self) {
-        self.write(|w| w)
+#[doc = "Reader of register HC1R"]
+pub type R = crate::R<u8, super::HC1R>;
+#[doc = "Writer for register HC1R"]
+pub type W = crate::W<u8, super::HC1R>;
+#[doc = "Register HC1R `reset()`'s with value 0"]
+impl crate::ResetValue for super::HC1R {
+    type Type = u8;
+    #[inline(always)]
+    fn reset_value() -> Self::Type {
+        0
     }
 }
-#[doc = "Possible values of the field `LEDCTRL`"]
+#[doc = "LED Control\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum LEDCTRLR {
-    #[doc = "LED off"]
+pub enum LEDCTRL_A {
+    #[doc = "0: LED off"]
     OFF,
-    #[doc = "LED on"]
+    #[doc = "1: LED on"]
     ON,
 }
-impl LEDCTRLR {
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        match *self {
-            LEDCTRLR::OFF => false,
-            LEDCTRLR::ON => true,
+impl From<LEDCTRL_A> for bool {
+    #[inline(always)]
+    fn from(variant: LEDCTRL_A) -> Self {
+        match variant {
+            LEDCTRL_A::OFF => false,
+            LEDCTRL_A::ON => true,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: bool) -> LEDCTRLR {
-        match value {
-            false => LEDCTRLR::OFF,
-            true => LEDCTRLR::ON,
+}
+#[doc = "Reader of field `LEDCTRL`"]
+pub type LEDCTRL_R = crate::R<bool, LEDCTRL_A>;
+impl LEDCTRL_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> LEDCTRL_A {
+        match self.bits {
+            false => LEDCTRL_A::OFF,
+            true => LEDCTRL_A::ON,
         }
     }
     #[doc = "Checks if the value of the field is `OFF`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_off(&self) -> bool {
-        *self == LEDCTRLR::OFF
+        *self == LEDCTRL_A::OFF
     }
     #[doc = "Checks if the value of the field is `ON`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_on(&self) -> bool {
-        *self == LEDCTRLR::ON
+        *self == LEDCTRL_A::ON
     }
 }
-#[doc = "Possible values of the field `DW`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum DWR {
-    #[doc = "1-bit mode"]
-    _1BIT,
-    #[doc = "4-bit mode"]
-    _4BIT,
+#[doc = "Write proxy for field `LEDCTRL`"]
+pub struct LEDCTRL_W<'a> {
+    w: &'a mut W,
 }
-impl DWR {
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        match *self {
-            DWR::_1BIT => false,
-            DWR::_4BIT => true,
+impl<'a> LEDCTRL_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: LEDCTRL_A) -> &'a mut W {
+        {
+            self.bit(variant.into())
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: bool) -> DWR {
-        match value {
-            false => DWR::_1BIT,
-            true => DWR::_4BIT,
+    #[doc = "LED off"]
+    #[inline(always)]
+    pub fn off(self) -> &'a mut W {
+        self.variant(LEDCTRL_A::OFF)
+    }
+    #[doc = "LED on"]
+    #[inline(always)]
+    pub fn on(self) -> &'a mut W {
+        self.variant(LEDCTRL_A::ON)
+    }
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !0x01) | ((value as u8) & 0x01);
+        self.w
+    }
+}
+#[doc = "Data Width\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum DW_A {
+    #[doc = "0: 1-bit mode"]
+    _1BIT,
+    #[doc = "1: 4-bit mode"]
+    _4BIT,
+}
+impl From<DW_A> for bool {
+    #[inline(always)]
+    fn from(variant: DW_A) -> Self {
+        match variant {
+            DW_A::_1BIT => false,
+            DW_A::_4BIT => true,
+        }
+    }
+}
+#[doc = "Reader of field `DW`"]
+pub type DW_R = crate::R<bool, DW_A>;
+impl DW_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> DW_A {
+        match self.bits {
+            false => DW_A::_1BIT,
+            true => DW_A::_4BIT,
         }
     }
     #[doc = "Checks if the value of the field is `_1BIT`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_1bit(&self) -> bool {
-        *self == DWR::_1BIT
+        *self == DW_A::_1BIT
     }
     #[doc = "Checks if the value of the field is `_4BIT`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_4bit(&self) -> bool {
-        *self == DWR::_4BIT
+        *self == DW_A::_4BIT
     }
 }
-#[doc = "Possible values of the field `HSEN`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum HSENR {
-    #[doc = "Normal Speed mode"]
-    NORMAL,
-    #[doc = "High Speed mode"]
-    HIGH,
+#[doc = "Write proxy for field `DW`"]
+pub struct DW_W<'a> {
+    w: &'a mut W,
 }
-impl HSENR {
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        match *self {
-            HSENR::NORMAL => false,
-            HSENR::HIGH => true,
+impl<'a> DW_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: DW_A) -> &'a mut W {
+        {
+            self.bit(variant.into())
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: bool) -> HSENR {
-        match value {
-            false => HSENR::NORMAL,
-            true => HSENR::HIGH,
+    #[doc = "1-bit mode"]
+    #[inline(always)]
+    pub fn _1bit(self) -> &'a mut W {
+        self.variant(DW_A::_1BIT)
+    }
+    #[doc = "4-bit mode"]
+    #[inline(always)]
+    pub fn _4bit(self) -> &'a mut W {
+        self.variant(DW_A::_4BIT)
+    }
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 1)) | (((value as u8) & 0x01) << 1);
+        self.w
+    }
+}
+#[doc = "High Speed Enable\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum HSEN_A {
+    #[doc = "0: Normal Speed mode"]
+    NORMAL,
+    #[doc = "1: High Speed mode"]
+    HIGH,
+}
+impl From<HSEN_A> for bool {
+    #[inline(always)]
+    fn from(variant: HSEN_A) -> Self {
+        match variant {
+            HSEN_A::NORMAL => false,
+            HSEN_A::HIGH => true,
+        }
+    }
+}
+#[doc = "Reader of field `HSEN`"]
+pub type HSEN_R = crate::R<bool, HSEN_A>;
+impl HSEN_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> HSEN_A {
+        match self.bits {
+            false => HSEN_A::NORMAL,
+            true => HSEN_A::HIGH,
         }
     }
     #[doc = "Checks if the value of the field is `NORMAL`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_normal(&self) -> bool {
-        *self == HSENR::NORMAL
+        *self == HSEN_A::NORMAL
     }
     #[doc = "Checks if the value of the field is `HIGH`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_high(&self) -> bool {
-        *self == HSENR::HIGH
+        *self == HSEN_A::HIGH
     }
 }
-#[doc = "Possible values of the field `DMASEL`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum DMASELR {
-    #[doc = "SDMA is selected"]
-    SDMA,
-    #[doc = "32-bit Address ADMA2 is selected"]
-    _32BIT,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
+#[doc = "Write proxy for field `HSEN`"]
+pub struct HSEN_W<'a> {
+    w: &'a mut W,
 }
-impl DMASELR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            DMASELR::SDMA => 0,
-            DMASELR::_32BIT => 2,
-            DMASELR::_Reserved(bits) => bits,
+impl<'a> HSEN_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: HSEN_A) -> &'a mut W {
+        {
+            self.bit(variant.into())
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> DMASELR {
-        match value {
-            0 => DMASELR::SDMA,
-            2 => DMASELR::_32BIT,
-            i => DMASELR::_Reserved(i),
+    #[doc = "Normal Speed mode"]
+    #[inline(always)]
+    pub fn normal(self) -> &'a mut W {
+        self.variant(HSEN_A::NORMAL)
+    }
+    #[doc = "High Speed mode"]
+    #[inline(always)]
+    pub fn high(self) -> &'a mut W {
+        self.variant(HSEN_A::HIGH)
+    }
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 2)) | (((value as u8) & 0x01) << 2);
+        self.w
+    }
+}
+#[doc = "DMA Select\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum DMASEL_A {
+    #[doc = "0: SDMA is selected"]
+    SDMA,
+    #[doc = "2: 32-bit Address ADMA2 is selected"]
+    _32BIT,
+}
+impl From<DMASEL_A> for u8 {
+    #[inline(always)]
+    fn from(variant: DMASEL_A) -> Self {
+        match variant {
+            DMASEL_A::SDMA => 0,
+            DMASEL_A::_32BIT => 2,
+        }
+    }
+}
+#[doc = "Reader of field `DMASEL`"]
+pub type DMASEL_R = crate::R<u8, DMASEL_A>;
+impl DMASEL_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, DMASEL_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(DMASEL_A::SDMA),
+            2 => Val(DMASEL_A::_32BIT),
+            i => Res(i),
         }
     }
     #[doc = "Checks if the value of the field is `SDMA`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_sdma(&self) -> bool {
-        *self == DMASELR::SDMA
+        *self == DMASEL_A::SDMA
     }
     #[doc = "Checks if the value of the field is `_32BIT`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_32bit(&self) -> bool {
-        *self == DMASELR::_32BIT
+        *self == DMASEL_A::_32BIT
     }
 }
-#[doc = "Possible values of the field `CARDDTL`"]
+#[doc = "Write proxy for field `DMASEL`"]
+pub struct DMASEL_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> DMASEL_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: DMASEL_A) -> &'a mut W {
+        unsafe { self.bits(variant.into()) }
+    }
+    #[doc = "SDMA is selected"]
+    #[inline(always)]
+    pub fn sdma(self) -> &'a mut W {
+        self.variant(DMASEL_A::SDMA)
+    }
+    #[doc = "32-bit Address ADMA2 is selected"]
+    #[inline(always)]
+    pub fn _32bit(self) -> &'a mut W {
+        self.variant(DMASEL_A::_32BIT)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub unsafe fn bits(self, value: u8) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x03 << 3)) | (((value as u8) & 0x03) << 3);
+        self.w
+    }
+}
+#[doc = "Card Detect Test Level\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum CARDDTLR {
-    #[doc = "No Card"]
+pub enum CARDDTL_A {
+    #[doc = "0: No Card"]
     NO,
-    #[doc = "Card Inserted"]
+    #[doc = "1: Card Inserted"]
     YES,
 }
-impl CARDDTLR {
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        match *self {
-            CARDDTLR::NO => false,
-            CARDDTLR::YES => true,
+impl From<CARDDTL_A> for bool {
+    #[inline(always)]
+    fn from(variant: CARDDTL_A) -> Self {
+        match variant {
+            CARDDTL_A::NO => false,
+            CARDDTL_A::YES => true,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: bool) -> CARDDTLR {
-        match value {
-            false => CARDDTLR::NO,
-            true => CARDDTLR::YES,
+}
+#[doc = "Reader of field `CARDDTL`"]
+pub type CARDDTL_R = crate::R<bool, CARDDTL_A>;
+impl CARDDTL_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> CARDDTL_A {
+        match self.bits {
+            false => CARDDTL_A::NO,
+            true => CARDDTL_A::YES,
         }
     }
     #[doc = "Checks if the value of the field is `NO`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_no(&self) -> bool {
-        *self == CARDDTLR::NO
+        *self == CARDDTL_A::NO
     }
     #[doc = "Checks if the value of the field is `YES`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_yes(&self) -> bool {
-        *self == CARDDTLR::YES
+        *self == CARDDTL_A::YES
     }
 }
-#[doc = "Possible values of the field `CARDDSEL`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum CARDDSELR {
-    #[doc = "SDCD# is selected (for normal use)"]
-    NORMAL,
-    #[doc = "The Card Select Test Level is selected (for test purpose)"]
-    TEST,
+#[doc = "Write proxy for field `CARDDTL`"]
+pub struct CARDDTL_W<'a> {
+    w: &'a mut W,
 }
-impl CARDDSELR {
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        match *self {
-            CARDDSELR::NORMAL => false,
-            CARDDSELR::TEST => true,
+impl<'a> CARDDTL_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: CARDDTL_A) -> &'a mut W {
+        {
+            self.bit(variant.into())
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: bool) -> CARDDSELR {
-        match value {
-            false => CARDDSELR::NORMAL,
-            true => CARDDSELR::TEST,
+    #[doc = "No Card"]
+    #[inline(always)]
+    pub fn no(self) -> &'a mut W {
+        self.variant(CARDDTL_A::NO)
+    }
+    #[doc = "Card Inserted"]
+    #[inline(always)]
+    pub fn yes(self) -> &'a mut W {
+        self.variant(CARDDTL_A::YES)
+    }
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 6)) | (((value as u8) & 0x01) << 6);
+        self.w
+    }
+}
+#[doc = "Card Detect Signal Selection\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum CARDDSEL_A {
+    #[doc = "0: SDCD# is selected (for normal use)"]
+    NORMAL,
+    #[doc = "1: The Card Select Test Level is selected (for test purpose)"]
+    TEST,
+}
+impl From<CARDDSEL_A> for bool {
+    #[inline(always)]
+    fn from(variant: CARDDSEL_A) -> Self {
+        match variant {
+            CARDDSEL_A::NORMAL => false,
+            CARDDSEL_A::TEST => true,
+        }
+    }
+}
+#[doc = "Reader of field `CARDDSEL`"]
+pub type CARDDSEL_R = crate::R<bool, CARDDSEL_A>;
+impl CARDDSEL_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> CARDDSEL_A {
+        match self.bits {
+            false => CARDDSEL_A::NORMAL,
+            true => CARDDSEL_A::TEST,
         }
     }
     #[doc = "Checks if the value of the field is `NORMAL`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_normal(&self) -> bool {
-        *self == CARDDSELR::NORMAL
+        *self == CARDDSEL_A::NORMAL
     }
     #[doc = "Checks if the value of the field is `TEST`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_test(&self) -> bool {
-        *self == CARDDSELR::TEST
+        *self == CARDDSEL_A::TEST
     }
 }
-#[doc = "Values that can be written to the field `LEDCTRL`"]
-pub enum LEDCTRLW {
-    #[doc = "LED off"]
-    OFF,
-    #[doc = "LED on"]
-    ON,
-}
-impl LEDCTRLW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> bool {
-        match *self {
-            LEDCTRLW::OFF => false,
-            LEDCTRLW::ON => true,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _LEDCTRLW<'a> {
+#[doc = "Write proxy for field `CARDDSEL`"]
+pub struct CARDDSEL_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _LEDCTRLW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: LEDCTRLW) -> &'a mut W {
+impl<'a> CARDDSEL_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: CARDDSEL_A) -> &'a mut W {
         {
-            self.bit(variant._bits())
-        }
-    }
-    #[doc = "LED off"]
-    #[inline]
-    pub fn off(self) -> &'a mut W {
-        self.variant(LEDCTRLW::OFF)
-    }
-    #[doc = "LED on"]
-    #[inline]
-    pub fn on(self) -> &'a mut W {
-        self.variant(LEDCTRLW::ON)
-    }
-    #[doc = r" Sets the field bit"]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r" Clears the field bit"]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
-        self.w
-    }
-}
-#[doc = "Values that can be written to the field `DW`"]
-pub enum DWW {
-    #[doc = "1-bit mode"]
-    _1BIT,
-    #[doc = "4-bit mode"]
-    _4BIT,
-}
-impl DWW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> bool {
-        match *self {
-            DWW::_1BIT => false,
-            DWW::_4BIT => true,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _DWW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _DWW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: DWW) -> &'a mut W {
-        {
-            self.bit(variant._bits())
-        }
-    }
-    #[doc = "1-bit mode"]
-    #[inline]
-    pub fn _1bit(self) -> &'a mut W {
-        self.variant(DWW::_1BIT)
-    }
-    #[doc = "4-bit mode"]
-    #[inline]
-    pub fn _4bit(self) -> &'a mut W {
-        self.variant(DWW::_4BIT)
-    }
-    #[doc = r" Sets the field bit"]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r" Clears the field bit"]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 1;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
-        self.w
-    }
-}
-#[doc = "Values that can be written to the field `HSEN`"]
-pub enum HSENW {
-    #[doc = "Normal Speed mode"]
-    NORMAL,
-    #[doc = "High Speed mode"]
-    HIGH,
-}
-impl HSENW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> bool {
-        match *self {
-            HSENW::NORMAL => false,
-            HSENW::HIGH => true,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _HSENW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _HSENW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: HSENW) -> &'a mut W {
-        {
-            self.bit(variant._bits())
-        }
-    }
-    #[doc = "Normal Speed mode"]
-    #[inline]
-    pub fn normal(self) -> &'a mut W {
-        self.variant(HSENW::NORMAL)
-    }
-    #[doc = "High Speed mode"]
-    #[inline]
-    pub fn high(self) -> &'a mut W {
-        self.variant(HSENW::HIGH)
-    }
-    #[doc = r" Sets the field bit"]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r" Clears the field bit"]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 2;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
-        self.w
-    }
-}
-#[doc = "Values that can be written to the field `DMASEL`"]
-pub enum DMASELW {
-    #[doc = "SDMA is selected"]
-    SDMA,
-    #[doc = "32-bit Address ADMA2 is selected"]
-    _32BIT,
-}
-impl DMASELW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            DMASELW::SDMA => 0,
-            DMASELW::_32BIT => 2,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _DMASELW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _DMASELW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: DMASELW) -> &'a mut W {
-        unsafe { self.bits(variant._bits()) }
-    }
-    #[doc = "SDMA is selected"]
-    #[inline]
-    pub fn sdma(self) -> &'a mut W {
-        self.variant(DMASELW::SDMA)
-    }
-    #[doc = "32-bit Address ADMA2 is selected"]
-    #[inline]
-    pub fn _32bit(self) -> &'a mut W {
-        self.variant(DMASELW::_32BIT)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 3;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
-        self.w
-    }
-}
-#[doc = "Values that can be written to the field `CARDDTL`"]
-pub enum CARDDTLW {
-    #[doc = "No Card"]
-    NO,
-    #[doc = "Card Inserted"]
-    YES,
-}
-impl CARDDTLW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> bool {
-        match *self {
-            CARDDTLW::NO => false,
-            CARDDTLW::YES => true,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _CARDDTLW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _CARDDTLW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: CARDDTLW) -> &'a mut W {
-        {
-            self.bit(variant._bits())
-        }
-    }
-    #[doc = "No Card"]
-    #[inline]
-    pub fn no(self) -> &'a mut W {
-        self.variant(CARDDTLW::NO)
-    }
-    #[doc = "Card Inserted"]
-    #[inline]
-    pub fn yes(self) -> &'a mut W {
-        self.variant(CARDDTLW::YES)
-    }
-    #[doc = r" Sets the field bit"]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r" Clears the field bit"]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 6;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
-        self.w
-    }
-}
-#[doc = "Values that can be written to the field `CARDDSEL`"]
-pub enum CARDDSELW {
-    #[doc = "SDCD# is selected (for normal use)"]
-    NORMAL,
-    #[doc = "The Card Select Test Level is selected (for test purpose)"]
-    TEST,
-}
-impl CARDDSELW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> bool {
-        match *self {
-            CARDDSELW::NORMAL => false,
-            CARDDSELW::TEST => true,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _CARDDSELW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _CARDDSELW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: CARDDSELW) -> &'a mut W {
-        {
-            self.bit(variant._bits())
+            self.bit(variant.into())
         }
     }
     #[doc = "SDCD# is selected (for normal use)"]
-    #[inline]
+    #[inline(always)]
     pub fn normal(self) -> &'a mut W {
-        self.variant(CARDDSELW::NORMAL)
+        self.variant(CARDDSEL_A::NORMAL)
     }
     #[doc = "The Card Select Test Level is selected (for test purpose)"]
-    #[inline]
+    #[inline(always)]
     pub fn test(self) -> &'a mut W {
-        self.variant(CARDDSELW::TEST)
+        self.variant(CARDDSEL_A::TEST)
     }
-    #[doc = r" Sets the field bit"]
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 7;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 7)) | (((value as u8) & 0x01) << 7);
         self.w
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
     #[doc = "Bit 0 - LED Control"]
-    #[inline]
-    pub fn ledctrl(&self) -> LEDCTRLR {
-        LEDCTRLR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        })
+    #[inline(always)]
+    pub fn ledctrl(&self) -> LEDCTRL_R {
+        LEDCTRL_R::new((self.bits & 0x01) != 0)
     }
     #[doc = "Bit 1 - Data Width"]
-    #[inline]
-    pub fn dw(&self) -> DWR {
-        DWR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        })
+    #[inline(always)]
+    pub fn dw(&self) -> DW_R {
+        DW_R::new(((self.bits >> 1) & 0x01) != 0)
     }
     #[doc = "Bit 2 - High Speed Enable"]
-    #[inline]
-    pub fn hsen(&self) -> HSENR {
-        HSENR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        })
+    #[inline(always)]
+    pub fn hsen(&self) -> HSEN_R {
+        HSEN_R::new(((self.bits >> 2) & 0x01) != 0)
     }
     #[doc = "Bits 3:4 - DMA Select"]
-    #[inline]
-    pub fn dmasel(&self) -> DMASELR {
-        DMASELR::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 3;
-            ((self.bits >> OFFSET) & MASK as u8) as u8
-        })
+    #[inline(always)]
+    pub fn dmasel(&self) -> DMASEL_R {
+        DMASEL_R::new(((self.bits >> 3) & 0x03) as u8)
     }
     #[doc = "Bit 6 - Card Detect Test Level"]
-    #[inline]
-    pub fn carddtl(&self) -> CARDDTLR {
-        CARDDTLR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 6;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        })
+    #[inline(always)]
+    pub fn carddtl(&self) -> CARDDTL_R {
+        CARDDTL_R::new(((self.bits >> 6) & 0x01) != 0)
     }
     #[doc = "Bit 7 - Card Detect Signal Selection"]
-    #[inline]
-    pub fn carddsel(&self) -> CARDDSELR {
-        CARDDSELR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 7;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        })
+    #[inline(always)]
+    pub fn carddsel(&self) -> CARDDSEL_R {
+        CARDDSEL_R::new(((self.bits >> 7) & 0x01) != 0)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
-    #[doc = r" Writes raw bits to the register"]
-    #[inline]
-    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
-        self.bits = bits;
-        self
-    }
     #[doc = "Bit 0 - LED Control"]
-    #[inline]
-    pub fn ledctrl(&mut self) -> _LEDCTRLW {
-        _LEDCTRLW { w: self }
+    #[inline(always)]
+    pub fn ledctrl(&mut self) -> LEDCTRL_W {
+        LEDCTRL_W { w: self }
     }
     #[doc = "Bit 1 - Data Width"]
-    #[inline]
-    pub fn dw(&mut self) -> _DWW {
-        _DWW { w: self }
+    #[inline(always)]
+    pub fn dw(&mut self) -> DW_W {
+        DW_W { w: self }
     }
     #[doc = "Bit 2 - High Speed Enable"]
-    #[inline]
-    pub fn hsen(&mut self) -> _HSENW {
-        _HSENW { w: self }
+    #[inline(always)]
+    pub fn hsen(&mut self) -> HSEN_W {
+        HSEN_W { w: self }
     }
     #[doc = "Bits 3:4 - DMA Select"]
-    #[inline]
-    pub fn dmasel(&mut self) -> _DMASELW {
-        _DMASELW { w: self }
+    #[inline(always)]
+    pub fn dmasel(&mut self) -> DMASEL_W {
+        DMASEL_W { w: self }
     }
     #[doc = "Bit 6 - Card Detect Test Level"]
-    #[inline]
-    pub fn carddtl(&mut self) -> _CARDDTLW {
-        _CARDDTLW { w: self }
+    #[inline(always)]
+    pub fn carddtl(&mut self) -> CARDDTL_W {
+        CARDDTL_W { w: self }
     }
     #[doc = "Bit 7 - Card Detect Signal Selection"]
-    #[inline]
-    pub fn carddsel(&mut self) -> _CARDDSELW {
-        _CARDDSELW { w: self }
+    #[inline(always)]
+    pub fn carddsel(&mut self) -> CARDDSEL_W {
+        CARDDSEL_W { w: self }
     }
 }

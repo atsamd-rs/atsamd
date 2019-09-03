@@ -13,15 +13,15 @@ extern crate samd21_mini as hal;
 use hal::clock::GenericClockController;
 use hal::prelude::*;
 use hal::sercom::{PadPin, Sercom0Pad2, Sercom0Pad3, UART0};
-use hal::target_device::gclk::clkctrl::GENR;
-use hal::target_device::gclk::genctrl::SRCR;
+use hal::pac::gclk::clkctrl::GEN_A;
+use hal::pac::gclk::genctrl::SRC_A;
 use rtfm::app;
 
 macro_rules! dbgprint {
     ($($arg:tt)*) => {{}};
 }
 
-#[app(device=hal)]
+#[app(device=hal::pac)]
 const APP: () = {
     static mut BLUE_LED: hal::gpio::Pa17<hal::gpio::Output<hal::gpio::OpenDrain>> = ();
     static mut TX_LED: hal::gpio::Pa27<hal::gpio::Output<hal::gpio::OpenDrain>> = ();
@@ -38,8 +38,8 @@ const APP: () = {
             &mut device.SYSCTRL,
             &mut device.NVMCTRL,
         );
-        clocks.configure_gclk_divider_and_source(GENR::GCLK2, 1, SRCR::DFLL48M, false);
-        let gclk2 = clocks.get_gclk(GENR::GCLK2).expect("Could not get clock 2");
+        clocks.configure_gclk_divider_and_source(GEN_A::GCLK2, 1, SRC_A::DFLL48M, false);
+        let gclk2 = clocks.get_gclk(GEN_A::GCLK2).expect("Could not get clock 2");
 
         dbgprint!("Initializing serial port");
 

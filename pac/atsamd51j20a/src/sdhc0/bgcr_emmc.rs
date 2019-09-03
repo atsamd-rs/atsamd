@@ -1,302 +1,192 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u8,
-}
-#[doc = r" Value to write to the register"]
-pub struct W {
-    bits: u8,
-}
-impl super::BGCR_EMMC {
-    #[doc = r" Modifies the contents of the register"]
-    #[inline]
-    pub fn modify<F>(&self, f: F)
-    where
-        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
-    {
-        let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-    #[doc = r" Writes to the register"]
-    #[inline]
-    pub fn write<F>(&self, f: F)
-    where
-        F: FnOnce(&mut W) -> &mut W,
-    {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Writes the reset value to the register"]
-    #[inline]
-    pub fn reset(&self) {
-        self.write(|w| w)
+#[doc = "Reader of register BGCR_EMMC"]
+pub type R = crate::R<u8, super::BGCR_EMMC>;
+#[doc = "Writer for register BGCR_EMMC"]
+pub type W = crate::W<u8, super::BGCR_EMMC>;
+#[doc = "Register BGCR_EMMC `reset()`'s with value 0"]
+impl crate::ResetValue for super::BGCR_EMMC {
+    type Type = u8;
+    #[inline(always)]
+    fn reset_value() -> Self::Type {
+        0
     }
 }
-#[doc = "Possible values of the field `STPBGR`"]
+#[doc = "Stop at Block Gap Request\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum STPBGRR {
-    #[doc = "Transfer"]
+pub enum STPBGR_A {
+    #[doc = "0: Transfer"]
     TRANSFER,
-    #[doc = "Stop"]
+    #[doc = "1: Stop"]
     STOP,
 }
-impl STPBGRR {
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        match *self {
-            STPBGRR::TRANSFER => false,
-            STPBGRR::STOP => true,
+impl From<STPBGR_A> for bool {
+    #[inline(always)]
+    fn from(variant: STPBGR_A) -> Self {
+        match variant {
+            STPBGR_A::TRANSFER => false,
+            STPBGR_A::STOP => true,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: bool) -> STPBGRR {
-        match value {
-            false => STPBGRR::TRANSFER,
-            true => STPBGRR::STOP,
+}
+#[doc = "Reader of field `STPBGR`"]
+pub type STPBGR_R = crate::R<bool, STPBGR_A>;
+impl STPBGR_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> STPBGR_A {
+        match self.bits {
+            false => STPBGR_A::TRANSFER,
+            true => STPBGR_A::STOP,
         }
     }
     #[doc = "Checks if the value of the field is `TRANSFER`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_transfer(&self) -> bool {
-        *self == STPBGRR::TRANSFER
+        *self == STPBGR_A::TRANSFER
     }
     #[doc = "Checks if the value of the field is `STOP`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_stop(&self) -> bool {
-        *self == STPBGRR::STOP
+        *self == STPBGR_A::STOP
     }
 }
-#[doc = "Possible values of the field `CONTR`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum CONTRR {
-    #[doc = "Not affected"]
-    GO_ON,
-    #[doc = "Restart"]
-    RESTART,
-}
-impl CONTRR {
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        match *self {
-            CONTRR::GO_ON => false,
-            CONTRR::RESTART => true,
-        }
-    }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: bool) -> CONTRR {
-        match value {
-            false => CONTRR::GO_ON,
-            true => CONTRR::RESTART,
-        }
-    }
-    #[doc = "Checks if the value of the field is `GO_ON`"]
-    #[inline]
-    pub fn is_go_on(&self) -> bool {
-        *self == CONTRR::GO_ON
-    }
-    #[doc = "Checks if the value of the field is `RESTART`"]
-    #[inline]
-    pub fn is_restart(&self) -> bool {
-        *self == CONTRR::RESTART
-    }
-}
-#[doc = "Values that can be written to the field `STPBGR`"]
-pub enum STPBGRW {
-    #[doc = "Transfer"]
-    TRANSFER,
-    #[doc = "Stop"]
-    STOP,
-}
-impl STPBGRW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> bool {
-        match *self {
-            STPBGRW::TRANSFER => false,
-            STPBGRW::STOP => true,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _STPBGRW<'a> {
+#[doc = "Write proxy for field `STPBGR`"]
+pub struct STPBGR_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _STPBGRW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: STPBGRW) -> &'a mut W {
+impl<'a> STPBGR_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: STPBGR_A) -> &'a mut W {
         {
-            self.bit(variant._bits())
+            self.bit(variant.into())
         }
     }
     #[doc = "Transfer"]
-    #[inline]
+    #[inline(always)]
     pub fn transfer(self) -> &'a mut W {
-        self.variant(STPBGRW::TRANSFER)
+        self.variant(STPBGR_A::TRANSFER)
     }
     #[doc = "Stop"]
-    #[inline]
+    #[inline(always)]
     pub fn stop(self) -> &'a mut W {
-        self.variant(STPBGRW::STOP)
+        self.variant(STPBGR_A::STOP)
     }
-    #[doc = r" Sets the field bit"]
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits = (self.w.bits & !0x01) | ((value as u8) & 0x01);
         self.w
     }
 }
-#[doc = "Values that can be written to the field `CONTR`"]
-pub enum CONTRW {
-    #[doc = "Not affected"]
+#[doc = "Continue Request\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum CONTR_A {
+    #[doc = "0: Not affected"]
     GO_ON,
-    #[doc = "Restart"]
+    #[doc = "1: Restart"]
     RESTART,
 }
-impl CONTRW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> bool {
-        match *self {
-            CONTRW::GO_ON => false,
-            CONTRW::RESTART => true,
+impl From<CONTR_A> for bool {
+    #[inline(always)]
+    fn from(variant: CONTR_A) -> Self {
+        match variant {
+            CONTR_A::GO_ON => false,
+            CONTR_A::RESTART => true,
         }
     }
 }
-#[doc = r" Proxy"]
-pub struct _CONTRW<'a> {
+#[doc = "Reader of field `CONTR`"]
+pub type CONTR_R = crate::R<bool, CONTR_A>;
+impl CONTR_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> CONTR_A {
+        match self.bits {
+            false => CONTR_A::GO_ON,
+            true => CONTR_A::RESTART,
+        }
+    }
+    #[doc = "Checks if the value of the field is `GO_ON`"]
+    #[inline(always)]
+    pub fn is_go_on(&self) -> bool {
+        *self == CONTR_A::GO_ON
+    }
+    #[doc = "Checks if the value of the field is `RESTART`"]
+    #[inline(always)]
+    pub fn is_restart(&self) -> bool {
+        *self == CONTR_A::RESTART
+    }
+}
+#[doc = "Write proxy for field `CONTR`"]
+pub struct CONTR_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _CONTRW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: CONTRW) -> &'a mut W {
+impl<'a> CONTR_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: CONTR_A) -> &'a mut W {
         {
-            self.bit(variant._bits())
+            self.bit(variant.into())
         }
     }
     #[doc = "Not affected"]
-    #[inline]
+    #[inline(always)]
     pub fn go_on(self) -> &'a mut W {
-        self.variant(CONTRW::GO_ON)
+        self.variant(CONTR_A::GO_ON)
     }
     #[doc = "Restart"]
-    #[inline]
+    #[inline(always)]
     pub fn restart(self) -> &'a mut W {
-        self.variant(CONTRW::RESTART)
+        self.variant(CONTR_A::RESTART)
     }
-    #[doc = r" Sets the field bit"]
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 1;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 1)) | (((value as u8) & 0x01) << 1);
         self.w
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
     #[doc = "Bit 0 - Stop at Block Gap Request"]
-    #[inline]
-    pub fn stpbgr(&self) -> STPBGRR {
-        STPBGRR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        })
+    #[inline(always)]
+    pub fn stpbgr(&self) -> STPBGR_R {
+        STPBGR_R::new((self.bits & 0x01) != 0)
     }
     #[doc = "Bit 1 - Continue Request"]
-    #[inline]
-    pub fn contr(&self) -> CONTRR {
-        CONTRR::_from({
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        })
+    #[inline(always)]
+    pub fn contr(&self) -> CONTR_R {
+        CONTR_R::new(((self.bits >> 1) & 0x01) != 0)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
-    #[doc = r" Writes raw bits to the register"]
-    #[inline]
-    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
-        self.bits = bits;
-        self
-    }
     #[doc = "Bit 0 - Stop at Block Gap Request"]
-    #[inline]
-    pub fn stpbgr(&mut self) -> _STPBGRW {
-        _STPBGRW { w: self }
+    #[inline(always)]
+    pub fn stpbgr(&mut self) -> STPBGR_W {
+        STPBGR_W { w: self }
     }
     #[doc = "Bit 1 - Continue Request"]
-    #[inline]
-    pub fn contr(&mut self) -> _CONTRW {
-        _CONTRW { w: self }
+    #[inline(always)]
+    pub fn contr(&mut self) -> CONTR_W {
+        CONTR_W { w: self }
     }
 }

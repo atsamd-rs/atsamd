@@ -1,61 +1,41 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u8,
-}
-impl super::HSDIV {
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-}
-#[doc = "Possible values of the field `DIV`"]
+#[doc = "Reader of register HSDIV"]
+pub type R = crate::R<u8, super::HSDIV>;
+#[doc = "CPU Clock Division Factor\n\nValue on reset: 1"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum DIVR {
-    #[doc = "Divide by 1"]
+pub enum DIV_A {
+    #[doc = "1: Divide by 1"]
     DIV1,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
 }
-impl DIVR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            DIVR::DIV1 => 1,
-            DIVR::_Reserved(bits) => bits,
+impl From<DIV_A> for u8 {
+    #[inline(always)]
+    fn from(variant: DIV_A) -> Self {
+        match variant {
+            DIV_A::DIV1 => 1,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> DIVR {
-        match value {
-            1 => DIVR::DIV1,
-            i => DIVR::_Reserved(i),
+}
+#[doc = "Reader of field `DIV`"]
+pub type DIV_R = crate::R<u8, DIV_A>;
+impl DIV_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, DIV_A> {
+        use crate::Variant::*;
+        match self.bits {
+            1 => Val(DIV_A::DIV1),
+            i => Res(i),
         }
     }
     #[doc = "Checks if the value of the field is `DIV1`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_div1(&self) -> bool {
-        *self == DIVR::DIV1
+        *self == DIV_A::DIV1
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
     #[doc = "Bits 0:7 - CPU Clock Division Factor"]
-    #[inline]
-    pub fn div(&self) -> DIVR {
-        DIVR::_from({
-            const MASK: u8 = 255;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u8) as u8
-        })
+    #[inline(always)]
+    pub fn div(&self) -> DIV_R {
+        DIV_R::new((self.bits & 0xff) as u8)
     }
 }

@@ -11,7 +11,8 @@ use embedded_hal::digital::v2::{InputPin};
 
 use hal::prelude::*;
 use hal::{clock::GenericClockController, delay::Delay};
-use hal::{entry, CorePeripherals, Peripherals};
+use hal::entry;
+use hal::pac::{CorePeripherals, Peripherals};
 
 use smart_leds::brightness;
 use smart_leds::SmartLedsWrite;
@@ -92,4 +93,4 @@ fn wheel(mut wheel_pos: u8) -> Color {
     }
     wheel_pos -= 170;
     (wheel_pos * 3, 255 - wheel_pos * 3, 0).into()
-}
+} 

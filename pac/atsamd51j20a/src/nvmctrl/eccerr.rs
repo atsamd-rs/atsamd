@@ -1,159 +1,121 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u32,
-}
-impl super::ECCERR {
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-}
-#[doc = r" Value of the field"]
-pub struct ADDRR {
-    bits: u32,
-}
-impl ADDRR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u32 {
-        self.bits
-    }
-}
-#[doc = "Possible values of the field `TYPEL`"]
+#[doc = "Reader of register ECCERR"]
+pub type R = crate::R<u32, super::ECCERR>;
+#[doc = "Reader of field `ADDR`"]
+pub type ADDR_R = crate::R<u32, u32>;
+#[doc = "Low Double-Word Error Type\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum TYPELR {
-    #[doc = "No Error Detected Since Last Read"]
+pub enum TYPEL_A {
+    #[doc = "0: No Error Detected Since Last Read"]
     NONE,
-    #[doc = "At Least One Single Error Detected Since last Read"]
+    #[doc = "1: At Least One Single Error Detected Since last Read"]
     SINGLE,
-    #[doc = "At Least One Dual Error Detected Since Last Read"]
+    #[doc = "2: At Least One Dual Error Detected Since Last Read"]
     DUAL,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
 }
-impl TYPELR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            TYPELR::NONE => 0,
-            TYPELR::SINGLE => 1,
-            TYPELR::DUAL => 2,
-            TYPELR::_Reserved(bits) => bits,
+impl From<TYPEL_A> for u8 {
+    #[inline(always)]
+    fn from(variant: TYPEL_A) -> Self {
+        match variant {
+            TYPEL_A::NONE => 0,
+            TYPEL_A::SINGLE => 1,
+            TYPEL_A::DUAL => 2,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> TYPELR {
-        match value {
-            0 => TYPELR::NONE,
-            1 => TYPELR::SINGLE,
-            2 => TYPELR::DUAL,
-            i => TYPELR::_Reserved(i),
+}
+#[doc = "Reader of field `TYPEL`"]
+pub type TYPEL_R = crate::R<u8, TYPEL_A>;
+impl TYPEL_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, TYPEL_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(TYPEL_A::NONE),
+            1 => Val(TYPEL_A::SINGLE),
+            2 => Val(TYPEL_A::DUAL),
+            i => Res(i),
         }
     }
     #[doc = "Checks if the value of the field is `NONE`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_none(&self) -> bool {
-        *self == TYPELR::NONE
+        *self == TYPEL_A::NONE
     }
     #[doc = "Checks if the value of the field is `SINGLE`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_single(&self) -> bool {
-        *self == TYPELR::SINGLE
+        *self == TYPEL_A::SINGLE
     }
     #[doc = "Checks if the value of the field is `DUAL`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_dual(&self) -> bool {
-        *self == TYPELR::DUAL
+        *self == TYPEL_A::DUAL
     }
 }
-#[doc = "Possible values of the field `TYPEH`"]
+#[doc = "High Double-Word Error Type\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum TYPEHR {
-    #[doc = "No Error Detected Since Last Read"]
+pub enum TYPEH_A {
+    #[doc = "0: No Error Detected Since Last Read"]
     NONE,
-    #[doc = "At Least One Single Error Detected Since last Read"]
+    #[doc = "1: At Least One Single Error Detected Since last Read"]
     SINGLE,
-    #[doc = "At Least One Dual Error Detected Since Last Read"]
+    #[doc = "2: At Least One Dual Error Detected Since Last Read"]
     DUAL,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
 }
-impl TYPEHR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            TYPEHR::NONE => 0,
-            TYPEHR::SINGLE => 1,
-            TYPEHR::DUAL => 2,
-            TYPEHR::_Reserved(bits) => bits,
+impl From<TYPEH_A> for u8 {
+    #[inline(always)]
+    fn from(variant: TYPEH_A) -> Self {
+        match variant {
+            TYPEH_A::NONE => 0,
+            TYPEH_A::SINGLE => 1,
+            TYPEH_A::DUAL => 2,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> TYPEHR {
-        match value {
-            0 => TYPEHR::NONE,
-            1 => TYPEHR::SINGLE,
-            2 => TYPEHR::DUAL,
-            i => TYPEHR::_Reserved(i),
+}
+#[doc = "Reader of field `TYPEH`"]
+pub type TYPEH_R = crate::R<u8, TYPEH_A>;
+impl TYPEH_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, TYPEH_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(TYPEH_A::NONE),
+            1 => Val(TYPEH_A::SINGLE),
+            2 => Val(TYPEH_A::DUAL),
+            i => Res(i),
         }
     }
     #[doc = "Checks if the value of the field is `NONE`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_none(&self) -> bool {
-        *self == TYPEHR::NONE
+        *self == TYPEH_A::NONE
     }
     #[doc = "Checks if the value of the field is `SINGLE`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_single(&self) -> bool {
-        *self == TYPEHR::SINGLE
+        *self == TYPEH_A::SINGLE
     }
     #[doc = "Checks if the value of the field is `DUAL`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_dual(&self) -> bool {
-        *self == TYPEHR::DUAL
+        *self == TYPEH_A::DUAL
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u32 {
-        self.bits
-    }
     #[doc = "Bits 0:23 - Error Address"]
-    #[inline]
-    pub fn addr(&self) -> ADDRR {
-        let bits = {
-            const MASK: u32 = 16777215;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) as u32
-        };
-        ADDRR { bits }
+    #[inline(always)]
+    pub fn addr(&self) -> ADDR_R {
+        ADDR_R::new((self.bits & 0x00ff_ffff) as u32)
     }
     #[doc = "Bits 28:29 - Low Double-Word Error Type"]
-    #[inline]
-    pub fn typel(&self) -> TYPELR {
-        TYPELR::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 28;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+    #[inline(always)]
+    pub fn typel(&self) -> TYPEL_R {
+        TYPEL_R::new(((self.bits >> 28) & 0x03) as u8)
     }
     #[doc = "Bits 30:31 - High Double-Word Error Type"]
-    #[inline]
-    pub fn typeh(&self) -> TYPEHR {
-        TYPEHR::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 30;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+    #[inline(always)]
+    pub fn typeh(&self) -> TYPEH_R {
+        TYPEH_R::new(((self.bits >> 30) & 0x03) as u8)
     }
 }

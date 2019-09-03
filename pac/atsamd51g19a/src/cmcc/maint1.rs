@@ -1,118 +1,94 @@
-#[doc = r" Value to write to the register"]
-pub struct W {
-    bits: u32,
-}
-impl super::MAINT1 {
-    #[doc = r" Writes to the register"]
-    #[inline]
-    pub fn write<F>(&self, f: F)
-    where
-        F: FnOnce(&mut W) -> &mut W,
-    {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
+#[doc = "Writer for register MAINT1"]
+pub type W = crate::W<u32, super::MAINT1>;
+#[doc = "Register MAINT1 `reset()`'s with value 0"]
+impl crate::ResetValue for super::MAINT1 {
+    type Type = u32;
+    #[inline(always)]
+    fn reset_value() -> Self::Type {
+        0
     }
 }
-#[doc = r" Proxy"]
-pub struct _INDEXW<'a> {
+#[doc = "Write proxy for field `INDEX`"]
+pub struct INDEX_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _INDEXW<'a> {
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+impl<'a> INDEX_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 255;
-        const OFFSET: u8 = 4;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0xff << 4)) | (((value as u32) & 0xff) << 4);
         self.w
     }
 }
-#[doc = "Values that can be written to the field `WAY`"]
-pub enum WAYW {
-    #[doc = "Way 0 is selection for index invalidation"]
+#[doc = "Invalidate Way\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum WAY_AW {
+    #[doc = "0: Way 0 is selection for index invalidation"]
     WAY0,
-    #[doc = "Way 1 is selection for index invalidation"]
+    #[doc = "1: Way 1 is selection for index invalidation"]
     WAY1,
-    #[doc = "Way 2 is selection for index invalidation"]
+    #[doc = "2: Way 2 is selection for index invalidation"]
     WAY2,
-    #[doc = "Way 3 is selection for index invalidation"]
+    #[doc = "3: Way 3 is selection for index invalidation"]
     WAY3,
 }
-impl WAYW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            WAYW::WAY0 => 0,
-            WAYW::WAY1 => 1,
-            WAYW::WAY2 => 2,
-            WAYW::WAY3 => 3,
+impl From<WAY_AW> for u8 {
+    #[inline(always)]
+    fn from(variant: WAY_AW) -> Self {
+        match variant {
+            WAY_AW::WAY0 => 0,
+            WAY_AW::WAY1 => 1,
+            WAY_AW::WAY2 => 2,
+            WAY_AW::WAY3 => 3,
         }
     }
 }
-#[doc = r" Proxy"]
-pub struct _WAYW<'a> {
+#[doc = "Write proxy for field `WAY`"]
+pub struct WAY_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _WAYW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: WAYW) -> &'a mut W {
-        unsafe { self.bits(variant._bits()) }
+impl<'a> WAY_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: WAY_AW) -> &'a mut W {
+        unsafe { self.bits(variant.into()) }
     }
     #[doc = "Way 0 is selection for index invalidation"]
-    #[inline]
+    #[inline(always)]
     pub fn way0(self) -> &'a mut W {
-        self.variant(WAYW::WAY0)
+        self.variant(WAY_AW::WAY0)
     }
     #[doc = "Way 1 is selection for index invalidation"]
-    #[inline]
+    #[inline(always)]
     pub fn way1(self) -> &'a mut W {
-        self.variant(WAYW::WAY1)
+        self.variant(WAY_AW::WAY1)
     }
     #[doc = "Way 2 is selection for index invalidation"]
-    #[inline]
+    #[inline(always)]
     pub fn way2(self) -> &'a mut W {
-        self.variant(WAYW::WAY2)
+        self.variant(WAY_AW::WAY2)
     }
     #[doc = "Way 3 is selection for index invalidation"]
-    #[inline]
+    #[inline(always)]
     pub fn way3(self) -> &'a mut W {
-        self.variant(WAYW::WAY3)
+        self.variant(WAY_AW::WAY3)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 15;
-        const OFFSET: u8 = 28;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x0f << 28)) | (((value as u32) & 0x0f) << 28);
         self.w
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
-    #[doc = r" Writes raw bits to the register"]
-    #[inline]
-    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.bits = bits;
-        self
-    }
     #[doc = "Bits 4:11 - Invalidate Index"]
-    #[inline]
-    pub fn index(&mut self) -> _INDEXW {
-        _INDEXW { w: self }
+    #[inline(always)]
+    pub fn index(&mut self) -> INDEX_W {
+        INDEX_W { w: self }
     }
     #[doc = "Bits 28:31 - Invalidate Way"]
-    #[inline]
-    pub fn way(&mut self) -> _WAYW {
-        _WAYW { w: self }
+    #[inline(always)]
+    pub fn way(&mut self) -> WAY_W {
+        WAY_W { w: self }
     }
 }

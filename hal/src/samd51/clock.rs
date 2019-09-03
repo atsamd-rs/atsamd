@@ -3,13 +3,13 @@
 //! before you can set up most of the peripherals on the atsamd51 device.
 //! The other types in this module are used to enforce at compile time
 //! that the peripherals have been correctly configured.
-use crate::target_device::gclk::pchctrl::GENR::*;
+use crate::target_device::gclk::pchctrl::GEN_A::*;
 use crate::target_device::{self, GCLK, NVMCTRL, OSCCTRL, MCLK, OSC32KCTRL};
-use crate::target_device::gclk::genctrl::SRCR::*;
+use crate::target_device::gclk::genctrl::SRC_A::*;
 use crate::time::{Hertz};
 
-pub type ClockGenId = target_device::gclk::pchctrl::GENR;
-pub type ClockSource = target_device::gclk::genctrl::SRCR;
+pub type ClockGenId = target_device::gclk::pchctrl::GEN_A;
+pub type ClockSource = target_device::gclk::genctrl::SRC_A;
 #[allow(bad_style)]
 pub enum ClockId {
     DFLL48 = 0,
@@ -73,7 +73,7 @@ use self::ClockId::*;
 /// Its primary purpose is to be passed in to methods
 /// such as `GenericClockController::tcc2_tc3` to configure
 /// the clock for a peripheral.
-#[derive(Clone, Copy)]
+//#[derive(Clone, Copy)]
 pub struct GClock {
     gclk: ClockGenId,
     freq: Hertz,
@@ -108,8 +108,8 @@ impl State {
         src: ClockSource,
         improve_duty_cycle: bool,
     ) {
-        self.gclk.genctrl[gclk.bits() as usize].write(|w| unsafe {
-            w.src().bits(src.bits());
+        self.gclk.genctrl[u8::from(gclk) as usize].write(|w| unsafe {
+            w.src().variant(src.into());
             w.div().bits(divider);
             // divide directly by divider, rather than 2^(n+1)
             w.divsel().clear_bit();
@@ -123,7 +123,7 @@ impl State {
 
     fn enable_clock_generator(&mut self, clock: ClockId, generator: ClockGenId) {
         self.gclk.pchctrl[clock.bits()].write(|w| unsafe {
-            w.gen().bits(generator.bits());
+            w.gen().bits(generator.into());
             w.chen().set_bit()
         });
         self.wait_for_sync();
@@ -262,7 +262,7 @@ impl GenericClockController {
     /// If that clock generator has not yet been configured,
     /// returns None.
     pub fn get_gclk(&mut self, gclk: ClockGenId) -> Option<GClock> {
-        let idx = gclk.bits() as usize;
+        let idx = u8::from(gclk) as usize;
         if self.gclks[idx].0 == 0 {
             None
         } else {
@@ -289,7 +289,7 @@ impl GenericClockController {
         src: ClockSource,
         improve_duty_cycle: bool,
     ) -> Option<GClock> {
-        let idx = gclk.bits() as usize;
+        let idx = u8::from(gclk) as usize;
         if self.gclks[idx].0 != 0 {
             return None;
         }
@@ -301,7 +301,6 @@ impl GenericClockController {
             DFLL => OSC48M_FREQ,
             DPLL0 => OSC120M_FREQ,
             XOSC0 | XOSC1 | GCLKIN | DPLL1 => unimplemented!(),
-            target_device::gclk::genctrl::SRCR::_Reserved(_) => panic!()
         };
         self.gclks[idx] = Hertz(freq.0 / divider as u32);
         Some(GClock { gclk, freq })
@@ -359,7 +358,7 @@ impl GenericClockController {
         self.used_clocks |= bits;
 
         self.state.enable_clock_generator($clock, generator.gclk);
-        let freq = self.gclks[generator.gclk.bits() as usize];
+        let freq = self.gclks[u8::from(generator.gclk) as usize];
         Some($Type{freq})
     }
     )+

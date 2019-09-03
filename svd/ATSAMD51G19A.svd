@@ -32225,14 +32225,14 @@
             <field>
               <name>CCBUF</name>
               <description>Channel Compare/Capture Buffer Value</description>
-              <bitOffset>0</bitOffset>
-              <bitWidth>4</bitWidth>
+              <bitOffset>4</bitOffset>
+              <bitWidth>20</bitWidth>
             </field>
             <field>
               <name>DITHERBUF</name>
               <description>Dithering Buffer Cycle Number</description>
-              <bitOffset>4</bitOffset>
-              <bitWidth>20</bitWidth>
+              <bitOffset>0</bitOffset>
+              <bitWidth>4</bitWidth>
             </field>
           </fields>
         </register>

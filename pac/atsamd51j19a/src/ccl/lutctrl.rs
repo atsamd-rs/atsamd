@@ -1,1237 +1,872 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u32,
-}
-#[doc = r" Value to write to the register"]
-pub struct W {
-    bits: u32,
-}
-impl super::LUTCTRL {
-    #[doc = r" Modifies the contents of the register"]
-    #[inline]
-    pub fn modify<F>(&self, f: F)
-    where
-        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
-    {
-        let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-    #[doc = r" Writes to the register"]
-    #[inline]
-    pub fn write<F>(&self, f: F)
-    where
-        F: FnOnce(&mut W) -> &mut W,
-    {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Writes the reset value to the register"]
-    #[inline]
-    pub fn reset(&self) {
-        self.write(|w| w)
+#[doc = "Reader of register LUTCTRL%s"]
+pub type R = crate::R<u32, super::LUTCTRL>;
+#[doc = "Writer for register LUTCTRL%s"]
+pub type W = crate::W<u32, super::LUTCTRL>;
+#[doc = "Register LUTCTRL%s `reset()`'s with value 0"]
+impl crate::ResetValue for super::LUTCTRL {
+    type Type = u32;
+    #[inline(always)]
+    fn reset_value() -> Self::Type {
+        0
     }
 }
-#[doc = r" Value of the field"]
-pub struct ENABLER {
-    bits: bool,
+#[doc = "Reader of field `ENABLE`"]
+pub type ENABLE_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `ENABLE`"]
+pub struct ENABLE_W<'a> {
+    w: &'a mut W,
 }
-impl ENABLER {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
+impl<'a> ENABLE_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
     }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
     }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 1)) | (((value as u32) & 0x01) << 1);
+        self.w
     }
 }
-#[doc = "Possible values of the field `FILTSEL`"]
+#[doc = "Filter Selection\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum FILTSELR {
-    #[doc = "Filter disabled"]
+pub enum FILTSEL_A {
+    #[doc = "0: Filter disabled"]
     DISABLE,
-    #[doc = "Synchronizer enabled"]
+    #[doc = "1: Synchronizer enabled"]
     SYNCH,
-    #[doc = "Filter enabled"]
+    #[doc = "2: Filter enabled"]
     FILTER,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
 }
-impl FILTSELR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            FILTSELR::DISABLE => 0,
-            FILTSELR::SYNCH => 1,
-            FILTSELR::FILTER => 2,
-            FILTSELR::_Reserved(bits) => bits,
+impl From<FILTSEL_A> for u8 {
+    #[inline(always)]
+    fn from(variant: FILTSEL_A) -> Self {
+        match variant {
+            FILTSEL_A::DISABLE => 0,
+            FILTSEL_A::SYNCH => 1,
+            FILTSEL_A::FILTER => 2,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> FILTSELR {
-        match value {
-            0 => FILTSELR::DISABLE,
-            1 => FILTSELR::SYNCH,
-            2 => FILTSELR::FILTER,
-            i => FILTSELR::_Reserved(i),
+}
+#[doc = "Reader of field `FILTSEL`"]
+pub type FILTSEL_R = crate::R<u8, FILTSEL_A>;
+impl FILTSEL_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, FILTSEL_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(FILTSEL_A::DISABLE),
+            1 => Val(FILTSEL_A::SYNCH),
+            2 => Val(FILTSEL_A::FILTER),
+            i => Res(i),
         }
     }
     #[doc = "Checks if the value of the field is `DISABLE`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_disable(&self) -> bool {
-        *self == FILTSELR::DISABLE
+        *self == FILTSEL_A::DISABLE
     }
     #[doc = "Checks if the value of the field is `SYNCH`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_synch(&self) -> bool {
-        *self == FILTSELR::SYNCH
+        *self == FILTSEL_A::SYNCH
     }
     #[doc = "Checks if the value of the field is `FILTER`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_filter(&self) -> bool {
-        *self == FILTSELR::FILTER
+        *self == FILTSEL_A::FILTER
     }
 }
-#[doc = r" Value of the field"]
-pub struct EDGESELR {
-    bits: bool,
-}
-impl EDGESELR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = "Possible values of the field `INSEL0`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum INSEL0R {
-    #[doc = "Masked input"]
-    MASK,
-    #[doc = "Feedback input source"]
-    FEEDBACK,
-    #[doc = "Linked LUT input source"]
-    LINK,
-    #[doc = "Event input source"]
-    EVENT,
-    #[doc = "I/O pin input source"]
-    IO,
-    #[doc = "AC input source"]
-    AC,
-    #[doc = "TC input source"]
-    TC,
-    #[doc = "Alternate TC input source"]
-    ALTTC,
-    #[doc = "TCC input source"]
-    TCC,
-    #[doc = "SERCOM input source"]
-    SERCOM,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
-}
-impl INSEL0R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            INSEL0R::MASK => 0,
-            INSEL0R::FEEDBACK => 1,
-            INSEL0R::LINK => 2,
-            INSEL0R::EVENT => 3,
-            INSEL0R::IO => 4,
-            INSEL0R::AC => 5,
-            INSEL0R::TC => 6,
-            INSEL0R::ALTTC => 7,
-            INSEL0R::TCC => 8,
-            INSEL0R::SERCOM => 9,
-            INSEL0R::_Reserved(bits) => bits,
-        }
-    }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> INSEL0R {
-        match value {
-            0 => INSEL0R::MASK,
-            1 => INSEL0R::FEEDBACK,
-            2 => INSEL0R::LINK,
-            3 => INSEL0R::EVENT,
-            4 => INSEL0R::IO,
-            5 => INSEL0R::AC,
-            6 => INSEL0R::TC,
-            7 => INSEL0R::ALTTC,
-            8 => INSEL0R::TCC,
-            9 => INSEL0R::SERCOM,
-            i => INSEL0R::_Reserved(i),
-        }
-    }
-    #[doc = "Checks if the value of the field is `MASK`"]
-    #[inline]
-    pub fn is_mask(&self) -> bool {
-        *self == INSEL0R::MASK
-    }
-    #[doc = "Checks if the value of the field is `FEEDBACK`"]
-    #[inline]
-    pub fn is_feedback(&self) -> bool {
-        *self == INSEL0R::FEEDBACK
-    }
-    #[doc = "Checks if the value of the field is `LINK`"]
-    #[inline]
-    pub fn is_link(&self) -> bool {
-        *self == INSEL0R::LINK
-    }
-    #[doc = "Checks if the value of the field is `EVENT`"]
-    #[inline]
-    pub fn is_event(&self) -> bool {
-        *self == INSEL0R::EVENT
-    }
-    #[doc = "Checks if the value of the field is `IO`"]
-    #[inline]
-    pub fn is_io(&self) -> bool {
-        *self == INSEL0R::IO
-    }
-    #[doc = "Checks if the value of the field is `AC`"]
-    #[inline]
-    pub fn is_ac(&self) -> bool {
-        *self == INSEL0R::AC
-    }
-    #[doc = "Checks if the value of the field is `TC`"]
-    #[inline]
-    pub fn is_tc(&self) -> bool {
-        *self == INSEL0R::TC
-    }
-    #[doc = "Checks if the value of the field is `ALTTC`"]
-    #[inline]
-    pub fn is_alttc(&self) -> bool {
-        *self == INSEL0R::ALTTC
-    }
-    #[doc = "Checks if the value of the field is `TCC`"]
-    #[inline]
-    pub fn is_tcc(&self) -> bool {
-        *self == INSEL0R::TCC
-    }
-    #[doc = "Checks if the value of the field is `SERCOM`"]
-    #[inline]
-    pub fn is_sercom(&self) -> bool {
-        *self == INSEL0R::SERCOM
-    }
-}
-#[doc = "Possible values of the field `INSEL1`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum INSEL1R {
-    #[doc = "Masked input"]
-    MASK,
-    #[doc = "Feedback input source"]
-    FEEDBACK,
-    #[doc = "Linked LUT input source"]
-    LINK,
-    #[doc = "Event input source"]
-    EVENT,
-    #[doc = "I/O pin input source"]
-    IO,
-    #[doc = "AC input source"]
-    AC,
-    #[doc = "TC input source"]
-    TC,
-    #[doc = "Alternate TC input source"]
-    ALTTC,
-    #[doc = "TCC input source"]
-    TCC,
-    #[doc = "SERCOM input source"]
-    SERCOM,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
-}
-impl INSEL1R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            INSEL1R::MASK => 0,
-            INSEL1R::FEEDBACK => 1,
-            INSEL1R::LINK => 2,
-            INSEL1R::EVENT => 3,
-            INSEL1R::IO => 4,
-            INSEL1R::AC => 5,
-            INSEL1R::TC => 6,
-            INSEL1R::ALTTC => 7,
-            INSEL1R::TCC => 8,
-            INSEL1R::SERCOM => 9,
-            INSEL1R::_Reserved(bits) => bits,
-        }
-    }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> INSEL1R {
-        match value {
-            0 => INSEL1R::MASK,
-            1 => INSEL1R::FEEDBACK,
-            2 => INSEL1R::LINK,
-            3 => INSEL1R::EVENT,
-            4 => INSEL1R::IO,
-            5 => INSEL1R::AC,
-            6 => INSEL1R::TC,
-            7 => INSEL1R::ALTTC,
-            8 => INSEL1R::TCC,
-            9 => INSEL1R::SERCOM,
-            i => INSEL1R::_Reserved(i),
-        }
-    }
-    #[doc = "Checks if the value of the field is `MASK`"]
-    #[inline]
-    pub fn is_mask(&self) -> bool {
-        *self == INSEL1R::MASK
-    }
-    #[doc = "Checks if the value of the field is `FEEDBACK`"]
-    #[inline]
-    pub fn is_feedback(&self) -> bool {
-        *self == INSEL1R::FEEDBACK
-    }
-    #[doc = "Checks if the value of the field is `LINK`"]
-    #[inline]
-    pub fn is_link(&self) -> bool {
-        *self == INSEL1R::LINK
-    }
-    #[doc = "Checks if the value of the field is `EVENT`"]
-    #[inline]
-    pub fn is_event(&self) -> bool {
-        *self == INSEL1R::EVENT
-    }
-    #[doc = "Checks if the value of the field is `IO`"]
-    #[inline]
-    pub fn is_io(&self) -> bool {
-        *self == INSEL1R::IO
-    }
-    #[doc = "Checks if the value of the field is `AC`"]
-    #[inline]
-    pub fn is_ac(&self) -> bool {
-        *self == INSEL1R::AC
-    }
-    #[doc = "Checks if the value of the field is `TC`"]
-    #[inline]
-    pub fn is_tc(&self) -> bool {
-        *self == INSEL1R::TC
-    }
-    #[doc = "Checks if the value of the field is `ALTTC`"]
-    #[inline]
-    pub fn is_alttc(&self) -> bool {
-        *self == INSEL1R::ALTTC
-    }
-    #[doc = "Checks if the value of the field is `TCC`"]
-    #[inline]
-    pub fn is_tcc(&self) -> bool {
-        *self == INSEL1R::TCC
-    }
-    #[doc = "Checks if the value of the field is `SERCOM`"]
-    #[inline]
-    pub fn is_sercom(&self) -> bool {
-        *self == INSEL1R::SERCOM
-    }
-}
-#[doc = "Possible values of the field `INSEL2`"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum INSEL2R {
-    #[doc = "Masked input"]
-    MASK,
-    #[doc = "Feedback input source"]
-    FEEDBACK,
-    #[doc = "Linked LUT input source"]
-    LINK,
-    #[doc = "Event input source"]
-    EVENT,
-    #[doc = "I/O pin input source"]
-    IO,
-    #[doc = "AC input source"]
-    AC,
-    #[doc = "TC input source"]
-    TC,
-    #[doc = "Alternate TC input source"]
-    ALTTC,
-    #[doc = "TCC input source"]
-    TCC,
-    #[doc = "SERCOM input source"]
-    SERCOM,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
-}
-impl INSEL2R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            INSEL2R::MASK => 0,
-            INSEL2R::FEEDBACK => 1,
-            INSEL2R::LINK => 2,
-            INSEL2R::EVENT => 3,
-            INSEL2R::IO => 4,
-            INSEL2R::AC => 5,
-            INSEL2R::TC => 6,
-            INSEL2R::ALTTC => 7,
-            INSEL2R::TCC => 8,
-            INSEL2R::SERCOM => 9,
-            INSEL2R::_Reserved(bits) => bits,
-        }
-    }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> INSEL2R {
-        match value {
-            0 => INSEL2R::MASK,
-            1 => INSEL2R::FEEDBACK,
-            2 => INSEL2R::LINK,
-            3 => INSEL2R::EVENT,
-            4 => INSEL2R::IO,
-            5 => INSEL2R::AC,
-            6 => INSEL2R::TC,
-            7 => INSEL2R::ALTTC,
-            8 => INSEL2R::TCC,
-            9 => INSEL2R::SERCOM,
-            i => INSEL2R::_Reserved(i),
-        }
-    }
-    #[doc = "Checks if the value of the field is `MASK`"]
-    #[inline]
-    pub fn is_mask(&self) -> bool {
-        *self == INSEL2R::MASK
-    }
-    #[doc = "Checks if the value of the field is `FEEDBACK`"]
-    #[inline]
-    pub fn is_feedback(&self) -> bool {
-        *self == INSEL2R::FEEDBACK
-    }
-    #[doc = "Checks if the value of the field is `LINK`"]
-    #[inline]
-    pub fn is_link(&self) -> bool {
-        *self == INSEL2R::LINK
-    }
-    #[doc = "Checks if the value of the field is `EVENT`"]
-    #[inline]
-    pub fn is_event(&self) -> bool {
-        *self == INSEL2R::EVENT
-    }
-    #[doc = "Checks if the value of the field is `IO`"]
-    #[inline]
-    pub fn is_io(&self) -> bool {
-        *self == INSEL2R::IO
-    }
-    #[doc = "Checks if the value of the field is `AC`"]
-    #[inline]
-    pub fn is_ac(&self) -> bool {
-        *self == INSEL2R::AC
-    }
-    #[doc = "Checks if the value of the field is `TC`"]
-    #[inline]
-    pub fn is_tc(&self) -> bool {
-        *self == INSEL2R::TC
-    }
-    #[doc = "Checks if the value of the field is `ALTTC`"]
-    #[inline]
-    pub fn is_alttc(&self) -> bool {
-        *self == INSEL2R::ALTTC
-    }
-    #[doc = "Checks if the value of the field is `TCC`"]
-    #[inline]
-    pub fn is_tcc(&self) -> bool {
-        *self == INSEL2R::TCC
-    }
-    #[doc = "Checks if the value of the field is `SERCOM`"]
-    #[inline]
-    pub fn is_sercom(&self) -> bool {
-        *self == INSEL2R::SERCOM
-    }
-}
-#[doc = r" Value of the field"]
-pub struct INVEIR {
-    bits: bool,
-}
-impl INVEIR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct LUTEIR {
-    bits: bool,
-}
-impl LUTEIR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct LUTEOR {
-    bits: bool,
-}
-impl LUTEOR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct TRUTHR {
-    bits: u8,
-}
-impl TRUTHR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
-}
-#[doc = r" Proxy"]
-pub struct _ENABLEW<'a> {
+#[doc = "Write proxy for field `FILTSEL`"]
+pub struct FILTSEL_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _ENABLEW<'a> {
-    #[doc = r" Sets the field bit"]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r" Clears the field bit"]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 1;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
-        self.w
-    }
-}
-#[doc = "Values that can be written to the field `FILTSEL`"]
-pub enum FILTSELW {
-    #[doc = "Filter disabled"]
-    DISABLE,
-    #[doc = "Synchronizer enabled"]
-    SYNCH,
-    #[doc = "Filter enabled"]
-    FILTER,
-}
-impl FILTSELW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            FILTSELW::DISABLE => 0,
-            FILTSELW::SYNCH => 1,
-            FILTSELW::FILTER => 2,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _FILTSELW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _FILTSELW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: FILTSELW) -> &'a mut W {
-        unsafe { self.bits(variant._bits()) }
+impl<'a> FILTSEL_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: FILTSEL_A) -> &'a mut W {
+        unsafe { self.bits(variant.into()) }
     }
     #[doc = "Filter disabled"]
-    #[inline]
+    #[inline(always)]
     pub fn disable(self) -> &'a mut W {
-        self.variant(FILTSELW::DISABLE)
+        self.variant(FILTSEL_A::DISABLE)
     }
     #[doc = "Synchronizer enabled"]
-    #[inline]
+    #[inline(always)]
     pub fn synch(self) -> &'a mut W {
-        self.variant(FILTSELW::SYNCH)
+        self.variant(FILTSEL_A::SYNCH)
     }
     #[doc = "Filter enabled"]
-    #[inline]
+    #[inline(always)]
     pub fn filter(self) -> &'a mut W {
-        self.variant(FILTSELW::FILTER)
+        self.variant(FILTSEL_A::FILTER)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 3;
-        const OFFSET: u8 = 4;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x03 << 4)) | (((value as u32) & 0x03) << 4);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _EDGESELW<'a> {
+#[doc = "Reader of field `EDGESEL`"]
+pub type EDGESEL_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `EDGESEL`"]
+pub struct EDGESEL_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _EDGESELW<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> EDGESEL_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 7;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 7)) | (((value as u32) & 0x01) << 7);
         self.w
     }
 }
-#[doc = "Values that can be written to the field `INSEL0`"]
-pub enum INSEL0W {
-    #[doc = "Masked input"]
+#[doc = "Input Selection 0\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum INSEL0_A {
+    #[doc = "0: Masked input"]
     MASK,
-    #[doc = "Feedback input source"]
+    #[doc = "1: Feedback input source"]
     FEEDBACK,
-    #[doc = "Linked LUT input source"]
+    #[doc = "2: Linked LUT input source"]
     LINK,
-    #[doc = "Event input source"]
+    #[doc = "3: Event input source"]
     EVENT,
-    #[doc = "I/O pin input source"]
+    #[doc = "4: I/O pin input source"]
     IO,
-    #[doc = "AC input source"]
+    #[doc = "5: AC input source"]
     AC,
-    #[doc = "TC input source"]
+    #[doc = "6: TC input source"]
     TC,
-    #[doc = "Alternate TC input source"]
+    #[doc = "7: Alternate TC input source"]
     ALTTC,
-    #[doc = "TCC input source"]
+    #[doc = "8: TCC input source"]
     TCC,
-    #[doc = "SERCOM input source"]
+    #[doc = "9: SERCOM input source"]
     SERCOM,
 }
-impl INSEL0W {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            INSEL0W::MASK => 0,
-            INSEL0W::FEEDBACK => 1,
-            INSEL0W::LINK => 2,
-            INSEL0W::EVENT => 3,
-            INSEL0W::IO => 4,
-            INSEL0W::AC => 5,
-            INSEL0W::TC => 6,
-            INSEL0W::ALTTC => 7,
-            INSEL0W::TCC => 8,
-            INSEL0W::SERCOM => 9,
+impl From<INSEL0_A> for u8 {
+    #[inline(always)]
+    fn from(variant: INSEL0_A) -> Self {
+        match variant {
+            INSEL0_A::MASK => 0,
+            INSEL0_A::FEEDBACK => 1,
+            INSEL0_A::LINK => 2,
+            INSEL0_A::EVENT => 3,
+            INSEL0_A::IO => 4,
+            INSEL0_A::AC => 5,
+            INSEL0_A::TC => 6,
+            INSEL0_A::ALTTC => 7,
+            INSEL0_A::TCC => 8,
+            INSEL0_A::SERCOM => 9,
         }
     }
 }
-#[doc = r" Proxy"]
-pub struct _INSEL0W<'a> {
+#[doc = "Reader of field `INSEL0`"]
+pub type INSEL0_R = crate::R<u8, INSEL0_A>;
+impl INSEL0_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, INSEL0_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(INSEL0_A::MASK),
+            1 => Val(INSEL0_A::FEEDBACK),
+            2 => Val(INSEL0_A::LINK),
+            3 => Val(INSEL0_A::EVENT),
+            4 => Val(INSEL0_A::IO),
+            5 => Val(INSEL0_A::AC),
+            6 => Val(INSEL0_A::TC),
+            7 => Val(INSEL0_A::ALTTC),
+            8 => Val(INSEL0_A::TCC),
+            9 => Val(INSEL0_A::SERCOM),
+            i => Res(i),
+        }
+    }
+    #[doc = "Checks if the value of the field is `MASK`"]
+    #[inline(always)]
+    pub fn is_mask(&self) -> bool {
+        *self == INSEL0_A::MASK
+    }
+    #[doc = "Checks if the value of the field is `FEEDBACK`"]
+    #[inline(always)]
+    pub fn is_feedback(&self) -> bool {
+        *self == INSEL0_A::FEEDBACK
+    }
+    #[doc = "Checks if the value of the field is `LINK`"]
+    #[inline(always)]
+    pub fn is_link(&self) -> bool {
+        *self == INSEL0_A::LINK
+    }
+    #[doc = "Checks if the value of the field is `EVENT`"]
+    #[inline(always)]
+    pub fn is_event(&self) -> bool {
+        *self == INSEL0_A::EVENT
+    }
+    #[doc = "Checks if the value of the field is `IO`"]
+    #[inline(always)]
+    pub fn is_io(&self) -> bool {
+        *self == INSEL0_A::IO
+    }
+    #[doc = "Checks if the value of the field is `AC`"]
+    #[inline(always)]
+    pub fn is_ac(&self) -> bool {
+        *self == INSEL0_A::AC
+    }
+    #[doc = "Checks if the value of the field is `TC`"]
+    #[inline(always)]
+    pub fn is_tc(&self) -> bool {
+        *self == INSEL0_A::TC
+    }
+    #[doc = "Checks if the value of the field is `ALTTC`"]
+    #[inline(always)]
+    pub fn is_alttc(&self) -> bool {
+        *self == INSEL0_A::ALTTC
+    }
+    #[doc = "Checks if the value of the field is `TCC`"]
+    #[inline(always)]
+    pub fn is_tcc(&self) -> bool {
+        *self == INSEL0_A::TCC
+    }
+    #[doc = "Checks if the value of the field is `SERCOM`"]
+    #[inline(always)]
+    pub fn is_sercom(&self) -> bool {
+        *self == INSEL0_A::SERCOM
+    }
+}
+#[doc = "Write proxy for field `INSEL0`"]
+pub struct INSEL0_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _INSEL0W<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: INSEL0W) -> &'a mut W {
-        unsafe { self.bits(variant._bits()) }
+impl<'a> INSEL0_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: INSEL0_A) -> &'a mut W {
+        unsafe { self.bits(variant.into()) }
     }
     #[doc = "Masked input"]
-    #[inline]
+    #[inline(always)]
     pub fn mask(self) -> &'a mut W {
-        self.variant(INSEL0W::MASK)
+        self.variant(INSEL0_A::MASK)
     }
     #[doc = "Feedback input source"]
-    #[inline]
+    #[inline(always)]
     pub fn feedback(self) -> &'a mut W {
-        self.variant(INSEL0W::FEEDBACK)
+        self.variant(INSEL0_A::FEEDBACK)
     }
     #[doc = "Linked LUT input source"]
-    #[inline]
+    #[inline(always)]
     pub fn link(self) -> &'a mut W {
-        self.variant(INSEL0W::LINK)
+        self.variant(INSEL0_A::LINK)
     }
     #[doc = "Event input source"]
-    #[inline]
+    #[inline(always)]
     pub fn event(self) -> &'a mut W {
-        self.variant(INSEL0W::EVENT)
+        self.variant(INSEL0_A::EVENT)
     }
     #[doc = "I/O pin input source"]
-    #[inline]
+    #[inline(always)]
     pub fn io(self) -> &'a mut W {
-        self.variant(INSEL0W::IO)
+        self.variant(INSEL0_A::IO)
     }
     #[doc = "AC input source"]
-    #[inline]
+    #[inline(always)]
     pub fn ac(self) -> &'a mut W {
-        self.variant(INSEL0W::AC)
+        self.variant(INSEL0_A::AC)
     }
     #[doc = "TC input source"]
-    #[inline]
+    #[inline(always)]
     pub fn tc(self) -> &'a mut W {
-        self.variant(INSEL0W::TC)
+        self.variant(INSEL0_A::TC)
     }
     #[doc = "Alternate TC input source"]
-    #[inline]
+    #[inline(always)]
     pub fn alttc(self) -> &'a mut W {
-        self.variant(INSEL0W::ALTTC)
+        self.variant(INSEL0_A::ALTTC)
     }
     #[doc = "TCC input source"]
-    #[inline]
+    #[inline(always)]
     pub fn tcc(self) -> &'a mut W {
-        self.variant(INSEL0W::TCC)
+        self.variant(INSEL0_A::TCC)
     }
     #[doc = "SERCOM input source"]
-    #[inline]
+    #[inline(always)]
     pub fn sercom(self) -> &'a mut W {
-        self.variant(INSEL0W::SERCOM)
+        self.variant(INSEL0_A::SERCOM)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 15;
-        const OFFSET: u8 = 8;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x0f << 8)) | (((value as u32) & 0x0f) << 8);
         self.w
     }
 }
-#[doc = "Values that can be written to the field `INSEL1`"]
-pub enum INSEL1W {
-    #[doc = "Masked input"]
+#[doc = "Input Selection 1\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum INSEL1_A {
+    #[doc = "0: Masked input"]
     MASK,
-    #[doc = "Feedback input source"]
+    #[doc = "1: Feedback input source"]
     FEEDBACK,
-    #[doc = "Linked LUT input source"]
+    #[doc = "2: Linked LUT input source"]
     LINK,
-    #[doc = "Event input source"]
+    #[doc = "3: Event input source"]
     EVENT,
-    #[doc = "I/O pin input source"]
+    #[doc = "4: I/O pin input source"]
     IO,
-    #[doc = "AC input source"]
+    #[doc = "5: AC input source"]
     AC,
-    #[doc = "TC input source"]
+    #[doc = "6: TC input source"]
     TC,
-    #[doc = "Alternate TC input source"]
+    #[doc = "7: Alternate TC input source"]
     ALTTC,
-    #[doc = "TCC input source"]
+    #[doc = "8: TCC input source"]
     TCC,
-    #[doc = "SERCOM input source"]
+    #[doc = "9: SERCOM input source"]
     SERCOM,
 }
-impl INSEL1W {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            INSEL1W::MASK => 0,
-            INSEL1W::FEEDBACK => 1,
-            INSEL1W::LINK => 2,
-            INSEL1W::EVENT => 3,
-            INSEL1W::IO => 4,
-            INSEL1W::AC => 5,
-            INSEL1W::TC => 6,
-            INSEL1W::ALTTC => 7,
-            INSEL1W::TCC => 8,
-            INSEL1W::SERCOM => 9,
+impl From<INSEL1_A> for u8 {
+    #[inline(always)]
+    fn from(variant: INSEL1_A) -> Self {
+        match variant {
+            INSEL1_A::MASK => 0,
+            INSEL1_A::FEEDBACK => 1,
+            INSEL1_A::LINK => 2,
+            INSEL1_A::EVENT => 3,
+            INSEL1_A::IO => 4,
+            INSEL1_A::AC => 5,
+            INSEL1_A::TC => 6,
+            INSEL1_A::ALTTC => 7,
+            INSEL1_A::TCC => 8,
+            INSEL1_A::SERCOM => 9,
         }
     }
 }
-#[doc = r" Proxy"]
-pub struct _INSEL1W<'a> {
+#[doc = "Reader of field `INSEL1`"]
+pub type INSEL1_R = crate::R<u8, INSEL1_A>;
+impl INSEL1_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, INSEL1_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(INSEL1_A::MASK),
+            1 => Val(INSEL1_A::FEEDBACK),
+            2 => Val(INSEL1_A::LINK),
+            3 => Val(INSEL1_A::EVENT),
+            4 => Val(INSEL1_A::IO),
+            5 => Val(INSEL1_A::AC),
+            6 => Val(INSEL1_A::TC),
+            7 => Val(INSEL1_A::ALTTC),
+            8 => Val(INSEL1_A::TCC),
+            9 => Val(INSEL1_A::SERCOM),
+            i => Res(i),
+        }
+    }
+    #[doc = "Checks if the value of the field is `MASK`"]
+    #[inline(always)]
+    pub fn is_mask(&self) -> bool {
+        *self == INSEL1_A::MASK
+    }
+    #[doc = "Checks if the value of the field is `FEEDBACK`"]
+    #[inline(always)]
+    pub fn is_feedback(&self) -> bool {
+        *self == INSEL1_A::FEEDBACK
+    }
+    #[doc = "Checks if the value of the field is `LINK`"]
+    #[inline(always)]
+    pub fn is_link(&self) -> bool {
+        *self == INSEL1_A::LINK
+    }
+    #[doc = "Checks if the value of the field is `EVENT`"]
+    #[inline(always)]
+    pub fn is_event(&self) -> bool {
+        *self == INSEL1_A::EVENT
+    }
+    #[doc = "Checks if the value of the field is `IO`"]
+    #[inline(always)]
+    pub fn is_io(&self) -> bool {
+        *self == INSEL1_A::IO
+    }
+    #[doc = "Checks if the value of the field is `AC`"]
+    #[inline(always)]
+    pub fn is_ac(&self) -> bool {
+        *self == INSEL1_A::AC
+    }
+    #[doc = "Checks if the value of the field is `TC`"]
+    #[inline(always)]
+    pub fn is_tc(&self) -> bool {
+        *self == INSEL1_A::TC
+    }
+    #[doc = "Checks if the value of the field is `ALTTC`"]
+    #[inline(always)]
+    pub fn is_alttc(&self) -> bool {
+        *self == INSEL1_A::ALTTC
+    }
+    #[doc = "Checks if the value of the field is `TCC`"]
+    #[inline(always)]
+    pub fn is_tcc(&self) -> bool {
+        *self == INSEL1_A::TCC
+    }
+    #[doc = "Checks if the value of the field is `SERCOM`"]
+    #[inline(always)]
+    pub fn is_sercom(&self) -> bool {
+        *self == INSEL1_A::SERCOM
+    }
+}
+#[doc = "Write proxy for field `INSEL1`"]
+pub struct INSEL1_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _INSEL1W<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: INSEL1W) -> &'a mut W {
-        unsafe { self.bits(variant._bits()) }
+impl<'a> INSEL1_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: INSEL1_A) -> &'a mut W {
+        unsafe { self.bits(variant.into()) }
     }
     #[doc = "Masked input"]
-    #[inline]
+    #[inline(always)]
     pub fn mask(self) -> &'a mut W {
-        self.variant(INSEL1W::MASK)
+        self.variant(INSEL1_A::MASK)
     }
     #[doc = "Feedback input source"]
-    #[inline]
+    #[inline(always)]
     pub fn feedback(self) -> &'a mut W {
-        self.variant(INSEL1W::FEEDBACK)
+        self.variant(INSEL1_A::FEEDBACK)
     }
     #[doc = "Linked LUT input source"]
-    #[inline]
+    #[inline(always)]
     pub fn link(self) -> &'a mut W {
-        self.variant(INSEL1W::LINK)
+        self.variant(INSEL1_A::LINK)
     }
     #[doc = "Event input source"]
-    #[inline]
+    #[inline(always)]
     pub fn event(self) -> &'a mut W {
-        self.variant(INSEL1W::EVENT)
+        self.variant(INSEL1_A::EVENT)
     }
     #[doc = "I/O pin input source"]
-    #[inline]
+    #[inline(always)]
     pub fn io(self) -> &'a mut W {
-        self.variant(INSEL1W::IO)
+        self.variant(INSEL1_A::IO)
     }
     #[doc = "AC input source"]
-    #[inline]
+    #[inline(always)]
     pub fn ac(self) -> &'a mut W {
-        self.variant(INSEL1W::AC)
+        self.variant(INSEL1_A::AC)
     }
     #[doc = "TC input source"]
-    #[inline]
+    #[inline(always)]
     pub fn tc(self) -> &'a mut W {
-        self.variant(INSEL1W::TC)
+        self.variant(INSEL1_A::TC)
     }
     #[doc = "Alternate TC input source"]
-    #[inline]
+    #[inline(always)]
     pub fn alttc(self) -> &'a mut W {
-        self.variant(INSEL1W::ALTTC)
+        self.variant(INSEL1_A::ALTTC)
     }
     #[doc = "TCC input source"]
-    #[inline]
+    #[inline(always)]
     pub fn tcc(self) -> &'a mut W {
-        self.variant(INSEL1W::TCC)
+        self.variant(INSEL1_A::TCC)
     }
     #[doc = "SERCOM input source"]
-    #[inline]
+    #[inline(always)]
     pub fn sercom(self) -> &'a mut W {
-        self.variant(INSEL1W::SERCOM)
+        self.variant(INSEL1_A::SERCOM)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 15;
-        const OFFSET: u8 = 12;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x0f << 12)) | (((value as u32) & 0x0f) << 12);
         self.w
     }
 }
-#[doc = "Values that can be written to the field `INSEL2`"]
-pub enum INSEL2W {
-    #[doc = "Masked input"]
+#[doc = "Input Selection 2\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum INSEL2_A {
+    #[doc = "0: Masked input"]
     MASK,
-    #[doc = "Feedback input source"]
+    #[doc = "1: Feedback input source"]
     FEEDBACK,
-    #[doc = "Linked LUT input source"]
+    #[doc = "2: Linked LUT input source"]
     LINK,
-    #[doc = "Event input source"]
+    #[doc = "3: Event input source"]
     EVENT,
-    #[doc = "I/O pin input source"]
+    #[doc = "4: I/O pin input source"]
     IO,
-    #[doc = "AC input source"]
+    #[doc = "5: AC input source"]
     AC,
-    #[doc = "TC input source"]
+    #[doc = "6: TC input source"]
     TC,
-    #[doc = "Alternate TC input source"]
+    #[doc = "7: Alternate TC input source"]
     ALTTC,
-    #[doc = "TCC input source"]
+    #[doc = "8: TCC input source"]
     TCC,
-    #[doc = "SERCOM input source"]
+    #[doc = "9: SERCOM input source"]
     SERCOM,
 }
-impl INSEL2W {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            INSEL2W::MASK => 0,
-            INSEL2W::FEEDBACK => 1,
-            INSEL2W::LINK => 2,
-            INSEL2W::EVENT => 3,
-            INSEL2W::IO => 4,
-            INSEL2W::AC => 5,
-            INSEL2W::TC => 6,
-            INSEL2W::ALTTC => 7,
-            INSEL2W::TCC => 8,
-            INSEL2W::SERCOM => 9,
+impl From<INSEL2_A> for u8 {
+    #[inline(always)]
+    fn from(variant: INSEL2_A) -> Self {
+        match variant {
+            INSEL2_A::MASK => 0,
+            INSEL2_A::FEEDBACK => 1,
+            INSEL2_A::LINK => 2,
+            INSEL2_A::EVENT => 3,
+            INSEL2_A::IO => 4,
+            INSEL2_A::AC => 5,
+            INSEL2_A::TC => 6,
+            INSEL2_A::ALTTC => 7,
+            INSEL2_A::TCC => 8,
+            INSEL2_A::SERCOM => 9,
         }
     }
 }
-#[doc = r" Proxy"]
-pub struct _INSEL2W<'a> {
+#[doc = "Reader of field `INSEL2`"]
+pub type INSEL2_R = crate::R<u8, INSEL2_A>;
+impl INSEL2_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, INSEL2_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(INSEL2_A::MASK),
+            1 => Val(INSEL2_A::FEEDBACK),
+            2 => Val(INSEL2_A::LINK),
+            3 => Val(INSEL2_A::EVENT),
+            4 => Val(INSEL2_A::IO),
+            5 => Val(INSEL2_A::AC),
+            6 => Val(INSEL2_A::TC),
+            7 => Val(INSEL2_A::ALTTC),
+            8 => Val(INSEL2_A::TCC),
+            9 => Val(INSEL2_A::SERCOM),
+            i => Res(i),
+        }
+    }
+    #[doc = "Checks if the value of the field is `MASK`"]
+    #[inline(always)]
+    pub fn is_mask(&self) -> bool {
+        *self == INSEL2_A::MASK
+    }
+    #[doc = "Checks if the value of the field is `FEEDBACK`"]
+    #[inline(always)]
+    pub fn is_feedback(&self) -> bool {
+        *self == INSEL2_A::FEEDBACK
+    }
+    #[doc = "Checks if the value of the field is `LINK`"]
+    #[inline(always)]
+    pub fn is_link(&self) -> bool {
+        *self == INSEL2_A::LINK
+    }
+    #[doc = "Checks if the value of the field is `EVENT`"]
+    #[inline(always)]
+    pub fn is_event(&self) -> bool {
+        *self == INSEL2_A::EVENT
+    }
+    #[doc = "Checks if the value of the field is `IO`"]
+    #[inline(always)]
+    pub fn is_io(&self) -> bool {
+        *self == INSEL2_A::IO
+    }
+    #[doc = "Checks if the value of the field is `AC`"]
+    #[inline(always)]
+    pub fn is_ac(&self) -> bool {
+        *self == INSEL2_A::AC
+    }
+    #[doc = "Checks if the value of the field is `TC`"]
+    #[inline(always)]
+    pub fn is_tc(&self) -> bool {
+        *self == INSEL2_A::TC
+    }
+    #[doc = "Checks if the value of the field is `ALTTC`"]
+    #[inline(always)]
+    pub fn is_alttc(&self) -> bool {
+        *self == INSEL2_A::ALTTC
+    }
+    #[doc = "Checks if the value of the field is `TCC`"]
+    #[inline(always)]
+    pub fn is_tcc(&self) -> bool {
+        *self == INSEL2_A::TCC
+    }
+    #[doc = "Checks if the value of the field is `SERCOM`"]
+    #[inline(always)]
+    pub fn is_sercom(&self) -> bool {
+        *self == INSEL2_A::SERCOM
+    }
+}
+#[doc = "Write proxy for field `INSEL2`"]
+pub struct INSEL2_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _INSEL2W<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: INSEL2W) -> &'a mut W {
-        unsafe { self.bits(variant._bits()) }
+impl<'a> INSEL2_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: INSEL2_A) -> &'a mut W {
+        unsafe { self.bits(variant.into()) }
     }
     #[doc = "Masked input"]
-    #[inline]
+    #[inline(always)]
     pub fn mask(self) -> &'a mut W {
-        self.variant(INSEL2W::MASK)
+        self.variant(INSEL2_A::MASK)
     }
     #[doc = "Feedback input source"]
-    #[inline]
+    #[inline(always)]
     pub fn feedback(self) -> &'a mut W {
-        self.variant(INSEL2W::FEEDBACK)
+        self.variant(INSEL2_A::FEEDBACK)
     }
     #[doc = "Linked LUT input source"]
-    #[inline]
+    #[inline(always)]
     pub fn link(self) -> &'a mut W {
-        self.variant(INSEL2W::LINK)
+        self.variant(INSEL2_A::LINK)
     }
     #[doc = "Event input source"]
-    #[inline]
+    #[inline(always)]
     pub fn event(self) -> &'a mut W {
-        self.variant(INSEL2W::EVENT)
+        self.variant(INSEL2_A::EVENT)
     }
     #[doc = "I/O pin input source"]
-    #[inline]
+    #[inline(always)]
     pub fn io(self) -> &'a mut W {
-        self.variant(INSEL2W::IO)
+        self.variant(INSEL2_A::IO)
     }
     #[doc = "AC input source"]
-    #[inline]
+    #[inline(always)]
     pub fn ac(self) -> &'a mut W {
-        self.variant(INSEL2W::AC)
+        self.variant(INSEL2_A::AC)
     }
     #[doc = "TC input source"]
-    #[inline]
+    #[inline(always)]
     pub fn tc(self) -> &'a mut W {
-        self.variant(INSEL2W::TC)
+        self.variant(INSEL2_A::TC)
     }
     #[doc = "Alternate TC input source"]
-    #[inline]
+    #[inline(always)]
     pub fn alttc(self) -> &'a mut W {
-        self.variant(INSEL2W::ALTTC)
+        self.variant(INSEL2_A::ALTTC)
     }
     #[doc = "TCC input source"]
-    #[inline]
+    #[inline(always)]
     pub fn tcc(self) -> &'a mut W {
-        self.variant(INSEL2W::TCC)
+        self.variant(INSEL2_A::TCC)
     }
     #[doc = "SERCOM input source"]
-    #[inline]
+    #[inline(always)]
     pub fn sercom(self) -> &'a mut W {
-        self.variant(INSEL2W::SERCOM)
+        self.variant(INSEL2_A::SERCOM)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 15;
-        const OFFSET: u8 = 16;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x0f << 16)) | (((value as u32) & 0x0f) << 16);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _INVEIW<'a> {
+#[doc = "Reader of field `INVEI`"]
+pub type INVEI_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `INVEI`"]
+pub struct INVEI_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _INVEIW<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> INVEI_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 20;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 20)) | (((value as u32) & 0x01) << 20);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _LUTEIW<'a> {
+#[doc = "Reader of field `LUTEI`"]
+pub type LUTEI_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `LUTEI`"]
+pub struct LUTEI_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _LUTEIW<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> LUTEI_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 21;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 21)) | (((value as u32) & 0x01) << 21);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _LUTEOW<'a> {
+#[doc = "Reader of field `LUTEO`"]
+pub type LUTEO_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `LUTEO`"]
+pub struct LUTEO_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _LUTEOW<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> LUTEO_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 22;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 22)) | (((value as u32) & 0x01) << 22);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _TRUTHW<'a> {
+#[doc = "Reader of field `TRUTH`"]
+pub type TRUTH_R = crate::R<u8, u8>;
+#[doc = "Write proxy for field `TRUTH`"]
+pub struct TRUTH_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _TRUTHW<'a> {
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+impl<'a> TRUTH_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 255;
-        const OFFSET: u8 = 24;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0xff << 24)) | (((value as u32) & 0xff) << 24);
         self.w
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u32 {
-        self.bits
-    }
     #[doc = "Bit 1 - LUT Enable"]
-    #[inline]
-    pub fn enable(&self) -> ENABLER {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        ENABLER { bits }
+    #[inline(always)]
+    pub fn enable(&self) -> ENABLE_R {
+        ENABLE_R::new(((self.bits >> 1) & 0x01) != 0)
     }
     #[doc = "Bits 4:5 - Filter Selection"]
-    #[inline]
-    pub fn filtsel(&self) -> FILTSELR {
-        FILTSELR::_from({
-            const MASK: u8 = 3;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+    #[inline(always)]
+    pub fn filtsel(&self) -> FILTSEL_R {
+        FILTSEL_R::new(((self.bits >> 4) & 0x03) as u8)
     }
     #[doc = "Bit 7 - Edge Selection"]
-    #[inline]
-    pub fn edgesel(&self) -> EDGESELR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 7;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        EDGESELR { bits }
+    #[inline(always)]
+    pub fn edgesel(&self) -> EDGESEL_R {
+        EDGESEL_R::new(((self.bits >> 7) & 0x01) != 0)
     }
     #[doc = "Bits 8:11 - Input Selection 0"]
-    #[inline]
-    pub fn insel0(&self) -> INSEL0R {
-        INSEL0R::_from({
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+    #[inline(always)]
+    pub fn insel0(&self) -> INSEL0_R {
+        INSEL0_R::new(((self.bits >> 8) & 0x0f) as u8)
     }
     #[doc = "Bits 12:15 - Input Selection 1"]
-    #[inline]
-    pub fn insel1(&self) -> INSEL1R {
-        INSEL1R::_from({
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 12;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+    #[inline(always)]
+    pub fn insel1(&self) -> INSEL1_R {
+        INSEL1_R::new(((self.bits >> 12) & 0x0f) as u8)
     }
     #[doc = "Bits 16:19 - Input Selection 2"]
-    #[inline]
-    pub fn insel2(&self) -> INSEL2R {
-        INSEL2R::_from({
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 16;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+    #[inline(always)]
+    pub fn insel2(&self) -> INSEL2_R {
+        INSEL2_R::new(((self.bits >> 16) & 0x0f) as u8)
     }
     #[doc = "Bit 20 - Inverted Event Input Enable"]
-    #[inline]
-    pub fn invei(&self) -> INVEIR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 20;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        INVEIR { bits }
+    #[inline(always)]
+    pub fn invei(&self) -> INVEI_R {
+        INVEI_R::new(((self.bits >> 20) & 0x01) != 0)
     }
     #[doc = "Bit 21 - LUT Event Input Enable"]
-    #[inline]
-    pub fn lutei(&self) -> LUTEIR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 21;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        LUTEIR { bits }
+    #[inline(always)]
+    pub fn lutei(&self) -> LUTEI_R {
+        LUTEI_R::new(((self.bits >> 21) & 0x01) != 0)
     }
     #[doc = "Bit 22 - LUT Event Output Enable"]
-    #[inline]
-    pub fn luteo(&self) -> LUTEOR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 22;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        LUTEOR { bits }
+    #[inline(always)]
+    pub fn luteo(&self) -> LUTEO_R {
+        LUTEO_R::new(((self.bits >> 22) & 0x01) != 0)
     }
     #[doc = "Bits 24:31 - Truth Value"]
-    #[inline]
-    pub fn truth(&self) -> TRUTHR {
-        let bits = {
-            const MASK: u8 = 255;
-            const OFFSET: u8 = 24;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
-        TRUTHR { bits }
+    #[inline(always)]
+    pub fn truth(&self) -> TRUTH_R {
+        TRUTH_R::new(((self.bits >> 24) & 0xff) as u8)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
-    #[doc = r" Writes raw bits to the register"]
-    #[inline]
-    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.bits = bits;
-        self
-    }
     #[doc = "Bit 1 - LUT Enable"]
-    #[inline]
-    pub fn enable(&mut self) -> _ENABLEW {
-        _ENABLEW { w: self }
+    #[inline(always)]
+    pub fn enable(&mut self) -> ENABLE_W {
+        ENABLE_W { w: self }
     }
     #[doc = "Bits 4:5 - Filter Selection"]
-    #[inline]
-    pub fn filtsel(&mut self) -> _FILTSELW {
-        _FILTSELW { w: self }
+    #[inline(always)]
+    pub fn filtsel(&mut self) -> FILTSEL_W {
+        FILTSEL_W { w: self }
     }
     #[doc = "Bit 7 - Edge Selection"]
-    #[inline]
-    pub fn edgesel(&mut self) -> _EDGESELW {
-        _EDGESELW { w: self }
+    #[inline(always)]
+    pub fn edgesel(&mut self) -> EDGESEL_W {
+        EDGESEL_W { w: self }
     }
     #[doc = "Bits 8:11 - Input Selection 0"]
-    #[inline]
-    pub fn insel0(&mut self) -> _INSEL0W {
-        _INSEL0W { w: self }
+    #[inline(always)]
+    pub fn insel0(&mut self) -> INSEL0_W {
+        INSEL0_W { w: self }
     }
     #[doc = "Bits 12:15 - Input Selection 1"]
-    #[inline]
-    pub fn insel1(&mut self) -> _INSEL1W {
-        _INSEL1W { w: self }
+    #[inline(always)]
+    pub fn insel1(&mut self) -> INSEL1_W {
+        INSEL1_W { w: self }
     }
     #[doc = "Bits 16:19 - Input Selection 2"]
-    #[inline]
-    pub fn insel2(&mut self) -> _INSEL2W {
-        _INSEL2W { w: self }
+    #[inline(always)]
+    pub fn insel2(&mut self) -> INSEL2_W {
+        INSEL2_W { w: self }
     }
     #[doc = "Bit 20 - Inverted Event Input Enable"]
-    #[inline]
-    pub fn invei(&mut self) -> _INVEIW {
-        _INVEIW { w: self }
+    #[inline(always)]
+    pub fn invei(&mut self) -> INVEI_W {
+        INVEI_W { w: self }
     }
     #[doc = "Bit 21 - LUT Event Input Enable"]
-    #[inline]
-    pub fn lutei(&mut self) -> _LUTEIW {
-        _LUTEIW { w: self }
+    #[inline(always)]
+    pub fn lutei(&mut self) -> LUTEI_W {
+        LUTEI_W { w: self }
     }
     #[doc = "Bit 22 - LUT Event Output Enable"]
-    #[inline]
-    pub fn luteo(&mut self) -> _LUTEOW {
-        _LUTEOW { w: self }
+    #[inline(always)]
+    pub fn luteo(&mut self) -> LUTEO_W {
+        LUTEO_W { w: self }
     }
     #[doc = "Bits 24:31 - Truth Value"]
-    #[inline]
-    pub fn truth(&mut self) -> _TRUTHW {
-        _TRUTHW { w: self }
+    #[inline(always)]
+    pub fn truth(&mut self) -> TRUTH_W {
+        TRUTH_W { w: self }
     }
 }

@@ -1,185 +1,64 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u8,
-}
-#[doc = r" Value to write to the register"]
-pub struct W {
-    bits: u8,
-}
-impl super::CRCSTATUS {
-    #[doc = r" Modifies the contents of the register"]
-    #[inline]
-    pub fn modify<F>(&self, f: F)
-    where
-        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
-    {
-        let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-    #[doc = r" Writes to the register"]
-    #[inline]
-    pub fn write<F>(&self, f: F)
-    where
-        F: FnOnce(&mut W) -> &mut W,
-    {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Writes the reset value to the register"]
-    #[inline]
-    pub fn reset(&self) {
-        self.write(|w| w)
+#[doc = "Reader of register CRCSTATUS"]
+pub type R = crate::R<u8, super::CRCSTATUS>;
+#[doc = "Writer for register CRCSTATUS"]
+pub type W = crate::W<u8, super::CRCSTATUS>;
+#[doc = "Register CRCSTATUS `reset()`'s with value 0"]
+impl crate::ResetValue for super::CRCSTATUS {
+    type Type = u8;
+    #[inline(always)]
+    fn reset_value() -> Self::Type {
+        0
     }
 }
-#[doc = r" Value of the field"]
-pub struct CRCBUSYR {
-    bits: bool,
-}
-impl CRCBUSYR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct CRCZEROR {
-    bits: bool,
-}
-impl CRCZEROR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct CRCERRR {
-    bits: bool,
-}
-impl CRCERRR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Proxy"]
-pub struct _CRCBUSYW<'a> {
+#[doc = "Reader of field `CRCBUSY`"]
+pub type CRCBUSY_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `CRCBUSY`"]
+pub struct CRCBUSY_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _CRCBUSYW<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> CRCBUSY_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits = (self.w.bits & !0x01) | ((value as u8) & 0x01);
         self.w
     }
 }
+#[doc = "Reader of field `CRCZERO`"]
+pub type CRCZERO_R = crate::R<bool, bool>;
+#[doc = "Reader of field `CRCERR`"]
+pub type CRCERR_R = crate::R<bool, bool>;
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
     #[doc = "Bit 0 - CRC Module Busy"]
-    #[inline]
-    pub fn crcbusy(&self) -> CRCBUSYR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
-        CRCBUSYR { bits }
+    #[inline(always)]
+    pub fn crcbusy(&self) -> CRCBUSY_R {
+        CRCBUSY_R::new((self.bits & 0x01) != 0)
     }
     #[doc = "Bit 1 - CRC Zero"]
-    #[inline]
-    pub fn crczero(&self) -> CRCZEROR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
-        CRCZEROR { bits }
+    #[inline(always)]
+    pub fn crczero(&self) -> CRCZERO_R {
+        CRCZERO_R::new(((self.bits >> 1) & 0x01) != 0)
     }
     #[doc = "Bit 2 - CRC Error"]
-    #[inline]
-    pub fn crcerr(&self) -> CRCERRR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
-        CRCERRR { bits }
+    #[inline(always)]
+    pub fn crcerr(&self) -> CRCERR_R {
+        CRCERR_R::new(((self.bits >> 2) & 0x01) != 0)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
-    #[doc = r" Writes raw bits to the register"]
-    #[inline]
-    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
-        self.bits = bits;
-        self
-    }
     #[doc = "Bit 0 - CRC Module Busy"]
-    #[inline]
-    pub fn crcbusy(&mut self) -> _CRCBUSYW {
-        _CRCBUSYW { w: self }
+    #[inline(always)]
+    pub fn crcbusy(&mut self) -> CRCBUSY_W {
+        CRCBUSY_W { w: self }
     }
 }

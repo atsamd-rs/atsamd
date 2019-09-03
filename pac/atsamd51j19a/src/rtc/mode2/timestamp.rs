@@ -1,175 +1,85 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u32,
-}
-impl super::TIMESTAMP {
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-}
-#[doc = r" Value of the field"]
-pub struct SECONDR {
-    bits: u8,
-}
-impl SECONDR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
-}
-#[doc = r" Value of the field"]
-pub struct MINUTER {
-    bits: u8,
-}
-impl MINUTER {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
-}
-#[doc = "Possible values of the field `HOUR`"]
+#[doc = "Reader of register TIMESTAMP"]
+pub type R = crate::R<u32, super::TIMESTAMP>;
+#[doc = "Reader of field `SECOND`"]
+pub type SECOND_R = crate::R<u8, u8>;
+#[doc = "Reader of field `MINUTE`"]
+pub type MINUTE_R = crate::R<u8, u8>;
+#[doc = "Hour Timestamp Value\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum HOURR {
-    #[doc = "AM when CLKREP in 12-hour"]
+pub enum HOUR_A {
+    #[doc = "0: AM when CLKREP in 12-hour"]
     AM,
-    #[doc = "PM when CLKREP in 12-hour"]
+    #[doc = "16: PM when CLKREP in 12-hour"]
     PM,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
 }
-impl HOURR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            HOURR::AM => 0,
-            HOURR::PM => 16,
-            HOURR::_Reserved(bits) => bits,
+impl From<HOUR_A> for u8 {
+    #[inline(always)]
+    fn from(variant: HOUR_A) -> Self {
+        match variant {
+            HOUR_A::AM => 0,
+            HOUR_A::PM => 16,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> HOURR {
-        match value {
-            0 => HOURR::AM,
-            16 => HOURR::PM,
-            i => HOURR::_Reserved(i),
+}
+#[doc = "Reader of field `HOUR`"]
+pub type HOUR_R = crate::R<u8, HOUR_A>;
+impl HOUR_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, HOUR_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(HOUR_A::AM),
+            16 => Val(HOUR_A::PM),
+            i => Res(i),
         }
     }
     #[doc = "Checks if the value of the field is `AM`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_am(&self) -> bool {
-        *self == HOURR::AM
+        *self == HOUR_A::AM
     }
     #[doc = "Checks if the value of the field is `PM`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_pm(&self) -> bool {
-        *self == HOURR::PM
+        *self == HOUR_A::PM
     }
 }
-#[doc = r" Value of the field"]
-pub struct DAYR {
-    bits: u8,
-}
-impl DAYR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
-}
-#[doc = r" Value of the field"]
-pub struct MONTHR {
-    bits: u8,
-}
-impl MONTHR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
-}
-#[doc = r" Value of the field"]
-pub struct YEARR {
-    bits: u8,
-}
-impl YEARR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
-}
+#[doc = "Reader of field `DAY`"]
+pub type DAY_R = crate::R<u8, u8>;
+#[doc = "Reader of field `MONTH`"]
+pub type MONTH_R = crate::R<u8, u8>;
+#[doc = "Reader of field `YEAR`"]
+pub type YEAR_R = crate::R<u8, u8>;
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u32 {
-        self.bits
-    }
     #[doc = "Bits 0:5 - Second Timestamp Value"]
-    #[inline]
-    pub fn second(&self) -> SECONDR {
-        let bits = {
-            const MASK: u8 = 63;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
-        SECONDR { bits }
+    #[inline(always)]
+    pub fn second(&self) -> SECOND_R {
+        SECOND_R::new((self.bits & 0x3f) as u8)
     }
     #[doc = "Bits 6:11 - Minute Timestamp Value"]
-    #[inline]
-    pub fn minute(&self) -> MINUTER {
-        let bits = {
-            const MASK: u8 = 63;
-            const OFFSET: u8 = 6;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
-        MINUTER { bits }
+    #[inline(always)]
+    pub fn minute(&self) -> MINUTE_R {
+        MINUTE_R::new(((self.bits >> 6) & 0x3f) as u8)
     }
     #[doc = "Bits 12:16 - Hour Timestamp Value"]
-    #[inline]
-    pub fn hour(&self) -> HOURR {
-        HOURR::_from({
-            const MASK: u8 = 31;
-            const OFFSET: u8 = 12;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+    #[inline(always)]
+    pub fn hour(&self) -> HOUR_R {
+        HOUR_R::new(((self.bits >> 12) & 0x1f) as u8)
     }
     #[doc = "Bits 17:21 - Day Timestamp Value"]
-    #[inline]
-    pub fn day(&self) -> DAYR {
-        let bits = {
-            const MASK: u8 = 31;
-            const OFFSET: u8 = 17;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
-        DAYR { bits }
+    #[inline(always)]
+    pub fn day(&self) -> DAY_R {
+        DAY_R::new(((self.bits >> 17) & 0x1f) as u8)
     }
     #[doc = "Bits 22:25 - Month Timestamp Value"]
-    #[inline]
-    pub fn month(&self) -> MONTHR {
-        let bits = {
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 22;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
-        MONTHR { bits }
+    #[inline(always)]
+    pub fn month(&self) -> MONTH_R {
+        MONTH_R::new(((self.bits >> 22) & 0x0f) as u8)
     }
     #[doc = "Bits 26:31 - Year Timestamp Value"]
-    #[inline]
-    pub fn year(&self) -> YEARR {
-        let bits = {
-            const MASK: u8 = 63;
-            const OFFSET: u8 = 26;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
-        YEARR { bits }
+    #[inline(always)]
+    pub fn year(&self) -> YEAR_R {
+        YEAR_R::new(((self.bits >> 26) & 0x3f) as u8)
     }
 }

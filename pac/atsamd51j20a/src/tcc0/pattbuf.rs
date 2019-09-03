@@ -1,1008 +1,560 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u16,
-}
-#[doc = r" Value to write to the register"]
-pub struct W {
-    bits: u16,
-}
-impl super::PATTBUF {
-    #[doc = r" Modifies the contents of the register"]
-    #[inline]
-    pub fn modify<F>(&self, f: F)
-    where
-        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
-    {
-        let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-    #[doc = r" Writes to the register"]
-    #[inline]
-    pub fn write<F>(&self, f: F)
-    where
-        F: FnOnce(&mut W) -> &mut W,
-    {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Writes the reset value to the register"]
-    #[inline]
-    pub fn reset(&self) {
-        self.write(|w| w)
+#[doc = "Reader of register PATTBUF"]
+pub type R = crate::R<u16, super::PATTBUF>;
+#[doc = "Writer for register PATTBUF"]
+pub type W = crate::W<u16, super::PATTBUF>;
+#[doc = "Register PATTBUF `reset()`'s with value 0"]
+impl crate::ResetValue for super::PATTBUF {
+    type Type = u16;
+    #[inline(always)]
+    fn reset_value() -> Self::Type {
+        0
     }
 }
-#[doc = r" Value of the field"]
-pub struct PGEB0R {
-    bits: bool,
-}
-impl PGEB0R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct PGEB1R {
-    bits: bool,
-}
-impl PGEB1R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct PGEB2R {
-    bits: bool,
-}
-impl PGEB2R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct PGEB3R {
-    bits: bool,
-}
-impl PGEB3R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct PGEB4R {
-    bits: bool,
-}
-impl PGEB4R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct PGEB5R {
-    bits: bool,
-}
-impl PGEB5R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct PGEB6R {
-    bits: bool,
-}
-impl PGEB6R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct PGEB7R {
-    bits: bool,
-}
-impl PGEB7R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct PGVB0R {
-    bits: bool,
-}
-impl PGVB0R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct PGVB1R {
-    bits: bool,
-}
-impl PGVB1R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct PGVB2R {
-    bits: bool,
-}
-impl PGVB2R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct PGVB3R {
-    bits: bool,
-}
-impl PGVB3R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct PGVB4R {
-    bits: bool,
-}
-impl PGVB4R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct PGVB5R {
-    bits: bool,
-}
-impl PGVB5R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct PGVB6R {
-    bits: bool,
-}
-impl PGVB6R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct PGVB7R {
-    bits: bool,
-}
-impl PGVB7R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Proxy"]
-pub struct _PGEB0W<'a> {
+#[doc = "Reader of field `PGEB0`"]
+pub type PGEB0_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `PGEB0`"]
+pub struct PGEB0_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _PGEB0W<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> PGEB0_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits = (self.w.bits & !0x01) | ((value as u16) & 0x01);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _PGEB1W<'a> {
+#[doc = "Reader of field `PGEB1`"]
+pub type PGEB1_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `PGEB1`"]
+pub struct PGEB1_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _PGEB1W<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> PGEB1_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 1;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 1)) | (((value as u16) & 0x01) << 1);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _PGEB2W<'a> {
+#[doc = "Reader of field `PGEB2`"]
+pub type PGEB2_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `PGEB2`"]
+pub struct PGEB2_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _PGEB2W<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> PGEB2_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 2;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 2)) | (((value as u16) & 0x01) << 2);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _PGEB3W<'a> {
+#[doc = "Reader of field `PGEB3`"]
+pub type PGEB3_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `PGEB3`"]
+pub struct PGEB3_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _PGEB3W<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> PGEB3_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 3;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 3)) | (((value as u16) & 0x01) << 3);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _PGEB4W<'a> {
+#[doc = "Reader of field `PGEB4`"]
+pub type PGEB4_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `PGEB4`"]
+pub struct PGEB4_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _PGEB4W<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> PGEB4_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 4;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 4)) | (((value as u16) & 0x01) << 4);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _PGEB5W<'a> {
+#[doc = "Reader of field `PGEB5`"]
+pub type PGEB5_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `PGEB5`"]
+pub struct PGEB5_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _PGEB5W<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> PGEB5_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 5;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 5)) | (((value as u16) & 0x01) << 5);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _PGEB6W<'a> {
+#[doc = "Reader of field `PGEB6`"]
+pub type PGEB6_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `PGEB6`"]
+pub struct PGEB6_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _PGEB6W<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> PGEB6_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 6;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 6)) | (((value as u16) & 0x01) << 6);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _PGEB7W<'a> {
+#[doc = "Reader of field `PGEB7`"]
+pub type PGEB7_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `PGEB7`"]
+pub struct PGEB7_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _PGEB7W<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> PGEB7_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 7;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 7)) | (((value as u16) & 0x01) << 7);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _PGVB0W<'a> {
+#[doc = "Reader of field `PGVB0`"]
+pub type PGVB0_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `PGVB0`"]
+pub struct PGVB0_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _PGVB0W<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> PGVB0_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 8;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 8)) | (((value as u16) & 0x01) << 8);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _PGVB1W<'a> {
+#[doc = "Reader of field `PGVB1`"]
+pub type PGVB1_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `PGVB1`"]
+pub struct PGVB1_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _PGVB1W<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> PGVB1_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 9;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 9)) | (((value as u16) & 0x01) << 9);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _PGVB2W<'a> {
+#[doc = "Reader of field `PGVB2`"]
+pub type PGVB2_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `PGVB2`"]
+pub struct PGVB2_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _PGVB2W<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> PGVB2_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 10;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 10)) | (((value as u16) & 0x01) << 10);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _PGVB3W<'a> {
+#[doc = "Reader of field `PGVB3`"]
+pub type PGVB3_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `PGVB3`"]
+pub struct PGVB3_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _PGVB3W<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> PGVB3_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 11;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 11)) | (((value as u16) & 0x01) << 11);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _PGVB4W<'a> {
+#[doc = "Reader of field `PGVB4`"]
+pub type PGVB4_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `PGVB4`"]
+pub struct PGVB4_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _PGVB4W<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> PGVB4_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 12;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 12)) | (((value as u16) & 0x01) << 12);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _PGVB5W<'a> {
+#[doc = "Reader of field `PGVB5`"]
+pub type PGVB5_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `PGVB5`"]
+pub struct PGVB5_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _PGVB5W<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> PGVB5_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 13;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 13)) | (((value as u16) & 0x01) << 13);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _PGVB6W<'a> {
+#[doc = "Reader of field `PGVB6`"]
+pub type PGVB6_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `PGVB6`"]
+pub struct PGVB6_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _PGVB6W<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> PGVB6_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 14;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 14)) | (((value as u16) & 0x01) << 14);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _PGVB7W<'a> {
+#[doc = "Reader of field `PGVB7`"]
+pub type PGVB7_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `PGVB7`"]
+pub struct PGVB7_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _PGVB7W<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> PGVB7_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 15;
-        self.w.bits &= !((MASK as u16) << OFFSET);
-        self.w.bits |= ((value & MASK) as u16) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 15)) | (((value as u16) & 0x01) << 15);
         self.w
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u16 {
-        self.bits
-    }
     #[doc = "Bit 0 - Pattern Generator 0 Output Enable Buffer"]
-    #[inline]
-    pub fn pgeb0(&self) -> PGEB0R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
-        PGEB0R { bits }
+    #[inline(always)]
+    pub fn pgeb0(&self) -> PGEB0_R {
+        PGEB0_R::new((self.bits & 0x01) != 0)
     }
     #[doc = "Bit 1 - Pattern Generator 1 Output Enable Buffer"]
-    #[inline]
-    pub fn pgeb1(&self) -> PGEB1R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
-        PGEB1R { bits }
+    #[inline(always)]
+    pub fn pgeb1(&self) -> PGEB1_R {
+        PGEB1_R::new(((self.bits >> 1) & 0x01) != 0)
     }
     #[doc = "Bit 2 - Pattern Generator 2 Output Enable Buffer"]
-    #[inline]
-    pub fn pgeb2(&self) -> PGEB2R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
-        PGEB2R { bits }
+    #[inline(always)]
+    pub fn pgeb2(&self) -> PGEB2_R {
+        PGEB2_R::new(((self.bits >> 2) & 0x01) != 0)
     }
     #[doc = "Bit 3 - Pattern Generator 3 Output Enable Buffer"]
-    #[inline]
-    pub fn pgeb3(&self) -> PGEB3R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 3;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
-        PGEB3R { bits }
+    #[inline(always)]
+    pub fn pgeb3(&self) -> PGEB3_R {
+        PGEB3_R::new(((self.bits >> 3) & 0x01) != 0)
     }
     #[doc = "Bit 4 - Pattern Generator 4 Output Enable Buffer"]
-    #[inline]
-    pub fn pgeb4(&self) -> PGEB4R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
-        PGEB4R { bits }
+    #[inline(always)]
+    pub fn pgeb4(&self) -> PGEB4_R {
+        PGEB4_R::new(((self.bits >> 4) & 0x01) != 0)
     }
     #[doc = "Bit 5 - Pattern Generator 5 Output Enable Buffer"]
-    #[inline]
-    pub fn pgeb5(&self) -> PGEB5R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 5;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
-        PGEB5R { bits }
+    #[inline(always)]
+    pub fn pgeb5(&self) -> PGEB5_R {
+        PGEB5_R::new(((self.bits >> 5) & 0x01) != 0)
     }
     #[doc = "Bit 6 - Pattern Generator 6 Output Enable Buffer"]
-    #[inline]
-    pub fn pgeb6(&self) -> PGEB6R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 6;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
-        PGEB6R { bits }
+    #[inline(always)]
+    pub fn pgeb6(&self) -> PGEB6_R {
+        PGEB6_R::new(((self.bits >> 6) & 0x01) != 0)
     }
     #[doc = "Bit 7 - Pattern Generator 7 Output Enable Buffer"]
-    #[inline]
-    pub fn pgeb7(&self) -> PGEB7R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 7;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
-        PGEB7R { bits }
+    #[inline(always)]
+    pub fn pgeb7(&self) -> PGEB7_R {
+        PGEB7_R::new(((self.bits >> 7) & 0x01) != 0)
     }
     #[doc = "Bit 8 - Pattern Generator 0 Output Enable"]
-    #[inline]
-    pub fn pgvb0(&self) -> PGVB0R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
-        PGVB0R { bits }
+    #[inline(always)]
+    pub fn pgvb0(&self) -> PGVB0_R {
+        PGVB0_R::new(((self.bits >> 8) & 0x01) != 0)
     }
     #[doc = "Bit 9 - Pattern Generator 1 Output Enable"]
-    #[inline]
-    pub fn pgvb1(&self) -> PGVB1R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 9;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
-        PGVB1R { bits }
+    #[inline(always)]
+    pub fn pgvb1(&self) -> PGVB1_R {
+        PGVB1_R::new(((self.bits >> 9) & 0x01) != 0)
     }
     #[doc = "Bit 10 - Pattern Generator 2 Output Enable"]
-    #[inline]
-    pub fn pgvb2(&self) -> PGVB2R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 10;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
-        PGVB2R { bits }
+    #[inline(always)]
+    pub fn pgvb2(&self) -> PGVB2_R {
+        PGVB2_R::new(((self.bits >> 10) & 0x01) != 0)
     }
     #[doc = "Bit 11 - Pattern Generator 3 Output Enable"]
-    #[inline]
-    pub fn pgvb3(&self) -> PGVB3R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 11;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
-        PGVB3R { bits }
+    #[inline(always)]
+    pub fn pgvb3(&self) -> PGVB3_R {
+        PGVB3_R::new(((self.bits >> 11) & 0x01) != 0)
     }
     #[doc = "Bit 12 - Pattern Generator 4 Output Enable"]
-    #[inline]
-    pub fn pgvb4(&self) -> PGVB4R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 12;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
-        PGVB4R { bits }
+    #[inline(always)]
+    pub fn pgvb4(&self) -> PGVB4_R {
+        PGVB4_R::new(((self.bits >> 12) & 0x01) != 0)
     }
     #[doc = "Bit 13 - Pattern Generator 5 Output Enable"]
-    #[inline]
-    pub fn pgvb5(&self) -> PGVB5R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 13;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
-        PGVB5R { bits }
+    #[inline(always)]
+    pub fn pgvb5(&self) -> PGVB5_R {
+        PGVB5_R::new(((self.bits >> 13) & 0x01) != 0)
     }
     #[doc = "Bit 14 - Pattern Generator 6 Output Enable"]
-    #[inline]
-    pub fn pgvb6(&self) -> PGVB6R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 14;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
-        PGVB6R { bits }
+    #[inline(always)]
+    pub fn pgvb6(&self) -> PGVB6_R {
+        PGVB6_R::new(((self.bits >> 14) & 0x01) != 0)
     }
     #[doc = "Bit 15 - Pattern Generator 7 Output Enable"]
-    #[inline]
-    pub fn pgvb7(&self) -> PGVB7R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 15;
-            ((self.bits >> OFFSET) & MASK as u16) != 0
-        };
-        PGVB7R { bits }
+    #[inline(always)]
+    pub fn pgvb7(&self) -> PGVB7_R {
+        PGVB7_R::new(((self.bits >> 15) & 0x01) != 0)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
-    #[doc = r" Writes raw bits to the register"]
-    #[inline]
-    pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {
-        self.bits = bits;
-        self
-    }
     #[doc = "Bit 0 - Pattern Generator 0 Output Enable Buffer"]
-    #[inline]
-    pub fn pgeb0(&mut self) -> _PGEB0W {
-        _PGEB0W { w: self }
+    #[inline(always)]
+    pub fn pgeb0(&mut self) -> PGEB0_W {
+        PGEB0_W { w: self }
     }
     #[doc = "Bit 1 - Pattern Generator 1 Output Enable Buffer"]
-    #[inline]
-    pub fn pgeb1(&mut self) -> _PGEB1W {
-        _PGEB1W { w: self }
+    #[inline(always)]
+    pub fn pgeb1(&mut self) -> PGEB1_W {
+        PGEB1_W { w: self }
     }
     #[doc = "Bit 2 - Pattern Generator 2 Output Enable Buffer"]
-    #[inline]
-    pub fn pgeb2(&mut self) -> _PGEB2W {
-        _PGEB2W { w: self }
+    #[inline(always)]
+    pub fn pgeb2(&mut self) -> PGEB2_W {
+        PGEB2_W { w: self }
     }
     #[doc = "Bit 3 - Pattern Generator 3 Output Enable Buffer"]
-    #[inline]
-    pub fn pgeb3(&mut self) -> _PGEB3W {
-        _PGEB3W { w: self }
+    #[inline(always)]
+    pub fn pgeb3(&mut self) -> PGEB3_W {
+        PGEB3_W { w: self }
     }
     #[doc = "Bit 4 - Pattern Generator 4 Output Enable Buffer"]
-    #[inline]
-    pub fn pgeb4(&mut self) -> _PGEB4W {
-        _PGEB4W { w: self }
+    #[inline(always)]
+    pub fn pgeb4(&mut self) -> PGEB4_W {
+        PGEB4_W { w: self }
     }
     #[doc = "Bit 5 - Pattern Generator 5 Output Enable Buffer"]
-    #[inline]
-    pub fn pgeb5(&mut self) -> _PGEB5W {
-        _PGEB5W { w: self }
+    #[inline(always)]
+    pub fn pgeb5(&mut self) -> PGEB5_W {
+        PGEB5_W { w: self }
     }
     #[doc = "Bit 6 - Pattern Generator 6 Output Enable Buffer"]
-    #[inline]
-    pub fn pgeb6(&mut self) -> _PGEB6W {
-        _PGEB6W { w: self }
+    #[inline(always)]
+    pub fn pgeb6(&mut self) -> PGEB6_W {
+        PGEB6_W { w: self }
     }
     #[doc = "Bit 7 - Pattern Generator 7 Output Enable Buffer"]
-    #[inline]
-    pub fn pgeb7(&mut self) -> _PGEB7W {
-        _PGEB7W { w: self }
+    #[inline(always)]
+    pub fn pgeb7(&mut self) -> PGEB7_W {
+        PGEB7_W { w: self }
     }
     #[doc = "Bit 8 - Pattern Generator 0 Output Enable"]
-    #[inline]
-    pub fn pgvb0(&mut self) -> _PGVB0W {
-        _PGVB0W { w: self }
+    #[inline(always)]
+    pub fn pgvb0(&mut self) -> PGVB0_W {
+        PGVB0_W { w: self }
     }
     #[doc = "Bit 9 - Pattern Generator 1 Output Enable"]
-    #[inline]
-    pub fn pgvb1(&mut self) -> _PGVB1W {
-        _PGVB1W { w: self }
+    #[inline(always)]
+    pub fn pgvb1(&mut self) -> PGVB1_W {
+        PGVB1_W { w: self }
     }
     #[doc = "Bit 10 - Pattern Generator 2 Output Enable"]
-    #[inline]
-    pub fn pgvb2(&mut self) -> _PGVB2W {
-        _PGVB2W { w: self }
+    #[inline(always)]
+    pub fn pgvb2(&mut self) -> PGVB2_W {
+        PGVB2_W { w: self }
     }
     #[doc = "Bit 11 - Pattern Generator 3 Output Enable"]
-    #[inline]
-    pub fn pgvb3(&mut self) -> _PGVB3W {
-        _PGVB3W { w: self }
+    #[inline(always)]
+    pub fn pgvb3(&mut self) -> PGVB3_W {
+        PGVB3_W { w: self }
     }
     #[doc = "Bit 12 - Pattern Generator 4 Output Enable"]
-    #[inline]
-    pub fn pgvb4(&mut self) -> _PGVB4W {
-        _PGVB4W { w: self }
+    #[inline(always)]
+    pub fn pgvb4(&mut self) -> PGVB4_W {
+        PGVB4_W { w: self }
     }
     #[doc = "Bit 13 - Pattern Generator 5 Output Enable"]
-    #[inline]
-    pub fn pgvb5(&mut self) -> _PGVB5W {
-        _PGVB5W { w: self }
+    #[inline(always)]
+    pub fn pgvb5(&mut self) -> PGVB5_W {
+        PGVB5_W { w: self }
     }
     #[doc = "Bit 14 - Pattern Generator 6 Output Enable"]
-    #[inline]
-    pub fn pgvb6(&mut self) -> _PGVB6W {
-        _PGVB6W { w: self }
+    #[inline(always)]
+    pub fn pgvb6(&mut self) -> PGVB6_W {
+        PGVB6_W { w: self }
     }
     #[doc = "Bit 15 - Pattern Generator 7 Output Enable"]
-    #[inline]
-    pub fn pgvb7(&mut self) -> _PGVB7W {
-        _PGVB7W { w: self }
+    #[inline(always)]
+    pub fn pgvb7(&mut self) -> PGVB7_W {
+        PGVB7_W { w: self }
     }
 }

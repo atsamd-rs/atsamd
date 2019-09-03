@@ -1,218 +1,136 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u8,
-}
-#[doc = r" Value to write to the register"]
-pub struct W {
-    bits: u8,
-}
-impl super::SEQCTRL {
-    #[doc = r" Modifies the contents of the register"]
-    #[inline]
-    pub fn modify<F>(&self, f: F)
-    where
-        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
-    {
-        let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-    #[doc = r" Writes to the register"]
-    #[inline]
-    pub fn write<F>(&self, f: F)
-    where
-        F: FnOnce(&mut W) -> &mut W,
-    {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Writes the reset value to the register"]
-    #[inline]
-    pub fn reset(&self) {
-        self.write(|w| w)
+#[doc = "Reader of register SEQCTRL%s"]
+pub type R = crate::R<u8, super::SEQCTRL>;
+#[doc = "Writer for register SEQCTRL%s"]
+pub type W = crate::W<u8, super::SEQCTRL>;
+#[doc = "Register SEQCTRL%s `reset()`'s with value 0"]
+impl crate::ResetValue for super::SEQCTRL {
+    type Type = u8;
+    #[inline(always)]
+    fn reset_value() -> Self::Type {
+        0
     }
 }
-#[doc = "Possible values of the field `SEQSEL`"]
+#[doc = "Sequential Selection\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum SEQSELR {
-    #[doc = "Sequential logic is disabled"]
+pub enum SEQSEL_A {
+    #[doc = "0: Sequential logic is disabled"]
     DISABLE,
-    #[doc = "D flip flop"]
+    #[doc = "1: D flip flop"]
     DFF,
-    #[doc = "JK flip flop"]
+    #[doc = "2: JK flip flop"]
     JK,
-    #[doc = "D latch"]
+    #[doc = "3: D latch"]
     LATCH,
-    #[doc = "RS latch"]
+    #[doc = "4: RS latch"]
     RS,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
 }
-impl SEQSELR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            SEQSELR::DISABLE => 0,
-            SEQSELR::DFF => 1,
-            SEQSELR::JK => 2,
-            SEQSELR::LATCH => 3,
-            SEQSELR::RS => 4,
-            SEQSELR::_Reserved(bits) => bits,
+impl From<SEQSEL_A> for u8 {
+    #[inline(always)]
+    fn from(variant: SEQSEL_A) -> Self {
+        match variant {
+            SEQSEL_A::DISABLE => 0,
+            SEQSEL_A::DFF => 1,
+            SEQSEL_A::JK => 2,
+            SEQSEL_A::LATCH => 3,
+            SEQSEL_A::RS => 4,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> SEQSELR {
-        match value {
-            0 => SEQSELR::DISABLE,
-            1 => SEQSELR::DFF,
-            2 => SEQSELR::JK,
-            3 => SEQSELR::LATCH,
-            4 => SEQSELR::RS,
-            i => SEQSELR::_Reserved(i),
+}
+#[doc = "Reader of field `SEQSEL`"]
+pub type SEQSEL_R = crate::R<u8, SEQSEL_A>;
+impl SEQSEL_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, SEQSEL_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(SEQSEL_A::DISABLE),
+            1 => Val(SEQSEL_A::DFF),
+            2 => Val(SEQSEL_A::JK),
+            3 => Val(SEQSEL_A::LATCH),
+            4 => Val(SEQSEL_A::RS),
+            i => Res(i),
         }
     }
     #[doc = "Checks if the value of the field is `DISABLE`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_disable(&self) -> bool {
-        *self == SEQSELR::DISABLE
+        *self == SEQSEL_A::DISABLE
     }
     #[doc = "Checks if the value of the field is `DFF`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_dff(&self) -> bool {
-        *self == SEQSELR::DFF
+        *self == SEQSEL_A::DFF
     }
     #[doc = "Checks if the value of the field is `JK`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_jk(&self) -> bool {
-        *self == SEQSELR::JK
+        *self == SEQSEL_A::JK
     }
     #[doc = "Checks if the value of the field is `LATCH`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_latch(&self) -> bool {
-        *self == SEQSELR::LATCH
+        *self == SEQSEL_A::LATCH
     }
     #[doc = "Checks if the value of the field is `RS`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_rs(&self) -> bool {
-        *self == SEQSELR::RS
+        *self == SEQSEL_A::RS
     }
 }
-#[doc = "Values that can be written to the field `SEQSEL`"]
-pub enum SEQSELW {
-    #[doc = "Sequential logic is disabled"]
-    DISABLE,
-    #[doc = "D flip flop"]
-    DFF,
-    #[doc = "JK flip flop"]
-    JK,
-    #[doc = "D latch"]
-    LATCH,
-    #[doc = "RS latch"]
-    RS,
-}
-impl SEQSELW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            SEQSELW::DISABLE => 0,
-            SEQSELW::DFF => 1,
-            SEQSELW::JK => 2,
-            SEQSELW::LATCH => 3,
-            SEQSELW::RS => 4,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _SEQSELW<'a> {
+#[doc = "Write proxy for field `SEQSEL`"]
+pub struct SEQSEL_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _SEQSELW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: SEQSELW) -> &'a mut W {
-        unsafe { self.bits(variant._bits()) }
+impl<'a> SEQSEL_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: SEQSEL_A) -> &'a mut W {
+        unsafe { self.bits(variant.into()) }
     }
     #[doc = "Sequential logic is disabled"]
-    #[inline]
+    #[inline(always)]
     pub fn disable(self) -> &'a mut W {
-        self.variant(SEQSELW::DISABLE)
+        self.variant(SEQSEL_A::DISABLE)
     }
     #[doc = "D flip flop"]
-    #[inline]
+    #[inline(always)]
     pub fn dff(self) -> &'a mut W {
-        self.variant(SEQSELW::DFF)
+        self.variant(SEQSEL_A::DFF)
     }
     #[doc = "JK flip flop"]
-    #[inline]
+    #[inline(always)]
     pub fn jk(self) -> &'a mut W {
-        self.variant(SEQSELW::JK)
+        self.variant(SEQSEL_A::JK)
     }
     #[doc = "D latch"]
-    #[inline]
+    #[inline(always)]
     pub fn latch(self) -> &'a mut W {
-        self.variant(SEQSELW::LATCH)
+        self.variant(SEQSEL_A::LATCH)
     }
     #[doc = "RS latch"]
-    #[inline]
+    #[inline(always)]
     pub fn rs(self) -> &'a mut W {
-        self.variant(SEQSELW::RS)
+        self.variant(SEQSEL_A::RS)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 15;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits = (self.w.bits & !0x0f) | ((value as u8) & 0x0f);
         self.w
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
     #[doc = "Bits 0:3 - Sequential Selection"]
-    #[inline]
-    pub fn seqsel(&self) -> SEQSELR {
-        SEQSELR::_from({
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u8) as u8
-        })
+    #[inline(always)]
+    pub fn seqsel(&self) -> SEQSEL_R {
+        SEQSEL_R::new((self.bits & 0x0f) as u8)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
-    #[doc = r" Writes raw bits to the register"]
-    #[inline]
-    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
-        self.bits = bits;
-        self
-    }
     #[doc = "Bits 0:3 - Sequential Selection"]
-    #[inline]
-    pub fn seqsel(&mut self) -> _SEQSELW {
-        _SEQSELW { w: self }
+    #[inline(always)]
+    pub fn seqsel(&mut self) -> SEQSEL_W {
+        SEQSEL_W { w: self }
     }
 }

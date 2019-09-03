@@ -6,7 +6,7 @@ extern crate feather_m0 as hal;
 extern crate cortex_m_rt;
 
 use hal::clock::GenericClockController;
-use hal::{Peripherals, CorePeripherals};
+use hal::pac::{Peripherals, CorePeripherals};
 use hal::prelude::*;
 use hal::delay::Delay;
 use hal::pwm::Pwm3;

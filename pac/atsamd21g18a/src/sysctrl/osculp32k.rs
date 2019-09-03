@@ -1,164 +1,74 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u8,
-}
-#[doc = r" Value to write to the register"]
-pub struct W {
-    bits: u8,
-}
-impl super::OSCULP32K {
-    #[doc = r" Modifies the contents of the register"]
-    #[inline]
-    pub fn modify<F>(&self, f: F)
-    where
-        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
-    {
-        let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-    #[doc = r" Writes to the register"]
-    #[inline]
-    pub fn write<F>(&self, f: F)
-    where
-        F: FnOnce(&mut W) -> &mut W,
-    {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Writes the reset value to the register"]
-    #[inline]
-    pub fn reset(&self) {
-        self.write(|w| w)
+#[doc = "Reader of register OSCULP32K"]
+pub type R = crate::R<u8, super::OSCULP32K>;
+#[doc = "Writer for register OSCULP32K"]
+pub type W = crate::W<u8, super::OSCULP32K>;
+#[doc = "Register OSCULP32K `reset()`'s with value 0x1f"]
+impl crate::ResetValue for super::OSCULP32K {
+    type Type = u8;
+    #[inline(always)]
+    fn reset_value() -> Self::Type {
+        0x1f
     }
 }
-#[doc = r" Value of the field"]
-pub struct CALIBR {
-    bits: u8,
-}
-impl CALIBR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
-}
-#[doc = r" Value of the field"]
-pub struct WRTLOCKR {
-    bits: bool,
-}
-impl WRTLOCKR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Proxy"]
-pub struct _CALIBW<'a> {
+#[doc = "Reader of field `CALIB`"]
+pub type CALIB_R = crate::R<u8, u8>;
+#[doc = "Write proxy for field `CALIB`"]
+pub struct CALIB_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _CALIBW<'a> {
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+impl<'a> CALIB_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 31;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits = (self.w.bits & !0x1f) | ((value as u8) & 0x1f);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _WRTLOCKW<'a> {
+#[doc = "Reader of field `WRTLOCK`"]
+pub type WRTLOCK_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `WRTLOCK`"]
+pub struct WRTLOCK_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _WRTLOCKW<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> WRTLOCK_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 7;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 7)) | (((value as u8) & 0x01) << 7);
         self.w
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
     #[doc = "Bits 0:4 - Oscillator Calibration"]
-    #[inline]
-    pub fn calib(&self) -> CALIBR {
-        let bits = {
-            const MASK: u8 = 31;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u8) as u8
-        };
-        CALIBR { bits }
+    #[inline(always)]
+    pub fn calib(&self) -> CALIB_R {
+        CALIB_R::new((self.bits & 0x1f) as u8)
     }
     #[doc = "Bit 7 - Write Lock"]
-    #[inline]
-    pub fn wrtlock(&self) -> WRTLOCKR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 7;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
-        WRTLOCKR { bits }
+    #[inline(always)]
+    pub fn wrtlock(&self) -> WRTLOCK_R {
+        WRTLOCK_R::new(((self.bits >> 7) & 0x01) != 0)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 31 }
-    }
-    #[doc = r" Writes raw bits to the register"]
-    #[inline]
-    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
-        self.bits = bits;
-        self
-    }
     #[doc = "Bits 0:4 - Oscillator Calibration"]
-    #[inline]
-    pub fn calib(&mut self) -> _CALIBW {
-        _CALIBW { w: self }
+    #[inline(always)]
+    pub fn calib(&mut self) -> CALIB_W {
+        CALIB_W { w: self }
     }
     #[doc = "Bit 7 - Write Lock"]
-    #[inline]
-    pub fn wrtlock(&mut self) -> _WRTLOCKW {
-        _WRTLOCKW { w: self }
+    #[inline(always)]
+    pub fn wrtlock(&mut self) -> WRTLOCK_W {
+        WRTLOCK_W { w: self }
     }
 }

@@ -1,167 +1,71 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u32,
-}
-#[doc = r" Value to write to the register"]
-pub struct W {
-    bits: u32,
-}
-impl super::DFLLVAL {
-    #[doc = r" Modifies the contents of the register"]
-    #[inline]
-    pub fn modify<F>(&self, f: F)
-    where
-        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
-    {
-        let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-    #[doc = r" Writes to the register"]
-    #[inline]
-    pub fn write<F>(&self, f: F)
-    where
-        F: FnOnce(&mut W) -> &mut W,
-    {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Writes the reset value to the register"]
-    #[inline]
-    pub fn reset(&self) {
-        self.write(|w| w)
+#[doc = "Reader of register DFLLVAL"]
+pub type R = crate::R<u32, super::DFLLVAL>;
+#[doc = "Writer for register DFLLVAL"]
+pub type W = crate::W<u32, super::DFLLVAL>;
+#[doc = "Register DFLLVAL `reset()`'s with value 0"]
+impl crate::ResetValue for super::DFLLVAL {
+    type Type = u32;
+    #[inline(always)]
+    fn reset_value() -> Self::Type {
+        0
     }
 }
-#[doc = r" Value of the field"]
-pub struct FINER {
-    bits: u8,
-}
-impl FINER {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
-}
-#[doc = r" Value of the field"]
-pub struct COARSER {
-    bits: u8,
-}
-impl COARSER {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
-}
-#[doc = r" Value of the field"]
-pub struct DIFFR {
-    bits: u16,
-}
-impl DIFFR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u16 {
-        self.bits
-    }
-}
-#[doc = r" Proxy"]
-pub struct _FINEW<'a> {
+#[doc = "Reader of field `FINE`"]
+pub type FINE_R = crate::R<u8, u8>;
+#[doc = "Write proxy for field `FINE`"]
+pub struct FINE_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _FINEW<'a> {
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+impl<'a> FINE_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 255;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !0xff) | ((value as u32) & 0xff);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _COARSEW<'a> {
+#[doc = "Reader of field `COARSE`"]
+pub type COARSE_R = crate::R<u8, u8>;
+#[doc = "Write proxy for field `COARSE`"]
+pub struct COARSE_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _COARSEW<'a> {
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+impl<'a> COARSE_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 63;
-        const OFFSET: u8 = 10;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x3f << 10)) | (((value as u32) & 0x3f) << 10);
         self.w
     }
 }
+#[doc = "Reader of field `DIFF`"]
+pub type DIFF_R = crate::R<u16, u16>;
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u32 {
-        self.bits
-    }
     #[doc = "Bits 0:7 - Fine Value"]
-    #[inline]
-    pub fn fine(&self) -> FINER {
-        let bits = {
-            const MASK: u8 = 255;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
-        FINER { bits }
+    #[inline(always)]
+    pub fn fine(&self) -> FINE_R {
+        FINE_R::new((self.bits & 0xff) as u8)
     }
     #[doc = "Bits 10:15 - Coarse Value"]
-    #[inline]
-    pub fn coarse(&self) -> COARSER {
-        let bits = {
-            const MASK: u8 = 63;
-            const OFFSET: u8 = 10;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
-        COARSER { bits }
+    #[inline(always)]
+    pub fn coarse(&self) -> COARSE_R {
+        COARSE_R::new(((self.bits >> 10) & 0x3f) as u8)
     }
     #[doc = "Bits 16:31 - Multiplication Ratio Difference"]
-    #[inline]
-    pub fn diff(&self) -> DIFFR {
-        let bits = {
-            const MASK: u16 = 65535;
-            const OFFSET: u8 = 16;
-            ((self.bits >> OFFSET) & MASK as u32) as u16
-        };
-        DIFFR { bits }
+    #[inline(always)]
+    pub fn diff(&self) -> DIFF_R {
+        DIFF_R::new(((self.bits >> 16) & 0xffff) as u16)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
-    #[doc = r" Writes raw bits to the register"]
-    #[inline]
-    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.bits = bits;
-        self
-    }
     #[doc = "Bits 0:7 - Fine Value"]
-    #[inline]
-    pub fn fine(&mut self) -> _FINEW {
-        _FINEW { w: self }
+    #[inline(always)]
+    pub fn fine(&mut self) -> FINE_W {
+        FINE_W { w: self }
     }
     #[doc = "Bits 10:15 - Coarse Value"]
-    #[inline]
-    pub fn coarse(&mut self) -> _COARSEW {
-        _COARSEW { w: self }
+    #[inline(always)]
+    pub fn coarse(&mut self) -> COARSE_W {
+        COARSE_W { w: self }
     }
 }

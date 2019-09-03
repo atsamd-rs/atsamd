@@ -1,661 +1,384 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u32,
-}
-#[doc = r" Value to write to the register"]
-pub struct W {
-    bits: u32,
-}
-impl super::CFG {
-    #[doc = r" Modifies the contents of the register"]
-    #[inline]
-    pub fn modify<F>(&self, f: F)
-    where
-        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
-    {
-        let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-    #[doc = r" Writes to the register"]
-    #[inline]
-    pub fn write<F>(&self, f: F)
-    where
-        F: FnOnce(&mut W) -> &mut W,
-    {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Writes the reset value to the register"]
-    #[inline]
-    pub fn reset(&self) {
-        self.write(|w| w)
+#[doc = "Reader of register CFG"]
+pub type R = crate::R<u32, super::CFG>;
+#[doc = "Writer for register CFG"]
+pub type W = crate::W<u32, super::CFG>;
+#[doc = "Register CFG `reset()`'s with value 0"]
+impl crate::ResetValue for super::CFG {
+    type Type = u32;
+    #[inline(always)]
+    fn reset_value() -> Self::Type {
+        0
     }
 }
-#[doc = r" Value of the field"]
-pub struct WBDISR {
-    bits: bool,
+#[doc = "Reader of field `WBDIS`"]
+pub type WBDIS_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `WBDIS`"]
+pub struct WBDIS_W<'a> {
+    w: &'a mut W,
 }
-impl WBDISR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
+impl<'a> WBDIS_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
     }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
     }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct EOMDISR {
-    bits: bool,
-}
-impl EOMDISR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !0x01) | ((value as u32) & 0x01);
+        self.w
     }
 }
-#[doc = r" Value of the field"]
-pub struct SLBDISR {
-    bits: bool,
+#[doc = "Reader of field `EOMDIS`"]
+pub type EOMDIS_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `EOMDIS`"]
+pub struct EOMDIS_W<'a> {
+    w: &'a mut W,
 }
-impl SLBDISR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
+impl<'a> EOMDIS_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
     }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
     }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct BBCR {
-    bits: u8,
-}
-impl BBCR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 1)) | (((value as u32) & 0x01) << 1);
+        self.w
     }
 }
-#[doc = r" Value of the field"]
-pub struct ASCDR {
-    bits: bool,
+#[doc = "Reader of field `SLBDIS`"]
+pub type SLBDIS_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `SLBDIS`"]
+pub struct SLBDIS_W<'a> {
+    w: &'a mut W,
 }
-impl ASCDR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
+impl<'a> SLBDIS_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
     }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
     }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct DUALBUFFR {
-    bits: bool,
-}
-impl DUALBUFFR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 2)) | (((value as u32) & 0x01) << 2);
+        self.w
     }
 }
-#[doc = r" Value of the field"]
-pub struct UIHASHR {
-    bits: bool,
+#[doc = "Reader of field `BBC`"]
+pub type BBC_R = crate::R<u8, u8>;
+#[doc = "Write proxy for field `BBC`"]
+pub struct BBC_W<'a> {
+    w: &'a mut W,
 }
-impl UIHASHR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
+impl<'a> BBC_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub unsafe fn bits(self, value: u8) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x0f << 4)) | (((value as u32) & 0x0f) << 4);
+        self.w
     }
 }
-#[doc = "Possible values of the field `UALGO`"]
+#[doc = "Reader of field `ASCD`"]
+pub type ASCD_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `ASCD`"]
+pub struct ASCD_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> ASCD_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 8)) | (((value as u32) & 0x01) << 8);
+        self.w
+    }
+}
+#[doc = "Reader of field `DUALBUFF`"]
+pub type DUALBUFF_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `DUALBUFF`"]
+pub struct DUALBUFF_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> DUALBUFF_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 9)) | (((value as u32) & 0x01) << 9);
+        self.w
+    }
+}
+#[doc = "Reader of field `UIHASH`"]
+pub type UIHASH_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `UIHASH`"]
+pub struct UIHASH_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> UIHASH_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 12)) | (((value as u32) & 0x01) << 12);
+        self.w
+    }
+}
+#[doc = "User SHA Algorithm\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum UALGOR {
-    #[doc = "SHA1 Algorithm"]
+pub enum UALGO_A {
+    #[doc = "0: SHA1 Algorithm"]
     SHA1,
-    #[doc = "SHA256 Algorithm"]
+    #[doc = "1: SHA256 Algorithm"]
     SHA256,
-    #[doc = "SHA224 Algorithm"]
+    #[doc = "4: SHA224 Algorithm"]
     SHA224,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
 }
-impl UALGOR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            UALGOR::SHA1 => 0,
-            UALGOR::SHA256 => 1,
-            UALGOR::SHA224 => 4,
-            UALGOR::_Reserved(bits) => bits,
+impl From<UALGO_A> for u8 {
+    #[inline(always)]
+    fn from(variant: UALGO_A) -> Self {
+        match variant {
+            UALGO_A::SHA1 => 0,
+            UALGO_A::SHA256 => 1,
+            UALGO_A::SHA224 => 4,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> UALGOR {
-        match value {
-            0 => UALGOR::SHA1,
-            1 => UALGOR::SHA256,
-            4 => UALGOR::SHA224,
-            i => UALGOR::_Reserved(i),
+}
+#[doc = "Reader of field `UALGO`"]
+pub type UALGO_R = crate::R<u8, UALGO_A>;
+impl UALGO_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, UALGO_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(UALGO_A::SHA1),
+            1 => Val(UALGO_A::SHA256),
+            4 => Val(UALGO_A::SHA224),
+            i => Res(i),
         }
     }
     #[doc = "Checks if the value of the field is `SHA1`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_sha1(&self) -> bool {
-        *self == UALGOR::SHA1
+        *self == UALGO_A::SHA1
     }
     #[doc = "Checks if the value of the field is `SHA256`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_sha256(&self) -> bool {
-        *self == UALGOR::SHA256
+        *self == UALGO_A::SHA256
     }
     #[doc = "Checks if the value of the field is `SHA224`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_sha224(&self) -> bool {
-        *self == UALGOR::SHA224
+        *self == UALGO_A::SHA224
     }
 }
-#[doc = r" Value of the field"]
-pub struct HAPROTR {
-    bits: u8,
-}
-impl HAPROTR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
-}
-#[doc = r" Value of the field"]
-pub struct DAPROTR {
-    bits: u8,
-}
-impl DAPROTR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
-}
-#[doc = r" Proxy"]
-pub struct _WBDISW<'a> {
+#[doc = "Write proxy for field `UALGO`"]
+pub struct UALGO_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _WBDISW<'a> {
-    #[doc = r" Sets the field bit"]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r" Clears the field bit"]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
-        self.w
-    }
-}
-#[doc = r" Proxy"]
-pub struct _EOMDISW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _EOMDISW<'a> {
-    #[doc = r" Sets the field bit"]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r" Clears the field bit"]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 1;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
-        self.w
-    }
-}
-#[doc = r" Proxy"]
-pub struct _SLBDISW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _SLBDISW<'a> {
-    #[doc = r" Sets the field bit"]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r" Clears the field bit"]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 2;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
-        self.w
-    }
-}
-#[doc = r" Proxy"]
-pub struct _BBCW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _BBCW<'a> {
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 15;
-        const OFFSET: u8 = 4;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
-        self.w
-    }
-}
-#[doc = r" Proxy"]
-pub struct _ASCDW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _ASCDW<'a> {
-    #[doc = r" Sets the field bit"]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r" Clears the field bit"]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 8;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
-        self.w
-    }
-}
-#[doc = r" Proxy"]
-pub struct _DUALBUFFW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _DUALBUFFW<'a> {
-    #[doc = r" Sets the field bit"]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r" Clears the field bit"]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 9;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
-        self.w
-    }
-}
-#[doc = r" Proxy"]
-pub struct _UIHASHW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _UIHASHW<'a> {
-    #[doc = r" Sets the field bit"]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r" Clears the field bit"]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 12;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
-        self.w
-    }
-}
-#[doc = "Values that can be written to the field `UALGO`"]
-pub enum UALGOW {
-    #[doc = "SHA1 Algorithm"]
-    SHA1,
-    #[doc = "SHA256 Algorithm"]
-    SHA256,
-    #[doc = "SHA224 Algorithm"]
-    SHA224,
-}
-impl UALGOW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            UALGOW::SHA1 => 0,
-            UALGOW::SHA256 => 1,
-            UALGOW::SHA224 => 4,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _UALGOW<'a> {
-    w: &'a mut W,
-}
-impl<'a> _UALGOW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: UALGOW) -> &'a mut W {
-        unsafe { self.bits(variant._bits()) }
+impl<'a> UALGO_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: UALGO_A) -> &'a mut W {
+        unsafe { self.bits(variant.into()) }
     }
     #[doc = "SHA1 Algorithm"]
-    #[inline]
+    #[inline(always)]
     pub fn sha1(self) -> &'a mut W {
-        self.variant(UALGOW::SHA1)
+        self.variant(UALGO_A::SHA1)
     }
     #[doc = "SHA256 Algorithm"]
-    #[inline]
+    #[inline(always)]
     pub fn sha256(self) -> &'a mut W {
-        self.variant(UALGOW::SHA256)
+        self.variant(UALGO_A::SHA256)
     }
     #[doc = "SHA224 Algorithm"]
-    #[inline]
+    #[inline(always)]
     pub fn sha224(self) -> &'a mut W {
-        self.variant(UALGOW::SHA224)
+        self.variant(UALGO_A::SHA224)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 7;
-        const OFFSET: u8 = 13;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x07 << 13)) | (((value as u32) & 0x07) << 13);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _HAPROTW<'a> {
+#[doc = "Reader of field `HAPROT`"]
+pub type HAPROT_R = crate::R<u8, u8>;
+#[doc = "Write proxy for field `HAPROT`"]
+pub struct HAPROT_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _HAPROTW<'a> {
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+impl<'a> HAPROT_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 63;
-        const OFFSET: u8 = 16;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x3f << 16)) | (((value as u32) & 0x3f) << 16);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _DAPROTW<'a> {
+#[doc = "Reader of field `DAPROT`"]
+pub type DAPROT_R = crate::R<u8, u8>;
+#[doc = "Write proxy for field `DAPROT`"]
+pub struct DAPROT_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _DAPROTW<'a> {
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+impl<'a> DAPROT_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 63;
-        const OFFSET: u8 = 24;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x3f << 24)) | (((value as u32) & 0x3f) << 24);
         self.w
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u32 {
-        self.bits
-    }
     #[doc = "Bit 0 - Write Back Disable"]
-    #[inline]
-    pub fn wbdis(&self) -> WBDISR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        WBDISR { bits }
+    #[inline(always)]
+    pub fn wbdis(&self) -> WBDIS_R {
+        WBDIS_R::new((self.bits & 0x01) != 0)
     }
     #[doc = "Bit 1 - End of Monitoring Disable"]
-    #[inline]
-    pub fn eomdis(&self) -> EOMDISR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        EOMDISR { bits }
+    #[inline(always)]
+    pub fn eomdis(&self) -> EOMDIS_R {
+        EOMDIS_R::new(((self.bits >> 1) & 0x01) != 0)
     }
     #[doc = "Bit 2 - Secondary List Branching Disable"]
-    #[inline]
-    pub fn slbdis(&self) -> SLBDISR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        SLBDISR { bits }
+    #[inline(always)]
+    pub fn slbdis(&self) -> SLBDIS_R {
+        SLBDIS_R::new(((self.bits >> 2) & 0x01) != 0)
     }
     #[doc = "Bits 4:7 - Bus Burden Control"]
-    #[inline]
-    pub fn bbc(&self) -> BBCR {
-        let bits = {
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
-        BBCR { bits }
+    #[inline(always)]
+    pub fn bbc(&self) -> BBC_R {
+        BBC_R::new(((self.bits >> 4) & 0x0f) as u8)
     }
     #[doc = "Bit 8 - Automatic Switch To Compare Digest"]
-    #[inline]
-    pub fn ascd(&self) -> ASCDR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        ASCDR { bits }
+    #[inline(always)]
+    pub fn ascd(&self) -> ASCD_R {
+        ASCD_R::new(((self.bits >> 8) & 0x01) != 0)
     }
     #[doc = "Bit 9 - Dual Input Buffer"]
-    #[inline]
-    pub fn dualbuff(&self) -> DUALBUFFR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 9;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        DUALBUFFR { bits }
+    #[inline(always)]
+    pub fn dualbuff(&self) -> DUALBUFF_R {
+        DUALBUFF_R::new(((self.bits >> 9) & 0x01) != 0)
     }
     #[doc = "Bit 12 - User Initial Hash Value"]
-    #[inline]
-    pub fn uihash(&self) -> UIHASHR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 12;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        UIHASHR { bits }
+    #[inline(always)]
+    pub fn uihash(&self) -> UIHASH_R {
+        UIHASH_R::new(((self.bits >> 12) & 0x01) != 0)
     }
     #[doc = "Bits 13:15 - User SHA Algorithm"]
-    #[inline]
-    pub fn ualgo(&self) -> UALGOR {
-        UALGOR::_from({
-            const MASK: u8 = 7;
-            const OFFSET: u8 = 13;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        })
+    #[inline(always)]
+    pub fn ualgo(&self) -> UALGO_R {
+        UALGO_R::new(((self.bits >> 13) & 0x07) as u8)
     }
     #[doc = "Bits 16:21 - Region Hash Area Protection"]
-    #[inline]
-    pub fn haprot(&self) -> HAPROTR {
-        let bits = {
-            const MASK: u8 = 63;
-            const OFFSET: u8 = 16;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
-        HAPROTR { bits }
+    #[inline(always)]
+    pub fn haprot(&self) -> HAPROT_R {
+        HAPROT_R::new(((self.bits >> 16) & 0x3f) as u8)
     }
     #[doc = "Bits 24:29 - Region Descriptor Area Protection"]
-    #[inline]
-    pub fn daprot(&self) -> DAPROTR {
-        let bits = {
-            const MASK: u8 = 63;
-            const OFFSET: u8 = 24;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
-        DAPROTR { bits }
+    #[inline(always)]
+    pub fn daprot(&self) -> DAPROT_R {
+        DAPROT_R::new(((self.bits >> 24) & 0x3f) as u8)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
-    #[doc = r" Writes raw bits to the register"]
-    #[inline]
-    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.bits = bits;
-        self
-    }
     #[doc = "Bit 0 - Write Back Disable"]
-    #[inline]
-    pub fn wbdis(&mut self) -> _WBDISW {
-        _WBDISW { w: self }
+    #[inline(always)]
+    pub fn wbdis(&mut self) -> WBDIS_W {
+        WBDIS_W { w: self }
     }
     #[doc = "Bit 1 - End of Monitoring Disable"]
-    #[inline]
-    pub fn eomdis(&mut self) -> _EOMDISW {
-        _EOMDISW { w: self }
+    #[inline(always)]
+    pub fn eomdis(&mut self) -> EOMDIS_W {
+        EOMDIS_W { w: self }
     }
     #[doc = "Bit 2 - Secondary List Branching Disable"]
-    #[inline]
-    pub fn slbdis(&mut self) -> _SLBDISW {
-        _SLBDISW { w: self }
+    #[inline(always)]
+    pub fn slbdis(&mut self) -> SLBDIS_W {
+        SLBDIS_W { w: self }
     }
     #[doc = "Bits 4:7 - Bus Burden Control"]
-    #[inline]
-    pub fn bbc(&mut self) -> _BBCW {
-        _BBCW { w: self }
+    #[inline(always)]
+    pub fn bbc(&mut self) -> BBC_W {
+        BBC_W { w: self }
     }
     #[doc = "Bit 8 - Automatic Switch To Compare Digest"]
-    #[inline]
-    pub fn ascd(&mut self) -> _ASCDW {
-        _ASCDW { w: self }
+    #[inline(always)]
+    pub fn ascd(&mut self) -> ASCD_W {
+        ASCD_W { w: self }
     }
     #[doc = "Bit 9 - Dual Input Buffer"]
-    #[inline]
-    pub fn dualbuff(&mut self) -> _DUALBUFFW {
-        _DUALBUFFW { w: self }
+    #[inline(always)]
+    pub fn dualbuff(&mut self) -> DUALBUFF_W {
+        DUALBUFF_W { w: self }
     }
     #[doc = "Bit 12 - User Initial Hash Value"]
-    #[inline]
-    pub fn uihash(&mut self) -> _UIHASHW {
-        _UIHASHW { w: self }
+    #[inline(always)]
+    pub fn uihash(&mut self) -> UIHASH_W {
+        UIHASH_W { w: self }
     }
     #[doc = "Bits 13:15 - User SHA Algorithm"]
-    #[inline]
-    pub fn ualgo(&mut self) -> _UALGOW {
-        _UALGOW { w: self }
+    #[inline(always)]
+    pub fn ualgo(&mut self) -> UALGO_W {
+        UALGO_W { w: self }
     }
     #[doc = "Bits 16:21 - Region Hash Area Protection"]
-    #[inline]
-    pub fn haprot(&mut self) -> _HAPROTW {
-        _HAPROTW { w: self }
+    #[inline(always)]
+    pub fn haprot(&mut self) -> HAPROT_W {
+        HAPROT_W { w: self }
     }
     #[doc = "Bits 24:29 - Region Descriptor Area Protection"]
-    #[inline]
-    pub fn daprot(&mut self) -> _DAPROTW {
-        _DAPROTW { w: self }
+    #[inline(always)]
+    pub fn daprot(&mut self) -> DAPROT_W {
+        DAPROT_W { w: self }
     }
 }

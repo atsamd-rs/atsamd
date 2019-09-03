@@ -1,4 +1,4 @@
-#[doc = r" Register block"]
+#[doc = r"Register block"]
 #[repr(C)]
 pub struct RegisterBlock {
     _reserved_0_count8: [u8; 32usize],
@@ -35,7 +35,7 @@ impl RegisterBlock {
         unsafe { &mut *(((self as *const Self) as *mut u8).add(0usize) as *mut COUNT8) }
     }
 }
-#[doc = r" Register block"]
+#[doc = r"Register block"]
 #[repr(C)]
 pub struct COUNT8 {
     #[doc = "0x00 - Control A"]
@@ -71,10 +71,10 @@ pub struct COUNT8 {
     #[doc = "0x18 - COUNT8 Compare/Capture"]
     pub cc: [self::count8::CC; 2],
 }
-#[doc = r" Register block"]
+#[doc = r"Register block"]
 #[doc = "8-bit Counter Mode"]
 pub mod count8;
-#[doc = r" Register block"]
+#[doc = r"Register block"]
 #[repr(C)]
 pub struct COUNT16 {
     #[doc = "0x00 - Control A"]
@@ -107,10 +107,10 @@ pub struct COUNT16 {
     #[doc = "0x18 - COUNT16 Compare/Capture"]
     pub cc: [self::count16::CC; 2],
 }
-#[doc = r" Register block"]
+#[doc = r"Register block"]
 #[doc = "16-bit Counter Mode"]
 pub mod count16;
-#[doc = r" Register block"]
+#[doc = r"Register block"]
 #[repr(C)]
 pub struct COUNT32 {
     #[doc = "0x00 - Control A"]
@@ -143,6 +143,6 @@ pub struct COUNT32 {
     #[doc = "0x18 - COUNT32 Compare/Capture"]
     pub cc: [self::count32::CC; 2],
 }
-#[doc = r" Register block"]
+#[doc = r"Register block"]
 #[doc = "32-bit Counter Mode"]
 pub mod count32;

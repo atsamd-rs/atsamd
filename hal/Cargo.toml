@@ -1,6 +1,6 @@
 [package]
 name = "atsamd-hal"
-version = "0.6.0"
+version = "0.7.0"
 authors = ["Wez Furlong <wez@wezfurlong.org>", "Paul Sajna <sajattack@gmail.com>"]
 description = "HAL and Peripheral access API for ATSAMD21 and ATSAMD51 microcontrollers"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
@@ -31,32 +31,32 @@ version = "~1.0"
 # We use a feature named "samdFOO" to pull in the dependency named "atsamdFOO"
 [dependencies.atsamd21g18a]
 path = "../pac/atsamd21g18a"
-version = "~0.5"
+version = "~0.6"
 optional = true
 
 [dependencies.atsamd21e18a]
 path = "../pac/atsamd21e18a"
-version = "~0.5"
+version = "~0.6"
 optional = true
 
 [dependencies.atsamd21j18a]
 path = "../pac/atsamd21j18a"
-version = "~0.5"
+version = "~0.6"
 optional = true
 
 [dependencies.atsamd51g19a]
 path = "../pac/atsamd51g19a"
-version = "~0.5"
+version = "~0.6"
 optional = true
 
 [dependencies.atsamd51j19a]
 path = "../pac/atsamd51j19a"
-version = "~0.5"
+version = "~0.6"
 optional = true
 
 [dependencies.atsamd51j20a]
 path = "../pac/atsamd51j20a"
-version = "~0.5"
+version = "~0.6"
 optional = true
 
 

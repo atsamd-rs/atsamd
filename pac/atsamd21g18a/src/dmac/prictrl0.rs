@@ -1,464 +1,248 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u32,
-}
-#[doc = r" Value to write to the register"]
-pub struct W {
-    bits: u32,
-}
-impl super::PRICTRL0 {
-    #[doc = r" Modifies the contents of the register"]
-    #[inline]
-    pub fn modify<F>(&self, f: F)
-    where
-        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
-    {
-        let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-    #[doc = r" Writes to the register"]
-    #[inline]
-    pub fn write<F>(&self, f: F)
-    where
-        F: FnOnce(&mut W) -> &mut W,
-    {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Writes the reset value to the register"]
-    #[inline]
-    pub fn reset(&self) {
-        self.write(|w| w)
+#[doc = "Reader of register PRICTRL0"]
+pub type R = crate::R<u32, super::PRICTRL0>;
+#[doc = "Writer for register PRICTRL0"]
+pub type W = crate::W<u32, super::PRICTRL0>;
+#[doc = "Register PRICTRL0 `reset()`'s with value 0"]
+impl crate::ResetValue for super::PRICTRL0 {
+    type Type = u32;
+    #[inline(always)]
+    fn reset_value() -> Self::Type {
+        0
     }
 }
-#[doc = r" Value of the field"]
-pub struct LVLPRI0R {
-    bits: u8,
-}
-impl LVLPRI0R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
-}
-#[doc = r" Value of the field"]
-pub struct RRLVLEN0R {
-    bits: bool,
-}
-impl RRLVLEN0R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct LVLPRI1R {
-    bits: u8,
-}
-impl LVLPRI1R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
-}
-#[doc = r" Value of the field"]
-pub struct RRLVLEN1R {
-    bits: bool,
-}
-impl RRLVLEN1R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct LVLPRI2R {
-    bits: u8,
-}
-impl LVLPRI2R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
-}
-#[doc = r" Value of the field"]
-pub struct RRLVLEN2R {
-    bits: bool,
-}
-impl RRLVLEN2R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct LVLPRI3R {
-    bits: u8,
-}
-impl LVLPRI3R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
-}
-#[doc = r" Value of the field"]
-pub struct RRLVLEN3R {
-    bits: bool,
-}
-impl RRLVLEN3R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Proxy"]
-pub struct _LVLPRI0W<'a> {
+#[doc = "Reader of field `LVLPRI0`"]
+pub type LVLPRI0_R = crate::R<u8, u8>;
+#[doc = "Write proxy for field `LVLPRI0`"]
+pub struct LVLPRI0_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _LVLPRI0W<'a> {
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+impl<'a> LVLPRI0_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 15;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !0x0f) | ((value as u32) & 0x0f);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _RRLVLEN0W<'a> {
+#[doc = "Reader of field `RRLVLEN0`"]
+pub type RRLVLEN0_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `RRLVLEN0`"]
+pub struct RRLVLEN0_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _RRLVLEN0W<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> RRLVLEN0_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 7;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 7)) | (((value as u32) & 0x01) << 7);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _LVLPRI1W<'a> {
+#[doc = "Reader of field `LVLPRI1`"]
+pub type LVLPRI1_R = crate::R<u8, u8>;
+#[doc = "Write proxy for field `LVLPRI1`"]
+pub struct LVLPRI1_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _LVLPRI1W<'a> {
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+impl<'a> LVLPRI1_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 15;
-        const OFFSET: u8 = 8;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x0f << 8)) | (((value as u32) & 0x0f) << 8);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _RRLVLEN1W<'a> {
+#[doc = "Reader of field `RRLVLEN1`"]
+pub type RRLVLEN1_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `RRLVLEN1`"]
+pub struct RRLVLEN1_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _RRLVLEN1W<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> RRLVLEN1_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 15;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 15)) | (((value as u32) & 0x01) << 15);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _LVLPRI2W<'a> {
+#[doc = "Reader of field `LVLPRI2`"]
+pub type LVLPRI2_R = crate::R<u8, u8>;
+#[doc = "Write proxy for field `LVLPRI2`"]
+pub struct LVLPRI2_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _LVLPRI2W<'a> {
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+impl<'a> LVLPRI2_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 15;
-        const OFFSET: u8 = 16;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x0f << 16)) | (((value as u32) & 0x0f) << 16);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _RRLVLEN2W<'a> {
+#[doc = "Reader of field `RRLVLEN2`"]
+pub type RRLVLEN2_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `RRLVLEN2`"]
+pub struct RRLVLEN2_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _RRLVLEN2W<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> RRLVLEN2_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 23;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 23)) | (((value as u32) & 0x01) << 23);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _LVLPRI3W<'a> {
+#[doc = "Reader of field `LVLPRI3`"]
+pub type LVLPRI3_R = crate::R<u8, u8>;
+#[doc = "Write proxy for field `LVLPRI3`"]
+pub struct LVLPRI3_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _LVLPRI3W<'a> {
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+impl<'a> LVLPRI3_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 15;
-        const OFFSET: u8 = 24;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x0f << 24)) | (((value as u32) & 0x0f) << 24);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _RRLVLEN3W<'a> {
+#[doc = "Reader of field `RRLVLEN3`"]
+pub type RRLVLEN3_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `RRLVLEN3`"]
+pub struct RRLVLEN3_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _RRLVLEN3W<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> RRLVLEN3_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 31;
-        self.w.bits &= !((MASK as u32) << OFFSET);
-        self.w.bits |= ((value & MASK) as u32) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 31)) | (((value as u32) & 0x01) << 31);
         self.w
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u32 {
-        self.bits
-    }
     #[doc = "Bits 0:3 - Level 0 Channel Priority Number"]
-    #[inline]
-    pub fn lvlpri0(&self) -> LVLPRI0R {
-        let bits = {
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
-        LVLPRI0R { bits }
+    #[inline(always)]
+    pub fn lvlpri0(&self) -> LVLPRI0_R {
+        LVLPRI0_R::new((self.bits & 0x0f) as u8)
     }
     #[doc = "Bit 7 - Level 0 Round-Robin Scheduling Enable"]
-    #[inline]
-    pub fn rrlvlen0(&self) -> RRLVLEN0R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 7;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        RRLVLEN0R { bits }
+    #[inline(always)]
+    pub fn rrlvlen0(&self) -> RRLVLEN0_R {
+        RRLVLEN0_R::new(((self.bits >> 7) & 0x01) != 0)
     }
     #[doc = "Bits 8:11 - Level 1 Channel Priority Number"]
-    #[inline]
-    pub fn lvlpri1(&self) -> LVLPRI1R {
-        let bits = {
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 8;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
-        LVLPRI1R { bits }
+    #[inline(always)]
+    pub fn lvlpri1(&self) -> LVLPRI1_R {
+        LVLPRI1_R::new(((self.bits >> 8) & 0x0f) as u8)
     }
     #[doc = "Bit 15 - Level 1 Round-Robin Scheduling Enable"]
-    #[inline]
-    pub fn rrlvlen1(&self) -> RRLVLEN1R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 15;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        RRLVLEN1R { bits }
+    #[inline(always)]
+    pub fn rrlvlen1(&self) -> RRLVLEN1_R {
+        RRLVLEN1_R::new(((self.bits >> 15) & 0x01) != 0)
     }
     #[doc = "Bits 16:19 - Level 2 Channel Priority Number"]
-    #[inline]
-    pub fn lvlpri2(&self) -> LVLPRI2R {
-        let bits = {
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 16;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
-        LVLPRI2R { bits }
+    #[inline(always)]
+    pub fn lvlpri2(&self) -> LVLPRI2_R {
+        LVLPRI2_R::new(((self.bits >> 16) & 0x0f) as u8)
     }
     #[doc = "Bit 23 - Level 2 Round-Robin Scheduling Enable"]
-    #[inline]
-    pub fn rrlvlen2(&self) -> RRLVLEN2R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 23;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        RRLVLEN2R { bits }
+    #[inline(always)]
+    pub fn rrlvlen2(&self) -> RRLVLEN2_R {
+        RRLVLEN2_R::new(((self.bits >> 23) & 0x01) != 0)
     }
     #[doc = "Bits 24:27 - Level 3 Channel Priority Number"]
-    #[inline]
-    pub fn lvlpri3(&self) -> LVLPRI3R {
-        let bits = {
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 24;
-            ((self.bits >> OFFSET) & MASK as u32) as u8
-        };
-        LVLPRI3R { bits }
+    #[inline(always)]
+    pub fn lvlpri3(&self) -> LVLPRI3_R {
+        LVLPRI3_R::new(((self.bits >> 24) & 0x0f) as u8)
     }
     #[doc = "Bit 31 - Level 3 Round-Robin Scheduling Enable"]
-    #[inline]
-    pub fn rrlvlen3(&self) -> RRLVLEN3R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 31;
-            ((self.bits >> OFFSET) & MASK as u32) != 0
-        };
-        RRLVLEN3R { bits }
+    #[inline(always)]
+    pub fn rrlvlen3(&self) -> RRLVLEN3_R {
+        RRLVLEN3_R::new(((self.bits >> 31) & 0x01) != 0)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
-    #[doc = r" Writes raw bits to the register"]
-    #[inline]
-    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.bits = bits;
-        self
-    }
     #[doc = "Bits 0:3 - Level 0 Channel Priority Number"]
-    #[inline]
-    pub fn lvlpri0(&mut self) -> _LVLPRI0W {
-        _LVLPRI0W { w: self }
+    #[inline(always)]
+    pub fn lvlpri0(&mut self) -> LVLPRI0_W {
+        LVLPRI0_W { w: self }
     }
     #[doc = "Bit 7 - Level 0 Round-Robin Scheduling Enable"]
-    #[inline]
-    pub fn rrlvlen0(&mut self) -> _RRLVLEN0W {
-        _RRLVLEN0W { w: self }
+    #[inline(always)]
+    pub fn rrlvlen0(&mut self) -> RRLVLEN0_W {
+        RRLVLEN0_W { w: self }
     }
     #[doc = "Bits 8:11 - Level 1 Channel Priority Number"]
-    #[inline]
-    pub fn lvlpri1(&mut self) -> _LVLPRI1W {
-        _LVLPRI1W { w: self }
+    #[inline(always)]
+    pub fn lvlpri1(&mut self) -> LVLPRI1_W {
+        LVLPRI1_W { w: self }
     }
     #[doc = "Bit 15 - Level 1 Round-Robin Scheduling Enable"]
-    #[inline]
-    pub fn rrlvlen1(&mut self) -> _RRLVLEN1W {
-        _RRLVLEN1W { w: self }
+    #[inline(always)]
+    pub fn rrlvlen1(&mut self) -> RRLVLEN1_W {
+        RRLVLEN1_W { w: self }
     }
     #[doc = "Bits 16:19 - Level 2 Channel Priority Number"]
-    #[inline]
-    pub fn lvlpri2(&mut self) -> _LVLPRI2W {
-        _LVLPRI2W { w: self }
+    #[inline(always)]
+    pub fn lvlpri2(&mut self) -> LVLPRI2_W {
+        LVLPRI2_W { w: self }
     }
     #[doc = "Bit 23 - Level 2 Round-Robin Scheduling Enable"]
-    #[inline]
-    pub fn rrlvlen2(&mut self) -> _RRLVLEN2W {
-        _RRLVLEN2W { w: self }
+    #[inline(always)]
+    pub fn rrlvlen2(&mut self) -> RRLVLEN2_W {
+        RRLVLEN2_W { w: self }
     }
     #[doc = "Bits 24:27 - Level 3 Channel Priority Number"]
-    #[inline]
-    pub fn lvlpri3(&mut self) -> _LVLPRI3W {
-        _LVLPRI3W { w: self }
+    #[inline(always)]
+    pub fn lvlpri3(&mut self) -> LVLPRI3_W {
+        LVLPRI3_W { w: self }
     }
     #[doc = "Bit 31 - Level 3 Round-Robin Scheduling Enable"]
-    #[inline]
-    pub fn rrlvlen3(&mut self) -> _RRLVLEN3W {
-        _RRLVLEN3W { w: self }
+    #[inline(always)]
+    pub fn rrlvlen3(&mut self) -> RRLVLEN3_W {
+        RRLVLEN3_W { w: self }
     }
 }

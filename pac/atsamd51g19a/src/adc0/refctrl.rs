@@ -1,294 +1,184 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u8,
-}
-#[doc = r" Value to write to the register"]
-pub struct W {
-    bits: u8,
-}
-impl super::REFCTRL {
-    #[doc = r" Modifies the contents of the register"]
-    #[inline]
-    pub fn modify<F>(&self, f: F)
-    where
-        for<'w> F: FnOnce(&R, &'w mut W) -> &'w mut W,
-    {
-        let bits = self.register.get();
-        let r = R { bits };
-        let mut w = W { bits };
-        f(&r, &mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-    #[doc = r" Writes to the register"]
-    #[inline]
-    pub fn write<F>(&self, f: F)
-    where
-        F: FnOnce(&mut W) -> &mut W,
-    {
-        let mut w = W::reset_value();
-        f(&mut w);
-        self.register.set(w.bits);
-    }
-    #[doc = r" Writes the reset value to the register"]
-    #[inline]
-    pub fn reset(&self) {
-        self.write(|w| w)
+#[doc = "Reader of register REFCTRL"]
+pub type R = crate::R<u8, super::REFCTRL>;
+#[doc = "Writer for register REFCTRL"]
+pub type W = crate::W<u8, super::REFCTRL>;
+#[doc = "Register REFCTRL `reset()`'s with value 0"]
+impl crate::ResetValue for super::REFCTRL {
+    type Type = u8;
+    #[inline(always)]
+    fn reset_value() -> Self::Type {
+        0
     }
 }
-#[doc = "Possible values of the field `REFSEL`"]
+#[doc = "Reference Selection\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum REFSELR {
-    #[doc = "Internal Bandgap Reference"]
+pub enum REFSEL_A {
+    #[doc = "0: Internal Bandgap Reference"]
     INTREF,
-    #[doc = "1/2 VDDANA"]
+    #[doc = "2: 1/2 VDDANA"]
     INTVCC0,
-    #[doc = "VDDANA"]
+    #[doc = "3: VDDANA"]
     INTVCC1,
-    #[doc = "External Reference"]
+    #[doc = "4: External Reference"]
     AREFA,
-    #[doc = "External Reference"]
+    #[doc = "5: External Reference"]
     AREFB,
-    #[doc = "External Reference (only on ADC1)"]
+    #[doc = "6: External Reference (only on ADC1)"]
     AREFC,
-    #[doc = r" Reserved"]
-    _Reserved(u8),
 }
-impl REFSELR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        match *self {
-            REFSELR::INTREF => 0,
-            REFSELR::INTVCC0 => 2,
-            REFSELR::INTVCC1 => 3,
-            REFSELR::AREFA => 4,
-            REFSELR::AREFB => 5,
-            REFSELR::AREFC => 6,
-            REFSELR::_Reserved(bits) => bits,
+impl From<REFSEL_A> for u8 {
+    #[inline(always)]
+    fn from(variant: REFSEL_A) -> Self {
+        match variant {
+            REFSEL_A::INTREF => 0,
+            REFSEL_A::INTVCC0 => 2,
+            REFSEL_A::INTVCC1 => 3,
+            REFSEL_A::AREFA => 4,
+            REFSEL_A::AREFB => 5,
+            REFSEL_A::AREFC => 6,
         }
     }
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _from(value: u8) -> REFSELR {
-        match value {
-            0 => REFSELR::INTREF,
-            2 => REFSELR::INTVCC0,
-            3 => REFSELR::INTVCC1,
-            4 => REFSELR::AREFA,
-            5 => REFSELR::AREFB,
-            6 => REFSELR::AREFC,
-            i => REFSELR::_Reserved(i),
+}
+#[doc = "Reader of field `REFSEL`"]
+pub type REFSEL_R = crate::R<u8, REFSEL_A>;
+impl REFSEL_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, REFSEL_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(REFSEL_A::INTREF),
+            2 => Val(REFSEL_A::INTVCC0),
+            3 => Val(REFSEL_A::INTVCC1),
+            4 => Val(REFSEL_A::AREFA),
+            5 => Val(REFSEL_A::AREFB),
+            6 => Val(REFSEL_A::AREFC),
+            i => Res(i),
         }
     }
     #[doc = "Checks if the value of the field is `INTREF`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_intref(&self) -> bool {
-        *self == REFSELR::INTREF
+        *self == REFSEL_A::INTREF
     }
     #[doc = "Checks if the value of the field is `INTVCC0`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_intvcc0(&self) -> bool {
-        *self == REFSELR::INTVCC0
+        *self == REFSEL_A::INTVCC0
     }
     #[doc = "Checks if the value of the field is `INTVCC1`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_intvcc1(&self) -> bool {
-        *self == REFSELR::INTVCC1
+        *self == REFSEL_A::INTVCC1
     }
     #[doc = "Checks if the value of the field is `AREFA`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_arefa(&self) -> bool {
-        *self == REFSELR::AREFA
+        *self == REFSEL_A::AREFA
     }
     #[doc = "Checks if the value of the field is `AREFB`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_arefb(&self) -> bool {
-        *self == REFSELR::AREFB
+        *self == REFSEL_A::AREFB
     }
     #[doc = "Checks if the value of the field is `AREFC`"]
-    #[inline]
+    #[inline(always)]
     pub fn is_arefc(&self) -> bool {
-        *self == REFSELR::AREFC
+        *self == REFSEL_A::AREFC
     }
 }
-#[doc = r" Value of the field"]
-pub struct REFCOMPR {
-    bits: bool,
-}
-impl REFCOMPR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = "Values that can be written to the field `REFSEL`"]
-pub enum REFSELW {
-    #[doc = "Internal Bandgap Reference"]
-    INTREF,
-    #[doc = "1/2 VDDANA"]
-    INTVCC0,
-    #[doc = "VDDANA"]
-    INTVCC1,
-    #[doc = "External Reference"]
-    AREFA,
-    #[doc = "External Reference"]
-    AREFB,
-    #[doc = "External Reference (only on ADC1)"]
-    AREFC,
-}
-impl REFSELW {
-    #[allow(missing_docs)]
-    #[doc(hidden)]
-    #[inline]
-    pub fn _bits(&self) -> u8 {
-        match *self {
-            REFSELW::INTREF => 0,
-            REFSELW::INTVCC0 => 2,
-            REFSELW::INTVCC1 => 3,
-            REFSELW::AREFA => 4,
-            REFSELW::AREFB => 5,
-            REFSELW::AREFC => 6,
-        }
-    }
-}
-#[doc = r" Proxy"]
-pub struct _REFSELW<'a> {
+#[doc = "Write proxy for field `REFSEL`"]
+pub struct REFSEL_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _REFSELW<'a> {
-    #[doc = r" Writes `variant` to the field"]
-    #[inline]
-    pub fn variant(self, variant: REFSELW) -> &'a mut W {
-        unsafe { self.bits(variant._bits()) }
+impl<'a> REFSEL_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: REFSEL_A) -> &'a mut W {
+        unsafe { self.bits(variant.into()) }
     }
     #[doc = "Internal Bandgap Reference"]
-    #[inline]
+    #[inline(always)]
     pub fn intref(self) -> &'a mut W {
-        self.variant(REFSELW::INTREF)
+        self.variant(REFSEL_A::INTREF)
     }
     #[doc = "1/2 VDDANA"]
-    #[inline]
+    #[inline(always)]
     pub fn intvcc0(self) -> &'a mut W {
-        self.variant(REFSELW::INTVCC0)
+        self.variant(REFSEL_A::INTVCC0)
     }
     #[doc = "VDDANA"]
-    #[inline]
+    #[inline(always)]
     pub fn intvcc1(self) -> &'a mut W {
-        self.variant(REFSELW::INTVCC1)
+        self.variant(REFSEL_A::INTVCC1)
     }
     #[doc = "External Reference"]
-    #[inline]
+    #[inline(always)]
     pub fn arefa(self) -> &'a mut W {
-        self.variant(REFSELW::AREFA)
+        self.variant(REFSEL_A::AREFA)
     }
     #[doc = "External Reference"]
-    #[inline]
+    #[inline(always)]
     pub fn arefb(self) -> &'a mut W {
-        self.variant(REFSELW::AREFB)
+        self.variant(REFSEL_A::AREFB)
     }
     #[doc = "External Reference (only on ADC1)"]
-    #[inline]
+    #[inline(always)]
     pub fn arefc(self) -> &'a mut W {
-        self.variant(REFSELW::AREFC)
+        self.variant(REFSEL_A::AREFC)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        const MASK: u8 = 15;
-        const OFFSET: u8 = 0;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits = (self.w.bits & !0x0f) | ((value as u8) & 0x0f);
         self.w
     }
 }
-#[doc = r" Proxy"]
-pub struct _REFCOMPW<'a> {
+#[doc = "Reader of field `REFCOMP`"]
+pub type REFCOMP_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `REFCOMP`"]
+pub struct REFCOMP_W<'a> {
     w: &'a mut W,
 }
-impl<'a> _REFCOMPW<'a> {
-    #[doc = r" Sets the field bit"]
+impl<'a> REFCOMP_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
         self.bit(true)
     }
-    #[doc = r" Clears the field bit"]
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
     pub fn clear_bit(self) -> &'a mut W {
         self.bit(false)
     }
-    #[doc = r" Writes raw bits to the field"]
-    #[inline]
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        const MASK: bool = true;
-        const OFFSET: u8 = 7;
-        self.w.bits &= !((MASK as u8) << OFFSET);
-        self.w.bits |= ((value & MASK) as u8) << OFFSET;
+        self.w.bits = (self.w.bits & !(0x01 << 7)) | (((value as u8) & 0x01) << 7);
         self.w
     }
 }
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
     #[doc = "Bits 0:3 - Reference Selection"]
-    #[inline]
-    pub fn refsel(&self) -> REFSELR {
-        REFSELR::_from({
-            const MASK: u8 = 15;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u8) as u8
-        })
+    #[inline(always)]
+    pub fn refsel(&self) -> REFSEL_R {
+        REFSEL_R::new((self.bits & 0x0f) as u8)
     }
     #[doc = "Bit 7 - Reference Buffer Offset Compensation Enable"]
-    #[inline]
-    pub fn refcomp(&self) -> REFCOMPR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 7;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
-        REFCOMPR { bits }
+    #[inline(always)]
+    pub fn refcomp(&self) -> REFCOMP_R {
+        REFCOMP_R::new(((self.bits >> 7) & 0x01) != 0)
     }
 }
 impl W {
-    #[doc = r" Reset value of the register"]
-    #[inline]
-    pub fn reset_value() -> W {
-        W { bits: 0 }
-    }
-    #[doc = r" Writes raw bits to the register"]
-    #[inline]
-    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
-        self.bits = bits;
-        self
-    }
     #[doc = "Bits 0:3 - Reference Selection"]
-    #[inline]
-    pub fn refsel(&mut self) -> _REFSELW {
-        _REFSELW { w: self }
+    #[inline(always)]
+    pub fn refsel(&mut self) -> REFSEL_W {
+        REFSEL_W { w: self }
     }
     #[doc = "Bit 7 - Reference Buffer Offset Compensation Enable"]
-    #[inline]
-    pub fn refcomp(&mut self) -> _REFCOMPW {
-        _REFCOMPW { w: self }
+    #[inline(always)]
+    pub fn refcomp(&mut self) -> REFCOMP_W {
+        REFCOMP_W { w: self }
     }
 }

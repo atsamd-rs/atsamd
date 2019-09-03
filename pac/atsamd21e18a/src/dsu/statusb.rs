@@ -1,175 +1,39 @@
-#[doc = r" Value read from the register"]
-pub struct R {
-    bits: u8,
-}
-impl super::STATUSB {
-    #[doc = r" Reads the contents of the register"]
-    #[inline]
-    pub fn read(&self) -> R {
-        R {
-            bits: self.register.get(),
-        }
-    }
-}
-#[doc = r" Value of the field"]
-pub struct PROTR {
-    bits: bool,
-}
-impl PROTR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct DBGPRESR {
-    bits: bool,
-}
-impl DBGPRESR {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct DCCD0R {
-    bits: bool,
-}
-impl DCCD0R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct DCCD1R {
-    bits: bool,
-}
-impl DCCD1R {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
-#[doc = r" Value of the field"]
-pub struct HPER {
-    bits: bool,
-}
-impl HPER {
-    #[doc = r" Value of the field as raw bits"]
-    #[inline]
-    pub fn bit(&self) -> bool {
-        self.bits
-    }
-    #[doc = r" Returns `true` if the bit is clear (0)"]
-    #[inline]
-    pub fn bit_is_clear(&self) -> bool {
-        !self.bit()
-    }
-    #[doc = r" Returns `true` if the bit is set (1)"]
-    #[inline]
-    pub fn bit_is_set(&self) -> bool {
-        self.bit()
-    }
-}
+#[doc = "Reader of register STATUSB"]
+pub type R = crate::R<u8, super::STATUSB>;
+#[doc = "Reader of field `PROT`"]
+pub type PROT_R = crate::R<bool, bool>;
+#[doc = "Reader of field `DBGPRES`"]
+pub type DBGPRES_R = crate::R<bool, bool>;
+#[doc = "Reader of field `DCCD0`"]
+pub type DCCD0_R = crate::R<bool, bool>;
+#[doc = "Reader of field `DCCD1`"]
+pub type DCCD1_R = crate::R<bool, bool>;
+#[doc = "Reader of field `HPE`"]
+pub type HPE_R = crate::R<bool, bool>;
 impl R {
-    #[doc = r" Value of the register as raw bits"]
-    #[inline]
-    pub fn bits(&self) -> u8 {
-        self.bits
-    }
     #[doc = "Bit 0 - Protected"]
-    #[inline]
-    pub fn prot(&self) -> PROTR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 0;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
-        PROTR { bits }
+    #[inline(always)]
+    pub fn prot(&self) -> PROT_R {
+        PROT_R::new((self.bits & 0x01) != 0)
     }
     #[doc = "Bit 1 - Debugger Present"]
-    #[inline]
-    pub fn dbgpres(&self) -> DBGPRESR {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 1;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
-        DBGPRESR { bits }
+    #[inline(always)]
+    pub fn dbgpres(&self) -> DBGPRES_R {
+        DBGPRES_R::new(((self.bits >> 1) & 0x01) != 0)
     }
     #[doc = "Bit 2 - Debug Communication Channel 0 Dirty"]
-    #[inline]
-    pub fn dccd0(&self) -> DCCD0R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 2;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
-        DCCD0R { bits }
+    #[inline(always)]
+    pub fn dccd0(&self) -> DCCD0_R {
+        DCCD0_R::new(((self.bits >> 2) & 0x01) != 0)
     }
     #[doc = "Bit 3 - Debug Communication Channel 1 Dirty"]
-    #[inline]
-    pub fn dccd1(&self) -> DCCD1R {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 3;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
-        DCCD1R { bits }
+    #[inline(always)]
+    pub fn dccd1(&self) -> DCCD1_R {
+        DCCD1_R::new(((self.bits >> 3) & 0x01) != 0)
     }
     #[doc = "Bit 4 - Hot-Plugging Enable"]
-    #[inline]
-    pub fn hpe(&self) -> HPER {
-        let bits = {
-            const MASK: bool = true;
-            const OFFSET: u8 = 4;
-            ((self.bits >> OFFSET) & MASK as u8) != 0
-        };
-        HPER { bits }
+    #[inline(always)]
+    pub fn hpe(&self) -> HPE_R {
+        HPE_R::new(((self.bits >> 4) & 0x01) != 0)
     }
 }

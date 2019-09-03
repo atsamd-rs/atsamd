@@ -1,4 +1,4 @@
-#[doc = r" Register block"]
+#[doc = r"Register block"]
 #[repr(C)]
 pub struct RegisterBlock {
     #[doc = "0x00 - Control"]
@@ -341,81 +341,134 @@ pub struct RegisterBlock {
     #[doc = "0x120 - User Multiplexer n"]
     pub user: [USER; 67],
 }
-#[doc = "Control"]
-pub struct CTRLA {
-    register: ::vcell::VolatileCell<u8>,
-}
+#[doc = "Control\n\nThis register you can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about avaliable fields see [ctrla](ctrla) module"]
+pub type CTRLA = crate::Reg<u8, _CTRLA>;
+#[allow(missing_docs)]
+#[doc(hidden)]
+pub struct _CTRLA;
+#[doc = "`write(|w| ..)` method takes [ctrla::W](ctrla::W) writer structure"]
+impl crate::Writable for CTRLA {}
 #[doc = "Control"]
 pub mod ctrla;
-#[doc = "Software Event"]
-pub struct SWEVT {
-    register: ::vcell::VolatileCell<u32>,
-}
+#[doc = "Software Event\n\nThis register you can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about avaliable fields see [swevt](swevt) module"]
+pub type SWEVT = crate::Reg<u32, _SWEVT>;
+#[allow(missing_docs)]
+#[doc(hidden)]
+pub struct _SWEVT;
+#[doc = "`write(|w| ..)` method takes [swevt::W](swevt::W) writer structure"]
+impl crate::Writable for SWEVT {}
 #[doc = "Software Event"]
 pub mod swevt;
-#[doc = "Priority Control"]
-pub struct PRICTRL {
-    register: ::vcell::VolatileCell<u8>,
-}
+#[doc = "Priority Control\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about avaliable fields see [prictrl](prictrl) module"]
+pub type PRICTRL = crate::Reg<u8, _PRICTRL>;
+#[allow(missing_docs)]
+#[doc(hidden)]
+pub struct _PRICTRL;
+#[doc = "`read()` method returns [prictrl::R](prictrl::R) reader structure"]
+impl crate::Readable for PRICTRL {}
+#[doc = "`write(|w| ..)` method takes [prictrl::W](prictrl::W) writer structure"]
+impl crate::Writable for PRICTRL {}
 #[doc = "Priority Control"]
 pub mod prictrl;
-#[doc = "Channel Pending Interrupt"]
-pub struct INTPEND {
-    register: ::vcell::VolatileCell<u16>,
-}
+#[doc = "Channel Pending Interrupt\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about avaliable fields see [intpend](intpend) module"]
+pub type INTPEND = crate::Reg<u16, _INTPEND>;
+#[allow(missing_docs)]
+#[doc(hidden)]
+pub struct _INTPEND;
+#[doc = "`read()` method returns [intpend::R](intpend::R) reader structure"]
+impl crate::Readable for INTPEND {}
+#[doc = "`write(|w| ..)` method takes [intpend::W](intpend::W) writer structure"]
+impl crate::Writable for INTPEND {}
 #[doc = "Channel Pending Interrupt"]
 pub mod intpend;
-#[doc = "Interrupt Status"]
-pub struct INTSTATUS {
-    register: ::vcell::VolatileCell<u32>,
-}
+#[doc = "Interrupt Status\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about avaliable fields see [intstatus](intstatus) module"]
+pub type INTSTATUS = crate::Reg<u32, _INTSTATUS>;
+#[allow(missing_docs)]
+#[doc(hidden)]
+pub struct _INTSTATUS;
+#[doc = "`read()` method returns [intstatus::R](intstatus::R) reader structure"]
+impl crate::Readable for INTSTATUS {}
 #[doc = "Interrupt Status"]
 pub mod intstatus;
-#[doc = "Busy Channels"]
-pub struct BUSYCH {
-    register: ::vcell::VolatileCell<u32>,
-}
+#[doc = "Busy Channels\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about avaliable fields see [busych](busych) module"]
+pub type BUSYCH = crate::Reg<u32, _BUSYCH>;
+#[allow(missing_docs)]
+#[doc(hidden)]
+pub struct _BUSYCH;
+#[doc = "`read()` method returns [busych::R](busych::R) reader structure"]
+impl crate::Readable for BUSYCH {}
 #[doc = "Busy Channels"]
 pub mod busych;
-#[doc = "Ready Users"]
-pub struct READYUSR {
-    register: ::vcell::VolatileCell<u32>,
-}
+#[doc = "Ready Users\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about avaliable fields see [readyusr](readyusr) module"]
+pub type READYUSR = crate::Reg<u32, _READYUSR>;
+#[allow(missing_docs)]
+#[doc(hidden)]
+pub struct _READYUSR;
+#[doc = "`read()` method returns [readyusr::R](readyusr::R) reader structure"]
+impl crate::Readable for READYUSR {}
 #[doc = "Ready Users"]
 pub mod readyusr;
-#[doc = "Channel n Control"]
-pub struct CHANNEL {
-    register: ::vcell::VolatileCell<u32>,
-}
+#[doc = "Channel n Control\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about avaliable fields see [channel](channel) module"]
+pub type CHANNEL = crate::Reg<u32, _CHANNEL>;
+#[allow(missing_docs)]
+#[doc(hidden)]
+pub struct _CHANNEL;
+#[doc = "`read()` method returns [channel::R](channel::R) reader structure"]
+impl crate::Readable for CHANNEL {}
+#[doc = "`write(|w| ..)` method takes [channel::W](channel::W) writer structure"]
+impl crate::Writable for CHANNEL {}
 #[doc = "Channel n Control"]
 pub mod channel;
-#[doc = "Channel n Interrupt Enable Clear"]
-pub struct CHINTENCLR {
-    register: ::vcell::VolatileCell<u8>,
-}
+#[doc = "Channel n Interrupt Enable Clear\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about avaliable fields see [chintenclr](chintenclr) module"]
+pub type CHINTENCLR = crate::Reg<u8, _CHINTENCLR>;
+#[allow(missing_docs)]
+#[doc(hidden)]
+pub struct _CHINTENCLR;
+#[doc = "`read()` method returns [chintenclr::R](chintenclr::R) reader structure"]
+impl crate::Readable for CHINTENCLR {}
+#[doc = "`write(|w| ..)` method takes [chintenclr::W](chintenclr::W) writer structure"]
+impl crate::Writable for CHINTENCLR {}
 #[doc = "Channel n Interrupt Enable Clear"]
 pub mod chintenclr;
-#[doc = "Channel n Interrupt Enable Set"]
-pub struct CHINTENSET {
-    register: ::vcell::VolatileCell<u8>,
-}
+#[doc = "Channel n Interrupt Enable Set\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about avaliable fields see [chintenset](chintenset) module"]
+pub type CHINTENSET = crate::Reg<u8, _CHINTENSET>;
+#[allow(missing_docs)]
+#[doc(hidden)]
+pub struct _CHINTENSET;
+#[doc = "`read()` method returns [chintenset::R](chintenset::R) reader structure"]
+impl crate::Readable for CHINTENSET {}
+#[doc = "`write(|w| ..)` method takes [chintenset::W](chintenset::W) writer structure"]
+impl crate::Writable for CHINTENSET {}
 #[doc = "Channel n Interrupt Enable Set"]
 pub mod chintenset;
-#[doc = "Channel n Interrupt Flag Status and Clear"]
-pub struct CHINTFLAG {
-    register: ::vcell::VolatileCell<u8>,
-}
+#[doc = "Channel n Interrupt Flag Status and Clear\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about avaliable fields see [chintflag](chintflag) module"]
+pub type CHINTFLAG = crate::Reg<u8, _CHINTFLAG>;
+#[allow(missing_docs)]
+#[doc(hidden)]
+pub struct _CHINTFLAG;
+#[doc = "`read()` method returns [chintflag::R](chintflag::R) reader structure"]
+impl crate::Readable for CHINTFLAG {}
+#[doc = "`write(|w| ..)` method takes [chintflag::W](chintflag::W) writer structure"]
+impl crate::Writable for CHINTFLAG {}
 #[doc = "Channel n Interrupt Flag Status and Clear"]
 pub mod chintflag;
-#[doc = "Channel n Status"]
-pub struct CHSTATUS {
-    register: ::vcell::VolatileCell<u8>,
-}
+#[doc = "Channel n Status\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about avaliable fields see [chstatus](chstatus) module"]
+pub type CHSTATUS = crate::Reg<u8, _CHSTATUS>;
+#[allow(missing_docs)]
+#[doc(hidden)]
+pub struct _CHSTATUS;
+#[doc = "`read()` method returns [chstatus::R](chstatus::R) reader structure"]
+impl crate::Readable for CHSTATUS {}
 #[doc = "Channel n Status"]
 pub mod chstatus;
-#[doc = "User Multiplexer n"]
-pub struct USER {
-    register: ::vcell::VolatileCell<u32>,
-}
+#[doc = "User Multiplexer n\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about avaliable fields see [user](user) module"]
+pub type USER = crate::Reg<u32, _USER>;
+#[allow(missing_docs)]
+#[doc(hidden)]
+pub struct _USER;
+#[doc = "`read()` method returns [user::R](user::R) reader structure"]
+impl crate::Readable for USER {}
+#[doc = "`write(|w| ..)` method takes [user::W](user::W) writer structure"]
+impl crate::Writable for USER {}
 #[doc = "User Multiplexer n"]
 pub mod user;

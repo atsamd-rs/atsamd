@@ -1,6 +1,6 @@
 //! NeoTrellis M4 Express pins
 
-use super::{hal, target_device, MCLK, SERCOM2, SERCOM4};
+use super::{hal, target_device, pac::MCLK, pac::SERCOM2, pac::SERCOM4};
 
 use hal::clock::*;
 use hal::define_pins;

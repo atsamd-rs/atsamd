@@ -1,4 +1,4 @@
-#[doc = r" Register block"]
+#[doc = r"Register block"]
 #[repr(C)]
 pub struct RegisterBlock {
     _reserved_0_spi: [u8; 49usize],
@@ -45,7 +45,7 @@ impl RegisterBlock {
         unsafe { &mut *(((self as *const Self) as *mut u8).add(0usize) as *mut I2CM) }
     }
 }
-#[doc = r" Register block"]
+#[doc = r"Register block"]
 #[repr(C)]
 pub struct I2CM {
     #[doc = "0x00 - I2CM Control A"]
@@ -78,10 +78,10 @@ pub struct I2CM {
     #[doc = "0x30 - I2CM Debug Control"]
     pub dbgctrl: self::i2cm::DBGCTRL,
 }
-#[doc = r" Register block"]
+#[doc = r"Register block"]
 #[doc = "I2C Master Mode"]
 pub mod i2cm;
-#[doc = r" Register block"]
+#[doc = r"Register block"]
 #[repr(C)]
 pub struct I2CS {
     #[doc = "0x00 - I2CS Control A"]
@@ -108,10 +108,10 @@ pub struct I2CS {
     #[doc = "0x28 - I2CS Data"]
     pub data: self::i2cs::DATA,
 }
-#[doc = r" Register block"]
+#[doc = r"Register block"]
 #[doc = "I2C Slave Mode"]
 pub mod i2cs;
-#[doc = r" Register block"]
+#[doc = r"Register block"]
 #[repr(C)]
 pub struct SPI {
     #[doc = "0x00 - SPI Control A"]
@@ -144,10 +144,10 @@ pub struct SPI {
     #[doc = "0x30 - SPI Debug Control"]
     pub dbgctrl: self::spi::DBGCTRL,
 }
-#[doc = r" Register block"]
+#[doc = r"Register block"]
 #[doc = "SPI Mode"]
 pub mod spi;
-#[doc = r" Register block"]
+#[doc = r"Register block"]
 #[repr(C)]
 pub struct USART {
     #[doc = "0x00 - USART Control A"]
@@ -239,6 +239,6 @@ impl USART {
         unsafe { &mut *(((self as *const Self) as *mut u8).add(12usize) as *mut self::usart::BAUD) }
     }
 }
-#[doc = r" Register block"]
+#[doc = r"Register block"]
 #[doc = "USART Mode"]
 pub mod usart;

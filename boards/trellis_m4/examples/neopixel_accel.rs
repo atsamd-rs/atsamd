@@ -13,7 +13,8 @@ use embedded_hal::digital::v1_compat::{OldOutputPin};
 use hal::adxl343::accelerometer::Accelerometer;
 use hal::prelude::*;
 use hal::{clock::GenericClockController, delay::Delay};
-use hal::{entry, CorePeripherals, Peripherals};
+use hal::entry;
+use hal::pac::{CorePeripherals, Peripherals};
 
 use smart_leds::{Color, SmartLedsWrite};
 
