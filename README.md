@@ -139,6 +139,8 @@ $ cargo build --manifest-path metro_m0/Cargo.toml \
   --example blinky_basic --features use_semihosting
 ```
 
+## Adding a new board
+See our wiki page for a [complete guide](https://github.com/atsamd-rs/atsamd/wiki/Adding-a-new-board) on adding a new board.
 
 ## License
 
