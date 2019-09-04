@@ -79,3 +79,6 @@ name = "timer"
 
 [[example]]
 name = "adc"
+
+[[example]]
+name = "trng"
