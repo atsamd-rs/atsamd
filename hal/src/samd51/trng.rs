@@ -15,15 +15,9 @@ impl Trng {
     }
 
     pub fn random(&self, buf: &mut [u8]) {
-        for chunk in buf.chunks_exact_mut(4) { 
-            chunk.copy_from_slice(&self.random_u32().to_le_bytes());
-        }
-        // copy_from_slice doesn't work if the slices are of different lengths
-        let remainder = buf.len() % 4;
-        let final_word = self.random_u32().to_le_bytes();
-        for i in 0..remainder {
-            buf[buf.len()-i] = final_word[i];
-        }
+        for chunk in buf.chunks_mut(4) { 
+            chunk.copy_from_slice(&self.random_u32().to_le_bytes()[..chunk.len()]); 
+        }    
     }
 
 
