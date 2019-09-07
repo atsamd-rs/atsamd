@@ -35,21 +35,5 @@ script:
   - "cd $CRATE"
   - "cargo build ${EXAMPLES:---examples} $FEATURES"
 
-jobs:
-  include:
-    - stage: Document-and-Deploy
-      rust: 'nightly'
-      env: ''
-      script:
-        - ./build-docs.py
-      deploy:
-        provider: pages
-        skip-cleanup: true
-        github-token: $GITHUB_TOKEN
-        keep-history: false
-        local-dir: doc
-
 stages:
   - test
-  - name: Document-and-Deploy
-    if: (NOT type IN (pull_request)) AND (branch = master)
