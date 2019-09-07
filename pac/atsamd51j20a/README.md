@@ -5,7 +5,7 @@ for Rust Embedded projects.
 
 https://crates.io/crates/atsamd51j20a
 
-## [Documentation](https://atsamd-rs.github.io/atsamd/atsamd51j20a/atsamd51j20a/)
+## [Documentation](https://docs.rs/atsamd51j20a/)
 
 This source was automatically generated using `svd2rust`, split into smaller
 pieces using `form` and formatted via `rustfmt`.
