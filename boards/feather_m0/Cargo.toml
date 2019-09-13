@@ -45,6 +45,8 @@ optional = true
 
 [dev-dependencies]
 cortex-m-semihosting = "~0.3"
+ssd1306 = "0.3.0-alpha.1"
+embedded-graphics = "0.6.0-alpha.2"
 
 [features]
 # ask the HAL to enable atsamd21g18a support
@@ -77,3 +79,6 @@ name = "pwm"
 
 [[example]]
 name = "adc"
+
+[[example]]
+name = "ssd1306_graphicsmode_i2c"
