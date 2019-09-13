@@ -82,3 +82,6 @@ name = "adc"
 
 [[example]]
 name = "ssd1306_graphicsmode_i2c"
+
+[[example]]
+name = "ssd1306_graphicsmode_128x32_i2c"
