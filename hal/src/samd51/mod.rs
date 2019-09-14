@@ -3,6 +3,7 @@ pub mod clock;
 pub mod sercom;
 pub mod timer;
 pub mod trng;
+pub mod qspi;
 
 #[cfg(feature = "unproven")]
 pub mod pwm;

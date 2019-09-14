@@ -81,3 +81,6 @@ name = "adc"
 
 [[example]]
 name = "trng"
+
+[[example]]
+name = "qspi"
