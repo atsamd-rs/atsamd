@@ -4,38 +4,48 @@
 //! Draw a square, circle and triangle on the screen of a SSD1306-backed
 //! display using the `embedded_graphics` crate.
 //!
-//! This example is for the _Adafruit Feather M0_ series boards, using I2C to
-//! communicate between the board and the display module/board.
+//! This example is for the _Adafruit Feather M0_ series boards connected to
+//! a display module with an SSD1306 chipset, using I2C to communicate between
+//! the processor board and the display module/board.
 //!
 //! This example is based on:
 //! - https://github.com/jamwaffles/ssd1306/blob/master/examples/graphics_i2c.rs
 //! - https://github.com/atsamd-rs/atsamd/blob/master/boards/itsybitsy_m0/examples/i2c_ssd1306.rs
 //!
-//! You can either use the USB port + BOSSAC or a SWD debugger/programmer to
-//! load this example onto the Feather M0 board.
+//! You can either use the USB port on the Feather + BOSSAC or a SWD
+//! debugger/programmer to load this example onto the Feather M0 board.
 //!
 //! Adafruit Feather M0 Boards:
 //! - Feather M0 Adalogger: https://www.adafruit.com/product/2796
 //! - Feather M0 Basic: https://www.adafruit.com/product/2772
 //!
-//! Adafruit sells a display with a SSD1306 chipset
-//! (https://www.adafruit.com/product/2900) as a "Featherwing" (can snap in to
-//! other Feather boards if the correct headers are used, or snap into a
-//! breadboard).  They also sell I2C and SPI "modules" that have a display and
-//! the SSD1306 chip on a single board, which you then connect to the Feather
-//! M0 with wires.  SSD1306 modules can also be found on various shopping
-//! websites (Amazon, Ebay, //! Ali*).  Note that most SSD1306-backed display
-//! modules are usually either 128x64 pixels or 128x32 pixels in size, but
-//! there are other sizes running around in the wild.
+//! Adafruit sells a SSD1306 display module called a "Featherwing"
+//! (https://www.adafruit.com/product/2900), which can plug in to other
+//! Feather boards if the correct headers are used, or can be plugged directly
+//! into a breadboard and connected with wires.  They also sell other I2C and
+//! SPI "modules" that have the SSD1306 chipset and a display of some sort,
+//! which you then connect to the Feather M0 with wires.  Other SSD1306
+//! modules can also be found on various shopping websites (Amazon, Ebay, //!
+//! Ali*), although it may be hard to tell from item listings if the module is
+//! using an SSD1306 chipset or not.
+
+//! Note that most SSD1306-backed display modules are usually either 128x64
+//! pixels or 128x32 pixels in size, but there are other sizes running around
+//! in the wild.
+//!
+//! The default display size for the Rust `ssd1306` library (if no size is
+//! passed in to the constructor as a parameter) is 128x64 pixels;
+//!
+//! https://jamwaffles.github.io/ssd1306/master/ssd1306/builder/struct.Builder.html#method.new
 //!
 //! Wiring connections for the Adafruit OLED Featherwing:
 //!
 //! ```
 //! OLED Featherwing -> Feather M0
 //!     GND -> GND
-//!     +5V -> VCC
-//! GPIOSDA -> PA22
-//! GPIOSCL -> PA23
+//!      3v -> 3v3
+//! GPIOSDA -> PA22 (SDA)
+//! GPIOSCL -> PA23 (SCL)
 //! ```
 //!
 //! Wiring connections for generic OLED modules:
@@ -43,12 +53,12 @@
 //! ```
 //!      OLED module -> Feather M0
 //! (black)  GND -> GND
-//! (red)    +5V -> VCC
-//! (yellow) SDA -> PA22
-//! (green)  SCL -> PA23
+//! (red)    +3V -> VCC
+//! (yellow) SDA -> PA22 (SDA)
+//! (green)  SCL -> PA23 (SCL)
 //! ```
 //!
-//! Build this example with: `cargo build --example ssd1306_graphicsmode_i2c.rs`
+//! Build this example with: `cargo build --example ssd1306_graphicsmode_128x64_i2c`
 //!
 
 extern crate feather_m0 as hal;
@@ -98,6 +108,8 @@ fn main() -> ! {
         &mut pins.port,
     );
 
+    // default DisplaySize: 128x64 pixels; see the
+    // ssd1306::builder::Builder::new() method definition for more info
     let mut disp: GraphicsMode<_> = Builder::new().connect_i2c(i2c).into();
 
     disp.init().unwrap();
