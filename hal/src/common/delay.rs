@@ -5,7 +5,38 @@ use cortex_m::peripheral::SYST;
 
 use crate::clock::GenericClockController;
 use crate::time::Hertz;
+use cortex_m::asm::delay as cycle_delay;
+use embedded_hal::timer::{CountDown, Periodic};
 use hal::blocking::delay::{DelayMs, DelayUs};
+
+#[derive(Clone, Copy)]
+pub struct SpinTimer {
+    cycles: u32,
+}
+
+impl SpinTimer {
+    pub fn new(cycles: u32) -> SpinTimer {
+        SpinTimer{ cycles }
+    }
+}
+
+impl Periodic for SpinTimer {}
+
+impl CountDown for SpinTimer {
+    type Time = u32;
+
+    fn start<T>(&mut self, cycles: T)
+    where
+        T: Into<Self::Time>,
+    {
+        self.cycles = cycles.into();
+    }
+
+    fn wait(&mut self) -> nb::Result<(), void::Void> {
+        cycle_delay(self.cycles);
+        Ok(())
+    }
+}
 
 /// System timer (SysTick) as a delay provider
 pub struct Delay {
