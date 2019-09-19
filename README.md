@@ -31,22 +31,21 @@ There are a couple of crates provided by this repo:
 
 In addition to the generic crates, there are also crates for popular ATSAMD21/51 based development boards. They aim to rename pins to match silk screens or Arduino pin assignments, add helpers for initialization, and re-export the `atsamd-hal` crate.
 
-* [`arduino_mkrzero`](https://atsamd-rs.github.io/atsamd/atsamd21g18a/arduino_mkrzero/)
-* [`circuit_playground_express`](https://atsamd-rs.github.io/atsamd/atsamd21g18a/circuit_playground_express/)
-* [`feather_m0`](https://atsamd-rs.github.io/atsamd/atsamd21g18a/feather_m0/)
-* [`gemma_m0`](https://atsamd-rs.github.io/atsamd/atsamd21e18a/gemma_m0/)
-* [`itsybitsy_m0`](https://atsamd-rs.github.io/atsamd/atsamd21g18a/itsybitsy_m0/)
-* [`metro_m0`](https://atsamd-rs.github.io/atsamd/atsamd21g18a/metro_m0/)
-* [`samd21_mini`](https://atsamd-rs.github.io/atsamd/atsamd21g18a/samd21_mini/)
-* [`trinket_m0`](https://atsamd-rs.github.io/atsamd/atsamd21e18a/trinket_m0/)
-* [`sodaq_one`](https://atsamd-rs.github.io/atsamd/atsamd21g18a/sodaq_one/)
-* [`metro_m4`](https://atsamd-rs.github.io/atsamd/atsamd51j19a/metro_m4/)
-* [`trellis_m4`](https://atsamd-rs.github.io/atsamd/atsamd51g19a/trellis_m4/)
-* [`itsybitsy_m4`](https://atsamd-rs.github.io/atsamd/atsamd51g19a/itsybitsy_m4/)
-* [`feather_m4`](https://atsamd-rs.github.io/atsamd/atsamd51j19a/feather_m4/)
-* [`pyportal`](https://atsamd-rs.github.io/atsamd/atsamd51j20a/pyportal/)
-* [`pygamer`](https://atsamd-rs.github.io/atsamd/atsamd51j19a/pygamer/)
-* [`sodaq_sara_aff`](https://atsamd-rs.github.io/atsamd/atsamd21j18a/sodaq_sara_aff/)
+* [`arduino_mkrzero`](https://docs.rs/arduino_mkrzero/)
+* [`circuit_playground_express`](https://docs.rs/circuit_playground_express/)
+* [`feather_m0`](https://docs.rs/feather_m0/)
+* [`gemma_m0`](https://docs.rs/gemma_m0/)
+* [`itsybitsy_m0`](https://docs.rs/itsybitsy_m0/)
+* [`metro_m0`](https://docs.rs/metro_m0/)
+* [`samd21_mini`](https://docs.rs/samd21_mini/)
+* [`trinket_m0`](https://docs.rs/trinket_m0/)
+* [`sodaq_one`](https://docs.rs/sodaq_one/)
+* [`metro_m4`](https://docs.rs/metro_m4/)
+* [`trellis_m4`](https://docs.rs/trellis_m4/)
+* [`feather_m4`](https://docs.rs/feather_m4/)
+* [`pyportal`](https://docs.rs/pyportal/)
+* [`pygamer`](https://docs.rs/pygamer/)
+* [`sodaq_sara_aff`](https://docs.rs/sodaq_sara_aff/)
 
 ## Building
 
