@@ -2,9 +2,9 @@
 
 use super::{hal, pac::MCLK, pac::SERCOM1, pac::SERCOM2, target_device};
 
+use embedded_hal::timer::{CountDown, Periodic};
 use hal::clock::*;
 use hal::define_pins;
-use hal::delay::SpinTimer;
 use hal::gpio::{self, *};
 use hal::sercom::{I2CMaster2, PadPin, SPIMaster1, Sercom2Pad0, Sercom2Pad1};
 use hal::time::Hertz;
@@ -259,23 +259,18 @@ pub struct Dotstar {
 }
 
 impl Dotstar {
-    pub fn dotstar(
+    pub fn dotstar<T: CountDown + Periodic>(
         self,
         port: &mut Port,
+        timer: T,
     ) -> apa102_spi::Apa102<
-        bitbang_hal::spi::SPI<
-            Pb0<Input<PullUp>>,
-            Pb3<Output<PushPull>>,
-            Pb2<Output<PushPull>>,
-            SpinTimer,
-        >,
+        bitbang_hal::spi::SPI<Pb0<Input<PullUp>>, Pb3<Output<PushPull>>, Pb2<Output<PushPull>>, T>,
     > {
         let di = self.di.into_push_pull_output(port);
         let ci = self.ci.into_push_pull_output(port);
         let nc = self.nc.into_pull_up_input(port);
-        let spi_timer = SpinTimer::new(24);
 
-        let spi = bitbang_hal::spi::SPI::new(apa102_spi::MODE, nc, di, ci, spi_timer);
+        let spi = bitbang_hal::spi::SPI::new(apa102_spi::MODE, nc, di, ci, timer);
         Apa102::new_with_custom_postamble(spi, 4, false)
     }
 }
