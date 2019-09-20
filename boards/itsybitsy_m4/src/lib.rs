@@ -15,7 +15,6 @@ pub use hal::target_device as pac;
 pub use cortex_m_rt::entry;
 pub use pins::Pins;
 
-use embedded_hal::digital::v1_compat::{OldInputPin, OldOutputPin};
 use gpio::{PfC, Port};
 use hal::clock::GenericClockController;
 use hal::delay::SpinTimer;
@@ -48,9 +47,9 @@ pub fn dotstar_bitbang(
     port: &mut Port,
 ) -> apa102_spi::Apa102<
     bitbang_hal::spi::SPI<
-        OldInputPin<Pb0<Input<PullUp>>>,
-        OldOutputPin<Pb3<Output<PushPull>>>,
-        OldOutputPin<Pb2<Output<PushPull>>>,
+        Pb0<Input<PullUp>>,
+        Pb3<Output<PushPull>>,
+        Pb2<Output<PushPull>>,
         SpinTimer,
     >,
 > {

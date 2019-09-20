@@ -2,7 +2,6 @@
 
 use super::{hal, pac::MCLK, pac::SERCOM1, pac::SERCOM2, target_device};
 
-use embedded_hal::digital::v1_compat::{OldInputPin, OldOutputPin};
 use hal::clock::*;
 use hal::define_pins;
 use hal::delay::SpinTimer;
@@ -265,15 +264,15 @@ impl Dotstar {
         port: &mut Port,
     ) -> apa102_spi::Apa102<
         bitbang_hal::spi::SPI<
-            OldInputPin<Pb0<Input<PullUp>>>,
-            OldOutputPin<Pb3<Output<PushPull>>>,
-            OldOutputPin<Pb2<Output<PushPull>>>,
+            Pb0<Input<PullUp>>,
+            Pb3<Output<PushPull>>,
+            Pb2<Output<PushPull>>,
             SpinTimer,
         >,
     > {
-        let di: OldOutputPin<_> = self.di.into_push_pull_output(port).into();
-        let ci: OldOutputPin<_> = self.ci.into_push_pull_output(port).into();
-        let nc: OldInputPin<_> = self.nc.into_pull_up_input(port).into();
+        let di = self.di.into_push_pull_output(port);
+        let ci = self.ci.into_push_pull_output(port);
+        let nc = self.nc.into_pull_up_input(port);
         let spi_timer = SpinTimer::new(24);
 
         let spi = bitbang_hal::spi::SPI::new(apa102_spi::MODE, nc, di, ci, spi_timer);

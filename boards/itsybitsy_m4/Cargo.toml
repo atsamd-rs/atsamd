@@ -16,7 +16,7 @@ documentation = "https://atsamd-rs.github.io/atsamd/atsamd51g19a/itsybitsy_m4/"
 [dependencies]
 cortex-m = "~0.6"
 embedded-hal = "~0.2"
-bitbang-hal = "0.2.3"
+bitbang-hal = "~0.3"
 apa102-spi = "~0.3"
 smart-leds = "~0.2"
 smart-leds-trait = "~0.2"
