@@ -1,6 +1,6 @@
 [package]
 name = "atsamd-hal"
-version = "0.7.0"
+version = "0.7.1"
 authors = ["Wez Furlong <wez@wezfurlong.org>", "Paul Sajna <sajattack@gmail.com>"]
 description = "HAL and Peripheral access API for ATSAMD21 and ATSAMD51 microcontrollers"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
