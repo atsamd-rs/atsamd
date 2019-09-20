@@ -9,9 +9,11 @@ use crate::target_device::{MCLK, TC2, TC3};
 use crate::target_device::{TC4, TC5};
 
 use crate::clock;
-use nb;
 use crate::time::Hertz;
+use nb;
 use void::Void;
+
+use cortex_m::asm::delay as cycle_delay;
 
 // Note:
 // TC3 + TC4 can be paired to make a 32-bit counter
@@ -57,13 +59,13 @@ where
 
         // Disable the timer while we reconfigure it
         count.ctrla.modify(|_, w| w.enable().clear_bit());
-        while count.status.read().perbufv().bit_is_set()  {}
+        while count.status.read().perbufv().bit_is_set() {}
 
         // Now that we have a clock routed to the peripheral, we
         // can ask it to perform a reset.
         count.ctrla.write(|w| w.swrst().set_bit());
 
-        while count.status.read().perbufv().bit_is_set()  {}
+        while count.status.read().perbufv().bit_is_set() {}
         // the SVD erroneously marks swrst as write-only, so we
         // need to manually read the bit here
         while count.ctrla.read().bits() & 1 != 0 {}
@@ -79,9 +81,7 @@ where
         count.cc[0].write(|w| unsafe { w.cc().bits(cycles as u16) });
 
         // Enable Match Frequency Waveform generation
-        count.wave.modify(|_, w| {
-            w.wavegen().mfrq()
-        });
+        count.wave.modify(|_, w| w.wavegen().mfrq());
 
         count.ctrla.modify(|_, w| {
             match divider {
@@ -179,12 +179,12 @@ pub struct TimerParams {
 }
 
 impl TimerParams {
-    pub fn new<T> (timeout: T, src_freq: u32) -> Self
+    pub fn new<T>(timeout: T, src_freq: u32) -> Self
     where
         T: Into<Hertz>,
     {
         let timeout = timeout.into();
-        let ticks: u32 = src_freq/timeout.0.max(1);
+        let ticks: u32 = src_freq / timeout.0.max(1);
         let divider = ((ticks >> 16) + 1).next_power_of_two();
         let divider = match divider {
             1 | 2 | 4 | 8 | 16 | 64 | 256 | 1024 => divider,
@@ -224,4 +224,33 @@ tc! {
 tc! {
     TimerCounter4: (TC4, tc4_, Tc4Tc5Clock, apbcmask),
     TimerCounter5: (TC5, tc5_, Tc4Tc5Clock, apbcmask),
+}
+
+#[derive(Clone, Copy)]
+pub struct SpinTimer {
+    cycles: u32,
+}
+
+impl SpinTimer {
+    pub fn new(cycles: u32) -> SpinTimer {
+        SpinTimer { cycles }
+    }
+}
+
+impl Periodic for SpinTimer {}
+
+impl CountDown for SpinTimer {
+    type Time = u32;
+
+    fn start<T>(&mut self, cycles: T)
+    where
+        T: Into<Self::Time>,
+    {
+        self.cycles = cycles.into();
+    }
+
+    fn wait(&mut self) -> nb::Result<(), void::Void> {
+        cycle_delay(self.cycles);
+        Ok(())
+    }
 }
