@@ -56,7 +56,7 @@ use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
 
 use embedded_graphics::prelude::*;
-use embedded_graphics::primitives::{Circle, Line, Rectangle};
+use embedded_graphics::primitives::{Circle, Rectangle, Triangle};
 use embedded_graphics::pixelcolor::BinaryColor;
 use ssd1306::prelude::*;
 use ssd1306::Builder;
@@ -108,24 +108,15 @@ fn main() -> ! {
     );
 
     // triangle
+    // 'Triangle' requires 'embedded_graphics' 0.6 or newer...
     disp.draw(
-        Line::new(
+        Triangle::new(
             Point::new(16, 16 + yoffset),
             Point::new(16 + 16, 16 + yoffset),
+            Point::new(16 + 8, yoffset)
         )
         .stroke(Some(BinaryColor::On))
         .into_iter(),
-    );
-    disp.draw(
-        Line::new(Point::new(16, 16 + yoffset), Point::new(16 + 8, yoffset))
-            .stroke(Some(BinaryColor::On))
-            .into_iter(),
-    );
-    disp.draw(
-        Line::new(Point::new(16 + 16, 16 + yoffset),
-            Point::new(16 + 8, yoffset))
-            .stroke(Some(BinaryColor::On))
-            .into_iter(),
     );
 
     // square
