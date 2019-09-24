@@ -24,7 +24,7 @@
 //! Feather boards if the correct headers are used, or can be plugged directly
 //! into a breadboard and connected with wires.  They also sell other I2C and
 //! SPI "modules" that have the SSD1306 chipset and a display of some sort,
-//! which you then connect to the Feather M0 with wires.  Other SSD1306
+//! which you then connect to the Feather M0 with wires.  Even more SSD1306
 //! modules can also be found on various shopping websites (Amazon, Ebay, //!
 //! Ali*), although it may be hard to tell from item listings if the module is
 //! using an SSD1306 chipset or not.
@@ -115,15 +115,26 @@ fn main() -> ! {
     disp.init().unwrap();
     disp.flush().unwrap();
 
-    let yoffset = 16;
+    let yoffset = 24;
+    let x_max = 127;
+    let y_max = 63;
+
+    // screen outline
+    disp.draw(
+        Rectangle::new(
+            Point::new(0, 0),
+            Point::new(x_max, y_max))
+            .stroke(Some(BinaryColor::On))
+            .into_iter(),
+    );
 
     // triangle
     // 'Triangle' requires 'embedded_graphics' 0.6 or newer...
     disp.draw(
         Triangle::new(
-            Point::new(8, 16 + yoffset),
-            Point::new(8 + 16, 16 + yoffset),
-            Point::new(8 + 8, yoffset)
+            Point::new(16, 16 + yoffset),
+            Point::new(16 + 16, 16 + yoffset),
+            Point::new(16 + 8, yoffset)
         )
         .stroke(Some(BinaryColor::On))
         .into_iter(),
@@ -131,14 +142,16 @@ fn main() -> ! {
 
     // square
     disp.draw(
-        Rectangle::new(Point::new(48, 16), Point::new(48 + 16, 16 + 16))
+        Rectangle::new(
+            Point::new(54, yoffset),
+            Point::new(54 + 16, 16 + yoffset))
             .stroke(Some(BinaryColor::On))
             .into_iter(),
     );
 
     // circle
     disp.draw(
-        Circle::new(Point::new(96, 16 + 8), 8)
+        Circle::new(Point::new(100, 8 + yoffset), 8)
             .stroke(Some(BinaryColor::On))
             .into_iter(),
     );
