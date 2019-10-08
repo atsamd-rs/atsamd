@@ -133,8 +133,8 @@ impl State {
 /// `GenericClockController` encapsulates the GCLK hardware.
 /// It provides a type safe way to configure the system clocks.
 /// Initializing the `GenericClockController` instance configures
-/// the system to run at 120MHz by taking the DFLL48 
-/// and feeding it into the DPLL0 hardware which multiplies the 
+/// the system to run at 120MHz by taking the DFLL48
+/// and feeding it into the DPLL0 hardware which multiplies the
 /// signal by 2.5x.
 pub struct GenericClockController {
     state: State,
@@ -421,7 +421,7 @@ fn enable_external_32kosc(osc32kctrl: &mut OSC32KCTRL) {
     });
 
     osc32kctrl.rtcctrl.write(|w| w.rtcsel().xosc1k());
-    
+
     // Wait for the oscillator to stabilize
     while osc32kctrl.status.read().xosc32krdy().bit_is_clear() {}
 }
@@ -451,4 +451,58 @@ fn configure_and_enable_dpll0(oscctrl: &mut OSCCTRL, gclk: &mut GCLK) {
         w.ondemand().clear_bit()
     });
 
+}
+
+/// Configure the dfll48m to operate at 48Mhz
+fn configure_and_enable_dfll48m_usb_correction(oscctrl: &mut OSCCTRL) {
+    // unsafe {
+    //     // Temporarily set GCLK0 to internal 32k oscillator.
+    //     state.gclk.genctrl[0].write(|w| {
+    //         w.src().osculp32k();
+    //         w.oe().set_bit();
+    //         w.genen().set_bit()
+    //     });
+    // }
+    // while state.gclk.syncbusy.read().genctrl0().is_gclk0() {}
+
+    // Disable the dfllmul and reenable in this order due to chip errata.
+    oscctrl.dfllctrla.write(|w| unsafe {
+        w.bits(0)
+    });
+    while oscctrl.dfllsync.read().enable().bit_is_set() {};
+
+
+    oscctrl.dfllmul.write(|w| unsafe {
+        w.cstep().bits(0x1)
+        .fstep().bits(0x1)
+        // scaling factor for 1Khz SOF signal.
+        .mul().bits((48_000_000u32 / 1000) as u16)
+    });
+    while oscctrl.dfllsync.read().dfllmul().bit_is_set() {};
+
+    oscctrl.dfllctrlb.write(|w| unsafe {
+        w.bits(0)
+    });
+    while oscctrl.dfllsync.read().dfllctrlb().bit_is_set() {};
+
+    oscctrl.dfllctrla.write(|w| {
+        w.enable().set_bit()
+    });
+    while oscctrl.dfllsync.read().enable().bit_is_set() {};
+
+    // Write the current value in again.
+    oscctrl.dfllval.modify(|r, w| unsafe {
+        w.bits(r.bits())
+    });
+    while oscctrl.dfllsync.read().dfllval().bit_is_set() {};
+
+    oscctrl.dfllctrlb.write(|w| {
+        // closed loop mode
+        w.mode().set_bit()
+        // chill cycle disable
+        .ccdis().set_bit()
+        // usb correction
+        .usbcrm().set_bit()
+    });
+    while oscctrl.dfllsync.read().dfllctrlb().bit_is_set() {};
 }
