@@ -40,9 +40,10 @@ panic_rtt = "~0.2"
 
 [features]
 # ask the HAL to enable atsamd51g19a support
-default = ["rt", "atsamd-hal/samd51g19a", "atsamd-hal/samd51", "atsamd-hal/unproven"]
+default = ["rt", "usb", "atsamd-hal/samd51g19a", "atsamd-hal/samd51", "atsamd-hal/unproven"]
 rt = ["cortex-m-rt", "atsamd-hal/samd51g19a-rt"]
 unproven = ["atsamd-hal/unproven"]
+usb = ["atsamd-hal/usb"]
 
 [profile.dev]
 incremental = false

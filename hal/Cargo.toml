@@ -60,12 +60,9 @@ path = "../pac/atsamd51j20a"
 version = "~0.6"
 optional = true
 
-
-#[dependencies.usb-device]
-#git = "https://github.com/wez/usb-device"
-#branch = "unsafe_atomics"
-#version = "~0.1"
-#optional = true
+[dependencies.usb-device]
+version = "~0.2"
+optional = true
 
 [dev-dependencies]
 panic_rtt = "~0.1"
@@ -97,4 +94,4 @@ samd51j20a = ["atsamd51j20a"]
 samd51j20a-rt = ["atsamd51j20a", "atsamd51j20a/rt"]
 unproven = ["embedded-hal/unproven"]
 use_rtt = ["jlink_rtt"]
-#usb = ["usb-device"]
+usb = ["usb-device"]

@@ -48,9 +48,9 @@ macro_rules! dbgprint {
 pub mod common;
 pub use self::common::*;
 
-#[cfg(feature="samd51")] 
+#[cfg(feature="samd51")]
 pub mod samd51;
-#[cfg(feature="samd51")] 
+#[cfg(feature="samd51")]
 pub use self::samd51::*;
 
 #[cfg(not(feature="samd51"))]
@@ -58,5 +58,7 @@ pub mod samd21;
 #[cfg(not(feature="samd51"))]
 pub use self::samd21::*;
 
-#[cfg(feature = "usb")]
+#[cfg(all(feature = "usb", feature="samd21"))]
 pub use self::samd21::usb;
+#[cfg(all(feature = "usb", feature="samd51"))]
+pub use self::samd51::usb;
