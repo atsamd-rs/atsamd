@@ -3,13 +3,20 @@
 use super::{hal, pac::MCLK, pac::SERCOM1, pac::SERCOM2, target_device};
 
 use embedded_hal::timer::{CountDown, Periodic};
-use hal::clock::*;
 use hal::define_pins;
 use hal::gpio::{self, *};
 use hal::sercom::{I2CMaster2, PadPin, SPIMaster1, Sercom2Pad0, Sercom2Pad1};
 use hal::time::Hertz;
 
+use hal::clock::GenericClockController;
+use super::pac::gclk::{genctrl::SRC_A, pchctrl::GEN_A};
+
 use apa102_spi::Apa102;
+
+#[cfg(feature = "usb")]
+use hal::usb::usb_device::bus::UsbBusAllocator;
+#[cfg(feature = "usb")]
+pub use hal::usb::UsbBus;
 
 define_pins!(
     /// Maps the pins to their arduino names and
@@ -137,12 +144,18 @@ impl Pins {
             scl: self.i2c_scl,
         };
 
+        let usb = USB {
+            dm: self.usb_dm,
+            dp: self.usb_dp,
+        };
+
         Sets {
             analog,
             dotstar,
             spi,
             i2c,
             flash,
+            usb,
             port: self.port,
         }
     }
@@ -164,6 +177,9 @@ pub struct Sets {
 
     /// QSPI Flash pins
     pub flash: QSPIFlash,
+
+    /// USB pins
+    pub usb: USB,
 
     /// Port
     pub port: Port,
@@ -236,6 +252,36 @@ impl I2C {
             self.sda.into_pad(port),
             self.scl.into_pad(port),
         )
+    }
+}
+
+/// USB pins
+pub struct USB {
+    pub dm: Pa24<Input<Floating>>,
+    pub dp: Pa25<Input<Floating>>,
+}
+
+
+impl USB {
+    #[cfg(feature = "usb")]
+    pub fn usb_allocator(
+        self,
+        usb: super::pac::USB,
+        clocks: &mut GenericClockController,
+        mclk: &mut MCLK,
+        port: &mut Port,
+    ) -> UsbBusAllocator<UsbBus> {
+        clocks.configure_gclk_divider_and_source(GEN_A::GCLK2, 1, SRC_A::DFLL, false);
+        let usb_gclk = clocks.get_gclk(GEN_A::GCLK2).unwrap();
+        let usb_clock = &clocks.usb(&usb_gclk).unwrap();
+
+        UsbBusAllocator::new(UsbBus::new(
+            usb_clock,
+            mclk,
+            self.dm.into_function(port),
+            self.dp.into_function(port),
+            usb,
+        ))
     }
 }
 

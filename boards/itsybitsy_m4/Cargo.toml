@@ -31,6 +31,10 @@ path = "../../hal"
 version = "~0.7"
 default-features = false
 
+[dependencies.usb-device]
+version = "~0.2"
+optional = true
+
 [dev-dependencies]
 panic-halt = "~0.2"
 panic-semihosting = "~0.5"
@@ -43,7 +47,7 @@ panic_rtt = "~0.2"
 default = ["rt", "usb", "atsamd-hal/samd51g19a", "atsamd-hal/samd51", "atsamd-hal/unproven"]
 rt = ["cortex-m-rt", "atsamd-hal/samd51g19a-rt"]
 unproven = ["atsamd-hal/unproven"]
-usb = ["atsamd-hal/usb"]
+usb = ["atsamd-hal/usb", "usb-device"]
 
 [profile.dev]
 incremental = false
@@ -63,3 +67,7 @@ name = "blinky_basic"
 
 [[example]]
 name = "dotstar"
+
+
+[[example]]
+name = "usb_serial"
