@@ -457,7 +457,7 @@ fn configure_and_enable_dpll0(oscctrl: &mut OSCCTRL, gclk: &mut GCLK) {
 }
 
 #[cfg(feature = "usb")]
-/// Configure the dfll48m to operate at 48Mhz
+/// Configure the dfll48m to calibrate against the 1Khz USB SOF reference.
 fn configure_usb_correction(oscctrl: &mut OSCCTRL) {
     oscctrl.dfllmul.write(|w| unsafe {
         w.cstep().bits(0x1)

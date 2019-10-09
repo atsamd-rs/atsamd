@@ -35,6 +35,10 @@ default-features = false
 version = "~0.2"
 optional = true
 
+[dependencies.usbd-serial]
+version = "~0.1"
+optional = true
+
 [dev-dependencies]
 panic-halt = "~0.2"
 panic-semihosting = "~0.5"
@@ -47,7 +51,7 @@ panic_rtt = "~0.2"
 default = ["rt", "atsamd-hal/samd51g19a", "atsamd-hal/samd51", "atsamd-hal/unproven"]
 rt = ["cortex-m-rt", "atsamd-hal/samd51g19a-rt"]
 unproven = ["atsamd-hal/unproven"]
-usb = ["atsamd-hal/usb", "usb-device"]
+usb = ["atsamd-hal/usb", "usb-device", "usbd-serial"]
 uart_debug = ["atsamd-hal/uart_debug"]
 
 [profile.dev]
@@ -71,5 +75,5 @@ name = "dotstar"
 
 
 [[example]]
-name = "usb_enumerate"
+name = "usb_serial"
 required-features = ["usb", "uart_debug"]

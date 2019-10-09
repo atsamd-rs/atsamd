@@ -19,6 +19,8 @@ use crate::dbgprint;
 #[cfg(feature = "uart_debug")]
 use crate::uart_debug;
 
+/// EndpointTypeBits represents valid values for the EPTYPE fields in
+/// the EPCFGn registers.
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum EndpointTypeBits {
     Disabled = 0,
@@ -47,6 +49,7 @@ impl From<EndpointType> for EndpointTypeBits {
     }
 }
 
+/// EPConfig tracks the desired configuration for one side of an endpoint.
 #[derive(Default, Clone, Copy)]
 struct EPConfig {
     ep_type: EndpointTypeBits,
@@ -71,6 +74,7 @@ impl EPConfig {
     }
 }
 
+// EndpointInfo represents the desired configuration for an endpoint pair.
 #[derive(Default)]
 struct EndpointInfo {
     bank0: EPConfig,
@@ -83,6 +87,8 @@ impl EndpointInfo {
     }
 }
 
+/// AllEndpoints tracks the desired configuration of all endpoints managed
+/// by the USB peripheral.
 struct AllEndpoints {
     endpoints: [EndpointInfo; 8],
 }
@@ -286,6 +292,7 @@ impl<'a> Bank<'a, InBank> {
         }
     }
 
+    /// Acknowledges the signal that the last packet was sent.
     #[inline]
     fn clear_transfer_complete(&self) {
         // Clear bits in epintflag by writing them to 1
@@ -293,16 +300,20 @@ impl<'a> Bank<'a, InBank> {
             .write(|w| w.trcpt1().set_bit().trfail1().set_bit());
     }
 
+    /// Indicates if a transfer is complete or pending.
     #[inline]
     fn is_transfer_complete(&self) -> bool {
         self.epintflag(self.index()).read().trcpt1().bit()
     }
 
+    /// Indicates if a transfer failed.
     #[inline]
     fn is_transfer_failed(&self) -> bool {
         self.epintflag(self.index()).read().trfail1().bit()
     }
 
+    /// Resets the state of the endpoint as expected for a USB
+    /// protocol reset.
     fn reset(&mut self) {
         let idx = self.index();
         let config = self.config().clone();
@@ -321,6 +332,9 @@ impl<'a> Bank<'a, InBank> {
         self.clear_transfer_complete();
     }
 
+    /// Prepares to transfer a series of bytes by copying the data into the
+    /// bank1 buffer. The caller must call set_ready() to finalize the
+    /// transfer.
     pub fn write(&mut self, buf: &[u8]) -> UsbResult<usize> {
         let size = buf.len().min(self.config().allocated_size as usize);
         let desc = self.desc_bank();
@@ -376,6 +390,7 @@ impl<'a> Bank<'a, OutBank> {
         }
     }
 
+    /// Acknowledges the signal that data has been received.
     #[inline]
     fn clear_transfer_complete(&self) {
         // Clear bits in epintflag by writing them to 1
@@ -383,11 +398,14 @@ impl<'a> Bank<'a, OutBank> {
             .write(|w| w.trcpt0().set_bit().trfail0().set_bit());
     }
 
+    /// Checks if data has been received. Returns true for failed transfers
+    /// as well as successful transfers.
     #[inline]
     fn is_transfer_complete(&self) -> bool {
         self.epintflag(self.index()).read().trcpt0().bit()
     }
 
+    /// Returns true if the transfer failed.
     #[inline]
     fn is_transfer_failed(&self) -> bool {
         self.epintflag(self.index()).read().trfail0().bit()
@@ -400,12 +418,16 @@ impl<'a> Bank<'a, OutBank> {
         self.epintflag(self.index()).read().rxstp().bit()
     }
 
+    /// Acknowledges the signal that a SETUP packet was received
+    /// successfully.
     #[inline]
     fn clear_received_setup_interrupt(&self) {
         // Clear bits in epintflag by writing them to 1
         self.epintflag(self.index()).write(|w| w.rxstp().set_bit());
     }
 
+    /// Resets the state of the endpoint as expected for a USB
+    /// protocol reset.
     fn reset(&mut self) {
         let idx = self.index();
         let config = self.config().clone();
@@ -431,6 +453,9 @@ impl<'a> Bank<'a, OutBank> {
             .write(|w| w.rxstp().set_bit().trcpt0().set_bit());
     }
 
+    /// Copies data from the bank0 buffer to the provided array. The caller
+    /// must call set_ready to indicate the buffer is free for the next
+    /// transfer.
     pub fn read(&mut self, buf: &mut [u8]) -> UsbResult<usize> {
         let desc = self.desc_bank();
         let size = desc.get_byte_count() as usize;
@@ -600,7 +625,7 @@ impl UsbBus {
         mclk: &mut MCLK,
         dm_pad: DmPad,
         dp_pad: DpPad,
-        usb: USB,
+        _usb: USB,
     ) -> Self {
         dbgprint!("******** UsbBus::new\n");
         mclk.ahbmask.modify(|_, w| w.usb_().set_bit());
@@ -710,15 +735,15 @@ impl Inner {
         while usb.syncbusy.read().enable().bit_is_set() {}
 
         usb.intenset.write(|w| {
-            w.eorst().set_bit();
-            w.lpmsusp().set_bit();
-            w.suspend().set_bit();
-            w.wakeup().set_bit();
-            w.eorsm().set_bit();
-            w.uprsm().set_bit()
+            w.eorst().set_bit()
+            .eorsm().set_bit()
+            .suspend().set_bit()
         });
 
+        // Configure the endpoints before we detach, as hosts may enumerate
+        // before attempting a USB protocol reset.
         self.flush_eps();
+
         usb.ctrlb.modify(|_, w| w.detach().clear_bit());
     }
 
@@ -813,9 +838,12 @@ impl Inner {
     }
 
     fn poll(&self) -> PollResult {
-        if self.usb().intflag.read().wakeup().bit_is_set() {
-            self.usb().intflag.write(|w| w.wakeup().set_bit());
-        }
+        // Clear flags we are not concerned about.
+        self.usb().intflag.write(|w| {
+            w.wakeup().set_bit()
+            .sof().set_bit()
+            .eorsm().set_bit()
+        });
 
         if self.received_suspend_interrupt() {
             self.clear_suspend();
@@ -825,7 +853,6 @@ impl Inner {
         if self.received_end_of_reset_interrupt() {
             self.clear_end_of_reset();
             dbgprint!("PollResult::Reset\n");
-            self.print_epstatus(0, "DEBUG");
             return PollResult::Reset;
         }
 
