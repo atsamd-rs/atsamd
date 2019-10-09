@@ -128,6 +128,20 @@ impl State {
         });
         self.wait_for_sync();
     }
+
+    fn setup_usb_correction(&mut self, oscctrl: &mut OSCCTRL) {
+        unsafe {
+            // Temporarily set GCLK0 to internal 32k oscillator.
+            self.gclk.genctrl[0].write(|w| {
+                w.src().osculp32k();
+                w.oe().set_bit();
+                w.genen().set_bit()
+            });
+        }
+        while self.gclk.syncbusy.read().genctrl0().is_gclk0() {}
+
+        configure_usb_correction(oscctrl);
+    }
 }
 
 /// `GenericClockController` encapsulates the GCLK hardware.
@@ -191,6 +205,9 @@ impl GenericClockController {
         }
 
         while state.gclk.syncbusy.read().genctrl0().is_gclk0() {}
+
+        #[cfg(feature = "usb")]
+        state.setup_usb_correction(oscctrl);
 
         // GCLK5 set to 2MHz
         unsafe {
@@ -454,17 +471,7 @@ fn configure_and_enable_dpll0(oscctrl: &mut OSCCTRL, gclk: &mut GCLK) {
 }
 
 /// Configure the dfll48m to operate at 48Mhz
-fn configure_and_enable_dfll48m_usb_correction(oscctrl: &mut OSCCTRL) {
-    // unsafe {
-    //     // Temporarily set GCLK0 to internal 32k oscillator.
-    //     state.gclk.genctrl[0].write(|w| {
-    //         w.src().osculp32k();
-    //         w.oe().set_bit();
-    //         w.genen().set_bit()
-    //     });
-    // }
-    // while state.gclk.syncbusy.read().genctrl0().is_gclk0() {}
-
+fn configure_usb_correction(oscctrl: &mut OSCCTRL) {
     // Disable the dfllmul and reenable in this order due to chip errata.
     oscctrl.dfllctrla.write(|w| unsafe {
         w.bits(0)
