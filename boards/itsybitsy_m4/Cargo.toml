@@ -44,7 +44,7 @@ panic_rtt = "~0.2"
 
 [features]
 # ask the HAL to enable atsamd51g19a support
-default = ["rt", "usb", "uart_debug", "atsamd-hal/samd51g19a", "atsamd-hal/samd51", "atsamd-hal/unproven"]
+default = ["rt", "atsamd-hal/samd51g19a", "atsamd-hal/samd51", "atsamd-hal/unproven"]
 rt = ["cortex-m-rt", "atsamd-hal/samd51g19a-rt"]
 unproven = ["atsamd-hal/unproven"]
 usb = ["atsamd-hal/usb", "usb-device"]
@@ -71,4 +71,5 @@ name = "dotstar"
 
 
 [[example]]
-name = "usb_serial"
+name = "usb_enumerate"
+required-features = ["usb", "uart_debug"]

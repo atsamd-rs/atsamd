@@ -13,7 +13,7 @@ use cortex_m::singleton;
 use usb_device;
 use usb_device::bus::PollResult;
 use usb_device::endpoint::{EndpointAddress, EndpointType};
-use usb_device::{Result as UsbResult, UsbError, UsbDirection};
+use usb_device::{Result as UsbResult, UsbDirection, UsbError};
 
 use crate::dbgprint;
 #[cfg(feature = "uart_debug")]
@@ -718,23 +718,19 @@ impl Inner {
             w.uprsm().set_bit()
         });
 
+        self.flush_eps();
         usb.ctrlb.modify(|_, w| w.detach().clear_bit());
     }
 
-    fn reset(&self) {
-        dbgprint!("UsbBus::reset\n");
+    fn flush_eps(&self) {
         for idx in 0..8 {
             let cfg = self.epcfg(idx);
             let info = &self.endpoints.borrow().endpoints[idx];
 
-            if let Ok(mut bank) =
-                self.bank0(EndpointAddress::from_parts(idx, UsbDirection::Out))
-            {
+            if let Ok(mut bank) = self.bank0(EndpointAddress::from_parts(idx, UsbDirection::Out)) {
                 bank.reset();
             }
-            if let Ok(mut bank) =
-                self.bank1(EndpointAddress::from_parts(idx, UsbDirection::In))
-            {
+            if let Ok(mut bank) = self.bank1(EndpointAddress::from_parts(idx, UsbDirection::In)) {
                 bank.reset();
             }
 
@@ -745,7 +741,11 @@ impl Inner {
                     .bits(info.bank1.ep_type as u8)
             });
         }
+    }
 
+    fn reset(&self) {
+        dbgprint!("UsbBus::reset\n");
+        self.flush_eps();
         self.usb().ctrlb.modify(|_, w| w.detach().clear_bit());
     }
 
@@ -816,7 +816,7 @@ impl Inner {
         if self.usb().intflag.read().wakeup().bit_is_set() {
             self.usb().intflag.write(|w| w.wakeup().set_bit());
         }
-        
+
         if self.received_suspend_interrupt() {
             self.clear_suspend();
             dbgprint!("PollResult::Suspend\n");
@@ -942,7 +942,12 @@ impl Inner {
                 Ok(size) => {
                     //dbgprint!("UsbBus::read {} bytes ok", size);
                     let got = &buf[..size as usize];
-                    dbgprint!("UsbBus::read {} bytes from ep {:?} -> {:?}\n", size, ep, got);
+                    dbgprint!(
+                        "UsbBus::read {} bytes from ep {:?} -> {:?}\n",
+                        size,
+                        ep,
+                        got
+                    );
                     Ok(size)
                 }
                 Err(err) => {

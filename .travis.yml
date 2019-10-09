@@ -13,7 +13,7 @@ env:
   - CRATE=boards/feather_m4
   - CRATE=boards/gemma_m0
   - CRATE=boards/itsybitsy_m0
-  - CRATE=boards/itsybitsy_m4 FEATURES="--features=unproven"
+  - CRATE=boards/itsybitsy_m4 FEATURES="--features=unproven,usb,uart_debug"
   - CRATE=boards/trinket_m0
   - CRATE=boards/samd21_mini
   - CRATE=boards/arduino_mkrzero

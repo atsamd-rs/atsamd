@@ -12,12 +12,12 @@ use hal::pac::{interrupt, CorePeripherals, Peripherals};
 use hal::usb::UsbBus;
 use usb_device::bus::UsbBusAllocator;
 
-use usb_device::prelude::*;
 use hal::prelude::*;
+use usb_device::prelude::*;
 
-use hal::{uart, uart_debug};
 use hal::dbgprint;
 use hal::time::Hertz;
+use hal::{uart, uart_debug};
 
 #[entry]
 fn main() -> ! {
@@ -32,23 +32,36 @@ fn main() -> ! {
     );
     let mut pins = hal::Pins::new(peripherals.PORT).split();
 
-    uart_debug::wire_uart(uart(pins.uart, &mut clocks, Hertz(115200), peripherals.SERCOM3, &mut peripherals.MCLK, &mut pins.port));
+    uart_debug::wire_uart(uart(
+        pins.uart,
+        &mut clocks,
+        Hertz(115200),
+        peripherals.SERCOM3,
+        &mut peripherals.MCLK,
+        &mut pins.port,
+    ));
     dbgprint!("\n\n\n\n~========== STARTING ==========~\n");
 
     let bus_allocator = unsafe {
-        USB_ALLOCATOR = Some(pins.usb.usb_allocator(peripherals.USB, &mut clocks, &mut peripherals.MCLK, &mut pins.port));
+        USB_ALLOCATOR = Some(pins.usb.usb_allocator(
+            peripherals.USB,
+            &mut clocks,
+            &mut peripherals.MCLK,
+            &mut pins.port,
+        ));
         USB_ALLOCATOR.as_ref().unwrap()
     };
 
     unsafe {
-        USB_BUS = Some(UsbDeviceBuilder::new(&bus_allocator, UsbVidPid(0x16c0, 0x27dd))
+        USB_BUS = Some(
+            UsbDeviceBuilder::new(&bus_allocator, UsbVidPid(0x16c0, 0x27dd))
             .manufacturer("Fake company")
             .product("Serial port")
             .serial_number("TEST")
             // .device_class(0)
-            .build());
+            .build(),
+        );
     }
-
 
     unsafe {
         core.NVIC.set_priority(interrupt::USB_OTHER, 1);
@@ -60,14 +73,12 @@ fn main() -> ! {
     core.NVIC.enable(interrupt::USB_TRCPT0);
     core.NVIC.enable(interrupt::USB_TRCPT1);
 
-    loop {
-
-    }
+    loop {}
 }
 
 static mut USB_ALLOCATOR: Option<UsbBusAllocator<UsbBus>> = None;
 static mut USB_BUS: Option<UsbDevice<UsbBus>> = None;
- fn poll_usb() {
+fn poll_usb() {
     unsafe {
         USB_BUS.as_mut().map(|usb_dev| {
             usb_dev.poll(&mut []);
