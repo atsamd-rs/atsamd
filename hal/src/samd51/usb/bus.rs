@@ -602,7 +602,7 @@ impl UsbBus {
         dp_pad: DpPad,
         usb: USB,
     ) -> Self {
-        dbgprint!("******** UsbBus::new");
+        dbgprint!("******** UsbBus::new\n");
         mclk.ahbmask.modify(|_, w| w.usb_().set_bit());
         mclk.apbbmask.modify(|_, w| w.usb_().set_bit());
 
@@ -631,7 +631,7 @@ impl Inner {
         let ep = ep.into();
         let idx = ep.index();
         let dir = ep.direction();
-        dbgprint!("UsbBus::stall={} for {:?} {}", stall, dir, idx);
+        dbgprint!("UsbBus::stall={} for {:?} {}\n", stall, dir, idx);
         if ep.is_out() {
             if let Ok(mut bank) = self.bank0(ep) {
                 bank.set_stall(stall);
@@ -648,7 +648,7 @@ impl Inner {
 
         let mut desc = self.desc.borrow_mut();
 
-        dbgprint!("ep{} status {}:\n    bk1rdy={} stallrq1={} stall1={} trcpt1={} trfail1={} byte_count1={} multi_packet_size1={}\n    bk0rdy={} stallrq0={} stall0={} trcpt0={} trfail0={} byte_count0={} multi_packet_size0={}\n    curbk={} dtglin={} dtglout={} rxstp={}   lpmsusp={} lpmnyet={} ramacer={} uprsm={} eorsm={} wakeup={} eorst={} sof={} suspend={}",
+        dbgprint!("ep{} status {}:\n    bk1rdy={} stallrq1={} stall1={} trcpt1={} trfail1={} byte_count1={} multi_packet_size1={}\n    bk0rdy={} stallrq0={} stall0={} trcpt0={} trfail0={} byte_count0={} multi_packet_size0={}\n    curbk={} dtglin={} dtglout={} rxstp={}   lpmsusp={} lpmnyet={} ramacer={} uprsm={} eorsm={} wakeup={} eorst={} sof={} suspend={}\n",
                 ep, label,
                 status.bk1rdy().bit() as u8,
                 status.stallrq1().bit() as u8,
@@ -683,7 +683,7 @@ impl Inner {
 
 impl Inner {
     fn enable(&mut self) {
-        dbgprint!("UsbBus::enable");
+        dbgprint!("UsbBus::enable\n");
         let usb = self.usb();
         usb.ctrla.modify(|_, w| w.swrst().set_bit());
         while usb.syncbusy.read().swrst().bit_is_set() {}
@@ -707,6 +707,7 @@ impl Inner {
         usb.ctrlb.modify(|_, w| w.spdconf().fs());
 
         usb.ctrla.modify(|_, w| w.enable().set_bit());
+        while usb.syncbusy.read().enable().bit_is_set() {}
 
         usb.intenset.write(|w| {
             w.eorst().set_bit();
@@ -716,10 +717,12 @@ impl Inner {
             w.eorsm().set_bit();
             w.uprsm().set_bit()
         });
+
+        usb.ctrlb.modify(|_, w| w.detach().clear_bit());
     }
 
     fn reset(&self) {
-        dbgprint!("reset");
+        dbgprint!("UsbBus::reset\n");
         for idx in 0..8 {
             let cfg = self.epcfg(idx);
             let info = &self.endpoints.borrow().endpoints[idx];
@@ -747,10 +750,10 @@ impl Inner {
     }
 
     fn suspend(&self) {
-        dbgprint!("UsbBus::suspend");
+        dbgprint!("UsbBus::suspend\n");
     }
     fn resume(&self) {
-        dbgprint!("UsbBus::resume");
+        dbgprint!("UsbBus::resume\n");
         let usb = self.usb();
         usb.ctrla.modify(|_, w| w.enable().set_bit());
         usb.ctrlb.modify(|_, w| w.detach().clear_bit());
@@ -769,7 +772,7 @@ impl Inner {
         let buffer = self.buffers.borrow_mut().allocate_buffer(allocated_size)?;
 
         dbgprint!(
-            "UsbBus::alloc_ep dir={:?} addr={:?} type={:?} max_packet_size={} interval={}",
+            "UsbBus::alloc_ep dir={:?} addr={:?} type={:?} max_packet_size={} interval={}\n",
             dir,
             addr,
             ep_type,
@@ -794,13 +797,13 @@ impl Inner {
             buffer,
         )?;
 
-        dbgprint!("alloc_ep -> {:?}", addr);
+        dbgprint!("alloc_ep -> {:?}\n", addr);
 
         Ok(addr.into())
     }
 
     fn set_device_address(&self, addr: u8) {
-        dbgprint!("UsbBus::set_device_address addr={}", addr);
+        dbgprint!("UsbBus::set_device_address addr={}\n", addr);
         self.usb()
             .dadd
             .write(|w| unsafe { w.dadd().bits(addr).adden().set_bit() });
@@ -812,12 +815,13 @@ impl Inner {
     fn poll(&self) -> PollResult {
         if self.received_suspend_interrupt() {
             self.clear_suspend();
-            dbgprint!("PollResult::Suspend");
+            dbgprint!("PollResult::Suspend\n");
             return PollResult::Suspend;
         }
         if self.received_end_of_reset_interrupt() {
             self.clear_end_of_reset();
-            dbgprint!("PollResult::Reset");
+            dbgprint!("PollResult::Reset\n");
+            self.print_epstatus(0, "DEBUG");
             return PollResult::Reset;
         }
 
@@ -848,7 +852,7 @@ impl Inner {
                 continue;
             }
             if bank1.is_transfer_complete() {
-                dbgprint!("ep {} WRITE DONE", ep);
+                dbgprint!("ep {} WRITE DONE\n", ep);
                 ep_in_complete |= mask;
                 bank1.clear_transfer_complete();
                 continue;
@@ -859,14 +863,14 @@ impl Inner {
                 .bank0(EndpointAddress::from_parts(idx, UsbDirection::Out))
                 .unwrap();
             if bank0.received_setup_interrupt() {
-                dbgprint!("ep {} GOT SETUP", ep);
+                dbgprint!("ep {} GOT SETUP\n", ep);
                 ep_setup |= mask;
                 bank0.clear_received_setup_interrupt();
                 break;
             }
 
             if bank0.is_transfer_complete() {
-                dbgprint!("ep {} READABLE", ep);
+                dbgprint!("ep {} READABLE\n", ep);
                 ep_out |= mask;
             }
             if bank0.is_transfer_failed() {
@@ -889,7 +893,7 @@ impl Inner {
         if bank.is_ready() {
             // Waiting for the host to pick up the existing data
             dbgprint!(
-                "UsbBus::write {} bytes {:?} to ep {:?} -> BUSY trcpt1={}",
+                "UsbBus::write {} bytes {:?} to ep {:?} -> BUSY trcpt1={}\n",
                 buf.len(),
                 buf,
                 ep,
@@ -904,7 +908,7 @@ impl Inner {
         bank.set_ready(true); // ready to be sent
 
         dbgprint!(
-            "UsbBus::write {} bytes {:?} to ep {:?} -> {:?}",
+            "UsbBus::write {} bytes {:?} to ep {:?} -> {:?}\n",
             buf.len(),
             buf,
             ep,
@@ -934,11 +938,11 @@ impl Inner {
                 Ok(size) => {
                     //dbgprint!("UsbBus::read {} bytes ok", size);
                     let got = &buf[..size as usize];
-                    dbgprint!("UsbBus::read {} bytes from ep {:?} -> {:?}", size, ep, got);
+                    dbgprint!("UsbBus::read {} bytes from ep {:?} -> {:?}\n", size, ep, got);
                     Ok(size)
                 }
                 Err(err) => {
-                    dbgprint!("UsbBus::read from ep {:?} -> {:?}", ep, err);
+                    dbgprint!("UsbBus::read from ep {:?} -> {:?}\n", ep, err);
                     self.print_epstatus(ep.index(), "after read");
                     Err(err)
                 }
