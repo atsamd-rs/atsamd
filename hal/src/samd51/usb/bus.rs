@@ -15,6 +15,10 @@ use usb_device::bus::PollResult;
 use usb_device::endpoint::{EndpointAddress, EndpointType};
 use usb_device::{Result as UsbResult, UsbError, UsbDirection};
 
+use crate::dbgprint;
+#[cfg(feature = "uart_debug")]
+use crate::uart_debug;
+
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum EndpointTypeBits {
     Disabled = 0,
@@ -790,7 +794,7 @@ impl Inner {
             buffer,
         )?;
 
-        dbgprint!("alloc_ep -> {:x}", addr.0);
+        dbgprint!("alloc_ep -> {:?}", addr);
 
         Ok(addr.into())
     }
@@ -885,10 +889,10 @@ impl Inner {
         if bank.is_ready() {
             // Waiting for the host to pick up the existing data
             dbgprint!(
-                "UsbBus::write {} bytes {:?} to ep {} -> BUSY trcpt1={}",
+                "UsbBus::write {} bytes {:?} to ep {:?} -> BUSY trcpt1={}",
                 buf.len(),
                 buf,
-                ep.0,
+                ep,
                 bank.is_transfer_complete()
             );
             return Err(UsbError::WouldBlock);
@@ -900,10 +904,10 @@ impl Inner {
         bank.set_ready(true); // ready to be sent
 
         dbgprint!(
-            "UsbBus::write {} bytes {:?} to ep {} -> {:?}",
+            "UsbBus::write {} bytes {:?} to ep {:?} -> {:?}",
             buf.len(),
             buf,
-            ep.0,
+            ep,
             size
         );
 
@@ -930,11 +934,11 @@ impl Inner {
                 Ok(size) => {
                     //dbgprint!("UsbBus::read {} bytes ok", size);
                     let got = &buf[..size as usize];
-                    dbgprint!("UsbBus::read {} bytes from ep{} -> {:?}", size, ep.0, got);
+                    dbgprint!("UsbBus::read {} bytes from ep {:?} -> {:?}", size, ep, got);
                     Ok(size)
                 }
                 Err(err) => {
-                    dbgprint!("UsbBus::read from ep{} -> {:?}", ep.0, err);
+                    dbgprint!("UsbBus::read from ep {:?} -> {:?}", ep, err);
                     self.print_epstatus(ep.index(), "after read");
                     Err(err)
                 }

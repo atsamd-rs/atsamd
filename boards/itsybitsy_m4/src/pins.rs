@@ -1,11 +1,11 @@
 //! ItsyBitsy M4 Express pins
 
-use super::{hal, pac::MCLK, pac::SERCOM1, pac::SERCOM2, target_device};
+use super::{hal, pac::MCLK, pac::SERCOM1, pac::SERCOM2, pac::SERCOM3, target_device};
 
 use embedded_hal::timer::{CountDown, Periodic};
 use hal::define_pins;
 use hal::gpio::{self, *};
-use hal::sercom::{I2CMaster2, PadPin, SPIMaster1, Sercom2Pad0, Sercom2Pad1};
+use hal::sercom::{I2CMaster2, PadPin, SPIMaster1, Sercom2Pad0, Sercom2Pad1, UART3};
 use hal::time::Hertz;
 
 use hal::clock::GenericClockController;
@@ -149,6 +149,11 @@ impl Pins {
             dp: self.usb_dp,
         };
 
+        let uart = UART {
+            rx: self.d0,
+            tx: self.d1,
+        };
+
         Sets {
             analog,
             dotstar,
@@ -156,6 +161,7 @@ impl Pins {
             i2c,
             flash,
             usb,
+            uart,
             port: self.port,
         }
     }
@@ -180,6 +186,9 @@ pub struct Sets {
 
     /// USB pins
     pub usb: USB,
+
+    /// UART (external pinout) pins
+    pub uart: UART,
 
     /// Port
     pub port: Port,
@@ -282,6 +291,40 @@ impl USB {
             self.dp.into_function(port),
             usb,
         ))
+    }
+}
+
+/// UART pins
+pub struct UART {
+    pub tx: Pa17<Input<Floating>>,
+    pub rx: Pa16<Input<Floating>>,
+}
+
+impl UART {
+    /// Convenience for setting up the labelled TX, RX pins in the
+    /// to operate as a UART device at the specified baud rate.
+    pub fn uart<F: Into<Hertz>>(
+        self,
+        clocks: &mut GenericClockController,
+        baud: F,
+        sercom3: SERCOM3,
+        mclk: &mut MCLK,
+        port: &mut Port,
+    ) -> UART3<
+        hal::sercom::Sercom3Pad1<gpio::Pa16<gpio::PfD>>,
+        hal::sercom::Sercom3Pad0<gpio::Pa17<gpio::PfD>>,
+        (),
+        (),
+    > {
+        let gclk0 = clocks.gclk0();
+
+        UART3::new(
+            &clocks.sercom3_core(&gclk0).unwrap(),
+            baud.into(),
+            sercom3,
+            mclk,
+            (self.rx.into_pad(port), self.tx.into_pad(port)),
+        )
     }
 }
 

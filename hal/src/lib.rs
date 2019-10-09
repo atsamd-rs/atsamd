@@ -38,7 +38,7 @@ macro_rules! dbgprint {
     };
 }
 
-#[cfg(not(feature = "use_rtt"))]
+#[cfg(all(not(feature = "use_rtt"), not(feature = "uart_debug")))]
 #[macro_export]
 macro_rules! dbgprint {
     ($($arg:tt)*) => {{}};

@@ -19,8 +19,11 @@ use embedded_hal::timer::{CountDown, Periodic};
 use gpio::{PfC, Port};
 use hal::clock::GenericClockController;
 use hal::gpio::*;
-use hal::sercom::{I2CMaster2, SPIMaster1};
+use hal::sercom::{I2CMaster2, SPIMaster1, UART3};
 use hal::time::Hertz;
+
+#[cfg(feature = "uart_debug")]
+pub use hal::dbgprint;
 
 /// Convenience for setting up the labelled SPI peripheral.
 /// This powers up SERCOM1 and configures it for use as an
@@ -64,4 +67,22 @@ pub fn i2c_master<F: Into<Hertz>>(
 ) -> I2CMaster2<hal::sercom::Sercom2Pad0<gpio::Pa12<PfC>>, hal::sercom::Sercom2Pad1<gpio::Pa13<PfC>>>
 {
     pins.i2c_master(clocks, bus_speed, sercom4, mclk, port)
+}
+
+/// Convenience for setting up the labelled TX, RX pins to
+/// operate as a UART running at the specified frequency.
+pub fn uart<F: Into<Hertz>>(
+    pins: pins::UART,
+    clocks: &mut GenericClockController,
+    baud: F,
+    sercom3: pac::SERCOM3,
+    mclk: &mut pac::MCLK,
+    port: &mut Port,
+) -> UART3<
+    hal::sercom::Sercom3Pad1<gpio::Pa16<gpio::PfD>>,
+    hal::sercom::Sercom3Pad0<gpio::Pa17<gpio::PfD>>,
+    (),
+    (),
+> {
+    pins.uart(clocks, baud, sercom3, mclk, port)
 }

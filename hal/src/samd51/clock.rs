@@ -130,15 +130,15 @@ impl State {
     }
 
     fn setup_usb_correction(&mut self, oscctrl: &mut OSCCTRL) {
-        unsafe {
-            // Temporarily set GCLK0 to internal 32k oscillator.
-            self.gclk.genctrl[0].write(|w| {
-                w.src().osculp32k();
-                w.oe().set_bit();
-                w.genen().set_bit()
-            });
-        }
-        while self.gclk.syncbusy.read().genctrl0().is_gclk0() {}
+        // unsafe {
+        //     // Temporarily set GCLK0 to internal 32k oscillator.
+        //     self.gclk.genctrl[0].write(|w| {
+        //         w.src().osculp32k();
+        //         w.oe().set_bit();
+        //         w.genen().set_bit()
+        //     });
+        // }
+        // while self.gclk.syncbusy.read().genctrl0().is_gclk0() {}
 
         configure_usb_correction(oscctrl);
     }
@@ -473,11 +473,10 @@ fn configure_and_enable_dpll0(oscctrl: &mut OSCCTRL, gclk: &mut GCLK) {
 /// Configure the dfll48m to operate at 48Mhz
 fn configure_usb_correction(oscctrl: &mut OSCCTRL) {
     // Disable the dfllmul and reenable in this order due to chip errata.
-    oscctrl.dfllctrla.write(|w| unsafe {
-        w.bits(0)
-    });
-    while oscctrl.dfllsync.read().enable().bit_is_set() {};
-
+    // oscctrl.dfllctrla.write(|w| unsafe {
+    //     w.bits(0)
+    // });
+    // while oscctrl.dfllsync.read().enable().bit_is_set() {};
 
     oscctrl.dfllmul.write(|w| unsafe {
         w.cstep().bits(0x1)
@@ -486,22 +485,6 @@ fn configure_usb_correction(oscctrl: &mut OSCCTRL) {
         .mul().bits((48_000_000u32 / 1000) as u16)
     });
     while oscctrl.dfllsync.read().dfllmul().bit_is_set() {};
-
-    oscctrl.dfllctrlb.write(|w| unsafe {
-        w.bits(0)
-    });
-    while oscctrl.dfllsync.read().dfllctrlb().bit_is_set() {};
-
-    oscctrl.dfllctrla.write(|w| {
-        w.enable().set_bit()
-    });
-    while oscctrl.dfllsync.read().enable().bit_is_set() {};
-
-    // Write the current value in again.
-    oscctrl.dfllval.modify(|r, w| unsafe {
-        w.bits(r.bits())
-    });
-    while oscctrl.dfllsync.read().dfllval().bit_is_set() {};
 
     oscctrl.dfllctrlb.write(|w| {
         // closed loop mode

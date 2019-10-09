@@ -15,6 +15,10 @@ use usb_device::bus::UsbBusAllocator;
 use usb_device::prelude::*;
 use hal::prelude::*;
 
+use hal::{uart, uart_debug};
+use hal::dbgprint;
+use hal::time::Hertz;
+
 #[entry]
 fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
@@ -27,6 +31,9 @@ fn main() -> ! {
         &mut peripherals.NVMCTRL,
     );
     let mut pins = hal::Pins::new(peripherals.PORT).split();
+
+    uart_debug::wire_uart(uart(pins.uart, &mut clocks, Hertz(115200), peripherals.SERCOM3, &mut peripherals.MCLK, &mut pins.port));
+    dbgprint!("\n\n\n\n~========== STARTING ==========~\n");
 
     let bus_allocator = unsafe {
         USB_ALLOCATOR = Some(pins.usb.usb_allocator(peripherals.USB, &mut clocks, &mut peripherals.MCLK, &mut pins.port));
