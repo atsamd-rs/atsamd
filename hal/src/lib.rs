@@ -1,5 +1,4 @@
 #![no_std]
-#![cfg_attr(feature = "usb", feature(align_offset, ptr_offset_from))]
 
 pub extern crate embedded_hal as hal;
 

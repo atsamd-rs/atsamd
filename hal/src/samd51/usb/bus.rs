@@ -180,7 +180,7 @@ impl BufferAllocator {
             return Err(UsbError::EndpointMemoryOverflow);
         }
 
-        self.next_buf = unsafe { end_addr.offset_from(self.buffers.as_ptr()) as u16 };
+        self.next_buf = unsafe { end_addr.sub(self.buffers.as_ptr() as usize) as u16 };
 
         Ok(start_addr)
     }
@@ -813,6 +813,10 @@ impl Inner {
     }
 
     fn poll(&self) -> PollResult {
+        if self.usb().intflag.read().wakeup().bit_is_set() {
+            self.usb().intflag.write(|w| w.wakeup().set_bit());
+        }
+        
         if self.received_suspend_interrupt() {
             self.clear_suspend();
             dbgprint!("PollResult::Suspend\n");

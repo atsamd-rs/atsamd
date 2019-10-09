@@ -55,12 +55,10 @@ fn main() -> ! {
         core.NVIC.set_priority(interrupt::USB_TRCPT0, 1);
         core.NVIC.set_priority(interrupt::USB_TRCPT1, 1);
         core.NVIC.set_priority(interrupt::USB_TRCPT1, 1);
-        core.NVIC.set_priority(interrupt::USB_SOF_HSOF, 1);
     }
     core.NVIC.enable(interrupt::USB_OTHER);
     core.NVIC.enable(interrupt::USB_TRCPT0);
     core.NVIC.enable(interrupt::USB_TRCPT1);
-    core.NVIC.enable(interrupt::USB_SOF_HSOF);
 
     loop {
 
@@ -75,11 +73,6 @@ static mut USB_BUS: Option<UsbDevice<UsbBus>> = None;
             usb_dev.poll(&mut []);
         });
     };
-}
-
-#[interrupt]
-fn USB_SOF_HSOF() {
-    poll_usb();
 }
 
 #[interrupt]
