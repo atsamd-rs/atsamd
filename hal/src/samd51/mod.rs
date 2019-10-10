@@ -11,10 +11,10 @@ pub mod adc;
 #[cfg(feature = "usb")]
 pub mod usb;
 
-#[cfg(feature = "uart_debug")]
+#[cfg(feature = "use_uart_debug")]
 pub mod uart_debug;
 
-#[cfg(feature = "uart_debug")]
+#[cfg(feature = "use_uart_debug")]
 #[macro_export]
 macro_rules! dbgprint {
     ($($arg:tt)*) => {

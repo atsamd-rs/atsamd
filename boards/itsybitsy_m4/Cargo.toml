@@ -52,7 +52,7 @@ default = ["rt", "atsamd-hal/samd51g19a", "atsamd-hal/samd51", "atsamd-hal/unpro
 rt = ["cortex-m-rt", "atsamd-hal/samd51g19a-rt"]
 unproven = ["atsamd-hal/unproven"]
 usb = ["atsamd-hal/usb", "usb-device", "usbd-serial"]
-uart_debug = ["atsamd-hal/uart_debug"]
+use_uart_debug = ["atsamd-hal/use_uart_debug"]
 
 [profile.dev]
 incremental = false
@@ -76,4 +76,4 @@ name = "dotstar"
 
 [[example]]
 name = "usb_serial"
-required-features = ["usb", "uart_debug"]
+required-features = ["usb", "use_uart_debug"]

@@ -22,7 +22,7 @@ use hal::gpio::*;
 use hal::sercom::{I2CMaster2, SPIMaster1, UART3};
 use hal::time::Hertz;
 
-#[cfg(feature = "uart_debug")]
+#[cfg(feature = "use_uart_debug")]
 pub use hal::dbgprint;
 
 /// Convenience for setting up the labelled SPI peripheral.
