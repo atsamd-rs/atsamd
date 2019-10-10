@@ -1,5 +1,4 @@
 #![no_std]
-#![cfg_attr(feature = "usb", feature(align_offset, ptr_offset_from))]
 
 pub extern crate embedded_hal as hal;
 
@@ -38,7 +37,7 @@ macro_rules! dbgprint {
     };
 }
 
-#[cfg(not(feature = "use_rtt"))]
+#[cfg(all(not(feature = "use_rtt"), not(feature = "use_uart_debug")))]
 #[macro_export]
 macro_rules! dbgprint {
     ($($arg:tt)*) => {{}};
@@ -48,9 +47,9 @@ macro_rules! dbgprint {
 pub mod common;
 pub use self::common::*;
 
-#[cfg(feature="samd51")] 
+#[cfg(feature="samd51")]
 pub mod samd51;
-#[cfg(feature="samd51")] 
+#[cfg(feature="samd51")]
 pub use self::samd51::*;
 
 #[cfg(not(feature="samd51"))]
@@ -58,5 +57,7 @@ pub mod samd21;
 #[cfg(not(feature="samd51"))]
 pub use self::samd21::*;
 
-#[cfg(feature = "usb")]
+#[cfg(all(feature = "usb", feature="samd21"))]
 pub use self::samd21::usb;
+#[cfg(all(feature = "usb", feature="samd51"))]
+pub use self::samd51::usb;

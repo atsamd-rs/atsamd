@@ -1,6 +1,6 @@
 [package]
 name = "itsybitsy_m4"
-version = "0.1.0"
+version = "0.1.1"
 authors = [
     "Nic Hartley <nxh9052@rit.edu>",
     "Tom <twitchyliquid64@ciphersink.net>",
@@ -31,6 +31,14 @@ path = "../../hal"
 version = "~0.7"
 default-features = false
 
+[dependencies.usb-device]
+version = "~0.2"
+optional = true
+
+[dependencies.usbd-serial]
+version = "~0.1"
+optional = true
+
 [dev-dependencies]
 panic-halt = "~0.2"
 panic-semihosting = "~0.5"
@@ -43,6 +51,8 @@ panic_rtt = "~0.2"
 default = ["rt", "atsamd-hal/samd51g19a", "atsamd-hal/samd51", "atsamd-hal/unproven"]
 rt = ["cortex-m-rt", "atsamd-hal/samd51g19a-rt"]
 unproven = ["atsamd-hal/unproven"]
+usb = ["atsamd-hal/usb", "usb-device", "usbd-serial"]
+use_uart_debug = ["atsamd-hal/use_uart_debug"]
 
 [profile.dev]
 incremental = false
@@ -62,3 +72,8 @@ name = "blinky_basic"
 
 [[example]]
 name = "dotstar"
+
+
+[[example]]
+name = "usb_serial"
+required-features = ["usb", "use_uart_debug"]

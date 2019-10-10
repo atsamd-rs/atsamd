@@ -1,15 +1,22 @@
 //! ItsyBitsy M4 Express pins
 
-use super::{hal, pac::MCLK, pac::SERCOM1, pac::SERCOM2, target_device};
+use super::{hal, pac::MCLK, pac::SERCOM1, pac::SERCOM2, pac::SERCOM3, target_device};
 
 use embedded_hal::timer::{CountDown, Periodic};
-use hal::clock::*;
 use hal::define_pins;
 use hal::gpio::{self, *};
-use hal::sercom::{I2CMaster2, PadPin, SPIMaster1, Sercom2Pad0, Sercom2Pad1};
+use hal::sercom::{I2CMaster2, PadPin, SPIMaster1, Sercom2Pad0, Sercom2Pad1, UART3};
 use hal::time::Hertz;
 
+use hal::clock::GenericClockController;
+use super::pac::gclk::{genctrl::SRC_A, pchctrl::GEN_A};
+
 use apa102_spi::Apa102;
+
+#[cfg(feature = "usb")]
+use hal::usb::usb_device::bus::UsbBusAllocator;
+#[cfg(feature = "usb")]
+pub use hal::usb::UsbBus;
 
 define_pins!(
     /// Maps the pins to their arduino names and
@@ -137,12 +144,24 @@ impl Pins {
             scl: self.i2c_scl,
         };
 
+        let usb = USB {
+            dm: self.usb_dm,
+            dp: self.usb_dp,
+        };
+
+        let uart = UART {
+            rx: self.d0,
+            tx: self.d1,
+        };
+
         Sets {
             analog,
             dotstar,
             spi,
             i2c,
             flash,
+            usb,
+            uart,
             port: self.port,
         }
     }
@@ -164,6 +183,12 @@ pub struct Sets {
 
     /// QSPI Flash pins
     pub flash: QSPIFlash,
+
+    /// USB pins
+    pub usb: USB,
+
+    /// UART (external pinout) pins
+    pub uart: UART,
 
     /// Port
     pub port: Port,
@@ -235,6 +260,70 @@ impl I2C {
             mclk,
             self.sda.into_pad(port),
             self.scl.into_pad(port),
+        )
+    }
+}
+
+/// USB pins
+pub struct USB {
+    pub dm: Pa24<Input<Floating>>,
+    pub dp: Pa25<Input<Floating>>,
+}
+
+
+impl USB {
+    #[cfg(feature = "usb")]
+    pub fn usb_allocator(
+        self,
+        usb: super::pac::USB,
+        clocks: &mut GenericClockController,
+        mclk: &mut MCLK,
+        port: &mut Port,
+    ) -> UsbBusAllocator<UsbBus> {
+        clocks.configure_gclk_divider_and_source(GEN_A::GCLK2, 1, SRC_A::DFLL, false);
+        let usb_gclk = clocks.get_gclk(GEN_A::GCLK2).unwrap();
+        let usb_clock = &clocks.usb(&usb_gclk).unwrap();
+
+        UsbBusAllocator::new(UsbBus::new(
+            usb_clock,
+            mclk,
+            self.dm.into_function(port),
+            self.dp.into_function(port),
+            usb,
+        ))
+    }
+}
+
+/// UART pins
+pub struct UART {
+    pub tx: Pa17<Input<Floating>>,
+    pub rx: Pa16<Input<Floating>>,
+}
+
+impl UART {
+    /// Convenience for setting up the labelled TX, RX pins in the
+    /// to operate as a UART device at the specified baud rate.
+    pub fn uart<F: Into<Hertz>>(
+        self,
+        clocks: &mut GenericClockController,
+        baud: F,
+        sercom3: SERCOM3,
+        mclk: &mut MCLK,
+        port: &mut Port,
+    ) -> UART3<
+        hal::sercom::Sercom3Pad1<gpio::Pa16<gpio::PfD>>,
+        hal::sercom::Sercom3Pad0<gpio::Pa17<gpio::PfD>>,
+        (),
+        (),
+    > {
+        let gclk0 = clocks.gclk0();
+
+        UART3::new(
+            &clocks.sercom3_core(&gclk0).unwrap(),
+            baud.into(),
+            sercom3,
+            mclk,
+            (self.rx.into_pad(port), self.tx.into_pad(port)),
         )
     }
 }

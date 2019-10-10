@@ -133,8 +133,8 @@ impl State {
 /// `GenericClockController` encapsulates the GCLK hardware.
 /// It provides a type safe way to configure the system clocks.
 /// Initializing the `GenericClockController` instance configures
-/// the system to run at 120MHz by taking the DFLL48 
-/// and feeding it into the DPLL0 hardware which multiplies the 
+/// the system to run at 120MHz by taking the DFLL48
+/// and feeding it into the DPLL0 hardware which multiplies the
 /// signal by 2.5x.
 pub struct GenericClockController {
     state: State,
@@ -191,6 +191,9 @@ impl GenericClockController {
         }
 
         while state.gclk.syncbusy.read().genctrl0().is_gclk0() {}
+
+        #[cfg(feature = "usb")]
+        configure_usb_correction(oscctrl);
 
         // GCLK5 set to 2MHz
         unsafe {
@@ -421,7 +424,7 @@ fn enable_external_32kosc(osc32kctrl: &mut OSC32KCTRL) {
     });
 
     osc32kctrl.rtcctrl.write(|w| w.rtcsel().xosc1k());
-    
+
     // Wait for the oscillator to stabilize
     while osc32kctrl.status.read().xosc32krdy().bit_is_clear() {}
 }
@@ -451,4 +454,26 @@ fn configure_and_enable_dpll0(oscctrl: &mut OSCCTRL, gclk: &mut GCLK) {
         w.ondemand().clear_bit()
     });
 
+}
+
+#[cfg(feature = "usb")]
+/// Configure the dfll48m to calibrate against the 1Khz USB SOF reference.
+fn configure_usb_correction(oscctrl: &mut OSCCTRL) {
+    oscctrl.dfllmul.write(|w| unsafe {
+        w.cstep().bits(0x1)
+        .fstep().bits(0x1)
+        // scaling factor for 1Khz SOF signal.
+        .mul().bits((48_000_000u32 / 1000) as u16)
+    });
+    while oscctrl.dfllsync.read().dfllmul().bit_is_set() {};
+
+    oscctrl.dfllctrlb.write(|w| {
+        // closed loop mode
+        w.mode().set_bit()
+        // chill cycle disable
+        .ccdis().set_bit()
+        // usb correction
+        .usbcrm().set_bit()
+    });
+    while oscctrl.dfllsync.read().dfllctrlb().bit_is_set() {};
 }
