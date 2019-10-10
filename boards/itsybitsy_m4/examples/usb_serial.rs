@@ -46,6 +46,7 @@ fn main() -> ! {
         &mut peripherals.NVMCTRL,
     );
     let mut pins = hal::Pins::new(peripherals.PORT).split();
+    let rstc = &peripherals.RSTC;
 
     let mut rgb = hal::dotstar_bitbang(pins.dotstar, &mut pins.port, SpinTimer::new(12));
     rgb.write([RGB8 { r: 0, g: 0, b: 0 }].iter().cloned())
@@ -59,7 +60,8 @@ fn main() -> ! {
         &mut peripherals.MCLK,
         &mut pins.port,
     ));
-    dbgprint!("\n\n\n\n~========== STARTING ==========~\n");
+    dbgprint!("\n\n\n\n~========== STARTING {:?} ==========~\n", hal::serial_number());
+    dbgprint!("Last reset was from {:?}\n", hal::reset_cause(rstc));
 
     let bus_allocator = unsafe {
         USB_ALLOCATOR = Some(pins.usb.usb_allocator(
