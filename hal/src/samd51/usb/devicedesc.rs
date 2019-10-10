@@ -53,6 +53,7 @@ impl DeviceDescBank {
         }
     }
 
+    #[allow(unused)]
     /// This bit defines the automatic Zero Length Packet mode of the endpoint.
     /// When enabled, the USB module will manage the ZLP handshake by hardware.
     /// This bit is for IN endpoints only. When disabled the handshake should be
@@ -77,6 +78,7 @@ impl DeviceDescBank {
         self.pcksize.set_size(size);
     }
 
+    #[allow(unused)]
     pub fn get_endpoint_size(&self) -> u16 {
         let bits = self.pcksize.size();
         match bits {
@@ -124,20 +126,24 @@ impl DeviceDescBank {
         self.pcksize.byte_count() as u16
     }
 
+    #[allow(unused)]
     pub fn link_state(&self) -> u8 {
         // every value except 1 (L1 sleep) is reserved
         self.extreg.link_state() as u8
     }
 
+    #[allow(unused)]
     /// best effort service latency
     pub fn besl(&self) -> u8 {
         self.extreg.besl() as u8
     }
 
+    #[allow(unused)]
     pub fn remote_wake(&self) -> bool {
         self.extreg.remote_wake()
     }
 
+    #[allow(unused)]
     /// These bits define the SUBPID field of a received extended token. These
     /// bits are updated when the USB has answered by an handshake token
     /// ACK to a LPM transaction
@@ -145,6 +151,7 @@ impl DeviceDescBank {
         self.extreg.subpid() as u8
     }
 
+    #[allow(unused)]
     /// This bit defines the Error Flow Status.  This bit is set when a Error
     /// Flow has been detected during transfer from/towards this bank.  For OUT
     /// transfer, a NAK handshake has been sent.  For Isochronous OUT transfer,
@@ -155,6 +162,7 @@ impl DeviceDescBank {
         self.status_bk.error_flow()
     }
 
+    #[allow(unused)]
     /// This bit defines the CRC Error Status.  This bit is set when a CRC
     /// error has been detected in an isochronous OUT endpoint bank
     pub fn crc_error(&self) -> bool {

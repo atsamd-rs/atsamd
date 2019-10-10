@@ -16,13 +16,13 @@ extern crate panic_halt;
 use hal::clock::GenericClockController;
 
 use cortex_m::interrupt::free as disable_interrupts;
+use cortex_m::peripheral::NVIC;
 use hal::entry;
 use hal::pac::{interrupt, CorePeripherals, Peripherals};
 
 use hal::usb::UsbBus;
 use usb_device::bus::UsbBusAllocator;
 
-use hal::prelude::*;
 use usb_device::prelude::*;
 use usbd_serial::{SerialPort, USB_CLASS_CDC};
 
@@ -88,10 +88,10 @@ fn main() -> ! {
         core.NVIC.set_priority(interrupt::USB_TRCPT0, 1);
         core.NVIC.set_priority(interrupt::USB_TRCPT1, 1);
         core.NVIC.set_priority(interrupt::USB_TRCPT1, 1);
+        NVIC::unmask(interrupt::USB_OTHER);
+        NVIC::unmask(interrupt::USB_TRCPT0);
+        NVIC::unmask(interrupt::USB_TRCPT1);
     }
-    core.NVIC.enable(interrupt::USB_OTHER);
-    core.NVIC.enable(interrupt::USB_TRCPT0);
-    core.NVIC.enable(interrupt::USB_TRCPT1);
 
     loop {
         let pending = disable_interrupts(|_| unsafe {
