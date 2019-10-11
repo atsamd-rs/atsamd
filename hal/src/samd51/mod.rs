@@ -4,6 +4,7 @@ pub mod pwm;
 pub mod sercom;
 pub mod timer;
 pub mod trng;
+pub mod watchdog;
 
 mod serial_number;
 pub use serial_number::*;
