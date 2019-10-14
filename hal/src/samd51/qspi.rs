@@ -3,6 +3,8 @@ use crate::{
     gpio::{Pa8, Pa9, Pa10, Pa11, Pb10, Pb11, Input, Floating, PfH, Port},
 };
 
+use embedded_sdmmc::{Block, BlockCount, BlockIdx, BlockDevice};
+
 pub struct Qspi {
     qspi: QSPI,
     sck: Pb10<PfH>,
@@ -65,11 +67,11 @@ impl Qspi {
         }
     }
     
-    unsafe fn run_instruction(
-        &mut self, 
+    unsafe fn run_write_instruction(
+        &self, 
         command: Command, 
         addr: u32, 
-        buf: &mut [u8]
+        buf: &[u8]
     ) {
         if command == Command::EraseSector || command == Command::EraseBlock {
             self.qspi.instraddr.write(|w| { w.addr().bits(addr) });
@@ -77,13 +79,7 @@ impl Qspi {
         self.qspi.instrctrl.write(|w| w.instr().bits(command.bits()));
         let _ = self.qspi.instrframe.read().bits();
         if buf.len() > 0 {
-            if self.qspi.instrframe.read().tfrtype().is_read() 
-                || self.qspi.instrframe.read().tfrtype().is_readmemory()
-            {
-                core::ptr::copy((QSPI_AHB + addr) as *mut u8, buf.as_mut_ptr(), buf.len());  
-            } else {
-                core::ptr::copy(buf.as_ptr(), (QSPI_AHB + addr) as *mut u8, buf.len()); 
-            }
+            core::ptr::copy(buf.as_ptr(), (QSPI_AHB + addr) as *mut u8, buf.len()); 
         }
 
         self.qspi.ctrla.write(|w| {
@@ -95,17 +91,38 @@ impl Qspi {
         self.qspi.intflag.modify(|_, w| w.instrend().set_bit());
     }
 
-    pub fn run_command(&mut self, command: Command) {
+    unsafe fn run_read_instruction(
+        &self, 
+        command: Command, 
+        addr: u32, 
+        buf: &mut [u8]
+    ) {
+        self.qspi.instrctrl.write(|w| w.instr().bits(command.bits()));
+        let _ = self.qspi.instrframe.read().bits();
+        if buf.len() > 0 {
+            core::ptr::copy((QSPI_AHB + addr) as *mut u8, buf.as_mut_ptr(), buf.len());  
+        }
+
+        self.qspi.ctrla.write(|w| {
+            w.enable().set_bit();
+            w.lastxfer().set_bit()
+        });
+
+        while self.qspi.intflag.read().instrend().bit_is_clear() {}
+        self.qspi.intflag.modify(|_, w| w.instrend().set_bit());
+    }
+
+    pub fn run_command(&self, command: Command) {
         self.qspi.instrframe.write(|w| {
             w.width().single_bit_spi();
             w.addrlen()._24bits();
             w.tfrtype().read();
             w.instren().set_bit()
         });
-        unsafe { self.run_instruction(command, 0, &mut[]); }
+        unsafe { self.run_read_instruction(command, 0, &mut[]); }
     }
 
-    pub fn read_command(&mut self, command: Command, response: &mut [u8]) {
+    pub fn read_command(&self, command: Command, response: &mut [u8]) {
         self.qspi.instrframe.write(|w| {
             w.width().single_bit_spi();
             w.addrlen()._24bits();
@@ -113,10 +130,10 @@ impl Qspi {
             w.instren().set_bit();
             w.dataen().set_bit()
         });
-        unsafe { self.run_instruction(command, 0, response); }
+        unsafe { self.run_read_instruction(command, 0, response); }
     }
 
-    pub fn write_command(&mut self, command: Command, data: &mut [u8]) {
+    pub fn write_command(&self, command: Command, data: &[u8]) {
         self.qspi.instrframe.write(|w| {
             w.width().single_bit_spi();
             w.addrlen()._24bits();
@@ -129,10 +146,10 @@ impl Qspi {
             }
         });
 
-        unsafe { self.run_instruction(command, 0, data); }
+        unsafe { self.run_write_instruction(command, 0, data); }
     }
 
-    pub fn erase_command(&mut self, command: Command, address: u32) {
+    pub fn erase_command(&self, command: Command, address: u32) {
         self.qspi.instrframe.write(|w| {
             w.width().single_bit_spi();
             w.addrlen()._24bits();
@@ -140,10 +157,10 @@ impl Qspi {
             w.instren().set_bit();
             w.addren().set_bit()
         });
-        unsafe { self.run_instruction(command, address, &mut[]); }
+        unsafe { self.run_write_instruction(command, address, &[]); }
     }
 
-    pub fn read_memory(&mut self, addr: u32, buf: &mut [u8]) {
+    pub fn read_memory(&self, addr: u32, buf: &mut [u8]) {
         self.qspi.instrframe.write(|w| {
             w.width().quad_output();
             w.addrlen()._24bits();
@@ -153,10 +170,10 @@ impl Qspi {
             w.addren().set_bit();
             unsafe{ w.dummylen().bits(8) }
         });
-        unsafe { self.run_instruction(Command::QuadRead, addr, buf) };
+        unsafe { self.run_read_instruction(Command::QuadRead, addr, buf) };
     }
 
-    pub fn write_memory(&mut self, addr: u32, buf: &mut [u8]) {
+    pub fn write_memory(&self, addr: u32, buf: &[u8]) {
         self.qspi.instrframe.write(|w| {
             w.width().quad_output();
             w.addrlen()._24bits();
@@ -165,12 +182,54 @@ impl Qspi {
             w.dataen().set_bit();
             w.addren().set_bit()
         });
-        unsafe { self.run_instruction(Command::QuadPageProgram, addr, buf) };
+        unsafe { self.run_write_instruction(Command::QuadPageProgram, addr, buf) };
     }
 
-    pub fn set_clk_divider(&mut self, value: u8) {
+    pub fn set_clk_divider(&self, value: u8) {
         self.qspi.baud.write(|w| unsafe { w.baud().bits(value) });  
     }
+}
+
+impl BlockDevice for Qspi {
+    type Error = BlockDevError;
+    fn read(
+        &self,
+        blocks: &mut [Block],
+        start_block_idx: BlockIdx,
+        reason: &str
+    ) -> Result<(), Self::Error> {
+        for (idx, block) in blocks.iter_mut().enumerate() {
+            self.read_memory(
+                (start_block_idx.0 + idx as u32) * 512,
+                &mut block.contents
+            );
+        }
+        Ok(())
+    }
+    fn write(
+        &self,
+        blocks: &[Block],
+        start_block_idx: BlockIdx
+    ) -> Result<(), Self::Error> {
+        for (idx, block) in blocks.iter().enumerate() {
+            self.write_memory(
+                (start_block_idx.0 + idx as u32) * 512,
+                &block.contents
+            );
+        }
+        Ok(())
+    }
+
+    fn num_blocks(&self) -> Result<BlockCount, Self::Error> {
+        //TODO flash chips other than 2MiB
+        Ok(embedded_sdmmc::BlockCount(32768))
+    }
+}
+
+
+#[derive(Debug, Copy, Clone, Eq, PartialEq)]
+pub enum BlockDevError {
+
 }
 
 #[repr(u8)]
@@ -201,3 +260,4 @@ impl Command {
 }
 
 const QSPI_AHB: u32 = 0x04000000;
+    
