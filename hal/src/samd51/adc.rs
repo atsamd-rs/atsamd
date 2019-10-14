@@ -34,7 +34,7 @@ impl Adc<$ADC> {
             unsafe { w.adjres().bits(0) } // adjust result by 0
         });
         while adc.syncbusy.read().refctrl().bit_is_set() {}
-        adc.refctrl.modify(|_, w| w.refsel().intvcc0());
+        adc.refctrl.modify(|_, w| w.refsel().intvcc1());
         Self { adc }
     }
 
