@@ -3,8 +3,6 @@ use crate::{
     gpio::{Pa8, Pa9, Pa10, Pa11, Pb10, Pb11, Input, Floating, PfH, Port},
 };
 
-use embedded_sdmmc::{Block, BlockCount, BlockIdx, BlockDevice};
-
 pub struct Qspi {
     qspi: QSPI,
     sck: Pb10<PfH>,
@@ -188,48 +186,6 @@ impl Qspi {
     pub fn set_clk_divider(&self, value: u8) {
         self.qspi.baud.write(|w| unsafe { w.baud().bits(value) });  
     }
-}
-
-impl BlockDevice for Qspi {
-    type Error = BlockDevError;
-    fn read(
-        &self,
-        blocks: &mut [Block],
-        start_block_idx: BlockIdx,
-        reason: &str
-    ) -> Result<(), Self::Error> {
-        for (idx, block) in blocks.iter_mut().enumerate() {
-            self.read_memory(
-                (start_block_idx.0 + idx as u32) * 512,
-                &mut block.contents
-            );
-        }
-        Ok(())
-    }
-    fn write(
-        &self,
-        blocks: &[Block],
-        start_block_idx: BlockIdx
-    ) -> Result<(), Self::Error> {
-        for (idx, block) in blocks.iter().enumerate() {
-            self.write_memory(
-                (start_block_idx.0 + idx as u32) * 512,
-                &block.contents
-            );
-        }
-        Ok(())
-    }
-
-    fn num_blocks(&self) -> Result<BlockCount, Self::Error> {
-        //TODO flash chips other than 2MiB
-        Ok(embedded_sdmmc::BlockCount(32768))
-    }
-}
-
-
-#[derive(Debug, Copy, Clone, Eq, PartialEq)]
-pub enum BlockDevError {
-
 }
 
 #[repr(u8)]
