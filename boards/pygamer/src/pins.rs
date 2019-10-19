@@ -1,9 +1,19 @@
 //! PyGamer pins
 
-use super::{hal, target_device};
+use super::{hal, pac::MCLK, pac::SERCOM5, target_device};
 
 use crate::hal::gpio::{self, *};
 use hal::define_pins;
+use hal::sercom::{PadPin, UART5};
+use hal::time::Hertz;
+
+use super::pac::gclk::{genctrl::SRC_A, pchctrl::GEN_A};
+use hal::clock::GenericClockController;
+
+#[cfg(feature = "usb")]
+use hal::usb::usb_device::bus::UsbBusAllocator;
+#[cfg(feature = "usb")]
+pub use hal::usb::UsbBus;
 
 define_pins!(
     /// Maps the pins to their arduino names and
@@ -89,6 +99,11 @@ define_pins!(
     /// STEMMA SCL 
     pin scl = a13,
 
+    /// USB D- pin
+    pin usb_dm = a24,
+    /// USB D+ pin
+    pin usb_dp = a25,
+
     // Miscellanea
     /// SD card chip select (also d4)
     pin sd_cs = a14,
@@ -103,3 +118,105 @@ define_pins!(
     /// Button Clock
     pin button_clock = b31,
 );
+
+impl Pins {
+    /// Split the device pins into subsets
+    pub fn split(self) -> Sets {
+        let neopixel = self.neopixel;
+
+        let usb = USB {
+            dm: self.usb_dm,
+            dp: self.usb_dp,
+        };
+
+        let uart = UART {
+            rx: self.rx,
+            tx: self.tx,
+        };
+
+        Sets {
+            neopixel,
+            usb,
+            uart,
+            port: self.port,
+        }
+    }
+}
+
+/// Sets of pins split apart by category
+pub struct Sets {
+    /// Neopixel (RGB LED) pins
+    pub neopixel: gpio::Pa15<gpio::Input<gpio::Floating>>,
+
+    /// USB pins
+    pub usb: USB,
+
+    /// UART (external pinout) pins
+    pub uart: UART,
+
+    /// Port
+    pub port: Port,
+}
+
+/// USB pins
+pub struct USB {
+    pub dm: Pa24<Input<Floating>>,
+    pub dp: Pa25<Input<Floating>>,
+}
+
+impl USB {
+    #[cfg(feature = "usb")]
+    pub fn usb_allocator(
+        self,
+        usb: super::pac::USB,
+        clocks: &mut GenericClockController,
+        mclk: &mut MCLK,
+        port: &mut Port,
+    ) -> UsbBusAllocator<UsbBus> {
+        clocks.configure_gclk_divider_and_source(GEN_A::GCLK2, 1, SRC_A::DFLL, false);
+        let usb_gclk = clocks.get_gclk(GEN_A::GCLK2).unwrap();
+        let usb_clock = &clocks.usb(&usb_gclk).unwrap();
+
+        UsbBusAllocator::new(UsbBus::new(
+            usb_clock,
+            mclk,
+            self.dm.into_function(port),
+            self.dp.into_function(port),
+            usb,
+        ))
+    }
+}
+
+/// UART pins
+pub struct UART {
+    pub tx: Pb16<Input<Floating>>,
+    pub rx: Pb17<Input<Floating>>,
+}
+
+impl UART {
+    /// Convenience for setting up the labelled TX, RX pins in the
+    /// to operate as a UART device at the specified baud rate.
+    pub fn uart<F: Into<Hertz>>(
+        self,
+        clocks: &mut GenericClockController,
+        baud: F,
+        sercom5: SERCOM5,
+        mclk: &mut MCLK,
+        port: &mut Port,
+    ) -> UART5<
+        hal::sercom::Sercom5Pad1<gpio::Pb17<gpio::PfC>>,
+        hal::sercom::Sercom5Pad0<gpio::Pb16<gpio::PfC>>,
+        (),
+        (),
+    > {
+        let gclk0 = clocks.gclk0();
+
+        UART5::new(
+            &clocks.sercom5_core(&gclk0).unwrap(),
+            baud.into(),
+            sercom5,
+            mclk,
+            (self.rx.into_pad(port), self.tx.into_pad(port)),
+        )
+    }
+}
