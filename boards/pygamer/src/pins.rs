@@ -7,9 +7,10 @@ use hal::define_pins;
 use hal::sercom::{PadPin, UART5};
 use hal::time::Hertz;
 
-use super::pac::gclk::{genctrl::SRC_A, pchctrl::GEN_A};
 use hal::clock::GenericClockController;
 
+#[cfg(feature = "usb")]
+use super::pac::gclk::{genctrl::SRC_A, pchctrl::GEN_A};
 #[cfg(feature = "usb")]
 use hal::usb::usb_device::bus::UsbBusAllocator;
 #[cfg(feature = "usb")]
@@ -134,7 +135,10 @@ impl Pins {
             tx: self.tx,
         };
 
+        let led = LED { led: self.d13 };
+
         Sets {
+            led,
             neopixel,
             usb,
             uart,
@@ -145,6 +149,8 @@ impl Pins {
 
 /// Sets of pins split apart by category
 pub struct Sets {
+    pub led: LED,
+
     /// Neopixel (RGB LED) pins
     pub neopixel: gpio::Pa15<gpio::Input<gpio::Floating>>,
 
@@ -156,6 +162,17 @@ pub struct Sets {
 
     /// Port
     pub port: Port,
+}
+
+/// UART pins
+pub struct LED {
+    pub led: Pa23<Input<Floating>>,
+}
+
+impl LED {
+    pub fn led(self, port: &mut Port) -> Pa23<Output<PushPull>> {
+        self.led.into_push_pull_output(port)
+    }
 }
 
 /// USB pins
