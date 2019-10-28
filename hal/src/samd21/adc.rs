@@ -1,5 +1,5 @@
 use crate::hal::adc::{Channel, OneShot};
-use crate::target_device::{ADC, PM};
+use crate::target_device::{adc, ADC, PM};
 use crate::clock::GenericClockController;
 use crate::gpio::{
     Pa2, Pa3, Pa4, Pa5, Pa6, Pa7, Pa8, Pa9, Pa10, Pa11, Pb0, Pb1, Pb2, Pb3, Pb4, 
@@ -26,18 +26,37 @@ impl Adc<ADC> {
         while adc.status.read().syncbusy().bit_is_set() {}
         adc.sampctrl.modify(|_, w| unsafe { w.samplen().bits(5) }); //sample length
         while adc.status.read().syncbusy().bit_is_set() {}
-        adc.inputctrl.modify(|_, w| w.muxneg().gnd()); // No negative input (internal gnd) 
+        adc.inputctrl.modify(|_, w| w.muxneg().gnd()); // No negative input (internal gnd)
         while adc.status.read().syncbusy().bit_is_set() {}
-        adc.avgctrl.modify(|_, w| {
-            w.samplenum()._1(); // No averaging
-            unsafe { w.adjres().bits(0) } // adjust result by 0
+
+        let mut newadc = Self { adc };
+        newadc.samples(adc::avgctrl::SAMPLENUM_A::_1);
+        newadc.gain(adc::inputctrl::GAIN_A::DIV2);
+        newadc.reference(adc::refctrl::REFSEL_A::INTVCC1);
+
+        newadc
+    }
+
+    pub fn samples(&mut self, samples: adc::avgctrl::SAMPLENUM_A) {
+        self.adc.avgctrl.modify(|_, w| {
+            w.samplenum().variant(samples);
+            // I don't see any reason to divide ourselves. peripheral will automatically
+            // shift as needed
+            unsafe { w.adjres().bits(0) }
         });
-        while adc.status.read().syncbusy().bit_is_set() {}
-        adc.inputctrl.modify(|_, w| w.gain().div2());
-        while adc.status.read().syncbusy().bit_is_set() {}
-        adc.refctrl.modify(|_, w| w.refsel().intvcc1());
-        while adc.status.read().syncbusy().bit_is_set() {}
-        Self { adc }
+        while self.adc.status.read().syncbusy().bit_is_set() {}
+    }
+
+    pub fn gain(&mut self, gain: adc::inputctrl::GAIN_A) {
+        self.adc.inputctrl.modify(|_, w| w.gain().variant(gain));
+        while self.adc.status.read().syncbusy().bit_is_set() {}
+    }
+
+    pub fn reference(&mut self, reference: adc::refctrl::REFSEL_A) {
+        self.adc
+            .refctrl
+            .modify(|_, w| w.refsel().variant(reference));
+        while self.adc.status.read().syncbusy().bit_is_set() {}
     }
 
     fn power_up(&mut self) {

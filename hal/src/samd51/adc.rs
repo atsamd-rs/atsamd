@@ -1,5 +1,5 @@
 use crate::hal::adc::{Channel, OneShot};
-use crate::target_device::{ADC0, ADC1, MCLK};
+use crate::target_device::{adc0, ADC0, ADC1, MCLK};
 use crate::target_device::gclk::genctrl::SRC_A::DFLL;
 use crate::target_device::gclk::pchctrl::GEN_A::GCLK11;
 use crate::clock::GenericClockController;
@@ -29,13 +29,29 @@ impl Adc<$ADC> {
         while adc.syncbusy.read().sampctrl().bit_is_set() {}
         adc.inputctrl.modify(|_, w| w.muxneg().gnd()); // No negative input (internal gnd)
         while adc.syncbusy.read().inputctrl().bit_is_set() {}
-        adc.avgctrl.modify(|_, w| {
-            w.samplenum()._1();  // No averaging
-            unsafe { w.adjres().bits(0) } // adjust result by 0
+
+        let mut newadc = Self { adc };
+        newadc.samples(adc0::avgctrl::SAMPLENUM_A::_1);
+        newadc.reference(adc0::refctrl::REFSEL_A::INTVCC1);
+
+        newadc
+    }
+
+    pub fn samples(&mut self, samples: adc0::avgctrl::SAMPLENUM_A) {
+        self.adc.avgctrl.modify(|_, w| {
+            w.samplenum().variant(samples);
+            // I don't see any reason to divide ourselves. peripheral will automatically
+            // shift as needed
+            unsafe { w.adjres().bits(0) }
         });
-        while adc.syncbusy.read().refctrl().bit_is_set() {}
-        adc.refctrl.modify(|_, w| w.refsel().intvcc1());
-        Self { adc }
+        while self.adc.syncbusy.read().avgctrl().bit_is_set() {}
+    }
+
+    pub fn reference(&mut self, reference: adc0::refctrl::REFSEL_A) {
+        self.adc
+            .refctrl
+            .modify(|_, w| w.refsel().variant(reference));
+        while self.adc.syncbusy.read().refctrl().bit_is_set() {}
     }
 
     fn power_up(&mut self) {
