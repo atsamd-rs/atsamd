@@ -1,11 +1,11 @@
 use crate::clock;
-use crate::time::Hertz;
 use crate::hal::spi::{FullDuplex, Mode, Phase, Polarity};
-use nb;
 use crate::sercom::pads::*;
 use crate::target_device::sercom0::SPI;
 use crate::target_device::{MCLK, SERCOM0, SERCOM1, SERCOM2, SERCOM3};
 use crate::target_device::{SERCOM4, SERCOM5};
+use crate::time::Hertz;
+use nb;
 
 #[derive(Debug)]
 pub enum Error {
@@ -65,16 +65,14 @@ macro_rules! spi_master {
             };
         }
 
-        padout!((0, 1) => Pad0, Pad2, Pad3);
+        // dipo In master operation, DI is MISO Pad number 0-3
+        // dopo 0 MOSI PAD 0
+        // dopo 2 MOSI PAD 3
+        // SCK can only be on PAD 1
+        // (dipo,dopo) => (MISO, MOSI, SCK)
         padout!((0, 2) => Pad0, Pad3, Pad1);
-
-        padout!((1, 1) => Pad1, Pad2, Pad3);
-        padout!((1, 3) => Pad1, Pad0, Pad3);
-
         padout!((2, 0) => Pad2, Pad0, Pad1);
         padout!((2, 2) => Pad2, Pad3, Pad1);
-        padout!((2, 3) => Pad2, Pad0, Pad3);
-
         padout!((3, 0) => Pad3, Pad0, Pad1);
 
         $crate::paste::item! {
