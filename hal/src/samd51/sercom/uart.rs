@@ -89,16 +89,24 @@ macro_rules! uart {
             };
         }
 
-        padout!((0, 1) => Pad0, Pad2);
-
+        // rxpo 0-3 RX on PAD 0-3
+        // TX always PAD 0
+        // txpo 0 no RTS/CTS
+        // txpo 1 reserved and can't be used
+        // txpo 2 RTS PAD 2, CTS PAD 3
+        // txpo 3 RTS PAD 2, no CTS
+        // (rxpo_txpo) => (RX, TX, RTS, CTS)
         padout!((1, 0) => Pad1, Pad0);
         padout!((1, 2) => Pad1, Pad0, Pad2, Pad3);
-        padout!((1, 1) => Pad1, Pad2);
+
+        // todo we could support an RTS without a CTS
+        // padout!((1, 3) => Pad1, Pad0, Pad2);
 
         padout!((2, 0) => Pad2, Pad0);
-
         padout!((3, 0) => Pad3, Pad0);
-        padout!((3, 1) => Pad3, Pad2);
+
+        // todo we could support an RTS without a CTS
+        // padout!((3, 3) => Pad3, Pad0, Pad2);
 
         $crate::paste::item! {
             /// UARTX represents the corresponding SERCOMX instance
