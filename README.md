@@ -7,6 +7,7 @@ devices, such as the Adafruit Metro M0, Trinket M0 and Gemma M0, using Rust.
 
 There are a couple of crates provided by this repo:
 
+* [`atsamd11c14a`](https://docs.rs/atsamd11c14a/) is an auto-generated crate providing access to the peripherals specified for this device by its SVD file.
 * [`atsamd21g18a`](https://docs.rs/atsamd21g18a/) is an
   auto-generated crate providing access to the peripherals
   specified for this device by its SVD file.  This is the MCU used in the Metro M0,
@@ -25,7 +26,7 @@ There are a couple of crates provided by this repo:
 * [`atsamd51g19a`](https://docs.rs/atsamd51g19a/) is an auto-generated crate providing access to the peripherals specified for this device by its SVD file. This is the MCU used in the Trellis M4 and ItsyBitsy M4 boards from Adafruit.
 * [`atsamd-hal`](https://docs.rs/atsamd_hal/) is the result
   of reading the datasheet for the device and encoding
-  a type-safe layer over the raw `atsamd21g18a`, `atsamd21e18a`, `atsamd21j18a`, `atsamd51j19a`, and `atsamd51g19a` crates.  This crate
+  a type-safe layer over the raw `atsamd11c14a`, `atsamd21g18a`, `atsamd21e18a`, `atsamd21j18a`, `atsamd51j19a`, and `atsamd51g19a` crates.  This crate
   implements traits specified by the `embedded-hal` project, making it compatible with
   various drivers in the embedded rust ecosystem.
 
