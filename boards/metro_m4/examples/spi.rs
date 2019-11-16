@@ -35,9 +35,9 @@ fn main() -> ! {
     let gclk = clocks.gclk0();
 
     let mut spi: hal::sercom::SPIMaster3<
-        hal::sercom::Sercom3Pad1<hal::gpio::Pa23<hal::gpio::PfC>>,
-        hal::sercom::Sercom3Pad0<hal::gpio::Pa22<hal::gpio::PfC>>,
         hal::sercom::Sercom3Pad3<hal::gpio::Pa21<hal::gpio::PfD>>,
+        hal::sercom::Sercom3Pad0<hal::gpio::Pa22<hal::gpio::PfC>>,
+        hal::sercom::Sercom3Pad1<hal::gpio::Pa23<hal::gpio::PfC>>,
     > = hal::sercom::SPIMaster3::new(
         &clocks.sercom3_core(&gclk).unwrap(),
         3_000_000u32.hz(),
@@ -48,9 +48,9 @@ fn main() -> ! {
         peripherals.SERCOM3,
         &mut peripherals.MCLK,
         (
-            pins.d0.into_pad(&mut pins.port),
-            pins.d1.into_pad(&mut pins.port),
             pins.d8.into_pad(&mut pins.port),
+            pins.d1.into_pad(&mut pins.port),
+            pins.d0.into_pad(&mut pins.port),
         ),
     );
 
