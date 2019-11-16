@@ -4,17 +4,17 @@
 extern crate cortex_m;
 extern crate cortex_m_semihosting;
 extern crate metro_m4 as hal;
+extern crate nb;
 #[cfg(not(feature = "use_semihosting"))]
 extern crate panic_halt;
 #[cfg(feature = "use_semihosting")]
 extern crate panic_semihosting;
-extern crate nb;
 
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
-use hal::prelude::*;
 use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
+use hal::prelude::*;
 use hal::sercom::PadPin;
 use nb::block;
 
@@ -35,10 +35,10 @@ fn main() -> ! {
     let gclk = clocks.gclk0();
 
     let mut spi: hal::sercom::SPIMaster3<
-            hal::sercom::Sercom3Pad1<hal::gpio::Pa23<hal::gpio::PfC>>,
-            hal::sercom::Sercom3Pad0<hal::gpio::Pa22<hal::gpio::PfC>>,
-            hal::sercom::Sercom3Pad3<hal::gpio::Pa21<hal::gpio::PfD>>,
-        > = hal::sercom::SPIMaster3::new(
+        hal::sercom::Sercom3Pad1<hal::gpio::Pa23<hal::gpio::PfC>>,
+        hal::sercom::Sercom3Pad0<hal::gpio::Pa22<hal::gpio::PfC>>,
+        hal::sercom::Sercom3Pad3<hal::gpio::Pa21<hal::gpio::PfD>>,
+    > = hal::sercom::SPIMaster3::new(
         &clocks.sercom3_core(&gclk).unwrap(),
         3_000_000u32.hz(),
         embedded_hal::spi::Mode {
@@ -47,7 +47,11 @@ fn main() -> ! {
         },
         peripherals.SERCOM3,
         &mut peripherals.MCLK,
-        (pins.d0.into_pad(&mut pins.port), pins.d1.into_pad(&mut pins.port), pins.d8.into_pad(&mut pins.port)),
+        (
+            pins.d0.into_pad(&mut pins.port),
+            pins.d1.into_pad(&mut pins.port),
+            pins.d8.into_pad(&mut pins.port),
+        ),
     );
 
     loop {
@@ -56,5 +60,4 @@ fn main() -> ! {
         }
         delay.delay_ms(1000u16);
     }
-
 }
