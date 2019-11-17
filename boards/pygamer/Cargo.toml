@@ -35,7 +35,7 @@ panic_rtt = "~0.2"
 cortex-m-semihosting = "~0.3"
 cortex-m-rtfm = "~0.4"
 smart-leds = "0.3"
-ws2812-nop-samd51 = { git = "https://github.com/smart-leds-rs/ws2812-nop-samd51.git" }
+ws2812-nop-samd51 = { git = "https://github.com/jacobrosenthal/ws2812-nop-samd51.git", branch="update" }
 embedded-graphics = "~0.4"
 ws2812-spi = "0.2.0"
 
