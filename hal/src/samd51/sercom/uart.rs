@@ -1,13 +1,13 @@
 use crate::clock;
-use crate::time::Hertz;
 use crate::hal::blocking::serial::{write::Default, Write};
 use crate::hal::serial;
-use nb;
 use crate::sercom::pads::*;
 use crate::target_device::sercom0::USART;
 use crate::target_device::{MCLK, SERCOM0, SERCOM1, SERCOM2, SERCOM3};
 use crate::target_device::{SERCOM4, SERCOM5};
+use crate::time::Hertz;
 use core::fmt;
+use nb;
 
 /// The RxpoTxpo trait defines a way to get the data in and data out pin out
 /// values for a given UARTXPadout configuration. You should not implement
@@ -35,7 +35,7 @@ macro_rules! uart {
         $crate::paste::item! {
             /// A pad mapping configuration for the SERCOM in UART mode.
             ///
-            /// This type can only be constructed using the From implementations 
+            /// This type can only be constructed using the From implementations
             /// in this module, which are restricted to valid configurations.
             ///
             /// Defines which sercom pad is mapped to which UART function.
@@ -89,16 +89,24 @@ macro_rules! uart {
             };
         }
 
-        padout!((0, 1) => Pad0, Pad2);
-
+        // rxpo 0-3 RX on PAD 0-3
+        // TX always PAD 0
+        // txpo 0 no RTS/CTS
+        // txpo 1 reserved and can't be used
+        // txpo 2 RTS PAD 2, CTS PAD 3
+        // txpo 3 RTS PAD 2, no CTS
+        // (rxpo_txpo) => (RX, TX, RTS, CTS)
         padout!((1, 0) => Pad1, Pad0);
         padout!((1, 2) => Pad1, Pad0, Pad2, Pad3);
-        padout!((1, 1) => Pad1, Pad2);
+
+        // todo we could support an RTS without a CTS
+        // padout!((1, 3) => Pad1, Pad0, Pad2);
 
         padout!((2, 0) => Pad2, Pad0);
-
         padout!((3, 0) => Pad3, Pad0);
-        padout!((3, 1) => Pad3, Pad2);
+
+        // todo we could support an RTS without a CTS
+        // padout!((3, 3) => Pad3, Pad0, Pad2);
 
         $crate::paste::item! {
             /// UARTX represents the corresponding SERCOMX instance
@@ -268,12 +276,84 @@ macro_rules! uart {
     }
 }
 
-uart!(UART0: (Sercom0, SERCOM0, sercom0_, Sercom0CoreClock, apbamask, SERCOM0_0, SERCOM0_1, SERCOM0_2));
-uart!(UART1: (Sercom1, SERCOM1, sercom1_, Sercom1CoreClock, apbamask, SERCOM1_0, SERCOM1_1, SERCOM1_2));
-uart!(UART2: (Sercom2, SERCOM2, sercom2_, Sercom2CoreClock, apbbmask, SERCOM2_0, SERCOM2_1, SERCOM2_2));
-uart!(UART3: (Sercom3, SERCOM3, sercom3_, Sercom3CoreClock, apbbmask, SERCOM3_0, SERCOM3_1, SERCOM3_2));
-uart!(UART4: (Sercom4, SERCOM4, sercom4_, Sercom4CoreClock, apbdmask, SERCOM4_0, SERCOM4_1, SERCOM4_2));
-uart!(UART5: (Sercom5, SERCOM5, sercom5_, Sercom5CoreClock, apbdmask, SERCOM5_0, SERCOM5_1, SERCOM5_2));
+uart!(
+    UART0:
+        (
+            Sercom0,
+            SERCOM0,
+            sercom0_,
+            Sercom0CoreClock,
+            apbamask,
+            SERCOM0_0,
+            SERCOM0_1,
+            SERCOM0_2
+        )
+);
+uart!(
+    UART1:
+        (
+            Sercom1,
+            SERCOM1,
+            sercom1_,
+            Sercom1CoreClock,
+            apbamask,
+            SERCOM1_0,
+            SERCOM1_1,
+            SERCOM1_2
+        )
+);
+uart!(
+    UART2:
+        (
+            Sercom2,
+            SERCOM2,
+            sercom2_,
+            Sercom2CoreClock,
+            apbbmask,
+            SERCOM2_0,
+            SERCOM2_1,
+            SERCOM2_2
+        )
+);
+uart!(
+    UART3:
+        (
+            Sercom3,
+            SERCOM3,
+            sercom3_,
+            Sercom3CoreClock,
+            apbbmask,
+            SERCOM3_0,
+            SERCOM3_1,
+            SERCOM3_2
+        )
+);
+uart!(
+    UART4:
+        (
+            Sercom4,
+            SERCOM4,
+            sercom4_,
+            Sercom4CoreClock,
+            apbdmask,
+            SERCOM4_0,
+            SERCOM4_1,
+            SERCOM4_2
+        )
+);
+uart!(
+    UART5:
+        (
+            Sercom5,
+            SERCOM5,
+            sercom5_,
+            Sercom5CoreClock,
+            apbdmask,
+            SERCOM5_0,
+            SERCOM5_1,
+            SERCOM5_2
+        )
+);
 
 const SHIFT: u8 = 32;
 
