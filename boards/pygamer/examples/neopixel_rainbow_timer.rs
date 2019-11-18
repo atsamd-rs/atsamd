@@ -2,17 +2,17 @@
 #![no_main]
 
 extern crate cortex_m;
+extern crate embedded_hal;
 extern crate panic_halt;
 extern crate pygamer as hal;
 extern crate smart_leds;
-extern crate ws2812_nop_samd51 as ws2812;
+extern crate ws2812_timer_delay as ws2812;
 
 use embedded_hal::digital::v1_compat::OldOutputPin;
-
 use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
-use hal::{clock::GenericClockController, delay::Delay};
+use hal::{clock::GenericClockController, delay::Delay, timer::TimerCounter};
 
 use smart_leds::hsv::RGB8;
 use smart_leds::{brightness, SmartLedsWrite};
@@ -30,8 +30,18 @@ fn main() -> ! {
     );
     let mut pins = hal::Pins::new(peripherals.PORT);
 
-    let neopixel_pin: OldOutputPin<_> = pins.neopixel.into_push_pull_output(&mut pins.port).into();
-    let mut neopixel = ws2812::Ws2812::new(neopixel_pin);
+    let gclk0 = clocks.gclk0();
+    let timer_clock = clocks.tc2_tc3(&gclk0).unwrap();
+    let mut timer = TimerCounter::tc3_(&timer_clock, peripherals.TC3, &mut peripherals.MCLK);
+    // supposed to be 3mhz?
+    // slow mode always 1 led turns white.. so disable
+    // havent seen lto false work
+    // lto true 3.1-3.8 works,
+    timer.start(3_100_000u32.hz());
+
+    let mut neopixel_pin: OldOutputPin<_> =
+        pins.neopixel.into_push_pull_output(&mut pins.port).into();
+    let mut neopixel = ws2812::Ws2812::new(timer, &mut neopixel_pin);
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
     const NUM_LEDS: usize = 5;

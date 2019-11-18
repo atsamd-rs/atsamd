@@ -5,13 +5,13 @@ extern crate cortex_m;
 extern crate panic_halt;
 extern crate pygamer as hal;
 extern crate smart_leds;
-extern crate ws2812_nop_samd51 as ws2812;
-
-use embedded_hal::digital::v1_compat::OldOutputPin;
+extern crate ws2812_spi as ws2812;
 
 use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
+use hal::sercom::PadPin;
+use hal::time::MegaHertz;
 use hal::{clock::GenericClockController, delay::Delay};
 
 use smart_leds::hsv::RGB8;
@@ -29,9 +29,29 @@ fn main() -> ! {
         &mut peripherals.NVMCTRL,
     );
     let mut pins = hal::Pins::new(peripherals.PORT);
+    let gclk = clocks.gclk0();
 
-    let neopixel_pin: OldOutputPin<_> = pins.neopixel.into_push_pull_output(&mut pins.port).into();
-    let mut neopixel = ws2812::Ws2812::new(neopixel_pin);
+    let spi: hal::sercom::SPIMaster2<
+        hal::sercom::Sercom2Pad0<hal::gpio::Pa12<hal::gpio::PfC>>,
+        hal::sercom::Sercom2Pad3<hal::gpio::Pa15<hal::gpio::PfC>>,
+        hal::sercom::Sercom2Pad1<hal::gpio::Pa13<hal::gpio::PfC>>,
+    > = hal::sercom::SPIMaster2::new(
+        &clocks.sercom2_core(&gclk).unwrap(),
+        MegaHertz(3),
+        embedded_hal::spi::Mode {
+            phase: embedded_hal::spi::Phase::CaptureOnFirstTransition,
+            polarity: embedded_hal::spi::Polarity::IdleLow,
+        },
+        peripherals.SERCOM2,
+        &mut peripherals.MCLK,
+        (
+            pins.sda.into_pad(&mut pins.port),
+            pins.neopixel.into_pad(&mut pins.port),
+            pins.scl.into_pad(&mut pins.port),
+        ),
+    );
+
+    let mut neopixel = ws2812::Ws2812::new(spi);
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
     const NUM_LEDS: usize = 5;
