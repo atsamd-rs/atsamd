@@ -1,18 +1,19 @@
 #![no_std]
 #![no_main]
 
-extern crate panic_halt;
-extern crate pygamer as hal;
+#[allow(unused_imports)]
+use panic_halt;
+use pygamer as hal;
 
 use embedded_graphics::image::Image16BPP;
-use embedded_graphics::prelude::*;
 use embedded_graphics::pixelcolor::PixelColorU16;
+use embedded_graphics::prelude::*;
 use embedded_graphics::primitives::Rect;
 use embedded_graphics::Drawing;
 
 use hal::clock::GenericClockController;
-use hal::{entry, display};
 use hal::pac::{CorePeripherals, Peripherals};
+use hal::{display, entry};
 
 #[entry]
 fn main() -> ! {
@@ -41,14 +42,16 @@ fn main() -> ! {
         pins.tft_backlight,
         peripherals.TC2,
         &mut delay,
-        &mut pins.port
-    ).unwrap();
+        &mut pins.port,
+    )
+    .unwrap();
 
-    let black_backdrop: Rect<PixelColorU16> = Rect::new(Coord::new(0, 0), Coord::new(160, 128)).with_fill(Some(0x0000u16.into()));
+    let black_backdrop: Rect<PixelColorU16> =
+        Rect::new(Coord::new(0, 0), Coord::new(160, 128)).with_fill(Some(0x0000u16.into()));
     display.draw(black_backdrop.into_iter());
-    let ferris = Image16BPP::new(include_bytes!("./ferris.raw"), 86, 64).translate(Coord::new(42, 32));
+    let ferris =
+        Image16BPP::new(include_bytes!("./ferris.raw"), 86, 64).translate(Coord::new(42, 32));
     display.draw(ferris.into_iter());
 
     loop {}
 }
-

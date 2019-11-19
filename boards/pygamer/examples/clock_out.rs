@@ -1,17 +1,15 @@
 #![no_std]
 #![no_main]
 
-extern crate cortex_m_rt;
-extern crate embedded_hal;
-extern crate nb;
-extern crate panic_halt;
-extern crate pygamer as hal;
+#[allow(unused_imports)]
+use panic_halt;
+use pygamer as hal;
 
-use crate::hal::clock::GenericClockController;
-use crate::hal::pac::gclk::genctrl::SRC_A::DPLL0;
-use crate::hal::pac::gclk::pchctrl::GEN_A::GCLK2;
-use crate::hal::pac::Peripherals;
-use cortex_m_rt::entry;
+use hal::clock::GenericClockController;
+use hal::entry;
+use hal::pac::gclk::genctrl::SRC_A::DPLL0;
+use hal::pac::gclk::pchctrl::GEN_A::GCLK2;
+use hal::pac::Peripherals;
 
 #[entry]
 fn main() -> ! {

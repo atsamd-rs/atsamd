@@ -1,12 +1,9 @@
 #![no_std]
 #![no_main]
 
-extern crate cortex_m;
-extern crate embedded_hal;
-extern crate panic_halt;
-extern crate pygamer as hal;
-extern crate smart_leds;
-extern crate ws2812_timer_delay as ws2812;
+#[allow(unused_imports)]
+use panic_halt;
+use pygamer as hal;
 
 use embedded_hal::digital::v1_compat::OldOutputPin;
 use hal::entry;
@@ -17,6 +14,7 @@ use hal::{clock::GenericClockController, delay::Delay};
 
 use smart_leds::hsv::RGB8;
 use smart_leds::{brightness, SmartLedsWrite};
+use ws2812_timer_delay as ws2812;
 
 #[entry]
 fn main() -> ! {
@@ -30,26 +28,25 @@ fn main() -> ! {
         &mut peripherals.NVMCTRL,
     );
     let mut pins = hal::Pins::new(peripherals.PORT);
-    //4-11 works with lto true...
     let timer = SpinTimer::new(4);
 
-    let mut neopixel_pin: OldOutputPin<_> =
-        pins.neopixel.into_push_pull_output(&mut pins.port).into();
-    let mut neopixel = ws2812::Ws2812::new(timer, &mut neopixel_pin);
+    let neopixel_pin: OldOutputPin<_> = pins.neopixel.into_push_pull_output(&mut pins.port).into();
+    let mut neopixel = ws2812::Ws2812::new(timer, neopixel_pin);
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
     const NUM_LEDS: usize = 5;
-    let mut data = [RGB8::default(); NUM_LEDS];
 
     loop {
-        for j in 0..(256 * 5) {
-            //why
-            for _ in 0..1 {
-                for i in 0..NUM_LEDS {
-                    data[i] = wheel((((i * 256) as u16 / NUM_LEDS as u16 + j as u16) & 255) as u8);
-                }
-            }
-            let _ = neopixel.write(brightness(data.iter().cloned(), 32));
+        for j in 0..255u8 {
+            let _ = neopixel.write(brightness(
+                (0..NUM_LEDS).map(|i| {
+                    //could have all leds be same color with number = j
+                    //instead lets offset each of them by 255/5 or 51
+                    wheel(j.wrapping_add(51 * i as u8))
+                }),
+                32,
+            ));
+
             delay.delay_ms(5u8);
         }
     }

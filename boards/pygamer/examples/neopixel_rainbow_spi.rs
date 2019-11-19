@@ -1,11 +1,9 @@
 #![no_std]
 #![no_main]
 
-extern crate cortex_m;
-extern crate panic_halt;
-extern crate pygamer as hal;
-extern crate smart_leds;
-extern crate ws2812_spi as ws2812;
+#[allow(unused_imports)]
+use panic_halt;
+use pygamer as hal;
 
 use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
@@ -16,6 +14,7 @@ use hal::{clock::GenericClockController, delay::Delay};
 
 use smart_leds::hsv::RGB8;
 use smart_leds::{brightness, SmartLedsWrite};
+use ws2812_spi as ws2812;
 
 #[entry]
 fn main() -> ! {
@@ -54,18 +53,21 @@ fn main() -> ! {
     let mut neopixel = ws2812::Ws2812::new(spi);
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
-    const NUM_LEDS: usize = 5;
-    let mut data = [RGB8::default(); NUM_LEDS];
-
     loop {
-        for j in 0..(256 * 5) {
-            //why
-            for _ in 0..1 {
-                for i in 0..NUM_LEDS {
-                    data[i] = wheel((((i * 256) as u16 / NUM_LEDS as u16 + j as u16) & 255) as u8);
-                }
-            }
-            let _ = neopixel.write(brightness(data.iter().cloned(), 32));
+        for j in 0..255u8 {
+            let colors = [
+                // split the color changes across all 5 leds evenly, 255/5=51
+                // and have them safely wrap over when they go above 255
+                wheel(j),
+                wheel(j.wrapping_add(51)),
+                wheel(j.wrapping_add(102)),
+                wheel(j.wrapping_add(153)),
+                wheel(j.wrapping_add(204)),
+            ];
+            neopixel
+                .write(brightness(colors.iter().cloned(), 32))
+                .unwrap();
+
             delay.delay_ms(5u8);
         }
     }

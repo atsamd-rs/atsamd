@@ -1,11 +1,11 @@
 #![no_std]
 #![no_main]
 
-extern crate panic_halt;
-extern crate pygamer as hal;
+#[allow(unused_imports)]
+use panic_halt;
+use pygamer as hal;
 
 use hal::clock::GenericClockController;
-
 use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
