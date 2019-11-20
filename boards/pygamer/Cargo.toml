@@ -37,6 +37,7 @@ panic-halt = "~0.2"
 embedded-graphics = "~0.4"
 smart-leds = "0.3"
 ws2812-spi = "0.2.0"
+lis3dh = "0.1.0"
 
 [dependencies.usb-device]
 version = "~0.2"
@@ -72,6 +73,10 @@ required-features = ["usb", "ws2812-timer"]
 [[example]]
 name = "usb_poll"
 required-features = ["usb"]
+
+[[example]]
+name = "neopixel_tilt"
+required-features = ["ws2812-timer"]
 
 [[example]]
 name = "neopixel_rainbow_spintimer"
