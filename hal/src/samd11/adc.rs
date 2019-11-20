@@ -1,5 +1,5 @@
 use crate::clock::GenericClockController;
-use crate::gpio::{Pa10, Pa11, Pa2, Pa3, Pa4, Pa5, Pa6, Pa7, Pa8, Pa9, PfB};
+use crate::gpio::{Pa2, Pa3, Pa4, Pa5, Pa6, Pa7, Pa10, Pa11, Pa14, Pa15, PfB};
 use crate::hal::adc::{Channel, OneShot};
 use crate::target_device::{adc, ADC, PM};
 
@@ -119,12 +119,12 @@ impl Channel<ADC> for $pin<PfB> {
 adc_pins! {
     Pa2: 0,
     Pa3: 1,
-    Pa4: 4,
-    Pa5: 5,
-    Pa6: 6,
-    Pa7: 7,
-    Pa8: 16,
-    Pa9: 17,
-    Pa10: 18,
-    Pa11: 19
+    Pa4: 2,
+    Pa5: 3,
+    Pa6: 4,
+    Pa7: 5,
+    Pa10: 8,
+    Pa11: 9,
+    Pa14: 6,
+    Pa15: 7
 }
