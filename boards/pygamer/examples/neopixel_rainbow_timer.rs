@@ -5,7 +5,6 @@
 use panic_halt;
 use pygamer as hal;
 
-use embedded_hal::digital::v1_compat::OldOutputPin;
 use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
@@ -13,7 +12,6 @@ use hal::{clock::GenericClockController, delay::Delay, timer::TimerCounter};
 
 use smart_leds::hsv::RGB8;
 use smart_leds::{brightness, SmartLedsWrite};
-use ws2812_timer_delay as ws2812;
 
 #[entry]
 fn main() -> ! {
@@ -26,15 +24,14 @@ fn main() -> ! {
         &mut peripherals.OSCCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = hal::Pins::new(peripherals.PORT);
+    let mut pins = hal::Pins::new(peripherals.PORT).split();
 
     let gclk0 = clocks.gclk0();
     let timer_clock = clocks.tc2_tc3(&gclk0).unwrap();
     let mut timer = TimerCounter::tc3_(&timer_clock, peripherals.TC3, &mut peripherals.MCLK);
     timer.start(3_000_000u32.hz());
 
-    let neopixel_pin: OldOutputPin<_> = pins.neopixel.into_push_pull_output(&mut pins.port).into();
-    let mut neopixel = ws2812::Ws2812::new(timer, neopixel_pin);
+    let mut neopixel = pins.neopixel.init(timer, &mut pins.port);
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
     loop {

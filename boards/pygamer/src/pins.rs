@@ -1,13 +1,28 @@
 //! PyGamer pins
 
-use super::{hal, pac::MCLK, pac::SERCOM5, target_device};
+use super::{hal, pac, pac::MCLK, target_device};
 
 use crate::hal::gpio::{self, *};
 use hal::define_pins;
-use hal::sercom::{PadPin, UART5};
-use hal::time::Hertz;
+
+use hal::prelude::*;
+
+use hal::sercom::{
+    I2CMaster2, PadPin, SPIMaster1, SPIMaster4, Sercom2Pad0, Sercom2Pad1, Sercom4Pad1, Sercom4Pad2,
+    Sercom4Pad3, UART5,
+};
+
+#[cfg(feature = "ws2812-timer")]
+use embedded_hal::{digital::v1_compat::OldOutputPin, timer::CountDown, timer::Periodic};
+#[cfg(feature = "ws2812-timer")]
+use ws2812_timer_delay as ws2812;
 
 use hal::clock::GenericClockController;
+
+use hal::pwm::Pwm2;
+use hal::time::Hertz;
+
+use st7735_lcd::{Orientation, ST7735};
 
 #[cfg(feature = "usb")]
 use super::pac::gclk::{genctrl::SRC_A, pchctrl::GEN_A};
@@ -118,12 +133,77 @@ define_pins!(
     pin button_out = b30,
     /// Button Clock
     pin button_clock = b31,
+
+    /// qspi flash
+    pin flash_sck = b10,
+    pin flash_cs = b11,
+    pin flash_d0 = a8,
+    pin flash_d1 = a9,
+    pin flash_d2 = a10,
+    pin flash_d3 = a11,
 );
 
 impl Pins {
     /// Split the device pins into subsets
     pub fn split(self) -> Sets {
-        let neopixel = self.neopixel;
+        let speaker = Speaker {
+            speaker: self.speaker,
+            enable: self.speaker_enable,
+        };
+
+        let display = Display {
+            accel_irq: self.accel_irq,
+            tft_mosi: self.tft_mosi,
+            tft_sck: self.tft_sck,
+            tft_reset: self.tft_reset,
+            tft_cs: self.tft_cs,
+            tft_dc: self.tft_dc,
+            tft_backlight: self.tft_backlight,
+        };
+
+        let analog = Analog {
+            a1: self.a1,
+            a2: self.a2,
+            a3: self.a3,
+            a4: self.a4,
+            a5: self.a5,
+            a6: self.a6,
+        };
+
+        let digital = Digital {
+            d2: self.d2,
+            d3: self.d3,
+            d5: self.d5,
+            d6: self.d6,
+            d9: self.d9,
+            d10: self.d10,
+            d11: self.d11,
+            d12: self.d12,
+        };
+
+        let flash = QSPIFlash {
+            sck: self.flash_sck,
+            cs: self.flash_cs,
+            data0: self.flash_d0,
+            data1: self.flash_d1,
+            data2: self.flash_d2,
+            data3: self.flash_d3,
+        };
+
+        let spi = SPI {
+            sck: self.sck,
+            mosi: self.mosi,
+            miso: self.miso,
+        };
+
+        let i2c = I2C {
+            sda: self.sda,
+            scl: self.scl,
+        };
+
+        let neopixel = Neopixel {
+            neopixel: self.neopixel,
+        };
 
         let usb = USB {
             dm: self.usb_dm,
@@ -135,24 +215,53 @@ impl Pins {
             tx: self.tx,
         };
 
-        let led = LED { led: self.d13 };
-
         Sets {
-            led,
+            port: self.port,
+            display,
+            led_pin: self.d13,
             neopixel,
+            light_pin: self.light,
+            i2c,
+            sd_cs_pin: self.sd_cs,
+            analog,
+            digital,
+            speaker,
+            spi,
+            flash,
             usb,
             uart,
-            port: self.port,
         }
     }
 }
 
 /// Sets of pins split apart by category
 pub struct Sets {
-    pub led: LED,
+    /// Port
+    pub port: Port,
+
+    /// LCD Display
+    pub display: Display,
+
+    /// Red Led
+    pub led_pin: Pa23<Input<Floating>>,
 
     /// Neopixel (RGB LED) pins
-    pub neopixel: gpio::Pa15<gpio::Input<gpio::Floating>>,
+    pub neopixel: Neopixel,
+
+    /// Analog Light Sensor
+    pub light_pin: Pb4<Input<Floating>>,
+
+    /// I2C (connected to LIS3DH accelerometer and "Stemma" port)
+    pub i2c: I2C,
+
+    /// SD Card CS pin
+    pub sd_cs_pin: Pa14<Input<Floating>>,
+
+    /// Speaker (DAC not implemented in hal yet)
+    pub speaker: Speaker,
+
+    /// SPI (connected to SD Card)
+    pub spi: SPI,
 
     /// USB pins
     pub usb: USB,
@@ -160,19 +269,199 @@ pub struct Sets {
     /// UART (external pinout) pins
     pub uart: UART,
 
-    /// Port
-    pub port: Port,
+    /// Analog pins.
+    pub analog: Analog,
+
+    /// Digital pins.
+    pub digital: Digital,
+
+    /// Flash storage
+    pub flash: QSPIFlash,
 }
 
-/// UART pins
-pub struct LED {
-    pub led: Pa23<Input<Floating>>,
+/// Display pins
+pub struct Display {
+    pub accel_irq: Pb14<Input<Floating>>, // TODO remove once we make miso optional
+    pub tft_mosi: Pb15<Input<Floating>>,
+    pub tft_sck: Pb13<Input<Floating>>,
+    pub tft_reset: Pa0<Input<Floating>>,
+    pub tft_cs: Pb12<Input<Floating>>,
+    pub tft_dc: Pb5<Input<Floating>>,
+    pub tft_backlight: Pa1<Input<Floating>>,
 }
 
-impl LED {
-    pub fn led(self, port: &mut Port) -> Pa23<Output<PushPull>> {
-        self.led.into_push_pull_output(port)
+impl Display {
+    pub fn init(
+        self,
+        clocks: &mut GenericClockController,
+        sercom4: pac::SERCOM4,
+        mclk: &mut pac::MCLK,
+        timer2: pac::TC2,
+        delay: &mut hal::delay::Delay,
+        port: &mut Port,
+    ) -> Result<
+        (
+            ST7735<
+                SPIMaster4<
+                    Sercom4Pad2<gpio::Pb14<gpio::PfC>>,
+                    Sercom4Pad3<gpio::Pb15<gpio::PfC>>,
+                    Sercom4Pad1<gpio::Pb13<gpio::PfC>>,
+                >,
+                gpio::Pb5<Output<PushPull>>,
+                gpio::Pa0<Output<PushPull>>,
+            >,
+            atsamd_hal::samd51::pwm::Pwm2,
+        ),
+        (),
+    > {
+        let gclk0 = clocks.gclk0();
+        let tft_spi = SPIMaster4::new(
+            &clocks.sercom4_core(&gclk0).ok_or(())?,
+            16.mhz(),
+            hal::hal::spi::Mode {
+                phase: hal::hal::spi::Phase::CaptureOnFirstTransition,
+                polarity: hal::hal::spi::Polarity::IdleLow,
+            },
+            sercom4,
+            mclk,
+            (
+                self.accel_irq.into_pad(port),
+                self.tft_mosi.into_pad(port),
+                self.tft_sck.into_pad(port),
+            ),
+        );
+
+        let mut tft_cs = self.tft_cs.into_push_pull_output(port);
+        tft_cs.set_low()?;
+
+        let tft_dc = self.tft_dc.into_push_pull_output(port);
+        let tft_reset = self.tft_reset.into_push_pull_output(port);
+
+        let mut display = st7735_lcd::ST7735::new(tft_spi, tft_dc, tft_reset, true, false);
+        display.init(delay)?;
+        display.set_orientation(&Orientation::LandscapeSwapped)?;
+
+        let tft_backlight = self.tft_backlight.into_function_e(port);
+        let mut pwm2 = Pwm2::new(
+            &clocks.tc2_tc3(&gclk0).ok_or(())?,
+            1.khz(),
+            timer2,
+            hal::pwm::TC2Pinout::Pa1(tft_backlight),
+            mclk,
+        );
+
+        pwm2.set_duty(pwm2.get_max_duty());
+
+        Ok((display, pwm2))
     }
+}
+
+/// Neopixel pins
+pub struct Neopixel {
+    pub neopixel: Pa15<Input<Floating>>,
+}
+
+#[cfg(feature = "ws2812-timer")]
+impl Neopixel {
+    /// Convenience for setting up the onboard neopixels using the provided
+    /// Timer preconfigured to 3mhz.
+    pub fn init<T: CountDown + Periodic>(
+        self,
+        timer: T,
+        port: &mut Port,
+    ) -> ws2812::Ws2812<
+        T,
+        embedded_hal::digital::v1_compat::OldOutputPin<
+            atsamd_hal::common::gpio::Pa15<
+                atsamd_hal::common::gpio::Output<atsamd_hal::common::gpio::PushPull>,
+            >,
+        >,
+    > {
+        let neopixel_pin: OldOutputPin<_> = self.neopixel.into_push_pull_output(port).into();
+
+        ws2812::Ws2812::new(timer, neopixel_pin)
+    }
+}
+
+/// SPI pins
+pub struct SPI {
+    pub mosi: gpio::Pb23<Input<Floating>>,
+    pub miso: gpio::Pb22<Input<Floating>>,
+    pub sck: gpio::Pa17<Input<Floating>>,
+}
+
+impl SPI {
+    /// Convenience for setting up the labelled pins to operate
+    /// as an SPI master, running at the specified frequency.
+    pub fn init<F: Into<Hertz>>(
+        self,
+        clocks: &mut GenericClockController,
+        bus_speed: F,
+        sercom1: pac::SERCOM1,
+        mclk: &mut MCLK,
+        port: &mut Port,
+    ) -> SPIMaster1<
+        hal::sercom::Sercom1Pad2<gpio::Pb22<gpio::PfC>>,
+        hal::sercom::Sercom1Pad3<gpio::Pb23<gpio::PfC>>,
+        hal::sercom::Sercom1Pad1<gpio::Pa17<gpio::PfC>>,
+    > {
+        let gclk0 = clocks.gclk0();
+        SPIMaster1::new(
+            &clocks.sercom1_core(&gclk0).unwrap(),
+            bus_speed.into(),
+            hal::hal::spi::Mode {
+                phase: hal::hal::spi::Phase::CaptureOnFirstTransition,
+                polarity: hal::hal::spi::Polarity::IdleLow,
+            },
+            sercom1,
+            mclk,
+            (
+                self.miso.into_pad(port),
+                self.mosi.into_pad(port),
+                self.sck.into_pad(port),
+            ),
+        )
+    }
+}
+
+/// I2C pins
+pub struct I2C {
+    pub sda: Pa12<Input<Floating>>,
+    pub scl: Pa13<Input<Floating>>,
+}
+
+impl I2C {
+    /// Convenience for setting up the labelled SDA, SCL pins to
+    /// operate as an I2C master running at the specified frequency.
+    pub fn init<F: Into<Hertz>>(
+        self,
+        clocks: &mut GenericClockController,
+        bus_speed: F,
+        sercom2: pac::SERCOM2,
+        mclk: &mut MCLK,
+        port: &mut Port,
+    ) -> I2CMaster2<Sercom2Pad0<Pa12<PfC>>, Sercom2Pad1<Pa13<PfC>>> {
+        let gclk0 = clocks.gclk0();
+        I2CMaster2::new(
+            &clocks.sercom2_core(&gclk0).unwrap(),
+            bus_speed.into(),
+            sercom2,
+            mclk,
+            self.sda.into_pad(port),
+            self.scl.into_pad(port),
+        )
+    }
+}
+
+/// Sd Card pins
+pub struct SdCard {
+    pub cs: Pa14<Input<Floating>>,
+}
+
+/// Speaker pins
+pub struct Speaker {
+    pub speaker: Pa2<Input<Floating>>,
+    pub enable: Pa27<Input<Floating>>,
 }
 
 /// USB pins
@@ -183,7 +472,9 @@ pub struct USB {
 
 impl USB {
     #[cfg(feature = "usb")]
-    pub fn usb_allocator(
+    /// Convenience for setting up the onboard usb port to operate
+    /// as a USB device.
+    pub fn init(
         self,
         usb: super::pac::USB,
         clocks: &mut GenericClockController,
@@ -211,13 +502,13 @@ pub struct UART {
 }
 
 impl UART {
-    /// Convenience for setting up the labelled TX, RX pins in the
+    /// Convenience for setting up the labelled TX, RX pins
     /// to operate as a UART device at the specified baud rate.
-    pub fn uart<F: Into<Hertz>>(
+    pub fn init<F: Into<Hertz>>(
         self,
         clocks: &mut GenericClockController,
         baud: F,
-        sercom5: SERCOM5,
+        sercom5: pac::SERCOM5,
         mclk: &mut MCLK,
         port: &mut Port,
     ) -> UART5<
@@ -236,4 +527,38 @@ impl UART {
             (self.rx.into_pad(port), self.tx.into_pad(port)),
         )
     }
+}
+
+/// Analog pins
+pub struct Analog {
+    pub a1: Pa5<Input<Floating>>,
+    pub a2: Pb8<Input<Floating>>,
+    pub a3: Pb9<Input<Floating>>,
+    pub a4: Pa4<Input<Floating>>,
+    pub a5: Pa6<Input<Floating>>,
+    pub a6: Pb1<Input<Floating>>,
+}
+
+/// Digital pins
+pub struct Digital {
+    /// also usabe as A8
+    pub d2: Pb3<Input<Floating>>,
+    /// also usabe as A9
+    pub d3: Pb2<Input<Floating>>,
+    pub d5: Pa16<Input<Floating>>,
+    pub d6: Pa18<Input<Floating>>,
+    pub d9: Pa19<Input<Floating>>,
+    pub d10: Pa20<Input<Floating>>,
+    pub d11: Pa21<Input<Floating>>,
+    pub d12: Pa22<Input<Floating>>,
+}
+
+/// QSPI flash pins
+pub struct QSPIFlash {
+    pub sck: Pb10<Input<Floating>>,
+    pub cs: Pb11<Input<Floating>>,
+    pub data0: Pa8<Input<Floating>>,
+    pub data1: Pa9<Input<Floating>>,
+    pub data2: Pa10<Input<Floating>>,
+    pub data3: Pa11<Input<Floating>>,
 }

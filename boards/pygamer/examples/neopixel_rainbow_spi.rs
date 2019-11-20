@@ -67,7 +67,6 @@ fn main() -> ! {
             neopixel
                 .write(brightness(colors.iter().cloned(), 32))
                 .unwrap();
-
             delay.delay_ms(5u8);
         }
     }

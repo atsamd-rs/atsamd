@@ -16,7 +16,6 @@ use pygamer as hal;
 
 use cortex_m::interrupt::free as disable_interrupts;
 use cortex_m::peripheral::NVIC;
-use embedded_hal::digital::v1_compat::OldOutputPin;
 use hal::clock::GenericClockController;
 use hal::entry;
 use hal::pac::{interrupt, CorePeripherals, Peripherals};
@@ -30,7 +29,6 @@ use hal::timer::SpinTimer;
 
 use smart_leds::hsv::RGB8;
 use smart_leds::SmartLedsWrite;
-use ws2812_timer_delay as ws2812;
 
 const NUM_LEDS: usize = 5;
 
@@ -48,15 +46,14 @@ fn main() -> ! {
     let mut pins = hal::Pins::new(peripherals.PORT).split();
 
     let timer = SpinTimer::new(4);
-    let neopixel_pin: OldOutputPin<_> = pins.neopixel.into_push_pull_output(&mut pins.port).into();
-    let mut neopixel = ws2812::Ws2812::new(timer, neopixel_pin);
+    let mut neopixel = pins.neopixel.init(timer, &mut pins.port);
 
     neopixel
         .write([RGB8 { r: 0, g: 0, b: 0 }; NUM_LEDS].iter().cloned())
         .unwrap();
 
     let bus_allocator = unsafe {
-        USB_ALLOCATOR = Some(pins.usb.usb_allocator(
+        USB_ALLOCATOR = Some(pins.usb.init(
             peripherals.USB,
             &mut clocks,
             &mut peripherals.MCLK,

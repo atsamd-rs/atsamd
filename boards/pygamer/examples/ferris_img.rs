@@ -12,8 +12,8 @@ use embedded_graphics::primitives::Rect;
 use embedded_graphics::Drawing;
 
 use hal::clock::GenericClockController;
+use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
-use hal::{display, entry};
 
 #[entry]
 fn main() -> ! {
@@ -26,25 +26,20 @@ fn main() -> ! {
         &mut peripherals.OSCCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = hal::Pins::new(peripherals.PORT);
+    let mut pins = hal::Pins::new(peripherals.PORT).split();
     let mut delay = hal::delay::Delay::new(core.SYST, &mut clocks);
 
-    let (mut display, _backlight) = display(
-        &mut clocks,
-        peripherals.SERCOM4,
-        &mut peripherals.MCLK,
-        pins.accel_irq,
-        pins.tft_mosi,
-        pins.tft_sck,
-        pins.tft_reset,
-        pins.tft_cs,
-        pins.tft_dc,
-        pins.tft_backlight,
-        peripherals.TC2,
-        &mut delay,
-        &mut pins.port,
-    )
-    .unwrap();
+    let (mut display, _backlight) = pins
+        .display
+        .init(
+            &mut clocks,
+            peripherals.SERCOM4,
+            &mut peripherals.MCLK,
+            peripherals.TC2,
+            &mut delay,
+            &mut pins.port,
+        )
+        .unwrap();
 
     let black_backdrop: Rect<PixelColorU16> =
         Rect::new(Coord::new(0, 0), Coord::new(160, 128)).with_fill(Some(0x0000u16.into()));

@@ -27,7 +27,7 @@ fn main() -> ! {
 
     let mut pins = hal::Pins::new(peripherals.PORT).split();
 
-    let usb_bus = pins.usb.usb_allocator(
+    let usb_bus = pins.usb.init(
         peripherals.USB,
         &mut clocks,
         &mut peripherals.MCLK,
@@ -35,7 +35,7 @@ fn main() -> ! {
     );
 
     let mut serial = SerialPort::new(&usb_bus);
-    let mut led = pins.led.led(&mut pins.port);
+    let mut led = pins.led_pin.into_open_drain_output(&mut pins.port);
 
     let mut usb_dev = UsbDeviceBuilder::new(&usb_bus, UsbVidPid(0x16c0, 0x27dd))
         .manufacturer("Fake company")
