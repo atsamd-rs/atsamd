@@ -3,6 +3,7 @@
 use super::{hal, pac, pac::MCLK, target_device};
 
 use crate::hal::gpio::{self, *};
+use gpio::{Floating, Input, Output, Port, PushPull};
 use hal::define_pins;
 
 use hal::prelude::*;
@@ -30,6 +31,9 @@ use super::pac::gclk::{genctrl::SRC_A, pchctrl::GEN_A};
 use hal::usb::usb_device::bus::UsbBusAllocator;
 #[cfg(feature = "usb")]
 pub use hal::usb::UsbBus;
+
+#[cfg(feature = "unproven")]
+use cortex_m::asm::delay as cycle_delay;
 
 define_pins!(
     /// Maps the pins to their arduino names and
@@ -120,13 +124,14 @@ define_pins!(
     /// USB D+ pin
     pin usb_dp = a25,
 
-    // Miscellanea
     /// SD card chip select (also d4)
     pin sd_cs = a14,
+
     /// Joystick X
     pin joy_x = b6,
     /// Joystick Y
     pin joy_y = b7,
+
     /// Button Latch
     pin button_latch = b0,
     /// Button Out
@@ -215,6 +220,12 @@ impl Pins {
             tx: self.tx,
         };
 
+        let buttons = Buttons {
+            latch: self.button_latch,
+            data_in: self.button_out,
+            clock: self.button_clock,
+        };
+
         Sets {
             port: self.port,
             display,
@@ -230,6 +241,7 @@ impl Pins {
             flash,
             usb,
             uart,
+            buttons,
         }
     }
 }
@@ -277,6 +289,8 @@ pub struct Sets {
 
     /// Flash storage
     pub flash: QSPIFlash,
+
+    pub buttons: Buttons,
 }
 
 /// Display pins
@@ -561,4 +575,274 @@ pub struct QSPIFlash {
     pub data1: Pa9<Input<Floating>>,
     pub data2: Pa10<Input<Floating>>,
     pub data3: Pa11<Input<Floating>>,
+}
+
+/// Button pins
+pub struct Buttons {
+    /// Button Latch
+    pub latch: Pb0<Input<Floating>>,
+    /// Button Out
+    pub data_in: Pb30<Input<Floating>>,
+    /// Button Clock
+    pub clock: Pb31<Input<Floating>>,
+}
+
+#[cfg(feature = "unproven")]
+#[derive(Debug, PartialEq)]
+pub enum Keys {
+    SelectDown,
+    SelectUp,
+    StartDown,
+    StartUp,
+    BDown,
+    BUp,
+    ADown,
+    AUp,
+}
+
+#[cfg(feature = "unproven")]
+pub struct ButtonIter {
+    pub pressed: u8,
+    pub released: u8,
+    pub bit_index: u8,
+}
+
+#[cfg(feature = "unproven")]
+//should be impossible for released and pressed, but gives released preference
+fn mask_to_event(mask: u8, released: u8, pressed: u8) -> Option<Keys> {
+    let pressed_bool = mask & pressed == mask;
+    let released_bool = mask & released == mask;
+
+    match mask {
+        0x8 => {
+            if released_bool {
+                Some(Keys::BUp)
+            } else if pressed_bool {
+                Some(Keys::BDown)
+            } else {
+                None
+            }
+        }
+        0x4 => {
+            if released_bool {
+                Some(Keys::AUp)
+            } else if pressed_bool {
+                Some(Keys::ADown)
+            } else {
+                None
+            }
+        }
+        0x2 => {
+            if released_bool {
+                Some(Keys::StartUp)
+            } else if pressed_bool {
+                Some(Keys::StartDown)
+            } else {
+                None
+            }
+        }
+        0x1 => {
+            if released_bool {
+                Some(Keys::SelectUp)
+            } else if pressed_bool {
+                Some(Keys::SelectDown)
+            } else {
+                None
+            }
+        }
+        _ => None,
+    }
+}
+
+#[cfg(feature = "unproven")]
+impl Iterator for ButtonIter {
+    type Item = Keys;
+
+    fn next(&mut self) -> Option<Keys> {
+        //really want a while post increment but doesnt exist
+        //only 4 buttons represented in the shift
+        if self.bit_index >= 4 {
+            return None;
+        }
+
+        //funky do while
+        while {
+            let mask = 0x8 >> self.bit_index;
+            self.bit_index += 1;
+
+            let event = mask_to_event(mask, self.released, self.pressed);
+            if event.is_some() {
+                return event;
+            }
+
+            mask != 0
+        } {}
+
+        None
+    }
+}
+
+/// Button pins
+#[cfg(feature = "unproven")]
+pub struct ButtonReader {
+    /// Button Latch
+    pub latch: Pb0<Output<PushPull>>,
+    /// Button Out
+    pub data_in: Pb30<Input<Floating>>,
+    /// Button Clock
+    pub clock: Pb31<Output<PushPull>>,
+    pub last: u8,
+}
+
+#[cfg(feature = "unproven")]
+impl ButtonReader {
+    // 10*1us total blocking read
+    pub fn events(&mut self) -> ButtonIter {
+        self.latch.set_low().ok();
+        cycle_delay(120);
+        self.latch.set_high().ok();
+        cycle_delay(120);
+
+        let mut current: u8 = 0;
+
+        // they only use the top 4 bits
+        for _i in 0..4 {
+            current <<= 1;
+
+            if self.data_in.is_high().unwrap() {
+                current |= 1;
+            }
+
+            self.clock.set_high().ok();
+            cycle_delay(120);
+            self.clock.set_low().ok();
+            cycle_delay(120);
+        }
+
+        let iter = ButtonIter {
+            pressed: (self.last ^ current) & current,
+            released: (self.last ^ current) & self.last,
+            bit_index: 0,
+        };
+
+        self.last = current;
+
+        iter
+    }
+}
+
+#[cfg(feature = "unproven")]
+impl Buttons {
+    pub fn init(self, port: &mut Port) -> ButtonReader {
+        let mut latch = self.latch.into_push_pull_output(port);
+        latch.set_high().ok();
+
+        let data_in = self.data_in.into_floating_input(port);
+
+        let mut clock = self.clock.into_push_pull_output(port);
+        clock.set_high().ok();
+
+        ButtonReader {
+            latch,
+            data_in,
+            clock,
+            last: 0,
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn parse_from_left() {
+        let mut iter = ButtonIter {
+            pressed: 0x0F,
+            released: 0x00,
+            bit_index: 0,
+        };
+
+        assert_eq!(Some(Keys::BDown), iter.next());
+        assert_eq!(Some(Keys::ADown), iter.next());
+        assert_eq!(Some(Keys::StartDown), iter.next());
+        assert_eq!(Some(Keys::SelectDown), iter.next());
+        assert_eq!(None, iter.next());
+    }
+
+    #[test]
+    fn iter_released_before_pressed() {
+        let mut iter = ButtonIter {
+            pressed: 0x0F,
+            released: 0x0F,
+            bit_index: 0,
+        };
+
+        assert_eq!(Some(Keys::BUp), iter.next());
+        assert_eq!(Some(Keys::AUp), iter.next());
+        assert_eq!(Some(Keys::StartUp), iter.next());
+        assert_eq!(Some(Keys::SelectUp), iter.next());
+        assert_eq!(None, iter.next());
+    }
+
+    #[test]
+    fn iter_released_before_pressed2() {
+        let mut iter = ButtonIter {
+            pressed: 0x05,
+            released: 0x0A,
+            bit_index: 0,
+        };
+
+        assert_eq!(Some(Keys::BUp), iter.next());
+        assert_eq!(Some(Keys::ADown), iter.next());
+        assert_eq!(Some(Keys::StartUp), iter.next());
+        assert_eq!(Some(Keys::SelectDown), iter.next());
+        assert_eq!(None, iter.next());
+    }
+
+    #[test]
+    fn inner_empty_bit_is_skipped() {
+        let mut iter = ButtonIter {
+            pressed: 0x05,
+            released: 0x00,
+            bit_index: 0,
+        };
+
+        assert_eq!(Some(Keys::ADown), iter.next());
+        assert_eq!(Some(Keys::SelectDown), iter.next());
+        assert_eq!(None, iter.next());
+    }
+
+    #[test]
+    fn empty_returns_none() {
+        let mut iter = ButtonIter {
+            pressed: 0x00,
+            released: 0x00,
+            bit_index: 0,
+        };
+
+        assert_eq!(None, iter.next());
+    }
+
+    #[test]
+    fn upper_four_bits_unused() {
+        let mut iter = ButtonIter {
+            pressed: 0xF0,
+            released: 0x00,
+            bit_index: 0,
+        };
+
+        assert_eq!(None, iter.next());
+    }
+
+    #[test]
+    fn upper_four_bits_unused2() {
+        let mut iter = ButtonIter {
+            pressed: 0x00,
+            released: 0xF0,
+            bit_index: 0,
+        };
+
+        assert_eq!(None, iter.next());
+    }
 }

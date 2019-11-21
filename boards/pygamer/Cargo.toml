@@ -79,6 +79,10 @@ name = "neopixel_tilt"
 required-features = ["ws2812-timer"]
 
 [[example]]
+name = "neopixel_button"
+required-features = ["ws2812-timer", "unproven"]
+
+[[example]]
 name = "neopixel_rainbow_spintimer"
 required-features = ["ws2812-timer"]
 
