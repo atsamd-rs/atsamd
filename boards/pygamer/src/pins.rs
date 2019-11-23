@@ -35,6 +35,9 @@ pub use hal::usb::UsbBus;
 #[cfg(feature = "unproven")]
 use cortex_m::asm::delay as cycle_delay;
 
+#[cfg(feature = "unproven")]
+use super::pac::ADC1;
+
 define_pins!(
     /// Maps the pins to their arduino names and
     /// the numbers printed on the board.
@@ -58,8 +61,8 @@ define_pins!(
     pin a4 = a4,
     /// Analog pin 5
     pin a5 = a6,
-    /// Analog pin 6
-    pin a6 = b1,
+    /// Battery Measure (also Analog pin 6)
+    pin battery = b1,
     /// Light sensor (also Analog pin 7)
     pin light = b4,
     /// Digital pin 2 (also Analog pin 8) 
@@ -128,9 +131,9 @@ define_pins!(
     pin sd_cs = a14,
 
     /// Joystick X
-    pin joy_x = b6,
+    pin joy_x = b7,
     /// Joystick Y
-    pin joy_y = b7,
+    pin joy_y = b6,
 
     /// Button Latch
     pin button_latch = b0,
@@ -172,7 +175,6 @@ impl Pins {
             a3: self.a3,
             a4: self.a4,
             a5: self.a5,
-            a6: self.a6,
         };
 
         let digital = Digital {
@@ -226,6 +228,11 @@ impl Pins {
             clock: self.button_clock,
         };
 
+        let joystick = Joystick {
+            joy_x: self.joy_x,
+            joy_y: self.joy_y,
+        };
+
         Sets {
             port: self.port,
             display,
@@ -242,6 +249,7 @@ impl Pins {
             usb,
             uart,
             buttons,
+            joystick,
         }
     }
 }
@@ -291,6 +299,8 @@ pub struct Sets {
     pub flash: QSPIFlash,
 
     pub buttons: Buttons,
+
+    pub joystick: Joystick,
 }
 
 /// Display pins
@@ -550,7 +560,6 @@ pub struct Analog {
     pub a3: Pb9<Input<Floating>>,
     pub a4: Pa4<Input<Floating>>,
     pub a5: Pa6<Input<Floating>>,
-    pub a6: Pb1<Input<Floating>>,
 }
 
 /// Digital pins
@@ -747,6 +756,47 @@ impl Buttons {
             data_in,
             clock,
             last: 0,
+        }
+    }
+}
+
+/// Button pins
+pub struct JoystickReader {
+    /// Joystick X
+    pub joy_x: gpio::Pb7<gpio::PfB>,
+    /// Joystick Y
+    pub joy_y: gpio::Pb6<gpio::PfB>,
+}
+
+#[cfg(feature = "unproven")]
+impl JoystickReader {
+    pub fn read(&mut self, adc: &mut hal::adc::Adc<ADC1>) -> (u16, u16) {
+        //note adafruit averages 3 readings on x and y (not inside the adc) seems unnecessary?
+        //note adafruit recenters around zero.. Im not doing that either atm.
+
+        let y_data: u16 = adc.read(&mut self.joy_y).unwrap();
+        let x_data: u16 = adc.read(&mut self.joy_x).unwrap();
+
+        (x_data, y_data)
+    }
+}
+
+/// Joystick pins
+pub struct Joystick {
+    /// Joystick X
+    pub joy_x: Pb7<Input<Floating>>,
+    /// Joystick Y
+    pub joy_y: Pb6<Input<Floating>>,
+}
+
+#[cfg(feature = "unproven")]
+impl Joystick {
+    /// Convenience for setting up the joystick. Returns JoystickReader instance
+    /// which can be polled for joystick (x,y) tuple
+    pub fn init(self, port: &mut Port) -> JoystickReader {
+        JoystickReader {
+            joy_x: self.joy_x.into_function_b(port),
+            joy_y: self.joy_y.into_function_b(port),
         }
     }
 }

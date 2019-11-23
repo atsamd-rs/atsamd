@@ -1,13 +1,18 @@
-//! LIS3DH accelerometer example
-
 #![no_std]
 #![no_main]
+/// Joystick y controls the color of a neopixel while Joystick x moves it
+/// left and right around the center neopixel
+/// Select and Start control a second neopixel left and right while it is
+/// automatically rotating through the color wheel
+/// When they overlap, joystick takes precedence
 
 #[allow(unused_imports)]
 use panic_halt;
 use pygamer as hal;
 
+use hal::adc::Adc;
 use hal::entry;
+use hal::pac::gclk::pchctrl::GEN_A::GCLK11;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::pins::Keys;
 use hal::prelude::*;
@@ -34,40 +39,68 @@ fn main() -> ! {
 
     let mut buttons = pins.buttons.init(&mut pins.port);
 
+    let mut adc1 = Adc::adc1(peripherals.ADC1, &mut peripherals.MCLK, &mut clocks, GCLK11);
+    let mut joystick = pins.joystick.init(&mut pins.port);
+
     // neopixels
     let timer = SpinTimer::new(4);
 
     let mut neopixel = pins.neopixel.init(timer, &mut pins.port);
 
     const NUM_LEDS: usize = 5;
-    let mut pos: usize = 2;
-
-    let mut j: u8 = 0;
+    let mut pos_button: usize = 2;
+    let mut color_button: u8 = 0;
     loop {
+        let (x, y) = joystick.read(&mut adc1);
+
+        //put y in j for rainbow, turn 4095 into 255, /16
+        use core::convert::TryInto;
+        let color_joy: u8 = ((y - 1) / 16).try_into().unwrap();
+
+        let pos_joy: usize = if x < 147 {
+            0
+        } else if (x >= 147) && (x < 1048) {
+            1
+        } else if (x >= 1048) && (x < 3048) {
+            2
+        } else if (x >= 3048) && (x < 3948) {
+            3
+        } else {
+            4
+        };
+
         for event in buttons.events() {
             match event {
                 Keys::SelectDown => {
-                    if pos > 0 {
-                        pos -= 1;
+                    if pos_button > 0 {
+                        pos_button -= 1;
                     }
                 }
                 Keys::StartDown => {
-                    if pos < 4 {
-                        pos += 1;
+                    if pos_button < 4 {
+                        pos_button += 1;
                     }
                 }
                 _ => {}
             }
         }
 
-        //finally paint the one led wherever the position is
+        //finally paint the two leds at position, accel priority
         let _ = neopixel.write(brightness(
-            (0..NUM_LEDS).map(|i| if i == pos { wheel(j) } else { RGB8::default() }),
+            (0..NUM_LEDS).map(|i| {
+                if i == pos_joy {
+                    wheel(color_joy)
+                } else if i == pos_button {
+                    wheel(color_button)
+                } else {
+                    RGB8::default()
+                }
+            }),
             32,
         ));
 
         //incremement the wheel easing
-        j = j.wrapping_add(1);
+        color_button = color_button.wrapping_add(1);
 
         delay.delay_ms(5u8);
     }
