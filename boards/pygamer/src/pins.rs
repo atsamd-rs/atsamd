@@ -36,7 +36,7 @@ pub use hal::usb::UsbBus;
 use cortex_m::asm::delay as cycle_delay;
 
 #[cfg(feature = "unproven")]
-use super::pac::ADC1;
+use super::pac::{ADC0, ADC1};
 
 define_pins!(
     /// Maps the pins to their arduino names and
@@ -212,6 +212,10 @@ impl Pins {
             neopixel: self.neopixel,
         };
 
+        let battery = Battery {
+            battery: self.battery,
+        };
+
         let usb = USB {
             dm: self.usb_dm,
             dp: self.usb_dp,
@@ -238,6 +242,7 @@ impl Pins {
             display,
             led_pin: self.d13,
             neopixel,
+            battery,
             light_pin: self.light,
             i2c,
             sd_cs_pin: self.sd_cs,
@@ -276,6 +281,9 @@ pub struct Sets {
 
     /// SD Card CS pin
     pub sd_cs_pin: Pa14<Input<Floating>>,
+
+    /// Battery Voltage
+    pub battery: Battery,
 
     /// Speaker (DAC not implemented in hal yet)
     pub speaker: Speaker,
@@ -760,7 +768,7 @@ impl Buttons {
     }
 }
 
-/// Button pins
+/// Joystick pins
 pub struct JoystickReader {
     /// Joystick X
     pub joy_x: gpio::Pb7<gpio::PfB>,
@@ -797,6 +805,38 @@ impl Joystick {
         JoystickReader {
             joy_x: self.joy_x.into_function_b(port),
             joy_y: self.joy_y.into_function_b(port),
+        }
+    }
+}
+
+/// Battery Reader
+#[cfg(feature = "unproven")]
+pub struct BatteryReader {
+    /// Battery pin
+    pub battery: gpio::Pb1<gpio::PfB>,
+}
+
+#[cfg(feature = "unproven")]
+impl BatteryReader {
+    pub fn read(&mut self, adc: &mut hal::adc::Adc<ADC0>) -> (f32) {
+        let data: u16 = adc.read(&mut self.battery).unwrap();
+        let result: f32 = (data as f32 / 4095.0) * 2.0 * 3.3;
+        result
+    }
+}
+
+/// Battery pin
+pub struct Battery {
+    pub battery: Pb1<Input<Floating>>,
+}
+
+#[cfg(feature = "unproven")]
+impl Battery {
+    /// Convenience for reading Battery Volage. Returns BatteryReader instance
+    /// which can be polled for battery voltage
+    pub fn init(self, port: &mut Port) -> BatteryReader {
+        BatteryReader {
+            battery: self.battery.into_function_b(port),
         }
     }
 }

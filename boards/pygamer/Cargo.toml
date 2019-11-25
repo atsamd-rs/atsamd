@@ -93,3 +93,7 @@ required-features = ["ws2812-timer"]
 [[example]]
 name = "neopixel_adc_light"
 required-features = [ "ws2812-timer", "unproven",]
+
+[[example]]
+name = "neopixel_adc_battery"
+required-features = [ "ws2812-timer" ,"unproven",]
