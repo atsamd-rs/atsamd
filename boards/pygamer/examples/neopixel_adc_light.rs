@@ -1,6 +1,7 @@
+//! Joystick y controls the color, Joystick x moves between the 5 neopixel leds
+
 #![no_std]
 #![no_main]
-/// Joystick y controls the color, Joystick x moves between the 5 neopixel leds
 
 #[allow(unused_imports)]
 use panic_halt;

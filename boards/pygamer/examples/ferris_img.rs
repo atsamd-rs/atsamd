@@ -1,3 +1,9 @@
+//! Place a bitmap image on the screen.
+//! Convert a png to .raw bytes
+//! * With imagemagick `convert ferris.png -flip -type truecolor -define bmp:subtype=RGB565 -depth 16 -strip ferris.bmp`
+//! * Or export images directly from GIMP by saving as .bmp and choosing 16bit R5 G6 B5
+//! Then `tail -c 11008 ferris.bmp > ferris.raw` where c is width*height*2 and our ferris.png was 86x64
+
 #![no_std]
 #![no_main]
 

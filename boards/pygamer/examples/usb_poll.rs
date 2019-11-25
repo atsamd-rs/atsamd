@@ -1,3 +1,6 @@
+//! Makes the pygamer appear as a USB serial port loop back device.
+//! Repeats back all characters sent to it, but in upper case.
+
 #![no_std]
 #![no_main]
 

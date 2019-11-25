@@ -1,3 +1,5 @@
+//! Blink an led without using the BSP split() method.
+
 #![no_std]
 #![no_main]
 

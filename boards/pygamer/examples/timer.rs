@@ -1,3 +1,6 @@
+//! Use a hardware timer to wiggle a pin by blocking until the timer is up
+//! and then toggling a pin.
+
 #![no_std]
 #![no_main]
 

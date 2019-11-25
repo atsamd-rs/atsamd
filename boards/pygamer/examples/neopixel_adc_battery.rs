@@ -1,6 +1,7 @@
+//! Display battery percentage on the neopixels.
+
 #![no_std]
 #![no_main]
-/// Display battery percentage on the neopixels.
 
 #[allow(unused_imports)]
 use panic_halt;

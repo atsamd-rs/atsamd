@@ -1,4 +1,4 @@
-//! LIS3DH accelerometer example
+//! LIS3DH accelerometer example. Move the neopixel led by tilting left and right.
 
 #![no_std]
 #![no_main]
