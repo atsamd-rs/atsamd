@@ -1,5 +1,5 @@
 use crate::clock;
-use crate::gpio::{Pa15, Pa19, PfE};
+use crate::gpio::{Pa5, Pa15, Pa17, Pa23, PfE};
 use crate::hal::PwmPin;
 use crate::time::Hertz;
 use crate::timer::TimerParams;
@@ -7,8 +7,10 @@ use crate::timer::TimerParams;
 use crate::target_device::{PM, TC1};
 
 pub enum TC1Pinout {
+    Pa5(Pa5<PfE>),
     Pa15(Pa15<PfE>),
-    Pa19(Pa19<PfE>),
+    Pa17(Pa17<PfE>),
+    Pa23(Pa23<PfE>),
 }
 
 pub enum Channel {
@@ -138,5 +140,5 @@ impl PwmPin for $TYPE {
 )+}}
 
 pwm! {
-    Pwm3: (TC1, TC1Pinout, Tcc0Clock, apbcmask, tc1_, Pwm3Wrapper),
+    Pwm1: (TC1, TC1Pinout, Tc1Tc2Clock, apbcmask, tc1_, Pwm1Wrapper),
 }
