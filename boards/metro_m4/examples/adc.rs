@@ -1,18 +1,19 @@
 #![no_std]
 #![no_main]
 
-extern crate panic_semihosting;
 extern crate cortex_m_rt;
-extern crate metro_m4 as hal;
 extern crate embedded_hal;
+extern crate metro_m4 as hal;
+extern crate panic_semihosting;
 
 use core::fmt::Write;
 
-use hal::prelude::*;
+use hal::adc::Adc;
 use hal::clock::GenericClockController;
 use hal::entry;
-use hal::pac::{Peripherals, CorePeripherals};
-use hal::adc::Adc;
+use hal::pac::gclk::pchctrl::GEN_A::GCLK11;
+use hal::pac::{CorePeripherals, Peripherals};
+use hal::prelude::*;
 use hal::sercom::{PadPin, Sercom3Pad0, Sercom3Pad1, UART3};
 
 #[entry]
@@ -28,7 +29,7 @@ fn main() -> ! {
     );
     let mut pins = hal::Pins::new(peripherals.PORT);
     let mut delay = hal::delay::Delay::new(core.SYST, &mut clocks);
-    let mut adc0 = Adc::adc0(peripherals.ADC0, &mut peripherals.MCLK, &mut clocks);
+    let mut adc0 = Adc::adc0(peripherals.ADC0, &mut peripherals.MCLK, &mut clocks, GCLK11);
     let mut a0 = pins.a0.into_function_b(&mut pins.port);
 
     let gclk0 = clocks.gclk0();
@@ -40,7 +41,8 @@ fn main() -> ! {
         .d1
         .into_pull_down_input(&mut pins.port)
         .into_pad(&mut pins.port);
-    let uart_clk = clocks.sercom3_core(&gclk0)
+    let uart_clk = clocks
+        .sercom3_core(&gclk0)
         .expect("Could not configure sercom3 clock");
 
     let mut uart = UART3::new(
@@ -48,7 +50,7 @@ fn main() -> ! {
         9600.hz(),
         peripherals.SERCOM3,
         &mut peripherals.MCLK,
-        (rx, tx)
+        (rx, tx),
     );
 
     loop {
