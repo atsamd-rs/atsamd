@@ -5,7 +5,7 @@ use crate::gpio::{
 };
 use crate::hal::adc::{Channel, OneShot};
 use crate::target_device::gclk::genctrl::SRC_A::DFLL;
-use crate::target_device::gclk::pchctrl::GEN_A::GCLK11;
+use crate::target_device::gclk::pchctrl::GEN_A;
 use crate::target_device::{adc0, ADC0, ADC1, MCLK};
 
 pub struct Adc<ADC> {
@@ -16,12 +16,12 @@ macro_rules! adc_hal {
     ($($ADC:ident: ($init:ident, $mclk:ident, $apmask:ident),)+) => {
         $(
 impl Adc<$ADC> {
-    pub fn $init(adc: $ADC, mclk: &mut MCLK, clocks: &mut GenericClockController) -> Self {
+    pub fn $init(adc: $ADC, mclk: &mut MCLK, clocks: &mut GenericClockController, gclk:GEN_A) -> Self {
         mclk.$mclk.modify(|_, w| w.$apmask().set_bit());
         // set to 1/(1/(48000000/32) * 6) = 250000 SPS
-        let gclk11 = clocks.configure_gclk_divider_and_source(GCLK11, 1, DFLL, false)
+        let adc_clock = clocks.configure_gclk_divider_and_source(gclk, 1, DFLL, false)
             .expect("adc clock setup failed");
-        clocks.$init(&gclk11).expect("adc clock setup failed");
+        clocks.$init(&adc_clock).expect("adc clock setup failed");
         adc.ctrla.modify(|_, w| w.prescaler().div32());
         adc.ctrlb.modify(|_, w| w.ressel()._12bit());
         while adc.syncbusy.read().ctrlb().bit_is_set() {}
