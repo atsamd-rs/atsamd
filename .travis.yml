@@ -22,7 +22,7 @@ env:
   - CRATE=boards/sodaq_sara_aff
   - CRATE=boards/pyportal
   - CRATE=boards/trellis_m4 FEATURES="--features=keypad-unproven"
-  - CRATE=boards/pygamer FEATURES="--features=unproven,usb,ws2812-timer"
+  - CRATE=boards/pygamer FEATURES="--features=unproven,usb,ws2812-timer,math"
 
 matrix:
   allow_failures:

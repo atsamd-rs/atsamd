@@ -28,6 +28,10 @@ path = "../../hal"
 version = "~0.7"
 default-features = false
 
+[dependencies.micromath]
+version = "0.5.1"
+optional = true
+
 [dependencies.ws2812-timer-delay]
 version = "~0.3"
 optional = true
@@ -55,6 +59,7 @@ rt = ["cortex-m-rt", "atsamd-hal/samd51j19a-rt"]
 unproven = ["atsamd-hal/unproven"]
 usb = ["atsamd-hal/usb", "usb-device", "usbd-serial"]
 ws2812-timer = ["ws2812-timer-delay"]
+math = ["micromath"]
 
 [profile.dev]
 incremental = false
@@ -102,3 +107,7 @@ required-features = [ "ws2812-timer", "unproven",]
 [[example]]
 name = "neopixel_adc_battery"
 required-features = [ "ws2812-timer" ,"unproven",]
+
+[[example]]
+name = "neopixel_easing"
+required-features = [ "ws2812-timer" ,"unproven", "math"]
