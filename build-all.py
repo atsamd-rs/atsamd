@@ -30,6 +30,10 @@ for env in travis['env']:
 	if features != None:
 		cmd.extend(shlex.split(features))
 
+	buildmode = d.get("BUILDMODE", None)
+	if buildmode != None:
+		cmd.extend(shlex.split(buildmode))
+
 	print(cmd)
 	
 	subprocess.check_call(cmd, cwd=crate_dir)

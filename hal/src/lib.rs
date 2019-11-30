@@ -4,6 +4,9 @@ pub extern crate embedded_hal as hal;
 
 pub use paste;
 
+#[cfg(feature = "samd11c14a")]
+pub use atsamd11c14a as target_device;
+
 #[cfg(feature = "samd21e18a")]
 pub use atsamd21e18a as target_device;
 
@@ -47,17 +50,22 @@ macro_rules! dbgprint {
 pub mod common;
 pub use self::common::*;
 
-#[cfg(feature="samd51")]
+#[cfg(feature = "samd51")]
 pub mod samd51;
-#[cfg(feature="samd51")]
+#[cfg(feature = "samd51")]
 pub use self::samd51::*;
 
-#[cfg(not(feature="samd51"))]
+#[cfg(not(any(feature = "samd11c14a", feature = "samd51")))]
 pub mod samd21;
-#[cfg(not(feature="samd51"))]
+#[cfg(not(any(feature = "samd11c14a", feature = "samd51")))]
 pub use self::samd21::*;
 
-#[cfg(all(feature = "usb", feature="samd21"))]
+#[cfg(feature = "samd11c14a")]
+pub mod samd11;
+#[cfg(feature = "samd11c14a")]
+pub use self::samd11::*;
+
+#[cfg(all(feature = "usb", feature = "samd21"))]
 pub use self::samd21::usb;
-#[cfg(all(feature = "usb", feature="samd51"))]
+#[cfg(all(feature = "usb", feature = "samd51"))]
 pub use self::samd51::usb;

@@ -2,7 +2,7 @@
 name = "atsamd-hal"
 version = "0.7.4"
 authors = ["Wez Furlong <wez@wezfurlong.org>", "Paul Sajna <sajattack@gmail.com>"]
-description = "HAL and Peripheral access API for ATSAMD21 and ATSAMD51 microcontrollers"
+description = "HAL and Peripheral access API for ATSAMD11, ATSAMD21 and ATSAMD51 microcontrollers"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/atsamd-rs/atsamd"
@@ -30,6 +30,11 @@ version = "~1.0"
 # Each of the supported chips is listed as an optional dependency here.
 # This makes it available when the corresponding feature name is referenced.
 # We use a feature named "samdFOO" to pull in the dependency named "atsamdFOO"
+[dependencies.atsamd11c14a]
+path = "../pac/atsamd11c14a"
+version = "~0.1"
+optional = true
+
 [dependencies.atsamd21g18a]
 path = "../pac/atsamd21g18a"
 version = "~0.6"
@@ -79,6 +84,8 @@ cortex-m-rtfm = "~0.3"
 # If we simply used feature names that matched the dependency names, enabling the
 # rt feature would link all possible parts in and cause a linker error due to
 # the high degree of similar symbols present in the various parts.
+samd11c14a = ["atsamd11c14a"]
+samd11c14a-rt = ["atsamd11c14a", "atsamd11c14a/rt"]
 samd21g18a = ["atsamd21g18a"]
 samd21g18a-rt = ["atsamd21g18a", "atsamd21g18a/rt"]
 samd21e18a = ["atsamd21e18a"]
