@@ -15,7 +15,7 @@ env:
   - CRATE=boards/itsybitsy_m0
   - CRATE=boards/itsybitsy_m4 FEATURES="--features=unproven,usb,use_uart_debug"
   - CRATE=boards/trinket_m0
-  - CRATE=boards/samd11_bare FEATURES="--features=unproven"
+  - CRATE=boards/samd11_bare FEATURES="--features=unproven" BUILDMODE="--release"
   - CRATE=boards/samd21_mini
   - CRATE=boards/arduino_mkrzero
   - CRATE=boards/circuit_playground_express
@@ -35,7 +35,7 @@ before_install:
 
 script:
   - "cd $CRATE"
-  - "cargo build ${EXAMPLES:---examples} $FEATURES"
+  - "cargo build ${EXAMPLES:---examples} $FEATURES $BUILDMODE"
 
 stages:
   - test
