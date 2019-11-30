@@ -1,6 +1,6 @@
 # atsamd support for Rust
 
-This repo holds various things that support/enable working with atmel samd21 and samd51 based
+This repo holds various things that support/enable working with atmel samd11, samd21 and samd51 based
 devices, such as the Adafruit Metro M0, Trinket M0 and Gemma M0, using Rust.
 
 [![Build Status](https://travis-ci.org/atsamd-rs/atsamd.svg?branch=master)](https://travis-ci.org/atsamd-rs/atsamd)
@@ -51,7 +51,7 @@ In addition to the generic crates, there are also crates for popular ATSAMD21/51
 ## Building
 
  You'll need to install support for
-`thumbv6m-none-eabi` if you're targeting samd21 or `thumbv7em-none-eabihf` if you're targeting samd51.  Make sure that you have a new enough version of the
+`thumbv6m-none-eabi` if you're targeting samd11 or samd21, or `thumbv7em-none-eabihf` if you're targeting samd51.  Make sure that you have a new enough version of the
 gcc toolchain; the one installable even on recent versions of ubuntu can
 fail to correctly link the vector table:
 
