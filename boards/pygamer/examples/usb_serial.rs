@@ -1,8 +1,6 @@
 #![no_std]
 #![no_main]
 
-extern crate embedded_hal;
-extern crate panic_halt;
 /// Makes the pygamer appear as a USB serial port. The color of the
 /// neopixel LED can be changed by sending bytes to the serial port.
 ///
@@ -12,21 +10,18 @@ extern crate panic_halt;
 /// $> sudo bash -c "echo 'R' > /dev/ttyACM0"
 /// $> sudo bash -c "echo 'G' > /dev/ttyACM0"
 /// $> sudo bash -c "echo 'O' > /dev/ttyACM0"
-extern crate pygamer as hal;
-extern crate ws2812_timer_delay as ws2812;
-
-use hal::clock::GenericClockController;
-
-use embedded_hal::digital::v1_compat::OldOutputPin;
+#[allow(unused_imports)]
+use panic_halt;
+use pygamer as hal;
 
 use cortex_m::interrupt::free as disable_interrupts;
 use cortex_m::peripheral::NVIC;
+use hal::clock::GenericClockController;
 use hal::entry;
 use hal::pac::{interrupt, CorePeripherals, Peripherals};
 
 use hal::usb::UsbBus;
 use usb_device::bus::UsbBusAllocator;
-
 use usb_device::prelude::*;
 use usbd_serial::{SerialPort, USB_CLASS_CDC};
 
@@ -51,17 +46,14 @@ fn main() -> ! {
     let mut pins = hal::Pins::new(peripherals.PORT).split();
 
     let timer = SpinTimer::new(4);
-
-    let mut neopixel_pin: OldOutputPin<_> =
-        pins.neopixel.into_push_pull_output(&mut pins.port).into();
-    let mut neopixel = ws2812::Ws2812::new(timer, &mut neopixel_pin);
+    let mut neopixel = pins.neopixel.init(timer, &mut pins.port);
 
     neopixel
         .write([RGB8 { r: 0, g: 0, b: 0 }; NUM_LEDS].iter().cloned())
         .unwrap();
 
     let bus_allocator = unsafe {
-        USB_ALLOCATOR = Some(pins.usb.usb_allocator(
+        USB_ALLOCATOR = Some(pins.usb.init(
             peripherals.USB,
             &mut clocks,
             &mut peripherals.MCLK,

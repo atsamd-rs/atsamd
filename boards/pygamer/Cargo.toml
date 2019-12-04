@@ -28,19 +28,21 @@ path = "../../hal"
 version = "~0.7"
 default-features = false
 
+[dependencies.micromath]
+version = "0.5.1"
+optional = true
+
+[dependencies.ws2812-timer-delay]
+version = "~0.3"
+optional = true
+
 [dev-dependencies]
 panic-halt = "~0.2"
-panic-semihosting = "~0.5"
-panic_rtt = "~0.2"
-cortex-m-semihosting = "~0.3"
-cortex-m-rtfm = "~0.4"
-smart-leds = "0.3"
-ws2812-nop-samd51 = { git = "https://github.com/jacobrosenthal/ws2812-nop-samd51.git", branch="update" }
 embedded-graphics = "~0.4"
+smart-leds = "0.3"
 ws2812-spi = "0.2.0"
-
-[dev-dependencies.ws2812-timer-delay]
-version = "~0.2"
+lis3dh = "0.1.0"
+cortex-m-rtfm = "~0.4"
 
 [dependencies.usb-device]
 version = "~0.2"
@@ -56,7 +58,8 @@ default = ["rt", "atsamd-hal/samd51j19a", "atsamd-hal/samd51"]
 rt = ["cortex-m-rt", "atsamd-hal/samd51j19a-rt"]
 unproven = ["atsamd-hal/unproven"]
 usb = ["atsamd-hal/usb", "usb-device", "usbd-serial"]
-use_uart_debug = ["atsamd-hal/use_uart_debug"]
+ws2812-timer = ["ws2812-timer-delay"]
+math = ["micromath"]
 
 [profile.dev]
 incremental = false
@@ -71,9 +74,40 @@ opt-level = "s"
 
 [[example]]
 name = "usb_serial"
-required-features = ["usb"]
-
+required-features = ["usb", "ws2812-timer"]
 
 [[example]]
 name = "usb_poll"
 required-features = ["usb"]
+
+[[example]]
+name = "neopixel_tilt"
+required-features = ["ws2812-timer"]
+
+[[example]]
+name = "neopixel_button"
+required-features = ["ws2812-timer", "unproven"]
+
+[[example]]
+name = "neopixel_rainbow_spintimer"
+required-features = ["ws2812-timer"]
+
+[[example]]
+name = "button_rtfm"
+required-features = ["unproven"]
+
+[[example]]
+name = "neopixel_rainbow_timer"
+required-features = ["ws2812-timer"]
+
+[[example]]
+name = "neopixel_adc_light"
+required-features = [ "ws2812-timer", "unproven",]
+
+[[example]]
+name = "neopixel_adc_battery"
+required-features = [ "ws2812-timer" ,"unproven",]
+
+[[example]]
+name = "neopixel_easing"
+required-features = [ "ws2812-timer" ,"unproven", "math"]

@@ -1,11 +1,14 @@
+//! Makes the pygamer appear as a USB serial port loop back device.
+//! Repeats back all characters sent to it, but in upper case.
+
 #![no_std]
 #![no_main]
 
-extern crate panic_halt;
-extern crate pygamer as hal;
+#[allow(unused_imports)]
+use panic_halt;
+use pygamer as hal;
 
 use hal::clock::GenericClockController;
-
 use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
@@ -27,7 +30,7 @@ fn main() -> ! {
 
     let mut pins = hal::Pins::new(peripherals.PORT).split();
 
-    let usb_bus = pins.usb.usb_allocator(
+    let usb_bus = pins.usb.init(
         peripherals.USB,
         &mut clocks,
         &mut peripherals.MCLK,
@@ -35,7 +38,7 @@ fn main() -> ! {
     );
 
     let mut serial = SerialPort::new(&usb_bus);
-    let mut led = pins.led.led(&mut pins.port);
+    let mut led = pins.led_pin.into_open_drain_output(&mut pins.port);
 
     let mut usb_dev = UsbDeviceBuilder::new(&usb_bus, UsbVidPid(0x16c0, 0x27dd))
         .manufacturer("Fake company")

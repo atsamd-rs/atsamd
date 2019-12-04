@@ -1,3 +1,5 @@
+//! Blink an led without using the BSP split() method.
+
 #![no_std]
 #![no_main]
 
@@ -5,12 +7,15 @@
 use panic_halt;
 use pygamer as hal;
 
+use core::f32::consts::FRAC_PI_2;
+use hal::clock::GenericClockController;
+use hal::delay::Delay;
 use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 use hal::timer::SpinTimer;
-use hal::{clock::GenericClockController, delay::Delay};
-
+use hal::trng::Trng;
+use micromath::F32Ext;
 use smart_leds::hsv::RGB8;
 use smart_leds::{brightness, SmartLedsWrite};
 
@@ -32,22 +37,39 @@ fn main() -> ! {
     let mut neopixel = pins.neopixel.init(timer, &mut pins.port);
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
+    let trng = Trng::new(&mut peripherals.MCLK, peripherals.TRNG);
+
     const NUM_LEDS: usize = 5;
 
     loop {
+        let rand = trng.random_u8();
+        let pos: usize = rand.wrapping_rem(5) as usize; //random led
+        let rgb = wheel(rand); //random color
+
         for j in 0..255u8 {
             let _ = neopixel.write(brightness(
-                (0..NUM_LEDS).map(|i| {
-                    //could have all leds be same color with number = j
-                    //instead lets offset each of them by 255/5 or 51
-                    wheel(j.wrapping_add(51 * i as u8))
-                }),
-                32,
+                (0..NUM_LEDS).map(|i| if i == pos { rgb } else { RGB8::default() }),
+                // current step, start output led off=0, max output of only 32, 255 top
+                sine_ease_in(j as f32, 0.0, 32.0, 255.0) as u8,
             ));
+            delay.delay_ms(5u8);
+        }
 
+        for j in (0..255u8).rev() {
+            let _ = neopixel.write(brightness(
+                (0..NUM_LEDS).map(|i| if i == pos { rgb } else { RGB8::default() }),
+                // current step, start output led off=0, max output of only 32, 255 top
+                sine_ease_in(j as f32, 0.0, 32.0, 255.0) as u8,
+            ));
             delay.delay_ms(5u8);
         }
     }
+}
+
+#[inline]
+// current step, where oputput starts, where output ends, last step
+fn sine_ease_in(t: f32, b: f32, c: f32, d: f32) -> f32 {
+    -c * (t / d * FRAC_PI_2).cos() + c + b
 }
 
 /// Input a value 0 to 255 to get a color value

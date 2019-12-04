@@ -1,8 +1,11 @@
+//! Blink an led without using the BSP split() method.
+
 #![no_std]
 #![no_main]
 
-extern crate panic_halt;
-extern crate pygamer as hal;
+#[allow(unused_imports)]
+use panic_halt;
+use pygamer as hal;
 
 use hal::clock::GenericClockController;
 use hal::delay::Delay;

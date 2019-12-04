@@ -1,21 +1,25 @@
+//! Joystick y controls the color, Joystick x moves between the 5 neopixel leds
+
 #![no_std]
 #![no_main]
 
-extern crate cortex_m;
-extern crate panic_halt;
-extern crate pygamer as hal;
-extern crate smart_leds;
-extern crate ws2812_nop_samd51 as ws2812;
+#[allow(unused_imports)]
+use panic_halt;
+use pygamer as hal;
 
-use embedded_hal::digital::v1_compat::OldOutputPin;
-
+use hal::adc::Adc;
 use hal::entry;
+use hal::pac::gclk::pchctrl::GEN_A::GCLK11;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
+use hal::timer::SpinTimer;
 use hal::{clock::GenericClockController, delay::Delay};
 
 use smart_leds::hsv::RGB8;
 use smart_leds::{brightness, SmartLedsWrite};
+
+use embedded_hal::digital::v1_compat::OldOutputPin;
+use ws2812_timer_delay as ws2812;
 
 #[entry]
 fn main() -> ! {
@@ -30,24 +34,43 @@ fn main() -> ! {
     );
     let mut pins = hal::Pins::new(peripherals.PORT);
 
+    let mut adc1 = Adc::adc1(peripherals.ADC1, &mut peripherals.MCLK, &mut clocks, GCLK11);
+    let mut light = pins.light.into_function_b(&mut pins.port);
+
+    let timer = SpinTimer::new(4);
     let neopixel_pin: OldOutputPin<_> = pins.neopixel.into_push_pull_output(&mut pins.port).into();
-    let mut neopixel = ws2812::Ws2812::new(neopixel_pin);
+    let mut neopixel = ws2812::Ws2812::new(timer, neopixel_pin);
+
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
     const NUM_LEDS: usize = 5;
-    let mut data = [RGB8::default(); NUM_LEDS];
+    let mut j: u8 = 0;
 
     loop {
-        for j in 0..(256 * 5) {
-            //why
-            for _ in 0..1 {
-                for i in 0..NUM_LEDS {
-                    data[i] = wheel((((i * 256) as u16 / NUM_LEDS as u16 + j as u16) & 255) as u8);
-                }
-            }
-            let _ = neopixel.write(brightness(data.iter().cloned(), 32));
-            delay.delay_ms(5u8);
-        }
+        let light_data: u16 = adc1.read(&mut light).unwrap();
+
+        let pos: usize = if light_data < 100 {
+            0
+        } else if (light_data >= 147) && (light_data < 1048) {
+            1
+        } else if (light_data >= 1048) && (light_data < 3048) {
+            2
+        } else if (light_data >= 3048) && (light_data < 3948) {
+            3
+        } else {
+            4
+        };
+
+        //finally paint the one led wherever the position is
+        let _ = neopixel.write(brightness(
+            (0..NUM_LEDS).map(|i| if i == pos { wheel(j) } else { RGB8::default() }),
+            32,
+        ));
+
+        //incremement the wheel easing
+        j = j.wrapping_add(1);
+
+        delay.delay_ms(10u8);
     }
 }
 

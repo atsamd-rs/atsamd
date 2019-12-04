@@ -1,17 +1,18 @@
+//! Use a hardware timer to wiggle a pin by blocking until the timer is up
+//! and then toggling a pin.
+
 #![no_std]
 #![no_main]
 
-extern crate cortex_m_rt;
-extern crate embedded_hal;
-extern crate nb;
-extern crate panic_halt;
-extern crate pygamer as hal;
+#[allow(unused_imports)]
+use panic_halt;
+use pygamer as hal;
 
-use crate::hal::clock::GenericClockController;
-use crate::hal::pac::Peripherals;
-use crate::hal::timer::TimerCounter;
-use cortex_m_rt::entry;
+use hal::clock::GenericClockController;
+use hal::entry;
+use hal::pac::Peripherals;
 use hal::prelude::*;
+use hal::timer::TimerCounter;
 use nb::block;
 
 #[entry]
