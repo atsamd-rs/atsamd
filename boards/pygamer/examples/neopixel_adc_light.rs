@@ -1,4 +1,4 @@
-//! Joystick y controls the color, Joystick x moves between the 5 neopixel leds
+//! Display light sensor reading on the neopixels.
 
 #![no_std]
 #![no_main]
