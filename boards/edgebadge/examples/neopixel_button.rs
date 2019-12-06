@@ -1,7 +1,6 @@
-//! Joystick y controls the color of a neopixel while Joystick x moves it
-//! left and right around the center neopixel
-//! Select and Start control a second neopixel left and right while it is
+//! Left and right on 'joystick' controls the first neopixel while it is
 //! automatically rotating through the color wheel
+//! Select and Start control a second neopixel
 //! When they overlap, joystick takes precedence
 
 #![no_std]
@@ -12,9 +11,7 @@ use panic_halt;
 
 use edgebadge as hal;
 
-use hal::adc::Adc;
 use hal::entry;
-use hal::pac::gclk::pchctrl::GEN_A::GCLK11;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::pins::Keys;
 use hal::prelude::*;
@@ -41,38 +38,28 @@ fn main() -> ! {
 
     let mut buttons = pins.buttons.init(&mut pins.port);
 
-    let mut adc1 = Adc::adc1(peripherals.ADC1, &mut peripherals.MCLK, &mut clocks, GCLK11);
-    let mut joystick = pins.joystick.init(&mut pins.port);
-
     // neopixels
     let timer = SpinTimer::new(4);
 
     let mut neopixel = pins.neopixel.init(timer, &mut pins.port);
 
     const NUM_LEDS: usize = 5;
-    let mut pos_button: usize = 2;
+    let mut pos_button: usize = 1;
+    let mut pos_joy: usize = 3;
     let mut color_button: u8 = 0;
     loop {
-        let (x, y) = joystick.read(&mut adc1);
-
-        //put y in j for rainbow, turn 4095 into 255, /16
-        use core::convert::TryInto;
-        let color_joy: u8 = ((y - 1) / 16).try_into().unwrap();
-
-        let pos_joy: usize = if x < 147 {
-            0
-        } else if (x >= 147) && (x < 1048) {
-            1
-        } else if (x >= 1048) && (x < 3048) {
-            2
-        } else if (x >= 3048) && (x < 3948) {
-            3
-        } else {
-            4
-        };
-
         for event in buttons.events() {
             match event {
+                Keys::LeftDown => {
+                    if pos_joy > 0 {
+                        pos_joy -= 1;
+                    }
+                }
+                Keys::RightDown => {
+                    if pos_joy < 4 {
+                        pos_joy += 1;
+                    }
+                }
                 Keys::SelectDown => {
                     if pos_button > 0 {
                         pos_button -= 1;
@@ -91,7 +78,7 @@ fn main() -> ! {
         let _ = neopixel.write(brightness(
             (0..NUM_LEDS).map(|i| {
                 if i == pos_joy {
-                    wheel(color_joy)
+                    wheel(color_button)
                 } else if i == pos_button {
                     wheel(color_button)
                 } else {
