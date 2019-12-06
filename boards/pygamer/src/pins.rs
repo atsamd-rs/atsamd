@@ -684,7 +684,7 @@ impl Iterator for ButtonIter {
 
         //funky do while
         while {
-            let mask = 0x8 >> self.bit_index;
+            let mask = 0x01 << self.bit_index;
             self.bit_index += 1;
 
             let event = mask_to_event(mask, self.released, self.pressed);
@@ -692,7 +692,7 @@ impl Iterator for ButtonIter {
                 return event;
             }
 
-            mask != 0
+            self.bit_index < 4
         } {}
 
         None
