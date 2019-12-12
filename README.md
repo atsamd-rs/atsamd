@@ -12,6 +12,7 @@ In addition to the PACs and HAL, there numerous **B**oard **S**upport **P**ackag
 
 | Crate | Version | Board Support Packages |
 |:------|:--------|:-----------------------|
+| [atsamd10c14a](https://docs.rs/atsamd10c14a/) | | |
 | [atsamd11c14a](https://docs.rs/atsamd11c14a/) | [![Crates.io](https://img.shields.io/crates/v/atsamd11c14a.svg)](https://crates.io/crates/atsamd11c14a) |  |
 | [atsamd21g18a](https://docs.rs/atsamd21g18a/) | [![Crates.io](https://img.shields.io/crates/v/atsamd21g18a.svg)](https://crates.io/crates/atsamd21g18a) | [Circuit Playground Express][circuit_playground_express], [Feather M0][feather_m0], [Metro M0][metro_m0], [MKR ZERO][arduino_mkrzero], [SAMD21 Mini][samd21_mini], [SODAQ ONE][sodaq_one] |
 | [atsamd21e18a](https://docs.rs/atsamd21e18a/) | [![Crates.io](https://img.shields.io/crates/v/atsamd21e18a.svg)](https://crates.io/crates/atsamd21e18a) | [Gemma M0][gemma_m0], [Trinket M0][trinket_m0], [Serpente][serpente] |
@@ -141,7 +142,7 @@ For more information, refer to the `README` files for each crate:
 ## Getting code onto the devices with bootloaders: uf2conv-rs
 
 [uf2conv-rs](https://github.com/sajattack/uf2conv-rs) adds a uf2 header [Microsofts HID Flashing Format (UF2)](https://github.com/microsoft/uf2/blob/86e101e3a282553756161fe12206c7a609975e70/README.md) for copying over to UF2 bootloader mass storage devices. UF2 is factory programmed extensively by [Microsoft MakeCode](https://www.microsoft.com/en-us/makecode) and [Adafruit](https://www.adafruit.com/) hardware.
-[cargo-binutils](https://github.com/rust-embedded/cargo-binutils) replaces the `cargo build` command to find and convert elf files into binary. 
+[cargo-binutils](https://github.com/rust-embedded/cargo-binutils) replaces the `cargo build` command to find and convert elf files into binary.
 
 Install the dependencies
 ```bash

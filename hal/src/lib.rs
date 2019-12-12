@@ -4,6 +4,9 @@ pub extern crate embedded_hal as hal;
 
 pub use paste;
 
+#[cfg(feature = "samd10c14a")]
+pub use atsamd10c14a as target_device;
+
 #[cfg(feature = "samd11c14a")]
 pub use atsamd11c14a as target_device;
 

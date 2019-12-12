@@ -15,9 +15,9 @@ python -m pip install -r requirements.txt
 # PATCH SVD FILES
 
 count=$(find svd/ -maxdepth 1 -name "*.svd.patched" | wc -l)
-if [ "$count" != 0 ]; then 
+if [ "$count" != 0 ]; then
   rm svd/*.svd.patched
-fi 
+fi
 
 for device in svd/devices/*.yaml; do
   svd patch "$device"
