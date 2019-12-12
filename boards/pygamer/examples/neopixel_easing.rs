@@ -1,4 +1,4 @@
-//! Blink an led without using the BSP split() method.
+//! Display light sensor reading on the neopixels.
 
 #![no_std]
 #![no_main]
@@ -46,6 +46,7 @@ fn main() -> ! {
         let pos: usize = rand.wrapping_rem(5) as usize; //random led
         let rgb = wheel(rand); //random color
 
+        //slowly enable led
         for j in 0..255u8 {
             let _ = neopixel.write(brightness(
                 (0..NUM_LEDS).map(|i| if i == pos { rgb } else { RGB8::default() }),
@@ -55,6 +56,7 @@ fn main() -> ! {
             delay.delay_ms(5u8);
         }
 
+        //slowly disable led - note the reverse .rev()
         for j in (0..255u8).rev() {
             let _ = neopixel.write(brightness(
                 (0..NUM_LEDS).map(|i| if i == pos { rgb } else { RGB8::default() }),
