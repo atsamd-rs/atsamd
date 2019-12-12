@@ -44,8 +44,8 @@ fn main() -> ! {
     let mut neopixel = pins.neopixel.init(timer, &mut pins.port);
 
     const NUM_LEDS: usize = 5;
-    let mut pos_button: usize = 1;
-    let mut pos_joy: usize = 3;
+    let mut pos_joy: usize = 1;
+    let mut pos_button: usize = 3;
     let mut color_button: u8 = 0;
     loop {
         for event in buttons.events() {
@@ -60,12 +60,12 @@ fn main() -> ! {
                         pos_joy += 1;
                     }
                 }
-                Keys::SelectDown => {
+                Keys::BDown => {
                     if pos_button > 0 {
                         pos_button -= 1;
                     }
                 }
-                Keys::StartDown => {
+                Keys::ADown => {
                     if pos_button < 4 {
                         pos_button += 1;
                     }

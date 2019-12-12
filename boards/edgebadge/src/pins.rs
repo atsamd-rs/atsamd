@@ -664,9 +664,9 @@ fn mask_to_event(mask: u8, released: u8, pressed: u8) -> Option<Keys> {
 
         0x08 => {
             if released_bool {
-                Some(Keys::UpUp)
+                Some(Keys::RightUp)
             } else if pressed_bool {
-                Some(Keys::UpDown)
+                Some(Keys::RightDown)
             } else {
                 None
             }
@@ -682,18 +682,18 @@ fn mask_to_event(mask: u8, released: u8, pressed: u8) -> Option<Keys> {
         }
         0x02 => {
             if released_bool {
-                Some(Keys::LeftUp)
+                Some(Keys::UpUp)
             } else if pressed_bool {
-                Some(Keys::LeftDown)
+                Some(Keys::UpDown)
             } else {
                 None
             }
         }
         0x01 => {
             if released_bool {
-                Some(Keys::RightUp)
+                Some(Keys::LeftUp)
             } else if pressed_bool {
-                Some(Keys::RightDown)
+                Some(Keys::LeftDown)
             } else {
                 None
             }
