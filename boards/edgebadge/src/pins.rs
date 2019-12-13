@@ -36,7 +36,7 @@ pub use hal::usb::UsbBus;
 use cortex_m::asm::delay as cycle_delay;
 
 #[cfg(feature = "unproven")]
-use super::pac::{ADC0, ADC1};
+use super::pac::ADC0;
 
 define_pins!(
     /// Maps the pins to their arduino names and
@@ -48,7 +48,7 @@ define_pins!(
     /// as it has a DAC (which is not currently supported
     /// by this hal) as well as input.
     pin speaker = a2,
-    /// enable speaker amplifier
+    /// enable speaker amplifier (todo even with built in buzzer?)
     pin speaker_enable = a27,
 
     /// Analog pin 1
@@ -69,6 +69,8 @@ define_pins!(
     pin d2 = b3,
     /// Digital pin 3 (also Analog pin 9)
     pin d3 = b2,
+    /// Digital pin 4 (todo analog pin? also give back in split)
+    pin d4 = a14,
     /// Digital pin 5
     pin d5 = a16,
     /// Digital pin 6
@@ -108,7 +110,7 @@ define_pins!(
     /// Pin RX (d0)
     pin rx = b17,
 
-    // SPI - Serial Peripheral Interface (connected to sd card slot)
+    // SPI - Serial Peripheral Interface
     /// Pin MISO
     pin miso = b22,
     /// Pin MOSI
@@ -127,13 +129,11 @@ define_pins!(
     /// USB D+ pin
     pin usb_dp = a25,
 
-    /// SD card chip select (also d4)
-    pin sd_cs = a14,
-
-    /// Joystick X
-    pin joy_x = b7,
-    /// Joystick Y
-    pin joy_y = b6,
+    //todo no idea
+    // /// Joystick X
+    // pin joy_x = b7,
+    // /// Joystick Y
+    // pin joy_y = b6,
 
     /// Button Latch
     pin button_latch = b0,
@@ -180,6 +180,7 @@ impl Pins {
         let digital = Digital {
             d2: self.d2,
             d3: self.d3,
+            d4: self.d4,
             d5: self.d5,
             d6: self.d6,
             d9: self.d9,
@@ -232,11 +233,6 @@ impl Pins {
             clock: self.button_clock,
         };
 
-        let joystick = Joystick {
-            joy_x: self.joy_x,
-            joy_y: self.joy_y,
-        };
-
         Sets {
             port: self.port,
             display,
@@ -245,7 +241,6 @@ impl Pins {
             battery,
             light_pin: self.light,
             i2c,
-            sd_cs_pin: self.sd_cs,
             analog,
             digital,
             speaker,
@@ -254,7 +249,6 @@ impl Pins {
             usb,
             uart,
             buttons,
-            joystick,
         }
     }
 }
@@ -279,16 +273,13 @@ pub struct Sets {
     /// I2C (connected to LIS3DH accelerometer and "Stemma" port)
     pub i2c: I2C,
 
-    /// SD Card CS pin
-    pub sd_cs_pin: Pa14<Input<Floating>>,
-
     /// Battery Voltage
     pub battery: Battery,
 
     /// Speaker (DAC not implemented in hal yet)
     pub speaker: Speaker,
 
-    /// SPI (connected to SD Card)
+    /// SPI
     pub spi: SPI,
 
     /// USB pins
@@ -307,8 +298,6 @@ pub struct Sets {
     pub flash: QSPIFlash,
 
     pub buttons: Buttons,
-
-    pub joystick: Joystick,
 }
 
 /// Display pins
@@ -485,11 +474,6 @@ impl I2C {
     }
 }
 
-/// Sd Card pins
-pub struct SdCard {
-    pub cs: Pa14<Input<Floating>>,
-}
-
 /// Speaker pins
 pub struct Speaker {
     pub speaker: Pa2<Input<Floating>>,
@@ -576,6 +560,7 @@ pub struct Digital {
     pub d2: Pb3<Input<Floating>>,
     /// also usabe as A9
     pub d3: Pb2<Input<Floating>>,
+    pub d4: Pa14<Input<Floating>>,
     pub d5: Pa16<Input<Floating>>,
     pub d6: Pa18<Input<Floating>>,
     pub d9: Pa19<Input<Floating>>,
@@ -615,6 +600,15 @@ pub enum Keys {
     BUp,
     ADown,
     AUp,
+
+    UpUp,
+    UpDown,
+    DownUp,
+    DownDown,
+    LeftUp,
+    LeftDown,
+    RightUp,
+    RightDown,
 }
 
 #[cfg(feature = "unproven")]
@@ -631,7 +625,7 @@ fn mask_to_event(mask: u8, released: u8, pressed: u8) -> Option<Keys> {
     let released_bool = mask & released == mask;
 
     match mask {
-        0x8 => {
+        0x80 => {
             if released_bool {
                 Some(Keys::BUp)
             } else if pressed_bool {
@@ -640,7 +634,7 @@ fn mask_to_event(mask: u8, released: u8, pressed: u8) -> Option<Keys> {
                 None
             }
         }
-        0x4 => {
+        0x40 => {
             if released_bool {
                 Some(Keys::AUp)
             } else if pressed_bool {
@@ -649,7 +643,7 @@ fn mask_to_event(mask: u8, released: u8, pressed: u8) -> Option<Keys> {
                 None
             }
         }
-        0x2 => {
+        0x20 => {
             if released_bool {
                 Some(Keys::StartUp)
             } else if pressed_bool {
@@ -658,11 +652,48 @@ fn mask_to_event(mask: u8, released: u8, pressed: u8) -> Option<Keys> {
                 None
             }
         }
-        0x1 => {
+        0x10 => {
             if released_bool {
                 Some(Keys::SelectUp)
             } else if pressed_bool {
                 Some(Keys::SelectDown)
+            } else {
+                None
+            }
+        }
+
+        0x08 => {
+            if released_bool {
+                Some(Keys::RightUp)
+            } else if pressed_bool {
+                Some(Keys::RightDown)
+            } else {
+                None
+            }
+        }
+        0x04 => {
+            if released_bool {
+                Some(Keys::DownUp)
+            } else if pressed_bool {
+                Some(Keys::DownDown)
+            } else {
+                None
+            }
+        }
+        0x02 => {
+            if released_bool {
+                Some(Keys::UpUp)
+            } else if pressed_bool {
+                Some(Keys::UpDown)
+            } else {
+                None
+            }
+        }
+        0x01 => {
+            if released_bool {
+                Some(Keys::LeftUp)
+            } else if pressed_bool {
+                Some(Keys::LeftDown)
             } else {
                 None
             }
@@ -677,8 +708,7 @@ impl Iterator for ButtonIter {
 
     fn next(&mut self) -> Option<Keys> {
         //really want a while post increment but doesnt exist
-        //only 4 buttons represented in the shift
-        if self.bit_index >= 4 {
+        if self.bit_index >= 8 {
             return None;
         }
 
@@ -692,7 +722,7 @@ impl Iterator for ButtonIter {
                 return event;
             }
 
-            self.bit_index < 4
+            self.bit_index < 8
         } {}
 
         None
@@ -720,7 +750,7 @@ pub struct ButtonReader {
 //trec min recovery time 55ns, how long before you should attempt to read again?
 #[cfg(feature = "unproven")]
 impl ButtonReader {
-    // 28*8.333ns total blocking read
+    // 48*8.333ns total blocking read
     pub fn events(&mut self) -> ButtonIter {
         self.latch.set_low().ok();
         cycle_delay(7); //tsu?
@@ -729,8 +759,7 @@ impl ButtonReader {
 
         let mut current: u8 = 0;
 
-        // they only use the top 4 bits
-        for _i in 0..4 {
+        for _i in 0..8 {
             current <<= 1;
 
             self.clock.set_low().ok();
@@ -770,47 +799,6 @@ impl Buttons {
             data_in,
             clock,
             last: 0,
-        }
-    }
-}
-
-/// Joystick pins
-pub struct JoystickReader {
-    /// Joystick X
-    pub joy_x: gpio::Pb7<gpio::PfB>,
-    /// Joystick Y
-    pub joy_y: gpio::Pb6<gpio::PfB>,
-}
-
-#[cfg(feature = "unproven")]
-impl JoystickReader {
-    pub fn read(&mut self, adc: &mut hal::adc::Adc<ADC1>) -> (u16, u16) {
-        //note adafruit averages 3 readings on x and y (not inside the adc) seems unnecessary?
-        //note adafruit recenters around zero.. Im not doing that either atm.
-
-        let y_data: u16 = adc.read(&mut self.joy_y).unwrap();
-        let x_data: u16 = adc.read(&mut self.joy_x).unwrap();
-
-        (x_data, y_data)
-    }
-}
-
-/// Joystick pins
-pub struct Joystick {
-    /// Joystick X
-    pub joy_x: Pb7<Input<Floating>>,
-    /// Joystick Y
-    pub joy_y: Pb6<Input<Floating>>,
-}
-
-#[cfg(feature = "unproven")]
-impl Joystick {
-    /// Convenience for setting up the joystick. Returns JoystickReader instance
-    /// which can be polled for joystick (x,y) tuple
-    pub fn init(self, port: &mut Port) -> JoystickReader {
-        JoystickReader {
-            joy_x: self.joy_x.into_function_b(port),
-            joy_y: self.joy_y.into_function_b(port),
         }
     }
 }

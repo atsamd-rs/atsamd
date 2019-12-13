@@ -1,11 +1,12 @@
-//! Display light sensor reading on the neopixels.
+//! Blink an led without using the BSP split() method.
 
 #![no_std]
 #![no_main]
 
 #[allow(unused_imports)]
 use panic_halt;
-use pygamer as hal;
+
+use edgebadge as hal;
 
 use core::f32::consts::FRAC_PI_2;
 use hal::clock::GenericClockController;

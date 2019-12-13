@@ -5,7 +5,8 @@
 
 #[allow(unused_imports)]
 use panic_halt;
-use pygamer as hal;
+
+use edgebadge as hal;
 
 use hal::adc::Adc;
 use hal::entry;
