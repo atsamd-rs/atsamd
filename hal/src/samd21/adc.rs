@@ -1,8 +1,7 @@
 use crate::clock::GenericClockController;
-use crate::gpio::{
-    Pa10, Pa11, Pa2, Pa3, Pa4, Pa5, Pa6, Pa7, Pa8, Pa9, Pb0, Pb1, Pb2, Pb3, Pb4, Pb5, Pb6, Pb7,
-    Pb8, Pb9, PfB,
-};
+use crate::gpio::{Pa10, Pa11, Pa2, Pa3, Pa4, Pa5, Pa6, Pa7, Pa8, Pa9, PfB};
+#[cfg(any(feature = "samd21g18a", feature = "samd21j18a"))]
+use crate::gpio::{Pb0, Pb1, Pb2, Pb3, Pb4, Pb5, Pb6, Pb7, Pb8, Pb9};
 use crate::hal::adc::{Channel, OneShot};
 use crate::target_device::{adc, ADC, PM};
 
@@ -122,12 +121,18 @@ impl Channel<ADC> for $pin<PfB> {
 adc_pins! {
     Pa2: 0,
     Pa3: 1,
-    Pb8: 2,
-    Pb9: 3,
     Pa4: 4,
     Pa5: 5,
     Pa6: 6,
     Pa7: 7,
+    Pa8: 16,
+    Pa9: 17,
+    Pa10: 18,
+    Pa11: 19
+}
+
+#[cfg(any(feature = "samd21g18a", feature = "samd21j18a"))]
+adc_pins! {
     Pb0: 8,
     Pb1: 9,
     Pb2: 10,
@@ -136,8 +141,6 @@ adc_pins! {
     Pb5: 13,
     Pb6: 14,
     Pb7: 15,
-    Pa8: 16,
-    Pa9: 17,
-    Pa10: 18,
-    Pa11: 19
+    Pb8: 2,
+    Pb9: 3
 }
