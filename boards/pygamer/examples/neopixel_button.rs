@@ -18,6 +18,7 @@ use hal::pac::{CorePeripherals, Peripherals};
 use hal::pins::Keys;
 use hal::prelude::*;
 use hal::timer::SpinTimer;
+use hal::util::map_from;
 use hal::{clock::GenericClockController, delay::Delay};
 
 use smart_leds::{
@@ -57,20 +58,13 @@ fn main() -> ! {
     loop {
         let (x, y) = joystick.read(&mut adc1);
 
-        //put y in j for rainbow, map 4095 into 255
-        let color_joy = map_from((0, 4095), (0, 255), y);
+        // map up/down to control rainbow color 0-255
+        let color_joy = map_from(y as i16, (0, 4095), (0, 255)) as u8;
 
-        let pos_joy: usize = if x < 147 {
-            0
-        } else if (x >= 147) && (x < 1048) {
-            1
-        } else if (x >= 1048) && (x < 3048) {
-            2
-        } else if (x >= 3048) && (x < 3948) {
-            3
-        } else {
-            4
-        };
+        // map left/right to neopixel position 0-4
+        // joystick is not quite linear, rests at second pixel
+        // shifting up by 500 seems to help
+        let pos_joy = map_from(x as i16 + 500, (0, 4595), (0, 4)) as usize;
 
         for event in buttons.events() {
             match event {
@@ -112,14 +106,4 @@ fn main() -> ! {
 
         delay.delay_ms(5u8);
     }
-}
-
-fn map_from(from_range: (u16, u16), to_range: (u16, u16), input: u16) -> u8 {
-    debug_assert!(from_range.0 < from_range.1);
-    debug_assert!(to_range.0 < to_range.1);
-    debug_assert!(input <= from_range.1);
-
-    let from: f32 = (from_range.1 - from_range.0).into();
-    let to: f32 = (to_range.1 - to_range.0).into();
-    ((input - from_range.0) as f32 / from * to + to_range.0 as f32) as u8
 }
