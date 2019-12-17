@@ -15,6 +15,28 @@ This crate provides a type-safe Rust API for working with the
 - 4-JST hacking port with 3.3V power, ground, and two GPIO (can be I2C/ADC/UART)
 - Analog Devices [ADXL343] triple-axis accelerometer
 
+## Prerequisites
+* Install the cross compile toolchain `rustup target add thumbv7em-none-eabihf`
+* Install [cargo-hf2 the hf2 bootloader flasher tool](https://crates.io/crates/cargo-hf2) however your platform requires
+
+## Uploading an example
+Check out the repository for examples:
+
+https://github.com/atsamd-rs/atsamd/tree/master/boards/trellis_m4/examples
+
+* Be in this directory `cd boards/trellis_m4`
+* Put your device in bootloader mode usually by hitting the reset button twice.
+* Build and upload in one step
+```
+$ cargo hf2 --release --example neopixel_rainbow
+    Finished release [optimized + debuginfo] target(s) in 0.19s
+    Searching for a connected device with known vid/pid pair.
+    Trying  Ok(Some("Adafruit Industries")) Ok(Some("PyBadge"))
+    Flashing "/Users/User/atsamd/boards/trellis_m4/target/thumbv7em-none-eabihf/release/examples/neopixel_rainbow"
+    Finished in 0.079s
+$
+```
+
 ## Optional `trellis_m4` Cargo Features
 
 The following optional hardware drivers can be enabled as cargo features:
@@ -30,11 +52,24 @@ your Cargo.toml:
 trellis_m4 = { version = "~0.1", features = ["adxl343", "keypad-unproven"] }
 ```
 
-## Examples?
+Or when running an example:
+```
+$ cargo hf2 --release --example neopixel_keypad
+error: target `neopixel_keypad` in package `trellis_m4` requires the features: `keypad-unproven`
+Consider enabling them by passing, e.g., `--features="keypad-unproven"`
+```
+Just follow the instructions to add --features like
+```
+cargo hf2 --release --example neopixel_keypad --features="keypad-unproven"
+    Finished release [optimized + debuginfo] target(s) in 0.09s
+    Searching for a connected device with known vid/pid pair.
+    Trying  Ok(Some("Adafruit Industries")) Ok(Some("PyGamer"))
+    Flashing "/Users/User/atsamd/boards/trellis_m4/target/thumbv7em-none-eabihf/release/examples/neopixel_keypad"
+    Finished in 0.167s
+$
+```
 
-Check out the repository for examples:
-
-https://github.com/atsamd-rs/atsamd/tree/master/boards/trellis_m4/examples
+## More Examples
 
 [Adafruit NeoTrellis M4 board]: https://www.adafruit.com/product/3938
 [ATSAMD51G19A]: https://www.microchip.com/wwwproducts/en/ATSAMD51G19A
