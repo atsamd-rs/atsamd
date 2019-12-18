@@ -1,16 +1,22 @@
 use crate::clock;
-use crate::gpio::{Pa5, Pa15, Pa17, Pa23, PfE};
+use crate::gpio::{Pa5, Pa7, Pa11, Pa15, Pa17, Pa23, Pa31, PfE};
 use crate::hal::PwmPin;
 use crate::time::Hertz;
 use crate::timer::TimerParams;
 
-use crate::target_device::{PM, TC1};
+use crate::target_device::{PM, TC1, TC2};
 
 pub enum TC1Pinout {
     Pa5(Pa5<PfE>),
     Pa15(Pa15<PfE>),
     Pa17(Pa17<PfE>),
     Pa23(Pa23<PfE>),
+}
+
+pub enum TC2Pinout {
+    Pa7(Pa7<PfE>),
+    Pa11(Pa11<PfE>),
+    Pa31(Pa31<PfE>),
 }
 
 pub enum Channel {
@@ -81,18 +87,18 @@ impl $TYPE {
         let count = self.tc.count16();
         count.ctrla.modify(|_, w| w.enable().clear_bit());
         count.ctrla.modify(|_, w| {
-                match params.divider {
-                    1 => w.prescaler().div1(),
-                    2 => w.prescaler().div2(),
-                    4 => w.prescaler().div4(),
-                    8 => w.prescaler().div8(),
-                    16 => w.prescaler().div16(),
-                    64 => w.prescaler().div64(),
-                    256 => w.prescaler().div256(),
-                    1024 => w.prescaler().div1024(),
-                    _ => unreachable!(),
-                }
-            });
+            match params.divider {
+                1 => w.prescaler().div1(),
+                2 => w.prescaler().div2(),
+                4 => w.prescaler().div4(),
+                8 => w.prescaler().div8(),
+                16 => w.prescaler().div16(),
+                64 => w.prescaler().div64(),
+                256 => w.prescaler().div256(),
+                1024 => w.prescaler().div1024(),
+                _ => unreachable!(),
+            }
+        });
         count.ctrla.modify(|_, w| w.enable().set_bit());
         count.cc[0].write(|w| unsafe { w.cc().bits(params.cycles as u16) });
     }
@@ -133,7 +139,7 @@ impl PwmPin for $TYPE {
 
     fn set_duty(&mut self, duty: Self::Duty) {
         let count = self.tc.count16();
-        count.cc[1].write(|w| unsafe {w.cc().bits(duty)});
+        count.cc[1].write(|w| unsafe { w.cc().bits(duty) });
     }
 }
 
@@ -141,4 +147,5 @@ impl PwmPin for $TYPE {
 
 pwm! {
     Pwm1: (TC1, TC1Pinout, Tc1Tc2Clock, apbcmask, tc1_, Pwm1Wrapper),
+    Pwm2: (TC2, TC2Pinout, Tc1Tc2Clock, apbcmask, tc2_, Pwm2Wrapper),
 }
