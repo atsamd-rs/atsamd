@@ -15,8 +15,7 @@ use hal::prelude::*;
 use hal::timer::SpinTimer;
 use hal::{clock::GenericClockController, delay::Delay};
 
-use smart_leds::hsv::RGB8;
-use smart_leds::{brightness, SmartLedsWrite};
+use smart_leds::{brightness, hsv::RGB8, SmartLedsWrite};
 
 #[entry]
 fn main() -> ! {
@@ -77,7 +76,6 @@ fn main() -> ! {
         neopixel
             .write(brightness(colors.iter().cloned(), 1))
             .unwrap();
-        delay.delay_ms(5u8);
 
         delay.delay_ms(10u8);
     }

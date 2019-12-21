@@ -27,8 +27,7 @@ use usbd_serial::{SerialPort, USB_CLASS_CDC};
 
 use hal::timer::SpinTimer;
 
-use smart_leds::hsv::RGB8;
-use smart_leds::SmartLedsWrite;
+use smart_leds::{hsv::RGB8, SmartLedsWrite};
 
 const NUM_LEDS: usize = 5;
 
