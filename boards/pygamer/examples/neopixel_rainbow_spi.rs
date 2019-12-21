@@ -12,8 +12,10 @@ use hal::sercom::PadPin;
 use hal::time::MegaHertz;
 use hal::{clock::GenericClockController, delay::Delay};
 
-use smart_leds::hsv::RGB8;
-use smart_leds::{brightness, SmartLedsWrite};
+use smart_leds::{
+    hsv::{hsv2rgb, Hsv},
+    SmartLedsWrite,
+};
 use ws2812_spi as ws2812;
 
 #[entry]
@@ -58,31 +60,35 @@ fn main() -> ! {
             let colors = [
                 // split the color changes across all 5 leds evenly, 255/5=51
                 // and have them safely wrap over when they go above 255
-                wheel(j),
-                wheel(j.wrapping_add(51)),
-                wheel(j.wrapping_add(102)),
-                wheel(j.wrapping_add(153)),
-                wheel(j.wrapping_add(204)),
+                hsv2rgb(Hsv {
+                    hue: j,
+                    sat: 255,
+                    val: 32,
+                }),
+                hsv2rgb(Hsv {
+                    hue: j.wrapping_add(51),
+                    sat: 255,
+                    val: 32,
+                }),
+                hsv2rgb(Hsv {
+                    hue: j.wrapping_add(102),
+                    sat: 255,
+                    val: 32,
+                }),
+                hsv2rgb(Hsv {
+                    hue: j.wrapping_add(153),
+                    sat: 255,
+                    val: 32,
+                }),
+                hsv2rgb(Hsv {
+                    hue: j.wrapping_add(204),
+                    sat: 255,
+                    val: 32,
+                }),
             ];
-            neopixel
-                .write(brightness(colors.iter().cloned(), 32))
-                .unwrap();
+
+            neopixel.write(colors.iter().cloned()).unwrap();
             delay.delay_ms(5u8);
         }
     }
-}
-
-/// Input a value 0 to 255 to get a color value
-/// The colours are a transition r - g - b - back to r.
-fn wheel(mut wheel_pos: u8) -> RGB8 {
-    wheel_pos = 255 - wheel_pos;
-    if wheel_pos < 85 {
-        return (255 - wheel_pos * 3, 0, wheel_pos * 3).into();
-    }
-    if wheel_pos < 170 {
-        wheel_pos -= 85;
-        return (0, wheel_pos * 3, 255 - wheel_pos * 3).into();
-    }
-    wheel_pos -= 170;
-    (wheel_pos * 3, 255 - wheel_pos * 3, 0).into()
 }

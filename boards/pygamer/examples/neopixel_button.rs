@@ -20,7 +20,10 @@ use hal::prelude::*;
 use hal::timer::SpinTimer;
 use hal::{clock::GenericClockController, delay::Delay};
 
-use smart_leds::{brightness, hsv::RGB8, SmartLedsWrite};
+use smart_leds::{
+    hsv::{hsv2rgb, Hsv, RGB8},
+    SmartLedsWrite,
+};
 
 #[entry]
 fn main() -> ! {
@@ -54,9 +57,8 @@ fn main() -> ! {
     loop {
         let (x, y) = joystick.read(&mut adc1);
 
-        //put y in j for rainbow, turn 4095 into 255, /16
-        use core::convert::TryInto;
-        let color_joy: u8 = ((y - 1) / 16).try_into().unwrap();
+        //put y in j for rainbow, map 4095 into 255
+        let color_joy = map_from((0, 4095), (0, 255), y);
 
         let pos_joy: usize = if x < 147 {
             0
@@ -87,37 +89,37 @@ fn main() -> ! {
         }
 
         //finally paint the two leds at position, accel priority
-        let _ = neopixel.write(brightness(
-            (0..NUM_LEDS).map(|i| {
-                if i == pos_joy {
-                    wheel(color_joy)
-                } else if i == pos_button {
-                    wheel(color_button)
-                } else {
-                    RGB8::default()
-                }
-            }),
-            32,
-        ));
+        let _ = neopixel.write((0..NUM_LEDS).map(|i| {
+            if i == pos_joy {
+                hsv2rgb(Hsv {
+                    hue: color_joy,
+                    sat: 255,
+                    val: 32,
+                })
+            } else if i == pos_button {
+                hsv2rgb(Hsv {
+                    hue: color_button,
+                    sat: 255,
+                    val: 32,
+                })
+            } else {
+                RGB8::default()
+            }
+        }));
 
-        //incremement the wheel easing
+        //incremement the hue easing
         color_button = color_button.wrapping_add(1);
 
         delay.delay_ms(5u8);
     }
 }
 
-/// Input a value 0 to 255 to get a color value
-/// The colours are a transition r - g - b - back to r.
-fn wheel(mut wheel_pos: u8) -> RGB8 {
-    wheel_pos = 255 - wheel_pos;
-    if wheel_pos < 85 {
-        return (255 - wheel_pos * 3, 0, wheel_pos * 3).into();
-    }
-    if wheel_pos < 170 {
-        wheel_pos -= 85;
-        return (0, wheel_pos * 3, 255 - wheel_pos * 3).into();
-    }
-    wheel_pos -= 170;
-    (wheel_pos * 3, 255 - wheel_pos * 3, 0).into()
+fn map_from(from_range: (u16, u16), to_range: (u16, u16), input: u16) -> u8 {
+    debug_assert!(from_range.0 < from_range.1);
+    debug_assert!(to_range.0 < to_range.1);
+    debug_assert!(input <= from_range.1);
+
+    let from: f32 = (from_range.1 - from_range.0).into();
+    let to: f32 = (to_range.1 - to_range.0).into();
+    ((input - from_range.0) as f32 / from * to + to_range.0 as f32) as u8
 }
