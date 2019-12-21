@@ -711,6 +711,9 @@ impl Inner {
             w.eorsm().set_bit();
             w.uprsm().set_bit()
         });
+
+        // TODO this should be done when an EIC for VBUS is triggered
+        self.usb().ctrlb.modify(|_, w| w.detach().clear_bit());
     }
 
     fn reset(&self) {
