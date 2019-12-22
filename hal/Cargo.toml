@@ -84,21 +84,23 @@ cortex-m-rtfm = "~0.3"
 # If we simply used feature names that matched the dependency names, enabling the
 # rt feature would link all possible parts in and cause a linker error due to
 # the high degree of similar symbols present in the various parts.
-samd11c14a = ["atsamd11c14a"]
-samd11c14a-rt = ["atsamd11c14a", "atsamd11c14a/rt"]
-samd21g18a = ["atsamd21g18a"]
-samd21g18a-rt = ["atsamd21g18a", "atsamd21g18a/rt"]
-samd21e18a = ["atsamd21e18a"]
-samd21e18a-rt = ["atsamd21e18a", "atsamd21e18a/rt"]
-samd21j18a = ["atsamd21j18a"]
-samd21j18a-rt = ["atsamd21j18a", "atsamd21j18a/rt"]
+samd11 = [] # Convenience feature for shared configuration of samd11 chips.
+samd11c14a = ["atsamd11c14a", "samd11"]
+samd11c14a-rt = ["samd11c14a", "samd11c14a/rt"]
+samd21 = [] # Convenience feature for shared configuration of samd21 chips.
+samd21g18a = ["atsamd21g18a", "samd21"]
+samd21g18a-rt = ["samd21g18a", "samd21g18a/rt"]
+samd21e18a = ["atsamd21e18a", "samd21"]
+samd21e18a-rt = ["samd21e18a", "samd21e18a/rt"]
+samd21j18a = ["atsamd21j18a", "samd21"]
+samd21j18a-rt = ["samd21j18a", "samd21j18a/rt"]
 samd51 = [] # Convenience feature for shared configuration of samd51 chips.
-samd51g19a = ["atsamd51g19a"]
-samd51g19a-rt = ["atsamd51g19a", "atsamd51g19a/rt"]
-samd51j19a = ["atsamd51j19a"]
-samd51j19a-rt = ["atsamd51j19a", "atsamd51j19a/rt"]
-samd51j20a = ["atsamd51j20a"]
-samd51j20a-rt = ["atsamd51j20a", "atsamd51j20a/rt"]
+samd51g19a = ["atsamd51g19a", "samd51"]
+samd51g19a-rt = ["samd51g19a", "samd51g19a/rt"]
+samd51j19a = ["atsamd51j19a", "samd51"]
+samd51j19a-rt = ["samd51j19a", "samd51j19a/rt"]
+samd51j20a = ["atsamd51j20a", "samd51"]
+samd51j20a-rt = ["samd51j20a", "samd51j20a/rt"]
 unproven = ["embedded-hal/unproven"]
 use_rtt = ["jlink_rtt"]
 use_uart_debug = []
