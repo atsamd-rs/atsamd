@@ -712,12 +712,12 @@ impl Inner {
             w.uprsm().set_bit()
         });
 
-        // TODO this should be done when an EIC for VBUS is triggered
+        self.flush_eps();
+
         self.usb().ctrlb.modify(|_, w| w.detach().clear_bit());
     }
 
-    fn reset(&self) {
-        dbgprint!("reset");
+    fn flush_eps(&self) {
         for idx in 0..8 {
             let cfg = self.epcfg(idx);
             let info = &self.endpoints.borrow().endpoints[idx];
@@ -740,6 +740,11 @@ impl Inner {
                     .bits(info.bank1.ep_type as u8)
             });
         }
+    }
+
+    fn reset(&self) {
+        dbgprint!("reset");
+        self.flush_eps();
 
         self.usb().ctrlb.modify(|_, w| w.detach().clear_bit());
     }
