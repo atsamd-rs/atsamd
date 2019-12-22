@@ -64,8 +64,3 @@ pub use self::samd21::*;
 pub mod samd11;
 #[cfg(feature = "samd11c14a")]
 pub use self::samd11::*;
-
-#[cfg(all(feature = "usb", feature = "samd21"))]
-pub use self::samd21::usb;
-#[cfg(all(feature = "usb", feature = "samd51"))]
-pub use self::samd51::usb;
