@@ -12,58 +12,8 @@ use cortex_m::interrupt::{free as disable_interrupts, Mutex};
 use cortex_m::singleton;
 use usb_device;
 use usb_device::bus::PollResult;
-use usb_device::endpoint::{EndpointDirection, EndpointType};
-use usb_device::{Result as UsbResult, UsbError};
-
-#[derive(Debug, Clone, Copy)]
-struct EndpointAddress(u8);
-
-impl From<u8> for EndpointAddress {
-    #[inline]
-    fn from(addr: u8) -> EndpointAddress {
-        EndpointAddress(addr)
-    }
-}
-
-impl From<EndpointAddress> for u8 {
-    #[inline]
-    fn from(addr: EndpointAddress) -> u8 {
-        addr.0
-    }
-}
-
-impl EndpointAddress {
-    const INBITS: u8 = EndpointDirection::In as u8;
-
-    #[inline]
-    fn from_parts(idx: usize, dir: EndpointDirection) -> Self {
-        EndpointAddress(idx as u8 | dir as u8)
-    }
-
-    #[inline]
-    fn direction(&self) -> EndpointDirection {
-        if (self.0 & Self::INBITS) != 0 {
-            EndpointDirection::In
-        } else {
-            EndpointDirection::Out
-        }
-    }
-
-    #[inline]
-    fn is_in(&self) -> bool {
-        (self.0 & Self::INBITS) != 0
-    }
-
-    #[inline]
-    fn is_out(&self) -> bool {
-        (self.0 & Self::INBITS) == 0
-    }
-
-    #[inline]
-    fn index(&self) -> usize {
-        (self.0 & !Self::INBITS) as usize
-    }
-}
+use usb_device::endpoint::{EndpointAddress, EndpointType};
+use usb_device::{Result as UsbResult, UsbDirection, UsbError};
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum EndpointTypeBits {
@@ -149,12 +99,12 @@ impl AllEndpoints {
         }
     }
 
-    fn find_free_endpoint(&self, dir: EndpointDirection) -> UsbResult<usize> {
+    fn find_free_endpoint(&self, dir: UsbDirection) -> UsbResult<usize> {
         // start with 1 because 0 is reserved for Control
         for idx in 1..8 {
             let ep_type = match dir {
-                EndpointDirection::Out => self.endpoints[idx].bank0.ep_type,
-                EndpointDirection::In => self.endpoints[idx].bank1.ep_type,
+                UsbDirection::Out => self.endpoints[idx].bank0.ep_type,
+                UsbDirection::In => self.endpoints[idx].bank1.ep_type,
             };
             if ep_type == EndpointTypeBits::Disabled {
                 return Ok(idx);
@@ -165,7 +115,7 @@ impl AllEndpoints {
 
     fn allocate_endpoint(
         &mut self,
-        dir: EndpointDirection,
+        dir: UsbDirection,
         idx: usize,
         ep_type: EndpointType,
         allocated_size: u16,
@@ -174,11 +124,11 @@ impl AllEndpoints {
         buffer_addr: *mut u8,
     ) -> UsbResult<EndpointAddress> {
         let bank = match dir {
-            EndpointDirection::Out => &mut self.endpoints[idx].bank0,
-            EndpointDirection::In => &mut self.endpoints[idx].bank1,
+            UsbDirection::Out => &mut self.endpoints[idx].bank0,
+            UsbDirection::In => &mut self.endpoints[idx].bank1,
         };
         if bank.ep_type != EndpointTypeBits::Disabled {
-            return Err(UsbError::EndpointTaken);
+            return Err(UsbError::InvalidEndpoint);
         }
 
         *bank = EPConfig::new(ep_type, allocated_size, max_packet_size, buffer_addr);
@@ -218,15 +168,15 @@ impl BufferAllocator {
         let start_addr = unsafe { start_addr.offset(offset as isize) };
 
         if start_addr >= buf_end {
-            return Err(UsbError::SizeOverflow);
+            return Err(UsbError::EndpointMemoryOverflow);
         }
 
         let end_addr = unsafe { start_addr.offset(size as isize) };
         if end_addr > buf_end {
-            return Err(UsbError::SizeOverflow);
+            return Err(UsbError::EndpointMemoryOverflow);
         }
 
-        self.next_buf = unsafe { end_addr.offset_from(self.buffers.as_ptr()) as u16 };
+        self.next_buf = unsafe { end_addr.sub(self.buffers.as_ptr() as usize) as u16 };
 
         Ok(start_addr)
     }
@@ -761,21 +711,24 @@ impl Inner {
             w.eorsm().set_bit();
             w.uprsm().set_bit()
         });
+
+        self.flush_eps();
+
+        self.usb().ctrlb.modify(|_, w| w.detach().clear_bit());
     }
 
-    fn reset(&self) {
-        dbgprint!("reset");
+    fn flush_eps(&self) {
         for idx in 0..8 {
             let cfg = self.epcfg(idx);
             let info = &self.endpoints.borrow().endpoints[idx];
 
             if let Ok(mut bank) =
-                self.bank0(EndpointAddress::from_parts(idx, EndpointDirection::Out))
+                self.bank0(EndpointAddress::from_parts(idx, UsbDirection::Out))
             {
                 bank.reset();
             }
             if let Ok(mut bank) =
-                self.bank1(EndpointAddress::from_parts(idx, EndpointDirection::In))
+                self.bank1(EndpointAddress::from_parts(idx, UsbDirection::In))
             {
                 bank.reset();
             }
@@ -787,6 +740,11 @@ impl Inner {
                     .bits(info.bank1.ep_type as u8)
             });
         }
+    }
+
+    fn reset(&self) {
+        dbgprint!("reset");
+        self.flush_eps();
 
         self.usb().ctrlb.modify(|_, w| w.detach().clear_bit());
     }
@@ -803,12 +761,12 @@ impl Inner {
 
     fn alloc_ep(
         &mut self,
-        dir: EndpointDirection,
-        addr: Option<u8>,
+        dir: UsbDirection,
+        addr: Option<EndpointAddress>,
         ep_type: EndpointType,
         max_packet_size: u16,
         interval: u8,
-    ) -> UsbResult<u8> {
+    ) -> UsbResult<EndpointAddress> {
         let allocated_size = max_packet_size.max(64);
 
         let buffer = self.buffers.borrow_mut().allocate_buffer(allocated_size)?;
@@ -826,7 +784,7 @@ impl Inner {
 
         let idx = match addr {
             None => endpoints.find_free_endpoint(dir)?,
-            Some(addr) => EndpointAddress(addr).index(),
+            Some(addr) => EndpointAddress::from(addr).index(),
         };
 
         let addr = endpoints.allocate_endpoint(
@@ -849,7 +807,7 @@ impl Inner {
         self.usb()
             .dadd
             .write(|w| unsafe { w.dadd().bits(addr).adden().set_bit() });
-        if let Ok(bank) = self.bank0(EndpointAddress::from_parts(0, EndpointDirection::Out)) {
+        if let Ok(bank) = self.bank0(EndpointAddress::from_parts(0, UsbDirection::Out)) {
             bank.clear_received_setup_interrupt();
         }
     }
@@ -884,7 +842,7 @@ impl Inner {
             let idx = ep as usize;
 
             let bank1 = self
-                .bank1(EndpointAddress::from_parts(idx, EndpointDirection::In))
+                .bank1(EndpointAddress::from_parts(idx, UsbDirection::In))
                 .unwrap();
             if bank1.is_transfer_complete() && bank1.is_transfer_failed() {
                 //self.print_epstatus(idx, "WRITE FAIL");
@@ -901,7 +859,7 @@ impl Inner {
             drop(bank1);
 
             let bank0 = self
-                .bank0(EndpointAddress::from_parts(idx, EndpointDirection::Out))
+                .bank0(EndpointAddress::from_parts(idx, UsbDirection::Out))
                 .unwrap();
             if bank0.received_setup_interrupt() {
                 dbgprint!("ep {} GOT SETUP", ep);
@@ -928,8 +886,8 @@ impl Inner {
         }
     }
 
-    fn write(&self, ep: u8, buf: &[u8]) -> UsbResult<usize> {
-        let ep = EndpointAddress(ep);
+    fn write(&self, ep: EndpointAddress, buf: &[u8]) -> UsbResult<usize> {
+        let ep = EndpointAddress::from(ep);
         let mut bank = self.bank1(ep.into())?;
 
         if bank.is_ready() {
@@ -941,7 +899,7 @@ impl Inner {
                 ep.0,
                 bank.is_transfer_complete()
             );
-            return Err(UsbError::Busy);
+            return Err(UsbError::WouldBlock);
         }
 
         let size = bank.write(buf);
@@ -960,8 +918,8 @@ impl Inner {
         size
     }
 
-    fn read(&self, ep: u8, buf: &mut [u8]) -> UsbResult<usize> {
-        let ep = EndpointAddress(ep);
+    fn read(&self, ep: EndpointAddress, buf: &mut [u8]) -> UsbResult<usize> {
+        let ep = EndpointAddress::from(ep);
         let mut bank = self.bank0(ep.into())?;
 
         let bk0rdy = bank.is_ready();
@@ -991,12 +949,12 @@ impl Inner {
                 }
             }
         } else {
-            Err(UsbError::NoData)
+            Err(UsbError::WouldBlock)
         }
     }
 
-    fn is_stalled(&self, ep: u8) -> bool {
-        let ep = EndpointAddress(ep);
+    fn is_stalled(&self, ep: EndpointAddress) -> bool {
+        let ep = EndpointAddress::from(ep);
         if ep.is_out() {
             self.bank0(ep.into()).unwrap().is_stalled()
         } else {
@@ -1004,7 +962,7 @@ impl Inner {
         }
     }
 
-    fn set_stalled(&self, ep: u8, stalled: bool) {
+    fn set_stalled(&self, ep: EndpointAddress, stalled: bool) {
         self.set_stall(ep, stalled);
     }
 }
@@ -1028,12 +986,12 @@ impl usb_device::bus::UsbBus for UsbBus {
 
     fn alloc_ep(
         &mut self,
-        dir: EndpointDirection,
-        addr: Option<u8>,
+        dir: UsbDirection,
+        addr: Option<EndpointAddress>,
         ep_type: EndpointType,
         max_packet_size: u16,
         interval: u8,
-    ) -> UsbResult<u8> {
+    ) -> UsbResult<EndpointAddress> {
         disable_interrupts(|cs| {
             self.inner.borrow(cs).borrow_mut().alloc_ep(
                 dir,
@@ -1053,19 +1011,19 @@ impl usb_device::bus::UsbBus for UsbBus {
         disable_interrupts(|cs| self.inner.borrow(cs).borrow().poll())
     }
 
-    fn write(&self, ep: u8, buf: &[u8]) -> UsbResult<usize> {
+    fn write(&self, ep: EndpointAddress, buf: &[u8]) -> UsbResult<usize> {
         disable_interrupts(|cs| self.inner.borrow(cs).borrow().write(ep, buf))
     }
 
-    fn read(&self, ep: u8, buf: &mut [u8]) -> UsbResult<usize> {
+    fn read(&self, ep: EndpointAddress, buf: &mut [u8]) -> UsbResult<usize> {
         disable_interrupts(|cs| self.inner.borrow(cs).borrow().read(ep, buf))
     }
 
-    fn set_stalled(&self, ep: u8, stalled: bool) {
+    fn set_stalled(&self, ep: EndpointAddress, stalled: bool) {
         disable_interrupts(|cs| self.inner.borrow(cs).borrow().set_stalled(ep, stalled))
     }
 
-    fn is_stalled(&self, ep: u8) -> bool {
+    fn is_stalled(&self, ep: EndpointAddress) -> bool {
         disable_interrupts(|cs| self.inner.borrow(cs).borrow().is_stalled(ep))
     }
 }

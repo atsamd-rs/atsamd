@@ -740,7 +740,7 @@ impl Inner {
             .suspend().set_bit()
         });
 
-        // Configure the endpoints before we detach, as hosts may enumerate
+        // Configure the endpoints before we attach, as hosts may enumerate
         // before attempting a USB protocol reset.
         self.flush_eps();
 
