@@ -7,7 +7,7 @@ rust:
   - nightly
 
 env:
-  - CRATE=boards/metro_m0 EXAMPLES="--example=blinky_basic --example=blinky_rtfm"   
+  - CRATE=boards/metro_m0 EXAMPLES="--example=blinky_basic --example=blinky_rtfm --example=usb_serial"
   - CRATE=boards/metro_m4 FEATURES="--features=unproven"
   - CRATE=boards/feather_m0 FEATURES="--features=unproven"
   - CRATE=boards/feather_m4 FEATURES="--features=unproven"
