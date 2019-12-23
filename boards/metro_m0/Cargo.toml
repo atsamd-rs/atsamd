@@ -32,13 +32,21 @@ cortex-m-semihosting = "~0.3"
 cortex-m-rtfm = "~0.4"
 sx1509 = "~0.2"
 
+[dependencies.usb-device]
+version = "~0.2"
+optional = true
+
+[dependencies.usbd-serial]
+version = "~0.1"
+optional = true
+
 [features]
 # ask the HAL to enable atsamd21g18a support
 default = ["rt", "atsamd-hal/samd21g18a"]
 rt = ["cortex-m-rt", "atsamd-hal/samd21g18a-rt"]
 unproven = ["atsamd-hal/unproven"]
 use_rtt = ["atsamd-hal/use_rtt"]
-#usb = ["atsamd-hal/usb"]
+usb = ["atsamd-hal/usb", "usb-device", "usbd-serial"]
 
 [profile.dev]
 incremental = false
@@ -50,3 +58,7 @@ lto = false
 debug = true
 lto = true
 opt-level = "s"
+
+[[example]]
+name = "usb_serial"
+required-features = ["usb"]
