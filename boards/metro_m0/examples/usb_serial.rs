@@ -78,8 +78,8 @@ fn main() -> ! {
 
 fn poll_usb() {
     unsafe {
-        USB_BUS.as_mut().map(|usb_dev| {
-            USB_SERIAL.as_mut().map(|serial| {
+        match (USB_BUS.as_mut(), USB_SERIAL.as_mut()) {
+            (Some(usb_dev), Some(serial)) => {
                 usb_dev.poll(&mut [serial]);
 
                 let mut buf = [0u8; 8];
@@ -97,8 +97,9 @@ fn poll_usb() {
                     }
                     _ => {}
                 }
-            });
-        });
+            },
+            _ => {}
+        };
     };
 }
 
