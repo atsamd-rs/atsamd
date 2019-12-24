@@ -162,9 +162,9 @@ impl $TYPE {
             let params = TimerParams::new(freq, clock.freq().0);
             pm.$apmask.modify(|_, w| w.$apbits().set_bit());
             tcc.ctrla.write(|w| w.swrst().set_bit());
-            while tcc.syncbusy.read().bits() & 1 != 0 {}
+            while tcc.syncbusy.read().swrst().bit() {}
             tcc.ctrlbclr.write(|w| w.dir().set_bit() );
-            while tcc.syncbusy.read().bits() & (1 << 2) != 0 {}
+            while tcc.syncbusy.read().ctrlb().bit() {}
             tcc.ctrla.modify(|_, w| w.enable().clear_bit());
             tcc.ctrla.modify(|_, w| {
                 match params.divider {
@@ -180,9 +180,9 @@ impl $TYPE {
                 }
             });
             tcc.wave.write(|w| w.wavegen().npwm());
-            while tcc.syncbusy.read().bits() & (1 << 6) != 0 {}
+            while tcc.syncbusy.read().wave().bit() {}
             tcc.per().write(|w| unsafe { w.bits(params.cycles as u32) });
-            while tcc.syncbusy.read().bits() & (1 << 7) != 0 {}
+            while tcc.syncbusy.read().per().bit() {}
             tcc.ctrla.modify(|_, w| w.enable().set_bit());
         }
 
@@ -250,7 +250,7 @@ impl Pwm for $TYPE {
         });
         self.tcc.ctrla.modify(|_, w| w.enable().set_bit());
         self.tcc.per().write(|w| unsafe { w.bits(params.cycles as u32) });
-        while self.tcc.syncbusy.read().bits() & (1 << 7) != 0 {}
+        while self.tcc.syncbusy.read().per().bit() {}
     }
 }
 
