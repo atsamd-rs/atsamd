@@ -1,30 +1,14 @@
 use crate::clock;
-use crate::gpio::{Pa5, Pa7, Pa11, Pa15, Pa17, Pa23, Pa31, PfE};
-use crate::hal::PwmPin;
+use crate::hal::{Pwm, PwmPin};
 use crate::time::Hertz;
 use crate::timer::TimerParams;
 
-use crate::target_device::{PM, TC1, TC2};
+use crate::target_device::{PM, TC1, TC2, TCC0};
 
-pub enum TC1Pinout {
-    Pa5(Pa5<PfE>),
-    Pa15(Pa15<PfE>),
-    Pa17(Pa17<PfE>),
-    Pa23(Pa23<PfE>),
-}
-
-pub enum TC2Pinout {
-    Pa7(Pa7<PfE>),
-    Pa11(Pa11<PfE>),
-    Pa31(Pa31<PfE>),
-}
-
-pub enum Channel {
-    C0,
-}
+// Timer/Counter (TCx)
 
 macro_rules! pwm {
-    ($($TYPE:ident: ($TC:ident, $pinout:ident, $clock:ident, $apmask:ident, $apbits:ident, $wrapper:ident),)+) => {
+    ($($TYPE:ident: ($TC:ident, $clock:ident, $apmask:ident, $apbits:ident, $wrapper:ident),)+) => {
         $(
 
 pub struct $TYPE {
@@ -32,8 +16,6 @@ pub struct $TYPE {
     /// Used to calculate the period of the pwm.
     clock_freq: Hertz,
     tc: $TC,
-    #[allow(dead_code)]
-    pinout: $pinout,
 }
 
 impl $TYPE {
@@ -41,7 +23,6 @@ impl $TYPE {
         clock: &clock::$clock,
         freq: F,
         tc: $TC,
-        pinout: $pinout,
         pm: &mut PM,
     ) -> Self {
         let freq = freq.into();
@@ -74,7 +55,6 @@ impl $TYPE {
         Self {
             clock_freq: clock.freq(),
             tc,
-            pinout,
         }
     }
 
@@ -146,6 +126,136 @@ impl PwmPin for $TYPE {
 )+}}
 
 pwm! {
-    Pwm1: (TC1, TC1Pinout, Tc1Tc2Clock, apbcmask, tc1_, Pwm1Wrapper),
-    Pwm2: (TC2, TC2Pinout, Tc1Tc2Clock, apbcmask, tc2_, Pwm2Wrapper),
+    Pwm1: (TC1, Tc1Tc2Clock, apbcmask, tc1_, Pwm1Wrapper),
+    Pwm2: (TC2, Tc1Tc2Clock, apbcmask, tc2_, Pwm2Wrapper),
+}
+
+// Timer/Counter for Control Applications (TCCx)
+
+pub enum Channel {
+    _0,
+    _1,
+    _2,
+    _3,
+}
+
+macro_rules! pwm_tcc {
+    ($($TYPE:ident: ($TCC:ident, $clock:ident, $apmask:ident, $apbits:ident, $wrapper:ident),)+) => {
+        $(
+
+pub struct $TYPE {
+    /// The frequency of the attached clock, not the period of the pwm.
+    /// Used to calculate the period of the pwm.
+    clock_freq: Hertz,
+    tcc: $TCC,
+}
+
+impl $TYPE {
+    pub fn new<F: Into<Hertz>> (
+        clock: &clock::$clock,
+        freq: F,
+        tcc: $TCC,
+        pm: &mut PM,
+    ) -> Self {
+        let freq = freq.into();
+        {
+            let params = TimerParams::new(freq, clock.freq().0);
+            pm.$apmask.modify(|_, w| w.$apbits().set_bit());
+            tcc.ctrla.write(|w| w.swrst().set_bit());
+            while tcc.syncbusy.read().bits() & 1 != 0 {}
+            tcc.ctrlbclr.write(|w| w.dir().set_bit() );
+            while tcc.syncbusy.read().bits() & (1 << 2) != 0 {}
+            tcc.ctrla.modify(|_, w| w.enable().clear_bit());
+            tcc.ctrla.modify(|_, w| {
+                match params.divider {
+                    1 => w.prescaler().div1(),
+                    2 => w.prescaler().div2(),
+                    4 => w.prescaler().div4(),
+                    8 => w.prescaler().div8(),
+                    16 => w.prescaler().div16(),
+                    64 => w.prescaler().div64(),
+                    256 => w.prescaler().div256(),
+                    1024 => w.prescaler().div1024(),
+                    _ => unreachable!(),
+                }
+            });
+            tcc.wave.write(|w| w.wavegen().npwm());
+            while tcc.syncbusy.read().bits() & (1 << 6) != 0 {}
+            tcc.per().write(|w| unsafe { w.bits(params.cycles as u32) });
+            while tcc.syncbusy.read().bits() & (1 << 7) != 0 {}
+            tcc.ctrla.modify(|_, w| w.enable().set_bit());
+        }
+
+        Self {
+            clock_freq: clock.freq(),
+            tcc,
+        }
+    }
+}
+
+impl Pwm for $TYPE {
+    type Channel = Channel;
+    type Time = Hertz;
+    type Duty = u32;
+
+    fn disable(&mut self, _channel: Self::Channel) {
+        self.tcc.ctrla.modify(|_, w| w.enable().clear_bit());
+    }
+
+    fn enable(&mut self, _channel: Self::Channel) {
+        self.tcc.ctrla.modify(|_, w| w.enable().set_bit());
+    }
+
+    fn get_period(&self) -> Self::Time {
+        let divisor = self.tcc.ctrla.read().prescaler().bits();
+        let top = self.tcc.per().read().bits();
+        Hertz(self.clock_freq.0 / divisor as u32 / (top + 1) as u32)
+    }
+
+    fn get_duty(&self, channel: Self::Channel) -> Self::Duty {
+        let cc = self.tcc.cc();
+        let duty: u32 = cc[channel as usize].read().cc().bits();
+        duty
+    }
+
+    fn get_max_duty(&self) -> Self::Duty {
+        let top = self.tcc.per().read().bits();
+        top
+    }
+
+    fn set_duty(&mut self, channel: Self::Channel, duty: Self::Duty) {
+        let cc = self.tcc.cc();
+        cc[channel as usize].write(|w| unsafe { w.cc().bits(duty) });
+    }
+
+    fn set_period<P>(&mut self, period: P)
+    where
+        P: Into<Self::Time>,
+    {
+        let period = period.into();
+        let params = TimerParams::new(period, self.clock_freq.0);
+        self.tcc.ctrla.modify(|_, w| w.enable().clear_bit());
+        self.tcc.ctrla.modify(|_, w| {
+            match params.divider {
+                1 => w.prescaler().div1(),
+                2 => w.prescaler().div2(),
+                4 => w.prescaler().div4(),
+                8 => w.prescaler().div8(),
+                16 => w.prescaler().div16(),
+                64 => w.prescaler().div64(),
+                256 => w.prescaler().div256(),
+                1024 => w.prescaler().div1024(),
+                _ => unreachable!(),
+            }
+        });
+        self.tcc.ctrla.modify(|_, w| w.enable().set_bit());
+        self.tcc.per().write(|w| unsafe { w.bits(params.cycles as u32) });
+        while self.tcc.syncbusy.read().bits() & (1 << 7) != 0 {}
+    }
+}
+
+)+}}
+
+pwm_tcc! {
+    Pwm0: (TCC0, Tcc0Clock, apbcmask, tcc0_, Pwm0Wrapper),
 }
