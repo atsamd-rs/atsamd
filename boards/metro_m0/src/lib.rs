@@ -240,8 +240,8 @@ pub fn usb_allocator(
     usb_dp: gpio::Pa25<Input<Floating>>,
     port: &mut Port,
     ) -> UsbBusAllocator<UsbBus> {
-    clocks.configure_gclk_divider_and_source(GEN_A::GCLK2, 1, SRC_A::DFLL48M, false);
-    let usb_gclk = clocks.get_gclk(GEN_A::GCLK2).unwrap();
+    clocks.configure_gclk_divider_and_source(GEN_A::GCLK0, 1, SRC_A::DFLL48M, false);
+    let usb_gclk = clocks.get_gclk(GEN_A::GCLK0).unwrap();
     let usb_clock = &clocks.usb(&usb_gclk).unwrap();
 
     UsbBusAllocator::new(UsbBus::new(
