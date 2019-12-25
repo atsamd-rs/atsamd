@@ -8,7 +8,7 @@ use cortex_m_rt::{exception, ExceptionFrame};
 use hal::clock::GenericClockController;
 use hal::prelude::*;
 use hal::{entry};
-use hal::pac::{interrupt, CorePeripherals, Peripherals};
+use hal::pac::{interrupt, Interrupt, CorePeripherals, Peripherals};
 
 use hal::usb::UsbBus;
 use hal::usb_allocator;
@@ -68,9 +68,9 @@ fn main() -> ! {
     };
 
     unsafe {
-        core.NVIC.set_priority(interrupt::USB, 0);
+        core.NVIC.set_priority(Interrupt::USB, 0);
     }
-    core.NVIC.enable(interrupt::USB);
+    core.NVIC.enable(Interrupt::USB);
 
     //dbgprint!("do loop");
     loop {}
