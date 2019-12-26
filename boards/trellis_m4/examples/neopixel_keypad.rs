@@ -6,13 +6,13 @@ use panic_halt;
 use trellis_m4 as hal;
 use ws2812_nop_samd51 as ws2812;
 
-use embedded_hal::digital::v1_compat::{OldOutputPin};
-use embedded_hal::digital::v2::{InputPin};
+use embedded_hal::digital::v1_compat::OldOutputPin;
+use embedded_hal::digital::v2::InputPin;
 
-use hal::prelude::*;
-use hal::{clock::GenericClockController, delay::Delay};
 use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
+use hal::prelude::*;
+use hal::{clock::GenericClockController, delay::Delay};
 
 use smart_leds::brightness;
 use smart_leds::SmartLedsWrite;
@@ -52,7 +52,8 @@ fn main() -> ! {
             for (i, value) in color_values.iter_mut().enumerate() {
                 let keypad_column = i % 8;
                 let keypad_row = i / 8;
-                let keypad_button: &InputPin<Error = ()> = &keypad_inputs[keypad_row][keypad_column];
+                let keypad_button: &InputPin<Error = ()> =
+                    &keypad_inputs[keypad_row][keypad_column];
 
                 if keypad_button.is_high().unwrap() {
                     keypad_state[i] = true;
@@ -93,4 +94,4 @@ fn wheel(mut wheel_pos: u8) -> Color {
     }
     wheel_pos -= 170;
     (wheel_pos * 3, 255 - wheel_pos * 3, 0).into()
-} 
+}
