@@ -104,7 +104,6 @@ impl PwmPin for $TYPE {
         count.ctrla.modify(|_, w| w.enable().set_bit());
     }
 
-
     fn get_duty(&self) -> Self::Duty {
         let count = self.tc.count16();
         let duty: u16 = count.cc[1].read().cc().bits();
@@ -162,9 +161,9 @@ impl $TYPE {
             let params = TimerParams::new(freq, clock.freq().0);
             pm.$apmask.modify(|_, w| w.$apbits().set_bit());
             tcc.ctrla.write(|w| w.swrst().set_bit());
-            while tcc.syncbusy.read().swrst().bit() {}
+            while tcc.syncbusy.read().swrst().bit_is_set() {}
             tcc.ctrlbclr.write(|w| w.dir().set_bit() );
-            while tcc.syncbusy.read().ctrlb().bit() {}
+            while tcc.syncbusy.read().ctrlb().bit_is_set() {}
             tcc.ctrla.modify(|_, w| w.enable().clear_bit());
             tcc.ctrla.modify(|_, w| {
                 match params.divider {
@@ -180,9 +179,9 @@ impl $TYPE {
                 }
             });
             tcc.wave.write(|w| w.wavegen().npwm());
-            while tcc.syncbusy.read().wave().bit() {}
+            while tcc.syncbusy.read().wave().bit_is_set() {}
             tcc.per().write(|w| unsafe { w.bits(params.cycles as u32) });
-            while tcc.syncbusy.read().per().bit() {}
+            while tcc.syncbusy.read().per().bit_is_set() {}
             tcc.ctrla.modify(|_, w| w.enable().set_bit());
         }
 
