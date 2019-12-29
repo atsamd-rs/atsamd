@@ -55,12 +55,12 @@ pub mod samd51;
 #[cfg(feature = "samd51")]
 pub use self::samd51::*;
 
-#[cfg(not(any(feature = "samd11c14a", feature = "samd51")))]
+#[cfg(feature = "samd21")]
 pub mod samd21;
-#[cfg(not(any(feature = "samd11c14a", feature = "samd51")))]
+#[cfg(feature = "samd21")]
 pub use self::samd21::*;
 
-#[cfg(feature = "samd11c14a")]
+#[cfg(feature = "samd11")]
 pub mod samd11;
-#[cfg(feature = "samd11c14a")]
+#[cfg(feature = "samd11")]
 pub use self::samd11::*;
