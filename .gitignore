@@ -8,4 +8,4 @@ Cargo.lock
 /.gdb_history
 **/*.iml
 **/*.idea
-.DS_Store
+**/.DS_Store

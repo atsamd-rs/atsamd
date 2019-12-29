@@ -115,7 +115,7 @@ macro_rules! spi_master {
                         {}
 
                         // Put the hardware into spi master mode
-//                        sercom.spi().ctrla.modify(|_, w| w.mode().spi_master());
+                        sercom.spi().ctrla.modify(|_, w| w.mode().spi_master());
                         // wait for configuration to take effect
                         while sercom.spi().syncbusy.read().enable().bit_is_set() {}
 
@@ -218,6 +218,5 @@ spi_master!(SPIMaster2: (Sercom2, SERCOM2, sercom2_, Sercom2CoreClock, apbbmask)
 spi_master!(SPIMaster3: (Sercom3, SERCOM3, sercom3_, Sercom3CoreClock, apbbmask));
 spi_master!(SPIMaster4: (Sercom4, SERCOM4, sercom4_, Sercom4CoreClock, apbdmask));
 spi_master!(SPIMaster5: (Sercom5, SERCOM5, sercom5_, Sercom5CoreClock, apbdmask));
-// TODO verify apbdmask
 spi_master!(SPIMaster6: (Sercom6, SERCOM6, sercom6_, Sercom6CoreClock, apbdmask));
 spi_master!(SPIMaster7: (Sercom7, SERCOM7, sercom7_, Sercom7CoreClock, apbdmask));

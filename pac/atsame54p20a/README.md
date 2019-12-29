@@ -1,11 +1,11 @@
-# ATSAMD51J20A
+# ATSAME54P20A
 
-A peripheral access crate for the ATSAMD51J20A chip from Microchip (née Atmel)
+A peripheral access crate for the ATSAME54P20A chip from Microchip (née Atmel)
 for Rust Embedded projects.
 
-https://crates.io/crates/atsamd51j20a
+https://crates.io/crates/atsame54p20a
 
-## [Documentation](https://docs.rs/atsamd51j20a/)
+## [Documentation](https://docs.rs/atsame54p20a/)
 
 This source was automatically generated using `svd2rust`, split into smaller
 pieces using `form` and formatted via `rustfmt`.
