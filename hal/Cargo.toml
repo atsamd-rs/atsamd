@@ -1,8 +1,8 @@
 [package]
 name = "atsamd-hal"
 version = "0.7.4"
-authors = ["Wez Furlong <wez@wezfurlong.org>", "Paul Sajna <sajattack@gmail.com>"]
-description = "HAL and Peripheral access API for ATSAMD11, ATSAMD21 and ATSAMD51 microcontrollers"
+authors = ["Wez Furlong <wez@wezfurlong.org>", "Paul Sajna <sajattack@gmail.com>", "Michael van Niekerk <mvniekerk@gmail.com>"]
+description = "HAL and Peripheral access API for ATSAMD11, ATSAMD21, ATSAMD51 and ATSAME54 microcontrollers"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/atsamd-rs/atsamd"
@@ -65,6 +65,11 @@ path = "../pac/atsamd51j20a"
 version = "~0.6"
 optional = true
 
+[dependencies.atsame54p20a]
+path = "../pac/atsame54p20a"
+version = "~0.6"
+optional = true
+
 [dependencies.usb-device]
 version = "~0.2"
 optional = true
@@ -101,6 +106,9 @@ samd51j19a = ["atsamd51j19a", "samd51"]
 samd51j19a-rt = ["atsamd51j19a", "atsamd51j19a/rt", "samd51"]
 samd51j20a = ["atsamd51j20a", "samd51"]
 samd51j20a-rt = ["atsamd51j20a", "atsamd51j20a/rt", "samd51"]
+same54 = [] # Convenience feature for shared configuration of same54 chips
+same54p20a = ["atsame54p20a", "same54"]
+same54p20a-rt = ["atsame54p20a", "atsame54p20a/rt", "same54"]
 unproven = ["embedded-hal/unproven"]
 use_rtt = ["jlink_rtt"]
 use_uart_debug = []
