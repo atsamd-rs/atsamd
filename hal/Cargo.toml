@@ -2,7 +2,7 @@
 name = "atsamd-hal"
 version = "0.7.4"
 authors = ["Wez Furlong <wez@wezfurlong.org>", "Paul Sajna <sajattack@gmail.com>", "Michael van Niekerk <mvniekerk@gmail.com>"]
-description = "HAL and Peripheral access API for ATSAMD11, ATSAMD21, ATSAMD51 and ATSAM54 microcontrollers"
+description = "HAL and Peripheral access API for ATSAMD11, ATSAMD21, ATSAMD51 and ATSAME54 microcontrollers"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/atsamd-rs/atsamd"
