@@ -27,13 +27,14 @@ fn main() -> ! {
     let mut delay = Delay::new(core.SYST, &mut clocks);
     let mut pins = hal::Pins::new(peripherals.PORT);
 
-    let _d12 = pins.d12.into_function_e(&mut pins.port);
+    let d12 = pins.d12.into_function_e(&mut pins.port);
 
     let gclk0 = clocks.gclk0();
     let mut pwm2 = Pwm2::new(
         &clocks.tc2_tc3(&gclk0).unwrap(),
         1.khz(),
         peripherals.TC2,
+        hal::pwm::TC2Pinout::Pa17(d12),
         &mut peripherals.MCLK,
     );
     let max_duty = pwm2.get_max_duty();
