@@ -7,7 +7,7 @@ rust:
   - nightly
 
 env:
-  - CRATE=boards/metro_m0 EXAMPLES="--example=blinky_basic --example=blinky_rtfm"   
+  - CRATE=boards/metro_m0 EXAMPLES="--example=blinky_basic --example=blinky_rtfm"
   - CRATE=boards/metro_m4 FEATURES="--features=unproven"
   - CRATE=boards/feather_m0 FEATURES="--features=unproven"
   - CRATE=boards/feather_m4 FEATURES="--features=unproven"
@@ -24,6 +24,7 @@ env:
   - CRATE=boards/pyportal FEATURES="--features=unproven"
   - CRATE=boards/trellis_m4 FEATURES="--features=keypad-unproven"
   - CRATE=boards/pygamer FEATURES="--features=unproven,usb,ws2812-timer,math"
+  - CRATE=boards/pfza_proto1 EXAMPLES="--example=blinky_basic"
 
 matrix:
   allow_failures:

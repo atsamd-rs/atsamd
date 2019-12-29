@@ -25,6 +25,9 @@ pub use atsamd51j19a as target_device;
 #[cfg(feature = "samd51j20a")]
 pub use atsamd51j20a as target_device;
 
+#[cfg(feature = "same54p20a")]
+pub use atsame54p20a as target_device;
+
 #[cfg(feature = "use_rtt")]
 pub use jlink_rtt;
 
@@ -49,6 +52,11 @@ macro_rules! dbgprint {
 #[macro_use]
 pub mod common;
 pub use self::common::*;
+
+#[cfg(feature = "same54")]
+pub mod same54;
+#[cfg(feature = "same54")]
+pub use self::same54::*;
 
 #[cfg(feature = "samd51")]
 pub mod samd51;
