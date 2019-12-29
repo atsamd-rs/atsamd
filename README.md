@@ -24,7 +24,7 @@ There are a couple of crates provided by this repo:
 * [`atsamd51j19a`](https://docs.rs/atsamd51j19a/) is an auto-generated crate providing access to the peripherals specified for this device by its SVD file. This is the MCU used in the Metro M4 and Feather M4 boards from Adafruit.
 * [`atsamd51j20a`](https://docs.rs/atsamd51j20a/) is an auto-generated crate providing access to the peripherals specified for this device by its SVD file. This is the MCU used in the PyPortal board from Adafruit.
 * [`atsamd51g19a`](https://docs.rs/atsamd51g19a/) is an auto-generated crate providing access to the peripherals specified for this device by its SVD file. This is the MCU used in the Trellis M4 and ItsyBitsy M4 boards from Adafruit.
-* [`atsame54p20a`](https://docs.rs/atsamd51g19a/) is an auto-generated crate providing access to the peripherals specified for this device by its SVD file. This is the MCU used in the PathfinderZA Proto1 board
+* [`atsame54p20a`](https://docs.rs/atsame54p20a/) is an auto-generated crate providing access to the peripherals specified for this device by its SVD file. This is the MCU used in the PathfinderZA Proto1 board
 * [`atsamd-hal`](https://docs.rs/atsamd_hal/) is the result
   of reading the datasheet for the device and encoding
   a type-safe layer over the raw `atsamd11c14a`, `atsamd21g18a`, `atsamd21e18a`, `atsamd21j18a`, `atsamd51j19a`, `atsamd51g19a` and `atsame54p20a` crates.  This crate
