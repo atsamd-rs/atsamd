@@ -1,0 +1,27 @@
+[package]
+name = "atsame54p20a"
+description = "Peripheral access API for ATSAME54P20A microcontrollers (generated using svd2rust)"
+version = "0.6.0"
+authors = [
+   "Wez Furlong <wez@wezfurlong.org>",
+   "Paul Sajna <sajattack@gmail.com>",
+   "Shella Stephens <shella@infracoven.io",
+   "Michael van Niekerk <mvniekerk@gmail.com>"
+]
+keywords = ["no-std", "arm", "cortex-m"]
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/atsamd-rs/atsamd"
+readme = "README.md"
+documentation = "https://atsamd-rs.github.io/atsamd/atsamd51j20a/atsamd51j20a/"
+
+[dependencies]
+bare-metal = "~0.2"
+cortex-m = "~0.6"
+vcell = "~0.1"
+
+[dependencies.cortex-m-rt]
+optional = true
+version = "~0.6"
+
+[features]
+rt = ["cortex-m-rt/device"]

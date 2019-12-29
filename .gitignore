@@ -6,3 +6,6 @@ target
 /doc-build
 Cargo.lock
 /.gdb_history
+**/*.iml
+**/*.idea
+.DS_Store
