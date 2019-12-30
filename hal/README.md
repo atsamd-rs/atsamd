@@ -1,6 +1,11 @@
 # HAL for working with atsamd & atsame devices
 
-This crate provides a type-safe API for working with atsamd11, atsamd21, atsamd51, and atsame54 based devices.
+This crate provides a type-safe API for working with `samd11`, `samd21`, `samd51`, and `same54` based devices.
+
+[![Build Status](https://travis-ci.org/atsamd-rs/atsamd.svg?branch=master)](https://travis-ci.org/atsamd-rs/atsamd)
+[![Crates.io](https://img.shields.io/crates/v/atsamd-hal.svg)](https://crates.io/crates/atsamd-hal)
+
+## [Documentation](https://docs.rs/atsamd-hal)
 
 ## Supported Devices
 
@@ -20,3 +25,19 @@ This crate can support other variants in a similar fashion; pull requests for th
 Check out the metro_m0 board support crate examples:
 
 https://github.com/atsamd-rs/atsamd/tree/master/boards/metro_m0/examples
+
+## License
+
+Licensed under either of:
+
+- Apache License, Version 2.0 ([LICENSE-APACHE](https://github.com/atsamd-rs/atsamd/blob/master/LICENSE-APACHE) or
+  http://www.apache.org/licenses/LICENSE-2.0)
+- MIT license ([LICENSE-MIT](https://github.com/atsamd-rs/atsamd/blob/master/LICENSE-MIT) or http://opensource.org/licenses/MIT)
+
+at your option.
+
+### Contribution
+
+Unless you explicitly state otherwise, any contribution intentionally submitted
+for inclusion in the work by you, as defined in the Apache-2.0 license, shall
+be dual licensed as above, without any additional terms or conditions.
