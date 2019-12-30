@@ -12723,7 +12723,7 @@
               <name>GENCTRL0</name>
               <description>Generic Clock Generator Control 0 Synchronization Busy bits</description>
               <bitOffset>2</bitOffset>
-              <bitWidth>1</bitWidth>
+              <bitWidth>12</bitWidth>
               <access>read-only</access>
               <enumeratedValues>
                 <name>GENCTRL0Select</name>
@@ -12793,7 +12793,7 @@
               <name>GENCTRL1</name>
               <description>Generic Clock Generator Control 1 Synchronization Busy bits</description>
               <bitOffset>3</bitOffset>
-              <bitWidth>1</bitWidth>
+              <bitWidth>12</bitWidth>
               <access>read-only</access>
               <enumeratedValues>
                 <name>GENCTRL1Select</name>
@@ -12863,7 +12863,7 @@
               <name>GENCTRL2</name>
               <description>Generic Clock Generator Control 2 Synchronization Busy bits</description>
               <bitOffset>4</bitOffset>
-              <bitWidth>1</bitWidth>
+              <bitWidth>12</bitWidth>
               <access>read-only</access>
               <enumeratedValues>
                 <name>GENCTRL2Select</name>
@@ -12933,7 +12933,7 @@
               <name>GENCTRL3</name>
               <description>Generic Clock Generator Control 3 Synchronization Busy bits</description>
               <bitOffset>5</bitOffset>
-              <bitWidth>1</bitWidth>
+              <bitWidth>12</bitWidth>
               <access>read-only</access>
               <enumeratedValues>
                 <name>GENCTRL3Select</name>
@@ -13003,7 +13003,7 @@
               <name>GENCTRL4</name>
               <description>Generic Clock Generator Control 4 Synchronization Busy bits</description>
               <bitOffset>6</bitOffset>
-              <bitWidth>1</bitWidth>
+              <bitWidth>12</bitWidth>
               <access>read-only</access>
               <enumeratedValues>
                 <name>GENCTRL4Select</name>
@@ -13073,7 +13073,7 @@
               <name>GENCTRL5</name>
               <description>Generic Clock Generator Control 5 Synchronization Busy bits</description>
               <bitOffset>7</bitOffset>
-              <bitWidth>1</bitWidth>
+              <bitWidth>12</bitWidth>
               <access>read-only</access>
               <enumeratedValues>
                 <name>GENCTRL5Select</name>
@@ -13143,7 +13143,7 @@
               <name>GENCTRL6</name>
               <description>Generic Clock Generator Control 6 Synchronization Busy bits</description>
               <bitOffset>8</bitOffset>
-              <bitWidth>1</bitWidth>
+              <bitWidth>12</bitWidth>
               <access>read-only</access>
               <enumeratedValues>
                 <name>GENCTRL6Select</name>
@@ -13213,7 +13213,7 @@
               <name>GENCTRL7</name>
               <description>Generic Clock Generator Control 7 Synchronization Busy bits</description>
               <bitOffset>9</bitOffset>
-              <bitWidth>1</bitWidth>
+              <bitWidth>12</bitWidth>
               <access>read-only</access>
               <enumeratedValues>
                 <name>GENCTRL7Select</name>
@@ -13283,7 +13283,7 @@
               <name>GENCTRL8</name>
               <description>Generic Clock Generator Control 8 Synchronization Busy bits</description>
               <bitOffset>10</bitOffset>
-              <bitWidth>1</bitWidth>
+              <bitWidth>12</bitWidth>
               <access>read-only</access>
               <enumeratedValues>
                 <name>GENCTRL8Select</name>
@@ -13353,7 +13353,7 @@
               <name>GENCTRL9</name>
               <description>Generic Clock Generator Control 9 Synchronization Busy bits</description>
               <bitOffset>11</bitOffset>
-              <bitWidth>1</bitWidth>
+              <bitWidth>12</bitWidth>
               <access>read-only</access>
               <enumeratedValues>
                 <name>GENCTRL9Select</name>
@@ -13423,7 +13423,7 @@
               <name>GENCTRL10</name>
               <description>Generic Clock Generator Control 10 Synchronization Busy bits</description>
               <bitOffset>12</bitOffset>
-              <bitWidth>1</bitWidth>
+              <bitWidth>12</bitWidth>
               <access>read-only</access>
               <enumeratedValues>
                 <name>GENCTRL10Select</name>
@@ -13493,7 +13493,7 @@
               <name>GENCTRL11</name>
               <description>Generic Clock Generator Control 11 Synchronization Busy bits</description>
               <bitOffset>13</bitOffset>
-              <bitWidth>1</bitWidth>
+              <bitWidth>12</bitWidth>
               <access>read-only</access>
               <enumeratedValues>
                 <name>GENCTRL11Select</name>
