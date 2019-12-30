@@ -120,6 +120,23 @@ $ cargo build --manifest-path metro_m0/Cargo.toml \
     --example blinky_basic --features use_semihosting
 ```
 
+## Getting code onto the device: hf2-rs
+
+[hf2-rs](https://github.com/jacobrosenthal/hf2-rs) implements [Microsofts HID Flashing Format (HF2)](https://github.com/microsoft/uf2/blob/86e101e3a282553756161fe12206c7a609975e70/hf2.md) to upload firmware to UF2 bootloaders. UF2 is factory programmed extensively by [Microsoft MakeCode](https://www.microsoft.com/en-us/makecode) and [Adafruit](https://www.adafruit.com/) hardware.
+
+The `cargo-hf2` crate replaces the `cargo build` command to include flashing over USB to connected UF2 devices, using hf2 flashing over HID protocol.
+
+```bash
+$ cargo install cargo-hf2
+$ cargo hf2 --manifest-path metro_m0/Cargo.toml \
+    --example blinky_basic --features unproven --release
+```
+
+For more information, refer to the `README` files for each crate:
+* [hf2 library (`hf2`)](https://github.com/jacobrosenthal/hf2-rs/tree/master/hf2)
+* [hf2 binary (`hf2-cli`)](https://github.com/jacobrosenthal/hf2-rs/tree/master/hf2-cli)
+* [hf2 cargo subcommand (`hf2-cargo`)](https://github.com/jacobrosenthal/hf2-rs/tree/master/cargo-hf2)
+
 ## Adding a new board
 
 See our wiki page for a [complete guide](https://github.com/atsamd-rs/atsamd/wiki/Adding-a-new-board) on adding a new board.
