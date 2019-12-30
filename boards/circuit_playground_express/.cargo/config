@@ -5,3 +5,6 @@ target = "thumbv6m-none-eabi"
 
 [target.thumbv6m-none-eabi]
 runner = 'arm-none-eabi-gdb'
+rustflags = [
+  "-C", "link-arg=-Tlink.x",
+]
