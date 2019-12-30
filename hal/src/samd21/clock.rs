@@ -301,6 +301,7 @@ impl GenericClockController {
 }
 
 clock_generator!(
+    (tcc0_tcc1, Tcc0Tcc1Clock, TCC0_TCC1),
     (tcc2_tc3, Tcc2Tc3Clock, TCC2_TC3),
     (tc4_tc5, Tc4Tc5Clock, TC4_TC5),
     (tc6_tc7, Tc6Tc7Clock, TC6_TC7),
