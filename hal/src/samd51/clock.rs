@@ -238,6 +238,7 @@ impl GenericClockController {
                 Hertz(0),
                 Hertz(0),
             ],
+            // TODO constrain this to ClockId::XX, FDPLL0?
             used_clocks: 1u64 << u8::from(DPLL0),
         }
     }
@@ -351,13 +352,13 @@ impl GenericClockController {
     /// Returns `None` is the specified generic clock has already been
     /// configured.
     pub fn $id(&mut self, generator: &GClock) -> Option<$Type> {
-        let bits : u64 = 1<<$clock.bits() as u64;
+        let bits: u64 = 1<< ClockId::$clock.bits() as u64;
         if (self.used_clocks & bits) != 0 {
             return None;
         }
         self.used_clocks |= bits;
 
-        self.state.enable_clock_generator($clock, generator.gclk);
+        self.state.enable_clock_generator(ClockId::$clock, generator.gclk);
         let freq = self.gclks[u8::from(generator.gclk) as usize];
         Some($Type{freq})
     }
