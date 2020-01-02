@@ -171,7 +171,7 @@ impl GenericClockController {
                 Hertz(0),
                 Hertz(0),
             ],
-            used_clocks: 1u64 << u8::from(DFLL48M),
+            used_clocks: 1u64 << u8::from(ClockId::DFLL48),
         }
     }
 
