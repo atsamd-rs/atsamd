@@ -817,7 +817,7 @@ pub struct BatteryReader {
 #[cfg(feature = "unproven")]
 impl BatteryReader {
     /// Returns a float for voltage of battery
-    pub fn read(&mut self, adc: &mut hal::adc::Adc<ADC0>) -> (f32) {
+    pub fn read(&mut self, adc: &mut hal::adc::Adc<ADC0>) -> f32 {
         let data: u16 = adc.read(&mut self.battery).unwrap();
         let result: f32 = (data as f32 / 4095.0) * 2.0 * 3.3;
         result
