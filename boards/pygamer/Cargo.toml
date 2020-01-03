@@ -38,7 +38,6 @@ optional = true
 
 [dependencies.ws2812-timer-delay]
 version = "~0.3"
-optional = true
 
 [dev-dependencies]
 panic-halt = "~0.2"
@@ -62,7 +61,6 @@ default = ["rt", "atsamd-hal/samd51j19a", "atsamd-hal/samd51", "unproven"]
 rt = ["cortex-m-rt", "atsamd-hal/samd51j19a-rt"]
 unproven = ["atsamd-hal/unproven"]
 usb = ["atsamd-hal/usb", "usb-device", "usbd-serial"]
-ws2812-timer = ["ws2812-timer-delay"]
 sd-card = ["embedded-sdmmc"]
 math = ["micromath"]
 
@@ -79,35 +77,11 @@ opt-level = "s"
 
 [[example]]
 name = "usb_serial"
-required-features = ["usb", "ws2812-timer"]
+required-features = ["usb"]
 
 [[example]]
 name = "usb_poll"
 required-features = ["usb"]
-
-[[example]]
-name = "neopixel_tilt"
-required-features = ["ws2812-timer"]
-
-[[example]]
-name = "neopixel_button"
-required-features = ["ws2812-timer"]
-
-[[example]]
-name = "neopixel_rainbow_spintimer"
-required-features = ["ws2812-timer"]
-
-[[example]]
-name = "neopixel_rainbow_timer"
-required-features = ["ws2812-timer"]
-
-[[example]]
-name = "neopixel_adc_light"
-required-features = [ "ws2812-timer"]
-
-[[example]]
-name = "neopixel_adc_battery"
-required-features = [ "ws2812-timer"]
 
 [[example]]
 name = "sd_card"
@@ -115,4 +89,4 @@ required-features = ["sd-card"]
 
 [[example]]
 name = "neopixel_easing"
-required-features = [ "ws2812-timer", "math"]
+required-features = [ "math"]

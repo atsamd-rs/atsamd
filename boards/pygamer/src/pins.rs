@@ -13,9 +13,7 @@ use hal::sercom::{
     Sercom4Pad3, UART5,
 };
 
-#[cfg(feature = "ws2812-timer")]
 use embedded_hal::{digital::v1_compat::OldOutputPin, timer::CountDown, timer::Periodic};
-#[cfg(feature = "ws2812-timer")]
 use ws2812_timer_delay as ws2812;
 
 use hal::clock::GenericClockController;
@@ -396,7 +394,6 @@ pub struct Neopixel {
     pub neopixel: Pa15<Input<Floating>>,
 }
 
-#[cfg(feature = "ws2812-timer")]
 impl Neopixel {
     /// Convenience for setting up the onboard neopixels using the provided
     /// Timer preconfigured to 3mhz.
