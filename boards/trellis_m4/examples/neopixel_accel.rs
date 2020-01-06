@@ -6,17 +6,18 @@
 #[allow(unused_imports)]
 use panic_halt;
 use trellis_m4 as hal;
-use ws2812_nop_samd51 as ws2812;
+use ws2812_timer_delay as ws2812;
 
-use embedded_hal::digital::v1_compat::{OldOutputPin};
+use embedded_hal::digital::v1_compat::OldOutputPin;
 
 use hal::adxl343::accelerometer::Accelerometer;
-use hal::prelude::*;
-use hal::{clock::GenericClockController, delay::Delay};
 use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
+use hal::prelude::*;
+use hal::timer::SpinTimer;
+use hal::{clock::GenericClockController, delay::Delay};
 
-use smart_leds::{Color, SmartLedsWrite};
+use smart_leds::{hsv::RGB8, SmartLedsWrite};
 
 #[entry]
 fn main() -> ! {
@@ -35,8 +36,9 @@ fn main() -> ! {
     let mut pins = hal::Pins::new(peripherals.PORT).split();
 
     // neopixels
+    let timer = SpinTimer::new(4);
     let neopixel_pin: OldOutputPin<_> = pins.neopixel.into_push_pull_output(&mut pins.port).into();
-    let mut neopixels = ws2812::Ws2812::new(neopixel_pin);
+    let mut neopixels = ws2812::Ws2812::new(timer, neopixel_pin);
 
     // accelerometer
     let mut adxl343 = pins
@@ -54,9 +56,9 @@ fn main() -> ! {
 
         // RGB indicators of current accelerometer state
         let colors = [
-            Color::from(((ax3.x >> 8 & 0b11000000) as u8, 0, 0)),
-            Color::from((0, (ax3.y >> 8 & 0b11000000) as u8, 0)),
-            Color::from((0, 0, (ax3.x >> 8 & 0b11000000) as u8)),
+            RGB8::from(((ax3.x >> 8 & 0b11000000) as u8, 0, 0)),
+            RGB8::from((0, (ax3.y >> 8 & 0b11000000) as u8, 0)),
+            RGB8::from((0, 0, (ax3.x >> 8 & 0b11000000) as u8)),
         ];
 
         neopixels.write(colors.iter().cloned()).unwrap();
