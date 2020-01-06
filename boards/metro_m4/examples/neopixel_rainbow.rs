@@ -12,7 +12,8 @@ use embedded_hal::digital::v1_compat::OldOutputPin;
 use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
-use hal::{clock::GenericClockController, delay::Delay, timer::TimerCounter};
+use hal::timer::SpinTimer;
+use hal::{clock::GenericClockController, delay::Delay};
 
 use smart_leds::{
     hsv::{hsv2rgb, Hsv},
@@ -32,14 +33,9 @@ fn main() -> ! {
     );
     let mut pins = hal::Pins::new(peripherals.PORT);
 
-    let gclk0 = clocks.gclk0();
-    let timer_clock = clocks.tc2_tc3(&gclk0).unwrap();
-    let mut timer = TimerCounter::tc3_(&timer_clock, peripherals.TC3, &mut peripherals.MCLK);
-    timer.start(3_000_000u32.hz());
-
-    let mut neopixel_pin: OldOutputPin<_> =
-        pins.neopixel.into_push_pull_output(&mut pins.port).into();
-    let mut neopixel = ws2812::Ws2812::new(timer, &mut neopixel_pin);
+    let timer = SpinTimer::new(4);
+    let neopixel_pin: OldOutputPin<_> = pins.neopixel.into_push_pull_output(&mut pins.port).into();
+    let mut neopixel = ws2812::Ws2812::new(timer, neopixel_pin);
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
     loop {
