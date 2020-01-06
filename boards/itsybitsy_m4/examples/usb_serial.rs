@@ -31,8 +31,7 @@ use hal::time::Hertz;
 use hal::{uart, uart_debug};
 
 use hal::timer::SpinTimer;
-use smart_leds::RGB8;
-use smart_leds_trait::SmartLedsWrite;
+use smart_leds::{hsv::RGB8, SmartLedsWrite};
 
 #[entry]
 fn main() -> ! {
@@ -60,7 +59,10 @@ fn main() -> ! {
         &mut peripherals.MCLK,
         &mut pins.port,
     ));
-    dbgprint!("\n\n\n\n~========== STARTING {:?} ==========~\n", hal::serial_number());
+    dbgprint!(
+        "\n\n\n\n~========== STARTING {:?} ==========~\n",
+        hal::serial_number()
+    );
     dbgprint!("Last reset was from {:?}\n", hal::reset_cause(rstc));
 
     let bus_allocator = unsafe {
