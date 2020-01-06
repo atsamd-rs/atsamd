@@ -11,8 +11,7 @@ use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 use hal::timer::SpinTimer;
 
-use smart_leds::RGB8;
-use smart_leds_trait::SmartLedsWrite;
+use smart_leds::{hsv::RGB8, SmartLedsWrite};
 
 #[entry]
 fn main() -> ! {
