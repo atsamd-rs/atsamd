@@ -1,6 +1,6 @@
 [package]
 name = "circuit_playground_express"
-version = "0.5.0"
+version = "0.6.0"
 authors = ["Paul Sajna <paulsajna@gmail.com>"]
 description = "Board Support crate for the Adafruit Circuit Playground Express"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
@@ -16,7 +16,7 @@ nb = "~0.1"
 
 [dependencies.atsamd-hal]
 path = "../../hal"
-version = "~0.7"
+version = "~0.8"
 default-features = false
 
 [dev-dependencies]

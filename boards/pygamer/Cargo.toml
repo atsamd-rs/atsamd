@@ -1,6 +1,6 @@
 [package]
 name = "pygamer"
-version = "0.3.0"
+version = "0.4.0"
 authors = [
     "Paul Sajna <sajattack@gmail.com>",
     "Wez Furlong <wez@wezfurlong.org>"
@@ -25,7 +25,7 @@ optional = true
 
 [dependencies.atsamd-hal]
 path = "../../hal"
-version = "~0.7"
+version = "~0.8"
 default-features = false
 
 [dependencies.micromath]
