@@ -40,6 +40,7 @@ In addition to the PACs and HAL, there numerous **B**oard **S**upport **P**ackag
 [sodaq_sara_aff]: https://github.com/atsamd-rs/atsamd/tree/master/boards/sodaq_sara_aff/
 [trellis_m4]: https://github.com/atsamd-rs/atsamd/tree/master/boards/trellis_m4/
 [trinket_m0]: https://github.com/atsamd-rs/atsamd/tree/master/boards/trinket_m0/
+[serpente]: https://github.com/atsamd-rs/atsamd/tree/master/boards/serpente/
 
 ## Building
 
