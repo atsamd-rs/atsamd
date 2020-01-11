@@ -3,6 +3,7 @@ pub mod clock;
 pub mod pwm;
 pub mod sercom;
 pub mod timer;
+pub mod watchdog;
 
 mod serial_number;
 pub use serial_number::*;
