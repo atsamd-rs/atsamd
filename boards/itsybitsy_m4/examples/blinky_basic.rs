@@ -29,7 +29,7 @@ fn main() -> ! {
     let mut red_led = pins.d13.into_open_drain_output(&mut pins.port);
 
     let mut wdt = Watchdog::new(peripherals.WDT);
-    wdt.start(WatchdogTimeout::Cycles256);
+    wdt.start(WatchdogTimeout::Cycles256 as u8);
 
     loop {
         delay.delay_ms(200u8);
