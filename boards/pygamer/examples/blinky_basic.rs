@@ -27,17 +27,19 @@ fn main() -> ! {
     );
     let mut delay = Delay::new(core.SYST, &mut clocks);
     delay.delay_ms(400u16);
-    let wdt = Watchdog::new_with_timeout(peripherals.WDT, WatchdogTimeout::Timeout256ms);
 
     let mut pins = hal::Pins::new(peripherals.PORT);
     let mut red_led = pins.d13.into_open_drain_output(&mut pins.port);
 
+    let mut wdt = Watchdog::new(peripherals.WDT);
+    wdt.start(WatchdogTimeout::Cycles256);
+
     loop {
         delay.delay_ms(200u8);
-        wdt.clear();
+        wdt.feed();
         red_led.set_high().unwrap();
         delay.delay_ms(200u8);
-        wdt.clear();
+        wdt.feed();
         red_led.set_low().unwrap();
     }
 }
