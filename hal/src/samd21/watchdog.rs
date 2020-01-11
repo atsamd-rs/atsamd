@@ -44,9 +44,9 @@ impl watchdog::Watchdog for Watchdog {
 impl watchdog::WatchdogDisable for Watchdog {
     fn disable(&mut self) {
         // Disable the watchdog timer.
-        self.wdt.ctrla.write(|w| w.enable().clear_bit());
+        self.wdt.ctrl.write(|w| w.enable().clear_bit());
         // Wait for watchdog timer to be disabled.
-        while self.wdt.syncbusy.read().enable().bit_is_set() {}
+        while self.wdt.status.read().syncbusy().bit_is_set() {}
     }
 }
 
@@ -64,8 +64,8 @@ impl watchdog::WatchdogEnable for Watchdog {
             .config
             .write(|w| unsafe { w.per().bits(period.into()) });
         // Enable the watchdog timer.
-        self.wdt.ctrla.write(|w| w.enable().set_bit());
+        self.wdt.ctrl.write(|w| w.enable().set_bit());
         // Wait for watchdog timer to be enabled.
-        while self.wdt.syncbusy.read().enable().bit_is_set() {}
+        while self.wdt.status.read().syncbusy().bit_is_set() {}
     }
 }

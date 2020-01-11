@@ -38,3 +38,6 @@ name = "blinky_basic"
 
 [[example]]
 name = "pwm"
+
+[[example]]
+name = "watchdog"
