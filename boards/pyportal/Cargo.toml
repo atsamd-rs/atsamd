@@ -39,13 +39,13 @@ ws2812-nop-samd51 = { git = "https://github.com/smart-leds-rs/ws2812-nop-samd51.
 
 [dev-dependencies.ws2812-timer-delay]
 version = "~0.1"
-features = ["slow"] 
+features = ["slow"]
 
 [features]
 # ask the HAL to enable atsamd51j20a support
-default = ["rt", "atsamd-hal/samd51j20a", "atsamd-hal/samd51"]
-rt = ["cortex-m-rt", "atsamd-hal/samd51j20a-rt"]
+default = ["rt", "atsamd-hal/samd51j20a", "atsamd-hal/samd51", "unproven"]
 unproven = ["atsamd-hal/unproven"]
+rt = ["cortex-m-rt", "atsamd-hal/samd51j20a-rt"]
 
 [profile.dev]
 incremental = false
@@ -55,5 +55,5 @@ lto = false
 
 [profile.release]
 debug = true
-lto = false 
+lto = false
 opt-level = "s"

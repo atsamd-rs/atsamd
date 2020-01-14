@@ -58,7 +58,7 @@ optional = true
 
 [features]
 # ask the HAL to enable atsamd51j20a support
-default = ["rt", "atsamd-hal/samd51j19a", "atsamd-hal/samd51"]
+default = ["rt", "atsamd-hal/samd51j19a", "atsamd-hal/samd51", "unproven"]
 rt = ["cortex-m-rt", "atsamd-hal/samd51j19a-rt"]
 unproven = ["atsamd-hal/unproven"]
 usb = ["atsamd-hal/usb", "usb-device", "usbd-serial"]
@@ -91,15 +91,11 @@ required-features = ["ws2812-timer"]
 
 [[example]]
 name = "neopixel_button"
-required-features = ["ws2812-timer", "unproven"]
+required-features = ["ws2812-timer"]
 
 [[example]]
 name = "neopixel_rainbow_spintimer"
 required-features = ["ws2812-timer"]
-
-[[example]]
-name = "button_rtfm"
-required-features = ["unproven"]
 
 [[example]]
 name = "neopixel_rainbow_timer"
@@ -107,11 +103,11 @@ required-features = ["ws2812-timer"]
 
 [[example]]
 name = "neopixel_adc_light"
-required-features = [ "ws2812-timer", "unproven",]
+required-features = [ "ws2812-timer"]
 
 [[example]]
 name = "neopixel_adc_battery"
-required-features = [ "ws2812-timer" ,"unproven",]
+required-features = [ "ws2812-timer"]
 
 [[example]]
 name = "sd_card"
@@ -119,4 +115,4 @@ required-features = ["sd-card"]
 
 [[example]]
 name = "neopixel_easing"
-required-features = [ "ws2812-timer" ,"unproven", "math"]
+required-features = [ "ws2812-timer", "math"]
