@@ -41,7 +41,7 @@ embedded-graphics = "~0.4"
 smart-leds = "0.3"
 ws2812-spi = "0.2.0"
 lis3dh = "0.1.0"
-cortex-m-rtfm = "~0.4"
+cortex-m-rtfm = "~0.5.1"
 
 [dependencies.usb-device]
 version = "~0.2"

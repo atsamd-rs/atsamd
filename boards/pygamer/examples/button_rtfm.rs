@@ -11,26 +11,28 @@ use hal::pins::Keys;
 use hal::prelude::*;
 use rtfm::app;
 
-#[app(device = crate::hal::pac)]
+#[app(device = crate::hal::pac, peripherals = true)]
 const APP: () = {
-    static mut RED_LED: Pa23<Output<OpenDrain>> = ();
-    static mut TIMER: hal::timer::TimerCounter3 = ();
-    static mut BUTTONS: hal::pins::ButtonReader = ();
+    struct Resources {
+        red_led: Pa23<Output<OpenDrain>>,
+        timer: hal::timer::TimerCounter3,
+        buttons: hal::pins::ButtonReader,
+    }
 
     /// This function is called each time the tc3 interrupt triggers.
     /// We use it to toggle the LED.  The `wait()` call is important
     /// because it checks and resets the counter ready for the next
     /// period.
-    #[interrupt(resources = [TIMER,RED_LED, BUTTONS])]
-    fn TC3() {
-        if resources.TIMER.wait().is_ok() {
-            for event in resources.BUTTONS.events() {
+    #[task(binds = TC3, resources = [timer, red_led, buttons])]
+    fn tc3(c: tc3::Context) {
+        if c.resources.timer.wait().is_ok() {
+            for event in c.resources.buttons.events() {
                 match event {
                     Keys::SelectDown => {
-                        resources.RED_LED.set_high().ok();
+                        c.resources.red_led.set_high().ok();
                     }
                     Keys::SelectUp => {
-                        resources.RED_LED.set_low().ok();
+                        c.resources.red_led.set_low().ok();
                     }
                     _ => {}
                 }
@@ -39,7 +41,8 @@ const APP: () = {
     }
 
     #[init]
-    fn init() {
+    fn init(c: init::Context) -> init::LateResources {
+        let mut device = c.device;
         let mut clocks = GenericClockController::with_internal_32kosc(
             device.GCLK,
             &mut device.MCLK,
@@ -58,8 +61,10 @@ const APP: () = {
         tc3.start(200.hz());
         tc3.enable_interrupt();
 
-        BUTTONS = pins.buttons.init(&mut pins.port);
-        RED_LED = pins.led_pin.into_open_drain_output(&mut pins.port);
-        TIMER = tc3;
+        init::LateResources {
+            buttons: pins.buttons.init(&mut pins.port),
+            red_led: pins.led_pin.into_open_drain_output(&mut pins.port),
+            timer: tc3,
+        }
     }
 };
