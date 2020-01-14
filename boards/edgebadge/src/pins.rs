@@ -20,7 +20,9 @@ use ws2812_timer_delay as ws2812;
 
 use hal::clock::GenericClockController;
 
+#[cfg(feature = "unproven")]
 use hal::pwm::Pwm2;
+
 use hal::time::Hertz;
 
 use st7735_lcd::{Orientation, ST7735};
@@ -311,6 +313,7 @@ pub struct Display {
     pub tft_backlight: Pa1<Input<Floating>>,
 }
 
+#[cfg(feature = "unproven")]
 impl Display {
     pub fn init(
         self,
