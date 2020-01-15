@@ -39,10 +39,6 @@ optional = true
 version = "~0.1"
 optional = true
 
-[dependencies.cortex-m-rtfm]
-version = "~0.3"
-optional = true
-
 [dev-dependencies]
 cortex-m-semihosting = "~0.3"
 ssd1306 = "=0.3.0-alpha.1"
@@ -58,7 +54,6 @@ use_rtt = ["atsamd-hal/use_rtt", "panic_rtt"]
 panic_halt = ["panic-halt"]
 panic_abort = ["panic-abort"]
 panic_semihosting = ["panic-semihosting"]
-cortex_m_rtfm = ["cortex-m-rtfm"]
 
 [profile.dev]
 incremental = false
