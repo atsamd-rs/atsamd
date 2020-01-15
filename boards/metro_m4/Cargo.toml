@@ -67,6 +67,7 @@ name = "neopixel_rainbow"
 
 [[example]]
 name = "pwm"
+required-features = ["unproven"]
 
 [[example]]
 name = "serial"
