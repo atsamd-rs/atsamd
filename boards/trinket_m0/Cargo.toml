@@ -38,6 +38,7 @@ name = "blinky_basic"
 
 [[example]]
 name = "pwm"
+required-features = ["unproven"]
 
 [[example]]
 name = "watchdog"

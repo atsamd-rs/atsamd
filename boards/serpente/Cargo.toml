@@ -32,3 +32,10 @@ default = ["rt", "atsamd-hal/samd21e18a"]
 rt = ["cortex-m-rt", "atsamd-hal/samd21e18a-rt"]
 unproven = ["atsamd-hal/unproven"]
 use_semihosting = []
+
+[[example]]
+name = "blinky_basic"
+
+[[example]]
+name = "pwm"
+required-features = ["unproven"]
