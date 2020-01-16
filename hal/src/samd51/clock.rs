@@ -61,9 +61,10 @@ pub enum ClockId {
     SDHC1,
     CM4_TRACE,
 }
-impl ClockId {
-    fn bits(self) -> usize {
-        self as usize
+
+impl From<ClockId> for u8 {
+    fn from(clock: ClockId) -> u8 {
+        clock as u8
     }
 }
 
@@ -120,7 +121,7 @@ impl State {
     }
 
     fn enable_clock_generator(&mut self, clock: ClockId, generator: ClockGenId) {
-        self.gclk.pchctrl[clock.bits()].write(|w| unsafe {
+        self.gclk.pchctrl[u8::from(clock) as usize].write(|w| unsafe {
             w.gen().bits(generator.into());
             w.chen().set_bit()
         });
@@ -350,7 +351,7 @@ impl GenericClockController {
     /// Returns `None` is the specified generic clock has already been
     /// configured.
     pub fn $id(&mut self, generator: &GClock) -> Option<$Type> {
-        let bits: u64 = 1<< ClockId::$clock.bits() as u64;
+        let bits: u64 = 1<< u8::from(ClockId::$clock) as u64;
         if (self.used_clocks & bits) != 0 {
             return None;
         }
