@@ -61,12 +61,12 @@ pub enum ClockId {
     SDHC1,
     CM4_TRACE,
 }
-impl ClockId {
-    fn bits(self) -> usize {
-        self as usize
+
+impl From<ClockId> for u8 {
+    fn from(clock: ClockId) -> u8 {
+        clock as u8
     }
 }
-use self::ClockId::*;
 
 /// Represents a configured clock generator.
 /// Can be converted into the effective clock frequency.
@@ -122,7 +122,7 @@ impl State {
     }
 
     fn enable_clock_generator(&mut self, clock: ClockId, generator: ClockGenId) {
-        self.gclk.pchctrl[clock.bits()].write(|w| unsafe {
+        self.gclk.pchctrl[u8::from(clock) as usize].write(|w| unsafe {
             w.gen().bits(generator.into());
             w.chen().set_bit()
         });
@@ -241,7 +241,7 @@ impl GenericClockController {
                 Hertz(0),
                 Hertz(0),
             ],
-            used_clocks: 1u64 << u8::from(DPLL0),
+            used_clocks: 1u64 << u8::from(ClockId::FDPLL0),
         }
     }
 
@@ -354,13 +354,13 @@ impl GenericClockController {
     /// Returns `None` is the specified generic clock has already been
     /// configured.
     pub fn $id(&mut self, generator: &GClock) -> Option<$Type> {
-        let bits : u64 = 1<<$clock.bits() as u64;
+        let bits: u64 = 1<<u8::from(ClockId::$clock) as u64;
         if (self.used_clocks & bits) != 0 {
             return None;
         }
         self.used_clocks |= bits;
 
-        self.state.enable_clock_generator($clock, generator.gclk);
+        self.state.enable_clock_generator(ClockId::$clock, generator.gclk);
         let freq = self.gclks[u8::from(generator.gclk) as usize];
         Some($Type{freq})
     }
@@ -439,7 +439,7 @@ fn wait_for_dpllrdy(oscctrl: &mut OSCCTRL) {
 
 /// Configure the dpll0 to run at 120MHz
 fn configure_and_enable_dpll0(oscctrl: &mut OSCCTRL, gclk: &mut GCLK) {
-   gclk.pchctrl[FDPLL0 as usize].write(|w| {
+   gclk.pchctrl[u8::from(ClockId::FDPLL0) as usize].write(|w| {
         w.chen().set_bit();
         w.gen().gclk5()
     });
