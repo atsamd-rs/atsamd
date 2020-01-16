@@ -24,7 +24,8 @@ env:
   - CRATE=boards/pyportal FEATURES="--features=unproven"
   - CRATE=boards/trellis_m4 FEATURES="--features=keypad-unproven"
   - CRATE=boards/pygamer FEATURES="--features=unproven,usb,ws2812-timer,math"
-  - CRATE=boards/pfza_proto1 EXAMPLES="--example=blinky_basic"
+  - CRATE=boards/pfza_proto1 EXAMPLES="--example=blinky_basic" FEATURES="--features=unproven"
+  - CRATE=boards/serpente EXAMPLES="--example=blinky_basic --example=pwm" FEATURES="--features=unproven"
 
 matrix:
   allow_failures:

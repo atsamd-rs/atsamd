@@ -1,6 +1,6 @@
 [package]
 name = "itsybitsy_m4"
-version = "0.1.2"
+version = "0.2.0"
 authors = [
     "Nic Hartley <nxh9052@rit.edu>",
     "Tom <twitchyliquid64@ciphersink.net>",
@@ -15,7 +15,7 @@ documentation = "https://atsamd-rs.github.io/atsamd/atsamd51g19a/itsybitsy_m4/"
 
 [dependencies]
 cortex-m = "~0.6"
-embedded-hal = "~0.2"
+embedded-hal = "~0.2.3"
 bitbang-hal = "~0.3"
 apa102-spi = "~0.3"
 smart-leds = "~0.2"
@@ -28,7 +28,7 @@ optional = true
 
 [dependencies.atsamd-hal]
 path = "../../hal"
-version = "~0.7"
+version = "~0.8"
 default-features = false
 
 [dependencies.usb-device]
