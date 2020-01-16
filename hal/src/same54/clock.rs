@@ -66,7 +66,6 @@ impl ClockId {
         self as usize
     }
 }
-use self::ClockId::*;
 
 /// Represents a configured clock generator.
 /// Can be converted into the effective clock frequency.
@@ -241,8 +240,7 @@ impl GenericClockController {
                 Hertz(0),
                 Hertz(0),
             ],
-            // TODO constrain this to ClockId::XX, should it be FDPLL0?
-            used_clocks: 1u64 << u8::from(DPLL0),
+            used_clocks: 1u64 << u8::from(ClockId::FDPLL0),
         }
     }
 
@@ -440,7 +438,7 @@ fn wait_for_dpllrdy(oscctrl: &mut OSCCTRL) {
 
 /// Configure the dpll0 to run at 120MHz
 fn configure_and_enable_dpll0(oscctrl: &mut OSCCTRL, gclk: &mut GCLK) {
-   gclk.pchctrl[FDPLL0 as usize].write(|w| {
+   gclk.pchctrl[ClockId::FDPLL0 as usize].write(|w| {
         w.chen().set_bit();
         w.gen().gclk5()
     });
