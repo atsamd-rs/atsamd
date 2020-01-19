@@ -312,9 +312,10 @@ impl<'a> Bank<'a, InBank> {
         self.epintflag(self.index()).read().trfail1().bit()
     }
 
-    /// Resets the state of the endpoint as expected for a USB
-    /// protocol reset.
-    fn reset(&mut self) {
+    /// Writes the state of the endpoint to registers and its corresponding
+    /// in-memory descriptor. Status & flag registers are not cleared, except
+    /// for endpoint 0.
+    fn flush_config(&mut self) {
         let idx = self.index();
         let config = self.config().clone();
         {
@@ -326,10 +327,18 @@ impl<'a> Bank<'a, InBank> {
             desc.set_byte_count(0);
         }
 
-        self.epstatusclr(idx)
-            .write(|w| w.stallrq1().set_bit().dtglin().set_bit().bk1rdy().set_bit());
-        self.epintenset(idx).write(|w| w.trcpt1().set_bit());
-        self.clear_transfer_complete();
+        if idx == 0 {
+            self.epstatusclr(idx)
+                .write(|w| w.stallrq1().set_bit().dtglin().set_bit().bk1rdy().set_bit());
+            self.clear_transfer_complete();
+        }
+    }
+
+    /// Enables endpoint-specific interrupts. This is separate from reset()
+    /// as the EPINTENSET[n] documentation is ambiguous on writes sticking
+    /// when EPEN[n] is zero. As such, these interrupts are configured last.
+    fn setup_ep_interrupts(&mut self) {
+        self.epintenset(self.index()).write(|w| w.trcpt1().set_bit());
     }
 
     /// Prepares to transfer a series of bytes by copying the data into the
@@ -426,9 +435,10 @@ impl<'a> Bank<'a, OutBank> {
         self.epintflag(self.index()).write(|w| w.rxstp().set_bit());
     }
 
-    /// Resets the state of the endpoint as expected for a USB
-    /// protocol reset.
-    fn reset(&mut self) {
+    /// Writes the state of the endpoint to registers and its corresponding
+    /// in-memory descriptor. Status & flag registers are not cleared, except
+    /// for endpoint 0.
+    fn flush_config(&mut self) {
         let idx = self.index();
         let config = self.config().clone();
 
@@ -441,15 +451,23 @@ impl<'a> Bank<'a, OutBank> {
             desc.set_byte_count(0);
         }
 
-        self.epstatusclr(idx).write(|w| {
-            w.stallrq0()
-                .set_bit()
-                .dtglout()
-                .set_bit()
-                .bk0rdy()
-                .set_bit()
-        });
-        self.epintenset(idx)
+        if idx == 0 {
+            self.epstatusclr(idx).write(|w| {
+                w.stallrq0()
+                    .set_bit()
+                    .dtglout()
+                    .set_bit()
+                    .bk0rdy()
+                    .set_bit()
+            });
+        }
+    }
+
+    /// Enables endpoint-specific interrupts. This is separate from reset()
+    /// as the EPINTENSET[n] documentation is ambiguous on writes sticking
+    /// when EPEN[n] is zero. As such, these interrupts are configured last.
+    fn setup_ep_interrupts(&mut self) {
+        self.epintenset(self.index())
             .write(|w| w.rxstp().set_bit().trcpt0().set_bit());
     }
 
@@ -595,28 +613,6 @@ impl Inner {
             _phantom: PhantomData,
         })
     }
-
-    #[inline]
-    fn received_end_of_reset_interrupt(&self) -> bool {
-        self.usb().intflag.read().eorst().bit_is_set()
-    }
-
-    #[inline]
-    fn clear_end_of_reset(&self) {
-        // Clear by writing a 1
-        self.usb().intflag.modify(|_, w| w.eorst().set_bit());
-    }
-
-    #[inline]
-    fn received_suspend_interrupt(&self) -> bool {
-        self.usb().intflag.read().suspend().bit_is_set()
-    }
-
-    #[inline]
-    fn clear_suspend(&self) {
-        // Clear by writing a 1
-        self.usb().intflag.modify(|_, w| w.suspend().set_bit());
-    }
 }
 
 impl UsbBus {
@@ -734,10 +730,12 @@ impl Inner {
         usb.ctrla.modify(|_, w| w.enable().set_bit());
         while usb.syncbusy.read().enable().bit_is_set() {}
 
+        // Clear pending.
+        usb.intflag.write(|w| unsafe {
+            w.bits(usb.intflag.read().bits())
+        });
         usb.intenset.write(|w| {
             w.eorst().set_bit()
-            .eorsm().set_bit()
-            .suspend().set_bit()
         });
 
         // Configure the endpoints before we attach, as hosts may enumerate
@@ -747,16 +745,19 @@ impl Inner {
         usb.ctrlb.modify(|_, w| w.detach().clear_bit());
     }
 
+    /// Configures all endpoints based on prior calls to alloc_ep(). Status
+    /// and flag registers are not cleared except for endpoint 0 - the samd51
+    ///  peripheral will clear them for us following a protocol reset.
     fn flush_eps(&self) {
         for idx in 0..8 {
             let cfg = self.epcfg(idx);
             let info = &self.endpoints.borrow().endpoints[idx];
 
             if let Ok(mut bank) = self.bank0(EndpointAddress::from_parts(idx, UsbDirection::Out)) {
-                bank.reset();
+                bank.flush_config();
             }
             if let Ok(mut bank) = self.bank1(EndpointAddress::from_parts(idx, UsbDirection::In)) {
-                bank.reset();
+                bank.flush_config();
             }
 
             cfg.modify(|_, w| unsafe {
@@ -765,13 +766,29 @@ impl Inner {
                     .eptype1()
                     .bits(info.bank1.ep_type as u8)
             });
+
+            // Endpoint interrupts are configured after the write to EPTYPE, as it appears writes
+            // to EPINTEN*[n] do not take effect unless the endpoint is already somewhat configured.
+            // The datasheet is ambiguous here, section 38.8.3.7 (Device Interrupt EndPoint Set n)
+            // of the SAM D5x/E5x states:
+            //    "This register is cleared by USB reset or when EPEN[n] is zero"
+            // EPEN[n] is not a register that exists, nor does it align with any other terminology.
+            // We assume this means setting EPCFG[n] to a non-zero value, but we do interrupt
+            // configuration last to be sure.
+            if let Ok(mut bank) = self.bank0(EndpointAddress::from_parts(idx, UsbDirection::Out)) {
+                bank.setup_ep_interrupts();
+            }
+            if let Ok(mut bank) = self.bank1(EndpointAddress::from_parts(idx, UsbDirection::In)) {
+                bank.setup_ep_interrupts();
+            }
         }
     }
 
-    fn reset(&self) {
+    /// protocol_reset is called by the USB HAL when it detects the host has performed a USB
+    /// reset.
+    fn protocol_reset(&self) {
         dbgprint!("UsbBus::reset\n");
         self.flush_eps();
-        self.usb().ctrlb.modify(|_, w| w.detach().clear_bit());
     }
 
     fn suspend(&self) {
@@ -779,9 +796,6 @@ impl Inner {
     }
     fn resume(&self) {
         dbgprint!("UsbBus::resume\n");
-        let usb = self.usb();
-        usb.ctrla.modify(|_, w| w.enable().set_bit());
-        usb.ctrlb.modify(|_, w| w.detach().clear_bit());
     }
 
     fn alloc_ep(
@@ -838,23 +852,15 @@ impl Inner {
     }
 
     fn poll(&self) -> PollResult {
-        // Clear flags we are not concerned about.
-        self.usb().intflag.write(|w| {
-            w.wakeup().set_bit()
-            .sof().set_bit()
-            .eorsm().set_bit()
-        });
-
-        if self.received_suspend_interrupt() {
-            self.clear_suspend();
-            dbgprint!("PollResult::Suspend\n");
-            return PollResult::Suspend;
-        }
-        if self.received_end_of_reset_interrupt() {
-            self.clear_end_of_reset();
+        let intflags = self.usb().intflag.read();
+        if intflags.eorst().bit() { // end of reset interrupt
+            self.usb().intflag.write(|w| w.eorst().set_bit());
             dbgprint!("PollResult::Reset\n");
             return PollResult::Reset;
         }
+        // As the suspend & wakup interrupts/states cannot distinguish between
+        // unconnected & unsuspended, we do not handle them to avoid spurious
+        // transitions.
 
         let intbits = self.usb().epintsmry.read().bits();
         if intbits == 0 {
@@ -1007,7 +1013,7 @@ impl usb_device::bus::UsbBus for UsbBus {
     }
 
     fn reset(&self) {
-        disable_interrupts(|cs| self.inner.borrow(cs).borrow().reset())
+        disable_interrupts(|cs| self.inner.borrow(cs).borrow().protocol_reset())
     }
 
     fn suspend(&self) {
