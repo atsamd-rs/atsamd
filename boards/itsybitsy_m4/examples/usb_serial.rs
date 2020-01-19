@@ -89,10 +89,11 @@ fn main() -> ! {
         core.NVIC.set_priority(interrupt::USB_OTHER, 1);
         core.NVIC.set_priority(interrupt::USB_TRCPT0, 1);
         core.NVIC.set_priority(interrupt::USB_TRCPT1, 1);
-        core.NVIC.set_priority(interrupt::USB_TRCPT1, 1);
+        core.NVIC.set_priority(interrupt::USB_SOF_HSOF, 2);
         NVIC::unmask(interrupt::USB_OTHER);
         NVIC::unmask(interrupt::USB_TRCPT0);
         NVIC::unmask(interrupt::USB_TRCPT1);
+        NVIC::unmask(interrupt::USB_SOF_HSOF);
     }
 
     loop {
@@ -117,7 +118,6 @@ fn poll_usb() {
         USB_BUS.as_mut().map(|usb_dev| {
             USB_SERIAL.as_mut().map(|serial| {
                 usb_dev.poll(&mut [serial]);
-
                 let mut buf = [0u8; 64];
 
                 if let Ok(count) = serial.read(&mut buf) {
@@ -157,4 +157,17 @@ fn USB_TRCPT0() {
 #[interrupt]
 fn USB_TRCPT1() {
     poll_usb();
+}
+
+static mut SOF_COUNTER: u8 = 0;
+
+#[interrupt]
+fn USB_SOF_HSOF() {
+    unsafe {
+        SOF_COUNTER+=1;
+        if SOF_COUNTER >= 4 {
+            poll_usb();
+            SOF_COUNTER = 0;
+        }
+    };
 }

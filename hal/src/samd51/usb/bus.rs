@@ -595,28 +595,6 @@ impl Inner {
             _phantom: PhantomData,
         })
     }
-
-    #[inline]
-    fn received_end_of_reset_interrupt(&self) -> bool {
-        self.usb().intflag.read().eorst().bit_is_set()
-    }
-
-    #[inline]
-    fn clear_end_of_reset(&self) {
-        // Clear by writing a 1
-        self.usb().intflag.modify(|_, w| w.eorst().set_bit());
-    }
-
-    #[inline]
-    fn received_suspend_interrupt(&self) -> bool {
-        self.usb().intflag.read().suspend().bit_is_set()
-    }
-
-    #[inline]
-    fn clear_suspend(&self) {
-        // Clear by writing a 1
-        self.usb().intflag.modify(|_, w| w.suspend().set_bit());
-    }
 }
 
 impl UsbBus {
@@ -734,10 +712,13 @@ impl Inner {
         usb.ctrla.modify(|_, w| w.enable().set_bit());
         while usb.syncbusy.read().enable().bit_is_set() {}
 
+        // Clear pending.
+        usb.intflag.write(|w| unsafe {
+            w.bits(usb.intflag.read().bits())
+        });
         usb.intenset.write(|w| {
             w.eorst().set_bit()
-            .eorsm().set_bit()
-            .suspend().set_bit()
+            .sof().set_bit()
         });
 
         // Configure the endpoints before we attach, as hosts may enumerate
@@ -779,9 +760,6 @@ impl Inner {
     }
     fn resume(&self) {
         dbgprint!("UsbBus::resume\n");
-        let usb = self.usb();
-        usb.ctrla.modify(|_, w| w.enable().set_bit());
-        usb.ctrlb.modify(|_, w| w.detach().clear_bit());
     }
 
     fn alloc_ep(
@@ -838,23 +816,18 @@ impl Inner {
     }
 
     fn poll(&self) -> PollResult {
-        // Clear flags we are not concerned about.
-        self.usb().intflag.write(|w| {
-            w.wakeup().set_bit()
-            .sof().set_bit()
-            .eorsm().set_bit()
-        });
-
-        if self.received_suspend_interrupt() {
-            self.clear_suspend();
-            dbgprint!("PollResult::Suspend\n");
-            return PollResult::Suspend;
-        }
-        if self.received_end_of_reset_interrupt() {
-            self.clear_end_of_reset();
+        let intflags = self.usb().intflag.read();
+        if intflags.eorst().bit() { // end of reset interrupt
+            self.usb().intflag.write(|w| w.eorst().set_bit());
             dbgprint!("PollResult::Reset\n");
             return PollResult::Reset;
         }
+        if intflags.sof().bit() { // start of frame interrupt
+            self.usb().intflag.write(|w| w.sof().set_bit());
+        }
+        // As the suspend & wakup interrupts/states cannot distinguish between
+        // unconnected & unsuspended, we do not handle them to avoid spurious
+        // transitions.
 
         let intbits = self.usb().epintsmry.read().bits();
         if intbits == 0 {
