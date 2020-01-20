@@ -327,11 +327,8 @@ impl<'a> Bank<'a, InBank> {
             desc.set_byte_count(0);
         }
 
-        if idx == 0 {
-            self.epstatusclr(idx)
-                .write(|w| w.stallrq1().set_bit().dtglin().set_bit().bk1rdy().set_bit());
-            self.clear_transfer_complete();
-        }
+        self.epstatusclr(idx)
+            .write(|w| w.bk1rdy().set_bit());
     }
 
     /// Enables endpoint-specific interrupts. This is separate from reset()
@@ -451,16 +448,8 @@ impl<'a> Bank<'a, OutBank> {
             desc.set_byte_count(0);
         }
 
-        if idx == 0 {
-            self.epstatusclr(idx).write(|w| {
-                w.stallrq0()
-                    .set_bit()
-                    .dtglout()
-                    .set_bit()
-                    .bk0rdy()
-                    .set_bit()
-            });
-        }
+        self.epstatusclr(idx)
+            .write(|w| w.bk0rdy().set_bit());
     }
 
     /// Enables endpoint-specific interrupts. This is separate from reset()
