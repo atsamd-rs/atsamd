@@ -907,7 +907,10 @@ impl Inner {
             if bank0.received_setup_interrupt() {
                 dbgprint!("ep {} GOT SETUP\n", ep);
                 ep_setup |= mask;
-                bank0.clear_received_setup_interrupt();
+                // usb-device crate:
+                //  "This event should continue to be reported until the packet is read."
+                // So we don't clear the flag here, instead it is cleared in the read
+                // handler.
                 break;
             }
 
@@ -916,7 +919,6 @@ impl Inner {
                 ep_out |= mask;
             }
             if bank0.is_transfer_failed() {
-                drop(bank0);
                 self.print_epstatus(idx, "READ FAIL");
                 ep_out |= mask;
             }
@@ -962,9 +964,14 @@ impl Inner {
 
     fn read(&self, ep: EndpointAddress, buf: &mut [u8]) -> UsbResult<usize> {
         let mut bank = self.bank0(ep.into())?;
+        let rxstp = bank.received_setup_interrupt();
 
-        if bank.is_ready() {
+        if bank.is_ready() || rxstp {
             let size = bank.read(buf);
+
+            if rxstp {
+                bank.clear_received_setup_interrupt();
+            }
 
             // self.print_epstatus(idx, "read");
 
