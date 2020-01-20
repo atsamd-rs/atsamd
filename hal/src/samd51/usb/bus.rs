@@ -1,3 +1,7 @@
+// This crate uses standard host-centric USB terminology for transfer directions. Therefore an OUT transfer refers to a host-to-device transfer, and an IN transfer refers to a device-to-host transfer. This is mainly a concern for implementing new USB peripheral drivers and USB classes, and people doing that should be familiar with the USB standard.
+// http://ww1.microchip.com/downloads/en/DeviceDoc/60001507E.pdf
+// http://ww1.microchip.com/downloads/en/AppNotes/Atmel-42261-SAM-D21-USB_Application-Note_AT06475.pdf
+
 use super::{Descriptors, DmPad, DpPad};
 use crate::calibration::{usb_transn_cal, usb_transp_cal, usb_trim_cal};
 use crate::clock;
@@ -312,26 +316,19 @@ impl<'a> Bank<'a, InBank> {
         self.epintflag(self.index()).read().trfail1().bit()
     }
 
-    /// Writes the state of the endpoint to registers and its corresponding
-    /// in-memory descriptor. Status & flag registers are not cleared, except
-    /// for endpoint 0.
+    /// Writes out endpoint configuration to its in-memory descriptor.
     fn flush_config(&mut self) {
         let config = self.config().clone();
         {
             let desc = self.desc_bank();
-
             desc.set_address(config.addr as *mut u8);
             desc.set_endpoint_size(config.max_packet_size);
             desc.set_multi_packet_size(0);
             desc.set_byte_count(0);
         }
-
-        self.setup_ep_interrupts();
     }
 
-    /// Enables endpoint-specific interrupts. This is separate from reset()
-    /// as the EPINTENSET[n] documentation is ambiguous on writes sticking
-    /// when EPEN[n] is zero. As such, these interrupts are configured last.
+    /// Enables endpoint-specific interrupts.
     fn setup_ep_interrupts(&mut self) {
         self.epintenset(self.index())
             .write(|w| w.trcpt1().set_bit());
@@ -431,26 +428,19 @@ impl<'a> Bank<'a, OutBank> {
         self.epintflag(self.index()).write(|w| w.rxstp().set_bit());
     }
 
-    /// Writes the state of the endpoint to registers and its corresponding
-    /// in-memory descriptor. Status & flag registers are not cleared, except
-    /// for endpoint 0.
+    /// Writes out endpoint configuration to its in-memory descriptor.
     fn flush_config(&mut self) {
         let config = self.config().clone();
         {
             let desc = self.desc_bank();
-
             desc.set_address(config.addr as *mut u8);
             desc.set_endpoint_size(config.max_packet_size);
             desc.set_multi_packet_size(0);
             desc.set_byte_count(0);
         }
-
-        self.setup_ep_interrupts();
     }
 
-    /// Enables endpoint-specific interrupts. This is separate from reset()
-    /// as the EPINTENSET[n] documentation is ambiguous on writes sticking
-    /// when EPEN[n] is zero. As such, these interrupts are configured last.
+    /// Enables endpoint-specific interrupts.
     fn setup_ep_interrupts(&mut self) {
         self.epintenset(self.index())
             .write(|w| w.rxstp().set_bit().trcpt0().set_bit());
@@ -687,6 +677,14 @@ impl Inner {
     }
 }
 
+#[derive(Copy, Clone)]
+enum FlushConfigMode {
+    // Write configuration to all configured endpoints.
+    Full,
+    // Refresh configuration which was reset due to a bus reset.
+    ProtocolReset,
+}
+
 impl Inner {
     fn enable(&mut self) {
         dbgprint!("UsbBus::enable\n");
@@ -722,81 +720,82 @@ impl Inner {
 
         // Configure the endpoints before we attach, as hosts may enumerate
         // before attempting a USB protocol reset.
-        for idx in 0..8 {
-            let cfg = self.epcfg(idx);
-            let info = &self.endpoints.borrow().endpoints[idx];
-
-            // Endpoint interrupts are configured after the write to EPTYPE, as it appears writes
-            // to EPINTEN*[n] do not take effect unless the endpoint is already somewhat configured.
-            // The datasheet is ambiguous here, section 38.8.3.7 (Device Interrupt EndPoint Set n)
-            // of the SAM D5x/E5x states:
-            //    "This register is cleared by USB reset or when EPEN[n] is zero"
-            // EPEN[n] is not a register that exists, nor does it align with any other terminology.
-            // We assume this means setting EPCFG[n] to a non-zero value, but we do interrupt
-            // configuration last to be sure.
-            cfg.modify(|_, w| unsafe {
-                w.eptype0()
-                    .bits(info.bank0.ep_type as u8)
-                    .eptype1()
-                    .bits(info.bank1.ep_type as u8)
-            });
-
-            if let Ok(mut bank) = self.bank0(EndpointAddress::from_parts(idx, UsbDirection::Out)) {
-                bank.flush_config();
-            }
-            if let Ok(mut bank) = self.bank1(EndpointAddress::from_parts(idx, UsbDirection::In)) {
-                bank.flush_config();
-            }
-        }
+        self.flush_eps(FlushConfigMode::Full);
 
         usb.ctrlb.modify(|_, w| w.detach().clear_bit());
     }
 
-    /// Configures all endpoints based on prior calls to alloc_ep(). Status
-    /// and flag registers are not cleared except for endpoint 0 - the samd51
-    ///  peripheral will clear them for us following a protocol reset.
-    fn flush_eps(&self) {
-        for idx in 1..8 {
-            let cfg = self.epcfg(idx);
-            let info = &self.endpoints.borrow().endpoints[idx];
-
-            // Endpoint interrupts are configured after the write to EPTYPE, as it appears writes
-            // to EPINTEN*[n] do not take effect unless the endpoint is already somewhat configured.
-            // The datasheet is ambiguous here, section 38.8.3.7 (Device Interrupt EndPoint Set n)
-            // of the SAM D5x/E5x states:
-            //    "This register is cleared by USB reset or when EPEN[n] is zero"
-            // EPEN[n] is not a register that exists, nor does it align with any other terminology.
-            // We assume this means setting EPCFG[n] to a non-zero value, but we do interrupt
-            // configuration last to be sure.
-            cfg.modify(|_, w| unsafe {
-                w.eptype0()
-                    .bits(info.bank0.ep_type as u8)
-                    .eptype1()
-                    .bits(info.bank1.ep_type as u8)
-            });
-
-            if let Ok(mut bank) = self.bank0(EndpointAddress::from_parts(idx, UsbDirection::Out)) {
-                bank.flush_config();
+    /// Configures all endpoints based on prior calls to alloc_ep().
+    fn flush_eps(&self, mode: FlushConfigMode) {
+        for idx in 0..8 {
+            match (mode, idx) {
+                // A flush due to a protocol reset need not reconfigure endpoint 0,
+                // except for enabling its interrupts.
+                (FlushConfigMode::ProtocolReset, 0) => {
+                    self.setup_ep_interrupts(EndpointAddress::from_parts(idx, UsbDirection::Out));
+                    self.setup_ep_interrupts(EndpointAddress::from_parts(idx, UsbDirection::In));
+                },
+                // A full flush configures all provisioned endpoints + enables interrupts.
+                // Endpoints 1-8 have identical behaviour when flushed due to protocol reset.
+                (FlushConfigMode::Full, _) | (FlushConfigMode::ProtocolReset, _) => {
+                    // Write bank configuration & endpoint type.
+                    self.flush_ep(idx);
+                    // Endpoint interrupts are configured after the write to EPTYPE, as it appears writes
+                    // to EPINTEN*[n] do not take effect unless the endpoint is already somewhat configured.
+                    // The datasheet is ambiguous here, section 38.8.3.7 (Device Interrupt EndPoint Set n)
+                    // of the SAM D5x/E5x states:
+                    //    "This register is cleared by USB reset or when EPEN[n] is zero"
+                    // EPEN[n] is not a register that exists, nor does it align with any other terminology.
+                    // We assume this means setting EPCFG[n] to a non-zero value, but we do interrupt
+                    // configuration last to be sure.
+                    self.setup_ep_interrupts(EndpointAddress::from_parts(idx, UsbDirection::Out));
+                    self.setup_ep_interrupts(EndpointAddress::from_parts(idx, UsbDirection::In));
+                }
             }
-            if let Ok(mut bank) = self.bank1(EndpointAddress::from_parts(idx, UsbDirection::In)) {
-                bank.flush_config();
-            }
-        }
-
-        //only reset ep0 epintenset
-        if let Ok(mut bank) = self.bank0(EndpointAddress::from_parts(0, UsbDirection::Out)) {
-            bank.setup_ep_interrupts();
-        }
-        if let Ok(mut bank) = self.bank1(EndpointAddress::from_parts(0, UsbDirection::In)) {
-            bank.setup_ep_interrupts();
         }
     }
 
-    /// protocol_reset is called by the USB HAL when it detects the host has performed a USB
-    /// reset.
+    /// flush_ep commits bank descriptor information for the endpoint pair,
+    /// and enables the endpoint according to its type.
+    fn flush_ep(&self, idx: usize) {
+        let cfg = self.epcfg(idx);
+        let info = &self.endpoints.borrow().endpoints[idx];
+        // Write bank descriptors first. We do this so there is no period in
+        // which the endpoint is enabled but has an invalid descriptor.
+        if let Ok(mut bank) = self.bank0(EndpointAddress::from_parts(idx, UsbDirection::Out)) {
+            bank.flush_config();
+        }
+        if let Ok(mut bank) = self.bank1(EndpointAddress::from_parts(idx, UsbDirection::In)) {
+            bank.flush_config();
+        }
+
+        // Set the endpoint type. At this point, the endpoint is enabled.
+        cfg.modify(|_, w| unsafe {
+            w.eptype0()
+                .bits(info.bank0.ep_type as u8)
+                .eptype1()
+                .bits(info.bank1.ep_type as u8)
+        });
+    }
+
+    /// setup_ep_interrupts enables interrupts for the given endpoint address.
+    fn setup_ep_interrupts(&self, ep_addr: EndpointAddress) {
+        if ep_addr.is_out() {
+            if let Ok(mut bank) = self.bank0(ep_addr) {
+                bank.setup_ep_interrupts();
+            }
+        } else {
+            if let Ok(mut bank) = self.bank1(ep_addr) {
+                bank.setup_ep_interrupts();
+            }
+        }
+    }
+
+    /// protocol_reset is called by the USB HAL when it detects the host has
+    /// performed a USB reset.
     fn protocol_reset(&self) {
         dbgprint!("UsbBus::reset\n");
-        self.flush_eps();
+        self.flush_eps(FlushConfigMode::ProtocolReset);
     }
 
     fn suspend(&self) {
