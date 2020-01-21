@@ -23,6 +23,14 @@ path = "../../hal"
 version = "~0.8"
 default-features = false
 
+[dependencies.usb-device]
+version = "~0.2"
+optional = true
+
+[dependencies.usbd-serial]
+version = "~0.1"
+optional = true
+
 [dev-dependencies]
 panic-halt = "~0.2"
 ssd1306 = "~0.2"
@@ -30,7 +38,21 @@ embedded-graphics = "^0.4.0"
 
 [features]
 # ask the HAL to enable atsamd21g18a support
-default = ["rt", "atsamd-hal/samd21g18a"]
+default = ["rt", "atsamd-hal/samd21g18a", "atsamd-hal/unproven"]
 rt = ["cortex-m-rt", "atsamd-hal/samd21g18a-rt"]
+usb = ["atsamd-hal/usb", "usb-device", "usbd-serial"]
 unproven = ["atsamd-hal/unproven"]
 use_semihosting = []
+
+[[example]]
+name = "blinky_basic"
+
+[[example]]
+name = "i2c_ssd1306"
+
+[[example]]
+name = "spi_ssd1306"
+
+[[example]]
+name = "usb_echo"
+required-features = ["usb"]
