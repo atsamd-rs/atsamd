@@ -310,12 +310,6 @@ impl<'a> Bank<'a, InBank> {
         self.epintflag(self.index()).read().trcpt1().bit()
     }
 
-    /// Indicates if a transfer failed.
-    #[inline]
-    fn is_transfer_failed(&self) -> bool {
-        self.epintflag(self.index()).read().trfail1().bit()
-    }
-
     /// Writes out endpoint configuration to its in-memory descriptor.
     fn flush_config(&mut self) {
         let config = self.config().clone();
@@ -405,12 +399,6 @@ impl<'a> Bank<'a, OutBank> {
     #[inline]
     fn is_transfer_complete(&self) -> bool {
         self.epintflag(self.index()).read().trcpt0().bit()
-    }
-
-    /// Returns true if the transfer failed.
-    #[inline]
-    fn is_transfer_failed(&self) -> bool {
-        self.epintflag(self.index()).read().trfail0().bit()
     }
 
     /// Returns true if a Received Setup interrupt has occurred.
@@ -887,16 +875,18 @@ impl Inner {
             let bank1 = self
                 .bank1(EndpointAddress::from_parts(idx, UsbDirection::In))
                 .unwrap();
-            if bank1.is_transfer_complete() && bank1.is_transfer_failed() {
-                //self.print_epstatus(idx, "WRITE FAIL");
-                ep_in_complete |= mask;
-                bank1.clear_transfer_complete();
-                continue;
-            }
             if bank1.is_transfer_complete() {
+                bank1.clear_transfer_complete();
                 dbgprint!("ep {} WRITE DONE\n", ep);
                 ep_in_complete |= mask;
-                bank1.clear_transfer_complete();
+                // Continuing (and hence not setting masks to indicate complete
+                // OUT transfers) is necessary for operation to proceed beyond
+                // the device-address + descriptor stage. The authors suspect a
+                // deadlock caused by waiting on a write when handling a read
+                // somewhere in an underlying class or control crate, but we
+                // can't be sure. Either way, if a write has finished, we only
+                // set the flag for a completed write on that endpoint index.
+                // Future polls will handle the reads.
                 continue;
             }
             drop(bank1);
@@ -911,15 +901,10 @@ impl Inner {
                 //  "This event should continue to be reported until the packet is read."
                 // So we don't clear the flag here, instead it is cleared in the read
                 // handler.
-                break;
             }
 
             if bank0.is_transfer_complete() {
                 dbgprint!("ep {} READABLE\n", ep);
-                ep_out |= mask;
-            }
-            if bank0.is_transfer_failed() {
-                self.print_epstatus(idx, "READ FAIL");
                 ep_out |= mask;
             }
         }
