@@ -8,7 +8,6 @@ extern crate usb_device;
 extern crate cortex_m;
 
 use hal::clock::GenericClockController;
-use hal::delay::Delay;
 use hal::prelude::*;
 use hal::entry;
 use hal::pac::{interrupt, CorePeripherals, Peripherals};
@@ -33,12 +32,7 @@ fn main() -> ! {
         &mut peripherals.NVMCTRL,
     );
     let mut pins = hal::Pins::new(peripherals.PORT);
-    unsafe {
-        RED_LED = Some(pins.d13.into_open_drain_output(&mut pins.port));
-        RED_LED.as_mut().map(|led| {
-            led.set_low().unwrap();
-        });
-    }
+    let mut red_led = pins.d13.into_open_drain_output(&mut pins.port);
 
     let bus_allocator = unsafe {
         USB_ALLOCATOR = Some(hal::usb_allocator(
@@ -69,22 +63,20 @@ fn main() -> ! {
         NVIC::unmask(interrupt::USB);
     }
 
+    // Flash the LED in a spin loop to demonstrate that USB is
+    // entirely interrupt driven.
     loop {
-        // cycle_delay(5 * 1024 * 1024);
-        // red_led.set_high().unwrap();
-        // cycle_delay(5 * 1024 * 1024);
-        // red_led.set_low().unwrap();
+        cycle_delay(15 * 1024 * 1024);
+        red_led.toggle();
     }
 }
 
-static mut RED_LED: Option<hal::gpio::Pa17<hal::gpio::Output<hal::gpio::OpenDrain>>> = None;
 static mut USB_ALLOCATOR: Option<UsbBusAllocator<UsbBus>> = None;
 static mut USB_BUS: Option<UsbDevice<UsbBus>> = None;
 static mut USB_SERIAL: Option<SerialPort<UsbBus>> = None;
 
 fn poll_usb() {
     unsafe {
-        RED_LED.as_mut().map(|led| led.toggle() );
         USB_BUS.as_mut().map(|usb_dev| {
             USB_SERIAL.as_mut().map(|serial| {
                 usb_dev.poll(&mut [serial]);

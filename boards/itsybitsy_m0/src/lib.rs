@@ -235,9 +235,7 @@ pub fn usb_allocator(
     port: &mut Port,
 ) -> UsbBusAllocator<UsbBus> {
     let gclk0 = clocks.gclk0();
-    dbgprint!("making usb clock");
     let usb_clock = &clocks.usb(&gclk0).unwrap();
-    dbgprint!("got clock");
 
     UsbBusAllocator::new(UsbBus::new(
         usb_clock,

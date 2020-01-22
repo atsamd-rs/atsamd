@@ -19,6 +19,10 @@ use usb_device::bus::PollResult;
 use usb_device::endpoint::{EndpointAddress, EndpointType};
 use usb_device::{Result as UsbResult, UsbDirection, UsbError};
 
+use crate::dbgprint;
+#[cfg(feature = "use_uart_debug")]
+use crate::uart_debug;
+
 /// EndpointTypeBits represents valid values for the EPTYPE fields in
 /// the EPCFGn registers.
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
