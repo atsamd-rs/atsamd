@@ -428,8 +428,8 @@ fn configure_and_enable_dfll48m(sysctrl: &mut SYSCTRL, use_external_crystal: boo
             // chill cycle disable
             w.ccdis().set_bit();
 
-            // usb correction
-            w.usbcrm().set_bit();
+            // usb correction is not set due to instability issues around
+            // USB bus resets. TODO(twitchyliquid64): Maybe switch to OSC8M?
 
             // bypass coarse lock (have calibration data)
             w.bplckc().set_bit()
