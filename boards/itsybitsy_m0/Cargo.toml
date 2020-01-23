@@ -1,6 +1,6 @@
 [package]
 name = "itsybitsy_m0"
-version = "0.6.0"
+version = "0.7.0"
 authors = ["Ben Bergman <ben@benbergman.ca>"]
 description = "Board Support crate for the Adafruit ItsyBitsy M0"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
