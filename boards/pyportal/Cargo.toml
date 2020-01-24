@@ -34,12 +34,10 @@ panic-semihosting = "~0.5"
 panic_rtt = "~0.2"
 cortex-m-semihosting = "~0.3"
 cortex-m-rtfm = "~0.4"
-smart-leds = "~0.1"
-ws2812-nop-samd51 = { git = "https://github.com/smart-leds-rs/ws2812-nop-samd51.git" }
+smart-leds = "~0.3"
 
 [dev-dependencies.ws2812-timer-delay]
-version = "~0.1"
-features = ["slow"]
+version = "~0.3"
 
 [features]
 # ask the HAL to enable atsamd51j20a support
@@ -51,9 +49,9 @@ rt = ["cortex-m-rt", "atsamd-hal/samd51j20a-rt"]
 incremental = false
 codegen-units = 1
 debug = true
-lto = false
+lto = true
 
 [profile.release]
 debug = true
-lto = false
+lto = true
 opt-level = "s"
