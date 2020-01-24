@@ -1,3 +1,5 @@
+//! Rotate all neopixel leds through a rainbow. Uses a Timer as a timer source.
+
 #![no_std]
 #![no_main]
 
