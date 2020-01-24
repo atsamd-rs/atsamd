@@ -121,7 +121,7 @@ $ cargo build --manifest-path metro_m0/Cargo.toml \
     --example blinky_basic --features use_semihosting
 ```
 
-## Getting code onto the device: hf2-rs
+## Getting code onto the devices with bootloaders: hf2-rs
 
 [hf2-rs](https://github.com/jacobrosenthal/hf2-rs) implements [Microsofts HID Flashing Format (HF2)](https://github.com/microsoft/uf2/blob/86e101e3a282553756161fe12206c7a609975e70/hf2.md) to upload firmware to UF2 bootloaders. UF2 is factory programmed extensively by [Microsoft MakeCode](https://www.microsoft.com/en-us/makecode) and [Adafruit](https://www.adafruit.com/) hardware.
 
@@ -137,6 +137,28 @@ For more information, refer to the `README` files for each crate:
 * [hf2 library (`hf2`)](https://github.com/jacobrosenthal/hf2-rs/tree/master/hf2)
 * [hf2 binary (`hf2-cli`)](https://github.com/jacobrosenthal/hf2-rs/tree/master/hf2-cli)
 * [hf2 cargo subcommand (`hf2-cargo`)](https://github.com/jacobrosenthal/hf2-rs/tree/master/cargo-hf2)
+
+## Getting code onto the devices with bootloaders: uf2conv-rs
+
+[uf2conv-rs](https://github.com/sajattack/uf2conv-rs) adds a uf2 header [Microsofts HID Flashing Format (UF2)](https://github.com/microsoft/uf2/blob/86e101e3a282553756161fe12206c7a609975e70/README.md) for copying over to UF2 bootloader mass storage devices. UF2 is factory programmed extensively by [Microsoft MakeCode](https://www.microsoft.com/en-us/makecode) and [Adafruit](https://www.adafruit.com/) hardware.
+[cargo-binutils](https://github.com/rust-embedded/cargo-binutils) replaces the `cargo build` command to find and convert elf files into binary. 
+
+Install the dependencies
+```bash
+$ rustup component add llvm-tools-preview
+$ cargo install uf2conv cargo-binutils
+```
+
+Then for say, metro_m0 examples
+```bash
+$ cargo objcopy --example blinky_basic --features unproven --release -- -O binary blinky_basic.bin
+$ uf2conv-rs blinky_basic.bin --base 0x2000 --output blinky_basic.uf2
+$ cp blinky_basic.uf2 /Volumes/PYGAMERBOOT/
+```
+
+For more information, refer to the `README` files for each crate:
+* [uf2conv-rs (`uf2conv-rs`)](https://github.com/sajattack/uf2conv-rs)
+* [cargo-binutils (`cargo-binutils`)](https://github.com/rust-embedded/cargo-binutils)
 
 ## Adding a new board
 
