@@ -11,7 +11,7 @@ use crate::target_device::{MCLK, USB};
 use crate::usb::devicedesc::DeviceDescBank;
 use core::cell::{Ref, RefCell, RefMut};
 use core::marker::PhantomData;
-use core::mem;
+use core::mem::{self, MaybeUninit};
 use cortex_m::interrupt::{free as disable_interrupts, Mutex};
 use cortex_m::singleton;
 use usb_device;
@@ -154,7 +154,7 @@ impl AllEndpoints {
 // FIXME: replace with more general heap?
 const BUFFER_SIZE: usize = 2048;
 fn buffer() -> &'static mut [u8; BUFFER_SIZE] {
-    singleton!(: [u8; BUFFER_SIZE] = unsafe{mem::uninitialized()}).unwrap()
+    singleton!(: [u8; BUFFER_SIZE] = unsafe{MaybeUninit::uninit().assume_init()}).unwrap()
 }
 
 struct BufferAllocator {
@@ -613,9 +613,12 @@ impl Inner {
 
     fn set_stall<EP: Into<EndpointAddress>>(&self, ep: EP, stall: bool) {
         let ep = ep.into();
-        let idx = ep.index();
-        let dir = ep.direction();
-        dbgprint!("UsbBus::stall={} for {:?} {}\n", stall, dir, idx);
+        dbgprint!(
+            "UsbBus::stall={} for {:?} {}\n",
+            stall,
+            ep.direction(),
+            ep.index()
+        );
         if ep.is_out() {
             if let Ok(mut bank) = self.bank0(ep) {
                 bank.set_stall(stall);
@@ -625,11 +628,13 @@ impl Inner {
         }
     }
 
+    #[allow(unused_variables)]
     fn print_epstatus(&self, ep: usize, label: &str) {
         let status = self.epstatus(ep).read();
         let epint = self.epintflag(ep).read();
         let intflag = self.usb().intflag.read();
 
+        #[allow(unused_mut)]
         let mut desc = self.desc.borrow_mut();
 
         dbgprint!("ep{} status {}:\n    bk1rdy={} stallrq1={} stall1={} trcpt1={} trfail1={} byte_count1={} multi_packet_size1={}\n    bk0rdy={} stallrq0={} stall0={} trcpt0={} trfail0={} byte_count0={} multi_packet_size0={}\n    curbk={} dtglin={} dtglout={} rxstp={}   lpmsusp={} lpmnyet={} ramacer={} uprsm={} eorsm={} wakeup={} eorst={} sof={} suspend={}\n",
@@ -722,7 +727,7 @@ impl Inner {
                 (FlushConfigMode::ProtocolReset, 0) => {
                     self.setup_ep_interrupts(EndpointAddress::from_parts(idx, UsbDirection::Out));
                     self.setup_ep_interrupts(EndpointAddress::from_parts(idx, UsbDirection::In));
-                },
+                }
                 // A full flush configures all provisioned endpoints + enables interrupts.
                 // Endpoints 1-8 have identical behaviour when flushed due to protocol reset.
                 (FlushConfigMode::Full, _) | (FlushConfigMode::ProtocolReset, _) => {
@@ -968,12 +973,11 @@ impl Inner {
             match size {
                 Ok(size) => {
                     //dbgprint!("UsbBus::read {} bytes ok", size);
-                    let got = &buf[..size as usize];
                     dbgprint!(
                         "UsbBus::read {} bytes from ep {:?} -> {:?}\n",
                         size,
                         ep,
-                        got
+                        &buf[..size as usize]
                     );
                     Ok(size)
                 }

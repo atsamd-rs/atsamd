@@ -57,6 +57,7 @@ impl DeviceDescBank {
     /// When enabled, the USB module will manage the ZLP handshake by hardware.
     /// This bit is for IN endpoints only. When disabled the handshake should be
     /// managed by firmware.
+    #[allow(unused)]
     pub fn set_auto_zlp(&mut self, enable: bool) {
         self.pcksize.set_auto_zlp(enable);
     }
@@ -77,6 +78,7 @@ impl DeviceDescBank {
         self.pcksize.set_size(size);
     }
 
+    #[allow(unused)]
     pub fn get_endpoint_size(&self) -> u16 {
         let bits = self.pcksize.size();
         match bits {
@@ -102,6 +104,7 @@ impl DeviceDescBank {
     /// For OUT endpoints, MULTI_PACKET_SIZE holds the total data
     /// size for the complete transfer. This value must be a multiple of the
     /// maximum packet size.
+    #[allow(dead_code)]
     pub fn get_multi_packet_size(&self) -> u16 {
         self.pcksize.multi_packet_size() as u16
     }
@@ -124,16 +127,19 @@ impl DeviceDescBank {
         self.pcksize.byte_count() as u16
     }
 
+    #[allow(unused)]
     pub fn link_state(&self) -> u8 {
         // every value except 1 (L1 sleep) is reserved
         self.extreg.link_state() as u8
     }
 
     /// best effort service latency
+    #[allow(unused)]
     pub fn besl(&self) -> u8 {
         self.extreg.besl() as u8
     }
 
+    #[allow(unused)]
     pub fn remote_wake(&self) -> bool {
         self.extreg.remote_wake()
     }
@@ -141,6 +147,7 @@ impl DeviceDescBank {
     /// These bits define the SUBPID field of a received extended token. These
     /// bits are updated when the USB has answered by an handshake token
     /// ACK to a LPM transaction
+    #[allow(unused)]
     pub fn subpid(&self) -> u8 {
         self.extreg.subpid() as u8
     }
@@ -151,12 +158,14 @@ impl DeviceDescBank {
     /// an overrun condition has occurred.  For IN transfer, this bit is not
     /// valid. EPSTATUS.TRFAIL0 and EPSTATUS.TRFAIL1 should reflect the flow
     /// errors.
+    #[allow(unused)]
     pub fn error_flow(&self) -> bool {
         self.status_bk.error_flow()
     }
 
     /// This bit defines the CRC Error Status.  This bit is set when a CRC
     /// error has been detected in an isochronous OUT endpoint bank
+    #[allow(unused)]
     pub fn crc_error(&self) -> bool {
         self.status_bk.crc_error()
     }
