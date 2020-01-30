@@ -31,6 +31,10 @@ optional = true
 version = "~0.1"
 optional = true
 
+[dependencies.usbd-hid]
+version = "~0.3"
+optional = true
+
 [dev-dependencies]
 panic-halt = "~0.2"
 ssd1306 = "~0.2"
@@ -40,7 +44,7 @@ embedded-graphics = "^0.4.0"
 # ask the HAL to enable atsamd21g18a support
 default = ["rt", "atsamd-hal/samd21g18a"]
 rt = ["cortex-m-rt", "atsamd-hal/samd21g18a-rt"]
-usb = ["atsamd-hal/usb", "usb-device", "usbd-serial"]
+usb = ["atsamd-hal/usb", "usb-device", "usbd-serial", "usbd-hid"]
 unproven = ["atsamd-hal/unproven"]
 use_semihosting = []
 
@@ -55,4 +59,8 @@ name = "spi_ssd1306"
 
 [[example]]
 name = "usb_echo"
+required-features = ["usb"]
+
+[[example]]
+name = "twitching_usb_mouse"
 required-features = ["usb"]
