@@ -91,3 +91,6 @@ name = "ssd1306_terminalmode_128x64_i2c"
 
 [[example]]
 name = "ssd1306_graphicsmode_128x64_spi"
+
+[[example]]
+name = "ssd1306_terminalmode_128x64_spi"
