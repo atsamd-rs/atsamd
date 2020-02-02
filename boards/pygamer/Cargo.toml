@@ -20,7 +20,7 @@ nb = "~0.1"
 st7735-lcd = "~0.5"
 
 [dependencies.cortex-m-rt]
-version = "~0.6"
+version = "~0.6.12"
 optional = true
 
 [dependencies.atsamd-hal]
