@@ -233,6 +233,38 @@ impl SPI {
             ),
         )
     }
+
+    /// Convenience for setting up the labelled pins to operate as an
+    /// SPI master in half-duplex (transmit only) mode, running at
+    /// the specified frequency.
+    pub fn spi_master_half_duplex<F: Into<Hertz>>(
+        self,
+        clocks: &mut GenericClockController,
+        bus_speed: F,
+        sercom1: SERCOM1,
+        mclk: &mut MCLK,
+        port: &mut Port,
+    ) -> SPIMaster1<
+        hal::sercom::Sercom1Pad3<gpio::Pb23<gpio::PfC>>,
+        hal::sercom::Sercom1Pad0<gpio::Pa0<gpio::PfD>>,
+        hal::sercom::Sercom1Pad1<gpio::Pa1<gpio::PfD>>,
+    > {
+        let gclk0 = clocks.gclk0();
+        SPIMaster1::new(
+            &clocks.sercom1_core(&gclk0).unwrap(),
+            bus_speed.into(),
+            hal::hal::spi::Mode {
+                phase: hal::hal::spi::Phase::CaptureOnFirstTransition,
+                polarity: hal::hal::spi::Polarity::IdleLow,
+            },
+            sercom1,
+            mclk,
+            (
+                self.mosi.into_pad(port),
+                self.sck.into_pad(port),
+            ),
+        )
+    }
 }
 
 /// I2C pins

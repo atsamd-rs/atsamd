@@ -18,6 +18,7 @@ pub enum Error {
 /// sense.
 pub trait DipoDopo {
     fn dipo_dopo(&self) -> (u8, u8);
+    fn uses_miso(&self) -> bool;
 }
 
 /// Define an SPIMasterX type for the given Sercom number.
@@ -34,7 +35,7 @@ macro_rules! spi_master {
             ///
             /// Defines which sercom pad is mapped to which SPI function.
             pub struct [<$Type Padout>]<MISO, MOSI, SCK> {
-                _miso: MISO,
+                miso: Option<MISO>,
                 _mosi: MOSI,
                 _sck: SCK,
             }
@@ -52,13 +53,23 @@ macro_rules! spi_master {
                     /// Convert from a tuple of (MISO, MOSI, SCK) to SPIMasterXPadout
                     impl<PIN0, PIN1, PIN2> From<([<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, [<$Sercom $pad2>]<PIN2>)> for [<$Type Padout>]<[<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, [<$Sercom $pad2>]<PIN2>> {
                         fn from(pads: ([<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, [<$Sercom $pad2>]<PIN2>)) -> [<$Type Padout>]<[<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, [<$Sercom $pad2>]<PIN2>> {
-                            [<$Type Padout>] { _miso: pads.0, _mosi: pads.1, _sck: pads.2 }
+                            [<$Type Padout>] { miso: Some(pads.0), _mosi: pads.1, _sck: pads.2 }
+                        }
+                    }
+
+                    /// Convert from a tuple of (MOSI, SCK) to SPIMasterXPadout
+                    impl<PIN0, PIN1, PIN2> From<([<$Sercom $pad1>]<PIN1>, [<$Sercom $pad2>]<PIN2>)> for [<$Type Padout>]<[<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, [<$Sercom $pad2>]<PIN2>> {
+                        fn from(pads: ([<$Sercom $pad1>]<PIN1>, [<$Sercom $pad2>]<PIN2>)) -> [<$Type Padout>]<[<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, [<$Sercom $pad2>]<PIN2>> {
+                            [<$Type Padout>] { miso: None, _mosi: pads.0, _sck: pads.1 }
                         }
                     }
 
                     impl<PIN0, PIN1, PIN2> DipoDopo for [<$Type Padout>]<[<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, [<$Sercom $pad2>]<PIN2>> {
                         fn dipo_dopo(&self) -> (u8, u8) {
                             $dipo_dopo
+                        }
+                        fn uses_miso(&self) -> bool {
+                            self.miso.is_some()
                         }
                     }
                 }
@@ -120,10 +131,13 @@ macro_rules! spi_master {
                         // wait for configuration to take effect
                         while sercom.spi().syncbusy.read().enable().bit_is_set() {}
 
-                        // 8 bit data size and enable the receiver
+                        // 8 bit data size, enable the reciever if MISO was provided
                         sercom.spi().ctrlb.modify(|_, w|{
                             w.chsize().bits(0);
-                            w.rxen().set_bit()
+                            if padout.uses_miso() {
+                                w.rxen().set_bit();
+                            }
+                            w
                         });
 
                         // set the baud rate
