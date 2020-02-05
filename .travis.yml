@@ -9,7 +9,7 @@ rust:
 env:
   - CRATE=boards/metro_m0 EXAMPLES="--example=blinky_basic --example=blinky_rtfm" FEATURES="--features=unproven"   
   - CRATE=boards/metro_m4 FEATURES="--features=unproven"
-  - CRATE=boards/feather_m0 FEATURES="--features=unproven"
+  - CRATE=boards/feather_m0 EXAMPLES="--example=blinky_basic --example=usb_echo --example=pwm" FEATURES="--features=unproven,usb"
   - CRATE=boards/feather_m4 FEATURES="--features=unproven"
   - CRATE=boards/gemma_m0 FEATURES="--features=unproven"
   - CRATE=boards/itsybitsy_m0 FEATURES="--features=unproven"
