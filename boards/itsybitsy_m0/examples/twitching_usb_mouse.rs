@@ -16,7 +16,8 @@ use hal::usb::UsbBus;
 use usb_device::bus::UsbBusAllocator;
 use usb_device::prelude::*;
 use usbd_hid::hid_class::{HIDClass};
-use usbd_hid::descriptor::{SerializedDescriptor, MouseReport};
+use usbd_hid::descriptor::MouseReport;
+use usbd_hid::descriptor::generator_prelude::*;
 
 use cortex_m::asm::delay as cycle_delay;
 use cortex_m::peripheral::NVIC;
@@ -34,6 +35,7 @@ fn main() -> ! {
     );
     let mut pins = hal::Pins::new(peripherals.PORT);
     let mut red_led = pins.d13.into_open_drain_output(&mut pins.port);
+    red_led.set_low().unwrap();
 
     let bus_allocator = unsafe {
         USB_ALLOCATOR = Some(hal::usb_allocator(
@@ -65,13 +67,10 @@ fn main() -> ! {
     }
 
     loop {
-        flash_red_led(&mut red_led);
-        push_mouse_movement(MouseReport{buttons: 0, x: 0, y: 5}).unwrap();
         cycle_delay(25 * 1024 * 1024);
-
-        flash_red_led(&mut red_led);
-        push_mouse_movement(MouseReport{buttons: 0, x: 0, y: -5}).unwrap();
+        push_mouse_movement(MouseReport{x: 0, y: 4, buttons: 0}).ok().unwrap_or(0);
         cycle_delay(25 * 1024 * 1024);
+        push_mouse_movement(MouseReport{x: 0, y: -4, buttons: 0}).ok().unwrap_or(0);
     }
 }
 
@@ -79,16 +78,10 @@ fn push_mouse_movement(report: MouseReport) -> Result<usize, usb_device::UsbErro
     disable_interrupts(|_| {
         unsafe {
             USB_HID.as_mut().map(|hid| {
-                hid.push_input(&core::mem::transmute::<MouseReport, [u8; 3]>(report))
+                hid.push_input(&report)
             })
         }
     }).unwrap()
-}
-
-fn flash_red_led(red_led: &mut hal::gpio::Pa17<hal::gpio::Output<hal::gpio::OpenDrain>>) {
-    red_led.set_high().unwrap();
-    cycle_delay(50 * 1024);
-    red_led.set_low().unwrap();
 }
 
 static mut USB_ALLOCATOR: Option<UsbBusAllocator<UsbBus>> = None;
