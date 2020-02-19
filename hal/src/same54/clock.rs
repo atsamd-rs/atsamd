@@ -371,8 +371,11 @@ impl GenericClockController {
 
 clock_generator!(
     (tc0_tc1, Tc0Tc1Clock, TC0_TC1),
+    (tcc0_tcc1, Tcc0Tcc1Clock, TCC0_TCC1),
     (tc2_tc3, Tc2Tc3Clock, TC2_TC3),
+    (tcc2_tcc3, Tcc2Tcc3Clock, TCC2_TCC3),
     (tc4_tc5, Tc4Tc5Clock, TC4_TC5),
+    (tcc4, Tcc4Clock, TCC4),
     (tc6_tc7, Tc6Tc7Clock, TC6_TC7),
     (sercom0_core, Sercom0CoreClock, SERCOM0_CORE),
     (sercom1_core, Sercom1CoreClock, SERCOM1_CORE),
@@ -385,7 +388,34 @@ clock_generator!(
     (usb, UsbClock, USB),
     (adc0, Adc0Clock, ADC0),
     (adc1, Adc1Clock, ADC1),
+    (eic, EicClock, EIC),
+    (freq_m_msr, FreqmMsrClock, FREQM_MSR),
+    (freq_m_ref, FreqmRefClock, FREQM_REF),
+    (evsys0, Evsys0Clock, EVSYS0),
+    (evsys1, Evsys1Clock, EVSYS1),
+    (evsys2, Evsys2Clock, EVSYS2),
+    (evsys3, Evsys3Clock, EVSYS3),
+    (evsys4, Evsys4Clock, EVSYS4),
+    (evsys5, Evsys5Clock, EVSYS5),
+    (evsys6, Evsys6Clock, EVSYS6),
+    (evsys7, Evsys7Clock, EVSYS7),
+    (evsys8, Evsys8Clock, EVSYS8),
+    (evsys9, Evsys9Clock, EVSYS9),
+    (evsys10, Evsys10Clock, EVSYS10),
+    (evsys11, Evsys11Clock, EVSYS11),
+    (can0, Can0Clock, CAN0),
+    (can1, Can1Clock, CAN1),
+    (pdec, PdecClock, PDEC),
+    (ac, AcClock, AC),
+    (ccl, CclClock, CCL),
+    (dac, DacClock, DAC),
+    (i2s0, I2S0Clock, I2S0),
+    (i2s1, I2S1Clock, I2S1),
+    (sdhc0, Sdhc0Clock, SDHC0),
+    (sdhc1, Sdhc1Clock, SDHC1),
+    (cm4_trace, Cm4TraceClock, CM4_TRACE),
 );
+
 
 /// The frequency of the 48Mhz source.
 pub const OSC48M_FREQ: Hertz = Hertz(48_000_000);
