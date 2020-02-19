@@ -383,6 +383,7 @@ clock_generator!(
     (usb, UsbClock, USB),
     (adc0, Adc0Clock, ADC0),
     (adc1, Adc1Clock, ADC1),
+    (eic, EicClock, EIC),
     (freq_m_msr, FreqmMsrClock, FREQM_MSR),
     (freq_m_ref, FreqmRefClock, FREQM_REF),
     (evsys0, Evsys0Clock, EVSYS0),
