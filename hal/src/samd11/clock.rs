@@ -309,6 +309,18 @@ clock_generator!(
     (usb, UsbClock, USB),
     (rtc, RtcClock, RTC),
     (adc, AdcClock, ADC),
+    (wdt, WdtClock, WDT),
+    (eic, EicClock, EIC),
+    (evsys0, Evsys0Clock, EVSYS_CHANNEL_0),
+    (evsys1, Evsys1Clock, EVSYS_CHANNEL_1),
+    (evsys2, Evsys2Clock, EVSYS_CHANNEL_2),
+    (evsys3, Evsys3Clock, EVSYS_CHANNEL_3),
+    (evsys4, Evsys4Clock, EVSYS_CHANNEL_4),
+    (evsys5, Evsys5Clock, EVSYS_CHANNEL_5),
+    (ac_dig, AcDigClock, AC_DIG),
+    (ac_ana AcAnaClock, AC_ANA),
+    (dac, DacClock, DAC),
+    (ptc, PtcClock, PTC),
 );
 
 /// The frequency of the 48Mhz source.
