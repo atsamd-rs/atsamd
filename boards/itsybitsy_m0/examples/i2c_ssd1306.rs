@@ -9,13 +9,15 @@ extern crate ssd1306;
 
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
-use hal::prelude::*;
-use hal::time::KiloHertz;
 use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
+use hal::prelude::*;
+use hal::time::KiloHertz;
 
+use embedded_graphics::pixelcolor::BinaryColor;
 use embedded_graphics::prelude::*;
-use embedded_graphics::primitives::{Circle, Line, Rect};
+use embedded_graphics::primitives::{Circle, Line, Rectangle};
+use embedded_graphics::style::PrimitiveStyleBuilder;
 use ssd1306::prelude::*;
 use ssd1306::Builder;
 
@@ -43,38 +45,46 @@ fn main() -> ! {
         &mut pins.port,
     );
 
-    let mut disp: GraphicsMode<_> = Builder::new().connect_i2c(i2c).into();
+    // NOTE the `DisplaySize` enum comes from the ssd1306 package,
+    // and currently only supports certain display sizes; see
+    // https://jamwaffles.github.io/ssd1306/master/ssd1306/prelude/enum.DisplaySize.html
+    let mut disp: GraphicsMode<_> = Builder::new()
+        .size(DisplaySize::Display128x32)
+        .connect_i2c(i2c)
+        .into();
 
     disp.init().unwrap();
     disp.flush().unwrap();
 
-    disp.draw(
-        Line::new(Coord::new(8, 16 + 16), Coord::new(8 + 16, 16 + 16))
-            .with_stroke(Some(1u8.into()))
-            .into_iter(),
-    );
-    disp.draw(
-        Line::new(Coord::new(8, 16 + 16), Coord::new(8 + 8, 16))
-            .with_stroke(Some(1u8.into()))
-            .into_iter(),
-    );
-    disp.draw(
-        Line::new(Coord::new(8 + 16, 16 + 16), Coord::new(8 + 8, 16))
-            .with_stroke(Some(1u8.into()))
-            .into_iter(),
-    );
+    let style = PrimitiveStyleBuilder::new()
+        .stroke_color(BinaryColor::On)
+        .stroke_width(1)
+        .build();
 
-    disp.draw(
-        Rect::new(Coord::new(48, 16), Coord::new(48 + 16, 16 + 16))
-            .with_stroke(Some(1u8.into()))
-            .into_iter(),
-    );
+    Line::new(Point::new(8, 16 + 16), Point::new(8 + 16, 16 + 16))
+        .into_styled(style)
+        .draw(&mut disp)
+        .unwrap();
 
-    disp.draw(
-        Circle::new(Coord::new(96, 16 + 8), 8)
-            .with_stroke(Some(1u8.into()))
-            .into_iter(),
-    );
+    Line::new(Point::new(8, 16 + 16), Point::new(8 + 8, 16))
+        .into_styled(style)
+        .draw(&mut disp)
+        .unwrap();
+
+    Line::new(Point::new(8 + 16, 16 + 16), Point::new(8 + 8, 16))
+        .into_styled(style)
+        .draw(&mut disp)
+        .unwrap();
+
+    Rectangle::new(Point::new(48, 16), Point::new(48 + 16, 16 + 16))
+        .into_styled(style)
+        .draw(&mut disp)
+        .unwrap();
+
+    Circle::new(Point::new(96, 16 + 8), 8)
+        .into_styled(style)
+        .draw(&mut disp)
+        .unwrap();
 
     disp.flush().unwrap();
 
