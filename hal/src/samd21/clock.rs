@@ -460,5 +460,12 @@ fn configure_and_enable_dfll48m(sysctrl: &mut SYSCTRL, use_external_crystal: boo
     // and finally enable it!
     sysctrl.dfllctrl.modify(|_, w| w.enable().set_bit());
 
+    if use_external_crystal {
+        // wait for lock
+        while sysctrl.pclksr.read().dflllckc().bit_is_clear()
+            || sysctrl.pclksr.read().dflllckf().bit_is_clear()
+        {}
+    }
+
     wait_for_dfllrdy(sysctrl);
 }
