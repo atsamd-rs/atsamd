@@ -65,7 +65,8 @@ impl State {
             // divide directly by divider, rather than exponential
             w.divsel().clear_bit();
             w.idc().bit(improve_duty_cycle);
-            w.genen().set_bit()
+            w.genen().set_bit();
+            w.oe().set_bit()
         });
         self.wait_for_sync();
     }
