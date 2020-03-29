@@ -66,6 +66,7 @@ use hal::time::MegaHertz;
 use embedded_graphics::pixelcolor::BinaryColor;
 use embedded_graphics::prelude::*;
 use embedded_graphics::primitives::{Circle, Rectangle, Triangle};
+use embedded_graphics::style::PrimitiveStyleBuilder;
 use ssd1306::prelude::*;
 use ssd1306::Builder;
 
@@ -108,38 +109,39 @@ fn main() -> ! {
     let x_max = 127;
     let y_max = 63;
 
+    let style = PrimitiveStyleBuilder::new()
+        .stroke_color(BinaryColor::On)
+        .stroke_width(1)
+        .build();
+
     // screen outline
-    disp.draw(
-        Rectangle::new(Point::new(0, 0), Point::new(x_max, y_max))
-            .stroke(Some(BinaryColor::On))
-            .into_iter(),
-    );
+    Rectangle::new(Point::new(0, 0), Point::new(x_max, y_max))
+        .into_styled(style)
+        .draw(&mut disp)
+        .unwrap();
 
     // triangle
     // 'Triangle' requires 'embedded_graphics' 0.6 or newer...
-    disp.draw(
-        Triangle::new(
-            Point::new(16, 16 + yoffset),
-            Point::new(16 + 16, 16 + yoffset),
-            Point::new(16 + 8, yoffset),
-        )
-        .stroke(Some(BinaryColor::On))
-        .into_iter(),
-    );
+    Triangle::new(
+        Point::new(16, 16 + yoffset),
+        Point::new(16 + 16, 16 + yoffset),
+        Point::new(16 + 8, yoffset),
+    )
+    .into_styled(style)
+    .draw(&mut disp)
+    .unwrap();
 
     // square
-    disp.draw(
-        Rectangle::new(Point::new(54, yoffset), Point::new(54 + 16, 16 + yoffset))
-            .stroke(Some(BinaryColor::On))
-            .into_iter(),
-    );
+    Rectangle::new(Point::new(54, yoffset), Point::new(54 + 16, 16 + yoffset))
+        .into_styled(style)
+        .draw(&mut disp)
+        .unwrap();
 
     // circle
-    disp.draw(
-        Circle::new(Point::new(100, 8 + yoffset), 8)
-            .stroke(Some(BinaryColor::On))
-            .into_iter(),
-    );
+    Circle::new(Point::new(100, 8 + yoffset), 8)
+        .into_styled(style)
+        .draw(&mut disp)
+        .unwrap();
 
     disp.flush().unwrap();
 

@@ -371,7 +371,8 @@ impl Display {
         let tft_dc = self.tft_dc.into_push_pull_output(port);
         let tft_reset = self.tft_reset.into_push_pull_output(port);
 
-        let mut display = st7735_lcd::ST7735::new(tft_spi, tft_dc, tft_reset, true, false);
+        let mut display =
+            st7735_lcd::ST7735::new(tft_spi, tft_dc, tft_reset, true, false, 160, 128);
         display.init(delay)?;
         display.set_orientation(&Orientation::LandscapeSwapped)?;
 
