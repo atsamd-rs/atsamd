@@ -13,7 +13,7 @@ use hal::pac::{CorePeripherals, Peripherals};
 fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
     let core = CorePeripherals::take().unwrap();
-    let mut clocks = GenericClockController::with_internal_32kosc(
+    let mut clocks = GenericClockController::with_external_32kosc(
         peripherals.GCLK,
         &mut peripherals.PM,
         &mut peripherals.SYSCTRL,

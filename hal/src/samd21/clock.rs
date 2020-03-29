@@ -65,7 +65,8 @@ impl State {
             // divide directly by divider, rather than exponential
             w.divsel().clear_bit();
             w.idc().bit(improve_duty_cycle);
-            w.genen().set_bit()
+            w.genen().set_bit();
+            w.oe().set_bit()
         });
         self.wait_for_sync();
     }
@@ -459,6 +460,13 @@ fn configure_and_enable_dfll48m(sysctrl: &mut SYSCTRL, use_external_crystal: boo
 
     // and finally enable it!
     sysctrl.dfllctrl.modify(|_, w| w.enable().set_bit());
+
+    if use_external_crystal {
+        // wait for lock
+        while sysctrl.pclksr.read().dflllckc().bit_is_clear()
+            || sysctrl.pclksr.read().dflllckf().bit_is_clear()
+        {}
+    }
 
     wait_for_dfllrdy(sysctrl);
 }
