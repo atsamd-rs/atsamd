@@ -164,6 +164,15 @@ For more information, refer to the `README` files for each crate:
 
 See our wiki page for a [complete guide](https://github.com/atsamd-rs/atsamd/wiki/Adding-a-new-board) on adding a new board.
 
+## SVD File Patching
+
+Any errors found in the vendor-supplied SVD files can be patched using [svdtools]. For information on how to write patches, please refer to the [Device and Peripheral YAML Format] section of the [svdtools] README.
+
+Device-specific changes can be applied in the device'a patch file, eg.) `svd/devices/atsamd21e18a.yaml`. Changes common to one or more devices can be placed in their own file within `svd/devices/common_patches/`, and included in the applicable devices' patch files.
+
+[svdtools]: https://github.com/stm32-rs/svdtools
+[Device and Peripheral YAML Format]: https://github.com/stm32-rs/svdtools#device-and-peripheral-yaml-format
+
 ## License
 
 The included SVD files are sourced from http://packs.download.atmel.com/ and
