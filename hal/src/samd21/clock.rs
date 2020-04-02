@@ -126,6 +126,7 @@ impl GenericClockController {
         let mut state = State { gclk };
 
         set_flash_to_half_auto_wait_state(nvmctrl);
+        set_flash_manual_write(nvmctrl);
         enable_gclk_apb(pm);
         if use_external_crystal {
             enable_external_32kosc(sysctrl);
@@ -343,6 +344,11 @@ pub const OSC32K_FREQ: Hertz = Hertz(32_000);
 
 fn set_flash_to_half_auto_wait_state(nvmctrl: &mut NVMCTRL) {
     nvmctrl.ctrlb.modify(|_, w| w.rws().half());
+}
+
+/// Prevent automatic writes to flash by pointers to flash area
+fn set_flash_manual_write(nvmctrl: &mut NVMCTRL) {
+    nvmctrl.ctrlb.modify(|_, w| w.manw().set_bit());
 }
 
 fn enable_gclk_apb(pm: &mut PM) {
