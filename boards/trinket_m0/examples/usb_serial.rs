@@ -84,7 +84,7 @@ fn poll_usb() {
 
                 if let Ok(count) = serial.read(&mut buf) {
                     for (i, c) in buf.iter().enumerate() {
-                        if i > count {
+                        if i >= count {
                             break;
                         }
                         serial.write(&[c.clone()]);
