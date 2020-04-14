@@ -65,7 +65,8 @@ impl State {
             // divide directly by divider, rather than exponential
             w.divsel().clear_bit();
             w.idc().bit(improve_duty_cycle);
-            w.genen().set_bit()
+            w.genen().set_bit();
+            w.oe().set_bit()
         });
         self.wait_for_sync();
     }
@@ -171,7 +172,7 @@ impl GenericClockController {
                 Hertz(0),
                 Hertz(0),
             ],
-            used_clocks: 1u64 << u8::from(DFLL48M),
+            used_clocks: 1u64 << u8::from(ClockId::DFLL48),
         }
     }
 
@@ -285,13 +286,13 @@ impl GenericClockController {
     /// Returns `None` is the specified generic clock has already been
     /// configured.
     pub fn $id(&mut self, generator: &GClock) -> Option<$Type> {
-        let bits : u64 = 1<<u8::from($clock) as u64;
+        let bits : u64 = 1<<u8::from(ClockId::$clock) as u64;
         if (self.used_clocks & bits) != 0 {
             return None;
         }
         self.used_clocks |= bits;
 
-        self.state.enable_clock_generator($clock, generator.gclk);
+        self.state.enable_clock_generator(ClockId::$clock, generator.gclk);
         let freq = self.gclks[u8::from(generator.gclk) as usize];
         Some($Type{freq})
     }
@@ -309,6 +310,17 @@ clock_generator!(
     (usb, UsbClock, USB),
     (rtc, RtcClock, RTC),
     (adc, AdcClock, ADC),
+    (wdt, WdtClock, WDT),
+    (eic, EicClock, EIC),
+    (evsys0, Evsys0Clock, EVSYS_0),
+    (evsys1, Evsys1Clock, EVSYS_1),
+    (evsys2, Evsys2Clock, EVSYS_2),
+    (evsys3, Evsys3Clock, EVSYS_3),
+    (evsys4, Evsys4Clock, EVSYS_4),
+    (evsys5, Evsys5Clock, EVSYS_5),
+    (ac_dig, AcDigClock, AC_DIG),
+    (ac_ana, AcAnaClock, AC_ANA),
+    (dac, DacClock, DAC),
 );
 
 /// The frequency of the 48Mhz source.

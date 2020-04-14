@@ -58,6 +58,7 @@ impl DeviceDescBank {
     /// When enabled, the USB module will manage the ZLP handshake by hardware.
     /// This bit is for IN endpoints only. When disabled the handshake should be
     /// managed by firmware.
+    #[allow(unused_variables)]
     pub fn set_auto_zlp(&mut self, enable: bool) {
         self.pcksize.set_auto_zlp(enable);
     }
@@ -104,6 +105,7 @@ impl DeviceDescBank {
     /// For OUT endpoints, MULTI_PACKET_SIZE holds the total data
     /// size for the complete transfer. This value must be a multiple of the
     /// maximum packet size.
+    #[allow(dead_code)]
     pub fn get_multi_packet_size(&self) -> u16 {
         self.pcksize.multi_packet_size() as u16
     }

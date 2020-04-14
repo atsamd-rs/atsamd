@@ -77,7 +77,6 @@ fn main() -> ! {
         core.NVIC.set_priority(interrupt::USB_OTHER, 1);
         core.NVIC.set_priority(interrupt::USB_TRCPT0, 1);
         core.NVIC.set_priority(interrupt::USB_TRCPT1, 1);
-        core.NVIC.set_priority(interrupt::USB_TRCPT1, 1);
         NVIC::unmask(interrupt::USB_OTHER);
         NVIC::unmask(interrupt::USB_TRCPT0);
         NVIC::unmask(interrupt::USB_TRCPT1);
@@ -110,7 +109,7 @@ fn poll_usb() {
 
                 if let Ok(count) = serial.read(&mut buf) {
                     for (i, c) in buf.iter().enumerate() {
-                        if i > count {
+                        if i >= count {
                             break;
                         }
                         match c.clone() as char {

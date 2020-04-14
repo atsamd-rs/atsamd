@@ -21,11 +21,10 @@ use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 use hal::time::MegaHertz;
 
-use embedded_graphics::image::Image16BPP;
-use embedded_graphics::pixelcolor::PixelColorU16;
+use embedded_graphics::egrectangle;
+use embedded_graphics::image::Image;
+use embedded_graphics::pixelcolor::{raw::LittleEndian, Rgb565, RgbColor};
 use embedded_graphics::prelude::*;
-use embedded_graphics::primitives::Rect;
-use embedded_graphics::Drawing;
 
 #[entry]
 fn main() -> ! {
@@ -67,12 +66,16 @@ fn main() -> ! {
         )
         .unwrap();
 
-    let black_backdrop: Rect<PixelColorU16> =
-        Rect::new(Coord::new(0, 0), Coord::new(160, 128)).with_fill(Some(0x0000u16.into()));
-    display.draw(black_backdrop.into_iter());
+    egrectangle!(
+        (0, 0),
+        (160, 128),
+        stroke_width = 0,
+        fill_color = Some(RgbColor::BLACK)
+    )
+    .draw(&mut display);
 
     cont.device().init().unwrap();
-    let volume = cont.get_volume(VolumeIdx(0)).unwrap();
+    let mut volume = cont.get_volume(VolumeIdx(0)).unwrap();
     let dir = cont.open_root_dir(&volume).unwrap();
 
     let mut scratch = [0u8; 11008];
@@ -83,14 +86,16 @@ fn main() -> ! {
     loop {
         for image in images.iter() {
             if let Ok(mut f) =
-                cont.open_file_in_dir(&volume, &dir, image, embedded_sdmmc::Mode::ReadOnly)
+                cont.open_file_in_dir(&mut volume, &dir, image, embedded_sdmmc::Mode::ReadOnly)
             {
                 cont.read(&volume, &mut f, &mut scratch).unwrap();
 
-                let ferris = Image16BPP::new(&scratch, 86, 64).translate(Coord::new(42, 32));
-                display.draw(ferris.into_iter());
+                let ferris: Image<Rgb565, LittleEndian> = Image::new(&scratch, 86, 64);
+                ferris.translate(Point::new(42, 32)).draw(&mut display);
 
                 cont.close_file(&volume, f).ok();
+            } else {
+                red_led.set_high().unwrap();
             }
             delay.delay_ms(200u8);
         }

@@ -61,8 +61,8 @@
 //! Build this example with: `cargo build --example ssd1306_graphicsmode_128x64_i2c`
 //!
 
-extern crate feather_m0 as hal;
 extern crate embedded_graphics;
+extern crate feather_m0 as hal;
 extern crate ssd1306;
 
 // how to panic...
@@ -73,14 +73,15 @@ extern crate panic_semihosting;
 
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
-use hal::prelude::*;
-use hal::time::KiloHertz;
 use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
+use hal::prelude::*;
+use hal::time::KiloHertz;
 
+use embedded_graphics::pixelcolor::BinaryColor;
 use embedded_graphics::prelude::*;
 use embedded_graphics::primitives::{Circle, Rectangle, Triangle};
-use embedded_graphics::pixelcolor::BinaryColor;
+use embedded_graphics::style::PrimitiveStyleBuilder;
 use ssd1306::prelude::*;
 use ssd1306::Builder;
 
@@ -115,46 +116,43 @@ fn main() -> ! {
     disp.init().unwrap();
     disp.flush().unwrap();
 
+    let style = PrimitiveStyleBuilder::new()
+        .stroke_color(BinaryColor::On)
+        .stroke_width(1)
+        .build();
+
     let yoffset = 24;
     let x_max = 127;
     let y_max = 63;
 
     // screen outline
-    disp.draw(
-        Rectangle::new(
-            Point::new(0, 0),
-            Point::new(x_max, y_max))
-            .stroke(Some(BinaryColor::On))
-            .into_iter(),
-    );
+    Rectangle::new(Point::new(0, 0), Point::new(x_max, y_max))
+        .into_styled(style)
+        .draw(&mut disp)
+        .unwrap();
 
     // triangle
     // 'Triangle' requires 'embedded_graphics' 0.6 or newer...
-    disp.draw(
-        Triangle::new(
-            Point::new(16, 16 + yoffset),
-            Point::new(16 + 16, 16 + yoffset),
-            Point::new(16 + 8, yoffset)
-        )
-        .stroke(Some(BinaryColor::On))
-        .into_iter(),
-    );
+    Triangle::new(
+        Point::new(16, 16 + yoffset),
+        Point::new(16 + 16, 16 + yoffset),
+        Point::new(16 + 8, yoffset),
+    )
+    .into_styled(style)
+    .draw(&mut disp)
+    .unwrap();
 
     // square
-    disp.draw(
-        Rectangle::new(
-            Point::new(54, yoffset),
-            Point::new(54 + 16, 16 + yoffset))
-            .stroke(Some(BinaryColor::On))
-            .into_iter(),
-    );
+    Rectangle::new(Point::new(54, yoffset), Point::new(54 + 16, 16 + yoffset))
+        .into_styled(style)
+        .draw(&mut disp)
+        .unwrap();
 
     // circle
-    disp.draw(
-        Circle::new(Point::new(100, 8 + yoffset), 8)
-            .stroke(Some(BinaryColor::On))
-            .into_iter(),
-    );
+    Circle::new(Point::new(100, 8 + yoffset), 8)
+        .into_styled(style)
+        .draw(&mut disp)
+        .unwrap();
 
     disp.flush().unwrap();
 

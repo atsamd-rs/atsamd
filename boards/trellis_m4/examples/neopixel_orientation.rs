@@ -6,16 +6,17 @@
 #[allow(unused_imports)]
 use panic_halt;
 use trellis_m4 as hal;
-use ws2812_nop_samd51 as ws2812;
+use ws2812_timer_delay as ws2812;
 
-use embedded_hal::digital::v1_compat::{OldOutputPin};
+use embedded_hal::digital::v1_compat::OldOutputPin;
 
 use hal::adxl343::accelerometer::Orientation;
-use hal::prelude::*;
-use hal::{clock::GenericClockController, delay::Delay};
 use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
-use smart_leds::{colors, Color, SmartLedsWrite};
+use hal::prelude::*;
+use hal::timer::SpinTimer;
+use hal::{clock::GenericClockController, delay::Delay};
+use smart_leds::{colors, hsv::RGB8, SmartLedsWrite};
 
 #[entry]
 fn main() -> ! {
@@ -34,8 +35,9 @@ fn main() -> ! {
     let mut pins = hal::Pins::new(peripherals.PORT).split();
 
     // neopixels
+    let timer = SpinTimer::new(4);
     let neopixel_pin: OldOutputPin<_> = pins.neopixel.into_push_pull_output(&mut pins.port).into();
-    let mut neopixels = ws2812::Ws2812::new(neopixel_pin);
+    let mut neopixels = ws2812::Ws2812::new(timer, neopixel_pin);
 
     // accelerometer
     let adxl343 = pins
@@ -64,7 +66,7 @@ fn main() -> ! {
     }
 }
 
-fn colors_for_orientation(orientation: Orientation) -> [Color; hal::NEOPIXEL_COUNT] {
+fn colors_for_orientation(orientation: Orientation) -> [RGB8; hal::NEOPIXEL_COUNT] {
     let mut colors = [colors::DEEP_SKY_BLUE; hal::NEOPIXEL_COUNT];
     let green = colors::FOREST_GREEN;
 

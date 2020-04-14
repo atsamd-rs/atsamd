@@ -61,12 +61,12 @@ pub enum ClockId {
     SDHC1,
     CM4_TRACE,
 }
-impl ClockId {
-    fn bits(self) -> usize {
-        self as usize
+
+impl From<ClockId> for u8 {
+    fn from(clock: ClockId) -> u8 {
+        clock as u8
     }
 }
-use self::ClockId::*;
 
 /// Represents a configured clock generator.
 /// Can be converted into the effective clock frequency.
@@ -121,7 +121,7 @@ impl State {
     }
 
     fn enable_clock_generator(&mut self, clock: ClockId, generator: ClockGenId) {
-        self.gclk.pchctrl[clock.bits()].write(|w| unsafe {
+        self.gclk.pchctrl[u8::from(clock) as usize].write(|w| unsafe {
             w.gen().bits(generator.into());
             w.chen().set_bit()
         });
@@ -238,7 +238,7 @@ impl GenericClockController {
                 Hertz(0),
                 Hertz(0),
             ],
-            used_clocks: 1u64 << u8::from(DPLL0),
+            used_clocks: 1u64 << u8::from(ClockId::FDPLL0),
         }
     }
 
@@ -351,13 +351,13 @@ impl GenericClockController {
     /// Returns `None` is the specified generic clock has already been
     /// configured.
     pub fn $id(&mut self, generator: &GClock) -> Option<$Type> {
-        let bits : u64 = 1<<$clock.bits() as u64;
+        let bits: u64 = 1<< u8::from(ClockId::$clock) as u64;
         if (self.used_clocks & bits) != 0 {
             return None;
         }
         self.used_clocks |= bits;
 
-        self.state.enable_clock_generator($clock, generator.gclk);
+        self.state.enable_clock_generator(ClockId::$clock, generator.gclk);
         let freq = self.gclks[u8::from(generator.gclk) as usize];
         Some($Type{freq})
     }
@@ -383,6 +383,32 @@ clock_generator!(
     (usb, UsbClock, USB),
     (adc0, Adc0Clock, ADC0),
     (adc1, Adc1Clock, ADC1),
+    (eic, EicClock, EIC),
+    (freq_m_msr, FreqmMsrClock, FREQM_MSR),
+    (freq_m_ref, FreqmRefClock, FREQM_REF),
+    (evsys0, Evsys0Clock, EVSYS0),
+    (evsys1, Evsys1Clock, EVSYS1),
+    (evsys2, Evsys2Clock, EVSYS2),
+    (evsys3, Evsys3Clock, EVSYS3),
+    (evsys4, Evsys4Clock, EVSYS4),
+    (evsys5, Evsys5Clock, EVSYS5),
+    (evsys6, Evsys6Clock, EVSYS6),
+    (evsys7, Evsys7Clock, EVSYS7),
+    (evsys8, Evsys8Clock, EVSYS8),
+    (evsys9, Evsys9Clock, EVSYS9),
+    (evsys10, Evsys10Clock, EVSYS10),
+    (evsys11, Evsys11Clock, EVSYS11),
+    (can0, Can0Clock, CAN0),
+    (can1, Can1Clock, CAN1),
+    (pdec, PdecClock, PDEC),
+    (ac, AcClock, AC),
+    (ccl, CclClock, CCL),
+    (dac, DacClock, DAC),
+    (i2s0, I2S0Clock, I2S0),
+    (i2s1, I2S1Clock, I2S1),
+    (sdhc0, Sdhc0Clock, SDHC0),
+    (sdhc1, Sdhc1Clock, SDHC1),
+    (cm4_trace, Cm4TraceClock, CM4_TRACE),
 );
 
 /// The frequency of the 48Mhz source.
@@ -436,7 +462,7 @@ fn wait_for_dpllrdy(oscctrl: &mut OSCCTRL) {
 
 /// Configure the dpll0 to run at 120MHz
 fn configure_and_enable_dpll0(oscctrl: &mut OSCCTRL, gclk: &mut GCLK) {
-    gclk.pchctrl[FDPLL0 as usize].write(|w| {
+    gclk.pchctrl[ClockId::FDPLL0 as usize].write(|w| {
         w.chen().set_bit();
         w.gen().gclk5()
     });

@@ -65,7 +65,8 @@ impl State {
             // divide directly by divider, rather than exponential
             w.divsel().clear_bit();
             w.idc().bit(improve_duty_cycle);
-            w.genen().set_bit()
+            w.genen().set_bit();
+            w.oe().set_bit()
         });
         self.wait_for_sync();
     }
@@ -125,6 +126,7 @@ impl GenericClockController {
         let mut state = State { gclk };
 
         set_flash_to_half_auto_wait_state(nvmctrl);
+        set_flash_manual_write(nvmctrl);
         enable_gclk_apb(pm);
         if use_external_crystal {
             enable_external_32kosc(sysctrl);
@@ -171,7 +173,7 @@ impl GenericClockController {
                 Hertz(0),
                 Hertz(0),
             ],
-            used_clocks: 1u64 << u8::from(DFLL48M),
+            used_clocks: 1u64 << u8::from(ClockId::DFLL48),
         }
     }
 
@@ -285,13 +287,13 @@ impl GenericClockController {
     /// Returns `None` is the specified generic clock has already been
     /// configured.
     pub fn $id(&mut self, generator: &GClock) -> Option<$Type> {
-        let bits : u64 = 1<<u8::from($clock) as u64;
+        let bits: u64 = 1<<u8::from(ClockId::$clock) as u64;
         if (self.used_clocks & bits) != 0 {
             return None;
         }
         self.used_clocks |= bits;
 
-        self.state.enable_clock_generator($clock, generator.gclk);
+        self.state.enable_clock_generator(ClockId::$clock, generator.gclk);
         let freq = self.gclks[u8::from(generator.gclk) as usize];
         Some($Type{freq})
     }
@@ -314,6 +316,25 @@ clock_generator!(
     (usb, UsbClock, USB),
     (rtc, RtcClock, RTC),
     (adc, AdcClock, ADC),
+    (wdt, WdtClock, WDT),
+    (eic, EicClock, EIC),
+    (evsys0, Evsys0Clock, EVSYS_0),
+    (evsys1, Evsys1Clock, EVSYS_1),
+    (evsys2, Evsys2Clock, EVSYS_2),
+    (evsys3, Evsys3Clock, EVSYS_3),
+    (evsys4, Evsys4Clock, EVSYS_4),
+    (evsys5, Evsys5Clock, EVSYS_5),
+    (evsys6, Evsys6Clock, EVSYS_6),
+    (evsys7, Evsys7Clock, EVSYS_7),
+    (evsys8, Evsys8Clock, EVSYS_8),
+    (evsys9, Evsys9Clock, EVSYS_9),
+    (evsys10, Evsys10Clock, EVSYS_10),
+    (evsys11, Evsys11Clock, EVSYS_11),
+    (ac_ana, AcAnaClock, AC_ANA),
+    (ac_dig, AcDigClock, AC_DIG),
+    (dac, DacClock, DAC),
+    (i2s0, I2S0Clock, I2S_0),
+    (i2s1, I2S1Clock, I2S_1),
 );
 
 /// The frequency of the 48Mhz source.
@@ -323,6 +344,11 @@ pub const OSC32K_FREQ: Hertz = Hertz(32_000);
 
 fn set_flash_to_half_auto_wait_state(nvmctrl: &mut NVMCTRL) {
     nvmctrl.ctrlb.modify(|_, w| w.rws().half());
+}
+
+/// Prevent automatic writes to flash by pointers to flash area
+fn set_flash_manual_write(nvmctrl: &mut NVMCTRL) {
+    nvmctrl.ctrlb.modify(|_, w| w.manw().set_bit());
 }
 
 fn enable_gclk_apb(pm: &mut PM) {
@@ -428,8 +454,8 @@ fn configure_and_enable_dfll48m(sysctrl: &mut SYSCTRL, use_external_crystal: boo
             // chill cycle disable
             w.ccdis().set_bit();
 
-            // usb correction
-            w.usbcrm().set_bit();
+            // usb correction is not set due to instability issues around
+            // USB bus resets. TODO(twitchyliquid64): Maybe switch to OSC8M?
 
             // bypass coarse lock (have calibration data)
             w.bplckc().set_bit()
@@ -440,6 +466,13 @@ fn configure_and_enable_dfll48m(sysctrl: &mut SYSCTRL, use_external_crystal: boo
 
     // and finally enable it!
     sysctrl.dfllctrl.modify(|_, w| w.enable().set_bit());
+
+    if use_external_crystal {
+        // wait for lock
+        while sysctrl.pclksr.read().dflllckc().bit_is_clear()
+            || sysctrl.pclksr.read().dflllckf().bit_is_clear()
+        {}
+    }
 
     wait_for_dfllrdy(sysctrl);
 }

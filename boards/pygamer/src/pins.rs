@@ -13,14 +13,14 @@ use hal::sercom::{
     Sercom4Pad3, UART5,
 };
 
-#[cfg(feature = "ws2812-timer")]
 use embedded_hal::{digital::v1_compat::OldOutputPin, timer::CountDown, timer::Periodic};
-#[cfg(feature = "ws2812-timer")]
 use ws2812_timer_delay as ws2812;
 
 use hal::clock::GenericClockController;
 
+#[cfg(feature = "unproven")]
 use hal::pwm::Pwm2;
+
 use hal::time::Hertz;
 
 use st7735_lcd::{Orientation, ST7735};
@@ -322,7 +322,9 @@ pub struct Display {
     pub tft_backlight: Pa1<Input<Floating>>,
 }
 
+#[cfg(feature = "unproven")]
 impl Display {
+    /// Convenience for setting up the on board display.
     pub fn init(
         self,
         clocks: &mut GenericClockController,
@@ -369,7 +371,8 @@ impl Display {
         let tft_dc = self.tft_dc.into_push_pull_output(port);
         let tft_reset = self.tft_reset.into_push_pull_output(port);
 
-        let mut display = st7735_lcd::ST7735::new(tft_spi, tft_dc, tft_reset, true, false);
+        let mut display =
+            st7735_lcd::ST7735::new(tft_spi, tft_dc, tft_reset, true, false, 160, 128);
         display.init(delay)?;
         display.set_orientation(&Orientation::LandscapeSwapped)?;
 
@@ -393,7 +396,6 @@ pub struct Neopixel {
     pub neopixel: Pa15<Input<Floating>>,
 }
 
-#[cfg(feature = "ws2812-timer")]
 impl Neopixel {
     /// Convenience for setting up the onboard neopixels using the provided
     /// Timer preconfigured to 3mhz.
@@ -721,6 +723,7 @@ pub struct ButtonReader {
 #[cfg(feature = "unproven")]
 impl ButtonReader {
     // 28*8.333ns total blocking read
+    /// Returns a ButtonIter of button changes as Keys enums
     pub fn events(&mut self) -> ButtonIter {
         self.latch.set_low().ok();
         cycle_delay(7); //tsu?
@@ -756,6 +759,8 @@ impl ButtonReader {
 
 #[cfg(feature = "unproven")]
 impl Buttons {
+    /// Convenience for setting up the button latch pins
+    /// Returns ButtonReader iterator which can be polled for Key events
     pub fn init(self, port: &mut Port) -> ButtonReader {
         let mut latch = self.latch.into_push_pull_output(port);
         latch.set_high().ok();
@@ -784,6 +789,8 @@ pub struct JoystickReader {
 
 #[cfg(feature = "unproven")]
 impl JoystickReader {
+    /// returns a tuple (x,y) where values are 12 bit, between 0-4095
+    /// values are NOT centered, but could be by subtracting 2048
     pub fn read(&mut self, adc: &mut hal::adc::Adc<ADC1>) -> (u16, u16) {
         //note adafruit averages 3 readings on x and y (not inside the adc) seems unnecessary?
         //note adafruit recenters around zero.. Im not doing that either atm.
@@ -824,7 +831,8 @@ pub struct BatteryReader {
 
 #[cfg(feature = "unproven")]
 impl BatteryReader {
-    pub fn read(&mut self, adc: &mut hal::adc::Adc<ADC0>) -> (f32) {
+    /// Returns a float for voltage of battery
+    pub fn read(&mut self, adc: &mut hal::adc::Adc<ADC0>) -> f32 {
         let data: u16 = adc.read(&mut self.battery).unwrap();
         let result: f32 = (data as f32 / 4095.0) * 2.0 * 3.3;
         result

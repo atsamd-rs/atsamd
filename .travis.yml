@@ -9,7 +9,7 @@ rust:
 env:
   - CRATE=boards/metro_m0 EXAMPLES="--example=blinky_basic --example=blinky_rtfm" FEATURES="--features=unproven"   
   - CRATE=boards/metro_m4 FEATURES="--features=unproven"
-  - CRATE=boards/feather_m0 FEATURES="--features=unproven"
+  - CRATE=boards/feather_m0 EXAMPLES="--example=blinky_basic --example=usb_echo --example=pwm" FEATURES="--features=unproven,usb"
   - CRATE=boards/feather_m4 FEATURES="--features=unproven"
   - CRATE=boards/gemma_m0 FEATURES="--features=unproven"
   - CRATE=boards/itsybitsy_m0 FEATURES="--features=unproven"
@@ -18,13 +18,16 @@ env:
   - CRATE=boards/samd11_bare FEATURES="--features=unproven" BUILDMODE="--release"
   - CRATE=boards/samd21_mini FEATURES="--features=unproven"
   - CRATE=boards/arduino_mkrzero FEATURES="--features=unproven"
+  - CRATE=boards/arduino_mkrvidor4000 FEATURES="--features=unproven"
   - CRATE=boards/circuit_playground_express FEATURES="--features=unproven"
   - CRATE=boards/sodaq_one FEATURES="--features=unproven"
   - CRATE=boards/sodaq_sara_aff FEATURES="--features=unproven"
   - CRATE=boards/pyportal FEATURES="--features=unproven"
   - CRATE=boards/trellis_m4 FEATURES="--features=keypad-unproven"
-  - CRATE=boards/pygamer FEATURES="--features=unproven,usb,ws2812-timer,math"
-  - CRATE=boards/pfza_proto1 EXAMPLES="--example=blinky_basic"
+  - CRATE=boards/pygamer FEATURES="--features=unproven,usb,math"
+  - CRATE=boards/pfza_proto1 EXAMPLES="--example=blinky_basic" FEATURES="--features=unproven"
+  - CRATE=boards/serpente EXAMPLES="--example=blinky_basic --example=pwm" FEATURES="--features=unproven"
+  - CRATE=boards/edgebadge FEATURES="--features=unproven"
 
 matrix:
   allow_failures:
