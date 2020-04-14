@@ -1,6 +1,7 @@
 [package]
 name = "feather_m4"
 version = "0.4.0"
+edition = "2018"
 authors = ["Theodore DeRego <tderego94@gmail.com>"]
 description = "Board Support crate for the Adafruit Feather M4"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
@@ -27,6 +28,8 @@ default-features = false
 panic-halt = "~0.2"
 panic-semihosting = "~0.5"
 cortex-m-semihosting = "~0.3"
+smart-leds = "0.3.0"
+ws2812-timer-delay = "0.3.0"
 
 [features]
 # ask the HAL to enable atsamd51j19a support
