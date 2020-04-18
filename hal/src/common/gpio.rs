@@ -59,6 +59,8 @@ pub struct PullUp;
 pub struct PushPull;
 /// Open drain output
 pub struct OpenDrain;
+/// Open drain output, which can be read when not driven
+pub struct ReadableOpenDrain;
 
 /// Peripheral Function A
 pub struct PfA;
@@ -277,6 +279,24 @@ macro_rules! pin {
                 $PinType { _mode: PhantomData }
             }
 
+            /// Configures the pin to operate as an open drain output which can be read
+            pub fn into_readable_open_drain_output(self, port: &mut Port) -> $PinType<Output<ReadableOpenDrain>> {
+                port.$dirset().write(|bits| unsafe {
+                    bits.bits(1 << $pin_no);
+                    bits
+                });
+
+                port.$pincfg()[$pin_no].write(|bits| {
+                    bits.pmuxen().clear_bit();
+                    bits.inen().set_bit();
+                    bits.pullen().clear_bit();
+                    bits.drvstr().clear_bit();
+                    bits
+                });
+
+                $PinType { _mode: PhantomData }
+            }
+
             /// Configures the pin to operate as a push-pull output
             pub fn into_push_pull_output(self, port: &mut Port) -> $PinType<Output<PushPull>> {
                 port.$dirset().write(|bits| unsafe {
@@ -336,6 +356,20 @@ macro_rules! pin {
                 self.toggle_impl();
 
                 Ok(())
+            }
+        }
+
+        #[cfg(feature = "unproven")]
+        impl InputPin for $PinType<Output<ReadableOpenDrain>> {
+            // TODO: switch to ! when it’s stable
+            type Error = ();
+
+            fn is_high(&self) -> Result<bool, Self::Error> {
+                Ok(unsafe { (((*PORT::ptr()).$in.read().bits()) & (1 << $pin_no)) != 0 })
+            }
+
+            fn is_low(&self) -> Result<bool, Self::Error> {
+                Ok(unsafe { (((*PORT::ptr()).$in.read().bits()) & (1 << $pin_no)) == 0 })
             }
         }
 
