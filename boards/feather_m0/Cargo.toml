@@ -51,6 +51,7 @@ optional = true
 cortex-m-semihosting = "~0.3"
 ssd1306 = "~0.3.1"
 embedded-graphics = "0.6.0"
+nb = "~0.1"
 
 [features]
 # ask the HAL to enable atsamd21g18a support
@@ -76,6 +77,9 @@ opt-level = "s"
 
 [[example]]
 name = "blinky_basic"
+
+[[example]]
+name = "timers"
 
 [[example]]
 name = "pwm"
