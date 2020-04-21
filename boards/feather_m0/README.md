@@ -26,4 +26,4 @@ $
 ```
 
 Note that some older Feather M0 boards do not come with support for HF2. For these boards,
-you can upload using the `bossa` tool as described in the [atsamd crate documentation](https://github.com/markhildreth/atsamd#getting-code-onto-the-device-gemma-m0).
+you can upload using the `bossa` tool as described in the [atsamd crate documentation](https://github.com/atsamd-rs/atsamd#getting-code-onto-the-device-gemma-m0).
