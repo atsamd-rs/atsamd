@@ -28,6 +28,7 @@ env:
   - CRATE=boards/pfza_proto1 EXAMPLES="--example=blinky_basic" FEATURES="--features=unproven"
   - CRATE=boards/serpente EXAMPLES="--example=blinky_basic --example=pwm" FEATURES="--features=unproven"
   - CRATE=boards/edgebadge FEATURES="--features=unproven"
+  - CRATE=boards/xiao_m0 EXAMPLES="--example=blink --example=usb_serial" FEATURES="--features=usb"
 
 matrix:
   allow_failures:
