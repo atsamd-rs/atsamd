@@ -5,7 +5,7 @@ set -xe
 
 # INSTALL DEPENDENCIES
 
-cargo install --force --version 0.17.0 svd2rust
+cargo install --force --git https://github.com/gkelly/svd2rust --branch bleeding-edge svd2rust
 cargo install --force --version 0.7.0 form
 
 python -m pip install -r requirements.txt
