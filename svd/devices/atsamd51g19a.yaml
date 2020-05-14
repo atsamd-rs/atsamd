@@ -1,1 +1,5 @@
 _svd: ../ATSAMD51G19A.svd
+
+_include:
+  - "include/nvmctrl-param-see.yaml"
+  - "include/sdhc0-reset-values.yaml"
