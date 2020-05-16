@@ -1,6 +1,6 @@
 [package]
 name = "atsamd-hal"
-version = "0.8.2"
+version = "0.8.3"
 authors = [
     "Wez Furlong <wez@wezfurlong.org>",
     "Paul Sajna <sajattack@gmail.com>",
