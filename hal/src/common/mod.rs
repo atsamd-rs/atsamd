@@ -4,3 +4,4 @@ pub mod gpio;
 pub mod pad;
 pub mod prelude;
 pub mod time;
+pub mod timer_traits;
