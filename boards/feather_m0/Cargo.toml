@@ -109,3 +109,6 @@ name = "ssd1306_terminalmode_128x64_spi"
 [[example]]
 name = "usb_echo"
 required-features = ["usb"]
+
+[[example]]
+name = "sleeping_timer"
