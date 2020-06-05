@@ -19,7 +19,7 @@ use core::sync::atomic;
 use cortex_m::peripheral::NVIC;
 
 /// Shared atomic between TC4 interrupt and sleeping_delay module
-static mut INTERRUPT_FIRED: Option<atomic::AtomicBool> = None;
+static mut INTERRUPT_FIRED: atomic::AtomicBool = atomic::AtomicBool::new(false);
 
 #[entry]
 fn main() -> ! {
@@ -34,10 +34,7 @@ fn main() -> ! {
     );
 
     // Set up the int fired global for use in the interrupt handler / SleepingDelay
-    let interrupt_fired = unsafe {
-        INTERRUPT_FIRED = Some(atomic::AtomicBool::default());
-        INTERRUPT_FIRED.as_ref().unwrap()
-    };
+    let interrupt_fired = unsafe { &INTERRUPT_FIRED };
 
     // Get a clock & make a sleeping delay object
     let gclk0 = clocks.gclk0();
@@ -67,10 +64,7 @@ fn main() -> ! {
 fn TC4() {
     unsafe {
         // Let the sleepingtimer know that the interrupt fired, and clear it
-        INTERRUPT_FIRED
-            .as_ref()
-            .unwrap()
-            .store(true, atomic::Ordering::Relaxed);
+        INTERRUPT_FIRED.store(true, atomic::Ordering::Relaxed);
         TC4::ptr()
             .as_ref()
             .unwrap()
