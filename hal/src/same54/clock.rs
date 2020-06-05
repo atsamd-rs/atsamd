@@ -3,9 +3,9 @@
 //! before you can set up most of the peripherals on the atsamd51 device.
 //! The other types in this module are used to enforce at compile time
 //! that the peripherals have been correctly configured.
-use crate::target_device::gclk::pchctrl::GEN_A::*;
-use crate::target_device::{self, GCLK, NVMCTRL, OSCCTRL, MCLK, OSC32KCTRL};
 use crate::target_device::gclk::genctrl::SRC_A::*;
+use crate::target_device::gclk::pchctrl::GEN_A::*;
+use crate::target_device::{self, GCLK, MCLK, NVMCTRL, OSC32KCTRL, OSCCTRL};
 use crate::time::{Hertz, MegaHertz};
 
 pub type ClockGenId = target_device::gclk::pchctrl::GEN_A;
@@ -92,9 +92,8 @@ struct State {
 impl State {
     fn reset_gclk(&mut self) {
         self.gclk.ctrla.write(|w| w.swrst().set_bit());
-        while self.gclk.ctrla.read().swrst().bit_is_set()
-            || self.gclk.syncbusy.read().bits() != 0
-        {}
+        while self.gclk.ctrla.read().swrst().bit_is_set() || self.gclk.syncbusy.read().bits() != 0 {
+        }
     }
 
     fn wait_for_sync(&mut self) {
@@ -152,7 +151,7 @@ impl GenericClockController {
         oscctrl: &mut OSCCTRL,
         nvmctrl: &mut NVMCTRL,
     ) -> Self {
-        Self::new(gclk, mclk,  osc32kctrl, oscctrl, nvmctrl, false)
+        Self::new(gclk, mclk, osc32kctrl, oscctrl, nvmctrl, false)
     }
 
     /// Reset the clock controller, configure the system to run
@@ -221,9 +220,7 @@ impl GenericClockController {
 
         while state.gclk.syncbusy.read().genctrl0().is_gclk0() {}
 
-        mclk.cpudiv.write(|w| {
-            w.div().div1()
-        });
+        mclk.cpudiv.write(|w| w.div().div1());
 
         Self {
             state,
@@ -416,17 +413,15 @@ clock_generator!(
     (cm4_trace, Cm4TraceClock, CM4_TRACE),
 );
 
-
 /// The frequency of the 48Mhz source.
 pub const OSC48M_FREQ: Hertz = Hertz(48_000_000);
 /// The frequency of the 32Khz source.
-pub const OSC32K_FREQ: Hertz = Hertz(32_000);
+pub const OSC32K_FREQ: Hertz = Hertz(32_768);
 /// The frequency of the 120Mhz source.
 pub const OSC120M_FREQ: Hertz = Hertz(120_000_000);
 
-
 fn set_flash_to_half_auto_wait_state(nvmctrl: &mut NVMCTRL) {
-//    nvmctrl.ctrla.modify(|_, w| w.rws().half());
+    // nvmctrl.ctrla.modify(|_, w| w.rws().half());
     // TODO Fix above
 }
 
@@ -463,13 +458,14 @@ fn enable_external_32kosc(osc32kctrl: &mut OSC32KCTRL) {
 }
 
 fn wait_for_dpllrdy(oscctrl: &mut OSCCTRL) {
-    while oscctrl.dpllstatus0.read().lock().bit_is_clear() ||
-        oscctrl.dpllstatus0.read().clkrdy().bit_is_clear() {}
+    while oscctrl.dpllstatus0.read().lock().bit_is_clear()
+        || oscctrl.dpllstatus0.read().clkrdy().bit_is_clear()
+    {}
 }
 
 /// Configure the dpll0 to run at 120MHz
 fn configure_and_enable_dpll0(oscctrl: &mut OSCCTRL, gclk: &mut GCLK) {
-   gclk.pchctrl[u8::from(ClockId::FDPLL0) as usize].write(|w| {
+    gclk.pchctrl[u8::from(ClockId::FDPLL0) as usize].write(|w| {
         w.chen().set_bit();
         w.gen().gclk5()
     });
@@ -479,14 +475,11 @@ fn configure_and_enable_dpll0(oscctrl: &mut OSCCTRL, gclk: &mut GCLK) {
             w.ldrfrac().bits(0)
         });
     }
-    oscctrl.dpllctrlb0.write(|w| {
-        w.refclk().gclk()
-    });
+    oscctrl.dpllctrlb0.write(|w| w.refclk().gclk());
     oscctrl.dpllctrla0.write(|w| {
         w.enable().set_bit();
         w.ondemand().clear_bit()
     });
-
 }
 
 #[cfg(feature = "usb")]
@@ -498,7 +491,7 @@ fn configure_usb_correction(oscctrl: &mut OSCCTRL) {
         // scaling factor for 1Khz SOF signal.
         .mul().bits((48_000_000u32 / 1000) as u16)
     });
-    while oscctrl.dfllsync.read().dfllmul().bit_is_set() {};
+    while oscctrl.dfllsync.read().dfllmul().bit_is_set() {}
 
     oscctrl.dfllctrlb.write(|w| {
         // closed loop mode
@@ -508,5 +501,5 @@ fn configure_usb_correction(oscctrl: &mut OSCCTRL) {
         // usb correction
         .usbcrm().set_bit()
     });
-    while oscctrl.dfllsync.read().dfllctrlb().bit_is_set() {};
+    while oscctrl.dfllsync.read().dfllctrlb().bit_is_set() {}
 }
