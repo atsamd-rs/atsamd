@@ -326,7 +326,7 @@ clock_generator!(
 /// The frequency of the 48Mhz source.
 pub const OSC48M_FREQ: Hertz = Hertz(48_000_000);
 /// The frequency of the 32Khz source.
-pub const OSC32K_FREQ: Hertz = Hertz(32_000);
+pub const OSC32K_FREQ: Hertz = Hertz(32_768);
 
 fn set_flash_to_half_auto_wait_state(nvmctrl: &mut NVMCTRL) {
     nvmctrl.ctrlb.modify(|_, w| w.rws().half());
