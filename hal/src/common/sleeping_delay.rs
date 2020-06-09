@@ -33,12 +33,13 @@ where
     }
 }
 
-impl<TIM> DelayUs<u32> for SleepingDelay<TIM>
+impl<TIM, TYPE> DelayUs<TYPE> for SleepingDelay<TIM>
 where
     TIM: InterruptDrivenTimer,
+    TYPE: Into<u32>,
 {
-    fn delay_us(&mut self, us: u32) {
-        self.timer.start((1_000_000 / us).hz());
+    fn delay_us(&mut self, us: TYPE) {
+        self.timer.start((1_000_000_u32 / us.into()).hz());
         self.timer.enable_interrupt();
         loop {
             asm::wfi();
@@ -51,47 +52,12 @@ where
     }
 }
 
-impl<TIM> DelayUs<u16> for SleepingDelay<TIM>
+impl<TIM, TYPE> DelayMs<TYPE> for SleepingDelay<TIM>
 where
     TIM: InterruptDrivenTimer,
+    TYPE: Into<u32>,
 {
-    fn delay_us(&mut self, us: u16) {
-        self.delay_us(us as u32)
-    }
-}
-
-impl<TIM> DelayUs<u8> for SleepingDelay<TIM>
-where
-    TIM: InterruptDrivenTimer,
-{
-    fn delay_us(&mut self, us: u8) {
-        self.delay_us(us as u32)
-    }
-}
-
-impl<TIM> DelayMs<u32> for SleepingDelay<TIM>
-where
-    TIM: InterruptDrivenTimer,
-{
-    fn delay_ms(&mut self, ms: u32) {
-        self.delay_us(ms * 1_000);
-    }
-}
-
-impl<TIM> DelayMs<u16> for SleepingDelay<TIM>
-where
-    TIM: InterruptDrivenTimer,
-{
-    fn delay_ms(&mut self, ms: u16) {
-        self.delay_ms(ms as u32);
-    }
-}
-
-impl<TIM> DelayMs<u8> for SleepingDelay<TIM>
-where
-    TIM: InterruptDrivenTimer,
-{
-    fn delay_ms(&mut self, ms: u8) {
-        self.delay_ms(ms as u32);
+    fn delay_ms(&mut self, ms: TYPE) {
+        self.delay_us(ms.into() * 1_000_u32);
     }
 }
