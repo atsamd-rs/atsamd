@@ -1,35 +1,35 @@
 #![no_std]
 #![no_main]
 
-extern crate atsamd_hal as atsamd21;
-extern crate cortex_m;
-extern crate rtfm;
-#[macro_use]
-extern crate nb;
-extern crate embedded_hal;
-extern crate panic_halt;
-extern crate samd21_mini as hal;
+use panic_halt as _;
+use samd21_mini as hal;
 
 use hal::clock::GenericClockController;
-use hal::prelude::*;
-use hal::sercom::{PadPin, Sercom0Pad2, Sercom0Pad3, UART0};
+use hal::gpio::{OpenDrain, Output, Pa10, Pa11, Pa17, Pa27, Pb3, PfC};
 use hal::pac::gclk::clkctrl::GEN_A;
 use hal::pac::gclk::genctrl::SRC_A;
-use rtfm::app;
+use hal::prelude::*;
+use hal::sercom::{PadPin, Sercom0Pad2, Sercom0Pad3, UART0};
+use nb::block;
+use rtic::app;
 
 macro_rules! dbgprint {
     ($($arg:tt)*) => {{}};
 }
 
-#[app(device=hal::pac)]
+#[app(device = crate::hal::pac, peripherals = true)]
 const APP: () = {
-    static mut BLUE_LED: hal::gpio::Pa17<hal::gpio::Output<hal::gpio::OpenDrain>> = ();
-    static mut TX_LED: hal::gpio::Pa27<hal::gpio::Output<hal::gpio::OpenDrain>> = ();
-    static mut RX_LED: hal::gpio::Pb3<hal::gpio::Output<hal::gpio::OpenDrain>> = ();
-    static mut UART: UART0<Sercom0Pad3<hal::gpio::Pa11<hal::gpio::PfC>>, Sercom0Pad2<hal::gpio::Pa10<hal::gpio::PfC>>, (), ()> = ();
+    struct Resources {
+        blue_led: Pa17<Output<OpenDrain>>,
+        tx_led: Pa27<Output<OpenDrain>>,
+        rx_led: Pb3<Output<OpenDrain>>,
+        uart: UART0<Sercom0Pad3<Pa11<PfC>>, Sercom0Pad2<Pa10<PfC>>, (), ()>,
+    }
 
     #[init]
-    fn init() {
+    fn init(c: init::Context) -> init::LateResources {
+        let mut device = c.device;
+
         let mut pins = hal::Pins::new(device.PORT);
 
         let mut clocks = GenericClockController::with_internal_32kosc(
@@ -39,7 +39,9 @@ const APP: () = {
             &mut device.NVMCTRL,
         );
         clocks.configure_gclk_divider_and_source(GEN_A::GCLK2, 1, SRC_A::DFLL48M, false);
-        let gclk2 = clocks.get_gclk(GEN_A::GCLK2).expect("Could not get clock 2");
+        let gclk2 = clocks
+            .get_gclk(GEN_A::GCLK2)
+            .expect("Could not get clock 2");
 
         dbgprint!("Initializing serial port");
 
@@ -63,7 +65,7 @@ const APP: () = {
             9600.hz(),
             device.SERCOM0,
             &mut device.PM,
-            (rx_pin, tx_pin)
+            (rx_pin, tx_pin),
         );
 
         let mut rx_led = pins.rx_led.into_open_drain_output(&mut pins.port);
@@ -73,27 +75,30 @@ const APP: () = {
         rx_led.set_high().unwrap();
 
         dbgprint!("done init");
-        BLUE_LED = led;
-        TX_LED = tx_led;
-        RX_LED = rx_led;
-        UART = uart;
+
+        init::LateResources {
+            blue_led: led,
+            tx_led,
+            rx_led,
+            uart,
+        }
     }
 
-    #[interrupt(resources = [UART, RX_LED, TX_LED])]
-    fn SERCOM0() {
-        resources.RX_LED.set_low().unwrap();
-        let data = match block!(resources.UART.read()) {
+    #[task(binds = SERCOM0, resources = [blue_led, tx_led, uart, rx_led])]
+    fn SERCOM0(c: SERCOM0::Context) {
+        c.resources.rx_led.set_low().unwrap();
+        let data = match block!(c.resources.uart.read()) {
             Ok(v) => {
-                resources.RX_LED.set_high().unwrap();
+                c.resources.rx_led.set_high().unwrap();
                 v
             }
             Err(_) => 0 as u8,
         };
 
-        resources.TX_LED.set_low().unwrap();
-        match block!(resources.UART.write(data)) {
+        c.resources.tx_led.set_low().unwrap();
+        match block!(c.resources.uart.write(data)) {
             Ok(_) => {
-                resources.TX_LED.set_high().unwrap();
+                c.resources.tx_led.set_high().unwrap();
             }
             Err(_) => unimplemented!(),
         }
