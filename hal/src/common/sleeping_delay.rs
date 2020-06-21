@@ -6,6 +6,8 @@ use crate::time::U32Ext;
 use crate::timer_traits::InterruptDrivenTimer;
 use hal::blocking::delay::{DelayMs, DelayUs};
 
+const NUM_US_IN_S: u32 = 1_000_000;
+
 /// Delay and sleep while we do (WFI) using a timer
 pub struct SleepingDelay<TIM> {
     timer: TIM,
@@ -39,13 +41,28 @@ where
     TYPE: Into<u32>,
 {
     fn delay_us(&mut self, us: TYPE) {
-        self.timer.start((1_000_000_u32 / us.into()).hz());
+        let mut us: u32 = us.into();
+        if us == 0 {
+            panic!("Invalid delay duration");
+        }
+
+        // Determine how many cycles we need to run for this delay, if any
+        let mut count: u32 = 1 + us / NUM_US_IN_S;
+        if count > 1 {
+            us /= count - 1;
+        }
+
+        // Start the timer and sleep!
+        self.timer.start((NUM_US_IN_S / us).hz());
         self.timer.enable_interrupt();
         loop {
             asm::wfi();
             if self.timer.wait().is_ok() || self.interrupt_fired.load(atomic::Ordering::Relaxed) {
                 self.interrupt_fired.store(false, atomic::Ordering::Relaxed);
-                break;
+                count -= 1;
+                if count == 0 {
+                    break;
+                }
             }
         }
         self.timer.disable_interrupt();
