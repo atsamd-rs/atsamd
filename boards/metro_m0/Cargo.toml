@@ -29,7 +29,7 @@ panic-halt = "~0.2"
 panic_rtt = "~0.2"
 panic-semihosting = "~0.5"
 cortex-m-semihosting = "~0.3"
-cortex-m-rtfm = "~0.5.1"
+cortex-m-rtic = "~0.5.1"
 sx1509 = "~0.2"
 
 [features]

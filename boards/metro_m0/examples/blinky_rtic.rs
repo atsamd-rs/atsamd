@@ -5,7 +5,7 @@ use metro_m0 as hal;
 
 use hal::clock::GenericClockController;
 use hal::prelude::*;
-use rtfm::app;
+use rtic::app;
 
 #[cfg(not(feature = "use_semihosting"))]
 use panic_halt as _;

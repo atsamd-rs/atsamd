@@ -3,14 +3,13 @@
 
 #[allow(unused_imports)]
 use panic_halt;
-
-use edgebadge as hal;
+use pygamer as hal;
 
 use hal::clock::GenericClockController;
 use hal::gpio::{OpenDrain, Output, Pa23};
 use hal::pins::Keys;
 use hal::prelude::*;
-use rtfm::app;
+use rtic::app;
 
 #[app(device = crate::hal::pac, peripherals = true)]
 const APP: () = {
