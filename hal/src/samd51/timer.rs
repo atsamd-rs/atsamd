@@ -179,7 +179,7 @@ pub struct TimerParams {
 }
 
 impl TimerParams {
-        pub fn new_hz<T>(timeout: T, src_freq: u32) -> Self
+        pub fn new<T>(timeout: T, src_freq: u32) -> Self
     where
         T: Into<Hertz>,
     {
