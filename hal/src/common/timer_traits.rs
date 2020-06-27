@@ -3,7 +3,7 @@ use crate::time;
 
 /// Trait for timers that can enable & disable an interrupt the fires
 /// when the timer expires
-pub trait InterruptDrivenTimer: CountDown<Time = time::Hertz> + Periodic {
+pub trait InterruptDrivenTimer: CountDown<Time = time::Microseconds> + Periodic {
     /// Enable the timer interrupt
     fn enable_interrupt(&mut self);
 
