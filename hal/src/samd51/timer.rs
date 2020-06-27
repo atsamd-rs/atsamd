@@ -9,7 +9,7 @@ use crate::target_device::{MCLK, TC2, TC3};
 use crate::target_device::{TC4, TC5};
 
 use crate::clock;
-use crate::time::Hertz;
+use crate::time::{Hertz, Microseconds};
 use nb;
 use void::Void;
 
@@ -46,13 +46,13 @@ impl<TC> CountDown for TimerCounter<TC>
 where
     TC: Count16,
 {
-    type Time = Hertz;
+    type Time = Microseconds;
 
     fn start<T>(&mut self, timeout: T)
     where
-        T: Into<Hertz>,
+        T: Into<Self::Time>,
     {
-        let params = TimerParams::new(timeout, self.freq.0);
+        let params = TimerParams::new_us(timeout, self.freq.0);
         let divider = params.divider;
         let cycles = params.cycles;
         let count = self.tc.count_16();
@@ -179,12 +179,26 @@ pub struct TimerParams {
 }
 
 impl TimerParams {
-    pub fn new<T>(timeout: T, src_freq: u32) -> Self
+        pub fn new_hz<T>(timeout: T, src_freq: u32) -> Self
     where
         T: Into<Hertz>,
     {
         let timeout = timeout.into();
         let ticks: u32 = src_freq / timeout.0.max(1);
+        Self::new_from_ticks(ticks)
+    }
+
+    pub fn new_us<T>(timeout: T, src_freq: Hertz) -> Self
+    where
+        T: Into<Microseconds>,
+    {
+        let timeout = timeout.into();
+        let ticks: u32 = (timeout.0 as u64 * src_freq.0 as u64 / 1_000_000_u64) as u32;
+        Self::new_from_ticks(ticks)
+    }
+
+    fn new_from_ticks(ticks: u32) -> Self
+    {
         let divider = ((ticks >> 16) + 1).next_power_of_two();
         let divider = match divider {
             1 | 2 | 4 | 8 | 16 | 64 | 256 | 1024 => divider,
