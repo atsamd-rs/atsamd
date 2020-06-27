@@ -46,7 +46,7 @@ where
     where
         T: Into<Self::Time>,
     {
-        let params = TimerParams::new_us(timeout, self.freq);
+        let params = TimerParams::new_us(timeout, self.freq.0);
         let divider = params.divider;
         let cycles = params.cycles;
 
@@ -172,21 +172,21 @@ pub struct TimerParams {
 }
 
 impl TimerParams {
-    pub fn new<T>(timeout: T, src_freq: Hertz) -> Self
+    pub fn new<T>(timeout: T, src_freq: u32) -> Self
     where
         T: Into<Hertz>,
     {
         let timeout = timeout.into();
-        let ticks: u32 = src_freq.0 / timeout.0.max(1);
+        let ticks: u32 = src_freq / timeout.0.max(1);
         TimerParams::new_from_ticks(ticks)
     }
 
-    pub fn new_us<T>(timeout: T, src_freq: Hertz) -> Self
+    pub fn new_us<T>(timeout: T, src_freq: u32) -> Self
     where
         T: Into<Microseconds>,
     {
         let timeout = timeout.into();
-        let ticks: u32 = (timeout.0 as u64 * src_freq.0 as u64 / 1_000_000_u64) as u32;
+        let ticks: u32 = (timeout.0 as u64 * src_freq as u64 / 1_000_000_u64) as u32;
         Self::new_from_ticks(ticks)
     }
 
@@ -236,8 +236,8 @@ mod tests {
 
     #[test]
     fn timer_params_hz_and_us_same_1hz() {
-        let tp_from_hz = TimerParams::new(1_u32.hz(), 48_000_000_u32.hz());
-        let tp_from_us = TimerParams::new_us(1_000_000_u32.us(), 48_000_000_u32.hz());
+        let tp_from_hz = TimerParams::new(1_u32.hz(), 48_000_000_u32);
+        let tp_from_us = TimerParams::new_us(1_000_000_u32.us(), 48_000_000_u32);
 
         assert_eq!(tp_from_hz.divider, tp_from_us.divider);
         assert_eq!(tp_from_hz.cycles, tp_from_us.cycles);
@@ -245,8 +245,8 @@ mod tests {
 
     #[test]
     fn timer_params_hz_and_us_same_3hz() {
-        let tp_from_hz = TimerParams::new(3_u32.hz(), 48_000_000_u32.hz());
-        let tp_from_us = TimerParams::new_us(333_333_u32.us(), 48_000_000_u32.hz());
+        let tp_from_hz = TimerParams::new(3_u32.hz(), 48_000_000_u32);
+        let tp_from_us = TimerParams::new_us(333_333_u32.us(), 48_000_000_u32);
 
         // There's some rounding error here, but it is extremely small (1 cycle difference)
         assert_eq!(tp_from_hz.divider, tp_from_us.divider);
