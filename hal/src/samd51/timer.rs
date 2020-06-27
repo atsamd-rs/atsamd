@@ -216,8 +216,8 @@ impl TimerParams {
 
         if cycles > u16::max_value() as u32 {
             panic!(
-                "cycles {} is out of range for a 16 bit counter (timeout={})",
-                cycles, timeout.0
+                "cycles {} is out of range for a 16 bit counter",
+                cycles
             );
         }
 
