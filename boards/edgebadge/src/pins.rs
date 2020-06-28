@@ -65,7 +65,7 @@ define_pins!(
     pin battery = b1,
     /// Light sensor (also Analog pin 7)
     pin light = b4,
-    /// Digital pin 2 (also Analog pin 8) 
+    /// Digital pin 2 (also Analog pin 8)
     pin d2 = b3,
     /// Digital pin 3 (also Analog pin 9)
     pin d3 = b2,
@@ -121,7 +121,7 @@ define_pins!(
     // I2C (connected to LIS3DH accelerometer)
     /// STEMMA SDA
     pin sda = a12,
-    /// STEMMA SCL 
+    /// STEMMA SCL
     pin scl = a13,
 
     /// USB D- pin
@@ -499,6 +499,8 @@ impl USB {
         mclk: &mut MCLK,
         port: &mut Port,
     ) -> UsbBusAllocator<UsbBus> {
+        use gpio::IntoFunction;
+
         clocks.configure_gclk_divider_and_source(GEN_A::GCLK2, 1, SRC_A::DFLL, false);
         let usb_gclk = clocks.get_gclk(GEN_A::GCLK2).unwrap();
         let usb_clock = &clocks.usb(&usb_gclk).unwrap();

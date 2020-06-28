@@ -22,8 +22,6 @@ use hal::{
 };
 
 #[cfg(feature = "usb")]
-use hal::gpio::IntoFunction;
-#[cfg(feature = "usb")]
 use hal::usb::usb_device::bus::UsbBusAllocator;
 #[cfg(feature = "usb")]
 pub use hal::usb::UsbBus;
@@ -157,6 +155,8 @@ pub fn usb_allocator(
     dp: gpio::Pa25<Input<Floating>>,
     port: &mut Port,
 ) -> UsbBusAllocator<UsbBus> {
+    use gpio::IntoFunction;
+
     let gclk0 = clocks.gclk0();
     let usb_clock = &clocks.usb(&gclk0).unwrap();
 

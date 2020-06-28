@@ -179,6 +179,8 @@ pub fn usb_bus(
     dp: gpio::Pa25<Input<Floating>>,
     port: &mut Port,
 ) -> UsbBusWrapper<UsbBus> {
+    use gpio::IntoFunction;
+
     let gclk0 = clocks.gclk0();
     dbgprint!("making usb clock");
     let usb_clock = &clocks.usb(&gclk0).unwrap();

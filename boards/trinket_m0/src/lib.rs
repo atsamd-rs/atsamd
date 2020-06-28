@@ -122,6 +122,8 @@ pub fn usb_allocator(
     dp: gpio::Pa25<Input<Floating>>,
     port: &mut Port,
 ) -> UsbBusAllocator<UsbBus> {
+    use gpio::IntoFunction;
+
     let gclk0 = clocks.gclk0();
     let usb_clock = &clocks.usb(&gclk0).unwrap();
 
