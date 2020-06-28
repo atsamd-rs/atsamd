@@ -515,8 +515,6 @@ impl USB {
         mclk: &mut MCLK,
         port: &mut Port,
     ) -> UsbBusAllocator<UsbBus> {
-        use gpio::IntoFunction;
-
         clocks.configure_gclk_divider_and_source(GEN_A::GCLK2, 1, SRC_A::DFLL, false);
         let usb_gclk = clocks.get_gclk(GEN_A::GCLK2).unwrap();
         let usb_clock = &clocks.usb(&usb_gclk).unwrap();
