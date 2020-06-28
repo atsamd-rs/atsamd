@@ -2,6 +2,7 @@
 use crate::target_device::tc1::COUNT16;
 #[allow(unused)]
 use crate::target_device::{PM, TC1};
+use crate::timer_traits::InterruptDrivenTimer;
 use hal::timer::{CountDown, Periodic};
 
 use crate::clock;
@@ -100,7 +101,7 @@ where
     }
 }
 
-impl<TC> TimerCounter<TC>
+impl<TC> InterruptDrivenTimer for TimerCounter<TC>
 where
     TC: Count16,
 {
@@ -108,7 +109,7 @@ where
     /// This method only sets the clock configuration to trigger
     /// the interrupt; it does not configure the interrupt controller
     /// or define an interrupt handler.
-    pub fn enable_interrupt(&mut self) {
+    fn enable_interrupt(&mut self) {
         self.tc.count_16().intenset.write(|w| w.ovf().set_bit());
     }
 
@@ -116,7 +117,7 @@ where
     /// This method only sets the clock configuration to prevent
     /// triggering the interrupt; it does not configure the interrupt
     /// controller.
-    pub fn disable_interrupt(&mut self) {
+    fn disable_interrupt(&mut self) {
         self.tc.count_16().intenclr.write(|w| w.ovf().set_bit());
     }
 }
