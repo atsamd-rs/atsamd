@@ -2,6 +2,7 @@
 #![deny(missing_docs)]
 #![deny(warnings)]
 #![allow(non_camel_case_types)]
+#![allow(clippy::all)]
 #![no_std]
 extern crate bare_metal;
 extern crate cortex_m;

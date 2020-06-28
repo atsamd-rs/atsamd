@@ -1,7 +1,6 @@
 use crate::clock;
 use crate::time::Hertz;
 use crate::hal::spi::{FullDuplex, Mode, Phase, Polarity};
-use nb;
 use crate::sercom::pads::*;
 use crate::target_device::sercom0::SPI;
 use crate::target_device::{PM, SERCOM0, SERCOM1, SERCOM2, SERCOM3};

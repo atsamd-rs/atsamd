@@ -2,7 +2,6 @@ use crate::clock;
 use crate::time::Hertz;
 use crate::hal::blocking::serial::{write::Default, Write};
 use crate::hal::serial;
-use nb;
 use crate::sercom::pads::*;
 use crate::target_device::sercom0::USART;
 use crate::target_device::{PM, SERCOM0, SERCOM1, SERCOM2, SERCOM3};
@@ -27,7 +26,7 @@ macro_rules! uart {
         $crate::paste::item! {
             /// A pad mapping configuration for the SERCOM in UART mode.
             ///
-            /// This type can only be constructed using the From implementations 
+            /// This type can only be constructed using the From implementations
             /// in this module, which are restricted to valid configurations.
             ///
             /// Defines which sercom pad is mapped to which UART function.
@@ -278,5 +277,5 @@ fn calculate_baud_value(baudrate: u32, clk_freq: u32, n_samples: u8) -> u16 {
     let scale = (1u64 << SHIFT) - ratio;
     let baud_calculated = (65536u64 * scale) >> SHIFT;
 
-    return baud_calculated as u16;
+    baud_calculated as u16
 }

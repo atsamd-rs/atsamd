@@ -7,7 +7,6 @@ use hal::timer::{CountDown, Periodic};
 
 use crate::clock;
 use crate::time::{Hertz, Microseconds};
-use nb;
 use void::Void;
 
 /// A generic hardware timer counter.

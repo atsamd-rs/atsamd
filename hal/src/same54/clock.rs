@@ -108,7 +108,7 @@ impl State {
         improve_duty_cycle: bool,
     ) {
         self.gclk.genctrl[u8::from(gclk) as usize].write(|w| unsafe {
-            w.src().variant(src.into());
+            w.src().variant(src);
             w.div().bits(divider);
             // divide directly by divider, rather than 2^(n+1)
             w.divsel().clear_bit();
@@ -421,6 +421,7 @@ pub const OSC32K_FREQ: Hertz = Hertz(32_768);
 pub const OSC120M_FREQ: Hertz = Hertz(120_000_000);
 
 fn set_flash_to_half_auto_wait_state(nvmctrl: &mut NVMCTRL) {
+    todo!();
     // nvmctrl.ctrla.modify(|_, w| w.rws().half());
     // TODO Fix above
 }

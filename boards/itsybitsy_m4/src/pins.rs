@@ -9,7 +9,6 @@ use hal::sercom::{I2CMaster2, PadPin, SPIMaster1, Sercom2Pad0, Sercom2Pad1, UART
 use hal::time::Hertz;
 
 use hal::clock::GenericClockController;
-use super::pac::gclk::{genctrl::SRC_A, pchctrl::GEN_A};
 
 use apa102_spi::Apa102;
 
