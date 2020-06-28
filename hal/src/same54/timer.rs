@@ -10,7 +10,6 @@ use crate::target_device::{TC4, TC5};
 use crate::clock;
 use crate::time::{Hertz, Microseconds};
 use crate::timer_traits::InterruptDrivenTimer;
-use nb;
 use void::Void;
 
 use cortex_m::asm::delay as cycle_delay;

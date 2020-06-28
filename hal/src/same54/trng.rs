@@ -8,16 +8,16 @@ use embedded_hal::blocking::rng::Read;
 pub struct Trng(TRNG);
 
 impl Trng {
-    pub fn new(mclk: &mut MCLK, trng: TRNG) -> Trng { 
-        mclk.apbcmask.modify(|_, w| w.trng_().set_bit()); 
+    pub fn new(mclk: &mut MCLK, trng: TRNG) -> Trng {
+        mclk.apbcmask.modify(|_, w| w.trng_().set_bit());
         trng.ctrla.modify(|_, w| w.enable().set_bit());
         Self(trng)
     }
 
     pub fn random(&self, buf: &mut [u8]) {
-        for chunk in buf.chunks_mut(4) { 
-            chunk.copy_from_slice(&self.random_u32().to_le_bytes()[..chunk.len()]); 
-        }    
+        for chunk in buf.chunks_mut(4) {
+            chunk.copy_from_slice(&self.random_u32().to_le_bytes()[..chunk.len()]);
+        }
     }
 
 
@@ -57,7 +57,8 @@ impl RngCore for Trng {
     }
 
     fn try_fill_bytes(&mut self, dest: &mut [u8]) -> Result<(), rand_core::Error> {
-        Ok(self.fill_bytes(dest))
+        self.fill_bytes(dest);
+        Ok(())
     }
 }
 

@@ -111,7 +111,7 @@ pub trait IntoFunction<T> {
 
 // rustfmt wants to keep indenting the nested macro on each run,
 // so disable it for this whole block :-/
-#[cfg_attr(rustfmt, rustfmt_skip)]
+#[rustfmt::skip]
 macro_rules! pin {
     (
         $PinType:ident,

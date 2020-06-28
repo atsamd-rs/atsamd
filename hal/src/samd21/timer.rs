@@ -7,7 +7,6 @@ use hal::timer::{CountDown, Periodic};
 use crate::clock;
 use crate::time::{Hertz, Microseconds};
 use crate::timer_traits::InterruptDrivenTimer;
-use nb;
 use void::Void;
 
 // Note:

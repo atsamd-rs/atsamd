@@ -55,20 +55,20 @@ pub enum ResetCause {
 impl From<u8> for ResetCause {
     fn from(rcause_val: u8) -> ResetCause {
         match rcause_val {
-            1 => ResetCause::POR,
-            2 => ResetCause::BOD12,
-            4 => ResetCause::BOD33,
-            8 => ResetCause::NVM,
-            16 => ResetCause::External,
-            32 => ResetCause::Watchdog,
-            64 => ResetCause::System,
-            128 => ResetCause::Backup,
-            _ => ResetCause::Unknown,
+            1 => Self::POR,
+            2 => Self::BOD12,
+            4 => Self::BOD33,
+            8 => Self::NVM,
+            16 => Self::External,
+            32 => Self::Watchdog,
+            64 => Self::System,
+            128 => Self::Backup,
+            _ => Self::Unknown,
         }
     }
 }
 
 /// Returns the cause of the last reset.
-pub fn reset_cause<'a>(rstc: &'a crate::target_device::RSTC) -> ResetCause {
+pub fn reset_cause(rstc: &crate::target_device::RSTC) -> ResetCause {
     ResetCause::from(rstc.rcause.read().bits())
 }

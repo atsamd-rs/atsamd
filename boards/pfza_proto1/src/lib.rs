@@ -15,7 +15,7 @@ pub use hal::target_device as pac;
 pub use hal::common::*;
 pub use hal::same54::*;
 
-use gpio::{Floating, Input, Port, PfC};
+use gpio::{Floating, Input, Port};
 use hal::clock::GenericClockController;
 use hal::sercom::{I2CMaster7, PadPin, SPIMaster6};
 use hal::time::Hertz;

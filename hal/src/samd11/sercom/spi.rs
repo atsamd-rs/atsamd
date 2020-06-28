@@ -4,7 +4,6 @@ use crate::sercom::pads::*;
 use crate::target_device::sercom0::SPI;
 use crate::target_device::{PM, SERCOM0, SERCOM1};
 use crate::time::Hertz;
-use nb;
 
 #[derive(Debug)]
 pub enum Error {
