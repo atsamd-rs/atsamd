@@ -1,7 +1,7 @@
 use crate::hal::timer::{CountDown, Periodic};
 use crate::time;
 
-/// Trait for timers that can enable & disable an interrupt the fires
+/// Trait for timers that can enable & disable an interrupt that fires
 /// when the timer expires
 pub trait InterruptDrivenTimer: CountDown<Time = time::Microseconds> + Periodic {
     /// Enable the timer interrupt
