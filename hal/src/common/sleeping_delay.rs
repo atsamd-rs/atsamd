@@ -41,19 +41,15 @@ where
     TYPE: Into<u32>,
 {
     fn delay_us(&mut self, us: TYPE) {
-        let mut us: u32 = us.into();
-        if us == 0 {
-            panic!("Invalid delay duration");
-        }
+        let us: u32 = us.into();
 
         // Determine how many cycles we need to run for this delay, if any
-        let mut count: u32 = 1 + us / NUM_US_IN_S;
-        if count > 1 {
-            us /= count - 1;
-        }
+        // Avoid timers that run longer than a second because for 48 MHz-based timers,
+        //   there is no valid divisor + cycle count greater than ~1.3s, so we'd panic.
+        let mut count: u32 = 1 + (us / NUM_US_IN_S);
 
         // Start the timer and sleep!
-        self.timer.start((NUM_US_IN_S / us).hz());
+        self.timer.start((us / count).us());
         self.timer.enable_interrupt();
         loop {
             asm::wfi();

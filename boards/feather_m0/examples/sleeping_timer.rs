@@ -51,9 +51,9 @@ fn main() -> ! {
     red_led.set_high().unwrap();
     loop {
         red_led.set_high().unwrap();
-        sleeping_delay.delay_ms(500u32);
+        sleeping_delay.delay_ms(5_000u32);
         red_led.set_low().unwrap();
-        sleeping_delay.delay_ms(1000u32);
+        sleeping_delay.delay_ms(500u32);
     }
 }
 
