@@ -20,6 +20,8 @@ cargo build --release --example blinky_basic
 arm-none-eabi-objcopy -O binary target/thumbv6m-none-eabi/release/examples/blinky_basic target/blinky_basic.bin
 bossac -i -d -U true -i -e -w -v target/blinky_basic.bin -R
 ```
+(You may need to use `--port` with something like `/dev/ttyACM0` or `/dev/ttyACM1`
 
 #### Notes
- - It may help to double-press the center button to reset when re-flashing the device
+ - It may help to double-press the center button to reset when re-flashing the device. This sets the device in a bootloader mode.
+

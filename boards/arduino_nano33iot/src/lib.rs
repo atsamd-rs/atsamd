@@ -19,6 +19,13 @@ pub use hal::target_device as pac;
 
 use gpio::{Floating, Input, Port};
 
+#[cfg(feature = "usb")]
+use hal::clock::GenericClockController;
+#[cfg(feature = "usb")]
+use hal::usb::usb_device::bus::UsbBusAllocator;
+#[cfg(feature = "usb")]
+pub use hal::usb::UsbBus;
+
 // The docs could be further improved with details of the specific channels etc
 define_pins!(
     /// Maps the pins to their arduino names and the numbers printed on the board.
@@ -109,10 +116,33 @@ define_pins!(
     /// SerialNina 30: PWM, TC
     pin serial_nina30 = a23,
 
-    pin usb_n = a24,
-    pin usb_p = a25,
+    pin usb_dm = a24,
+    pin usb_dp = a25,
     pin aref = a3,
 
     pin p34 = a30,
     pin p35 = a31,
 );
+
+#[cfg(feature = "usb")]
+pub fn usb_allocator(
+    usb: pac::USB,
+    clocks: &mut GenericClockController,
+    pm: &mut pac::PM,
+    dm: gpio::Pa24<Input<Floating>>,
+    dp: gpio::Pa25<Input<Floating>>,
+    port: &mut Port,
+) -> UsbBusAllocator<UsbBus> {
+    use gpio::IntoFunction;
+
+    let gclk0 = clocks.gclk0();
+    let usb_clock = &clocks.usb(&gclk0).unwrap();
+
+    UsbBusAllocator::new(UsbBus::new(
+        usb_clock,
+        pm,
+        dm.into_function(port),
+        dp.into_function(port),
+        usb,
+    ))
+}
