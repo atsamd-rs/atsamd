@@ -1,7 +1,7 @@
 [package]
 name = "arduino_nano33iot"
-version = "0.6.0"
-authors = ["Wez Furlong <wez@wezfurlong.org>", "David McGillicuddy <contact@djmcgill.co.uk>"]
+version = "0.1.0"
+authors = ["Gus Wynn <guswynn@gmail.com>"]
 description = "Board Support crate for the Arduino Nano 33 IOT"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal", "arduino"]
 license = "MIT OR Apache-2.0"
