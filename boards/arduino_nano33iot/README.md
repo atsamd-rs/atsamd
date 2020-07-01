@@ -24,4 +24,5 @@ bossac -i -d -U true -i -e -w -v target/blinky_basic.bin -R
 
 #### Notes
  - It may help to double-press the center button to reset when re-flashing the device. This sets the device in a bootloader mode.
+ - For the usb example, `picocom` is a good simple terminal serial emulator
 

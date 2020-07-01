@@ -65,13 +65,18 @@ fn main() -> ! {
     // Flash the LED in a spin loop to demonstrate that USB is
     // entirely interrupt driven.
     loop {
-        cycle_delay(15 * 1024 * 1024);
+        cycle_delay(5 * 1024 * 1024);
         red_led.toggle();
-        unsafe {
-            USB_SERIAL.as_mut().map(|serial| {
-                serial.write("test print".as_bytes()).unwrap();
-            });
-        }
+
+        // Turn off interrupts so we don't fight with the interrupt
+        cortex_m::interrupt::free(|_| unsafe {
+            USB_BUS.as_mut().map(|_| {
+                USB_SERIAL.as_mut().map(|serial| {
+                    // Skip errors so we can continue the program
+                    let _ = serial.write("log line\r\n".as_bytes());
+                });
+            })
+        });
     }
 }
 
@@ -84,18 +89,10 @@ fn poll_usb() {
         USB_BUS.as_mut().map(|usb_dev| {
             USB_SERIAL.as_mut().map(|serial| {
                 usb_dev.poll(&mut [serial]);
-                /*
-                let mut buf = [0u8; 64];
 
-                if let Ok(count) = serial.read(&mut buf) {
-                    for (i, c) in buf.iter().enumerate() {
-                        if i >= count {
-                            break;
-                        }
-                        serial.write("gus".as_bytes());
-                    }
-                };
-                */
+                // Make the other side happy
+                let mut buf = [0u8; 16];
+                let _ = serial.read(&mut buf);
             });
         });
     };
