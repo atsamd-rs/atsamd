@@ -29,7 +29,7 @@ pub use hal::usb::UsbBus;
 // The docs could be further improved with details of the specific channels etc
 define_pins!(
     /// Maps the pins to their arduino names and the numbers printed on the board.
-    /// Information from: <https://github.com/arduino/ArduinoCore-samd/blob/master/variants/mkrzero/variant.cpp>
+    /// Information from: <https://github.com/arduino/ArduinoCore-samd/blob/master/variants/nano_33_iot/variant.cpp>
     struct Pins,
     target_device: target_device,
 
