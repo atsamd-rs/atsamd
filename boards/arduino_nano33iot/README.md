@@ -1,6 +1,6 @@
-# Arduino Mkrzero Board Support Crate
+# Arduino Nano 33 IOT Board Support Crate
 
-This crate provides a type-safe API for working with the [Arduino mkrzero board](https://store.arduino.cc/arduino-mkrzero).
+This crate provides a type-safe API for working with the [Arduino nano 33 IOT board](https://store.arduino.cc/usa/nano-33-iot).
 
 ## Examples
 ### Blinky Basic
@@ -20,3 +20,9 @@ cargo build --release --example blinky_basic
 arm-none-eabi-objcopy -O binary target/thumbv6m-none-eabi/release/examples/blinky_basic target/blinky_basic.bin
 bossac -i -d -U true -i -e -w -v target/blinky_basic.bin -R
 ```
+(You may need to use `--port` with something like `/dev/ttyACM0` or `/dev/ttyACM1`
+
+#### Notes
+ - It may help to double-press the center button to reset when re-flashing the device. This sets the device in a bootloader mode.
+ - For the usb example, `picocom` is a good simple terminal serial emulator
+

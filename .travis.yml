@@ -18,6 +18,7 @@ env:
   - CRATE=boards/samd11_bare FEATURES="--features=unproven" BUILDMODE="--release"
   - CRATE=boards/samd21_mini FEATURES="--features=unproven"
   - CRATE=boards/arduino_mkrzero FEATURES="--features=unproven"
+  - CRATE=boards/arduino_nano33iot FEATURES="--features=unproven"
   - CRATE=boards/arduino_mkrvidor4000 FEATURES="--features=unproven"
   - CRATE=boards/circuit_playground_express FEATURES="--features=unproven"
   - CRATE=boards/sodaq_one FEATURES="--features=unproven"
