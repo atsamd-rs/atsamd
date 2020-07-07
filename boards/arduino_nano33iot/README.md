@@ -1,4 +1,4 @@
-# Arduino Mkrzero Board Support Crate
+# Arduino Nano 33 IOT Board Support Crate
 
 This crate provides a type-safe API for working with the [Arduino nano 33 IOT board](https://store.arduino.cc/usa/nano-33-iot).
 
