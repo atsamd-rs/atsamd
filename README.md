@@ -19,6 +19,7 @@ In addition to the PACs and HAL, there numerous **B**oard **S**upport **P**ackag
 | [atsamd51j19a](https://docs.rs/atsamd51j19a/) | [![Crates.io](https://img.shields.io/crates/v/atsamd51j19a.svg)](https://crates.io/crates/atsamd51j19a) | [EdgeBadge][edgebadge], [Feather M4][feather_m4], [Metro M4][metro_m4] |
 | [atsamd51j20a](https://docs.rs/atsamd51j20a/) | [![Crates.io](https://img.shields.io/crates/v/atsamd51j20a.svg)](https://crates.io/crates/atsamd51j20a) | [PyPortal][pyportal] |
 | [atsamd51g19a](https://docs.rs/atsamd51g19a/) | [![Crates.io](https://img.shields.io/crates/v/atsamd51g19a.svg)](https://crates.io/crates/atsamd51g19a) | [ItsyBitsy M4][itsybitsy_m4], [Trellis M4][trellis_m4] |
+| [atsamd51p19a](https://docs.rs/atsamd51p19a/) | [![Crates.io](https://img.shields.io/crates/v/atsamd51p19a.svg)](https://crates.io/crates/atsamd51p19a) | |
 | [atsame54p20a](https://docs.rs/atsame54p20a/) | [![Crates.io](https://img.shields.io/crates/v/atsame54p20a.svg)](https://crates.io/crates/atsame54p20a) | [PathfinderZA Proto1][pfza_proto1] |
 | [atsamd-hal](https://docs.rs/atsamd_hal/) | [![Crates.io](https://img.shields.io/crates/v/atsamd_hal.svg)](https://crates.io/crates/atsamd_hal) |  |
 
