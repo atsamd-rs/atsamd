@@ -170,33 +170,29 @@ macro_rules! spi_master {
 
                 /// Disable the SPI
                 pub fn disable(&mut self) {
-                    unsafe {
-                        self.sercom.spi().ctrla.modify(|_, w| w.enable().clear_bit());
-                        // wait for configuration to take effect
-                        while self.sercom.spi().syncbusy.read().enable().bit_is_set() {}
-                    }
+                    self.sercom.spi().ctrla.modify(|_, w| w.enable().clear_bit());
+                    // wait for configuration to take effect
+                    while self.sercom.spi().syncbusy.read().enable().bit_is_set() {}
                 }
 
                 /// Enable the SPI
                 pub fn enable(&mut self) {
-                    unsafe {
-                        self.sercom.spi().ctrla.modify(|_, w| w.enable().set_bit());
-                        // wait for configuration to take effect
-                        while self.sercom.spi().syncbusy.read().enable().bit_is_set() {}
-                    }
+                    self.sercom.spi().ctrla.modify(|_, w| w.enable().set_bit());
+                    // wait for configuration to take effect
+                    while self.sercom.spi().syncbusy.read().enable().bit_is_set() {}
                 }
 
                 /// Set the baud rate
-                pub fn set_baud<F: Into<Hertz>(
+                pub fn set_baud<F: Into<Hertz>>(
                     &mut self,
                     freq: F,
-                    clock:&clock::$clock,
+                    clock:&clock::$clock
                 ) {
                     self.disable();
                     unsafe {
                         let gclk = clock.freq();
                         let baud = (gclk.0 / (2 * freq.into().0) - 1) as u8;
-                        sercom.spi().baud.modify(|_, w| w.baud().bits(baud));
+                        self.sercom.spi().baud.modify(|_, w| w.baud().bits(baud));
                     }
                     self.enable();
                 }
@@ -207,19 +203,17 @@ macro_rules! spi_master {
                     mode: Mode
                 ) {
                     self.disable();
-                    unsafe {
-                         sercom.spi().ctrla.modify(|_, w| {
-                            match mode.polarity {
-                                Polarity::IdleLow => w.cpol().clear_bit(),
-                                Polarity::IdleHigh => w.cpol().set_bit(),
-                            };
+                    self.sercom.spi().ctrla.modify(|_, w| {
+                        match mode.polarity {
+                            Polarity::IdleLow => w.cpol().clear_bit(),
+                            Polarity::IdleHigh => w.cpol().set_bit(),
+                        };
 
-                            match mode.phase {
-                                Phase::CaptureOnFirstTransition => w.cpha().clear_bit(),
-                                Phase::CaptureOnSecondTransition => w.cpha().set_bit(),
-                            };
-                        });
-                    }
+                        match mode.phase {
+                            Phase::CaptureOnFirstTransition => w.cpha().clear_bit(),
+                            Phase::CaptureOnSecondTransition => w.cpha().set_bit(),
+                        }
+                    });
                     self.enable();
                 }
 
