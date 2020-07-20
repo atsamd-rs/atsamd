@@ -4,6 +4,7 @@ use crate::sercom::pads::*;
 use crate::target_device::sercom0::SPI;
 use crate::target_device::{PM, SERCOM0, SERCOM1};
 use crate::time::Hertz;
+use crate::common::sercom_traits::{ReconfigurableBaudrate, ReconfigurableSpiMode};
 
 #[derive(Debug)]
 pub enum Error {
@@ -180,41 +181,6 @@ macro_rules! spi_master {
                     while self.sercom.spi().syncbusy.read().enable().bit_is_set() {}
                 }
 
-                /// Set the baud rate
-                pub fn set_baud<F: Into<Hertz>>(
-                    &mut self,
-                    freq: F,
-                    clock:&clock::$clock
-                ) {
-                    self.disable();
-                    unsafe {
-                        let gclk = clock.freq();
-                        let baud = (gclk.0 / (2 * freq.into().0) - 1) as u8;
-                        self.sercom.spi().baud.modify(|_, w| w.baud().bits(baud));
-                    }
-                    self.enable();
-                }
-
-                /// Set the polarity (CPOL) and phase (CPHA) of the SPI
-                pub fn set_mode(
-                    &mut self,
-                    mode: Mode
-                ) {
-                    self.disable();
-                    self.sercom.spi().ctrla.modify(|_, w| {
-                        match mode.polarity {
-                            Polarity::IdleLow => w.cpol().clear_bit(),
-                            Polarity::IdleHigh => w.cpol().set_bit(),
-                        };
-
-                        match mode.phase {
-                            Phase::CaptureOnFirstTransition => w.cpha().clear_bit(),
-                            Phase::CaptureOnSecondTransition => w.cpha().set_bit(),
-                        }
-                    });
-                    self.enable();
-                }
-
                 /// Tear down the SPI instance and yield the constituent pins and
                 /// SERCOM instance.  No explicit de-initialization is performed.
                 pub fn free(self) -> ([<$Type Padout>]<MISO, MOSI, SCK>, $SERCOM) {
@@ -225,6 +191,37 @@ macro_rules! spi_master {
                 fn spi(&mut self) -> &SPI {
                     &self.sercom.spi()
                 }
+            }
+        }
+
+        impl<MISO, MOSI, SCK> ReconfigurableBaudrate for $Type<MISO, MOSI, SCK> {
+            fn change_baudrate<C: Into<Hertz>, F: Into<Hertz>>(&mut self, clock: C, freq: F) {
+                self.disable();
+                unsafe {
+                    let gclk: Hertz = clock.into();
+                    let freq: Hertz = freq.into();
+                    let baud = (gclk.0 / (2 * freq.0) - 1) as u8;
+                    self.sercom.spi().baud.modify(|_, w| w.baud().bits(baud));
+                }
+                self.enable();
+            }
+        }
+
+        impl<MISO, MOSI, SCK> ReconfigurableSpiMode for $Type<MISO, MOSI, SCK> {
+            fn change_spi_mode(&mut self, mode: Mode) {
+                self.disable();
+                self.sercom.spi().ctrla.modify(|_, w| {
+                    match mode.polarity {
+                        Polarity::IdleLow => w.cpol().clear_bit(),
+                        Polarity::IdleHigh => w.cpol().set_bit(),
+                    };
+
+                    match mode.phase {
+                        Phase::CaptureOnFirstTransition => w.cpha().clear_bit(),
+                        Phase::CaptureOnSecondTransition => w.cpha().set_bit(),
+                    }
+                });
+                self.enable();
             }
         }
 
