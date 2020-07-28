@@ -1,13 +1,15 @@
+#[rustfmt::skip]
 use crate::gpio::{Pa1, Pa5, Pa7, Pa9, Pa11, Pa13, Pa15, Pa17, Pa19, Pb31, PfE};
 
 #[cfg(all(not(feature = "samd51g19a"), not(feature = "samd51g18a")))]
+#[rustfmt::skip]
 use crate::gpio::{Pa23, Pa25, Pb9, Pb11, Pb13, Pb15};
 
 use crate::clock;
-use crate::timer::TimerParams;
-use crate::time::Hertz;
 use crate::hal::PwmPin;
-use crate::target_device::{TC0, TC1, TC2, TC3, MCLK};
+use crate::target_device::{MCLK, TC0, TC1, TC2, TC3};
+use crate::time::Hertz;
+use crate::timer::TimerParams;
 
 #[cfg(all(not(feature = "samd51g19a"), not(feature = "samd51g18a")))]
 use crate::target_device::{TC4, TC5};
@@ -48,8 +50,8 @@ pub enum TC5Pinout {
     Pb15(Pb15<PfE>),
 }
 
-pub enum Channel { 
-    C0
+pub enum Channel {
+    C0,
 }
 
 macro_rules! pwm {
@@ -111,7 +113,7 @@ impl $TYPE {
 
     pub fn get_period(&self) -> Hertz {
         let count = self.tc.count16();
-        let divisor = count.ctrla.read().prescaler().bits(); 
+        let divisor = count.ctrla.read().prescaler().bits();
         let top = count.cc[0].read().cc().bits();
         Hertz(self.clock_freq.0 / divisor as u32 / (top + 1) as u32)
     }
@@ -160,7 +162,7 @@ impl PwmPin for $TYPE {
     fn get_duty(&self) -> Self::Duty {
         let count = self.tc.count16();
         let duty: u16 = count.ccbuf[1].read().ccbuf().bits();
-        duty 
+        duty
     }
 
     fn get_max_duty(&self) -> Self::Duty {

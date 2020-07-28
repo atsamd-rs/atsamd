@@ -1,12 +1,12 @@
 // Note: section 7.2.3 shows which pins support I2C Hs mode
 
 use crate::clock;
-use crate::time::Hertz;
 use crate::hal::blocking::i2c::{Read, Write, WriteRead};
 use crate::target_device::sercom0::I2CM;
 use crate::target_device::{PM, SERCOM0, SERCOM1, SERCOM2, SERCOM3};
-#[cfg(any(feature = "samd21g18a", feature="samd21j18a"))]
+#[cfg(any(feature = "samd21g18a", feature = "samd21j18a"))]
 use crate::target_device::{SERCOM4, SERCOM5};
+use crate::time::Hertz;
 
 const BUS_STATE_IDLE: u8 = 1;
 const BUS_STATE_OWNED: u8 = 2;
@@ -337,7 +337,7 @@ i2c!([
         ),
 ]);
 
-#[cfg(any(feature = "samd21g18a", feature="samd21j18a"))]
+#[cfg(any(feature = "samd21g18a", feature = "samd21j18a"))]
 i2c!([
     I2CMaster4:
         (

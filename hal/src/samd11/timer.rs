@@ -186,8 +186,7 @@ impl TimerParams {
         Self::new_from_ticks(ticks)
     }
 
-    fn new_from_ticks(ticks: u32) -> Self
-    {
+    fn new_from_ticks(ticks: u32) -> Self {
         let divider = ((ticks >> 16) + 1).next_power_of_two();
         let divider = match divider {
             1 | 2 | 4 | 8 | 16 | 64 | 256 | 1024 => divider,
@@ -204,10 +203,7 @@ impl TimerParams {
         let cycles: u32 = ticks / divider as u32;
 
         if cycles > u16::max_value() as u32 {
-            panic!(
-                "cycles {} is out of range for a 16 bit counter",
-                cycles,
-            );
+            panic!("cycles {} is out of range for a 16 bit counter", cycles,);
         }
 
         TimerParams {

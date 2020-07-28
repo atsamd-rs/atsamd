@@ -1,7 +1,11 @@
 use crate::clock::GenericClockController;
+#[rustfmt::skip]
 use crate::gpio::{
-    Pa10, Pa11, Pa2, Pa3, Pa4, Pa5, Pa6, Pa7, Pa8, Pa9, Pb0, Pb1, Pb2, Pb3, Pb4, Pb5, Pb6, Pb7,
-    Pb8, Pb9, PfB, Pc0, Pc1, Pc2, Pc3, Pc30, Pc31, Pd0, Pd1
+    Pa2, Pa3, Pa4, Pa5, Pa6, Pa7, Pa8, Pa9, Pa10, Pa11,
+    Pb0, Pb1, Pb2, Pb3, Pb4, Pb5, Pb6, Pb7, Pb8, Pb9,
+    Pc0, Pc1, Pc2, Pc3, Pc30, Pc31,
+    Pd0, Pd1,
+    PfB,
 };
 use crate::hal::adc::{Channel, OneShot};
 use crate::target_device::gclk::genctrl::SRC_A::DFLL;

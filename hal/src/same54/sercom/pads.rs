@@ -1,7 +1,6 @@
 use crate::gpio::{self, IntoFunction, Port};
 pub use crate::pad::PadPin;
 
-
 // sercom0[0] PA08:C, PB24:C, PA04:D, PC17:D
 // sercom0[1] PA09:C, PB25:C, PA05:D, PC16:D
 // sercom0[2] PA10:C, PC24:C, PA06:D, PC18:D
