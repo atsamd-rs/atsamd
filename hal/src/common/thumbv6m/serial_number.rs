@@ -1,12 +1,13 @@
 //! Serial number
-// See 9.6 Memories --> Serial Number, page 60
+// See  9.6   Memories --> Serial Number, page 24 for samd11
+// See 10.3.3 Memories --> Serial Number, page 45 for samd21
 
 use core::ptr;
 
-const SN_1: u32 = 0x008061FC;
-const SN_2: u32 = 0x00806010;
-const SN_3: u32 = 0x00806014;
-const SN_4: u32 = 0x00806018;
+const SN_1: u32 = 0x0080A00C;
+const SN_2: u32 = 0x0080A040;
+const SN_3: u32 = 0x0080A044;
+const SN_4: u32 = 0x0080A048;
 
 /// Returns the serial number of the chip as 4 32-bit integers. The serial
 /// number is only guaranteed to be unique if all 128 bits are used.

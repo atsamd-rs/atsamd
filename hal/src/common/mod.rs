@@ -9,9 +9,9 @@ pub mod timer_traits;
 #[cfg(any(feature = "samd11", feature = "samd21"))]
 mod thumbv6m;
 #[cfg(any(feature = "samd11", feature = "samd21"))]
-pub use thumbv6m::gpio;
+pub use thumbv6m::*;
 
 #[cfg(any(feature = "samd51", feature = "same54"))]
 mod thumbv7em;
 #[cfg(any(feature = "samd51", feature = "same54"))]
-pub use thumbv7em::gpio;
+pub use thumbv7em::*;
