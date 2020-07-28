@@ -206,7 +206,7 @@ impl<$pad0, $pad1> $Type<$pad0, $pad1> {
     fn send_bytes(&mut self, bytes: &[u8]) -> Result<(), I2CError> {
         for b in bytes {
             unsafe {
-                self.i2cm().data.write(|w| w.bits(*b as u32));
+                self.i2cm().data.write(|w| w.bits(*b));
             }
 
             loop {
