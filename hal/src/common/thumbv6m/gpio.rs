@@ -4,16 +4,13 @@
 //! reference the individual pin configuration.
 //! The IO pins can be switched into alternate function modes, which
 //! routes the pins to different peripherals depending on the mode
-//! for the pin.   The pin configuration is reflected through the
+//! for the pin.  The pin configuration is reflected through the
 //! use of type states to make the interface (ideally, or at least practically)
 //! impossible to misuse.
 use crate::target_device::port::{DIRCLR, DIRSET, OUTCLR, OUTSET, PINCFG0_, PMUX0_};
 
-#[cfg(any(feature = "samd21g18a", feature="samd21j18a", feature = "samd51", feature = "same54"))]
+#[cfg(any(feature = "samd21g18a", feature="samd21j18a"))]
 use crate::target_device::port::{PINCFG1_, PMUX1_};
-
-#[cfg(feature = "same54")]
-use crate::target_device::port::{PINCFG2_, PMUX2_, PINCFG3_, PMUX3_};
 
 use crate::target_device::PORT;
 use core::marker::PhantomData;
@@ -78,24 +75,6 @@ pub struct PfF;
 pub struct PfG;
 /// Peripheral Function H
 pub struct PfH;
-/// Peripheral Function I
-#[cfg(any(feature = "samd51", feature = "same54"))]
-pub struct PfI;
-/// Peripheral Function J
-#[cfg(any(feature = "samd51", feature = "same54"))]
-pub struct PfJ;
-/// Peripheral Function K
-#[cfg(any(feature = "samd51", feature = "same54"))]
-pub struct PfK;
-/// Peripheral Function L
-#[cfg(any(feature = "samd51", feature = "same54"))]
-pub struct PfL;
-/// Peripheral Function M
-#[cfg(any(feature = "samd51", feature = "same54"))]
-pub struct PfM;
-/// Peripheral Function N
-#[cfg(any(feature = "samd51", feature = "same54"))]
-pub struct PfN;
 
 /// A trait that makes it easier to generically manage
 /// converting a pin from its current state into some
@@ -176,24 +155,7 @@ macro_rules! pin {
         function!(PfG, into_function_g, g);
         function!(PfH, into_function_h, h);
 
-        #[cfg(any(feature = "samd51", feature = "same54"))]
-        function!(PfI, into_function_i, i);
-        #[cfg(any(feature = "samd51", feature = "same54"))]
-        function!(PfJ, into_function_j, j);
-        #[cfg(any(feature = "samd51", feature = "same54"))]
-        function!(PfK, into_function_k, k);
-        #[cfg(any(feature = "samd51", feature = "same54"))]
-        function!(PfL, into_function_l, l);
-        #[cfg(any(feature = "samd51", feature = "same54"))]
-        function!(PfM, into_function_m, m);
-        #[cfg(any(feature = "samd51", feature = "same54"))]
-        function!(PfN, into_function_n, n);
-
         impl<MODE> $PinType<MODE> {
-
-            // TODO: datasheet mentions this, but is likely for
-            // a slightly different variant
-            // function!(PfI, into_function_i, i);
 
             /// Configures the pin to operate as a floating input
             pub fn into_floating_input(self, port: &mut Port) -> $PinType<Input<Floating>> {
@@ -453,79 +415,29 @@ impl Port {
         unsafe { &(*PORT::ptr()).pmux0_ }
     }
 
-    #[cfg(any(feature = "samd21g18a", feature="samd21j18a", feature = "samd51", feature = "same54"))]
+    #[cfg(any(feature = "samd21g18a", feature="samd21j18a"))]
     fn dirset1(&mut self) -> &DIRSET {
         unsafe { &(*PORT::ptr()).dirset1 }
     }
-    #[cfg(any(feature = "samd21g18a", feature="samd21j18a", feature = "samd51", feature = "same54"))]
+    #[cfg(any(feature = "samd21g18a", feature="samd21j18a"))]
     fn dirclr1(&mut self) -> &DIRCLR {
         unsafe { &(*PORT::ptr()).dirclr1 }
     }
-    #[cfg(any(feature = "samd21g18a", feature="samd21j18a", feature = "samd51", feature = "same54"))]
+    #[cfg(any(feature = "samd21g18a", feature="samd21j18a"))]
     fn pincfg1(&mut self) -> &[PINCFG1_; 32] {
         unsafe { &(*PORT::ptr()).pincfg1_ }
     }
-    #[cfg(any(feature = "samd21g18a", feature="samd21j18a", feature = "samd51", feature = "same54"))]
+    #[cfg(any(feature = "samd21g18a", feature="samd21j18a"))]
     fn outset1(&mut self) -> &OUTSET {
         unsafe { &(*PORT::ptr()).outset1 }
     }
-    #[cfg(any(feature = "samd21g18a", feature="samd21j18a", feature = "samd51", feature = "same54"))]
+    #[cfg(any(feature = "samd21g18a", feature="samd21j18a"))]
     fn outclr1(&mut self) -> &OUTCLR {
         unsafe { &(*PORT::ptr()).outclr1 }
     }
-    #[cfg(any(feature = "samd21g18a", feature="samd21j18a", feature = "samd51", feature = "same54"))]
+    #[cfg(any(feature = "samd21g18a", feature="samd21j18a"))]
     fn pmux1(&mut self) -> &[PMUX1_; 16] {
         unsafe { &(*PORT::ptr()).pmux1_ }
-    }
-
-    #[cfg(any(feature = "same54"))]
-    fn dirset2(&mut self) -> &DIRSET {
-        unsafe { &(*PORT::ptr()).dirset2 }
-    }
-    #[cfg(any(feature = "same54"))]
-    fn dirclr2(&mut self) -> &DIRCLR {
-        unsafe { &(*PORT::ptr()).dirclr2 }
-    }
-    #[cfg(any(feature = "same54"))]
-    fn pincfg2(&mut self) -> &[PINCFG2_; 32] {
-        unsafe { &(*PORT::ptr()).pincfg2_ }
-    }
-    #[cfg(any(feature = "same54"))]
-    fn outset2(&mut self) -> &OUTSET {
-        unsafe { &(*PORT::ptr()).outset2 }
-    }
-    #[cfg(any(feature = "same54"))]
-    fn outclr2(&mut self) -> &OUTCLR {
-        unsafe { &(*PORT::ptr()).outclr2 }
-    }
-    #[cfg(any(feature = "same54"))]
-    fn pmux2(&mut self) -> &[PMUX2_; 16] {
-        unsafe { &(*PORT::ptr()).pmux2_ }
-    }
-
-    #[cfg(any(feature = "same54"))]
-    fn dirset3(&mut self) -> &DIRSET {
-        unsafe { &(*PORT::ptr()).dirset3 }
-    }
-    #[cfg(any(feature = "same54"))]
-    fn dirclr3(&mut self) -> &DIRCLR {
-        unsafe { &(*PORT::ptr()).dirclr3 }
-    }
-    #[cfg(any(feature = "same54"))]
-    fn pincfg3(&mut self) -> &[PINCFG3_; 32] {
-        unsafe { &(*PORT::ptr()).pincfg3_ }
-    }
-    #[cfg(any(feature = "same54"))]
-    fn outset3(&mut self) -> &OUTSET {
-        unsafe { &(*PORT::ptr()).outset3 }
-    }
-    #[cfg(any(feature = "same54"))]
-    fn outclr3(&mut self) -> &OUTCLR {
-        unsafe { &(*PORT::ptr()).outclr3 }
-    }
-    #[cfg(any(feature = "same54"))]
-    fn pmux3(&mut self) -> &[PMUX3_; 16] {
-        unsafe { &(*PORT::ptr()).pmux3_ }
     }
 }
 
@@ -534,10 +446,6 @@ macro_rules! port {
        $($PinTypeA:ident: ($pin_identA:ident, $pin_noA:expr),)+
     ],[
        $($PinTypeB:ident: ($pin_identB:ident, $pin_noB:expr),)+
-    ],[
-       $($PinTypeC:ident: ($pin_identC:ident, $pin_noC:expr),)+
-    ],[
-       $($PinTypeD:ident: ($pin_identD:ident, $pin_noD:expr),)+
     ]) => {
 
 /// Holds the GPIO Port peripheral and broken out pin instances
@@ -551,18 +459,8 @@ pub struct Parts {
     )+
     $(
         /// Pin $pin_identB
-        #[cfg(any(feature = "samd21g18a", feature="samd21j18a", feature = "samd51", feature = "same54"))]
+        #[cfg(any(feature = "samd21g18a", feature="samd21j18a"))]
         pub $pin_identB: $PinTypeB<Input<Floating>>,
-    )+
-    $(
-        /// Pin $pin_identC
-        #[cfg(any(feature = "same54"))]
-        pub $pin_identC: $PinTypeC<Input<Floating>>,
-    )+
-    $(
-        /// Pin $pin_identD
-        #[cfg(any(feature = "same54"))]
-        pub $pin_identD: $PinTypeD<Input<Floating>>,
     )+
 }
 
@@ -577,16 +475,8 @@ impl GpioExt for PORT {
                 $pin_identA: $PinTypeA { _mode: PhantomData },
             )+
             $(
-                #[cfg(any(feature = "samd21g18a", feature="samd21j18a", feature = "samd51", feature = "same54"))]
+                #[cfg(any(feature = "samd21g18a", feature="samd21j18a"))]
                 $pin_identB: $PinTypeB { _mode: PhantomData },
-            )+
-            $(
-                #[cfg(any(feature = "same54"))]
-                $pin_identC: $PinTypeC { _mode: PhantomData },
-            )+
-            $(
-                #[cfg(any(feature = "same54"))]
-                $pin_identD: $PinTypeD { _mode: PhantomData },
             )+
         }
     }
@@ -597,19 +487,9 @@ $(
         pincfg0, outset0, outclr0, pmux0, out0, outtgl0, in0);
 )+
 $(
-    #[cfg(any(feature = "samd21g18a", feature="samd21j18a", feature = "samd51", feature = "same54"))]
+    #[cfg(any(feature = "samd21g18a", feature="samd21j18a"))]
     pin!($PinTypeB, $pin_identB, $pin_noB, dirset1, dirclr1,
         pincfg1, outset1, outclr1, pmux1, out1, outtgl1, in1);
-)+
-$(
-    #[cfg(any(feature = "same54"))]
-    pin!($PinTypeC, $pin_identC, $pin_noC, dirset2, dirclr2,
-        pincfg2, outset2, outclr2, pmux2, out2, outtgl2, in2);
-)+
-$(
-    #[cfg(any(feature = "same54"))]
-    pin!($PinTypeD, $pin_identD, $pin_noD, dirset3, dirclr3,
-        pincfg3, outset3, outclr3, pmux3, out3, outtgl3, in3);
 )+
 
     };
@@ -681,48 +561,6 @@ port!([
     Pb29: (pb29, 29),
     Pb30: (pb30, 30),
     Pb31: (pb31, 31),
-],
-[
-    Pc0: (pc0, 0),
-    Pc1: (pc1, 1),
-    Pc2: (pc2, 2),
-    Pc3: (pc3, 3),
-    Pc4: (pc4, 4),
-    Pc5: (pc5, 5),
-    Pc6: (pc6, 6),
-    Pc7: (pc7, 7),
-    Pc10: (pc10, 10),
-    Pc11: (pc11, 11),
-    Pc12: (pc12, 12),
-    Pc13: (pc13, 13),
-    Pc14: (pc14, 14),
-    Pc15: (pc15, 15),
-    Pc16: (pc16, 16),
-    Pc17: (pc17, 17),
-    Pc18: (pc18, 18),
-    Pc19: (pc19, 19),
-    Pc20: (pc20, 20),
-    Pc21: (pc21, 21),
-    Pc22: (pc22, 22),
-    Pc23: (pc23, 23),
-    Pc24: (pc24, 24),
-    Pc25: (pc25, 25),
-    Pc26: (pc26, 26),
-    Pc27: (pc27, 27),
-    Pc28: (pc28, 28),
-    Pc30: (pc30, 30),
-    Pc31: (pc31, 31),
-],
-[
-    Pd0: (pd0, 0),
-    Pd1: (pd1, 1),
-    Pd8: (pd8, 8),
-    Pd9: (pd9, 9),
-    Pd10: (pd10, 10),
-    Pd11: (pd11, 11),
-    Pd12: (pd12, 12),
-    Pd20: (pd20, 20),
-    Pd21: (pd21, 21),
 ]);
 
 /// This macro is a helper for defining a `Pins` type in a board support

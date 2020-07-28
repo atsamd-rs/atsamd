@@ -2,7 +2,7 @@ use crate::clock;
 use crate::hal::blocking::serial::{write::Default, Write};
 use crate::hal::serial;
 use crate::sercom::pads::*;
-use crate::target_device::sercom0::USART;
+use crate::target_device::sercom0::USART_INT;
 use crate::target_device::{MCLK, SERCOM0, SERCOM1, SERCOM2, SERCOM3, SERCOM4, SERCOM5, SERCOM6, SERCOM7};
 use crate::time::Hertz;
 use core::fmt;
@@ -135,14 +135,14 @@ macro_rules! uart {
                     // Lots of union fields which require unsafe access
                     unsafe {
                         // Reset
-                        sercom.usart().ctrla.modify(|_, w| w.swrst().set_bit());
-                        while sercom.usart().syncbusy.read().swrst().bit_is_set()
-                            || sercom.usart().ctrla.read().swrst().bit_is_set() {
+                        sercom.usart_int().ctrla.modify(|_, w| w.swrst().set_bit());
+                        while sercom.usart_int().syncbusy.read().swrst().bit_is_set()
+                            || sercom.usart_int().ctrla.read().swrst().bit_is_set() {
                             // wait for sync of CTRLA.SWRST
                         }
 
                         // Unsafe b/c of direct call to bits on rxpo/txpo
-                        sercom.usart().ctrla.modify(|_, w| {
+                        sercom.usart_int().ctrla.modify(|_, w| {
                             w.dord().set_bit();
 
                             let (rxpo, txpo) = padout.rxpo_txpo();
@@ -154,7 +154,7 @@ macro_rules! uart {
                             w.runstdby().set_bit(); // Run in standby
                             w.form().bits(0); // 0 is no parity bits
 
-//                            w.mode().usart_int_clk(); // Internal clock mode
+                            // w.mode().usart_int_clk(); // Internal clock mode
                             w.cmode().clear_bit() // Asynchronous mode
                         });
 
@@ -168,7 +168,7 @@ macro_rules! uart {
                         // let baud = mul_ratio / 1000;
                         // let fp = ((mul_ratio - (baud*1000))*8)/1000;
                         //
-                        // sercom.usart().baud.baud_frac_mode.modify(|_, w| {
+                        // sercom.usart_int().baud.baud_frac_mode.modify(|_, w| {
                         //     w.baud().bits(baud as u16);
                         //     w.fp().bits(fp as u8)
                         // });
@@ -176,11 +176,11 @@ macro_rules! uart {
                         // Asynchronous arithmetic mode (Table 24-2 in datasheet)
                         let baud = calculate_baud_value(freq.into().0, fref, sample_rate);
 
-                        sercom.usart().baud().modify(|_, w| {
+                        sercom.usart_int().baud().modify(|_, w| {
                             w.baud().bits(baud)
                         });
 
-                        sercom.usart().ctrlb.modify(|_, w| {
+                        sercom.usart_int().ctrlb.modify(|_, w| {
                             w.sbmode().clear_bit(); // 0 is one stop bit see sec 25.8.2
                             w.chsize().bits(0x0);
                             w.pmode().set_bit();
@@ -188,16 +188,16 @@ macro_rules! uart {
                             w.rxen().set_bit()
                         });
 
-                        while sercom.usart().syncbusy.read().ctrlb().bit_is_set() {}
+                        while sercom.usart_int().syncbusy.read().ctrlb().bit_is_set() {}
 
-                        sercom.usart().ctrlc.modify(|_, w| {
+                        sercom.usart_int().ctrlc.modify(|_, w| {
                             w.gtime().bits(2);
                             w.maxiter().bits(7)
                         });
 
-                        sercom.usart().ctrla.modify(|_, w| w.enable().set_bit());
+                        sercom.usart_int().ctrla.modify(|_, w| w.enable().set_bit());
                         // wait for sync of ENABLE
-                        while sercom.usart().syncbusy.read().enable().bit_is_set() {}
+                        while sercom.usart_int().syncbusy.read().enable().bit_is_set() {}
                     }
 
                     Self {
@@ -210,8 +210,8 @@ macro_rules! uart {
                     (self.padout, self.sercom)
                 }
 
-                fn usart(&self) -> &USART {
-                    return &self.sercom.usart();
+                fn usart(&self) -> &USART_INT {
+                    return &self.sercom.usart_int();
                 }
 
                 fn dre(&self) -> bool {
@@ -229,7 +229,7 @@ macro_rules! uart {
                             return Err(nb::Error::WouldBlock);
                         }
 
-                        self.sercom.usart().data.write(|w| {
+                        self.sercom.usart_int().data.write(|w| {
                             w.bits(word as u32)
                         });
                     }

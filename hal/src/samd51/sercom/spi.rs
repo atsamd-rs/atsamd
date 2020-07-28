@@ -1,7 +1,7 @@
 use crate::clock;
 use crate::hal::spi::{FullDuplex, Mode, Phase, Polarity};
 use crate::sercom::pads::*;
-use crate::target_device::sercom0::SPI;
+use crate::target_device::sercom0::SPIM;
 use crate::target_device::{MCLK, SERCOM0, SERCOM1, SERCOM2, SERCOM3};
 use crate::target_device::{SERCOM4, SERCOM5};
 use crate::time::Hertz;
@@ -108,19 +108,19 @@ macro_rules! spi_master {
 
                     unsafe {
                         // reset the sercom instance
-                        sercom.spi().ctrla.modify(|_, w| w.swrst().set_bit());
+                        sercom.spim().ctrla.modify(|_, w| w.swrst().set_bit());
                         // wait for reset to complete
-                        while sercom.spi().syncbusy.read().swrst().bit_is_set()
-                            || sercom.spi().ctrla.read().swrst().bit_is_set()
+                        while sercom.spim().syncbusy.read().swrst().bit_is_set()
+                            || sercom.spim().ctrla.read().swrst().bit_is_set()
                         {}
 
                         // Put the hardware into spi master mode
-                        sercom.spi().ctrla.modify(|_, w| w.mode().spi_master());
+                        sercom.spim().ctrla.modify(|_, w| w.mode().spi_master());
                         // wait for configuration to take effect
-                        while sercom.spi().syncbusy.read().enable().bit_is_set() {}
+                        while sercom.spim().syncbusy.read().enable().bit_is_set() {}
 
                         // 8 bit data size and enable the receiver
-                        sercom.spi().ctrlb.modify(|_, w|{
+                        sercom.spim().ctrlb.modify(|_, w|{
                             w.chsize().bits(0);
                             w.rxen().set_bit()
                         });
@@ -128,9 +128,9 @@ macro_rules! spi_master {
                         // set the baud rate
                         let gclk = clock.freq();
                         let baud = (gclk.0 / (2 * freq.into().0) - 1) as u8;
-                        sercom.spi().baud.modify(|_, w| w.baud().bits(baud));
+                        sercom.spim().baud.modify(|_, w| w.baud().bits(baud));
 
-                        sercom.spi().ctrla.modify(|_, w| {
+                        sercom.spim().ctrla.modify(|_, w| {
                             match mode.polarity {
                                 Polarity::IdleLow => w.cpol().clear_bit(),
                                 Polarity::IdleHigh => w.cpol().set_bit(),
@@ -150,9 +150,9 @@ macro_rules! spi_master {
                         });
 
 
-                        sercom.spi().ctrla.modify(|_, w| w.enable().set_bit());
+                        sercom.spim().ctrla.modify(|_, w| w.enable().set_bit());
                         // wait for configuration to take effect
-                        while sercom.spi().syncbusy.read().enable().bit_is_set() {}
+                        while sercom.spim().syncbusy.read().enable().bit_is_set() {}
 
                     }
 
@@ -164,16 +164,16 @@ macro_rules! spi_master {
 
                 /// Disable the SPI
                 pub fn disable(&mut self) {
-                    self.sercom.spi().ctrla.modify(|_, w| w.enable().clear_bit());
+                    self.sercom.spim().ctrla.modify(|_, w| w.enable().clear_bit());
                     // wait for configuration to take effect
-                    while self.sercom.spi().syncbusy.read().enable().bit_is_set() {}
+                    while self.sercom.spim().syncbusy.read().enable().bit_is_set() {}
                 }
 
                 /// Enable the SPI
                 pub fn enable(&mut self) {
-                    self.sercom.spi().ctrla.modify(|_, w| w.enable().set_bit());
+                    self.sercom.spim().ctrla.modify(|_, w| w.enable().set_bit());
                     // wait for configuration to take effect
-                    while self.sercom.spi().syncbusy.read().enable().bit_is_set() {}
+                    while self.sercom.spim().syncbusy.read().enable().bit_is_set() {}
                 }
 
                 /// Set the baud rate
@@ -186,7 +186,7 @@ macro_rules! spi_master {
                     unsafe {
                         let gclk = clock.freq();
                         let baud = (gclk.0 / (2 * freq.into().0) - 1) as u8;
-                        self.sercom.spi().baud.modify(|_, w| w.baud().bits(baud));
+                        self.sercom.spim().baud.modify(|_, w| w.baud().bits(baud));
                     }
                     self.enable();
                 }
@@ -197,7 +197,7 @@ macro_rules! spi_master {
                     mode: Mode
                 ) {
                     self.disable();
-                    self.sercom.spi().ctrla.modify(|_, w| {
+                    self.sercom.spim().ctrla.modify(|_, w| {
                         match mode.polarity {
                             Polarity::IdleLow => w.cpol().clear_bit(),
                             Polarity::IdleHigh => w.cpol().set_bit(),
@@ -218,8 +218,8 @@ macro_rules! spi_master {
                 }
 
                 /// Helper for accessing the spi member of the sercom instance
-                fn spi(&mut self) -> &SPI {
-                    &self.sercom.spi()
+                fn spi(&mut self) -> &SPIM {
+                    &self.sercom.spim()
                 }
             }
 

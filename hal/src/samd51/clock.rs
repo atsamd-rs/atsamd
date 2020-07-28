@@ -10,7 +10,8 @@ use crate::time::{Hertz, MegaHertz};
 
 pub type ClockGenId = target_device::gclk::pchctrl::GEN_A;
 pub type ClockSource = target_device::gclk::genctrl::SRC_A;
-#[allow(bad_style)]
+
+#[allow(non_camel_case_types)]
 pub enum ClockId {
     DFLL48 = 0,
     FDPLL0,
@@ -92,8 +93,7 @@ struct State {
 impl State {
     fn reset_gclk(&mut self) {
         self.gclk.ctrla.write(|w| w.swrst().set_bit());
-        while self.gclk.ctrla.read().swrst().bit_is_set() || self.gclk.syncbusy.read().bits() != 0 {
-        }
+        while self.gclk.ctrla.read().swrst().bit_is_set() || self.gclk.syncbusy.read().bits() != 0 {}
     }
 
     fn wait_for_sync(&mut self) {
@@ -189,7 +189,7 @@ impl GenericClockController {
             state.set_gclk_divider_and_source(GCLK1, 1, OSCULP32K, false);
         }
 
-        while state.gclk.syncbusy.read().genctrl0().is_gclk0() {}
+        while state.gclk.syncbusy.read().genctrl().is_gclk0() {}
 
         #[cfg(feature = "usb")]
         configure_usb_correction(oscctrl);
@@ -203,7 +203,7 @@ impl GenericClockController {
             });
         }
 
-        while state.gclk.syncbusy.read().genctrl5().is_gclk5() {}
+        while state.gclk.syncbusy.read().genctrl().is_gclk5() {}
 
         configure_and_enable_dpll0(oscctrl, &mut state.gclk);
         wait_for_dpllrdy(oscctrl);
@@ -218,7 +218,7 @@ impl GenericClockController {
             });
         }
 
-        while state.gclk.syncbusy.read().genctrl0().is_gclk0() {}
+        while state.gclk.syncbusy.read().genctrl().is_gclk0() {}
 
         mclk.cpudiv.write(|w| w.div().div1());
 
@@ -419,7 +419,9 @@ pub const OSC32K_FREQ: Hertz = Hertz(32_768);
 pub const OSC120M_FREQ: Hertz = Hertz(120_000_000);
 
 fn set_flash_to_half_auto_wait_state(nvmctrl: &mut NVMCTRL) {
-    nvmctrl.ctrla.modify(|_, w| w.rws().half());
+    // Zero indicates zero wait states, one indicates one wait state, etc.,
+    // up to 15 wait states.
+    nvmctrl.ctrla.modify(|_, w| unsafe { w.rws().bits(0b0111) });
 }
 
 fn enable_gclk_apb(mclk: &mut MCLK) {
@@ -455,8 +457,8 @@ fn enable_external_32kosc(osc32kctrl: &mut OSC32KCTRL) {
 }
 
 fn wait_for_dpllrdy(oscctrl: &mut OSCCTRL) {
-    while oscctrl.dpllstatus0.read().lock().bit_is_clear()
-        || oscctrl.dpllstatus0.read().clkrdy().bit_is_clear()
+    while oscctrl.dpll[0].dpllstatus.read().lock().bit_is_clear()
+        || oscctrl.dpll[0].dpllstatus.read().clkrdy().bit_is_clear()
     {}
 }
 
@@ -467,13 +469,13 @@ fn configure_and_enable_dpll0(oscctrl: &mut OSCCTRL, gclk: &mut GCLK) {
         w.gen().gclk5()
     });
     unsafe {
-        oscctrl.dpllratio0.write(|w| {
+        oscctrl.dpll[0].dpllratio.write(|w| {
             w.ldr().bits(59);
             w.ldrfrac().bits(0)
         });
     }
-    oscctrl.dpllctrlb0.write(|w| w.refclk().gclk());
-    oscctrl.dpllctrla0.write(|w| {
+    oscctrl.dpll[0].dpllctrlb.write(|w| w.refclk().gclk());
+    oscctrl.dpll[0].dpllctrla.write(|w| {
         w.enable().set_bit();
         w.ondemand().clear_bit()
     });

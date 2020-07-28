@@ -154,7 +154,7 @@ impl AllEndpoints {
 // FIXME: replace with more general heap?
 const BUFFER_SIZE: usize = 2048;
 fn buffer() -> &'static mut [u8; BUFFER_SIZE] {
-    singleton!(: [u8; BUFFER_SIZE] = unsafe{MaybeUninit::uninit().assume_init()}).unwrap()
+    singleton!(: [u8; BUFFER_SIZE] = unsafe{ MaybeUninit::uninit().assume_init() }).unwrap()
 }
 
 struct BufferAllocator {
@@ -216,20 +216,19 @@ pub struct UsbBus {
 /// - rust doesn't currently have a great solution for generating identifier
 ///   names, so we have to pass in a list of the possible names.
 macro_rules! ep {
-    ($name:ident, $type:ident, $e0:ident, $e1:ident, $e2:ident,
-     $e3:ident, $e4:ident, $e5:ident, $e6:ident, $e7:ident) => {
+    ($name:ident, $type:ident) => {
         #[allow(unused)]
         #[inline]
-        fn $name(&self, endpoint: usize) -> &target_device::usb::device::$type {
+        fn $name(&self, endpoint: usize) -> &target_device::usb::device::device_endpoint::$type {
             match endpoint {
-                0 => &self.usb().$e0,
-                1 => &self.usb().$e1,
-                2 => &self.usb().$e2,
-                3 => &self.usb().$e3,
-                4 => &self.usb().$e4,
-                5 => &self.usb().$e5,
-                6 => &self.usb().$e6,
-                7 => &self.usb().$e7,
+                0 => &self.usb().device_endpoint0.$name,
+                1 => &self.usb().device_endpoint1.$name,
+                2 => &self.usb().device_endpoint2.$name,
+                3 => &self.usb().device_endpoint3.$name,
+                4 => &self.usb().device_endpoint4.$name,
+                5 => &self.usb().device_endpoint5.$name,
+                6 => &self.usb().device_endpoint6.$name,
+                7 => &self.usb().device_endpoint7.$name,
                 _ => unreachable!(),
             }
         }
@@ -471,75 +470,19 @@ impl<'a> Bank<'a, OutBank> {
 }
 
 impl<'a, T> Bank<'a, T> {
-    ep!(epcfg, EPCFG, epcfg0, epcfg1, epcfg2, epcfg3, epcfg4, epcfg5, epcfg6, epcfg7);
-    ep!(
-        epstatusclr,
-        EPSTATUSCLR,
-        epstatusclr0,
-        epstatusclr1,
-        epstatusclr2,
-        epstatusclr3,
-        epstatusclr4,
-        epstatusclr5,
-        epstatusclr6,
-        epstatusclr7
-    );
-    ep!(
-        epstatusset,
-        EPSTATUSSET,
-        epstatusset0,
-        epstatusset1,
-        epstatusset2,
-        epstatusset3,
-        epstatusset4,
-        epstatusset5,
-        epstatusset6,
-        epstatusset7
-    );
-    ep!(
-        epstatus, EPSTATUS, epstatus0, epstatus1, epstatus2, epstatus3, epstatus4, epstatus5,
-        epstatus6, epstatus7
-    );
-    ep!(
-        epintflag, EPINTFLAG, epintflag0, epintflag1, epintflag2, epintflag3, epintflag4,
-        epintflag5, epintflag6, epintflag7
-    );
-    ep!(
-        epintenclr,
-        EPINTENCLR,
-        epintenclr0,
-        epintenclr1,
-        epintenclr2,
-        epintenclr3,
-        epintenclr4,
-        epintenclr5,
-        epintenclr6,
-        epintenclr7
-    );
-    ep!(
-        epintenset,
-        EPINTENSET,
-        epintenset0,
-        epintenset1,
-        epintenset2,
-        epintenset3,
-        epintenset4,
-        epintenset5,
-        epintenset6,
-        epintenset7
-    );
+    ep!(epcfg,       EPCFG);
+    ep!(epstatusclr, EPSTATUSCLR);
+    ep!(epstatusset, EPSTATUSSET);
+    ep!(epstatus,    EPSTATUS);
+    ep!(epintflag,   EPINTFLAG);
+    ep!(epintenclr,  EPINTENCLR);
+    ep!(epintenset,  EPINTENSET);
 }
 
 impl Inner {
-    ep!(epcfg, EPCFG, epcfg0, epcfg1, epcfg2, epcfg3, epcfg4, epcfg5, epcfg6, epcfg7);
-    ep!(
-        epstatus, EPSTATUS, epstatus0, epstatus1, epstatus2, epstatus3, epstatus4, epstatus5,
-        epstatus6, epstatus7
-    );
-    ep!(
-        epintflag, EPINTFLAG, epintflag0, epintflag1, epintflag2, epintflag3, epintflag4,
-        epintflag5, epintflag6, epintflag7
-    );
+    ep!(epcfg,     EPCFG);
+    ep!(epstatus,  EPSTATUS);
+    ep!(epintflag, EPINTFLAG);
 
     fn bank0<'a>(&'a self, ep: EndpointAddress) -> UsbResult<Bank<'a, OutBank>> {
         if ep.is_in() {
