@@ -228,7 +228,7 @@ macro_rules! ep {
                 _ => unreachable!(),
             }
         }
-    }
+    };
 }
 
 struct Bank<'a, T> {
@@ -489,18 +489,18 @@ impl<'a> Bank<'a, OutBank> {
 }
 
 impl<'a, T> Bank<'a, T> {
-    ep!(epcfg,       EPCFG);
+    ep!(epcfg, EPCFG);
     ep!(epstatusclr, EPSTATUSCLR);
     ep!(epstatusset, EPSTATUSSET);
-    ep!(epstatus,    EPSTATUS);
-    ep!(epintflag,   EPINTFLAG);
-    ep!(epintenclr,  EPINTENCLR);
-    ep!(epintenset,  EPINTENSET);
+    ep!(epstatus, EPSTATUS);
+    ep!(epintflag, EPINTFLAG);
+    ep!(epintenclr, EPINTENCLR);
+    ep!(epintenset, EPINTENSET);
 }
 
 impl Inner {
-    ep!(epcfg,     EPCFG);
-    ep!(epstatus,  EPSTATUS);
+    ep!(epcfg, EPCFG);
+    ep!(epstatus, EPSTATUS);
     ep!(epintflag, EPINTFLAG);
 
     fn bank0<'a>(&'a self, ep: EndpointAddress) -> UsbResult<Bank<'a, OutBank>> {
@@ -677,11 +677,8 @@ impl Inner {
         usb.ctrla.modify(|_, w| w.enable().set_bit());
         while usb.syncbusy.read().enable().bit_is_set() {}
 
-        usb.intenset.write(|w| {
-            w.eorst().set_bit()
-            .eorsm().set_bit()
-            .suspend().set_bit()
-        });
+        usb.intenset
+            .write(|w| w.eorst().set_bit().eorsm().set_bit().suspend().set_bit());
 
         // Configure the endpoints before we attach, as hosts may enumerate
         // before attempting a USB protocol reset.
@@ -782,11 +779,9 @@ impl Inner {
 
     fn poll(&self) -> PollResult {
         // Clear flags we are not concerned about.
-        self.usb().intflag.write(|w| {
-            w.wakeup().set_bit()
-            .sof().set_bit()
-            .eorsm().set_bit()
-        });
+        self.usb()
+            .intflag
+            .write(|w| w.wakeup().set_bit().sof().set_bit().eorsm().set_bit());
 
         if self.received_suspend_interrupt() {
             self.clear_suspend();

@@ -9,7 +9,7 @@
 //! impossible to misuse.
 use crate::target_device::port::{DIRCLR, DIRSET, OUTCLR, OUTSET, PINCFG0_, PMUX0_};
 
-#[cfg(any(feature = "samd21g18a", feature="samd21j18a"))]
+#[cfg(any(feature = "samd21g18a", feature = "samd21j18a"))]
 use crate::target_device::port::{PINCFG1_, PMUX1_};
 
 use crate::target_device::PORT;
@@ -415,27 +415,27 @@ impl Port {
         unsafe { &(*PORT::ptr()).pmux0_ }
     }
 
-    #[cfg(any(feature = "samd21g18a", feature="samd21j18a"))]
+    #[cfg(any(feature = "samd21g18a", feature = "samd21j18a"))]
     fn dirset1(&mut self) -> &DIRSET {
         unsafe { &(*PORT::ptr()).dirset1 }
     }
-    #[cfg(any(feature = "samd21g18a", feature="samd21j18a"))]
+    #[cfg(any(feature = "samd21g18a", feature = "samd21j18a"))]
     fn dirclr1(&mut self) -> &DIRCLR {
         unsafe { &(*PORT::ptr()).dirclr1 }
     }
-    #[cfg(any(feature = "samd21g18a", feature="samd21j18a"))]
+    #[cfg(any(feature = "samd21g18a", feature = "samd21j18a"))]
     fn pincfg1(&mut self) -> &[PINCFG1_; 32] {
         unsafe { &(*PORT::ptr()).pincfg1_ }
     }
-    #[cfg(any(feature = "samd21g18a", feature="samd21j18a"))]
+    #[cfg(any(feature = "samd21g18a", feature = "samd21j18a"))]
     fn outset1(&mut self) -> &OUTSET {
         unsafe { &(*PORT::ptr()).outset1 }
     }
-    #[cfg(any(feature = "samd21g18a", feature="samd21j18a"))]
+    #[cfg(any(feature = "samd21g18a", feature = "samd21j18a"))]
     fn outclr1(&mut self) -> &OUTCLR {
         unsafe { &(*PORT::ptr()).outclr1 }
     }
-    #[cfg(any(feature = "samd21g18a", feature="samd21j18a"))]
+    #[cfg(any(feature = "samd21g18a", feature = "samd21j18a"))]
     fn pmux1(&mut self) -> &[PMUX1_; 16] {
         unsafe { &(*PORT::ptr()).pmux1_ }
     }

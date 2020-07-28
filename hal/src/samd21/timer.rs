@@ -190,8 +190,7 @@ impl TimerParams {
         Self::new_from_ticks(ticks)
     }
 
-    fn new_from_ticks(ticks: u32) -> Self
-    {
+    fn new_from_ticks(ticks: u32) -> Self {
         let divider = ((ticks >> 16) + 1).next_power_of_two();
         let divider = match divider {
             1 | 2 | 4 | 8 | 16 | 64 | 256 | 1024 => divider,
@@ -208,10 +207,7 @@ impl TimerParams {
         let cycles: u32 = ticks / divider as u32;
 
         if cycles > u16::max_value() as u32 {
-            panic!(
-                "cycles {} is out of range for a 16 bit counter",
-                cycles
-            );
+            panic!("cycles {} is out of range for a 16 bit counter", cycles);
         }
 
         TimerParams {
@@ -221,13 +217,11 @@ impl TimerParams {
     }
 }
 
-
 tc! {
     TimerCounter3: (TC3, tc3_, Tcc2Tc3Clock),
     TimerCounter4: (TC4, tc4_, Tc4Tc5Clock),
     TimerCounter5: (TC5, tc5_, Tc4Tc5Clock),
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -248,7 +242,8 @@ mod tests {
         let tp_from_hz = TimerParams::new(3_u32.hz(), 48_000_000_u32);
         let tp_from_us = TimerParams::new_us(333_333_u32.us(), 48_000_000_u32);
 
-        // There's some rounding error here, but it is extremely small (1 cycle difference)
+        // There's some rounding error here, but it is extremely small (1 cycle
+        // difference)
         assert_eq!(tp_from_hz.divider, tp_from_us.divider);
         assert!((tp_from_hz.cycles as i32 - tp_from_us.cycles as i32).abs() <= 1);
     }

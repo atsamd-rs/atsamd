@@ -1,4 +1,5 @@
 use crate::clock::GenericClockController;
+#[rustfmt::skip]
 use crate::gpio::{Pa2, Pa3, Pa4, Pa5, Pa6, Pa7, Pa10, Pa11, Pa14, Pa15, PfB};
 use crate::hal::adc::{Channel, OneShot};
 use crate::target_device::{adc, ADC, PM};

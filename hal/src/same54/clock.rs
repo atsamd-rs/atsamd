@@ -93,7 +93,8 @@ struct State {
 impl State {
     fn reset_gclk(&mut self) {
         self.gclk.ctrla.write(|w| w.swrst().set_bit());
-        while self.gclk.ctrla.read().swrst().bit_is_set() || self.gclk.syncbusy.read().bits() != 0 {}
+        while self.gclk.ctrla.read().swrst().bit_is_set() || self.gclk.syncbusy.read().bits() != 0 {
+        }
     }
 
     fn wait_for_sync(&mut self) {

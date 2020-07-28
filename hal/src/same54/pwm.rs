@@ -1,11 +1,14 @@
-use crate::gpio::{Pa1, Pa5, Pa7, Pa9, Pa11, Pa13, Pa15, Pa17, Pa19, Pb31, PfE};
-use crate::gpio::{Pa23, Pa25, Pb9, Pb11, Pb13, Pb15, Pb3, Pb17, Pa31, Pa21, Pb23, Pb1};
-
+#[rustfmt::skip]
+use crate::gpio::{
+    Pa1, Pa5, Pa7, Pa9, Pa11, Pa13, Pa15, Pa17, Pa19, Pa21, Pa23, Pa25, Pa31,
+    Pb1, Pb3, Pb9, Pb11, Pb13, Pb15, Pb17, Pb23, Pb31,
+    PfE,
+};
 use crate::clock;
-use crate::timer::TimerParams;
-use crate::time::Hertz;
 use crate::hal::PwmPin;
-use crate::target_device::{TC0, TC1, TC2, TC3, TC4, TC5, TC6, TC7, MCLK};
+use crate::target_device::{MCLK, TC0, TC1, TC2, TC3, TC4, TC5, TC6, TC7};
+use crate::time::Hertz;
+use crate::timer::TimerParams;
 
 pub enum TC0Pinout {
     Pa5(Pa5<PfE>),
@@ -54,7 +57,7 @@ pub enum TC7Pinout {
 }
 
 pub enum Channel {
-    C0
+    C0,
 }
 
 macro_rules! pwm {

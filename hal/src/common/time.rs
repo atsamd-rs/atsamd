@@ -57,7 +57,6 @@ pub trait U32Ext {
 }
 
 impl U32Ext for u32 {
-
     // Frequency based
 
     fn bps(self) -> Bps {
