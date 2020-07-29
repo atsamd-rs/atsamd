@@ -85,48 +85,6 @@ pub struct PfM;
 /// Peripheral Function N
 pub struct PfN;
 
-// Enumerate all possible peripheral function variants.
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum PeriphalFunction {
-    A,
-    B,
-    C,
-    D,
-    E,
-    F,
-    G,
-    H,
-    I,
-    J,
-    K,
-    L,
-    M,
-    N,
-}
-
-impl From<PeriphalFunction> for u8 {
-    #[inline(always)]
-    fn from(variant: PeriphalFunction) -> Self {
-        use PeriphalFunction::*;
-        match variant {
-            A => 0,
-            B => 1,
-            C => 2,
-            D => 3,
-            E => 4,
-            F => 5,
-            G => 6,
-            H => 7,
-            I => 8,
-            J => 9,
-            K => 10,
-            L => 11,
-            M => 12,
-            N => 13,
-        }
-    }
-}
-
 /// A trait that makes it easier to generically manage
 /// converting a pin from its current state into some
 /// other functional mode.  The configuration change
@@ -154,13 +112,11 @@ macro_rules! pin {
         $outset:ident,
         $outclr:ident,
         $pinmux:ident,
-        $out:ident,
-        $outtgl:ident,
-        $in:ident
+        $out:ident
     ) => {
         // Helper for pmux peripheral function configuration
         macro_rules! function {
-            ($FuncType:ty, $func_ident:ident, $variant:ident) => {
+            ($FuncType:ty, $func_ident:ident, $variant:expr) => {
 
         impl<MODE> $PinType<MODE> {
             /// Configures the pin to operate with a peripheral
@@ -171,10 +127,10 @@ macro_rules! pin {
                 port.$pinmux()[$pin_no >> 1].modify(|_, w| {
                     if $pin_no & 1 == 1 {
                         // Odd-numbered pin
-                        unsafe { w.pmuxo().bits(PeriphalFunction::$variant as u8) }
+                        unsafe { w.pmuxo().bits($variant) }
                     } else {
                         // Even-numbered pin
-                        unsafe { w.pmuxe().bits(PeriphalFunction::$variant as u8) }
+                        unsafe { w.pmuxe().bits($variant) }
                     }
                 });
 
@@ -200,20 +156,20 @@ macro_rules! pin {
             _mode: PhantomData<MODE>,
         }
 
-        function!(PfA, into_function_a, A);
-        function!(PfB, into_function_b, B);
-        function!(PfC, into_function_c, C);
-        function!(PfD, into_function_d, D);
-        function!(PfE, into_function_e, E);
-        function!(PfF, into_function_f, F);
-        function!(PfG, into_function_g, G);
-        function!(PfH, into_function_h, H);
-        function!(PfI, into_function_i, I);
-        function!(PfJ, into_function_j, J);
-        function!(PfK, into_function_k, K);
-        function!(PfL, into_function_l, L);
-        function!(PfM, into_function_m, M);
-        function!(PfN, into_function_n, N);
+        function!(PfA, into_function_a, 0);
+        function!(PfB, into_function_b, 1);
+        function!(PfC, into_function_c, 2);
+        function!(PfD, into_function_d, 3);
+        function!(PfE, into_function_e, 4);
+        function!(PfF, into_function_f, 5);
+        function!(PfG, into_function_g, 6);
+        function!(PfH, into_function_h, 7);
+        function!(PfI, into_function_i, 8);
+        function!(PfJ, into_function_j, 9);
+        function!(PfK, into_function_k, 10);
+        function!(PfL, into_function_l, 11);
+        function!(PfM, into_function_m, 12);
+        function!(PfN, into_function_n, 13);
 
         impl<MODE> $PinType<MODE> {
 
@@ -608,21 +564,21 @@ impl GpioExt for PORT {
 
 $(
     pin!($PinTypeA, $pin_identA, $pin_noA, group0, dirset0, dirclr0,
-        pincfg0, outset0, outclr0, pmux0, out0, outtgl0, in0);
+        pincfg0, outset0, outclr0, pmux0, out0);
 )+
 $(
     pin!($PinTypeB, $pin_identB, $pin_noB, group1, dirset1, dirclr1,
-        pincfg1, outset1, outclr1, pmux1, out1, outtgl1, in1);
+        pincfg1, outset1, outclr1, pmux1, out1);
 )+
 $(
     #[cfg(any(feature = "same54"))]
     pin!($PinTypeC, $pin_identC, $pin_noC, group2, dirset2, dirclr2,
-        pincfg2, outset2, outclr2, pmux2, out2, outtgl2, in2);
+        pincfg2, outset2, outclr2, pmux2, out2);
 )+
 $(
     #[cfg(any(feature = "same54"))]
     pin!($PinTypeD, $pin_identD, $pin_noD, group3, dirset3, dirclr3,
-        pincfg3, outset3, outclr3, pmux3, out3, outtgl3, in3);
+        pincfg3, outset3, outclr3, pmux3, out3);
 )+
 
     };
