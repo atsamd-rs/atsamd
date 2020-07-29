@@ -41,42 +41,42 @@ version = "~1.0"
 # We use a feature named "samdFOO" to pull in the dependency named "atsamdFOO"
 [dependencies.atsamd11c14a]
 path = "../pac/atsamd11c14a"
-version = "~0.6"
-optional = true
-
-[dependencies.atsamd21g18a]
-path = "../pac/atsamd21g18a"
-version = "~0.6"
+version = "~0.7"
 optional = true
 
 [dependencies.atsamd21e18a]
 path = "../pac/atsamd21e18a"
-version = "~0.6"
+version = "~0.7"
+optional = true
+
+[dependencies.atsamd21g18a]
+path = "../pac/atsamd21g18a"
+version = "~0.7"
 optional = true
 
 [dependencies.atsamd21j18a]
 path = "../pac/atsamd21j18a"
-version = "~0.6"
+version = "~0.7"
 optional = true
 
 [dependencies.atsamd51g19a]
 path = "../pac/atsamd51g19a"
-version = "~0.6"
+version = "~0.7"
 optional = true
 
 [dependencies.atsamd51j19a]
 path = "../pac/atsamd51j19a"
-version = "~0.6"
+version = "~0.7"
 optional = true
 
 [dependencies.atsamd51j20a]
 path = "../pac/atsamd51j20a"
-version = "~0.6"
+version = "~0.7"
 optional = true
 
 [dependencies.atsame54p20a]
 path = "../pac/atsame54p20a"
-version = "~0.6"
+version = "~0.7"
 optional = true
 
 [features]
@@ -91,10 +91,10 @@ samd11 = [] # Convenience feature for shared configuration of samd11 chips.
 samd11c14a = ["atsamd11c14a", "samd11"]
 samd11c14a-rt = ["atsamd11c14a", "atsamd11c14a/rt", "samd11"]
 samd21 = [] # Convenience feature for shared configuration of samd21 chips.
-samd21g18a = ["atsamd21g18a", "samd21"]
-samd21g18a-rt = ["atsamd21g18a", "atsamd21g18a/rt", "samd21"]
 samd21e18a = ["atsamd21e18a", "samd21"]
 samd21e18a-rt = ["atsamd21e18a", "atsamd21e18a/rt", "samd21"]
+samd21g18a = ["atsamd21g18a", "samd21"]
+samd21g18a-rt = ["atsamd21g18a", "atsamd21g18a/rt", "samd21"]
 samd21j18a = ["atsamd21j18a", "samd21"]
 samd21j18a-rt = ["atsamd21j18a", "atsamd21j18a/rt", "samd21"]
 samd51 = [] # Convenience feature for shared configuration of samd51 chips.
