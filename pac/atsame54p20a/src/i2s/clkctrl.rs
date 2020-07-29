@@ -1,8 +1,9 @@
-#[doc = "Reader of register CLKCTRL%s"]
+#[doc = "Reader of register CLKCTRL[%s]"]
 pub type R = crate::R<u32, super::CLKCTRL>;
-#[doc = "Writer for register CLKCTRL%s"]
+#[doc = "Writer for register CLKCTRL[%s]"]
 pub type W = crate::W<u32, super::CLKCTRL>;
-#[doc = "Register CLKCTRL%s `reset()`'s with value 0"]
+#[doc = "Register CLKCTRL[%s]
+`reset()`'s with value 0"]
 impl crate::ResetValue for super::CLKCTRL {
     type Type = u32;
     #[inline(always)]

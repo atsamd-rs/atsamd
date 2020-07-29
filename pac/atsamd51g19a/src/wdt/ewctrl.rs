@@ -12,49 +12,37 @@ impl crate::ResetValue for super::EWCTRL {
 }
 #[doc = "Early Warning Interrupt Time Offset\n\nValue on reset: 11"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum EWOFFSET_A {
     #[doc = "0: 8 clock cycles"]
-    CYC8,
+    CYC8 = 0,
     #[doc = "1: 16 clock cycles"]
-    CYC16,
+    CYC16 = 1,
     #[doc = "2: 32 clock cycles"]
-    CYC32,
+    CYC32 = 2,
     #[doc = "3: 64 clock cycles"]
-    CYC64,
+    CYC64 = 3,
     #[doc = "4: 128 clock cycles"]
-    CYC128,
+    CYC128 = 4,
     #[doc = "5: 256 clock cycles"]
-    CYC256,
+    CYC256 = 5,
     #[doc = "6: 512 clock cycles"]
-    CYC512,
+    CYC512 = 6,
     #[doc = "7: 1024 clock cycles"]
-    CYC1024,
+    CYC1024 = 7,
     #[doc = "8: 2048 clock cycles"]
-    CYC2048,
+    CYC2048 = 8,
     #[doc = "9: 4096 clock cycles"]
-    CYC4096,
+    CYC4096 = 9,
     #[doc = "10: 8192 clock cycles"]
-    CYC8192,
+    CYC8192 = 10,
     #[doc = "11: 16384 clock cycles"]
-    CYC16384,
+    CYC16384 = 11,
 }
 impl From<EWOFFSET_A> for u8 {
     #[inline(always)]
     fn from(variant: EWOFFSET_A) -> Self {
-        match variant {
-            EWOFFSET_A::CYC8 => 0,
-            EWOFFSET_A::CYC16 => 1,
-            EWOFFSET_A::CYC32 => 2,
-            EWOFFSET_A::CYC64 => 3,
-            EWOFFSET_A::CYC128 => 4,
-            EWOFFSET_A::CYC256 => 5,
-            EWOFFSET_A::CYC512 => 6,
-            EWOFFSET_A::CYC1024 => 7,
-            EWOFFSET_A::CYC2048 => 8,
-            EWOFFSET_A::CYC4096 => 9,
-            EWOFFSET_A::CYC8192 => 10,
-            EWOFFSET_A::CYC16384 => 11,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `EWOFFSET`"]

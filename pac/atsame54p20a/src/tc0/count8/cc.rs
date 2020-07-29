@@ -1,8 +1,9 @@
-#[doc = "Reader of register CC%s"]
+#[doc = "Reader of register CC[%s]"]
 pub type R = crate::R<u8, super::CC>;
-#[doc = "Writer for register CC%s"]
+#[doc = "Writer for register CC[%s]"]
 pub type W = crate::W<u8, super::CC>;
-#[doc = "Register CC%s `reset()`'s with value 0"]
+#[doc = "Register CC[%s]
+`reset()`'s with value 0"]
 impl crate::ResetValue for super::CC {
     type Type = u8;
     #[inline(always)]

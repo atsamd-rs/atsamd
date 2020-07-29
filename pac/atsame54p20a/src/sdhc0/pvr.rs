@@ -1,8 +1,9 @@
-#[doc = "Reader of register PVR%s"]
+#[doc = "Reader of register PVR[%s]"]
 pub type R = crate::R<u16, super::PVR>;
-#[doc = "Writer for register PVR%s"]
+#[doc = "Writer for register PVR[%s]"]
 pub type W = crate::W<u16, super::PVR>;
-#[doc = "Register PVR%s `reset()`'s with value 0"]
+#[doc = "Register PVR[%s]
+`reset()`'s with value 0"]
 impl crate::ResetValue for super::PVR {
     type Type = u16;
     #[inline(always)]

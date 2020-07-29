@@ -60,31 +60,25 @@ impl<'a> ENABLE_W<'a> {
 }
 #[doc = "Operating Mode\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum MODE_A {
-    #[doc = "0: USART mode with external clock"]
-    USART_EXT_CLK,
-    #[doc = "1: USART mode with internal clock"]
-    USART_INT_CLK,
-    #[doc = "2: SPI mode with external clock"]
-    SPI_SLAVE,
-    #[doc = "3: SPI mode with internal clock"]
-    SPI_MASTER,
-    #[doc = "4: I2C mode with external clock"]
-    I2C_SLAVE,
-    #[doc = "5: I2C mode with internal clock"]
-    I2C_MASTER,
+    #[doc = "0: USART with external clock"]
+    USART_EXT_CLK = 0,
+    #[doc = "1: USART with internal clock"]
+    USART_INT_CLK = 1,
+    #[doc = "2: SPI in slave operation"]
+    SPI_SLAVE = 2,
+    #[doc = "3: SPI in master operation"]
+    SPI_MASTER = 3,
+    #[doc = "4: I2C slave operation"]
+    I2C_SLAVE = 4,
+    #[doc = "5: I2C master operation"]
+    I2C_MASTER = 5,
 }
 impl From<MODE_A> for u8 {
     #[inline(always)]
     fn from(variant: MODE_A) -> Self {
-        match variant {
-            MODE_A::USART_EXT_CLK => 0,
-            MODE_A::USART_INT_CLK => 1,
-            MODE_A::SPI_SLAVE => 2,
-            MODE_A::SPI_MASTER => 3,
-            MODE_A::I2C_SLAVE => 4,
-            MODE_A::I2C_MASTER => 5,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `MODE`"]
@@ -145,32 +139,32 @@ impl<'a> MODE_W<'a> {
     pub fn variant(self, variant: MODE_A) -> &'a mut W {
         unsafe { self.bits(variant.into()) }
     }
-    #[doc = "USART mode with external clock"]
+    #[doc = "USART with external clock"]
     #[inline(always)]
     pub fn usart_ext_clk(self) -> &'a mut W {
         self.variant(MODE_A::USART_EXT_CLK)
     }
-    #[doc = "USART mode with internal clock"]
+    #[doc = "USART with internal clock"]
     #[inline(always)]
     pub fn usart_int_clk(self) -> &'a mut W {
         self.variant(MODE_A::USART_INT_CLK)
     }
-    #[doc = "SPI mode with external clock"]
+    #[doc = "SPI in slave operation"]
     #[inline(always)]
     pub fn spi_slave(self) -> &'a mut W {
         self.variant(MODE_A::SPI_SLAVE)
     }
-    #[doc = "SPI mode with internal clock"]
+    #[doc = "SPI in master operation"]
     #[inline(always)]
     pub fn spi_master(self) -> &'a mut W {
         self.variant(MODE_A::SPI_MASTER)
     }
-    #[doc = "I2C mode with external clock"]
+    #[doc = "I2C slave operation"]
     #[inline(always)]
     pub fn i2c_slave(self) -> &'a mut W {
         self.variant(MODE_A::I2C_SLAVE)
     }
-    #[doc = "I2C mode with internal clock"]
+    #[doc = "I2C master operation"]
     #[inline(always)]
     pub fn i2c_master(self) -> &'a mut W {
         self.variant(MODE_A::I2C_MASTER)
@@ -230,16 +224,95 @@ impl<'a> PINOUT_W<'a> {
         self.w
     }
 }
+#[doc = "SDA Hold Time\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
+pub enum SDAHOLD_A {
+    #[doc = "0: Disabled"]
+    DISABLE = 0,
+    #[doc = "1: 50-100ns hold time"]
+    _75NS = 1,
+    #[doc = "2: 300-600ns hold time"]
+    _450NS = 2,
+    #[doc = "3: 400-800ns hold time"]
+    _600NS = 3,
+}
+impl From<SDAHOLD_A> for u8 {
+    #[inline(always)]
+    fn from(variant: SDAHOLD_A) -> Self {
+        variant as _
+    }
+}
 #[doc = "Reader of field `SDAHOLD`"]
-pub type SDAHOLD_R = crate::R<u8, u8>;
+pub type SDAHOLD_R = crate::R<u8, SDAHOLD_A>;
+impl SDAHOLD_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> SDAHOLD_A {
+        match self.bits {
+            0 => SDAHOLD_A::DISABLE,
+            1 => SDAHOLD_A::_75NS,
+            2 => SDAHOLD_A::_450NS,
+            3 => SDAHOLD_A::_600NS,
+            _ => unreachable!(),
+        }
+    }
+    #[doc = "Checks if the value of the field is `DISABLE`"]
+    #[inline(always)]
+    pub fn is_disable(&self) -> bool {
+        *self == SDAHOLD_A::DISABLE
+    }
+    #[doc = "Checks if the value of the field is `_75NS`"]
+    #[inline(always)]
+    pub fn is_75ns(&self) -> bool {
+        *self == SDAHOLD_A::_75NS
+    }
+    #[doc = "Checks if the value of the field is `_450NS`"]
+    #[inline(always)]
+    pub fn is_450ns(&self) -> bool {
+        *self == SDAHOLD_A::_450NS
+    }
+    #[doc = "Checks if the value of the field is `_600NS`"]
+    #[inline(always)]
+    pub fn is_600ns(&self) -> bool {
+        *self == SDAHOLD_A::_600NS
+    }
+}
 #[doc = "Write proxy for field `SDAHOLD`"]
 pub struct SDAHOLD_W<'a> {
     w: &'a mut W,
 }
 impl<'a> SDAHOLD_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: SDAHOLD_A) -> &'a mut W {
+        {
+            self.bits(variant.into())
+        }
+    }
+    #[doc = "Disabled"]
+    #[inline(always)]
+    pub fn disable(self) -> &'a mut W {
+        self.variant(SDAHOLD_A::DISABLE)
+    }
+    #[doc = "50-100ns hold time"]
+    #[inline(always)]
+    pub fn _75ns(self) -> &'a mut W {
+        self.variant(SDAHOLD_A::_75NS)
+    }
+    #[doc = "300-600ns hold time"]
+    #[inline(always)]
+    pub fn _450ns(self) -> &'a mut W {
+        self.variant(SDAHOLD_A::_450NS)
+    }
+    #[doc = "400-800ns hold time"]
+    #[inline(always)]
+    pub fn _600ns(self) -> &'a mut W {
+        self.variant(SDAHOLD_A::_600NS)
+    }
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
+    pub fn bits(self, value: u8) -> &'a mut W {
         self.w.bits = (self.w.bits & !(0x03 << 20)) | (((value as u32) & 0x03) << 20);
         self.w
     }
@@ -292,13 +365,78 @@ impl<'a> SEXTTOEN_W<'a> {
         self.w
     }
 }
+#[doc = "Transfer Speed\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
+pub enum SPEED_A {
+    #[doc = "0: Standard Mode(Sm) Upto 100kHz and Fast Mode(Fm) Upto 400kHz "]
+    STANDARD_AND_FAST_MODE = 0,
+    #[doc = "1: Fast-mode Plus Upto 1MHz"]
+    FASTPLUS_MODE = 1,
+    #[doc = "2: High-speed mode Upto 3.4MHz"]
+    HIGH_SPEED_MODE = 2,
+}
+impl From<SPEED_A> for u8 {
+    #[inline(always)]
+    fn from(variant: SPEED_A) -> Self {
+        variant as _
+    }
+}
 #[doc = "Reader of field `SPEED`"]
-pub type SPEED_R = crate::R<u8, u8>;
+pub type SPEED_R = crate::R<u8, SPEED_A>;
+impl SPEED_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, SPEED_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(SPEED_A::STANDARD_AND_FAST_MODE),
+            1 => Val(SPEED_A::FASTPLUS_MODE),
+            2 => Val(SPEED_A::HIGH_SPEED_MODE),
+            i => Res(i),
+        }
+    }
+    #[doc = "Checks if the value of the field is `STANDARD_AND_FAST_MODE`"]
+    #[inline(always)]
+    pub fn is_standard_and_fast_mode(&self) -> bool {
+        *self == SPEED_A::STANDARD_AND_FAST_MODE
+    }
+    #[doc = "Checks if the value of the field is `FASTPLUS_MODE`"]
+    #[inline(always)]
+    pub fn is_fastplus_mode(&self) -> bool {
+        *self == SPEED_A::FASTPLUS_MODE
+    }
+    #[doc = "Checks if the value of the field is `HIGH_SPEED_MODE`"]
+    #[inline(always)]
+    pub fn is_high_speed_mode(&self) -> bool {
+        *self == SPEED_A::HIGH_SPEED_MODE
+    }
+}
 #[doc = "Write proxy for field `SPEED`"]
 pub struct SPEED_W<'a> {
     w: &'a mut W,
 }
 impl<'a> SPEED_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: SPEED_A) -> &'a mut W {
+        unsafe { self.bits(variant.into()) }
+    }
+    #[doc = "Standard Mode(Sm) Upto 100kHz and Fast Mode(Fm) Upto 400kHz"]
+    #[inline(always)]
+    pub fn standard_and_fast_mode(self) -> &'a mut W {
+        self.variant(SPEED_A::STANDARD_AND_FAST_MODE)
+    }
+    #[doc = "Fast-mode Plus Upto 1MHz"]
+    #[inline(always)]
+    pub fn fastplus_mode(self) -> &'a mut W {
+        self.variant(SPEED_A::FASTPLUS_MODE)
+    }
+    #[doc = "High-speed mode Upto 3.4MHz"]
+    #[inline(always)]
+    pub fn high_speed_mode(self) -> &'a mut W {
+        self.variant(SPEED_A::HIGH_SPEED_MODE)
+    }
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
@@ -330,16 +468,95 @@ impl<'a> SCLSM_W<'a> {
         self.w
     }
 }
+#[doc = "Inactive Time-Out\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
+pub enum INACTOUT_A {
+    #[doc = "0: Disabled"]
+    DISABLE = 0,
+    #[doc = "1: 5-6 SCL Time-Out(50-60us)"]
+    _55US = 1,
+    #[doc = "2: 10-11 SCL Time-Out(100-110us)"]
+    _105US = 2,
+    #[doc = "3: 20-21 SCL Time-Out(200-210us)"]
+    _205US = 3,
+}
+impl From<INACTOUT_A> for u8 {
+    #[inline(always)]
+    fn from(variant: INACTOUT_A) -> Self {
+        variant as _
+    }
+}
 #[doc = "Reader of field `INACTOUT`"]
-pub type INACTOUT_R = crate::R<u8, u8>;
+pub type INACTOUT_R = crate::R<u8, INACTOUT_A>;
+impl INACTOUT_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> INACTOUT_A {
+        match self.bits {
+            0 => INACTOUT_A::DISABLE,
+            1 => INACTOUT_A::_55US,
+            2 => INACTOUT_A::_105US,
+            3 => INACTOUT_A::_205US,
+            _ => unreachable!(),
+        }
+    }
+    #[doc = "Checks if the value of the field is `DISABLE`"]
+    #[inline(always)]
+    pub fn is_disable(&self) -> bool {
+        *self == INACTOUT_A::DISABLE
+    }
+    #[doc = "Checks if the value of the field is `_55US`"]
+    #[inline(always)]
+    pub fn is_55us(&self) -> bool {
+        *self == INACTOUT_A::_55US
+    }
+    #[doc = "Checks if the value of the field is `_105US`"]
+    #[inline(always)]
+    pub fn is_105us(&self) -> bool {
+        *self == INACTOUT_A::_105US
+    }
+    #[doc = "Checks if the value of the field is `_205US`"]
+    #[inline(always)]
+    pub fn is_205us(&self) -> bool {
+        *self == INACTOUT_A::_205US
+    }
+}
 #[doc = "Write proxy for field `INACTOUT`"]
 pub struct INACTOUT_W<'a> {
     w: &'a mut W,
 }
 impl<'a> INACTOUT_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: INACTOUT_A) -> &'a mut W {
+        {
+            self.bits(variant.into())
+        }
+    }
+    #[doc = "Disabled"]
+    #[inline(always)]
+    pub fn disable(self) -> &'a mut W {
+        self.variant(INACTOUT_A::DISABLE)
+    }
+    #[doc = "5-6 SCL Time-Out(50-60us)"]
+    #[inline(always)]
+    pub fn _55us(self) -> &'a mut W {
+        self.variant(INACTOUT_A::_55US)
+    }
+    #[doc = "10-11 SCL Time-Out(100-110us)"]
+    #[inline(always)]
+    pub fn _105us(self) -> &'a mut W {
+        self.variant(INACTOUT_A::_105US)
+    }
+    #[doc = "20-21 SCL Time-Out(200-210us)"]
+    #[inline(always)]
+    pub fn _205us(self) -> &'a mut W {
+        self.variant(INACTOUT_A::_205US)
+    }
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
+    pub fn bits(self, value: u8) -> &'a mut W {
         self.w.bits = (self.w.bits & !(0x03 << 28)) | (((value as u32) & 0x03) << 28);
         self.w
     }

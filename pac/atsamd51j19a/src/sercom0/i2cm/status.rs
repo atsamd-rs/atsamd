@@ -60,6 +60,28 @@ impl<'a> ARBLOST_W<'a> {
 }
 #[doc = "Reader of field `RXNACK`"]
 pub type RXNACK_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `RXNACK`"]
+pub struct RXNACK_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> RXNACK_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 2)) | (((value as u16) & 0x01) << 2);
+        self.w
+    }
+}
 #[doc = "Reader of field `BUSSTATE`"]
 pub type BUSSTATE_R = crate::R<u8, u8>;
 #[doc = "Write proxy for field `BUSSTATE`"]
@@ -100,6 +122,28 @@ impl<'a> LOWTOUT_W<'a> {
 }
 #[doc = "Reader of field `CLKHOLD`"]
 pub type CLKHOLD_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `CLKHOLD`"]
+pub struct CLKHOLD_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> CLKHOLD_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 7)) | (((value as u16) & 0x01) << 7);
+        self.w
+    }
+}
 #[doc = "Reader of field `MEXTTOUT`"]
 pub type MEXTTOUT_R = crate::R<bool, bool>;
 #[doc = "Write proxy for field `MEXTTOUT`"]
@@ -230,6 +274,11 @@ impl W {
     pub fn arblost(&mut self) -> ARBLOST_W {
         ARBLOST_W { w: self }
     }
+    #[doc = "Bit 2 - Received Not Acknowledge"]
+    #[inline(always)]
+    pub fn rxnack(&mut self) -> RXNACK_W {
+        RXNACK_W { w: self }
+    }
     #[doc = "Bits 4:5 - Bus State"]
     #[inline(always)]
     pub fn busstate(&mut self) -> BUSSTATE_W {
@@ -239,6 +288,11 @@ impl W {
     #[inline(always)]
     pub fn lowtout(&mut self) -> LOWTOUT_W {
         LOWTOUT_W { w: self }
+    }
+    #[doc = "Bit 7 - Clock Hold"]
+    #[inline(always)]
+    pub fn clkhold(&mut self) -> CLKHOLD_W {
+        CLKHOLD_W { w: self }
     }
     #[doc = "Bit 8 - Master SCL Low Extend Timeout"]
     #[inline(always)]

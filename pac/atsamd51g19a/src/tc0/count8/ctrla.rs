@@ -10,6 +10,8 @@ impl crate::ResetValue for super::CTRLA {
         0
     }
 }
+#[doc = "Reader of field `SWRST`"]
+pub type SWRST_R = crate::R<bool, bool>;
 #[doc = "Write proxy for field `SWRST`"]
 pub struct SWRST_W<'a> {
     w: &'a mut W,
@@ -58,22 +60,19 @@ impl<'a> ENABLE_W<'a> {
 }
 #[doc = "Timer Counter Mode\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum MODE_A {
     #[doc = "0: Counter in 16-bit mode"]
-    COUNT16,
+    COUNT16 = 0,
     #[doc = "1: Counter in 8-bit mode"]
-    COUNT8,
+    COUNT8 = 1,
     #[doc = "2: Counter in 32-bit mode"]
-    COUNT32,
+    COUNT32 = 2,
 }
 impl From<MODE_A> for u8 {
     #[inline(always)]
     fn from(variant: MODE_A) -> Self {
-        match variant {
-            MODE_A::COUNT16 => 0,
-            MODE_A::COUNT8 => 1,
-            MODE_A::COUNT32 => 2,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `MODE`"]
@@ -140,22 +139,19 @@ impl<'a> MODE_W<'a> {
 }
 #[doc = "Prescaler and Counter Synchronization\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum PRESCSYNC_A {
     #[doc = "0: Reload or reset the counter on next generic clock"]
-    GCLK,
+    GCLK = 0,
     #[doc = "1: Reload or reset the counter on next prescaler clock"]
-    PRESC,
+    PRESC = 1,
     #[doc = "2: Reload or reset the counter on next generic clock and reset the prescaler counter"]
-    RESYNC,
+    RESYNC = 2,
 }
 impl From<PRESCSYNC_A> for u8 {
     #[inline(always)]
     fn from(variant: PRESCSYNC_A) -> Self {
-        match variant {
-            PRESCSYNC_A::GCLK => 0,
-            PRESCSYNC_A::PRESC => 1,
-            PRESCSYNC_A::RESYNC => 2,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `PRESCSYNC`"]
@@ -270,37 +266,29 @@ impl<'a> ONDEMAND_W<'a> {
 }
 #[doc = "Prescaler\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum PRESCALER_A {
     #[doc = "0: Prescaler: GCLK_TC"]
-    DIV1,
+    DIV1 = 0,
     #[doc = "1: Prescaler: GCLK_TC/2"]
-    DIV2,
+    DIV2 = 1,
     #[doc = "2: Prescaler: GCLK_TC/4"]
-    DIV4,
+    DIV4 = 2,
     #[doc = "3: Prescaler: GCLK_TC/8"]
-    DIV8,
+    DIV8 = 3,
     #[doc = "4: Prescaler: GCLK_TC/16"]
-    DIV16,
+    DIV16 = 4,
     #[doc = "5: Prescaler: GCLK_TC/64"]
-    DIV64,
+    DIV64 = 5,
     #[doc = "6: Prescaler: GCLK_TC/256"]
-    DIV256,
+    DIV256 = 6,
     #[doc = "7: Prescaler: GCLK_TC/1024"]
-    DIV1024,
+    DIV1024 = 7,
 }
 impl From<PRESCALER_A> for u8 {
     #[inline(always)]
     fn from(variant: PRESCALER_A) -> Self {
-        match variant {
-            PRESCALER_A::DIV1 => 0,
-            PRESCALER_A::DIV2 => 1,
-            PRESCALER_A::DIV4 => 2,
-            PRESCALER_A::DIV8 => 3,
-            PRESCALER_A::DIV16 => 4,
-            PRESCALER_A::DIV64 => 5,
-            PRESCALER_A::DIV256 => 6,
-            PRESCALER_A::DIV1024 => 7,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `PRESCALER`"]
@@ -543,22 +531,19 @@ impl<'a> COPEN1_W<'a> {
 }
 #[doc = "Capture Mode Channel 0\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum CAPTMODE0_A {
     #[doc = "0: Default capture"]
-    DEFAULT,
+    DEFAULT = 0,
     #[doc = "1: Minimum capture"]
-    CAPTMIN,
+    CAPTMIN = 1,
     #[doc = "2: Maximum capture"]
-    CAPTMAX,
+    CAPTMAX = 2,
 }
 impl From<CAPTMODE0_A> for u8 {
     #[inline(always)]
     fn from(variant: CAPTMODE0_A) -> Self {
-        match variant {
-            CAPTMODE0_A::DEFAULT => 0,
-            CAPTMODE0_A::CAPTMIN => 1,
-            CAPTMODE0_A::CAPTMAX => 2,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `CAPTMODE0`"]
@@ -625,22 +610,19 @@ impl<'a> CAPTMODE0_W<'a> {
 }
 #[doc = "Capture mode Channel 1\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum CAPTMODE1_A {
     #[doc = "0: Default capture"]
-    DEFAULT,
+    DEFAULT = 0,
     #[doc = "1: Minimum capture"]
-    CAPTMIN,
+    CAPTMIN = 1,
     #[doc = "2: Maximum capture"]
-    CAPTMAX,
+    CAPTMAX = 2,
 }
 impl From<CAPTMODE1_A> for u8 {
     #[inline(always)]
     fn from(variant: CAPTMODE1_A) -> Self {
-        match variant {
-            CAPTMODE1_A::DEFAULT => 0,
-            CAPTMODE1_A::CAPTMIN => 1,
-            CAPTMODE1_A::CAPTMAX => 2,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `CAPTMODE1`"]
@@ -706,6 +688,11 @@ impl<'a> CAPTMODE1_W<'a> {
     }
 }
 impl R {
+    #[doc = "Bit 0 - Software Reset"]
+    #[inline(always)]
+    pub fn swrst(&self) -> SWRST_R {
+        SWRST_R::new((self.bits & 0x01) != 0)
+    }
     #[doc = "Bit 1 - Enable"]
     #[inline(always)]
     pub fn enable(&self) -> ENABLE_R {

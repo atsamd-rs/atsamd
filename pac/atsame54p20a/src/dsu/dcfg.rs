@@ -1,8 +1,9 @@
-#[doc = "Reader of register DCFG%s"]
+#[doc = "Reader of register DCFG[%s]"]
 pub type R = crate::R<u32, super::DCFG>;
-#[doc = "Writer for register DCFG%s"]
+#[doc = "Writer for register DCFG[%s]"]
 pub type W = crate::W<u32, super::DCFG>;
-#[doc = "Register DCFG%s `reset()`'s with value 0"]
+#[doc = "Register DCFG[%s]
+`reset()`'s with value 0"]
 impl crate::ResetValue for super::DCFG {
     type Type = u32;
     #[inline(always)]

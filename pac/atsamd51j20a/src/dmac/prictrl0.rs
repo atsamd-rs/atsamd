@@ -26,25 +26,21 @@ impl<'a> LVLPRI0_W<'a> {
 }
 #[doc = "Level 0 Quality of Service\n\nValue on reset: 2"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum QOS0_A {
     #[doc = "0: Regular delivery"]
-    REGULAR,
+    REGULAR = 0,
     #[doc = "1: Bandwidth shortage"]
-    SHORTAGE,
+    SHORTAGE = 1,
     #[doc = "2: Latency sensitive"]
-    SENSITIVE,
+    SENSITIVE = 2,
     #[doc = "3: Latency critical"]
-    CRITICAL,
+    CRITICAL = 3,
 }
 impl From<QOS0_A> for u8 {
     #[inline(always)]
     fn from(variant: QOS0_A) -> Self {
-        match variant {
-            QOS0_A::REGULAR => 0,
-            QOS0_A::SHORTAGE => 1,
-            QOS0_A::SENSITIVE => 2,
-            QOS0_A::CRITICAL => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `QOS0`"]
@@ -161,25 +157,21 @@ impl<'a> LVLPRI1_W<'a> {
 }
 #[doc = "Level 1 Quality of Service\n\nValue on reset: 2"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum QOS1_A {
     #[doc = "0: Regular delivery"]
-    REGULAR,
+    REGULAR = 0,
     #[doc = "1: Bandwidth shortage"]
-    SHORTAGE,
+    SHORTAGE = 1,
     #[doc = "2: Latency sensitive"]
-    SENSITIVE,
+    SENSITIVE = 2,
     #[doc = "3: Latency critical"]
-    CRITICAL,
+    CRITICAL = 3,
 }
 impl From<QOS1_A> for u8 {
     #[inline(always)]
     fn from(variant: QOS1_A) -> Self {
-        match variant {
-            QOS1_A::REGULAR => 0,
-            QOS1_A::SHORTAGE => 1,
-            QOS1_A::SENSITIVE => 2,
-            QOS1_A::CRITICAL => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `QOS1`"]
@@ -296,25 +288,21 @@ impl<'a> LVLPRI2_W<'a> {
 }
 #[doc = "Level 2 Quality of Service\n\nValue on reset: 2"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum QOS2_A {
     #[doc = "0: Regular delivery"]
-    REGULAR,
+    REGULAR = 0,
     #[doc = "1: Bandwidth shortage"]
-    SHORTAGE,
+    SHORTAGE = 1,
     #[doc = "2: Latency sensitive"]
-    SENSITIVE,
+    SENSITIVE = 2,
     #[doc = "3: Latency critical"]
-    CRITICAL,
+    CRITICAL = 3,
 }
 impl From<QOS2_A> for u8 {
     #[inline(always)]
     fn from(variant: QOS2_A) -> Self {
-        match variant {
-            QOS2_A::REGULAR => 0,
-            QOS2_A::SHORTAGE => 1,
-            QOS2_A::SENSITIVE => 2,
-            QOS2_A::CRITICAL => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `QOS2`"]
@@ -431,25 +419,21 @@ impl<'a> LVLPRI3_W<'a> {
 }
 #[doc = "Level 3 Quality of Service\n\nValue on reset: 2"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum QOS3_A {
     #[doc = "0: Regular delivery"]
-    REGULAR,
+    REGULAR = 0,
     #[doc = "1: Bandwidth shortage"]
-    SHORTAGE,
+    SHORTAGE = 1,
     #[doc = "2: Latency sensitive"]
-    SENSITIVE,
+    SENSITIVE = 2,
     #[doc = "3: Latency critical"]
-    CRITICAL,
+    CRITICAL = 3,
 }
 impl From<QOS3_A> for u8 {
     #[inline(always)]
     fn from(variant: QOS3_A) -> Self {
-        match variant {
-            QOS3_A::REGULAR => 0,
-            QOS3_A::SHORTAGE => 1,
-            QOS3_A::SENSITIVE => 2,
-            QOS3_A::CRITICAL => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `QOS3`"]

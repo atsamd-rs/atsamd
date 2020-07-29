@@ -1,8 +1,9 @@
-#[doc = "Reader of register CLKCTRL%s"]
+#[doc = "Reader of register CLKCTRL[%s]"]
 pub type R = crate::R<u32, super::CLKCTRL>;
-#[doc = "Writer for register CLKCTRL%s"]
+#[doc = "Writer for register CLKCTRL[%s]"]
 pub type W = crate::W<u32, super::CLKCTRL>;
-#[doc = "Register CLKCTRL%s `reset()`'s with value 0"]
+#[doc = "Register CLKCTRL[%s]
+`reset()`'s with value 0"]
 impl crate::ResetValue for super::CLKCTRL {
     type Type = u32;
     #[inline(always)]
@@ -12,25 +13,21 @@ impl crate::ResetValue for super::CLKCTRL {
 }
 #[doc = "Slot Size\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum SLOTSIZE_A {
     #[doc = "0: 8-bit Slot for Clock Unit n"]
-    _8,
+    _8 = 0,
     #[doc = "1: 16-bit Slot for Clock Unit n"]
-    _16,
+    _16 = 1,
     #[doc = "2: 24-bit Slot for Clock Unit n"]
-    _24,
+    _24 = 2,
     #[doc = "3: 32-bit Slot for Clock Unit n"]
-    _32,
+    _32 = 3,
 }
 impl From<SLOTSIZE_A> for u8 {
     #[inline(always)]
     fn from(variant: SLOTSIZE_A) -> Self {
-        match variant {
-            SLOTSIZE_A::_8 => 0,
-            SLOTSIZE_A::_16 => 1,
-            SLOTSIZE_A::_24 => 2,
-            SLOTSIZE_A::_32 => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `SLOTSIZE`"]
@@ -123,25 +120,21 @@ impl<'a> NBSLOTS_W<'a> {
 }
 #[doc = "Frame Sync Width\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum FSWIDTH_A {
     #[doc = "0: Frame Sync Pulse is 1 Slot wide (default for I2S protocol)"]
-    SLOT,
+    SLOT = 0,
     #[doc = "1: Frame Sync Pulse is half a Frame wide"]
-    HALF,
+    HALF = 1,
     #[doc = "2: Frame Sync Pulse is 1 Bit wide"]
-    BIT,
+    BIT = 2,
     #[doc = "3: Clock Unit n operates in Burst mode, with a 1-bit wide Frame Sync pulse per Data sample, only when Data transfer is requested"]
-    BURST,
+    BURST = 3,
 }
 impl From<FSWIDTH_A> for u8 {
     #[inline(always)]
     fn from(variant: FSWIDTH_A) -> Self {
-        match variant {
-            FSWIDTH_A::SLOT => 0,
-            FSWIDTH_A::HALF => 1,
-            FSWIDTH_A::BIT => 2,
-            FSWIDTH_A::BURST => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `FSWIDTH`"]
@@ -222,17 +215,14 @@ impl<'a> FSWIDTH_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum BITDELAY_A {
     #[doc = "0: Left Justified (0 Bit Delay)"]
-    LJ,
+    LJ = 0,
     #[doc = "1: I2S (1 Bit Delay)"]
-    I2S,
+    I2S = 1,
 }
 impl From<BITDELAY_A> for bool {
     #[inline(always)]
     fn from(variant: BITDELAY_A) -> Self {
-        match variant {
-            BITDELAY_A::LJ => false,
-            BITDELAY_A::I2S => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `BITDELAY`"]
@@ -300,17 +290,14 @@ impl<'a> BITDELAY_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum FSSEL_A {
     #[doc = "0: Divided Serial Clock n is used as Frame Sync n source"]
-    SCKDIV,
+    SCKDIV = 0,
     #[doc = "1: FSn input pin is used as Frame Sync n source"]
-    FSPIN,
+    FSPIN = 1,
 }
 impl From<FSSEL_A> for bool {
     #[inline(always)]
     fn from(variant: FSSEL_A) -> Self {
-        match variant {
-            FSSEL_A::SCKDIV => false,
-            FSSEL_A::FSPIN => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `FSSEL`"]
@@ -426,17 +413,14 @@ impl<'a> FSOUTINV_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum SCKSEL_A {
     #[doc = "0: Divided Master Clock n is used as Serial Clock n source"]
-    MCKDIV,
+    MCKDIV = 0,
     #[doc = "1: SCKn input pin is used as Serial Clock n source"]
-    SCKPIN,
+    SCKPIN = 1,
 }
 impl From<SCKSEL_A> for bool {
     #[inline(always)]
     fn from(variant: SCKSEL_A) -> Self {
-        match variant {
-            SCKSEL_A::MCKDIV => false,
-            SCKSEL_A::SCKPIN => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `SCKSEL`"]
@@ -528,17 +512,14 @@ impl<'a> SCKOUTINV_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum MCKSEL_A {
     #[doc = "0: GCLK_I2S_n is used as Master Clock n source"]
-    GCLK,
+    GCLK = 0,
     #[doc = "1: MCKn input pin is used as Master Clock n source"]
-    MCKPIN,
+    MCKPIN = 1,
 }
 impl From<MCKSEL_A> for bool {
     #[inline(always)]
     fn from(variant: MCKSEL_A) -> Self {
-        match variant {
-            MCKSEL_A::GCLK => false,
-            MCKSEL_A::MCKPIN => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `MCKSEL`"]

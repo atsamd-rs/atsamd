@@ -26,19 +26,17 @@ impl<'a> LQOS_W<'a> {
 }
 #[doc = "DMA Trigger Level\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum DCCDMALEVEL_A {
     #[doc = "0: Trigger rises when DCC is empty"]
-    EMPTY,
+    EMPTY = 0,
     #[doc = "1: Trigger rises when DCC is full"]
-    FULL,
+    FULL = 1,
 }
 impl From<DCCDMALEVEL_A> for u8 {
     #[inline(always)]
     fn from(variant: DCCDMALEVEL_A) -> Self {
-        match variant {
-            DCCDMALEVEL_A::EMPTY => 0,
-            DCCDMALEVEL_A::FULL => 1,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `DCCDMALEVEL`"]

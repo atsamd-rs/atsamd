@@ -1,8 +1,9 @@
-#[doc = "Reader of register GHASH%s"]
+#[doc = "Reader of register GHASH[%s]"]
 pub type R = crate::R<u32, super::GHASH>;
-#[doc = "Writer for register GHASH%s"]
+#[doc = "Writer for register GHASH[%s]"]
 pub type W = crate::W<u32, super::GHASH>;
-#[doc = "Register GHASH%s `reset()`'s with value 0"]
+#[doc = "Register GHASH[%s]
+`reset()`'s with value 0"]
 impl crate::ResetValue for super::GHASH {
     type Type = u32;
     #[inline(always)]

@@ -10,6 +10,8 @@ impl crate::ResetValue for super::CTRLA {
         0
     }
 }
+#[doc = "Reader of field `SWRST`"]
+pub type SWRST_R = crate::R<bool, bool>;
 #[doc = "Write proxy for field `SWRST`"]
 pub struct SWRST_W<'a> {
     w: &'a mut W,
@@ -58,22 +60,19 @@ impl<'a> ENABLE_W<'a> {
 }
 #[doc = "Operation Mode\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum MODE_A {
     #[doc = "0: QDEC operating mode"]
-    QDEC,
+    QDEC = 0,
     #[doc = "1: HALL operating mode"]
-    HALL,
+    HALL = 1,
     #[doc = "2: COUNTER operating mode"]
-    COUNTER,
+    COUNTER = 2,
 }
 impl From<MODE_A> for u8 {
     #[inline(always)]
     fn from(variant: MODE_A) -> Self {
-        match variant {
-            MODE_A::QDEC => 0,
-            MODE_A::HALL => 1,
-            MODE_A::COUNTER => 2,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `MODE`"]
@@ -164,28 +163,23 @@ impl<'a> RUNSTDBY_W<'a> {
 }
 #[doc = "PDEC Configuration\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum CONF_A {
     #[doc = "0: Quadrature decoder direction"]
-    X4,
+    X4 = 0,
     #[doc = "1: Secure Quadrature decoder direction"]
-    X4S,
+    X4S = 1,
     #[doc = "2: Decoder direction"]
-    X2,
+    X2 = 2,
     #[doc = "3: Secure decoder direction"]
-    X2S,
+    X2S = 3,
     #[doc = "4: Auto correction mode"]
-    AUTOC,
+    AUTOC = 4,
 }
 impl From<CONF_A> for u8 {
     #[inline(always)]
     fn from(variant: CONF_A) -> Self {
-        match variant {
-            CONF_A::X4 => 0,
-            CONF_A::X4S => 1,
-            CONF_A::X2 => 2,
-            CONF_A::X2S => 3,
-            CONF_A::AUTOC => 4,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `CONF`"]
@@ -517,6 +511,11 @@ impl<'a> MAXCMP_W<'a> {
     }
 }
 impl R {
+    #[doc = "Bit 0 - Software Reset"]
+    #[inline(always)]
+    pub fn swrst(&self) -> SWRST_R {
+        SWRST_R::new((self.bits & 0x01) != 0)
+    }
     #[doc = "Bit 1 - Enable"]
     #[inline(always)]
     pub fn enable(&self) -> ENABLE_R {

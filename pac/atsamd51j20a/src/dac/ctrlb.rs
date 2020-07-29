@@ -36,25 +36,21 @@ impl<'a> DIFF_W<'a> {
 }
 #[doc = "Reference Selection for DAC0/1\n\nValue on reset: 1"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum REFSEL_A {
     #[doc = "0: External reference unbuffered"]
-    VREFPU,
+    VREFPU = 0,
     #[doc = "1: Analog supply"]
-    VDDANA,
+    VDDANA = 1,
     #[doc = "2: External reference buffered"]
-    VREFPB,
+    VREFPB = 2,
     #[doc = "3: Internal bandgap reference"]
-    INTREF,
+    INTREF = 3,
 }
 impl From<REFSEL_A> for u8 {
     #[inline(always)]
     fn from(variant: REFSEL_A) -> Self {
-        match variant {
-            REFSEL_A::VREFPU => 0,
-            REFSEL_A::VDDANA => 1,
-            REFSEL_A::VREFPB => 2,
-            REFSEL_A::INTREF => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `REFSEL`"]

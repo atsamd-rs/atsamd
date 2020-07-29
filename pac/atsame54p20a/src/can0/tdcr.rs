@@ -12,6 +12,18 @@ impl crate::ResetValue for super::TDCR {
 }
 #[doc = "Reader of field `TDCF`"]
 pub type TDCF_R = crate::R<u8, u8>;
+#[doc = "Write proxy for field `TDCF`"]
+pub struct TDCF_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> TDCF_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub unsafe fn bits(self, value: u8) -> &'a mut W {
+        self.w.bits = (self.w.bits & !0x7f) | ((value as u32) & 0x7f);
+        self.w
+    }
+}
 #[doc = "Reader of field `TDCO`"]
 pub type TDCO_R = crate::R<u8, u8>;
 #[doc = "Write proxy for field `TDCO`"]
@@ -39,6 +51,11 @@ impl R {
     }
 }
 impl W {
+    #[doc = "Bits 0:6 - Transmitter Delay Compensation Filter Length"]
+    #[inline(always)]
+    pub fn tdcf(&mut self) -> TDCF_W {
+        TDCF_W { w: self }
+    }
     #[doc = "Bits 8:14 - Transmitter Delay Compensation Offset"]
     #[inline(always)]
     pub fn tdco(&mut self) -> TDCO_W {

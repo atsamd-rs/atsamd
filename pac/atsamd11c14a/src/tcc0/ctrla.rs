@@ -60,25 +60,21 @@ impl<'a> ENABLE_W<'a> {
 }
 #[doc = "Enhanced Resolution\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum RESOLUTION_A {
     #[doc = "0: Dithering is disabled"]
-    NONE,
+    NONE = 0,
     #[doc = "1: Dithering is done every 16 PWM frames"]
-    DITH4,
+    DITH4 = 1,
     #[doc = "2: Dithering is done every 32 PWM frames"]
-    DITH5,
+    DITH5 = 2,
     #[doc = "3: Dithering is done every 64 PWM frames"]
-    DITH6,
+    DITH6 = 3,
 }
 impl From<RESOLUTION_A> for u8 {
     #[inline(always)]
     fn from(variant: RESOLUTION_A) -> Self {
-        match variant {
-            RESOLUTION_A::NONE => 0,
-            RESOLUTION_A::DITH4 => 1,
-            RESOLUTION_A::DITH5 => 2,
-            RESOLUTION_A::DITH6 => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `RESOLUTION`"]
@@ -157,37 +153,29 @@ impl<'a> RESOLUTION_W<'a> {
 }
 #[doc = "Prescaler\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum PRESCALER_A {
     #[doc = "0: No division"]
-    DIV1,
+    DIV1 = 0,
     #[doc = "1: Divide by 2"]
-    DIV2,
+    DIV2 = 1,
     #[doc = "2: Divide by 4"]
-    DIV4,
+    DIV4 = 2,
     #[doc = "3: Divide by 8"]
-    DIV8,
+    DIV8 = 3,
     #[doc = "4: Divide by 16"]
-    DIV16,
+    DIV16 = 4,
     #[doc = "5: Divide by 64"]
-    DIV64,
+    DIV64 = 5,
     #[doc = "6: Divide by 256"]
-    DIV256,
+    DIV256 = 6,
     #[doc = "7: Divide by 1024"]
-    DIV1024,
+    DIV1024 = 7,
 }
 impl From<PRESCALER_A> for u8 {
     #[inline(always)]
     fn from(variant: PRESCALER_A) -> Self {
-        match variant {
-            PRESCALER_A::DIV1 => 0,
-            PRESCALER_A::DIV2 => 1,
-            PRESCALER_A::DIV4 => 2,
-            PRESCALER_A::DIV8 => 3,
-            PRESCALER_A::DIV16 => 4,
-            PRESCALER_A::DIV64 => 5,
-            PRESCALER_A::DIV256 => 6,
-            PRESCALER_A::DIV1024 => 7,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `PRESCALER`"]
@@ -334,22 +322,19 @@ impl<'a> RUNSTDBY_W<'a> {
 }
 #[doc = "Prescaler and Counter Synchronization Selection\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum PRESCSYNC_A {
     #[doc = "0: Reload or reset counter on next GCLK"]
-    GCLK,
+    GCLK = 0,
     #[doc = "1: Reload or reset counter on next prescaler clock"]
-    PRESC,
+    PRESC = 1,
     #[doc = "2: Reload or reset counter on next GCLK and reset prescaler counter"]
-    RESYNC,
+    RESYNC = 2,
 }
 impl From<PRESCSYNC_A> for u8 {
     #[inline(always)]
     fn from(variant: PRESCSYNC_A) -> Self {
-        match variant {
-            PRESCSYNC_A::GCLK => 0,
-            PRESCSYNC_A::PRESC => 1,
-            PRESCSYNC_A::RESYNC => 2,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `PRESCSYNC`"]

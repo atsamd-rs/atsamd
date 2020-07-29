@@ -1,8 +1,9 @@
-#[doc = "Reader of register LUTCTRL%s"]
+#[doc = "Reader of register LUTCTRL[%s]"]
 pub type R = crate::R<u32, super::LUTCTRL>;
-#[doc = "Writer for register LUTCTRL%s"]
+#[doc = "Writer for register LUTCTRL[%s]"]
 pub type W = crate::W<u32, super::LUTCTRL>;
-#[doc = "Register LUTCTRL%s `reset()`'s with value 0"]
+#[doc = "Register LUTCTRL[%s]
+`reset()`'s with value 0"]
 impl crate::ResetValue for super::LUTCTRL {
     type Type = u32;
     #[inline(always)]
@@ -36,22 +37,19 @@ impl<'a> ENABLE_W<'a> {
 }
 #[doc = "Filter Selection\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum FILTSEL_A {
     #[doc = "0: Filter disabled"]
-    DISABLE,
+    DISABLE = 0,
     #[doc = "1: Synchronizer enabled"]
-    SYNCH,
+    SYNCH = 1,
     #[doc = "2: Filter enabled"]
-    FILTER,
+    FILTER = 2,
 }
 impl From<FILTSEL_A> for u8 {
     #[inline(always)]
     fn from(variant: FILTSEL_A) -> Self {
-        match variant {
-            FILTSEL_A::DISABLE => 0,
-            FILTSEL_A::SYNCH => 1,
-            FILTSEL_A::FILTER => 2,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `FILTSEL`"]
@@ -142,43 +140,33 @@ impl<'a> EDGESEL_W<'a> {
 }
 #[doc = "Input Selection 0\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum INSEL0_A {
     #[doc = "0: Masked input"]
-    MASK,
+    MASK = 0,
     #[doc = "1: Feedback input source"]
-    FEEDBACK,
+    FEEDBACK = 1,
     #[doc = "2: Linked LUT input source"]
-    LINK,
+    LINK = 2,
     #[doc = "3: Event input source"]
-    EVENT,
+    EVENT = 3,
     #[doc = "4: I/O pin input source"]
-    IO,
+    IO = 4,
     #[doc = "5: AC input source"]
-    AC,
+    AC = 5,
     #[doc = "6: TC input source"]
-    TC,
+    TC = 6,
     #[doc = "7: Alternate TC input source"]
-    ALTTC,
+    ALTTC = 7,
     #[doc = "8: TCC input source"]
-    TCC,
+    TCC = 8,
     #[doc = "9: SERCOM input source"]
-    SERCOM,
+    SERCOM = 9,
 }
 impl From<INSEL0_A> for u8 {
     #[inline(always)]
     fn from(variant: INSEL0_A) -> Self {
-        match variant {
-            INSEL0_A::MASK => 0,
-            INSEL0_A::FEEDBACK => 1,
-            INSEL0_A::LINK => 2,
-            INSEL0_A::EVENT => 3,
-            INSEL0_A::IO => 4,
-            INSEL0_A::AC => 5,
-            INSEL0_A::TC => 6,
-            INSEL0_A::ALTTC => 7,
-            INSEL0_A::TCC => 8,
-            INSEL0_A::SERCOM => 9,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `INSEL0`"]
@@ -322,43 +310,33 @@ impl<'a> INSEL0_W<'a> {
 }
 #[doc = "Input Selection 1\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum INSEL1_A {
     #[doc = "0: Masked input"]
-    MASK,
+    MASK = 0,
     #[doc = "1: Feedback input source"]
-    FEEDBACK,
+    FEEDBACK = 1,
     #[doc = "2: Linked LUT input source"]
-    LINK,
+    LINK = 2,
     #[doc = "3: Event input source"]
-    EVENT,
+    EVENT = 3,
     #[doc = "4: I/O pin input source"]
-    IO,
+    IO = 4,
     #[doc = "5: AC input source"]
-    AC,
+    AC = 5,
     #[doc = "6: TC input source"]
-    TC,
+    TC = 6,
     #[doc = "7: Alternate TC input source"]
-    ALTTC,
+    ALTTC = 7,
     #[doc = "8: TCC input source"]
-    TCC,
+    TCC = 8,
     #[doc = "9: SERCOM input source"]
-    SERCOM,
+    SERCOM = 9,
 }
 impl From<INSEL1_A> for u8 {
     #[inline(always)]
     fn from(variant: INSEL1_A) -> Self {
-        match variant {
-            INSEL1_A::MASK => 0,
-            INSEL1_A::FEEDBACK => 1,
-            INSEL1_A::LINK => 2,
-            INSEL1_A::EVENT => 3,
-            INSEL1_A::IO => 4,
-            INSEL1_A::AC => 5,
-            INSEL1_A::TC => 6,
-            INSEL1_A::ALTTC => 7,
-            INSEL1_A::TCC => 8,
-            INSEL1_A::SERCOM => 9,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `INSEL1`"]
@@ -502,43 +480,33 @@ impl<'a> INSEL1_W<'a> {
 }
 #[doc = "Input Selection 2\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum INSEL2_A {
     #[doc = "0: Masked input"]
-    MASK,
+    MASK = 0,
     #[doc = "1: Feedback input source"]
-    FEEDBACK,
+    FEEDBACK = 1,
     #[doc = "2: Linked LUT input source"]
-    LINK,
+    LINK = 2,
     #[doc = "3: Event input source"]
-    EVENT,
+    EVENT = 3,
     #[doc = "4: I/O pin input source"]
-    IO,
+    IO = 4,
     #[doc = "5: AC input source"]
-    AC,
+    AC = 5,
     #[doc = "6: TC input source"]
-    TC,
+    TC = 6,
     #[doc = "7: Alternate TC input source"]
-    ALTTC,
+    ALTTC = 7,
     #[doc = "8: TCC input source"]
-    TCC,
+    TCC = 8,
     #[doc = "9: SERCOM input source"]
-    SERCOM,
+    SERCOM = 9,
 }
 impl From<INSEL2_A> for u8 {
     #[inline(always)]
     fn from(variant: INSEL2_A) -> Self {
-        match variant {
-            INSEL2_A::MASK => 0,
-            INSEL2_A::FEEDBACK => 1,
-            INSEL2_A::LINK => 2,
-            INSEL2_A::EVENT => 3,
-            INSEL2_A::IO => 4,
-            INSEL2_A::AC => 5,
-            INSEL2_A::TC => 6,
-            INSEL2_A::ALTTC => 7,
-            INSEL2_A::TCC => 8,
-            INSEL2_A::SERCOM => 9,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `INSEL2`"]

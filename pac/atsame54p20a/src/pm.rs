@@ -45,11 +45,13 @@ impl crate::Readable for SLEEPCFG {}
 impl crate::Writable for SLEEPCFG {}
 #[doc = "Sleep Configuration"]
 pub mod sleepcfg;
-#[doc = "Interrupt Enable Clear\n\nThis register you can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [intenclr](intenclr) module"]
+#[doc = "Interrupt Enable Clear\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [intenclr](intenclr) module"]
 pub type INTENCLR = crate::Reg<u8, _INTENCLR>;
 #[allow(missing_docs)]
 #[doc(hidden)]
 pub struct _INTENCLR;
+#[doc = "`read()` method returns [intenclr::R](intenclr::R) reader structure"]
+impl crate::Readable for INTENCLR {}
 #[doc = "`write(|w| ..)` method takes [intenclr::W](intenclr::W) writer structure"]
 impl crate::Writable for INTENCLR {}
 #[doc = "Interrupt Enable Clear"]

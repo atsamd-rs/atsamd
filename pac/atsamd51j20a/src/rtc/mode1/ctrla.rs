@@ -10,6 +10,8 @@ impl crate::ResetValue for super::CTRLA {
         0
     }
 }
+#[doc = "Reader of field `SWRST`"]
+pub type SWRST_R = crate::R<bool, bool>;
 #[doc = "Write proxy for field `SWRST`"]
 pub struct SWRST_W<'a> {
     w: &'a mut W,
@@ -58,22 +60,19 @@ impl<'a> ENABLE_W<'a> {
 }
 #[doc = "Operating Mode\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum MODE_A {
     #[doc = "0: Mode 0: 32-bit Counter"]
-    COUNT32,
+    COUNT32 = 0,
     #[doc = "1: Mode 1: 16-bit Counter"]
-    COUNT16,
+    COUNT16 = 1,
     #[doc = "2: Mode 2: Clock/Calendar"]
-    CLOCK,
+    CLOCK = 2,
 }
 impl From<MODE_A> for u8 {
     #[inline(always)]
     fn from(variant: MODE_A) -> Self {
-        match variant {
-            MODE_A::COUNT32 => 0,
-            MODE_A::COUNT16 => 1,
-            MODE_A::CLOCK => 2,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `MODE`"]
@@ -140,49 +139,37 @@ impl<'a> MODE_W<'a> {
 }
 #[doc = "Prescaler\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum PRESCALER_A {
     #[doc = "0: CLK_RTC_CNT = GCLK_RTC/1"]
-    OFF,
+    OFF = 0,
     #[doc = "1: CLK_RTC_CNT = GCLK_RTC/1"]
-    DIV1,
+    DIV1 = 1,
     #[doc = "2: CLK_RTC_CNT = GCLK_RTC/2"]
-    DIV2,
+    DIV2 = 2,
     #[doc = "3: CLK_RTC_CNT = GCLK_RTC/4"]
-    DIV4,
+    DIV4 = 3,
     #[doc = "4: CLK_RTC_CNT = GCLK_RTC/8"]
-    DIV8,
+    DIV8 = 4,
     #[doc = "5: CLK_RTC_CNT = GCLK_RTC/16"]
-    DIV16,
+    DIV16 = 5,
     #[doc = "6: CLK_RTC_CNT = GCLK_RTC/32"]
-    DIV32,
+    DIV32 = 6,
     #[doc = "7: CLK_RTC_CNT = GCLK_RTC/64"]
-    DIV64,
+    DIV64 = 7,
     #[doc = "8: CLK_RTC_CNT = GCLK_RTC/128"]
-    DIV128,
+    DIV128 = 8,
     #[doc = "9: CLK_RTC_CNT = GCLK_RTC/256"]
-    DIV256,
+    DIV256 = 9,
     #[doc = "10: CLK_RTC_CNT = GCLK_RTC/512"]
-    DIV512,
+    DIV512 = 10,
     #[doc = "11: CLK_RTC_CNT = GCLK_RTC/1024"]
-    DIV1024,
+    DIV1024 = 11,
 }
 impl From<PRESCALER_A> for u8 {
     #[inline(always)]
     fn from(variant: PRESCALER_A) -> Self {
-        match variant {
-            PRESCALER_A::OFF => 0,
-            PRESCALER_A::DIV1 => 1,
-            PRESCALER_A::DIV2 => 2,
-            PRESCALER_A::DIV4 => 3,
-            PRESCALER_A::DIV8 => 4,
-            PRESCALER_A::DIV16 => 5,
-            PRESCALER_A::DIV32 => 6,
-            PRESCALER_A::DIV64 => 7,
-            PRESCALER_A::DIV128 => 8,
-            PRESCALER_A::DIV256 => 9,
-            PRESCALER_A::DIV512 => 10,
-            PRESCALER_A::DIV1024 => 11,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `PRESCALER`"]
@@ -419,6 +406,11 @@ impl<'a> COUNTSYNC_W<'a> {
     }
 }
 impl R {
+    #[doc = "Bit 0 - Software Reset"]
+    #[inline(always)]
+    pub fn swrst(&self) -> SWRST_R {
+        SWRST_R::new((self.bits & 0x01) != 0)
+    }
     #[doc = "Bit 1 - Enable"]
     #[inline(always)]
     pub fn enable(&self) -> ENABLE_R {

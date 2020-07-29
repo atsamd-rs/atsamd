@@ -1,8 +1,9 @@
-#[doc = "Reader of register PCHCTRL%s"]
+#[doc = "Reader of register PCHCTRL[%s]"]
 pub type R = crate::R<u32, super::PCHCTRL>;
-#[doc = "Writer for register PCHCTRL%s"]
+#[doc = "Writer for register PCHCTRL[%s]"]
 pub type W = crate::W<u32, super::PCHCTRL>;
-#[doc = "Register PCHCTRL%s `reset()`'s with value 0"]
+#[doc = "Register PCHCTRL[%s]
+`reset()`'s with value 0"]
 impl crate::ResetValue for super::PCHCTRL {
     type Type = u32;
     #[inline(always)]

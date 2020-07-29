@@ -14,17 +14,14 @@ impl crate::ResetValue for super::TMR {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum DMAEN_A {
     #[doc = "0: No data transfer or Non DMA data transfer"]
-    DISABLE,
+    DISABLE = 0,
     #[doc = "1: DMA data transfer"]
-    ENABLE,
+    ENABLE = 1,
 }
 impl From<DMAEN_A> for bool {
     #[inline(always)]
     fn from(variant: DMAEN_A) -> Self {
-        match variant {
-            DMAEN_A::DISABLE => false,
-            DMAEN_A::ENABLE => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `DMAEN`"]
@@ -92,17 +89,14 @@ impl<'a> DMAEN_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum BCEN_A {
     #[doc = "0: Disable"]
-    DISABLE,
+    DISABLE = 0,
     #[doc = "1: Enable"]
-    ENABLE,
+    ENABLE = 1,
 }
 impl From<BCEN_A> for bool {
     #[inline(always)]
     fn from(variant: BCEN_A) -> Self {
-        match variant {
-            BCEN_A::DISABLE => false,
-            BCEN_A::ENABLE => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `BCEN`"]
@@ -168,22 +162,19 @@ impl<'a> BCEN_W<'a> {
 }
 #[doc = "Auto Command Enable\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum ACMDEN_A {
     #[doc = "0: Auto Command Disabled"]
-    DISABLED,
+    DISABLED = 0,
     #[doc = "1: Auto CMD12 Enable"]
-    CMD12,
+    CMD12 = 1,
     #[doc = "2: Auto CMD23 Enable"]
-    CMD23,
+    CMD23 = 2,
 }
 impl From<ACMDEN_A> for u8 {
     #[inline(always)]
     fn from(variant: ACMDEN_A) -> Self {
-        match variant {
-            ACMDEN_A::DISABLED => 0,
-            ACMDEN_A::CMD12 => 1,
-            ACMDEN_A::CMD23 => 2,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `ACMDEN`"]
@@ -252,17 +243,14 @@ impl<'a> ACMDEN_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum DTDSEL_A {
     #[doc = "0: Write (Host to Card)"]
-    WRITE,
+    WRITE = 0,
     #[doc = "1: Read (Card to Host)"]
-    READ,
+    READ = 1,
 }
 impl From<DTDSEL_A> for bool {
     #[inline(always)]
     fn from(variant: DTDSEL_A) -> Self {
-        match variant {
-            DTDSEL_A::WRITE => false,
-            DTDSEL_A::READ => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `DTDSEL`"]
@@ -330,17 +318,14 @@ impl<'a> DTDSEL_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum MSBSEL_A {
     #[doc = "0: Single Block"]
-    SINGLE,
+    SINGLE = 0,
     #[doc = "1: Multiple Block"]
-    MULTIPLE,
+    MULTIPLE = 1,
 }
 impl From<MSBSEL_A> for bool {
     #[inline(always)]
     fn from(variant: MSBSEL_A) -> Self {
-        match variant {
-            MSBSEL_A::SINGLE => false,
-            MSBSEL_A::MULTIPLE => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `MSBSEL`"]

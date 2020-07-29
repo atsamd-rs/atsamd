@@ -2,25 +2,21 @@
 pub type R = crate::R<u32, super::MCCAR>;
 #[doc = "Maximum Current for 3.3V\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum MAXCUR33V_A {
     #[doc = "0: Get information via another method"]
-    OTHER,
+    OTHER = 0,
     #[doc = "1: 4mA"]
-    _4MA,
+    _4MA = 1,
     #[doc = "2: 8mA"]
-    _8MA,
+    _8MA = 2,
     #[doc = "3: 12mA"]
-    _12MA,
+    _12MA = 3,
 }
 impl From<MAXCUR33V_A> for u8 {
     #[inline(always)]
     fn from(variant: MAXCUR33V_A) -> Self {
-        match variant {
-            MAXCUR33V_A::OTHER => 0,
-            MAXCUR33V_A::_4MA => 1,
-            MAXCUR33V_A::_8MA => 2,
-            MAXCUR33V_A::_12MA => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `MAXCUR33V`"]
@@ -61,25 +57,21 @@ impl MAXCUR33V_R {
 }
 #[doc = "Maximum Current for 3.0V\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum MAXCUR30V_A {
     #[doc = "0: Get information via another method"]
-    OTHER,
+    OTHER = 0,
     #[doc = "1: 4mA"]
-    _4MA,
+    _4MA = 1,
     #[doc = "2: 8mA"]
-    _8MA,
+    _8MA = 2,
     #[doc = "3: 12mA"]
-    _12MA,
+    _12MA = 3,
 }
 impl From<MAXCUR30V_A> for u8 {
     #[inline(always)]
     fn from(variant: MAXCUR30V_A) -> Self {
-        match variant {
-            MAXCUR30V_A::OTHER => 0,
-            MAXCUR30V_A::_4MA => 1,
-            MAXCUR30V_A::_8MA => 2,
-            MAXCUR30V_A::_12MA => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `MAXCUR30V`"]
@@ -120,25 +112,21 @@ impl MAXCUR30V_R {
 }
 #[doc = "Maximum Current for 1.8V\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum MAXCUR18V_A {
     #[doc = "0: Get information via another method"]
-    OTHER,
+    OTHER = 0,
     #[doc = "1: 4mA"]
-    _4MA,
+    _4MA = 1,
     #[doc = "2: 8mA"]
-    _8MA,
+    _8MA = 2,
     #[doc = "3: 12mA"]
-    _12MA,
+    _12MA = 3,
 }
 impl From<MAXCUR18V_A> for u8 {
     #[inline(always)]
     fn from(variant: MAXCUR18V_A) -> Self {
-        match variant {
-            MAXCUR18V_A::OTHER => 0,
-            MAXCUR18V_A::_4MA => 1,
-            MAXCUR18V_A::_8MA => 2,
-            MAXCUR18V_A::_12MA => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `MAXCUR18V`"]

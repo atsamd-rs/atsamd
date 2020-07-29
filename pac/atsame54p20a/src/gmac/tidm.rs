@@ -1,8 +1,9 @@
-#[doc = "Reader of register TIDM%s"]
+#[doc = "Reader of register TIDM[%s]"]
 pub type R = crate::R<u32, super::TIDM>;
-#[doc = "Writer for register TIDM%s"]
+#[doc = "Writer for register TIDM[%s]"]
 pub type W = crate::W<u32, super::TIDM>;
-#[doc = "Register TIDM%s `reset()`'s with value 0"]
+#[doc = "Register TIDM[%s]
+`reset()`'s with value 0"]
 impl crate::ResetValue for super::TIDM {
     type Type = u32;
     #[inline(always)]

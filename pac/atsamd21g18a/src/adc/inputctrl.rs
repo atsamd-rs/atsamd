@@ -12,88 +12,63 @@ impl crate::ResetValue for super::INPUTCTRL {
 }
 #[doc = "Positive Mux Input Selection\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum MUXPOS_A {
     #[doc = "0: ADC AIN0 Pin"]
-    PIN0,
+    PIN0 = 0,
     #[doc = "1: ADC AIN1 Pin"]
-    PIN1,
+    PIN1 = 1,
     #[doc = "2: ADC AIN2 Pin"]
-    PIN2,
+    PIN2 = 2,
     #[doc = "3: ADC AIN3 Pin"]
-    PIN3,
+    PIN3 = 3,
     #[doc = "4: ADC AIN4 Pin"]
-    PIN4,
+    PIN4 = 4,
     #[doc = "5: ADC AIN5 Pin"]
-    PIN5,
+    PIN5 = 5,
     #[doc = "6: ADC AIN6 Pin"]
-    PIN6,
+    PIN6 = 6,
     #[doc = "7: ADC AIN7 Pin"]
-    PIN7,
+    PIN7 = 7,
     #[doc = "8: ADC AIN8 Pin"]
-    PIN8,
+    PIN8 = 8,
     #[doc = "9: ADC AIN9 Pin"]
-    PIN9,
+    PIN9 = 9,
     #[doc = "10: ADC AIN10 Pin"]
-    PIN10,
+    PIN10 = 10,
     #[doc = "11: ADC AIN11 Pin"]
-    PIN11,
+    PIN11 = 11,
     #[doc = "12: ADC AIN12 Pin"]
-    PIN12,
+    PIN12 = 12,
     #[doc = "13: ADC AIN13 Pin"]
-    PIN13,
+    PIN13 = 13,
     #[doc = "14: ADC AIN14 Pin"]
-    PIN14,
+    PIN14 = 14,
     #[doc = "15: ADC AIN15 Pin"]
-    PIN15,
+    PIN15 = 15,
     #[doc = "16: ADC AIN16 Pin"]
-    PIN16,
+    PIN16 = 16,
     #[doc = "17: ADC AIN17 Pin"]
-    PIN17,
+    PIN17 = 17,
     #[doc = "18: ADC AIN18 Pin"]
-    PIN18,
+    PIN18 = 18,
     #[doc = "19: ADC AIN19 Pin"]
-    PIN19,
+    PIN19 = 19,
     #[doc = "24: Temperature Reference"]
-    TEMP,
+    TEMP = 24,
     #[doc = "25: Bandgap Voltage"]
-    BANDGAP,
+    BANDGAP = 25,
     #[doc = "26: 1/4  Scaled Core Supply"]
-    SCALEDCOREVCC,
+    SCALEDCOREVCC = 26,
     #[doc = "27: 1/4  Scaled I/O Supply"]
-    SCALEDIOVCC,
+    SCALEDIOVCC = 27,
     #[doc = "28: DAC Output"]
-    DAC,
+    DAC = 28,
 }
 impl From<MUXPOS_A> for u8 {
     #[inline(always)]
     fn from(variant: MUXPOS_A) -> Self {
-        match variant {
-            MUXPOS_A::PIN0 => 0,
-            MUXPOS_A::PIN1 => 1,
-            MUXPOS_A::PIN2 => 2,
-            MUXPOS_A::PIN3 => 3,
-            MUXPOS_A::PIN4 => 4,
-            MUXPOS_A::PIN5 => 5,
-            MUXPOS_A::PIN6 => 6,
-            MUXPOS_A::PIN7 => 7,
-            MUXPOS_A::PIN8 => 8,
-            MUXPOS_A::PIN9 => 9,
-            MUXPOS_A::PIN10 => 10,
-            MUXPOS_A::PIN11 => 11,
-            MUXPOS_A::PIN12 => 12,
-            MUXPOS_A::PIN13 => 13,
-            MUXPOS_A::PIN14 => 14,
-            MUXPOS_A::PIN15 => 15,
-            MUXPOS_A::PIN16 => 16,
-            MUXPOS_A::PIN17 => 17,
-            MUXPOS_A::PIN18 => 18,
-            MUXPOS_A::PIN19 => 19,
-            MUXPOS_A::TEMP => 24,
-            MUXPOS_A::BANDGAP => 25,
-            MUXPOS_A::SCALEDCOREVCC => 26,
-            MUXPOS_A::SCALEDIOVCC => 27,
-            MUXPOS_A::DAC => 28,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `MUXPOS`"]
@@ -402,43 +377,33 @@ impl<'a> MUXPOS_W<'a> {
 }
 #[doc = "Negative Mux Input Selection\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum MUXNEG_A {
     #[doc = "0: ADC AIN0 Pin"]
-    PIN0,
+    PIN0 = 0,
     #[doc = "1: ADC AIN1 Pin"]
-    PIN1,
+    PIN1 = 1,
     #[doc = "2: ADC AIN2 Pin"]
-    PIN2,
+    PIN2 = 2,
     #[doc = "3: ADC AIN3 Pin"]
-    PIN3,
+    PIN3 = 3,
     #[doc = "4: ADC AIN4 Pin"]
-    PIN4,
+    PIN4 = 4,
     #[doc = "5: ADC AIN5 Pin"]
-    PIN5,
+    PIN5 = 5,
     #[doc = "6: ADC AIN6 Pin"]
-    PIN6,
+    PIN6 = 6,
     #[doc = "7: ADC AIN7 Pin"]
-    PIN7,
+    PIN7 = 7,
     #[doc = "24: Internal Ground"]
-    GND,
+    GND = 24,
     #[doc = "25: I/O Ground"]
-    IOGND,
+    IOGND = 25,
 }
 impl From<MUXNEG_A> for u8 {
     #[inline(always)]
     fn from(variant: MUXNEG_A) -> Self {
-        match variant {
-            MUXNEG_A::PIN0 => 0,
-            MUXNEG_A::PIN1 => 1,
-            MUXNEG_A::PIN2 => 2,
-            MUXNEG_A::PIN3 => 3,
-            MUXNEG_A::PIN4 => 4,
-            MUXNEG_A::PIN5 => 5,
-            MUXNEG_A::PIN6 => 6,
-            MUXNEG_A::PIN7 => 7,
-            MUXNEG_A::GND => 24,
-            MUXNEG_A::IOGND => 25,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `MUXNEG`"]
@@ -610,31 +575,25 @@ impl<'a> INPUTOFFSET_W<'a> {
 }
 #[doc = "Gain Factor Selection\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum GAIN_A {
     #[doc = "0: 1x"]
-    _1X,
+    _1X = 0,
     #[doc = "1: 2x"]
-    _2X,
+    _2X = 1,
     #[doc = "2: 4x"]
-    _4X,
+    _4X = 2,
     #[doc = "3: 8x"]
-    _8X,
+    _8X = 3,
     #[doc = "4: 16x"]
-    _16X,
+    _16X = 4,
     #[doc = "15: 1/2x"]
-    DIV2,
+    DIV2 = 15,
 }
 impl From<GAIN_A> for u8 {
     #[inline(always)]
     fn from(variant: GAIN_A) -> Self {
-        match variant {
-            GAIN_A::_1X => 0,
-            GAIN_A::_2X => 1,
-            GAIN_A::_4X => 2,
-            GAIN_A::_8X => 3,
-            GAIN_A::_16X => 4,
-            GAIN_A::DIV2 => 15,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `GAIN`"]

@@ -152,13 +152,15 @@ impl crate::Readable for TEST {}
 impl crate::Writable for TEST {}
 #[doc = "Test"]
 pub mod test;
-#[doc = "RAM Watchdog\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [rwd](rwd) module"]
+#[doc = "RAM Watchdog\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [rwd](rwd) module"]
 pub type RWD = crate::Reg<u32, _RWD>;
 #[allow(missing_docs)]
 #[doc(hidden)]
 pub struct _RWD;
 #[doc = "`read()` method returns [rwd::R](rwd::R) reader structure"]
 impl crate::Readable for RWD {}
+#[doc = "`write(|w| ..)` method takes [rwd::W](rwd::W) writer structure"]
+impl crate::Writable for RWD {}
 #[doc = "RAM Watchdog"]
 pub mod rwd;
 #[doc = "CC Control\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [cccr](cccr) module"]

@@ -12,25 +12,21 @@ impl crate::ResetValue for super::CR {
 }
 #[doc = "Response Type\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum RESPTYP_A {
     #[doc = "0: No response"]
-    NONE,
+    NONE = 0,
     #[doc = "1: 136-bit response"]
-    _136_BIT,
+    _136_BIT = 1,
     #[doc = "2: 48-bit response"]
-    _48_BIT,
+    _48_BIT = 2,
     #[doc = "3: 48-bit response check busy after response"]
-    _48_BIT_BUSY,
+    _48_BIT_BUSY = 3,
 }
 impl From<RESPTYP_A> for u8 {
     #[inline(always)]
     fn from(variant: RESPTYP_A) -> Self {
-        match variant {
-            RESPTYP_A::NONE => 0,
-            RESPTYP_A::_136_BIT => 1,
-            RESPTYP_A::_48_BIT => 2,
-            RESPTYP_A::_48_BIT_BUSY => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `RESPTYP`"]
@@ -111,17 +107,14 @@ impl<'a> RESPTYP_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CMDCCEN_A {
     #[doc = "0: Disable"]
-    DISABLE,
+    DISABLE = 0,
     #[doc = "1: Enable"]
-    ENABLE,
+    ENABLE = 1,
 }
 impl From<CMDCCEN_A> for bool {
     #[inline(always)]
     fn from(variant: CMDCCEN_A) -> Self {
-        match variant {
-            CMDCCEN_A::DISABLE => false,
-            CMDCCEN_A::ENABLE => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `CMDCCEN`"]
@@ -189,17 +182,14 @@ impl<'a> CMDCCEN_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CMDICEN_A {
     #[doc = "0: Disable"]
-    DISABLE,
+    DISABLE = 0,
     #[doc = "1: Enable"]
-    ENABLE,
+    ENABLE = 1,
 }
 impl From<CMDICEN_A> for bool {
     #[inline(always)]
     fn from(variant: CMDICEN_A) -> Self {
-        match variant {
-            CMDICEN_A::DISABLE => false,
-            CMDICEN_A::ENABLE => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `CMDICEN`"]
@@ -267,17 +257,14 @@ impl<'a> CMDICEN_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum DPSEL_A {
     #[doc = "0: No Data Present"]
-    NO_DATA,
+    NO_DATA = 0,
     #[doc = "1: Data Present"]
-    DATA,
+    DATA = 1,
 }
 impl From<DPSEL_A> for bool {
     #[inline(always)]
     fn from(variant: DPSEL_A) -> Self {
-        match variant {
-            DPSEL_A::NO_DATA => false,
-            DPSEL_A::DATA => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `DPSEL`"]
@@ -343,25 +330,21 @@ impl<'a> DPSEL_W<'a> {
 }
 #[doc = "Command Type\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum CMDTYP_A {
     #[doc = "0: Other commands"]
-    NORMAL,
+    NORMAL = 0,
     #[doc = "1: CMD52 for writing Bus Suspend in CCCR"]
-    SUSPEND,
+    SUSPEND = 1,
     #[doc = "2: CMD52 for writing Function Select in CCCR"]
-    RESUME,
+    RESUME = 2,
     #[doc = "3: CMD12, CMD52 for writing I/O Abort in CCCR"]
-    ABORT,
+    ABORT = 3,
 }
 impl From<CMDTYP_A> for u8 {
     #[inline(always)]
     fn from(variant: CMDTYP_A) -> Self {
-        match variant {
-            CMDTYP_A::NORMAL => 0,
-            CMDTYP_A::SUSPEND => 1,
-            CMDTYP_A::RESUME => 2,
-            CMDTYP_A::ABORT => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `CMDTYP`"]

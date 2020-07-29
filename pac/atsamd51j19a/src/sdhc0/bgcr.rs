@@ -14,17 +14,14 @@ impl crate::ResetValue for super::BGCR {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum STPBGR_A {
     #[doc = "0: Transfer"]
-    TRANSFER,
+    TRANSFER = 0,
     #[doc = "1: Stop"]
-    STOP,
+    STOP = 1,
 }
 impl From<STPBGR_A> for bool {
     #[inline(always)]
     fn from(variant: STPBGR_A) -> Self {
-        match variant {
-            STPBGR_A::TRANSFER => false,
-            STPBGR_A::STOP => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `STPBGR`"]
@@ -92,17 +89,14 @@ impl<'a> STPBGR_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CONTR_A {
     #[doc = "0: Not affected"]
-    GO_ON,
+    GO_ON = 0,
     #[doc = "1: Restart"]
-    RESTART,
+    RESTART = 1,
 }
 impl From<CONTR_A> for bool {
     #[inline(always)]
     fn from(variant: CONTR_A) -> Self {
-        match variant {
-            CONTR_A::GO_ON => false,
-            CONTR_A::RESTART => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `CONTR`"]
@@ -170,17 +164,14 @@ impl<'a> CONTR_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum RWCTRL_A {
     #[doc = "0: Disable Read Wait Control"]
-    DISABLE,
+    DISABLE = 0,
     #[doc = "1: Enable Read Wait Control"]
-    ENABLE,
+    ENABLE = 1,
 }
 impl From<RWCTRL_A> for bool {
     #[inline(always)]
     fn from(variant: RWCTRL_A) -> Self {
-        match variant {
-            RWCTRL_A::DISABLE => false,
-            RWCTRL_A::ENABLE => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `RWCTRL`"]
@@ -248,17 +239,14 @@ impl<'a> RWCTRL_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum INTBG_A {
     #[doc = "0: Disabled"]
-    DISABLED,
+    DISABLED = 0,
     #[doc = "1: Enabled"]
-    ENABLED,
+    ENABLED = 1,
 }
 impl From<INTBG_A> for bool {
     #[inline(always)]
     fn from(variant: INTBG_A) -> Self {
-        match variant {
-            INTBG_A::DISABLED => false,
-            INTBG_A::ENABLED => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `INTBG`"]

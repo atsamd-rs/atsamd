@@ -106,28 +106,6 @@ impl crate::Readable for CLOCK {}
 impl crate::Writable for CLOCK {}
 #[doc = "MODE2 Clock Value"]
 pub mod clock;
-#[doc = "MODE2 Alarm n Value\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [alarm](alarm) module"]
-pub type ALARM = crate::Reg<u32, _ALARM>;
-#[allow(missing_docs)]
-#[doc(hidden)]
-pub struct _ALARM;
-#[doc = "`read()` method returns [alarm::R](alarm::R) reader structure"]
-impl crate::Readable for ALARM {}
-#[doc = "`write(|w| ..)` method takes [alarm::W](alarm::W) writer structure"]
-impl crate::Writable for ALARM {}
-#[doc = "MODE2 Alarm n Value"]
-pub mod alarm;
-#[doc = "MODE2 Alarm n Mask\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [mask](mask) module"]
-pub type MASK = crate::Reg<u8, _MASK>;
-#[allow(missing_docs)]
-#[doc(hidden)]
-pub struct _MASK;
-#[doc = "`read()` method returns [mask::R](mask::R) reader structure"]
-impl crate::Readable for MASK {}
-#[doc = "`write(|w| ..)` method takes [mask::W](mask::W) writer structure"]
-impl crate::Writable for MASK {}
-#[doc = "MODE2 Alarm n Mask"]
-pub mod mask;
 #[doc = "General Purpose\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [gp](gp) module"]
 pub type GP = crate::Reg<u32, _GP>;
 #[allow(missing_docs)]
@@ -139,6 +117,50 @@ impl crate::Readable for GP {}
 impl crate::Writable for GP {}
 #[doc = "General Purpose"]
 pub mod gp;
+#[doc = "MODE2_ALARM Alarm n Value\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [alarm0](alarm0) module"]
+pub type ALARM0 = crate::Reg<u32, _ALARM0>;
+#[allow(missing_docs)]
+#[doc(hidden)]
+pub struct _ALARM0;
+#[doc = "`read()` method returns [alarm0::R](alarm0::R) reader structure"]
+impl crate::Readable for ALARM0 {}
+#[doc = "`write(|w| ..)` method takes [alarm0::W](alarm0::W) writer structure"]
+impl crate::Writable for ALARM0 {}
+#[doc = "MODE2_ALARM Alarm n Value"]
+pub mod alarm0;
+#[doc = "MODE2_ALARM Alarm n Mask\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [mask0](mask0) module"]
+pub type MASK0 = crate::Reg<u8, _MASK0>;
+#[allow(missing_docs)]
+#[doc(hidden)]
+pub struct _MASK0;
+#[doc = "`read()` method returns [mask0::R](mask0::R) reader structure"]
+impl crate::Readable for MASK0 {}
+#[doc = "`write(|w| ..)` method takes [mask0::W](mask0::W) writer structure"]
+impl crate::Writable for MASK0 {}
+#[doc = "MODE2_ALARM Alarm n Mask"]
+pub mod mask0;
+#[doc = "MODE2_ALARM Alarm n Value\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [alarm1](alarm1) module"]
+pub type ALARM1 = crate::Reg<u32, _ALARM1>;
+#[allow(missing_docs)]
+#[doc(hidden)]
+pub struct _ALARM1;
+#[doc = "`read()` method returns [alarm1::R](alarm1::R) reader structure"]
+impl crate::Readable for ALARM1 {}
+#[doc = "`write(|w| ..)` method takes [alarm1::W](alarm1::W) writer structure"]
+impl crate::Writable for ALARM1 {}
+#[doc = "MODE2_ALARM Alarm n Value"]
+pub mod alarm1;
+#[doc = "MODE2_ALARM Alarm n Mask\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [mask1](mask1) module"]
+pub type MASK1 = crate::Reg<u8, _MASK1>;
+#[allow(missing_docs)]
+#[doc(hidden)]
+pub struct _MASK1;
+#[doc = "`read()` method returns [mask1::R](mask1::R) reader structure"]
+impl crate::Readable for MASK1 {}
+#[doc = "`write(|w| ..)` method takes [mask1::W](mask1::W) writer structure"]
+impl crate::Writable for MASK1 {}
+#[doc = "MODE2_ALARM Alarm n Mask"]
+pub mod mask1;
 #[doc = "Tamper Control\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [tampctrl](tampctrl) module"]
 pub type TAMPCTRL = crate::Reg<u32, _TAMPCTRL>;
 #[allow(missing_docs)]

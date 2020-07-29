@@ -14,17 +14,14 @@ impl crate::ResetValue for super::CC2R {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum FSDCLKD_A {
     #[doc = "0: No effect"]
-    NOEFFECT,
+    NOEFFECT = 0,
     #[doc = "1: SDCLK can be stopped at any time after DATA transfer.SDCLK enable forcing for 8 SDCLK cycles is disabled"]
-    DISABLE,
+    DISABLE = 1,
 }
 impl From<FSDCLKD_A> for bool {
     #[inline(always)]
     fn from(variant: FSDCLKD_A) -> Self {
-        match variant {
-            FSDCLKD_A::NOEFFECT => false,
-            FSDCLKD_A::DISABLE => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `FSDCLKD`"]

@@ -58,6 +58,8 @@ impl<'a> QCEN_W<'a> {
         self.w
     }
 }
+#[doc = "Reader of field `CMD`"]
+pub type CMD_R = crate::R<u8, u8>;
 #[doc = "Write proxy for field `CMD`"]
 pub struct CMD_W<'a> {
     w: &'a mut W,
@@ -104,6 +106,11 @@ impl R {
     #[inline(always)]
     pub fn qcen(&self) -> QCEN_R {
         QCEN_R::new(((self.bits >> 9) & 0x01) != 0)
+    }
+    #[doc = "Bits 16:17 - Command"]
+    #[inline(always)]
+    pub fn cmd(&self) -> CMD_R {
+        CMD_R::new(((self.bits >> 16) & 0x03) as u8)
     }
     #[doc = "Bit 18 - Acknowledge Action"]
     #[inline(always)]

@@ -58,22 +58,19 @@ impl<'a> ENABLE_W<'a> {
 }
 #[doc = "Operating Mode\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum MODE_A {
     #[doc = "0: Mode 0: 32-bit Counter"]
-    COUNT32,
+    COUNT32 = 0,
     #[doc = "1: Mode 1: 16-bit Counter"]
-    COUNT16,
+    COUNT16 = 1,
     #[doc = "2: Mode 2: Clock/Calendar"]
-    CLOCK,
+    CLOCK = 2,
 }
 impl From<MODE_A> for u8 {
     #[inline(always)]
     fn from(variant: MODE_A) -> Self {
-        match variant {
-            MODE_A::COUNT32 => 0,
-            MODE_A::COUNT16 => 1,
-            MODE_A::CLOCK => 2,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `MODE`"]
@@ -140,46 +137,35 @@ impl<'a> MODE_W<'a> {
 }
 #[doc = "Prescaler\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum PRESCALER_A {
     #[doc = "0: CLK_RTC_CNT = GCLK_RTC/1"]
-    DIV1,
+    DIV1 = 0,
     #[doc = "1: CLK_RTC_CNT = GCLK_RTC/2"]
-    DIV2,
+    DIV2 = 1,
     #[doc = "2: CLK_RTC_CNT = GCLK_RTC/4"]
-    DIV4,
+    DIV4 = 2,
     #[doc = "3: CLK_RTC_CNT = GCLK_RTC/8"]
-    DIV8,
+    DIV8 = 3,
     #[doc = "4: CLK_RTC_CNT = GCLK_RTC/16"]
-    DIV16,
+    DIV16 = 4,
     #[doc = "5: CLK_RTC_CNT = GCLK_RTC/32"]
-    DIV32,
+    DIV32 = 5,
     #[doc = "6: CLK_RTC_CNT = GCLK_RTC/64"]
-    DIV64,
+    DIV64 = 6,
     #[doc = "7: CLK_RTC_CNT = GCLK_RTC/128"]
-    DIV128,
+    DIV128 = 7,
     #[doc = "8: CLK_RTC_CNT = GCLK_RTC/256"]
-    DIV256,
+    DIV256 = 8,
     #[doc = "9: CLK_RTC_CNT = GCLK_RTC/512"]
-    DIV512,
+    DIV512 = 9,
     #[doc = "10: CLK_RTC_CNT = GCLK_RTC/1024"]
-    DIV1024,
+    DIV1024 = 10,
 }
 impl From<PRESCALER_A> for u8 {
     #[inline(always)]
     fn from(variant: PRESCALER_A) -> Self {
-        match variant {
-            PRESCALER_A::DIV1 => 0,
-            PRESCALER_A::DIV2 => 1,
-            PRESCALER_A::DIV4 => 2,
-            PRESCALER_A::DIV8 => 3,
-            PRESCALER_A::DIV16 => 4,
-            PRESCALER_A::DIV32 => 5,
-            PRESCALER_A::DIV64 => 6,
-            PRESCALER_A::DIV128 => 7,
-            PRESCALER_A::DIV256 => 8,
-            PRESCALER_A::DIV512 => 9,
-            PRESCALER_A::DIV1024 => 10,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `PRESCALER`"]

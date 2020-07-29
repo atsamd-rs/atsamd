@@ -74,8 +74,52 @@ impl<'a> EVD_W<'a> {
 }
 #[doc = "Reader of field `READY`"]
 pub type READY_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `READY`"]
+pub struct READY_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> READY_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 14)) | (((value as u16) & 0x01) << 14);
+        self.w
+    }
+}
 #[doc = "Reader of field `BUSY`"]
 pub type BUSY_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `BUSY`"]
+pub struct BUSY_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> BUSY_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 15)) | (((value as u16) & 0x01) << 15);
+        self.w
+    }
+}
 impl R {
     #[doc = "Bits 0:3 - Channel ID"]
     #[inline(always)]
@@ -118,5 +162,15 @@ impl W {
     #[inline(always)]
     pub fn evd(&mut self) -> EVD_W {
         EVD_W { w: self }
+    }
+    #[doc = "Bit 14 - Ready"]
+    #[inline(always)]
+    pub fn ready(&mut self) -> READY_W {
+        READY_W { w: self }
+    }
+    #[doc = "Bit 15 - Busy"]
+    #[inline(always)]
+    pub fn busy(&mut self) -> BUSY_W {
+        BUSY_W { w: self }
     }
 }

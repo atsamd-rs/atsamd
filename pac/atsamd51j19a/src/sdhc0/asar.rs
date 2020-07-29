@@ -1,8 +1,9 @@
-#[doc = "Reader of register ASAR%s"]
+#[doc = "Reader of register ASAR[%s]"]
 pub type R = crate::R<u32, super::ASAR>;
-#[doc = "Writer for register ASAR%s"]
+#[doc = "Writer for register ASAR[%s]"]
 pub type W = crate::W<u32, super::ASAR>;
-#[doc = "Register ASAR%s `reset()`'s with value 0"]
+#[doc = "Register ASAR[%s]
+`reset()`'s with value 0"]
 impl crate::ResetValue for super::ASAR {
     type Type = u32;
     #[inline(always)]

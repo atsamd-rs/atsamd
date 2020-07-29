@@ -108,8 +108,52 @@ impl<'a> LOCKE_W<'a> {
 }
 #[doc = "Reader of field `ECCSE`"]
 pub type ECCSE_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `ECCSE`"]
+pub struct ECCSE_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> ECCSE_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 4)) | (((value as u16) & 0x01) << 4);
+        self.w
+    }
+}
 #[doc = "Reader of field `ECCDE`"]
 pub type ECCDE_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `ECCDE`"]
+pub struct ECCDE_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> ECCDE_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 5)) | (((value as u16) & 0x01) << 5);
+        self.w
+    }
+}
 #[doc = "Reader of field `NVME`"]
 pub type NVME_R = crate::R<bool, bool>;
 #[doc = "Write proxy for field `NVME`"]
@@ -307,6 +351,16 @@ impl W {
     #[inline(always)]
     pub fn locke(&mut self) -> LOCKE_W {
         LOCKE_W { w: self }
+    }
+    #[doc = "Bit 4 - ECC Single Error"]
+    #[inline(always)]
+    pub fn eccse(&mut self) -> ECCSE_W {
+        ECCSE_W { w: self }
+    }
+    #[doc = "Bit 5 - ECC Dual Error"]
+    #[inline(always)]
+    pub fn eccde(&mut self) -> ECCDE_W {
+        ECCDE_W { w: self }
     }
     #[doc = "Bit 6 - NVM Error"]
     #[inline(always)]

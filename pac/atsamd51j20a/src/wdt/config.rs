@@ -12,49 +12,37 @@ impl crate::ResetValue for super::CONFIG {
 }
 #[doc = "Time-Out Period\n\nValue on reset: 11"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum PER_A {
     #[doc = "0: 8 clock cycles"]
-    CYC8,
+    CYC8 = 0,
     #[doc = "1: 16 clock cycles"]
-    CYC16,
+    CYC16 = 1,
     #[doc = "2: 32 clock cycles"]
-    CYC32,
+    CYC32 = 2,
     #[doc = "3: 64 clock cycles"]
-    CYC64,
+    CYC64 = 3,
     #[doc = "4: 128 clock cycles"]
-    CYC128,
+    CYC128 = 4,
     #[doc = "5: 256 clock cycles"]
-    CYC256,
+    CYC256 = 5,
     #[doc = "6: 512 clock cycles"]
-    CYC512,
+    CYC512 = 6,
     #[doc = "7: 1024 clock cycles"]
-    CYC1024,
+    CYC1024 = 7,
     #[doc = "8: 2048 clock cycles"]
-    CYC2048,
+    CYC2048 = 8,
     #[doc = "9: 4096 clock cycles"]
-    CYC4096,
+    CYC4096 = 9,
     #[doc = "10: 8192 clock cycles"]
-    CYC8192,
+    CYC8192 = 10,
     #[doc = "11: 16384 clock cycles"]
-    CYC16384,
+    CYC16384 = 11,
 }
 impl From<PER_A> for u8 {
     #[inline(always)]
     fn from(variant: PER_A) -> Self {
-        match variant {
-            PER_A::CYC8 => 0,
-            PER_A::CYC16 => 1,
-            PER_A::CYC32 => 2,
-            PER_A::CYC64 => 3,
-            PER_A::CYC128 => 4,
-            PER_A::CYC256 => 5,
-            PER_A::CYC512 => 6,
-            PER_A::CYC1024 => 7,
-            PER_A::CYC2048 => 8,
-            PER_A::CYC4096 => 9,
-            PER_A::CYC8192 => 10,
-            PER_A::CYC16384 => 11,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `PER`"]
@@ -220,49 +208,37 @@ impl<'a> PER_W<'a> {
 }
 #[doc = "Window Mode Time-Out Period\n\nValue on reset: 11"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum WINDOW_A {
     #[doc = "0: 8 clock cycles"]
-    CYC8,
+    CYC8 = 0,
     #[doc = "1: 16 clock cycles"]
-    CYC16,
+    CYC16 = 1,
     #[doc = "2: 32 clock cycles"]
-    CYC32,
+    CYC32 = 2,
     #[doc = "3: 64 clock cycles"]
-    CYC64,
+    CYC64 = 3,
     #[doc = "4: 128 clock cycles"]
-    CYC128,
+    CYC128 = 4,
     #[doc = "5: 256 clock cycles"]
-    CYC256,
+    CYC256 = 5,
     #[doc = "6: 512 clock cycles"]
-    CYC512,
+    CYC512 = 6,
     #[doc = "7: 1024 clock cycles"]
-    CYC1024,
+    CYC1024 = 7,
     #[doc = "8: 2048 clock cycles"]
-    CYC2048,
+    CYC2048 = 8,
     #[doc = "9: 4096 clock cycles"]
-    CYC4096,
+    CYC4096 = 9,
     #[doc = "10: 8192 clock cycles"]
-    CYC8192,
+    CYC8192 = 10,
     #[doc = "11: 16384 clock cycles"]
-    CYC16384,
+    CYC16384 = 11,
 }
 impl From<WINDOW_A> for u8 {
     #[inline(always)]
     fn from(variant: WINDOW_A) -> Self {
-        match variant {
-            WINDOW_A::CYC8 => 0,
-            WINDOW_A::CYC16 => 1,
-            WINDOW_A::CYC32 => 2,
-            WINDOW_A::CYC64 => 3,
-            WINDOW_A::CYC128 => 4,
-            WINDOW_A::CYC256 => 5,
-            WINDOW_A::CYC512 => 6,
-            WINDOW_A::CYC1024 => 7,
-            WINDOW_A::CYC2048 => 8,
-            WINDOW_A::CYC4096 => 9,
-            WINDOW_A::CYC8192 => 10,
-            WINDOW_A::CYC16384 => 11,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `WINDOW`"]

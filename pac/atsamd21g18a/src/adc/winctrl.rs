@@ -12,28 +12,23 @@ impl crate::ResetValue for super::WINCTRL {
 }
 #[doc = "Window Monitor Mode\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum WINMODE_A {
     #[doc = "0: No window mode (default)"]
-    DISABLE,
+    DISABLE = 0,
     #[doc = "1: Mode 1: RESULT > WINLT"]
-    MODE1,
+    MODE1 = 1,
     #[doc = "2: Mode 2: RESULT < WINUT"]
-    MODE2,
+    MODE2 = 2,
     #[doc = "3: Mode 3: WINLT < RESULT < WINUT"]
-    MODE3,
+    MODE3 = 3,
     #[doc = "4: Mode 4: !(WINLT < RESULT < WINUT)"]
-    MODE4,
+    MODE4 = 4,
 }
 impl From<WINMODE_A> for u8 {
     #[inline(always)]
     fn from(variant: WINMODE_A) -> Self {
-        match variant {
-            WINMODE_A::DISABLE => 0,
-            WINMODE_A::MODE1 => 1,
-            WINMODE_A::MODE2 => 2,
-            WINMODE_A::MODE3 => 3,
-            WINMODE_A::MODE4 => 4,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `WINMODE`"]

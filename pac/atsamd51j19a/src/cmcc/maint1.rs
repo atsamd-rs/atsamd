@@ -22,25 +22,21 @@ impl<'a> INDEX_W<'a> {
 }
 #[doc = "Invalidate Way\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum WAY_AW {
     #[doc = "0: Way 0 is selection for index invalidation"]
-    WAY0,
+    WAY0 = 0,
     #[doc = "1: Way 1 is selection for index invalidation"]
-    WAY1,
+    WAY1 = 1,
     #[doc = "2: Way 2 is selection for index invalidation"]
-    WAY2,
+    WAY2 = 2,
     #[doc = "3: Way 3 is selection for index invalidation"]
-    WAY3,
+    WAY3 = 3,
 }
 impl From<WAY_AW> for u8 {
     #[inline(always)]
     fn from(variant: WAY_AW) -> Self {
-        match variant {
-            WAY_AW::WAY0 => 0,
-            WAY_AW::WAY1 => 1,
-            WAY_AW::WAY2 => 2,
-            WAY_AW::WAY3 => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Write proxy for field `WAY`"]

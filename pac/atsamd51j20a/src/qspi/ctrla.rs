@@ -10,6 +10,8 @@ impl crate::ResetValue for super::CTRLA {
         0
     }
 }
+#[doc = "Reader of field `SWRST`"]
+pub type SWRST_R = crate::R<bool, bool>;
 #[doc = "Write proxy for field `SWRST`"]
 pub struct SWRST_W<'a> {
     w: &'a mut W,
@@ -56,6 +58,8 @@ impl<'a> ENABLE_W<'a> {
         self.w
     }
 }
+#[doc = "Reader of field `LASTXFER`"]
+pub type LASTXFER_R = crate::R<bool, bool>;
 #[doc = "Write proxy for field `LASTXFER`"]
 pub struct LASTXFER_W<'a> {
     w: &'a mut W,
@@ -79,10 +83,20 @@ impl<'a> LASTXFER_W<'a> {
     }
 }
 impl R {
+    #[doc = "Bit 0 - Software Reset"]
+    #[inline(always)]
+    pub fn swrst(&self) -> SWRST_R {
+        SWRST_R::new((self.bits & 0x01) != 0)
+    }
     #[doc = "Bit 1 - Enable"]
     #[inline(always)]
     pub fn enable(&self) -> ENABLE_R {
         ENABLE_R::new(((self.bits >> 1) & 0x01) != 0)
+    }
+    #[doc = "Bit 24 - Last Transfer"]
+    #[inline(always)]
+    pub fn lastxfer(&self) -> LASTXFER_R {
+        LASTXFER_R::new(((self.bits >> 24) & 0x01) != 0)
     }
 }
 impl W {

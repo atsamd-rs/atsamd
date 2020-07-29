@@ -2,34 +2,27 @@
 pub type R = crate::R<u8, super::FSMSTATUS>;
 #[doc = "Fine State Machine Status\n\nValue on reset: 1"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum FSMSTATE_A {
     #[doc = "1: OFF (L3). It corresponds to the powered-off, disconnected, and disabled state"]
-    OFF,
+    OFF = 1,
     #[doc = "2: ON (L0). It corresponds to the Idle and Active states"]
-    ON,
+    ON = 2,
     #[doc = "4: SUSPEND (L2)"]
-    SUSPEND,
+    SUSPEND = 4,
     #[doc = "8: SLEEP (L1)"]
-    SLEEP,
+    SLEEP = 8,
     #[doc = "16: DNRESUME. Down Stream Resume."]
-    DNRESUME,
+    DNRESUME = 16,
     #[doc = "32: UPRESUME. Up Stream Resume."]
-    UPRESUME,
+    UPRESUME = 32,
     #[doc = "64: RESET. USB lines Reset."]
-    RESET,
+    RESET = 64,
 }
 impl From<FSMSTATE_A> for u8 {
     #[inline(always)]
     fn from(variant: FSMSTATE_A) -> Self {
-        match variant {
-            FSMSTATE_A::OFF => 1,
-            FSMSTATE_A::ON => 2,
-            FSMSTATE_A::SUSPEND => 4,
-            FSMSTATE_A::SLEEP => 8,
-            FSMSTATE_A::DNRESUME => 16,
-            FSMSTATE_A::UPRESUME => 32,
-            FSMSTATE_A::RESET => 64,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `FSMSTATE`"]
@@ -87,9 +80,9 @@ impl FSMSTATE_R {
     }
 }
 impl R {
-    #[doc = "Bits 0:5 - Fine State Machine Status"]
+    #[doc = "Bits 0:6 - Fine State Machine Status"]
     #[inline(always)]
     pub fn fsmstate(&self) -> FSMSTATE_R {
-        FSMSTATE_R::new((self.bits & 0x3f) as u8)
+        FSMSTATE_R::new((self.bits & 0x7f) as u8)
     }
 }

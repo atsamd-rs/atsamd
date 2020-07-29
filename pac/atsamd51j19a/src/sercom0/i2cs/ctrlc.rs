@@ -24,13 +24,64 @@ impl<'a> SDASETUP_W<'a> {
         self.w
     }
 }
+#[doc = "Data 32 Bit\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum DATA32B_A {
+    #[doc = "0: Data transaction from/to DATA register are 8-bit"]
+    DATA_TRANS_8BIT = 0,
+    #[doc = "1: Data transaction from/to DATA register are 32-bit"]
+    DATA_TRANS_32BIT = 1,
+}
+impl From<DATA32B_A> for bool {
+    #[inline(always)]
+    fn from(variant: DATA32B_A) -> Self {
+        variant as u8 != 0
+    }
+}
 #[doc = "Reader of field `DATA32B`"]
-pub type DATA32B_R = crate::R<bool, bool>;
+pub type DATA32B_R = crate::R<bool, DATA32B_A>;
+impl DATA32B_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> DATA32B_A {
+        match self.bits {
+            false => DATA32B_A::DATA_TRANS_8BIT,
+            true => DATA32B_A::DATA_TRANS_32BIT,
+        }
+    }
+    #[doc = "Checks if the value of the field is `DATA_TRANS_8BIT`"]
+    #[inline(always)]
+    pub fn is_data_trans_8bit(&self) -> bool {
+        *self == DATA32B_A::DATA_TRANS_8BIT
+    }
+    #[doc = "Checks if the value of the field is `DATA_TRANS_32BIT`"]
+    #[inline(always)]
+    pub fn is_data_trans_32bit(&self) -> bool {
+        *self == DATA32B_A::DATA_TRANS_32BIT
+    }
+}
 #[doc = "Write proxy for field `DATA32B`"]
 pub struct DATA32B_W<'a> {
     w: &'a mut W,
 }
 impl<'a> DATA32B_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: DATA32B_A) -> &'a mut W {
+        {
+            self.bit(variant.into())
+        }
+    }
+    #[doc = "Data transaction from/to DATA register are 8-bit"]
+    #[inline(always)]
+    pub fn data_trans_8bit(self) -> &'a mut W {
+        self.variant(DATA32B_A::DATA_TRANS_8BIT)
+    }
+    #[doc = "Data transaction from/to DATA register are 32-bit"]
+    #[inline(always)]
+    pub fn data_trans_32bit(self) -> &'a mut W {
+        self.variant(DATA32B_A::DATA_TRANS_32BIT)
+    }
     #[doc = r"Sets the field bit"]
     #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {

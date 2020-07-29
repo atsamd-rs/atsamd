@@ -108,28 +108,23 @@ impl<'a> ONDEMAND_W<'a> {
 }
 #[doc = "Oscillator Gain\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum GAIN_A {
     #[doc = "0: 2MHz"]
-    _0,
+    _0 = 0,
     #[doc = "1: 4MHz"]
-    _1,
+    _1 = 1,
     #[doc = "2: 8MHz"]
-    _2,
+    _2 = 2,
     #[doc = "3: 16MHz"]
-    _3,
+    _3 = 3,
     #[doc = "4: 30MHz"]
-    _4,
+    _4 = 4,
 }
 impl From<GAIN_A> for u8 {
     #[inline(always)]
     fn from(variant: GAIN_A) -> Self {
-        match variant {
-            GAIN_A::_0 => 0,
-            GAIN_A::_1 => 1,
-            GAIN_A::_2 => 2,
-            GAIN_A::_3 => 3,
-            GAIN_A::_4 => 4,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `GAIN`"]

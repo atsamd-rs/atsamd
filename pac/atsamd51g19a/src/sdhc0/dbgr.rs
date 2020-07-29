@@ -14,17 +14,14 @@ impl crate::ResetValue for super::DBGR {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum NIDBG_A {
     #[doc = "0: Debugging is intrusive (reads of BDPR from debugger are considered and increment the internal buffer pointer)"]
-    IDBG,
+    IDBG = 0,
     #[doc = "1: Debugging is not intrusive (reads of BDPR from debugger are discarded and do not increment the internal buffer pointer)"]
-    NIDBG,
+    NIDBG = 1,
 }
 impl From<NIDBG_A> for bool {
     #[inline(always)]
     fn from(variant: NIDBG_A) -> Self {
-        match variant {
-            NIDBG_A::IDBG => false,
-            NIDBG_A::NIDBG => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `NIDBG`"]

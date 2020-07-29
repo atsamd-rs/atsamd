@@ -60,19 +60,17 @@ impl<'a> ENABLE_W<'a> {
 }
 #[doc = "Dual Mode Trigger Selection\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum DUALSEL_A {
     #[doc = "0: Start event or software trigger will start a conversion on both ADCs"]
-    BOTH,
+    BOTH = 0,
     #[doc = "1: START event or software trigger will alternatingly start a conversion on ADC0 and ADC1"]
-    INTERLEAVE,
+    INTERLEAVE = 1,
 }
 impl From<DUALSEL_A> for u8 {
     #[inline(always)]
     fn from(variant: DUALSEL_A) -> Self {
-        match variant {
-            DUALSEL_A::BOTH => 0,
-            DUALSEL_A::INTERLEAVE => 1,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `DUALSEL`"]
@@ -200,37 +198,29 @@ impl<'a> ONDEMAND_W<'a> {
 }
 #[doc = "Prescaler Configuration\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum PRESCALER_A {
     #[doc = "0: Peripheral clock divided by 2"]
-    DIV2,
+    DIV2 = 0,
     #[doc = "1: Peripheral clock divided by 4"]
-    DIV4,
+    DIV4 = 1,
     #[doc = "2: Peripheral clock divided by 8"]
-    DIV8,
+    DIV8 = 2,
     #[doc = "3: Peripheral clock divided by 16"]
-    DIV16,
+    DIV16 = 3,
     #[doc = "4: Peripheral clock divided by 32"]
-    DIV32,
+    DIV32 = 4,
     #[doc = "5: Peripheral clock divided by 64"]
-    DIV64,
+    DIV64 = 5,
     #[doc = "6: Peripheral clock divided by 128"]
-    DIV128,
+    DIV128 = 6,
     #[doc = "7: Peripheral clock divided by 256"]
-    DIV256,
+    DIV256 = 7,
 }
 impl From<PRESCALER_A> for u8 {
     #[inline(always)]
     fn from(variant: PRESCALER_A) -> Self {
-        match variant {
-            PRESCALER_A::DIV2 => 0,
-            PRESCALER_A::DIV4 => 1,
-            PRESCALER_A::DIV8 => 2,
-            PRESCALER_A::DIV16 => 3,
-            PRESCALER_A::DIV32 => 4,
-            PRESCALER_A::DIV64 => 5,
-            PRESCALER_A::DIV128 => 6,
-            PRESCALER_A::DIV256 => 7,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `PRESCALER`"]

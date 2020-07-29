@@ -14,17 +14,14 @@ impl crate::ResetValue for super::HC1R {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum LEDCTRL_A {
     #[doc = "0: LED off"]
-    OFF,
+    OFF = 0,
     #[doc = "1: LED on"]
-    ON,
+    ON = 1,
 }
 impl From<LEDCTRL_A> for bool {
     #[inline(always)]
     fn from(variant: LEDCTRL_A) -> Self {
-        match variant {
-            LEDCTRL_A::OFF => false,
-            LEDCTRL_A::ON => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `LEDCTRL`"]
@@ -92,17 +89,14 @@ impl<'a> LEDCTRL_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum DW_A {
     #[doc = "0: 1-bit mode"]
-    _1BIT,
+    _1BIT = 0,
     #[doc = "1: 4-bit mode"]
-    _4BIT,
+    _4BIT = 1,
 }
 impl From<DW_A> for bool {
     #[inline(always)]
     fn from(variant: DW_A) -> Self {
-        match variant {
-            DW_A::_1BIT => false,
-            DW_A::_4BIT => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `DW`"]
@@ -170,17 +164,14 @@ impl<'a> DW_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum HSEN_A {
     #[doc = "0: Normal Speed mode"]
-    NORMAL,
+    NORMAL = 0,
     #[doc = "1: High Speed mode"]
-    HIGH,
+    HIGH = 1,
 }
 impl From<HSEN_A> for bool {
     #[inline(always)]
     fn from(variant: HSEN_A) -> Self {
-        match variant {
-            HSEN_A::NORMAL => false,
-            HSEN_A::HIGH => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `HSEN`"]
@@ -246,19 +237,17 @@ impl<'a> HSEN_W<'a> {
 }
 #[doc = "DMA Select\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum DMASEL_A {
     #[doc = "0: SDMA is selected"]
-    SDMA,
+    SDMA = 0,
     #[doc = "2: 32-bit Address ADMA2 is selected"]
-    _32BIT,
+    _32BIT = 2,
 }
 impl From<DMASEL_A> for u8 {
     #[inline(always)]
     fn from(variant: DMASEL_A) -> Self {
-        match variant {
-            DMASEL_A::SDMA => 0,
-            DMASEL_A::_32BIT => 2,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `DMASEL`"]
@@ -316,17 +305,14 @@ impl<'a> DMASEL_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CARDDTL_A {
     #[doc = "0: No Card"]
-    NO,
+    NO = 0,
     #[doc = "1: Card Inserted"]
-    YES,
+    YES = 1,
 }
 impl From<CARDDTL_A> for bool {
     #[inline(always)]
     fn from(variant: CARDDTL_A) -> Self {
-        match variant {
-            CARDDTL_A::NO => false,
-            CARDDTL_A::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `CARDDTL`"]
@@ -394,17 +380,14 @@ impl<'a> CARDDTL_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CARDDSEL_A {
     #[doc = "0: SDCD# is selected (for normal use)"]
-    NORMAL,
+    NORMAL = 0,
     #[doc = "1: The Card Select Test Level is selected (for test purpose)"]
-    TEST,
+    TEST = 1,
 }
 impl From<CARDDSEL_A> for bool {
     #[inline(always)]
     fn from(variant: CARDDSEL_A) -> Self {
-        match variant {
-            CARDDSEL_A::NORMAL => false,
-            CARDDSEL_A::TEST => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `CARDDSEL`"]

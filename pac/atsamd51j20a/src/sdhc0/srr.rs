@@ -14,17 +14,14 @@ impl crate::ResetValue for super::SRR {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum SWRSTALL_A {
     #[doc = "0: Work"]
-    WORK,
+    WORK = 0,
     #[doc = "1: Reset"]
-    RESET,
+    RESET = 1,
 }
 impl From<SWRSTALL_A> for bool {
     #[inline(always)]
     fn from(variant: SWRSTALL_A) -> Self {
-        match variant {
-            SWRSTALL_A::WORK => false,
-            SWRSTALL_A::RESET => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `SWRSTALL`"]
@@ -92,17 +89,14 @@ impl<'a> SWRSTALL_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum SWRSTCMD_A {
     #[doc = "0: Work"]
-    WORK,
+    WORK = 0,
     #[doc = "1: Reset"]
-    RESET,
+    RESET = 1,
 }
 impl From<SWRSTCMD_A> for bool {
     #[inline(always)]
     fn from(variant: SWRSTCMD_A) -> Self {
-        match variant {
-            SWRSTCMD_A::WORK => false,
-            SWRSTCMD_A::RESET => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `SWRSTCMD`"]
@@ -170,17 +164,14 @@ impl<'a> SWRSTCMD_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum SWRSTDAT_A {
     #[doc = "0: Work"]
-    WORK,
+    WORK = 0,
     #[doc = "1: Reset"]
-    RESET,
+    RESET = 1,
 }
 impl From<SWRSTDAT_A> for bool {
     #[inline(always)]
     fn from(variant: SWRSTDAT_A) -> Self {
-        match variant {
-            SWRSTDAT_A::WORK => false,
-            SWRSTDAT_A::RESET => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `SWRSTDAT`"]

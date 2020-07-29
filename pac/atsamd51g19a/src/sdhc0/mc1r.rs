@@ -12,25 +12,21 @@ impl crate::ResetValue for super::MC1R {
 }
 #[doc = "e.MMC Command Type\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum CMDTYP_A {
     #[doc = "0: Not a MMC specific command"]
-    NORMAL,
+    NORMAL = 0,
     #[doc = "1: Wait IRQ Command"]
-    WAITIRQ,
+    WAITIRQ = 1,
     #[doc = "2: Stream Command"]
-    STREAM,
+    STREAM = 2,
     #[doc = "3: Boot Command"]
-    BOOT,
+    BOOT = 3,
 }
 impl From<CMDTYP_A> for u8 {
     #[inline(always)]
     fn from(variant: CMDTYP_A) -> Self {
-        match variant {
-            CMDTYP_A::NORMAL => 0,
-            CMDTYP_A::WAITIRQ => 1,
-            CMDTYP_A::STREAM => 2,
-            CMDTYP_A::BOOT => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `CMDTYP`"]

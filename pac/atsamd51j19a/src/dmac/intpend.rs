@@ -122,10 +122,76 @@ impl<'a> CRCERR_W<'a> {
 }
 #[doc = "Reader of field `FERR`"]
 pub type FERR_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `FERR`"]
+pub struct FERR_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> FERR_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 13)) | (((value as u16) & 0x01) << 13);
+        self.w
+    }
+}
 #[doc = "Reader of field `BUSY`"]
 pub type BUSY_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `BUSY`"]
+pub struct BUSY_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> BUSY_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 14)) | (((value as u16) & 0x01) << 14);
+        self.w
+    }
+}
 #[doc = "Reader of field `PEND`"]
 pub type PEND_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `PEND`"]
+pub struct PEND_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> PEND_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 15)) | (((value as u16) & 0x01) << 15);
+        self.w
+    }
+}
 impl R {
     #[doc = "Bits 0:4 - Channel ID"]
     #[inline(always)]
@@ -193,5 +259,20 @@ impl W {
     #[inline(always)]
     pub fn crcerr(&mut self) -> CRCERR_W {
         CRCERR_W { w: self }
+    }
+    #[doc = "Bit 13 - Fetch Error"]
+    #[inline(always)]
+    pub fn ferr(&mut self) -> FERR_W {
+        FERR_W { w: self }
+    }
+    #[doc = "Bit 14 - Busy"]
+    #[inline(always)]
+    pub fn busy(&mut self) -> BUSY_W {
+        BUSY_W { w: self }
+    }
+    #[doc = "Bit 15 - Pending"]
+    #[inline(always)]
+    pub fn pend(&mut self) -> PEND_W {
+        PEND_W { w: self }
     }
 }

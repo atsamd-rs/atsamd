@@ -1,8 +1,9 @@
-#[doc = "Reader of register PCHCTRL%s"]
+#[doc = "Reader of register PCHCTRL[%s]"]
 pub type R = crate::R<u32, super::PCHCTRL>;
-#[doc = "Writer for register PCHCTRL%s"]
+#[doc = "Writer for register PCHCTRL[%s]"]
 pub type W = crate::W<u32, super::PCHCTRL>;
-#[doc = "Register PCHCTRL%s `reset()`'s with value 0"]
+#[doc = "Register PCHCTRL[%s]
+`reset()`'s with value 0"]
 impl crate::ResetValue for super::PCHCTRL {
     type Type = u32;
     #[inline(always)]
@@ -12,49 +13,37 @@ impl crate::ResetValue for super::PCHCTRL {
 }
 #[doc = "Generic Clock Generator\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum GEN_A {
     #[doc = "0: Generic clock generator 0"]
-    GCLK0,
+    GCLK0 = 0,
     #[doc = "1: Generic clock generator 1"]
-    GCLK1,
+    GCLK1 = 1,
     #[doc = "2: Generic clock generator 2"]
-    GCLK2,
+    GCLK2 = 2,
     #[doc = "3: Generic clock generator 3"]
-    GCLK3,
+    GCLK3 = 3,
     #[doc = "4: Generic clock generator 4"]
-    GCLK4,
+    GCLK4 = 4,
     #[doc = "5: Generic clock generator 5"]
-    GCLK5,
+    GCLK5 = 5,
     #[doc = "6: Generic clock generator 6"]
-    GCLK6,
+    GCLK6 = 6,
     #[doc = "7: Generic clock generator 7"]
-    GCLK7,
+    GCLK7 = 7,
     #[doc = "8: Generic clock generator 8"]
-    GCLK8,
+    GCLK8 = 8,
     #[doc = "9: Generic clock generator 9"]
-    GCLK9,
+    GCLK9 = 9,
     #[doc = "10: Generic clock generator 10"]
-    GCLK10,
+    GCLK10 = 10,
     #[doc = "11: Generic clock generator 11"]
-    GCLK11,
+    GCLK11 = 11,
 }
 impl From<GEN_A> for u8 {
     #[inline(always)]
     fn from(variant: GEN_A) -> Self {
-        match variant {
-            GEN_A::GCLK0 => 0,
-            GEN_A::GCLK1 => 1,
-            GEN_A::GCLK2 => 2,
-            GEN_A::GCLK3 => 3,
-            GEN_A::GCLK4 => 4,
-            GEN_A::GCLK5 => 5,
-            GEN_A::GCLK6 => 6,
-            GEN_A::GCLK7 => 7,
-            GEN_A::GCLK8 => 8,
-            GEN_A::GCLK9 => 9,
-            GEN_A::GCLK10 => 10,
-            GEN_A::GCLK11 => 11,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `GEN`"]

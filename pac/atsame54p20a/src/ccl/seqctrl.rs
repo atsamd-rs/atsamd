@@ -1,8 +1,9 @@
-#[doc = "Reader of register SEQCTRL%s"]
+#[doc = "Reader of register SEQCTRL[%s]"]
 pub type R = crate::R<u8, super::SEQCTRL>;
-#[doc = "Writer for register SEQCTRL%s"]
+#[doc = "Writer for register SEQCTRL[%s]"]
 pub type W = crate::W<u8, super::SEQCTRL>;
-#[doc = "Register SEQCTRL%s `reset()`'s with value 0"]
+#[doc = "Register SEQCTRL[%s]
+`reset()`'s with value 0"]
 impl crate::ResetValue for super::SEQCTRL {
     type Type = u8;
     #[inline(always)]

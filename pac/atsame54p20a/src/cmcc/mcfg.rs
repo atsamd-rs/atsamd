@@ -14,11 +14,11 @@ impl crate::ResetValue for super::MCFG {
 #[derive(Clone, Copy, Debug, PartialEq)]
 #[repr(u8)]
 pub enum MODE_A {
-    #[doc = "0: cycle counter"]
+    #[doc = "0: Cycle counter"]
     CYCLE_COUNT = 0,
-    #[doc = "1: instruction hit counter"]
+    #[doc = "1: Instruction hit counter"]
     IHIT_COUNT = 1,
-    #[doc = "2: data hit counter"]
+    #[doc = "2: Data hit counter"]
     DHIT_COUNT = 2,
 }
 impl From<MODE_A> for u8 {
@@ -67,17 +67,17 @@ impl<'a> MODE_W<'a> {
     pub fn variant(self, variant: MODE_A) -> &'a mut W {
         unsafe { self.bits(variant.into()) }
     }
-    #[doc = "cycle counter"]
+    #[doc = "Cycle counter"]
     #[inline(always)]
     pub fn cycle_count(self) -> &'a mut W {
         self.variant(MODE_A::CYCLE_COUNT)
     }
-    #[doc = "instruction hit counter"]
+    #[doc = "Instruction hit counter"]
     #[inline(always)]
     pub fn ihit_count(self) -> &'a mut W {
         self.variant(MODE_A::IHIT_COUNT)
     }
-    #[doc = "data hit counter"]
+    #[doc = "Data hit counter"]
     #[inline(always)]
     pub fn dhit_count(self) -> &'a mut W {
         self.variant(MODE_A::DHIT_COUNT)

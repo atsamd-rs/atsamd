@@ -14,17 +14,14 @@ impl crate::ResetValue for super::BBPS {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CONF_A {
     #[doc = "0: The power switch is handled by the BOD33"]
-    BOD33,
+    BOD33 = 0,
     #[doc = "1: In Backup Domain, the backup domain is always supplied by battery backup power"]
-    FORCED,
+    FORCED = 1,
 }
 impl From<CONF_A> for bool {
     #[inline(always)]
     fn from(variant: CONF_A) -> Self {
-        match variant {
-            CONF_A::BOD33 => false,
-            CONF_A::FORCED => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `CONF`"]

@@ -14,17 +14,14 @@ impl crate::ResetValue for super::SEECFG {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum WMODE_A {
     #[doc = "0: A NVM write command is issued after each write in the pagebuffer"]
-    UNBUFFERED,
+    UNBUFFERED = 0,
     #[doc = "1: A NVM write command is issued when a write to a new page is requested"]
-    BUFFERED,
+    BUFFERED = 1,
 }
 impl From<WMODE_A> for bool {
     #[inline(always)]
     fn from(variant: WMODE_A) -> Self {
-        match variant {
-            WMODE_A::UNBUFFERED => false,
-            WMODE_A::BUFFERED => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `WMODE`"]

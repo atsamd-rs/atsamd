@@ -1,8 +1,9 @@
-#[doc = "Reader of register COMPCTRL%s"]
+#[doc = "Reader of register COMPCTRL[%s]"]
 pub type R = crate::R<u32, super::COMPCTRL>;
-#[doc = "Writer for register COMPCTRL%s"]
+#[doc = "Writer for register COMPCTRL[%s]"]
 pub type W = crate::W<u32, super::COMPCTRL>;
-#[doc = "Register COMPCTRL%s `reset()`'s with value 0"]
+#[doc = "Register COMPCTRL[%s]
+`reset()`'s with value 0"]
 impl crate::ResetValue for super::COMPCTRL {
     type Type = u32;
     #[inline(always)]
@@ -60,25 +61,21 @@ impl<'a> SINGLE_W<'a> {
 }
 #[doc = "Interrupt Selection\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum INTSEL_A {
     #[doc = "0: Interrupt on comparator output toggle"]
-    TOGGLE,
+    TOGGLE = 0,
     #[doc = "1: Interrupt on comparator output rising"]
-    RISING,
+    RISING = 1,
     #[doc = "2: Interrupt on comparator output falling"]
-    FALLING,
+    FALLING = 2,
     #[doc = "3: Interrupt on end of comparison (single-shot mode only)"]
-    EOC,
+    EOC = 3,
 }
 impl From<INTSEL_A> for u8 {
     #[inline(always)]
     fn from(variant: INTSEL_A) -> Self {
-        match variant {
-            INTSEL_A::TOGGLE => 0,
-            INTSEL_A::RISING => 1,
-            INTSEL_A::FALLING => 2,
-            INTSEL_A::EOC => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `INTSEL`"]
@@ -181,37 +178,29 @@ impl<'a> RUNSTDBY_W<'a> {
 }
 #[doc = "Negative Input Mux Selection\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum MUXNEG_A {
     #[doc = "0: I/O pin 0"]
-    PIN0,
+    PIN0 = 0,
     #[doc = "1: I/O pin 1"]
-    PIN1,
+    PIN1 = 1,
     #[doc = "2: I/O pin 2"]
-    PIN2,
+    PIN2 = 2,
     #[doc = "3: I/O pin 3"]
-    PIN3,
+    PIN3 = 3,
     #[doc = "4: Ground"]
-    GND,
+    GND = 4,
     #[doc = "5: VDD scaler"]
-    VSCALE,
+    VSCALE = 5,
     #[doc = "6: Internal bandgap voltage"]
-    BANDGAP,
+    BANDGAP = 6,
     #[doc = "7: DAC output"]
-    DAC,
+    DAC = 7,
 }
 impl From<MUXNEG_A> for u8 {
     #[inline(always)]
     fn from(variant: MUXNEG_A) -> Self {
-        match variant {
-            MUXNEG_A::PIN0 => 0,
-            MUXNEG_A::PIN1 => 1,
-            MUXNEG_A::PIN2 => 2,
-            MUXNEG_A::PIN3 => 3,
-            MUXNEG_A::GND => 4,
-            MUXNEG_A::VSCALE => 5,
-            MUXNEG_A::BANDGAP => 6,
-            MUXNEG_A::DAC => 7,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `MUXNEG`"]
@@ -334,28 +323,23 @@ impl<'a> MUXNEG_W<'a> {
 }
 #[doc = "Positive Input Mux Selection\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum MUXPOS_A {
     #[doc = "0: I/O pin 0"]
-    PIN0,
+    PIN0 = 0,
     #[doc = "1: I/O pin 1"]
-    PIN1,
+    PIN1 = 1,
     #[doc = "2: I/O pin 2"]
-    PIN2,
+    PIN2 = 2,
     #[doc = "3: I/O pin 3"]
-    PIN3,
+    PIN3 = 3,
     #[doc = "4: VDD Scaler"]
-    VSCALE,
+    VSCALE = 4,
 }
 impl From<MUXPOS_A> for u8 {
     #[inline(always)]
     fn from(variant: MUXPOS_A) -> Self {
-        match variant {
-            MUXPOS_A::PIN0 => 0,
-            MUXPOS_A::PIN1 => 1,
-            MUXPOS_A::PIN2 => 2,
-            MUXPOS_A::PIN3 => 3,
-            MUXPOS_A::VSCALE => 4,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `MUXPOS`"]
@@ -468,16 +452,15 @@ impl<'a> SWAP_W<'a> {
 }
 #[doc = "Speed Selection\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum SPEED_A {
     #[doc = "3: High speed"]
-    HIGH,
+    HIGH = 3,
 }
 impl From<SPEED_A> for u8 {
     #[inline(always)]
     fn from(variant: SPEED_A) -> Self {
-        match variant {
-            SPEED_A::HIGH => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `SPEED`"]
@@ -546,22 +529,19 @@ impl<'a> HYSTEN_W<'a> {
 }
 #[doc = "Hysteresis Level\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum HYST_A {
     #[doc = "0: 50mV"]
-    HYST50,
+    HYST50 = 0,
     #[doc = "1: 100mV"]
-    HYST100,
+    HYST100 = 1,
     #[doc = "2: 150mV"]
-    HYST150,
+    HYST150 = 2,
 }
 impl From<HYST_A> for u8 {
     #[inline(always)]
     fn from(variant: HYST_A) -> Self {
-        match variant {
-            HYST_A::HYST50 => 0,
-            HYST_A::HYST100 => 1,
-            HYST_A::HYST150 => 2,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `HYST`"]
@@ -628,22 +608,19 @@ impl<'a> HYST_W<'a> {
 }
 #[doc = "Filter Length\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum FLEN_A {
     #[doc = "0: No filtering"]
-    OFF,
+    OFF = 0,
     #[doc = "1: 3-bit majority function (2 of 3)"]
-    MAJ3,
+    MAJ3 = 1,
     #[doc = "2: 5-bit majority function (3 of 5)"]
-    MAJ5,
+    MAJ5 = 2,
 }
 impl From<FLEN_A> for u8 {
     #[inline(always)]
     fn from(variant: FLEN_A) -> Self {
-        match variant {
-            FLEN_A::OFF => 0,
-            FLEN_A::MAJ3 => 1,
-            FLEN_A::MAJ5 => 2,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `FLEN`"]
@@ -710,22 +687,19 @@ impl<'a> FLEN_W<'a> {
 }
 #[doc = "Output\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum OUT_A {
     #[doc = "0: The output of COMPn is not routed to the COMPn I/O port"]
-    OFF,
+    OFF = 0,
     #[doc = "1: The asynchronous output of COMPn is routed to the COMPn I/O port"]
-    ASYNC,
+    ASYNC = 1,
     #[doc = "2: The synchronous output (including filtering) of COMPn is routed to the COMPn I/O port"]
-    SYNC,
+    SYNC = 2,
 }
 impl From<OUT_A> for u8 {
     #[inline(always)]
     fn from(variant: OUT_A) -> Self {
-        match variant {
-            OUT_A::OFF => 0,
-            OUT_A::ASYNC => 1,
-            OUT_A::SYNC => 2,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `OUT`"]
@@ -749,7 +723,7 @@ impl OUT_R {
     }
     #[doc = "Checks if the value of the field is `ASYNC`"]
     #[inline(always)]
-    pub fn is_async(&self) -> bool {
+    pub fn is_async_(&self) -> bool {
         *self == OUT_A::ASYNC
     }
     #[doc = "Checks if the value of the field is `SYNC`"]
@@ -775,7 +749,7 @@ impl<'a> OUT_W<'a> {
     }
     #[doc = "The asynchronous output of COMPn is routed to the COMPn I/O port"]
     #[inline(always)]
-    pub fn async(self) -> &'a mut W {
+    pub fn async_(self) -> &'a mut W {
         self.variant(OUT_A::ASYNC)
     }
     #[doc = "The synchronous output (including filtering) of COMPn is routed to the COMPn I/O port"]

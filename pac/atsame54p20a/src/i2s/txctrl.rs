@@ -10,6 +10,85 @@ impl crate::ResetValue for super::TXCTRL {
         0
     }
 }
+#[doc = "Serializer Mode\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
+pub enum SERMODE_A {
+    #[doc = "0: Receive"]
+    RX = 0,
+    #[doc = "1: Transmit"]
+    TX = 1,
+    #[doc = "2: Receive one PDM data on each serial clock edge"]
+    PDM2 = 2,
+}
+impl From<SERMODE_A> for u8 {
+    #[inline(always)]
+    fn from(variant: SERMODE_A) -> Self {
+        variant as _
+    }
+}
+#[doc = "Reader of field `SERMODE`"]
+pub type SERMODE_R = crate::R<u8, SERMODE_A>;
+impl SERMODE_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, SERMODE_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(SERMODE_A::RX),
+            1 => Val(SERMODE_A::TX),
+            2 => Val(SERMODE_A::PDM2),
+            i => Res(i),
+        }
+    }
+    #[doc = "Checks if the value of the field is `RX`"]
+    #[inline(always)]
+    pub fn is_rx(&self) -> bool {
+        *self == SERMODE_A::RX
+    }
+    #[doc = "Checks if the value of the field is `TX`"]
+    #[inline(always)]
+    pub fn is_tx(&self) -> bool {
+        *self == SERMODE_A::TX
+    }
+    #[doc = "Checks if the value of the field is `PDM2`"]
+    #[inline(always)]
+    pub fn is_pdm2(&self) -> bool {
+        *self == SERMODE_A::PDM2
+    }
+}
+#[doc = "Write proxy for field `SERMODE`"]
+pub struct SERMODE_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> SERMODE_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: SERMODE_A) -> &'a mut W {
+        unsafe { self.bits(variant.into()) }
+    }
+    #[doc = "Receive"]
+    #[inline(always)]
+    pub fn rx(self) -> &'a mut W {
+        self.variant(SERMODE_A::RX)
+    }
+    #[doc = "Transmit"]
+    #[inline(always)]
+    pub fn tx(self) -> &'a mut W {
+        self.variant(SERMODE_A::TX)
+    }
+    #[doc = "Receive one PDM data on each serial clock edge"]
+    #[inline(always)]
+    pub fn pdm2(self) -> &'a mut W {
+        self.variant(SERMODE_A::PDM2)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub unsafe fn bits(self, value: u8) -> &'a mut W {
+        self.w.bits = (self.w.bits & !0x03) | ((value as u32) & 0x03);
+        self.w
+    }
+}
 #[doc = "Line Default Line when Slot Disabled\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
 #[repr(u8)]
@@ -161,6 +240,81 @@ impl<'a> TXSAME_W<'a> {
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
         self.w.bits = (self.w.bits & !(0x01 << 4)) | (((value as u32) & 0x01) << 4);
+        self.w
+    }
+}
+#[doc = "Clock Unit Selection\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum CLKSEL_A {
+    #[doc = "0: Use Clock Unit 0"]
+    CLK0 = 0,
+    #[doc = "1: Use Clock Unit 1"]
+    CLK1 = 1,
+}
+impl From<CLKSEL_A> for bool {
+    #[inline(always)]
+    fn from(variant: CLKSEL_A) -> Self {
+        variant as u8 != 0
+    }
+}
+#[doc = "Reader of field `CLKSEL`"]
+pub type CLKSEL_R = crate::R<bool, CLKSEL_A>;
+impl CLKSEL_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> CLKSEL_A {
+        match self.bits {
+            false => CLKSEL_A::CLK0,
+            true => CLKSEL_A::CLK1,
+        }
+    }
+    #[doc = "Checks if the value of the field is `CLK0`"]
+    #[inline(always)]
+    pub fn is_clk0(&self) -> bool {
+        *self == CLKSEL_A::CLK0
+    }
+    #[doc = "Checks if the value of the field is `CLK1`"]
+    #[inline(always)]
+    pub fn is_clk1(&self) -> bool {
+        *self == CLKSEL_A::CLK1
+    }
+}
+#[doc = "Write proxy for field `CLKSEL`"]
+pub struct CLKSEL_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> CLKSEL_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: CLKSEL_A) -> &'a mut W {
+        {
+            self.bit(variant.into())
+        }
+    }
+    #[doc = "Use Clock Unit 0"]
+    #[inline(always)]
+    pub fn clk0(self) -> &'a mut W {
+        self.variant(CLKSEL_A::CLK0)
+    }
+    #[doc = "Use Clock Unit 1"]
+    #[inline(always)]
+    pub fn clk1(self) -> &'a mut W {
+        self.variant(CLKSEL_A::CLK1)
+    }
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 5)) | (((value as u32) & 0x01) << 5);
         self.w
     }
 }
@@ -970,6 +1124,11 @@ impl<'a> DMA_W<'a> {
     }
 }
 impl R {
+    #[doc = "Bits 0:1 - Serializer Mode"]
+    #[inline(always)]
+    pub fn sermode(&self) -> SERMODE_R {
+        SERMODE_R::new((self.bits & 0x03) as u8)
+    }
     #[doc = "Bits 2:3 - Line Default Line when Slot Disabled"]
     #[inline(always)]
     pub fn txdefault(&self) -> TXDEFAULT_R {
@@ -979,6 +1138,11 @@ impl R {
     #[inline(always)]
     pub fn txsame(&self) -> TXSAME_R {
         TXSAME_R::new(((self.bits >> 4) & 0x01) != 0)
+    }
+    #[doc = "Bit 5 - Clock Unit Selection"]
+    #[inline(always)]
+    pub fn clksel(&self) -> CLKSEL_R {
+        CLKSEL_R::new(((self.bits >> 5) & 0x01) != 0)
     }
     #[doc = "Bit 7 - Data Slot Formatting Adjust"]
     #[inline(always)]
@@ -1057,6 +1221,11 @@ impl R {
     }
 }
 impl W {
+    #[doc = "Bits 0:1 - Serializer Mode"]
+    #[inline(always)]
+    pub fn sermode(&mut self) -> SERMODE_W {
+        SERMODE_W { w: self }
+    }
     #[doc = "Bits 2:3 - Line Default Line when Slot Disabled"]
     #[inline(always)]
     pub fn txdefault(&mut self) -> TXDEFAULT_W {
@@ -1066,6 +1235,11 @@ impl W {
     #[inline(always)]
     pub fn txsame(&mut self) -> TXSAME_W {
         TXSAME_W { w: self }
+    }
+    #[doc = "Bit 5 - Clock Unit Selection"]
+    #[inline(always)]
+    pub fn clksel(&mut self) -> CLKSEL_W {
+        CLKSEL_W { w: self }
     }
     #[doc = "Bit 7 - Data Slot Formatting Adjust"]
     #[inline(always)]

@@ -26,37 +26,29 @@ impl<'a> BLOCKSIZE_W<'a> {
 }
 #[doc = "SDMA Buffer Boundary\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum BOUNDARY_A {
     #[doc = "0: 4k bytes"]
-    _4K,
+    _4K = 0,
     #[doc = "1: 8k bytes"]
-    _8K,
+    _8K = 1,
     #[doc = "2: 16k bytes"]
-    _16K,
+    _16K = 2,
     #[doc = "3: 32k bytes"]
-    _32K,
+    _32K = 3,
     #[doc = "4: 64k bytes"]
-    _64K,
+    _64K = 4,
     #[doc = "5: 128k bytes"]
-    _128K,
+    _128K = 5,
     #[doc = "6: 256k bytes"]
-    _256K,
+    _256K = 6,
     #[doc = "7: 512k bytes"]
-    _512K,
+    _512K = 7,
 }
 impl From<BOUNDARY_A> for u8 {
     #[inline(always)]
     fn from(variant: BOUNDARY_A) -> Self {
-        match variant {
-            BOUNDARY_A::_4K => 0,
-            BOUNDARY_A::_8K => 1,
-            BOUNDARY_A::_16K => 2,
-            BOUNDARY_A::_32K => 3,
-            BOUNDARY_A::_64K => 4,
-            BOUNDARY_A::_128K => 5,
-            BOUNDARY_A::_256K => 6,
-            BOUNDARY_A::_512K => 7,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `BOUNDARY`"]
