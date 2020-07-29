@@ -4,17 +4,14 @@ pub type R = crate::R<u32, super::PSR>;
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CMDINHC_A {
     #[doc = "0: Can issue command using only CMD line"]
-    CAN,
+    CAN = 0,
     #[doc = "1: Cannot issue command"]
-    CANNOT,
+    CANNOT = 1,
 }
 impl From<CMDINHC_A> for bool {
     #[inline(always)]
     fn from(variant: CMDINHC_A) -> Self {
-        match variant {
-            CMDINHC_A::CAN => false,
-            CMDINHC_A::CANNOT => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `CMDINHC`"]
@@ -43,17 +40,14 @@ impl CMDINHC_R {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CMDINHD_A {
     #[doc = "0: Can issue command which uses the DAT line"]
-    CAN,
+    CAN = 0,
     #[doc = "1: Cannot issue command which uses the DAT line"]
-    CANNOT,
+    CANNOT = 1,
 }
 impl From<CMDINHD_A> for bool {
     #[inline(always)]
     fn from(variant: CMDINHD_A) -> Self {
-        match variant {
-            CMDINHD_A::CAN => false,
-            CMDINHD_A::CANNOT => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `CMDINHD`"]
@@ -82,17 +76,14 @@ impl CMDINHD_R {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum DLACT_A {
     #[doc = "0: DAT Line Inactive"]
-    INACTIVE,
+    INACTIVE = 0,
     #[doc = "1: DAT Line Active"]
-    ACTIVE,
+    ACTIVE = 1,
 }
 impl From<DLACT_A> for bool {
     #[inline(always)]
     fn from(variant: DLACT_A) -> Self {
-        match variant {
-            DLACT_A::INACTIVE => false,
-            DLACT_A::ACTIVE => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `DLACT`"]
@@ -121,17 +112,14 @@ impl DLACT_R {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum RTREQ_A {
     #[doc = "0: Fixed or well-tuned sampling clock"]
-    OK,
+    OK = 0,
     #[doc = "1: Sampling clock needs re-tuning"]
-    REQUIRED,
+    REQUIRED = 1,
 }
 impl From<RTREQ_A> for bool {
     #[inline(always)]
     fn from(variant: RTREQ_A) -> Self {
-        match variant {
-            RTREQ_A::OK => false,
-            RTREQ_A::REQUIRED => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `RTREQ`"]
@@ -160,17 +148,14 @@ impl RTREQ_R {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum WTACT_A {
     #[doc = "0: No valid data"]
-    NO,
+    NO = 0,
     #[doc = "1: Transferring data"]
-    YES,
+    YES = 1,
 }
 impl From<WTACT_A> for bool {
     #[inline(always)]
     fn from(variant: WTACT_A) -> Self {
-        match variant {
-            WTACT_A::NO => false,
-            WTACT_A::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `WTACT`"]
@@ -199,17 +184,14 @@ impl WTACT_R {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum RTACT_A {
     #[doc = "0: No valid data"]
-    NO,
+    NO = 0,
     #[doc = "1: Transferring data"]
-    YES,
+    YES = 1,
 }
 impl From<RTACT_A> for bool {
     #[inline(always)]
     fn from(variant: RTACT_A) -> Self {
-        match variant {
-            RTACT_A::NO => false,
-            RTACT_A::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `RTACT`"]
@@ -238,17 +220,14 @@ impl RTACT_R {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum BUFWREN_A {
     #[doc = "0: Write disable"]
-    DISABLE,
+    DISABLE = 0,
     #[doc = "1: Write enable"]
-    ENABLE,
+    ENABLE = 1,
 }
 impl From<BUFWREN_A> for bool {
     #[inline(always)]
     fn from(variant: BUFWREN_A) -> Self {
-        match variant {
-            BUFWREN_A::DISABLE => false,
-            BUFWREN_A::ENABLE => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `BUFWREN`"]
@@ -277,17 +256,14 @@ impl BUFWREN_R {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum BUFRDEN_A {
     #[doc = "0: Read disable"]
-    DISABLE,
+    DISABLE = 0,
     #[doc = "1: Read enable"]
-    ENABLE,
+    ENABLE = 1,
 }
 impl From<BUFRDEN_A> for bool {
     #[inline(always)]
     fn from(variant: BUFRDEN_A) -> Self {
-        match variant {
-            BUFRDEN_A::DISABLE => false,
-            BUFRDEN_A::ENABLE => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `BUFRDEN`"]
@@ -316,17 +292,14 @@ impl BUFRDEN_R {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CARDINS_A {
     #[doc = "0: Reset or Debouncing or No Card"]
-    NO,
+    NO = 0,
     #[doc = "1: Card inserted"]
-    YES,
+    YES = 1,
 }
 impl From<CARDINS_A> for bool {
     #[inline(always)]
     fn from(variant: CARDINS_A) -> Self {
-        match variant {
-            CARDINS_A::NO => false,
-            CARDINS_A::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `CARDINS`"]
@@ -355,17 +328,14 @@ impl CARDINS_R {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CARDSS_A {
     #[doc = "0: Reset or Debouncing"]
-    NO,
+    NO = 0,
     #[doc = "1: No Card or Insered"]
-    YES,
+    YES = 1,
 }
 impl From<CARDSS_A> for bool {
     #[inline(always)]
     fn from(variant: CARDSS_A) -> Self {
-        match variant {
-            CARDSS_A::NO => false,
-            CARDSS_A::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `CARDSS`"]
@@ -394,17 +364,14 @@ impl CARDSS_R {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CARDDPL_A {
     #[doc = "0: No card present (SDCD#=1)"]
-    NO,
+    NO = 0,
     #[doc = "1: Card present (SDCD#=0)"]
-    YES,
+    YES = 1,
 }
 impl From<CARDDPL_A> for bool {
     #[inline(always)]
     fn from(variant: CARDDPL_A) -> Self {
-        match variant {
-            CARDDPL_A::NO => false,
-            CARDDPL_A::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `CARDDPL`"]
@@ -433,17 +400,14 @@ impl CARDDPL_R {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum WRPPL_A {
     #[doc = "0: Write protected (SDWP#=0)"]
-    PROTECTED,
+    PROTECTED = 0,
     #[doc = "1: Write enabled (SDWP#=1)"]
-    ENABLED,
+    ENABLED = 1,
 }
 impl From<WRPPL_A> for bool {
     #[inline(always)]
     fn from(variant: WRPPL_A) -> Self {
-        match variant {
-            WRPPL_A::PROTECTED => false,
-            WRPPL_A::ENABLED => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `WRPPL`"]
@@ -533,7 +497,8 @@ impl R {
     pub fn wrppl(&self) -> WRPPL_R {
         WRPPL_R::new(((self.bits >> 19) & 0x01) != 0)
     }
-    #[doc = "Bits 20:23 - DAT\\[3:0\\] Line Level"]
+    #[doc = "Bits 20:23 - DAT\\[3:0\\]
+Line Level"]
     #[inline(always)]
     pub fn datll(&self) -> DATLL_R {
         DATLL_R::new(((self.bits >> 20) & 0x0f) as u8)

@@ -1,8 +1,9 @@
-#[doc = "Reader of register COMPCTRL%s"]
+#[doc = "Reader of register COMPCTRL[%s]"]
 pub type R = crate::R<u32, super::COMPCTRL>;
-#[doc = "Writer for register COMPCTRL%s"]
+#[doc = "Writer for register COMPCTRL[%s]"]
 pub type W = crate::W<u32, super::COMPCTRL>;
-#[doc = "Register COMPCTRL%s `reset()`'s with value 0"]
+#[doc = "Register COMPCTRL[%s]
+`reset()`'s with value 0"]
 impl crate::ResetValue for super::COMPCTRL {
     type Type = u32;
     #[inline(always)]
@@ -722,7 +723,7 @@ impl OUT_R {
     }
     #[doc = "Checks if the value of the field is `ASYNC`"]
     #[inline(always)]
-    pub fn is_async(&self) -> bool {
+    pub fn is_async_(&self) -> bool {
         *self == OUT_A::ASYNC
     }
     #[doc = "Checks if the value of the field is `SYNC`"]
@@ -748,7 +749,7 @@ impl<'a> OUT_W<'a> {
     }
     #[doc = "The asynchronous output of COMPn is routed to the COMPn I/O port"]
     #[inline(always)]
-    pub fn async(self) -> &'a mut W {
+    pub fn async_(self) -> &'a mut W {
         self.variant(OUT_A::ASYNC)
     }
     #[doc = "The synchronous output (including filtering) of COMPn is routed to the COMPn I/O port"]

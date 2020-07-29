@@ -346,30 +346,6 @@ impl<'a> TC3__W<'a> {
         self.w
     }
 }
-#[doc = "Reader of field `TAL_`"]
-pub type TAL__R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `TAL_`"]
-pub struct TAL__W<'a> {
-    w: &'a mut W,
-}
-impl<'a> TAL__W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 15)) | (((value as u32) & 0x01) << 15);
-        self.w
-    }
-}
 #[doc = "Reader of field `RAMECC_`"]
 pub type RAMECC__R = crate::R<bool, bool>;
 #[doc = "Write proxy for field `RAMECC_`"]
@@ -465,11 +441,6 @@ impl R {
     pub fn tc3_(&self) -> TC3__R {
         TC3__R::new(((self.bits >> 14) & 0x01) != 0)
     }
-    #[doc = "Bit 15 - TAL"]
-    #[inline(always)]
-    pub fn tal_(&self) -> TAL__R {
-        TAL__R::new(((self.bits >> 15) & 0x01) != 0)
-    }
     #[doc = "Bit 16 - RAMECC"]
     #[inline(always)]
     pub fn ramecc_(&self) -> RAMECC__R {
@@ -546,11 +517,6 @@ impl W {
     #[inline(always)]
     pub fn tc3_(&mut self) -> TC3__W {
         TC3__W { w: self }
-    }
-    #[doc = "Bit 15 - TAL"]
-    #[inline(always)]
-    pub fn tal_(&mut self) -> TAL__W {
-        TAL__W { w: self }
     }
     #[doc = "Bit 16 - RAMECC"]
     #[inline(always)]

@@ -2,28 +2,23 @@
 pub type R = crate::R<u32, super::UASR>;
 #[doc = "Undefined Register Access Trace\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum URAT_A {
     #[doc = "0: Unspecified structure member set to one detected when the descriptor is loaded"]
-    UNSPEC_STRUCT_MEMBER,
+    UNSPEC_STRUCT_MEMBER = 0,
     #[doc = "1: CFG modified during active monitoring"]
-    CFG_MODIFIED,
+    CFG_MODIFIED = 1,
     #[doc = "2: DSCR modified during active monitoring"]
-    DSCR_MODIFIED,
+    DSCR_MODIFIED = 2,
     #[doc = "3: HASH modified during active monitoring"]
-    HASH_MODIFIED,
+    HASH_MODIFIED = 3,
     #[doc = "4: Write-only register read access"]
-    READ_ACCESS,
+    READ_ACCESS = 4,
 }
 impl From<URAT_A> for u8 {
     #[inline(always)]
     fn from(variant: URAT_A) -> Self {
-        match variant {
-            URAT_A::UNSPEC_STRUCT_MEMBER => 0,
-            URAT_A::CFG_MODIFIED => 1,
-            URAT_A::DSCR_MODIFIED => 2,
-            URAT_A::HASH_MODIFIED => 3,
-            URAT_A::READ_ACCESS => 4,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `URAT`"]

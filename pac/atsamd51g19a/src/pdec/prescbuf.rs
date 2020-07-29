@@ -12,46 +12,35 @@ impl crate::ResetValue for super::PRESCBUF {
 }
 #[doc = "Prescaler Buffer Value\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum PRESCBUF_A {
     #[doc = "0: No division"]
-    DIV1,
+    DIV1 = 0,
     #[doc = "1: Divide by 2"]
-    DIV2,
+    DIV2 = 1,
     #[doc = "2: Divide by 4"]
-    DIV4,
+    DIV4 = 2,
     #[doc = "3: Divide by 8"]
-    DIV8,
+    DIV8 = 3,
     #[doc = "4: Divide by 16"]
-    DIV16,
+    DIV16 = 4,
     #[doc = "5: Divide by 32"]
-    DIV32,
+    DIV32 = 5,
     #[doc = "6: Divide by 64"]
-    DIV64,
+    DIV64 = 6,
     #[doc = "7: Divide by 128"]
-    DIV128,
+    DIV128 = 7,
     #[doc = "8: Divide by 256"]
-    DIV256,
+    DIV256 = 8,
     #[doc = "9: Divide by 512"]
-    DIV512,
+    DIV512 = 9,
     #[doc = "10: Divide by 1024"]
-    DIV1024,
+    DIV1024 = 10,
 }
 impl From<PRESCBUF_A> for u8 {
     #[inline(always)]
     fn from(variant: PRESCBUF_A) -> Self {
-        match variant {
-            PRESCBUF_A::DIV1 => 0,
-            PRESCBUF_A::DIV2 => 1,
-            PRESCBUF_A::DIV4 => 2,
-            PRESCBUF_A::DIV8 => 3,
-            PRESCBUF_A::DIV16 => 4,
-            PRESCBUF_A::DIV32 => 5,
-            PRESCBUF_A::DIV64 => 6,
-            PRESCBUF_A::DIV128 => 7,
-            PRESCBUF_A::DIV256 => 8,
-            PRESCBUF_A::DIV512 => 9,
-            PRESCBUF_A::DIV1024 => 10,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `PRESCBUF`"]

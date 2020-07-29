@@ -1,4 +1,4 @@
-#[doc = "Reader of register RESULT%s"]
+#[doc = "Reader of register RESULT[%s]"]
 pub type R = crate::R<u16, super::RESULT>;
 #[doc = "Reader of field `RESULT`"]
 pub type RESULT_R = crate::R<u16, u16>;

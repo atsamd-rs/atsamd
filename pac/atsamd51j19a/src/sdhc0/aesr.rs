@@ -2,22 +2,19 @@
 pub type R = crate::R<u8, super::AESR>;
 #[doc = "ADMA Error State\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum ERRST_A {
     #[doc = "0: ST_STOP (Stop DMA)"]
-    STOP,
+    STOP = 0,
     #[doc = "1: ST_FDS (Fetch Descriptor)"]
-    FDS,
+    FDS = 1,
     #[doc = "3: ST_TFR (Transfer Data)"]
-    TFR,
+    TFR = 3,
 }
 impl From<ERRST_A> for u8 {
     #[inline(always)]
     fn from(variant: ERRST_A) -> Self {
-        match variant {
-            ERRST_A::STOP => 0,
-            ERRST_A::FDS => 1,
-            ERRST_A::TFR => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `ERRST`"]
@@ -54,17 +51,14 @@ impl ERRST_R {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum LMIS_A {
     #[doc = "0: No Error"]
-    NO,
+    NO = 0,
     #[doc = "1: Error"]
-    YES,
+    YES = 1,
 }
 impl From<LMIS_A> for bool {
     #[inline(always)]
     fn from(variant: LMIS_A) -> Self {
-        match variant {
-            LMIS_A::NO => false,
-            LMIS_A::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `LMIS`"]

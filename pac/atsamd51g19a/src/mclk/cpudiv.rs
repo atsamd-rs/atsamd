@@ -12,37 +12,29 @@ impl crate::ResetValue for super::CPUDIV {
 }
 #[doc = "Low-Power Clock Division Factor\n\nValue on reset: 1"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum DIV_A {
     #[doc = "1: Divide by 1"]
-    DIV1,
+    DIV1 = 1,
     #[doc = "2: Divide by 2"]
-    DIV2,
+    DIV2 = 2,
     #[doc = "4: Divide by 4"]
-    DIV4,
+    DIV4 = 4,
     #[doc = "8: Divide by 8"]
-    DIV8,
+    DIV8 = 8,
     #[doc = "16: Divide by 16"]
-    DIV16,
+    DIV16 = 16,
     #[doc = "32: Divide by 32"]
-    DIV32,
+    DIV32 = 32,
     #[doc = "64: Divide by 64"]
-    DIV64,
+    DIV64 = 64,
     #[doc = "128: Divide by 128"]
-    DIV128,
+    DIV128 = 128,
 }
 impl From<DIV_A> for u8 {
     #[inline(always)]
     fn from(variant: DIV_A) -> Self {
-        match variant {
-            DIV_A::DIV1 => 1,
-            DIV_A::DIV2 => 2,
-            DIV_A::DIV4 => 4,
-            DIV_A::DIV8 => 8,
-            DIV_A::DIV16 => 16,
-            DIV_A::DIV32 => 32,
-            DIV_A::DIV64 => 64,
-            DIV_A::DIV128 => 128,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `DIV`"]

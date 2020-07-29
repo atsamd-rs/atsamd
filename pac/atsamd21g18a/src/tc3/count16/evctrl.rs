@@ -12,31 +12,25 @@ impl crate::ResetValue for super::EVCTRL {
 }
 #[doc = "Event Action\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum EVACT_A {
     #[doc = "0: Event action disabled"]
-    OFF,
+    OFF = 0,
     #[doc = "1: Start, restart or retrigger TC on event"]
-    RETRIGGER,
+    RETRIGGER = 1,
     #[doc = "2: Count on event"]
-    COUNT,
+    COUNT = 2,
     #[doc = "3: Start TC on event"]
-    START,
+    START = 3,
     #[doc = "5: Period captured in CC0, pulse width in CC1"]
-    PPW,
+    PPW = 5,
     #[doc = "6: Period captured in CC1, pulse width in CC0"]
-    PWP,
+    PWP = 6,
 }
 impl From<EVACT_A> for u8 {
     #[inline(always)]
     fn from(variant: EVACT_A) -> Self {
-        match variant {
-            EVACT_A::OFF => 0,
-            EVACT_A::RETRIGGER => 1,
-            EVACT_A::COUNT => 2,
-            EVACT_A::START => 3,
-            EVACT_A::PPW => 5,
-            EVACT_A::PWP => 6,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `EVACT`"]

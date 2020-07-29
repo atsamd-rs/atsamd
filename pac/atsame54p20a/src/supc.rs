@@ -11,8 +11,7 @@ pub struct RegisterBlock {
     pub status: STATUS,
     #[doc = "0x10 - BOD33 Control"]
     pub bod33: BOD33,
-    #[doc = "0x14 - BOD12 Control"]
-    pub bod12: BOD12,
+    _reserved5: [u8; 4usize],
     #[doc = "0x18 - VREG Control"]
     pub vreg: VREG,
     #[doc = "0x1c - VREF Control"]
@@ -77,17 +76,6 @@ impl crate::Readable for BOD33 {}
 impl crate::Writable for BOD33 {}
 #[doc = "BOD33 Control"]
 pub mod bod33;
-#[doc = "BOD12 Control\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [bod12](bod12) module"]
-pub type BOD12 = crate::Reg<u32, _BOD12>;
-#[allow(missing_docs)]
-#[doc(hidden)]
-pub struct _BOD12;
-#[doc = "`read()` method returns [bod12::R](bod12::R) reader structure"]
-impl crate::Readable for BOD12 {}
-#[doc = "`write(|w| ..)` method takes [bod12::W](bod12::W) writer structure"]
-impl crate::Writable for BOD12 {}
-#[doc = "BOD12 Control"]
-pub mod bod12;
 #[doc = "VREG Control\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [vreg](vreg) module"]
 pub type VREG = crate::Reg<u32, _VREG>;
 #[allow(missing_docs)]

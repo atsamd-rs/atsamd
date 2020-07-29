@@ -12,25 +12,21 @@ impl crate::ResetValue for super::WAVE {
 }
 #[doc = "Waveform Generation Mode\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum WAVEGEN_A {
     #[doc = "0: Normal frequency"]
-    NFRQ,
+    NFRQ = 0,
     #[doc = "1: Match frequency"]
-    MFRQ,
+    MFRQ = 1,
     #[doc = "2: Normal PWM"]
-    NPWM,
+    NPWM = 2,
     #[doc = "3: Match PWM"]
-    MPWM,
+    MPWM = 3,
 }
 impl From<WAVEGEN_A> for u8 {
     #[inline(always)]
     fn from(variant: WAVEGEN_A) -> Self {
-        match variant {
-            WAVEGEN_A::NFRQ => 0,
-            WAVEGEN_A::MFRQ => 1,
-            WAVEGEN_A::NPWM => 2,
-            WAVEGEN_A::MPWM => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `WAVEGEN`"]

@@ -1,8 +1,9 @@
-#[doc = "Reader of register CONFIG%s"]
+#[doc = "Reader of register CONFIG[%s]"]
 pub type R = crate::R<u32, super::CONFIG>;
-#[doc = "Writer for register CONFIG%s"]
+#[doc = "Writer for register CONFIG[%s]"]
 pub type W = crate::W<u32, super::CONFIG>;
-#[doc = "Register CONFIG%s `reset()`'s with value 0"]
+#[doc = "Register CONFIG[%s]
+`reset()`'s with value 0"]
 impl crate::ResetValue for super::CONFIG {
     type Type = u32;
     #[inline(always)]
@@ -12,31 +13,25 @@ impl crate::ResetValue for super::CONFIG {
 }
 #[doc = "Input Sense Configuration 0\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum SENSE0_A {
     #[doc = "0: No detection"]
-    NONE,
+    NONE = 0,
     #[doc = "1: Rising edge detection"]
-    RISE,
+    RISE = 1,
     #[doc = "2: Falling edge detection"]
-    FALL,
+    FALL = 2,
     #[doc = "3: Both edges detection"]
-    BOTH,
+    BOTH = 3,
     #[doc = "4: High level detection"]
-    HIGH,
+    HIGH = 4,
     #[doc = "5: Low level detection"]
-    LOW,
+    LOW = 5,
 }
 impl From<SENSE0_A> for u8 {
     #[inline(always)]
     fn from(variant: SENSE0_A) -> Self {
-        match variant {
-            SENSE0_A::NONE => 0,
-            SENSE0_A::RISE => 1,
-            SENSE0_A::FALL => 2,
-            SENSE0_A::BOTH => 3,
-            SENSE0_A::HIGH => 4,
-            SENSE0_A::LOW => 5,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `SENSE0`"]
@@ -160,31 +155,25 @@ impl<'a> FILTEN0_W<'a> {
 }
 #[doc = "Input Sense Configuration 1\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum SENSE1_A {
     #[doc = "0: No detection"]
-    NONE,
+    NONE = 0,
     #[doc = "1: Rising edge detection"]
-    RISE,
+    RISE = 1,
     #[doc = "2: Falling edge detection"]
-    FALL,
+    FALL = 2,
     #[doc = "3: Both edges detection"]
-    BOTH,
+    BOTH = 3,
     #[doc = "4: High level detection"]
-    HIGH,
+    HIGH = 4,
     #[doc = "5: Low level detection"]
-    LOW,
+    LOW = 5,
 }
 impl From<SENSE1_A> for u8 {
     #[inline(always)]
     fn from(variant: SENSE1_A) -> Self {
-        match variant {
-            SENSE1_A::NONE => 0,
-            SENSE1_A::RISE => 1,
-            SENSE1_A::FALL => 2,
-            SENSE1_A::BOTH => 3,
-            SENSE1_A::HIGH => 4,
-            SENSE1_A::LOW => 5,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `SENSE1`"]
@@ -308,31 +297,25 @@ impl<'a> FILTEN1_W<'a> {
 }
 #[doc = "Input Sense Configuration 2\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum SENSE2_A {
     #[doc = "0: No detection"]
-    NONE,
+    NONE = 0,
     #[doc = "1: Rising edge detection"]
-    RISE,
+    RISE = 1,
     #[doc = "2: Falling edge detection"]
-    FALL,
+    FALL = 2,
     #[doc = "3: Both edges detection"]
-    BOTH,
+    BOTH = 3,
     #[doc = "4: High level detection"]
-    HIGH,
+    HIGH = 4,
     #[doc = "5: Low level detection"]
-    LOW,
+    LOW = 5,
 }
 impl From<SENSE2_A> for u8 {
     #[inline(always)]
     fn from(variant: SENSE2_A) -> Self {
-        match variant {
-            SENSE2_A::NONE => 0,
-            SENSE2_A::RISE => 1,
-            SENSE2_A::FALL => 2,
-            SENSE2_A::BOTH => 3,
-            SENSE2_A::HIGH => 4,
-            SENSE2_A::LOW => 5,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `SENSE2`"]
@@ -456,31 +439,25 @@ impl<'a> FILTEN2_W<'a> {
 }
 #[doc = "Input Sense Configuration 3\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum SENSE3_A {
     #[doc = "0: No detection"]
-    NONE,
+    NONE = 0,
     #[doc = "1: Rising edge detection"]
-    RISE,
+    RISE = 1,
     #[doc = "2: Falling edge detection"]
-    FALL,
+    FALL = 2,
     #[doc = "3: Both edges detection"]
-    BOTH,
+    BOTH = 3,
     #[doc = "4: High level detection"]
-    HIGH,
+    HIGH = 4,
     #[doc = "5: Low level detection"]
-    LOW,
+    LOW = 5,
 }
 impl From<SENSE3_A> for u8 {
     #[inline(always)]
     fn from(variant: SENSE3_A) -> Self {
-        match variant {
-            SENSE3_A::NONE => 0,
-            SENSE3_A::RISE => 1,
-            SENSE3_A::FALL => 2,
-            SENSE3_A::BOTH => 3,
-            SENSE3_A::HIGH => 4,
-            SENSE3_A::LOW => 5,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `SENSE3`"]
@@ -604,31 +581,25 @@ impl<'a> FILTEN3_W<'a> {
 }
 #[doc = "Input Sense Configuration 4\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum SENSE4_A {
     #[doc = "0: No detection"]
-    NONE,
+    NONE = 0,
     #[doc = "1: Rising edge detection"]
-    RISE,
+    RISE = 1,
     #[doc = "2: Falling edge detection"]
-    FALL,
+    FALL = 2,
     #[doc = "3: Both edges detection"]
-    BOTH,
+    BOTH = 3,
     #[doc = "4: High level detection"]
-    HIGH,
+    HIGH = 4,
     #[doc = "5: Low level detection"]
-    LOW,
+    LOW = 5,
 }
 impl From<SENSE4_A> for u8 {
     #[inline(always)]
     fn from(variant: SENSE4_A) -> Self {
-        match variant {
-            SENSE4_A::NONE => 0,
-            SENSE4_A::RISE => 1,
-            SENSE4_A::FALL => 2,
-            SENSE4_A::BOTH => 3,
-            SENSE4_A::HIGH => 4,
-            SENSE4_A::LOW => 5,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `SENSE4`"]
@@ -752,31 +723,25 @@ impl<'a> FILTEN4_W<'a> {
 }
 #[doc = "Input Sense Configuration 5\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum SENSE5_A {
     #[doc = "0: No detection"]
-    NONE,
+    NONE = 0,
     #[doc = "1: Rising edge detection"]
-    RISE,
+    RISE = 1,
     #[doc = "2: Falling edge detection"]
-    FALL,
+    FALL = 2,
     #[doc = "3: Both edges detection"]
-    BOTH,
+    BOTH = 3,
     #[doc = "4: High level detection"]
-    HIGH,
+    HIGH = 4,
     #[doc = "5: Low level detection"]
-    LOW,
+    LOW = 5,
 }
 impl From<SENSE5_A> for u8 {
     #[inline(always)]
     fn from(variant: SENSE5_A) -> Self {
-        match variant {
-            SENSE5_A::NONE => 0,
-            SENSE5_A::RISE => 1,
-            SENSE5_A::FALL => 2,
-            SENSE5_A::BOTH => 3,
-            SENSE5_A::HIGH => 4,
-            SENSE5_A::LOW => 5,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `SENSE5`"]
@@ -900,31 +865,25 @@ impl<'a> FILTEN5_W<'a> {
 }
 #[doc = "Input Sense Configuration 6\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum SENSE6_A {
     #[doc = "0: No detection"]
-    NONE,
+    NONE = 0,
     #[doc = "1: Rising edge detection"]
-    RISE,
+    RISE = 1,
     #[doc = "2: Falling edge detection"]
-    FALL,
+    FALL = 2,
     #[doc = "3: Both edges detection"]
-    BOTH,
+    BOTH = 3,
     #[doc = "4: High level detection"]
-    HIGH,
+    HIGH = 4,
     #[doc = "5: Low level detection"]
-    LOW,
+    LOW = 5,
 }
 impl From<SENSE6_A> for u8 {
     #[inline(always)]
     fn from(variant: SENSE6_A) -> Self {
-        match variant {
-            SENSE6_A::NONE => 0,
-            SENSE6_A::RISE => 1,
-            SENSE6_A::FALL => 2,
-            SENSE6_A::BOTH => 3,
-            SENSE6_A::HIGH => 4,
-            SENSE6_A::LOW => 5,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `SENSE6`"]
@@ -1048,31 +1007,25 @@ impl<'a> FILTEN6_W<'a> {
 }
 #[doc = "Input Sense Configuration 7\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum SENSE7_A {
     #[doc = "0: No detection"]
-    NONE,
+    NONE = 0,
     #[doc = "1: Rising edge detection"]
-    RISE,
+    RISE = 1,
     #[doc = "2: Falling edge detection"]
-    FALL,
+    FALL = 2,
     #[doc = "3: Both edges detection"]
-    BOTH,
+    BOTH = 3,
     #[doc = "4: High level detection"]
-    HIGH,
+    HIGH = 4,
     #[doc = "5: Low level detection"]
-    LOW,
+    LOW = 5,
 }
 impl From<SENSE7_A> for u8 {
     #[inline(always)]
     fn from(variant: SENSE7_A) -> Self {
-        match variant {
-            SENSE7_A::NONE => 0,
-            SENSE7_A::RISE => 1,
-            SENSE7_A::FALL => 2,
-            SENSE7_A::BOTH => 3,
-            SENSE7_A::HIGH => 4,
-            SENSE7_A::LOW => 5,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `SENSE7`"]

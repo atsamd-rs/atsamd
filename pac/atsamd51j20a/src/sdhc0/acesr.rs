@@ -4,17 +4,14 @@ pub type R = crate::R<u16, super::ACESR>;
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum ACMD12NE_A {
     #[doc = "0: Executed"]
-    EXEC,
+    EXEC = 0,
     #[doc = "1: Not executed"]
-    NOT_EXEC,
+    NOT_EXEC = 1,
 }
 impl From<ACMD12NE_A> for bool {
     #[inline(always)]
     fn from(variant: ACMD12NE_A) -> Self {
-        match variant {
-            ACMD12NE_A::EXEC => false,
-            ACMD12NE_A::NOT_EXEC => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `ACMD12NE`"]
@@ -43,17 +40,14 @@ impl ACMD12NE_R {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum ACMDTEO_A {
     #[doc = "0: No error"]
-    NO,
+    NO = 0,
     #[doc = "1: Timeout"]
-    YES,
+    YES = 1,
 }
 impl From<ACMDTEO_A> for bool {
     #[inline(always)]
     fn from(variant: ACMDTEO_A) -> Self {
-        match variant {
-            ACMDTEO_A::NO => false,
-            ACMDTEO_A::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `ACMDTEO`"]
@@ -82,17 +76,14 @@ impl ACMDTEO_R {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum ACMDCRC_A {
     #[doc = "0: No error"]
-    NO,
+    NO = 0,
     #[doc = "1: CRC Error Generated"]
-    YES,
+    YES = 1,
 }
 impl From<ACMDCRC_A> for bool {
     #[inline(always)]
     fn from(variant: ACMDCRC_A) -> Self {
-        match variant {
-            ACMDCRC_A::NO => false,
-            ACMDCRC_A::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `ACMDCRC`"]
@@ -121,17 +112,14 @@ impl ACMDCRC_R {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum ACMDEND_A {
     #[doc = "0: No error"]
-    NO,
+    NO = 0,
     #[doc = "1: End Bit Error Generated"]
-    YES,
+    YES = 1,
 }
 impl From<ACMDEND_A> for bool {
     #[inline(always)]
     fn from(variant: ACMDEND_A) -> Self {
-        match variant {
-            ACMDEND_A::NO => false,
-            ACMDEND_A::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `ACMDEND`"]
@@ -160,17 +148,14 @@ impl ACMDEND_R {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum ACMDIDX_A {
     #[doc = "0: No error"]
-    NO,
+    NO = 0,
     #[doc = "1: Error"]
-    YES,
+    YES = 1,
 }
 impl From<ACMDIDX_A> for bool {
     #[inline(always)]
     fn from(variant: ACMDIDX_A) -> Self {
-        match variant {
-            ACMDIDX_A::NO => false,
-            ACMDIDX_A::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `ACMDIDX`"]
@@ -199,17 +184,14 @@ impl ACMDIDX_R {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CMDNI_A {
     #[doc = "0: No error"]
-    OK,
+    OK = 0,
     #[doc = "1: Not Issued"]
-    NOT_ISSUED,
+    NOT_ISSUED = 1,
 }
 impl From<CMDNI_A> for bool {
     #[inline(always)]
     fn from(variant: CMDNI_A) -> Self {
-        match variant {
-            CMDNI_A::OK => false,
-            CMDNI_A::NOT_ISSUED => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `CMDNI`"]

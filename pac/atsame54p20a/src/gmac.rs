@@ -44,22 +44,8 @@ pub struct RegisterBlock {
     pub hrb: HRB,
     #[doc = "0x84 - Hash Register Top \\[63:32\\]"]
     pub hrt: HRT,
-    #[doc = "0x88 - Specific Address Bottom \\[31:0\\] Register"]
-    pub sab0: SAB,
-    #[doc = "0x8c - Specific Address Top \\[47:32\\] Register"]
-    pub sat0: SAT,
-    #[doc = "0x90 - Specific Address Bottom \\[31:0\\] Register"]
-    pub sab1: SAB,
-    #[doc = "0x94 - Specific Address Top \\[47:32\\] Register"]
-    pub sat1: SAT,
-    #[doc = "0x98 - Specific Address Bottom \\[31:0\\] Register"]
-    pub sab2: SAB,
-    #[doc = "0x9c - Specific Address Top \\[47:32\\] Register"]
-    pub sat2: SAT,
-    #[doc = "0xa0 - Specific Address Bottom \\[31:0\\] Register"]
-    pub sab3: SAB,
-    #[doc = "0xa4 - Specific Address Top \\[47:32\\] Register"]
-    pub sat3: SAT,
+    #[doc = "0x88 - SA\\[%s\\]"]
+    pub sa: [SA; 4],
     #[doc = "0xa8 - Type ID Match Register"]
     pub tidm: [TIDM; 4],
     #[doc = "0xb8 - Wake on LAN"]
@@ -70,11 +56,13 @@ pub struct RegisterBlock {
     pub svlan: SVLAN,
     #[doc = "0xc4 - Transmit PFC Pause Register"]
     pub tpfcp: TPFCP,
-    #[doc = "0xc8 - Specific Address 1 Mask Bottom \\[31:0\\] Register"]
+    #[doc = "0xc8 - Specific Address 1 Mask Bottom \\[31:0\\]
+Register"]
     pub samb1: SAMB1,
-    #[doc = "0xcc - Specific Address 1 Mask Top \\[47:32\\] Register"]
+    #[doc = "0xcc - Specific Address 1 Mask Top \\[47:32\\]
+Register"]
     pub samt1: SAMT1,
-    _reserved36: [u8; 12usize],
+    _reserved29: [u8; 12usize],
     #[doc = "0xdc - Tsu timer comparison nanoseconds Register"]
     pub nsc: NSC,
     #[doc = "0xe0 - Tsu timer second comparison Register"]
@@ -89,10 +77,12 @@ pub struct RegisterBlock {
     pub peftsh: PEFTSH,
     #[doc = "0xf4 - PTP Peer Event Frame Received Seconds High Register"]
     pub pefrsh: PEFRSH,
-    _reserved43: [u8; 8usize],
-    #[doc = "0x100 - Octets Transmitted \\[31:0\\] Register"]
+    _reserved36: [u8; 8usize],
+    #[doc = "0x100 - Octets Transmitted \\[31:0\\]
+Register"]
     pub otlo: OTLO,
-    #[doc = "0x104 - Octets Transmitted \\[47:32\\] Register"]
+    #[doc = "0x104 - Octets Transmitted \\[47:32\\]
+Register"]
     pub othi: OTHI,
     #[doc = "0x108 - Frames Transmitted Register"]
     pub ft: FT,
@@ -130,9 +120,11 @@ pub struct RegisterBlock {
     pub dtf: DTF,
     #[doc = "0x14c - Carrier Sense Errors Register"]
     pub cse: CSE,
-    #[doc = "0x150 - Octets Received \\[31:0\\] Received"]
+    #[doc = "0x150 - Octets Received \\[31:0\\]
+Received"]
     pub orlo: ORLO,
-    #[doc = "0x154 - Octets Received \\[47:32\\] Received"]
+    #[doc = "0x154 - Octets Received \\[47:32\\]
+Received"]
     pub orhi: ORHI,
     #[doc = "0x158 - Frames Received Register"]
     pub fr: FR,
@@ -180,17 +172,21 @@ pub struct RegisterBlock {
     pub tce: TCE,
     #[doc = "0x1b0 - UDP Checksum Errors Register"]
     pub uce: UCE,
-    _reserved88: [u8; 8usize],
-    #[doc = "0x1bc - 1588 Timer Increment \\[15:0\\] Sub-Nanoseconds Register"]
+    _reserved81: [u8; 8usize],
+    #[doc = "0x1bc - 1588 Timer Increment \\[15:0\\]
+Sub-Nanoseconds Register"]
     pub tisubn: TISUBN,
-    #[doc = "0x1c0 - 1588 Timer Seconds High \\[15:0\\] Register"]
+    #[doc = "0x1c0 - 1588 Timer Seconds High \\[15:0\\]
+Register"]
     pub tsh: TSH,
-    _reserved90: [u8; 4usize],
-    #[doc = "0x1c8 - 1588 Timer Sync Strobe Seconds \\[31:0\\] Register"]
+    _reserved83: [u8; 4usize],
+    #[doc = "0x1c8 - 1588 Timer Sync Strobe Seconds \\[31:0\\]
+Register"]
     pub tsssl: TSSSL,
     #[doc = "0x1cc - 1588 Timer Sync Strobe Nanoseconds Register"]
     pub tssn: TSSN,
-    #[doc = "0x1d0 - 1588 Timer Seconds \\[31:0\\] Register"]
+    #[doc = "0x1d0 - 1588 Timer Seconds \\[31:0\\]
+Register"]
     pub tsl: TSL,
     #[doc = "0x1d4 - 1588 Timer Nanoseconds Register"]
     pub tn: TN,
@@ -214,7 +210,7 @@ pub struct RegisterBlock {
     pub pefrsl: PEFRSL,
     #[doc = "0x1fc - PTP Peer Event Frame Received Nanoseconds"]
     pub pefrn: PEFRN,
-    _reserved104: [u8; 112usize],
+    _reserved97: [u8; 112usize],
     #[doc = "0x270 - Receive LPI transition Register"]
     pub rlpitr: RLPITR,
     #[doc = "0x274 - Receive LPI Time Register"]
@@ -224,6 +220,19 @@ pub struct RegisterBlock {
     #[doc = "0x27c - Receive LPI Time Register"]
     pub tlpiti: TLPITI,
 }
+#[doc = r"Register block"]
+#[repr(C)]
+pub struct SA {
+    #[doc = "0x00 - Specific Address Bottom \\[31:0\\]
+Register"]
+    pub sab: self::sa::SAB,
+    #[doc = "0x04 - Specific Address Top \\[47:32\\]
+Register"]
+    pub sat: self::sa::SAT,
+}
+#[doc = r"Register block"]
+#[doc = "SA\\[%s\\]"]
+pub mod sa;
 #[doc = "Network Control Register\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [ncr](ncr) module"]
 pub type NCR = crate::Reg<u32, _NCR>;
 #[allow(missing_docs)]
@@ -445,28 +454,6 @@ impl crate::Readable for HRT {}
 impl crate::Writable for HRT {}
 #[doc = "Hash Register Top \\[63:32\\]"]
 pub mod hrt;
-#[doc = "Specific Address Bottom \\[31:0\\] Register\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [sab](sab) module"]
-pub type SAB = crate::Reg<u32, _SAB>;
-#[allow(missing_docs)]
-#[doc(hidden)]
-pub struct _SAB;
-#[doc = "`read()` method returns [sab::R](sab::R) reader structure"]
-impl crate::Readable for SAB {}
-#[doc = "`write(|w| ..)` method takes [sab::W](sab::W) writer structure"]
-impl crate::Writable for SAB {}
-#[doc = "Specific Address Bottom \\[31:0\\] Register"]
-pub mod sab;
-#[doc = "Specific Address Top \\[47:32\\] Register\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [sat](sat) module"]
-pub type SAT = crate::Reg<u32, _SAT>;
-#[allow(missing_docs)]
-#[doc(hidden)]
-pub struct _SAT;
-#[doc = "`read()` method returns [sat::R](sat::R) reader structure"]
-impl crate::Readable for SAT {}
-#[doc = "`write(|w| ..)` method takes [sat::W](sat::W) writer structure"]
-impl crate::Writable for SAT {}
-#[doc = "Specific Address Top \\[47:32\\] Register"]
-pub mod sat;
 #[doc = "Type ID Match Register\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [tidm](tidm) module"]
 pub type TIDM = crate::Reg<u32, _TIDM>;
 #[allow(missing_docs)]
@@ -522,7 +509,8 @@ impl crate::Readable for TPFCP {}
 impl crate::Writable for TPFCP {}
 #[doc = "Transmit PFC Pause Register"]
 pub mod tpfcp;
-#[doc = "Specific Address 1 Mask Bottom \\[31:0\\] Register\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [samb1](samb1) module"]
+#[doc = "Specific Address 1 Mask Bottom \\[31:0\\]
+Register\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [samb1](samb1) module"]
 pub type SAMB1 = crate::Reg<u32, _SAMB1>;
 #[allow(missing_docs)]
 #[doc(hidden)]
@@ -531,9 +519,11 @@ pub struct _SAMB1;
 impl crate::Readable for SAMB1 {}
 #[doc = "`write(|w| ..)` method takes [samb1::W](samb1::W) writer structure"]
 impl crate::Writable for SAMB1 {}
-#[doc = "Specific Address 1 Mask Bottom \\[31:0\\] Register"]
+#[doc = "Specific Address 1 Mask Bottom \\[31:0\\]
+Register"]
 pub mod samb1;
-#[doc = "Specific Address 1 Mask Top \\[47:32\\] Register\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [samt1](samt1) module"]
+#[doc = "Specific Address 1 Mask Top \\[47:32\\]
+Register\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [samt1](samt1) module"]
 pub type SAMT1 = crate::Reg<u32, _SAMT1>;
 #[allow(missing_docs)]
 #[doc(hidden)]
@@ -542,7 +532,8 @@ pub struct _SAMT1;
 impl crate::Readable for SAMT1 {}
 #[doc = "`write(|w| ..)` method takes [samt1::W](samt1::W) writer structure"]
 impl crate::Writable for SAMT1 {}
-#[doc = "Specific Address 1 Mask Top \\[47:32\\] Register"]
+#[doc = "Specific Address 1 Mask Top \\[47:32\\]
+Register"]
 pub mod samt1;
 #[doc = "Tsu timer comparison nanoseconds Register\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [nsc](nsc) module"]
 pub type NSC = crate::Reg<u32, _NSC>;
@@ -613,23 +604,27 @@ pub struct _PEFRSH;
 impl crate::Readable for PEFRSH {}
 #[doc = "PTP Peer Event Frame Received Seconds High Register"]
 pub mod pefrsh;
-#[doc = "Octets Transmitted \\[31:0\\] Register\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [otlo](otlo) module"]
+#[doc = "Octets Transmitted \\[31:0\\]
+Register\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [otlo](otlo) module"]
 pub type OTLO = crate::Reg<u32, _OTLO>;
 #[allow(missing_docs)]
 #[doc(hidden)]
 pub struct _OTLO;
 #[doc = "`read()` method returns [otlo::R](otlo::R) reader structure"]
 impl crate::Readable for OTLO {}
-#[doc = "Octets Transmitted \\[31:0\\] Register"]
+#[doc = "Octets Transmitted \\[31:0\\]
+Register"]
 pub mod otlo;
-#[doc = "Octets Transmitted \\[47:32\\] Register\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [othi](othi) module"]
+#[doc = "Octets Transmitted \\[47:32\\]
+Register\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [othi](othi) module"]
 pub type OTHI = crate::Reg<u32, _OTHI>;
 #[allow(missing_docs)]
 #[doc(hidden)]
 pub struct _OTHI;
 #[doc = "`read()` method returns [othi::R](othi::R) reader structure"]
 impl crate::Readable for OTHI {}
-#[doc = "Octets Transmitted \\[47:32\\] Register"]
+#[doc = "Octets Transmitted \\[47:32\\]
+Register"]
 pub mod othi;
 #[doc = "Frames Transmitted Register\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [ft](ft) module"]
 pub type FT = crate::Reg<u32, _FT>;
@@ -793,23 +788,27 @@ pub struct _CSE;
 impl crate::Readable for CSE {}
 #[doc = "Carrier Sense Errors Register"]
 pub mod cse;
-#[doc = "Octets Received \\[31:0\\] Received\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [orlo](orlo) module"]
+#[doc = "Octets Received \\[31:0\\]
+Received\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [orlo](orlo) module"]
 pub type ORLO = crate::Reg<u32, _ORLO>;
 #[allow(missing_docs)]
 #[doc(hidden)]
 pub struct _ORLO;
 #[doc = "`read()` method returns [orlo::R](orlo::R) reader structure"]
 impl crate::Readable for ORLO {}
-#[doc = "Octets Received \\[31:0\\] Received"]
+#[doc = "Octets Received \\[31:0\\]
+Received"]
 pub mod orlo;
-#[doc = "Octets Received \\[47:32\\] Received\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [orhi](orhi) module"]
+#[doc = "Octets Received \\[47:32\\]
+Received\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [orhi](orhi) module"]
 pub type ORHI = crate::Reg<u32, _ORHI>;
 #[allow(missing_docs)]
 #[doc(hidden)]
 pub struct _ORHI;
 #[doc = "`read()` method returns [orhi::R](orhi::R) reader structure"]
 impl crate::Readable for ORHI {}
-#[doc = "Octets Received \\[47:32\\] Received"]
+#[doc = "Octets Received \\[47:32\\]
+Received"]
 pub mod orhi;
 #[doc = "Frames Received Register\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [fr](fr) module"]
 pub type FR = crate::Reg<u32, _FR>;
@@ -1018,7 +1017,8 @@ pub struct _UCE;
 impl crate::Readable for UCE {}
 #[doc = "UDP Checksum Errors Register"]
 pub mod uce;
-#[doc = "1588 Timer Increment \\[15:0\\] Sub-Nanoseconds Register\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [tisubn](tisubn) module"]
+#[doc = "1588 Timer Increment \\[15:0\\]
+Sub-Nanoseconds Register\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [tisubn](tisubn) module"]
 pub type TISUBN = crate::Reg<u32, _TISUBN>;
 #[allow(missing_docs)]
 #[doc(hidden)]
@@ -1027,9 +1027,11 @@ pub struct _TISUBN;
 impl crate::Readable for TISUBN {}
 #[doc = "`write(|w| ..)` method takes [tisubn::W](tisubn::W) writer structure"]
 impl crate::Writable for TISUBN {}
-#[doc = "1588 Timer Increment \\[15:0\\] Sub-Nanoseconds Register"]
+#[doc = "1588 Timer Increment \\[15:0\\]
+Sub-Nanoseconds Register"]
 pub mod tisubn;
-#[doc = "1588 Timer Seconds High \\[15:0\\] Register\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [tsh](tsh) module"]
+#[doc = "1588 Timer Seconds High \\[15:0\\]
+Register\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [tsh](tsh) module"]
 pub type TSH = crate::Reg<u32, _TSH>;
 #[allow(missing_docs)]
 #[doc(hidden)]
@@ -1038,9 +1040,11 @@ pub struct _TSH;
 impl crate::Readable for TSH {}
 #[doc = "`write(|w| ..)` method takes [tsh::W](tsh::W) writer structure"]
 impl crate::Writable for TSH {}
-#[doc = "1588 Timer Seconds High \\[15:0\\] Register"]
+#[doc = "1588 Timer Seconds High \\[15:0\\]
+Register"]
 pub mod tsh;
-#[doc = "1588 Timer Sync Strobe Seconds \\[31:0\\] Register\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [tsssl](tsssl) module"]
+#[doc = "1588 Timer Sync Strobe Seconds \\[31:0\\]
+Register\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [tsssl](tsssl) module"]
 pub type TSSSL = crate::Reg<u32, _TSSSL>;
 #[allow(missing_docs)]
 #[doc(hidden)]
@@ -1049,7 +1053,8 @@ pub struct _TSSSL;
 impl crate::Readable for TSSSL {}
 #[doc = "`write(|w| ..)` method takes [tsssl::W](tsssl::W) writer structure"]
 impl crate::Writable for TSSSL {}
-#[doc = "1588 Timer Sync Strobe Seconds \\[31:0\\] Register"]
+#[doc = "1588 Timer Sync Strobe Seconds \\[31:0\\]
+Register"]
 pub mod tsssl;
 #[doc = "1588 Timer Sync Strobe Nanoseconds Register\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [tssn](tssn) module"]
 pub type TSSN = crate::Reg<u32, _TSSN>;
@@ -1062,7 +1067,8 @@ impl crate::Readable for TSSN {}
 impl crate::Writable for TSSN {}
 #[doc = "1588 Timer Sync Strobe Nanoseconds Register"]
 pub mod tssn;
-#[doc = "1588 Timer Seconds \\[31:0\\] Register\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [tsl](tsl) module"]
+#[doc = "1588 Timer Seconds \\[31:0\\]
+Register\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [tsl](tsl) module"]
 pub type TSL = crate::Reg<u32, _TSL>;
 #[allow(missing_docs)]
 #[doc(hidden)]
@@ -1071,7 +1077,8 @@ pub struct _TSL;
 impl crate::Readable for TSL {}
 #[doc = "`write(|w| ..)` method takes [tsl::W](tsl::W) writer structure"]
 impl crate::Writable for TSL {}
-#[doc = "1588 Timer Seconds \\[31:0\\] Register"]
+#[doc = "1588 Timer Seconds \\[31:0\\]
+Register"]
 pub mod tsl;
 #[doc = "1588 Timer Nanoseconds Register\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [tn](tn) module"]
 pub type TN = crate::Reg<u32, _TN>;

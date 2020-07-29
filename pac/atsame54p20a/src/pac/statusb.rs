@@ -28,8 +28,6 @@ pub type TCC1__R = crate::R<bool, bool>;
 pub type TC2__R = crate::R<bool, bool>;
 #[doc = "Reader of field `TC3_`"]
 pub type TC3__R = crate::R<bool, bool>;
-#[doc = "Reader of field `TAL_`"]
-pub type TAL__R = crate::R<bool, bool>;
 #[doc = "Reader of field `RAMECC_`"]
 pub type RAMECC__R = crate::R<bool, bool>;
 impl R {
@@ -102,11 +100,6 @@ impl R {
     #[inline(always)]
     pub fn tc3_(&self) -> TC3__R {
         TC3__R::new(((self.bits >> 14) & 0x01) != 0)
-    }
-    #[doc = "Bit 15 - TAL APB Protect Enable"]
-    #[inline(always)]
-    pub fn tal_(&self) -> TAL__R {
-        TAL__R::new(((self.bits >> 15) & 0x01) != 0)
     }
     #[doc = "Bit 16 - RAMECC APB Protect Enable"]
     #[inline(always)]

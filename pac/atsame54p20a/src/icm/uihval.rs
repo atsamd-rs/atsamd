@@ -1,6 +1,7 @@
-#[doc = "Writer for register UIHVAL%s"]
+#[doc = "Writer for register UIHVAL[%s]"]
 pub type W = crate::W<u32, super::UIHVAL>;
-#[doc = "Register UIHVAL%s `reset()`'s with value 0"]
+#[doc = "Register UIHVAL[%s]
+`reset()`'s with value 0"]
 impl crate::ResetValue for super::UIHVAL {
     type Type = u32;
     #[inline(always)]

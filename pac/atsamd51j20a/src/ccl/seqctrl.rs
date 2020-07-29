@@ -1,8 +1,9 @@
-#[doc = "Reader of register SEQCTRL%s"]
+#[doc = "Reader of register SEQCTRL[%s]"]
 pub type R = crate::R<u8, super::SEQCTRL>;
-#[doc = "Writer for register SEQCTRL%s"]
+#[doc = "Writer for register SEQCTRL[%s]"]
 pub type W = crate::W<u8, super::SEQCTRL>;
-#[doc = "Register SEQCTRL%s `reset()`'s with value 0"]
+#[doc = "Register SEQCTRL[%s]
+`reset()`'s with value 0"]
 impl crate::ResetValue for super::SEQCTRL {
     type Type = u8;
     #[inline(always)]
@@ -12,28 +13,23 @@ impl crate::ResetValue for super::SEQCTRL {
 }
 #[doc = "Sequential Selection\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum SEQSEL_A {
     #[doc = "0: Sequential logic is disabled"]
-    DISABLE,
+    DISABLE = 0,
     #[doc = "1: D flip flop"]
-    DFF,
+    DFF = 1,
     #[doc = "2: JK flip flop"]
-    JK,
+    JK = 2,
     #[doc = "3: D latch"]
-    LATCH,
+    LATCH = 3,
     #[doc = "4: RS latch"]
-    RS,
+    RS = 4,
 }
 impl From<SEQSEL_A> for u8 {
     #[inline(always)]
     fn from(variant: SEQSEL_A) -> Self {
-        match variant {
-            SEQSEL_A::DISABLE => 0,
-            SEQSEL_A::DFF => 1,
-            SEQSEL_A::JK => 2,
-            SEQSEL_A::LATCH => 3,
-            SEQSEL_A::RS => 4,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `SEQSEL`"]

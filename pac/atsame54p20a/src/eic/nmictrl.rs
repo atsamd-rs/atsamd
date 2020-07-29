@@ -152,13 +152,64 @@ impl<'a> NMIFILTEN_W<'a> {
         self.w
     }
 }
+#[doc = "Asynchronous Edge Detection Mode\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum NMIASYNCH_A {
+    #[doc = "0: Edge detection is clock synchronously operated"]
+    SYNC = 0,
+    #[doc = "1: Edge detection is clock asynchronously operated"]
+    ASYNC = 1,
+}
+impl From<NMIASYNCH_A> for bool {
+    #[inline(always)]
+    fn from(variant: NMIASYNCH_A) -> Self {
+        variant as u8 != 0
+    }
+}
 #[doc = "Reader of field `NMIASYNCH`"]
-pub type NMIASYNCH_R = crate::R<bool, bool>;
+pub type NMIASYNCH_R = crate::R<bool, NMIASYNCH_A>;
+impl NMIASYNCH_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> NMIASYNCH_A {
+        match self.bits {
+            false => NMIASYNCH_A::SYNC,
+            true => NMIASYNCH_A::ASYNC,
+        }
+    }
+    #[doc = "Checks if the value of the field is `SYNC`"]
+    #[inline(always)]
+    pub fn is_sync(&self) -> bool {
+        *self == NMIASYNCH_A::SYNC
+    }
+    #[doc = "Checks if the value of the field is `ASYNC`"]
+    #[inline(always)]
+    pub fn is_async_(&self) -> bool {
+        *self == NMIASYNCH_A::ASYNC
+    }
+}
 #[doc = "Write proxy for field `NMIASYNCH`"]
 pub struct NMIASYNCH_W<'a> {
     w: &'a mut W,
 }
 impl<'a> NMIASYNCH_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: NMIASYNCH_A) -> &'a mut W {
+        {
+            self.bit(variant.into())
+        }
+    }
+    #[doc = "Edge detection is clock synchronously operated"]
+    #[inline(always)]
+    pub fn sync(self) -> &'a mut W {
+        self.variant(NMIASYNCH_A::SYNC)
+    }
+    #[doc = "Edge detection is clock asynchronously operated"]
+    #[inline(always)]
+    pub fn async_(self) -> &'a mut W {
+        self.variant(NMIASYNCH_A::ASYNC)
+    }
     #[doc = r"Sets the field bit"]
     #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {

@@ -12,25 +12,21 @@ impl crate::ResetValue for super::QOSCTRL {
 }
 #[doc = "Configuration Quality of Service\n\nValue on reset: 1"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum CQOS_A {
     #[doc = "0: Background (no sensitive operation)"]
-    DISABLE,
+    DISABLE = 0,
     #[doc = "1: Sensitive Bandwidth"]
-    LOW,
+    LOW = 1,
     #[doc = "2: Sensitive Latency"]
-    MEDIUM,
+    MEDIUM = 2,
     #[doc = "3: Critical Latency"]
-    HIGH,
+    HIGH = 3,
 }
 impl From<CQOS_A> for u8 {
     #[inline(always)]
     fn from(variant: CQOS_A) -> Self {
-        match variant {
-            CQOS_A::DISABLE => 0,
-            CQOS_A::LOW => 1,
-            CQOS_A::MEDIUM => 2,
-            CQOS_A::HIGH => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `CQOS`"]
@@ -109,25 +105,21 @@ impl<'a> CQOS_W<'a> {
 }
 #[doc = "Data Quality of Service\n\nValue on reset: 1"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum DQOS_A {
     #[doc = "0: Background (no sensitive operation)"]
-    DISABLE,
+    DISABLE = 0,
     #[doc = "1: Sensitive Bandwidth"]
-    LOW,
+    LOW = 1,
     #[doc = "2: Sensitive Latency"]
-    MEDIUM,
+    MEDIUM = 2,
     #[doc = "3: Critical Latency"]
-    HIGH,
+    HIGH = 3,
 }
 impl From<DQOS_A> for u8 {
     #[inline(always)]
     fn from(variant: DQOS_A) -> Self {
-        match variant {
-            DQOS_A::DISABLE => 0,
-            DQOS_A::LOW => 1,
-            DQOS_A::MEDIUM => 2,
-            DQOS_A::HIGH => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `DQOS`"]

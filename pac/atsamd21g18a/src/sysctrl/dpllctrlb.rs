@@ -12,25 +12,21 @@ impl crate::ResetValue for super::DPLLCTRLB {
 }
 #[doc = "Proportional Integral Filter Selection\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum FILTER_A {
     #[doc = "0: Default filter mode"]
-    DEFAULT,
+    DEFAULT = 0,
     #[doc = "1: Low bandwidth filter"]
-    LBFILT,
+    LBFILT = 1,
     #[doc = "2: High bandwidth filter"]
-    HBFILT,
+    HBFILT = 2,
     #[doc = "3: High damping filter"]
-    HDFILT,
+    HDFILT = 3,
 }
 impl From<FILTER_A> for u8 {
     #[inline(always)]
     fn from(variant: FILTER_A) -> Self {
-        match variant {
-            FILTER_A::DEFAULT => 0,
-            FILTER_A::LBFILT => 1,
-            FILTER_A::HBFILT => 2,
-            FILTER_A::HDFILT => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `FILTER`"]
@@ -157,22 +153,19 @@ impl<'a> WUF_W<'a> {
 }
 #[doc = "Reference Clock Selection\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum REFCLK_A {
     #[doc = "0: CLK_DPLL_REF0 clock reference"]
-    REF0,
+    REF0 = 0,
     #[doc = "1: CLK_DPLL_REF1 clock reference"]
-    REF1,
+    REF1 = 1,
     #[doc = "2: GCLK_DPLL clock reference"]
-    GCLK,
+    GCLK = 2,
 }
 impl From<REFCLK_A> for u8 {
     #[inline(always)]
     fn from(variant: REFCLK_A) -> Self {
-        match variant {
-            REFCLK_A::REF0 => 0,
-            REFCLK_A::REF1 => 1,
-            REFCLK_A::GCLK => 2,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `REFCLK`"]
@@ -239,28 +232,23 @@ impl<'a> REFCLK_W<'a> {
 }
 #[doc = "Lock Time\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum LTIME_A {
     #[doc = "0: No time-out"]
-    DEFAULT,
+    DEFAULT = 0,
     #[doc = "4: Time-out if no lock within 8 ms"]
-    _8MS,
+    _8MS = 4,
     #[doc = "5: Time-out if no lock within 9 ms"]
-    _9MS,
+    _9MS = 5,
     #[doc = "6: Time-out if no lock within 10 ms"]
-    _10MS,
+    _10MS = 6,
     #[doc = "7: Time-out if no lock within 11 ms"]
-    _11MS,
+    _11MS = 7,
 }
 impl From<LTIME_A> for u8 {
     #[inline(always)]
     fn from(variant: LTIME_A) -> Self {
-        match variant {
-            LTIME_A::DEFAULT => 0,
-            LTIME_A::_8MS => 4,
-            LTIME_A::_9MS => 5,
-            LTIME_A::_10MS => 6,
-            LTIME_A::_11MS => 7,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `LTIME`"]

@@ -10,13 +10,78 @@ impl crate::ResetValue for super::BKUPCFG {
         0
     }
 }
+#[doc = "Ram Configuration\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
+pub enum BRAMCFG_A {
+    #[doc = "0: All the backup RAM is retained"]
+    RET = 0,
+    #[doc = "1: Only the first 4Kbytes of the backup RAM is retained"]
+    PARTIAL = 1,
+    #[doc = "2: All the backup RAM is turned OFF"]
+    OFF = 2,
+}
+impl From<BRAMCFG_A> for u8 {
+    #[inline(always)]
+    fn from(variant: BRAMCFG_A) -> Self {
+        variant as _
+    }
+}
 #[doc = "Reader of field `BRAMCFG`"]
-pub type BRAMCFG_R = crate::R<u8, u8>;
+pub type BRAMCFG_R = crate::R<u8, BRAMCFG_A>;
+impl BRAMCFG_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, BRAMCFG_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(BRAMCFG_A::RET),
+            1 => Val(BRAMCFG_A::PARTIAL),
+            2 => Val(BRAMCFG_A::OFF),
+            i => Res(i),
+        }
+    }
+    #[doc = "Checks if the value of the field is `RET`"]
+    #[inline(always)]
+    pub fn is_ret(&self) -> bool {
+        *self == BRAMCFG_A::RET
+    }
+    #[doc = "Checks if the value of the field is `PARTIAL`"]
+    #[inline(always)]
+    pub fn is_partial(&self) -> bool {
+        *self == BRAMCFG_A::PARTIAL
+    }
+    #[doc = "Checks if the value of the field is `OFF`"]
+    #[inline(always)]
+    pub fn is_off(&self) -> bool {
+        *self == BRAMCFG_A::OFF
+    }
+}
 #[doc = "Write proxy for field `BRAMCFG`"]
 pub struct BRAMCFG_W<'a> {
     w: &'a mut W,
 }
 impl<'a> BRAMCFG_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: BRAMCFG_A) -> &'a mut W {
+        unsafe { self.bits(variant.into()) }
+    }
+    #[doc = "All the backup RAM is retained"]
+    #[inline(always)]
+    pub fn ret(self) -> &'a mut W {
+        self.variant(BRAMCFG_A::RET)
+    }
+    #[doc = "Only the first 4Kbytes of the backup RAM is retained"]
+    #[inline(always)]
+    pub fn partial(self) -> &'a mut W {
+        self.variant(BRAMCFG_A::PARTIAL)
+    }
+    #[doc = "All the backup RAM is turned OFF"]
+    #[inline(always)]
+    pub fn off(self) -> &'a mut W {
+        self.variant(BRAMCFG_A::OFF)
+    }
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {

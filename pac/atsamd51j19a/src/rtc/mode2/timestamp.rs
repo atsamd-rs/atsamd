@@ -6,19 +6,17 @@ pub type SECOND_R = crate::R<u8, u8>;
 pub type MINUTE_R = crate::R<u8, u8>;
 #[doc = "Hour Timestamp Value\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum HOUR_A {
     #[doc = "0: AM when CLKREP in 12-hour"]
-    AM,
+    AM = 0,
     #[doc = "16: PM when CLKREP in 12-hour"]
-    PM,
+    PM = 16,
 }
 impl From<HOUR_A> for u8 {
     #[inline(always)]
     fn from(variant: HOUR_A) -> Self {
-        match variant {
-            HOUR_A::AM => 0,
-            HOUR_A::PM => 16,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `HOUR`"]

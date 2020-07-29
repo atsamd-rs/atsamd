@@ -121,6 +121,45 @@ impl INTCLKS_R {
         *self == INTCLKS_A::READY
     }
 }
+#[doc = "Write proxy for field `INTCLKS`"]
+pub struct INTCLKS_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> INTCLKS_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: INTCLKS_A) -> &'a mut W {
+        {
+            self.bit(variant.into())
+        }
+    }
+    #[doc = "Not Ready"]
+    #[inline(always)]
+    pub fn not_ready(self) -> &'a mut W {
+        self.variant(INTCLKS_A::NOT_READY)
+    }
+    #[doc = "Ready"]
+    #[inline(always)]
+    pub fn ready(self) -> &'a mut W {
+        self.variant(INTCLKS_A::READY)
+    }
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 1)) | (((value as u16) & 0x01) << 1);
+        self.w
+    }
+}
 #[doc = "SD Clock Enable\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum SDCLKEN_A {
@@ -336,6 +375,11 @@ impl W {
     #[inline(always)]
     pub fn intclken(&mut self) -> INTCLKEN_W {
         INTCLKEN_W { w: self }
+    }
+    #[doc = "Bit 1 - Internal Clock Stable"]
+    #[inline(always)]
+    pub fn intclks(&mut self) -> INTCLKS_W {
+        INTCLKS_W { w: self }
     }
     #[doc = "Bit 2 - SD Clock Enable"]
     #[inline(always)]

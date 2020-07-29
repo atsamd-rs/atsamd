@@ -84,31 +84,25 @@ impl<'a> ONESHOT_W<'a> {
 }
 #[doc = "Command\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum CMD_A {
     #[doc = "0: No action"]
-    NONE,
+    NONE = 0,
     #[doc = "1: Force a start, restart or retrigger"]
-    RETRIGGER,
+    RETRIGGER = 1,
     #[doc = "2: Force a stop"]
-    STOP,
+    STOP = 2,
     #[doc = "3: Force update of double-buffered register"]
-    UPDATE,
+    UPDATE = 3,
     #[doc = "4: Force a read synchronization of COUNT"]
-    READSYNC,
+    READSYNC = 4,
     #[doc = "5: One-shot DMA trigger"]
-    DMAOS,
+    DMAOS = 5,
 }
 impl From<CMD_A> for u8 {
     #[inline(always)]
     fn from(variant: CMD_A) -> Self {
-        match variant {
-            CMD_A::NONE => 0,
-            CMD_A::RETRIGGER => 1,
-            CMD_A::STOP => 2,
-            CMD_A::UPDATE => 3,
-            CMD_A::READSYNC => 4,
-            CMD_A::DMAOS => 5,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `CMD`"]

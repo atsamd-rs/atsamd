@@ -58,7 +58,7 @@ pub struct RegisterBlock {
     #[doc = "0x1ffc - Component Identification 3"]
     pub cid3: CID3,
 }
-#[doc = "Control\n\nThis register you can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about avaliable fields see [ctrl](ctrl) module"]
+#[doc = "Control\n\nThis register you can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [ctrl](ctrl) module"]
 pub type CTRL = crate::Reg<u8, _CTRL>;
 #[allow(missing_docs)]
 #[doc(hidden)]
@@ -67,7 +67,7 @@ pub struct _CTRL;
 impl crate::Writable for CTRL {}
 #[doc = "Control"]
 pub mod ctrl;
-#[doc = "Status A\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about avaliable fields see [statusa](statusa) module"]
+#[doc = "Status A\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [statusa](statusa) module"]
 pub type STATUSA = crate::Reg<u8, _STATUSA>;
 #[allow(missing_docs)]
 #[doc(hidden)]
@@ -78,7 +78,7 @@ impl crate::Readable for STATUSA {}
 impl crate::Writable for STATUSA {}
 #[doc = "Status A"]
 pub mod statusa;
-#[doc = "Status B\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about avaliable fields see [statusb](statusb) module"]
+#[doc = "Status B\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [statusb](statusb) module"]
 pub type STATUSB = crate::Reg<u8, _STATUSB>;
 #[allow(missing_docs)]
 #[doc(hidden)]
@@ -87,7 +87,7 @@ pub struct _STATUSB;
 impl crate::Readable for STATUSB {}
 #[doc = "Status B"]
 pub mod statusb;
-#[doc = "Address\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about avaliable fields see [addr](addr) module"]
+#[doc = "Address\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [addr](addr) module"]
 pub type ADDR = crate::Reg<u32, _ADDR>;
 #[allow(missing_docs)]
 #[doc(hidden)]
@@ -98,7 +98,7 @@ impl crate::Readable for ADDR {}
 impl crate::Writable for ADDR {}
 #[doc = "Address"]
 pub mod addr;
-#[doc = "Length\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about avaliable fields see [length](length) module"]
+#[doc = "Length\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [length](length) module"]
 pub type LENGTH = crate::Reg<u32, _LENGTH>;
 #[allow(missing_docs)]
 #[doc(hidden)]
@@ -109,7 +109,7 @@ impl crate::Readable for LENGTH {}
 impl crate::Writable for LENGTH {}
 #[doc = "Length"]
 pub mod length;
-#[doc = "Data\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about avaliable fields see [data](data) module"]
+#[doc = "Data\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [data](data) module"]
 pub type DATA = crate::Reg<u32, _DATA>;
 #[allow(missing_docs)]
 #[doc(hidden)]
@@ -120,7 +120,7 @@ impl crate::Readable for DATA {}
 impl crate::Writable for DATA {}
 #[doc = "Data"]
 pub mod data;
-#[doc = "Debug Communication Channel n\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about avaliable fields see [dcc](dcc) module"]
+#[doc = "Debug Communication Channel n\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [dcc](dcc) module"]
 pub type DCC = crate::Reg<u32, _DCC>;
 #[allow(missing_docs)]
 #[doc(hidden)]
@@ -131,7 +131,7 @@ impl crate::Readable for DCC {}
 impl crate::Writable for DCC {}
 #[doc = "Debug Communication Channel n"]
 pub mod dcc;
-#[doc = "Device Identification\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about avaliable fields see [did](did) module"]
+#[doc = "Device Identification\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [did](did) module"]
 pub type DID = crate::Reg<u32, _DID>;
 #[allow(missing_docs)]
 #[doc(hidden)]
@@ -151,7 +151,7 @@ impl crate::Readable for CFG {}
 impl crate::Writable for CFG {}
 #[doc = "Configuration"]
 pub mod cfg;
-#[doc = "Device Configuration\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about avaliable fields see [dcfg](dcfg) module"]
+#[doc = "Device Configuration\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [dcfg](dcfg) module"]
 pub type DCFG = crate::Reg<u32, _DCFG>;
 #[allow(missing_docs)]
 #[doc(hidden)]
@@ -162,7 +162,7 @@ impl crate::Readable for DCFG {}
 impl crate::Writable for DCFG {}
 #[doc = "Device Configuration"]
 pub mod dcfg;
-#[doc = "CoreSight ROM Table Entry 0\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about avaliable fields see [entry0](entry0) module"]
+#[doc = "CoreSight ROM Table Entry 0\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [entry0](entry0) module"]
 pub type ENTRY0 = crate::Reg<u32, _ENTRY0>;
 #[allow(missing_docs)]
 #[doc(hidden)]
@@ -171,7 +171,7 @@ pub struct _ENTRY0;
 impl crate::Readable for ENTRY0 {}
 #[doc = "CoreSight ROM Table Entry 0"]
 pub mod entry0;
-#[doc = "CoreSight ROM Table Entry 1\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about avaliable fields see [entry1](entry1) module"]
+#[doc = "CoreSight ROM Table Entry 1\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [entry1](entry1) module"]
 pub type ENTRY1 = crate::Reg<u32, _ENTRY1>;
 #[allow(missing_docs)]
 #[doc(hidden)]
@@ -180,7 +180,7 @@ pub struct _ENTRY1;
 impl crate::Readable for ENTRY1 {}
 #[doc = "CoreSight ROM Table Entry 1"]
 pub mod entry1;
-#[doc = "CoreSight ROM Table End\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about avaliable fields see [end](end) module"]
+#[doc = "CoreSight ROM Table End\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [end](end) module"]
 pub type END = crate::Reg<u32, _END>;
 #[allow(missing_docs)]
 #[doc(hidden)]
@@ -189,7 +189,7 @@ pub struct _END;
 impl crate::Readable for END {}
 #[doc = "CoreSight ROM Table End"]
 pub mod end;
-#[doc = "CoreSight ROM Table Memory Type\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about avaliable fields see [memtype](memtype) module"]
+#[doc = "CoreSight ROM Table Memory Type\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [memtype](memtype) module"]
 pub type MEMTYPE = crate::Reg<u32, _MEMTYPE>;
 #[allow(missing_docs)]
 #[doc(hidden)]
@@ -198,7 +198,7 @@ pub struct _MEMTYPE;
 impl crate::Readable for MEMTYPE {}
 #[doc = "CoreSight ROM Table Memory Type"]
 pub mod memtype;
-#[doc = "Peripheral Identification 4\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about avaliable fields see [pid4](pid4) module"]
+#[doc = "Peripheral Identification 4\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [pid4](pid4) module"]
 pub type PID4 = crate::Reg<u32, _PID4>;
 #[allow(missing_docs)]
 #[doc(hidden)]
@@ -207,7 +207,7 @@ pub struct _PID4;
 impl crate::Readable for PID4 {}
 #[doc = "Peripheral Identification 4"]
 pub mod pid4;
-#[doc = "Peripheral Identification 5\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about avaliable fields see [pid5](pid5) module"]
+#[doc = "Peripheral Identification 5\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [pid5](pid5) module"]
 pub type PID5 = crate::Reg<u32, _PID5>;
 #[allow(missing_docs)]
 #[doc(hidden)]
@@ -216,7 +216,7 @@ pub struct _PID5;
 impl crate::Readable for PID5 {}
 #[doc = "Peripheral Identification 5"]
 pub mod pid5;
-#[doc = "Peripheral Identification 6\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about avaliable fields see [pid6](pid6) module"]
+#[doc = "Peripheral Identification 6\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [pid6](pid6) module"]
 pub type PID6 = crate::Reg<u32, _PID6>;
 #[allow(missing_docs)]
 #[doc(hidden)]
@@ -225,7 +225,7 @@ pub struct _PID6;
 impl crate::Readable for PID6 {}
 #[doc = "Peripheral Identification 6"]
 pub mod pid6;
-#[doc = "Peripheral Identification 7\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about avaliable fields see [pid7](pid7) module"]
+#[doc = "Peripheral Identification 7\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [pid7](pid7) module"]
 pub type PID7 = crate::Reg<u32, _PID7>;
 #[allow(missing_docs)]
 #[doc(hidden)]
@@ -234,7 +234,7 @@ pub struct _PID7;
 impl crate::Readable for PID7 {}
 #[doc = "Peripheral Identification 7"]
 pub mod pid7;
-#[doc = "Peripheral Identification 0\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about avaliable fields see [pid0](pid0) module"]
+#[doc = "Peripheral Identification 0\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [pid0](pid0) module"]
 pub type PID0 = crate::Reg<u32, _PID0>;
 #[allow(missing_docs)]
 #[doc(hidden)]
@@ -243,7 +243,7 @@ pub struct _PID0;
 impl crate::Readable for PID0 {}
 #[doc = "Peripheral Identification 0"]
 pub mod pid0;
-#[doc = "Peripheral Identification 1\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about avaliable fields see [pid1](pid1) module"]
+#[doc = "Peripheral Identification 1\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [pid1](pid1) module"]
 pub type PID1 = crate::Reg<u32, _PID1>;
 #[allow(missing_docs)]
 #[doc(hidden)]
@@ -252,7 +252,7 @@ pub struct _PID1;
 impl crate::Readable for PID1 {}
 #[doc = "Peripheral Identification 1"]
 pub mod pid1;
-#[doc = "Peripheral Identification 2\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about avaliable fields see [pid2](pid2) module"]
+#[doc = "Peripheral Identification 2\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [pid2](pid2) module"]
 pub type PID2 = crate::Reg<u32, _PID2>;
 #[allow(missing_docs)]
 #[doc(hidden)]
@@ -261,7 +261,7 @@ pub struct _PID2;
 impl crate::Readable for PID2 {}
 #[doc = "Peripheral Identification 2"]
 pub mod pid2;
-#[doc = "Peripheral Identification 3\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about avaliable fields see [pid3](pid3) module"]
+#[doc = "Peripheral Identification 3\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [pid3](pid3) module"]
 pub type PID3 = crate::Reg<u32, _PID3>;
 #[allow(missing_docs)]
 #[doc(hidden)]
@@ -270,7 +270,7 @@ pub struct _PID3;
 impl crate::Readable for PID3 {}
 #[doc = "Peripheral Identification 3"]
 pub mod pid3;
-#[doc = "Component Identification 0\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about avaliable fields see [cid0](cid0) module"]
+#[doc = "Component Identification 0\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [cid0](cid0) module"]
 pub type CID0 = crate::Reg<u32, _CID0>;
 #[allow(missing_docs)]
 #[doc(hidden)]
@@ -279,7 +279,7 @@ pub struct _CID0;
 impl crate::Readable for CID0 {}
 #[doc = "Component Identification 0"]
 pub mod cid0;
-#[doc = "Component Identification 1\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about avaliable fields see [cid1](cid1) module"]
+#[doc = "Component Identification 1\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [cid1](cid1) module"]
 pub type CID1 = crate::Reg<u32, _CID1>;
 #[allow(missing_docs)]
 #[doc(hidden)]
@@ -288,7 +288,7 @@ pub struct _CID1;
 impl crate::Readable for CID1 {}
 #[doc = "Component Identification 1"]
 pub mod cid1;
-#[doc = "Component Identification 2\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about avaliable fields see [cid2](cid2) module"]
+#[doc = "Component Identification 2\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [cid2](cid2) module"]
 pub type CID2 = crate::Reg<u32, _CID2>;
 #[allow(missing_docs)]
 #[doc(hidden)]
@@ -297,7 +297,7 @@ pub struct _CID2;
 impl crate::Readable for CID2 {}
 #[doc = "Component Identification 2"]
 pub mod cid2;
-#[doc = "Component Identification 3\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about avaliable fields see [cid3](cid3) module"]
+#[doc = "Component Identification 3\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [cid3](cid3) module"]
 pub type CID3 = crate::Reg<u32, _CID3>;
 #[allow(missing_docs)]
 #[doc(hidden)]

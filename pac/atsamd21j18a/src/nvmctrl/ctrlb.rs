@@ -12,22 +12,19 @@ impl crate::ResetValue for super::CTRLB {
 }
 #[doc = "NVM Read Wait States\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum RWS_A {
     #[doc = "0: Single Auto Wait State"]
-    SINGLE,
+    SINGLE = 0,
     #[doc = "1: Half Auto Wait State"]
-    HALF,
+    HALF = 1,
     #[doc = "2: Dual Auto Wait State"]
-    DUAL,
+    DUAL = 2,
 }
 impl From<RWS_A> for u8 {
     #[inline(always)]
     fn from(variant: RWS_A) -> Self {
-        match variant {
-            RWS_A::SINGLE => 0,
-            RWS_A::HALF => 1,
-            RWS_A::DUAL => 2,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `RWS`"]
@@ -118,22 +115,19 @@ impl<'a> MANW_W<'a> {
 }
 #[doc = "Power Reduction Mode during Sleep\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum SLEEPPRM_A {
     #[doc = "0: NVM block enters low-power mode when entering sleep.NVM block exits low-power mode upon first access."]
-    WAKEONACCESS,
+    WAKEONACCESS = 0,
     #[doc = "1: NVM block enters low-power mode when entering sleep.NVM block exits low-power mode when exiting sleep."]
-    WAKEUPINSTANT,
+    WAKEUPINSTANT = 1,
     #[doc = "3: Auto power reduction disabled."]
-    DISABLED,
+    DISABLED = 3,
 }
 impl From<SLEEPPRM_A> for u8 {
     #[inline(always)]
     fn from(variant: SLEEPPRM_A) -> Self {
-        match variant {
-            SLEEPPRM_A::WAKEONACCESS => 0,
-            SLEEPPRM_A::WAKEUPINSTANT => 1,
-            SLEEPPRM_A::DISABLED => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `SLEEPPRM`"]
@@ -200,22 +194,19 @@ impl<'a> SLEEPPRM_W<'a> {
 }
 #[doc = "NVMCTRL Read Mode\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum READMODE_A {
     #[doc = "0: The NVM Controller (cache system) does not insert wait states on a cache miss. Gives the best system performance."]
-    NO_MISS_PENALTY,
+    NO_MISS_PENALTY = 0,
     #[doc = "1: Reduces power consumption of the cache system, but inserts a wait state each time there is a cache miss. This mode may not be relevant if CPU performance is required, as the application will be stalled and may lead to increase run time."]
-    LOW_POWER,
+    LOW_POWER = 1,
     #[doc = "2: The cache system ensures that a cache hit or miss takes the same amount of time, determined by the number of programmed flash wait states. This mode can be used for real-time applications that require deterministic execution timings."]
-    DETERMINISTIC,
+    DETERMINISTIC = 2,
 }
 impl From<READMODE_A> for u8 {
     #[inline(always)]
     fn from(variant: READMODE_A) -> Self {
-        match variant {
-            READMODE_A::NO_MISS_PENALTY => 0,
-            READMODE_A::LOW_POWER => 1,
-            READMODE_A::DETERMINISTIC => 2,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `READMODE`"]

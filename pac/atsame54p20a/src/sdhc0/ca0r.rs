@@ -34,7 +34,7 @@ impl TEOCLKF_R {
 #[doc = "Timeout Clock Unit\n\nValue on reset: 1"]
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum TEOCLKU_A {
-    #[doc = "0: kHz"]
+    #[doc = "0: KHz"]
     KHZ = 0,
     #[doc = "1: MHz"]
     MHZ = 1,

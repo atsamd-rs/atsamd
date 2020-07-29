@@ -4,37 +4,29 @@ pub type R = crate::R<u32, super::PARAM>;
 pub type NVMP_R = crate::R<u16, u16>;
 #[doc = "Page Size\n\nValue on reset: 6"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum PSZ_A {
     #[doc = "0: 8 bytes"]
-    _8,
+    _8 = 0,
     #[doc = "1: 16 bytes"]
-    _16,
+    _16 = 1,
     #[doc = "2: 32 bytes"]
-    _32,
+    _32 = 2,
     #[doc = "3: 64 bytes"]
-    _64,
+    _64 = 3,
     #[doc = "4: 128 bytes"]
-    _128,
+    _128 = 4,
     #[doc = "5: 256 bytes"]
-    _256,
+    _256 = 5,
     #[doc = "6: 512 bytes"]
-    _512,
+    _512 = 6,
     #[doc = "7: 1024 bytes"]
-    _1024,
+    _1024 = 7,
 }
 impl From<PSZ_A> for u8 {
     #[inline(always)]
     fn from(variant: PSZ_A) -> Self {
-        match variant {
-            PSZ_A::_8 => 0,
-            PSZ_A::_16 => 1,
-            PSZ_A::_32 => 2,
-            PSZ_A::_64 => 3,
-            PSZ_A::_128 => 4,
-            PSZ_A::_256 => 5,
-            PSZ_A::_512 => 6,
-            PSZ_A::_1024 => 7,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `PSZ`"]

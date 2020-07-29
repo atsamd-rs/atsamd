@@ -108,25 +108,21 @@ impl<'a> CORREN_W<'a> {
 }
 #[doc = "Conversion Result Resolution\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum RESSEL_A {
     #[doc = "0: 12-bit result"]
-    _12BIT,
+    _12BIT = 0,
     #[doc = "1: For averaging mode output"]
-    _16BIT,
+    _16BIT = 1,
     #[doc = "2: 10-bit result"]
-    _10BIT,
+    _10BIT = 2,
     #[doc = "3: 8-bit result"]
-    _8BIT,
+    _8BIT = 3,
 }
 impl From<RESSEL_A> for u8 {
     #[inline(always)]
     fn from(variant: RESSEL_A) -> Self {
-        match variant {
-            RESSEL_A::_12BIT => 0,
-            RESSEL_A::_16BIT => 1,
-            RESSEL_A::_10BIT => 2,
-            RESSEL_A::_8BIT => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `RESSEL`"]
@@ -205,37 +201,29 @@ impl<'a> RESSEL_W<'a> {
 }
 #[doc = "Prescaler Configuration\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum PRESCALER_A {
     #[doc = "0: Peripheral clock divided by 4"]
-    DIV4,
+    DIV4 = 0,
     #[doc = "1: Peripheral clock divided by 8"]
-    DIV8,
+    DIV8 = 1,
     #[doc = "2: Peripheral clock divided by 16"]
-    DIV16,
+    DIV16 = 2,
     #[doc = "3: Peripheral clock divided by 32"]
-    DIV32,
+    DIV32 = 3,
     #[doc = "4: Peripheral clock divided by 64"]
-    DIV64,
+    DIV64 = 4,
     #[doc = "5: Peripheral clock divided by 128"]
-    DIV128,
+    DIV128 = 5,
     #[doc = "6: Peripheral clock divided by 256"]
-    DIV256,
+    DIV256 = 6,
     #[doc = "7: Peripheral clock divided by 512"]
-    DIV512,
+    DIV512 = 7,
 }
 impl From<PRESCALER_A> for u8 {
     #[inline(always)]
     fn from(variant: PRESCALER_A) -> Self {
-        match variant {
-            PRESCALER_A::DIV4 => 0,
-            PRESCALER_A::DIV8 => 1,
-            PRESCALER_A::DIV16 => 2,
-            PRESCALER_A::DIV32 => 3,
-            PRESCALER_A::DIV64 => 4,
-            PRESCALER_A::DIV128 => 5,
-            PRESCALER_A::DIV256 => 6,
-            PRESCALER_A::DIV512 => 7,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `PRESCALER`"]

@@ -12,37 +12,29 @@ impl crate::ResetValue for super::APBCSEL {
 }
 #[doc = "APBC Prescaler Selection\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum APBCDIV_A {
     #[doc = "0: Divide by 1"]
-    DIV1,
+    DIV1 = 0,
     #[doc = "1: Divide by 2"]
-    DIV2,
+    DIV2 = 1,
     #[doc = "2: Divide by 4"]
-    DIV4,
+    DIV4 = 2,
     #[doc = "3: Divide by 8"]
-    DIV8,
+    DIV8 = 3,
     #[doc = "4: Divide by 16"]
-    DIV16,
+    DIV16 = 4,
     #[doc = "5: Divide by 32"]
-    DIV32,
+    DIV32 = 5,
     #[doc = "6: Divide by 64"]
-    DIV64,
+    DIV64 = 6,
     #[doc = "7: Divide by 128"]
-    DIV128,
+    DIV128 = 7,
 }
 impl From<APBCDIV_A> for u8 {
     #[inline(always)]
     fn from(variant: APBCDIV_A) -> Self {
-        match variant {
-            APBCDIV_A::DIV1 => 0,
-            APBCDIV_A::DIV2 => 1,
-            APBCDIV_A::DIV4 => 2,
-            APBCDIV_A::DIV8 => 3,
-            APBCDIV_A::DIV16 => 4,
-            APBCDIV_A::DIV32 => 5,
-            APBCDIV_A::DIV64 => 6,
-            APBCDIV_A::DIV128 => 7,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `APBCDIV`"]

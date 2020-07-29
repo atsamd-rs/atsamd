@@ -6,22 +6,19 @@ pub type GCLK_R = crate::R<bool, bool>;
 pub type RRP_R = crate::R<bool, bool>;
 #[doc = "Number of Way\n\nValue on reset: 2"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum WAYNUM_A {
     #[doc = "0: Direct Mapped Cache"]
-    DMAPPED,
+    DMAPPED = 0,
     #[doc = "1: 2-WAY set associative"]
-    ARCH2WAY,
+    ARCH2WAY = 1,
     #[doc = "2: 4-WAY set associative"]
-    ARCH4WAY,
+    ARCH4WAY = 2,
 }
 impl From<WAYNUM_A> for u8 {
     #[inline(always)]
     fn from(variant: WAYNUM_A) -> Self {
-        match variant {
-            WAYNUM_A::DMAPPED => 0,
-            WAYNUM_A::ARCH2WAY => 1,
-            WAYNUM_A::ARCH4WAY => 2,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `WAYNUM`"]
@@ -58,34 +55,27 @@ impl WAYNUM_R {
 pub type LCKDOWN_R = crate::R<bool, bool>;
 #[doc = "Cache Size\n\nValue on reset: 2"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum CSIZE_A {
     #[doc = "0: Cache Size is 1 KB"]
-    CSIZE_1KB,
+    CSIZE_1KB = 0,
     #[doc = "1: Cache Size is 2 KB"]
-    CSIZE_2KB,
+    CSIZE_2KB = 1,
     #[doc = "2: Cache Size is 4 KB"]
-    CSIZE_4KB,
+    CSIZE_4KB = 2,
     #[doc = "3: Cache Size is 8 KB"]
-    CSIZE_8KB,
+    CSIZE_8KB = 3,
     #[doc = "4: Cache Size is 16 KB"]
-    CSIZE_16KB,
+    CSIZE_16KB = 4,
     #[doc = "5: Cache Size is 32 KB"]
-    CSIZE_32KB,
+    CSIZE_32KB = 5,
     #[doc = "6: Cache Size is 64 KB"]
-    CSIZE_64KB,
+    CSIZE_64KB = 6,
 }
 impl From<CSIZE_A> for u8 {
     #[inline(always)]
     fn from(variant: CSIZE_A) -> Self {
-        match variant {
-            CSIZE_A::CSIZE_1KB => 0,
-            CSIZE_A::CSIZE_2KB => 1,
-            CSIZE_A::CSIZE_4KB => 2,
-            CSIZE_A::CSIZE_8KB => 3,
-            CSIZE_A::CSIZE_16KB => 4,
-            CSIZE_A::CSIZE_32KB => 5,
-            CSIZE_A::CSIZE_64KB => 6,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `CSIZE`"]
@@ -144,31 +134,25 @@ impl CSIZE_R {
 }
 #[doc = "Cache Line Size\n\nValue on reset: 2"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum CLSIZE_A {
     #[doc = "0: Cache Line Size is 4 bytes"]
-    CLSIZE_4B,
+    CLSIZE_4B = 0,
     #[doc = "1: Cache Line Size is 8 bytes"]
-    CLSIZE_8B,
+    CLSIZE_8B = 1,
     #[doc = "2: Cache Line Size is 16 bytes"]
-    CLSIZE_16B,
+    CLSIZE_16B = 2,
     #[doc = "3: Cache Line Size is 32 bytes"]
-    CLSIZE_32B,
+    CLSIZE_32B = 3,
     #[doc = "4: Cache Line Size is 64 bytes"]
-    CLSIZE_64B,
+    CLSIZE_64B = 4,
     #[doc = "5: Cache Line Size is 128 bytes"]
-    CLSIZE_128B,
+    CLSIZE_128B = 5,
 }
 impl From<CLSIZE_A> for u8 {
     #[inline(always)]
     fn from(variant: CLSIZE_A) -> Self {
-        match variant {
-            CLSIZE_A::CLSIZE_4B => 0,
-            CLSIZE_A::CLSIZE_8B => 1,
-            CLSIZE_A::CLSIZE_16B => 2,
-            CLSIZE_A::CLSIZE_32B => 3,
-            CLSIZE_A::CLSIZE_64B => 4,
-            CLSIZE_A::CLSIZE_128B => 5,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `CLSIZE`"]

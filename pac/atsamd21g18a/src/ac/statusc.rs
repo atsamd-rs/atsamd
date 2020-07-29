@@ -6,22 +6,19 @@ pub type STATE0_R = crate::R<bool, bool>;
 pub type STATE1_R = crate::R<bool, bool>;
 #[doc = "Window 0 Current State\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum WSTATE0_A {
     #[doc = "0: Signal is above window"]
-    ABOVE,
+    ABOVE = 0,
     #[doc = "1: Signal is inside window"]
-    INSIDE,
+    INSIDE = 1,
     #[doc = "2: Signal is below window"]
-    BELOW,
+    BELOW = 2,
 }
 impl From<WSTATE0_A> for u8 {
     #[inline(always)]
     fn from(variant: WSTATE0_A) -> Self {
-        match variant {
-            WSTATE0_A::ABOVE => 0,
-            WSTATE0_A::INSIDE => 1,
-            WSTATE0_A::BELOW => 2,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `WSTATE0`"]

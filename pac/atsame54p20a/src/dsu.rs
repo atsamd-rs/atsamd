@@ -20,42 +20,17 @@ pub struct RegisterBlock {
     pub did: DID,
     #[doc = "0x1c - Configuration"]
     pub cfg: CFG,
-    _reserved9: [u8; 32usize],
-    #[doc = "0x40 - MBIST Control"]
-    pub mbctrl: MBCTRL,
-    #[doc = "0x44 - MBIST Configuration"]
-    pub mbconfig: MBCONFIG,
-    #[doc = "0x48 - MBIST Background Word"]
-    pub mbword: MBWORD,
-    #[doc = "0x4c - MBIST Global Status"]
-    pub mbgstat: MBGSTAT,
-    #[doc = "0x50 - MBIST Fail Data"]
-    pub mbdfail: MBDFAIL,
-    #[doc = "0x54 - MBIST Expected Data"]
-    pub mbdexp: MBDEXP,
-    #[doc = "0x58 - MBIST Fail Address"]
-    pub mbafail: MBAFAIL,
-    #[doc = "0x5c - MBIST Fail Context"]
-    pub mbcontext: MBCONTEXT,
-    #[doc = "0x60 - MBIST Memory Enable 0"]
-    pub mbenable0: MBENABLE0,
-    _reserved18: [u8; 4usize],
-    #[doc = "0x68 - MBIST Memory Busy 0"]
-    pub mbbusy0: MBBUSY0,
-    _reserved19: [u8; 4usize],
-    #[doc = "0x70 - MBIST Memory Status 0"]
-    pub mbstatus0: MBSTATUS0,
-    _reserved20: [u8; 124usize],
+    _reserved9: [u8; 208usize],
     #[doc = "0xf0 - Device Configuration"]
     pub dcfg: [DCFG; 2],
-    _reserved21: [u8; 3848usize],
+    _reserved10: [u8; 3848usize],
     #[doc = "0x1000 - CoreSight ROM Table Entry 0"]
     pub entry0: ENTRY0,
     #[doc = "0x1004 - CoreSight ROM Table Entry 1"]
     pub entry1: ENTRY1,
     #[doc = "0x1008 - CoreSight ROM Table End"]
     pub end: END,
-    _reserved24: [u8; 4032usize],
+    _reserved13: [u8; 4032usize],
     #[doc = "0x1fcc - CoreSight ROM Table Memory Type"]
     pub memtype: MEMTYPE,
     #[doc = "0x1fd0 - Peripheral Identification 4"]
@@ -176,117 +151,6 @@ impl crate::Readable for CFG {}
 impl crate::Writable for CFG {}
 #[doc = "Configuration"]
 pub mod cfg;
-#[doc = "MBIST Control\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [mbctrl](mbctrl) module"]
-pub type MBCTRL = crate::Reg<u32, _MBCTRL>;
-#[allow(missing_docs)]
-#[doc(hidden)]
-pub struct _MBCTRL;
-#[doc = "`read()` method returns [mbctrl::R](mbctrl::R) reader structure"]
-impl crate::Readable for MBCTRL {}
-#[doc = "`write(|w| ..)` method takes [mbctrl::W](mbctrl::W) writer structure"]
-impl crate::Writable for MBCTRL {}
-#[doc = "MBIST Control"]
-pub mod mbctrl;
-#[doc = "MBIST Configuration\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [mbconfig](mbconfig) module"]
-pub type MBCONFIG = crate::Reg<u32, _MBCONFIG>;
-#[allow(missing_docs)]
-#[doc(hidden)]
-pub struct _MBCONFIG;
-#[doc = "`read()` method returns [mbconfig::R](mbconfig::R) reader structure"]
-impl crate::Readable for MBCONFIG {}
-#[doc = "`write(|w| ..)` method takes [mbconfig::W](mbconfig::W) writer structure"]
-impl crate::Writable for MBCONFIG {}
-#[doc = "MBIST Configuration"]
-pub mod mbconfig;
-#[doc = "MBIST Background Word\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [mbword](mbword) module"]
-pub type MBWORD = crate::Reg<u32, _MBWORD>;
-#[allow(missing_docs)]
-#[doc(hidden)]
-pub struct _MBWORD;
-#[doc = "`read()` method returns [mbword::R](mbword::R) reader structure"]
-impl crate::Readable for MBWORD {}
-#[doc = "`write(|w| ..)` method takes [mbword::W](mbword::W) writer structure"]
-impl crate::Writable for MBWORD {}
-#[doc = "MBIST Background Word"]
-pub mod mbword;
-#[doc = "MBIST Global Status\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [mbgstat](mbgstat) module"]
-pub type MBGSTAT = crate::Reg<u32, _MBGSTAT>;
-#[allow(missing_docs)]
-#[doc(hidden)]
-pub struct _MBGSTAT;
-#[doc = "`read()` method returns [mbgstat::R](mbgstat::R) reader structure"]
-impl crate::Readable for MBGSTAT {}
-#[doc = "`write(|w| ..)` method takes [mbgstat::W](mbgstat::W) writer structure"]
-impl crate::Writable for MBGSTAT {}
-#[doc = "MBIST Global Status"]
-pub mod mbgstat;
-#[doc = "MBIST Fail Data\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [mbdfail](mbdfail) module"]
-pub type MBDFAIL = crate::Reg<u32, _MBDFAIL>;
-#[allow(missing_docs)]
-#[doc(hidden)]
-pub struct _MBDFAIL;
-#[doc = "`read()` method returns [mbdfail::R](mbdfail::R) reader structure"]
-impl crate::Readable for MBDFAIL {}
-#[doc = "MBIST Fail Data"]
-pub mod mbdfail;
-#[doc = "MBIST Expected Data\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [mbdexp](mbdexp) module"]
-pub type MBDEXP = crate::Reg<u32, _MBDEXP>;
-#[allow(missing_docs)]
-#[doc(hidden)]
-pub struct _MBDEXP;
-#[doc = "`read()` method returns [mbdexp::R](mbdexp::R) reader structure"]
-impl crate::Readable for MBDEXP {}
-#[doc = "MBIST Expected Data"]
-pub mod mbdexp;
-#[doc = "MBIST Fail Address\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [mbafail](mbafail) module"]
-pub type MBAFAIL = crate::Reg<u32, _MBAFAIL>;
-#[allow(missing_docs)]
-#[doc(hidden)]
-pub struct _MBAFAIL;
-#[doc = "`read()` method returns [mbafail::R](mbafail::R) reader structure"]
-impl crate::Readable for MBAFAIL {}
-#[doc = "MBIST Fail Address"]
-pub mod mbafail;
-#[doc = "MBIST Fail Context\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [mbcontext](mbcontext) module"]
-pub type MBCONTEXT = crate::Reg<u32, _MBCONTEXT>;
-#[allow(missing_docs)]
-#[doc(hidden)]
-pub struct _MBCONTEXT;
-#[doc = "`read()` method returns [mbcontext::R](mbcontext::R) reader structure"]
-impl crate::Readable for MBCONTEXT {}
-#[doc = "MBIST Fail Context"]
-pub mod mbcontext;
-#[doc = "MBIST Memory Enable 0\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [mbenable0](mbenable0) module"]
-pub type MBENABLE0 = crate::Reg<u32, _MBENABLE0>;
-#[allow(missing_docs)]
-#[doc(hidden)]
-pub struct _MBENABLE0;
-#[doc = "`read()` method returns [mbenable0::R](mbenable0::R) reader structure"]
-impl crate::Readable for MBENABLE0 {}
-#[doc = "`write(|w| ..)` method takes [mbenable0::W](mbenable0::W) writer structure"]
-impl crate::Writable for MBENABLE0 {}
-#[doc = "MBIST Memory Enable 0"]
-pub mod mbenable0;
-#[doc = "MBIST Memory Busy 0\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [mbbusy0](mbbusy0) module"]
-pub type MBBUSY0 = crate::Reg<u32, _MBBUSY0>;
-#[allow(missing_docs)]
-#[doc(hidden)]
-pub struct _MBBUSY0;
-#[doc = "`read()` method returns [mbbusy0::R](mbbusy0::R) reader structure"]
-impl crate::Readable for MBBUSY0 {}
-#[doc = "MBIST Memory Busy 0"]
-pub mod mbbusy0;
-#[doc = "MBIST Memory Status 0\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [mbstatus0](mbstatus0) module"]
-pub type MBSTATUS0 = crate::Reg<u32, _MBSTATUS0>;
-#[allow(missing_docs)]
-#[doc(hidden)]
-pub struct _MBSTATUS0;
-#[doc = "`read()` method returns [mbstatus0::R](mbstatus0::R) reader structure"]
-impl crate::Readable for MBSTATUS0 {}
-#[doc = "`write(|w| ..)` method takes [mbstatus0::W](mbstatus0::W) writer structure"]
-impl crate::Writable for MBSTATUS0 {}
-#[doc = "MBIST Memory Status 0"]
-pub mod mbstatus0;
 #[doc = "Device Configuration\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [dcfg](dcfg) module"]
 pub type DCFG = crate::Reg<u32, _DCFG>;
 #[allow(missing_docs)]

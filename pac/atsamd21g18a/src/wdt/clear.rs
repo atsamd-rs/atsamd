@@ -10,16 +10,15 @@ impl crate::ResetValue for super::CLEAR {
 }
 #[doc = "Watchdog Clear\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum CLEAR_AW {
     #[doc = "165: Clear Key"]
-    KEY,
+    KEY = 165,
 }
 impl From<CLEAR_AW> for u8 {
     #[inline(always)]
     fn from(variant: CLEAR_AW) -> Self {
-        match variant {
-            CLEAR_AW::KEY => 165,
-        }
+        variant as _
     }
 }
 #[doc = "Write proxy for field `CLEAR`"]

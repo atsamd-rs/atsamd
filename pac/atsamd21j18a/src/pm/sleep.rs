@@ -12,22 +12,19 @@ impl crate::ResetValue for super::SLEEP {
 }
 #[doc = "Idle Mode Configuration\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum IDLE_A {
     #[doc = "0: The CPU clock domain is stopped"]
-    CPU,
+    CPU = 0,
     #[doc = "1: The CPU and AHB clock domains are stopped"]
-    AHB,
+    AHB = 1,
     #[doc = "2: The CPU, AHB and APB clock domains are stopped"]
-    APB,
+    APB = 2,
 }
 impl From<IDLE_A> for u8 {
     #[inline(always)]
     fn from(variant: IDLE_A) -> Self {
-        match variant {
-            IDLE_A::CPU => 0,
-            IDLE_A::AHB => 1,
-            IDLE_A::APB => 2,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `IDLE`"]

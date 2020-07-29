@@ -14,17 +14,14 @@ impl crate::ResetValue for super::NISTR {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CMDC_A {
     #[doc = "0: No command complete"]
-    NO,
+    NO = 0,
     #[doc = "1: Command complete"]
-    YES,
+    YES = 1,
 }
 impl From<CMDC_A> for bool {
     #[inline(always)]
     fn from(variant: CMDC_A) -> Self {
-        match variant {
-            CMDC_A::NO => false,
-            CMDC_A::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `CMDC`"]
@@ -92,17 +89,14 @@ impl<'a> CMDC_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum TRFC_A {
     #[doc = "0: Not complete"]
-    NO,
+    NO = 0,
     #[doc = "1: Command execution is completed"]
-    YES,
+    YES = 1,
 }
 impl From<TRFC_A> for bool {
     #[inline(always)]
     fn from(variant: TRFC_A) -> Self {
-        match variant {
-            TRFC_A::NO => false,
-            TRFC_A::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `TRFC`"]
@@ -170,17 +164,14 @@ impl<'a> TRFC_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum BLKGE_A {
     #[doc = "0: No Block Gap Event"]
-    NO,
+    NO = 0,
     #[doc = "1: Transaction stopped at block gap"]
-    STOP,
+    STOP = 1,
 }
 impl From<BLKGE_A> for bool {
     #[inline(always)]
     fn from(variant: BLKGE_A) -> Self {
-        match variant {
-            BLKGE_A::NO => false,
-            BLKGE_A::STOP => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `BLKGE`"]
@@ -248,17 +239,14 @@ impl<'a> BLKGE_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum DMAINT_A {
     #[doc = "0: No DMA Interrupt"]
-    NO,
+    NO = 0,
     #[doc = "1: DMA Interrupt is generated"]
-    YES,
+    YES = 1,
 }
 impl From<DMAINT_A> for bool {
     #[inline(always)]
     fn from(variant: DMAINT_A) -> Self {
-        match variant {
-            DMAINT_A::NO => false,
-            DMAINT_A::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `DMAINT`"]
@@ -326,17 +314,14 @@ impl<'a> DMAINT_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum BWRRDY_A {
     #[doc = "0: Not ready to write buffer"]
-    NO,
+    NO = 0,
     #[doc = "1: Ready to write buffer"]
-    YES,
+    YES = 1,
 }
 impl From<BWRRDY_A> for bool {
     #[inline(always)]
     fn from(variant: BWRRDY_A) -> Self {
-        match variant {
-            BWRRDY_A::NO => false,
-            BWRRDY_A::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `BWRRDY`"]
@@ -404,17 +389,14 @@ impl<'a> BWRRDY_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum BRDRDY_A {
     #[doc = "0: Not ready to read buffer"]
-    NO,
+    NO = 0,
     #[doc = "1: Ready to read buffer"]
-    YES,
+    YES = 1,
 }
 impl From<BRDRDY_A> for bool {
     #[inline(always)]
     fn from(variant: BRDRDY_A) -> Self {
-        match variant {
-            BRDRDY_A::NO => false,
-            BRDRDY_A::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `BRDRDY`"]
@@ -482,17 +464,14 @@ impl<'a> BRDRDY_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CINS_A {
     #[doc = "0: Card state stable or Debouncing"]
-    NO,
+    NO = 0,
     #[doc = "1: Card inserted"]
-    YES,
+    YES = 1,
 }
 impl From<CINS_A> for bool {
     #[inline(always)]
     fn from(variant: CINS_A) -> Self {
-        match variant {
-            CINS_A::NO => false,
-            CINS_A::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `CINS`"]
@@ -560,17 +539,14 @@ impl<'a> CINS_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CREM_A {
     #[doc = "0: Card state stable or Debouncing"]
-    NO,
+    NO = 0,
     #[doc = "1: Card Removed"]
-    YES,
+    YES = 1,
 }
 impl From<CREM_A> for bool {
     #[inline(always)]
     fn from(variant: CREM_A) -> Self {
-        match variant {
-            CREM_A::NO => false,
-            CREM_A::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `CREM`"]
@@ -638,17 +614,14 @@ impl<'a> CREM_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CINT_A {
     #[doc = "0: No Card Interrupt"]
-    NO,
+    NO = 0,
     #[doc = "1: Generate Card Interrupt"]
-    YES,
+    YES = 1,
 }
 impl From<CINT_A> for bool {
     #[inline(always)]
     fn from(variant: CINT_A) -> Self {
-        match variant {
-            CINT_A::NO => false,
-            CINT_A::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `CINT`"]
@@ -673,21 +646,57 @@ impl CINT_R {
         *self == CINT_A::YES
     }
 }
+#[doc = "Write proxy for field `CINT`"]
+pub struct CINT_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> CINT_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: CINT_A) -> &'a mut W {
+        {
+            self.bit(variant.into())
+        }
+    }
+    #[doc = "No Card Interrupt"]
+    #[inline(always)]
+    pub fn no(self) -> &'a mut W {
+        self.variant(CINT_A::NO)
+    }
+    #[doc = "Generate Card Interrupt"]
+    #[inline(always)]
+    pub fn yes(self) -> &'a mut W {
+        self.variant(CINT_A::YES)
+    }
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 8)) | (((value as u16) & 0x01) << 8);
+        self.w
+    }
+}
 #[doc = "Error Interrupt\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum ERRINT_A {
     #[doc = "0: No Error"]
-    NO,
+    NO = 0,
     #[doc = "1: Error"]
-    YES,
+    YES = 1,
 }
 impl From<ERRINT_A> for bool {
     #[inline(always)]
     fn from(variant: ERRINT_A) -> Self {
-        match variant {
-            ERRINT_A::NO => false,
-            ERRINT_A::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `ERRINT`"]
@@ -710,6 +719,45 @@ impl ERRINT_R {
     #[inline(always)]
     pub fn is_yes(&self) -> bool {
         *self == ERRINT_A::YES
+    }
+}
+#[doc = "Write proxy for field `ERRINT`"]
+pub struct ERRINT_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> ERRINT_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: ERRINT_A) -> &'a mut W {
+        {
+            self.bit(variant.into())
+        }
+    }
+    #[doc = "No Error"]
+    #[inline(always)]
+    pub fn no(self) -> &'a mut W {
+        self.variant(ERRINT_A::NO)
+    }
+    #[doc = "Error"]
+    #[inline(always)]
+    pub fn yes(self) -> &'a mut W {
+        self.variant(ERRINT_A::YES)
+    }
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 15)) | (((value as u16) & 0x01) << 15);
+        self.w
     }
 }
 impl R {
@@ -804,5 +852,15 @@ impl W {
     #[inline(always)]
     pub fn crem(&mut self) -> CREM_W {
         CREM_W { w: self }
+    }
+    #[doc = "Bit 8 - Card Interrupt"]
+    #[inline(always)]
+    pub fn cint(&mut self) -> CINT_W {
+        CINT_W { w: self }
+    }
+    #[doc = "Bit 15 - Error Interrupt"]
+    #[inline(always)]
+    pub fn errint(&mut self) -> ERRINT_W {
+        ERRINT_W { w: self }
     }
 }

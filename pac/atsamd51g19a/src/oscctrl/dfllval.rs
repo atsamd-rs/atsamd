@@ -40,6 +40,18 @@ impl<'a> COARSE_W<'a> {
 }
 #[doc = "Reader of field `DIFF`"]
 pub type DIFF_R = crate::R<u16, u16>;
+#[doc = "Write proxy for field `DIFF`"]
+pub struct DIFF_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> DIFF_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub unsafe fn bits(self, value: u16) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0xffff << 16)) | (((value as u32) & 0xffff) << 16);
+        self.w
+    }
+}
 impl R {
     #[doc = "Bits 0:7 - Fine Value"]
     #[inline(always)]
@@ -67,5 +79,10 @@ impl W {
     #[inline(always)]
     pub fn coarse(&mut self) -> COARSE_W {
         COARSE_W { w: self }
+    }
+    #[doc = "Bits 16:31 - Multiplication Ratio Difference"]
+    #[inline(always)]
+    pub fn diff(&mut self) -> DIFF_W {
+        DIFF_W { w: self }
     }
 }

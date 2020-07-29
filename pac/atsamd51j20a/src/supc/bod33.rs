@@ -36,25 +36,21 @@ impl<'a> ENABLE_W<'a> {
 }
 #[doc = "Action when Threshold Crossed\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum ACTION_A {
     #[doc = "0: No action"]
-    NONE,
+    NONE = 0,
     #[doc = "1: The BOD33 generates a reset"]
-    RESET,
+    RESET = 1,
     #[doc = "2: The BOD33 generates an interrupt"]
-    INT,
+    INT = 2,
     #[doc = "3: The BOD33 puts the device in backup sleep mode"]
-    BKUP,
+    BKUP = 3,
 }
 impl From<ACTION_A> for u8 {
     #[inline(always)]
     fn from(variant: ACTION_A) -> Self {
-        match variant {
-            ACTION_A::NONE => 0,
-            ACTION_A::RESET => 1,
-            ACTION_A::INT => 2,
-            ACTION_A::BKUP => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `ACTION`"]
@@ -243,37 +239,29 @@ impl<'a> HYST_W<'a> {
 }
 #[doc = "Prescaler Select\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum PSEL_A {
     #[doc = "0: Not divided"]
-    NODIV,
+    NODIV = 0,
     #[doc = "1: Divide clock by 4"]
-    DIV4,
+    DIV4 = 1,
     #[doc = "2: Divide clock by 8"]
-    DIV8,
+    DIV8 = 2,
     #[doc = "3: Divide clock by 16"]
-    DIV16,
+    DIV16 = 3,
     #[doc = "4: Divide clock by 32"]
-    DIV32,
+    DIV32 = 4,
     #[doc = "5: Divide clock by 64"]
-    DIV64,
+    DIV64 = 5,
     #[doc = "6: Divide clock by 128"]
-    DIV128,
+    DIV128 = 6,
     #[doc = "7: Divide clock by 256"]
-    DIV256,
+    DIV256 = 7,
 }
 impl From<PSEL_A> for u8 {
     #[inline(always)]
     fn from(variant: PSEL_A) -> Self {
-        match variant {
-            PSEL_A::NODIV => 0,
-            PSEL_A::DIV4 => 1,
-            PSEL_A::DIV8 => 2,
-            PSEL_A::DIV16 => 3,
-            PSEL_A::DIV32 => 4,
-            PSEL_A::DIV64 => 5,
-            PSEL_A::DIV128 => 6,
-            PSEL_A::DIV256 => 7,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `PSEL`"]

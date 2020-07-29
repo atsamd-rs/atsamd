@@ -12,121 +12,85 @@ impl crate::ResetValue for super::CLKCTRL {
 }
 #[doc = "Generic Clock Selection ID\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum ID_A {
     #[doc = "0: DFLL48"]
-    DFLL48,
+    DFLL48 = 0,
     #[doc = "1: FDPLL"]
-    FDPLL,
+    FDPLL = 1,
     #[doc = "2: FDPLL32K"]
-    FDPLL32K,
+    FDPLL32K = 2,
     #[doc = "3: WDT"]
-    WDT,
+    WDT = 3,
     #[doc = "4: RTC"]
-    RTC,
+    RTC = 4,
     #[doc = "5: EIC"]
-    EIC,
+    EIC = 5,
     #[doc = "6: USB"]
-    USB,
+    USB = 6,
     #[doc = "7: EVSYS_0"]
-    EVSYS_0,
+    EVSYS_0 = 7,
     #[doc = "8: EVSYS_1"]
-    EVSYS_1,
+    EVSYS_1 = 8,
     #[doc = "9: EVSYS_2"]
-    EVSYS_2,
+    EVSYS_2 = 9,
     #[doc = "10: EVSYS_3"]
-    EVSYS_3,
+    EVSYS_3 = 10,
     #[doc = "11: EVSYS_4"]
-    EVSYS_4,
+    EVSYS_4 = 11,
     #[doc = "12: EVSYS_5"]
-    EVSYS_5,
+    EVSYS_5 = 12,
     #[doc = "13: EVSYS_6"]
-    EVSYS_6,
+    EVSYS_6 = 13,
     #[doc = "14: EVSYS_7"]
-    EVSYS_7,
+    EVSYS_7 = 14,
     #[doc = "15: EVSYS_8"]
-    EVSYS_8,
+    EVSYS_8 = 15,
     #[doc = "16: EVSYS_9"]
-    EVSYS_9,
+    EVSYS_9 = 16,
     #[doc = "17: EVSYS_10"]
-    EVSYS_10,
+    EVSYS_10 = 17,
     #[doc = "18: EVSYS_11"]
-    EVSYS_11,
+    EVSYS_11 = 18,
     #[doc = "19: SERCOMX_SLOW"]
-    SERCOMX_SLOW,
+    SERCOMX_SLOW = 19,
     #[doc = "20: SERCOM0_CORE"]
-    SERCOM0_CORE,
+    SERCOM0_CORE = 20,
     #[doc = "21: SERCOM1_CORE"]
-    SERCOM1_CORE,
+    SERCOM1_CORE = 21,
     #[doc = "22: SERCOM2_CORE"]
-    SERCOM2_CORE,
+    SERCOM2_CORE = 22,
     #[doc = "23: SERCOM3_CORE"]
-    SERCOM3_CORE,
+    SERCOM3_CORE = 23,
     #[doc = "24: SERCOM4_CORE"]
-    SERCOM4_CORE,
+    SERCOM4_CORE = 24,
     #[doc = "25: SERCOM5_CORE"]
-    SERCOM5_CORE,
+    SERCOM5_CORE = 25,
     #[doc = "26: TCC0_TCC1"]
-    TCC0_TCC1,
+    TCC0_TCC1 = 26,
     #[doc = "27: TCC2_TC3"]
-    TCC2_TC3,
+    TCC2_TC3 = 27,
     #[doc = "28: TC4_TC5"]
-    TC4_TC5,
+    TC4_TC5 = 28,
     #[doc = "29: TC6_TC7"]
-    TC6_TC7,
+    TC6_TC7 = 29,
     #[doc = "30: ADC"]
-    ADC,
+    ADC = 30,
     #[doc = "31: AC_DIG"]
-    AC_DIG,
+    AC_DIG = 31,
     #[doc = "32: AC_ANA"]
-    AC_ANA,
+    AC_ANA = 32,
     #[doc = "33: DAC"]
-    DAC,
+    DAC = 33,
     #[doc = "35: I2S_0"]
-    I2S_0,
+    I2S_0 = 35,
     #[doc = "36: I2S_1"]
-    I2S_1,
+    I2S_1 = 36,
 }
 impl From<ID_A> for u8 {
     #[inline(always)]
     fn from(variant: ID_A) -> Self {
-        match variant {
-            ID_A::DFLL48 => 0,
-            ID_A::FDPLL => 1,
-            ID_A::FDPLL32K => 2,
-            ID_A::WDT => 3,
-            ID_A::RTC => 4,
-            ID_A::EIC => 5,
-            ID_A::USB => 6,
-            ID_A::EVSYS_0 => 7,
-            ID_A::EVSYS_1 => 8,
-            ID_A::EVSYS_2 => 9,
-            ID_A::EVSYS_3 => 10,
-            ID_A::EVSYS_4 => 11,
-            ID_A::EVSYS_5 => 12,
-            ID_A::EVSYS_6 => 13,
-            ID_A::EVSYS_7 => 14,
-            ID_A::EVSYS_8 => 15,
-            ID_A::EVSYS_9 => 16,
-            ID_A::EVSYS_10 => 17,
-            ID_A::EVSYS_11 => 18,
-            ID_A::SERCOMX_SLOW => 19,
-            ID_A::SERCOM0_CORE => 20,
-            ID_A::SERCOM1_CORE => 21,
-            ID_A::SERCOM2_CORE => 22,
-            ID_A::SERCOM3_CORE => 23,
-            ID_A::SERCOM4_CORE => 24,
-            ID_A::SERCOM5_CORE => 25,
-            ID_A::TCC0_TCC1 => 26,
-            ID_A::TCC2_TC3 => 27,
-            ID_A::TC4_TC5 => 28,
-            ID_A::TC6_TC7 => 29,
-            ID_A::ADC => 30,
-            ID_A::AC_DIG => 31,
-            ID_A::AC_ANA => 32,
-            ID_A::DAC => 33,
-            ID_A::I2S_0 => 35,
-            ID_A::I2S_1 => 36,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `ID`"]
@@ -556,40 +520,31 @@ impl<'a> ID_W<'a> {
 }
 #[doc = "Generic Clock Generator\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum GEN_A {
     #[doc = "0: Generic clock generator 0"]
-    GCLK0,
+    GCLK0 = 0,
     #[doc = "1: Generic clock generator 1"]
-    GCLK1,
+    GCLK1 = 1,
     #[doc = "2: Generic clock generator 2"]
-    GCLK2,
+    GCLK2 = 2,
     #[doc = "3: Generic clock generator 3"]
-    GCLK3,
+    GCLK3 = 3,
     #[doc = "4: Generic clock generator 4"]
-    GCLK4,
+    GCLK4 = 4,
     #[doc = "5: Generic clock generator 5"]
-    GCLK5,
+    GCLK5 = 5,
     #[doc = "6: Generic clock generator 6"]
-    GCLK6,
+    GCLK6 = 6,
     #[doc = "7: Generic clock generator 7"]
-    GCLK7,
+    GCLK7 = 7,
     #[doc = "8: Generic clock generator 8"]
-    GCLK8,
+    GCLK8 = 8,
 }
 impl From<GEN_A> for u8 {
     #[inline(always)]
     fn from(variant: GEN_A) -> Self {
-        match variant {
-            GEN_A::GCLK0 => 0,
-            GEN_A::GCLK1 => 1,
-            GEN_A::GCLK2 => 2,
-            GEN_A::GCLK3 => 3,
-            GEN_A::GCLK4 => 4,
-            GEN_A::GCLK5 => 5,
-            GEN_A::GCLK6 => 6,
-            GEN_A::GCLK7 => 7,
-            GEN_A::GCLK8 => 8,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `GEN`"]

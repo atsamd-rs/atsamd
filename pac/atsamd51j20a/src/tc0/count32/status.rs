@@ -12,8 +12,52 @@ impl crate::ResetValue for super::STATUS {
 }
 #[doc = "Reader of field `STOP`"]
 pub type STOP_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `STOP`"]
+pub struct STOP_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> STOP_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !0x01) | ((value as u8) & 0x01);
+        self.w
+    }
+}
 #[doc = "Reader of field `SLAVE`"]
 pub type SLAVE_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `SLAVE`"]
+pub struct SLAVE_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> SLAVE_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 1)) | (((value as u8) & 0x01) << 1);
+        self.w
+    }
+}
 #[doc = "Reader of field `PERBUFV`"]
 pub type PERBUFV_R = crate::R<bool, bool>;
 #[doc = "Write proxy for field `PERBUFV`"]
@@ -114,6 +158,16 @@ impl R {
     }
 }
 impl W {
+    #[doc = "Bit 0 - Stop Status Flag"]
+    #[inline(always)]
+    pub fn stop(&mut self) -> STOP_W {
+        STOP_W { w: self }
+    }
+    #[doc = "Bit 1 - Slave Status Flag"]
+    #[inline(always)]
+    pub fn slave(&mut self) -> SLAVE_W {
+        SLAVE_W { w: self }
+    }
     #[doc = "Bit 3 - Synchronization Busy Status"]
     #[inline(always)]
     pub fn perbufv(&mut self) -> PERBUFV_W {

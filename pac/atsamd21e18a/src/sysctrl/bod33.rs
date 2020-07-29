@@ -60,22 +60,19 @@ impl<'a> HYST_W<'a> {
 }
 #[doc = "BOD33 Action\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum ACTION_A {
     #[doc = "0: No action"]
-    NONE,
+    NONE = 0,
     #[doc = "1: The BOD33 generates a reset"]
-    RESET,
+    RESET = 1,
     #[doc = "2: The BOD33 generates an interrupt"]
-    INTERRUPT,
+    INTERRUPT = 2,
 }
 impl From<ACTION_A> for u8 {
     #[inline(always)]
     fn from(variant: ACTION_A) -> Self {
-        match variant {
-            ACTION_A::NONE => 0,
-            ACTION_A::RESET => 1,
-            ACTION_A::INTERRUPT => 2,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `ACTION`"]
@@ -214,61 +211,45 @@ impl<'a> CEN_W<'a> {
 }
 #[doc = "Prescaler Select\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum PSEL_A {
     #[doc = "0: Divide clock by 2"]
-    DIV2,
+    DIV2 = 0,
     #[doc = "1: Divide clock by 4"]
-    DIV4,
+    DIV4 = 1,
     #[doc = "2: Divide clock by 8"]
-    DIV8,
+    DIV8 = 2,
     #[doc = "3: Divide clock by 16"]
-    DIV16,
+    DIV16 = 3,
     #[doc = "4: Divide clock by 32"]
-    DIV32,
+    DIV32 = 4,
     #[doc = "5: Divide clock by 64"]
-    DIV64,
+    DIV64 = 5,
     #[doc = "6: Divide clock by 128"]
-    DIV128,
+    DIV128 = 6,
     #[doc = "7: Divide clock by 256"]
-    DIV256,
+    DIV256 = 7,
     #[doc = "8: Divide clock by 512"]
-    DIV512,
+    DIV512 = 8,
     #[doc = "9: Divide clock by 1024"]
-    DIV1K,
+    DIV1K = 9,
     #[doc = "10: Divide clock by 2048"]
-    DIV2K,
+    DIV2K = 10,
     #[doc = "11: Divide clock by 4096"]
-    DIV4K,
+    DIV4K = 11,
     #[doc = "12: Divide clock by 8192"]
-    DIV8K,
+    DIV8K = 12,
     #[doc = "13: Divide clock by 16384"]
-    DIV16K,
+    DIV16K = 13,
     #[doc = "14: Divide clock by 32768"]
-    DIV32K,
+    DIV32K = 14,
     #[doc = "15: Divide clock by 65536"]
-    DIV64K,
+    DIV64K = 15,
 }
 impl From<PSEL_A> for u8 {
     #[inline(always)]
     fn from(variant: PSEL_A) -> Self {
-        match variant {
-            PSEL_A::DIV2 => 0,
-            PSEL_A::DIV4 => 1,
-            PSEL_A::DIV8 => 2,
-            PSEL_A::DIV16 => 3,
-            PSEL_A::DIV32 => 4,
-            PSEL_A::DIV64 => 5,
-            PSEL_A::DIV128 => 6,
-            PSEL_A::DIV256 => 7,
-            PSEL_A::DIV512 => 8,
-            PSEL_A::DIV1K => 9,
-            PSEL_A::DIV2K => 10,
-            PSEL_A::DIV4K => 11,
-            PSEL_A::DIV8K => 12,
-            PSEL_A::DIV16K => 13,
-            PSEL_A::DIV32K => 14,
-            PSEL_A::DIV64K => 15,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `PSEL`"]

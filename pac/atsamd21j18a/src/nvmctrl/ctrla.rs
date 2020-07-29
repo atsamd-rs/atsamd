@@ -12,52 +12,39 @@ impl crate::ResetValue for super::CTRLA {
 }
 #[doc = "Command\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum CMD_A {
     #[doc = "2: Erase Row - Erases the row addressed by the ADDR register."]
-    ER,
+    ER = 2,
     #[doc = "4: Write Page - Writes the contents of the page buffer to the page addressed by the ADDR register."]
-    WP,
+    WP = 4,
     #[doc = "5: Erase Auxiliary Row - Erases the auxiliary row addressed by the ADDR register. This command can be given only when the security bit is not set and only to the user configuration row."]
-    EAR,
+    EAR = 5,
     #[doc = "6: Write Auxiliary Page - Writes the contents of the page buffer to the page addressed by the ADDR register. This command can be given only when the security bit is not set and only to the user configuration row."]
-    WAP,
+    WAP = 6,
     #[doc = "10: Security Flow Command"]
-    SF,
+    SF = 10,
     #[doc = "15: Write lockbits"]
-    WL,
+    WL = 15,
     #[doc = "64: Lock Region - Locks the region containing the address location in the ADDR register."]
-    LR,
+    LR = 64,
     #[doc = "65: Unlock Region - Unlocks the region containing the address location in the ADDR register."]
-    UR,
+    UR = 65,
     #[doc = "66: Sets the power reduction mode."]
-    SPRM,
+    SPRM = 66,
     #[doc = "67: Clears the power reduction mode."]
-    CPRM,
+    CPRM = 67,
     #[doc = "68: Page Buffer Clear - Clears the page buffer."]
-    PBC,
+    PBC = 68,
     #[doc = "69: Set Security Bit - Sets the security bit by writing 0x00 to the first byte in the lockbit row."]
-    SSB,
+    SSB = 69,
     #[doc = "70: Invalidates all cache lines."]
-    INVALL,
+    INVALL = 70,
 }
 impl From<CMD_A> for u8 {
     #[inline(always)]
     fn from(variant: CMD_A) -> Self {
-        match variant {
-            CMD_A::ER => 2,
-            CMD_A::WP => 4,
-            CMD_A::EAR => 5,
-            CMD_A::WAP => 6,
-            CMD_A::SF => 10,
-            CMD_A::WL => 15,
-            CMD_A::LR => 64,
-            CMD_A::UR => 65,
-            CMD_A::SPRM => 66,
-            CMD_A::CPRM => 67,
-            CMD_A::PBC => 68,
-            CMD_A::SSB => 69,
-            CMD_A::INVALL => 70,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `CMD`"]
@@ -234,16 +221,15 @@ impl<'a> CMD_W<'a> {
 }
 #[doc = "Command Execution\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum CMDEX_A {
     #[doc = "165: Execution Key"]
-    KEY,
+    KEY = 165,
 }
 impl From<CMDEX_A> for u8 {
     #[inline(always)]
     fn from(variant: CMDEX_A) -> Self {
-        match variant {
-            CMDEX_A::KEY => 165,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `CMDEX`"]

@@ -646,6 +646,45 @@ impl CINT_R {
         *self == CINT_A::YES
     }
 }
+#[doc = "Write proxy for field `CINT`"]
+pub struct CINT_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> CINT_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: CINT_A) -> &'a mut W {
+        {
+            self.bit(variant.into())
+        }
+    }
+    #[doc = "No Card Interrupt"]
+    #[inline(always)]
+    pub fn no(self) -> &'a mut W {
+        self.variant(CINT_A::NO)
+    }
+    #[doc = "Generate Card Interrupt"]
+    #[inline(always)]
+    pub fn yes(self) -> &'a mut W {
+        self.variant(CINT_A::YES)
+    }
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 8)) | (((value as u16) & 0x01) << 8);
+        self.w
+    }
+}
 #[doc = "Error Interrupt\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum ERRINT_A {
@@ -680,6 +719,45 @@ impl ERRINT_R {
     #[inline(always)]
     pub fn is_yes(&self) -> bool {
         *self == ERRINT_A::YES
+    }
+}
+#[doc = "Write proxy for field `ERRINT`"]
+pub struct ERRINT_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> ERRINT_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: ERRINT_A) -> &'a mut W {
+        {
+            self.bit(variant.into())
+        }
+    }
+    #[doc = "No Error"]
+    #[inline(always)]
+    pub fn no(self) -> &'a mut W {
+        self.variant(ERRINT_A::NO)
+    }
+    #[doc = "Error"]
+    #[inline(always)]
+    pub fn yes(self) -> &'a mut W {
+        self.variant(ERRINT_A::YES)
+    }
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 15)) | (((value as u16) & 0x01) << 15);
+        self.w
     }
 }
 impl R {
@@ -774,5 +852,15 @@ impl W {
     #[inline(always)]
     pub fn crem(&mut self) -> CREM_W {
         CREM_W { w: self }
+    }
+    #[doc = "Bit 8 - Card Interrupt"]
+    #[inline(always)]
+    pub fn cint(&mut self) -> CINT_W {
+        CINT_W { w: self }
+    }
+    #[doc = "Bit 15 - Error Interrupt"]
+    #[inline(always)]
+    pub fn errint(&mut self) -> ERRINT_W {
+        ERRINT_W { w: self }
     }
 }

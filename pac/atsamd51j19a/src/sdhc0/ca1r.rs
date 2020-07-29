@@ -4,17 +4,14 @@ pub type R = crate::R<u32, super::CA1R>;
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum SDR50SUP_A {
     #[doc = "0: SDR50 is Not Supported"]
-    NO,
+    NO = 0,
     #[doc = "1: SDR50 is Supported"]
-    YES,
+    YES = 1,
 }
 impl From<SDR50SUP_A> for bool {
     #[inline(always)]
     fn from(variant: SDR50SUP_A) -> Self {
-        match variant {
-            SDR50SUP_A::NO => false,
-            SDR50SUP_A::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `SDR50SUP`"]
@@ -43,17 +40,14 @@ impl SDR50SUP_R {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum SDR104SUP_A {
     #[doc = "0: SDR104 is Not Supported"]
-    NO,
+    NO = 0,
     #[doc = "1: SDR104 is Supported"]
-    YES,
+    YES = 1,
 }
 impl From<SDR104SUP_A> for bool {
     #[inline(always)]
     fn from(variant: SDR104SUP_A) -> Self {
-        match variant {
-            SDR104SUP_A::NO => false,
-            SDR104SUP_A::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `SDR104SUP`"]
@@ -82,17 +76,14 @@ impl SDR104SUP_R {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum DDR50SUP_A {
     #[doc = "0: DDR50 is Not Supported"]
-    NO,
+    NO = 0,
     #[doc = "1: DDR50 is Supported"]
-    YES,
+    YES = 1,
 }
 impl From<DDR50SUP_A> for bool {
     #[inline(always)]
     fn from(variant: DDR50SUP_A) -> Self {
-        match variant {
-            DDR50SUP_A::NO => false,
-            DDR50SUP_A::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `DDR50SUP`"]
@@ -121,17 +112,14 @@ impl DDR50SUP_R {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum DRVASUP_A {
     #[doc = "0: Driver Type A is Not Supported"]
-    NO,
+    NO = 0,
     #[doc = "1: Driver Type A is Supported"]
-    YES,
+    YES = 1,
 }
 impl From<DRVASUP_A> for bool {
     #[inline(always)]
     fn from(variant: DRVASUP_A) -> Self {
-        match variant {
-            DRVASUP_A::NO => false,
-            DRVASUP_A::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `DRVASUP`"]
@@ -160,17 +148,14 @@ impl DRVASUP_R {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum DRVCSUP_A {
     #[doc = "0: Driver Type C is Not Supported"]
-    NO,
+    NO = 0,
     #[doc = "1: Driver Type C is Supported"]
-    YES,
+    YES = 1,
 }
 impl From<DRVCSUP_A> for bool {
     #[inline(always)]
     fn from(variant: DRVCSUP_A) -> Self {
-        match variant {
-            DRVCSUP_A::NO => false,
-            DRVCSUP_A::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `DRVCSUP`"]
@@ -199,17 +184,14 @@ impl DRVCSUP_R {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum DRVDSUP_A {
     #[doc = "0: Driver Type D is Not Supported"]
-    NO,
+    NO = 0,
     #[doc = "1: Driver Type D is Supported"]
-    YES,
+    YES = 1,
 }
 impl From<DRVDSUP_A> for bool {
     #[inline(always)]
     fn from(variant: DRVDSUP_A) -> Self {
-        match variant {
-            DRVDSUP_A::NO => false,
-            DRVDSUP_A::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `DRVDSUP`"]
@@ -236,52 +218,39 @@ impl DRVDSUP_R {
 }
 #[doc = "Timer Count for Re-Tuning\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum TCNTRT_A {
     #[doc = "0: Re-Tuning Timer disabled"]
-    DISABLED,
+    DISABLED = 0,
     #[doc = "1: 1 second"]
-    _1S,
+    _1S = 1,
     #[doc = "2: 2 seconds"]
-    _2S,
+    _2S = 2,
     #[doc = "3: 4 seconds"]
-    _4S,
+    _4S = 3,
     #[doc = "4: 8 seconds"]
-    _8S,
+    _8S = 4,
     #[doc = "5: 16 seconds"]
-    _16S,
+    _16S = 5,
     #[doc = "6: 32 seconds"]
-    _32S,
+    _32S = 6,
     #[doc = "7: 64 seconds"]
-    _64S,
+    _64S = 7,
     #[doc = "8: 128 seconds"]
-    _128S,
+    _128S = 8,
     #[doc = "9: 256 seconds"]
-    _256S,
+    _256S = 9,
     #[doc = "10: 512 seconds"]
-    _512S,
+    _512S = 10,
     #[doc = "11: 1024 seconds"]
-    _1024S,
+    _1024S = 11,
     #[doc = "15: Get information from other source"]
-    OTHER,
+    OTHER = 15,
 }
 impl From<TCNTRT_A> for u8 {
     #[inline(always)]
     fn from(variant: TCNTRT_A) -> Self {
-        match variant {
-            TCNTRT_A::DISABLED => 0,
-            TCNTRT_A::_1S => 1,
-            TCNTRT_A::_2S => 2,
-            TCNTRT_A::_4S => 3,
-            TCNTRT_A::_8S => 4,
-            TCNTRT_A::_16S => 5,
-            TCNTRT_A::_32S => 6,
-            TCNTRT_A::_64S => 7,
-            TCNTRT_A::_128S => 8,
-            TCNTRT_A::_256S => 9,
-            TCNTRT_A::_512S => 10,
-            TCNTRT_A::_1024S => 11,
-            TCNTRT_A::OTHER => 15,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `TCNTRT`"]
@@ -378,17 +347,14 @@ impl TCNTRT_R {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum TSDR50_A {
     #[doc = "0: SDR50 does not require tuning"]
-    NO,
+    NO = 0,
     #[doc = "1: SDR50 requires tuning"]
-    YES,
+    YES = 1,
 }
 impl From<TSDR50_A> for bool {
     #[inline(always)]
     fn from(variant: TSDR50_A) -> Self {
-        match variant {
-            TSDR50_A::NO => false,
-            TSDR50_A::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `TSDR50`"]
@@ -415,16 +381,15 @@ impl TSDR50_R {
 }
 #[doc = "Clock Multiplier\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum CLKMULT_A {
     #[doc = "0: Clock Multiplier is Not Supported"]
-    NO,
+    NO = 0,
 }
 impl From<CLKMULT_A> for u8 {
     #[inline(always)]
     fn from(variant: CLKMULT_A) -> Self {
-        match variant {
-            CLKMULT_A::NO => 0,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `CLKMULT`"]

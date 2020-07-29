@@ -14,17 +14,14 @@ impl crate::ResetValue for super::EISTR {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CMDTEO_A {
     #[doc = "0: No Error"]
-    NO,
+    NO = 0,
     #[doc = "1: Timeout"]
-    YES,
+    YES = 1,
 }
 impl From<CMDTEO_A> for bool {
     #[inline(always)]
     fn from(variant: CMDTEO_A) -> Self {
-        match variant {
-            CMDTEO_A::NO => false,
-            CMDTEO_A::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `CMDTEO`"]
@@ -92,17 +89,14 @@ impl<'a> CMDTEO_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CMDCRC_A {
     #[doc = "0: No Error"]
-    NO,
+    NO = 0,
     #[doc = "1: CRC Error Generated"]
-    YES,
+    YES = 1,
 }
 impl From<CMDCRC_A> for bool {
     #[inline(always)]
     fn from(variant: CMDCRC_A) -> Self {
-        match variant {
-            CMDCRC_A::NO => false,
-            CMDCRC_A::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `CMDCRC`"]
@@ -170,17 +164,14 @@ impl<'a> CMDCRC_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CMDEND_A {
     #[doc = "0: No error"]
-    NO,
+    NO = 0,
     #[doc = "1: End Bit Error Generated"]
-    YES,
+    YES = 1,
 }
 impl From<CMDEND_A> for bool {
     #[inline(always)]
     fn from(variant: CMDEND_A) -> Self {
-        match variant {
-            CMDEND_A::NO => false,
-            CMDEND_A::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `CMDEND`"]
@@ -248,17 +239,14 @@ impl<'a> CMDEND_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CMDIDX_A {
     #[doc = "0: No Error"]
-    NO,
+    NO = 0,
     #[doc = "1: Error"]
-    YES,
+    YES = 1,
 }
 impl From<CMDIDX_A> for bool {
     #[inline(always)]
     fn from(variant: CMDIDX_A) -> Self {
-        match variant {
-            CMDIDX_A::NO => false,
-            CMDIDX_A::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `CMDIDX`"]
@@ -326,17 +314,14 @@ impl<'a> CMDIDX_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum DATTEO_A {
     #[doc = "0: No Error"]
-    NO,
+    NO = 0,
     #[doc = "1: Timeout"]
-    YES,
+    YES = 1,
 }
 impl From<DATTEO_A> for bool {
     #[inline(always)]
     fn from(variant: DATTEO_A) -> Self {
-        match variant {
-            DATTEO_A::NO => false,
-            DATTEO_A::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `DATTEO`"]
@@ -404,17 +389,14 @@ impl<'a> DATTEO_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum DATCRC_A {
     #[doc = "0: No Error"]
-    NO,
+    NO = 0,
     #[doc = "1: Error"]
-    YES,
+    YES = 1,
 }
 impl From<DATCRC_A> for bool {
     #[inline(always)]
     fn from(variant: DATCRC_A) -> Self {
-        match variant {
-            DATCRC_A::NO => false,
-            DATCRC_A::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `DATCRC`"]
@@ -482,17 +464,14 @@ impl<'a> DATCRC_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum DATEND_A {
     #[doc = "0: No Error"]
-    NO,
+    NO = 0,
     #[doc = "1: Error"]
-    YES,
+    YES = 1,
 }
 impl From<DATEND_A> for bool {
     #[inline(always)]
     fn from(variant: DATEND_A) -> Self {
-        match variant {
-            DATEND_A::NO => false,
-            DATEND_A::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `DATEND`"]
@@ -560,17 +539,14 @@ impl<'a> DATEND_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CURLIM_A {
     #[doc = "0: No Error"]
-    NO,
+    NO = 0,
     #[doc = "1: Power Fail"]
-    YES,
+    YES = 1,
 }
 impl From<CURLIM_A> for bool {
     #[inline(always)]
     fn from(variant: CURLIM_A) -> Self {
-        match variant {
-            CURLIM_A::NO => false,
-            CURLIM_A::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `CURLIM`"]
@@ -638,17 +614,14 @@ impl<'a> CURLIM_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum ACMD_A {
     #[doc = "0: No Error"]
-    NO,
+    NO = 0,
     #[doc = "1: Error"]
-    YES,
+    YES = 1,
 }
 impl From<ACMD_A> for bool {
     #[inline(always)]
     fn from(variant: ACMD_A) -> Self {
-        match variant {
-            ACMD_A::NO => false,
-            ACMD_A::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `ACMD`"]
@@ -716,17 +689,14 @@ impl<'a> ACMD_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum ADMA_A {
     #[doc = "0: No Error"]
-    NO,
+    NO = 0,
     #[doc = "1: Error"]
-    YES,
+    YES = 1,
 }
 impl From<ADMA_A> for bool {
     #[inline(always)]
     fn from(variant: ADMA_A) -> Self {
-        match variant {
-            ADMA_A::NO => false,
-            ADMA_A::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `ADMA`"]

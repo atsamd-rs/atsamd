@@ -10,6 +10,8 @@ impl crate::ResetValue for super::CTRLA {
         0
     }
 }
+#[doc = "Reader of field `SWRST`"]
+pub type SWRST_R = crate::R<bool, bool>;
 #[doc = "Write proxy for field `SWRST`"]
 pub struct SWRST_W<'a> {
     w: &'a mut W,
@@ -452,6 +454,11 @@ impl<'a> CLOCKSYNC_W<'a> {
     }
 }
 impl R {
+    #[doc = "Bit 0 - Software Reset"]
+    #[inline(always)]
+    pub fn swrst(&self) -> SWRST_R {
+        SWRST_R::new((self.bits & 0x01) != 0)
+    }
     #[doc = "Bit 1 - Enable"]
     #[inline(always)]
     pub fn enable(&self) -> ENABLE_R {

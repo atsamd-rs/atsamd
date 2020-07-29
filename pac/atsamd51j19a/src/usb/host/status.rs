@@ -26,6 +26,18 @@ impl<'a> SPEED_W<'a> {
 }
 #[doc = "Reader of field `LINESTATE`"]
 pub type LINESTATE_R = crate::R<u8, u8>;
+#[doc = "Write proxy for field `LINESTATE`"]
+pub struct LINESTATE_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> LINESTATE_W<'a> {
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub unsafe fn bits(self, value: u8) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x03 << 6)) | (((value as u8) & 0x03) << 6);
+        self.w
+    }
+}
 impl R {
     #[doc = "Bits 2:3 - Speed Status"]
     #[inline(always)]
@@ -43,5 +55,10 @@ impl W {
     #[inline(always)]
     pub fn speed(&mut self) -> SPEED_W {
         SPEED_W { w: self }
+    }
+    #[doc = "Bits 6:7 - USB Line State Status"]
+    #[inline(always)]
+    pub fn linestate(&mut self) -> LINESTATE_W {
+        LINESTATE_W { w: self }
     }
 }

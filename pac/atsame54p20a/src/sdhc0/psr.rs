@@ -497,7 +497,8 @@ impl R {
     pub fn wrppl(&self) -> WRPPL_R {
         WRPPL_R::new(((self.bits >> 19) & 0x01) != 0)
     }
-    #[doc = "Bits 20:23 - DAT\\[3:0\\] Line Level"]
+    #[doc = "Bits 20:23 - DAT\\[3:0\\]
+Line Level"]
     #[inline(always)]
     pub fn datll(&self) -> DATLL_R {
         DATLL_R::new(((self.bits >> 20) & 0x0f) as u8)

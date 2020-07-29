@@ -14,17 +14,14 @@ impl crate::ResetValue for super::WCR {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum WKENCINT_A {
     #[doc = "0: Disable"]
-    DISABLE,
+    DISABLE = 0,
     #[doc = "1: Enable"]
-    ENABLE,
+    ENABLE = 1,
 }
 impl From<WKENCINT_A> for bool {
     #[inline(always)]
     fn from(variant: WKENCINT_A) -> Self {
-        match variant {
-            WKENCINT_A::DISABLE => false,
-            WKENCINT_A::ENABLE => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `WKENCINT`"]
@@ -92,17 +89,14 @@ impl<'a> WKENCINT_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum WKENCINS_A {
     #[doc = "0: Disable"]
-    DISABLE,
+    DISABLE = 0,
     #[doc = "1: Enable"]
-    ENABLE,
+    ENABLE = 1,
 }
 impl From<WKENCINS_A> for bool {
     #[inline(always)]
     fn from(variant: WKENCINS_A) -> Self {
-        match variant {
-            WKENCINS_A::DISABLE => false,
-            WKENCINS_A::ENABLE => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `WKENCINS`"]
@@ -170,17 +164,14 @@ impl<'a> WKENCINS_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum WKENCREM_A {
     #[doc = "0: Disable"]
-    DISABLE,
+    DISABLE = 0,
     #[doc = "1: Enable"]
-    ENABLE,
+    ENABLE = 1,
 }
 impl From<WKENCREM_A> for bool {
     #[inline(always)]
     fn from(variant: WKENCREM_A) -> Self {
-        match variant {
-            WKENCREM_A::DISABLE => false,
-            WKENCREM_A::ENABLE => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `WKENCREM`"]

@@ -14,17 +14,14 @@ impl crate::ResetValue for super::CTRLB {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum MODE_A {
     #[doc = "0: SPI operating mode"]
-    SPI,
+    SPI = 0,
     #[doc = "1: Serial Memory operating mode"]
-    MEMORY,
+    MEMORY = 1,
 }
 impl From<MODE_A> for bool {
     #[inline(always)]
     fn from(variant: MODE_A) -> Self {
-        match variant {
-            MODE_A::SPI => false,
-            MODE_A::MEMORY => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `MODE`"]
@@ -162,22 +159,19 @@ impl<'a> SMEMREG_W<'a> {
 }
 #[doc = "Chip Select Mode\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum CSMODE_A {
     #[doc = "0: The chip select is deasserted if TD has not been reloaded before the end of the current transfer."]
-    NORELOAD,
+    NORELOAD = 0,
     #[doc = "1: The chip select is deasserted when the bit LASTXFER is written at 1 and the character written in TD has been transferred."]
-    LASTXFER,
+    LASTXFER = 1,
     #[doc = "2: The chip select is deasserted systematically after each transfer."]
-    SYSTEMATICALLY,
+    SYSTEMATICALLY = 2,
 }
 impl From<CSMODE_A> for u8 {
     #[inline(always)]
     fn from(variant: CSMODE_A) -> Self {
-        match variant {
-            CSMODE_A::NORELOAD => 0,
-            CSMODE_A::LASTXFER => 1,
-            CSMODE_A::SYSTEMATICALLY => 2,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `CSMODE`"]
@@ -244,40 +238,31 @@ impl<'a> CSMODE_W<'a> {
 }
 #[doc = "Data Length\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum DATALEN_A {
     #[doc = "0: 8-bits transfer"]
-    _8BITS,
+    _8BITS = 0,
     #[doc = "1: 9 bits transfer"]
-    _9BITS,
+    _9BITS = 1,
     #[doc = "2: 10-bits transfer"]
-    _10BITS,
+    _10BITS = 2,
     #[doc = "3: 11-bits transfer"]
-    _11BITS,
+    _11BITS = 3,
     #[doc = "4: 12-bits transfer"]
-    _12BITS,
+    _12BITS = 4,
     #[doc = "5: 13-bits transfer"]
-    _13BITS,
+    _13BITS = 5,
     #[doc = "6: 14-bits transfer"]
-    _14BITS,
+    _14BITS = 6,
     #[doc = "7: 15-bits transfer"]
-    _15BITS,
+    _15BITS = 7,
     #[doc = "8: 16-bits transfer"]
-    _16BITS,
+    _16BITS = 8,
 }
 impl From<DATALEN_A> for u8 {
     #[inline(always)]
     fn from(variant: DATALEN_A) -> Self {
-        match variant {
-            DATALEN_A::_8BITS => 0,
-            DATALEN_A::_9BITS => 1,
-            DATALEN_A::_10BITS => 2,
-            DATALEN_A::_11BITS => 3,
-            DATALEN_A::_12BITS => 4,
-            DATALEN_A::_13BITS => 5,
-            DATALEN_A::_14BITS => 6,
-            DATALEN_A::_15BITS => 7,
-            DATALEN_A::_16BITS => 8,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `DATALEN`"]

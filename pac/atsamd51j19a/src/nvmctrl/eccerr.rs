@@ -4,22 +4,19 @@ pub type R = crate::R<u32, super::ECCERR>;
 pub type ADDR_R = crate::R<u32, u32>;
 #[doc = "Low Double-Word Error Type\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum TYPEL_A {
     #[doc = "0: No Error Detected Since Last Read"]
-    NONE,
+    NONE = 0,
     #[doc = "1: At Least One Single Error Detected Since last Read"]
-    SINGLE,
+    SINGLE = 1,
     #[doc = "2: At Least One Dual Error Detected Since Last Read"]
-    DUAL,
+    DUAL = 2,
 }
 impl From<TYPEL_A> for u8 {
     #[inline(always)]
     fn from(variant: TYPEL_A) -> Self {
-        match variant {
-            TYPEL_A::NONE => 0,
-            TYPEL_A::SINGLE => 1,
-            TYPEL_A::DUAL => 2,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `TYPEL`"]
@@ -54,22 +51,19 @@ impl TYPEL_R {
 }
 #[doc = "High Double-Word Error Type\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum TYPEH_A {
     #[doc = "0: No Error Detected Since Last Read"]
-    NONE,
+    NONE = 0,
     #[doc = "1: At Least One Single Error Detected Since last Read"]
-    SINGLE,
+    SINGLE = 1,
     #[doc = "2: At Least One Dual Error Detected Since Last Read"]
-    DUAL,
+    DUAL = 2,
 }
 impl From<TYPEH_A> for u8 {
     #[inline(always)]
     fn from(variant: TYPEH_A) -> Self {
-        match variant {
-            TYPEH_A::NONE => 0,
-            TYPEH_A::SINGLE => 1,
-            TYPEH_A::DUAL => 2,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `TYPEH`"]

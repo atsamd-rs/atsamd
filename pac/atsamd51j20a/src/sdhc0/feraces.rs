@@ -12,17 +12,14 @@ impl crate::ResetValue for super::FERACES {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum ACMD12NE_AW {
     #[doc = "0: No Interrupt"]
-    NO,
+    NO = 0,
     #[doc = "1: Interrupt is generated"]
-    YES,
+    YES = 1,
 }
 impl From<ACMD12NE_AW> for bool {
     #[inline(always)]
     fn from(variant: ACMD12NE_AW) -> Self {
-        match variant {
-            ACMD12NE_AW::NO => false,
-            ACMD12NE_AW::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Write proxy for field `ACMD12NE`"]
@@ -68,17 +65,14 @@ impl<'a> ACMD12NE_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum ACMDTEO_AW {
     #[doc = "0: No Interrupt"]
-    NO,
+    NO = 0,
     #[doc = "1: Interrupt is generated"]
-    YES,
+    YES = 1,
 }
 impl From<ACMDTEO_AW> for bool {
     #[inline(always)]
     fn from(variant: ACMDTEO_AW) -> Self {
-        match variant {
-            ACMDTEO_AW::NO => false,
-            ACMDTEO_AW::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Write proxy for field `ACMDTEO`"]
@@ -124,17 +118,14 @@ impl<'a> ACMDTEO_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum ACMDCRC_AW {
     #[doc = "0: No Interrupt"]
-    NO,
+    NO = 0,
     #[doc = "1: Interrupt is generated"]
-    YES,
+    YES = 1,
 }
 impl From<ACMDCRC_AW> for bool {
     #[inline(always)]
     fn from(variant: ACMDCRC_AW) -> Self {
-        match variant {
-            ACMDCRC_AW::NO => false,
-            ACMDCRC_AW::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Write proxy for field `ACMDCRC`"]
@@ -180,17 +171,14 @@ impl<'a> ACMDCRC_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum ACMDEND_AW {
     #[doc = "0: No Interrupt"]
-    NO,
+    NO = 0,
     #[doc = "1: Interrupt is generated"]
-    YES,
+    YES = 1,
 }
 impl From<ACMDEND_AW> for bool {
     #[inline(always)]
     fn from(variant: ACMDEND_AW) -> Self {
-        match variant {
-            ACMDEND_AW::NO => false,
-            ACMDEND_AW::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Write proxy for field `ACMDEND`"]
@@ -236,17 +224,14 @@ impl<'a> ACMDEND_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum ACMDIDX_AW {
     #[doc = "0: No Interrupt"]
-    NO,
+    NO = 0,
     #[doc = "1: Interrupt is generated"]
-    YES,
+    YES = 1,
 }
 impl From<ACMDIDX_AW> for bool {
     #[inline(always)]
     fn from(variant: ACMDIDX_AW) -> Self {
-        match variant {
-            ACMDIDX_AW::NO => false,
-            ACMDIDX_AW::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Write proxy for field `ACMDIDX`"]
@@ -292,17 +277,14 @@ impl<'a> ACMDIDX_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CMDNI_AW {
     #[doc = "0: No Interrupt"]
-    NO,
+    NO = 0,
     #[doc = "1: Interrupt is generated"]
-    YES,
+    YES = 1,
 }
 impl From<CMDNI_AW> for bool {
     #[inline(always)]
     fn from(variant: CMDNI_AW) -> Self {
-        match variant {
-            CMDNI_AW::NO => false,
-            CMDNI_AW::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Write proxy for field `CMDNI`"]

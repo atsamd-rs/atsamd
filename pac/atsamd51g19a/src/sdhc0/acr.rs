@@ -12,25 +12,21 @@ impl crate::ResetValue for super::ACR {
 }
 #[doc = "AHB Maximum Burst\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum BMAX_A {
     #[doc = "0: `0`"]
-    INCR16,
+    INCR16 = 0,
     #[doc = "1: `1`"]
-    INCR8,
+    INCR8 = 1,
     #[doc = "2: `10`"]
-    INCR4,
+    INCR4 = 2,
     #[doc = "3: `11`"]
-    SINGLE,
+    SINGLE = 3,
 }
 impl From<BMAX_A> for u8 {
     #[inline(always)]
     fn from(variant: BMAX_A) -> Self {
-        match variant {
-            BMAX_A::INCR16 => 0,
-            BMAX_A::INCR8 => 1,
-            BMAX_A::INCR4 => 2,
-            BMAX_A::SINGLE => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `BMAX`"]

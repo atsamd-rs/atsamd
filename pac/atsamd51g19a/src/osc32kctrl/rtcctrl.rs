@@ -12,25 +12,21 @@ impl crate::ResetValue for super::RTCCTRL {
 }
 #[doc = "RTC Clock Selection\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum RTCSEL_A {
     #[doc = "0: 1.024kHz from 32kHz internal ULP oscillator"]
-    ULP1K,
+    ULP1K = 0,
     #[doc = "1: 32.768kHz from 32kHz internal ULP oscillator"]
-    ULP32K,
+    ULP32K = 1,
     #[doc = "4: 1.024kHz from 32.768kHz internal oscillator"]
-    XOSC1K,
+    XOSC1K = 4,
     #[doc = "5: 32.768kHz from 32.768kHz external crystal oscillator"]
-    XOSC32K,
+    XOSC32K = 5,
 }
 impl From<RTCSEL_A> for u8 {
     #[inline(always)]
     fn from(variant: RTCSEL_A) -> Self {
-        match variant {
-            RTCSEL_A::ULP1K => 0,
-            RTCSEL_A::ULP32K => 1,
-            RTCSEL_A::XOSC1K => 4,
-            RTCSEL_A::XOSC32K => 5,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `RTCSEL`"]

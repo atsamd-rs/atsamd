@@ -2,16 +2,15 @@
 pub type R = crate::R<u32, super::CA0R>;
 #[doc = "Timeout Clock Frequency\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum TEOCLKF_A {
     #[doc = "0: Get information via another method"]
-    OTHER,
+    OTHER = 0,
 }
 impl From<TEOCLKF_A> for u8 {
     #[inline(always)]
     fn from(variant: TEOCLKF_A) -> Self {
-        match variant {
-            TEOCLKF_A::OTHER => 0,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `TEOCLKF`"]
@@ -35,18 +34,15 @@ impl TEOCLKF_R {
 #[doc = "Timeout Clock Unit\n\nValue on reset: 1"]
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum TEOCLKU_A {
-    #[doc = "0: kHz"]
-    KHZ,
+    #[doc = "0: KHz"]
+    KHZ = 0,
     #[doc = "1: MHz"]
-    MHZ,
+    MHZ = 1,
 }
 impl From<TEOCLKU_A> for bool {
     #[inline(always)]
     fn from(variant: TEOCLKU_A) -> Self {
-        match variant {
-            TEOCLKU_A::KHZ => false,
-            TEOCLKU_A::MHZ => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `TEOCLKU`"]
@@ -73,16 +69,15 @@ impl TEOCLKU_R {
 }
 #[doc = "Base Clock Frequency\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum BASECLKF_A {
     #[doc = "0: Get information via another method"]
-    OTHER,
+    OTHER = 0,
 }
 impl From<BASECLKF_A> for u8 {
     #[inline(always)]
     fn from(variant: BASECLKF_A) -> Self {
-        match variant {
-            BASECLKF_A::OTHER => 0,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `BASECLKF`"]
@@ -105,22 +100,19 @@ impl BASECLKF_R {
 }
 #[doc = "Max Block Length\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum MAXBLKL_A {
     #[doc = "0: 512 bytes"]
-    _512,
+    _512 = 0,
     #[doc = "1: 1024 bytes"]
-    _1024,
+    _1024 = 1,
     #[doc = "2: 2048 bytes"]
-    _2048,
+    _2048 = 2,
 }
 impl From<MAXBLKL_A> for u8 {
     #[inline(always)]
     fn from(variant: MAXBLKL_A) -> Self {
-        match variant {
-            MAXBLKL_A::_512 => 0,
-            MAXBLKL_A::_1024 => 1,
-            MAXBLKL_A::_2048 => 2,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `MAXBLKL`"]
@@ -157,17 +149,14 @@ impl MAXBLKL_R {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum ED8SUP_A {
     #[doc = "0: 8-bit Bus Width not Supported"]
-    NO,
+    NO = 0,
     #[doc = "1: 8-bit Bus Width Supported"]
-    YES,
+    YES = 1,
 }
 impl From<ED8SUP_A> for bool {
     #[inline(always)]
     fn from(variant: ED8SUP_A) -> Self {
-        match variant {
-            ED8SUP_A::NO => false,
-            ED8SUP_A::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `ED8SUP`"]
@@ -196,17 +185,14 @@ impl ED8SUP_R {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum ADMA2SUP_A {
     #[doc = "0: ADMA2 not Supported"]
-    NO,
+    NO = 0,
     #[doc = "1: ADMA2 Supported"]
-    YES,
+    YES = 1,
 }
 impl From<ADMA2SUP_A> for bool {
     #[inline(always)]
     fn from(variant: ADMA2SUP_A) -> Self {
-        match variant {
-            ADMA2SUP_A::NO => false,
-            ADMA2SUP_A::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `ADMA2SUP`"]
@@ -235,17 +221,14 @@ impl ADMA2SUP_R {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum HSSUP_A {
     #[doc = "0: High Speed not Supported"]
-    NO,
+    NO = 0,
     #[doc = "1: High Speed Supported"]
-    YES,
+    YES = 1,
 }
 impl From<HSSUP_A> for bool {
     #[inline(always)]
     fn from(variant: HSSUP_A) -> Self {
-        match variant {
-            HSSUP_A::NO => false,
-            HSSUP_A::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `HSSUP`"]
@@ -274,17 +257,14 @@ impl HSSUP_R {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum SDMASUP_A {
     #[doc = "0: SDMA not Supported"]
-    NO,
+    NO = 0,
     #[doc = "1: SDMA Supported"]
-    YES,
+    YES = 1,
 }
 impl From<SDMASUP_A> for bool {
     #[inline(always)]
     fn from(variant: SDMASUP_A) -> Self {
-        match variant {
-            SDMASUP_A::NO => false,
-            SDMASUP_A::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `SDMASUP`"]
@@ -313,17 +293,14 @@ impl SDMASUP_R {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum SRSUP_A {
     #[doc = "0: Suspend/Resume not Supported"]
-    NO,
+    NO = 0,
     #[doc = "1: Suspend/Resume Supported"]
-    YES,
+    YES = 1,
 }
 impl From<SRSUP_A> for bool {
     #[inline(always)]
     fn from(variant: SRSUP_A) -> Self {
-        match variant {
-            SRSUP_A::NO => false,
-            SRSUP_A::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `SRSUP`"]
@@ -352,17 +329,14 @@ impl SRSUP_R {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum V33VSUP_A {
     #[doc = "0: 3.3V Not Supported"]
-    NO,
+    NO = 0,
     #[doc = "1: 3.3V Supported"]
-    YES,
+    YES = 1,
 }
 impl From<V33VSUP_A> for bool {
     #[inline(always)]
     fn from(variant: V33VSUP_A) -> Self {
-        match variant {
-            V33VSUP_A::NO => false,
-            V33VSUP_A::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `V33VSUP`"]
@@ -391,17 +365,14 @@ impl V33VSUP_R {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum V30VSUP_A {
     #[doc = "0: 3.0V Not Supported"]
-    NO,
+    NO = 0,
     #[doc = "1: 3.0V Supported"]
-    YES,
+    YES = 1,
 }
 impl From<V30VSUP_A> for bool {
     #[inline(always)]
     fn from(variant: V30VSUP_A) -> Self {
-        match variant {
-            V30VSUP_A::NO => false,
-            V30VSUP_A::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `V30VSUP`"]
@@ -430,17 +401,14 @@ impl V30VSUP_R {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum V18VSUP_A {
     #[doc = "0: 1.8V Not Supported"]
-    NO,
+    NO = 0,
     #[doc = "1: 1.8V Supported"]
-    YES,
+    YES = 1,
 }
 impl From<V18VSUP_A> for bool {
     #[inline(always)]
     fn from(variant: V18VSUP_A) -> Self {
-        match variant {
-            V18VSUP_A::NO => false,
-            V18VSUP_A::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `V18VSUP`"]
@@ -469,17 +437,14 @@ impl V18VSUP_R {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum SB64SUP_A {
     #[doc = "0: 32-bit Address Descriptors and System Bus"]
-    NO,
+    NO = 0,
     #[doc = "1: 64-bit Address Descriptors and System Bus"]
-    YES,
+    YES = 1,
 }
 impl From<SB64SUP_A> for bool {
     #[inline(always)]
     fn from(variant: SB64SUP_A) -> Self {
-        match variant {
-            SB64SUP_A::NO => false,
-            SB64SUP_A::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `SB64SUP`"]
@@ -508,17 +473,14 @@ impl SB64SUP_R {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum ASINTSUP_A {
     #[doc = "0: Asynchronous Interrupt not Supported"]
-    NO,
+    NO = 0,
     #[doc = "1: Asynchronous Interrupt supported"]
-    YES,
+    YES = 1,
 }
 impl From<ASINTSUP_A> for bool {
     #[inline(always)]
     fn from(variant: ASINTSUP_A) -> Self {
-        match variant {
-            ASINTSUP_A::NO => false,
-            ASINTSUP_A::YES => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `ASINTSUP`"]
@@ -545,19 +507,17 @@ impl ASINTSUP_R {
 }
 #[doc = "Slot Type\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum SLTYPE_A {
     #[doc = "0: Removable Card Slot"]
-    REMOVABLE,
+    REMOVABLE = 0,
     #[doc = "1: Embedded Slot for One Device"]
-    EMBEDDED,
+    EMBEDDED = 1,
 }
 impl From<SLTYPE_A> for u8 {
     #[inline(always)]
     fn from(variant: SLTYPE_A) -> Self {
-        match variant {
-            SLTYPE_A::REMOVABLE => 0,
-            SLTYPE_A::EMBEDDED => 1,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `SLTYPE`"]

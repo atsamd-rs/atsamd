@@ -26,40 +26,31 @@ impl<'a> ID_W<'a> {
 }
 #[doc = "Source Select\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum SRC_A {
     #[doc = "0: XOSC oscillator output"]
-    XOSC,
+    XOSC = 0,
     #[doc = "1: Generator input pad"]
-    GCLKIN,
+    GCLKIN = 1,
     #[doc = "2: Generic clock generator 1 output"]
-    GCLKGEN1,
+    GCLKGEN1 = 2,
     #[doc = "3: OSCULP32K oscillator output"]
-    OSCULP32K,
+    OSCULP32K = 3,
     #[doc = "4: OSC32K oscillator output"]
-    OSC32K,
+    OSC32K = 4,
     #[doc = "5: XOSC32K oscillator output"]
-    XOSC32K,
+    XOSC32K = 5,
     #[doc = "6: OSC8M oscillator output"]
-    OSC8M,
+    OSC8M = 6,
     #[doc = "7: DFLL48M output"]
-    DFLL48M,
+    DFLL48M = 7,
     #[doc = "8: DPLL96M output"]
-    DPLL96M,
+    DPLL96M = 8,
 }
 impl From<SRC_A> for u8 {
     #[inline(always)]
     fn from(variant: SRC_A) -> Self {
-        match variant {
-            SRC_A::XOSC => 0,
-            SRC_A::GCLKIN => 1,
-            SRC_A::GCLKGEN1 => 2,
-            SRC_A::OSCULP32K => 3,
-            SRC_A::OSC32K => 4,
-            SRC_A::XOSC32K => 5,
-            SRC_A::OSC8M => 6,
-            SRC_A::DFLL48M => 7,
-            SRC_A::DPLL96M => 8,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `SRC`"]

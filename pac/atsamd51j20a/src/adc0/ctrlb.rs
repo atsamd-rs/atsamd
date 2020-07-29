@@ -84,25 +84,21 @@ impl<'a> CORREN_W<'a> {
 }
 #[doc = "Conversion Result Resolution\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum RESSEL_A {
     #[doc = "0: 12-bit result"]
-    _12BIT,
+    _12BIT = 0,
     #[doc = "1: For averaging mode output"]
-    _16BIT,
+    _16BIT = 1,
     #[doc = "2: 10-bit result"]
-    _10BIT,
+    _10BIT = 2,
     #[doc = "3: 8-bit result"]
-    _8BIT,
+    _8BIT = 3,
 }
 impl From<RESSEL_A> for u8 {
     #[inline(always)]
     fn from(variant: RESSEL_A) -> Self {
-        match variant {
-            RESSEL_A::_12BIT => 0,
-            RESSEL_A::_16BIT => 1,
-            RESSEL_A::_10BIT => 2,
-            RESSEL_A::_8BIT => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `RESSEL`"]
@@ -181,28 +177,23 @@ impl<'a> RESSEL_W<'a> {
 }
 #[doc = "Window Monitor Mode\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum WINMODE_A {
     #[doc = "0: No window mode (default)"]
-    DISABLE,
+    DISABLE = 0,
     #[doc = "1: RESULT > WINLT"]
-    MODE1,
+    MODE1 = 1,
     #[doc = "2: RESULT < WINUT"]
-    MODE2,
+    MODE2 = 2,
     #[doc = "3: WINLT < RESULT < WINUT"]
-    MODE3,
+    MODE3 = 3,
     #[doc = "4: !(WINLT < RESULT < WINUT)"]
-    MODE4,
+    MODE4 = 4,
 }
 impl From<WINMODE_A> for u8 {
     #[inline(always)]
     fn from(variant: WINMODE_A) -> Self {
-        match variant {
-            WINMODE_A::DISABLE => 0,
-            WINMODE_A::MODE1 => 1,
-            WINMODE_A::MODE2 => 2,
-            WINMODE_A::MODE3 => 3,
-            WINMODE_A::MODE4 => 4,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `WINMODE`"]

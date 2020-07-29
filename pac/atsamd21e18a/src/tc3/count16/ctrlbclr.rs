@@ -60,22 +60,19 @@ impl<'a> ONESHOT_W<'a> {
 }
 #[doc = "Command\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum CMD_A {
     #[doc = "0: No action"]
-    NONE,
+    NONE = 0,
     #[doc = "1: Force a start, restart or retrigger"]
-    RETRIGGER,
+    RETRIGGER = 1,
     #[doc = "2: Force a stop"]
-    STOP,
+    STOP = 2,
 }
 impl From<CMD_A> for u8 {
     #[inline(always)]
     fn from(variant: CMD_A) -> Self {
-        match variant {
-            CMD_A::NONE => 0,
-            CMD_A::RETRIGGER => 1,
-            CMD_A::STOP => 2,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `CMD`"]

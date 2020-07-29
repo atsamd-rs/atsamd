@@ -1,8 +1,9 @@
-#[doc = "Reader of register GENCTRL%s"]
+#[doc = "Reader of register GENCTRL[%s]"]
 pub type R = crate::R<u32, super::GENCTRL>;
-#[doc = "Writer for register GENCTRL%s"]
+#[doc = "Writer for register GENCTRL[%s]"]
 pub type W = crate::W<u32, super::GENCTRL>;
-#[doc = "Register GENCTRL%s `reset()`'s with value 0"]
+#[doc = "Register GENCTRL[%s]
+`reset()`'s with value 0"]
 impl crate::ResetValue for super::GENCTRL {
     type Type = u32;
     #[inline(always)]
@@ -12,40 +13,31 @@ impl crate::ResetValue for super::GENCTRL {
 }
 #[doc = "Source Select\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum SRC_A {
     #[doc = "0: XOSC0 oscillator output"]
-    XOSC0,
+    XOSC0 = 0,
     #[doc = "1: XOSC1 oscillator output"]
-    XOSC1,
+    XOSC1 = 1,
     #[doc = "2: Generator input pad"]
-    GCLKIN,
+    GCLKIN = 2,
     #[doc = "3: Generic clock generator 1 output"]
-    GCLKGEN1,
+    GCLKGEN1 = 3,
     #[doc = "4: OSCULP32K oscillator output"]
-    OSCULP32K,
+    OSCULP32K = 4,
     #[doc = "5: XOSC32K oscillator output"]
-    XOSC32K,
+    XOSC32K = 5,
     #[doc = "6: DFLL output"]
-    DFLL,
+    DFLL = 6,
     #[doc = "7: DPLL0 output"]
-    DPLL0,
+    DPLL0 = 7,
     #[doc = "8: DPLL1 output"]
-    DPLL1,
+    DPLL1 = 8,
 }
 impl From<SRC_A> for u8 {
     #[inline(always)]
     fn from(variant: SRC_A) -> Self {
-        match variant {
-            SRC_A::XOSC0 => 0,
-            SRC_A::XOSC1 => 1,
-            SRC_A::GCLKIN => 2,
-            SRC_A::GCLKGEN1 => 3,
-            SRC_A::OSCULP32K => 4,
-            SRC_A::XOSC32K => 5,
-            SRC_A::DFLL => 6,
-            SRC_A::DPLL0 => 7,
-            SRC_A::DPLL1 => 8,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `SRC`"]
@@ -272,13 +264,64 @@ impl<'a> OE_W<'a> {
         self.w
     }
 }
+#[doc = "Divide Selection\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum DIVSEL_A {
+    #[doc = "0: Divide input directly by divider factor"]
+    DIV1 = 0,
+    #[doc = "1: Divide input by 2^(divider factor+ 1)"]
+    DIV2 = 1,
+}
+impl From<DIVSEL_A> for bool {
+    #[inline(always)]
+    fn from(variant: DIVSEL_A) -> Self {
+        variant as u8 != 0
+    }
+}
 #[doc = "Reader of field `DIVSEL`"]
-pub type DIVSEL_R = crate::R<bool, bool>;
+pub type DIVSEL_R = crate::R<bool, DIVSEL_A>;
+impl DIVSEL_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> DIVSEL_A {
+        match self.bits {
+            false => DIVSEL_A::DIV1,
+            true => DIVSEL_A::DIV2,
+        }
+    }
+    #[doc = "Checks if the value of the field is `DIV1`"]
+    #[inline(always)]
+    pub fn is_div1(&self) -> bool {
+        *self == DIVSEL_A::DIV1
+    }
+    #[doc = "Checks if the value of the field is `DIV2`"]
+    #[inline(always)]
+    pub fn is_div2(&self) -> bool {
+        *self == DIVSEL_A::DIV2
+    }
+}
 #[doc = "Write proxy for field `DIVSEL`"]
 pub struct DIVSEL_W<'a> {
     w: &'a mut W,
 }
 impl<'a> DIVSEL_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: DIVSEL_A) -> &'a mut W {
+        {
+            self.bit(variant.into())
+        }
+    }
+    #[doc = "Divide input directly by divider factor"]
+    #[inline(always)]
+    pub fn div1(self) -> &'a mut W {
+        self.variant(DIVSEL_A::DIV1)
+    }
+    #[doc = "Divide input by 2^(divider factor+ 1)"]
+    #[inline(always)]
+    pub fn div2(self) -> &'a mut W {
+        self.variant(DIVSEL_A::DIV2)
+    }
     #[doc = r"Sets the field bit"]
     #[inline(always)]
     pub fn set_bit(self) -> &'a mut W {
