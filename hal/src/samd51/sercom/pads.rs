@@ -9,29 +9,37 @@ pub use crate::pad::PadPin;
 pad!(Sercom0Pad0 {
     Pa4(PfD),
     Pa8(PfC),
-    // Pc17(PfD),
-    // Pb24(PfC),
+    #[cfg(feature = "samd51p19a")]
+    Pc17(PfD),
+    #[cfg(feature = "samd51p19a")]
+    Pb24(PfC),
 });
 
 pad!(Sercom0Pad1 {
     Pa5(PfD),
     Pa9(PfC),
-    // Pc16(PfD),
-    // Pb25(PfC),
+    #[cfg(feature = "samd51p19a")]
+    Pc16(PfD),
+    #[cfg(feature = "samd51p19a")]
+    Pb25(PfC),
 });
 
 pad!(Sercom0Pad2 {
     Pa6(PfD),
     Pa10(PfC),
-    // Pc18(PfD),
-    // Pc24(PfC),
+    #[cfg(feature = "samd51p19a")]
+    Pc18(PfD),
+    #[cfg(feature = "samd51p19a")]
+    Pc24(PfC),
 });
 
 pad!(Sercom0Pad3 {
     Pa7(PfD),
     Pa11(PfC),
-    // Pc19(PfD),
-    // Pc25(PfC),
+    #[cfg(feature = "samd51p19a")]
+    Pc19(PfD),
+    #[cfg(feature = "samd51p19a")]
+    Pc25(PfC),
 });
 
 // sercom1[0]:  PA00:D   PA16:C   PC22:C    PC27:C
@@ -42,29 +50,35 @@ pad!(Sercom0Pad3 {
 pad!(Sercom1Pad0 {
     Pa0(PfD),
     Pa16(PfC),
-    // Pc22(PfC),
-    // Pc27(PfC),
+    #[cfg(feature = "samd51p19a")]
+    Pc22(PfC),
+    #[cfg(feature = "samd51p19a")]
+    Pc27(PfC),
 });
 
 pad!(Sercom1Pad1 {
     Pa1(PfD),
     Pa17(PfC),
-    // Pc23(PfC),
-    // Pc28(PfC),
+    #[cfg(feature = "samd51p19a")]
+    Pc23(PfC),
+    #[cfg(feature = "samd51p19a")]
+    Pc28(PfC),
 });
 
 pad!(Sercom1Pad2 {
     Pa18(PfC),
     Pa30(PfD),
     Pb22(PfC),
-    // Pd20(PfC),
+    #[cfg(feature = "samd51p19a")]
+    Pd20(PfC),
 });
 
 pad!(Sercom1Pad3 {
     Pa19(PfC),
     Pa31(PfD),
     Pb23(PfC),
-    // Pd21(PfC),
+    #[cfg(feature = "samd51p19a")]
+    Pd21(PfC),
 });
 
 // sercom2[0]:  PA09:D   PA12:C     PB25:D      PB26:C
@@ -75,29 +89,37 @@ pad!(Sercom1Pad3 {
 pad!(Sercom2Pad0 {
     Pa9(PfD),
     Pa12(PfC),
-    // Pb25(PfD),
-    // Pb26(PfC),
+    #[cfg(feature = "samd51p19a")]
+    Pb25(PfD),
+    #[cfg(feature = "samd51p19a")]
+    Pb26(PfC),
 });
 
 pad!(Sercom2Pad1 {
     Pa8(PfD),
     Pa13(PfC),
-    // Pb24(PfD),
-    // Pb27(PfC),
+    #[cfg(feature = "samd51p19a")]
+    Pb24(PfD),
+    #[cfg(feature = "samd51p19a")]
+    Pb27(PfC),
 });
 
 pad!(Sercom2Pad2 {
     Pa10(PfD),
     Pa14(PfC),
-    // Pb28(PfC),
-    // Pc24(PfD),
+    #[cfg(feature = "samd51p19a")]
+    Pb28(PfC),
+    #[cfg(feature = "samd51p19a")]
+    Pc24(PfD),
 });
 
 pad!(Sercom2Pad3 {
     Pa11(PfD),
     Pa15(PfC),
-    // Pb29(PfC),
-    // Pc25(PfD),
+    #[cfg(feature = "samd51p19a")]
+    Pb29(PfC),
+    #[cfg(feature = "samd51p19a")]
+    Pc25(PfD),
 });
 
 // sercom3[0]:  PA17:D   PA22:C   PB20:C    PC23:D
@@ -108,29 +130,35 @@ pad!(Sercom2Pad3 {
 pad!(Sercom3Pad0 {
     Pa17(PfD),
     Pa22(PfC),
-    // Pb20(PfC),
-    // Pc23(PfD),
+    #[cfg(feature = "samd51p19a")]
+    Pb20(PfC),
+    #[cfg(feature = "samd51p19a")]
+    Pc23(PfD),
 });
 
 pad!(Sercom3Pad1 {
     Pa16(PfD),
     Pa23(PfC),
-    // Pb21(PfC),
-    // Pc22(PfD),
+    #[cfg(feature = "samd51p19a")]
+    Pb21(PfC),
+    #[cfg(feature = "samd51p19a")]
+    Pc22(PfD),
 });
 
 pad!(Sercom3Pad2 {
     Pa18(PfD),
     Pa20(PfD),
     Pa24(PfC),
-    // Pd20(PfD),
+    #[cfg(feature = "samd51p19a")]
+    Pd20(PfD),
 });
 
 pad!(Sercom3Pad3 {
     Pa19(PfD),
     Pa21(PfD),
     Pa25(PfC),
-    // Pd21(PfD),
+    #[cfg(feature = "samd51p19a")]
+    Pd21(PfD),
 });
 
 // sercom4[0]:  PA13:D   PB08:D   PB12:C    PB27:D
@@ -142,28 +170,32 @@ pad!(Sercom4Pad0 {
     Pa13(PfD),
     Pb8(PfD),
     Pb12(PfC),
-    // Pb27(PfD),
+    #[cfg(feature = "samd51p19a")]
+    Pb27(PfD),
 });
 
 pad!(Sercom4Pad1 {
     Pa12(PfD),
     Pb9(PfD),
     Pb13(PfC),
-    // Pb26(PfD),
+    #[cfg(feature = "samd51p19a")]
+    Pb26(PfD),
 });
 
 pad!(Sercom4Pad2 {
     Pa14(PfD),
     Pb10(PfD),
     Pb14(PfC),
-    // Pb28(PfD),
+    #[cfg(feature = "samd51p19a")]
+    Pb28(PfD),
 });
 
 pad!(Sercom4Pad3 {
     Pa15(PfD),
     Pb11(PfD),
     Pb15(PfC),
-    // Pb29(PfD),
+    #[cfg(feature = "samd51p19a")]
+    Pb29(PfD),
 });
 
 // sercom5[0]:  PA23:D   PB02:D   PB16:C   PB31:D
@@ -189,7 +221,8 @@ pad!(Sercom5Pad2 {
     Pa20(PfC),
     Pa24(PfD),
     Pb0(PfD),
-    // Pb18(PfC),
+    #[cfg(feature = "samd51p19a")]
+    Pb18(PfC),
     Pb22(PfD),
 });
 
@@ -197,72 +230,81 @@ pad!(Sercom5Pad3 {
     Pa21(PfC),
     Pa25(PfD),
     Pb1(PfD),
-    // Pb19(PfC),
+    #[cfg(feature = "samd51p19a")]
+    Pb19(PfC),
     Pb23(PfD),
 });
 
-// // sercom6[0]:  PC04:C   PC13:D   PC16:C   PD09:D
-// // sercom6[1]:  PC05:C   PC12:D   PC17:C   PD08:D
-// // sercom6[2]:  PC06:C   PC10:C   PC14:D   PC18:C   PD10:D
-// // sercom6[3]:  PC07:C   PC11:C   PC15:D   PC19:C   PD11:D
+// sercom6[0]:  PC04:C   PC13:D   PC16:C   PD09:D
+// sercom6[1]:  PC05:C   PC12:D   PC17:C   PD08:D
+// sercom6[2]:  PC06:C   PC10:C   PC14:D   PC18:C   PD10:D
+// sercom6[3]:  PC07:C   PC11:C   PC15:D   PC19:C   PD11:D
 
-// pad!(Sercom6Pad0 {
-//     Pc4(PfC),
-//     Pc13(PfD),
-//     Pc16(PfC),
-//     Pd9(PfD),
-// });
+#[cfg(feature = "samd51p19a")]
+pad!(Sercom6Pad0 {
+    Pc4(PfC),
+    Pc13(PfD),
+    Pc16(PfC),
+    Pd9(PfD),
+});
 
-// pad!(Sercom6Pad1 {
-//     Pc5(PfC),
-//     Pc12(PfD),
-//     Pc17(PfC),
-//     Pd8(PfD),
-// });
+#[cfg(feature = "samd51p19a")]
+pad!(Sercom6Pad1 {
+    Pc5(PfC),
+    Pc12(PfD),
+    Pc17(PfC),
+    Pd8(PfD),
+});
 
-// pad!(Sercom6Pad2 {
-//     Pc6(PfC),
-//     Pc10(PfC),
-//     Pc14(PfD),
-//     Pc18(PfC),
-//     Pd10(PfD),
-// });
+#[cfg(feature = "samd51p19a")]
+pad!(Sercom6Pad2 {
+    Pc6(PfC),
+    Pc10(PfC),
+    Pc14(PfD),
+    Pc18(PfC),
+    Pd10(PfD),
+});
 
-// pad!(Sercom6Pad3 {
-//     Pc7(PfC),
-//     Pc11(PfC),
-//     Pc15(PfD),
-//     Pc19(PfC),
-//     Pd11(PfD),
-// });
+#[cfg(feature = "samd51p19a")]
+pad!(Sercom6Pad3 {
+    Pc7(PfC),
+    Pc11(PfC),
+    Pc15(PfD),
+    Pc19(PfC),
+    Pd11(PfD),
+});
 
-// // sercom7[0]:  PB21:D   PC12:C   PD08:C
-// // sercom7[1]:  PB20:D   PC13:C   PD09:C
-// // sercom7[2]:  PB18:D   PC10:D   PC14:C   PD10:C
-// // sercom7[3]:  PC11:D   PC15:C   PD11:C   PB19:D
+// sercom7[0]:  PB21:D   PC12:C   PD08:C
+// sercom7[1]:  PB20:D   PC13:C   PD09:C
+// sercom7[2]:  PB18:D   PC10:D   PC14:C   PD10:C
+// sercom7[3]:  PC11:D   PC15:C   PD11:C   PB19:D
 
-// pad!(Sercom7Pad0 {
-//     Pb21(PfD),
-//     Pc12(PfC),
-//     Pd8(PfC),
-// });
+#[cfg(feature = "samd51p19a")]
+pad!(Sercom7Pad0 {
+    Pb21(PfD),
+    Pc12(PfC),
+    Pd8(PfC),
+});
 
-// pad!(Sercom7Pad1 {
-//     Pb20(PfD),
-//     Pc13(PfC),
-//     Pd9(PfC),
-// });
+#[cfg(feature = "samd51p19a")]
+pad!(Sercom7Pad1 {
+    Pb20(PfD),
+    Pc13(PfC),
+    Pd9(PfC),
+});
 
-// pad!(Sercom7Pad2 {
-//     Pb18(PfD),
-//     Pc10(PfD),
-//     Pc14(PfC),
-//     Pd10(PfC),
-// });
+#[cfg(feature = "samd51p19a")]
+pad!(Sercom7Pad2 {
+    Pb18(PfD),
+    Pc10(PfD),
+    Pc14(PfC),
+    Pd10(PfC),
+});
 
-// pad!(Sercom7Pad3 {
-//     Pc11(PfD),
-//     Pc15(PfC),
-//     Pd11(PfC),
-//     Pb19(PfD),
-// });
+#[cfg(feature = "samd51p19a")]
+pad!(Sercom7Pad3 {
+    Pc11(PfD),
+    Pc15(PfC),
+    Pd11(PfC),
+    Pb19(PfD),
+});
