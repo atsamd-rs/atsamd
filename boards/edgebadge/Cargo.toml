@@ -1,6 +1,6 @@
 [package]
 name = "edgebadge"
-version = "0.4.0"
+version = "0.5.0"
 authors = [
     "Jacob Rosenthal <@jacobrosenthal>",
 ]
@@ -24,7 +24,7 @@ optional = true
 
 [dependencies.atsamd-hal]
 path = "../../hal"
-version = "~0.8"
+version = "~0.9"
 default-features = false
 
 [dependencies.micromath]
