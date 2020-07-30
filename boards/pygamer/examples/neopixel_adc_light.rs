@@ -1,4 +1,7 @@
 //! Display light sensor reading on the neopixels.
+//!
+//! Note leds may appear white during debug. Either build for release or add
+//! opt-level = 2 to profile.dev in Cargo.toml
 
 #![no_std]
 #![no_main]

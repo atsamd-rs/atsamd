@@ -3,6 +3,9 @@
 //! Select and Start control a second neopixel left and right while it is
 //! automatically rotating through the color wheel
 //! When they overlap, joystick takes precedence
+//!
+//! Note leds may appear white during debug. Either build for release or add
+//! opt-level = 2 to profile.dev in Cargo.toml
 
 #![no_std]
 #![no_main]

@@ -1,4 +1,7 @@
 //! Rotate all neopixel leds through a rainbow. Uses a luckily placed set of SPI pins as a timer source.
+//!
+//! Note leds may appear white during debug. Either build for release or add
+//! opt-level = 2 to profile.dev in Cargo.toml
 
 #![no_std]
 #![no_main]
