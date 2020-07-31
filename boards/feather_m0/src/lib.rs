@@ -34,7 +34,6 @@ define_pins!(
     /// as it has a DAC (which is not currently supported
     /// by this hal) as well as input.
     pin a0 = a2,
-
     /// Analog Pin 1
     pin a1 = b8,
     /// Analog Pin 2
@@ -50,10 +49,16 @@ define_pins!(
     pin d0 = a11,
     /// Pin 1, tx
     pin d1 = a10,
+    /// Pin 3
+    pin d3 = a9,
+    /// Pin 4
+    pin d4 = a8,
     /// Pin 5, PWM capable
     pin d5 = a15,
     /// Pin 6, PWM capable
     pin d6 = a20,
+    /// Pin 8
+    pin d8 = a6,
     /// Pin 9, PWM capable.  Also analog input (A7)
     pin d9 = a7,
     /// Pin 10, PWM capable
