@@ -107,28 +107,31 @@ macro_rules! spi_master {
                     // safe because we're exclusively owning SERCOM
                     mclk.$apmask.modify(|_, w| w.$powermask().set_bit());
 
+                    // reset the sercom instance
+                    sercom.spim().ctrla.modify(|_, w| w.swrst().set_bit());
+                    // wait for reset to complete
+                    while sercom.spim().syncbusy.read().swrst().bit_is_set()
+                        || sercom.spim().ctrla.read().swrst().bit_is_set()
+                    {}
+
+                    // Put the hardware into spi master mode
+                    sercom.spim().ctrla.modify(|_, w| w.mode().spi_master());
+                    // wait for configuration to take effect
+                    while sercom.spim().syncbusy.read().enable().bit_is_set() {}
+
+                    // 8 bit data size and enable the receiver
                     unsafe {
-                        // reset the sercom instance
-                        sercom.spim().ctrla.modify(|_, w| w.swrst().set_bit());
-                        // wait for reset to complete
-                        while sercom.spim().syncbusy.read().swrst().bit_is_set()
-                            || sercom.spim().ctrla.read().swrst().bit_is_set()
-                        {}
-
-                        // Put the hardware into spi master mode
-                        sercom.spim().ctrla.modify(|_, w| w.mode().spi_master());
-                        // wait for configuration to take effect
-                        while sercom.spim().syncbusy.read().enable().bit_is_set() {}
-
-                        // 8 bit data size and enable the receiver
                         sercom.spim().ctrlb.modify(|_, w|{
                             w.chsize().bits(0);
                             w.rxen().set_bit()
                         });
+                    }
 
-                        // set the baud rate
-                        let gclk = clock.freq();
-                        let baud = (gclk.0 / (2 * freq.into().0) - 1) as u8;
+                    // set the baud rate
+                    let gclk = clock.freq();
+                    let baud = (gclk.0 / (2 * freq.into().0) - 1) as u8;
+
+                    unsafe {
                         sercom.spim().baud.modify(|_, w| w.baud().bits(baud));
 
                         sercom.spim().ctrla.modify(|_, w| {
@@ -149,13 +152,11 @@ macro_rules! spi_master {
                             // MSB first
                             w.dord().clear_bit()
                         });
-
-
-                        sercom.spim().ctrla.modify(|_, w| w.enable().set_bit());
-                        // wait for configuration to take effect
-                        while sercom.spim().syncbusy.read().enable().bit_is_set() {}
-
                     }
+
+                    sercom.spim().ctrla.modify(|_, w| w.enable().set_bit());
+                    // wait for configuration to take effect
+                    while sercom.spim().syncbusy.read().enable().bit_is_set() {}
 
                     Self {
                         padout,
@@ -184,9 +185,9 @@ macro_rules! spi_master {
                     clock:&clock::$clock
                 ) {
                     self.disable();
+                    let gclk = clock.freq();
+                    let baud = (gclk.0 / (2 * freq.into().0) - 1) as u8;
                     unsafe {
-                        let gclk = clock.freq();
-                        let baud = (gclk.0 / (2 * freq.into().0) - 1) as u8;
                         self.sercom.spim().baud.modify(|_, w| w.baud().bits(baud));
                     }
                     self.enable();
