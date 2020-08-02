@@ -1,10 +1,11 @@
 use crate::clock;
 use crate::hal::spi::{FullDuplex, Mode, Phase, Polarity};
 use crate::sercom::pads::*;
+use crate::spi_common::AtsamdSpi;
 use crate::target_device::sercom0::SPIM;
 use crate::target_device::{MCLK, SERCOM0, SERCOM1, SERCOM2, SERCOM3};
 use crate::target_device::{SERCOM4, SERCOM5};
-use crate::time::{Hertz, U32Ext};
+use crate::time::Hertz;
 
 #[derive(Debug)]
 pub enum Error {
@@ -87,6 +88,18 @@ macro_rules! spi_master {
                 sercom: $SERCOM,
             }
 
+            impl<MISO, MOSI, SCK> AtsamdSpi for $Type<MISO, MOSI, SCK> {
+                /// Helper for accessing the spi member of the sercom instance
+                fn spi(&self) -> &SPIM {
+                    &self.sercom.spim()
+                }
+
+                /// Helper for accessing the spi member of the sercom instance
+                fn spi_mut(&mut self) -> &SPIM {
+                    &self.sercom.spim()
+                }
+            }
+
             impl<MISO, MOSI, SCK> $Type<MISO, MOSI, SCK> {
                 /// Power on and configure SERCOMX to work as an SPI Master operating
                 /// with the specified frequency and SPI Mode.  The pinout specifies
@@ -127,7 +140,7 @@ macro_rules! spi_master {
                     }
 
                     // set the baud rate
-                    let baud = Self::calculate_baud(freq, clock);
+                    let baud = Self::calculate_baud(freq, clock.freq());
                     unsafe {
                         sercom.spim().baud.modify(|_, w| w.baud().bits(baud));
 
@@ -162,20 +175,6 @@ macro_rules! spi_master {
                     }
                 }
 
-                /// Disable the SPI
-                pub fn disable(&mut self) {
-                    self.spi_mut().ctrla.modify(|_, w| w.enable().clear_bit());
-                    // wait for configuration to take effect
-                    while self.spi().syncbusy.read().enable().bit_is_set() {}
-                }
-
-                /// Enable the SPI
-                pub fn enable(&mut self) {
-                    self.spi_mut().ctrla.modify(|_, w| w.enable().set_bit());
-                    // wait for configuration to take effect
-                    while self.spi().syncbusy.read().enable().bit_is_set() {}
-                }
-
                 /// Set the baud rate
                 pub fn set_baud<F: Into<Hertz>>(
                     &mut self,
@@ -183,30 +182,10 @@ macro_rules! spi_master {
                     clock:&clock::$clock
                 ) {
                     self.disable();
-                    let baud = Self::calculate_baud(freq, clock);
+                    let baud = Self::calculate_baud(freq, clock.freq());
                     unsafe {
                         self.spi_mut().baud.modify(|_, w| w.baud().bits(baud));
                     }
-                    self.enable();
-                }
-
-                /// Set the polarity (CPOL) and phase (CPHA) of the SPI
-                pub fn set_mode(
-                    &mut self,
-                    mode: Mode
-                ) {
-                    self.disable();
-                    self.spi_mut().ctrla.modify(|_, w| {
-                        match mode.polarity {
-                            Polarity::IdleLow => w.cpol().clear_bit(),
-                            Polarity::IdleHigh => w.cpol().set_bit(),
-                        };
-
-                        match mode.phase {
-                            Phase::CaptureOnFirstTransition => w.cpha().clear_bit(),
-                            Phase::CaptureOnSecondTransition => w.cpha().set_bit(),
-                        }
-                    });
                     self.enable();
                 }
 
@@ -214,38 +193,6 @@ macro_rules! spi_master {
                 /// SERCOM instance.  No explicit de-initialization is performed.
                 pub fn free(self) -> ([<$Type Padout>]<MISO, MOSI, SCK>, $SERCOM) {
                     (self.padout, self.sercom)
-                }
-
-                /// Method for calculating the output frequency given our baud settings.
-                ///
-                /// for synchronous SERCOM peripherals, the calculation for the final
-                /// frequency is `f_baud = f_ref / (2 * (BAUD + 1))`.
-                pub fn freq(&self, src_clock: &clock::$clock) -> Hertz {
-                    let gclk: u32 = src_clock.freq().0;
-                    let baud: u8 = self.spi().baud.read().bits();
-
-                    (gclk / (2_u32 * (baud as u32 + 1_u32))).hz()
-                }
-
-                /// Helper for accessing the spi member of the sercom instance
-                fn spi(&self) -> &SPIM {
-                    &self.sercom.spim()
-                }
-
-                /// Helper for accessing the spi member of the sercom instance
-                fn spi_mut(&mut self) -> &SPIM {
-                    &self.sercom.spim()
-                }
-
-                /// Helper for calculating our baudrate register
-                ///
-                /// for synchronous SERCOM peripherals, the calculation for this
-                /// register is `BAUD = f_ref / (2 * f_baud) - 1`.
-                #[inline]
-                fn calculate_baud<F: Into<Hertz>>(freq: F, clock:&clock::$clock) -> u8 {
-                    let gclk = clock.freq();
-                    let baud = (gclk.0 / (2 * freq.into().0) - 1) as u8;
-                    baud
                 }
             }
 
