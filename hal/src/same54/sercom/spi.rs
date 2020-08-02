@@ -5,7 +5,7 @@ use crate::target_device::sercom0::SPIM;
 use crate::target_device::{
     MCLK, SERCOM0, SERCOM1, SERCOM2, SERCOM3, SERCOM4, SERCOM5, SERCOM6, SERCOM7,
 };
-use crate::time::Hertz;
+use crate::time::{Hertz, U32Ext};
 
 #[derive(Debug)]
 pub enum Error {
@@ -128,9 +128,7 @@ macro_rules! spi_master {
                     }
 
                     // set the baud rate
-                    let gclk = clock.freq();
-                    let baud = (gclk.0 / (2 * freq.into().0) - 1) as u8;
-
+                    let baud = Self::calculate_baud(freq, clock);
                     unsafe {
                         sercom.spim().baud.modify(|_, w| w.baud().bits(baud));
 
@@ -166,16 +164,16 @@ macro_rules! spi_master {
 
                 /// Disable the SPI
                 pub fn disable(&mut self) {
-                    self.sercom.spim().ctrla.modify(|_, w| w.enable().clear_bit());
+                    self.spi_mut().ctrla.modify(|_, w| w.enable().clear_bit());
                     // wait for configuration to take effect
-                    while self.sercom.spim().syncbusy.read().enable().bit_is_set() {}
+                    while self.spi().syncbusy.read().enable().bit_is_set() {}
                 }
 
                 /// Enable the SPI
                 pub fn enable(&mut self) {
-                    self.sercom.spim().ctrla.modify(|_, w| w.enable().set_bit());
+                    self.spi_mut().ctrla.modify(|_, w| w.enable().set_bit());
                     // wait for configuration to take effect
-                    while self.sercom.spim().syncbusy.read().enable().bit_is_set() {}
+                    while self.spi().syncbusy.read().enable().bit_is_set() {}
                 }
 
                 /// Set the baud rate
@@ -185,10 +183,9 @@ macro_rules! spi_master {
                     clock:&clock::$clock
                 ) {
                     self.disable();
-                    let gclk = clock.freq();
-                    let baud = (gclk.0 / (2 * freq.into().0) - 1) as u8;
+                    let baud = Self::calculate_baud(freq, clock);
                     unsafe {
-                        self.sercom.spim().baud.modify(|_, w| w.baud().bits(baud));
+                        self.spi_mut().baud.modify(|_, w| w.baud().bits(baud));
                     }
                     self.enable();
                 }
@@ -199,7 +196,7 @@ macro_rules! spi_master {
                     mode: Mode
                 ) {
                     self.disable();
-                    self.sercom.spim().ctrla.modify(|_, w| {
+                    self.spi_mut().ctrla.modify(|_, w| {
                         match mode.polarity {
                             Polarity::IdleLow => w.cpol().clear_bit(),
                             Polarity::IdleHigh => w.cpol().set_bit(),
@@ -219,9 +216,36 @@ macro_rules! spi_master {
                     (self.padout, self.sercom)
                 }
 
+                /// Method for calculating the output frequency given our baud settings.
+                ///
+                /// for synchronous SERCOM peripherals, the calculation for the final
+                /// frequency is `f_baud = f_ref / (2 * (BAUD + 1))`.
+                pub fn freq(&self, src_clock: &clock::$clock) -> Hertz {
+                    let gclk: u32 = src_clock.freq().0;
+                    let baud: u8 = self.spi().baud.read().bits();
+
+                    (gclk / (2_u32 * (baud as u32 + 1_u32))).hz()
+                }
+
                 /// Helper for accessing the spi member of the sercom instance
-                fn spi(&mut self) -> &SPIM {
+                fn spi(&self) -> &SPIM {
                     &self.sercom.spim()
+                }
+
+                /// Helper for accessing the spi member of the sercom instance
+                fn spi_mut(&mut self) -> &SPIM {
+                    &self.sercom.spim()
+                }
+
+                /// Helper for calculating our baudrate register
+                ///
+                /// for synchronous SERCOM peripherals, the calculation for this
+                /// register is `BAUD = f_ref / (2 * f_baud) - 1`.
+                #[inline]
+                fn calculate_baud<F: Into<Hertz>>(freq: F, clock:&clock::$clock) -> u8 {
+                    let gclk = clock.freq();
+                    let baud = (gclk.0 / (2 * freq.into().0) - 1) as u8;
+                    baud
                 }
             }
 
@@ -247,7 +271,7 @@ macro_rules! spi_master {
                     let intflag = self.spi().intflag.read();
                     // dre is data register empty
                     if intflag.dre().bit_is_set() {
-                        self.spi().data.write(|w| unsafe{w.data().bits(byte as u32)});
+                        self.spi_mut().data.write(|w| unsafe{w.data().bits(byte as u32)});
                         Ok(())
                     } else {
                         Err(nb::Error::WouldBlock)
