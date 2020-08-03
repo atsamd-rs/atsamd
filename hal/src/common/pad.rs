@@ -12,7 +12,10 @@ pub trait PadPin<T> {
 /// appropriate function and return the pin wrapped in the pad type.
 macro_rules! pad {
     ($PadType:ident {
-        $($PinType:ident ($Pf:ident),)+
+        $(
+            $( #[$attr:meta] )*
+            $PinType:ident ($Pf:ident),
+        )+
     }
     ) => {
 /// Represents a numbered pad for the associated sercom instance. The pad is
@@ -30,6 +33,7 @@ impl<PIN> $PadType<PIN> {
 }
 
 $(
+    $( #[$attr] )*
     impl<MODE> PadPin<$PadType<gpio::$PinType<gpio::$Pf>>> for gpio::$PinType<MODE> {
         fn into_pad(self, port: &mut Port) -> $PadType<gpio::$PinType<gpio::$Pf>> {
             $PadType::new(self.into_function(port))
