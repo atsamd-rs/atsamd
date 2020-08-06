@@ -1,7 +1,7 @@
 use crate::clock;
 use crate::hal::spi::{FullDuplex, Mode, Phase, Polarity};
 use crate::sercom::pads::*;
-use crate::spi_common::AtsamdSpi;
+use crate::spi_common::CommonSpi;
 use crate::target_device::sercom0::SPIM;
 use crate::target_device::{MCLK, SERCOM0, SERCOM1, SERCOM2, SERCOM3};
 use crate::target_device::{SERCOM4, SERCOM5};
@@ -88,7 +88,7 @@ macro_rules! spi_master {
                 sercom: $SERCOM,
             }
 
-            impl<MISO, MOSI, SCK> AtsamdSpi for $Type<MISO, MOSI, SCK> {
+            impl<MISO, MOSI, SCK> CommonSpi for $Type<MISO, MOSI, SCK> {
                 /// Helper for accessing the spi member of the sercom instance
                 fn spi(&self) -> &SPIM {
                     &self.sercom.spim()

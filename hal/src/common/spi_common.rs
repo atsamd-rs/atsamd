@@ -8,7 +8,7 @@ use crate::target_device::sercom0::SPI;
 #[cfg(any(feature = "samd51", feature = "same54"))]
 use crate::target_device::sercom0::SPIM as SPI;
 
-pub trait AtsamdSpi {
+pub trait CommonSpi {
     /// Helper for accessing the spi member of the sercom instance
     fn spi(&self) -> &SPI;
 
