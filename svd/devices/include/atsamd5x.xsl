@@ -18,4 +18,17 @@
   <xsl:template match="/device/peripherals/peripheral[name='SDHC0']/registers/register[name='SISR']/resetValue">
     0x00
   </xsl:template>
+
+  <!-- The TCn::COUNTn::CTRLA::DMAOS fields are all missing. -->
+  <xsl:template match="/device/peripherals/peripheral[name='TC0']/registers/cluster/register[name='CTRLA']/fields">
+    <fields>
+      <xsl:copy-of select="./field"/>
+      <field>
+        <name>DMAOS</name>
+        <description>DMA One-Shot Trigger Mode</description>
+        <bitOffset>15</bitOffset>
+        <bitWidth>1</bitWidth>
+      </field>
+    </fields>
+  </xsl:template>
 </xsl:stylesheet>
