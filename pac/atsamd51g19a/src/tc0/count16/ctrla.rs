@@ -687,6 +687,30 @@ impl<'a> CAPTMODE1_W<'a> {
         self.w
     }
 }
+#[doc = "Reader of field `DMAOS`"]
+pub type DMAOS_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `DMAOS`"]
+pub struct DMAOS_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> DMAOS_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 15)) | (((value as u32) & 0x01) << 15);
+        self.w
+    }
+}
 impl R {
     #[doc = "Bit 0 - Software Reset"]
     #[inline(always)]
@@ -757,6 +781,11 @@ impl R {
     #[inline(always)]
     pub fn captmode1(&self) -> CAPTMODE1_R {
         CAPTMODE1_R::new(((self.bits >> 27) & 0x03) as u8)
+    }
+    #[doc = "Bit 15 - DMA One-Shot Trigger Mode"]
+    #[inline(always)]
+    pub fn dmaos(&self) -> DMAOS_R {
+        DMAOS_R::new(((self.bits >> 15) & 0x01) != 0)
     }
 }
 impl W {
@@ -829,5 +858,10 @@ impl W {
     #[inline(always)]
     pub fn captmode1(&mut self) -> CAPTMODE1_W {
         CAPTMODE1_W { w: self }
+    }
+    #[doc = "Bit 15 - DMA One-Shot Trigger Mode"]
+    #[inline(always)]
+    pub fn dmaos(&mut self) -> DMAOS_W {
+        DMAOS_W { w: self }
     }
 }
