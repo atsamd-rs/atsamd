@@ -6,7 +6,7 @@ use crate::timer_traits::InterruptDrivenTimer;
 use hal::timer::{CountDown, Periodic};
 
 use crate::clock;
-use crate::time::{Hertz, Microseconds};
+use crate::time::{Hertz, Nanoseconds};
 use void::Void;
 
 /// A generic hardware timer counter.
@@ -36,7 +36,7 @@ impl<TC> CountDown for TimerCounter<TC>
 where
     TC: Count16,
 {
-    type Time = Microseconds;
+    type Time = Nanoseconds;
 
     fn start<T>(&mut self, timeout: T)
     where
@@ -179,10 +179,10 @@ impl TimerParams {
 
     pub fn new_us<T>(timeout: T, src_freq: u32) -> Self
     where
-        T: Into<Microseconds>,
+        T: Into<Nanoseconds>,
     {
         let timeout = timeout.into();
-        let ticks: u32 = (timeout.0 as u64 * src_freq as u64 / 1_000_000_u64) as u32;
+        let ticks: u32 = (timeout.0 as u64 * src_freq as u64 / 1_000_000_000_u64) as u32;
         Self::new_from_ticks(ticks)
     }
 

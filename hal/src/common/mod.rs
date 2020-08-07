@@ -3,6 +3,7 @@ pub mod sleeping_delay;
 #[macro_use]
 pub mod pad;
 pub mod prelude;
+pub mod spi_common;
 pub mod time;
 pub mod timer_traits;
 
