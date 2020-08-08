@@ -324,7 +324,7 @@ impl<'dmac, 'desc> Channel<'dmac, 'desc> {
         let dmac = self.controller.lock();
 
         // Save value for `allocate()`
-        self.peripheral_trigger = match self.peripheral_trigger {
+        self.peripheral_trigger = match trigger {
             TRIGSRCW::DISABLE => TRIGSRCW::DISABLE,
         };
 
