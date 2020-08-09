@@ -43,11 +43,11 @@ fn main() -> ! {
     let mut delay = Delay::new(core.SYST, &mut clocks);
     let mut red_led = pins.d13.into_open_drain_output(&mut pins.port);
     
-    let tx: Sercom5Pad1<_> = pins
+    let tx: Sercom5Pad0<_> = pins
         .d1
         .into_pull_down_input(&mut pins.port)
         .into_pad(&mut pins.port);
-    let rx: Sercom5Pad0<_> = pins
+    let rx: Sercom5Pad1<_> = pins
         .d0
         .into_pull_down_input(&mut pins.port)
         .into_pad(&mut pins.port);
@@ -60,7 +60,7 @@ fn main() -> ! {
         Hertz(19200),
         peripherals.SERCOM5,
         &mut peripherals.MCLK,
-        (tx, rx),
+        (rx, tx),
     );
 
     // Write out a message on start up
