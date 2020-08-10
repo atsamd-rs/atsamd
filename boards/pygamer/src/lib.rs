@@ -28,3 +28,18 @@ pub mod util {
         ((input - from_range.0) as f32 / from * to + to_range.0 as f32) as i16
     }
 }
+
+#[cfg(feature = "panic_led")]
+#[inline(never)]
+#[panic_handler]
+fn panic(_info: &core::panic::PanicInfo) -> ! {
+    use embedded_hal::digital::v2::OutputPin;
+
+    let peripherals = unsafe { crate::pac::Peripherals::steal() };
+    let mut pins = Pins::new(peripherals.PORT);
+    let _ = pins.d13.into_open_drain_output(&mut pins.port).set_high();
+
+    loop {
+        cortex_m::asm::udf()
+    }
+}

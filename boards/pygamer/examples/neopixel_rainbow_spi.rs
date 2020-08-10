@@ -7,6 +7,7 @@
 #![no_std]
 #![no_main]
 
+#[cfg(not(feature = "panic_led"))]
 use panic_halt as _;
 use pygamer as hal;
 
