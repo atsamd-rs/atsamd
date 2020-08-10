@@ -22,6 +22,7 @@
 #![no_std]
 #![no_main]
 
+#[cfg(not(feature = "panic_led"))]
 use panic_halt as _;
 use pygamer as hal;
 
@@ -46,8 +47,6 @@ fn main() -> ! {
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
     let mut sets = hal::Pins::new(peripherals.PORT).split();
-    let mut user_led = sets.led_pin.into_open_drain_output(&mut sets.port);
-    user_led.set_high().unwrap();
 
     let mut flash = sets
         .flash
@@ -65,14 +64,7 @@ fn main() -> ! {
     // Check for GD25Q64C JEDEC ID
     let mut read_buf = [0u8; 3];
     flash.read_command(Command::ReadId, &mut read_buf).unwrap();
-    if read_buf != [0x17, 0x40, 0xc8] {
-        // If we did not read back the same data flash the status
-        // LED.
-        loop {
-            user_led.toggle();
-            delay.delay_ms(200u8);
-        }
-    }
+    assert_eq!(read_buf, [0x17, 0x40, 0xc8]);
 
     // 120MHz / 2 = 60mhz
     // faster than 104mhz at 3.3v would require High Performance Mode
@@ -107,16 +99,8 @@ fn main() -> ! {
     // adafruit uses 8, and the underlying implementation uses 8 atm as well
     let mut read_buf = [0u8; 4];
     flash.read_memory(0, &mut read_buf);
-    if read_buf != write_buf {
-        // If we did not read back the same data flash the status
-        // LED.
-        loop {
-            user_led.toggle();
-            delay.delay_ms(200u8);
-        }
-    }
+    assert_eq!(read_buf, write_buf);
 
-    user_led.set_low().unwrap();
     loop {}
 }
 
