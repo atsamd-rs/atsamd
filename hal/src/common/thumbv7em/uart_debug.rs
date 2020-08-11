@@ -1,5 +1,5 @@
-use super::sercom::*;
 use crate::gpio;
+use crate::sercom::*;
 use cortex_m::interrupt::free as disable_interrupts;
 
 pub static mut WRITER: DbgWriter = DbgWriter { uart: None };

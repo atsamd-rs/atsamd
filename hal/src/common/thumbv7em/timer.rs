@@ -3,11 +3,10 @@ use crate::hal::timer::{CountDown, Periodic};
 use crate::target_device::tc0::COUNT16;
 #[allow(unused)]
 use crate::target_device::{MCLK, TC2, TC3};
-
-use crate::timer_traits::InterruptDrivenTimer;
 // Only the G variants are missing these timers
 #[cfg(all(not(feature = "samd51g19a"), not(feature = "samd51g18a")))]
 use crate::target_device::{TC4, TC5};
+use crate::timer_traits::InterruptDrivenTimer;
 
 use crate::clock;
 use crate::time::{Hertz, Nanoseconds};
