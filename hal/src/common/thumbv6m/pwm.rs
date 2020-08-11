@@ -3,9 +3,15 @@ use crate::hal::{Pwm, PwmPin};
 use crate::time::Hertz;
 use crate::timer::TimerParams;
 
-use crate::target_device::{PM, TC3, TC4, TC5, TCC0, TCC1, TCC2};
+use crate::target_device::{PM, TCC0};
+#[cfg(feature = "samd11")]
+use crate::target_device::{TC1, TC2};
+#[cfg(feature = "samd21")]
+use crate::target_device::{TC3, TC4, TC5, TCC1, TCC2};
 #[cfg(feature = "atsamd21j18a")]
 use crate::target_device::{TC6, TC7};
+
+// Timer/Counter (TCx)
 
 macro_rules! pwm {
     ($($TYPE:ident: ($TC:ident, $clock:ident, $apmask:ident, $apbits:ident, $wrapper:ident),)+) => {
@@ -124,6 +130,13 @@ impl PwmPin for $TYPE {
 
 )+}}
 
+#[cfg(feature = "samd11")]
+pwm! {
+    Pwm1: (TC1, Tc1Tc2Clock, apbcmask, tc1_, Pwm1Wrapper),
+    Pwm2: (TC2, Tc1Tc2Clock, apbcmask, tc2_, Pwm2Wrapper),
+}
+
+#[cfg(feature = "samd21")]
 pwm! {
     Pwm3: (TC3, Tcc2Tc3Clock, apbcmask, tc3_, Pwm3Wrapper),
     Pwm4: (TC4, Tc4Tc5Clock, apbcmask, tc4_, Pwm4Wrapper),
@@ -262,6 +275,12 @@ impl Pwm for $TYPE {
 
 )+}}
 
+#[cfg(feature = "samd11")]
+pwm_tcc! {
+    Pwm0: (TCC0, Tcc0Clock, apbcmask, tcc0_, Pwm0Wrapper),
+}
+
+#[cfg(feature = "samd21")]
 pwm_tcc! {
     Pwm0: (TCC0, Tcc0Tcc1Clock, apbcmask, tcc0_, Pwm0Wrapper),
     Pwm1: (TCC1, Tcc0Tcc1Clock, apbcmask, tcc1_, Pwm1Wrapper),

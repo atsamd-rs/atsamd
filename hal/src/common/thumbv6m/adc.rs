@@ -1,6 +1,5 @@
 use crate::clock::GenericClockController;
-#[rustfmt::skip]
-use crate::gpio::{Pa2, Pa3, Pa4, Pa5, Pa6, Pa7, Pa10, Pa11, Pa14, Pa15, PfB};
+use crate::gpio::*;
 use crate::hal::adc::{Channel, OneShot};
 use crate::target_device::{adc, ADC, PM};
 
@@ -11,19 +10,24 @@ pub struct Adc<ADC> {
 impl Adc<ADC> {
     pub fn adc(adc: ADC, pm: &mut PM, clocks: &mut GenericClockController) -> Self {
         pm.apbcmask.modify(|_, w| w.adc_().set_bit());
-        // set to 1/(1/(48000000/32) * 6) = 250000 SPS
+
+        // set to 1 / (1 / (48000000 / 32) * 6) = 250000 SPS
         let gclk0 = clocks.gclk0();
         clocks.adc(&gclk0).expect("adc clock setup failed");
         while adc.status.read().syncbusy().bit_is_set() {}
+
         adc.ctrla.modify(|_, w| w.swrst().set_bit());
         while adc.status.read().syncbusy().bit_is_set() {}
+
         adc.ctrlb.modify(|_, w| {
             w.prescaler().div32();
             w.ressel()._12bit()
         });
         while adc.status.read().syncbusy().bit_is_set() {}
+
         adc.sampctrl.modify(|_, w| unsafe { w.samplen().bits(5) }); //sample length
         while adc.status.read().syncbusy().bit_is_set() {}
+
         adc.inputctrl.modify(|_, w| w.muxneg().gnd()); // No negative input (internal gnd)
         while adc.status.read().syncbusy().bit_is_set() {}
 
@@ -73,14 +77,17 @@ impl Adc<ADC> {
         self.adc.swtrig.modify(|_, w| w.start().set_bit());
         while self.adc.intflag.read().resrdy().bit_is_clear() {}
         while self.adc.status.read().syncbusy().bit_is_set() {}
+
         // Clear the interrupt flag
         self.adc.intflag.modify(|_, w| w.resrdy().set_bit());
+
         // Start conversion again, since The first conversion after the reference is
         // changed must not be used.
         self.adc.swtrig.modify(|_, w| w.start().set_bit());
         while self.adc.intflag.read().resrdy().bit_is_clear() {}
         while self.adc.status.read().syncbusy().bit_is_set() {}
         let result = self.adc.result.read().result().bits();
+
         result
     }
 }
@@ -95,12 +102,14 @@ where
     fn read(&mut self, _pin: &mut PIN) -> nb::Result<WORD, Self::Error> {
         let chan = PIN::channel();
         while self.adc.status.read().syncbusy().bit_is_set() {}
+
         self.adc
             .inputctrl
             .modify(|_, w| unsafe { w.muxpos().bits(chan) });
         self.power_up();
         let result = self.convert();
         self.power_down();
+
         Ok(result.into())
     }
 }
@@ -117,6 +126,7 @@ impl Channel<ADC> for $pin<PfB> {
     }
 }
 
+#[cfg(feature = "samd11")]
 adc_pins! {
     Pa2: 0,
     Pa3: 1,
@@ -128,4 +138,32 @@ adc_pins! {
     Pa11: 9,
     Pa14: 6,
     Pa15: 7
+}
+
+#[cfg(feature = "samd21")]
+adc_pins! {
+    Pa2: 0,
+    Pa3: 1,
+    Pa4: 4,
+    Pa5: 5,
+    Pa6: 6,
+    Pa7: 7,
+    Pa8: 16,
+    Pa9: 17,
+    Pa10: 18,
+    Pa11: 19
+}
+
+#[cfg(any(feature = "samd21g18a", feature = "samd21j18a"))]
+adc_pins! {
+    Pb0: 8,
+    Pb1: 9,
+    Pb2: 10,
+    Pb3: 11,
+    Pb4: 12,
+    Pb5: 13,
+    Pb6: 14,
+    Pb7: 15,
+    Pb8: 2,
+    Pb9: 3
 }
