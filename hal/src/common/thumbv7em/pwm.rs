@@ -1,18 +1,22 @@
-#[rustfmt::skip]
-use crate::gpio::{Pa1, Pa5, Pa7, Pa9, Pa11, Pa13, Pa15, Pa17, Pa19, Pb31, PfE};
-
-#[cfg(all(not(feature = "samd51g19a"), not(feature = "samd51g18a")))]
-#[rustfmt::skip]
-use crate::gpio::{Pa23, Pa25, Pb9, Pb11, Pb13, Pb15};
-
 use crate::clock;
 use crate::hal::PwmPin;
-use crate::target_device::{MCLK, TC0, TC1, TC2, TC3};
 use crate::time::Hertz;
 use crate::timer::TimerParams;
 
+#[rustfmt::skip]
+use crate::gpio::{Pa1, Pa5, Pa7, Pa9, Pa11, Pa13, Pa15, Pa17, Pa19, Pb31, PfE};
+#[cfg(all(not(feature = "samd51g19a"), not(feature = "samd51g18a")))]
+#[rustfmt::skip]
+use crate::gpio::{Pa23, Pa25, Pb9, Pb11, Pb13, Pb15};
+#[cfg(feature = "same54")]
+#[rustfmt::skip]
+use crate::gpio::{Pa21, Pa31, Pb1, Pb3, Pb17, Pb23};
+
+use crate::target_device::{MCLK, TC0, TC1, TC2, TC3};
 #[cfg(all(not(feature = "samd51g19a"), not(feature = "samd51g18a")))]
 use crate::target_device::{TC4, TC5};
+#[cfg(feature = "same54")]
+use crate::target_device::{TC6, TC7};
 
 pub enum TC0Pinout {
     Pa5(Pa5<PfE>),
@@ -48,6 +52,20 @@ pub enum TC5Pinout {
     Pa25(Pa25<PfE>),
     Pb11(Pb11<PfE>),
     Pb15(Pb15<PfE>),
+}
+
+#[cfg(feature = "same54")]
+pub enum TC6Pinout {
+    Pb3(Pb3<PfE>),
+    Pb17(Pb17<PfE>),
+    Pa31(Pa31<PfE>),
+}
+
+#[cfg(feature = "same54")]
+pub enum TC7Pinout {
+    Pa21(Pa21<PfE>),
+    Pb23(Pb23<PfE>),
+    Pb1(Pb1<PfE>),
 }
 
 pub enum Channel {
@@ -190,4 +208,10 @@ pwm! {
 pwm! {
     Pwm4: (TC4, TC4Pinout, Tc4Tc5Clock, apbcmask, tc4_, Pwm4Wrapper),
     Pwm5: (TC5, TC5Pinout, Tc4Tc5Clock, apbcmask, tc5_, Pwm5Wrapper),
+}
+
+#[cfg(feature = "same54")]
+pwm! {
+    Pwm6: (TC6, TC6Pinout, Tc6Tc7Clock, apbdmask, tc6_, Pwm6Wrapper),
+    Pwm7: (TC7, TC7Pinout, Tc6Tc7Clock, apbdmask, tc7_, Pwm7Wrapper),
 }
