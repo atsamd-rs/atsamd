@@ -19,11 +19,12 @@ use gpio::{Floating, Input, Port, PfC};
 use hal::clock::GenericClockController;
 use hal::sercom::{I2CMaster5, PadPin, SPIMaster2, UART3};
 use hal::time::Hertz;
+use pac::MCLK;
 
 #[cfg(feature = "usb")]
-pub use hal::usb::UsbBus;
+use hal::usb::usb_device::bus::UsbBusAllocator;
 #[cfg(feature = "usb")]
-use usb_device::bus::UsbBusWrapper;
+pub use hal::usb::UsbBus;
 
 define_pins!(
     /// Maps the pins to their arduino names and
@@ -188,4 +189,28 @@ pub fn uart<F: Into<Hertz>>(
         mclk,
         (d0.into_pad(port), d1.into_pad(port)),
     )
+}
+
+#[cfg(feature = "usb")]
+pub fn usb_allocator(
+    dm: gpio::Pa24<Input<Floating>>,
+    dp: gpio::Pa25<Input<Floating>>,
+    usb: pac::USB,
+    clocks: &mut GenericClockController,
+    mclk: &mut MCLK,
+    port: &mut Port,
+) -> UsbBusAllocator<UsbBus> {
+    use pac::gclk::{genctrl::SRC_A, pchctrl::GEN_A};
+
+    clocks.configure_gclk_divider_and_source(GEN_A::GCLK2, 1, SRC_A::DFLL, false);
+    let usb_gclk = clocks.get_gclk(GEN_A::GCLK2).unwrap();
+    let usb_clock = &clocks.usb(&usb_gclk).unwrap();
+
+    UsbBusAllocator::new(UsbBus::new(
+        usb_clock,
+        mclk,
+        dm.into_function_h(port),
+        dp.into_function_h(port),
+        usb,
+    ))
 }
