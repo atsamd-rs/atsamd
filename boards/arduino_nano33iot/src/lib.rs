@@ -108,7 +108,7 @@ define_pins!(
     /// SPI (Lefacy ICSP) 4 / NINA SCK
     pin nina_sck = a15,
     pin nina_gpio0 = a27,
-    pin nina_resetn = a8,
+    pin nina_resetn = b8,
     pin nina_ack = a28,
 
     /// SerialNina 29: PWM, TC
