@@ -21,12 +21,12 @@ fn main() -> ! {
         &mut peripherals.NVMCTRL,
     );
     let mut pins = hal::Pins::new(peripherals.PORT);
-    let mut red_led = pins.d13.into_open_drain_output(&mut pins.port);
+    let mut led = pins.d6.into_open_drain_output(&mut pins.port);
     let mut delay = Delay::new(core.SYST, &mut clocks);
     loop {
         delay.delay_ms(200u8);
-        red_led.set_high().unwrap();
+        led.set_high().unwrap();
         delay.delay_ms(200u8);
-        red_led.set_low().unwrap();
+        led.set_low().unwrap();
     }
 }

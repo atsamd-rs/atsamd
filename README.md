@@ -14,7 +14,7 @@ In addition to the PACs and HAL, there numerous **B**oard **S**upport **P**ackag
 |:------|:--------|:-----------------------|
 | [atsamd11c14a](https://docs.rs/atsamd11c14a/) | [![Crates.io](https://img.shields.io/crates/v/atsamd11c14a.svg)](https://crates.io/crates/atsamd11c14a) |  |
 | [atsamd21e18a](https://docs.rs/atsamd21e18a/) | [![Crates.io](https://img.shields.io/crates/v/atsamd21e18a.svg)](https://crates.io/crates/atsamd21e18a) | [Gemma M0][gemma_m0], [Trinket M0][trinket_m0], [Serpente][serpente] |
-| [atsamd21g18a](https://docs.rs/atsamd21g18a/) | [![Crates.io](https://img.shields.io/crates/v/atsamd21g18a.svg)](https://crates.io/crates/atsamd21g18a) | [Circuit Playground Express][circuit_playground_express], [Feather M0][feather_m0], [Metro M0][metro_m0], [MKR ZERO][arduino_mkrzero], [SAMD21 Mini][samd21_mini], [SODAQ ONE][sodaq_one] |
+| [atsamd21g18a](https://docs.rs/atsamd21g18a/) | [![Crates.io](https://img.shields.io/crates/v/atsamd21g18a.svg)](https://crates.io/crates/atsamd21g18a) | [Circuit Playground Express][circuit_playground_express], [Feather M0][feather_m0], [Metro M0][metro_m0], [MKR ZERO][arduino_mkrzero], [MKR WiFi 1010][arduino_mkrwifi1010], [SAMD21 Mini][samd21_mini], [SODAQ ONE][sodaq_one] |
 | [atsamd21j18a](https://docs.rs/atsamd21j18a/) | [![Crates.io](https://img.shields.io/crates/v/atsamd21j18a.svg)](https://crates.io/crates/atsamd21j18a) | [SODAQ SARA AFF][sodaq_sara_aff] |
 | [atsamd51g19a](https://docs.rs/atsamd51g19a/) | [![Crates.io](https://img.shields.io/crates/v/atsamd51g19a.svg)](https://crates.io/crates/atsamd51g19a) | [ItsyBitsy M4][itsybitsy_m4], [Trellis M4][trellis_m4] |
 | [atsamd51j19a](https://docs.rs/atsamd51j19a/) | [![Crates.io](https://img.shields.io/crates/v/atsamd51j19a.svg)](https://crates.io/crates/atsamd51j19a) | [EdgeBadge][edgebadge], [Feather M4][feather_m4], [Metro M4][metro_m4] |
@@ -24,6 +24,7 @@ In addition to the PACs and HAL, there numerous **B**oard **S**upport **P**ackag
 | [atsamd-hal](https://docs.rs/atsamd_hal/) | [![Crates.io](https://img.shields.io/crates/v/atsamd_hal.svg)](https://crates.io/crates/atsamd_hal) |  |
 
 [arduino_mkrzero]: https://github.com/atsamd-rs/atsamd/tree/master/boards/arduino_mkrzero/
+[arduino_mkrwifi1010]: https://github.com/atsamd-rs/atsamd/tree/master/boards/arduino_mkrwifi1010/
 [circuit_playground_express]: https://github.com/atsamd-rs/atsamd/tree/master/boards/circuit_playground_express/
 [edgebadge]: https://github.com/atsamd-rs/atsamd/tree/master/boards/edgebadge
 [feather_m0]: https://github.com/atsamd-rs/atsamd/tree/master/boards/feather_m0/

@@ -7,7 +7,7 @@ keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
-documentation = "https://atsamd-rs.github.io/atsamd/atsamd21e18a/arduino_mkrwifi1010/"
+documentation = "https://atsamd-rs.github.io/atsamd/atsamd21g18a/arduino_mkrwifi1010/"
 
 [dependencies]
 cortex-m = "~0.6"
@@ -35,9 +35,9 @@ version = "~0.1"
 optional = true
 
 [features]
-# ask the HAL to enable atsamd21e18a support
-default = ["rt", "atsamd-hal/samd21e18a"]
-rt = ["cortex-m-rt", "atsamd-hal/samd21e18a-rt"]
+# ask the HAL to enable atsamd21g18a support
+default = ["rt", "atsamd-hal/samd21g18a"]
+rt = ["cortex-m-rt", "atsamd-hal/samd21g18a-rt"]
 usb = ["atsamd-hal/usb", "usb-device", "usbd-serial"]
 unproven = ["atsamd-hal/unproven"]
 use_semihosting = []

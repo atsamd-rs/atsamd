@@ -1,26 +1,27 @@
-# Adafruit Gemma M0 Board Support Crate
+# Arduino MKR WiFi 1010 Board Support Crate
 
-This crate provides a type-safe API for working with the [Adafruit Gemma M0
-board](https://www.adafruit.com/product/3501).
+This crate provides a type-safe API for working with the [Arduino MKR WiFi 1010 board](https://store.arduino.cc/usa/mkr-wifi-1010).
 
-## Prerequisites
-* Install the cross compile toolchain `rustup target add thumbv6m-none-eabi`
-* Install [cargo-hf2 the hf2 bootloader flasher tool](https://crates.io/crates/cargo-hf2) however your platform requires
+## Examples
+### Blinky Basic
+#### Requirements
+ - Arduino IDE installed
+    - samd package installed
+    - Now the arduino distribution contains bossac.exe in `ArduinoData/packages/arduino/tools/bossac/1.7.0/` add it to your path
+       - `ArduinoData` is likely something like `~/.arduino15/`
+    - Probably best to install an example sketch via the IDE just to make sure everything is working
+    - Note that the [arduino cli](https://github.com/arduino/arduino-cli) (or just regular bossac) may soon replace this section
+ - arm-none-eabi tools installed, you need gcc and objcopy.
+ - thumbv6m-none-eabi rust target installed via `rustup target add thumbv6m-none-eabi`
 
-## Uploading an example
-Check out the repository for examples:
-
-https://github.com/atsamd-rs/atsamd/tree/master/boards/gemma_m0/examples
-
-* Be in this directory `cd boards/gemma_m0`
-* Put your device in bootloader mode usually by hitting the reset button twice.
-* Build and upload in one step
+#### Steps
+```bash
+cargo build --release --example blinky_basic
+arm-none-eabi-objcopy -O binary target/thumbv6m-none-eabi/release/examples/blinky_basic target/blinky_basic.bin
+bossac -i -d -U true -i -e -w -v target/blinky_basic.bin -R
 ```
-$ cargo hf2 --release --example blinky_basic
-    Finished release [optimized + debuginfo] target(s) in 0.19s
-    Searching for a connected device with known vid/pid pair.
-    Trying  Ok(Some("Adafruit Industries")) Ok(Some("PyBadge"))
-    Flashing "/Users/User/atsamd/boards/gemma_m0/target/thumbv7em-none-eabihf/release/examples/blinky_basic"
-    Finished in 0.079s
-$
-```
+(You may need to use `--port` with something like `/dev/ttyACM0` or `/dev/ttyACM1`
+
+#### Notes
+ - It may help to double-press the center button to reset when re-flashing the device. This sets the device in a bootloader mode.
+ - For the usb example, `picocom` is a good simple terminal serial emulator
