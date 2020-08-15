@@ -10,6 +10,13 @@ pub use cortex_m_rt::entry;
 #[cfg(feature = "panic_halt")]
 pub extern crate panic_halt;
 
+#[cfg(feature = "usb")]
+use hal::clock::GenericClockController;
+#[cfg(feature = "usb")]
+use hal::usb::usb_device::bus::UsbBusAllocator;
+#[cfg(feature = "usb")]
+pub use hal::usb::UsbBus;
+
 use hal::prelude::*;
 use hal::*;
 
@@ -110,3 +117,26 @@ define_pins!(
     pin xin32 = a0,
     pin xout32 = a1,
 );
+
+#[cfg(feature = "usb")]
+pub fn usb_allocator(
+    usb: pac::USB,
+    clocks: &mut GenericClockController,
+    pm: &mut pac::PM,
+    dm: gpio::Pa24<Input<Floating>>,
+    dp: gpio::Pa25<Input<Floating>>,
+    port: &mut Port,
+) -> UsbBusAllocator<UsbBus> {
+    use gpio::IntoFunction;
+
+    let gclk0 = clocks.gclk0();
+    let usb_clock = &clocks.usb(&gclk0).unwrap();
+
+    UsbBusAllocator::new(UsbBus::new(
+        usb_clock,
+        pm,
+        dm.into_function(port),
+        dp.into_function(port),
+        usb,
+    ))
+}
