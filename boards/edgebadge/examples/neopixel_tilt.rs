@@ -6,10 +6,8 @@
 #![no_std]
 #![no_main]
 
-#[allow(unused_imports)]
-use panic_halt;
-
 use edgebadge as hal;
+use panic_halt as _;
 
 use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
@@ -58,46 +56,15 @@ fn main() -> ! {
     lis3dh.set_range(lis3dh::Range::G2).unwrap();
     lis3dh.set_datarate(lis3dh::DataRate::Hz_100).unwrap();
 
-    const NUM_LEDS: usize = 5;
+    let mut state = TiltState::new();
 
-    let threshold: i16 = 20;
-    let mut pos: usize = 2;
-    let mut tilt: i16 = 0;
-
-    let mut j: u8 = 0;
     loop {
         let lis = lis3dh.acceleration().unwrap();
 
-        //what about like.. momentum, more angle or longer its been at angle stops slower
-        //like.. steps larger so it gets easier. also on a bigger number tilt?
+        let (pos, j) = state.update(lis.x);
 
-        // naive solution.. threshold tilt
-        // better.. delay filter?
-
-        // actually 2 thresholds, first you have to be tilted enough (gt / lt 1000) to be counted
-        if lis.x > 1000 {
-            tilt += 1;
-        } else if lis.x < -1000 {
-            tilt -= 1;
-        }
-
-        // then we need threshold amount of counted tilts to inc/dec position
-        if tilt.abs() > threshold {
-            //todo clamp is nightly
-            if tilt.is_negative() {
-                if pos > 0 {
-                    pos -= 1;
-                }
-            } else {
-                if pos < 4 {
-                    pos += 1;
-                }
-            }
-            tilt = 0;
-        }
-
-        //finally paint the one led wherever the position is
-        let _ = neopixel.write((0..NUM_LEDS).map(|i| {
+        // iterate through neopixels and paint the one led
+        let _ = neopixel.write((0..5).map(|i| {
             if i == pos {
                 hsv2rgb(Hsv {
                     hue: j,
@@ -109,10 +76,58 @@ fn main() -> ! {
             }
         }));
 
-        //incremement the hue easing
-        j = j.wrapping_add(1);
-
         //don't update faster than the accell is reading
         delay.delay_ms(10u8);
+    }
+}
+
+pub struct TiltState {
+    pos: usize,
+    tilt: i16,
+    j: u8,
+}
+
+impl TiltState {
+    // start at the middle pixel
+    const fn new() -> TiltState {
+        TiltState {
+            pos: 2,
+            tilt: 0,
+            j: 0,
+        }
+    }
+
+    fn update(&mut self, value: i16) -> (usize, u8) {
+        //what about like.. momentum, more angle or longer its been at angle stops slower
+        //like.. steps larger so it gets easier. also on a bigger number tilt?
+
+        // naive solution.. threshold tilt
+        // better.. delay filter?
+
+        // actually 2 thresholds, first you have to be tilted enough (gt / lt 1000) to be counted
+        if value > 1000 {
+            self.tilt += 1;
+        } else if value < -1000 {
+            self.tilt -= 1;
+        }
+
+        // then we need threshold amount of counted tilts to inc/dec position
+        if self.tilt.abs() > 20 {
+            //todo clamp is nightly
+            if self.tilt.is_negative() {
+                if self.pos > 0 {
+                    self.pos -= 1;
+                }
+            } else {
+                if self.pos < 4 {
+                    self.pos += 1;
+                }
+            }
+            self.tilt = 0;
+        }
+
+        //incremement the hue easing
+        self.j = self.j.wrapping_add(1);
+        (self.pos, self.j)
     }
 }
