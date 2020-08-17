@@ -14,8 +14,7 @@
 //! Note leds may appear white during debug. Either build for release or add
 //! opt-level = 2 to profile.dev in Cargo.toml
 
-#[allow(unused_imports)]
-use panic_halt;
+use panic_halt as _;
 use pygamer as hal;
 
 use cortex_m::interrupt::free as disable_interrupts;
@@ -23,17 +22,12 @@ use cortex_m::peripheral::NVIC;
 use hal::clock::GenericClockController;
 use hal::entry;
 use hal::pac::{interrupt, CorePeripherals, Peripherals};
-
+use hal::timer::SpinTimer;
 use hal::usb::UsbBus;
+use smart_leds::{colors, hsv::RGB8, SmartLedsWrite};
 use usb_device::bus::UsbBusAllocator;
 use usb_device::prelude::*;
 use usbd_serial::{SerialPort, USB_CLASS_CDC};
-
-use hal::timer::SpinTimer;
-
-use smart_leds::{hsv::RGB8, SmartLedsWrite};
-
-const NUM_LEDS: usize = 5;
 
 #[entry]
 fn main() -> ! {
@@ -51,9 +45,7 @@ fn main() -> ! {
     let timer = SpinTimer::new(4);
     let mut neopixel = pins.neopixel.init(timer, &mut pins.port);
 
-    neopixel
-        .write([RGB8 { r: 0, g: 0, b: 0 }; NUM_LEDS].iter().cloned())
-        .unwrap();
+    let _ = neopixel.write((0..5).map(|_| RGB8::default()));
 
     let bus_allocator = unsafe {
         USB_ALLOCATOR = Some(pins.usb.init(
@@ -93,7 +85,7 @@ fn main() -> ! {
             pending
         });
         if let Some(color) = pending {
-            neopixel.write(color.iter().cloned()).unwrap();
+            let _ = neopixel.write((0..5).map(|_| color));
         }
     }
 }
@@ -101,7 +93,7 @@ fn main() -> ! {
 static mut USB_ALLOCATOR: Option<UsbBusAllocator<UsbBus>> = None;
 static mut USB_BUS: Option<UsbDevice<UsbBus>> = None;
 static mut USB_SERIAL: Option<SerialPort<UsbBus>> = None;
-static mut PENDING_COLOR: Option<[RGB8; NUM_LEDS]> = None;
+static mut PENDING_COLOR: Option<RGB8> = None;
 
 fn poll_usb() {
     unsafe {
@@ -112,23 +104,15 @@ fn poll_usb() {
                 let mut buf = [0u8; 64];
 
                 if let Ok(count) = serial.read(&mut buf) {
-                    for (i, c) in buf.iter().enumerate() {
-                        if i >= count {
-                            break;
-                        }
-                        match c.clone() as char {
-                            'R' => {
-                                PENDING_COLOR = Some([RGB8 { r: 120, g: 0, b: 0 }; NUM_LEDS]);
-                            }
-                            'G' => {
-                                PENDING_COLOR = Some([RGB8 { r: 0, g: 120, b: 0 }; NUM_LEDS]);
-                            }
-                            'O' => {
-                                PENDING_COLOR = Some([RGB8 { r: 0, g: 0, b: 0 }; NUM_LEDS]);
-                            }
-                            _ => {}
-                        }
-                    }
+                    let last = buf[count - 1] as char;
+                    let color = match last {
+                        'R' => colors::RED,
+                        'G' => colors::GREEN,
+                        'O' => colors::ORANGE,
+                        _ => RGB8::default(),
+                    };
+
+                    PENDING_COLOR = Some(color);
                 };
             });
         });
