@@ -3,8 +3,7 @@
 #![no_std]
 #![no_main]
 
-#[allow(unused_imports)]
-use panic_halt;
+use panic_halt as _;
 use pygamer as hal;
 
 use hal::clock::GenericClockController;

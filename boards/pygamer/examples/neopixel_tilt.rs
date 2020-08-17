@@ -15,13 +15,11 @@ use hal::prelude::*;
 use hal::time::KiloHertz;
 use hal::timer::SpinTimer;
 use hal::{clock::GenericClockController, delay::Delay};
-
+use lis3dh::{accelerometer::Accelerometer, Lis3dh};
 use smart_leds::{
     hsv::{hsv2rgb, Hsv, RGB8},
     SmartLedsWrite,
 };
-
-use lis3dh::{accelerometer::Accelerometer, Lis3dh};
 
 #[entry]
 fn main() -> ! {

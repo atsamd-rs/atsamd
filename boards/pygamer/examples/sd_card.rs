@@ -8,10 +8,13 @@
 #![no_std]
 #![no_main]
 
-#[allow(unused_imports)]
-use panic_halt;
+use panic_halt as _;
 use pygamer as hal;
 
+use embedded_graphics::pixelcolor::{Rgb565, RgbColor};
+use embedded_graphics::prelude::*;
+use embedded_graphics::{egrectangle, primitive_style};
+use embedded_graphics::{image::Image, image::ImageRaw, image::ImageRawLE};
 use embedded_hal::digital::v1_compat::OldOutputPin;
 use embedded_sdmmc::{TimeSource, Timestamp, VolumeIdx};
 use hal::clock::GenericClockController;
@@ -20,11 +23,6 @@ use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 use hal::time::MegaHertz;
-
-use embedded_graphics::pixelcolor::{Rgb565, RgbColor};
-use embedded_graphics::prelude::*;
-use embedded_graphics::{egrectangle, primitive_style};
-use embedded_graphics::{image::Image, image::ImageRaw, image::ImageRawLE};
 
 #[entry]
 fn main() -> ! {

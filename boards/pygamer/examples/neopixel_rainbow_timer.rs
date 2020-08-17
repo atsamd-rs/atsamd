@@ -6,15 +6,13 @@
 #![no_std]
 #![no_main]
 
-#[allow(unused_imports)]
-use panic_halt;
+use panic_halt as _;
 use pygamer as hal;
 
 use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 use hal::{clock::GenericClockController, delay::Delay, timer::TimerCounter};
-
 use smart_leds::{
     hsv::{hsv2rgb, Hsv},
     SmartLedsWrite,

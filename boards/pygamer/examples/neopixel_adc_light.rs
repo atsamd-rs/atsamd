@@ -6,10 +6,10 @@
 #![no_std]
 #![no_main]
 
-#[allow(unused_imports)]
-use panic_halt;
+use panic_halt as _;
 use pygamer as hal;
 
+use embedded_hal::digital::v1_compat::OldOutputPin;
 use hal::adc::Adc;
 use hal::entry;
 use hal::pac::gclk::pchctrl::GEN_A::GCLK11;
@@ -17,13 +17,10 @@ use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 use hal::timer::SpinTimer;
 use hal::{clock::GenericClockController, delay::Delay};
-
 use smart_leds::{
     hsv::{hsv2rgb, Hsv, RGB8},
     SmartLedsWrite,
 };
-
-use embedded_hal::digital::v1_compat::OldOutputPin;
 use ws2812_timer_delay as ws2812;
 
 #[entry]

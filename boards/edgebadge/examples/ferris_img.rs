@@ -10,16 +10,13 @@
 #![no_std]
 #![no_main]
 
-#[allow(unused_imports)]
-use panic_halt;
-
 use edgebadge as hal;
+use panic_halt as _;
 
 use embedded_graphics::pixelcolor::{Rgb565, RgbColor};
 use embedded_graphics::prelude::*;
 use embedded_graphics::{egrectangle, primitive_style};
 use embedded_graphics::{image::Image, image::ImageRaw, image::ImageRawLE};
-
 use hal::clock::GenericClockController;
 use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};

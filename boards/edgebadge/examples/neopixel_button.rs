@@ -9,10 +9,8 @@
 #![no_std]
 #![no_main]
 
-#[allow(unused_imports)]
-use panic_halt;
-
 use edgebadge as hal;
+use panic_halt as _;
 
 use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
@@ -20,7 +18,6 @@ use hal::pins::Keys;
 use hal::prelude::*;
 use hal::timer::SpinTimer;
 use hal::{clock::GenericClockController, delay::Delay};
-
 use smart_leds::{
     hsv::{hsv2rgb, Hsv, RGB8},
     SmartLedsWrite,
