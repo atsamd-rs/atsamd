@@ -6,8 +6,7 @@
 #![no_std]
 #![no_main]
 
-#[allow(unused_imports)]
-use panic_halt;
+use panic_halt as _;
 use pygamer as hal;
 
 use core::f32::consts::FRAC_PI_2;

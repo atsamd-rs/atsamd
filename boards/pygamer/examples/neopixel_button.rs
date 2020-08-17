@@ -10,8 +10,7 @@
 #![no_std]
 #![no_main]
 
-#[allow(unused_imports)]
-use panic_halt;
+use panic_halt as _;
 use pygamer as hal;
 
 use hal::adc::Adc;
@@ -23,7 +22,6 @@ use hal::prelude::*;
 use hal::timer::SpinTimer;
 use hal::util::map_from;
 use hal::{clock::GenericClockController, delay::Delay};
-
 use smart_leds::{
     hsv::{hsv2rgb, Hsv, RGB8},
     SmartLedsWrite,
