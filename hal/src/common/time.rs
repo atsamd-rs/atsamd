@@ -24,9 +24,9 @@ pub struct MegaHertz(pub u32);
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub struct Seconds(pub u32);
 
-/// Miliseconds
+/// Milliseconds
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
-pub struct Miliseconds(pub u32);
+pub struct Milliseconds(pub u32);
 
 /// Microseconds
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
@@ -53,8 +53,8 @@ pub trait U32Ext {
     /// Wrap in `Seconds`
     fn s(self) -> Seconds;
 
-    /// Wrap in `Miliseconds`
-    fn ms(self) -> Miliseconds;
+    /// Wrap in `Milliseconds`
+    fn ms(self) -> Milliseconds;
 
     /// Wrap in `Microseconds`
     fn us(self) -> Microseconds;
@@ -88,8 +88,8 @@ impl U32Ext for u32 {
         Seconds(self)
     }
 
-    fn ms(self) -> Miliseconds {
-        Miliseconds(self)
+    fn ms(self) -> Milliseconds {
+        Milliseconds(self)
     }
 
     fn us(self) -> Microseconds {
@@ -141,9 +141,9 @@ impl Into<MegaHertz> for KiloHertz {
 
 // Period based
 
-impl Into<Miliseconds> for Seconds {
-    fn into(self) -> Miliseconds {
-        Miliseconds(self.0 * 1_000)
+impl Into<Milliseconds> for Seconds {
+    fn into(self) -> Milliseconds {
+        Milliseconds(self.0 * 1_000)
     }
 }
 impl Into<Microseconds> for Seconds {
@@ -158,7 +158,7 @@ impl Into<Nanoseconds> for Seconds {
     }
 }
 
-impl Into<Microseconds> for Miliseconds {
+impl Into<Microseconds> for Milliseconds {
     fn into(self) -> Microseconds {
         Microseconds(self.0 * 1_000)
     }
@@ -170,7 +170,7 @@ impl Into<Nanoseconds> for Microseconds {
     }
 }
 
-impl Into<Seconds> for Miliseconds {
+impl Into<Seconds> for Milliseconds {
     fn into(self) -> Seconds {
         Seconds(self.0 / 1_000)
     }
@@ -182,13 +182,13 @@ impl Into<Seconds> for Microseconds {
     }
 }
 
-impl Into<Miliseconds> for Microseconds {
-    fn into(self) -> Miliseconds {
-        Miliseconds(self.0 / 1_000)
+impl Into<Milliseconds> for Microseconds {
+    fn into(self) -> Milliseconds {
+        Milliseconds(self.0 / 1_000)
     }
 }
 
-impl Into<Nanoseconds> for Miliseconds {
+impl Into<Nanoseconds> for Milliseconds {
     fn into(self) -> Nanoseconds {
         Nanoseconds(self.0 * 1_000_000)
     }
