@@ -8,10 +8,13 @@
 #![no_std]
 #![no_main]
 
-#[allow(unused_imports)]
-use panic_halt;
+use panic_halt as _;
 use pygamer as hal;
 
+use embedded_graphics::pixelcolor::{Rgb565, RgbColor};
+use embedded_graphics::prelude::*;
+use embedded_graphics::{egrectangle, primitive_style};
+use embedded_graphics::{image::Image, image::ImageRaw, image::ImageRawLE};
 use embedded_hal::digital::v1_compat::OldOutputPin;
 use embedded_sdmmc::{TimeSource, Timestamp, VolumeIdx};
 use hal::clock::GenericClockController;
@@ -20,11 +23,6 @@ use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 use hal::time::MegaHertz;
-
-use embedded_graphics::egrectangle;
-use embedded_graphics::image::Image;
-use embedded_graphics::pixelcolor::{raw::LittleEndian, Rgb565, RgbColor};
-use embedded_graphics::prelude::*;
 
 #[entry]
 fn main() -> ! {
@@ -67,12 +65,12 @@ fn main() -> ! {
         .unwrap();
 
     egrectangle!(
-        (0, 0),
-        (160, 128),
-        stroke_width = 0,
-        fill_color = Some(RgbColor::BLACK)
+        top_left = (0, 0),
+        bottom_right = (160, 128),
+        style = primitive_style!(stroke_width = 0, fill_color = RgbColor::BLACK)
     )
-    .draw(&mut display);
+    .draw(&mut display)
+    .unwrap();
 
     cont.device().init().unwrap();
     let mut volume = cont.get_volume(VolumeIdx(0)).unwrap();
@@ -88,14 +86,16 @@ fn main() -> ! {
             if let Ok(mut f) =
                 cont.open_file_in_dir(&mut volume, &dir, image, embedded_sdmmc::Mode::ReadOnly)
             {
-                cont.read(&volume, &mut f, &mut scratch).unwrap();
+                let _ = cont.read(&volume, &mut f, &mut scratch);
 
-                let ferris: Image<Rgb565, LittleEndian> = Image::new(&scratch, 86, 64);
-                ferris.translate(Point::new(42, 32)).draw(&mut display);
+                let raw_image: ImageRawLE<Rgb565> = ImageRaw::new(&scratch, 86, 64);
+                let ferris: Image<_, Rgb565> = Image::new(&raw_image, Point::new(32, 32));
+
+                let _ = ferris.draw(&mut display);
 
                 cont.close_file(&volume, f).ok();
             } else {
-                red_led.set_high().unwrap();
+                let _ = red_led.set_high();
             }
             delay.delay_ms(200u8);
         }

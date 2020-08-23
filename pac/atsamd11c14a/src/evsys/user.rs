@@ -26,16 +26,15 @@ impl<'a> USER_W<'a> {
 }
 #[doc = "Channel Event Selection\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum CHANNEL_A {
     #[doc = "0: No Channel Output Selected"]
-    _0,
+    _0 = 0,
 }
 impl From<CHANNEL_A> for u8 {
     #[inline(always)]
     fn from(variant: CHANNEL_A) -> Self {
-        match variant {
-            CHANNEL_A::_0 => 0,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `CHANNEL`"]

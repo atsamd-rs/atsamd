@@ -1,6 +1,7 @@
-#[doc = "Writer for register DATABUF%s"]
+#[doc = "Writer for register DATABUF[%s]"]
 pub type W = crate::W<u16, super::DATABUF>;
-#[doc = "Register DATABUF%s `reset()`'s with value 0"]
+#[doc = "Register DATABUF[%s]
+`reset()`'s with value 0"]
 impl crate::ResetValue for super::DATABUF {
     type Type = u16;
     #[inline(always)]

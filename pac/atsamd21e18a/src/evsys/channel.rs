@@ -64,22 +64,19 @@ impl<'a> EVGEN_W<'a> {
 }
 #[doc = "Path Selection\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum PATH_A {
     #[doc = "0: Synchronous path"]
-    SYNCHRONOUS,
+    SYNCHRONOUS = 0,
     #[doc = "1: Resynchronized path"]
-    RESYNCHRONIZED,
+    RESYNCHRONIZED = 1,
     #[doc = "2: Asynchronous path"]
-    ASYNCHRONOUS,
+    ASYNCHRONOUS = 2,
 }
 impl From<PATH_A> for u8 {
     #[inline(always)]
     fn from(variant: PATH_A) -> Self {
-        match variant {
-            PATH_A::SYNCHRONOUS => 0,
-            PATH_A::RESYNCHRONIZED => 1,
-            PATH_A::ASYNCHRONOUS => 2,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `PATH`"]
@@ -146,25 +143,21 @@ impl<'a> PATH_W<'a> {
 }
 #[doc = "Edge Detection Selection\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum EDGSEL_A {
     #[doc = "0: No event output when using the resynchronized or synchronous path"]
-    NO_EVT_OUTPUT,
+    NO_EVT_OUTPUT = 0,
     #[doc = "1: Event detection only on the rising edge of the signal from the event generator when using the resynchronized or synchronous path"]
-    RISING_EDGE,
+    RISING_EDGE = 1,
     #[doc = "2: Event detection only on the falling edge of the signal from the event generator when using the resynchronized or synchronous path"]
-    FALLING_EDGE,
+    FALLING_EDGE = 2,
     #[doc = "3: Event detection on rising and falling edges of the signal from the event generator when using the resynchronized or synchronous path"]
-    BOTH_EDGES,
+    BOTH_EDGES = 3,
 }
 impl From<EDGSEL_A> for u8 {
     #[inline(always)]
     fn from(variant: EDGSEL_A) -> Self {
-        match variant {
-            EDGSEL_A::NO_EVT_OUTPUT => 0,
-            EDGSEL_A::RISING_EDGE => 1,
-            EDGSEL_A::FALLING_EDGE => 2,
-            EDGSEL_A::BOTH_EDGES => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `EDGSEL`"]

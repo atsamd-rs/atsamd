@@ -132,37 +132,29 @@ impl<'a> ONDEMAND_W<'a> {
 }
 #[doc = "Voltage Reference Selection\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum SEL_A {
     #[doc = "0: 1.0V voltage reference typical value"]
-    _1V0,
+    _1V0 = 0,
     #[doc = "1: 1.1V voltage reference typical value"]
-    _1V1,
+    _1V1 = 1,
     #[doc = "2: 1.2V voltage reference typical value"]
-    _1V2,
+    _1V2 = 2,
     #[doc = "3: 1.25V voltage reference typical value"]
-    _1V25,
+    _1V25 = 3,
     #[doc = "4: 2.0V voltage reference typical value"]
-    _2V0,
+    _2V0 = 4,
     #[doc = "5: 2.2V voltage reference typical value"]
-    _2V2,
+    _2V2 = 5,
     #[doc = "6: 2.4V voltage reference typical value"]
-    _2V4,
+    _2V4 = 6,
     #[doc = "7: 2.5V voltage reference typical value"]
-    _2V5,
+    _2V5 = 7,
 }
 impl From<SEL_A> for u8 {
     #[inline(always)]
     fn from(variant: SEL_A) -> Self {
-        match variant {
-            SEL_A::_1V0 => 0,
-            SEL_A::_1V1 => 1,
-            SEL_A::_1V2 => 2,
-            SEL_A::_1V25 => 3,
-            SEL_A::_2V0 => 4,
-            SEL_A::_2V2 => 5,
-            SEL_A::_2V4 => 6,
-            SEL_A::_2V5 => 7,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `SEL`"]

@@ -60,34 +60,27 @@ impl<'a> ENABLE_W<'a> {
 }
 #[doc = "AES Modes of operation\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum AESMODE_A {
     #[doc = "0: Electronic code book mode"]
-    ECB,
+    ECB = 0,
     #[doc = "1: Cipher block chaining mode"]
-    CBC,
+    CBC = 1,
     #[doc = "2: Output feedback mode"]
-    OFB,
+    OFB = 2,
     #[doc = "3: Cipher feedback mode"]
-    CFB,
+    CFB = 3,
     #[doc = "4: Counter mode"]
-    COUNTER,
+    COUNTER = 4,
     #[doc = "5: CCM mode"]
-    CCM,
+    CCM = 5,
     #[doc = "6: Galois counter mode"]
-    GCM,
+    GCM = 6,
 }
 impl From<AESMODE_A> for u8 {
     #[inline(always)]
     fn from(variant: AESMODE_A) -> Self {
-        match variant {
-            AESMODE_A::ECB => 0,
-            AESMODE_A::CBC => 1,
-            AESMODE_A::OFB => 2,
-            AESMODE_A::CFB => 3,
-            AESMODE_A::COUNTER => 4,
-            AESMODE_A::CCM => 5,
-            AESMODE_A::GCM => 6,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `AESMODE`"]
@@ -198,28 +191,23 @@ impl<'a> AESMODE_W<'a> {
 }
 #[doc = "Cipher Feedback Block Size\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum CFBS_A {
     #[doc = "0: 128-bit Input data block for Encryption/Decryption in Cipher Feedback mode"]
-    _128BIT,
+    _128BIT = 0,
     #[doc = "1: 64-bit Input data block for Encryption/Decryption in Cipher Feedback mode"]
-    _64BIT,
+    _64BIT = 1,
     #[doc = "2: 32-bit Input data block for Encryption/Decryption in Cipher Feedback mode"]
-    _32BIT,
+    _32BIT = 2,
     #[doc = "3: 16-bit Input data block for Encryption/Decryption in Cipher Feedback mode"]
-    _16BIT,
+    _16BIT = 3,
     #[doc = "4: 8-bit Input data block for Encryption/Decryption in Cipher Feedback mode"]
-    _8BIT,
+    _8BIT = 4,
 }
 impl From<CFBS_A> for u8 {
     #[inline(always)]
     fn from(variant: CFBS_A) -> Self {
-        match variant {
-            CFBS_A::_128BIT => 0,
-            CFBS_A::_64BIT => 1,
-            CFBS_A::_32BIT => 2,
-            CFBS_A::_16BIT => 3,
-            CFBS_A::_8BIT => 4,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `CFBS`"]
@@ -308,22 +296,19 @@ impl<'a> CFBS_W<'a> {
 }
 #[doc = "Encryption Key Size\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum KEYSIZE_A {
     #[doc = "0: 128-bit Key for Encryption / Decryption"]
-    _128BIT,
+    _128BIT = 0,
     #[doc = "1: 192-bit Key for Encryption / Decryption"]
-    _192BIT,
+    _192BIT = 1,
     #[doc = "2: 256-bit Key for Encryption / Decryption"]
-    _256BIT,
+    _256BIT = 2,
 }
 impl From<KEYSIZE_A> for u8 {
     #[inline(always)]
     fn from(variant: KEYSIZE_A) -> Self {
-        match variant {
-            KEYSIZE_A::_128BIT => 0,
-            KEYSIZE_A::_192BIT => 1,
-            KEYSIZE_A::_256BIT => 2,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `KEYSIZE`"]
@@ -392,17 +377,14 @@ impl<'a> KEYSIZE_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CIPHER_A {
     #[doc = "0: Decryption"]
-    DEC,
+    DEC = 0,
     #[doc = "1: Encryption"]
-    ENC,
+    ENC = 1,
 }
 impl From<CIPHER_A> for bool {
     #[inline(always)]
     fn from(variant: CIPHER_A) -> Self {
-        match variant {
-            CIPHER_A::DEC => false,
-            CIPHER_A::ENC => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `CIPHER`"]
@@ -470,17 +452,14 @@ impl<'a> CIPHER_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum STARTMODE_A {
     #[doc = "0: Start Encryption / Decryption in Manual mode"]
-    MANUAL,
+    MANUAL = 0,
     #[doc = "1: Start Encryption / Decryption in Auto mode"]
-    AUTO,
+    AUTO = 1,
 }
 impl From<STARTMODE_A> for bool {
     #[inline(always)]
     fn from(variant: STARTMODE_A) -> Self {
-        match variant {
-            STARTMODE_A::MANUAL => false,
-            STARTMODE_A::AUTO => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `STARTMODE`"]
@@ -548,17 +527,14 @@ impl<'a> STARTMODE_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum LOD_A {
     #[doc = "0: No effect"]
-    NONE,
+    NONE = 0,
     #[doc = "1: Start encryption in Last Output Data mode"]
-    LAST,
+    LAST = 1,
 }
 impl From<LOD_A> for bool {
     #[inline(always)]
     fn from(variant: LOD_A) -> Self {
-        match variant {
-            LOD_A::NONE => false,
-            LOD_A::LAST => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `LOD`"]
@@ -626,17 +602,14 @@ impl<'a> LOD_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum KEYGEN_A {
     #[doc = "0: No effect"]
-    NONE,
+    NONE = 0,
     #[doc = "1: Start Computation of the last NK words of the expanded key"]
-    LAST,
+    LAST = 1,
 }
 impl From<KEYGEN_A> for bool {
     #[inline(always)]
     fn from(variant: KEYGEN_A) -> Self {
-        match variant {
-            KEYGEN_A::NONE => false,
-            KEYGEN_A::LAST => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `KEYGEN`"]
@@ -704,17 +677,14 @@ impl<'a> KEYGEN_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum XORKEY_A {
     #[doc = "0: No effect"]
-    NONE,
+    NONE = 0,
     #[doc = "1: The user keyword gets XORed with the previous keyword register content."]
-    XOR,
+    XOR = 1,
 }
 impl From<XORKEY_A> for bool {
     #[inline(always)]
     fn from(variant: XORKEY_A) -> Self {
-        match variant {
-            XORKEY_A::NONE => false,
-            XORKEY_A::XOR => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `XORKEY`"]

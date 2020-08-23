@@ -8,19 +8,17 @@ pub type REVISION_R = crate::R<u8, u8>;
 pub type DIE_R = crate::R<u8, u8>;
 #[doc = "Series\n\nValue on reset: 3"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum SERIES_A {
     #[doc = "0: Cortex-M0+ processor, basic feature set"]
-    _0,
+    _0 = 0,
     #[doc = "1: Cortex-M0+ processor, USB"]
-    _1,
+    _1 = 1,
 }
 impl From<SERIES_A> for u8 {
     #[inline(always)]
     fn from(variant: SERIES_A) -> Self {
-        match variant {
-            SERIES_A::_0 => 0,
-            SERIES_A::_1 => 1,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `SERIES`"]
@@ -49,19 +47,17 @@ impl SERIES_R {
 }
 #[doc = "Family\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum FAMILY_A {
     #[doc = "0: General purpose microcontroller"]
-    _0,
+    _0 = 0,
     #[doc = "1: PicoPower"]
-    _1,
+    _1 = 1,
 }
 impl From<FAMILY_A> for u8 {
     #[inline(always)]
     fn from(variant: FAMILY_A) -> Self {
-        match variant {
-            FAMILY_A::_0 => 0,
-            FAMILY_A::_1 => 1,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `FAMILY`"]
@@ -90,25 +86,21 @@ impl FAMILY_R {
 }
 #[doc = "Processor\n\nValue on reset: 1"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum PROCESSOR_A {
     #[doc = "0: Cortex-M0"]
-    _0,
+    _0 = 0,
     #[doc = "1: Cortex-M0+"]
-    _1,
+    _1 = 1,
     #[doc = "2: Cortex-M3"]
-    _2,
+    _2 = 2,
     #[doc = "3: Cortex-M4"]
-    _3,
+    _3 = 3,
 }
 impl From<PROCESSOR_A> for u8 {
     #[inline(always)]
     fn from(variant: PROCESSOR_A) -> Self {
-        match variant {
-            PROCESSOR_A::_0 => 0,
-            PROCESSOR_A::_1 => 1,
-            PROCESSOR_A::_2 => 2,
-            PROCESSOR_A::_3 => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `PROCESSOR`"]

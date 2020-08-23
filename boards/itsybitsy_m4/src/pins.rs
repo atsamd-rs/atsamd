@@ -9,7 +9,6 @@ use hal::sercom::{I2CMaster2, PadPin, SPIMaster1, Sercom2Pad0, Sercom2Pad1, UART
 use hal::time::Hertz;
 
 use hal::clock::GenericClockController;
-use super::pac::gclk::{genctrl::SRC_A, pchctrl::GEN_A};
 
 use apa102_spi::Apa102;
 
@@ -280,6 +279,8 @@ impl USB {
         mclk: &mut MCLK,
         port: &mut Port,
     ) -> UsbBusAllocator<UsbBus> {
+        use super::pac::gclk::{genctrl::SRC_A, pchctrl::GEN_A};
+
         clocks.configure_gclk_divider_and_source(GEN_A::GCLK2, 1, SRC_A::DFLL, false);
         let usb_gclk = clocks.get_gclk(GEN_A::GCLK2).unwrap();
         let usb_clock = &clocks.usb(&usb_gclk).unwrap();

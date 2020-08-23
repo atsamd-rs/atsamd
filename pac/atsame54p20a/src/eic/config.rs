@@ -1,8 +1,9 @@
-#[doc = "Reader of register CONFIG%s"]
+#[doc = "Reader of register CONFIG[%s]"]
 pub type R = crate::R<u32, super::CONFIG>;
-#[doc = "Writer for register CONFIG%s"]
+#[doc = "Writer for register CONFIG[%s]"]
 pub type W = crate::W<u32, super::CONFIG>;
-#[doc = "Register CONFIG%s `reset()`'s with value 0"]
+#[doc = "Register CONFIG[%s]
+`reset()`'s with value 0"]
 impl crate::ResetValue for super::CONFIG {
     type Type = u32;
     #[inline(always)]

@@ -12,37 +12,29 @@ impl crate::ResetValue for super::EVCTRL {
 }
 #[doc = "Timer/counter Input Event0 Action\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum EVACT0_A {
     #[doc = "0: Event action disabled"]
-    OFF,
+    OFF = 0,
     #[doc = "1: Start, restart or re-trigger counter on event"]
-    RETRIGGER,
+    RETRIGGER = 1,
     #[doc = "2: Count on event"]
-    COUNTEV,
+    COUNTEV = 2,
     #[doc = "3: Start counter on event"]
-    START,
+    START = 3,
     #[doc = "4: Increment counter on event"]
-    INC,
+    INC = 4,
     #[doc = "5: Count on active state of asynchronous event"]
-    COUNT,
+    COUNT = 5,
     #[doc = "6: Stamp capture"]
-    STAMP,
+    STAMP = 6,
     #[doc = "7: Non-recoverable fault"]
-    FAULT,
+    FAULT = 7,
 }
 impl From<EVACT0_A> for u8 {
     #[inline(always)]
     fn from(variant: EVACT0_A) -> Self {
-        match variant {
-            EVACT0_A::OFF => 0,
-            EVACT0_A::RETRIGGER => 1,
-            EVACT0_A::COUNTEV => 2,
-            EVACT0_A::START => 3,
-            EVACT0_A::INC => 4,
-            EVACT0_A::COUNT => 5,
-            EVACT0_A::STAMP => 6,
-            EVACT0_A::FAULT => 7,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `EVACT0`"]
@@ -165,37 +157,29 @@ impl<'a> EVACT0_W<'a> {
 }
 #[doc = "Timer/counter Input Event1 Action\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum EVACT1_A {
     #[doc = "0: Event action disabled"]
-    OFF,
+    OFF = 0,
     #[doc = "1: Re-trigger counter on event"]
-    RETRIGGER,
+    RETRIGGER = 1,
     #[doc = "2: Direction control"]
-    DIR,
+    DIR = 2,
     #[doc = "3: Stop counter on event"]
-    STOP,
+    STOP = 3,
     #[doc = "4: Decrement counter on event"]
-    DEC,
+    DEC = 4,
     #[doc = "5: Period capture value in CC0 register, pulse width capture value in CC1 register"]
-    PPW,
+    PPW = 5,
     #[doc = "6: Period capture value in CC1 register, pulse width capture value in CC0 register"]
-    PWP,
+    PWP = 6,
     #[doc = "7: Non-recoverable fault"]
-    FAULT,
+    FAULT = 7,
 }
 impl From<EVACT1_A> for u8 {
     #[inline(always)]
     fn from(variant: EVACT1_A) -> Self {
-        match variant {
-            EVACT1_A::OFF => 0,
-            EVACT1_A::RETRIGGER => 1,
-            EVACT1_A::DIR => 2,
-            EVACT1_A::STOP => 3,
-            EVACT1_A::DEC => 4,
-            EVACT1_A::PPW => 5,
-            EVACT1_A::PWP => 6,
-            EVACT1_A::FAULT => 7,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `EVACT1`"]
@@ -318,25 +302,21 @@ impl<'a> EVACT1_W<'a> {
 }
 #[doc = "Timer/counter Output Event Mode\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum CNTSEL_A {
     #[doc = "0: An interrupt/event is generated when a new counter cycle starts"]
-    START,
+    START = 0,
     #[doc = "1: An interrupt/event is generated when a counter cycle ends"]
-    END,
+    END = 1,
     #[doc = "2: An interrupt/event is generated when a counter cycle ends, except for the first and last cycles"]
-    BETWEEN,
+    BETWEEN = 2,
     #[doc = "3: An interrupt/event is generated when a new counter cycle starts or a counter cycle ends"]
-    BOUNDARY,
+    BOUNDARY = 3,
 }
 impl From<CNTSEL_A> for u8 {
     #[inline(always)]
     fn from(variant: CNTSEL_A) -> Self {
-        match variant {
-            CNTSEL_A::START => 0,
-            CNTSEL_A::END => 1,
-            CNTSEL_A::BETWEEN => 2,
-            CNTSEL_A::BOUNDARY => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `CNTSEL`"]

@@ -1,9 +1,7 @@
 [package]
 name = "edgebadge"
-version = "0.4.0"
-authors = [
-    "Jacob Rosenthal <@jacobrosenthal>",
-]
+version = "0.5.0"
+authors = ["Jacob Rosenthal <@jacobrosenthal>"]
 description = "Board Support crate for the Adafruit EdgeBadge"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
 license = "MIT OR Apache-2.0"
@@ -24,7 +22,7 @@ optional = true
 
 [dependencies.atsamd-hal]
 path = "../../hal"
-version = "~0.8"
+version = "~0.9"
 default-features = false
 
 [dependencies.micromath]
@@ -40,7 +38,7 @@ embedded-graphics = "0.6.0"
 smart-leds = "0.3"
 ws2812-spi = "0.2.0"
 lis3dh = "0.1.0"
-cortex-m-rtfm = "~0.5.1"
+cortex-m-rtic = "~0.5.1"
 
 [dependencies.usb-device]
 version = "~0.2"
@@ -59,25 +57,24 @@ usb = ["atsamd-hal/usb", "usb-device", "usbd-serial"]
 math = ["micromath"]
 
 [profile.dev]
+# opt-level = 2 # uncomment for neopixel functionality during debug
 incremental = false
-codegen-units = 1
 debug = true
-lto = true
+lto = "thin" # thin for debug speed
 
 [profile.release]
 debug = true
-lto = true
-opt-level = "s"
-
+lto = "fat"
+opt-level = 3 # neopixel prefers 3 over s
 
 [[example]]
 name = "usb_serial"
-required-features = [ "usb" ]
+required-features = ["usb"]
 
 [[example]]
 name = "usb_poll"
-required-features = [ "usb" ]
+required-features = ["usb"]
 
 [[example]]
 name = "neopixel_easing"
-required-features = [ "math"]
+required-features = ["math"]

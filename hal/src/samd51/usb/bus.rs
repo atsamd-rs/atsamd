@@ -1,5 +1,8 @@
-// This crate uses standard host-centric USB terminology for transfer directions. Therefore an OUT transfer refers to a host-to-device transfer, and an IN transfer refers to a device-to-host transfer. This is mainly a concern for implementing new USB peripheral drivers and USB classes, and people doing that should be familiar with the USB standard.
-// http://ww1.microchip.com/downloads/en/DeviceDoc/60001507E.pdf
+// This crate uses standard host-centric USB terminology for transfer
+// directions. Therefore an OUT transfer refers to a host-to-device transfer,
+// and an IN transfer refers to a device-to-host transfer. This is mainly a
+// concern for implementing new USB peripheral drivers and USB classes, and
+// people doing that should be familiar with the USB standard. http://ww1.microchip.com/downloads/en/DeviceDoc/60001507E.pdf
 // http://ww1.microchip.com/downloads/en/AppNotes/Atmel-42261-SAM-D21-USB_Application-Note_AT06475.pdf
 
 use super::{Descriptors, DmPad, DpPad};
@@ -154,7 +157,7 @@ impl AllEndpoints {
 // FIXME: replace with more general heap?
 const BUFFER_SIZE: usize = 2048;
 fn buffer() -> &'static mut [u8; BUFFER_SIZE] {
-    singleton!(: [u8; BUFFER_SIZE] = unsafe{MaybeUninit::uninit().assume_init()}).unwrap()
+    singleton!(: [u8; BUFFER_SIZE] = unsafe{ MaybeUninit::uninit().assume_init() }).unwrap()
 }
 
 struct BufferAllocator {
@@ -216,24 +219,23 @@ pub struct UsbBus {
 /// - rust doesn't currently have a great solution for generating identifier
 ///   names, so we have to pass in a list of the possible names.
 macro_rules! ep {
-    ($name:ident, $type:ident, $e0:ident, $e1:ident, $e2:ident,
-     $e3:ident, $e4:ident, $e5:ident, $e6:ident, $e7:ident) => {
+    ($name:ident, $type:ident) => {
         #[allow(unused)]
         #[inline]
-        fn $name(&self, endpoint: usize) -> &target_device::usb::device::$type {
+        fn $name(&self, endpoint: usize) -> &target_device::usb::device::device_endpoint::$type {
             match endpoint {
-                0 => &self.usb().$e0,
-                1 => &self.usb().$e1,
-                2 => &self.usb().$e2,
-                3 => &self.usb().$e3,
-                4 => &self.usb().$e4,
-                5 => &self.usb().$e5,
-                6 => &self.usb().$e6,
-                7 => &self.usb().$e7,
+                0 => &self.usb().device_endpoint0.$name,
+                1 => &self.usb().device_endpoint1.$name,
+                2 => &self.usb().device_endpoint2.$name,
+                3 => &self.usb().device_endpoint3.$name,
+                4 => &self.usb().device_endpoint4.$name,
+                5 => &self.usb().device_endpoint5.$name,
+                6 => &self.usb().device_endpoint6.$name,
+                7 => &self.usb().device_endpoint7.$name,
                 _ => unreachable!(),
             }
         }
-    }
+    };
 }
 
 struct Bank<'a, T> {
@@ -471,75 +473,19 @@ impl<'a> Bank<'a, OutBank> {
 }
 
 impl<'a, T> Bank<'a, T> {
-    ep!(epcfg, EPCFG, epcfg0, epcfg1, epcfg2, epcfg3, epcfg4, epcfg5, epcfg6, epcfg7);
-    ep!(
-        epstatusclr,
-        EPSTATUSCLR,
-        epstatusclr0,
-        epstatusclr1,
-        epstatusclr2,
-        epstatusclr3,
-        epstatusclr4,
-        epstatusclr5,
-        epstatusclr6,
-        epstatusclr7
-    );
-    ep!(
-        epstatusset,
-        EPSTATUSSET,
-        epstatusset0,
-        epstatusset1,
-        epstatusset2,
-        epstatusset3,
-        epstatusset4,
-        epstatusset5,
-        epstatusset6,
-        epstatusset7
-    );
-    ep!(
-        epstatus, EPSTATUS, epstatus0, epstatus1, epstatus2, epstatus3, epstatus4, epstatus5,
-        epstatus6, epstatus7
-    );
-    ep!(
-        epintflag, EPINTFLAG, epintflag0, epintflag1, epintflag2, epintflag3, epintflag4,
-        epintflag5, epintflag6, epintflag7
-    );
-    ep!(
-        epintenclr,
-        EPINTENCLR,
-        epintenclr0,
-        epintenclr1,
-        epintenclr2,
-        epintenclr3,
-        epintenclr4,
-        epintenclr5,
-        epintenclr6,
-        epintenclr7
-    );
-    ep!(
-        epintenset,
-        EPINTENSET,
-        epintenset0,
-        epintenset1,
-        epintenset2,
-        epintenset3,
-        epintenset4,
-        epintenset5,
-        epintenset6,
-        epintenset7
-    );
+    ep!(epcfg, EPCFG);
+    ep!(epstatusclr, EPSTATUSCLR);
+    ep!(epstatusset, EPSTATUSSET);
+    ep!(epstatus, EPSTATUS);
+    ep!(epintflag, EPINTFLAG);
+    ep!(epintenclr, EPINTENCLR);
+    ep!(epintenset, EPINTENSET);
 }
 
 impl Inner {
-    ep!(epcfg, EPCFG, epcfg0, epcfg1, epcfg2, epcfg3, epcfg4, epcfg5, epcfg6, epcfg7);
-    ep!(
-        epstatus, EPSTATUS, epstatus0, epstatus1, epstatus2, epstatus3, epstatus4, epstatus5,
-        epstatus6, epstatus7
-    );
-    ep!(
-        epintflag, EPINTFLAG, epintflag0, epintflag1, epintflag2, epintflag3, epintflag4,
-        epintflag5, epintflag6, epintflag7
-    );
+    ep!(epcfg, EPCFG);
+    ep!(epstatus, EPSTATUS);
+    ep!(epintflag, EPINTFLAG);
 
     fn bank0<'a>(&'a self, ep: EndpointAddress) -> UsbResult<Bank<'a, OutBank>> {
         if ep.is_in() {
@@ -733,14 +679,16 @@ impl Inner {
                 (FlushConfigMode::Full, _) | (FlushConfigMode::ProtocolReset, _) => {
                     // Write bank configuration & endpoint type.
                     self.flush_ep(idx);
-                    // Endpoint interrupts are configured after the write to EPTYPE, as it appears writes
-                    // to EPINTEN*[n] do not take effect unless the endpoint is already somewhat configured.
-                    // The datasheet is ambiguous here, section 38.8.3.7 (Device Interrupt EndPoint Set n)
+                    // Endpoint interrupts are configured after the write to EPTYPE, as it appears
+                    // writes to EPINTEN*[n] do not take effect unless the
+                    // endpoint is already somewhat configured. The datasheet is
+                    // ambiguous here, section 38.8.3.7 (Device Interrupt EndPoint Set n)
                     // of the SAM D5x/E5x states:
                     //    "This register is cleared by USB reset or when EPEN[n] is zero"
-                    // EPEN[n] is not a register that exists, nor does it align with any other terminology.
-                    // We assume this means setting EPCFG[n] to a non-zero value, but we do interrupt
-                    // configuration last to be sure.
+                    // EPEN[n] is not a register that exists, nor does it align with any other
+                    // terminology. We assume this means setting EPCFG[n] to a
+                    // non-zero value, but we do interrupt configuration last to
+                    // be sure.
                     self.setup_ep_interrupts(EndpointAddress::from_parts(idx, UsbDirection::Out));
                     self.setup_ep_interrupts(EndpointAddress::from_parts(idx, UsbDirection::In));
                 }
@@ -903,9 +851,9 @@ impl Inner {
                 dbgprint!("ep {} GOT SETUP\n", ep);
                 ep_setup |= mask;
                 // usb-device crate:
-                //  "This event should continue to be reported until the packet is read."
-                // So we don't clear the flag here, instead it is cleared in the read
-                // handler.
+                //  "This event should continue to be reported until the packet
+                // is read." So we don't clear the flag here,
+                // instead it is cleared in the read handler.
             }
 
             if bank0.is_transfer_complete() {

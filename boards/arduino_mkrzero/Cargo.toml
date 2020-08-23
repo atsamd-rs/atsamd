@@ -1,6 +1,6 @@
 [package]
 name = "arduino_mkrzero"
-version = "0.6.0"
+version = "0.8.0"
 authors = ["Wez Furlong <wez@wezfurlong.org>", "David McGillicuddy <contact@djmcgill.co.uk>"]
 description = "Board Support crate for the Arduino MKRZERO"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal", "arduino"]
@@ -24,13 +24,33 @@ optional = true
 
 [dependencies.atsamd-hal]
 path = "../../hal"
-version = "~0.8"
+version = "~0.9"
 default-features = false
+
+[dependencies.usb-device]
+version = "~0.2"
+optional = true
+
+[dependencies.usbd-serial]
+version = "~0.1"
+optional = true
 
 [features]
 # ask the HAL to enable atsamd21g18a support
-default = ["rt", "panic_halt", "atsamd-hal/samd21g18a"]
+default = ["rt", "panic_halt", "atsamd-hal/samd21g18a", "usb"]
 rt = ["cortex-m-rt", "atsamd-hal/samd21g18a-rt"]
+usb = ["atsamd-hal/usb", "usb-device", "usbd-serial"]
 panic_halt = ["panic-halt"]
 unproven = ["atsamd-hal/unproven"]
 use_semihosting = []
+
+[[example]]
+name = "blinky_basic"
+
+[[example]]
+name = "usb_logging"
+required-features = ["usb"]
+
+[[example]]
+name = "pwm"
+required-features = ["unproven"]

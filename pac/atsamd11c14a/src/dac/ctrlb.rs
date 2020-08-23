@@ -132,22 +132,19 @@ impl<'a> BDWP_W<'a> {
 }
 #[doc = "Reference Selection\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum REFSEL_A {
     #[doc = "0: Internal 1.0V reference"]
-    INT1V,
+    INT1V = 0,
     #[doc = "1: AVCC"]
-    AVCC,
+    AVCC = 1,
     #[doc = "2: External reference"]
-    VREFP,
+    VREFP = 2,
 }
 impl From<REFSEL_A> for u8 {
     #[inline(always)]
     fn from(variant: REFSEL_A) -> Self {
-        match variant {
-            REFSEL_A::INT1V => 0,
-            REFSEL_A::AVCC => 1,
-            REFSEL_A::VREFP => 2,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `REFSEL`"]

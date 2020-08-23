@@ -14,17 +14,14 @@ impl crate::ResetValue for super::NISIER {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CMDC_A {
     #[doc = "0: Masked"]
-    MASKED,
+    MASKED = 0,
     #[doc = "1: Enabled"]
-    ENABLED,
+    ENABLED = 1,
 }
 impl From<CMDC_A> for bool {
     #[inline(always)]
     fn from(variant: CMDC_A) -> Self {
-        match variant {
-            CMDC_A::MASKED => false,
-            CMDC_A::ENABLED => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `CMDC`"]
@@ -92,17 +89,14 @@ impl<'a> CMDC_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum TRFC_A {
     #[doc = "0: Masked"]
-    MASKED,
+    MASKED = 0,
     #[doc = "1: Enabled"]
-    ENABLED,
+    ENABLED = 1,
 }
 impl From<TRFC_A> for bool {
     #[inline(always)]
     fn from(variant: TRFC_A) -> Self {
-        match variant {
-            TRFC_A::MASKED => false,
-            TRFC_A::ENABLED => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `TRFC`"]
@@ -170,17 +164,14 @@ impl<'a> TRFC_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum BLKGE_A {
     #[doc = "0: Masked"]
-    MASKED,
+    MASKED = 0,
     #[doc = "1: Enabled"]
-    ENABLED,
+    ENABLED = 1,
 }
 impl From<BLKGE_A> for bool {
     #[inline(always)]
     fn from(variant: BLKGE_A) -> Self {
-        match variant {
-            BLKGE_A::MASKED => false,
-            BLKGE_A::ENABLED => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `BLKGE`"]
@@ -248,17 +239,14 @@ impl<'a> BLKGE_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum DMAINT_A {
     #[doc = "0: Masked"]
-    MASKED,
+    MASKED = 0,
     #[doc = "1: Enabled"]
-    ENABLED,
+    ENABLED = 1,
 }
 impl From<DMAINT_A> for bool {
     #[inline(always)]
     fn from(variant: DMAINT_A) -> Self {
-        match variant {
-            DMAINT_A::MASKED => false,
-            DMAINT_A::ENABLED => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `DMAINT`"]
@@ -326,17 +314,14 @@ impl<'a> DMAINT_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum BWRRDY_A {
     #[doc = "0: Masked"]
-    MASKED,
+    MASKED = 0,
     #[doc = "1: Enabled"]
-    ENABLED,
+    ENABLED = 1,
 }
 impl From<BWRRDY_A> for bool {
     #[inline(always)]
     fn from(variant: BWRRDY_A) -> Self {
-        match variant {
-            BWRRDY_A::MASKED => false,
-            BWRRDY_A::ENABLED => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `BWRRDY`"]
@@ -404,17 +389,14 @@ impl<'a> BWRRDY_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum BRDRDY_A {
     #[doc = "0: Masked"]
-    MASKED,
+    MASKED = 0,
     #[doc = "1: Enabled"]
-    ENABLED,
+    ENABLED = 1,
 }
 impl From<BRDRDY_A> for bool {
     #[inline(always)]
     fn from(variant: BRDRDY_A) -> Self {
-        match variant {
-            BRDRDY_A::MASKED => false,
-            BRDRDY_A::ENABLED => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `BRDRDY`"]
@@ -482,17 +464,14 @@ impl<'a> BRDRDY_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CINS_A {
     #[doc = "0: Masked"]
-    MASKED,
+    MASKED = 0,
     #[doc = "1: Enabled"]
-    ENABLED,
+    ENABLED = 1,
 }
 impl From<CINS_A> for bool {
     #[inline(always)]
     fn from(variant: CINS_A) -> Self {
-        match variant {
-            CINS_A::MASKED => false,
-            CINS_A::ENABLED => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `CINS`"]
@@ -560,17 +539,14 @@ impl<'a> CINS_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CREM_A {
     #[doc = "0: Masked"]
-    MASKED,
+    MASKED = 0,
     #[doc = "1: Enabled"]
-    ENABLED,
+    ENABLED = 1,
 }
 impl From<CREM_A> for bool {
     #[inline(always)]
     fn from(variant: CREM_A) -> Self {
-        match variant {
-            CREM_A::MASKED => false,
-            CREM_A::ENABLED => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `CREM`"]
@@ -638,17 +614,14 @@ impl<'a> CREM_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CINT_A {
     #[doc = "0: Masked"]
-    MASKED,
+    MASKED = 0,
     #[doc = "1: Enabled"]
-    ENABLED,
+    ENABLED = 1,
 }
 impl From<CINT_A> for bool {
     #[inline(always)]
     fn from(variant: CINT_A) -> Self {
-        match variant {
-            CINT_A::MASKED => false,
-            CINT_A::ENABLED => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `CINT`"]

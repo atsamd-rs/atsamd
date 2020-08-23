@@ -84,25 +84,21 @@ impl<'a> ONESHOT_W<'a> {
 }
 #[doc = "Ramp Index Command\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum IDXCMD_A {
     #[doc = "0: Command disabled: Index toggles between cycles A and B"]
-    DISABLE,
+    DISABLE = 0,
     #[doc = "1: Set index: cycle B will be forced in the next cycle"]
-    SET,
+    SET = 1,
     #[doc = "2: Clear index: cycle A will be forced in the next cycle"]
-    CLEAR,
+    CLEAR = 2,
     #[doc = "3: Hold index: the next cycle will be the same as the current cycle"]
-    HOLD,
+    HOLD = 3,
 }
 impl From<IDXCMD_A> for u8 {
     #[inline(always)]
     fn from(variant: IDXCMD_A) -> Self {
-        match variant {
-            IDXCMD_A::DISABLE => 0,
-            IDXCMD_A::SET => 1,
-            IDXCMD_A::CLEAR => 2,
-            IDXCMD_A::HOLD => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `IDXCMD`"]
@@ -181,28 +177,23 @@ impl<'a> IDXCMD_W<'a> {
 }
 #[doc = "TCC Command\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum CMD_A {
     #[doc = "0: No action"]
-    NONE,
+    NONE = 0,
     #[doc = "1: Clear start, restart or retrigger"]
-    RETRIGGER,
+    RETRIGGER = 1,
     #[doc = "2: Force stop"]
-    STOP,
+    STOP = 2,
     #[doc = "3: Force update of double buffered registers"]
-    UPDATE,
+    UPDATE = 3,
     #[doc = "4: Force COUNT read synchronization"]
-    READSYNC,
+    READSYNC = 4,
 }
 impl From<CMD_A> for u8 {
     #[inline(always)]
     fn from(variant: CMD_A) -> Self {
-        match variant {
-            CMD_A::NONE => 0,
-            CMD_A::RETRIGGER => 1,
-            CMD_A::STOP => 2,
-            CMD_A::UPDATE => 3,
-            CMD_A::READSYNC => 4,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `CMD`"]

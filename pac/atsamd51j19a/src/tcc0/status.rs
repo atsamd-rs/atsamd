@@ -12,8 +12,52 @@ impl crate::ResetValue for super::STATUS {
 }
 #[doc = "Reader of field `STOP`"]
 pub type STOP_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `STOP`"]
+pub struct STOP_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> STOP_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !0x01) | ((value as u32) & 0x01);
+        self.w
+    }
+}
 #[doc = "Reader of field `IDX`"]
 pub type IDX_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `IDX`"]
+pub struct IDX_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> IDX_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 1)) | (((value as u32) & 0x01) << 1);
+        self.w
+    }
+}
 #[doc = "Reader of field `UFS`"]
 pub type UFS_R = crate::R<bool, bool>;
 #[doc = "Write proxy for field `UFS`"]
@@ -64,6 +108,28 @@ impl<'a> DFS_W<'a> {
 }
 #[doc = "Reader of field `SLAVE`"]
 pub type SLAVE_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `SLAVE`"]
+pub struct SLAVE_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> SLAVE_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 4)) | (((value as u32) & 0x01) << 4);
+        self.w
+    }
+}
 #[doc = "Reader of field `PATTBUFV`"]
 pub type PATTBUFV_R = crate::R<bool, bool>;
 #[doc = "Write proxy for field `PATTBUFV`"]
@@ -114,12 +180,100 @@ impl<'a> PERBUFV_W<'a> {
 }
 #[doc = "Reader of field `FAULTAIN`"]
 pub type FAULTAIN_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `FAULTAIN`"]
+pub struct FAULTAIN_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> FAULTAIN_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 8)) | (((value as u32) & 0x01) << 8);
+        self.w
+    }
+}
 #[doc = "Reader of field `FAULTBIN`"]
 pub type FAULTBIN_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `FAULTBIN`"]
+pub struct FAULTBIN_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> FAULTBIN_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 9)) | (((value as u32) & 0x01) << 9);
+        self.w
+    }
+}
 #[doc = "Reader of field `FAULT0IN`"]
 pub type FAULT0IN_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `FAULT0IN`"]
+pub struct FAULT0IN_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> FAULT0IN_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 10)) | (((value as u32) & 0x01) << 10);
+        self.w
+    }
+}
 #[doc = "Reader of field `FAULT1IN`"]
 pub type FAULT1IN_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `FAULT1IN`"]
+pub struct FAULT1IN_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> FAULT1IN_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 11)) | (((value as u32) & 0x01) << 11);
+        self.w
+    }
+}
 #[doc = "Reader of field `FAULTA`"]
 pub type FAULTA_R = crate::R<bool, bool>;
 #[doc = "Write proxy for field `FAULTA`"]
@@ -362,16 +516,148 @@ impl<'a> CCBUFV5_W<'a> {
 }
 #[doc = "Reader of field `CMP0`"]
 pub type CMP0_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `CMP0`"]
+pub struct CMP0_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> CMP0_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 24)) | (((value as u32) & 0x01) << 24);
+        self.w
+    }
+}
 #[doc = "Reader of field `CMP1`"]
 pub type CMP1_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `CMP1`"]
+pub struct CMP1_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> CMP1_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 25)) | (((value as u32) & 0x01) << 25);
+        self.w
+    }
+}
 #[doc = "Reader of field `CMP2`"]
 pub type CMP2_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `CMP2`"]
+pub struct CMP2_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> CMP2_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 26)) | (((value as u32) & 0x01) << 26);
+        self.w
+    }
+}
 #[doc = "Reader of field `CMP3`"]
 pub type CMP3_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `CMP3`"]
+pub struct CMP3_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> CMP3_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 27)) | (((value as u32) & 0x01) << 27);
+        self.w
+    }
+}
 #[doc = "Reader of field `CMP4`"]
 pub type CMP4_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `CMP4`"]
+pub struct CMP4_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> CMP4_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 28)) | (((value as u32) & 0x01) << 28);
+        self.w
+    }
+}
 #[doc = "Reader of field `CMP5`"]
 pub type CMP5_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `CMP5`"]
+pub struct CMP5_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> CMP5_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 29)) | (((value as u32) & 0x01) << 29);
+        self.w
+    }
+}
 impl R {
     #[doc = "Bit 0 - Stop"]
     #[inline(always)]
@@ -510,6 +796,16 @@ impl R {
     }
 }
 impl W {
+    #[doc = "Bit 0 - Stop"]
+    #[inline(always)]
+    pub fn stop(&mut self) -> STOP_W {
+        STOP_W { w: self }
+    }
+    #[doc = "Bit 1 - Ramp"]
+    #[inline(always)]
+    pub fn idx(&mut self) -> IDX_W {
+        IDX_W { w: self }
+    }
     #[doc = "Bit 2 - Non-recoverable Update Fault State"]
     #[inline(always)]
     pub fn ufs(&mut self) -> UFS_W {
@@ -520,6 +816,11 @@ impl W {
     pub fn dfs(&mut self) -> DFS_W {
         DFS_W { w: self }
     }
+    #[doc = "Bit 4 - Slave"]
+    #[inline(always)]
+    pub fn slave(&mut self) -> SLAVE_W {
+        SLAVE_W { w: self }
+    }
     #[doc = "Bit 5 - Pattern Buffer Valid"]
     #[inline(always)]
     pub fn pattbufv(&mut self) -> PATTBUFV_W {
@@ -529,6 +830,26 @@ impl W {
     #[inline(always)]
     pub fn perbufv(&mut self) -> PERBUFV_W {
         PERBUFV_W { w: self }
+    }
+    #[doc = "Bit 8 - Recoverable Fault A Input"]
+    #[inline(always)]
+    pub fn faultain(&mut self) -> FAULTAIN_W {
+        FAULTAIN_W { w: self }
+    }
+    #[doc = "Bit 9 - Recoverable Fault B Input"]
+    #[inline(always)]
+    pub fn faultbin(&mut self) -> FAULTBIN_W {
+        FAULTBIN_W { w: self }
+    }
+    #[doc = "Bit 10 - Non-Recoverable Fault0 Input"]
+    #[inline(always)]
+    pub fn fault0in(&mut self) -> FAULT0IN_W {
+        FAULT0IN_W { w: self }
+    }
+    #[doc = "Bit 11 - Non-Recoverable Fault1 Input"]
+    #[inline(always)]
+    pub fn fault1in(&mut self) -> FAULT1IN_W {
+        FAULT1IN_W { w: self }
     }
     #[doc = "Bit 12 - Recoverable Fault A State"]
     #[inline(always)]
@@ -579,5 +900,35 @@ impl W {
     #[inline(always)]
     pub fn ccbufv5(&mut self) -> CCBUFV5_W {
         CCBUFV5_W { w: self }
+    }
+    #[doc = "Bit 24 - Compare Channel 0 Value"]
+    #[inline(always)]
+    pub fn cmp0(&mut self) -> CMP0_W {
+        CMP0_W { w: self }
+    }
+    #[doc = "Bit 25 - Compare Channel 1 Value"]
+    #[inline(always)]
+    pub fn cmp1(&mut self) -> CMP1_W {
+        CMP1_W { w: self }
+    }
+    #[doc = "Bit 26 - Compare Channel 2 Value"]
+    #[inline(always)]
+    pub fn cmp2(&mut self) -> CMP2_W {
+        CMP2_W { w: self }
+    }
+    #[doc = "Bit 27 - Compare Channel 3 Value"]
+    #[inline(always)]
+    pub fn cmp3(&mut self) -> CMP3_W {
+        CMP3_W { w: self }
+    }
+    #[doc = "Bit 28 - Compare Channel 4 Value"]
+    #[inline(always)]
+    pub fn cmp4(&mut self) -> CMP4_W {
+        CMP4_W { w: self }
+    }
+    #[doc = "Bit 29 - Compare Channel 5 Value"]
+    #[inline(always)]
+    pub fn cmp5(&mut self) -> CMP5_W {
+        CMP5_W { w: self }
     }
 }

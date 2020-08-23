@@ -58,22 +58,19 @@ impl<'a> ENABLE_W<'a> {
 }
 #[doc = "TC Mode\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum MODE_A {
     #[doc = "0: Counter in 16-bit mode"]
-    COUNT16,
+    COUNT16 = 0,
     #[doc = "1: Counter in 8-bit mode"]
-    COUNT8,
+    COUNT8 = 1,
     #[doc = "2: Counter in 32-bit mode"]
-    COUNT32,
+    COUNT32 = 2,
 }
 impl From<MODE_A> for u8 {
     #[inline(always)]
     fn from(variant: MODE_A) -> Self {
-        match variant {
-            MODE_A::COUNT16 => 0,
-            MODE_A::COUNT8 => 1,
-            MODE_A::COUNT32 => 2,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `MODE`"]
@@ -140,25 +137,21 @@ impl<'a> MODE_W<'a> {
 }
 #[doc = "Waveform Generation Operation\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum WAVEGEN_A {
     #[doc = "0: `0`"]
-    NFRQ,
+    NFRQ = 0,
     #[doc = "1: `1`"]
-    MFRQ,
+    MFRQ = 1,
     #[doc = "2: `10`"]
-    NPWM,
+    NPWM = 2,
     #[doc = "3: `11`"]
-    MPWM,
+    MPWM = 3,
 }
 impl From<WAVEGEN_A> for u8 {
     #[inline(always)]
     fn from(variant: WAVEGEN_A) -> Self {
-        match variant {
-            WAVEGEN_A::NFRQ => 0,
-            WAVEGEN_A::MFRQ => 1,
-            WAVEGEN_A::NPWM => 2,
-            WAVEGEN_A::MPWM => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `WAVEGEN`"]
@@ -237,37 +230,29 @@ impl<'a> WAVEGEN_W<'a> {
 }
 #[doc = "Prescaler\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum PRESCALER_A {
     #[doc = "0: Prescaler: GCLK_TC"]
-    DIV1,
+    DIV1 = 0,
     #[doc = "1: Prescaler: GCLK_TC/2"]
-    DIV2,
+    DIV2 = 1,
     #[doc = "2: Prescaler: GCLK_TC/4"]
-    DIV4,
+    DIV4 = 2,
     #[doc = "3: Prescaler: GCLK_TC/8"]
-    DIV8,
+    DIV8 = 3,
     #[doc = "4: Prescaler: GCLK_TC/16"]
-    DIV16,
+    DIV16 = 4,
     #[doc = "5: Prescaler: GCLK_TC/64"]
-    DIV64,
+    DIV64 = 5,
     #[doc = "6: Prescaler: GCLK_TC/256"]
-    DIV256,
+    DIV256 = 6,
     #[doc = "7: Prescaler: GCLK_TC/1024"]
-    DIV1024,
+    DIV1024 = 7,
 }
 impl From<PRESCALER_A> for u8 {
     #[inline(always)]
     fn from(variant: PRESCALER_A) -> Self {
-        match variant {
-            PRESCALER_A::DIV1 => 0,
-            PRESCALER_A::DIV2 => 1,
-            PRESCALER_A::DIV4 => 2,
-            PRESCALER_A::DIV8 => 3,
-            PRESCALER_A::DIV16 => 4,
-            PRESCALER_A::DIV64 => 5,
-            PRESCALER_A::DIV256 => 6,
-            PRESCALER_A::DIV1024 => 7,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `PRESCALER`"]
@@ -414,22 +399,19 @@ impl<'a> RUNSTDBY_W<'a> {
 }
 #[doc = "Prescaler and Counter Synchronization\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum PRESCSYNC_A {
     #[doc = "0: Reload or reset the counter on next generic clock"]
-    GCLK,
+    GCLK = 0,
     #[doc = "1: Reload or reset the counter on next prescaler clock"]
-    PRESC,
+    PRESC = 1,
     #[doc = "2: Reload or reset the counter on next generic clock. Reset the prescaler counter"]
-    RESYNC,
+    RESYNC = 2,
 }
 impl From<PRESCSYNC_A> for u8 {
     #[inline(always)]
     fn from(variant: PRESCSYNC_A) -> Self {
-        match variant {
-            PRESCSYNC_A::GCLK => 0,
-            PRESCSYNC_A::PRESC => 1,
-            PRESCSYNC_A::RESYNC => 2,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `PRESCSYNC`"]

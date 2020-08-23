@@ -21,8 +21,6 @@ use hal::sercom::{I2CMaster2, PadPin, SPIMaster1, UART5};
 use hal::time::Hertz;
 
 #[cfg(feature = "usb")]
-use gpio::IntoFunction;
-#[cfg(feature = "usb")]
 pub use hal::usb::UsbBus;
 #[cfg(feature = "usb")]
 use usb_device::bus::UsbBusWrapper;
@@ -31,7 +29,7 @@ define_pins!(
     /// Maps the pins to their arduino names and
     /// the numbers printed on the board.
     struct Pins,
-    target_device: target_device, 
+    target_device: target_device,
 
     /// Analog pin 0.  Can act as a true analog output
     /// as it has a DAC (which is not currently supported
@@ -50,9 +48,9 @@ define_pins!(
     pin a5 = a6,
 
     /// Pin 0, rx
-    pin d0 = b16,
+    pin d0 = b17,
     /// Pin 1, tx
-    pin d1 = b17,
+    pin d1 = b16,
     /// Pin 4, PWM capable
     pin d4 = a14,
 
@@ -160,7 +158,9 @@ pub fn uart<F: Into<Hertz>>(
     port: &mut Port,
 ) -> UART5<
         hal::sercom::Sercom5Pad1<gpio::Pb17<PfC>>,
-        hal::sercom::Sercom5Pad0<gpio::Pb16<PfC>>, (), ()
+        hal::sercom::Sercom5Pad0<gpio::Pb16<PfC>>,
+        (),
+        ()
     > {
     let gclk0 = clocks.gclk0();
 
@@ -182,6 +182,8 @@ pub fn usb_bus(
     dp: gpio::Pa25<Input<Floating>>,
     port: &mut Port,
 ) -> UsbBusWrapper<UsbBus> {
+    use gpio::IntoFunction;
+
     let gclk0 = clocks.gclk0();
     dbgprint!("making usb clock");
     let usb_clock = &clocks.usb(&gclk0).unwrap();

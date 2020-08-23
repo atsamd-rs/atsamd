@@ -12,22 +12,19 @@ impl crate::ResetValue for super::SERCTRL {
 }
 #[doc = "Serializer Mode\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum SERMODE_A {
     #[doc = "0: Receive"]
-    RX,
+    RX = 0,
     #[doc = "1: Transmit"]
-    TX,
+    TX = 1,
     #[doc = "2: Receive one PDM data on each serial clock edge"]
-    PDM2,
+    PDM2 = 2,
 }
 impl From<SERMODE_A> for u8 {
     #[inline(always)]
     fn from(variant: SERMODE_A) -> Self {
-        match variant {
-            SERMODE_A::RX => 0,
-            SERMODE_A::TX => 1,
-            SERMODE_A::PDM2 => 2,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `SERMODE`"]
@@ -94,22 +91,19 @@ impl<'a> SERMODE_W<'a> {
 }
 #[doc = "Line Default Line when Slot Disabled\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum TXDEFAULT_A {
     #[doc = "0: Output Default Value is 0"]
-    ZERO,
+    ZERO = 0,
     #[doc = "1: Output Default Value is 1"]
-    ONE,
+    ONE = 1,
     #[doc = "3: Output Default Value is high impedance"]
-    HIZ,
+    HIZ = 3,
 }
 impl From<TXDEFAULT_A> for u8 {
     #[inline(always)]
     fn from(variant: TXDEFAULT_A) -> Self {
-        match variant {
-            TXDEFAULT_A::ZERO => 0,
-            TXDEFAULT_A::ONE => 1,
-            TXDEFAULT_A::HIZ => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `TXDEFAULT`"]
@@ -178,17 +172,14 @@ impl<'a> TXDEFAULT_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum TXSAME_A {
     #[doc = "0: Zero data transmitted in case of underrun"]
-    ZERO,
+    ZERO = 0,
     #[doc = "1: Last data transmitted in case of underrun"]
-    SAME,
+    SAME = 1,
 }
 impl From<TXSAME_A> for bool {
     #[inline(always)]
     fn from(variant: TXSAME_A) -> Self {
-        match variant {
-            TXSAME_A::ZERO => false,
-            TXSAME_A::SAME => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `TXSAME`"]
@@ -256,17 +247,14 @@ impl<'a> TXSAME_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CLKSEL_A {
     #[doc = "0: Use Clock Unit 0"]
-    CLK0,
+    CLK0 = 0,
     #[doc = "1: Use Clock Unit 1"]
-    CLK1,
+    CLK1 = 1,
 }
 impl From<CLKSEL_A> for bool {
     #[inline(always)]
     fn from(variant: CLKSEL_A) -> Self {
-        match variant {
-            CLKSEL_A::CLK0 => false,
-            CLKSEL_A::CLK1 => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `CLKSEL`"]
@@ -334,17 +322,14 @@ impl<'a> CLKSEL_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum SLOTADJ_A {
     #[doc = "0: Data is right adjusted in slot"]
-    RIGHT,
+    RIGHT = 0,
     #[doc = "1: Data is left adjusted in slot"]
-    LEFT,
+    LEFT = 1,
 }
 impl From<SLOTADJ_A> for bool {
     #[inline(always)]
     fn from(variant: SLOTADJ_A) -> Self {
-        match variant {
-            SLOTADJ_A::RIGHT => false,
-            SLOTADJ_A::LEFT => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `SLOTADJ`"]
@@ -410,37 +395,29 @@ impl<'a> SLOTADJ_W<'a> {
 }
 #[doc = "Data Word Size\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum DATASIZE_A {
     #[doc = "0: 32 bits"]
-    _32,
+    _32 = 0,
     #[doc = "1: 24 bits"]
-    _24,
+    _24 = 1,
     #[doc = "2: 20 bits"]
-    _20,
+    _20 = 2,
     #[doc = "3: 18 bits"]
-    _18,
+    _18 = 3,
     #[doc = "4: 16 bits"]
-    _16,
+    _16 = 4,
     #[doc = "5: 16 bits compact stereo"]
-    _16C,
+    _16C = 5,
     #[doc = "6: 8 bits"]
-    _8,
+    _8 = 6,
     #[doc = "7: 8 bits compact stereo"]
-    _8C,
+    _8C = 7,
 }
 impl From<DATASIZE_A> for u8 {
     #[inline(always)]
     fn from(variant: DATASIZE_A) -> Self {
-        match variant {
-            DATASIZE_A::_32 => 0,
-            DATASIZE_A::_24 => 1,
-            DATASIZE_A::_20 => 2,
-            DATASIZE_A::_18 => 3,
-            DATASIZE_A::_16 => 4,
-            DATASIZE_A::_16C => 5,
-            DATASIZE_A::_8 => 6,
-            DATASIZE_A::_8C => 7,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `DATASIZE`"]
@@ -565,17 +542,14 @@ impl<'a> DATASIZE_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum WORDADJ_A {
     #[doc = "0: Data is right adjusted in word"]
-    RIGHT,
+    RIGHT = 0,
     #[doc = "1: Data is left adjusted in word"]
-    LEFT,
+    LEFT = 1,
 }
 impl From<WORDADJ_A> for bool {
     #[inline(always)]
     fn from(variant: WORDADJ_A) -> Self {
-        match variant {
-            WORDADJ_A::RIGHT => false,
-            WORDADJ_A::LEFT => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `WORDADJ`"]
@@ -641,25 +615,21 @@ impl<'a> WORDADJ_W<'a> {
 }
 #[doc = "Data Formatting Bit Extension\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum EXTEND_A {
     #[doc = "0: Extend with zeroes"]
-    ZERO,
+    ZERO = 0,
     #[doc = "1: Extend with ones"]
-    ONE,
+    ONE = 1,
     #[doc = "2: Extend with Most Significant Bit"]
-    MSBIT,
+    MSBIT = 2,
     #[doc = "3: Extend with Least Significant Bit"]
-    LSBIT,
+    LSBIT = 3,
 }
 impl From<EXTEND_A> for u8 {
     #[inline(always)]
     fn from(variant: EXTEND_A) -> Self {
-        match variant {
-            EXTEND_A::ZERO => 0,
-            EXTEND_A::ONE => 1,
-            EXTEND_A::MSBIT => 2,
-            EXTEND_A::LSBIT => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `EXTEND`"]
@@ -740,17 +710,14 @@ impl<'a> EXTEND_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum BITREV_A {
     #[doc = "0: Transfer Data Most Significant Bit (MSB) first (default for I2S protocol)"]
-    MSBIT,
+    MSBIT = 0,
     #[doc = "1: Transfer Data Least Significant Bit (LSB) first"]
-    LSBIT,
+    LSBIT = 1,
 }
 impl From<BITREV_A> for bool {
     #[inline(always)]
     fn from(variant: BITREV_A) -> Self {
-        match variant {
-            BITREV_A::MSBIT => false,
-            BITREV_A::LSBIT => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `BITREV`"]
@@ -1010,17 +977,14 @@ impl<'a> SLOTDIS7_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum MONO_A {
     #[doc = "0: Normal mode"]
-    STEREO,
+    STEREO = 0,
     #[doc = "1: Left channel data is duplicated to right channel"]
-    MONO,
+    MONO = 1,
 }
 impl From<MONO_A> for bool {
     #[inline(always)]
     fn from(variant: MONO_A) -> Self {
-        match variant {
-            MONO_A::STEREO => false,
-            MONO_A::MONO => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `MONO`"]
@@ -1088,17 +1052,14 @@ impl<'a> MONO_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum DMA_A {
     #[doc = "0: Single DMA channel"]
-    SINGLE,
+    SINGLE = 0,
     #[doc = "1: One DMA channel per data channel"]
-    MULTIPLE,
+    MULTIPLE = 1,
 }
 impl From<DMA_A> for bool {
     #[inline(always)]
     fn from(variant: DMA_A) -> Self {
-        match variant {
-            DMA_A::SINGLE => false,
-            DMA_A::MULTIPLE => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `DMA`"]

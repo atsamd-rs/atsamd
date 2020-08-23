@@ -1,12 +1,13 @@
 //! Blink an led without using the BSP split() method.
+//!
+//! Note leds may appear white during debug. Either build for release or add
+//! opt-level = 2 to profile.dev in Cargo.toml
 
 #![no_std]
 #![no_main]
 
-#[allow(unused_imports)]
-use panic_halt;
-
 use edgebadge as hal;
+use panic_halt as _;
 
 use core::f32::consts::FRAC_PI_2;
 use hal::clock::GenericClockController;
@@ -17,7 +18,6 @@ use hal::prelude::*;
 use hal::timer::SpinTimer;
 use hal::trng::Trng;
 use micromath::F32Ext;
-
 use smart_leds::{
     hsv::{hsv2rgb, Hsv, RGB8},
     SmartLedsWrite,

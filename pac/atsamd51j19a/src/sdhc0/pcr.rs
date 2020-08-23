@@ -14,17 +14,14 @@ impl crate::ResetValue for super::PCR {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum SDBPWR_A {
     #[doc = "0: Power off"]
-    OFF,
+    OFF = 0,
     #[doc = "1: Power on"]
-    ON,
+    ON = 1,
 }
 impl From<SDBPWR_A> for bool {
     #[inline(always)]
     fn from(variant: SDBPWR_A) -> Self {
-        match variant {
-            SDBPWR_A::OFF => false,
-            SDBPWR_A::ON => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `SDBPWR`"]
@@ -90,22 +87,19 @@ impl<'a> SDBPWR_W<'a> {
 }
 #[doc = "SD Bus Voltage Select\n\nValue on reset: 7"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum SDBVSEL_A {
     #[doc = "5: 1.8V (Typ.)"]
-    _1V8,
+    _1V8 = 5,
     #[doc = "6: 3.0V (Typ.)"]
-    _3V0,
+    _3V0 = 6,
     #[doc = "7: 3.3V (Typ.)"]
-    _3V3,
+    _3V3 = 7,
 }
 impl From<SDBVSEL_A> for u8 {
     #[inline(always)]
     fn from(variant: SDBVSEL_A) -> Self {
-        match variant {
-            SDBVSEL_A::_1V8 => 5,
-            SDBVSEL_A::_3V0 => 6,
-            SDBVSEL_A::_3V3 => 7,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `SDBVSEL`"]

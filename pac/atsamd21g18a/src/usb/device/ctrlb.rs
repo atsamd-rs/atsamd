@@ -60,25 +60,21 @@ impl<'a> UPRSM_W<'a> {
 }
 #[doc = "Speed Configuration\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum SPDCONF_A {
     #[doc = "0: FS : Full Speed"]
-    FS,
+    FS = 0,
     #[doc = "1: LS : Low Speed"]
-    LS,
+    LS = 1,
     #[doc = "2: HS : High Speed capable"]
-    HS,
+    HS = 2,
     #[doc = "3: HSTM: High Speed Test Mode (force high-speed mode for test mode)"]
-    HSTM,
+    HSTM = 3,
 }
 impl From<SPDCONF_A> for u8 {
     #[inline(always)]
     fn from(variant: SPDCONF_A) -> Self {
-        match variant {
-            SPDCONF_A::FS => 0,
-            SPDCONF_A::LS => 1,
-            SPDCONF_A::HS => 2,
-            SPDCONF_A::HSTM => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `SPDCONF`"]
@@ -301,25 +297,21 @@ impl<'a> GNAK_W<'a> {
 }
 #[doc = "Link Power Management Handshake\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum LPMHDSK_A {
     #[doc = "0: No handshake. LPM is not supported"]
-    NO,
+    NO = 0,
     #[doc = "1: ACK"]
-    ACK,
+    ACK = 1,
     #[doc = "2: NYET"]
-    NYET,
+    NYET = 2,
     #[doc = "3: STALL"]
-    STALL,
+    STALL = 3,
 }
 impl From<LPMHDSK_A> for u8 {
     #[inline(always)]
     fn from(variant: LPMHDSK_A) -> Self {
-        match variant {
-            LPMHDSK_A::NO => 0,
-            LPMHDSK_A::ACK => 1,
-            LPMHDSK_A::NYET => 2,
-            LPMHDSK_A::STALL => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `LPMHDSK`"]

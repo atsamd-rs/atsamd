@@ -12,37 +12,29 @@ impl crate::ResetValue for super::PMUX1_ {
 }
 #[doc = "Peripheral Multiplexing Even\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum PMUXE_A {
     #[doc = "0: Peripheral function A selected"]
-    A,
+    A = 0,
     #[doc = "1: Peripheral function B selected"]
-    B,
+    B = 1,
     #[doc = "2: Peripheral function C selected"]
-    C,
+    C = 2,
     #[doc = "3: Peripheral function D selected"]
-    D,
+    D = 3,
     #[doc = "4: Peripheral function E selected"]
-    E,
+    E = 4,
     #[doc = "5: Peripheral function F selected"]
-    F,
+    F = 5,
     #[doc = "6: Peripheral function G selected"]
-    G,
+    G = 6,
     #[doc = "7: Peripheral function H selected"]
-    H,
+    H = 7,
 }
 impl From<PMUXE_A> for u8 {
     #[inline(always)]
     fn from(variant: PMUXE_A) -> Self {
-        match variant {
-            PMUXE_A::A => 0,
-            PMUXE_A::B => 1,
-            PMUXE_A::C => 2,
-            PMUXE_A::D => 3,
-            PMUXE_A::E => 4,
-            PMUXE_A::F => 5,
-            PMUXE_A::G => 6,
-            PMUXE_A::H => 7,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `PMUXE`"]
@@ -164,37 +156,29 @@ impl<'a> PMUXE_W<'a> {
 }
 #[doc = "Peripheral Multiplexing Odd\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum PMUXO_A {
     #[doc = "0: Peripheral function A selected"]
-    A,
+    A = 0,
     #[doc = "1: Peripheral function B selected"]
-    B,
+    B = 1,
     #[doc = "2: Peripheral function C selected"]
-    C,
+    C = 2,
     #[doc = "3: Peripheral function D selected"]
-    D,
+    D = 3,
     #[doc = "4: Peripheral function E selected"]
-    E,
+    E = 4,
     #[doc = "5: Peripheral function F selected"]
-    F,
+    F = 5,
     #[doc = "6: Peripheral function G selected"]
-    G,
+    G = 6,
     #[doc = "7: Peripheral function H selected"]
-    H,
+    H = 7,
 }
 impl From<PMUXO_A> for u8 {
     #[inline(always)]
     fn from(variant: PMUXO_A) -> Self {
-        match variant {
-            PMUXO_A::A => 0,
-            PMUXO_A::B => 1,
-            PMUXO_A::C => 2,
-            PMUXO_A::D => 3,
-            PMUXO_A::E => 4,
-            PMUXO_A::F => 5,
-            PMUXO_A::G => 6,
-            PMUXO_A::H => 7,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `PMUXO`"]

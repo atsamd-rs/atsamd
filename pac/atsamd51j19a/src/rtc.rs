@@ -154,15 +154,15 @@ pub struct MODE2 {
     #[doc = "0x18 - MODE2 Clock Value"]
     pub clock: self::mode2::CLOCK,
     _reserved10: [u8; 4usize],
-    #[doc = "0x20 - MODE2 Alarm n Value"]
-    pub alarm0: self::mode2::ALARM,
-    #[doc = "0x24 - MODE2 Alarm n Mask"]
-    pub mask0: self::mode2::MASK,
+    #[doc = "0x20 - MODE2_ALARM Alarm n Value"]
+    pub alarm0: self::mode2::ALARM0,
+    #[doc = "0x24 - MODE2_ALARM Alarm n Mask"]
+    pub mask0: self::mode2::MASK0,
     _reserved12: [u8; 3usize],
-    #[doc = "0x28 - MODE2 Alarm n Value"]
-    pub alarm1: self::mode2::ALARM,
-    #[doc = "0x2c - MODE2 Alarm n Mask"]
-    pub mask1: self::mode2::MASK,
+    #[doc = "0x28 - MODE2_ALARM Alarm n Value"]
+    pub alarm1: self::mode2::ALARM1,
+    #[doc = "0x2c - MODE2_ALARM Alarm n Mask"]
+    pub mask1: self::mode2::MASK1,
     _reserved14: [u8; 19usize],
     #[doc = "0x40 - General Purpose"]
     pub gp: [self::mode2::GP; 4],

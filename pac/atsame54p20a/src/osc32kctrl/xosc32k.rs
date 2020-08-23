@@ -154,13 +154,130 @@ impl<'a> ONDEMAND_W<'a> {
         self.w
     }
 }
+#[doc = "Oscillator Start-Up Time\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
+pub enum STARTUP_A {
+    #[doc = "0: 62.6 ms"]
+    CYCLE2048 = 0,
+    #[doc = "1: 125 ms"]
+    CYCLE4096 = 1,
+    #[doc = "2: 500 ms"]
+    CYCLE16384 = 2,
+    #[doc = "3: 1000 ms"]
+    CYCLE32768 = 3,
+    #[doc = "4: 2000 ms"]
+    CYCLE65536 = 4,
+    #[doc = "5: 4000 ms"]
+    CYCLE131072 = 5,
+    #[doc = "6: 8000 ms"]
+    CYCLE262144 = 6,
+}
+impl From<STARTUP_A> for u8 {
+    #[inline(always)]
+    fn from(variant: STARTUP_A) -> Self {
+        variant as _
+    }
+}
 #[doc = "Reader of field `STARTUP`"]
-pub type STARTUP_R = crate::R<u8, u8>;
+pub type STARTUP_R = crate::R<u8, STARTUP_A>;
+impl STARTUP_R {
+    #[doc = r"Get enumerated values variant"]
+    #[inline(always)]
+    pub fn variant(&self) -> crate::Variant<u8, STARTUP_A> {
+        use crate::Variant::*;
+        match self.bits {
+            0 => Val(STARTUP_A::CYCLE2048),
+            1 => Val(STARTUP_A::CYCLE4096),
+            2 => Val(STARTUP_A::CYCLE16384),
+            3 => Val(STARTUP_A::CYCLE32768),
+            4 => Val(STARTUP_A::CYCLE65536),
+            5 => Val(STARTUP_A::CYCLE131072),
+            6 => Val(STARTUP_A::CYCLE262144),
+            i => Res(i),
+        }
+    }
+    #[doc = "Checks if the value of the field is `CYCLE2048`"]
+    #[inline(always)]
+    pub fn is_cycle2048(&self) -> bool {
+        *self == STARTUP_A::CYCLE2048
+    }
+    #[doc = "Checks if the value of the field is `CYCLE4096`"]
+    #[inline(always)]
+    pub fn is_cycle4096(&self) -> bool {
+        *self == STARTUP_A::CYCLE4096
+    }
+    #[doc = "Checks if the value of the field is `CYCLE16384`"]
+    #[inline(always)]
+    pub fn is_cycle16384(&self) -> bool {
+        *self == STARTUP_A::CYCLE16384
+    }
+    #[doc = "Checks if the value of the field is `CYCLE32768`"]
+    #[inline(always)]
+    pub fn is_cycle32768(&self) -> bool {
+        *self == STARTUP_A::CYCLE32768
+    }
+    #[doc = "Checks if the value of the field is `CYCLE65536`"]
+    #[inline(always)]
+    pub fn is_cycle65536(&self) -> bool {
+        *self == STARTUP_A::CYCLE65536
+    }
+    #[doc = "Checks if the value of the field is `CYCLE131072`"]
+    #[inline(always)]
+    pub fn is_cycle131072(&self) -> bool {
+        *self == STARTUP_A::CYCLE131072
+    }
+    #[doc = "Checks if the value of the field is `CYCLE262144`"]
+    #[inline(always)]
+    pub fn is_cycle262144(&self) -> bool {
+        *self == STARTUP_A::CYCLE262144
+    }
+}
 #[doc = "Write proxy for field `STARTUP`"]
 pub struct STARTUP_W<'a> {
     w: &'a mut W,
 }
 impl<'a> STARTUP_W<'a> {
+    #[doc = r"Writes `variant` to the field"]
+    #[inline(always)]
+    pub fn variant(self, variant: STARTUP_A) -> &'a mut W {
+        unsafe { self.bits(variant.into()) }
+    }
+    #[doc = "62.6 ms"]
+    #[inline(always)]
+    pub fn cycle2048(self) -> &'a mut W {
+        self.variant(STARTUP_A::CYCLE2048)
+    }
+    #[doc = "125 ms"]
+    #[inline(always)]
+    pub fn cycle4096(self) -> &'a mut W {
+        self.variant(STARTUP_A::CYCLE4096)
+    }
+    #[doc = "500 ms"]
+    #[inline(always)]
+    pub fn cycle16384(self) -> &'a mut W {
+        self.variant(STARTUP_A::CYCLE16384)
+    }
+    #[doc = "1000 ms"]
+    #[inline(always)]
+    pub fn cycle32768(self) -> &'a mut W {
+        self.variant(STARTUP_A::CYCLE32768)
+    }
+    #[doc = "2000 ms"]
+    #[inline(always)]
+    pub fn cycle65536(self) -> &'a mut W {
+        self.variant(STARTUP_A::CYCLE65536)
+    }
+    #[doc = "4000 ms"]
+    #[inline(always)]
+    pub fn cycle131072(self) -> &'a mut W {
+        self.variant(STARTUP_A::CYCLE131072)
+    }
+    #[doc = "8000 ms"]
+    #[inline(always)]
+    pub fn cycle262144(self) -> &'a mut W {
+        self.variant(STARTUP_A::CYCLE262144)
+    }
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {

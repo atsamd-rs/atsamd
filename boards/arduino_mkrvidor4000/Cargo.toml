@@ -1,6 +1,6 @@
 [package]
 name = "arduino_mkrvidor4000"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Sameer Puri <purisame@spuri.io>"]
 description = "Board Support crate for the Arduino MKR VIDOR 4000"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal", "arduino"]
@@ -24,7 +24,7 @@ optional = true
 
 [dependencies.atsamd-hal]
 path = "../../hal"
-version = "~0.8"
+version = "~0.9"
 default-features = false
 
 [features]

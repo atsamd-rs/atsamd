@@ -96,6 +96,8 @@ impl<'a> AMODE_W<'a> {
         self.w
     }
 }
+#[doc = "Reader of field `CMD`"]
+pub type CMD_R = crate::R<u8, u8>;
 #[doc = "Write proxy for field `CMD`"]
 pub struct CMD_W<'a> {
     w: &'a mut W,
@@ -152,6 +154,11 @@ impl R {
     #[inline(always)]
     pub fn amode(&self) -> AMODE_R {
         AMODE_R::new(((self.bits >> 14) & 0x03) as u8)
+    }
+    #[doc = "Bits 16:17 - Command"]
+    #[inline(always)]
+    pub fn cmd(&self) -> CMD_R {
+        CMD_R::new(((self.bits >> 16) & 0x03) as u8)
     }
     #[doc = "Bit 18 - Acknowledge Action"]
     #[inline(always)]

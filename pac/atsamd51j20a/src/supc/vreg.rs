@@ -38,17 +38,14 @@ impl<'a> ENABLE_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum SEL_A {
     #[doc = "0: LDO selection"]
-    LDO,
+    LDO = 0,
     #[doc = "1: Buck selection"]
-    BUCK,
+    BUCK = 1,
 }
 impl From<SEL_A> for bool {
     #[inline(always)]
     fn from(variant: SEL_A) -> Self {
-        match variant {
-            SEL_A::LDO => false,
-            SEL_A::BUCK => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `SEL`"]

@@ -2,22 +2,19 @@
 pub type R = crate::R<u8, super::STATUS>;
 #[doc = "Speed Status\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum SPEED_A {
     #[doc = "0: Full-speed mode"]
-    FS,
+    FS = 0,
     #[doc = "1: Low-speed mode"]
-    LS,
+    LS = 1,
     #[doc = "2: High-speed mode"]
-    HS,
+    HS = 2,
 }
 impl From<SPEED_A> for u8 {
     #[inline(always)]
     fn from(variant: SPEED_A) -> Self {
-        match variant {
-            SPEED_A::FS => 0,
-            SPEED_A::LS => 1,
-            SPEED_A::HS => 2,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `SPEED`"]
@@ -52,22 +49,19 @@ impl SPEED_R {
 }
 #[doc = "USB Line State Status\n\nValue on reset: 1"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum LINESTATE_A {
     #[doc = "0: SE0/RESET"]
-    _0,
+    _0 = 0,
     #[doc = "1: FS-J or LS-K State"]
-    _1,
+    _1 = 1,
     #[doc = "2: FS-K or LS-J State"]
-    _2,
+    _2 = 2,
 }
 impl From<LINESTATE_A> for u8 {
     #[inline(always)]
     fn from(variant: LINESTATE_A) -> Self {
-        match variant {
-            LINESTATE_A::_0 => 0,
-            LINESTATE_A::_1 => 1,
-            LINESTATE_A::_2 => 2,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `LINESTATE`"]

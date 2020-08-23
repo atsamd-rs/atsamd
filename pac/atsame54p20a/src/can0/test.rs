@@ -129,6 +129,28 @@ impl<'a> TX_W<'a> {
 }
 #[doc = "Reader of field `RX`"]
 pub type RX_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `RX`"]
+pub struct RX_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> RX_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 7)) | (((value as u32) & 0x01) << 7);
+        self.w
+    }
+}
 impl R {
     #[doc = "Bit 4 - Loop Back Mode"]
     #[inline(always)]
@@ -156,5 +178,10 @@ impl W {
     #[inline(always)]
     pub fn tx(&mut self) -> TX_W {
         TX_W { w: self }
+    }
+    #[doc = "Bit 7 - Receive Pin"]
+    #[inline(always)]
+    pub fn rx(&mut self) -> RX_W {
+        RX_W { w: self }
     }
 }

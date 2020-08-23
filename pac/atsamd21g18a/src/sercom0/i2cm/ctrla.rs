@@ -60,31 +60,25 @@ impl<'a> ENABLE_W<'a> {
 }
 #[doc = "Operating Mode\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum MODE_A {
     #[doc = "0: USART mode with external clock"]
-    USART_EXT_CLK,
+    USART_EXT_CLK = 0,
     #[doc = "1: USART mode with internal clock"]
-    USART_INT_CLK,
+    USART_INT_CLK = 1,
     #[doc = "2: SPI mode with external clock"]
-    SPI_SLAVE,
+    SPI_SLAVE = 2,
     #[doc = "3: SPI mode with internal clock"]
-    SPI_MASTER,
+    SPI_MASTER = 3,
     #[doc = "4: I2C mode with external clock"]
-    I2C_SLAVE,
+    I2C_SLAVE = 4,
     #[doc = "5: I2C mode with internal clock"]
-    I2C_MASTER,
+    I2C_MASTER = 5,
 }
 impl From<MODE_A> for u8 {
     #[inline(always)]
     fn from(variant: MODE_A) -> Self {
-        match variant {
-            MODE_A::USART_EXT_CLK => 0,
-            MODE_A::USART_INT_CLK => 1,
-            MODE_A::SPI_SLAVE => 2,
-            MODE_A::SPI_MASTER => 3,
-            MODE_A::I2C_SLAVE => 4,
-            MODE_A::I2C_MASTER => 5,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `MODE`"]

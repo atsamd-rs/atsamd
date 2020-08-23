@@ -25,7 +25,7 @@ pub struct RegisterBlock {
     #[doc = "0x34 - Cache Monitor Status Register"]
     pub msr: MSR,
 }
-#[doc = "Cache Type Register\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about avaliable fields see [type_](type_) module"]
+#[doc = "Cache Type Register\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [type_](type_) module"]
 pub type TYPE = crate::Reg<u32, _TYPE>;
 #[allow(missing_docs)]
 #[doc(hidden)]
@@ -45,7 +45,7 @@ impl crate::Readable for CFG {}
 impl crate::Writable for CFG {}
 #[doc = "Cache Configuration Register"]
 pub mod cfg;
-#[doc = "Cache Control Register\n\nThis register you can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about avaliable fields see [ctrl](ctrl) module"]
+#[doc = "Cache Control Register\n\nThis register you can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [ctrl](ctrl) module"]
 pub type CTRL = crate::Reg<u32, _CTRL>;
 #[allow(missing_docs)]
 #[doc(hidden)]
@@ -54,7 +54,7 @@ pub struct _CTRL;
 impl crate::Writable for CTRL {}
 #[doc = "Cache Control Register"]
 pub mod ctrl;
-#[doc = "Cache Status Register\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about avaliable fields see [sr](sr) module"]
+#[doc = "Cache Status Register\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [sr](sr) module"]
 pub type SR = crate::Reg<u32, _SR>;
 #[allow(missing_docs)]
 #[doc(hidden)]
@@ -63,7 +63,7 @@ pub struct _SR;
 impl crate::Readable for SR {}
 #[doc = "Cache Status Register"]
 pub mod sr;
-#[doc = "Cache Lock per Way Register\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about avaliable fields see [lckway](lckway) module"]
+#[doc = "Cache Lock per Way Register\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [lckway](lckway) module"]
 pub type LCKWAY = crate::Reg<u32, _LCKWAY>;
 #[allow(missing_docs)]
 #[doc(hidden)]
@@ -74,7 +74,7 @@ impl crate::Readable for LCKWAY {}
 impl crate::Writable for LCKWAY {}
 #[doc = "Cache Lock per Way Register"]
 pub mod lckway;
-#[doc = "Cache Maintenance Register 0\n\nThis register you can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about avaliable fields see [maint0](maint0) module"]
+#[doc = "Cache Maintenance Register 0\n\nThis register you can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [maint0](maint0) module"]
 pub type MAINT0 = crate::Reg<u32, _MAINT0>;
 #[allow(missing_docs)]
 #[doc(hidden)]
@@ -83,7 +83,7 @@ pub struct _MAINT0;
 impl crate::Writable for MAINT0 {}
 #[doc = "Cache Maintenance Register 0"]
 pub mod maint0;
-#[doc = "Cache Maintenance Register 1\n\nThis register you can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about avaliable fields see [maint1](maint1) module"]
+#[doc = "Cache Maintenance Register 1\n\nThis register you can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [maint1](maint1) module"]
 pub type MAINT1 = crate::Reg<u32, _MAINT1>;
 #[allow(missing_docs)]
 #[doc(hidden)]
@@ -92,7 +92,7 @@ pub struct _MAINT1;
 impl crate::Writable for MAINT1 {}
 #[doc = "Cache Maintenance Register 1"]
 pub mod maint1;
-#[doc = "Cache Monitor Configuration Register\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about avaliable fields see [mcfg](mcfg) module"]
+#[doc = "Cache Monitor Configuration Register\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [mcfg](mcfg) module"]
 pub type MCFG = crate::Reg<u32, _MCFG>;
 #[allow(missing_docs)]
 #[doc(hidden)]
@@ -103,7 +103,7 @@ impl crate::Readable for MCFG {}
 impl crate::Writable for MCFG {}
 #[doc = "Cache Monitor Configuration Register"]
 pub mod mcfg;
-#[doc = "Cache Monitor Enable Register\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about avaliable fields see [men](men) module"]
+#[doc = "Cache Monitor Enable Register\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [men](men) module"]
 pub type MEN = crate::Reg<u32, _MEN>;
 #[allow(missing_docs)]
 #[doc(hidden)]
@@ -114,7 +114,7 @@ impl crate::Readable for MEN {}
 impl crate::Writable for MEN {}
 #[doc = "Cache Monitor Enable Register"]
 pub mod men;
-#[doc = "Cache Monitor Control Register\n\nThis register you can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about avaliable fields see [mctrl](mctrl) module"]
+#[doc = "Cache Monitor Control Register\n\nThis register you can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [mctrl](mctrl) module"]
 pub type MCTRL = crate::Reg<u32, _MCTRL>;
 #[allow(missing_docs)]
 #[doc(hidden)]
@@ -123,7 +123,7 @@ pub struct _MCTRL;
 impl crate::Writable for MCTRL {}
 #[doc = "Cache Monitor Control Register"]
 pub mod mctrl;
-#[doc = "Cache Monitor Status Register\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about avaliable fields see [msr](msr) module"]
+#[doc = "Cache Monitor Status Register\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [msr](msr) module"]
 pub type MSR = crate::Reg<u32, _MSR>;
 #[allow(missing_docs)]
 #[doc(hidden)]

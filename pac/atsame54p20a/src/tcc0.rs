@@ -50,33 +50,33 @@ pub struct RegisterBlock {
 impl RegisterBlock {
     #[doc = "0x34 - Count"]
     #[inline(always)]
-    pub fn count_dith6(&self) -> &COUNT_DITH6 {
-        unsafe { &*(((self as *const Self) as *const u8).add(52usize) as *const COUNT_DITH6) }
+    pub fn count_dith6_mode(&self) -> &COUNT_DITH6_MODE {
+        unsafe { &*(((self as *const Self) as *const u8).add(52usize) as *const COUNT_DITH6_MODE) }
     }
     #[doc = "0x34 - Count"]
     #[inline(always)]
-    pub fn count_dith6_mut(&self) -> &mut COUNT_DITH6 {
-        unsafe { &mut *(((self as *const Self) as *mut u8).add(52usize) as *mut COUNT_DITH6) }
+    pub fn count_dith6_mode_mut(&self) -> &mut COUNT_DITH6_MODE {
+        unsafe { &mut *(((self as *const Self) as *mut u8).add(52usize) as *mut COUNT_DITH6_MODE) }
     }
     #[doc = "0x34 - Count"]
     #[inline(always)]
-    pub fn count_dith5(&self) -> &COUNT_DITH5 {
-        unsafe { &*(((self as *const Self) as *const u8).add(52usize) as *const COUNT_DITH5) }
+    pub fn count_dith5_mode(&self) -> &COUNT_DITH5_MODE {
+        unsafe { &*(((self as *const Self) as *const u8).add(52usize) as *const COUNT_DITH5_MODE) }
     }
     #[doc = "0x34 - Count"]
     #[inline(always)]
-    pub fn count_dith5_mut(&self) -> &mut COUNT_DITH5 {
-        unsafe { &mut *(((self as *const Self) as *mut u8).add(52usize) as *mut COUNT_DITH5) }
+    pub fn count_dith5_mode_mut(&self) -> &mut COUNT_DITH5_MODE {
+        unsafe { &mut *(((self as *const Self) as *mut u8).add(52usize) as *mut COUNT_DITH5_MODE) }
     }
     #[doc = "0x34 - Count"]
     #[inline(always)]
-    pub fn count_dith4(&self) -> &COUNT_DITH4 {
-        unsafe { &*(((self as *const Self) as *const u8).add(52usize) as *const COUNT_DITH4) }
+    pub fn count_dith4_mode(&self) -> &COUNT_DITH4_MODE {
+        unsafe { &*(((self as *const Self) as *const u8).add(52usize) as *const COUNT_DITH4_MODE) }
     }
     #[doc = "0x34 - Count"]
     #[inline(always)]
-    pub fn count_dith4_mut(&self) -> &mut COUNT_DITH4 {
-        unsafe { &mut *(((self as *const Self) as *mut u8).add(52usize) as *mut COUNT_DITH4) }
+    pub fn count_dith4_mode_mut(&self) -> &mut COUNT_DITH4_MODE {
+        unsafe { &mut *(((self as *const Self) as *mut u8).add(52usize) as *mut COUNT_DITH4_MODE) }
     }
     #[doc = "0x34 - Count"]
     #[inline(always)]
@@ -90,33 +90,33 @@ impl RegisterBlock {
     }
     #[doc = "0x40 - Period"]
     #[inline(always)]
-    pub fn per_dith6(&self) -> &PER_DITH6 {
-        unsafe { &*(((self as *const Self) as *const u8).add(64usize) as *const PER_DITH6) }
+    pub fn per_dith6_mode(&self) -> &PER_DITH6_MODE {
+        unsafe { &*(((self as *const Self) as *const u8).add(64usize) as *const PER_DITH6_MODE) }
     }
     #[doc = "0x40 - Period"]
     #[inline(always)]
-    pub fn per_dith6_mut(&self) -> &mut PER_DITH6 {
-        unsafe { &mut *(((self as *const Self) as *mut u8).add(64usize) as *mut PER_DITH6) }
+    pub fn per_dith6_mode_mut(&self) -> &mut PER_DITH6_MODE {
+        unsafe { &mut *(((self as *const Self) as *mut u8).add(64usize) as *mut PER_DITH6_MODE) }
     }
     #[doc = "0x40 - Period"]
     #[inline(always)]
-    pub fn per_dith5(&self) -> &PER_DITH5 {
-        unsafe { &*(((self as *const Self) as *const u8).add(64usize) as *const PER_DITH5) }
+    pub fn per_dith5_mode(&self) -> &PER_DITH5_MODE {
+        unsafe { &*(((self as *const Self) as *const u8).add(64usize) as *const PER_DITH5_MODE) }
     }
     #[doc = "0x40 - Period"]
     #[inline(always)]
-    pub fn per_dith5_mut(&self) -> &mut PER_DITH5 {
-        unsafe { &mut *(((self as *const Self) as *mut u8).add(64usize) as *mut PER_DITH5) }
+    pub fn per_dith5_mode_mut(&self) -> &mut PER_DITH5_MODE {
+        unsafe { &mut *(((self as *const Self) as *mut u8).add(64usize) as *mut PER_DITH5_MODE) }
     }
     #[doc = "0x40 - Period"]
     #[inline(always)]
-    pub fn per_dith4(&self) -> &PER_DITH4 {
-        unsafe { &*(((self as *const Self) as *const u8).add(64usize) as *const PER_DITH4) }
+    pub fn per_dith4_mode(&self) -> &PER_DITH4_MODE {
+        unsafe { &*(((self as *const Self) as *const u8).add(64usize) as *const PER_DITH4_MODE) }
     }
     #[doc = "0x40 - Period"]
     #[inline(always)]
-    pub fn per_dith4_mut(&self) -> &mut PER_DITH4 {
-        unsafe { &mut *(((self as *const Self) as *mut u8).add(64usize) as *mut PER_DITH4) }
+    pub fn per_dith4_mode_mut(&self) -> &mut PER_DITH4_MODE {
+        unsafe { &mut *(((self as *const Self) as *mut u8).add(64usize) as *mut PER_DITH4_MODE) }
     }
     #[doc = "0x40 - Period"]
     #[inline(always)]
@@ -130,33 +130,45 @@ impl RegisterBlock {
     }
     #[doc = "0x44 - Compare and Capture"]
     #[inline(always)]
-    pub fn cc_dith6(&self) -> &[CC_DITH6; 6] {
-        unsafe { &*(((self as *const Self) as *const u8).add(68usize) as *const [CC_DITH6; 6]) }
+    pub fn cc_dith6_mode(&self) -> &[CC_DITH6_MODE; 6] {
+        unsafe {
+            &*(((self as *const Self) as *const u8).add(68usize) as *const [CC_DITH6_MODE; 6])
+        }
     }
     #[doc = "0x44 - Compare and Capture"]
     #[inline(always)]
-    pub fn cc_dith6_mut(&self) -> &mut [CC_DITH6; 6] {
-        unsafe { &mut *(((self as *const Self) as *mut u8).add(68usize) as *mut [CC_DITH6; 6]) }
+    pub fn cc_dith6_mode_mut(&self) -> &mut [CC_DITH6_MODE; 6] {
+        unsafe {
+            &mut *(((self as *const Self) as *mut u8).add(68usize) as *mut [CC_DITH6_MODE; 6])
+        }
     }
     #[doc = "0x44 - Compare and Capture"]
     #[inline(always)]
-    pub fn cc_dith5(&self) -> &[CC_DITH5; 6] {
-        unsafe { &*(((self as *const Self) as *const u8).add(68usize) as *const [CC_DITH5; 6]) }
+    pub fn cc_dith5_mode(&self) -> &[CC_DITH5_MODE; 6] {
+        unsafe {
+            &*(((self as *const Self) as *const u8).add(68usize) as *const [CC_DITH5_MODE; 6])
+        }
     }
     #[doc = "0x44 - Compare and Capture"]
     #[inline(always)]
-    pub fn cc_dith5_mut(&self) -> &mut [CC_DITH5; 6] {
-        unsafe { &mut *(((self as *const Self) as *mut u8).add(68usize) as *mut [CC_DITH5; 6]) }
+    pub fn cc_dith5_mode_mut(&self) -> &mut [CC_DITH5_MODE; 6] {
+        unsafe {
+            &mut *(((self as *const Self) as *mut u8).add(68usize) as *mut [CC_DITH5_MODE; 6])
+        }
     }
     #[doc = "0x44 - Compare and Capture"]
     #[inline(always)]
-    pub fn cc_dith4(&self) -> &[CC_DITH4; 6] {
-        unsafe { &*(((self as *const Self) as *const u8).add(68usize) as *const [CC_DITH4; 6]) }
+    pub fn cc_dith4_mode(&self) -> &[CC_DITH4_MODE; 6] {
+        unsafe {
+            &*(((self as *const Self) as *const u8).add(68usize) as *const [CC_DITH4_MODE; 6])
+        }
     }
     #[doc = "0x44 - Compare and Capture"]
     #[inline(always)]
-    pub fn cc_dith4_mut(&self) -> &mut [CC_DITH4; 6] {
-        unsafe { &mut *(((self as *const Self) as *mut u8).add(68usize) as *mut [CC_DITH4; 6]) }
+    pub fn cc_dith4_mode_mut(&self) -> &mut [CC_DITH4_MODE; 6] {
+        unsafe {
+            &mut *(((self as *const Self) as *mut u8).add(68usize) as *mut [CC_DITH4_MODE; 6])
+        }
     }
     #[doc = "0x44 - Compare and Capture"]
     #[inline(always)]
@@ -170,33 +182,45 @@ impl RegisterBlock {
     }
     #[doc = "0x6c - Period Buffer"]
     #[inline(always)]
-    pub fn perbuf_dith6(&self) -> &PERBUF_DITH6 {
-        unsafe { &*(((self as *const Self) as *const u8).add(108usize) as *const PERBUF_DITH6) }
+    pub fn perbuf_dith6_mode(&self) -> &PERBUF_DITH6_MODE {
+        unsafe {
+            &*(((self as *const Self) as *const u8).add(108usize) as *const PERBUF_DITH6_MODE)
+        }
     }
     #[doc = "0x6c - Period Buffer"]
     #[inline(always)]
-    pub fn perbuf_dith6_mut(&self) -> &mut PERBUF_DITH6 {
-        unsafe { &mut *(((self as *const Self) as *mut u8).add(108usize) as *mut PERBUF_DITH6) }
+    pub fn perbuf_dith6_mode_mut(&self) -> &mut PERBUF_DITH6_MODE {
+        unsafe {
+            &mut *(((self as *const Self) as *mut u8).add(108usize) as *mut PERBUF_DITH6_MODE)
+        }
     }
     #[doc = "0x6c - Period Buffer"]
     #[inline(always)]
-    pub fn perbuf_dith5(&self) -> &PERBUF_DITH5 {
-        unsafe { &*(((self as *const Self) as *const u8).add(108usize) as *const PERBUF_DITH5) }
+    pub fn perbuf_dith5_mode(&self) -> &PERBUF_DITH5_MODE {
+        unsafe {
+            &*(((self as *const Self) as *const u8).add(108usize) as *const PERBUF_DITH5_MODE)
+        }
     }
     #[doc = "0x6c - Period Buffer"]
     #[inline(always)]
-    pub fn perbuf_dith5_mut(&self) -> &mut PERBUF_DITH5 {
-        unsafe { &mut *(((self as *const Self) as *mut u8).add(108usize) as *mut PERBUF_DITH5) }
+    pub fn perbuf_dith5_mode_mut(&self) -> &mut PERBUF_DITH5_MODE {
+        unsafe {
+            &mut *(((self as *const Self) as *mut u8).add(108usize) as *mut PERBUF_DITH5_MODE)
+        }
     }
     #[doc = "0x6c - Period Buffer"]
     #[inline(always)]
-    pub fn perbuf_dith4(&self) -> &PERBUF_DITH4 {
-        unsafe { &*(((self as *const Self) as *const u8).add(108usize) as *const PERBUF_DITH4) }
+    pub fn perbuf_dith4_mode(&self) -> &PERBUF_DITH4_MODE {
+        unsafe {
+            &*(((self as *const Self) as *const u8).add(108usize) as *const PERBUF_DITH4_MODE)
+        }
     }
     #[doc = "0x6c - Period Buffer"]
     #[inline(always)]
-    pub fn perbuf_dith4_mut(&self) -> &mut PERBUF_DITH4 {
-        unsafe { &mut *(((self as *const Self) as *mut u8).add(108usize) as *mut PERBUF_DITH4) }
+    pub fn perbuf_dith4_mode_mut(&self) -> &mut PERBUF_DITH4_MODE {
+        unsafe {
+            &mut *(((self as *const Self) as *mut u8).add(108usize) as *mut PERBUF_DITH4_MODE)
+        }
     }
     #[doc = "0x6c - Period Buffer"]
     #[inline(always)]
@@ -210,33 +234,45 @@ impl RegisterBlock {
     }
     #[doc = "0x70 - Compare and Capture Buffer"]
     #[inline(always)]
-    pub fn ccbuf_dith6(&self) -> &[CCBUF_DITH6; 6] {
-        unsafe { &*(((self as *const Self) as *const u8).add(112usize) as *const [CCBUF_DITH6; 6]) }
+    pub fn ccbuf_dith6_mode(&self) -> &[CCBUF_DITH6_MODE; 6] {
+        unsafe {
+            &*(((self as *const Self) as *const u8).add(112usize) as *const [CCBUF_DITH6_MODE; 6])
+        }
     }
     #[doc = "0x70 - Compare and Capture Buffer"]
     #[inline(always)]
-    pub fn ccbuf_dith6_mut(&self) -> &mut [CCBUF_DITH6; 6] {
-        unsafe { &mut *(((self as *const Self) as *mut u8).add(112usize) as *mut [CCBUF_DITH6; 6]) }
+    pub fn ccbuf_dith6_mode_mut(&self) -> &mut [CCBUF_DITH6_MODE; 6] {
+        unsafe {
+            &mut *(((self as *const Self) as *mut u8).add(112usize) as *mut [CCBUF_DITH6_MODE; 6])
+        }
     }
     #[doc = "0x70 - Compare and Capture Buffer"]
     #[inline(always)]
-    pub fn ccbuf_dith5(&self) -> &[CCBUF_DITH5; 6] {
-        unsafe { &*(((self as *const Self) as *const u8).add(112usize) as *const [CCBUF_DITH5; 6]) }
+    pub fn ccbuf_dith5_mode(&self) -> &[CCBUF_DITH5_MODE; 6] {
+        unsafe {
+            &*(((self as *const Self) as *const u8).add(112usize) as *const [CCBUF_DITH5_MODE; 6])
+        }
     }
     #[doc = "0x70 - Compare and Capture Buffer"]
     #[inline(always)]
-    pub fn ccbuf_dith5_mut(&self) -> &mut [CCBUF_DITH5; 6] {
-        unsafe { &mut *(((self as *const Self) as *mut u8).add(112usize) as *mut [CCBUF_DITH5; 6]) }
+    pub fn ccbuf_dith5_mode_mut(&self) -> &mut [CCBUF_DITH5_MODE; 6] {
+        unsafe {
+            &mut *(((self as *const Self) as *mut u8).add(112usize) as *mut [CCBUF_DITH5_MODE; 6])
+        }
     }
     #[doc = "0x70 - Compare and Capture Buffer"]
     #[inline(always)]
-    pub fn ccbuf_dith4(&self) -> &[CCBUF_DITH4; 6] {
-        unsafe { &*(((self as *const Self) as *const u8).add(112usize) as *const [CCBUF_DITH4; 6]) }
+    pub fn ccbuf_dith4_mode(&self) -> &[CCBUF_DITH4_MODE; 6] {
+        unsafe {
+            &*(((self as *const Self) as *const u8).add(112usize) as *const [CCBUF_DITH4_MODE; 6])
+        }
     }
     #[doc = "0x70 - Compare and Capture Buffer"]
     #[inline(always)]
-    pub fn ccbuf_dith4_mut(&self) -> &mut [CCBUF_DITH4; 6] {
-        unsafe { &mut *(((self as *const Self) as *mut u8).add(112usize) as *mut [CCBUF_DITH4; 6]) }
+    pub fn ccbuf_dith4_mode_mut(&self) -> &mut [CCBUF_DITH4_MODE; 6] {
+        unsafe {
+            &mut *(((self as *const Self) as *mut u8).add(112usize) as *mut [CCBUF_DITH4_MODE; 6])
+        }
     }
     #[doc = "0x70 - Compare and Capture Buffer"]
     #[inline(always)]
@@ -412,39 +448,39 @@ impl crate::Readable for COUNT {}
 impl crate::Writable for COUNT {}
 #[doc = "Count"]
 pub mod count;
-#[doc = "Count\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [count_dith4](count_dith4) module"]
-pub type COUNT_DITH4 = crate::Reg<u32, _COUNT_DITH4>;
+#[doc = "Count\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [count_dith4_mode](count_dith4_mode) module"]
+pub type COUNT_DITH4_MODE = crate::Reg<u32, _COUNT_DITH4_MODE>;
 #[allow(missing_docs)]
 #[doc(hidden)]
-pub struct _COUNT_DITH4;
-#[doc = "`read()` method returns [count_dith4::R](count_dith4::R) reader structure"]
-impl crate::Readable for COUNT_DITH4 {}
-#[doc = "`write(|w| ..)` method takes [count_dith4::W](count_dith4::W) writer structure"]
-impl crate::Writable for COUNT_DITH4 {}
+pub struct _COUNT_DITH4_MODE;
+#[doc = "`read()` method returns [count_dith4_mode::R](count_dith4_mode::R) reader structure"]
+impl crate::Readable for COUNT_DITH4_MODE {}
+#[doc = "`write(|w| ..)` method takes [count_dith4_mode::W](count_dith4_mode::W) writer structure"]
+impl crate::Writable for COUNT_DITH4_MODE {}
 #[doc = "Count"]
-pub mod count_dith4;
-#[doc = "Count\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [count_dith5](count_dith5) module"]
-pub type COUNT_DITH5 = crate::Reg<u32, _COUNT_DITH5>;
+pub mod count_dith4_mode;
+#[doc = "Count\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [count_dith5_mode](count_dith5_mode) module"]
+pub type COUNT_DITH5_MODE = crate::Reg<u32, _COUNT_DITH5_MODE>;
 #[allow(missing_docs)]
 #[doc(hidden)]
-pub struct _COUNT_DITH5;
-#[doc = "`read()` method returns [count_dith5::R](count_dith5::R) reader structure"]
-impl crate::Readable for COUNT_DITH5 {}
-#[doc = "`write(|w| ..)` method takes [count_dith5::W](count_dith5::W) writer structure"]
-impl crate::Writable for COUNT_DITH5 {}
+pub struct _COUNT_DITH5_MODE;
+#[doc = "`read()` method returns [count_dith5_mode::R](count_dith5_mode::R) reader structure"]
+impl crate::Readable for COUNT_DITH5_MODE {}
+#[doc = "`write(|w| ..)` method takes [count_dith5_mode::W](count_dith5_mode::W) writer structure"]
+impl crate::Writable for COUNT_DITH5_MODE {}
 #[doc = "Count"]
-pub mod count_dith5;
-#[doc = "Count\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [count_dith6](count_dith6) module"]
-pub type COUNT_DITH6 = crate::Reg<u32, _COUNT_DITH6>;
+pub mod count_dith5_mode;
+#[doc = "Count\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [count_dith6_mode](count_dith6_mode) module"]
+pub type COUNT_DITH6_MODE = crate::Reg<u32, _COUNT_DITH6_MODE>;
 #[allow(missing_docs)]
 #[doc(hidden)]
-pub struct _COUNT_DITH6;
-#[doc = "`read()` method returns [count_dith6::R](count_dith6::R) reader structure"]
-impl crate::Readable for COUNT_DITH6 {}
-#[doc = "`write(|w| ..)` method takes [count_dith6::W](count_dith6::W) writer structure"]
-impl crate::Writable for COUNT_DITH6 {}
+pub struct _COUNT_DITH6_MODE;
+#[doc = "`read()` method returns [count_dith6_mode::R](count_dith6_mode::R) reader structure"]
+impl crate::Readable for COUNT_DITH6_MODE {}
+#[doc = "`write(|w| ..)` method takes [count_dith6_mode::W](count_dith6_mode::W) writer structure"]
+impl crate::Writable for COUNT_DITH6_MODE {}
 #[doc = "Count"]
-pub mod count_dith6;
+pub mod count_dith6_mode;
 #[doc = "Pattern\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [patt](patt) module"]
 pub type PATT = crate::Reg<u16, _PATT>;
 #[allow(missing_docs)]
@@ -478,39 +514,39 @@ impl crate::Readable for PER {}
 impl crate::Writable for PER {}
 #[doc = "Period"]
 pub mod per;
-#[doc = "Period\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [per_dith4](per_dith4) module"]
-pub type PER_DITH4 = crate::Reg<u32, _PER_DITH4>;
+#[doc = "Period\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [per_dith4_mode](per_dith4_mode) module"]
+pub type PER_DITH4_MODE = crate::Reg<u32, _PER_DITH4_MODE>;
 #[allow(missing_docs)]
 #[doc(hidden)]
-pub struct _PER_DITH4;
-#[doc = "`read()` method returns [per_dith4::R](per_dith4::R) reader structure"]
-impl crate::Readable for PER_DITH4 {}
-#[doc = "`write(|w| ..)` method takes [per_dith4::W](per_dith4::W) writer structure"]
-impl crate::Writable for PER_DITH4 {}
+pub struct _PER_DITH4_MODE;
+#[doc = "`read()` method returns [per_dith4_mode::R](per_dith4_mode::R) reader structure"]
+impl crate::Readable for PER_DITH4_MODE {}
+#[doc = "`write(|w| ..)` method takes [per_dith4_mode::W](per_dith4_mode::W) writer structure"]
+impl crate::Writable for PER_DITH4_MODE {}
 #[doc = "Period"]
-pub mod per_dith4;
-#[doc = "Period\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [per_dith5](per_dith5) module"]
-pub type PER_DITH5 = crate::Reg<u32, _PER_DITH5>;
+pub mod per_dith4_mode;
+#[doc = "Period\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [per_dith5_mode](per_dith5_mode) module"]
+pub type PER_DITH5_MODE = crate::Reg<u32, _PER_DITH5_MODE>;
 #[allow(missing_docs)]
 #[doc(hidden)]
-pub struct _PER_DITH5;
-#[doc = "`read()` method returns [per_dith5::R](per_dith5::R) reader structure"]
-impl crate::Readable for PER_DITH5 {}
-#[doc = "`write(|w| ..)` method takes [per_dith5::W](per_dith5::W) writer structure"]
-impl crate::Writable for PER_DITH5 {}
+pub struct _PER_DITH5_MODE;
+#[doc = "`read()` method returns [per_dith5_mode::R](per_dith5_mode::R) reader structure"]
+impl crate::Readable for PER_DITH5_MODE {}
+#[doc = "`write(|w| ..)` method takes [per_dith5_mode::W](per_dith5_mode::W) writer structure"]
+impl crate::Writable for PER_DITH5_MODE {}
 #[doc = "Period"]
-pub mod per_dith5;
-#[doc = "Period\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [per_dith6](per_dith6) module"]
-pub type PER_DITH6 = crate::Reg<u32, _PER_DITH6>;
+pub mod per_dith5_mode;
+#[doc = "Period\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [per_dith6_mode](per_dith6_mode) module"]
+pub type PER_DITH6_MODE = crate::Reg<u32, _PER_DITH6_MODE>;
 #[allow(missing_docs)]
 #[doc(hidden)]
-pub struct _PER_DITH6;
-#[doc = "`read()` method returns [per_dith6::R](per_dith6::R) reader structure"]
-impl crate::Readable for PER_DITH6 {}
-#[doc = "`write(|w| ..)` method takes [per_dith6::W](per_dith6::W) writer structure"]
-impl crate::Writable for PER_DITH6 {}
+pub struct _PER_DITH6_MODE;
+#[doc = "`read()` method returns [per_dith6_mode::R](per_dith6_mode::R) reader structure"]
+impl crate::Readable for PER_DITH6_MODE {}
+#[doc = "`write(|w| ..)` method takes [per_dith6_mode::W](per_dith6_mode::W) writer structure"]
+impl crate::Writable for PER_DITH6_MODE {}
 #[doc = "Period"]
-pub mod per_dith6;
+pub mod per_dith6_mode;
 #[doc = "Compare and Capture\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [cc](cc) module"]
 pub type CC = crate::Reg<u32, _CC>;
 #[allow(missing_docs)]
@@ -522,39 +558,39 @@ impl crate::Readable for CC {}
 impl crate::Writable for CC {}
 #[doc = "Compare and Capture"]
 pub mod cc;
-#[doc = "Compare and Capture\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [cc_dith4](cc_dith4) module"]
-pub type CC_DITH4 = crate::Reg<u32, _CC_DITH4>;
+#[doc = "Compare and Capture\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [cc_dith4_mode](cc_dith4_mode) module"]
+pub type CC_DITH4_MODE = crate::Reg<u32, _CC_DITH4_MODE>;
 #[allow(missing_docs)]
 #[doc(hidden)]
-pub struct _CC_DITH4;
-#[doc = "`read()` method returns [cc_dith4::R](cc_dith4::R) reader structure"]
-impl crate::Readable for CC_DITH4 {}
-#[doc = "`write(|w| ..)` method takes [cc_dith4::W](cc_dith4::W) writer structure"]
-impl crate::Writable for CC_DITH4 {}
+pub struct _CC_DITH4_MODE;
+#[doc = "`read()` method returns [cc_dith4_mode::R](cc_dith4_mode::R) reader structure"]
+impl crate::Readable for CC_DITH4_MODE {}
+#[doc = "`write(|w| ..)` method takes [cc_dith4_mode::W](cc_dith4_mode::W) writer structure"]
+impl crate::Writable for CC_DITH4_MODE {}
 #[doc = "Compare and Capture"]
-pub mod cc_dith4;
-#[doc = "Compare and Capture\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [cc_dith5](cc_dith5) module"]
-pub type CC_DITH5 = crate::Reg<u32, _CC_DITH5>;
+pub mod cc_dith4_mode;
+#[doc = "Compare and Capture\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [cc_dith5_mode](cc_dith5_mode) module"]
+pub type CC_DITH5_MODE = crate::Reg<u32, _CC_DITH5_MODE>;
 #[allow(missing_docs)]
 #[doc(hidden)]
-pub struct _CC_DITH5;
-#[doc = "`read()` method returns [cc_dith5::R](cc_dith5::R) reader structure"]
-impl crate::Readable for CC_DITH5 {}
-#[doc = "`write(|w| ..)` method takes [cc_dith5::W](cc_dith5::W) writer structure"]
-impl crate::Writable for CC_DITH5 {}
+pub struct _CC_DITH5_MODE;
+#[doc = "`read()` method returns [cc_dith5_mode::R](cc_dith5_mode::R) reader structure"]
+impl crate::Readable for CC_DITH5_MODE {}
+#[doc = "`write(|w| ..)` method takes [cc_dith5_mode::W](cc_dith5_mode::W) writer structure"]
+impl crate::Writable for CC_DITH5_MODE {}
 #[doc = "Compare and Capture"]
-pub mod cc_dith5;
-#[doc = "Compare and Capture\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [cc_dith6](cc_dith6) module"]
-pub type CC_DITH6 = crate::Reg<u32, _CC_DITH6>;
+pub mod cc_dith5_mode;
+#[doc = "Compare and Capture\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [cc_dith6_mode](cc_dith6_mode) module"]
+pub type CC_DITH6_MODE = crate::Reg<u32, _CC_DITH6_MODE>;
 #[allow(missing_docs)]
 #[doc(hidden)]
-pub struct _CC_DITH6;
-#[doc = "`read()` method returns [cc_dith6::R](cc_dith6::R) reader structure"]
-impl crate::Readable for CC_DITH6 {}
-#[doc = "`write(|w| ..)` method takes [cc_dith6::W](cc_dith6::W) writer structure"]
-impl crate::Writable for CC_DITH6 {}
+pub struct _CC_DITH6_MODE;
+#[doc = "`read()` method returns [cc_dith6_mode::R](cc_dith6_mode::R) reader structure"]
+impl crate::Readable for CC_DITH6_MODE {}
+#[doc = "`write(|w| ..)` method takes [cc_dith6_mode::W](cc_dith6_mode::W) writer structure"]
+impl crate::Writable for CC_DITH6_MODE {}
 #[doc = "Compare and Capture"]
-pub mod cc_dith6;
+pub mod cc_dith6_mode;
 #[doc = "Pattern Buffer\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [pattbuf](pattbuf) module"]
 pub type PATTBUF = crate::Reg<u16, _PATTBUF>;
 #[allow(missing_docs)]
@@ -577,39 +613,39 @@ impl crate::Readable for PERBUF {}
 impl crate::Writable for PERBUF {}
 #[doc = "Period Buffer"]
 pub mod perbuf;
-#[doc = "Period Buffer\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [perbuf_dith4](perbuf_dith4) module"]
-pub type PERBUF_DITH4 = crate::Reg<u32, _PERBUF_DITH4>;
+#[doc = "Period Buffer\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [perbuf_dith4_mode](perbuf_dith4_mode) module"]
+pub type PERBUF_DITH4_MODE = crate::Reg<u32, _PERBUF_DITH4_MODE>;
 #[allow(missing_docs)]
 #[doc(hidden)]
-pub struct _PERBUF_DITH4;
-#[doc = "`read()` method returns [perbuf_dith4::R](perbuf_dith4::R) reader structure"]
-impl crate::Readable for PERBUF_DITH4 {}
-#[doc = "`write(|w| ..)` method takes [perbuf_dith4::W](perbuf_dith4::W) writer structure"]
-impl crate::Writable for PERBUF_DITH4 {}
+pub struct _PERBUF_DITH4_MODE;
+#[doc = "`read()` method returns [perbuf_dith4_mode::R](perbuf_dith4_mode::R) reader structure"]
+impl crate::Readable for PERBUF_DITH4_MODE {}
+#[doc = "`write(|w| ..)` method takes [perbuf_dith4_mode::W](perbuf_dith4_mode::W) writer structure"]
+impl crate::Writable for PERBUF_DITH4_MODE {}
 #[doc = "Period Buffer"]
-pub mod perbuf_dith4;
-#[doc = "Period Buffer\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [perbuf_dith5](perbuf_dith5) module"]
-pub type PERBUF_DITH5 = crate::Reg<u32, _PERBUF_DITH5>;
+pub mod perbuf_dith4_mode;
+#[doc = "Period Buffer\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [perbuf_dith5_mode](perbuf_dith5_mode) module"]
+pub type PERBUF_DITH5_MODE = crate::Reg<u32, _PERBUF_DITH5_MODE>;
 #[allow(missing_docs)]
 #[doc(hidden)]
-pub struct _PERBUF_DITH5;
-#[doc = "`read()` method returns [perbuf_dith5::R](perbuf_dith5::R) reader structure"]
-impl crate::Readable for PERBUF_DITH5 {}
-#[doc = "`write(|w| ..)` method takes [perbuf_dith5::W](perbuf_dith5::W) writer structure"]
-impl crate::Writable for PERBUF_DITH5 {}
+pub struct _PERBUF_DITH5_MODE;
+#[doc = "`read()` method returns [perbuf_dith5_mode::R](perbuf_dith5_mode::R) reader structure"]
+impl crate::Readable for PERBUF_DITH5_MODE {}
+#[doc = "`write(|w| ..)` method takes [perbuf_dith5_mode::W](perbuf_dith5_mode::W) writer structure"]
+impl crate::Writable for PERBUF_DITH5_MODE {}
 #[doc = "Period Buffer"]
-pub mod perbuf_dith5;
-#[doc = "Period Buffer\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [perbuf_dith6](perbuf_dith6) module"]
-pub type PERBUF_DITH6 = crate::Reg<u32, _PERBUF_DITH6>;
+pub mod perbuf_dith5_mode;
+#[doc = "Period Buffer\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [perbuf_dith6_mode](perbuf_dith6_mode) module"]
+pub type PERBUF_DITH6_MODE = crate::Reg<u32, _PERBUF_DITH6_MODE>;
 #[allow(missing_docs)]
 #[doc(hidden)]
-pub struct _PERBUF_DITH6;
-#[doc = "`read()` method returns [perbuf_dith6::R](perbuf_dith6::R) reader structure"]
-impl crate::Readable for PERBUF_DITH6 {}
-#[doc = "`write(|w| ..)` method takes [perbuf_dith6::W](perbuf_dith6::W) writer structure"]
-impl crate::Writable for PERBUF_DITH6 {}
+pub struct _PERBUF_DITH6_MODE;
+#[doc = "`read()` method returns [perbuf_dith6_mode::R](perbuf_dith6_mode::R) reader structure"]
+impl crate::Readable for PERBUF_DITH6_MODE {}
+#[doc = "`write(|w| ..)` method takes [perbuf_dith6_mode::W](perbuf_dith6_mode::W) writer structure"]
+impl crate::Writable for PERBUF_DITH6_MODE {}
 #[doc = "Period Buffer"]
-pub mod perbuf_dith6;
+pub mod perbuf_dith6_mode;
 #[doc = "Compare and Capture Buffer\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [ccbuf](ccbuf) module"]
 pub type CCBUF = crate::Reg<u32, _CCBUF>;
 #[allow(missing_docs)]
@@ -621,36 +657,36 @@ impl crate::Readable for CCBUF {}
 impl crate::Writable for CCBUF {}
 #[doc = "Compare and Capture Buffer"]
 pub mod ccbuf;
-#[doc = "Compare and Capture Buffer\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [ccbuf_dith4](ccbuf_dith4) module"]
-pub type CCBUF_DITH4 = crate::Reg<u32, _CCBUF_DITH4>;
+#[doc = "Compare and Capture Buffer\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [ccbuf_dith4_mode](ccbuf_dith4_mode) module"]
+pub type CCBUF_DITH4_MODE = crate::Reg<u32, _CCBUF_DITH4_MODE>;
 #[allow(missing_docs)]
 #[doc(hidden)]
-pub struct _CCBUF_DITH4;
-#[doc = "`read()` method returns [ccbuf_dith4::R](ccbuf_dith4::R) reader structure"]
-impl crate::Readable for CCBUF_DITH4 {}
-#[doc = "`write(|w| ..)` method takes [ccbuf_dith4::W](ccbuf_dith4::W) writer structure"]
-impl crate::Writable for CCBUF_DITH4 {}
+pub struct _CCBUF_DITH4_MODE;
+#[doc = "`read()` method returns [ccbuf_dith4_mode::R](ccbuf_dith4_mode::R) reader structure"]
+impl crate::Readable for CCBUF_DITH4_MODE {}
+#[doc = "`write(|w| ..)` method takes [ccbuf_dith4_mode::W](ccbuf_dith4_mode::W) writer structure"]
+impl crate::Writable for CCBUF_DITH4_MODE {}
 #[doc = "Compare and Capture Buffer"]
-pub mod ccbuf_dith4;
-#[doc = "Compare and Capture Buffer\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [ccbuf_dith5](ccbuf_dith5) module"]
-pub type CCBUF_DITH5 = crate::Reg<u32, _CCBUF_DITH5>;
+pub mod ccbuf_dith4_mode;
+#[doc = "Compare and Capture Buffer\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [ccbuf_dith5_mode](ccbuf_dith5_mode) module"]
+pub type CCBUF_DITH5_MODE = crate::Reg<u32, _CCBUF_DITH5_MODE>;
 #[allow(missing_docs)]
 #[doc(hidden)]
-pub struct _CCBUF_DITH5;
-#[doc = "`read()` method returns [ccbuf_dith5::R](ccbuf_dith5::R) reader structure"]
-impl crate::Readable for CCBUF_DITH5 {}
-#[doc = "`write(|w| ..)` method takes [ccbuf_dith5::W](ccbuf_dith5::W) writer structure"]
-impl crate::Writable for CCBUF_DITH5 {}
+pub struct _CCBUF_DITH5_MODE;
+#[doc = "`read()` method returns [ccbuf_dith5_mode::R](ccbuf_dith5_mode::R) reader structure"]
+impl crate::Readable for CCBUF_DITH5_MODE {}
+#[doc = "`write(|w| ..)` method takes [ccbuf_dith5_mode::W](ccbuf_dith5_mode::W) writer structure"]
+impl crate::Writable for CCBUF_DITH5_MODE {}
 #[doc = "Compare and Capture Buffer"]
-pub mod ccbuf_dith5;
-#[doc = "Compare and Capture Buffer\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [ccbuf_dith6](ccbuf_dith6) module"]
-pub type CCBUF_DITH6 = crate::Reg<u32, _CCBUF_DITH6>;
+pub mod ccbuf_dith5_mode;
+#[doc = "Compare and Capture Buffer\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [ccbuf_dith6_mode](ccbuf_dith6_mode) module"]
+pub type CCBUF_DITH6_MODE = crate::Reg<u32, _CCBUF_DITH6_MODE>;
 #[allow(missing_docs)]
 #[doc(hidden)]
-pub struct _CCBUF_DITH6;
-#[doc = "`read()` method returns [ccbuf_dith6::R](ccbuf_dith6::R) reader structure"]
-impl crate::Readable for CCBUF_DITH6 {}
-#[doc = "`write(|w| ..)` method takes [ccbuf_dith6::W](ccbuf_dith6::W) writer structure"]
-impl crate::Writable for CCBUF_DITH6 {}
+pub struct _CCBUF_DITH6_MODE;
+#[doc = "`read()` method returns [ccbuf_dith6_mode::R](ccbuf_dith6_mode::R) reader structure"]
+impl crate::Readable for CCBUF_DITH6_MODE {}
+#[doc = "`write(|w| ..)` method takes [ccbuf_dith6_mode::W](ccbuf_dith6_mode::W) writer structure"]
+impl crate::Writable for CCBUF_DITH6_MODE {}
 #[doc = "Compare and Capture Buffer"]
-pub mod ccbuf_dith6;
+pub mod ccbuf_dith6_mode;

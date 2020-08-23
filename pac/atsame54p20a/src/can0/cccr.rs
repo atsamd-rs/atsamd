@@ -84,6 +84,28 @@ impl<'a> ASM_W<'a> {
 }
 #[doc = "Reader of field `CSA`"]
 pub type CSA_R = crate::R<bool, bool>;
+#[doc = "Write proxy for field `CSA`"]
+pub struct CSA_W<'a> {
+    w: &'a mut W,
+}
+impl<'a> CSA_W<'a> {
+    #[doc = r"Sets the field bit"]
+    #[inline(always)]
+    pub fn set_bit(self) -> &'a mut W {
+        self.bit(true)
+    }
+    #[doc = r"Clears the field bit"]
+    #[inline(always)]
+    pub fn clear_bit(self) -> &'a mut W {
+        self.bit(false)
+    }
+    #[doc = r"Writes raw bits to the field"]
+    #[inline(always)]
+    pub fn bit(self, value: bool) -> &'a mut W {
+        self.w.bits = (self.w.bits & !(0x01 << 3)) | (((value as u32) & 0x01) << 3);
+        self.w
+    }
+}
 #[doc = "Reader of field `CSR`"]
 pub type CSR_R = crate::R<bool, bool>;
 #[doc = "Write proxy for field `CSR`"]
@@ -411,6 +433,11 @@ impl W {
     #[inline(always)]
     pub fn asm(&mut self) -> ASM_W {
         ASM_W { w: self }
+    }
+    #[doc = "Bit 3 - Clock Stop Acknowledge"]
+    #[inline(always)]
+    pub fn csa(&mut self) -> CSA_W {
+        CSA_W { w: self }
     }
     #[doc = "Bit 4 - Clock Stop Request"]
     #[inline(always)]

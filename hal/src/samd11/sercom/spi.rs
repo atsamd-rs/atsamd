@@ -1,10 +1,10 @@
 use crate::clock;
 use crate::hal::spi::{FullDuplex, Mode, Phase, Polarity};
 use crate::sercom::pads::*;
+use crate::spi_common::CommonSpi;
 use crate::target_device::sercom0::SPI;
 use crate::target_device::{PM, SERCOM0, SERCOM1};
 use crate::time::Hertz;
-use nb;
 
 #[derive(Debug)]
 pub enum Error {
@@ -89,6 +89,18 @@ macro_rules! spi_master {
                 sercom: $SERCOM,
             }
 
+            impl<MISO, MOSI, SCK> CommonSpi for $Type<MISO, MOSI, SCK> {
+                /// Helper for accessing the spi member of the sercom instance
+                fn spi(&self) -> &SPI {
+                    &self.sercom.spi()
+                }
+
+                /// Helper for accessing the spi member of the sercom instance
+                fn spi_mut(&mut self) -> &SPI {
+                    &self.sercom.spi()
+                }
+            }
+
             impl<MISO, MOSI, SCK> $Type<MISO, MOSI, SCK> {
                 /// Power on and configure SERCOMX to work as an SPI Master operating
                 /// with the specified frequency and SPI Mode. The padout specifies
@@ -111,28 +123,30 @@ macro_rules! spi_master {
                     // safe because we're exclusively owning SERCOM
                     pm.apbcmask.modify(|_, w| w.$powermask().set_bit());
 
+                    // reset the sercom instance
+                    sercom.spi().ctrla.modify(|_, w| w.swrst().set_bit());
+                    // wait for reset to complete
+                    while sercom.spi().syncbusy.read().swrst().bit_is_set()
+                        || sercom.spi().ctrla.read().swrst().bit_is_set()
+                    {}
+
+                    // Put the hardware into spi master mode
+                    sercom.spi().ctrla.modify(|_, w| w.mode().spi_master());
+                    // wait for configuration to take effect
+                    while sercom.spi().syncbusy.read().enable().bit_is_set() {}
+
+                    // 8 bit data size and enable the receiver
                     unsafe {
-                        // reset the sercom instance
-                        sercom.spi().ctrla.modify(|_, w| w.swrst().set_bit());
-                        // wait for reset to complete
-                        while sercom.spi().syncbusy.read().swrst().bit_is_set()
-                            || sercom.spi().ctrla.read().swrst().bit_is_set()
-                        {}
-
-                        // Put the hardware into spi master mode
-                        sercom.spi().ctrla.modify(|_, w| w.mode().spi_master());
-                        // wait for configuration to take effect
-                        while sercom.spi().syncbusy.read().enable().bit_is_set() {}
-
-                        // 8 bit data size and enable the receiver
                         sercom.spi().ctrlb.modify(|_, w|{
                             w.chsize().bits(0);
                             w.rxen().set_bit()
                         });
+                    }
 
-                        // set the baud rate
-                        let gclk = clock.freq();
-                        let baud = (gclk.0 / (2 * freq.into().0) - 1) as u8;
+                    // set the baud rate
+                    let baud = Self::calculate_baud(freq, clock.freq());
+
+                    unsafe {
                         sercom.spi().baud.modify(|_, w| w.baud().bits(baud));
 
                         sercom.spi().ctrla.modify(|_, w| {
@@ -153,13 +167,11 @@ macro_rules! spi_master {
                             // MSB first
                             w.dord().clear_bit()
                         });
-
-
-                        sercom.spi().ctrla.modify(|_, w| w.enable().set_bit());
-                        // wait for configuration to take effect
-                        while sercom.spi().syncbusy.read().enable().bit_is_set() {}
-
                     }
+
+                    sercom.spi().ctrla.modify(|_, w| w.enable().set_bit());
+                    // wait for configuration to take effect
+                    while sercom.spi().syncbusy.read().enable().bit_is_set() {}
 
                     Self {
                         padout,
@@ -167,15 +179,20 @@ macro_rules! spi_master {
                     }
                 }
 
+                /// Set the baud rate
+                pub fn set_baud<F: Into<Hertz>>(&mut self, freq: F, clock: &clock::$clock) {
+                    self.disable();
+                    let baud = Self::calculate_baud(freq, clock.freq());
+                    unsafe {
+                        self.spi_mut().baud.modify(|_, w| w.baud().bits(baud));
+                    }
+                    self.enable();
+                }
+
                 /// Tear down the SPI instance and yield the constituent pins and
                 /// SERCOM instance.  No explicit de-initialization is performed.
                 pub fn free(self) -> ([<$Type Padout>]<MISO, MOSI, SCK>, $SERCOM) {
                     (self.padout, self.sercom)
-                }
-
-                /// Helper for accessing the spi member of the sercom instance
-                fn spi(&mut self) -> &SPI {
-                    &self.sercom.spi()
                 }
             }
         }
@@ -202,7 +219,7 @@ macro_rules! spi_master {
                 let intflag = self.spi().intflag.read();
                 // dre is data register empty
                 if intflag.dre().bit_is_set() {
-                    self.spi().data.write(|w| unsafe{w.data().bits(byte as u16)});
+                    self.spi_mut().data.write(|w| unsafe{w.data().bits(byte as u16)});
                     Ok(())
                 } else {
                     Err(nb::Error::WouldBlock)

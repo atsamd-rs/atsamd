@@ -1,10 +1,12 @@
 //! Display battery percentage on the neopixels.
+//!
+//! Note leds may appear white during debug. Either build for release or add
+//! opt-level = 2 to profile.dev in Cargo.toml
 
 #![no_std]
 #![no_main]
 
-#[allow(unused_imports)]
-use panic_halt;
+use panic_halt as _;
 use pygamer as hal;
 
 use hal::adc::Adc;
@@ -14,7 +16,6 @@ use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 use hal::timer::SpinTimer;
 use hal::{clock::GenericClockController, delay::Delay};
-
 use smart_leds::{brightness, hsv::RGB8, SmartLedsWrite};
 
 #[entry]

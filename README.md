@@ -13,12 +13,13 @@ In addition to the PACs and HAL, there numerous **B**oard **S**upport **P**ackag
 | Crate | Version | Board Support Packages |
 |:------|:--------|:-----------------------|
 | [atsamd11c14a](https://docs.rs/atsamd11c14a/) | [![Crates.io](https://img.shields.io/crates/v/atsamd11c14a.svg)](https://crates.io/crates/atsamd11c14a) |  |
-| [atsamd21g18a](https://docs.rs/atsamd21g18a/) | [![Crates.io](https://img.shields.io/crates/v/atsamd21g18a.svg)](https://crates.io/crates/atsamd21g18a) | [Circuit Playground Express][circuit_playground_express], [Feather M0][feather_m0], [Metro M0][metro_m0], [MKR ZERO][arduino_mkrzero], [SAMD21 Mini][samd21_mini], [SODAQ ONE][sodaq_one] |
 | [atsamd21e18a](https://docs.rs/atsamd21e18a/) | [![Crates.io](https://img.shields.io/crates/v/atsamd21e18a.svg)](https://crates.io/crates/atsamd21e18a) | [Gemma M0][gemma_m0], [Trinket M0][trinket_m0], [Serpente][serpente] |
+| [atsamd21g18a](https://docs.rs/atsamd21g18a/) | [![Crates.io](https://img.shields.io/crates/v/atsamd21g18a.svg)](https://crates.io/crates/atsamd21g18a) | [Circuit Playground Express][circuit_playground_express], [Feather M0][feather_m0], [Metro M0][metro_m0], [MKR ZERO][arduino_mkrzero], [SAMD21 Mini][samd21_mini], [SODAQ ONE][sodaq_one] |
 | [atsamd21j18a](https://docs.rs/atsamd21j18a/) | [![Crates.io](https://img.shields.io/crates/v/atsamd21j18a.svg)](https://crates.io/crates/atsamd21j18a) | [SODAQ SARA AFF][sodaq_sara_aff] |
+| [atsamd51g19a](https://docs.rs/atsamd51g19a/) | [![Crates.io](https://img.shields.io/crates/v/atsamd51g19a.svg)](https://crates.io/crates/atsamd51g19a) | [ItsyBitsy M4][itsybitsy_m4], [Trellis M4][trellis_m4] |
 | [atsamd51j19a](https://docs.rs/atsamd51j19a/) | [![Crates.io](https://img.shields.io/crates/v/atsamd51j19a.svg)](https://crates.io/crates/atsamd51j19a) | [EdgeBadge][edgebadge], [Feather M4][feather_m4], [Metro M4][metro_m4] |
 | [atsamd51j20a](https://docs.rs/atsamd51j20a/) | [![Crates.io](https://img.shields.io/crates/v/atsamd51j20a.svg)](https://crates.io/crates/atsamd51j20a) | [PyPortal][pyportal] |
-| [atsamd51g19a](https://docs.rs/atsamd51g19a/) | [![Crates.io](https://img.shields.io/crates/v/atsamd51g19a.svg)](https://crates.io/crates/atsamd51g19a) | [ItsyBitsy M4][itsybitsy_m4], [Trellis M4][trellis_m4] |
+| [atsamd51p19a](https://docs.rs/atsamd51p19a/) | [![Crates.io](https://img.shields.io/crates/v/atsamd51p19a.svg)](https://crates.io/crates/atsamd51p19a) |  |
 | [atsame54p20a](https://docs.rs/atsame54p20a/) | [![Crates.io](https://img.shields.io/crates/v/atsame54p20a.svg)](https://crates.io/crates/atsame54p20a) | [PathfinderZA Proto1][pfza_proto1] |
 | [atsamd-hal](https://docs.rs/atsamd_hal/) | [![Crates.io](https://img.shields.io/crates/v/atsamd_hal.svg)](https://crates.io/crates/atsamd_hal) |  |
 
@@ -140,7 +141,7 @@ For more information, refer to the `README` files for each crate:
 
 ## Getting code onto the devices with bootloaders: uf2conv-rs
 
-[uf2conv-rs](https://github.com/sajattack/uf2conv-rs) adds a uf2 header [Microsofts HID Flashing Format (UF2)](https://github.com/microsoft/uf2/blob/86e101e3a282553756161fe12206c7a609975e70/README.md) for copying over to UF2 bootloader mass storage devices. UF2 is factory programmed extensively by [Microsoft MakeCode](https://www.microsoft.com/en-us/makecode) and [Adafruit](https://www.adafruit.com/) hardware.
+[uf2conv](https://github.com/sajattack/uf2conv-rs) adds a uf2 header [Microsofts HID Flashing Format (UF2)](https://github.com/microsoft/uf2/blob/86e101e3a282553756161fe12206c7a609975e70/README.md) for copying over to UF2 bootloader mass storage devices. UF2 is factory programmed extensively by [Microsoft MakeCode](https://www.microsoft.com/en-us/makecode) and [Adafruit](https://www.adafruit.com/) hardware.
 [cargo-binutils](https://github.com/rust-embedded/cargo-binutils) replaces the `cargo build` command to find and convert elf files into binary. 
 
 Install the dependencies
@@ -152,26 +153,17 @@ $ cargo install uf2conv cargo-binutils
 Then for say, metro_m0 examples
 ```bash
 $ cargo objcopy --example blinky_basic --features unproven --release -- -O binary blinky_basic.bin
-$ uf2conv-rs blinky_basic.bin --base 0x2000 --output blinky_basic.uf2
+$ uf2conv blinky_basic.bin --base 0x2000 --output blinky_basic.uf2
 $ cp blinky_basic.uf2 /Volumes/PYGAMERBOOT/
 ```
 
 For more information, refer to the `README` files for each crate:
-* [uf2conv-rs (`uf2conv-rs`)](https://github.com/sajattack/uf2conv-rs)
+* [uf2conv (`uf2conv-rs`)](https://github.com/sajattack/uf2conv-rs)
 * [cargo-binutils (`cargo-binutils`)](https://github.com/rust-embedded/cargo-binutils)
 
 ## Adding a new board
 
 See our wiki page for a [complete guide](https://github.com/atsamd-rs/atsamd/wiki/Adding-a-new-board) on adding a new board.
-
-## SVD File Patching
-
-Any errors found in the vendor-supplied SVD files can be patched using [svdtools]. For information on how to write patches, please refer to the [Device and Peripheral YAML Format] section of the [svdtools] README.
-
-Device-specific changes can be applied in the device'a patch file, eg.) `svd/devices/atsamd21e18a.yaml`. Changes common to one or more devices can be placed in their own file within `svd/devices/common_patches/`, and included in the applicable devices' patch files.
-
-[svdtools]: https://github.com/stm32-rs/svdtools
-[Device and Peripheral YAML Format]: https://github.com/stm32-rs/svdtools#device-and-peripheral-yaml-format
 
 ## License
 

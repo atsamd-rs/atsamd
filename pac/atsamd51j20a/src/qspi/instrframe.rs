@@ -12,34 +12,27 @@ impl crate::ResetValue for super::INSTRFRAME {
 }
 #[doc = "Instruction Code, Address, Option Code and Data Width\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum WIDTH_A {
     #[doc = "0: Instruction: Single-bit SPI / Address-Option: Single-bit SPI / Data: Single-bit SPI"]
-    SINGLE_BIT_SPI,
+    SINGLE_BIT_SPI = 0,
     #[doc = "1: Instruction: Single-bit SPI / Address-Option: Single-bit SPI / Data: Dual SPI"]
-    DUAL_OUTPUT,
+    DUAL_OUTPUT = 1,
     #[doc = "2: Instruction: Single-bit SPI / Address-Option: Single-bit SPI / Data: Quad SPI"]
-    QUAD_OUTPUT,
+    QUAD_OUTPUT = 2,
     #[doc = "3: Instruction: Single-bit SPI / Address-Option: Dual SPI / Data: Dual SPI"]
-    DUAL_IO,
+    DUAL_IO = 3,
     #[doc = "4: Instruction: Single-bit SPI / Address-Option: Quad SPI / Data: Quad SPI"]
-    QUAD_IO,
+    QUAD_IO = 4,
     #[doc = "5: Instruction: Dual SPI / Address-Option: Dual SPI / Data: Dual SPI"]
-    DUAL_CMD,
+    DUAL_CMD = 5,
     #[doc = "6: Instruction: Quad SPI / Address-Option: Quad SPI / Data: Quad SPI"]
-    QUAD_CMD,
+    QUAD_CMD = 6,
 }
 impl From<WIDTH_A> for u8 {
     #[inline(always)]
     fn from(variant: WIDTH_A) -> Self {
-        match variant {
-            WIDTH_A::SINGLE_BIT_SPI => 0,
-            WIDTH_A::DUAL_OUTPUT => 1,
-            WIDTH_A::QUAD_OUTPUT => 2,
-            WIDTH_A::DUAL_IO => 3,
-            WIDTH_A::QUAD_IO => 4,
-            WIDTH_A::DUAL_CMD => 5,
-            WIDTH_A::QUAD_CMD => 6,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `WIDTH`"]
@@ -246,25 +239,21 @@ impl<'a> DATAEN_W<'a> {
 }
 #[doc = "Option Code Length\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum OPTCODELEN_A {
     #[doc = "0: 1-bit length option code"]
-    _1BIT,
+    _1BIT = 0,
     #[doc = "1: 2-bits length option code"]
-    _2BITS,
+    _2BITS = 1,
     #[doc = "2: 4-bits length option code"]
-    _4BITS,
+    _4BITS = 2,
     #[doc = "3: 8-bits length option code"]
-    _8BITS,
+    _8BITS = 3,
 }
 impl From<OPTCODELEN_A> for u8 {
     #[inline(always)]
     fn from(variant: OPTCODELEN_A) -> Self {
-        match variant {
-            OPTCODELEN_A::_1BIT => 0,
-            OPTCODELEN_A::_2BITS => 1,
-            OPTCODELEN_A::_4BITS => 2,
-            OPTCODELEN_A::_8BITS => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `OPTCODELEN`"]
@@ -345,17 +334,14 @@ impl<'a> OPTCODELEN_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum ADDRLEN_A {
     #[doc = "0: 24-bits address length"]
-    _24BITS,
+    _24BITS = 0,
     #[doc = "1: 32-bits address length"]
-    _32BITS,
+    _32BITS = 1,
 }
 impl From<ADDRLEN_A> for bool {
     #[inline(always)]
     fn from(variant: ADDRLEN_A) -> Self {
-        match variant {
-            ADDRLEN_A::_24BITS => false,
-            ADDRLEN_A::_32BITS => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `ADDRLEN`"]
@@ -421,25 +407,21 @@ impl<'a> ADDRLEN_W<'a> {
 }
 #[doc = "Data Transfer Type\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum TFRTYPE_A {
     #[doc = "0: Read transfer from the serial memory.Scrambling is not performed.Read at random location (fetch) in the serial flash memory is not possible."]
-    READ,
+    READ = 0,
     #[doc = "1: Read data transfer from the serial memory.If enabled, scrambling is performed.Read at random location (fetch) in the serial flash memory is possible."]
-    READMEMORY,
+    READMEMORY = 1,
     #[doc = "2: Write transfer into the serial memory.Scrambling is not performed."]
-    WRITE,
+    WRITE = 2,
     #[doc = "3: Write data transfer into the serial memory.If enabled, scrambling is performed."]
-    WRITEMEMORY,
+    WRITEMEMORY = 3,
 }
 impl From<TFRTYPE_A> for u8 {
     #[inline(always)]
     fn from(variant: TFRTYPE_A) -> Self {
-        match variant {
-            TFRTYPE_A::READ => 0,
-            TFRTYPE_A::READMEMORY => 1,
-            TFRTYPE_A::WRITE => 2,
-            TFRTYPE_A::WRITEMEMORY => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `TFRTYPE`"]

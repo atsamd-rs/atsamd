@@ -1,13 +1,12 @@
 use crate::clock;
-use crate::time::Hertz;
 use crate::hal::blocking::serial::{write::Default, Write};
 use crate::hal::serial;
-use nb;
 use crate::sercom::pads::*;
 use crate::target_device::sercom0::USART;
 use crate::target_device::{PM, SERCOM0, SERCOM1, SERCOM2, SERCOM3};
-#[cfg(any(feature = "samd21g18a", feature="samd21j18a"))]
+#[cfg(any(feature = "samd21g18a", feature = "samd21j18a"))]
 use crate::target_device::{SERCOM4, SERCOM5};
+use crate::time::Hertz;
 use core::fmt;
 
 /// The RxpoTxpo trait defines a way to get the data in and data out pin out
@@ -27,7 +26,7 @@ macro_rules! uart {
         $crate::paste::item! {
             /// A pad mapping configuration for the SERCOM in UART mode.
             ///
-            /// This type can only be constructed using the From implementations 
+            /// This type can only be constructed using the From implementations
             /// in this module, which are restricted to valid configurations.
             ///
             /// Defines which sercom pad is mapped to which UART function.
@@ -265,9 +264,9 @@ uart!(UART0: (Sercom0, SERCOM0, sercom0_, Sercom0CoreClock));
 uart!(UART1: (Sercom1, SERCOM1, sercom1_, Sercom1CoreClock));
 uart!(UART2: (Sercom2, SERCOM2, sercom2_, Sercom2CoreClock));
 uart!(UART3: (Sercom3, SERCOM3, sercom3_, Sercom3CoreClock));
-#[cfg(any(feature = "samd21g18a", feature="samd21j18a"))]
+#[cfg(any(feature = "samd21g18a", feature = "samd21j18a"))]
 uart!(UART4: (Sercom4, SERCOM4, sercom4_, Sercom4CoreClock));
-#[cfg(any(feature = "samd21g18a", feature="samd21j18a"))]
+#[cfg(any(feature = "samd21g18a", feature = "samd21j18a"))]
 uart!(UART5: (Sercom5, SERCOM5, sercom5_, Sercom5CoreClock));
 
 const SHIFT: u8 = 32;
@@ -278,5 +277,5 @@ fn calculate_baud_value(baudrate: u32, clk_freq: u32, n_samples: u8) -> u16 {
     let scale = (1u64 << SHIFT) - ratio;
     let baud_calculated = (65536u64 * scale) >> SHIFT;
 
-    return baud_calculated as u16;
+    baud_calculated as u16
 }

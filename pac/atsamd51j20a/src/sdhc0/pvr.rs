@@ -1,8 +1,9 @@
-#[doc = "Reader of register PVR%s"]
+#[doc = "Reader of register PVR[%s]"]
 pub type R = crate::R<u16, super::PVR>;
-#[doc = "Writer for register PVR%s"]
+#[doc = "Writer for register PVR[%s]"]
 pub type W = crate::W<u16, super::PVR>;
-#[doc = "Register PVR%s `reset()`'s with value 0"]
+#[doc = "Register PVR[%s]
+`reset()`'s with value 0"]
 impl crate::ResetValue for super::PVR {
     type Type = u16;
     #[inline(always)]
@@ -28,17 +29,14 @@ impl<'a> SDCLKFSEL_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum CLKGSEL_A {
     #[doc = "0: Host Controller Ver2.00 Compatible Clock Generator (Divider)"]
-    DIV,
+    DIV = 0,
     #[doc = "1: Programmable Clock Generator"]
-    PROG,
+    PROG = 1,
 }
 impl From<CLKGSEL_A> for bool {
     #[inline(always)]
     fn from(variant: CLKGSEL_A) -> Self {
-        match variant {
-            CLKGSEL_A::DIV => false,
-            CLKGSEL_A::PROG => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `CLKGSEL`"]
@@ -104,25 +102,21 @@ impl<'a> CLKGSEL_W<'a> {
 }
 #[doc = "Driver Strength Select Value for Initialization\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum DRVSEL_A {
     #[doc = "0: Driver Type B is Selected"]
-    B,
+    B = 0,
     #[doc = "1: Driver Type A is Selected"]
-    A,
+    A = 1,
     #[doc = "2: Driver Type C is Selected"]
-    C,
+    C = 2,
     #[doc = "3: Driver Type D is Selected"]
-    D,
+    D = 3,
 }
 impl From<DRVSEL_A> for u8 {
     #[inline(always)]
     fn from(variant: DRVSEL_A) -> Self {
-        match variant {
-            DRVSEL_A::B => 0,
-            DRVSEL_A::A => 1,
-            DRVSEL_A::C => 2,
-            DRVSEL_A::D => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `DRVSEL`"]

@@ -3,12 +3,14 @@
 //! Select and Start control a second neopixel left and right while it is
 //! automatically rotating through the color wheel
 //! When they overlap, joystick takes precedence
+//!
+//! Note leds may appear white during debug. Either build for release or add
+//! opt-level = 2 to profile.dev in Cargo.toml
 
 #![no_std]
 #![no_main]
 
-#[allow(unused_imports)]
-use panic_halt;
+use panic_halt as _;
 use pygamer as hal;
 
 use hal::adc::Adc;
@@ -20,7 +22,6 @@ use hal::prelude::*;
 use hal::timer::SpinTimer;
 use hal::util::map_from;
 use hal::{clock::GenericClockController, delay::Delay};
-
 use smart_leds::{
     hsv::{hsv2rgb, Hsv, RGB8},
     SmartLedsWrite,

@@ -1,6 +1,6 @@
 [package]
 name = "pfza_proto1"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Michael van Niekerk <mvniekerk@gmail.com>"]
 description = "Board Support crate for the PathfinderZA Proto1"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
@@ -20,7 +20,7 @@ optional = true
 
 [dependencies.atsamd-hal]
 path = "../../hal"
-version = "~0.8"
+version = "~0.9"
 default-features = false
 
 [dev-dependencies]

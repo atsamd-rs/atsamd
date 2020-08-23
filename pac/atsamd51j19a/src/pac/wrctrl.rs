@@ -26,25 +26,21 @@ impl<'a> PERID_W<'a> {
 }
 #[doc = "Peripheral access control key\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum KEY_A {
     #[doc = "0: No action"]
-    OFF,
+    OFF = 0,
     #[doc = "1: Clear protection"]
-    CLR,
+    CLR = 1,
     #[doc = "2: Set protection"]
-    SET,
+    SET = 2,
     #[doc = "3: Set and lock protection"]
-    SETLCK,
+    SETLCK = 3,
 }
 impl From<KEY_A> for u8 {
     #[inline(always)]
     fn from(variant: KEY_A) -> Self {
-        match variant {
-            KEY_A::OFF => 0,
-            KEY_A::CLR => 1,
-            KEY_A::SET => 2,
-            KEY_A::SETLCK => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `KEY`"]

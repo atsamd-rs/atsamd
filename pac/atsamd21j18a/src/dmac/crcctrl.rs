@@ -12,22 +12,19 @@ impl crate::ResetValue for super::CRCCTRL {
 }
 #[doc = "CRC Beat Size\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum CRCBEATSIZE_A {
     #[doc = "0: 8-bit bus transfer"]
-    BYTE,
+    BYTE = 0,
     #[doc = "1: 16-bit bus transfer"]
-    HWORD,
+    HWORD = 1,
     #[doc = "2: 32-bit bus transfer"]
-    WORD,
+    WORD = 2,
 }
 impl From<CRCBEATSIZE_A> for u8 {
     #[inline(always)]
     fn from(variant: CRCBEATSIZE_A) -> Self {
-        match variant {
-            CRCBEATSIZE_A::BYTE => 0,
-            CRCBEATSIZE_A::HWORD => 1,
-            CRCBEATSIZE_A::WORD => 2,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `CRCBEATSIZE`"]
@@ -94,19 +91,17 @@ impl<'a> CRCBEATSIZE_W<'a> {
 }
 #[doc = "CRC Polynomial Type\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum CRCPOLY_A {
     #[doc = "0: CRC-16 (CRC-CCITT)"]
-    CRC16,
+    CRC16 = 0,
     #[doc = "1: CRC32 (IEEE 802.3)"]
-    CRC32,
+    CRC32 = 1,
 }
 impl From<CRCPOLY_A> for u8 {
     #[inline(always)]
     fn from(variant: CRCPOLY_A) -> Self {
-        match variant {
-            CRCPOLY_A::CRC16 => 0,
-            CRCPOLY_A::CRC32 => 1,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `CRCPOLY`"]
@@ -162,19 +157,17 @@ impl<'a> CRCPOLY_W<'a> {
 }
 #[doc = "CRC Input Source\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum CRCSRC_A {
     #[doc = "0: No action"]
-    NOACT,
+    NOACT = 0,
     #[doc = "1: I/O interface"]
-    IO,
+    IO = 1,
 }
 impl From<CRCSRC_A> for u8 {
     #[inline(always)]
     fn from(variant: CRCSRC_A) -> Self {
-        match variant {
-            CRCSRC_A::NOACT => 0,
-            CRCSRC_A::IO => 1,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `CRCSRC`"]

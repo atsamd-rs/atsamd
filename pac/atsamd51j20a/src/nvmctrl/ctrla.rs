@@ -60,25 +60,21 @@ impl<'a> SUSPEN_W<'a> {
 }
 #[doc = "Write Mode\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum WMODE_A {
     #[doc = "0: Manual Write"]
-    MAN,
+    MAN = 0,
     #[doc = "1: Automatic Double Word Write"]
-    ADW,
+    ADW = 1,
     #[doc = "2: Automatic Quad Word"]
-    AQW,
+    AQW = 2,
     #[doc = "3: Automatic Page Write"]
-    AP,
+    AP = 3,
 }
 impl From<WMODE_A> for u8 {
     #[inline(always)]
     fn from(variant: WMODE_A) -> Self {
-        match variant {
-            WMODE_A::MAN => 0,
-            WMODE_A::ADW => 1,
-            WMODE_A::AQW => 2,
-            WMODE_A::AP => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `WMODE`"]
@@ -157,22 +153,19 @@ impl<'a> WMODE_W<'a> {
 }
 #[doc = "Power Reduction Mode during Sleep\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum PRM_A {
     #[doc = "0: NVM block enters low-power mode when entering standby mode. NVM block enters low-power mode when SPRM command is issued. NVM block exits low-power mode upon first access."]
-    SEMIAUTO,
+    SEMIAUTO = 0,
     #[doc = "1: NVM block enters low-power mode when entering standby mode. NVM block enters low-power mode when SPRM command is issued. NVM block exits low-power mode when system is not in standby mode."]
-    FULLAUTO,
+    FULLAUTO = 1,
     #[doc = "3: NVM block does not enter low-power mode when entering standby mode. NVM block enters low-power mode when SPRM command is issued. NVM block exits low-power mode upon first access."]
-    MANUAL,
+    MANUAL = 3,
 }
 impl From<PRM_A> for u8 {
     #[inline(always)]
     fn from(variant: PRM_A) -> Self {
-        match variant {
-            PRM_A::SEMIAUTO => 0,
-            PRM_A::FULLAUTO => 1,
-            PRM_A::MANUAL => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `PRM`"]
@@ -237,81 +230,13 @@ impl<'a> PRM_W<'a> {
         self.w
     }
 }
-#[doc = "NVM Read Wait States\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum RWS_A {
-    #[doc = "0: Single Auto Wait State"]
-    SINGLE,
-    #[doc = "1: Half Auto Wait State"]
-    HALF,
-    #[doc = "2: Dual Auto Wait State"]
-    DUAL,
-}
-impl From<RWS_A> for u8 {
-    #[inline(always)]
-    fn from(variant: RWS_A) -> Self {
-        match variant {
-            RWS_A::SINGLE => 0,
-            RWS_A::HALF => 1,
-            RWS_A::DUAL => 2,
-        }
-    }
-}
 #[doc = "Reader of field `RWS`"]
-pub type RWS_R = crate::R<u8, RWS_A>;
-impl RWS_R {
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> crate::Variant<u8, RWS_A> {
-        use crate::Variant::*;
-        match self.bits {
-            0 => Val(RWS_A::SINGLE),
-            1 => Val(RWS_A::HALF),
-            2 => Val(RWS_A::DUAL),
-            i => Res(i),
-        }
-    }
-    #[doc = "Checks if the value of the field is `SINGLE`"]
-    #[inline(always)]
-    pub fn is_single(&self) -> bool {
-        *self == RWS_A::SINGLE
-    }
-    #[doc = "Checks if the value of the field is `HALF`"]
-    #[inline(always)]
-    pub fn is_half(&self) -> bool {
-        *self == RWS_A::HALF
-    }
-    #[doc = "Checks if the value of the field is `DUAL`"]
-    #[inline(always)]
-    pub fn is_dual(&self) -> bool {
-        *self == RWS_A::DUAL
-    }
-}
+pub type RWS_R = crate::R<u8, u8>;
 #[doc = "Write proxy for field `RWS`"]
 pub struct RWS_W<'a> {
     w: &'a mut W,
 }
 impl<'a> RWS_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: RWS_A) -> &'a mut W {
-        unsafe { self.bits(variant.into()) }
-    }
-    #[doc = "Single Auto Wait State"]
-    #[inline(always)]
-    pub fn single(self) -> &'a mut W {
-        self.variant(RWS_A::SINGLE)
-    }
-    #[doc = "Half Auto Wait State"]
-    #[inline(always)]
-    pub fn half(self) -> &'a mut W {
-        self.variant(RWS_A::HALF)
-    }
-    #[doc = "Dual Auto Wait State"]
-    #[inline(always)]
-    pub fn dual(self) -> &'a mut W {
-        self.variant(RWS_A::DUAL)
-    }
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {

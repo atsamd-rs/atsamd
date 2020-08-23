@@ -1,4 +1,4 @@
-#[doc = "Reader of register RR%s"]
+#[doc = "Reader of register RR[%s]"]
 pub type R = crate::R<u32, super::RR>;
 #[doc = "Reader of field `CMDRESP`"]
 pub type CMDRESP_R = crate::R<u32, u32>;

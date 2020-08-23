@@ -84,25 +84,21 @@ impl<'a> ONDEMAND_W<'a> {
 }
 #[doc = "Oscillator Prescaler\n\nValue on reset: 3"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum PRESC_A {
     #[doc = "0: 1"]
-    _0,
+    _0 = 0,
     #[doc = "1: 2"]
-    _1,
+    _1 = 1,
     #[doc = "2: 4"]
-    _2,
+    _2 = 2,
     #[doc = "3: 8"]
-    _3,
+    _3 = 3,
 }
 impl From<PRESC_A> for u8 {
     #[inline(always)]
     fn from(variant: PRESC_A) -> Self {
-        match variant {
-            PRESC_A::_0 => 0,
-            PRESC_A::_1 => 1,
-            PRESC_A::_2 => 2,
-            PRESC_A::_3 => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `PRESC`"]
@@ -195,25 +191,21 @@ impl<'a> CALIB_W<'a> {
 }
 #[doc = "Oscillator Frequency Range\n\nValue on reset: 2"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum FRANGE_A {
     #[doc = "0: 4 to 6MHz"]
-    _0,
+    _0 = 0,
     #[doc = "1: 6 to 8MHz"]
-    _1,
+    _1 = 1,
     #[doc = "2: 8 to 11MHz"]
-    _2,
+    _2 = 2,
     #[doc = "3: 11 to 15MHz"]
-    _3,
+    _3 = 3,
 }
 impl From<FRANGE_A> for u8 {
     #[inline(always)]
     fn from(variant: FRANGE_A) -> Self {
-        match variant {
-            FRANGE_A::_0 => 0,
-            FRANGE_A::_1 => 1,
-            FRANGE_A::_2 => 2,
-            FRANGE_A::_3 => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `FRANGE`"]

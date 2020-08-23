@@ -2,16 +2,15 @@
 pub type R = crate::R<u8, super::HSDIV>;
 #[doc = "CPU Clock Division Factor\n\nValue on reset: 1"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum DIV_A {
     #[doc = "1: Divide by 1"]
-    DIV1,
+    DIV1 = 1,
 }
 impl From<DIV_A> for u8 {
     #[inline(always)]
     fn from(variant: DIV_A) -> Self {
-        match variant {
-            DIV_A::DIV1 => 1,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `DIV`"]

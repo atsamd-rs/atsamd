@@ -12,28 +12,23 @@ impl crate::ResetValue for super::HC2R {
 }
 #[doc = "UHS Mode Select\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum UHSMS_A {
     #[doc = "0: SDR12"]
-    SDR12,
+    SDR12 = 0,
     #[doc = "1: SDR25"]
-    SDR25,
+    SDR25 = 1,
     #[doc = "2: SDR50"]
-    SDR50,
+    SDR50 = 2,
     #[doc = "3: SDR104"]
-    SDR104,
+    SDR104 = 3,
     #[doc = "4: DDR50"]
-    DDR50,
+    DDR50 = 4,
 }
 impl From<UHSMS_A> for u8 {
     #[inline(always)]
     fn from(variant: UHSMS_A) -> Self {
-        match variant {
-            UHSMS_A::SDR12 => 0,
-            UHSMS_A::SDR25 => 1,
-            UHSMS_A::SDR50 => 2,
-            UHSMS_A::SDR104 => 3,
-            UHSMS_A::DDR50 => 4,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `UHSMS`"]
@@ -124,17 +119,14 @@ impl<'a> UHSMS_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum VS18EN_A {
     #[doc = "0: 3.3V Signaling"]
-    S33V,
+    S33V = 0,
     #[doc = "1: 1.8V Signaling"]
-    S18V,
+    S18V = 1,
 }
 impl From<VS18EN_A> for bool {
     #[inline(always)]
     fn from(variant: VS18EN_A) -> Self {
-        match variant {
-            VS18EN_A::S33V => false,
-            VS18EN_A::S18V => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `VS18EN`"]
@@ -200,25 +192,21 @@ impl<'a> VS18EN_W<'a> {
 }
 #[doc = "Driver Strength Select\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum DRVSEL_A {
     #[doc = "0: Driver Type B is Selected (Default)"]
-    B,
+    B = 0,
     #[doc = "1: Driver Type A is Selected"]
-    A,
+    A = 1,
     #[doc = "2: Driver Type C is Selected"]
-    C,
+    C = 2,
     #[doc = "3: Driver Type D is Selected"]
-    D,
+    D = 3,
 }
 impl From<DRVSEL_A> for u8 {
     #[inline(always)]
     fn from(variant: DRVSEL_A) -> Self {
-        match variant {
-            DRVSEL_A::B => 0,
-            DRVSEL_A::A => 1,
-            DRVSEL_A::C => 2,
-            DRVSEL_A::D => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `DRVSEL`"]
@@ -299,17 +287,14 @@ impl<'a> DRVSEL_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum EXTUN_A {
     #[doc = "0: Not Tuned or Tuning Completed"]
-    NO,
+    NO = 0,
     #[doc = "1: Execute Tuning"]
-    REQUESTED,
+    REQUESTED = 1,
 }
 impl From<EXTUN_A> for bool {
     #[inline(always)]
     fn from(variant: EXTUN_A) -> Self {
-        match variant {
-            EXTUN_A::NO => false,
-            EXTUN_A::REQUESTED => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `EXTUN`"]
@@ -377,17 +362,14 @@ impl<'a> EXTUN_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum SLCKSEL_A {
     #[doc = "0: Fixed clock is used to sample data"]
-    FIXED,
+    FIXED = 0,
     #[doc = "1: Tuned clock is used to sample data"]
-    TUNED,
+    TUNED = 1,
 }
 impl From<SLCKSEL_A> for bool {
     #[inline(always)]
     fn from(variant: SLCKSEL_A) -> Self {
-        match variant {
-            SLCKSEL_A::FIXED => false,
-            SLCKSEL_A::TUNED => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `SLCKSEL`"]
@@ -455,17 +437,14 @@ impl<'a> SLCKSEL_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum ASINTEN_A {
     #[doc = "0: Disabled"]
-    DISABLED,
+    DISABLED = 0,
     #[doc = "1: Enabled"]
-    ENABLED,
+    ENABLED = 1,
 }
 impl From<ASINTEN_A> for bool {
     #[inline(always)]
     fn from(variant: ASINTEN_A) -> Self {
-        match variant {
-            ASINTEN_A::DISABLED => false,
-            ASINTEN_A::ENABLED => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `ASINTEN`"]
@@ -533,17 +512,14 @@ impl<'a> ASINTEN_W<'a> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum PVALEN_A {
     #[doc = "0: SDCLK and Driver Strength are controlled by Host Controller"]
-    HOST,
+    HOST = 0,
     #[doc = "1: Automatic Selection by Preset Value is Enabled"]
-    AUTO,
+    AUTO = 1,
 }
 impl From<PVALEN_A> for bool {
     #[inline(always)]
     fn from(variant: PVALEN_A) -> Self {
-        match variant {
-            PVALEN_A::HOST => false,
-            PVALEN_A::AUTO => true,
-        }
+        variant as u8 != 0
     }
 }
 #[doc = "Reader of field `PVALEN`"]

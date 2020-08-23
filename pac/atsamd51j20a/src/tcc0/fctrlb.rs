@@ -12,25 +12,21 @@ impl crate::ResetValue for super::FCTRLB {
 }
 #[doc = "Fault B Source\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum SRC_A {
     #[doc = "0: Fault input disabled"]
-    DISABLE,
+    DISABLE = 0,
     #[doc = "1: MCEx (x=0,1) event input"]
-    ENABLE,
+    ENABLE = 1,
     #[doc = "2: Inverted MCEx (x=0,1) event input"]
-    INVERT,
+    INVERT = 2,
     #[doc = "3: Alternate fault (A or B) state at the end of the previous period"]
-    ALTFAULT,
+    ALTFAULT = 3,
 }
 impl From<SRC_A> for u8 {
     #[inline(always)]
     fn from(variant: SRC_A) -> Self {
-        match variant {
-            SRC_A::DISABLE => 0,
-            SRC_A::ENABLE => 1,
-            SRC_A::INVERT => 2,
-            SRC_A::ALTFAULT => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `SRC`"]
@@ -157,25 +153,21 @@ impl<'a> QUAL_W<'a> {
 }
 #[doc = "Fault B Blanking Mode\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum BLANK_A {
     #[doc = "0: Blanking applied from start of the ramp"]
-    START,
+    START = 0,
     #[doc = "1: Blanking applied from rising edge of the output waveform"]
-    RISE,
+    RISE = 1,
     #[doc = "2: Blanking applied from falling edge of the output waveform"]
-    FALL,
+    FALL = 2,
     #[doc = "3: Blanking applied from each toggle of the output waveform"]
-    BOTH,
+    BOTH = 3,
 }
 impl From<BLANK_A> for u8 {
     #[inline(always)]
     fn from(variant: BLANK_A) -> Self {
-        match variant {
-            BLANK_A::START => 0,
-            BLANK_A::RISE => 1,
-            BLANK_A::FALL => 2,
-            BLANK_A::BOTH => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `BLANK`"]
@@ -278,25 +270,21 @@ impl<'a> RESTART_W<'a> {
 }
 #[doc = "Fault B Halt Mode\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum HALT_A {
     #[doc = "0: Halt action disabled"]
-    DISABLE,
+    DISABLE = 0,
     #[doc = "1: Hardware halt action"]
-    HW,
+    HW = 1,
     #[doc = "2: Software halt action"]
-    SW,
+    SW = 2,
     #[doc = "3: Non-recoverable fault"]
-    NR,
+    NR = 3,
 }
 impl From<HALT_A> for u8 {
     #[inline(always)]
     fn from(variant: HALT_A) -> Self {
-        match variant {
-            HALT_A::DISABLE => 0,
-            HALT_A::HW => 1,
-            HALT_A::SW => 2,
-            HALT_A::NR => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `HALT`"]
@@ -375,25 +363,21 @@ impl<'a> HALT_W<'a> {
 }
 #[doc = "Fault B Capture Channel\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum CHSEL_A {
     #[doc = "0: Capture value stored in channel 0"]
-    CC0,
+    CC0 = 0,
     #[doc = "1: Capture value stored in channel 1"]
-    CC1,
+    CC1 = 1,
     #[doc = "2: Capture value stored in channel 2"]
-    CC2,
+    CC2 = 2,
     #[doc = "3: Capture value stored in channel 3"]
-    CC3,
+    CC3 = 3,
 }
 impl From<CHSEL_A> for u8 {
     #[inline(always)]
     fn from(variant: CHSEL_A) -> Self {
-        match variant {
-            CHSEL_A::CC0 => 0,
-            CHSEL_A::CC1 => 1,
-            CHSEL_A::CC2 => 2,
-            CHSEL_A::CC3 => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `CHSEL`"]
@@ -472,37 +456,29 @@ impl<'a> CHSEL_W<'a> {
 }
 #[doc = "Fault B Capture Action\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum CAPTURE_A {
     #[doc = "0: No capture"]
-    DISABLE,
+    DISABLE = 0,
     #[doc = "1: Capture on fault"]
-    CAPT,
+    CAPT = 1,
     #[doc = "2: Minimum capture"]
-    CAPTMIN,
+    CAPTMIN = 2,
     #[doc = "3: Maximum capture"]
-    CAPTMAX,
+    CAPTMAX = 3,
     #[doc = "4: Minimum local detection"]
-    LOCMIN,
+    LOCMIN = 4,
     #[doc = "5: Maximum local detection"]
-    LOCMAX,
+    LOCMAX = 5,
     #[doc = "6: Minimum and maximum local detection"]
-    DERIV0,
+    DERIV0 = 6,
     #[doc = "7: Capture with ramp index as MSB value"]
-    CAPTMARK,
+    CAPTMARK = 7,
 }
 impl From<CAPTURE_A> for u8 {
     #[inline(always)]
     fn from(variant: CAPTURE_A) -> Self {
-        match variant {
-            CAPTURE_A::DISABLE => 0,
-            CAPTURE_A::CAPT => 1,
-            CAPTURE_A::CAPTMIN => 2,
-            CAPTURE_A::CAPTMAX => 3,
-            CAPTURE_A::LOCMIN => 4,
-            CAPTURE_A::LOCMAX => 5,
-            CAPTURE_A::DERIV0 => 6,
-            CAPTURE_A::CAPTMARK => 7,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `CAPTURE`"]

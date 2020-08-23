@@ -12,34 +12,23 @@ impl crate::ResetValue for super::SLEEPCFG {
 }
 #[doc = "Sleep Mode\n\nValue on reset: 2"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum SLEEPMODE_A {
-    #[doc = "0: CPU clock is OFF"]
-    IDLE0,
-    #[doc = "1: AHB clock is OFF"]
-    IDLE1,
-    #[doc = "2: APB clock are OFF"]
-    IDLE2,
+    #[doc = "2: CPU, AHBx, and APBx clocks are OFF"]
+    IDLE = 2,
     #[doc = "4: All Clocks are OFF"]
-    STANDBY,
+    STANDBY = 4,
     #[doc = "5: Backup domain is ON as well as some PDRAMs"]
-    HIBERNATE,
+    HIBERNATE = 5,
     #[doc = "6: Only Backup domain is powered ON"]
-    BACKUP,
+    BACKUP = 6,
     #[doc = "7: All power domains are powered OFF"]
-    OFF,
+    OFF = 7,
 }
 impl From<SLEEPMODE_A> for u8 {
     #[inline(always)]
     fn from(variant: SLEEPMODE_A) -> Self {
-        match variant {
-            SLEEPMODE_A::IDLE0 => 0,
-            SLEEPMODE_A::IDLE1 => 1,
-            SLEEPMODE_A::IDLE2 => 2,
-            SLEEPMODE_A::STANDBY => 4,
-            SLEEPMODE_A::HIBERNATE => 5,
-            SLEEPMODE_A::BACKUP => 6,
-            SLEEPMODE_A::OFF => 7,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `SLEEPMODE`"]
@@ -50,9 +39,7 @@ impl SLEEPMODE_R {
     pub fn variant(&self) -> crate::Variant<u8, SLEEPMODE_A> {
         use crate::Variant::*;
         match self.bits {
-            0 => Val(SLEEPMODE_A::IDLE0),
-            1 => Val(SLEEPMODE_A::IDLE1),
-            2 => Val(SLEEPMODE_A::IDLE2),
+            2 => Val(SLEEPMODE_A::IDLE),
             4 => Val(SLEEPMODE_A::STANDBY),
             5 => Val(SLEEPMODE_A::HIBERNATE),
             6 => Val(SLEEPMODE_A::BACKUP),
@@ -60,20 +47,10 @@ impl SLEEPMODE_R {
             i => Res(i),
         }
     }
-    #[doc = "Checks if the value of the field is `IDLE0`"]
+    #[doc = "Checks if the value of the field is `IDLE`"]
     #[inline(always)]
-    pub fn is_idle0(&self) -> bool {
-        *self == SLEEPMODE_A::IDLE0
-    }
-    #[doc = "Checks if the value of the field is `IDLE1`"]
-    #[inline(always)]
-    pub fn is_idle1(&self) -> bool {
-        *self == SLEEPMODE_A::IDLE1
-    }
-    #[doc = "Checks if the value of the field is `IDLE2`"]
-    #[inline(always)]
-    pub fn is_idle2(&self) -> bool {
-        *self == SLEEPMODE_A::IDLE2
+    pub fn is_idle(&self) -> bool {
+        *self == SLEEPMODE_A::IDLE
     }
     #[doc = "Checks if the value of the field is `STANDBY`"]
     #[inline(always)]
@@ -106,20 +83,10 @@ impl<'a> SLEEPMODE_W<'a> {
     pub fn variant(self, variant: SLEEPMODE_A) -> &'a mut W {
         unsafe { self.bits(variant.into()) }
     }
-    #[doc = "CPU clock is OFF"]
+    #[doc = "CPU, AHBx, and APBx clocks are OFF"]
     #[inline(always)]
-    pub fn idle0(self) -> &'a mut W {
-        self.variant(SLEEPMODE_A::IDLE0)
-    }
-    #[doc = "AHB clock is OFF"]
-    #[inline(always)]
-    pub fn idle1(self) -> &'a mut W {
-        self.variant(SLEEPMODE_A::IDLE1)
-    }
-    #[doc = "APB clock are OFF"]
-    #[inline(always)]
-    pub fn idle2(self) -> &'a mut W {
-        self.variant(SLEEPMODE_A::IDLE2)
+    pub fn idle(self) -> &'a mut W {
+        self.variant(SLEEPMODE_A::IDLE)
     }
     #[doc = "All Clocks are OFF"]
     #[inline(always)]

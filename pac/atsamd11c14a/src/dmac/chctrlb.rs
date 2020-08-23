@@ -12,34 +12,27 @@ impl crate::ResetValue for super::CHCTRLB {
 }
 #[doc = "Event Input Action\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum EVACT_A {
     #[doc = "0: No action"]
-    NOACT,
+    NOACT = 0,
     #[doc = "1: Transfer and periodic transfer trigger"]
-    TRIG,
+    TRIG = 1,
     #[doc = "2: Conditional transfer trigger"]
-    CTRIG,
+    CTRIG = 2,
     #[doc = "3: Conditional block transfer"]
-    CBLOCK,
+    CBLOCK = 3,
     #[doc = "4: Channel suspend operation"]
-    SUSPEND,
+    SUSPEND = 4,
     #[doc = "5: Channel resume operation"]
-    RESUME,
+    RESUME = 5,
     #[doc = "6: Skip next block suspend action"]
-    SSKIP,
+    SSKIP = 6,
 }
 impl From<EVACT_A> for u8 {
     #[inline(always)]
     fn from(variant: EVACT_A) -> Self {
-        match variant {
-            EVACT_A::NOACT => 0,
-            EVACT_A::TRIG => 1,
-            EVACT_A::CTRIG => 2,
-            EVACT_A::CBLOCK => 3,
-            EVACT_A::SUSPEND => 4,
-            EVACT_A::RESUME => 5,
-            EVACT_A::SSKIP => 6,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `EVACT`"]
@@ -198,25 +191,21 @@ impl<'a> EVOE_W<'a> {
 }
 #[doc = "Channel Arbitration Level\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum LVL_A {
     #[doc = "0: Channel Priority Level 0"]
-    LVL0,
+    LVL0 = 0,
     #[doc = "1: Channel Priority Level 1"]
-    LVL1,
+    LVL1 = 1,
     #[doc = "2: Channel Priority Level 2"]
-    LVL2,
+    LVL2 = 2,
     #[doc = "3: Channel Priority Level 3"]
-    LVL3,
+    LVL3 = 3,
 }
 impl From<LVL_A> for u8 {
     #[inline(always)]
     fn from(variant: LVL_A) -> Self {
-        match variant {
-            LVL_A::LVL0 => 0,
-            LVL_A::LVL1 => 1,
-            LVL_A::LVL2 => 2,
-            LVL_A::LVL3 => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `LVL`"]
@@ -295,16 +284,15 @@ impl<'a> LVL_W<'a> {
 }
 #[doc = "Trigger Source\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum TRIGSRC_A {
     #[doc = "0: Only software/event triggers"]
-    DISABLE,
+    DISABLE = 0,
 }
 impl From<TRIGSRC_A> for u8 {
     #[inline(always)]
     fn from(variant: TRIGSRC_A) -> Self {
-        match variant {
-            TRIGSRC_A::DISABLE => 0,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `TRIGSRC`"]
@@ -349,22 +337,19 @@ impl<'a> TRIGSRC_W<'a> {
 }
 #[doc = "Trigger Action\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum TRIGACT_A {
     #[doc = "0: One trigger required for each block transfer"]
-    BLOCK,
+    BLOCK = 0,
     #[doc = "2: One trigger required for each beat transfer"]
-    BEAT,
+    BEAT = 2,
     #[doc = "3: One trigger required for each transaction"]
-    TRANSACTION,
+    TRANSACTION = 3,
 }
 impl From<TRIGACT_A> for u8 {
     #[inline(always)]
     fn from(variant: TRIGACT_A) -> Self {
-        match variant {
-            TRIGACT_A::BLOCK => 0,
-            TRIGACT_A::BEAT => 2,
-            TRIGACT_A::TRANSACTION => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `TRIGACT`"]
@@ -431,22 +416,19 @@ impl<'a> TRIGACT_W<'a> {
 }
 #[doc = "Software Command\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum CMD_A {
     #[doc = "0: No action"]
-    NOACT,
+    NOACT = 0,
     #[doc = "1: Channel suspend operation"]
-    SUSPEND,
+    SUSPEND = 1,
     #[doc = "2: Channel resume operation"]
-    RESUME,
+    RESUME = 2,
 }
 impl From<CMD_A> for u8 {
     #[inline(always)]
     fn from(variant: CMD_A) -> Self {
-        match variant {
-            CMD_A::NOACT => 0,
-            CMD_A::SUSPEND => 1,
-            CMD_A::RESUME => 2,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `CMD`"]

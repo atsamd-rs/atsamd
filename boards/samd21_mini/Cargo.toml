@@ -1,6 +1,6 @@
 [package]
 name = "samd21_mini"
-version = "0.5.0"
+version = "0.6.0"
 authors = ["Ze'ev Klapow <zklapow@gmail.com>"]
 description = "Board Support crate for the Sparkfun SAMD21 Mini Breakout"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
@@ -8,6 +8,7 @@ license = "MIT OR Apache-2.0"
 repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
 documentation = "https://atsamd-rs.github.io/atsamd/atsamd21g18a/samd21_mini/"
+edition = "2018"
 
 [dependencies]
 cortex-m = "~0.6"
@@ -20,14 +21,14 @@ optional = true
 
 [dependencies.atsamd-hal]
 path = "../../hal"
-version = "~0.8"
+version = "~0.9"
 default-features = false
 
 [dev-dependencies]
 panic-halt = "~0.2"
 panic-semihosting = "~0.5"
 cortex-m-semihosting = "~0.3"
-cortex-m-rtfm = "~0.4"
+cortex-m-rtic = "~0.5.1"
 
 [features]
 # ask the HAL to enable atsamd21g18a support

@@ -12,34 +12,27 @@ impl crate::ResetValue for super::WAVE {
 }
 #[doc = "Waveform Generation\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum WAVEGEN_A {
     #[doc = "0: Normal frequency"]
-    NFRQ,
+    NFRQ = 0,
     #[doc = "1: Match frequency"]
-    MFRQ,
+    MFRQ = 1,
     #[doc = "2: Normal PWM"]
-    NPWM,
+    NPWM = 2,
     #[doc = "4: Dual-slope critical"]
-    DSCRITICAL,
+    DSCRITICAL = 4,
     #[doc = "5: Dual-slope with interrupt/event condition when COUNT reaches ZERO"]
-    DSBOTTOM,
+    DSBOTTOM = 5,
     #[doc = "6: Dual-slope with interrupt/event condition when COUNT reaches ZERO or TOP"]
-    DSBOTH,
+    DSBOTH = 6,
     #[doc = "7: Dual-slope with interrupt/event condition when COUNT reaches TOP"]
-    DSTOP,
+    DSTOP = 7,
 }
 impl From<WAVEGEN_A> for u8 {
     #[inline(always)]
     fn from(variant: WAVEGEN_A) -> Self {
-        match variant {
-            WAVEGEN_A::NFRQ => 0,
-            WAVEGEN_A::MFRQ => 1,
-            WAVEGEN_A::NPWM => 2,
-            WAVEGEN_A::DSCRITICAL => 4,
-            WAVEGEN_A::DSBOTTOM => 5,
-            WAVEGEN_A::DSBOTH => 6,
-            WAVEGEN_A::DSTOP => 7,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `WAVEGEN`"]
@@ -150,25 +143,21 @@ impl<'a> WAVEGEN_W<'a> {
 }
 #[doc = "Ramp Mode\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum RAMP_A {
     #[doc = "0: RAMP1 operation"]
-    RAMP1,
+    RAMP1 = 0,
     #[doc = "1: Alternative RAMP2 operation"]
-    RAMP2A,
+    RAMP2A = 1,
     #[doc = "2: RAMP2 operation"]
-    RAMP2,
+    RAMP2 = 2,
     #[doc = "3: Critical RAMP2 operation"]
-    RAMP2C,
+    RAMP2C = 3,
 }
 impl From<RAMP_A> for u8 {
     #[inline(always)]
     fn from(variant: RAMP_A) -> Self {
-        match variant {
-            RAMP_A::RAMP1 => 0,
-            RAMP_A::RAMP2A => 1,
-            RAMP_A::RAMP2 => 2,
-            RAMP_A::RAMP2C => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `RAMP`"]

@@ -12,34 +12,27 @@ impl crate::ResetValue for super::MASK {
 }
 #[doc = "Alarm Mask Selection\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum SEL_A {
     #[doc = "0: Alarm Disabled"]
-    OFF,
+    OFF = 0,
     #[doc = "1: Match seconds only"]
-    SS,
+    SS = 1,
     #[doc = "2: Match seconds and minutes only"]
-    MMSS,
+    MMSS = 2,
     #[doc = "3: Match seconds, minutes, and hours only"]
-    HHMMSS,
+    HHMMSS = 3,
     #[doc = "4: Match seconds, minutes, hours, and days only"]
-    DDHHMMSS,
+    DDHHMMSS = 4,
     #[doc = "5: Match seconds, minutes, hours, days, and months only"]
-    MMDDHHMMSS,
+    MMDDHHMMSS = 5,
     #[doc = "6: Match seconds, minutes, hours, days, months, and years"]
-    YYMMDDHHMMSS,
+    YYMMDDHHMMSS = 6,
 }
 impl From<SEL_A> for u8 {
     #[inline(always)]
     fn from(variant: SEL_A) -> Self {
-        match variant {
-            SEL_A::OFF => 0,
-            SEL_A::SS => 1,
-            SEL_A::MMSS => 2,
-            SEL_A::HHMMSS => 3,
-            SEL_A::DDHHMMSS => 4,
-            SEL_A::MMDDHHMMSS => 5,
-            SEL_A::YYMMDDHHMMSS => 6,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `SEL`"]

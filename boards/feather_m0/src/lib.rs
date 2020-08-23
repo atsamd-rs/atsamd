@@ -14,7 +14,7 @@ pub use hal::common::*;
 pub use hal::samd21::*;
 pub use hal::target_device as pac;
 
-use gpio::{Floating, Input, IntoFunction, PfC, Port};
+use gpio::{Floating, Input, PfC, Port};
 use hal::clock::GenericClockController;
 use hal::sercom::{I2CMaster3, PadPin, SPIMaster4, UART0};
 use hal::time::Hertz;
@@ -176,6 +176,8 @@ pub fn usb_allocator(
     dp: gpio::Pa25<Input<Floating>>,
     port: &mut Port,
 ) -> UsbBusAllocator<UsbBus> {
+    use gpio::IntoFunction;
+
     let gclk0 = clocks.gclk0();
     let usb_clock = &clocks.usb(&gclk0).unwrap();
 

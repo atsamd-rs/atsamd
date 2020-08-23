@@ -156,37 +156,29 @@ impl<'a> DMAEN_W<'a> {
 }
 #[doc = "Debounce Freqnuency\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum DEBF_A {
     #[doc = "0: CLK_RTC_DEB = CLK_RTC/2"]
-    DIV2,
+    DIV2 = 0,
     #[doc = "1: CLK_RTC_DEB = CLK_RTC/4"]
-    DIV4,
+    DIV4 = 1,
     #[doc = "2: CLK_RTC_DEB = CLK_RTC/8"]
-    DIV8,
+    DIV8 = 2,
     #[doc = "3: CLK_RTC_DEB = CLK_RTC/16"]
-    DIV16,
+    DIV16 = 3,
     #[doc = "4: CLK_RTC_DEB = CLK_RTC/32"]
-    DIV32,
+    DIV32 = 4,
     #[doc = "5: CLK_RTC_DEB = CLK_RTC/64"]
-    DIV64,
+    DIV64 = 5,
     #[doc = "6: CLK_RTC_DEB = CLK_RTC/128"]
-    DIV128,
+    DIV128 = 6,
     #[doc = "7: CLK_RTC_DEB = CLK_RTC/256"]
-    DIV256,
+    DIV256 = 7,
 }
 impl From<DEBF_A> for u8 {
     #[inline(always)]
     fn from(variant: DEBF_A) -> Self {
-        match variant {
-            DEBF_A::DIV2 => 0,
-            DEBF_A::DIV4 => 1,
-            DEBF_A::DIV8 => 2,
-            DEBF_A::DIV16 => 3,
-            DEBF_A::DIV32 => 4,
-            DEBF_A::DIV64 => 5,
-            DEBF_A::DIV128 => 6,
-            DEBF_A::DIV256 => 7,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `DEBF`"]
@@ -309,37 +301,29 @@ impl<'a> DEBF_W<'a> {
 }
 #[doc = "Active Layer Freqnuency\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum ACTF_A {
     #[doc = "0: CLK_RTC_OUT = CLK_RTC/2"]
-    DIV2,
+    DIV2 = 0,
     #[doc = "1: CLK_RTC_OUT = CLK_RTC/4"]
-    DIV4,
+    DIV4 = 1,
     #[doc = "2: CLK_RTC_OUT = CLK_RTC/8"]
-    DIV8,
+    DIV8 = 2,
     #[doc = "3: CLK_RTC_OUT = CLK_RTC/16"]
-    DIV16,
+    DIV16 = 3,
     #[doc = "4: CLK_RTC_OUT = CLK_RTC/32"]
-    DIV32,
+    DIV32 = 4,
     #[doc = "5: CLK_RTC_OUT = CLK_RTC/64"]
-    DIV64,
+    DIV64 = 5,
     #[doc = "6: CLK_RTC_OUT = CLK_RTC/128"]
-    DIV128,
+    DIV128 = 6,
     #[doc = "7: CLK_RTC_OUT = CLK_RTC/256"]
-    DIV256,
+    DIV256 = 7,
 }
 impl From<ACTF_A> for u8 {
     #[inline(always)]
     fn from(variant: ACTF_A) -> Self {
-        match variant {
-            ACTF_A::DIV2 => 0,
-            ACTF_A::DIV4 => 1,
-            ACTF_A::DIV8 => 2,
-            ACTF_A::DIV16 => 3,
-            ACTF_A::DIV32 => 4,
-            ACTF_A::DIV64 => 5,
-            ACTF_A::DIV128 => 6,
-            ACTF_A::DIV256 => 7,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `ACTF`"]

@@ -170,22 +170,19 @@ impl<'a> UIHASH_W<'a> {
 }
 #[doc = "User SHA Algorithm\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum UALGO_A {
     #[doc = "0: SHA1 Algorithm"]
-    SHA1,
+    SHA1 = 0,
     #[doc = "1: SHA256 Algorithm"]
-    SHA256,
+    SHA256 = 1,
     #[doc = "4: SHA224 Algorithm"]
-    SHA224,
+    SHA224 = 4,
 }
 impl From<UALGO_A> for u8 {
     #[inline(always)]
     fn from(variant: UALGO_A) -> Self {
-        match variant {
-            UALGO_A::SHA1 => 0,
-            UALGO_A::SHA256 => 1,
-            UALGO_A::SHA224 => 4,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `UALGO`"]

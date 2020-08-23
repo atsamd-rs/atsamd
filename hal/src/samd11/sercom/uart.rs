@@ -6,7 +6,6 @@ use crate::target_device::sercom0::USART;
 use crate::target_device::{PM, SERCOM0, SERCOM1};
 use crate::time::Hertz;
 use core::fmt;
-use nb;
 
 /// The RxpoTxpo trait defines a way to get the data in and data out pin out
 /// values for a given UARTXPadout configuration. You should not implement
@@ -270,5 +269,5 @@ fn calculate_baud_value(baudrate: u32, clk_freq: u32, n_samples: u8) -> u16 {
     let scale = (1u64 << SHIFT) - ratio;
     let baud_calculated = (65536u64 * scale) >> SHIFT;
 
-    return baud_calculated as u16;
+    baud_calculated as u16
 }

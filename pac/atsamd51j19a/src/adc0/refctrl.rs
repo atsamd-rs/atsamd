@@ -12,31 +12,25 @@ impl crate::ResetValue for super::REFCTRL {
 }
 #[doc = "Reference Selection\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum REFSEL_A {
     #[doc = "0: Internal Bandgap Reference"]
-    INTREF,
+    INTREF = 0,
     #[doc = "2: 1/2 VDDANA"]
-    INTVCC0,
+    INTVCC0 = 2,
     #[doc = "3: VDDANA"]
-    INTVCC1,
+    INTVCC1 = 3,
     #[doc = "4: External Reference"]
-    AREFA,
+    AREFA = 4,
     #[doc = "5: External Reference"]
-    AREFB,
+    AREFB = 5,
     #[doc = "6: External Reference (only on ADC1)"]
-    AREFC,
+    AREFC = 6,
 }
 impl From<REFSEL_A> for u8 {
     #[inline(always)]
     fn from(variant: REFSEL_A) -> Self {
-        match variant {
-            REFSEL_A::INTREF => 0,
-            REFSEL_A::INTVCC0 => 2,
-            REFSEL_A::INTVCC1 => 3,
-            REFSEL_A::AREFA => 4,
-            REFSEL_A::AREFB => 5,
-            REFSEL_A::AREFC => 6,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `REFSEL`"]

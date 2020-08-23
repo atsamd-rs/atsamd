@@ -1,8 +1,9 @@
-#[doc = "Reader of register SCALER%s"]
+#[doc = "Reader of register SCALER[%s]"]
 pub type R = crate::R<u8, super::SCALER>;
-#[doc = "Writer for register SCALER%s"]
+#[doc = "Writer for register SCALER[%s]"]
 pub type W = crate::W<u8, super::SCALER>;
-#[doc = "Register SCALER%s `reset()`'s with value 0"]
+#[doc = "Register SCALER[%s]
+`reset()`'s with value 0"]
 impl crate::ResetValue for super::SCALER {
     type Type = u8;
     #[inline(always)]

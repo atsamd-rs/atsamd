@@ -1,6 +1,6 @@
 [package]
 name = "trellis_m4"
-version = "0.5.0"
+version = "0.6.0"
 authors = [
     "Tony Arcieri <bascule@gmail.com>",
     "Paul Sajna <sajattack@gmail.com>",
@@ -29,7 +29,7 @@ optional = true
 
 [dependencies.atsamd-hal]
 path = "../../hal"
-version = "~0.8"
+version = "~0.9"
 default-features = false
 
 [dependencies.keypad]
@@ -40,7 +40,7 @@ optional = true
 panic-halt = "~0.2"
 panic-semihosting = "~0.5"
 cortex-m-semihosting = "~0.3"
-cortex-m-rtfm = "~0.4"
+cortex-m-rtic = "~0.5.1"
 panic_rtt = "~0.2"
 smart-leds = "0.3"
 

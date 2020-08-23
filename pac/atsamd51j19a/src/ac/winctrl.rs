@@ -36,25 +36,21 @@ impl<'a> WEN0_W<'a> {
 }
 #[doc = "Window 0 Interrupt Selection\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum WINTSEL0_A {
     #[doc = "0: Interrupt on signal above window"]
-    ABOVE,
+    ABOVE = 0,
     #[doc = "1: Interrupt on signal inside window"]
-    INSIDE,
+    INSIDE = 1,
     #[doc = "2: Interrupt on signal below window"]
-    BELOW,
+    BELOW = 2,
     #[doc = "3: Interrupt on signal outside window"]
-    OUTSIDE,
+    OUTSIDE = 3,
 }
 impl From<WINTSEL0_A> for u8 {
     #[inline(always)]
     fn from(variant: WINTSEL0_A) -> Self {
-        match variant {
-            WINTSEL0_A::ABOVE => 0,
-            WINTSEL0_A::INSIDE => 1,
-            WINTSEL0_A::BELOW => 2,
-            WINTSEL0_A::OUTSIDE => 3,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `WINTSEL0`"]

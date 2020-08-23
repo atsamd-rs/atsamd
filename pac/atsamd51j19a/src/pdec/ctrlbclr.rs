@@ -36,31 +36,25 @@ impl<'a> LUPD_W<'a> {
 }
 #[doc = "Command\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum CMD_A {
     #[doc = "0: No action"]
-    NONE,
+    NONE = 0,
     #[doc = "1: Force a counter restart or retrigger"]
-    RETRIGGER,
+    RETRIGGER = 1,
     #[doc = "2: Force update of double buffered registers"]
-    UPDATE,
+    UPDATE = 2,
     #[doc = "3: Force a read synchronization of COUNT"]
-    READSYNC,
+    READSYNC = 3,
     #[doc = "4: Start QDEC/HALL"]
-    START,
+    START = 4,
     #[doc = "5: Stop QDEC/HALL"]
-    STOP,
+    STOP = 5,
 }
 impl From<CMD_A> for u8 {
     #[inline(always)]
     fn from(variant: CMD_A) -> Self {
-        match variant {
-            CMD_A::NONE => 0,
-            CMD_A::RETRIGGER => 1,
-            CMD_A::UPDATE => 2,
-            CMD_A::READSYNC => 3,
-            CMD_A::START => 4,
-            CMD_A::STOP => 5,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `CMD`"]

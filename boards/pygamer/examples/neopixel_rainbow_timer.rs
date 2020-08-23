@@ -1,17 +1,18 @@
 //! Rotate all neopixel leds through a rainbow. Uses a Timer as a timer source.
+//!
+//! Note leds may appear white during debug. Either build for release or add
+//! opt-level = 2 to profile.dev in Cargo.toml
 
 #![no_std]
 #![no_main]
 
-#[allow(unused_imports)]
-use panic_halt;
+use panic_halt as _;
 use pygamer as hal;
 
 use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 use hal::{clock::GenericClockController, delay::Delay, timer::TimerCounter};
-
 use smart_leds::{
     hsv::{hsv2rgb, Hsv},
     SmartLedsWrite,
@@ -33,7 +34,7 @@ fn main() -> ! {
     let gclk0 = clocks.gclk0();
     let timer_clock = clocks.tc2_tc3(&gclk0).unwrap();
     let mut timer = TimerCounter::tc3_(&timer_clock, peripherals.TC3, &mut peripherals.MCLK);
-    timer.start(3_000_000u32.hz());
+    timer.start(3.mhz());
 
     let mut neopixel = pins.neopixel.init(timer, &mut pins.port);
     let mut delay = Delay::new(core.SYST, &mut clocks);

@@ -12,31 +12,25 @@ impl crate::ResetValue for super::NMICTRL {
 }
 #[doc = "Non-Maskable Interrupt Sense\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[repr(u8)]
 pub enum NMISENSE_A {
     #[doc = "0: No detection"]
-    NONE,
+    NONE = 0,
     #[doc = "1: Rising-edge detection"]
-    RISE,
+    RISE = 1,
     #[doc = "2: Falling-edge detection"]
-    FALL,
+    FALL = 2,
     #[doc = "3: Both-edges detection"]
-    BOTH,
+    BOTH = 3,
     #[doc = "4: High-level detection"]
-    HIGH,
+    HIGH = 4,
     #[doc = "5: Low-level detection"]
-    LOW,
+    LOW = 5,
 }
 impl From<NMISENSE_A> for u8 {
     #[inline(always)]
     fn from(variant: NMISENSE_A) -> Self {
-        match variant {
-            NMISENSE_A::NONE => 0,
-            NMISENSE_A::RISE => 1,
-            NMISENSE_A::FALL => 2,
-            NMISENSE_A::BOTH => 3,
-            NMISENSE_A::HIGH => 4,
-            NMISENSE_A::LOW => 5,
-        }
+        variant as _
     }
 }
 #[doc = "Reader of field `NMISENSE`"]
