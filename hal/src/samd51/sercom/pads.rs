@@ -284,6 +284,7 @@ pad!(Sercom7Pad0 {
     Pb21(PfD),
     Pc12(PfC),
     Pd8(PfC),
+    Pb30(PfC),
 });
 
 #[cfg(feature = "samd51p19a")]
@@ -291,6 +292,7 @@ pad!(Sercom7Pad1 {
     Pb20(PfD),
     Pc13(PfC),
     Pd9(PfC),
+    Pb31(PfC),
 });
 
 #[cfg(feature = "samd51p19a")]
