@@ -13,6 +13,22 @@ use hal::timer::SpinTimer;
 
 use smart_leds::{hsv::RGB8, SmartLedsWrite};
 
+fn rgb_wheel(position: u8) -> RGB8 {
+    match position {
+        0..=85 => {
+            RGB8 { r: (255 - position * 3), g: (position * 3), b: 0 }
+        }
+        86..=170 => {
+            let position = position - 85;
+            RGB8 { r: 0, g: (255 - position * 3), b: (position * 3) }
+        }
+        _ => {
+            let position = position - 170;
+            RGB8 { r: (position * 3), g: 0, b: (255 - position * 3) }
+        }
+    }
+}
+
 #[entry]
 fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
@@ -28,17 +44,17 @@ fn main() -> ! {
     let mut pins = hal::Pins::new(peripherals.PORT).split();
 
     let mut rgb = hal::dotstar_bitbang(pins.dotstar, &mut pins.port, SpinTimer::new(12));
-    let off: [RGB8; 1] = [RGB8 { r: 0, g: 0, b: 0 }];
-    let red: [RGB8; 1] = [RGB8 { r: 100, g: 0, b: 0 }];
-    let green: [RGB8; 1] = [RGB8 { r: 0, g: 100, b: 0 }];
 
-    rgb.write(off.iter().cloned()).unwrap();
-    delay.delay_ms(1200u16);
 
+    let mut val = 0;
     loop {
-        rgb.write(red.iter().cloned()).unwrap();
-        delay.delay_ms(60u8);
-        rgb.write(green.iter().cloned()).unwrap();
+        // Can't use because of running u8 % u16
+        val = match val {
+            255 => 0,
+            _ => val + 1
+        };
+        let color: [RGB8; 1] = [rgb_wheel(val)];
+        rgb.write(color.iter().cloned()).unwrap();
         delay.delay_ms(60u8);
     }
 }
