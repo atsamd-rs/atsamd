@@ -14,8 +14,11 @@ pub use hal::common::*;
 pub use hal::samd21::*;
 pub use hal::target_device as pac;
 
+use apa102_spi::Apa102;
+use embedded_hal::timer::{CountDown, Periodic};
 use gpio::{Floating, Input, PfC, Port};
 use hal::clock::GenericClockController;
+use hal::gpio::*;
 use hal::sercom::{I2CMaster3, PadPin, SPIMaster4, SPIMaster5, UART0};
 use hal::time::Hertz;
 
@@ -97,6 +100,53 @@ define_pins!(
     pin usb_dp = a25,
 );
 
+impl Pins {
+    /// Split the device pins into subsets
+    pub fn split(self) -> Sets {
+        let dotstar = Dotstar {
+            ci: self.dotstar_ci,
+            di: self.dotstar_di,
+            nc: self.miso,
+        };
+
+        Sets {
+            dotstar,
+            port: self.port,
+        }
+    }
+}
+
+/// Sets of pins split apart by category
+pub struct Sets {
+    /// Dotstar (RGB LED) pins
+    pub dotstar: Dotstar,
+    /// Port
+    pub port: Port,
+}
+/// Dotstar pins
+pub struct Dotstar {
+    pub ci: Pa0<Input<Floating>>,
+    pub di: Pa1<Input<Floating>>,
+    pub nc: Pa12<Input<Floating>>,
+}
+
+impl Dotstar {
+    pub fn dotstar<T: CountDown + Periodic>(
+        self,
+        port: &mut Port,
+        timer: T,
+    ) -> apa102_spi::Apa102<
+        bitbang_hal::spi::SPI<Pa12<Input<PullUp>>, Pa1<Output<PushPull>>, Pa0<Output<PushPull>>, T>,
+    > {
+        let di = self.di.into_push_pull_output(port);
+        let ci = self.ci.into_push_pull_output(port);
+        let nc = self.nc.into_pull_up_input(port);
+
+        let spi = bitbang_hal::spi::SPI::new(apa102_spi::MODE, nc, di, ci, timer);
+        Apa102::new_with_custom_postamble(spi, 4, false)
+    }
+}
+
 /// Convenience for setting up the externally labelled SPI.
 /// This powers up SERCOM4 and configures it for use as an
 /// SPI Master in SPI Mode 0.
@@ -172,6 +222,18 @@ pub fn flash_spi_master(
     cs.set_high().unwrap();
 
     (flash, cs)
+}
+
+/// Convenience for setting up the dotstar LED using bitbang'ed
+/// SPI.
+pub fn dotstar_bitbang<T: CountDown + Periodic>(
+    pins: Dotstar,
+    port: &mut Port,
+    timer: T,
+) -> apa102_spi::Apa102<
+    bitbang_hal::spi::SPI<Pa12<Input<PullUp>>, Pa1<Output<PushPull>>, Pa0<Output<PushPull>>, T>,
+> {
+    pins.dotstar(port, timer)
 }
 
 /// Convenience for setting up the labelled SDA, SCL pins to
