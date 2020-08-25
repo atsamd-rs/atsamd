@@ -48,7 +48,7 @@ fn main() -> ! {
 
     let mut val = 0;
     loop {
-        // Can't use because of running u8 % u16
+        // Can't use the modulo operator on a u8 with an overflowing u8 or with a u16
         val = match val {
             255 => 0,
             _ => val + 1
