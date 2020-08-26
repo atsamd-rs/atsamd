@@ -1,5 +1,8 @@
 #![no_std]
 
+pub mod pins;
+pub use pins::Pins;
+
 extern crate atsamd_hal as hal;
 
 #[cfg(feature = "rt")]
@@ -14,7 +17,6 @@ pub use hal::common::*;
 pub use hal::samd21::*;
 pub use hal::target_device as pac;
 
-use apa102_spi::Apa102;
 use embedded_hal::timer::{CountDown, Periodic};
 use gpio::{Floating, Input, PfC, Port};
 use hal::clock::GenericClockController;
@@ -27,125 +29,6 @@ use hal::usb::usb_device::bus::UsbBusAllocator;
 #[cfg(feature = "usb")]
 pub use hal::usb::UsbBus;
 
-define_pins!(
-    /// Maps the pins to their arduino names and
-    /// the numbers printed on the board.
-    struct Pins,
-    target_device: target_device,
-
-    /// Analog pin 0.  Can act as a true analog output
-    /// as it has a DAC (which is not currently supported
-    /// by this hal) as well as input.
-    pin a0 = a2,
-    /// Analog Pin 1
-    pin a1 = b8,
-    /// Analog Pin 2
-    pin a2 = b9,
-    /// Analog Pin 3
-    pin a3 = a4,
-    /// Analog Pin 4
-    pin a4 = a5,
-    /// Analog Pin 5
-    pin a5 = b2,
-
-    /// Pin 0, rx
-    pin d0 = a11,
-    /// Pin 1, tx
-    pin d1 = a10,
-    pin d2 = a14,
-    pin d3 = a9,
-    pin d4 = a8,
-    pin d5 = a15,
-    pin d7 = a21,
-    pin d9 = a7,
-    pin d10 = a18,
-    pin d11 = a16,
-    pin d12 = a19,
-    /// Digital pin number 13, which is also attached to
-    /// the red LED.  PWM capable.
-    pin d13 = a17,
-
-    /// The SPI MOSI
-    pin mosi = b10,
-    /// The SPI MISO
-    pin miso = a12,
-    /// The SPI SCK
-    pin sck = b11,
-
-    /// The MOSI pin attached to the on-board SPI flash
-    pin flash_mosi = b22,
-    /// The MISO pin attached to the on-board SPI flash
-    pin flash_miso = b3,
-    /// The SCK pin attached to the on-board SPI flash
-    pin flash_sck = b23,
-    /// The CS pin attached to the on-board SPI flash
-    pin flash_cs = a27,
-
-    /// The I2C clock
-    pin scl = a23,
-    /// The I2C data line
-    pin sda = a22,
-
-    /// The DotStar clock
-    pin dotstar_ci = a0,
-    /// The DotStar data line
-    pin dotstar_di = a1,
-
-    pin swdio = a31,
-    pin swdclk = a30,
-
-    /// The USB D- pad
-    pin usb_dm = a24,
-    /// The USB D+ pad
-    pin usb_dp = a25,
-);
-
-impl Pins {
-    /// Split the device pins into subsets
-    pub fn split(self) -> Sets {
-        let dotstar = Dotstar {
-            ci: self.dotstar_ci,
-            di: self.dotstar_di,
-            nc: self.miso,
-        };
-
-        Sets {
-            dotstar,
-            port: self.port,
-        }
-    }
-}
-
-/// Sets of pins split apart by category
-pub struct Sets {
-    /// Dotstar (RGB LED) pins
-    pub dotstar: Dotstar,
-    /// Port
-    pub port: Port,
-}
-/// Dotstar pins
-pub struct Dotstar {
-    pub ci: Pa0<Input<Floating>>,
-    pub di: Pa1<Input<Floating>>,
-    pub nc: Pa12<Input<Floating>>,
-}
-
-impl Dotstar {
-    pub fn dotstar<T: CountDown + Periodic>(
-        self,
-        port: &mut Port,
-        timer: T,
-    ) -> apa102_spi::Apa102<
-        bitbang_hal::spi::SPI<Pa12<Input<PullUp>>, Pa1<Output<PushPull>>, Pa0<Output<PushPull>>, T>,
-    > {
-        let di = self.di.into_push_pull_output(port);
-        let ci = self.ci.into_push_pull_output(port);
-        let nc = self.nc.into_pull_up_input(port);
-
-        let spi = bitbang_hal::spi::SPI::new(apa102_spi::MODE, nc, di, ci, timer);
-        Apa102::new_with_custom_postamble(spi, 4, false)
-    }
-}
 
 /// Convenience for setting up the externally labelled SPI.
 /// This powers up SERCOM4 and configures it for use as an
@@ -227,13 +110,13 @@ pub fn flash_spi_master(
 /// Convenience for setting up the dotstar LED using bitbang'ed
 /// SPI.
 pub fn dotstar_bitbang<T: CountDown + Periodic>(
-    pins: Dotstar,
+    pins: pins::Dotstar,
     port: &mut Port,
     timer: T,
 ) -> apa102_spi::Apa102<
-    bitbang_hal::spi::SPI<Pa12<Input<PullUp>>, Pa1<Output<PushPull>>, Pa0<Output<PushPull>>, T>,
+    bitbang_hal::spi::SPI<Pb0<Input<PullUp>>, Pa1<Output<PushPull>>, Pa0<Output<PushPull>>, T>,
 > {
-    pins.dotstar(port, timer)
+    pins.init(timer, port)
 }
 
 /// Convenience for setting up the labelled SDA, SCL pins to

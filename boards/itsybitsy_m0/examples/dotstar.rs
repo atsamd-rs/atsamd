@@ -43,7 +43,7 @@ fn main() -> ! {
 
     let mut pins = hal::Pins::new(peripherals.PORT).split();
 
-    let mut rgb = hal::dotstar_bitbang(pins.dotstar, &mut pins.port, SpinTimer::new(12));
+    let mut rgb = pins.dotstar.init(SpinTimer::new(12), &mut pins.port);
 
 
     let mut val = 0;
