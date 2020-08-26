@@ -1,10 +1,13 @@
 //! ItsyBitsy M0 pins
 
-use super::{hal, target_device};
+use super::{hal, pac, target_device};
 
 use embedded_hal::timer::{CountDown, Periodic};
+use hal::clock::GenericClockController;
 use hal::define_pins;
 use hal::gpio::{self, *};
+use hal::sercom::{I2CMaster3, PadPin, SPIMaster4, UART0};
+use hal::time::Hertz;
 
 use apa102_spi::Apa102;
 
@@ -205,10 +208,65 @@ pub struct SPI {
     pub miso: gpio::Pa12<Input<Floating>>,
 }
 
+impl SPI {
+    pub fn init<F: Into<Hertz>>(
+        self,
+        clocks: &mut GenericClockController,
+        bus_speed: F,
+        sercom4: pac::SERCOM4,
+        pm: &mut pac::PM,
+        port: &mut Port,
+    ) -> SPIMaster4<
+        hal::sercom::Sercom4Pad0<gpio::Pa12<gpio::PfD>>,
+        hal::sercom::Sercom4Pad2<gpio::Pb10<gpio::PfD>>,
+        hal::sercom::Sercom4Pad3<gpio::Pb11<gpio::PfD>>,
+    > {
+        let gclk0 = clocks.gclk0();
+        SPIMaster4::new(
+            &clocks.sercom4_core(&gclk0).unwrap(),
+            bus_speed.into(),
+            hal::hal::spi::Mode {
+                phase: hal::hal::spi::Phase::CaptureOnFirstTransition,
+                polarity: hal::hal::spi::Polarity::IdleLow,
+            },
+            sercom4,
+            pm,
+            (
+                self.miso.into_pad(port),
+                self.mosi.into_pad(port),
+                self.sck.into_pad(port)),
+        )
+    }
+}
+
 /// I2C pins
 pub struct I2C {
     pub sda: Pa22<Input<Floating>>,
     pub scl: Pa23<Input<Floating>>,
+}
+
+impl I2C {
+    pub fn init<F: Into<Hertz>>(
+        self,
+        clocks: &mut GenericClockController,
+        bus_speed: F,
+        sercom3: pac::SERCOM3,
+        pm: &mut pac::PM,
+        port: &mut Port,
+    ) -> I2CMaster3<
+        hal::sercom::Sercom3Pad0<hal::gpio::Pa22<hal::gpio::PfC>>,
+        hal::sercom::Sercom3Pad1<hal::gpio::Pa23<hal::gpio::PfC>>,
+    > {
+        let gclk0 = clocks.gclk0();
+        I2CMaster3::new(
+            &clocks.sercom3_core(&gclk0).unwrap(),
+            bus_speed.into(),
+            sercom3,
+            pm,
+            self.sda.into_pad(port),
+            self.scl.into_pad(port),
+        )
+    }
 }
 
 /// USB pins
@@ -217,8 +275,61 @@ pub struct USB {
     pub dp: Pa25<Input<Floating>>,
 }
 
+impl USB {
+    #[cfg(feature = "usb")]
+    pub fn init(
+        self,
+        usb: pac::USB,
+        clocks: &mut GenericClockController,
+        pm: &mut pac::PM,
+        port: &mut Port,
+    ) -> UsbBusAllocator<UsbBus> {
+        use gpio::IntoFunction;
+
+        let gclk0 = clocks.gclk0();
+        let usb_clock = &clocks.usb(&gclk0).unwrap();
+
+        UsbBusAllocator::new(UsbBus::new(
+            usb_clock,
+            pm,
+            self.dm.into_function(port),
+            self.dp.into_function(port),
+            usb,
+        ))
+    }
+}
+
 /// UART pins
 pub struct UART {
     pub tx: Pa10<Input<Floating>>,
     pub rx: Pa11<Input<Floating>>,
+}
+
+impl UART {
+    pub fn init<F: Into<Hertz>>(
+        self,
+        clocks: &mut GenericClockController,
+        baud: F,
+        sercom0: pac::SERCOM0,
+        pm: &mut pac::PM,
+        port: &mut Port,
+    ) -> UART0<
+        hal::sercom::Sercom0Pad3<gpio::Pa11<PfC>>,
+        hal::sercom::Sercom0Pad2<gpio::Pa10<PfC>>,
+        (),
+        (),
+    > {
+        let gclk0 = clocks.gclk0();
+
+        UART0::new(
+            &clocks.sercom0_core(&gclk0).unwrap(),
+            baud.into(),
+            sercom0,
+            pm,
+            (
+                self.rx.into_pad(port),
+                self.tx.into_pad(port),
+            ),
+        )
+    }
 }
