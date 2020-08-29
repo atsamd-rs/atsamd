@@ -17,10 +17,8 @@ pub use hal::common::*;
 pub use hal::samd21::*;
 pub use hal::target_device as pac;
 
-use embedded_hal::timer::{CountDown, Periodic};
 use gpio::{Floating, Input, PfC, Port};
 use hal::clock::GenericClockController;
-use hal::gpio::*;
 use hal::sercom::{I2CMaster3, PadPin, SPIMaster4, SPIMaster5, UART0};
 use hal::time::Hertz;
 
@@ -105,18 +103,6 @@ pub fn flash_spi_master(
     cs.set_high().unwrap();
 
     (flash, cs)
-}
-
-/// Convenience for setting up the dotstar LED using bitbang'ed
-/// SPI.
-pub fn dotstar_bitbang<T: CountDown + Periodic>(
-    pins: pins::Dotstar,
-    port: &mut Port,
-    timer: T,
-) -> apa102_spi::Apa102<
-    bitbang_hal::spi::SPI<Pb0<Input<PullUp>>, Pa1<Output<PushPull>>, Pa0<Output<PushPull>>, T>,
-> {
-    pins.init(timer, port)
 }
 
 /// Convenience for setting up the labelled SDA, SCL pins to
