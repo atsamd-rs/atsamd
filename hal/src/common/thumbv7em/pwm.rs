@@ -7,7 +7,7 @@ use crate::timer::TimerParams;
 use crate::target_device::{MCLK, TC0, TC1, TC2, TC3, TCC0, TCC1, TCC2};
 #[cfg(all(not(feature = "samd51g19a"), not(feature = "samd51g18a")))]
 use crate::target_device::{TC4, TC5, TCC3, TCC4};
-#[cfg(all(feature = "samd51p19a", feature = "same54"))]
+#[cfg(any(feature = "samd51p19a", feature = "same54"))]
 use crate::target_device::{TC6, TC7};
 
 // Timer/Counter (TCx)
@@ -200,7 +200,7 @@ pwm! {
     Pwm5: (TC5, TC5Pinout, Tc4Tc5Clock, apbcmask, tc5_, Pwm5Wrapper),
 }
 
-#[cfg(all(feature = "samd51p19a", feature = "same54"))]
+#[cfg(any(feature = "samd51p19a", feature = "same54"))]
 pwm! {
     Pwm6: (TC6, TC6Pinout, Tc6Tc7Clock, apbdmask, tc6_, Pwm6Wrapper),
     Pwm7: (TC7, TC7Pinout, Tc6Tc7Clock, apbdmask, tc7_, Pwm7Wrapper),
@@ -219,8 +219,145 @@ pub enum Channel {
     _7,
 }
 
+pub enum TCC0Pinout {
+    Pa8(Pa8<PfF>),
+    Pa9(Pa9<PfF>),
+    Pa10(Pa10<PfF>),
+    Pa11(Pa11<PfF>),
+    Pa12(Pa12<PfF>),
+    Pa13(Pa13<PfF>),
+    Pa16(Pa16<PfG>),
+    Pa17(Pa17<PfG>),
+    Pa18(Pa18<PfG>),
+    Pa19(Pa19<PfG>),
+    Pa20(Pa20<PfG>),
+    Pa21(Pa21<PfG>),
+    Pa22(Pa22<PfG>),
+    Pa23(Pa23<PfG>),
+    Pb10(Pb10<PfF>),
+    Pb11(Pb11<PfF>),
+    Pb12(Pb12<PfG>),
+    Pb13(Pb13<PfG>),
+    Pb14(Pb14<PfG>),
+    Pb15(Pb15<PfG>),
+    Pb16(Pb16<PfG>),
+    Pb17(Pb17<PfG>),
+    Pb30(Pb30<PfG>),
+    Pb31(Pb31<PfG>),
+    #[cfg(any(feature = "samd51p19a", feature = "same54"))]
+    Pc4(Pc4<PfF>),
+    #[cfg(any(feature = "samd51p19a", feature = "same54"))]
+    Pc10(Pc10<PfF>),
+    #[cfg(any(feature = "samd51p19a", feature = "same54"))]
+    Pc11(Pc11<PfF>),
+    #[cfg(any(feature = "samd51p19a", feature = "same54"))]
+    Pc12(Pc12<PfF>),
+    #[cfg(any(feature = "samd51p19a", feature = "same54"))]
+    Pc13(Pc13<PfF>),
+    #[cfg(any(feature = "samd51p19a", feature = "same54"))]
+    Pc14(Pc14<PfF>),
+    #[cfg(any(feature = "samd51p19a", feature = "same54"))]
+    Pc15(Pc15<PfF>),
+    #[cfg(any(feature = "samd51p19a", feature = "same54"))]
+    Pc16(Pc16<PfF>),
+    #[cfg(any(feature = "samd51p19a", feature = "same54"))]
+    Pc17(Pc17<PfF>),
+    #[cfg(any(feature = "samd51p19a", feature = "same54"))]
+    Pc18(Pc18<PfF>),
+    #[cfg(any(feature = "samd51p19a", feature = "same54"))]
+    Pc19(Pc19<PfF>),
+    #[cfg(any(feature = "samd51p19a", feature = "same54"))]
+    Pc20(Pc20<PfF>),
+    #[cfg(any(feature = "samd51p19a", feature = "same54"))]
+    Pc21(Pc21<PfF>),
+    #[cfg(any(feature = "samd51p19a", feature = "same54"))]
+    Pc22(Pc22<PfF>),
+    #[cfg(any(feature = "samd51p19a", feature = "same54"))]
+    Pc23(Pc23<PfF>),
+    #[cfg(any(feature = "samd51p19a", feature = "same54"))]
+    Pd8(Pd8<PfF>),
+    #[cfg(any(feature = "samd51p19a", feature = "same54"))]
+    Pd9(Pd9<PfF>),
+    #[cfg(any(feature = "samd51p19a", feature = "same54"))]
+    Pd10(Pd10<PfF>),
+    #[cfg(any(feature = "samd51p19a", feature = "same54"))]
+    Pd11(Pd11<PfF>),
+    #[cfg(any(feature = "samd51p19a", feature = "same54"))]
+    Pd12(Pd12<PfF>),
+}
+
+pub enum TCC1Pinout {
+    Pa8(Pa8<PfG>),
+    Pa9(Pa9<PfG>),
+    Pa10(Pa10<PfG>),
+    Pa11(Pa11<PfG>),
+    Pa12(Pa12<PfG>),
+    Pa13(Pa13<PfG>),
+    Pa14(Pa14<PfG>),
+    Pa15(Pa15<PfG>),
+    Pa16(Pa16<PfF>),
+    Pa17(Pa17<PfF>),
+    Pa18(Pa18<PfF>),
+    Pa19(Pa19<PfF>),
+    Pa20(Pa20<PfF>),
+    Pa21(Pa21<PfF>),
+    Pa22(Pa22<PfF>),
+    Pa23(Pa23<PfF>),
+    Pb10(Pb10<PfG>),
+    Pb11(Pb11<PfG>),
+    Pb18(Pb18<PfF>),
+    Pb19(Pb19<PfF>),
+    Pb20(Pb20<PfF>),
+    Pb21(Pb21<PfF>),
+    Pb26(Pb26<PfF>),
+    Pb27(Pb27<PfF>),
+    Pb28(Pb28<PfF>),
+    Pb29(Pb29<PfF>),
+    #[cfg(any(feature = "samd51p19a", feature = "same54"))]
+    Pc10(Pc10<PfG>),
+    #[cfg(any(feature = "samd51p19a", feature = "same54"))]
+    Pc11(Pc11<PfG>),
+    #[cfg(any(feature = "samd51p19a", feature = "same54"))]
+    Pc12(Pc12<PfG>),
+    #[cfg(any(feature = "samd51p19a", feature = "same54"))]
+    Pc13(Pc13<PfG>),
+    #[cfg(any(feature = "samd51p19a", feature = "same54"))]
+    Pc14(Pc14<PfG>),
+    #[cfg(any(feature = "samd51p19a", feature = "same54"))]
+    Pc15(Pc15<PfG>),
+    #[cfg(any(feature = "samd51p19a", feature = "same54"))]
+    Pd20(Pd20<PfF>),
+    #[cfg(any(feature = "samd51p19a", feature = "same54"))]
+    Pd21(Pd21<PfF>),
+}
+
+pub enum TCC2Pinout {
+    Pa14(Pa14<PfF>),
+    Pa15(Pa15<PfF>),
+    Pa24(Pa24<PfF>),
+    Pa30(Pa30<PfF>),
+    Pa31(Pa31<PfF>),
+    Pb2(Pb2<PfF>),
+}
+
+#[cfg(all(not(feature = "samd51g19a"), not(feature = "samd51g18a")))]
+pub enum TCC3Pinout {
+    Pb12(Pb12<PfF>),
+    Pb13(Pb13<PfF>),
+    Pb16(Pb16<PfF>),
+    Pb17(Pb17<PfF>),
+}
+
+#[cfg(all(not(feature = "samd51g19a"), not(feature = "samd51g18a")))]
+pub enum TCC4Pinout {
+    Pb14(Pb14<PfF>),
+    Pb15(Pb15<PfF>),
+    Pb30(Pb30<PfF>),
+    Pb31(Pb31<PfF>),
+}
+
 macro_rules! pwm_tcc {
-    ($($TYPE:ident: ($TCC:ident, $clock:ident, $apmask:ident, $apbits:ident, $wrapper:ident),)+) => {
+    ($($TYPE:ident: ($TCC:ident, $pinout:ident, $clock:ident, $apmask:ident, $apbits:ident, $wrapper:ident),)+) => {
         $(
 
 pub struct $TYPE {
@@ -228,6 +365,8 @@ pub struct $TYPE {
     /// Used to calculate the period of the pwm.
     clock_freq: Hertz,
     tcc: $TCC,
+    #[allow(dead_code)]
+    pinout: $pinout,
 }
 
 impl $TYPE {
@@ -235,6 +374,7 @@ impl $TYPE {
         clock: &clock::$clock,
         freq: F,
         tcc: $TCC,
+        pinout: $pinout,
         mclk: &mut MCLK,
     ) -> Self {
         let freq = freq.into();
@@ -269,6 +409,7 @@ impl $TYPE {
         Self {
             clock_freq: clock.freq(),
             tcc,
+            pinout,
         }
     }
 }
@@ -343,13 +484,13 @@ impl Pwm for $TYPE {
 }
 
 pwm_tcc! {
-    Tcc0Pwm: (TCC0, Tcc0Tcc1Clock, apbbmask, tcc0_, TccPwm0Wrapper),
-    Tcc1Pwm: (TCC1, Tcc0Tcc1Clock, apbbmask, tcc1_, TccPwm1Wrapper),
-    Tcc2Pwm: (TCC2, Tcc2Tcc3Clock, apbcmask, tcc2_, TccPwm2Wrapper),
+    Tcc0Pwm: (TCC0, TCC0Pinout, Tcc0Tcc1Clock, apbbmask, tcc0_, TccPwm0Wrapper),
+    Tcc1Pwm: (TCC1, TCC1Pinout, Tcc0Tcc1Clock, apbbmask, tcc1_, TccPwm1Wrapper),
+    Tcc2Pwm: (TCC2, TCC2Pinout, Tcc2Tcc3Clock, apbcmask, tcc2_, TccPwm2Wrapper),
 }
 
 #[cfg(all(not(feature = "samd51g19a"), not(feature = "samd51g18a")))]
 pwm_tcc! {
-    Tcc3Pwm: (TCC3, Tcc2Tcc3Clock, apbcmask, tcc3_, TccPwm3Wrapper),
-    Tcc4Pwm: (TCC4, Tcc4Clock,     apbdmask, tcc4_, TccPwm4Wrapper),
+    Tcc3Pwm: (TCC3, TCC3Pinout, Tcc2Tcc3Clock, apbcmask, tcc3_, TccPwm3Wrapper),
+    Tcc4Pwm: (TCC4, TCC4Pinout, Tcc4Clock,     apbdmask, tcc4_, TccPwm4Wrapper),
 }
