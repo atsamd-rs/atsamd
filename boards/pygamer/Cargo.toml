@@ -90,3 +90,11 @@ required-features = ["sd-card"]
 [[example]]
 name = "neopixel_easing"
 required-features = ["math"]
+
+[[example]]
+name = "pwm_tc4"
+required-features = ["math"]
+
+[[example]]
+name = "pwm_tcc0"
+required-features = ["math"]
