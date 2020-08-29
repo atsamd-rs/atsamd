@@ -46,7 +46,7 @@ embedded-graphics = "0.6.0"
 
 [features]
 # ask the HAL to enable atsamd21g18a support
-default = ["rt", "atsamd-hal/samd21g18a", "atsamd-hal/unproven"]
+default = ["rt", "atsamd-hal/samd21g18a"]
 rt = ["cortex-m-rt", "atsamd-hal/samd21g18a-rt"]
 usb = ["atsamd-hal/usb", "usb-device", "usbd-serial", "usbd-hid"]
 unproven = ["atsamd-hal/unproven"]
@@ -57,6 +57,7 @@ name = "blinky_basic"
 
 [[example]]
 name = "dotstar"
+required-features = ["unproven"]
 
 [[example]]
 name = "i2c_ssd1306"
