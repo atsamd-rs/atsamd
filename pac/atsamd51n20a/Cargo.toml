@@ -5,7 +5,7 @@ version = "0.7.0"
 authors = [
    "Wez Furlong <wez@wezfurlong.org>",
    "Paul Sajna <sajattack@gmail.com>",
-   "Shella Stephens <shella@infracoven.io",
+   "Bradley Harden <bradleyharden@gmail.com>",
 ]
 keywords = ["no-std", "arm", "cortex-m"]
 license = "MIT OR Apache-2.0"
