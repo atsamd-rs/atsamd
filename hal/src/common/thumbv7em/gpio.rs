@@ -449,27 +449,27 @@ impl Port {
         unsafe { &(*PORT::ptr()).group1.pmux }
     }
 
-    #[cfg(any(feature = "samd51p19a", feature = "same54"))]
+    #[cfg(any(feature = "samd51p19a", feature = "samd51n20a", feature = "same54"))]
     fn dirset2(&mut self) -> &DIRSET {
         unsafe { &(*PORT::ptr()).group2.dirset }
     }
-    #[cfg(any(feature = "samd51p19a", feature = "same54"))]
+    #[cfg(any(feature = "samd51p19a", feature = "samd51n20a", feature = "same54"))]
     fn dirclr2(&mut self) -> &DIRCLR {
         unsafe { &(*PORT::ptr()).group2.dirclr }
     }
-    #[cfg(any(feature = "samd51p19a", feature = "same54"))]
+    #[cfg(any(feature = "samd51p19a", feature = "samd51n20a", feature = "same54"))]
     fn pincfg2(&mut self) -> &[PINCFG; 32] {
         unsafe { &(*PORT::ptr()).group2.pincfg }
     }
-    #[cfg(any(feature = "samd51p19a", feature = "same54"))]
+    #[cfg(any(feature = "samd51p19a", feature = "samd51n20a", feature = "same54"))]
     fn outset2(&mut self) -> &OUTSET {
         unsafe { &(*PORT::ptr()).group2.outset }
     }
-    #[cfg(any(feature = "samd51p19a", feature = "same54"))]
+    #[cfg(any(feature = "samd51p19a", feature = "samd51n20a", feature = "same54"))]
     fn outclr2(&mut self) -> &OUTCLR {
         unsafe { &(*PORT::ptr()).group2.outclr }
     }
-    #[cfg(any(feature = "samd51p19a", feature = "same54"))]
+    #[cfg(any(feature = "samd51p19a", feature = "samd51n20a", feature = "same54"))]
     fn pmux2(&mut self) -> &[PMUX; 16] {
         unsafe { &(*PORT::ptr()).group2.pmux }
     }
@@ -526,7 +526,7 @@ pub struct Parts {
     )+
     $(
         /// Pin $pin_identC
-        #[cfg(any(feature = "samd51p19a", feature = "same54"))]
+        #[cfg(any(feature = "samd51p19a", feature = "samd51n20a", feature = "same54"))]
         pub $pin_identC: $PinTypeC<Input<Floating>>,
     )+
     $(
@@ -550,7 +550,7 @@ impl GpioExt for PORT {
                 $pin_identB: $PinTypeB { _mode: PhantomData },
             )+
             $(
-                #[cfg(any(feature = "samd51p19a", feature = "same54"))]
+                #[cfg(any(feature = "samd51p19a", feature = "samd51n20a", feature = "same54"))]
                 $pin_identC: $PinTypeC { _mode: PhantomData },
             )+
             $(
@@ -570,7 +570,7 @@ $(
         pincfg1, outset1, outclr1, pmux1, out1);
 )+
 $(
-    #[cfg(any(feature = "samd51p19a", feature = "same54"))]
+    #[cfg(any(feature = "samd51p19a", feature = "samd51n20a", feature = "same54"))]
     pin!($PinTypeC, $pin_identC, $pin_noC, group2, dirset2, dirclr2,
         pincfg2, outset2, outclr2, pmux2, out2);
 )+

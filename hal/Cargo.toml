@@ -74,6 +74,11 @@ path = "../pac/atsamd51j20a"
 version = "~0.7"
 optional = true
 
+[dependencies.atsamd51n20a]
+path = "../pac/atsamd51n20a"
+version = "~0.7"
+optional = true
+
 [dependencies.atsamd51p19a]
 path = "../pac/atsamd51p19a"
 version = "~0.7"
@@ -109,6 +114,8 @@ samd51j19a = ["atsamd51j19a", "samd51"]
 samd51j19a-rt = ["atsamd51j19a", "atsamd51j19a/rt", "samd51"]
 samd51j20a = ["atsamd51j20a", "samd51"]
 samd51j20a-rt = ["atsamd51j20a", "atsamd51j20a/rt", "samd51"]
+samd51n20a = ["atsamd51n20a", "samd51"]
+samd51n20a-rt = ["atsamd51n20a", "atsamd51n20a/rt", "samd51"]
 samd51p19a = ["atsamd51p19a", "samd51"]
 samd51p19a-rt = ["atsamd51p19a", "atsamd51p19a/rt", "samd51"]
 same54 = [] # Convenience feature for shared configuration of same54 chips
