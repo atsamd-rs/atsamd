@@ -1,9 +1,8 @@
 #![no_std]
 #![no_main]
 
-extern crate panic_halt;
-extern crate trinket_m0 as hal;
-extern crate cortex_m_rt;
+use panic_halt as _;
+use trinket_m0 as hal;
 
 use hal::clock::GenericClockController;
 use hal::pac::{Peripherals, CorePeripherals};
