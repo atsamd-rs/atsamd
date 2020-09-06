@@ -1,11 +1,8 @@
 #![no_std]
 #![no_main]
 
-extern crate trinket_m0 as hal;
-extern crate panic_halt;
-extern crate usbd_serial;
-extern crate usb_device;
-extern crate cortex_m;
+use panic_halt as _;
+use trinket_m0 as hal;
 
 use hal::clock::GenericClockController;
 use hal::prelude::*;
