@@ -16,8 +16,6 @@ use hal::prelude::*;
 use hal::entry;
 use hal::pac::{interrupt, CorePeripherals, Peripherals};
 use hal::adc::Adc;
-use hal::delay::Delay;
-use hal::prelude::*;
 use hal::usb::UsbBus;
 use usb_device::bus::UsbBusAllocator;
 use usb_device::prelude::*;
@@ -41,10 +39,8 @@ fn main() -> ! {
         &mut peripherals.NVMCTRL,
     );
     let mut pins = hal::Pins::new(peripherals.PORT);
-    let mut delay = hal::delay::Delay::new(core.SYST, &mut clocks);
     let mut adc = Adc::adc(peripherals.ADC, &mut peripherals.PM, &mut clocks);
     let mut a0 = pins.a0.into_function_b(&mut pins.port);
-    let mut led = pins.led_builtin.into_open_drain_output(&mut pins.port);
 
     let bus_allocator = unsafe {
         USB_ALLOCATOR = Some(hal::usb_allocator(
