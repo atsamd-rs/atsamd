@@ -13,11 +13,14 @@ pub extern crate panic_halt;
 use hal::prelude::*;
 use hal::*;
 
+use gpio::{Floating, Input, Port};
+use hal::clock::GenericClockController;
+use hal::sercom::{I2CMaster4, PadPin};
+use hal::time::Hertz;
+
 pub use hal::common::*;
 pub use hal::samd21::*;
 pub use hal::target_device as pac;
-
-use gpio::{Floating, Input, Port};
 
 #[cfg(feature = "usb")]
 use hal::clock::GenericClockController;
@@ -145,4 +148,29 @@ pub fn usb_allocator(
         dp.into_function(port),
         usb,
     ))
+}
+
+/// Convenience for setting up the labelled SDA, SCL pins to
+/// operate as an I2C master running at the specified frequency.
+pub fn i2c_master<F: Into<Hertz>>(
+    clocks: &mut GenericClockController,
+    bus_speed: F,
+    sercom4: pac::SERCOM4,
+    pm: &mut pac::PM,
+    sda: gpio::Pb8<Input<Floating>>,
+    scl: gpio::Pb9<Input<Floating>>,
+    port: &mut Port,
+) -> I2CMaster4<
+    hal::sercom::Sercom4Pad0<hal::gpio::Pb8<hal::gpio::PfD>>,
+    hal::sercom::Sercom4Pad1<hal::gpio::Pb9<hal::gpio::PfD>>,
+> {
+    let gclk0 = clocks.gclk0();
+    I2CMaster4::new(
+        &clocks.sercom4_core(&gclk0).unwrap(),
+        bus_speed.into(),
+        sercom4,
+        pm,
+        sda.into_pad(port),
+        scl.into_pad(port),
+    )
 }
