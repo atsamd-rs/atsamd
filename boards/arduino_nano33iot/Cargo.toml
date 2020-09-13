@@ -51,3 +51,11 @@ name = "blinky_basic"
 [[example]]
 name = "usb_logging"
 required-features = ["usb"]
+
+[[example]]
+name = "i2c_ssd1306"
+
+[[example]]
+name = "serial"
+
+
