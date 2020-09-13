@@ -35,6 +35,14 @@ optional = true
 version = "~0.1"
 optional = true
 
+[dependencies.ssd1306]
+version ="~0.4"
+features=["graphics"]
+
+[dependencies.rand]
+version = "0.7.3"
+default-features = false
+features = ["small_rng"]
 
 [features]
 # ask the HAL to enable atsamd21g18a support
@@ -51,3 +59,9 @@ name = "blinky_basic"
 [[example]]
 name = "usb_logging"
 required-features = ["usb"]
+
+[[example]]
+name = "serial"
+
+[[example]]
+name = "i2c_ssd1306"
