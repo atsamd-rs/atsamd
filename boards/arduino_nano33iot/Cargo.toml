@@ -41,7 +41,7 @@ default-features = false
 features = ["small_rng"]
 
 [dependencies.ssd1306]
-version ="0.3.1"
+version ="~0.4"
 features=["graphics"]
 
 [features]
