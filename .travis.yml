@@ -17,6 +17,7 @@ env:
   - CRATE=boards/trinket_m0 FEATURES="--features=unproven"
   - CRATE=boards/samd11_bare FEATURES="--features=unproven" BUILDMODE="--release"
   - CRATE=boards/samd21_mini FEATURES="--features=unproven"
+  - CRATE=boards/arduino_mkr1000 EXAMPLES="--example=blinky_basic" FEATURES="--features=unproven,usb"
   - CRATE=boards/arduino_mkrzero FEATURES="--features=unproven,usb"
   - CRATE=boards/arduino_nano33iot FEATURES="--features=unproven"
   - CRATE=boards/arduino_mkrvidor4000 FEATURES="--features=unproven"
