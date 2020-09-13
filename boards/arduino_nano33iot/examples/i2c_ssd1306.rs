@@ -1,6 +1,5 @@
 //!
 //! Based on an example from https://github.com/jamwaffles/ssd1306
-//!
 //! Sends random raw data to the display, emulating an old untuned TV. 
 //! Retrieves the underlying display properties struct and allows calling of the low-level `draw()` method,
 //! sending a 1024 byte buffer straight to the display.
@@ -16,7 +15,6 @@
 extern crate arduino_nano33iot as hal;
 extern crate ssd1306;
 extern crate rand;
-extern crate embedded_graphics;
 
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
@@ -25,7 +23,7 @@ use hal::time::KiloHertz;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 
-use ssd1306::{prelude::*, Builder as SSD1306Builder, mode::displaymode::DisplayModeTrait};
+use ssd1306::{mode::displaymode::DisplayModeTrait, prelude::*, Builder, I2CDIBuilder};
 
 use rand::prelude::*;
 
@@ -48,7 +46,7 @@ fn main() -> ! {
 
     let i2c = hal::i2c_master(
         &mut clocks,
-        KiloHertz(100),
+        KiloHertz(400),
         peripherals.SERCOM4, 
         &mut peripherals.PM, 
         pins.sda,
@@ -56,11 +54,11 @@ fn main() -> ! {
         &mut pins.port,
     );  
 
-    let mut disp: GraphicsMode<_> = SSD1306Builder::new().size(DisplaySize::Display128x32).connect_i2c(i2c).into();
-        
+    let interface = I2CDIBuilder::new().init(i2c);
+    let mut disp: GraphicsMode<_> = Builder::new().connect(interface).into();       
     disp.init().unwrap();
     
-    let mut props = disp.release();
+    let mut props = disp.into_properties();
     
     let mut buf = [0x00u8; 512]; //each line has 128 pixels, that's 8 bytes, x 32 lines = 512 bytes for the whole display
 
@@ -72,3 +70,4 @@ fn main() -> ! {
     }
 
 }
+
