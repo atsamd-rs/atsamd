@@ -32,9 +32,10 @@ env:
   - CRATE=boards/edgebadge FEATURES="--features=unproven"
   - CRATE=boards/xiao_m0 EXAMPLES="--example=blink --example=usb_serial" FEATURES="--features=usb"
 
-matrix:
+jobs:
   allow_failures:
     - rust: nightly
+  fast_finish: true
 
 before_install:
   - rustup target add thumbv6m-none-eabi
@@ -43,6 +44,3 @@ before_install:
 script:
   - "cd $CRATE"
   - "cargo build ${EXAMPLES:---examples} $FEATURES $BUILDMODE"
-
-stages:
-  - test
