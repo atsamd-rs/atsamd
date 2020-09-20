@@ -10,11 +10,17 @@ pub use cortex_m_rt::entry;
 use hal::prelude::*;
 use hal::*;
 
+use hal::clock::GenericClockController;
+use hal::time::Hertz;
+
+use hal::sercom::{PadPin, UART5};
+
 pub use hal::target_device as pac;
 pub use hal::common::*;
 pub use hal::samd21::*;
 
-use gpio::{Floating, Input, Port};
+use gpio::{Floating, Input, Port, PfD};
+
 
 define_pins!(
     /// Maps the pins to their arduino names and
@@ -94,3 +100,30 @@ define_pins!(
 
     pin aref = a3,
 );
+
+/// Convenience for setting up the labelled RX, TX pins to
+/// operate as a UART device running at the specified baud.
+pub fn uart<F: Into<Hertz>>(
+    clocks: &mut GenericClockController,
+    baud: F,
+    sercom5: pac::SERCOM5,
+    pm: &mut pac::PM,
+    d13: gpio::Pb23<Input<Floating>>, //rx
+    d14: gpio::Pb22<Input<Floating>>, //tx
+    port: &mut Port,
+) -> UART5<
+    hal::sercom::Sercom5Pad3<gpio::Pb23<PfD>>, //rx
+    hal::sercom::Sercom5Pad2<gpio::Pb22<PfD>>, //tx
+    (),
+    (),
+> {
+    let gclk0 = clocks.gclk0();
+
+    UART5::new(
+        &clocks.sercom5_core(&gclk0).unwrap(),
+        baud.into(),
+        sercom5,
+        pm,
+        (d13.into_pad(port), d14.into_pad(port)),
+    )
+}
