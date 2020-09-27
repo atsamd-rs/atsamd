@@ -17,6 +17,7 @@ env:
   - CRATE=boards/trinket_m0 FEATURES="--features=unproven"
   - CRATE=boards/samd11_bare FEATURES="--features=unproven" BUILDMODE="--release"
   - CRATE=boards/samd21_mini FEATURES="--features=unproven"
+  - CRATE=boards/arduino_mkr1000 FEATURES="--features=unproven,usb"
   - CRATE=boards/arduino_mkrzero FEATURES="--features=unproven,usb"
   - CRATE=boards/arduino_nano33iot FEATURES="--features=unproven"
   - CRATE=boards/arduino_mkrvidor4000 FEATURES="--features=unproven"
@@ -31,9 +32,10 @@ env:
   - CRATE=boards/edgebadge FEATURES="--features=unproven"
   - CRATE=boards/xiao_m0 EXAMPLES="--example=blink --example=usb_serial" FEATURES="--features=usb"
 
-matrix:
+jobs:
   allow_failures:
     - rust: nightly
+  fast_finish: true
 
 before_install:
   - rustup target add thumbv6m-none-eabi
@@ -42,6 +44,3 @@ before_install:
 script:
   - "cd $CRATE"
   - "cargo build ${EXAMPLES:---examples} $FEATURES $BUILDMODE"
-
-stages:
-  - test
