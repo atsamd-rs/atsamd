@@ -60,7 +60,7 @@ In addition to the PACs and HAL, there numerous **B**oard **S**upport **P**ackag
 
 Make sure that you have a new enough version of the gcc toolchain; the one installable even on recent versions of Ubuntu can fail to correctly link the vector table:
 
-**Note** you may be able to avoid this step if using `cargo-binutils`. See board specific instructions in `boards/` for more details.
+**Note**: you may be able to avoid this step if using `cargo-binutils`. See board specific instructions in `boards/` for more details.
 
 ```bash
 $ sudo add-apt-repository ppa:team-gcc-arm-embedded/ppa -y
