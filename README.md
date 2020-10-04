@@ -60,6 +60,8 @@ In addition to the PACs and HAL, there numerous **B**oard **S**upport **P**ackag
 
 Make sure that you have a new enough version of the gcc toolchain; the one installable even on recent versions of Ubuntu can fail to correctly link the vector table:
 
+**Note** you may be able to avoid this step if using `cargo-binutils`. See board specific instructions in `boards/` for more details.
+
 ```bash
 $ sudo add-apt-repository ppa:team-gcc-arm-embedded/ppa -y
 $ sudo apt update
@@ -104,6 +106,7 @@ $ cargo build --example blinky_basic
 $ arm-none-eabi-objcopy -O binary \
     target/thumbv6m-none-eabi/debug/examples/blinky_basic \
     target/thumbv6m-none-eabi/debug/examples/blinky_basic.bin
+# if using cargo-binutils, you can `rust-objcopy` with the same flags, or combine the previous 2 steps with `cargo objcopy`
 $ stty -F /dev/ttyACM1 ospeed 1200
 $ ~/.arduino15/packages/arduino/tools/bossac/1.7.0/bossac -i -d \
     --port=ttyACM1 -U -e -w -v \
