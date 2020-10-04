@@ -8,8 +8,8 @@ This crate provides a type-safe API for working with the WIO Lite MG126(https://
  - Arduino IDE installed
     - samd package installed (You can do this by going to Tools->Board->BoardManager and then searching for `samd`
     - Now the arduino distribution contains bossac.exe in `ArduinoData/packages/arduino/tools/bossac/1.7.0[-arduino3]/` add it to your path
-       - *linux* `ArduinoData` is likely something like `~/.arduino15/`
-       - *OSX* `ArduinoData` is likely something like `~/Library/Arduino15`
+       - **linux** `ArduinoData` is likely something like `~/.arduino15/`
+       - **OSX** `ArduinoData` is likely something like `~/Library/Arduino15`
     - Probably best to install an example sketch via the IDE just to make sure everything is working
     - Note that the [arduino cli](https://github.com/arduino/arduino-cli) (or just regular bossac) may soon replace this section
  - arm-none-eabi tools installed, you need gcc and objcopy.
