@@ -24,10 +24,10 @@ https://github.com/atsamd-rs/atsamd/tree/master/boards/grand_central_m4/examples
 * Build and upload in one step
 ```
 $ cargo hf2 --release --example blinky_basic
-    Finished release [optimized + debuginfo] target(s) in 0.19s
+    Finished release [optimized + debuginfo] target(s) in 2m 02s
     Searching for a connected device with known vid/pid pair.
-    Trying  Ok(Some("Adafruit Industries")) Ok(Some("PyBadge"))
-    Flashing "/Users/User/atsamd/boards/grand_central_m4/target/thumbv7em-none-eabihf/release/examples/blinky_basic"
-    Finished in 0.079s
+    Trying  Ok(Some("Adafruit Industries")) Ok(Some("Grand Central M4 Express"))
+    Flashing "/path/to/atsamd/boards/grand_central_m4/target/thumbv7em-none-eabihf/release/examples/blinky_basic"
+    Finished in 0.085s
 $
 ```
