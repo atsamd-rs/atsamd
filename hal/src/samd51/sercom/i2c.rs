@@ -5,6 +5,9 @@ use crate::hal::blocking::i2c::{Read, Write, WriteRead};
 use crate::target_device::sercom0::I2CM;
 use crate::target_device::{MCLK, SERCOM0, SERCOM1, SERCOM2, SERCOM3};
 use crate::target_device::{SERCOM4, SERCOM5};
+#[cfg(any(feature = "samd51p20a"))]
+use crate::target_device::{SERCOM6};
+
 use crate::time::Hertz;
 
 const BUS_STATE_IDLE: u8 = 1;
@@ -360,6 +363,20 @@ i2c!([
             apbdmask
         ),
 ]);
+
+#[cfg(any(feature = "samd51p20a"))]
+i2c!([
+    I2CMaster6:
+        (
+            Sercom6Pad0,
+            Sercom6Pad1,
+            SERCOM6,
+            sercom6_,
+            Sercom6CoreClock,
+            apbdmask
+        ),
+]);
+
 
 #[derive(Debug)]
 pub enum I2CError {

@@ -246,16 +246,16 @@ pad!(Sercom6Pad0 {
     Pc4(PfC),
     Pc13(PfD),
     Pc16(PfC),
-    #[cfg(any(feature = "samd51p19a")]
+    #[cfg(any(feature = "samd51p19a", feature = "samd51p20a"))]
     Pd9(PfD),
 });
 
-#[cfg(any(feature = "samd51p19a", feature = "samd51n20a"))]
+#[cfg(any(feature = "samd51p19a", feature = "samd51n20a", feature = "samd51p20a"))]
 pad!(Sercom6Pad1 {
     Pc5(PfC),
     Pc12(PfD),
     Pc17(PfC),
-    #[cfg(feature = "samd51p19a", feature = "samd51p20a"))]
+    #[cfg(any(feature = "samd51p19a", feature = "samd51p20a"))]
     Pd8(PfD),
 });
 

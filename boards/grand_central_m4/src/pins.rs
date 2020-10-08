@@ -1,0 +1,749 @@
+//! Grand Cental M4 Express pins
+
+use super::{hal, pac::MCLK, 
+    pac::SERCOM0, pac::SERCOM1, //pac::SERCOM2, 
+    pac::SERCOM3, pac::SERCOM4, pac::SERCOM5, 
+    pac::SERCOM6, pac::SERCOM7, target_device};
+
+use hal::define_pins;
+use hal::gpio::{self, *};
+use hal::sercom::{
+    PadPin,
+    I2CMaster3, Sercom3Pad0, Sercom3Pad1,
+    I2CMaster6, Sercom6Pad0, Sercom6Pad1,
+    SPIMaster7, //Sercom7Pad3,Sercom7Pad0, Sercom7Pad1,
+    UART0, Sercom0Pad1, Sercom0Pad0,
+    UART4, Sercom4Pad0, Sercom4Pad1,
+    UART1, Sercom1Pad0, Sercom1Pad1,
+    UART5, Sercom5Pad0, Sercom5Pad1,
+};
+use hal::time::Hertz;
+
+use hal::clock::GenericClockController;
+
+#[cfg(feature = "usb")]
+use hal::usb::usb_device::bus::UsbBusAllocator;
+#[cfg(feature = "usb")]
+pub use hal::usb::UsbBus;
+
+define_pins!(
+    /// Maps the pins to their arduino names and
+    /// the numbers printed on the board.
+    struct Pins,
+    target_device: target_device,
+
+    /// LED Pins
+    pin tx_led = c30,
+    pin rx_led = c31,
+    //pin led = b1,
+    pin neopixel = c24,
+
+    /// Pin A0 (analog). Can act as a true analog output as it has a DAC (which is
+    /// currently not supported by this hal) as well as input.
+    pin a0 = a2,
+    /// Pin A1 (analog). Can act as a true analog output as it has a DAC (which is
+    /// currently not supported by this hal) as well as input.
+    pin a1 = a5,
+    /// Pin A2 (analog)
+    pin a2 = b3,
+    /// Pin A3 (analog)
+    pin a3 = c0,
+    /// Pin A4 (analog), PWM capable
+    pin a4 = c1,
+    /// Pin A5 (analog), PWM capable
+    pin a5 = c2,
+    pin a6 = c3,
+    pin a7 = b4,
+    pin a8 = b5,
+    pin a9 = b6,
+    pin a10 = b7,
+    pin a11 = b8,
+    pin a12 = b9,
+    pin a13 = a4,
+    pin a14 = a6,
+    pin a15 = a7,
+
+    /// Pin 0 (digital), aka RX for Serial1. PWM capable.
+    //pin d0 = b25,
+    /// Pin 1 (digital), aka TX for Serial1. PWM capable.
+    //pin d1 = b24,
+    /// Pin 2, PWN capable, analog input capable
+    pin d2 = c18,
+    /// Pin 3
+    pin d3 = c19,
+    /// Pin 4, PWM capable
+    pin d4 = c20,
+    /// Pin 5. Output-only with rail-to-rail HI level. PWM capable.
+    pin d5 = c21,
+    pin d6 = d20,
+    /// Pin 7, PWM capable
+    pin d7 = d21,
+    pin d8 = b18,
+    /// Pin 9, PWM capable
+    pin d9 = b2,
+    /// Pin 10, PWM capable
+    pin d10 = b22,
+    /// Pin 11, PWM capable
+    pin d11 = b23,
+    /// Pin 12, PWM capable
+    pin d12 = b0,
+    /// Pin 13, PWM capable. Also attached to onboard LED.
+    pin d13 = b1,
+    //pin d14 = b16,
+    //pin d15 = b17,
+    //pin d16 = c22,
+    //pin d17 = c23,
+    //pin d18 = b12,
+    //pin d19 = b13,
+    //pin d20 = c16,
+    //pin d21 = c17,
+    pin d22 = d12,
+    pin d23 = a15,
+    //pin d24 = a24,
+    //pin d25 = a25,
+
+    // Parallel Capture Peripheral (PCC)
+    //DEN1: #26 = PA12, DEN2: #27 = PA13, CLK: #28 = PA14, PCC_XCLK: #29 = PB19
+    //PCC_D0: #37 = PA16, PCC_D1: #36 = PA17, PCC_D2: #35 = PA18, PCC_D3: #34 = PA19 
+    //PCC_D4: #33 = PA20, PCC_D5: #32 = PA21, PCC_D6: #31 = PA22, PCC_D7: #30 = PA23
+    //PCC_D8: #39 = PB14, PCC_D9: #38 = PB15, PCC_D10: #41 = PC12, PCC_D11: #40 = PC13
+    //PCC_D12: #43 = PC14, PCC_D13: #42 = PC15 
+    pin d26 = a12,
+    pin d27 = a13,
+    pin d28 = a14,
+    pin d29 = b19,
+    pin d30 = a23,
+    pin d31 = a22,
+    pin d32 = a21,
+    pin d33 = a20,
+    pin d34 = a19,
+    pin d35 = a18,
+    pin d36 = a17,
+    pin d37 = a16,
+    pin d38 = b15,
+    pin d39 = b14,
+    pin d40 = c13,
+    pin d41 = c12,
+    pin d42 = c15,
+    pin d43 = c14,
+
+    //D44: #44 = PC11, D45: #45 = PC10, D46: #46 = PC06, D47: #47 = PC07
+    //D48: #48 = PC04, D49: #49 = PC05
+    pin d44 = c11,
+    pin d45 = c10,
+    pin d46 = c6,
+    pin d47 = c7,
+    pin d48 = c4,
+    pin d49 = c5,
+
+    //MISO: #50 = PD11, MOSI: #51 = PD08, SCK: #52 = PD09, SS: #53 = PD10  
+    //pin d50 = d11,
+    //pin d51 = d8,
+    //pin d52 = d9,
+    //pin d53 = d10,
+
+    // I2C Pins same as d20 and d21 respectively
+    pin sda = b20,
+    pin scl = b21,
+    pin sda_1 = c16,
+    pin scl_1 = c17,
+
+    // Hardware SPI Pins
+    pin mosi = d8,
+    pin sck = d9,
+    pin ss = d10,
+    pin miso = d11,
+
+    // On-board SPI flash Pins
+    pin flash_sck = b10,
+    pin flash_io0 = a8,
+    pin flash_io1 = a9,
+    pin flash_io2 = a10,
+    pin flash_io3 = a11,
+    pin flash_cs = b11,
+
+    // USB D+/- pad Pins
+    pin usb_dm = a24,
+    pin usb_dp = a25,
+
+    // UART0
+    pin uart0_rx = b25,
+    pin uart0_tx = b24,
+
+    // UART1
+    pin uart1_rx = b13,
+    pin uart1_tx = b12,
+
+    // UART2
+    pin uart2_rx = c23,
+    pin uart2_tx = c22,
+
+    // UART3
+    pin uart3_rx = b17,
+    pin uart3_tx = b16,
+
+    // Micro SD Card Pins
+    pin sd_mosi = b26,
+    pin sd_sck = b27,
+    pin sd_cs = b28,
+    pin sd_miso = b29,
+    pin swo = b30,
+    pin sd_cd = b31,
+
+    // Analog Reference Pin
+    pin aref = a3,
+
+    // TODO: ADC
+
+);
+
+impl Pins {
+    /// Split the device pins into subsets
+    pub fn split(self) -> Sets {
+        let analog = Analog {
+            a0: self.a0,
+            a1: self.a1,
+            a2: self.a2,
+            a3: self.a3,
+            a4: self.a4,
+            a5: self.a5,
+            a6: self.a6,
+            a7: self.a7,
+            a8: self.a8,
+            a9: self.a9,
+            a10: self.a10,
+            a11: self.a11,
+            a12: self.a12,
+            a13: self.a13,
+            a14: self.a14,
+            a15: self.a15,
+        };
+
+        let digital = Digital {
+            //d0: self.d0,
+            //d1: self.d1,
+            d2: self.d2,
+            d3: self.d3,
+            d4: self.d4,
+            d5: self.d5,
+            d6: self.d6,
+            d7: self.d7,
+            d8: self.d8,
+            d9: self.d9,
+            d10: self.d10,
+            d11: self.d11,
+            d12: self.d12,
+            d13: self.d13,
+            //d14: self.d14,
+            //d15: self.d15,
+            //d16: self.d16,
+            //d17: self.d17,
+            //d18: self.d18,
+            //d19: self.d19,
+            //d20: self.d20,
+            //d21: self.d21,
+            //d22: self.d22,
+            //d23: self.d23,
+            //d24: self.d24,
+            //d25: self.d25,
+            d26: self.d26,
+            d27: self.d27,
+            d28: self.d28,
+            d29: self.d29,
+            d30: self.d30,
+            d31: self.d31,
+            d32: self.d32,
+            d33: self.d33,
+            d34: self.d34,
+            d35: self.d35,
+            d36: self.d36,
+            d37: self.d37,
+            d38: self.d38,
+            d39: self.d39,
+            d40: self.d40,
+            d41: self.d41,
+            d42: self.d42,
+            d43: self.d43,
+            d44: self.d44,
+            d45: self.d45,
+            d46: self.d46,
+            d47: self.d47,
+            d48: self.d48,
+            d49: self.d49,
+            //d50: self.d50,
+            //d51: self.d51,
+            //d52: self.d52,
+            //d53: self.d53,
+        };
+
+        let flash = QSPIFlash {
+            sck: self.flash_sck,
+            cs: self.flash_cs,
+            data0: self.flash_io0,
+            data1: self.flash_io1,
+            data2: self.flash_io2,
+            data3: self.flash_io3,
+        };
+
+        let spi = SPI {
+            sck: self.sck,
+            mosi: self.mosi,
+            miso: self.miso,
+        };
+
+        let sdcard = SdCard {
+            cs: self.sd_cs,
+            cd: self.sd_cd,
+        };
+
+        let i2c = I2C {
+            sda: self.sda,
+            scl: self.scl,
+        };
+
+        let i2c1 = I2C1 {
+            sda: self.sda_1,
+            scl: self.scl_1,
+        };
+
+        let usb = USB {
+            dm: self.usb_dm,
+            dp: self.usb_dp,
+        };
+
+        //let uart0 = UART0_ {
+         //   rx: self.d0,
+         //   tx: self.d1,
+        //};
+
+        //let uart1 = UART1_ {
+        //    rx: self.uart1_rx,
+        //    tx: self.uart1_tx,
+        //};
+
+        //let uart2 = UART2_ {
+        //    rx: self.uart2_rx,
+        //    tx: self.uart2_tx,
+        //};
+
+        //let uart3 = UART3_ {
+        //    rx: self.uart3_rx,
+        //    tx: self.uart3_tx,
+        //};
+
+        Sets {
+            port: self.port,
+            analog,
+            digital,
+            spi,
+            usb,
+            flash,
+            sdcard,
+            i2c,
+            i2c1,
+            //uart0,
+            //uart1,
+            //uart2,
+            //uart3,
+            tx_led: self.tx_led,
+            rx_led: self.rx_led,
+            neopixel: self.neopixel,
+        }
+    }
+}
+
+/// Sets of pins split apart by category
+pub struct Sets {
+
+    pub neopixel: Pc24<Input<Floating>>,
+    pub tx_led: Pc30<Input<Floating>>,
+    pub rx_led: Pc31<Input<Floating>>,
+
+    /// Analog pins
+    pub analog: Analog,
+
+    pub digital: Digital,
+
+    /// SPI (external pinout) pins
+    pub spi: SPI,
+
+    /// SdCard
+    pub sdcard: SdCard,
+
+    /// I2C (external pinout) pins
+    pub i2c: I2C,
+
+    pub i2c1: I2C1,
+
+    /// QSPI Flash pins
+    pub flash: QSPIFlash,
+
+    /// USB pins
+    pub usb: USB,
+
+    /// UART (external pinout) pins
+    //pub uart0: UART0_,
+    //pub uart1: UART1_,
+    //pub uart2: UART2_,
+    //pub uart3: UART3_,
+
+    /// Port
+    pub port: Port,
+
+}
+
+/// SPI pins
+pub struct SPI {
+    pub mosi: gpio::Pd8<Input<Floating>>,
+    pub miso: gpio::Pd11<Input<Floating>>,
+    pub sck: gpio::Pd9<Input<Floating>>,
+}
+
+impl SPI {
+    pub fn init<F: Into<Hertz>>(
+        self,
+        clocks: &mut GenericClockController,
+        bus_speed: F,
+        sercom7: SERCOM7,
+        mclk: &mut MCLK,
+        port: &mut Port,
+    ) -> SPIMaster7<
+        hal::sercom::Sercom7Pad3<gpio::Pd11<gpio::PfC>>,
+        hal::sercom::Sercom7Pad0<gpio::Pd8<gpio::PfC>>,
+        hal::sercom::Sercom7Pad1<gpio::Pd9<gpio::PfC>>,
+    > {
+        let gclk0 = clocks.gclk0();
+        SPIMaster7::new(
+            &clocks.sercom7_core(&gclk0).unwrap(),
+            bus_speed.into(),
+            hal::hal::spi::Mode {
+                phase: hal::hal::spi::Phase::CaptureOnFirstTransition,
+                polarity: hal::hal::spi::Polarity::IdleLow,
+            },
+            sercom7,
+            mclk,
+            (
+                self.miso.into_pad(port),
+                self.mosi.into_pad(port),
+                self.sck.into_pad(port),
+            ),
+        )
+    }
+}
+
+/// I2C pins
+pub struct I2C {
+    pub sda: Pb20<Input<Floating>>,
+    pub scl: Pb21<Input<Floating>>,
+}
+
+impl I2C {
+ /// Convenience for setting up the labelled SDA, SCL pins to
+    /// operate as an I2C master running at the specified frequency.
+    pub fn init<F: Into<Hertz>>(
+        self,
+        clocks: &mut GenericClockController,
+        bus_speed: F,
+        sercom3: SERCOM3,
+        mclk: &mut MCLK,
+        port: &mut Port,
+    ) -> I2CMaster3<Sercom3Pad0<Pb20<PfC>>, Sercom3Pad1<Pb21<PfC>>> {
+        let gclk0 = clocks.gclk0();
+        I2CMaster3::new(
+            &clocks.sercom3_core(&gclk0).unwrap(),
+            bus_speed.into(),
+            sercom3,
+            mclk,
+            self.sda.into_pad(port),
+            self.scl.into_pad(port),
+        )
+    }
+}
+
+/// I2C_1 pins
+pub struct I2C1 {
+    pub sda: Pc16<Input<Floating>>,
+    pub scl: Pc17<Input<Floating>>,
+}
+
+impl I2C1 {
+ /// Convenience for setting up the labelled SDA, SCL pins to
+    /// operate as an I2C master running at the specified frequency.
+    pub fn init<F: Into<Hertz>>(
+        self,
+        clocks: &mut GenericClockController,
+        bus_speed: F,
+        sercom6: SERCOM6,
+        mclk: &mut MCLK,
+        port: &mut Port,
+    ) -> I2CMaster6<Sercom6Pad0<Pc16<PfC>>, Sercom6Pad1<Pc17<PfC>>> {
+        let gclk0 = clocks.gclk0();
+        I2CMaster6::new(
+            &clocks.sercom6_core(&gclk0).unwrap(),
+            bus_speed.into(),
+            sercom6,
+            mclk,
+            self.sda.into_pad(port),
+            self.scl.into_pad(port),
+        )
+    }
+}
+
+/// Sd Card pins
+pub struct SdCard {
+    pub cs: Pb28<Input<Floating>>,
+    pub cd: Pb31<Input<Floating>>, 
+}
+
+/// USB pins
+pub struct USB {
+    pub dm: Pa24<Input<Floating>>,
+    pub dp: Pa25<Input<Floating>>,
+}
+
+impl USB {
+    #[cfg(feature = "usb")]
+    /// Convenience for setting up the onboard usb port to operate
+    /// as a USB device.
+    pub fn init(
+        self,
+        usb: super::pac::USB,
+        clocks: &mut GenericClockController,
+        mclk: &mut MCLK,
+        port: &mut Port,
+    ) -> UsbBusAllocator<UsbBus> {
+        clocks.configure_gclk_divider_and_source(GEN_A::GCLK2, 1, SRC_A::DFLL, false);
+        let usb_gclk = clocks.get_gclk(GEN_A::GCLK2).unwrap();
+        let usb_clock = &clocks.usb(&usb_gclk).unwrap();
+
+        UsbBusAllocator::new(UsbBus::new(
+            usb_clock,
+            mclk,
+            self.dm.into_function(port),
+            self.dp.into_function(port),
+            usb,
+        ))
+    }
+}
+
+/// UART0 pins
+pub struct UART0_ {
+    pub tx: Pb24<Input<Floating>>,
+    pub rx: Pb25<Input<Floating>>,
+}
+
+impl UART0_ {
+    /// Convenience for setting up the labelled TX, RX pins
+    /// to operate as a UART device at the specified baud rate.
+    pub fn init<F: Into<Hertz>>(
+        self,
+        clocks: &mut GenericClockController,
+        baud: F,
+        sercom0: SERCOM0,
+        mclk: &mut MCLK,
+        port: &mut Port,
+    ) -> UART0<
+        Sercom0Pad1<gpio::Pb25<gpio::PfC>>,
+        Sercom0Pad0<gpio::Pb24<gpio::PfC>>,
+        (),
+        (),
+    > {
+        let gclk0 = clocks.gclk0();
+
+        UART0::new(
+            &clocks.sercom0_core(&gclk0).unwrap(),
+            baud.into(),
+            sercom0,
+            mclk,
+            (self.rx.into_pad(port), self.tx.into_pad(port)),
+        )
+    }
+}
+
+/// UART1 pins
+pub struct UART1_ {
+    pub tx: Pb12<Input<Floating>>,
+    pub rx: Pb13<Input<Floating>>,
+}
+
+impl UART1_ {
+    /// Convenience for setting up the labelled TX, RX pins
+    /// to operate as a UART device at the specified baud rate.
+    pub fn init<F: Into<Hertz>>(
+        self,
+        clocks: &mut GenericClockController,
+        baud: F,
+        sercom4: SERCOM4,
+        mclk: &mut MCLK,
+        port: &mut Port,
+    ) -> UART4<
+        Sercom4Pad1<gpio::Pb13<gpio::PfC>>,
+        Sercom4Pad0<gpio::Pb12<gpio::PfC>>,
+        (),
+        (),
+    > {
+        let gclk0 = clocks.gclk0();
+
+        UART4::new(
+            &clocks.sercom4_core(&gclk0).unwrap(),
+            baud.into(),
+            sercom4,
+            mclk,
+            (self.rx.into_pad(port), self.tx.into_pad(port)),
+        )
+    }
+}
+
+/// UART2 pins
+pub struct UART2_ {
+    pub tx: Pc22<Input<Floating>>,
+    pub rx: Pc23<Input<Floating>>,
+}
+
+impl UART2_ {
+    /// Convenience for setting up the labelled TX, RX pins
+    /// to operate as a UART device at the specified baud rate.
+    pub fn init<F: Into<Hertz>>(
+        self,
+        clocks: &mut GenericClockController,
+        baud: F,
+        sercom1: SERCOM1,
+        mclk: &mut MCLK,
+        port: &mut Port,
+    ) -> UART1<
+        Sercom1Pad1<gpio::Pc23<gpio::PfC>>,
+        Sercom1Pad0<gpio::Pc22<gpio::PfC>>,
+        (),
+        (),
+    > {
+        let gclk0 = clocks.gclk0();
+
+        UART1::new(
+            &clocks.sercom1_core(&gclk0).unwrap(),
+            baud.into(),
+            sercom1,
+            mclk,
+            (self.rx.into_pad(port), self.tx.into_pad(port)),
+        )
+    }
+}
+
+/// UART3 pins
+pub struct UART3_ {
+    pub tx: Pb16<Input<Floating>>,
+    pub rx: Pb17<Input<Floating>>,
+}
+
+impl UART3_ {
+    /// Convenience for setting up the labelled TX, RX pins
+    /// to operate as a UART device at the specified baud rate.
+    pub fn init<F: Into<Hertz>>(
+        self,
+        clocks: &mut GenericClockController,
+        baud: F,
+        sercom5: SERCOM5,
+        mclk: &mut MCLK,
+        port: &mut Port,
+    ) -> UART5<
+        Sercom5Pad1<gpio::Pb17<gpio::PfC>>,
+        Sercom5Pad0<gpio::Pb16<gpio::PfC>>,
+        (),
+        (),
+    > {
+        let gclk0 = clocks.gclk0();
+
+        UART5::new(
+            &clocks.sercom5_core(&gclk0).unwrap(),
+            baud.into(),
+            sercom5,
+            mclk,
+            (self.rx.into_pad(port), self.tx.into_pad(port)),
+        )
+    }
+}
+
+pub struct Analog {
+    pub a0: Pa2<Input<Floating>>,
+    pub a1: Pa5<Input<Floating>>,
+    pub a2: Pb3<Input<Floating>>,
+    pub a3: Pc0<Input<Floating>>,
+    pub a4: Pc1<Input<Floating>>,
+    pub a5: Pc2<Input<Floating>>,
+    pub a6: Pc3<Input<Floating>>,
+    pub a7: Pb4<Input<Floating>>,
+    pub a8: Pb5<Input<Floating>>,
+    pub a9: Pb6<Input<Floating>>,
+    pub a10: Pb7<Input<Floating>>,
+    pub a11: Pb8<Input<Floating>>,
+    pub a12: Pb9<Input<Floating>>,
+    pub a13: Pa4<Input<Floating>>,
+    pub a14: Pa6<Input<Floating>>,
+    pub a15: Pa7<Input<Floating>>,
+}
+
+pub struct Digital {
+    //pub d0: Pb25<Input<Floating>>,
+    //pub d1: Pb24<Input<Floating>>,
+    pub d2: Pc18<Input<Floating>>,
+    pub d3: Pc19<Input<Floating>>,
+    pub d4: Pc20<Input<Floating>>,
+    pub d5: Pc21<Input<Floating>>,
+    pub d6: Pd20<Input<Floating>>,
+    pub d7: Pd21<Input<Floating>>,
+    pub d8: Pb18<Input<Floating>>,
+    pub d9: Pb2<Input<Floating>>,
+    pub d10: Pb22<Input<Floating>>,
+    pub d11: Pb23<Input<Floating>>,
+    pub d12: Pb0<Input<Floating>>,
+    pub d13: Pb1<Input<Floating>>,
+    //pub d14: Pb16<Input<Floating>>,
+    //pub d15: Pb17<Input<Floating>>,
+    //pub d16: Pc22<Input<Floating>>,
+    //pub d17: Pc23<Input<Floating>>,
+    //pub d18: Pb12<Input<Floating>>,
+    //pub d19: Pb13<Input<Floating>>,
+    //pub d20: Pc16<Input<Floating>>,
+    //pub d21: Pc17<Input<Floating>>,
+    //pub d22: Pd12<Input<Floating>>,
+    //pub d23: Pa15<Input<Floating>>,
+    //pub d24: Pa24<Input<Floating>>,
+    //pub d25: Pa25<Input<Floating>>,
+    pub d26: Pa12<Input<Floating>>,
+    pub d27: Pa13<Input<Floating>>,
+    pub d28: Pa14<Input<Floating>>,
+    pub d29: Pb19<Input<Floating>>,
+    pub d30: Pa23<Input<Floating>>,
+    pub d31: Pa22<Input<Floating>>,
+    pub d32: Pa21<Input<Floating>>,
+    pub d33: Pa20<Input<Floating>>,
+    pub d34: Pa19<Input<Floating>>,
+    pub d35: Pa18<Input<Floating>>,
+    pub d36: Pa17<Input<Floating>>,
+    pub d37: Pa16<Input<Floating>>,
+    pub d38: Pb15<Input<Floating>>,
+    pub d39: Pb14<Input<Floating>>,
+    pub d40: Pc13<Input<Floating>>,
+    pub d41: Pc12<Input<Floating>>,
+    pub d42: Pc15<Input<Floating>>,
+    pub d43: Pc14<Input<Floating>>,
+    pub d44: Pc11<Input<Floating>>,
+    pub d45: Pc10<Input<Floating>>,
+    pub d46: Pc6<Input<Floating>>,
+    pub d47: Pc7<Input<Floating>>,
+    pub d48: Pc4<Input<Floating>>,
+    pub d49: Pc5<Input<Floating>>,
+    //pub d50: Pd11<Input<Floating>>,
+    //pub d51: Pd8<Input<Floating>>,
+    //pub d52: Pd9<Input<Floating>>,
+    //pub d53: Pd10<Input<Floating>>,
+}
+
+/// QSPI flash pins
+pub struct QSPIFlash {
+    pub sck: Pb10<Input<Floating>>,
+    pub cs: Pb11<Input<Floating>>,
+    pub data0: Pa8<Input<Floating>>,
+    pub data1: Pa9<Input<Floating>>,
+    pub data2: Pa10<Input<Floating>>,
+    pub data3: Pa11<Input<Floating>>,
+}
