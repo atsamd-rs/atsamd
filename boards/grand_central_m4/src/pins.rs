@@ -1,4 +1,4 @@
-//! Grand Cental M4 Express pins
+//! Grand Central M4 Express Pins
 
 use super::{hal, pac::MCLK, 
     pac::SERCOM0, pac::SERCOM1, //pac::SERCOM2, 
@@ -32,25 +32,46 @@ define_pins!(
     struct Pins,
     target_device: target_device,
 
-    /// LED Pins
+    /// # LED Pins
+    
+    /// ## TX LED
+    /// Yellow USB serial data transmitted LED
     pin tx_led = c30,
-    pin rx_led = c31,
-    //pin led = b1,
-    pin neopixel = c24,
 
-    /// Pin A0 (analog). Can act as a true analog output as it has a DAC (which is
-    /// currently not supported by this hal) as well as input.
+    /// ## RX LED
+    /// Yellow USB serial received LED
+    pin rx_led = c31,
+
+    /// # Logic Pins
+    ///
+    /// All logic pins are 3.3V
+    ///
+    /// PWM capable pins are:
+    /// - A1, A2, A12, A15.
+    /// - D2-D9, D11, D13-D45, D48, D50-D53.
+    /// - MISO, MOSI, SCK, SCL, SDA.
+  
+    /// ## Analog 0
+    /// This pin is analog input  A0 but is also an analog output due to 
+    /// having a DAC (digital-to-analog converter). This is the first 
+    /// DAC, and is 'independent' of A1. You can set the raw voltage to 
+    /// anything from 0 to 3.3V, unlike PWM outputs, this is a true analog 
+    /// output.
     pin a0 = a2,
-    /// Pin A1 (analog). Can act as a true analog output as it has a DAC (which is
-    /// currently not supported by this hal) as well as input.
+
+    /// ## Analog 1
+    /// This pin is analog input  A1 but is also an analog output due to 
+    /// having a DAC (digital-to-analog converter). This is the second 
+    /// DAC, and is 'independent' of A0. You can set the raw voltage to 
+    /// anything from 0 to 3.3V, unlike PWM outputs this is a true analog 
+    /// output.
     pin a1 = a5,
-    /// Pin A2 (analog)
+
+    /// ## Analog 2-15
+    /// These are each analog input as well as digital I/O pins.
     pin a2 = b3,
-    /// Pin A3 (analog)
     pin a3 = c0,
-    /// Pin A4 (analog), PWM capable
     pin a4 = c1,
-    /// Pin A5 (analog), PWM capable
     pin a5 = c2,
     pin a6 = c3,
     pin a7 = b4,
@@ -62,73 +83,216 @@ define_pins!(
     pin a13 = a4,
     pin a14 = a6,
     pin a15 = a7,
+    
+    /// # Digital GPIO Pins
+    
+    /// ## Digital 0:
+    /// RX - GPIO #0, also receive (input) pin for Serial0 (hardware UART) 
+    /// unlike the original Mega this is not used by the USB-to-Serial 
+    /// chip so its free to use
+    /// 
+    /// mapped as: uart0_rx
+    ///pin d0 = b25,
+    pin uart0_rx = b25,
 
-    /// Pin 0 (digital), aka RX for Serial1. PWM capable.
-    //pin d0 = b25,
-    /// Pin 1 (digital), aka TX for Serial1. PWM capable.
-    //pin d1 = b24,
-    /// Pin 2, PWN capable, analog input capable
+    /// ## Digital 1:
+    /// TX - GPIO #1, also transmit (output) pin for Serial0 (hardware UART) 
+    /// unlike the original Mega this is not used by the USB-to-Serial chip 
+    /// so its free to use
+    /// 
+    /// mapped as: uar0_tx
+    ///pin d1 = b24,
+    pin uart0_tx = b24,
+
+    /// ## Digital 2-13
+    /// These are general purpose GPIO.
     pin d2 = c18,
-    /// Pin 3
     pin d3 = c19,
-    /// Pin 4, PWM capable
     pin d4 = c20,
-    /// Pin 5. Output-only with rail-to-rail HI level. PWM capable.
     pin d5 = c21,
     pin d6 = d20,
-    /// Pin 7, PWM capable
     pin d7 = d21,
     pin d8 = b18,
-    /// Pin 9, PWM capable
     pin d9 = b2,
-    /// Pin 10, PWM capable
     pin d10 = b22,
-    /// Pin 11, PWM capable
     pin d11 = b23,
-    /// Pin 12, PWM capable
     pin d12 = b0,
-    /// Pin 13, PWM capable. Also attached to onboard LED.
-    pin d13 = b1,
-    //pin d14 = b16,
-    //pin d15 = b17,
-    //pin d16 = c22,
-    //pin d17 = c23,
-    //pin d18 = b12,
-    //pin d19 = b13,
-    //pin d20 = c16,
-    //pin d21 = c17,
+
+    /// ## Digital 13
+    /// Connected to the red LED marked L (see note below) next to the USB 
+    /// jack. Also PWM output.
+    /// 
+    /// mapped as: red_led
+    ///pin d13 = b1,
+    pin red_led = b1,
+
+    /// ## Digital 14
+    /// TX3 - GPIO #14, to maintain compatibility with the Mega pinout this can
+    /// also be a Serial TX (on SERCOM5)
+    /// 
+    /// mapped as: uart3_tx
+    ///pin d14 = b16,
+    pin uart3_tx = b16,
+
+    /// ## Digital 15
+    /// RX3 - GPIO #15, to maintain compatibility with the Mega pinout this can 
+    /// also be a Serial RX (on SERCOM5)
+    /// 
+    /// mapped as: uart3_rx
+    ///pin d15 = b17,
+    pin uart3_rx = b17,
+    
+    /// ## Digital 16
+    /// TX2 - GPIO #16, to maintain compatibility with the Mega pinout this can 
+    /// also be a Serial TX (on SERCOM1)
+    /// 
+    /// mapped as: uart2_tx
+    ///pin d16 = c22,
+    pin uart2_tx = c22,
+    
+    /// ## Digital 17
+    /// RX2 - GPIO #17, to maintain compatibility with the Mega pinout this can 
+    /// also be a Serial RX (on SERCOM1)
+    /// 
+    /// mapped as: uart2_rx
+    ///pin d17 = c23,
+    pin uart2_rx = c23,
+    
+    /// ## Digital 18
+    /// TX1 - GPIO #18, to maintain compatibility with the Mega pinout this can 
+    /// also be a Serial TX (on SERCOM4)
+    /// 
+    /// mapped as: uart1_tx
+    ///pin d18 = b12,
+    pin uart1_tx = b12,
+    
+    /// ## Digital 19
+    /// RX1 - GPIO #19, to maintain compatibility with the Mega pinout this can 
+    /// also be a Serial RX (on SERCOM4)
+    /// 
+    /// mapped as: uart1_rx
+    ///pin d19 = b13,
+    pin uart1_rx = b13,
+    
+    /// ## Digital 20
+    /// SDA - GPIO #20, and also I2C (Wire) data pin - This is the same as the 
+    /// SDA above
+    /// 
+    /// mapped as: sda
+    ///pin d20 = c16,
+    pin sda = c16,
+    
+    /// ## Digital 21
+    /// SCL - GPIO #21, and also I2C (Wire) clock pin - This is the same as the 
+    /// SCL above. The original Mega had this as a separate I2C port but we 
+    /// have lots of SERCOMs and to keep things simple, we tied them together
+    /// 
+    /// mapped as: scl
+    ///pin d21 = c17,
+    pin scl = c17,
+
+    /// ## Digital 22-23
+    /// These are general purpose GPIO.
     pin d22 = d12,
     pin d23 = a15,
-    //pin d24 = a24,
-    //pin d25 = a25,
+    
+    /// ## USB Pins
 
-    // Parallel Capture Peripheral (PCC)
-    //DEN1: #26 = PA12, DEN2: #27 = PA13, CLK: #28 = PA14, PCC_XCLK: #29 = PB19
-    //PCC_D0: #37 = PA16, PCC_D1: #36 = PA17, PCC_D2: #35 = PA18, PCC_D3: #34 = PA19 
-    //PCC_D4: #33 = PA20, PCC_D5: #32 = PA21, PCC_D6: #31 = PA22, PCC_D7: #30 = PA23
-    //PCC_D8: #39 = PB14, PCC_D9: #38 = PB15, PCC_D10: #41 = PC12, PCC_D11: #40 = PC13
-    //PCC_D12: #43 = PC14, PCC_D13: #42 = PC15 
+    /// Digital 24
+    /// USB D-
+    /// 
+    /// mapped as: usb_dn 
+    ///pin d24 = a24,
+    pin usb_dn = a24,
+
+    /// Digital 25
+    /// USB D+
+    /// 
+    /// mapped as: usb_dp
+    ///pin d25 = a25,
+    pin usb_dp = a25,
+
+    /// # Parallel Capture Peripheral (PCC) Pins
+    /// There's a 'camera' input peripheral you can use with some camera chips 
+    /// to capture video with 14-bit data width. We thought this was neat so 
+    /// we made sure all those pins were available. Here are the PCC pins 
+    /// (left) and the Grand Central M4 pins it's mapped to. Unlike other 
+    /// peripherals, you cannot mux these signals to other pins!
+    
+    /// ## Digital 26
+    /// PCC: DEN1
     pin d26 = a12,
+
+    /// ## Digital 27
+    /// PCC: DEN2
     pin d27 = a13,
+    
+    /// ## Digital 28
+    /// PCC: CLK
     pin d28 = a14,
+
+    /// ## Digital 29
+    /// PCC: XCLK
     pin d29 = b19,
+
+    /// ## Digital 30
+    /// PCC: D7
     pin d30 = a23,
+
+    /// ## Digital 31
+    /// PCC: D6
     pin d31 = a22,
+
+    /// ## Digital 32
+    /// PCC: D5
     pin d32 = a21,
+
+    /// ## Digital 33
+    /// PCC: D4
     pin d33 = a20,
+
+    /// ## Digital 34
+    /// PCC: D3
     pin d34 = a19,
+
+    /// ## Digital 35
+    /// PCC: D2
     pin d35 = a18,
+
+    /// ## Digital 36
+    /// PCC: D1
     pin d36 = a17,
+
+    /// ## Digital 37
+    /// PCC: D0
     pin d37 = a16,
+    
+    /// ## Digital 38
+    /// PCC: D9
     pin d38 = b15,
+
+    /// ## Digital 39
+    /// PCC: D8
     pin d39 = b14,
+
+    /// ## Digital 40
+    /// PCC: D11
     pin d40 = c13,
+
+    /// ## Digital 41
+    /// PCC: D10
     pin d41 = c12,
+
+    /// ## Digital 42
+    /// PCC: D13
     pin d42 = c15,
+
+    /// ## Digital 43
+    /// PCC: D12
     pin d43 = c14,
 
-    //D44: #44 = PC11, D45: #45 = PC10, D46: #46 = PC06, D47: #47 = PC07
-    //D48: #48 = PC04, D49: #49 = PC05
+    /// Digital 44-49
+    /// These are general purpose GPIO.
     pin d44 = c11,
     pin d45 = c10,
     pin d46 = c6,
@@ -136,61 +300,104 @@ define_pins!(
     pin d48 = c4,
     pin d49 = c5,
 
-    //MISO: #50 = PD11, MOSI: #51 = PD08, SCK: #52 = PD09, SS: #53 = PD10  
-    //pin d50 = d11,
-    //pin d51 = d8,
-    //pin d52 = d9,
-    //pin d53 = d10,
-
-    // I2C Pins same as d20 and d21 respectively
-    pin sda = b20,
-    pin scl = b21,
-    pin sda_1 = c16,
-    pin scl_1 = c17,
-
-    // Hardware SPI Pins
-    pin mosi = d8,
-    pin sck = d9,
-    pin ss = d10,
+    /// # Hardware SPI
+    /// These are the hardware SPI pins, are are connected to the 2x3 
+    /// header in the middle of the board. you can use them as everyday GPIO 
+    /// pins (but recommend keeping them free as they are best used for 
+    /// hardware SPI connections for high speed.)
+    
+    /// Digital 50
+    /// MISO - This is the same as the header in the middle of the board when
+    /// used for SPI
+    /// 
+    /// mapped as: miso
+    ///pin d50 = d11,
     pin miso = d11,
 
-    // On-board SPI flash Pins
+    /// Digital 51
+    /// MOSI -This is the same as the header in the middle of the board when 
+    /// used for SPI
+    /// 
+    /// mapped as: mosi
+    ///pin d51 = d8,
+    pin mosi = d8,
+
+    /// Digital 52
+    /// SCK -This is the same as the header in the middle of the board when 
+    /// used for SPI
+    /// 
+    /// mapped as: sck
+    ///pin d52 = d9,
+    pin sck = d9,
+
+    /// ## Digital 52
+    /// SS - This is just named SS for back-compatibility with the Mega's 
+    /// SPI secondary-select pin.
+    /// 
+    /// mapped as: SS
+    ///pin d53 = d10,
+    pin ss = d10,
+
+    /// # QSPI Flash
+    /// The QSPI Flash is connected to 6 pins that are not brought out on 
+    /// the GPIO pads. This way you don't have to worry about the SPI flash 
+    /// colliding with other devices on the main SPI connection.
+    ///
+    /// QSPI is neat because it allows you to have 4 data in/out lines instead
+    /// of just SPI's single line in and single line out. This means that QSPI 
+    /// is at least 4 times faster. But in reality is at least 10x faster 
+    /// because you can clock the QSPI peripheral much faster than a plain SPI 
+    /// peripheral.
+    
+    /// ## QSPI Flash SCK
     pin flash_sck = b10,
+
+    /// ## QSPI Flash IO0
     pin flash_io0 = a8,
+
+    /// ## QSPI Flash IO1
     pin flash_io1 = a9,
+
+    /// ## QSPI Flash IO2
     pin flash_io2 = a10,
+
+    /// ## QSPI Flash IO3
     pin flash_io3 = a11,
+
+    /// ## QSPI Flash CS
     pin flash_cs = b11,
 
-    // USB D+/- pad Pins
-    pin usb_dm = a24,
-    pin usb_dp = a25,
+    /// # NeoPixel
+    /// The NeoPixel is connected to pin #88. The NeoPixel is powered by the 
+    /// 3.3V power supply but that hasn't shown to make a big difference in 
+    /// brightness or color. The NeoPixel is also used by the bootloader to 
+    /// let you know if the device has enumerated correctly (green) or USB 
+    /// failure (red).
+    
+    /// ## NeoPixel Pin
+    pin neopixel = c24,
 
-    // UART0
-    pin uart0_rx = b25,
-    pin uart0_tx = b24,
-
-    // UART1
-    pin uart1_rx = b13,
-    pin uart1_tx = b12,
-
-    // UART2
-    pin uart2_rx = c23,
-    pin uart2_tx = c22,
-
-    // UART3
-    pin uart3_rx = b17,
-    pin uart3_tx = b16,
-
-    // Micro SD Card Pins
+    /// # Micro SD Card Pins
+    
+    /// ## SD Card MOSI
     pin sd_mosi = b26,
+
+    /// ## SD CARD SCK
     pin sd_sck = b27,
+
+    /// ## SD CARD CS
     pin sd_cs = b28,
+
+    /// ## SD CARD MISO
     pin sd_miso = b29,
+
+    /// ## SD CARD SWO?
     pin swo = b30,
+
+    /// ## SD CARD CD
     pin sd_cd = b31,
 
-    // Analog Reference Pin
+    /// Analog Reference Pin
     pin aref = a3,
 
     // TODO: ADC
@@ -219,63 +426,6 @@ impl Pins {
             a15: self.a15,
         };
 
-        let digital = Digital {
-            //d0: self.d0,
-            //d1: self.d1,
-            d2: self.d2,
-            d3: self.d3,
-            d4: self.d4,
-            d5: self.d5,
-            d6: self.d6,
-            d7: self.d7,
-            d8: self.d8,
-            d9: self.d9,
-            d10: self.d10,
-            d11: self.d11,
-            d12: self.d12,
-            d13: self.d13,
-            //d14: self.d14,
-            //d15: self.d15,
-            //d16: self.d16,
-            //d17: self.d17,
-            //d18: self.d18,
-            //d19: self.d19,
-            //d20: self.d20,
-            //d21: self.d21,
-            //d22: self.d22,
-            //d23: self.d23,
-            //d24: self.d24,
-            //d25: self.d25,
-            d26: self.d26,
-            d27: self.d27,
-            d28: self.d28,
-            d29: self.d29,
-            d30: self.d30,
-            d31: self.d31,
-            d32: self.d32,
-            d33: self.d33,
-            d34: self.d34,
-            d35: self.d35,
-            d36: self.d36,
-            d37: self.d37,
-            d38: self.d38,
-            d39: self.d39,
-            d40: self.d40,
-            d41: self.d41,
-            d42: self.d42,
-            d43: self.d43,
-            d44: self.d44,
-            d45: self.d45,
-            d46: self.d46,
-            d47: self.d47,
-            d48: self.d48,
-            d49: self.d49,
-            //d50: self.d50,
-            //d51: self.d51,
-            //d52: self.d52,
-            //d53: self.d53,
-        };
-
         let flash = QSPIFlash {
             sck: self.flash_sck,
             cs: self.flash_cs,
@@ -301,50 +451,43 @@ impl Pins {
             scl: self.scl,
         };
 
-        let i2c1 = I2C1 {
-            sda: self.sda_1,
-            scl: self.scl_1,
-        };
-
         let usb = USB {
-            dm: self.usb_dm,
+            dm: self.usb_dn,
             dp: self.usb_dp,
         };
 
-        //let uart0 = UART0_ {
-         //   rx: self.d0,
-         //   tx: self.d1,
-        //};
+        let uart0 = UART0_ {
+           rx: self.uart0_rx,
+           tx: self.uart0_tx,
+        };
 
-        //let uart1 = UART1_ {
-        //    rx: self.uart1_rx,
-        //    tx: self.uart1_tx,
-        //};
+        let uart1 = UART1_ {
+            rx: self.uart1_rx,
+            tx: self.uart1_tx,
+        };
 
-        //let uart2 = UART2_ {
-        //    rx: self.uart2_rx,
-        //    tx: self.uart2_tx,
-        //};
+        let uart2 = UART2_ {
+            rx: self.uart2_rx,
+            tx: self.uart2_tx,
+        };
 
-        //let uart3 = UART3_ {
-        //    rx: self.uart3_rx,
-        //    tx: self.uart3_tx,
-        //};
+        let uart3 = UART3_ {
+            rx: self.uart3_rx,
+            tx: self.uart3_tx,
+        };
 
         Sets {
             port: self.port,
             analog,
-            digital,
             spi,
             usb,
             flash,
             sdcard,
             i2c,
-            i2c1,
-            //uart0,
-            //uart1,
-            //uart2,
-            //uart3,
+            uart0,
+            uart1,
+            uart2,
+            uart3,
             tx_led: self.tx_led,
             rx_led: self.rx_led,
             neopixel: self.neopixel,
@@ -362,8 +505,6 @@ pub struct Sets {
     /// Analog pins
     pub analog: Analog,
 
-    pub digital: Digital,
-
     /// SPI (external pinout) pins
     pub spi: SPI,
 
@@ -373,8 +514,6 @@ pub struct Sets {
     /// I2C (external pinout) pins
     pub i2c: I2C,
 
-    pub i2c1: I2C1,
-
     /// QSPI Flash pins
     pub flash: QSPIFlash,
 
@@ -382,10 +521,10 @@ pub struct Sets {
     pub usb: USB,
 
     /// UART (external pinout) pins
-    //pub uart0: UART0_,
-    //pub uart1: UART1_,
-    //pub uart2: UART2_,
-    //pub uart3: UART3_,
+    pub uart0: UART0_,
+    pub uart1: UART1_,
+    pub uart2: UART2_,
+    pub uart3: UART3_,
 
     /// Port
     pub port: Port,
@@ -433,8 +572,8 @@ impl SPI {
 
 /// I2C pins
 pub struct I2C {
-    pub sda: Pb20<Input<Floating>>,
-    pub scl: Pb21<Input<Floating>>,
+    pub sda: Pc16<Input<Floating>>,
+    pub scl: Pc17<Input<Floating>>,
 }
 
 impl I2C {
@@ -444,36 +583,7 @@ impl I2C {
         self,
         clocks: &mut GenericClockController,
         bus_speed: F,
-        sercom3: SERCOM3,
-        mclk: &mut MCLK,
-        port: &mut Port,
-    ) -> I2CMaster3<Sercom3Pad0<Pb20<PfC>>, Sercom3Pad1<Pb21<PfC>>> {
-        let gclk0 = clocks.gclk0();
-        I2CMaster3::new(
-            &clocks.sercom3_core(&gclk0).unwrap(),
-            bus_speed.into(),
-            sercom3,
-            mclk,
-            self.sda.into_pad(port),
-            self.scl.into_pad(port),
-        )
-    }
-}
-
-/// I2C_1 pins
-pub struct I2C1 {
-    pub sda: Pc16<Input<Floating>>,
-    pub scl: Pc17<Input<Floating>>,
-}
-
-impl I2C1 {
- /// Convenience for setting up the labelled SDA, SCL pins to
-    /// operate as an I2C master running at the specified frequency.
-    pub fn init<F: Into<Hertz>>(
-        self,
-        clocks: &mut GenericClockController,
-        bus_speed: F,
-        sercom6: SERCOM6,
+        sercom3: SERCOM6,
         mclk: &mut MCLK,
         port: &mut Port,
     ) -> I2CMaster6<Sercom6Pad0<Pc16<PfC>>, Sercom6Pad1<Pc17<PfC>>> {
@@ -481,7 +591,7 @@ impl I2C1 {
         I2CMaster6::new(
             &clocks.sercom6_core(&gclk0).unwrap(),
             bus_speed.into(),
-            sercom6,
+            sercom3,
             mclk,
             self.sda.into_pad(port),
             self.scl.into_pad(port),
@@ -512,7 +622,7 @@ impl USB {
         mclk: &mut MCLK,
         port: &mut Port,
     ) -> UsbBusAllocator<UsbBus> {
-        clocks.configure_gclk_divider_and_source(pac::gclk::genctrl::GEN_A::GCLK2, 1, pac::gclk::genctrl::SRC_A::DFLL, false);
+        clocks.configure_gclk_divider_and_source(super::pac::gclk::genctrl::GEN_A::GCLK2, 1, super::pac::gclk::genctrl::SRC_A::DFLL, false);
         let usb_gclk = clocks.get_gclk(GEN_A::GCLK2).unwrap();
         let usb_clock = &clocks.usb(&usb_gclk).unwrap();
 
@@ -679,63 +789,6 @@ pub struct Analog {
     pub a13: Pa4<Input<Floating>>,
     pub a14: Pa6<Input<Floating>>,
     pub a15: Pa7<Input<Floating>>,
-}
-
-pub struct Digital {
-    //pub d0: Pb25<Input<Floating>>,
-    //pub d1: Pb24<Input<Floating>>,
-    pub d2: Pc18<Input<Floating>>,
-    pub d3: Pc19<Input<Floating>>,
-    pub d4: Pc20<Input<Floating>>,
-    pub d5: Pc21<Input<Floating>>,
-    pub d6: Pd20<Input<Floating>>,
-    pub d7: Pd21<Input<Floating>>,
-    pub d8: Pb18<Input<Floating>>,
-    pub d9: Pb2<Input<Floating>>,
-    pub d10: Pb22<Input<Floating>>,
-    pub d11: Pb23<Input<Floating>>,
-    pub d12: Pb0<Input<Floating>>,
-    pub d13: Pb1<Input<Floating>>,
-    //pub d14: Pb16<Input<Floating>>,
-    //pub d15: Pb17<Input<Floating>>,
-    //pub d16: Pc22<Input<Floating>>,
-    //pub d17: Pc23<Input<Floating>>,
-    //pub d18: Pb12<Input<Floating>>,
-    //pub d19: Pb13<Input<Floating>>,
-    //pub d20: Pc16<Input<Floating>>,
-    //pub d21: Pc17<Input<Floating>>,
-    //pub d22: Pd12<Input<Floating>>,
-    //pub d23: Pa15<Input<Floating>>,
-    //pub d24: Pa24<Input<Floating>>,
-    //pub d25: Pa25<Input<Floating>>,
-    pub d26: Pa12<Input<Floating>>,
-    pub d27: Pa13<Input<Floating>>,
-    pub d28: Pa14<Input<Floating>>,
-    pub d29: Pb19<Input<Floating>>,
-    pub d30: Pa23<Input<Floating>>,
-    pub d31: Pa22<Input<Floating>>,
-    pub d32: Pa21<Input<Floating>>,
-    pub d33: Pa20<Input<Floating>>,
-    pub d34: Pa19<Input<Floating>>,
-    pub d35: Pa18<Input<Floating>>,
-    pub d36: Pa17<Input<Floating>>,
-    pub d37: Pa16<Input<Floating>>,
-    pub d38: Pb15<Input<Floating>>,
-    pub d39: Pb14<Input<Floating>>,
-    pub d40: Pc13<Input<Floating>>,
-    pub d41: Pc12<Input<Floating>>,
-    pub d42: Pc15<Input<Floating>>,
-    pub d43: Pc14<Input<Floating>>,
-    pub d44: Pc11<Input<Floating>>,
-    pub d45: Pc10<Input<Floating>>,
-    pub d46: Pc6<Input<Floating>>,
-    pub d47: Pc7<Input<Floating>>,
-    pub d48: Pc4<Input<Floating>>,
-    pub d49: Pc5<Input<Floating>>,
-    //pub d50: Pd11<Input<Floating>>,
-    //pub d51: Pd8<Input<Floating>>,
-    //pub d52: Pd9<Input<Floating>>,
-    //pub d53: Pd10<Input<Floating>>,
 }
 
 /// QSPI flash pins

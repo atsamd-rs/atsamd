@@ -26,7 +26,7 @@ fn main() -> ! {
     delay.delay_ms(400u16);
 
     let mut pins = hal::Pins::new(peripherals.PORT);
-    let mut red_led = pins.d13.into_open_drain_output(&mut pins.port);
+    let mut red_led = pins.red_led.into_open_drain_output(&mut pins.port);
 
     let mut wdt = Watchdog::new(peripherals.WDT);
     wdt.start(WatchdogTimeout::Cycles256 as u8);
