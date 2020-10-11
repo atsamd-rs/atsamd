@@ -1,17 +1,16 @@
 //! Grand Central M4 Express Pins
 
 use super::{hal, pac::MCLK, 
-    pac::SERCOM0, pac::SERCOM1, //pac::SERCOM2, 
-    pac::SERCOM3, pac::SERCOM4, pac::SERCOM5, 
+    pac::SERCOM0, pac::SERCOM1, 
+    pac::SERCOM4, pac::SERCOM5, 
     pac::SERCOM6, pac::SERCOM7, target_device};
 
 use hal::define_pins;
 use hal::gpio::{self, *};
 use hal::sercom::{
     PadPin,
-    I2CMaster3, Sercom3Pad0, Sercom3Pad1,
     I2CMaster6, Sercom6Pad0, Sercom6Pad1,
-    SPIMaster7, //Sercom7Pad3,Sercom7Pad0, Sercom7Pad1,
+    SPIMaster7,
     UART0, Sercom0Pad1, Sercom0Pad0,
     UART4, Sercom4Pad0, Sercom4Pad1,
     UART1, Sercom1Pad0, Sercom1Pad1,
