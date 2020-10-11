@@ -45,7 +45,6 @@ cortex-m-rtic = "~0.5.1"
 panic_rtt = "~0.2"
 
 [features]
-# ask the HAL to enable atsamd51g19a support
 default = ["rt", "atsamd-hal/samd51p20a", "atsamd-hal/samd51", "atsamd-hal/unproven"]
 rt = ["cortex-m-rt", "atsamd-hal/samd51p20a-rt"]
 unproven = ["atsamd-hal/unproven"]
