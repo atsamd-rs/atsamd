@@ -20,6 +20,8 @@ In addition to the PACs and HAL, there numerous **B**oard **S**upport **P**ackag
 | [atsamd51j19a](https://docs.rs/atsamd51j19a/) | [![Crates.io](https://img.shields.io/crates/v/atsamd51j19a.svg)](https://crates.io/crates/atsamd51j19a) | [EdgeBadge][edgebadge], [Feather M4][feather_m4], [Metro M4][metro_m4] |
 | [atsamd51j20a](https://docs.rs/atsamd51j20a/) | [![Crates.io](https://img.shields.io/crates/v/atsamd51j20a.svg)](https://crates.io/crates/atsamd51j20a) | [PyPortal][pyportal] |
 | [atsamd51p19a](https://docs.rs/atsamd51p19a/) | [![Crates.io](https://img.shields.io/crates/v/atsamd51p19a.svg)](https://crates.io/crates/atsamd51p19a) |  |
+| [atsamd51p20a](https://docs.rs/atsamd51p20a/) | [![Crates.io](https://img.shields.io/crates/v/atsamd51p20a.svg)](https://crates.io/crates/atsamd51p20a) |  |
+| [atsamd51p20a](https://docs.rs/atsamd51p20a/) | [![Crates.io](https://img.shields.io/crates/v/atsamd51p20a.svg)](https://crates.io/crates/atsamd51p20a) | [Grand Central M4 Express][grand_central_m4] |
 | [atsame54p20a](https://docs.rs/atsame54p20a/) | [![Crates.io](https://img.shields.io/crates/v/atsame54p20a.svg)](https://crates.io/crates/atsame54p20a) | [PathfinderZA Proto1][pfza_proto1] |
 | [atsamd-hal](https://docs.rs/atsamd_hal/) | [![Crates.io](https://img.shields.io/crates/v/atsamd_hal.svg)](https://crates.io/crates/atsamd_hal) |  |
 
@@ -42,6 +44,7 @@ In addition to the PACs and HAL, there numerous **B**oard **S**upport **P**ackag
 [trellis_m4]: https://github.com/atsamd-rs/atsamd/tree/master/boards/trellis_m4/
 [trinket_m0]: https://github.com/atsamd-rs/atsamd/tree/master/boards/trinket_m0/
 [serpente]: https://github.com/atsamd-rs/atsamd/tree/master/boards/serpente/
+[grand_central_m4]: https://github.com/atsamd-rs/atsamd/tree/master/boards/grand_central_m4/
 
 ## Building
 

@@ -5,6 +5,8 @@ use crate::sercom::pads::*;
 use crate::target_device::sercom0::USART_INT;
 use crate::target_device::{MCLK, SERCOM0, SERCOM1, SERCOM2, SERCOM3};
 use crate::target_device::{SERCOM4, SERCOM5};
+#[cfg(feature = "samd51p20a")]
+use crate::target_device::{SERCOM6, SERCOM7};
 use crate::time::Hertz;
 use core::fmt;
 
@@ -351,6 +353,34 @@ uart!(
             SERCOM5_0,
             SERCOM5_1,
             SERCOM5_2
+        )
+);
+#[cfg(feature = "samd51p20a")]
+uart!(
+    UART6:
+        (
+            Sercom6,
+            SERCOM6,
+            sercom6_,
+            Sercom6CoreClock,
+            apbdmask,
+            SERCOM6_0,
+            SERCOM6_1,
+            SERCOM6_2
+        )
+);
+#[cfg(feature = "samd51p20a")]
+uart!(
+    UART7:
+        (
+            Sercom7,
+            SERCOM7,
+            sercom7_,
+            Sercom7CoreClock,
+            apbdmask,
+            SERCOM7_0,
+            SERCOM7_1,
+            SERCOM7_2
         )
 );
 
