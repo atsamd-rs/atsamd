@@ -32,7 +32,7 @@ env:
   - CRATE=boards/edgebadge FEATURES="--features=unproven"
   - CRATE=boards/xiao_m0 EXAMPLES="--example=blink --example=usb_serial" FEATURES="--features=usb"
   - CRATE=boards/wio_lite_mg126 FEATURES="--features=unproven,usb"
-  - CRATE=boards/grand_central_m4 FEATURES="--features=unproven" EXAMPLES="--example=blinky_basic"
+  - CRATE=boards/grand_central_m4 FEATURES="--features=unproven"
 
 jobs:
   allow_failures:
