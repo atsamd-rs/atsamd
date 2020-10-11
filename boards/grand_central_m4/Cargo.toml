@@ -15,9 +15,8 @@ documentation = "https://atsamd-rs.github.io/atsamd/atsamd51g19a/grand_central_m
 [dependencies]
 cortex-m = "~0.6"
 embedded-hal = "~0.2.3"
-bitbang-hal = "~0.3"
-apa102-spi = "~0.3"
-smart-leds = "~0.3"
+smart-leds = "0.3"
+ws2812-spi = "0.2.0"
 nb = "~0.1"
 
 [dependencies.cortex-m-rt]
@@ -37,10 +36,15 @@ optional = true
 version = "~0.1"
 optional = true
 
+[dependencies.ws2812-timer-delay]
+version = "~0.3"
+
 [dev-dependencies]
 panic-halt = "~0.2"
 panic-semihosting = "~0.5"
 cortex-m-semihosting = "~0.3"
+smart-leds = "0.3"
+ws2812-spi = "0.2.0"
 cortex-m-rtic = "~0.5.1"
 panic_rtt = "~0.2"
 
@@ -61,6 +65,9 @@ lto = true
 lto = true
 opt-level = "s"
 
-
 [[example]]
 name = "blinky_basic"
+
+[[example]]
+name = "usb_serial"
+required-features = ["usb"]

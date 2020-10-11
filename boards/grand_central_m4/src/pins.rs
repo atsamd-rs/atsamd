@@ -18,8 +18,13 @@ use hal::sercom::{
 };
 use hal::time::Hertz;
 
+use embedded_hal::{digital::v1_compat::OldOutputPin, timer::CountDown, timer::Periodic};
+use ws2812_timer_delay as ws2812;
+
 use hal::clock::GenericClockController;
 
+#[cfg(feature = "usb")]
+use super::pac::gclk::{genctrl::SRC_A, pchctrl::GEN_A};
 #[cfg(feature = "usb")]
 use hal::usb::usb_device::bus::UsbBusAllocator;
 #[cfg(feature = "usb")]
@@ -200,9 +205,9 @@ define_pins!(
     /// Digital 24
     /// USB D-
     /// 
-    /// mapped as: usb_dn 
+    /// mapped as: usb_dm 
     ///pin d24 = a24,
-    pin usb_dn = a24,
+    pin usb_dm = a24,
 
     /// Digital 25
     /// USB D+
@@ -451,7 +456,7 @@ impl Pins {
         };
 
         let usb = USB {
-            dm: self.usb_dn,
+            dm: self.usb_dm,
             dp: self.usb_dp,
         };
 
@@ -475,6 +480,10 @@ impl Pins {
             tx: self.uart3_tx,
         };
 
+        let neopixel = Neopixel {
+            neopixel: self.neopixel,
+        };
+
         Sets {
             port: self.port,
             analog,
@@ -489,7 +498,7 @@ impl Pins {
             uart3,
             tx_led: self.tx_led,
             rx_led: self.rx_led,
-            neopixel: self.neopixel,
+            neopixel,
         }
     }
 }
@@ -497,7 +506,6 @@ impl Pins {
 /// Sets of pins split apart by category
 pub struct Sets {
 
-    pub neopixel: Pc24<Input<Floating>>,
     pub tx_led: Pc30<Input<Floating>>,
     pub rx_led: Pc31<Input<Floating>>,
 
@@ -515,6 +523,9 @@ pub struct Sets {
 
     /// QSPI Flash pins
     pub flash: QSPIFlash,
+
+    /// Neopixel
+    pub neopixel: Neopixel,
 
     /// USB pins
     pub usb: USB,
@@ -621,7 +632,7 @@ impl USB {
         mclk: &mut MCLK,
         port: &mut Port,
     ) -> UsbBusAllocator<UsbBus> {
-        clocks.configure_gclk_divider_and_source(super::pac::gclk::genctrl::GEN_A::GCLK2, 1, super::pac::gclk::genctrl::SRC_A::DFLL, false);
+        clocks.configure_gclk_divider_and_source(GEN_A::GCLK2, 1, SRC_A::DFLL, false);
         let usb_gclk = clocks.get_gclk(GEN_A::GCLK2).unwrap();
         let usb_clock = &clocks.usb(&usb_gclk).unwrap();
 
@@ -798,4 +809,30 @@ pub struct QSPIFlash {
     pub data1: Pa9<Input<Floating>>,
     pub data2: Pa10<Input<Floating>>,
     pub data3: Pa11<Input<Floating>>,
+}
+
+/// Neopixel pins
+pub struct Neopixel {
+    pub neopixel: Pc24<Input<Floating>>,
+}
+
+impl Neopixel {
+    /// Convenience for setting up the onboard neopixels using the provided
+    /// Timer preconfigured to 3mhz.
+    pub fn init<T: CountDown + Periodic>(
+        self,
+        timer: T,
+        port: &mut Port,
+    ) -> ws2812::Ws2812<
+        T,
+        embedded_hal::digital::v1_compat::OldOutputPin<
+            atsamd_hal::common::gpio::Pc24<
+                atsamd_hal::common::gpio::Output<atsamd_hal::common::gpio::PushPull>,
+            >,
+        >,
+    > {
+        let neopixel_pin: OldOutputPin<_> = self.neopixel.into_push_pull_output(port).into();
+
+        ws2812::Ws2812::new(timer, neopixel_pin)
+    }
 }
