@@ -56,9 +56,8 @@ debug = true
 lto = true
 
 [profile.release]
-debug = true
 lto = true
-opt-level = "s"
+opt-level = 3
 
 [[example]]
 name = "blinky_basic"
