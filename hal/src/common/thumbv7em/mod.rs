@@ -1,3 +1,4 @@
+pub mod eic;
 pub mod gpio;
 pub mod timer;
 pub mod trng;
