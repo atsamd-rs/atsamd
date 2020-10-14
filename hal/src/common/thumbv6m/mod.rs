@@ -1,4 +1,3 @@
-pub mod evsys;
 pub mod gpio;
 
 mod reset_cause;
