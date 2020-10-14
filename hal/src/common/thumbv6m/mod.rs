@@ -1,4 +1,3 @@
-pub mod eic;
 pub mod evsys;
 pub mod gpio;
 

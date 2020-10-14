@@ -10,7 +10,12 @@ pub trait EicPin<T> {
 
 pub type Sense = target_device::eic::config::SENSE0_A;
 
-// TODO: implement support for NMI
+pub type ExternalInterruptID = usize;
+
+/// ExternalInterrupt describes something with an external interrupt ID.
+pub trait ExternalInterrupt {
+    fn id(self) -> ExternalInterruptID;
+}
 
 /// The pad macro defines the given EIC pin and implements EicPin for the
 /// given pins. The EicPin implementation will configure the pin for the
@@ -42,20 +47,20 @@ crate::paste::item! {
             [<$PadType $num>](pin)
         }
 
-        pub fn enable_event(&mut self, eic: &mut super::EIC) {
+        pub fn enable_event(&mut self, eic: &mut super::ConfigurableEIC) {
             eic.eic.evctrl.modify(|_, w| unsafe {
                 w.bits(1 << $num)
             });
         }
 
-        pub fn enable_interrupt(&mut self, eic: &mut super::EIC) {
-            eic.eic.intenset.modify(|_, w| unsafe {
+        pub fn enable_interrupt(&mut self, eic: &mut super::ConfigurableEIC) {
+            eic.eic.intenset.write(|w| unsafe {
                 w.bits(1 << $num)
             })
         }
 
-        pub fn disable_interrupt(&mut self, eic: &mut super::EIC) {
-            eic.eic.intenclr.modify(|_, w| unsafe {
+        pub fn disable_interrupt(&mut self, eic: &mut super::ConfigurableEIC) {
+            eic.eic.intenclr.write(|w| unsafe {
                 w.bits(1 << $num)
             })
         }
@@ -65,15 +70,20 @@ crate::paste::item! {
             intflag & (1 << $num) != 0
         }
 
+        pub fn state(&mut self) -> bool {
+            let state = unsafe { &(*target_device::EIC::ptr()) }.pinstate.read().bits();
+            state & (1 << $num) != 0
+        }
+
         pub fn clear_interrupt(&mut self) {
             unsafe {
-                &(*target_device::EIC::ptr()).intflag.modify(|_, w| {
+                &(*target_device::EIC::ptr()).intflag.write(|w| {
                     w.bits(1 << $num)
                 });
             }
         }
 
-        pub fn sense(&mut self, _eic: &mut super::EIC, sense: Sense) {
+        pub fn sense(&mut self, _eic: &mut super::ConfigurableEIC, sense: Sense) {
             // Which of the two config blocks this eic config is in
             let offset = ($num >> 3) & 0b0001;
             let config = unsafe { &(*target_device::EIC::ptr()).config[offset] };
@@ -94,7 +104,7 @@ crate::paste::item! {
             });
         }
 
-        pub fn filter(&mut self, _eic: &mut super::EIC, filter: bool) {
+        pub fn filter(&mut self, _eic: &mut super::ConfigurableEIC, filter: bool) {
             // Which of the two config blocks this eic config is in
             let offset = ($num >> 3) & 0b0001;
             let config = unsafe { &(*target_device::EIC::ptr()).config[offset] };
@@ -121,6 +131,11 @@ crate::paste::item! {
         impl<MODE> EicPin<[<$PadType $num>]<gpio::$PinType<gpio::PfA>>> for gpio::$PinType<MODE> {
             fn into_ei(self, port: &mut Port) -> [<$PadType $num>]<gpio::$PinType<gpio::PfA>> {
                 [<$PadType $num>]::new(self.into_function(port))
+            }
+        }
+        impl<MODE> ExternalInterrupt for &gpio::$PinType<MODE> {
+            fn id(self) -> ExternalInterruptID {
+                $num
             }
         }
     )+
