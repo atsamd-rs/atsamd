@@ -133,6 +133,7 @@ crate::paste::item! {
                 [<$PadType $num>]::new(self.into_function(port))
             }
         }
+        $(#[$attr])*
         impl<MODE> ExternalInterrupt for &gpio::$PinType<MODE> {
             fn id(self) -> ExternalInterruptID {
                 $num
