@@ -449,27 +449,57 @@ impl Port {
         unsafe { &(*PORT::ptr()).group1.pmux }
     }
 
-    #[cfg(any(feature = "samd51p19a", feature = "samd51n20a", feature = "samd51p20a", feature = "same54"))]
+    #[cfg(any(
+        feature = "samd51p19a",
+        feature = "samd51n20a",
+        feature = "samd51p20a",
+        feature = "same54"
+    ))]
     fn dirset2(&mut self) -> &DIRSET {
         unsafe { &(*PORT::ptr()).group2.dirset }
     }
-    #[cfg(any(feature = "samd51p19a", feature = "samd51n20a", feature = "samd51p20a", feature = "same54"))]
+    #[cfg(any(
+        feature = "samd51p19a",
+        feature = "samd51n20a",
+        feature = "samd51p20a",
+        feature = "same54"
+    ))]
     fn dirclr2(&mut self) -> &DIRCLR {
         unsafe { &(*PORT::ptr()).group2.dirclr }
     }
-    #[cfg(any(feature = "samd51p19a", feature = "samd51n20a", feature = "samd51p20a", feature = "same54"))]
+    #[cfg(any(
+        feature = "samd51p19a",
+        feature = "samd51n20a",
+        feature = "samd51p20a",
+        feature = "same54"
+    ))]
     fn pincfg2(&mut self) -> &[PINCFG; 32] {
         unsafe { &(*PORT::ptr()).group2.pincfg }
     }
-    #[cfg(any(feature = "samd51p19a", feature = "samd51n20a", feature = "samd51p20a", feature = "same54"))]
+    #[cfg(any(
+        feature = "samd51p19a",
+        feature = "samd51n20a",
+        feature = "samd51p20a",
+        feature = "same54"
+    ))]
     fn outset2(&mut self) -> &OUTSET {
         unsafe { &(*PORT::ptr()).group2.outset }
     }
-    #[cfg(any(feature = "samd51p19a", feature = "samd51n20a", feature = "samd51p20a", feature = "same54"))]
+    #[cfg(any(
+        feature = "samd51p19a",
+        feature = "samd51n20a",
+        feature = "samd51p20a",
+        feature = "same54"
+    ))]
     fn outclr2(&mut self) -> &OUTCLR {
         unsafe { &(*PORT::ptr()).group2.outclr }
     }
-    #[cfg(any(feature = "samd51p19a", feature = "samd51n20a", feature = "samd51p20a", feature = "same54"))]
+    #[cfg(any(
+        feature = "samd51p19a",
+        feature = "samd51n20a",
+        feature = "samd51p20a",
+        feature = "same54"
+    ))]
     fn pmux2(&mut self) -> &[PMUX; 16] {
         unsafe { &(*PORT::ptr()).group2.pmux }
     }

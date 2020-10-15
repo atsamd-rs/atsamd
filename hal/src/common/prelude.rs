@@ -1,4 +1,6 @@
 //! Import the prelude to gain convenient access to helper traits
+#[cfg(any(feature = "samd51", feature = "same54"))]
+pub use crate::eic::pin::EicPin;
 pub use crate::gpio::GpioExt as _atsamd21_hal_gpio_GpioExt;
 pub use crate::spi_common::CommonSpi as _atsamd_hal_spi_common_CommonSpi;
 pub use crate::time::U32Ext as _atsamd21_hal_time_U32Ext;
