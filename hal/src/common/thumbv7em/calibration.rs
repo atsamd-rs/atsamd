@@ -1,5 +1,5 @@
 //! NVM Software Calibration Area Mapping
-// See 9.5 NVM Software Calibration Area Mapping, page 55
+// See 9.5 NVM Software Calibration Area Mapping, page 57
 
 use core::ptr;
 

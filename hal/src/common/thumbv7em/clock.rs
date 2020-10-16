@@ -309,9 +309,15 @@ impl GenericClockController {
 }
 
 macro_rules! clock_generator {
-    ($(($id:ident, $Type:ident, $clock:ident),)+) => {
+    (
+        $(
+            $(#[$attr:meta])*
+            ($id:ident, $Type:ident, $clock:ident),
+        )+
+    ) => {
 
 $(
+
 /// A typed token that indicates that the clock for the peripheral(s)
 /// with the matching name has been configured.
 /// The effective clock frequency is available via the `freq` method,
@@ -319,17 +325,20 @@ $(
 /// The peripheral initialization code will typically require passing
 /// in this object to prove at compile time that the clock has been
 /// correctly initialized.
+$(#[$attr])*
 #[derive(Debug)]
 pub struct $Type {
     freq: Hertz,
 }
 
+$(#[$attr])*
 impl $Type {
     /// Returns the frequency of the configured clock
     pub fn freq(&self) -> Hertz {
         self.freq
     }
 }
+$(#[$attr])*
 impl Into<Hertz> for $Type {
     fn into(self) -> Hertz {
         self.freq
@@ -351,8 +360,9 @@ impl GenericClockController {
     /// appropriately.
     /// Returns `None` is the specified generic clock has already been
     /// configured.
+    $(#[$attr])*
     pub fn $id(&mut self, generator: &GClock) -> Option<$Type> {
-        let bits: u64 = 1<<u8::from(ClockId::$clock) as u64;
+        let bits: u64 = 1 << u8::from(ClockId::$clock) as u64;
         if (self.used_clocks & bits) != 0 {
             return None;
         }
@@ -381,7 +391,19 @@ clock_generator!(
     (sercom3_core, Sercom3CoreClock, SERCOM3_CORE),
     (sercom4_core, Sercom4CoreClock, SERCOM4_CORE),
     (sercom5_core, Sercom5CoreClock, SERCOM5_CORE),
+    #[cfg(any(
+        feature = "samd51n20a",
+        feature = "samd51p19a",
+        feature = "samd51p20a",
+        feature = "same54"
+    ))]
     (sercom6_core, Sercom6CoreClock, SERCOM6_CORE),
+    #[cfg(any(
+        feature = "samd51n20a",
+        feature = "samd51p19a",
+        feature = "samd51p20a",
+        feature = "same54"
+    ))]
     (sercom7_core, Sercom7CoreClock, SERCOM7_CORE),
     (usb, UsbClock, USB),
     (adc0, Adc0Clock, ADC0),
@@ -467,7 +489,7 @@ fn wait_for_dpllrdy(oscctrl: &mut OSCCTRL) {
 
 /// Configure the dpll0 to run at 120MHz
 fn configure_and_enable_dpll0(oscctrl: &mut OSCCTRL, gclk: &mut GCLK) {
-    gclk.pchctrl[u8::from(ClockId::FDPLL0) as usize].write(|w| {
+    gclk.pchctrl[ClockId::FDPLL0 as usize].write(|w| {
         w.chen().set_bit();
         w.gen().gclk5()
     });
