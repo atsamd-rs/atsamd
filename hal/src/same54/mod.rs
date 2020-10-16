@@ -1,5 +1,3 @@
-pub mod sercom;
-
 #[cfg(feature = "usb")]
 pub mod usb;
 

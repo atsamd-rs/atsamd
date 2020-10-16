@@ -2,6 +2,7 @@ pub mod calibration;
 pub mod clock;
 pub mod eic;
 pub mod gpio;
+pub mod sercom;
 pub mod timer;
 pub mod trng;
 

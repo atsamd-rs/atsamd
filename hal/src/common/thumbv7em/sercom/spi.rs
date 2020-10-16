@@ -3,9 +3,13 @@ use crate::hal::spi::{FullDuplex, Mode, Phase, Polarity};
 use crate::sercom::pads::*;
 use crate::spi_common::CommonSpi;
 use crate::target_device::sercom0::SPIM;
-use crate::target_device::{MCLK, SERCOM0, SERCOM1, SERCOM2, SERCOM3};
-use crate::target_device::{SERCOM4, SERCOM5};
-#[cfg(any(feature = "samd51p19a", feature = "samd51n20a", feature = "samd51p20a"))]
+use crate::target_device::{MCLK, SERCOM0, SERCOM1, SERCOM2, SERCOM3, SERCOM4, SERCOM5};
+#[cfg(any(
+    feature = "samd51n20a",
+    feature = "samd51p19a",
+    feature = "samd51p20a",
+    feature = "same54"
+))]
 use crate::target_device::{SERCOM6, SERCOM7};
 use crate::time::Hertz;
 
@@ -27,7 +31,10 @@ pub trait DipoDopo {
 /// Also defines the valid "pad to spi function" mappings for this instance so
 /// that construction is restricted to correct configurations.
 macro_rules! spi_master {
-    ($Type:ident: ($Sercom:ident, $SERCOM:ident, $powermask:ident, $clock:ident, $apmask:ident)) => {
+    (
+        $Type:ident: ($Sercom:ident, $SERCOM:ident, $powermask:ident, $clock:ident, $apmask:ident)
+    ) => {
+
         $crate::paste::item! {
             /// A pad mapping configuration for the SERCOM in SPI master mode.
             ///
@@ -242,7 +249,17 @@ spi_master!(SPIMaster2: (Sercom2, SERCOM2, sercom2_, Sercom2CoreClock, apbbmask)
 spi_master!(SPIMaster3: (Sercom3, SERCOM3, sercom3_, Sercom3CoreClock, apbbmask));
 spi_master!(SPIMaster4: (Sercom4, SERCOM4, sercom4_, Sercom4CoreClock, apbdmask));
 spi_master!(SPIMaster5: (Sercom5, SERCOM5, sercom5_, Sercom5CoreClock, apbdmask));
-#[cfg(any(feature = "samd51p19a", feature = "samd51n20a", feature = "samd51p20a"))]
+#[cfg(any(
+    feature = "samd51n20a",
+    feature = "samd51p19a",
+    feature = "samd51p20a",
+    feature = "same54"
+))]
 spi_master!(SPIMaster6: (Sercom6, SERCOM6, sercom6_, Sercom6CoreClock, apbdmask));
-#[cfg(any(feature = "samd51p19a", feature = "samd51n20a", feature = "samd51p20a"))]
+#[cfg(any(
+    feature = "samd51n20a",
+    feature = "samd51p19a",
+    feature = "samd51p20a",
+    feature = "same54"
+))]
 spi_master!(SPIMaster7: (Sercom7, SERCOM7, sercom7_, Sercom7CoreClock, apbdmask));

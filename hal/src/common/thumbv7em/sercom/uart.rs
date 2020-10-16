@@ -3,9 +3,13 @@ use crate::hal::blocking::serial::{write::Default, Write};
 use crate::hal::serial;
 use crate::sercom::pads::*;
 use crate::target_device::sercom0::USART_INT;
-use crate::target_device::{MCLK, SERCOM0, SERCOM1, SERCOM2, SERCOM3};
-use crate::target_device::{SERCOM4, SERCOM5};
-#[cfg(feature = "samd51p20a")]
+use crate::target_device::{MCLK, SERCOM0, SERCOM1, SERCOM2, SERCOM3, SERCOM4, SERCOM5};
+#[cfg(any(
+    feature = "samd51n20a",
+    feature = "samd51p19a",
+    feature = "samd51p20a",
+    feature = "same54"
+))]
 use crate::target_device::{SERCOM6, SERCOM7};
 use crate::time::Hertz;
 use core::fmt;
@@ -157,7 +161,7 @@ macro_rules! uart {
                             w.runstdby().set_bit(); // Run in standby
                             w.form().bits(0); // 0 is no parity bits
 
-                            w.mode().usart_int_clk(); // Internal clock mode
+                            // w.mode().usart_int_clk(); // Internal clock mode
                             w.cmode().clear_bit() // Asynchronous mode
                         });
 
@@ -290,6 +294,7 @@ uart!(
             SERCOM0_2
         )
 );
+
 uart!(
     UART1:
         (
@@ -303,6 +308,7 @@ uart!(
             SERCOM1_2
         )
 );
+
 uart!(
     UART2:
         (
@@ -316,6 +322,7 @@ uart!(
             SERCOM2_2
         )
 );
+
 uart!(
     UART3:
         (
@@ -329,6 +336,7 @@ uart!(
             SERCOM3_2
         )
 );
+
 uart!(
     UART4:
         (
@@ -342,6 +350,7 @@ uart!(
             SERCOM4_2
         )
 );
+
 uart!(
     UART5:
         (
@@ -355,7 +364,13 @@ uart!(
             SERCOM5_2
         )
 );
-#[cfg(feature = "samd51p20a")]
+
+#[cfg(any(
+    feature = "samd51n20a",
+    feature = "samd51p19a",
+    feature = "samd51p20a",
+    feature = "same54"
+))]
 uart!(
     UART6:
         (
@@ -369,7 +384,13 @@ uart!(
             SERCOM6_2
         )
 );
-#[cfg(feature = "samd51p20a")]
+
+#[cfg(any(
+    feature = "samd51n20a",
+    feature = "samd51p19a",
+    feature = "samd51p20a",
+    feature = "same54"
+))]
 uart!(
     UART7:
         (

@@ -3,9 +3,14 @@
 use crate::clock;
 use crate::hal::blocking::i2c::{Read, Write, WriteRead};
 use crate::target_device::sercom0::I2CM;
-use crate::target_device::{
-    MCLK, SERCOM0, SERCOM1, SERCOM2, SERCOM3, SERCOM4, SERCOM5, SERCOM6, SERCOM7,
-};
+use crate::target_device::{MCLK, SERCOM0, SERCOM1, SERCOM2, SERCOM3, SERCOM4, SERCOM5};
+#[cfg(any(
+    feature = "samd51n20a",
+    feature = "samd51p19a",
+    feature = "samd51p20a",
+    feature = "same54"
+))]
+use crate::target_device::{SERCOM6, SERCOM7};
 use crate::time::Hertz;
 
 const BUS_STATE_IDLE: u8 = 1;
@@ -17,9 +22,20 @@ const MASTER_ACT_STOP: u8 = 3;
 /// Define an I2C master type for the given SERCOM and pad pair.
 macro_rules! i2c {
     ([
-        $($Type:ident: ($pad0:ident, $pad1:ident, $SERCOM:ident, $powermask:ident, $clock:ident, $apmask:ident),)+
+        $($Type:ident:
+            (
+                $pad0:ident,
+                $pad1:ident,
+                $SERCOM:ident,
+                $powermask:ident,
+                $clock:ident,
+                $apmask:ident
+            ),
+        )+
     ]) => {
+
         $(
+
 /// Represents the Sercom instance configured to act as an I2C Master.
 /// The embedded_hal blocking I2C traits are implemented by this instance.
 pub struct $Type<$pad0, $pad1> {
@@ -69,6 +85,7 @@ impl<$pad0, $pad1> $Type<$pad0, $pad1> {
             while sercom.i2cm().syncbusy.read().swrst().bit_is_set()
                 || sercom.i2cm().ctrla.read().swrst().bit_is_set()
             {}
+
             // Put the hardware into i2c master mode
             sercom.i2cm().ctrla.modify(|_, w| w.mode().i2c_master());
             // wait for configuration to take effect
@@ -267,6 +284,7 @@ impl<$pad0, $pad1> $Type<$pad0, $pad1> {
         self.fill_buffer(buffer)
     }
 }
+
 impl<$pad0, $pad1> Write for $Type<$pad0, $pad1> {
     type Error = I2CError;
 
@@ -297,7 +315,9 @@ impl<$pad0, $pad1> WriteRead for $Type<$pad0, $pad1> {
         res
     }
 }
+
         )+
+
     };
 }
 
@@ -356,6 +376,15 @@ i2c!([
             Sercom5CoreClock,
             apbdmask
         ),
+]);
+
+#[cfg(any(
+    feature = "samd51n20a",
+    feature = "samd51p19a",
+    feature = "samd51p20a",
+    feature = "same54"
+))]
+i2c!([
     I2CMaster6:
         (
             Sercom6Pad0,
