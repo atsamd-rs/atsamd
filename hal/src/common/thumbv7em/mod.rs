@@ -6,6 +6,9 @@ pub mod sercom;
 pub mod timer;
 pub mod trng;
 
+#[cfg(feature = "usb")]
+pub mod usb;
+
 mod reset_cause;
 pub use reset_cause::*;
 
