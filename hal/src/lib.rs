@@ -72,12 +72,18 @@ pub mod samd21;
 #[cfg(feature = "samd21")]
 pub use self::samd21::*;
 
+// The following modules are included purely for backward compatibility reasons.
+// Whenever major breaking changes are made to the HAL next, these modules
+// should be removed.
+
 #[cfg(feature = "samd51")]
-pub mod samd51;
-#[cfg(feature = "samd51")]
-pub use self::samd51::*;
+pub mod samd51 {
+    #[cfg(feature = "unproven")]
+    pub use crate::pwm;
+}
 
 #[cfg(feature = "same54")]
-pub mod same54;
-#[cfg(feature = "same54")]
-pub use self::same54::*;
+pub mod same54 {
+    #[cfg(feature = "unproven")]
+    pub use crate::pwm;
+}
