@@ -18,6 +18,7 @@ This crate provides a type-safe API for working with `samd11`, `samd21`, `samd51
 * `atsamd51j20a` (via the `samd51j20a` feature) [[pac]](https://github.com/atsamd-rs/atsamd/tree/master/pac/atsamd51j20a)
 * `atsamd51n20a` (via the `samd51n20a` feature) [[pac]](https://github.com/atsamd-rs/atsamd/tree/master/pac/atsamd51n20a)
 * `atsamd51p19a` (via the `samd51p19a` feature) [[pac]](https://github.com/atsamd-rs/atsamd/tree/master/pac/atsamd51p19a)
+* `atsamd51p20a` (via the `samd51p20a` feature) [[pac]](https://github.com/atsamd-rs/atsamd/tree/master/pac/atsamd51p20a)
 * `atsame54p20a` (via the `same54p20a` feature) [[pac]](https://github.com/atsamd-rs/atsamd/tree/master/pac/atsame54p20a)
 
 This crate can support other variants in a similar fashion; pull requests for this are welcomed!
