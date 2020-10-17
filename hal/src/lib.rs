@@ -76,11 +76,13 @@ pub use self::samd21::*;
 // Whenever major breaking changes are made to the HAL next, these modules
 // should be removed.
 
+#[cfg(feature = "samd51")]
 pub mod samd51 {
     #[cfg(feature = "unproven")]
     pub use crate::pwm;
 }
 
+#[cfg(feature = "same54")]
 pub mod same54 {
     #[cfg(feature = "unproven")]
     pub use crate::pwm;
