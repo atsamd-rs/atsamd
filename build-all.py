@@ -1,39 +1,37 @@
 #!/usr/bin/env python
 
 import os
-import yaml
 import shlex
 import subprocess
+import yaml
 
-travis = yaml.safe_load(open('.travis.yml', 'r'))
 
-for env in travis['env']:
-	words = shlex.split(env)
+travis_config = yaml.safe_load(open(".travis.yml", "r"))
 
-	d = {}
-	for word in words:
-		key_value = word.split('=', 1)
-		d[key_value[0]] = key_value[1]
+for config in travis_config["env"]:
+    # build a dict mapping environment variables to their respective values
+    env = {}
+    for var in shlex.split(config):
+        (key, value) = var.split("=", 1)
+        env[key] = value
 
-	crate_dir = d["CRATE"]
+    # for each of the supported environment variables, if a value has been
+    # provided then extend the command accordingly
+    cmd = ["cargo", "build"]
 
-	cmd = [
-	    'cargo',
-	    'build',
-	]
+    variables = ["EXAMPLES", "FEATURES", "BUILDMODE"]
+    for var in variables:
+        value = env.get(var, None)
+        if value is not None:
+            cmd.extend(shlex.split(value))
 
-	examples = d.get("EXAMPLES", None)
-	if examples != None:
-		cmd.extend(shlex.split(examples))
+    # print a short banner stating which crate is being built and the command
+    # that's being used to build it
+    print()
+    print("-" * 80)
+    print(f"Crate:   {env['CRATE'].split('/')[1]}")  # remove leading 'boards/'
+    print(f"Command: {' '.join(cmd)}")
+    print()
 
-	features = d.get("FEATURES", None)
-	if features != None:
-		cmd.extend(shlex.split(features))
-
-	buildmode = d.get("BUILDMODE", None)
-	if buildmode != None:
-		cmd.extend(shlex.split(buildmode))
-
-	print(cmd)
-	
-	subprocess.check_call(cmd, cwd=crate_dir)
+    # execute the build command for the crate
+    subprocess.check_call(cmd, cwd=env["CRATE"])
