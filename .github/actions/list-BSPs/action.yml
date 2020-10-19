@@ -1,0 +1,16 @@
+name: 'Compute BSP matrix'
+description: 'Prepares the build environment'
+outputs:
+  matrix:
+    description: "Build matrix"
+    value: ${{ steps.compute-matrix.outputs.matrix }}
+runs:
+  using: "composite"
+  steps:
+    - run: sudo apt-get install -y jq
+      shell: bash
+    - id: compute-matrix
+      shell: bash
+      run: |
+        matrix_json=$(cat crates.json | jq -Mr -c '{ "bsp": (.boards | keys ), "toolchain": ["stable", "nightly"] }')
+        echo "::set-output name=matrix::${matrix_json}"
