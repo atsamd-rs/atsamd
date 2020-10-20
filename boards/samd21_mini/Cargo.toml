@@ -7,7 +7,7 @@ keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
-documentation = "https://atsamd-rs.github.io/atsamd/atsamd21g18a/samd21_mini/"
+documentation = "https://atsamd-rs.github.io/atsamd/atsamd21g/samd21_mini/"
 edition = "2018"
 
 [dependencies]
@@ -31,8 +31,8 @@ cortex-m-semihosting = "~0.3"
 cortex-m-rtic = "~0.5.1"
 
 [features]
-# ask the HAL to enable atsamd21g18a support
-default = ["rt", "atsamd-hal/samd21g18a"]
-rt = ["cortex-m-rt", "atsamd-hal/samd21g18a-rt"]
+# ask the HAL to enable atsamd21g support
+default = ["rt", "atsamd-hal/samd21g"]
+rt = ["cortex-m-rt", "atsamd-hal/samd21g-rt"]
 unproven = ["atsamd-hal/unproven"]
 use_semihosting = []

@@ -7,7 +7,7 @@ keywords = ["no-std", "arm", "cortex-m", "embedded-hal", "arduino"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
-documentation = "https://atsamd-rs.github.io/atsamd/atsamd21g18a/arduino_nano33iot/"
+documentation = "https://atsamd-rs.github.io/atsamd/atsamd21g/arduino_nano33iot/"
 
 [dependencies]
 cortex-m = "~0.6"
@@ -45,9 +45,9 @@ default-features = false
 features = ["small_rng"]
 
 [features]
-# ask the HAL to enable atsamd21g18a support
-default = ["rt", "panic_halt", "atsamd-hal/samd21g18a"]
-rt = ["cortex-m-rt", "atsamd-hal/samd21g18a-rt"]
+# ask the HAL to enable atsamd21g support
+default = ["rt", "panic_halt", "atsamd-hal/samd21g"]
+rt = ["cortex-m-rt", "atsamd-hal/samd21g-rt"]
 usb = ["atsamd-hal/usb", "usb-device", "usbd-serial"]
 panic_halt = ["panic-halt"]
 unproven = ["atsamd-hal/unproven"]

@@ -1,6 +1,6 @@
-# ATSAMD11C14A Support Crate
+# ATSAMD11C Support Crate
 
-This crate provides a type-safe API for working with the [ATSAMD11C14A](https://www.microchip.com/wwwproducts/en/ATSAMD11C14).
+This crate provides a type-safe API for working with the [ATSAMD11C](https://www.microchip.com/wwwproducts/en/ATSAMD11C14).
 
 ## Examples?
 

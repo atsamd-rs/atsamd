@@ -7,7 +7,7 @@ keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
-documentation = "https://atsamd-rs.github.io/atsamd/atsamd21g18a/circuit_playground_express/"
+documentation = "https://atsamd-rs.github.io/atsamd/atsamd21g/circuit_playground_express/"
 
 [dependencies]
 cortex-m = "~0.6"
@@ -24,8 +24,8 @@ panic-halt = "~0.2"
 cortex-m-rt = "~0.6.12"
 
 [features]
-# ask the HAL to enable atsamd21g18a support
-default = ["rt", "atsamd-hal/samd21g18a"]
-rt = ["atsamd-hal/samd21g18a-rt"]
+# ask the HAL to enable atsamd21g support
+default = ["rt", "atsamd-hal/samd21g"]
+rt = ["atsamd-hal/samd21g-rt"]
 unproven = ["atsamd-hal/unproven"]
 use_semihosting = []

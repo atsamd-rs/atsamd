@@ -7,7 +7,7 @@ keywords = ["no-std", "arm", "cortex-m", "embedded-hal", "arduino"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
-documentation = "https://atsamd-rs.github.io/atsamd/atsamd21g18a/wio_lite_mg126/"
+documentation = "https://atsamd-rs.github.io/atsamd/atsamd21g/wio_lite_mg126/"
 
 [dependencies]
 cortex-m = "~0.6"
@@ -55,9 +55,9 @@ version = "~0.2"
 optional = true
 
 [features]
-# ask the HAL to enable atsamd21g18a support
-default = ["rt", "panic_halt", "atsamd-hal/samd21g18a"]
-rt = ["cortex-m-rt", "atsamd-hal/samd21g18a-rt"]
+# ask the HAL to enable atsamd21g support
+default = ["rt", "panic_halt", "atsamd-hal/samd21g"]
+rt = ["cortex-m-rt", "atsamd-hal/samd21g-rt"]
 unproven = ["atsamd-hal/unproven"]
 use_rtt = ["atsamd-hal/use_rtt", "panic_rtt"]
 usb = ["atsamd-hal/usb", "usb-device", "usbd-serial", "numtoa"]

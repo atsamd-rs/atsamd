@@ -8,7 +8,7 @@ edition = "2018"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
-documentation = "https://atsamd-rs.github.io/atsamd/atsamd21e18a/trinket_m0/"
+documentation = "https://atsamd-rs.github.io/atsamd/atsamd21e/trinket_m0/"
 
 [dependencies]
 cortex-m = "~0.6.2"
@@ -39,9 +39,9 @@ optional = true
 panic-halt = "~0.2"
 
 [features]
-# ask the HAL to enable atsamd21e18a support
-default = ["rt", "atsamd-hal/samd21e18a"]
-rt = ["cortex-m-rt", "atsamd-hal/samd21e18a-rt"]
+# ask the HAL to enable atsamd21e support
+default = ["rt", "atsamd-hal/samd21e"]
+rt = ["cortex-m-rt", "atsamd-hal/samd21e-rt"]
 unproven = ["atsamd-hal/unproven"]
 usb = ["atsamd-hal/usb", "usb-device", "usbd-serial"]
 use_semihosting = []

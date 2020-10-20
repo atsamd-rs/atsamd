@@ -5,7 +5,7 @@ This crate provides a type-safe Rust API for working with the
 
 ## Board Features
 
-- Microchip [ATSAMD51P20A] Cortex-M4 microcontroller @ 120 MHz (32-bit, 3.3V logic and power)
+- Microchip [ATSAMD51P] Cortex-M4 microcontroller @ 120 MHz (32-bit, 3.3V logic and power)
   - 1MB Flash
   - 256kB SRAM
   - 8MB SPI Flash chip

@@ -7,7 +7,7 @@ keywords = ["no-std", "arm", "cortex-m", "embedded-hal", "arduino"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
-documentation = "https://atsamd-rs.github.io/atsamd/atsamd21g18a/arduino_mkrvidor4000/"
+documentation = "https://atsamd-rs.github.io/atsamd/atsamd21g/arduino_mkrvidor4000/"
 
 [dependencies]
 cortex-m = "~0.6"
@@ -28,9 +28,9 @@ version = "~0.9"
 default-features = false
 
 [features]
-# ask the HAL to enable atsamd21g18a support
-default = ["rt", "panic_halt", "atsamd-hal/samd21g18a"]
-rt = ["cortex-m-rt", "atsamd-hal/samd21g18a-rt"]
+# ask the HAL to enable atsamd21g support
+default = ["rt", "panic_halt", "atsamd-hal/samd21g"]
+rt = ["cortex-m-rt", "atsamd-hal/samd21g-rt"]
 panic_halt = ["panic-halt"]
 unproven = ["atsamd-hal/unproven"]
 usb = ["atsamd-hal/usb"]
