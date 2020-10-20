@@ -1,11 +1,11 @@
-# ATSAMD51P19A
+# ATSAMD51P
 
-A peripheral access crate for the ATSAMD51P19A chip from Microchip (née Atmel) for Rust Embedded projects.
+A peripheral access crate for the ATSAMD51P chip from Microchip (née Atmel) for Rust Embedded projects.
 
 [![Build Status](https://travis-ci.org/atsamd-rs/atsamd.svg?branch=master)](https://travis-ci.org/atsamd-rs/atsamd)
-[![Crates.io](https://img.shields.io/crates/v/atsamd51p19a.svg)](https://crates.io/crates/atsamd51p19a)
+[![Crates.io](https://img.shields.io/crates/v/atsamd51p.svg)](https://crates.io/crates/atsamd51p)
 
-## [Documentation](https://docs.rs/atsamd51p19a/)
+## [Documentation](https://docs.rs/atsamd51p/)
 
 This source was automatically generated using `svd2rust`, split into smaller pieces using `form` and formatted via `rustfmt`.
 

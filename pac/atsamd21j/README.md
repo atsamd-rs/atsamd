@@ -1,11 +1,11 @@
-# ATSAMD21J18A
+# ATSAMD21J
 
-A peripheral access crate for the ATSAMD21J18A chip from Microchip (née Atmel) for Rust Embedded projects.
+A peripheral access crate for the ATSAMD21J chip from Microchip (née Atmel) for Rust Embedded projects.
 
 [![Build Status](https://travis-ci.org/atsamd-rs/atsamd.svg?branch=master)](https://travis-ci.org/atsamd-rs/atsamd)
-[![Crates.io](https://img.shields.io/crates/v/atsamd21j18a.svg)](https://crates.io/crates/atsamd21j18a)
+[![Crates.io](https://img.shields.io/crates/v/atsamd21j.svg)](https://crates.io/crates/atsamd21j)
 
-## [Documentation](https://docs.rs/atsamd21j18a)
+## [Documentation](https://docs.rs/atsamd21j)
 
 This source was automatically generated using `svd2rust`, split into smaller pieces using `form` and formatted via `rustfmt`.
 

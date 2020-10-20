@@ -1,11 +1,11 @@
-# ATSAMD51N20A
+# ATSAMD51N
 
-A peripheral access crate for the ATSAMD51N20A chip from Microchip (née Atmel) for Rust Embedded projects.
+A peripheral access crate for the ATSAMD51N chip from Microchip (née Atmel) for Rust Embedded projects.
 
 [![Build Status](https://travis-ci.org/atsamd-rs/atsamd.svg?branch=master)](https://travis-ci.org/atsamd-rs/atsamd)
-[![Crates.io](https://img.shields.io/crates/v/atsamd51n20a.svg)](https://crates.io/crates/atsamd51n20a)
+[![Crates.io](https://img.shields.io/crates/v/atsamd51n.svg)](https://crates.io/crates/atsamd51n)
 
-## [Documentation](https://docs.rs/atsamd51n20a/)
+## [Documentation](https://docs.rs/atsamd51n/)
 
 This source was automatically generated using `svd2rust`, split into smaller pieces using `form` and formatted via `rustfmt`.
 
