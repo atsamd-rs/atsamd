@@ -11,21 +11,26 @@ cargo install --force --version 0.7.0 form
 # PATCH SVD FILES AND GENERATE CRATES
 
 TOP="${PWD}"
+SED="${TOP}/sed"
 
 for xsl in svd/devices/*\.xsl; do
   chip=$(basename "${xsl}" .xsl)
   CHIP=$(echo "${chip}" | tr '[:lower:]' '[:upper:]')
-  svd=svd/${CHIP}.svd
-
-  pushd "${TOP}/pac/${chip}"
+  svd=svd/${CHIP:0:9}.svd
+  cp svd/${CHIP}.svd $svd
+  
+  # remove last characters, because they just represent the memory size
+  pushd "${TOP}/pac/${chip:0:9}"
 
   xsltproc "${TOP}/${xsl}" "${TOP}/${svd}" | svd2rust --nightly
 
+  rm "${TOP}/${svd}"
   rm -rf src/
   form -i lib.rs -o src
   rm lib.rs
-  cargo fmt
-  rustfmt build.rs
+  SED -i "s/${CHIP}/${CHIP:0:9}/g" src/lib.rs
+  cargo +nightly fmt
+  rustfmt +nightly build.rs
 
   popd
 done
