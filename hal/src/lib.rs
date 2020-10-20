@@ -4,38 +4,32 @@ pub extern crate embedded_hal as hal;
 
 pub use paste;
 
-#[cfg(feature = "samd11c14a")]
-pub use atsamd11c14a as target_device;
+#[cfg(feature = "samd11c")]
+pub use atsamd11c as target_device;
 
-#[cfg(feature = "samd21e18a")]
-pub use atsamd21e18a as target_device;
+#[cfg(feature = "samd21e")]
+pub use atsamd21e as target_device;
 
-#[cfg(feature = "samd21g18a")]
-pub use atsamd21g18a as target_device;
+#[cfg(feature = "samd21g")]
+pub use atsamd21g as target_device;
 
-#[cfg(feature = "samd21j18a")]
-pub use atsamd21j18a as target_device;
+#[cfg(feature = "samd21j")]
+pub use atsamd21j as target_device;
 
-#[cfg(feature = "samd51g19a")]
-pub use atsamd51g19a as target_device;
+#[cfg(feature = "samd51g")]
+pub use atsamd51g as target_device;
 
-#[cfg(feature = "samd51j19a")]
-pub use atsamd51j19a as target_device;
+#[cfg(feature = "samd51j")]
+pub use atsamd51j as target_device;
 
-#[cfg(feature = "samd51j20a")]
-pub use atsamd51j20a as target_device;
+#[cfg(feature = "samd51n")]
+pub use atsamd51n as target_device;
 
-#[cfg(feature = "samd51n20a")]
-pub use atsamd51n20a as target_device;
+#[cfg(feature = "samd51p")]
+pub use atsamd51p as target_device;
 
-#[cfg(feature = "samd51p19a")]
-pub use atsamd51p19a as target_device;
-
-#[cfg(feature = "samd51p20a")]
-pub use atsamd51p20a as target_device;
-
-#[cfg(feature = "same54p20a")]
-pub use atsame54p20a as target_device;
+#[cfg(feature = "same54p")]
+pub use atsame54p as target_device;
 
 #[cfg(feature = "use_rtt")]
 pub use jlink_rtt;

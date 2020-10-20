@@ -12,7 +12,7 @@ keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
-documentation = "https://atsamd-rs.github.io/atsamd/atsamd21g18a/atsamd21_hal/"
+documentation = "https://atsamd-rs.github.io/atsamd/atsamd21g/atsamd21_hal/"
 edition = "2018"
 
 [dependencies]
@@ -39,58 +39,48 @@ version = "~1.0"
 # Each of the supported chips is listed as an optional dependency here.
 # This makes it available when the corresponding feature name is referenced.
 # We use a feature named "samdFOO" to pull in the dependency named "atsamdFOO"
-[dependencies.atsamd11c14a]
-path = "../pac/atsamd11c14a"
+[dependencies.atsamd11c]
+path = "../pac/atsamd11c"
 version = "~0.7"
 optional = true
 
-[dependencies.atsamd21e18a]
-path = "../pac/atsamd21e18a"
+[dependencies.atsamd21e]
+path = "../pac/atsamd21e"
 version = "~0.7"
 optional = true
 
-[dependencies.atsamd21g18a]
-path = "../pac/atsamd21g18a"
+[dependencies.atsamd21g]
+path = "../pac/atsamd21g"
 version = "~0.7"
 optional = true
 
-[dependencies.atsamd21j18a]
-path = "../pac/atsamd21j18a"
+[dependencies.atsamd21j]
+path = "../pac/atsamd21j"
 version = "~0.7"
 optional = true
 
-[dependencies.atsamd51g19a]
-path = "../pac/atsamd51g19a"
+[dependencies.atsamd51g]
+path = "../pac/atsamd51g"
 version = "~0.7"
 optional = true
 
-[dependencies.atsamd51j19a]
-path = "../pac/atsamd51j19a"
+[dependencies.atsamd51j]
+path = "../pac/atsamd51j"
 version = "~0.7"
 optional = true
 
-[dependencies.atsamd51j20a]
-path = "../pac/atsamd51j20a"
+[dependencies.atsamd51n]
+path = "../pac/atsamd51n"
 version = "~0.7"
 optional = true
 
-[dependencies.atsamd51n20a]
-path = "../pac/atsamd51n20a"
+[dependencies.atsamd51p]
+path = "../pac/atsamd51p"
 version = "~0.7"
 optional = true
 
-[dependencies.atsamd51p19a]
-path = "../pac/atsamd51p19a"
-version = "~0.7"
-optional = true
-
-[dependencies.atsamd51p20a]
-path = "../pac/atsamd51p20a"
-version = "~0.7"
-optional = true
-
-[dependencies.atsame54p20a]
-path = "../pac/atsame54p20a"
+[dependencies.atsame54p]
+path = "../pac/atsame54p"
 version = "~0.7"
 optional = true
 
@@ -103,31 +93,27 @@ optional = true
 # rt feature would link all possible parts in and cause a linker error due to
 # the high degree of similar symbols present in the various parts.
 samd11 = [] # Convenience feature for shared configuration of samd11 chips.
-samd11c14a = ["atsamd11c14a", "samd11"]
-samd11c14a-rt = ["atsamd11c14a", "atsamd11c14a/rt", "samd11"]
+samd11c = ["atsamd11c", "samd11"]
+samd11c-rt = ["atsamd11c", "atsamd11c/rt", "samd11"]
 samd21 = [] # Convenience feature for shared configuration of samd21 chips.
-samd21e18a = ["atsamd21e18a", "samd21"]
-samd21e18a-rt = ["atsamd21e18a", "atsamd21e18a/rt", "samd21"]
-samd21g18a = ["atsamd21g18a", "samd21"]
-samd21g18a-rt = ["atsamd21g18a", "atsamd21g18a/rt", "samd21"]
-samd21j18a = ["atsamd21j18a", "samd21"]
-samd21j18a-rt = ["atsamd21j18a", "atsamd21j18a/rt", "samd21"]
+samd21e = ["atsamd21e", "samd21"]
+samd21e-rt = ["atsamd21e", "atsamd21e/rt", "samd21"]
+samd21g = ["atsamd21g", "samd21"]
+samd21g-rt = ["atsamd21g", "atsamd21g/rt", "samd21"]
+samd21j = ["atsamd21j", "samd21"]
+samd21j-rt = ["atsamd21j", "atsamd21j/rt", "samd21"]
 samd51 = [] # Convenience feature for shared configuration of samd51 chips.
-samd51g19a = ["atsamd51g19a", "samd51"]
-samd51g19a-rt = ["atsamd51g19a", "atsamd51g19a/rt", "samd51"]
-samd51j19a = ["atsamd51j19a", "samd51"]
-samd51j19a-rt = ["atsamd51j19a", "atsamd51j19a/rt", "samd51"]
-samd51j20a = ["atsamd51j20a", "samd51"]
-samd51j20a-rt = ["atsamd51j20a", "atsamd51j20a/rt", "samd51"]
-samd51n20a = ["atsamd51n20a", "samd51"]
-samd51n20a-rt = ["atsamd51n20a", "atsamd51n20a/rt", "samd51"]
-samd51p19a = ["atsamd51p19a", "samd51"]
-samd51p19a-rt = ["atsamd51p19a", "atsamd51p19a/rt", "samd51"]
-samd51p20a = ["atsamd51p20a", "samd51"]
-samd51p20a-rt = ["atsamd51p20a", "atsamd51p20a/rt", "samd51"]
+samd51g = ["atsamd51g", "samd51"]
+samd51g-rt = ["atsamd51g", "atsamd51g/rt", "samd51"]
+samd51j = ["atsamd51j", "samd51"]
+samd51j-rt = ["atsamd51j", "atsamd51j/rt", "samd51"]
+samd51n = ["atsamd51n", "samd51"]
+samd51n-rt = ["atsamd51n", "atsamd51n/rt", "samd51"]
+samd51p = ["atsamd51p", "samd51"]
+samd51p-rt = ["atsamd51p", "atsamd51p/rt", "samd51"]
 same54 = [] # Convenience feature for shared configuration of same54 chips
-same54p20a = ["atsame54p20a", "same54"]
-same54p20a-rt = ["atsame54p20a", "atsame54p20a/rt", "same54"]
+same54p = ["atsame54p", "same54"]
+same54p-rt = ["atsame54p", "atsame54p/rt", "same54"]
 unproven = ["embedded-hal/unproven"]
 use_rtt = ["jlink_rtt"]
 use_uart_debug = []

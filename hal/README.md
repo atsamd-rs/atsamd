@@ -9,17 +9,17 @@ This crate provides a type-safe API for working with `samd11`, `samd21`, `samd51
 
 ## Supported Devices
 
-* `atsamd11c14a` (via the `samd11c14a` feature) [[pac]](https://github.com/atsamd-rs/atsamd/tree/master/pac/atsamd11c14a)
-* `atsamd21e18a` (via the `samd21e18a` feature) [[pac]](https://github.com/atsamd-rs/atsamd/tree/master/pac/atsamd21e18a)
-* `atsamd21g18a` (via the `samd21g18a` feature) [[pac]](https://github.com/atsamd-rs/atsamd/tree/master/pac/atsamd21g18a)
-* `atsamd21j18a` (via the `samd21j18a` feature) [[pac]](https://github.com/atsamd-rs/atsamd/tree/master/pac/atsamd21j18a)
-* `atsamd51g19a` (via the `samd51g19a` feature) [[pac]](https://github.com/atsamd-rs/atsamd/tree/master/pac/atsamd51g19a)
-* `atsamd51j19a` (via the `samd51j19a` feature) [[pac]](https://github.com/atsamd-rs/atsamd/tree/master/pac/atsamd51j19a)
-* `atsamd51j20a` (via the `samd51j20a` feature) [[pac]](https://github.com/atsamd-rs/atsamd/tree/master/pac/atsamd51j20a)
-* `atsamd51n20a` (via the `samd51n20a` feature) [[pac]](https://github.com/atsamd-rs/atsamd/tree/master/pac/atsamd51n20a)
-* `atsamd51p19a` (via the `samd51p19a` feature) [[pac]](https://github.com/atsamd-rs/atsamd/tree/master/pac/atsamd51p19a)
-* `atsamd51p20a` (via the `samd51p20a` feature) [[pac]](https://github.com/atsamd-rs/atsamd/tree/master/pac/atsamd51p20a)
-* `atsame54p20a` (via the `same54p20a` feature) [[pac]](https://github.com/atsamd-rs/atsamd/tree/master/pac/atsame54p20a)
+* `atsamd11c` (via the `samd11c` feature) [[pac]](https://github.com/atsamd-rs/atsamd/tree/master/pac/atsamd11c)
+* `atsamd21e` (via the `samd21e` feature) [[pac]](https://github.com/atsamd-rs/atsamd/tree/master/pac/atsamd21e)
+* `atsamd21g` (via the `samd21g` feature) [[pac]](https://github.com/atsamd-rs/atsamd/tree/master/pac/atsamd21g)
+* `atsamd21j` (via the `samd21j` feature) [[pac]](https://github.com/atsamd-rs/atsamd/tree/master/pac/atsamd21j)
+* `atsamd51g` (via the `samd51g` feature) [[pac]](https://github.com/atsamd-rs/atsamd/tree/master/pac/atsamd51g)
+* `atsamd51j` (via the `samd51j` feature) [[pac]](https://github.com/atsamd-rs/atsamd/tree/master/pac/atsamd51j)
+* `atsamd51j` (via the `samd51j` feature) [[pac]](https://github.com/atsamd-rs/atsamd/tree/master/pac/atsamd51j)
+* `atsamd51n` (via the `samd51n` feature) [[pac]](https://github.com/atsamd-rs/atsamd/tree/master/pac/atsamd51n)
+* `atsamd51p` (via the `samd51p` feature) [[pac]](https://github.com/atsamd-rs/atsamd/tree/master/pac/atsamd51p)
+* `atsamd51p` (via the `samd51p` feature) [[pac]](https://github.com/atsamd-rs/atsamd/tree/master/pac/atsamd51p)
+* `atsame54p` (via the `same54p` feature) [[pac]](https://github.com/atsamd-rs/atsamd/tree/master/pac/atsame54p)
 
 This crate can support other variants in a similar fashion; pull requests for this are welcomed!
 

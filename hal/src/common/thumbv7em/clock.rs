@@ -392,16 +392,14 @@ clock_generator!(
     (sercom4_core, Sercom4CoreClock, SERCOM4_CORE),
     (sercom5_core, Sercom5CoreClock, SERCOM5_CORE),
     #[cfg(any(
-        feature = "samd51n20a",
-        feature = "samd51p19a",
-        feature = "samd51p20a",
+        feature = "samd51n",
+        feature = "samd51p",
         feature = "same54"
     ))]
     (sercom6_core, Sercom6CoreClock, SERCOM6_CORE),
     #[cfg(any(
-        feature = "samd51n20a",
-        feature = "samd51p19a",
-        feature = "samd51p20a",
+        feature = "samd51n",
+        feature = "samd51p",
         feature = "same54"
     ))]
     (sercom7_core, Sercom7CoreClock, SERCOM7_CORE),

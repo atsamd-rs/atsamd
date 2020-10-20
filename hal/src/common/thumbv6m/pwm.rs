@@ -8,7 +8,7 @@ use crate::target_device::{PM, TCC0};
 use crate::target_device::{TC1, TC2};
 #[cfg(feature = "samd21")]
 use crate::target_device::{TC3, TC4, TC5, TCC1, TCC2};
-#[cfg(feature = "atsamd21j18a")]
+#[cfg(feature = "atsamd21j")]
 use crate::target_device::{TC6, TC7};
 
 // Timer/Counter (TCx)
@@ -143,7 +143,7 @@ pwm! {
     Pwm5: (TC5, Tc4Tc5Clock, apbcmask, tc5_, Pwm5Wrapper),
 }
 
-#[cfg(feature = "atsamd21j18a")]
+#[cfg(feature = "atsamd21j")]
 pwm! {
     Pwm6: (TC6, Tc6Tc7Clock, apbcmask, tc6_, Pwm6Wrapper),
     Pwm7: (TC7, Tc6Tc7Clock, apbcmask, tc7_, Pwm7Wrapper),
