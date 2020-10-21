@@ -7,7 +7,7 @@ This crate provides a type-safe Rust API for working with the
 
 ## Board Features
 
-- Microchip [ATSAMD51G19A] Cortex-M4 microcontroller @ 120 MHz (32-bit, 3.3V logic and power)
+- Microchip [ATSAMD51G] Cortex-M4 microcontroller @ 120 MHz (32-bit, 3.3V logic and power)
   - 512kB Flash
   - 192kB SRAM
 - 8 MB SPI Flash chip
@@ -72,6 +72,6 @@ $
 ## More Examples
 
 [Adafruit NeoTrellis M4 board]: https://www.adafruit.com/product/3938
-[ATSAMD51G19A]: https://www.microchip.com/wwwproducts/en/ATSAMD51G19A
+[ATSAMD51G]: https://www.microchip.com/wwwproducts/en/ATSAMD51G
 [ADXL343]: https://www.analog.com/en/products/adxl343.html
 [keypad]: https://crates.io/crates/keypad

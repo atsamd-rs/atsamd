@@ -154,7 +154,7 @@ adc_pins! {
     Pa11: 19
 }
 
-#[cfg(any(feature = "samd21g18a", feature = "samd21j18a"))]
+#[cfg(feature = "min-samd21g")]
 adc_pins! {
     Pb0: 8,
     Pb1: 9,

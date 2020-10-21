@@ -7,7 +7,7 @@ keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
-documentation = "https://atsamd-rs.github.io/atsamd/atsamd21g18a/feather_m0/"
+documentation = "https://atsamd-rs.github.io/atsamd/atsamd21g/feather_m0/"
 
 [dependencies]
 cortex-m = "~0.6"
@@ -54,9 +54,9 @@ embedded-graphics = "0.6.0"
 nb = "~0.1"
 
 [features]
-# ask the HAL to enable atsamd21g18a support
-default = ["rt", "atsamd-hal/samd21g18a", "panic_halt"]
-rt = ["cortex-m-rt", "atsamd-hal/samd21g18a-rt"]
+# ask the HAL to enable atsamd21g support
+default = ["rt", "atsamd-hal/samd21g", "panic_halt"]
+rt = ["cortex-m-rt", "atsamd-hal/samd21g-rt"]
 unproven = ["atsamd-hal/unproven"]
 use_rtt = ["atsamd-hal/use_rtt", "panic_rtt"]
 usb = ["atsamd-hal/usb", "usb-device", "usbd-serial"]

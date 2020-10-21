@@ -7,7 +7,7 @@ keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
-documentation = "https://atsamd-rs.github.io/atsamd/atsame54p20a/pfza_proto1/"
+documentation = "https://atsamd-rs.github.io/atsamd/atsame54p/pfza_proto1/"
 
 [dependencies]
 cortex-m = "~0.6"
@@ -29,9 +29,9 @@ panic-semihosting = "~0.5"
 cortex-m-semihosting = "~0.3"
 
 [features]
-# ask the HAL to enable atsame54p20a support
-default = ["rt", "atsamd-hal/same54p20a", "atsamd-hal/same54"]
-rt = ["cortex-m-rt", "atsamd-hal/same54p20a-rt"]
+# ask the HAL to enable atsame54p support
+default = ["rt", "atsamd-hal/same54p", "atsamd-hal/same54"]
+rt = ["cortex-m-rt", "atsamd-hal/same54p-rt"]
 unproven = ["atsamd-hal/unproven"]
 
 [profile.dev]

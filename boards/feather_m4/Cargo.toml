@@ -8,7 +8,7 @@ keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
-documentation = "https://atsamd-rs.github.io/atsamd/atsamd51j19a/feather_m4/"
+documentation = "https://atsamd-rs.github.io/atsamd/atsamd51j/feather_m4/"
 
 [dependencies]
 cortex-m = "~0.6"
@@ -32,9 +32,9 @@ smart-leds = "0.3.0"
 ws2812-timer-delay = "0.3.0"
 
 [features]
-# ask the HAL to enable atsamd51j19a support
-default = ["rt", "atsamd-hal/samd51j19a", "atsamd-hal/samd51"]
-rt = ["cortex-m-rt", "atsamd-hal/samd51j19a-rt"]
+# ask the HAL to enable atsamd51j support
+default = ["rt", "atsamd-hal/samd51j", "atsamd-hal/samd51"]
+rt = ["cortex-m-rt", "atsamd-hal/samd51j-rt"]
 unproven = ["atsamd-hal/unproven"]
 
 [profile.dev]

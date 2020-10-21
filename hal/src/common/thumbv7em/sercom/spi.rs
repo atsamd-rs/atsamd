@@ -4,12 +4,7 @@ use crate::sercom::pads::*;
 use crate::spi_common::CommonSpi;
 use crate::target_device::sercom0::SPIM;
 use crate::target_device::{MCLK, SERCOM0, SERCOM1, SERCOM2, SERCOM3, SERCOM4, SERCOM5};
-#[cfg(any(
-    feature = "samd51n20a",
-    feature = "samd51p19a",
-    feature = "samd51p20a",
-    feature = "same54"
-))]
+#[cfg(feature = "min-samd51n")]
 use crate::target_device::{SERCOM6, SERCOM7};
 use crate::time::Hertz;
 
@@ -249,17 +244,7 @@ spi_master!(SPIMaster2: (Sercom2, SERCOM2, sercom2_, Sercom2CoreClock, apbbmask)
 spi_master!(SPIMaster3: (Sercom3, SERCOM3, sercom3_, Sercom3CoreClock, apbbmask));
 spi_master!(SPIMaster4: (Sercom4, SERCOM4, sercom4_, Sercom4CoreClock, apbdmask));
 spi_master!(SPIMaster5: (Sercom5, SERCOM5, sercom5_, Sercom5CoreClock, apbdmask));
-#[cfg(any(
-    feature = "samd51n20a",
-    feature = "samd51p19a",
-    feature = "samd51p20a",
-    feature = "same54"
-))]
+#[cfg(feature = "min-samd51n")]
 spi_master!(SPIMaster6: (Sercom6, SERCOM6, sercom6_, Sercom6CoreClock, apbdmask));
-#[cfg(any(
-    feature = "samd51n20a",
-    feature = "samd51p19a",
-    feature = "samd51p20a",
-    feature = "same54"
-))]
+#[cfg(feature = "min-samd51n")]
 spi_master!(SPIMaster7: (Sercom7, SERCOM7, sercom7_, Sercom7CoreClock, apbdmask));

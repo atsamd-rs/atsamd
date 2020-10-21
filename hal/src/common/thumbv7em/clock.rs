@@ -391,19 +391,9 @@ clock_generator!(
     (sercom3_core, Sercom3CoreClock, SERCOM3_CORE),
     (sercom4_core, Sercom4CoreClock, SERCOM4_CORE),
     (sercom5_core, Sercom5CoreClock, SERCOM5_CORE),
-    #[cfg(any(
-        feature = "samd51n20a",
-        feature = "samd51p19a",
-        feature = "samd51p20a",
-        feature = "same54"
-    ))]
+    #[cfg(feature = "min-samd51n")]
     (sercom6_core, Sercom6CoreClock, SERCOM6_CORE),
-    #[cfg(any(
-        feature = "samd51n20a",
-        feature = "samd51p19a",
-        feature = "samd51p20a",
-        feature = "same54"
-    ))]
+    #[cfg(feature = "min-samd51n")]
     (sercom7_core, Sercom7CoreClock, SERCOM7_CORE),
     (usb, UsbClock, USB),
     (adc0, Adc0Clock, ADC0),

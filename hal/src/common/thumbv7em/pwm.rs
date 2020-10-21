@@ -5,9 +5,9 @@ use crate::time::Hertz;
 use crate::timer::TimerParams;
 
 use crate::target_device::{MCLK, TC0, TC1, TC2, TC3, TCC0, TCC1, TCC2};
-#[cfg(all(not(feature = "samd51g19a"), not(feature = "samd51g18a")))]
+#[cfg(feature = "min-samd51j")]
 use crate::target_device::{TC4, TC5, TCC3, TCC4};
-#[cfg(any(feature = "samd51p19a", feature = "samd51p20a", feature = "same54"))]
+#[cfg(feature = "min-samd51p")]
 use crate::target_device::{TC6, TC7};
 
 // Timer/Counter (TCx)
@@ -34,28 +34,28 @@ pub enum TC3Pinout {
     Pa19(Pa19<PfE>),
 }
 
-#[cfg(all(not(feature = "samd51g19a"), not(feature = "samd51g18a")))]
+#[cfg(feature = "min-samd51j")]
 pub enum TC4Pinout {
     Pa23(Pa23<PfE>),
     Pb9(Pb9<PfE>),
     Pb13(Pb13<PfE>),
 }
 
-#[cfg(all(not(feature = "samd51g19a"), not(feature = "samd51g18a")))]
+#[cfg(feature = "min-samd51j")]
 pub enum TC5Pinout {
     Pa25(Pa25<PfE>),
     Pb11(Pb11<PfE>),
     Pb15(Pb15<PfE>),
 }
 
-#[cfg(any(feature = "samd51p19a", feature = "samd51p20a", feature = "same54"))]
+#[cfg(feature = "min-samd51n")]
 pub enum TC6Pinout {
     Pb3(Pb3<PfE>),
     Pb17(Pb17<PfE>),
     Pa31(Pa31<PfE>),
 }
 
-#[cfg(any(feature = "samd51p19a", feature = "samd51p20a", feature = "same54"))]
+#[cfg(feature = "min-samd51n")]
 pub enum TC7Pinout {
     Pa21(Pa21<PfE>),
     Pb23(Pb23<PfE>),
@@ -194,13 +194,13 @@ pwm! {
     Pwm3: (TC3, TC3Pinout, Tc2Tc3Clock, apbbmask, tc3_, Pwm3Wrapper),
 }
 
-#[cfg(all(not(feature = "samd51g19a"), not(feature = "samd51g18a")))]
+#[cfg(feature = "min-samd51j")]
 pwm! {
     Pwm4: (TC4, TC4Pinout, Tc4Tc5Clock, apbcmask, tc4_, Pwm4Wrapper),
     Pwm5: (TC5, TC5Pinout, Tc4Tc5Clock, apbcmask, tc5_, Pwm5Wrapper),
 }
 
-#[cfg(any(feature = "samd51p19a", feature = "samd51p20a", feature = "same54"))]
+#[cfg(feature = "min-samd51n")]
 pwm! {
     Pwm6: (TC6, TC6Pinout, Tc6Tc7Clock, apbdmask, tc6_, Pwm6Wrapper),
     Pwm7: (TC7, TC7Pinout, Tc6Tc7Clock, apbdmask, tc7_, Pwm7Wrapper),
@@ -236,53 +236,61 @@ pub enum TCC0Pinout {
     Pa23(Pa23<PfG>),
     Pb10(Pb10<PfF>),
     Pb11(Pb11<PfF>),
+    #[cfg(feature = "min-samd51j")]
     Pb12(Pb12<PfG>),
+    #[cfg(feature = "min-samd51j")]
     Pb13(Pb13<PfG>),
+    #[cfg(feature = "min-samd51j")]
     Pb14(Pb14<PfG>),
+    #[cfg(feature = "min-samd51j")]
     Pb15(Pb15<PfG>),
+    #[cfg(feature = "min-samd51j")]
     Pb16(Pb16<PfG>),
+    #[cfg(feature = "min-samd51j")]
     Pb17(Pb17<PfG>),
+    #[cfg(feature = "min-samd51j")]
     Pb30(Pb30<PfG>),
+    #[cfg(feature = "min-samd51j")]
     Pb31(Pb31<PfG>),
-    #[cfg(any(feature = "samd51p19a", feature = "samd51p20a", feature = "same54"))]
-    Pc4(Pc4<PfF>),
-    #[cfg(any(feature = "samd51p19a", feature = "samd51p20a", feature = "same54"))]
+    #[cfg(feature = "min-samd51n")]
     Pc10(Pc10<PfF>),
-    #[cfg(any(feature = "samd51p19a", feature = "samd51p20a", feature = "same54"))]
+    #[cfg(feature = "min-samd51n")]
     Pc11(Pc11<PfF>),
-    #[cfg(any(feature = "samd51p19a", feature = "samd51p20a", feature = "same54"))]
+    #[cfg(feature = "min-samd51n")]
     Pc12(Pc12<PfF>),
-    #[cfg(any(feature = "samd51p19a", feature = "samd51p20a", feature = "same54"))]
+    #[cfg(feature = "min-samd51n")]
     Pc13(Pc13<PfF>),
-    #[cfg(any(feature = "samd51p19a", feature = "samd51p20a", feature = "same54"))]
+    #[cfg(feature = "min-samd51n")]
     Pc14(Pc14<PfF>),
-    #[cfg(any(feature = "samd51p19a", feature = "samd51p20a", feature = "same54"))]
+    #[cfg(feature = "min-samd51n")]
     Pc15(Pc15<PfF>),
-    #[cfg(any(feature = "samd51p19a", feature = "samd51p20a", feature = "same54"))]
+    #[cfg(feature = "min-samd51n")]
     Pc16(Pc16<PfF>),
-    #[cfg(any(feature = "samd51p19a", feature = "samd51p20a", feature = "same54"))]
+    #[cfg(feature = "min-samd51n")]
     Pc17(Pc17<PfF>),
-    #[cfg(any(feature = "samd51p19a", feature = "samd51p20a", feature = "same54"))]
+    #[cfg(feature = "min-samd51n")]
     Pc18(Pc18<PfF>),
-    #[cfg(any(feature = "samd51p19a", feature = "samd51p20a", feature = "same54"))]
+    #[cfg(feature = "min-samd51n")]
     Pc19(Pc19<PfF>),
-    #[cfg(any(feature = "samd51p19a", feature = "samd51p20a", feature = "same54"))]
+    #[cfg(feature = "min-samd51n")]
     Pc20(Pc20<PfF>),
-    #[cfg(any(feature = "samd51p19a", feature = "samd51p20a", feature = "same54"))]
+    #[cfg(feature = "min-samd51n")]
     Pc21(Pc21<PfF>),
-    #[cfg(any(feature = "samd51p19a", feature = "samd51p20a", feature = "same54"))]
+    #[cfg(feature = "min-samd51p")]
+    Pc4(Pc4<PfF>),
+    #[cfg(feature = "min-samd51p")]
     Pc22(Pc22<PfF>),
-    #[cfg(any(feature = "samd51p19a", feature = "samd51p20a", feature = "same54"))]
+    #[cfg(feature = "min-samd51p")]
     Pc23(Pc23<PfF>),
-    #[cfg(any(feature = "samd51p19a", feature = "samd51p20a", feature = "same54"))]
+    #[cfg(feature = "min-samd51p")]
     Pd8(Pd8<PfF>),
-    #[cfg(any(feature = "samd51p19a", feature = "samd51p20a", feature = "same54"))]
+    #[cfg(feature = "min-samd51p")]
     Pd9(Pd9<PfF>),
-    #[cfg(any(feature = "samd51p19a", feature = "samd51p20a", feature = "same54"))]
+    #[cfg(feature = "min-samd51p")]
     Pd10(Pd10<PfF>),
-    #[cfg(any(feature = "samd51p19a", feature = "samd51p20a", feature = "same54"))]
+    #[cfg(feature = "min-samd51p")]
     Pd11(Pd11<PfF>),
-    #[cfg(any(feature = "samd51p19a", feature = "samd51p20a", feature = "same54"))]
+    #[cfg(feature = "min-samd51p")]
     Pd12(Pd12<PfF>),
 }
 
@@ -305,29 +313,37 @@ pub enum TCC1Pinout {
     Pa23(Pa23<PfF>),
     Pb10(Pb10<PfG>),
     Pb11(Pb11<PfG>),
+    #[cfg(feature = "min-samd51n")]
     Pb18(Pb18<PfF>),
+    #[cfg(feature = "min-samd51n")]
     Pb19(Pb19<PfF>),
+    #[cfg(feature = "min-samd51n")]
     Pb20(Pb20<PfF>),
+    #[cfg(feature = "min-samd51n")]
     Pb21(Pb21<PfF>),
-    Pb26(Pb26<PfF>),
-    Pb27(Pb27<PfF>),
-    Pb28(Pb28<PfF>),
-    Pb29(Pb29<PfF>),
-    #[cfg(any(feature = "samd51p19a", feature = "samd51p20a", feature = "same54"))]
+    #[cfg(feature = "min-samd51n")]
     Pc10(Pc10<PfG>),
-    #[cfg(any(feature = "samd51p19a", feature = "samd51p20a", feature = "same54"))]
+    #[cfg(feature = "min-samd51n")]
     Pc11(Pc11<PfG>),
-    #[cfg(any(feature = "samd51p19a", feature = "samd51p20a", feature = "same54"))]
+    #[cfg(feature = "min-samd51n")]
     Pc12(Pc12<PfG>),
-    #[cfg(any(feature = "samd51p19a", feature = "samd51p20a", feature = "same54"))]
+    #[cfg(feature = "min-samd51n")]
     Pc13(Pc13<PfG>),
-    #[cfg(any(feature = "samd51p19a", feature = "samd51p20a", feature = "same54"))]
+    #[cfg(feature = "min-samd51n")]
     Pc14(Pc14<PfG>),
-    #[cfg(any(feature = "samd51p19a", feature = "samd51p20a", feature = "same54"))]
+    #[cfg(feature = "min-samd51n")]
     Pc15(Pc15<PfG>),
-    #[cfg(any(feature = "samd51p19a", feature = "samd51p20a", feature = "same54"))]
+    #[cfg(feature = "min-samd51p")]
+    Pb26(Pb26<PfF>),
+    #[cfg(feature = "min-samd51p")]
+    Pb27(Pb27<PfF>),
+    #[cfg(feature = "min-samd51p")]
+    Pb28(Pb28<PfF>),
+    #[cfg(feature = "min-samd51p")]
+    Pb29(Pb29<PfF>),
+    #[cfg(feature = "min-samd51p")]
     Pd20(Pd20<PfF>),
-    #[cfg(any(feature = "samd51p19a", feature = "samd51p20a", feature = "same54"))]
+    #[cfg(feature = "min-samd51p")]
     Pd21(Pd21<PfF>),
 }
 
@@ -340,7 +356,7 @@ pub enum TCC2Pinout {
     Pb2(Pb2<PfF>),
 }
 
-#[cfg(all(not(feature = "samd51g19a"), not(feature = "samd51g18a")))]
+#[cfg(feature = "min-samd51j")]
 pub enum TCC3Pinout {
     Pb12(Pb12<PfF>),
     Pb13(Pb13<PfF>),
@@ -348,7 +364,7 @@ pub enum TCC3Pinout {
     Pb17(Pb17<PfF>),
 }
 
-#[cfg(all(not(feature = "samd51g19a"), not(feature = "samd51g18a")))]
+#[cfg(feature = "min-samd51j")]
 pub enum TCC4Pinout {
     Pb14(Pb14<PfF>),
     Pb15(Pb15<PfF>),
@@ -489,7 +505,7 @@ pwm_tcc! {
     Tcc2Pwm: (TCC2, TCC2Pinout, Tcc2Tcc3Clock, apbcmask, tcc2_, TccPwm2Wrapper),
 }
 
-#[cfg(all(not(feature = "samd51g19a"), not(feature = "samd51g18a")))]
+#[cfg(feature = "min-samd51j")]
 pwm_tcc! {
     Tcc3Pwm: (TCC3, TCC3Pinout, Tcc2Tcc3Clock, apbcmask, tcc3_, TccPwm3Wrapper),
     Tcc4Pwm: (TCC4, TCC4Pinout, Tcc4Clock,     apbdmask, tcc4_, TccPwm4Wrapper),

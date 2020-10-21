@@ -12,16 +12,16 @@ In addition to the PACs and HAL, there numerous **B**oard **S**upport **P**ackag
 
 | Crate | Version | Board Support Packages |
 |:------|:--------|:-----------------------|
-| [atsamd11c14a](https://docs.rs/atsamd11c14a/) | [![Crates.io](https://img.shields.io/crates/v/atsamd11c14a.svg)](https://crates.io/crates/atsamd11c14a) |  |
-| [atsamd21e18a](https://docs.rs/atsamd21e18a/) | [![Crates.io](https://img.shields.io/crates/v/atsamd21e18a.svg)](https://crates.io/crates/atsamd21e18a) | [Gemma M0][gemma_m0], [Serpente][serpente], [Trinket M0][trinket_m0] |
-| [atsamd21g18a](https://docs.rs/atsamd21g18a/) | [![Crates.io](https://img.shields.io/crates/v/atsamd21g18a.svg)](https://crates.io/crates/atsamd21g18a) | [Arduino Nano 33 IOT][arduino_nano33_iot], [Circuit Playground Express][circuit_playground_express], [Feather M0][feather_m0], [Metro M0][metro_m0], [MKR1000][arduino_mkr1000], [MKR Vidor 4000][arduino_mkr_vidor_4000], [MKR ZERO][arduino_mkrzero], [SAMD21 Mini][samd21_mini], [SODAQ ONE][sodaq_one], [Wio Lite MG126][wio_lite_mg126], [Xiao M0][xiao_m0] |
-| [atsamd21j18a](https://docs.rs/atsamd21j18a/) | [![Crates.io](https://img.shields.io/crates/v/atsamd21j18a.svg)](https://crates.io/crates/atsamd21j18a) | [SODAQ SARA AFF][sodaq_sara_aff] |
-| [atsamd51g19a](https://docs.rs/atsamd51g19a/) | [![Crates.io](https://img.shields.io/crates/v/atsamd51g19a.svg)](https://crates.io/crates/atsamd51g19a) | [ItsyBitsy M4][itsybitsy_m4], [Trellis M4][trellis_m4] |
-| [atsamd51j19a](https://docs.rs/atsamd51j19a/) | [![Crates.io](https://img.shields.io/crates/v/atsamd51j19a.svg)](https://crates.io/crates/atsamd51j19a) | [EdgeBadge][edgebadge], [Feather M4][feather_m4], [Metro M4][metro_m4] |
-| [atsamd51j20a](https://docs.rs/atsamd51j20a/) | [![Crates.io](https://img.shields.io/crates/v/atsamd51j20a.svg)](https://crates.io/crates/atsamd51j20a) | [PyPortal][pyportal] |
-| [atsamd51p19a](https://docs.rs/atsamd51p19a/) | [![Crates.io](https://img.shields.io/crates/v/atsamd51p19a.svg)](https://crates.io/crates/atsamd51p19a) |  |
-| [atsamd51p20a](https://docs.rs/atsamd51p20a/) | [![Crates.io](https://img.shields.io/crates/v/atsamd51p20a.svg)](https://crates.io/crates/atsamd51p20a) | [Grand Central M4 Express][grand_central_m4] |
-| [atsame54p20a](https://docs.rs/atsame54p20a/) | [![Crates.io](https://img.shields.io/crates/v/atsame54p20a.svg)](https://crates.io/crates/atsame54p20a) | [PathfinderZA Proto1][pfza_proto1] |
+| [atsamd11c](https://docs.rs/atsamd11c/) | [![Crates.io](https://img.shields.io/crates/v/atsamd11c.svg)](https://crates.io/crates/atsamd11c) |  |
+| [atsamd21e](https://docs.rs/atsamd21e/) | [![Crates.io](https://img.shields.io/crates/v/atsamd21e.svg)](https://crates.io/crates/atsamd21e) | [Gemma M0][gemma_m0], [Serpente][serpente], [Trinket M0][trinket_m0] |
+| [atsamd21g](https://docs.rs/atsamd21g/) | [![Crates.io](https://img.shields.io/crates/v/atsamd21g.svg)](https://crates.io/crates/atsamd21g) | [Arduino Nano 33 IOT][arduino_nano33_iot], [Circuit Playground Express][circuit_playground_express], [Feather M0][feather_m0], [Metro M0][metro_m0], [MKR1000][arduino_mkr1000], [MKR Vidor 4000][arduino_mkr_vidor_4000], [MKR ZERO][arduino_mkrzero], [SAMD21 Mini][samd21_mini], [SODAQ ONE][sodaq_one], [Wio Lite MG126][wio_lite_mg126], [Xiao M0][xiao_m0] |
+| [atsamd21j](https://docs.rs/atsamd21j/) | [![Crates.io](https://img.shields.io/crates/v/atsamd21j.svg)](https://crates.io/crates/atsamd21j) | [SODAQ SARA AFF][sodaq_sara_aff] |
+| [atsamd51g](https://docs.rs/atsamd51g/) | [![Crates.io](https://img.shields.io/crates/v/atsamd51g.svg)](https://crates.io/crates/atsamd51g) | [ItsyBitsy M4][itsybitsy_m4], [Trellis M4][trellis_m4] |
+| [atsamd51j](https://docs.rs/atsamd51j/) | [![Crates.io](https://img.shields.io/crates/v/atsamd51j.svg)](https://crates.io/crates/atsamd51j) | [EdgeBadge][edgebadge], [Feather M4][feather_m4], [Metro M4][metro_m4] |
+| [atsamd51j](https://docs.rs/atsamd51j/) | [![Crates.io](https://img.shields.io/crates/v/atsamd51j.svg)](https://crates.io/crates/atsamd51j) | [PyPortal][pyportal] |
+| [atsamd51p](https://docs.rs/atsamd51p/) | [![Crates.io](https://img.shields.io/crates/v/atsamd51p.svg)](https://crates.io/crates/atsamd51p) |  |
+| [atsamd51p](https://docs.rs/atsamd51p/) | [![Crates.io](https://img.shields.io/crates/v/atsamd51p.svg)](https://crates.io/crates/atsamd51p) | [Grand Central M4 Express][grand_central_m4] |
+| [atsame54p](https://docs.rs/atsame54p/) | [![Crates.io](https://img.shields.io/crates/v/atsame54p.svg)](https://crates.io/crates/atsame54p) | [PathfinderZA Proto1][pfza_proto1] |
 | [atsamd-hal](https://docs.rs/atsamd_hal/) | [![Crates.io](https://img.shields.io/crates/v/atsamd_hal.svg)](https://crates.io/crates/atsamd_hal) |  |
 
 [arduino_mkr1000]: https://github.com/atsamd-rs/atsamd/tree/master/boards/arduino_mkr1000

@@ -4,7 +4,7 @@ use crate::clock;
 use crate::hal::blocking::i2c::{Read, Write, WriteRead};
 use crate::target_device::sercom0::I2CM;
 use crate::target_device::{PM, SERCOM0, SERCOM1, SERCOM2, SERCOM3};
-#[cfg(any(feature = "samd21g18a", feature = "samd21j18a"))]
+#[cfg(feature = "min-samd21g")]
 use crate::target_device::{SERCOM4, SERCOM5};
 use crate::time::Hertz;
 
@@ -337,7 +337,7 @@ i2c!([
         ),
 ]);
 
-#[cfg(any(feature = "samd21g18a", feature = "samd21j18a"))]
+#[cfg(feature = "min-samd21g")]
 i2c!([
     I2CMaster4:
         (

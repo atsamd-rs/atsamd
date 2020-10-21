@@ -7,7 +7,7 @@ keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
-documentation = "https://atsamd-rs.github.io/atsamd/atsamd21g18a/xiao_m0/"
+documentation = "https://atsamd-rs.github.io/atsamd/atsamd21g/xiao_m0/"
 edition = "2018"
 
 [dependencies]
@@ -36,8 +36,8 @@ optional = true
 panic-halt = "~0.2"
 
 [features]
-default = ["rt", "atsamd-hal/samd21g18a"]
-rt = ["cortex-m-rt", "atsamd-hal/samd21g18a-rt"]
+default = ["rt", "atsamd-hal/samd21g"]
+rt = ["cortex-m-rt", "atsamd-hal/samd21g-rt"]
 unproven = ["atsamd-hal/unproven"]
 usb = ["atsamd-hal/usb", "usb-device", "usbd-serial"]
 

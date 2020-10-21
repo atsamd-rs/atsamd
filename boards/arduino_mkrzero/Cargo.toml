@@ -7,7 +7,7 @@ keywords = ["no-std", "arm", "cortex-m", "embedded-hal", "arduino"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
-documentation = "https://atsamd-rs.github.io/atsamd/atsamd21g18a/arduino_mkrzero/"
+documentation = "https://atsamd-rs.github.io/atsamd/atsamd21g/arduino_mkrzero/"
 
 [dependencies]
 cortex-m = "~0.6"
@@ -36,9 +36,9 @@ version = "~0.1"
 optional = true
 
 [features]
-# ask the HAL to enable atsamd21g18a support
-default = ["rt", "panic_halt", "atsamd-hal/samd21g18a", "usb"]
-rt = ["cortex-m-rt", "atsamd-hal/samd21g18a-rt"]
+# ask the HAL to enable atsamd21g support
+default = ["rt", "panic_halt", "atsamd-hal/samd21g", "usb"]
+rt = ["cortex-m-rt", "atsamd-hal/samd21g-rt"]
 usb = ["atsamd-hal/usb", "usb-device", "usbd-serial"]
 panic_halt = ["panic-halt"]
 unproven = ["atsamd-hal/unproven"]

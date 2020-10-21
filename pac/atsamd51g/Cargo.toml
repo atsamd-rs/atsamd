@@ -1,0 +1,22 @@
+[package]
+name = "atsamd51g"
+description = "Peripheral access API for ATSAMD51G microcontrollers (generated using svd2rust)"
+version = "0.7.0"
+authors = ["Wez Furlong <wez@wezfurlong.org>", "Tony Arcieri <bascule@gmail.com>"]
+keywords = ["no-std", "arm", "cortex-m"]
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/atsamd-rs/atsamd"
+readme = "README.md"
+documentation = "https://atsamd-rs.github.io/atsamd/atsamd51g/atsamd51g/"
+
+[dependencies]
+bare-metal = "~0.2"
+cortex-m = "~0.6"
+vcell = "~0.1"
+
+[dependencies.cortex-m-rt]
+version = "~0.6.12"
+optional = true
+
+[features]
+rt = ["cortex-m-rt/device"]

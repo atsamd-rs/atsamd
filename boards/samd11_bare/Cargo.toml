@@ -2,12 +2,12 @@
 name = "samd11_bare"
 version = "0.3.0"
 authors = ["Jesse Braham <jesse@beta7.io>"]
-description = "Support crate for the ATSAMD11C14A"
+description = "Support crate for the ATSAMD11C"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
-documentation = "https://atsamd-rs.github.io/atsamd/atsamd11c14a/samd11_bare/"
+documentation = "https://atsamd-rs.github.io/atsamd/atsamd11c/samd11_bare/"
 
 [dependencies]
 cortex-m = "~0.6"
@@ -28,9 +28,9 @@ cortex-m-semihosting = "0.3.5"
 panic-halt = "~0.2"
 
 [features]
-# ask the HAL to enable atsamd11c14a support
-default = ["rt", "atsamd-hal/samd11c14a"]
-rt = ["cortex-m-rt", "atsamd-hal/samd11c14a-rt"]
+# ask the HAL to enable atsamd11c support
+default = ["rt", "atsamd-hal/samd11c"]
+rt = ["cortex-m-rt", "atsamd-hal/samd11c-rt"]
 unproven = ["atsamd-hal/unproven"]
 use_semihosting = []
 

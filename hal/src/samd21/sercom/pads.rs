@@ -108,28 +108,28 @@ pad!(Sercom3Pad3 {
 // sercom4[2]:  PA14:D   PB10:D   PB14:C
 // sercom4[3]:  PA15:D   PB11:D   PB15:C
 
-#[cfg(any(feature = "samd21g18a", feature = "samd21j18a"))]
+#[cfg(feature = "min-samd21g")]
 pad!(Sercom4Pad0 {
     Pa12(PfD),
     Pb8(PfD),
     Pb12(PfC),
 });
 
-#[cfg(any(feature = "samd21g18a", feature = "samd21j18a"))]
+#[cfg(feature = "min-samd21g")]
 pad!(Sercom4Pad1 {
     Pa13(PfD),
     Pb9(PfD),
     Pb13(PfC),
 });
 
-#[cfg(any(feature = "samd21g18a", feature = "samd21j18a"))]
+#[cfg(feature = "min-samd21g")]
 pad!(Sercom4Pad2 {
     Pa14(PfD),
     Pb10(PfD),
     Pb14(PfC),
 });
 
-#[cfg(any(feature = "samd21g18a", feature = "samd21j18a"))]
+#[cfg(feature = "min-samd21g")]
 pad!(Sercom4Pad3 {
     Pa15(PfD),
     Pb11(PfD),
@@ -141,7 +141,7 @@ pad!(Sercom4Pad3 {
 // sercom5[2]:  PA24:D   PB00:D   PA20:C  PB22:D
 // sercom5[3]:  PA25:D   PB01:D   PA21:C  PB23:D
 
-#[cfg(any(feature = "samd21g18a", feature = "samd21j18a"))]
+#[cfg(feature = "min-samd21g")]
 pad!(Sercom5Pad0 {
     Pa22(PfD),
     Pb2(PfD),
@@ -149,7 +149,7 @@ pad!(Sercom5Pad0 {
     Pb30(PfD),
 });
 
-#[cfg(any(feature = "samd21g18a", feature = "samd21j18a"))]
+#[cfg(feature = "min-samd21g")]
 pad!(Sercom5Pad1 {
     Pa23(PfD),
     Pb3(PfD),
@@ -157,7 +157,7 @@ pad!(Sercom5Pad1 {
     Pb31(PfD),
 });
 
-#[cfg(any(feature = "samd21g18a", feature = "samd21j18a"))]
+#[cfg(feature = "min-samd21g")]
 pad!(Sercom5Pad2 {
     Pa24(PfD),
     Pb0(PfD),
@@ -165,7 +165,7 @@ pad!(Sercom5Pad2 {
     Pb22(PfD),
 });
 
-#[cfg(any(feature = "samd21g18a", feature = "samd21j18a"))]
+#[cfg(feature = "min-samd21g")]
 pad!(Sercom5Pad3 {
     Pa25(PfD),
     Pb1(PfD),

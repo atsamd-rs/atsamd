@@ -12,7 +12,7 @@ license = "MIT OR Apache-2.0"
 edition = "2018"
 repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
-documentation = "https://atsamd-rs.github.io/atsamd/atsamd51g19a/trellis_m4/"
+documentation = "https://atsamd-rs.github.io/atsamd/atsamd51g/trellis_m4/"
 
 [dependencies]
 cortex-m = "~0.6"
@@ -48,9 +48,9 @@ smart-leds = "0.3"
 version = "~0.3"
 
 [features]
-# ask the HAL to enable atsamd51g19a support
-default = ["rt", "atsamd-hal/samd51g19a", "atsamd-hal/samd51"]
-rt = ["cortex-m-rt", "atsamd-hal/samd51g19a-rt"]
+# ask the HAL to enable atsamd51g support
+default = ["rt", "atsamd-hal/samd51g", "atsamd-hal/samd51"]
+rt = ["cortex-m-rt", "atsamd-hal/samd51g-rt"]
 unproven = ["atsamd-hal/unproven"]
 keypad-unproven = ["keypad", "unproven"]
 

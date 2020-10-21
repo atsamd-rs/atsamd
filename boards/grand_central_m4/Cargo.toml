@@ -10,7 +10,7 @@ license = "MIT OR Apache-2.0"
 edition = "2018"
 repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
-documentation = "https://atsamd-rs.github.io/atsamd/atsamd51g19a/grand_central_m4/"
+documentation = "https://atsamd-rs.github.io/atsamd/atsamd51g/grand_central_m4/"
 
 [dependencies]
 cortex-m = "~0.6"
@@ -49,8 +49,8 @@ cortex-m-rtic = "~0.5.1"
 panic_rtt = "~0.2"
 
 [features]
-default = ["rt", "atsamd-hal/samd51p20a", "atsamd-hal/samd51", "atsamd-hal/unproven"]
-rt = ["cortex-m-rt", "atsamd-hal/samd51p20a-rt"]
+default = ["rt", "atsamd-hal/samd51p", "atsamd-hal/samd51", "atsamd-hal/unproven"]
+rt = ["cortex-m-rt", "atsamd-hal/samd51p-rt"]
 unproven = ["atsamd-hal/unproven"]
 usb = ["atsamd-hal/usb", "usb-device", "usbd-serial"]
 use_uart_debug = ["atsamd-hal/use_uart_debug"]
