@@ -2,11 +2,14 @@ use crate::clock::GenericClockController;
 #[rustfmt::skip]
 use crate::gpio::{
     Pa2, Pa3, Pa4, Pa5, Pa6, Pa7, Pa8, Pa9, Pa10, Pa11,
-    Pb0, Pb1, Pb2, Pb3, Pb4, Pb5, Pb6, Pb7, Pb8, Pb9,
-    PfB,
+    Pb0, Pb1, Pb2, Pb3, Pb8, Pb9, PfB,
 };
-#[cfg(feature = "same54")]
-use crate::gpio::{Pc0, Pc1, Pc2, Pc3, Pc30, Pc31, Pd0, Pd1};
+#[cfg(feature = "min-samd51j")]
+use crate::gpio::{Pb4, Pb5, Pb6, Pb7};
+#[cfg(feature = "min-samd51n")]
+use crate::gpio::{Pc0, Pc1, Pc2, Pc3};
+#[cfg(feature = "min-samd51p")]
+use crate::gpio::{Pc30, Pc31, Pd0, Pd1};
 use crate::hal::adc::{Channel, OneShot};
 use crate::target_device::gclk::genctrl::SRC_A::DFLL;
 use crate::target_device::gclk::pchctrl::GEN_A;
@@ -142,18 +145,26 @@ adc_pins! {
     Pb9:  (ADC1, 1),
     Pa8:  (ADC1, 2),
     Pa9:  (ADC1, 3),
+}
+
+#[cfg(feature = "min-samd51j")]
+adc_pins! {
     Pb4:  (ADC1, 6),
     Pb5:  (ADC1, 7),
     Pb6:  (ADC1, 8),
     Pb7:  (ADC1, 9),
 }
 
-#[cfg(feature = "same54")]
+#[cfg(feature = "min-samd51n")]
 adc_pins! {
     Pc2:  (ADC1, 4),
     Pc3:  (ADC1, 5),
     Pc0:  (ADC1, 10),
     Pc1:  (ADC1, 11),
+}
+
+#[cfg(feature = "min-samd51p")]
+adc_pins! {
     Pc30: (ADC1, 12),
     Pc31: (ADC1, 13),
     Pd0:  (ADC1, 14),

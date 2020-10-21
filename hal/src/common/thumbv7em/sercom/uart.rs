@@ -4,11 +4,7 @@ use crate::hal::serial;
 use crate::sercom::pads::*;
 use crate::target_device::sercom0::USART_INT;
 use crate::target_device::{MCLK, SERCOM0, SERCOM1, SERCOM2, SERCOM3, SERCOM4, SERCOM5};
-#[cfg(any(
-    feature = "samd51n",
-    feature = "samd51p",
-    feature = "same54"
-))]
+#[cfg(feature = "min-samd51n")]
 use crate::target_device::{SERCOM6, SERCOM7};
 use crate::time::Hertz;
 use core::fmt;
@@ -364,11 +360,7 @@ uart!(
         )
 );
 
-#[cfg(any(
-    feature = "samd51n",
-    feature = "samd51p",
-    feature = "same54"
-))]
+#[cfg(feature = "min-samd51n")]
 uart!(
     UART6:
         (
@@ -383,11 +375,7 @@ uart!(
         )
 );
 
-#[cfg(any(
-    feature = "samd51n",
-    feature = "samd51p",
-    feature = "same54"
-))]
+#[cfg(feature = "min-samd51n")]
 uart!(
     UART7:
         (

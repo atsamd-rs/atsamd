@@ -4,7 +4,7 @@ use crate::target_device::tc0::COUNT16;
 #[allow(unused)]
 use crate::target_device::{MCLK, TC2, TC3};
 // Only the G variants are missing these timers
-#[cfg(all(not(feature = "samd51g"), not(feature = "samd51g")))]
+#[cfg(feature = "min-samd51j")]
 use crate::target_device::{TC4, TC5};
 use crate::timer_traits::InterruptDrivenTimer;
 
@@ -229,7 +229,7 @@ tc! {
 }
 
 // Only the G variants are missing these timers
-#[cfg(all(not(feature = "samd51g"), not(feature = "samd51g")))]
+#[cfg(feature = "min-samd51j")]
 tc! {
     TimerCounter4: (TC4, tc4_, Tc4Tc5Clock, apbcmask),
     TimerCounter5: (TC5, tc5_, Tc4Tc5Clock, apbcmask),

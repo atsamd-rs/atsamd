@@ -4,11 +4,7 @@ use crate::clock;
 use crate::hal::blocking::i2c::{Read, Write, WriteRead};
 use crate::target_device::sercom0::I2CM;
 use crate::target_device::{MCLK, SERCOM0, SERCOM1, SERCOM2, SERCOM3, SERCOM4, SERCOM5};
-#[cfg(any(
-    feature = "samd51n",
-    feature = "samd51p",
-    feature = "same54"
-))]
+#[cfg(feature = "min-samd51n")]
 use crate::target_device::{SERCOM6, SERCOM7};
 use crate::time::Hertz;
 
@@ -377,11 +373,7 @@ i2c!([
         ),
 ]);
 
-#[cfg(any(
-    feature = "samd51n",
-    feature = "samd51p",
-    feature = "same54"
-))]
+#[cfg(feature = "min-samd51n")]
 i2c!([
     I2CMaster6:
         (
