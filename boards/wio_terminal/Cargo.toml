@@ -28,7 +28,6 @@ cortex-m = "0.6"
 cortex-m-rt = { version = "0.6", optional = true }
 display-interface-spi = "0.4"
 heapless = "0.5"
-drogue-nom-utils = "0.1"
 
 [dependencies.atsamd-hal]
 path = "../../hal"
@@ -51,13 +50,14 @@ optional = true
 version = "0.1"
 optional = true
 
-[dependencies.nom]
-default-features = false
-version = "5.1"
-
 [dev-dependencies]
+drogue-nom-utils = "0.1"
 embedded-graphics = "0.6"
 panic-halt = "0.2"
+
+[dev-dependencies.nom]
+default-features = false
+version = "5.1"
 
 [features]
 default = ["atsamd-hal/samd51p", "rt", "unproven", "usb"]
