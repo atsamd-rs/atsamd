@@ -1,0 +1,89 @@
+[package]
+name = "wio-terminal"
+version = "0.1.0"
+authors = ["Jesse Braham <jesse@beta7.io>", "Tom <twitchyliquid64@ciphersink.net>"]
+edition = "2018"
+description = "Board support crate for the Seeed Studio Wio Terminal"
+documentation = "https://docs.rs/wio-terminal/"
+readme = "README.md"
+repository = "https://github.com/jessebraham/wio-terminal"
+license = "MIT OR Apache-2.0"
+keywords = [
+    "arm",
+    "cortex-m",
+    "embedded-hal",
+    "no-std",
+]
+categories = [
+    "embedded",
+    "hardware-support",
+    "no-std",
+]
+
+[dependencies]
+cortex-m = "~0.6"
+cortex-m-rt = { version = "~0.6", optional = true }
+display-interface-spi = "0.4.0"
+heapless = "~0.5"
+drogue-nom-utils = "0.1.0"
+
+[dependencies.atsamd-hal]
+git = "https://github.com/atsamd-rs/atsamd"
+rev = "3097042ce7ce1b3e4dcc42efd450dff9ead8868f"
+
+[dependencies.lis3dh]
+git = "https://github.com/BenBergman/lis3dh-rs"
+rev = "0bd78d8aaf197dba9a4570c2934bf222ca20562c"
+
+[dependencies.ili9341]
+git = "https://github.com/yuri91/ili9341-rs"
+rev = "afbfd98f9dfe934ddffa9c2ef45d4eccd9ad8ce8"
+
+[dependencies.usb-device]
+version = "~0.2"
+optional = true
+
+[dependencies.usbd-serial]
+version = "~0.1"
+optional = true
+
+[dependencies.nom]
+default-features = false
+version = "^5"
+
+[dev-dependencies]
+embedded-graphics = "~0.6"
+panic-halt = "~0.2"
+
+[features]
+default = ["atsamd-hal/samd51p19a", "rt", "unproven", "usb"]
+rt = ["atsamd-hal/samd51p19a-rt", "cortex-m-rt"]
+unproven = ["atsamd-hal/unproven"]
+usb = ["atsamd-hal/usb", "usb-device", "usbd-serial"]
+
+[profile.dev]
+incremental = false
+codegen-units = 1
+debug = true
+lto = true
+
+[profile.release]
+lto = true
+opt-level = "s"
+
+[[example]]
+name = "blinky"
+
+[[example]]
+name = "buttons"
+
+[[example]]
+name = "orientation"
+
+[[example]]
+name = "usb_serial_display"
+required-features = ["usb"]
+
+[[example]]
+name = "clock"
+required-features = ["usb"]

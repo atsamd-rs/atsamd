@@ -1,0 +1,19 @@
+language: rust
+
+rust:
+  - stable
+  - beta
+  - nightly
+
+jobs:
+  allow_failures:
+    - rust: nightly
+  fast_finish: true
+
+cache: cargo
+
+before_install:
+  - rustup target add thumbv7em-none-eabihf
+
+script:
+  - cargo build --examples
