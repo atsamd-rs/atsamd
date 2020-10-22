@@ -1,7 +1,10 @@
 [package]
 name = "wio-terminal"
 version = "0.1.0"
-authors = ["Jesse Braham <jesse@beta7.io>", "Tom <twitchyliquid64@ciphersink.net>"]
+authors = [
+    "Jesse Braham <jesse@beta7.io>",
+    "Tom <twitchyliquid64@ciphersink.net>"
+]
 edition = "2018"
 description = "Board support crate for the Seeed Studio Wio Terminal"
 documentation = "https://docs.rs/wio-terminal/"
@@ -28,8 +31,9 @@ heapless = "~0.5"
 drogue-nom-utils = "0.1.0"
 
 [dependencies.atsamd-hal]
-git = "https://github.com/atsamd-rs/atsamd"
-rev = "3097042ce7ce1b3e4dcc42efd450dff9ead8868f"
+path = "../../hal"
+version = "~0.10"
+default-features = false
 
 [dependencies.lis3dh]
 git = "https://github.com/BenBergman/lis3dh-rs"
@@ -56,8 +60,8 @@ embedded-graphics = "~0.6"
 panic-halt = "~0.2"
 
 [features]
-default = ["atsamd-hal/samd51p19a", "rt", "unproven", "usb"]
-rt = ["atsamd-hal/samd51p19a-rt", "cortex-m-rt"]
+default = ["atsamd-hal/samd51p", "rt", "unproven", "usb"]
+rt = ["atsamd-hal/samd51p-rt", "cortex-m-rt"]
 unproven = ["atsamd-hal/unproven"]
 usb = ["atsamd-hal/usb", "usb-device", "usbd-serial"]
 

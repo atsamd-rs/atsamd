@@ -75,6 +75,9 @@
     "wio_lite_mg126": {
       "build": "cargo build --examples --features=unproven,usb"
     },
+    "wio_terminal": {
+      "build": "cargo build --examples"
+    },
     "xiao_m0": {
       "build": "cargo build --examples --features=usb"
     }
