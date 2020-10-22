@@ -12,7 +12,7 @@ mod thumbv6m;
 #[cfg(any(feature = "samd11", feature = "samd21"))]
 pub use thumbv6m::*;
 
-#[cfg(any(feature = "samd51", feature = "same54"))]
+#[cfg(any(feature = "samd51", feature = "same51", feature = "same53", feature = "same54"))]
 mod thumbv7em;
-#[cfg(any(feature = "samd51", feature = "same54"))]
+#[cfg(any(feature = "samd51", feature = "same51", feature = "same53", feature = "same54"))]
 pub use thumbv7em::*;
