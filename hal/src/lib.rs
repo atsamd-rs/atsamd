@@ -28,6 +28,24 @@ pub use atsamd51n as target_device;
 #[cfg(feature = "samd51p")]
 pub use atsamd51p as target_device;
 
+#[cfg(feature = "same51g")]
+pub use atsame51g as target_device;
+
+#[cfg(feature = "same51j")]
+pub use atsame51j as target_device;
+
+#[cfg(feature = "same51n")]
+pub use atsame51n as target_device;
+
+#[cfg(feature = "same53j")]
+pub use atsame53j as target_device;
+
+#[cfg(feature = "same53n")]
+pub use atsame53n as target_device;
+
+#[cfg(feature = "same54n")]
+pub use atsame54n as target_device;
+
 #[cfg(feature = "same54p")]
 pub use atsame54p as target_device;
 
@@ -72,6 +90,18 @@ pub use self::samd21::*;
 
 #[cfg(feature = "samd51")]
 pub mod samd51 {
+    #[cfg(feature = "unproven")]
+    pub use crate::pwm;
+}
+
+#[cfg(feature = "same51")]
+pub mod same51 {
+    #[cfg(feature = "unproven")]
+    pub use crate::pwm;
+}
+
+#[cfg(feature = "same53")]
+pub mod same53 {
     #[cfg(feature = "unproven")]
     pub use crate::pwm;
 }
