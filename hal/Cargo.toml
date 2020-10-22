@@ -1,6 +1,6 @@
 [package]
 name = "atsamd-hal"
-version = "0.9.1"
+version = "0.10.0"
 authors = [
     "Wez Furlong <wez@wezfurlong.org>",
     "Paul Sajna <sajattack@gmail.com>",
@@ -16,72 +16,72 @@ documentation = "https://atsamd-rs.github.io/atsamd/atsamd21g/atsamd21_hal/"
 edition = "2018"
 
 [dependencies]
-bitfield = "~0.13"
-cortex-m = "~0.6"
+bitfield = "0.13"
+cortex-m = "0.6"
 embedded-hal = "~0.2.3"
-nb = "~0.1"
-paste = "~0.1"
-rand_core = "~0.5"
-vcell = "~0.1"
+nb = "0.1"
+paste = "0.1"
+rand_core = "0.5"
+vcell = "0.1"
 
 [dependencies.jlink_rtt]
 optional = true
-version = "~0.1"
+version = "0.1"
 
 [dependencies.usb-device]
-version = "~0.2"
+version = "0.2"
 optional = true
 
 [dependencies.void]
 default-features = false
-version = "~1.0"
+version = "1.0"
 
 # Each of the supported chips is listed as an optional dependency here.
 # This makes it available when the corresponding feature name is referenced.
 # We use a feature named "samdFOO" to pull in the dependency named "atsamdFOO"
 [dependencies.atsamd11c]
 path = "../pac/atsamd11c"
-version = "~0.7"
+version = "0.8"
 optional = true
 
 [dependencies.atsamd21e]
 path = "../pac/atsamd21e"
-version = "~0.7"
+version = "0.8"
 optional = true
 
 [dependencies.atsamd21g]
 path = "../pac/atsamd21g"
-version = "~0.7"
+version = "0.8"
 optional = true
 
 [dependencies.atsamd21j]
 path = "../pac/atsamd21j"
-version = "~0.7"
+version = "0.8"
 optional = true
 
 [dependencies.atsamd51g]
 path = "../pac/atsamd51g"
-version = "~0.7"
+version = "0.8"
 optional = true
 
 [dependencies.atsamd51j]
 path = "../pac/atsamd51j"
-version = "~0.7"
+version = "0.8"
 optional = true
 
 [dependencies.atsamd51n]
 path = "../pac/atsamd51n"
-version = "~0.7"
+version = "0.8"
 optional = true
 
 [dependencies.atsamd51p]
 path = "../pac/atsamd51p"
-version = "~0.7"
+version = "0.8"
 optional = true
 
 [dependencies.atsame54p]
 path = "../pac/atsame54p"
-version = "~0.7"
+version = "0.8"
 optional = true
 
 [features]
