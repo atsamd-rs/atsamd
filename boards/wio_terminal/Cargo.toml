@@ -24,15 +24,15 @@ categories = [
 ]
 
 [dependencies]
-cortex-m = "~0.6"
-cortex-m-rt = { version = "~0.6", optional = true }
-display-interface-spi = "0.4.0"
-heapless = "~0.5"
-drogue-nom-utils = "0.1.0"
+cortex-m = "0.6"
+cortex-m-rt = { version = "0.6", optional = true }
+display-interface-spi = "0.4"
+heapless = "0.5"
+drogue-nom-utils = "0.1"
 
 [dependencies.atsamd-hal]
 path = "../../hal"
-version = "~0.10"
+version = "0.10"
 default-features = false
 
 [dependencies.lis3dh]
@@ -44,20 +44,20 @@ git = "https://github.com/yuri91/ili9341-rs"
 rev = "afbfd98f9dfe934ddffa9c2ef45d4eccd9ad8ce8"
 
 [dependencies.usb-device]
-version = "~0.2"
+version = "0.2"
 optional = true
 
 [dependencies.usbd-serial]
-version = "~0.1"
+version = "0.1"
 optional = true
 
 [dependencies.nom]
 default-features = false
-version = "^5"
+version = "5.1"
 
 [dev-dependencies]
-embedded-graphics = "~0.6"
-panic-halt = "~0.2"
+embedded-graphics = "0.6"
+panic-halt = "0.2"
 
 [features]
 default = ["atsamd-hal/samd51p", "rt", "unproven", "usb"]
