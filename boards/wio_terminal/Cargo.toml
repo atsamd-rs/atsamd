@@ -28,36 +28,21 @@ cortex-m = "0.6"
 cortex-m-rt = { version = "0.6", optional = true }
 display-interface-spi = "0.4"
 heapless = "0.5"
+ili9341 = "0.4.1"
+lis3dh = "0.3.0"
+usb-device = { version = "0.2", optional = true }
+usbd-serial = { version = "0.1", optional = true }
 
 [dependencies.atsamd-hal]
 path = "../../hal"
 version = "0.10"
 default-features = false
 
-[dependencies.lis3dh]
-git = "https://github.com/BenBergman/lis3dh-rs"
-rev = "0bd78d8aaf197dba9a4570c2934bf222ca20562c"
-
-[dependencies.ili9341]
-git = "https://github.com/yuri91/ili9341-rs"
-rev = "afbfd98f9dfe934ddffa9c2ef45d4eccd9ad8ce8"
-
-[dependencies.usb-device]
-version = "0.2"
-optional = true
-
-[dependencies.usbd-serial]
-version = "0.1"
-optional = true
-
 [dev-dependencies]
 drogue-nom-utils = "0.1"
 embedded-graphics = "0.6"
+nom = { version = "5.1", default-features= false }
 panic-halt = "0.2"
-
-[dev-dependencies.nom]
-default-features = false
-version = "5.1"
 
 [features]
 default = ["atsamd-hal/samd51p", "rt", "unproven", "usb"]
@@ -82,12 +67,12 @@ name = "blinky"
 name = "buttons"
 
 [[example]]
+name = "clock"
+required-features = ["usb"]
+
+[[example]]
 name = "orientation"
 
 [[example]]
 name = "usb_serial_display"
-required-features = ["usb"]
-
-[[example]]
-name = "clock"
 required-features = ["usb"]
