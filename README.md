@@ -89,11 +89,10 @@ $ cargo build --examples
 If you'd like to build all the same things that the CI would build but on your local system, you can run:
 
 ```bash
-$ python -m venv /tmp/atsamd-virtualenv
-$ source /tmp/atsamd-virtualenv/bin/activate
-$ pip install -r requirements.txt
 $ ./build-all.py
 ```
+
+Please note that this script requires Python 3.
 
 ## Getting code onto the device: Gemma M0
 
