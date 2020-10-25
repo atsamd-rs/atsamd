@@ -19,7 +19,7 @@ In addition to the PACs and HAL, there numerous **B**oard **S**upport **P**ackag
 | [atsamd51g](https://docs.rs/atsamd51g/) | [![Crates.io](https://img.shields.io/crates/v/atsamd51g.svg)](https://crates.io/crates/atsamd51g) | [ItsyBitsy M4][itsybitsy_m4], [Trellis M4][trellis_m4] |
 | [atsamd51j](https://docs.rs/atsamd51j/) | [![Crates.io](https://img.shields.io/crates/v/atsamd51j.svg)](https://crates.io/crates/atsamd51j) | [EdgeBadge][edgebadge], [Feather M4][feather_m4], [Metro M4][metro_m4], [PyPortal][pyportal] |
 | [atsame51n](https://docs.rs/atsame51n/) | [![Crates.io](https://img.shields.io/crates/v/atsame51n.svg)](https://crates.io/crates/atsame51n) |  |
-| [atsamd51p](https://docs.rs/atsamd51p/) | [![Crates.io](https://img.shields.io/crates/v/atsamd51p.svg)](https://crates.io/crates/atsamd51p) | [Grand Central M4 Express][grand_central_m4] |
+| [atsamd51p](https://docs.rs/atsamd51p/) | [![Crates.io](https://img.shields.io/crates/v/atsamd51p.svg)](https://crates.io/crates/atsamd51p) | [Grand Central M4 Express][grand_central_m4], [Wio Terminal][wio_terminal] |
 | [atsame51g](https://docs.rs/atsame51g/) | [![Crates.io](https://img.shields.io/crates/v/atsame51g.svg)](https://crates.io/crates/atsame51g) |  |
 | [atsame51j](https://docs.rs/atsame51j/) | [![Crates.io](https://img.shields.io/crates/v/atsame51j.svg)](https://crates.io/crates/atsame51j) |  |
 | [atsame51n](https://docs.rs/atsame51n/) | [![Crates.io](https://img.shields.io/crates/v/atsame51n.svg)](https://crates.io/crates/atsame51n) |  |
@@ -53,6 +53,7 @@ In addition to the PACs and HAL, there numerous **B**oard **S**upport **P**ackag
 [trellis_m4]: https://github.com/atsamd-rs/atsamd/tree/master/boards/trellis_m4/
 [trinket_m0]: https://github.com/atsamd-rs/atsamd/tree/master/boards/trinket_m0/
 [wio_lite_mg126]: https://github.com/atsamd-rs/atsamd/tree/master/boards/wio_lite_mg126
+[wio_terminal]: https://github.com/atsamd-rs/atsamd/tree/master/boards/wio_terminal
 [xiao_m0]: https://github.com/atsamd-rs/atsamd/tree/master/boards/xiao_m0
 
 ## Building
