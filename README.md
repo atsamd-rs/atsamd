@@ -2,7 +2,7 @@
 
 This repository holds various crates that support/enable working with Atmel `samd11`, `samd21`, `samd51` and `same5x` based devices using Rust.
 
-[![Build Status](https://travis-ci.org/atsamd-rs/atsamd.svg?branch=master)](https://travis-ci.org/atsamd-rs/atsamd)
+![CI Build](https://github.com/atsamd-rs/atsamd/workflows/Build%20BSPs/badge.svg)
 
 The **P**eripheral **A**ccess **C**rates (**PAC**s) are automatically generated, and provide low-level access to the peripherals specified by a device's SVD file.
 
