@@ -91,12 +91,7 @@ pub enum Gpio {
     #[cfg(feature = "min-samd51n")]
     PortC,
     #[cfg(feature = "min-samd51p")]
-    PortD
-}
-pub struct Pxx<MODE> {
-    gpio: Gpio,
-    no: u8,
-    _mode: PhantomData<MODE>,
+    PortD,
 }
 
 /// A trait that makes it easier to generically manage
@@ -111,13 +106,91 @@ pub trait IntoFunction<T> {
     fn into_function(self, port: &mut Port) -> T;
 }
 
-// rustfmt wants to keep indenting the nested macro on each run,
-// so disable it for this whole block :-/
-#[rustfmt::skip]
-macro_rules! pin {
+macro_rules! pin_xx {
     (
         $PinType:ident,
-        $pin_ident:ident,
+        $group:ident,
+        $dirset:ident,
+        $dirclr:ident,
+        $pincfg:ident,
+        $outset:ident,
+        $outclr:ident,
+        $pinmux:ident,
+        $out:ident
+    ) => {
+        /// Represents the IO pin with the matching name.
+        pub struct $PinType<MODE> {
+            gpio: Gpio,
+            no: u8,
+            _mode: PhantomData<MODE>,
+        }
+
+        impl<MODE> $PinType<MODE> {
+
+            #[inline(always)]
+            fn pin_no(&self) -> u8 {
+                self.no
+            }
+            #[inline(always)]
+            fn pin_mask(&self) -> u32 {
+                1u32 << self.pin_no()
+            }
+            #[inline(always)]
+            fn change_mode<NewMode>(self) -> $PinType<NewMode> {
+                $PinType { _mode: PhantomData, no: self.no, gpio: self.gpio }
+            }
+        }
+
+        pin_common!($PinType, $group, $dirset, $dirclr, $pincfg, $outset, $outclr, $pinmux, $out);
+    };
+}
+
+macro_rules! pin_x {
+    (
+        $PinType:ident,
+        $PortType:ident,
+        $group:ident,
+        $dirset:ident,
+        $dirclr:ident,
+        $pincfg:ident,
+        $outset:ident,
+        $outclr:ident,
+        $pinmux:ident,
+        $out:ident
+    ) => {
+        /// Represents the IO pin with the matching name.
+        pub struct $PinType<MODE> {
+            no: u8,
+            _mode: PhantomData<MODE>,
+        }
+
+        impl<MODE> $PinType<MODE> {
+
+            #[inline(always)]
+            fn pin_no(&self) -> u8 {
+                self.no
+            }
+            #[inline(always)]
+            fn pin_mask(&self) -> u32 {
+                1u32 << self.pin_no()
+            }
+            #[inline(always)]
+            fn change_mode<NewMode>(self) -> $PinType<NewMode> {
+                $PinType { _mode: PhantomData, no: self.no }
+            }
+            pub fn downgrade(self) -> Pxx<MODE> {
+                Pxx { no: self.no, gpio: Gpio::$PortType, _mode: self._mode }
+            }
+        }
+
+        pin_common!($PinType, $group, $dirset, $dirclr, $pincfg, $outset, $outclr, $pinmux, $out);
+    };
+}
+
+macro_rules! port_pin {
+    (
+        $PinType:ident,
+        $PinTypeDown:ident,
         $pin_no:expr,
         $group:ident,
         $dirset:ident,
@@ -126,9 +199,49 @@ macro_rules! pin {
         $outset:ident,
         $outclr:ident,
         $pinmux:ident,
-        $out:ident,
-        $PinTypeDown:ident,
-        $($is_pin:expr),*
+        $out:ident
+    ) => {
+        /// Represents the IO pin with the matching name.
+        pub struct $PinType<MODE> {
+            _mode: PhantomData<MODE>,
+        }
+
+        impl<MODE> $PinType<MODE> {
+            #[inline(always)]
+            fn pin_no(&self) -> u8 {
+                $pin_no
+            }
+            #[inline(always)]
+            fn pin_mask(&self) -> u32 {
+                1u32 << $pin_no
+            }
+            #[inline(always)]
+            fn change_mode<NewMode>(self) -> $PinType<NewMode> {
+                $PinType { _mode: PhantomData }
+            }
+            pub fn downgrade(self) -> $PinTypeDown<MODE> {
+                $PinTypeDown { no: self.pin_no(), _mode: self._mode }
+            }
+        }
+
+        pin_common!($PinType, $group, $dirset, $dirclr, $pincfg, $outset, $outclr, $pinmux, $out);
+    };
+}
+
+// rustfmt wants to keep indenting the nested macro on each run,
+// so disable it for this whole block :-/
+#[rustfmt::skip]
+macro_rules! pin_common {
+    (
+        $PinType:ident,
+        $group:ident,
+        $dirset:ident,
+        $dirclr:ident,
+        $pincfg:ident,
+        $outset:ident,
+        $outclr:ident,
+        $pinmux:ident,
+        $out:ident
     ) => {
         // Helper for pmux peripheral function configuration
         macro_rules! function {
@@ -172,13 +285,6 @@ macro_rules! pin {
             };
         }
 
-        /// Represents the IO pin with the matching name.
-        pub struct $PinType<MODE> {
-            #[cfg(not(all($(feature = $is_pin,)*)))]
-            no: u8,
-            _mode: PhantomData<MODE>,
-        }
-
         function!(PfA, into_function_a, 0);
         function!(PfB, into_function_b, 1);
         function!(PfC, into_function_c, 2);
@@ -194,43 +300,6 @@ macro_rules! pin {
         function!(PfM, into_function_m, 12);
         function!(PfN, into_function_n, 13);
 
-        #[cfg(not(all($(feature = $is_pin,)*)))]
-        impl<MODE> $PinType<MODE> {
-
-            #[inline(always)]
-            fn pin_no(&self) -> u8 {
-                self.no
-            }
-            #[inline(always)]
-            fn pin_mask(&self) -> u32 {
-                1u32 << self.pin_no()
-            }
-            #[inline(always)]
-            fn change_mode<NewMode>(self) -> $PinType<NewMode> {
-                return $PinType { _mode: PhantomData, no: self.no };
-            }
-            pub fn downgrade(self) -> Pxx<MODE> {
-                Pxx { no: self.no, gpio: Gpio::$PinTypeDown, _mode: PhantomData }
-            }
-        }
-        #[cfg(all($(feature = $is_pin,)*))]
-        impl<MODE> $PinType<MODE> {
-            #[inline(always)]
-            fn pin_no(&self) -> u8 {
-                $pin_no
-            }
-            #[inline(always)]
-            fn pin_mask(&self) -> u32 {
-                1u32 << $pin_no
-            }
-            #[inline(always)]
-            fn change_mode<NewMode>(self) -> $PinType<NewMode> {
-                return $PinType { _mode: PhantomData };
-            }
-            pub fn downgrade(self) -> $PinTypeDown<MODE> {
-                $PinTypeDown { no: self.pin_no(), _mode: self._mode }
-            }
-        }
 
         impl<MODE> $PinType<MODE> {
             /// Configures the pin to operate as a floating input
@@ -621,34 +690,37 @@ impl GpioExt for PORT {
     }
 }
 
-pin!(Pax, pax, (), group0, dirset0, dirclr0,
-    pincfg0, outset0, outclr0, pmux0, out0, PortA, "");
-pin!(Pbx, pbx, (), group1, dirset1, dirclr1,
-    pincfg1, outset1, outclr1, pmux1, out1, PortB, "");
+pin_xx!(Pxx, group0, dirset0, dirclr0,
+    pincfg0, outset0, outclr0, pmux0, out0);
+
+pin_x!(Pax, PortA, group0, dirset0, dirclr0,
+    pincfg0, outset0, outclr0, pmux0, out0);
+pin_x!(Pbx, PortB, group1, dirset1, dirclr1,
+    pincfg1, outset1, outclr1, pmux1, out1);
 #[cfg(feature = "min-samd51n")]
-pin!(Pcx, pcx, (), group2, dirset2, dirclr2,
-    pincfg2, outset2, outclr2, pmux2, out2, PortC, "");
+pin_x!(Pcx, PortC, group2, dirset2, dirclr2,
+    pincfg2, outset2, outclr2, pmux2, out2);
 #[cfg(feature = "min-samd51p")]
-pin!(Pdx, pdx, (), group3, dirset3, dirclr3,
-    pincfg3, outset3, outclr3, pmux3, out3, PortD, "");
+pin_x!(Pdx, PortD, group3, dirset3, dirclr3,
+    pincfg3, outset3, outclr3, pmux3, out3);
 
 $(
-    pin!($PinTypeA, $pin_identA, $pin_noA, group0, dirset0, dirclr0,
-        pincfg0, outset0, outclr0, pmux0, out0, Pax, );
+    port_pin!($PinTypeA, Pax, $pin_noA, group0, dirset0, dirclr0,
+        pincfg0, outset0, outclr0, pmux0, out0);
 )+
 $(
-    pin!($PinTypeB, $pin_identB, $pin_noB, group1, dirset1, dirclr1,
-        pincfg1, outset1, outclr1, pmux1, out1, Pbx, );
+    port_pin!($PinTypeB, Pbx, $pin_noB, group1, dirset1, dirclr1,
+        pincfg1, outset1, outclr1, pmux1, out1);
 )+
 $(
     #[cfg(feature = "min-samd51n")]
-    pin!($PinTypeC, $pin_identC, $pin_noC, group2, dirset2, dirclr2,
-        pincfg2, outset2, outclr2, pmux2, out2, Pcx, );
+    port_pin!($PinTypeC, Pcx, $pin_noC, group2, dirset2, dirclr2,
+        pincfg2, outset2, outclr2, pmux2, out2);
 )+
 $(
     #[cfg(feature = "min-samd51p")]
-    pin!($PinTypeD, $pin_identD, $pin_noD, group3, dirset3, dirclr3,
-        pincfg3, outset3, outclr3, pmux3, out3, Pdx, );
+    port_pin!($PinTypeD, Pcx, $pin_noD, group3, dirset3, dirclr3,
+        pincfg3, outset3, outclr3, pmux3, out3);
 )+
 
     };
