@@ -85,6 +85,61 @@ pub struct PfM;
 /// Peripheral Function N
 pub struct PfN;
 
+pub enum Gpio {
+    PortA,
+    PortB,
+    #[cfg(feature = "min-samd51n")]
+    PortC,
+    #[cfg(feature = "min-samd51p")]
+    PortD
+}
+pub struct Pax<MODE> {
+    no: u8,
+    _mode: PhantomData<MODE>,
+}
+pub struct Pbx<MODE> {
+    no: u8,
+    _mode: PhantomData<MODE>,
+}
+#[cfg(feature = "min-samd51n")]
+pub struct Pcx<MODE> {
+    no: u8,
+    _mode: PhantomData<MODE>,
+}
+#[cfg(feature = "min-samd51p")]
+pub struct Pdx<MODE> {
+    no: u8,
+    _mode: PhantomData<MODE>,
+}
+pub struct Pxx<MODE> {
+    gpio: Gpio,
+    no: u8,
+    _mode: PhantomData<MODE>,
+}
+
+impl<MODE> Pax<MODE> {
+    pub fn downgrade(self) -> Pxx<MODE> {
+        Pxx { no: self.no, gpio: Gpio::PortA, _mode: PhantomData }
+    }
+}
+impl<MODE> Pbx<MODE> {
+    pub fn downgrade(self) -> Pxx<MODE> {
+        Pxx { no: self.no, gpio: Gpio::PortB, _mode: PhantomData }
+    }
+}
+#[cfg(feature = "min-samd51n")]
+impl<MODE> Pcx<MODE> {
+    pub fn downgrade(self) -> Pxx<MODE> {
+        Pxx { no: self.no, gpio: Gpio::PortC, _mode: PhantomData }
+    }
+}
+#[cfg(feature = "min-samd51p")]
+impl<MODE> Pdx<MODE> {
+    pub fn downgrade(self) -> Pxx<MODE> {
+        Pxx { no: self.no, gpio: Gpio::PortD, _mode: PhantomData }
+    }
+}
+
 /// A trait that makes it easier to generically manage
 /// converting a pin from its current state into some
 /// other functional mode.  The configuration change
@@ -112,20 +167,23 @@ macro_rules! pin {
         $outset:ident,
         $outclr:ident,
         $pinmux:ident,
-        $out:ident
+        $out:ident,
+        $PinTypeDown:ident,
+        $($is_pin:expr),*
     ) => {
         // Helper for pmux peripheral function configuration
         macro_rules! function {
             ($FuncType:ty, $func_ident:ident, $variant:expr) => {
 
         impl<MODE> $PinType<MODE> {
+
             /// Configures the pin to operate with a peripheral
             pub fn $func_ident(
                 self,
                 port: &mut Port
             ) -> $PinType<$FuncType> {
-                port.$pinmux()[$pin_no >> 1].modify(|_, w| {
-                    if $pin_no & 1 == 1 {
+                port.$pinmux()[self.pin_no() >> 1].modify(|_, w| {
+                    if self.pin_no() & 1 == 1 {
                         // Odd-numbered pin
                         unsafe { w.pmuxo().bits($variant) }
                     } else {
@@ -134,7 +192,7 @@ macro_rules! pin {
                     }
                 });
 
-                port.$pincfg()[$pin_no].modify(|_, bits| {
+                port.$pincfg()[self.pin_no()].modify(|_, bits| {
                     bits.pmuxen().set_bit()
                 });
 
@@ -152,8 +210,18 @@ macro_rules! pin {
         }
 
         /// Represents the IO pin with the matching name.
+        // Only for specific pins
+        #[cfg(all($(feature = $is_pin,)*))]
         pub struct $PinType<MODE> {
             _mode: PhantomData<MODE>,
+        }
+
+        // Only for specific pins
+        #[cfg(all($(feature = $is_pin,)*))]
+        impl<MODE> $PinType<MODE> {
+            pub fn downgrade(self) -> $PinTypeDown<MODE> {
+                $PinTypeDown { no: self.pin_no() }
+            }
         }
 
         function!(PfA, into_function_a, 0);
@@ -173,14 +241,25 @@ macro_rules! pin {
 
         impl<MODE> $PinType<MODE> {
 
+            #[cfg(not(all($(feature = $is_pin,)*)))]
+            #[inline(always)]
+            fn pin_no(&self) -> u8 {
+                self.pin_no
+            }
+            #[cfg(all($(feature = $is_pin,)*))]
+            #[inline(always)]
+            fn pin_no(&self) -> u8 {
+                $pin_no
+            }
+
             /// Configures the pin to operate as a floating input
             pub fn into_floating_input(self, port: &mut Port) -> $PinType<Input<Floating>> {
                 port.$dirclr().write(|bits| unsafe {
-                    bits.bits(1 << $pin_no);
+                    bits.bits(1 << self.pin_no());
                     bits
                 });
 
-                port.$pincfg()[$pin_no].write(|bits| {
+                port.$pincfg()[self.pin_no()].write(|bits| {
                     bits.pmuxen().clear_bit();
                     bits.inen().set_bit();
                     bits.pullen().clear_bit();
@@ -194,11 +273,11 @@ macro_rules! pin {
             /// Configures the pin to operate as a pulled down input pin
             pub fn into_pull_down_input(self, port: &mut Port) -> $PinType<Input<PullDown>> {
                 port.$dirclr().write(|bits| unsafe {
-                    bits.bits(1 << $pin_no);
+                    bits.bits(1 << self.pin_no());
                     bits
                 });
 
-                port.$pincfg()[$pin_no].write(|bits| {
+                port.$pincfg()[self.pin_no()].write(|bits| {
                     bits.pmuxen().clear_bit();
                     bits.inen().set_bit();
                     bits.pullen().set_bit();
@@ -208,7 +287,7 @@ macro_rules! pin {
 
                 // Pull down
                 port.$outclr().write(|bits| unsafe {
-                    bits.bits(1 << $pin_no);
+                    bits.bits(1 << self.pin_no());
                     bits
                 });
 
@@ -218,11 +297,11 @@ macro_rules! pin {
             /// Configures the pin to operate as a pulled up input pin
             pub fn into_pull_up_input(self, port: &mut Port) -> $PinType<Input<PullUp>> {
                 port.$dirclr().write(|bits| unsafe {
-                    bits.bits(1 << $pin_no);
+                    bits.bits(1 << self.pin_no());
                     bits
                 });
 
-                port.$pincfg()[$pin_no].write(|bits| {
+                port.$pincfg()[self.pin_no()].write(|bits| {
                     bits.pmuxen().clear_bit();
                     bits.inen().set_bit();
                     bits.pullen().set_bit();
@@ -232,7 +311,7 @@ macro_rules! pin {
 
                 // Pull up
                 port.$outset().write(|bits| unsafe {
-                    bits.bits(1 << $pin_no);
+                    bits.bits(1 << self.pin_no());
                     bits
                 });
 
@@ -242,11 +321,11 @@ macro_rules! pin {
             /// Configures the pin to operate as an open drain output
             pub fn into_open_drain_output(self, port: &mut Port) -> $PinType<Output<OpenDrain>> {
                 port.$dirset().write(|bits| unsafe {
-                    bits.bits(1 << $pin_no);
+                    bits.bits(1 << self.pin_no());
                     bits
                 });
 
-                port.$pincfg()[$pin_no].write(|bits| {
+                port.$pincfg()[self.pin_no()].write(|bits| {
                     bits.pmuxen().clear_bit();
                     bits.inen().clear_bit();
                     bits.pullen().clear_bit();
@@ -260,11 +339,11 @@ macro_rules! pin {
             /// Configures the pin to operate as an open drain output which can be read
             pub fn into_readable_open_drain_output(self, port: &mut Port) -> $PinType<Output<ReadableOpenDrain>> {
                 port.$dirset().write(|bits| unsafe {
-                    bits.bits(1 << $pin_no);
+                    bits.bits(1 << self.pin_no());
                     bits
                 });
 
-                port.$pincfg()[$pin_no].write(|bits| {
+                port.$pincfg()[self.pin_no()].write(|bits| {
                     bits.pmuxen().clear_bit();
                     bits.inen().set_bit();
                     bits.pullen().clear_bit();
@@ -278,11 +357,11 @@ macro_rules! pin {
             /// Configures the pin to operate as a push-pull output
             pub fn into_push_pull_output(self, port: &mut Port) -> $PinType<Output<PushPull>> {
                 port.$dirset().write(|bits| unsafe {
-                    bits.bits(1 << $pin_no);
+                    bits.bits(1 << self.pin_no());
                     bits
                 });
 
-                port.$pincfg()[$pin_no].write(|bits| {
+                port.$pincfg()[self.pin_no()].write(|bits| {
                     bits.pmuxen().clear_bit();
                     bits.inen().set_bit();
                     bits.pullen().clear_bit();
@@ -297,7 +376,7 @@ macro_rules! pin {
         impl $PinType<Output<OpenDrain>> {
             /// Control state of the internal pull up
             pub fn internal_pull_up(&mut self, port: &mut Port, on: bool) {
-                port.$pincfg()[$pin_no].write(|bits| {
+                port.$pincfg()[self.pin_no()].write(|bits| {
                     if on {
                         bits.pullen().set_bit();
                     } else {
@@ -318,7 +397,7 @@ macro_rules! pin {
             fn toggle_impl(&mut self) {
                 unsafe {
                     (*PORT::ptr()).$group.outtgl.write(|bits| {
-                        bits.bits(1 << $pin_no);
+                        bits.bits(1 << self.pin_no());
                         bits
                     });
                 }
@@ -343,11 +422,11 @@ macro_rules! pin {
             type Error = ();
 
             fn is_high(&self) -> Result<bool, Self::Error> {
-                Ok(unsafe { (((*PORT::ptr()).$group.in_.read().bits()) & (1 << $pin_no)) != 0 })
+                Ok(unsafe { (((*PORT::ptr()).$group.in_.read().bits()) & (1 << self.pin_no())) != 0 })
             }
 
             fn is_low(&self) -> Result<bool, Self::Error> {
-                Ok(unsafe { (((*PORT::ptr()).$group.in_.read().bits()) & (1 << $pin_no)) == 0 })
+                Ok(unsafe { (((*PORT::ptr()).$group.in_.read().bits()) & (1 << self.pin_no())) == 0 })
             }
         }
 
@@ -357,22 +436,22 @@ macro_rules! pin {
             type Error = ();
 
             fn is_high(&self) -> Result<bool, Self::Error> {
-                Ok(unsafe { (((*PORT::ptr()).$group.in_.read().bits()) & (1 << $pin_no)) != 0 })
+                Ok(unsafe { (((*PORT::ptr()).$group.in_.read().bits()) & (1 << self.pin_no())) != 0 })
             }
 
             fn is_low(&self) -> Result<bool, Self::Error> {
-                Ok(unsafe { (((*PORT::ptr()).$group.in_.read().bits()) & (1 << $pin_no)) == 0 })
+                Ok(unsafe { (((*PORT::ptr()).$group.in_.read().bits()) & (1 << self.pin_no())) == 0 })
             }
         }
 
         #[cfg(feature = "unproven")]
         impl<MODE> StatefulOutputPin for $PinType<Output<MODE>> {
             fn is_set_high(&self) -> Result<bool, Self::Error> {
-                Ok(unsafe { (((*PORT::ptr()).$group.out.read().bits()) & (1 << $pin_no)) != 0 })
+                Ok(unsafe { (((*PORT::ptr()).$group.out.read().bits()) & (1 << self.pin_no())) != 0 })
             }
 
             fn is_set_low(&self) -> Result<bool, Self::Error> {
-                Ok(unsafe { (((*PORT::ptr()).$group.out.read().bits()) & (1 << $pin_no)) == 0 })
+                Ok(unsafe { (((*PORT::ptr()).$group.out.read().bits()) & (1 << self.pin_no())) == 0 })
             }
         }
 
@@ -383,7 +462,7 @@ macro_rules! pin {
             fn set_high(&mut self) -> Result<(), Self::Error> {
                 unsafe {
                     (*PORT::ptr()).$group.outset.write(|bits| {
-                        bits.bits(1 << $pin_no);
+                        bits.bits(1 << self.pin_no());
                         bits
                     });
                 }
@@ -394,7 +473,7 @@ macro_rules! pin {
             fn set_low(&mut self) -> Result<(), Self::Error> {
                 unsafe {
                     (*PORT::ptr()).$group.outclr.write(|bits| {
-                        bits.bits(1 << $pin_no);
+                        bits.bits(1 << self.pin_no());
                         bits
                     });
                 }
@@ -561,23 +640,34 @@ impl GpioExt for PORT {
     }
 }
 
+pin!(Pax, pax, (), group0, dirset0, dirclr0,
+    pincfg0, outset0, outclr0, pmux0, out0, Pxx, "");
+pin!(Pbx, pbx, (), group1, dirset1, dirclr1,
+    pincfg1, outset1, outclr1, pmux1, out1, Pxx, "");
+#[cfg(feature = "min-samd51n")]
+pin!(Pcx, pcx, (), group2, dirset2, dirclr2,
+    pincfg2, outset2, outclr2, pmux2, out2, Pxx, "");
+#[cfg(feature = "min-samd51p")]
+pin!(Pdx, pdx, (), group3, dirset3, dirclr3,
+    pincfg3, outset3, outclr3, pmux3, out3, Pxx, "");
+
 $(
     pin!($PinTypeA, $pin_identA, $pin_noA, group0, dirset0, dirclr0,
-        pincfg0, outset0, outclr0, pmux0, out0);
+        pincfg0, outset0, outclr0, pmux0, out0, Pax,);
 )+
 $(
     pin!($PinTypeB, $pin_identB, $pin_noB, group1, dirset1, dirclr1,
-        pincfg1, outset1, outclr1, pmux1, out1);
+        pincfg1, outset1, outclr1, pmux1, out1, Pbx,);
 )+
 $(
     #[cfg(feature = "min-samd51n")]
     pin!($PinTypeC, $pin_identC, $pin_noC, group2, dirset2, dirclr2,
-        pincfg2, outset2, outclr2, pmux2, out2);
+        pincfg2, outset2, outclr2, pmux2, out2, Pcx,);
 )+
 $(
     #[cfg(feature = "min-samd51p")]
     pin!($PinTypeD, $pin_identD, $pin_noD, group3, dirset3, dirclr3,
-        pincfg3, outset3, outclr3, pmux3, out3);
+        pincfg3, outset3, outclr3, pmux3, out3, Pdx,);
 )+
 
     };
