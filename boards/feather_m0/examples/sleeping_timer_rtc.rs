@@ -18,7 +18,7 @@ use hal::sleeping_delay::SleepingDelay;
 use core::sync::atomic;
 use cortex_m::peripheral::NVIC;
 
-/// Shared atomic between TC4 interrupt and sleeping_delay module
+/// Shared atomic between RTC interrupt and sleeping_delay module
 static INTERRUPT_FIRED: atomic::AtomicBool = atomic::AtomicBool::new(false);
 
 #[entry]
