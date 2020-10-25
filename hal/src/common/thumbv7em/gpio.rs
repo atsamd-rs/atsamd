@@ -93,51 +93,10 @@ pub enum Gpio {
     #[cfg(feature = "min-samd51p")]
     PortD
 }
-pub struct Pax<MODE> {
-    no: u8,
-    _mode: PhantomData<MODE>,
-}
-pub struct Pbx<MODE> {
-    no: u8,
-    _mode: PhantomData<MODE>,
-}
-#[cfg(feature = "min-samd51n")]
-pub struct Pcx<MODE> {
-    no: u8,
-    _mode: PhantomData<MODE>,
-}
-#[cfg(feature = "min-samd51p")]
-pub struct Pdx<MODE> {
-    no: u8,
-    _mode: PhantomData<MODE>,
-}
 pub struct Pxx<MODE> {
     gpio: Gpio,
     no: u8,
     _mode: PhantomData<MODE>,
-}
-
-impl<MODE> Pax<MODE> {
-    pub fn downgrade(self) -> Pxx<MODE> {
-        Pxx { no: self.no, gpio: Gpio::PortA, _mode: PhantomData }
-    }
-}
-impl<MODE> Pbx<MODE> {
-    pub fn downgrade(self) -> Pxx<MODE> {
-        Pxx { no: self.no, gpio: Gpio::PortB, _mode: PhantomData }
-    }
-}
-#[cfg(feature = "min-samd51n")]
-impl<MODE> Pcx<MODE> {
-    pub fn downgrade(self) -> Pxx<MODE> {
-        Pxx { no: self.no, gpio: Gpio::PortC, _mode: PhantomData }
-    }
-}
-#[cfg(feature = "min-samd51p")]
-impl<MODE> Pdx<MODE> {
-    pub fn downgrade(self) -> Pxx<MODE> {
-        Pxx { no: self.no, gpio: Gpio::PortD, _mode: PhantomData }
-    }
 }
 
 /// A trait that makes it easier to generically manage
@@ -214,18 +173,10 @@ macro_rules! pin {
         }
 
         /// Represents the IO pin with the matching name.
-        // Only for specific pins
-        #[cfg(all($(feature = $is_pin,)*))]
         pub struct $PinType<MODE> {
+            #[cfg(not(all($(feature = $is_pin,)*)))]
+            no: u8,
             _mode: PhantomData<MODE>,
-        }
-
-        // Only for specific pins
-        #[cfg(all($(feature = $is_pin,)*))]
-        impl<MODE> $PinType<MODE> {
-            pub fn downgrade(self) -> $PinTypeDown<MODE> {
-                $PinTypeDown { no: self.pin_no(), _mode: self._mode }
-            }
         }
 
         function!(PfA, into_function_a, 0);
@@ -243,39 +194,45 @@ macro_rules! pin {
         function!(PfM, into_function_m, 12);
         function!(PfN, into_function_n, 13);
 
+        #[cfg(not(all($(feature = $is_pin,)*)))]
         impl<MODE> $PinType<MODE> {
 
-            #[cfg(not(all($(feature = $is_pin,)*)))]
             #[inline(always)]
             fn pin_no(&self) -> u8 {
                 self.no
             }
-            #[cfg(not(all($(feature = $is_pin,)*)))]
             #[inline(always)]
             fn pin_mask(&self) -> u32 {
                 1u32 << self.pin_no()
             }
-            #[cfg(all($(feature = $is_pin,)*))]
-            #[inline(always)]
-            fn pin_no(&self) -> u8 {
-                $pin_no
-            }
-            #[cfg(all($(feature = $is_pin,)*))]
-            #[inline(always)]
-            fn pin_mask(&self) -> u32 {
-                1u32 << $pin_no
-            }
-            #[cfg(all($(feature = $is_pin,)*))]
-            #[inline(always)]
-            fn change_mode<NewMode>(self) -> $PinType<NewMode> {
-                return $PinType { _mode: PhantomData };
-            }
-            #[cfg(not(all($(feature = $is_pin,)*)))]
             #[inline(always)]
             fn change_mode<NewMode>(self) -> $PinType<NewMode> {
                 return $PinType { _mode: PhantomData, no: self.no };
             }
+            pub fn downgrade(self) -> Pxx<MODE> {
+                Pxx { no: self.no, gpio: Gpio::$PinTypeDown, _mode: PhantomData }
+            }
+        }
+        #[cfg(all($(feature = $is_pin,)*))]
+        impl<MODE> $PinType<MODE> {
+            #[inline(always)]
+            fn pin_no(&self) -> u8 {
+                $pin_no
+            }
+            #[inline(always)]
+            fn pin_mask(&self) -> u32 {
+                1u32 << $pin_no
+            }
+            #[inline(always)]
+            fn change_mode<NewMode>(self) -> $PinType<NewMode> {
+                return $PinType { _mode: PhantomData };
+            }
+            pub fn downgrade(self) -> $PinTypeDown<MODE> {
+                $PinTypeDown { no: self.pin_no(), _mode: self._mode }
+            }
+        }
 
+        impl<MODE> $PinType<MODE> {
             /// Configures the pin to operate as a floating input
             pub fn into_floating_input(self, port: &mut Port) -> $PinType<Input<Floating>> {
                 port.$dirclr().write(|bits| unsafe {
@@ -665,33 +622,33 @@ impl GpioExt for PORT {
 }
 
 pin!(Pax, pax, (), group0, dirset0, dirclr0,
-    pincfg0, outset0, outclr0, pmux0, out0, Pxx, "");
+    pincfg0, outset0, outclr0, pmux0, out0, PortA, "");
 pin!(Pbx, pbx, (), group1, dirset1, dirclr1,
-    pincfg1, outset1, outclr1, pmux1, out1, Pxx, "");
+    pincfg1, outset1, outclr1, pmux1, out1, PortB, "");
 #[cfg(feature = "min-samd51n")]
 pin!(Pcx, pcx, (), group2, dirset2, dirclr2,
-    pincfg2, outset2, outclr2, pmux2, out2, Pxx, "");
+    pincfg2, outset2, outclr2, pmux2, out2, PortC, "");
 #[cfg(feature = "min-samd51p")]
 pin!(Pdx, pdx, (), group3, dirset3, dirclr3,
-    pincfg3, outset3, outclr3, pmux3, out3, Pxx, "");
+    pincfg3, outset3, outclr3, pmux3, out3, PortD, "");
 
 $(
     pin!($PinTypeA, $pin_identA, $pin_noA, group0, dirset0, dirclr0,
-        pincfg0, outset0, outclr0, pmux0, out0, Pax,);
+        pincfg0, outset0, outclr0, pmux0, out0, Pax, );
 )+
 $(
     pin!($PinTypeB, $pin_identB, $pin_noB, group1, dirset1, dirclr1,
-        pincfg1, outset1, outclr1, pmux1, out1, Pbx,);
+        pincfg1, outset1, outclr1, pmux1, out1, Pbx, );
 )+
 $(
     #[cfg(feature = "min-samd51n")]
     pin!($PinTypeC, $pin_identC, $pin_noC, group2, dirset2, dirclr2,
-        pincfg2, outset2, outclr2, pmux2, out2, Pcx,);
+        pincfg2, outset2, outclr2, pmux2, out2, Pcx, );
 )+
 $(
     #[cfg(feature = "min-samd51p")]
     pin!($PinTypeD, $pin_identD, $pin_noD, group3, dirset3, dirclr3,
-        pincfg3, outset3, outclr3, pmux3, out3, Pdx,);
+        pincfg3, outset3, outclr3, pmux3, out3, Pdx, );
 )+
 
     };
