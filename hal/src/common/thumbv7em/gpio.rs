@@ -118,7 +118,7 @@ macro_rules! pin_xx {
         $pinmux:ident,
         $out:ident
     ) => {
-        /// Represents the IO pin with the matching name.
+        /// Represents an IO pin
         pub struct $PinType<MODE> {
             gpio: Gpio,
             no: u8,
@@ -158,7 +158,7 @@ macro_rules! pin_x {
         $pinmux:ident,
         $out:ident
     ) => {
-        /// Represents the IO pin with the matching name.
+        /// Represents an IO pin of the matching port.
         pub struct $PinType<MODE> {
             no: u8,
             _mode: PhantomData<MODE>,
@@ -269,10 +269,6 @@ macro_rules! pin_common {
                 });
 
                 self.change_mode()
-                // #[cfg(all($(feature = $is_pin,)*))]
-                // return $PinType { _mode: PhantomData };
-                // #[cfg(not(all($(feature = $is_pin,)*)))]
-                // return $PinType { _mode: PhantomData, no: self.no };
             }
         }
 
