@@ -52,6 +52,7 @@ impl State {
         divider: u16,
         src: ClockSource,
         improve_duty_cycle: bool,
+        run_standby: bool,
     ) {
         self.gclk.gendiv.write(|w| unsafe {
             w.id().bits(u8::from(gclk));
@@ -66,7 +67,8 @@ impl State {
             w.divsel().clear_bit();
             w.idc().bit(improve_duty_cycle);
             w.genen().set_bit();
-            w.oe().set_bit()
+            w.oe().set_bit();
+            w.runstdby().bit(run_standby)
         });
         self.wait_for_sync();
     }
@@ -138,9 +140,9 @@ impl GenericClockController {
 
         // Enable a 32khz source -> GCLK1
         if use_external_crystal {
-            state.set_gclk_divider_and_source(GCLK1, 1, XOSC32K, false);
+            state.set_gclk_divider_and_source(GCLK1, 1, XOSC32K, false, true);
         } else {
-            state.set_gclk_divider_and_source(GCLK1, 1, OSC32K, false);
+            state.set_gclk_divider_and_source(GCLK1, 1, OSC32K, false, true);
         }
 
         // Feed 32khz into the DFLL48
@@ -148,7 +150,7 @@ impl GenericClockController {
         // Enable the DFLL48
         configure_and_enable_dfll48m(sysctrl, use_external_crystal);
         // Feed DFLL48 into the main clock
-        state.set_gclk_divider_and_source(GCLK0, 1, DFLL48M, true);
+        state.set_gclk_divider_and_source(GCLK0, 1, DFLL48M, true, false);
         // We are now running at 48Mhz
 
         // Reset various dividers back to 1
@@ -268,13 +270,14 @@ impl GenericClockController {
         divider: u16,
         src: ClockSource,
         improve_duty_cycle: bool,
+        run_standby: bool,
     ) -> Option<GClock> {
         let idx = u8::from(gclk) as usize;
         if self.gclks[idx].0 != 0 {
             return None;
         }
         self.state
-            .set_gclk_divider_and_source(gclk, divider, src, improve_duty_cycle);
+            .set_gclk_divider_and_source(gclk, divider, src, improve_duty_cycle, run_standby);
         let freq: Hertz = match src {
             XOSC32K | OSC32K | OSCULP32K => OSC32K_FREQ,
             GCLKGEN1 => self.gclks[1],

@@ -42,6 +42,14 @@ fn main() -> ! {
     let timer = timer::TimerCounter::tc4_(tc45, peripherals.TC4, &mut peripherals.PM);
     let mut sleeping_delay = SleepingDelay::new(timer, &INTERRUPT_FIRED);
 
+    // Timer overflow interrupts are asynchronous, we can use IDLE1 sleep for max
+    //   power savings. The CPU, AHB and APB clock domains are stopped
+    // peripherals.PM.sleep.modify(|_, w| w.idle().apb());
+
+    // We can also use it in standby mode, if all of the clocks are configured to
+    //   opperate in standby, for even more power savings
+    core.SCB.set_sleepdeep();
+
     // enable interrupts
     unsafe {
         core.NVIC.set_priority(interrupt::TC4, 2);
@@ -51,12 +59,11 @@ fn main() -> ! {
     // Configure our red LED and blink forever, sleeping between!
     let mut pins = hal::Pins::new(peripherals.PORT);
     let mut red_led = pins.d13.into_open_drain_output(&mut pins.port);
-    red_led.set_high().unwrap();
     loop {
         red_led.set_high().unwrap();
-        sleeping_delay.delay_ms(5_000u32);
+        sleeping_delay.delay_ms(1_000u32);
         red_led.set_low().unwrap();
-        sleeping_delay.delay_ms(500u32);
+        sleeping_delay.delay_ms(100u32);
     }
 }
 

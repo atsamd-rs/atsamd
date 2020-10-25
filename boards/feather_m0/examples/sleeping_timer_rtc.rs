@@ -34,14 +34,17 @@ fn main() -> ! {
     );
 
     // Get a clock & make a sleeping delay object
-    let gclk0 = clocks.gclk0();
+    let gclk1 = clocks.gclk1();
     let timer = rtc_timer::RealTimeCounterTimer::new(
-        &gclk0,
+        &gclk1,
         &mut peripherals.PM,
         &mut clocks,
         peripherals.RTC.mode0(),
     );
     let mut sleeping_delay = SleepingDelay::new(timer, &INTERRUPT_FIRED);
+
+    // We can use the RTC in standby for maximum power savings
+    core.SCB.set_sleepdeep();
 
     // enable interrupts
     unsafe {
@@ -52,12 +55,11 @@ fn main() -> ! {
     // Configure our red LED and blink forever, sleeping between!
     let mut pins = hal::Pins::new(peripherals.PORT);
     let mut red_led = pins.d13.into_open_drain_output(&mut pins.port);
-    red_led.set_low().unwrap();
     loop {
         red_led.set_low().unwrap();
         sleeping_delay.delay_ms(1_000u32);
         red_led.set_high().unwrap();
-        sleeping_delay.delay_ms(250u32);
+        sleeping_delay.delay_ms(100u32);
     }
 }
 
