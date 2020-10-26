@@ -3,7 +3,7 @@
 use crate::target_device::{MCLK, RTC};
 
 /// Datetime represents an RTC clock/calendar value.
-#[derive(Debug,Clone,Copy)]
+#[derive(Debug, Clone, Copy)]
 pub struct Datetime {
     pub seconds: u8,
     pub minutes: u8,
@@ -17,14 +17,14 @@ type ClockR = crate::target_device::rtc::mode2::clock::R;
 
 impl From<ClockR> for Datetime {
     fn from(clock: ClockR) -> Datetime {
-        Datetime{
+        Datetime {
             seconds: clock.second().bits(),
             minutes: clock.minute().bits(),
             hours: clock.hour().bits(),
             day: clock.day().bits(),
             month: clock.month().bits(),
             year: clock.year().bits(),
-         }
+        }
     }
 }
 
@@ -66,12 +66,18 @@ impl RtcClock {
     /// Updates the current clock/calendar value.
     pub fn set_time(&mut self, time: Datetime) {
         self.rtc.mode2().clock.write(|w| unsafe {
-            w.second().bits(time.seconds)
-             .minute().bits(time.minutes)
-             .hour().bits(time.hours)
-             .day().bits(time.day)
-             .month().bits(time.month)
-             .year().bits(time.year)
+            w.second()
+                .bits(time.seconds)
+                .minute()
+                .bits(time.minutes)
+                .hour()
+                .bits(time.hours)
+                .day()
+                .bits(time.day)
+                .month()
+                .bits(time.month)
+                .year()
+                .bits(time.year)
         });
 
         while self.rtc.mode2().syncbusy.read().clock().bit_is_set() {

@@ -1,8 +1,14 @@
 //! Place a series of bitmap image on the screen from the sd card.
 //! Install Imagemagick and convert 3 pngs from https://rustacean.net/ to centered 86x64 size .raw bytes (where 11008 is 86x64x2)
-//! convert -resize 86x64^ -gravity center -extent 86x64 -background black rustacean-orig-noshadow.png -flip -type truecolor -define bmp:subtype=RGB565 -depth 16 -strip ferris.bmp && tail -c 11008 ferris.bmp > ferris.raw
-//! convert -resize 86x64^ -gravity center -extent 86x64 -background black rustacean-flat-gesture.png -flip -type truecolor -define bmp:subtype=RGB565 -depth 16 -strip ferris1.bmp && tail -c 11008 ferris1.bmp > ferris1.raw
-//! convert -resize 86x64^ -gravity center -extent 86x64 -background black rustacean-flat-happy.png -flip -type truecolor -define bmp:subtype=RGB565 -depth 16 -strip ferris2.bmp && tail -c 11008 ferris2.bmp > ferris2.raw
+//! convert -resize 86x64^ -gravity center -extent 86x64 -background black
+//! rustacean-orig-noshadow.png -flip -type truecolor -define bmp:subtype=RGB565
+//! -depth 16 -strip ferris.bmp && tail -c 11008 ferris.bmp > ferris.raw convert
+//! -resize 86x64^ -gravity center -extent 86x64 -background black
+//! rustacean-flat-gesture.png -flip -type truecolor -define bmp:subtype=RGB565
+//! -depth 16 -strip ferris1.bmp && tail -c 11008 ferris1.bmp > ferris1.raw
+//! convert -resize 86x64^ -gravity center -extent 86x64 -background black
+//! rustacean-flat-happy.png -flip -type truecolor -define bmp:subtype=RGB565
+//! -depth 16 -strip ferris2.bmp && tail -c 11008 ferris2.bmp > ferris2.raw
 //! cp *.raw /Volumes/SDCARD/
 
 #![no_std]

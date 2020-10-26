@@ -27,7 +27,6 @@ use hal::usb::usb_device::bus::UsbBusAllocator;
 #[cfg(feature = "usb")]
 pub use hal::usb::UsbBus;
 
-
 /// Convenience for setting up the externally labelled SPI.
 /// This powers up SERCOM4 and configures it for use as an
 /// SPI Master in SPI Mode 0.

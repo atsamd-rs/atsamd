@@ -19,22 +19,24 @@ fn main() -> ! {
         &mut peripherals.SYSCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = hal::Pins::new(peripherals.PORT);    
+    let mut pins = hal::Pins::new(peripherals.PORT);
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
-    let mut uart = hal::uart(&mut clocks,
-                         9600.hz(), 
-                         peripherals.SERCOM5,
-                         &mut peripherals.PM,
-                         pins.rx,
-                         pins.tx,
-                         &mut pins.port);
-                         
-    loop {                      
+    let mut uart = hal::uart(
+        &mut clocks,
+        9600.hz(),
+        peripherals.SERCOM5,
+        &mut peripherals.PM,
+        pins.rx,
+        pins.tx,
+        &mut pins.port,
+    );
+
+    loop {
         // print ASCII characters from ! to ~
         for ch in 33..127 {
             uart.write(ch).unwrap();
             delay.delay_ms(500u16);
-            }        
         }
-  }
+    }
+}

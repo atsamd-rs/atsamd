@@ -5,7 +5,12 @@ use crate::time::{Hertz, U32Ext};
 #[cfg(any(feature = "samd11", feature = "samd21"))]
 use crate::target_device::sercom0::SPI;
 
-#[cfg(any(feature = "samd51", feature = "same51", feature = "same53", feature = "same54"))]
+#[cfg(any(
+    feature = "samd51",
+    feature = "same51",
+    feature = "same53",
+    feature = "same54"
+))]
 use crate::target_device::sercom0::SPIM as SPI;
 
 pub trait CommonSpi {

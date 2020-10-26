@@ -3,17 +3,17 @@
 
 extern crate cortex_m;
 extern crate cortex_m_semihosting;
-extern crate pfza_proto1 as hal;
 #[cfg(not(feature = "use_semihosting"))]
 extern crate panic_halt;
 #[cfg(feature = "use_semihosting")]
 extern crate panic_semihosting;
+extern crate pfza_proto1 as hal;
 
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
-use hal::prelude::*;
 use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
+use hal::prelude::*;
 
 #[entry]
 fn main() -> ! {

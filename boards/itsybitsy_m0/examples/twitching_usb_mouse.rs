@@ -1,27 +1,27 @@
 #![no_std]
 #![no_main]
 
+extern crate cortex_m;
 extern crate itsybitsy_m0 as hal;
 extern crate panic_halt;
-extern crate usbd_hid;
 extern crate usb_device;
-extern crate cortex_m;
+extern crate usbd_hid;
 
 use hal::clock::GenericClockController;
-use hal::prelude::*;
 use hal::entry;
 use hal::pac::{interrupt, CorePeripherals, Peripherals};
+use hal::prelude::*;
 
 use hal::usb::UsbBus;
 use usb_device::bus::UsbBusAllocator;
 use usb_device::prelude::*;
-use usbd_hid::hid_class::{HIDClass};
-use usbd_hid::descriptor::MouseReport;
 use usbd_hid::descriptor::generator_prelude::*;
+use usbd_hid::descriptor::MouseReport;
+use usbd_hid::hid_class::HIDClass;
 
 use cortex_m::asm::delay as cycle_delay;
-use cortex_m::peripheral::NVIC;
 use cortex_m::interrupt::free as disable_interrupts;
+use cortex_m::peripheral::NVIC;
 
 #[entry]
 fn main() -> ! {
@@ -68,20 +68,26 @@ fn main() -> ! {
 
     loop {
         cycle_delay(25 * 1024 * 1024);
-        push_mouse_movement(MouseReport{x: 0, y: 4, buttons: 0}).ok().unwrap_or(0);
+        push_mouse_movement(MouseReport {
+            x: 0,
+            y: 4,
+            buttons: 0,
+        })
+        .ok()
+        .unwrap_or(0);
         cycle_delay(25 * 1024 * 1024);
-        push_mouse_movement(MouseReport{x: 0, y: -4, buttons: 0}).ok().unwrap_or(0);
+        push_mouse_movement(MouseReport {
+            x: 0,
+            y: -4,
+            buttons: 0,
+        })
+        .ok()
+        .unwrap_or(0);
     }
 }
 
 fn push_mouse_movement(report: MouseReport) -> Result<usize, usb_device::UsbError> {
-    disable_interrupts(|_| {
-        unsafe {
-            USB_HID.as_mut().map(|hid| {
-                hid.push_input(&report)
-            })
-        }
-    }).unwrap()
+    disable_interrupts(|_| unsafe { USB_HID.as_mut().map(|hid| hid.push_input(&report)) }).unwrap()
 }
 
 static mut USB_ALLOCATOR: Option<UsbBusAllocator<UsbBus>> = None;

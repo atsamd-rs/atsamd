@@ -7,8 +7,8 @@ extern crate panic_halt;
 
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
-use hal::prelude::*;
 use hal::pac::{CorePeripherals, Peripherals};
+use hal::prelude::*;
 
 use cortex_m_rt::entry;
 

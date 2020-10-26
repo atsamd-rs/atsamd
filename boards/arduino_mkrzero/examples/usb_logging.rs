@@ -9,9 +9,9 @@ extern crate usbd_serial;
 
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
-use hal::prelude::*;
 use hal::entry;
 use hal::pac::{interrupt, CorePeripherals, Peripherals};
+use hal::prelude::*;
 
 use hal::usb::UsbBus;
 use usb_device::bus::UsbBusAllocator;

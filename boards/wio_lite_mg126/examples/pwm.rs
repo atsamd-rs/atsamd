@@ -1,14 +1,14 @@
 #![no_std]
 #![no_main]
 
+extern crate cortex_m_rt;
 extern crate panic_halt;
 extern crate wio_lite_mg126 as hal;
-extern crate cortex_m_rt;
 
 use hal::clock::GenericClockController;
-use hal::pac::{Peripherals, CorePeripherals};
-use hal::prelude::*;
 use hal::delay::Delay;
+use hal::pac::{CorePeripherals, Peripherals};
+use hal::prelude::*;
 use hal::pwm::{Channel, Pwm1};
 
 use cortex_m_rt::entry;

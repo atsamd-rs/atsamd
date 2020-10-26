@@ -3,19 +3,19 @@
 
 extern crate cortex_m;
 extern crate cortex_m_semihosting;
-extern crate wio_lite_mg126 as hal;
+extern crate embedded_hal;
 #[cfg(not(feature = "use_semihosting"))]
 extern crate panic_halt;
 #[cfg(feature = "use_semihosting")]
 extern crate panic_semihosting;
-extern crate embedded_hal;
+extern crate wio_lite_mg126 as hal;
 
+use cortex_m_semihosting::hprintln;
+use hal::adc::Adc;
 use hal::clock::GenericClockController;
-use hal::prelude::*;
 use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
-use hal::adc::Adc;
-use cortex_m_semihosting::hprintln;
+use hal::prelude::*;
 
 #[entry]
 fn main() -> ! {

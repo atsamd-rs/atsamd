@@ -11,11 +11,11 @@ pub use cortex_m_rt::entry;
 use hal::prelude::*;
 use hal::*;
 
-pub use hal::target_device as pac;
 pub use hal::common::*;
 pub use hal::samd51::*;
+pub use hal::target_device as pac;
 
-use gpio::{Floating, Input, Port, PfC};
+use gpio::{Floating, Input, PfC, Port};
 use hal::clock::GenericClockController;
 use hal::sercom::{I2CMaster5, PadPin, SPIMaster2, UART3};
 use hal::time::Hertz;
@@ -54,7 +54,7 @@ define_pins!(
     pin d1 = a22,
     /// Pin 2
     pin d2 = b17,
-    /// Pin 3 
+    /// Pin 3
     pin d3 = b16,
     /// Pin 4
     pin d4 = b13,
@@ -123,10 +123,10 @@ pub fn spi_master<F: Into<Hertz>>(
     miso: gpio::Pa14<Input<Floating>>,
     port: &mut Port,
 ) -> SPIMaster2<
-        hal::sercom::Sercom2Pad2<gpio::Pa14<gpio::PfC>>,
-        hal::sercom::Sercom2Pad0<gpio::Pa12<gpio::PfC>>,
-        hal::sercom::Sercom2Pad1<gpio::Pa13<gpio::PfC>>
-    > {
+    hal::sercom::Sercom2Pad2<gpio::Pa14<gpio::PfC>>,
+    hal::sercom::Sercom2Pad0<gpio::Pa12<gpio::PfC>>,
+    hal::sercom::Sercom2Pad1<gpio::Pa13<gpio::PfC>>,
+> {
     let gclk0 = clocks.gclk0();
     SPIMaster2::new(
         &clocks.sercom2_core(&gclk0).unwrap(),
@@ -152,9 +152,9 @@ pub fn i2c_master<F: Into<Hertz>>(
     scl: gpio::Pb3<Input<Floating>>,
     port: &mut Port,
 ) -> I2CMaster5<
-        hal::sercom::Sercom5Pad0<gpio::Pb2<gpio::PfD>>,
-        hal::sercom::Sercom5Pad1<gpio::Pb3<gpio::PfD>>,
-    > {
+    hal::sercom::Sercom5Pad0<gpio::Pb2<gpio::PfD>>,
+    hal::sercom::Sercom5Pad1<gpio::Pb3<gpio::PfD>>,
+> {
     let gclk0 = clocks.gclk0();
     I2CMaster5::new(
         &clocks.sercom5_core(&gclk0).unwrap(),
@@ -177,9 +177,11 @@ pub fn uart<F: Into<Hertz>>(
     d1: gpio::Pa22<Input<Floating>>,
     port: &mut Port,
 ) -> UART3<
-        hal::sercom::Sercom3Pad1<gpio::Pa23<PfC>>,
-        hal::sercom::Sercom3Pad0<gpio::Pa22<PfC>>, (), ()
-    > {
+    hal::sercom::Sercom3Pad1<gpio::Pa23<PfC>>,
+    hal::sercom::Sercom3Pad0<gpio::Pa22<PfC>>,
+    (),
+    (),
+> {
     let gclk0 = clocks.gclk0();
 
     UART3::new(

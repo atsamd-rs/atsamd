@@ -1,14 +1,14 @@
 #![no_std]
 #![no_main]
 
-extern crate panic_halt;
-extern crate feather_m0 as hal;
 extern crate cortex_m_rt;
+extern crate feather_m0 as hal;
+extern crate panic_halt;
 
 use hal::clock::GenericClockController;
-use hal::pac::{Peripherals, CorePeripherals};
-use hal::prelude::*;
 use hal::delay::Delay;
+use hal::pac::{CorePeripherals, Peripherals};
+use hal::prelude::*;
 use hal::pwm::Pwm3;
 
 use cortex_m_rt::entry;

@@ -14,12 +14,12 @@ extern crate nb;
 
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
-use hal::prelude::*;
 use hal::entry;
+use hal::pac::gclk::genctrl::SRC_A;
+use hal::pac::gclk::pchctrl::GEN_A;
 use hal::pac::{CorePeripherals, Peripherals};
+use hal::prelude::*;
 use hal::sercom::{PadPin, Sercom3Pad0, Sercom3Pad1, UART3};
-use hal::pac::gclk::pchctrl::{GEN_A};
-use hal::pac::gclk::genctrl::{SRC_A};
 
 #[entry]
 fn main() -> ! {
@@ -33,7 +33,9 @@ fn main() -> ! {
         &mut peripherals.NVMCTRL,
     );
     clocks.configure_gclk_divider_and_source(GEN_A::GCLK2, 1, SRC_A::DFLL, false);
-    let gclk2 = clocks.get_gclk(GEN_A::GCLK2).expect("Could not get clock 2");
+    let gclk2 = clocks
+        .get_gclk(GEN_A::GCLK2)
+        .expect("Could not get clock 2");
 
     let mut pins = hal::Pins::new(peripherals.PORT);
     let mut delay = Delay::new(core.SYST, &mut clocks);
@@ -60,8 +62,8 @@ fn main() -> ! {
 
     loop {
         for byte in b"Hello, world!" {
-        // NOTE `block!` blocks until `uart.write()` completes and returns
-        // `Result<(), Error>`
+            // NOTE `block!` blocks until `uart.write()` completes and returns
+            // `Result<(), Error>`
             block!(uart.write(*byte)).unwrap();
         }
         delay.delay_ms(1000u16);

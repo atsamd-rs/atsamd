@@ -1,14 +1,14 @@
 #![no_std]
 #![no_main]
 
-extern crate sodaq_sara_aff as hal;
 extern crate panic_halt;
+extern crate sodaq_sara_aff as hal;
 
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
-use hal::prelude::*;
 use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
+use hal::prelude::*;
 
 #[entry]
 fn main() -> ! {

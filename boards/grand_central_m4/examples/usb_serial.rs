@@ -14,8 +14,8 @@
 //! Note leds may appear white during debug. Either build for release or add
 //! opt-level = 2 to profile.dev in Cargo.toml
 
-use panic_halt as _;
 use grand_central_m4 as hal;
+use panic_halt as _;
 
 use cortex_m::interrupt::free as disable_interrupts;
 use cortex_m::peripheral::NVIC;

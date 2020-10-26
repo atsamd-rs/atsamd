@@ -8,21 +8,21 @@ extern crate st7735_lcd;
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
 use hal::entry;
-use hal::time::{MegaHertz};
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
+use hal::time::MegaHertz;
 
 use embedded_graphics::{
     image::{Image, ImageRaw, ImageRawLE},
+    pixelcolor::Rgb565,
     prelude::*,
     primitives::rectangle::Rectangle,
-    pixelcolor::Rgb565,
     style::PrimitiveStyleBuilder,
 };
 
 use st7735_lcd::Orientation;
 
-const BOOT_DELAY_MS: u16 = 100; 
+const BOOT_DELAY_MS: u16 = 100;
 
 #[entry]
 fn main() -> ! {
@@ -34,22 +34,22 @@ fn main() -> ! {
         &mut peripherals.SYSCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = hal::Pins::new(peripherals.PORT);    
+    let mut pins = hal::Pins::new(peripherals.PORT);
     let mut delay = Delay::new(core.SYST, &mut clocks);
-    
+
     delay.delay_ms(BOOT_DELAY_MS);
-    
+
     let spi = hal::spi_master(
-        &mut clocks, 
-        MegaHertz(16), 
+        &mut clocks,
+        MegaHertz(16),
         peripherals.SERCOM1,
         &mut peripherals.PM,
         pins.led_sck,
         pins.mosi,
         pins.miso,
         &mut pins.port,
-        );
-    
+    );
+
     let dc = pins.d6.into_open_drain_output(&mut pins.port);
     let mut rst = pins.d9.into_open_drain_output(&mut pins.port);
 
@@ -57,21 +57,19 @@ fn main() -> ! {
 
     disp.init(&mut delay).unwrap();
     disp.set_orientation(&Orientation::Landscape).unwrap();
-    let style = PrimitiveStyleBuilder::new().fill_color(Rgb565::BLACK).build();
+    let style = PrimitiveStyleBuilder::new()
+        .fill_color(Rgb565::BLACK)
+        .build();
     let black_backdrop = Rectangle::new(Point::new(0, 0), Point::new(160, 128)).into_styled(style);
     black_backdrop.draw(&mut disp).unwrap();
-    
+
     disp.set_offset(0, 25);
 
     // draw ferris
-    let image_raw: ImageRawLE<Rgb565> = ImageRaw::new(include_bytes!("../assets/ferris.raw"), 86, 64);
+    let image_raw: ImageRawLE<Rgb565> =
+        ImageRaw::new(include_bytes!("../assets/ferris.raw"), 86, 64);
     let image: Image<_, Rgb565> = Image::new(&image_raw, Point::new(34, 8));
     image.draw(&mut disp).unwrap();
 
-    
-
-    loop {
-        
-        }
-
-    }
+    loop {}
+}

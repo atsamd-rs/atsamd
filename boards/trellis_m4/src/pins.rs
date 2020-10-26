@@ -1,6 +1,6 @@
 //! NeoTrellis M4 Express pins
 
-use super::{hal, target_device, pac::MCLK, pac::SERCOM2, pac::SERCOM4};
+use super::{hal, pac::MCLK, pac::SERCOM2, pac::SERCOM4, target_device};
 
 use hal::clock::*;
 use hal::define_pins;
@@ -245,10 +245,7 @@ impl STEMMA {
         sercom4: SERCOM4,
         mclk: &mut MCLK,
         port: &mut Port,
-    ) -> I2CMaster4<
-        Sercom4Pad0<Pb8<PfD>>,
-        Sercom4Pad1<Pb9<PfD>>,
-    > {
+    ) -> I2CMaster4<Sercom4Pad0<Pb8<PfD>>, Sercom4Pad1<Pb9<PfD>>> {
         let gclk0 = clocks.gclk0();
         I2CMaster4::new(
             &clocks.sercom4_core(&gclk0).unwrap(),

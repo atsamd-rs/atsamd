@@ -6,10 +6,10 @@ extern crate atsamd_hal;
 
 use hal::clock::{GenericClockController, Tcc0Tcc1Clock};
 use hal::delay::Delay;
-use hal::prelude::*;
 use hal::entry;
-use hal::pwm::{Pwm0, Channel};
 use hal::pac::{CorePeripherals, Peripherals};
+use hal::prelude::*;
+use hal::pwm::{Channel, Pwm0};
 
 #[entry]
 fn main() -> ! {
@@ -35,7 +35,7 @@ fn main() -> ! {
         &tcc0_tcc1_clock,
         1.khz(),
         peripherals.TCC0,
-        &mut peripherals.PM
+        &mut peripherals.PM,
     );
     let max_duty = pwm0.get_max_duty();
     pwm0.enable(Channel::_1);

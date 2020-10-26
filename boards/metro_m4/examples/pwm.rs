@@ -1,16 +1,16 @@
 #![no_std]
 #![no_main]
 
-extern crate panic_halt;
-extern crate metro_m4 as hal;
 extern crate cortex_m_rt;
+extern crate metro_m4 as hal;
+extern crate panic_halt;
 
-use hal::clock::GenericClockController;
-use hal::pac::{Peripherals, CorePeripherals};
-use hal::prelude::*;
-use hal::delay::Delay;
-use hal::pwm::Pwm2;
 use cortex_m_rt::entry;
+use hal::clock::GenericClockController;
+use hal::delay::Delay;
+use hal::pac::{CorePeripherals, Peripherals};
+use hal::prelude::*;
+use hal::pwm::Pwm2;
 
 #[entry]
 fn main() -> ! {

@@ -58,8 +58,8 @@
 //! (green)  SCL -> PA23 (SCL)
 //! ```
 //!
-//! Build this example with: `cargo build --example ssd1306_graphicsmode_128x64_i2c`
-//!
+//! Build this example with: `cargo build --example
+//! ssd1306_graphicsmode_128x64_i2c`
 
 extern crate embedded_graphics;
 extern crate feather_m0 as hal;

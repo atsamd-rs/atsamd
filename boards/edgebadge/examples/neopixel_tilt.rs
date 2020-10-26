@@ -1,4 +1,5 @@
-//! LIS3DH accelerometer example. Move the neopixel led by tilting left and right.
+//! LIS3DH accelerometer example. Move the neopixel led by tilting left and
+//! right.
 //!
 //! Note leds may appear white during debug. Either build for release or add
 //! opt-level = 2 to profile.dev in Cargo.toml
@@ -96,13 +97,15 @@ impl TiltState {
     }
 
     fn update(&mut self, value: i16) -> (usize, u8) {
-        //what about like.. momentum, more angle or longer its been at angle stops slower
-        //like.. steps larger so it gets easier. also on a bigger number tilt?
+        //what about like.. momentum, more angle or longer its been at angle stops
+        // slower like.. steps larger so it gets easier. also on a bigger number
+        // tilt?
 
         // naive solution.. threshold tilt
         // better.. delay filter?
 
-        // actually 2 thresholds, first you have to be tilted enough (gt / lt 1000) to be counted
+        // actually 2 thresholds, first you have to be tilted enough (gt / lt 1000) to
+        // be counted
         if value > 1000 {
             self.tilt += 1;
         } else if value < -1000 {
