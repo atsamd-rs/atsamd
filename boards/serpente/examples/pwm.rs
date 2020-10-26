@@ -1,15 +1,15 @@
 #![no_std]
 #![no_main]
 
-extern crate serpente as hal;
 extern crate panic_halt;
+extern crate serpente as hal;
 
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
-use hal::prelude::*;
-use hal::pwm::{Channel, Pwm0};
 use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
+use hal::prelude::*;
+use hal::pwm::{Channel, Pwm0};
 
 #[entry]
 fn main() -> ! {
@@ -57,12 +57,24 @@ pub struct RGB {
 fn wheel(mut wheel_pos: u8) -> RGB {
     wheel_pos = 255 - wheel_pos;
     if wheel_pos < 85 {
-        return RGB{r: 255 - wheel_pos * 3, g: 0, b: wheel_pos * 3};
+        return RGB {
+            r: 255 - wheel_pos * 3,
+            g: 0,
+            b: wheel_pos * 3,
+        };
     }
     if wheel_pos < 170 {
         wheel_pos -= 85;
-        return RGB{r: 0, g: wheel_pos * 3, b: 255 - wheel_pos * 3};
+        return RGB {
+            r: 0,
+            g: wheel_pos * 3,
+            b: 255 - wheel_pos * 3,
+        };
     }
     wheel_pos -= 170;
-    RGB{r: wheel_pos * 3, g: 255 - wheel_pos * 3, b: 0}
+    RGB {
+        r: wheel_pos * 3,
+        g: 255 - wheel_pos * 3,
+        b: 0,
+    }
 }

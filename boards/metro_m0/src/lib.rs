@@ -8,14 +8,14 @@ pub use cortex_m_rt::entry;
 use hal::prelude::*;
 use hal::*;
 
-pub use hal::target_device as pac;
 pub use hal::common::*;
 pub use hal::samd21::*;
+pub use hal::target_device as pac;
 
 use hal::clock::GenericClockController;
 #[cfg(feature = "usb")]
 use hal::gpio::IntoFunction;
-use hal::gpio::{Floating, Input, Port, PfC};
+use hal::gpio::{Floating, Input, PfC, Port};
 use hal::sercom::{I2CMaster3, PadPin, SPIMaster4, SPIMaster5, UART0};
 use hal::time::Hertz;
 
@@ -121,10 +121,10 @@ pub fn spi_master<F: Into<Hertz>>(
     miso: gpio::Pa12<Input<Floating>>,
     port: &mut Port,
 ) -> SPIMaster4<
-        hal::sercom::Sercom4Pad0<gpio::Pa12<gpio::PfD>>,
-        hal::sercom::Sercom4Pad2<gpio::Pb10<gpio::PfD>>,
-        hal::sercom::Sercom4Pad3<gpio::Pb11<gpio::PfD>>
-    > {
+    hal::sercom::Sercom4Pad0<gpio::Pa12<gpio::PfD>>,
+    hal::sercom::Sercom4Pad2<gpio::Pb10<gpio::PfD>>,
+    hal::sercom::Sercom4Pad3<gpio::Pb11<gpio::PfD>>,
+> {
     let gclk0 = clocks.gclk0();
     SPIMaster4::new(
         &clocks.sercom4_core(&gclk0).unwrap(),
@@ -151,12 +151,13 @@ pub fn flash_spi_master(
     miso: gpio::Pb3<Input<Floating>>,
     cs: gpio::Pa13<Input<Floating>>,
     port: &mut Port,
-) -> (hal::sercom::SPIMaster5<
+) -> (
+    hal::sercom::SPIMaster5<
         hal::sercom::Sercom5Pad1<hal::gpio::Pb3<hal::gpio::PfD>>,
         hal::sercom::Sercom5Pad2<hal::gpio::Pb22<hal::gpio::PfD>>,
-        hal::sercom::Sercom5Pad3<hal::gpio::Pb23<hal::gpio::PfD>>
+        hal::sercom::Sercom5Pad3<hal::gpio::Pb23<hal::gpio::PfD>>,
     >,
-    hal::gpio::Pa13<hal::gpio::Output<hal::gpio::PushPull>>
+    hal::gpio::Pa13<hal::gpio::Output<hal::gpio::PushPull>>,
 ) {
     let gclk0 = clocks.gclk0();
     let flash = SPIMaster5::new(
@@ -190,7 +191,10 @@ pub fn i2c_master<F: Into<Hertz>>(
     sda: gpio::Pa22<Input<Floating>>,
     scl: gpio::Pa23<Input<Floating>>,
     port: &mut Port,
-) -> hal::sercom::I2CMaster3<hal::sercom::Sercom3Pad0<gpio::Pa22<gpio::PfC>>, hal::sercom::Sercom3Pad1<gpio::Pa23<gpio::PfC>>> {
+) -> hal::sercom::I2CMaster3<
+    hal::sercom::Sercom3Pad0<gpio::Pa22<gpio::PfC>>,
+    hal::sercom::Sercom3Pad1<gpio::Pa23<gpio::PfC>>,
+> {
     let gclk0 = clocks.gclk0();
     I2CMaster3::new(
         &clocks.sercom3_core(&gclk0).unwrap(),

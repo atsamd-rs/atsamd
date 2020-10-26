@@ -44,15 +44,14 @@
 //!         GND -> CS (see note above about grounding 'CS' pin)
 //! ```
 //!
-//! Build this example with: `cargo build --example ssd1306_terminalmode_128x64_spi`
-//!
-
+//! Build this example with: `cargo build --example
+//! ssd1306_terminalmode_128x64_spi`
 
 #![no_std]
 #![no_main]
 
-extern crate feather_m0 as hal;
 extern crate embedded_graphics;
+extern crate feather_m0 as hal;
 extern crate ssd1306;
 
 // how to panic...
@@ -63,10 +62,10 @@ extern crate panic_semihosting;
 
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
-use hal::prelude::*;
-use hal::time::MegaHertz;
 use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
+use hal::prelude::*;
+use hal::time::MegaHertz;
 
 use ssd1306::prelude::*;
 use ssd1306::Builder;

@@ -10,9 +10,9 @@ pub use cortex_m_rt::entry;
 use hal::prelude::*;
 use hal::*;
 
-pub use hal::target_device as pac;
 pub use hal::common::*;
 pub use hal::samd21::*;
+pub use hal::target_device as pac;
 
 use gpio::{Floating, Input, PfD, Port};
 
@@ -80,21 +80,21 @@ define_pins!(
     /// chg_stat
     pin chg_stat = a4,
 
-    /// gps 
+    /// gps
     pin gps_tp = a7,
     pin gps_en = a28,
-	
-	// u-blox sara
+
+    // u-blox sara
     pin sara_enable = a27,
     pin sara_reset = b14,
     pin sara_tx_enable = b13,
     pin sara_status = b22,
-	pin sara_tx = a6,
-	pin sara_rx = a5,
+    pin sara_tx = a6,
+    pin sara_rx = a5,
 
-	/// i2c
-	pin sda = a16,
-	pin scl = a17,
+    /// i2c
+    pin sda = a16,
+    pin scl = a17,
     pin sda1 = a8,
     pin scl1 = a9,
 );
@@ -109,8 +109,12 @@ pub fn uart<F: Into<Hertz>>(
     rx: gpio::Pb31<Input<Floating>>,
     tx: gpio::Pb30<Input<Floating>>,
     port: &mut Port,
-) -> UART5<hal::sercom::Sercom5Pad1<gpio::Pb31<PfD>>, hal::sercom::Sercom5Pad0<gpio::Pb30<PfD>>, (), ()>
-{
+) -> UART5<
+    hal::sercom::Sercom5Pad1<gpio::Pb31<PfD>>,
+    hal::sercom::Sercom5Pad0<gpio::Pb30<PfD>>,
+    (),
+    (),
+> {
     let gclk0 = clocks.gclk0();
 
     UART5::new(

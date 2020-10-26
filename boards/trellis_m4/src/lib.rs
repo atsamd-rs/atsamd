@@ -13,25 +13,25 @@ use atsamd_hal as hal;
 
 use hal::*;
 
-pub use hal::target_device as pac;
 pub use hal::common::*;
 pub use hal::samd51::*;
+pub use hal::target_device as pac;
 
 #[cfg(feature = "rt")]
 pub use cortex_m_rt::entry;
 pub use pins::Pins;
 
-use gpio::Port;
 #[cfg(feature = "keypad-unproven")]
 use gpio::Input;
+use gpio::Port;
 use hal::clock::GenericClockController;
 use hal::sercom::{I2CMaster4, UART4};
 use hal::time::Hertz;
 
 #[cfg(feature = "keypad-unproven")]
-use hal::gpio::{OpenDrain, Output, PullUp};
-#[cfg(feature = "keypad-unproven")]
 use embedded_hal::digital::v1_compat::{OldInputPin, OldOutputPin};
+#[cfg(feature = "keypad-unproven")]
+use hal::gpio::{OpenDrain, Output, PullUp};
 #[cfg(feature = "keypad-unproven")]
 use keypad::{keypad_new, keypad_struct};
 

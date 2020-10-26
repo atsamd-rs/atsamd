@@ -10,11 +10,11 @@ pub use cortex_m_rt::entry;
 use hal::*;
 
 pub use crate::pins::Pins;
-pub use hal::target_device as pac;
 pub use hal::common::*;
 pub use hal::samd51::*;
+pub use hal::target_device as pac;
 
-use gpio::{Floating, Input, Port, PfC};
+use gpio::{Floating, Input, PfC, Port};
 use hal::clock::GenericClockController;
 use hal::sercom::{I2CMaster5, PadPin, SPIMaster2, UART4};
 use hal::time::Hertz;
@@ -40,10 +40,10 @@ pub fn spi_master<F: Into<Hertz>>(
     miso: gpio::Pa14<Input<Floating>>,
     port: &mut Port,
 ) -> SPIMaster2<
-        hal::sercom::Sercom2Pad2<gpio::Pa14<gpio::PfC>>,
-        hal::sercom::Sercom2Pad0<gpio::Pa12<gpio::PfC>>,
-        hal::sercom::Sercom2Pad1<gpio::Pa13<gpio::PfC>>,
-    > {
+    hal::sercom::Sercom2Pad2<gpio::Pa14<gpio::PfC>>,
+    hal::sercom::Sercom2Pad0<gpio::Pa12<gpio::PfC>>,
+    hal::sercom::Sercom2Pad1<gpio::Pa13<gpio::PfC>>,
+> {
     let gclk0 = clocks.gclk0();
     SPIMaster2::new(
         &clocks.sercom2_core(&gclk0).unwrap(),
@@ -69,9 +69,9 @@ pub fn i2c_master<F: Into<Hertz>>(
     scl: gpio::Pb3<Input<Floating>>,
     port: &mut Port,
 ) -> I2CMaster5<
-        hal::sercom::Sercom5Pad0<gpio::Pb2<gpio::PfD>>,
-        hal::sercom::Sercom5Pad1<gpio::Pb3<gpio::PfD>>
-    > {
+    hal::sercom::Sercom5Pad0<gpio::Pb2<gpio::PfD>>,
+    hal::sercom::Sercom5Pad1<gpio::Pb3<gpio::PfD>>,
+> {
     let gclk0 = clocks.gclk0();
     I2CMaster5::new(
         &clocks.sercom5_core(&gclk0).unwrap(),
@@ -93,9 +93,11 @@ pub fn esp_uart<F: Into<Hertz>>(
     esp_tx: gpio::Pb12<Input<Floating>>,
     port: &mut Port,
 ) -> UART4<
-        hal::sercom::Sercom4Pad1<gpio::Pb13<PfC>>,
-        hal::sercom::Sercom4Pad0<gpio::Pb12<PfC>>, (), ()
-    > {
+    hal::sercom::Sercom4Pad1<gpio::Pb13<PfC>>,
+    hal::sercom::Sercom4Pad0<gpio::Pb12<PfC>>,
+    (),
+    (),
+> {
     let gclk0 = clocks.gclk0();
 
     UART4::new(

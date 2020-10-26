@@ -10,9 +10,9 @@ pub use cortex_m_rt::entry;
 use hal::prelude::*;
 use hal::*;
 
-pub use hal::target_device as pac;
 pub use hal::common::*;
 pub use hal::samd21::*;
+pub use hal::target_device as pac;
 
 use gpio::{self, *};
 
@@ -22,9 +22,9 @@ use hal::sercom::{I2CMaster2, PadPin, UART0};
 use hal::time::Hertz;
 
 #[cfg(feature = "unproven")]
-use embedded_hal::timer::{CountDown, Periodic};
-#[cfg(feature = "unproven")]
 use apa102_spi::Apa102;
+#[cfg(feature = "unproven")]
+use embedded_hal::timer::{CountDown, Periodic};
 
 #[cfg(feature = "usb")]
 use hal::usb::usb_device::bus::UsbBusAllocator;
@@ -107,10 +107,8 @@ impl Pins {
     }
 }
 
-
 /// Sets of pins split apart by category
 pub struct Sets {
-
     /// Dotstar (RGB LED) pins
     pub dotstar: Dotstar,
 
@@ -143,7 +141,12 @@ impl Dotstar {
         timer: T,
         port: &mut Port,
     ) -> apa102_spi::Apa102<
-        bitbang_hal::spi::SPI<gpio::Pa14<Input<PullUp>>, gpio::Pa0<Output<PushPull>>, gpio::Pa1<Output<PushPull>>, T>,
+        bitbang_hal::spi::SPI<
+            gpio::Pa14<Input<PullUp>>,
+            gpio::Pa0<Output<PushPull>>,
+            gpio::Pa1<Output<PushPull>>,
+            T,
+        >,
     > {
         let di = self.di.into_push_pull_output(port);
         let ci = self.ci.into_push_pull_output(port);
@@ -195,10 +198,8 @@ pub fn i2c_master<F: Into<Hertz>>(
     sda: gpio::Pa8<Input<Floating>>,
     scl: gpio::Pa9<Input<Floating>>,
     port: &mut Port,
-) -> I2CMaster2<
-    hal::sercom::Sercom2Pad0<gpio::Pa8<PfD>>,
-    hal::sercom::Sercom2Pad1<gpio::Pa9<PfD>>,
-> {
+) -> I2CMaster2<hal::sercom::Sercom2Pad0<gpio::Pa8<PfD>>, hal::sercom::Sercom2Pad1<gpio::Pa9<PfD>>>
+{
     let gclk0 = clocks.gclk0();
 
     I2CMaster2::new(
@@ -225,8 +226,12 @@ impl UART {
         sercom0: pac::SERCOM0,
         pm: &mut pac::PM,
         port: &mut Port,
-    ) -> UART0<hal::sercom::Sercom0Pad3<gpio::Pa7<PfD>>, hal::sercom::Sercom0Pad2<gpio::Pa6<PfD>>, (), ()>
-    {
+    ) -> UART0<
+        hal::sercom::Sercom0Pad3<gpio::Pa7<PfD>>,
+        hal::sercom::Sercom0Pad2<gpio::Pa6<PfD>>,
+        (),
+        (),
+    > {
         let gclk0 = clocks.gclk0();
 
         UART0::new(
@@ -262,7 +267,6 @@ pub fn uart<F: Into<Hertz>>(
     )
 }
 
-
 /// USB pins
 pub struct USB {
     pub dm: gpio::Pa24<Input<Floating>>,
@@ -278,7 +282,6 @@ impl USB {
         pm: &mut pac::PM,
         port: &mut Port,
     ) -> UsbBusAllocator<UsbBus> {
-
         let gclk0 = clocks.gclk0();
         let usb_clock = &clocks.usb(&gclk0).unwrap();
 
@@ -301,7 +304,6 @@ pub fn usb_allocator(
     dp: gpio::Pa25<Input<Floating>>,
     port: &mut Port,
 ) -> UsbBusAllocator<UsbBus> {
-
     let gclk0 = clocks.gclk0();
     let usb_clock = &clocks.usb(&gclk0).unwrap();
 

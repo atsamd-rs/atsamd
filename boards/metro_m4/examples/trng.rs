@@ -1,20 +1,19 @@
 #![no_std]
 #![no_main]
 
-extern crate panic_semihosting;
-extern crate cortex_m_semihosting;
 extern crate cortex_m_rt;
-extern crate metro_m4 as hal;
+extern crate cortex_m_semihosting;
 extern crate embedded_hal;
+extern crate metro_m4 as hal;
+extern crate panic_semihosting;
 
 use cortex_m_semihosting::hprintln;
 
-use hal::prelude::*;
 use hal::clock::GenericClockController;
 use hal::entry;
-use hal::pac::{Peripherals, CorePeripherals};
+use hal::pac::{CorePeripherals, Peripherals};
+use hal::prelude::*;
 use hal::trng::Trng;
-
 
 #[entry]
 fn main() -> ! {
@@ -31,7 +30,7 @@ fn main() -> ! {
     let trng = Trng::new(&mut peripherals.MCLK, peripherals.TRNG);
 
     loop {
-        hprintln!("{}", trng.random_u32()).unwrap(); 
+        hprintln!("{}", trng.random_u32()).unwrap();
         delay.delay_ms(1000u16);
     }
 }

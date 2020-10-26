@@ -1,14 +1,14 @@
 #![no_std]
 #![no_main]
 
-extern crate serpente as hal;
 extern crate panic_halt;
+extern crate serpente as hal;
 
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
-use hal::prelude::*;
 use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
+use hal::prelude::*;
 
 #[entry]
 fn main() -> ! {

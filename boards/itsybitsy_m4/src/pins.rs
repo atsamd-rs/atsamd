@@ -269,7 +269,6 @@ pub struct USB {
     pub dp: Pa25<Input<Floating>>,
 }
 
-
 impl USB {
     #[cfg(feature = "usb")]
     pub fn usb_allocator(

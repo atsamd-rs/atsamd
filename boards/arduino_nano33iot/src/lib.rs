@@ -13,15 +13,14 @@ pub extern crate panic_halt;
 use hal::prelude::*;
 use hal::*;
 
-use gpio::{Floating, Input, Port, PfC, PfD};
+use gpio::{Floating, Input, PfC, PfD, Port};
 use hal::clock::GenericClockController;
-use hal::sercom::{I2CMaster4, PadPin, UART5, SPIMaster1};
+use hal::sercom::{I2CMaster4, PadPin, SPIMaster1, UART5};
 use hal::time::Hertz;
 
 pub use hal::common::*;
 pub use hal::samd21::*;
 pub use hal::target_device as pac;
-
 
 #[cfg(feature = "usb")]
 use hal::clock::GenericClockController;
@@ -151,9 +150,7 @@ pub fn usb_allocator(
     ))
 }
 
-
 /// EXPERIMENTAL FEATURE STARTS HERE
-
 
 /// Convenience for setting up the labelled SDA, SCL pins to
 /// operate as an I2C master running at the specified frequency.
@@ -165,10 +162,8 @@ pub fn i2c_master<F: Into<Hertz>>(
     sda: gpio::Pb8<Input<Floating>>,
     scl: gpio::Pb9<Input<Floating>>,
     port: &mut Port,
-) -> I2CMaster4<
-    hal::sercom::Sercom4Pad0<gpio::Pb8<PfD>>,
-    hal::sercom::Sercom4Pad1<gpio::Pb9<PfD>>,
-> {
+) -> I2CMaster4<hal::sercom::Sercom4Pad0<gpio::Pb8<PfD>>, hal::sercom::Sercom4Pad1<gpio::Pb9<PfD>>>
+{
     let gclk0 = clocks.gclk0();
     I2CMaster4::new(
         &clocks.sercom4_core(&gclk0).unwrap(),
@@ -180,7 +175,6 @@ pub fn i2c_master<F: Into<Hertz>>(
     )
 }
 
-
 /// Convenience for setting up the labelled RX, TX pins to
 /// operate as a UART device running at the specified baud.
 pub fn uart<F: Into<Hertz>>(
@@ -188,8 +182,8 @@ pub fn uart<F: Into<Hertz>>(
     baud: F,
     sercom5: pac::SERCOM5,
     pm: &mut pac::PM,
-    rx: gpio::Pb23<Input<Floating>>, 
-    tx: gpio::Pb22<Input<Floating>>, 
+    rx: gpio::Pb23<Input<Floating>>,
+    tx: gpio::Pb22<Input<Floating>>,
     port: &mut Port,
 ) -> UART5<
     hal::sercom::Sercom5Pad3<gpio::Pb23<PfD>>,
@@ -207,7 +201,6 @@ pub fn uart<F: Into<Hertz>>(
         (rx.into_pad(port), tx.into_pad(port)),
     )
 }
-
 
 /// Convenience for setting up the labelled SPI peripheral.
 /// This powers up SERCOM4 and configures it for use as an

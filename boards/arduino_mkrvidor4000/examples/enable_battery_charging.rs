@@ -43,6 +43,13 @@ fn main() -> ! {
         pins.scl.into_pad(&mut pins.port),
     );
 
-    i2c.write(PMIC_ADDRESS, &[PMIC_POWER_ON_CONFIGURATION_REGISTER, PMIC_POWER_ON_CONFIGURATION]).unwrap();
+    i2c.write(
+        PMIC_ADDRESS,
+        &[
+            PMIC_POWER_ON_CONFIGURATION_REGISTER,
+            PMIC_POWER_ON_CONFIGURATION,
+        ],
+    )
+    .unwrap();
     loop {}
 }

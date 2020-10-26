@@ -5,9 +5,9 @@ extern crate atsamd_hal as hal;
 use hal::prelude::*;
 use hal::*;
 
-pub use hal::target_device as pac;
 pub use hal::common::*;
 pub use hal::samd21::*;
+pub use hal::target_device as pac;
 
 use gpio::{Floating, Input, Output, Port, PushPull};
 use hal::clock::GenericClockController;
@@ -76,11 +76,14 @@ pub fn flash_spi_master(
     miso: gpio::Pa16<Input<Floating>>,
     cs: gpio::Pb22<Input<Floating>>,
     port: &mut Port,
-) -> (SPIMaster3<
+) -> (
+    SPIMaster3<
         hal::sercom::Sercom3Pad0<gpio::Pa16<gpio::PfD>>,
         hal::sercom::Sercom3Pad2<gpio::Pa20<gpio::PfD>>,
         hal::sercom::Sercom3Pad3<gpio::Pa21<gpio::PfD>>,
-    >, gpio::Pb22<Output<PushPull>>) {
+    >,
+    gpio::Pb22<Output<PushPull>>,
+) {
     let gclk0 = clocks.gclk0();
     let flash = SPIMaster3::new(
         &clocks.sercom3_core(&gclk0).unwrap(),
@@ -114,9 +117,9 @@ pub fn i2c_master<F: Into<Hertz>>(
     scl: gpio::Pb3<Input<Floating>>,
     port: &mut Port,
 ) -> I2CMaster5<
-        hal::sercom::Sercom5Pad0<gpio::Pb2<gpio::PfD>>,
-        hal::sercom::Sercom5Pad1<gpio::Pb3<gpio::PfD>>,
-    > {
+    hal::sercom::Sercom5Pad0<gpio::Pb2<gpio::PfD>>,
+    hal::sercom::Sercom5Pad1<gpio::Pb3<gpio::PfD>>,
+> {
     let gclk0 = clocks.gclk0();
     I2CMaster5::new(
         &clocks.sercom5_core(&gclk0).unwrap(),

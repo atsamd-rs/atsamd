@@ -15,12 +15,11 @@ use hal::time::Hertz;
 
 use hal::sercom::{PadPin, UART5};
 
-pub use hal::target_device as pac;
 pub use hal::common::*;
 pub use hal::samd21::*;
+pub use hal::target_device as pac;
 
-use gpio::{Floating, Input, Port, PfD};
-
+use gpio::{Floating, Input, PfD, Port};
 
 define_pins!(
     /// Maps the pins to their arduino names and

@@ -13,9 +13,9 @@ pub extern crate panic_halt;
 use hal::prelude::*;
 use hal::*;
 
-pub use hal::target_device as pac;
 pub use hal::common::*;
 pub use hal::samd21::*;
+pub use hal::target_device as pac;
 
 use gpio::{Floating, Input, Port};
 use hal::clock::GenericClockController;
@@ -103,7 +103,6 @@ define_pins!(
     //pin adc_battery = b9,
 );
 
-
 #[cfg(feature = "usb")]
 pub fn usb_allocator(
     usb: pac::USB,
@@ -136,7 +135,10 @@ pub fn i2c_master<F: Into<Hertz>>(
     sda: gpio::Pa22<Input<Floating>>,
     scl: gpio::Pa23<Input<Floating>>,
     port: &mut Port,
-) -> hal::sercom::I2CMaster3<hal::sercom::Sercom3Pad0<gpio::Pa22<gpio::PfC>>, hal::sercom::Sercom3Pad1<gpio::Pa23<gpio::PfC>>> {
+) -> hal::sercom::I2CMaster3<
+    hal::sercom::Sercom3Pad0<gpio::Pa22<gpio::PfC>>,
+    hal::sercom::Sercom3Pad1<gpio::Pa23<gpio::PfC>>,
+> {
     let gclk0 = clocks.gclk0();
     I2CMaster3::new(
         &clocks.sercom3_core(&gclk0).unwrap(),

@@ -3,19 +3,18 @@
 
 extern crate cortex_m;
 extern crate cortex_m_semihosting;
-extern crate wio_lite_mg126 as hal;
-extern crate panic_halt;
 extern crate embedded_hal;
+extern crate numtoa;
+extern crate panic_halt;
 extern crate usb_device;
 extern crate usbd_serial;
-extern crate numtoa;
+extern crate wio_lite_mg126 as hal;
 
-
+use hal::adc::Adc;
 use hal::clock::GenericClockController;
-use hal::prelude::*;
 use hal::entry;
 use hal::pac::{interrupt, CorePeripherals, Peripherals};
-use hal::adc::Adc;
+use hal::prelude::*;
 use hal::usb::UsbBus;
 use usb_device::bus::UsbBusAllocator;
 use usb_device::prelude::*;

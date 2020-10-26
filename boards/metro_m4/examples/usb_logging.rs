@@ -1,8 +1,8 @@
 #![no_std]
 #![no_main]
 
-extern crate metro_m4 as hal;
 extern crate cortex_m;
+extern crate metro_m4 as hal;
 extern crate panic_halt;
 extern crate usb_device;
 extern crate usbd_serial;

@@ -238,7 +238,8 @@ impl SPI {
             (
                 self.miso.into_pad(port),
                 self.mosi.into_pad(port),
-                self.sck.into_pad(port)),
+                self.sck.into_pad(port),
+            ),
         )
     }
 }
@@ -330,10 +331,7 @@ impl UART {
             baud.into(),
             sercom0,
             pm,
-            (
-                self.rx.into_pad(port),
-                self.tx.into_pad(port),
-            ),
+            (self.rx.into_pad(port), self.tx.into_pad(port)),
         )
     }
 }

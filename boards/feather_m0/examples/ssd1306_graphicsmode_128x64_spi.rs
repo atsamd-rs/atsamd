@@ -45,7 +45,8 @@
 //!         GND -> CS (see note above about grounding 'CS' pin)
 //! ```
 //!
-//! Build this example with: `cargo build --example ssd1306_graphicsmode_128x64_spi`
+//! Build this example with: `cargo build --example
+//! ssd1306_graphicsmode_128x64_spi`
 
 #![no_std]
 #![no_main]

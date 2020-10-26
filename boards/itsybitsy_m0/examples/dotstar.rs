@@ -15,16 +15,26 @@ use smart_leds::{hsv::RGB8, SmartLedsWrite};
 
 fn rgb_wheel(position: u8) -> RGB8 {
     match position {
-        0..=85 => {
-            RGB8 { r: (255 - position * 3), g: (position * 3), b: 0 }
-        }
+        0..=85 => RGB8 {
+            r: (255 - position * 3),
+            g: (position * 3),
+            b: 0,
+        },
         86..=170 => {
             let position = position - 85;
-            RGB8 { r: 0, g: (255 - position * 3), b: (position * 3) }
+            RGB8 {
+                r: 0,
+                g: (255 - position * 3),
+                b: (position * 3),
+            }
         }
         _ => {
             let position = position - 170;
-            RGB8 { r: (position * 3), g: 0, b: (255 - position * 3) }
+            RGB8 {
+                r: (position * 3),
+                g: 0,
+                b: (255 - position * 3),
+            }
         }
     }
 }
@@ -45,13 +55,12 @@ fn main() -> ! {
 
     let mut rgb = pins.dotstar.init(SpinTimer::new(12), &mut pins.port);
 
-
     let mut val = 0;
     loop {
         // Can't use the modulo operator on a u8 with an overflowing u8 or with a u16
         val = match val {
             255 => 0,
-            _ => val + 1
+            _ => val + 1,
         };
         let color: [RGB8; 1] = [rgb_wheel(val)];
         rgb.write(color.iter().cloned()).unwrap();
