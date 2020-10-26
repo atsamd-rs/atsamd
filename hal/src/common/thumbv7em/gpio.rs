@@ -106,7 +106,7 @@ pub trait IntoFunction<T> {
     fn into_function(self, port: &mut Port) -> T;
 }
 
-macro_rules! pin_xx {
+macro_rules! any_pin {
     (
         $PinType:ident,
         $group:ident,
@@ -145,7 +145,7 @@ macro_rules! pin_xx {
     };
 }
 
-macro_rules! pin_x {
+macro_rules! port_pin {
     (
         $PinType:ident,
         $PortType:ident,
@@ -187,7 +187,7 @@ macro_rules! pin_x {
     };
 }
 
-macro_rules! port_pin {
+macro_rules! pin {
     (
         $PinType:ident,
         $PinTypeDown:ident,
@@ -686,36 +686,36 @@ impl GpioExt for PORT {
     }
 }
 
-pin_xx!(Pxx, group0, dirset0, dirclr0,
+any_pin!(Pxx, group0, dirset0, dirclr0,
     pincfg0, outset0, outclr0, pmux0, out0);
 
-pin_x!(Pax, PortA, group0, dirset0, dirclr0,
+port_pin!(Pax, PortA, group0, dirset0, dirclr0,
     pincfg0, outset0, outclr0, pmux0, out0);
-pin_x!(Pbx, PortB, group1, dirset1, dirclr1,
+port_pin!(Pbx, PortB, group1, dirset1, dirclr1,
     pincfg1, outset1, outclr1, pmux1, out1);
 #[cfg(feature = "min-samd51n")]
-pin_x!(Pcx, PortC, group2, dirset2, dirclr2,
+port_pin!(Pcx, PortC, group2, dirset2, dirclr2,
     pincfg2, outset2, outclr2, pmux2, out2);
 #[cfg(feature = "min-samd51p")]
-pin_x!(Pdx, PortD, group3, dirset3, dirclr3,
+port_pin!(Pdx, PortD, group3, dirset3, dirclr3,
     pincfg3, outset3, outclr3, pmux3, out3);
 
 $(
-    port_pin!($PinTypeA, Pax, $pin_noA, group0, dirset0, dirclr0,
+    pin!($PinTypeA, Pax, $pin_noA, group0, dirset0, dirclr0,
         pincfg0, outset0, outclr0, pmux0, out0);
 )+
 $(
-    port_pin!($PinTypeB, Pbx, $pin_noB, group1, dirset1, dirclr1,
+    pin!($PinTypeB, Pbx, $pin_noB, group1, dirset1, dirclr1,
         pincfg1, outset1, outclr1, pmux1, out1);
 )+
 $(
     #[cfg(feature = "min-samd51n")]
-    port_pin!($PinTypeC, Pcx, $pin_noC, group2, dirset2, dirclr2,
+    pin!($PinTypeC, Pcx, $pin_noC, group2, dirset2, dirclr2,
         pincfg2, outset2, outclr2, pmux2, out2);
 )+
 $(
     #[cfg(feature = "min-samd51p")]
-    port_pin!($PinTypeD, Pcx, $pin_noD, group3, dirset3, dirclr3,
+    pin!($PinTypeD, Pcx, $pin_noD, group3, dirset3, dirclr3,
         pincfg3, outset3, outclr3, pmux3, out3);
 )+
 
