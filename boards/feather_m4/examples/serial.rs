@@ -36,7 +36,7 @@ fn main() -> ! {
 
     let mut pins = hal::Pins::new(peripherals.PORT);
     let mut delay = Delay::new(core.SYST, &mut clocks);
-
+    
     let tx: Sercom5Pad0<_> = pins
         .d1
         .into_pull_down_input(&mut pins.port)
@@ -48,7 +48,7 @@ fn main() -> ! {
     let uart_clk = clocks
         .sercom5_core(&gclk2)
         .expect("Could not configure sercom5 clock");
-
+    
     let mut uart = UART5::new(
         &uart_clk,
         Hertz(19200),
@@ -56,7 +56,7 @@ fn main() -> ! {
         &mut peripherals.MCLK,
         (rx, tx),
     );
-
+    
     loop {
         for byte in b"Hello, world!" {
             block!(uart.write(*byte)).unwrap();

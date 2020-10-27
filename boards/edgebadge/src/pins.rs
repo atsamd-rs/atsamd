@@ -749,8 +749,7 @@ pub struct ButtonReader {
 //tsu min setup time 55ns = 7 cycles
 //th min hold time 5ns = 1 cycles
 //tw min pulse width 36ns = 5 cycles
-//trec min recovery time 55ns, how long before you should attempt to read
-// again?
+//trec min recovery time 55ns, how long before you should attempt to read again?
 #[cfg(feature = "unproven")]
 impl ButtonReader {
     // 48*8.333ns total blocking read
