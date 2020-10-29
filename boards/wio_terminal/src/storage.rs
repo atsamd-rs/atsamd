@@ -81,28 +81,7 @@ impl SDCard {
             ),
         );
 
-        // Configure the chip select pin as a push-pull output.
         let cs = self.cs.into_push_pull_output(port);
-        // let dc = self.dc.into_push_pull_output(port);
-        // let reset = self.reset.into_push_pull_output(port);
-        //
-        // // Create a SPIInterface over the peripheral, then create the ILI9341 driver
-        // // using said interface and set its default orientation.
-        // let interface = SPIInterface::new(spi, dc, cs);
-        // let mut ili9341 = Ili9341::new(interface, reset, delay).map_err(|_| ())?;
-        // ili9341
-        //     .set_orientation(Orientation::LandscapeFlipped)
-        //     .map_err(|_| ())?;
-        //
-        // // Configure the backlight pin as a push-pull output; unfortunately this pin
-        // // does not appear to support PWM.
-        // //   HIGH - backlight enabled
-        // //   LOW  - backlight disabled
-        // let mut backlight = self.backlight.into_push_pull_output(port);
-        // backlight.set_high()?;
-
-        // Return a result consisting of a Tuple containing the display driver and
-        // backlight pin.
         Ok((spi, cs, self.det))
     }
 }
