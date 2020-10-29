@@ -24,6 +24,7 @@ use heapless::consts::U128;
 use heapless::String;
 
 use embedded_sdmmc::{TimeSource, Timestamp, VolumeIdx};
+use wio::SDCardController;
 
 #[entry]
 fn main() -> ! {
@@ -42,18 +43,16 @@ fn main() -> ! {
     let pins = Pins::new(peripherals.PORT);
     let mut sets: Sets = pins.split();
 
-    let (sd_spi, sd_cs, _sd_present) = sets
+    let (mut cont, _sd_present) = sets
         .sd_card
         .init(
             &mut clocks,
             peripherals.SERCOM6,
             &mut peripherals.MCLK,
             &mut sets.port,
+            Clock,
         )
         .unwrap();
-
-    let mut cont =
-        embedded_sdmmc::Controller::new(embedded_sdmmc::SdMmcSpi::new(sd_spi, sd_cs), Clock);
 
     // Initialize the ILI9341-based LCD display. Create a black backdrop the size of
     // the screen.
@@ -73,6 +72,10 @@ fn main() -> ! {
     loop {
         match cont.device().init() {
             Ok(_) => {
+                // Now that we have initialized, we can run the SPI bus at
+                // a reasonable speed.
+                cont.set_baud(20.mhz());
+
                 let mut data = String::<U128>::new();
                 write!(data, "OK! ").unwrap();
                 match cont.device().card_size_bytes() {
@@ -119,10 +122,10 @@ fn main() -> ! {
     }
 }
 
-type SDCard =
-    embedded_sdmmc::Controller<embedded_sdmmc::SdMmcSpi<wio::SDCardSPI, wio::SDCardCS>, Clock>;
-
-fn print_contents(cont: &mut SDCard, lcd: &mut wio::LCD) -> Result<(), embedded_sdmmc::Error<embedded_sdmmc::SdMmcError>> {
+fn print_contents(
+    cont: &mut SDCardController<Clock>,
+    lcd: &mut wio::LCD,
+) -> Result<(), embedded_sdmmc::Error<embedded_sdmmc::SdMmcError>> {
     let style = TextStyle::new(Font12x16, Rgb565::WHITE);
 
     let volume = cont.get_volume(VolumeIdx(0))?;
@@ -132,7 +135,7 @@ fn print_contents(cont: &mut SDCard, lcd: &mut wio::LCD) -> Result<(), embedded_
     let out = cont.iterate_dir(&volume, &dir, |ent| {
         let mut data = String::<U128>::new();
         writeln!(data, "{} - {:?}", ent.name, ent.attributes).unwrap();
-        Text::new(data.as_str(), Point::new(4, 20 + count*16))
+        Text::new(data.as_str(), Point::new(4, 20 + count * 16))
             .into_styled(style)
             .draw(lcd)
             .ok()
