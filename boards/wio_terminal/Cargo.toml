@@ -38,6 +38,10 @@ path = "../../hal"
 version = "0.10"
 default-features = false
 
+[dependencies.embedded-sdmmc]
+version = "0.3.0"
+optional = true
+
 [dev-dependencies]
 drogue-nom-utils = "0.1"
 embedded-graphics = "0.6"
@@ -49,6 +53,7 @@ default = ["atsamd-hal/samd51p", "rt", "unproven", "usb"]
 rt = ["atsamd-hal/samd51p-rt", "cortex-m-rt"]
 unproven = ["atsamd-hal/unproven"]
 usb = ["atsamd-hal/usb", "usb-device", "usbd-serial"]
+sdcard = ["embedded-sdmmc"]
 
 [profile.dev]
 incremental = false
@@ -76,3 +81,7 @@ name = "orientation"
 [[example]]
 name = "usb_serial_display"
 required-features = ["usb"]
+
+[[example]]
+name = "sdcard"
+required-features = ["sdcard"]
