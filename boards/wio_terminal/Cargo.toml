@@ -30,6 +30,7 @@ display-interface-spi = "0.4"
 heapless = "0.5"
 ili9341 = "0.4.1"
 lis3dh = "0.3.0"
+embedded-sdmmc = "0.3.0"
 usb-device = { version = "0.2", optional = true }
 usbd-serial = { version = "0.1", optional = true }
 
@@ -76,3 +77,6 @@ name = "orientation"
 [[example]]
 name = "usb_serial_display"
 required-features = ["usb"]
+
+[[example]]
+name = "sdcard"
