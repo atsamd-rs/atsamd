@@ -450,7 +450,8 @@ fn enable_gclk_apb(mclk: &mut MCLK) {
 fn enable_internal_32kosc(osc32kctrl: &mut OSC32KCTRL) {
     osc32kctrl.osculp32k.modify(|_, w| {
         w.en32k().set_bit();
-        w.en1k().set_bit()
+        w.en1k().set_bit();
+        w.runstdby().set_bit()
     });
     osc32kctrl.rtcctrl.write(|w| w.rtcsel().ulp1k());
 }
@@ -465,7 +466,8 @@ fn enable_external_32kosc(osc32kctrl: &mut OSC32KCTRL) {
         // Crystal connected to xin32/xout32
         w.xtalen().set_bit();
         w.enable().set_bit();
-        w.cgm().xt()
+        w.cgm().xt();
+        w.runstdby().set_bit()
     });
 
     osc32kctrl.rtcctrl.write(|w| w.rtcsel().xosc1k());

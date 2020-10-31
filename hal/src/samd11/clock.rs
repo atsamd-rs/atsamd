@@ -396,7 +396,8 @@ pub fn enable_internal_32kosc(sysctrl: &mut SYSCTRL) {
             w.startup().bits(6);
         }
         w.en32k().set_bit();
-        w.enable().set_bit()
+        w.enable().set_bit();
+        w.runstdby().set_bit()
     });
     while sysctrl.pclksr.read().osc32krdy().bit_is_clear() {
         // Wait for the oscillator to stabilize
@@ -414,7 +415,8 @@ pub fn enable_external_32kosc(sysctrl: &mut SYSCTRL) {
         // Enable 32khz output
         w.en32k().set_bit();
         // Crystal connected to xin32/xout32
-        w.xtalen().set_bit()
+        w.xtalen().set_bit();
+        w.runstdby().set_bit()
     });
     sysctrl.xosc32k.modify(|_, w| w.enable().set_bit());
     while sysctrl.pclksr.read().xosc32krdy().bit_is_clear() {
