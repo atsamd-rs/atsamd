@@ -6,8 +6,9 @@ use atsamd_hal::gpio::{
 };
 use atsamd_hal::hal::spi;
 use atsamd_hal::prelude::*;
+use atsamd_hal::qspi;
 use atsamd_hal::sercom::{PadPin, SPIMaster6, Sercom6Pad0, Sercom6Pad1, Sercom6Pad2};
-use atsamd_hal::target_device::{MCLK, SERCOM6};
+use atsamd_hal::target_device::{MCLK, QSPI, SERCOM6};
 use atsamd_hal::time::Hertz;
 use embedded_sdmmc::{SdMmcSpi, TimeSource};
 
@@ -30,6 +31,14 @@ pub struct QSPIFlash {
 
     /// QSPI Flash `d3` pin
     pub d3: Pa11<Input<Floating>>,
+}
+
+impl QSPIFlash {
+    pub fn init(self, mclk: &mut MCLK, port: &mut Port, qspi: QSPI) -> qspi::Qspi {
+        qspi::Qspi::new(
+            mclk, port, qspi, self.sck, self.cs, self.d0, self.d1, self.d2, self.d3,
+        )
+    }
 }
 
 /// SD Card pins (uses `SERCOM6`)
