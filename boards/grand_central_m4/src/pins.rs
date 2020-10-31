@@ -33,7 +33,7 @@ define_pins!(
     target_device: target_device,
 
     /// # LED Pins
-    
+
     /// ## TX LED
     /// Yellow USB serial data transmitted LED
     pin tx_led = c30,
@@ -50,20 +50,20 @@ define_pins!(
     /// - A1, A2, A12, A15.
     /// - D2-D9, D11, D13-D45, D48, D50-D53.
     /// - MISO, MOSI, SCK, SCL, SDA.
-  
+
     /// ## Analog 0
-    /// This pin is analog input  A0 but is also an analog output due to 
-    /// having a DAC (digital-to-analog converter). This is the first 
-    /// DAC, and is 'independent' of A1. You can set the raw voltage to 
-    /// anything from 0 to 3.3V, unlike PWM outputs, this is a true analog 
+    /// This pin is analog input  A0 but is also an analog output due to
+    /// having a DAC (digital-to-analog converter). This is the first
+    /// DAC, and is 'independent' of A1. You can set the raw voltage to
+    /// anything from 0 to 3.3V, unlike PWM outputs, this is a true analog
     /// output.
     pin a0 = a2,
 
     /// ## Analog 1
-    /// This pin is analog input  A1 but is also an analog output due to 
-    /// having a DAC (digital-to-analog converter). This is the second 
-    /// DAC, and is 'independent' of A0. You can set the raw voltage to 
-    /// anything from 0 to 3.3V, unlike PWM outputs this is a true analog 
+    /// This pin is analog input  A1 but is also an analog output due to
+    /// having a DAC (digital-to-analog converter). This is the second
+    /// DAC, and is 'independent' of A0. You can set the raw voltage to
+    /// anything from 0 to 3.3V, unlike PWM outputs this is a true analog
     /// output.
     pin a1 = a5,
 
@@ -83,23 +83,23 @@ define_pins!(
     pin a13 = a4,
     pin a14 = a6,
     pin a15 = a7,
-    
+
     /// # Digital GPIO Pins
-    
+
     /// ## Digital 0:
-    /// RX - GPIO #0, also receive (input) pin for Serial0 (hardware UART) 
-    /// unlike the original Mega this is not used by the USB-to-Serial 
+    /// RX - GPIO #0, also receive (input) pin for Serial0 (hardware UART)
+    /// unlike the original Mega this is not used by the USB-to-Serial
     /// chip so its free to use
-    /// 
+    ///
     /// mapped as: uart0_rx
     ///pin d0 = b25,
     pin uart0_rx = b25,
 
     /// ## Digital 1:
-    /// TX - GPIO #1, also transmit (output) pin for Serial0 (hardware UART) 
-    /// unlike the original Mega this is not used by the USB-to-Serial chip 
+    /// TX - GPIO #1, also transmit (output) pin for Serial0 (hardware UART)
+    /// unlike the original Mega this is not used by the USB-to-Serial chip
     /// so its free to use
-    /// 
+    ///
     /// mapped as: uar0_tx
     ///pin d1 = b24,
     pin uart0_tx = b24,
@@ -119,9 +119,9 @@ define_pins!(
     pin d12 = b0,
 
     /// ## Digital 13
-    /// Connected to the red LED marked L (see note below) next to the USB 
+    /// Connected to the red LED marked L (see note below) next to the USB
     /// jack. Also PWM output.
-    /// 
+    ///
     /// mapped as: red_led
     ///pin d13 = b1,
     pin red_led = b1,
@@ -129,64 +129,64 @@ define_pins!(
     /// ## Digital 14
     /// TX3 - GPIO #14, to maintain compatibility with the Mega pinout this can
     /// also be a Serial TX (on SERCOM5)
-    /// 
+    ///
     /// mapped as: uart3_tx
     ///pin d14 = b16,
     pin uart3_tx = b16,
 
     /// ## Digital 15
-    /// RX3 - GPIO #15, to maintain compatibility with the Mega pinout this can 
+    /// RX3 - GPIO #15, to maintain compatibility with the Mega pinout this can
     /// also be a Serial RX (on SERCOM5)
-    /// 
+    ///
     /// mapped as: uart3_rx
     ///pin d15 = b17,
     pin uart3_rx = b17,
-    
+
     /// ## Digital 16
-    /// TX2 - GPIO #16, to maintain compatibility with the Mega pinout this can 
+    /// TX2 - GPIO #16, to maintain compatibility with the Mega pinout this can
     /// also be a Serial TX (on SERCOM1)
-    /// 
+    ///
     /// mapped as: uart2_tx
     ///pin d16 = c22,
     pin uart2_tx = c22,
-    
+
     /// ## Digital 17
-    /// RX2 - GPIO #17, to maintain compatibility with the Mega pinout this can 
+    /// RX2 - GPIO #17, to maintain compatibility with the Mega pinout this can
     /// also be a Serial RX (on SERCOM1)
-    /// 
+    ///
     /// mapped as: uart2_rx
     ///pin d17 = c23,
     pin uart2_rx = c23,
-    
+
     /// ## Digital 18
-    /// TX1 - GPIO #18, to maintain compatibility with the Mega pinout this can 
+    /// TX1 - GPIO #18, to maintain compatibility with the Mega pinout this can
     /// also be a Serial TX (on SERCOM4)
-    /// 
+    ///
     /// mapped as: uart1_tx
     ///pin d18 = b12,
     pin uart1_tx = b12,
-    
+
     /// ## Digital 19
-    /// RX1 - GPIO #19, to maintain compatibility with the Mega pinout this can 
+    /// RX1 - GPIO #19, to maintain compatibility with the Mega pinout this can
     /// also be a Serial RX (on SERCOM4)
-    /// 
+    ///
     /// mapped as: uart1_rx
     ///pin d19 = b13,
     pin uart1_rx = b13,
-    
+
     /// ## Digital 20
-    /// SDA - GPIO #20, and also I2C (Wire) data pin - This is the same as the 
+    /// SDA - GPIO #20, and also I2C (Wire) data pin - This is the same as the
     /// SDA above
-    /// 
+    ///
     /// mapped as: sda
     ///pin d20 = c16,
     pin sda = c16,
-    
+
     /// ## Digital 21
-    /// SCL - GPIO #21, and also I2C (Wire) clock pin - This is the same as the 
-    /// SCL above. The original Mega had this as a separate I2C port but we 
+    /// SCL - GPIO #21, and also I2C (Wire) clock pin - This is the same as the
+    /// SCL above. The original Mega had this as a separate I2C port but we
     /// have lots of SERCOMs and to keep things simple, we tied them together
-    /// 
+    ///
     /// mapped as: scl
     ///pin d21 = c17,
     pin scl = c17,
@@ -195,30 +195,30 @@ define_pins!(
     /// These are general purpose GPIO.
     pin d22 = d12,
     pin d23 = a15,
-    
+
     /// ## USB Pins
 
     /// Digital 24
     /// USB D-
-    /// 
-    /// mapped as: usb_dm 
+    ///
+    /// mapped as: usb_dm
     ///pin d24 = a24,
     pin usb_dm = a24,
 
     /// Digital 25
     /// USB D+
-    /// 
+    ///
     /// mapped as: usb_dp
     ///pin d25 = a25,
     pin usb_dp = a25,
 
     /// # Parallel Capture Peripheral (PCC) Pins
-    /// There's a 'camera' input peripheral you can use with some camera chips 
-    /// to capture video with 14-bit data width. We thought this was neat so 
-    /// we made sure all those pins were available. Here are the PCC pins 
-    /// (left) and the Grand Central M4 pins it's mapped to. Unlike other 
+    /// There's a 'camera' input peripheral you can use with some camera chips
+    /// to capture video with 14-bit data width. We thought this was neat so
+    /// we made sure all those pins were available. Here are the PCC pins
+    /// (left) and the Grand Central M4 pins it's mapped to. Unlike other
     /// peripherals, you cannot mux these signals to other pins!
-    
+
     /// ## Digital 26
     /// PCC: DEN1
     pin d26 = a12,
@@ -226,7 +226,7 @@ define_pins!(
     /// ## Digital 27
     /// PCC: DEN2
     pin d27 = a13,
-    
+
     /// ## Digital 28
     /// PCC: CLK
     pin d28 = a14,
@@ -266,7 +266,7 @@ define_pins!(
     /// ## Digital 37
     /// PCC: D0
     pin d37 = a16,
-    
+
     /// ## Digital 38
     /// PCC: D9
     pin d38 = b15,
@@ -301,54 +301,54 @@ define_pins!(
     pin d49 = c5,
 
     /// # Hardware SPI
-    /// These are the hardware SPI pins, are are connected to the 2x3 
-    /// header in the middle of the board. you can use them as everyday GPIO 
-    /// pins (but recommend keeping them free as they are best used for 
+    /// These are the hardware SPI pins, are are connected to the 2x3
+    /// header in the middle of the board. you can use them as everyday GPIO
+    /// pins (but recommend keeping them free as they are best used for
     /// hardware SPI connections for high speed.)
-    
+
     /// Digital 50
     /// MISO - This is the same as the header in the middle of the board when
     /// used for SPI
-    /// 
+    ///
     /// mapped as: miso
     ///pin d50 = d11,
     pin miso = d11,
 
     /// Digital 51
-    /// MOSI -This is the same as the header in the middle of the board when 
+    /// MOSI -This is the same as the header in the middle of the board when
     /// used for SPI
-    /// 
+    ///
     /// mapped as: mosi
     ///pin d51 = d8,
     pin mosi = d8,
 
     /// Digital 52
-    /// SCK -This is the same as the header in the middle of the board when 
+    /// SCK -This is the same as the header in the middle of the board when
     /// used for SPI
-    /// 
+    ///
     /// mapped as: sck
     ///pin d52 = d9,
     pin sck = d9,
 
     /// ## Digital 52
-    /// SS - This is just named SS for back-compatibility with the Mega's 
+    /// SS - This is just named SS for back-compatibility with the Mega's
     /// SPI secondary-select pin.
-    /// 
+    ///
     /// mapped as: SS
     ///pin d53 = d10,
     pin ss = d10,
 
     /// # QSPI Flash
-    /// The QSPI Flash is connected to 6 pins that are not brought out on 
-    /// the GPIO pads. This way you don't have to worry about the SPI flash 
+    /// The QSPI Flash is connected to 6 pins that are not brought out on
+    /// the GPIO pads. This way you don't have to worry about the SPI flash
     /// colliding with other devices on the main SPI connection.
     ///
     /// QSPI is neat because it allows you to have 4 data in/out lines instead
-    /// of just SPI's single line in and single line out. This means that QSPI 
-    /// is at least 4 times faster. But in reality is at least 10x faster 
-    /// because you can clock the QSPI peripheral much faster than a plain SPI 
+    /// of just SPI's single line in and single line out. This means that QSPI
+    /// is at least 4 times faster. But in reality is at least 10x faster
+    /// because you can clock the QSPI peripheral much faster than a plain SPI
     /// peripheral.
-    
+
     /// ## QSPI Flash SCK
     pin flash_sck = b10,
 
@@ -368,17 +368,17 @@ define_pins!(
     pin flash_cs = b11,
 
     /// # NeoPixel
-    /// The NeoPixel is connected to pin #88. The NeoPixel is powered by the 
-    /// 3.3V power supply but that hasn't shown to make a big difference in 
-    /// brightness or color. The NeoPixel is also used by the bootloader to 
-    /// let you know if the device has enumerated correctly (green) or USB 
+    /// The NeoPixel is connected to pin #88. The NeoPixel is powered by the
+    /// 3.3V power supply but that hasn't shown to make a big difference in
+    /// brightness or color. The NeoPixel is also used by the bootloader to
+    /// let you know if the device has enumerated correctly (green) or USB
     /// failure (red).
-    
+
     /// ## NeoPixel Pin
     pin neopixel = c24,
 
     /// # Micro SD Card Pins
-    
+
     /// ## SD Card MOSI
     pin sd_mosi = b26,
 
@@ -606,7 +606,7 @@ impl I2C {
 /// Sd Card pins
 pub struct SdCard {
     pub cs: Pb28<Input<Floating>>,
-    pub cd: Pb31<Input<Floating>>, 
+    pub cd: Pb31<Input<Floating>>,
 }
 
 /// USB pins

@@ -54,7 +54,7 @@ define_pins!(
     pin d1 = a22,
     /// Pin 2
     pin d2 = b17,
-    /// Pin 3 
+    /// Pin 3
     pin d3 = b16,
     /// Pin 4
     pin d4 = b13,
