@@ -80,3 +80,6 @@ required-features = ["usb"]
 
 [[example]]
 name = "sdcard"
+
+[[example]]
+name = "qspi"
