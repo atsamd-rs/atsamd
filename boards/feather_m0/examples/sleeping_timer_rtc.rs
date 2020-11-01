@@ -8,7 +8,7 @@ extern crate panic_halt;
 #[cfg(feature = "use_semihosting")]
 extern crate panic_semihosting;
 
-use hal::clock::GenericClockController;
+use hal::clock::{ClockGenId, GenericClockController};
 use hal::entry;
 use hal::pac::{interrupt, CorePeripherals, Peripherals, RTC};
 use hal::prelude::*;
@@ -35,6 +35,7 @@ fn main() -> ! {
 
     // Get a clock & make a sleeping delay object
     let gclk1 = clocks.gclk1();
+    clocks.configure_standby(ClockGenId::GCLK1, true);
     let timer = rtc_timer::RealTimeCounterTimer::new(
         &gclk1,
         &mut peripherals.PM,
