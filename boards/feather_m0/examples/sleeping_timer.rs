@@ -33,11 +33,13 @@ fn main() -> ! {
         &mut peripherals.NVMCTRL,
     );
 
-    // Get a clock & make a sleeping delay object
+    // Get a clock & make a sleeping delay object. use external 32k clock that runs
+    // in standby
     enable_external_32kosc(&mut peripherals.SYSCTRL);
     let timer_clock = clocks
         .configure_gclk_divider_and_source(ClockGenId::GCLK1, 1, ClockSource::XOSC32K, false)
         .unwrap();
+    clocks.configure_standby(ClockGenId::GCLK1, true);
     let tc45 = &clocks.tc4_tc5(&timer_clock).unwrap();
     let timer = timer::TimerCounter::tc4_(tc45, peripherals.TC4, &mut peripherals.PM);
     let mut sleeping_delay = SleepingDelay::new(timer, &INTERRUPT_FIRED);

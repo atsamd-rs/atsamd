@@ -26,7 +26,7 @@ impl Adc<$ADC> {
     pub fn $init(adc: $ADC, mclk: &mut MCLK, clocks: &mut GenericClockController, gclk:GEN_A) -> Self {
         mclk.$mclk.modify(|_, w| w.$apmask().set_bit());
         // set to 1/(1/(48000000/32) * 6) = 250000 SPS
-        let adc_clock = clocks.configure_gclk_divider_and_source(gclk, 1, DFLL, false, false)
+        let adc_clock = clocks.configure_gclk_divider_and_source(gclk, 1, DFLL, false)
             .expect("adc clock setup failed");
         clocks.$init(&adc_clock).expect("adc clock setup failed");
         adc.ctrla.modify(|_, w| w.prescaler().div32());

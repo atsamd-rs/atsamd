@@ -26,7 +26,7 @@ fn main() -> ! {
     let mut pins = hal::Pins::new(peripherals.PORT);
 
     let _gclk2 = clocks
-        .configure_gclk_divider_and_source(GCLK2, 12, DPLL0, false, false)
+        .configure_gclk_divider_and_source(GCLK2, 12, DPLL0, false)
         .unwrap();
     pins.d13.into_function_m(&mut pins.port);
     loop {}

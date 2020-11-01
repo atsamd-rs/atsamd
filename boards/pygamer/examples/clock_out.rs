@@ -26,7 +26,7 @@ fn main() -> ! {
 
     //3mhz
     let _gclk2 = clocks
-        .configure_gclk_divider_and_source(GCLK2, 40, DPLL0, false, false)
+        .configure_gclk_divider_and_source(GCLK2, 40, DPLL0, false)
         .unwrap();
     pins.d5.into_function_m(&mut pins.port);
     loop {}

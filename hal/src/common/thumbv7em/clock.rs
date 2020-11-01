@@ -107,7 +107,6 @@ impl State {
         divider: u16,
         src: ClockSource,
         improve_duty_cycle: bool,
-        run_standby: bool,
     ) {
         self.gclk.genctrl[u8::from(gclk) as usize].write(|w| unsafe {
             w.src().variant(src);
@@ -116,8 +115,7 @@ impl State {
             w.divsel().clear_bit();
             w.idc().bit(improve_duty_cycle);
             w.genen().set_bit();
-            w.oe().set_bit();
-            w.runstdby().bit(run_standby)
+            w.oe().set_bit()
         });
 
         self.wait_for_sync();
@@ -128,6 +126,21 @@ impl State {
             w.gen().bits(generator.into());
             w.chen().set_bit()
         });
+        self.wait_for_sync();
+    }
+
+    fn configure_standby(&mut self, gclk: ClockGenId, enable: bool) {
+        // We must first read out the configuration of genctrl to read/modify/write it.
+        //   To do so, we must do an 8-bit write to GENCTRL.ID (ref 15.6.4.1 Indirect
+        //   Access). 32-bit write did not work.
+        unsafe {
+            let genctrl_ptr_u8: *mut u8 = self.gclk.genctrl.as_ptr() as *mut u8;
+            *genctrl_ptr_u8 = u8::from(gclk);
+        }
+        self.wait_for_sync();
+
+        // Now that the configuration is loaded, modify it
+        self.gclk.genctrl.modify(|_, w| w.runstdby().bit(enable));
         self.wait_for_sync();
     }
 }
@@ -185,11 +198,11 @@ impl GenericClockController {
         if use_external_crystal {
             enable_external_32kosc(osc32kctrl);
             state.reset_gclk();
-            state.set_gclk_divider_and_source(GCLK1, 1, XOSC32K, false, false);
+            state.set_gclk_divider_and_source(GCLK1, 1, XOSC32K, false);
         } else {
             enable_internal_32kosc(osc32kctrl);
             state.reset_gclk();
-            state.set_gclk_divider_and_source(GCLK1, 1, OSCULP32K, false, false);
+            state.set_gclk_divider_and_source(GCLK1, 1, OSCULP32K, false);
         }
 
         while state.gclk.syncbusy.read().genctrl().is_gclk0() {}
@@ -291,14 +304,13 @@ impl GenericClockController {
         divider: u16,
         src: ClockSource,
         improve_duty_cycle: bool,
-        run_standby: bool,
     ) -> Option<GClock> {
         let idx = u8::from(gclk) as usize;
         if self.gclks[idx].0 != 0 {
             return None;
         }
         self.state
-            .set_gclk_divider_and_source(gclk, divider, src, improve_duty_cycle, run_standby);
+            .set_gclk_divider_and_source(gclk, divider, src, improve_duty_cycle);
         let freq: Hertz = match src {
             XOSC32K | OSCULP32K => OSC32K_FREQ,
             GCLKGEN1 => self.gclks[1],
@@ -308,6 +320,11 @@ impl GenericClockController {
         };
         self.gclks[idx] = Hertz(freq.0 / divider as u32);
         Some(GClock { gclk, freq })
+    }
+
+    /// Enables or disables the given GClk from operation in standby.
+    pub fn configure_standby(&mut self, gclk: ClockGenId, enable: bool) {
+        self.state.configure_standby(gclk, enable)
     }
 }
 
