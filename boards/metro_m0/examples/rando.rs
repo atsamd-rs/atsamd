@@ -9,7 +9,6 @@ extern crate metro_m0 as hal;
 extern crate panic_halt;
 #[cfg(feature = "use_semihosting")]
 extern crate panic_semihosting;
-extern crate rtfm;
 // extern crate ssd1331;
 extern crate sx1509;
 
@@ -33,9 +32,10 @@ macro_rules! dbgprint {
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
 // use hal::gpio;
+use hal::pac::CorePeripherals;
 use hal::prelude::*;
 use hal::sercom::{I2CMaster3, SPIMaster5};
-use rtfm::app;
+use rtic::app;
 
 /*
 type Display = ssd1331::Ssd1331<
@@ -45,27 +45,43 @@ type Display = ssd1331::Ssd1331<
 >;
 */
 
-#[app(device=hal)]
+#[app(device = crate::hal::pac, peripherals = true)]
 const APP: () = {
-    static mut RED_LED: hal::gpio::Pa17<hal::gpio::Output<hal::gpio::OpenDrain>> = ();
-    static mut I2C: I2CMaster3 = ();
-    static mut FLASH: SPIMaster5 = ();
-    static mut SX1509: sx1509::Sx1509<I2CMaster3> = ();
-    //static SPI: SPIMaster4;
-    //static SSD1131: Display;
-    static mut TIMER: hal::timer::TimerCounter3 = ();
+    struct Resources {
+        RED_LED: hal::gpio::Pa17<hal::gpio::Output<hal::gpio::OpenDrain>>,
+        I2C: I2CMaster3<
+            hal::sercom::Sercom3Pad0<hal::gpio::Pa22<hal::gpio::PfC>>,
+            hal::sercom::Sercom3Pad1<hal::gpio::Pa23<hal::gpio::PfC>>,
+        >,
+        FLASH: SPIMaster5<
+            hal::sercom::Sercom5Pad1<hal::gpio::Pb3<hal::gpio::PfD>>,
+            hal::sercom::Sercom5Pad2<hal::gpio::Pb22<hal::gpio::PfD>>,
+            hal::sercom::Sercom5Pad3<hal::gpio::Pb23<hal::gpio::PfD>>,
+        >,
+        SX1509: sx1509::Sx1509<
+            I2CMaster3<
+                hal::sercom::Sercom3Pad0<hal::gpio::Pa22<hal::gpio::PfC>>,
+                hal::sercom::Sercom3Pad1<hal::gpio::Pa23<hal::gpio::PfC>>,
+            >,
+        >,
+        // SPI: SPIMaster4,
+        // SSD1131: Display,
+        TIMER: hal::timer::TimerCounter3,
+    }
 
-    #[interrupt(resources = [TIMER,RED_LED])]
-    fn TC3() {
-        if resources.TIMER.wait().is_ok() {
-            resources.RED_LED.toggle();
+    #[task(binds = TC3, resources = [TIMER, RED_LED])]
+    fn TC3(ctx: TC3::Context) {
+        if ctx.resources.TIMER.wait().is_ok() {
+            ctx.resources.RED_LED.toggle();
         }
     }
 
     #[init]
-    fn init() {
+    fn init(c: init::Context) -> init::LateResources {
         let interval = 1.hz();
 
+        let mut device = c.device;
+        let core = CorePeripherals::take().unwrap();
         let mut clocks = GenericClockController::with_internal_32kosc(
             device.GCLK,
             &mut device.PM,
@@ -93,7 +109,7 @@ const APP: () = {
 
         let mut buf = [0x9f, 0, 0, 0];
 
-        let res = flash.transfer(&mut buf);
+        let _res = flash.transfer(&mut buf);
         dbgprint!("tx result {}", res.is_ok());
         flash_cs.set_high().unwrap();
 
@@ -176,15 +192,15 @@ const APP: () = {
 
         dbgprint!("do first write");
         // Let's try to init an sx1509 attached to the i2c bus
-        let res1 = expander.borrow(&mut i2c).software_reset();
+        let _res1 = expander.borrow(&mut i2c).software_reset();
         dbgprint!("send reset {:?}", res1.is_ok());
 
         let res3 = expander
             .borrow(&mut i2c)
             .read_16(sx1509::Register::RegInterruptMaskA);
         match res3 {
-            Err(e) => dbgprint!("read intmaska fail {:?}", e),
-            Ok(val) => dbgprint!("read intmaska {:x}", val),
+            Err(_e) => dbgprint!("read intmaska fail {:?}", e),
+            Ok(_val) => dbgprint!("read intmaska {:x}", val),
         };
 
         let mut tc3 = hal::timer::TimerCounter::tc3_(
@@ -197,12 +213,14 @@ const APP: () = {
         tc3.enable_interrupt();
 
         dbgprint!("done init");
-        RED_LED = pins.d13.into_open_drain_output(&mut pins.port);
-        I2C = i2c;
-        SX1509 = expander;
-        TIMER = tc3;
-        // SPI: spi,
-        // SSD1131: display,
-        FLASH = flash;
+        init::LateResources {
+            RED_LED: pins.d13.into_open_drain_output(&mut pins.port),
+            I2C: i2c,
+            SX1509: expander,
+            TIMER: tc3,
+            // SPI: spi,
+            // SSD1131: display,
+            FLASH: flash,
+        }
     }
 };
