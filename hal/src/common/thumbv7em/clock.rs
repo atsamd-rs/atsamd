@@ -457,8 +457,7 @@ fn enable_gclk_apb(mclk: &mut MCLK) {
 fn enable_internal_32kosc(osc32kctrl: &mut OSC32KCTRL) {
     osc32kctrl.osculp32k.modify(|_, w| {
         w.en32k().set_bit();
-        w.en1k().set_bit();
-        w.runstdby().set_bit()
+        w.en1k().set_bit()
     });
     osc32kctrl.rtcctrl.write(|w| w.rtcsel().ulp1k());
 }
