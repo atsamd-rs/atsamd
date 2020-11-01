@@ -102,7 +102,7 @@ impl GenericClockController {
         sysctrl: &mut SYSCTRL,
         nvmctrl: &mut NVMCTRL,
     ) -> Self {
-        Self::new(gclk, pm, sysctrl, nvmctrl, false)
+        Self::new_48mhz_from_32khz(gclk, pm, sysctrl, nvmctrl, false)
     }
 
     /// Reset the clock controller, configure the system to run
@@ -113,10 +113,10 @@ impl GenericClockController {
         sysctrl: &mut SYSCTRL,
         nvmctrl: &mut NVMCTRL,
     ) -> Self {
-        Self::new(gclk, pm, sysctrl, nvmctrl, true)
+        Self::new_48mhz_from_32khz(gclk, pm, sysctrl, nvmctrl, true)
     }
 
-    fn new(
+    fn new_48mhz_from_32khz(
         gclk: GCLK,
         pm: &mut PM,
         sysctrl: &mut SYSCTRL,
@@ -177,6 +177,51 @@ impl GenericClockController {
         }
     }
 
+    /// Reset the clock controller, configure the system to run at 8Mhz from internal 8 MHz RC clock (no PLL)
+    /// and reset various clock dividers.
+    pub fn with_internal_8mhz(
+        gclk: GCLK,
+        pm: &mut PM,
+        sysctrl: &mut SYSCTRL,
+        nvmctrl: &mut NVMCTRL,
+    ) -> Self {
+        let mut state = State { gclk };
+
+        // No wait states needed <= 24 MHz @ 3.3v (ref. 37.12 NVM characteristics)
+        set_flash_manual_write(nvmctrl);
+        enable_gclk_apb(pm);
+
+        state.reset_gclk();
+
+        // Enable 8 MHz source -> GCLK0
+        state.set_gclk_divider_and_source(GCLK0, 1, OSC8M, false);
+
+        // Reset various dividers back to 1
+        sysctrl.osc8m.modify(|_, w| {
+            w.presc()._0();
+            w.ondemand().clear_bit()
+        });
+        pm.cpusel.write(|w| w.cpudiv().div1());
+        pm.apbasel.write(|w| w.apbadiv().div1());
+        pm.apbbsel.write(|w| w.apbbdiv().div1());
+        pm.apbcsel.write(|w| w.apbcdiv().div1());
+
+        Self {
+            state,
+            gclks: [
+                OSC8M_FREQ,
+                Hertz(0),
+                Hertz(0),
+                Hertz(0),
+                Hertz(0),
+                Hertz(0),
+                Hertz(0),
+                Hertz(0),
+            ],
+            used_clocks: 0,
+        }
+    }
+
     /// Returns a `GClock` for gclk0, the system clock generator at 48Mhz
     pub fn gclk0(&mut self) -> GClock {
         GClock {
@@ -233,7 +278,7 @@ impl GenericClockController {
         let freq: Hertz = match src {
             XOSC32K | OSC32K | OSCULP32K => OSC32K_FREQ,
             GCLKGEN1 => self.gclks[1],
-            OSC8M => 8.mhz().into(),
+            OSC8M => OSC8M_FREQ,
             DFLL48M => OSC48M_FREQ,
             DPLL96M => 96.mhz().into(),
             GCLKIN | XOSC => unimplemented!(),
@@ -339,6 +384,8 @@ clock_generator!(
 
 /// The frequency of the 48Mhz source.
 pub const OSC48M_FREQ: Hertz = Hertz(48_000_000);
+/// The frequency of the 8 Mhz source.
+pub const OSC8M_FREQ: Hertz = Hertz(8_000_000);
 /// The frequency of the 32Khz source.
 pub const OSC32K_FREQ: Hertz = Hertz(32_768);
 
