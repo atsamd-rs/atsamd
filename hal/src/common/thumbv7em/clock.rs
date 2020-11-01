@@ -130,17 +130,7 @@ impl State {
     }
 
     fn configure_standby(&mut self, gclk: ClockGenId, enable: bool) {
-        // We must first read out the configuration of genctrl to read/modify/write it.
-        //   To do so, we must do an 8-bit write to GENCTRL.ID (ref 15.6.4.1 Indirect
-        //   Access). 32-bit write did not work.
-        unsafe {
-            let genctrl_ptr_u8: *mut u8 = self.gclk.genctrl.as_ptr() as *mut u8;
-            *genctrl_ptr_u8 = u8::from(gclk);
-        }
-        self.wait_for_sync();
-
-        // Now that the configuration is loaded, modify it
-        self.gclk.genctrl.modify(|_, w| w.runstdby().bit(enable));
+        self.gclk.genctrl[u8::from(gclk) as usize].modify(|_, w| w.runstdby().bit(enable));
         self.wait_for_sync();
     }
 }
