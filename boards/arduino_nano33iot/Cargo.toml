@@ -44,6 +44,10 @@ version = "0.7.3"
 default-features = false
 features = ["small_rng"]
 
+[dev-dependencies]
+embedded-graphics = "0.6.2"
+st7735-lcd = "0.7.2"
+
 [features]
 # ask the HAL to enable atsamd21g support
 default = ["rt", "panic_halt", "atsamd-hal/samd21g"]

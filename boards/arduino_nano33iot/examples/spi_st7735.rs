@@ -51,7 +51,7 @@ fn main() -> ! {
     );
 
     let dc = pins.d6.into_open_drain_output(&mut pins.port);
-    let mut rst = pins.d9.into_open_drain_output(&mut pins.port);
+    let rst = pins.d9.into_open_drain_output(&mut pins.port);
 
     let mut disp = st7735_lcd::ST7735::new(spi, dc, rst, true, false, 160, 128);
 
@@ -66,8 +66,7 @@ fn main() -> ! {
     disp.set_offset(0, 25);
 
     // draw ferris
-    let image_raw: ImageRawLE<Rgb565> =
-        ImageRaw::new(include_bytes!("../assets/ferris.raw"), 86, 64);
+    let image_raw: ImageRawLE<Rgb565> = ImageRaw::new(include_bytes!("assets/ferris.raw"), 86, 64);
     let image: Image<_, Rgb565> = Image::new(&image_raw, Point::new(34, 8));
     image.draw(&mut disp).unwrap();
 
