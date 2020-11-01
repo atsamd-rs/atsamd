@@ -7,6 +7,7 @@ keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
+edition = "2018"
 
 [dependencies]
 cortex-m = "0.6"
@@ -86,6 +87,7 @@ required-features = ["unproven"]
 
 [[example]]
 name = "adc"
+required-features = ["unproven"]
 
 [[example]]
 name = "ssd1306_graphicsmode_128x64_i2c"

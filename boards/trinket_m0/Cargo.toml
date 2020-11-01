@@ -54,6 +54,7 @@ required-features = ["unproven"]
 
 [[example]]
 name = "watchdog"
+required-features = ["unproven"]
 
 [[example]]
 name = "usb_serial"
