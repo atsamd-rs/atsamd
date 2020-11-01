@@ -1,6 +1,6 @@
 //! PyGamer pins
 
-use super::{hal, pac, pac::MCLK, target_device};
+use super::{hal, pac, pac::MCLK, pac::QSPI, target_device};
 
 use crate::hal::gpio::{self, *};
 use gpio::{Floating, Input, Output, Port, PushPull};
@@ -12,6 +12,8 @@ use hal::sercom::{
     I2CMaster2, PadPin, SPIMaster1, SPIMaster4, Sercom2Pad0, Sercom2Pad1, Sercom4Pad1, Sercom4Pad2,
     Sercom4Pad3, UART5,
 };
+
+use hal::qspi;
 
 use embedded_hal::{digital::v1_compat::OldOutputPin, timer::CountDown, timer::Periodic};
 use ws2812_timer_delay as ws2812;
@@ -594,6 +596,14 @@ pub struct QSPIFlash {
     pub data1: Pa9<Input<Floating>>,
     pub data2: Pa10<Input<Floating>>,
     pub data3: Pa11<Input<Floating>>,
+}
+
+impl QSPIFlash {
+    pub fn init(self, mclk: &mut MCLK, port: &mut Port, qspi: QSPI) -> qspi::Qspi {
+        qspi::Qspi::new(
+            mclk, port, qspi, self.sck, self.cs, self.data0, self.data1, self.data2, self.data3,
+        )
+    }
 }
 
 /// Button pins

@@ -21,6 +21,8 @@ pub struct Qspi {
 }
 
 impl Qspi {
+    /// Enable the clocks for the qspi peripheral in single data rate mode
+    /// assuming 120mhz system clock, for 4mhz spi mode 0 operation.
     pub fn new(
         mclk: &mut MCLK,
         port: &mut Port,
@@ -48,8 +50,11 @@ impl Qspi {
 
         qspi.ctrla.write(|w| w.swrst().set_bit());
         qspi.baud.write(|w| unsafe {
-            w.baud().bits((120_000_000u32 / 4_000_000u32) as u8); // 4Mhz
-                                                                  // SPI MODE 0
+            // TODO get system clock value instead of hardcoding
+            //(120_000_000u32 / 4_000_000u32) = 30 = BAUD + 1
+            // BAUD = 29
+            w.baud().bits(29); // 4Mhz
+                               // SPI MODE 0
             w.cpol().clear_bit();
             w.cpha().clear_bit()
         });
@@ -231,7 +236,8 @@ impl Qspi {
         Ok(())
     }
 
-    /// Read a sequential block of memory to buf
+    /// Quad Fast Read a sequential block of memory to buf
+    /// Note hardcodes 8 dummy cycles
     pub fn read_memory(&mut self, addr: u32, buf: &mut [u8]) {
         let tfm = TransferMode {
             quad_width: true,
@@ -245,7 +251,10 @@ impl Qspi {
         unsafe { self.run_read_instruction(Command::QuadRead, tfm, addr, buf) };
     }
 
-    /// Write a sequential block of memory to addr
+    /// Page Program a sequential block of memory to addr.
+    ///
+    /// Note more than page size bytes are sent to the device, some bytes will
+    /// be discarded. Check your device for specific handling.
     pub fn write_memory(&mut self, addr: u32, buf: &[u8]) {
         self.qspi.instrframe.write(|w| {
             w.width().quad_output();
@@ -267,6 +276,14 @@ impl Qspi {
     }
 
     /// Set the clock divider, relative to the main clock
+    ///
+    /// This fn safely subtracts 1 from your input value as the underlying fn is
+    /// SCK Baud = MCKL / (value + 1)
+    ///
+    /// ex if MCLK is 120mhz
+    /// value  0 is reduced to  0 results in 120mhz clock
+    /// value  1 is reduced to  0 results in 120mhz clock
+    /// value  2 is reduced to  1 results in  60mhz clock
     pub fn set_clk_divider(&mut self, value: u8) {
         // The baud register is divisor - 1
         self.qspi
