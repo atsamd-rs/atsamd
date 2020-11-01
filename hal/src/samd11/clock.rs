@@ -102,7 +102,7 @@ impl GenericClockController {
         sysctrl: &mut SYSCTRL,
         nvmctrl: &mut NVMCTRL,
     ) -> Self {
-        Self::new(gclk, pm, sysctrl, nvmctrl, false)
+        Self::new_48mhz_from_32khz(gclk, pm, sysctrl, nvmctrl, false)
     }
 
     /// Reset the clock controller, configure the system to run
@@ -113,10 +113,10 @@ impl GenericClockController {
         sysctrl: &mut SYSCTRL,
         nvmctrl: &mut NVMCTRL,
     ) -> Self {
-        Self::new(gclk, pm, sysctrl, nvmctrl, true)
+        Self::new_48mhz_from_32khz(gclk, pm, sysctrl, nvmctrl, true)
     }
 
-    fn new(
+    fn new_48mhz_from_32khz(
         gclk: GCLK,
         pm: &mut PM,
         sysctrl: &mut SYSCTRL,
@@ -173,6 +173,50 @@ impl GenericClockController {
                 Hertz(0),
             ],
             used_clocks: 1u64 << u8::from(ClockId::DFLL48),
+        }
+    }
+
+    /// Reset the clock controller, configure the system to run at 8Mhz from internal 8 MHz RC clock (no PLL)
+    /// and reset various clock dividers.
+    pub fn with_internal_8mhz(
+        gclk: GCLK,
+        pm: &mut PM,
+        sysctrl: &mut SYSCTRL,
+        nvmctrl: &mut NVMCTRL,
+    ) -> Self {
+        let mut state = State { gclk };
+
+        // No wait states needed <= 24 MHz @ 3.3v (ref. 35.11 NVM characteristics)
+        enable_gclk_apb(pm);
+
+        state.reset_gclk();
+
+        // Enable 8 MHz source -> GCLK0
+        state.set_gclk_divider_and_source(GCLK0, 1, OSC8M, false);
+
+        // Reset various dividers back to 1
+        sysctrl.osc8m.modify(|_, w| {
+            w.presc()._0();
+            w.ondemand().clear_bit()
+        });
+        pm.cpusel.write(|w| w.cpudiv().div1());
+        pm.apbasel.write(|w| w.apbadiv().div1());
+        pm.apbbsel.write(|w| w.apbbdiv().div1());
+        pm.apbcsel.write(|w| w.apbcdiv().div1());
+
+        Self {
+            state,
+            gclks: [
+                OSC8M_FREQ,
+                Hertz(0),
+                Hertz(0),
+                Hertz(0),
+                Hertz(0),
+                Hertz(0),
+                Hertz(0),
+                Hertz(0),
+            ],
+            used_clocks: 0,
         }
     }
 
