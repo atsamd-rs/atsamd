@@ -23,8 +23,6 @@ pub use hal::samd21::*;
 pub use hal::target_device as pac;
 
 #[cfg(feature = "usb")]
-use hal::clock::GenericClockController;
-#[cfg(feature = "usb")]
 use hal::usb::usb_device::bus::UsbBusAllocator;
 #[cfg(feature = "usb")]
 pub use hal::usb::UsbBus;
