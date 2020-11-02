@@ -8,7 +8,7 @@ extern crate panic_halt;
 #[cfg(feature = "use_semihosting")]
 extern crate panic_semihosting;
 
-use hal::clock::GenericClockController;
+use hal::clock::{enable_external_32kosc, ClockGenId, ClockSource, GenericClockController};
 use hal::entry;
 use hal::pac::{interrupt, CorePeripherals, Peripherals, TC4};
 use hal::prelude::*;
@@ -26,7 +26,7 @@ fn main() -> ! {
     // Configure all of our peripherals/clocks
     let mut peripherals = Peripherals::take().unwrap();
     let mut core = CorePeripherals::take().unwrap();
-    let mut clocks = GenericClockController::with_external_32kosc(
+    let mut clocks = GenericClockController::with_internal_8mhz(
         peripherals.GCLK,
         &mut peripherals.PM,
         &mut peripherals.SYSCTRL,
@@ -34,8 +34,11 @@ fn main() -> ! {
     );
 
     // Get a clock & make a sleeping delay object
-    let gclk0 = clocks.gclk0();
-    let tc45 = &clocks.tc4_tc5(&gclk0).unwrap();
+    enable_external_32kosc(&mut peripherals.SYSCTRL);
+    let timer_clock = clocks
+        .configure_gclk_divider_and_source(ClockGenId::GCLK1, 1, ClockSource::XOSC32K, false)
+        .unwrap();
+    let tc45 = &clocks.tc4_tc5(&timer_clock).unwrap();
     let timer = timer::TimerCounter::tc4_(tc45, peripherals.TC4, &mut peripherals.PM);
     let mut sleeping_delay = SleepingDelay::new(timer, &INTERRUPT_FIRED);
 
