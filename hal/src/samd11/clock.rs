@@ -276,7 +276,7 @@ impl GenericClockController {
         let freq: Hertz = match src {
             XOSC32K | OSC32K | OSCULP32K => OSC32K_FREQ,
             GCLKGEN1 => self.gclks[1],
-            OSC8M => 8.mhz().into(),
+            OSC8M => OSC8M_FREQ,
             DFLL48M => OSC48M_FREQ,
             DPLL96M => 96.mhz().into(),
             GCLKIN | XOSC => unimplemented!(),
@@ -369,6 +369,8 @@ clock_generator!(
 
 /// The frequency of the 48Mhz source.
 pub const OSC48M_FREQ: Hertz = Hertz(48_000_000);
+/// The frequency of the 8 Mhz source.
+pub const OSC8M_FREQ: Hertz = Hertz(8_000_000);
 /// The frequency of the 32Khz source.
 pub const OSC32K_FREQ: Hertz = Hertz(32_768);
 
