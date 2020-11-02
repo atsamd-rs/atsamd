@@ -403,7 +403,7 @@ fn enable_gclk_apb(pm: &mut PM) {
 }
 
 /// Turn on the internal 32hkz oscillator
-fn enable_internal_32kosc(sysctrl: &mut SYSCTRL) {
+pub fn enable_internal_32kosc(sysctrl: &mut SYSCTRL) {
     let calibration = super::calibration::osc32k_cal();
     sysctrl.osc32k.write(|w| {
         unsafe {
@@ -421,7 +421,7 @@ fn enable_internal_32kosc(sysctrl: &mut SYSCTRL) {
 }
 
 /// Turn on the external 32hkz oscillator
-fn enable_external_32kosc(sysctrl: &mut SYSCTRL) {
+pub fn enable_external_32kosc(sysctrl: &mut SYSCTRL) {
     sysctrl.xosc32k.modify(|_, w| {
         unsafe {
             // 6 here means: use 64k cycles of OSCULP32k to start up this oscillator
