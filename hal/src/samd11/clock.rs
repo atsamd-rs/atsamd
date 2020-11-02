@@ -176,8 +176,8 @@ impl GenericClockController {
         }
     }
 
-    /// Reset the clock controller, configure the system to run at 8Mhz from internal 8 MHz RC clock (no PLL)
-    /// and reset various clock dividers.
+    /// Reset the clock controller, configure the system to run at 8Mhz from
+    /// internal 8 MHz RC clock (no PLL) and reset various clock dividers.
     pub fn with_internal_8mhz(
         gclk: GCLK,
         pm: &mut PM,
