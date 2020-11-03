@@ -151,6 +151,7 @@ pwm! {
 
 // Timer/Counter for Control Applications (TCCx)
 
+#[derive(Copy, Clone)]
 pub enum Channel {
     _0,
     _1,
