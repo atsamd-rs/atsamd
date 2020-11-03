@@ -45,7 +45,8 @@ fn main() -> ! {
     flash.run_command(Command::Reset).unwrap();
     delay.delay_ms(50u8);
 
-    // WARP SPEEEED (133Mhz = divide by 1 (plus one)).
+    // 120MHz / 2 = 60mhz
+    // w25q can do frequencies of up to 80MHz
     flash.set_clk_divider(2);
 
     // Enable Quad SPI mode.
