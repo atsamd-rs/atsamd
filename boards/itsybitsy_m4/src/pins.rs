@@ -78,7 +78,7 @@ define_pins!(
     pin dotstar_di = b3,
     /// Not connected, but usable as the MISO when addressing
     /// the dotstar over SPI.
-    pin dotstar_nc = b0,
+    pin dotstar_nc = a27,
 
     /// Hardware I2C SDA pin.
     pin i2c_sda = a12,
@@ -342,9 +342,9 @@ pub struct Analog {
 pub struct Dotstar {
     pub ci: Pb2<Input<Floating>>,
     pub di: Pb3<Input<Floating>>,
-    // Pb0 is NC on the ItsyBitsy M4, so its safe to use
+    // Pa27 is NC on the ItsyBitsy M4, so its safe to use
     // as the MISO given the HAL requires it.
-    pub nc: Pb0<Input<Floating>>,
+    pub nc: Pa27<Input<Floating>>,
 }
 
 impl Dotstar {
@@ -353,7 +353,7 @@ impl Dotstar {
         port: &mut Port,
         timer: T,
     ) -> apa102_spi::Apa102<
-        bitbang_hal::spi::SPI<Pb0<Input<PullUp>>, Pb3<Output<PushPull>>, Pb2<Output<PushPull>>, T>,
+        bitbang_hal::spi::SPI<Pa27<Input<PullUp>>, Pb3<Output<PushPull>>, Pb2<Output<PushPull>>, T>,
     > {
         let di = self.di.into_push_pull_output(port);
         let ci = self.ci.into_push_pull_output(port);

@@ -83,7 +83,7 @@ define_pins!(
     pin d24 = b11,
 
     /// Digital 22: MISO
-    pin d22 = b12,
+    pin d22 = a12,
 
     /// Digital 23: MOSI
     pin d23 = b10,

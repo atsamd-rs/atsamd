@@ -50,7 +50,7 @@ pub fn dotstar_bitbang<T: CountDown + Periodic>(
     port: &mut Port,
     timer: T,
 ) -> apa102_spi::Apa102<
-    bitbang_hal::spi::SPI<Pb0<Input<PullUp>>, Pb3<Output<PushPull>>, Pb2<Output<PushPull>>, T>,
+    bitbang_hal::spi::SPI<Pa27<Input<PullUp>>, Pb3<Output<PushPull>>, Pb2<Output<PushPull>>, T>,
 > {
     pins.dotstar(port, timer)
 }

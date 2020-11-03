@@ -84,7 +84,7 @@ define_pins!(
     pin dotstar_di = a1,
     /// Not connected, but usable as the MISO when addressing
     /// the dotstar over SPI.
-    pin dotstar_nc = b0,
+    pin dotstar_nc = a13,
 
     pin swdio = a31,
     pin swdclk = a30,
@@ -184,7 +184,7 @@ pub struct Analog {
 pub struct Dotstar {
     pub ci: Pa0<Input<Floating>>,
     pub di: Pa1<Input<Floating>>,
-    pub nc: Pb0<Input<Floating>>,
+    pub nc: Pa13<Input<Floating>>,
 }
 
 impl Dotstar {
@@ -194,7 +194,7 @@ impl Dotstar {
         timer: T,
         port: &mut Port,
     ) -> apa102_spi::Apa102<
-        bitbang_hal::spi::SPI<Pb0<Input<PullUp>>, Pa1<Output<PushPull>>, Pa0<Output<PushPull>>, T>,
+        bitbang_hal::spi::SPI<Pa13<Input<PullUp>>, Pa1<Output<PushPull>>, Pa0<Output<PushPull>>, T>,
     > {
         let di = self.di.into_push_pull_output(port);
         let ci = self.ci.into_push_pull_output(port);
