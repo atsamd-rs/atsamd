@@ -58,11 +58,13 @@ pad!(Sercom1Pad3 {
 
 pad!(Sercom2Pad0 {
     Pa8(PfD),
+    #[cfg(feature = "min-samd21g")]
     Pa12(PfC),
 });
 
 pad!(Sercom2Pad1 {
     Pa9(PfD),
+    #[cfg(feature = "min-samd21g")]
     Pa13(PfC),
 });
 
@@ -93,12 +95,14 @@ pad!(Sercom3Pad1 {
 
 pad!(Sercom3Pad2 {
     Pa18(PfD),
+    #[cfg(feature = "min-samd21g")]
     Pa20(PfD),
     Pa24(PfC),
 });
 
 pad!(Sercom3Pad3 {
     Pa19(PfD),
+    #[cfg(feature = "min-samd21g")]
     Pa21(PfD),
     Pa25(PfC),
 });
@@ -112,6 +116,7 @@ pad!(Sercom3Pad3 {
 pad!(Sercom4Pad0 {
     Pa12(PfD),
     Pb8(PfD),
+    #[cfg(feature = "min-samd21j")]
     Pb12(PfC),
 });
 
@@ -119,6 +124,7 @@ pad!(Sercom4Pad0 {
 pad!(Sercom4Pad1 {
     Pa13(PfD),
     Pb9(PfD),
+    #[cfg(feature = "min-samd21j")]
     Pb13(PfC),
 });
 
@@ -126,6 +132,7 @@ pad!(Sercom4Pad1 {
 pad!(Sercom4Pad2 {
     Pa14(PfD),
     Pb10(PfD),
+    #[cfg(feature = "min-samd21j")]
     Pb14(PfC),
 });
 
@@ -133,6 +140,7 @@ pad!(Sercom4Pad2 {
 pad!(Sercom4Pad3 {
     Pa15(PfD),
     Pb11(PfD),
+    #[cfg(feature = "min-samd21j")]
     Pb15(PfC),
 });
 
@@ -145,7 +153,9 @@ pad!(Sercom4Pad3 {
 pad!(Sercom5Pad0 {
     Pa22(PfD),
     Pb2(PfD),
+    #[cfg(feature = "min-samd21j")]
     Pb16(PfC),
+    #[cfg(feature = "min-samd21j")]
     Pb30(PfD),
 });
 
@@ -153,13 +163,16 @@ pad!(Sercom5Pad0 {
 pad!(Sercom5Pad1 {
     Pa23(PfD),
     Pb3(PfD),
+    #[cfg(feature = "min-samd21j")]
     Pb17(PfC),
+    #[cfg(feature = "min-samd21j")]
     Pb31(PfD),
 });
 
 #[cfg(feature = "min-samd21g")]
 pad!(Sercom5Pad2 {
     Pa24(PfD),
+    #[cfg(feature = "min-samd21j")]
     Pb0(PfD),
     Pa20(PfC),
     Pb22(PfD),
@@ -168,6 +181,7 @@ pad!(Sercom5Pad2 {
 #[cfg(feature = "min-samd21g")]
 pad!(Sercom5Pad3 {
     Pa25(PfD),
+    #[cfg(feature = "min-samd21j")]
     Pb1(PfD),
     Pa21(PfC),
     Pb23(PfD),

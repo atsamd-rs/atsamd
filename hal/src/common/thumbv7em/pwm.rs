@@ -7,7 +7,7 @@ use crate::timer::TimerParams;
 use crate::target_device::{MCLK, TC0, TC1, TC2, TC3, TCC0, TCC1, TCC2};
 #[cfg(feature = "min-samd51j")]
 use crate::target_device::{TC4, TC5, TCC3, TCC4};
-#[cfg(feature = "min-samd51p")]
+#[cfg(feature = "min-samd51n")]
 use crate::target_device::{TC6, TC7};
 
 // Timer/Counter (TCx)
@@ -15,6 +15,7 @@ use crate::target_device::{TC6, TC7};
 pub enum TC0Pinout {
     Pa5(Pa5<PfE>),
     Pa9(Pa9<PfE>),
+    #[cfg(feature = "min-samd51j")]
     Pb31(Pb31<PfE>),
 }
 

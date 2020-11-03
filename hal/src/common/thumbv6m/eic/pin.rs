@@ -193,9 +193,9 @@ ei!(ExtInt[7] {
 ei!(ExtInt[0] {
     Pa0,
     Pa16,
-    #[cfg(feature = "min-samd21g")]
+    #[cfg(feature = "min-samd21j")]
     Pb0,
-    #[cfg(feature = "min-samd21g")]
+    #[cfg(feature = "min-samd21j")]
     Pb16,
 });
 
@@ -203,9 +203,9 @@ ei!(ExtInt[0] {
 ei!(ExtInt[1] {
     Pa1,
     Pa17,
-    #[cfg(feature = "min-samd21g")]
+    #[cfg(feature = "min-samd21j")]
     Pb1,
-    #[cfg(feature = "min-samd21g")]
+    #[cfg(feature = "min-samd21j")]
     Pb17,
 });
 
@@ -228,16 +228,18 @@ ei!(ExtInt[3] {
 #[cfg(feature = "samd21")]
 ei!(ExtInt[4] {
     Pa4,
-    Pa20,
     #[cfg(feature = "min-samd21g")]
+    Pa20,
+    #[cfg(feature = "min-samd21j")]
     Pb4,
 });
 
 #[cfg(feature = "samd21")]
 ei!(ExtInt[5] {
     Pa5,
-    Pa21,
     #[cfg(feature = "min-samd21g")]
+    Pa21,
+    #[cfg(feature = "min-samd21j")]
     Pb5,
 });
 
@@ -245,7 +247,7 @@ ei!(ExtInt[5] {
 ei!(ExtInt[6] {
     Pa6,
     Pa22,
-    #[cfg(feature = "min-samd21g")]
+    #[cfg(feature = "min-samd21j")]
     Pb6,
     #[cfg(feature = "min-samd21g")]
     Pb22,
@@ -255,7 +257,7 @@ ei!(ExtInt[6] {
 ei!(ExtInt[7] {
     Pa7,
     Pa23,
-    #[cfg(feature = "min-samd21g")]
+    #[cfg(feature = "min-samd21j")]
     Pb7,
     #[cfg(feature = "min-samd21g")]
     Pb23,
@@ -293,26 +295,28 @@ ei!(ExtInt[11] {
 
 #[cfg(feature = "samd21")]
 ei!(ExtInt[12] {
+    #[cfg(feature = "min-samd21g")]
     Pa12,
     Pa24,
-    #[cfg(feature = "min-samd21g")]
+    #[cfg(feature = "min-samd21j")]
     Pb12,
 });
 
 #[cfg(feature = "samd21")]
 ei!(ExtInt[13] {
+    #[cfg(feature = "min-samd21g")]
     Pa13,
     Pa25,
-    #[cfg(feature = "min-samd21g")]
+    #[cfg(feature = "min-samd21j")]
     Pb13,
 });
 
 #[cfg(feature = "samd21")]
 ei!(ExtInt[14] {
     Pa14,
-    #[cfg(feature = "min-samd21g")]
+    #[cfg(feature = "min-samd21j")]
     Pb14,
-    #[cfg(feature = "min-samd21g")]
+    #[cfg(feature = "min-samd21j")]
     Pb30,
 });
 
@@ -320,8 +324,8 @@ ei!(ExtInt[14] {
 ei!(ExtInt[15] {
     Pa15,
     Pa27,
-    #[cfg(feature = "min-samd21g")]
+    #[cfg(feature = "min-samd21j")]
     Pb15,
-    #[cfg(feature = "min-samd21g")]
+    #[cfg(feature = "min-samd21j")]
     Pb31,
 });
