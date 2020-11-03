@@ -1,5 +1,4 @@
 pub mod eic;
-pub mod gpio;
 
 mod reset_cause;
 pub use reset_cause::*;
