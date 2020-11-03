@@ -2,10 +2,10 @@ use crate::clock::GenericClockController;
 #[rustfmt::skip]
 use crate::gpio::{
     Pa2, Pa3, Pa4, Pa5, Pa6, Pa7, Pa8, Pa9, Pa10, Pa11,
-    Pb0, Pb1, Pb2, Pb3, Pb8, Pb9, PfB,
+    Pb2, Pb3, Pb8, Pb9, PfB,
 };
 #[cfg(feature = "min-samd51j")]
-use crate::gpio::{Pb4, Pb5, Pb6, Pb7};
+use crate::gpio::{Pb0, Pb1, Pb4, Pb5, Pb6, Pb7};
 #[cfg(feature = "min-samd51n")]
 use crate::gpio::{Pc0, Pc1, Pc2, Pc3};
 #[cfg(feature = "min-samd51p")]
@@ -218,8 +218,6 @@ adc_pins! {
     Pa9:  (ADC0, 9),
     Pa10: (ADC0, 10),
     Pa11: (ADC0, 11),
-    Pb0:  (ADC0, 12),
-    Pb1:  (ADC0, 13),
     Pb2:  (ADC0, 14),
     Pb3:  (ADC0, 15),
 
@@ -231,6 +229,8 @@ adc_pins! {
 
 #[cfg(feature = "min-samd51j")]
 adc_pins! {
+    Pb0:  (ADC0, 12),
+    Pb1:  (ADC0, 13),
     Pb4:  (ADC1, 6),
     Pb5:  (ADC1, 7),
     Pb6:  (ADC1, 8),

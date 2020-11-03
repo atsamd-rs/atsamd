@@ -138,13 +138,8 @@ impl Channel<ADC> for $pin<PfB> {
 #[cfg(feature = "samd11")]
 adc_pins! {
     Pa2: 0,
-    Pa3: 1,
     Pa4: 2,
     Pa5: 3,
-    Pa6: 4,
-    Pa7: 5,
-    Pa10: 8,
-    Pa11: 9,
     Pa14: 6,
     Pa15: 7
 }
@@ -165,14 +160,18 @@ adc_pins! {
 
 #[cfg(feature = "min-samd21g")]
 adc_pins! {
-    Pb0: 8,
-    Pb1: 9,
     Pb2: 10,
     Pb3: 11,
+    Pb8: 2,
+    Pb9: 3
+}
+
+#[cfg(feature = "min-samd21j")]
+adc_pins! {
+    Pb0: 8,
+    Pb1: 9,
     Pb4: 12,
     Pb5: 13,
     Pb6: 14,
-    Pb7: 15,
-    Pb8: 2,
-    Pb9: 3
+    Pb7: 15
 }

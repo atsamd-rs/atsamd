@@ -148,7 +148,9 @@ crate::paste::item! {
 ei!(ExtInt[0] {
     Pa0,
     Pa16,
+    #[cfg(feature = "min-samd51j")]
     Pb0,
+    #[cfg(feature = "min-samd51j")]
     Pb16,
     #[cfg(feature = "min-samd51n")]
     Pc0,
@@ -161,7 +163,9 @@ ei!(ExtInt[0] {
 ei!(ExtInt[1] {
     Pa1,
     Pa17,
+    #[cfg(feature = "min-samd51j")]
     Pb1,
+    #[cfg(feature = "min-samd51j")]
     Pb17,
     #[cfg(feature = "min-samd51n")]
     Pc1,
@@ -175,6 +179,7 @@ ei!(ExtInt[2] {
     Pa2,
     Pa18,
     Pb2,
+    #[cfg(feature = "min-samd51n")]
     Pb18,
     #[cfg(feature = "min-samd51n")]
     Pc2,
@@ -186,6 +191,7 @@ ei!(ExtInt[3] {
     Pa3,
     Pa19,
     Pb3,
+    #[cfg(feature = "min-samd51n")]
     Pb19,
     #[cfg(feature = "min-samd51n")]
     Pc3,
@@ -198,9 +204,11 @@ ei!(ExtInt[3] {
 ei!(ExtInt[4] {
     Pa4,
     Pa20,
+    #[cfg(feature = "min-samd51j")]
     Pb4,
-    Pb20,
     #[cfg(feature = "min-samd51n")]
+    Pb20,
+    #[cfg(feature = "min-samd51p")]
     Pc4,
     #[cfg(feature = "min-samd51n")]
     Pc20,
@@ -211,7 +219,9 @@ ei!(ExtInt[4] {
 ei!(ExtInt[5] {
     Pa5,
     Pa21,
+    #[cfg(feature = "min-samd51j")]
     Pb5,
+    #[cfg(feature = "min-samd51n")]
     Pb21,
     #[cfg(feature = "min-samd51n")]
     Pc5,
@@ -224,11 +234,12 @@ ei!(ExtInt[5] {
 ei!(ExtInt[6] {
     Pa6,
     Pa22,
+    #[cfg(feature = "min-samd51j")]
     Pb6,
     Pb22,
     #[cfg(feature = "min-samd51n")]
     Pc6,
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "min-samd51p")]
     Pc22,
     #[cfg(feature = "min-samd51p")]
     Pd11,
@@ -237,9 +248,10 @@ ei!(ExtInt[6] {
 ei!(ExtInt[7] {
     Pa7,
     Pa23,
+    #[cfg(feature = "min-samd51j")]
     Pb7,
     Pb23,
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "min-samd51p")]
     Pc23,
     #[cfg(feature = "min-samd51p")]
     Pd12,
@@ -248,6 +260,7 @@ ei!(ExtInt[7] {
 ei!(ExtInt[8] {
     Pa24,
     Pb8,
+    #[cfg(feature = "min-samd51n")]
     Pb24,
     #[cfg(feature = "min-samd51n")]
     Pc24,
@@ -257,6 +270,7 @@ ei!(ExtInt[9] {
     Pa9,
     Pa25,
     Pb9,
+    #[cfg(feature = "min-samd51n")]
     Pb25,
     #[cfg(feature = "min-samd51n")]
     Pc7,
@@ -289,7 +303,9 @@ ei!(ExtInt[11] {
 
 ei!(ExtInt[12] {
     Pa12,
+    #[cfg(feature = "min-samd51j")]
     Pb12,
+    #[cfg(feature = "min-samd51p")]
     Pb26,
     #[cfg(feature = "min-samd51n")]
     Pc12,
@@ -299,7 +315,9 @@ ei!(ExtInt[12] {
 
 ei!(ExtInt[13] {
     Pa13,
+    #[cfg(feature = "min-samd51j")]
     Pb13,
+    #[cfg(feature = "min-samd51p")]
     Pb27,
     #[cfg(feature = "min-samd51n")]
     Pc13,
@@ -308,23 +326,29 @@ ei!(ExtInt[13] {
 ei!(ExtInt[14] {
     Pa14,
     Pa30,
+    #[cfg(feature = "min-samd51j")]
     Pb14,
+    #[cfg(feature = "min-samd51p")]
     Pb28,
+    #[cfg(feature = "min-samd51j")]
     Pb30,
     #[cfg(feature = "min-samd51n")]
     Pc14,
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "min-samd51p")]
     Pc30,
 });
 
 ei!(ExtInt[15] {
     Pa15,
     Pa31,
+    #[cfg(feature = "min-samd51j")]
     Pb15,
+    #[cfg(feature = "min-samd51p")]
     Pb29,
+    #[cfg(feature = "min-samd51j")]
     Pb31,
     #[cfg(feature = "min-samd51n")]
     Pc15,
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "min-samd51p")]
     Pc31,
 });

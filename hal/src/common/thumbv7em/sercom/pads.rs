@@ -169,6 +169,7 @@ pad!(Sercom3Pad3 {
 pad!(Sercom4Pad0 {
     Pa13(PfD),
     Pb8(PfD),
+    #[cfg(feature = "min-samd51j")]
     Pb12(PfC),
     #[cfg(feature = "min-samd51p")]
     Pb27(PfD),
@@ -177,6 +178,7 @@ pad!(Sercom4Pad0 {
 pad!(Sercom4Pad1 {
     Pa12(PfD),
     Pb9(PfD),
+    #[cfg(feature = "min-samd51j")]
     Pb13(PfC),
     #[cfg(feature = "min-samd51p")]
     Pb26(PfD),
@@ -185,6 +187,7 @@ pad!(Sercom4Pad1 {
 pad!(Sercom4Pad2 {
     Pa14(PfD),
     Pb10(PfD),
+    #[cfg(feature = "min-samd51j")]
     Pb14(PfC),
     #[cfg(feature = "min-samd51p")]
     Pb28(PfD),
@@ -193,6 +196,7 @@ pad!(Sercom4Pad2 {
 pad!(Sercom4Pad3 {
     Pa15(PfD),
     Pb11(PfD),
+    #[cfg(feature = "min-samd51j")]
     Pb15(PfC),
     #[cfg(feature = "min-samd51p")]
     Pb29(PfD),
@@ -206,20 +210,25 @@ pad!(Sercom4Pad3 {
 pad!(Sercom5Pad0 {
     Pa23(PfD),
     Pb2(PfD),
+    #[cfg(feature = "min-samd51j")]
     Pb16(PfC),
+    #[cfg(feature = "min-samd51j")]
     Pb31(PfD),
 });
 
 pad!(Sercom5Pad1 {
     Pa22(PfD),
     Pb3(PfD),
+    #[cfg(feature = "min-samd51j")]
     Pb17(PfC),
+    #[cfg(feature = "min-samd51j")]
     Pb30(PfD),
 });
 
 pad!(Sercom5Pad2 {
     Pa20(PfC),
     Pa24(PfD),
+    #[cfg(feature = "min-samd51j")]
     Pb0(PfD),
     #[cfg(feature = "min-samd51n")]
     Pb18(PfC),
@@ -229,6 +238,7 @@ pad!(Sercom5Pad2 {
 pad!(Sercom5Pad3 {
     Pa21(PfC),
     Pa25(PfD),
+    #[cfg(feature = "min-samd51j")]
     Pb1(PfD),
     #[cfg(feature = "min-samd51n")]
     Pb19(PfC),
