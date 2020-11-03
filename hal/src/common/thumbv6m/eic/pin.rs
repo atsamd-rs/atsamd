@@ -126,14 +126,14 @@ crate::paste::item! {
 
     $(
         $(#[$attr])*
-        impl<MODE> EicPin<[<$PadType $num>]<gpio::$PinType<gpio::PfA>>> for gpio::$PinType<MODE> {
+        impl<MODE: gpio::PinMode> EicPin<[<$PadType $num>]<gpio::$PinType<gpio::PfA>>> for gpio::$PinType<MODE> {
             fn into_ei(self, port: &mut Port) -> [<$PadType $num>]<gpio::$PinType<gpio::PfA>> {
                 [<$PadType $num>]::new(self.into_function(port))
             }
         }
 
         $(#[$attr])*
-        impl<MODE> ExternalInterrupt for &gpio::$PinType<MODE> {
+        impl<MODE: gpio::PinMode> ExternalInterrupt for &gpio::$PinType<MODE> {
             fn id(self) -> ExternalInterruptID {
                 $num
             }

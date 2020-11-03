@@ -34,7 +34,7 @@ impl<PIN> $PadType<PIN> {
 
 $(
     $( #[$attr] )*
-    impl<MODE> PadPin<$PadType<gpio::$PinType<gpio::$Pf>>> for gpio::$PinType<MODE> {
+    impl<MODE: gpio::PinMode> PadPin<$PadType<gpio::$PinType<gpio::$Pf>>> for gpio::$PinType<MODE> {
         fn into_pad(self, port: &mut Port) -> $PadType<gpio::$PinType<gpio::$Pf>> {
             $PadType::new(self.into_function(port))
         }
