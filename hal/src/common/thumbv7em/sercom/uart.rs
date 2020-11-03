@@ -156,7 +156,7 @@ macro_rules! uart {
                             w.runstdby().set_bit(); // Run in standby
                             w.form().bits(0); // 0 is no parity bits
 
-                            // w.mode().usart_int_clk(); // Internal clock mode
+                            w.mode().usart_int_clk(); // Internal clock mode
                             w.cmode().clear_bit() // Asynchronous mode
                         });
 
