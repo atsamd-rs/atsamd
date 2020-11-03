@@ -1,7 +1,7 @@
 #![no_std]
 #![no_main]
 
-extern crate arduino_mkrzero as hal;
+extern crate arduino_zero as hal;
 extern crate atsamd_hal;
 
 use hal::clock::{GenericClockController, Tcc0Tcc1Clock};

@@ -1,7 +1,7 @@
 #![no_std]
 #![no_main]
 
-extern crate arduino_mkrzero as hal;
+extern crate arduino_zero as hal;
 extern crate cortex_m;
 extern crate panic_halt;
 extern crate usb_device;
@@ -35,7 +35,7 @@ fn main() -> ! {
         &mut peripherals.NVMCTRL,
     );
     let mut pins = hal::Pins::new(peripherals.PORT);
-    let mut led = pins.led_builtin.into_open_drain_output(&mut pins.port);
+    let mut led = pins.led_sck.into_open_drain_output(&mut pins.port);
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
     let bus_allocator = unsafe {
