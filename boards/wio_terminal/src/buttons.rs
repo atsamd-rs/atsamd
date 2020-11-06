@@ -93,6 +93,7 @@ impl ButtonPins {
     }
 }
 
+#[derive(Debug, PartialEq, Eq)]
 pub enum Button {
     TopLeft,
     TopMiddle,
@@ -104,6 +105,7 @@ pub enum Button {
     Click,
 }
 
+#[derive(Debug, PartialEq, Eq)]
 pub struct ButtonEvent {
     pub button: Button,
     pub down: bool,
