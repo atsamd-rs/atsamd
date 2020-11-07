@@ -4,7 +4,6 @@ pub mod sleeping_delay;
 pub mod pad;
 pub mod prelude;
 pub mod spi_common;
-pub mod time;
 pub mod timer_traits;
 
 #[cfg(any(feature = "samd11", feature = "samd21"))]

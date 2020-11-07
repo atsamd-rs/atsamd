@@ -9,7 +9,13 @@ use crate::target_device::{TC4, TC5};
 use crate::timer_traits::InterruptDrivenTimer;
 
 use crate::clock;
-use crate::time::{Hertz, Nanoseconds};
+use embedded_time::{
+    duration::{Duration, Nanoseconds},
+    fixed_point::FixedPoint,
+    fraction::Fraction,
+    rate::Hertz,
+};
+
 use void::Void;
 
 use cortex_m::asm::delay as cycle_delay;
@@ -51,9 +57,15 @@ where
     where
         T: Into<Self::Time>,
     {
-        let params = TimerParams::new_us(timeout, self.freq.0);
-        let divider = params.divider;
-        let cycles = params.cycles;
+        let ns: Nanoseconds<u32> = timeout.into();
+        let params = Fraction::new_reduce(
+            *self.freq.integer(),
+            *ns.to_rate::<Hertz<u32>>().unwrap().integer(),
+        )
+        .unwrap();
+
+        let divider = *params.numerator();
+        let cycles = *params.denominator();
         let count = self.tc.count_16();
 
         // Disable the timer while we reconfigure it
@@ -168,59 +180,6 @@ impl TimerCounter<$TC>
     }
 }
         )+
-    }
-}
-
-/// Helper type for computing cycles and divider given frequency
-#[derive(Debug, Clone, Copy)]
-pub struct TimerParams {
-    pub divider: u16,
-    pub cycles: u32,
-}
-
-impl TimerParams {
-    pub fn new<T>(timeout: T, src_freq: u32) -> Self
-    where
-        T: Into<Hertz>,
-    {
-        let timeout = timeout.into();
-        let ticks: u32 = src_freq / timeout.0.max(1);
-        Self::new_from_ticks(ticks)
-    }
-
-    pub fn new_us<T>(timeout: T, src_freq: u32) -> Self
-    where
-        T: Into<Nanoseconds>,
-    {
-        let timeout = timeout.into();
-        let ticks: u32 = (timeout.0 as u64 * src_freq as u64 / 1_000_000_000_u64) as u32;
-        Self::new_from_ticks(ticks)
-    }
-
-    fn new_from_ticks(ticks: u32) -> Self {
-        let divider = ((ticks >> 16) + 1).next_power_of_two();
-        let divider = match divider {
-            1 | 2 | 4 | 8 | 16 | 64 | 256 | 1024 => divider,
-            // There are a couple of gaps, so we round up to the next largest
-            // divider; we'll need to count twice as many but it will work.
-            32 => 64,
-            128 => 256,
-            512 => 1024,
-            // Catch all case; this is lame.  Would be great to detect this
-            // and fail at compile time.
-            _ => 1024,
-        };
-
-        let cycles: u32 = ticks / divider as u32;
-
-        if cycles > u16::max_value() as u32 {
-            panic!("cycles {} is out of range for a 16 bit counter", cycles);
-        }
-
-        TimerParams {
-            divider: divider as u16,
-            cycles,
-        }
     }
 }
 

@@ -1,8 +1,7 @@
 use crate::clock;
 use crate::gpio::*;
 use crate::hal::{Pwm, PwmPin};
-use crate::time::Hertz;
-use crate::timer::TimerParams;
+use embedded_time::{fixed_point::FixedPoint, fraction::Fraction, rate::Hertz};
 
 use crate::target_device::{MCLK, TC0, TC1, TC2, TC3, TCC0, TCC1, TCC2};
 #[cfg(feature = "min-samd51j")]
@@ -86,13 +85,18 @@ impl $TYPE {
         let freq = freq.into();
         {
             let count = tc.count16();
-            let params = TimerParams::new(freq, clock.freq().0);
+
+            let params = Fraction::new_reduce(
+                *clock.freq().integer(),
+                *freq.integer(),
+            ).unwrap();
+
             mclk.$apmask.modify(|_, w| w.$apbits().set_bit());
             count.ctrla.write(|w| w.swrst().set_bit());
             while count.ctrla.read().bits() & 1 != 0 {}
             count.ctrla.modify(|_, w| w.enable().clear_bit());
             count.ctrla.modify(|_, w| {
-                match params.divider {
+                match *params.numerator() {
                     1 => w.prescaler().div1(),
                     2 => w.prescaler().div2(),
                     4 => w.prescaler().div4(),
@@ -105,7 +109,7 @@ impl $TYPE {
                 }
             });
             count.wave.write(|w| w.wavegen().mpwm());
-            count.cc[0].write(|w| unsafe { w.cc().bits(params.cycles as u16) });
+            count.cc[0].write(|w| unsafe { w.cc().bits(*params.denominator() as u16) });
             while count.syncbusy.read().cc0().bit_is_set() {}
             count.cc[1].write(|w| unsafe { w.cc().bits(0) });
             while count.syncbusy.read().cc1().bit_is_set() {}
@@ -130,12 +134,15 @@ impl $TYPE {
     where
         P: Into<Hertz>
     {
-        let period = period.into();
-        let params = TimerParams::new(period, self.clock_freq.0);
+        let params = Fraction::new_reduce(
+            *self.clock_freq.integer(),
+            *period.into().integer(),
+        ).unwrap();
+
         let count = self.tc.count16();
         count.ctrla.modify(|_, w| w.enable().clear_bit());
         count.ctrla.modify(|_, w| {
-                match params.divider {
+                match *params.numerator() {
                     1 => w.prescaler().div1(),
                     2 => w.prescaler().div2(),
                     4 => w.prescaler().div4(),
@@ -148,7 +155,7 @@ impl $TYPE {
                 }
             });
         count.ctrla.modify(|_, w| w.enable().set_bit());
-        count.cc[0].write(|w| unsafe { w.cc().bits(params.cycles as u16) });
+        count.cc[0].write(|w| unsafe { w.cc().bits(*params.denominator() as u16) });
         while count.syncbusy.read().cc0().bit_is_set() {}
     }
 }
@@ -396,7 +403,11 @@ impl $TYPE {
     ) -> Self {
         let freq = freq.into();
         {
-            let params = TimerParams::new(freq, clock.freq().0);
+            let params = Fraction::new_reduce(
+                *clock.freq().integer(),
+                *freq.integer(),
+            ).unwrap();
+
             mclk.$apmask.modify(|_, w| w.$apbits().set_bit());
             tcc.ctrla.write(|w| w.swrst().set_bit());
             while tcc.syncbusy.read().swrst().bit_is_set() {}
@@ -404,7 +415,7 @@ impl $TYPE {
             while tcc.syncbusy.read().ctrlb().bit_is_set() {}
             tcc.ctrla.modify(|_, w| w.enable().clear_bit());
             tcc.ctrla.modify(|_, w| {
-                match params.divider {
+                match *params.numerator() {
                     1 => w.prescaler().div1(),
                     2 => w.prescaler().div2(),
                     4 => w.prescaler().div4(),
@@ -418,7 +429,7 @@ impl $TYPE {
             });
             tcc.wave.write(|w| w.wavegen().npwm());
             while tcc.syncbusy.read().wave().bit_is_set() {}
-            tcc.per().write(|w| unsafe { w.bits(params.cycles as u32) });
+            tcc.per().write(|w| unsafe { w.bits(*params.denominator() as u32) });
             while tcc.syncbusy.read().per().bit_is_set() {}
             tcc.ctrla.modify(|_, w| w.enable().set_bit());
         }
@@ -472,12 +483,15 @@ impl Pwm for $TYPE {
     where
         P: Into<Self::Time>,
     {
-        let period = period.into();
-        let params = TimerParams::new(period, self.clock_freq.0);
+        let params = Fraction::new_reduce(
+            *self.clock_freq.integer(),
+            *period.into().integer(),
+        ).unwrap();
+
         self.tcc.ctrla.modify(|_, w| w.enable().clear_bit());
         while self.tcc.syncbusy.read().enable().bit_is_set() {}
         self.tcc.ctrla.modify(|_, w| {
-            match params.divider {
+            match *params.numerator() {
                 1 => w.prescaler().div1(),
                 2 => w.prescaler().div2(),
                 4 => w.prescaler().div4(),
@@ -491,7 +505,7 @@ impl Pwm for $TYPE {
         });
         self.tcc.ctrla.modify(|_, w| w.enable().set_bit());
         while self.tcc.syncbusy.read().enable().bit_is_set() {}
-        self.tcc.per().write(|w| unsafe { w.bits(params.cycles as u32) });
+        self.tcc.per().write(|w| unsafe { w.bits(*params.denominator() as u32) });
         while self.tcc.syncbusy.read().per().bit() {}
     }
 }
