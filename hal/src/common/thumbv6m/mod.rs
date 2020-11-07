@@ -1,3 +1,4 @@
+pub mod eic;
 pub mod gpio;
 
 mod reset_cause;

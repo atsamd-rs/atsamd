@@ -49,6 +49,9 @@ use_semihosting = []
 name = "blinky_basic"
 
 [[example]]
+name = "eic"
+
+[[example]]
 name = "pwm"
 required-features = ["unproven"]
 
