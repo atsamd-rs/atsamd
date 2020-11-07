@@ -79,6 +79,21 @@ impl State {
         });
         self.wait_for_sync();
     }
+
+    fn configure_standby(&mut self, gclk: ClockGenId, enable: bool) {
+        // We must first read out the configuration of genctrl to read/modify/write it.
+        //   To do so, we must do an 8-bit write to GENCTRL.ID (ref 15.6.4.1 Indirect
+        //   Access). 32-bit write did not work.
+        unsafe {
+            let genctrl_ptr_u8: *mut u8 = self.gclk.genctrl.as_ptr() as *mut u8;
+            *genctrl_ptr_u8 = u8::from(gclk);
+        }
+        self.wait_for_sync();
+
+        // Now that the configuration is loaded, modify it
+        self.gclk.genctrl.modify(|_, w| w.runstdby().bit(enable));
+        self.wait_for_sync();
+    }
 }
 
 /// `GenericClockController` encapsulates the GCLK hardware.
@@ -286,6 +301,11 @@ impl GenericClockController {
         self.gclks[idx] = Hertz(freq.0 / divider as u32);
         Some(GClock { gclk, freq })
     }
+
+    /// Enables or disables the given GClk from operation in standby.
+    pub fn configure_standby(&mut self, gclk: ClockGenId, enable: bool) {
+        self.state.configure_standby(gclk, enable)
+    }
 }
 
 macro_rules! clock_generator {
@@ -413,7 +433,8 @@ pub fn enable_internal_32kosc(sysctrl: &mut SYSCTRL) {
             w.startup().bits(6);
         }
         w.en32k().set_bit();
-        w.enable().set_bit()
+        w.enable().set_bit();
+        w.runstdby().set_bit()
     });
     while sysctrl.pclksr.read().osc32krdy().bit_is_clear() {
         // Wait for the oscillator to stabilize
@@ -431,7 +452,8 @@ pub fn enable_external_32kosc(sysctrl: &mut SYSCTRL) {
         // Enable 32khz output
         w.en32k().set_bit();
         // Crystal connected to xin32/xout32
-        w.xtalen().set_bit()
+        w.xtalen().set_bit();
+        w.runstdby().set_bit()
     });
     sysctrl.xosc32k.modify(|_, w| w.enable().set_bit());
     while sysctrl.pclksr.read().xosc32krdy().bit_is_clear() {

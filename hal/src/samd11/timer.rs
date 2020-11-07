@@ -84,7 +84,8 @@ where
             };
             // Enable Match Frequency Waveform generation
             w.wavegen().mfrq();
-            w.enable().set_bit()
+            w.enable().set_bit();
+            w.runstdby().set_bit()
         });
     }
 

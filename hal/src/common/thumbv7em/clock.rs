@@ -128,6 +128,11 @@ impl State {
         });
         self.wait_for_sync();
     }
+
+    fn configure_standby(&mut self, gclk: ClockGenId, enable: bool) {
+        self.gclk.genctrl[u8::from(gclk) as usize].modify(|_, w| w.runstdby().bit(enable));
+        self.wait_for_sync();
+    }
 }
 
 /// `GenericClockController` encapsulates the GCLK hardware.
@@ -306,6 +311,11 @@ impl GenericClockController {
         self.gclks[idx] = Hertz(freq.0 / divider as u32);
         Some(GClock { gclk, freq })
     }
+
+    /// Enables or disables the given GClk from operation in standby.
+    pub fn configure_standby(&mut self, gclk: ClockGenId, enable: bool) {
+        self.state.configure_standby(gclk, enable)
+    }
 }
 
 macro_rules! clock_generator {
@@ -462,7 +472,8 @@ fn enable_external_32kosc(osc32kctrl: &mut OSC32KCTRL) {
         // Crystal connected to xin32/xout32
         w.xtalen().set_bit();
         w.enable().set_bit();
-        w.cgm().xt()
+        w.cgm().xt();
+        w.runstdby().set_bit()
     });
 
     osc32kctrl.rtcctrl.write(|w| w.rtcsel().xosc1k());

@@ -113,3 +113,6 @@ required-features = ["usb"]
 
 [[example]]
 name = "sleeping_timer"
+
+[[example]]
+name = "sleeping_timer_rtc"

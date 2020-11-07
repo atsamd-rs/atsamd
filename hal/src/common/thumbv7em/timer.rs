@@ -94,7 +94,8 @@ where
                 1024 => w.prescaler().div1024(),
                 _ => unreachable!(),
             };
-            w.enable().set_bit()
+            w.enable().set_bit();
+            w.runstdby().set_bit()
         });
     }
 
