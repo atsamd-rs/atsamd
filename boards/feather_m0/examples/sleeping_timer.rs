@@ -1,3 +1,15 @@
+//! Uses a timer in standby mode to blink an LED for maximum power savings.
+//!
+//! We also use the internal 8MHz RC oscillator & the internal 32k oscillator
+//! to save power as it doesn't require the PLL. In standby on my feather_m0,
+//! we draw 247 uA when the LED is off and 891 uA when the LED is on at 4.3v.
+//! We are slightly limited by the quiescent current draw of the regulator of
+//! 90-150 uA.
+//!
+//! Some more power numbers that I measured:
+//! In IDLE2 we draw 740 uA (CPU & AHB & APB domain off)
+//! In IDLE1 we draw 870 uA (CPU & AHB domain off)
+//! In IDLE0 we draw 870 uA (CPU domain off)
 #![no_std]
 #![no_main]
 
@@ -8,7 +20,7 @@ extern crate panic_halt;
 #[cfg(feature = "use_semihosting")]
 extern crate panic_semihosting;
 
-use hal::clock::{enable_external_32kosc, ClockGenId, ClockSource, GenericClockController};
+use hal::clock::{enable_internal_32kosc, ClockGenId, ClockSource, GenericClockController};
 use hal::entry;
 use hal::pac::{interrupt, CorePeripherals, Peripherals, TC4};
 use hal::prelude::*;
@@ -33,18 +45,18 @@ fn main() -> ! {
         &mut peripherals.NVMCTRL,
     );
 
-    // Get a clock & make a sleeping delay object. use external 32k clock that runs
+    // Get a clock & make a sleeping delay object. use internal 32k clock that runs
     // in standby
-    enable_external_32kosc(&mut peripherals.SYSCTRL);
+    enable_internal_32kosc(&mut peripherals.SYSCTRL);
     let timer_clock = clocks
-        .configure_gclk_divider_and_source(ClockGenId::GCLK1, 1, ClockSource::XOSC32K, false)
+        .configure_gclk_divider_and_source(ClockGenId::GCLK1, 1, ClockSource::OSC32K, false)
         .unwrap();
     clocks.configure_standby(ClockGenId::GCLK1, true);
     let tc45 = &clocks.tc4_tc5(&timer_clock).unwrap();
     let timer = timer::TimerCounter::tc4_(tc45, peripherals.TC4, &mut peripherals.PM);
     let mut sleeping_delay = SleepingDelay::new(timer, &INTERRUPT_FIRED);
 
-    // Timer overflow interrupts are asynchronous, we can use IDLE1 sleep for max
+    // Timer overflow interrupts are asynchronous, we can use IDLE2 sleep for max
     //   power savings. The CPU, AHB and APB clock domains are stopped
     // peripherals.PM.sleep.modify(|_, w| w.idle().apb());
 
@@ -58,13 +70,34 @@ fn main() -> ! {
         NVIC::unmask(interrupt::TC4);
     }
 
+    // Turn off unnecessary peripherals
+    peripherals.PM.ahbmask.modify(|_, w| {
+        w.usb_().clear_bit();
+        w.dmac_().clear_bit()
+    });
+    peripherals.PM.apbamask.modify(|_, w| {
+        w.eic_().clear_bit();
+        w.wdt_().clear_bit();
+        w.sysctrl_().clear_bit();
+        w.pac0_().clear_bit()
+    });
+    peripherals.PM.apbbmask.modify(|_, w| {
+        w.usb_().clear_bit();
+        w.dmac_().clear_bit();
+        w.nvmctrl_().clear_bit();
+        w.dsu_().clear_bit();
+        w.pac1_().clear_bit()
+    });
+    // Thankfully the only one default on here is ADC
+    peripherals.PM.apbcmask.modify(|_, w| w.adc_().clear_bit());
+
     // Configure our red LED and blink forever, sleeping between!
     let mut pins = hal::Pins::new(peripherals.PORT);
     let mut red_led = pins.d13.into_open_drain_output(&mut pins.port);
     loop {
-        red_led.set_high().unwrap();
-        sleeping_delay.delay_ms(1_000u32);
         red_led.set_low().unwrap();
+        sleeping_delay.delay_ms(1_000u32);
+        red_led.set_high().unwrap();
         sleeping_delay.delay_ms(100u32);
     }
 }
