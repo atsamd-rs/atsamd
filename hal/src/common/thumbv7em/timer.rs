@@ -183,6 +183,61 @@ impl TimerCounter<$TC>
     }
 }
 
+/// Helper type for computing cycles and divider given frequency
+#[derive(Debug, Clone, Copy)]
+pub struct TimerParams {
+    pub divider: u16,
+    pub cycles: u32,
+}
+
+impl TimerParams {
+    pub fn new<T, F>(timeout: T, src_freq: F) -> Self
+    where
+        T: Into<Hertz>,
+        F: Into<Hertz>,
+    {
+        let timeout = timeout.into();
+        let ticks: u32 = src_freq.into().0 / timeout.0.max(1);
+        Self::new_from_ticks(ticks)
+    }
+
+    pub fn new_us<T, F>(timeout: T, src_freq: F) -> Self
+    where
+        T: Into<Nanoseconds<u64>>,
+        F: Into<Hertz<u64>>,
+    {
+        let timeout = timeout.into();
+        let ticks: u32 = (timeout.0 * src_freq.into().0 / 1_000_000_000_u64) as u32;
+        Self::new_from_ticks(ticks)
+    }
+
+    fn new_from_ticks(ticks: u32) -> Self {
+        let divider = ((ticks >> 16) + 1).next_power_of_two();
+        let divider = match divider {
+            1 | 2 | 4 | 8 | 16 | 64 | 256 | 1024 => divider,
+            // There are a couple of gaps, so we round up to the next largest
+            // divider; we'll need to count twice as many but it will work.
+            32 => 64,
+            128 => 256,
+            512 => 1024,
+            // Catch all case; this is lame.  Would be great to detect this
+            // and fail at compile time.
+            _ => 1024,
+        };
+
+        let cycles: u32 = ticks / divider as u32;
+
+        if cycles > u16::max_value() as u32 {
+            panic!("cycles {} is out of range for a 16 bit counter", cycles);
+        }
+
+        TimerParams {
+            divider: divider as u16,
+            cycles,
+        }
+    }
+}
+
 tc! {
     TimerCounter2: (TC2, tc2_, Tc2Tc3Clock, apbbmask),
     TimerCounter3: (TC3, tc3_, Tc2Tc3Clock, apbbmask),
@@ -193,6 +248,33 @@ tc! {
 tc! {
     TimerCounter4: (TC4, tc4_, Tc4Tc5Clock, apbcmask),
     TimerCounter5: (TC5, tc5_, Tc4Tc5Clock, apbcmask),
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::common::timer::TimerParams;
+    use embedded_time::duration::*;
+    use embedded_time::rate::*;
+
+    #[test]
+    fn timer_params_hz_and_us_same_1hz() {
+        let tp_from_hz = TimerParams::new(1_u32.Hz(), 48_000_000_u32.Hz());
+        let tp_from_us = TimerParams::new_us(1_000_000_u32.microseconds(), 48u32.MHz());
+
+        assert_eq!(tp_from_hz.divider, tp_from_us.divider);
+        assert_eq!(tp_from_hz.cycles, tp_from_us.cycles);
+    }
+
+    #[test]
+    fn timer_params_hz_and_us_same_3hz() {
+        let tp_from_hz = TimerParams::new(3_u32.Hz(), 48_000_000_u32.Hz());
+        let tp_from_us = TimerParams::new_us(333_333_u32.microseconds(), 48u32.MHz());
+
+        // There's some rounding error here, but it is extremely small (1 cycle
+        // difference)
+        assert_eq!(tp_from_hz.divider, tp_from_us.divider);
+        assert!((tp_from_hz.cycles as i32 - tp_from_us.cycles as i32).abs() <= 1);
+    }
 }
 
 #[derive(Clone, Copy)]

@@ -1,7 +1,7 @@
 use crate::clock;
 use crate::hal::{Pwm, PwmPin};
-use crate::time::Hertz;
 use crate::timer::TimerParams;
+use embedded_time::rate::Hertz;
 
 use crate::target_device::{PM, TCC0};
 #[cfg(feature = "samd11")]
@@ -31,10 +31,9 @@ impl $TYPE {
         tc: $TC,
         pm: &mut PM,
     ) -> Self {
-        let freq = freq.into();
         {
             let count = tc.count16();
-            let params = TimerParams::new(freq, clock.freq().0);
+            let params = TimerParams::new(freq, clock.freq());
             pm.$apmask.modify(|_, w| w.$apbits().set_bit());
             count.ctrla.write(|w| w.swrst().set_bit());
             while count.ctrla.read().bits() & 1 != 0 {}
@@ -68,8 +67,7 @@ impl $TYPE {
     where
         P: Into<Hertz>
     {
-        let period = period.into();
-        let params = TimerParams::new(period, self.clock_freq.0);
+        let params = TimerParams::new(period, self.clock_freq);
         let count = self.tc.count16();
         count.ctrla.modify(|_, w| w.enable().clear_bit());
         count.ctrla.modify(|_, w| {
@@ -177,9 +175,8 @@ impl $TYPE {
         tcc: $TCC,
         pm: &mut PM,
     ) -> Self {
-        let freq = freq.into();
         {
-            let params = TimerParams::new(freq, clock.freq().0);
+            let params = TimerParams::new(freq, clock.freq());
             pm.$apmask.modify(|_, w| w.$apbits().set_bit());
             tcc.ctrla.write(|w| w.swrst().set_bit());
             while tcc.syncbusy.read().swrst().bit_is_set() {}
@@ -252,8 +249,7 @@ impl Pwm for $TYPE {
     where
         P: Into<Self::Time>,
     {
-        let period = period.into();
-        let params = TimerParams::new(period, self.clock_freq.0);
+        let params = TimerParams::new(period, self.clock_freq);
         self.tcc.ctrla.modify(|_, w| w.enable().clear_bit());
         self.tcc.ctrla.modify(|_, w| {
             match params.divider {
