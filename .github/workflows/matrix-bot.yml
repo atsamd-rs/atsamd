@@ -1,0 +1,18 @@
+name: Matrix bot
+on:
+  pull_request_target:
+    types: [opened]
+
+jobs:
+  new-pr:
+    if: github.repository == 'atsamd-rs/atsamd'
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+     - name: send message
+       uses: s3krit/matrix-message-action@v0.0.3
+       with:
+         room_id: ${{ secrets.MATRIX_ROOM_ID }}
+         access_token: ${{ secrets.MATRIX_ACCESS_TOKEN }}
+         message: "New PR: [${{ github.event.pull_request.title }}](${{ github.event.pull_request.html_url }})"
+         server: "matrix.org"
