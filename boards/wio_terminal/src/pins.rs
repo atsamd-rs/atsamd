@@ -192,6 +192,8 @@ pub struct Sets {
     pub user_led: Pa15<Input<Floating>>,
 
     pub buttons: ButtonPins,
+
+    pub header_pins: HeaderPins,
 }
 
 impl Pins {
@@ -254,6 +256,17 @@ impl Pins {
         };
 
         let user_led = self.user_led;
+        let header_pins = HeaderPins {
+            a0_d0: self.a0_d0,
+            a1_d1: self.a1_d1,
+            a2_d2: self.a2_d2,
+            a3_d3: self.a3_d3,
+            a4_d4: self.a4_d4,
+            a5_d5: self.a5_d5,
+            a6_d6: self.a6_d6,
+            a7_d7: self.a7_d7,
+            a8_d8: self.a8_d8,
+        };
 
         let buttons = ButtonPins {
             button1: self.button1,
@@ -279,6 +292,20 @@ impl Pins {
             usb,
             user_led,
             buttons,
+            header_pins,
         }
     }
+}
+
+/// Other pins broken out to the RPi-compatible header.
+pub struct HeaderPins {
+    pub a0_d0: Pb8<Input<Floating>>,
+    pub a1_d1: Pb9<Input<Floating>>,
+    pub a2_d2: Pa7<Input<Floating>>,
+    pub a3_d3: Pb4<Input<Floating>>,
+    pub a4_d4: Pb5<Input<Floating>>,
+    pub a5_d5: Pb6<Input<Floating>>,
+    pub a6_d6: Pa4<Input<Floating>>,
+    pub a7_d7: Pb7<Input<Floating>>,
+    pub a8_d8: Pa6<Input<Floating>>,
 }
