@@ -5,8 +5,8 @@ use atsamd_hal::prelude::*;
 use atsamd_hal::sercom::{I2CMaster4, PadPin, Sercom4Pad0, Sercom4Pad1};
 use atsamd_hal::target_device::gclk::pchctrl::GEN_A::GCLK11;
 use atsamd_hal::target_device::{ADC1, MCLK, SERCOM4};
+use atsamd_hal::time::Hertz;
 use core::convert::TryFrom;
-use embedded_time::rate::Hertz;
 
 use lis3dh::{Lis3dh, SlaveAddr};
 

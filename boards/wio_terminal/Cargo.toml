@@ -33,7 +33,6 @@ lis3dh = "0.3.0"
 embedded-sdmmc = "0.3.0"
 usb-device = { version = "0.2", optional = true }
 usbd-serial = { version = "0.1", optional = true }
-embedded-time = "0.10"
 
 [dependencies.atsamd-hal]
 path = "../../hal"
