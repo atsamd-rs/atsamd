@@ -15,6 +15,11 @@ use crate::target_device::gclk::genctrl::SRC_A::DFLL;
 use crate::target_device::gclk::pchctrl::GEN_A;
 use crate::target_device::{adc0, ADC0, ADC1, MCLK};
 
+/// An ADC where results are accessible via interrupt servicing.
+pub struct InterruptAdc<ADC> {
+    adc: Adc<ADC>,
+}
+
 pub struct Adc<ADC> {
     adc: ADC,
 }
@@ -82,14 +87,77 @@ impl Adc<$ADC> {
         while self.adc.syncbusy.read().enable().bit_is_set() {}
     }
 
-    fn convert(&mut self) -> u16 {
+    #[inline(always)]
+    fn start_conversion(&mut self) {
         // start conversion
         self.adc.swtrig.modify(|_, w| w.start().set_bit());
         // do it again because the datasheet tells us to
         self.adc.swtrig.modify(|_, w| w.start().set_bit());
+    }
+
+    fn synchronous_convert(&mut self) -> u16 {
+        self.start_conversion();
         while self.adc.intflag.read().resrdy().bit_is_clear() {}
         let result = self.adc.result.read().result().bits();
         result
+    }
+
+    /// Enables an interrupt when conversion is ready.
+    fn enable_interrupts(&mut self) {
+        self.adc.intflag.write(|w| w.resrdy().set_bit());
+        self.adc.intenset.write(|w| w.resrdy().set_bit());
+    }
+
+    /// Disables the interrupt for when conversion is ready.
+    fn disable_interrupts(&mut self) {
+        self.adc.intenclr.write(|w| w.resrdy().set_bit());
+    }
+
+    fn service_interrupt_ready(&mut self) -> Option<u16> {
+        if self.adc.intflag.read().resrdy().bit_is_set() {
+            self.adc.intflag.write(|w| w.resrdy().set_bit());
+            let result = self.adc.result.read().result().bits();
+            Some(result)
+        } else {
+            None
+        }
+    }
+
+    /// Sets the mux to a particular pin. The pin mux is enabled-protected,
+    /// so must be called while the peripheral is disabled.
+    fn mux<PIN: Channel<$ADC, ID=u8>>(&mut self, _pin: &mut PIN) {
+        let chan = PIN::channel();
+        while self.adc.syncbusy.read().inputctrl().bit_is_set() {}
+        self.adc.inputctrl.modify(|_, w| w.muxpos().bits(chan));
+    }
+}
+
+
+impl InterruptAdc<$ADC> {
+    pub fn service_interrupt_ready(&mut self) -> Option<u16> {
+        if let Some(res) = self.adc.service_interrupt_ready() {
+            self.adc.disable_interrupts();
+            self.adc.power_down();
+            Some(res)
+        } else {
+            None
+        }
+    }
+
+    /// Starts a conversion sampling the specified pin.
+    pub fn start_conversion<PIN: Channel<$ADC, ID=u8>>(&mut self, pin: &mut PIN) {
+        self.adc.mux(pin);
+        self.adc.power_up();
+        self.adc.enable_interrupts();
+        self.adc.start_conversion();
+    }
+}
+
+impl From<Adc<$ADC>> for InterruptAdc<$ADC> {
+    fn from(adc: Adc<$ADC>) -> Self {
+        Self {
+            adc,
+        }
     }
 }
 
@@ -100,13 +168,10 @@ where
 {
    type Error = ();
 
-   fn read(&mut self, _pin: &mut PIN) -> nb::Result<WORD, Self::Error> {
-        let chan = PIN::channel();
-        while self.adc.syncbusy.read().inputctrl().bit_is_set() {}
-        // pin must be selected before adc is enabled
-        self.adc.inputctrl.modify(|_, w| w.muxpos().bits(chan));
+   fn read(&mut self, pin: &mut PIN) -> nb::Result<WORD, Self::Error> {
+        self.mux(pin);
         self.power_up();
-        let result = self.convert();
+        let result = self.synchronous_convert();
         self.power_down();
         Ok(result.into())
    }
