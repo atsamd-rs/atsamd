@@ -40,11 +40,20 @@ impl Adc<ADC> {
     }
 
     pub fn samples(&mut self, samples: adc::avgctrl::SAMPLENUM_A) {
+        use adc::avgctrl::SAMPLENUM_A;
         self.adc.avgctrl.modify(|_, w| {
             w.samplenum().variant(samples);
-            // I don't see any reason to divide ourselves. peripheral will automatically
-            // shift as needed
-            unsafe { w.adjres().bits(0) }
+            unsafe {
+                // Table 32-3 (32.6.7) specifies the adjres
+                // values necessary for each SAMPLENUM value.
+                w.adjres().bits(match samples {
+                    SAMPLENUM_A::_1 => 0,
+                    SAMPLENUM_A::_2 => 1,
+                    SAMPLENUM_A::_4 => 2,
+                    SAMPLENUM_A::_8 => 3,
+                    _ => 4,
+                })
+            }
         });
         while self.adc.status.read().syncbusy().bit_is_set() {}
     }
