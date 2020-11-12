@@ -115,6 +115,8 @@ impl Qspi {
 
         while self.qspi.intflag.read().instrend().bit_is_clear() {}
         self.qspi.intflag.write(|w| w.instrend().set_bit());
+        while self.qspi.intflag.read().csrise().bit_is_clear() {}
+        self.qspi.intflag.write(|w| w.csrise().set_bit());
     }
 
     unsafe fn run_read_instruction(
@@ -149,6 +151,8 @@ impl Qspi {
 
         while self.qspi.intflag.read().instrend().bit_is_clear() {}
         self.qspi.intflag.write(|w| w.instrend().set_bit());
+        while self.qspi.intflag.read().csrise().bit_is_clear() {}
+        self.qspi.intflag.write(|w| w.csrise().set_bit());
     }
 
     /// Run a generic command that neither takes nor receives data
@@ -221,18 +225,28 @@ impl Qspi {
     pub fn erase_command(&self, command: Command, address: u32) -> Result<(), Error> {
         match command {
             //TODO verify this list of commands
-            Command::EraseSector | Command::EraseBlock | Command::EraseChip => (),
+            Command::EraseSector | Command::EraseBlock => {
+                let tfm = TransferMode {
+                    address_enable: true,
+                    instruction_enable: true,
+                    ..TransferMode::default()
+                };
+                unsafe {
+                    self.run_write_instruction(command, tfm, address, &[]);
+                }
+            }
+            Command::EraseChip => {
+                let tfm = TransferMode {
+                    instruction_enable: true,
+                    ..TransferMode::default()
+                };
+                unsafe {
+                    self.run_read_instruction(command, tfm, 0, &mut []);
+                }
+            }
             _ => return Err(Error::CommandFunctionMismatch),
         }
 
-        let tfm = TransferMode {
-            address_enable: true,
-            instruction_enable: true,
-            ..TransferMode::default()
-        };
-        unsafe {
-            self.run_write_instruction(command, tfm, address, &[]);
-        }
         Ok(())
     }
 
@@ -247,7 +261,6 @@ impl Qspi {
             dummy_cycles: 8,
             ..TransferMode::default()
         };
-
         unsafe { self.run_read_instruction(Command::QuadRead, tfm, addr, buf) };
     }
 
@@ -256,15 +269,6 @@ impl Qspi {
     /// Note more than page size bytes are sent to the device, some bytes will
     /// be discarded. Check your device for specific handling.
     pub fn write_memory(&mut self, addr: u32, buf: &[u8]) {
-        self.qspi.instrframe.write(|w| {
-            w.width().quad_output();
-            w.addrlen()._24bits();
-            w.tfrtype().writememory();
-            w.instren().set_bit();
-            w.dataen().set_bit();
-            w.addren().set_bit()
-        });
-
         let tfm = TransferMode {
             quad_width: true,
             address_enable: true,
