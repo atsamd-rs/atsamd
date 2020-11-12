@@ -15,6 +15,8 @@ use crate::target_device::gclk::genctrl::SRC_A::DFLL;
 use crate::target_device::gclk::pchctrl::GEN_A;
 use crate::target_device::{adc0, ADC0, ADC1, MCLK};
 
+use crate::calibration;
+
 /// An ADC where results are accessible via interrupt servicing.
 pub struct InterruptAdc<ADC> {
     adc: Adc<ADC>,
@@ -25,7 +27,7 @@ pub struct Adc<ADC> {
 }
 
 macro_rules! adc_hal {
-    ($($ADC:ident: ($init:ident, $mclk:ident, $apmask:ident),)+) => {
+    ($($ADC:ident: ($init:ident, $mclk:ident, $apmask:ident, $compcal:ident, $refcal:ident, $r2rcal:ident),)+) => {
         $(
 impl Adc<$ADC> {
     pub fn $init(adc: $ADC, mclk: &mut MCLK, clocks: &mut GenericClockController, gclk:GEN_A) -> Self {
@@ -41,6 +43,12 @@ impl Adc<$ADC> {
         while adc.syncbusy.read().sampctrl().bit_is_set() {}
         adc.inputctrl.modify(|_, w| w.muxneg().gnd()); // No negative input (internal gnd)
         while adc.syncbusy.read().inputctrl().bit_is_set() {}
+
+        adc.calib.write(|w| unsafe {
+            w.biascomp().bits(calibration::$compcal());
+            w.biasrefbuf().bits(calibration::$refcal());
+            w.biasr2r().bits(calibration::$r2rcal())
+        });
 
         let mut newadc = Self { adc };
         newadc.samples(adc0::avgctrl::SAMPLENUM_A::_1);
@@ -193,8 +201,8 @@ impl Channel<$ADC> for $pin<PfB> {
 }
 
 adc_hal! {
-    ADC0: (adc0, apbdmask, adc0_),
-    ADC1: (adc1, apbdmask, adc1_),
+    ADC0: (adc0, apbdmask, adc0_, adc0_biascomp_scale_cal, adc0_biasref_scale_cal, adc0_biasr2r_scale_cal),
+    ADC1: (adc1, apbdmask, adc1_, adc1_biascomp_scale_cal, adc1_biasref_scale_cal, adc1_biasr2r_scale_cal),
 }
 
 adc_pins! {
