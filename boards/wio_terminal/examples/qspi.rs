@@ -11,7 +11,7 @@ use wio_terminal as wio;
 
 use wio::hal::clock::GenericClockController;
 use wio::hal::delay::Delay;
-use wio::hal::qspi::Command;
+use wio::hal::qspi::{self, Command};
 use wio::pac::{CorePeripherals, Peripherals};
 use wio::prelude::*;
 use wio::{entry, Pins, Sets};
@@ -125,6 +125,57 @@ fn main() -> ! {
         }
     }
 
+    // So far, everything has worked fine in OneShot mode. Lets try XIP mode.
+    //
+    // Write out 4 bytes to address 0x800.
+    let write_buf = [0x1, 0xaa, 0xce, 0x4];
+    wait_ready(&mut flash);
+    flash.run_command(Command::WriteEnable).unwrap();
+    flash.write_memory(0x800, &write_buf);
+    writeln!(textbuffer, "Wrote {:?} to address 0x800.\n", write_buf).unwrap();
+    terminal.write_str(textbuffer.as_str());
+    textbuffer.truncate(0);
+
+    // Switch to XIP mode and read those 4 bytes natively.
+    let mut flash = flash.into_xip();
+    let mut read_buf = [0u8; 4];
+    unsafe {
+        core::ptr::copy(
+            (0x04000000 + 0x800) as *mut u8,
+            read_buf.as_mut_ptr(),
+            read_buf.len(),
+        );
+    }
+    writeln!(textbuffer, "XIP read value: {:?}\n", read_buf).unwrap();
+    terminal.write_str(textbuffer.as_str());
+    textbuffer.truncate(0);
+
+    if read_buf != write_buf {
+        // If we did not read back the same data flash the status
+        // LED.
+        loop {
+            user_led.toggle();
+            delay.delay_ms(200u8);
+        }
+    }
+
+    // Switch back to OneShot mode and make sure we read the same.
+    let mut flash = flash.into_oneshot();
+    let mut read_buf = [0u8; 4];
+    wait_ready(&mut flash);
+    flash.read_memory(0x800, &mut read_buf);
+    writeln!(textbuffer, "post-XIP read value: {:?}\n", read_buf).unwrap();
+    terminal.write_str(textbuffer.as_str());
+    textbuffer.truncate(0);
+
+    if read_buf != write_buf {
+        // If we did not read back the same data flash the status
+        // LED.
+        loop {
+            user_led.toggle();
+            delay.delay_ms(200u8);
+        }
+    }
     user_led.set_low().unwrap();
     loop {}
 }
@@ -210,13 +261,13 @@ bitfield! {
 }
 
 /// Wait for the write-in-progress and suspended write/erase.
-fn wait_ready(flash: &mut wio::hal::qspi::Qspi) {
+fn wait_ready(flash: &mut qspi::Qspi<qspi::OneShot>) {
     while Status1(flash_status(flash, Command::ReadStatus)).busy() {}
     while Status2(flash_status(flash, Command::ReadStatus2)).suspend() {}
 }
 
 /// Returns the contents of the status register indicated by cmd.
-fn flash_status(flash: &mut wio::hal::qspi::Qspi, cmd: Command) -> u8 {
+fn flash_status(flash: &mut qspi::Qspi<qspi::OneShot>, cmd: Command) -> u8 {
     let mut out = [0u8; 1];
     flash.read_command(cmd, &mut out).ok().unwrap();
     out[0]
