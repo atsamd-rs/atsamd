@@ -33,7 +33,7 @@ impl Adc<ADC> {
 
         let mut newadc = Self { adc };
         newadc.samples(adc::avgctrl::SAMPLENUM_A::_1);
-        newadc.gain(adc::inputctrl::GAIN_A::_1X);
+        newadc.gain(adc::inputctrl::GAIN_A::DIV2);
         newadc.reference(adc::refctrl::REFSEL_A::INTVCC1);
 
         newadc
