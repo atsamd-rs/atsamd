@@ -30,7 +30,7 @@ use hal::delay::Delay;
 use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
-use hal::qspi::Command;
+use hal::qspi::{self, Command};
 
 #[entry]
 fn main() -> ! {
@@ -121,13 +121,13 @@ fn main() -> ! {
 }
 
 /// Wait for the write-in-progress and suspended write/erase.
-fn wait_ready(flash: &mut hal::qspi::Qspi) {
+fn wait_ready(flash: &mut qspi::Qspi<qspi::OneShot>) {
     while flash_status(flash, Command::ReadStatus) & 0x01 != 0 {}
     while flash_status(flash, Command::ReadStatus2) & 0x80 != 0 {}
 }
 
 /// Returns the contents of the status register indicated by cmd.
-fn flash_status(flash: &mut hal::qspi::Qspi, cmd: Command) -> u8 {
+fn flash_status(flash: &mut qspi::Qspi<qspi::OneShot>, cmd: Command) -> u8 {
     let mut out = [0u8; 1];
     flash.read_command(cmd, &mut out).ok().unwrap();
     out[0]

@@ -599,7 +599,7 @@ pub struct QSPIFlash {
 }
 
 impl QSPIFlash {
-    pub fn init(self, mclk: &mut MCLK, port: &mut Port, qspi: QSPI) -> qspi::Qspi {
+    pub fn init(self, mclk: &mut MCLK, port: &mut Port, qspi: QSPI) -> qspi::Qspi<qspi::OneShot> {
         qspi::Qspi::new(
             mclk, port, qspi, self.sck, self.cs, self.data0, self.data1, self.data2, self.data3,
         )
