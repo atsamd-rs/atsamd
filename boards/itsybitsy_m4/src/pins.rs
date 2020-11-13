@@ -3,10 +3,10 @@
 use super::{hal, pac::MCLK, pac::SERCOM1, pac::SERCOM2, pac::SERCOM3, target_device};
 
 use embedded_hal::timer::{CountDown, Periodic};
-use embedded_time::rate::Hertz;
 use hal::define_pins;
 use hal::gpio::{self, *};
 use hal::sercom::{I2CMaster2, PadPin, SPIMaster1, Sercom2Pad0, Sercom2Pad1, UART3};
+use hal::time::Hertz;
 
 use hal::clock::GenericClockController;
 
@@ -218,7 +218,7 @@ impl SPI {
         let gclk0 = clocks.gclk0();
         SPIMaster1::new(
             &clocks.sercom1_core(&gclk0).unwrap(),
-            bus_speed.into(),
+            bus_speed,
             hal::hal::spi::Mode {
                 phase: hal::hal::spi::Phase::CaptureOnFirstTransition,
                 polarity: hal::hal::spi::Polarity::IdleLow,
