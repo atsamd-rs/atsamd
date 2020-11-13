@@ -3,6 +3,7 @@ use crate::{
     target_device::qspi::instrframe,
     target_device::{MCLK, QSPI},
 };
+use core::marker::PhantomData;
 
 #[derive(Debug, Clone, Copy, Eq, PartialEq)]
 pub enum Error {
@@ -10,7 +11,12 @@ pub enum Error {
     CommandFunctionMismatch,
 }
 
-pub struct Qspi {
+/// Qspi used for read/write of fixed-size octet buffers
+pub struct OneShot;
+/// Qspi is memory-mapped as read/execute
+pub struct XIP;
+
+pub struct Qspi<MODE> {
     qspi: QSPI,
     _sck: Pb10<PfH>,
     _cs: Pb11<PfH>,
@@ -18,9 +24,10 @@ pub struct Qspi {
     _io1: Pa9<PfH>,
     _io2: Pa10<PfH>,
     _io3: Pa11<PfH>,
+    _mode: PhantomData<MODE>,
 }
 
-impl Qspi {
+impl Qspi<OneShot> {
     /// Enable the clocks for the qspi peripheral in single data rate mode
     /// assuming 120mhz system clock, for 4mhz spi mode 0 operation.
     pub fn new(
@@ -33,7 +40,7 @@ impl Qspi {
         _io1: Pa9<Input<Floating>>,
         _io2: Pa10<Input<Floating>>,
         _io3: Pa11<Input<Floating>>,
-    ) -> Qspi {
+    ) -> Qspi<OneShot> {
         mclk.apbcmask.modify(|_, w| w.qspi_().set_bit());
         // Enable the clocks for the qspi peripheral in single data rate mode.
         mclk.ahbmask.modify(|_, w| {
@@ -68,7 +75,7 @@ impl Qspi {
 
         qspi.ctrla.modify(|_, w| w.enable().set_bit());
 
-        Qspi {
+        Self {
             qspi,
             _sck,
             _cs,
@@ -76,7 +83,196 @@ impl Qspi {
             _io1,
             _io2,
             _io3,
+            _mode: PhantomData,
         }
+    }
+
+    /// Run a generic command that neither takes nor receives data
+    pub fn run_command(&self, command: Command) -> Result<(), Error> {
+        match command {
+            //TODO verify this list of commands
+            Command::WriteEnable
+            | Command::WriteDisable
+            | Command::Reset
+            | Command::EnableReset => (),
+            _ => return Err(Error::CommandFunctionMismatch),
+        }
+
+        let tfm = TransferMode {
+            instruction_enable: true,
+            ..TransferMode::default()
+        };
+        unsafe {
+            self.run_read_instruction(command, tfm, 0, &mut [], true);
+        }
+        Ok(())
+    }
+
+    /// Run one of the read commands
+    pub fn read_command(&self, command: Command, response: &mut [u8]) -> Result<(), Error> {
+        match command {
+            //TODO verify this list of commands
+            Command::Read
+            | Command::QuadRead
+            | Command::ReadId
+            | Command::ReadStatus
+            | Command::ReadStatus2 => (),
+            _ => return Err(Error::CommandFunctionMismatch),
+        }
+
+        let tfm = TransferMode {
+            data_enable: true,
+            instruction_enable: true,
+            ..TransferMode::default()
+        };
+        unsafe {
+            self.run_read_instruction(command, tfm, 0, response, true);
+        }
+        Ok(())
+    }
+
+    /// Run one of the write commands
+    pub fn write_command(&self, command: Command, data: &[u8]) -> Result<(), Error> {
+        match command {
+            //TODO verify this list of commands
+            Command::PageProgram
+            | Command::QuadPageProgram
+            | Command::WriteStatus
+            | Command::WriteStatus2 => (),
+            _ => return Err(Error::CommandFunctionMismatch),
+        }
+
+        let tfm = TransferMode {
+            data_enable: data.len() > 0,
+            instruction_enable: true,
+            ..TransferMode::default()
+        };
+        unsafe {
+            self.run_write_instruction(command, tfm, 0, data);
+        }
+        Ok(())
+    }
+
+    /// Run one of the erase commands
+    pub fn erase_command(&self, command: Command, address: u32) -> Result<(), Error> {
+        match command {
+            //TODO verify this list of commands
+            Command::EraseSector | Command::EraseBlock => {
+                let tfm = TransferMode {
+                    address_enable: true,
+                    instruction_enable: true,
+                    ..TransferMode::default()
+                };
+                unsafe {
+                    self.run_write_instruction(command, tfm, address, &[]);
+                }
+            }
+            Command::EraseChip => {
+                let tfm = TransferMode {
+                    instruction_enable: true,
+                    ..TransferMode::default()
+                };
+                unsafe {
+                    self.run_read_instruction(command, tfm, 0, &mut [], true);
+                }
+            }
+            _ => return Err(Error::CommandFunctionMismatch),
+        }
+
+        Ok(())
+    }
+
+    /// Quad Fast Read a sequential block of memory to buf
+    /// Note: Hardcodes 8 dummy cycles
+    pub fn read_memory(&mut self, addr: u32, buf: &mut [u8]) {
+        let tfm = TransferMode {
+            quad_width: true,
+            address_enable: true,
+            data_enable: true,
+            instruction_enable: true,
+            dummy_cycles: 8,
+            ..TransferMode::default()
+        };
+        unsafe { self.run_read_instruction(Command::QuadRead, tfm, addr, buf, true) };
+    }
+
+    /// Page Program a sequential block of memory to addr.
+    ///
+    /// Note more than page size bytes are sent to the device, some bytes will
+    /// be discarded. Check your device for specific handling.
+    pub fn write_memory(&mut self, addr: u32, buf: &[u8]) {
+        let tfm = TransferMode {
+            quad_width: true,
+            address_enable: true,
+            data_enable: true,
+            instruction_enable: true,
+            ..TransferMode::default()
+        };
+        unsafe { self.run_write_instruction(Command::QuadPageProgram, tfm, addr, buf) };
+    }
+
+    /// Latches the peripheral in a read/execute state, so it can be used to
+    /// read or execute directly from flash.
+    ///
+    /// Note: Hardcodes 8 dummy cycles.
+    pub fn into_xip(self) -> Qspi<XIP> {
+        let tfm = TransferMode {
+            quad_width: true,
+            address_enable: true,
+            data_enable: true,
+            instruction_enable: true,
+            dummy_cycles: 8,
+            ..TransferMode::default()
+        };
+        unsafe {
+            self.run_read_instruction(Command::QuadRead, tfm, 0, &mut [], false);
+        }
+
+        Qspi::<XIP> {
+            qspi: self.qspi,
+            _sck: self._sck,
+            _cs: self._cs,
+            _io0: self._io0,
+            _io1: self._io1,
+            _io2: self._io2,
+            _io3: self._io3,
+            _mode: PhantomData,
+        }
+    }
+}
+
+/// Operations available in XIP mode
+impl Qspi<XIP> {
+    /// Latches the peripheral in a read/execute state, so it can be used to
+    /// read or execute directly from flash.
+    pub fn into_oneshot(self) -> Qspi<OneShot> {
+        unsafe { self.finalize() };
+
+        Qspi::<OneShot> {
+            qspi: self.qspi,
+            _sck: self._sck,
+            _cs: self._cs,
+            _io0: self._io0,
+            _io1: self._io1,
+            _io2: self._io2,
+            _io3: self._io3,
+            _mode: PhantomData,
+        }
+    }
+}
+
+// (Mostly internal) methods available in any mode.
+impl<MODE> Qspi<MODE> {
+    unsafe fn finalize(&self) {
+        self.qspi.ctrla.write(|w| {
+            w.enable().set_bit();
+            w.lastxfer().set_bit()
+        });
+
+        while self.qspi.intflag.read().instrend().bit_is_clear() {}
+        self.qspi.intflag.write(|w| w.instrend().set_bit());
+        while self.qspi.intflag.read().csrise().bit_is_clear() {}
+        self.qspi.intflag.write(|w| w.csrise().set_bit());
     }
 
     unsafe fn run_write_instruction(
@@ -108,13 +304,7 @@ impl Qspi {
             core::ptr::copy(buf.as_ptr(), (QSPI_AHB + addr) as *mut u8, buf.len());
         }
 
-        self.qspi.ctrla.write(|w| {
-            w.enable().set_bit();
-            w.lastxfer().set_bit()
-        });
-
-        while self.qspi.intflag.read().instrend().bit_is_clear() {}
-        self.qspi.intflag.write(|w| w.instrend().set_bit());
+        self.finalize();
     }
 
     unsafe fn run_read_instruction(
@@ -123,6 +313,7 @@ impl Qspi {
         tfm: TransferMode,
         addr: u32,
         buf: &mut [u8],
+        finalize: bool,
     ) {
         self.qspi
             .instrctrl
@@ -142,137 +333,10 @@ impl Qspi {
         if buf.len() > 0 {
             core::ptr::copy((QSPI_AHB + addr) as *mut u8, buf.as_mut_ptr(), buf.len());
         }
-        self.qspi.ctrla.write(|w| {
-            w.enable().set_bit();
-            w.lastxfer().set_bit()
-        });
 
-        while self.qspi.intflag.read().instrend().bit_is_clear() {}
-        self.qspi.intflag.write(|w| w.instrend().set_bit());
-    }
-
-    /// Run a generic command that neither takes nor receives data
-    pub fn run_command(&self, command: Command) -> Result<(), Error> {
-        match command {
-            //TODO verify this list of commands
-            Command::WriteEnable
-            | Command::WriteDisable
-            | Command::Reset
-            | Command::EnableReset => (),
-            _ => return Err(Error::CommandFunctionMismatch),
+        if finalize {
+            self.finalize();
         }
-
-        let tfm = TransferMode {
-            instruction_enable: true,
-            ..TransferMode::default()
-        };
-        unsafe {
-            self.run_read_instruction(command, tfm, 0, &mut []);
-        }
-        Ok(())
-    }
-
-    /// Run one of the read commands
-    pub fn read_command(&self, command: Command, response: &mut [u8]) -> Result<(), Error> {
-        match command {
-            //TODO verify this list of commands
-            Command::Read
-            | Command::QuadRead
-            | Command::ReadId
-            | Command::ReadStatus
-            | Command::ReadStatus2 => (),
-            _ => return Err(Error::CommandFunctionMismatch),
-        }
-
-        let tfm = TransferMode {
-            data_enable: true,
-            instruction_enable: true,
-            ..TransferMode::default()
-        };
-        unsafe {
-            self.run_read_instruction(command, tfm, 0, response);
-        }
-        Ok(())
-    }
-
-    /// Run one of the write commands
-    pub fn write_command(&self, command: Command, data: &[u8]) -> Result<(), Error> {
-        match command {
-            //TODO verify this list of commands
-            Command::PageProgram
-            | Command::QuadPageProgram
-            | Command::WriteStatus
-            | Command::WriteStatus2 => (),
-            _ => return Err(Error::CommandFunctionMismatch),
-        }
-
-        let tfm = TransferMode {
-            data_enable: data.len() > 0,
-            instruction_enable: true,
-            ..TransferMode::default()
-        };
-        unsafe {
-            self.run_write_instruction(command, tfm, 0, data);
-        }
-        Ok(())
-    }
-
-    /// Run one of the erase commands
-    pub fn erase_command(&self, command: Command, address: u32) -> Result<(), Error> {
-        match command {
-            //TODO verify this list of commands
-            Command::EraseSector | Command::EraseBlock | Command::EraseChip => (),
-            _ => return Err(Error::CommandFunctionMismatch),
-        }
-
-        let tfm = TransferMode {
-            address_enable: true,
-            instruction_enable: true,
-            ..TransferMode::default()
-        };
-        unsafe {
-            self.run_write_instruction(command, tfm, address, &[]);
-        }
-        Ok(())
-    }
-
-    /// Quad Fast Read a sequential block of memory to buf
-    /// Note hardcodes 8 dummy cycles
-    pub fn read_memory(&mut self, addr: u32, buf: &mut [u8]) {
-        let tfm = TransferMode {
-            quad_width: true,
-            address_enable: true,
-            data_enable: true,
-            instruction_enable: true,
-            dummy_cycles: 8,
-            ..TransferMode::default()
-        };
-
-        unsafe { self.run_read_instruction(Command::QuadRead, tfm, addr, buf) };
-    }
-
-    /// Page Program a sequential block of memory to addr.
-    ///
-    /// Note more than page size bytes are sent to the device, some bytes will
-    /// be discarded. Check your device for specific handling.
-    pub fn write_memory(&mut self, addr: u32, buf: &[u8]) {
-        self.qspi.instrframe.write(|w| {
-            w.width().quad_output();
-            w.addrlen()._24bits();
-            w.tfrtype().writememory();
-            w.instren().set_bit();
-            w.dataen().set_bit();
-            w.addren().set_bit()
-        });
-
-        let tfm = TransferMode {
-            quad_width: true,
-            address_enable: true,
-            data_enable: true,
-            instruction_enable: true,
-            ..TransferMode::default()
-        };
-        unsafe { self.run_write_instruction(Command::QuadPageProgram, tfm, addr, buf) };
     }
 
     /// Set the clock divider, relative to the main clock
