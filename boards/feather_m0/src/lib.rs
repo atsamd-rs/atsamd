@@ -30,6 +30,9 @@ define_pins!(
     struct Pins,
     target_device: target_device,
 
+    /// AREF pin - has 1uF capacitor to ground
+    pin aref = a3,
+
     /// Analog pin 0.  Can act as a true analog output
     /// as it has a DAC (which is not currently supported
     /// by this hal) as well as input.
