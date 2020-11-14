@@ -82,6 +82,38 @@ define_pins!(
     pin usb_dm = a24,
     /// The USB D+ pad
     pin usb_dp = a25,
+
+    /// SPI chip select for the RFM module
+    #[cfg(feature = "rfm")]
+    pin rfm_cs = a6,
+
+    /// Reset for the RFM module
+    #[cfg(feature = "rfm")]
+    pin rfm_reset = a8,
+
+    /// Interrupt from the RFM module
+    #[cfg(feature = "rfm")]
+    pin rfm_irq = a9,
+
+    /// Neopixel data
+    #[cfg(feature = "express")]
+    pin neopixel = a6,
+
+    /// SPI clock for the external flash
+    #[cfg(feature = "express")]
+    pin flash_sck = a9,
+
+    /// SPI MOSI for the external flash
+    #[cfg(feature = "express")]
+    pin flash_mosi = a8,
+
+    /// SPI MISO for the external flash
+    #[cfg(feature = "express")]
+    pin flash_miso = a14,
+
+    /// SPI chip select for the external flash
+    #[cfg(feature = "express")]
+    pin flash_cs = a13,
 );
 
 /// Convenience for setting up the labelled SPI peripheral.

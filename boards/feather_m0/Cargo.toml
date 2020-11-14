@@ -63,6 +63,10 @@ usb = ["atsamd-hal/usb", "usb-device", "usbd-serial"]
 panic_halt = ["panic-halt"]
 panic_abort = ["panic-abort"]
 panic_semihosting = ["panic-semihosting"]
+# Enable pins for the radio on "RadioFruits" with RFM95, RFM96, RFM69
+rfm = []
+# Enable pins for the flash and neopixel on the Feather M0 Express
+express = []
 
 [profile.dev]
 incremental = false

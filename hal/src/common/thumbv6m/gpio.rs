@@ -593,6 +593,7 @@ impl $Type {
             $Type {
                 port: pins.port,
                 $(
+                $(#[$attr])*
                 $name: pins.[<p $pin_ident>]
                 ),+
             }
