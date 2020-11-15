@@ -8,12 +8,11 @@
 //! referred to as a Pad.  When the pins are set to the appropriate
 //! peripheral function mode they are routed to the sercom pad.
 
-mod i2c;
-mod pads;
-mod spi;
-mod uart;
+pub mod i2c;
+pub mod spi;
+pub mod uart;
+pub use super::v2::pad_map;
 
 pub use self::i2c::*;
-pub use self::pads::*;
 pub use self::spi::*;
 pub use self::uart::*;

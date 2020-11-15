@@ -119,7 +119,7 @@ where
     I: PinId,
     M: PinMode,
 {
-    pin: v2::Pin<I, M>,
+    pub(crate) pin: v2::Pin<I, M>,
 }
 
 impl<I, M> Pin<I, M>

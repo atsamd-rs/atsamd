@@ -3,7 +3,7 @@ pub mod clock;
 pub mod eic;
 pub mod qspi;
 pub mod rtc;
-pub mod sercom;
+pub(crate) mod sercom;
 pub mod timer;
 pub mod trng;
 

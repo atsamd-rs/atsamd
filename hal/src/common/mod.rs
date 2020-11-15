@@ -1,9 +1,8 @@
 pub mod delay;
 pub mod gpio;
-pub mod sleeping_delay;
-#[macro_use]
-pub mod pad;
 pub mod prelude;
+pub mod sercom;
+pub mod sleeping_delay;
 pub mod spi_common;
 pub mod time;
 pub mod timer_traits;
@@ -13,17 +12,12 @@ mod thumbv6m;
 #[cfg(any(feature = "samd11", feature = "samd21"))]
 pub use thumbv6m::*;
 
-#[cfg(any(
-    feature = "samd51",
-    feature = "same51",
-    feature = "same53",
-    feature = "same54"
-))]
+#[cfg(feature = "min-samd51g")]
 mod thumbv7em;
-#[cfg(any(
-    feature = "samd51",
-    feature = "same51",
-    feature = "same53",
-    feature = "same54"
-))]
+#[cfg(feature = "min-samd51g")]
 pub use thumbv7em::*;
+
+// This module maintains backwards compatibility for the v1 SERCOM pads API
+pub mod pad {
+    pub use crate::sercom::v1::pads::PadPin;
+}
