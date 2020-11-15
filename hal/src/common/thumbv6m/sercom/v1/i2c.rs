@@ -4,11 +4,14 @@ use crate::clock;
 use crate::hal::blocking::i2c::{Read, Write, WriteRead};
 use crate::target_device::sercom0::I2CM;
 use crate::target_device::{PM, SERCOM0, SERCOM1};
+#[cfg(feature = "samd21")]
+use crate::target_device::{SERCOM2, SERCOM3};
+#[cfg(feature = "min-samd21g")]
+use crate::target_device::{SERCOM4, SERCOM5};
 use crate::time::Hertz;
 
 const BUS_STATE_UNKNOWN: u8 = 0;
 const BUS_STATE_IDLE: u8 = 1;
-const BUS_STATE_OWNED: u8 = 2;
 const BUS_STATE_BUSY: u8 = 3;
 
 const MASTER_ACT_READ: u8 = 2;
@@ -320,6 +323,46 @@ i2c!([
             SERCOM1,
             sercom1_,
             Sercom1CoreClock
+        ),
+]);
+
+#[cfg(feature = "samd21")]
+i2c!([
+    I2CMaster2:
+        (
+            Sercom2Pad0,
+            Sercom2Pad1,
+            SERCOM2,
+            sercom2_,
+            Sercom2CoreClock
+        ),
+    I2CMaster3:
+        (
+            Sercom3Pad0,
+            Sercom3Pad1,
+            SERCOM3,
+            sercom3_,
+            Sercom3CoreClock
+        ),
+]);
+
+#[cfg(feature = "min-samd21g")]
+i2c!([
+    I2CMaster4:
+        (
+            Sercom4Pad0,
+            Sercom4Pad1,
+            SERCOM4,
+            sercom4_,
+            Sercom4CoreClock
+        ),
+    I2CMaster5:
+        (
+            Sercom5Pad0,
+            Sercom5Pad1,
+            SERCOM5,
+            sercom5_,
+            Sercom5CoreClock
         ),
 ]);
 

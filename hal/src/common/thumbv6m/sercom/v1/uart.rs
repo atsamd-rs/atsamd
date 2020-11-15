@@ -4,6 +4,10 @@ use crate::hal::serial;
 use crate::sercom::pads::*;
 use crate::target_device::sercom0::USART;
 use crate::target_device::{PM, SERCOM0, SERCOM1};
+#[cfg(feature = "samd21")]
+use crate::target_device::{SERCOM2, SERCOM3};
+#[cfg(feature = "min-samd21g")]
+use crate::target_device::{SERCOM4, SERCOM5};
 use crate::time::Hertz;
 use core::fmt;
 
@@ -47,13 +51,21 @@ macro_rules! uart {
             ($rxpo_txpo:expr => $pad0:ident, $pad1:ident) => {
                 $crate::paste::item! {
                     /// Convert from a tuple of (RX, TX) to UARTXPadout
-                    impl<PIN0, PIN1> From<([<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>)> for [<$Type Padout>]<[<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, (), ()> {
+                    impl<PIN0, PIN1> From<([<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>)> for [<$Type Padout>]<[<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, (), ()>
+                    where
+                        PIN0: Map<$Sercom, $pad0>,
+                        PIN1: Map<$Sercom, $pad1>,
+                    {
                         fn from(pads: ([<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>)) -> [<$Type Padout>]<[<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, (), ()> {
                             [<$Type Padout>] { _rx: pads.0, _tx: pads.1, _rts: (), _cts: () }
                         }
                     }
 
-                    impl<PIN0, PIN1> RxpoTxpo for [<$Type Padout>]<[<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, (), ()> {
+                    impl<PIN0, PIN1> RxpoTxpo for [<$Type Padout>]<[<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, (), ()>
+                    where
+                        PIN0: Map<$Sercom, $pad0>,
+                        PIN1: Map<$Sercom, $pad1>,
+                    {
                         fn rxpo_txpo(&self) -> (u8, u8) {
                             $rxpo_txpo
                         }
@@ -63,13 +75,25 @@ macro_rules! uart {
             ($rxpo_txpo:expr => $pad0:ident, $pad1:ident, $pad2:ident, $pad3:ident) => {
                 $crate::paste::item! {
                     /// Convert from a tuple of (RX, TX, RTS, CTS) to UARTXPadout
-                    impl<PIN0, PIN1, PIN2, PIN3> From<([<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, [<$Sercom $pad2>]<PIN2>, [<$Sercom $pad3>]<PIN3>)> for [<$Type Padout>]<[<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, [<$Sercom $pad2>]<PIN2>, [<$Sercom $pad3>]<PIN3>> {
+                    impl<PIN0, PIN1, PIN2, PIN3> From<([<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, [<$Sercom $pad2>]<PIN2>, [<$Sercom $pad3>]<PIN3>)> for [<$Type Padout>]<[<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, [<$Sercom $pad2>]<PIN2>, [<$Sercom $pad3>]<PIN3>>
+                    where
+                        PIN0: Map<$Sercom, $pad0>,
+                        PIN1: Map<$Sercom, $pad1>,
+                        PIN2: Map<$Sercom, $pad2>,
+                        PIN3: Map<$Sercom, $pad3>,
+                    {
                         fn from(pads: ([<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, [<$Sercom $pad2>]<PIN2>, [<$Sercom $pad3>]<PIN3>)) -> [<$Type Padout>]<[<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, [<$Sercom $pad2>]<PIN2>, [<$Sercom $pad3>]<PIN3>> {
                             [<$Type Padout>] { _rx: pads.0, _tx: pads.1, _rts: pads.2, _cts: pads.3 }
                         }
                     }
 
-                    impl<PIN0, PIN1, PIN2, PIN3> RxpoTxpo for [<$Type Padout>]<[<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, [<$Sercom $pad2>]<PIN2>, [<$Sercom $pad3>]<PIN3>> {
+                    impl<PIN0, PIN1, PIN2, PIN3> RxpoTxpo for [<$Type Padout>]<[<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, [<$Sercom $pad2>]<PIN2>, [<$Sercom $pad3>]<PIN3>>
+                    where
+                        PIN0: Map<$Sercom, $pad0>,
+                        PIN1: Map<$Sercom, $pad1>,
+                        PIN2: Map<$Sercom, $pad2>,
+                        PIN3: Map<$Sercom, $pad3>,
+                    {
                         fn rxpo_txpo(&self) -> (u8, u8) {
                             $rxpo_txpo
                         }
@@ -260,6 +284,14 @@ macro_rules! uart {
 
 uart!(UART0: (Sercom0, SERCOM0, sercom0_, Sercom0CoreClock));
 uart!(UART1: (Sercom1, SERCOM1, sercom1_, Sercom1CoreClock));
+#[cfg(feature = "samd21")]
+uart!(UART2: (Sercom2, SERCOM2, sercom2_, Sercom2CoreClock));
+#[cfg(feature = "samd21")]
+uart!(UART3: (Sercom3, SERCOM3, sercom3_, Sercom3CoreClock));
+#[cfg(feature = "min-samd21g")]
+uart!(UART4: (Sercom4, SERCOM4, sercom4_, Sercom4CoreClock));
+#[cfg(feature = "min-samd21g")]
+uart!(UART5: (Sercom5, SERCOM5, sercom5_, Sercom5CoreClock));
 
 const SHIFT: u8 = 32;
 

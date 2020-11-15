@@ -16,3 +16,5 @@ pub mod pwm;
 
 #[cfg(feature = "unproven")]
 pub mod watchdog;
+
+pub(crate) mod sercom;
