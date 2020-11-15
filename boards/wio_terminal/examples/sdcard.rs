@@ -63,6 +63,7 @@ fn main() -> ! {
             peripherals.SERCOM7,
             &mut peripherals.MCLK,
             &mut sets.port,
+            24.mhz(),
             &mut delay,
         )
         .unwrap();

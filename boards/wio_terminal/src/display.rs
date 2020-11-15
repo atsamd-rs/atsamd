@@ -5,6 +5,7 @@ use atsamd_hal::hal::spi;
 use atsamd_hal::prelude::*;
 use atsamd_hal::sercom::{PadPin, SPIMaster7, Sercom7Pad1, Sercom7Pad2, Sercom7Pad3};
 use atsamd_hal::target_device::{MCLK, SERCOM7};
+use atsamd_hal::time::Hertz;
 use display_interface_spi::SPIInterface;
 use ili9341::{Ili9341, Orientation};
 
@@ -48,20 +49,20 @@ impl Display {
     /// Initialize the display and its corresponding SPI bus peripheral. Return
     /// a tuple containing the configured display driver struct and backlight
     /// pin.
-    pub fn init(
+    pub fn init<F: Into<Hertz>>(
         self,
         clocks: &mut GenericClockController,
         sercom7: SERCOM7,
         mclk: &mut MCLK,
         port: &mut Port,
+        clock_speed: F,
         delay: &mut Delay,
     ) -> Result<(LCD, Pc5<Output<PushPull>>), ()> {
-        // Initialize the SPI peripherial on the configured pins, using SERCOM7 and
-        // running at 20MHz.
+        // Initialize the SPI peripherial on the configured pins, using SERCOM7.
         let gclk0 = clocks.gclk0();
         let spi = SPIMaster7::new(
             &clocks.sercom7_core(&gclk0).ok_or(())?,
-            20.mhz(),
+            clock_speed,
             spi::Mode {
                 phase: spi::Phase::CaptureOnFirstTransition,
                 polarity: spi::Polarity::IdleLow,
