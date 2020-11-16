@@ -54,6 +54,7 @@ $ arm-none-eabi-objcopy \
 >   -O binary \
 >   /target/thumbv7em-none-eabihf/release/examples/blinky \
 >   /target/thumbv7em-none-eabihf/release/examples/blinky.bin
+> # alternatively, use cargo-binutils, you can `rust-objcopy` with the same flags, or combine it with the `cargo build` step and use `cargo objcopy`
 $ bossac \
 >   -i -d -v \
 >   --port=<PORT> -U \
