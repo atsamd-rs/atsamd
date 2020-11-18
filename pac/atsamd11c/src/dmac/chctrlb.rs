@@ -288,6 +288,44 @@ impl<'a> LVL_W<'a> {
 pub enum TRIGSRC_A {
     #[doc = "0: Only software/event triggers"]
     DISABLE = 0,
+    #[doc = "1: SERCOM0 RX Trigger"]
+    SERCOM0_RX = 1,
+    #[doc = "2: SERCOM0 TX Trigger"]
+    SERCOM0_TX = 2,
+    #[doc = "3: SERCOM1 RX Trigger"]
+    SERCOM1_RX = 3,
+    #[doc = "4: SERCOM1 TX Trigger"]
+    SERCOM1_TX = 4,
+    #[doc = "5: SERCOM2 RX Trigger"]
+    SERCOM2_RX = 5,
+    #[doc = "6: SERCOM2 TX Trigger"]
+    SERCOM2_TX = 6,
+    #[doc = "7: TCC0 Overflow Trigger"]
+    TCC0_OVF = 7,
+    #[doc = "8: TCC0 Match/Compare 0 Trigger"]
+    TCC0_MC0 = 8,
+    #[doc = "9: TCC0 Match/Compare 1 Trigger"]
+    TCC0_MC1 = 9,
+    #[doc = "10: TCC0 Match/Compare 2 Trigger"]
+    TCC0_MC2 = 10,
+    #[doc = "11: TCC0 Match/Compare 3 Trigger"]
+    TCC0_MC3 = 11,
+    #[doc = "12: TC1 Overflow Trigger"]
+    TC1_OVF = 12,
+    #[doc = "13: TC1 Match/Compare 0 Trigger"]
+    TC1_MC0 = 13,
+    #[doc = "14: TC1 Match/Compare 1 Trigger"]
+    TC1_MC1 = 14,
+    #[doc = "15: TC2 Overflow Trigger"]
+    TC2_OVF = 15,
+    #[doc = "16: TC2 Match/Compare 0 Trigger"]
+    TC2_MC0 = 16,
+    #[doc = "17: TC2 Match/Compare 1 Trigger"]
+    TC2_MC1 = 17,
+    #[doc = "18: ADC Result Ready Trigger"]
+    ADC_RESRDY = 18,
+    #[doc = "19: DAC Empty Trigger"]
+    DAC_EMPTY = 19,
 }
 impl From<TRIGSRC_A> for u8 {
     #[inline(always)]
@@ -304,6 +342,25 @@ impl TRIGSRC_R {
         use crate::Variant::*;
         match self.bits {
             0 => Val(TRIGSRC_A::DISABLE),
+            1 => Val(TRIGSRC_A::SERCOM0_RX),
+            2 => Val(TRIGSRC_A::SERCOM0_TX),
+            3 => Val(TRIGSRC_A::SERCOM1_RX),
+            4 => Val(TRIGSRC_A::SERCOM1_TX),
+            5 => Val(TRIGSRC_A::SERCOM2_RX),
+            6 => Val(TRIGSRC_A::SERCOM2_TX),
+            7 => Val(TRIGSRC_A::TCC0_OVF),
+            8 => Val(TRIGSRC_A::TCC0_MC0),
+            9 => Val(TRIGSRC_A::TCC0_MC1),
+            10 => Val(TRIGSRC_A::TCC0_MC2),
+            11 => Val(TRIGSRC_A::TCC0_MC3),
+            12 => Val(TRIGSRC_A::TC1_OVF),
+            13 => Val(TRIGSRC_A::TC1_MC0),
+            14 => Val(TRIGSRC_A::TC1_MC1),
+            15 => Val(TRIGSRC_A::TC2_OVF),
+            16 => Val(TRIGSRC_A::TC2_MC0),
+            17 => Val(TRIGSRC_A::TC2_MC1),
+            18 => Val(TRIGSRC_A::ADC_RESRDY),
+            19 => Val(TRIGSRC_A::DAC_EMPTY),
             i => Res(i),
         }
     }
@@ -311,6 +368,101 @@ impl TRIGSRC_R {
     #[inline(always)]
     pub fn is_disable(&self) -> bool {
         *self == TRIGSRC_A::DISABLE
+    }
+    #[doc = "Checks if the value of the field is `SERCOM0_RX`"]
+    #[inline(always)]
+    pub fn is_sercom0_rx(&self) -> bool {
+        *self == TRIGSRC_A::SERCOM0_RX
+    }
+    #[doc = "Checks if the value of the field is `SERCOM0_TX`"]
+    #[inline(always)]
+    pub fn is_sercom0_tx(&self) -> bool {
+        *self == TRIGSRC_A::SERCOM0_TX
+    }
+    #[doc = "Checks if the value of the field is `SERCOM1_RX`"]
+    #[inline(always)]
+    pub fn is_sercom1_rx(&self) -> bool {
+        *self == TRIGSRC_A::SERCOM1_RX
+    }
+    #[doc = "Checks if the value of the field is `SERCOM1_TX`"]
+    #[inline(always)]
+    pub fn is_sercom1_tx(&self) -> bool {
+        *self == TRIGSRC_A::SERCOM1_TX
+    }
+    #[doc = "Checks if the value of the field is `SERCOM2_RX`"]
+    #[inline(always)]
+    pub fn is_sercom2_rx(&self) -> bool {
+        *self == TRIGSRC_A::SERCOM2_RX
+    }
+    #[doc = "Checks if the value of the field is `SERCOM2_TX`"]
+    #[inline(always)]
+    pub fn is_sercom2_tx(&self) -> bool {
+        *self == TRIGSRC_A::SERCOM2_TX
+    }
+    #[doc = "Checks if the value of the field is `TCC0_OVF`"]
+    #[inline(always)]
+    pub fn is_tcc0_ovf(&self) -> bool {
+        *self == TRIGSRC_A::TCC0_OVF
+    }
+    #[doc = "Checks if the value of the field is `TCC0_MC0`"]
+    #[inline(always)]
+    pub fn is_tcc0_mc0(&self) -> bool {
+        *self == TRIGSRC_A::TCC0_MC0
+    }
+    #[doc = "Checks if the value of the field is `TCC0_MC1`"]
+    #[inline(always)]
+    pub fn is_tcc0_mc1(&self) -> bool {
+        *self == TRIGSRC_A::TCC0_MC1
+    }
+    #[doc = "Checks if the value of the field is `TCC0_MC2`"]
+    #[inline(always)]
+    pub fn is_tcc0_mc2(&self) -> bool {
+        *self == TRIGSRC_A::TCC0_MC2
+    }
+    #[doc = "Checks if the value of the field is `TCC0_MC3`"]
+    #[inline(always)]
+    pub fn is_tcc0_mc3(&self) -> bool {
+        *self == TRIGSRC_A::TCC0_MC3
+    }
+    #[doc = "Checks if the value of the field is `TC1_OVF`"]
+    #[inline(always)]
+    pub fn is_tc1_ovf(&self) -> bool {
+        *self == TRIGSRC_A::TC1_OVF
+    }
+    #[doc = "Checks if the value of the field is `TC1_MC0`"]
+    #[inline(always)]
+    pub fn is_tc1_mc0(&self) -> bool {
+        *self == TRIGSRC_A::TC1_MC0
+    }
+    #[doc = "Checks if the value of the field is `TC1_MC1`"]
+    #[inline(always)]
+    pub fn is_tc1_mc1(&self) -> bool {
+        *self == TRIGSRC_A::TC1_MC1
+    }
+    #[doc = "Checks if the value of the field is `TC2_OVF`"]
+    #[inline(always)]
+    pub fn is_tc2_ovf(&self) -> bool {
+        *self == TRIGSRC_A::TC2_OVF
+    }
+    #[doc = "Checks if the value of the field is `TC2_MC0`"]
+    #[inline(always)]
+    pub fn is_tc2_mc0(&self) -> bool {
+        *self == TRIGSRC_A::TC2_MC0
+    }
+    #[doc = "Checks if the value of the field is `TC2_MC1`"]
+    #[inline(always)]
+    pub fn is_tc2_mc1(&self) -> bool {
+        *self == TRIGSRC_A::TC2_MC1
+    }
+    #[doc = "Checks if the value of the field is `ADC_RESRDY`"]
+    #[inline(always)]
+    pub fn is_adc_resrdy(&self) -> bool {
+        *self == TRIGSRC_A::ADC_RESRDY
+    }
+    #[doc = "Checks if the value of the field is `DAC_EMPTY`"]
+    #[inline(always)]
+    pub fn is_dac_empty(&self) -> bool {
+        *self == TRIGSRC_A::DAC_EMPTY
     }
 }
 #[doc = "Write proxy for field `TRIGSRC`"]
@@ -327,6 +479,101 @@ impl<'a> TRIGSRC_W<'a> {
     #[inline(always)]
     pub fn disable(self) -> &'a mut W {
         self.variant(TRIGSRC_A::DISABLE)
+    }
+    #[doc = "SERCOM0 RX Trigger"]
+    #[inline(always)]
+    pub fn sercom0_rx(self) -> &'a mut W {
+        self.variant(TRIGSRC_A::SERCOM0_RX)
+    }
+    #[doc = "SERCOM0 TX Trigger"]
+    #[inline(always)]
+    pub fn sercom0_tx(self) -> &'a mut W {
+        self.variant(TRIGSRC_A::SERCOM0_TX)
+    }
+    #[doc = "SERCOM1 RX Trigger"]
+    #[inline(always)]
+    pub fn sercom1_rx(self) -> &'a mut W {
+        self.variant(TRIGSRC_A::SERCOM1_RX)
+    }
+    #[doc = "SERCOM1 TX Trigger"]
+    #[inline(always)]
+    pub fn sercom1_tx(self) -> &'a mut W {
+        self.variant(TRIGSRC_A::SERCOM1_TX)
+    }
+    #[doc = "SERCOM2 RX Trigger"]
+    #[inline(always)]
+    pub fn sercom2_rx(self) -> &'a mut W {
+        self.variant(TRIGSRC_A::SERCOM2_RX)
+    }
+    #[doc = "SERCOM2 TX Trigger"]
+    #[inline(always)]
+    pub fn sercom2_tx(self) -> &'a mut W {
+        self.variant(TRIGSRC_A::SERCOM2_TX)
+    }
+    #[doc = "TCC0 Overflow Trigger"]
+    #[inline(always)]
+    pub fn tcc0_ovf(self) -> &'a mut W {
+        self.variant(TRIGSRC_A::TCC0_OVF)
+    }
+    #[doc = "TCC0 Match/Compare 0 Trigger"]
+    #[inline(always)]
+    pub fn tcc0_mc0(self) -> &'a mut W {
+        self.variant(TRIGSRC_A::TCC0_MC0)
+    }
+    #[doc = "TCC0 Match/Compare 1 Trigger"]
+    #[inline(always)]
+    pub fn tcc0_mc1(self) -> &'a mut W {
+        self.variant(TRIGSRC_A::TCC0_MC1)
+    }
+    #[doc = "TCC0 Match/Compare 2 Trigger"]
+    #[inline(always)]
+    pub fn tcc0_mc2(self) -> &'a mut W {
+        self.variant(TRIGSRC_A::TCC0_MC2)
+    }
+    #[doc = "TCC0 Match/Compare 3 Trigger"]
+    #[inline(always)]
+    pub fn tcc0_mc3(self) -> &'a mut W {
+        self.variant(TRIGSRC_A::TCC0_MC3)
+    }
+    #[doc = "TC1 Overflow Trigger"]
+    #[inline(always)]
+    pub fn tc1_ovf(self) -> &'a mut W {
+        self.variant(TRIGSRC_A::TC1_OVF)
+    }
+    #[doc = "TC1 Match/Compare 0 Trigger"]
+    #[inline(always)]
+    pub fn tc1_mc0(self) -> &'a mut W {
+        self.variant(TRIGSRC_A::TC1_MC0)
+    }
+    #[doc = "TC1 Match/Compare 1 Trigger"]
+    #[inline(always)]
+    pub fn tc1_mc1(self) -> &'a mut W {
+        self.variant(TRIGSRC_A::TC1_MC1)
+    }
+    #[doc = "TC2 Overflow Trigger"]
+    #[inline(always)]
+    pub fn tc2_ovf(self) -> &'a mut W {
+        self.variant(TRIGSRC_A::TC2_OVF)
+    }
+    #[doc = "TC2 Match/Compare 0 Trigger"]
+    #[inline(always)]
+    pub fn tc2_mc0(self) -> &'a mut W {
+        self.variant(TRIGSRC_A::TC2_MC0)
+    }
+    #[doc = "TC2 Match/Compare 1 Trigger"]
+    #[inline(always)]
+    pub fn tc2_mc1(self) -> &'a mut W {
+        self.variant(TRIGSRC_A::TC2_MC1)
+    }
+    #[doc = "ADC Result Ready Trigger"]
+    #[inline(always)]
+    pub fn adc_resrdy(self) -> &'a mut W {
+        self.variant(TRIGSRC_A::ADC_RESRDY)
+    }
+    #[doc = "DAC Empty Trigger"]
+    #[inline(always)]
+    pub fn dac_empty(self) -> &'a mut W {
+        self.variant(TRIGSRC_A::DAC_EMPTY)
     }
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
