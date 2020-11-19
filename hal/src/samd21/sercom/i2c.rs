@@ -8,8 +8,10 @@ use crate::target_device::{PM, SERCOM0, SERCOM1, SERCOM2, SERCOM3};
 use crate::target_device::{SERCOM4, SERCOM5};
 use crate::time::Hertz;
 
+const BUS_STATE_UNKNOWN: u8 = 0;
 const BUS_STATE_IDLE: u8 = 1;
 const BUS_STATE_OWNED: u8 = 2;
+const BUS_STATE_BUSY: u8 = 3;
 
 const MASTER_ACT_READ: u8 = 2;
 const MASTER_ACT_STOP: u8 = 3;
@@ -103,11 +105,12 @@ impl<$pad0, $pad1> $Type<$pad0, $pad1> {
     }
 
     fn start_tx_write(&mut self, addr: u8) -> Result<(), I2CError> {
-        loop {
-            match self.i2cm().status.read().busstate().bits() {
-                BUS_STATE_IDLE | BUS_STATE_OWNED => break,
-                _ => continue,
-            }
+        let status = self.i2cm().status.read();
+        if status.busstate().bits() == BUS_STATE_BUSY
+            || (status.arblost().bit_is_set() && status.busstate().bits() != BUS_STATE_IDLE)
+            || status.busstate().bits() == BUS_STATE_UNKNOWN
+        {
+            return Err(I2CError::BusError);
         }
 
         // Signal start and transmit encoded address.
@@ -144,11 +147,12 @@ impl<$pad0, $pad1> $Type<$pad0, $pad1> {
     }
 
     fn start_tx_read(&mut self, addr: u8) -> Result<(), I2CError> {
-        loop {
-            match self.i2cm().status.read().busstate().bits() {
-                BUS_STATE_IDLE | BUS_STATE_OWNED => break,
-                _ => continue,
-            }
+        let status = self.i2cm().status.read();
+        if status.busstate().bits() == BUS_STATE_BUSY
+            || (status.arblost().bit_is_set() && status.busstate().bits() != BUS_STATE_IDLE)
+            || status.busstate().bits() == BUS_STATE_UNKNOWN
+        {
+            return Err(I2CError::BusError);
         }
 
         self.i2cm().intflag.modify(|_, w| w.error().clear_bit());
