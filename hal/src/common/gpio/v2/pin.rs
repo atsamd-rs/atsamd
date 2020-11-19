@@ -1,41 +1,42 @@
-//! pin - A type-level module for GPIO pins
+//! # Type-level module for GPIO pins
 //!
 //! This module provides a type-level API for GPIO pins. It uses the type system
 //! to track the state of pins at compile-time. To do so, it uses traits to
 //! represent meta-types and types as instances of those meta-types. For
-//! example, the trait `InputConfig` acts as a type-level `enum` of the
-//! available input configurations, and the types `Floating`, `PullDown` and
-//! `PullUp` are the type-level variants of `InputConfig`.
+//! example, the trait [InputConfig] acts as a type-level `enum` of the
+//! available input configurations, and the types [Floating], [PullDown] and
+//! [PullUp] are the type-level variants of [InputConfig].
 //!
 //! When applied as a trait bound, meta-types restrict type parameters to the
 //! corresponding variants. All of the traits in this module are closed, using
-//! the `Sealed` pattern, so the type-level instances found in this module are
-//! the only possible variants.
+//! the `Sealed` trait pattern, so the type-level instances found in this module
+//! are the only possible variants.
 //!
-//! Type-level pins are parameterized by two main meta-types, `PinId` and
-//! `PinMode`.
+//! Type-level pins are parameterized by two main meta-types, [PinId] and
+//! [PinMode].
 //!
-//! The `PinId` meta-type identifies a pin by it's group (A, B, C or D) and pin
-//! number. Each `PinId` instance is named according to its datasheet
-//! identifier, e.g. `PA27`.
+//! The [PinId] meta-type identifies a pin by it's group (A, B, C or D) and pin
+//! number. Each [PinId] instance is named according to its datasheet
+//! identifier, e.g. [PA27].
 //!
-//! The `PinMode` meta-type represents the various pin modes. The available
-//! `PinMode` variants are `Disabled`, `Input`, `Output` and `Alternate`, each
+//! The [PinMode] meta-type represents the various pin modes. The available
+//! [PinMode] variants are [Disabled], [Input], [Output] and [Alternate], each
 //! with its own corresponding configurations.
 //!
-//! The `Pin` struct acts as a type-level instance of a pin. It is parameterized
-//! by two type parameters, a `PinId` and a `PinMode`. `Pin`s with different
-//! `PinId`s or `PinMode`s are considered distinct types by the compiler. As a
-//! consequence, converting from one `PinMode` to another requires changing
-//! type. Functions that change `PinMode` must consume the existing instance and
+//! The [Pin] struct acts as a type-level instance of a pin. It is parameterized
+//! by two type parameters, a [PinId] and a [PinMode]. [Pin]s with different
+//! [PinId]s or [PinMode]s are considered distinct types by the compiler. As a
+//! consequence, converting from one [PinMode] to another requires changing
+//! type. Functions that change [PinMode] must consume the existing instance and
 //! return a new instance.
 //!
-//! It is not possible for users to create new instances of a `Pin`. Singleton
-//! instances of each pin are made available to users through the `Pins` struct.
+//! It is not possible for users to create new instances of a [Pin]. Singleton
+//! instances of each pin are made available to users through the [Pins] struct.
 //!
-//! To create the `Pins` struct, users must supply the PAC `PORT` peripheral.
-//! The `Pins` struct takes ownership of the `PORT` and provies the
-//! corresponding pins. Each `Pin` within the `Pins` struct can be moved out and
+//! To create the [Pins] struct, users must supply the PAC
+//! [PORT](crate::target_device::PORT) peripheral. The [Pins] struct takes
+//! ownership of the [PORT](crate::target_device::PORT) and provies the
+//! corresponding pins. Each [Pin] within the [Pins] struct can be moved out and
 //! used individually.
 //!
 //!
@@ -57,9 +58,12 @@
 //!
 //! # Embedded HAL traits
 //!
-//! This module implements all of the embedded HAL GPIO traits for each `Pin` in
-//! the corresponding `PinMode`s, namely: `InputPin`, `OutputPin`,
-//! `ToggleableOutputPin` and `StatefulOutputPin`.
+//! This module implements all of the embedded HAL GPIO traits for each [Pin] in
+//! the corresponding [PinMode]s, namely:
+//! [InputPin](embedded_hal::digital::v2::InputPin),
+//! [OutputPin](embedded_hal::digital::v2::OutputPin),
+//! [ToggleableOutputPin](embedded_hal::digital::v2::ToggleableOutputPin) and
+//! [StatefulOutputPin](embedded_hal::digital::v2::StatefulOutputPin).
 //!
 //! # Type-level encapsulation
 //!
@@ -73,8 +77,8 @@
 //! ```
 //!
 //! As an alternative, this module provides a trait to encapsulate a pin with a
-//! single type-parameter, `AnyPin`. The `AnyPin` trait is implemented by every
-//! possible variant of `Pin`, so it can be used as a trait bound for pins. With
+//! single type-parameter, [AnyPin]. The [AnyPin] trait is implemented by every
+//! possible variant of [Pin], so it can be used as a trait bound for pins. With
 //! this approach, only one type parameter is required.
 //!
 //! ```rust
@@ -83,8 +87,8 @@
 //! }
 //! ```
 //!
-//! Moreover, no information is lost with this approach, because the `AnyPin`
-//! trait has associated types for each type parameter of `Pin`. Use these
+//! Moreover, no information is lost with this approach, because the [AnyPin]
+//! trait has associated types for each type parameter of [Pin]. Use these
 //! associated types to apply trait bounds or restrict the pin in some way.
 //!
 //! ```rust
@@ -100,11 +104,12 @@
 //! # Optional pins
 //!
 //! Finally, this module provides an easy way to implement optional pins. The
-//! trait `OptionalPin` is implemented for each `Pin` as well as the
-//! `crate::typelevel::NoneT` struct. `NoneT` acts as a type-level version of
-//! the `None` variant. The `SomePin` trait has both `OptionalPin` and `AnyPin`
-//! as super traits, so it can be used as a bound to guarantee a valid pin and
-//! provide access to the `AnyPin` associated types.
+//! trait [OptionalPin] is implemented for each [Pin] as well as the
+//! [NoneT](crate::typelevel::NoneT) struct. [NoneT](crate::typelevel::NoneT)
+//! acts as a type-level version of the [None](core::option::Option::None)
+//! variant. The [SomePin] trait has both [OptionalPin] and [AnyPin] as super
+//! traits, so it can be used as a bound to guarantee a valid pin and provide
+//! access to the [AnyPin] associated types.
 //!
 //! ```rust
 //! struct UserStruct<P: OptionalPin> {
@@ -146,14 +151,11 @@ use super::dynpin::*;
 /// Type-level `enum` for disabled configurations
 pub trait DisabledConfig: Sealed {}
 
-/// Type-level variant of both `DisabledConfig` and `InputConfig`
-/// representing a floating configuration
+/// Type-level variant of both [DisabledConfig] and [InputConfig]
 pub enum Floating {}
-/// Type-level variant of both `DisabledConfig` and `InputConfig`
-/// representing a pull-down configuration
+/// Type-level variant of both [DisabledConfig] and [InputConfig]
 pub enum PullDown {}
-/// Type-level variant of both `DisabledConfig` and `InputConfig`
-/// representing a pull-up configuration
+/// Type-level variant of both [DisabledConfig] and [InputConfig]
 pub enum PullUp {}
 
 impl Sealed for Floating {}
@@ -164,24 +166,25 @@ impl DisabledConfig for Floating {}
 impl DisabledConfig for PullDown {}
 impl DisabledConfig for PullUp {}
 
-/// Type-level variant of `PinMode` for disabled modes
-/// Type `C` is one of three configurations: `Floating`, `PullDown` or `PullUp`
+/// Type-level variant of [PinMode] for disabled modes
+///
+/// Type `C` is one of three configurations: [Floating], [PullDown] or [PullUp]
 pub struct Disabled<C: DisabledConfig> {
     cfg: PhantomData<C>,
 }
 
 impl<C: DisabledConfig> Sealed for Disabled<C> {}
 
-/// Type-level variant of `PinMode` for floating disabled mode
+/// Type-level variant of [PinMode] for floating disabled mode
 pub type FloatingDisabled = Disabled<Floating>;
 
-/// Type-level variant of `PinMode` for pull-down disabled mode
+/// Type-level variant of [PinMode] for pull-down disabled mode
 pub type PullDownDisabled = Disabled<PullDown>;
 
-/// Type-level variant of `PinMode` for pull-up disabled mode
+/// Type-level variant of [PinMode] for pull-up disabled mode
 pub type PullUpDisabled = Disabled<PullUp>;
 
-/// Type alias for the `PinMode` at reset
+/// Type alias for the [PinMode] at reset
 pub type Reset = FloatingDisabled;
 
 //==============================================================================
@@ -195,22 +198,23 @@ impl InputConfig for Floating {}
 impl InputConfig for PullDown {}
 impl InputConfig for PullUp {}
 
-/// Type-level variant of `PinMode` for input modes
-/// Type `C` is one of three input configurations: `Floating`, `PullDown` or
-/// `PullUp`
+/// Type-level variant of [PinMode] for input modes
+///
+/// Type `C` is one of three input configurations: [Floating], [PullDown] or
+/// [PullUp]
 pub struct Input<C: InputConfig> {
     cfg: PhantomData<C>,
 }
 
 impl<C: InputConfig> Sealed for Input<C> {}
 
-/// Type-level variant of `PinMode` for floating input mode
+/// Type-level variant of [PinMode] for floating input mode
 pub type FloatingInput = Input<Floating>;
 
-/// Type-level variant of `PinMode` for pull-down input mode
+/// Type-level variant of [PinMode] for pull-down input mode
 pub type PullDownInput = Input<PullDown>;
 
-/// Type-level variant of `PinMode` for pull-up input mode
+/// Type-level variant of [PinMode] for pull-up input mode
 pub type PullUpInput = Input<PullUp>;
 
 //==============================================================================
@@ -220,9 +224,9 @@ pub type PullUpInput = Input<PullUp>;
 /// Type-level `enum` for output configurations
 pub trait OutputConfig: Sealed {}
 
-/// Type-level variant of `OutputConfig` for a push-pull configuration
+/// Type-level variant of [OutputConfig] for a push-pull configuration
 pub enum PushPull {}
-/// Type-level variant of `OutputConfig` for a readable push-pull configuration
+/// Type-level variant of [OutputConfig] for a readable push-pull configuration
 pub enum Readable {}
 
 impl Sealed for PushPull {}
@@ -231,18 +235,19 @@ impl Sealed for Readable {}
 impl OutputConfig for PushPull {}
 impl OutputConfig for Readable {}
 
-/// Type-level variant of `PinMode` for output modes
-/// Type `C` is one of two output configurations: `PushPull` or `Readable`
+/// Type-level variant of [PinMode] for output modes
+///
+/// Type `C` is one of two output configurations: [PushPull] or [Readable]
 pub struct Output<C: OutputConfig> {
     cfg: PhantomData<C>,
 }
 
 impl<C: OutputConfig> Sealed for Output<C> {}
 
-/// Type-level variant of `PinMode` for push-pull output mode
+/// Type-level variant of [PinMode] for push-pull output mode
 pub type PushPullOutput = Output<PushPull>;
 
-/// Type-level variant of `PinMode` for readable push-pull output mode
+/// Type-level variant of [PinMode] for readable push-pull output mode
 pub type ReadableOutput = Output<Readable>;
 
 //==============================================================================
@@ -251,7 +256,7 @@ pub type ReadableOutput = Output<Readable>;
 
 /// Type-level `enum` for alternate peripheral function configurations
 pub trait AlternateConfig: Sealed {
-    /// Corresponding `DynAlternate`
+    /// Corresponding [DynAlternate](super::DynAlternate)
     const DYN: DynAlternate;
     /// Value written to the PMUX register for the given peripheral function
     const NUM: u8;
@@ -268,7 +273,7 @@ macro_rules! alternate {
             $(
                 $( #[$cfg] )?
                 #[
-                    doc = "Type-level variant of `AlternateConfig` for \
+                    doc = "Type-level variant of [AlternateConfig] for \
                     alternate peripheral function " $Letter
                 ]
                 pub enum $Letter {}
@@ -281,8 +286,8 @@ macro_rules! alternate {
                 }
                 $( #[$cfg] )?
                 #[
-                    doc = "Type-level variant of `PinMode` for alternate \
-                    peripheral function " $Letter
+                    doc = "Type-level variant of [PinMode] for alternate \
+                    peripheral function [" $Letter "]"
                 ]
                 pub type [<Alternate $Letter>] = Alternate<$Letter>;
             )+
@@ -314,8 +319,9 @@ alternate!([
     (N, 13),
 ]);
 
-/// Type-level variant of `PinMode` for alternate peripheral functions
-/// Type `C` is one of the alternate configurations
+/// Type-level variant of [PinMode] for alternate peripheral functions
+///
+/// Type `C` is an [AlternateConfig]
 pub struct Alternate<C: AlternateConfig> {
     cfg: PhantomData<C>,
 }
@@ -328,7 +334,7 @@ impl<C: AlternateConfig> Sealed for Alternate<C> {}
 
 /// Type-level `enum` representing pin modes
 pub trait PinMode: Sealed + Sized {
-    /// Corresponding `DynPinMode`
+    /// Corresponding [DynPinMode](super::DynPinMode)
     const DYN: DynPinMode;
     /// Value of the DIR field in this mode
     const DIR: bool = false;
@@ -342,7 +348,7 @@ pub trait PinMode: Sealed + Sized {
     const PMUXEN: bool = false;
     /// Value of the PMUXE/PMUXO field in this mode
     const PMUX: u8 = 0;
-    /// Convert a `Pin` into this `PinMode`
+    /// Convert a [Pin] into this [PinMode]
     #[inline]
     fn into_mode<I, M>(_pin: Pin<I, M>) -> Pin<I, Self>
     where
@@ -352,9 +358,9 @@ pub trait PinMode: Sealed + Sized {
         Self::convert(I::Group::group(), I::NUM);
         Pin::new()
     }
-    /// Set the hardware registers for a given `PinMode`
+    /// Set the hardware registers for a given [PinMode]
     ///
-    /// This function uses the `GROUP` pointer safely. It only modifies
+    /// This function uses the GROUP pointer safely. It only modifies
     /// registers and fields of the corresponding pin, and it does so using only
     /// atomic operations. The PMUX registers cannot be configured directly
     /// using atomic operations. Use the WRCONFIG register instead.
@@ -561,7 +567,7 @@ impl_core_convert_from!(
 //  Pin groups
 //==============================================================================
 
-// Because the `Group` trait gives access to the raw registers, hide it in a
+// Because the [Group] trait gives access to the raw registers, hide it in a
 // private module
 mod private {
     use super::{Sealed, PORT};
@@ -667,7 +673,7 @@ group!(GroupD, 3);
 
 /// Type-level `enum` for pin IDs
 pub trait PinId: Sealed {
-    /// Corresponding `DynPinId`
+    /// Corresponding [DynPinId](super::DynPinId)
     const DYN: DynPinId;
     /// Pin group; Also acts as zero-sized reference to the GROUP registers
     type Group: Group;
@@ -697,17 +703,17 @@ macro_rules! pin_id {
 //  Pin trait
 //==============================================================================
 
-/// Type-level meta-type representing pins
+/// Meta-type representing any [Pin]
 ///
-/// All instances of `Pin` implement this trait. When used as a trait bound, it
-/// acts to encapsulate a `Pin`. Without this trait, a completely generic
-/// `Pin` would require two type parameters. When using this trait as a bound,
+/// All instances of [Pin] implement this trait. When used as a trait bound, it
+/// acts to encapsulate a [Pin]. Without this trait, a completely generic
+/// [Pin] would require two type parameters. When using this trait as a bound,
 /// only one type parameter is required, yet you can still recover each type
-/// parameter of the corresponding `Pin` through the associated types.
+/// parameter of the corresponding [Pin] through the associated types.
 pub trait AnyPin: Sealed {
-    /// `PinId` of the corresponding `Pin`
+    /// [PinId] of the corresponding [Pin]
     type Id: PinId;
-    /// `PinMode` of the corresponding `Pin`
+    /// [PinMode] of the corresponding [Pin]
     type Mode: PinMode;
 }
 
@@ -731,15 +737,18 @@ where
 //  Optional pins
 //==============================================================================
 
-/// Type-level meta-type representing an optional `Pin`. This trait is
-/// implemented for every `Pin`, as well as for `crate::typelevel::NoneT`.
+/// Meta-type representing an optional [Pin].
+///
+/// This trait is implemented for every [Pin], as well as for
+/// [NoneT](crate::typelevel::NoneT).
 pub trait OptionalPin: Sealed {}
 impl OptionalPin for NoneT {}
 impl<P: AnyPin> OptionalPin for P {}
 
-/// Type-level meta-type representing a valid `Pin`. When used as a bound, this
-/// trait allows you to exclude `crate::typelevel::NoneT` and limit the type to
-/// valid `Pin`s.
+/// Meta-type representing a valid [Pin].
+///
+/// When used as a bound, this trait allows you to exclude
+/// [NoneT](crate::typelevel::NoneT) and limit the type to valid [Pin]s.
 pub trait SomePin: OptionalPin + AnyPin {}
 impl<P: OptionalPin + AnyPin> SomePin for P {}
 
@@ -810,7 +819,7 @@ pub(super) fn write_drive_strength(group: *const GROUP, num: u8, bit: bool) {
 //  Pin struct
 //==============================================================================
 
-/// A type-level GPIO pin, parameterized by `PinId` and `PinMode` types
+/// A type-level GPIO pin, parameterized by [PinId] and [PinMode] types
 pub struct Pin<I, M>
 where
     I: PinId,
@@ -833,7 +842,7 @@ where
         }
     }
 
-    /// Convert the pin to the requested `PinMode`
+    /// Convert the pin to the requested [PinMode]
     #[inline]
     pub fn into_mode<N: PinMode>(self) -> Pin<I, N> {
         N::into_mode(self)
@@ -888,6 +897,7 @@ where
     }
 
     /// Configure the pin to operate as the corresponding peripheral function.
+    ///
     /// The type `C` indicates the desired peripheral function.
     #[inline]
     pub fn into_alternate<C: AlternateConfig>(self) -> Pin<I, Alternate<C>> {
@@ -895,6 +905,7 @@ where
     }
 
     /// Read the current drive strength of the pin.
+    ///
     /// The drive strength is reset to normal on every change in pin mode.
     #[inline]
     pub fn get_drive_strength(&self) {
@@ -902,6 +913,7 @@ where
     }
 
     /// Set the drive strength for the pin.
+    ///
     /// The drive strength is reset to normal on every change in pin mode.
     #[inline]
     pub fn set_drive_strength(&mut self, stronger: bool) {
@@ -1051,7 +1063,7 @@ macro_rules! pins{
         )+
     ) => {
         paste! {
-            /// Collection of all the individual `Pin`s
+            /// Collection of all the individual [Pin]s
             pub struct Pins {
                 port: PORT,
                 $(
@@ -1061,8 +1073,8 @@ macro_rules! pins{
                 )+
             }
             impl Pins {
-                /// Take ownership of the PAC `PORT` and split it into discrete
-                /// pins
+                /// Take ownership of the PAC [PORT](crate::target_device::PORT)
+                /// and split it into discrete [Pin]s
                 pub fn new(port: PORT) -> Pins {
                     Pins {
                         port,
@@ -1072,7 +1084,7 @@ macro_rules! pins{
                         )+
                     }
                 }
-                /// Get a reference to the PAC `PORT`
+                /// Get a reference to the PAC [PORT](crate::target_device::PORT)
                 ///
                 /// This operation could allow you to invalidate the compiler's
                 /// type-level tracking, so it is unsafe.
@@ -1080,9 +1092,10 @@ macro_rules! pins{
                 pub unsafe fn port(&self) -> &PORT {
                     &self.port
                 }
-                /// Consume the `Pins` struct and return the PAC `PORT`
+                /// Consume the [Pins] struct and return the PAC
+                /// [PORT](crate::target_device::PORT)
                 ///
-                /// All remaining `Pin` instances stored within the struct will
+                /// All remaining [Pin] instances stored within the struct will
                 /// be dropped. This operation could allow you to invalidate the
                 /// compiler's type-level tracking, so it is unsafe.
                 #[inline]

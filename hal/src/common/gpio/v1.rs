@@ -1,14 +1,14 @@
-//! GPIO pins - version 1
+//! # Version 1 of the GPIO module
 //!
 //! This module is a compatibility shim that allows existing code to use the new
-//! `v2` module. This API will eventually be deprecated and removed. The
-//! remaining documentation in this module comes from the prior implementation
-//! of the GPIO module.
+//! [v2](super::v2) module. This API will eventually be deprecated and removed.
+//! The remaining documentation in this module comes from the prior
+//! implementation of the GPIO module.
 //!
 //! Working with GPIO pins.
-//! The pins are associated with the PORT hardware.  This module
-//! defines a `split` method on the `PORT` type that is used to safely
-//! reference the individual pin configuration.
+//! The pins are associated with the PORT hardware. This module defines a
+//! [split](GpioExt::split) method on the [PORT](crate::target_device::PORT)
+//! type that is used to safely reference the individual pin configuration.
 //! The IO pins can be switched into alternate function modes, which
 //! routes the pins to different peripherals depending on the mode
 //! for the pin.  The pin configuration is reflected through the
