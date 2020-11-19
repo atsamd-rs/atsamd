@@ -8,6 +8,6 @@ mod private {
 
 pub(crate) use private::Sealed;
 
-/// Type-level version of the `None` variant
+/// Type-level version of the [None](core::option::Option::None) variant
 pub struct NoneT;
 impl Sealed for NoneT {}
