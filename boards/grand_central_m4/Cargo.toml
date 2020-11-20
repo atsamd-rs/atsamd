@@ -52,7 +52,6 @@ default = ["rt", "atsamd-hal/samd51p", "atsamd-hal/samd51", "atsamd-hal/unproven
 rt = ["cortex-m-rt", "atsamd-hal/samd51p-rt"]
 unproven = ["atsamd-hal/unproven"]
 usb = ["atsamd-hal/usb", "usb-device", "usbd-serial"]
-use_uart_debug = ["atsamd-hal/use_uart_debug"]
 
 [profile.dev]
 incremental = false
