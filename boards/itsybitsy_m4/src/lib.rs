@@ -8,6 +8,7 @@ use atsamd_hal as hal;
 use hal::*;
 
 pub use hal::common::*;
+pub use hal::dbgprint;
 pub use hal::samd51::*;
 pub use hal::target_device as pac;
 
@@ -21,9 +22,6 @@ use hal::clock::GenericClockController;
 use hal::gpio::*;
 use hal::sercom::{I2CMaster2, SPIMaster1, UART3};
 use hal::time::Hertz;
-
-#[cfg(feature = "use_uart_debug")]
-pub use hal::dbgprint;
 
 /// Convenience for setting up the labelled SPI peripheral.
 /// This powers up SERCOM1 and configures it for use as an
