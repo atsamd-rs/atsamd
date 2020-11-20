@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 use generic_array::{ArrayLength, GenericArray};
 
 use crate::gpio::*;
@@ -129,19 +131,37 @@ impl<IOSet> GmacPadout for RmiiPadout<IOSet> {
     const MODE: GmacMode = GmacMode::Rmii;
 }
 
-pub struct Gmac<P: GmacPadout, RxBuf, TxBuf> {
+// type RxCallback = fn(Gmac<P: GmacPadout, RxBuf, TxBuf, RxCallback,
+// TxCallback>);
+pub struct Gmac<P: GmacPadout, RxBuf, TxBuf, RxCallback, TxCallback> {
     _padout: P,
+    gmac: GMAC,
     rx_buffers: RxBuf,
     tx_buffers: TxBuf,
+    rx_buf_index: usize,
+    tx_buf_index: usize,
+    last_tx_buf_index: usize,
+    rx_callback: Option<RxCallback>,
+    tx_callback: Option<TxCallback>,
 }
 
-impl<P, RxBuf, TxBuf> Gmac<P, RxBuf, TxBuf>
+impl<P, RxBuf, TxBuf, RxCallback, TxCallback> Gmac<P, RxBuf, TxBuf, RxCallback, TxCallback>
 where
     P: GmacPadout,
     RxBuf: BufferSet<RxBufferDescriptor>,
     TxBuf: BufferSet<TxBufferDescriptor>,
+    RxCallback: FnMut(&mut Gmac<P, RxBuf, TxBuf, RxCallback, TxCallback>),
+    TxCallback: FnMut(&mut Gmac<P, RxBuf, TxBuf, RxCallback, TxCallback>),
 {
-    pub fn new(padout: P, mclk: &MCLK, gmac: GMAC, rx_buffers: RxBuf, tx_buffers: TxBuf) -> Self {
+    pub fn new(
+        padout: P,
+        mclk: &MCLK,
+        gmac: GMAC,
+        rx_buffers: RxBuf,
+        tx_buffers: TxBuf,
+        /* rx_callback: RxCallback,
+         * tx_callback: TxCallback, */
+    ) -> Self {
         mclk.ahbmask.modify(|_, w| w.gmac_().set_bit());
         mclk.apbcmask.modify(|_, w| w.gmac_().set_bit());
 
@@ -210,13 +230,64 @@ where
         NVIC::mask(Interrupt::GMAC);
         NVIC::unpend(Interrupt::GMAC);
         unsafe {
+            //TODO Should this really be here?
             NVIC::unmask(Interrupt::GMAC);
         }
 
         Gmac {
             _padout: padout,
+            gmac,
             rx_buffers,
             tx_buffers,
+            rx_buf_index: 0,
+            tx_buf_index: 0,
+            last_tx_buf_index: 0,
+            rx_callback: None,
+            tx_callback: None,
+        }
+    }
+
+    pub fn enable(&mut self) {
+        self.gmac.ncr.modify(|_, w| {
+            w.rxen().set_bit();
+            w.txen().set_bit()
+        });
+    }
+    pub fn disable(&mut self) {
+        self.gmac.ncr.modify(|_, w| {
+            w.rxen().clear_bit();
+            w.txen().clear_bit()
+        });
+    }
+
+    pub fn gmac_handler(&mut self) {
+        let tsr = self.gmac.tsr.read().bits();
+        let rsr = self.gmac.rsr.read().bits();
+        // Must be Clear ISR (Clear on read)
+        self.gmac.isr.read().bits();
+
+        if (tsr & (1 << 5)) == 1 << 5 {
+            // Frame transmited
+            unsafe {
+                self.gmac.tsr.write_with_zero(|w| w.bits(tsr));
+            }
+            if self.tx_buffers.get_descriptor(self.tx_buf_index).used() {
+                // Call transmitted callback
+                let mut cb = self.tx_callback.take().unwrap();
+                cb(self);
+                self.tx_callback = Some(cb);
+            }
+        }
+
+        if (rsr & (1 << 1)) == 1 << 1 {
+            // Frame received
+            // Call received callback
+            let mut cb = self.rx_callback.take().unwrap();
+            cb(self);
+            self.rx_callback = Some(cb);
+        }
+        unsafe {
+            self.gmac.rsr.write_with_zero(|w| w.bits(rsr));
         }
     }
     #[rustfmt::skip]
@@ -487,10 +558,19 @@ where
             buffers,
         }
     }
+
+    pub fn get_buffer(&self, index: usize) -> &[u8] {
+        &self.buffers[index][..]
+    }
+    pub fn get_descriptor(&self, index: usize) -> &T {
+        &self.descriptors[index]
+    }
 }
 
 pub trait BufferSet<T> {
     fn address(&self) -> u32;
+    fn get_buffer(&self, index: usize) -> &[u8];
+    fn get_descriptor(&self, index: usize) -> &T;
 }
 impl<
         T: BufferDescriptor,
@@ -500,6 +580,12 @@ impl<
 {
     fn address(&self) -> u32 {
         self.descriptors.as_ptr() as u32
+    }
+    fn get_buffer(&self, index: usize) -> &[u8] {
+        &self.get_buffer(index)[..]
+    }
+    fn get_descriptor(&self, index: usize) -> &T {
+        self.get_descriptor(index)
     }
 }
 
