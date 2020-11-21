@@ -1,7 +1,7 @@
 # SAM E54 Xplained Pro Evaluation Kit Board Support Crate
 
 This crate provides a type-safe Rust API for working with the
-[SAM E54 Xplained Pro Evaluation Kit](https://www.microchip.com/developmenttools/productdetails/atsame54-xpro).
+[SAM E54 Xplained Pro Evaluation Kit](https://www.microchip.com/developmenttools/productdetails/atsame54_xpro).
 
 ## Board Features
 
@@ -17,9 +17,9 @@ This crate provides a type-safe Rust API for working with the
 ## Uploading an example
 Check out the repository for examples:
 
-https://github.com/atsamd-rs/atsamd/tree/master/boards/atsame54-xpro/examples
+https://github.com/atsamd-rs/atsamd/tree/master/boards/atsame54_xpro/examples
 
-* Be in this directory `cd boards/atsame54-xpro`
+* Be in this directory `cd boards/atsame54_xpro`
 * Put your device in bootloader mode usually by hitting the reset button twice.
 * Build and upload in one step
 ```
@@ -27,7 +27,7 @@ $ cargo hf2 --release --example blinky_basic
     Finished release [optimized + debuginfo] target(s) in 2m 02s
     Searching for a connected device with known vid/pid pair.
     Trying  Ok(Some("Microchip")) Ok(Some("SAM E54 Xplained Pro Evaluation Kit"))
-    Flashing "/path/to/atsamd/boards/atsame54-xpro/target/thumbv7em-none-eabihf/release/examples/blinky_basic"
+    Flashing "/path/to/atsamd/boards/atsame54_xpro/target/thumbv7em-none-eabihf/release/examples/blinky_basic"
     Finished in 0.085s
 $
 ```

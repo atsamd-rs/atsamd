@@ -1,5 +1,5 @@
 [package]
-name = "atsame54-xpro"
+name = "atsame54_xpro"
 version = "0.1.1"
 authors = [
     "Karsten Große <karsten.grosse@sympatron.de>"
