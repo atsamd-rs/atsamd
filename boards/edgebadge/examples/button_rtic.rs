@@ -57,7 +57,7 @@ const APP: () = {
 
         let mut tc3 = hal::timer::TimerCounter::tc3_(&timer_clock, device.TC3, &mut device.MCLK);
 
-        tc3.start(200.hz());
+        tc3.start(200u32.Hz());
         tc3.enable_interrupt();
 
         init::LateResources {

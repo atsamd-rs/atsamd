@@ -64,8 +64,8 @@ where
         )
         .unwrap();
 
-        let divider = *params.numerator();
-        let cycles = *params.denominator();
+        let divider = *params.denominator();
+        let cycles = *params.numerator();
         let count = self.tc.count_16();
 
         // Disable the timer while we reconfigure it

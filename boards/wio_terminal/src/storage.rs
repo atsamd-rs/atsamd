@@ -111,7 +111,7 @@ impl SDCard {
         let sercom6_clk = clocks.sercom6_core(&gclk0).ok_or(())?;
         let spi = SPIMaster6::new(
             &sercom6_clk,
-            Hertz::try_from(Hertz::from(400.kHz())).unwrap(),
+            400000u32.Hz(),
             spi::Mode {
                 phase: spi::Phase::CaptureOnFirstTransition,
                 polarity: spi::Polarity::IdleLow,

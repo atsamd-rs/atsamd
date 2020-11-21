@@ -44,7 +44,7 @@ fn main() -> ! {
 
     let mut uart = hal::uart(
         &mut clocks,
-        115200.hz(),
+        115200u32.Hz(),
         peripherals.SERCOM0,
         &mut peripherals.PM,
         pins.d3,

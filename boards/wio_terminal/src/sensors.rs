@@ -35,7 +35,7 @@ impl Accelerometer {
         let gclk0 = clocks.gclk0();
         let i2c = I2CMaster4::new(
             &clocks.sercom4_core(&gclk0).unwrap(),
-            Hertz::try_from(Hertz::from(400.kHz())).unwrap(),
+            400000u32.Hz(),
             sercom4,
             mclk,
             self.sda.into_pad(port),

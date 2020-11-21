@@ -47,7 +47,7 @@ fn main() -> ! {
 
     let mut uart = UART3::new(
         &uart_clk,
-        9600.hz(),
+        9600u32.Hz(),
         peripherals.SERCOM3,
         &mut peripherals.MCLK,
         (rx, tx),

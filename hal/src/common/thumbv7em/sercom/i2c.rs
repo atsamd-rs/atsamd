@@ -44,7 +44,7 @@ impl<$pad0, $pad1> $Type<$pad0, $pad1> {
     /// The clock is obtained via the `GenericClockGenerator` type.
     /// `freq` specifies the bus frequency to use for I2C communication.
     /// There are typically a handful of values that tend to be supported;
-    /// standard mode is 100.khz(), full speed mode is 400.khz().
+    /// standard mode is 100 khz, full speed mode is 400 khz.
     /// The hardware in the atsamd device supports fast mode at 1.mhz()
     /// and fast mode, but there may be additional hardware configuration
     /// missing from the current software implementation that prevents that
@@ -53,7 +53,7 @@ impl<$pad0, $pad1> $Type<$pad0, $pad1> {
     /// ```no_run
     /// let mut i2c = I2CMaster3::new(
     ///     &clocks.sercom3_core(&gclk0).unwrap(),
-    ///     400.khz(),
+    ///     400000u32.Hz(),
     ///     p.device.SERCOM3,
     ///     &mut p.device.MCLK,
     ///     // Metro M0 express has I2C on pins PA22, PA23

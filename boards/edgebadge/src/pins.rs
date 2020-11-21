@@ -368,7 +368,7 @@ impl Display {
         let tft_backlight = self.tft_backlight.into_function_e(port);
         let mut pwm2 = Pwm2::new(
             &clocks.tc2_tc3(&gclk0).ok_or(())?,
-            1.khz(),
+            1000u32.Hz(),
             timer2,
             hal::pwm::TC2Pinout::Pa1(tft_backlight),
             mclk,

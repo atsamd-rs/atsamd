@@ -183,7 +183,7 @@ impl Accelerometer {
         >,
         adxl343::accelerometer::Error<I2CError>,
     > {
-        Adxl343::new(self.i2c_master(clocks, 100.khz(), sercom, mclk, port))
+        Adxl343::new(self.i2c_master(clocks, 100000u32.Hz(), sercom, mclk, port))
     }
 
     /// Configure accelerometer's SDA and SCL pins as an I2C master"
