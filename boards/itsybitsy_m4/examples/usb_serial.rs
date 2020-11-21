@@ -28,7 +28,7 @@ use usbd_serial::{SerialPort, USB_CLASS_CDC};
 
 use hal::dbgprint;
 use hal::time::Hertz;
-use hal::{uart, uart_debug};
+use hal::uart;
 
 use hal::timer::SpinTimer;
 use smart_leds::{hsv::RGB8, SmartLedsWrite};
@@ -51,14 +51,14 @@ fn main() -> ! {
     rgb.write([RGB8 { r: 0, g: 0, b: 0 }].iter().cloned())
         .unwrap();
 
-    uart_debug::wire_uart(uart(
+    uart(
         pins.uart,
         &mut clocks,
         Hertz(115200),
         peripherals.SERCOM3,
         &mut peripherals.MCLK,
         &mut pins.port,
-    ));
+    );
     dbgprint!(
         "\n\n\n\n~========== STARTING {:?} ==========~\n",
         hal::serial_number()

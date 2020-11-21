@@ -15,6 +15,3 @@ pub use hal::target_device as pac;
 #[cfg(feature = "rt")]
 pub use cortex_m_rt::entry;
 pub use pins::Pins;
-
-#[cfg(feature = "use_uart_debug")]
-pub use hal::dbgprint;

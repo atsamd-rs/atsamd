@@ -35,12 +35,12 @@ $
 Note some examples will tell you they need more features enabled
 ```
 $ cargo hf2 --release --example usb_serial
-error: target `usb_serial` in package `itsybitsy_m4` requires the features: `usb`, `use_uart_debug`
-Consider enabling them by passing, e.g., `--features="usb use_uart_debug"`
+error: target `usb_serial` in package `itsybitsy_m4` requires the features: `usb`
+Consider enabling them by passing, e.g., `--features="usb"`
 ```
 Just follow the instructions to add --features like
 ```
-cargo hf2 --release --example usb_serial --features="usb use_uart_debug"
+cargo hf2 --release --example usb_serial --features="usb"
     Finished release [optimized + debuginfo] target(s) in 0.09s
     Searching for a connected device with known vid/pid pair.
     Trying  Ok(Some("Adafruit Industries")) Ok(Some("PyBadge"))

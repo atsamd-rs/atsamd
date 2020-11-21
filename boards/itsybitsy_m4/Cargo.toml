@@ -50,7 +50,7 @@ default = ["rt", "atsamd-hal/samd51g", "atsamd-hal/samd51", "atsamd-hal/unproven
 rt = ["cortex-m-rt", "atsamd-hal/samd51g-rt"]
 unproven = ["atsamd-hal/unproven"]
 usb = ["atsamd-hal/usb", "usb-device", "usbd-serial"]
-use_uart_debug = ["atsamd-hal/use_uart_debug"]
+use_rtt = ["atsamd-hal/use_rtt"]
 
 [profile.dev]
 incremental = false
@@ -67,11 +67,9 @@ opt-level = "s"
 [[example]]
 name = "blinky_basic"
 
-
 [[example]]
 name = "dotstar"
 
-
 [[example]]
 name = "usb_serial"
-required-features = ["usb", "use_uart_debug"]
+required-features = ["usb", "use_rtt"]
