@@ -1,135 +1,10 @@
 #![allow(dead_code)]
 
-use generic_array::{ArrayLength, GenericArray};
-
-use crate::gpio::*;
-use crate::target_device::{Interrupt, GMAC, MCLK, NVIC};
-
-#[cfg(feature = "min-samd51n")]
-pub struct MiiPadout<IOSet> {
-    _gtxck: Pa14<PfL>,
-    _gtxen: Pa17<PfL>,
-    _gtx0: Pa18<PfL>,
-    _gtx1: Pa19<PfL>,
-    _gtx2: Pc16<PfL>,
-    _gtx3: Pc17<PfL>,
-    _gtxer: Pc19<PfL>,
-    _grxck: Pc18<PfL>,
-    _grxdv: Pc20<PfL>,
-    _grx0: Pa13<PfL>,
-    _grx1: Pa12<PfL>,
-    _grx2: Pc15<PfL>,
-    _grx3: Pc14<PfL>,
-    _grxer: Pa15<PfL>,
-    _gcrs: Pa16<PfL>,
-    _gcol: Pc21<PfL>,
-    _ioset: IOSet,
-    /* _GMDC: GMDC,
-     * _GMDIO: GMDIO, */
-}
-
-impl<IOSet> MiiPadout<IOSet> {
-    #[allow(clippy::too_many_arguments)]
-    pub fn new(
-        port: &mut Port,
-        _gtxck: Pa14<Input<Floating>>,
-        _gtxen: Pa17<Input<Floating>>,
-        _gtx0: Pa18<Input<Floating>>,
-        _gtx1: Pa19<Input<Floating>>,
-        _gtx2: Pc16<Input<Floating>>,
-        _gtx3: Pc17<Input<Floating>>,
-        _gtxer: Pc19<Input<Floating>>,
-        _grxck: Pc18<Input<Floating>>,
-        _grxdv: Pc20<Input<Floating>>,
-        _grx0: Pa13<Input<Floating>>,
-        _grx1: Pa12<Input<Floating>>,
-        _grx2: Pc15<Input<Floating>>,
-        _grx3: Pc14<Input<Floating>>,
-        _grxer: Pa15<Input<Floating>>,
-        _gcrs: Pa16<Input<Floating>>,
-        _gcol: Pc21<Input<Floating>>,
-        _ioset: IOSet,
-    ) -> Self {
-        MiiPadout {
-            _gtxck: _gtxck.into_function(port),
-            _gtxen: _gtxen.into_function(port),
-            _gtx0: _gtx0.into_function(port),
-            _gtx1: _gtx1.into_function(port),
-            _gtx2: _gtx2.into_function(port),
-            _gtx3: _gtx3.into_function(port),
-            _gtxer: _gtxer.into_function(port),
-            _grxck: _grxck.into_function(port),
-            _grxdv: _grxdv.into_function(port),
-            _grx0: _grx0.into_function(port),
-            _grx1: _grx1.into_function(port),
-            _grx2: _grx2.into_function(port),
-            _grx3: _grx3.into_function(port),
-            _grxer: _grxer.into_function(port),
-            _gcrs: _gcrs.into_function(port),
-            _gcol: _gcol.into_function(port),
-            _ioset,
-        }
-    }
-}
-
-pub struct RmiiPadout<IOSet> {
-    _gtxck: Pa14<PfL>,
-    _gtxen: Pa17<PfL>,
-    _gtx0: Pa18<PfL>,
-    _gtx1: Pa19<PfL>,
-    #[cfg(feature = "same53j")]
-    _grxdv: Pa16<PfL>,
-    #[cfg(not(feature = "same53j"))]
-    _grxdv: Pc20<PfL>,
-    _grx0: Pa13<PfL>,
-    _grx1: Pa12<PfL>,
-    _grxer: Pa15<PfL>,
-    _ioset: IOSet,
-}
-
-impl<IOSet> RmiiPadout<IOSet> {
-    #[allow(clippy::too_many_arguments)]
-    pub fn new(
-        port: &mut Port,
-        _gtxck: Pa14<Input<Floating>>,
-        _gtxen: Pa17<Input<Floating>>,
-        _gtx0: Pa18<Input<Floating>>,
-        _gtx1: Pa19<Input<Floating>>,
-        #[cfg(feature = "same53j")] _grxdv: Pa16<Input<Floating>>,
-        #[cfg(not(feature = "same53j"))] _grxdv: Pc20<Input<Floating>>,
-        _grx0: Pa13<Input<Floating>>,
-        _grx1: Pa12<Input<Floating>>,
-        _grxer: Pa15<Input<Floating>>,
-        _ioset: IOSet,
-    ) -> Self {
-        RmiiPadout {
-            _gtxck: _gtxck.into_function(port),
-            _gtxen: _gtxen.into_function(port),
-            _gtx0: _gtx0.into_function(port),
-            _gtx1: _gtx1.into_function(port),
-            _grxdv: _grxdv.into_function(port),
-            _grx0: _grx0.into_function(port),
-            _grx1: _grx1.into_function(port),
-            _grxer: _grxer.into_function(port),
-            _ioset,
-        }
-    }
-}
-
-pub enum GmacMode {
-    Rmii = 0,
-    Mii = 1,
-}
-
-pub trait GmacPadout {
-    const MODE: GmacMode;
-}
-impl<IOSet> GmacPadout for MiiPadout<IOSet> {
-    const MODE: GmacMode = GmacMode::Mii;
-}
-impl<IOSet> GmacPadout for RmiiPadout<IOSet> {
-    const MODE: GmacMode = GmacMode::Rmii;
-}
+use crate::target_device::{GMAC, MCLK};
+mod buffer;
+use buffer::*;
+mod pad;
+use pad::*;
 
 // type RxCallback = fn(Gmac<P: GmacPadout, RxBuf, TxBuf, RxCallback,
 // TxCallback>);
@@ -227,12 +102,12 @@ where
                 .write_with_zero(|w| w.addr().bits(rx_buffers.address()));
         }
 
-        NVIC::mask(Interrupt::GMAC);
-        NVIC::unpend(Interrupt::GMAC);
-        unsafe {
-            //TODO Should this really be here?
-            NVIC::unmask(Interrupt::GMAC);
-        }
+        // NVIC::mask(Interrupt::GMAC);
+        // NVIC::unpend(Interrupt::GMAC);
+        // unsafe {
+        //     //TODO Should this really be here?
+        //     NVIC::unmask(Interrupt::GMAC);
+        // }
 
         Gmac {
             _padout: padout,
@@ -272,19 +147,21 @@ where
                 self.gmac.tsr.write_with_zero(|w| w.bits(tsr));
             }
             if self.tx_buffers.get_descriptor(self.tx_buf_index).used() {
-                // Call transmitted callback
-                let mut cb = self.tx_callback.take().unwrap();
-                cb(self);
-                self.tx_callback = Some(cb);
+                if let Some(mut cb) = self.tx_callback.take() {
+                    // Call transmitted callback
+                    cb(self);
+                    self.tx_callback = Some(cb);
+                }
             }
         }
 
         if (rsr & (1 << 1)) == 1 << 1 {
             // Frame received
-            // Call received callback
-            let mut cb = self.rx_callback.take().unwrap();
-            cb(self);
-            self.rx_callback = Some(cb);
+            if let Some(mut cb) = self.rx_callback.take() {
+                // Call received callback
+                cb(self);
+                self.rx_callback = Some(cb);
+            }
         }
         unsafe {
             self.gmac.rsr.write_with_zero(|w| w.bits(rsr));
@@ -332,260 +209,6 @@ where
         // #if CONF_ETHERNET_PHY_0_IEEE8023_MII_CONTROL_REG0_SETTING == 1
         //     ethernet_phy_write_reg(&ETHERNET_PHY_0_desc, MDIO_REG0_BMCR, CONF_ETHERNET_PHY_0_IEEE8023_MII_CONTROL_REG0);
         // #endif /* CONF_ETHERNET_PHY_0_IEEE8023_MII_CONTROL_REG0_SETTING */
-    }
-}
-
-pub struct Ioset<GMDC, GMDIO>(GMDC, GMDIO);
-pub trait IOSet: private::Sealed {}
-impl<GMDC, GMDIO> private::Sealed for Ioset<GMDC, GMDIO> {}
-impl<GMDC, GMDIO> IOSet for Ioset<GMDC, GMDIO> {}
-
-impl<GMDC, GMDIO> Ioset<GMDC, GMDIO>
-where
-    GMDC: IntoFunction<Pb14<PfL>>,
-    GMDIO: IntoFunction<Pb15<PfL>>,
-{
-    pub fn new1(gmdc: GMDC, gmdio: GMDIO) -> impl IOSet {
-        Ioset(gmdc, gmdio)
-    }
-}
-impl<GMDC, GMDIO> Ioset<GMDC, GMDIO>
-where
-    GMDC: IntoFunction<Pc11<PfL>>,
-    GMDIO: IntoFunction<Pc12<PfL>>,
-{
-    pub fn new2(gmdc: GMDC, gmdio: GMDIO) -> impl IOSet {
-        Ioset(gmdc, gmdio)
-    }
-}
-impl<GMDC, GMDIO> Ioset<GMDC, GMDIO>
-where
-    GMDC: IntoFunction<Pc22<PfL>>,
-    GMDIO: IntoFunction<Pc23<PfL>>,
-{
-    pub fn new3(gmdc: GMDC, gmdio: GMDIO) -> impl IOSet {
-        Ioset(gmdc, gmdio)
-    }
-}
-impl<GMDC, GMDIO> Ioset<GMDC, GMDIO>
-where
-    GMDC: IntoFunction<Pa20<PfL>>,
-    GMDIO: IntoFunction<Pa21<PfL>>,
-{
-    pub fn new4(gmdc: GMDC, gmdio: GMDIO) -> impl IOSet {
-        Ioset(gmdc, gmdio)
-    }
-}
-
-// IOSET    1       2       3       4
-// GMDC     PB14    PC11    PC22    PA20
-// GMDIO    PB15    PC12    PC23    PA21
-
-#[repr(C, align(8))]
-pub struct TxBufferDescriptor {
-    address: u32,
-    status: u32,
-}
-#[allow(clippy::len_without_is_empty)]
-impl TxBufferDescriptor {
-    pub fn address(&self) -> u32 {
-        self.address
-    }
-    pub(crate) fn set_address(&mut self, address: u32) {
-        self.address = address;
-    }
-    pub(crate) fn reset_status(&mut self) {
-        self.status = 1 << 31; // only used bit
-    }
-    pub(crate) fn set_wrap(&mut self, wrap: bool) {
-        if wrap {
-            self.address |= 1 << 30;
-        } else {
-            self.address &= !(1 << 30);
-        }
-    }
-    pub fn len(&self) -> u16 {
-        (self.status & ((1 << 14) - 1)) as u16
-    }
-    pub fn last_buf(&self) -> bool {
-        (self.status >> 16) & 1 == 1
-    }
-    pub fn no_crc(&self) -> bool {
-        (self.status >> 17) & 1 == 1
-    }
-    pub fn checksum_err(&self) -> u8 {
-        (self.status >> 20 & 0x7) as u8
-    }
-    pub fn lco(&self) -> bool {
-        (self.status >> 26) & 1 == 1
-    }
-    pub fn exhausted(&self) -> bool {
-        (self.status >> 27) & 1 == 1
-    }
-    pub fn error(&self) -> bool {
-        (self.status >> 29) & 1 == 1
-    }
-    pub fn wrap(&self) -> bool {
-        (self.status >> 30) & 1 == 1
-    }
-    pub fn used(&self) -> bool {
-        (self.status >> 31) & 1 == 1
-    }
-}
-
-#[repr(C, align(8))]
-pub struct RxBufferDescriptor {
-    address: u32,
-    status: u32,
-}
-#[allow(clippy::len_without_is_empty)]
-impl RxBufferDescriptor {
-    pub fn ownership(&self) -> bool {
-        self.address & 1 == 1
-    }
-    pub fn wrap(&self) -> bool {
-        (self.address >> 1) & 1 == 1
-    }
-    pub fn address(&self) -> u32 {
-        self.address >> 2
-    }
-    pub(crate) fn set_address(&mut self, address: u32) {
-        assert!(address < (1 << 30));
-        self.address = address & ((1 << 30) - 1);
-    }
-    pub(crate) fn reset_status(&mut self) {
-        self.status = 0;
-    }
-    pub(crate) fn set_wrap(&mut self, wrap: bool) {
-        if wrap {
-            self.address |= 1 << 1;
-        } else {
-            self.address &= !(1 << 1);
-        }
-    }
-
-    pub fn len(&self) -> u16 {
-        (self.status & ((1 << 13) - 1)) as u16
-    }
-    pub fn fcs(&self) -> bool {
-        (self.status >> 13) & 1 == 1
-    }
-    pub fn sof(&self) -> bool {
-        (self.status >> 14) & 1 == 1
-    }
-    pub fn eof(&self) -> bool {
-        (self.status >> 15) & 1 == 1
-    }
-    pub fn cfi(&self) -> bool {
-        (self.status >> 16) & 1 == 1
-    }
-    pub fn vlan_priority(&self) -> u8 {
-        (self.status >> 17 & 0x7) as u8
-    }
-    pub fn priority_detected(&self) -> bool {
-        (self.status >> 20) & 1 == 1
-    }
-    pub fn vlan_detected(&self) -> bool {
-        (self.status >> 21) & 1 == 1
-    }
-    pub fn type_id_match(&self) -> u8 {
-        (self.status >> 22 & 0x3) as u8
-    }
-    pub fn checksumoffload(&self) -> bool {
-        (self.status >> 24) & 1 == 1
-    }
-    pub fn addrmatch(&self) -> u8 {
-        ((self.status >> 25) & 0x3) as u8
-    }
-    pub fn ext_addr_match(&self) -> bool {
-        (self.status >> 27) & 1 == 1
-    }
-    pub fn uni_hash_match(&self) -> bool {
-        (self.status >> 29) & 1 == 1
-    }
-    pub fn multi_hash_match(&self) -> bool {
-        (self.status >> 30) & 1 == 1
-    }
-    pub fn boardcast_detect(&self) -> bool {
-        (self.status >> 31) & 1 == 1
-    }
-}
-
-pub trait BufferDescriptor: private::Sealed {
-    fn init(&mut self, buf: &[u8], is_last: bool);
-}
-impl BufferDescriptor for RxBufferDescriptor {
-    fn init(&mut self, buf: &[u8], is_last: bool) {
-        self.set_address(buf.as_ptr() as u32);
-        self.reset_status();
-        self.set_wrap(is_last);
-    }
-}
-impl BufferDescriptor for TxBufferDescriptor {
-    fn init(&mut self, buf: &[u8], is_last: bool) {
-        self.set_address(buf.as_ptr() as u32);
-        self.reset_status();
-        self.set_wrap(is_last);
-    }
-}
-
-pub struct GmacBufferSet<T, Count, Size>
-where
-    T: BufferDescriptor,
-    Count: ArrayLength<T> + ArrayLength<GenericArray<u8, Size>>,
-    Size: ArrayLength<u8>,
-{
-    descriptors: GenericArray<T, Count>,
-    buffers: GenericArray<GenericArray<u8, Size>, Count>,
-}
-
-impl<T, Count, Size> GmacBufferSet<T, Count, Size>
-where
-    T: BufferDescriptor,
-    Count: ArrayLength<T> + ArrayLength<GenericArray<u8, Size>>,
-    Size: ArrayLength<u8>,
-{
-    pub fn new(
-        mut descriptors: GenericArray<T, Count>,
-        buffers: GenericArray<GenericArray<u8, Size>, Count>,
-    ) -> Self {
-        let count = Count::to_usize();
-        for (idx, (descriptor, buffer)) in descriptors.iter_mut().zip(buffers.iter()).enumerate() {
-            descriptor.init(&buffer[..], idx >= count - 1);
-        }
-        GmacBufferSet {
-            descriptors,
-            buffers,
-        }
-    }
-
-    pub fn get_buffer(&self, index: usize) -> &[u8] {
-        &self.buffers[index][..]
-    }
-    pub fn get_descriptor(&self, index: usize) -> &T {
-        &self.descriptors[index]
-    }
-}
-
-pub trait BufferSet<T> {
-    fn address(&self) -> u32;
-    fn get_buffer(&self, index: usize) -> &[u8];
-    fn get_descriptor(&self, index: usize) -> &T;
-}
-impl<
-        T: BufferDescriptor,
-        Count: ArrayLength<T> + ArrayLength<GenericArray<u8, Size>>,
-        Size: ArrayLength<u8>,
-    > BufferSet<T> for GmacBufferSet<T, Count, Size>
-{
-    fn address(&self) -> u32 {
-        self.descriptors.as_ptr() as u32
-    }
-    fn get_buffer(&self, index: usize) -> &[u8] {
-        &self.get_buffer(index)[..]
-    }
-    fn get_descriptor(&self, index: usize) -> &T {
-        self.get_descriptor(index)
     }
 }
 
