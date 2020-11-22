@@ -109,4 +109,9 @@
       </enumeratedValue>
     </enumeratedValues>
   </xsl:template>
+
+  <!-- The drive strength bit is erroneously write-only in the
+  original SVD, remove the accesss field that marks it as such -->
+  <xsl:template match="/device/peripherals/peripheral[name='PORT']/registers/register[name='PINCFG0_%s']/fields/field[name='DRVSTR']/access">
+  </xsl:template>
 </xsl:stylesheet>
