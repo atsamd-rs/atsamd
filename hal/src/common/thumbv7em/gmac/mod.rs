@@ -122,6 +122,26 @@ where
         }
     }
 
+    pub fn deinit(self) -> (P, GMAC, RxBuf, TxBuf) {
+        unsafe {
+            /* Disable all GMAC Interrupt */
+            self.gmac.idr.write_with_zero(|w| w.bits(0xFFFFFFFF));
+            /* Disable transmit/receive */
+            self.gmac.ncr.write_with_zero(|w| w.bits(0));
+        }
+        // Disable Interrupt
+        //crate::target_device::NVIC::mask(crate::target_device::Interrupt::GMAC);
+
+        (self._padout, self.gmac, self.rx_buffers, self.tx_buffers)
+    }
+
+    pub fn set_rx_callback(&mut self, callback: RxCallback) {
+        self.rx_callback = Some(callback)
+    }
+    pub fn set_tx_callback(&mut self, callback: TxCallback) {
+        self.tx_callback = Some(callback)
+    }
+
     pub fn enable(&mut self) {
         self.gmac.ncr.modify(|_, w| {
             w.rxen().set_bit();
@@ -133,6 +153,89 @@ where
             w.rxen().clear_bit();
             w.txen().clear_bit()
         });
+    }
+
+    pub fn write(&mut self, buf: &[u8]) -> nb::Result<(), ()> {
+        let descriptor = self.tx_buffers.get_descriptor(self.last_tx_buf_index);
+        if descriptor.used() && !descriptor.last_buf() {
+            // Set used flag from first descriptor to last descriptor, as DMA
+            // only set the first used flag
+            for idx in 0..TxBuf::COUNT {
+                let mut pos = self.last_tx_buf_index + idx;
+                if pos >= TxBuf::COUNT {
+                    pos -= TxBuf::COUNT;
+                }
+                let descriptor = self.tx_buffers.get_descriptor_mut(pos);
+                descriptor.set_used();
+                if descriptor.last_buf() {
+                    break;
+                }
+            }
+        }
+
+        if !self.tx_buffers.get_descriptor(self.rx_buf_index).used() {
+            return Err(nb::Error::WouldBlock);
+        }
+
+        /* Check if have enough buffers, the first buffer already checked */
+        if buf.len() > TxBuf::SIZE {
+            for idx in 0..TxBuf::COUNT {
+                let mut pos = self.tx_buf_index + idx;
+                if pos >= TxBuf::COUNT {
+                    pos -= TxBuf::COUNT;
+                }
+
+                let descriptor = self.tx_buffers.get_descriptor(pos);
+                if !descriptor.used() {
+                    return Err(nb::Error::WouldBlock);
+                }
+
+                if (buf.len() - (TxBuf::SIZE * idx)) < TxBuf::SIZE {
+                    break;
+                }
+            }
+        }
+        self.last_tx_buf_index = self.tx_buf_index;
+
+        /* Write data to transmit buffer */
+        let mut len = buf.len();
+        let mut buf = buf;
+        for _ in 0..TxBuf::COUNT {
+            let blen = len.min(TxBuf::SIZE);
+            self.tx_buffers
+                .get_buffer_mut(self.tx_buf_index)
+                .copy_from_slice(&buf[..blen]);
+            len -= blen;
+            buf = &buf[blen..];
+
+            let descriptor = self.tx_buffers.get_descriptor_mut(self.tx_buf_index);
+            if len > 0 {
+                /* Here the Used flag be set to zero */
+                descriptor.reset_with_len(blen, false);
+            } else {
+                /* Here the Used flag be set to zero */
+                descriptor.reset_with_len(blen, true);
+            }
+
+            self.tx_buf_index += 1;
+            if self.tx_buf_index == TxBuf::COUNT {
+                self.tx_buf_index = 0;
+                self.tx_buffers
+                    .get_descriptor_mut(TxBuf::COUNT - 1)
+                    .set_wrap(true);
+            }
+            if len == 0 {
+                break;
+            }
+        }
+
+        /* Data synchronization barrier */
+        cortex_m::asm::dsb();
+
+        /* Active Transmit */
+        self.gmac.ncr.modify(|_, w| w.tstart().set_bit());
+
+        Ok(())
     }
 
     pub fn gmac_handler(&mut self) {
@@ -213,7 +316,7 @@ where
 }
 
 mod private {
-    use generic_array::{ArrayLength, GenericArray};
+    use generic_array::ArrayLength;
     pub trait Sealed {}
 
     // Implement for those same types, but no others.
@@ -221,7 +324,7 @@ mod private {
     impl Sealed for super::TxBufferDescriptor {}
     impl<
             T: super::BufferDescriptor,
-            Count: ArrayLength<T> + ArrayLength<GenericArray<u8, Size>>,
+            Count: ArrayLength<T> + ArrayLength<super::GmacBuffer<Size>>,
             Size: ArrayLength<u8>,
         > Sealed for super::GmacBufferSet<T, Count, Size>
     {
