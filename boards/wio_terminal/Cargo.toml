@@ -36,6 +36,8 @@ lis3dh = "0.3.0"
 embedded-sdmmc = "0.3.0"
 usb-device = { version = "0.2", optional = true }
 usbd-serial = { version = "0.1", optional = true }
+bbqueue = { version = "0.4", optional = true }
+nb = { version = "0.1", optional = true }
 
 [dependencies.atsamd-hal]
 path = "../../hal"
@@ -49,10 +51,11 @@ nom = { version = "5.1", default-features= false }
 panic-halt = "0.2"
 
 [features]
-default = ["atsamd-hal/samd51p", "rt", "unproven", "usb"]
+default = ["atsamd-hal/samd51p", "rt", "unproven", "usb", "wifi"]
 rt = ["atsamd-hal/samd51p-rt", "cortex-m-rt"]
 unproven = ["atsamd-hal/unproven"]
 usb = ["atsamd-hal/usb", "usb-device", "usbd-serial"]
+wifi = ["bbqueue", "nb"]
 
 [profile.dev]
 incremental = false
@@ -86,3 +89,7 @@ name = "sdcard"
 
 [[example]]
 name = "qspi"
+
+[[example]]
+name = "wifi"
+required-features = ["wifi"]

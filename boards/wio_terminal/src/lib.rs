@@ -31,6 +31,7 @@ mod sensors;
 mod serial;
 mod sound;
 mod storage;
+mod wifi;
 
 pub use buttons::*;
 pub use display::*;
@@ -39,3 +40,4 @@ pub use sensors::*;
 pub use serial::*;
 pub use sound::*;
 pub use storage::*;
+pub use wifi::*;

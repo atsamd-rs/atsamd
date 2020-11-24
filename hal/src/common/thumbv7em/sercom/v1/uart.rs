@@ -171,7 +171,6 @@ macro_rules! uart {
                             w.rxpo().bits(rxpo); // Uses pad 3 for rx
                             w.txpo().bits(txpo); // Uses pad 2 for tx (and pad 3 for xck)
 
-                            w.form().bits(0x00); // No parity
                             w.sampr().bits(0x00); // 16x oversample fractional
                             w.runstdby().set_bit(); // Run in standby
                             w.form().bits(0); // 0 is no parity bits
@@ -239,6 +238,19 @@ macro_rules! uart {
                 fn dre(&self) -> bool {
                     self.usart().intflag.read().dre().bit_is_set()
                 }
+
+                pub fn intenset<F>(&mut self, f: F)
+                where F: FnOnce(&mut crate::target_device::sercom0::usart_int::intenset::W)
+                {
+                    self.usart().intenset.write(|w| {
+                        f(w);
+                        w
+                    });
+                }
+
+                pub fn flags(&self) -> crate::target_device::sercom0::usart_int::status::R {
+                    self.usart().status.read()
+                }
             }
 
 
@@ -273,14 +285,18 @@ macro_rules! uart {
                 type Error = ();
 
                 fn read(&mut self) -> nb::Result<u8, Self::Error> {
-                    let has_data = self.usart().intflag.read().rxc().bit_is_set();
+                    // A frame error occurred, so discard the byte in DATA.
+                    if self.usart().status.read().ferr().bit_is_set() {
+                        self.usart().data.read();
+                        self.usart().status.write(|w| w.ferr().set_bit());
+                    }
 
+                    let has_data = self.usart().intflag.read().rxc().bit_is_set();
                     if !has_data {
                         return Err(nb::Error::WouldBlock);
                     }
 
                     let data = self.usart().data.read().bits();
-
                     Ok(data as u8)
                 }
             }

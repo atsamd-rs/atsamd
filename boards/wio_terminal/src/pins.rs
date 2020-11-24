@@ -7,6 +7,7 @@ use super::sensors::{Accelerometer, LightSensor};
 use super::serial::{UART, USB};
 use super::sound::{Buzzer, Microphone};
 use super::storage::{QSPIFlash, SDCard};
+use super::wifi::WifiPins;
 
 define_pins!(
     /// Map the desired pin names to their physical pins
@@ -105,6 +106,8 @@ define_pins!(
     pin rtl8720d_txd = c23,
     pin rtl8720d_hspi_miso = c24,
     pin rtl8720d_hspi_cs = c25,
+    pin rtl8720d_data_ready = c20,
+    pin rtl8720d_dir = a19,
 
     /// GPIO
     pin a0_d0 = b8,
@@ -148,12 +151,10 @@ define_pins!(
     pin xout = b23,
 
     /// MISCELLANEOUS
-    pin sync = a19,
     pin swo = b30,
     pin ir_ctl = b31,
     pin output_ctr_5v = c14,
     pin output_ctr_3v3 = c15,
-    pin irq0 = c20,
 );
 
 /// Sets of pins split apart by category
@@ -192,6 +193,9 @@ pub struct Sets {
     pub user_led: Pa15<Input<Floating>>,
 
     pub buttons: ButtonPins,
+
+    // WiFi pins
+    pub wifi: WifiPins,
 
     pub header_pins: HeaderPins,
 }
@@ -279,6 +283,18 @@ impl Pins {
             switch_b: self.switch_b,
         };
 
+        let wifi = WifiPins {
+            pwr: self.rtl8720d_chip_pu,
+            rxd: self.rtl8720d_rxd,
+            txd: self.rtl8720d_txd,
+            mosi: self.rtl8720d_hspi_mosi,
+            clk: self.rtl8720d_hspi_clk,
+            miso: self.rtl8720d_hspi_miso,
+            cs: self.rtl8720d_hspi_cs,
+            ready: self.rtl8720d_data_ready,
+            dir: self.rtl8720d_dir,
+        };
+
         Sets {
             accelerometer,
             buzzer,
@@ -292,6 +308,7 @@ impl Pins {
             usb,
             user_led,
             buttons,
+            wifi,
             header_pins,
         }
     }
