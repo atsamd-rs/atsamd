@@ -6,6 +6,10 @@ on:
         description: 'Version bump (patch/minor/major)'
         required: true
         default: 'minor'
+      sync_hal:
+        description: 'Update PAC deps in HAL (yes/no)'
+        required: true
+        default: 'yes'
 
 jobs:
   bump-pac-versions:
@@ -35,6 +39,10 @@ jobs:
 
           rm Cargo.toml
           git diff > bump.patch
+
+      - name: Update HAL deps
+        if: github.event.inputs.sync_hal == 'yes'
+        uses: ./.github/actions/sync-pac-versions
 
       - name: Upload diff
         uses: actions/upload-artifact@v2

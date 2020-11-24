@@ -1,0 +1,9 @@
+name: 'Sync HAL to PAC versions'
+description: 'Updates HAL file with latest PAC versions'
+runs:
+  using: "composite"
+  steps:
+    - run: sudo apt install python3-toml
+      shell: bash
+    - run: python3 ${{ github.action_path }}/update-from-pac.py
+      shell: bash
