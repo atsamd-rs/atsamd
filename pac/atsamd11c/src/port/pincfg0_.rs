@@ -82,6 +82,8 @@ impl<'a> PULLEN_W<'a> {
         self.w
     }
 }
+#[doc = "Reader of field `DRVSTR`"]
+pub type DRVSTR_R = crate::R<bool, bool>;
 #[doc = "Write proxy for field `DRVSTR`"]
 pub struct DRVSTR_W<'a> {
     w: &'a mut W,
@@ -119,6 +121,11 @@ impl R {
     #[inline(always)]
     pub fn pullen(&self) -> PULLEN_R {
         PULLEN_R::new(((self.bits >> 2) & 0x01) != 0)
+    }
+    #[doc = "Bit 6 - Output Driver Strength Selection"]
+    #[inline(always)]
+    pub fn drvstr(&self) -> DRVSTR_R {
+        DRVSTR_R::new(((self.bits >> 6) & 0x01) != 0)
     }
 }
 impl W {
