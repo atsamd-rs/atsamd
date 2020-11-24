@@ -4,14 +4,14 @@ use atsamd_hal::gpio::*;
 use atsamd_hal::prelude::*;
 use atsamd_hal::target_device::{interrupt, MCLK};
 
-use atsamd_hal::sercom::{Error as SercomError, PadPin, Sercom0Pad0, Sercom0Pad2, UART0};
+use atsamd_hal::sercom::{PadPin, Sercom0Pad0, Sercom0Pad2, UART0};
 use atsamd_hal::target_device::SERCOM0;
 use atsamd_hal::time::Hertz;
 
 use bbqueue;
 use bbqueue::{
     consts::{U128, U512},
-    BBBuffer, ConstBBBuffer, Consumer, Producer,
+    BBBuffer, Consumer, Producer,
 };
 
 use cortex_m::interrupt::CriticalSection;
@@ -20,6 +20,13 @@ use cortex_m::peripheral::NVIC;
 use nb::block;
 
 mod erpc;
+mod sys_rpcs;
+use sys_rpcs::*;
+
+/// Wifi methods
+pub mod rpc {
+    pub use super::sys_rpcs::*;
+}
 
 /// A Wifi stack error.
 #[derive(Debug, Clone)]
@@ -49,7 +56,8 @@ pub struct Wifi {
 
     rx_buff_isr: Producer<'static, U512>,
     rx_buff_input: Consumer<'static, U512>,
-    tx_buff: BBBuffer<U128>,
+    tx_buff_isr: Consumer<'static, U128>,
+    tx_buff_input: Producer<'static, U128>,
 
     sequence: u32,
     fault: Option<Error>,
@@ -66,6 +74,7 @@ impl Wifi {
         port: &mut Port,
         delay: &mut Delay,
         rx_buff: &'static BBBuffer<U512>,
+        tx_buff: &'static BBBuffer<U128>,
     ) -> Result<Wifi, ()> {
         let gclk0 = clocks.gclk0();
         let tx: Sercom0Pad0<_> = pins.mosi.into_pad(port);
@@ -87,7 +96,7 @@ impl Wifi {
         delay.delay_ms(200u8);
 
         let (rx_buff_isr, rx_buff_input) = rx_buff.try_split().unwrap();
-        let tx_buff = BBBuffer::new();
+        let (tx_buff_input, tx_buff_isr) = tx_buff.try_split().unwrap();
 
         let fault = None;
         let sequence = 0;
@@ -99,7 +108,8 @@ impl Wifi {
             uart,
             rx_buff_isr,
             rx_buff_input,
-            tx_buff,
+            tx_buff_isr,
+            tx_buff_input,
             fault,
             sequence,
         })
@@ -122,6 +132,8 @@ impl Wifi {
         });
     }
 
+    /// Called from ISR: Handles the signal that the UART has recieved
+    /// a byte that needs to be read.
     pub fn _handle_rx(&mut self) {
         match self.uart.read() {
             Ok(b) => {
@@ -140,6 +152,20 @@ impl Wifi {
         };
     }
 
+    /// Called from ISR: Handles the signal that the outgoing UART buffer
+    /// has room for the next byte.
+    pub fn _handle_data_empty(&mut self) {
+        if let Ok(rgr) = self.tx_buff_isr.read() {
+            let buf = rgr.buf();
+            self.uart.write(buf[0]);
+            rgr.release(1);
+        } else {
+            self.uart.intenclr(|w| {
+                w.dre().set_bit();
+            });
+        }
+    }
+
     pub fn debug_read(&mut self) -> Result<bbqueue::GrantR<'static, U512>, ()> {
         self.rx_buff_input.read().map_err(|_| ())
     }
@@ -147,34 +173,86 @@ impl Wifi {
         self.uart.flags()
     }
 
+    /// Reads the fault status, if any
     pub fn fault(&self) -> Option<Error> {
         self.fault.clone()
     }
 
-    pub fn send_get_version_id(&mut self) {
-        let msg = erpc::codec::Header {
-            sequence: self.next_seq(),
-            msg_type: erpc::id::MsgType::Invocation,
-            service: erpc::id::Service::System,
-            request: erpc::id::SystemRequest::VersionID.into(),
-        }
-        .as_bytes();
+    /// Issues an RPC, blocking till a response is recieved.
+    pub fn blocking_rpc<'a, RPC: erpc::codec::RPC>(
+        &mut self,
+        mut rpc: RPC,
+    ) -> Result<RPC::ReturnValue, erpc::Err<RPC::Error>> {
+        let header = rpc.header(self.next_seq());
+        self.write_frame(&header.as_bytes())
+            .map_err(|_| erpc::Err::TXErr)?;
 
-        self.flush_tx(&msg).unwrap();
+        // Read the frame header
+        let fh = loop {
+            let mut r = match self.rx_buff_input.read() {
+                Ok(r) => r,
+                Err(_) => {
+                    continue;
+                }
+            };
+            let b = r.buf();
+
+            let pr = erpc::codec::FramePreamble::parse::<()>(b);
+            if let Err(nom::Err::Incomplete(_)) = pr {
+                continue;
+            }
+            if let Err(e) = pr {
+                return Err(erpc::Err::Parsing(e));
+            }
+            let (_, fh) = pr.unwrap();
+
+            drop(b);
+            r.release(4);
+            break fh;
+        };
+
+        // Read the payload, check CRC, hand off to underlying trait to decode
+        let result = loop {
+            let mut r = match self.rx_buff_input.read() {
+                Ok(r) => r,
+                Err(_) => {
+                    continue;
+                }
+            };
+            let b = r.buf();
+            let l = b.len();
+
+            if l < fh.msg_length as usize {
+                continue;
+            }
+
+            let expect_crc = erpc::codec::crc16(&b[..l]);
+            if expect_crc != fh.crc16 {
+                return Err(erpc::Err::CRCMismatch);
+            }
+
+            let out = rpc.parse(b);
+            drop(b);
+            r.release(l);
+            break out;
+        };
+        result
     }
 
-    fn flush_tx(&mut self, msg: &[u8]) -> Result<(), ()> {
-        let crc = erpc::codec::crc16(msg);
+    fn write_frame(&mut self, msg: &[u8]) -> Result<(), ()> {
+        let header = erpc::codec::FramePreamble::new_from_msg(msg);
 
-        for b in &(msg.len() as u16).to_le_bytes() {
-            block!(self.uart.write(*b))?;
+        for b in header.as_bytes().iter().chain(msg) {
+            // block!(self.uart.write(*b))?;
+            if let Ok(mut wgr) = self.tx_buff_input.grant_exact(1) {
+                wgr[0] = *b;
+                wgr.commit(1);
+            }
+            self.uart.intenset(|w| {
+                w.dre().set_bit();
+            });
         }
-        for b in &(crc as u16).to_le_bytes() {
-            block!(self.uart.write(*b))?;
-        }
-        for b in msg {
-            block!(self.uart.write(*b))?;
-        }
+
         Ok(())
     }
 
@@ -203,6 +281,7 @@ macro_rules! wifi_singleton {
     ($global_name:ident) => {
         static mut $global_name: Option<Wifi> = None;
         static WIFI_RX: BBBuffer<U512> = BBBuffer(ConstBBBuffer::new());
+        static WIFI_TX: BBBuffer<U128> = BBBuffer(ConstBBBuffer::new());
 
         unsafe fn wifi_init(
             _cs: &CriticalSection,
@@ -215,7 +294,7 @@ macro_rules! wifi_singleton {
         ) -> Result<(), ()> {
             unsafe {
                 $global_name = Some(Wifi::init(
-                    pins, sercom0, clocks, mclk, port, delay, &WIFI_RX,
+                    pins, sercom0, clocks, mclk, port, delay, &WIFI_RX, &WIFI_TX,
                 )?);
             }
             Ok(())
@@ -226,7 +305,7 @@ macro_rules! wifi_singleton {
             // Data Register Empty interrupt.
             unsafe {
                 $global_name.as_mut().map(|wifi| {
-                    // wifi.handle_data_empty();
+                    wifi._handle_data_empty();
                 });
             }
         }

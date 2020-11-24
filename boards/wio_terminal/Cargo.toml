@@ -38,6 +38,7 @@ usb-device = { version = "0.2", optional = true }
 usbd-serial = { version = "0.1", optional = true }
 bbqueue = { version = "0.4", optional = true }
 nb = { version = "0.1", optional = true }
+nom = { version = "5.1", default-features = false, optional = true }
 
 [dependencies.atsamd-hal]
 path = "../../hal"
@@ -47,15 +48,14 @@ default-features = false
 [dev-dependencies]
 drogue-nom-utils = "0.1"
 embedded-graphics = "0.6"
-nom = { version = "5.1", default-features= false }
 panic-halt = "0.2"
 
 [features]
-default = ["atsamd-hal/samd51p", "rt", "unproven", "usb", "wifi"]
+default = ["atsamd-hal/samd51p", "rt", "unproven", "usb", "wifi", "nom"]
 rt = ["atsamd-hal/samd51p-rt", "cortex-m-rt"]
 unproven = ["atsamd-hal/unproven"]
 usb = ["atsamd-hal/usb", "usb-device", "usbd-serial"]
-wifi = ["bbqueue", "nb"]
+wifi = ["bbqueue", "nb", "nom"]
 
 [profile.dev]
 incremental = false

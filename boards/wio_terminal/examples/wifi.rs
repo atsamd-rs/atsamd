@@ -11,7 +11,7 @@ use wio::hal::qspi::{self, Command};
 use wio::pac::{CorePeripherals, Peripherals};
 use wio::prelude::*;
 use wio::wifi_prelude::*;
-use wio::{entry, wifi_singleton, Pins, Sets};
+use wio::{entry, rpc, wifi_singleton, Pins, Sets};
 
 use core::fmt::Write;
 use cortex_m::interrupt::free as disable_interrupts;
@@ -79,11 +79,19 @@ fn main() -> ! {
     terminal.write_str(textbuffer.as_str());
     textbuffer.truncate(0);
 
-    unsafe {
-        WIFI.as_mut().map(|wifi| {
-            wifi.send_get_version_id();
-        });
-    }
+    let version = unsafe {
+        WIFI.as_mut()
+            .map(|wifi| wifi.blocking_rpc(rpc::GetVersion {}).unwrap())
+            .unwrap()
+    };
+    writeln!(
+        textbuffer,
+        "Ameba is running firmware version {:?}",
+        version
+    )
+    .unwrap();
+    terminal.write_str(textbuffer.as_str());
+    textbuffer.truncate(0);
 
     loop {
         user_led.toggle();

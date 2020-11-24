@@ -248,6 +248,15 @@ macro_rules! uart {
                     });
                 }
 
+                pub fn intenclr<F>(&mut self, f: F)
+                where F: FnOnce(&mut crate::target_device::sercom0::usart_int::intenclr::W)
+                {
+                    self.usart().intenclr.write(|w| {
+                        f(w);
+                        w
+                    });
+                }
+
                 pub fn flags(&self) -> crate::target_device::sercom0::usart_int::status::R {
                     self.usart().status.read()
                 }
