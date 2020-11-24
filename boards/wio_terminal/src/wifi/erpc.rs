@@ -28,12 +28,14 @@ pub mod id {
     #[repr(u8)]
     pub enum Service {
         System = 1,
+        Wifi = 14,
     }
 
     impl From<u8> for Service {
         fn from(mt: u8) -> Service {
             match mt {
                 1 => Service::System,
+                14 => Service::Wifi,
                 _ => panic!("unknown message type!"),
             }
         }
@@ -50,6 +52,21 @@ pub mod id {
 
     impl From<SystemRequest> for u8 {
         fn from(r: SystemRequest) -> u8 {
+            r as u8
+        }
+    }
+
+    /// Wio Terminal request IDs for the Wifi service
+    #[derive(Debug, Copy, Clone)]
+    #[allow(unused)]
+    #[repr(u8)]
+    pub enum WifiRequest {
+        GetMacAddress = 8,
+        IsScanning = 65,
+    }
+
+    impl From<WifiRequest> for u8 {
+        fn from(r: WifiRequest) -> u8 {
             r as u8
         }
     }

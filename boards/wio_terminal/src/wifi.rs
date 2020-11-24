@@ -22,10 +22,13 @@ use nb::block;
 mod erpc;
 mod sys_rpcs;
 use sys_rpcs::*;
+mod wifi_rpcs;
+use wifi_rpcs::*;
 
 /// Wifi methods
 pub mod rpc {
     pub use super::sys_rpcs::*;
+    pub use super::wifi_rpcs::*;
 }
 
 /// A Wifi stack error.
@@ -228,6 +231,7 @@ impl Wifi {
 
             let expect_crc = erpc::codec::crc16(&b[..l]);
             if expect_crc != fh.crc16 {
+                r.release(l);
                 return Err(erpc::Err::CRCMismatch);
             }
 
@@ -242,7 +246,12 @@ impl Wifi {
     fn write_frame(&mut self, msg: &[u8]) -> Result<(), ()> {
         let header = erpc::codec::FramePreamble::new_from_msg(msg);
 
-        for b in header.as_bytes().iter().chain(msg) {
+        self.tx(header.as_bytes().iter().chain(msg));
+        Ok(())
+    }
+
+    fn tx<'a, D: Iterator<Item = &'a u8>>(&mut self, data: D) {
+        for b in data {
             // block!(self.uart.write(*b))?;
             if let Ok(mut wgr) = self.tx_buff_input.grant_exact(1) {
                 wgr[0] = *b;
@@ -252,8 +261,6 @@ impl Wifi {
                 w.dre().set_bit();
             });
         }
-
-        Ok(())
     }
 
     fn next_seq(&mut self) -> u32 {

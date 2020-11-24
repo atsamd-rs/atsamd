@@ -93,6 +93,24 @@ fn main() -> ! {
     terminal.write_str(textbuffer.as_str());
     textbuffer.truncate(0);
 
+    let mac = unsafe {
+        WIFI.as_mut()
+            .map(|wifi| wifi.blocking_rpc(rpc::GetMacAddress {}).unwrap())
+            .unwrap()
+    };
+    writeln!(textbuffer, "mac = {:?}", mac).unwrap();
+    terminal.write_str(textbuffer.as_str());
+    textbuffer.truncate(0);
+
+    let scanning = unsafe {
+        WIFI.as_mut()
+            .map(|wifi| wifi.blocking_rpc(rpc::IsScanning {}).unwrap())
+            .unwrap()
+    };
+    writeln!(textbuffer, "is scanning = {:?}", scanning).unwrap();
+    terminal.write_str(textbuffer.as_str());
+    textbuffer.truncate(0);
+
     loop {
         user_led.toggle();
         delay.delay_ms(200u8);
