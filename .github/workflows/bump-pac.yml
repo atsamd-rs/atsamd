@@ -21,9 +21,11 @@ jobs:
           cargo install cargo-workspace2
 
           # Create a fake workspace file for all PACs.
-          echo "[workspace]\n\nmembers = [" > Cargo.toml
+          echo "[workspace]" > Cargo.toml
+          echo "members = [" >> Cargo.toml
           for d in pac/*/ ; do echo "    \"${d::-1}\"," >> Cargo.toml; done
-          echo "]\n" >> Cargo.toml
+          echo "]" >> Cargo.toml
+          echo "" >> Cargo.toml
 
           # Create a ws2 query string for all PACs.
           pacs=$(for d in pac/*/ ; do echo -n "${d:4:${#d}-5} "; done )
@@ -39,6 +41,12 @@ jobs:
         with:
           name: bump.patch
           path: bump.patch
+
+      - name: Cleanup
+        shell: bash
+        run: |
+          set -ex
+          rm bump.patch
 
       - name: Create Pull Request
         id: cpr
