@@ -63,6 +63,7 @@ pub mod id {
     pub enum WifiRequest {
         GetMacAddress = 8,
         IsScanning = 65,
+        ScanGetNumAPs = 66,
     }
 
     impl From<WifiRequest> for u8 {

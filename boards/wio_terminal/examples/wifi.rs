@@ -111,6 +111,16 @@ fn main() -> ! {
     terminal.write_str(textbuffer.as_str());
     textbuffer.truncate(0);
 
+    let num = unsafe {
+        WIFI.as_mut()
+            .map(|wifi| wifi.blocking_rpc(rpc::ScanGetNumAPs {}).unwrap())
+            .unwrap()
+    };
+    writeln!(textbuffer, "num scanning APs = {:?}", num).unwrap();
+    terminal.write_str(textbuffer.as_str());
+    textbuffer.truncate(0);
+
+
     loop {
         user_led.toggle();
         delay.delay_ms(200u8);

@@ -59,3 +59,28 @@ impl codec::RPC for IsScanning {
         Ok(data[0] != 0)
     }
 }
+
+pub struct ScanGetNumAPs {}
+
+impl codec::RPC for ScanGetNumAPs {
+    type ReturnValue = u16;
+    type Error = ();
+
+    fn header(&self, seq: u32) -> codec::Header {
+        codec::Header {
+            sequence: seq,
+            msg_type: id::MsgType::Invocation,
+            service: id::Service::Wifi,
+            request: id::WifiRequest::ScanGetNumAPs.into(),
+        }
+    }
+
+    fn parse(&mut self, data: &[u8]) -> Result<Self::ReturnValue, Err<Self::Error>> {
+        let (data, _) = codec::Header::parse::<()>(data)?; // TODO: Check RPC header values
+        if data.len() < 2 {
+            return Err(Err::RPCErr(()));
+        }
+        let (_, num) = streaming::le_u16(data)?;
+        Ok(num)
+    }
+}
