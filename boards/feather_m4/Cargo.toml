@@ -24,6 +24,14 @@ path = "../../hal"
 version = "0.10"
 default-features = false
 
+[dependencies.usb-device]
+version = "0.2"
+optional = true
+
+[dependencies.usbd-serial]
+version = "0.1"
+optional = true
+
 [dev-dependencies]
 panic-halt = "0.2"
 panic-semihosting = "0.5"
@@ -36,6 +44,8 @@ ws2812-timer-delay = "0.3.0"
 default = ["rt", "atsamd-hal/samd51j", "atsamd-hal/samd51"]
 rt = ["cortex-m-rt", "atsamd-hal/samd51j-rt"]
 unproven = ["atsamd-hal/unproven"]
+usb = ["atsamd-hal/usb", "usb-device", "usbd-serial"]
+use_rtt = ["atsamd-hal/use_rtt"]
 
 [profile.dev]
 incremental = false
@@ -51,3 +61,7 @@ opt-level = "s"
 [[example]]
 name = "pwm"
 required-features = ["unproven"]
+
+[[example]]
+name = "usb_echo"
+required-features = ["usb", "use_rtt"]
