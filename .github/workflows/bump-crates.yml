@@ -136,7 +136,7 @@ jobs:
           body: |
             Automated bump of crate versions.
             - Workflow launched by `${{ github.actor }}`
-            - Workflow: [bump-pac.yml][1]
+            - Workflow: [bump-crates.yml][1]
             - PAC bump = `${{ github.event.inputs.pac_bump }}`
             - HAL bump = `${{ github.event.inputs.hal_bump }}`
             - BSP bump = `${{ github.event.inputs.bsp_bump }}`
