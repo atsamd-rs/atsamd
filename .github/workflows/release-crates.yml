@@ -44,7 +44,7 @@ jobs:
         shell: bash
         run: |
           set -ex
-          cd "hal" && cargo publish
+          cd "hal" && cargo publish --no-verify
 
 
       - name: Release BSP crates
