@@ -126,7 +126,7 @@ jobs:
         uses: peter-evans/create-pull-request@v3
         with:
           token: ${{ secrets.ATSAMD_BOT }}
-          commit-message: ${{ github.event.inputs.bump }} bump of PAC versions
+          commit-message: ${{ github.event.inputs.bump }} bump of crate versions
           committer: GitHub <noreply@github.com>
           author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
           signoff: false
