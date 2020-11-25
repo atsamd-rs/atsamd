@@ -1,6 +1,6 @@
 [package]
 name = "metro_m4"
-version = "0.6.1"
+version = "0.7.0"
 authors = ["Paul Sajna <sajattack@gmail.com>", "Wez Furlong <wez@wezfurlong.org>"]
 description = "Board Support crate for the Adafruit Metro M4"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
@@ -20,8 +20,16 @@ optional = true
 
 [dependencies.atsamd-hal]
 path = "../../hal"
-version = "0.10"
+version = "0.11"
 default-features = false
+
+[dependencies.usb-device]
+version = "0.2"
+optional = true
+
+[dependencies.usbd-serial]
+version = "0.1"
+optional = true
 
 [dev-dependencies]
 panic-halt = "0.2"
@@ -33,14 +41,6 @@ smart-leds = "0.3"
 
 [dev-dependencies.ws2812-timer-delay]
 version = "0.3"
-
-[dependencies.usb-device]
-version = "0.2"
-optional = true
-
-[dependencies.usbd-serial]
-version = "0.1"
-optional = true
 
 [features]
 # ask the HAL to enable atsamd51j support
