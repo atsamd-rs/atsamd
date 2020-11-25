@@ -1,0 +1,59 @@
+name: Release crates
+on:
+  workflow_dispatch:
+    inputs:
+      release_pac:
+        description: 'Release PAC (yes/no)'
+        required: true
+        default: 'yes'
+      release_hal:
+        description: 'Release HAL (yes/no)'
+        required: true
+        default: 'yes'
+      release_bsp:
+        description: 'Release BSPs (yes/no)'
+        required: true
+        default: 'yes'
+jobs:
+  release-crates:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Rust
+        uses: hecrj/setup-rust-action@v1
+      - uses: actions/checkout@v2
+
+      - name: Login
+        run: cargo login ${CRATES_IO_TOKEN}
+        env:
+          CRATES_IO_TOKEN: ${{ secrets.CRATES_IO_TOKEN }}
+
+      - name: Release PAC crates
+        if: github.event.inputs.release_pac == 'yes'
+        shell: bash
+        run: |
+          set -ex
+
+          # Run `cargo publish` on each PAC.
+          for d in pac/*/
+          do
+            (cd "${d}" && cargo publish );
+          done
+
+      - name: Release HAL crate
+        if: github.event.inputs.release_hal == 'yes'
+        shell: bash
+        run: |
+          set -ex
+          cd "hal" && cargo publish
+
+
+      - name: Release BSP crates
+        if: github.event.inputs.release_bsp == 'yes'
+        shell: bash
+        run: |
+          set -ex
+          sudo apt-get install -y jq
+          for bsp in $(cat crates.json | jq -Mr -c '.boards | keys[]');
+          do
+            (cd "boards/${bsp}" && cargo publish );
+          done

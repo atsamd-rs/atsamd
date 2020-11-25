@@ -8,8 +8,10 @@ import toml
 class PacDep(object):
     def __init__(self, name, hal_info, pac_info):
         self._name = name
-        self._hal_version = hal_info['version'][:3]
-        self._pac_version = pac_info['package']['version'][:3]
+        h = toml.load("hal/Cargo.toml")
+        # Trim the patch from the versions.
+        self._hal_version = '.'.join(hal_info['version'].split('.')[:-1])
+        self._pac_version = '.'.join(pac_info['package']['version'].split('.')[:-1])
         self._line = None
 
     @property

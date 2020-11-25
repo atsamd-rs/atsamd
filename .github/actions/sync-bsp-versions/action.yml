@@ -1,0 +1,9 @@
+name: 'Sync BSPs to HAL version'
+description: 'Updates BSP files to point to latest HAL'
+runs:
+  using: "composite"
+  steps:
+    - run: sudo apt install python3-toml
+      shell: bash
+    - run: python3 ${{ github.action_path }}/update-from-hal.py
+      shell: bash
