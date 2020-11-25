@@ -437,6 +437,28 @@ where
     }
 }
 
+/// Convert from a `v2::Pin` to a `v1::Pin`
+impl<I, M> From<v2::Pin<I, M>> for Pin<I, M>
+where
+    I: PinId,
+    M: PinMode,
+{
+    fn from(pin: v2::Pin<I, M>) -> Pin<I, M> {
+        Pin { pin }
+    }
+}
+
+/// Convert from a `v1::Pin` to a `v2::Pin`
+impl<I, M> From<Pin<I, M>> for v2::Pin<I, M>
+where
+    I: PinId,
+    M: PinMode,
+{
+    fn from(pin: Pin<I, M>) -> v2::Pin<I, M> {
+        pin.pin
+    }
+}
+
 /// Opaque port reference
 pub struct Port {
     _0: (),
