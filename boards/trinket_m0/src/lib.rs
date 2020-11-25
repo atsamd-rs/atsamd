@@ -3,8 +3,6 @@
 extern crate atsamd_hal as hal;
 
 #[cfg(feature = "rt")]
-extern crate cortex_m_rt;
-#[cfg(feature = "rt")]
 pub use cortex_m_rt::entry;
 
 use hal::prelude::*;
@@ -17,8 +15,7 @@ pub use hal::target_device as pac;
 use gpio::{self, *};
 
 use hal::clock::GenericClockController;
-use hal::define_pins;
-use hal::sercom::{I2CMaster2, PadPin, UART0};
+use hal::sercom::{I2CMaster2, PadPin, SPIMaster0, UART0};
 use hal::time::Hertz;
 
 #[cfg(feature = "unproven")]
@@ -155,6 +152,37 @@ impl Dotstar {
         let spi = bitbang_hal::spi::SPI::new(apa102_spi::MODE, nc, di, ci, timer);
         Apa102::new_with_custom_postamble(spi, 4, false)
     }
+}
+
+/// Convenience function for setting up the A7/D3/SCK, A6/D4/MOSI, and
+/// A9/D2/MISO pins as a SPI Master.
+pub fn spi_master<F: Into<Hertz>>(
+    clocks: &mut GenericClockController,
+    speed: F,
+    sercom0: pac::SERCOM0,
+    pm: &mut pac::PM,
+    sck: gpio::Pa7<Input<Floating>>,
+    mosi: gpio::Pa6<Input<Floating>>,
+    miso: gpio::Pa9<Input<Floating>>,
+    port: &mut Port,
+) -> SPIMaster0<
+    hal::sercom::Sercom0Pad1<gpio::Pa9<gpio::PfC>>,
+    hal::sercom::Sercom0Pad2<gpio::Pa6<gpio::PfD>>,
+    hal::sercom::Sercom0Pad3<gpio::Pa7<gpio::PfD>>,
+> {
+    let gclk0 = clocks.gclk0();
+
+    SPIMaster0::new(
+        &clocks.sercom0_core(&gclk0).unwrap(),
+        speed.into(),
+        hal::hal::spi::Mode {
+            phase: hal::hal::spi::Phase::CaptureOnFirstTransition,
+            polarity: hal::hal::spi::Polarity::IdleLow,
+        },
+        sercom0,
+        pm,
+        (miso.into_pad(port), mosi.into_pad(port), sck.into_pad(port)),
+    )
 }
 
 /// I2C pins
