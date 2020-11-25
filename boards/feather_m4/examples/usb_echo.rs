@@ -5,22 +5,23 @@ extern crate feather_m4 as hal;
 extern crate panic_halt;
 
 use hal::clock::GenericClockController;
-
-use cortex_m::peripheral::NVIC;
 use hal::entry;
 use hal::pac::{interrupt, CorePeripherals, Peripherals};
-
+use hal::prelude::*;
 use hal::usb::UsbBus;
-use usb_device::bus::UsbBusAllocator;
 
+use usb_device::bus::UsbBusAllocator;
 use usb_device::prelude::*;
 use usbd_serial::{SerialPort, USB_CLASS_CDC};
+
+use cortex_m::asm::delay as cycle_delay;
+use cortex_m::peripheral::NVIC;
 
 #[entry]
 fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
     let mut core = CorePeripherals::take().unwrap();
-    let mut clocks = GenericClockController::with_internal_32kosc(
+    let mut clocks = GenericClockController::with_external_32kosc(
         peripherals.GCLK,
         &mut peripherals.MCLK,
         &mut peripherals.OSC32KCTRL,
@@ -28,6 +29,7 @@ fn main() -> ! {
         &mut peripherals.NVMCTRL,
     );
     let mut pins = hal::Pins::new(peripherals.PORT);
+    let mut red_led = pins.d13.into_open_drain_output(&mut pins.port);
 
     let bus_allocator = unsafe {
         USB_ALLOCATOR = Some(hal::usb_allocator(
@@ -62,7 +64,10 @@ fn main() -> ! {
         NVIC::unmask(interrupt::USB_TRCPT1);
     }
 
-    loop {}
+    loop {
+        cycle_delay(5 * 1024 * 1024);
+        red_led.toggle();
+    }
 }
 
 static mut USB_ALLOCATOR: Option<UsbBusAllocator<UsbBus>> = None;

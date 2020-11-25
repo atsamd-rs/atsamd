@@ -45,7 +45,6 @@ default = ["rt", "atsamd-hal/samd51j", "atsamd-hal/samd51"]
 rt = ["cortex-m-rt", "atsamd-hal/samd51j-rt"]
 unproven = ["atsamd-hal/unproven"]
 usb = ["atsamd-hal/usb", "usb-device", "usbd-serial"]
-use_rtt = ["atsamd-hal/use_rtt"]
 
 [profile.dev]
 incremental = false
@@ -64,4 +63,4 @@ required-features = ["unproven"]
 
 [[example]]
 name = "usb_echo"
-required-features = ["usb", "use_rtt"]
+required-features = ["usb"]
