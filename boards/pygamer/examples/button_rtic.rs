@@ -3,14 +3,14 @@
 
 #[cfg(not(feature = "panic_led"))]
 use panic_halt as _;
-use pygamer::{self as hal, pins::ButtonReader, pins::Keys, Pins};
+use pygamer::{hal, ButtonReader, Keys, Pins};
 
 use hal::clock::GenericClockController;
 use hal::gpio::{OpenDrain, Output, Pa23};
 use hal::prelude::*;
 use rtic::app;
 
-#[app(device = crate::hal::pac, peripherals = true)]
+#[app(device = pygamer::pac, peripherals = true)]
 const APP: () = {
     struct Resources {
         red_led: Pa23<Output<OpenDrain>>,

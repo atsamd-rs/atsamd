@@ -8,13 +8,13 @@
 
 #[cfg(not(feature = "panic_led"))]
 use panic_halt as _;
-use pygamer::{self as hal, entry, pac, Pins};
+use pygamer::{entry, hal, pac, Pins};
 
 use hal::adc::Adc;
-use hal::pac::gclk::pchctrl::GEN_A::GCLK11;
 use hal::prelude::*;
 use hal::timer::SpinTimer;
 use hal::{clock::GenericClockController, delay::Delay};
+use pac::gclk::pchctrl::GEN_A::GCLK11;
 use pac::{CorePeripherals, Peripherals};
 use smart_leds::{brightness, hsv::RGB8, SmartLedsWrite};
 
