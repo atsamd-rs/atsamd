@@ -27,15 +27,7 @@
 //! module. They are included in the [`pad_map`] module.
 //!
 //! [`pad_map`]: crate::sercom::v2::pad_map
-//! [`Pin`]: crate::gpio::v2::Pin
-//! [`PinId`]: crate::gpio::v2::PinId
-//! [`PinMode`]: crate::gpio::v2::PinMode
-//! [`AlternateC`]: crate::gpio::v2::AlternateC
-//! [`AlternateD`]: crate::gpio::v2::AlternateD
-//! [`From`]: core::convert::From
-//! [`Into`]: core::convert::Into
 
-use core::convert::From;
 use core::ops::Deref;
 
 use crate::paste::paste;
@@ -177,16 +169,14 @@ where
 /// implemented directly on [`PinId`]s. Because the same [`Pin`] can often be
 /// used for two different [`Pad`]s, the [`Map`] trait acts to map a
 /// [`Sercom`]/[`PadNum`] pair to the correct [`PinMode`] for the [`PinId`].
-///
-/// [`Pin`]: crate::gpio::v2::Pin
 pub trait Map<S, P>
 where
     S: Sercom,
     P: PadNum,
 {
-    /// The [`PinId`](crate::gpio::v2::PinId) for the corresponding pin
+    /// The [`PinId`] for the corresponding pin
     type Id: PinId;
-    /// The [`PinMode`](crate::gpio::v2::PinMode) for the corresponding pin
+    /// The [`PinMode`] for the corresponding pin
     type Mode: PinMode;
 }
 
@@ -209,11 +199,6 @@ where
 /// Each [`Pad`] takes ownership of the corresponding [`Pin`] for the duration
 /// of its lifetime. [`Pad`]s can be converted to and from [`Pin`]s using the
 /// [`Into`] and [`From`] traits.
-///
-/// [`Pin`]: crate::gpio::v2::Pin
-/// [`PinId`]: crate::gpio::v2::PinId
-/// [`Into`]: core::convert::Into
-/// [`From`]: core::convert::From
 pub struct Pad<S, P, M>
 where
     S: Sercom,
@@ -229,12 +214,39 @@ where
     P: PadNum,
     M: Map<S, P>,
 {
+    /// Create a new SERCOM [`Pad`] from a [`Pin`]
+    ///
+    /// The specified [`Map`] type must map the specified [`Sercom`] and
+    /// [`PadNum`] to the given [`Pin`]
     #[inline]
     pub fn new<O: PinMode>(pin: Pin<M::Id, O>) -> Self
     where
         Pin<M::Id, O>: Into<Pin<M::Id, M::Mode>>,
     {
         Pad { pin: pin.into() }
+    }
+    /// Consume the [`Pad`] and release the corresponding [`Pin`]
+    #[inline]
+    pub fn free(self) -> Pin<M::Id, M::Mode> {
+        self.pin
+    }
+    /// Convert a [`Pad`] to a type that implements [`AnyPad`]
+    ///
+    /// Even though there is a one-to-one mapping between `Pad<S, P, M>` and
+    /// `AnyPad<Sercom = S, PadNum = P, Map = M>`, the compiler doesn't know
+    /// that. This method provides a way to convert from a [`Pad`] to an
+    /// [`AnyPad`]. See the [`AnyPad`] trait for more details.
+    #[inline]
+    pub fn as_any<T>(self) -> T
+    where
+        T: AnyPad<Sercom = S, PadNum = P, Map = M>,
+    {
+        // SAFETY:
+        // core::ptr::read performs a bitwise copy, regardless of whether the
+        // type implements `Copy`. The returned value is a copy, so we must
+        // dispose of self. Because self contains no resources or allocations,
+        // we can simply drop it.
+        unsafe { core::ptr::read(&self as *const _ as *const T) }
     }
 }
 
@@ -250,17 +262,90 @@ where
 //  AnyPad meta-type
 //==============================================================================
 
-/// Meta-type representing any `Pad`.
+/// Type alias to convert from an implementation of [`AnyPad`] to the
+/// corresponding concrete [`Pad`]
+pub type ConcretePad<P> = Pad<<P as AnyPad>::Sercom, <P as AnyPad>::PadNum, <P as AnyPad>::Map>;
+
+/// Meta-type representing any [`Pad`]
 ///
 /// All instances of [`Pad`] implement this trait. When used as a trait bound,
 /// it acts to encapsulate a [`Pad`]. Without this trait, a completely generic
-/// [`Pad`] would require three type parameters. When using this trait as a
-/// bound, only one type parameter is required, yet you can still recover each
-/// type parameter of the corresponding [`Pad`] through the associated types.
+/// [`Pad`] requires three type parameters, i.e. `Pad<S, P, M>`. But when using
+/// this trait, only one type parameter is required, i.e. `P: AnyPad`. However,
+/// even / though we have dropped type parameters, no information is lost,
+/// because the [`Sercom`], [`PadNum`] and [`Map`] type parameters are stored as
+/// associated types in the trait. The implementation of [`AnyPad`] looks
+/// something like this:
+///
+/// ```rust
+/// impl<S: Sercom, P: PadNum, M: Map<S, P>> AnyPad for Pad<S, P, M> {
+///     type Sercom = S;
+///     type PadNum = P;
+///     type Map = M;
+///     // ...
+/// }
+/// ```
+///
+/// Thus, there is a one-to-one mapping between `Pad<S, P, M>` and
+/// `AnyPad<Sercom = S, PadNum = P, Map = M>`, so you can always recover the
+/// full, concrete type from an implementation of [`AnyPad`]. The type alias
+/// [`ConcretePad`] is / provided for just this purpose.
+///
+/// ## `AnyPad` as a trait bound
+///
+/// When using [`AnyPad`] as a trait bound, you can constrain the associated
+/// types to restrict the acceptable [`Pad`]s. For example, you could restrict
+/// a function to accept a particular pad number.
+///
+/// ```rust
+/// fn example<P>(pad: P)
+/// where
+///     P: AnyPad<PadNum = Pad2>
+/// {
+/// }
+/// ```
+///
+/// Or you could accept any pad number, as long as it's in the desired SERCOM.
+///
+/// ```rust
+/// fn example<P>(pad: P)
+/// where
+///     P: AnyPad<Sercom = Sercom4>
+/// {
+/// }
+/// ```
+///
+/// You can also apply more complex bounds.
+///
+/// ```rust
+/// fn example<P>(pad: P)
+/// where
+///     P: AnyPad,
+///     P::PadNum: UserTrait,
+/// {
+/// }
+/// ```
+///
+/// ## Generic `AnyPad`s
+///
+/// Working with a generic type constrained by [`AnyPad`] is slightly different
+/// than working with a concrete [`Pad`]. When compiling a generic function, the
+/// compiler cannot assume anything about the specific concrete type. It can
+/// only use what it knows about the [`AnyPad`] trait. To cast a generic type to
+/// a concrete type, use the [`as_concrete`](AnyPad::as_concrete) method. To
+/// cast back to the generic type, use the [`Pad`] method
+/// [`as_any`](Pad::as_any).
 pub trait AnyPad: Sealed {
     type Sercom: Sercom;
     type PadNum: PadNum;
     type Map: Map<Self::Sercom, Self::PadNum>;
+    /// Convert a type that implements [`AnyPad`] to a concrete [`Pad`]
+    ///
+    /// Even though there is a one-to-one mapping between `Pad<I, M>` and
+    /// `AnyPad<Sercom = S, PadNum = P, Map = M>`, the compiler doesn't know
+    /// that. This method provides a way to convert from an [`AnyPad`] to a
+    /// concrete [`Pad`].
+    fn as_concrete(self) -> ConcretePad<Self>;
 }
 
 impl<S, P, M> AnyPad for Pad<S, P, M>
@@ -272,6 +357,10 @@ where
     type Sercom = S;
     type PadNum = P;
     type Map = M;
+    #[inline]
+    fn as_concrete(self) -> ConcretePad<Self> {
+        self
+    }
 }
 
 //==============================================================================
@@ -280,16 +369,15 @@ where
 
 /// Meta-type representing an optional [`Pad`].
 ///
-/// This trait is implemented for every [`Pad`], as well as for
-/// [`NoneT`](crate::typelevel::NoneT).
+/// This trait is implemented for every [`Pad`], as well as for [`NoneT`].
 pub trait OptionalPad {}
 impl OptionalPad for NoneT {}
 impl<P: AnyPad> OptionalPad for P {}
 
 /// Meta-type representing a valid [`Pad`].
 ///
-/// When used as a bound, this trait allows you to exclude
-/// [`NoneT`](crate::typelevel::NoneT) and limit the type to valid [`Pad`]s.
+/// When used as a bound, this trait allows you to exclude [`NoneT`] and limit
+/// the type to valid [`Pad`]s.
 pub trait SomePad: OptionalPad + AnyPad {}
 impl<P: AnyPad> SomePad for P {}
 
@@ -303,8 +391,7 @@ where
     P: PadNum,
     M: Map<S, P>,
 {
-    /// Convert from a [`Pad`] to its corresponding
-    /// [`Pin`](crate::gpio::v2::Pin).
+    /// Convert from a [`Pad`] to its corresponding [`Pin`].
     ///
     /// This transformation is unique for a given [`Pad`].
     #[inline]
@@ -321,11 +408,9 @@ where
     O: PinMode,
     Pin<M::Id, O>: Into<Pin<M::Id, M::Mode>>,
 {
-    /// Convert from a [`Pin`](crate::gpio::v2::Pin) to its corresponding
-    /// [`Pad`].
+    /// Convert from a [`Pin`] to its corresponding [`Pad`].
     ///
-    /// This conversion is not necessarily unique for a given
-    /// [`Pin`](crate::gpio::v2::Pin).
+    /// This conversion is not necessarily unique for a given [`Pin`]
     #[inline]
     fn from(pin: Pin<M::Id, O>) -> Self {
         Pad::new(pin)

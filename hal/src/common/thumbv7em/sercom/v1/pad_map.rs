@@ -28,6 +28,7 @@ use crate::sercom::v2::pads::*;
 // attributes applied to both individual PadNums as well as entire IoSets
 macro_rules! map {
     // Single instance, with optional attribute
+    // IoSet is ignored here. See the note on the pad_table macro
     (
         $( #[$cfg:meta] )?
         $Sercom:ident, $IoSet:ident, $PadNum:ident, $PinId:ident, $Cfg:ident
@@ -66,9 +67,9 @@ macro_rules! map {
     };
 }
 
-// If all four PadNums of an IoSet have the same configuration attribute,
-// then you can place a the attribute above the IoSet. Otherwise, each
-// PadNum must have its own configuration attribute.
+// The pad tables for `v1` were copied and pasted from those created for `v2`.
+// The `v2` pad tables require information about IoSet, but that information
+// is ignored here. Instead, `Map` is implemented directly on `PinId`s
 macro_rules! pad_table {
     (
         $Sercom:ident { $(

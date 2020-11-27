@@ -22,7 +22,6 @@ use crate::sercom::v2::pads::*;
 //  Pad definitions
 //==============================================================================
 
-// TODO
 macro_rules! map {
     // Single instance, with optional attribute
     (
@@ -51,7 +50,7 @@ macro_rules! map {
     };
 }
 
-// TODO
+// Feature gates can be placed on individual configurations or on the entire pin
 macro_rules! pad_table {
     (
         $(
