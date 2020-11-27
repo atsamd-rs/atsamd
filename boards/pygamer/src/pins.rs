@@ -1,44 +1,33 @@
 //! PyGamer pins
 
-use super::{hal, pac, pac::MCLK, pac::QSPI, target_device};
-
-use crate::hal::gpio::{self, *};
-use gpio::{Floating, Input, Output, Port, PushPull};
-use hal::define_pins;
-
-use hal::prelude::*;
-
-use hal::sercom::{
-    I2CMaster2, PadPin, SPIMaster1, SPIMaster4, Sercom2Pad0, Sercom2Pad1, Sercom4Pad1, Sercom4Pad2,
-    Sercom4Pad3, UART5,
-};
-
-use hal::qspi;
+use super::{hal, pac, target_device};
 
 use embedded_hal::{digital::v1_compat::OldOutputPin, timer::CountDown, timer::Periodic};
+use gpio::{Floating, Input, Output, Port, PushPull};
+use hal::clock::GenericClockController;
+use hal::define_pins;
+use hal::gpio::{self, *};
+use hal::hal::spi;
+use hal::prelude::*;
+use hal::sercom::{I2CMaster2, PadPin, SPIMaster1, SPIMaster4, UART5};
+use hal::{qspi, time::Hertz};
+use pac::{MCLK, QSPI};
+use st7735_lcd::{Orientation, ST7735};
 use ws2812_timer_delay as ws2812;
 
-use hal::clock::GenericClockController;
-
-#[cfg(feature = "unproven")]
-use hal::pwm::Pwm2;
-
-use hal::time::Hertz;
-
-use st7735_lcd::{Orientation, ST7735};
-
-#[cfg(feature = "usb")]
-use super::pac::gclk::{genctrl::SRC_A, pchctrl::GEN_A};
 #[cfg(feature = "usb")]
 use hal::usb::usb_device::bus::UsbBusAllocator;
 #[cfg(feature = "usb")]
 pub use hal::usb::UsbBus;
+#[cfg(feature = "usb")]
+use pac::gclk::{genctrl::SRC_A, pchctrl::GEN_A};
 
 #[cfg(feature = "unproven")]
 use cortex_m::asm::delay as cycle_delay;
-
 #[cfg(feature = "unproven")]
-use super::pac::{ADC0, ADC1};
+use hal::pwm::Pwm2;
+#[cfg(feature = "unproven")]
+use pac::{ADC0, ADC1};
 
 define_pins!(
     /// Maps the pins to their arduino names and
@@ -339,14 +328,14 @@ impl Display {
         (
             ST7735<
                 SPIMaster4<
-                    Sercom4Pad2<gpio::Pb14<gpio::PfC>>,
-                    Sercom4Pad3<gpio::Pb15<gpio::PfC>>,
-                    Sercom4Pad1<gpio::Pb13<gpio::PfC>>,
+                    hal::sercom::Sercom4Pad2<Pb14<PfC>>,
+                    hal::sercom::Sercom4Pad3<Pb15<PfC>>,
+                    hal::sercom::Sercom4Pad1<Pb13<PfC>>,
                 >,
-                gpio::Pb5<Output<PushPull>>,
-                gpio::Pa0<Output<PushPull>>,
+                Pb5<Output<PushPull>>,
+                Pa0<Output<PushPull>>,
             >,
-            atsamd_hal::samd51::pwm::Pwm2,
+            Pwm2,
         ),
         (),
     > {
@@ -354,9 +343,9 @@ impl Display {
         let tft_spi = SPIMaster4::new(
             &clocks.sercom4_core(&gclk0).ok_or(())?,
             16.mhz(),
-            hal::hal::spi::Mode {
-                phase: hal::hal::spi::Phase::CaptureOnFirstTransition,
-                polarity: hal::hal::spi::Polarity::IdleLow,
+            spi::Mode {
+                phase: spi::Phase::CaptureOnFirstTransition,
+                polarity: spi::Polarity::IdleLow,
             },
             sercom4,
             mclk,
@@ -405,14 +394,7 @@ impl Neopixel {
         self,
         timer: T,
         port: &mut Port,
-    ) -> ws2812::Ws2812<
-        T,
-        embedded_hal::digital::v1_compat::OldOutputPin<
-            atsamd_hal::common::gpio::Pa15<
-                atsamd_hal::common::gpio::Output<atsamd_hal::common::gpio::PushPull>,
-            >,
-        >,
-    > {
+    ) -> ws2812::Ws2812<T, OldOutputPin<Pa15<Output<PushPull>>>> {
         let neopixel_pin: OldOutputPin<_> = self.neopixel.into_push_pull_output(port).into();
 
         ws2812::Ws2812::new(timer, neopixel_pin)
@@ -421,9 +403,9 @@ impl Neopixel {
 
 /// SPI pins
 pub struct SPI {
-    pub mosi: gpio::Pb23<Input<Floating>>,
-    pub miso: gpio::Pb22<Input<Floating>>,
-    pub sck: gpio::Pa17<Input<Floating>>,
+    pub mosi: Pb23<Input<Floating>>,
+    pub miso: Pb22<Input<Floating>>,
+    pub sck: Pa17<Input<Floating>>,
 }
 
 impl SPI {
@@ -437,17 +419,17 @@ impl SPI {
         mclk: &mut MCLK,
         port: &mut Port,
     ) -> SPIMaster1<
-        hal::sercom::Sercom1Pad2<gpio::Pb22<gpio::PfC>>,
-        hal::sercom::Sercom1Pad3<gpio::Pb23<gpio::PfC>>,
-        hal::sercom::Sercom1Pad1<gpio::Pa17<gpio::PfC>>,
+        hal::sercom::Sercom1Pad2<Pb22<PfC>>,
+        hal::sercom::Sercom1Pad3<Pb23<PfC>>,
+        hal::sercom::Sercom1Pad1<Pa17<PfC>>,
     > {
         let gclk0 = clocks.gclk0();
         SPIMaster1::new(
             &clocks.sercom1_core(&gclk0).unwrap(),
             bus_speed.into(),
-            hal::hal::spi::Mode {
-                phase: hal::hal::spi::Phase::CaptureOnFirstTransition,
-                polarity: hal::hal::spi::Polarity::IdleLow,
+            spi::Mode {
+                phase: spi::Phase::CaptureOnFirstTransition,
+                polarity: spi::Polarity::IdleLow,
             },
             sercom1,
             mclk,
@@ -476,7 +458,7 @@ impl I2C {
         sercom2: pac::SERCOM2,
         mclk: &mut MCLK,
         port: &mut Port,
-    ) -> I2CMaster2<Sercom2Pad0<Pa12<PfC>>, Sercom2Pad1<Pa13<PfC>>> {
+    ) -> I2CMaster2<hal::sercom::Sercom2Pad0<Pa12<PfC>>, hal::sercom::Sercom2Pad1<Pa13<PfC>>> {
         let gclk0 = clocks.gclk0();
         I2CMaster2::new(
             &clocks.sercom2_core(&gclk0).unwrap(),
@@ -487,11 +469,6 @@ impl I2C {
             self.scl.into_pad(port),
         )
     }
-}
-
-/// Sd Card pins
-pub struct SdCard {
-    pub cs: Pa14<Input<Floating>>,
 }
 
 /// Speaker pins
@@ -512,7 +489,7 @@ impl USB {
     /// as a USB device.
     pub fn init(
         self,
-        usb: super::pac::USB,
+        usb: pac::USB,
         clocks: &mut GenericClockController,
         mclk: &mut MCLK,
         port: &mut Port,
@@ -547,12 +524,8 @@ impl UART {
         sercom5: pac::SERCOM5,
         mclk: &mut MCLK,
         port: &mut Port,
-    ) -> UART5<
-        hal::sercom::Sercom5Pad1<gpio::Pb17<gpio::PfC>>,
-        hal::sercom::Sercom5Pad0<gpio::Pb16<gpio::PfC>>,
-        (),
-        (),
-    > {
+    ) -> UART5<hal::sercom::Sercom5Pad1<Pb17<PfC>>, hal::sercom::Sercom5Pad0<Pb16<PfC>>, (), ()>
+    {
         let gclk0 = clocks.gclk0();
 
         UART5::new(
@@ -793,9 +766,9 @@ impl Buttons {
 /// Joystick pins
 pub struct JoystickReader {
     /// Joystick X
-    pub joy_x: gpio::Pb7<gpio::PfB>,
+    pub joy_x: Pb7<PfB>,
     /// Joystick Y
-    pub joy_y: gpio::Pb6<gpio::PfB>,
+    pub joy_y: Pb6<PfB>,
 }
 
 #[cfg(feature = "unproven")]
@@ -838,7 +811,7 @@ impl Joystick {
 #[cfg(feature = "unproven")]
 pub struct BatteryReader {
     /// Battery pin
-    pub battery: gpio::Pb1<gpio::PfB>,
+    pub battery: Pb1<PfB>,
 }
 
 #[cfg(feature = "unproven")]

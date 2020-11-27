@@ -16,7 +16,7 @@
 
 #[cfg(not(feature = "panic_led"))]
 use panic_halt as _;
-use pygamer as hal;
+use pygamer::{self as hal, entry, pac, Pins};
 
 use embedded_graphics::pixelcolor::{Rgb565, RgbColor};
 use embedded_graphics::prelude::*;
@@ -26,10 +26,9 @@ use embedded_hal::digital::v1_compat::OldOutputPin;
 use embedded_sdmmc::{TimeSource, Timestamp, VolumeIdx};
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
-use hal::entry;
-use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 use hal::time::MegaHertz;
+use pac::{CorePeripherals, Peripherals};
 
 #[entry]
 fn main() -> ! {
@@ -44,7 +43,7 @@ fn main() -> ! {
     );
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
-    let mut pins = hal::Pins::new(peripherals.PORT).split();
+    let mut pins = Pins::new(peripherals.PORT).split();
 
     let mut red_led = pins.led_pin.into_open_drain_output(&mut pins.port);
 

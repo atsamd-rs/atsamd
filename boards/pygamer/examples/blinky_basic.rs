@@ -5,14 +5,13 @@
 
 #[cfg(not(feature = "panic_led"))]
 use panic_halt as _;
-use pygamer as hal;
+use pygamer::{self as hal, entry, pac, Pins};
 
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
-use hal::entry;
-use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 use hal::watchdog::{Watchdog, WatchdogTimeout};
+use pac::{CorePeripherals, Peripherals};
 
 #[entry]
 fn main() -> ! {
@@ -28,7 +27,7 @@ fn main() -> ! {
     let mut delay = Delay::new(core.SYST, &mut clocks);
     delay.delay_ms(400u16);
 
-    let mut pins = hal::Pins::new(peripherals.PORT);
+    let mut pins = Pins::new(peripherals.PORT);
     let mut red_led = pins.d13.into_open_drain_output(&mut pins.port);
 
     let mut wdt = Watchdog::new(peripherals.WDT);

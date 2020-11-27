@@ -8,21 +8,18 @@
 
 #[cfg(not(feature = "panic_led"))]
 use panic_halt as _;
-use pygamer as hal;
+use pygamer::{self as hal, entry, pac, Pins};
 
 use core::f32::consts::FRAC_PI_2;
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
-use hal::entry;
-use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 use hal::timer::SpinTimer;
 use hal::trng::Trng;
 use micromath::F32Ext;
-use smart_leds::{
-    hsv::{hsv2rgb, Hsv, RGB8},
-    SmartLedsWrite,
-};
+use pac::{CorePeripherals, Peripherals};
+use smart_leds::hsv::{hsv2rgb, Hsv, RGB8};
+use smart_leds::SmartLedsWrite;
 
 #[entry]
 fn main() -> ! {
@@ -36,7 +33,7 @@ fn main() -> ! {
         &mut peripherals.NVMCTRL,
     );
 
-    let mut pins = hal::Pins::new(peripherals.PORT).split();
+    let mut pins = Pins::new(peripherals.PORT).split();
     let timer = SpinTimer::new(4);
 
     let mut neopixel = pins.neopixel.init(timer, &mut pins.port);

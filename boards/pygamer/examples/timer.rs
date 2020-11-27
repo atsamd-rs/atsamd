@@ -6,14 +6,13 @@
 
 #[cfg(not(feature = "panic_led"))]
 use panic_halt as _;
-use pygamer as hal;
+use pygamer::{self as hal, entry, pac, Pins};
 
 use hal::clock::GenericClockController;
-use hal::entry;
-use hal::pac::Peripherals;
 use hal::prelude::*;
 use hal::timer::TimerCounter;
 use nb::block;
+use pac::Peripherals;
 
 #[entry]
 fn main() -> ! {
@@ -25,7 +24,7 @@ fn main() -> ! {
         &mut peripherals.OSCCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = hal::Pins::new(peripherals.PORT);
+    let mut pins = Pins::new(peripherals.PORT);
 
     let gclk0 = clocks.gclk0();
     let timer_clock = clocks.tc2_tc3(&gclk0).unwrap();
