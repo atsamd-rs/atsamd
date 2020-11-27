@@ -320,7 +320,6 @@ impl<I, M> Pin<I, Output<M>>
 where
     I: PinId,
     M: OutputConfig,
-    Output<M>: PinMode,
 {
     /// Toggle the logic level of the pin; if it is currently
     /// high, set it low and vice versa.
@@ -335,7 +334,6 @@ impl<I, M> ToggleableOutputPin for Pin<I, Output<M>>
 where
     I: PinId,
     M: OutputConfig,
-    Output<M>: PinMode,
 {
     // TODO: switch to ! when it’s stable
     type Error = ();
@@ -368,7 +366,6 @@ impl<I, M> InputPin for Pin<I, Input<M>>
 where
     I: PinId,
     M: InputConfig,
-    Input<M>: PinMode,
 {
     // TODO: switch to ! when it’s stable
     type Error = ();
@@ -389,7 +386,6 @@ impl<I, M> StatefulOutputPin for Pin<I, Output<M>>
 where
     I: PinId,
     M: OutputConfig,
-    Output<M>: PinMode,
 {
     #[inline]
     fn is_set_high(&self) -> Result<bool, Self::Error> {
@@ -406,7 +402,6 @@ impl<I, M> OutputPin for Pin<I, Output<M>>
 where
     I: PinId,
     M: OutputConfig,
-    Output<M>: PinMode,
 {
     // TODO: switch to ! when it’s stable
     type Error = ();

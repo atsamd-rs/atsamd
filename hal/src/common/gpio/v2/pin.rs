@@ -155,7 +155,14 @@ use super::dynpin::*;
 //==============================================================================
 
 /// Type-level `enum` for disabled configurations
-pub trait DisabledConfig: Sealed {}
+pub trait DisabledConfig: Sealed {
+    /// Corresponding [`DynDisabled`](super::DynDisabled)
+    const DYN: DynDisabled;
+    /// Value of the PULLEN field in this configuration
+    const PULLEN: bool;
+    /// Value of the OUT field in this configuration
+    const OUT: bool = false;
+}
 
 /// Type-level variant of both [`DisabledConfig`] and [`InputConfig`]
 pub enum Floating {}
@@ -168,9 +175,20 @@ impl Sealed for Floating {}
 impl Sealed for PullDown {}
 impl Sealed for PullUp {}
 
-impl DisabledConfig for Floating {}
-impl DisabledConfig for PullDown {}
-impl DisabledConfig for PullUp {}
+impl DisabledConfig for Floating {
+    const DYN: DynDisabled = DynDisabled::Floating;
+    const PULLEN: bool = false;
+}
+impl DisabledConfig for PullDown {
+    const DYN: DynDisabled = DynDisabled::PullDown;
+    const PULLEN: bool = true;
+    const OUT: bool = false;
+}
+impl DisabledConfig for PullUp {
+    const DYN: DynDisabled = DynDisabled::PullUp;
+    const PULLEN: bool = true;
+    const OUT: bool = true;
+}
 
 /// Type-level variant of [`PinMode`] for disabled modes
 ///
@@ -199,11 +217,29 @@ pub type Reset = FloatingDisabled;
 //==============================================================================
 
 /// Type-level `enum` for input configurations
-pub trait InputConfig: Sealed {}
+pub trait InputConfig: Sealed {
+    /// Corresponding [`DynInput`](super::DynInput)
+    const DYN: DynInput;
+    /// Value of the PULLEN field in this configuration
+    const PULLEN: bool;
+    /// Value of the OUT field in this configuration
+    const OUT: bool = false;
+}
 
-impl InputConfig for Floating {}
-impl InputConfig for PullDown {}
-impl InputConfig for PullUp {}
+impl InputConfig for Floating {
+    const DYN: DynInput = DynInput::Floating;
+    const PULLEN: bool = false;
+}
+impl InputConfig for PullDown {
+    const DYN: DynInput = DynInput::PullDown;
+    const PULLEN: bool = true;
+    const OUT: bool = false;
+}
+impl InputConfig for PullUp {
+    const DYN: DynInput = DynInput::PullUp;
+    const PULLEN: bool = true;
+    const OUT: bool = true;
+}
 
 /// Type-level variant of [`PinMode`] for input modes
 ///
@@ -229,7 +265,12 @@ pub type PullUpInput = Input<PullUp>;
 //==============================================================================
 
 /// Type-level `enum` for output configurations
-pub trait OutputConfig: Sealed {}
+pub trait OutputConfig: Sealed {
+    /// Corresponding [`DynOutput`](super::DynOutput)
+    const DYN: DynOutput;
+    /// Value of the INEN field in this configuration
+    const INEN: bool;
+}
 
 /// Type-level variant of [`OutputConfig`] for a push-pull configuration
 pub enum PushPull {}
@@ -240,8 +281,14 @@ pub enum Readable {}
 impl Sealed for PushPull {}
 impl Sealed for Readable {}
 
-impl OutputConfig for PushPull {}
-impl OutputConfig for Readable {}
+impl OutputConfig for PushPull {
+    const DYN: DynOutput = DynOutput::PushPull;
+    const INEN: bool = false;
+}
+impl OutputConfig for Readable {
+    const DYN: DynOutput = DynOutput::Readable;
+    const INEN: bool = true;
+}
 
 /// Type-level variant of [`PinMode`] for output modes
 ///
@@ -266,8 +313,8 @@ pub type ReadableOutput = Output<Readable>;
 pub trait AlternateConfig: Sealed {
     /// Corresponding [`DynAlternate`](super::DynAlternate)
     const DYN: DynAlternate;
-    /// Value written to the PMUX register for the given peripheral function
-    const NUM: u8;
+    /// Value of the PMUXE/PMUXO field in this configuration
+    const PMUX: u8;
 }
 
 macro_rules! alternate {
@@ -290,7 +337,7 @@ macro_rules! alternate {
                 $( #[$cfg] )?
                 impl AlternateConfig for $Letter {
                     const DYN: DynAlternate = DynAlternate::$Letter;
-                    const NUM: u8 = $NUM;
+                    const PMUX: u8 = $NUM;
                 }
                 $( #[$cfg] )?
                 #[
@@ -408,68 +455,32 @@ pub trait PinMode: Sealed + Sized {
     }
 }
 
-impl PinMode for FloatingDisabled {
-    const DYN: DynPinMode = DYN_FLOATING_DISABLED;
+impl<C: DisabledConfig> PinMode for Disabled<C> {
+    const DYN: DynPinMode = DynPinMode::Disabled(C::DYN);
     const DIR: bool = false;
     const INEN: bool = false;
-    const PULLEN: bool = false;
+    const PULLEN: bool = C::PULLEN;
+    const OUT: bool = C::OUT;
 }
 
-impl PinMode for PullDownDisabled {
-    const DYN: DynPinMode = DYN_PULL_DOWN_DISABLED;
-    const DIR: bool = false;
-    const INEN: bool = false;
-    const PULLEN: bool = true;
-    const OUT: bool = false;
-}
-
-impl PinMode for PullUpDisabled {
-    const DYN: DynPinMode = DYN_PULL_UP_DISABLED;
-    const DIR: bool = false;
-    const INEN: bool = false;
-    const PULLEN: bool = true;
-    const OUT: bool = true;
-}
-
-impl PinMode for FloatingInput {
-    const DYN: DynPinMode = DYN_FLOATING_INPUT;
+impl<C: InputConfig> PinMode for Input<C> {
+    const DYN: DynPinMode = DynPinMode::Input(C::DYN);
     const DIR: bool = false;
     const INEN: bool = true;
-    const PULLEN: bool = false;
+    const PULLEN: bool = C::PULLEN;
+    const OUT: bool = C::OUT;
 }
 
-impl PinMode for PullDownInput {
-    const DYN: DynPinMode = DYN_PULL_DOWN_INPUT;
-    const DIR: bool = false;
-    const INEN: bool = true;
-    const PULLEN: bool = true;
-    const OUT: bool = false;
-}
-
-impl PinMode for PullUpInput {
-    const DYN: DynPinMode = DYN_PULL_UP_INPUT;
-    const DIR: bool = false;
-    const INEN: bool = true;
-    const PULLEN: bool = true;
-    const OUT: bool = true;
-}
-
-impl PinMode for PushPullOutput {
-    const DYN: DynPinMode = DYN_PUSH_PULL_OUTPUT;
+impl<C: OutputConfig> PinMode for Output<C> {
+    const DYN: DynPinMode = DynPinMode::Output(C::DYN);
     const DIR: bool = true;
-    const INEN: bool = false;
-}
-
-impl PinMode for ReadableOutput {
-    const DYN: DynPinMode = DYN_READABLE_OUTPUT;
-    const DIR: bool = true;
-    const INEN: bool = true;
+    const INEN: bool = C::INEN;
 }
 
 impl<C: AlternateConfig> PinMode for Alternate<C> {
     const DYN: DynPinMode = DynPinMode::Alternate(C::DYN);
     const PMUXEN: bool = true;
-    const PMUX: u8 = C::NUM;
+    const PMUX: u8 = C::PMUX;
 }
 
 /// Use a recursive macro to implement [`From`](core::convert::From) for each
@@ -769,7 +780,6 @@ pub type ConcretePin<P> = Pin<<P as AnyPin>::Id, <P as AnyPin>::Mode>;
 /// where
 ///     P: AnyPin<Mode = Output<C>>,
 ///     C: OutputConfig,
-///     Output<C>: PinMode,
 ///     P::Id: UserTrait,
 /// {
 /// }
@@ -1245,7 +1255,6 @@ impl<I, C> OutputPin for Pin<I, Output<C>>
 where
     I: PinId,
     C: OutputConfig,
-    Output<C>: PinMode,
 {
     type Error = Infallible;
     #[inline]
@@ -1281,7 +1290,6 @@ impl<I, C> InputPin for Pin<I, Input<C>>
 where
     I: PinId,
     C: InputConfig,
-    Input<C>: PinMode,
 {
     type Error = Infallible;
     #[inline]
@@ -1299,7 +1307,6 @@ impl<I, C> ToggleableOutputPin for Pin<I, Output<C>>
 where
     I: PinId,
     C: OutputConfig,
-    Output<C>: PinMode,
 {
     type Error = Infallible;
     #[inline]
@@ -1314,7 +1321,6 @@ impl<I, C> StatefulOutputPin for Pin<I, Output<C>>
 where
     I: PinId,
     C: OutputConfig,
-    Output<C>: PinMode,
 {
     #[inline]
     fn is_set_high(&self) -> Result<bool, Self::Error> {
