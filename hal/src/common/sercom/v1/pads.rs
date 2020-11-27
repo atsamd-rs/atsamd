@@ -20,6 +20,7 @@ use paste::paste;
 use crate::gpio::v1::{IntoFunction, Pin};
 use crate::gpio::v2::{PinId, PinMode};
 use crate::gpio::Port;
+use crate::typelevel::Sealed;
 
 pub use crate::sercom::v2::pads::*;
 
@@ -53,8 +54,15 @@ define_pads!(Sercom6, Sercom7);
 /// The PadPin trait makes it more ergonomic to convert a pin into a Sercom pad.
 /// You should not implement this trait for yourself; only the implementations
 /// in the sercom module make sense.
-pub trait PadPin<T> {
+pub trait PadPin<T>: Sealed {
     fn into_pad(self, port: &mut Port) -> T;
+}
+
+impl<I, M> Sealed for Pin<I, M>
+where
+    I: PinId,
+    M: PinMode,
+{
 }
 
 // Transfer `Map` from each `PinId` to its corresponding configured `Pin`
