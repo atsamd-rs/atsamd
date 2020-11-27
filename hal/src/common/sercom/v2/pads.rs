@@ -205,7 +205,7 @@ where
     P: PadNum,
     M: Map<S, P>,
 {
-    pin: Pin<M::Id, M::Mode>,
+    pub(crate) pin: Pin<M::Id, M::Mode>,
 }
 
 impl<S, P, M> Pad<S, P, M>
