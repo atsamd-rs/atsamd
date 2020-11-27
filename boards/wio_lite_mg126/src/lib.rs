@@ -17,9 +17,10 @@ pub use hal::common::*;
 pub use hal::samd21::*;
 pub use hal::target_device as pac;
 
-use gpio::{Floating, Input, Port};
+use gpio::{self, *};
+
 use hal::clock::GenericClockController;
-use hal::sercom::{I2CMaster3, PadPin};
+use hal::sercom::{I2CMaster3, PadPin, SPIMaster4, UART2};
 use hal::time::Hertz;
 
 #[cfg(feature = "usb")]
@@ -94,36 +95,18 @@ define_pins!(
     /// Digital 1: TX
     pin tx = a27,
 
+    /// USB Data MInus
     pin usb_dm = a24,
+
+    /// USB Data Plus
     pin usb_dp = a25,
+
     // LED built into the board
     // pin led_builtin = a17,
 
     //pin bottom_pad = a28,
     //pin adc_battery = b9,
 );
-
-#[cfg(feature = "usb")]
-pub fn usb_allocator(
-    usb: pac::USB,
-    clocks: &mut GenericClockController,
-    pm: &mut pac::PM,
-    dm: gpio::Pa24<Input<Floating>>,
-    dp: gpio::Pa25<Input<Floating>>,
-    port: &mut Port,
-) -> UsbBusAllocator<UsbBus> {
-    use gpio::IntoFunction;
-    let gclk0 = clocks.gclk0();
-    let usb_clock = &clocks.usb(&gclk0).unwrap();
-
-    UsbBusAllocator::new(UsbBus::new(
-        usb_clock,
-        pm,
-        dm.into_function(port),
-        dp.into_function(port),
-        usb,
-    ))
-}
 
 /// Convenience for setting up the labelled SDA, SCL pins to
 /// operate as an I2C master running at the specified frequency.
@@ -148,4 +131,83 @@ pub fn i2c_master<F: Into<Hertz>>(
         sda.into_pad(port),
         scl.into_pad(port),
     )
+}
+
+/// Convenience function for setting up the D24/SCK, D23/MOSI, and D22/MISO pins
+/// as a SPI Master.
+pub fn spi_master<F: Into<Hertz>>(
+    clocks: &mut GenericClockController,
+    speed: F,
+    sercom4: pac::SERCOM4,
+    pm: &mut pac::PM,
+    sck: gpio::Pb11<Input<Floating>>,
+    mosi: gpio::Pb10<Input<Floating>>,
+    miso: gpio::Pa12<Input<Floating>>,
+    port: &mut Port,
+) -> SPIMaster4<
+    hal::sercom::Sercom4Pad0<gpio::Pa12<gpio::PfD>>,
+    hal::sercom::Sercom4Pad2<gpio::Pb10<gpio::PfD>>,
+    hal::sercom::Sercom4Pad3<gpio::Pb11<gpio::PfD>>,
+> {
+    let gclk0 = clocks.gclk0();
+
+    SPIMaster4::new(
+        &clocks.sercom4_core(&gclk0).unwrap(),
+        speed.into(),
+        hal::hal::spi::Mode {
+            phase: hal::hal::spi::Phase::CaptureOnFirstTransition,
+            polarity: hal::hal::spi::Polarity::IdleLow,
+        },
+        sercom4,
+        pm,
+        (miso.into_pad(port), mosi.into_pad(port), sck.into_pad(port)),
+    )
+}
+
+/// Convenience for setting up the D0 and D1 pins to
+/// operate as UART RX/TX (respectively) running at the specified baud.
+pub fn uart<F: Into<Hertz>>(
+    clocks: &mut GenericClockController,
+    baud: F,
+    sercom2: pac::SERCOM2,
+    pm: &mut pac::PM,
+    d0: gpio::Pa11<Input<Floating>>,
+    d1: gpio::Pa10<Input<Floating>>,
+    port: &mut Port,
+) -> UART2<
+    hal::sercom::Sercom2Pad3<gpio::Pa11<PfD>>,
+    hal::sercom::Sercom2Pad2<gpio::Pa10<PfD>>,
+    (),
+    (),
+> {
+    let gclk0 = clocks.gclk0();
+
+    UART2::new(
+        &clocks.sercom2_core(&gclk0).unwrap(),
+        baud.into(),
+        sercom2,
+        pm,
+        (d0.into_pad(port), d1.into_pad(port)),
+    )
+}
+
+#[cfg(feature = "usb")]
+pub fn usb_allocator(
+    usb: pac::USB,
+    clocks: &mut GenericClockController,
+    pm: &mut pac::PM,
+    dm: gpio::Pa24<Input<Floating>>,
+    dp: gpio::Pa25<Input<Floating>>,
+    port: &mut Port,
+) -> UsbBusAllocator<UsbBus> {
+    let gclk0 = clocks.gclk0();
+    let usb_clock = &clocks.usb(&gclk0).unwrap();
+
+    UsbBusAllocator::new(UsbBus::new(
+        usb_clock,
+        pm,
+        dm.into_function(port),
+        dp.into_function(port),
+        usb,
+    ))
 }
