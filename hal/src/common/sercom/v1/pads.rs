@@ -91,3 +91,39 @@ where
         Pad::new(pin.pin)
     }
 }
+
+/// Convert from a `v2` [`Pad`] to a `v1` [`Pad`]
+///
+/// The difference here is the [`Map`] type. `v2` [`Pad`]s use [`PinId`]s for
+/// [`Map`], while `v1` [`Pad`]s use configured [`Pin`]s. This conversion is
+/// usually only applicable to thumbv6m chips. The thumbv7em chips usually
+/// implement [`Map`] on `IoSet`
+impl<S, P, I> From<Pad<S, P, I>> for Pad<S, P, Pin<I::Id, I::Mode>>
+where
+    S: Sercom,
+    P: PadNum,
+    I: PinId + Map<S, P>,
+    Pin<I::Id, I::Mode>: Map<S, P, Id = I::Id, Mode = I::Mode>,
+{
+    fn from(pad: Pad<S, P, I>) -> Pad<S, P, Pin<I::Id, I::Mode>> {
+        Pad { pin: pad.pin }
+    }
+}
+
+/// Convert from a `v1` [`Pad`] to a `v2` [`Pad`]
+///
+/// The difference here is the [`Map`] type. `v2` [`Pad`]s use [`PinId`]s for
+/// [`Map`], while `v1` [`Pad`]s use configured [`Pin`]s. This conversion is
+/// usually only applicable to thumbv6m chips. The thumbv7em chips usually
+/// implement [`Map`] on `IoSet`.
+impl<S, P, I> From<Pad<S, P, Pin<I::Id, I::Mode>>> for Pad<S, P, I>
+where
+    S: Sercom,
+    P: PadNum,
+    I: PinId + Map<S, P>,
+    Pin<I::Id, I::Mode>: Map<S, P, Id = I::Id, Mode = I::Mode>,
+{
+    fn from(pad: Pad<S, P, Pin<I::Id, I::Mode>>) -> Pad<S, P, I> {
+        Pad { pin: pad.pin }
+    }
+}
