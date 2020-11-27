@@ -12,9 +12,10 @@ pub use hal::common::*;
 pub use hal::samd21::*;
 pub use hal::target_device as pac;
 
-use gpio::{self, *};
-
 use hal::clock::GenericClockController;
+#[cfg(feature = "usb")]
+use hal::gpio::IntoFunction;
+use hal::gpio::{Floating, Input, PfC, Port};
 use hal::sercom::{I2CMaster3, PadPin, SPIMaster4, SPIMaster5, UART0};
 use hal::time::Hertz;
 
