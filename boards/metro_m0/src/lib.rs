@@ -256,7 +256,7 @@ pub fn usb_allocator(
 #[cfg(feature = "usb")]
 #[deprecated(
     since = "0.8.0",
-    note = "Please use the usb_allocator function instead",
+    note = "Please use the usb_allocator function instead"
 )]
 pub fn usb_bus(
     usb: pac::USB,
