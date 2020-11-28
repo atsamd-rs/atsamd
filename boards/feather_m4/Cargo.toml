@@ -64,3 +64,6 @@ required-features = ["unproven"]
 [[example]]
 name = "usb_echo"
 required-features = ["usb"]
+
+[[example]]
+name = "sleeping_timer_rtc"

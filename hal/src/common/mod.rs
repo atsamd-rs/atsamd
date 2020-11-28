@@ -1,6 +1,7 @@
 pub mod delay;
 pub mod gpio;
 pub mod prelude;
+pub mod rtc;
 pub mod sercom;
 pub mod sleeping_delay;
 pub mod spi_common;

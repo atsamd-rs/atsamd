@@ -1,96 +1,66 @@
 #![no_std]
 #![no_main]
 
-/// Makes the wio_terminal appear as a USB serial port, and display
-/// the time on the screen.
-///
-/// You can tell the terminal the time by running (on linux):
-///  - sudo stty -F /dev/ttyACM0 115200 raw -echo
-///  - sudo bash -c "echo 'time=hour:minute:second' > /dev/ttyACM0"
-use embedded_graphics as eg;
+extern crate feather_m0 as hal;
 use panic_halt as _;
-use wio_terminal as wio;
-
-use eg::fonts::{Font24x32, Text};
-use eg::pixelcolor::Rgb565;
-use eg::prelude::*;
-use eg::primitives::rectangle::Rectangle;
-use eg::style::{PrimitiveStyleBuilder, TextStyle};
 
 use cortex_m::interrupt::free as disable_interrupts;
 use cortex_m::peripheral::NVIC;
 
-use wio::hal::clock::GenericClockController;
-use wio::hal::delay::Delay;
-use wio::pac::{interrupt, CorePeripherals, Peripherals};
-use wio::prelude::*;
-use wio::{entry, Pins, Sets};
+use hal::clock::{ClockGenId, ClockSource, GenericClockController};
+use hal::delay::Delay;
+use hal::pac::{interrupt, CorePeripherals, Peripherals};
+use hal::prelude::*;
+use hal::{entry, Pins};
 
 use core::fmt::Write;
+use hal::rtc;
 use heapless::consts::U16;
 use heapless::String;
-use wio::hal::rtc;
 
+use hal::usb::UsbBus;
 use usb_device::bus::UsbBusAllocator;
 use usb_device::prelude::*;
 use usbd_serial::{SerialPort, USB_CLASS_CDC};
-use wio::hal::usb::UsbBus;
 
 #[entry]
 fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
     let mut core = CorePeripherals::take().unwrap();
 
-    let mut clocks = GenericClockController::with_external_32kosc(
+    let mut clocks = GenericClockController::with_internal_32kosc(
         peripherals.GCLK,
-        &mut peripherals.MCLK,
-        &mut peripherals.OSC32KCTRL,
-        &mut peripherals.OSCCTRL,
+        &mut peripherals.PM,
+        &mut peripherals.SYSCTRL,
         &mut peripherals.NVMCTRL,
     );
 
     let mut delay = Delay::new(core.SYST, &mut clocks);
-    let pins = Pins::new(peripherals.PORT);
-    let mut sets: Sets = pins.split();
+    let mut pins = Pins::new(peripherals.PORT);
+    let mut red_led = pins.d13.into_open_drain_output(&mut pins.port);
+
+    // get the internal 32k running at 1024 Hz for the RTC
+    let timer_clock = clocks
+        .configure_gclk_divider_and_source(ClockGenId::GCLK3, 32, ClockSource::OSC32K, true)
+        .unwrap();
+    clocks.configure_standby(ClockGenId::GCLK3, true);
+    let rtc_clock = clocks.rtc(&timer_clock).unwrap();
+    let mut rtc = rtc::Rtc::new(peripherals.RTC, rtc_clock.freq(), &mut peripherals.PM);
+    rtc.clock_mode();
 
     unsafe {
-        // Configure the RTC. a 1024 Hz clock is configured for us when enabling our
-        // main clock
-        let mut rtc = rtc::Rtc::new(peripherals.RTC, 1024.hz(), &mut peripherals.MCLK);
-        rtc.clock_mode();
         RTC = Some(rtc);
     }
 
-    // Initialize the ILI9341-based LCD display. Create a black backdrop the size of
-    // the screen.
-    let (mut display, _backlight) = sets
-        .display
-        .init(
-            &mut clocks,
-            peripherals.SERCOM7,
-            &mut peripherals.MCLK,
-            &mut sets.port,
-            58.mhz(),
-            &mut delay,
-        )
-        .unwrap();
-    Rectangle::new(Point::new(0, 0), Point::new(320, 240))
-        .into_styled(
-            PrimitiveStyleBuilder::new()
-                .fill_color(Rgb565::BLACK)
-                .build(),
-        )
-        .draw(&mut display)
-        .ok()
-        .unwrap();
-
-    // Initialize USB.
+    // initialize USB
     let bus_allocator = unsafe {
-        USB_ALLOCATOR = Some(sets.usb.usb_allocator(
+        USB_ALLOCATOR = Some(hal::usb_allocator(
             peripherals.USB,
             &mut clocks,
-            &mut peripherals.MCLK,
-            &mut sets.port,
+            &mut peripherals.PM,
+            pins.usb_dm,
+            pins.usb_dp,
+            &mut pins.port,
         ));
         USB_ALLOCATOR.as_ref().unwrap()
     };
@@ -106,45 +76,27 @@ fn main() -> ! {
         );
     }
     unsafe {
-        core.NVIC.set_priority(interrupt::USB_OTHER, 1);
-        core.NVIC.set_priority(interrupt::USB_TRCPT0, 1);
-        core.NVIC.set_priority(interrupt::USB_TRCPT1, 1);
-        NVIC::unmask(interrupt::USB_OTHER);
-        NVIC::unmask(interrupt::USB_TRCPT0);
-        NVIC::unmask(interrupt::USB_TRCPT1);
+        core.NVIC.set_priority(interrupt::USB, 1);
+        NVIC::unmask(interrupt::USB);
     }
 
-    let style = TextStyle::new(Font24x32, Rgb565::WHITE);
-
+    // Print the time forever!
     loop {
-        delay.delay_ms(1000 as u16);
+        red_led.toggle();
         let time =
             disable_interrupts(|_| unsafe { RTC.as_mut().map(|rtc| rtc.current_time()) }).unwrap();
 
         let mut data = String::<U16>::new();
         write!(
             data,
-            "{:02}:{:02}:{:02}",
+            "{:02}:{:02}:{:02}\r\n",
             time.hours, time.minutes, time.seconds
         )
         .ok()
         .unwrap();
+        write_serial(data.as_bytes());
 
-        Rectangle::new(Point::new(55, 80), Point::new(250, 112))
-            .into_styled(
-                PrimitiveStyleBuilder::new()
-                    .fill_color(Rgb565::BLACK)
-                    .build(),
-            )
-            .draw(&mut display)
-            .ok()
-            .unwrap();
-
-        Text::new(data.as_str(), Point::new(55, 80))
-            .into_styled(style)
-            .draw(&mut display)
-            .ok()
-            .unwrap();
+        delay.delay_ms(1_000_u32);
     }
 }
 
@@ -152,6 +104,14 @@ static mut USB_ALLOCATOR: Option<UsbBusAllocator<UsbBus>> = None;
 static mut USB_BUS: Option<UsbDevice<UsbBus>> = None;
 static mut USB_SERIAL: Option<SerialPort<UsbBus>> = None;
 static mut RTC: Option<rtc::Rtc> = None;
+
+fn write_serial(bytes: &[u8]) {
+    unsafe {
+        USB_SERIAL.as_mut().map(|serial| {
+            serial.write(bytes).unwrap();
+        });
+    }
+}
 
 fn poll_usb() {
     unsafe {
@@ -161,9 +121,11 @@ fn poll_usb() {
                 let mut buf = [0u8; 32];
 
                 if let Ok(count) = serial.read(&mut buf) {
-                    // terminal.enqueue((buf, count)).ok().unwrap();
                     let mut buffer: &[u8] = &buf[..count];
+                    // echo to terminal
+                    serial.write(buffer).unwrap();
 
+                    // Look for setting of time
                     while buffer.len() > 5 {
                         match timespec(buffer) {
                             Ok((remaining, time)) => {
@@ -191,17 +153,7 @@ fn poll_usb() {
 }
 
 #[interrupt]
-fn USB_OTHER() {
-    poll_usb();
-}
-
-#[interrupt]
-fn USB_TRCPT0() {
-    poll_usb();
-}
-
-#[interrupt]
-fn USB_TRCPT1() {
+fn USB() {
     poll_usb();
 }
 
@@ -219,14 +171,14 @@ use drogue_nom_utils::parse_usize;
 named!(
     pub timespec<Time>,
     do_parse!(
-        opt!( char!('\n') ) >>
+        opt!( char!('\r') ) >>
         tag!("time=") >>
         hour: parse_usize >>
         char!(':') >>
         minute: parse_usize >>
         char!(':') >>
         second: parse_usize >>
-        tag!("\n") >>
+        tag!("\r") >>
         (
             Time{ hour, minute, second }
         )
