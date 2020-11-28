@@ -42,7 +42,7 @@ impl From<ClockR> for Datetime {
     }
 }
 
-/// RtcClock represents the RTC configured in clock/calendar mode.
+/// Rtc represents the RTC peripheral for either clock/calendar or timer mode.
 pub struct Rtc {
     rtc: RTC,
     rtc_clock_freq: Hertz,
