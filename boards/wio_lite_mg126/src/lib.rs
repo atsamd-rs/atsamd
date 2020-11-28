@@ -95,7 +95,7 @@ define_pins!(
     /// Digital 1: TX
     pin tx = a27,
 
-    /// USB Data MInus
+    /// USB Data Minus
     pin usb_dm = a24,
 
     /// USB Data Plus
