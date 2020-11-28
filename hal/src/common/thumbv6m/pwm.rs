@@ -1,7 +1,7 @@
 use crate::clock;
 use crate::hal::{Pwm, PwmPin};
 use crate::time::Hertz;
-use crate::timer::TimerParams;
+use crate::timer_params::TimerParams;
 
 use crate::target_device::{PM, TCC0};
 #[cfg(feature = "samd11")]

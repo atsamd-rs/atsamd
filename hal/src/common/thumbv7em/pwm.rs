@@ -2,7 +2,7 @@ use crate::clock;
 use crate::gpio::*;
 use crate::hal::{Pwm, PwmPin};
 use crate::time::Hertz;
-use crate::timer::TimerParams;
+use crate::timer_params::TimerParams;
 
 use crate::target_device::{MCLK, TC0, TC1, TC2, TC3, TCC0, TCC1, TCC2};
 #[cfg(feature = "min-samd51j")]
