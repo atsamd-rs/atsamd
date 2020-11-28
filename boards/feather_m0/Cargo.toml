@@ -52,6 +52,9 @@ cortex-m-semihosting = "0.3"
 ssd1306 = "0.3.1"
 embedded-graphics = "0.6.0"
 nb = "0.1"
+drogue-nom-utils = "0.1"
+nom = { version = "5.1", default-features= false }
+heapless = "0.5"
 
 [features]
 # ask the HAL to enable atsamd21g support
@@ -120,3 +123,7 @@ name = "sleeping_timer"
 
 [[example]]
 name = "sleeping_timer_rtc"
+
+[[example]]
+name = "clock"
+required-features = ["usb"]
