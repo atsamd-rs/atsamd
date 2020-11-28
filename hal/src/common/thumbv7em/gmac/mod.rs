@@ -2,9 +2,9 @@
 
 use crate::target_device::{GMAC, MCLK};
 mod buffer;
-use buffer::*;
+pub use buffer::*;
 mod pad;
-use pad::*;
+pub use pad::*;
 
 // type RxCallback = fn(Gmac<P: GmacPadout, RxBuf, TxBuf, RxCallback,
 // TxCallback>);
@@ -155,11 +155,75 @@ where
         });
     }
 
+    pub fn set_mac_filter(&mut self, index: MacFilterIndex, mac: &MacAddress) {
+        unsafe {
+            let first_part = mac.0.as_ptr() as *const u32;
+            let last_part = (mac.0.as_ptr() as *const u16).offset(2);
+            self.gmac.sa[index as usize]
+                .sab
+                .write_with_zero(|w| w.addr().bits(*first_part));
+            self.gmac.sa[index as usize]
+                .sat
+                .write_with_zero(|w| w.addr().bits(*last_part));
+            // No TID filter
+            self.gmac.tidm[index as usize].write_with_zero(|w| w);
+        }
+    }
+    pub fn set_mac_filter_with_type_id(
+        &mut self,
+        index: MacFilterIndex,
+        mac: &MacAddress,
+        type_id: TypeId,
+    ) {
+        self.set_mac_filter(index, mac);
+        unsafe {
+            self.gmac.tidm[index as usize].write_with_zero(|w| w.tid().bits(type_id.0));
+        }
+    }
+    /// # Safety
+    /// This function can write any data to any PHY register. Extreme caution
+    /// must be taken to not write invalid data!
+    pub unsafe fn write_phy_reg(&mut self, addr: u8, reg: u8, data: u16) {
+        self.gmac.ncr.modify(|_, w| w.mpe().set_bit());
+        self.gmac.man.write_with_zero(|w| {
+            w.op().bits(1); /* 0x01 write operation */
+            w.cltto().set_bit(); /* Clause 22/45 operation */
+            w.wtn().bits(2); /* Must be written to 0x2 */
+            w.phya().bits(addr);
+            w.rega().bits(reg);
+            w.data().bits(data)
+        });
+        /* Wait for the write operation complete */
+        while self.gmac.nsr.read().idle().bit_is_clear() {}
+        self.gmac.ncr.modify(|_, w| w.mpe().clear_bit());
+    }
+
+    pub fn read_phy_reg(&mut self, addr: u8, reg: u8) -> u16 {
+        self.gmac.ncr.modify(|_, w| w.mpe().set_bit());
+        unsafe {
+            self.gmac.man.write_with_zero(|w| {
+                w.op().bits(2); /* 0x02 read operation */
+                w.cltto().set_bit(); /* Clause 22/45 operation */
+                w.wtn().bits(2); /* Must be written to 0x2 */
+                w.phya().bits(addr);
+                w.rega().bits(reg)
+            });
+        }
+        /* Wait for the read operation complete */
+        while self.gmac.nsr.read().idle().bit_is_clear() {}
+
+        let data = self.gmac.man.read().data().bits();
+
+        self.gmac.ncr.modify(|_, w| w.mpe().clear_bit());
+
+        data
+    }
+
     pub fn write(&mut self, buf: &[u8]) -> nb::Result<(), ()> {
-        let descriptor = self.tx_buffers.get_descriptor(self.last_tx_buf_index);
-        if descriptor.used() && !descriptor.last_buf() {
+        let last_descriptor = self.tx_buffers.get_descriptor(self.last_tx_buf_index);
+        if last_descriptor.used() && !last_descriptor.last_buf() {
             // Set used flag from first descriptor to last descriptor, as DMA
-            // only set the first used flag
+            // only sets the first used flag when it's done
             for idx in 0..TxBuf::COUNT {
                 let mut pos = self.last_tx_buf_index + idx;
                 if pos >= TxBuf::COUNT {
@@ -173,7 +237,8 @@ where
             }
         }
 
-        if !self.tx_buffers.get_descriptor(self.rx_buf_index).used() {
+        if !self.tx_buffers.get_descriptor(self.tx_buf_index).used() {
+            // All buffers are full
             return Err(nb::Error::WouldBlock);
         }
 
@@ -190,7 +255,7 @@ where
                     return Err(nb::Error::WouldBlock);
                 }
 
-                if (buf.len() - (TxBuf::SIZE * idx)) < TxBuf::SIZE {
+                if buf.len() - (TxBuf::SIZE * idx) < TxBuf::SIZE {
                     break;
                 }
             }
@@ -209,22 +274,33 @@ where
             buf = &buf[blen..];
 
             let descriptor = self.tx_buffers.get_descriptor_mut(self.tx_buf_index);
+            // This is probably ok to do here, because the docs state
+            // (24.6.3.4 Transmit AHB Buffers):
+            //
+            // If transmission stops due to a transmit error or a used bit being read,
+            // transmission restarts from the first buffer descriptor of the
+            // frame being transmitted when the transmit start bit is rewritten.
+            //
+            // Therefore it is not a problem if he GMAC reads this partial frame,
+            // because it will retry if it failed when NCR.TSART is written
             if len > 0 {
-                /* Here the Used flag be set to zero */
+                /* Here the Used flag is set to zero */
                 descriptor.reset_with_len(blen, false);
             } else {
-                /* Here the Used flag be set to zero */
+                /* Here the Used flag is set to zero */
                 descriptor.reset_with_len(blen, true);
             }
 
             self.tx_buf_index += 1;
             if self.tx_buf_index == TxBuf::COUNT {
                 self.tx_buf_index = 0;
-                self.tx_buffers
-                    .get_descriptor_mut(TxBuf::COUNT - 1)
-                    .set_wrap(true);
+                // Wrap is set on init and does not need to be set here
+                // self.tx_buffers
+                //     .get_descriptor_mut(TxBuf::COUNT - 1)
+                //     .set_wrap(true);
             }
             if len == 0 {
+                // Whole frame written
                 break;
             }
         }
@@ -312,6 +388,29 @@ where
         // #if CONF_ETHERNET_PHY_0_IEEE8023_MII_CONTROL_REG0_SETTING == 1
         //     ethernet_phy_write_reg(&ETHERNET_PHY_0_desc, MDIO_REG0_BMCR, CONF_ETHERNET_PHY_0_IEEE8023_MII_CONTROL_REG0);
         // #endif /* CONF_ETHERNET_PHY_0_IEEE8023_MII_CONTROL_REG0_SETTING */
+    }
+}
+
+#[derive(Copy, Clone)]
+pub enum MacFilterIndex {
+    Filter0 = 0,
+    Filter1 = 1,
+    Filter2 = 2,
+    Filter3 = 3,
+}
+#[derive(Copy, Clone)]
+pub struct MacAddress(pub [u8; 6]);
+#[derive(Copy, Clone)]
+pub struct TypeId(pub u16);
+
+impl From<[u8; 6]> for MacAddress {
+    fn from(addr: [u8; 6]) -> Self {
+        MacAddress(addr)
+    }
+}
+impl TypeId {
+    pub fn Ip() -> Self {
+        TypeId(0x6000)
     }
 }
 
