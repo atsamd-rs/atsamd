@@ -146,6 +146,12 @@ impl Rtc {
 
     /// Returns the current clock/calendar value.
     pub fn current_time(&self) -> Datetime {
+        // synchronize this read on SAMD11/21. SAMx5x is automatically synchronized
+        #[cfg(any(feature = "samd11", feature = "samd21"))]
+        {
+            self.mode2().readreq.modify(|_, w| w.rcont().set_bit());
+            self.sync();
+        }
         self.mode2().clock.read().into()
     }
 
