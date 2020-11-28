@@ -56,7 +56,8 @@ fn main() -> ! {
     .draw(&mut display)
     .unwrap();
 
-    let raw_image: ImageRawLE<Rgb565> = ImageRaw::new(include_bytes!("./ferris.raw"), 86, 64);
+    let raw_image: ImageRawLE<Rgb565> =
+        ImageRaw::new(include_bytes!("../assets/ferris.raw"), 86, 64);
     let ferris: Image<_, Rgb565> = Image::new(&raw_image, Point::new(32, 32));
 
     ferris.draw(&mut display).unwrap();
