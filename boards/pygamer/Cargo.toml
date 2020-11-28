@@ -12,6 +12,8 @@ repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
 edition = "2018"
 
+exclude = ["assets", "examples"]
+
 [dependencies]
 cortex-m = "0.6"
 embedded-hal = "0.2.3"
