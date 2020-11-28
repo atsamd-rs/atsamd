@@ -12,21 +12,17 @@
 
 #[cfg(not(feature = "panic_led"))]
 use panic_halt as _;
-use pygamer as hal;
+use pygamer::{self as hal, entry, pac, pins::Keys, Pins};
 
 use hal::adc::Adc;
-use hal::entry;
-use hal::pac::gclk::pchctrl::GEN_A::GCLK11;
-use hal::pac::{CorePeripherals, Peripherals};
-use hal::pins::Keys;
 use hal::prelude::*;
 use hal::timer::SpinTimer;
 use hal::util::map_from;
 use hal::{clock::GenericClockController, delay::Delay};
-use smart_leds::{
-    hsv::{hsv2rgb, Hsv, RGB8},
-    SmartLedsWrite,
-};
+use pac::gclk::pchctrl::GEN_A::GCLK11;
+use pac::{CorePeripherals, Peripherals};
+use smart_leds::hsv::{hsv2rgb, Hsv, RGB8};
+use smart_leds::SmartLedsWrite;
 
 #[entry]
 fn main() -> ! {
@@ -42,7 +38,7 @@ fn main() -> ! {
     );
 
     let mut delay = Delay::new(core_peripherals.SYST, &mut clocks);
-    let mut pins = hal::Pins::new(peripherals.PORT).split();
+    let mut pins = Pins::new(peripherals.PORT).split();
 
     let mut buttons = pins.buttons.init(&mut pins.port);
 

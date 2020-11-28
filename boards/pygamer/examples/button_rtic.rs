@@ -3,11 +3,10 @@
 
 #[cfg(not(feature = "panic_led"))]
 use panic_halt as _;
-use pygamer as hal;
+use pygamer::{self as hal, pins::ButtonReader, pins::Keys, Pins};
 
 use hal::clock::GenericClockController;
 use hal::gpio::{OpenDrain, Output, Pa23};
-use hal::pins::Keys;
 use hal::prelude::*;
 use rtic::app;
 
@@ -16,7 +15,7 @@ const APP: () = {
     struct Resources {
         red_led: Pa23<Output<OpenDrain>>,
         timer: hal::timer::TimerCounter3,
-        buttons: hal::pins::ButtonReader,
+        buttons: ButtonReader,
     }
 
     /// This function is called each time the tc3 interrupt triggers.
@@ -51,7 +50,7 @@ const APP: () = {
             &mut device.NVMCTRL,
         );
 
-        let mut pins = hal::Pins::new(device.PORT).split();
+        let mut pins = Pins::new(device.PORT).split();
 
         let gclk0 = clocks.gclk0();
         let timer_clock = clocks.tc2_tc3(&gclk0).unwrap();

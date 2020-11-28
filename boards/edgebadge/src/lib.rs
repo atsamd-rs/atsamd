@@ -1,6 +1,9 @@
 #![no_std]
 #![recursion_limit = "1024"]
 
+#[cfg(feature = "unproven")]
+pub mod buttons;
+
 pub mod pins;
 use atsamd_hal as hal;
 

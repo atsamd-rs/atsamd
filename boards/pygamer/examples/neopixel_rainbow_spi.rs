@@ -9,18 +9,15 @@
 
 #[cfg(not(feature = "panic_led"))]
 use panic_halt as _;
-use pygamer as hal;
+use pygamer::{self as hal, entry, pac, Pins};
 
-use hal::entry;
-use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 use hal::sercom::PadPin;
 use hal::time::MegaHertz;
 use hal::{clock::GenericClockController, delay::Delay};
-use smart_leds::{
-    hsv::{hsv2rgb, Hsv},
-    SmartLedsWrite,
-};
+use pac::{CorePeripherals, Peripherals};
+use smart_leds::hsv::{hsv2rgb, Hsv};
+use smart_leds::SmartLedsWrite;
 use ws2812_spi as ws2812;
 
 #[entry]
@@ -34,7 +31,7 @@ fn main() -> ! {
         &mut peripherals.OSCCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = hal::Pins::new(peripherals.PORT);
+    let mut pins = Pins::new(peripherals.PORT);
     let gclk = clocks.gclk0();
 
     let spi: hal::sercom::SPIMaster2<
