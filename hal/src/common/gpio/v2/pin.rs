@@ -605,6 +605,7 @@ mod private {
 
     /// The SAMD11 and SAMD21 PACs don't have the GROUP type.
     /// Manually re-implement it here
+    #[repr(C)]
     pub struct GROUP {
         pub dir: DIR,
         pub dirclr: DIRCLR,
