@@ -32,6 +32,19 @@
     </fields>
   </xsl:template>
 
+  <!-- The GMAC::TIDM::ENIDn fields are all missing. -->
+  <xsl:template match="/device/peripherals/peripheral[name='GMAC']/registers/register[name='TIDM[%s]']/fields">
+    <fields>
+      <xsl:copy-of select="./field"/>
+      <field>
+        <name>ENID</name>
+        <description>Enable Copying of TID Matched Frames</description>
+        <bitOffset>31</bitOffset>
+        <bitWidth>1</bitWidth>
+      </field>
+    </fields>
+  </xsl:template>
+
   <!-- The DMAC trigger sources in the original SVD only have the 0=disabled
   enumeration value -->
   <xsl:template match="/device/peripherals/peripheral[name='DMAC']/registers/cluster/register[name='CHCTRLA']/fields/field[name='TRIGSRC']/enumeratedValues">
