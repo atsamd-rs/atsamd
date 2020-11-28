@@ -2,7 +2,6 @@ pub mod calibration;
 pub mod clock;
 pub mod eic;
 pub mod qspi;
-pub mod rtc;
 pub(crate) mod sercom;
 pub mod timer;
 pub mod trng;

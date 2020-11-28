@@ -54,7 +54,12 @@ fn main() -> ! {
     let mut sets: Sets = pins.split();
 
     unsafe {
-        RTC = Some(rtc::RtcClock::new(peripherals.RTC, &mut peripherals.MCLK));
+        // Configure the RTC. a 1024 Hz clock is configured for us when enabling our main clock
+        RTC = Some(rtc::Rtc::new(
+            peripherals.RTC,
+            1024.hz(),
+            &mut peripherals.MCLK,
+        ));
     }
 
     // Initialize the ILI9341-based LCD display. Create a black backdrop the size of
@@ -147,7 +152,7 @@ fn main() -> ! {
 static mut USB_ALLOCATOR: Option<UsbBusAllocator<UsbBus>> = None;
 static mut USB_BUS: Option<UsbDevice<UsbBus>> = None;
 static mut USB_SERIAL: Option<SerialPort<UsbBus>> = None;
-static mut RTC: Option<rtc::RtcClock> = None;
+static mut RTC: Option<rtc::Rtc> = None;
 
 fn poll_usb() {
     unsafe {
