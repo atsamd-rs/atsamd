@@ -6,21 +6,18 @@
 #![no_std]
 #![no_main]
 
-use edgebadge as hal;
+use edgebadge::{self as hal, entry, pac, Pins};
 use panic_halt as _;
 
 use embedded_hal::digital::v1_compat::OldOutputPin;
 use hal::adc::Adc;
-use hal::entry;
-use hal::pac::gclk::pchctrl::GEN_A::GCLK11;
-use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 use hal::timer::SpinTimer;
 use hal::{clock::GenericClockController, delay::Delay};
-use smart_leds::{
-    hsv::{hsv2rgb, Hsv, RGB8},
-    SmartLedsWrite,
-};
+use pac::gclk::pchctrl::GEN_A::GCLK11;
+use pac::{CorePeripherals, Peripherals};
+use smart_leds::hsv::SmartLedsWrite;
+use smart_leds::hsv::{hsv2rgb, Hsv, RGB8};
 use ws2812_timer_delay as ws2812;
 
 #[entry]
@@ -34,7 +31,7 @@ fn main() -> ! {
         &mut peripherals.OSCCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = hal::Pins::new(peripherals.PORT);
+    let mut pins = Pins::new(peripherals.PORT);
 
     let mut adc1 = Adc::adc1(peripherals.ADC1, &mut peripherals.MCLK, &mut clocks, GCLK11);
     let mut light = pins.light.into_function_b(&mut pins.port);

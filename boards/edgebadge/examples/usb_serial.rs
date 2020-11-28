@@ -14,16 +14,15 @@
 //! Note leds may appear white during debug. Either build for release or add
 //! opt-level = 2 to profile.dev in Cargo.toml
 
-use edgebadge as hal;
+use edgebadge::{self as hal, entry, pac, Pins};
 use panic_halt as _;
 
 use cortex_m::interrupt::free as disable_interrupts;
 use cortex_m::peripheral::NVIC;
 use hal::clock::GenericClockController;
-use hal::entry;
-use hal::pac::{interrupt, CorePeripherals, Peripherals};
 use hal::timer::SpinTimer;
 use hal::usb::UsbBus;
+use pac::{interrupt, CorePeripherals, Peripherals};
 use smart_leds::{colors, hsv::RGB8, SmartLedsWrite};
 use usb_device::bus::UsbBusAllocator;
 use usb_device::prelude::*;
@@ -40,7 +39,7 @@ fn main() -> ! {
         &mut peripherals.OSCCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = hal::Pins::new(peripherals.PORT).split();
+    let mut pins = Pins::new(peripherals.PORT).split();
 
     let timer = SpinTimer::new(4);
     let mut neopixel = pins.neopixel.init(timer, &mut pins.port);

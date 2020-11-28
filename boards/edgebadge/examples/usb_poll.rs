@@ -4,13 +4,12 @@
 #![no_std]
 #![no_main]
 
-use edgebadge as hal;
+use edgebadge::{self as hal, entry, pac, Pins};
 use panic_halt as _;
 
 use hal::clock::GenericClockController;
-use hal::entry;
-use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
+use pac::{CorePeripherals, Peripherals};
 use usb_device::prelude::*;
 use usbd_serial::{SerialPort, USB_CLASS_CDC};
 
@@ -26,7 +25,7 @@ fn main() -> ! {
         &mut peripherals.NVMCTRL,
     );
 
-    let mut pins = hal::Pins::new(peripherals.PORT).split();
+    let mut pins = Pins::new(peripherals.PORT).split();
 
     let usb_bus = pins.usb.init(
         peripherals.USB,

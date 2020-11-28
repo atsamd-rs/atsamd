@@ -6,22 +6,19 @@
 #![no_std]
 #![no_main]
 
-use edgebadge as hal;
+use edgebadge::{self as hal, entry, pac, Pins};
 use panic_halt as _;
 
 use core::f32::consts::FRAC_PI_2;
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
-use hal::entry;
-use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 use hal::timer::SpinTimer;
 use hal::trng::Trng;
 use micromath::F32Ext;
-use smart_leds::{
-    hsv::{hsv2rgb, Hsv, RGB8},
-    SmartLedsWrite,
-};
+use pac::{CorePeripherals, Peripherals};
+use smart_leds::hsv::SmartLedsWrite;
+use smart_leds::hsv::{hsv2rgb, Hsv, RGB8};
 
 #[entry]
 fn main() -> ! {
@@ -35,7 +32,7 @@ fn main() -> ! {
         &mut peripherals.NVMCTRL,
     );
 
-    let mut pins = hal::Pins::new(peripherals.PORT).split();
+    let mut pins = Pins::new(peripherals.PORT).split();
     let timer = SpinTimer::new(4);
 
     let mut neopixel = pins.neopixel.init(timer, &mut pins.port);

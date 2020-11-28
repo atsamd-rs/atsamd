@@ -7,20 +7,17 @@
 #![no_std]
 #![no_main]
 
-use edgebadge as hal;
+use edgebadge::{self as hal, entry, pac, Pins};
 use panic_halt as _;
 
-use hal::entry;
-use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 use hal::time::KiloHertz;
 use hal::timer::SpinTimer;
 use hal::{clock::GenericClockController, delay::Delay};
 use lis3dh::{accelerometer::Accelerometer, Lis3dh};
-use smart_leds::{
-    hsv::{hsv2rgb, Hsv, RGB8},
-    SmartLedsWrite,
-};
+use pac::{CorePeripherals, Peripherals};
+use smart_leds::hsv::SmartLedsWrite;
+use smart_leds::hsv::{hsv2rgb, Hsv, RGB8};
 
 #[entry]
 fn main() -> ! {
@@ -36,7 +33,7 @@ fn main() -> ! {
     );
 
     let mut delay = Delay::new(core_peripherals.SYST, &mut clocks);
-    let mut pins = hal::Pins::new(peripherals.PORT).split();
+    let mut pins = Pins::new(peripherals.PORT).split();
 
     // neopixels
     let timer = SpinTimer::new(4);

@@ -6,17 +6,14 @@
 #![no_std]
 #![no_main]
 
-use edgebadge as hal;
+use edgebadge::{self as hal, entry, pac, Pins};
 use panic_halt as _;
 
-use hal::entry;
-use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 use hal::{clock::GenericClockController, delay::Delay, timer::TimerCounter};
-use smart_leds::{
-    hsv::{hsv2rgb, Hsv},
-    SmartLedsWrite,
-};
+use pac::{CorePeripherals, Peripherals};
+use smart_leds::hsv::SmartLedsWrite;
+use smart_leds::hsv::{hsv2rgb, Hsv};
 
 #[entry]
 fn main() -> ! {
@@ -29,7 +26,7 @@ fn main() -> ! {
         &mut peripherals.OSCCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = hal::Pins::new(peripherals.PORT).split();
+    let mut pins = Pins::new(peripherals.PORT).split();
 
     let gclk0 = clocks.gclk0();
     let timer_clock = clocks.tc2_tc3(&gclk0).unwrap();
