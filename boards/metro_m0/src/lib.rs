@@ -234,7 +234,7 @@ pub fn uart<F: Into<Hertz>>(
 }
 
 #[cfg(feature = "usb")]
-pub fn usb_bus(
+pub fn usb_allocator(
     usb: pac::USB,
     clocks: &mut GenericClockController,
     pm: &mut pac::PM,
@@ -243,9 +243,8 @@ pub fn usb_bus(
     port: &mut Port,
 ) -> UsbBusAllocator<UsbBus> {
     let gclk0 = clocks.gclk0();
-    // dbgprint!("making usb clock");
     let usb_clock = &clocks.usb(&gclk0).unwrap();
-    // dbgprint!("got clock");
+
     UsbBusAllocator::new(UsbBus::new(
         usb_clock,
         pm,
@@ -253,4 +252,20 @@ pub fn usb_bus(
         dp.into_function(port),
         usb,
     ))
+}
+
+#[cfg(feature = "usb")]
+#[deprecated(
+    since = "0.8.0",
+    note = "Please use the usb_allocator function instead"
+)]
+pub fn usb_bus(
+    usb: pac::USB,
+    clocks: &mut GenericClockController,
+    pm: &mut pac::PM,
+    dm: gpio::Pa24<Input<Floating>>,
+    dp: gpio::Pa25<Input<Floating>>,
+    port: &mut Port,
+) -> UsbBusAllocator<UsbBus> {
+    usb_allocator(usb, clocks, pm, dm, dp, port)
 }
