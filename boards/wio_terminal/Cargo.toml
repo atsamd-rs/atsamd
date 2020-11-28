@@ -23,6 +23,8 @@ categories = [
     "no-std",
 ]
 
+exclude = ["assets", "examples"]
+
 [dependencies]
 bitfield = "0.13"
 cortex-m = "0.6"
