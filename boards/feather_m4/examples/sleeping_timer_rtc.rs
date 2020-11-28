@@ -35,7 +35,8 @@ fn main() -> ! {
         &mut peripherals.NVMCTRL,
     );
 
-    // Configure the RTC. a 1024 Hz clock is configured for us when enabling our main clock
+    // Configure the RTC. a 1024 Hz clock is configured for us when enabling our
+    // main clock
     let timer = rtc::Rtc::new(peripherals.RTC, 1024.hz(), &mut peripherals.MCLK);
     let mut sleeping_delay = SleepingDelay::new(timer, &INTERRUPT_FIRED);
 

@@ -54,7 +54,8 @@ fn main() -> ! {
     let mut sets: Sets = pins.split();
 
     unsafe {
-        // Configure the RTC. a 1024 Hz clock is configured for us when enabling our main clock
+        // Configure the RTC. a 1024 Hz clock is configured for us when enabling our
+        // main clock
         RTC = Some(rtc::Rtc::new(
             peripherals.RTC,
             1024.hz(),
