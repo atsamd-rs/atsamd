@@ -250,54 +250,58 @@ impl DynPin {
         let group = self.group();
         let num = self.id.num;
         use self::DynPinMode::*;
-        match mode {
-            Disabled(config) => {
-                use self::DynDisabled::*;
-                match config {
-                    Floating => FloatingDisabled::convert(group, num),
-                    PullDown => PullDownDisabled::convert(group, num),
-                    PullUp => PullUpDisabled::convert(group, num),
+        // SAFETY: We have exclusive control of the pin, so convert function is
+        // safe to use.
+        unsafe {
+            match mode {
+                Disabled(config) => {
+                    use self::DynDisabled::*;
+                    match config {
+                        Floating => FloatingDisabled::convert(group, num),
+                        PullDown => PullDownDisabled::convert(group, num),
+                        PullUp => PullUpDisabled::convert(group, num),
+                    }
                 }
-            }
-            Input(config) => {
-                use self::DynInput::*;
-                match config {
-                    Floating => FloatingInput::convert(group, num),
-                    PullDown => PullDownInput::convert(group, num),
-                    PullUp => PullUpInput::convert(group, num),
+                Input(config) => {
+                    use self::DynInput::*;
+                    match config {
+                        Floating => FloatingInput::convert(group, num),
+                        PullDown => PullDownInput::convert(group, num),
+                        PullUp => PullUpInput::convert(group, num),
+                    }
                 }
-            }
-            Output(config) => {
-                use self::DynOutput::*;
-                match config {
-                    PushPull => PushPullOutput::convert(group, num),
-                    Readable => ReadableOutput::convert(group, num),
+                Output(config) => {
+                    use self::DynOutput::*;
+                    match config {
+                        PushPull => PushPullOutput::convert(group, num),
+                        Readable => ReadableOutput::convert(group, num),
+                    }
                 }
-            }
-            Alternate(config) => {
-                use self::DynAlternate::*;
-                match config {
-                    A => AlternateA::convert(group, num),
-                    B => AlternateB::convert(group, num),
-                    C => AlternateC::convert(group, num),
-                    D => AlternateD::convert(group, num),
-                    E => AlternateE::convert(group, num),
-                    F => AlternateF::convert(group, num),
-                    G => AlternateG::convert(group, num),
-                    #[cfg(any(feature = "samd21", feature = "min-samd51g"))]
-                    H => AlternateH::convert(group, num),
-                    #[cfg(feature = "min-samd51g")]
-                    I => AlternateI::convert(group, num),
-                    #[cfg(feature = "min-samd51g")]
-                    J => AlternateJ::convert(group, num),
-                    #[cfg(feature = "min-samd51g")]
-                    K => AlternateK::convert(group, num),
-                    #[cfg(feature = "min-samd51g")]
-                    L => AlternateL::convert(group, num),
-                    #[cfg(feature = "min-samd51g")]
-                    M => AlternateM::convert(group, num),
-                    #[cfg(feature = "min-samd51g")]
-                    N => AlternateN::convert(group, num),
+                Alternate(config) => {
+                    use self::DynAlternate::*;
+                    match config {
+                        A => AlternateA::convert(group, num),
+                        B => AlternateB::convert(group, num),
+                        C => AlternateC::convert(group, num),
+                        D => AlternateD::convert(group, num),
+                        E => AlternateE::convert(group, num),
+                        F => AlternateF::convert(group, num),
+                        G => AlternateG::convert(group, num),
+                        #[cfg(any(feature = "samd21", feature = "min-samd51g"))]
+                        H => AlternateH::convert(group, num),
+                        #[cfg(feature = "min-samd51g")]
+                        I => AlternateI::convert(group, num),
+                        #[cfg(feature = "min-samd51g")]
+                        J => AlternateJ::convert(group, num),
+                        #[cfg(feature = "min-samd51g")]
+                        K => AlternateK::convert(group, num),
+                        #[cfg(feature = "min-samd51g")]
+                        L => AlternateL::convert(group, num),
+                        #[cfg(feature = "min-samd51g")]
+                        M => AlternateM::convert(group, num),
+                        #[cfg(feature = "min-samd51g")]
+                        N => AlternateN::convert(group, num),
+                    }
                 }
             }
         }
@@ -372,7 +376,8 @@ impl DynPin {
     /// The drive strength is reset to normal on every change in pin mode.
     #[inline]
     pub fn set_drive_strength(&mut self, stronger: bool) {
-        write_drive_strength(self.group(), self.id.num, stronger);
+        // SAFETY: We have exclusive control of the pin, so this is safe to use.
+        unsafe { write_drive_strength(self.group(), self.id.num, stronger) };
     }
 
     #[inline]
@@ -384,15 +389,17 @@ impl DynPin {
     }
     #[inline]
     fn _write(&mut self, bit: bool) -> Result<(), Error> {
+        // SAFETY: We have exclusive control of the pin, so this is safe to use.
         match self.mode {
-            DynPinMode::Output(_) => Ok(write_pin(self.group(), self.id.num, bit)),
+            DynPinMode::Output(_) => unsafe { Ok(write_pin(self.group(), self.id.num, bit)) },
             _ => Err(Error::InvalidPinType),
         }
     }
     #[inline]
     fn _toggle(&mut self) -> Result<(), Error> {
+        // SAFETY: We have exclusive control of the pin, so this is safe to use.
         match self.mode {
-            DynPinMode::Output(_) => Ok(toggle_pin(self.group(), self.id.num)),
+            DynPinMode::Output(_) => unsafe { Ok(toggle_pin(self.group(), self.id.num)) },
             _ => Err(Error::InvalidPinType),
         }
     }

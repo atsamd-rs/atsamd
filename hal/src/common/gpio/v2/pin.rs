@@ -155,7 +155,14 @@ use super::dynpin::*;
 //==============================================================================
 
 /// Type-level `enum` for disabled configurations
-pub trait DisabledConfig: Sealed {}
+pub trait DisabledConfig: Sealed {
+    /// Corresponding [`DynDisabled`](super::DynDisabled)
+    const DYN: DynDisabled;
+    /// Value of the PULLEN field in this configuration
+    const PULLEN: bool;
+    /// Value of the OUT field in this configuration
+    const OUT: bool = false;
+}
 
 /// Type-level variant of both [`DisabledConfig`] and [`InputConfig`]
 pub enum Floating {}
@@ -168,9 +175,20 @@ impl Sealed for Floating {}
 impl Sealed for PullDown {}
 impl Sealed for PullUp {}
 
-impl DisabledConfig for Floating {}
-impl DisabledConfig for PullDown {}
-impl DisabledConfig for PullUp {}
+impl DisabledConfig for Floating {
+    const DYN: DynDisabled = DynDisabled::Floating;
+    const PULLEN: bool = false;
+}
+impl DisabledConfig for PullDown {
+    const DYN: DynDisabled = DynDisabled::PullDown;
+    const PULLEN: bool = true;
+    const OUT: bool = false;
+}
+impl DisabledConfig for PullUp {
+    const DYN: DynDisabled = DynDisabled::PullUp;
+    const PULLEN: bool = true;
+    const OUT: bool = true;
+}
 
 /// Type-level variant of [`PinMode`] for disabled modes
 ///
@@ -199,11 +217,29 @@ pub type Reset = FloatingDisabled;
 //==============================================================================
 
 /// Type-level `enum` for input configurations
-pub trait InputConfig: Sealed {}
+pub trait InputConfig: Sealed {
+    /// Corresponding [`DynInput`](super::DynInput)
+    const DYN: DynInput;
+    /// Value of the PULLEN field in this configuration
+    const PULLEN: bool;
+    /// Value of the OUT field in this configuration
+    const OUT: bool = false;
+}
 
-impl InputConfig for Floating {}
-impl InputConfig for PullDown {}
-impl InputConfig for PullUp {}
+impl InputConfig for Floating {
+    const DYN: DynInput = DynInput::Floating;
+    const PULLEN: bool = false;
+}
+impl InputConfig for PullDown {
+    const DYN: DynInput = DynInput::PullDown;
+    const PULLEN: bool = true;
+    const OUT: bool = false;
+}
+impl InputConfig for PullUp {
+    const DYN: DynInput = DynInput::PullUp;
+    const PULLEN: bool = true;
+    const OUT: bool = true;
+}
 
 /// Type-level variant of [`PinMode`] for input modes
 ///
@@ -229,7 +265,12 @@ pub type PullUpInput = Input<PullUp>;
 //==============================================================================
 
 /// Type-level `enum` for output configurations
-pub trait OutputConfig: Sealed {}
+pub trait OutputConfig: Sealed {
+    /// Corresponding [`DynOutput`](super::DynOutput)
+    const DYN: DynOutput;
+    /// Value of the INEN field in this configuration
+    const INEN: bool;
+}
 
 /// Type-level variant of [`OutputConfig`] for a push-pull configuration
 pub enum PushPull {}
@@ -240,8 +281,14 @@ pub enum Readable {}
 impl Sealed for PushPull {}
 impl Sealed for Readable {}
 
-impl OutputConfig for PushPull {}
-impl OutputConfig for Readable {}
+impl OutputConfig for PushPull {
+    const DYN: DynOutput = DynOutput::PushPull;
+    const INEN: bool = false;
+}
+impl OutputConfig for Readable {
+    const DYN: DynOutput = DynOutput::Readable;
+    const INEN: bool = true;
+}
 
 /// Type-level variant of [`PinMode`] for output modes
 ///
@@ -266,8 +313,8 @@ pub type ReadableOutput = Output<Readable>;
 pub trait AlternateConfig: Sealed {
     /// Corresponding [`DynAlternate`](super::DynAlternate)
     const DYN: DynAlternate;
-    /// Value written to the PMUX register for the given peripheral function
-    const NUM: u8;
+    /// Value of the PMUXE/PMUXO field in this configuration
+    const PMUX: u8;
 }
 
 macro_rules! alternate {
@@ -290,7 +337,7 @@ macro_rules! alternate {
                 $( #[$cfg] )?
                 impl AlternateConfig for $Letter {
                     const DYN: DynAlternate = DynAlternate::$Letter;
-                    const NUM: u8 = $NUM;
+                    const PMUX: u8 = $NUM;
                 }
                 $( #[$cfg] )?
                 #[
@@ -363,21 +410,24 @@ pub trait PinMode: Sealed + Sized {
         I: PinId,
         M: PinMode,
     {
-        Self::convert(I::Group::group(), I::NUM);
+        // SAFETY: We have exclusive control of the pin, so this is safe to use.
+        unsafe { Self::convert(I::Group::group(), I::NUM) };
         Pin::new()
     }
     /// Set the hardware registers for a given [`PinMode`]
     ///
-    /// This function uses the GROUP pointer safely. It only modifies
-    /// registers and fields of the corresponding pin, and it does so using only
-    /// atomic operations. The PMUX registers cannot be configured directly
-    /// using atomic operations. Use the WRCONFIG register instead.
+    /// # Safety
+    /// This function is only safe to use with exclusive control of a pin,
+    /// through ownership or a mutable reference. It uses the GROUP pointer
+    /// safely, because it only writes bits of the corresponding pin and does so
+    /// with atomic operations. Normally, it would not be possible to configure
+    /// the PMUX value without writing bits for another pin, but the WRCONFIG
+    /// register makes this possible.
     #[doc(hidden)]
     #[inline]
-    fn convert(group: *const GROUP, num: u8) {
-        let group = unsafe { &*group };
+    unsafe fn convert(group: *const GROUP, num: u8) {
         let mask: u32 = 1 << num;
-        group.wrconfig.write(|w| {
+        (*group).wrconfig.write(|w| {
             if num & 0x10 != 0 {
                 w.hwsel().set_bit();
             } else {
@@ -385,91 +435,53 @@ pub trait PinMode: Sealed + Sized {
             }
             w.wrpincfg().set_bit();
             w.wrpmux().set_bit();
-            unsafe {
-                w.pmux().bits(Self::PMUX);
-            }
+            w.pmux().bits(Self::PMUX);
             w.pullen().bit(Self::PULLEN);
             w.inen().bit(Self::INEN);
             w.pmuxen().bit(Self::PMUXEN);
-            unsafe { w.pinmask().bits(1 << (num & 0xF)) }
+            w.pinmask().bits(1 << (num & 0xF))
         });
         if Self::DIR {
-            group.dirset.write(|w| unsafe { w.bits(mask) });
+            (*group).dirset.write(|w| w.bits(mask));
         } else {
-            group.dirclr.write(|w| unsafe { w.bits(mask) });
+            (*group).dirclr.write(|w| w.bits(mask));
         }
         if Self::PULLEN {
             if Self::OUT {
-                group.outset.write(|w| unsafe { w.bits(mask) });
+                (*group).outset.write(|w| w.bits(mask));
             } else {
-                group.outclr.write(|w| unsafe { w.bits(mask) });
+                (*group).outclr.write(|w| w.bits(mask));
             }
         }
     }
 }
 
-impl PinMode for FloatingDisabled {
-    const DYN: DynPinMode = DYN_FLOATING_DISABLED;
+impl<C: DisabledConfig> PinMode for Disabled<C> {
+    const DYN: DynPinMode = DynPinMode::Disabled(C::DYN);
     const DIR: bool = false;
     const INEN: bool = false;
-    const PULLEN: bool = false;
+    const PULLEN: bool = C::PULLEN;
+    const OUT: bool = C::OUT;
 }
 
-impl PinMode for PullDownDisabled {
-    const DYN: DynPinMode = DYN_PULL_DOWN_DISABLED;
-    const DIR: bool = false;
-    const INEN: bool = false;
-    const PULLEN: bool = true;
-    const OUT: bool = false;
-}
-
-impl PinMode for PullUpDisabled {
-    const DYN: DynPinMode = DYN_PULL_UP_DISABLED;
-    const DIR: bool = false;
-    const INEN: bool = false;
-    const PULLEN: bool = true;
-    const OUT: bool = true;
-}
-
-impl PinMode for FloatingInput {
-    const DYN: DynPinMode = DYN_FLOATING_INPUT;
+impl<C: InputConfig> PinMode for Input<C> {
+    const DYN: DynPinMode = DynPinMode::Input(C::DYN);
     const DIR: bool = false;
     const INEN: bool = true;
-    const PULLEN: bool = false;
+    const PULLEN: bool = C::PULLEN;
+    const OUT: bool = C::OUT;
 }
 
-impl PinMode for PullDownInput {
-    const DYN: DynPinMode = DYN_PULL_DOWN_INPUT;
-    const DIR: bool = false;
-    const INEN: bool = true;
-    const PULLEN: bool = true;
-    const OUT: bool = false;
-}
-
-impl PinMode for PullUpInput {
-    const DYN: DynPinMode = DYN_PULL_UP_INPUT;
-    const DIR: bool = false;
-    const INEN: bool = true;
-    const PULLEN: bool = true;
-    const OUT: bool = true;
-}
-
-impl PinMode for PushPullOutput {
-    const DYN: DynPinMode = DYN_PUSH_PULL_OUTPUT;
+impl<C: OutputConfig> PinMode for Output<C> {
+    const DYN: DynPinMode = DynPinMode::Output(C::DYN);
     const DIR: bool = true;
-    const INEN: bool = false;
-}
-
-impl PinMode for ReadableOutput {
-    const DYN: DynPinMode = DYN_READABLE_OUTPUT;
-    const DIR: bool = true;
-    const INEN: bool = true;
+    const INEN: bool = C::INEN;
 }
 
 impl<C: AlternateConfig> PinMode for Alternate<C> {
     const DYN: DynPinMode = DynPinMode::Alternate(C::DYN);
     const PMUXEN: bool = true;
-    const PMUX: u8 = C::NUM;
+    const PMUX: u8 = C::PMUX;
 }
 
 /// Use a recursive macro to implement [`From`](core::convert::From) for each
@@ -593,6 +605,7 @@ mod private {
 
     /// The SAMD11 and SAMD21 PACs don't have the GROUP type.
     /// Manually re-implement it here
+    #[repr(C)]
     pub struct GROUP {
         pub dir: DIR,
         pub dirclr: DIRCLR,
@@ -626,19 +639,21 @@ mod private {
         /// another context modifying the same PMUX register for a different
         /// pin, it could corrupt the configuration.
         ///
-        /// In this module, we would like to create `Pin`s that are both `Send`
-        /// and `Sync`. To do so, we need to make three guarantees:
-        /// - Each `Pin` is a singleton, i.e. there is only ever one instance at
-        ///   at any given point in the code.
+        /// In this module, we would like to create singleton `Pin`s that are
+        /// both `Send` and `Sync`. To do so, we need to make three guarantees:
         /// - Each `Pin` can only modify its own configuration.
-        /// - Each `Pin` can only access the `PORT` using atomic operations.
+        /// - Each `Pin` can only modify shared `PORT` registers using atomic
+        ///   operations.
+        /// - A `Pin` should not have interior mutability. It should require
+        ///   ownership or a mutable reference to change the pin configuration.
         ///
-        /// It is not possible to fulfill these conditions by directly accessing
-        /// the PMUX register. Instead, we can use the WRCONFIG register.
+        /// It is not possible to fulfill the first two conditions by directly
+        /// accessing the PMUX register. Instead, we can use the WRCONFIG
+        /// register to change the PMUX value.
         ///
         /// This function will return a raw pointer to the GROUP register block
         /// for the corresponding `PinId`. It is unsafe to use this pointer
-        /// unless the conditions above are met.
+        /// unless the above conditions are met.
         #[inline]
         fn group() -> *const GROUP {
             #[cfg(feature = "samd11")]
@@ -769,7 +784,6 @@ pub type ConcretePin<P> = Pin<<P as AnyPin>::Id, <P as AnyPin>::Mode>;
 /// where
 ///     P: AnyPin<Mode = Output<C>>,
 ///     C: OutputConfig,
-///     Output<C>: PinMode,
 ///     P::Id: UserTrait,
 /// {
 /// }
@@ -987,63 +1001,81 @@ impl<P: OptionalPin + AnyPin> SomePin for P {}
 //  Pin reading & writing
 //==============================================================================
 
-/// This function uses the `GROUP` pointer safely, because it only uses atomic
-/// operations and it only accesses bits of the corresponding pin.
+/// Read the logic level of an input put
+///
+/// This function is always safe to use, because it only reads from the GROUP
+/// register block.
 #[inline]
 pub(super) fn read_pin(group: *const GROUP, num: u8) -> bool {
-    let group = unsafe { &*group };
     let mask: u32 = 1 << num;
-    (group.in_.read().bits() & mask) != 0
+    unsafe { (*group).in_.read().bits() & mask != 0 }
 }
 
-/// This function uses the `GROUP` pointer safely, because it only uses atomic
-/// operations and it only accesses bits of the corresponding pin.
+/// Write the logic level of an output pin
+///
+/// # Safety
+///
+/// This function is only safe to use with exclusive control of a pin, through
+/// ownership or a mutable reference. It uses the GROUP pointer safely, because
+/// it writes to the OUTSET and OUTCLR registers. These register are designed to
+/// allow changing the OUT setting atomically, without affecting other pins.
 #[inline]
-pub(super) fn write_pin(group: *const GROUP, num: u8, bit: bool) {
-    let group = unsafe { &*group };
+pub(super) unsafe fn write_pin(group: *const GROUP, num: u8, bit: bool) {
     let mask: u32 = 1 << num;
     if bit {
-        group.outset.write(|w| unsafe { w.bits(mask) });
+        (*group).outset.write(|w| w.bits(mask));
     } else {
-        group.outclr.write(|w| unsafe { w.bits(mask) });
+        (*group).outclr.write(|w| w.bits(mask));
     }
 }
 
-/// This function uses the `GROUP` pointer safely, because it only uses atomic
-/// operations and it only accesses bits of the corresponding pin.
+/// Toggle the logic level of an output pin
+///
+/// # Safety
+///
+/// This function is only safe to use with exclusive control of a pin, through
+/// ownership or a mutable reference. It uses the GROUP pointer safely, because
+/// it writes to the OUTTGL register. This register is designed to allow
+/// changing the OUT setting atomically, without affecting other pins.
 #[inline]
-pub(super) fn toggle_pin(group: *const GROUP, num: u8) {
-    let group = unsafe { &*group };
+pub(super) unsafe fn toggle_pin(group: *const GROUP, num: u8) {
     let mask: u32 = 1 << num;
-    group.outtgl.write(|w| unsafe { w.bits(mask) });
+    (*group).outtgl.write(|w| w.bits(mask));
 }
 
-/// This function uses the `GROUP` pointer safely, because it only uses atomic
-/// operations and it only accesses bits of the corresponding pin.
+/// Read back the logic level of an output pin
+///
+/// This function is always safe to use, because it only reads from the GROUP
+/// register block.
 #[inline]
 pub(super) fn read_out_pin(group: *const GROUP, num: u8) -> bool {
-    let group = unsafe { &*group };
     let mask: u32 = 1 << num;
-    (group.out.read().bits() & mask) != 0
+    unsafe { (*group).out.read().bits() & mask != 0 }
 }
 
-/// This function uses the `GROUP` pointer safely, because it only uses atomic
-/// operations and it only accesses bits of the corresponding pin.
+/// Read the drive strength of a pin
+///
+/// This function is always safe to use, because it only reads from the GROUP
+/// register block.
 #[inline]
 pub(super) fn read_drive_strength(group: *const GROUP, num: u8) -> bool {
-    let group = unsafe { &*group };
     // The SAMD11 and SAMD21 PACs don't have read methods for DRVSTR, so do it
     // manually
-    group.pincfg[num as usize].read().bits() & 0x40 == 0
+    unsafe { (*group).pincfg[num as usize].read().bits() & 0x40 == 0 }
 }
 
-/// This function does not access the PINCFG register atomically, but it is
-/// still safe, because the PINCFG register is not shared with any other pins in
-/// the GROUP and each `Pin` is a singleton.
+/// Write the drive strength of a pin
+///
+/// # Safety
+///
+/// This function is only safe to use with exclusive control of a pin, through
+/// ownership or a mutable reference. It does not use atomic operations to
+/// modify the pin configuration, but it only writes to the PINCFG register,
+/// which is not shared with any other pin. As long as we have exclusive control
+/// of the pin, we can safely perform the read/modify/write.
 #[inline]
-pub(super) fn write_drive_strength(group: *const GROUP, num: u8, bit: bool) {
-    let group = unsafe { &*group };
-    group.pincfg[num as usize].modify(|_, w| w.drvstr().bit(bit));
+pub(super) unsafe fn write_drive_strength(group: *const GROUP, num: u8, bit: bool) {
+    (*group).pincfg[num as usize].modify(|_, w| w.drvstr().bit(bit));
 }
 
 //==============================================================================
@@ -1192,7 +1224,8 @@ where
     /// The drive strength is reset to normal on every change in pin mode.
     #[inline]
     pub fn set_drive_strength(&mut self, stronger: bool) {
-        write_drive_strength(I::Group::group(), I::NUM, stronger);
+        // SAFETY: We have exclusive control of the pin, so this is safe to use.
+        unsafe { write_drive_strength(I::Group::group(), I::NUM, stronger) };
     }
 
     #[inline]
@@ -1201,11 +1234,13 @@ where
     }
     #[inline]
     fn _write(&mut self, bit: bool) {
-        write_pin(I::Group::group(), I::NUM, bit)
+        // SAFETY: We have exclusive control of the pin, so this is safe to use.
+        unsafe { write_pin(I::Group::group(), I::NUM, bit) }
     }
     #[inline]
     pub(crate) fn _toggle(&mut self) {
-        toggle_pin(I::Group::group(), I::NUM)
+        // SAFETY: We have exclusive control of the pin, so this is safe to use.
+        unsafe { toggle_pin(I::Group::group(), I::NUM) }
     }
     #[inline]
     fn _read_out(&self) -> bool {
@@ -1245,7 +1280,6 @@ impl<I, C> OutputPin for Pin<I, Output<C>>
 where
     I: PinId,
     C: OutputConfig,
-    Output<C>: PinMode,
 {
     type Error = Infallible;
     #[inline]
@@ -1281,7 +1315,6 @@ impl<I, C> InputPin for Pin<I, Input<C>>
 where
     I: PinId,
     C: InputConfig,
-    Input<C>: PinMode,
 {
     type Error = Infallible;
     #[inline]
@@ -1299,7 +1332,6 @@ impl<I, C> ToggleableOutputPin for Pin<I, Output<C>>
 where
     I: PinId,
     C: OutputConfig,
-    Output<C>: PinMode,
 {
     type Error = Infallible;
     #[inline]
@@ -1314,7 +1346,6 @@ impl<I, C> StatefulOutputPin for Pin<I, Output<C>>
 where
     I: PinId,
     C: OutputConfig,
-    Output<C>: PinMode,
 {
     #[inline]
     fn is_set_high(&self) -> Result<bool, Self::Error> {
