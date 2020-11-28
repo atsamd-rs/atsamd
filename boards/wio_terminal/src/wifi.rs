@@ -17,13 +17,9 @@ use bbqueue::{
 use cortex_m::interrupt::CriticalSection;
 use cortex_m::peripheral::NVIC;
 
-use nb::block;
-
 mod erpc;
 mod sys_rpcs;
-use sys_rpcs::*;
 mod wifi_rpcs;
-use wifi_rpcs::*;
 
 /// Wifi methods
 pub mod rpc {
@@ -160,7 +156,7 @@ impl Wifi {
     pub fn _handle_data_empty(&mut self) {
         if let Ok(rgr) = self.tx_buff_isr.read() {
             let buf = rgr.buf();
-            self.uart.write(buf[0]);
+            self.uart.write(buf[0]).ok();
             rgr.release(1);
         } else {
             self.uart.intenclr(|w| {
@@ -186,66 +182,83 @@ impl Wifi {
         &mut self,
         mut rpc: RPC,
     ) -> Result<RPC::ReturnValue, erpc::Err<RPC::Error>> {
-        let header = rpc.header(self.next_seq());
-        self.write_frame(&header.as_bytes())
+        // Transmit the request.
+        let mut tx_buff = heapless::Vec::new();
+        tx_buff
+            .extend_from_slice(&rpc.header(self.next_seq()).as_bytes())
             .map_err(|_| erpc::Err::TXErr)?;
+        rpc.args(&mut tx_buff);
+        self.write_frame(&tx_buff).map_err(|_| erpc::Err::TXErr)?;
 
-        // Read the frame header
-        let fh = loop {
-            let mut r = match self.rx_buff_input.read() {
-                Ok(r) => r,
-                Err(_) => {
-                    continue;
-                }
-            };
-            let b = r.buf();
-
-            let pr = erpc::codec::FramePreamble::parse::<()>(b);
-            if let Err(nom::Err::Incomplete(_)) = pr {
+        loop {
+            let result = self.recieve_rpc_response(&mut rpc);
+            if let Err(erpc::Err::NotOurs) = result {
                 continue;
-            }
-            if let Err(e) = pr {
-                return Err(erpc::Err::Parsing(e));
-            }
-            let (_, fh) = pr.unwrap();
-
-            drop(b);
-            r.release(4);
-            break fh;
-        };
-
-        // Read the payload, check CRC, hand off to underlying trait to decode
-        let result = loop {
-            let mut r = match self.rx_buff_input.read() {
-                Ok(r) => r,
-                Err(_) => {
-                    continue;
-                }
             };
-            let b = r.buf();
-            let l = b.len();
-
-            if l < fh.msg_length as usize {
-                continue;
-            }
-
-            let expect_crc = erpc::codec::crc16(&b[..l]);
-            if expect_crc != fh.crc16 {
-                r.release(l);
-                return Err(erpc::Err::CRCMismatch);
-            }
-
-            let out = rpc.parse(b);
-            drop(b);
-            r.release(l);
-            break out;
-        };
-        result
+            break result;
+        }
     }
 
-    fn write_frame(&mut self, msg: &[u8]) -> Result<(), ()> {
-        let header = erpc::codec::FramePreamble::new_from_msg(msg);
+    fn recieve_rpc_response<'a, RPC: erpc::codec::RPC>(
+        &mut self,
+        rpc: &mut RPC,
+    ) -> Result<RPC::ReturnValue, erpc::Err<RPC::Error>> {
+        // Read the frame header
+        let fh = self.recieve_frame_header(rpc)?;
 
+        // Read the payload, check CRC, hand off to underlying trait to decode
+        let mut buffer = [0u8; 2048];
+        let sz = fh.msg_length as usize;
+        self.recieve_bytes(&mut buffer[..sz]);
+
+        let expect_crc = erpc::codec::crc16(&buffer[..sz]);
+        if expect_crc != fh.crc16 {
+            return Err(erpc::Err::CRCMismatch);
+        }
+
+        rpc.parse(&buffer[..sz])
+    }
+
+    fn recieve_frame_header<'a, RPC: erpc::codec::RPC>(
+        &mut self,
+        _rpc: &mut RPC,
+    ) -> Result<erpc::codec::FramePreamble, erpc::Err<RPC::Error>> {
+        let mut buffer = [0u8; 4];
+        self.recieve_bytes(&mut buffer);
+
+        match erpc::codec::FramePreamble::parse(&buffer[..]) {
+            Err(e) => Err(erpc::Err::Parsing(e)),
+            Ok(fh) => Ok(fh.1),
+        }
+    }
+
+    fn recieve_bytes(&mut self, mut buffer: &mut [u8]) {
+        while buffer.len() > 0 {
+            let r = match self.rx_buff_input.read() {
+                Ok(r) => r,
+                Err(_) => {
+                    continue;
+                }
+            };
+            let b = r.buf();
+            let copy_amt = if b.len() < buffer.len() {
+                b.len()
+            } else {
+                buffer.len()
+            };
+
+            for (i, b) in b[..copy_amt].iter().enumerate() {
+                buffer[i] = *b;
+            }
+            buffer = &mut buffer[copy_amt..];
+
+            drop(b);
+            r.release(copy_amt);
+        }
+    }
+
+    fn write_frame(&mut self, msg: &heapless::Vec<u8, heapless::consts::U64>) -> Result<(), ()> {
+        let header = erpc::codec::FramePreamble::new_from_msg(msg);
         self.tx(header.as_bytes().iter().chain(msg));
         Ok(())
     }

@@ -1,6 +1,9 @@
 use super::erpc::{codec, id, Err};
 use heapless::{consts::U16, String};
-use nom::number::streaming;
+use nom::{
+    lib::std::ops::RangeFrom, lib::std::ops::RangeTo, number::streaming, InputIter, InputLength,
+    InputTake, Slice,
+};
 
 pub struct GetVersion {}
 
@@ -18,16 +21,22 @@ impl codec::RPC for GetVersion {
     }
 
     fn parse(&mut self, data: &[u8]) -> Result<String<U16>, Err<()>> {
-        let (data, _) = codec::Header::parse::<()>(data)?; // TODO: Check RPC header values
+        let (data, hdr) = codec::Header::parse(data)?;
+        if hdr.msg_type != id::MsgType::Reply
+            || hdr.service != id::Service::System
+            || hdr.request != id::SystemRequest::VersionID.into()
+        {
+            return Err(Err::NotOurs);
+        }
 
-        let (data, length) = streaming::le_u32::<()>(data)?;
+        let (data, length) = streaming::le_u32(data)?;
         if length > 16 {
             return Err(Err::ResponseOverrun);
         }
 
         let mut out: Self::ReturnValue = String::new();
-        for b in data.iter() {
-            out.push(*b as char).ok();
+        for b in data.iter_elements() {
+            out.push(b as char).ok();
         }
         Ok(out)
     }

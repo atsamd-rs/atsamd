@@ -7,7 +7,6 @@ use wio_terminal as wio;
 
 use wio::hal::clock::GenericClockController;
 use wio::hal::delay::Delay;
-use wio::hal::qspi::{self, Command};
 use wio::pac::{CorePeripherals, Peripherals};
 use wio::prelude::*;
 use wio::wifi_prelude::*;
@@ -55,10 +54,7 @@ fn main() -> ! {
     let mut user_led = sets.user_led.into_open_drain_output(&mut sets.port);
     user_led.set_high().unwrap();
 
-    write!(textbuffer, "starting wifi...").unwrap();
-    terminal.write_str(textbuffer.as_str());
-    textbuffer.truncate(0);
-
+    // Initialize the wifi peripheral.
     let args = (
         sets.wifi,
         peripherals.SERCOM0,
@@ -68,16 +64,12 @@ fn main() -> ! {
         &mut delay,
     );
     let nvic = &mut core.NVIC;
-    let res = disable_interrupts(|cs| unsafe {
-        let res = wifi_init(cs, args.0, args.1, args.2, args.3, args.4, args.5);
+    disable_interrupts(|cs| unsafe {
+        wifi_init(cs, args.0, args.1, args.2, args.3, args.4, args.5).unwrap();
         WIFI.as_mut().map(|wifi| {
             wifi.enable(cs, nvic);
         });
-        res
     });
-    writeln!(textbuffer, "DONE ({:?})", res).unwrap();
-    terminal.write_str(textbuffer.as_str());
-    textbuffer.truncate(0);
 
     let version = unsafe {
         WIFI.as_mut()
@@ -102,14 +94,23 @@ fn main() -> ! {
     terminal.write_str(textbuffer.as_str());
     textbuffer.truncate(0);
 
-    let scanning = unsafe {
+    let ss = unsafe {
         WIFI.as_mut()
-            .map(|wifi| wifi.blocking_rpc(rpc::IsScanning {}).unwrap())
+            .map(|wifi| wifi.blocking_rpc(rpc::ScanStart {}).unwrap())
             .unwrap()
     };
-    writeln!(textbuffer, "is scanning = {:?}", scanning).unwrap();
+    writeln!(textbuffer, "scan.start() = {:?}", ss).unwrap();
     terminal.write_str(textbuffer.as_str());
     textbuffer.truncate(0);
+
+    let mut scanning = true;
+    while scanning {
+        scanning = unsafe {
+            WIFI.as_mut()
+                .map(|wifi| wifi.blocking_rpc(rpc::IsScanning {}).unwrap())
+                .unwrap()
+        };
+    }
 
     let num = unsafe {
         WIFI.as_mut()
@@ -120,10 +121,22 @@ fn main() -> ! {
     terminal.write_str(textbuffer.as_str());
     textbuffer.truncate(0);
 
+    let aps = unsafe {
+        WIFI.as_mut()
+            .map(|wifi| {
+                wifi.blocking_rpc(rpc::ScanGetAP::<generic_array::typenum::consts::U3>::new())
+            })
+            .unwrap()
+    };
+    for ap in aps.unwrap().0 {
+        writeln!(textbuffer, "{:?}", ap).unwrap();
+        terminal.write_str(textbuffer.as_str());
+        textbuffer.truncate(0);
+    }
 
     loop {
         user_led.toggle();
-        delay.delay_ms(200u8);
+        delay.delay_ms(90u16);
 
         disable_interrupts(|_cs| unsafe {
             WIFI.as_mut().map(|wifi| {

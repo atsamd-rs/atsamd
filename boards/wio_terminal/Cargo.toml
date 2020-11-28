@@ -36,9 +36,10 @@ lis3dh = "0.3.0"
 embedded-sdmmc = "0.3.0"
 usb-device = { version = "0.2", optional = true }
 usbd-serial = { version = "0.1", optional = true }
-bbqueue = { version = "0.4", optional = true }
+bbqueue = { version = "^0.4.11", optional = true }
 nb = { version = "0.1", optional = true }
-nom = { version = "5.1", default-features = false, optional = true }
+nom = { version = "^6.0", default-features = false, optional = true }
+generic-array = { version = "0.13", optional = true }
 
 [dependencies.atsamd-hal]
 path = "../../hal"
@@ -51,11 +52,11 @@ embedded-graphics = "0.6"
 panic-halt = "0.2"
 
 [features]
-default = ["atsamd-hal/samd51p", "rt", "unproven", "usb", "wifi", "nom"]
+default = ["atsamd-hal/samd51p", "rt", "unproven", "usb", "wifi"]
 rt = ["atsamd-hal/samd51p-rt", "cortex-m-rt"]
 unproven = ["atsamd-hal/unproven"]
-usb = ["atsamd-hal/usb", "usb-device", "usbd-serial"]
-wifi = ["bbqueue", "nb", "nom"]
+usb = ["atsamd-hal/usb", "usb-device", "usbd-serial", "nom"]
+wifi = ["bbqueue", "nb", "nom", "generic-array"]
 
 [profile.dev]
 incremental = false

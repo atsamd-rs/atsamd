@@ -1,13 +1,13 @@
 pub mod id {
     /// eRPC request type
-    #[derive(Debug, Copy, Clone)]
+    #[derive(Debug, Copy, Clone, PartialEq)]
     #[allow(unused)]
-    #[repr(u8)]
     pub enum MsgType {
         Invocation = 0,
         Oneway = 1,
         Reply = 2,
         Notification = 3,
+        Unknown = 255,
     }
 
     impl From<u8> for MsgType {
@@ -17,34 +17,43 @@ pub mod id {
                 1 => MsgType::Oneway,
                 2 => MsgType::Reply,
                 3 => MsgType::Notification,
-                _ => panic!("unknown message type!"),
+                _ => MsgType::Unknown,
             }
         }
     }
 
     /// Wio Terminal services
-    #[derive(Debug, Copy, Clone)]
+    #[derive(Debug, Copy, Clone, PartialEq)]
     #[allow(unused)]
-    #[repr(u8)]
     pub enum Service {
         System = 1,
+        BLEHost = 2,
+        BLEGap = 3,
+        BLEGapBone = 4,
+        BLECallback = 13,
         Wifi = 14,
+        WifiCallback = 18,
+        Unknown = 255,
     }
 
     impl From<u8> for Service {
         fn from(mt: u8) -> Service {
             match mt {
                 1 => Service::System,
+                2 => Service::BLEHost,
+                3 => Service::BLEGap,
+                4 => Service::BLEGapBone,
+                13 => Service::BLECallback,
                 14 => Service::Wifi,
-                _ => panic!("unknown message type!"),
+                18 => Service::WifiCallback,
+                _ => Service::Unknown,
             }
         }
     }
 
     /// Wio Terminal request IDs for the System service
-    #[derive(Debug, Copy, Clone)]
+    #[derive(Debug, Copy, Clone, PartialEq)]
     #[allow(unused)]
-    #[repr(u8)]
     pub enum SystemRequest {
         VersionID = 1,
         AckID = 2,
@@ -57,13 +66,14 @@ pub mod id {
     }
 
     /// Wio Terminal request IDs for the Wifi service
-    #[derive(Debug, Copy, Clone)]
+    #[derive(Debug, Copy, Clone, PartialEq)]
     #[allow(unused)]
-    #[repr(u8)]
     pub enum WifiRequest {
         GetMacAddress = 8,
+        ScanStart = 64,
         IsScanning = 65,
-        ScanGetNumAPs = 66,
+        ScanGetAP = 66,
+        ScanGetNumAPs = 67,
     }
 
     impl From<WifiRequest> for u8 {
@@ -75,7 +85,10 @@ pub mod id {
 
 pub mod codec {
     use super::id::*;
-    use nom::{error::ParseError, number::streaming, IResult};
+    use nom::{
+        error::ParseError, lib::std::ops::RangeFrom, lib::std::ops::RangeTo, number::streaming,
+        IResult, InputIter, InputLength, InputTake, Slice,
+    };
 
     const BASIC_CODEC_VERSION: u8 = 1;
 
@@ -103,7 +116,10 @@ pub mod codec {
             ]
         }
 
-        pub fn parse<'a, E: ParseError<&'a [u8]>>(i: &'a [u8]) -> IResult<&'a [u8], Self, E> {
+        pub fn parse<I, E: ParseError<I>>(i: I) -> IResult<I, Self, E>
+        where
+            I: Slice<RangeFrom<usize>> + InputIter<Item = u8> + InputLength,
+        {
             let (i, header) = streaming::le_u32(i)?;
             let (i, sequence) = streaming::le_u32(i)?;
             Ok((
@@ -138,7 +154,10 @@ pub mod codec {
             [l[0], l[1], c[0], c[1]]
         }
 
-        pub fn parse<'a, E: ParseError<&'a [u8]>>(i: &'a [u8]) -> IResult<&'a [u8], Self, E> {
+        pub fn parse<I, E: ParseError<I>>(i: I) -> IResult<I, Self, E>
+        where
+            I: Slice<RangeFrom<usize>> + InputIter<Item = u8> + InputLength,
+        {
             let (i, msg_length) = streaming::le_u16(i)?;
             let (i, crc16) = streaming::le_u16(i)?;
             Ok((i, Self { msg_length, crc16 }))
@@ -146,11 +165,14 @@ pub mod codec {
     }
 
     /// computes the CRC value used in the Wio Terminal eRPC codec
-    pub(crate) fn crc16(data: &[u8]) -> u16 {
+    pub(crate) fn crc16<I>(data: I) -> u16
+    where
+        I: InputIter<Item = u8>,
+    {
         let mut crc: u32 = 0xEF4A;
 
-        for b in data.iter() {
-            crc ^= (*b as u32) << 8;
+        for b in data.iter_elements() {
+            crc ^= (b as u32) << 8;
             for _ in 0..8 {
                 let mut temp: u32 = crc << 1;
                 if (crc & 0x8000) != 0 {
@@ -168,6 +190,8 @@ pub mod codec {
         type Error;
 
         fn header(&self, seq: u32) -> Header;
+        fn args(&self, _buff: &mut heapless::Vec<u8, heapless::consts::U64>) {}
+
         fn parse(&mut self, data: &[u8]) -> Result<Self::ReturnValue, super::Err<Self::Error>>;
     }
 }
@@ -181,6 +205,9 @@ pub enum Err<E> {
     CRCMismatch,
     /// There was an issue while transmitting
     TXErr,
+    /// The response we were given to parse was for a different (callback,
+    /// probably) RPC.
+    NotOurs,
     /// There was an RPC-specific error.
     RPCErr(E),
     /// Too much data was present in the response
