@@ -56,11 +56,9 @@ fn main() -> ! {
     unsafe {
         // Configure the RTC. a 1024 Hz clock is configured for us when enabling our
         // main clock
-        RTC = Some(rtc::Rtc::new(
-            peripherals.RTC,
-            1024.hz(),
-            &mut peripherals.MCLK,
-        ));
+        let mut rtc = rtc::Rtc::new(peripherals.RTC, 1024.hz(), &mut peripherals.MCLK);
+        rtc.clock_mode();
+        RTC = Some(rtc);
     }
 
     // Initialize the ILI9341-based LCD display. Create a black backdrop the size of

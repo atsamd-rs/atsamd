@@ -117,11 +117,12 @@ impl Rtc {
 
     // --- clock functions
 
+    /// Configures the peripheral for clock/calendar mode. Requires the source
+    /// clock to be running at 1024 Hz.
     pub fn clock_mode(&mut self) {
-        assert_eq!(
-            self.rtc_clock_freq.0, 1024_u32,
-            "RTC source not running at 1024 Hz!"
-        );
+        // The max divisor is 1024, so to get 1 Hz, we need a 1024 Hz source.
+        assert_eq!(self.rtc_clock_freq.0, 1024_u32, "RTC clk not 1024 Hz!");
+
         self.mode2_ctrla().modify(|_, w| {
             w.mode().clock() // enable mode2 (clock)
             .clkrep().clear_bit()
