@@ -1,6 +1,6 @@
 use atsamd_hal::clock::GenericClockController;
-use atsamd_hal::delay::Delay;
 use atsamd_hal::gpio::*;
+use atsamd_hal::hal::blocking::delay::DelayMs;
 use atsamd_hal::hal::spi;
 use atsamd_hal::prelude::*;
 use atsamd_hal::sercom::{PadPin, SPIMaster7, Sercom7Pad1, Sercom7Pad2, Sercom7Pad3};
@@ -49,14 +49,14 @@ impl Display {
     /// Initialize the display and its corresponding SPI bus peripheral. Return
     /// a tuple containing the configured display driver struct and backlight
     /// pin.
-    pub fn init<F: Into<Hertz>>(
+    pub fn init<F: Into<Hertz>, D: DelayMs<u16>>(
         self,
         clocks: &mut GenericClockController,
         sercom7: SERCOM7,
         mclk: &mut MCLK,
         port: &mut Port,
         clock_speed: F,
-        delay: &mut Delay,
+        delay: &mut D,
     ) -> Result<(LCD, Pc5<Output<PushPull>>), ()> {
         // Initialize the SPI peripherial on the configured pins, using SERCOM7.
         let gclk0 = clocks.gclk0();
