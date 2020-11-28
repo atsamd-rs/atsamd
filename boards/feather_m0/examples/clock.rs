@@ -41,9 +41,9 @@ fn main() -> ! {
 
     // get the internal 32k running at 1024 Hz for the RTC
     let timer_clock = clocks
-        .configure_gclk_divider_and_source(ClockGenId::GCLK2, 32, ClockSource::OSC32K, true)
+        .configure_gclk_divider_and_source(ClockGenId::GCLK3, 32, ClockSource::OSC32K, true)
         .unwrap();
-    clocks.configure_standby(ClockGenId::GCLK2, true);
+    clocks.configure_standby(ClockGenId::GCLK3, true);
     let rtc_clock = clocks.rtc(&timer_clock).unwrap();
     let mut rtc = rtc::Rtc::new(peripherals.RTC, rtc_clock.freq(), &mut peripherals.PM);
     rtc.clock_mode();

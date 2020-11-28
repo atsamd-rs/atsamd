@@ -108,6 +108,21 @@ impl State {
         src: ClockSource,
         improve_duty_cycle: bool,
     ) {
+        // validate the divisor factor based on gclk ID (see 14.8.3)
+        let mut divisor_invalid = false;
+        if gclk == GCLK1 {
+            if divider as u32 >= 2_u32.pow(16) {
+                divisor_invalid = true;
+            }
+        } else {
+            if divider >= 2_u16.pow(8) {
+                divisor_invalid = true;
+            }
+        }
+        if divisor_invalid {
+            panic!("invalid divisor {} for GCLK {}", divider, gclk as u8);
+        }
+
         self.gclk.genctrl[u8::from(gclk) as usize].write(|w| unsafe {
             w.src().variant(src);
             w.div().bits(divider);
