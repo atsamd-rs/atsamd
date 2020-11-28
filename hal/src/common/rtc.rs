@@ -128,6 +128,7 @@ impl Rtc {
             .matchclr().clear_bit()
             .prescaler().div1024() // 1.024 kHz / 1024 = 1Hz
         });
+        self.sync();
 
         // enable clock sync on SAMx5x
         #[cfg(feature = "min-samd51g")]
