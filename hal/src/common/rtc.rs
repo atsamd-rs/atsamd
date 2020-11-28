@@ -7,12 +7,7 @@ use hal::timer::{CountDown, Periodic};
 use void::Void;
 
 // SAMx5x imports
-#[cfg(any(
-    feature = "samd51",
-    feature = "same51",
-    feature = "same53",
-    feature = "same54"
-))]
+#[cfg(feature = "min-samd51g")]
 use crate::target_device::{
     rtc::mode0::CTRLA as MODE0_CTRLA, rtc::mode2::CTRLA as MODE2_CTRLA, MCLK as PM,
 };
@@ -82,12 +77,7 @@ impl Rtc {
 
     #[inline]
     fn mode0_ctrla(&self) -> &MODE0_CTRLA {
-        #[cfg(any(
-            feature = "samd51",
-            feature = "same51",
-            feature = "same53",
-            feature = "same54"
-        ))]
+        #[cfg(feature = "min-samd51g")]
         return &self.mode0().ctrla;
         #[cfg(any(feature = "samd11", feature = "samd21"))]
         return &self.mode0().ctrl;
@@ -95,12 +85,7 @@ impl Rtc {
 
     #[inline]
     fn mode2_ctrla(&self) -> &MODE2_CTRLA {
-        #[cfg(any(
-            feature = "samd51",
-            feature = "same51",
-            feature = "same53",
-            feature = "same54"
-        ))]
+        #[cfg(feature = "min-samd51g")]
         return &self.mode2().ctrla;
         #[cfg(any(feature = "samd11", feature = "samd21"))]
         return &self.mode2().ctrl;
@@ -108,15 +93,10 @@ impl Rtc {
 
     #[inline]
     fn sync(&self) {
+        #[cfg(feature = "min-samd51g")]
+        while self.mode2().syncbusy.read().bits() != 0 {}
         #[cfg(any(feature = "samd11", feature = "samd21"))]
         while self.mode2().status.read().syncbusy().bit_is_set() {}
-        #[cfg(any(
-            feature = "samd51",
-            feature = "same51",
-            feature = "same53",
-            feature = "same54"
-        ))]
-        while self.mode2().syncbusy.read().bits() != 0 {}
     }
 
     #[inline]
@@ -150,12 +130,7 @@ impl Rtc {
         });
 
         // enable clock sync on SAMx5x
-        #[cfg(any(
-            feature = "samd51",
-            feature = "same51",
-            feature = "same53",
-            feature = "same54"
-        ))]
+        #[cfg(feature = "min-samd51g")]
         {
             self.mode2_ctrla().modify(|_, w| {
                 w.clocksync().set_bit() // synchronize the CLOCK register
