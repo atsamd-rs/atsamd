@@ -9,12 +9,16 @@ use void::Void;
 // SAMx5x imports
 #[cfg(feature = "min-samd51g")]
 use crate::target_device::{
-    rtc::mode0::CTRLA as MODE0_CTRLA, rtc::mode2::CTRLA as MODE2_CTRLA, MCLK as PM,
+    rtc::mode0::ctrla::PRESCALER_A, rtc::mode0::CTRLA as MODE0_CTRLA,
+    rtc::mode2::CTRLA as MODE2_CTRLA, MCLK as PM,
 };
 
 // SAMD11/SAMD21 imports
 #[cfg(any(feature = "samd11", feature = "samd21"))]
-use crate::target_device::{rtc::mode0::CTRL as MODE0_CTRLA, rtc::mode2::CTRL as MODE2_CTRLA, PM};
+use crate::target_device::{
+    rtc::mode0::ctrl::PRESCALER_A, rtc::mode0::CTRL as MODE0_CTRLA,
+    rtc::mode2::CTRL as MODE2_CTRLA, PM,
+};
 
 /// Datetime represents an RTC clock/calendar value.
 #[derive(Debug, Clone, Copy)]
@@ -207,20 +211,7 @@ impl CountDown for Rtc {
         self.mode0().comp[0].write(|w| unsafe { w.comp().bits(cycles) });
         self.mode0_ctrla().modify(|_, w| {
             // set clock divider...
-            match divider {
-                1 => w.prescaler().div1(),
-                2 => w.prescaler().div2(),
-                4 => w.prescaler().div4(),
-                8 => w.prescaler().div8(),
-                16 => w.prescaler().div16(),
-                32 => w.prescaler().div32(),
-                64 => w.prescaler().div64(),
-                128 => w.prescaler().div128(),
-                256 => w.prescaler().div256(),
-                512 => w.prescaler().div512(),
-                1024 => w.prescaler().div1024(),
-                _ => unreachable!(),
-            };
+            w.prescaler().variant(divider);
             // clear timer on match...
             w.matchclr().set_bit();
             // and enable RTC.
@@ -260,7 +251,7 @@ impl InterruptDrivenTimer for Rtc {
 /// Helper type for computing cycles and divider given frequency
 #[derive(Debug, Clone, Copy)]
 pub struct TimerParams {
-    pub divider: u16,
+    pub divider: PRESCALER_A,
     pub cycles: u32,
 }
 
@@ -289,17 +280,24 @@ impl TimerParams {
     /// Common helper function that gets the best divider & calculates cycles
     /// with that divider.
     fn new_from_ticks(ticks: u32) -> Self {
-        let mut divider = ((ticks >> 16) + 1).next_power_of_two();
-        if divider > 1024 {
-            // lame. Can we catch this at compile time? Probably??
-            divider = 1024;
-        }
+        let divider_value = ((ticks >> 16) + 1).next_power_of_two();
+        let divider = match divider_value {
+            1 => PRESCALER_A::DIV1,
+            2 => PRESCALER_A::DIV2,
+            4 => PRESCALER_A::DIV4,
+            8 => PRESCALER_A::DIV8,
+            16 => PRESCALER_A::DIV16,
+            32 => PRESCALER_A::DIV32,
+            64 => PRESCALER_A::DIV64,
+            128 => PRESCALER_A::DIV128,
+            256 => PRESCALER_A::DIV256,
+            512 => PRESCALER_A::DIV512,
+            1024 => PRESCALER_A::DIV1024,
+            _ => PRESCALER_A::DIV1024, // would be nice to catch this at compile time (rust-lang/rust#51999)
+        };
 
-        let cycles: u32 = ticks / divider as u32;
+        let cycles: u32 = ticks / divider_value as u32;
 
-        TimerParams {
-            divider: divider as u16,
-            cycles,
-        }
+        TimerParams { divider, cycles }
     }
 }
