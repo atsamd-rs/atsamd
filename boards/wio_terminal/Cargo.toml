@@ -47,7 +47,6 @@ version = "0.11"
 default-features = false
 
 [dev-dependencies]
-drogue-nom-utils = "0.1"
 embedded-graphics = "0.6"
 panic-halt = "0.2"
 

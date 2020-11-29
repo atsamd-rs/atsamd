@@ -207,28 +207,42 @@ fn USB_TRCPT1() {
 
 #[derive(Clone)]
 pub struct Time {
-    hour: usize,
-    minute: usize,
-    second: usize,
+    hour: u32,
+    minute: u32,
+    second: u32,
+}
+
+fn atoi(digits: &[u8]) -> u32 {
+    let mut num: u32 = 0;
+    let len = digits.len();
+    for (i, digit) in digits.iter().enumerate() {
+        let digit = (*digit - '0' as u8) as u32;
+        let mut exp = 1;
+        for _ in 0..(len - i - 1) {
+            exp *= 10;
+        }
+        num += exp * digit;
+    }
+    num
 }
 
 #[macro_use]
 extern crate nom;
-use drogue_nom_utils::parse_usize;
+use nom::character::streaming::digit1 as nom_ascii_digit;
 
-named!(
+nom::named!(
     pub timespec<Time>,
     do_parse!(
         opt!( char!('\n') ) >>
         tag!("time=") >>
-        hour: parse_usize >>
+        hour: nom_ascii_digit >>
         char!(':') >>
-        minute: parse_usize >>
+        minute: nom_ascii_digit >>
         char!(':') >>
-        second: parse_usize >>
+        second: nom_ascii_digit >>
         tag!("\n") >>
         (
-            Time{ hour, minute, second }
+            Time{ hour: atoi(hour), minute: atoi(minute), second: atoi(second) }
         )
     )
 );
