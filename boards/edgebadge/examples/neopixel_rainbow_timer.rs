@@ -2,6 +2,9 @@
 //!
 //! Note leds may appear white during debug. Either build for release or add
 //! opt-level = 2 to profile.dev in Cargo.toml
+//!
+//! Note: This is jittery these days and probably not a good choice until
+//! debugged
 
 #![no_std]
 #![no_main]
