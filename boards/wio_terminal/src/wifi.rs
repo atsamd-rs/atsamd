@@ -148,13 +148,6 @@ impl Wifi {
         }
     }
 
-    pub fn debug_read(&mut self) -> Result<bbqueue::GrantR<'static, U512>, ()> {
-        self.rx_buff_input.read().map_err(|_| ())
-    }
-    pub fn debug_usart(&mut self) -> atsamd_hal::target_device::sercom0::usart_int::status::R {
-        self.uart.flags()
-    }
-
     /// Issues an RPC, blocking till a response is recieved.
     pub fn blocking_rpc<'a, RPC: erpc::codec::RPC>(
         &mut self,
