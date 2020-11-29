@@ -91,5 +91,5 @@ name = "sdcard"
 name = "qspi"
 
 [[example]]
-name = "wifi"
+name = "wifi_scan"
 required-features = ["wifi"]

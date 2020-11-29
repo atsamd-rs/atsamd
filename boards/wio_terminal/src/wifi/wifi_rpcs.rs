@@ -3,8 +3,8 @@ use super::erpc::{codec, id, Err};
 use generic_array::{ArrayLength, GenericArray};
 use heapless::{consts::U18, String};
 use nom::{
-    error::ParseError, lib::std::ops::RangeFrom, lib::std::ops::RangeTo, number::streaming,
-    IResult, InputIter, InputLength, InputTake, Slice,
+    lib::std::ops::RangeFrom, lib::std::ops::RangeTo, number::streaming, InputIter, InputLength,
+    Slice,
 };
 
 pub struct GetMacAddress {}
@@ -79,9 +79,6 @@ impl codec::RPC for IsScanning {
     }
 }
 
-const SSID_MAX_LENGTH: u8 = 32;
-const AP_LIST_MAX_LENGTH: usize = 60;
-
 #[derive(Debug, Copy, Clone)]
 #[repr(u32)]
 pub enum BssType {
@@ -133,7 +130,7 @@ pub enum WPS {
     Wsc = 0x0007,
 }
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq)]
 #[repr(u32)]
 pub enum Band {
     _5Ghz = 0,
@@ -148,8 +145,8 @@ impl core::fmt::Debug for BSSID {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         let table = b"0123456789abcdef";
 
-        let mut out = [0u8; 12 + 6];
-        for i in 0..(12 + 6) {
+        let mut out = [0u8; 12 + 6 - 1];
+        for i in 0..(12 + 6 - 1) {
             let b = self.0[i / 3];
             out[i] = match (i + 1) % 3 {
                 0 => ':' as u8,
@@ -172,30 +169,11 @@ pub struct SSID {
 
 impl core::fmt::Debug for SSID {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        f.write_str(core::str::from_utf8(&self.value[..self.len as usize]).unwrap())
-    }
-}
-
-impl SSID {
-    fn parse<I, E: ParseError<I>>(i: I) -> IResult<I, Self, E>
-    where
-        I: Slice<RangeFrom<usize>> + InputIter<Item = u8> + InputLength + InputTake,
-    {
-        let (data, length) = streaming::le_u8(i)?;
-        let mut out = Self {
-            len: length,
-            value: [0u8; 33],
-        };
-        if data.input_len() < length as usize {
-            return Err(nom::Err::Incomplete(nom::Needed::new(
-                length as usize - data.input_len(),
-            )));
-        };
-        for (i, b) in data.take(length as usize).iter_elements().enumerate() {
-            out.value[i] = b;
+        // Unused unsafe warning is erroneous: needed for safe_packed_borrows
+        #[allow(unused_unsafe)]
+        unsafe {
+            f.write_str(core::str::from_utf8(&self.value[..self.len as usize]).unwrap())
         }
-
-        Ok((data.slice(length as usize..), out))
     }
 }
 
@@ -205,8 +183,12 @@ where
 {
     fn into(self) -> String<N> {
         let mut out = String::new();
-        for i in 0..self.len as usize {
-            out.push(self.value[i] as char);
+        // Unused unsafe warning is erroneous: needed for safe_packed_borrows
+        #[allow(unused_unsafe)]
+        unsafe {
+            for i in 0..self.len as usize {
+                out.push(self.value[i] as char).ok();
+            }
         }
         out
     }
@@ -235,27 +217,31 @@ pub struct ScanResult {
 
 impl core::fmt::Debug for ScanResult {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        if self.ssid.len > 0 {
-            f.debug_struct("ScanResult")
-                .field("ssid", &self.ssid)
-                .field("bssid", &self.bssid)
-                .field("rssi", &self.rssi)
-                .field("type", &self.bss_type)
-                .field("security", &self.security)
-                .field("wps", &self.wps)
-                .field("channel", &self.chan)
-                .field("band", &self.band)
-                .finish()
-        } else {
-            f.debug_struct("ScanResult")
-                .field("bssid", &self.bssid)
-                .field("rssi", &self.rssi)
-                .field("type", &self.bss_type)
-                .field("security", &self.security)
-                .field("wps", &self.wps)
-                .field("channel", &self.chan)
-                .field("band", &self.band)
-                .finish()
+        // Unused unsafe warning is erroneous: needed for safe_packed_borrows
+        #[allow(unused_unsafe)]
+        unsafe {
+            if self.ssid.len > 0 {
+                f.debug_struct("ScanResult")
+                    .field("ssid", &self.ssid)
+                    .field("bssid", &self.bssid)
+                    .field("rssi", &self.rssi)
+                    .field("type", &self.bss_type)
+                    .field("security", &self.security)
+                    .field("wps", &self.wps)
+                    .field("channel", &self.chan)
+                    .field("band", &self.band)
+                    .finish()
+            } else {
+                f.debug_struct("ScanResult")
+                    .field("bssid", &self.bssid)
+                    .field("rssi", &self.rssi)
+                    .field("type", &self.bss_type)
+                    .field("security", &self.security)
+                    .field("wps", &self.wps)
+                    .field("channel", &self.chan)
+                    .field("band", &self.band)
+                    .finish()
+            }
         }
     }
 }

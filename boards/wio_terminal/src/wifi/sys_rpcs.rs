@@ -1,9 +1,6 @@
 use super::erpc::{codec, id, Err};
 use heapless::{consts::U16, String};
-use nom::{
-    lib::std::ops::RangeFrom, lib::std::ops::RangeTo, number::streaming, InputIter, InputLength,
-    InputTake, Slice,
-};
+use nom::{number::streaming, InputIter};
 
 pub struct GetVersion {}
 

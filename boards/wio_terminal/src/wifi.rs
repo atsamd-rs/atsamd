@@ -27,14 +27,7 @@ pub mod rpc {
     pub use super::wifi_rpcs::*;
 }
 
-/// A Wifi stack error.
-#[derive(Debug, Clone)]
-pub enum Error {
-    RxOverrun,
-    RxRead,
-    NotReady,
-}
-
+/// The set of pins which are connected to the RTL8720 in some way
 pub struct WifiPins {
     pub pwr: Pa18<Input<Floating>>,
     pub rxd: Pc22<Input<Floating>>,
@@ -47,10 +40,9 @@ pub struct WifiPins {
     pub dir: Pa19<Input<Floating>>,
 }
 
+/// eRPC-based protocol to the RTL8720 chip
 pub struct Wifi {
     _pwr: Pa18<Output<PushPull>>,
-    ready: Pc20<Input<Floating>>,
-    dir_mosi: Pa19<Input<Floating>>,
     uart: WifiUART,
 
     rx_buff_isr: Producer<'static, U512>,
@@ -59,7 +51,6 @@ pub struct Wifi {
     tx_buff_input: Producer<'static, U128>,
 
     sequence: u32,
-    fault: Option<Error>,
 }
 
 type WifiUART = UART0<Sercom0Pad2<Pc24<PfC>>, Sercom0Pad0<Pb24<PfC>>, (), ()>;
@@ -97,19 +88,15 @@ impl Wifi {
         let (rx_buff_isr, rx_buff_input) = rx_buff.try_split().unwrap();
         let (tx_buff_input, tx_buff_isr) = tx_buff.try_split().unwrap();
 
-        let fault = None;
         let sequence = 0;
 
         Ok(Wifi {
             _pwr: pwr,
-            ready: pins.ready,
-            dir_mosi: pins.dir,
             uart,
             rx_buff_isr,
             rx_buff_input,
             tx_buff_isr,
             tx_buff_input,
-            fault,
             sequence,
         })
     }
@@ -118,12 +105,8 @@ impl Wifi {
         unsafe {
             nvic.set_priority(interrupt::SERCOM0_0, 1);
             NVIC::unmask(interrupt::SERCOM0_0);
-            // nvic.set_priority(interrupt::SERCOM0_1, 1);
-            // NVIC::unmask(interrupt::SERCOM0_1);
             nvic.set_priority(interrupt::SERCOM0_2, 1);
             NVIC::unmask(interrupt::SERCOM0_2);
-            // nvic.set_priority(interrupt::SERCOM0_OTHER, 1);
-            // NVIC::unmask(interrupt::SERCOM0_OTHER);
         }
 
         self.uart.intenset(|w| {
@@ -140,12 +123,12 @@ impl Wifi {
                     wgr[0] = b;
                     wgr.commit(1);
                 } else {
-                    self.fault = Some(Error::RxOverrun);
+                    panic!("overrun");
                 }
             }
             Err(e) => {
                 if e != nb::Error::WouldBlock {
-                    self.fault = Some(Error::RxRead);
+                    panic!("unrecoverable read error");
                 }
             }
         };
@@ -170,11 +153,6 @@ impl Wifi {
     }
     pub fn debug_usart(&mut self) -> atsamd_hal::target_device::sercom0::usart_int::status::R {
         self.uart.flags()
-    }
-
-    /// Reads the fault status, if any
-    pub fn fault(&self) -> Option<Error> {
-        self.fault.clone()
     }
 
     /// Issues an RPC, blocking till a response is recieved.
@@ -203,8 +181,7 @@ impl Wifi {
         &mut self,
         rpc: &mut RPC,
     ) -> Result<RPC::ReturnValue, erpc::Err<RPC::Error>> {
-        // Read the frame header
-        let fh = self.recieve_frame_header(rpc)?;
+        let fh = self.recieve_frame_header(rpc)?; // Read the frame header
 
         // Read the payload, check CRC, hand off to underlying trait to decode
         let mut buffer = [0u8; 2048];
@@ -265,7 +242,6 @@ impl Wifi {
 
     fn tx<'a, D: Iterator<Item = &'a u8>>(&mut self, data: D) {
         for b in data {
-            // block!(self.uart.write(*b))?;
             if let Ok(mut wgr) = self.tx_buff_input.grant_exact(1) {
                 wgr[0] = *b;
                 wgr.commit(1);
@@ -282,6 +258,7 @@ impl Wifi {
     }
 }
 
+/// Imports necessary for using `wifi_singleton`.
 pub mod wifi_prelude {
     pub use crate::wifi::*;
     pub use atsamd_hal::gpio::Port;
@@ -296,6 +273,7 @@ pub mod wifi_prelude {
     pub use cortex_m::interrupt::CriticalSection;
 }
 
+/// Declares static globals for the wifi controller, and wires up interrupts.
 #[macro_export]
 macro_rules! wifi_singleton {
     ($global_name:ident) => {
@@ -303,6 +281,7 @@ macro_rules! wifi_singleton {
         static WIFI_RX: BBBuffer<U512> = BBBuffer(ConstBBBuffer::new());
         static WIFI_TX: BBBuffer<U128> = BBBuffer(ConstBBBuffer::new());
 
+        /// Initializes the wifi controller from within an interrupt-free context.
         unsafe fn wifi_init(
             _cs: &CriticalSection,
             pins: WifiPins,
@@ -330,14 +309,6 @@ macro_rules! wifi_singleton {
             }
         }
 
-        // #[interrupt]
-        // fn SERCOM0_1() {
-        //     // Transmit Complete interrupt.
-        //     $global_name.as_mut().map(|wifi| {
-        //         wifi.handle_data_empty();
-        //     });
-        // }
-
         #[interrupt]
         fn SERCOM0_2() {
             // Recieve Complete interrupt.
@@ -347,9 +318,5 @@ macro_rules! wifi_singleton {
                 });
             }
         }
-
-        // #[interrupt]
-        // fn SERCOM0_Other() {
-        // }
     };
 }

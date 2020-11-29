@@ -86,8 +86,8 @@ pub mod id {
 pub mod codec {
     use super::id::*;
     use nom::{
-        error::ParseError, lib::std::ops::RangeFrom, lib::std::ops::RangeTo, number::streaming,
-        IResult, InputIter, InputLength, InputTake, Slice,
+        error::ParseError, lib::std::ops::RangeFrom, number::streaming, IResult, InputIter,
+        InputLength, Slice,
     };
 
     const BASIC_CODEC_VERSION: u8 = 1;
