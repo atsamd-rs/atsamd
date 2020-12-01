@@ -39,9 +39,6 @@ static mut TX_DESCRIPTORS: MaybeUninit<GenericArray<TxBufferDescriptor, TxBuffer
     MaybeUninit::uninit();
 static mut TX_BUFFER_SET: MaybeUninit<TxBuffers> = MaybeUninit::uninit();
 
-type RxCallback = fn() -> ();
-type TxCallback = fn() -> ();
-
 #[entry]
 fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
@@ -60,31 +57,31 @@ fn main() -> ! {
     let mut sets = pins.split();
     let mut led = sets.led.into_open_drain_output(&mut sets.port);
 
-    let mut rx_buffers = unsafe {
+    let rx_buffers = unsafe {
         RX_DESCRIPTORS.as_mut_ptr().write(GenericArray::default());
         RX_BUFFERS.as_mut_ptr().write(GenericArray::default());
         let descriptors = RX_DESCRIPTORS.as_mut_ptr();
         let buffers = RX_BUFFERS.as_mut_ptr();
-        let mut rx_buffers: GmacBufferSet<
+        let rx_buffers: GmacBufferSet<
             RxBufferDescriptor,
             generic_array::typenum::U16,
             generic_array::typenum::U1024,
         > = RxBuffers::new(&mut *descriptors, &mut *buffers);
         rx_buffers
     };
-    let mut tx_buffers = unsafe {
+    let tx_buffers = unsafe {
         TX_DESCRIPTORS.as_mut_ptr().write(GenericArray::default());
         TX_BUFFERS.as_mut_ptr().write(GenericArray::default());
         let descriptors = TX_DESCRIPTORS.as_mut_ptr();
         let buffers = TX_BUFFERS.as_mut_ptr();
-        let mut tx_buffers: GmacBufferSet<
+        let tx_buffers: GmacBufferSet<
             TxBufferDescriptor,
             generic_array::typenum::U16,
             generic_array::typenum::U1024,
         > = TxBuffers::new(&mut *descriptors, &mut *buffers);
         tx_buffers
     };
-    let (gmac, gmac_int, gmac_reset) = sets.ethernet.init::<_, _, RxCallback, TxCallback>(
+    let (_gmac, _gmac_int, _gmac_reset) = sets.ethernet.init(
         &mut sets.port,
         &peripherals.MCLK,
         peripherals.GMAC,

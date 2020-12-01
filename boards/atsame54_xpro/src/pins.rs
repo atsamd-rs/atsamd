@@ -424,25 +424,21 @@ pub struct Ethernet {
 type EthernetPadout = RmiiPadout<Ioset<Pc11<Input<Floating>>, Pc12<Input<Floating>>>>;
 
 impl Ethernet {
-    pub fn init<RxBuf, TxBuf, RxCallback, TxCallback>(
+    pub fn init<RxBuf, TxBuf>(
         self,
         port: &mut Port,
         mclk: &MCLK,
         gmac: target_device::GMAC,
         rx_buffers: RxBuf,
         tx_buffers: TxBuf,
-        rx_callback: Option<RxCallback>,
-        tx_callback: Option<TxCallback>,
     ) -> (
-        Gmac<EthernetPadout, RxBuf, TxBuf, RxCallback, TxCallback>,
+        Gmac<EthernetPadout, RxBuf, TxBuf>,
         gpio::Pd12<Input<PullUp>>,
         gpio::Pc21<Output<PushPull>>,
     )
     where
         RxBuf: BufferSet<RxBufferDescriptor>,
         TxBuf: BufferSet<TxBufferDescriptor>,
-        RxCallback: FnMut(&mut Gmac<EthernetPadout, RxBuf, TxBuf, RxCallback, TxCallback>),
-        TxCallback: FnMut(&mut Gmac<EthernetPadout, RxBuf, TxBuf, RxCallback, TxCallback>),
     {
         let padout = RmiiPadout::new(
             port,
@@ -456,11 +452,8 @@ impl Ethernet {
             self.grxer,
             Ioset::new2(self.gmdc, self.gmdio),
         );
-        let mut gmac = Gmac::new(padout, mclk, gmac, rx_buffers, tx_buffers);
-        gmac.set_rx_callback(rx_callback.unwrap());
-        gmac.set_tx_callback(tx_callback.unwrap());
         (
-            gmac,
+            Gmac::new(padout, mclk, gmac, rx_buffers, tx_buffers),
             self.ethernet_interrupt.into_pull_up_input(port),
             self.ethernet_reset.into_push_pull_output(port),
         )
