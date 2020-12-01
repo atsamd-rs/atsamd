@@ -136,10 +136,17 @@ impl RxBufferDescriptor {
     }
     /// Ownership — needs to be zero for the GMAC to write data to the receive
     /// buffer. The GMAC sets this to one once it has successfully written a
-    /// frame to memory.Software has to clear this bit before the buffer can be
+    /// frame to memory. Software has to clear this bit before the buffer can be
     /// used again.
     pub fn ownership(&self) -> bool {
         self.address.get() & 1 == 1
+    }
+    pub(crate) fn set_ownership(&self, value: bool) {
+        if value {
+            self.address.set(self.address.get() | 1);
+        } else {
+            self.address.set(self.address.get() & !1);
+        }
     }
     /// Wrap — marks last descriptor in receive buffer descriptor list.
     pub fn wrap(&self) -> bool {
@@ -174,8 +181,8 @@ impl RxBufferDescriptor {
     /// frames are enabled, these 12 bits areconcatenated with bit[13] of
     /// the descriptor above.
     ///
-    /// With FCS discard mode enabled: (bit 17 set in
-    /// Network Configuration Register)
+    /// With FCS discard mode enabled: (bit 17 set in Network Configuration
+    /// Register)
     ///
     /// Least significant 12 bits for length of frame excluding FCS. If jumbo
     /// frames are enabled, these 12 bits are concatenated with bit[13] of

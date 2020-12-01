@@ -6,8 +6,6 @@ pub use buffer::*;
 mod pad;
 pub use pad::*;
 
-// type RxCallback = fn(Gmac<P: GmacPadout, RxBuf, TxBuf, RxCallback,
-// TxCallback>);
 pub struct Gmac<P: GmacPadout, RxBuf, TxBuf, RxCallback, TxCallback> {
     _padout: P,
     gmac: GMAC,
@@ -28,15 +26,7 @@ where
     RxCallback: FnMut(&mut Gmac<P, RxBuf, TxBuf, RxCallback, TxCallback>),
     TxCallback: FnMut(&mut Gmac<P, RxBuf, TxBuf, RxCallback, TxCallback>),
 {
-    pub fn new(
-        padout: P,
-        mclk: &MCLK,
-        gmac: GMAC,
-        rx_buffers: RxBuf,
-        tx_buffers: TxBuf,
-        /* rx_callback: RxCallback,
-         * tx_callback: TxCallback, */
-    ) -> Self {
+    pub fn new(padout: P, mclk: &MCLK, gmac: GMAC, rx_buffers: RxBuf, tx_buffers: TxBuf) -> Self {
         mclk.ahbmask.modify(|_, w| w.gmac_().set_bit());
         mclk.apbcmask.modify(|_, w| w.gmac_().set_bit());
 
@@ -177,9 +167,13 @@ where
     ) {
         self.set_mac_filter(index, mac);
         unsafe {
-            self.gmac.tidm[index as usize].write_with_zero(|w| w.tid().bits(type_id.0));
+            self.gmac.tidm[index as usize].write_with_zero(|w| {
+                w.tid().bits(type_id.0);
+                w.enid().set_bit()
+            });
         }
     }
+
     /// # Safety
     /// This function can write any data to any PHY register. Extreme caution
     /// must be taken to not write invalid data!
@@ -197,7 +191,6 @@ where
         while self.gmac.nsr.read().idle().bit_is_clear() {}
         self.gmac.ncr.modify(|_, w| w.mpe().clear_bit());
     }
-
     pub fn read_phy_reg(&mut self, addr: u8, reg: u8) -> u16 {
         self.gmac.ncr.modify(|_, w| w.mpe().set_bit());
         unsafe {
@@ -314,6 +307,100 @@ where
         Ok(())
     }
 
+    /// Read raw data from MAC
+    pub fn read(&mut self, buf: &mut [u8]) -> nb::Result<usize, ()> {
+        let mut sof = None; // Start of Frame index
+        let mut eof = None; // End of Frame index
+        let mut total_len = 0; // Total length of received package
+        let mut len = 0;
+        let mut last_idx = 0;
+        for idx in 0..RxBuf::COUNT {
+            last_idx = idx;
+            let mut pos = self.rx_buf_index + idx;
+            if pos >= RxBuf::COUNT {
+                pos -= RxBuf::COUNT;
+            }
+            let descriptor = self.rx_buffers.get_descriptor(pos);
+            if !descriptor.ownership() {
+                /* No more data for Ethernet package */
+                break;
+            }
+            if descriptor.sof() {
+                sof = Some(idx);
+            }
+            if descriptor.eof() && sof.is_some() {
+                /* eof now indicates the number of bufs the frame used */
+                eof = Some(idx);
+                /* Length of the whole frame is written to the last descriptor */
+                len = (descriptor.len() as usize).min(buf.len());
+                /* Break process since the last data has been found */
+                break;
+            }
+        }
+
+        let j = if let Some(eof) = eof {
+            eof + 1
+        } else if let Some(sof) = sof {
+            sof
+        } else {
+            last_idx
+        };
+
+        let mut buf = &mut buf[..];
+        for i in 0..j {
+            if let Some(eof) = eof {
+                if i >= sof.unwrap_or(usize::MAX) && i <= eof && len > 0 {
+                    let n = len.min(RxBuf::SIZE);
+                    let buffer = self.rx_buffers.get_buffer(self.rx_buf_index);
+                    buf.copy_from_slice(&buffer[..n]);
+                    buf = &mut buf[n..];
+                    total_len += n;
+                    len -= n;
+                }
+            }
+            self.rx_buffers
+                .get_descriptor_mut(self.rx_buf_index)
+                .set_ownership(false);
+            self.rx_buf_index += 1;
+            if self.rx_buf_index == RxBuf::COUNT {
+                self.rx_buf_index = 0;
+            }
+        }
+
+        Ok(total_len)
+    }
+    /// Get next valid package length from the MAC
+    ///
+    /// The application can use this function to fetch the length of the next
+    /// package, allocate a buffer with this length, and then invoke `read()`
+    /// to read out the package data.
+    pub fn get_read_len(&mut self) -> usize {
+        let mut total_len = 0usize;
+        let mut sof = false;
+        for idx in 0..RxBuf::COUNT {
+            let mut pos = self.rx_buf_index + idx;
+            if pos >= RxBuf::COUNT {
+                pos -= RxBuf::COUNT;
+            }
+            let descriptor = self.rx_buffers.get_descriptor(pos);
+            if !descriptor.ownership() {
+                /* No more data for Ethernet package */
+                break;
+            }
+            if descriptor.sof() {
+                sof = true;
+            }
+            if sof {
+                total_len += descriptor.len() as usize;
+            }
+            if descriptor.eof() {
+                /* Break process since the last data has been found */
+                break;
+            }
+        }
+        total_len
+    }
+
     pub fn gmac_handler(&mut self) {
         let tsr = self.gmac.tsr.read().bits();
         let rsr = self.gmac.rsr.read().bits();
@@ -346,49 +433,6 @@ where
             self.gmac.rsr.write_with_zero(|w| w.bits(rsr));
         }
     }
-    #[rustfmt::skip]
-    fn _comments() {
-        // hri_gmac_write_NCR_reg(dev->hw,
-        //                     (CONF_GMAC_NCR_LBL ? GMAC_NCR_LBL : 0) | (CONF_GMAC_NCR_MPE ? GMAC_NCR_MPE : 0)
-        //                         | (CONF_GMAC_NCR_WESTAT ? GMAC_NCR_WESTAT : 0) | (CONF_GMAC_NCR_BP ? GMAC_NCR_BP : 0)
-        //                         | (CONF_GMAC_NCR_ENPBPR ? GMAC_NCR_ENPBPR : 0)
-        //                         | (CONF_GMAC_NCR_TXPBPF ? GMAC_NCR_TXPBPF : 0));
-        // hri_gmac_write_NCFGR_reg(
-        //     dev->hw,
-        //     (CONF_GMAC_NCFGR_SPD ? GMAC_NCFGR_SPD : 0) | (CONF_GMAC_NCFGR_FD ? GMAC_NCFGR_FD : 0)
-        //         | (CONF_GMAC_NCFGR_DNVLAN ? GMAC_NCFGR_DNVLAN : 0) | (CONF_GMAC_NCFGR_JFRAME ? GMAC_NCFGR_JFRAME : 0)
-        //         | (CONF_GMAC_NCFGR_CAF ? GMAC_NCFGR_CAF : 0) | (CONF_GMAC_NCFGR_NBC ? GMAC_NCFGR_NBC : 0)
-        //         | (CONF_GMAC_NCFGR_MTIHEN ? GMAC_NCFGR_MTIHEN : 0) | (CONF_GMAC_NCFGR_UNIHEN ? GMAC_NCFGR_UNIHEN : 0)
-        //         | (CONF_GMAC_NCFGR_MAXFS ? GMAC_NCFGR_MAXFS : 0) | (CONF_GMAC_NCFGR_RTY ? GMAC_NCFGR_RTY : 0)
-        //         | (CONF_GMAC_NCFGR_PEN ? GMAC_NCFGR_PEN : 0) | GMAC_NCFGR_RXBUFO(CONF_GMAC_NCFGR_RXBUFO)
-        //         | (CONF_GMAC_NCFGR_LFERD ? GMAC_NCFGR_LFERD : 0) | (CONF_GMAC_NCFGR_RFCS ? GMAC_NCFGR_RFCS : 0)
-        //         | GMAC_NCFGR_CLK(CONF_GMAC_NCFGR_CLK) | (CONF_GMAC_NCFGR_DCPF ? GMAC_NCFGR_DCPF : 0)
-        //         | (CONF_GMAC_NCFGR_RXCOEN ? GMAC_NCFGR_RXCOEN : 0) | (CONF_GMAC_NCFGR_EFRHD ? GMAC_NCFGR_EFRHD : 0)
-        //         | (CONF_GMAC_NCFGR_IRXFCS ? GMAC_NCFGR_IRXFCS : 0) | (CONF_GMAC_NCFGR_IPGSEN ? GMAC_NCFGR_IPGSEN : 0)
-        //         | (CONF_GMAC_NCFGR_RXBP ? GMAC_NCFGR_RXBP : 0) | (CONF_GMAC_NCFGR_IRXER ? GMAC_NCFGR_IRXER : 0));
-        // hri_gmac_write_UR_reg(dev->hw, (CONF_GMAC_UR_MII ? GMAC_UR_MII : 0));
-        // hri_gmac_write_DCFGR_reg(
-        //     dev->hw,
-        //     GMAC_DCFGR_FBLDO(CONF_GMAC_DCFGR_FBLDO) | (CONF_GMAC_DCFGR_ESMA ? GMAC_DCFGR_ESMA : 0)
-        //         | (CONF_GMAC_DCFGR_ESPA ? GMAC_DCFGR_ESPA : 0) | GMAC_DCFGR_RXBMS(CONF_GMAC_DCFGR_RXBMS)
-        //         | (CONF_GMAC_DCFGR_TXPBMS ? GMAC_DCFGR_TXPBMS : 0) | (CONF_GMAC_DCFGR_TXCOEN ? GMAC_DCFGR_TXCOEN : 0)
-        //         | GMAC_DCFGR_DRBS(CONF_GMAC_DCFGR_DRBS) | (CONF_GMAC_DCFGR_DDRP ? GMAC_DCFGR_DDRP : 0));
-        // hri_gmac_write_WOL_reg(dev->hw, 0);
-        // hri_gmac_write_IPGS_reg(dev->hw, GMAC_IPGS_FL((CONF_GMAC_IPGS_FL_MUL << 8) | CONF_GMAC_IPGS_FL_DIV));
-
-        // _mac_init_bufdescr(dev);
-
-        // _gmac_dev = dev;
-        // NVIC_DisableIRQ(GMAC_IRQn);
-        // NVIC_ClearPendingIRQ(GMAC_IRQn);
-        // NVIC_EnableIRQ(GMAC_IRQn);
-
-        // hri_gmac_set_NCR_reg(dev->hw, GMAC_NCR_RXEN | GMAC_NCR_TXEN);
-        // ethernet_phy_init(&ETHERNET_PHY_0_desc, &COMMUNICATION_IO, CONF_ETHERNET_PHY_0_IEEE8023_MII_PHY_ADDRESS);
-        // #if CONF_ETHERNET_PHY_0_IEEE8023_MII_CONTROL_REG0_SETTING == 1
-        //     ethernet_phy_write_reg(&ETHERNET_PHY_0_desc, MDIO_REG0_BMCR, CONF_ETHERNET_PHY_0_IEEE8023_MII_CONTROL_REG0);
-        // #endif /* CONF_ETHERNET_PHY_0_IEEE8023_MII_CONTROL_REG0_SETTING */
-    }
 }
 
 #[derive(Copy, Clone)]
@@ -409,8 +453,11 @@ impl From<[u8; 6]> for MacAddress {
     }
 }
 impl TypeId {
-    pub fn Ip() -> Self {
-        TypeId(0x6000)
+    pub fn ip() -> Self {
+        TypeId(0x0600)
+    }
+    pub fn vlan() -> Self {
+        TypeId(0x8100)
     }
 }
 
