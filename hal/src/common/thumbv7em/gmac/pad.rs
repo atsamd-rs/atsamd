@@ -81,16 +81,41 @@ pub struct RmiiPadout<IOSet> {
     _ioset: IOSet,
 }
 
+#[allow(clippy::too_many_arguments)]
 impl<IOSet> RmiiPadout<IOSet> {
-    #[allow(clippy::too_many_arguments)]
+    #[cfg(feature = "same53j")]
     pub fn new(
         port: &mut Port,
         _gtxck: Pa14<Input<Floating>>,
         _gtxen: Pa17<Input<Floating>>,
         _gtx0: Pa18<Input<Floating>>,
         _gtx1: Pa19<Input<Floating>>,
-        #[cfg(feature = "same53j")] _grxdv: Pa16<Input<Floating>>,
-        #[cfg(not(feature = "same53j"))] _grxdv: Pc20<Input<Floating>>,
+        _grxdv: Pa16<Input<Floating>>,
+        _grx0: Pa13<Input<Floating>>,
+        _grx1: Pa12<Input<Floating>>,
+        _grxer: Pa15<Input<Floating>>,
+        _ioset: IOSet,
+    ) -> Self {
+        RmiiPadout {
+            _gtxck: _gtxck.into_function(port),
+            _gtxen: _gtxen.into_function(port),
+            _gtx0: _gtx0.into_function(port),
+            _gtx1: _gtx1.into_function(port),
+            _grxdv: _grxdv.into_function(port),
+            _grx0: _grx0.into_function(port),
+            _grx1: _grx1.into_function(port),
+            _grxer: _grxer.into_function(port),
+            _ioset,
+        }
+    }
+    #[cfg(not(feature = "same53j"))]
+    pub fn new(
+        port: &mut Port,
+        _gtxck: Pa14<Input<Floating>>,
+        _gtxen: Pa17<Input<Floating>>,
+        _gtx0: Pa18<Input<Floating>>,
+        _gtx1: Pa19<Input<Floating>>,
+        _grxdv: Pc20<Input<Floating>>,
         _grx0: Pa13<Input<Floating>>,
         _grx1: Pa12<Input<Floating>>,
         _grxer: Pa15<Input<Floating>>,
@@ -120,7 +145,7 @@ where
     GMDC: IntoFunction<Pb14<PfL>>,
     GMDIO: IntoFunction<Pb15<PfL>>,
 {
-    pub fn new1(gmdc: GMDC, gmdio: GMDIO) -> impl IOSet {
+    pub fn new1(gmdc: GMDC, gmdio: GMDIO) -> Self {
         Ioset(gmdc, gmdio)
     }
 }
@@ -129,7 +154,7 @@ where
     GMDC: IntoFunction<Pc11<PfL>>,
     GMDIO: IntoFunction<Pc12<PfL>>,
 {
-    pub fn new2(gmdc: GMDC, gmdio: GMDIO) -> impl IOSet {
+    pub fn new2(gmdc: GMDC, gmdio: GMDIO) -> Self {
         Ioset(gmdc, gmdio)
     }
 }
@@ -138,7 +163,7 @@ where
     GMDC: IntoFunction<Pc22<PfL>>,
     GMDIO: IntoFunction<Pc23<PfL>>,
 {
-    pub fn new3(gmdc: GMDC, gmdio: GMDIO) -> impl IOSet {
+    pub fn new3(gmdc: GMDC, gmdio: GMDIO) -> Self {
         Ioset(gmdc, gmdio)
     }
 }
@@ -147,7 +172,7 @@ where
     GMDC: IntoFunction<Pa20<PfL>>,
     GMDIO: IntoFunction<Pa21<PfL>>,
 {
-    pub fn new4(gmdc: GMDC, gmdio: GMDIO) -> impl IOSet {
+    pub fn new4(gmdc: GMDC, gmdio: GMDIO) -> Self {
         Ioset(gmdc, gmdio)
     }
 }
