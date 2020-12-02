@@ -31,7 +31,6 @@ mod sensors;
 mod serial;
 mod sound;
 mod storage;
-mod wifi;
 
 pub use buttons::*;
 pub use display::*;
@@ -40,4 +39,8 @@ pub use sensors::*;
 pub use serial::*;
 pub use sound::*;
 pub use storage::*;
-pub use wifi::*;
+
+#[cfg(feature = "wifi")]
+mod wifi;
+#[cfg(feature = "wifi")]
+pub use wifi::{Wifi, WifiPins, wifi_prelude, rpcs as wifi_rpcs};

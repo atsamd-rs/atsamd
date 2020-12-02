@@ -10,7 +10,8 @@ use wio::hal::delay::Delay;
 use wio::pac::{CorePeripherals, Peripherals};
 use wio::prelude::*;
 use wio::wifi_prelude::*;
-use wio::{entry, rpc, wifi_singleton, Pins, Sets};
+use wio::{entry, wifi_singleton, Pins, Sets};
+use wio::wifi_rpcs as rpc;
 
 use core::fmt::Write;
 use cortex_m::interrupt::free as disable_interrupts;

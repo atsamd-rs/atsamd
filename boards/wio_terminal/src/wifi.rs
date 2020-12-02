@@ -17,15 +17,8 @@ use bbqueue::{
 use cortex_m::interrupt::CriticalSection;
 use cortex_m::peripheral::NVIC;
 
-mod erpc;
-mod sys_rpcs;
-mod wifi_rpcs;
-
-/// Wifi methods
-pub mod rpc {
-    pub use super::sys_rpcs::*;
-    pub use super::wifi_rpcs::*;
-}
+use seeed_erpc as erpc;
+pub use erpc::rpcs;
 
 /// The set of pins which are connected to the RTL8720 in some way
 pub struct WifiPins {
@@ -149,7 +142,7 @@ impl Wifi {
     }
 
     /// Issues an RPC, blocking till a response is recieved.
-    pub fn blocking_rpc<'a, RPC: erpc::codec::RPC>(
+    pub fn blocking_rpc<'a, RPC: erpc::RPC>(
         &mut self,
         mut rpc: RPC,
     ) -> Result<RPC::ReturnValue, erpc::Err<RPC::Error>> {
@@ -170,7 +163,7 @@ impl Wifi {
         }
     }
 
-    fn recieve_rpc_response<'a, RPC: erpc::codec::RPC>(
+    fn recieve_rpc_response<'a, RPC: erpc::RPC>(
         &mut self,
         rpc: &mut RPC,
     ) -> Result<RPC::ReturnValue, erpc::Err<RPC::Error>> {
@@ -181,22 +174,18 @@ impl Wifi {
         let sz = fh.msg_length as usize;
         self.recieve_bytes(&mut buffer[..sz]);
 
-        let expect_crc = erpc::codec::crc16(&buffer[..sz]);
-        if expect_crc != fh.crc16 {
-            return Err(erpc::Err::CRCMismatch);
-        }
-
+        fh.check_crc(&buffer[..sz])?;
         rpc.parse(&buffer[..sz])
     }
 
-    fn recieve_frame_header<'a, RPC: erpc::codec::RPC>(
+    fn recieve_frame_header<'a, RPC: erpc::RPC>(
         &mut self,
         _rpc: &mut RPC,
-    ) -> Result<erpc::codec::FramePreamble, erpc::Err<RPC::Error>> {
+    ) -> Result<erpc::FrameHeader, erpc::Err<RPC::Error>> {
         let mut buffer = [0u8; 4];
         self.recieve_bytes(&mut buffer);
 
-        match erpc::codec::FramePreamble::parse(&buffer[..]) {
+        match erpc::FrameHeader::parse(&buffer[..]) {
             Err(e) => Err(erpc::Err::Parsing(e)),
             Ok(fh) => Ok(fh.1),
         }
@@ -228,7 +217,7 @@ impl Wifi {
     }
 
     fn write_frame(&mut self, msg: &heapless::Vec<u8, heapless::consts::U64>) -> Result<(), ()> {
-        let header = erpc::codec::FramePreamble::new_from_msg(msg);
+        let header = erpc::FrameHeader::new_from_msg(msg);
         self.tx(header.as_bytes().iter().chain(msg));
         Ok(())
     }

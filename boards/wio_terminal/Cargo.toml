@@ -40,6 +40,7 @@ bbqueue = { version = "^0.4.11", optional = true }
 nb = { version = "0.1", optional = true }
 nom = { version = "^6.0", default-features = false, optional = true }
 generic-array = { version = "0.13", optional = true }
+seeed-erpc = { version = "0.0.1", optional = true }
 
 [dependencies.atsamd-hal]
 path = "../../hal"
@@ -55,7 +56,7 @@ default = ["atsamd-hal/samd51p", "rt", "unproven", "usb", "wifi"]
 rt = ["atsamd-hal/samd51p-rt", "cortex-m-rt"]
 unproven = ["atsamd-hal/unproven"]
 usb = ["atsamd-hal/usb", "usb-device", "usbd-serial", "nom"]
-wifi = ["bbqueue", "nb", "nom", "generic-array"]
+wifi = ["bbqueue", "nb", "nom", "generic-array", "seeed-erpc"]
 
 [profile.dev]
 incremental = false
