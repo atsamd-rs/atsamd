@@ -15,7 +15,7 @@ readme = "README.md"
 [dependencies]
 bare-metal = "~0.2"
 cortex-m = "~0.6"
-vcell = "~0.1"
+vcell = "~0.1.2"
 
 [dependencies.cortex-m-rt]
 version = "~0.6.12"
