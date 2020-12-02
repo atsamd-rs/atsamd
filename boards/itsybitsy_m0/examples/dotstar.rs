@@ -55,13 +55,9 @@ fn main() -> ! {
 
     let mut rgb = pins.dotstar.init(SpinTimer::new(12), &mut pins.port);
 
-    let mut val = 0;
+    let mut val: u8 = 0;
     loop {
-        // Can't use the modulo operator on a u8 with an overflowing u8 or with a u16
-        val = match val {
-            255 => 0,
-            _ => val + 1,
-        };
+        val = val.wrapping_add(1);
         let color: [RGB8; 1] = [rgb_wheel(val)];
         rgb.write(color.iter().cloned()).unwrap();
         delay.delay_ms(60u8);
