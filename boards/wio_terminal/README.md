@@ -11,6 +11,8 @@ This project is made possible thanks to the following crates:
 * [atsamd-hal](https://github.com/atsamd-rs/atsamd)
 * [ili9341-rs](https://github.com/yuri91/ili9341-rs)
 * [lis3dh-rs](https://github.com/BenBergman/lis3dh-rs)
+* [embedded-sdmmc](https://github.com/rust-embedded-community/embedded-sdmmc-rs)
+* [seeed-erpc-rs](https://github.com/twitchyliquid64/seeed-erpc-rs)
 
 ## [Documentation]
 
@@ -21,6 +23,11 @@ This project is made possible thanks to the following crates:
 * [Wio Terminal product page](https://www.seeedstudio.com/Wio-Terminal-p-4509.html)
 * [Wio Terminal wiki](https://wiki.seeedstudio.com/Wio-Terminal-Getting-Started/)
 * [Wio Terminal user manual](https://files.seeedstudio.com/wiki/Wio-Terminal/res/Wio-Terminal-User-Manual.pdf)
+
+## Wifi
+
+If you want to use the Wifi features of this crate, you must have updated the wifi core firmware to at least version `2.0.1`. You
+can read instructions for this process [here](https://wiki.seeedstudio.com/Wio-Terminal-Network-Overview/).
 
 ## Examples
 

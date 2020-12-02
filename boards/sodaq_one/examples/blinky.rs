@@ -35,10 +35,10 @@ fn main() -> ! {
     let mut delay = Delay::new(core.SYST, &mut clocks);
     let time = 1000u16;
     #[cfg(feature = "use_semihosting")]
-    hprintln!("startup").unwrap();
+    hprintln!("startup");
     loop {
         #[cfg(feature = "use_semihosting")]
-        hprintln!("loop").unwrap();
+        hprintln!("loop");
         red_led.set_low().unwrap();
         green_led.set_high().unwrap();
         blue_led.set_high().unwrap();
