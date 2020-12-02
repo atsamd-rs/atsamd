@@ -17,8 +17,8 @@ use bbqueue::{
 use cortex_m::interrupt::CriticalSection;
 use cortex_m::peripheral::NVIC;
 
-use seeed_erpc as erpc;
 pub use erpc::rpcs;
+use seeed_erpc as erpc;
 
 /// The set of pins which are connected to the RTL8720 in some way
 pub struct WifiPins {
