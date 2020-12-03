@@ -39,3 +39,8 @@ pub use sensors::*;
 pub use serial::*;
 pub use sound::*;
 pub use storage::*;
+
+#[cfg(feature = "wifi")]
+mod wifi;
+#[cfg(feature = "wifi")]
+pub use wifi::{rpcs as wifi_rpcs, wifi_prelude, Wifi, WifiPins};

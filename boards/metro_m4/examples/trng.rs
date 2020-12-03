@@ -30,7 +30,7 @@ fn main() -> ! {
     let trng = Trng::new(&mut peripherals.MCLK, peripherals.TRNG);
 
     loop {
-        hprintln!("{}", trng.random_u32()).unwrap();
+        hprintln!("{}", trng.random_u32());
         delay.delay_ms(1000u16);
     }
 }
