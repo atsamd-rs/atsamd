@@ -10,6 +10,7 @@ use crate::target_device::{SERCOM2, SERCOM3};
 use crate::target_device::{SERCOM4, SERCOM5};
 use crate::time::Hertz;
 use core::fmt;
+use core::marker::PhantomData;
 
 /// The RxpoTxpo trait defines a way to get the data in and data out pin out
 /// values for a given UARTXPadout configuration. You should not implement
@@ -37,6 +38,34 @@ macro_rules! uart {
                 _tx: TX,
                 _rts: RTS,
                 _cts: CTS,
+            }
+
+            /// A pad mapping configuration for the receiving half of the SERCOM in UART mode.
+            pub struct [<$Type RxPadout>]<RX, CTS> {
+                _rx: RX,
+                _cts: CTS,
+            }
+
+            /// A pad mapping configuration for the transmitting half of the SERCOM in UART mode.
+            pub struct [<$Type TxPadout>]<TX, RTS> {
+                _tx: TX,
+                _rts: RTS,
+            }
+
+            impl<RX, TX, RTS, CTS> [<$Type Padout>]<RX, TX, RTS, CTS> {
+                /// Splits the padout into transmit and receive halves
+                pub fn split(self) -> ([<$Type TxPadout>]<TX, RTS>, [<$Type RxPadout>]<RX, CTS>) {
+                    (
+                        [<$Type TxPadout>] {
+                            _tx: self._tx,
+                            _rts: self._rts,
+                        },
+                        [<$Type RxPadout>] {
+                            _rx: self._rx,
+                            _cts: self._cts,
+                        },
+                    )
+                }
             }
         }
 
@@ -218,26 +247,47 @@ macro_rules! uart {
                     (self.padout, self.sercom)
                 }
 
+                /// Splits the UART into transmit and receive halves
+                pub fn split(self) -> ([<$Type Tx>]<TX, RTS>, [<$Type Rx>]<RX, CTS>) {
+                    let (tx_pads, rx_pads) = self.padout.split();
+                    (
+                        [<$Type Tx>] {
+                            _padout: tx_pads,
+                            sercom: PhantomData,
+                        },
+                        [<$Type Rx>] {
+                            _padout: rx_pads,
+                            sercom: PhantomData,
+                        },
+                    )
+                }
+
                 fn usart(&self) -> &USART {
                     return &self.sercom.usart();
                 }
-
-                fn dre(&self) -> bool {
-                    self.usart().intflag.read().dre().bit_is_set()
-                }
             }
 
+            /// The transmitting half of the corresponding UARTX instance (as returned by `UARTX::split`)
+            pub struct [<$Type Tx>]<TX, RTS> {
+                _padout: [<$Type TxPadout>]<TX, RTS>,
+                sercom: PhantomData<$SERCOM>,
+            }
 
-            impl<RX, TX, RTS, CTS> serial::Write<u8> for $Type<RX, TX, RTS, CTS> {
-                type Error = ();
+            impl<TX, RTS> [<$Type Tx>]<TX, RTS> {
+                /// # Safety
+                ///
+                /// Only this struct instance should be able to access TX-related fields on this SERCOM.
+                unsafe fn usart(&self) -> &USART {
+                    (*$SERCOM::ptr()).usart()
+                }
 
-                fn write(&mut self, word: u8) -> nb::Result<(), Self::Error> {
+                fn do_write(usart: &USART, word: u8) -> nb::Result<(), ()> {
                     unsafe {
-                        if !self.dre() {
+                        if !usart.intflag.read().dre().bit_is_set() {
                             return Err(nb::Error::WouldBlock);
                         }
 
-                        self.sercom.usart().data.write(|w| {
+                        usart.data.write(|w| {
                             w.bits(word as u16)
                         });
                     }
@@ -245,9 +295,9 @@ macro_rules! uart {
                     Ok(())
                 }
 
-                fn flush(&mut self) -> nb::Result<(), Self::Error> {
+                fn do_flush(usart: &USART) -> nb::Result<(), ()> {
                     // simply await DRE empty
-                    if !self.dre() {
+                    if !usart.intflag.read().dre().bit_is_set() {
                         return Err(nb::Error::WouldBlock);
                     }
 
@@ -255,23 +305,82 @@ macro_rules! uart {
                 }
             }
 
-            impl<RX, TX, RTS, CTS> serial::Read<u8> for $Type<RX, TX, RTS, CTS> {
+            impl<TX, RTS> serial::Write<u8> for [<$Type Tx>]<TX, RTS> {
                 type Error = ();
 
-                fn read(&mut self) -> nb::Result<u8, Self::Error> {
-                    let has_data = self.usart().intflag.read().rxc().bit_is_set();
+                fn write(&mut self, word: u8) -> nb::Result<(), Self::Error> {
+                    Self::do_write(unsafe { self.usart() }, word)
+                }
+
+                fn flush(&mut self) -> nb::Result<(), Self::Error> {
+                    Self::do_flush(unsafe { self.usart() })
+                }
+            }
+
+            impl<RX, TX, RTS, CTS> serial::Write<u8> for $Type<RX, TX, RTS, CTS> {
+                type Error = ();
+
+                fn write(&mut self, word: u8) -> nb::Result<(), Self::Error> {
+                    [<$Type Tx>]::<TX, RTS>::do_write(self.sercom.usart(), word)
+                }
+
+                fn flush(&mut self) -> nb::Result<(), Self::Error> {
+                    [<$Type Tx>]::<TX, RTS>::do_flush(self.sercom.usart())
+                }
+            }
+
+            /// The receiving half of the corresponding UARTX instance (as returned by `UARTX::split`)
+            pub struct [<$Type Rx>]<RX, CTS> {
+                _padout: [<$Type RxPadout>]<RX, CTS>,
+                sercom: PhantomData<$SERCOM>,
+            }
+
+            impl<RX, CTS> [<$Type Rx>]<RX, CTS> {
+                /// # Safety
+                ///
+                /// Only this struct instance should be able to access RX-related fields on this SERCOM.
+                unsafe fn usart(&self) -> &USART {
+                    (*$SERCOM::ptr()).usart()
+                }
+
+                fn do_read(usart: &USART) -> nb::Result<u8, ()> {
+                    let has_data = usart.intflag.read().rxc().bit_is_set();
 
                     if !has_data {
                         return Err(nb::Error::WouldBlock);
                     }
 
-                    let data = self.usart().data.read().bits();
+                    let data = usart.data.read().bits();
 
                     Ok(data as u8)
                 }
             }
 
+            impl<RX, CTS> serial::Read<u8> for [<$Type Rx>]<RX, CTS> {
+                type Error = ();
+
+                fn read(&mut self) -> nb::Result<u8, Self::Error> {
+                    Self::do_read(unsafe { self.usart() })
+                }
+            }
+
+            impl<RX, TX, RTS, CTS> serial::Read<u8> for $Type<RX, TX, RTS, CTS> {
+                type Error = ();
+
+                fn read(&mut self) -> nb::Result<u8, Self::Error> {
+                    [<$Type Rx>]::<RX, CTS>::do_read(self.sercom.usart())
+                }
+            }
+
+            impl<TX, RTS> Default<u8> for [<$Type Tx>]<TX, RTS> {}
+
             impl<RX, TX, RTS, CTS> Default<u8> for $Type<RX, TX, RTS, CTS> {}
+
+            impl<TX, RTS> fmt::Write for [<$Type Tx>]<TX, RTS> {
+                fn write_str(&mut self, s: &str) -> fmt::Result {
+                    self.bwrite_all(s.as_bytes()).map_err(|_| fmt::Error)
+                }
+            }
 
             impl<RX, TX, RTS, CTS> fmt::Write for $Type<RX, TX, RTS, CTS> {
                 fn write_str(&mut self, s: &str) -> fmt::Result {
