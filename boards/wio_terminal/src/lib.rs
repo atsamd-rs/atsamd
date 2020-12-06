@@ -44,3 +44,7 @@ pub use storage::*;
 mod wifi;
 #[cfg(feature = "wifi")]
 pub use wifi::{rpcs as wifi_rpcs, wifi_prelude, Wifi, WifiPins};
+#[cfg(feature = "wifi")]
+pub mod wifi_types {
+    pub use seeed_erpc::{BssType, IPInfo, L3Interface, Security, WifiMode, BSSID, SSID};
+}

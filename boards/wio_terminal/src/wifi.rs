@@ -10,7 +10,7 @@ use atsamd_hal::time::Hertz;
 
 use bbqueue;
 use bbqueue::{
-    consts::{U128, U512},
+    consts::{U128, U512, U64},
     BBBuffer, Consumer, Producer,
 };
 
@@ -94,6 +94,9 @@ impl Wifi {
         })
     }
 
+    /// Turns on internal interrupts. Call this after you have finished
+    /// initializing the rest of your peripherals but before you start
+    /// issuing RPCs against the wifi chip.
     pub fn enable(&mut self, _cs: &CriticalSection, nvic: &mut NVIC) {
         unsafe {
             nvic.set_priority(interrupt::SERCOM0_0, 1);
@@ -105,6 +108,45 @@ impl Wifi {
         self.uart.intenset(|w| {
             w.rxc().set_bit();
         });
+    }
+
+    /// Convenience function to connection an access point with the given
+    /// network name and security parameters, and request an IP via DHCP.
+    pub fn connect_to_ap<S: Into<heapless::String<U64>>, P: Into<heapless::String<U64>>>(
+        &mut self,
+        delay: &mut Delay,
+        ssid: S,
+        pw: P,
+        security: erpc::Security,
+    ) -> Result<erpc::IPInfo, erpc::Err<()>> {
+        self.blocking_rpc(rpcs::AdapterInit {})?;
+        self.blocking_rpc(rpcs::DHCPClientStop {
+            interface: erpc::L3Interface::Station,
+        })?;
+        self.blocking_rpc(rpcs::WifiOff {})?;
+
+        delay.delay_ms(35u8);
+
+        self.blocking_rpc(rpcs::WifiOn {
+            mode: erpc::WifiMode::Station,
+        })?;
+
+        self.blocking_rpc(rpcs::WifiConnect {
+            ssid: ssid.into(),
+            password: pw.into(),
+            security: security,
+            semaphore: 0,
+        })?;
+
+        self.blocking_rpc(rpcs::DHCPClientStart {
+            interface: erpc::L3Interface::Station,
+        })?;
+
+        delay.delay_ms(25u8);
+        self.blocking_rpc(rpcs::GetIPInfo {
+            interface: erpc::L3Interface::Station,
+        })
+        .map_err(|_| erpc::Err::RPCErr(()))
     }
 
     /// Called from ISR: Handles the signal that the UART has recieved
