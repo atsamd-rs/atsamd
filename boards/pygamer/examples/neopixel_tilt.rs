@@ -34,19 +34,19 @@ fn main() -> ! {
     );
 
     let mut delay = Delay::new(core_peripherals.SYST, &mut clocks);
-    let mut pins = Pins::new(peripherals.PORT).split();
+    let mut sets = Pins::new(peripherals.PORT).split();
 
     // neopixels
     let timer = SpinTimer::new(4);
-    let mut neopixel = pins.neopixel.init(timer, &mut pins.port);
+    let mut neopixel = sets.neopixel.init(timer, &mut sets.port);
 
     // i2c
-    let i2c = pins.i2c.init(
+    let i2c = sets.i2c.init(
         &mut clocks,
         KiloHertz(400),
         peripherals.SERCOM2,
         &mut peripherals.MCLK,
-        &mut pins.port,
+        &mut sets.port,
     );
 
     let mut lis3dh = Lis3dh::new(i2c, 0x19).unwrap();

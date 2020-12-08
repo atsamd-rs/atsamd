@@ -43,22 +43,22 @@ fn main() -> ! {
     );
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
-    let mut pins = Pins::new(peripherals.PORT).split();
+    let mut sets = Pins::new(peripherals.PORT).split();
 
-    let mut red_led = pins.led_pin.into_open_drain_output(&mut pins.port);
+    let mut red_led = sets.led_pin.into_open_drain_output(&mut sets.port);
 
-    let sdmmc_cs: OldOutputPin<_> = pins.sd_cs_pin.into_push_pull_output(&mut pins.port).into();
-    let sdmmc_spi = pins.spi.init(
+    let sdmmc_cs: OldOutputPin<_> = sets.sd_cs_pin.into_push_pull_output(&mut sets.port).into();
+    let sdmmc_spi = sets.spi.init(
         &mut clocks,
         MegaHertz(3),
         peripherals.SERCOM1,
         &mut peripherals.MCLK,
-        &mut pins.port,
+        &mut sets.port,
     );
     let mut cont =
         embedded_sdmmc::Controller::new(embedded_sdmmc::SdMmcSpi::new(sdmmc_spi, sdmmc_cs), Clock);
 
-    let (mut display, _backlight) = pins
+    let (mut display, _backlight) = sets
         .display
         .init(
             &mut clocks,

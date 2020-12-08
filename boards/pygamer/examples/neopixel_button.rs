@@ -38,17 +38,17 @@ fn main() -> ! {
     );
 
     let mut delay = Delay::new(core_peripherals.SYST, &mut clocks);
-    let mut pins = Pins::new(peripherals.PORT).split();
+    let mut sets = Pins::new(peripherals.PORT).split();
 
-    let mut buttons = pins.buttons.init(&mut pins.port);
+    let mut buttons = sets.buttons.init(&mut sets.port);
 
     let mut adc1 = Adc::adc1(peripherals.ADC1, &mut peripherals.MCLK, &mut clocks, GCLK11);
-    let mut joystick = pins.joystick.init(&mut pins.port);
+    let mut joystick = sets.joystick.init(&mut sets.port);
 
     // neopixels
     let timer = SpinTimer::new(4);
 
-    let mut neopixel = pins.neopixel.init(timer, &mut pins.port);
+    let mut neopixel = sets.neopixel.init(timer, &mut sets.port);
 
     const NUM_LEDS: usize = 5;
     let mut pos_button: usize = 2;

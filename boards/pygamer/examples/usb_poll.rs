@@ -26,17 +26,17 @@ fn main() -> ! {
         &mut peripherals.NVMCTRL,
     );
 
-    let mut pins = Pins::new(peripherals.PORT).split();
+    let mut sets = Pins::new(peripherals.PORT).split();
 
-    let usb_bus = pins.usb.init(
+    let usb_bus = sets.usb.init(
         peripherals.USB,
         &mut clocks,
         &mut peripherals.MCLK,
-        &mut pins.port,
+        &mut sets.port,
     );
 
     let mut serial = SerialPort::new(&usb_bus);
-    let mut led = pins.led_pin.into_open_drain_output(&mut pins.port);
+    let mut led = sets.led_pin.into_open_drain_output(&mut sets.port);
 
     let mut usb_dev = UsbDeviceBuilder::new(&usb_bus, UsbVidPid(0x16c0, 0x27dd))
         .manufacturer("Fake company")

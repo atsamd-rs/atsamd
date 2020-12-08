@@ -29,14 +29,14 @@ fn main() -> ! {
         &mut peripherals.OSCCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = Pins::new(peripherals.PORT).split();
+    let mut sets = Pins::new(peripherals.PORT).split();
 
     let mut adc0 = Adc::adc0(peripherals.ADC0, &mut peripherals.MCLK, &mut clocks, GCLK11);
-    let mut battery = pins.battery.init(&mut pins.port);
+    let mut battery = sets.battery.init(&mut sets.port);
 
     // neopixels
     let timer = SpinTimer::new(4);
-    let mut neopixel = pins.neopixel.init(timer, &mut pins.port);
+    let mut neopixel = sets.neopixel.init(timer, &mut sets.port);
 
     let mut delay = Delay::new(core.SYST, &mut clocks);
 

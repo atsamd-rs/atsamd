@@ -33,10 +33,10 @@ fn main() -> ! {
         &mut peripherals.NVMCTRL,
     );
 
-    let mut pins = Pins::new(peripherals.PORT).split();
+    let mut sets = Pins::new(peripherals.PORT).split();
     let timer = SpinTimer::new(4);
 
-    let mut neopixel = pins.neopixel.init(timer, &mut pins.port);
+    let mut neopixel = sets.neopixel.init(timer, &mut sets.port);
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
     let trng = Trng::new(&mut peripherals.MCLK, peripherals.TRNG);

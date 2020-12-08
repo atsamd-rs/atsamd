@@ -32,10 +32,10 @@ fn main() -> ! {
         &mut peripherals.OSCCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = Pins::new(peripherals.PORT).split();
+    let mut sets = Pins::new(peripherals.PORT).split();
     let mut delay = hal::delay::Delay::new(core.SYST, &mut clocks);
 
-    let (mut display, _backlight) = pins
+    let (mut display, _backlight) = sets
         .display
         .init(
             &mut clocks,
@@ -43,7 +43,7 @@ fn main() -> ! {
             &mut peripherals.MCLK,
             peripherals.TC2,
             &mut delay,
-            &mut pins.port,
+            &mut sets.port,
         )
         .unwrap();
 
