@@ -26,13 +26,14 @@ In addition to the PACs and HAL, there numerous **B**oard **S**upport **P**ackag
 | [atsame53j](https://docs.rs/atsame53j/) | [![Crates.io](https://img.shields.io/crates/v/atsame53j.svg)](https://crates.io/crates/atsame53j) |  |
 | [atsame53n](https://docs.rs/atsame53n/) | [![Crates.io](https://img.shields.io/crates/v/atsame53n.svg)](https://crates.io/crates/atsame53n) |  |
 | [atsame54n](https://docs.rs/atsame54n/) | [![Crates.io](https://img.shields.io/crates/v/atsame54n.svg)](https://crates.io/crates/atsame54n) |  |
-| [atsame54p](https://docs.rs/atsame54p/) | [![Crates.io](https://img.shields.io/crates/v/atsame54p.svg)](https://crates.io/crates/atsame54p) | [PathfinderZA Proto1][pfza_proto1] |
+| [atsame54p](https://docs.rs/atsame54p/) | [![Crates.io](https://img.shields.io/crates/v/atsame54p.svg)](https://crates.io/crates/atsame54p) | [PathfinderZA Proto1][pfza_proto1], [SAM E54 Xplained Pro Evaluation Kit][atsame54_xpro] |
 | [atsamd-hal](https://docs.rs/atsamd_hal/) | [![Crates.io](https://img.shields.io/crates/v/atsamd_hal.svg)](https://crates.io/crates/atsamd_hal) |  |
 
 [arduino_mkr1000]: https://github.com/atsamd-rs/atsamd/tree/master/boards/arduino_mkr1000
 [arduino_mkr_vidor_4000]: https://github.com/atsamd-rs/atsamd/tree/master/boards/arduino_mkrvidor4000
 [arduino_mkrzero]: https://github.com/atsamd-rs/atsamd/tree/master/boards/arduino_mkrzero/
 [arduino_nano33_iot]: https://github.com/atsamd-rs/atsamd/tree/master/boards/arduino_nano33iot
+[atsame54_xpro]: https://github.com/atsamd-rs/atsamd/tree/master/boards/atsame54_xpro/
 [circuit_playground_express]: https://github.com/atsamd-rs/atsamd/tree/master/boards/circuit_playground_express/
 [edgebadge]: https://github.com/atsamd-rs/atsamd/tree/master/boards/edgebadge
 [feather_m0]: https://github.com/atsamd-rs/atsamd/tree/master/boards/feather_m0/

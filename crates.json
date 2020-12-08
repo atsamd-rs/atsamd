@@ -12,6 +12,9 @@
     "arduino_nano33iot": {
       "build": "cargo build --examples --features=unproven"
     },
+    "atsame54_xpro": {
+      "build": "cargo build --examples --features=unproven"
+    },
     "circuit_playground_express": {
       "build": "cargo build --examples --features=unproven"
     },
