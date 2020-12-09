@@ -4,7 +4,7 @@
 //! This crate is essentially a thin wrapper for [atsamd-hal], and re-exports it
 //! along with some of its members.
 //!
-//! Instead of interacting with the hal pin numbers [Pins] lets you use
+//! Instead of interacting with the hal pin numbers, [Pins] lets you use
 //! descriptive labels printed on the board like d13 or neopixel.
 //! ```ignore
 //! let mut pins = Pins::new(peripherals.PORT);
@@ -19,11 +19,16 @@
 //! let mut neopixel = sets.neopixel.init(timer, &mut sets.port);
 //! ```
 //!
-//! Visit Adafruit for an overview of [pinout] and available connectors.
+//! Visit Adafruit for an [overview] of pins and connectors and check out the
+//! [examples] to get an idea of how applications are structured and how the API
+//! works. Finally, install [hf2] to enable `cargo run` support for single
+//! command build and upload.
 //!
 //! [Pygamer]: https://www.adafruit.com/product/4242
-//! [atsamd-hal]: https://github.com/atsamd-rs/atsamd
-//! [pinout]: https://learn.adafruit.com/adafruit-pygamer
+//! [atsamd-hal]: https://docs.rs/atsamd-hal/latest/atsamd_hal/
+//! [overview]: https://learn.adafruit.com/adafruit-pygamer
+//! [examples]: https://github.com/atsamd-rs/atsamd/tree/master/boards/pygamer/examples
+//! [hf2]: https://github.com/jacobrosenthal/hf2-rs/tree/master/hf2-cli
 
 #![no_std]
 #![recursion_limit = "1024"]

@@ -33,110 +33,52 @@ use st7735_lcd::{Orientation, ST7735};
 use target_device::{ADC0, ADC1};
 
 define_pins!(
-    /// Maps the pins to their arduino names and
-    /// the numbers printed on the board.
+    /// Array of pins mapped to their arduino names and the numbers printed on
+    /// the board.
     struct Pins,
     target_device: target_device,
 
-    /// Analog pin 0.  Can act as a true analog output
-    /// as it has a DAC (which is not currently supported
-    /// by this hal) as well as input.
     pin speaker = a2,
-    /// enable speaker amplifier
     pin speaker_enable = a27,
-
-    /// Analog pin 1
     pin a1 = a5,
-    /// Analog pin 2
     pin a2 = b8,
-    /// Analog pin 3
     pin a3 = b9,
-    /// Analog pin 4
     pin a4 = a4,
-    /// Analog pin 5
     pin a5 = a6,
-    /// Battery Measure (also Analog pin 6)
     pin battery = b1,
-    /// Light sensor (also Analog pin 7)
     pin light = b4,
-    /// Digital pin 2 (also Analog pin 8)
     pin d2 = b3,
-    /// Digital pin 3 (also Analog pin 9)
     pin d3 = b2,
-    /// Digital pin 5
     pin d5 = a16,
-    /// Digital pin 6
     pin d6 = a18,
-    /// Accelerometer interrupt pin (also d7)
     pin accel_irq = b14,
-    /// Neopixel data line (controls all 5 neopixels, also d8)
     pin neopixel = a15,
-    /// Digital pin 9
     pin d9 = a19,
-    /// Digital pin 10
     pin d10 = a20,
-    /// Digital pin 11
     pin d11 = a21,
-    /// Digital pin 12
     pin d12 = a22,
-    /// D13 LED/JACDAC
     pin d13 = a23,
-
-    // TFT(Thin-film-transistor liquid-crystal display) control pins
-    /// TFT MOSI
     pin tft_mosi = b15,
-    /// TFT SCK
     pin tft_sck = b13,
-    /// TFT Reset
     pin tft_reset = a0,
-    /// TFT DC
     pin tft_dc = b5,
-    /// TFT CS
     pin tft_cs = b12,
-    /// TFT Backlight (also Analog pin 7)
     pin tft_backlight = a1,
-
-    // UART - Universal Asynchronous Receiver/Transmitter
-    /// Pin TX (d1)
     pin tx = b16,
-    /// Pin RX (d0)
     pin rx = b17,
-
-    // SPI - Serial Peripheral Interface (connected to sd card slot)
-    /// Pin MISO
     pin miso = b22,
-    /// Pin MOSI
     pin mosi = b23,
-    /// Pin SCK
     pin sck = a17,
-
-    // I2C (connected to LIS3DH accelerometer)
-    /// STEMMA SDA
     pin sda = a12,
-    /// STEMMA SCL
     pin scl = a13,
-
-    /// USB D- pin
     pin usb_dm = a24,
-    /// USB D+ pin
     pin usb_dp = a25,
-
-    /// SD card chip select (also d4)
     pin sd_cs = a14,
-
-    /// Joystick X
     pin joy_x = b7,
-    /// Joystick Y
     pin joy_y = b6,
-
-    /// Button Latch
     pin button_latch = b0,
-    /// Button Out
     pin button_out = b30,
-    /// Button Clock
     pin button_clock = b31,
-
-    /// qspi flash
     pin flash_sck = b10,
     pin flash_cs = b11,
     pin flash_d0 = a8,
@@ -255,53 +197,22 @@ impl Pins {
 
 /// Sets of pins split apart by category
 pub struct Sets {
-    /// Port
     pub port: Port,
-
-    /// LCD Display
     pub display: Display,
-
-    /// Red Led
     pub led_pin: Pa23<Input<Floating>>,
-
-    /// Neopixel (RGB LED) pins
     pub neopixel: Neopixel,
-
-    /// Analog Light Sensor
     pub light_pin: Pb4<Input<Floating>>,
-
-    /// I2C (connected to LIS3DH accelerometer and "Stemma" port)
     pub i2c: I2C,
-
-    /// SD Card CS pin
     pub sd_cs_pin: Pa14<Input<Floating>>,
-
-    /// Battery Voltage
     pub battery: Battery,
-
-    /// Speaker (DAC not implemented in hal yet)
     pub speaker: Speaker,
-
-    /// SPI (connected to SD Card)
     pub spi: SPI,
-
-    /// USB pins
     pub usb: USB,
-
-    /// UART (external pinout) pins
     pub uart: UART,
-
-    /// Analog pins.
     pub analog: Analog,
-
-    /// Digital pins.
     pub digital: Digital,
-
-    /// Flash storage
     pub flash: QSPIFlash,
-
     pub buttons: Buttons,
-
     pub joystick: Joystick,
 }
 
@@ -412,8 +323,8 @@ pub struct SPI {
 }
 
 impl SPI {
-    /// Convenience for setting up the labelled pins to operate
-    /// as an SPI master, running at the specified frequency.
+    /// Convenience for setting up the labelled pins to operate as an SPI
+    /// master, running at the specified frequency.
     pub fn init<F: Into<Hertz>>(
         self,
         clocks: &mut GenericClockController,
@@ -452,8 +363,8 @@ pub struct I2C {
 }
 
 impl I2C {
-    /// Convenience for setting up the labelled SDA, SCL pins to
-    /// operate as an I2C master running at the specified frequency.
+    /// Convenience for setting up the labelled SDA, SCL pins to operate as an
+    /// I2C master running at the specified frequency.
     pub fn init<F: Into<Hertz>>(
         self,
         clocks: &mut GenericClockController,
@@ -488,8 +399,8 @@ pub struct USB {
 
 impl USB {
     #[cfg(feature = "usb")]
-    /// Convenience for setting up the onboard usb port to operate
-    /// as a USB device.
+    /// Convenience for setting up the onboard usb port to operate as a USB
+    /// device.
     pub fn init(
         self,
         usb: target_device::USB,
@@ -518,8 +429,8 @@ pub struct UART {
 }
 
 impl UART {
-    /// Convenience for setting up the labelled TX, RX pins
-    /// to operate as a UART device at the specified baud rate.
+    /// Convenience for setting up the labelled TX, RX pins to operate as a UART
+    /// device at the specified baud rate.
     pub fn init<F: Into<Hertz>>(
         self,
         clocks: &mut GenericClockController,
@@ -575,6 +486,7 @@ pub struct QSPIFlash {
 }
 
 impl QSPIFlash {
+    /// Convenience for setting up the onboard qspi flash chip.
     pub fn init(self, mclk: &mut MCLK, port: &mut Port, qspi: QSPI) -> qspi::Qspi<qspi::OneShot> {
         qspi::Qspi::new(
             mclk, port, qspi, self.sck, self.cs, self.data0, self.data1, self.data2, self.data3,
@@ -584,18 +496,15 @@ impl QSPIFlash {
 
 /// Button pins
 pub struct Buttons {
-    /// Button Latch
     pub latch: Pb0<Input<Floating>>,
-    /// Button Out
     pub data_in: Pb30<Input<Floating>>,
-    /// Button Clock
     pub clock: Pb31<Input<Floating>>,
 }
 
 #[cfg(feature = "unproven")]
 impl Buttons {
-    /// Convenience for setting up the button latch pins
-    /// Returns ButtonReader iterator which can be polled for Key events
+    /// Convenience for setting up the button latch pins. Returns a ButtonReader
+    /// iterator which can be polled for Key events.
     pub fn init(self, port: &mut Port) -> ButtonReader {
         let mut latch = self.latch.into_push_pull_output(port);
         latch.set_high().ok();
@@ -605,29 +514,22 @@ impl Buttons {
         let mut clock = self.clock.into_push_pull_output(port);
         clock.set_high().ok();
 
-        ButtonReader {
-            latch,
-            data_in,
-            clock,
-            last: 0,
-        }
+        ButtonReader::new(latch, data_in, clock)
     }
 }
 
 /// Joystick pins
 pub struct JoystickReader {
-    /// Joystick X
     pub joy_x: Pb7<PfB>,
-    /// Joystick Y
     pub joy_y: Pb6<PfB>,
 }
 
 #[cfg(feature = "unproven")]
 impl JoystickReader {
-    /// returns a tuple (x,y) where values are 12 bit, between 0-4095
-    /// values are NOT centered, but could be by subtracting 2048
+    /// Returns a tuple (x,y) where values are 12 bit, between 0-4095. Values
+    /// are NOT centered, but could be by subtracting 2048.
     pub fn read(&mut self, adc: &mut hal::adc::Adc<ADC1>) -> (u16, u16) {
-        //note adafruit averages 3 readings on x and y (not inside the adc) seems
+        // note adafruit averages 3 readings on x and y (not inside the adc) seems
         // unnecessary? note adafruit recenters around zero.. Im not doing that
         // either atm.
 
@@ -640,16 +542,14 @@ impl JoystickReader {
 
 /// Joystick pins
 pub struct Joystick {
-    /// Joystick X
     pub joy_x: Pb7<Input<Floating>>,
-    /// Joystick Y
     pub joy_y: Pb6<Input<Floating>>,
 }
 
 #[cfg(feature = "unproven")]
 impl Joystick {
     /// Convenience for setting up the joystick. Returns JoystickReader instance
-    /// which can be polled for joystick (x,y) tuple
+    /// which can be polled for joystick (x,y) tuple.
     pub fn init(self, port: &mut Port) -> JoystickReader {
         JoystickReader {
             joy_x: self.joy_x.into_function_b(port),
@@ -661,13 +561,12 @@ impl Joystick {
 /// Battery Reader
 #[cfg(feature = "unproven")]
 pub struct BatteryReader {
-    /// Battery pin
     pub battery: Pb1<PfB>,
 }
 
 #[cfg(feature = "unproven")]
 impl BatteryReader {
-    /// Returns a float for voltage of battery
+    /// Returns a float for voltage of battery.
     pub fn read(&mut self, adc: &mut hal::adc::Adc<ADC0>) -> f32 {
         let data: u16 = adc.read(&mut self.battery).unwrap();
         let result: f32 = (data as f32 / 4095.0) * 2.0 * 3.3;
@@ -682,7 +581,7 @@ pub struct Battery {
 
 #[cfg(feature = "unproven")]
 impl Battery {
-    /// Convenience for reading Battery Volage. Returns BatteryReader instance
+    /// Convenience for reading Battery Volage. Returns a BatteryReader instance
     /// which can be polled for battery voltage
     pub fn init(self, port: &mut Port) -> BatteryReader {
         BatteryReader {
