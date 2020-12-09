@@ -552,9 +552,9 @@ pub struct Analog {
 
 /// Digital pins
 pub struct Digital {
-    /// also usabe as A8
+    /// also usable as A8
     pub d2: Pb3<Input<Floating>>,
-    /// also usabe as A9
+    /// also usable as A9
     pub d3: Pb2<Input<Floating>>,
     pub d5: Pa16<Input<Floating>>,
     pub d6: Pa18<Input<Floating>>,

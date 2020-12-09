@@ -1,3 +1,30 @@
+//! `pygamer` is a Board Support Package (BSP) which provides a type-safe API
+//! for the Adafruit [Pygamer].
+//!
+//! This crate is essentially a thin wrapper for [atsamd-hal], and re-exports it
+//! along with some of its members.
+//!
+//! Instead of interacting with the hal pin numbers [Pins] lets you use
+//! descriptive labels printed on the board like d13 or neopixel.
+//! ```ignore
+//! let mut pins = Pins::new(peripherals.PORT);
+//! let mut red_led = pins.d13.into_open_drain_output(&mut pins.port);
+//! ```
+//!
+//! The `split()` fn goes further and returns a [Sets] struct which you interact
+//! with groups of pins like a bus or peripheral and offers an `init()` fn.
+//! ```ignore
+//! let mut sets = Pins::new(peripherals.PORT).split();
+//! let timer = SpinTimer::new(4);
+//! let mut neopixel = sets.neopixel.init(timer, &mut sets.port);
+//! ```
+//!
+//! Visit Adafruit for an overview of [pinout] and available connectors.
+//!
+//! [Pygamer]: https://www.adafruit.com/product/4242
+//! [atsamd-hal]: https://github.com/atsamd-rs/atsamd
+//! [pinout]: https://learn.adafruit.com/adafruit-pygamer
+
 #![no_std]
 #![recursion_limit = "1024"]
 
