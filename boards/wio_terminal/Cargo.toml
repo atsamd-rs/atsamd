@@ -40,7 +40,7 @@ bbqueue = { version = "^0.4.11", optional = true }
 nb = { version = "0.1", optional = true }
 nom = { version = "^6.0", default-features = false, optional = true }
 generic-array = { version = "0.13", optional = true }
-seeed-erpc = { version = "0.0.1", optional = true }
+seeed-erpc = { version = "0.1.0", optional = true }
 
 [dependencies.atsamd-hal]
 path = "../../hal"
@@ -93,4 +93,8 @@ name = "qspi"
 
 [[example]]
 name = "wifi_scan"
+required-features = ["wifi"]
+
+[[example]]
+name = "wifi_connect"
 required-features = ["wifi"]
