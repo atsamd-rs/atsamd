@@ -19,8 +19,7 @@ use cortex_m::interrupt::free as disable_interrupts;
 use eg::fonts::{Font6x12, Text};
 use eg::pixelcolor::Rgb565;
 use eg::prelude::*;
-use eg::primitives::rectangle::Rectangle;
-use eg::style::{PrimitiveStyleBuilder, TextStyle};
+use eg::style::TextStyle;
 use heapless::{consts::U256, String};
 
 #[entry]
@@ -128,11 +127,7 @@ fn main() -> ! {
 wifi_singleton!(WIFI);
 
 fn clear(display: &mut wio::LCD) {
-    let style = PrimitiveStyleBuilder::new()
-        .fill_color(Rgb565::BLACK)
-        .build();
-    let backdrop = Rectangle::new(Point::new(0, 0), Point::new(320, 320)).into_styled(style);
-    backdrop.draw(display).ok().unwrap();
+    display.clear(Rgb565::BLACK).ok().unwrap();
 }
 
 fn write<'a, T: Into<&'a str>>(display: &mut wio::LCD, text: T, pos: Point) {
