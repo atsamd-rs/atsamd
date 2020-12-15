@@ -22,6 +22,12 @@ pub struct InterruptAdc<ADC> {
     adc: Adc<ADC>,
 }
 
+/// An ADC where results are accessible via interrupt servicing 
+/// and runs with free-run mode to start conversion automatically after a conversion completes. 
+pub struct FreeRunAdc<ADC> {
+    adc: Adc<ADC>,
+}
+
 pub struct Adc<ADC> {
     adc: ADC,
 }
@@ -103,6 +109,16 @@ impl Adc<$ADC> {
         self.adc.swtrig.modify(|_, w| w.start().set_bit());
     }
 
+    fn enable_freerunning(&mut self) {
+        self.adc.ctrlb.modify(|_, w| w.freerun().set_bit());
+        while self.adc.syncbusy.read().ctrlb().bit_is_set() {}
+    }
+
+    fn disable_freerunning(&mut self) {
+        self.adc.ctrlb.modify(|_, w| w.freerun().set_bit());
+        while self.adc.syncbusy.read().ctrlb().bit_is_set() {}
+    }
+
     fn synchronous_convert(&mut self) -> u16 {
         self.start_conversion();
         while self.adc.intflag.read().resrdy().bit_is_clear() {}
@@ -162,6 +178,35 @@ impl InterruptAdc<$ADC> {
 }
 
 impl From<Adc<$ADC>> for InterruptAdc<$ADC> {
+    fn from(adc: Adc<$ADC>) -> Self {
+        Self {
+            adc,
+        }
+    }
+}
+
+impl FreeRunAdc<$ADC> {
+    pub fn service_interrupt_ready(&mut self) -> Option<u16> {
+        self.adc.service_interrupt_ready()
+    }
+
+    pub fn stop_conversion(&mut self) {
+        self.adc.disable_interrupts();
+        self.adc.power_down();
+        self.adc.disable_freerunning();
+    }
+
+    /// Starts a conversion sampling the specified pin.
+    pub fn start_conversion<PIN: Channel<$ADC, ID=u8>>(&mut self, pin: &mut PIN) {
+        self.adc.mux(pin);
+        self.adc.power_up();
+        self.adc.enable_interrupts();
+        self.adc.enable_freerunning();
+        self.adc.start_conversion();
+    }
+}
+
+impl From<Adc<$ADC>> for FreeRunAdc<$ADC> {
     fn from(adc: Adc<$ADC>) -> Self {
         Self {
             adc,
