@@ -22,8 +22,9 @@ pub struct InterruptAdc<ADC> {
     adc: Adc<ADC>,
 }
 
-/// An ADC where results are accessible via interrupt servicing 
-/// and runs with free-run mode to start conversion automatically after a conversion completes. 
+/// An ADC where results are accessible via interrupt servicing
+/// and runs with free-run mode to start conversion automatically after a
+/// conversion completes.
 pub struct FreeRunAdc<ADC> {
     adc: Adc<ADC>,
 }
