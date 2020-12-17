@@ -18,20 +18,28 @@ use crate::target_device::{adc0, ADC0, ADC1, MCLK};
 use crate::calibration;
 
 /// An ADC where results are accessible via interrupt servicing.
-pub struct InterruptAdc<ADC> {
+pub struct InterruptAdc<ADC, C>
+where
+    C: ConversionMode<ADC>,
+{
     adc: Adc<ADC>,
-}
-
-/// An ADC where results are accessible via interrupt servicing
-/// and runs with free-run mode to start conversion automatically after a
-/// conversion completes.
-pub struct FreeRunAdc<ADC> {
-    adc: Adc<ADC>,
+    m: core::marker::PhantomData<C>,
 }
 
 pub struct Adc<ADC> {
     adc: ADC,
 }
+
+/// Describes how an interrupt-driven ADC should finalize the peripheral
+/// upon the completion of a conversion.
+pub trait ConversionMode<ADC> {
+    fn on_start(adc: &mut Adc<ADC>);
+    fn on_complete(adc: &mut Adc<ADC>);
+    fn on_stop(adc: &mut Adc<ADC>);
+}
+
+pub struct SingleConversion;
+pub struct FreeRunning;
 
 macro_rules! adc_hal {
     ($($ADC:ident: ($init:ident, $mclk:ident, $apmask:ident, $compcal:ident, $refcal:ident, $r2rcal:ident),)+) => {
@@ -157,12 +165,36 @@ impl Adc<$ADC> {
     }
 }
 
+impl ConversionMode<$ADC> for SingleConversion  {
+    fn on_start(adc: &mut Adc<$ADC>) {
+    }
+    fn on_complete(adc: &mut Adc<$ADC>) {
+        adc.disable_interrupts();
+        adc.power_down();
+    }
+    fn on_stop(adc: &mut Adc<$ADC>) {
+    }
+}
 
-impl InterruptAdc<$ADC> {
+impl ConversionMode<$ADC> for FreeRunning {
+    fn on_start(adc: &mut Adc<$ADC>) {
+        adc.enable_freerunning();
+    }
+    fn on_complete(adc: &mut Adc<$ADC>) {
+    }
+    fn on_stop(adc: &mut Adc<$ADC>) {
+        adc.disable_interrupts();
+        adc.power_down();
+        adc.disable_freerunning();
+    }
+}
+
+impl<C> InterruptAdc<$ADC, C>
+    where C: ConversionMode<$ADC>
+{
     pub fn service_interrupt_ready(&mut self) -> Option<u16> {
         if let Some(res) = self.adc.service_interrupt_ready() {
-            self.adc.disable_interrupts();
-            self.adc.power_down();
+            C::on_complete(&mut self.adc);
             Some(res)
         } else {
             None
@@ -173,44 +205,23 @@ impl InterruptAdc<$ADC> {
     pub fn start_conversion<PIN: Channel<$ADC, ID=u8>>(&mut self, pin: &mut PIN) {
         self.adc.mux(pin);
         self.adc.power_up();
+        C::on_start(&mut self.adc);
         self.adc.enable_interrupts();
         self.adc.start_conversion();
-    }
-}
-
-impl From<Adc<$ADC>> for InterruptAdc<$ADC> {
-    fn from(adc: Adc<$ADC>) -> Self {
-        Self {
-            adc,
-        }
-    }
-}
-
-impl FreeRunAdc<$ADC> {
-    pub fn service_interrupt_ready(&mut self) -> Option<u16> {
-        self.adc.service_interrupt_ready()
     }
 
     pub fn stop_conversion(&mut self) {
-        self.adc.disable_interrupts();
-        self.adc.power_down();
-        self.adc.disable_freerunning();
-    }
-
-    /// Starts a conversion sampling the specified pin.
-    pub fn start_conversion<PIN: Channel<$ADC, ID=u8>>(&mut self, pin: &mut PIN) {
-        self.adc.mux(pin);
-        self.adc.power_up();
-        self.adc.enable_interrupts();
-        self.adc.enable_freerunning();
-        self.adc.start_conversion();
+        C::on_stop(&mut self.adc);
     }
 }
 
-impl From<Adc<$ADC>> for FreeRunAdc<$ADC> {
+impl<C> From<Adc<$ADC>> for InterruptAdc<$ADC, C>
+    where C: ConversionMode<$ADC>
+{
     fn from(adc: Adc<$ADC>) -> Self {
         Self {
             adc,
+            m: core::marker::PhantomData{},
         }
     }
 }
