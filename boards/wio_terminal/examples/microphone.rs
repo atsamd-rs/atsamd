@@ -5,14 +5,14 @@ use embedded_graphics as eg;
 use panic_halt as _;
 use wio_terminal as wio;
 
+use cortex_m::peripheral::NVIC;
+use wio::hal::adc::{FreeRunning, InterruptAdc, SingleConversion};
 use wio::hal::clock::GenericClockController;
 use wio::hal::delay::Delay;
-use wio::hal::adc::{InterruptAdc, SingleConversion, FreeRunning};
-use wio::pac::{CorePeripherals, Peripherals};
 use wio::pac::{adc0::refctrl::REFSEL_A, gclk::pchctrl::GEN_A::GCLK11, interrupt, ADC1};
+use wio::pac::{CorePeripherals, Peripherals};
 use wio::prelude::*;
 use wio::{entry, Pins, Sets};
-use cortex_m::peripheral::NVIC;
 
 use core::fmt::Write;
 use eg::fonts::{Font6x12, Text};
@@ -23,8 +23,8 @@ use eg::style::{PrimitiveStyleBuilder, TextStyle};
 use heapless::consts::U256;
 use heapless::String;
 
-use heapless::spsc::Queue;
 use heapless::consts::*;
+use heapless::spsc::Queue;
 struct Ctx {
     adc: InterruptAdc<ADC1, ConversionMode>,
     samples: Queue<u16, U8>,
@@ -32,8 +32,8 @@ struct Ctx {
 static mut CTX: Option<Ctx> = None;
 
 type ConversionMode = FreeRunning;
-// You also have to uncomment the line which calls start_conversion function in the main loop.
-//type ConversionMode = SingleConversion;
+// You also have to uncomment the line which calls start_conversion function in
+// the main loop. type ConversionMode = SingleConversion;
 
 #[entry]
 fn main() -> ! {
@@ -67,14 +67,19 @@ fn main() -> ! {
 
     let mut user_led = sets.user_led.into_open_drain_output(&mut sets.port);
     user_led.set_high().unwrap();
-    
+
     // Construct an InterruptAdc with free-running mode.
     let (mut microphone_adc, mut microphone_pin) = {
-        let (adc, pin) = sets.microphone.init(peripherals.ADC1, &mut clocks, &mut peripherals.MCLK, &mut sets.port);
+        let (adc, pin) = sets.microphone.init(
+            peripherals.ADC1,
+            &mut clocks,
+            &mut peripherals.MCLK,
+            &mut sets.port,
+        );
         let interrupt_adc: InterruptAdc<_, ConversionMode> = InterruptAdc::from(adc);
         (interrupt_adc, pin)
     };
-    
+
     microphone_adc.start_conversion(&mut microphone_pin);
 
     unsafe {
@@ -97,10 +102,11 @@ fn main() -> ! {
         let mut min = core::f32::INFINITY;
         let mut max = core::f32::NEG_INFINITY;
         let mut sum = 0f32;
-        // Though the ADC sampling rate is set to 250[kSPS] according to the comment in the adc.rs, 
-        // actual sampling rate seems 83.333[kSPS], which is 1/3 of expected sampling rate.
+        // Though the ADC sampling rate is set to 250[kSPS] according to the comment in
+        // the adc.rs, actual sampling rate seems 83.333[kSPS], which is 1/3 of
+        // expected sampling rate.
         let count_max = 83333;
-        for count in 0..count_max { 
+        for count in 0..count_max {
             // Uncomment if you use single conversion mode.
             // unsafe { CTX.as_mut().unwrap().adc.start_conversion(&mut microphone_pin); }
             let value = loop {
@@ -121,7 +127,6 @@ fn main() -> ! {
         terminal.write_str(textbuffer.as_str());
     }
 }
-
 
 #[interrupt]
 fn ADC1_RESRDY() {
