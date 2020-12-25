@@ -10,11 +10,14 @@ pub use self::bus::UsbBus;
 mod devicedesc;
 use self::devicedesc::Descriptors;
 
+
+use gpio::v2::*;
+
 /// Emit SOF at 1Khz on this pin when configured as function H
-pub type SofPad = gpio::Pa23<gpio::PfH>;
+pub type SofPad = Pin<PA23, AlternateH>;
 
 /// USB D- is connected here
-pub type DmPad = gpio::Pa24<gpio::PfH>;
+pub type DmPad = Pin<PA24, AlternateH>;
 
 /// USB D+ is connected here
-pub type DpPad = gpio::Pa25<gpio::PfH>;
+pub type DpPad = Pin<PA25, AlternateH>;
