@@ -10,14 +10,32 @@ pub use self::bus::UsbBus;
 mod devicedesc;
 use self::devicedesc::Descriptors;
 
+/// Default SOF pad
+pub type SofPad = gpio::v1::Pa23<gpio::v1::PfH>;
+/// Default USB D- pad
+pub type DmPad = gpio::v1::Pa24<gpio::v1::PfH>;
+/// Default USB D+ pad
+pub type DpPad = gpio::v1::Pa25<gpio::v1::PfH>;
 
-use gpio::v2::*;
 
-/// Emit SOF at 1Khz on this pin when configured as function H
-pub type SofPad = Pin<PA23, AlternateH>;
 
-/// USB D- is connected here
-pub type DmPad = Pin<PA24, AlternateH>;
+/// Indicates pin can be used as USB D-
+pub trait UsbPadDm: Send {}
 
-/// USB D+ is connected here
-pub type DpPad = Pin<PA25, AlternateH>;
+/// Indicates pin can be used as USB D+
+pub trait UsbPadDp: Send {}
+
+/// Indicates pin can be used as SOF (1kHz signal)
+pub trait UsbPadSof: Send {}
+
+
+// v1 pin impls
+impl UsbPadSof for gpio::v1::Pa23<gpio::v1::PfH> {}
+impl UsbPadDm for gpio::v1::Pa24<gpio::v1::PfH> {}
+impl UsbPadDp for gpio::v1::Pa25<gpio::v1::PfH> {}
+
+// v2 pin impls
+impl UsbPadSof for gpio::v2::Pin<gpio::v2::PA23, gpio::v2::AlternateH> {}
+impl UsbPadDm for gpio::v2::Pin<gpio::v2::PA24, gpio::v2::AlternateH> {}
+impl UsbPadDp for gpio::v2::Pin<gpio::v2::PA25, gpio::v2::AlternateH> {}
+

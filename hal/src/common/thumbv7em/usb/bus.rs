@@ -5,7 +5,7 @@
 // people doing that should be familiar with the USB standard. http://ww1.microchip.com/downloads/en/DeviceDoc/60001507E.pdf
 // http://ww1.microchip.com/downloads/en/AppNotes/Atmel-42261-SAM-D21-USB_Application-Note_AT06475.pdf
 
-use super::{Descriptors, DmPad, DpPad};
+use super::{Descriptors, DmPad, DpPad, UsbPadDm, UsbPadDp};
 use crate::calibration::{usb_transn_cal, usb_transp_cal, usb_trim_cal};
 use crate::clock;
 use crate::target_device;
@@ -197,16 +197,16 @@ impl BufferAllocator {
     }
 }
 
-struct Inner {
+struct Inner<Dm: UsbPadDm = DmPad, Dp: UsbPadDp = DpPad> {
     desc: RefCell<Descriptors>,
-    _dm_pad: DmPad,
-    _dp_pad: DpPad,
+    _dm_pad: Dm,
+    _dp_pad: Dp,
     endpoints: RefCell<AllEndpoints>,
     buffers: RefCell<BufferAllocator>,
 }
 
-pub struct UsbBus {
-    inner: Mutex<RefCell<Inner>>,
+pub struct UsbBus<Dm: UsbPadDm = DmPad, Dp: UsbPadDp = DpPad> {
+    inner: Mutex<RefCell<Inner<Dm, Dp>>>,
 }
 
 /// Generate a method that allows returning the endpoint register
@@ -480,7 +480,7 @@ impl<'a, T> Bank<'a, T> {
     ep!(epintenset, EPINTENSET);
 }
 
-impl Inner {
+impl <Dm: UsbPadDm, Dp: UsbPadDp> Inner<Dm, Dp> {
     ep!(epcfg, EPCFG);
     ep!(epstatus, EPSTATUS);
     ep!(epintflag, EPINTFLAG);
@@ -522,12 +522,12 @@ impl Inner {
     }
 }
 
-impl UsbBus {
+impl <Dm: UsbPadDm, Dp: UsbPadDp> UsbBus <Dm, Dp> {
     pub fn new(
         _clock: &clock::UsbClock,
         mclk: &mut MCLK,
-        dm_pad: DmPad,
-        dp_pad: DpPad,
+        dm_pad: Dm,
+        dp_pad: Dp,
         _usb: USB,
     ) -> Self {
         dbgprint!("******** UsbBus::new\n");
@@ -550,7 +550,7 @@ impl UsbBus {
     }
 }
 
-impl Inner {
+impl <Dm: UsbPadDm, Dp: UsbPadDp> Inner <Dm, Dp> {
     fn usb(&self) -> &DEVICE {
         unsafe { &(*USB::ptr()).device() }
     }
@@ -622,7 +622,7 @@ enum FlushConfigMode {
     ProtocolReset,
 }
 
-impl Inner {
+impl <Dm: UsbPadDm, Dp: UsbPadDp> Inner <Dm, Dp> {
     fn enable(&mut self) {
         dbgprint!("UsbBus::enable\n");
         let usb = self.usb();
@@ -951,7 +951,7 @@ impl Inner {
     }
 }
 
-impl usb_device::bus::UsbBus for UsbBus {
+impl <Dm: UsbPadDm, Dp: UsbPadDp> usb_device::bus::UsbBus for UsbBus <Dm, Dp> {
     fn enable(&mut self) {
         disable_interrupts(|cs| self.inner.borrow(cs).borrow_mut().enable())
     }
