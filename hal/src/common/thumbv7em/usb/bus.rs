@@ -480,7 +480,7 @@ impl<'a, T> Bank<'a, T> {
     ep!(epintenset, EPINTENSET);
 }
 
-impl <Dm: UsbPadDm, Dp: UsbPadDp> Inner<Dm, Dp> {
+impl<Dm: UsbPadDm, Dp: UsbPadDp> Inner<Dm, Dp> {
     ep!(epcfg, EPCFG);
     ep!(epstatus, EPSTATUS);
     ep!(epintflag, EPINTFLAG);
@@ -522,7 +522,7 @@ impl <Dm: UsbPadDm, Dp: UsbPadDp> Inner<Dm, Dp> {
     }
 }
 
-impl <Dm: UsbPadDm, Dp: UsbPadDp> UsbBus <Dm, Dp> {
+impl<Dm: UsbPadDm, Dp: UsbPadDp> UsbBus<Dm, Dp> {
     pub fn new(
         _clock: &clock::UsbClock,
         mclk: &mut MCLK,
@@ -550,7 +550,7 @@ impl <Dm: UsbPadDm, Dp: UsbPadDp> UsbBus <Dm, Dp> {
     }
 }
 
-impl <Dm: UsbPadDm, Dp: UsbPadDp> Inner <Dm, Dp> {
+impl<Dm: UsbPadDm, Dp: UsbPadDp> Inner<Dm, Dp> {
     fn usb(&self) -> &DEVICE {
         unsafe { &(*USB::ptr()).device() }
     }
@@ -622,7 +622,7 @@ enum FlushConfigMode {
     ProtocolReset,
 }
 
-impl <Dm: UsbPadDm, Dp: UsbPadDp> Inner <Dm, Dp> {
+impl<Dm: UsbPadDm, Dp: UsbPadDp> Inner<Dm, Dp> {
     fn enable(&mut self) {
         dbgprint!("UsbBus::enable\n");
         let usb = self.usb();
@@ -951,7 +951,7 @@ impl <Dm: UsbPadDm, Dp: UsbPadDp> Inner <Dm, Dp> {
     }
 }
 
-impl <Dm: UsbPadDm, Dp: UsbPadDp> usb_device::bus::UsbBus for UsbBus <Dm, Dp> {
+impl<Dm: UsbPadDm, Dp: UsbPadDp> usb_device::bus::UsbBus for UsbBus<Dm, Dp> {
     fn enable(&mut self) {
         disable_interrupts(|cs| self.inner.borrow(cs).borrow_mut().enable())
     }

@@ -17,8 +17,6 @@ pub type DmPad = gpio::v1::Pa24<gpio::v1::PfH>;
 /// Default USB D+ pad
 pub type DpPad = gpio::v1::Pa25<gpio::v1::PfH>;
 
-
-
 /// Indicates pin can be used as USB D-
 pub trait UsbPadDm: Send {}
 
@@ -27,7 +25,6 @@ pub trait UsbPadDp: Send {}
 
 /// Indicates pin can be used as SOF (1kHz signal)
 pub trait UsbPadSof: Send {}
-
 
 // v1 pin impls
 impl UsbPadSof for gpio::v1::Pa23<gpio::v1::PfH> {}
@@ -38,4 +35,3 @@ impl UsbPadDp for gpio::v1::Pa25<gpio::v1::PfH> {}
 impl UsbPadSof for gpio::v2::Pin<gpio::v2::PA23, gpio::v2::AlternateH> {}
 impl UsbPadDm for gpio::v2::Pin<gpio::v2::PA24, gpio::v2::AlternateH> {}
 impl UsbPadDp for gpio::v2::Pin<gpio::v2::PA25, gpio::v2::AlternateH> {}
-
