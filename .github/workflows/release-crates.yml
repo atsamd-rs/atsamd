@@ -59,6 +59,10 @@ jobs:
         shell: bash
         run: |
           set -ex
+
+          # Install random crate to force update of the registry
+          cargo install lazy_static || true
+
           cd "hal" && cargo publish --no-verify
 
 
@@ -67,6 +71,10 @@ jobs:
         shell: bash
         run: |
           set -ex
+
+          # Install random crate to force update of the registry
+          cargo install lazy_static || true
+
           sudo apt-get install -y jq
           for bsp in $(cat crates.json | jq -Mr -c '.boards | keys[]');
           do
