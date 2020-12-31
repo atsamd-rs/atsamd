@@ -78,5 +78,15 @@ jobs:
           sudo apt-get install -y jq
           for bsp in $(cat crates.json | jq -Mr -c '.boards | keys[]');
           do
-            (cd "boards/${bsp}" && cargo publish );
+            (
+              cd "boards/${bsp}"
+              PUBLISH_ERR=$(cargo publish 2>&1 >/dev/null)
+              if [[ "$PUBLISH_ERR" == *" is already uploaded"* ]]; then
+                exit 0
+              fi
+              if [[ "$PUBLISH_ERR" == *"error: "* ]]; then
+                echo "$PUBLISH_ERR"
+                exit 1
+              fi
+            )
           done
