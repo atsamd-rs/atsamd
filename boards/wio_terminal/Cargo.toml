@@ -39,8 +39,8 @@ usbd-serial = { version = "0.1", optional = true }
 bbqueue = { version = "^0.4.11", optional = true }
 nb = { version = "0.1", optional = true }
 nom = { version = "^6.0", default-features = false, optional = true }
-generic-array = { version = "0.13", optional = true }
-seeed-erpc = { version = "0.1.0", optional = true }
+generic-array = { version = "0.14", optional = true }
+seeed-erpc = { version = "0.1.1", optional = true }
 
 [dependencies.atsamd-hal]
 path = "../../hal"
