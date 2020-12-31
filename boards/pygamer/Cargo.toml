@@ -11,7 +11,7 @@ license = "MIT OR Apache-2.0"
 repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
 edition = "2018"
-exclude = ["assets", "examples"]
+exclude = ["assets"]
 
 [dependencies]
 cortex-m = "0.6"
