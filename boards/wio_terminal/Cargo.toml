@@ -23,7 +23,7 @@ categories = [
     "no-std",
 ]
 
-exclude = ["assets", "examples"]
+exclude = ["assets"]
 
 [dependencies]
 bitfield = "0.13"
