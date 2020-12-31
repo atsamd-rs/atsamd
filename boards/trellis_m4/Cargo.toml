@@ -1,6 +1,6 @@
 [package]
 name = "trellis_m4"
-version = "0.7.0"
+version = "0.8.0"
 authors = [
     "Tony Arcieri <bascule@gmail.com>",
     "Paul Sajna <sajattack@gmail.com>",
@@ -31,7 +31,7 @@ optional = true
 
 [dependencies.atsamd-hal]
 path = "../../hal"
-version = "0.11"
+version = "0.12"
 default-features = false
 
 [dependencies.keypad]
