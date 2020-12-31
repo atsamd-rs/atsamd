@@ -42,3 +42,4 @@ jobs:
         set -ex
         cd boards/${{ matrix.bsp }}
         $(${build_invocation})
+        cargo publish --dry-run
