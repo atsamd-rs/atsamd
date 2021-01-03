@@ -1643,3 +1643,194 @@ define_pins!(
         (PD21, 21),
     }
 );
+
+/// Helper macro to give meaningful names to GPIO pins
+///
+/// The normal [`Pins`] struct names each [`Pin`] according to its [`PinId`].
+/// However, BSP authors would prefer to name each [`Pin`] according to its
+/// function. This macro defines a new `Pins` struct with custom field names
+/// for each [`Pin`], and it defines type aliases and constants to make it
+/// easier to work with the [`Pin`]s and [`DynPin`](super::DynPin)s.
+///
+/// The types and constants are defined within a public module named
+/// `bsp_pins_mod` and are then re-exported with `pub use bsp_pins_mod::*;`.
+///
+/// # Example
+///
+/// The following example macro call
+///
+/// ```rust
+/// bsp_pins!(
+///     #[cfg(feature = "unproven")]
+///     PA24 {
+///         name: led_pass,
+///         aliases: {
+///             AlternateH: LedPass,
+///             #[cfg(feature = "usb")]
+///             AlternateM: UsbPin
+///         }
+///     }
+/// );
+/// ```
+///
+/// would expand to this
+///
+/// ```rust
+/// pub mod bsp_pins_mod {
+///     use atsamd_hal::target_device::PORT;
+///     use atsamd_hal::gpio::v2::{
+///         self as gpio, Pin, PinId, PinMode, Reset, DynPinId, DynPinMode
+///     };
+///
+///     pub struct Pins {
+///         port: Option<PORT>,
+///         #[cfg(feature = "unproven")]
+///         pub led_pass: Pin<gpio::PA24, Reset>,
+///     }
+///
+///     impl Pins {
+///
+///         pub fn new(port: PORT) -> Self {
+///             let pins = gpio::Pins::new(port);
+///             Self {
+///                 port: Some(unsafe { pins.port() }),
+///                 #[cfg(feature = "unproven")]
+///                 led_pass: pins.pa24,
+///             }
+///         }
+///
+///         #[inline]
+///         pub unsafe fn port(&mut self) -> PORT {
+///             self.port.take().unwrap()
+///         }
+///     }
+///
+///     #[cfg(feature = "unproven")]
+///     pub type LedPass = Pin<gpio::PA24, gpio::AlternateH>;
+///     #[cfg(feature = "unproven")]
+///     pub const LED_PASS_ID: DynPinId = <gpio::PA24 as PinId>::DYN;
+///     #[cfg(feature = "unproven")]
+///     pub const LED_PASS_MODE: DynPinMode = <gpio::AlternateH as PinMode>::DYN;
+///
+///     #[cfg(feature = "unproven")]
+///     #[cfg(feature = "usb")]
+///     pub type UsbPin = Pin<gpio::PA24, gpio::AlternateM>;
+///     #[cfg(feature = "unproven")]
+///     #[cfg(feature = "usb")]
+///     pub const USB_PIN_ID: DynPinId = <gpio::PA24 as PinId>::DYN;
+///     #[cfg(feature = "unproven")]
+///     #[cfg(feature = "usb")]
+///     pub const USB_PIN_MODE: DynPinMode = <gpio::AlternateM as PinMode>::DYN;
+/// }
+/// pub use bsp_pins_mod::*;
+/// ```
+#[macro_export]
+macro_rules! bsp_pins {
+    (
+        $(
+            $( #[$name_cfg:meta] )?
+            $Id:ty {
+                name: $name:ident $(,)?
+                $(
+                    aliases: {
+                        $(
+                            $( #[$alias_cfg:meta] )?
+                            $Mode:ty: $Alias:ident
+                        ),+
+                    }
+                )?
+            }
+        )+
+    ) => {
+        paste! {
+            pub mod bsp_pins_mod {
+                use atsamd_hal::target_device::PORT;
+                use atsamd_hal::gpio::v2::{
+                    self as gpio, Pin, PinId, PinMode, Reset, DynPinId, DynPinMode
+                };
+
+                /// BSP replacement for the HAL
+                /// [`Pins`](atsamd_hal::gpio::v2::Pins) type
+                ///
+                /// This type is intended to provide more meaningful names for
+                /// the given pins.
+                pub struct Pins {
+                    port: Option<PORT>,
+                    $(
+                        $( #[$name_cfg] )?
+                        pub $name: Pin<gpio::$Id, Reset>,
+                    )+
+                }
+
+                impl Pins {
+
+                    /// Take ownership of the PAC [`PORT`] and split it into
+                    /// discrete [`Pin`]s.
+                    ///
+                    /// This struct serves as a replacement for the HAL [`Pins`]
+                    /// struct. It is intended to provide more meaningful names
+                    /// for each [`Pin`] in a BSP. Any [`Pin`] not defined by
+                    /// the BSP is dropped.
+                    ///
+                    /// [`PORT`](atsamd_hal::target_device::PORT)
+                    /// [`Pin`](atsamd_hal::gpio::v2::Pin)
+                    /// [`Pins`](atsamd_hal::gpio::v2::Pins)
+                    pub fn new(port: PORT) -> Self {
+                        let mut pins = gpio::Pins::new(port);
+                        Self {
+                            port: Some(unsafe{ pins.port() }),
+                            $(
+                                $( #[$name_cfg] )?
+                                $name: pins.[<$Id:lower>],
+                            )+
+                        }
+                    }
+
+                    /// Take the PAC [`PORT`]
+                    ///
+                    /// The [`PORT`] can only be taken once. Subsequent calls to
+                    /// this function will panic.
+                    ///
+                    /// # Safety
+                    ///
+                    /// Direct access to the [`PORT`] could allow you to invalidate
+                    /// the compiler's type-level tracking, so it is unsafe.
+                    ///
+                    /// [`PORT`](atsamd_hal::target_device::PORT)
+                    #[inline]
+                    pub unsafe fn port(&mut self) -> PORT {
+                        self.port.take().unwrap()
+                    }
+                }
+
+                $(
+                    $( #[$name_cfg] )?
+                    $(
+                        $(
+                            $( #[$alias_cfg] )?
+                            /// Alias for a configured [`Pin`](atsamd_hal::gpio::v2::Pin)
+                            pub type $Alias = Pin<gpio::$Id, gpio::$Mode>;
+                        )+
+                    )?
+                    $( #[$name_cfg] )?
+                    $(
+                        $(
+                            $( #[$alias_cfg] )?
+                            #[doc = "[DynPinId](atsamd_hal::gpio::v2::DynPinId) for the `" $Alias "` alias."]
+                            pub const [<$Alias:snake:upper _ID>]: DynPinId = <gpio::$Id as PinId>::DYN;
+                        )+
+                    )?
+                    $( #[$name_cfg] )?
+                    $(
+                        $(
+                            $( #[$alias_cfg] )?
+                            #[doc = "[DynPinMode](atsamd_hal::gpio::v2::DynPinMode) for the `" $Alias "` alias."]
+                            pub const [<$Alias:snake:upper _MODE>]: DynPinMode = <gpio::$Mode as PinMode>::DYN;
+                        )+
+                    )?
+                )+
+            }
+            pub use bsp_pins_mod::*;
+        }
+    };
+}
