@@ -1376,7 +1376,7 @@ macro_rules! pins{
         paste! {
             /// Collection of all the individual [`Pin`]s
             pub struct Pins {
-                port: PORT,
+                port: Option<PORT>,
                 $(
                     #[doc = "Pin " $Id]
                     $( #[$cfg] )?
@@ -1389,32 +1389,27 @@ macro_rules! pins{
                 /// discrete [`Pin`]s
                 pub fn new(port: PORT) -> Pins {
                     Pins {
-                        port,
+                        port: Some(port),
                         $(
                             $( #[$cfg] )?
                             [<$Id:lower>]: Pin::new(),
                         )+
                     }
                 }
-                /// Get a reference to the PAC
-                /// [`PORT`](crate::target_device::PORT)
+                /// Take the PAC [`PORT`]
                 ///
-                /// This operation could allow you to invalidate the compiler's
-                /// type-level tracking, so it is unsafe.
-                #[inline]
-                pub unsafe fn port(&self) -> &PORT {
-                    &self.port
-                }
-                /// Consume the [`Pins`] struct and return the PAC
-                /// [`PORT`](crate::target_device::PORT)
+                /// The [`PORT`] can only be taken once. Subsequent calls to
+                /// this function will panic.
                 ///
-                /// All remaining [`Pin`] instances stored within the struct
-                /// will be dropped. This operation could allow you to
-                /// invalidate the compiler's type-level tracking, so it is
-                /// unsafe.
+                /// # Safety
+                ///
+                /// Direct access to the [`PORT`] could allow you to invalidate
+                /// the compiler's type-level tracking, so it is unsafe.
+                ///
+                /// [`PORT`](crate::target_device::PORT)
                 #[inline]
-                pub unsafe fn free(self) -> PORT {
-                    self.port
+                pub unsafe fn port(&mut self) -> PORT {
+                    self.port.take().unwrap()
                 }
             }
         }
