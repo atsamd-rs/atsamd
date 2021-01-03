@@ -34,22 +34,22 @@ macro_rules! uart {
             ///
             /// Defines which sercom pad is mapped to which UART function.
             pub struct [<$Type Padout>]<RX, TX, RTS, CTS> {
-                _rx: RX,
-                _tx: TX,
-                _rts: RTS,
-                _cts: CTS,
+                rx: RX,
+                tx: TX,
+                rts: RTS,
+                cts: CTS,
             }
 
             /// A pad mapping configuration for the receiving half of the SERCOM in UART mode.
             pub struct [<$Type RxPadout>]<RX, CTS> {
-                _rx: RX,
-                _cts: CTS,
+                rx: RX,
+                cts: CTS,
             }
 
             /// A pad mapping configuration for the transmitting half of the SERCOM in UART mode.
             pub struct [<$Type TxPadout>]<TX, RTS> {
-                _tx: TX,
-                _rts: RTS,
+                tx: TX,
+                rts: RTS,
             }
 
             impl<RX, TX, RTS, CTS> [<$Type Padout>]<RX, TX, RTS, CTS> {
@@ -57,14 +57,24 @@ macro_rules! uart {
                 pub fn split(self) -> ([<$Type TxPadout>]<TX, RTS>, [<$Type RxPadout>]<RX, CTS>) {
                     (
                         [<$Type TxPadout>] {
-                            _tx: self._tx,
-                            _rts: self._rts,
+                            tx: self.tx,
+                            rts: self.rts,
                         },
                         [<$Type RxPadout>] {
-                            _rx: self._rx,
-                            _cts: self._cts,
+                            rx: self.rx,
+                            cts: self.cts,
                         },
                     )
+                }
+
+                /// Combines transmit and receive halves back into a duplex padout
+                pub fn join(tx: [<$Type TxPadout>]<TX, RTS>, rx: [<$Type RxPadout>]<RX, CTS>) -> Self {
+                    Self {
+                        rx: rx.rx,
+                        tx: tx.tx,
+                        rts: tx.rts,
+                        cts: rx.cts,
+                    }
                 }
             }
         }
@@ -86,7 +96,7 @@ macro_rules! uart {
                         PIN1: Map<$Sercom, $pad1>,
                     {
                         fn from(pads: ([<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>)) -> [<$Type Padout>]<[<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, (), ()> {
-                            [<$Type Padout>] { _rx: pads.0, _tx: pads.1, _rts: (), _cts: () }
+                            [<$Type Padout>] { rx: pads.0, tx: pads.1, rts: (), cts: () }
                         }
                     }
 
@@ -112,7 +122,7 @@ macro_rules! uart {
                         PIN3: Map<$Sercom, $pad3>,
                     {
                         fn from(pads: ([<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, [<$Sercom $pad2>]<PIN2>, [<$Sercom $pad3>]<PIN3>)) -> [<$Type Padout>]<[<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, [<$Sercom $pad2>]<PIN2>, [<$Sercom $pad3>]<PIN3>> {
-                            [<$Type Padout>] { _rx: pads.0, _tx: pads.1, _rts: pads.2, _cts: pads.3 }
+                            [<$Type Padout>] { rx: pads.0, tx: pads.1, rts: pads.2, cts: pads.3 }
                         }
                     }
 
@@ -252,14 +262,22 @@ macro_rules! uart {
                     let (tx_pads, rx_pads) = self.padout.split();
                     (
                         [<$Type Tx>] {
-                            _padout: tx_pads,
-                            sercom: PhantomData,
+                            padout: tx_pads,
+                            sercom: self.sercom,
                         },
                         [<$Type Rx>] {
-                            _padout: rx_pads,
+                            padout: rx_pads,
                             sercom: PhantomData,
                         },
                     )
+                }
+
+                /// Combines transmit and receive halves back into a duplex UART
+                pub fn join(tx: [<$Type Tx>]<TX, RTS>, rx: [<$Type Rx>]<RX, CTS>) -> Self {
+                    Self {
+                        padout: [<$Type Padout>]::join(tx.padout, rx.padout),
+                        sercom: tx.sercom,
+                    }
                 }
 
                 fn usart(&self) -> &USART {
@@ -269,8 +287,10 @@ macro_rules! uart {
 
             /// The transmitting half of the corresponding UARTX instance (as returned by `UARTX::split`)
             pub struct [<$Type Tx>]<TX, RTS> {
-                _padout: [<$Type TxPadout>]<TX, RTS>,
-                sercom: PhantomData<$SERCOM>,
+                padout: [<$Type TxPadout>]<TX, RTS>,
+                /// We store the SERCOM object here so we can retrieve it later,
+                /// but conceptually, ownership is shared between the Rx and Tx halves.
+                sercom: $SERCOM,
             }
 
             impl<TX, RTS> [<$Type Tx>]<TX, RTS> {
@@ -331,7 +351,7 @@ macro_rules! uart {
 
             /// The receiving half of the corresponding UARTX instance (as returned by `UARTX::split`)
             pub struct [<$Type Rx>]<RX, CTS> {
-                _padout: [<$Type RxPadout>]<RX, CTS>,
+                padout: [<$Type RxPadout>]<RX, CTS>,
                 sercom: PhantomData<$SERCOM>,
             }
 
