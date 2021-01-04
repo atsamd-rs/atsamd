@@ -84,5 +84,37 @@
     "xiao_m0": {
       "build": "cargo build --examples --features=usb"
     }
+  },
+  "hal_doc_variants": {
+    "samd11c": {
+      "features": ["samd11c", "unproven"],
+      "target": "thumbv6m-none-eabi"
+    },
+
+    "samd21g": {
+      "features": ["samd21g", "unproven", "usb"],
+      "target": "thumbv6m-none-eabi"
+    },
+    "samd21j": {
+      "features": ["samd21j", "unproven", "usb"],
+      "target": "thumbv6m-none-eabi"
+    },
+
+    "samd51g": {
+      "features": ["samd51g", "unproven", "usb"],
+      "target": "thumbv7em-none-eabihf"
+    },
+    "samd51j": {
+      "features": ["samd51j", "unproven", "usb"],
+      "target": "thumbv7em-none-eabihf"
+    },
+    "samd51n": {
+      "features": ["samd51n", "unproven", "usb"],
+      "target": "thumbv7em-none-eabihf"
+    },
+    "samd51p": {
+      "features": ["samd51p", "unproven", "usb"],
+      "target": "thumbv7em-none-eabihf"
+    }
   }
 }
