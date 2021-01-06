@@ -658,7 +658,12 @@ mod private {
         fn group() -> *const GROUP {
             #[cfg(feature = "samd11")]
             const GROUPS: *const [GROUP; 1] = PORT::ptr() as *const [GROUP; 1];
-            #[cfg(any(feature = "samd21", feature = "samd51g", feature = "samd51j", feature = "same51j"))]
+            #[cfg(any(
+                feature = "samd21",
+                feature = "samd51g",
+                feature = "samd51j",
+                feature = "same51j"
+            ))]
             const GROUPS: *const [GROUP; 2] = PORT::ptr() as *const [GROUP; 2];
             #[cfg(any(feature = "samd51n", feature = "same51n"))]
             const GROUPS: *const [GROUP; 3] = PORT::ptr() as *const [GROUP; 3];
