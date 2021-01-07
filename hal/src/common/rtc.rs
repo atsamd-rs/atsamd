@@ -203,9 +203,7 @@ impl CountDown for Rtc {
         // can ask it to perform a reset.
         self.reset();
 
-        // the SVD erroneously marks swrst as write-only, so we
-        // need to manually read the bit here
-        while self.mode0_ctrla().read().bits() & 1 != 0 {}
+        while self.mode0_ctrla().read().swrst().bit_is_set() {}
 
         // set cycles to compare to...
         self.mode0().comp[0].write(|w| unsafe { w.comp().bits(cycles) });
