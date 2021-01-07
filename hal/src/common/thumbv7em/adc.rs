@@ -166,13 +166,13 @@ impl Adc<$ADC> {
 }
 
 impl ConversionMode<$ADC> for SingleConversion  {
-    fn on_start(adc: &mut Adc<$ADC>) {
+    fn on_start(_adc: &mut Adc<$ADC>) {
     }
     fn on_complete(adc: &mut Adc<$ADC>) {
         adc.disable_interrupts();
         adc.power_down();
     }
-    fn on_stop(adc: &mut Adc<$ADC>) {
+    fn on_stop(_adc: &mut Adc<$ADC>) {
     }
 }
 
@@ -180,7 +180,7 @@ impl ConversionMode<$ADC> for FreeRunning {
     fn on_start(adc: &mut Adc<$ADC>) {
         adc.enable_freerunning();
     }
-    fn on_complete(adc: &mut Adc<$ADC>) {
+    fn on_complete(_adc: &mut Adc<$ADC>) {
     }
     fn on_stop(adc: &mut Adc<$ADC>) {
         adc.disable_interrupts();
