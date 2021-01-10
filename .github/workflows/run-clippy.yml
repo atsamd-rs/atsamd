@@ -1,0 +1,47 @@
+name: Runs clippy on BSP & HAL code
+on: [push, pull_request]
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+    - name: Checkout sources
+      uses: actions/checkout@v2
+    - id: set-matrix
+      uses: ./.github/actions/list-BSPs
+
+  build:
+    runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.toolchain == 'nightly' }}
+    needs: setup
+    strategy:
+      matrix: ${{fromJson(needs.setup.outputs.matrix)}}
+    steps:
+    - name: Checkout sources
+      uses: actions/checkout@v2
+    - name: Install Rust (thumbv6m)
+      uses: actions-rs/toolchain@v1
+      with:
+        profile: minimal
+        toolchain: ${{ matrix.toolchain }}
+        override: true
+        target: thumbv6m-none-eabi
+    - name: Install Rust (thumbv7em)
+      uses: actions-rs/toolchain@v1
+      with:
+        profile: minimal
+        toolchain: ${{ matrix.toolchain }}
+        override: true
+        target: thumbv7em-none-eabihf
+    - name: Clippy ${{ matrix.bsp }}
+      run: |
+        build_invocation=$(cat ./crates.json | jq -Mr --arg board '${{ matrix.bsp }}' -c '.boards | .[$board] | .build')
+        cd boards/${{ matrix.bsp }}
+    - uses: actions/checkout@v1
+    - run: rustup component add clippy
+    - uses: actions-rs/clippy-check@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        args: --all-features
