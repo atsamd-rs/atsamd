@@ -1,4 +1,4 @@
-name: Runs clippy on BSP & HAL code
+name: Clippy BSP & HAL code
 on: [push, pull_request]
 
 jobs:
@@ -36,12 +36,10 @@ jobs:
         override: true
         target: thumbv7em-none-eabihf
     - name: Clippy ${{ matrix.bsp }}
-      run: |
-        build_invocation=$(cat ./crates.json | jq -Mr --arg board '${{ matrix.bsp }}' -c '.boards | .[$board] | .build')
-        cd boards/${{ matrix.bsp }}
+      run: toml_path=boards/${{ matrix.bsp }}
     - uses: actions/checkout@v1
     - run: rustup component add clippy
     - uses: actions-rs/clippy-check@v1
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        args: --all-features
+        args: --all-features --manifest-path=${{ toml_path }}/Cargo.toml
