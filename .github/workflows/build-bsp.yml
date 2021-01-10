@@ -11,6 +11,34 @@ jobs:
       uses: actions/checkout@v2
     - id: set-matrix
       uses: ./.github/actions/list-BSPs
+    - name: Install toolchain (stable thumbv6m)
+      uses: actions-rs/toolchain@v1
+      with:
+        profile: minimal
+        toolchain: stable
+        override: true
+        target: thumbv6m-none-eabi
+    - name: Install toolchain (stable thumbv7em)
+      uses: actions-rs/toolchain@v1
+      with:
+        profile: minimal
+        toolchain: stable
+        override: true
+        target: thumbv7em-none-eabihf
+    - name: Install toolchain (nightly thumbv6m)
+      uses: actions-rs/toolchain@v1
+      with:
+        profile: minimal
+        toolchain: nightly
+        override: true
+        target: thumbv6m-none-eabi
+    - name: Install toolchain (nightly thumbv7em)
+      uses: actions-rs/toolchain@v1
+      with:
+        profile: minimal
+        toolchain: nightly
+        override: true
+        target: thumbv7em-none-eabihf
 
   build:
     runs-on: ubuntu-latest
@@ -21,25 +49,11 @@ jobs:
     steps:
     - name: Checkout sources
       uses: actions/checkout@v2
-    - name: Install Rust (thumbv6m)
-      uses: actions-rs/toolchain@v1
-      with:
-        profile: minimal
-        toolchain: ${{ matrix.toolchain }}
-        override: true
-        target: thumbv6m-none-eabi
-    - name: Install Rust (thumbv7em)
-      uses: actions-rs/toolchain@v1
-      with:
-        profile: minimal
-        toolchain: ${{ matrix.toolchain }}
-        override: true
-        target: thumbv7em-none-eabihf
 
     - name: Test ${{ matrix.bsp }}
       run: |
         build_invocation=$(cat ./crates.json | jq -Mr --arg board '${{ matrix.bsp }}' -c '.boards | .[$board] | .build')
         set -ex
         cd boards/${{ matrix.bsp }}
-        $(${build_invocation})
+        cargo +${{ matrix.toolchain }} $(${build_invocation})
         cargo publish --dry-run

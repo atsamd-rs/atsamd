@@ -1,88 +1,88 @@
 {
   "boards": {
     "arduino_mkr1000": {
-      "build": "cargo build --examples --features=unproven,usb"
+      "build": "--examples --features=unproven,usb"
     },
     "arduino_mkrvidor4000": {
-      "build": "cargo build --examples --features=unproven"
+      "build": "--examples --features=unproven"
     },
     "arduino_mkrzero": {
-      "build": "cargo build --examples --features=unproven,usb"
+      "build": "--examples --features=unproven,usb"
     },
     "arduino_nano33iot": {
-      "build": "cargo build --examples --features=unproven"
+      "build": "--examples --features=unproven"
     },
     "atsame54_xpro": {
-      "build": "cargo build --examples --features=unproven"
+      "build": "--examples --features=unproven"
     },
     "circuit_playground_express": {
-      "build": "cargo build --examples --features=unproven"
+      "build": "--examples --features=unproven"
     },
     "edgebadge": {
-      "build": "cargo build --examples --features=unproven"
+      "build": "--examples --features=unproven"
     },
     "feather_m0": {
-      "build": "cargo build --examples --example=pwm --features=unproven,usb"
+      "build": "--examples --example=pwm --features=unproven,usb"
     },
     "feather_m4": {
-      "build": "cargo build --examples --features=unproven,usb"
+      "build": "--examples --features=unproven,usb"
     },
     "gemma_m0": {
-      "build": "cargo build --examples --features=unproven"
+      "build": "--examples --features=unproven"
     },
     "grand_central_m4": {
-      "build": "cargo build --examples --features=unproven"
+      "build": "--examples --features=unproven"
     },
     "itsybitsy_m0": {
-      "build": "cargo build --examples --features=unproven"
+      "build": "--examples --features=unproven"
     },
     "itsybitsy_m4": {
-      "build": "cargo build --examples --features=unproven,usb,use_rtt"
+      "build": "--examples --features=unproven,usb,use_rtt"
     },
     "metro_m0": {
-      "build": "cargo build --examples --features=unproven,usb"
+      "build": "--examples --features=unproven,usb"
     },
     "metro_m4": {
-      "build": "cargo build --examples --features=unproven,usb"
+      "build": "--examples --features=unproven,usb"
     },
     "pfza_proto1": {
-      "build": "cargo build --examples --features=unproven"
+      "build": "--examples --features=unproven"
     },
     "pygamer": {
-      "build": "cargo build --examples --features=unproven,usb,math"
+      "build": "--examples --features=unproven,usb,math"
     },
     "pyportal": {
-      "build": "cargo build --examples --features=unproven"
+      "build": "--examples --features=unproven"
     },
     "samd11_bare": {
-      "build": "cargo build --release --examples --features=unproven"
+      "build": "--release --examples --features=unproven"
     },
     "samd21_mini": {
-      "build": "cargo build --examples --features=unproven"
+      "build": "--examples --features=unproven"
     },
     "serpente": {
-      "build": "cargo build --examples --features=unproven"
+      "build": "--examples --features=unproven"
     },
     "sodaq_one": {
-      "build": "cargo build --examples --features=unproven"
+      "build": "--examples --features=unproven"
     },
     "sodaq_sara_aff": {
-      "build": "cargo build --examples --features=unproven"
+      "build": "--examples --features=unproven"
     },
     "trellis_m4": {
-      "build": "cargo build --examples --features=keypad-unproven"
+      "build": "--examples --features=keypad-unproven"
     },
     "trinket_m0": {
-      "build": "cargo build --examples --features=unproven,usb"
+      "build": "--examples --features=unproven,usb"
     },
     "wio_lite_mg126": {
-      "build": "cargo build --examples --features=unproven,usb"
+      "build": "--examples --features=unproven,usb"
     },
     "wio_terminal": {
-      "build": "cargo build --examples --features=usb"
+      "build": "--examples --features=usb"
     },
     "xiao_m0": {
-      "build": "cargo build --examples --features=usb"
+      "build": "--examples --features=usb"
     }
   },
   "hal_doc_variants": {
