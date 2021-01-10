@@ -107,7 +107,7 @@ jobs:
           git config committer.email 'atsamd-bot@users.noreply.github.com'
           git commit -m 'Generate HAL documentation'
 
-          git remote add upstream https://github.com/atsamd-bot/hal-docs.git
+          git remote add upstream https://github.com/atsamd-rs/docs.git
 
           # Disable command echoing and compute the base64 header in a wrapper
           # function, to avoid the token or the base64-encoded token from
