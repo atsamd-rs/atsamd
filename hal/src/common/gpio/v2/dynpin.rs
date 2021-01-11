@@ -391,7 +391,10 @@ impl DynPin {
     fn _write(&mut self, bit: bool) -> Result<(), Error> {
         // SAFETY: We have exclusive control of the pin, so this is safe to use.
         match self.mode {
-            DynPinMode::Output(_) => unsafe { write_pin(self.group(), self.id.num, bit); Ok(()) },
+            DynPinMode::Output(_) => unsafe {
+                write_pin(self.group(), self.id.num, bit);
+                Ok(())
+            },
             _ => Err(Error::InvalidPinType),
         }
     }
@@ -399,7 +402,10 @@ impl DynPin {
     fn _toggle(&mut self) -> Result<(), Error> {
         // SAFETY: We have exclusive control of the pin, so this is safe to use.
         match self.mode {
-            DynPinMode::Output(_) => unsafe { toggle_pin(self.group(), self.id.num); Ok(()) },
+            DynPinMode::Output(_) => unsafe {
+                toggle_pin(self.group(), self.id.num);
+                Ok(())
+            },
             _ => Err(Error::InvalidPinType),
         }
     }
