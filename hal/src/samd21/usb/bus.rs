@@ -152,12 +152,13 @@ impl AllEndpoints {
 
 // FIXME: replace with more general heap?
 const BUFFER_SIZE: usize = 2048;
-fn buffer() -> &'static mut [u8; BUFFER_SIZE] {
-    singleton!(: [u8; BUFFER_SIZE] = unsafe{MaybeUninit::uninit().assume_init()}).unwrap()
+fn buffer() -> &'static mut [MaybeUninit<u8>; BUFFER_SIZE] {
+    singleton!(: [MaybeUninit<u8>; BUFFER_SIZE] = unsafe{ MaybeUninit::uninit().assume_init() })
+        .unwrap()
 }
 
 struct BufferAllocator {
-    buffers: &'static mut [u8; BUFFER_SIZE],
+    buffers: &'static mut [MaybeUninit<u8>; BUFFER_SIZE],
     next_buf: u16,
 }
 
@@ -172,7 +173,7 @@ impl BufferAllocator {
     fn allocate_buffer(&mut self, size: u16) -> UsbResult<*mut u8> {
         debug_assert!(size & 1 == 0);
 
-        let start_addr = &mut self.buffers[self.next_buf as usize] as *mut u8;
+        let start_addr = &mut self.buffers[self.next_buf as usize].as_mut_ptr();
         let buf_end = unsafe { start_addr.offset(BUFFER_SIZE as isize) };
 
         // The address must be 32-bit aligned, so allow for that here
