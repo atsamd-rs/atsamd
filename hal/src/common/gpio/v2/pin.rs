@@ -351,19 +351,19 @@ macro_rules! alternate {
 }
 
 alternate!([
-    (A, 00),
-    (B, 01),
-    (C, 02),
-    (D, 03),
-    (E, 04),
-    (F, 05),
-    (G, 06),
+    (A, 0),
+    (B, 1),
+    (C, 2),
+    (D, 3),
+    (E, 4),
+    (F, 5),
+    (G, 6),
     #[cfg(any(feature = "samd21", feature = "min-samd51g"))]
-    (H, 07),
+    (H, 7),
     #[cfg(feature = "min-samd51g")]
-    (I, 08),
+    (I, 8),
     #[cfg(feature = "min-samd51g")]
-    (J, 09),
+    (J, 9),
     #[cfg(feature = "min-samd51g")]
     (K, 10),
     #[cfg(feature = "min-samd51g")]
@@ -1253,11 +1253,11 @@ where
     }
     #[inline]
     pub(crate) fn _is_low(&self) -> bool {
-        self._read() == false
+        !self._read()
     }
     #[inline]
     pub(crate) fn _is_high(&self) -> bool {
-        self._read() == true
+        self._read()
     }
     #[inline]
     pub(crate) fn _set_low(&mut self) {
@@ -1269,11 +1269,11 @@ where
     }
     #[inline]
     pub(crate) fn _is_set_low(&self) -> bool {
-        self._read_out() == false
+        !self._read_out()
     }
     #[inline]
     pub(crate) fn _is_set_high(&self) -> bool {
-        self._read_out() == true
+        self._read_out()
     }
 }
 
@@ -1452,20 +1452,20 @@ macro_rules! define_pins {
 define_pins!(
     A {
         #[cfg(not(feature = "samd11"))]
-        (PA00, 00),
+        (PA00, 0),
         #[cfg(not(feature = "samd11"))]
-        (PA01, 01),
-        (PA02, 02),
+        (PA01, 1),
+        (PA02, 2),
         #[cfg(not(feature = "samd11"))]
-        (PA03, 03),
-        (PA04, 04),
-        (PA05, 05),
+        (PA03, 3),
+        (PA04, 4),
+        (PA05, 5),
         #[cfg(not(feature = "samd11"))]
-        (PA06, 06),
+        (PA06, 6),
         #[cfg(not(feature = "samd11"))]
-        (PA07, 07),
-        (PA08, 08),
-        (PA09, 09),
+        (PA07, 7),
+        (PA08, 8),
+        (PA09, 9),
         #[cfg(not(feature = "samd11"))]
         (PA10, 10),
         #[cfg(not(feature = "samd11"))]
@@ -1503,25 +1503,25 @@ define_pins!(
     }
     B {
         #[cfg(any(feature = "min-samd21j", feature = "min-samd51j"))]
-        (PB00, 00),
+        (PB00, 0),
         #[cfg(any(feature = "min-samd21j", feature = "min-samd51j"))]
-        (PB01, 01),
+        (PB01, 1),
         #[cfg(any(feature = "min-samd21g", feature = "min-samd51g"))]
-        (PB02, 02),
+        (PB02, 2),
         #[cfg(any(feature = "min-samd21g", feature = "min-samd51g"))]
-        (PB03, 03),
+        (PB03, 3),
         #[cfg(any(feature = "min-samd21j", feature = "min-samd51j"))]
-        (PB04, 04),
+        (PB04, 4),
         #[cfg(any(feature = "min-samd21j", feature = "min-samd51j"))]
-        (PB05, 05),
+        (PB05, 5),
         #[cfg(any(feature = "min-samd21j", feature = "min-samd51j"))]
-        (PB06, 06),
+        (PB06, 6),
         #[cfg(any(feature = "min-samd21j", feature = "min-samd51j"))]
-        (PB07, 07),
+        (PB07, 7),
         #[cfg(any(feature = "min-samd21g", feature = "min-samd51g"))]
-        (PB08, 08),
+        (PB08, 8),
         #[cfg(any(feature = "min-samd21g", feature = "min-samd51g"))]
-        (PB09, 09),
+        (PB09, 9),
         #[cfg(any(feature = "min-samd21g", feature = "min-samd51g"))]
         (PB10, 10),
         #[cfg(any(feature = "min-samd21g", feature = "min-samd51g"))]
@@ -1569,21 +1569,21 @@ define_pins!(
     }
     C {
         #[cfg(feature = "min-samd51n")]
-        (PC00, 00),
+        (PC00, 0),
         #[cfg(feature = "min-samd51n")]
-        (PC01, 01),
+        (PC01, 1),
         #[cfg(feature = "min-samd51n")]
-        (PC02, 02),
+        (PC02, 2),
         #[cfg(feature = "min-samd51n")]
-        (PC03, 03),
+        (PC03, 3),
         #[cfg(feature = "min-samd51p")]
-        (PC04, 04),
+        (PC04, 4),
         #[cfg(feature = "min-samd51n")]
-        (PC05, 05),
+        (PC05, 5),
         #[cfg(feature = "min-samd51n")]
-        (PC06, 06),
+        (PC06, 6),
         #[cfg(feature = "min-samd51n")]
-        (PC07, 07),
+        (PC07, 7),
         #[cfg(feature = "min-samd51n")]
         (PC10, 10),
         #[cfg(feature = "min-samd51n")]
@@ -1629,13 +1629,13 @@ define_pins!(
     }
     D {
         #[cfg(feature = "min-samd51p")]
-        (PD00, 00),
+        (PD00, 0),
         #[cfg(feature = "min-samd51p")]
-        (PD01, 01),
+        (PD01, 1),
         #[cfg(feature = "min-samd51p")]
-        (PD08, 08),
+        (PD08, 8),
         #[cfg(feature = "min-samd51p")]
-        (PD09, 09),
+        (PD09, 9),
         #[cfg(feature = "min-samd51p")]
         (PD10, 10),
         #[cfg(feature = "min-samd51p")]

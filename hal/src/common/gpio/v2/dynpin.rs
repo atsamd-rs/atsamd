@@ -391,7 +391,7 @@ impl DynPin {
     fn _write(&mut self, bit: bool) -> Result<(), Error> {
         // SAFETY: We have exclusive control of the pin, so this is safe to use.
         match self.mode {
-            DynPinMode::Output(_) => unsafe { Ok(write_pin(self.group(), self.id.num, bit)) },
+            DynPinMode::Output(_) => unsafe { write_pin(self.group(), self.id.num, bit); Ok(()) },
             _ => Err(Error::InvalidPinType),
         }
     }
@@ -399,7 +399,7 @@ impl DynPin {
     fn _toggle(&mut self) -> Result<(), Error> {
         // SAFETY: We have exclusive control of the pin, so this is safe to use.
         match self.mode {
-            DynPinMode::Output(_) => unsafe { Ok(toggle_pin(self.group(), self.id.num)) },
+            DynPinMode::Output(_) => unsafe { toggle_pin(self.group(), self.id.num); Ok(()) },
             _ => Err(Error::InvalidPinType),
         }
     }
@@ -412,11 +412,11 @@ impl DynPin {
     }
     #[inline]
     fn _is_low(&self) -> Result<bool, Error> {
-        Ok(self._read()? == false)
+        Ok(!(self._read()?))
     }
     #[inline]
     fn _is_high(&self) -> Result<bool, Error> {
-        Ok(self._read()? == true)
+        Ok(self._read()?)
     }
     #[inline]
     fn _set_low(&mut self) -> Result<(), Error> {
@@ -428,11 +428,11 @@ impl DynPin {
     }
     #[inline]
     fn _is_set_low(&self) -> Result<bool, Error> {
-        Ok(self._read_out()? == false)
+        Ok(!(self._read_out()?))
     }
     #[inline]
     fn _is_set_high(&self) -> Result<bool, Error> {
-        Ok(self._read_out()? == true)
+        Ok(self._read_out()?)
     }
 }
 
