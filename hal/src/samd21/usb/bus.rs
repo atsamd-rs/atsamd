@@ -17,7 +17,6 @@ use core::marker::PhantomData;
 use core::mem;
 use cortex_m::interrupt::{free as disable_interrupts, Mutex};
 use cortex_m::singleton;
-use usb_device;
 use usb_device::bus::PollResult;
 use usb_device::endpoint::{EndpointAddress, EndpointType};
 use usb_device::{Result as UsbResult, UsbDirection, UsbError};
@@ -126,6 +125,7 @@ impl AllEndpoints {
         Err(UsbError::EndpointOverflow)
     }
 
+    #[allow(clippy::too_many_arguments)]
     fn allocate_endpoint(
         &mut self,
         dir: UsbDirection,
@@ -311,7 +311,7 @@ impl<'a> Bank<'a, InBank> {
 
     /// Writes out endpoint configuration to its in-memory descriptor.
     fn flush_config(&mut self) {
-        let config = self.config().clone();
+        let config = *self.config();
         {
             let desc = self.desc_bank();
             desc.set_address(config.addr as *mut u8);
@@ -417,7 +417,7 @@ impl<'a> Bank<'a, OutBank> {
 
     /// Writes out endpoint configuration to its in-memory descriptor.
     fn flush_config(&mut self) {
-        let config = self.config().clone();
+        let config = *self.config();
         {
             let desc = self.desc_bank();
             desc.set_address(config.addr as *mut u8);
@@ -540,7 +540,7 @@ impl Inner {
         epintflag5, epintflag6, epintflag7
     );
 
-    fn bank0<'a>(&'a self, ep: EndpointAddress) -> UsbResult<Bank<'a, OutBank>> {
+    fn bank0(&'_ self, ep: EndpointAddress) -> UsbResult<Bank<'_, OutBank>> {
         if ep.is_in() {
             return Err(UsbError::InvalidEndpoint);
         }
@@ -558,7 +558,7 @@ impl Inner {
         })
     }
 
-    fn bank1<'a>(&'a self, ep: EndpointAddress) -> UsbResult<Bank<'a, InBank>> {
+    fn bank1(&'_ self, ep: EndpointAddress) -> UsbResult<Bank<'_, InBank>> {
         if ep.is_out() {
             return Err(UsbError::InvalidEndpoint);
         }
@@ -777,10 +777,8 @@ impl Inner {
             if let Ok(mut bank) = self.bank0(ep_addr) {
                 bank.setup_ep_interrupts();
             }
-        } else {
-            if let Ok(mut bank) = self.bank1(ep_addr) {
-                bank.setup_ep_interrupts();
-            }
+        } else if let Ok(mut bank) = self.bank1(ep_addr) {
+            bank.setup_ep_interrupts();
         }
     }
 
@@ -823,7 +821,7 @@ impl Inner {
 
         let idx = match addr {
             None => endpoints.find_free_endpoint(dir)?,
-            Some(addr) => EndpointAddress::from(addr).index(),
+            Some(addr) => addr.index(),
         };
 
         let addr = endpoints.allocate_endpoint(
@@ -838,7 +836,7 @@ impl Inner {
 
         dbgprint!("alloc_ep -> {:?}\n", addr);
 
-        Ok(addr.into())
+        Ok(addr)
     }
 
     fn set_device_address(&self, addr: u8) {
@@ -922,7 +920,7 @@ impl Inner {
     }
 
     fn write(&self, ep: EndpointAddress, buf: &[u8]) -> UsbResult<usize> {
-        let mut bank = self.bank1(ep.into())?;
+        let mut bank = self.bank1(ep)?;
 
         if bank.is_ready() {
             // Waiting for the host to pick up the existing data
@@ -953,7 +951,7 @@ impl Inner {
     }
 
     fn read(&self, ep: EndpointAddress, buf: &mut [u8]) -> UsbResult<usize> {
-        let mut bank = self.bank0(ep.into())?;
+        let mut bank = self.bank0(ep)?;
         let rxstp = bank.received_setup_interrupt();
 
         if bank.is_ready() || rxstp {
@@ -994,9 +992,9 @@ impl Inner {
 
     fn is_stalled(&self, ep: EndpointAddress) -> bool {
         if ep.is_out() {
-            self.bank0(ep.into()).unwrap().is_stalled()
+            self.bank0(ep).unwrap().is_stalled()
         } else {
-            self.bank1(ep.into()).unwrap().is_stalled()
+            self.bank1(ep).unwrap().is_stalled()
         }
     }
 
