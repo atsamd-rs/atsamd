@@ -155,8 +155,7 @@ impl AllEndpoints {
 // FIXME: replace with more general heap?
 const BUFFER_SIZE: usize = 2048;
 fn buffer() -> &'static mut [u8; BUFFER_SIZE] {
-    singleton!(: [u8; BUFFER_SIZE] = [0; BUFFER_SIZE] )
-        .unwrap()
+    singleton!(: [u8; BUFFER_SIZE] = [0; BUFFER_SIZE] ).unwrap()
 }
 
 struct BufferAllocator {
