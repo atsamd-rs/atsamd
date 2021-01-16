@@ -14,7 +14,7 @@ use crate::target_device::{MCLK, USB};
 use crate::usb::devicedesc::DeviceDescBank;
 use core::cell::{Ref, RefCell, RefMut};
 use core::marker::PhantomData;
-use core::mem::{self, MaybeUninit};
+use core::mem;
 use cortex_m::interrupt::{free as disable_interrupts, Mutex};
 use cortex_m::singleton;
 use usb_device;
@@ -154,13 +154,13 @@ impl AllEndpoints {
 
 // FIXME: replace with more general heap?
 const BUFFER_SIZE: usize = 2048;
-fn buffer() -> &'static mut [MaybeUninit<u8>; BUFFER_SIZE] {
-    singleton!(: [MaybeUninit<u8>; BUFFER_SIZE] = unsafe{ MaybeUninit::uninit().assume_init() })
+fn buffer() -> &'static mut [u8; BUFFER_SIZE] {
+    singleton!(: [u8; BUFFER_SIZE] = [0; BUFFER_SIZE] )
         .unwrap()
 }
 
 struct BufferAllocator {
-    buffers: &'static mut [MaybeUninit<u8>; BUFFER_SIZE],
+    buffers: &'static mut [u8; BUFFER_SIZE],
     next_buf: u16,
 }
 
@@ -175,7 +175,7 @@ impl BufferAllocator {
     fn allocate_buffer(&mut self, size: u16) -> UsbResult<*mut u8> {
         debug_assert!(size & 1 == 0);
 
-        let start_addr = &mut self.buffers[self.next_buf as usize].as_mut_ptr();
+        let start_addr = &mut self.buffers[self.next_buf as usize] as *mut u8;
         let buf_end = unsafe { start_addr.offset(BUFFER_SIZE as isize) };
 
         // The address must be 32-bit aligned, so allow for that here
