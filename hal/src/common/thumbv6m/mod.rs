@@ -15,4 +15,8 @@ pub mod pwm;
 #[cfg(feature = "unproven")]
 pub mod watchdog;
 
+#[cfg(feature = "unproven")]
+#[cfg(feature = "samd21")]
+pub mod dmac;
+
 pub(crate) mod sercom;
