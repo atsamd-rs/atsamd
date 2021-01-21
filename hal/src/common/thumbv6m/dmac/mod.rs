@@ -36,8 +36,6 @@
 
 #![warn(missing_docs)]
 
-use crate::target_device;
-
 pub mod channel;
 pub mod dma_controller;
 pub mod transfer;
