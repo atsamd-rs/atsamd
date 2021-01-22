@@ -1,30 +1,79 @@
 //! # DMA transfer abstractions
 //!
-//! ## Transfer types
+//! # Transfer types
 //!
 //! Four transfer types are supported:
 //!
 //! * Incrementing-source to incrementing-destination
-//! (normally used for memory-to-memory transfers) - see `inc_src_inc_dest`
+//! (normally used for memory-to-memory transfers) - see [`inc_src_inc_dest`](DmaTransfer::inc_src_inc_dest)
 //!
 //! * Incrementing-source to fixed-destination (normally used
-//! for memory-to-peripheral transfers) - see `inc_src_fixed_dest`
+//! for memory-to-peripheral transfers) - see [`inc_src_fixed_dest`](DmaTransfer::inc_src_fixed_dest)
 //!
 //! * Fixed-source to incrementing-destination (normally used for
-//! peripheral-to-memory transfers) - see `fixed_src_inc_dest`
+//! peripheral-to-memory transfers) - see [`fixed_src_inc_dest`](DmaTransfer::fixed_src_inc_dest)
 //!
 //! * Fixed-source to fixed-destination (normally used for
-//! peripheral-to-peripheral transfers) - see `fixed_src_fixed_dest`
+//! peripheral-to-peripheral transfers) - see [`fixed_src_fixed_dest`](DmaTransfer::fixed_src_fixed_dest)
 //!
-//! ## Beat sizes
+//! # Beat sizes
 //!
-//! Three beat sizes are supported:
+//! A beat is an atomic, uninterruptible transfer size.Three beat sizes are supported:
 //!
 //! * Byte-per-byte (8 bit beats);
 //!
 //! * Halfword-per-halfword (16 bit beats);
 //!
 //! * Word-per-word (32 bit beats);
+//!
+//! The correct beat size will automatically be selected in function of the type of the source and destination
+//! buffers.
+//!
+//! # One-shot vs circular transfers
+//!
+//! If the transfer is setup as one-shot (`circular_xfer == false`), the transfer will run once
+//! and stop. Otherwise, if it is setup as "circular" `circular_xfer == true`, then the transfer
+//! will be set as circular, meaning it will restart a new, identical block transfer when the current block
+//! transfer is complete. This is particularly useful when combined with a TC/TCC trigger source,
+//! for instance to periodically retreive a sample from an ADC and send it to a circular buffer,
+//! or send a sample to a DAC.
+//!
+//! # Starting a transfer
+//!
+//! A transfer is started by calling [`begin`](DmaTransfer::begin). You will be required to supply a trigger source
+//! and a trigger action.
+//!
+//! # Waiting for a transfer to complete
+//!
+//! A transfer can waited upon by calling [`wait`](DmaTransfer::wait). This is a _blocking_ method, meaning it will
+//! busy-wait until the transfer is completed. When it returns, it will release the source and destination buffers,
+//! as well as the DMA channel and the payload.
+//!
+//! # Interrupting (stopping) a transfer
+//!
+//! A transfer can be stopped (regardless of whether it has completed or not) by calling [`stop`](DmaTransfer::stop).
+//! This is _not_ a blocking method, meaning it will stop the transfer and immediately return.
+//! When it returns, it will release the source and destination buffers, as well as the DMA channel and the payload.
+//!
+//! # Trigger sources
+//!
+//! Most peripherals can issue triggers to a DMA channel. A software trigger is also available
+//! (see [`trigger`](DmaTransfer::software_trigger)). See ATSAMD21 datasheet, table 19-8 for all
+//! available trigger sources.
+//!
+//! # Trigger actions
+//!
+//! Three trigger actions are available:
+//!
+//! * BLOCK: One trigger required for each block transfer. In the context of this driver,
+//! one DmaTransfer is equivalent to one Block transfer.
+//!
+//! * BEAT: One trigger required for each beat transfer. In the context of this driver, the beat
+//! size will depend on the type of buffer used (8, 16 or 32 bits).
+//!
+//! * TRANSACTION: One trigger required for a full DMA transaction. this is useful for circular
+//! transfers in the context of this driver. One trigger will set off the transaction, that
+//! will now run uninterrupted until it is stopped.
 
 use core::{
     marker::PhantomData,
@@ -41,7 +90,8 @@ use crate::typelevel::Sealed;
 use core::mem;
 
 // TODO change source and dest types to Pin (see https://docs.rust-embedded.org/embedonomicon/dma.html#immovable-buffers)
-/// DMA transfer, owning the resources until the transfer is done and [wait()](DmaTransfer::wait) is called.
+/// DMA transfer, owning the resources until the transfer is done and
+/// [`wait`](DmaTransfer::wait) is called.
 pub struct DmaTransfer<B, Pld, Src, Dst, ChanStatus, const ID: u8>
 where
     B: 'static + DmaBeat,
@@ -77,11 +127,22 @@ where
 {
 }
 
+/// These methods offer a transfer from an incrementing source to a fixed destination
 impl<B, Pld, const ID: u8> DmaTransfer<B, Pld, &'static mut [B], &'static mut B, Ready, ID>
 where
     B: 'static + DmaBeat,
 {
-    /// Incrementing source to fixed destination
+    /// Setup a transfer with an incrementing source to fixed destination.
+    ///
+    /// If `circular_xfer == false`, the transfer will run once
+    /// and stop. If `circular_xfer == true`, then the transfer will be set as circular,
+    /// meaning it will restart a new, identical block transfer when the current block
+    /// transfer is complete.
+    ///
+    /// `payload` is just a way for the transfer to own resources
+    /// while the transfer is ongoing. For instance, a SERCOM instance could be moved
+    /// into the transfer to prevent data races until the transfer is complete. Calling
+    /// [`wait`](DmaTransfer::wait) will release the payload for reuse.
     #[inline(always)]
     pub fn inc_src_fixed_dest(
         chan: Channel<Ready, ID>,
@@ -101,11 +162,22 @@ where
     }
 }
 
+/// These methods offer a transfer from an fixed source to a incrementing destination
 impl<B, Pld, const ID: u8> DmaTransfer<B, Pld, &'static mut B, &'static mut [B], Ready, ID>
 where
     B: 'static + DmaBeat,
 {
-    /// Fixed source to incrementing destination
+    /// Setup a transfer from a fixed source to an incrementing destination.
+    ///
+    /// If `circular_xfer == false`, the transfer will run once
+    /// and stop. If `circular_xfer == true`, then the transfer will be set as circular,
+    /// meaning it will restart a new, identical block transfer when the current block
+    /// transfer is complete.
+    ///
+    /// `payload` is just a way for the transfer to own resources
+    /// while the transfer is ongoing. For instance, a SERCOM instance could be moved
+    /// into the transfer to prevent data races until the transfer is complete. Calling
+    /// [`wait`](DmaTransfer::wait) will release the payload for reuse.
     #[inline(always)]
     pub fn fixed_src_inc_dest(
         chan: Channel<Ready, ID>,
@@ -125,11 +197,23 @@ where
     }
 }
 
+/// These methods offer a transfer from an incrementing source to a incrementing destination
 impl<B: 'static + DmaBeat, P, const ID: u8, const N: usize>
     DmaTransfer<B, P, &'static mut [B; N], &'static mut [B; N], Ready, ID>
 {
-    /// Incrementing source to incrementing destination. Here,
-    /// we use array references instead of slices to *statically* ensure
+    /// Setup a transfer from an incrementing source to an incrementing destination.
+    ///
+    /// If `circular_xfer == false`, the transfer will run once
+    /// and stop. If `circular_xfer == true`, then the transfer will be set as circular,
+    /// meaning it will restart a new, identical block transfer when the current block
+    /// transfer is complete.
+    ///
+    /// `payload` is just a way for the transfer to own resources
+    /// while the transfer is ongoing. For instance, a SERCOM instance could be moved
+    /// into the transfer to prevent data races until the transfer is complete. Calling
+    /// [`wait`](DmaTransfer::wait) will release the payload for reuse.
+    ///
+    /// Here, we use array references instead of slices to *statically* ensure
     /// they are the same length. If the two buffers weren't the same length,
     /// we could run into undefined behaviour, especially if the destination
     /// buffer is shorter than the source buffer. In that specific case, the
@@ -154,10 +238,21 @@ impl<B: 'static + DmaBeat, P, const ID: u8, const N: usize>
     }
 }
 
+/// These methods offer a transfer from an fixed source to a fixed destination
 impl<B: 'static + DmaBeat, P, const ID: u8>
     DmaTransfer<B, P, &'static mut B, &'static mut B, Ready, ID>
 {
-    /// Fixed source to fixed destination
+    /// Fixed source to fixed destination.
+    ///
+    /// If `circular_xfer == false`, the transfer will run once
+    /// and stop. If `circular_xfer == true`, then the transfer will be set as circular,
+    /// meaning it will restart a new, identical block transfer when the current block
+    /// transfer is complete.
+    ///
+    /// `payload` is just a way for the transfer to own resources
+    /// while the transfer is ongoing. For instance, a SERCOM instance could be moved
+    /// into the transfer to prevent data races until the transfer is complete. Calling
+    /// [`wait`](DmaTransfer::wait) will release the payload for reuse.
     #[inline(always)]
     pub fn fixed_src_fixed_dest(
         chan: Channel<Ready, ID>,
@@ -184,13 +279,7 @@ where
     Src: DmaBuffer<B>,
     Dst: DmaBuffer<B>,
 {
-    /// Setup a DMA transfer. If `circular_xfer == false`, the transfer will run once
-    /// and stop. If `circular_xfer == true`, then the transfer will be set as circular,
-    /// meaning it will restart a new, identical block transfer when the current block
-    /// transfer is complete. `payload` is just a way for the transfer to own resources
-    /// while the transfer is ongoing. For instance, a SERCOM instance could be moved
-    /// into the transfer to prevent data races until the transfer is complete. Calling
-    /// (`wait()`)[DmaTransfer::wait] will release the payload for reuse.
+    /// Setup a DMA transfer.
     fn setup(
         chan: Channel<Ready, ID>,
         mut config: TransferConfiguration<B, Src, Dst>,
@@ -251,6 +340,8 @@ where
 
     /// Begin DMA transfer. If [TriggerSource::DISABLE](TriggerSource::DISABLE) is used,
     /// a sowftware trigger will be issued to the DMA channel to launch the transfer.
+    /// Is is therefore not necessary, in most cases, to manually issue a software trigger
+    /// to the channel.
     pub fn begin(
         self,
         dmac: &mut DmaController,
@@ -279,6 +370,12 @@ where
     Src: DmaBuffer<B>,
     Dst: DmaBuffer<B>,
 {
+    /// Issue a software trigger request to the corresponding channel.
+    /// Note that is not guaranteed that the trigger request will register,
+    /// if a trigger request is already pending for the channel.
+    pub fn software_trigger(&mut self, dmac: &mut DmaController) {
+        self.chan.software_trigger(dmac.as_mut());
+    }
     /// Blocking; Wait for the DMA transfer to complete and release all owned resources
     pub fn wait(self, dmac: &mut DmaController) -> (Src, Dst, Channel<Ready, ID>, P) {
         let chan = self.chan.release(dmac.as_mut());
@@ -373,8 +470,8 @@ impl<T: DmaBeat> DmaBuffer<T> for &mut T {
     }
 }
 
-/// Convert u8, u16 and u32 integers
-/// into BeatSize enums
+/// Convert 8, 16 and 32 bit types
+/// into [`BeatSize`](BeatSize)
 pub trait DmaBeat {
     /// Convert to BeatSize
     fn to_beatsize() -> BeatSize;

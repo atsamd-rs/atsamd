@@ -1,4 +1,5 @@
-//! # DMA Driver for the Atmel SAMD21 chip family.
+//! # Direct Memory Access Controller
+//!
 //! This library provides a type-safe API with compile-time guarantees
 //! that the peripheral and individual DMA channels are correctly configured
 //! before launching a DMA transfer.
@@ -12,6 +13,26 @@
 //! (linked-list) transfers, are not currently supported.
 //! Advances arbitration schemes (eg. round-robin) are not currently
 //! supported.
+//!
+//! # Priority levels
+//!
+//! The DMAC features 4 priority levels. Level 0 has the highest priority
+//! and level 3 has the lowest. Each channel can be assigned to one priority
+//! level. If two channels with the same priority level are requested to
+//! execute a transfer at the same time, the lowest channel number will have
+//! priority (in the default arbitration scheme, eg. not round-robin).
+//!
+//! By default, all priority levels are enabled when initializing the DMAC
+//! (see [`DmaController::init`](dma_controller::DmaController::init)). Levels
+//! can be enabled or disabled through the various `level_x_enabled` methods.
+//!
+//! # Interrupts
+//!
+//! This driver does not use or manage interrupts issued by the DMAC. Individual channels
+//! can be configured to generate interrupts when the transfer is complete, an error is
+//! detected or the channel is suspended. However, these interrupts will not be triggered
+//! unless the DMAC interrupt is unmasked in the NVIC. You will be responsible for clearing
+//! the interrupt flags in the ISR.
 //!
 //! # Example
 //! ```
@@ -27,7 +48,7 @@
 //! // NOTE: buf_src and buf_dest should be either:
 //! // &'static mut T, &'static mut [T], or &'static mut [T; N] where T: BeatSize
 //! let xfer = DmaTransfer::inc_src_inc_dest(chan0, buf_src, buf_dest, false, ());
-//! // Begin transfer
+//! // Begin transfer with a software trigger
 //! let xfer = xfer.begin(&mut dmac, TriggerSource::DISABLE, TriggerAction::BLOCK);
 //!
 //! // Wait for transfer to complete and grab resulting buffers

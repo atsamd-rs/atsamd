@@ -1,20 +1,37 @@
 //! # Abstractions over individual DMA channels
+//!
+//! # Initializing
+//!
+//! Individual channels should be initialized through the [`Channel::init`](Channel::init) method.
+//! This will return a `Channel<Ready, ID>` ready for use by a [`DmaTransfer`](super::transfer::DmaTransfer).
+//! Initializing a channel requires setting a priority level, as well as enabling or disabling interrupt
+//! requests (only for the specific channel being initialized).
+//!
+//! # Channel status
+//!
+//! Channels can be in any of three statuses: `Uninitialized`, `Ready`, and `Busy`. These statuses are checked
+//! at compile time to ensure they are properly initialized before launching DMA transfers.
+//!
+//! # Resetting
+//!
+//! Calling the [`reset`](Channel::reset) method will reset the channel to its `Uninitialized` state. You
+//! will be required to call [`init`](Channel::init) again before being able to use it with a `DmaTransfer`.
 
 use super::dma_controller::{DmaController, PriorityLevel, TriggerAction, TriggerSource};
 use crate::target_device::DMAC;
 use crate::typelevel::Sealed;
 use cortex_m::interrupt;
 
-/// Represents an uninitialized DMA channel
+/// Uninitialized channel
 pub struct Uninitialized;
 
-/// Represents an initialized and ready to begin DMA channel
+/// Initialized and ready to transfer channel
 pub struct Ready;
 
-/// Represents a busy DMA channel
+/// Busy channel
 pub struct Busy;
 
-/// Represents a DMA channel
+/// DMA channel, capable of executing [`DmaTransfer`](super::transfer::DmaTransfer)s.
 pub struct Channel<Status, const ID: u8> {
     _status: Status,
 }
@@ -30,6 +47,10 @@ impl<S, const ID: u8> Sealed for Channel<S, ID> {}
 /// These methods may be used on any DMA channel in any configuration
 impl<S, const ID: u8> Channel<S, ID> {
     /// Configure the DMA channel so that it is ready to be used by a [`DmaTransfer`](super::transfer::DmaTransfer).
+    ///
+    /// # Return
+    ///
+    /// A `Channel` with a `Ready` status
     pub fn init(
         mut self,
         lvl: PriorityLevel,
@@ -37,6 +58,9 @@ impl<S, const ID: u8> Channel<S, ID> {
         controller: &mut DmaController,
     ) -> Channel<Ready, ID> {
         let dmac = controller.as_mut();
+
+        // Software reset the channel for good measure
+        self._reset_private(dmac);
 
         self.with_chid(dmac, |d| {
             // Reset the channel to its startup state and wait for reset to complete
@@ -73,11 +97,42 @@ impl<S, const ID: u8> Channel<S, ID> {
             fun(dmac);
         });
     }
+
+    #[inline(always)]
+    fn _reset_private(&mut self, dmac: &mut DMAC) {
+        self.with_chid(dmac, |d| {
+            // Reset the channel to its startup state and wait for reset to complete
+            d.chctrla.modify(|_, w| w.swrst().set_bit());
+            while d.chctrla.read().swrst().bit_is_set() {}
+        })
+    }
+
+    #[inline(always)]
+    fn _trigger_private(&mut self, dmac: &mut DMAC) {
+        // SAFETY: This is safe because we are writing the correct channel
+        // number into the register
+        unsafe {
+            dmac.swtrigctrl.modify(|_, w| w.bits(1 << ID));
+        }
+    }
 }
 
-/// These methods may only be used on a configured DMA channel
+/// These methods may only be used on a `Ready` DMA channel
 impl<const ID: u8> Channel<Ready, ID> {
-    /// Start transfer on channel using the specified trigger source
+    /// Issue a software reset to the channel. This will return the channel to its startup state
+    pub fn reset(mut self, dmac: &mut DMAC) -> Channel<Uninitialized, ID> {
+        self._reset_private(dmac);
+
+        Channel {
+            _status: Uninitialized,
+        }
+    }
+
+    /// Start transfer on channel using the specified trigger source.
+    ///
+    /// # Return
+    ///
+    /// A `Channel` with a `Busy` status.
     pub(crate) fn start(
         mut self,
         trig_src: TriggerSource,
@@ -105,24 +160,26 @@ impl<const ID: u8> Channel<Ready, ID> {
 
         // If trigger source is DISABLE, manually trigger transfer
         if trig_src == TriggerSource::DISABLE {
-            // SAFETY: This is safe because we are writing the correct channel
-            // number into the register
-            unsafe {
-                dmac.swtrigctrl.modify(|_, w| w.bits(1 << ID));
-            }
+            self._trigger_private(dmac);
         }
 
         Channel { _status: Busy }
     }
 }
 
+/// These methods may only be used on a `Busy` DMA channel
 impl<const ID: u8> Channel<Busy, ID> {
+    /// Issue a software trigger to the channel
+    pub(crate) fn software_trigger(&mut self, dmac: &mut DMAC) {
+        self._trigger_private(dmac);
+    }
+
     /// Stop transfer on channel whether or not the transfer has completed
     ///
     /// # Return
     ///
-    /// A channel with a Ready status, ready to be reused by a new
-    /// (`DmaTransfer`)[super::transfer::DmaTransfer]
+    /// A `Channel` with a `Ready` status, ready to be reused by a new
+    /// [`DmaTransfer`](super::transfer::DmaTransfer)
     #[inline(always)]
     pub(crate) fn stop(mut self, dmac: &mut DMAC) -> Channel<Ready, ID> {
         self.with_chid(dmac, |d| d.chctrla.modify(|_, w| w.enable().clear_bit()));
@@ -147,8 +204,8 @@ impl<const ID: u8> Channel<Busy, ID> {
     ///
     /// # Return
     ///
-    /// A channel with a Ready status, ready to be reused by a new
-    /// (`DmaTransfer`)[super::transfer::DmaTransfer]
+    /// A `Channel` with a `Ready` status, ready to be reused by a new
+    /// [`DmaTransfer`](super::transfer::DmaTransfer)
     #[inline(always)]
     pub(crate) fn release(self, dmac: &mut DMAC) -> Channel<Ready, ID> {
         while !self.xfer_complete(dmac) {}
