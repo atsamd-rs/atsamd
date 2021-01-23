@@ -1660,7 +1660,7 @@ define_pins!(
 /// The following example macro call
 ///
 /// ```rust
-/// bsp_pins!(
+/// atsamd_hal::bsp_pins!(
 ///     #[cfg(feature = "unproven")]
 ///     PA24 {
 ///         name: led_pass,
@@ -1742,7 +1742,7 @@ macro_rules! bsp_pins {
             }
         )+
     ) => {
-        paste! {
+        atsamd_hal::paste::paste! {
             pub mod bsp_pins_mod {
                 use atsamd_hal::target_device::PORT;
                 use atsamd_hal::gpio::v2::{
