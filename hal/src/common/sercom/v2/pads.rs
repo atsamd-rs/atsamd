@@ -14,7 +14,7 @@
 //! the other hand, the conversion from [`Pad`] to [`Pin`] is always unique,
 //! because the [`Pad`] always knows which [`Pin`] it contains.
 //!
-//! ```rust
+//! ```
 //! let pad: Pad<Sercom0, Pad0, IoSet1> = pins.pa08.into();
 //! let pin: Pin<_, _> = pad.into();
 //! ```
@@ -28,6 +28,7 @@
 //!
 //! [`pad_map`]: crate::sercom::v2::pad_map
 
+use core::mem::transmute;
 use core::ops::Deref;
 
 use crate::paste::paste;
@@ -166,9 +167,9 @@ where
 ///
 /// The SAMD11 and SAMD21 series chips are not limited by IOSET. Any combination
 /// of valid pins for a given SERCOM is acceptable. Thus, the [`Map`] trait is
-/// implemented directly on [`PinId`]s. Because the same [`Pin`] can often be
-/// used for two different [`Pad`]s, the [`Map`] trait acts to map a
-/// [`Sercom`]/[`PadNum`] pair to the correct [`PinMode`] for the [`PinId`].
+/// implemented directly on [`PinId`]s. Because the same [`PinId`] can often be
+/// used as a SERCOM [`Pad`] in two different [`PinMode`]s, the [`Map`] trait
+/// acts to map a [`Sercom`]/[`PadNum`] pair to the correct [`PinMode`].
 pub trait Map<S, P>
 where
     S: Sercom,
@@ -225,28 +226,11 @@ where
     {
         Pad { pin: pin.into() }
     }
+
     /// Consume the [`Pad`] and release the corresponding [`Pin`]
     #[inline]
     pub fn free(self) -> Pin<M::Id, M::Mode> {
         self.pin
-    }
-    /// Convert a [`Pad`] to a type that implements [`AnyPad`]
-    ///
-    /// Even though there is a one-to-one mapping between `Pad<S, P, M>` and
-    /// `AnyPad<Sercom = S, PadNum = P, Map = M>`, the compiler doesn't know
-    /// that. This method provides a way to convert from a [`Pad`] to an
-    /// [`AnyPad`]. See the [`AnyPad`] trait for more details.
-    #[inline]
-    pub fn as_any<T>(self) -> T
-    where
-        T: AnyPad<Sercom = S, PadNum = P, Map = M>,
-    {
-        // SAFETY:
-        // core::ptr::read performs a bitwise copy, regardless of whether the
-        // type implements `Copy`. The returned value is a copy, so we must
-        // dispose of self. Because self contains no resources or allocations,
-        // we can simply drop it.
-        unsafe { core::ptr::read(&self as *const _ as *const T) }
     }
 }
 
@@ -259,12 +243,8 @@ where
 }
 
 //==============================================================================
-//  AnyPad meta-type
+//  AnyPad
 //==============================================================================
-
-/// Type alias to convert from an implementation of [`AnyPad`] to the
-/// corresponding concrete [`Pad`]
-pub type ConcretePad<P> = Pad<<P as AnyPad>::Sercom, <P as AnyPad>::PadNum, <P as AnyPad>::Map>;
 
 /// Meta-type representing any [`Pad`]
 ///
@@ -272,24 +252,33 @@ pub type ConcretePad<P> = Pad<<P as AnyPad>::Sercom, <P as AnyPad>::PadNum, <P a
 /// it acts to encapsulate a [`Pad`]. Without this trait, a completely generic
 /// [`Pad`] requires three type parameters, i.e. `Pad<S, P, M>`. But when using
 /// this trait, only one type parameter is required, i.e. `P: AnyPad`. However,
-/// even / though we have dropped type parameters, no information is lost,
-/// because the [`Sercom`], [`PadNum`] and [`Map`] type parameters are stored as
-/// associated types in the trait. The implementation of [`AnyPad`] looks
-/// something like this:
+/// even though we have dropped type parameters, no information is lost, because
+/// the [`Sercom`], [`PadNum`] and [`Map`] type parameters are stored as
+/// associated types in the trait. The implementation of [`AnyPad`] looks like
+/// this:
 ///
-/// ```rust
+/// ```
 /// impl<S: Sercom, P: PadNum, M: Map<S, P>> AnyPad for Pad<S, P, M> {
 ///     type Sercom = S;
 ///     type PadNum = P;
 ///     type Map = M;
-///     // ...
 /// }
 /// ```
 ///
 /// Thus, there is a one-to-one mapping between `Pad<S, P, M>` and
 /// `AnyPad<Sercom = S, PadNum = P, Map = M>`, so you can always recover the
 /// full, concrete type from an implementation of [`AnyPad`]. The type alias
-/// [`ConcretePad`] is / provided for just this purpose.
+/// [`SpecificPad`] is provided for this purpose. You can convert between
+/// [`AnyPad`] and its corresponding [`SpecificPad`] using the [`Into`],
+/// [`AsRef`] and [`AsMut`] traits.
+///
+/// ```
+/// fn example<P: AnyPad>(mut any_pad: P) {
+///     let pad_mut: &mut SpecificPad<P> = any_pad.as_mut();
+///     let pad_ref: &SpecificPad<P> = any_pad.as_ref();
+///     let pad: SpecificPad<P> = any_pad.into();
+/// }
+/// ```
 ///
 /// ## `AnyPad` as a trait bound
 ///
@@ -297,7 +286,7 @@ pub type ConcretePad<P> = Pad<<P as AnyPad>::Sercom, <P as AnyPad>::PadNum, <P a
 /// types to restrict the acceptable [`Pad`]s. For example, you could restrict
 /// a function to accept a particular pad number.
 ///
-/// ```rust
+/// ```
 /// fn example<P>(pad: P)
 /// where
 ///     P: AnyPad<PadNum = Pad2>
@@ -307,7 +296,7 @@ pub type ConcretePad<P> = Pad<<P as AnyPad>::Sercom, <P as AnyPad>::PadNum, <P a
 ///
 /// Or you could accept any pad number, as long as it's in the desired SERCOM.
 ///
-/// ```rust
+/// ```
 /// fn example<P>(pad: P)
 /// where
 ///     P: AnyPad<Sercom = Sercom4>
@@ -315,9 +304,10 @@ pub type ConcretePad<P> = Pad<<P as AnyPad>::Sercom, <P as AnyPad>::PadNum, <P a
 /// }
 /// ```
 ///
-/// You can also apply more complex bounds.
+/// You can also apply more complex bounds. In this case, the [`PadNum`] must
+/// satisfy some `UserTrait`.
 ///
-/// ```rust
+/// ```
 /// fn example<P>(pad: P)
 /// where
 ///     P: AnyPad,
@@ -329,23 +319,19 @@ pub type ConcretePad<P> = Pad<<P as AnyPad>::Sercom, <P as AnyPad>::PadNum, <P a
 /// ## Generic `AnyPad`s
 ///
 /// Working with a generic type constrained by [`AnyPad`] is slightly different
-/// than working with a concrete [`Pad`]. When compiling a generic function, the
+/// than working with a [`Pad`] directly. When compiling a generic function, the
 /// compiler cannot assume anything about the specific concrete type. It can
-/// only use what it knows about the [`AnyPad`] trait. To cast a generic type to
-/// a concrete type, use the [`as_concrete`](AnyPad::as_concrete) method. To
-/// cast back to the generic type, use the [`Pad`] method
-/// [`as_any`](Pad::as_any).
-pub trait AnyPad: Sealed {
+/// only use what it knows about the [`AnyPad`] trait. To use a generic
+/// [`AnyPad`], you must first convert it to its corresponding [`SpecificPad`]
+/// using the [`Into`], [`AsRef`] or [`AsMut`] trait. In some instances, you may
+/// also need to convert back.
+///
+/// The documentation for [`AnyPin`](crate::gpio::v2::AnyPin) provides a more
+/// detailed example.
+pub trait AnyPad: Sealed + Is<Type = SpecificPad<Self>> {
     type Sercom: Sercom;
     type PadNum: PadNum;
     type Map: Map<Self::Sercom, Self::PadNum>;
-    /// Convert a type that implements [`AnyPad`] to a concrete [`Pad`]
-    ///
-    /// Even though there is a one-to-one mapping between `Pad<I, M>` and
-    /// `AnyPad<Sercom = S, PadNum = P, Map = M>`, the compiler doesn't know
-    /// that. This method provides a way to convert from an [`AnyPad`] to a
-    /// concrete [`Pad`].
-    fn as_concrete(self) -> ConcretePad<Self>;
 }
 
 impl<S, P, M> AnyPad for Pad<S, P, M>
@@ -357,9 +343,29 @@ where
     type Sercom = S;
     type PadNum = P;
     type Map = M;
+}
+
+/// Type alias to recover the specific [`Pad`] from an implementation of
+/// [`AnyPad`]
+pub type SpecificPad<P> = Pad<<P as AnyPad>::Sercom, <P as AnyPad>::PadNum, <P as AnyPad>::Map>;
+
+/// Implementation required to satisfy the `Is<Type = SpecificPad<Self>>` bound
+/// on [`AnyPad`]
+impl<P: AnyPad> AsRef<P> for SpecificPad<P> {
     #[inline]
-    fn as_concrete(self) -> ConcretePad<Self> {
-        self
+    fn as_ref(&self) -> &P {
+        // SAFETY: This is guaranteed to be safe, because P == SpecificPad<P>
+        unsafe { transmute(self) }
+    }
+}
+
+/// Implementation required to satisfy the `Is<Type = SpecificPad<Self>>` bound
+/// on [`AnyPad`]
+impl<P: AnyPad> AsMut<P> for SpecificPad<P> {
+    #[inline]
+    fn as_mut(&mut self) -> &mut P {
+        // SAFETY: This is guaranteed to be safe, because P == SpecificPad<P>
+        unsafe { transmute(self) }
     }
 }
 
