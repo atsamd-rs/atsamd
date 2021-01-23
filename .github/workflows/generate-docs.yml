@@ -1,0 +1,127 @@
+name: Generate & push docs
+on:
+  workflow_dispatch:
+    inputs:
+      gen_hal_docs:
+        description: 'Generate hal docs (yes/no)'
+        required: true
+        default: 'yes'
+
+jobs:
+  gen-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+      - name: Install Rust (thumbv6m)
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+          target: thumbv6m-none-eabi
+      - name: Install Rust (thumbv7em)
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+          target: thumbv7em-none-eabihf
+
+      - name: Generate HAL docs
+        if: github.event.inputs.gen_hal_docs == 'yes'
+        shell: bash
+        run: |
+          set -ex
+
+          docs_path="$(pwd)/docs_repo"
+          mkdir -pv "${docs_path}"
+          (cd "$docs_path" && git init && git checkout -b main)
+
+          for variant in $(cat crates.json | jq -Mr -c '.hal_doc_variants | keys[]');
+          do
+            (
+              feature_str=$(cat crates.json | jq -Mr --arg variant "${variant}" -c '.hal_doc_variants[$variant].features | join(",")')
+              target=$(cat crates.json | jq -Mr --arg variant "${variant}" -c '.hal_doc_variants[$variant].target')
+
+              mkdir -pv "${docs_path}/${variant}"
+              cd hal
+
+              cargo doc --features "${feature_str}" --target "${target}" --release --target-dir "${docs_path}/${variant}"
+
+              rm -rf "${docs_path}/${variant}/${target}/doc/typenum"
+              find "${docs_path}/${variant}/" -type f -exec sed -i 's|../typenum/|https://docs.rs/typenum/1.12.0/typenum/|g' {} +
+              sed -i '/"typenum"/d' "${docs_path}/${variant}/${target}/doc/search-index.js"
+
+              rm -rf "${docs_path}/${variant}/${target}/release/deps"
+              rm -rf "${docs_path}/${variant}/release"
+            )
+          done
+
+          echo '<!DOCTYPE html>' > "${docs_path}/index.html"
+          echo '<html lang="en">' >> "${docs_path}/index.html"
+          echo '  <head>' >> "${docs_path}/index.html"
+          echo '    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">' >> "${docs_path}/index.html"
+          echo '    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">' >> "${docs_path}/index.html"
+          echo '    <style>.label { margin-right: 0.2em; } </style>' >> "${docs_path}/index.html"
+          echo '  </head>' >> "${docs_path}/index.html"
+
+          echo '  <body class="container">' >> "${docs_path}/index.html"
+          echo '    <h1>per-chip atsamd-HAL docs</h1>' >> "${docs_path}/index.html"
+          echo '    ' >> "${docs_path}/index.html"
+
+          echo '    <table class="table table-bordered">' >> "${docs_path}/index.html"
+          echo '      <thead>' >> "${docs_path}/index.html"
+          echo '        <tr><th>Chip</th><th>Features</th></tr>' >> "${docs_path}/index.html"
+          echo '      </thead>' >> "${docs_path}/index.html"
+
+          echo '      <tbody>' >> "${docs_path}/index.html"
+          for variant in $(cat crates.json | jq -Mr -c '.hal_doc_variants | keys[]');
+          do
+              target=$(cat crates.json | jq -Mr --arg variant "${variant}" -c '.hal_doc_variants[$variant].target')
+              features_html=$(cat crates.json | jq -Mr --arg variant "${variant}" -c '.hal_doc_variants[$variant].features | map("<span class=\"label label-default\">", . , "</span>") | join(" ")')
+
+              echo '        <tr>' >> "${docs_path}/index.html"
+              echo "          <td><a href='${variant}/${target}/doc/atsamd_hal/index.html'>${variant}</a></td>" >> "${docs_path}/index.html"
+              echo "          <td>${features_html}</td>" >> "${docs_path}/index.html"
+              echo '        </tr>' >> "${docs_path}/index.html"
+          done
+          echo '      </tbody>' >> "${docs_path}/index.html"
+
+          echo '    </table>' >> "${docs_path}/index.html"
+          echo '  </body>' >> "${docs_path}/index.html"
+          echo '</html>' >> "${docs_path}/index.html"
+
+      - name: Upload
+        if: github.event.inputs.gen_hal_docs == 'yes'
+        shell: bash
+        run: |
+          set -ex
+
+          docs_path="$(pwd)/docs_repo"
+          cd "${docs_path}"
+          git add -A
+          git config author.name atsamd-bot
+          git config author.email 'atsamd-bot@users.noreply.github.com'
+          git config committer.name atsamd-bot
+          git config committer.email 'atsamd-bot@users.noreply.github.com'
+          git commit -m 'Generate HAL documentation'
+
+          git remote add upstream https://github.com/atsamd-rs/docs.git
+
+          # Disable command echoing and compute the base64 header in a wrapper
+          # function, to avoid the token or the base64-encoded token from
+          # hitting the logs.
+          set +x
+          gen_basic_header() {
+            local gat=$1
+            echo -n "$(echo -n "x-access-token:${gat}"|base64 --wrap=0)"
+          }
+          auth="$(gen_basic_header '${{ secrets.ATSAMD_BOT }}')"
+
+          git \
+            -c "http.https://github.com.extraheader=Authorization: basic ${auth}" \
+            -c 'author.name=atsamd-bot' \
+            -c 'author.email=atsamd-bot@users.noreply.github.com' \
+            push -q upstream main -f
+          set -x

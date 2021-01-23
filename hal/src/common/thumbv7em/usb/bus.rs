@@ -14,7 +14,7 @@ use crate::target_device::{MCLK, USB};
 use crate::usb::devicedesc::DeviceDescBank;
 use core::cell::{Ref, RefCell, RefMut};
 use core::marker::PhantomData;
-use core::mem::{self, MaybeUninit};
+use core::mem;
 use cortex_m::interrupt::{free as disable_interrupts, Mutex};
 use cortex_m::singleton;
 use usb_device;
@@ -155,7 +155,7 @@ impl AllEndpoints {
 // FIXME: replace with more general heap?
 const BUFFER_SIZE: usize = 2048;
 fn buffer() -> &'static mut [u8; BUFFER_SIZE] {
-    singleton!(: [u8; BUFFER_SIZE] = unsafe{ MaybeUninit::uninit().assume_init() }).unwrap()
+    singleton!(: [u8; BUFFER_SIZE] = [0; BUFFER_SIZE] ).unwrap()
 }
 
 struct BufferAllocator {

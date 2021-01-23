@@ -36,19 +36,18 @@
 //!
 //! To create the [`Pins`] struct, users must supply the PAC
 //! [`PORT`](crate::target_device::PORT) peripheral. The [`Pins`] struct takes
-//! ownership of the [`PORT`](crate::target_device::PORT) and provides the
-//! corresponding pins. Each [`Pin`] within the [`Pins`] struct can be moved out
-//! and used individually.
+//! ownership of the [`PORT`] and provides the corresponding pins. Each [`Pin`]
+//! within the [`Pins`] struct can be moved out and used individually.
 //!
 //!
-//! ```rust
+//! ```
 //! let mut peripherals = Peripherals::take().unwrap();
 //! let pins = Pins::new(peripherals.PORT);
 //! ```
 //!
 //! Pins can be converted between modes using several different methods.
 //!
-//! ```rust
+//! ```
 //! // Use one of the literal function names
 //! let pa27 = pins.pa27.into_floating_input();
 //! // Use a generic method and one of the `PinMode` variant types
@@ -60,18 +59,15 @@
 //! # Embedded HAL traits
 //!
 //! This module implements all of the embedded HAL GPIO traits for each [`Pin`]
-//! in the corresponding [`PinMode`]s, namely:
-//! [`InputPin`](embedded_hal::digital::v2::InputPin),
-//! [`OutputPin`](embedded_hal::digital::v2::OutputPin),
-//! [`ToggleableOutputPin`](embedded_hal::digital::v2::ToggleableOutputPin) and
-//! [`StatefulOutputPin`](embedded_hal::digital::v2::StatefulOutputPin).
+//! in the corresponding [`PinMode`]s, namely: [`InputPin`], [`OutputPin`],
+//! [`ToggleableOutputPin`] and [`StatefulOutputPin`].
 //!
 //! # Type-level encapsulation
 //!
 //! Normally, storing a generic pin within some data structure requires two type
 //! parameters.
 //!
-//! ```rust
+//! ```
 //! struct UserStruct<I: PinId, M: PinMode> {
 //!     pin: Pin<I, M>
 //! }
@@ -82,7 +78,7 @@
 //! every possible variant of [`Pin`], so it can be used as a trait bound for
 //! pins. With this approach, only one type parameter is required.
 //!
-//! ```rust
+//! ```
 //! struct UserStruct<P: AnyPin> {
 //!     pin: P
 //! }
@@ -92,7 +88,7 @@
 //! trait has associated types for each type parameter of [`Pin`]. Use these
 //! associated types to apply trait bounds or restrict the pin in some way.
 //!
-//! ```rust
+//! ```
 //! struct UserStruct<P>
 //! where
 //!     P: AnyPin<Mode = AlternateE>,
@@ -103,21 +99,19 @@
 //! ```
 //!
 //! However, note that working with a generic type constrained by [`AnyPin`] is
-//! a bit different than working directly with a concrete type. See the
-//! [`AnyPin`] documentation for more details.
+//! a bit different than working directly with a [`Pin`]. See the [`AnyPin`]
+//! documentation for more details.
 //!
 //! # Optional pins
 //!
 //! Finally, this module provides an easy way to implement optional pins. The
 //! trait [`OptionalPin`] is implemented for each [`Pin`] as well as the
-//! [`NoneT`](crate::typelevel::NoneT) struct.
-//! [`NoneT`](crate::typelevel::NoneT) acts as a type-level version of the
-//! [`None`](core::option::Option::None) variant. The [`SomePin`] trait has both
-//! [`OptionalPin`] and [`AnyPin`] as super traits, so it can be used as a bound
-//! to guarantee a valid pin and provide access to the [`AnyPin`] associated
-//! types.
+//! [`NoneT`] struct. [`NoneT`] acts as a type-level version of the [`None`]
+//! variant. The [`SomePin`] trait has both [`OptionalPin`] and [`AnyPin`] as
+//! super traits, so it can be used as a bound to guarantee a valid pin and
+//! provide access to the [`AnyPin`] associated types.
 //!
-//! ```rust
+//! ```
 //! struct UserStruct<P: OptionalPin> {
 //!     pin: P
 //! }
@@ -137,6 +131,7 @@
 
 use core::convert::Infallible;
 use core::marker::PhantomData;
+use core::mem::transmute;
 
 use paste::paste;
 
@@ -146,7 +141,7 @@ use hal::digital::v2::{InputPin, StatefulOutputPin, ToggleableOutputPin};
 
 use crate::target_device::PORT;
 
-use crate::typelevel::{NoneT, Sealed};
+use crate::typelevel::{Is, NoneT, Sealed};
 
 use super::dynpin::*;
 
@@ -342,7 +337,7 @@ macro_rules! alternate {
                 $( #[$cfg] )?
                 #[
                     doc = "Type-level variant of [`PinMode`] for alternate \
-                    peripheral function [" $Letter "]"
+                    peripheral function [`" $Letter "`]"
                 ]
                 pub type [<Alternate $Letter>] = Alternate<$Letter>;
             )+
@@ -658,9 +653,14 @@ mod private {
         fn group() -> *const GROUP {
             #[cfg(feature = "samd11")]
             const GROUPS: *const [GROUP; 1] = PORT::ptr() as *const [GROUP; 1];
-            #[cfg(any(feature = "samd21", feature = "samd51g", feature = "samd51j"))]
+            #[cfg(any(
+                feature = "samd21",
+                feature = "samd51g",
+                feature = "samd51j",
+                feature = "same51j"
+            ))]
             const GROUPS: *const [GROUP; 2] = PORT::ptr() as *const [GROUP; 2];
-            #[cfg(feature = "samd51n")]
+            #[cfg(any(feature = "samd51n", feature = "same51n"))]
             const GROUPS: *const [GROUP; 3] = PORT::ptr() as *const [GROUP; 3];
             #[cfg(feature = "min-samd51p")]
             const GROUPS: *const [GROUP; 4] = PORT::ptr() as *const [GROUP; 4];
@@ -723,12 +723,8 @@ macro_rules! pin_id {
 }
 
 //==============================================================================
-//  Pin trait
+//  AnyPin
 //==============================================================================
-
-/// Type alias to recover the corresponding concrete [`Pin`] type from a given
-/// implementation of [`AnyPin`]
-pub type ConcretePin<P> = Pin<<P as AnyPin>::Id, <P as AnyPin>::Mode>;
 
 /// Meta-type representing any [`Pin`]
 ///
@@ -738,28 +734,36 @@ pub type ConcretePin<P> = Pin<<P as AnyPin>::Id, <P as AnyPin>::Mode>;
 /// trait, only one type parameter is required, i.e. `P: AnyPin`. However, even
 /// though we have dropped a type parameter, no information is lost, because the
 /// [`PinId`] and [`PinMode`] type parameters are stored as associated types in
-/// the trait. The implementation of [`AnyPin`] looks something like this:
+/// the trait. The implementation of [`AnyPin`] looks like this:
 ///
-/// ```rust
+/// ```
 /// impl<I: PinId, M: PinMode> AnyPin for Pin<I, M> {
 ///     type Id = I;
 ///     type Mode = M;
-///     // ...
 /// }
 /// ```
 ///
 /// Thus, there is a one-to-one mapping between `Pin<I, M>` and
-/// `AnyPin<Id = I, Mode = M>`, so you can always recover the full, concrete
-/// type from an implementation of [`AnyPin`]. The type alias [`ConcretePin`] is
-/// provided for just this purpose.
+/// `AnyPin<Id = I, Mode = M>`, so you can always recover the specific type from
+/// an implementation of [`AnyPin`]. The type alias [`SpecificPin`] is provided
+/// for this purpose. You can convert between [`AnyPin`] and its corresponding
+/// [`SpecificPin`] using the [`Into`], [`AsRef`] and [`AsMut`] traits.
 ///
-/// ## `AnyPin` as a trait bound
+/// ```
+/// fn example<P: AnyPin>(mut any_pin: P) {
+///     let pin_mut: &mut SpecificPin<P> = any_pin.as_mut();
+///     let pin_ref: &SpecificPin<P> = any_pin.as_ref();
+///     let pin: SpecificPin<P> = any_pin.into();
+/// }
+/// ```
+///
+/// ## [`AnyPin`] as a trait bound
 ///
 /// When using [`AnyPin`] as a trait bound, you can constrain the associated
 /// types to restrict the acceptable [`Pin`]s. For example, you could restrict
 /// a function to accept a particular pin in any mode.
 ///
-/// ```rust
+/// ```
 /// fn example<P>(pin: P)
 /// where
 ///     P: AnyPin<Id = PA27>
@@ -769,7 +773,7 @@ pub type ConcretePin<P> = Pin<<P as AnyPin>::Id, <P as AnyPin>::Mode>;
 ///
 /// Or you could accept any pin, as long as it's in the desired mode.
 ///
-/// ```rust
+/// ```
 /// fn example<P>(pin: P)
 /// where
 ///     P: AnyPin<Mode = PullDownInput>
@@ -777,9 +781,10 @@ pub type ConcretePin<P> = Pin<<P as AnyPin>::Id, <P as AnyPin>::Mode>;
 /// }
 /// ```
 ///
-/// You can also apply more complex bounds.
+/// You can also apply more complex bounds. In the following example, `P` must
+/// be an output pin, and its [`PinId`] must satisfy some `UserTrait`.
 ///
-/// ```rust
+/// ```
 /// fn example<P, C>(pin: P)
 /// where
 ///     P: AnyPin<Mode = Output<C>>,
@@ -789,163 +794,72 @@ pub type ConcretePin<P> = Pin<<P as AnyPin>::Id, <P as AnyPin>::Mode>;
 /// }
 /// ```
 ///
-/// ## Generic `AnyPin`s
+/// ## Generic [`AnyPin`]s
 ///
 /// Working with a generic type constrained by [`AnyPin`] is slightly different
-/// than working with a concrete [`Pin`]. When compiling a generic function, the
-/// compiler cannot assume anything about the specific concrete type. It can
-/// only use what it knows about the [`AnyPin`] trait.  Consequently, we repeat
-/// all of [`Pin`]'s inherent methods on the trait, for convenience. To cast a
-/// generic type to a concrete type, use the
-/// [`as_concrete`](AnyPin::as_concrete) method. To cast back to the generic
-/// type, use the [`Pin`] method [`as_any`](Pin::as_any).
+/// than working with a [`Pin`] directly. When compiling a generic function, the
+/// compiler cannot assume anything about the specific type. It can only use
+/// what it knows about the [`AnyPin`] trait. To use a generic [`AnyPin`], you
+/// must first convert it to its corresponding [`SpecificPin`] using the
+/// [`Into`], [`AsRef`] or [`AsMut`] trait. In some instances, you may also need
+/// to convert back.
 ///
 /// The following example walks through a few different ways to interact with a
-/// generic type constrained by `AnyPin`.
+/// generic type constrained by [`AnyPin`]. Suppose you wanted to store a
+/// completely generic [`Pin`] within a struct. You can do so using only one
+/// type parameter and the [`AnyPin`] trait.
 ///
-/// Suppose you wanted to store a completely generic [`Pin`] within a struct.
-/// You can do so using only one type parameter and the [`AnyPin`] trait.
-///
-/// ```rust
+/// ```
 /// pub struct Example<P: AnyPin> {
 ///     pin: P,
 /// }
 /// ```
 ///
 /// Next, suppose you want to create a method that will take the [`Pin`] out of
-/// the struct, perform some operations in several [`PinMode`]s, and put it back
-/// into the struct before returning. The `elided` method below shows such an
-/// example. However, it can be a bit tricky to follow all of the type
+/// the struct, perform some operations in different [`PinMode`]s, and put it
+/// back into the struct before returning. The `elided` method below shows such
+/// an example. However, it can be a bit tricky to follow all of the type
 /// conversions here. For clarity, the `expanded` method shows the same behavior
-/// with each transformation given its proper type annotation. Notice that it is
-/// not enough to simply put back a type that implements
-/// `AnyPin<Id = P::Id, Mode = P::Mode>`. As far as the compiler is concerned,
-/// there could be many different types that satisfy that trait bound. Instead,
-/// you must put back a `P` exactly. The [`as_any`](Pin::as_any) function is the
-/// key here. It transforms some type that implements
-/// `AnyPin<Id = P::Id, Mode = P::Mode>` into `P` itself.
+/// with each transformation given its proper type annotation.
 ///
-/// ```rust
+/// Notice that it is not enough to simply put back the correct [`SpecificPin`].
+/// Even though the [`SpecificPin`] implements
+/// `AnyPin<Id = P::Id, Mode = P::Mode>` the compiler doesn't understand that
+/// `SpecificPin<P> == P` for all `P`. As far as the compiler is concerned,
+/// there could be several different types that implement
+/// `AnyPin<Id = P::Id, Mode = P::Mode>`. Instead, the compiler requires that
+/// you put back an instance of `P` exactly. The final use of [`Into`] is key
+/// here. It transforms the [`SpecificPin`] back into `P` itself.
+///
+/// ```
 /// impl<P: AnyPin> Example<P> {
 ///     pub fn elided(mut self) -> Self {
-///         let mut pin = self.pin.into_push_pull_output();
-///         pin.set_high().unwrap();
+///         let pin = self.pin.into();
+///         let mut pin = pin.into_push_pull_output();
+///         pin.set_high().ok();
 ///         let pin = pin.into_floating_input();
 ///         let _bit = pin.is_low().unwrap();
-///         self.pin = pin.into_mode().as_any();
+///         let pin = pin.into_mode();
+///         self.pin = pin.into();
 ///         self
 ///     }
 ///     pub fn expanded(mut self) -> Self {
-///         // This step is skipped above, because the `into_push_pull_output`
-///         // trait method automatically calls `as_concrete`.
-///         // By definition, ConcretePin<P> == Pin<P::Id, P::Mode>
-///         let pin: ConcretePin<P> = self.pin.as_concrete();
+///         let pin: SpecificPin<P> = self.pin.into();
 ///         let mut pin: Pin<P::Id, PushPullOutput> = pin.into_push_pull_output();
-///         pin.set_high().unwrap();
+///         pin.set_high().ok();
 ///         let pin: Pin<P::Id, FloatingInput> = pin.into_floating_input();
 ///         let _bit = pin.is_low().unwrap();
-///         let pin: ConcretePin<P> = pin.into_mode::<P::Mode>();
-///         self.pin: P = pin.as_any::<P>();
+///         let pin: SpecificPin<P> = pin.into_mode::<P::Mode>();
+///         self.pin = pin.into();
 ///         self
 ///     }
 /// }
 /// ```
-pub trait AnyPin: Sized + Sealed {
+pub trait AnyPin: Sealed + Is<Type = SpecificPin<Self>> {
     /// [`PinId`] of the corresponding [`Pin`]
     type Id: PinId;
     /// [`PinMode`] of the corresponding [`Pin`]
     type Mode: PinMode;
-
-    /// Convert a type that implements [`AnyPin`] to a concrete [`Pin`]
-    ///
-    /// Even though there is a one-to-one mapping between `Pin<I, M>` and
-    /// `AnyPin<Id = I, Mode = M>`, the compiler doesn't know that. This method
-    /// provides a way to convert from an [`AnyPin`] to a [`Pin`]
-    fn as_concrete(self) -> ConcretePin<Self>;
-
-    /// Implement [`as_concrete`](AnyPin::as_concrete) for references
-    fn as_concrete_ref(&self) -> &ConcretePin<Self>;
-
-    /// Implement [`as_concrete`](AnyPin::as_concrete) for mutable references
-    fn as_concrete_mut(&mut self) -> &mut ConcretePin<Self>;
-
-    /// Convert the pin to the requested [`PinMode`]
-    #[inline]
-    fn into_mode<N: PinMode>(self) -> Pin<Self::Id, N> {
-        self.as_concrete().into_mode()
-    }
-
-    /// Disable the pin and set it to float
-    #[inline]
-    fn into_floating_disabled(self) -> Pin<Self::Id, FloatingDisabled> {
-        self.as_concrete().into_mode()
-    }
-
-    /// Disable the pin and set it to pull down
-    #[inline]
-    fn into_pull_down_disabled(self) -> Pin<Self::Id, PullDownDisabled> {
-        self.as_concrete().into_mode()
-    }
-
-    /// Disable the pin and set it to pull up
-    #[inline]
-    fn into_pull_up_disabled(self) -> Pin<Self::Id, PullUpDisabled> {
-        self.as_concrete().into_mode()
-    }
-
-    /// Configure the pin to operate as a floating input
-    #[inline]
-    fn into_floating_input(self) -> Pin<Self::Id, FloatingInput> {
-        self.as_concrete().into_mode()
-    }
-
-    /// Configure the pin to operate as a pulled down input
-    #[inline]
-    fn into_pull_down_input(self) -> Pin<Self::Id, PullDownInput> {
-        self.as_concrete().into_mode()
-    }
-
-    /// Configure the pin to operate as a pulled up input
-    #[inline]
-    fn into_pull_up_input(self) -> Pin<Self::Id, PullUpInput> {
-        self.as_concrete().into_mode()
-    }
-
-    /// Configure the pin to operate as a push-pull output
-    #[inline]
-    fn into_push_pull_output(self) -> Pin<Self::Id, PushPullOutput> {
-        self.as_concrete().into_mode()
-    }
-
-    /// Configure the pin to operate as a readable push pull output
-    #[inline]
-    fn into_readable_output(self) -> Pin<Self::Id, ReadableOutput> {
-        self.as_concrete().into_mode()
-    }
-
-    /// Configure the pin to operate as the corresponding peripheral function.
-    ///
-    /// The type `C` indicates the desired peripheral function.
-    #[inline]
-    fn into_alternate<C: AlternateConfig>(self) -> Pin<Self::Id, Alternate<C>> {
-        self.as_concrete().into_mode()
-    }
-
-    /// Read the current drive strength of the pin.
-    ///
-    /// The drive strength is reset to normal on every change in pin mode.
-    #[inline]
-    fn get_drive_strength(&self) {
-        self.as_concrete_ref().get_drive_strength()
-    }
-
-    /// Set the drive strength for the pin.
-    ///
-    /// The drive strength is reset to normal on every change in pin mode.
-    #[inline]
-    fn set_drive_strength(&mut self, stronger: bool) {
-        self.as_concrete_mut().set_drive_strength(stronger)
-    }
 }
 
 impl<I, M> Sealed for Pin<I, M>
@@ -962,17 +876,31 @@ where
 {
     type Id = I;
     type Mode = M;
+}
+
+/// Type alias to recover the specific [`Pin`] type from an implementation of
+/// [`AnyPin`]
+///
+/// By definition, `P == SpecificPin<P>` for all `P: AnyPin`.
+pub type SpecificPin<P> = Pin<<P as AnyPin>::Id, <P as AnyPin>::Mode>;
+
+/// Implementation required to satisfy the `Is<Type = SpecificPin<Self>>` bound
+/// on [`AnyPin`]
+impl<P: AnyPin> AsRef<P> for SpecificPin<P> {
     #[inline]
-    fn as_concrete(self) -> ConcretePin<Self> {
-        self
+    fn as_ref(&self) -> &P {
+        // SAFETY: This is guaranteed to be safe, because P == SpecificPin<P>
+        unsafe { transmute(self) }
     }
+}
+
+/// Implementation required to satisfy the `Is<Type = SpecificPin<Self>>` bound
+/// on [`AnyPin`]
+impl<P: AnyPin> AsMut<P> for SpecificPin<P> {
     #[inline]
-    fn as_concrete_ref(&self) -> &ConcretePin<Self> {
-        self
-    }
-    #[inline]
-    fn as_concrete_mut(&mut self) -> &mut ConcretePin<Self> {
-        self
+    fn as_mut(&mut self) -> &mut P {
+        // SAFETY: This is guaranteed to be safe, because P == SpecificPin<P>
+        unsafe { transmute(self) }
     }
 }
 
@@ -1103,50 +1031,6 @@ where
             id: PhantomData,
             mode: PhantomData,
         }
-    }
-
-    /// Convert a [`Pin`] to a type that implements [`AnyPin`]
-    ///
-    /// Even though there is a one-to-one mapping between `Pin<I, M>` and
-    /// `AnyPin<Id = I, Mode = M>`, the compiler doesn't know that. This method
-    /// provides a way to convert from a [`Pin`] to an [`AnyPin`]. See the
-    /// [`AnyPin`] trait for more details.
-    #[inline]
-    pub fn as_any<P>(self) -> P
-    where
-        P: AnyPin<Id = I, Mode = M>,
-    {
-        // SAFETY:
-        // core::ptr::read makes a bitwise copy, regardless of whether the type
-        // implements Copy. Thus, the returned value is a copy, and we still
-        // need to dispose of self. Because a `Pin` does not contain any
-        // resources or allocations, we can safely drop it, rather than use
-        // core::mem::forget
-        unsafe { core::ptr::read(&self as *const _ as *const P) }
-    }
-
-    /// Implement [`as_any`](Pin::as_any) for references
-    #[inline]
-    pub fn as_any_ref<P>(&self) -> &P
-    where
-        P: AnyPin<Id = I, Mode = M>,
-    {
-        // SAFETY:
-        // P is guaranteed to be Pin<I, M>, so there is no actual transmute
-        // operation. The correct lifetime is preserved, albiet elided
-        unsafe { &*(self as *const _ as *const P) }
-    }
-
-    /// Implement [`as_any`](Pin::as_any) for mutable references
-    #[inline]
-    pub fn as_any_mut<P>(&mut self) -> &mut P
-    where
-        P: AnyPin<Id = I, Mode = M>,
-    {
-        // SAFETY:
-        // P is guaranteed to be Pin<I, M>, so there is no actual transmute
-        // operation. The correct lifetime is preserved, albiet elided
-        unsafe { &mut *(self as *mut _ as *mut P) }
     }
 
     /// Convert the pin to the requested [`PinMode`]
@@ -1371,7 +1255,7 @@ macro_rules! pins{
         paste! {
             /// Collection of all the individual [`Pin`]s
             pub struct Pins {
-                port: PORT,
+                port: Option<PORT>,
                 $(
                     #[doc = "Pin " $Id]
                     $( #[$cfg] )?
@@ -1384,32 +1268,27 @@ macro_rules! pins{
                 /// discrete [`Pin`]s
                 pub fn new(port: PORT) -> Pins {
                     Pins {
-                        port,
+                        port: Some(port),
                         $(
                             $( #[$cfg] )?
                             [<$Id:lower>]: Pin::new(),
                         )+
                     }
                 }
-                /// Get a reference to the PAC
-                /// [`PORT`](crate::target_device::PORT)
+                /// Take the PAC [`PORT`]
                 ///
-                /// This operation could allow you to invalidate the compiler's
-                /// type-level tracking, so it is unsafe.
-                #[inline]
-                pub unsafe fn port(&self) -> &PORT {
-                    &self.port
-                }
-                /// Consume the [`Pins`] struct and return the PAC
-                /// [`PORT`](crate::target_device::PORT)
+                /// The [`PORT`] can only be taken once. Subsequent calls to
+                /// this function will panic.
                 ///
-                /// All remaining [`Pin`] instances stored within the struct
-                /// will be dropped. This operation could allow you to
-                /// invalidate the compiler's type-level tracking, so it is
-                /// unsafe.
+                /// # Safety
+                ///
+                /// Direct access to the [`PORT`] could allow you to invalidate
+                /// the compiler's type-level tracking, so it is unsafe.
+                ///
+                /// [`PORT`](crate::target_device::PORT)
                 #[inline]
-                pub unsafe fn free(self) -> PORT {
-                    self.port
+                pub unsafe fn port(&mut self) -> PORT {
+                    self.port.take().unwrap()
                 }
             }
         }
@@ -1643,3 +1522,194 @@ define_pins!(
         (PD21, 21),
     }
 );
+
+/// Helper macro to give meaningful names to GPIO pins
+///
+/// The normal [`Pins`] struct names each [`Pin`] according to its [`PinId`].
+/// However, BSP authors would prefer to name each [`Pin`] according to its
+/// function. This macro defines a new `Pins` struct with custom field names
+/// for each [`Pin`], and it defines type aliases and constants to make it
+/// easier to work with the [`Pin`]s and [`DynPin`](super::DynPin)s.
+///
+/// The types and constants are defined within a public module named
+/// `bsp_pins_mod` and are then re-exported with `pub use bsp_pins_mod::*;`.
+///
+/// # Example
+///
+/// The following example macro call
+///
+/// ```rust
+/// atsamd_hal::bsp_pins!(
+///     #[cfg(feature = "unproven")]
+///     PA24 {
+///         name: led_pass,
+///         aliases: {
+///             AlternateH: LedPass,
+///             #[cfg(feature = "usb")]
+///             AlternateM: UsbPin
+///         }
+///     }
+/// );
+/// ```
+///
+/// would expand to this
+///
+/// ```rust
+/// pub mod bsp_pins_mod {
+///     use atsamd_hal::target_device::PORT;
+///     use atsamd_hal::gpio::v2::{
+///         self as gpio, Pin, PinId, PinMode, Reset, DynPinId, DynPinMode
+///     };
+///
+///     pub struct Pins {
+///         port: Option<PORT>,
+///         #[cfg(feature = "unproven")]
+///         pub led_pass: Pin<gpio::PA24, Reset>,
+///     }
+///
+///     impl Pins {
+///
+///         pub fn new(port: PORT) -> Self {
+///             let pins = gpio::Pins::new(port);
+///             Self {
+///                 port: Some(unsafe { pins.port() }),
+///                 #[cfg(feature = "unproven")]
+///                 led_pass: pins.pa24,
+///             }
+///         }
+///
+///         #[inline]
+///         pub unsafe fn port(&mut self) -> PORT {
+///             self.port.take().unwrap()
+///         }
+///     }
+///
+///     #[cfg(feature = "unproven")]
+///     pub type LedPass = Pin<gpio::PA24, gpio::AlternateH>;
+///     #[cfg(feature = "unproven")]
+///     pub const LED_PASS_ID: DynPinId = <gpio::PA24 as PinId>::DYN;
+///     #[cfg(feature = "unproven")]
+///     pub const LED_PASS_MODE: DynPinMode = <gpio::AlternateH as PinMode>::DYN;
+///
+///     #[cfg(feature = "unproven")]
+///     #[cfg(feature = "usb")]
+///     pub type UsbPin = Pin<gpio::PA24, gpio::AlternateM>;
+///     #[cfg(feature = "unproven")]
+///     #[cfg(feature = "usb")]
+///     pub const USB_PIN_ID: DynPinId = <gpio::PA24 as PinId>::DYN;
+///     #[cfg(feature = "unproven")]
+///     #[cfg(feature = "usb")]
+///     pub const USB_PIN_MODE: DynPinMode = <gpio::AlternateM as PinMode>::DYN;
+/// }
+/// pub use bsp_pins_mod::*;
+/// ```
+#[macro_export]
+macro_rules! bsp_pins {
+    (
+        $(
+            $( #[$name_cfg:meta] )?
+            $Id:ty {
+                name: $name:ident $(,)?
+                $(
+                    aliases: {
+                        $(
+                            $( #[$alias_cfg:meta] )?
+                            $Mode:ty: $Alias:ident
+                        ),+
+                    }
+                )?
+            }
+        )+
+    ) => {
+        atsamd_hal::paste::paste! {
+            pub mod bsp_pins_mod {
+                use atsamd_hal::target_device::PORT;
+                use atsamd_hal::gpio::v2::{
+                    self as gpio, Pin, PinId, PinMode, Reset, DynPinId, DynPinMode
+                };
+
+                /// BSP replacement for the HAL
+                /// [`Pins`](atsamd_hal::gpio::v2::Pins) type
+                ///
+                /// This type is intended to provide more meaningful names for
+                /// the given pins.
+                pub struct Pins {
+                    port: Option<PORT>,
+                    $(
+                        $( #[$name_cfg] )?
+                        pub $name: Pin<gpio::$Id, Reset>,
+                    )+
+                }
+
+                impl Pins {
+
+                    /// Take ownership of the PAC [`PORT`] and split it into
+                    /// discrete [`Pin`]s.
+                    ///
+                    /// This struct serves as a replacement for the HAL [`Pins`]
+                    /// struct. It is intended to provide more meaningful names
+                    /// for each [`Pin`] in a BSP. Any [`Pin`] not defined by
+                    /// the BSP is dropped.
+                    ///
+                    /// [`PORT`](atsamd_hal::target_device::PORT)
+                    /// [`Pin`](atsamd_hal::gpio::v2::Pin)
+                    /// [`Pins`](atsamd_hal::gpio::v2::Pins)
+                    pub fn new(port: PORT) -> Self {
+                        let mut pins = gpio::Pins::new(port);
+                        Self {
+                            port: Some(unsafe{ pins.port() }),
+                            $(
+                                $( #[$name_cfg] )?
+                                $name: pins.[<$Id:lower>],
+                            )+
+                        }
+                    }
+
+                    /// Take the PAC [`PORT`]
+                    ///
+                    /// The [`PORT`] can only be taken once. Subsequent calls to
+                    /// this function will panic.
+                    ///
+                    /// # Safety
+                    ///
+                    /// Direct access to the [`PORT`] could allow you to invalidate
+                    /// the compiler's type-level tracking, so it is unsafe.
+                    ///
+                    /// [`PORT`](atsamd_hal::target_device::PORT)
+                    #[inline]
+                    pub unsafe fn port(&mut self) -> PORT {
+                        self.port.take().unwrap()
+                    }
+                }
+
+                $(
+                    $( #[$name_cfg] )?
+                    $(
+                        $(
+                            $( #[$alias_cfg] )?
+                            /// Alias for a configured [`Pin`](atsamd_hal::gpio::v2::Pin)
+                            pub type $Alias = Pin<gpio::$Id, gpio::$Mode>;
+                        )+
+                    )?
+                    $( #[$name_cfg] )?
+                    $(
+                        $(
+                            $( #[$alias_cfg] )?
+                            #[doc = "[DynPinId](atsamd_hal::gpio::v2::DynPinId) for the `" $Alias "` alias."]
+                            pub const [<$Alias:snake:upper _ID>]: DynPinId = <gpio::$Id as PinId>::DYN;
+                        )+
+                    )?
+                    $( #[$name_cfg] )?
+                    $(
+                        $(
+                            $( #[$alias_cfg] )?
+                            #[doc = "[DynPinMode](atsamd_hal::gpio::v2::DynPinMode) for the `" $Alias "` alias."]
+                            pub const [<$Alias:snake:upper _MODE>]: DynPinMode = <gpio::$Mode as PinMode>::DYN;
+                        )+
+                    )?
+                )+
+            }
+            pub use bsp_pins_mod::*;
+        }
+    };
+}

@@ -1,6 +1,6 @@
 [package]
 name = "sodaq_one"
-version = "0.7.0"
+version = "0.8.0"
 authors = ["Robert Hennig <robert.hennig@freylax.de>"]
 description = "Board Support crate for the SODAQ ONE"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
@@ -20,7 +20,7 @@ optional = true
 
 [dependencies.atsamd-hal]
 path = "../../hal"
-version = "0.11"
+version = "0.12"
 default-features = false
 
 [dev-dependencies]

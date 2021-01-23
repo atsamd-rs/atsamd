@@ -6,16 +6,15 @@
 //! value-level API solves this problem by erasing the type information and
 //! tracking the pin at run-time.
 //!
-//! Value-level pins are represented by the [DynPin] type. [DynPin] has two
-//! fields, `id` and `mode` with types [DynPinId] and [DynPinMode]
+//! Value-level pins are represented by the [`DynPin`] type. [`DynPin`] has two
+//! fields, `id` and `mode` with types [`DynPinId`] and [`DynPinMode`]
 //! respectively. The implementation of these types closely mirrors the
 //! type-level API.
 //!
-//! Instances of [DynPin] cannot be created directly. Rather, they must be
-//! created from their type-level equivalents using [From](core::convert::From)
-//! /[Into](core::convert::Into).
+//! Instances of [`DynPin`] cannot be created directly. Rather, they must be
+//! created from their type-level equivalents using [`From`]/[`Into`].
 //!
-//! ```rust
+//! ```
 //! // Move a pin out of the Pins struct and convert to a DynPin
 //! let pa27: DynPin = pins.pa27.into();
 //! ```
@@ -23,24 +22,24 @@
 //! Conversions between pin modes use a value-level version of the type-level
 //! API.
 //!
-//! ```rust
+//! ```
 //! // Use one of the literal function names
 //! pa27.into_floating_input();
 //! // Use a method and a DynPinMode variant
 //! pa27.into_mode(DYN_FLOATING_INPUT);
 //! ```
 //!
-//! Because the pin state cannot be tracked at compile-time, many [DynPin]
+//! Because the pin state cannot be tracked at compile-time, many [`DynPin`]
 //! operations become fallible. Run-time checks are inserted to ensure that
 //! users don't try to, for example, set the output level of an input pin.
 //!
 //! Users may try to convert value-level pins back to their type-level
 //! equivalents. However, this option is fallible, because the compiler cannot
 //! guarantee the pin has the correct ID or is in the correct mode at
-//! compile-time. Use [TryFrom](core::convert::TryFrom)/
-//! [TryInto](core::convert::TryInto) for this conversion.
+//! compile-time. Use [`TryFrom`](core::convert::TryFrom)/
+//! [`TryInto`](core::convert::TryInto) for this conversion.
 //!
-//! ```rust
+//! ```
 //! // Convert to a `DynPin`
 //! let pa27: DynPin = pins.pa27.into();
 //! // Change pin mode
@@ -51,13 +50,16 @@
 //!
 //! # Embedded HAL traits
 //!
-//! This module implements all of the embedded HAL GPIO traits for [DynPin].
+//! This module implements all of the embedded HAL GPIO traits for [`DynPin`].
 //! However, whereas the type-level API uses
 //! `Error = core::convert::Infallible`, the value-level API can return a real
-//! error. If the [DynPin] is not in the correct [DynPinMode] for the operation,
-//! the trait functions will return [InvalidPinType](Error::InvalidPinType).
+//! error. If the [`DynPin`] is not in the correct [`DynPinMode`] for the
+//! operation, the trait functions will return
+//! [`InvalidPinType`](Error::InvalidPinType).
 
 use core::convert::TryFrom;
+
+use paste::paste;
 
 use hal::digital::v2::OutputPin;
 #[cfg(feature = "unproven")]
@@ -67,7 +69,7 @@ use super::pin::*;
 
 /// GPIO error type
 ///
-/// [DynPin]s are not tracked and verified at compile-time, so run-time
+/// [`DynPin`]s are not tracked and verified at compile-time, so run-time
 /// operations are fallible. This `enum` represents the corresponding errors.
 pub enum Error {
     /// The pin did not have the correct ID or mode for the requested operation
@@ -132,60 +134,45 @@ pub enum DynPinMode {
     Alternate(DynAlternate),
 }
 
-/// Value-level variant of [DynPinMode] for floating disabled mode
+/// Value-level variant of [`DynPinMode`] for floating disabled mode
 pub const DYN_FLOATING_DISABLED: DynPinMode = DynPinMode::Disabled(DynDisabled::Floating);
-/// Value-level variant of [DynPinMode] for pull-down disabled mode
+/// Value-level variant of [`DynPinMode`] for pull-down disabled mode
 pub const DYN_PULL_DOWN_DISABLED: DynPinMode = DynPinMode::Disabled(DynDisabled::PullDown);
-/// Value-level variant of [DynPinMode] for pull-up disabled mode
+/// Value-level variant of [`DynPinMode`] for pull-up disabled mode
 pub const DYN_PULL_UP_DISABLED: DynPinMode = DynPinMode::Disabled(DynDisabled::PullUp);
 
-/// Value-level variant of [DynPinMode] for floating input mode
+/// Value-level variant of [`DynPinMode`] for floating input mode
 pub const DYN_FLOATING_INPUT: DynPinMode = DynPinMode::Input(DynInput::Floating);
-/// Value-level variant of [DynPinMode] for pull-down input mode
+/// Value-level variant of [`DynPinMode`] for pull-down input mode
 pub const DYN_PULL_DOWN_INPUT: DynPinMode = DynPinMode::Input(DynInput::PullDown);
-/// Value-level variant of [DynPinMode] for pull-up input mode
+/// Value-level variant of [`DynPinMode`] for pull-up input mode
 pub const DYN_PULL_UP_INPUT: DynPinMode = DynPinMode::Input(DynInput::PullUp);
 
-/// Value-level variant of [DynPinMode] for push-pull output mode
+/// Value-level variant of [`DynPinMode`] for push-pull output mode
 pub const DYN_PUSH_PULL_OUTPUT: DynPinMode = DynPinMode::Output(DynOutput::PushPull);
-/// Value-level variant of [DynPinMode] for readable push-pull output mode
+/// Value-level variant of [`DynPinMode`] for readable push-pull output mode
 pub const DYN_READABLE_OUTPUT: DynPinMode = DynPinMode::Output(DynOutput::Readable);
 
-/// Value-level variant of [DynPinMode] for alternate peripheral function A
-pub const DYN_ALTERNATE_A: DynPinMode = DynPinMode::Alternate(DynAlternate::A);
-/// Value-level variant of [DynPinMode] for alternate peripheral function B
-pub const DYN_ALTERNATE_B: DynPinMode = DynPinMode::Alternate(DynAlternate::B);
-/// Value-level variant of [DynPinMode] for alternate peripheral function C
-pub const DYN_ALTERNATE_C: DynPinMode = DynPinMode::Alternate(DynAlternate::C);
-/// Value-level variant of [DynPinMode] for alternate peripheral function D
-pub const DYN_ALTERNATE_D: DynPinMode = DynPinMode::Alternate(DynAlternate::D);
-/// Value-level variant of [DynPinMode] for alternate peripheral function E
-pub const DYN_ALTERNATE_E: DynPinMode = DynPinMode::Alternate(DynAlternate::E);
-/// Value-level variant of [DynPinMode] for alternate peripheral function F
-pub const DYN_ALTERNATE_F: DynPinMode = DynPinMode::Alternate(DynAlternate::F);
-/// Value-level variant of [DynPinMode] for alternate peripheral function G
-pub const DYN_ALTERNATE_G: DynPinMode = DynPinMode::Alternate(DynAlternate::G);
-/// Value-level variant of [DynPinMode] for alternate peripheral function H
+macro_rules! dyn_alternate {
+    ( $($Letter:ident),+ ) => {
+        paste! {
+            $(
+                #[
+                    doc = "Value-level variant of [`DynPinMode`] for alternate "
+                    "peripheral function " $Letter
+                ]
+                pub const [<DYN_ALTERNATE_ $Letter>]: DynPinMode =
+                DynPinMode::Alternate(DynAlternate::$Letter);
+            )+
+        }
+    };
+}
+
+dyn_alternate!(A, B, C, D, E, F, G);
 #[cfg(any(feature = "samd21", feature = "min-samd51g"))]
-pub const DYN_ALTERNATE_H: DynPinMode = DynPinMode::Alternate(DynAlternate::H);
-/// Value-level variant of [DynPinMode] for alternate peripheral function I
+dyn_alternate!(H);
 #[cfg(feature = "min-samd51g")]
-pub const DYN_ALTERNATE_I: DynPinMode = DynPinMode::Alternate(DynAlternate::I);
-/// Value-level variant of `[DynPinMode]for alternate peripheral function J
-#[cfg(feature = "min-samd51g")]
-pub const DYN_ALTERNATE_J: DynPinMode = DynPinMode::Alternate(DynAlternate::J);
-/// Value-level variant of [DynPinMode] for alternate peripheral function K
-#[cfg(feature = "min-samd51g")]
-pub const DYN_ALTERNATE_K: DynPinMode = DynPinMode::Alternate(DynAlternate::K);
-/// Value-level variant of [DynPinMode] for alternate peripheral function L
-#[cfg(feature = "min-samd51g")]
-pub const DYN_ALTERNATE_L: DynPinMode = DynPinMode::Alternate(DynAlternate::L);
-/// Value-level variant of [DynPinMode] for alternate peripheral function M
-#[cfg(feature = "min-samd51g")]
-pub const DYN_ALTERNATE_M: DynPinMode = DynPinMode::Alternate(DynAlternate::M);
-/// Value-level variant of [DynPinMode] for alternate peripheral function N
-#[cfg(feature = "min-samd51g")]
-pub const DYN_ALTERNATE_N: DynPinMode = DynPinMode::Alternate(DynAlternate::N);
+dyn_alternate!(I, J, K, L, M, N);
 
 /// Value-level `enum` for pin groups
 #[derive(PartialEq, Clone, Copy)]
@@ -206,11 +193,10 @@ pub struct DynPinId {
     pub num: u8,
 }
 
-/// A value-level pin, parameterized by [DynPinId] and [DynPinMode]
+/// A value-level pin, parameterized by [`DynPinId`] and [`DynPinMode`]
 ///
-/// This type acts as a type-erased version of [super::Pin]. Every pin is
-/// represented by the same type, and pins are tracked and distinguished at
-/// run-time.
+/// This type acts as a type-erased version of [`Pin`]. Every pin is represented
+/// by the same type, and pins are tracked and distinguished at run-time.
 pub struct DynPin {
     id: DynPinId,
     mode: DynPinMode,
@@ -244,7 +230,7 @@ impl DynPin {
         }
     }
 
-    /// Convert the pin to the requested [DynPinMode]
+    /// Convert the pin to the requested [`DynPinMode`]
     #[inline]
     pub fn into_mode(&mut self, mode: DynPinMode) {
         let group = self.group();
@@ -357,7 +343,7 @@ impl DynPin {
 
     /// Configure the pin to operate as the corresponding peripheral function.
     ///
-    /// The `config` parameter indicates the desired peripheral function.
+    /// The `config` argument indicates the desired peripheral function.
     #[inline]
     pub fn into_alternate(&mut self, config: DynAlternate) {
         self.into_mode(DynPinMode::Alternate(config));
@@ -446,8 +432,8 @@ where
     M: PinMode,
 {
     #[inline]
-    /// Erase the type-level information in a [Pin] and return a value-level
-    /// [DynPin]
+    /// Erase the type-level information in a [`Pin`] and return a value-level
+    /// [`DynPin`]
     fn from(_pin: Pin<I, M>) -> Self {
         DynPin {
             id: I::DYN,
@@ -463,7 +449,7 @@ where
 {
     type Error = Error;
     #[inline]
-    /// Try to recreate a type-level [Pin] from a value-level [DynPin]
+    /// Try to recreate a type-level [`Pin`] from a value-level [`DynPin`]
     ///
     /// There is no way for the compiler to know if the conversion will be
     /// successful at compile-time. We must verify the conversion at run-time

@@ -253,7 +253,6 @@ impl Wifi {
             }
             buffer = &mut buffer[copy_amt..];
 
-            drop(b);
             r.release(copy_amt);
         }
     }

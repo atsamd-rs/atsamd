@@ -1,6 +1,6 @@
 [package]
 name = "wio_terminal"
-version = "0.2.0"
+version = "0.3.0"
 authors = [
     "Jesse Braham <jesse@beta7.io>",
     "Tom <twitchyliquid64@ciphersink.net>"
@@ -23,7 +23,7 @@ categories = [
     "no-std",
 ]
 
-exclude = ["assets", "examples"]
+exclude = ["assets"]
 
 [dependencies]
 bitfield = "0.13"
@@ -39,12 +39,12 @@ usbd-serial = { version = "0.1", optional = true }
 bbqueue = { version = "^0.4.11", optional = true }
 nb = { version = "0.1", optional = true }
 nom = { version = "^6.0", default-features = false, optional = true }
-generic-array = { version = "0.13", optional = true }
-seeed-erpc = { version = "0.1.0", optional = true }
+generic-array = { version = "0.14", optional = true }
+seeed-erpc = { version = "0.1.1", optional = true }
 
 [dependencies.atsamd-hal]
 path = "../../hal"
-version = "0.11"
+version = "0.12"
 default-features = false
 
 [dev-dependencies]

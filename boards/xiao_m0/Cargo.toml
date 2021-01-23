@@ -1,6 +1,6 @@
 [package]
 name = "xiao_m0"
-version = "0.8.0"
+version = "0.9.0"
 authors = ["Garret Kelly <gdk@google.com>"]
 description = "Board support crate for the Seeed Studio Seeeduino XIAO"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
@@ -20,7 +20,7 @@ optional = true
 
 [dependencies.atsamd-hal]
 path = "../../hal"
-version = "0.11"
+version = "0.12"
 default-features = false
 
 [dependencies.usb-device]
