@@ -87,27 +87,27 @@ define_pins!(
     pin usb_dp = a25,
 
     /// SPI chip select for the RFM module
-    #[cfg(feature = "rfm")]
+    #[cfg(all(feature = "rfm", not(feature = "express")))]
     pin rfm_cs = a6,
 
     /// Reset for the RFM module
-    #[cfg(feature = "rfm")]
+    #[cfg(all(feature = "rfm", not(feature = "express")))]
     pin rfm_reset = a8,
 
     /// Interrupt from the RFM module
-    #[cfg(feature = "rfm")]
+    #[cfg(all(feature = "rfm", not(feature = "express")))]
     pin rfm_irq = a9,
 
     /// Neopixel data
-    #[cfg(feature = "express")]
+    #[cfg(all(feature = "express", not(feature = "rfm")))]
     pin neopixel = a6,
 
     /// SPI clock for the external flash
-    #[cfg(feature = "express")]
+    #[cfg(all(feature = "express", not(feature = "rfm")))]
     pin flash_sck = a9,
 
     /// SPI MOSI for the external flash
-    #[cfg(feature = "express")]
+    #[cfg(all(feature = "express", not(feature = "rfm")))]
     pin flash_mosi = a8,
 
     /// SPI MISO for the external flash

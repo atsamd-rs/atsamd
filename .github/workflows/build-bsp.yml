@@ -28,6 +28,7 @@ jobs:
         toolchain: ${{ matrix.toolchain }}
         override: true
         target: thumbv6m-none-eabi
+        components: clippy
     - name: Install Rust (thumbv7em)
       uses: actions-rs/toolchain@v1
       with:
@@ -35,6 +36,7 @@ jobs:
         toolchain: ${{ matrix.toolchain }}
         override: true
         target: thumbv7em-none-eabihf
+        components: clippy
 
     - name: Test ${{ matrix.bsp }}
       run: |
@@ -43,3 +45,9 @@ jobs:
         cd boards/${{ matrix.bsp }}
         $(${build_invocation})
         cargo publish --dry-run
+    - uses: actions-rs/clippy-check@v1
+      if: ${{ matrix.toolchain == 'nightly' }}
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        name: Clippy ${{ matrix.bsp }}
+        args: --all-features --manifest-path=boards/${{ matrix.bsp }}/Cargo.toml
