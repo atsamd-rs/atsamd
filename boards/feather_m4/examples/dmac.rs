@@ -53,8 +53,8 @@ fn main() -> ! {
     chan0.burst_length(BurstLength::_4BEAT, &mut dmac);
     chan0.fifo_threshold(FifoThreshold::_8BEATS, &mut dmac);
 
-    // Setup a DMA transfer (memory-to-memory -> incrementing source, incrementing destination)
-    // with a 8-bit beat size
+    // Setup a DMA transfer (memory-to-memory -> incrementing source, incrementing
+    // destination) with a 8-bit beat size
     let xfer = DmaTransfer::inc_src_inc_dest(chan0, buf_src, buf_dest, false, ());
     // Begin transfer
     let xfer = xfer.begin(&mut dmac, TriggerSource::DISABLE, TriggerAction::BLOCK);
@@ -70,8 +70,8 @@ fn main() -> ! {
     let buf_16: &'static mut [u16; LENGTH] =
         cortex_m::singleton!(:[u16; LENGTH] = [0x0000; LENGTH]).unwrap();
 
-    // Setup a DMA transfer (memory-to-memory -> fixed source, incrementing destination)
-    // with a 16-bit beat size
+    // Setup a DMA transfer (memory-to-memory -> fixed source, incrementing
+    // destination) with a 16-bit beat size
     let xfer = DmaTransfer::fixed_src_inc_dest(chan0, const_16, buf_16, false, ());
     let xfer = xfer.begin(&mut dmac, TriggerSource::DISABLE, TriggerAction::BLOCK);
 
@@ -86,8 +86,8 @@ fn main() -> ! {
         buf_16[i] = i as u16;
     }
 
-    // Setup a DMA transfer (memory-to-memory -> incrementing source, fixed destination)
-    // with a 16-bit beat size
+    // Setup a DMA transfer (memory-to-memory -> incrementing source, fixed
+    // destination) with a 16-bit beat size
     let xfer = DmaTransfer::inc_src_fixed_dest(chan0, buf_16, const_16, false, ());
     let xfer = xfer.begin(&mut dmac, TriggerSource::DISABLE, TriggerAction::BLOCK);
 
