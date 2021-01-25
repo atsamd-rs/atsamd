@@ -131,8 +131,8 @@ impl Adc<$ADC> {
     fn synchronous_convert(&mut self) -> u16 {
         self.start_conversion();
         while self.adc.intflag.read().resrdy().bit_is_clear() {}
-        let result = self.adc.result.read().result().bits();
-        result
+
+        self.adc.result.read().result().bits()
     }
 
     /// Enables an interrupt when conversion is ready.
@@ -149,8 +149,8 @@ impl Adc<$ADC> {
     fn service_interrupt_ready(&mut self) -> Option<u16> {
         if self.adc.intflag.read().resrdy().bit_is_set() {
             self.adc.intflag.write(|w| w.resrdy().set_bit());
-            let result = self.adc.result.read().result().bits();
-            Some(result)
+
+            Some(self.adc.result.read().result().bits())
         } else {
             None
         }

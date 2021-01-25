@@ -143,7 +143,7 @@ impl Qspi<OneShot> {
         }
 
         let tfm = TransferMode {
-            data_enable: data.len() > 0,
+            data_enable: !data.is_empty(),
             instruction_enable: true,
             ..TransferMode::default()
         };
@@ -300,7 +300,7 @@ impl<MODE> Qspi<MODE> {
         });
         self.qspi.instrframe.read().bits();
 
-        if buf.len() > 0 {
+        if !buf.is_empty() {
             core::ptr::copy(buf.as_ptr(), (QSPI_AHB + addr) as *mut u8, buf.len());
         }
 
@@ -330,7 +330,7 @@ impl<MODE> Qspi<MODE> {
         });
         self.qspi.instrframe.read().bits();
 
-        if buf.len() > 0 {
+        if !buf.is_empty() {
             core::ptr::copy((QSPI_AHB + addr) as *mut u8, buf.as_mut_ptr(), buf.len());
         }
 
