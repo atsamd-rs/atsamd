@@ -11,8 +11,9 @@
 //! One-shot and circular transfers are supported. More complex
 //! transfer configurations, including multi-buffer
 //! (linked-list descriptor) transfers, are not currently supported.
-//! Advanced arbitration schemes (eg. round-robin) are not currently
-//! supported.
+//!
+//! Transfers are supported for `i8`, `u8`, `i16`, `u16`, `i32`, `u32` and `f32`
+//! beat sizes.
 //!
 //! # Enabling DMA support
 //!
@@ -54,7 +55,7 @@
 //!
 //! * `ATSAMD51/ATSAME5x`: - 32 channels (max): 1024 bytes
 //!
-//! # Priority levels
+//! # Priority levels and Arbitration
 //!
 //! The DMAC features 4 priority levels. Level 0 has the highest priority
 //! and level 3 has the lowest. Each channel can be assigned to one priority
@@ -65,6 +66,11 @@
 //! By default, all priority levels are enabled when initializing the DMAC
 //! (see [`DmaController::init`](dma_controller::DmaController::init)). Levels
 //! can be enabled or disabled through the various `level_x_enabled` methods.
+//!
+//! Round-Robin Arbitration can be enabled for individual priority levels by
+//! using the various `level_x_round_robin` methods. By default, all priority
+//! levels are initialized with a fixed arbitration scheme. See ATSAMD21
+//! datasheet section 19.6.2.4 for more information.
 //!
 //! # Interrupts
 //!

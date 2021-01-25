@@ -135,6 +135,30 @@ impl DmaController {
         self.dmac.ctrl.modify(|_, w| w.lvlen3().bit(enabled));
     }
 
+    /// Enable or disable Round-Robin Arbitration for priority level 0
+    #[inline(always)]
+    pub fn level_0_round_robin(&mut self, enabled: bool) {
+        self.dmac.prictrl0.modify(|_, w| w.rrlvlen0().bit(enabled));
+    }
+
+    /// Enable or disable Round-Robin Arbitration for priority level 1
+    #[inline(always)]
+    pub fn level_1_round_robin(&mut self, enabled: bool) {
+        self.dmac.prictrl0.modify(|_, w| w.rrlvlen1().bit(enabled));
+    }
+
+    /// Enable or disable Round-Robin Arbitration for priority level 2
+    #[inline(always)]
+    pub fn level_2_round_robin(&mut self, enabled: bool) {
+        self.dmac.prictrl0.modify(|_, w| w.rrlvlen2().bit(enabled));
+    }
+
+    /// Enable or disable Round-Robin Arbitration for priority level 3
+    #[inline(always)]
+    pub fn level_3_round_robin(&mut self, enabled: bool) {
+        self.dmac.prictrl0.modify(|_, w| w.rrlvlen3().bit(enabled));
+    }
+
     /// Release the DMAC and return the register block
     pub fn release(mut self, _pm: &mut PM) -> DMAC {
         self.dmac.ctrl.modify(|_, w| w.dmaenable().clear_bit());
