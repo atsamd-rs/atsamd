@@ -45,6 +45,9 @@ default = ["rt", "atsamd-hal/samd51j", "atsamd-hal/samd51"]
 rt = ["cortex-m-rt", "atsamd-hal/samd51j-rt"]
 unproven = ["atsamd-hal/unproven"]
 usb = ["atsamd-hal/usb", "usb-device", "usbd-serial"]
+dma = ["atsamd-hal/dma", "unproven"]
+max-channels = ["dma", "atsamd-hal/dma"]
+
 
 [profile.dev]
 incremental = false
@@ -67,3 +70,7 @@ required-features = ["usb"]
 
 [[example]]
 name = "sleeping_timer_rtc"
+
+[[example]]
+name = "dmac"
+required-features = ["dma"]

@@ -70,6 +70,8 @@ panic_semihosting = ["panic-semihosting"]
 rfm = []
 # Enable pins for the flash and neopixel on the Feather M0 Express
 express = []
+dma = ["atsamd-hal/dma"]
+max-channels = ["dma", "atsamd-hal/max-channels"]
 
 [profile.dev]
 incremental = false
@@ -126,7 +128,7 @@ name = "sleeping_timer_rtc"
 
 [[example]]
 name = "dmac"
-required-features = ["unproven"]
+required-features = ["dma"]
 
 [[example]]
 name = "clock"

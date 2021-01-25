@@ -7,6 +7,14 @@
 //! Initializing a channel requires setting a priority level, as well as enabling or disabling interrupt
 //! requests (only for the specific channel being initialized).
 //!
+//! # Burst Length and FIFO Threshold (SAMD51/SAME5x only)
+//!
+//! The transfer burst length can be configured through the [`burst_length`](Channel::burst_length) method.
+//! A burst is an atomic, uninterruptible transfer which length corresponds to a number of beats. See SAMD5x/E5x
+//! datasheet section 22.6.1.1 for more information. The FIFO threshold can be configured through the
+//! [`fifo_threshold`](Channel::fifo_threshold) method. This enables the channel to wait for multiple
+//! Beats before sending a Burst. See SAMD5x/E5x datasheet section 22.6.2.8 for more information.
+//!
 //! # Channel status
 //!
 //! Channels can be in any of three statuses: `Uninitialized`, `Ready`, and `Busy`. These statuses are checked
@@ -18,16 +26,30 @@
 //! will be required to call [`init`](Channel::init) again before being able to use it with a `DmaTransfer`.
 
 use super::dma_controller::{DmaController, PriorityLevel, TriggerAction, TriggerSource};
+
+#[cfg(any(
+    feature = "samd51",
+    feature = "same51",
+    feature = "same53",
+    feature = "same54"
+))]
+use super::dma_controller::{BurstLength, FifoThreshold};
+
+#[cfg(any(
+    feature = "samd51",
+    feature = "same51",
+    feature = "same53",
+    feature = "same54"
+))]
+use crate::target_device::dmac::CHANNEL;
+
 use crate::target_device::DMAC;
 use crate::typelevel::Sealed;
-use cortex_m::interrupt;
 
 /// Uninitialized channel
 pub struct Uninitialized;
-
 /// Initialized and ready to transfer channel
 pub struct Ready;
-
 /// Busy channel
 pub struct Busy;
 
@@ -46,6 +68,40 @@ impl<S, const ID: u8> Sealed for Channel<S, ID> {}
 
 /// These methods may be used on any DMA channel in any configuration
 impl<S, const ID: u8> Channel<S, ID> {
+    /// Set channel ID and run the closure. A closure is needed to ensure
+    /// the registers are accessed in an interrupt-safe way, as the SAMD21
+    /// DMAC is a little funky - It requires setting the channel number in
+    /// the CHID register, then access the channel control registers.
+    /// If an interrupt were to change the CHID register, we would be faced
+    /// with undefined behaviour.
+    #[cfg(any(feature = "samd11", feature = "samd21"))]
+    fn with_chid<F: Fn(&mut DMAC)>(&mut self, dmac: &mut DMAC, fun: F) {
+        cortex_m::interrupt::free(|_| {
+            // SAFETY: this is actually safe as long as we write a correct channel number to
+            // the CHID register
+            unsafe {
+                dmac.chid.modify(|_, w| w.id().bits(ID));
+            }
+
+            fun(dmac);
+        });
+    }
+
+    /// Set channel ID and run the closure. A closure is needed to ensure
+    /// the registers are accessed in an interrupt-safe way, as the SAMD21
+    /// DMAC is a little funky. For the SAMD51/SAMEx, we simply take a reference
+    /// to the correct channel number and run the closure on that.
+    #[cfg(any(
+        feature = "samd51",
+        feature = "same51",
+        feature = "same53",
+        feature = "same54"
+    ))]
+    fn with_chid<F: Fn(&CHANNEL)>(&mut self, dmac: &mut DMAC, fun: F) {
+        let mut ch = &dmac.channel[ID as usize];
+        fun(&mut ch);
+    }
+
     /// Configure the DMA channel so that it is ready to be used by a [`DmaTransfer`](super::transfer::DmaTransfer).
     ///
     /// # Return
@@ -67,8 +123,17 @@ impl<S, const ID: u8> Channel<S, ID> {
             d.chctrla.modify(|_, w| w.swrst().set_bit());
             while d.chctrla.read().swrst().bit_is_set() {}
 
+            #[cfg(any(feature = "samd11", feature = "samd21"))]
             // Setup priority level
             d.chctrlb.modify(|_, w| w.lvl().bits(lvl as u8));
+
+            #[cfg(any(
+                feature = "samd51",
+                feature = "same51",
+                feature = "same53",
+                feature = "same54"
+            ))]
+            d.chprilvl.modify(|_, w| w.prilvl().bits(lvl as u8));
 
             if enable_interrupts {
                 // Enable all interrupt sources
@@ -78,24 +143,6 @@ impl<S, const ID: u8> Channel<S, ID> {
         });
 
         Channel { _status: Ready }
-    }
-
-    /// Set channel ID and run the closure. A closure is needed to ensure
-    /// the registers are accessed in an interrupt-safe way, as the SAMD21/51
-    /// DMAC is a little funky - It requires setting the channel number in
-    /// the CHID register, then access the channel control registers.
-    /// If an interrupt were to change the CHID register, we would be faced
-    /// with undefined behaviour.
-    fn with_chid<F: Fn(&mut DMAC)>(&mut self, dmac: &mut DMAC, fun: F) {
-        interrupt::free(|_| {
-            // SAFETY: this is actually safe as long as we write a correct channel number to
-            // the CHID register
-            unsafe {
-                dmac.chid.modify(|_, w| w.id().bits(ID));
-            }
-
-            fun(dmac);
-        });
     }
 
     #[inline(always)]
@@ -128,6 +175,31 @@ impl<const ID: u8> Channel<Ready, ID> {
         }
     }
 
+    #[cfg(any(
+        feature = "samd51",
+        feature = "same51",
+        feature = "same53",
+        feature = "same54"
+    ))]
+    pub fn fifo_threshold(&mut self, threshold: FifoThreshold, dmac: &mut DmaController) {
+        self.with_chid(dmac.as_mut(), |d| {
+            d.chctrla.modify(|_, w| w.threshold().bits(threshold as u8));
+        })
+    }
+
+    #[cfg(any(
+        feature = "samd51",
+        feature = "same51",
+        feature = "same53",
+        feature = "same54"
+    ))]
+    pub fn burst_length(&mut self, burst_length: BurstLength, dmac: &mut DmaController) {
+        self.with_chid(dmac.as_mut(), |d| {
+            d.chctrla
+                .modify(|_, w| w.burstlen().bits(burst_length as u8));
+        })
+    }
+
     /// Start transfer on channel using the specified trigger source.
     ///
     /// # Return
@@ -145,8 +217,20 @@ impl<const ID: u8> Channel<Ready, ID> {
             // Configure the trigger source and trigger action
             // SAFETY: This is actually safe because we are writing the correct enum value
             // (imported from the PAC) into the register
+
+            #[cfg(any(feature = "samd11", feature = "samd21"))]
+            let trigger_channel = &d.chctrlb;
+
+            #[cfg(any(
+                feature = "samd51",
+                feature = "same51",
+                feature = "same53",
+                feature = "same54"
+            ))]
+            let trigger_channel = &d.chctrla;
+
             unsafe {
-                d.chctrlb.modify(|_, w| {
+                trigger_channel.modify(|_, w| {
                     w.trigsrc()
                         .bits(trig_src as u8)
                         .trigact()

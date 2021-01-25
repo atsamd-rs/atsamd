@@ -46,6 +46,10 @@ optional = true
 default-features = false
 version = "1.0"
 
+[dependencies.static_assertions]
+version = "1.1"
+optional = true
+
 # Each of the supported chips is listed as an optional dependency here.
 # This makes it available when the corresponding feature name is referenced.
 # We use a feature named "samdFOO" to pull in the dependency named "atsamdFOO"
@@ -178,3 +182,5 @@ min-samd51p = ["min-samd51n"]
 unproven = ["embedded-hal/unproven"]
 use_rtt = ["jlink_rtt"]
 usb = ["usb-device"]
+dma = ["static_assertions", "unproven"]
+max-channels = ["dma"]

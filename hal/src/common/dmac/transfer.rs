@@ -75,11 +75,7 @@
 //! transfers in the context of this driver. One trigger will set off the transaction, that
 //! will now run uninterrupted until it is stopped.
 
-use core::{
-    marker::PhantomData,
-    ops::DerefMut,
-    sync::atomic::{compiler_fence, Ordering},
-};
+use core::{marker::PhantomData, sync::atomic};
 
 use super::{
     channel::{Busy, Channel, Ready},
@@ -98,15 +94,29 @@ where
     Src: DmaBuffer<B>,
     Dst: DmaBuffer<B>,
 {
+    xfer: UnsafeTransfer<B, Pld, Src, Dst, ChanStatus, ID>,
+}
+
+/// Unsafe DMA transfer, owning the resources until the transfer is done and
+/// [`wait`](DmaTransfer::wait) is called. The user *must* ensure the
+/// transfer won't be dropped until it `wait`ed upon or `stop`ped
+/// before the transfer is dropped.
+pub struct UnsafeTransfer<B, Pld, Src, Dst, ChanStatus, const ID: u8>
+where
+    B: DmaBeat,
+    Src: DmaBuffer<B>,
+    Dst: DmaBuffer<B>,
+{
     config: TransferConfiguration<B, Src, Dst>,
     chan: Channel<ChanStatus, ID>,
     payload: Pld,
 }
 
-/// Transfer configuration abstraction
+/// Transfer configuration abstraction. This is also used
+/// for `UnsafeTransfer`s so no `'static` bound.
 struct TransferConfiguration<B, Src, Dst>
 where
-    B: 'static + DmaBeat,
+    B: DmaBeat,
     Src: DmaBuffer<B>,
     Dst: DmaBuffer<B>,
 {
@@ -122,6 +132,17 @@ impl<B, Pld, Src, Dst, ChanStatus, const ID: u8> Sealed
     for DmaTransfer<B, Pld, Src, Dst, ChanStatus, ID>
 where
     B: 'static + DmaBeat,
+    Src: DmaBuffer<B>,
+    Dst: DmaBuffer<B>,
+{
+}
+
+// Seal the UnsafeTransfer struct. Therefore users of the crate won't be able to
+// add their own `impl`s.
+impl<B, Pld, Src, Dst, ChanStatus, const ID: u8> Sealed
+    for UnsafeTransfer<B, Pld, Src, Dst, ChanStatus, ID>
+where
+    B: DmaBeat,
     Src: DmaBuffer<B>,
     Dst: DmaBuffer<B>,
 {
@@ -158,6 +179,50 @@ where
             length,
             _t: PhantomData,
         };
+        DmaTransfer {
+            xfer: UnsafeTransfer::setup(chan, config, circular_xfer, payload),
+        }
+    }
+}
+
+/// These methods offer a transfer from an incrementing source to a fixed destination
+impl<'a, B, Pld, const ID: u8> UnsafeTransfer<B, Pld, &'a mut [B], &'a mut B, Ready, ID>
+where
+    B: DmaBeat,
+{
+    /// Setup a transfer with an incrementing source to fixed destination.
+    ///
+    /// If `circular_xfer == false`, the transfer will run once
+    /// and stop. If `circular_xfer == true`, then the transfer will be set as circular,
+    /// meaning it will restart a new, identical block transfer when the current block
+    /// transfer is complete.
+    ///
+    /// `payload` is just a way for the transfer to own resources
+    /// while the transfer is ongoing. For instance, a SERCOM instance could be moved
+    /// into the transfer to prevent data races until the transfer is complete. Calling
+    /// [`wait`](DmaTransfer::wait) will release the payload for reuse.
+    ///
+    /// # Safety
+    ///
+    /// This function is `unsafe`. You must either manually guarantee that both `source`
+    /// and `dest` are `'static`, or that the returned `UnsafeTransfer` WILL be
+    /// stopped (by calling `stop`) or waited upon (by calling `wait`) before being
+    /// dropped in every possible case.
+    #[inline(always)]
+    pub unsafe fn inc_src_fixed_dest_unchecked(
+        chan: Channel<Ready, ID>,
+        source: &'a mut [B],
+        dest: &'a mut B,
+        circular_xfer: bool,
+        payload: Pld,
+    ) -> Self {
+        let length = source.len() as u16;
+        let config = TransferConfiguration {
+            source,
+            dest,
+            length,
+            _t: PhantomData,
+        };
         Self::setup(chan, config, circular_xfer, payload)
     }
 }
@@ -165,7 +230,7 @@ where
 /// These methods offer a transfer from an fixed source to a incrementing destination
 impl<B, Pld, const ID: u8> DmaTransfer<B, Pld, &'static mut B, &'static mut [B], Ready, ID>
 where
-    B: 'static + DmaBeat,
+    B: DmaBeat,
 {
     /// Setup a transfer from a fixed source to an incrementing destination.
     ///
@@ -183,6 +248,49 @@ where
         chan: Channel<Ready, ID>,
         source: &'static mut B,
         dest: &'static mut [B],
+        circular_xfer: bool,
+        payload: Pld,
+    ) -> Self {
+        let length = dest.len() as u16;
+        let config = TransferConfiguration {
+            source,
+            dest,
+            length,
+            _t: PhantomData,
+        };
+        DmaTransfer {
+            xfer: UnsafeTransfer::setup(chan, config, circular_xfer, payload),
+        }
+    }
+}
+
+impl<'a, B, Pld, const ID: u8> UnsafeTransfer<B, Pld, &'a mut B, &'a mut [B], Ready, ID>
+where
+    B: DmaBeat,
+{
+    /// Setup a transfer with an incrementing source to fixed destination.
+    ///
+    /// If `circular_xfer == false`, the transfer will run once
+    /// and stop. If `circular_xfer == true`, then the transfer will be set as circular,
+    /// meaning it will restart a new, identical block transfer when the current block
+    /// transfer is complete.
+    ///
+    /// `payload` is just a way for the transfer to own resources
+    /// while the transfer is ongoing. For instance, a SERCOM instance could be moved
+    /// into the transfer to prevent data races until the transfer is complete. Calling
+    /// [`wait`](DmaTransfer::wait) will release the payload for reuse.
+    ///
+    /// # Safety
+    ///
+    /// This function is `unsafe`. You must either manually guarantee that both `source`
+    /// and `dest` are `'static`, or that the returned `UnsafeTransfer` WILL be
+    /// stopped (by calling `stop`) or waited upon (by calling `wait`) before being
+    /// dropped in every possible case.
+    #[inline(always)]
+    pub unsafe fn fixed_src_inc_dest_unchecked(
+        chan: Channel<Ready, ID>,
+        source: &'a mut B,
+        dest: &'a mut [B],
         circular_xfer: bool,
         payload: Pld,
     ) -> Self {
@@ -234,6 +342,58 @@ impl<B: 'static + DmaBeat, P, const ID: u8, const N: usize>
             length,
             _t: PhantomData,
         };
+        DmaTransfer {
+            xfer: UnsafeTransfer::setup(chan, config, circular_xfer, payload),
+        }
+    }
+}
+
+/// These methods offer a transfer from an incrementing source to a incrementing destination
+impl<'a, B, P, const ID: u8, const N: usize>
+    UnsafeTransfer<B, P, &'a mut [B; N], &'a mut [B; N], Ready, ID>
+where
+    B: DmaBeat,
+{
+    /// Setup a transfer with an incrementing source to fixed destination.
+    ///
+    /// If `circular_xfer == false`, the transfer will run once
+    /// and stop. If `circular_xfer == true`, then the transfer will be set as circular,
+    /// meaning it will restart a new, identical block transfer when the current block
+    /// transfer is complete.
+    ///
+    /// `payload` is just a way for the transfer to own resources
+    /// while the transfer is ongoing. For instance, a SERCOM instance could be moved
+    /// into the transfer to prevent data races until the transfer is complete. Calling
+    /// [`wait`](DmaTransfer::wait) will release the payload for reuse.
+    ///
+    /// Here, we use array references instead of slices to *statically* ensure
+    /// they are the same length. If the two buffers weren't the same length,
+    /// we could run into undefined behaviour, especially if the destination
+    /// buffer is shorter than the source buffer. In that specific case, the
+    /// DMAC would end up overrunning the destination buffer and would write
+    /// into a memory section we don't own.
+    ///
+    /// # Safety
+    ///
+    /// This function is `unsafe`. You must either manually guarantee that both `source`
+    /// and `dest` are `'static`, or that the returned `UnsafeTransfer` WILL be
+    /// stopped (by calling `stop`) or waited upon (by calling `wait`) before being
+    /// dropped in every possible case.
+    #[inline(always)]
+    pub unsafe fn inc_src_inc_dest_unchecked(
+        chan: Channel<Ready, ID>,
+        source: &'a mut [B; N],
+        dest: &'a mut [B; N],
+        circular_xfer: bool,
+        payload: P,
+    ) -> Self {
+        let length = source.len() as u16;
+        let config = TransferConfiguration {
+            source,
+            dest,
+            length,
+            _t: PhantomData,
+        };
         Self::setup(chan, config, circular_xfer, payload)
     }
 }
@@ -268,14 +428,58 @@ impl<B: 'static + DmaBeat, P, const ID: u8>
             length,
             _t: PhantomData,
         };
+        DmaTransfer {
+            xfer: UnsafeTransfer::setup(chan, config, circular_xfer, payload),
+        }
+    }
+}
+
+/// These methods offer a transfer from an fixed source to a fixed destination
+impl<'a, B, P, const ID: u8> UnsafeTransfer<B, P, &'a mut B, &'a mut B, Ready, ID>
+where
+    B: DmaBeat,
+{
+    /// Setup a transfer with an incrementing source to fixed destination.
+    ///
+    /// If `circular_xfer == false`, the transfer will run once
+    /// and stop. If `circular_xfer == true`, then the transfer will be set as circular,
+    /// meaning it will restart a new, identical block transfer when the current block
+    /// transfer is complete.
+    ///
+    /// `payload` is just a way for the transfer to own resources
+    /// while the transfer is ongoing. For instance, a SERCOM instance could be moved
+    /// into the transfer to prevent data races until the transfer is complete. Calling
+    /// [`wait`](DmaTransfer::wait) will release the payload for reuse.
+    ///
+    /// # Safety
+    ///
+    /// This function is `unsafe`. You must either manually guarantee that both `source`
+    /// and `dest` are `'static`, or that the returned `UnsafeTransfer` WILL be
+    /// stopped (by calling `stop`) or waited upon (by calling `wait`) before being
+    /// dropped in every possible case.
+    #[inline(always)]
+    pub fn fixed_src_fixed_dest_unchecked(
+        chan: Channel<Ready, ID>,
+        source: &'a mut B,
+        dest: &'a mut B,
+        circular_xfer: bool,
+        payload: P,
+    ) -> Self {
+        let length = 1;
+        let config = TransferConfiguration {
+            source,
+            dest,
+            length,
+            _t: PhantomData,
+        };
         Self::setup(chan, config, circular_xfer, payload)
     }
 }
 
-/// These methods are available to a `DmaTransfer` holding a `Ready` channel
-impl<B, P, Src, Dst, const ID: u8> DmaTransfer<B, P, Src, Dst, Ready, ID>
+/// These methods are available to an `UnsafeTransfer` holding a `Ready` channel
+impl<B, P, Src, Dst, const ID: u8> UnsafeTransfer<B, P, Src, Dst, Ready, ID>
 where
-    B: 'static + DmaBeat,
+    B: DmaBeat,
     Src: DmaBuffer<B>,
     Dst: DmaBuffer<B>,
 {
@@ -331,7 +535,7 @@ where
             DESCRIPTOR_SECTION[ID as usize] = xfer_descriptor;
         }
 
-        DmaTransfer {
+        UnsafeTransfer {
             chan,
             config,
             payload,
@@ -347,15 +551,17 @@ where
         dmac: &mut DmaController,
         trig_src: TriggerSource,
         trig_act: TriggerAction,
-    ) -> DmaTransfer<B, P, Src, Dst, Busy, ID> {
+    ) -> UnsafeTransfer<B, P, Src, Dst, Busy, ID> {
         // Compiler fence to prevent the compiler from re-ordering read/write operations
         // beyond this fence.
         // (see https://docs.rust-embedded.org/embedonomicon/dma.html#compiler-misoptimizations)
-        compiler_fence(Ordering::Release); //  ▲
+        // (see https://docs.rust-embedded.org/embedonomicon/dma.html#compiler-misoptimizations)
+        // TODO change this to an atomic::fence since SAMD5x/SAME5x feature a data/instruction cache?
+        atomic::compiler_fence(atomic::Ordering::Release); //  ▲
 
         let chan = self.chan.start(trig_src, trig_act, dmac.as_mut());
 
-        DmaTransfer {
+        UnsafeTransfer {
             config: self.config,
             chan,
             payload: self.payload,
@@ -363,10 +569,32 @@ where
     }
 }
 
-/// These methods are available to a `DmaTransfer` holding a `Busy` channel
-impl<B, P, Src, Dst, const ID: u8> DmaTransfer<B, P, Src, Dst, Busy, ID>
+/// These methods are available to a `DmaTransfer` holding a `Ready` channel
+impl<B, P, Src, Dst, const ID: u8> DmaTransfer<B, P, Src, Dst, Ready, ID>
 where
     B: 'static + DmaBeat,
+    Src: DmaBuffer<B>,
+    Dst: DmaBuffer<B>,
+{
+    /// Begin DMA transfer. If [TriggerSource::DISABLE](TriggerSource::DISABLE) is used,
+    /// a sowftware trigger will be issued to the DMA channel to launch the transfer.
+    /// Is is therefore not necessary, in most cases, to manually issue a software trigger
+    /// to the channel.
+    pub fn begin(
+        self,
+        dmac: &mut DmaController,
+        trig_src: TriggerSource,
+        trig_act: TriggerAction,
+    ) -> DmaTransfer<B, P, Src, Dst, Busy, ID> {
+        let xfer = self.xfer.begin(dmac, trig_src, trig_act);
+        DmaTransfer { xfer }
+    }
+}
+
+/// These methods are available to an `UnsafeTransfer` holding a `Busy` channel
+impl<B, P, Src, Dst, const ID: u8> UnsafeTransfer<B, P, Src, Dst, Busy, ID>
+where
+    B: DmaBeat,
     Src: DmaBuffer<B>,
     Dst: DmaBuffer<B>,
 {
@@ -383,7 +611,8 @@ where
         // Compiler fence to prevent the compiler from re-ordering read/write operations
         // in front this fence.
         // (see https://docs.rust-embedded.org/embedonomicon/dma.html#compiler-misoptimizations)
-        compiler_fence(Ordering::Acquire); // ▼
+        // TODO change this to an atomic::fence since SAMD5x/SAME5x feature a data/instruction cache?
+        atomic::compiler_fence(atomic::Ordering::Acquire); // ▼
 
         (self.config.source, self.config.dest, chan, self.payload)
     }
@@ -395,9 +624,37 @@ where
         // Compiler fence to prevent the compiler from re-ordering read/write operations
         // in front this fence.
         // (see https://docs.rust-embedded.org/embedonomicon/dma.html#compiler-misoptimizations)
-        compiler_fence(Ordering::Acquire); // ▼
+        // TODO change this to an atomic::fence since SAMD5x/SAME5x feature a data/instruction cache?
+        atomic::compiler_fence(atomic::Ordering::Acquire); // ▼
 
         (self.config.source, self.config.dest, chan, self.payload)
+    }
+}
+
+/// These methods are available to a `DmaTransfer` holding a `Busy` channel
+impl<B, P, Src, Dst, const ID: u8> DmaTransfer<B, P, Src, Dst, Busy, ID>
+where
+    B: 'static + DmaBeat,
+    Src: DmaBuffer<B>,
+    Dst: DmaBuffer<B>,
+{
+    /// Issue a software trigger request to the corresponding channel.
+    /// Note that is not guaranteed that the trigger request will register,
+    /// if a trigger request is already pending for the channel.
+    #[inline(always)]
+    pub fn software_trigger(&mut self, dmac: &mut DmaController) {
+        self.xfer.software_trigger(dmac);
+    }
+    /// Blocking; Wait for the DMA transfer to complete and release all owned resources
+    #[inline(always)]
+    pub fn wait(self, dmac: &mut DmaController) -> (Src, Dst, Channel<Ready, ID>, P) {
+        self.xfer.wait(dmac)
+    }
+
+    /// Non-blocking; Immediately stop the DMA transfer and release all owned resources
+    #[inline(always)]
+    pub fn stop(self, dmac: &mut DmaController) -> (Src, Dst, Channel<Ready, ID>, P) {
+        self.xfer.stop(dmac)
     }
 }
 
@@ -415,7 +672,7 @@ pub enum BeatSize {
 // Trait enabling taking `*const` references to references to a single `T`,
 /// references to arrays of `T` or slices of `T`, where `T: DmaBeat`,
 /// as well as required transfer length
-pub trait DmaBuffer<T: DmaBeat>: DerefMut {
+pub trait DmaBuffer<T: DmaBeat> {
     /// Take a `*const` reference to the last object
     /// in the buffer needed by the DMAC. The pointer
     /// changes depending on whether the address should
@@ -429,7 +686,7 @@ impl<T: DmaBeat, const N: usize> DmaBuffer<T> for &mut [T; N] {
     fn to_dma_ptr(&self) -> *const T {
         let ptr = self.as_ptr();
         if self.incrementing() {
-            unsafe { ptr.offset(N as isize) }
+            unsafe { ptr.add(N) }
         } else {
             ptr
         }
@@ -446,7 +703,7 @@ impl<T: DmaBeat> DmaBuffer<T> for &mut [T] {
     fn to_dma_ptr(&self) -> *const T {
         let ptr = self.as_ptr();
         if self.incrementing() {
-            unsafe { ptr.offset(self.len() as isize) }
+            unsafe { ptr.add(self.len()) }
         } else {
             ptr
         }
@@ -465,6 +722,17 @@ impl<T: DmaBeat> DmaBuffer<T> for &mut T {
     }
 
     #[inline(always)]
+    fn incrementing(&self) -> bool {
+        false
+    }
+}
+
+impl<T: DmaBeat> DmaBuffer<T> for *const T {
+    #[inline(always)]
+    fn to_dma_ptr(&self) -> *const T {
+        *self
+    }
+
     fn incrementing(&self) -> bool {
         false
     }
