@@ -2,28 +2,35 @@
 //!
 //! # Initializing
 //!
-//! Individual channels should be initialized through the [`Channel::init`](Channel::init) method.
-//! This will return a `Channel<Ready, ID>` ready for use by a [`DmaTransfer`](super::transfer::DmaTransfer).
-//! Initializing a channel requires setting a priority level, as well as enabling or disabling interrupt
-//! requests (only for the specific channel being initialized).
+//! Individual channels should be initialized through the
+//! [`Channel::init`](Channel::init) method. This will return a `Channel<Ready,
+//! ID>` ready for use by a [`DmaTransfer`](super::transfer::DmaTransfer).
+//! Initializing a channel requires setting a priority level, as well as
+//! enabling or disabling interrupt requests (only for the specific channel
+//! being initialized).
 //!
 //! # Burst Length and FIFO Threshold (SAMD51/SAME5x only)
 //!
-//! The transfer burst length can be configured through the [`burst_length`](Channel::burst_length) method.
-//! A burst is an atomic, uninterruptible transfer which length corresponds to a number of beats. See SAMD5x/E5x
-//! datasheet section 22.6.1.1 for more information. The FIFO threshold can be configured through the
-//! [`fifo_threshold`](Channel::fifo_threshold) method. This enables the channel to wait for multiple
-//! Beats before sending a Burst. See SAMD5x/E5x datasheet section 22.6.2.8 for more information.
+//! The transfer burst length can be configured through the
+//! [`burst_length`](Channel::burst_length) method. A burst is an atomic,
+//! uninterruptible transfer which length corresponds to a number of beats. See
+//! SAMD5x/E5x datasheet section 22.6.1.1 for more information. The FIFO
+//! threshold can be configured through the [`fifo_threshold`](Channel::
+//! fifo_threshold) method. This enables the channel to wait for multiple
+//! Beats before sending a Burst. See SAMD5x/E5x datasheet section 22.6.2.8 for
+//! more information.
 //!
 //! # Channel status
 //!
-//! Channels can be in any of three statuses: `Uninitialized`, `Ready`, and `Busy`. These statuses are checked
-//! at compile time to ensure they are properly initialized before launching DMA transfers.
+//! Channels can be in any of three statuses: `Uninitialized`, `Ready`, and
+//! `Busy`. These statuses are checked at compile time to ensure they are
+//! properly initialized before launching DMA transfers.
 //!
 //! # Resetting
 //!
-//! Calling the [`reset`](Channel::reset) method will reset the channel to its `Uninitialized` state. You
-//! will be required to call [`init`](Channel::init) again before being able to use it with a `DmaTransfer`.
+//! Calling the [`reset`](Channel::reset) method will reset the channel to its
+//! `Uninitialized` state. You will be required to call [`init`](Channel::init)
+//! again before being able to use it with a `DmaTransfer`.
 
 use super::dma_controller::{DmaController, PriorityLevel, TriggerAction, TriggerSource};
 
@@ -53,7 +60,8 @@ pub struct Ready;
 /// Busy channel
 pub struct Busy;
 
-/// DMA channel, capable of executing [`DmaTransfer`](super::transfer::DmaTransfer)s.
+/// DMA channel, capable of executing
+/// [`DmaTransfer`](super::transfer::DmaTransfer)s.
 pub struct Channel<Status, const ID: u8> {
     _status: Status,
 }
@@ -102,7 +110,8 @@ impl<S, const ID: u8> Channel<S, ID> {
         fun(&mut ch);
     }
 
-    /// Configure the DMA channel so that it is ready to be used by a [`DmaTransfer`](super::transfer::DmaTransfer).
+    /// Configure the DMA channel so that it is ready to be used by a
+    /// [`DmaTransfer`](super::transfer::DmaTransfer).
     ///
     /// # Return
     ///
@@ -166,7 +175,8 @@ impl<S, const ID: u8> Channel<S, ID> {
 
 /// These methods may only be used on a `Ready` DMA channel
 impl<const ID: u8> Channel<Ready, ID> {
-    /// Issue a software reset to the channel. This will return the channel to its startup state
+    /// Issue a software reset to the channel. This will return the channel to
+    /// its startup state
     pub fn reset(mut self, dmac: &mut DMAC) -> Channel<Uninitialized, ID> {
         self._reset_private(dmac);
 
@@ -175,6 +185,9 @@ impl<const ID: u8> Channel<Ready, ID> {
         }
     }
 
+    /// Set the FIFO threshold length. The channel will wait until it has
+    /// received the selected number of Beats before triggering the Burst
+    /// transfer, reducing the DMA transfer latency.
     #[cfg(any(
         feature = "samd51",
         feature = "same51",
@@ -187,6 +200,8 @@ impl<const ID: u8> Channel<Ready, ID> {
         })
     }
 
+    /// Set burst length for the channel, in number of beats. A burst transfer
+    /// is an atomic, uninterruptible operation.
     #[cfg(any(
         feature = "samd51",
         feature = "same51",

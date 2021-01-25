@@ -9,9 +9,9 @@
 //! memory-to-peripheral, peripheral-to-memory,
 //! and peripheral-to-peripheral transfers.
 //! One-shot and circular transfers are supported. More complex
-//! transfer configurations, including multi-descriptor
-//! (linked-list) transfers, are not currently supported.
-//! Advances arbitration schemes (eg. round-robin) are not currently
+//! transfer configurations, including multi-buffer
+//! (linked-list descriptor) transfers, are not currently supported.
+//! Advanced arbitration schemes (eg. round-robin) are not currently
 //! supported.
 //!
 //! # Enabling DMA support
@@ -29,9 +29,9 @@
 //!
 //! Using DMA channels require a certain amount of RAM - 32 bytes per channel,
 //! to be exact. RAM will be not allocated unless the `dma` feature is enabled
-//! for the HAL. By default, half the channels available on the chip are enabled.
-//! If you need all DMA channels enabled, enable the `max-channels` feature
-//! in your board support crate or final executable.
+//! for the HAL. By default, half the channels available on the chip are
+//! enabled. If you need all DMA channels enabled, enable the `max-channels`
+//! feature in your board support crate or final executable.
 //!
 //! `Cargo.toml`
 //! ```
@@ -68,33 +68,37 @@
 //!
 //! # Interrupts
 //!
-//! This driver does not use or manage interrupts issued by the DMAC. Individual channels
-//! can be configured to generate interrupts when the transfer is complete, an error is
-//! detected or the channel is suspended. However, these interrupts will not be triggered
-//! unless the DMAC interrupt is unmasked in the NVIC. You will be responsible for clearing
-//! the interrupt flags in the ISR.
+//! This driver does not use or manage interrupts issued by the DMAC. Individual
+//! channels can be configured to generate interrupts when the transfer is
+//! complete, an error is detected or the channel is suspended. However, these
+//! interrupts will not be triggered unless the DMAC interrupt is unmasked in
+//! the NVIC. You will be responsible for clearing the interrupt flags in the
+//! ISR.
 //!
 //! # About static lifetimes
 //!
-//! The safe API this driver offers requires all buffers (source and destination) to have
-//! `'static` lifetimes. This is because [`mem::forget`](core::mem::forget) is a safe API,
-//! and therefore relying on [`mem::drop`](core::mem::drop) to terminate or abort a transfer
-//! does not guarantee the transfer will be terminated (specifically if [`mem::forget`](core::mem::forget)
-//! is called on a `DmaTransfer` containaing a `Channel<Busy, ID>`). This could cause the compiler to reclaim
-//! stack-allocated buffers for reuse while the DMAC is still writing to/reading from them!
-//! Needless to say that is very unsafe. Refer [here](https://docs.rust-embedded.org/embedonomicon/dma.html#memforget)
+//! The safe API this driver offers requires all buffers (source and
+//! destination) to have `'static` lifetimes. This is because
+//! [`mem::forget`](core::mem::forget) is a safe API, and therefore relying on
+//! [`mem::drop`](core::mem::drop) to terminate or abort a transfer
+//! does not guarantee the transfer will be terminated (specifically if
+//! [`mem::forget`](core::mem::forget) is called on a `DmaTransfer` containaing
+//! a `Channel<Busy, ID>`). This could cause the compiler to reclaim
+//! stack-allocated buffers for reuse while the DMAC is still writing to/reading
+//! from them! Needless to say that is very unsafe. Refer [here](https://docs.rust-embedded.org/embedonomicon/dma.html#memforget)
 //! or [here](https://blog.japaric.io/safe-dma/) for more information. You may choose to forego
-//! the `'static` lifetimes by using the unsafe API and the various `x_src_x_dest_unchecked`
-//! methods.
+//! the `'static` lifetimes by using the unsafe API and the various
+//! `x_src_x_dest_unchecked` methods.
 //!
 //! # Unsafe API
 //!
-//! This driver also offers an `unsafe` API through the `x_src_x_dest_unchecked` methods. These
-//! do not enforce `'static` lifetimes, and allow using `*const T` pointers as buffers. If
-//! you choose to use these methods, you MUST prove that a `DmaTransfer` containing a
-//! `Channel<Busy, ID>` will NEVER be dropped. You *must* call `wait()` or `stop()`
-//! manually on every [`UnsafeTransfer`](transfer::UnsafeTransfer) to convert their
-//! underlying channels back into `Channel<Ready, ID>`. No destructor or `Drop`
+//! This driver also offers an `unsafe` API through the `x_src_x_dest_unchecked`
+//! methods. These do not enforce `'static` lifetimes, and allow using `*mut T`
+//! pointers as buffers. If you choose to use these methods, you MUST prove that
+//! a `DmaTransfer` containing a `Channel<Busy, ID>` will NEVER be dropped. You
+//! *must* call `wait()` or `stop()` manually on every
+//! [`UnsafeTransfer`](transfer::UnsafeTransfer) to convert their underlying
+//! channels back into `Channel<Ready, ID>`. No destructor or `Drop`
 //! implementation is offered for `DmaTransfers` or `UnsafeTransfer`s.
 //!
 //! # Example
@@ -117,8 +121,6 @@
 //! // Wait for transfer to complete and grab resulting buffers
 //! let (buf_src, buf_dest, chan0, _) = xfer.wait(&mut dmac);
 //! ```
-
-#![warn(missing_docs)]
 
 pub mod channel;
 pub mod dma_controller;
@@ -143,7 +145,8 @@ const MAX_CHANNELS: usize = 6;
 #[cfg(feature = "samd21")]
 const MAX_CHANNELS: usize = 12;
 
-/// Maximum number of DMA channels supported by SAMD51, SAME51, SAME53 and SAME54 chips
+/// Maximum number of DMA channels supported by SAMD51, SAME51, SAME53 and
+/// SAME54 chips
 #[cfg(any(
     feature = "samd51",
     feature = "same51",
@@ -182,11 +185,11 @@ pub const DEFAULT_DESCRIPTOR: DmacDescriptor = DmacDescriptor {
     descaddr: 0,
 };
 
-// Writeback section. This static variable should never be written to in an interrupt
-// or thread context.
+// Writeback section. This static variable should never be written to in an
+// interrupt or thread context.
 #[doc(hidden)]
 static mut WRITEBACK: [DmacDescriptor; NUM_CHANNELS] = [DEFAULT_DESCRIPTOR; NUM_CHANNELS];
-// Descriptor section. This static variable should never be written to in an interrupt
-// or thread context.
+// Descriptor section. This static variable should never be written to in an
+// interrupt or thread context.
 #[doc(hidden)]
 static mut DESCRIPTOR_SECTION: [DmacDescriptor; NUM_CHANNELS] = [DEFAULT_DESCRIPTOR; NUM_CHANNELS];
