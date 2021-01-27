@@ -38,18 +38,12 @@ jobs:
         target: thumbv7em-none-eabihf
         components: clippy
 
-    - name: Test ${{ matrix.bsp }} build
+    - name: Test ${{ matrix.bsp }}
       run: |
         build_invocation=$(cat ./crates.json | jq -Mr --arg board '${{ matrix.bsp }}' -c '.boards | .[$board] | .build')
         set -ex
         cd boards/${{ matrix.bsp }}
         $(${build_invocation})
-    - name: Test ${{ matrix.bsp }} publish
-      if: github.actor != 'atsamd-bot'
-      run: |
-        set -ex
-        cd boards/${{ matrix.bsp }}
-        cargo publish --dry-run
 
     - uses: actions-rs/clippy-check@v1
       if: ${{ matrix.toolchain == 'nightly' }}
