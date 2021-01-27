@@ -578,13 +578,10 @@ where
         trig_src: TriggerSource,
         trig_act: TriggerAction,
     ) -> UnsafeTransfer<B, P, Src, Dst, Busy, ID> {
-        // Compiler fence to prevent the compiler from re-ordering read/write operations
-        // beyond this fence.
+        // Memory barrier to prevent the compiler/CPU from re-ordering read/write
+        // operations beyond this fence.
         // (see https://docs.rust-embedded.org/embedonomicon/dma.html#compiler-misoptimizations)
-        // (see https://docs.rust-embedded.org/embedonomicon/dma.html#compiler-misoptimizations)
-        // TODO change this to an atomic::fence since SAMD5x/SAME5x feature a
-        // data/instruction cache?
-        atomic::compiler_fence(atomic::Ordering::Release); //  ▲
+        atomic::fence(atomic::Ordering::Release); //  ▲
 
         let chan = self.chan.start(trig_src, trig_act, dmac.as_mut());
 
@@ -636,12 +633,10 @@ where
     pub fn wait(self, dmac: &mut DmaController) -> (Src, Dst, Channel<Ready, ID>, P) {
         let chan = self.chan.release(dmac.as_mut());
 
-        // Compiler fence to prevent the compiler from re-ordering read/write operations
-        // in front this fence.
+        // Memory barrier to prevent the compiler/CPU from re-ordering read/write
+        // operations beyond this fence.
         // (see https://docs.rust-embedded.org/embedonomicon/dma.html#compiler-misoptimizations)
-        // TODO change this to an atomic::fence since SAMD5x/SAME5x feature a
-        // data/instruction cache?
-        atomic::compiler_fence(atomic::Ordering::Acquire); // ▼
+        atomic::fence(atomic::Ordering::Acquire); // ▼
 
         (self.config.source, self.config.dest, chan, self.payload)
     }
@@ -651,12 +646,10 @@ where
     pub fn stop(self, dmac: &mut DmaController) -> (Src, Dst, Channel<Ready, ID>, P) {
         let chan = self.chan.stop(dmac.as_mut());
 
-        // Compiler fence to prevent the compiler from re-ordering read/write operations
-        // in front this fence.
+        // Memory barrier to prevent the compiler/CPU from re-ordering read/write
+        // operations beyond this fence.
         // (see https://docs.rust-embedded.org/embedonomicon/dma.html#compiler-misoptimizations)
-        // TODO change this to an atomic::fence since SAMD5x/SAME5x feature a
-        // data/instruction cache?
-        atomic::compiler_fence(atomic::Ordering::Acquire); // ▼
+        atomic::fence(atomic::Ordering::Acquire); // ▼
 
         (self.config.source, self.config.dest, chan, self.payload)
     }
