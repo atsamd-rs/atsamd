@@ -1,7 +1,11 @@
 use crate::clock::GenericClockController;
-use crate::gpio::*;
 use crate::hal::adc::{Channel, OneShot};
 use crate::target_device::{adc, ADC, PM};
+
+#[cfg(feature = "gpio-v2")]
+use crate::gpio::v2::*;
+#[cfg(not(feature = "gpio-v2"))]
+use crate::gpio::*;
 
 pub struct Adc<ADC> {
     adc: ADC,
@@ -123,6 +127,7 @@ where
     }
 }
 
+#[cfg(not(feature = "gpio-v2"))]
 macro_rules! adc_pins {
     ($($pin:ident: $chan:expr),+) => {
         $(
@@ -135,6 +140,20 @@ impl Channel<ADC> for $pin<PfB> {
     }
 }
 
+#[cfg(feature = "gpio-v2")]
+macro_rules! adc_pins {
+    ($($pin:ident: $chan:expr),+) => {
+        $(
+
+impl Channel<ADC> for Pin<$pin, AlternateB> {
+   type ID = u8;
+   fn channel() -> u8 { $chan }
+}
+        )+
+    }
+}
+
+#[cfg(not(feature = "gpio-v2"))]
 #[cfg(feature = "samd11")]
 adc_pins! {
     Pa2: 0,
@@ -144,6 +163,7 @@ adc_pins! {
     Pa15: 7
 }
 
+#[cfg(not(feature = "gpio-v2"))]
 #[cfg(feature = "samd21")]
 adc_pins! {
     Pa2: 0,
@@ -158,6 +178,7 @@ adc_pins! {
     Pa11: 19
 }
 
+#[cfg(not(feature = "gpio-v2"))]
 #[cfg(feature = "min-samd21g")]
 adc_pins! {
     Pb2: 10,
@@ -166,6 +187,7 @@ adc_pins! {
     Pb9: 3
 }
 
+#[cfg(not(feature = "gpio-v2"))]
 #[cfg(feature = "min-samd21j")]
 adc_pins! {
     Pb0: 8,
@@ -174,4 +196,49 @@ adc_pins! {
     Pb5: 13,
     Pb6: 14,
     Pb7: 15
+}
+
+#[cfg(feature = "gpio-v2")]
+#[cfg(feature = "samd11")]
+adc_pins! {
+    PA02: 0,
+    PA04: 2,
+    PA05: 3,
+    PA14: 6,
+    PA15: 7
+}
+
+#[cfg(feature = "gpio-v2")]
+#[cfg(feature = "samd21")]
+adc_pins! {
+    PA02: 0,
+    PA03: 1,
+    PA04: 4,
+    PA05: 5,
+    PA06: 6,
+    PA07: 7,
+    PA08: 16,
+    PA09: 17,
+    PA10: 18,
+    PA11: 19
+}
+
+#[cfg(feature = "gpio-v2")]
+#[cfg(feature = "min-samd21g")]
+adc_pins! {
+    PB02: 10,
+    PB03: 11,
+    PB08: 2,
+    PB09: 3
+}
+
+#[cfg(feature = "gpio-v2")]
+#[cfg(feature = "min-samd21j")]
+adc_pins! {
+    PB00: 8,
+    PB01: 9,
+    PB04: 12,
+    PB05: 13,
+    PB06: 14,
+    PB07: 15
 }

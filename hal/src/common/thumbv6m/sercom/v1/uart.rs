@@ -280,6 +280,7 @@ macro_rules! uart {
                     }
                 }
 
+                #[allow(dead_code)]
                 fn usart(&self) -> &USART {
                     return &self.sercom.usart();
                 }
