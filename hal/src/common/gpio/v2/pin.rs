@@ -129,6 +129,8 @@
 //! }
 //! ```
 
+#![allow(clippy::zero_prefixed_literal)]
+
 use core::convert::Infallible;
 use core::marker::PhantomData;
 use core::mem::transmute;

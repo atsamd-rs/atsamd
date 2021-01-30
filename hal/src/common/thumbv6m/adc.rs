@@ -95,9 +95,8 @@ impl Adc<ADC> {
         self.adc.swtrig.modify(|_, w| w.start().set_bit());
         while self.adc.intflag.read().resrdy().bit_is_clear() {}
         while self.adc.status.read().syncbusy().bit_is_set() {}
-        let result = self.adc.result.read().result().bits();
 
-        result
+        self.adc.result.read().result().bits()
     }
 }
 

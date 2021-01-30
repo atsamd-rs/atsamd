@@ -66,7 +66,6 @@ pub trait CommonSpi {
     /// register is `BAUD = f_ref / (2 * f_baud) - 1`.
     #[inline]
     fn calculate_baud<F: Into<Hertz>>(freq: F, src_clock_freq: Hertz) -> u8 {
-        let baud = (src_clock_freq.0 / (2 * freq.into().0) - 1) as u8;
-        baud
+        (src_clock_freq.0 / (2 * freq.into().0) - 1) as u8
     }
 }

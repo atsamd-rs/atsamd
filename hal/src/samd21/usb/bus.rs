@@ -173,12 +173,12 @@ impl BufferAllocator {
         debug_assert!(size & 1 == 0);
 
         let start_addr = &mut self.buffers[self.next_buf as usize] as *mut u8;
-        let buf_end = unsafe { start_addr.offset(BUFFER_SIZE as isize) };
+        let buf_end = unsafe { start_addr.add(BUFFER_SIZE) };
 
         // The address must be 32-bit aligned, so allow for that here
         // by offsetting by an appropriate alignment.
         let offset = start_addr.align_offset(mem::align_of::<u32>());
-        let start_addr = unsafe { start_addr.offset(offset as isize) };
+        let start_addr = unsafe { start_addr.add(offset) };
 
         if start_addr >= buf_end {
             return Err(UsbError::EndpointMemoryOverflow);
