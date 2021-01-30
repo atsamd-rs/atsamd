@@ -67,6 +67,7 @@ impl CryptoRng for Trng {}
 impl Read for Trng {
     type Error = ();
     fn read(&mut self, buffer: &mut [u8]) -> Result<(), Self::Error> {
-        Ok(self.random(buffer))
+        self.random(buffer);
+        Ok(())
     }
 }
