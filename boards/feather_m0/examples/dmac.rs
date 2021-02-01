@@ -44,7 +44,7 @@ fn main() -> ! {
     let channels = dmac.split();
 
     // Initialize DMA Channel 0
-    let chan0 = channels.0.init(PriorityLevel::LVL0, false, &mut dmac);
+    let chan0 = channels.0.init(&mut dmac, PriorityLevel::LVL0, false);
 
     // Setup a DMA transfer (memory-to-memory -> incrementing source, incrementing
     // destination) with a 8-bit beat size

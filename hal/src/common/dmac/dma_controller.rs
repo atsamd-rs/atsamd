@@ -15,7 +15,7 @@
 //!
 //! # Releasing the DMAC
 //!
-//! Using the [`DmaController::release`](DmaController::release) method will
+//! Using the [`DmaController::free`](DmaController::free) method will
 //! deinitialize the DMAC and return the underlying PAC object.
 
 #[cfg(any(feature = "samd11", feature = "samd21"))]
@@ -23,12 +23,7 @@ pub use crate::target_device::dmac::chctrlb::{
     LVL_A as PriorityLevel, TRIGACT_A as TriggerAction, TRIGSRC_A as TriggerSource,
 };
 
-#[cfg(any(
-    feature = "samd51",
-    feature = "same51",
-    feature = "same53",
-    feature = "same54"
-))]
+#[cfg(feature = "min-samd51g")]
 pub use crate::target_device::dmac::channel::{
     chctrla::{
         BURSTLEN_A as BurstLength, THRESHOLD_A as FifoThreshold, TRIGACT_A as TriggerAction,
@@ -48,23 +43,19 @@ pub struct DmaController {
     dmac: DMAC,
 }
 
-impl AsMut<DMAC> for DmaController {
-    /// Return a mutable reference to the underlying DMAC object exposed by the
-    /// PAC.
-    fn as_mut(&mut self) -> &mut DMAC {
-        &mut self.dmac
-    }
-}
-
-impl AsRef<DMAC> for DmaController {
+impl DmaController {
     /// Return an immutable reference to the underlying DMAC object exposed by
     /// the PAC.
-    fn as_ref(&self) -> &DMAC {
+    pub unsafe fn dmac(&self) -> &DMAC {
         &self.dmac
     }
-}
 
-impl DmaController {
+    /// Return a mutable reference to the underlying DMAC object exposed by the
+    /// PAC.
+    pub unsafe fn dmac_mut(&mut self) -> &mut DMAC {
+        &mut self.dmac
+    }
+
     /// Initialize the DMAC and return a DmaController object useable by
     /// [`DmaTransfer`](super::transfer::DmaTransfer)'s. By default, all
     /// priority levels are enabled unless subsequently disabled using the
@@ -95,14 +86,10 @@ impl DmaController {
         // TODO selectively enable priority levels
         // right now we blindly enable all priority levels
         dmac.ctrl.modify(|_, w| {
-            w.lvlen3()
-                .set_bit()
-                .lvlen2()
-                .set_bit()
-                .lvlen1()
-                .set_bit()
-                .lvlen0()
-                .set_bit()
+            w.lvlen3().set_bit();
+            w.lvlen2().set_bit();
+            w.lvlen1().set_bit();
+            w.lvlen0().set_bit()
         });
 
         // Enable DMA controller
@@ -112,55 +99,55 @@ impl DmaController {
     }
 
     /// Enable or disable priority level 0
-    #[inline(always)]
+    #[inline]
     pub fn level_0_enabled(&mut self, enabled: bool) {
         self.dmac.ctrl.modify(|_, w| w.lvlen0().bit(enabled));
     }
 
     /// Enable or disable priority level 1
-    #[inline(always)]
+    #[inline]
     pub fn level_1_enabled(&mut self, enabled: bool) {
         self.dmac.ctrl.modify(|_, w| w.lvlen1().bit(enabled));
     }
 
     /// Enable or disable priority level 2
-    #[inline(always)]
+    #[inline]
     pub fn level_2_enabled(&mut self, enabled: bool) {
         self.dmac.ctrl.modify(|_, w| w.lvlen2().bit(enabled));
     }
 
     /// Enable or disable priority level 3
-    #[inline(always)]
+    #[inline]
     pub fn level_3_enabled(&mut self, enabled: bool) {
         self.dmac.ctrl.modify(|_, w| w.lvlen3().bit(enabled));
     }
 
     /// Enable or disable Round-Robin Arbitration for priority level 0
-    #[inline(always)]
+    #[inline]
     pub fn level_0_round_robin(&mut self, enabled: bool) {
         self.dmac.prictrl0.modify(|_, w| w.rrlvlen0().bit(enabled));
     }
 
     /// Enable or disable Round-Robin Arbitration for priority level 1
-    #[inline(always)]
+    #[inline]
     pub fn level_1_round_robin(&mut self, enabled: bool) {
         self.dmac.prictrl0.modify(|_, w| w.rrlvlen1().bit(enabled));
     }
 
     /// Enable or disable Round-Robin Arbitration for priority level 2
-    #[inline(always)]
+    #[inline]
     pub fn level_2_round_robin(&mut self, enabled: bool) {
         self.dmac.prictrl0.modify(|_, w| w.rrlvlen2().bit(enabled));
     }
 
     /// Enable or disable Round-Robin Arbitration for priority level 3
-    #[inline(always)]
+    #[inline]
     pub fn level_3_round_robin(&mut self, enabled: bool) {
         self.dmac.prictrl0.modify(|_, w| w.rrlvlen3().bit(enabled));
     }
 
     /// Release the DMAC and return the register block
-    pub fn release(mut self, _pm: &mut PM) -> DMAC {
+    pub fn free(mut self, _pm: &mut PM) -> DMAC {
         self.dmac.ctrl.modify(|_, w| w.dmaenable().clear_bit());
 
         Self::swreset(&mut self.dmac);
@@ -177,10 +164,10 @@ impl DmaController {
     }
 
     /// Issue a software reset to the DMAC and wait for reset to complete
-    #[inline(always)]
+    #[inline]
     fn swreset(dmac: &mut DMAC) {
         dmac.ctrl.modify(|_, w| w.swrst().set_bit());
-        while !dmac.ctrl.read().swrst().bit_is_clear() {}
+        while dmac.ctrl.read().swrst().bit_is_set() {}
     }
 
     /// Split the DMAC into individual channels
@@ -226,16 +213,7 @@ impl DmaController {
     }
 
     /// Split the DMAC into individual channels
-    #[cfg(all(
-        any(
-            feature = "samd51",
-            feature = "same51",
-            feature = "same53",
-            feature = "same54",
-            feature = "max-channels"
-        ),
-        not(feature = "max-channels")
-    ))]
+    #[cfg(all(feature = "min-samd51g", not(feature = "max-channels")))]
     pub fn split(&mut self) -> DmacChannels {
         DmacChannels(
             new_chan(),
@@ -258,15 +236,7 @@ impl DmaController {
     }
 
     /// Split the DMAC into individual channels
-    #[cfg(all(
-        any(
-            feature = "samd51",
-            feature = "same51",
-            feature = "same53",
-            feature = "same54"
-        ),
-        feature = "max-channels"
-    ))]
+    #[cfg(all(feature = "min-samd51g", feature = "max-channels"))]
     pub fn split(&mut self) -> DmacChannels {
         DmacChannels(
             new_chan(),
@@ -345,16 +315,7 @@ pub struct DmacChannels(
 );
 
 /// Struct generating individual handles to each DMA channel
-#[cfg(all(
-    any(
-        feature = "samd51",
-        feature = "same51",
-        feature = "same53",
-        feature = "same54",
-        feature = "max-channels"
-    ),
-    not(feature = "max-channels")
-))]
+#[cfg(all(feature = "min-samd51g", not(feature = "max-channels")))]
 pub struct DmacChannels(
     pub Channel<Uninitialized, 0>,
     pub Channel<Uninitialized, 1>,
@@ -375,15 +336,7 @@ pub struct DmacChannels(
 );
 
 /// Struct generating individual handles to each DMA channel
-#[cfg(all(
-    any(
-        feature = "samd51",
-        feature = "same51",
-        feature = "same53",
-        feature = "same54"
-    ),
-    feature = "max-channels"
-))]
+#[cfg(all(feature = "min-samd51g", feature = "max-channels"))]
 pub struct DmacChannels(
     pub Channel<Uninitialized, 0>,
     pub Channel<Uninitialized, 1>,

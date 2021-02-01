@@ -48,10 +48,10 @@ fn main() -> ! {
     let channels = dmac.split();
 
     // Initialize DMA Channel 0
-    let mut chan0 = channels.0.init(PriorityLevel::LVL0, false, &mut dmac);
+    let mut chan0 = channels.0.init(&mut dmac, PriorityLevel::LVL0, false);
 
-    chan0.burst_length(BurstLength::_4BEAT, &mut dmac);
-    chan0.fifo_threshold(FifoThreshold::_8BEATS, &mut dmac);
+    chan0.burst_length(&mut dmac, BurstLength::_4BEAT);
+    chan0.fifo_threshold(&mut dmac, FifoThreshold::_8BEATS);
 
     // Setup a DMA transfer (memory-to-memory -> incrementing source, incrementing
     // destination) with a 8-bit beat size

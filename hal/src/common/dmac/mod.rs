@@ -57,8 +57,8 @@
 //!
 //! # Priority levels and Arbitration
 //!
-//! The DMAC features 4 priority levels. Level 0 has the highest priority
-//! and level 3 has the lowest. Each channel can be assigned to one priority
+//! The DMAC features 4 priority levels. Level 3 has the highest priority
+//! and level 0 has the lowest. Each channel can be assigned to one priority
 //! level. If two channels with the same priority level are requested to
 //! execute a transfer at the same time, the lowest channel number will have
 //! priority (in the default arbitration scheme, eg. not round-robin).
@@ -132,12 +132,7 @@ pub mod channel;
 pub mod dma_controller;
 pub mod transfer;
 
-#[cfg(any(
-    feature = "samd51",
-    feature = "same51",
-    feature = "same53",
-    feature = "same54"
-))]
+#[cfg(feature = "min-samd51g")]
 pub use dma_controller::{BurstLength, FifoThreshold};
 pub use dma_controller::{DmaController, PriorityLevel, TriggerAction, TriggerSource};
 pub use static_assertions::const_assert;
@@ -153,12 +148,7 @@ const MAX_CHANNELS: usize = 12;
 
 /// Maximum number of DMA channels supported by SAMD51, SAME51, SAME53 and
 /// SAME54 chips
-#[cfg(any(
-    feature = "samd51",
-    feature = "same51",
-    feature = "same53",
-    feature = "same54"
-))]
+#[cfg(feature = "min-samd51g")]
 const MAX_CHANNELS: usize = 32;
 
 /// Number of DMA channels used by the driver

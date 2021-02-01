@@ -90,7 +90,7 @@
 use core::{marker::PhantomData, sync::atomic};
 
 use super::{
-    channel::{Busy, Channel, Ready},
+    channel::{Busy, Channel, Ready, Status},
     dma_controller::{DmaController, TriggerAction, TriggerSource},
     DmacDescriptor, DESCRIPTOR_SECTION,
 };
@@ -105,6 +105,7 @@ where
     B: 'static + DmaBeat,
     Src: DmaBuffer<B>,
     Dst: DmaBuffer<B>,
+    ChanStatus: Status,
 {
     xfer: UnsafeTransfer<B, Pld, Src, Dst, ChanStatus, ID>,
 }
@@ -118,6 +119,7 @@ where
     B: DmaBeat,
     Src: DmaBuffer<B>,
     Dst: DmaBuffer<B>,
+    ChanStatus: Status,
 {
     config: TransferConfiguration<B, Src, Dst>,
     chan: Channel<ChanStatus, ID>,
@@ -146,6 +148,7 @@ where
     B: 'static + DmaBeat,
     Src: DmaBuffer<B>,
     Dst: DmaBuffer<B>,
+    ChanStatus: Status,
 {
 }
 
@@ -157,6 +160,7 @@ where
     B: DmaBeat,
     Src: DmaBuffer<B>,
     Dst: DmaBuffer<B>,
+    ChanStatus: Status,
 {
 }
 
@@ -178,7 +182,7 @@ where
     /// moved into the transfer to prevent data races until the transfer is
     /// complete. Calling [`wait`](DmaTransfer::wait) will release the
     /// payload for reuse.
-    #[inline(always)]
+    #[inline]
     pub fn inc_src_fixed_dest(
         chan: Channel<Ready, ID>,
         source: &'static mut [B],
@@ -224,7 +228,7 @@ where
     /// `source` and `dest` are `'static`, or that the returned
     /// `UnsafeTransfer` WILL be stopped (by calling `stop`) or waited upon
     /// (by calling `wait`) before being dropped in every possible case.
-    #[inline(always)]
+    #[inline]
     pub unsafe fn inc_src_fixed_dest_unchecked(
         chan: Channel<Ready, ID>,
         source: &'a mut [B],
@@ -261,7 +265,7 @@ where
     /// moved into the transfer to prevent data races until the transfer is
     /// complete. Calling [`wait`](DmaTransfer::wait) will release the
     /// payload for reuse.
-    #[inline(always)]
+    #[inline]
     pub fn fixed_src_inc_dest(
         chan: Channel<Ready, ID>,
         source: &'static mut B,
@@ -305,7 +309,7 @@ where
     /// `source` and `dest` are `'static`, or that the returned
     /// `UnsafeTransfer` WILL be stopped (by calling `stop`) or waited upon
     /// (by calling `wait`) before being dropped in every possible case.
-    #[inline(always)]
+    #[inline]
     pub unsafe fn fixed_src_inc_dest_unchecked(
         chan: Channel<Ready, ID>,
         source: *mut B,
@@ -349,7 +353,7 @@ impl<B: 'static + DmaBeat, P, const ID: u8, const N: usize>
     /// buffer is shorter than the source buffer. In that specific case, the
     /// DMAC would end up overrunning the destination buffer and would write
     /// into a memory section we don't own.
-    #[inline(always)]
+    #[inline]
     pub fn inc_src_inc_dest(
         chan: Channel<Ready, ID>,
         source: &'static mut [B; N],
@@ -403,7 +407,7 @@ where
     /// `source` and `dest` are `'static`, or that the returned
     /// `UnsafeTransfer` WILL be stopped (by calling `stop`) or waited upon
     /// (by calling `wait`) before being dropped in every possible case.
-    #[inline(always)]
+    #[inline]
     pub unsafe fn inc_src_inc_dest_unchecked(
         chan: Channel<Ready, ID>,
         source: &'a mut [B; N],
@@ -438,7 +442,7 @@ impl<B: 'static + DmaBeat, P, const ID: u8>
     /// moved into the transfer to prevent data races until the transfer is
     /// complete. Calling [`wait`](DmaTransfer::wait) will release the
     /// payload for reuse.
-    #[inline(always)]
+    #[inline]
     pub fn fixed_src_fixed_dest(
         chan: Channel<Ready, ID>,
         source: &'static mut B,
@@ -483,7 +487,7 @@ where
     /// `source` and `dest` are `'static`, or that the returned
     /// `UnsafeTransfer` WILL be stopped (by calling `stop`) or waited upon
     /// (by calling `wait`) before being dropped in every possible case.
-    #[inline(always)]
+    #[inline]
     pub unsafe fn fixed_src_fixed_dest_unchecked(
         chan: Channel<Ready, ID>,
         source: *mut B,
@@ -549,7 +553,7 @@ where
             // Block transfer control: Datasheet  section 19.8.2.1 p.329
             btctrl: ((src.incrementing() as u16) << 10) // Increment source address?
                 | ((dst.incrementing() as u16) << 11)   // Tncrement dest address?
-                | ((B::to_beatsize() as u16) << 8)      // Beatsize
+                | ((B::BEATSIZE as u16) << 8)           // Beatsize
                 | (1 << 0), // Validate descriptor
         };
 
@@ -583,7 +587,9 @@ where
         // (see https://docs.rust-embedded.org/embedonomicon/dma.html#compiler-misoptimizations)
         atomic::fence(atomic::Ordering::Release); //  ▲
 
-        let chan = self.chan.start(trig_src, trig_act, dmac.as_mut());
+        // SAFETY: This is safe because we only borrow dmac once
+        let dmac = dmac.dmac_mut();
+        let chan = self.chan.start(dmac, trig_src, trig_act);
 
         UnsafeTransfer {
             config: self.config,
@@ -604,6 +610,7 @@ where
     /// is used, a sowftware trigger will be issued to the DMA channel to
     /// launch the transfer. Is is therefore not necessary, in most cases,
     /// to manually issue a software trigger to the channel.
+    #[inline]
     pub fn begin(
         self,
         dmac: &mut DmaController,
@@ -625,13 +632,18 @@ where
     /// Issue a software trigger request to the corresponding channel.
     /// Note that is not guaranteed that the trigger request will register,
     /// if a trigger request is already pending for the channel.
+    #[inline]
     pub fn software_trigger(&mut self, dmac: &mut DmaController) {
-        self.chan.software_trigger(dmac.as_mut());
+        // SAFETY: This is safe because we only borrow dmac once.
+        let dmac = unsafe { dmac.dmac_mut() };
+        self.chan.software_trigger(dmac);
     }
     /// Blocking; Wait for the DMA transfer to complete and release all owned
     /// resources
     pub fn wait(self, dmac: &mut DmaController) -> (Src, Dst, Channel<Ready, ID>, P) {
-        let chan = self.chan.release(dmac.as_mut());
+        // SAFETY: This is safe because we only borrow dmac once.
+        let dmac = unsafe { dmac.dmac_mut() };
+        let chan = self.chan.free(dmac);
 
         // Memory barrier to prevent the compiler/CPU from re-ordering read/write
         // operations beyond this fence.
@@ -644,7 +656,9 @@ where
     /// Non-blocking; Immediately stop the DMA transfer and release all owned
     /// resources
     pub fn stop(self, dmac: &mut DmaController) -> (Src, Dst, Channel<Ready, ID>, P) {
-        let chan = self.chan.stop(dmac.as_mut());
+        // SAFETY: This is safe because we only borrow dmac once.
+        let dmac = unsafe { dmac.dmac_mut() };
+        let chan = self.chan.stop(dmac);
 
         // Memory barrier to prevent the compiler/CPU from re-ordering read/write
         // operations beyond this fence.
@@ -665,20 +679,20 @@ where
     /// Issue a software trigger request to the corresponding channel.
     /// Note that is not guaranteed that the trigger request will register,
     /// if a trigger request is already pending for the channel.
-    #[inline(always)]
+    #[inline]
     pub fn software_trigger(&mut self, dmac: &mut DmaController) {
         self.xfer.software_trigger(dmac);
     }
     /// Blocking; Wait for the DMA transfer to complete and release all owned
     /// resources
-    #[inline(always)]
+    #[inline]
     pub fn wait(self, dmac: &mut DmaController) -> (Src, Dst, Channel<Ready, ID>, P) {
         self.xfer.wait(dmac)
     }
 
     /// Non-blocking; Immediately stop the DMA transfer and release all owned
     /// resources
-    #[inline(always)]
+    #[inline]
     pub fn stop(self, dmac: &mut DmaController) -> (Src, Dst, Channel<Ready, ID>, P) {
         self.xfer.stop(dmac)
     }
@@ -698,7 +712,7 @@ pub enum BeatSize {
 // Trait enabling taking `*mut` references to references to a single `T`,
 /// references to arrays of `T` or slices of `T`, where `T: DmaBeat`,
 /// as well as required transfer length
-pub trait DmaBuffer<T: DmaBeat> {
+pub trait DmaBuffer<T: DmaBeat>: Sealed {
     /// Take a `*mut` reference to the last object
     /// in the buffer needed by the DMAC. The pointer
     /// changes depending on whether the address should
@@ -707,8 +721,10 @@ pub trait DmaBuffer<T: DmaBeat> {
     fn incrementing(&self) -> bool;
 }
 
+impl<T: DmaBeat, const N: usize> Sealed for &mut [T; N] {}
+
 impl<T: DmaBeat, const N: usize> DmaBuffer<T> for &mut [T; N] {
-    #[inline(always)]
+    #[inline]
     fn to_dma_ptr(&mut self) -> *mut T {
         let ptr = self.as_mut_ptr();
         if self.incrementing() {
@@ -718,14 +734,16 @@ impl<T: DmaBeat, const N: usize> DmaBuffer<T> for &mut [T; N] {
         }
     }
 
-    #[inline(always)]
+    #[inline]
     fn incrementing(&self) -> bool {
         N > 1
     }
 }
 
+impl<T: DmaBeat> Sealed for &mut [T] {}
+
 impl<T: DmaBeat> DmaBuffer<T> for &mut [T] {
-    #[inline(always)]
+    #[inline]
     fn to_dma_ptr(&mut self) -> *mut T {
         let ptr = self.as_mut_ptr();
         if self.incrementing() {
@@ -735,26 +753,30 @@ impl<T: DmaBeat> DmaBuffer<T> for &mut [T] {
         }
     }
 
-    #[inline(always)]
+    #[inline]
     fn incrementing(&self) -> bool {
         self.len() > 1
     }
 }
 
+impl<T: DmaBeat> Sealed for &mut T {}
+
 impl<T: DmaBeat> DmaBuffer<T> for &mut T {
-    #[inline(always)]
+    #[inline]
     fn to_dma_ptr(&mut self) -> *mut T {
         *self as *mut T
     }
 
-    #[inline(always)]
+    #[inline]
     fn incrementing(&self) -> bool {
         false
     }
 }
 
+impl<T: DmaBeat> Sealed for *mut T {}
+
 impl<T: DmaBeat> DmaBuffer<T> for *mut T {
-    #[inline(always)]
+    #[inline]
     fn to_dma_ptr(&mut self) -> *mut T {
         *self
     }
@@ -766,92 +788,42 @@ impl<T: DmaBeat> DmaBuffer<T> for *mut T {
 
 /// Convert 8, 16 and 32 bit types
 /// into [`BeatSize`](BeatSize)
-pub trait DmaBeat {
-    /// Convert to BeatSize
-    fn to_beatsize() -> BeatSize;
-    /// Number of bytes in type
-    fn num_bytes() -> u8;
+pub trait DmaBeat: Sealed {
+    /// Convert to BeatSize enum
+    const BEATSIZE: BeatSize;
 }
 
+impl Sealed for u8 {}
 impl DmaBeat for u8 {
-    #[inline(always)]
-    fn to_beatsize() -> BeatSize {
-        BeatSize::Byte
-    }
-
-    #[inline(always)]
-    fn num_bytes() -> u8 {
-        1
-    }
+    const BEATSIZE: BeatSize = BeatSize::Byte;
 }
 
+impl Sealed for i8 {}
 impl DmaBeat for i8 {
-    #[inline(always)]
-    fn to_beatsize() -> BeatSize {
-        BeatSize::Byte
-    }
-
-    #[inline(always)]
-    fn num_bytes() -> u8 {
-        1
-    }
+    const BEATSIZE: BeatSize = BeatSize::Byte;
 }
 
+impl Sealed for u16 {}
 impl DmaBeat for u16 {
-    #[inline(always)]
-    fn to_beatsize() -> BeatSize {
-        BeatSize::HalfWord
-    }
-
-    #[inline(always)]
-    fn num_bytes() -> u8 {
-        2
-    }
+    const BEATSIZE: BeatSize = BeatSize::HalfWord;
 }
 
+impl Sealed for i16 {}
 impl DmaBeat for i16 {
-    #[inline(always)]
-    fn to_beatsize() -> BeatSize {
-        BeatSize::HalfWord
-    }
-
-    #[inline(always)]
-    fn num_bytes() -> u8 {
-        2
-    }
+    const BEATSIZE: BeatSize = BeatSize::HalfWord;
 }
 
+impl Sealed for u32 {}
 impl DmaBeat for u32 {
-    #[inline(always)]
-    fn to_beatsize() -> BeatSize {
-        BeatSize::Word
-    }
-
-    #[inline(always)]
-    fn num_bytes() -> u8 {
-        4
-    }
+    const BEATSIZE: BeatSize = BeatSize::Word;
 }
 
+impl Sealed for i32 {}
 impl DmaBeat for i32 {
-    #[inline(always)]
-    fn to_beatsize() -> BeatSize {
-        BeatSize::Word
-    }
-
-    #[inline(always)]
-    fn num_bytes() -> u8 {
-        4
-    }
+    const BEATSIZE: BeatSize = BeatSize::Word;
 }
 
+impl Sealed for f32 {}
 impl DmaBeat for f32 {
-    fn to_beatsize() -> BeatSize {
-        BeatSize::Word
-    }
-
-    #[inline(always)]
-    fn num_bytes() -> u8 {
-        4
-    }
+    const BEATSIZE: BeatSize = BeatSize::Word;
 }

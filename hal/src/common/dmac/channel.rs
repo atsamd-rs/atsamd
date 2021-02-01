@@ -34,48 +34,44 @@
 
 use super::dma_controller::{DmaController, PriorityLevel, TriggerAction, TriggerSource};
 
-#[cfg(any(
-    feature = "samd51",
-    feature = "same51",
-    feature = "same53",
-    feature = "same54"
-))]
+#[cfg(feature = "min-samd51g")]
 use super::dma_controller::{BurstLength, FifoThreshold};
 
-#[cfg(any(
-    feature = "samd51",
-    feature = "same51",
-    feature = "same53",
-    feature = "same54"
-))]
+#[cfg(feature = "min-samd51g")]
 use crate::target_device::dmac::CHANNEL;
 
-use crate::target_device::DMAC;
-use crate::typelevel::Sealed;
+use crate::{target_device::DMAC, typelevel::Sealed};
+
+pub trait Status: Sealed {}
 
 /// Uninitialized channel
 pub struct Uninitialized;
+impl Sealed for Uninitialized {}
+impl Status for Uninitialized {}
 /// Initialized and ready to transfer channel
 pub struct Ready;
+impl Sealed for Ready {}
+impl Status for Ready {}
 /// Busy channel
 pub struct Busy;
+impl Sealed for Busy {}
+impl Status for Busy {}
 
 /// DMA channel, capable of executing
 /// [`DmaTransfer`](super::transfer::DmaTransfer)s.
-pub struct Channel<Status, const ID: u8> {
-    _status: Status,
+pub struct Channel<S: Status, const ID: u8> {
+    _status: S,
 }
 
+#[inline]
 pub(crate) fn new_chan<const ID: u8>() -> Channel<Uninitialized, ID> {
     Channel {
         _status: Uninitialized,
     }
 }
 
-impl<S, const ID: u8> Sealed for Channel<S, ID> {}
-
 /// These methods may be used on any DMA channel in any configuration
-impl<S, const ID: u8> Channel<S, ID> {
+impl<S: Status, const ID: u8> Channel<S, ID> {
     /// Set channel ID and run the closure. A closure is needed to ensure
     /// the registers are accessed in an interrupt-safe way, as the SAMD21
     /// DMAC is a little funky - It requires setting the channel number in
@@ -99,12 +95,8 @@ impl<S, const ID: u8> Channel<S, ID> {
     /// the registers are accessed in an interrupt-safe way, as the SAMD21
     /// DMAC is a little funky. For the SAMD51/SAMEx, we simply take a reference
     /// to the correct channel number and run the closure on that.
-    #[cfg(any(
-        feature = "samd51",
-        feature = "same51",
-        feature = "same53",
-        feature = "same54"
-    ))]
+    #[cfg(feature = "min-samd51g")]
+    #[inline]
     fn with_chid<F: Fn(&CHANNEL)>(&mut self, dmac: &mut DMAC, fun: F) {
         let mut ch = &dmac.channel[ID as usize];
         fun(&mut ch);
@@ -118,43 +110,38 @@ impl<S, const ID: u8> Channel<S, ID> {
     /// A `Channel` with a `Ready` status
     pub fn init(
         mut self,
+        controller: &mut DmaController,
         lvl: PriorityLevel,
         enable_interrupts: bool,
-        controller: &mut DmaController,
     ) -> Channel<Ready, ID> {
-        let dmac = controller.as_mut();
+        // SAFETY: this is safe because we only mutably borrow dmac once.
+        let dmac = unsafe { controller.dmac_mut() };
 
         // Software reset the channel for good measure
         self._reset_private(dmac);
 
         self.with_chid(dmac, |d| {
-            // Reset the channel to its startup state and wait for reset to complete
-            d.chctrla.modify(|_, w| w.swrst().set_bit());
-            while d.chctrla.read().swrst().bit_is_set() {}
-
             #[cfg(any(feature = "samd11", feature = "samd21"))]
             // Setup priority level
             d.chctrlb.modify(|_, w| w.lvl().bits(lvl as u8));
 
-            #[cfg(any(
-                feature = "samd51",
-                feature = "same51",
-                feature = "same53",
-                feature = "same54"
-            ))]
+            #[cfg(feature = "min-samd51g")]
             d.chprilvl.modify(|_, w| w.prilvl().bits(lvl as u8));
 
             if enable_interrupts {
                 // Enable all interrupt sources
-                d.chintenset
-                    .modify(|_, w| w.susp().set_bit().tcmpl().set_bit().terr().set_bit());
+                d.chintenset.modify(|_, w| {
+                    w.susp().set_bit();
+                    w.tcmpl().set_bit();
+                    w.terr().set_bit()
+                });
             }
         });
 
         Channel { _status: Ready }
     }
 
-    #[inline(always)]
+    #[inline]
     fn _reset_private(&mut self, dmac: &mut DMAC) {
         self.with_chid(dmac, |d| {
             // Reset the channel to its startup state and wait for reset to complete
@@ -163,7 +150,7 @@ impl<S, const ID: u8> Channel<S, ID> {
         })
     }
 
-    #[inline(always)]
+    #[inline]
     fn _trigger_private(&mut self, dmac: &mut DMAC) {
         // SAFETY: This is safe because we are writing the correct channel
         // number into the register
@@ -177,6 +164,7 @@ impl<S, const ID: u8> Channel<S, ID> {
 impl<const ID: u8> Channel<Ready, ID> {
     /// Issue a software reset to the channel. This will return the channel to
     /// its startup state
+    #[inline]
     pub fn reset(mut self, dmac: &mut DMAC) -> Channel<Uninitialized, ID> {
         self._reset_private(dmac);
 
@@ -188,28 +176,24 @@ impl<const ID: u8> Channel<Ready, ID> {
     /// Set the FIFO threshold length. The channel will wait until it has
     /// received the selected number of Beats before triggering the Burst
     /// transfer, reducing the DMA transfer latency.
-    #[cfg(any(
-        feature = "samd51",
-        feature = "same51",
-        feature = "same53",
-        feature = "same54"
-    ))]
-    pub fn fifo_threshold(&mut self, threshold: FifoThreshold, dmac: &mut DmaController) {
-        self.with_chid(dmac.as_mut(), |d| {
+    #[cfg(feature = "min-samd51g")]
+    #[inline]
+    pub fn fifo_threshold(&mut self, dmac: &mut DmaController, threshold: FifoThreshold) {
+        // SAFETY: This is safe because we only borrow dmac once.
+        let dmac = unsafe { dmac.dmac_mut() };
+        self.with_chid(dmac, |d| {
             d.chctrla.modify(|_, w| w.threshold().bits(threshold as u8));
         })
     }
 
     /// Set burst length for the channel, in number of beats. A burst transfer
     /// is an atomic, uninterruptible operation.
-    #[cfg(any(
-        feature = "samd51",
-        feature = "same51",
-        feature = "same53",
-        feature = "same54"
-    ))]
-    pub fn burst_length(&mut self, burst_length: BurstLength, dmac: &mut DmaController) {
-        self.with_chid(dmac.as_mut(), |d| {
+    #[cfg(feature = "min-samd51g")]
+    #[inline]
+    pub fn burst_length(&mut self, dmac: &mut DmaController, burst_length: BurstLength) {
+        // SAFETY: This is safe because we only borrow dmac once.
+        let dmac = unsafe { dmac.dmac_mut() };
+        self.with_chid(dmac, |d| {
             d.chctrla
                 .modify(|_, w| w.burstlen().bits(burst_length as u8));
         })
@@ -222,9 +206,9 @@ impl<const ID: u8> Channel<Ready, ID> {
     /// A `Channel` with a `Busy` status.
     pub(crate) fn start(
         mut self,
+        dmac: &mut DMAC,
         trig_src: TriggerSource,
         trig_act: TriggerAction,
-        dmac: &mut DMAC,
     ) -> Channel<Busy, ID> {
         // Set the channel ID. We assume the CHID register doesn't change
         // for the duration of this function.
@@ -236,20 +220,13 @@ impl<const ID: u8> Channel<Ready, ID> {
             #[cfg(any(feature = "samd11", feature = "samd21"))]
             let trigger_channel = &d.chctrlb;
 
-            #[cfg(any(
-                feature = "samd51",
-                feature = "same51",
-                feature = "same53",
-                feature = "same54"
-            ))]
+            #[cfg(feature = "min-samd51g")]
             let trigger_channel = &d.chctrla;
 
             unsafe {
                 trigger_channel.modify(|_, w| {
-                    w.trigsrc()
-                        .bits(trig_src as u8)
-                        .trigact()
-                        .bits(trig_act as u8)
+                    w.trigsrc().bits(trig_src as u8);
+                    w.trigact().bits(trig_act as u8)
                 });
             }
 
@@ -269,6 +246,7 @@ impl<const ID: u8> Channel<Ready, ID> {
 /// These methods may only be used on a `Busy` DMA channel
 impl<const ID: u8> Channel<Busy, ID> {
     /// Issue a software trigger to the channel
+    #[inline]
     pub(crate) fn software_trigger(&mut self, dmac: &mut DMAC) {
         self._trigger_private(dmac);
     }
@@ -279,10 +257,10 @@ impl<const ID: u8> Channel<Busy, ID> {
     ///
     /// A `Channel` with a `Ready` status, ready to be reused by a new
     /// [`DmaTransfer`](super::transfer::DmaTransfer)
-    #[inline(always)]
+    #[inline]
     pub(crate) fn stop(mut self, dmac: &mut DMAC) -> Channel<Ready, ID> {
         self.with_chid(dmac, |d| d.chctrla.modify(|_, w| w.enable().clear_bit()));
-        self.release(dmac)
+        self.free(dmac)
     }
 
     /// Returns whether or not the transfer is complete.
@@ -294,7 +272,7 @@ impl<const ID: u8> Channel<Busy, ID> {
     /// then when the arbiter begins to service the channel, PENDCH is cleared
     /// and BUSYCH is set. To make sure the transfer is actually complete, the
     /// channel needs to be both NOT PENDING and NOT BUSY.
-    #[inline(always)]
+    #[inline]
     pub(crate) fn xfer_complete(&self, dmac: &mut DMAC) -> bool {
         dmac.busych.read().bits() & (1 << ID) == 0 && dmac.pendch.read().bits() & (1 << ID) == 0
     }
@@ -305,8 +283,8 @@ impl<const ID: u8> Channel<Busy, ID> {
     ///
     /// A `Channel` with a `Ready` status, ready to be reused by a new
     /// [`DmaTransfer`](super::transfer::DmaTransfer)
-    #[inline(always)]
-    pub(crate) fn release(self, dmac: &mut DMAC) -> Channel<Ready, ID> {
+    #[inline]
+    pub(crate) fn free(self, dmac: &mut DMAC) -> Channel<Ready, ID> {
         while !self.xfer_complete(dmac) {}
         Channel { _status: Ready }
     }
