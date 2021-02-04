@@ -14,7 +14,6 @@ use hal::adc::Adc;
 use hal::prelude::*;
 use hal::timer::SpinTimer;
 use hal::{clock::GenericClockController, delay::Delay};
-use pac::gclk::pchctrl::GEN_A::GCLK11;
 use pac::{CorePeripherals, Peripherals};
 use smart_leds::hsv::SmartLedsWrite;
 use smart_leds::hsv::{hsv2rgb, Hsv, RGB8};
@@ -33,7 +32,8 @@ fn main() -> ! {
     );
     let mut pins = Pins::new(peripherals.PORT);
 
-    let mut adc1 = Adc::adc1(peripherals.ADC1, &mut peripherals.MCLK, &mut clocks, GCLK11);
+    let gclk0 = clocks.gclk0();
+    let mut adc1 = Adc::adc1(peripherals.ADC1, &mut peripherals.MCLK, &clocks.adc1(&gclk0).unwrap(), 1.khz());
     let mut light = pins.light.into_function_b(&mut pins.port);
 
     let timer = SpinTimer::new(4);

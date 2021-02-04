@@ -205,9 +205,9 @@ impl GenericClockController {
             state.reset_gclk();
             state.set_gclk_divider_and_source(GCLK1, 1, XOSC32K, false);
         } else {
-            enable_internal_32kosc(osc32kctrl);
-            state.reset_gclk();
-            state.set_gclk_divider_and_source(GCLK1, 1, OSCULP32K, false);
+            //enable_internal_32kosc(osc32kctrl);
+            //state.reset_gclk();
+            //state.set_gclk_divider_and_source(GCLK1, 1, OSCULP32K, false);
         }
 
         while state.gclk.syncbusy.read().genctrl().is_gclk0() {}
@@ -247,7 +247,7 @@ impl GenericClockController {
             state,
             gclks: [
                 OSC120M_FREQ,
-                OSC32K_FREQ,
+                Hertz(0), //OSC32K_FREQ,
                 Hertz(0),
                 Hertz(0),
                 Hertz(0),

@@ -42,7 +42,8 @@ fn main() -> ! {
 
     let mut buttons = pins.buttons.init(&mut pins.port);
 
-    let mut adc1 = Adc::adc1(peripherals.ADC1, &mut peripherals.MCLK, &mut clocks, GCLK11);
+    let gclk0 = clocks.gclk0();
+    let mut adc1 = Adc::adc1(peripherals.ADC1, &mut peripherals.MCLK, &clocks.adc1(&gclk0).unwrap(), 1.khz());
     let mut joystick = pins.joystick.init(&mut pins.port);
 
     // neopixels

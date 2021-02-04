@@ -11,7 +11,6 @@ use core::fmt::Write;
 use hal::adc::Adc;
 use hal::clock::GenericClockController;
 use hal::entry;
-use hal::pac::gclk::pchctrl::GEN_A::GCLK11;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 use hal::sercom::{PadPin, Sercom3Pad0, Sercom3Pad1, UART3};
@@ -29,7 +28,8 @@ fn main() -> ! {
     );
     let mut pins = hal::Pins::new(peripherals.PORT);
     let mut delay = hal::delay::Delay::new(core.SYST, &mut clocks);
-    let mut adc0 = Adc::adc0(peripherals.ADC0, &mut peripherals.MCLK, &mut clocks, GCLK11);
+    let gclk0 = clocks.gclk0();
+    let mut adc0 = Adc::adc0(peripherals.ADC0, &mut peripherals.MCLK, &clocks.adc0(&gclk0).unwrap(), 1.khz());
     let mut a0 = pins.a0.into_function_b(&mut pins.port);
 
     let gclk0 = clocks.gclk0();

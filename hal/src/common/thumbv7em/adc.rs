@@ -1,4 +1,4 @@
-use crate::clock::GenericClockController;
+use crate::clock::{Adc0Clock, Adc1Clock};
 #[rustfmt::skip]
 use crate::gpio::{
     Pa2, Pa3, Pa4, Pa5, Pa6, Pa7, Pa8, Pa9, Pa10, Pa11,
@@ -11,9 +11,8 @@ use crate::gpio::{Pc0, Pc1, Pc2, Pc3};
 #[cfg(feature = "min-samd51p")]
 use crate::gpio::{Pc30, Pc31, Pd0, Pd1};
 use crate::hal::adc::{Channel, OneShot};
-use crate::target_device::gclk::genctrl::SRC_A::DFLL;
-use crate::target_device::gclk::pchctrl::GEN_A;
 use crate::target_device::{adc0, ADC0, ADC1, MCLK};
+use crate::time::Hertz;
 
 use crate::calibration;
 
@@ -42,19 +41,56 @@ pub struct SingleConversion;
 pub struct FreeRunning;
 
 macro_rules! adc_hal {
-    ($($ADC:ident: ($init:ident, $mclk:ident, $apmask:ident, $compcal:ident, $refcal:ident, $r2rcal:ident),)+) => {
+    ($($ADC:ident: ($init:ident, $mclk:ident, $clock:ident, $apmask:ident, $compcal:ident, $refcal:ident, $r2rcal:ident),)+) => {
         $(
 impl Adc<$ADC> {
-    pub fn $init(adc: $ADC, mclk: &mut MCLK, clocks: &mut GenericClockController, gclk:GEN_A) -> Self {
+    pub fn $init<F: Into<Hertz>>(adc: $ADC, mclk: &mut MCLK, clock: &$clock, freq: F) -> Self {
         mclk.$mclk.modify(|_, w| w.$apmask().set_bit());
-        // set to 1/(1/(48000000/32) * 6) = 250000 SPS
-        let adc_clock = clocks.configure_gclk_divider_and_source(gclk, 1, DFLL, false)
-            .expect("adc clock setup failed");
-        clocks.$init(&adc_clock).expect("adc clock setup failed");
-        adc.ctrla.modify(|_, w| w.prescaler().div32());
-        adc.ctrlb.modify(|_, w| w.ressel()._12bit());
+        let freq = freq.into().0 as u32;
+        let clock = clock.freq().0 as u32;
+        //
+        //                  f_CLK_ADC
+        // R_S = -------------------------------
+        //       n_SAMPLING + n_OFFCOMP + n_DATA
+        //
+        //
+        //       f_GCLK_ADC / 2^(1 + CTRLA.PRESCALER)
+        // R_S = ------------------------------------
+        //       n_SAMPLING + n_OFFCOMP + n_DATA
+        //
+        //
+        //                             f_GCLK_ADC
+        // R_S = -----------------------------------------------------------
+        //       2^(1 + CTRLA.PRESCALER) * (n_SAMPLING + n_OFFCOMP + n_DATA)
+        //
+        //
+        //                                        f_GCLK_ADC
+        // 2^(1 + CTRLA.PRESCALER) = ---------------------------------------
+        //                           R_S * (n_SAMPLING + n_OFFCOMP + n_DATA)
+        //
+        let samplen = 5; // - 1
+        let offcomp = 0;
+        let resolution = 12;
+        let prescaler = (clock / (freq * (samplen + 1 + offcomp + resolution))).next_power_of_two() / 2;
+        adc.ctrla.modify(|_, w| match prescaler {
+            2 => w.prescaler().div2(),
+            4 => w.prescaler().div4(),
+            8 => w.prescaler().div8(),
+            16 => w.prescaler().div16(),
+            32 => w.prescaler().div32(),
+            64 => w.prescaler().div64(),
+            128 => w.prescaler().div128(),
+            256 => w.prescaler().div256(),
+            _ => panic!("can't set ADC divider"),
+        });
+        adc.ctrlb.modify(|_, w| match resolution {
+            12 => w.ressel()._12bit(),
+            10 => w.ressel()._10bit(),
+            8 => w.ressel()._8bit(),
+            _ => panic!("can't set resolution"),
+        });
         while adc.syncbusy.read().ctrlb().bit_is_set() {}
-        adc.sampctrl.modify(|_, w| unsafe {w.samplen().bits(5)}); // sample length
+        adc.sampctrl.modify(|_, w| unsafe {w.samplen().bits(samplen as u8)}); // sample length
         while adc.syncbusy.read().sampctrl().bit_is_set() {}
         adc.inputctrl.modify(|_, w| w.muxneg().gnd()); // No negative input (internal gnd)
         while adc.syncbusy.read().inputctrl().bit_is_set() {}
@@ -258,8 +294,8 @@ impl Channel<$ADC> for $pin<PfB> {
 }
 
 adc_hal! {
-    ADC0: (adc0, apbdmask, adc0_, adc0_biascomp_scale_cal, adc0_biasref_scale_cal, adc0_biasr2r_scale_cal),
-    ADC1: (adc1, apbdmask, adc1_, adc1_biascomp_scale_cal, adc1_biasref_scale_cal, adc1_biasr2r_scale_cal),
+    ADC0: (adc0, apbdmask, Adc0Clock, adc0_, adc0_biascomp_scale_cal, adc0_biasref_scale_cal, adc0_biasr2r_scale_cal),
+    ADC1: (adc1, apbdmask, Adc1Clock, adc1_, adc1_biascomp_scale_cal, adc1_biasref_scale_cal, adc1_biasr2r_scale_cal),
 }
 
 adc_pins! {

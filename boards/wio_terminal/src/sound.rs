@@ -53,7 +53,8 @@ impl Microphone {
         mclk: &mut MCLK,
         port: &mut Port,
     ) -> (Adc<ADC1>, Pc30<PfB>) {
-        let adc1 = Adc::adc1(adc, mclk, clocks, GCLK11);
+        let gclk0 = clocks.gclk0();
+        let adc1 = Adc::adc1(adc, mclk, &clocks.adc1(&gclk0).unwrap(), 40.khz());
         let pc30 = self.mic.into_function_b(port);
 
         (adc1, pc30)

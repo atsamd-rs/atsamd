@@ -31,7 +31,8 @@ fn main() -> ! {
     );
     let mut pins = Pins::new(peripherals.PORT).split();
 
-    let mut adc0 = Adc::adc0(peripherals.ADC0, &mut peripherals.MCLK, &mut clocks, GCLK11);
+    let gclk0 = clocks.gclk0();
+    let mut adc0 = Adc::adc0(peripherals.ADC0, &mut peripherals.MCLK, &clocks.adc0(&gclk0).unwrap(), 1.khz());
     let mut battery = pins.battery.init(&mut pins.port);
 
     // neopixels
