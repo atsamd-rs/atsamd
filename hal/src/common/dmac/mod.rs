@@ -136,7 +136,7 @@ pub mod transfer;
 pub use dma_controller::{BurstLength, FifoThreshold};
 pub use dma_controller::{DmaController, PriorityLevel, TriggerAction, TriggerSource};
 pub use static_assertions::const_assert;
-pub use transfer::{DmaTransfer, UnsafeTransfer};
+pub use transfer::{Buffers, DmaBeat, DmaTransfer, TransferConfiguration};
 
 /// Maximum number of DMA channels supported by SAMD11 chips
 #[cfg(feature = "samd11")]
