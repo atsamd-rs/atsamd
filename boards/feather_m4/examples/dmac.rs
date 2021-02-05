@@ -15,9 +15,11 @@ use hal::{
 };
 
 use hal::dmac::{
-    BurstLength, DmaController, DmaTransfer, FifoThreshold, PriorityLevel, TriggerAction,
-    TriggerSource,
+    BufferPair, BurstLength, DmaController, FifoThreshold, PriorityLevel, TransferConfiguration,
+    TriggerAction, TriggerSource,
 };
+
+use core::marker::PhantomData;
 
 #[entry]
 fn main() -> ! {
@@ -55,16 +57,22 @@ fn main() -> ! {
 
     // Setup a DMA transfer (memory-to-memory -> incrementing source, incrementing
     // destination) with a 8-bit beat size
-    let xfer = DmaTransfer::inc_src_inc_dest(chan0, buf_src, buf_dest, false, ());
+    let buffers = BufferPair {
+        source: buf_src,
+        destination: buf_dest,
+        _b: PhantomData::<u8>,
+    };
+    let xfer = buffers.setup_xfer(chan0, false, ());
     // Begin transfer
     let xfer = xfer.begin(&mut dmac, TriggerSource::DISABLE, TriggerAction::BLOCK);
 
     // Wait for transfer to complete and grab resulting buffers
-    let (buf_src, buf_dest, chan0, _) = xfer.wait(&mut dmac);
+    let (buffers, chan0, _) =
+        xfer.wait::<u8, &'static mut [u8; LENGTH], &'static mut [u8; LENGTH]>(&mut dmac);
 
     // Read the returned buffers
-    let _a = buf_src[LENGTH - 1];
-    let _b = buf_dest[LENGTH - 1];
+    let _a = buffers.source[LENGTH - 1];
+    let _b = buffers.destination[LENGTH - 1];
 
     let const_16: &mut u16 = cortex_m::singleton!(: u16 = 0xADDE).unwrap();
     let buf_16: &'static mut [u16; LENGTH] =
@@ -72,14 +80,22 @@ fn main() -> ! {
 
     // Setup a DMA transfer (memory-to-memory -> fixed source, incrementing
     // destination) with a 16-bit beat size
-    let xfer = DmaTransfer::fixed_src_inc_dest(chan0, const_16, buf_16, false, ());
+    let buffers = BufferPair {
+        source: const_16,
+        destination: buf_16.as_mut(),
+        _b: PhantomData::<u16>,
+    };
+    let xfer = buffers.setup_xfer(chan0, false, ());
     let xfer = xfer.begin(&mut dmac, TriggerSource::DISABLE, TriggerAction::BLOCK);
 
-    let (const_16, buf_16, chan0, _) = xfer.wait(&mut dmac);
+    let (buffers, chan0, _) = xfer.wait::<u16, &'static mut u16, &'static mut [u16]>(&mut dmac);
 
     // Read the returned buffers
-    let _a = *const_16;
-    let _b = buf_16[LENGTH - 1];
+    let _a = *buffers.source;
+    let _b = buffers.destination[LENGTH - 1];
+
+    let const_16 = buffers.source;
+    let buf_16 = buffers.destination;
 
     // Manipulate the returned buffer for fun
     for i in 0..LENGTH {
@@ -88,14 +104,19 @@ fn main() -> ! {
 
     // Setup a DMA transfer (memory-to-memory -> incrementing source, fixed
     // destination) with a 16-bit beat size
-    let xfer = DmaTransfer::inc_src_fixed_dest(chan0, buf_16, const_16, false, ());
+    let buffers = BufferPair {
+        source: buf_16.as_mut(),
+        destination: const_16,
+        _b: PhantomData::<u16>,
+    };
+    let xfer = buffers.setup_xfer(chan0, false, ());
     let xfer = xfer.begin(&mut dmac, TriggerSource::DISABLE, TriggerAction::BLOCK);
 
-    let (buf_16, const_16, _chan0, _) = xfer.wait(&mut dmac);
+    let (buffers, _chan0, _) = xfer.wait::<u16, &'static mut [u16], &'static mut u16>(&mut dmac);
 
     // Read the returned buffers
-    let _a = *const_16; // We expect the value "LENGTH - 1" to end up here
-    let _b = buf_16[LENGTH - 1];
+    let _a = *buffers.destination; // We expect the value "LENGTH - 1" to end up here
+    let _b = buffers.source[LENGTH - 1];
 
     loop {
         asm::nop();

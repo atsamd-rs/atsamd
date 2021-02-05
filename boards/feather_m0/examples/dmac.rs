@@ -16,7 +16,7 @@ use hal::{
 
 use core::marker::PhantomData;
 use hal::dmac::{
-    Buffers, DmaController, PriorityLevel, TransferConfiguration, TriggerAction, TriggerSource,
+    BufferPair, DmaController, PriorityLevel, TransferConfiguration, TriggerAction, TriggerSource,
 };
 
 #[entry]
@@ -51,7 +51,7 @@ fn main() -> ! {
 
     // Setup a DMA transfer (memory-to-memory -> incrementing source, incrementing
     // destination) with a 8-bit beat size
-    let buffers = Buffers {
+    let buffers = BufferPair {
         source: buf_src,
         destination: buf_dest,
         _b: PhantomData::<u8>,
@@ -74,7 +74,7 @@ fn main() -> ! {
 
     // Setup a DMA transfer (memory-to-memory -> fixed source, incrementing
     // destination) with a 16-bit beat size
-    let buffers = Buffers {
+    let buffers = BufferPair {
         source: const_16,
         destination: buf_16.as_mut(),
         _b: PhantomData::<u16>,
@@ -98,7 +98,7 @@ fn main() -> ! {
 
     // Setup a DMA transfer (memory-to-memory -> incrementing source, fixed
     // destination) with a 16-bit beat size
-    let buffers = Buffers {
+    let buffers = BufferPair {
         source: buf_16.as_mut(),
         destination: const_16,
         _b: PhantomData::<u16>,
