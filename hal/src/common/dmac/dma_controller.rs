@@ -57,7 +57,7 @@ impl DmaController {
     }
 
     /// Initialize the DMAC and return a DmaController object useable by
-    /// [`DmaTransfer`](super::transfer::DmaTransfer)'s. By default, all
+    /// [`Transfer`](super::transfer::Transfer)'s. By default, all
     /// priority levels are enabled unless subsequently disabled using the
     /// `level_x_enabled` methods.
     pub fn init(mut dmac: DMAC, _pm: &mut PM) -> Self {
@@ -172,8 +172,8 @@ impl DmaController {
 
     /// Split the DMAC into individual channels
     #[cfg(all(feature = "samd11", not(feature = "max-channels")))]
-    pub fn split(&mut self) -> DmacChannels {
-        DmacChannels(new_chan(), new_chan(), new_chan())
+    pub fn split(&mut self) -> Channels {
+        Channels(new_chan(), new_chan(), new_chan())
     }
 
     /// Split the DMAC into individual channels
@@ -182,8 +182,8 @@ impl DmaController {
         any(all(feature = "samd11", feature = "max-channels")),
         all(feature = "samd21", not(feature = "max-channels"))
     ))]
-    pub fn split(&mut self) -> DmacChannels {
-        DmacChannels(
+    pub fn split(&mut self) -> Channels {
+        Channels(
             new_chan(),
             new_chan(),
             new_chan(),
@@ -195,8 +195,8 @@ impl DmaController {
 
     /// Split the DMAC into individual channels
     #[cfg(all(feature = "samd21", feature = "max-channels"))]
-    pub fn split(&mut self) -> DmacChannels {
-        DmacChannels(
+    pub fn split(&mut self) -> Channels {
+        Channels(
             new_chan(),
             new_chan(),
             new_chan(),
@@ -214,8 +214,8 @@ impl DmaController {
 
     /// Split the DMAC into individual channels
     #[cfg(all(feature = "min-samd51g", not(feature = "max-channels")))]
-    pub fn split(&mut self) -> DmacChannels {
-        DmacChannels(
+    pub fn split(&mut self) -> Channels {
+        Channels(
             new_chan(),
             new_chan(),
             new_chan(),
@@ -237,8 +237,8 @@ impl DmaController {
 
     /// Split the DMAC into individual channels
     #[cfg(all(feature = "min-samd51g", feature = "max-channels"))]
-    pub fn split(&mut self) -> DmacChannels {
-        DmacChannels(
+    pub fn split(&mut self) -> Channels {
+        Channels(
             new_chan(),
             new_chan(),
             new_chan(),
@@ -277,7 +277,7 @@ impl DmaController {
 
 /// Struct generating individual handles to each DMA channel
 #[cfg(all(feature = "samd11", not(feature = "max-channels")))]
-pub struct DmacChannels(
+pub struct Channels(
     pub Channel<Uninitialized, 0>,
     pub Channel<Uninitialized, 1>,
     pub Channel<Uninitialized, 2>,
@@ -288,7 +288,7 @@ pub struct DmacChannels(
     any(all(feature = "samd11", feature = "max-channels")),
     all(feature = "samd21", not(feature = "max-channels"))
 ))]
-pub struct DmacChannels(
+pub struct Channels(
     pub Channel<Uninitialized, 0>,
     pub Channel<Uninitialized, 1>,
     pub Channel<Uninitialized, 2>,
@@ -299,7 +299,7 @@ pub struct DmacChannels(
 
 /// Struct generating individual handles to each DMA channel
 #[cfg(all(feature = "samd21", feature = "max-channels"))]
-pub struct DmacChannels(
+pub struct Channels(
     pub Channel<Uninitialized, 0>,
     pub Channel<Uninitialized, 1>,
     pub Channel<Uninitialized, 2>,
@@ -316,7 +316,7 @@ pub struct DmacChannels(
 
 /// Struct generating individual handles to each DMA channel
 #[cfg(all(feature = "min-samd51g", not(feature = "max-channels")))]
-pub struct DmacChannels(
+pub struct Channels(
     pub Channel<Uninitialized, 0>,
     pub Channel<Uninitialized, 1>,
     pub Channel<Uninitialized, 2>,
@@ -337,7 +337,7 @@ pub struct DmacChannels(
 
 /// Struct generating individual handles to each DMA channel
 #[cfg(all(feature = "min-samd51g", feature = "max-channels"))]
-pub struct DmacChannels(
+pub struct Channels(
     pub Channel<Uninitialized, 0>,
     pub Channel<Uninitialized, 1>,
     pub Channel<Uninitialized, 2>,

@@ -88,7 +88,7 @@
 //! [`mem::forget`](core::mem::forget) is a safe API, and therefore relying on
 //! [`mem::drop`](core::mem::drop) to terminate or abort a transfer
 //! does not guarantee the transfer will be terminated (specifically if
-//! [`mem::forget`](core::mem::forget) is called on a `DmaTransfer` containaing
+//! [`mem::forget`](core::mem::forget) is called on a `Transfer` containaing
 //! a `Channel<Busy, ID>`). This could cause the compiler to reclaim
 //! stack-allocated buffers for reuse while the DMAC is still writing to/reading
 //! from them! Needless to say that is very unsafe. Refer [here](https://docs.rust-embedded.org/embedonomicon/dma.html#memforget)
@@ -101,11 +101,11 @@
 //! This driver also offers an `unsafe` API through the `x_src_x_dest_unchecked`
 //! methods. These do not enforce `'static` lifetimes, and allow using `*mut T`
 //! pointers as buffers. If you choose to use these methods, you MUST prove that
-//! a `DmaTransfer` containing a `Channel<Busy, ID>` will NEVER be dropped. You
+//! a `Transfer` containing a `Channel<Busy, ID>` will NEVER be dropped. You
 //! *must* call `wait()` or `stop()` manually on every
 //! [`UnsafeTransfer`](transfer::UnsafeTransfer) to convert their underlying
 //! channels back into `Channel<Ready, ID>`. No destructor or `Drop`
-//! implementation is offered for `DmaTransfers` or `UnsafeTransfer`s.
+//! implementation is offered for `Transfer`s.
 //!
 //! # Example
 //! ```
@@ -136,7 +136,7 @@ pub mod transfer;
 pub use dma_controller::{BurstLength, FifoThreshold};
 pub use dma_controller::{DmaController, PriorityLevel, TriggerAction, TriggerSource};
 pub use static_assertions::const_assert;
-pub use transfer::{Buffers, DmaBeat, DmaTransfer, TransferConfiguration};
+pub use transfer::{Beat, Buffer, BufferPair, Transfer, TransferConfiguration};
 
 /// Maximum number of DMA channels supported by SAMD11 chips
 #[cfg(feature = "samd11")]

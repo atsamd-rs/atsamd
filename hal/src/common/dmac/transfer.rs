@@ -6,19 +6,19 @@
 //!
 //! * Incrementing-source to incrementing-destination
 //! (normally used for memory-to-memory transfers) - see
-//! [`inc_src_inc_dest`](DmaTransfer::inc_src_inc_dest)
+//! [`inc_src_inc_dest`](Transfer::inc_src_inc_dest)
 //!
 //! * Incrementing-source to fixed-destination (normally used
 //! for memory-to-peripheral transfers) - see
-//! [`inc_src_fixed_dest`](DmaTransfer::inc_src_fixed_dest)
+//! [`inc_src_fixed_dest`](Transfer::inc_src_fixed_dest)
 //!
 //! * Fixed-source to incrementing-destination (normally used for
 //! peripheral-to-memory transfers) - see
-//! [`fixed_src_inc_dest`](DmaTransfer::fixed_src_inc_dest)
+//! [`fixed_src_inc_dest`](Transfer::fixed_src_inc_dest)
 //!
 //! * Fixed-source to fixed-destination (normally used for
 //! peripheral-to-peripheral transfers) - see
-//! [`fixed_src_fixed_dest`](DmaTransfer::fixed_src_fixed_dest)
+//! [`fixed_src_fixed_dest`](Transfer::fixed_src_fixed_dest)
 //!
 //! # Beat sizes
 //!
@@ -46,12 +46,12 @@
 //!
 //! # Starting a transfer
 //!
-//! A transfer is started by calling [`begin`](DmaTransfer::begin). You will be
+//! A transfer is started by calling [`begin`](Transfer::begin). You will be
 //! required to supply a trigger source and a trigger action.
 //!
 //! # Waiting for a transfer to complete
 //!
-//! A transfer can waited upon by calling [`wait`](DmaTransfer::wait). This is a
+//! A transfer can waited upon by calling [`wait`](Transfer::wait). This is a
 //! _blocking_ method, meaning it will busy-wait until the transfer is
 //! completed. When it returns, it will release the source and destination
 //! buffers, as well as the DMA channel and the payload.
@@ -59,7 +59,7 @@
 //! # Interrupting (stopping) a transfer
 //!
 //! A transfer can be stopped (regardless of whether it has completed or not) by
-//! calling [`stop`](DmaTransfer::stop). This is _not_ a blocking method,
+//! calling [`stop`](Transfer::stop). This is _not_ a blocking method,
 //! meaning it will stop the transfer and immediately return. When it returns,
 //! it will release the source and destination buffers, as well as the DMA
 //! channel and the payload.
@@ -67,7 +67,7 @@
 //! # Trigger sources
 //!
 //! Most peripherals can issue triggers to a DMA channel. A software trigger is
-//! also available (see [`trigger`](DmaTransfer::software_trigger)). See
+//! also available (see [`trigger`](Transfer::software_trigger)). See
 //! ATSAMD21 datasheet, table 19-8 for all available trigger sources.
 //!
 //! # Trigger actions
@@ -76,7 +76,7 @@
 //!
 //! * BLOCK: One trigger required for each block transfer. In the context of
 //!   this driver,
-//! one DmaTransfer is equivalent to one Block transfer.
+//! one Transfer is equivalent to one Block transfer.
 //!
 //! * BEAT: One trigger required for each beat transfer. In the context of this
 //!   driver, the beat
@@ -99,8 +99,8 @@ use core::mem;
 
 // TODO change source and dest types to Pin (see https://docs.rust-embedded.org/embedonomicon/dma.html#immovable-buffers)
 /// DMA transfer, owning the resources until the transfer is done and
-/// [`wait`](DmaTransfer::wait) is called.
-pub struct DmaTransfer<C, Pld, ChanStatus, const ID: u8>
+/// [`wait`](Transfer::wait) is called.
+pub struct Transfer<C, Pld, ChanStatus, const ID: u8>
 where
     C: TransferConfiguration,
     ChanStatus: Status,
@@ -110,11 +110,11 @@ where
     payload: Pld,
 }
 
-pub struct Buffers<B, S, D>
+pub struct BufferPair<B, S, D>
 where
-    B: DmaBeat,
-    S: DmaBuffer<B>,
-    D: DmaBuffer<B>,
+    B: Beat,
+    S: Buffer<B>,
+    D: Buffer<B>,
 {
     pub source: S,
     pub destination: D,
@@ -123,7 +123,7 @@ where
 
 /// Configuration for a DMA transfer.
 pub unsafe trait TransferConfiguration: Sized {
-    type Beat: DmaBeat;
+    type Beat: Beat;
 
     /// Length of DMA transfer in Beat sizes
     fn xfer_length(&self) -> usize;
@@ -142,7 +142,7 @@ pub unsafe trait TransferConfiguration: Sized {
     /// `payload` is just a way for the transfer to own resources
     /// while the transfer is ongoing. For instance, a SERCOM instance could be
     /// moved into the transfer to prevent data races until the transfer is
-    /// complete. Calling [`wait`](DmaTransfer::wait) will release the
+    /// complete. Calling [`wait`](Transfer::wait) will release the
     /// payload for reuse.
     #[inline]
     fn setup_xfer<P, const ID: u8>(
@@ -150,16 +150,16 @@ pub unsafe trait TransferConfiguration: Sized {
         chan: Channel<Ready, ID>,
         circular: bool,
         payload: P,
-    ) -> DmaTransfer<Self, P, Ready, ID> {
-        DmaTransfer::setup(self, chan, circular, payload)
+    ) -> Transfer<Self, P, Ready, ID> {
+        Transfer::setup(self, chan, circular, payload)
     }
 }
 
 /// Incrementing source to fixed destination. Useful for Memory -> Peripheral
 /// transfers
-unsafe impl<B> TransferConfiguration for Buffers<B, &'static mut [B], &'static mut B>
+unsafe impl<B> TransferConfiguration for BufferPair<B, &'static mut [B], &'static mut B>
 where
-    B: 'static + DmaBeat,
+    B: 'static + Beat,
 {
     type Beat = B;
 
@@ -184,9 +184,9 @@ where
 
 /// Fixed source to incrementing destination. Useful for Peripheral -> Memory
 /// transfers
-unsafe impl<B> TransferConfiguration for Buffers<B, &'static mut B, &'static mut [B]>
+unsafe impl<B> TransferConfiguration for BufferPair<B, &'static mut B, &'static mut [B]>
 where
-    B: 'static + DmaBeat,
+    B: 'static + Beat,
 {
     type Beat = B;
 
@@ -211,9 +211,9 @@ where
 
 /// Fixed source to fixed destination. Useful for Peripheral -> Peripheral
 /// transfers
-unsafe impl<B> TransferConfiguration for Buffers<B, &'static mut B, &'static mut B>
+unsafe impl<B> TransferConfiguration for BufferPair<B, &'static mut B, &'static mut B>
 where
-    B: 'static + DmaBeat,
+    B: 'static + Beat,
 {
     type Beat = B;
 
@@ -244,9 +244,9 @@ where
 /// destination buffer, which would introduce undefined behaviour by overwriting
 /// some memory not owned.
 unsafe impl<B, const N: usize> TransferConfiguration
-    for Buffers<B, &'static mut [B; N], &'static mut [B; N]>
+    for BufferPair<B, &'static mut [B; N], &'static mut [B; N]>
 where
-    B: 'static + DmaBeat,
+    B: 'static + Beat,
 {
     type Beat = B;
 
@@ -269,8 +269,8 @@ where
     }
 }
 
-/// These methods are available to an `DmaTransfer` holding a `Ready` channel
-impl<C, P, const ID: u8> DmaTransfer<C, P, Ready, ID>
+/// These methods are available to an `Transfer` holding a `Ready` channel
+impl<C, P, const ID: u8> Transfer<C, P, Ready, ID>
 where
     C: TransferConfiguration,
 {
@@ -321,7 +321,7 @@ where
             DESCRIPTOR_SECTION[ID as usize] = xfer_descriptor;
         }
 
-        DmaTransfer {
+        Transfer {
             buffers,
             chan,
             payload,
@@ -337,7 +337,7 @@ where
         dmac: &mut DmaController,
         trig_src: TriggerSource,
         trig_act: TriggerAction,
-    ) -> DmaTransfer<C, P, Busy, ID> {
+    ) -> Transfer<C, P, Busy, ID> {
         // Memory barrier to prevent the compiler/CPU from re-ordering read/write
         // operations beyond this fence.
         // (see https://docs.rust-embedded.org/embedonomicon/dma.html#compiler-misoptimizations)
@@ -347,7 +347,7 @@ where
         let dmac = unsafe { dmac.dmac_mut() };
         let chan = self.chan.start(dmac, trig_src, trig_act);
 
-        DmaTransfer {
+        Transfer {
             buffers: self.buffers,
             chan,
             payload: self.payload,
@@ -356,7 +356,7 @@ where
 }
 
 /// These methods are available to a `Transfer` holding a `Busy` channel
-impl<C, P, const ID: u8> DmaTransfer<C, P, Busy, ID>
+impl<C, P, const ID: u8> Transfer<C, P, Busy, ID>
 where
     C: TransferConfiguration,
 {
@@ -373,9 +373,9 @@ where
     /// resources
     pub fn wait<B, S, D>(self, dmac: &mut DmaController) -> (C, Channel<Ready, ID>, P)
     where
-        B: DmaBeat,
-        S: DmaBuffer<B>,
-        D: DmaBuffer<B>,
+        B: Beat,
+        S: Buffer<B>,
+        D: Buffer<B>,
     {
         // SAFETY: This is safe because we only borrow dmac once.
         let dmac = unsafe { dmac.dmac_mut() };
@@ -393,9 +393,9 @@ where
     /// resources
     pub fn stop<B, S, D>(self, dmac: &mut DmaController) -> (C, Channel<Ready, ID>, P)
     where
-        B: DmaBeat,
-        S: DmaBuffer<B>,
-        D: DmaBuffer<B>,
+        B: Beat,
+        S: Buffer<B>,
+        D: Buffer<B>,
     {
         // SAFETY: This is safe because we only borrow dmac once.
         let dmac = unsafe { dmac.dmac_mut() };
@@ -422,9 +422,9 @@ pub enum BeatSize {
 }
 
 // Trait enabling taking `*mut` references to references to a single `T`,
-/// references to arrays of `T` or slices of `T`, where `T: DmaBeat`,
+/// references to arrays of `T` or slices of `T`, where `T: Beat`,
 /// as well as required transfer length
-pub unsafe trait DmaBuffer<T: DmaBeat> {
+pub unsafe trait Buffer<T: Beat> {
     /// Take a `*mut` reference to the last object
     /// in the buffer needed by the DMAC. The pointer
     /// changes depending on whether the address should
@@ -435,7 +435,7 @@ pub unsafe trait DmaBuffer<T: DmaBeat> {
     fn buffer_len(&self) -> usize;
 }
 
-unsafe impl<T: DmaBeat, const N: usize> DmaBuffer<T> for &mut [T; N] {
+unsafe impl<T: Beat, const N: usize> Buffer<T> for &mut [T; N] {
     #[inline]
     fn to_dma_ptr(&mut self) -> *mut T {
         let ptr = self.as_mut_ptr();
@@ -457,7 +457,7 @@ unsafe impl<T: DmaBeat, const N: usize> DmaBuffer<T> for &mut [T; N] {
     }
 }
 
-unsafe impl<T: DmaBeat> DmaBuffer<T> for &mut [T] {
+unsafe impl<T: Beat> Buffer<T> for &mut [T] {
     #[inline]
     fn to_dma_ptr(&mut self) -> *mut T {
         let ptr = self.as_mut_ptr();
@@ -479,7 +479,7 @@ unsafe impl<T: DmaBeat> DmaBuffer<T> for &mut [T] {
     }
 }
 
-unsafe impl<T: DmaBeat> DmaBuffer<T> for &mut T {
+unsafe impl<T: Beat> Buffer<T> for &mut T {
     #[inline]
     fn to_dma_ptr(&mut self) -> *mut T {
         *self as *mut T
@@ -496,7 +496,7 @@ unsafe impl<T: DmaBeat> DmaBuffer<T> for &mut T {
     }
 }
 
-unsafe impl<T: DmaBeat> DmaBuffer<T> for *mut T {
+unsafe impl<T: Beat> Buffer<T> for *mut T {
     #[inline]
     fn to_dma_ptr(&mut self) -> *mut T {
         *self
@@ -514,42 +514,42 @@ unsafe impl<T: DmaBeat> DmaBuffer<T> for *mut T {
 
 /// Convert 8, 16 and 32 bit types
 /// into [`BeatSize`](BeatSize)
-pub trait DmaBeat: Sealed {
+pub trait Beat: Sealed {
     /// Convert to BeatSize enum
     const BEATSIZE: BeatSize;
 }
 
 impl Sealed for u8 {}
-impl DmaBeat for u8 {
+impl Beat for u8 {
     const BEATSIZE: BeatSize = BeatSize::Byte;
 }
 
 impl Sealed for i8 {}
-impl DmaBeat for i8 {
+impl Beat for i8 {
     const BEATSIZE: BeatSize = BeatSize::Byte;
 }
 
 impl Sealed for u16 {}
-impl DmaBeat for u16 {
+impl Beat for u16 {
     const BEATSIZE: BeatSize = BeatSize::HalfWord;
 }
 
 impl Sealed for i16 {}
-impl DmaBeat for i16 {
+impl Beat for i16 {
     const BEATSIZE: BeatSize = BeatSize::HalfWord;
 }
 
 impl Sealed for u32 {}
-impl DmaBeat for u32 {
+impl Beat for u32 {
     const BEATSIZE: BeatSize = BeatSize::Word;
 }
 
 impl Sealed for i32 {}
-impl DmaBeat for i32 {
+impl Beat for i32 {
     const BEATSIZE: BeatSize = BeatSize::Word;
 }
 
 impl Sealed for f32 {}
-impl DmaBeat for f32 {
+impl Beat for f32 {
     const BEATSIZE: BeatSize = BeatSize::Word;
 }

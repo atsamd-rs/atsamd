@@ -4,7 +4,7 @@
 //!
 //! Individual channels should be initialized through the
 //! [`Channel::init`](Channel::init) method. This will return a `Channel<Ready,
-//! ID>` ready for use by a [`DmaTransfer`](super::transfer::DmaTransfer).
+//! ID>` ready for use by a [`Transfer`](super::transfer::Transfer).
 //! Initializing a channel requires setting a priority level, as well as
 //! enabling or disabling interrupt requests (only for the specific channel
 //! being initialized).
@@ -30,7 +30,7 @@
 //!
 //! Calling the [`reset`](Channel::reset) method will reset the channel to its
 //! `Uninitialized` state. You will be required to call [`init`](Channel::init)
-//! again before being able to use it with a `DmaTransfer`.
+//! again before being able to use it with a `Transfer`.
 
 use super::dma_controller::{DmaController, PriorityLevel, TriggerAction, TriggerSource};
 
@@ -58,7 +58,7 @@ impl Sealed for Busy {}
 impl Status for Busy {}
 
 /// DMA channel, capable of executing
-/// [`DmaTransfer`](super::transfer::DmaTransfer)s.
+/// [`Transfer`](super::transfer::Transfer)s.
 pub struct Channel<S: Status, const ID: u8> {
     _status: S,
 }
@@ -103,7 +103,7 @@ impl<S: Status, const ID: u8> Channel<S, ID> {
     }
 
     /// Configure the DMA channel so that it is ready to be used by a
-    /// [`DmaTransfer`](super::transfer::DmaTransfer).
+    /// [`Transfer`](super::transfer::Transfer).
     ///
     /// # Return
     ///
@@ -256,7 +256,7 @@ impl<const ID: u8> Channel<Busy, ID> {
     /// # Return
     ///
     /// A `Channel` with a `Ready` status, ready to be reused by a new
-    /// [`DmaTransfer`](super::transfer::DmaTransfer)
+    /// [`Transfer`](super::transfer::Transfer)
     #[inline]
     pub(crate) fn stop(mut self, dmac: &mut DMAC) -> Channel<Ready, ID> {
         self.with_chid(dmac, |d| d.chctrla.modify(|_, w| w.enable().clear_bit()));
@@ -282,7 +282,7 @@ impl<const ID: u8> Channel<Busy, ID> {
     /// # Return
     ///
     /// A `Channel` with a `Ready` status, ready to be reused by a new
-    /// [`DmaTransfer`](super::transfer::DmaTransfer)
+    /// [`Transfer`](super::transfer::Transfer)
     #[inline]
     pub(crate) fn free(self, dmac: &mut DMAC) -> Channel<Ready, ID> {
         while !self.xfer_complete(dmac) {}
