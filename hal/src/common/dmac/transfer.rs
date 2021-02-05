@@ -95,7 +95,6 @@ use super::{
     DmacDescriptor, DESCRIPTOR_SECTION,
 };
 use crate::typelevel::Sealed;
-use core::mem;
 
 // TODO change source and dest types to Pin (see https://docs.rust-embedded.org/embedonomicon/dma.html#immovable-buffers)
 /// DMA transfer, owning the resources until the transfer is done and
@@ -324,10 +323,7 @@ where
             // SAFETY: This is safe as we are only reading the descriptor's address,
             // and not actually writing any data to it. We also assume the descriptor
             // will never be moved.
-            unsafe {
-                DESCRIPTOR_SECTION.as_ptr() as u32
-                    + mem::size_of::<DmacDescriptor>() as u32 * (ID as u32)
-            }
+            unsafe { &DESCRIPTOR_SECTION[ID as usize] as *const _ as u32 }
         } else {
             0
         };
@@ -478,11 +474,11 @@ pub unsafe trait Buffer<T: Beat> {
 unsafe impl<T: Beat, const N: usize> Buffer<T> for &mut [T; N] {
     #[inline]
     fn to_dma_ptr(&mut self) -> *mut T {
-        let ptr = self.as_mut_ptr();
+        let ptrs = self.as_mut_ptr_range();
         if self.incrementing() {
-            unsafe { ptr.add(N) }
+            ptrs.end
         } else {
-            ptr
+            ptrs.start
         }
     }
 
@@ -500,11 +496,11 @@ unsafe impl<T: Beat, const N: usize> Buffer<T> for &mut [T; N] {
 unsafe impl<T: Beat> Buffer<T> for &mut [T] {
     #[inline]
     fn to_dma_ptr(&mut self) -> *mut T {
-        let ptr = self.as_mut_ptr();
+        let ptrs = self.as_mut_ptr_range();
         if self.incrementing() {
-            unsafe { ptr.add(self.len()) }
+            ptrs.end
         } else {
-            ptr
+            ptrs.start
         }
     }
 

@@ -46,12 +46,24 @@ pub struct DmaController {
 impl DmaController {
     /// Return an immutable reference to the underlying DMAC object exposed by
     /// the PAC.
+    ///
+    /// # Safety
+    ///
+    /// This function is unsafe because `DmaController` may expect certain
+    /// registers to retain a configuration. Messing with that configuration may
+    /// be unsafe.
     pub unsafe fn dmac(&self) -> &DMAC {
         &self.dmac
     }
 
     /// Return a mutable reference to the underlying DMAC object exposed by the
     /// PAC.
+    ///
+    /// # Safety
+    ///
+    /// This function is unsafe because `DmaController` may expect certain
+    /// registers to retain a configuration. Messing with that configuration may
+    /// be unsafe.
     pub unsafe fn dmac_mut(&mut self) -> &mut DMAC {
         &mut self.dmac
     }

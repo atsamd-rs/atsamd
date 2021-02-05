@@ -135,7 +135,6 @@ pub mod transfer;
 #[cfg(feature = "min-samd51g")]
 pub use dma_controller::{BurstLength, FifoThreshold};
 pub use dma_controller::{DmaController, PriorityLevel, TriggerAction, TriggerSource};
-pub use static_assertions::const_assert;
 pub use transfer::{Beat, Buffer, BufferPair, Transfer, TransferConfiguration};
 
 /// Maximum number of DMA channels supported by SAMD11 chips
