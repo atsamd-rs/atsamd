@@ -269,6 +269,46 @@ where
     }
 }
 
+/// Incrementing source to incrementing destination. Useful for Memory -> Memory
+/// transfers.
+///
+/// This takes array slices (`&[B]`) to
+/// *dynamically* ensure that the source buffer is as the same length as the
+/// destination buffer.
+///
+/// # Panics
+///
+/// `xfer_length` will panic is the source length is not equal to the
+/// destination length.
+unsafe impl<B> TransferConfiguration for BufferPair<B, &'static mut [B], &'static mut [B]>
+where
+    B: 'static + Beat,
+{
+    type Beat = B;
+
+    #[inline]
+    fn xfer_length(&self) -> usize {
+        if self.source.buffer_len() == self.destination.buffer_len() {
+            self.source.buffer_len()
+        } else {
+            panic!("Source buffer length is not equal to destination buffer length.")
+        }
+    }
+
+    #[inline]
+    fn src_ptr(&mut self) -> (*mut Self::Beat, bool) {
+        (self.source.to_dma_ptr(), self.source.incrementing())
+    }
+
+    #[inline]
+    fn dest_ptr(&mut self) -> (*mut Self::Beat, bool) {
+        (
+            self.destination.to_dma_ptr(),
+            self.destination.incrementing(),
+        )
+    }
+}
+
 /// These methods are available to an `Transfer` holding a `Ready` channel
 impl<C, P, const ID: u8> Transfer<C, P, Ready, ID>
 where
