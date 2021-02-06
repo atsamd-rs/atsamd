@@ -87,7 +87,7 @@
 //! transfers in the context of this driver. One trigger will set off the
 //! transaction, that will now run uninterrupted until it is stopped.
 
-use core::{marker::PhantomData, sync::atomic};
+use core::sync::atomic;
 
 use super::{
     channel::{Busy, Channel, Ready, Status},
@@ -109,15 +109,13 @@ where
     payload: Pld,
 }
 
-pub struct BufferPair<B, S, D>
+pub struct BufferPair<S, D>
 where
-    B: Beat,
-    S: Buffer<B>,
-    D: Buffer<B>,
+    S: Buffer,
+    D: Buffer<Beat = S::Beat>,
 {
     pub source: S,
     pub destination: D,
-    pub _b: PhantomData<B>,
 }
 
 /// Configuration for a DMA transfer.
@@ -156,7 +154,7 @@ pub unsafe trait TransferConfiguration: Sized {
 
 /// Incrementing source to fixed destination. Useful for Memory -> Peripheral
 /// transfers
-unsafe impl<B> TransferConfiguration for BufferPair<B, &'static mut [B], &'static mut B>
+unsafe impl<B> TransferConfiguration for BufferPair<&'static mut [B], &'static mut B>
 where
     B: 'static + Beat,
 {
@@ -169,21 +167,18 @@ where
 
     #[inline]
     fn src_ptr(&mut self) -> (*mut Self::Beat, bool) {
-        (self.source.to_dma_ptr(), self.source.incrementing())
+        (self.source.dma_ptr(), self.source.incrementing())
     }
 
     #[inline]
     fn dest_ptr(&mut self) -> (*mut Self::Beat, bool) {
-        (
-            self.destination.to_dma_ptr(),
-            self.destination.incrementing(),
-        )
+        (self.destination.dma_ptr(), self.destination.incrementing())
     }
 }
 
 /// Fixed source to incrementing destination. Useful for Peripheral -> Memory
 /// transfers
-unsafe impl<B> TransferConfiguration for BufferPair<B, &'static mut B, &'static mut [B]>
+unsafe impl<B> TransferConfiguration for BufferPair<&'static mut B, &'static mut [B]>
 where
     B: 'static + Beat,
 {
@@ -196,21 +191,18 @@ where
 
     #[inline]
     fn src_ptr(&mut self) -> (*mut Self::Beat, bool) {
-        (self.source.to_dma_ptr(), self.source.incrementing())
+        (self.source.dma_ptr(), self.source.incrementing())
     }
 
     #[inline]
     fn dest_ptr(&mut self) -> (*mut Self::Beat, bool) {
-        (
-            self.destination.to_dma_ptr(),
-            self.destination.incrementing(),
-        )
+        (self.destination.dma_ptr(), self.destination.incrementing())
     }
 }
 
 /// Fixed source to fixed destination. Useful for Peripheral -> Peripheral
 /// transfers
-unsafe impl<B> TransferConfiguration for BufferPair<B, &'static mut B, &'static mut B>
+unsafe impl<B> TransferConfiguration for BufferPair<&'static mut B, &'static mut B>
 where
     B: 'static + Beat,
 {
@@ -223,15 +215,12 @@ where
 
     #[inline]
     fn src_ptr(&mut self) -> (*mut Self::Beat, bool) {
-        (self.source.to_dma_ptr(), self.source.incrementing())
+        (self.source.dma_ptr(), self.source.incrementing())
     }
 
     #[inline]
     fn dest_ptr(&mut self) -> (*mut Self::Beat, bool) {
-        (
-            self.destination.to_dma_ptr(),
-            self.destination.incrementing(),
-        )
+        (self.destination.dma_ptr(), self.destination.incrementing())
     }
 }
 
@@ -243,7 +232,7 @@ where
 /// destination buffer, which would introduce undefined behaviour by overwriting
 /// some memory not owned.
 unsafe impl<B, const N: usize> TransferConfiguration
-    for BufferPair<B, &'static mut [B; N], &'static mut [B; N]>
+    for BufferPair<&'static mut [B; N], &'static mut [B; N]>
 where
     B: 'static + Beat,
 {
@@ -256,15 +245,12 @@ where
 
     #[inline]
     fn src_ptr(&mut self) -> (*mut Self::Beat, bool) {
-        (self.source.to_dma_ptr(), self.source.incrementing())
+        (self.source.dma_ptr(), self.source.incrementing())
     }
 
     #[inline]
     fn dest_ptr(&mut self) -> (*mut Self::Beat, bool) {
-        (
-            self.destination.to_dma_ptr(),
-            self.destination.incrementing(),
-        )
+        (self.destination.dma_ptr(), self.destination.incrementing())
     }
 }
 
@@ -279,7 +265,7 @@ where
 ///
 /// `xfer_length` will panic is the source length is not equal to the
 /// destination length.
-unsafe impl<B> TransferConfiguration for BufferPair<B, &'static mut [B], &'static mut [B]>
+unsafe impl<B> TransferConfiguration for BufferPair<&'static mut [B], &'static mut [B]>
 where
     B: 'static + Beat,
 {
@@ -296,15 +282,12 @@ where
 
     #[inline]
     fn src_ptr(&mut self) -> (*mut Self::Beat, bool) {
-        (self.source.to_dma_ptr(), self.source.incrementing())
+        (self.source.dma_ptr(), self.source.incrementing())
     }
 
     #[inline]
     fn dest_ptr(&mut self) -> (*mut Self::Beat, bool) {
-        (
-            self.destination.to_dma_ptr(),
-            self.destination.incrementing(),
-        )
+        (self.destination.dma_ptr(), self.destination.incrementing())
     }
 }
 
@@ -313,13 +296,13 @@ impl<C, P, const ID: u8> Transfer<C, P, Ready, ID>
 where
     C: TransferConfiguration,
 {
-    fn setup(mut buffers: C, chan: Channel<Ready, ID>, circular_xfer: bool, payload: P) -> Self {
+    fn setup(mut buffers: C, chan: Channel<Ready, ID>, circular: bool, payload: P) -> Self {
         // Enable support for circular transfers. If circular_xfer is true,
         // we set the address of the "next" block descriptor to actually
         // be the same address as the current block descriptor.
         // Otherwise we set it to 0 (terminates the transaction)
         // TODO: Enable support for linked lists (?)
-        let descaddr = if circular_xfer {
+        let descaddr = if circular {
             // SAFETY: This is safe as we are only reading the descriptor's address,
             // and not actually writing any data to it. We also assume the descriptor
             // will never be moved.
@@ -407,12 +390,7 @@ where
     }
     /// Blocking; Wait for the DMA transfer to complete and release all owned
     /// resources
-    pub fn wait<B, S, D>(self, dmac: &mut DmaController) -> (C, Channel<Ready, ID>, P)
-    where
-        B: Beat,
-        S: Buffer<B>,
-        D: Buffer<B>,
-    {
+    pub fn wait(self, dmac: &mut DmaController) -> (C, Channel<Ready, ID>, P) {
         // SAFETY: This is safe because we only borrow dmac once.
         let dmac = unsafe { dmac.dmac_mut() };
         let chan = self.chan.free(dmac);
@@ -427,12 +405,7 @@ where
 
     /// Non-blocking; Immediately stop the DMA transfer and release all owned
     /// resources
-    pub fn stop<B, S, D>(self, dmac: &mut DmaController) -> (C, Channel<Ready, ID>, P)
-    where
-        B: Beat,
-        S: Buffer<B>,
-        D: Buffer<B>,
-    {
+    pub fn stop(self, dmac: &mut DmaController) -> (C, Channel<Ready, ID>, P) {
         // SAFETY: This is safe because we only borrow dmac once.
         let dmac = unsafe { dmac.dmac_mut() };
         let chan = self.chan.stop(dmac);
@@ -460,20 +433,22 @@ pub enum BeatSize {
 // Trait enabling taking `*mut` references to references to a single `T`,
 /// references to arrays of `T` or slices of `T`, where `T: Beat`,
 /// as well as required transfer length
-pub unsafe trait Buffer<T: Beat> {
+pub unsafe trait Buffer {
+    type Beat: Beat;
     /// Take a `*mut` reference to the last object
     /// in the buffer needed by the DMAC. The pointer
     /// changes depending on whether the address should
-    fn to_dma_ptr(&mut self) -> *mut T;
+    fn dma_ptr(&mut self) -> *mut Self::Beat;
     /// Check if the DMA address should be incrementing or not
     fn incrementing(&self) -> bool;
     /// Buffer length
     fn buffer_len(&self) -> usize;
 }
 
-unsafe impl<T: Beat, const N: usize> Buffer<T> for &mut [T; N] {
+unsafe impl<T: Beat, const N: usize> Buffer for &mut [T; N] {
+    type Beat = T;
     #[inline]
-    fn to_dma_ptr(&mut self) -> *mut T {
+    fn dma_ptr(&mut self) -> *mut Self::Beat {
         let ptrs = self.as_mut_ptr_range();
         if self.incrementing() {
             ptrs.end
@@ -493,9 +468,10 @@ unsafe impl<T: Beat, const N: usize> Buffer<T> for &mut [T; N] {
     }
 }
 
-unsafe impl<T: Beat> Buffer<T> for &mut [T] {
+unsafe impl<T: Beat> Buffer for &mut [T] {
+    type Beat = T;
     #[inline]
-    fn to_dma_ptr(&mut self) -> *mut T {
+    fn dma_ptr(&mut self) -> *mut Self::Beat {
         let ptrs = self.as_mut_ptr_range();
         if self.incrementing() {
             ptrs.end
@@ -515,29 +491,14 @@ unsafe impl<T: Beat> Buffer<T> for &mut [T] {
     }
 }
 
-unsafe impl<T: Beat> Buffer<T> for &mut T {
+unsafe impl<T: Beat> Buffer for &mut T {
+    type Beat = T;
     #[inline]
-    fn to_dma_ptr(&mut self) -> *mut T {
+    fn dma_ptr(&mut self) -> *mut Self::Beat {
         *self as *mut T
     }
 
     #[inline]
-    fn incrementing(&self) -> bool {
-        false
-    }
-
-    #[inline]
-    fn buffer_len(&self) -> usize {
-        1
-    }
-}
-
-unsafe impl<T: Beat> Buffer<T> for *mut T {
-    #[inline]
-    fn to_dma_ptr(&mut self) -> *mut T {
-        *self
-    }
-
     fn incrementing(&self) -> bool {
         false
     }

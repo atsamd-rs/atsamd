@@ -19,8 +19,6 @@ use hal::dmac::{
     TriggerAction, TriggerSource,
 };
 
-use core::marker::PhantomData;
-
 #[entry]
 fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
@@ -60,15 +58,13 @@ fn main() -> ! {
     let buffers = BufferPair {
         source: buf_src,
         destination: buf_dest,
-        _b: PhantomData::<u8>,
     };
     let xfer = buffers.setup_xfer(chan0, false, ());
     // Begin transfer
     let xfer = xfer.begin(&mut dmac, TriggerSource::DISABLE, TriggerAction::BLOCK);
 
     // Wait for transfer to complete and grab resulting buffers
-    let (buffers, chan0, _) =
-        xfer.wait::<u8, &'static mut [u8; LENGTH], &'static mut [u8; LENGTH]>(&mut dmac);
+    let (buffers, chan0, _) = xfer.wait(&mut dmac);
 
     // Read the returned buffers
     let _a = buffers.source[LENGTH - 1];
@@ -83,12 +79,11 @@ fn main() -> ! {
     let buffers = BufferPair {
         source: const_16,
         destination: buf_16.as_mut(),
-        _b: PhantomData::<u16>,
     };
     let xfer = buffers.setup_xfer(chan0, false, ());
     let xfer = xfer.begin(&mut dmac, TriggerSource::DISABLE, TriggerAction::BLOCK);
 
-    let (buffers, chan0, _) = xfer.wait::<u16, &'static mut u16, &'static mut [u16]>(&mut dmac);
+    let (buffers, chan0, _) = xfer.wait(&mut dmac);
 
     // Read the returned buffers
     let _a = *buffers.source;
@@ -107,12 +102,11 @@ fn main() -> ! {
     let buffers = BufferPair {
         source: buf_16.as_mut(),
         destination: const_16,
-        _b: PhantomData::<u16>,
     };
     let xfer = buffers.setup_xfer(chan0, false, ());
     let xfer = xfer.begin(&mut dmac, TriggerSource::DISABLE, TriggerAction::BLOCK);
 
-    let (buffers, _chan0, _) = xfer.wait::<u16, &'static mut [u16], &'static mut u16>(&mut dmac);
+    let (buffers, _chan0, _) = xfer.wait(&mut dmac);
 
     // Read the returned buffers
     let _a = *buffers.destination; // We expect the value "LENGTH - 1" to end up here
