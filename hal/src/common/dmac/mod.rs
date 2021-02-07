@@ -61,16 +61,19 @@
 //! and level 0 has the lowest. Each channel can be assigned to one priority
 //! level. If two channels with the same priority level are requested to
 //! execute a transfer at the same time, the lowest channel number will have
-//! priority (in the default arbitration scheme, eg. not round-robin).
+//! priority (in the default, ie static, arbitration scheme).
 //!
 //! By default, all priority levels are enabled when initializing the DMAC
 //! (see [`DmaController::init`](dma_controller::DmaController::init)). Levels
 //! can be enabled or disabled through the various `level_x_enabled` methods.
 //!
-//! Round-Robin Arbitration can be enabled for individual priority levels by
-//! using the various `level_x_round_robin` methods. By default, all priority
-//! levels are initialized with a fixed arbitration scheme. See ATSAMD21
-//! datasheet section 19.6.2.4 for more information.
+//! Round-Robin Arbitration can be enabled for multiple priority levels
+//! simultaneously by using the
+//! [`DmaController::round_robin_arbitration`](dma_controller::DmaController::
+//! round_robin_arbitration) and [`DmaController::static_arbitration`]
+//! (dma_controller::DmaController::static_arbitration) methods. By default, all
+//! priority levels are initialized with a static arbitration scheme. See
+//! ATSAMD21 datasheet section 19.6.2.4 for more information.
 //!
 //! # Interrupts
 //!
@@ -91,21 +94,26 @@
 //! [`mem::forget`](core::mem::forget) is called on a `Transfer` containaing
 //! a `Channel<Busy, ID>`). This could cause the compiler to reclaim
 //! stack-allocated buffers for reuse while the DMAC is still writing to/reading
-//! from them! Needless to say that is very unsafe. Refer [here](https://docs.rust-embedded.org/embedonomicon/dma.html#memforget)
+//! from them! Needless to say that is very unsafe.
+//! Refer [here](https://docs.rust-embedded.org/embedonomicon/dma.html#memforget)
 //! or [here](https://blog.japaric.io/safe-dma/) for more information. You may choose to forego
-//! the `'static` lifetimes by using the unsafe API and the various
-//! `x_src_x_dest_unchecked` methods.
+//! the `'static` lifetimes by using the unsafe API and the
+//! [`Transfer::new_unchecked`](transfer::Transfer::new_unchecked) method.
 //!
 //! # Unsafe API
 //!
-//! This driver also offers an `unsafe` API through the `x_src_x_dest_unchecked`
-//! methods. These do not enforce `'static` lifetimes, and allow using `*mut T`
-//! pointers as buffers. If you choose to use these methods, you MUST prove that
+//! This driver also offers an `unsafe` API through the
+//! [`Transfer::new_unchecked`](transfer::Transfer::new_unchecked) method. It
+//! does not enforce `'static` lifetimes, and allow using buffers of different
+//! lengths. If you choose to use these methods, you MUST prove that
 //! a `Transfer` containing a `Channel<Busy, ID>` will NEVER be dropped. You
 //! *must* call `wait()` or `stop()` manually on every
 //! [`UnsafeTransfer`](transfer::UnsafeTransfer) to convert their underlying
 //! channels back into `Channel<Ready, ID>`. No destructor or `Drop`
 //! implementation is offered for `Transfer`s.
+//!
+//! Additionally, you can (unsafely) implement your own buffer types through the
+//! unsafe [`Buffer`](transfer::Buffer) trait.
 //!
 //! # Example
 //! ```
@@ -117,10 +125,15 @@
 //! // Initialize DMA Channel 0
 //! let chan0 = channels.0.init(PriorityLevel::LVL0, false, &mut dmac);
 //!
+//! let buffers = BufferPair {
+//!     source: buf_src,
+//!     destination: buf_src
+//! };
+//!
 //! // Setup a DMA transfer (memory-to-memory -> incrementing source, incrementing destination)
 //! // NOTE: buf_src and buf_dest should be either:
 //! // &'static mut T, &'static mut [T], or &'static mut [T; N] where T: BeatSize
-//! let xfer = DmaTransfer::inc_src_inc_dest(chan0, buf_src, buf_dest, false, ());
+//! let xfer = Transfer::new(buffers, chan0, false, ());
 //! // Begin transfer with a software trigger
 //! let xfer = xfer.begin(&mut dmac, TriggerSource::DISABLE, TriggerAction::BLOCK);
 //!
@@ -128,35 +141,94 @@
 //! let (buf_src, buf_dest, chan0, _) = xfer.wait(&mut dmac);
 //! ```
 
-pub mod channel;
-pub mod dma_controller;
-pub mod transfer;
+use modular_bitfield::prelude::*;
 
 #[cfg(feature = "min-samd51g")]
 pub use dma_controller::{BurstLength, FifoThreshold};
 pub use dma_controller::{DmaController, PriorityLevel, TriggerAction, TriggerSource};
-pub use transfer::{Beat, Buffer, BufferPair, Transfer, TransferConfiguration};
+use transfer::BeatSize;
+pub use transfer::{Beat, Buffer, BufferPair, Transfer};
 
-/// Maximum number of DMA channels supported by SAMD11 chips
-#[cfg(feature = "samd11")]
-const MAX_CHANNELS: usize = 6;
+#[cfg(all(feature = "samd11", feature = "max-channels"))]
+#[macro_export]
+macro_rules! with_num_channels {
+    ($some_macro:ident) => {
+        $some_macro!(6);
+    };
+}
 
-/// Maximum number of DMA channels supported by SAMD21 chips
-#[cfg(feature = "samd21")]
-const MAX_CHANNELS: usize = 12;
+#[cfg(all(feature = "samd21", feature = "max-channels"))]
+#[macro_export]
+macro_rules! with_num_channels {
+    ($some_macro:ident) => {
+        $some_macro!(12);
+    };
+}
 
-/// Maximum number of DMA channels supported by SAMD51, SAME51, SAME53 and
-/// SAME54 chips
-#[cfg(feature = "min-samd51g")]
-const MAX_CHANNELS: usize = 32;
+#[cfg(all(feature = "min-samd51g", feature = "max-channels"))]
+#[macro_export]
+macro_rules! with_num_channels {
+    ($some_macro:ident) => {
+        $some_macro!(32);
+    };
+}
+
+#[cfg(all(feature = "samd11", not(feature = "max-channels")))]
+#[macro_export]
+macro_rules! with_num_channels {
+    ($some_macro:ident) => {
+        $some_macro!(3);
+    };
+}
+
+#[cfg(all(feature = "samd21", not(feature = "max-channels")))]
+#[macro_export]
+macro_rules! with_num_channels {
+    ($some_macro:ident) => {
+        $some_macro!(6);
+    };
+}
+
+#[cfg(all(feature = "min-samd51g", not(feature = "max-channels")))]
+#[macro_export]
+macro_rules! with_num_channels {
+    ($some_macro:ident) => {
+        $some_macro!(16);
+    };
+}
+
+macro_rules! get {
+    ($literal:literal) => {
+        $literal
+    };
+}
 
 /// Number of DMA channels used by the driver
-#[cfg(feature = "max-channels")]
-pub const NUM_CHANNELS: usize = MAX_CHANNELS;
+pub const NUM_CHANNELS: usize = with_num_channels!(get);
 
-/// Number of channels used by the driver
-#[cfg(not(feature = "max-channels"))]
-pub const NUM_CHANNELS: usize = MAX_CHANNELS / 2;
+#[bitfield]
+#[derive(Clone, Copy)]
+pub struct BlockTransferControl {
+    #[allow(dead_code)]
+    valid: bool,
+    #[allow(dead_code)]
+    evosel: B2,
+    #[allow(dead_code)]
+    blockact: B2,
+    #[skip]
+    _reserved: B3,
+    #[bits = 2]
+    #[allow(dead_code)]
+    beatsize: BeatSize,
+    #[allow(dead_code)]
+    srcinc: bool,
+    #[allow(dead_code)]
+    dstinc: bool,
+    #[allow(dead_code)]
+    stepsel: bool,
+    #[allow(dead_code)]
+    stepsize: B3,
+}
 
 // ----- DMAC SRAM registers ----- //
 /// Descriptor representing a SRAM register. Datasheet section 19.8.2
@@ -164,7 +236,7 @@ pub const NUM_CHANNELS: usize = MAX_CHANNELS / 2;
 #[repr(C, align(16))]
 #[doc(hidden)]
 pub struct DmacDescriptor {
-    btctrl: u16,
+    btctrl: BlockTransferControl,
     btcnt: u16,
     srcaddr: u32,
     dstaddr: u32,
@@ -173,7 +245,7 @@ pub struct DmacDescriptor {
 
 #[doc(hidden)]
 pub const DEFAULT_DESCRIPTOR: DmacDescriptor = DmacDescriptor {
-    btctrl: 0,
+    btctrl: BlockTransferControl::new(),
     btcnt: 0,
     srcaddr: 0,
     dstaddr: 0,
@@ -188,3 +260,7 @@ static mut WRITEBACK: [DmacDescriptor; NUM_CHANNELS] = [DEFAULT_DESCRIPTOR; NUM_
 // interrupt or thread context.
 #[doc(hidden)]
 static mut DESCRIPTOR_SECTION: [DmacDescriptor; NUM_CHANNELS] = [DEFAULT_DESCRIPTOR; NUM_CHANNELS];
+
+pub mod channel;
+pub mod dma_controller;
+pub mod transfer;

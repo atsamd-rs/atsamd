@@ -15,8 +15,8 @@ use hal::{
 };
 
 use hal::dmac::{
-    BufferPair, BurstLength, DmaController, FifoThreshold, PriorityLevel, TransferConfiguration,
-    TriggerAction, TriggerSource,
+    BufferPair, BurstLength, DmaController, FifoThreshold, PriorityLevel, Transfer, TriggerAction,
+    TriggerSource,
 };
 
 #[entry]
@@ -59,7 +59,7 @@ fn main() -> ! {
         source: buf_src,
         destination: buf_dest,
     };
-    let xfer = buffers.setup_xfer(chan0, false, ());
+    let xfer = Transfer::new(buffers, chan0, false, ());
     // Begin transfer
     let xfer = xfer.begin(&mut dmac, TriggerSource::DISABLE, TriggerAction::BLOCK);
 
@@ -80,7 +80,7 @@ fn main() -> ! {
         source: const_16,
         destination: buf_16.as_mut(),
     };
-    let xfer = buffers.setup_xfer(chan0, false, ());
+    let xfer = Transfer::new(buffers, chan0, false, ());
     let xfer = xfer.begin(&mut dmac, TriggerSource::DISABLE, TriggerAction::BLOCK);
 
     let (buffers, chan0, _) = xfer.wait(&mut dmac);
@@ -100,10 +100,10 @@ fn main() -> ! {
     // Setup a DMA transfer (memory-to-memory -> incrementing source, fixed
     // destination) with a 16-bit beat size
     let buffers = BufferPair {
-        source: buf_16.as_mut(),
+        source: buf_16,
         destination: const_16,
     };
-    let xfer = buffers.setup_xfer(chan0, false, ());
+    let xfer = Transfer::new(buffers, chan0, false, ());
     let xfer = xfer.begin(&mut dmac, TriggerSource::DISABLE, TriggerAction::BLOCK);
 
     let (buffers, _chan0, _) = xfer.wait(&mut dmac);

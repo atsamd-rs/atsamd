@@ -2,23 +2,19 @@
 //!
 //! # Transfer types
 //!
-//! Four transfer types are supported:
+//! Four basic transfer types are supported:
 //!
 //! * Incrementing-source to incrementing-destination
-//! (normally used for memory-to-memory transfers) - see
-//! [`inc_src_inc_dest`](Transfer::inc_src_inc_dest)
+//! (normally used for memory-to-memory transfers)
 //!
 //! * Incrementing-source to fixed-destination (normally used
-//! for memory-to-peripheral transfers) - see
-//! [`inc_src_fixed_dest`](Transfer::inc_src_fixed_dest)
+//! for memory-to-peripheral transfers)
 //!
 //! * Fixed-source to incrementing-destination (normally used for
-//! peripheral-to-memory transfers) - see
-//! [`fixed_src_inc_dest`](Transfer::fixed_src_inc_dest)
+//! peripheral-to-memory transfers)
 //!
 //! * Fixed-source to fixed-destination (normally used for
-//! peripheral-to-peripheral transfers) - see
-//! [`fixed_src_fixed_dest`](Transfer::fixed_src_fixed_dest)
+//! peripheral-to-peripheral transfers)
 //!
 //! # Beat sizes
 //!
@@ -36,13 +32,13 @@
 //!
 //! # One-shot vs circular transfers
 //!
-//! If the transfer is setup as one-shot (`circular_xfer == false`), the
-//! transfer will run once and stop. Otherwise, if it is setup as "circular"
-//! `circular_xfer == true`, then the transfer will be set as circular, meaning
-//! it will restart a new, identical block transfer when the current block
-//! transfer is complete. This is particularly useful when combined with a
-//! TC/TCC trigger source, for instance to periodically retreive a sample from
-//! an ADC and send it to a circular buffer, or send a sample to a DAC.
+//! If the transfer is setup as one-shot (`circular == false`), the
+//! transfer will run once and stop. Otherwise, if `circular == true`, then the
+//! transfer will be set as circular, meaning it will restart a new, identical
+//! block transfer when the current block transfer is complete. This is
+//! particularly useful when combined with a TC/TCC trigger source, for instance
+//! to periodically retreive a sample from an ADC and send it to a circular
+//! buffer, or send a sample to a DAC.
 //!
 //! # Starting a transfer
 //!
@@ -88,339 +84,22 @@
 //! transaction, that will now run uninterrupted until it is stopped.
 
 use core::sync::atomic;
+use modular_bitfield::prelude::*;
 
 use super::{
     channel::{Busy, Channel, Ready, Status},
     dma_controller::{DmaController, TriggerAction, TriggerSource},
-    DmacDescriptor, DESCRIPTOR_SECTION,
+    BlockTransferControl, DmacDescriptor, DESCRIPTOR_SECTION,
 };
-use crate::typelevel::Sealed;
+use crate::typelevel::{Is, Sealed};
+use core::mem;
 
-// TODO change source and dest types to Pin (see https://docs.rust-embedded.org/embedonomicon/dma.html#immovable-buffers)
-/// DMA transfer, owning the resources until the transfer is done and
-/// [`wait`](Transfer::wait) is called.
-pub struct Transfer<C, Pld, ChanStatus, const ID: u8>
-where
-    C: TransferConfiguration,
-    ChanStatus: Status,
-{
-    buffers: C,
-    chan: Channel<ChanStatus, ID>,
-    payload: Pld,
-}
-
-pub struct BufferPair<S, D>
-where
-    S: Buffer,
-    D: Buffer<Beat = S::Beat>,
-{
-    pub source: S,
-    pub destination: D,
-}
-
-/// Configuration for a DMA transfer.
-pub unsafe trait TransferConfiguration: Sized {
-    type Beat: Beat;
-
-    /// Length of DMA transfer in Beat sizes
-    fn xfer_length(&self) -> usize;
-    /// Pointer to DMA source buffer.
-    fn src_ptr(&mut self) -> (*mut Self::Beat, bool);
-    /// Pointer to DMA destination buffer.
-    fn dest_ptr(&mut self) -> (*mut Self::Beat, bool);
-
-    /// Setup a DMA transfer.
-    ///
-    /// If `circular_xfer == false`, the transfer will run once
-    /// and stop. If `circular_xfer == true`, then the transfer will be set as
-    /// circular, meaning it will restart a new, identical block transfer
-    /// when the current block transfer is complete.
-    ///
-    /// `payload` is just a way for the transfer to own resources
-    /// while the transfer is ongoing. For instance, a SERCOM instance could be
-    /// moved into the transfer to prevent data races until the transfer is
-    /// complete. Calling [`wait`](Transfer::wait) will release the
-    /// payload for reuse.
-    #[inline]
-    fn setup_xfer<P, const ID: u8>(
-        self,
-        chan: Channel<Ready, ID>,
-        circular: bool,
-        payload: P,
-    ) -> Transfer<Self, P, Ready, ID> {
-        Transfer::setup(self, chan, circular, payload)
-    }
-}
-
-/// Incrementing source to fixed destination. Useful for Memory -> Peripheral
-/// transfers
-unsafe impl<B> TransferConfiguration for BufferPair<&'static mut [B], &'static mut B>
-where
-    B: 'static + Beat,
-{
-    type Beat = B;
-
-    #[inline]
-    fn xfer_length(&self) -> usize {
-        self.source.buffer_len()
-    }
-
-    #[inline]
-    fn src_ptr(&mut self) -> (*mut Self::Beat, bool) {
-        (self.source.dma_ptr(), self.source.incrementing())
-    }
-
-    #[inline]
-    fn dest_ptr(&mut self) -> (*mut Self::Beat, bool) {
-        (self.destination.dma_ptr(), self.destination.incrementing())
-    }
-}
-
-/// Fixed source to incrementing destination. Useful for Peripheral -> Memory
-/// transfers
-unsafe impl<B> TransferConfiguration for BufferPair<&'static mut B, &'static mut [B]>
-where
-    B: 'static + Beat,
-{
-    type Beat = B;
-
-    #[inline]
-    fn xfer_length(&self) -> usize {
-        self.destination.buffer_len()
-    }
-
-    #[inline]
-    fn src_ptr(&mut self) -> (*mut Self::Beat, bool) {
-        (self.source.dma_ptr(), self.source.incrementing())
-    }
-
-    #[inline]
-    fn dest_ptr(&mut self) -> (*mut Self::Beat, bool) {
-        (self.destination.dma_ptr(), self.destination.incrementing())
-    }
-}
-
-/// Fixed source to fixed destination. Useful for Peripheral -> Peripheral
-/// transfers
-unsafe impl<B> TransferConfiguration for BufferPair<&'static mut B, &'static mut B>
-where
-    B: 'static + Beat,
-{
-    type Beat = B;
-
-    #[inline]
-    fn xfer_length(&self) -> usize {
-        self.source.buffer_len()
-    }
-
-    #[inline]
-    fn src_ptr(&mut self) -> (*mut Self::Beat, bool) {
-        (self.source.dma_ptr(), self.source.incrementing())
-    }
-
-    #[inline]
-    fn dest_ptr(&mut self) -> (*mut Self::Beat, bool) {
-        (self.destination.dma_ptr(), self.destination.incrementing())
-    }
-}
-
-/// Incrementing source to incrementing destination. Useful for Memory -> Memory
-/// transfers.
-///
-/// This takes array references (`[B; N]`) instead of slices (`&[B]`) to
-/// *statically* ensure that the source buffer cannot be longer than the
-/// destination buffer, which would introduce undefined behaviour by overwriting
-/// some memory not owned.
-unsafe impl<B, const N: usize> TransferConfiguration
-    for BufferPair<&'static mut [B; N], &'static mut [B; N]>
-where
-    B: 'static + Beat,
-{
-    type Beat = B;
-
-    #[inline]
-    fn xfer_length(&self) -> usize {
-        self.source.buffer_len()
-    }
-
-    #[inline]
-    fn src_ptr(&mut self) -> (*mut Self::Beat, bool) {
-        (self.source.dma_ptr(), self.source.incrementing())
-    }
-
-    #[inline]
-    fn dest_ptr(&mut self) -> (*mut Self::Beat, bool) {
-        (self.destination.dma_ptr(), self.destination.incrementing())
-    }
-}
-
-/// Incrementing source to incrementing destination. Useful for Memory -> Memory
-/// transfers.
-///
-/// This takes array slices (`&[B]`) to
-/// *dynamically* ensure that the source buffer is as the same length as the
-/// destination buffer.
-///
-/// # Panics
-///
-/// `xfer_length` will panic is the source length is not equal to the
-/// destination length.
-unsafe impl<B> TransferConfiguration for BufferPair<&'static mut [B], &'static mut [B]>
-where
-    B: 'static + Beat,
-{
-    type Beat = B;
-
-    #[inline]
-    fn xfer_length(&self) -> usize {
-        if self.source.buffer_len() == self.destination.buffer_len() {
-            self.source.buffer_len()
-        } else {
-            panic!("Source buffer length is not equal to destination buffer length.")
-        }
-    }
-
-    #[inline]
-    fn src_ptr(&mut self) -> (*mut Self::Beat, bool) {
-        (self.source.dma_ptr(), self.source.incrementing())
-    }
-
-    #[inline]
-    fn dest_ptr(&mut self) -> (*mut Self::Beat, bool) {
-        (self.destination.dma_ptr(), self.destination.incrementing())
-    }
-}
-
-/// These methods are available to an `Transfer` holding a `Ready` channel
-impl<C, P, const ID: u8> Transfer<C, P, Ready, ID>
-where
-    C: TransferConfiguration,
-{
-    fn setup(mut buffers: C, chan: Channel<Ready, ID>, circular: bool, payload: P) -> Self {
-        // Enable support for circular transfers. If circular_xfer is true,
-        // we set the address of the "next" block descriptor to actually
-        // be the same address as the current block descriptor.
-        // Otherwise we set it to 0 (terminates the transaction)
-        // TODO: Enable support for linked lists (?)
-        let descaddr = if circular {
-            // SAFETY: This is safe as we are only reading the descriptor's address,
-            // and not actually writing any data to it. We also assume the descriptor
-            // will never be moved.
-            unsafe { &DESCRIPTOR_SECTION[ID as usize] as *const _ as u32 }
-        } else {
-            0
-        };
-
-        let (src, src_inc) = buffers.src_ptr();
-        let (dst, dst_inc) = buffers.dest_ptr();
-        let length = buffers.xfer_length() as u16;
-
-        let xfer_descriptor = DmacDescriptor {
-            // Next descriptor address:  0x0 terminates the transaction (no linked list),
-            // any other address points to the next block descriptor
-            descaddr,
-            // Source address: address of the last beat transfer source in block
-            srcaddr: src as u32,
-            // Destination address: address of the last beat transfer destination in block
-            dstaddr: dst as u32,
-            // Block transfer count: number of beats in block transfer
-            btcnt: length,
-            // Block transfer control: Datasheet  section 19.8.2.1 p.329
-            btctrl: ((src_inc as u16) << 10) // Increment source address?
-                | ((dst_inc as u16) << 11)   // Tncrement dest address?
-                | ((C::Beat::BEATSIZE as u16) << 8)           // Beatsize
-                | (1 << 0), // Validate descriptor
-        };
-
-        // SAFETY this is safe as long as we ONLY write to the descriptor
-        // belonging to OUR channel. We assume this is the only place
-        // in the entire library that this section or the array
-        // will be written to.
-        unsafe {
-            DESCRIPTOR_SECTION[ID as usize] = xfer_descriptor;
-        }
-
-        Transfer {
-            buffers,
-            chan,
-            payload,
-        }
-    }
-
-    /// Begin DMA transfer. If [TriggerSource::DISABLE](TriggerSource::DISABLE)
-    /// is used, a sowftware trigger will be issued to the DMA channel to
-    /// launch the transfer. Is is therefore not necessary, in most cases,
-    /// to manually issue a software trigger to the channel.
-    pub fn begin(
-        self,
-        dmac: &mut DmaController,
-        trig_src: TriggerSource,
-        trig_act: TriggerAction,
-    ) -> Transfer<C, P, Busy, ID> {
-        // Memory barrier to prevent the compiler/CPU from re-ordering read/write
-        // operations beyond this fence.
-        // (see https://docs.rust-embedded.org/embedonomicon/dma.html#compiler-misoptimizations)
-        atomic::fence(atomic::Ordering::Release); //  ▲
-
-        // SAFETY: This is safe because we only borrow dmac once
-        let dmac = unsafe { dmac.dmac_mut() };
-        let chan = self.chan.start(dmac, trig_src, trig_act);
-
-        Transfer {
-            buffers: self.buffers,
-            chan,
-            payload: self.payload,
-        }
-    }
-}
-
-/// These methods are available to a `Transfer` holding a `Busy` channel
-impl<C, P, const ID: u8> Transfer<C, P, Busy, ID>
-where
-    C: TransferConfiguration,
-{
-    /// Issue a software trigger request to the corresponding channel.
-    /// Note that is not guaranteed that the trigger request will register,
-    /// if a trigger request is already pending for the channel.
-    #[inline]
-    pub fn software_trigger(&mut self, dmac: &mut DmaController) {
-        // SAFETY: This is safe because we only borrow dmac once.
-        let dmac = unsafe { dmac.dmac_mut() };
-        self.chan.software_trigger(dmac);
-    }
-    /// Blocking; Wait for the DMA transfer to complete and release all owned
-    /// resources
-    pub fn wait(self, dmac: &mut DmaController) -> (C, Channel<Ready, ID>, P) {
-        // SAFETY: This is safe because we only borrow dmac once.
-        let dmac = unsafe { dmac.dmac_mut() };
-        let chan = self.chan.free(dmac);
-
-        // Memory barrier to prevent the compiler/CPU from re-ordering read/write
-        // operations beyond this fence.
-        // (see https://docs.rust-embedded.org/embedonomicon/dma.html#compiler-misoptimizations)
-        atomic::fence(atomic::Ordering::Acquire); // ▼
-
-        (self.buffers, chan, self.payload)
-    }
-
-    /// Non-blocking; Immediately stop the DMA transfer and release all owned
-    /// resources
-    pub fn stop(self, dmac: &mut DmaController) -> (C, Channel<Ready, ID>, P) {
-        // SAFETY: This is safe because we only borrow dmac once.
-        let dmac = unsafe { dmac.dmac_mut() };
-        let chan = self.chan.stop(dmac);
-
-        // Memory barrier to prevent the compiler/CPU from re-ordering read/write
-        // operations beyond this fence.
-        // (see https://docs.rust-embedded.org/embedonomicon/dma.html#compiler-misoptimizations)
-        atomic::fence(atomic::Ordering::Acquire); // ▼
-
-        (self.buffers, chan, self.payload)
-    }
-}
+//==============================================================================
+// Beat
+//==============================================================================
 
 /// Useable beat sizes for DMA transfers
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, BitfieldSpecifier)]
 pub enum BeatSize {
     /// Byte = [`u8`](core::u8)
     Byte = 0x00,
@@ -428,18 +107,47 @@ pub enum BeatSize {
     HalfWord = 0x01,
     /// Word = [`u32`](core::u32)
     Word = 0x02,
+    _RESERVED = 0x03,
+}
+/// Convert 8, 16 and 32 bit types
+/// into [`BeatSize`](BeatSize)
+pub trait Beat: Sealed {
+    /// Convert to BeatSize enum
+    const BEATSIZE: BeatSize;
 }
 
-// Trait enabling taking `*mut` references to references to a single `T`,
-/// references to arrays of `T` or slices of `T`, where `T: Beat`,
-/// as well as required transfer length
+macro_rules! impl_beat {
+    ( $( ($Type:ty, $Size:ident) ),+ ) => {
+        $(
+            impl Sealed for $Type {}
+            impl Beat for $Type {
+                const BEATSIZE: BeatSize = BeatSize::$Size;
+            }
+        )+
+    };
+}
+
+impl_beat!(
+    (u8, Byte),
+    (i8, Byte),
+    (u16, HalfWord),
+    (i16, HalfWord),
+    (u32, Word),
+    (i32, Word),
+    (f32, Word)
+);
+
+//==============================================================================
+// Buffer
+//==============================================================================
+
+/// Buffer useable by the DMAC.
 pub unsafe trait Buffer {
     type Beat: Beat;
-    /// Take a `*mut` reference to the last object
-    /// in the buffer needed by the DMAC. The pointer
-    /// changes depending on whether the address should
+    /// Pointer to the buffer. If the buffer is incrementing, the address should
+    /// point to the last beat transfer in the block.
     fn dma_ptr(&mut self) -> *mut Self::Beat;
-    /// Check if the DMA address should be incrementing or not
+    /// Return whether the buffer pointer should be incrementing or not
     fn incrementing(&self) -> bool;
     /// Buffer length
     fn buffer_len(&self) -> usize;
@@ -509,44 +217,256 @@ unsafe impl<T: Beat> Buffer for &mut T {
     }
 }
 
-/// Convert 8, 16 and 32 bit types
-/// into [`BeatSize`](BeatSize)
-pub trait Beat: Sealed {
-    /// Convert to BeatSize enum
-    const BEATSIZE: BeatSize;
+//==============================================================================
+// BufferPair
+//==============================================================================
+
+pub struct BufferPair<S, D>
+where
+    S: Buffer,
+    D: Buffer<Beat = S::Beat>,
+{
+    pub source: S,
+    pub destination: D,
 }
 
-impl Sealed for u8 {}
-impl Beat for u8 {
-    const BEATSIZE: BeatSize = BeatSize::Byte;
+//==============================================================================
+// AnyBufferPair
+//==============================================================================
+
+pub trait AnyBufferPair: Sealed + Is<Type = SpecificBufferPair<Self>> {
+    type Src: Buffer;
+    type Dst: Buffer<Beat = BufferPairBeat<Self>>;
 }
 
-impl Sealed for i8 {}
-impl Beat for i8 {
-    const BEATSIZE: BeatSize = BeatSize::Byte;
+pub type SpecificBufferPair<C> = BufferPair<<C as AnyBufferPair>::Src, <C as AnyBufferPair>::Dst>;
+
+pub type BufferPairSrc<B> = <B as AnyBufferPair>::Src;
+pub type BufferPairDst<B> = <B as AnyBufferPair>::Dst;
+pub type BufferPairBeat<B> = <BufferPairSrc<B> as Buffer>::Beat;
+
+impl<S, D> Sealed for BufferPair<S, D>
+where
+    S: Buffer,
+    D: Buffer<Beat = S::Beat>,
+{
 }
 
-impl Sealed for u16 {}
-impl Beat for u16 {
-    const BEATSIZE: BeatSize = BeatSize::HalfWord;
+impl<S, D> AnyBufferPair for BufferPair<S, D>
+where
+    S: Buffer,
+    D: Buffer<Beat = S::Beat>,
+{
+    type Src = S;
+    type Dst = D;
 }
 
-impl Sealed for i16 {}
-impl Beat for i16 {
-    const BEATSIZE: BeatSize = BeatSize::HalfWord;
+impl<B: AnyBufferPair> AsRef<B> for SpecificBufferPair<B> {
+    #[inline]
+    fn as_ref(&self) -> &B {
+        // SAFETY: This is guaranteed to be safe, because B == SpecificBufferPair<B>
+        unsafe { mem::transmute(self) }
+    }
 }
 
-impl Sealed for u32 {}
-impl Beat for u32 {
-    const BEATSIZE: BeatSize = BeatSize::Word;
+impl<B: AnyBufferPair> AsMut<B> for SpecificBufferPair<B> {
+    #[inline]
+    fn as_mut(&mut self) -> &mut B {
+        // SAFETY: This is guaranteed to be safe, because B == SpecificBufferPair<B>
+        unsafe { mem::transmute(self) }
+    }
 }
 
-impl Sealed for i32 {}
-impl Beat for i32 {
-    const BEATSIZE: BeatSize = BeatSize::Word;
+// TODO change source and dest types to Pin? (see https://docs.rust-embedded.org/embedonomicon/dma.html#immovable-buffers)
+/// DMA transfer, owning the resources until the transfer is done and
+/// [`wait`](Transfer::wait) is called.
+pub struct Transfer<B, Pld, ChanStatus, const ID: u8>
+where
+    B: AnyBufferPair,
+    ChanStatus: Status,
+{
+    buffers: B,
+    chan: Channel<ChanStatus, ID>,
+    payload: Pld,
 }
 
-impl Sealed for f32 {}
-impl Beat for f32 {
-    const BEATSIZE: BeatSize = BeatSize::Word;
+/// These methods are available to an `Transfer` holding a `Ready` channel
+impl<B, P, const ID: u8> Transfer<B, P, Ready, ID>
+where
+    B: AnyBufferPair,
+{
+    /// Safely construct a new `Transfer`. To guarantee memory safety, both
+    /// buffers are required to be `'static`.
+    /// Refer [here](https://docs.rust-embedded.org/embedonomicon/dma.html#memforget) or
+    /// [here](https://blog.japaric.io/safe-dma/) for more information.
+    ///
+    /// # Panics
+    ///
+    /// Panics if both buffers have a length > 1 and are not of equal length.
+    pub fn new(buffers: B, chan: Channel<Ready, ID>, circular: bool, payload: P) -> Self
+    where
+        B::Src: 'static,
+        B::Dst: 'static,
+    {
+        let src_len = buffers.as_ref().source.buffer_len();
+        let dst_len = buffers.as_ref().source.buffer_len();
+
+        if src_len > 1 && dst_len > 1 {
+            assert_eq!(src_len, dst_len);
+        }
+
+        // SAFETY: The safety checks are done by the function signature and the buffer
+        // length verification
+        unsafe { Self::new_unchecked(buffers, chan, circular, payload) }
+    }
+
+    /// Construct a new `Transfer` without checking for memory safety.
+    ///
+    /// # Safety
+    ///
+    /// To guarantee the safety of creating a `Transfer` using this method, you
+    /// must uphold some invariants:
+    ///
+    /// * A `Transfer` holding a `Channel<Running, ID>` must *never* be dropped.
+    ///   It should *always* be explicitly be `wait`ed upon or `stop`ped.
+    ///
+    /// * The size in bytes or the source and destination buffers should be
+    ///   exacly the same, unless one or both buffers are of length 1. The
+    ///   transfer length will be set to the longest of both buffers if they are
+    ///   not of equal size.
+    pub unsafe fn new_unchecked(
+        mut buffers: B,
+        chan: Channel<Ready, ID>,
+        circular: bool,
+        payload: P,
+    ) -> Self {
+        // Enable support for circular transfers. If circular_xfer is true,
+        // we set the address of the "next" block descriptor to actually
+        // be the same address as the current block descriptor.
+        // Otherwise we set it to 0 (terminates the transaction)
+        // TODO: Enable support for linked lists (?)
+        let descaddr = if circular {
+            // SAFETY This is safe as we are only reading the descriptor's address,
+            // and not actually writing any data to it. We also assume the descriptor
+            // will never be moved.
+            &DESCRIPTOR_SECTION[ID as usize] as *const _ as u32
+        } else {
+            0
+        };
+
+        let source = &mut buffers.as_mut().source;
+        let src_ptr = source.dma_ptr();
+        let src_inc = source.incrementing();
+        let src_len = source.buffer_len();
+
+        let dest = &mut buffers.as_mut().destination;
+        let dst_ptr = dest.dma_ptr();
+        let dst_inc = dest.incrementing();
+        let dst_len = dest.buffer_len();
+
+        let length = core::cmp::max(src_len, dst_len);
+
+        let btctrl = BlockTransferControl::new()
+            .with_srcinc(src_inc)
+            .with_dstinc(dst_inc)
+            .with_beatsize(BufferPairBeat::<B>::BEATSIZE)
+            .with_valid(true);
+
+        let xfer_descriptor = DmacDescriptor {
+            // Next descriptor address:  0x0 terminates the transaction (no linked list),
+            // any other address points to the next block descriptor
+            descaddr,
+            // Source address: address of the last beat transfer source in block
+            srcaddr: src_ptr as u32,
+            // Destination address: address of the last beat transfer destination in block
+            dstaddr: dst_ptr as u32,
+            // Block transfer count: number of beats in block transfer
+            btcnt: length as u16,
+            // Block transfer control: Datasheet  section 19.8.2.1 p.329
+            btctrl,
+        };
+
+        // SAFETY this is safe as long as we ONLY write to the descriptor
+        // belonging to OUR channel. We assume this is the only place
+        // in the entire library that this section or the array
+        // will be written to.
+        DESCRIPTOR_SECTION[ID as usize] = xfer_descriptor;
+
+        Transfer {
+            buffers,
+            chan,
+            payload,
+        }
+    }
+
+    /// Begin DMA transfer. If [TriggerSource::DISABLE](TriggerSource::DISABLE)
+    /// is used, a sowftware trigger will be issued to the DMA channel to
+    /// launch the transfer. Is is therefore not necessary, in most cases,
+    /// to manually issue a software trigger to the channel.
+    pub fn begin(
+        self,
+        dmac: &mut DmaController,
+        trig_src: TriggerSource,
+        trig_act: TriggerAction,
+    ) -> Transfer<B, P, Busy, ID> {
+        // Memory barrier to prevent the compiler/CPU from re-ordering read/write
+        // operations beyond this fence.
+        // (see https://docs.rust-embedded.org/embedonomicon/dma.html#compiler-misoptimizations)
+        atomic::fence(atomic::Ordering::Release); //  ▲
+
+        // SAFETY: This is safe because we only borrow dmac once
+        let dmac = unsafe { dmac.dmac_mut() };
+        let chan = self.chan.start(dmac, trig_src, trig_act);
+
+        Transfer {
+            buffers: self.buffers,
+            chan,
+            payload: self.payload,
+        }
+    }
+}
+
+/// These methods are available to a `Transfer` holding a `Busy` channel
+impl<B, P, const ID: u8> Transfer<B, P, Busy, ID>
+where
+    B: AnyBufferPair,
+{
+    /// Issue a software trigger request to the corresponding channel.
+    /// Note that is not guaranteed that the trigger request will register,
+    /// if a trigger request is already pending for the channel.
+    #[inline]
+    pub fn software_trigger(&mut self, dmac: &mut DmaController) {
+        // SAFETY: This is safe because we only borrow dmac once.
+        let dmac = unsafe { dmac.dmac_mut() };
+        self.chan.software_trigger(dmac);
+    }
+    /// Blocking; Wait for the DMA transfer to complete and release all owned
+    /// resources
+    pub fn wait(self, dmac: &mut DmaController) -> (B, Channel<Ready, ID>, P) {
+        // SAFETY: This is safe because we only borrow dmac once.
+        let dmac = unsafe { dmac.dmac_mut() };
+        let chan = self.chan.free(dmac);
+
+        // Memory barrier to prevent the compiler/CPU from re-ordering read/write
+        // operations beyond this fence.
+        // (see https://docs.rust-embedded.org/embedonomicon/dma.html#compiler-misoptimizations)
+        atomic::fence(atomic::Ordering::Acquire); // ▼
+
+        (self.buffers, chan, self.payload)
+    }
+
+    /// Non-blocking; Immediately stop the DMA transfer and release all owned
+    /// resources
+    pub fn stop(self, dmac: &mut DmaController) -> (B, Channel<Ready, ID>, P) {
+        // SAFETY: This is safe because we only borrow dmac once.
+        let dmac = unsafe { dmac.dmac_mut() };
+        let chan = self.chan.stop(dmac);
+
+        // Memory barrier to prevent the compiler/CPU from re-ordering read/write
+        // operations beyond this fence.
+        // (see https://docs.rust-embedded.org/embedonomicon/dma.html#compiler-misoptimizations)
+        atomic::fence(atomic::Ordering::Acquire); // ▼
+
+        (self.buffers, chan, self.payload)
+    }
 }

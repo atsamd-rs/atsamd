@@ -17,6 +17,9 @@
 //!
 //! Using the [`DmaController::free`](DmaController::free) method will
 //! deinitialize the DMAC and return the underlying PAC object.
+use core::mem;
+use modular_bitfield::prelude::*;
+use seq_macro::seq;
 
 #[cfg(any(feature = "samd11", feature = "samd21"))]
 pub use crate::target_device::dmac::chctrlb::{
@@ -38,9 +41,60 @@ use super::{
 };
 use crate::target_device::{DMAC, PM};
 
+macro_rules! define_channels_struct {
+    ($num_channels:literal) => {
+        seq!(N in 0..$num_channels {
+            /// Struct generating individual handles to each DMA channel
+            pub struct Channels(
+                #(
+                    pub Channel<Uninitialized, N>,
+                )*
+            );
+        });
+    };
+}
+
+with_num_channels!(define_channels_struct);
+
 /// Initialized DMA Controller
 pub struct DmaController {
     dmac: DMAC,
+}
+
+#[bitfield]
+pub struct PriorityLevelMask {
+    #[skip]
+    _reserved: B8,
+    #[allow(dead_code)]
+    level0: bool,
+    #[allow(dead_code)]
+    level1: bool,
+    #[allow(dead_code)]
+    level2: bool,
+    #[allow(dead_code)]
+    level3: bool,
+    #[skip]
+    _reserved: B4,
+}
+
+#[bitfield]
+pub struct RoundRobinMask {
+    #[skip]
+    _reserved: B7,
+    #[allow(dead_code)]
+    level0: bool,
+    #[skip]
+    _reserved: B7,
+    #[allow(dead_code)]
+    level1: bool,
+    #[skip]
+    _reserved: B7,
+    #[allow(dead_code)]
+    level2: bool,
+    #[skip]
+    _reserved: B7,
+    #[allow(dead_code)]
+    level3: bool,
 }
 
 impl DmaController {
@@ -110,52 +164,54 @@ impl DmaController {
         Self { dmac }
     }
 
-    /// Enable or disable priority level 0
+    /// Enable multiple priority levels simultaneously
     #[inline]
-    pub fn level_0_enabled(&mut self, enabled: bool) {
-        self.dmac.ctrl.modify(|_, w| w.lvlen0().bit(enabled));
+    pub fn enable_levels(&mut self, mask: PriorityLevelMask) {
+        // SAFETY This is safe because the use of bitfields ensures that only the
+        // LVLENx bits are written to. The fact that we are given a mask means we need
+        // to do the bit-level setting ourselves.
+        unsafe {
+            let mask: u16 = mem::transmute(mask);
+            self.dmac.ctrl.modify(|r, w| w.bits(r.bits() | mask));
+        }
     }
 
-    /// Enable or disable priority level 1
+    /// Disable multiple priority levels simultaneously
     #[inline]
-    pub fn level_1_enabled(&mut self, enabled: bool) {
-        self.dmac.ctrl.modify(|_, w| w.lvlen1().bit(enabled));
+    pub fn disable_levels(&mut self, mask: PriorityLevelMask) {
+        // SAFETY This is safe because the use of bitfields ensures that only the
+        // LVLENx bits are written to. The fact that we are given a mask means we need
+        // to do the bit-level clearing ourselves.
+        unsafe {
+            let mask: u16 = mem::transmute(mask);
+            self.dmac.ctrl.modify(|r, w| w.bits(r.bits() & !mask));
+        }
     }
 
-    /// Enable or disable priority level 2
+    /// Enable round-robin arbitration for multiple priority levels
+    /// simultaneously
     #[inline]
-    pub fn level_2_enabled(&mut self, enabled: bool) {
-        self.dmac.ctrl.modify(|_, w| w.lvlen2().bit(enabled));
+    pub fn round_robin_arbitration(&mut self, mask: RoundRobinMask) {
+        // SAFETY This is safe because the use of bitfields ensures that only the
+        // RRLVLENx bits are written to. The fact that we are given a mask means we need
+        // to do the bit-level setting ourselves.
+        unsafe {
+            let mask: u32 = mem::transmute(mask);
+            self.dmac.prictrl0.modify(|r, w| w.bits(r.bits() | mask));
+        }
     }
 
-    /// Enable or disable priority level 3
+    /// Disable round-robin arbitration (ie, enable static priorities) for
+    /// multiple priority levels simultaneously
     #[inline]
-    pub fn level_3_enabled(&mut self, enabled: bool) {
-        self.dmac.ctrl.modify(|_, w| w.lvlen3().bit(enabled));
-    }
-
-    /// Enable or disable Round-Robin Arbitration for priority level 0
-    #[inline]
-    pub fn level_0_round_robin(&mut self, enabled: bool) {
-        self.dmac.prictrl0.modify(|_, w| w.rrlvlen0().bit(enabled));
-    }
-
-    /// Enable or disable Round-Robin Arbitration for priority level 1
-    #[inline]
-    pub fn level_1_round_robin(&mut self, enabled: bool) {
-        self.dmac.prictrl0.modify(|_, w| w.rrlvlen1().bit(enabled));
-    }
-
-    /// Enable or disable Round-Robin Arbitration for priority level 2
-    #[inline]
-    pub fn level_2_round_robin(&mut self, enabled: bool) {
-        self.dmac.prictrl0.modify(|_, w| w.rrlvlen2().bit(enabled));
-    }
-
-    /// Enable or disable Round-Robin Arbitration for priority level 3
-    #[inline]
-    pub fn level_3_round_robin(&mut self, enabled: bool) {
-        self.dmac.prictrl0.modify(|_, w| w.rrlvlen3().bit(enabled));
+    pub fn static_arbitration(&mut self, mask: RoundRobinMask) {
+        // SAFETY This is safe because the use of bitfields ensures that only the
+        // RRLVLENx bits are written to. The fact that we are given a mask means we need
+        // to do the bit-level clearing ourselves.
+        unsafe {
+            let mask: u32 = mem::transmute(mask);
+            self.dmac.prictrl0.modify(|r, w| w.bits(r.bits() & !mask));
+        }
     }
 
     /// Release the DMAC and return the register block
@@ -187,199 +243,23 @@ impl DmaController {
     pub fn split(&mut self) -> Channels {
         Channels(new_chan(), new_chan(), new_chan())
     }
-
-    /// Split the DMAC into individual channels
-    /// Struct generating individual handles to each DMA channel
-    #[cfg(any(
-        any(all(feature = "samd11", feature = "max-channels")),
-        all(feature = "samd21", not(feature = "max-channels"))
-    ))]
-    pub fn split(&mut self) -> Channels {
-        Channels(
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-        )
-    }
-
-    /// Split the DMAC into individual channels
-    #[cfg(all(feature = "samd21", feature = "max-channels"))]
-    pub fn split(&mut self) -> Channels {
-        Channels(
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-        )
-    }
-
-    /// Split the DMAC into individual channels
-    #[cfg(all(feature = "min-samd51g", not(feature = "max-channels")))]
-    pub fn split(&mut self) -> Channels {
-        Channels(
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-        )
-    }
-
-    /// Split the DMAC into individual channels
-    #[cfg(all(feature = "min-samd51g", feature = "max-channels"))]
-    pub fn split(&mut self) -> Channels {
-        Channels(
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-            new_chan(),
-        )
-    }
 }
 
-/// Struct generating individual handles to each DMA channel
-#[cfg(all(feature = "samd11", not(feature = "max-channels")))]
-pub struct Channels(
-    pub Channel<Uninitialized, 0>,
-    pub Channel<Uninitialized, 1>,
-    pub Channel<Uninitialized, 2>,
-);
+macro_rules! define_split {
+    ($num_channels:literal) => {
+        seq!(N in 0..$num_channels {
+            /// Split the DMAC into individual channels
+            pub fn split(&mut self) -> Channels {
+                Channels(
+                    #(
+                        new_chan(),
+                    )*
+                )
+            }
+        });
+    };
+}
 
-/// Struct generating individual handles to each DMA channel
-#[cfg(any(
-    any(all(feature = "samd11", feature = "max-channels")),
-    all(feature = "samd21", not(feature = "max-channels"))
-))]
-pub struct Channels(
-    pub Channel<Uninitialized, 0>,
-    pub Channel<Uninitialized, 1>,
-    pub Channel<Uninitialized, 2>,
-    pub Channel<Uninitialized, 3>,
-    pub Channel<Uninitialized, 4>,
-    pub Channel<Uninitialized, 5>,
-);
-
-/// Struct generating individual handles to each DMA channel
-#[cfg(all(feature = "samd21", feature = "max-channels"))]
-pub struct Channels(
-    pub Channel<Uninitialized, 0>,
-    pub Channel<Uninitialized, 1>,
-    pub Channel<Uninitialized, 2>,
-    pub Channel<Uninitialized, 3>,
-    pub Channel<Uninitialized, 4>,
-    pub Channel<Uninitialized, 5>,
-    pub Channel<Uninitialized, 6>,
-    pub Channel<Uninitialized, 7>,
-    pub Channel<Uninitialized, 8>,
-    pub Channel<Uninitialized, 9>,
-    pub Channel<Uninitialized, 10>,
-    pub Channel<Uninitialized, 11>,
-);
-
-/// Struct generating individual handles to each DMA channel
-#[cfg(all(feature = "min-samd51g", not(feature = "max-channels")))]
-pub struct Channels(
-    pub Channel<Uninitialized, 0>,
-    pub Channel<Uninitialized, 1>,
-    pub Channel<Uninitialized, 2>,
-    pub Channel<Uninitialized, 3>,
-    pub Channel<Uninitialized, 4>,
-    pub Channel<Uninitialized, 5>,
-    pub Channel<Uninitialized, 6>,
-    pub Channel<Uninitialized, 7>,
-    pub Channel<Uninitialized, 8>,
-    pub Channel<Uninitialized, 9>,
-    pub Channel<Uninitialized, 10>,
-    pub Channel<Uninitialized, 11>,
-    pub Channel<Uninitialized, 12>,
-    pub Channel<Uninitialized, 13>,
-    pub Channel<Uninitialized, 14>,
-    pub Channel<Uninitialized, 15>,
-);
-
-/// Struct generating individual handles to each DMA channel
-#[cfg(all(feature = "min-samd51g", feature = "max-channels"))]
-pub struct Channels(
-    pub Channel<Uninitialized, 0>,
-    pub Channel<Uninitialized, 1>,
-    pub Channel<Uninitialized, 2>,
-    pub Channel<Uninitialized, 3>,
-    pub Channel<Uninitialized, 4>,
-    pub Channel<Uninitialized, 5>,
-    pub Channel<Uninitialized, 6>,
-    pub Channel<Uninitialized, 7>,
-    pub Channel<Uninitialized, 8>,
-    pub Channel<Uninitialized, 9>,
-    pub Channel<Uninitialized, 10>,
-    pub Channel<Uninitialized, 11>,
-    pub Channel<Uninitialized, 12>,
-    pub Channel<Uninitialized, 13>,
-    pub Channel<Uninitialized, 14>,
-    pub Channel<Uninitialized, 15>,
-    pub Channel<Uninitialized, 16>,
-    pub Channel<Uninitialized, 17>,
-    pub Channel<Uninitialized, 18>,
-    pub Channel<Uninitialized, 19>,
-    pub Channel<Uninitialized, 20>,
-    pub Channel<Uninitialized, 21>,
-    pub Channel<Uninitialized, 22>,
-    pub Channel<Uninitialized, 23>,
-    pub Channel<Uninitialized, 24>,
-    pub Channel<Uninitialized, 25>,
-    pub Channel<Uninitialized, 26>,
-    pub Channel<Uninitialized, 27>,
-    pub Channel<Uninitialized, 28>,
-    pub Channel<Uninitialized, 29>,
-    pub Channel<Uninitialized, 30>,
-    pub Channel<Uninitialized, 31>,
-);
+impl DmaController {
+    with_num_channels!(define_split);
+}
