@@ -65,7 +65,11 @@
 //!
 //! By default, all priority levels are enabled when initializing the DMAC
 //! (see [`DmaController::init`](dma_controller::DmaController::init)). Levels
-//! can be enabled or disabled through the various `level_x_enabled` methods.
+//! can be enabled or disabled through the various
+//! [`DmaController::enable_levels`](dma_controller::DmaController::
+//! enable_levels) and
+//! [`DmaController::disable_levels`](dma_controller::DmaController::
+//! disable_levels) methods.
 //!
 //! Round-Robin Arbitration can be enabled for multiple priority levels
 //! simultaneously by using the
@@ -108,9 +112,8 @@
 //! lengths. If you choose to use these methods, you MUST prove that
 //! a `Transfer` containing a `Channel<Busy, ID>` will NEVER be dropped. You
 //! *must* call `wait()` or `stop()` manually on every
-//! [`UnsafeTransfer`](transfer::UnsafeTransfer) to convert their underlying
-//! channels back into `Channel<Ready, ID>`. No destructor or `Drop`
-//! implementation is offered for `Transfer`s.
+//! `Transfer` that has been created using the unsafe API. No destructor or
+//! `Drop` implementation is offered for `Transfer`s.
 //!
 //! Additionally, you can (unsafely) implement your own buffer types through the
 //! unsafe [`Buffer`](transfer::Buffer) trait.
@@ -238,18 +241,18 @@ pub struct BlockTransferControl {
 pub struct DmacDescriptor {
     btctrl: BlockTransferControl,
     btcnt: u16,
-    srcaddr: u32,
-    dstaddr: u32,
-    descaddr: u32,
+    srcaddr: *mut (),
+    dstaddr: *mut (),
+    descaddr: *mut DmacDescriptor,
 }
 
 #[doc(hidden)]
 pub const DEFAULT_DESCRIPTOR: DmacDescriptor = DmacDescriptor {
     btctrl: BlockTransferControl::new(),
     btcnt: 0,
-    srcaddr: 0,
-    dstaddr: 0,
-    descaddr: 0,
+    srcaddr: 0 as *mut _,
+    dstaddr: 0 as *mut _,
+    descaddr: 0 as *mut _,
 };
 
 // Writeback section. This static variable should never be written to in an

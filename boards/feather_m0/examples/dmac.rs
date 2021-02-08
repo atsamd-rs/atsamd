@@ -52,7 +52,7 @@ fn main() -> ! {
         source: buf_src,
         destination: buf_dest,
     };
-    let xfer = Transfer::new(buffers, chan0, false, ());
+    let xfer = Transfer::new_from_arrays(buffers, chan0, false, ());
     // Begin transfer
     let xfer = xfer.begin(&mut dmac, TriggerSource::DISABLE, TriggerAction::BLOCK);
 

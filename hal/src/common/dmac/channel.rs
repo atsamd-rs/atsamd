@@ -15,10 +15,10 @@
 //! [`burst_length`](Channel::burst_length) method. A burst is an atomic,
 //! uninterruptible transfer which length corresponds to a number of beats. See
 //! SAMD5x/E5x datasheet section 22.6.1.1 for more information. The FIFO
-//! threshold can be configured through the [`fifo_threshold`](Channel::
-//! fifo_threshold) method. This enables the channel to wait for multiple
-//! Beats before sending a Burst. See SAMD5x/E5x datasheet section 22.6.2.8 for
-//! more information.
+//! threshold can be configured through the
+//! [`fifo_threshold`](Channel::fifo_threshold) method. This enables the channel
+//! to wait for multiple Beats before sending a Burst. See SAMD5x/E5x datasheet
+//! section 22.6.2.8 for more information.
 //!
 //! # Channel status
 //!

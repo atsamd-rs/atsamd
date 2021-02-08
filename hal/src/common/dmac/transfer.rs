@@ -221,7 +221,9 @@ unsafe impl<T: Beat> Buffer for &mut T {
 // BufferPair
 //==============================================================================
 
-pub struct BufferPair<S, D>
+/// Struct holding the source and destination buffers of a
+/// [`Transfer`](Transfer).
+pub struct BufferPair<S, D = S>
 where
     S: Buffer,
     D: Buffer<Beat = S::Beat>,
@@ -309,7 +311,7 @@ where
         B::Dst: 'static,
     {
         let src_len = buffers.as_ref().source.buffer_len();
-        let dst_len = buffers.as_ref().source.buffer_len();
+        let dst_len = buffers.as_ref().destination.buffer_len();
 
         if src_len > 1 && dst_len > 1 {
             assert_eq!(src_len, dst_len);
@@ -345,13 +347,14 @@ where
         // be the same address as the current block descriptor.
         // Otherwise we set it to 0 (terminates the transaction)
         // TODO: Enable support for linked lists (?)
+        #[allow(clippy::zero_ptr)]
         let descaddr = if circular {
             // SAFETY This is safe as we are only reading the descriptor's address,
             // and not actually writing any data to it. We also assume the descriptor
             // will never be moved.
-            &DESCRIPTOR_SECTION[ID as usize] as *const _ as u32
+            &mut DESCRIPTOR_SECTION[ID as usize] as *mut _
         } else {
-            0
+            0 as *mut _
         };
 
         let source = &mut buffers.as_mut().source;
@@ -377,9 +380,9 @@ where
             // any other address points to the next block descriptor
             descaddr,
             // Source address: address of the last beat transfer source in block
-            srcaddr: src_ptr as u32,
+            srcaddr: src_ptr as *mut _,
             // Destination address: address of the last beat transfer destination in block
-            dstaddr: dst_ptr as u32,
+            dstaddr: dst_ptr as *mut _,
             // Block transfer count: number of beats in block transfer
             btcnt: length as u16,
             // Block transfer control: Datasheet  section 19.8.2.1 p.329
@@ -423,6 +426,28 @@ where
             chan,
             payload: self.payload,
         }
+    }
+}
+
+/// These methods are available to a `Transfer` holding a `Ready` channel and a
+/// `BufferPair` holding two arrays of equal type and length
+impl<B, P, const N: usize, const ID: u8> Transfer<BufferPair<&'static mut [B; N]>, P, Ready, ID>
+where
+    B: 'static + Beat,
+{
+    /// Create a new `Transfer` from static array references of the same type
+    /// and length. When two array references are available (instead of slice
+    /// references), it is recommended to use this function over
+    /// [`Transfer::new`](Transfer::new), because it provides compile-time
+    /// checking that the array lengths match. It therefore does not panic, and
+    /// saves some runtime checking of the array lengths.
+    pub fn new_from_arrays(
+        buffers: BufferPair<&'static mut [B; N]>,
+        chan: Channel<Ready, ID>,
+        circular: bool,
+        payload: P,
+    ) -> Self {
+        unsafe { Self::new_unchecked(buffers, chan, circular, payload) }
     }
 }
 
