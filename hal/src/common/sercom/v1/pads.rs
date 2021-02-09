@@ -43,6 +43,7 @@ use crate::gpio::Port;
 use crate::typelevel::Sealed;
 
 pub use crate::sercom::v2::pads::*;
+pub use crate::sercom::v2::*;
 
 macro_rules! define_pads {
     ( $($Sercom:ty),+ ) => {

@@ -70,56 +70,10 @@
 //! [`pad_map`]: crate::sercom::v2::pad_map
 
 use core::mem::transmute;
-use core::ops::Deref;
 
-use crate::paste::paste;
-
-use crate::target_device::sercom0;
-use crate::target_device::{SERCOM0, SERCOM1};
-#[cfg(any(feature = "samd21", feature = "min-samd51g"))]
-use crate::target_device::{SERCOM2, SERCOM3};
-#[cfg(any(feature = "min-samd21g", feature = "min-samd51g"))]
-use crate::target_device::{SERCOM4, SERCOM5};
-#[cfg(feature = "min-samd51n")]
-use crate::target_device::{SERCOM6, SERCOM7};
-
+use super::Sercom;
 use crate::gpio::v2::*;
-use crate::typelevel::*;
-
-//==============================================================================
-//  Sercom
-//==============================================================================
-
-/// Type-level `enum` representing a Serial Communication Interface (SERCOM)
-pub trait Sercom: Sealed {
-    /// Corresponding [PAC](crate::target_device) SERCOM type
-    type SERCOM: Deref<Target = sercom0::RegisterBlock>;
-}
-
-/// Type alias to extract the correct [PAC](crate::target_device) SERCOM type
-/// from the [`Sercom`] instance
-pub type SERCOM<S> = <S as Sercom>::SERCOM;
-
-macro_rules! sercom {
-    ( $($Sercom:ident),+ ) => {
-        paste! {
-            $(
-                /// Represents the corresponding SERCOM instance
-                pub enum $Sercom {}
-                impl Sealed for $Sercom {}
-                impl Sercom for $Sercom { type SERCOM = [<$Sercom:upper>]; }
-            )+
-        }
-    };
-}
-
-sercom!(Sercom0, Sercom1);
-#[cfg(any(feature = "samd21", feature = "min-samd51g"))]
-sercom!(Sercom2, Sercom3);
-#[cfg(any(feature = "min-samd21g", feature = "min-samd51g"))]
-sercom!(Sercom4, Sercom5);
-#[cfg(feature = "min-samd51n")]
-sercom!(Sercom6, Sercom7);
+use crate::typelevel::{Is, NoneT, Sealed};
 
 //==============================================================================
 //  PadNum
