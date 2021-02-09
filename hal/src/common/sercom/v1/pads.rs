@@ -4,16 +4,36 @@
 //! [`v2`](crate::sercom::v2) module. This API will eventually be deprecated and
 //! removed.
 //!
-//! In the previous API, a macro defined implementations of [`PadPin`] between
-//! each valid pin/pad pair. And each pad type used a type parameter to indicate
-//! the pin type stored within it.
+//! Implementing this compatibility shim is somewhat complicated. The `v1` API
+//! created individual `SercomXPadY` types for each [`Sercom`]/[`PadNum`] pair.
+//! However, the mapping from [`Sercom`] & [`PadNum`] to GPIO [`Pin`] is not
+//! unique, so the `SercomXPadY` types still have to take a type parameter.
+//! The type parameter represents the corresponding [`Pin`] type stored within
+//! the `SercomXPadY` struct.
 //!
-//! In the new API, the [`Map`] trait is used to map [`Pin`]s to [`Pad`]s, and
-//! the stored [`Pin`] type is derived from it. To implement the old API using
-//! the new API, we must transfer the implementations of [`Map`] to the
-//! configured [`Pin`] types.
+//! The `v2` API takes a different approach. It defines a single, unified
+//! [`Pad`] type that takes three type parameters. Marker types specify the
+//! [`Sercom`] and [`PadNum`], and a [`Map`] trait handles the many-valued
+//! conversion between GPIO [`Pin`] and SERCOM [`Pad`].
 //!
-//! The remaining documentation in this module comes from the original API.
+//! This compatibility shim implements the `SercomXPadY` types as type aliases
+//! of the form `type SercomXPadY<Z> = Pad<SercomX, PadY, Z>`. The approach
+//! mostly works, but there is one catch.
+//!
+//! In SAMD51 & SAME5x chips, the [`Map`] trait is implemented on `IoSet` types,
+//! while in SAMD11 & SAMD21 chips, it is implemented on [`PinId`]s.
+//! Unfortunately, neither of these options works for the `v1` API. In the `v1`
+//! API, the `Z` type parameter is a [`Pin`], not an `IoSet` or [`PinId`].
+//!
+//! The problem is solved by "lifting" the [`Map`] implementations from each
+//! [`PinId`] to the corresponding [`Pin`] configured to act as a [`Pad`]. For
+//! the SAMD51 & SAMDE5x case, extra implementations of [`Map`] are provided for
+//! [`PinId`]s, over and above the implementations for `IoSet`s.
+//!
+//! Thus, the `v1` pad types share a type constructor ([`Pad`]) with the `v2`
+//! pad types, but they are still distinct, because they use different types for
+//! [`Map`]. For convenience, [`From`] & [`Into`] conversions are provided
+//! between the two.
 
 use paste::paste;
 
@@ -51,21 +71,11 @@ define_pads!(Sercom4, Sercom5);
 #[cfg(feature = "min-samd51n")]
 define_pads!(Sercom6, Sercom7);
 
-/// The PadPin trait makes it more ergonomic to convert a pin into a Sercom pad.
-/// You should not implement this trait for yourself; only the implementations
-/// in the sercom module make sense.
-pub trait PadPin<T>: Sealed {
-    fn into_pad(self, port: &mut Port) -> T;
-}
-
-impl<I, M> Sealed for Pin<I, M>
-where
-    I: PinId,
-    M: PinMode,
-{
-}
-
-// Transfer `Map` from each `PinId` to its corresponding configured `Pin`
+// Transfer all implementations of [`Map`] on [`PinId`]s to their corresponding
+// configured [`Pin`] types
+//
+// This is required for `v1` compatibility. See the [`v1::pads`](self) module
+// for more details.
 impl<S, P, I> Map<S, P> for Pin<I, I::Mode>
 where
     S: Sercom,
@@ -74,6 +84,13 @@ where
 {
     type Id = I;
     type Mode = I::Mode;
+}
+
+/// The PadPin trait makes it more ergonomic to convert a pin into a Sercom pad.
+/// You should not implement this trait for yourself; only the implementations
+/// in the sercom module make sense.
+pub trait PadPin<T>: Sealed {
+    fn into_pad(self, port: &mut Port) -> T;
 }
 
 impl<S, P, I, M> PadPin<Pad<S, P, Pin<I::Id, I::Mode>>> for Pin<I, M>
@@ -95,9 +112,7 @@ where
 /// Convert from a `v2` [`Pad`] to a `v1` [`Pad`]
 ///
 /// The difference here is the [`Map`] type. `v2` [`Pad`]s use [`PinId`]s for
-/// [`Map`], while `v1` [`Pad`]s use configured [`Pin`]s. This conversion is
-/// usually only applicable to thumbv6m chips. The thumbv7em chips usually
-/// implement [`Map`] on `IoSet`
+/// [`Map`], while `v1` [`Pad`]s use configured [`Pin`]s.
 impl<S, P, I> From<Pad<S, P, I>> for Pad<S, P, Pin<I::Id, I::Mode>>
 where
     S: Sercom,
@@ -113,9 +128,7 @@ where
 /// Convert from a `v1` [`Pad`] to a `v2` [`Pad`]
 ///
 /// The difference here is the [`Map`] type. `v2` [`Pad`]s use [`PinId`]s for
-/// [`Map`], while `v1` [`Pad`]s use configured [`Pin`]s. This conversion is
-/// usually only applicable to thumbv6m chips. The thumbv7em chips usually
-/// implement [`Map`] on `IoSet`.
+/// [`Map`], while `v1` [`Pad`]s use configured [`Pin`]s.
 impl<S, P, I> From<Pad<S, P, Pin<I::Id, I::Mode>>> for Pad<S, P, I>
 where
     S: Sercom,

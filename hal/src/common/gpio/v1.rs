@@ -2,8 +2,6 @@
 //!
 //! This module is a compatibility shim that allows existing code to use the new
 //! [v2](super::v2) module. This API will eventually be deprecated and removed.
-//! The remaining documentation in this module comes from the prior
-//! implementation of the GPIO module.
 //!
 //! Working with GPIO pins.
 //! The pins are associated with the PORT hardware. This module defines a
@@ -22,17 +20,13 @@ use hal::digital::v2::OutputPin;
 #[cfg(feature = "unproven")]
 use hal::digital::v2::{InputPin, StatefulOutputPin, ToggleableOutputPin};
 
-pub use crate::gpio::v2::PinMode;
-use crate::gpio::v2::{self, Alternate, AlternateConfig, InputConfig, OutputConfig, PinId};
+use crate::gpio::v2::{self, Alternate, AlternateConfig, AnyPin, InputConfig, OutputConfig};
+pub use crate::gpio::v2::{PinId, PinMode};
+use crate::typelevel::Sealed;
 
-/// The GpioExt trait allows splitting the PORT hardware into
-/// its constituent pin parts.
-pub trait GpioExt {
-    type Parts;
-
-    /// Consume and split the device into its constitent parts
-    fn split(self) -> Self::Parts;
-}
+//==============================================================================
+// Type definitions
+//==============================================================================
 
 /// Represents a pin configured for input.
 /// The MODE type is typically one of `Floating`, `PullDown` or
@@ -101,19 +95,19 @@ pub type PfM = v2::AlternateM;
 #[cfg(feature = "min-samd51g")]
 pub type PfN = v2::AlternateN;
 
-/// A trait that makes it easier to generically manage
-/// converting a pin from its current state into some
-/// other functional mode.  The configuration change
-/// requires exclusive access to the Port hardware,
-/// which is why this isn't simply the standard `Into`
-/// trait.
-pub trait IntoFunction<T> {
-    /// Consume the pin and configure it to operate in
-    /// the mode T.
-    fn into_function(self, port: &mut Port) -> T;
-}
+//==============================================================================
+// Pin
+//==============================================================================
 
-/// Represents a GPIO pin with a corresponding `PinId` and `PinMode`
+/// Represents a GPIO pin with a corresponding [`PinId`] and [`PinMode`]
+///
+/// The [`v2::Pin`] type provides many of the same inherent functions, but it
+/// does so without requiring the `PORT` as an argument, breaking backwards
+/// compatibility.
+///
+/// `v1` [`Pin`] type is a newtype wrapper for [`v2::Pin`]s. To aid in
+/// compatibility, the `v1` [`Pin`] types also implement [`AnyPin`]. [`From`] &
+/// [`Into`] conversions are provided between the two pin types.
 pub struct Pin<I, M>
 where
     I: PinId,
@@ -304,6 +298,119 @@ where
     }
 }
 
+//==============================================================================
+//  AnyPin
+//==============================================================================
+
+impl<I, M> Sealed for Pin<I, M>
+where
+    I: PinId,
+    M: PinMode,
+{
+}
+
+/// Implement [`AnyPin`] for `v1` [`Pin`] types to enhance compatibility with
+/// [`v2::Pin`]s
+impl<I, M> AnyPin for Pin<I, M>
+where
+    I: PinId,
+    M: PinMode,
+{
+    type Id = I;
+    type Mode = M;
+}
+
+/// Type alias to recover the specific `v1` [`Pin`] type from an implementation
+/// of [`AnyPin`]
+///
+/// By definition, `P == SpecificPin<P>` for all `P: AnyPin`.
+pub type SpecificPin<P> = Pin<<P as AnyPin>::Id, <P as AnyPin>::Mode>;
+
+/// Implementation required to satisfy the `Is<Type = SpecificPin<Self>>` bound
+/// on [`AnyPin`]
+impl<P: AnyPin> AsRef<P> for SpecificPin<P> {
+    #[inline]
+    fn as_ref(&self) -> &P {
+        // SAFETY: This is guaranteed to be safe, because P == SpecificPin<P>
+        // Transmuting between `v1` and `v2` `Pin` types is also safe, because
+        // single-field, newtype structs are guaranteed to have the same layout
+        // as the field, even for repr(Rust).
+        unsafe { core::mem::transmute(self) }
+    }
+}
+
+/// Implementation required to satisfy the `Is<Type = SpecificPin<Self>>` bound
+/// on [`AnyPin`]
+impl<P: AnyPin> AsMut<P> for SpecificPin<P> {
+    #[inline]
+    fn as_mut(&mut self) -> &mut P {
+        // SAFETY: This is guaranteed to be safe, because P == SpecificPin<P>
+        // Transmuting between `v1` and `v2` `Pin` types is also safe, because
+        // single-field, newtype structs are guaranteed to have the same layout
+        // as the field, even for repr(Rust).
+        unsafe { core::mem::transmute(self) }
+    }
+}
+
+//==============================================================================
+// IntoFunction
+//==============================================================================
+
+/// A trait that makes it easier to generically manage
+/// converting a pin from its current state into some
+/// other functional mode.  The configuration change
+/// requires exclusive access to the Port hardware,
+/// which is why this isn't simply the standard `Into`
+/// trait.
+pub trait IntoFunction<T> {
+    /// Consume the pin and configure it to operate in
+    /// the mode T.
+    fn into_function(self, port: &mut Port) -> T;
+}
+
+impl<I, M, C> IntoFunction<Pin<I, Alternate<C>>> for Pin<I, M>
+where
+    I: PinId,
+    M: PinMode,
+    C: AlternateConfig,
+{
+    #[allow(unused_variables)]
+    #[inline]
+    fn into_function(self, port: &mut Port) -> Pin<I, Alternate<C>> {
+        self.into_alternate()
+    }
+}
+
+//==============================================================================
+//  Conversions
+//==============================================================================
+
+/// Convert from a `v2::Pin` to a `v1::Pin`
+impl<I, M> From<v2::Pin<I, M>> for Pin<I, M>
+where
+    I: PinId,
+    M: PinMode,
+{
+    fn from(pin: v2::Pin<I, M>) -> Pin<I, M> {
+        Pin { pin }
+    }
+}
+
+/// Convert from a `v1::Pin` to a `v2::Pin`
+impl<I, M> From<Pin<I, M>> for v2::Pin<I, M>
+where
+    I: PinId,
+    M: PinMode,
+{
+    fn from(pin: Pin<I, M>) -> v2::Pin<I, M> {
+        pin.pin
+    }
+}
+
+//==============================================================================
+//  Embedded HAL traits
+//==============================================================================
+
 impl<I: PinId> Pin<I, Output<OpenDrain>> {
     /// Control state of the internal pull up
     ///
@@ -419,39 +526,17 @@ where
     }
 }
 
-impl<I, M, C> IntoFunction<Pin<I, Alternate<C>>> for Pin<I, M>
-where
-    I: PinId,
-    M: PinMode,
-    C: AlternateConfig,
-{
-    #[allow(unused_variables)]
-    #[inline]
-    fn into_function(self, port: &mut Port) -> Pin<I, Alternate<C>> {
-        self.into_alternate()
-    }
-}
+//==============================================================================
+//  Port & Parts
+//==============================================================================
 
-/// Convert from a `v2::Pin` to a `v1::Pin`
-impl<I, M> From<v2::Pin<I, M>> for Pin<I, M>
-where
-    I: PinId,
-    M: PinMode,
-{
-    fn from(pin: v2::Pin<I, M>) -> Pin<I, M> {
-        Pin { pin }
-    }
-}
+/// The GpioExt trait allows splitting the PORT hardware into
+/// its constituent pin parts.
+pub trait GpioExt {
+    type Parts;
 
-/// Convert from a `v1::Pin` to a `v2::Pin`
-impl<I, M> From<Pin<I, M>> for v2::Pin<I, M>
-where
-    I: PinId,
-    M: PinMode,
-{
-    fn from(pin: Pin<I, M>) -> v2::Pin<I, M> {
-        pin.pin
-    }
+    /// Consume and split the device into its constitent parts
+    fn split(self) -> Self::Parts;
 }
 
 /// Opaque port reference
@@ -469,10 +554,8 @@ macro_rules! port {
         $crate::paste::item! {
             $(
                 $( #[$cfg] )?
-                use v2::$PinId;
                 /// Represents the IO pin with the matching name
-                $( #[$cfg] )?
-                pub type $PinType<M> = Pin<$PinId, M>;
+                pub type $PinType<M> = Pin<v2::$PinId, M>;
             )+
 
             /// Holds the GPIO Port peripheral and broken out pin instances
@@ -494,7 +577,7 @@ macro_rules! port {
                         port: Port {_0: ()},
                         $(
                             $( #[$cfg] )?
-                            [<$PinType:lower>]: Pin::<$PinId, _>::new(),
+                            [<$PinType:lower>]: Pin::<v2::$PinId, _>::new(),
                         )+
                     }
                 }
@@ -694,6 +777,10 @@ port!([
     #[cfg(any(feature = "min-samd51p"))]
     (PD21, Pd21),
 ]);
+
+//==============================================================================
+//  Define pins macro
+//==============================================================================
 
 /// This macro is a helper for defining a `Pins` type in a board support
 /// crate.  This type is used to provide more meaningful aliases for the
