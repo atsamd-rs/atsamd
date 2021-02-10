@@ -962,6 +962,7 @@ impl<P: OptionalPin + AnyPin> SomePin for P {}
 /// This function is always safe to use, because it only reads from the GROUP
 /// register block.
 #[inline]
+#[allow(dead_code)]
 pub(super) fn read_pin(group: *const GROUP, num: u8) -> bool {
     let mask: u32 = 1 << num;
     unsafe { (*group).in_.read().bits() & mask != 0 }
@@ -1004,6 +1005,7 @@ pub(super) unsafe fn toggle_pin(group: *const GROUP, num: u8) {
 /// This function is always safe to use, because it only reads from the GROUP
 /// register block.
 #[inline]
+#[allow(dead_code)]
 pub(super) fn read_out_pin(group: *const GROUP, num: u8) -> bool {
     let mask: u32 = 1 << num;
     unsafe { (*group).out.read().bits() & mask != 0 }
