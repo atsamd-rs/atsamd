@@ -1,15 +1,7 @@
 use crate::clock::GenericClockController;
 #[rustfmt::skip]
-use crate::gpio::{
-    Pa2, Pa3, Pa4, Pa5, Pa6, Pa7, Pa8, Pa9, Pa10, Pa11,
-    Pb2, Pb3, Pb8, Pb9, PfB,
-};
-#[cfg(feature = "min-samd51j")]
-use crate::gpio::{Pb0, Pb1, Pb4, Pb5, Pb6, Pb7};
-#[cfg(feature = "min-samd51n")]
-use crate::gpio::{Pc0, Pc1, Pc2, Pc3};
-#[cfg(feature = "min-samd51p")]
-use crate::gpio::{Pc30, Pc31, Pd0, Pd1};
+use crate::gpio::v1;
+use crate::gpio::v2::*;
 use crate::hal::adc::{Channel, OneShot};
 use crate::target_device::gclk::genctrl::SRC_A::DFLL;
 use crate::target_device::gclk::pchctrl::GEN_A;
@@ -245,67 +237,83 @@ where
     }
 }
 
-macro_rules! adc_pins {
-    ($($pin:ident: ($ADC:ident, $chan:expr),)+) => {
-        $(
-
-impl Channel<$ADC> for $pin<PfB> {
-   type ID = u8;
-   fn channel() -> u8 { $chan }
-}
-        )+
-    }
-}
-
 adc_hal! {
     ADC0: (adc0, apbdmask, adc0_, adc0_biascomp_scale_cal, adc0_biasref_scale_cal, adc0_biasr2r_scale_cal),
     ADC1: (adc1, apbdmask, adc1_, adc1_biascomp_scale_cal, adc1_biasref_scale_cal, adc1_biasr2r_scale_cal),
 }
 
-adc_pins! {
-    Pa2:  (ADC0, 0),
-    Pa3:  (ADC0, 1),
-    Pb8:  (ADC0, 2),
-    Pb9:  (ADC0, 3),
-    Pa4:  (ADC0, 4),
-    Pa5:  (ADC0, 5),
-    Pa6:  (ADC0, 6),
-    Pa7:  (ADC0, 7),
-    Pa8:  (ADC0, 8),
-    Pa9:  (ADC0, 9),
-    Pa10: (ADC0, 10),
-    Pa11: (ADC0, 11),
-    Pb2:  (ADC0, 14),
-    Pb3:  (ADC0, 15),
+macro_rules! adc_pins {
+    (
+        $(
+            $PinId:ident: ($ADC:ident, $CHAN:literal),
+        )+
+    ) => {
+        $(
+            impl Channel<$ADC> for Pin<$PinId, AlternateB> {
+               type ID = u8;
+               fn channel() -> u8 { $CHAN }
+            }
+        )+
+    }
+}
 
-    Pb8:  (ADC1, 0),
-    Pb9:  (ADC1, 1),
-    Pa8:  (ADC1, 2),
-    Pa9:  (ADC1, 3),
+/// Implement [`Channel`] for [`v1::Pin`]s based on the implementations for
+/// `v2` [`Pin`]s
+impl<I, A> Channel<A> for v1::Pin<I, v1::PfB>
+where
+    I: PinId,
+    Pin<I, AlternateB>: Channel<A, ID = u8>,
+{
+    type ID = u8;
+    fn channel() -> u8 {
+        Pin::<I, AlternateB>::channel()
+    }
+}
+
+adc_pins! {
+    PA02: (ADC0, 0),
+    PA03: (ADC0, 1),
+    PB08: (ADC0, 2),
+    PB09: (ADC0, 3),
+    PA04: (ADC0, 4),
+    PA05: (ADC0, 5),
+    PA06: (ADC0, 6),
+    PA07: (ADC0, 7),
+    PA08: (ADC0, 8),
+    PA09: (ADC0, 9),
+    PA10: (ADC0, 10),
+    PA11: (ADC0, 11),
+    PB02: (ADC0, 14),
+    PB03: (ADC0, 15),
+
+    PB08: (ADC1, 0),
+    PB09: (ADC1, 1),
+    PA08: (ADC1, 2),
+    PA09: (ADC1, 3),
 }
 
 #[cfg(feature = "min-samd51j")]
 adc_pins! {
-    Pb0:  (ADC0, 12),
-    Pb1:  (ADC0, 13),
-    Pb4:  (ADC1, 6),
-    Pb5:  (ADC1, 7),
-    Pb6:  (ADC1, 8),
-    Pb7:  (ADC1, 9),
+    PB00: (ADC0, 12),
+    PB01: (ADC0, 13),
+    PB04: (ADC1, 6),
+    PB05: (ADC1, 7),
+    PB06: (ADC1, 8),
+    PB07: (ADC1, 9),
 }
 
 #[cfg(feature = "min-samd51n")]
 adc_pins! {
-    Pc2:  (ADC1, 4),
-    Pc3:  (ADC1, 5),
-    Pc0:  (ADC1, 10),
-    Pc1:  (ADC1, 11),
+    PC02: (ADC1, 4),
+    PC03: (ADC1, 5),
+    PC00: (ADC1, 10),
+    PC01: (ADC1, 11),
 }
 
 #[cfg(feature = "min-samd51p")]
 adc_pins! {
-    Pc30: (ADC1, 12),
-    Pc31: (ADC1, 13),
-    Pd0:  (ADC1, 14),
-    Pd1:  (ADC1, 15),
+    PC30: (ADC1, 12),
+    PC31: (ADC1, 13),
+    PD00: (ADC1, 14),
+    PD01: (ADC1, 15),
 }
