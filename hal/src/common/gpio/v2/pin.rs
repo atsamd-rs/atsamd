@@ -143,7 +143,7 @@ use hal::digital::v2::{InputPin, StatefulOutputPin, ToggleableOutputPin};
 
 use crate::target_device::PORT;
 
-use crate::typelevel::{Is, NoneT, Sealed};
+use crate::typelevel::{NoneT, Sealed};
 
 use super::dynpin::*;
 
@@ -857,7 +857,27 @@ macro_rules! pin_id {
 ///     }
 /// }
 /// ```
-pub trait AnyPin: Sealed + Is<Type = SpecificPin<Self>> {
+///
+/// ## `v1` Compatibility
+///
+/// Normally, this trait would use Is<Type = SpecificPin<Self>> as a super
+/// trait. But doing so would restrict implementations to only the `v2` `Pin`
+/// type in this module. To aid in backwards compatibility, we want to implement
+/// `AnyPin` for the `v1` `Pin` type as well. This is possible for a few
+/// reasons. First, both structs are zero-sized, so there is no meaningful
+/// memory layout to begin with. An even if there were, the `v1` `Pin` type is a
+/// newtype wrapper around a `v2` `Pin`, and single-field structs are guaranteed
+/// to have the same layout as the field, even for repr(Rust).
+pub trait AnyPin
+where
+    Self: Sealed,
+    Self: From<SpecificPin<Self>>,
+    Self: Into<SpecificPin<Self>>,
+    Self: AsRef<SpecificPin<Self>>,
+    Self: AsMut<SpecificPin<Self>>,
+    SpecificPin<Self>: AsRef<Self>,
+    SpecificPin<Self>: AsMut<Self>,
+{
     /// [`PinId`] of the corresponding [`Pin`]
     type Id: PinId;
     /// [`PinMode`] of the corresponding [`Pin`]
@@ -892,6 +912,9 @@ impl<P: AnyPin> AsRef<P> for SpecificPin<P> {
     #[inline]
     fn as_ref(&self) -> &P {
         // SAFETY: This is guaranteed to be safe, because P == SpecificPin<P>
+        // Transmuting between `v1` and `v2` `Pin` types is also safe, because
+        // both are zero-sized, and single-field, newtype structs are guaranteed
+        // to have the same layout as the field anyway, even for repr(Rust).
         unsafe { transmute(self) }
     }
 }
@@ -902,6 +925,9 @@ impl<P: AnyPin> AsMut<P> for SpecificPin<P> {
     #[inline]
     fn as_mut(&mut self) -> &mut P {
         // SAFETY: This is guaranteed to be safe, because P == SpecificPin<P>
+        // Transmuting between `v1` and `v2` `Pin` types is also safe, because
+        // both are zero-sized, and single-field, newtype structs are guaranteed
+        // to have the same layout as the field anyway, even for repr(Rust).
         unsafe { transmute(self) }
     }
 }

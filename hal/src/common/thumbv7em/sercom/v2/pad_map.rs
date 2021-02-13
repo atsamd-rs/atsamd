@@ -1,8 +1,8 @@
 //! Implementations of the [`pads`] [`Map`] trait
 //!
-//! This module provides implementations of [`Map`] on each [`IoSet`] for each
-//! valid pair of [`Sercom`] and [`PadNum`]. Each combination of [`Sercom`],
-//! [`PadNum`] and [`IoSet`] maps to a unique [`PinId`] and [`PinMode`].
+//! This module provides implementations of [`Map`] on each [`IoSet`]. For a
+//! given [`Sercom`] and [`PadNum`], the [`Map`] trait identifies the
+//! corresponding [`PinId`] and [`PinMode`] for the given [`IoSet`].
 //!
 //! [`pads`]: crate::sercom::v2::pads
 //! [`Sercom`]: crate::sercom::v2::pads::Sercom
