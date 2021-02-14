@@ -10,13 +10,14 @@
 //! [`PinMode`] for the [`PinId`].
 //!
 //! [`pads`]: crate::sercom::v2::pads
-//! [`Sercom`]: crate::sercom::v2::pads::Sercom
+//! [`Sercom`]: crate::sercom::v2::Sercom
 //! [`PadNum`]: crate::sercom::v2::pads::PadNum
 //! [`Map`]: crate::sercom::v2::pads::Map
 //! [`PinId`]: crate::gpio::v2::PinId
 //! [`PinMode`]: crate::gpio::v2::PinMode
 use crate::gpio::v2::*;
 use crate::sercom::v2::pads::*;
+use crate::sercom::v2::*;
 
 //==============================================================================
 //  Pad definitions

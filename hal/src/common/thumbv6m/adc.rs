@@ -1,5 +1,6 @@
 use crate::clock::GenericClockController;
-use crate::gpio::*;
+use crate::gpio::v1;
+use crate::gpio::v2::*;
 use crate::hal::adc::{Channel, OneShot};
 use crate::target_device::{adc, ADC, PM};
 
@@ -123,54 +124,70 @@ where
 }
 
 macro_rules! adc_pins {
-    ($($pin:ident: $chan:expr),+) => {
+    (
         $(
-
-impl Channel<ADC> for $pin<PfB> {
-   type ID = u8;
-   fn channel() -> u8 { $chan }
-}
+            $PinId:ident: $CHAN:literal
+        ),+
+    ) => {
+        $(
+            impl Channel<ADC> for Pin<$PinId, AlternateB> {
+               type ID = u8;
+               fn channel() -> u8 { $CHAN }
+            }
         )+
+    }
+}
+
+/// Implement [`Channel`] for [`v1::Pin`]s based on the implementations for
+/// `v2` [`Pin`]s
+impl<I> Channel<ADC> for v1::Pin<I, v1::PfB>
+where
+    I: PinId,
+    Pin<I, AlternateB>: Channel<ADC, ID = u8>,
+{
+    type ID = u8;
+    fn channel() -> u8 {
+        Pin::<I, AlternateB>::channel()
     }
 }
 
 #[cfg(feature = "samd11")]
 adc_pins! {
-    Pa2: 0,
-    Pa4: 2,
-    Pa5: 3,
-    Pa14: 6,
-    Pa15: 7
+    PA02: 0,
+    PA04: 2,
+    PA05: 3,
+    PA14: 6,
+    PA15: 7
 }
 
 #[cfg(feature = "samd21")]
 adc_pins! {
-    Pa2: 0,
-    Pa3: 1,
-    Pa4: 4,
-    Pa5: 5,
-    Pa6: 6,
-    Pa7: 7,
-    Pa8: 16,
-    Pa9: 17,
-    Pa10: 18,
-    Pa11: 19
+    PA02: 0,
+    PA03: 1,
+    PA04: 4,
+    PA05: 5,
+    PA06: 6,
+    PA07: 7,
+    PA08: 16,
+    PA09: 17,
+    PA10: 18,
+    PA11: 19
 }
 
 #[cfg(feature = "min-samd21g")]
 adc_pins! {
-    Pb2: 10,
-    Pb3: 11,
-    Pb8: 2,
-    Pb9: 3
+    PB02: 10,
+    PB03: 11,
+    PB08: 2,
+    PB09: 3
 }
 
 #[cfg(feature = "min-samd21j")]
 adc_pins! {
-    Pb0: 8,
-    Pb1: 9,
-    Pb4: 12,
-    Pb5: 13,
-    Pb6: 14,
-    Pb7: 15
+    PB00: 8,
+    PB01: 9,
+    PB04: 12,
+    PB05: 13,
+    PB06: 14,
+    PB07: 15
 }

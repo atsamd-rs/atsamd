@@ -16,8 +16,15 @@
 //! ## Migration
 //!
 //! The [v2] module will eventually replace [v1]. New users are encouraged to
-//! use [v2] instead of [v1]. Existing code should expect to migrate to [v2]
-//! before this crate reaches `1.0`.
+//! use [v2] instead of [v1].
+//!
+//! The new [`v2::spi`] module is substantially more configurable and safe than
+//! the existing, [`v1::spi`] module. To assist in migration, the
+//! [`v2::spi::Pads`] struct accepts both [`v1::Pin`]s and [`v2::Pin`]s.
+//!
+//! [`Pad`]: v2::pads::Pad
+//! [`v1::Pin`]: crate::gpio::v1::Pin
+//! [`v2::Pin`]: crate::gpio::v2::pin::Pin
 
 pub mod v1;
 pub use v1::*;

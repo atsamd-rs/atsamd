@@ -20,16 +20,23 @@ features = ["samd21g", "samd21g-rt", "unproven", "usb"]
 
 [dependencies]
 bitfield = "0.13"
+bitflags = "1.2.1"
 cortex-m = "0.6"
 embedded-hal = "0.2"
+generic-array = "0.14.4"
 nb = "0.1"
 paste = "1.0"
 rand_core = "0.5"
+seq-macro = "0.2.1"
 vcell = "0.1"
 
 [dependencies.jlink_rtt]
 optional = true
 version = "0.2"
+
+[dependencies.num-traits]
+default-features = false
+version = "0.2.14"
 
 [dependencies.usb-device]
 version = "0.2"
@@ -125,17 +132,18 @@ optional = true
 # If we simply used feature names that matched the dependency names, enabling the
 # rt feature would link all possible parts in and cause a linker error due to
 # the high degree of similar symbols present in the various parts.
-samd11 = [] # Convenience feature for shared configuration of samd11 chips.
+device = [] # Should be included if we are building for a specific target device.
+samd11 = ["device"] # Convenience feature for shared configuration of samd11 chips.
 samd11c = ["atsamd11c", "samd11"]
 samd11c-rt = ["samd11c", "atsamd11c/rt"]
-samd21 = [] # Convenience feature for shared configuration of samd21 chips.
+samd21 = ["device"] # Convenience feature for shared configuration of samd21 chips.
 samd21e = ["atsamd21e", "samd21"]
 samd21e-rt = ["samd21e", "atsamd21e/rt"]
 samd21g = ["atsamd21g", "samd21", "min-samd21g"]
 samd21g-rt = ["samd21g", "atsamd21g/rt"]
 samd21j = ["atsamd21j", "samd21", "min-samd21j"]
 samd21j-rt = ["samd21j", "atsamd21j/rt"]
-samd51 = [] # Convenience feature for shared configuration of samd51 chips.
+samd51 = ["device"] # Convenience feature for shared configuration of samd51 chips.
 samd51g = ["atsamd51g", "samd51", "min-samd51g"]
 samd51g-rt = ["samd51g", "atsamd51g/rt"]
 samd51j = ["atsamd51j", "samd51", "min-samd51j"]
@@ -144,19 +152,19 @@ samd51n = ["atsamd51n", "samd51", "min-samd51n"]
 samd51n-rt = ["samd51n", "atsamd51n/rt"]
 samd51p = ["atsamd51p", "samd51", "min-samd51p"]
 samd51p-rt = ["samd51p", "atsamd51p/rt"]
-same51 = [] # Convenience feature for shared configuration of same51 chips
+same51 = ["device"] # Convenience feature for shared configuration of same51 chips
 same51g = ["atsame51g", "same51", "min-samd51g"]
 same51g-rt = ["same51g", "atsame51g/rt"]
 same51j = ["atsame51j", "same51", "min-samd51j"]
 same51j-rt = ["same51j", "atsame51j/rt"]
 same51n = ["atsame51n", "same51", "min-samd51n"]
 same51n-rt = ["same51n", "atsame51n/rt"]
-same53 = [] # Convenience feature for shared configuration of same53 chips
+same53 = ["device"] # Convenience feature for shared configuration of same53 chips
 same53j = ["atsame53j", "same53", "min-samd51j"]
 same53j-rt = ["same53j", "atsame53j/rt"]
 same53n = ["atsame53n", "same53", "min-samd51n"]
 same53n-rt = ["same53n", "atsame53n/rt"]
-same54 = [] # Convenience feature for shared configuration of same54 chips
+same54 = ["device"] # Convenience feature for shared configuration of same54 chips
 same54n = ["atsame54n", "same54", "min-samd51n"]
 same54n-rt = ["same54n", "atsame54n/rt"]
 same54p = ["atsame54p", "same54", "min-samd51p"]

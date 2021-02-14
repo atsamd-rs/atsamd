@@ -2,83 +2,78 @@
 //!
 //! This module implements the [`Pad`] type, which represents a [`Pin`]
 //! configured to act as a SERCOM pad. A [`Pad`] is parameterized by three
-//! types. The first two types identify the pad by its [`Sercom`] and
-//! [`PadNum`]. However, each SERCOM pad can usually be mapped to several
-//! possible GPIO pins. The third type must implement the [`Map`] trait, which
-//! identifies a corresponding [`PinId`] and [`PinMode`]. The [`PinMode`] is
-//! usually [`AlternateC`] or [`AlternateD`].
+//! types. The first two types identify the [`Sercom`] and [`PadNum`]. However,
+//! each SERCOM pad can usually be mapped to several possible GPIO pins. The
+//! third type must implement the [`Map`] trait, which identifies a
+//! corresponding [`PinId`] and [`PinMode`]. The [`PinMode`] is usually
+//! [`AlternateC`] or [`AlternateD`].
+//!
+//! In SAMD51 and SAME5x chips, GPIO pins can only be used together as SERCOM
+//! pads if they belong to the same IOSET. For these chips, the HAL provides
+//! `IoSet` types. The `IoSet` types implement [`Map`] to specify the
+//! corresponding [`PinId`]s and [`PinMode`]s. For instance, implementations
+//! look like this:
+//!
+//! ```
+//! use crate::gpio::v2::pin::{PA08, AlternateC, AlternateD};
+//! use crate::sercom::v2::{Sercom0, Sercom2};
+//! use crate::sercom::v2::pads::{Pad0, Pad1, IoSet1, IoSet3, Map};
+//!
+//! impl Map<Sercom0, Pad0> for IoSet1 {
+//!     type Id = PA08;
+//!     type Mode = AlternateC;
+//! }
+//!
+//! impl Map<Sercom2, Pad1> for IoSet3 {
+//!     type Id = PA08;
+//!     type Mode = AlternateD;
+//! }
+//! ```
+//!
+//! SAMD11 and SAMD21 chips, on the other hand, have no concept of IOSET. Any
+//! set of GPIO pins can be used together as SERCOM pads. For these chips,
+//! [`Map`] is implemented directly on [`PinId`]s. For instance, here are the
+//! two equivalent implementations for SAMD21:
+//!
+//! ```
+//! use crate::gpio::v2::pin::{PA08, AlternateC, AlternateD};
+//! use crate::sercom::v2::{Sercom0, Sercom2};
+//! use crate::sercom::v2::pads::{Pad0, Map};
+//!
+//! impl Map<Sercom0, Pad0> for PA08 {
+//!     type Id = PA08;
+//!     type Mode = AlternateC;
+//! }
+//!
+//! impl Map<Sercom2, Pad0> for PA08 {
+//!     type Id = PA08;
+//!     type Mode = AlternateD;
+//! }
+//! ```
 //!
 //! To create a [`Pad`], use the [`From`]/[`Into`] traits. Upon creation, the
-//! [`Pad`] takes ownership of the [`Pin`]. The conversion from [`Pin`] to
-//! [`Pad`] is potentially many-valued, so it usually must be constrained. On
-//! the other hand, the conversion from [`Pad`] to [`Pin`] is always unique,
-//! because the [`Pad`] always knows which [`Pin`] it contains.
+//! [`Pad`] takes ownership of the [`Pin`].
+//!
+//! The conversion from [`Pin`] to [`Pad`] is frequently many-valued, so the
+//! types often can't be inferred. On the other hand, the conversion from
+//! [`Pad`] to [`Pin`] is always unique, because the [`Pad`] always knows which
+//! [`Pin`] it contains.
 //!
 //! ```
 //! let pad: Pad<Sercom0, Pad0, IoSet1> = pins.pa08.into();
-//! let pin: Pin<_, _> = pad.into();
+//! let pin: Pin<_, _> = pad.into(); // Is Pin<PA08, AlternateC>
 //! ```
 //!
-//! Because of differences in the way pins are mapped to SERCOM pads, the
-//! [`Map`] trait is implemented on different types, depending on the chip
-//! series. See the [`Map`] documentation for more details.
-//!
-//! As a result, the actual implementations of [`Map`] are not found in this
-//! module. They are included in the [`pad_map`] module.
+//! The actual implementations of [`Map`] are chip specific, so they are not
+//! found in this module. They are included in the [`pad_map`] module.
 //!
 //! [`pad_map`]: crate::sercom::v2::pad_map
 
 use core::mem::transmute;
-use core::ops::Deref;
 
-use crate::paste::paste;
-
-use crate::target_device::sercom0;
-use crate::target_device::{SERCOM0, SERCOM1};
-#[cfg(any(feature = "samd21", feature = "min-samd51g"))]
-use crate::target_device::{SERCOM2, SERCOM3};
-#[cfg(any(feature = "min-samd21g", feature = "min-samd51g"))]
-use crate::target_device::{SERCOM4, SERCOM5};
-#[cfg(feature = "min-samd51n")]
-use crate::target_device::{SERCOM6, SERCOM7};
-
+use super::Sercom;
 use crate::gpio::v2::*;
-use crate::typelevel::*;
-
-//==============================================================================
-//  Sercom
-//==============================================================================
-
-/// Type-level `enum` representing a Serial Communication Interface (SERCOM)
-pub trait Sercom: Sealed {
-    /// Corresponding [PAC](crate::target_device) SERCOM type
-    type SERCOM: Deref<Target = sercom0::RegisterBlock>;
-}
-
-/// Type alias to extract the correct [PAC](crate::target_device) SERCOM type
-/// from the [`Sercom`] instance
-pub type SERCOM<S> = <S as Sercom>::SERCOM;
-
-macro_rules! sercom {
-    ( $($Sercom:ident),+ ) => {
-        paste! {
-            $(
-                /// Represents the corresponding SERCOM instance
-                pub enum $Sercom {}
-                impl Sealed for $Sercom {}
-                impl Sercom for $Sercom { type SERCOM = [<$Sercom:upper>]; }
-            )+
-        }
-    };
-}
-
-sercom!(Sercom0, Sercom1);
-#[cfg(any(feature = "samd21", feature = "min-samd51g"))]
-sercom!(Sercom2, Sercom3);
-#[cfg(any(feature = "min-samd21g", feature = "min-samd51g"))]
-sercom!(Sercom4, Sercom5);
-#[cfg(feature = "min-samd51n")]
-sercom!(Sercom6, Sercom7);
+use crate::typelevel::{Is, NoneT, Sealed};
 
 //==============================================================================
 //  PadNum
@@ -151,8 +146,8 @@ where
 /// Type-level function mapping [`Pad`]s to [`Pin`]s
 ///
 /// This trait acts as a type-level function. It takes two types as arguments,
-/// the [`Sercom`] and [`PadNum`] of a [`Pad`], and returns the [`PinId`] and
-/// [`PinMode`] for the corresponding [`Pin`].
+/// a [`Sercom`] and [`PadNum`], and returns a corresponding [`PinId`] and
+/// [`PinMode`].
 ///
 /// For the SAMD51 and SAME5x series chips, all pins for a given SERCOM must
 /// come from the same IOSET. To account for this, we introduce a new

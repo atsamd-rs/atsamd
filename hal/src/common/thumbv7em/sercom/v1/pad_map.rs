@@ -1,14 +1,17 @@
 //! Implementations of the [`pads`] [`Map`] trait
 //!
-//! This module provides implementations of [`Map`] that are part of a
-//! compatibility shim for the [`v1`] API. The [`v1`] API did not account for
-//! the concept of [`IoSet`] in SAMD5x & SAME5x chips. Instead, it mapped pins
-//! directly to SERCOM pads. It was possible to accidentally mix pins from
-//! different IOSETs, which would not work.
+//! This module exists purely as part of a compatibility shim for the
+//! [`v1::pads`] API.
 //!
-//! This module provides implementations of [`Map`] directly on [`PinId`]s. The
-//! [`v1::pads`] shim will then transfer the mapping from [`PinId`] to
-//! configured pins.
+//! In the `v2` [`pads`] API, [`Map`] is implemented on [`IoSet`] types for the
+//! SAMD51 & SAME5x chips. However, the [`v1`] API did not account for the
+//! concept of [`IoSet`] at all. Instead, it mapped whole pins to SERCOM pads.
+//! As a consequence, it was possible to accidentally mix pins from different
+//! IOSETs, which would not work once flashed.
+//!
+//! This module provides implementations of [`Map`] directly on [`PinId`]s, just
+//! like the SAMD11 and SAMD21 chips. The [`v1::pads`] module then transfers the
+//! mappings from [`PinId`]s to configured [`Pin`]s.
 //!
 //! [`v1`]: crate::sercom::v1
 //! [`v1::pads`]: crate::sercom::v1::pads
@@ -19,6 +22,7 @@
 
 use crate::gpio::v2::*;
 use crate::sercom::v2::pads::*;
+use crate::sercom::v2::*;
 
 //==============================================================================
 //  Pad definitions

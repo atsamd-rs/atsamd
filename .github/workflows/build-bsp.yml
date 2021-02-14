@@ -51,3 +51,22 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         name: Clippy ${{ matrix.bsp }}
         args: --all-features --manifest-path=boards/${{ matrix.bsp }}/Cargo.toml
+
+  build_hal:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout sources
+      uses: actions/checkout@v2
+    - name: Install Rust (thumbv6m)
+      uses: actions-rs/toolchain@v1
+      with:
+        profile: minimal
+        toolchain: stable
+        override: true
+        target: thumbv6m-none-eabi
+        components: clippy
+    - name: Build HAL
+      run: |
+        set -ex
+        cd hal
+        cargo build
