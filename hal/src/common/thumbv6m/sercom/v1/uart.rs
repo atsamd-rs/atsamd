@@ -280,7 +280,10 @@ macro_rules! uart {
                     }
                 }
 
-                fn usart(&self) -> &USART {
+                /// # Safety
+                ///
+                /// Only this struct instance should be able to access TX-related fields on this SERCOM.
+                unsafe fn usart(&self) -> &USART {
                     return &self.sercom.usart();
                 }
             }
@@ -298,7 +301,7 @@ macro_rules! uart {
                 ///
                 /// Only this struct instance should be able to access TX-related fields on this SERCOM.
                 unsafe fn usart(&self) -> &USART {
-                    (*$SERCOM::ptr()).usart()
+                    return &self.sercom.usart();
                 }
 
                 fn do_write(usart: &USART, word: u8) -> nb::Result<(), ()> {
@@ -341,11 +344,11 @@ macro_rules! uart {
                 type Error = ();
 
                 fn write(&mut self, word: u8) -> nb::Result<(), Self::Error> {
-                    [<$Type Tx>]::<TX, RTS>::do_write(self.sercom.usart(), word)
+                    [<$Type Tx>]::<TX, RTS>::do_write(unsafe { self.usart() }, word)
                 }
 
                 fn flush(&mut self) -> nb::Result<(), Self::Error> {
-                    [<$Type Tx>]::<TX, RTS>::do_flush(self.sercom.usart())
+                    [<$Type Tx>]::<TX, RTS>::do_flush(unsafe { self.usart() })
                 }
             }
 
