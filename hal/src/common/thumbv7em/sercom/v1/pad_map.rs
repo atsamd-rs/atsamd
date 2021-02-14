@@ -22,6 +22,7 @@
 
 use crate::gpio::v2::*;
 use crate::sercom::v2::pads::*;
+use crate::sercom::v2::*;
 
 //==============================================================================
 //  Pad definitions
