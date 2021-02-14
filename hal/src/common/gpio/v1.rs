@@ -20,7 +20,7 @@ use hal::digital::v2::OutputPin;
 #[cfg(feature = "unproven")]
 use hal::digital::v2::{InputPin, StatefulOutputPin, ToggleableOutputPin};
 
-use crate::gpio::v2::{self, Alternate, AlternateConfig, AnyPin, InputConfig, OutputConfig};
+use crate::gpio::v2::{self, Alternate, AlternateConfig, AnyPin, OutputConfig};
 pub use crate::gpio::v2::{PinId, PinMode};
 use crate::typelevel::Sealed;
 
@@ -472,7 +472,7 @@ impl<I: PinId> InputPin for Pin<I, Output<ReadableOpenDrain>> {
 impl<I, M> InputPin for Pin<I, Input<M>>
 where
     I: PinId,
-    M: InputConfig,
+    M: crate::gpio::v2::pin::InputConfig,
 {
     // TODO: switch to ! when it’s stable
     type Error = ();
