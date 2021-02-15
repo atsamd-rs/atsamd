@@ -1,7 +1,8 @@
 //! EdgeBadge pins
 
-use super::{hal, pac, target_device};
+use super::hal;
 
+use atsamd_hal::target_device::{self, MCLK};
 use embedded_hal::{digital::v1_compat::OldOutputPin, timer::CountDown, timer::Periodic};
 use gpio::{Floating, Input, Output, Port, PushPull};
 use hal::clock::GenericClockController;
@@ -11,8 +12,6 @@ use hal::hal::spi;
 use hal::prelude::*;
 use hal::sercom::{I2CMaster2, PadPin, SPIMaster1, SPIMaster4, UART5};
 use hal::time::Hertz;
-use pac::MCLK;
-use st7735_lcd::{Orientation, ST7735};
 use ws2812_timer_delay as ws2812;
 
 #[cfg(feature = "usb")]
@@ -20,7 +19,7 @@ use hal::usb::usb_device::bus::UsbBusAllocator;
 #[cfg(feature = "usb")]
 pub use hal::usb::UsbBus;
 #[cfg(feature = "usb")]
-use pac::gclk::{genctrl::SRC_A, pchctrl::GEN_A};
+use target_device::gclk::{genctrl::SRC_A, pchctrl::GEN_A};
 
 #[cfg(feature = "unproven")]
 pub use crate::buttons::ButtonReader;
@@ -29,7 +28,9 @@ pub use crate::buttons::Keys;
 #[cfg(feature = "unproven")]
 use hal::pwm::Pwm2;
 #[cfg(feature = "unproven")]
-use pac::ADC0;
+use st7735_lcd::{Orientation, ST7735};
+#[cfg(feature = "unproven")]
+use target_device::ADC0;
 
 define_pins!(
     /// Maps the pins to their arduino names and
@@ -310,9 +311,9 @@ impl Display {
     pub fn init(
         self,
         clocks: &mut GenericClockController,
-        sercom4: pac::SERCOM4,
-        mclk: &mut pac::MCLK,
-        timer2: pac::TC2,
+        sercom4: target_device::SERCOM4,
+        mclk: &mut target_device::MCLK,
+        timer2: target_device::TC2,
         delay: &mut hal::delay::Delay,
         port: &mut Port,
     ) -> Result<
@@ -406,7 +407,7 @@ impl SPI {
         self,
         clocks: &mut GenericClockController,
         bus_speed: F,
-        sercom1: pac::SERCOM1,
+        sercom1: target_device::SERCOM1,
         mclk: &mut MCLK,
         port: &mut Port,
     ) -> SPIMaster1<
@@ -446,7 +447,7 @@ impl I2C {
         self,
         clocks: &mut GenericClockController,
         bus_speed: F,
-        sercom2: pac::SERCOM2,
+        sercom2: target_device::SERCOM2,
         mclk: &mut MCLK,
         port: &mut Port,
     ) -> I2CMaster2<hal::sercom::Sercom2Pad0<Pa12<PfC>>, hal::sercom::Sercom2Pad1<Pa13<PfC>>> {
@@ -480,7 +481,7 @@ impl USB {
     /// as a USB device.
     pub fn init(
         self,
-        usb: pac::USB,
+        usb: target_device::USB,
         clocks: &mut GenericClockController,
         mclk: &mut MCLK,
         port: &mut Port,
@@ -512,7 +513,7 @@ impl UART {
         self,
         clocks: &mut GenericClockController,
         baud: F,
-        sercom5: pac::SERCOM5,
+        sercom5: target_device::SERCOM5,
         mclk: &mut MCLK,
         port: &mut Port,
     ) -> UART5<hal::sercom::Sercom5Pad1<Pb17<PfC>>, hal::sercom::Sercom5Pad0<Pb16<PfC>>, (), ()>

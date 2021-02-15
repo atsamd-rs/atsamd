@@ -1,7 +1,26 @@
+//! `atsamd-hal` is Hardware Abstraction Layer (HAL) provideing a type-safe API
+//! for working with with the SAM family of processors including:
+//! * samd11
+//! * samd21
+//! * samd51
+//! * same51
+//! * same53
+//! * same54
+//!
+//! It utilizes the raw registers provided by the Peripheral Access Crate (PAC)
+//! and, where possible, traits specified by the `embedded-hal` project making
+//! it possible to share code and patterns with various other hals in the
+//! embedded rust ecosystem.
+//!
+//! When in doubt, reference the datasheets available at [Microchip].
+//!
+//! [Microchip]: https://www.microchip.com/design-centers/32-bit
+
 #![no_std]
 
 pub extern crate embedded_hal as hal;
 
+#[doc(hidden)]
 pub use paste;
 
 pub mod typelevel;
@@ -74,6 +93,7 @@ macro_rules! dbgprint {
 
 #[macro_use]
 pub mod common;
+#[doc(inline)]
 pub use self::common::*;
 
 #[cfg(feature = "samd11")]

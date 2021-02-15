@@ -9,7 +9,7 @@
 #![no_std]
 #![no_main]
 
-use edgebadge::{self as hal, entry, pac, pins::Keys, Pins};
+use edgebadge::{entry, hal, pac, Keys, Pins};
 use panic_halt as _;
 
 use hal::prelude::*;

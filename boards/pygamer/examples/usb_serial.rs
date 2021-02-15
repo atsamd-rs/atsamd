@@ -16,7 +16,7 @@
 
 #[cfg(not(feature = "panic_led"))]
 use panic_halt as _;
-use pygamer::{self as hal, entry, pac, Pins};
+use pygamer::{entry, hal, pac, Pins};
 
 use cortex_m::interrupt::free as disable_interrupts;
 use cortex_m::peripheral::NVIC;
@@ -40,19 +40,19 @@ fn main() -> ! {
         &mut peripherals.OSCCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = Pins::new(peripherals.PORT).split();
+    let mut sets = Pins::new(peripherals.PORT).split();
 
     let timer = SpinTimer::new(4);
-    let mut neopixel = pins.neopixel.init(timer, &mut pins.port);
+    let mut neopixel = sets.neopixel.init(timer, &mut sets.port);
 
     let _ = neopixel.write((0..5).map(|_| RGB8::default()));
 
     let bus_allocator = unsafe {
-        USB_ALLOCATOR = Some(pins.usb.init(
+        USB_ALLOCATOR = Some(sets.usb.init(
             peripherals.USB,
             &mut clocks,
             &mut peripherals.MCLK,
-            &mut pins.port,
+            &mut sets.port,
         ));
         USB_ALLOCATOR.as_ref().unwrap()
     };

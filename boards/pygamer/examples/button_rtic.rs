@@ -3,14 +3,14 @@
 
 #[cfg(not(feature = "panic_led"))]
 use panic_halt as _;
-use pygamer::{self as hal, pins::ButtonReader, pins::Keys, Pins};
+use pygamer::{hal, ButtonReader, Keys, Pins};
 
 use hal::clock::GenericClockController;
 use hal::gpio::{OpenDrain, Output, Pa23};
 use hal::prelude::*;
 use rtic::app;
 
-#[app(device = crate::hal::pac, peripherals = true)]
+#[app(device = pygamer::pac, peripherals = true)]
 const APP: () = {
     struct Resources {
         red_led: Pa23<Output<OpenDrain>>,
@@ -50,7 +50,7 @@ const APP: () = {
             &mut device.NVMCTRL,
         );
 
-        let mut pins = Pins::new(device.PORT).split();
+        let mut sets = Pins::new(device.PORT).split();
 
         let gclk0 = clocks.gclk0();
         let timer_clock = clocks.tc2_tc3(&gclk0).unwrap();
@@ -61,8 +61,8 @@ const APP: () = {
         tc3.enable_interrupt();
 
         init::LateResources {
-            buttons: pins.buttons.init(&mut pins.port),
-            red_led: pins.led_pin.into_open_drain_output(&mut pins.port),
+            buttons: sets.buttons.init(&mut sets.port),
+            red_led: sets.led_pin.into_open_drain_output(&mut sets.port),
             timer: tc3,
         }
     }

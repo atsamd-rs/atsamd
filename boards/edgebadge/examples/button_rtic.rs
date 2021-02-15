@@ -1,7 +1,7 @@
 #![no_std]
 #![no_main]
 
-use edgebadge::{self as hal, pins::ButtonReader, pins::Keys, Pins};
+use edgebadge::{hal, ButtonReader, Keys, Pins};
 use panic_halt as _;
 
 use hal::clock::GenericClockController;
@@ -9,7 +9,7 @@ use hal::gpio::{OpenDrain, Output, Pa23};
 use hal::prelude::*;
 use rtic::app;
 
-#[app(device = crate::hal::pac, peripherals = true)]
+#[app(device = edgebadge::pac, peripherals = true)]
 const APP: () = {
     struct Resources {
         red_led: Pa23<Output<OpenDrain>>,
