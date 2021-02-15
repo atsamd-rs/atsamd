@@ -64,20 +64,19 @@
 //! priority (in the default, ie static, arbitration scheme).
 //!
 //! By default, all priority levels are enabled when initializing the DMAC
-//! (see [`DmaController::init`](dma_controller::DmaController::init)). Levels
-//! can be enabled or disabled through the various
-//! [`DmaController::enable_levels`](dma_controller::DmaController::
-//! enable_levels) and
-//! [`DmaController::disable_levels`](dma_controller::DmaController::
-//! disable_levels) methods.
+//! (see [`DmaController::init`]). Levels
+//! can be enabled or disabled through the
+//! [`DmaController::enable_levels`] and
+//! [`DmaController::disable_levels`] methods. These methods must be supplied a
+//! [`PriorityLevelMask`].
 //!
 //! Round-Robin Arbitration can be enabled for multiple priority levels
 //! simultaneously by using the
-//! [`DmaController::round_robin_arbitration`](dma_controller::DmaController::
-//! round_robin_arbitration) and [`DmaController::static_arbitration`]
-//! (dma_controller::DmaController::static_arbitration) methods. By default, all
-//! priority levels are initialized with a static arbitration scheme. See
-//! ATSAMD21 datasheet section 19.6.2.4 for more information.
+//! [`DmaController::round_robin_arbitration`] and
+//! [`DmaController::static_arbitration`] methods. These methods must be
+//! supplied a [`RoundRobinMask`]. By default, all priority levels are
+//! initialized with a static arbitration scheme. See ATSAMD21 datasheet section
+//! 19.6.2.4 for more information.
 //!
 //! # Interrupts
 //!
@@ -88,6 +87,14 @@
 //! the NVIC. You will be responsible for clearing the interrupt flags in the
 //! ISR.
 //!
+//! # Payloads
+//!
+//! You may choose to append a payload to a `Transfer` by using the
+//! [`Transfer::with_payload`] method. This will take ownership of an aribtrary
+//! type until the transfer is released (`stop`ped or `wait`ed). This is useful,
+//! for instance, to take ownership of a peripheral until the transfer is
+//! complete and prevent data races.
+//!
 //! # About static lifetimes
 //!
 //! The safe API this driver offers requires all buffers (source and
@@ -96,7 +103,7 @@
 //! [`mem::drop`](core::mem::drop) to terminate or abort a transfer
 //! does not guarantee the transfer will be terminated (specifically if
 //! [`mem::forget`](core::mem::forget) is called on a `Transfer` containaing
-//! a `Channel<Busy, ID>`). This could cause the compiler to reclaim
+//! a `Channel<Id, Busy>`). This could cause the compiler to reclaim
 //! stack-allocated buffers for reuse while the DMAC is still writing to/reading
 //! from them! Needless to say that is very unsafe.
 //! Refer [here](https://docs.rust-embedded.org/embedonomicon/dma.html#memforget)
@@ -107,10 +114,10 @@
 //! # Unsafe API
 //!
 //! This driver also offers an `unsafe` API through the
-//! [`Transfer::new_unchecked`](transfer::Transfer::new_unchecked) method. It
+//! [`Transfer::new_unchecked`] method. It
 //! does not enforce `'static` lifetimes, and allow using buffers of different
 //! lengths. If you choose to use these methods, you MUST prove that
-//! a `Transfer` containing a `Channel<Busy, ID>` will NEVER be dropped. You
+//! a `Transfer` containing a `Channel<Id, Busy>` will NEVER be dropped. You
 //! *must* call `wait()` or `stop()` manually on every
 //! `Transfer` that has been created using the unsafe API. No destructor or
 //! `Drop` implementation is offered for `Transfer`s.
@@ -148,9 +155,11 @@ use modular_bitfield::prelude::*;
 
 #[cfg(feature = "min-samd51g")]
 pub use dma_controller::{BurstLength, FifoThreshold};
-pub use dma_controller::{DmaController, PriorityLevel, TriggerAction, TriggerSource};
+pub use dma_controller::{
+    DmaController, PriorityLevel, PriorityLevelMask, RoundRobinMask, TriggerAction, TriggerSource,
+};
 use transfer::BeatSize;
-pub use transfer::{Beat, Buffer, BufferPair, Transfer};
+pub use transfer::{Beat, Buffer, Transfer};
 
 #[cfg(all(feature = "samd11", feature = "max-channels"))]
 #[macro_export]

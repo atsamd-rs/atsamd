@@ -3,36 +3,41 @@
 //! # Initializing
 //!
 //! Individual channels should be initialized through the
-//! [`Channel::init`](Channel::init) method. This will return a `Channel<Ready,
-//! ID>` ready for use by a [`Transfer`](super::transfer::Transfer).
-//! Initializing a channel requires setting a priority level, as well as
-//! enabling or disabling interrupt requests (only for the specific channel
-//! being initialized).
+//! [`Channel::init`] method. This will return a `Channel<Id, Ready>` ready for
+//! use by a [`Transfer`](super::transfer::Transfer). Initializing a channel
+//! requires setting a priority level, as well as enabling or disabling
+//! interrupt requests (only for the specific channel being initialized).
 //!
 //! # Burst Length and FIFO Threshold (SAMD51/SAME5x only)
 //!
 //! The transfer burst length can be configured through the
-//! [`burst_length`](Channel::burst_length) method. A burst is an atomic,
+//! [`Channel::burst_length`] method. A burst is an atomic,
 //! uninterruptible transfer which length corresponds to a number of beats. See
 //! SAMD5x/E5x datasheet section 22.6.1.1 for more information. The FIFO
 //! threshold can be configured through the
-//! [`fifo_threshold`](Channel::fifo_threshold) method. This enables the channel
+//! [`Channel::fifo_threshold`] method. This enables the channel
 //! to wait for multiple Beats before sending a Burst. See SAMD5x/E5x datasheet
 //! section 22.6.2.8 for more information.
 //!
 //! # Channel status
 //!
-//! Channels can be in any of three statuses: `Uninitialized`, `Ready`, and
-//! `Busy`. These statuses are checked at compile time to ensure they are
+//! Channels can be in any of three statuses: [`Uninitialized`], [`Ready`], and
+//! [`Busy`]. These statuses are checked at compile time to ensure they are
 //! properly initialized before launching DMA transfers.
 //!
 //! # Resetting
 //!
-//! Calling the [`reset`](Channel::reset) method will reset the channel to its
-//! `Uninitialized` state. You will be required to call [`init`](Channel::init)
+//! Calling the [`Channel::reset`] method will reset the channel to its
+//! `Uninitialized` state. You will be required to call [`Channel::init`]
 //! again before being able to use it with a `Transfer`.
 
 use super::dma_controller::{DmaController, PriorityLevel, TriggerAction, TriggerSource};
+use crate::{
+    target_device::DMAC,
+    typelevel::{Is, Sealed},
+};
+use core::{marker::PhantomData, mem};
+use generic_array::typenum::*;
 
 #[cfg(feature = "min-samd51g")]
 use super::dma_controller::{BurstLength, FifoThreshold};
@@ -40,8 +45,9 @@ use super::dma_controller::{BurstLength, FifoThreshold};
 #[cfg(feature = "min-samd51g")]
 use crate::target_device::dmac::CHANNEL;
 
-use crate::{target_device::DMAC, typelevel::Sealed};
-
+//==============================================================================
+// Channel Status
+//==============================================================================
 pub trait Status: Sealed {}
 
 /// Uninitialized channel
@@ -57,21 +63,71 @@ pub struct Busy;
 impl Sealed for Busy {}
 impl Status for Busy {}
 
+//==============================================================================
+// AnyChannel
+//==============================================================================
+pub trait AnyChannel: Sealed + Is<Type = SpecificChannel<Self>> {
+    type Status: Status;
+    type Id: Unsigned;
+}
+
+pub type SpecificChannel<C> = Channel<<C as AnyChannel>::Id, <C as AnyChannel>::Status>;
+
+pub type ChannelStatus<C> = <C as AnyChannel>::Status;
+pub type ChannelId<C> = <C as AnyChannel>::Id;
+
+impl<Id, S> Sealed for Channel<Id, S>
+where
+    Id: Unsigned,
+    S: Status,
+{
+}
+
+impl<Id, S> AnyChannel for Channel<Id, S>
+where
+    Id: Unsigned,
+    S: Status,
+{
+    type Id = Id;
+    type Status = S;
+}
+
+impl<C: AnyChannel> AsRef<C> for SpecificChannel<C> {
+    #[inline]
+    fn as_ref(&self) -> &C {
+        // SAFETY: This is guaranteed to be safe, because C == SpecificChannel<C>
+        unsafe { mem::transmute(self) }
+    }
+}
+
+impl<C: AnyChannel> AsMut<C> for SpecificChannel<C> {
+    #[inline]
+    fn as_mut(&mut self) -> &mut C {
+        // SAFETY: This is guaranteed to be safe, because C == SpecificChannel<C>
+        unsafe { mem::transmute(self) }
+    }
+}
+
+//==============================================================================
+// Channel
+//==============================================================================
 /// DMA channel, capable of executing
 /// [`Transfer`](super::transfer::Transfer)s.
-pub struct Channel<S: Status, const ID: u8> {
+pub struct Channel<Id: Unsigned, S: Status> {
+    _id: PhantomData<Id>,
     _status: S,
 }
 
 #[inline]
-pub(crate) fn new_chan<const ID: u8>() -> Channel<Uninitialized, ID> {
+pub(crate) fn new_chan<Id: Unsigned>(_id: PhantomData<Id>) -> Channel<Id, Uninitialized> {
     Channel {
+        _id,
         _status: Uninitialized,
     }
 }
 
 /// These methods may be used on any DMA channel in any configuration
-impl<S: Status, const ID: u8> Channel<S, ID> {
+impl<Id: Unsigned, S: Status> Channel<Id, S> {
     /// Set channel ID and run the closure. A closure is needed to ensure
     /// the registers are accessed in an interrupt-safe way, as the SAMD21
     /// DMAC is a little funky - It requires setting the channel number in
@@ -84,7 +140,7 @@ impl<S: Status, const ID: u8> Channel<S, ID> {
             // SAFETY: this is actually safe as long as we write a correct channel number to
             // the CHID register
             unsafe {
-                dmac.chid.modify(|_, w| w.id().bits(ID));
+                dmac.chid.modify(|_, w| w.id().bits(Id::to_u8()));
             }
 
             fun(dmac);
@@ -98,7 +154,7 @@ impl<S: Status, const ID: u8> Channel<S, ID> {
     #[cfg(feature = "min-samd51g")]
     #[inline]
     fn with_chid<F: Fn(&CHANNEL)>(&mut self, dmac: &mut DMAC, fun: F) {
-        let mut ch = &dmac.channel[ID as usize];
+        let mut ch = &dmac.channel[Id::to_usize()];
         fun(&mut ch);
     }
 
@@ -113,7 +169,7 @@ impl<S: Status, const ID: u8> Channel<S, ID> {
         controller: &mut DmaController,
         lvl: PriorityLevel,
         enable_interrupts: bool,
-    ) -> Channel<Ready, ID> {
+    ) -> Channel<Id, Ready> {
         // SAFETY: this is safe because we only mutably borrow dmac once.
         let dmac = unsafe { controller.dmac_mut() };
 
@@ -138,7 +194,10 @@ impl<S: Status, const ID: u8> Channel<S, ID> {
             }
         });
 
-        Channel { _status: Ready }
+        Channel {
+            _id: self._id,
+            _status: Ready,
+        }
     }
 
     #[inline]
@@ -155,20 +214,21 @@ impl<S: Status, const ID: u8> Channel<S, ID> {
         // SAFETY: This is safe because we are writing the correct channel
         // number into the register
         unsafe {
-            dmac.swtrigctrl.modify(|_, w| w.bits(1 << ID));
+            dmac.swtrigctrl.modify(|_, w| w.bits(1 << Id::to_u8()));
         }
     }
 }
 
 /// These methods may only be used on a `Ready` DMA channel
-impl<const ID: u8> Channel<Ready, ID> {
+impl<Id: Unsigned> Channel<Id, Ready> {
     /// Issue a software reset to the channel. This will return the channel to
     /// its startup state
     #[inline]
-    pub fn reset(mut self, dmac: &mut DMAC) -> Channel<Uninitialized, ID> {
+    pub fn reset(mut self, dmac: &mut DMAC) -> Channel<Id, Uninitialized> {
         self._reset_private(dmac);
 
         Channel {
+            _id: self._id,
             _status: Uninitialized,
         }
     }
@@ -209,7 +269,7 @@ impl<const ID: u8> Channel<Ready, ID> {
         dmac: &mut DMAC,
         trig_src: TriggerSource,
         trig_act: TriggerAction,
-    ) -> Channel<Busy, ID> {
+    ) -> Channel<Id, Busy> {
         // Set the channel ID. We assume the CHID register doesn't change
         // for the duration of this function.
         self.with_chid(dmac, |d| {
@@ -239,12 +299,15 @@ impl<const ID: u8> Channel<Ready, ID> {
             self._trigger_private(dmac);
         }
 
-        Channel { _status: Busy }
+        Channel {
+            _id: self._id,
+            _status: Busy,
+        }
     }
 }
 
 /// These methods may only be used on a `Busy` DMA channel
-impl<const ID: u8> Channel<Busy, ID> {
+impl<Id: Unsigned> Channel<Id, Busy> {
     /// Issue a software trigger to the channel
     #[inline]
     pub(crate) fn software_trigger(&mut self, dmac: &mut DMAC) {
@@ -258,7 +321,7 @@ impl<const ID: u8> Channel<Busy, ID> {
     /// A `Channel` with a `Ready` status, ready to be reused by a new
     /// [`Transfer`](super::transfer::Transfer)
     #[inline]
-    pub(crate) fn stop(mut self, dmac: &mut DMAC) -> Channel<Ready, ID> {
+    pub(crate) fn stop(mut self, dmac: &mut DMAC) -> Channel<Id, Ready> {
         self.with_chid(dmac, |d| d.chctrla.modify(|_, w| w.enable().clear_bit()));
         self.free(dmac)
     }
@@ -274,7 +337,8 @@ impl<const ID: u8> Channel<Busy, ID> {
     /// channel needs to be both NOT PENDING and NOT BUSY.
     #[inline]
     pub(crate) fn xfer_complete(&self, dmac: &mut DMAC) -> bool {
-        dmac.busych.read().bits() & (1 << ID) == 0 && dmac.pendch.read().bits() & (1 << ID) == 0
+        let id = Id::to_u8();
+        dmac.busych.read().bits() & (1 << id) == 0 && dmac.pendch.read().bits() & (1 << id) == 0
     }
 
     /// Wait for the channel to clear its busy status, then release the channel.
@@ -284,8 +348,11 @@ impl<const ID: u8> Channel<Busy, ID> {
     /// A `Channel` with a `Ready` status, ready to be reused by a new
     /// [`Transfer`](super::transfer::Transfer)
     #[inline]
-    pub(crate) fn free(self, dmac: &mut DMAC) -> Channel<Ready, ID> {
+    pub(crate) fn free(self, dmac: &mut DMAC) -> Channel<Id, Ready> {
         while !self.xfer_complete(dmac) {}
-        Channel { _status: Ready }
+        Channel {
+            _id: self._id,
+            _status: Ready,
+        }
     }
 }
