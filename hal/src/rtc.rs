@@ -14,7 +14,7 @@ use core::{
     cmp::Ordering,
     convert::{Infallible, TryInto},
     fmt, ops,
-  };
+};
 
 #[cfg(feature = "rtic")]
 use rtic::{Fraction, Monotonic};
@@ -444,25 +444,26 @@ impl TimerParams {
     }
 }
 
-  /// A measurement of the RTC counter. Opaque and useful only with `Duration`
-  ///
-  /// # Correctness
-  ///
-  /// Adding or subtracting a `Duration` of more than `(1 << 31)` cycles to an `Instant` effectively
-  /// makes it "wrap around" and creates an incorrect value. This is also true if the operation is
-  /// done in steps, e.g. `(instant + dur) + dur` where `dur` is `(1 << 30)` ticks.
-  #[derive(Clone, Copy, Eq, PartialEq)]
-  pub struct Instant {
+/// A measurement of the RTC counter. Opaque and useful only with `Duration`
+///
+/// # Correctness
+///
+/// Adding or subtracting a `Duration` of more than `(1 << 31)` cycles to an
+/// `Instant` effectively makes it "wrap around" and creates an incorrect value.
+/// This is also true if the operation is done in steps, e.g. `(instant + dur) +
+/// dur` where `dur` is `(1 << 30)` ticks.
+#[derive(Clone, Copy, Eq, PartialEq)]
+pub struct Instant {
     inner: i32,
-  }
+}
 
-  impl Instant {
+impl Instant {
     /// Returns an instant corresponding to "now"
     pub fn now() -> Self {
         Instant {
             inner: unsafe {
-              let rtc = &*RTC::ptr();
-              rtc.mode0().count.read().bits() as i32
+                let rtc = &*RTC::ptr();
+                rtc.mode0().count.read().bits() as i32
             },
         }
     }
@@ -480,84 +481,86 @@ impl TimerParams {
         assert!(diff >= 0, "second instant is later than self");
         Duration { inner: diff as u32 }
     }
-  }
+}
 
-  impl fmt::Debug for Instant {
+impl fmt::Debug for Instant {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_tuple("Instant")
             .field(&(self.inner as u32))
             .finish()
     }
-  }
+}
 
-  impl ops::AddAssign<Duration> for Instant {
+impl ops::AddAssign<Duration> for Instant {
     fn add_assign(&mut self, dur: Duration) {
-        // NOTE this is a debug assertion because there's no foolproof way to detect a wrap around;
-        // the user may write `(instant + dur) + dur` where `dur` is `(1<<31)-1` ticks.
+        // NOTE this is a debug assertion because there's no foolproof way to detect a
+        // wrap around; the user may write `(instant + dur) + dur` where `dur`
+        // is `(1<<31)-1` ticks.
         debug_assert!(dur.inner < (1 << 31));
         self.inner = self.inner.wrapping_add(dur.inner as i32);
     }
-  }
+}
 
-  impl ops::Add<Duration> for Instant {
+impl ops::Add<Duration> for Instant {
     type Output = Self;
 
     fn add(mut self, dur: Duration) -> Self {
         self += dur;
         self
     }
-  }
+}
 
-  impl ops::SubAssign<Duration> for Instant {
+impl ops::SubAssign<Duration> for Instant {
     fn sub_assign(&mut self, dur: Duration) {
         // NOTE see the NOTE in `<Instant as AddAssign<Duration>>::add_assign`
         debug_assert!(dur.inner < (1 << 31));
         self.inner = self.inner.wrapping_sub(dur.inner as i32);
     }
-  }
+}
 
-  impl ops::Sub<Duration> for Instant {
+impl ops::Sub<Duration> for Instant {
     type Output = Self;
 
     fn sub(mut self, dur: Duration) -> Self {
         self -= dur;
         self
     }
-  }
+}
 
-  impl ops::Sub<Instant> for Instant {
+impl ops::Sub<Instant> for Instant {
     type Output = Duration;
 
     fn sub(self, other: Instant) -> Duration {
         self.duration_since(other)
     }
-  }
+}
 
-  impl Ord for Instant {
+impl Ord for Instant {
     fn cmp(&self, rhs: &Self) -> Ordering {
         self.inner.wrapping_sub(rhs.inner).cmp(&0)
     }
-  }
+}
 
-  impl PartialOrd for Instant {
+impl PartialOrd for Instant {
     fn partial_cmp(&self, rhs: &Self) -> Option<Ordering> {
         Some(self.cmp(rhs))
     }
-  }
+}
 
-  /// A `Duration` type to represent a span of time.
-  ///
-  /// # Correctness
-  ///
-  /// This type is *not* appropriate for representing time spans in the order of, or larger than,
-  /// seconds because it can hold a maximum of `(1 << 31)` "ticks" where each tick is the inverse of
-  /// the CPU frequency, which usually is dozens of MHz.
-  #[derive(Clone, Copy, Default, Eq, Ord, PartialEq, PartialOrd)]
-  pub struct Duration {
+/// A `Duration` type to represent a span of time.
+///
+/// # Correctness
+///
+/// This type is *not* appropriate for representing time spans in the order of,
+/// or larger than, seconds because it can hold a maximum of `(1 << 31)` "ticks"
+/// where each tick is the inverse of the CPU frequency, which usually is dozens
+/// of MHz.
+#[derive(Clone, Copy, Default, Eq, Ord, PartialEq, PartialOrd)]
+pub struct Duration {
     inner: u32,
-  }
+}
 
-  impl Duration {
+impl Duration {
     /// Creates a new `Duration` from the specified number of clock cycles
     pub fn from_cycles(cycles: u32) -> Self {
         Duration { inner: cycles }
@@ -567,23 +570,23 @@ impl TimerParams {
     pub fn as_cycles(&self) -> u32 {
         self.inner
     }
-  }
+}
 
-  impl TryInto<u32> for Duration {
+impl TryInto<u32> for Duration {
     type Error = Infallible;
 
     fn try_into(self) -> Result<u32, Infallible> {
         Ok(self.as_cycles())
     }
-  }
+}
 
-  impl ops::AddAssign for Duration {
+impl ops::AddAssign for Duration {
     fn add_assign(&mut self, dur: Duration) {
         self.inner += dur.inner;
     }
-  }
+}
 
-  impl ops::Add<Duration> for Duration {
+impl ops::Add<Duration> for Duration {
     type Output = Self;
 
     fn add(self, other: Self) -> Self {
@@ -591,15 +594,15 @@ impl TimerParams {
             inner: self.inner + other.inner,
         }
     }
-  }
+}
 
-  impl ops::SubAssign for Duration {
+impl ops::SubAssign for Duration {
     fn sub_assign(&mut self, rhs: Duration) {
         self.inner -= rhs.inner;
     }
-  }
+}
 
-  impl ops::Sub<Duration> for Duration {
+impl ops::Sub<Duration> for Duration {
     type Output = Self;
 
     fn sub(self, rhs: Self) -> Self {
@@ -607,7 +610,7 @@ impl TimerParams {
             inner: self.inner - rhs.inner,
         }
     }
-  }
+}
 
 /// Adds the `cycles` method to the `u32` type
 pub trait U32Ext {
@@ -621,24 +624,25 @@ impl U32Ext for u32 {
     }
 }
 
-/// RtcCounter is a counter based on the RTC peripheral for keeping track of time in RTIC
+/// RtcCounter is a counter based on the RTC peripheral for keeping track of
+/// time in RTIC
 pub struct RtcCounter {}
 
 impl RtcCounter {
     pub fn initialize(rtc: RTC, pm: &mut PM) {
-      pm.apbamask.modify(|_, w| w.rtc_().set_bit());
-      // disable RTC
-      rtc.mode0().ctrl.modify(|_, w| w.enable().clear_bit());
-      while rtc.mode0().status.read().syncbusy().bit_is_set() {}
+        pm.apbamask.modify(|_, w| w.rtc_().set_bit());
+        // disable RTC
+        rtc.mode0().ctrl.modify(|_, w| w.enable().clear_bit());
+        while rtc.mode0().status.read().syncbusy().bit_is_set() {}
 
-      // reset RTC
-      rtc.mode0().ctrl.modify(|_, w| w.swrst().set_bit());
-      while rtc.mode0().status.read().syncbusy().bit_is_set() {}
+        // reset RTC
+        rtc.mode0().ctrl.modify(|_, w| w.swrst().set_bit());
+        while rtc.mode0().status.read().syncbusy().bit_is_set() {}
 
-      // Explicitly drop rtc instance so it cannot be reused or reconfigured
-      drop(rtc)
+        // Explicitly drop rtc instance so it cannot be reused or reconfigured
+        drop(rtc)
     }
-  }
+}
 
 /// Implementation of the `Monotonic` trait based on the RTC counter
 #[cfg(feature = "rtic")]
