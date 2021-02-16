@@ -624,29 +624,22 @@ impl U32Ext for u32 {
     }
 }
 
-/// RtcCounter is a counter based on the RTC peripheral for keeping track of
-/// time in RTIC
-pub struct RtcCounter {}
+/// RtcMonotonic implements Monotonic based on the RTC peripheral for keeping
+/// track of time in RTIC
+pub struct RtcMonotonic {}
 
-impl RtcCounter {
-    pub fn initialize(rtc: RTC, pm: &mut PM) {
-        pm.apbamask.modify(|_, w| w.rtc_().set_bit());
-        // disable RTC
-        rtc.mode0().ctrl.modify(|_, w| w.enable().clear_bit());
-        while rtc.mode0().status.read().syncbusy().bit_is_set() {}
-
-        // reset RTC
-        rtc.mode0().ctrl.modify(|_, w| w.swrst().set_bit());
-        while rtc.mode0().status.read().syncbusy().bit_is_set() {}
-
-        // Explicitly drop rtc instance so it cannot be reused or reconfigured
-        drop(rtc)
+impl From<Rtc> for RtcMonotonic {
+    fn from(mut rtc: Rtc) -> Self {
+        rtc.enable(false);
+        rtc.reset();
+        rtc.timer_mode();
+        Self {}
     }
 }
 
 /// Implementation of the `Monotonic` trait based on the RTC counter
 #[cfg(feature = "rtic")]
-impl Monotonic for RtcCounter {
+impl Monotonic for RtcMonotonic {
     type Instant = Instant;
 
     fn ratio() -> Fraction {
@@ -656,19 +649,7 @@ impl Monotonic for RtcCounter {
         }
     }
 
-    unsafe fn reset() {
-        // This is safe because reset is only called once by the RTIC framework.
-        let rtc = &*RTC::ptr();
-
-        rtc.mode0().ctrl.modify(|_, w| w.enable().clear_bit());
-        while rtc.mode0().status.read().syncbusy().bit_is_set() {}
-
-        rtc.mode0().ctrl.modify(|_, w| w.swrst().set_bit());
-        while rtc.mode0().status.read().syncbusy().bit_is_set() {}
-
-        rtc.mode0().ctrl.modify(|_, w| w.enable().set_bit());
-        while rtc.mode0().status.read().syncbusy().bit_is_set() {}
-    }
+    unsafe fn reset() {}
 
     fn now() -> Instant {
         Instant::now()
