@@ -79,6 +79,7 @@ max-channels = ["dma", "atsamd-hal/max-channels"]
 # Enable pins for the adalogger SD card reader
 adalogger = []
 sdmmc = ["embedded-sdmmc", "atsamd-hal/sdmmc"]
+rtic = ["atsamd-hal/rtic"]
 
 [profile.dev]
 incremental = false

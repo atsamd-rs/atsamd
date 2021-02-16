@@ -44,6 +44,10 @@ version = "0.2.14"
 version = "0.2"
 optional = true
 
+[dependencies.cortex-m-rtic]
+optional = true
+version = "0.5"
+
 [dependencies.void]
 default-features = false
 version = "1.0"
@@ -195,3 +199,4 @@ usb = ["usb-device"]
 dma = ["unproven"]
 max-channels = ["dma"]
 sdmmc = ["embedded-sdmmc"]
+rtic = ["cortex-m-rtic"]
