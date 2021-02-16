@@ -1,5 +1,6 @@
 #![no_std]
 #![recursion_limit = "1024"]
+#![allow(deprecated)]
 
 pub mod pins;
 

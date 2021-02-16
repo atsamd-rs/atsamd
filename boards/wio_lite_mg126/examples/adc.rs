@@ -34,7 +34,7 @@ fn main() -> ! {
 
     loop {
         let data: u16 = adc.read(&mut a0).unwrap();
-        hprintln!("{}", data);
+        hprintln!("{}", data).ok();
         delay.delay_ms(1000u16);
     }
 }

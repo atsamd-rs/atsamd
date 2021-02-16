@@ -19,11 +19,6 @@ use hal::clock::GenericClockController;
 use hal::sercom::{I2CMaster5, PadPin, SPIMaster2, UART4};
 use hal::time::Hertz;
 
-#[cfg(feature = "usb")]
-pub use hal::usb::UsbBus;
-#[cfg(feature = "usb")]
-use usb_device::bus::UsbBusWrapper;
-
 /// This powers up SERCOM2 and configures it for use as an
 /// SPI Master in SPI Mode 0.
 /// Unlike the `flash_spi_master` function, this

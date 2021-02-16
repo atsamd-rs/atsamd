@@ -4,22 +4,22 @@
       "build": "cargo build --examples --features=unproven,usb"
     },
     "arduino_mkrvidor4000": {
-      "build": "cargo build --examples --features=unproven"
+      "build": "cargo build --examples --features=unproven,usb"
     },
     "arduino_mkrzero": {
       "build": "cargo build --examples --features=unproven,usb"
     },
     "arduino_nano33iot": {
-      "build": "cargo build --examples --features=unproven"
+      "build": "cargo build --examples --features=unproven,usb"
     },
     "atsame54_xpro": {
-      "build": "cargo build --examples --features=unproven"
+      "build": "cargo build --examples --features=unproven,usb"
     },
     "circuit_playground_express": {
       "build": "cargo build --examples --features=unproven"
     },
     "edgebadge": {
-      "build": "cargo build --examples --features=unproven"
+      "build": "cargo build --examples --features=unproven,usb"
     },
     "feather_m0": {
       "build": "cargo build --examples --example=pwm --features=unproven,usb"
@@ -31,10 +31,10 @@
       "build": "cargo build --examples --features=unproven"
     },
     "grand_central_m4": {
-      "build": "cargo build --examples --features=unproven"
+      "build": "cargo build --examples --features=unproven,usb"
     },
     "itsybitsy_m0": {
-      "build": "cargo build --examples --features=unproven"
+      "build": "cargo build --examples --features=unproven,usb"
     },
     "itsybitsy_m4": {
       "build": "cargo build --examples --features=unproven,usb,use_rtt"

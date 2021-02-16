@@ -138,7 +138,7 @@ fn main() -> ! {
     textbuffer.truncate(0);
 
     // Switch to XIP mode and read those 4 bytes natively.
-    let mut flash = flash.into_xip();
+    let flash = flash.into_xip();
     let mut read_buf = [0u8; 4];
     unsafe {
         core::ptr::copy(

@@ -14,9 +14,6 @@ pub use hal::target_device as pac;
 use hal::prelude::*;
 use hal::*;
 
-#[cfg(feature = "usb")]
-pub use hal::usb;
-
 use gpio::{Floating, Input, Port};
 
 define_pins!(

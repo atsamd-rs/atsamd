@@ -1,5 +1,5 @@
 use atsamd_hal::clock::GenericClockController;
-use atsamd_hal::gpio::{Floating, Input, IntoFunction, Pa24, Pa25, Pb26, Pb27, PfC, Port};
+use atsamd_hal::gpio::{Floating, Input, Pa24, Pa25, Pb26, Pb27, PfC, Port};
 use atsamd_hal::sercom::{PadPin, Sercom2Pad0, Sercom2Pad1, UART2};
 use atsamd_hal::target_device::{self, MCLK, SERCOM2};
 use atsamd_hal::time::Hertz;
@@ -57,18 +57,11 @@ impl USB {
         usb: target_device::USB,
         clocks: &mut GenericClockController,
         mclk: &mut MCLK,
-        port: &mut Port,
     ) -> UsbBusAllocator<UsbBus> {
         clocks.configure_gclk_divider_and_source(GEN_A::GCLK2, 1, SRC_A::DFLL, false);
         let usb_gclk = clocks.get_gclk(GEN_A::GCLK2).unwrap();
         let usb_clock = &clocks.usb(&usb_gclk).unwrap();
 
-        UsbBusAllocator::new(UsbBus::new(
-            usb_clock,
-            mclk,
-            self.dm.into_function(port),
-            self.dp.into_function(port),
-            usb,
-        ))
+        UsbBusAllocator::new(UsbBus::new(usb_clock, mclk, self.dm, self.dp, usb))
     }
 }

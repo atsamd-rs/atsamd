@@ -216,7 +216,7 @@ impl GenericClockController {
         gclk: GCLK,
         pm: &mut PM,
         sysctrl: &mut SYSCTRL,
-        nvmctrl: &mut NVMCTRL,
+        _nvmctrl: &mut NVMCTRL,
     ) -> Self {
         let mut state = State { gclk };
 

@@ -7,7 +7,6 @@ extern crate panic_halt as _;
 use hal::clock::GenericClockController;
 use hal::entry;
 use hal::pac::{interrupt, CorePeripherals, Peripherals};
-use hal::prelude::*;
 
 use hal::usb::UsbBus;
 use usb_device::bus::UsbBusAllocator;
@@ -32,13 +31,12 @@ fn main() -> ! {
     let mut red_led = pins.d13.into_open_drain_output(&mut pins.port);
 
     let bus_allocator = unsafe {
-        USB_ALLOCATOR = Some(hal::usb_bus(
+        USB_ALLOCATOR = Some(hal::usb_allocator(
             peripherals.USB,
             &mut clocks,
             &mut peripherals.PM,
             pins.usb_dm,
             pins.usb_dp,
-            &mut pins.port,
         ));
         USB_ALLOCATOR.as_ref().unwrap()
     };
@@ -84,7 +82,7 @@ fn poll_usb() {
                         if i >= count {
                             break;
                         }
-                        serial.write(&[c.clone()]);
+                        serial.write(&[c.clone()]).ok();
                     }
                 };
             });

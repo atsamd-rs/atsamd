@@ -6,10 +6,10 @@ use panic_halt as _;
 use wio_terminal as wio;
 
 use cortex_m::peripheral::NVIC;
-use wio::hal::adc::{FreeRunning, InterruptAdc, SingleConversion};
+use wio::hal::adc::{FreeRunning, InterruptAdc};
 use wio::hal::clock::GenericClockController;
 use wio::hal::delay::Delay;
-use wio::pac::{adc0::refctrl::REFSEL_A, gclk::pchctrl::GEN_A::GCLK11, interrupt, ADC1};
+use wio::pac::{interrupt, ADC1};
 use wio::pac::{CorePeripherals, Peripherals};
 use wio::prelude::*;
 use wio::{entry, Pins, Sets};
@@ -106,7 +106,7 @@ fn main() -> ! {
         // the adc.rs, actual sampling rate seems 83.333[kSPS], which is 1/3 of
         // expected sampling rate.
         let count_max = 83333;
-        for count in 0..count_max {
+        for _count in 0..count_max {
             // Uncomment if you use single conversion mode.
             // unsafe { CTX.as_mut().unwrap().adc.start_conversion(&mut microphone_pin); }
             let value = loop {
