@@ -45,7 +45,6 @@ fn main() -> ! {
             &mut peripherals.PM,
             pins.usb_n, // PA24, also usb_dm
             pins.usb_p, // PA24 also usb_dp
-            &mut pins.port,
         ));
         USB_ALLOCATOR.as_ref().unwrap()
     };

@@ -276,7 +276,6 @@ impl USB {
         usb: super::pac::USB,
         clocks: &mut GenericClockController,
         mclk: &mut MCLK,
-        port: &mut Port,
     ) -> UsbBusAllocator<UsbBus> {
         use super::pac::gclk::{genctrl::SRC_A, pchctrl::GEN_A};
 
@@ -284,13 +283,7 @@ impl USB {
         let usb_gclk = clocks.get_gclk(GEN_A::GCLK2).unwrap();
         let usb_clock = &clocks.usb(&usb_gclk).unwrap();
 
-        UsbBusAllocator::new(UsbBus::new(
-            usb_clock,
-            mclk,
-            self.dm.into_function(port),
-            self.dp.into_function(port),
-            usb,
-        ))
+        UsbBusAllocator::new(UsbBus::new(usb_clock, mclk, self.dm, self.dp, usb))
     }
 }
 

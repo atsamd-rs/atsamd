@@ -287,20 +287,11 @@ impl USB {
         usb: pac::USB,
         clocks: &mut GenericClockController,
         pm: &mut pac::PM,
-        port: &mut Port,
     ) -> UsbBusAllocator<UsbBus> {
-        use gpio::IntoFunction;
-
         let gclk0 = clocks.gclk0();
         let usb_clock = &clocks.usb(&gclk0).unwrap();
 
-        UsbBusAllocator::new(UsbBus::new(
-            usb_clock,
-            pm,
-            self.dm.into_function(port),
-            self.dp.into_function(port),
-            usb,
-        ))
+        UsbBusAllocator::new(UsbBus::new(usb_clock, pm, self.dm, self.dp, usb))
     }
 }
 

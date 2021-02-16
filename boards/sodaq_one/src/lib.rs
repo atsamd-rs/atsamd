@@ -20,6 +20,8 @@ use hal::sercom::{I2CMaster3, PadPin, SPIMaster0};
 use hal::time::Hertz;
 
 #[cfg(feature = "usb")]
+use gpio::v2::{AnyPin, PA24, PA25};
+#[cfg(feature = "usb")]
 pub use hal::usb::UsbBus;
 #[cfg(feature = "usb")]
 use usb_device::bus::UsbBusWrapper;
@@ -175,21 +177,12 @@ pub fn usb_bus(
     usb: pac::USB,
     clocks: &mut GenericClockController,
     pm: &mut pac::PM,
-    dm: gpio::Pa24<Input<Floating>>,
-    dp: gpio::Pa25<Input<Floating>>,
-    port: &mut Port,
+    dm: impl AnyPin<Id = PA24>,
+    dp: impl AnyPin<Id = PA25>,
 ) -> UsbBusWrapper<UsbBus> {
-    use gpio::IntoFunction;
-
     let gclk0 = clocks.gclk0();
     dbgprint!("making usb clock");
     let usb_clock = &clocks.usb(&gclk0).unwrap();
     dbgprint!("got clock");
-    UsbBusWrapper::new(UsbBus::new(
-        usb_clock,
-        pm,
-        dm.into_function(port),
-        dp.into_function(port),
-        usb,
-    ))
+    UsbBusWrapper::new(UsbBus::new(usb_clock, pm, dm, dp, usb))
 }

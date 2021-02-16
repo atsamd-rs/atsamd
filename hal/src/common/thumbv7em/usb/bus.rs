@@ -5,9 +5,10 @@
 // people doing that should be familiar with the USB standard. http://ww1.microchip.com/downloads/en/DeviceDoc/60001507E.pdf
 // http://ww1.microchip.com/downloads/en/AppNotes/Atmel-42261-SAM-D21-USB_Application-Note_AT06475.pdf
 
-use super::{Descriptors, DmPad, DpPad, UsbPadDm, UsbPadDp};
+use super::Descriptors;
 use crate::calibration::{usb_transn_cal, usb_transp_cal, usb_trim_cal};
 use crate::clock;
+use crate::gpio::v2::{AlternateH, AnyPin, Pin, PA24, PA25};
 use crate::target_device;
 use crate::target_device::usb::DEVICE;
 use crate::target_device::{MCLK, USB};
@@ -197,16 +198,16 @@ impl BufferAllocator {
     }
 }
 
-struct Inner<Dm: UsbPadDm = DmPad, Dp: UsbPadDp = DpPad> {
+struct Inner {
     desc: RefCell<Descriptors>,
-    _dm_pad: Dm,
-    _dp_pad: Dp,
+    _dm_pad: Pin<PA24, AlternateH>,
+    _dp_pad: Pin<PA25, AlternateH>,
     endpoints: RefCell<AllEndpoints>,
     buffers: RefCell<BufferAllocator>,
 }
 
-pub struct UsbBus<Dm: UsbPadDm = DmPad, Dp: UsbPadDp = DpPad> {
-    inner: Mutex<RefCell<Inner<Dm, Dp>>>,
+pub struct UsbBus {
+    inner: Mutex<RefCell<Inner>>,
 }
 
 /// Generate a method that allows returning the endpoint register
@@ -480,7 +481,7 @@ impl<'a, T> Bank<'a, T> {
     ep!(epintenset, EPINTENSET);
 }
 
-impl<Dm: UsbPadDm, Dp: UsbPadDp> Inner<Dm, Dp> {
+impl Inner {
     ep!(epcfg, EPCFG);
     ep!(epstatus, EPSTATUS);
     ep!(epintflag, EPINTFLAG);
@@ -522,12 +523,12 @@ impl<Dm: UsbPadDm, Dp: UsbPadDp> Inner<Dm, Dp> {
     }
 }
 
-impl<Dm: UsbPadDm, Dp: UsbPadDp> UsbBus<Dm, Dp> {
+impl UsbBus {
     pub fn new(
         _clock: &clock::UsbClock,
         mclk: &mut MCLK,
-        dm_pad: Dm,
-        dp_pad: Dp,
+        dm_pad: impl AnyPin<Id = PA24>,
+        dp_pad: impl AnyPin<Id = PA25>,
         _usb: USB,
     ) -> Self {
         dbgprint!("******** UsbBus::new\n");
@@ -537,8 +538,8 @@ impl<Dm: UsbPadDm, Dp: UsbPadDp> UsbBus<Dm, Dp> {
         let desc = RefCell::new(Descriptors::new());
 
         let inner = Inner {
-            _dm_pad: dm_pad,
-            _dp_pad: dp_pad,
+            _dm_pad: dm_pad.into().into_mode::<AlternateH>(),
+            _dp_pad: dp_pad.into().into_mode::<AlternateH>(),
             desc,
             buffers: RefCell::new(BufferAllocator::new()),
             endpoints: RefCell::new(AllEndpoints::new()),
@@ -550,7 +551,7 @@ impl<Dm: UsbPadDm, Dp: UsbPadDp> UsbBus<Dm, Dp> {
     }
 }
 
-impl<Dm: UsbPadDm, Dp: UsbPadDp> Inner<Dm, Dp> {
+impl Inner {
     fn usb(&self) -> &DEVICE {
         unsafe { &(*USB::ptr()).device() }
     }
@@ -622,7 +623,7 @@ enum FlushConfigMode {
     ProtocolReset,
 }
 
-impl<Dm: UsbPadDm, Dp: UsbPadDp> Inner<Dm, Dp> {
+impl Inner {
     fn enable(&mut self) {
         dbgprint!("UsbBus::enable\n");
         let usb = self.usb();
@@ -949,7 +950,7 @@ impl<Dm: UsbPadDm, Dp: UsbPadDp> Inner<Dm, Dp> {
     }
 }
 
-impl<Dm: UsbPadDm, Dp: UsbPadDp> usb_device::bus::UsbBus for UsbBus<Dm, Dp> {
+impl usb_device::bus::UsbBus for UsbBus {
     fn enable(&mut self) {
         disable_interrupts(|cs| self.inner.borrow(cs).borrow_mut().enable())
     }

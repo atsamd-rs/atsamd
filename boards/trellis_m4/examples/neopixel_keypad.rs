@@ -56,7 +56,7 @@ fn main() -> ! {
             for (i, value) in color_values.iter_mut().enumerate() {
                 let keypad_column = i % 8;
                 let keypad_row = i / 8;
-                let keypad_button: &InputPin<Error = ()> =
+                let keypad_button: &dyn InputPin<Error = ()> =
                     &keypad_inputs[keypad_row][keypad_column];
 
                 if keypad_button.is_high().unwrap() {

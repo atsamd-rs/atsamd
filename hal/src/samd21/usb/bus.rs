@@ -5,9 +5,10 @@
 // people doing that should be familiar with the USB standard. http://ww1.microchip.com/downloads/en/DeviceDoc/60001507E.pdf
 // http://ww1.microchip.com/downloads/en/AppNotes/Atmel-42261-SAM-D21-USB_Application-Note_AT06475.pdf
 
-use super::{Descriptors, DmPad, DpPad};
+use super::Descriptors;
 use crate::calibration::{usb_transn_cal, usb_transp_cal, usb_trim_cal};
 use crate::clock;
+use crate::gpio::v2::{AlternateG, AnyPin, Pin, PA24, PA25};
 use crate::target_device;
 use crate::target_device::usb::DEVICE;
 use crate::target_device::{PM, USB};
@@ -197,8 +198,8 @@ impl BufferAllocator {
 
 struct Inner {
     desc: RefCell<Descriptors>,
-    _dm_pad: DmPad,
-    _dp_pad: DpPad,
+    _dm_pad: Pin<PA24, AlternateG>,
+    _dp_pad: Pin<PA25, AlternateG>,
     endpoints: RefCell<AllEndpoints>,
     buffers: RefCell<BufferAllocator>,
 }
@@ -581,8 +582,8 @@ impl UsbBus {
     pub fn new(
         _clock: &clock::UsbClock,
         pm: &mut PM,
-        dm_pad: DmPad,
-        dp_pad: DpPad,
+        dm_pad: impl AnyPin<Id = PA24>,
+        dp_pad: impl AnyPin<Id = PA25>,
         _usb: USB,
     ) -> Self {
         dbgprint!("******** UsbBus::new\n");
@@ -591,8 +592,8 @@ impl UsbBus {
         let desc = RefCell::new(Descriptors::new());
 
         let inner = Inner {
-            _dm_pad: dm_pad,
-            _dp_pad: dp_pad,
+            _dm_pad: dm_pad.into().into_mode::<AlternateG>(),
+            _dp_pad: dp_pad.into().into_mode::<AlternateG>(),
             desc,
             buffers: RefCell::new(BufferAllocator::new()),
             endpoints: RefCell::new(AllEndpoints::new()),

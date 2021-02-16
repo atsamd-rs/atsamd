@@ -7,7 +7,6 @@ use trinket_m0 as hal;
 use hal::clock::GenericClockController;
 use hal::entry;
 use hal::pac::{interrupt, CorePeripherals, Peripherals};
-use hal::prelude::*;
 
 use hal::usb::UsbBus;
 use usb_device::bus::UsbBusAllocator;
@@ -38,7 +37,6 @@ fn main() -> ! {
             &mut peripherals.PM,
             pins.usb_dm,
             pins.usb_dp,
-            &mut pins.port,
         ));
         USB_ALLOCATOR.as_ref().unwrap()
     };
@@ -84,7 +82,7 @@ fn poll_usb() {
                         if i >= count {
                             break;
                         }
-                        serial.write(&[c.clone()]);
+                        serial.write(&[c.clone()]).ok();
                     }
                 };
             });

@@ -41,7 +41,6 @@ fn main() -> ! {
             peripherals.USB,
             &mut clocks,
             &mut peripherals.MCLK,
-            &mut pins.port,
         ));
         USB_ALLOCATOR.as_ref().unwrap()
     };
