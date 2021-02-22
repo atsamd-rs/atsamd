@@ -457,7 +457,8 @@ impl Clock for Rtc {
 #[cfg(feature = "rtic")]
 impl Monotonic for Rtc {
     fn reset(&mut self) {
-        // Since reset is only called once, we use it to enable the interrupt generation bit.
+        // Since reset is only called once, we use it to enable the interrupt generation
+        // bit.
         self.mode0().intenset.write(|w| w.cmp0().set_bit());
     }
 
