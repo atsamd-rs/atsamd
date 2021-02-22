@@ -17,7 +17,7 @@ use core::{
 };
 
 #[cfg(feature = "rtic")]
-use rtic::{Fraction, Monotonic};
+use rtic_monotonic::{embedded_time, Clock, Fraction, Instant, Monotonic};
 
 // SAMx5x imports
 #[cfg(feature = "min-samd51g")]
@@ -444,218 +444,28 @@ impl TimerParams {
     }
 }
 
-/// A measurement of the RTC counter. Opaque and useful only with `Duration`
-///
-/// # Correctness
-///
-/// Adding or subtracting a `Duration` of more than `(1 << 31)` cycles to an
-/// `Instant` effectively makes it "wrap around" and creates an incorrect value.
-/// This is also true if the operation is done in steps, e.g. `(instant + dur) +
-/// dur` where `dur` is `(1 << 30)` ticks.
-#[derive(Clone, Copy, Eq, PartialEq)]
-pub struct Instant {
-    inner: i32,
-}
-
-impl Instant {
-    /// Returns an instant corresponding to "now"
-    pub fn now() -> Self {
-        Instant {
-            inner: unsafe {
-                let rtc = &*RTC::ptr();
-                rtc.mode0().count.read().bits() as i32
-            },
-        }
-    }
-
-    /// Returns the amount of time elapsed since this instant was created.
-    pub fn elapsed(&self) -> Duration {
-        let diff = Instant::now().inner.wrapping_sub(self.inner);
-        assert!(diff >= 0, "instant now is earlier than self");
-        Duration { inner: diff as u32 }
-    }
-
-    /// Returns the amount of time elapsed from another instant to this one.
-    pub fn duration_since(&self, earlier: Instant) -> Duration {
-        let diff = self.inner.wrapping_sub(earlier.inner);
-        assert!(diff >= 0, "second instant is later than self");
-        Duration { inner: diff as u32 }
-    }
-}
-
-impl fmt::Debug for Instant {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_tuple("Instant")
-            .field(&(self.inner as u32))
-            .finish()
-    }
-}
-
-impl ops::AddAssign<Duration> for Instant {
-    fn add_assign(&mut self, dur: Duration) {
-        // NOTE this is a debug assertion because there's no foolproof way to detect a
-        // wrap around; the user may write `(instant + dur) + dur` where `dur`
-        // is `(1<<31)-1` ticks.
-        debug_assert!(dur.inner < (1 << 31));
-        self.inner = self.inner.wrapping_add(dur.inner as i32);
-    }
-}
-
-impl ops::Add<Duration> for Instant {
-    type Output = Self;
-
-    fn add(mut self, dur: Duration) -> Self {
-        self += dur;
-        self
-    }
-}
-
-impl ops::SubAssign<Duration> for Instant {
-    fn sub_assign(&mut self, dur: Duration) {
-        // NOTE see the NOTE in `<Instant as AddAssign<Duration>>::add_assign`
-        debug_assert!(dur.inner < (1 << 31));
-        self.inner = self.inner.wrapping_sub(dur.inner as i32);
-    }
-}
-
-impl ops::Sub<Duration> for Instant {
-    type Output = Self;
-
-    fn sub(mut self, dur: Duration) -> Self {
-        self -= dur;
-        self
-    }
-}
-
-impl ops::Sub<Instant> for Instant {
-    type Output = Duration;
-
-    fn sub(self, other: Instant) -> Duration {
-        self.duration_since(other)
-    }
-}
-
-impl Ord for Instant {
-    fn cmp(&self, rhs: &Self) -> Ordering {
-        self.inner.wrapping_sub(rhs.inner).cmp(&0)
-    }
-}
-
-impl PartialOrd for Instant {
-    fn partial_cmp(&self, rhs: &Self) -> Option<Ordering> {
-        Some(self.cmp(rhs))
-    }
-}
-
-/// A `Duration` type to represent a span of time.
-///
-/// # Correctness
-///
-/// This type is *not* appropriate for representing time spans in the order of,
-/// or larger than, seconds because it can hold a maximum of `(1 << 31)` "ticks"
-/// where each tick is the inverse of the CPU frequency, which usually is dozens
-/// of MHz.
-#[derive(Clone, Copy, Default, Eq, Ord, PartialEq, PartialOrd)]
-pub struct Duration {
-    inner: u32,
-}
-
-impl Duration {
-    /// Creates a new `Duration` from the specified number of clock cycles
-    pub fn from_cycles(cycles: u32) -> Self {
-        Duration { inner: cycles }
-    }
-
-    /// Returns the total number of clock cycles contained by this `Duration`
-    pub fn as_cycles(&self) -> u32 {
-        self.inner
-    }
-}
-
-impl TryInto<u32> for Duration {
-    type Error = Infallible;
-
-    fn try_into(self) -> Result<u32, Infallible> {
-        Ok(self.as_cycles())
-    }
-}
-
-impl ops::AddAssign for Duration {
-    fn add_assign(&mut self, dur: Duration) {
-        self.inner += dur.inner;
-    }
-}
-
-impl ops::Add<Duration> for Duration {
-    type Output = Self;
-
-    fn add(self, other: Self) -> Self {
-        Duration {
-            inner: self.inner + other.inner,
-        }
-    }
-}
-
-impl ops::SubAssign for Duration {
-    fn sub_assign(&mut self, rhs: Duration) {
-        self.inner -= rhs.inner;
-    }
-}
-
-impl ops::Sub<Duration> for Duration {
-    type Output = Self;
-
-    fn sub(self, rhs: Self) -> Self {
-        Duration {
-            inner: self.inner - rhs.inner,
-        }
-    }
-}
-
-/// Adds the `cycles` method to the `u32` type
-pub trait U32Ext {
-    /// Converts the `u32` value into RTC counter cycles
-    fn cycles(self) -> Duration;
-}
-
-impl U32Ext for u32 {
-    fn cycles(self) -> Duration {
-        Duration { inner: self }
-    }
-}
-
-/// RtcMonotonic implements Monotonic based on the RTC peripheral for keeping
-/// track of time in RTIC
-pub struct RtcMonotonic {}
-
-impl From<Rtc> for RtcMonotonic {
-    fn from(mut rtc: Rtc) -> Self {
-        rtc.enable(false);
-        rtc.reset();
-        rtc.timer_mode();
-        Self {}
-    }
-}
-
-/// Implementation of the `Monotonic` trait based on the RTC counter
 #[cfg(feature = "rtic")]
-impl Monotonic for RtcMonotonic {
-    type Instant = Instant;
+impl Clock for Rtc {
+    const SCALING_FACTOR: Fraction = Fraction::new(1, 32_768);
+    type T = u32;
 
-    fn ratio() -> Fraction {
-        Fraction {
-            numerator: 1,
-            denominator: 1,
-        }
+    fn try_now(&self) -> Result<Instant<Self>, embedded_time::clock::Error> {
+        Ok(Instant::new(self.count32()))
+    }
+}
+
+#[cfg(feature = "rtic")]
+impl Monotonic for Rtc {
+    fn reset(&mut self) {
+        // Since reset is only called once, we use it to enable the interrupt generation bit.
+        self.mode0().intenset.write(|w| w.cmp0().set_bit());
     }
 
-    unsafe fn reset() {}
-
-    fn now() -> Instant {
-        Instant::now()
+    fn set_compare(&mut self, val: <Self as Clock>::T) {
+        unsafe { self.mode0().comp[0].write(|w| w.comp().bits(val)) }
     }
 
-    fn zero() -> Instant {
-        Instant { inner: 0 }
+    fn clear_compare_flag(&mut self) {
+        self.mode0().intflag.write(|w| w.cmp0().set_bit());
     }
 }

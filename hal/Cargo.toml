@@ -46,7 +46,13 @@ optional = true
 
 [dependencies.cortex-m-rtic]
 optional = true
-version = "0.5"
+git = "https://github.com/rtic-rs/cortex-m-rtic"
+branch = "new_monotonic"
+
+[dependencies.rtic-monotonic]
+optional = true
+git = "https://github.com/rtic-rs/rtic-monotonic"
+branch = "master"
 
 [dependencies.void]
 default-features = false
@@ -199,4 +205,4 @@ usb = ["usb-device"]
 dma = ["unproven"]
 max-channels = ["dma"]
 sdmmc = ["embedded-sdmmc"]
-rtic = ["cortex-m-rtic"]
+rtic = ["cortex-m-rtic", "rtic-monotonic"]
