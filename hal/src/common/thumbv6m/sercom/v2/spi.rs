@@ -614,6 +614,7 @@ macro_rules! pads_alias {
 }
 
 #[macro_export]
+#[doc(hidden)]
 macro_rules! __pad_type {
     () => { NoneT };
     ($Sercom:ident, $PadNum:ident, $Id:ident) => {
@@ -1488,8 +1489,8 @@ impl<C: ValidConfig> Spi<C> {
     /// clear the RXC flag, which could break assumptions made elsewhere in
     /// this module.
     #[inline]
-    pub unsafe fn read_data(&mut self) -> u32 {
-        self.sercom().spi().data.read().bits()
+    pub unsafe fn read_data(&mut self) -> u16 {
+        self.sercom().spi().data.read().data().bits()
     }
 
     /// Write to the DATA register
@@ -1498,8 +1499,8 @@ impl<C: ValidConfig> Spi<C> {
     /// the DRE flag, which could break assumptions made elsewhere in this
     /// module.
     #[inline]
-    pub unsafe fn write_data(&mut self, data: u32) {
-        self.sercom().spi().data.write(|w| w.bits(data))
+    pub unsafe fn write_data(&mut self, data: u16) {
+        self.sercom().spi().data.write(|w| w.data().bits(data))
     }
 
     /// Disable the SPI peripheral and return the [`Config`] struct
@@ -1615,7 +1616,7 @@ where
     M: MasterMode,
     C: CharSize,
     C::Word: PrimInt,
-    u32: AsPrimitive<C::Word>,
+    u16: AsPrimitive<C::Word>,
 {
     type Error = Error;
 
@@ -1657,7 +1658,7 @@ where
     P: DipoDopo + Rx + NotTx,
     C: CharSize,
     C::Word: PrimInt,
-    u32: AsPrimitive<C::Word>,
+    u16: AsPrimitive<C::Word>,
 {
     type Error = Error;
 
@@ -1685,7 +1686,7 @@ impl<C> Write<SpiWord<C>> for Spi<C>
 where
     C: ValidConfig,
     C::Pads: Tx + NotRx,
-    SpiWord<C>: PrimInt + AsPrimitive<u32>,
+    SpiWord<C>: PrimInt + AsPrimitive<u16>,
 {
     type Error = Error;
 
@@ -1730,8 +1731,8 @@ where
     C: ValidConfig,
     C::Pads: Tx + Rx,
     C::Mode: MasterMode,
-    SpiWord<C>: PrimInt + AsPrimitive<u32>,
-    u32: AsPrimitive<SpiWord<C>>,
+    SpiWord<C>: PrimInt + AsPrimitive<u16>,
+    u16: AsPrimitive<SpiWord<C>>,
 {
     type Error = Error;
 
