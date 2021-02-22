@@ -184,16 +184,13 @@ use crate::typelevel::NoneT;
 use super::spi::{AnySpi, Error, Flags};
 
 #[cfg(feature = "min-samd51g")]
-use super::spi::{Config, DynLength, Mode, Spi, SpiLength, StaticLength, TxOrRx, ValidConfig};
-
-#[cfg(feature = "min-samd51g")]
-use generic_array::typenum::Unsigned;
-
-#[cfg(any(feature = "samd11", feature = "samd21"))]
-use core::mem::size_of;
+use {
+    super::spi::{Config, DynLength, Mode, Spi, SpiLength, StaticLength, TxOrRx, ValidConfig},
+    typenum::Unsigned,
+};
 
 #[cfg(any(feature = "samd11", feature = "samd21"))]
-use super::spi::SpiWord;
+use {super::spi::SpiWord, core::mem::size_of};
 
 #[cfg(any(feature = "samd11", feature = "samd21"))]
 type Data = u16;

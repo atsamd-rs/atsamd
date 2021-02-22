@@ -130,12 +130,11 @@ use embedded_hal::blocking;
 use embedded_hal::serial::{Read, Write};
 use embedded_hal::spi::{self, FullDuplex};
 pub use embedded_hal::spi::{Phase, Polarity, MODE_0, MODE_1, MODE_2, MODE_3};
-use generic_array::typenum::{self, Unsigned, U0, U1, U2, U3, U4};
-use generic_array::{ArrayLength, GenericArray};
 use nb::Error::WouldBlock;
 use num_traits::{AsPrimitive, PrimInt};
 use paste::paste;
 use seq_macro::seq;
+use typenum::{Unsigned, U0, U1, U2, U3, U4};
 
 use crate::target_device as pac;
 use pac::sercom0::spim::ctrla::{CPHA_A, CPOL_A, DIPO_A, DOPO_A, DORD_A, MODE_A};
@@ -156,7 +155,7 @@ pub mod lengths {
     use seq_macro::seq;
 
     seq!(N in 1..=255 {
-        pub use generic_array::typenum::U#N;
+        pub use typenum::U#N;
     });
 }
 
@@ -818,11 +817,11 @@ impl MasterMode for MasterHWSS {}
 /// traits, as well as other aspects of the SPI API. Transaction lengths of 1-4
 /// only require a single read/write of the DATA register, so they behave
 /// differently than longer transaction lengths.
-pub trait Length: Sealed + Unsigned + ArrayLength<u8> + 'static {
+pub trait Length: Sealed + Unsigned + 'static {
     /// Word size for the transaction length
     ///
     /// For lengths 1-4, this type is `u8`, `u16` or `u32`. For longer
-    /// transactions, this type is [`GenericArray`]`<u8, Self>`.
+    /// transactions, this type is `[u8, Self::USIZE]`.
     type Word: 'static;
 
     /// Configure the `LENGTH` register and enable the `LENGTH` counter
@@ -875,17 +874,16 @@ impl Length for U4 {
 }
 
 /// Marker trait for transaction [`Length`]s greater than four
-pub trait GreaterThan4: Sealed + Unsigned + ArrayLength<u8> + 'static {}
+pub trait GreaterThan4: Length {}
 
 seq!(N in 5..=255 {
     impl Sealed for typenum::U#N {}
     impl StaticLength for typenum::U#N {}
     impl GreaterThan4 for typenum::U#N {}
+    impl Length for typenum::U#N {
+        type Word = [u8; typenum::U#N::USIZE];
+    }
 });
-
-impl<L: GreaterThan4> Length for L {
-    type Word = GenericArray<u8, L>;
-}
 
 //=============================================================================
 // Flags
@@ -2016,7 +2014,7 @@ impl_blocking_traits!(U1, U2, U3, U4);
 /// transaction [`Length`]. If the slice length is incorrect, it will panic.
 ///
 /// [`Transfer`]: blocking::spi::Transfer
-impl<P, M, L> blocking::spi::Transfer<u8> for Spi<Config<P, M, L>>
+impl<'a, P, M, L> blocking::spi::Transfer<u8> for Spi<Config<P, M, L>>
 where
     Config<P, M, L>: ValidConfig,
     P: Rx,
@@ -2027,8 +2025,8 @@ where
 
     #[inline]
     fn transfer<'w>(&mut self, buf: &'w mut [u8]) -> Result<&'w [u8], Error> {
+        assert_eq!(buf.len(), L::USIZE);
         let sercom = unsafe { self.sercom() };
-        let buf: &'w mut GenericArray<u8, L> = buf.into(); // panic if wrong length
         transfer_slice(sercom, buf)
     }
 }
@@ -2050,7 +2048,7 @@ where
 
     #[inline]
     fn transfer<'w>(&mut self, buf: &'w mut [u8]) -> Result<&'w [u8], Error> {
-        assert_eq!(self.get_dyn_length() as usize, buf.len());
+        assert_eq!(buf.len(), self.get_dyn_length() as usize);
         let sercom = unsafe { self.sercom() };
         transfer_slice(sercom, buf)
     }
@@ -2119,8 +2117,8 @@ where
 
     #[inline]
     fn write(&mut self, buf: &[u8]) -> Result<(), Error> {
+        assert_eq!(buf.len(), L::USIZE);
         let sercom = unsafe { self.sercom() };
-        let buf: &GenericArray<u8, L> = buf.into(); // panic if wrong length
         write_slice(sercom, buf)
     }
 }
@@ -2146,7 +2144,7 @@ where
 
     #[inline]
     fn write(&mut self, buf: &[u8]) -> Result<(), Error> {
-        assert_eq!(self.get_dyn_length() as usize, buf.len());
+        assert_eq!(buf.len(), self.get_dyn_length() as usize);
         let sercom = unsafe { self.sercom() };
         write_slice(sercom, buf)
     }
