@@ -3,6 +3,8 @@ use crate::target_device::rtc::{MODE0, MODE2};
 use crate::target_device::RTC;
 use crate::time::{Hertz, Nanoseconds};
 use crate::timer_traits::InterruptDrivenTimer;
+use crate::typelevel::Sealed;
+use core::marker::PhantomData;
 use hal::timer::{CountDown, Periodic};
 use void::Void;
 
@@ -46,29 +48,36 @@ impl From<ClockR> for Datetime {
     }
 }
 
+/// RtcMode represents the mode of the RTC
+pub trait RtcMode: Sealed {}
+
+/// ClockMode represents the Clock/Alarm mode
+pub enum ClockMode {}
+
+impl RtcMode for ClockMode {}
+impl Sealed for ClockMode {}
+
+/// Count32Mode represents the 32-bit counter mode
+pub enum Count32Mode {}
+
+impl RtcMode for Count32Mode {}
+impl Sealed for Count32Mode {}
+
+/// DisabledMode represents the disabled (default) mode
+pub enum DisabledMode {}
+
+impl RtcMode for DisabledMode {}
+impl Sealed for DisabledMode {}
+
 /// Rtc represents the RTC peripheral for either clock/calendar or timer mode.
-pub struct Rtc {
+pub struct Rtc<Mode: RtcMode> {
     rtc: RTC,
     rtc_clock_freq: Hertz,
+    _mode: PhantomData<Mode>,
 }
 
-impl Rtc {
-    /// Resets & does the basic configuration of the RTC peripheral,
-    /// but doesn't configure it into a specific mode.
-    pub fn new(rtc: RTC, rtc_clock_freq: Hertz, pm: &mut PM) -> Self {
-        pm.apbamask.modify(|_, w| w.rtc_().set_bit());
-
-        let new_rtc = Self {
-            rtc,
-            rtc_clock_freq,
-        };
-
-        new_rtc.reset();
-        new_rtc
-    }
-
+impl<Mode: RtcMode> Rtc<Mode> {
     // --- Helper Functions for M0 vs M4 targets
-
     #[inline]
     fn mode0(&self) -> &MODE0 {
         self.rtc.mode0()
@@ -119,11 +128,46 @@ impl Rtc {
         self.sync();
     }
 
+    fn create(rtc: RTC, rtc_clock_freq: Hertz) -> Self {
+        Self {
+            rtc,
+            rtc_clock_freq,
+            _mode: PhantomData,
+        }
+    }
+
+    fn into_mode<M: RtcMode>(self) -> Rtc<M> {
+        Rtc::create(self.rtc, self.rtc_clock_freq)
+    }
+
+    /// Configures the peripheral for 32bit counter mode.
+    pub fn count32_mode(self) -> Rtc<Count32Mode> {
+        self.mode0_ctrla().modify(|_, w| {
+            w.mode().count32() // enable mode2 (clock)
+            .matchclr().clear_bit()
+            .prescaler().div1() // No prescaler
+        });
+        self.sync();
+
+        // enable clock sync on SAMx5x
+        #[cfg(feature = "min-samd51g")]
+        {
+            self.mode2_ctrla().modify(|_, w| {
+                w.clocksync().set_bit() // synchronize the CLOCK register
+            });
+
+            self.sync();
+        }
+
+        self.enable(true);
+        self.into_mode()
+    }
+
     // --- clock functions
 
     /// Configures the peripheral for clock/calendar mode. Requires the source
     /// clock to be running at 1024 Hz.
-    pub fn clock_mode(&mut self) {
+    pub fn clock_mode(self) -> Rtc<ClockMode> {
         // The max divisor is 1024, so to get 1 Hz, we need a 1024 Hz source.
         assert_eq!(self.rtc_clock_freq.0, 1024_u32, "RTC clk not 1024 Hz!");
 
@@ -146,7 +190,42 @@ impl Rtc {
         }
 
         self.enable(true);
+        self.into_mode()
     }
+}
+
+impl Rtc<DisabledMode> {
+    /// Resets & does the basic configuration of the RTC peripheral,
+    /// but doesn't configure it into a specific mode.
+    pub fn new(rtc: RTC, rtc_clock_freq: Hertz, pm: &mut PM) -> Self {
+        pm.apbamask.modify(|_, w| w.rtc_().set_bit());
+
+        let new_rtc = Rtc {
+            rtc,
+            rtc_clock_freq,
+            _mode: PhantomData,
+        };
+
+        new_rtc.reset();
+        new_rtc
+    }
+}
+
+impl Rtc<Count32Mode> {
+    #[inline]
+    fn count32(&self) -> u32 {
+        // synchronize this read on SAMD11/21. SAMx5x is automatically synchronized
+        #[cfg(any(feature = "samd11", feature = "samd21"))]
+        {
+            self.mode0().readreq.modify(|_, w| w.rcont().set_bit());
+            self.sync();
+        }
+        self.mode0().count.read().bits()
+    }
+}
+
+impl Rtc<ClockMode> {
+    // --- timer functions
 
     /// Returns the current clock/calendar value.
     pub fn current_time(&self) -> Datetime {
@@ -181,8 +260,8 @@ impl Rtc {
 
 // --- Timer / Counter Functionality
 
-impl Periodic for Rtc {}
-impl CountDown for Rtc {
+impl Periodic for Rtc<DisabledMode> {}
+impl CountDown for Rtc<DisabledMode> {
     type Time = Nanoseconds;
 
     fn start<T>(&mut self, timeout: T)
@@ -228,7 +307,7 @@ impl CountDown for Rtc {
     }
 }
 
-impl InterruptDrivenTimer for Rtc {
+impl InterruptDrivenTimer for Rtc<DisabledMode> {
     /// Enable the interrupt generation for this hardware timer.
     /// This method only sets the clock configuration to trigger
     /// the interrupt; it does not configure the interrupt controller
