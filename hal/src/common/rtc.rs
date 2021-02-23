@@ -245,7 +245,10 @@ impl Rtc<Count32Mode> {
     /// This resets the internal counter and sets the prescaler to match the
     /// provided timeout. You should configure the prescaler using the longest
     /// timeout you plan to measure.
-    pub fn reset_and_compute_prescaler<T: Into<<Self as CountDown>::Time>>(&mut self, timeout: T) -> &Self {
+    pub fn reset_and_compute_prescaler<T: Into<<Self as CountDown>::Time>>(
+        &mut self,
+        timeout: T,
+    ) -> &Self {
         let params = TimerParams::new_us(timeout, self.rtc_clock_freq.0);
         let divider = params.divider;
 
