@@ -57,17 +57,13 @@ pub enum ClockMode {}
 impl RtcMode for ClockMode {}
 impl Sealed for ClockMode {}
 
-/// Count32Mode represents the 32-bit counter mode
+/// Count32Mode represents the 32-bit counter mode. This is a free running
+/// count-up timer, the counter value is preserved when using the CountDown /
+/// Periodic traits (which are using the compare register only).
 pub enum Count32Mode {}
 
 impl RtcMode for Count32Mode {}
 impl Sealed for Count32Mode {}
-
-/// DisabledMode represents the disabled (default) mode
-pub enum DisabledMode {}
-
-impl RtcMode for DisabledMode {}
-impl Sealed for DisabledMode {}
 
 /// Rtc represents the RTC peripheral for either clock/calendar or timer mode.
 pub struct Rtc<Mode: RtcMode> {
@@ -79,17 +75,17 @@ pub struct Rtc<Mode: RtcMode> {
 impl<Mode: RtcMode> Rtc<Mode> {
     // --- Helper Functions for M0 vs M4 targets
     #[inline]
-    fn mode0(&self) -> &MODE0 {
+    fn mode0(&mut self) -> &MODE0 {
         self.rtc.mode0()
     }
 
     #[inline]
-    fn mode2(&self) -> &MODE2 {
+    fn mode2(&mut self) -> &MODE2 {
         self.rtc.mode2()
     }
 
     #[inline]
-    fn mode0_ctrla(&self) -> &MODE0_CTRLA {
+    fn mode0_ctrla(&mut self) -> &MODE0_CTRLA {
         #[cfg(feature = "min-samd51g")]
         return &self.mode0().ctrla;
         #[cfg(any(feature = "samd11", feature = "samd21"))]
@@ -97,7 +93,7 @@ impl<Mode: RtcMode> Rtc<Mode> {
     }
 
     #[inline]
-    fn mode2_ctrla(&self) -> &MODE2_CTRLA {
+    fn mode2_ctrla(&mut self) -> &MODE2_CTRLA {
         #[cfg(feature = "min-samd51g")]
         return &self.mode2().ctrla;
         #[cfg(any(feature = "samd11", feature = "samd21"))]
@@ -105,7 +101,7 @@ impl<Mode: RtcMode> Rtc<Mode> {
     }
 
     #[inline]
-    fn sync(&self) {
+    fn sync(&mut self) {
         #[cfg(feature = "min-samd51g")]
         while self.mode2().syncbusy.read().bits() != 0 {}
         #[cfg(any(feature = "samd11", feature = "samd21"))]
@@ -113,13 +109,13 @@ impl<Mode: RtcMode> Rtc<Mode> {
     }
 
     #[inline]
-    fn reset(&self) {
+    fn reset(&mut self) {
         self.mode0_ctrla().modify(|_, w| w.swrst().set_bit());
         self.sync();
     }
 
     #[inline]
-    fn enable(&self, enable: bool) {
+    fn enable(&mut self, enable: bool) {
         if enable {
             self.mode0_ctrla().modify(|_, w| w.enable().set_bit());
         } else {
@@ -140,8 +136,10 @@ impl<Mode: RtcMode> Rtc<Mode> {
         Rtc::create(self.rtc, self.rtc_clock_freq)
     }
 
-    /// Configures the peripheral for 32bit counter mode.
-    pub fn count32_mode(self) -> Rtc<Count32Mode> {
+    /// Reonfigures the peripheral for 32bit counter mode.
+    pub fn into_count32_mode(mut self) -> Rtc<Count32Mode> {
+        self.enable(false);
+        self.sync();
         self.mode0_ctrla().modify(|_, w| {
             w.mode().count32() // enable mode2 (clock)
             .matchclr().clear_bit()
@@ -163,21 +161,21 @@ impl<Mode: RtcMode> Rtc<Mode> {
         self.into_mode()
     }
 
-    // --- clock functions
-
-    /// Configures the peripheral for clock/calendar mode. Requires the source
+    /// Reconfigures the peripheral for clock/calendar mode. Requires the source
     /// clock to be running at 1024 Hz.
-    pub fn clock_mode(self) -> Rtc<ClockMode> {
+    pub fn into_clock_mode(mut self) -> Rtc<ClockMode> {
         // The max divisor is 1024, so to get 1 Hz, we need a 1024 Hz source.
         assert_eq!(self.rtc_clock_freq.0, 1024_u32, "RTC clk not 1024 Hz!");
 
+        self.sync();
+        self.enable(false);
+        self.sync();
         self.mode2_ctrla().modify(|_, w| {
             w.mode().clock() // enable mode2 (clock)
             .clkrep().clear_bit()
             .matchclr().clear_bit()
             .prescaler().div1024() // 1.024 kHz / 1024 = 1Hz
         });
-        self.sync();
 
         // enable clock sync on SAMx5x
         #[cfg(feature = "min-samd51g")]
@@ -189,31 +187,37 @@ impl<Mode: RtcMode> Rtc<Mode> {
             self.sync();
         }
 
+        self.sync();
         self.enable(true);
         self.into_mode()
     }
+
+    /// Releases the RTC resource
+    pub fn free(self) -> RTC {
+        self.rtc
+    }
 }
 
-impl Rtc<DisabledMode> {
-    /// Resets & does the basic configuration of the RTC peripheral,
-    /// but doesn't configure it into a specific mode.
-    pub fn new(rtc: RTC, rtc_clock_freq: Hertz, pm: &mut PM) -> Self {
+impl Rtc<Count32Mode> {
+    /// Configures the RTC in 32-bit counter mode with no prescaler (default
+    /// state after reset) and the counter initialized to zero.
+    pub fn count32_mode(rtc: RTC, rtc_clock_freq: Hertz, pm: &mut PM) -> Self {
         pm.apbamask.modify(|_, w| w.rtc_().set_bit());
 
-        let new_rtc = Rtc {
+        let mut new_rtc = Self {
             rtc,
             rtc_clock_freq,
             _mode: PhantomData,
         };
 
         new_rtc.reset();
+        new_rtc.enable(true);
         new_rtc
     }
-}
 
-impl Rtc<Count32Mode> {
+    /// Returns the internal counter value.
     #[inline]
-    fn count32(&self) -> u32 {
+    pub fn count32(&mut self) -> u32 {
         // synchronize this read on SAMD11/21. SAMx5x is automatically synchronized
         #[cfg(any(feature = "samd11", feature = "samd21"))]
         {
@@ -222,13 +226,57 @@ impl Rtc<Count32Mode> {
         }
         self.mode0().count.read().bits()
     }
+
+    /// Sets the internal counter value.
+    #[inline]
+    pub fn set_count32(&mut self, count: u32) {
+        self.sync();
+        self.enable(false);
+
+        self.sync();
+        self.mode0()
+            .count
+            .write(|w| unsafe { w.count().bits(count) });
+
+        self.sync();
+        self.enable(true);
+    }
+
+    /// This resets the internal counter and sets the prescaler to match the
+    /// provided timeout. You should configure the prescaler using the longest
+    /// timeout you plan to measure.
+    pub fn reset_and_compute_prescaler<T: Into<<Self as CountDown>::Time>>(&mut self, timeout: T) -> &Self {
+        let params = TimerParams::new_us(timeout, self.rtc_clock_freq.0);
+        let divider = params.divider;
+
+        // Disable the timer while we reconfigure it
+        self.sync();
+        self.enable(false);
+
+        // Now that we have a clock routed to the peripheral, we
+        // can ask it to perform a reset.
+        self.sync();
+        self.reset();
+
+        while self.mode0_ctrla().read().swrst().bit_is_set() {}
+
+        self.mode0_ctrla().modify(|_, w| {
+            // set clock divider...
+            w.prescaler().variant(divider);
+            // and enable RTC.
+            w.enable().set_bit()
+        });
+        self
+    }
 }
 
 impl Rtc<ClockMode> {
-    // --- timer functions
+    pub fn clock_mode(rtc: RTC, rtc_clock_freq: Hertz, pm: &mut PM) -> Self {
+        Rtc::count32_mode(rtc, rtc_clock_freq, pm).into_clock_mode()
+    }
 
     /// Returns the current clock/calendar value.
-    pub fn current_time(&self) -> Datetime {
+    pub fn current_time(&mut self) -> Datetime {
         // synchronize this read on SAMD11/21. SAMx5x is automatically synchronized
         #[cfg(any(feature = "samd11", feature = "samd21"))]
         {
@@ -260,40 +308,21 @@ impl Rtc<ClockMode> {
 
 // --- Timer / Counter Functionality
 
-impl Periodic for Rtc<DisabledMode> {}
-impl CountDown for Rtc<DisabledMode> {
+impl Periodic for Rtc<Count32Mode> {}
+impl CountDown for Rtc<Count32Mode> {
     type Time = Nanoseconds;
 
     fn start<T>(&mut self, timeout: T)
     where
         T: Into<Self::Time>,
     {
-        let params = TimerParams::new_us(timeout, self.rtc_clock_freq.0);
-        let divider = params.divider;
-        let cycles = params.cycles;
-
-        // Disable the timer while we reconfigure it
-        self.enable(false);
-
-        // 32 bit counter mode plz
-        self.mode0_ctrla().modify(|_, w| w.mode().count32());
-
-        // Now that we have a clock routed to the peripheral, we
-        // can ask it to perform a reset.
-        self.reset();
-
-        while self.mode0_ctrla().read().swrst().bit_is_set() {}
+        let ticks: u32 =
+            (timeout.into().0 as u64 * self.rtc_clock_freq.0 as u64 / 1_000_000_000) as u32;
+        let comp = self.count32().wrapping_add(ticks);
 
         // set cycles to compare to...
-        self.mode0().comp[0].write(|w| unsafe { w.comp().bits(cycles) });
-        self.mode0_ctrla().modify(|_, w| {
-            // set clock divider...
-            w.prescaler().variant(divider);
-            // clear timer on match...
-            w.matchclr().set_bit();
-            // and enable RTC.
-            w.enable().set_bit()
-        });
+        self.sync();
+        self.mode0().comp[0].write(|w| unsafe { w.comp().bits(comp) });
     }
 
     fn wait(&mut self) -> nb::Result<(), Void> {
@@ -307,7 +336,7 @@ impl CountDown for Rtc<DisabledMode> {
     }
 }
 
-impl InterruptDrivenTimer for Rtc<DisabledMode> {
+impl InterruptDrivenTimer for Rtc<Count32Mode> {
     /// Enable the interrupt generation for this hardware timer.
     /// This method only sets the clock configuration to trigger
     /// the interrupt; it does not configure the interrupt controller
@@ -341,7 +370,7 @@ impl TimerParams {
     {
         let timeout = timeout.into();
         let ticks: u32 = src_freq / timeout.0.max(1);
-        TimerParams::new_from_ticks(ticks)
+        Self::new_from_ticks(ticks)
     }
 
     /// calculates RTC timer paramters based on the input period-based timeout.

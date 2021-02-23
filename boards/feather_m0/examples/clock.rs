@@ -45,8 +45,7 @@ fn main() -> ! {
         .unwrap();
     clocks.configure_standby(ClockGenId::GCLK3, true);
     let rtc_clock = clocks.rtc(&timer_clock).unwrap();
-    let mut rtc = rtc::Rtc::new(peripherals.RTC, rtc_clock.freq(), &mut peripherals.PM);
-    let mut rtc = rtc.clock_mode();
+    let rtc = rtc::Rtc::clock_mode(peripherals.RTC, rtc_clock.freq(), &mut peripherals.PM);
 
     unsafe {
         RTC = Some(rtc);

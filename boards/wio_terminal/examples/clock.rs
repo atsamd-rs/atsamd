@@ -53,11 +53,11 @@ fn main() -> ! {
     let pins = Pins::new(peripherals.PORT);
     let mut sets: Sets = pins.split();
 
+    // Configure the RTC. a 1024 Hz clock is configured for us when enabling our
+    // main clock
+    let rtc = rtc::Rtc::clock_mode(peripherals.RTC, 1024.hz(), &mut peripherals.MCLK);
+
     unsafe {
-        // Configure the RTC. a 1024 Hz clock is configured for us when enabling our
-        // main clock
-        let mut rtc = rtc::Rtc::new(peripherals.RTC, 1024.hz(), &mut peripherals.MCLK);
-        let mut rtc = rtc.clock_mode();
         RTC = Some(rtc);
     }
 
