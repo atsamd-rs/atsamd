@@ -31,13 +31,12 @@
 //! `Uninitialized` state. You will be required to call [`Channel::init`]
 //! again before being able to use it with a `Transfer`.
 
-use super::dma_controller::{DmaController, PriorityLevel, TriggerAction, TriggerSource};
+use super::dma_controller::{ChId, DmaController, PriorityLevel, TriggerAction, TriggerSource};
 use crate::{
     target_device::DMAC,
     typelevel::{Is, Sealed},
 };
 use core::{marker::PhantomData, mem};
-use typenum::*;
 
 #[cfg(feature = "min-samd51g")]
 use super::dma_controller::{BurstLength, FifoThreshold};
@@ -68,7 +67,7 @@ impl Status for Busy {}
 //==============================================================================
 pub trait AnyChannel: Sealed + Is<Type = SpecificChannel<Self>> {
     type Status: Status;
-    type Id: Unsigned;
+    type Id: ChId;
 }
 
 pub type SpecificChannel<C> = Channel<<C as AnyChannel>::Id, <C as AnyChannel>::Status>;
@@ -78,14 +77,14 @@ pub type ChannelId<C> = <C as AnyChannel>::Id;
 
 impl<Id, S> Sealed for Channel<Id, S>
 where
-    Id: Unsigned,
+    Id: ChId,
     S: Status,
 {
 }
 
 impl<Id, S> AnyChannel for Channel<Id, S>
 where
-    Id: Unsigned,
+    Id: ChId,
     S: Status,
 {
     type Id = Id;
@@ -113,13 +112,13 @@ impl<C: AnyChannel> AsMut<C> for SpecificChannel<C> {
 //==============================================================================
 /// DMA channel, capable of executing
 /// [`Transfer`](super::transfer::Transfer)s.
-pub struct Channel<Id: Unsigned, S: Status> {
+pub struct Channel<Id: ChId, S: Status> {
     _id: PhantomData<Id>,
     _status: S,
 }
 
 #[inline]
-pub(crate) fn new_chan<Id: Unsigned>(_id: PhantomData<Id>) -> Channel<Id, Uninitialized> {
+pub(crate) fn new_chan<Id: ChId>(_id: PhantomData<Id>) -> Channel<Id, Uninitialized> {
     Channel {
         _id,
         _status: Uninitialized,
@@ -127,7 +126,7 @@ pub(crate) fn new_chan<Id: Unsigned>(_id: PhantomData<Id>) -> Channel<Id, Uninit
 }
 
 /// These methods may be used on any DMA channel in any configuration
-impl<Id: Unsigned, S: Status> Channel<Id, S> {
+impl<Id: ChId, S: Status> Channel<Id, S> {
     /// Set channel ID and run the closure. A closure is needed to ensure
     /// the registers are accessed in an interrupt-safe way, as the SAMD21
     /// DMAC is a little funky - It requires setting the channel number in
@@ -220,7 +219,7 @@ impl<Id: Unsigned, S: Status> Channel<Id, S> {
 }
 
 /// These methods may only be used on a `Ready` DMA channel
-impl<Id: Unsigned> Channel<Id, Ready> {
+impl<Id: ChId> Channel<Id, Ready> {
     /// Issue a software reset to the channel. This will return the channel to
     /// its startup state
     #[inline]
@@ -307,7 +306,7 @@ impl<Id: Unsigned> Channel<Id, Ready> {
 }
 
 /// These methods may only be used on a `Busy` DMA channel
-impl<Id: Unsigned> Channel<Id, Busy> {
+impl<Id: ChId> Channel<Id, Busy> {
     /// Issue a software trigger to the channel
     #[inline]
     pub(crate) fn software_trigger(&mut self, dmac: &mut DMAC) {

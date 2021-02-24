@@ -90,13 +90,12 @@
 
 use super::{
     channel::{AnyChannel, Busy, Channel, ChannelId, Ready},
-    dma_controller::{DmaController, TriggerAction, TriggerSource},
+    dma_controller::{ChId, DmaController, TriggerAction, TriggerSource},
     BlockTransferControl, DmacDescriptor, DESCRIPTOR_SECTION,
 };
 use crate::typelevel::{Is, Sealed};
 use core::mem;
 use core::sync::atomic;
-use generic_array::typenum::Unsigned;
 use modular_bitfield::prelude::*;
 
 //==============================================================================
@@ -355,7 +354,7 @@ where
         mut destination: D,
         circular: bool,
     ) -> Transfer<C, BufferPair<S, D>> {
-        let id = C::Id::USIZE;
+        let id = <C as AnyChannel>::Id::USIZE;
 
         // Enable support for circular transfers. If circular_xfer is true,
         // we set the address of the "next" block descriptor to actually

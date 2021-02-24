@@ -20,7 +20,6 @@
 //! deinitialize the DMAC and return the underlying PAC object.
 
 use core::mem;
-use generic_array::typenum::*;
 use modular_bitfield::prelude::*;
 use paste::paste;
 use seq_macro::seq;
@@ -45,13 +44,24 @@ use super::{
 };
 use crate::target_device::{DMAC, PM};
 
+/// Trait representing a DMA channel ID
+pub trait ChId {
+    const U8: u8;
+    const USIZE: usize;
+}
+
 macro_rules! define_channels_struct {
     ($num_channels:literal) => {
         seq!(N in 0..$num_channels {
             paste! {
                 #(
                     /// Type alias for a channel number
-                    pub type [<Ch N>] = [<U N>];
+                    pub struct [<Ch N>];
+
+                    impl ChId for [<Ch N>] {
+                        const U8: u8 = N;
+                        const USIZE: usize = N;
+                    }
                 )*
 
                 /// Struct generating individual handles to each DMA channel
