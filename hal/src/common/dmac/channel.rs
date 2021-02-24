@@ -37,7 +37,7 @@ use crate::{
     typelevel::{Is, Sealed},
 };
 use core::{marker::PhantomData, mem};
-use generic_array::typenum::*;
+use typenum::*;
 
 #[cfg(feature = "min-samd51g")]
 use super::dma_controller::{BurstLength, FifoThreshold};
@@ -140,8 +140,8 @@ impl<Id: Unsigned, S: Status> Channel<Id, S> {
             // SAFETY: this is actually safe as long as we write a correct channel number to
             // the CHID register
             unsafe {
-                dmac.chid.modify(|_, w| w.id().bits(Id::to_u8()));
-            }
+                dmac.chid.modify(|_, w| w.id().bits(Id::U8));
+            };
 
             fun(dmac);
         });
@@ -154,7 +154,7 @@ impl<Id: Unsigned, S: Status> Channel<Id, S> {
     #[cfg(feature = "min-samd51g")]
     #[inline]
     fn with_chid<F: Fn(&CHANNEL)>(&mut self, dmac: &mut DMAC, fun: F) {
-        let mut ch = &dmac.channel[Id::to_usize()];
+        let mut ch = &dmac.channel[Id::USIZE];
         fun(&mut ch);
     }
 
@@ -214,7 +214,7 @@ impl<Id: Unsigned, S: Status> Channel<Id, S> {
         // SAFETY: This is safe because we are writing the correct channel
         // number into the register
         unsafe {
-            dmac.swtrigctrl.modify(|_, w| w.bits(1 << Id::to_u8()));
+            dmac.swtrigctrl.modify(|_, w| w.bits(1 << Id::U8));
         }
     }
 }
@@ -337,7 +337,7 @@ impl<Id: Unsigned> Channel<Id, Busy> {
     /// channel needs to be both NOT PENDING and NOT BUSY.
     #[inline]
     pub(crate) fn xfer_complete(&self, dmac: &mut DMAC) -> bool {
-        let id = Id::to_u8();
+        let id = Id::U8;
         dmac.busych.read().bits() & (1 << id) == 0 && dmac.pendch.read().bits() & (1 << id) == 0
     }
 

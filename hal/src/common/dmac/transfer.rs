@@ -355,7 +355,7 @@ where
         mut destination: D,
         circular: bool,
     ) -> Transfer<C, BufferPair<S, D>> {
-        let id = C::Id::to_usize();
+        let id = C::Id::USIZE;
 
         // Enable support for circular transfers. If circular_xfer is true,
         // we set the address of the "next" block descriptor to actually

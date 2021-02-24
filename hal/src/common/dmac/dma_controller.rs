@@ -49,10 +49,15 @@ macro_rules! define_channels_struct {
     ($num_channels:literal) => {
         seq!(N in 0..$num_channels {
             paste! {
+                #(
+                    /// Type alias for a channel number
+                    pub type [<Ch N>] = [<U N>];
+                )*
+
                 /// Struct generating individual handles to each DMA channel
                 pub struct Channels(
                     #(
-                        pub Channel<[<U N>], Uninitialized>,
+                        pub Channel<[<Ch N>], Uninitialized>,
                     )*
                 );
             }
