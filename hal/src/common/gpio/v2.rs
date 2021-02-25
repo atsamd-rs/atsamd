@@ -20,3 +20,5 @@ pub use pin::*;
 
 pub mod dynpin;
 pub use dynpin::*;
+
+mod reg;

@@ -135,17 +135,17 @@ use core::convert::Infallible;
 use core::marker::PhantomData;
 use core::mem::transmute;
 
-use paste::paste;
-
 use hal::digital::v2::OutputPin;
 #[cfg(feature = "unproven")]
 use hal::digital::v2::{InputPin, StatefulOutputPin, ToggleableOutputPin};
+use paste::paste;
 
 use crate::target_device::PORT;
 
 use crate::typelevel::{NoneT, Sealed};
 
 use super::dynpin::*;
+use super::reg::RegisterInterface;
 
 //==============================================================================
 //  Disabled configurations
@@ -155,10 +155,6 @@ use super::dynpin::*;
 pub trait DisabledConfig: Sealed {
     /// Corresponding [`DynDisabled`](super::DynDisabled)
     const DYN: DynDisabled;
-    /// Value of the PULLEN field in this configuration
-    const PULLEN: bool;
-    /// Value of the OUT field in this configuration
-    const OUT: bool = false;
 }
 
 /// Type-level variant of both [`DisabledConfig`] and [`InputConfig`]
@@ -174,17 +170,12 @@ impl Sealed for PullUp {}
 
 impl DisabledConfig for Floating {
     const DYN: DynDisabled = DynDisabled::Floating;
-    const PULLEN: bool = false;
 }
 impl DisabledConfig for PullDown {
     const DYN: DynDisabled = DynDisabled::PullDown;
-    const PULLEN: bool = true;
-    const OUT: bool = false;
 }
 impl DisabledConfig for PullUp {
     const DYN: DynDisabled = DynDisabled::PullUp;
-    const PULLEN: bool = true;
-    const OUT: bool = true;
 }
 
 /// Type-level variant of [`PinMode`] for disabled modes
@@ -217,25 +208,16 @@ pub type Reset = FloatingDisabled;
 pub trait InputConfig: Sealed {
     /// Corresponding [`DynInput`](super::DynInput)
     const DYN: DynInput;
-    /// Value of the PULLEN field in this configuration
-    const PULLEN: bool;
-    /// Value of the OUT field in this configuration
-    const OUT: bool = false;
 }
 
 impl InputConfig for Floating {
     const DYN: DynInput = DynInput::Floating;
-    const PULLEN: bool = false;
 }
 impl InputConfig for PullDown {
     const DYN: DynInput = DynInput::PullDown;
-    const PULLEN: bool = true;
-    const OUT: bool = false;
 }
 impl InputConfig for PullUp {
     const DYN: DynInput = DynInput::PullUp;
-    const PULLEN: bool = true;
-    const OUT: bool = true;
 }
 
 /// Type-level variant of [`PinMode`] for input modes
@@ -265,8 +247,6 @@ pub type PullUpInput = Input<PullUp>;
 pub trait OutputConfig: Sealed {
     /// Corresponding [`DynOutput`](super::DynOutput)
     const DYN: DynOutput;
-    /// Value of the INEN field in this configuration
-    const INEN: bool;
 }
 
 /// Type-level variant of [`OutputConfig`] for a push-pull configuration
@@ -280,11 +260,9 @@ impl Sealed for Readable {}
 
 impl OutputConfig for PushPull {
     const DYN: DynOutput = DynOutput::PushPull;
-    const INEN: bool = false;
 }
 impl OutputConfig for Readable {
     const DYN: DynOutput = DynOutput::Readable;
-    const INEN: bool = true;
 }
 
 /// Type-level variant of [`PinMode`] for output modes
@@ -310,33 +288,25 @@ pub type ReadableOutput = Output<Readable>;
 pub trait AlternateConfig: Sealed {
     /// Corresponding [`DynAlternate`](super::DynAlternate)
     const DYN: DynAlternate;
-    /// Value of the PMUXE/PMUXO field in this configuration
-    const PMUX: u8;
 }
 
 macro_rules! alternate {
-    ([
+    (
         $(
-            $( #[$cfg:meta] )?
-            ($Letter:ident, $NUM:literal),
-        )+
-    ]) => {
+            $Letter:ident
+        ),+
+    ) => {
         paste! {
             $(
-                $( #[$cfg] )?
                 #[
                     doc = "Type-level variant of [`AlternateConfig`] for \
                     alternate peripheral function " $Letter
                 ]
                 pub enum $Letter {}
-                $( #[$cfg] )?
                 impl Sealed for $Letter {}
-                $( #[$cfg] )?
                 impl AlternateConfig for $Letter {
                     const DYN: DynAlternate = DynAlternate::$Letter;
-                    const PMUX: u8 = $NUM;
                 }
-                $( #[$cfg] )?
                 #[
                     doc = "Type-level variant of [`PinMode`] for alternate \
                     peripheral function [`" $Letter "`]"
@@ -347,29 +317,13 @@ macro_rules! alternate {
     };
 }
 
-alternate!([
-    (A, 00),
-    (B, 01),
-    (C, 02),
-    (D, 03),
-    (E, 04),
-    (F, 05),
-    (G, 06),
-    #[cfg(any(feature = "samd21", feature = "min-samd51g"))]
-    (H, 07),
-    #[cfg(feature = "min-samd51g")]
-    (I, 08),
-    #[cfg(feature = "min-samd51g")]
-    (J, 09),
-    #[cfg(feature = "min-samd51g")]
-    (K, 10),
-    #[cfg(feature = "min-samd51g")]
-    (L, 11),
-    #[cfg(feature = "min-samd51g")]
-    (M, 12),
-    #[cfg(feature = "min-samd51g")]
-    (N, 13),
-]);
+alternate!(A, B, C, D, E, F, G);
+
+#[cfg(any(feature = "samd21", feature = "min-samd51g"))]
+alternate!(H);
+
+#[cfg(feature = "min-samd51g")]
+alternate!(I, J, K, L, M, N);
 
 /// Type-level variant of [`PinMode`] for alternate peripheral functions
 ///
@@ -388,98 +342,244 @@ impl<C: AlternateConfig> Sealed for Alternate<C> {}
 pub trait PinMode: Sealed + Sized {
     /// Corresponding [`DynPinMode`](super::DynPinMode)
     const DYN: DynPinMode;
-    /// Value of the DIR field in this mode
-    const DIR: bool = false;
-    /// Value of the INEN field in this mode
-    const INEN: bool = false;
-    /// Value of the PULLEN field in this mode
-    const PULLEN: bool = false;
-    /// Value of the OUT field in this mode
-    const OUT: bool = false;
-    /// Value of the PMUXEN field in this mode
-    const PMUXEN: bool = false;
-    /// Value of the PMUXE/PMUXO field in this mode
-    const PMUX: u8 = 0;
-    /// Convert a [`Pin`] into this [`PinMode`]
-    #[inline]
-    fn into_mode<I, M>(_pin: Pin<I, M>) -> Pin<I, Self>
-    where
-        I: PinId,
-        M: PinMode,
-    {
-        // SAFETY: We have exclusive control of the pin, so this is safe to use.
-        unsafe { Self::convert(I::Group::group(), I::NUM) };
-        Pin::new()
-    }
-    /// Set the hardware registers for a given [`PinMode`]
-    ///
-    /// # Safety
-    /// This function is only safe to use with exclusive control of a pin,
-    /// through ownership or a mutable reference. It uses the GROUP pointer
-    /// safely, because it only writes bits of the corresponding pin and does so
-    /// with atomic operations. Normally, it would not be possible to configure
-    /// the PMUX value without writing bits for another pin, but the WRCONFIG
-    /// register makes this possible.
-    #[doc(hidden)]
-    #[inline]
-    unsafe fn convert(group: *const GROUP, num: u8) {
-        let mask: u32 = 1 << num;
-        (*group).wrconfig.write(|w| {
-            if num & 0x10 != 0 {
-                w.hwsel().set_bit();
-            } else {
-                w.hwsel().clear_bit();
-            }
-            w.wrpincfg().set_bit();
-            w.wrpmux().set_bit();
-            w.pmux().bits(Self::PMUX);
-            w.pullen().bit(Self::PULLEN);
-            w.inen().bit(Self::INEN);
-            w.pmuxen().bit(Self::PMUXEN);
-            w.pinmask().bits(1 << (num & 0xF))
-        });
-        if Self::DIR {
-            (*group).dirset.write(|w| w.bits(mask));
-        } else {
-            (*group).dirclr.write(|w| w.bits(mask));
-        }
-        if Self::PULLEN {
-            if Self::OUT {
-                (*group).outset.write(|w| w.bits(mask));
-            } else {
-                (*group).outclr.write(|w| w.bits(mask));
-            }
-        }
-    }
 }
 
 impl<C: DisabledConfig> PinMode for Disabled<C> {
     const DYN: DynPinMode = DynPinMode::Disabled(C::DYN);
-    const DIR: bool = false;
-    const INEN: bool = false;
-    const PULLEN: bool = C::PULLEN;
-    const OUT: bool = C::OUT;
 }
 
 impl<C: InputConfig> PinMode for Input<C> {
     const DYN: DynPinMode = DynPinMode::Input(C::DYN);
-    const DIR: bool = false;
-    const INEN: bool = true;
-    const PULLEN: bool = C::PULLEN;
-    const OUT: bool = C::OUT;
 }
 
 impl<C: OutputConfig> PinMode for Output<C> {
     const DYN: DynPinMode = DynPinMode::Output(C::DYN);
-    const DIR: bool = true;
-    const INEN: bool = C::INEN;
 }
 
 impl<C: AlternateConfig> PinMode for Alternate<C> {
     const DYN: DynPinMode = DynPinMode::Alternate(C::DYN);
-    const PMUXEN: bool = true;
-    const PMUX: u8 = C::PMUX;
 }
+
+//==============================================================================
+//  Pin IDs
+//==============================================================================
+
+/// Type-level `enum` for pin IDs
+pub trait PinId: Sealed {
+    /// Corresponding [`DynPinId`](super::DynPinId)
+    const DYN: DynPinId;
+}
+
+macro_rules! pin_id {
+    ($Group:ident, $Id:ident, $NUM:literal) => {
+        paste! {
+            #[doc = "Pin ID representing pin " $Id]
+            pub enum $Id {}
+            impl Sealed for $Id {}
+            impl PinId for $Id {
+                const DYN: DynPinId = DynPinId {
+                    group: DynGroup::$Group,
+                    num: $NUM,
+                };
+            }
+        }
+    };
+}
+
+//==============================================================================
+//  Registers
+//==============================================================================
+
+/// Provide a safe register interface for [`Pin`]s
+///
+/// This `struct` takes ownership of a [`PinId`] and provides an API to
+/// access the corresponding regsiters.
+struct Registers<I: PinId> {
+    id: PhantomData<I>,
+}
+
+// [`Registers`] takes ownership of the [`PinId`], and [`Pin`] guarantees that
+// each pin is a singleton, so this implementation is safe.
+unsafe impl<I: PinId> RegisterInterface for Registers<I> {
+    #[inline]
+    fn id(&self) -> DynPinId {
+        I::DYN
+    }
+}
+
+impl<I: PinId> Registers<I> {
+    /// Create a new instance of [`Registers`]
+    ///
+    /// # Safety
+    ///
+    /// Users must never create two simultaneous instances of this `struct` with
+    /// the same [`PinId`]
+    #[inline]
+    unsafe fn new() -> Self {
+        Registers { id: PhantomData }
+    }
+
+    /// Provide a type-level equivalent for the
+    /// [`RegisterInterface::change_mode`] method.
+    #[inline]
+    fn change_mode<M: PinMode>(&mut self) {
+        RegisterInterface::change_mode(self, M::DYN);
+    }
+}
+
+//==============================================================================
+//  Pin
+//==============================================================================
+
+/// A type-level GPIO pin, parameterized by [`PinId`] and [`PinMode`] types
+pub struct Pin<I, M>
+where
+    I: PinId,
+    M: PinMode,
+{
+    regs: Registers<I>,
+    mode: PhantomData<M>,
+}
+
+impl<I, M> Pin<I, M>
+where
+    I: PinId,
+    M: PinMode,
+{
+    /// Create a new [`Pin`]
+    ///
+    /// # Safety
+    ///
+    /// Each [`Pin`] must be a singleton. For a given [`PinId`], there must be
+    /// at most one corresponding [`Pin`] in existence at any given time.
+    /// Violating this requirement is `unsafe`.
+    #[inline]
+    pub(crate) unsafe fn new() -> Pin<I, M> {
+        Pin {
+            regs: Registers::new(),
+            mode: PhantomData,
+        }
+    }
+
+    /// Convert the pin to the requested [`PinMode`]
+    #[inline]
+    pub fn into_mode<N: PinMode>(mut self) -> Pin<I, N> {
+        self.regs.change_mode::<N>();
+        // Safe because we drop the existing Pin
+        unsafe { Pin::new() }
+    }
+
+    /// Disable the pin and set it to float
+    #[inline]
+    pub fn into_floating_disabled(self) -> Pin<I, FloatingDisabled> {
+        self.into_mode()
+    }
+
+    /// Disable the pin and set it to pull down
+    #[inline]
+    pub fn into_pull_down_disabled(self) -> Pin<I, PullDownDisabled> {
+        self.into_mode()
+    }
+
+    /// Disable the pin and set it to pull up
+    #[inline]
+    pub fn into_pull_up_disabled(self) -> Pin<I, PullUpDisabled> {
+        self.into_mode()
+    }
+
+    /// Configure the pin to operate as a floating input
+    #[inline]
+    pub fn into_floating_input(self) -> Pin<I, FloatingInput> {
+        self.into_mode()
+    }
+
+    /// Configure the pin to operate as a pulled down input
+    #[inline]
+    pub fn into_pull_down_input(self) -> Pin<I, PullDownInput> {
+        self.into_mode()
+    }
+
+    /// Configure the pin to operate as a pulled up input
+    #[inline]
+    pub fn into_pull_up_input(self) -> Pin<I, PullUpInput> {
+        self.into_mode()
+    }
+
+    /// Configure the pin to operate as a push-pull output
+    #[inline]
+    pub fn into_push_pull_output(self) -> Pin<I, PushPullOutput> {
+        self.into_mode()
+    }
+
+    /// Configure the pin to operate as a readable push pull output
+    #[inline]
+    pub fn into_readable_output(self) -> Pin<I, ReadableOutput> {
+        self.into_mode()
+    }
+
+    /// Configure the pin to operate as the corresponding peripheral function.
+    ///
+    /// The type `C` indicates the desired peripheral function.
+    #[inline]
+    pub fn into_alternate<C: AlternateConfig>(self) -> Pin<I, Alternate<C>> {
+        self.into_mode()
+    }
+
+    /// Read the current drive strength of the pin.
+    ///
+    /// The drive strength is reset to normal on every change in pin mode.
+    #[inline]
+    pub fn get_drive_strength(&self) -> bool {
+        self.regs.read_drive_strength()
+    }
+
+    /// Set the drive strength for the pin.
+    ///
+    /// The drive strength is reset to normal on every change in pin mode.
+    #[inline]
+    pub fn set_drive_strength(&mut self, stronger: bool) {
+        self.regs.write_drive_strength(stronger);
+    }
+
+    #[inline]
+    pub(crate) fn _is_low(&self) -> bool {
+        self.regs.read_pin() == false
+    }
+
+    #[inline]
+    pub(crate) fn _is_high(&self) -> bool {
+        self.regs.read_pin() == true
+    }
+
+    #[inline]
+    pub(crate) fn _set_low(&mut self) {
+        self.regs.write_pin(false);
+    }
+
+    #[inline]
+    pub(crate) fn _set_high(&mut self) {
+        self.regs.write_pin(true);
+    }
+
+    #[inline]
+    pub(crate) fn _toggle(&mut self) {
+        self.regs.toggle_pin();
+    }
+
+    #[inline]
+    pub(crate) fn _is_set_low(&self) -> bool {
+        self.regs.read_out_pin() == false
+    }
+
+    #[inline]
+    pub(crate) fn _is_set_high(&self) -> bool {
+        self.regs.read_out_pin() == true
+    }
+}
+
+//==============================================================================
+//  PinMode conversions
+//==============================================================================
 
 /// Use a recursive macro to implement [`From`](core::convert::From) for each
 /// pair of [`PinMode`]s. A macro is necessary to avoid conflicting with the
@@ -579,150 +679,6 @@ impl_core_convert_from!(
     #[cfg(feature = "min-samd51g")]
     AlternateN,
 );
-
-//==============================================================================
-//  Pin groups
-//==============================================================================
-
-// Because the [`Group`] trait gives access to the raw registers, hide it in a
-// private module
-mod private {
-    use super::{Sealed, PORT};
-
-    #[cfg(any(feature = "samd11", feature = "samd21"))]
-    use crate::target_device::port::{
-        CTRL, DIR, DIRCLR, DIRSET, DIRTGL, IN, OUT, OUTCLR, OUTSET, OUTTGL, PINCFG0_ as PINCFG,
-        PMUX0_ as PMUX, WRCONFIG,
-    };
-
-    #[cfg(feature = "min-samd51g")]
-    use crate::target_device::port::group::{
-        CTRL, DIR, DIRCLR, DIRSET, DIRTGL, IN, OUT, OUTCLR, OUTSET, OUTTGL, PINCFG, PMUX, WRCONFIG,
-    };
-
-    /// The SAMD11 and SAMD21 PACs don't have the GROUP type.
-    /// Manually re-implement it here
-    #[repr(C)]
-    pub struct GROUP {
-        pub dir: DIR,
-        pub dirclr: DIRCLR,
-        pub dirset: DIRSET,
-        pub dirtgl: DIRTGL,
-        pub out: OUT,
-        pub outclr: OUTCLR,
-        pub outset: OUTSET,
-        pub outtgl: OUTTGL,
-        pub in_: IN,
-        pub ctrl: CTRL,
-        pub wrconfig: WRCONFIG,
-        _padding1: [u8; 4],
-        pub pmux: [PMUX; 16],
-        pub pincfg: [PINCFG; 32],
-        _padding2: [u8; 32],
-    }
-
-    /// Trait used to implement zero-sized references to the GROUP registers
-    pub trait Group: Sealed {
-        /// Represents the group number
-        const NUM: usize;
-        /// Return a pointer to the corresponding GROUP register block
-        ///
-        /// On its own, the `PORT` is `Send` but not `Sync`. It is not safe to
-        /// access the `PORT` from multiple execution contexts without atomic
-        /// operations, because it would be possible to accidentally overwrite
-        /// configuration from another context. Specifically, each PMUX register
-        /// controls two pins. If one execution context is performing a
-        /// read/modify/write operation on the PMUX register but is preempted by
-        /// another context modifying the same PMUX register for a different
-        /// pin, it could corrupt the configuration.
-        ///
-        /// In this module, we would like to create singleton `Pin`s that are
-        /// both `Send` and `Sync`. To do so, we need to make three guarantees:
-        /// - Each `Pin` can only modify its own configuration.
-        /// - Each `Pin` can only modify shared `PORT` registers using atomic
-        ///   operations.
-        /// - A `Pin` should not have interior mutability. It should require
-        ///   ownership or a mutable reference to change the pin configuration.
-        ///
-        /// It is not possible to fulfill the first two conditions by directly
-        /// accessing the PMUX register. Instead, we can use the WRCONFIG
-        /// register to change the PMUX value.
-        ///
-        /// This function will return a raw pointer to the GROUP register block
-        /// for the corresponding `PinId`. It is unsafe to use this pointer
-        /// unless the above conditions are met.
-        #[inline]
-        fn group() -> *const GROUP {
-            #[cfg(feature = "samd11")]
-            const GROUPS: *const [GROUP; 1] = PORT::ptr() as *const [GROUP; 1];
-            #[cfg(any(
-                feature = "samd21",
-                feature = "samd51g",
-                feature = "samd51j",
-                feature = "same51j"
-            ))]
-            const GROUPS: *const [GROUP; 2] = PORT::ptr() as *const [GROUP; 2];
-            #[cfg(any(feature = "samd51n", feature = "same51n"))]
-            const GROUPS: *const [GROUP; 3] = PORT::ptr() as *const [GROUP; 3];
-            #[cfg(feature = "min-samd51p")]
-            const GROUPS: *const [GROUP; 4] = PORT::ptr() as *const [GROUP; 4];
-            unsafe { &(*GROUPS)[Self::NUM] }
-        }
-    }
-}
-
-pub(super) use private::{Group, GROUP};
-
-macro_rules! group {
-    ($Group:ident, $NUM:literal) => {
-        /// Type-level variant of `Group`
-        pub enum $Group {}
-        impl Sealed for $Group {}
-        impl Group for $Group {
-            const NUM: usize = $NUM;
-        }
-    };
-}
-
-group!(GroupA, 0);
-#[cfg(any(feature = "samd21", feature = "min-samd51g"))]
-group!(GroupB, 1);
-#[cfg(feature = "min-samd51n")]
-group!(GroupC, 2);
-#[cfg(feature = "min-samd51p")]
-group!(GroupD, 3);
-
-//==============================================================================
-//  Pin IDs
-//==============================================================================
-
-/// Type-level `enum` for pin IDs
-pub trait PinId: Sealed {
-    /// Corresponding [`DynPinId`](super::DynPinId)
-    const DYN: DynPinId;
-    /// Pin group; Also acts as zero-sized reference to the GROUP registers
-    type Group: Group;
-    /// Pin number
-    const NUM: u8;
-}
-
-macro_rules! pin_id {
-    ($Group:ident, $Id:ident, $NUM:literal) => {
-        paste! {
-            #[doc = "Pin ID representing pin " $Id]
-            pub enum $Id {}
-            impl Sealed for $Id {}
-            impl PinId for $Id {
-                type Group = [<Group $Group>];
-                const NUM: u8 = $NUM;
-                const DYN: DynPinId = DynPinId {
-                    group: DynGroup::$Group,
-                    num: $NUM,
-                };
-            }
-        }
-    };
-}
 
 //==============================================================================
 //  AnyPin
@@ -865,9 +821,9 @@ macro_rules! pin_id {
 /// type in this module. To aid in backwards compatibility, we want to implement
 /// `AnyPin` for the `v1` `Pin` type as well. This is possible for a few
 /// reasons. First, both structs are zero-sized, so there is no meaningful
-/// memory layout to begin with. An even if there were, the `v1` `Pin` type is a
-/// newtype wrapper around a `v2` `Pin`, and single-field structs are guaranteed
-/// to have the same layout as the field, even for repr(Rust).
+/// memory layout to begin with. And even if there were, the `v1` `Pin` type is
+/// a newtype wrapper around a `v2` `Pin`, and single-field structs are
+/// guaranteed to have the same layout as the field, even for `repr(Rust)`.
 pub trait AnyPin
 where
     Self: Sealed,
@@ -952,239 +908,6 @@ impl<P: AnyPin> OptionalPin for P {}
 /// still available.
 pub trait SomePin: OptionalPin + AnyPin {}
 impl<P: OptionalPin + AnyPin> SomePin for P {}
-
-//==============================================================================
-//  Pin reading & writing
-//==============================================================================
-
-/// Read the logic level of an input put
-///
-/// This function is always safe to use, because it only reads from the GROUP
-/// register block.
-#[inline]
-#[allow(dead_code)]
-pub(super) fn read_pin(group: *const GROUP, num: u8) -> bool {
-    let mask: u32 = 1 << num;
-    unsafe { (*group).in_.read().bits() & mask != 0 }
-}
-
-/// Write the logic level of an output pin
-///
-/// # Safety
-///
-/// This function is only safe to use with exclusive control of a pin, through
-/// ownership or a mutable reference. It uses the GROUP pointer safely, because
-/// it writes to the OUTSET and OUTCLR registers. These register are designed to
-/// allow changing the OUT setting atomically, without affecting other pins.
-#[inline]
-pub(super) unsafe fn write_pin(group: *const GROUP, num: u8, bit: bool) {
-    let mask: u32 = 1 << num;
-    if bit {
-        (*group).outset.write(|w| w.bits(mask));
-    } else {
-        (*group).outclr.write(|w| w.bits(mask));
-    }
-}
-
-/// Toggle the logic level of an output pin
-///
-/// # Safety
-///
-/// This function is only safe to use with exclusive control of a pin, through
-/// ownership or a mutable reference. It uses the GROUP pointer safely, because
-/// it writes to the OUTTGL register. This register is designed to allow
-/// changing the OUT setting atomically, without affecting other pins.
-#[inline]
-pub(super) unsafe fn toggle_pin(group: *const GROUP, num: u8) {
-    let mask: u32 = 1 << num;
-    (*group).outtgl.write(|w| w.bits(mask));
-}
-
-/// Read back the logic level of an output pin
-///
-/// This function is always safe to use, because it only reads from the GROUP
-/// register block.
-#[inline]
-#[allow(dead_code)]
-pub(super) fn read_out_pin(group: *const GROUP, num: u8) -> bool {
-    let mask: u32 = 1 << num;
-    unsafe { (*group).out.read().bits() & mask != 0 }
-}
-
-/// Read the drive strength of a pin
-///
-/// This function is always safe to use, because it only reads from the GROUP
-/// register block.
-#[inline]
-pub(super) fn read_drive_strength(group: *const GROUP, num: u8) -> bool {
-    // The SAMD11 and SAMD21 PACs don't have read methods for DRVSTR, so do it
-    // manually
-    unsafe { (*group).pincfg[num as usize].read().bits() & 0x40 == 0 }
-}
-
-/// Write the drive strength of a pin
-///
-/// # Safety
-///
-/// This function is only safe to use with exclusive control of a pin, through
-/// ownership or a mutable reference. It does not use atomic operations to
-/// modify the pin configuration, but it only writes to the PINCFG register,
-/// which is not shared with any other pin. As long as we have exclusive control
-/// of the pin, we can safely perform the read/modify/write.
-#[inline]
-pub(super) unsafe fn write_drive_strength(group: *const GROUP, num: u8, bit: bool) {
-    (*group).pincfg[num as usize].modify(|_, w| w.drvstr().bit(bit));
-}
-
-//==============================================================================
-//  Pin struct
-//==============================================================================
-
-/// A type-level GPIO pin, parameterized by [`PinId`] and [`PinMode`] types
-pub struct Pin<I, M>
-where
-    I: PinId,
-    M: PinMode,
-{
-    id: PhantomData<I>,
-    mode: PhantomData<M>,
-}
-
-impl<I, M> Pin<I, M>
-where
-    I: PinId,
-    M: PinMode,
-{
-    #[inline]
-    pub(crate) fn new() -> Pin<I, M> {
-        Pin {
-            id: PhantomData,
-            mode: PhantomData,
-        }
-    }
-
-    /// Convert the pin to the requested [`PinMode`]
-    #[inline]
-    pub fn into_mode<N: PinMode>(self) -> Pin<I, N> {
-        N::into_mode(self)
-    }
-
-    /// Disable the pin and set it to float
-    #[inline]
-    pub fn into_floating_disabled(self) -> Pin<I, FloatingDisabled> {
-        self.into_mode()
-    }
-
-    /// Disable the pin and set it to pull down
-    #[inline]
-    pub fn into_pull_down_disabled(self) -> Pin<I, PullDownDisabled> {
-        self.into_mode()
-    }
-
-    /// Disable the pin and set it to pull up
-    #[inline]
-    pub fn into_pull_up_disabled(self) -> Pin<I, PullUpDisabled> {
-        self.into_mode()
-    }
-
-    /// Configure the pin to operate as a floating input
-    #[inline]
-    pub fn into_floating_input(self) -> Pin<I, FloatingInput> {
-        self.into_mode()
-    }
-
-    /// Configure the pin to operate as a pulled down input
-    #[inline]
-    pub fn into_pull_down_input(self) -> Pin<I, PullDownInput> {
-        self.into_mode()
-    }
-
-    /// Configure the pin to operate as a pulled up input
-    #[inline]
-    pub fn into_pull_up_input(self) -> Pin<I, PullUpInput> {
-        self.into_mode()
-    }
-
-    /// Configure the pin to operate as a push-pull output
-    #[inline]
-    pub fn into_push_pull_output(self) -> Pin<I, PushPullOutput> {
-        self.into_mode()
-    }
-
-    /// Configure the pin to operate as a readable push pull output
-    #[inline]
-    pub fn into_readable_output(self) -> Pin<I, ReadableOutput> {
-        self.into_mode()
-    }
-
-    /// Configure the pin to operate as the corresponding peripheral function.
-    ///
-    /// The type `C` indicates the desired peripheral function.
-    #[inline]
-    pub fn into_alternate<C: AlternateConfig>(self) -> Pin<I, Alternate<C>> {
-        self.into_mode()
-    }
-
-    /// Read the current drive strength of the pin.
-    ///
-    /// The drive strength is reset to normal on every change in pin mode.
-    #[inline]
-    pub fn get_drive_strength(&self) {
-        read_drive_strength(I::Group::group(), I::NUM);
-    }
-
-    /// Set the drive strength for the pin.
-    ///
-    /// The drive strength is reset to normal on every change in pin mode.
-    #[inline]
-    pub fn set_drive_strength(&mut self, stronger: bool) {
-        // SAFETY: We have exclusive control of the pin, so this is safe to use.
-        unsafe { write_drive_strength(I::Group::group(), I::NUM, stronger) };
-    }
-
-    #[inline]
-    fn _read(&self) -> bool {
-        read_pin(I::Group::group(), I::NUM)
-    }
-    #[inline]
-    fn _write(&mut self, bit: bool) {
-        // SAFETY: We have exclusive control of the pin, so this is safe to use.
-        unsafe { write_pin(I::Group::group(), I::NUM, bit) }
-    }
-    #[inline]
-    pub(crate) fn _toggle(&mut self) {
-        // SAFETY: We have exclusive control of the pin, so this is safe to use.
-        unsafe { toggle_pin(I::Group::group(), I::NUM) }
-    }
-    #[inline]
-    fn _read_out(&self) -> bool {
-        read_out_pin(I::Group::group(), I::NUM)
-    }
-    #[inline]
-    pub(crate) fn _is_low(&self) -> bool {
-        self._read() == false
-    }
-    #[inline]
-    pub(crate) fn _is_high(&self) -> bool {
-        self._read() == true
-    }
-    #[inline]
-    pub(crate) fn _set_low(&mut self) {
-        self._write(false);
-    }
-    #[inline]
-    pub(crate) fn _set_high(&mut self) {
-        self._write(true);
-    }
-    #[inline]
-    pub(crate) fn _is_set_low(&self) -> bool {
-        self._read_out() == false
-    }
-    #[inline]
-    pub(crate) fn _is_set_high(&self) -> bool {
-        self._read_out() == true
-    }
-}
 
 //==============================================================================
 //  Embedded HAL traits
@@ -1296,12 +1019,14 @@ macro_rules! pins{
                 /// Take ownership of the PAC
                 /// [`PORT`](crate::target_device::PORT) and split it into
                 /// discrete [`Pin`]s
+                #[inline]
                 pub fn new(port: PORT) -> Pins {
                     Pins {
                         port: Some(port),
+                        // Safe because we only create one `Pin` per `PinId`
                         $(
                             $( #[$cfg] )?
-                            [<$Id:lower>]: Pin::new(),
+                            [<$Id:lower>]: unsafe { Pin::new() },
                         )+
                     }
                 }
@@ -1325,7 +1050,7 @@ macro_rules! pins{
     };
 }
 
-macro_rules! define_pins {
+macro_rules! declare_pins {
     (
         $(
             $Group:ident {
@@ -1353,7 +1078,7 @@ macro_rules! define_pins {
     };
 }
 
-define_pins!(
+declare_pins!(
     A {
         #[cfg(not(feature = "samd11"))]
         (PA00, 00),
@@ -1553,6 +1278,10 @@ define_pins!(
     }
 );
 
+//==============================================================================
+//  bsp_pins
+//==============================================================================
+
 /// Helper macro to give meaningful names to GPIO pins
 ///
 /// The normal [`Pins`] struct names each [`Pin`] according to its [`PinId`].
@@ -1683,6 +1412,7 @@ macro_rules! bsp_pins {
                 /// [`PORT`](atsamd_hal::target_device::PORT)
                 /// [`Pin`](atsamd_hal::gpio::v2::Pin)
                 /// [`Pins`](atsamd_hal::gpio::v2::Pins)
+                #[inline]
                 pub fn new(port: $crate::target_device::PORT) -> Self {
                     let mut pins = $crate::gpio::v2::Pins::new(port);
                     Self {

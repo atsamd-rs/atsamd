@@ -122,7 +122,7 @@ where
     M: PinMode,
 {
     #[inline]
-    fn new() -> Pin<I, M> {
+    unsafe fn new() -> Pin<I, M> {
         Pin {
             pin: v2::Pin::new(),
         }
@@ -575,9 +575,10 @@ macro_rules! port {
                 fn split(self) -> Parts {
                     Parts {
                         port: Port {_0: ()},
+                        // Safe because we only create one `Pin` per `PinId`
                         $(
                             $( #[$cfg] )?
-                            [<$PinType:lower>]: Pin::<v2::$PinId, _>::new(),
+                            [<$PinType:lower>]: unsafe { Pin::<v2::$PinId, _>::new() },
                         )+
                     }
                 }
