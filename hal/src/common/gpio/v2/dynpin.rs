@@ -66,15 +66,11 @@ use hal::digital::v2::OutputPin;
 use hal::digital::v2::{InputPin, StatefulOutputPin, ToggleableOutputPin};
 
 use super::pin::*;
+use super::reg::RegisterInterface;
 
-/// GPIO error type
-///
-/// [`DynPin`]s are not tracked and verified at compile-time, so run-time
-/// operations are fallible. This `enum` represents the corresponding errors.
-pub enum Error {
-    /// The pin did not have the correct ID or mode for the requested operation
-    InvalidPinType,
-}
+//==============================================================================
+//  DynPinMode configurations
+//==============================================================================
 
 /// Value-level `enum` for disabled configurations
 #[derive(PartialEq, Eq, Clone, Copy)]
@@ -125,6 +121,10 @@ pub enum DynAlternate {
     N,
 }
 
+//==============================================================================
+//  DynPinMode
+//==============================================================================
+
 /// Value-level `enum` representing pin modes
 #[derive(PartialEq, Eq, Clone, Copy)]
 pub enum DynPinMode {
@@ -174,6 +174,10 @@ dyn_alternate!(H);
 #[cfg(feature = "min-samd51g")]
 dyn_alternate!(I, J, K, L, M, N);
 
+//==============================================================================
+//  DynGroup & DynPinId
+//==============================================================================
+
 /// Value-level `enum` for pin groups
 #[derive(PartialEq, Clone, Copy)]
 pub enum DynGroup {
@@ -193,20 +197,86 @@ pub struct DynPinId {
     pub num: u8,
 }
 
+//==============================================================================
+//  DynRegisters
+//==============================================================================
+
+/// Provide a safe register interface for [`DynPin`]s
+///
+/// This `struct` takes ownership of a [`DynPinId`] and provides an API to
+/// access the corresponding regsiters.
+struct DynRegisters {
+    id: DynPinId,
+}
+
+// [`DynRegisters`] takes ownership of the [`DynPinId`], and [`DynPin`]
+// guarantees that each pin is a singleton, so this implementation is safe.
+unsafe impl RegisterInterface for DynRegisters {
+    #[inline]
+    fn id(&self) -> DynPinId {
+        self.id
+    }
+}
+
+impl DynRegisters {
+    /// Create a new instance of [`DynRegisters`]
+    ///
+    /// # Safety
+    ///
+    /// Users must never create two simultaneous instances of this `struct` with
+    /// the same [`DynPinId`]
+    #[inline]
+    unsafe fn new(id: DynPinId) -> Self {
+        DynRegisters { id }
+    }
+}
+
+//==============================================================================
+//  Error
+//==============================================================================
+
+/// GPIO error type
+///
+/// [`DynPin`]s are not tracked and verified at compile-time, so run-time
+/// operations are fallible. This `enum` represents the corresponding errors.
+pub enum Error {
+    /// The pin did not have the correct ID or mode for the requested operation
+    InvalidPinType,
+}
+
+//==============================================================================
+//  DynPin
+//==============================================================================
+
 /// A value-level pin, parameterized by [`DynPinId`] and [`DynPinMode`]
 ///
 /// This type acts as a type-erased version of [`Pin`]. Every pin is represented
 /// by the same type, and pins are tracked and distinguished at run-time.
 pub struct DynPin {
-    id: DynPinId,
+    regs: DynRegisters,
     mode: DynPinMode,
 }
 
 impl DynPin {
+    /// Create a new [`DynPin`]
+    ///
+    /// # Safety
+    ///
+    /// Each [`DynPin`] must be a singleton. For a given [`DynPinId`], there
+    /// must be at most one corresponding [`DynPin`] in existence at any given
+    /// time.  Violating this requirement is `unsafe`.
+    #[inline]
+    unsafe fn new(id: DynPinId, mode: DynPinMode) -> Self {
+        DynPin {
+            regs: DynRegisters::new(id),
+            mode,
+        }
+    }
+
     /// Return a copy of the pin ID
     #[inline]
     pub fn id(&self) -> DynPinId {
-        self.id
+        self.regs.id
     }
 
     /// Return a copy of the pin mode
@@ -215,82 +285,11 @@ impl DynPin {
         self.mode
     }
 
-    // This function is just a wrapper to return the correct GROUP pointer.
-    // See the `Group` trait for safety information.
-    #[inline]
-    fn group(&self) -> *const GROUP {
-        match self.id.group {
-            DynGroup::A => GroupA::group(),
-            #[cfg(any(feature = "samd21", feature = "min-samd51g"))]
-            DynGroup::B => GroupB::group(),
-            #[cfg(feature = "min-samd51n")]
-            DynGroup::C => GroupC::group(),
-            #[cfg(feature = "min-samd51p")]
-            DynGroup::D => GroupD::group(),
-        }
-    }
-
     /// Convert the pin to the requested [`DynPinMode`]
     #[inline]
     pub fn into_mode(&mut self, mode: DynPinMode) {
-        let group = self.group();
-        let num = self.id.num;
-        use self::DynPinMode::*;
-        // SAFETY: We have exclusive control of the pin, so convert function is
-        // safe to use.
-        unsafe {
-            match mode {
-                Disabled(config) => {
-                    use self::DynDisabled::*;
-                    match config {
-                        Floating => FloatingDisabled::convert(group, num),
-                        PullDown => PullDownDisabled::convert(group, num),
-                        PullUp => PullUpDisabled::convert(group, num),
-                    }
-                }
-                Input(config) => {
-                    use self::DynInput::*;
-                    match config {
-                        Floating => FloatingInput::convert(group, num),
-                        PullDown => PullDownInput::convert(group, num),
-                        PullUp => PullUpInput::convert(group, num),
-                    }
-                }
-                Output(config) => {
-                    use self::DynOutput::*;
-                    match config {
-                        PushPull => PushPullOutput::convert(group, num),
-                        Readable => ReadableOutput::convert(group, num),
-                    }
-                }
-                Alternate(config) => {
-                    use self::DynAlternate::*;
-                    match config {
-                        A => AlternateA::convert(group, num),
-                        B => AlternateB::convert(group, num),
-                        C => AlternateC::convert(group, num),
-                        D => AlternateD::convert(group, num),
-                        E => AlternateE::convert(group, num),
-                        F => AlternateF::convert(group, num),
-                        G => AlternateG::convert(group, num),
-                        #[cfg(any(feature = "samd21", feature = "min-samd51g"))]
-                        H => AlternateH::convert(group, num),
-                        #[cfg(feature = "min-samd51g")]
-                        I => AlternateI::convert(group, num),
-                        #[cfg(feature = "min-samd51g")]
-                        J => AlternateJ::convert(group, num),
-                        #[cfg(feature = "min-samd51g")]
-                        K => AlternateK::convert(group, num),
-                        #[cfg(feature = "min-samd51g")]
-                        L => AlternateL::convert(group, num),
-                        #[cfg(feature = "min-samd51g")]
-                        M => AlternateM::convert(group, num),
-                        #[cfg(feature = "min-samd51g")]
-                        N => AlternateN::convert(group, num),
-                    }
-                }
-            }
-        }
+        self.regs.change_mode(mode);
+        self.mode = mode;
     }
 
     /// Disable the pin and set it to float
@@ -353,8 +352,8 @@ impl DynPin {
     ///
     /// The drive strength is reset to normal on every change in pin mode.
     #[inline]
-    pub fn get_drive_strength(&self) {
-        read_drive_strength(self.group(), self.id.num);
+    pub fn get_drive_strength(&self) -> bool {
+        self.regs.read_drive_strength()
     }
 
     /// Set the drive strength for the pin.
@@ -362,37 +361,34 @@ impl DynPin {
     /// The drive strength is reset to normal on every change in pin mode.
     #[inline]
     pub fn set_drive_strength(&mut self, stronger: bool) {
-        // SAFETY: We have exclusive control of the pin, so this is safe to use.
-        unsafe { write_drive_strength(self.group(), self.id.num, stronger) };
+        self.regs.write_drive_strength(stronger);
     }
 
     #[inline]
     fn _read(&self) -> Result<bool, Error> {
         match self.mode {
-            DynPinMode::Input(_) | DYN_READABLE_OUTPUT => Ok(read_pin(self.group(), self.id.num)),
+            DynPinMode::Input(_) | DYN_READABLE_OUTPUT => Ok(self.regs.read_pin()),
             _ => Err(Error::InvalidPinType),
         }
     }
     #[inline]
     fn _write(&mut self, bit: bool) -> Result<(), Error> {
-        // SAFETY: We have exclusive control of the pin, so this is safe to use.
         match self.mode {
-            DynPinMode::Output(_) => unsafe { Ok(write_pin(self.group(), self.id.num, bit)) },
+            DynPinMode::Output(_) => Ok(self.regs.write_pin(bit)),
             _ => Err(Error::InvalidPinType),
         }
     }
     #[inline]
     fn _toggle(&mut self) -> Result<(), Error> {
-        // SAFETY: We have exclusive control of the pin, so this is safe to use.
         match self.mode {
-            DynPinMode::Output(_) => unsafe { Ok(toggle_pin(self.group(), self.id.num)) },
+            DynPinMode::Output(_) => Ok(self.regs.toggle_pin()),
             _ => Err(Error::InvalidPinType),
         }
     }
     #[inline]
     fn _read_out(&self) -> Result<bool, Error> {
         match self.mode {
-            DYN_READABLE_OUTPUT => Ok(read_out_pin(self.group(), self.id.num)),
+            DYN_READABLE_OUTPUT => Ok(self.regs.read_out_pin()),
             _ => Err(Error::InvalidPinType),
         }
     }
@@ -431,14 +427,13 @@ where
     I: PinId,
     M: PinMode,
 {
-    #[inline]
     /// Erase the type-level information in a [`Pin`] and return a value-level
     /// [`DynPin`]
+    #[inline]
     fn from(_pin: Pin<I, M>) -> Self {
-        DynPin {
-            id: I::DYN,
-            mode: M::DYN,
-        }
+        // The `Pin` is consumed, so it is safe to replace it with the
+        // corresponding `DynPin`
+        unsafe { DynPin::new(I::DYN, M::DYN) }
     }
 }
 
@@ -448,15 +443,18 @@ where
     M: PinMode,
 {
     type Error = Error;
-    #[inline]
+
     /// Try to recreate a type-level [`Pin`] from a value-level [`DynPin`]
     ///
     /// There is no way for the compiler to know if the conversion will be
     /// successful at compile-time. We must verify the conversion at run-time
     /// or refuse to perform it.
+    #[inline]
     fn try_from(pin: DynPin) -> Result<Self, Error> {
-        if pin.id == I::DYN && pin.mode == M::DYN {
-            Ok(Self::new())
+        if pin.regs.id == I::DYN && pin.mode == M::DYN {
+            // The `DynPin` is consumed, so it is safe to replace it with the
+            // corresponding `Pin`
+            Ok(unsafe { Self::new() })
         } else {
             Err(Error::InvalidPinType)
         }
