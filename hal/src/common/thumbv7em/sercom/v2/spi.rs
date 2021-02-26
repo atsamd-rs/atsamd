@@ -498,6 +498,7 @@ macro_rules! pads_alias {
 }
 
 #[macro_export]
+#[doc(hidden)]
 macro_rules! __pad_type {
     () => { NoneT };
     ($Sercom:ident, $PadNum:ident, $IoSet:ident) => {
