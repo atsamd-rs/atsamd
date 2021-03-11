@@ -19,7 +19,6 @@
 //! Using the [`DmaController::free`] method will
 //! deinitialize the DMAC and return the underlying PAC object.
 
-use core::mem;
 use modular_bitfield::prelude::*;
 use paste::paste;
 use seq_macro::seq;
@@ -83,6 +82,7 @@ pub struct DmaController {
 }
 
 #[bitfield]
+#[repr(u16)]
 pub struct PriorityLevelMask {
     #[skip]
     _reserved: B8,
@@ -103,6 +103,7 @@ pub struct PriorityLevelMask {
 }
 
 #[bitfield]
+#[repr(u32)]
 pub struct RoundRobinMask {
     #[skip]
     _reserved: B7,
@@ -197,8 +198,8 @@ impl DmaController {
         // SAFETY This is safe because the use of bitfields ensures that only the
         // LVLENx bits are written to. The fact that we are given a mask means we need
         // to do the bit-level setting ourselves.
+        let mask: u16 = mask.into();
         unsafe {
-            let mask: u16 = mem::transmute(mask);
             self.dmac.ctrl.modify(|r, w| w.bits(r.bits() | mask));
         }
     }
@@ -209,8 +210,8 @@ impl DmaController {
         // SAFETY This is safe because the use of bitfields ensures that only the
         // LVLENx bits are written to. The fact that we are given a mask means we need
         // to do the bit-level clearing ourselves.
+        let mask: u16 = mask.into();
         unsafe {
-            let mask: u16 = mem::transmute(mask);
             self.dmac.ctrl.modify(|r, w| w.bits(r.bits() & !mask));
         }
     }
@@ -222,8 +223,8 @@ impl DmaController {
         // SAFETY This is safe because the use of bitfields ensures that only the
         // RRLVLENx bits are written to. The fact that we are given a mask means we need
         // to do the bit-level setting ourselves.
+        let mask: u32 = mask.into();
         unsafe {
-            let mask: u32 = mem::transmute(mask);
             self.dmac.prictrl0.modify(|r, w| w.bits(r.bits() | mask));
         }
     }
@@ -235,8 +236,8 @@ impl DmaController {
         // SAFETY This is safe because the use of bitfields ensures that only the
         // RRLVLENx bits are written to. The fact that we are given a mask means we need
         // to do the bit-level clearing ourselves.
+        let mask: u32 = mask.into();
         unsafe {
-            let mask: u32 = mem::transmute(mask);
             self.dmac.prictrl0.modify(|r, w| w.bits(r.bits() & !mask));
         }
     }

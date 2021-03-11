@@ -220,6 +220,7 @@ pub const NUM_CHANNELS: usize = with_num_channels!(get);
 
 #[bitfield]
 #[derive(Clone, Copy)]
+#[repr(u16)]
 pub struct BlockTransferControl {
     #[allow(dead_code)]
     valid: bool,
