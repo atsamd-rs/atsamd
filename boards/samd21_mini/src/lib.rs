@@ -14,7 +14,17 @@ pub use hal::target_device as pac;
 use hal::prelude::*;
 use hal::*;
 
-use gpio::{Floating, Input, Port};
+use gpio::{Floating, Input, Port, PfC};
+use hal::clock::GenericClockController;
+use hal::sercom::{PadPin, SPIMaster1, UART0};
+use hal::time::Hertz;
+
+#[cfg(feature = "usb")]
+use gpio::v2::{AnyPin, PA24, PA25};
+#[cfg(feature = "usb")]
+use hal::usb::usb_device::bus::UsbBusAllocator;
+#[cfg(feature = "usb")]
+pub use hal::usb::UsbBus;
 
 define_pins!(
     /// Maps the pins to their arduino names and
