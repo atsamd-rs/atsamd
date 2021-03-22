@@ -52,6 +52,7 @@ extern "C" {
     fn ADC();
     fn AC();
     fn DAC();
+    fn PTC();
     fn I2S();
 }
 #[doc(hidden)]
@@ -90,7 +91,7 @@ pub static __INTERRUPTS: [Vector; 28] = [
     Vector { _handler: ADC },
     Vector { _handler: AC },
     Vector { _handler: DAC },
-    Vector { _reserved: 0 },
+    Vector { _handler: PTC },
     Vector { _handler: I2S },
 ];
 #[doc = r"Enumeration of all the interrupts"]
@@ -141,6 +142,8 @@ pub enum Interrupt {
     AC = 24,
     #[doc = "25 - DAC"]
     DAC = 25,
+    #[doc = "26 - PTC"]
+    PTC = 26,
     #[doc = "27 - I2S"]
     I2S = 27,
 }
@@ -513,6 +516,27 @@ impl Deref for PORT {
 }
 #[doc = "Port Module"]
 pub mod port;
+#[doc = "Peripheral Touch Controller"]
+pub struct PTC {
+    _marker: PhantomData<*const ()>,
+}
+unsafe impl Send for PTC {}
+impl PTC {
+    #[doc = r"Returns a pointer to the register block"]
+    #[inline(always)]
+    pub const fn ptr() -> *const ptc::RegisterBlock {
+        0x4200_4c00 as *const _
+    }
+}
+impl Deref for PTC {
+    type Target = ptc::RegisterBlock;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        unsafe { &*PTC::ptr() }
+    }
+}
+#[doc = "Peripheral Touch Controller"]
+pub mod ptc;
 #[doc = "Port Module (IOBUS)"]
 pub struct PORT_IOBUS {
     _marker: PhantomData<*const ()>,
@@ -851,6 +875,8 @@ pub struct Peripherals {
     pub PM: PM,
     #[doc = "PORT"]
     pub PORT: PORT,
+    #[doc = "PTC"]
+    pub PTC: PTC,
     #[doc = "PORT_IOBUS"]
     pub PORT_IOBUS: PORT_IOBUS,
     #[doc = "RTC"]
@@ -948,6 +974,9 @@ impl Peripherals {
                 _marker: PhantomData,
             },
             PORT: PORT {
+                _marker: PhantomData,
+            },
+            PTC: PTC {
                 _marker: PhantomData,
             },
             PORT_IOBUS: PORT_IOBUS {

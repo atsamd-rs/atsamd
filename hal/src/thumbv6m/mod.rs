@@ -14,6 +14,9 @@ pub mod timer;
 pub mod adc;
 
 #[cfg(feature = "unproven")]
+pub mod ptc;
+
+#[cfg(feature = "unproven")]
 pub mod pwm;
 
 #[cfg(feature = "unproven")]
