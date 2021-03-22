@@ -151,12 +151,23 @@ where
         let channel = PIN::channel();
         while self.ptc.ctrlb.read().syncflag().bit_is_set() {}
 
-        self.ptc
-            .yselect
-            .write(|w| unsafe { w.ymux().bits(1 << channel) });
-        self.ptc
-            .yselecten
-            .modify(|r, w| unsafe { w.bits(r.bits() | (1 << channel)) });
+        // Select and enable specified channel
+        if channel > 15 {
+            let channel = channel - 16;
+            self.ptc
+                .xselect
+                .write(|w| unsafe { w.xmux().bits(1 << channel) });
+            self.ptc
+                .xselecten
+                .modify(|r, w| unsafe { w.bits(r.bits() | (1 << channel)) });
+        } else {
+            self.ptc
+                .yselect
+                .write(|w| unsafe { w.ymux().bits(1 << channel) });
+            self.ptc
+                .yselecten
+                .modify(|r, w| unsafe { w.bits(r.bits() | (1 << channel)) });
+        };
         self.power_up();
         let result = self.convert();
         self.power_down();
@@ -189,12 +200,45 @@ where
     }
 }
 
-#[cfg(feature = "samd21e")]
 ptc_pins! {
     PA02: 0,
     PA03: 1,
     PA04: 2,
     PA05: 3,
     PA06: 4,
-    PA07: 5
+    PA07: 5,
+    PA08: 16,
+    PA09: 17,
+    PA10: 18,
+    PA11: 19,
+    PA16: 20,
+    PA17: 21,
+    PA18: 22,
+    PA19: 23,
+    PA22: 26,
+    PA23: 27
+}
+
+#[cfg(any(feature = "samd21g", feature = "samd21j"))]
+ptc_pins! {
+    PB02: 8,
+    PB03: 9,
+    PB08: 14,
+    PB09: 15,
+    PA20: 24,
+    PA21: 25
+}
+
+#[cfg(feature = "samd21j")]
+ptc_pins! {
+    PB00: 6,
+    PB01: 7,
+    PB04: 10,
+    PB05: 11,
+    PB06: 12,
+    PB07: 13,
+    PB12: 28,
+    PB13: 29,
+    PB14: 30,
+    PB15: 31
 }
