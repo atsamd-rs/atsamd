@@ -128,19 +128,7 @@ pub struct RoundRobinMask {
 }
 
 impl DmaController {
-    /// Return an immutable reference to the underlying DMAC object exposed by
-    /// the PAC.
-    ///
-    /// # Safety
-    ///
-    /// This function is unsafe because `DmaController` may expect certain
-    /// registers to retain a configuration. Messing with that configuration may
-    /// be unsafe.
-    pub unsafe fn dmac(&self) -> &DMAC {
-        &self.dmac
-    }
-
-    /// Return a mutable reference to the underlying DMAC object exposed by the
+    /// Return a shared reference to the underlying DMAC object exposed by the
     /// PAC.
     ///
     /// # Safety
@@ -148,7 +136,7 @@ impl DmaController {
     /// This function is unsafe because `DmaController` may expect certain
     /// registers to retain a configuration. Messing with that configuration may
     /// be unsafe.
-    pub unsafe fn dmac_mut(&mut self) -> &mut DMAC {
+    pub(super) fn dmac(&mut self) -> &DMAC {
         &mut self.dmac
     }
 
@@ -264,12 +252,6 @@ impl DmaController {
     fn swreset(dmac: &mut DMAC) {
         dmac.ctrl.modify(|_, w| w.swrst().set_bit());
         while dmac.ctrl.read().swrst().bit_is_set() {}
-    }
-
-    /// Split the DMAC into individual channels
-    #[cfg(all(feature = "samd11", not(feature = "max-channels")))]
-    pub fn split(&mut self) -> Channels {
-        Channels(new_chan(), new_chan(), new_chan())
     }
 }
 

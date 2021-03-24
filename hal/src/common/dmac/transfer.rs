@@ -310,7 +310,7 @@ where
     ///
     /// If two array references can be used as source and destination buffers
     /// (as opposed to slices), then it is recommended to use the
-    /// [`Transfer::new_with_arrays`] method instead.
+    /// [`Transfer::new_from_arrays`] method instead.
     ///
     /// # Panics
     ///
@@ -453,8 +453,7 @@ where
         // (see https://docs.rust-embedded.org/embedonomicon/dma.html#compiler-misoptimizations)
         atomic::fence(atomic::Ordering::Release); //  ▲
 
-        // SAFETY: This is safe because we only borrow dmac once
-        let dmac = unsafe { dmac.dmac_mut() };
+        let dmac = dmac.dmac();
         let chan = self.chan.into().start(dmac, trig_src, trig_act);
 
         Transfer {
@@ -499,15 +498,13 @@ where
     /// if a trigger request is already pending for the channel.
     #[inline]
     pub fn software_trigger(&mut self, dmac: &mut DmaController) {
-        // SAFETY: This is safe because we only borrow dmac once.
-        let dmac = unsafe { dmac.dmac_mut() };
+        let dmac = dmac.dmac();
         self.chan.as_mut().software_trigger(dmac);
     }
     /// Blocking; Wait for the DMA transfer to complete and release all owned
     /// resources
     pub fn wait(self, dmac: &mut DmaController) -> (Channel<ChannelId<C>, Ready>, S, D, P) {
-        // SAFETY: This is safe because we only borrow dmac once.
-        let dmac = unsafe { dmac.dmac_mut() };
+        let dmac = dmac.dmac();
         let chan = self.chan.into().free(dmac);
 
         // Memory barrier to prevent the compiler/CPU from re-ordering read/write
@@ -526,8 +523,7 @@ where
     /// Non-blocking; Immediately stop the DMA transfer and release all owned
     /// resources
     pub fn stop(self, dmac: &mut DmaController) -> (Channel<ChannelId<C>, Ready>, S, D, P) {
-        // SAFETY: This is safe because we only borrow dmac once.
-        let dmac = unsafe { dmac.dmac_mut() };
+        let dmac = dmac.dmac();
         let chan = self.chan.into().stop(dmac);
 
         // Memory barrier to prevent the compiler/CPU from re-ordering read/write

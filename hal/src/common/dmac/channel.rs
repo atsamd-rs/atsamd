@@ -50,15 +50,15 @@ use crate::target_device::dmac::CHANNEL;
 pub trait Status: Sealed {}
 
 /// Uninitialized channel
-pub struct Uninitialized;
+pub enum Uninitialized {}
 impl Sealed for Uninitialized {}
 impl Status for Uninitialized {}
 /// Initialized and ready to transfer channel
-pub struct Ready;
+pub enum Ready {}
 impl Sealed for Ready {}
 impl Status for Ready {}
 /// Busy channel
-pub struct Busy;
+pub enum Busy {}
 impl Sealed for Busy {}
 impl Status for Busy {}
 
@@ -114,14 +114,14 @@ impl<C: AnyChannel> AsMut<C> for SpecificChannel<C> {
 /// [`Transfer`](super::transfer::Transfer)s.
 pub struct Channel<Id: ChId, S: Status> {
     _id: PhantomData<Id>,
-    _status: S,
+    _status: PhantomData<S>,
 }
 
 #[inline]
 pub(crate) fn new_chan<Id: ChId>(_id: PhantomData<Id>) -> Channel<Id, Uninitialized> {
     Channel {
         _id,
-        _status: Uninitialized,
+        _status: PhantomData,
     }
 }
 
@@ -134,7 +134,7 @@ impl<Id: ChId, S: Status> Channel<Id, S> {
     /// If an interrupt were to change the CHID register, we would be faced
     /// with undefined behaviour.
     #[cfg(any(feature = "samd11", feature = "samd21"))]
-    fn with_chid<F: Fn(&mut DMAC)>(&mut self, dmac: &mut DMAC, fun: F) {
+    fn with_chid<F: Fn(&DMAC)>(&mut self, dmac: &DMAC, fun: F) {
         cortex_m::interrupt::free(|_| {
             // SAFETY: this is actually safe as long as we write a correct channel number to
             // the CHID register
@@ -152,7 +152,7 @@ impl<Id: ChId, S: Status> Channel<Id, S> {
     /// to the correct channel number and run the closure on that.
     #[cfg(feature = "min-samd51g")]
     #[inline]
-    fn with_chid<F: Fn(&CHANNEL)>(&mut self, dmac: &mut DMAC, fun: F) {
+    fn with_chid<F: Fn(&CHANNEL)>(&mut self, dmac: &DMAC, fun: F) {
         let mut ch = &dmac.channel[Id::USIZE];
         fun(&mut ch);
     }
@@ -169,8 +169,7 @@ impl<Id: ChId, S: Status> Channel<Id, S> {
         lvl: PriorityLevel,
         enable_interrupts: bool,
     ) -> Channel<Id, Ready> {
-        // SAFETY: this is safe because we only mutably borrow dmac once.
-        let dmac = unsafe { controller.dmac_mut() };
+        let dmac = controller.dmac();
 
         // Software reset the channel for good measure
         self._reset_private(dmac);
@@ -195,12 +194,12 @@ impl<Id: ChId, S: Status> Channel<Id, S> {
 
         Channel {
             _id: self._id,
-            _status: Ready,
+            _status: PhantomData,
         }
     }
 
     #[inline]
-    fn _reset_private(&mut self, dmac: &mut DMAC) {
+    fn _reset_private(&mut self, dmac: &DMAC) {
         self.with_chid(dmac, |d| {
             // Reset the channel to its startup state and wait for reset to complete
             d.chctrla.modify(|_, w| w.swrst().set_bit());
@@ -209,7 +208,7 @@ impl<Id: ChId, S: Status> Channel<Id, S> {
     }
 
     #[inline]
-    fn _trigger_private(&mut self, dmac: &mut DMAC) {
+    fn _trigger_private(&mut self, dmac: &DMAC) {
         // SAFETY: This is safe because we are writing the correct channel
         // number into the register
         unsafe {
@@ -223,12 +222,12 @@ impl<Id: ChId> Channel<Id, Ready> {
     /// Issue a software reset to the channel. This will return the channel to
     /// its startup state
     #[inline]
-    pub fn reset(mut self, dmac: &mut DMAC) -> Channel<Id, Uninitialized> {
+    pub fn reset(mut self, dmac: &DMAC) -> Channel<Id, Uninitialized> {
         self._reset_private(dmac);
 
         Channel {
             _id: self._id,
-            _status: Uninitialized,
+            _status: PhantomData,
         }
     }
 
@@ -238,8 +237,7 @@ impl<Id: ChId> Channel<Id, Ready> {
     #[cfg(feature = "min-samd51g")]
     #[inline]
     pub fn fifo_threshold(&mut self, dmac: &mut DmaController, threshold: FifoThreshold) {
-        // SAFETY: This is safe because we only borrow dmac once.
-        let dmac = unsafe { dmac.dmac_mut() };
+        let dmac = dmac.dmac();
         self.with_chid(dmac, |d| {
             d.chctrla.modify(|_, w| w.threshold().bits(threshold as u8));
         })
@@ -250,8 +248,7 @@ impl<Id: ChId> Channel<Id, Ready> {
     #[cfg(feature = "min-samd51g")]
     #[inline]
     pub fn burst_length(&mut self, dmac: &mut DmaController, burst_length: BurstLength) {
-        // SAFETY: This is safe because we only borrow dmac once.
-        let dmac = unsafe { dmac.dmac_mut() };
+        let dmac = dmac.dmac();
         self.with_chid(dmac, |d| {
             d.chctrla
                 .modify(|_, w| w.burstlen().bits(burst_length as u8));
@@ -265,7 +262,7 @@ impl<Id: ChId> Channel<Id, Ready> {
     /// A `Channel` with a `Busy` status.
     pub(crate) fn start(
         mut self,
-        dmac: &mut DMAC,
+        dmac: &DMAC,
         trig_src: TriggerSource,
         trig_act: TriggerAction,
     ) -> Channel<Id, Busy> {
@@ -300,7 +297,7 @@ impl<Id: ChId> Channel<Id, Ready> {
 
         Channel {
             _id: self._id,
-            _status: Busy,
+            _status: PhantomData,
         }
     }
 }
@@ -309,7 +306,7 @@ impl<Id: ChId> Channel<Id, Ready> {
 impl<Id: ChId> Channel<Id, Busy> {
     /// Issue a software trigger to the channel
     #[inline]
-    pub(crate) fn software_trigger(&mut self, dmac: &mut DMAC) {
+    pub(crate) fn software_trigger(&mut self, dmac: &DMAC) {
         self._trigger_private(dmac);
     }
 
@@ -320,7 +317,7 @@ impl<Id: ChId> Channel<Id, Busy> {
     /// A `Channel` with a `Ready` status, ready to be reused by a new
     /// [`Transfer`](super::transfer::Transfer)
     #[inline]
-    pub(crate) fn stop(mut self, dmac: &mut DMAC) -> Channel<Id, Ready> {
+    pub(crate) fn stop(mut self, dmac: &DMAC) -> Channel<Id, Ready> {
         self.with_chid(dmac, |d| d.chctrla.modify(|_, w| w.enable().clear_bit()));
         self.free(dmac)
     }
@@ -335,7 +332,7 @@ impl<Id: ChId> Channel<Id, Busy> {
     /// and BUSYCH is set. To make sure the transfer is actually complete, the
     /// channel needs to be both NOT PENDING and NOT BUSY.
     #[inline]
-    pub(crate) fn xfer_complete(&self, dmac: &mut DMAC) -> bool {
+    pub(crate) fn xfer_complete(&self, dmac: &DMAC) -> bool {
         let id = Id::U8;
         dmac.busych.read().bits() & (1 << id) == 0 && dmac.pendch.read().bits() & (1 << id) == 0
     }
@@ -347,11 +344,11 @@ impl<Id: ChId> Channel<Id, Busy> {
     /// A `Channel` with a `Ready` status, ready to be reused by a new
     /// [`Transfer`](super::transfer::Transfer)
     #[inline]
-    pub(crate) fn free(self, dmac: &mut DMAC) -> Channel<Id, Ready> {
+    pub(crate) fn free(self, dmac: &DMAC) -> Channel<Id, Ready> {
         while !self.xfer_complete(dmac) {}
         Channel {
             _id: self._id,
-            _status: Ready,
+            _status: PhantomData,
         }
     }
 }

@@ -135,20 +135,17 @@
 //! // Initialize DMA Channel 0
 //! let chan0 = channels.0.init(PriorityLevel::LVL0, false, &mut dmac);
 //!
-//! let buffers = BufferPair {
-//!     source: buf_src,
-//!     destination: buf_src
-//! };
-//!
 //! // Setup a DMA transfer (memory-to-memory -> incrementing source, incrementing destination)
 //! // NOTE: buf_src and buf_dest should be either:
 //! // &'static mut T, &'static mut [T], or &'static mut [T; N] where T: BeatSize
-//! let xfer = Transfer::new(buffers, chan0, false, ());
-//! // Begin transfer with a software trigger
-//! let xfer = xfer.begin(&mut dmac, TriggerSource::DISABLE, TriggerAction::BLOCK);
+//! let xfer = Transfer::new(chan0, buf_src, buf_dest, false).begin(
+//!     &mut dmac,
+//!     TriggerSource::DISABLE,
+//!     TriggerAction::BLOCK,
+//! );
 //!
 //! // Wait for transfer to complete and grab resulting buffers
-//! let (buf_src, buf_dest, chan0, _) = xfer.wait(&mut dmac);
+//! let (chan0, buf_src, buf_dest, _) = xfer.wait(&mut dmac);
 //! ```
 
 use modular_bitfield::prelude::*;
@@ -251,9 +248,9 @@ pub struct BlockTransferControl {
 pub struct DmacDescriptor {
     btctrl: BlockTransferControl,
     btcnt: u16,
-    srcaddr: *mut (),
-    dstaddr: *mut (),
-    descaddr: *mut DmacDescriptor,
+    srcaddr: *const (),
+    dstaddr: *const (),
+    descaddr: *const DmacDescriptor,
 }
 
 #[doc(hidden)]
