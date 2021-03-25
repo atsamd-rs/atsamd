@@ -56,6 +56,8 @@ default = ["atsamd-hal/samd51p", "rt", "unproven", "usb", "wifi"]
 rt = ["atsamd-hal/samd51p-rt", "cortex-m-rt"]
 unproven = ["atsamd-hal/unproven"]
 usb = ["atsamd-hal/usb", "usb-device", "usbd-serial", "nom"]
+# enable feature for RTL8720 firmware older than 2.1.2
+wifi-fw-before-212 = []
 wifi = ["bbqueue", "nb", "nom", "generic-array", "seeed-erpc"]
 
 [profile.dev]
