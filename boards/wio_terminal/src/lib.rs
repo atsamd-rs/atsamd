@@ -48,3 +48,7 @@ pub use wifi::{rpcs as wifi_rpcs, wifi_prelude, Wifi, WifiPins};
 pub mod wifi_types {
     pub use seeed_erpc::{BssType, IPInfo, L3Interface, Security, WifiMode, BSSID, SSID};
 }
+#[cfg(feature = "wifi-fw-before-212")]
+pub const WIFI_UART_BAUD: u32 = 1843200;
+#[cfg(not(feature = "wifi-fw-before-212"))]
+pub const WIFI_UART_BAUD: u32 = 614400;
