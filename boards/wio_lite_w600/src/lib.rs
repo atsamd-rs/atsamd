@@ -10,11 +10,9 @@ pub use cortex_m_rt::entry;
 #[cfg(feature = "panic_halt")]
 pub extern crate panic_halt;
 
-use hal::prelude::*;
-use hal::*;
+pub use hal::prelude::*;
+pub use hal::*;
 
-pub use hal::common::*;
-pub use hal::samd21::*;
 pub use hal::target_device as pac;
 
 use gpio::{self, *};
@@ -30,113 +28,171 @@ use hal::usb::usb_device::bus::UsbBusAllocator;
 #[cfg(feature = "usb")]
 pub use hal::usb::UsbBus;
 
-// The docs could be further improved with details of the specific channels etc
-define_pins!(
-    /// Maps the pins to their arduino names and the numbers printed on the board.
-    /// Information pulled from datasheet and board files for arduino IDE : <https://wiki.seeedstudio.com/Wio-Lite-MG126/#tech-support>
-    struct Pins,
-    target_device: target_device,
 
+// The docs could be further improved with details of the specific channels etc
+atsamd_hal::bsp_pins!(
     // ---------- Left Hand Side ----------
 
-    /// A0_PA02_AIN0
-    pin a0 = a2,
+    // A0_PA02_AIN0
+    PA02 {
+        name: a0,
+    }
 
-    /// AREF
-    pin aref = a3,
+    // AREF
+    PA03 {
+        name: aref,
+    }
 
-    /// A1_PB08_AIN2
-    pin a1 = b8,
+    // A1_PB08_AIN2
+    PB08 {
+        name: a1
+    },
 
-    /// A2_PB09_AIN2
-    pin a2 = b9,
+    // A2_PB09_AIN2
+    PB09 {
+        name: a2
+    },
 
-    /// A3_PB04_AIN2
-    pin a3 = a4,
+    // A3_PB04_AIN2
+    PA04 {
+        name: a3
+    },
 
-    /// A4_PB05_AIN2
-    pin a4 = a5,
+    // A4_PB05_AIN2
+    PA05 {
+        name: a4
+    },
 
-    /// D8_DGI_GPIO2/VBAT
-    pin vbat = a6,
+    // D8_DGI_GPIO2/VBAT
+    PA06 {
+        name: vbat
+    },
 
-    /// D9_DGI_GPIO3
-    pin d9 = a7,
+    // D9_DGI_GPIO3
+    PA07 {
+        name: d9
+    },
 
-    /// D1/TX_PA10_TCC0-W2
-    pin d1 = a10,
+    // D1/TX_PA10_TCC0-W2
+    PA10 {
+        name: d1
+    },
 
-    /// D0/RX_PA11_TCC0-W3
-    pin d0 = a11,
+    // D0/RX_PA11_TCC0-W3
+    PA11 {
+        name: d0
+    },
 
-    /// D23_PB10_S4_SPI_MOSI
-    pin d23 = b10,
+    // D23_PB10_S4_SPI_MOSI
+    PB10 {
+        name: d23
+    },
 
-    /// D24_PB11_S4_SPI_SCK
-    pin d24 = b11,
+    // D24_PB11_S4_SPI_SCK
+    PB11 {
+        name: d24
+    },
 
-    /// D22_PA12_S4_SPI_MISO
-    pin d22 = a12,
+    // D22_PA12_S4_SPI_MISO
+    PA12 {
+        name: d22
+    },
 
-    /// D5_PA15_TCC0-W5
-    pin d5 = a15,
+    // D5_PA15_TCC0-W5
+    PA15 {
+        name: d5
+    },
 
     // ---------- Right Hand Side ----------
 
-    /// PB03_RX_LED
+    // PB03_RX_LED
     // ToDo: What is this?
-    pin rx_led = b3,
+    PB03 {
+        name: rx_led
+    },
 
-    /// A5_PB02_AIN10
-    pin a5 = b2,
+    // A5_PB02_AIN10
+    PB02 {
+        name: a5
+    },
 
-    /// PA31_SWDIO
+    // PA31_SWDIO
     // ToDo: Is this ever useful in software?
-    pin swdio = a31,
+    PA31 {
+        name: swdio
+    },
 
-    /// PA30_SWCLK
+    // PA30_SWCLK
     // ToDo: Is this ever useful in software?
-    pin swclk = a30,
+    PA30 {
+        name: swclk
+    },
 
-    /// PA27_TX_LED
+    // PA27_TX_LED
     // ToDo: What is this?
-    pin tx_led = a27,
+    PA27 {
+        name: tx_led
+    },
 
-    /// UART1/TX_PB12_A4 (Tx for W600)
-    pin w600_tx = b23,
+    // UART1/TX_PB12_A4 (Tx for W600)
+    PB23 {
+        name: w600_tx
+    },
 
-    /// UART1/RX_PB11_A3 (Rx for W600)
-    pin w600_rx = b22,
+    // UART1/RX_PB11_A3 (Rx for W600)
+    PB22 {
+        name: w600_rx
+    },
 
-    /// SAMD21_D+ (USB Data Plus)
-    pin usb_dm = a25,
+    // SAMD21_D+ (USB Data Plus)
+    PA25 {
+        name: usb_dm
+    },
 
-    /// SAMD21_D- (USB Data Plus)
-    pin usb_dp = a24,
+    // SAMD21_D- (USB Data Plus)
+    PA24 {
+        name: usb_dp
+    },
 
-    /// D33/SCL/PA23
-    pin d33 = a23,
+    // D33/SCL/PA23
+    PA23 {
+        name: d33
+    },
 
-    /// D32/SDA/PA22
-    pin d32 = a22,
+    // D32/SDA/PA22
+    PA22 {
+        name: d32
+    },
 
-    /// RESET_W600
-    pin reset_w600 = a21,
+    // RESET_W600
+    PA21 {
+        name: reset_w600
+    },
 
-    /// D6_PA20_TCC0-W6
-    pin d6 = a20,
+    // D6_PA20_TCC0-W6
+    PA20 {
+        name: d6
+    },
 
-    /// D12_MISO
-    pin d12 = a19,
+    // D12_MISO
+    PA19 {
+        name: d12
+    },
 
-    /// D10_SS
-    pin d10 = a18,
+    // D10_SS
+    PA18 {
+        name: d10
+    },
 
-    /// D13_SCK
-    pin d13 = a17,
+    // D13_SCK
+    PA17 {
+        name: d13
+    },
 
-    /// D11_MOSI
-    pin d11 = a16,
+    // D11_MOSI
+    PA16 {
+        name: d11
+    },
 );
 
 /// Convenience for setting up the labelled SDA, SCL pins to

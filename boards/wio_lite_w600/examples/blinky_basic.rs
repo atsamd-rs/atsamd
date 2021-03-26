@@ -19,8 +19,8 @@ fn main() -> ! {
         &mut peripherals.SYSCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = hal::Pins::new(peripherals.PORT);
-    let mut led = pins.d13.into_open_drain_output(&mut pins.port);
+    let pins = hal::Pins::new(peripherals.PORT);
+    let mut led = pins.d13.into_push_pull_output();
 
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
