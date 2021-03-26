@@ -9,9 +9,6 @@ pub use serial_number::*;
 #[cfg(feature = "unproven")]
 pub mod adc;
 
-#[cfg(all(feature = "unproven", feature = "samd21"))]
-pub mod ptc;
-
 #[cfg(feature = "unproven")]
 pub mod pwm;
 
