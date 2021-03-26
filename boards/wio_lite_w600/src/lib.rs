@@ -28,7 +28,6 @@ use hal::usb::usb_device::bus::UsbBusAllocator;
 #[cfg(feature = "usb")]
 pub use hal::usb::UsbBus;
 
-
 // The docs could be further improved with details of the specific channels etc
 atsamd_hal::bsp_pins!(
     // ---------- Left Hand Side ----------
