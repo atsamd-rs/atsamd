@@ -37,95 +37,106 @@ define_pins!(
     struct Pins,
     target_device: target_device,
 
-    // D6_PA20_TCC0-W6
-    pin d6 = a20,
+    // ---------- Left Hand Side ----------
 
-    // D12_MISO
-    pin d12 = a19,
+    /// A0_PA02_AIN0
+    pin a0 = a2,
 
-    // D10_SS
-    pin d10 = a18,
+    /// AREF
+    pin aref = a3,
 
-    // D13_SCK
-    pin d13 = a17,
+    /// A1_PB08_AIN2
+    pin a1 = b8,
 
-    // D11_MOSI
-    pin d11 = a16,
+    /// A2_PB09_AIN2
+    pin a2 = b9,
 
-    // D9_DGI_GPIO3
+    /// A3_PB04_AIN2
+    pin a3 = a4,
+
+    /// A4_PB05_AIN2
+    pin a4 = a5,
+
+    /// D8_DGI_GPIO2/VBAT
+    pin vbat = a6,
+
+    /// D9_DGI_GPIO3
     pin d9 = a7,
 
-    // /// Digital 32: SDA
-    // pin d32 = a22,
-    //
-    // /// Digital 33: SCL
-    // pin d33 = a23,
-    //
-    // /// Digital 5: PWM, TC
-    // pin d5 = a15,
-    //
-    // /// Digital 6: PWM, TCC
-    // pin d6 = a20,
-    //
-    // /// Digital 9
-    // pin d9 = a7,
-    //
-    // /// Digital 10
-    // pin d10 = a18,
-    //
-    // /// Digital 11
-    // pin d11 = a16,
-    //
-    // /// Digital 12
-    // pin d12 = a19,
-    //
-    // /// Digital 13
-    // pin d13 = a17,
-    //
-    // /// Analog 0: DAC
-    // pin a0 = a2,
-    //
-    // /// Analog 1
-    // pin a1 = b8,
-    //
-    // /// Analog 2
-    // pin a2 = b9,
-    //
-    // /// Analog 3: PWM, TCC
-    // pin a3 = a4,
-    //
-    // /// Analog 4: PWM, TCC
-    // pin a4 = a5,
-    //
-    // /// Analog 5
-    // pin a5 = b2,
-    //
-    // /// Digital 24: SCK
-    // pin d24 = b11,
-    //
-    // /// Digital 22: MISO
-    // pin d22 = a12,
-    //
-    // /// Digital 23: MOSI
-    // pin d23 = b10,
-    //
-    // /// Digital 0: RX
-    // pin rx = b3,
-    //
-    // /// Digital 1: TX
-    // pin tx = a27,
-    //
-    // /// USB Data Minus
-    // pin usb_dm = a24,
-    //
-    // /// USB Data Plus
-    // pin usb_dp = a25,
-    //
-    // /// LED built into the board
-    // pin led_builtin = a17,
-    //
-    // pin bottom_pad = a28,
-    // pin adc_battery = b9,
+    /// D1/TX_PA10_TCC0-W2
+    pin d1 = a10,
+
+    /// D0/RX_PA11_TCC0-W3
+    pin d0 = a11,
+
+    /// D23_PB10_S4_SPI_MOSI
+    pin d23 = b10,
+
+    /// D24_PB11_S4_SPI_SCK
+    pin d24 = b11,
+
+    /// D22_PA12_S4_SPI_MISO
+    pin d22 = a12,
+
+    /// D5_PA15_TCC0-W5
+    pin d5 = a15,
+
+    // ---------- Right Hand Side ----------
+
+    /// PB03_RX_LED
+    // ToDo: What is this?
+    pin rx_led = b3,
+
+    /// A5_PB02_AIN10
+    pin a5 = b2,
+
+    /// PA31_SWDIO
+    // ToDo: Is this ever useful in software?
+    pin swdio = a31,
+
+    /// PA30_SWCLK
+    // ToDo: Is this ever useful in software?
+    pin swclk = a30,
+
+    /// PA27_TX_LED
+    // ToDo: What is this?
+    pin tx_led = a27,
+
+    /// UART1/TX_PB12_A4 (Tx for W600)
+    pin w600_tx = b23,
+
+    /// UART1/RX_PB11_A3 (Rx for W600)
+    pin w600_rx = b22,
+
+    /// SAMD21_D+ (USB Data Plus)
+    pin usb_dm = a25,
+
+    /// SAMD21_D- (USB Data Plus)
+    pin usb_dp = a24,
+
+    /// D33/SCL/PA23
+    pin d33 = a23,
+
+    /// D32/SDA/PA22
+    pin d32 = a22,
+
+    /// RESET_W600
+    pin reset_w600 = a21,
+
+    /// D6_PA20_TCC0-W6
+    pin d6 = a20,
+
+    /// D12_MISO
+    pin d12 = a19,
+
+    /// D10_SS
+    pin d10 = a18,
+
+    /// D13_SCK
+    pin d13 = a17,
+
+    /// D11_MOSI
+    pin d11 = a16,
 );
 
 /// Convenience for setting up the labelled SDA, SCL pins to
