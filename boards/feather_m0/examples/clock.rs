@@ -45,8 +45,7 @@ fn main() -> ! {
         .unwrap();
     clocks.configure_standby(ClockGenId::GCLK3, true);
     let rtc_clock = clocks.rtc(&timer_clock).unwrap();
-    let mut rtc = rtc::Rtc::new(peripherals.RTC, rtc_clock.freq(), &mut peripherals.PM);
-    rtc.clock_mode();
+    let rtc = rtc::Rtc::clock_mode(peripherals.RTC, rtc_clock.freq(), &mut peripherals.PM);
 
     unsafe {
         RTC = Some(rtc);
@@ -102,7 +101,7 @@ fn main() -> ! {
 static mut USB_ALLOCATOR: Option<UsbBusAllocator<UsbBus>> = None;
 static mut USB_BUS: Option<UsbDevice<UsbBus>> = None;
 static mut USB_SERIAL: Option<SerialPort<UsbBus>> = None;
-static mut RTC: Option<rtc::Rtc> = None;
+static mut RTC: Option<rtc::Rtc<rtc::ClockMode>> = None;
 
 fn write_serial(bytes: &[u8]) {
     unsafe {

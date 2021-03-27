@@ -53,7 +53,7 @@ fn main() -> ! {
         .unwrap();
     clocks.configure_standby(ClockGenId::GCLK1, true);
     let rtc_clock = clocks.rtc(&timer_clock).unwrap();
-    let timer = rtc::Rtc::new(peripherals.RTC, rtc_clock.freq(), &mut peripherals.PM);
+    let timer = rtc::Rtc::count32_mode(peripherals.RTC, rtc_clock.freq(), &mut peripherals.PM);
     let mut sleeping_delay = SleepingDelay::new(timer, &INTERRUPT_FIRED);
 
     // We can use the RTC in standby for maximum power savings
