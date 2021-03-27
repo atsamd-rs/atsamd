@@ -15,7 +15,7 @@ use hal::*;
 
 use gpio::{Floating, Input, PfC, PfD, Port};
 use hal::clock::GenericClockController;
-use hal::sercom::{I2CMaster4, PadPin, SPIMaster1, UART5};
+use hal::sercom::{I2CMaster4, PadPin, SPIMaster1, SPIMaster2, UART5};
 use hal::time::Hertz;
 
 pub use hal::common::*;
@@ -194,7 +194,7 @@ pub fn uart<F: Into<Hertz>>(
 }
 
 /// Convenience for setting up the labelled SPI peripheral.
-/// This powers up SERCOM4 and configures it for use as an
+/// This powers up SERCOM1 and configures it for use as an
 /// SPI Master in SPI Mode 0.
 pub fn spi_master<F: Into<Hertz>>(
     clocks: &mut GenericClockController,
@@ -220,6 +220,38 @@ pub fn spi_master<F: Into<Hertz>>(
             polarity: hal::hal::spi::Polarity::IdleLow,
         },
         sercom1,
+        pm,
+        (miso.into_pad(port), mosi.into_pad(port), sck.into_pad(port)),
+    )
+}
+
+/// Convenience for setting up the WiFi NINA SPI peripheral.
+/// This powers up SERCOM2 and configures it for use as an
+/// SPI Master in SPI Mode 0
+pub fn spi_master_wifi_nina<F: Into<Hertz>>(
+    clocks: &mut GenericClockController,
+    bus_speed: F,
+    sercom2: pac::SERCOM2,
+    pm: &mut pac::PM,
+    sck: gpio::Pa15<Input<Floating>>,
+    mosi: gpio::Pa12<Input<Floating>>,
+    miso: gpio::Pa13<Input<Floating>>,
+    port: &mut Port,
+) -> SPIMaster2<
+    hal::sercom::Sercom2Pad1<gpio::Pa13<PfC>>,
+    hal::sercom::Sercom2Pad0<gpio::Pa12<PfC>>,
+    hal::sercom::Sercom2Pad3<gpio::Pa15<PfC>>,
+> {
+    let gclk0 = clocks.gclk0();
+
+    SPIMaster2::new(
+        &clocks.sercom2_core(&gclk0).unwrap(),
+        bus_speed,
+        embedded_hal::spi::Mode {
+            phase: hal::hal::spi::Phase::CaptureOnFirstTransition,
+            polarity: hal::hal::spi::Polarity::IdleLow,
+        },
+        sercom2,
         pm,
         (miso.into_pad(port), mosi.into_pad(port), sck.into_pad(port)),
     )
