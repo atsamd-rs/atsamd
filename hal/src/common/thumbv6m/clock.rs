@@ -53,7 +53,8 @@ impl State {
         src: ClockSource,
         improve_duty_cycle: bool,
     ) {
-        // validate the divisor factor based on gclk ID (see 15.8.5)
+        // validate the divisor factor based on gclk ID (samd21 see 15.8.5, for samd11
+        // see 14.8.5)
         let mut divisor_invalid = false;
         if gclk == GCLK1 {
             if divider as u32 >= 2_u32.pow(16) {
@@ -160,6 +161,7 @@ impl GenericClockController {
         let mut state = State { gclk };
 
         set_flash_to_half_auto_wait_state(nvmctrl);
+        #[cfg(feature = "samd21")]
         set_flash_manual_write(nvmctrl);
         enable_gclk_apb(pm);
         if use_external_crystal {
@@ -222,6 +224,7 @@ impl GenericClockController {
         let mut state = State { gclk };
 
         // No wait states needed <= 24 MHz @ 3.3v (ref. 37.12 NVM characteristics)
+        #[cfg(feature = "samd21")]
         set_flash_manual_write(nvmctrl);
         enable_gclk_apb(pm);
 
@@ -386,6 +389,30 @@ impl GenericClockController {
     }
 }
 
+// samd11
+#[cfg(feature = "samd11")]
+clock_generator!(
+    (tcc0, Tcc0Clock, TCC0),
+    (tc1_tc2, Tc1Tc2Clock, TC1_TC2),
+    (sercom0_core, Sercom0CoreClock, SERCOM0_CORE),
+    (sercom1_core, Sercom1CoreClock, SERCOM1_CORE),
+    (sercom2_core, Sercom2CoreClock, SERCOM2_CORE),
+    (rtc, RtcClock, RTC),
+    (adc, AdcClock, ADC),
+    (wdt, WdtClock, WDT),
+    (eic, EicClock, EIC),
+    (evsys0, Evsys0Clock, EVSYS_0),
+    (evsys1, Evsys1Clock, EVSYS_1),
+    (evsys2, Evsys2Clock, EVSYS_2),
+    (evsys3, Evsys3Clock, EVSYS_3),
+    (evsys4, Evsys4Clock, EVSYS_4),
+    (evsys5, Evsys5Clock, EVSYS_5),
+    (ac_ana, AcAnaClock, AC_ANA),
+    (ac_dig, AcDigClock, AC_DIG),
+    (dac, DacClock, DAC),
+);
+// samd21
+#[cfg(feature = "samd21")]
 clock_generator!(
     (tcc0_tcc1, Tcc0Tcc1Clock, TCC0_TCC1),
     (tcc2_tc3, Tcc2Tc3Clock, TCC2_TC3),
@@ -433,6 +460,7 @@ fn set_flash_to_half_auto_wait_state(nvmctrl: &mut NVMCTRL) {
 }
 
 /// Prevent automatic writes to flash by pointers to flash area
+#[cfg(feature = "samd21")]
 fn set_flash_manual_write(nvmctrl: &mut NVMCTRL) {
     nvmctrl.ctrlb.modify(|_, w| w.manw().set_bit());
 }
@@ -544,6 +572,10 @@ fn configure_and_enable_dfll48m(sysctrl: &mut SYSCTRL, use_external_crystal: boo
 
             // usb correction is not set due to instability issues around
             // USB bus resets. TODO(twitchyliquid64): Maybe switch to OSC8M?
+            //
+            // TODO usb correction (still active for samd11??)
+            #[cfg(feature = "samd11")]
+            w.usbcrm().set_bit();
 
             // bypass coarse lock (have calibration data)
             w.bplckc().set_bit()
@@ -555,6 +587,7 @@ fn configure_and_enable_dfll48m(sysctrl: &mut SYSCTRL, use_external_crystal: boo
     // and finally enable it!
     sysctrl.dfllctrl.modify(|_, w| w.enable().set_bit());
 
+    #[cfg(feature = "samd21")]
     if use_external_crystal {
         // wait for lock
         while sysctrl.pclksr.read().dflllckc().bit_is_clear()

@@ -76,16 +76,6 @@ macro_rules! dbgprint {
 pub mod common;
 pub use self::common::*;
 
-#[cfg(feature = "samd11")]
-pub mod samd11;
-#[cfg(feature = "samd11")]
-pub use self::samd11::*;
-
-#[cfg(feature = "samd21")]
-pub mod samd21;
-#[cfg(feature = "samd21")]
-pub use self::samd21::*;
-
 // The following modules are included purely for backward compatibility reasons.
 // Whenever major breaking changes are made to the HAL next, these modules
 // should be removed.
