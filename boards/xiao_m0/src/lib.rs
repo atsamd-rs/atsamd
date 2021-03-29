@@ -6,7 +6,7 @@ pub extern crate atsamd_hal as hal;
 pub use cortex_m_rt::entry;
 
 pub use hal::common::*;
-pub use hal::samd21::*;
+
 pub use hal::target_device as pac;
 
 use hal::prelude::*;
