@@ -16,7 +16,7 @@ use hal::time::Hertz;
 use hal::sercom::{PadPin, UART5};
 
 pub use hal::common::*;
-pub use hal::samd21::*;
+
 pub use hal::target_device as pac;
 
 use gpio::{Floating, Input, PfD, Port};
