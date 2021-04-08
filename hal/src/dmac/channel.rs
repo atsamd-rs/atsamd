@@ -31,14 +31,15 @@
 //! `Uninitialized` state. You will be required to call [`Channel::init`]
 //! again before being able to use it with a `Transfer`.
 
-use super::dma_controller::{ChId, DmaController, PriorityLevel, TriggerAction, TriggerSource};
+use super::dma_controller::{ChId, PriorityLevel, TriggerAction, TriggerSource};
 use crate::{
-    target_device::DMAC,
+    target_device::{self, DMAC},
     typelevel::{Is, Sealed},
 };
 
 use core::{marker::PhantomData, mem};
 use modular_bitfield::prelude::*;
+use target_device::Peripherals;
 
 #[cfg(feature = "min-samd51g")]
 use super::dma_controller::{BurstLength, FifoThreshold};
@@ -142,15 +143,22 @@ impl<Id: ChId, S: Status> Channel<Id, S> {
     /// If an interrupt were to change the CHID register, we would be faced
     /// with undefined behaviour.
     #[cfg(any(feature = "samd11", feature = "samd21"))]
-    fn with_chid<F: FnMut(&DMAC)>(&mut self, dmac: &DMAC, mut fun: F) {
+    fn with_chid<F: FnMut(&DMAC)>(&mut self, mut fun: F) {
         cortex_m::interrupt::free(|_| {
-            // SAFETY: this is actually safe as long as we write a correct channel number to
-            // the CHID register
-            unsafe {
+            // SAFETY: This is ONLY safe if the individual channels are GUARANTEED not to
+            // mess with either:
+            // - The global DMAC configuration
+            // - The configuration of other channels.
+            //
+            // In practice, this means that the DMAC registers should only be accessed
+            // through the `with_chid` method.
+            let dmac = unsafe {
+                let dmac = Peripherals::steal().DMAC;
                 dmac.chid.modify(|_, w| w.id().bits(Id::U8));
+                dmac
             };
 
-            fun(dmac);
+            fun(&dmac);
         });
     }
 
@@ -160,8 +168,16 @@ impl<Id: ChId, S: Status> Channel<Id, S> {
     /// to the correct channel number and run the closure on that.
     #[cfg(feature = "min-samd51g")]
     #[inline]
-    fn with_chid<F: FnMut(&CHANNEL)>(&mut self, dmac: &DMAC, fun: F) {
-        let mut ch = &dmac.channel[Id::USIZE];
+    fn with_chid<F: FnMut(&CHANNEL)>(&mut self, fun: F) {
+        // SAFETY: This is ONLY safe if the individual channels are GUARANTEED not to
+        // mess with either:
+        // - The global DMAC configuration
+        // - The configuration of other channels.
+        //
+        // In practice, this means that the DMAC registers should only be accessed
+        // through the `with_chid` method.
+        let dmac = unsafe { Peripherals::steal().DMAC };
+        let mut ch = dmac.channel[Id::USIZE];
         fun(&mut ch);
     }
 
@@ -171,17 +187,11 @@ impl<Id: ChId, S: Status> Channel<Id, S> {
     /// # Return
     ///
     /// A `Channel` with a `Ready` status
-    pub fn init(
-        mut self,
-        controller: &mut DmaController,
-        lvl: PriorityLevel,
-    ) -> Channel<Id, Ready> {
-        let dmac = controller.dmac();
-
+    pub fn init(mut self, lvl: PriorityLevel) -> Channel<Id, Ready> {
         // Software reset the channel for good measure
-        self._reset_private(dmac);
+        self._reset_private();
 
-        self.with_chid(dmac, |d| {
+        self.with_chid(|d| {
             #[cfg(any(feature = "samd11", feature = "samd21"))]
             // Setup priority level
             d.chctrlb.modify(|_, w| w.lvl().bits(lvl as u8));
@@ -196,21 +206,21 @@ impl<Id: ChId, S: Status> Channel<Id, S> {
         }
     }
 
-    pub fn enable_interrupts(&mut self, dmac: &mut DmaController, flags: InterruptFlags) {
-        self.with_chid(dmac.dmac(), |d| {
-            d.chintenset.write(|w| unsafe { w.bits(flags.into()) })
-        })
+    pub fn enable_interrupts(&mut self, flags: InterruptFlags) {
+        // SAFETY: This is safe as InterruptFlags is only capable of writing in
+        // non-reserved bits
+        self.with_chid(|d| d.chintenset.write(|w| unsafe { w.bits(flags.into()) }))
     }
 
-    pub fn disable_interrupts(&mut self, dmac: &mut DmaController, flags: InterruptFlags) {
-        self.with_chid(dmac.dmac(), |d| {
-            d.chintenclr.write(|w| unsafe { w.bits(flags.into()) })
-        })
+    pub fn disable_interrupts(&mut self, flags: InterruptFlags) {
+        // SAFETY: This is safe as InterruptFlags is only capable of writing in
+        // non-reserved bits
+        self.with_chid(|d| d.chintenclr.write(|w| unsafe { w.bits(flags.into()) }))
     }
 
     #[inline]
-    fn _reset_private(&mut self, dmac: &DMAC) {
-        self.with_chid(dmac, |d| {
+    fn _reset_private(&mut self) {
+        self.with_chid(|d| {
             // Reset the channel to its startup state and wait for reset to complete
             d.chctrla.modify(|_, w| w.swrst().set_bit());
             while d.chctrla.read().swrst().bit_is_set() {}
@@ -218,11 +228,14 @@ impl<Id: ChId, S: Status> Channel<Id, S> {
     }
 
     #[inline]
-    fn _trigger_private(&mut self, dmac: &DMAC) {
-        // SAFETY: This is safe because we are writing the correct channel
-        // number into the register
+    fn _trigger_private(&mut self) {
+        // SAFETY: This is safe because we are only writing to a bit that belongs to
+        // this channel.
         unsafe {
-            dmac.swtrigctrl.modify(|_, w| w.bits(1 << Id::U8));
+            Peripherals::steal()
+                .DMAC
+                .swtrigctrl
+                .modify(|_, w| w.bits(1 << Id::U8));
         }
     }
 }
@@ -232,8 +245,8 @@ impl<Id: ChId> Channel<Id, Ready> {
     /// Issue a software reset to the channel. This will return the channel to
     /// its startup state
     #[inline]
-    pub fn reset(mut self, dmac: &DMAC) -> Channel<Id, Uninitialized> {
-        self._reset_private(dmac);
+    pub fn reset(mut self) -> Channel<Id, Uninitialized> {
+        self._reset_private();
 
         Channel {
             _id: self._id,
@@ -246,9 +259,8 @@ impl<Id: ChId> Channel<Id, Ready> {
     /// transfer, reducing the DMA transfer latency.
     #[cfg(feature = "min-samd51g")]
     #[inline]
-    pub fn fifo_threshold(&mut self, dmac: &mut DmaController, threshold: FifoThreshold) {
-        let dmac = dmac.dmac();
-        self.with_chid(dmac, |d| {
+    pub fn fifo_threshold(&mut self, threshold: FifoThreshold) {
+        self.with_chid(|d| {
             d.chctrla.modify(|_, w| w.threshold().bits(threshold as u8));
         })
     }
@@ -257,9 +269,8 @@ impl<Id: ChId> Channel<Id, Ready> {
     /// is an atomic, uninterruptible operation.
     #[cfg(feature = "min-samd51g")]
     #[inline]
-    pub fn burst_length(&mut self, dmac: &mut DmaController, burst_length: BurstLength) {
-        let dmac = dmac.dmac();
-        self.with_chid(dmac, |d| {
+    pub fn burst_length(&mut self, burst_length: BurstLength) {
+        self.with_chid(|d| {
             d.chctrla
                 .modify(|_, w| w.burstlen().bits(burst_length as u8));
         })
@@ -272,13 +283,12 @@ impl<Id: ChId> Channel<Id, Ready> {
     /// A `Channel` with a `Busy` status.
     pub(crate) fn start(
         mut self,
-        dmac: &DMAC,
         trig_src: TriggerSource,
         trig_act: TriggerAction,
     ) -> Channel<Id, Busy> {
         // Set the channel ID. We assume the CHID register doesn't change
         // for the duration of this function.
-        self.with_chid(dmac, |d| {
+        self.with_chid(|d| {
             // Configure the trigger source and trigger action
             // SAFETY: This is actually safe because we are writing the correct enum value
             // (imported from the PAC) into the register
@@ -289,6 +299,8 @@ impl<Id: ChId> Channel<Id, Ready> {
             #[cfg(feature = "min-samd51g")]
             let trigger_channel = &d.chctrla;
 
+            // SAFETY: This is safe as we only write valid bits into the registers because
+            // of TriggerSource and TriggerAction.
             unsafe {
                 trigger_channel.modify(|_, w| {
                     w.trigsrc().bits(trig_src as u8);
@@ -302,7 +314,7 @@ impl<Id: ChId> Channel<Id, Ready> {
 
         // If trigger source is DISABLE, manually trigger transfer
         if trig_src == TriggerSource::DISABLE {
-            self._trigger_private(dmac);
+            self._trigger_private();
         }
 
         Channel {
@@ -316,8 +328,8 @@ impl<Id: ChId> Channel<Id, Ready> {
 impl<Id: ChId> Channel<Id, Busy> {
     /// Issue a software trigger to the channel
     #[inline]
-    pub(crate) fn software_trigger(&mut self, dmac: &DMAC) {
-        self._trigger_private(dmac);
+    pub(crate) fn software_trigger(&mut self) {
+        self._trigger_private();
     }
 
     /// Stop transfer on channel whether or not the transfer has completed
@@ -327,9 +339,9 @@ impl<Id: ChId> Channel<Id, Busy> {
     /// A `Channel` with a `Ready` status, ready to be reused by a new
     /// [`Transfer`](super::transfer::Transfer)
     #[inline]
-    pub(crate) fn stop(mut self, dmac: &DMAC) -> Channel<Id, Ready> {
-        self.with_chid(dmac, |d| d.chctrla.modify(|_, w| w.enable().clear_bit()));
-        self.free(dmac)
+    pub(crate) fn stop(mut self) -> Channel<Id, Ready> {
+        self.with_chid(|d| d.chctrla.modify(|_, w| w.enable().clear_bit()));
+        self.free()
     }
 
     /// Returns whether or not the transfer is complete.
@@ -342,8 +354,10 @@ impl<Id: ChId> Channel<Id, Busy> {
     /// and BUSYCH is set. To make sure the transfer is actually complete, the
     /// channel needs to be both NOT PENDING and NOT BUSY.
     #[inline]
-    pub(crate) fn xfer_complete(&self, dmac: &DMAC) -> bool {
+    pub(crate) fn xfer_complete(&self) -> bool {
         let id = Id::U8;
+        // SAFETY: This is safe as we only read bits that belong to this channel.
+        let dmac = unsafe { Peripherals::steal().DMAC };
         dmac.busych.read().bits() & (1 << id) == 0 && dmac.pendch.read().bits() & (1 << id) == 0
     }
 
@@ -354,8 +368,8 @@ impl<Id: ChId> Channel<Id, Busy> {
     /// A `Channel` with a `Ready` status, ready to be reused by a new
     /// [`Transfer`](super::transfer::Transfer)
     #[inline]
-    pub(crate) fn free(self, dmac: &DMAC) -> Channel<Id, Ready> {
-        while !self.xfer_complete(dmac) {}
+    pub(crate) fn free(self) -> Channel<Id, Ready> {
+        while !self.xfer_complete() {}
         Channel {
             _id: self._id,
             _status: PhantomData,
@@ -364,9 +378,9 @@ impl<Id: ChId> Channel<Id, Busy> {
 
     #[inline]
     #[cfg(any(feature = "samd11", feature = "samd21"))]
-    pub fn callback(&mut self, dmac: &DMAC) {
+    pub fn callback(&mut self) {
         let mut xfer_complete = false;
-        self.with_chid(dmac, |d| {
+        self.with_chid(|d| {
             // Transfer complete
             if d.chintflag.read().tcmpl().bit_is_set() {
                 // TODO Do something here

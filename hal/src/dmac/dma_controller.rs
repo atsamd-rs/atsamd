@@ -128,18 +128,6 @@ pub struct RoundRobinMask {
 }
 
 impl DmaController {
-    /// Return a shared reference to the underlying DMAC object exposed by the
-    /// PAC.
-    ///
-    /// # Safety
-    ///
-    /// This function is unsafe because `DmaController` may expect certain
-    /// registers to retain a configuration. Messing with that configuration may
-    /// be unsafe.
-    pub(super) fn dmac(&mut self) -> &DMAC {
-        &mut self.dmac
-    }
-
     /// Initialize the DMAC and return a DmaController object useable by
     /// [`Transfer`](super::transfer::Transfer)'s. By default, all
     /// priority levels are enabled unless subsequently disabled using the

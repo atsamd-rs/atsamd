@@ -90,15 +90,10 @@
 
 use super::{
     channel::{AnyChannel, Busy, Channel, ChannelId, Ready},
-    dma_controller::{ChId, DmaController, TriggerAction, TriggerSource},
+    dma_controller::{ChId, TriggerAction, TriggerSource},
     BlockTransferControl, DmacDescriptor, DESCRIPTOR_SECTION,
 };
-
-use crate::{
-    target_device::DMAC,
-    typelevel::{Is, Sealed},
-};
-
+use crate::typelevel::{Is, Sealed};
 use core::{mem, sync::atomic};
 use modular_bitfield::prelude::*;
 
@@ -463,7 +458,6 @@ where
     /// to manually issue a software trigger to the channel.
     pub fn begin(
         self,
-        dmac: &mut DmaController,
         trig_src: TriggerSource,
         trig_act: TriggerAction,
     ) -> Transfer<Channel<ChannelId<C>, Busy>, BufferPair<S, D>, P> {
@@ -471,9 +465,7 @@ where
         // operations beyond this fence.
         // (see https://docs.rust-embedded.org/embedonomicon/dma.html#compiler-misoptimizations)
         atomic::fence(atomic::Ordering::Release); //  ▲
-
-        let dmac = dmac.dmac();
-        let chan = self.chan.into().start(dmac, trig_src, trig_act);
+        let chan = self.chan.into().start(trig_src, trig_act);
 
         Transfer {
             buffers: self.buffers,
@@ -516,15 +508,13 @@ where
     /// Note that is not guaranteed that the trigger request will register,
     /// if a trigger request is already pending for the channel.
     #[inline]
-    pub fn software_trigger(&mut self, dmac: &mut DmaController) {
-        let dmac = dmac.dmac();
-        self.chan.as_mut().software_trigger(dmac);
+    pub fn software_trigger(&mut self) {
+        self.chan.as_mut().software_trigger();
     }
     /// Blocking; Wait for the DMA transfer to complete and release all owned
     /// resources
-    pub fn wait(self, dmac: &mut DmaController) -> (Channel<ChannelId<C>, Ready>, S, D, P) {
-        let dmac = dmac.dmac();
-        let chan = self.chan.into().free(dmac);
+    pub fn wait(self) -> (Channel<ChannelId<C>, Ready>, S, D, P) {
+        let chan = self.chan.into().free();
 
         // Memory barrier to prevent the compiler/CPU from re-ordering read/write
         // operations beyond this fence.
@@ -541,9 +531,8 @@ where
 
     /// Non-blocking; Immediately stop the DMA transfer and release all owned
     /// resources
-    pub fn stop(self, dmac: &mut DmaController) -> (Channel<ChannelId<C>, Ready>, S, D, P) {
-        let dmac = dmac.dmac();
-        let chan = self.chan.into().stop(dmac);
+    pub fn stop(self) -> (Channel<ChannelId<C>, Ready>, S, D, P) {
+        let chan = self.chan.into().stop();
 
         // Memory barrier to prevent the compiler/CPU from re-ordering read/write
         // operations beyond this fence.
@@ -558,7 +547,7 @@ where
         )
     }
 
-    pub fn callback(&mut self, dmac: &DMAC) {
-        self.chan.as_mut().callback(dmac);
+    pub fn callback(&mut self) {
+        self.chan.as_mut().callback();
     }
 }
