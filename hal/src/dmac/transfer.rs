@@ -93,8 +93,13 @@ use super::{
     dma_controller::{ChId, DmaController, TriggerAction, TriggerSource},
     BlockTransferControl, DmacDescriptor, DESCRIPTOR_SECTION,
 };
-use crate::typelevel::{Is, Sealed};
-use core::sync::atomic;
+
+use crate::{
+    target_device::DMAC,
+    typelevel::{Is, Sealed},
+};
+
+use core::{mem, sync::atomic};
 use modular_bitfield::prelude::*;
 
 //==============================================================================
@@ -301,11 +306,12 @@ where
     payload: Pld,
 }
 
-/// These methods are available to an [`Transfer`] holding a `Ready` `Channel`.
+/// These methods are available to an [`Transfer`] holding a `Ready` `Channel`,
+/// as well as static buffers.
 impl<C, S, D> Transfer<C, BufferPair<S, D>>
 where
-    S: Buffer,
-    D: Buffer<Beat = S::Beat>,
+    S: Buffer + 'static,
+    D: Buffer<Beat = S::Beat> + 'static,
     C: AnyChannel<Status = Ready>,
 {
     /// Safely construct a new `Transfer`. To guarantee memory safety, both
@@ -338,7 +344,15 @@ where
         // length verification
         unsafe { Self::new_unchecked(chan, source, destination, circular) }
     }
+}
 
+/// These methods are available to an [`Transfer`] holding a `Ready` `Channel`.
+impl<C, S, D> Transfer<C, BufferPair<S, D>>
+where
+    S: Buffer,
+    D: Buffer<Beat = S::Beat>,
+    C: AnyChannel<Status = Ready>,
+{
     /// Construct a new `Transfer` without checking for memory safety.
     ///
     /// # Safety
@@ -542,5 +556,9 @@ where
             self.buffers.destination,
             self.payload,
         )
+    }
+
+    pub fn callback(&mut self, dmac: &DMAC) {
+        self.chan.as_mut().callback(dmac);
     }
 }

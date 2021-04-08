@@ -36,7 +36,9 @@ use crate::{
     target_device::DMAC,
     typelevel::{Is, Sealed},
 };
-use core::marker::PhantomData;
+
+use core::{marker::PhantomData, mem};
+use modular_bitfield::prelude::*;
 
 #[cfg(feature = "min-samd51g")]
 use super::dma_controller::{BurstLength, FifoThreshold};
@@ -140,7 +142,7 @@ impl<Id: ChId, S: Status> Channel<Id, S> {
     /// If an interrupt were to change the CHID register, we would be faced
     /// with undefined behaviour.
     #[cfg(any(feature = "samd11", feature = "samd21"))]
-    fn with_chid<F: Fn(&DMAC)>(&mut self, dmac: &DMAC, fun: F) {
+    fn with_chid<F: FnMut(&DMAC)>(&mut self, dmac: &DMAC, mut fun: F) {
         cortex_m::interrupt::free(|_| {
             // SAFETY: this is actually safe as long as we write a correct channel number to
             // the CHID register
@@ -158,7 +160,7 @@ impl<Id: ChId, S: Status> Channel<Id, S> {
     /// to the correct channel number and run the closure on that.
     #[cfg(feature = "min-samd51g")]
     #[inline]
-    fn with_chid<F: Fn(&CHANNEL)>(&mut self, dmac: &DMAC, fun: F) {
+    fn with_chid<F: FnMut(&CHANNEL)>(&mut self, dmac: &DMAC, fun: F) {
         let mut ch = &dmac.channel[Id::USIZE];
         fun(&mut ch);
     }
@@ -173,7 +175,6 @@ impl<Id: ChId, S: Status> Channel<Id, S> {
         mut self,
         controller: &mut DmaController,
         lvl: PriorityLevel,
-        enable_interrupts: bool,
     ) -> Channel<Id, Ready> {
         let dmac = controller.dmac();
 
@@ -187,21 +188,24 @@ impl<Id: ChId, S: Status> Channel<Id, S> {
 
             #[cfg(feature = "min-samd51g")]
             d.chprilvl.modify(|_, w| w.prilvl().bits(lvl as u8));
-
-            if enable_interrupts {
-                // Enable all interrupt sources
-                d.chintenset.modify(|_, w| {
-                    w.susp().set_bit();
-                    w.tcmpl().set_bit();
-                    w.terr().set_bit()
-                });
-            }
         });
 
         Channel {
             _id: self._id,
             _status: PhantomData,
         }
+    }
+
+    pub fn enable_interrupts(&mut self, dmac: &mut DmaController, flags: InterruptFlags) {
+        self.with_chid(dmac.dmac(), |d| {
+            d.chintenset.write(|w| unsafe { w.bits(flags.into()) })
+        })
+    }
+
+    pub fn disable_interrupts(&mut self, dmac: &mut DmaController, flags: InterruptFlags) {
+        self.with_chid(dmac.dmac(), |d| {
+            d.chintenclr.write(|w| unsafe { w.bits(flags.into()) })
+        })
     }
 
     #[inline]
@@ -357,4 +361,45 @@ impl<Id: ChId> Channel<Id, Busy> {
             _status: PhantomData,
         }
     }
+
+    #[inline]
+    #[cfg(any(feature = "samd11", feature = "samd21"))]
+    pub fn callback(&mut self, dmac: &DMAC) {
+        let mut xfer_complete = false;
+        self.with_chid(dmac, |d| {
+            // Transfer complete
+            if d.chintflag.read().tcmpl().bit_is_set() {
+                // TODO Do something here
+                xfer_complete = true;
+                d.chintflag.modify(|_, w| w.tcmpl().set_bit());
+            }
+
+            // Transfer error
+            if d.chintflag.read().terr().bit_is_set() {
+                // TODO Do something here
+                d.chintflag.modify(|_, w| w.terr().set_bit());
+            }
+
+            // Channel suspended
+            if d.chintflag.read().susp().bit_is_set() {
+                // TODO Do something here
+                d.chintflag.modify(|_, w| w.susp().set_bit());
+            }
+        });
+    }
+}
+
+/// Interrupt sources available to a DMA channel
+#[bitfield]
+#[repr(u8)]
+#[derive(Clone, Copy)]
+pub struct InterruptFlags {
+    /// Transfer error
+    pub terr: bool,
+    /// Transfer complete
+    pub tcmpl: bool,
+    /// Transfer suspended
+    pub susp: bool,
+    #[skip]
+    _reserved: B5,
 }
