@@ -1170,7 +1170,14 @@ where
     /// half the GCLK frequency. The minimum baud rate is the GCLK frequency /
     /// 512. Values outside this range will saturate at the extremes.
     #[inline]
-    pub fn baud<B: Into<Hertz>>(self, baud: B) -> Self {
+    pub fn baud<B: Into<Hertz>>(mut self, baud: B) -> Self {
+        self.update_baud(baud);
+        self
+    }
+
+    /// Update the baudrate
+    #[inline]
+    fn update_baud<B: Into<Hertz>>(&mut self, baud: B) {
         let baud: Hertz = baud.into();
         let baud = (self.freq.0 / 2 / baud.0).saturating_sub(1);
         let baud = if baud <= u8::MAX as u32 {
@@ -1181,8 +1188,7 @@ where
         self.sercom
             .spi()
             .baud
-            .modify(|_, w| unsafe { w.baud().bits(baud) });
-        self
+            .modify(|_, w| unsafe { w.baud().bits(baud) })
     }
 
     /// Control the buffer overflow notification
@@ -1234,6 +1240,16 @@ where
         self.sercom.spi().ctrla.modify(|_, w| w.enable().set_bit());
         while self.sercom.spi().syncbusy.read().enable().bit_is_set() {}
         Spi { config: self }
+    }
+
+    /// Enable or disable the SERCOM peripheral, and wait for the ENABLE bit to
+    /// synchronize.
+    fn enable_peripheral(&mut self, enable: bool) {
+        self.sercom
+            .spi()
+            .ctrla
+            .modify(|_, w| w.enable().bit(enable));
+        while self.sercom.spi().syncbusy.read().enable().bit_is_set() {}
     }
 }
 
@@ -1426,6 +1442,22 @@ impl<C: ValidConfig> Spi<C> {
     #[inline]
     pub unsafe fn sercom(&self) -> &SpiSercom<C> {
         &self.config.as_ref().sercom()
+    }
+
+    /// Update the SPI bus baudrate.
+    ///
+    /// **WARNING** this method assumes that the GCLK clock hasn't been changed
+    /// since [`Spi`] has been initialized.
+    ///
+    /// Calling this method will temporarily disable the SERCOM peripheral, as
+    /// the BAUD register is enable-protected. This may interrupt any ongoing
+    /// transactions.
+    #[inline]
+    pub fn update_baud<B: Into<Hertz>>(&mut self, baud: B) {
+        let config = self.config.as_mut();
+        config.enable_peripheral(false);
+        config.update_baud(baud);
+        config.enable_peripheral(true);
     }
 
     /// Enable interrupts for the specified flags
