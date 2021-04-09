@@ -291,14 +291,16 @@ where
 // TODO change source and dest types to Pin? (see https://docs.rust-embedded.org/embedonomicon/dma.html#immovable-buffers)
 /// DMA transfer, owning the resources until the transfer is done and
 /// [`Transfer::wait`] is called.
-pub struct Transfer<Chan, Buf, Pld = ()>
+pub struct Transfer<Chan, Buf, Pld = (), W = fn()>
 where
     Buf: AnyBufferPair,
     Chan: AnyChannel,
+    W: FnMut() + 'static,
 {
     chan: Chan,
     buffers: Buf,
     payload: Pld,
+    waker: Option<W>,
 }
 
 /// These methods are available to an [`Transfer`] holding a `Ready` `Channel`,
@@ -430,27 +432,60 @@ where
             buffers,
             chan,
             payload: (),
+            waker: None,
         }
     }
+}
 
+/// These methods are available to an [`Transfer`] holding a `Ready` `Channel`
+/// and a specified waker type
+impl<C, S, D, W> Transfer<C, BufferPair<S, D>, (), W>
+where
+    S: Buffer,
+    D: Buffer<Beat = S::Beat>,
+    C: AnyChannel<Status = Ready>,
+    W: FnMut() + 'static,
+{
     /// Append a payload to the transfer. This guarantees that it cannot safely
     /// be accessed while the transfer is ongoing.
-    pub fn with_payload<P>(self, payload: P) -> Transfer<C, BufferPair<S, D>, P> {
+    pub fn with_payload<P>(self, payload: P) -> Transfer<C, BufferPair<S, D>, P, W> {
         Transfer {
             buffers: self.buffers,
             chan: self.chan,
+            waker: self.waker,
             payload,
         }
     }
 }
 
-/// These methods are available to an `Transfer` holding a `Ready` channel and a
-/// specified payload type
+/// These methods are available to an [`Transfer`] holding a `Ready` `Channel`
+/// and a specified payload type.
 impl<C, S, D, P> Transfer<C, BufferPair<S, D>, P>
 where
     S: Buffer,
     D: Buffer<Beat = S::Beat>,
     C: AnyChannel<Status = Ready>,
+{
+    /// Append a waker to the transfer. This will be called when the DMAC
+    /// interrupt is called.
+    pub fn with_waker<W: FnMut() + 'static>(self, waker: W) -> Transfer<C, BufferPair<S, D>, P, W> {
+        Transfer {
+            buffers: self.buffers,
+            chan: self.chan,
+            payload: self.payload,
+            waker: Some(waker),
+        }
+    }
+}
+
+/// These methods are available to an `Transfer` holding a `Ready` channel and
+/// specified payload and waker types
+impl<C, S, D, P, W> Transfer<C, BufferPair<S, D>, P, W>
+where
+    S: Buffer,
+    D: Buffer<Beat = S::Beat>,
+    C: AnyChannel<Status = Ready>,
+    W: FnMut() + 'static,
 {
     /// Begin DMA transfer. If [TriggerSource::DISABLE](TriggerSource::DISABLE)
     /// is used, a sowftware trigger will be issued to the DMA channel to
@@ -460,7 +495,7 @@ where
         self,
         trig_src: TriggerSource,
         trig_act: TriggerAction,
-    ) -> Transfer<Channel<ChannelId<C>, Busy>, BufferPair<S, D>, P> {
+    ) -> Transfer<Channel<ChannelId<C>, Busy>, BufferPair<S, D>, P, W> {
         // Memory barrier to prevent the compiler/CPU from re-ordering read/write
         // operations beyond this fence.
         // (see https://docs.rust-embedded.org/embedonomicon/dma.html#compiler-misoptimizations)
@@ -471,6 +506,7 @@ where
             buffers: self.buffers,
             chan,
             payload: self.payload,
+            waker: self.waker,
         }
     }
 }
@@ -498,11 +534,12 @@ where
 }
 
 /// These methods are available to a `Transfer` holding a `Busy` channel
-impl<S, D, C, P> Transfer<C, BufferPair<S, D>, P>
+impl<S, D, C, P, W> Transfer<C, BufferPair<S, D>, P, W>
 where
     S: Buffer,
     D: Buffer<Beat = S::Beat>,
     C: AnyChannel<Status = Busy>,
+    W: FnMut() + 'static,
 {
     /// Issue a software trigger request to the corresponding channel.
     /// Note that is not guaranteed that the trigger request will register,
@@ -529,6 +566,11 @@ where
         )
     }
 
+    pub fn complete(&self) -> bool {
+        let chan = self.chan.as_ref();
+        chan.xfer_complete()
+    }
+
     /// Non-blocking; Immediately stop the DMA transfer and release all owned
     /// resources
     pub fn stop(self) -> (Channel<ChannelId<C>, Ready>, S, D, P) {
@@ -549,5 +591,8 @@ where
 
     pub fn callback(&mut self) {
         self.chan.as_mut().callback();
+        if let Some(mut w) = self.waker.take() {
+            w()
+        }
     }
 }
