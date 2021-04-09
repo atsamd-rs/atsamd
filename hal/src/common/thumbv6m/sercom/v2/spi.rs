@@ -892,7 +892,7 @@ pub trait CharSize: Sealed {
 
     /// Configure the `LENGTH` register and enable the `LENGTH` counter
     #[inline]
-    fn configure(sercom: &RegisterBlock) -> () {
+    fn configure(sercom: &RegisterBlock) {
         sercom
             .spi()
             .ctrlb
@@ -1170,14 +1170,7 @@ where
     /// half the GCLK frequency. The minimum baud rate is the GCLK frequency /
     /// 512. Values outside this range will saturate at the extremes.
     #[inline]
-    pub fn baud<B: Into<Hertz>>(mut self, baud: B) -> Self {
-        self.update_baud(baud);
-        self
-    }
-
-    /// Update the baudrate
-    #[inline]
-    fn update_baud<B: Into<Hertz>>(&mut self, baud: B) {
+    pub fn baud<B: Into<Hertz>>(self, baud: B) -> Self {
         let baud: Hertz = baud.into();
         let baud = (self.freq.0 / 2 / baud.0).saturating_sub(1);
         let baud = if baud <= u8::MAX as u32 {
@@ -1188,7 +1181,8 @@ where
         self.sercom
             .spi()
             .baud
-            .modify(|_, w| unsafe { w.baud().bits(baud) })
+            .modify(|_, w| unsafe { w.baud().bits(baud) });
+        self
     }
 
     /// Control the buffer overflow notification
@@ -1239,7 +1233,7 @@ where
         while self.sercom.spi().syncbusy.read().ctrlb().bit_is_set() {}
         self.sercom.spi().ctrla.modify(|_, w| w.enable().set_bit());
         while self.sercom.spi().syncbusy.read().enable().bit_is_set() {}
-        Spi { config: self }
+        Spi { config: Some(self) }
     }
 
     /// Enable or disable the SERCOM peripheral, and wait for the ENABLE bit to
@@ -1431,7 +1425,7 @@ where
 ///
 /// [`SpiFuture`]: crate::sercom::v2::spi_future::SpiFuture
 pub struct Spi<C: ValidConfig> {
-    config: C,
+    config: Option<C>,
 }
 
 impl<C: ValidConfig> Spi<C> {
@@ -1441,35 +1435,49 @@ impl<C: ValidConfig> Spi<C> {
     /// type-level tracking in this module, so it is unsafe.
     #[inline]
     pub unsafe fn sercom(&self) -> &SpiSercom<C> {
-        &self.config.as_ref().sercom()
+        self.config.as_ref().unwrap().as_ref().sercom()
     }
 
-    /// Update the SPI bus baudrate.
-    ///
-    /// **WARNING** this method assumes that the GCLK clock hasn't been changed
-    /// since [`Spi`] has been initialized.
+    /// Update the SPI configuration.
     ///
     /// Calling this method will temporarily disable the SERCOM peripheral, as
-    /// the BAUD register is enable-protected. This may interrupt any ongoing
+    /// some registers are enable-protected. This may interrupt any ongoing
     /// transactions.
     #[inline]
-    pub fn update_baud<B: Into<Hertz>>(&mut self, baud: B) {
-        let config = self.config.as_mut();
-        config.enable_peripheral(false);
-        config.update_baud(baud);
-        config.enable_peripheral(true);
+    pub fn update_config<F>(&mut self, update: F)
+    where
+        F: FnOnce(C) -> C,
+    {
+        let mut old_config = self.config.take().unwrap();
+        old_config.as_mut().enable_peripheral(false);
+
+        self.config.replace(update(old_config));
+
+        self.config
+            .as_mut()
+            .unwrap()
+            .as_mut()
+            .enable_peripheral(true);
     }
 
     /// Enable interrupts for the specified flags
     #[inline]
     pub fn enable_interrupts(&mut self, flags: Flags) {
-        self.config.as_mut().enable_interrupts(flags)
+        self.config
+            .as_mut()
+            .unwrap()
+            .as_mut()
+            .enable_interrupts(flags)
     }
 
     /// Disable interrupts for the specified flags
     #[inline]
     pub fn disable_interrupts(&mut self, flags: Flags) {
-        self.config.as_mut().disable_interrupts(flags);
+        self.config
+            .as_mut()
+            .unwrap()
+            .as_mut()
+            .disable_interrupts(flags);
     }
 
     /// Read the interrupt status flags
@@ -1537,15 +1545,18 @@ impl<C: ValidConfig> Spi<C> {
 
     /// Disable the SPI peripheral and return the [`Config`] struct
     #[inline]
-    pub fn disable(self) -> C {
+    pub fn disable(mut self) -> C {
         // SAFETY: The read state must be reset when disabling the peripheral
         unsafe { Config::<C::Pads>::reset_serial_read_state() };
         let spim = unsafe { self.sercom().spi() };
         spim.ctrlb.modify(|_, w| w.rxen().clear_bit());
         while spim.syncbusy.read().ctrlb().bit_is_set() {}
-        spim.ctrla.modify(|_, w| w.enable().clear_bit());
-        while spim.syncbusy.read().enable().bit_is_set() {}
         self.config
+            .as_mut()
+            .unwrap()
+            .as_mut()
+            .enable_peripheral(false);
+        self.config.unwrap()
     }
 }
 
