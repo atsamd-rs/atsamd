@@ -1613,6 +1613,129 @@ impl<C: ValidConfig> AnySpi for Spi<C> {
 }
 
 //=============================================================================
+// SPI DMA transfers
+//=============================================================================
+#[cfg(feature = "dma")]
+pub use spi_dma::*;
+
+#[cfg(feature = "dma")]
+mod spi_dma {
+    use super::*;
+    use crate::dmac::{
+        self,
+        channel::{self, Busy, Channel, ChannelId, Ready},
+        transfer, Transfer,
+    };
+
+    unsafe impl<P, M, C> dmac::transfer::Buffer for Spi<Config<P, M, C>>
+    where
+        Config<P, M, C>: ValidConfig,
+        P: DipoDopo,
+        M: MasterMode,
+        C: CharSize,
+        C::Word: dmac::transfer::Beat,
+    {
+        type Beat = C::Word;
+
+        #[cfg(feature = "min-samd51g")]
+        #[inline]
+        fn dma_ptr(&mut self) -> *mut Self::Beat {
+            unsafe { self.sercom().spim().data.as_ptr() as *mut _ }
+        }
+
+        #[inline]
+        #[cfg(any(feature = "samd11", feature = "samd21"))]
+        fn dma_ptr(&mut self) -> *mut Self::Beat {
+            unsafe { self.sercom().spi().data.as_ptr() as *mut _ }
+        }
+
+        fn incrementing(&self) -> bool {
+            false
+        }
+
+        fn buffer_len(&self) -> usize {
+            1
+        }
+    }
+
+    impl<P, M, C> Spi<Config<P, M, C>>
+    where
+        Self: dmac::transfer::Buffer<Beat = C::Word>,
+        Config<P, M, C>: ValidConfig,
+        P: DipoDopo + Tx,
+        M: MasterMode,
+        C: CharSize,
+        C::Word: dmac::transfer::Beat,
+    {
+        /// Transform an [`Spi`] into a DMA [`Transfer`]) and
+        /// start a send transaction.
+        #[inline]
+        pub fn send_with_dma<Chan, B, W>(
+            self,
+            buf: B,
+            mut channel: Chan,
+            waker: W,
+        ) -> Transfer<Channel<ChannelId<Chan>, Busy>, transfer::BufferPair<B, Self>, (), W>
+        where
+            Chan: channel::AnyChannel<Status = Ready>,
+            B: dmac::Buffer<Beat = C::Word> + 'static,
+            W: FnOnce(crate::dmac::channel::CallbackStatus) + 'static,
+        {
+            channel
+                .as_mut()
+                .enable_interrupts(dmac::channel::InterruptFlags::new().with_tcmpl(true));
+            // SAFETY: We use new_unchecked to avoid having to pass a 'static self as the
+            // destination buffer. This is safe as long as we guarantee the source buffer is
+            // static.
+            unsafe { dmac::Transfer::new_unchecked(channel, buf, self, false) }
+                .with_waker(waker)
+                .begin(
+                    SpiSercom::<Config<P, M, C>>::DMA_TX_TRIGGER,
+                    dmac::TriggerAction::BEAT,
+                )
+        }
+    }
+
+    impl<P, M, C> Spi<Config<P, M, C>>
+    where
+        Self: dmac::transfer::Buffer<Beat = C::Word>,
+        Config<P, M, C>: ValidConfig,
+        P: DipoDopo + Rx,
+        M: MasterMode,
+        C: CharSize,
+        C::Word: dmac::transfer::Beat,
+    {
+        /// Transform an [`Spi`] into a DMA [`Transfer`]) and
+        /// start a receive transaction.
+        #[inline]
+        pub fn receive_with_dma<Chan, B, W>(
+            self,
+            buf: B,
+            mut channel: Chan,
+            waker: W,
+        ) -> Transfer<Channel<ChannelId<Chan>, Busy>, transfer::BufferPair<Self, B>, (), W>
+        where
+            Chan: channel::AnyChannel<Status = Ready>,
+            B: dmac::Buffer<Beat = C::Word> + 'static,
+            W: FnOnce(crate::dmac::channel::CallbackStatus) + 'static,
+        {
+            channel
+                .as_mut()
+                .enable_interrupts(dmac::channel::InterruptFlags::new().with_tcmpl(true));
+            // SAFETY: We use new_unchecked to avoid having to pass a 'static self as the
+            // destination buffer. This is safe as long as we guarantee the source buffer is
+            // static.
+            unsafe { dmac::Transfer::new_unchecked(channel, self, buf, false) }
+                .with_waker(waker)
+                .begin(
+                    SpiSercom::<Config<P, M, C>>::DMA_RX_TRIGGER,
+                    dmac::TriggerAction::BEAT,
+                )
+        }
+    }
+}
+
+//=============================================================================
 // Embedded HAL traits
 //=============================================================================
 

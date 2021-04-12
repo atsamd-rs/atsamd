@@ -115,7 +115,7 @@ pub enum BeatSize {
 }
 /// Convert 8, 16 and 32 bit types
 /// into [`BeatSize`](BeatSize)
-pub trait Beat: Sealed {
+pub unsafe trait Beat: Sealed {
     /// Convert to BeatSize enum
     const BEATSIZE: BeatSize;
 }
@@ -124,7 +124,7 @@ macro_rules! impl_beat {
     ( $( ($Type:ty, $Size:ident) ),+ ) => {
         $(
             impl Sealed for $Type {}
-            impl Beat for $Type {
+            unsafe impl Beat for $Type {
                 const BEATSIZE: BeatSize = BeatSize::$Size;
             }
         )+
