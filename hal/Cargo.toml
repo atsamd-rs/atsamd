@@ -46,13 +46,11 @@ optional = true
 
 [dependencies.cortex-m-rtic]
 optional = true
-git = "https://github.com/rtic-rs/cortex-m-rtic"
-branch = "new_monotonic"
+version = "0.6.0-alpha.2"
 
 [dependencies.rtic-monotonic]
 optional = true
-git = "https://github.com/rtic-rs/rtic-monotonic"
-branch = "master"
+version = "0.1.0-alpha.0"
 
 [dependencies.void]
 default-features = false

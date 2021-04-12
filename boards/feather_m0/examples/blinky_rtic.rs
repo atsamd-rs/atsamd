@@ -18,7 +18,7 @@ extern crate rtic;
 mod app {
     use hal::clock::{ClockGenId, ClockSource, GenericClockController};
     use hal::pac::Peripherals;
-    use hal::rtc::Rtc;
+    use hal::rtc::{Rtc, Count32Mode};
     use rtic_monotonic::Extensions;
 
     #[resources]
@@ -28,7 +28,7 @@ mod app {
     }
 
     #[monotonic(binds = RTC, default = true)]
-    type RtcMonotonic = Rtc;
+    type RtcMonotonic = Rtc<Count32Mode>;
 
     #[init]
     fn init(cx: init::Context) -> (init::LateResources, init::Monotonics) {
@@ -47,8 +47,7 @@ mod app {
             .unwrap();
         clocks.configure_standby(ClockGenId::GCLK2, true);
         let rtc_clock = clocks.rtc(&rtc_clock_src).unwrap();
-        let mut rtc = Rtc::new(peripherals.RTC, rtc_clock.freq(), &mut peripherals.PM);
-        rtc.timer_mode();
+        let rtc = Rtc::count32_mode(peripherals.RTC, rtc_clock.freq(), &mut peripherals.PM);
         let red_led = pins.d13.into_open_drain_output(&mut pins.port);
 
         // We can use the RTC in standby for maximum power savings

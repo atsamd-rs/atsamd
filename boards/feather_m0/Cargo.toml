@@ -65,8 +65,7 @@ nom = { version = "5.1", default-features= false }
 heapless = "0.5"
 
 [dev-dependencies.cortex-m-rtic]
-git = "https://github.com/rtic-rs/cortex-m-rtic"
-branch = "new_monotonic"
+version = "0.6.0-alpha.2"
 
 [features]
 # ask the HAL to enable atsamd21g support
