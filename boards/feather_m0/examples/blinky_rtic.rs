@@ -18,7 +18,7 @@ extern crate rtic;
 mod app {
     use hal::clock::{ClockGenId, ClockSource, GenericClockController};
     use hal::pac::Peripherals;
-    use hal::rtc::{Rtc, Count32Mode};
+    use hal::rtc::{Count32Mode, Rtc};
     use rtic_monotonic::Extensions;
 
     #[resources]
