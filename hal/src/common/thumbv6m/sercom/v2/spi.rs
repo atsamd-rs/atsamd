@@ -892,7 +892,7 @@ pub trait CharSize: Sealed {
 
     /// Configure the `LENGTH` register and enable the `LENGTH` counter
     #[inline]
-    fn configure(sercom: &RegisterBlock) {
+    fn configure(sercom: &RegisterBlock) -> () {
         sercom
             .spi()
             .ctrlb
@@ -1233,7 +1233,7 @@ where
         while self.sercom.spi().syncbusy.read().ctrlb().bit_is_set() {}
         self.sercom.spi().ctrla.modify(|_, w| w.enable().set_bit());
         while self.sercom.spi().syncbusy.read().enable().bit_is_set() {}
-        Spi { config: Some(self) }
+        Spi { config: self }
     }
 
     /// Enable or disable the SERCOM peripheral, and wait for the ENABLE bit to
@@ -1425,7 +1425,7 @@ where
 ///
 /// [`SpiFuture`]: crate::sercom::v2::spi_future::SpiFuture
 pub struct Spi<C: ValidConfig> {
-    config: Option<C>,
+    config: C,
 }
 
 impl<C: ValidConfig> Spi<C> {
@@ -1435,7 +1435,7 @@ impl<C: ValidConfig> Spi<C> {
     /// type-level tracking in this module, so it is unsafe.
     #[inline]
     pub unsafe fn sercom(&self) -> &SpiSercom<C> {
-        self.config.as_ref().unwrap().as_ref().sercom()
+        &self.config.as_ref().sercom()
     }
 
     /// Update the SPI configuration.
@@ -1448,36 +1448,28 @@ impl<C: ValidConfig> Spi<C> {
     where
         F: FnOnce(C) -> C,
     {
-        let mut old_config = self.config.take().unwrap();
-        old_config.as_mut().enable_peripheral(false);
+        self.config.as_mut().enable_peripheral(false);
 
-        self.config.replace(update(old_config));
+        // Perform a bitwise copy of the old configuration. This will be used as default
+        // in case the call to update(self.config) panics. This should be safe
+        // as either one of self.config or old_config will be used, and Config
+        // does not deallocate when dropped.
+        let old_config = unsafe { core::ptr::read(&mut self.config as *const _) };
+        replace_with::replace_with(&mut self.config, || old_config, |c| update(c));
 
-        self.config
-            .as_mut()
-            .unwrap()
-            .as_mut()
-            .enable_peripheral(true);
+        self.config.as_mut().enable_peripheral(true);
     }
 
     /// Enable interrupts for the specified flags
     #[inline]
     pub fn enable_interrupts(&mut self, flags: Flags) {
-        self.config
-            .as_mut()
-            .unwrap()
-            .as_mut()
-            .enable_interrupts(flags)
+        self.config.as_mut().enable_interrupts(flags)
     }
 
     /// Disable interrupts for the specified flags
     #[inline]
     pub fn disable_interrupts(&mut self, flags: Flags) {
-        self.config
-            .as_mut()
-            .unwrap()
-            .as_mut()
-            .disable_interrupts(flags);
+        self.config.as_mut().disable_interrupts(flags);
     }
 
     /// Read the interrupt status flags
@@ -1551,12 +1543,8 @@ impl<C: ValidConfig> Spi<C> {
         let spim = unsafe { self.sercom().spi() };
         spim.ctrlb.modify(|_, w| w.rxen().clear_bit());
         while spim.syncbusy.read().ctrlb().bit_is_set() {}
+        self.config.as_mut().enable_peripheral(false);
         self.config
-            .as_mut()
-            .unwrap()
-            .as_mut()
-            .enable_peripheral(false);
-        self.config.unwrap()
     }
 }
 
