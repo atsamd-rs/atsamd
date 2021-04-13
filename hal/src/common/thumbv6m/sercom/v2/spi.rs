@@ -1444,7 +1444,7 @@ impl<C: ValidConfig> Spi<C> {
     /// some registers are enable-protected. This may interrupt any ongoing
     /// transactions.
     #[inline]
-    pub fn update_config<F>(&mut self, update: F)
+    pub fn reconfigure<F>(&mut self, update: F)
     where
         F: FnOnce(C) -> C,
     {
