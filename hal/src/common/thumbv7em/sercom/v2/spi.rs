@@ -1523,7 +1523,7 @@ impl<C: ValidConfig> Spi<C> {
     #[inline]
     pub fn reconfigure<F>(&mut self, update: F)
     where
-        F: FnOnce(C) -> C,
+        F: FnOnce(SpecificConfig<C>) -> SpecificConfig<C>,
     {
         self.config.as_mut().enable_peripheral(false);
 
@@ -1532,7 +1532,7 @@ impl<C: ValidConfig> Spi<C> {
         // as either one of self.config or old_config will be used, and Config
         // does not deallocate when dropped.
         let old_config = unsafe { core::ptr::read(&mut self.config as *const _) };
-        replace_with::replace_with(&mut self.config, || old_config, |c| update(c));
+        replace_with::replace_with(&mut self.config, || old_config, |c| update(c.into()).into());
 
         self.config.as_mut().enable_peripheral(true);
     }
