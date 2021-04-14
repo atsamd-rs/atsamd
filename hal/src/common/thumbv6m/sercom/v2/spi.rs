@@ -1235,6 +1235,16 @@ where
         while self.sercom.spi().syncbusy.read().enable().bit_is_set() {}
         Spi { config: self }
     }
+
+    /// Enable or disable the SERCOM peripheral, and wait for the ENABLE bit to
+    /// synchronize.
+    fn enable_peripheral(&mut self, enable: bool) {
+        self.sercom
+            .spi()
+            .ctrla
+            .modify(|_, w| w.enable().bit(enable));
+        while self.sercom.spi().syncbusy.read().enable().bit_is_set() {}
+    }
 }
 
 //=============================================================================
@@ -1428,6 +1438,28 @@ impl<C: ValidConfig> Spi<C> {
         &self.config.as_ref().sercom()
     }
 
+    /// Update the SPI configuration.
+    ///
+    /// Calling this method will temporarily disable the SERCOM peripheral, as
+    /// some registers are enable-protected. This may interrupt any ongoing
+    /// transactions.
+    #[inline]
+    pub fn reconfigure<F>(&mut self, update: F)
+    where
+        F: FnOnce(SpecificConfig<C>) -> SpecificConfig<C>,
+    {
+        self.config.as_mut().enable_peripheral(false);
+
+        // Perform a bitwise copy of the old configuration. This will be used as default
+        // in case the call to update(self.config) panics. This should be safe
+        // as either one of self.config or old_config will be used, and Config
+        // does not deallocate when dropped.
+        let old_config = unsafe { core::ptr::read(&mut self.config as *const _) };
+        replace_with::replace_with(&mut self.config, || old_config, |c| update(c.into()).into());
+
+        self.config.as_mut().enable_peripheral(true);
+    }
+
     /// Enable interrupts for the specified flags
     #[inline]
     pub fn enable_interrupts(&mut self, flags: Flags) {
@@ -1505,14 +1537,13 @@ impl<C: ValidConfig> Spi<C> {
 
     /// Disable the SPI peripheral and return the [`Config`] struct
     #[inline]
-    pub fn disable(self) -> C {
+    pub fn disable(mut self) -> C {
         // SAFETY: The read state must be reset when disabling the peripheral
         unsafe { Config::<C::Pads>::reset_serial_read_state() };
         let spim = unsafe { self.sercom().spi() };
         spim.ctrlb.modify(|_, w| w.rxen().clear_bit());
         while spim.syncbusy.read().ctrlb().bit_is_set() {}
-        spim.ctrla.modify(|_, w| w.enable().clear_bit());
-        while spim.syncbusy.read().enable().bit_is_set() {}
+        self.config.as_mut().enable_peripheral(false);
         self.config
     }
 }

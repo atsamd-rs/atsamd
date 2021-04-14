@@ -1218,15 +1218,24 @@ where
     /// SPI transactions are not possible until the peripheral is enabled.
     /// This function is limited to [`ValidConfig`]s.
     #[inline]
-    pub fn enable(self) -> Spi<Self>
+    pub fn enable(mut self) -> Spi<Self>
     where
         Self: ValidConfig,
     {
         self.sercom.spim().ctrlb.modify(|_, w| w.rxen().set_bit());
         while self.sercom.spim().syncbusy.read().ctrlb().bit_is_set() {}
-        self.sercom.spim().ctrla.modify(|_, w| w.enable().set_bit());
-        while self.sercom.spim().syncbusy.read().enable().bit_is_set() {}
+        self.enable_peripheral(true);
         Spi { config: self }
+    }
+
+    /// Enable or disable the SERCOM peripheral, and wait for the ENABLE bit to
+    /// synchronize.
+    fn enable_peripheral(&mut self, enable: bool) {
+        self.sercom
+            .spim()
+            .ctrla
+            .modify(|_, w| w.enable().bit(enable));
+        while self.sercom.spim().syncbusy.read().enable().bit_is_set() {}
     }
 }
 
@@ -1504,6 +1513,28 @@ impl<C: ValidConfig> Spi<C> {
     #[inline]
     pub unsafe fn sercom(&self) -> &SpiSercom<C> {
         &self.config.as_ref().sercom()
+    }
+
+    /// Update the SPI configuration.
+    ///
+    /// Calling this method will temporarily disable the SERCOM peripheral, as
+    /// some registers are enable-protected. This may interrupt any ongoing
+    /// transactions.
+    #[inline]
+    pub fn reconfigure<F>(&mut self, update: F)
+    where
+        F: FnOnce(SpecificConfig<C>) -> SpecificConfig<C>,
+    {
+        self.config.as_mut().enable_peripheral(false);
+
+        // Perform a bitwise copy of the old configuration. This will be used as default
+        // in case the call to update(self.config) panics. This should be safe
+        // as either one of self.config or old_config will be used, and Config
+        // does not deallocate when dropped.
+        let old_config = unsafe { core::ptr::read(&mut self.config as *const _) };
+        replace_with::replace_with(&mut self.config, || old_config, |c| update(c.into()).into());
+
+        self.config.as_mut().enable_peripheral(true);
     }
 
     /// Change the transaction [`Length`]
