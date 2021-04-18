@@ -35,6 +35,9 @@ atsamd_hal::bsp_pins!(
     // A0_PA02_AIN0
     PA02 {
         name: a0,
+        aliases: {
+            AlternateB: AIn0
+        }
     }
 
     // AREF
@@ -45,24 +48,37 @@ atsamd_hal::bsp_pins!(
     // A1_PB08_AIN2
     PB08 {
         name: a1
+        aliases: {
+            AlternateB: AIn1
+        }
     },
 
     // A2_PB09_AIN2
     PB09 {
         name: a2
+        aliases: {
+            AlternateB: AIn2
+        }
     },
 
     // A3_PB04_AIN2
     PA04 {
         name: a3
+        aliases: {
+            AlternateB: AIn3
+        }
     },
 
     // A4_PB05_AIN2
     PA05 {
         name: a4
+        aliases: {
+            AlternateB: AIn4
+        }
     },
 
     // D8_DGI_GPIO2/VBAT
+    // ToDo: What is this?
     PA06 {
         name: vbat
     },
@@ -75,26 +91,41 @@ atsamd_hal::bsp_pins!(
     // D1/TX_PA10_TCC0-W2
     PA10 {
         name: d1
+        aliases: {
+            AlternateC: Tx
+        }
     },
 
     // D0/RX_PA11_TCC0-W3
     PA11 {
         name: d0
+        aliases: {
+            AlternateC: Rx
+        }
     },
 
     // D23_PB10_S4_SPI_MOSI
     PB10 {
         name: d23
+        aliases: {
+            AlternateC: Mosi
+        }
     },
 
     // D24_PB11_S4_SPI_SCK
     PB11 {
         name: d24
+        aliases: {
+            AlternateB: Sck
+        }
     },
 
     // D22_PA12_S4_SPI_MISO
     PA12 {
         name: d22
+        aliases: {
+            AlternateC: Miso
+        }
     },
 
     // D5_PA15_TCC0-W5
@@ -155,12 +186,18 @@ atsamd_hal::bsp_pins!(
 
     // D33/SCL/PA23
     PA23 {
-        name: d33
+        name: d33,
+        aliases: {
+            AlternateC: Scl
+        }
     },
 
     // D32/SDA/PA22
     PA22 {
-        name: d32
+        name: d32,
+        aliases: {
+            AlternateC: Sda
+        }
     },
 
     // RESET_W600
