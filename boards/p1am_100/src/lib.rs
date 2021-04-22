@@ -14,9 +14,9 @@ pub use hal::common::*;
 
 pub use hal::target_device as pac;
 
-use gpio::{Floating, Input, PfC, Port};
+use gpio::{Floating, Input, Port};
 use hal::clock::GenericClockController;
-use hal::sercom::{I2CMaster3, PadPin, SPIMaster4, UART0};
+use hal::sercom::{I2CMaster3, PadPin, SPIMaster4, UART5};
 use hal::time::Hertz;
 
 #[cfg(feature = "usb")]
@@ -261,25 +261,24 @@ pub fn i2c_master<F: Into<Hertz>>(
 pub fn uart<F: Into<Hertz>>(
     clocks: &mut GenericClockController,
     baud: F,
-    sercom0: pac::SERCOM0,
+    sercom5: pac::SERCOM5,
     pm: &mut pac::PM,
-    d0: gpio::Pa11<Input<Floating>>,
-    d1: gpio::Pa10<Input<Floating>>,
-    port: &mut Port,
-) -> UART0<
-    hal::sercom::Sercom0Pad3<gpio::Pa11<PfC>>,
-    hal::sercom::Sercom0Pad2<gpio::Pa10<PfC>>,
+    rx: UartRx,
+    tx: UartTx,
+) -> UART5<
+    hal::sercom::Sercom5Pad3<hal::gpio::v2::PB23>,
+    hal::sercom::Sercom5Pad2<hal::gpio::v2::PB22>,
     (),
     (),
 > {
     let gclk0 = clocks.gclk0();
 
-    UART0::new(
-        &clocks.sercom0_core(&gclk0).unwrap(),
+    UART5::new(
+        &clocks.sercom5_core(&gclk0).unwrap(),
         baud.into(),
-        sercom0,
+        sercom5,
         pm,
-        (d0.into_pad(port), d1.into_pad(port)),
+        (rx.into(), tx.into()),
     )
 }
 
