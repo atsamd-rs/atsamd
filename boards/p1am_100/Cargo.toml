@@ -112,9 +112,5 @@ name = "sleeping_timer"
 name = "sleeping_timer_rtc"
 
 [[example]]
-name = "dmac"
-required-features = ["dma"]
-
-[[example]]
 name = "clock"
 required-features = ["usb"]
