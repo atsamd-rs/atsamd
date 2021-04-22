@@ -50,17 +50,21 @@ const APP: () = {
         let usb_allocator = USB_ALLOCATOR.as_ref().unwrap();
 
         let usb_serial = SerialPort::new(&usb_allocator);
-        let usb_dev = 
-            UsbDeviceBuilder::new(&usb_allocator, UsbVidPid(0x16c0, 0x27dd))
-                .manufacturer("Fake company")
-                .product("Serial port RTIC")
-                .serial_number("TEST")
-                .device_class(USB_CLASS_CDC)
-                .build();
+        let usb_dev = UsbDeviceBuilder::new(&usb_allocator, UsbVidPid(0x16c0, 0x27dd))
+            .manufacturer("Fake company")
+            .product("Serial port RTIC")
+            .serial_number("TEST")
+            .device_class(USB_CLASS_CDC)
+            .build();
 
         let delay = Delay::new(cx.core.SYST, &mut clocks);
 
-        init::LateResources { led, usb_serial, usb_dev, delay }
+        init::LateResources {
+            led,
+            usb_serial,
+            usb_dev,
+            delay,
+        }
     }
 
     #[idle(resources=[led, delay])]
@@ -73,18 +77,18 @@ const APP: () = {
         }
     }
 
-#[task(binds = USB, resources=[usb_dev, usb_serial], priority = 2)]
-fn poll_usb(cx: poll_usb::Context) {
-    cx.resources.usb_dev.poll(&mut [cx.resources.usb_serial]);
-    let mut buf = [0u8; 64];
+    #[task(binds = USB, resources=[usb_dev, usb_serial], priority = 2)]
+    fn poll_usb(cx: poll_usb::Context) {
+        cx.resources.usb_dev.poll(&mut [cx.resources.usb_serial]);
+        let mut buf = [0u8; 64];
 
-    if let Ok(count) = cx.resources.usb_serial.read(&mut buf) {
-        for (i, c) in buf.iter().enumerate() {
-            if i >= count {
-                break;
+        if let Ok(count) = cx.resources.usb_serial.read(&mut buf) {
+            for (i, c) in buf.iter().enumerate() {
+                if i >= count {
+                    break;
+                }
+                cx.resources.usb_serial.write(&[c.clone()]).ok();
             }
-            cx.resources.usb_serial.write(&[c.clone()]).ok();
-        }
-    };
-}
+        };
+    }
 };

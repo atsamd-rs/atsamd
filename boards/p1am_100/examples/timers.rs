@@ -3,8 +3,8 @@
 
 extern crate cortex_m;
 extern crate cortex_m_semihosting;
-extern crate p1am_100 as hal;
 extern crate nb;
+extern crate p1am_100 as hal;
 #[cfg(not(feature = "use_semihosting"))]
 extern crate panic_halt;
 #[cfg(feature = "use_semihosting")]
