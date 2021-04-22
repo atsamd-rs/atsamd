@@ -134,14 +134,14 @@ bsp_pins!(
     PA22 { name: d0 }
     PA23 { name: d1 }
     PA24 {
-        name: pa24,
+        name: usb_dm,
         aliases: {
             #[cfg(feature = "usb")]
             AlternateG: UsbDm
         }
     }
     PA25 {
-        name: pa25,
+        name: usb_dp,
         aliases: {
             #[cfg(feature = "usb")]
             AlternateG: UsbDp
