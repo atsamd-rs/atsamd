@@ -53,8 +53,6 @@ optional = true
 
 [dev-dependencies]
 cortex-m-semihosting = "0.3"
-ssd1306 = "0.3.1"
-embedded-graphics = "0.6.0"
 nb = "0.1"
 drogue-nom-utils = "0.1"
 nom = { version = "5.1", default-features= false }
@@ -98,24 +96,6 @@ required-features = ["unproven"]
 [[example]]
 name = "adc"
 required-features = ["unproven"]
-
-[[example]]
-name = "ssd1306_graphicsmode_128x64_i2c"
-
-[[example]]
-name = "ssd1306_graphicsmode_128x32_i2c"
-
-[[example]]
-name = "ssd1306_terminalmode_128x32_i2c"
-
-[[example]]
-name = "ssd1306_terminalmode_128x64_i2c"
-
-[[example]]
-name = "ssd1306_graphicsmode_128x64_spi"
-
-[[example]]
-name = "ssd1306_terminalmode_128x64_spi"
 
 [[example]]
 name = "usb_echo"
