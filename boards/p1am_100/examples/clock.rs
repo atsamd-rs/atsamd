@@ -80,7 +80,7 @@ fn main() -> ! {
 
     // Print the time forever!
     loop {
-        led.toggle();
+        led.toggle().unwrap();
         let time =
             disable_interrupts(|_| unsafe { RTC.as_mut().map(|rtc| rtc.current_time()) }).unwrap();
 
