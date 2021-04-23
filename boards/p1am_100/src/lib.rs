@@ -20,9 +20,8 @@ use hal::sercom::{I2CMaster3, PadPin, UART5, Sercom1, AnyPad, SomePad};
 use hal::sercom::v2::spi;
 use hal::sercom::v2::pads::{Pad, Pad0, Pad1, Pad2, Pad3};
 use hal::time::{Hertz, MegaHertz};
+use gpio::v2::AnyPin;
 
-#[cfg(feature = "usb")]
-use gpio::v2::{AnyPin, PA24, PA25};
 #[cfg(feature = "usb")]
 use hal::usb::usb_device::bus::UsbBusAllocator;
 #[cfg(feature = "usb")]
@@ -293,8 +292,8 @@ pub fn usb_allocator(
     usb: pac::USB,
     clocks: &mut GenericClockController,
     pm: &mut pac::PM,
-    dm: impl AnyPin<Id = PA24>,
-    dp: impl AnyPin<Id = PA25>,
+    dm: impl AnyPin<Id = <UsbDm as AnyPin>::Id>,
+    dp: impl AnyPin<Id = <UsbDp as AnyPin>::Id>,
 ) -> UsbBusAllocator<UsbBus> {
     let gclk0 = clocks.gclk0();
     let usb_clock = &clocks.usb(&gclk0).unwrap();
