@@ -16,8 +16,10 @@ pub use hal::target_device as pac;
 
 use gpio::{Floating, Input, Port};
 use hal::clock::GenericClockController;
-use hal::sercom::{I2CMaster3, PadPin, SPIMaster4, UART5};
-use hal::time::Hertz;
+use hal::sercom::{I2CMaster3, PadPin, UART5, Sercom1, AnyPad, SomePad};
+use hal::sercom::v2::spi;
+use hal::sercom::v2::pads::{Pad, Pad0, Pad1, Pad2, Pad3};
+use hal::time::{Hertz, MegaHertz};
 
 #[cfg(feature = "usb")]
 use gpio::v2::{AnyPin, PA24, PA25};
@@ -106,7 +108,7 @@ bsp_pins!(
     PA16 {
         name: d8,
         aliases: {
-            AlternateC: Spi0Sdo
+            AlternateC: Spi0Mosi
         }
     }
     PA17 {
@@ -126,7 +128,7 @@ bsp_pins!(
     PA19 {
         name: d10,
         aliases: {
-            AlternateC: Spi0Sdi
+            AlternateC: Spi0Miso
         }
     }
     PA20 { name: d6 }
@@ -200,35 +202,39 @@ bsp_pins!(
     }
 );
 
-/// Convenience for setting up the labelled SPI peripheral.
-/// This powers up SERCOM4 and configures it for use as an
-/// SPI Master in SPI Mode 0.
-pub fn spi_master<F: Into<Hertz>>(
+const BASE_CONTROLLER_FREQ: Hertz = Hertz(1000000);
+/// FIXME: const BASE_CONTROLLER_SPI_MODE: dyn spi::Mode = &spi::MODE_2;
+
+/// Convenience for setting up the labeled SPI0 peripheral.
+/// SPI0 has the P1AM base controller connected.
+/// This powers up SERCOM1 and configures it for talking to the
+/// base controller.
+pub fn base_controller_spi(
     clocks: &mut GenericClockController,
-    bus_speed: F,
-    sercom4: pac::SERCOM4,
+    sercom1: pac::SERCOM1,
     pm: &mut pac::PM,
-    sck: gpio::Pb11<Input<Floating>>,
-    mosi: gpio::Pb10<Input<Floating>>,
-    miso: gpio::Pa12<Input<Floating>>,
-    port: &mut Port,
-) -> SPIMaster4<
-    hal::sercom::Sercom4Pad0<gpio::Pa12<gpio::PfD>>,
-    hal::sercom::Sercom4Pad2<gpio::Pb10<gpio::PfD>>,
-    hal::sercom::Sercom4Pad3<gpio::Pb11<gpio::PfD>>,
-> {
-    let gclk0 = clocks.gclk0();
-    SPIMaster4::new(
-        &clocks.sercom4_core(&gclk0).unwrap(),
-        bus_speed.into(),
-        hal::hal::spi::Mode {
-            phase: hal::hal::spi::Phase::CaptureOnFirstTransition,
-            polarity: hal::hal::spi::Polarity::IdleLow,
-        },
-        sercom4,
-        pm,
-        (miso.into_pad(port), mosi.into_pad(port), sck.into_pad(port)),
-    )
+    sck: Spi0Sck,
+    mosi: Spi0Mosi,
+    miso: Spi0Miso,
+) -> sercom::v2::spi::Spi<
+        spi::Config<
+                spi::Pads<
+                        pac::SERCOM1,
+                    Pad<pac::SERCOM1, Pad3, <Spi0Miso as AnyPin>::Id>,
+                    Pad<pac::SERCOM1, Pad0, <Spi0Mosi as AnyPin>::Id>,
+                    Pad<pac::SERCOM1, Pad1, <Spi0Sck as AnyPin>::Id>,
+        >>>
+{
+    let gclk0 = &clocks.gclk0();
+    let core_clock = &clocks.sercom1_core(&gclk0).unwrap();
+    let pads = spi::Pads::new()
+        .sclk(sck)
+        .data_in(miso)
+        .data_out(mosi);
+    spi::Config::new(pm, sercom1, pads, core_clock.freq())
+        .baud(BASE_CONTROLLER_FREQ)
+        .spi_mode(spi::MODE_2)
+        .enable()
 }
 
 /// Convenience for setting up the labelled SDA, SCL pins to
@@ -266,8 +272,8 @@ pub fn uart<F: Into<Hertz>>(
     rx: UartRx,
     tx: UartTx,
 ) -> UART5<
-    hal::sercom::Sercom5Pad3<hal::gpio::v2::PB23>,
-    hal::sercom::Sercom5Pad2<hal::gpio::v2::PB22>,
+    hal::sercom::Sercom5Pad3<<UartRx as AnyPin>::Id>,
+    hal::sercom::Sercom5Pad2<<UartTx as AnyPin>::Id>,
     (),
     (),
 > {
