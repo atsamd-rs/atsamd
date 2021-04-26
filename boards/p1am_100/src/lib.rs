@@ -249,6 +249,13 @@ pub fn i2c_master<F: Into<Hertz>>(
     )
 }
 
+pub type Uart = UART5<
+        hal::sercom::Sercom5Pad3<<UartRx as AnyPin>::Id>,
+    hal::sercom::Sercom5Pad2<<UartTx as AnyPin>::Id>,
+    (),
+    (),
+    >;
+
 /// Convenience for setting up the labelled RX, TX pins to
 /// operate as a UART device running at the specified baud.
 pub fn uart<F: Into<Hertz>>(
@@ -258,12 +265,7 @@ pub fn uart<F: Into<Hertz>>(
     pm: &mut pac::PM,
     rx: UartRx,
     tx: UartTx,
-) -> UART5<
-    hal::sercom::Sercom5Pad3<<UartRx as AnyPin>::Id>,
-    hal::sercom::Sercom5Pad2<<UartTx as AnyPin>::Id>,
-    (),
-    (),
-> {
+) -> Uart {
     let gclk0 = clocks.gclk0();
 
     UART5::new(

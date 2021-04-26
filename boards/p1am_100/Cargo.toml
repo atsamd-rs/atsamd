@@ -98,6 +98,10 @@ name = "adc"
 required-features = ["unproven"]
 
 [[example]]
+name = "uart_echo_rtic"
+required-features = ["unproven"]
+
+[[example]]
 name = "usb_echo"
 required-features = ["usb", "unproven"]
 
