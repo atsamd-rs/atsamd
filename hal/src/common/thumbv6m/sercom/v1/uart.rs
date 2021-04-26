@@ -9,8 +9,30 @@ use crate::target_device::{SERCOM2, SERCOM3};
 #[cfg(feature = "min-samd21g")]
 use crate::target_device::{SERCOM4, SERCOM5};
 use crate::time::Hertz;
+use bitflags::bitflags;
 use core::fmt;
 use core::marker::PhantomData;
+
+//=============================================================================
+// Flags
+//=============================================================================
+
+bitflags! {
+    /// Interrupt bit flags for USART transactions
+    ///
+    /// The available interrupt flags are `DRE`, `RXC`, `TXC`, `SSL` and
+    /// `ERROR`. The binary format of the underlying bits exactly matches the
+    /// INTFLAG register.
+    pub struct Flags: u8 {
+        const DRE = 0x01;
+        const TXC = 0x02;
+        const RXC = 0x04;
+        const RXS = 0x08;
+        const CTSIC = 0x16;
+        const RXBRK = 0x32;
+        const ERROR = 0x80;
+    }
+}
 
 /// The RxpoTxpo trait defines a way to get the data in and data out pin out
 /// values for a given UARTXPadout configuration. You should not implement
@@ -256,6 +278,52 @@ macro_rules! uart {
                 pub fn free(self) -> ([<$Type Padout>]<RX, TX, RTS, CTS>, $SERCOM) {
                     (self.padout, self.sercom)
                 }
+
+                /// Enable interrupts for the specified flags
+                pub fn enable_interrupts(&mut self, flags: Flags) {
+                self.sercom
+                    .usart()
+                    .intenset
+                    .write(|w| unsafe { w.bits(flags.bits()) });
+                }
+
+                /// Disable interrupts for the specified flags
+                pub fn disable_interrupts(&mut self, flags: Flags) {
+                    self.sercom
+                        .usart()
+                        .intenclr
+                        .write(|w| unsafe { w.bits(flags.bits()) });
+                }
+
+                /// Clear the error interrupt flag.
+                pub fn clear_error(&mut self) -> bool {
+                    let ret = self.sercom.usart().intflag.read().error().bit_is_set();
+                    self.sercom.usart().intflag.modify(|_, w| w.error().set_bit());
+                    ret
+                }
+
+                /// Enable the USART peripheral
+                ///
+                /// USART transactions are not possible until the peripheral is enabled.
+                /// This function is limited to [`ValidConfig`]s.
+                #[inline]
+                pub fn enable(&mut self)
+                {
+                    self.sercom.usart().ctrlb.modify(|_, w| w.rxen().set_bit());
+                    while self.sercom.usart().syncbusy.read().ctrlb().bit_is_set() {}
+                    self.sercom.usart().ctrla.modify(|_, w| w.enable().set_bit());
+                    while self.sercom.usart().syncbusy.read().enable().bit_is_set() {}
+                }
+
+
+                #[inline]
+                pub fn disable(&mut self){
+                    self.sercom.usart().ctrlb.modify(|_, w| w.rxen().clear_bit());
+                    while self.sercom.usart().syncbusy.read().ctrlb().bit_is_set() {}
+                    self.sercom.usart().ctrla.modify(|_, w| w.enable().clear_bit());
+                    while self.sercom.usart().syncbusy.read().enable().bit_is_set() {}
+                }
+
 
                 /// Splits the UART into transmit and receive halves
                 pub fn split(self) -> ([<$Type Tx>]<TX, RTS>, [<$Type Rx>]<RX, CTS>) {
