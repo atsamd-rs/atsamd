@@ -72,9 +72,80 @@ macro_rules! dbgprint {
     ($($arg:tt)*) => {{}};
 }
 
+#[cfg(feature = "device")]
+pub mod delay;
+#[cfg(feature = "device")]
+pub mod gpio;
+#[cfg(feature = "device")]
+pub mod prelude;
+#[cfg(feature = "device")]
+pub mod rtc;
+#[cfg(feature = "device")]
+pub mod sercom;
+pub mod sleeping_delay;
+#[cfg(feature = "device")]
+pub mod spi_common;
+pub mod time;
+pub mod timer_params;
+pub mod timer_traits;
+
+#[cfg(all(feature = "unproven", feature = "dma"))]
 #[macro_use]
-pub mod common;
-pub use self::common::*;
+pub mod dmac;
+
+#[cfg(any(feature = "samd11", feature = "samd21"))]
+pub mod thumbv6m;
+#[cfg(any(feature = "samd11", feature = "samd21"))]
+pub use crate::thumbv6m::*;
+
+#[cfg(feature = "min-samd51g")]
+pub mod thumbv7em;
+#[cfg(feature = "min-samd51g")]
+pub use crate::thumbv7em::*;
+
+// This module maintains backwards compatibility for the v1 SERCOM pads API
+#[cfg(feature = "device")]
+pub mod pad {
+    pub use crate::sercom::v1::pads::PadPin;
+}
+
+// This module maintains backwards compatibility within this major release
+#[macro_use]
+pub mod common {
+    #[cfg(feature = "device")]
+    pub use crate::delay;
+    #[cfg(feature = "device")]
+    pub use crate::gpio;
+    #[cfg(feature = "device")]
+    pub use crate::prelude;
+    #[cfg(feature = "device")]
+    pub use crate::rtc;
+    #[cfg(feature = "device")]
+    pub use crate::sercom;
+    pub use crate::sleeping_delay;
+    #[cfg(feature = "device")]
+    pub use crate::spi_common;
+    pub use crate::time;
+    pub use crate::timer_params;
+    pub use crate::timer_traits;
+
+    #[cfg(all(feature = "unproven", feature = "dma"))]
+    #[macro_use]
+    pub use crate::dmac;
+
+    #[cfg(any(feature = "samd11", feature = "samd21"))]
+    pub use crate::thumbv6m;
+    #[cfg(any(feature = "samd11", feature = "samd21"))]
+    pub use crate::thumbv6m::*;
+
+    #[cfg(feature = "min-samd51g")]
+    pub use crate::thumbv7em;
+    #[cfg(feature = "min-samd51g")]
+    pub use crate::thumbv7em::*;
+
+    #[cfg(feature = "device")]
+    pub use crate::pad;
+}
 
 // The following modules are included purely for backward compatibility reasons.
 // Whenever major breaking changes are made to the HAL next, these modules
