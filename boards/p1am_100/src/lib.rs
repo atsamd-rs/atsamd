@@ -17,7 +17,6 @@ pub use hal::target_device as pac;
 use gpio::v2::AnyPin;
 use gpio::{Floating, Input, Port};
 use hal::clock::GenericClockController;
-use hal::sercom::v2::pads::{Pad, Pad0, Pad1, Pad2, Pad3};
 use hal::sercom::v2::spi;
 use hal::sercom::{AnyPad, I2CMaster3, PadPin, Sercom1, SomePad, UART5};
 use hal::time::{Hertz, MegaHertz};
@@ -215,16 +214,7 @@ pub fn base_controller_spi(
     sck: Spi0Sck,
     mosi: Spi0Mosi,
     miso: Spi0Miso,
-) -> sercom::v2::spi::Spi<
-    spi::Config<
-        spi::Pads<
-            pac::SERCOM1,
-            Pad<pac::SERCOM1, Pad3, <Spi0Miso as AnyPin>::Id>,
-            Pad<pac::SERCOM1, Pad0, <Spi0Mosi as AnyPin>::Id>,
-            Pad<pac::SERCOM1, Pad1, <Spi0Sck as AnyPin>::Id>,
-        >,
-    >,
-> {
+) -> sercom::v2::spi::Spi<impl spi::ValidConfig> {
     let gclk0 = &clocks.gclk0();
     let core_clock = &clocks.sercom1_core(&gclk0).unwrap();
     let pads = spi::Pads::new().sclk(sck).data_in(miso).data_out(mosi);
