@@ -15,11 +15,11 @@ pub use hal::common::*;
 pub use hal::target_device as pac;
 
 use gpio::v2::AnyPin;
-use gpio::{Floating, Input, Port};
+use gpio::Port;
 use hal::clock::GenericClockController;
 use hal::sercom::v2::spi;
-use hal::sercom::{Pad, AnyPad, I2CMaster0, PadPin, Sercom1, SomePad, UART5};
-use hal::time::{Hertz, MegaHertz};
+use hal::sercom::{I2CMaster0, PadPin, UART5};
+use hal::time::Hertz;
 
 #[cfg(feature = "usb")]
 use hal::usb::usb_device::bus::UsbBusAllocator;
