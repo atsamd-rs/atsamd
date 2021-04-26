@@ -18,7 +18,7 @@ use gpio::v2::AnyPin;
 use gpio::{Floating, Input, Port};
 use hal::clock::GenericClockController;
 use hal::sercom::v2::spi;
-use hal::sercom::{AnyPad, I2CMaster3, PadPin, Sercom1, SomePad, UART5};
+use hal::sercom::{Pad, AnyPad, I2CMaster0, PadPin, Sercom1, SomePad, UART5};
 use hal::time::{Hertz, MegaHertz};
 
 #[cfg(feature = "usb")]
@@ -63,13 +63,13 @@ bsp_pins!(
     PA08 {
         name: d11,
         aliases: {
-            AlternateC: SdaPin
+            AlternateC: Sda
         }
     }
     PA09 {
         name: d12,
         aliases: {
-            AlternateC: SclPin
+            AlternateC: Scl
         }
     }
     PA10 {
@@ -201,7 +201,7 @@ bsp_pins!(
 );
 
 const BASE_CONTROLLER_FREQ: Hertz = Hertz(1000000);
-/// FIXME: const BASE_CONTROLLER_SPI_MODE: dyn spi::Mode = &spi::MODE_2;
+// FIXME: const BASE_CONTROLLER_SPI_MODE: dyn spi::Mode = &spi::MODE_2;
 
 /// Convenience for setting up the labeled SPI0 peripheral.
 /// SPI0 has the P1AM base controller connected.
@@ -229,23 +229,23 @@ pub fn base_controller_spi(
 pub fn i2c_master<F: Into<Hertz>>(
     clocks: &mut GenericClockController,
     bus_speed: F,
-    sercom3: pac::SERCOM3,
+    sercom0: pac::SERCOM0,
     pm: &mut pac::PM,
-    sda: gpio::Pa22<Input<Floating>>,
-    scl: gpio::Pa23<Input<Floating>>,
+    sda: Sda,
+    scl: Scl,
     port: &mut Port,
-) -> I2CMaster3<
-    hal::sercom::Sercom3Pad0<hal::gpio::Pa22<hal::gpio::PfC>>,
-    hal::sercom::Sercom3Pad1<hal::gpio::Pa23<hal::gpio::PfC>>,
+) -> I2CMaster0<
+    impl hal::sercom::AnyPad<Sercom = pac::SERCOM0>,
+    impl hal::sercom::AnyPad<Sercom = pac::SERCOM0>,
 > {
     let gclk0 = clocks.gclk0();
-    I2CMaster3::new(
-        &clocks.sercom3_core(&gclk0).unwrap(),
+    I2CMaster0::new(
+        &clocks.sercom0_core(&gclk0).unwrap(),
         bus_speed.into(),
-        sercom3,
+        sercom0,
         pm,
-        sda.into_pad(port),
-        scl.into_pad(port),
+        <hal::gpio::v1::Pin<_, _>>::from(sda).into_pad(port),
+        <hal::gpio::v1::Pin<_, _>>::from(scl).into_pad(port),
     )
 }
 
