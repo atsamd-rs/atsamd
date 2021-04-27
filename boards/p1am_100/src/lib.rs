@@ -282,8 +282,8 @@ pub fn usb_allocator(
     usb: pac::USB,
     clocks: &mut GenericClockController,
     pm: &mut pac::PM,
-    dm: impl AnyPin<Id = <UsbDm as AnyPin>::Id>,
-    dp: impl AnyPin<Id = <UsbDp as AnyPin>::Id>,
+    dm: UsbDm,
+    dp: UsbDp,
 ) -> UsbBusAllocator<UsbBus> {
     let gclk0 = clocks.gclk0();
     let usb_clock = &clocks.usb(&gclk0).unwrap();

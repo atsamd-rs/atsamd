@@ -43,8 +43,8 @@ const APP: () = {
             peripherals.USB,
             &mut clocks,
             &mut peripherals.PM,
-            pins.usb_dm,
-            pins.usb_dp,
+            pins.usb_dm.into(),
+            pins.usb_dp.into(),
         ));
 
         let usb_allocator = USB_ALLOCATOR.as_ref().unwrap();
