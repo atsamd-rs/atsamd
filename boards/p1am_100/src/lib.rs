@@ -7,9 +7,9 @@ extern crate cortex_m_rt;
 #[cfg(feature = "rt")]
 pub use cortex_m_rt::entry;
 
+use embedded_hal;
 use hal::prelude::*;
 use hal::*;
-use embedded_hal;
 
 pub use hal::common::*;
 
@@ -251,11 +251,11 @@ pub fn i2c_master<F: Into<Hertz>>(
 }
 
 pub type Uart = UART5<
-        hal::sercom::Sercom5Pad3<<UartRx as AnyPin>::Id>,
+    hal::sercom::Sercom5Pad3<<UartRx as AnyPin>::Id>,
     hal::sercom::Sercom5Pad2<<UartTx as AnyPin>::Id>,
     (),
     (),
-    >;
+>;
 
 /// Convenience for setting up the labelled RX, TX pins to
 /// operate as a UART device running at the specified baud.
