@@ -9,6 +9,7 @@ pub use cortex_m_rt::entry;
 
 use hal::prelude::*;
 use hal::*;
+use embedded_hal;
 
 pub use hal::common::*;
 
@@ -201,7 +202,7 @@ bsp_pins!(
 );
 
 const BASE_CONTROLLER_FREQ: Hertz = Hertz(1000000);
-// FIXME: const BASE_CONTROLLER_SPI_MODE: dyn spi::Mode = &spi::MODE_2;
+const BASE_CONTROLLER_SPI_MODE: embedded_hal::spi::Mode = spi::MODE_2;
 
 /// Convenience for setting up the labeled SPI0 peripheral.
 /// SPI0 has the P1AM base controller connected.
@@ -220,7 +221,7 @@ pub fn base_controller_spi(
     let pads = spi::Pads::new().sclk(sck).data_in(miso).data_out(mosi);
     spi::Config::new(pm, sercom1, pads, core_clock.freq())
         .baud(BASE_CONTROLLER_FREQ)
-        .spi_mode(spi::MODE_2)
+        .spi_mode(BASE_CONTROLLER_SPI_MODE)
         .enable()
 }
 
