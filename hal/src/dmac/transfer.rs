@@ -291,11 +291,10 @@ where
 // TODO change source and dest types to Pin? (see https://docs.rust-embedded.org/embedonomicon/dma.html#immovable-buffers)
 /// DMA transfer, owning the resources until the transfer is done and
 /// [`Transfer::wait`] is called.
-pub struct Transfer<Chan, Buf, Pld = (), W = fn()>
+pub struct Transfer<Chan, Buf, Pld = (), W = ()>
 where
     Buf: AnyBufferPair,
     Chan: AnyChannel,
-    W: FnMut() + 'static,
 {
     chan: Chan,
     buffers: Buf,
@@ -444,7 +443,6 @@ where
     S: Buffer,
     D: Buffer<Beat = S::Beat>,
     C: AnyChannel<Status = Ready>,
-    W: FnMut() + 'static,
 {
     /// Append a payload to the transfer. This guarantees that it cannot safely
     /// be accessed while the transfer is ongoing.
@@ -468,7 +466,10 @@ where
 {
     /// Append a waker to the transfer. This will be called when the DMAC
     /// interrupt is called.
-    pub fn with_waker<W: FnMut() + 'static>(self, waker: W) -> Transfer<C, BufferPair<S, D>, P, W> {
+    pub fn with_waker<W: FnOnce() + 'static>(
+        self,
+        waker: W,
+    ) -> Transfer<C, BufferPair<S, D>, P, W> {
         Transfer {
             buffers: self.buffers,
             chan: self.chan,
@@ -485,7 +486,6 @@ where
     S: Buffer,
     D: Buffer<Beat = S::Beat>,
     C: AnyChannel<Status = Ready>,
-    W: FnMut() + 'static,
 {
     /// Begin DMA transfer. If [TriggerSource::DISABLE](TriggerSource::DISABLE)
     /// is used, a sowftware trigger will be issued to the DMA channel to
@@ -539,7 +539,6 @@ where
     S: Buffer,
     D: Buffer<Beat = S::Beat>,
     C: AnyChannel<Status = Busy>,
-    W: FnMut() + 'static,
 {
     /// Issue a software trigger request to the corresponding channel.
     /// Note that is not guaranteed that the trigger request will register,
@@ -588,10 +587,20 @@ where
             self.payload,
         )
     }
+}
 
+impl<S, D, C, P, W> Transfer<C, BufferPair<S, D>, P, W>
+where
+    S: Buffer,
+    D: Buffer<Beat = S::Beat>,
+    C: AnyChannel<Status = Busy>,
+    W: FnOnce() + 'static,
+{
+    /// This function should be put inside the DMAC interrupt handler.
+    /// It will take care of calling the [`Transfer`]'s waker (if it exists).
     pub fn callback(&mut self) {
         self.chan.as_mut().callback();
-        if let Some(mut w) = self.waker.take() {
+        if let Some(w) = self.waker.take() {
             w()
         }
     }

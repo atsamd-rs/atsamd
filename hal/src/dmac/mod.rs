@@ -150,6 +150,9 @@
 //! let (chan0, buf_src, buf_dest, _) = xfer.wait(&mut dmac);
 //! ```
 
+// This is necessary until modular_bitfield fixes all their unused brace warnings
+#![allow(unused_braces)]
+
 use modular_bitfield::prelude::*;
 
 #[cfg(feature = "min-samd51g")]
