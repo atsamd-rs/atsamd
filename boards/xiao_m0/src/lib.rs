@@ -55,6 +55,13 @@ define_pins!(
     /// Pin A10/D10/MOSI
     pin a10 = a6,
 
+    /// The SPI SCK
+    pin sck = a7,
+    /// The SPI MOSI
+    pin mosi = a6,
+    /// The SPI MISO
+    pin miso = a5,
+
     /// On-board yellow 'L' LED.
     pin led0 = a17,
     /// On-board blue 'RX' LED.
