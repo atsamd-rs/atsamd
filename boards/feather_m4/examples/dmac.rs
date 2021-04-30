@@ -48,18 +48,15 @@ fn main() -> ! {
     let channels = dmac.split();
 
     // Initialize DMA Channel 0
-    let chan0 = channels.0.init(&mut dmac, PriorityLevel::LVL0);
+    let chan0 = channels.0.init(PriorityLevel::LVL0);
 
     // Setup a DMA transfer (memory-to-memory -> incrementing source, incrementing
     // destination) with a 8-bit beat size
-    let xfer = Transfer::new_from_arrays(chan0, buf_src, buf_dest, false).begin(
-        &mut dmac,
-        TriggerSource::DISABLE,
-        TriggerAction::BLOCK,
-    );
+    let xfer = Transfer::new_from_arrays(chan0, buf_src, buf_dest, false)
+        .begin(TriggerSource::DISABLE, TriggerAction::BLOCK);
 
     // Wait for transfer to complete and grab resulting buffers
-    let (chan0, buf_src, buf_dest, _) = xfer.wait(&mut dmac);
+    let (chan0, buf_src, buf_dest, _) = xfer.wait();
 
     // Read the returned buffers
     let _a = buf_src[LENGTH - 1];
@@ -73,9 +70,9 @@ fn main() -> ! {
     // destination) with a 16-bit beat size. Demonstrate payload management.
     let xfer = Transfer::new(chan0, const_16, buf_16, false)
         .with_payload(pm)
-        .begin(&mut dmac, TriggerSource::DISABLE, TriggerAction::BLOCK);
+        .begin(TriggerSource::DISABLE, TriggerAction::BLOCK);
 
-    let (chan0, const_16, buf_16, _pm) = xfer.wait(&mut dmac);
+    let (chan0, const_16, buf_16, _pm) = xfer.wait();
 
     // Read the returned buffers
     let _a = *const_16;
@@ -88,13 +85,10 @@ fn main() -> ! {
 
     // Setup a DMA transfer (memory-to-memory -> incrementing source, fixed
     // destination) with a 16-bit beat size
-    let xfer = Transfer::new(chan0, buf_16, const_16, false).begin(
-        &mut dmac,
-        TriggerSource::DISABLE,
-        TriggerAction::BLOCK,
-    );
+    let xfer = Transfer::new(chan0, buf_16, const_16, false)
+        .begin(TriggerSource::DISABLE, TriggerAction::BLOCK);
 
-    let (_chan0, buf_16, const_16, _) = xfer.wait(&mut dmac);
+    let (_chan0, buf_16, const_16, _) = xfer.wait();
 
     // Read the returned buffers
     let _a = *const_16; // We expect the value "LENGTH - 1" to end up here
