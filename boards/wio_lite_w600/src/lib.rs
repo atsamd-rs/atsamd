@@ -4,6 +4,7 @@ extern crate atsamd_hal as hal;
 
 #[cfg(feature = "rt")]
 extern crate cortex_m_rt;
+
 #[cfg(feature = "rt")]
 pub use cortex_m_rt::entry;
 
@@ -238,21 +239,23 @@ pub fn i2c_master<F: Into<Hertz>>(
     bus_speed: F,
     sercom3: pac::SERCOM3,
     pm: &mut pac::PM,
-    sda: gpio::Pa22<Input<Floating>>,
-    scl: gpio::Pa23<Input<Floating>>,
-    port: &mut Port,
+    sda: gpio::v2::Pin<gpio::v2::PA22, gpio::v2::Reset>,
+    scl: gpio::v2::Pin<gpio::v2::PA23, gpio::v2::Reset>,
 ) -> hal::sercom::I2CMaster3<
-    hal::sercom::Sercom3Pad0<gpio::Pa22<gpio::PfC>>,
-    hal::sercom::Sercom3Pad1<gpio::Pa23<gpio::PfC>>,
+    hal::sercom::Sercom3Pad0<gpio::v2::PA22>,
+    hal::sercom::Sercom3Pad1<gpio::v2::PA23>,
 > {
+    use sercom::v2::pads::Pad;
+
     let gclk0 = clocks.gclk0();
+
     I2CMaster3::new(
         &clocks.sercom3_core(&gclk0).unwrap(),
         bus_speed.into(),
         sercom3,
         pm,
-        sda.into_pad(port),
-        scl.into_pad(port),
+        Pad::new(sda),
+        Pad::new(scl),
     )
 }
 
@@ -263,15 +266,16 @@ pub fn spi_master<F: Into<Hertz>>(
     speed: F,
     sercom4: pac::SERCOM4,
     pm: &mut pac::PM,
-    sck: gpio::Pb11<Input<Floating>>,
-    mosi: gpio::Pb10<Input<Floating>>,
-    miso: gpio::Pa12<Input<Floating>>,
-    port: &mut Port,
+    sck: gpio::v2::Pin<gpio::v2::PB11, gpio::v2::Reset>,
+    mosi: gpio::v2::Pin<gpio::v2::PB10, gpio::v2::Reset>,
+    miso: gpio::v2::Pin<gpio::v2::PA12, gpio::v2::Reset>,
 ) -> SPIMaster4<
-    hal::sercom::Sercom4Pad0<gpio::Pa12<gpio::PfD>>,
-    hal::sercom::Sercom4Pad2<gpio::Pb10<gpio::PfD>>,
-    hal::sercom::Sercom4Pad3<gpio::Pb11<gpio::PfD>>,
+    hal::sercom::Sercom4Pad0<gpio::v2::PA12>,
+    hal::sercom::Sercom4Pad2<gpio::v2::PB10>,
+    hal::sercom::Sercom4Pad3<gpio::v2::PB11>,
 > {
+    use sercom::v2::pads::Pad;
+
     let gclk0 = clocks.gclk0();
 
     SPIMaster4::new(
@@ -283,7 +287,7 @@ pub fn spi_master<F: Into<Hertz>>(
         },
         sercom4,
         pm,
-        (miso.into_pad(port), mosi.into_pad(port), sck.into_pad(port)),
+        (Pad::new(miso), Pad::new(mosi), Pad::new(sck)),
     )
 }
 
@@ -294,15 +298,16 @@ pub fn uart<F: Into<Hertz>>(
     baud: F,
     sercom2: pac::SERCOM2,
     pm: &mut pac::PM,
-    d0: gpio::Pa11<Input<Floating>>,
-    d1: gpio::Pa10<Input<Floating>>,
-    port: &mut Port,
+    d0: gpio::v2::Pin<gpio::v2::PA11, gpio::v2::Reset>,
+    d1: gpio::v2::Pin<gpio::v2::PA10, gpio::v2::Reset>,
 ) -> UART2<
-    hal::sercom::Sercom2Pad3<gpio::Pa11<PfD>>,
-    hal::sercom::Sercom2Pad2<gpio::Pa10<PfD>>,
+    hal::sercom::Sercom2Pad3<gpio::v2::PA11>,
+    hal::sercom::Sercom2Pad2<gpio::v2::PA10>,
     (),
     (),
 > {
+    use sercom::v2::pads::Pad;
+
     let gclk0 = clocks.gclk0();
 
     UART2::new(
@@ -310,7 +315,7 @@ pub fn uart<F: Into<Hertz>>(
         baud.into(),
         sercom2,
         pm,
-        (d0.into_pad(port), d1.into_pad(port)),
+        (Pad::new(d0), Pad::new(d1)),
     )
 }
 
@@ -319,8 +324,8 @@ pub fn usb_allocator(
     usb: pac::USB,
     clocks: &mut GenericClockController,
     pm: &mut pac::PM,
-    dm: impl AnyPin<Id = PA24>,
-    dp: impl AnyPin<Id = PA25>,
+    dm: impl AnyPin<Id=PA24>,
+    dp: impl AnyPin<Id=PA25>,
 ) -> UsbBusAllocator<UsbBus> {
     let gclk0 = clocks.gclk0();
     let usb_clock = &clocks.usb(&gclk0).unwrap();
