@@ -16,10 +16,10 @@ pub use hal::*;
 
 pub use hal::target_device as pac;
 
-use gpio::{self, *};
+use gpio;
 
 use hal::clock::GenericClockController;
-use hal::sercom::{I2CMaster3, PadPin, SPIMaster4, UART2};
+use hal::sercom::{I2CMaster3, SPIMaster4, UART2};
 use hal::time::Hertz;
 
 #[cfg(feature = "usb")]
@@ -239,8 +239,8 @@ pub fn i2c_master<F: Into<Hertz>>(
     bus_speed: F,
     sercom3: pac::SERCOM3,
     pm: &mut pac::PM,
-    sda: gpio::v2::Pin<gpio::v2::PA22, gpio::v2::Reset>,
-    scl: gpio::v2::Pin<gpio::v2::PA23, gpio::v2::Reset>,
+    sda: Sda,
+    scl: Scl,
 ) -> hal::sercom::I2CMaster3<
     hal::sercom::Sercom3Pad0<gpio::v2::PA22>,
     hal::sercom::Sercom3Pad1<gpio::v2::PA23>,
@@ -266,9 +266,9 @@ pub fn spi_master<F: Into<Hertz>>(
     speed: F,
     sercom4: pac::SERCOM4,
     pm: &mut pac::PM,
-    sck: gpio::v2::Pin<gpio::v2::PB11, gpio::v2::Reset>,
-    mosi: gpio::v2::Pin<gpio::v2::PB10, gpio::v2::Reset>,
-    miso: gpio::v2::Pin<gpio::v2::PA12, gpio::v2::Reset>,
+    sck: Sck,
+    mosi: Mosi,
+    miso: Miso,
 ) -> SPIMaster4<
     hal::sercom::Sercom4Pad0<gpio::v2::PA12>,
     hal::sercom::Sercom4Pad2<gpio::v2::PB10>,
@@ -298,8 +298,8 @@ pub fn uart<F: Into<Hertz>>(
     baud: F,
     sercom2: pac::SERCOM2,
     pm: &mut pac::PM,
-    d0: gpio::v2::Pin<gpio::v2::PA11, gpio::v2::Reset>,
-    d1: gpio::v2::Pin<gpio::v2::PA10, gpio::v2::Reset>,
+    rx: Rx,
+    tx: Tx,
 ) -> UART2<
     hal::sercom::Sercom2Pad3<gpio::v2::PA11>,
     hal::sercom::Sercom2Pad2<gpio::v2::PA10>,
@@ -315,7 +315,7 @@ pub fn uart<F: Into<Hertz>>(
         baud.into(),
         sercom2,
         pm,
-        (Pad::new(d0), Pad::new(d1)),
+        (Pad::new(rx), Pad::new(tx)),
     )
 }
 
