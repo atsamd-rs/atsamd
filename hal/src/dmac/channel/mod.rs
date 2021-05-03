@@ -273,18 +273,6 @@ impl<Id: ChId> Channel<Id, Busy> {
         self._trigger_private();
     }
 
-    /// Stop transfer on channel whether or not the transfer has completed
-    ///
-    /// # Return
-    ///
-    /// A `Channel` with a `Ready` status, ready to be reused by a new
-    /// [`Transfer`](super::transfer::Transfer)
-    #[inline]
-    pub(crate) fn stop(mut self) -> Channel<Id, Ready> {
-        self.regs.chctrla.modify(|_, w| w.enable().clear_bit());
-        self.free()
-    }
-
     /// Returns whether or not the transfer is complete.
     ///
     /// BUSYCH is set when the channel is ACTIVELY transferring;
@@ -299,14 +287,15 @@ impl<Id: ChId> Channel<Id, Busy> {
         !self.regs.busych.read_bit() && !self.regs.pendch.read_bit()
     }
 
-    /// Wait for the channel to clear its busy status, then release the channel.
+    /// Stop transfer on channel whether or not the transfer has completed
     ///
     /// # Return
     ///
     /// A `Channel` with a `Ready` status, ready to be reused by a new
     /// [`Transfer`](super::transfer::Transfer)
     #[inline]
-    pub(crate) fn free(self) -> Channel<Id, Ready> {
+    pub(crate) fn free(mut self) -> Channel<Id, Ready> {
+        self.regs.chctrla.modify(|_, w| w.enable().clear_bit());
         while !self.xfer_complete() {}
         Channel {
             regs: self.regs,
@@ -315,27 +304,37 @@ impl<Id: ChId> Channel<Id, Busy> {
     }
 
     #[inline]
-    pub(super) fn callback(&mut self) {
-        let mut xfer_complete = false;
+    pub(super) fn callback(&mut self) -> CallbackStatus {
         // Transfer complete
         if self.regs.chintflag.read().tcmpl().bit_is_set() {
-            // TODO Do something here
-            xfer_complete = true;
             self.regs.chintflag.modify(|_, w| w.tcmpl().set_bit());
+            return CallbackStatus::TransferComplete;
         }
-
         // Transfer error
-        if self.regs.chintflag.read().terr().bit_is_set() {
-            // TODO Do something here
+        else if self.regs.chintflag.read().terr().bit_is_set() {
             self.regs.chintflag.modify(|_, w| w.terr().set_bit());
+            return CallbackStatus::TransferError;
         }
-
         // Channel suspended
-        if self.regs.chintflag.read().susp().bit_is_set() {
-            // TODO Do something here
+        else if self.regs.chintflag.read().susp().bit_is_set() {
             self.regs.chintflag.modify(|_, w| w.susp().set_bit());
+            return CallbackStatus::TransferSuspended;
         }
+        // Default to error if for some reason there was in interrupt
+        // flag raised
+        CallbackStatus::TransferError
     }
+}
+
+/// Status of a transfer callback
+#[derive(Clone, Copy)]
+pub enum CallbackStatus {
+    /// Transfer Complete
+    TransferComplete,
+    /// Transfer Error
+    TransferError,
+    /// Transfer Suspended
+    TransferSuspended,
 }
 
 /// Interrupt sources available to a DMA channel

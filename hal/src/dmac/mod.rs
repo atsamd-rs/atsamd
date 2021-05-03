@@ -155,6 +155,7 @@
 
 use modular_bitfield::prelude::*;
 
+pub use channel::CallbackStatus;
 #[cfg(feature = "min-samd51g")]
 pub use dma_controller::{BurstLength, FifoThreshold};
 pub use dma_controller::{
