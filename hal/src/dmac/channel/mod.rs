@@ -38,7 +38,7 @@ use modular_bitfield::prelude::*;
 
 mod reg;
 
-use reg::{ModifyRegister, ReadBit, ReadRegister, RegisterBlock, WriteBit, WriteRegister};
+use reg::RegisterBlock;
 
 #[cfg(feature = "min-samd51g")]
 use super::dma_controller::{BurstLength, FifoThreshold};
@@ -183,7 +183,7 @@ impl<Id: ChId, S: Status> Channel<Id, S> {
 
     #[inline]
     fn _trigger_private(&mut self) {
-        self.regs.swtrigctrl.write(true);
+        self.regs.swtrigctrl.write_bit(true);
     }
 }
 
@@ -296,7 +296,7 @@ impl<Id: ChId> Channel<Id, Busy> {
     /// channel needs to be both NOT PENDING and NOT BUSY.
     #[inline]
     pub(crate) fn xfer_complete(&self) -> bool {
-        !self.regs.busych.read() && !self.regs.pendch.read()
+        !self.regs.busych.read_bit() && !self.regs.pendch.read_bit()
     }
 
     /// Wait for the channel to clear its busy status, then release the channel.

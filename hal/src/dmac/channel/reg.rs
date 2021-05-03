@@ -80,60 +80,21 @@ pub(super) trait Register<Id: ChId> {
     }
 }
 
-/// Readable register which belongs to a specific channel in its entirety
-pub(super) trait ReadRegister<Id: ChId, REG>: Register<Id>
-where
-    REG: target_device::generic::Readable,
-{
-    /// PAC read proxy
-    type R;
-    /// Read the register in a safe way.
-    fn read(&self) -> Self::R;
-}
-/// Writable register which belongs to a specific channel in its entirety
-pub(super) trait WriteRegister<Id: ChId, REG>: Register<Id>
-where
-    REG: target_device::generic::Writable,
-{
-    /// PAC write proxy
-    type W;
-    /// Write to the register in a safe way
-    fn write<F>(&mut self, func: F)
-    where
-        for<'w> F: FnOnce(&'w mut Self::W) -> &'w mut Self::W;
-}
-
-/// Readable/writable register which belongs to a specific channel in its
-/// entirety
-pub(super) trait ModifyRegister<Id: ChId, REG>: Register<Id>
-where
-    REG: target_device::generic::Readable + target_device::generic::Writable,
-{
-    /// PAC read proxy
-    type R;
-    /// PAC write proxy
-    type W;
-
-    /// Modify the register in a safe way
-    fn modify<F>(&mut self, func: F)
-    where
-        for<'w> F: FnOnce(&Self::R, &'w mut Self::W) -> &'w mut Self::W;
-}
-
-macro_rules! channel_reg_read {
-    ($reg:ident, $obj:ty) => {
+macro_rules! reg_proxy {
+    (@new $reg:ident) => {
         paste! {
             /// Register proxy tied to a specific channel
-            pub(super) struct [< $obj:camel Proxy >]<Id: ChId, REG> {
+            pub(super) struct [< $reg:camel Proxy >]<Id: ChId, REG> {
+                #[allow(ununsed)]
                 dmac: DMAC,
                 _id: PhantomData<Id>,
                 _reg: PhantomData<REG>,
             }
 
-            impl<Id: ChId> [< $obj:camel Proxy >]<Id, $obj> {
+            impl<Id: ChId> [< $reg:camel Proxy >]<Id, [< $reg:upper >]> {
                 /// Create a new register proxy
                 #[inline]
-                pub(super) fn new() -> Self {
+                pub fn new() -> Self {
                     Self {
                         // SAFETY: This is safe as long as the register
                         // only reads/writes registers through
@@ -144,132 +105,109 @@ macro_rules! channel_reg_read {
                     }
                 }
             }
+        }
+    };
 
-            impl<Id: ChId> Register<Id> for [< $obj:camel Proxy >]<Id, $obj> {}
+    // Internal rule for a Read-enabled register
+    (@read_reg $reg:ident) => {
+        paste! {
+            impl<Id: ChId> Register<Id> for [< $reg:camel Proxy >]<Id, [< $reg:upper >]> {}
 
-            impl<Id: ChId> ReadRegister<Id, $obj> for [<$obj:camel Proxy>]<Id, $obj> {
-                type R = channel_regs::$reg::R;
-
+            impl<Id> [< $reg:camel Proxy >]<Id, [< $reg:upper >]> where Id: ChId, [< $reg:upper >]: target_device::generic::Readable {
                 #[inline]
-                fn read(&self) -> Self::R {
-                    self.with_chid(&self.dmac, |d| d.$reg.read())
+                #[allow(dead_code)]
+                pub fn read(&self) -> channel_regs::[< $reg:lower >]::R {
+                    self.with_chid(&self.dmac, |d| d.[< $reg:lower >].read())
                 }
             }
         }
     };
-}
-macro_rules! channel_reg_write {
-    ($reg:ident, $obj:ty) => {
-        paste! {
-        impl<Id: ChId> WriteRegister<Id, $obj> for [< $obj:camel Proxy >]<Id, $obj> {
-            type W = channel_regs::$reg::W;
 
-            #[inline]
-            fn write<F>(&mut self, func: F)
-            where
-                for<'w> F: FnOnce(&'w mut Self::W) -> &'w mut Self::W,
+    // Read-only register
+    ($reg:ident, register, r) => {
+        paste! {
+
+            reg_proxy!(@new $reg);
+            reg_proxy!(@read_reg $reg);
+        }
+    };
+
+    // Read-write register
+    ($reg:ident, register, rw) => {
+        paste! {
+            reg_proxy!(@new $reg);
+            reg_proxy!(@read_reg $reg);
+
+            impl<Id> [< $reg:camel Proxy >]<Id, [< $reg:upper >]> where Id: ChId, [< $reg:upper >]: target_device::generic::Writable {
+                #[inline]
+                #[allow(dead_code)]
+                pub fn write<F>(&mut self, func: F)
+                where
+                    for<'w> F: FnOnce(&'w mut channel_regs::[< $reg:lower >]::W) -> &'w mut channel_regs::[< $reg:lower >]::W,
+                {
+                    self.with_chid(&self.dmac, |d| d.[< $reg:lower >].write(|w| func(w)));
+                }
+            }
+
+            impl<Id>[< $reg:camel Proxy >]<Id, [< $reg:upper >]> where
+                Id: ChId,
+                [< $reg:upper >]: target_device::generic::Writable + target_device::generic::Readable
             {
-                self.with_chid(&self.dmac, |d| d.$reg.write(|w| func(w)));
+                #[inline]
+                #[allow(dead_code)]
+                pub fn modify<F>(&mut self, func: F)
+                where
+                    for<'w> F: FnOnce(
+                        &channel_regs::[< $reg:lower >]::R,
+                        &'w mut channel_regs::[< $reg:lower >]::W
+                    ) -> &'w mut channel_regs::[< $reg:lower >]::W,
+                {
+                    self.with_chid(&self.dmac, |d| d.[< $reg:lower >].modify(|r, w| func(r, w)));
+                }
             }
         }
+    };
 
-        impl<Id: ChId> ModifyRegister<Id, $obj> for [< $obj:camel Proxy >]<Id, $obj> {
-            type R = channel_regs::$reg::R;
-            type W = channel_regs::$reg::W;
+    // Internal rule for read-enabled bit
+    (@read_bit $reg:ident) => {
+        paste! {
+            impl<Id: ChId> Register<Id> for [< $reg:camel Proxy >]<Id, [< $reg:upper >]> {}
 
-            #[inline]
-            fn modify<F>(&mut self, func: F)
-            where
-                for<'w> F: FnOnce(&Self::R, &'w mut Self::W) -> &'w mut Self::W,
+            impl<Id> [< $reg:camel Proxy >]<Id, [< $reg:upper >]> where Id: ChId, [< $reg:upper >]: target_device::generic::Readable {
+                #[inline]
+                #[allow(dead_code)]
+                pub fn read_bit(&self) -> bool {
+                    self.dmac.[< $reg:lower >].read().bits() & (1 << Id::U8) != 0
+                }
+            }
+        }
+    };
+
+    // Read-only bit
+    ($reg:ident, bit, r) => {
+        paste! {
+            reg_proxy!(@new $reg);
+            reg_proxy!(@read_bit $reg);
+        }
+    };
+
+    // Read-write bit
+    ($reg:ident, bit, rw) => {
+        paste! {
+            reg_proxy!(@new $reg);
+            reg_proxy!(@read_bit $reg);
+
+            impl<Id> [< $reg:camel Proxy >]<Id, [< $reg:upper>]> where
+                Id: ChId,
+                [< $reg:upper >]: target_device::generic::Readable + target_device::generic::Writable
             {
-                self.with_chid(&self.dmac, |d| d.$reg.modify(|r, w| func(r, w)));
-            }
-        }}
-    };
-}
-
-channel_reg_read!(chctrla, CHCTRLA);
-channel_reg_read!(chctrlb, CHCTRLB);
-channel_reg_read!(chintenclr, CHINTENCLR);
-channel_reg_read!(chintenset, CHINTENSET);
-channel_reg_read!(chintflag, CHINTFLAG);
-channel_reg_read!(chstatus, CHSTATUS);
-#[cfg(feature = "min-samd51g")]
-channel_reg_read!(chprilvl, CHPRILVL);
-
-channel_reg_write!(chctrla, CHCTRLA);
-channel_reg_write!(chctrlb, CHCTRLB);
-channel_reg_write!(chintenclr, CHINTENCLR);
-channel_reg_write!(chintenset, CHINTENSET);
-channel_reg_write!(chintflag, CHINTFLAG);
-#[cfg(feature = "min-samd51g")]
-channel_reg_write!(chprilvl, CHPRILVL);
-pub(super) trait ReadBit<Id: ChId, REG>: Register<Id>
-where
-    REG: target_device::generic::Readable,
-{
-    fn read(&self) -> bool;
-}
-
-macro_rules! channel_bit_read {
-    ($reg:ident, $obj:ty) => {
-        paste! {
-            /// Register proxy tied to a specific channel
-            pub(super) struct [< $obj:camel Proxy >]<Id: ChId, REG> {
-                dmac: DMAC,
-                _id: PhantomData<Id>,
-                _reg: PhantomData<REG>,
-            }
-
-            impl<Id: ChId> [< $obj:camel Proxy >]<Id, $obj> {
-                /// Create a new register proxy
                 #[inline]
-                pub(super) fn new() -> Self {
-                    Self {
-                        // SAFETY: This is safe as long as the register
-                        // only reads/writes the bits it controls
-                        // within registers.
-                        dmac: unsafe { Peripherals::steal().DMAC },
-                        _id: PhantomData,
-                        _reg: PhantomData,
-                    }
-                }
-            }
-
-            impl<Id: ChId> Register<Id> for [< $obj:camel Proxy >]<Id, $obj> {}
-
-            impl<Id: ChId> ReadBit<Id, $obj> for [< $obj:camel Proxy >]<Id, $obj> {
-                #[inline]
-                fn read(&self) -> bool {
-                    self.dmac.$reg.read().bits() & (1 << Id::U8) != 0
-                }
-            }
-        }
-    };
-}
-
-channel_bit_read!(intstatus, INTSTATUS);
-channel_bit_read!(busych, BUSYCH);
-channel_bit_read!(pendch, PENDCH);
-channel_bit_read!(swtrigctrl, SWTRIGCTRL);
-
-pub(super) trait WriteBit<Id: ChId, REG>: Register<Id>
-where
-    REG: target_device::generic::Writable,
-{
-    fn write(&self, bit: bool);
-}
-
-macro_rules! channel_bit_write {
-    ($reg: ident, $obj:ty) => {
-        paste! {
-            impl<Id: ChId> WriteBit<Id, $obj> for [< $obj:camel Proxy >]<Id, $obj> {
-                #[inline]
-                fn write(&self, bit: bool) {
+                #[allow(dead_code)]
+                pub fn write_bit(&self, bit: bool) {
                     // SAFETY: This is safe because we are only writing
                     // to the bit controlled by the channel.
                     self.dmac
-                        .$reg
+                        .[< $reg:lower >]
                         .modify(|r, w| unsafe { w.bits(r.bits() & ((bit as u32) << Id::U8)) });
                 }
             }
@@ -277,7 +215,19 @@ macro_rules! channel_bit_write {
     };
 }
 
-channel_bit_write!(swtrigctrl, SWTRIGCTRL);
+reg_proxy!(chctrla, register, rw);
+reg_proxy!(chctrlb, register, rw);
+reg_proxy!(chintenclr, register, rw);
+reg_proxy!(chintenset, register, rw);
+reg_proxy!(chintflag, register, rw);
+reg_proxy!(chstatus, register, r);
+#[cfg(feature = "min-samd51g")]
+reg_proxy!(chprilvl, register, rw);
+
+reg_proxy!(intstatus, bit, r);
+reg_proxy!(busych, bit, r);
+reg_proxy!(pendch, bit, r);
+reg_proxy!(swtrigctrl, bit, rw);
 
 /// Acts as a proxy to the PAC DMAC object. Only registers and bits
 /// within registers that should be readable/writable by specific
