@@ -83,7 +83,7 @@ bsp_pins!(
     PA12 {
         name: pa12,
         aliases: {
-            AlternateC: SdSdo
+            AlternateC: SdMosi
         }
     }
     PA13 {
@@ -101,7 +101,7 @@ bsp_pins!(
     PA15 {
         name: pa15,
         aliases: {
-            AlternateC: SdSdi
+            AlternateC: SdMiso
         }
     }
     PA16 {
@@ -222,6 +222,27 @@ pub fn base_controller_spi(
     spi::Config::new(pm, sercom1, pads, core_clock.freq())
         .baud(BASE_CONTROLLER_FREQ)
         .spi_mode(BASE_CONTROLLER_SPI_MODE)
+        .enable()
+}
+
+/// Convenience for setting up the labeled SPI2 peripheral.
+/// SPI2 has the microSD card slot connected.
+/// This powers up SERCOM4 and configures it for talking to the
+/// base controller.
+pub fn sdmmc_spi<F: Into<Hertz>>(
+    clocks: &mut GenericClockController,
+    bus_speed: F,
+    sercom4: pac::SERCOM4,
+    pm: &mut pac::PM,
+    sck: SdSck,
+    mosi: SdMosi,
+    miso: SdMiso,
+) -> sercom::v2::spi::Spi<impl spi::ValidConfig> {
+    let gclk0 = &clocks.gclk0();
+    let core_clock = &clocks.sercom4_core(&gclk0).unwrap();
+    let pads = spi::Pads::new().sclk(sck).data_in(miso).data_out(mosi);
+    spi::Config::new(pm, sercom4, pads, core_clock.freq())
+        .baud(bus_speed)
         .enable()
 }
 
