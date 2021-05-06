@@ -987,13 +987,13 @@ declare_pins!(
         #[cfg(not(feature = "samd11"))]
         (PA01, 01),
         (PA02, 02),
-        #[cfg(not(feature = "samd11"))]
+        #[cfg(not(feature = "samd11c"))]
         (PA03, 03),
         (PA04, 04),
         (PA05, 05),
-        #[cfg(not(feature = "samd11"))]
+        #[cfg(not(feature = "samd11c"))]
         (PA06, 06),
-        #[cfg(not(feature = "samd11"))]
+        #[cfg(not(feature = "samd11c"))]
         (PA07, 07),
         (PA08, 08),
         (PA09, 09),
@@ -1007,7 +1007,7 @@ declare_pins!(
         (PA13, 13),
         (PA14, 14),
         (PA15, 15),
-        #[cfg(not(feature = "samd11"))]
+        #[cfg(not(feature = "samd11c"))]
         (PA16, 16),
         #[cfg(not(feature = "samd11"))]
         (PA17, 17),
@@ -1019,9 +1019,9 @@ declare_pins!(
         (PA20, 20),
         #[cfg(any(feature = "min-samd21g", feature = "min-samd51g"))]
         (PA21, 21),
-        #[cfg(not(feature = "samd11"))]
+        #[cfg(not(feature = "samd11c"))]
         (PA22, 22),
-        #[cfg(not(feature = "samd11"))]
+        #[cfg(not(feature = "samd11c"))]
         (PA23, 23),
         (PA24, 24),
         (PA25, 25),

@@ -9,6 +9,9 @@ pub mod typelevel;
 #[cfg(feature = "samd11c")]
 pub use atsamd11c as target_device;
 
+#[cfg(feature = "samd11d")]
+pub use atsamd11d as target_device;
+
 #[cfg(feature = "samd21e")]
 pub use atsamd21e as target_device;
 
