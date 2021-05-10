@@ -34,10 +34,6 @@ const APP: () = {
 
         let delay = Delay::new(cx.core.SYST, &mut clocks);
 
-        // TODO: Is it okay to enable the interrupt before configuring the UART?
-        // We can't do it after because the UART5 object takes ownership of the peripheral.
-        //peripherals.SERCOM5.usart().intenset.modify(|_, w| w.rxc().bit(true));
-
         let mut uart = hal::uart(
             &mut clocks,
             9600.hz(),
