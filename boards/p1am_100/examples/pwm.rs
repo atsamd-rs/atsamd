@@ -68,7 +68,10 @@ fn main() -> ! {
     // Disable TC4
     count.ctrla.modify(|_, w| w.enable().clear_bit());
     // Divide GCLK by 4 to get TC4 clock
-    count.ctrla.modify(|_, w| { w.prescaler().div4(); w.prescsync().presc() });
+    count.ctrla.modify(|_, w| {
+        w.prescaler().div4();
+        w.prescsync().presc()
+    });
     // Normal PWM mode
     count.ctrla.write(|w| w.wavegen().npwm());
     // Start at 0 duty cycle
@@ -83,13 +86,17 @@ fn main() -> ! {
     let max_duty = u16::MAX;
 
     uprintln!(uart, "clock freq: {:?}", clock.freq());
-    uprintln!(uart, "prescaler: {:?}", count.ctrla.read().prescaler().variant());
+    uprintln!(
+        uart,
+        "prescaler: {:?}",
+        count.ctrla.read().prescaler().variant()
+    );
     uprintln!(uart, "max_duty: {}", max_duty);
 
     loop {
         uprintln!(uart, "starting at 0");
         for i in 0..256 {
-            count.cc[0].write(|w| unsafe { w.cc().bits(i*i) });
+            count.cc[0].write(|w| unsafe { w.cc().bits(i * i) });
             delay.delay_ms(5u16);
         }
     }
