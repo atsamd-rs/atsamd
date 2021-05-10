@@ -8,7 +8,6 @@ extern crate cortex_m_rt;
 pub use cortex_m_rt::entry;
 
 use embedded_hal;
-use hal::prelude::*;
 use hal::*;
 
 pub use hal::common::*;

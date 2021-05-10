@@ -31,7 +31,7 @@ fn main() -> ! {
         &mut peripherals.SYSCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = hal::Pins::new(peripherals.PORT);
+    let pins = hal::Pins::new(peripherals.PORT);
     let mut led: hal::Led = pins.led.into();
 
     let bus_allocator = unsafe {
@@ -66,7 +66,7 @@ fn main() -> ! {
     // entirely interrupt driven.
     loop {
         cycle_delay(15 * 1024 * 1024);
-        led.toggle();
+        led.toggle().unwrap();
     }
 }
 

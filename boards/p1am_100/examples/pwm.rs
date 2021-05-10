@@ -25,7 +25,7 @@ fn main() -> ! {
         &mut peripherals.NVMCTRL,
     );
     let mut delay = Delay::new(core.SYST, &mut clocks);
-    let mut pins = hal::Pins::new(peripherals.PORT);
+    let pins = hal::Pins::new(peripherals.PORT);
 
     let _led = pins.led.into_mode::<hal::gpio::v2::AlternateE>();
 
