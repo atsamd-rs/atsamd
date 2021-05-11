@@ -45,6 +45,9 @@
     "metro_m4": {
       "build": "cargo build --examples --features=unproven,usb"
     },
+    "p1am_100": {
+      "build": "cargo build --examples --features=unproven,usb"
+    },
     "pfza_proto1": {
       "build": "cargo build --examples --features=unproven"
     },
