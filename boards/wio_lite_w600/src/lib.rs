@@ -177,12 +177,18 @@ atsamd_hal::bsp_pins!(
 
     // SAMD21_D+ (USB Data Plus)
     PA25 {
-        name: usb_dm
+        name: usb_dp
+        aliases: {
+            AlternateG: UsbDp
+        }
     },
 
-    // SAMD21_D- (USB Data Plus)
+    // SAMD21_D- (USB Data Minus)
     PA24 {
-        name: usb_dp
+        name: usb_dm
+        aliases: {
+            AlternateG: UsbDm
+        }
     },
 
     // D33/SCL/PA23
@@ -324,8 +330,8 @@ pub fn usb_allocator(
     usb: pac::USB,
     clocks: &mut GenericClockController,
     pm: &mut pac::PM,
-    dm: impl AnyPin<Id=PA24>,
-    dp: impl AnyPin<Id=PA25>,
+    dm: UsbDm,
+    dp: UsbDp,
 ) -> UsbBusAllocator<UsbBus> {
     let gclk0 = clocks.gclk0();
     let usb_clock = &clocks.usb(&gclk0).unwrap();
