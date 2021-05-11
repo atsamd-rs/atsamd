@@ -117,7 +117,7 @@ atsamd_hal::bsp_pins!(
     PB11 {
         name: d24
         aliases: {
-            AlternateB: Sck
+            AlternateC: Sck
         }
     },
 
