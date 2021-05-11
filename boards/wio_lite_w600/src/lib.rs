@@ -23,8 +23,6 @@ use hal::sercom::{I2CMaster3, SPIMaster4, UART2};
 use hal::time::Hertz;
 
 #[cfg(feature = "usb")]
-use gpio::v2::{AnyPin, PA24, PA25};
-#[cfg(feature = "usb")]
 use hal::usb::usb_device::bus::UsbBusAllocator;
 #[cfg(feature = "usb")]
 pub use hal::usb::UsbBus;
