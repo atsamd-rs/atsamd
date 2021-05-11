@@ -286,6 +286,34 @@ macro_rules! uart {
                 unsafe fn usart(&self) -> &USART {
                     return &self.sercom.usart();
                 }
+
+                pub fn intenset<F>(&mut self, f: F)
+                where F: FnOnce(&mut crate::target_device::sercom0::usart::intenset::W)
+                {
+                    unsafe {
+                        self.usart().intenset.write(|w| {
+                            f(w);
+                            w
+                        });
+                    }
+                }
+
+                pub fn intenclr<F>(&mut self, f: F)
+                where F: FnOnce(&mut crate::target_device::sercom0::usart::intenclr::W)
+                {
+                    unsafe {
+                        self.usart().intenclr.write(|w| {
+                            f(w);
+                            w
+                        });
+                    }
+                }
+
+                pub fn flags(&self) -> crate::target_device::sercom0::usart::status::R {
+                    unsafe {
+                        self.usart().status.read()
+                    }
+                }
             }
 
             /// The transmitting half of the corresponding UARTX instance (as returned by `UARTX::split`)
