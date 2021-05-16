@@ -1,17 +1,18 @@
 #![no_std]
 #![no_main]
 
-extern crate cortex_m_rt;
-extern crate feather_m0 as hal;
-extern crate panic_halt;
+use cortex_m_rt::entry;
+use panic_halt as _;
+
+use bsp::hal;
+use bsp::pac;
+use feather_m0 as bsp;
 
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
-use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 use hal::pwm::Pwm3;
-
-use cortex_m_rt::entry;
+use pac::{CorePeripherals, Peripherals};
 
 #[entry]
 fn main() -> ! {
@@ -25,9 +26,9 @@ fn main() -> ! {
         &mut peripherals.NVMCTRL,
     );
     let mut delay = Delay::new(core.SYST, &mut clocks);
-    let mut pins = hal::Pins::new(peripherals.PORT);
+    let pins = bsp::Pins::new(peripherals.PORT);
 
-    let _d5 = pins.d5.into_function_e(&mut pins.port);
+    let _d5: bsp::D5Pwm = pins.d5.into();
 
     let gclk0 = clocks.gclk0();
     let mut pwm3 = Pwm3::new(

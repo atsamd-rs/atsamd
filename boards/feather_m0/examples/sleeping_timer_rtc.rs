@@ -13,22 +13,24 @@
 #![no_std]
 #![no_main]
 
-extern crate cortex_m;
-extern crate feather_m0 as hal;
-#[cfg(not(feature = "use_semihosting"))]
-extern crate panic_halt;
-#[cfg(feature = "use_semihosting")]
-extern crate panic_semihosting;
+use core::sync::atomic;
 
+use cortex_m::peripheral::NVIC;
+#[cfg(not(feature = "use_semihosting"))]
+use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
+
+use bsp::hal;
+use bsp::pac;
+use feather_m0 as bsp;
+
+use bsp::entry;
 use hal::clock::{enable_internal_32kosc, ClockGenId, ClockSource, GenericClockController};
-use hal::entry;
-use hal::pac::{interrupt, CorePeripherals, Peripherals, RTC};
 use hal::prelude::*;
 use hal::rtc;
 use hal::sleeping_delay::SleepingDelay;
-
-use core::sync::atomic;
-use cortex_m::peripheral::NVIC;
+use pac::{interrupt, CorePeripherals, Peripherals, RTC};
 
 /// Shared atomic between RTC interrupt and sleeping_delay module
 static INTERRUPT_FIRED: atomic::AtomicBool = atomic::AtomicBool::new(false);
@@ -87,8 +89,8 @@ fn main() -> ! {
     peripherals.PM.apbcmask.modify(|_, w| w.adc_().clear_bit());
 
     // Configure our red LED and blink forever, sleeping between!
-    let mut pins = hal::Pins::new(peripherals.PORT);
-    let mut red_led = pins.d13.into_open_drain_output(&mut pins.port);
+    let pins = bsp::Pins::new(peripherals.PORT);
+    let mut red_led: bsp::RedLed = pins.d13.into();
     loop {
         red_led.set_low().unwrap();
         sleeping_delay.delay_ms(1_000u32);
