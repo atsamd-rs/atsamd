@@ -1,4 +1,5 @@
-use crate::gpio::{self, IntoFunction, Port};
+use crate::gpio::v2::{self, AlternateA, AnyPin, PinId, PinMode};
+use crate::gpio::{self, IntoFunction, Pin, Port};
 use crate::target_device;
 
 /// The EicPin trait makes it more ergonomic to convert a gpio pin into an EIC
@@ -14,7 +15,7 @@ pub type ExternalInterruptID = usize;
 
 /// ExternalInterrupt describes something with an external interrupt ID.
 pub trait ExternalInterrupt {
-    fn id(self) -> ExternalInterruptID;
+    fn id(&self) -> ExternalInterruptID;
 }
 
 /// The pad macro defines the given EIC pin and implements EicPin for the
@@ -33,17 +34,23 @@ macro_rules! ei {
 crate::paste::item! {
     /// Represents a numbered external interrupt. The external interrupt is generic
     /// over any pin, only the EicPin implementations in this module make sense.
-    pub struct [<$PadType $num>]<GPIO>(GPIO);
+    pub struct [<$PadType $num>]<GPIO>
+    where
+        GPIO: AnyPin,
+    {
+        _pin: v2::Pin<GPIO::Id, AlternateA>,
+    }
 
     // impl !Send for [<$PadType $num>]<GPIO> {}
     // impl !Sync for [<$PadType $num>]<GPIO> {}
 
-    impl<GPIO> [<$PadType $num>]<GPIO> {
+    impl<GPIO: AnyPin> [<$PadType $num>]<GPIO> {
         /// Construct pad from the appropriate pin in any mode.
         /// You may find it more convenient to use the `into_pad` trait
         /// and avoid referencing the pad type.
         pub fn new(pin: GPIO) -> Self {
-            [<$PadType $num>](pin)
+            let _pin = pin.into().into_alternate();
+            [<$PadType $num>]{ _pin }
         }
 
         /// Configure the eic with options for this external interrupt
@@ -133,8 +140,8 @@ crate::paste::item! {
         }
 
         $(#[$attr])*
-        impl<MODE: gpio::PinMode> ExternalInterrupt for &gpio::$PinType<MODE> {
-            fn id(self) -> ExternalInterruptID {
+        impl<MODE: gpio::PinMode> ExternalInterrupt for gpio::$PinType<MODE> {
+            fn id(&self) -> ExternalInterruptID {
                 $num
             }
         }
@@ -142,6 +149,17 @@ crate::paste::item! {
 }
 
     };
+}
+
+impl<I, M> ExternalInterrupt for v2::Pin<I, M>
+where
+    I: PinId,
+    M: PinMode,
+    Pin<I, M>: ExternalInterrupt,
+{
+    fn id(&self) -> ExternalInterruptID {
+        Pin::<I, M>::id(self.as_ref())
+    }
 }
 
 // The SAMD11 and SAMD21 devices have different ExtInt designations. Just for

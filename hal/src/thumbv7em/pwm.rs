@@ -1,4 +1,7 @@
+#![allow(non_snake_case)]
+
 use crate::clock;
+use crate::gpio::v2::{AlternateE, AnyPin, Pin};
 use crate::gpio::*;
 use crate::hal::{Pwm, PwmPin};
 use crate::time::Hertz;
@@ -12,76 +15,85 @@ use crate::target_device::{TC6, TC7};
 
 // Timer/Counter (TCx)
 
-pub enum TC0Pinout {
-    Pa5(Pa5<PfE>),
-    Pa9(Pa9<PfE>),
+/// This is a major syntax hack.
+///
+/// The previous Pinout types were enums that took specific v1::Pin types. As a
+/// result, there was no way to make that implementation simultaneously
+/// compatible with both v1::Pin and v2::Pin.
+///
+/// BUT, the enum variant syntax is the same as the namespaced function syntax.
+/// I converted the enums to structs, and I created constructor methods with the
+/// same names as the previous enum variants. By constructing Pinout types with
+/// functions rather than enum variants, you can make it generic over v1::Pin
+/// and v2::Pin types.
+///
+/// This is (mostly) backwards compatible with the current syntax, and all the
+/// existing calls compile. The only incompatible change is the requirement of
+/// type parameters on the Pwm types. Most of the type, the type parameters can
+/// be inferred, so this is mostly backwards compatible as well. But there were
+/// one or two instances where I had to add explicit type parameters to existing
+/// BSP code.
+macro_rules! impl_tc_pinout {
+    (
+        $Type:ident: [ $(
+            $( #[$attr:meta] )?
+            ($func: ident, $Id: ident)
+        ),+ ]
+    ) => {
+        pub struct $Type<I: PinId> {
+            _pin: Pin<I, AlternateE>,
+        }
+
+        $(
+            $( #[$attr] )?
+            impl $Type<v2::$Id> {
+                #[inline]
+                pub fn $func(pin: impl AnyPin<Id = v2::$Id>) -> Self {
+                    let _pin = pin.into().into_alternate();
+                    Self { _pin }
+                }
+            }
+        )+
+    };
+}
+
+impl_tc_pinout!(TC0Pinout: [
+    (Pa5, PA05),
+    (Pa9, PA09),
     #[cfg(feature = "min-samd51j")]
-    Pb31(Pb31<PfE>),
-}
-
-pub enum TC1Pinout {
-    Pa7(Pa7<PfE>),
-    Pa11(Pa11<PfE>),
-}
-
-pub enum TC2Pinout {
-    Pa1(Pa1<PfE>),
-    Pa13(Pa13<PfE>),
-    Pa17(Pa17<PfE>),
-}
-
-pub enum TC3Pinout {
-    Pa15(Pa15<PfE>),
-    Pa19(Pa19<PfE>),
-}
-
+    (Pb31, PB31)
+]);
+impl_tc_pinout!(TC1Pinout: [(Pa7, PA07), (Pa11, PA11)]);
+impl_tc_pinout!(TC2Pinout: [(Pa1, PA01), (Pa13, PA13), (Pa17, PA17)]);
+impl_tc_pinout!(TC3Pinout: [(Pa15, PA15), (Pa19, PA19)]);
 #[cfg(feature = "min-samd51j")]
-pub enum TC4Pinout {
-    Pa23(Pa23<PfE>),
-    Pb9(Pb9<PfE>),
-    Pb13(Pb13<PfE>),
-}
-
+impl_tc_pinout!(TC4Pinout: [(Pa23, PA23), (Pb0, PB09), (Pb13, PB13)]);
 #[cfg(feature = "min-samd51j")]
-pub enum TC5Pinout {
-    Pa25(Pa25<PfE>),
-    Pb11(Pb11<PfE>),
-    Pb15(Pb15<PfE>),
-}
-
+impl_tc_pinout!(TC5Pinout: [(Pa25, PA25), (Pb11, PB11), (Pb15, PB15)]);
 #[cfg(feature = "min-samd51n")]
-pub enum TC6Pinout {
-    Pb3(Pb3<PfE>),
-    Pb17(Pb17<PfE>),
-    Pa31(Pa31<PfE>),
-}
-
+impl_tc_pinout!(TC6Pinout: [(Pb3, PB03), (Pb17, PB17), (Pa31, PA31)]);
 #[cfg(feature = "min-samd51n")]
-pub enum TC7Pinout {
-    Pa21(Pa21<PfE>),
-    Pb23(Pb23<PfE>),
-    Pb1(Pb1<PfE>),
-}
+impl_tc_pinout!(TC7Pinout: [(Pa21, PA21), (Pb23, PB23), (Pb1, PB01)]);
 
 macro_rules! pwm {
     ($($TYPE:ident: ($TC:ident, $pinout:ident, $clock:ident, $apmask:ident, $apbits:ident, $wrapper:ident),)+) => {
         $(
 
-pub struct $TYPE {
+pub struct $TYPE<I: PinId> {
     /// The frequency of the attached clock, not the period of the pwm.
     /// Used to calculate the period of the pwm.
     clock_freq: Hertz,
     tc: $TC,
     #[allow(dead_code)]
-    pinout: $pinout,
+    pinout: $pinout<I>,
 }
 
-impl $TYPE {
+impl<I: PinId> $TYPE<I> {
     pub fn new<F: Into<Hertz>> (
         clock: &clock::$clock,
         freq: F,
         tc: $TC,
-        pinout: $pinout,
+        pinout: $pinout<I>,
         mclk: &mut MCLK,
     ) -> Self {
         let freq = freq.into();
@@ -154,7 +166,7 @@ impl $TYPE {
     }
 }
 
-impl PwmPin for $TYPE {
+impl<I: PinId> PwmPin for $TYPE<I> {
     type Duty = u16;
 
     fn disable(&mut self) {
@@ -221,178 +233,220 @@ pub enum Channel {
     _7,
 }
 
-pub enum TCC0Pinout {
-    Pa8(Pa8<PfF>),
-    Pa9(Pa9<PfF>),
-    Pa10(Pa10<PfF>),
-    Pa11(Pa11<PfF>),
-    Pa12(Pa12<PfF>),
-    Pa13(Pa13<PfF>),
-    Pa16(Pa16<PfG>),
-    Pa17(Pa17<PfG>),
-    Pa18(Pa18<PfG>),
-    Pa19(Pa19<PfG>),
-    Pa20(Pa20<PfG>),
-    Pa21(Pa21<PfG>),
-    Pa22(Pa22<PfG>),
-    Pa23(Pa23<PfG>),
-    Pb10(Pb10<PfF>),
-    Pb11(Pb11<PfF>),
-    #[cfg(feature = "min-samd51j")]
-    Pb12(Pb12<PfG>),
-    #[cfg(feature = "min-samd51j")]
-    Pb13(Pb13<PfG>),
-    #[cfg(feature = "min-samd51j")]
-    Pb14(Pb14<PfG>),
-    #[cfg(feature = "min-samd51j")]
-    Pb15(Pb15<PfG>),
-    #[cfg(feature = "min-samd51j")]
-    Pb16(Pb16<PfG>),
-    #[cfg(feature = "min-samd51j")]
-    Pb17(Pb17<PfG>),
-    #[cfg(feature = "min-samd51j")]
-    Pb30(Pb30<PfG>),
-    #[cfg(feature = "min-samd51j")]
-    Pb31(Pb31<PfG>),
-    #[cfg(feature = "min-samd51n")]
-    Pc10(Pc10<PfF>),
-    #[cfg(feature = "min-samd51n")]
-    Pc11(Pc11<PfF>),
-    #[cfg(feature = "min-samd51n")]
-    Pc12(Pc12<PfF>),
-    #[cfg(feature = "min-samd51n")]
-    Pc13(Pc13<PfF>),
-    #[cfg(feature = "min-samd51n")]
-    Pc14(Pc14<PfF>),
-    #[cfg(feature = "min-samd51n")]
-    Pc15(Pc15<PfF>),
-    #[cfg(feature = "min-samd51n")]
-    Pc16(Pc16<PfF>),
-    #[cfg(feature = "min-samd51n")]
-    Pc17(Pc17<PfF>),
-    #[cfg(feature = "min-samd51n")]
-    Pc18(Pc18<PfF>),
-    #[cfg(feature = "min-samd51n")]
-    Pc19(Pc19<PfF>),
-    #[cfg(feature = "min-samd51n")]
-    Pc20(Pc20<PfF>),
-    #[cfg(feature = "min-samd51n")]
-    Pc21(Pc21<PfF>),
-    #[cfg(feature = "min-samd51p")]
-    Pc4(Pc4<PfF>),
-    #[cfg(feature = "min-samd51p")]
-    Pc22(Pc22<PfF>),
-    #[cfg(feature = "min-samd51p")]
-    Pc23(Pc23<PfF>),
-    #[cfg(feature = "min-samd51p")]
-    Pd8(Pd8<PfF>),
-    #[cfg(feature = "min-samd51p")]
-    Pd9(Pd9<PfF>),
-    #[cfg(feature = "min-samd51p")]
-    Pd10(Pd10<PfF>),
-    #[cfg(feature = "min-samd51p")]
-    Pd11(Pd11<PfF>),
-    #[cfg(feature = "min-samd51p")]
-    Pd12(Pd12<PfF>),
+/// This is a major syntax hack.
+///
+/// The previous Pinout types were enums that took specific v1::Pin types. As a
+/// result, there was no way to make that implementation simultaneously
+/// compatible with both v1::Pin and v2::Pin.
+///
+/// BUT, the enum variant syntax is the same as the namespaced function syntax.
+/// I converted the enums to structs, and I created constructor methods with the
+/// same names as the previous enum variants. By constructing Pinout types with
+/// functions rather than enum variants, you can make it generic over v1::Pin
+/// and v2::Pin types.
+///
+/// This is (mostly) backwards compatible with the current syntax, and all the
+/// existing calls compile. The only incompatible change is the requirement of
+/// type parameters on the Pwm types. Most of the type, the type parameters can
+/// be inferred, so this is mostly backwards compatible as well. But there were
+/// one or two instances where I had to add explicit type parameters to existing
+/// BSP code.
+macro_rules! impl_tcc_pinout {
+    (
+        $Type:ident: [ $(
+            $( #[$attr:meta] )?
+            ($func: ident, $Id: ident, $Mode:ident)
+        ),+ ]
+    ) => {
+        pub struct $Type<I: PinId, M: PinMode> {
+            _pin: Pin<I, M>,
+        }
+
+        $(
+            $( #[$attr] )?
+            impl $Type<v2::$Id, v2::$Mode> {
+                #[inline]
+                pub fn $func(pin: impl AnyPin<Id = v2::$Id>) -> Self {
+                    let _pin = pin.into().into_alternate();
+                    Self { _pin }
+                }
+            }
+        )+
+    };
 }
 
-pub enum TCC1Pinout {
-    Pa8(Pa8<PfG>),
-    Pa9(Pa9<PfG>),
-    Pa10(Pa10<PfG>),
-    Pa11(Pa11<PfG>),
-    Pa12(Pa12<PfG>),
-    Pa13(Pa13<PfG>),
-    Pa14(Pa14<PfG>),
-    Pa15(Pa15<PfG>),
-    Pa16(Pa16<PfF>),
-    Pa17(Pa17<PfF>),
-    Pa18(Pa18<PfF>),
-    Pa19(Pa19<PfF>),
-    Pa20(Pa20<PfF>),
-    Pa21(Pa21<PfF>),
-    Pa22(Pa22<PfF>),
-    Pa23(Pa23<PfF>),
-    Pb10(Pb10<PfG>),
-    Pb11(Pb11<PfG>),
+impl_tcc_pinout!(TCC0Pinout: [
+    (Pa8, PA08, AlternateF),
+    (Pa9, PA09, AlternateF),
+    (Pa10, PA10, AlternateF),
+    (Pa11, PA11, AlternateF),
+    (Pa12, PA12, AlternateF),
+    (Pa13, PA13, AlternateF),
+    (Pa16, PA16, AlternateG),
+    (Pa17, PA17, AlternateG),
+    (Pa18, PA18, AlternateG),
+    (Pa19, PA19, AlternateG),
+    (Pa20, PA20, AlternateG),
+    (Pa21, PA21, AlternateG),
+    (Pa22, PA22, AlternateG),
+    (Pa23, PA23, AlternateG),
+    (Pb10, PB10, AlternateF),
+    (Pb11, PB11, AlternateF),
+    #[cfg(feature = "min-samd51j")]
+    (Pb12, PB12, AlternateG),
+    #[cfg(feature = "min-samd51j")]
+    (Pb13, PB13, AlternateG),
+    #[cfg(feature = "min-samd51j")]
+    (Pb14, PB14, AlternateG),
+    #[cfg(feature = "min-samd51j")]
+    (Pb15, PB15, AlternateG),
+    #[cfg(feature = "min-samd51j")]
+    (Pb16, PB16, AlternateG),
+    #[cfg(feature = "min-samd51j")]
+    (Pb17, PB17, AlternateG),
+    #[cfg(feature = "min-samd51j")]
+    (Pb30, PB30, AlternateG),
+    #[cfg(feature = "min-samd51j")]
+    (Pb31, PB31, AlternateG),
     #[cfg(feature = "min-samd51n")]
-    Pb18(Pb18<PfF>),
+    (Pc10, PC10, AlternateF),
     #[cfg(feature = "min-samd51n")]
-    Pb19(Pb19<PfF>),
+    (Pc11, PC11, AlternateF),
     #[cfg(feature = "min-samd51n")]
-    Pb20(Pb20<PfF>),
+    (Pc12, PC12, AlternateF),
     #[cfg(feature = "min-samd51n")]
-    Pb21(Pb21<PfF>),
+    (Pc13, PC13, AlternateF),
     #[cfg(feature = "min-samd51n")]
-    Pc10(Pc10<PfG>),
+    (Pc14, PC14, AlternateF),
     #[cfg(feature = "min-samd51n")]
-    Pc11(Pc11<PfG>),
+    (Pc15, PC15, AlternateF),
     #[cfg(feature = "min-samd51n")]
-    Pc12(Pc12<PfG>),
+    (Pc16, PC16, AlternateF),
     #[cfg(feature = "min-samd51n")]
-    Pc13(Pc13<PfG>),
+    (Pc17, PC17, AlternateF),
     #[cfg(feature = "min-samd51n")]
-    Pc14(Pc14<PfG>),
+    (Pc18, PC18, AlternateF),
     #[cfg(feature = "min-samd51n")]
-    Pc15(Pc15<PfG>),
+    (Pc19, PC19, AlternateF),
+    #[cfg(feature = "min-samd51n")]
+    (Pc20, PC20, AlternateF),
+    #[cfg(feature = "min-samd51n")]
+    (Pc21, PC21, AlternateF),
     #[cfg(feature = "min-samd51p")]
-    Pb26(Pb26<PfF>),
+    (Pc4, PC04, AlternateF),
     #[cfg(feature = "min-samd51p")]
-    Pb27(Pb27<PfF>),
+    (Pc22, PC22, AlternateF),
     #[cfg(feature = "min-samd51p")]
-    Pb28(Pb28<PfF>),
+    (Pc23, PC23, AlternateF),
     #[cfg(feature = "min-samd51p")]
-    Pb29(Pb29<PfF>),
+    (Pd8, PD08, AlternateF),
     #[cfg(feature = "min-samd51p")]
-    Pd20(Pd20<PfF>),
+    (Pd9, PD09, AlternateF),
     #[cfg(feature = "min-samd51p")]
-    Pd21(Pd21<PfF>),
-}
+    (Pd10, PD10, AlternateF),
+    #[cfg(feature = "min-samd51p")]
+    (Pd11, PD11, AlternateF),
+    #[cfg(feature = "min-samd51p")]
+    (Pd12, PD12, AlternateF)
+]);
 
-pub enum TCC2Pinout {
-    Pa14(Pa14<PfF>),
-    Pa15(Pa15<PfF>),
-    Pa24(Pa24<PfF>),
-    Pa30(Pa30<PfF>),
-    Pa31(Pa31<PfF>),
-    Pb2(Pb2<PfF>),
-}
+impl_tcc_pinout!(TCC1Pinout: [
+    (Pa8, PA08, AlternateG),
+    (Pa9, PA09, AlternateG),
+    (Pa10, PA10, AlternateG),
+    (Pa11, PA11, AlternateG),
+    (Pa12, PA12, AlternateG),
+    (Pa13, PA13, AlternateG),
+    (Pa14, PA14, AlternateG),
+    (Pa15, PA15, AlternateG),
+    (Pa16, PA16, AlternateF),
+    (Pa17, PA17, AlternateF),
+    (Pa18, PA18, AlternateF),
+    (Pa19, PA19, AlternateF),
+    (Pa20, PA20, AlternateF),
+    (Pa21, PA21, AlternateF),
+    (Pa22, PA22, AlternateF),
+    (Pa23, PA23, AlternateF),
+    (Pb10, PB10, AlternateG),
+    (Pb11, PB11, AlternateG),
+    #[cfg(feature = "min-samd51n")]
+    (Pb18, PB18, AlternateF),
+    #[cfg(feature = "min-samd51n")]
+    (Pb19, PB19, AlternateF),
+    #[cfg(feature = "min-samd51n")]
+    (Pb20, PB20, AlternateF),
+    #[cfg(feature = "min-samd51n")]
+    (Pb21, PB21, AlternateF),
+    #[cfg(feature = "min-samd51n")]
+    (Pc10, PC10, AlternateG),
+    #[cfg(feature = "min-samd51n")]
+    (Pc11, PC11, AlternateG),
+    #[cfg(feature = "min-samd51n")]
+    (Pc12, PC12, AlternateG),
+    #[cfg(feature = "min-samd51n")]
+    (Pc13, PC13, AlternateG),
+    #[cfg(feature = "min-samd51n")]
+    (Pc14, PC14, AlternateG),
+    #[cfg(feature = "min-samd51n")]
+    (Pc15, PC15, AlternateG),
+    #[cfg(feature = "min-samd51p")]
+    (Pb26, PB26, AlternateF),
+    #[cfg(feature = "min-samd51p")]
+    (Pb27, PB27, AlternateF),
+    #[cfg(feature = "min-samd51p")]
+    (Pb28, PB28, AlternateF),
+    #[cfg(feature = "min-samd51p")]
+    (Pb29, PB29, AlternateF),
+    #[cfg(feature = "min-samd51p")]
+    (Pd20, PD20, AlternateF),
+    #[cfg(feature = "min-samd51p")]
+    (Pd21, PD21, AlternateF)
+]);
+
+impl_tcc_pinout!(TCC2Pinout: [
+    (Pa14, PA14, AlternateF),
+    (Pa15, PA15, AlternateF),
+    (Pa24, PA24, AlternateF),
+    (Pa30, PA30, AlternateF),
+    (Pa31, PA31, AlternateF),
+    (Pb2,  PB02, AlternateF)
+]);
 
 #[cfg(feature = "min-samd51j")]
-pub enum TCC3Pinout {
-    Pb12(Pb12<PfF>),
-    Pb13(Pb13<PfF>),
-    Pb16(Pb16<PfF>),
-    Pb17(Pb17<PfF>),
-}
+impl_tcc_pinout!(TCC3Pinout: [
+    (Pb12, PB12, AlternateF),
+    (Pb13, PB13, AlternateF),
+    (Pb16, PB16, AlternateF),
+    (Pb17, PB17, AlternateF)
+]);
 
 #[cfg(feature = "min-samd51j")]
-pub enum TCC4Pinout {
-    Pb14(Pb14<PfF>),
-    Pb15(Pb15<PfF>),
-    Pb30(Pb30<PfF>),
-    Pb31(Pb31<PfF>),
-}
+impl_tcc_pinout!(TCC4Pinout: [
+    (Pb14, PB14, AlternateF),
+    (Pb15, PB15, AlternateF),
+    (Pb30, PB30, AlternateF),
+    (Pb31, PB31, AlternateF)
+]);
 
 macro_rules! pwm_tcc {
     ($($TYPE:ident: ($TCC:ident, $pinout:ident, $clock:ident, $apmask:ident, $apbits:ident, $wrapper:ident),)+) => {
         $(
 
-pub struct $TYPE {
+pub struct $TYPE<I: PinId, M: PinMode> {
     /// The frequency of the attached clock, not the period of the pwm.
     /// Used to calculate the period of the pwm.
     clock_freq: Hertz,
     tcc: $TCC,
     #[allow(dead_code)]
-    pinout: $pinout,
+    pinout: $pinout<I, M>,
 }
 
-impl $TYPE {
+impl<I: PinId, M: PinMode> $TYPE<I, M> {
     pub fn new<F: Into<Hertz>> (
         clock: &clock::$clock,
         freq: F,
         tcc: $TCC,
-        pinout: $pinout,
+        pinout: $pinout<I, M>,
         mclk: &mut MCLK,
     ) -> Self {
         let freq = freq.into();
@@ -432,7 +486,7 @@ impl $TYPE {
     }
 }
 
-impl Pwm for $TYPE {
+impl<I: PinId, M: PinMode> Pwm for $TYPE<I, M> {
     type Channel = Channel;
     type Time = Hertz;
     type Duty = u32;
