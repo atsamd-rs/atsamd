@@ -376,7 +376,8 @@ where
 {
     /// Set the `DI` [`Pad`]
     ///
-    /// In a [`MasterMode`], this is MISO. In [`Slave`] [`OpMode`], this is MOSI.
+    /// In a [`MasterMode`], this is MISO. In [`Slave`] [`OpMode`], this is
+    /// MOSI.
     #[inline]
     pub fn data_in<Id>(self, pin: impl AnyPin<Id = Id>) -> Pads<S, I, Id, DO, CK, SS>
     where
@@ -395,7 +396,8 @@ where
 
     /// Set the `DO` [`Pad`]
     ///
-    /// In a [`MasterMode`], this is MOSI. In [`Slave`] [`OpMode`], this is MISO.
+    /// In a [`MasterMode`], this is MOSI. In [`Slave`] [`OpMode`], this is
+    /// MISO.
     #[inline]
     pub fn data_out<Id>(self, pin: impl AnyPin<Id = Id>) -> Pads<S, I, DI, Id, CK, SS>
     where
@@ -466,17 +468,17 @@ where
 /// optional. Each represents a corresponding type parameter of the `spi::Pads`
 /// type. Some of the types may be omitted, but any types that are specified,
 /// must be done in the order `DI`, `DO`, `CK` & `SS`.
-/// 
+///
 /// ```
 /// use atsamd_hal::pac::Peripherals;
 /// use atsamd_hal::spi_pads_from_pins;
 /// use atsamd_hal::gpio::v2::{Pin, PA08, PA09, AlternateC, Pins};
 /// use atsamd_hal::sercom::v2::{Sercom0, pad::IoSet1, spi};
-/// 
+///
 /// type Miso = Pin<PA08, AlternateC>;
 /// type Sclk = Pin<PA09, AlternateC>;
 /// pub type Pads = spi_pads_from_pins!(Sercom0, IoSet1, DI = Miso, CK = Sclk);
-/// 
+///
 /// pub fn test() -> Pads {
 ///     let peripherals = Peripherals::take().unwrap();
 ///     let pins = Pins::new(peripherals.PORT);

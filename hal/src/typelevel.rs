@@ -174,8 +174,8 @@
 //! corresponding type. However, we don't need to "store" a type in the same way
 //! we store values. The compiler is responsible for tracking the concrete type
 //! for each type parameter. But the language still requires us to act as if we
-//! used each type parameter. `PhantomData` is the solution here, because it lets
-//! us make use of the type parameters without actually storing any values.
+//! used each type parameter. `PhantomData` is the solution here, because it
+//! lets us make use of the type parameters without actually storing any values.
 //!
 //! Separately, `PhantomData` also allows us to create "instances" of types that
 //! normally can't be instantiated, like empty enums. For example, instances of
@@ -241,7 +241,6 @@
 //! impl Not for False {
 //!     type Result = True;
 //! }
-//!
 //! ```
 //!
 //! We can use the `Not` trait bound to transform one type to another. For
@@ -255,7 +254,7 @@
 //! ```
 //!
 //! Alternatively, we could redefine the trait and declar a corresponding type
-//! alias as 
+//! alias as
 //!
 //! ```
 //! trait NotFunction: Bool {
@@ -474,14 +473,14 @@
 //! {
 //!     type Type;
 //! }
-//! 
+//!
 //! type IsType<T> = <T as Is>::Type;
-//! 
+//!
 //! impl<T: AsRef<T> + AsMut<T>> Is for T {
 //!     type Type = T;
 //! }
 //! ```
-//! 
+//!
 //! And we can rewrite our `AnyPin` trait as
 //!
 //! ```
@@ -509,7 +508,7 @@
 //!     pin2: Pin<I2, M2>,
 //! }
 //! ```
-//! 
+//!
 //! This struct has already ballooned to four type parameters, without even
 //! doing much useful work. Given its heavy use of type parameters, this
 //! limitation can make type-level programming tedious, cumbersome and
@@ -690,6 +689,10 @@ where
 #[macro_export]
 #[doc(hidden)]
 macro_rules! __opt_type {
-    () => { $crate::typelevel::NoneT };
-    ($Type:ty) => { $Type };
+    () => {
+        $crate::typelevel::NoneT
+    };
+    ($Type:ty) => {
+        $Type
+    };
 }

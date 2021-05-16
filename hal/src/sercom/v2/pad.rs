@@ -41,8 +41,9 @@
 //! let pa08 = pad0.free();
 //! let pa09: Pin<_, _> = pad1.into();
 //! ```
-//!
-#![cfg_attr(feature = "min-samd51g", doc = "
+#![cfg_attr(
+    feature = "min-samd51g",
+    doc = "
 # IOSET\n
 \n
 SAMx5x chips do not allow arbitrary combinations of `PinId` for a given
@@ -51,7 +52,8 @@ defines a [type-level enum], [`IoSet`], to enforce this restriction. The
 [`InIoSet`] [type class] is responsible for labeling each `Pad` type with
 its corresponding, valid `IoSet`\\(s).\n
 \n
-")]
+"
+)]
 //! # Type-level enforcement
 //!
 //! This module also provides additional, type-level tools to enforce the
@@ -120,7 +122,6 @@ use crate::typelevel::{Is, NoneT, Sealed};
 ///
 /// [type-level enum]: crate::typelevel#type-level-enum
 pub trait PadNum: Sealed {}
-
 
 seq!(N in 0..=3 {
     paste! {

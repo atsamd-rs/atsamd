@@ -287,10 +287,7 @@ pub fn uart<F: Into<Hertz>>(
         baud.into(),
         sercom5,
         pm,
-        (
-            rx.into(),
-            tx.into()
-        ),
+        (rx.into(), tx.into()),
     )
 }
 

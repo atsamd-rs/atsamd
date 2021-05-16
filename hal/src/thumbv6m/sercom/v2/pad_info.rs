@@ -84,7 +84,6 @@ macro_rules! pad_table {
     };
 }
 
-
 pad_table!(
     #[cfg(feature = "samd21")]
     PA00 {
