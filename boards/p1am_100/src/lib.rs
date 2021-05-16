@@ -14,11 +14,10 @@ pub use hal::common::*;
 
 pub use hal::target_device as pac;
 
-use gpio::v2::AnyPin;
-use gpio::Port;
 use hal::clock::GenericClockController;
-use hal::sercom::v2::spi;
-use hal::sercom::{I2CMaster0, PadPin, UART5};
+use hal::sercom::v2::pad::PinToPad;
+use hal::sercom::v2::{spi, Sercom0};
+use hal::sercom::{I2CMaster0, UART5};
 use hal::time::Hertz;
 
 #[cfg(feature = "usb")]
@@ -217,7 +216,7 @@ pub fn base_controller_spi(
 ) -> sercom::v2::spi::Spi<impl spi::ValidConfig> {
     let gclk0 = &clocks.gclk0();
     let core_clock = &clocks.sercom1_core(&gclk0).unwrap();
-    let pads = spi::Pads::new().sclk(sck).data_in(miso).data_out(mosi);
+    let pads = spi::Pads::default().sclk(sck).data_in(miso).data_out(mosi);
     spi::Config::new(pm, sercom1, pads, core_clock.freq())
         .baud(BASE_CONTROLLER_FREQ)
         .spi_mode(BASE_CONTROLLER_SPI_MODE)
@@ -239,7 +238,7 @@ pub fn sdmmc_spi<F: Into<Hertz>>(
 ) -> sercom::v2::spi::Spi<impl spi::ValidConfig> {
     let gclk0 = &clocks.gclk0();
     let core_clock = &clocks.sercom4_core(&gclk0).unwrap();
-    let pads = spi::Pads::new().sclk(sck).data_in(miso).data_out(mosi);
+    let pads = spi::Pads::default().sclk(sck).data_in(miso).data_out(mosi);
     spi::Config::new(pm, sercom4, pads, core_clock.freq())
         .baud(bus_speed)
         .enable()
@@ -254,7 +253,6 @@ pub fn i2c_master<F: Into<Hertz>>(
     pm: &mut pac::PM,
     sda: Sda,
     scl: Scl,
-    port: &mut Port,
 ) -> I2CMaster0<
     impl hal::sercom::AnyPad<Sercom = pac::SERCOM0>,
     impl hal::sercom::AnyPad<Sercom = pac::SERCOM0>,
@@ -265,17 +263,12 @@ pub fn i2c_master<F: Into<Hertz>>(
         bus_speed.into(),
         sercom0,
         pm,
-        <hal::gpio::v1::Pin<_, _>>::from(sda).into_pad(port),
-        <hal::gpio::v1::Pin<_, _>>::from(scl).into_pad(port),
+        hal::sercom::v2::Pad::<Sercom0, _, _>::from(sda),
+        hal::sercom::v2::Pad::<Sercom0, _, _>::from(scl),
     )
 }
 
-pub type Uart = UART5<
-    hal::sercom::Sercom5Pad3<<UartRx as AnyPin>::Id>,
-    hal::sercom::Sercom5Pad2<<UartTx as AnyPin>::Id>,
-    (),
-    (),
->;
+pub type Uart = UART5<PinToPad<UartRx>, PinToPad<UartTx>, (), ()>;
 
 /// Convenience for setting up the labelled RX, TX pins to
 /// operate as a UART device running at the specified baud.
@@ -294,7 +287,10 @@ pub fn uart<F: Into<Hertz>>(
         baud.into(),
         sercom5,
         pm,
-        (rx.into(), tx.into()),
+        (
+            rx.into(),
+            tx.into()
+        ),
     )
 }
 

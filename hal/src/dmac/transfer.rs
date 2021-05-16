@@ -94,7 +94,6 @@ use super::{
     BlockTransferControl, DmacDescriptor, DESCRIPTOR_SECTION,
 };
 use crate::typelevel::{Is, Sealed};
-use core::mem;
 use core::sync::atomic;
 use modular_bitfield::prelude::*;
 
@@ -267,19 +266,25 @@ where
     type Dst = D;
 }
 
-impl<B: AnyBufferPair> AsRef<B> for SpecificBufferPair<B> {
+impl<S, D> AsRef<Self> for BufferPair<S, D>
+where
+    S: Buffer,
+    D: Buffer<Beat = S::Beat>,
+{
     #[inline]
-    fn as_ref(&self) -> &B {
-        // SAFETY: This is guaranteed to be safe, because B == SpecificBufferPair<B>
-        unsafe { mem::transmute(self) }
+    fn as_ref(&self) -> &Self {
+        self
     }
 }
 
-impl<B: AnyBufferPair> AsMut<B> for SpecificBufferPair<B> {
+impl<S, D> AsMut<Self> for BufferPair<S, D>
+where
+    S: Buffer,
+    D: Buffer<Beat = S::Beat>,
+{
     #[inline]
-    fn as_mut(&mut self) -> &mut B {
-        // SAFETY: This is guaranteed to be safe, because B == SpecificBufferPair<B>
-        unsafe { mem::transmute(self) }
+    fn as_mut(&mut self) -> &mut Self {
+        self
     }
 }
 
@@ -354,7 +359,7 @@ where
         mut destination: D,
         circular: bool,
     ) -> Transfer<C, BufferPair<S, D>> {
-        let id = <C as AnyChannel>::Id::USIZE;
+        let id = ChannelId::<C>::USIZE;
 
         // Enable support for circular transfers. If circular_xfer is true,
         // we set the address of the "next" block descriptor to actually

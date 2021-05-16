@@ -8,7 +8,6 @@
 //! peripheral function mode they are routed to the sercom pad.
 
 pub mod i2c;
-pub mod pad_map;
 pub mod spi;
 pub mod uart;
 

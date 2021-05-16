@@ -1,7 +1,7 @@
 //! # Version 2 of the SERCOM module
 //!
 //! This module provides a new API for the SERCOM peripherals. So far, only the
-//! [`pads`] and [`spi`] modules have been updated, but it is expected that the
+//! [`pad`] and [`spi`] modules have been updated, but it is expected that the
 //! `uart`, and `i2c` modules will eventually receive updates as well.
 
 use core::ops::Deref;
@@ -32,7 +32,9 @@ pub use crate::common::thumbv7em::sercom::v2::*;
 
 use crate::typelevel::Sealed;
 
-pub mod pads;
+pub mod pad;
+pub use pad::*;
+
 pub mod spi_future;
 
 //==============================================================================

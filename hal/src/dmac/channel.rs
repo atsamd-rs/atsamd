@@ -36,7 +36,7 @@ use crate::{
     target_device::DMAC,
     typelevel::{Is, Sealed},
 };
-use core::{marker::PhantomData, mem};
+use core::marker::PhantomData;
 
 #[cfg(feature = "min-samd51g")]
 use super::dma_controller::{BurstLength, FifoThreshold};
@@ -91,19 +91,25 @@ where
     type Status = S;
 }
 
-impl<C: AnyChannel> AsRef<C> for SpecificChannel<C> {
+impl<Id, S> AsRef<Self> for Channel<Id, S>
+where
+    Id: ChId,
+    S: Status,
+{
     #[inline]
-    fn as_ref(&self) -> &C {
-        // SAFETY: This is guaranteed to be safe, because C == SpecificChannel<C>
-        unsafe { mem::transmute(self) }
+    fn as_ref(&self) -> &Self {
+        self
     }
 }
 
-impl<C: AnyChannel> AsMut<C> for SpecificChannel<C> {
+impl<Id, S> AsMut<Self> for Channel<Id, S>
+where
+    Id: ChId,
+    S: Status,
+{
     #[inline]
-    fn as_mut(&mut self) -> &mut C {
-        // SAFETY: This is guaranteed to be safe, because C == SpecificChannel<C>
-        unsafe { mem::transmute(self) }
+    fn as_mut(&mut self) -> &mut Self {
+        self
     }
 }
 

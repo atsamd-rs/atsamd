@@ -326,8 +326,6 @@ where
 /// By definition, `P == SpecificPin<P>` for all `P: AnyPin`.
 pub type SpecificPin<P> = Pin<<P as AnyPin>::Id, <P as AnyPin>::Mode>;
 
-/// Implementation required to satisfy the `Is<Type = SpecificPin<Self>>` bound
-/// on [`AnyPin`]
 impl<P: AnyPin> AsRef<P> for SpecificPin<P> {
     #[inline]
     fn as_ref(&self) -> &P {
@@ -339,8 +337,6 @@ impl<P: AnyPin> AsRef<P> for SpecificPin<P> {
     }
 }
 
-/// Implementation required to satisfy the `Is<Type = SpecificPin<Self>>` bound
-/// on [`AnyPin`]
 impl<P: AnyPin> AsMut<P> for SpecificPin<P> {
     #[inline]
     fn as_mut(&mut self) -> &mut P {

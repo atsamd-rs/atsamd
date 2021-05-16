@@ -1,67 +1,89 @@
 //! Use the SERCOM peripheral for SPI transactions
 //!
-//! Configuring the SPI peripheral occurs in three steps. First, you must create
+//! Configuring an SPI peripheral occurs in three steps. First, you must create
 //! a set of [`Pads`] for use by the peripheral. Next, you assemble pieces into
 //! a [`Config`] struct. After configuring the peripheral, you then [`enable`]
 //! it, yielding a functional [`Spi`] struct. Transactions are performed using
-//! [`spi`](embedded_hal::spi) and [`serial`](embedded_hal::serial) traits from
-//! embedded HAL.
+//! the [`spi`](embedded_hal::spi) and [`serial`](embedded_hal::serial) traits
+//! from embedded HAL.
 //!
 //! # [`Pads`]
 //!
 //! A [`Sercom`] can use up to four [`Pin`]s as peripheral [`Pad`]s, but only
-//! certain [`Pin`] combinations are acceptable. In particular, all [`Pin`]s
-//! must be mapped to the same [`Sercom`] and [`IoSet`] (see section 6.2.8.1 of
-//! the datasheet).
+//! certain `Pin` combinations are acceptable. In particular, all `Pin`s must be
+//! mapped to the same `Sercom` and [`IoSet`] (see section 6.2.8.1 of the
+//! datasheet). This HAL makes it impossible to use invalid `Pin`/`Pad`
+//! combinations, and the [`Pads`] struct is responsible for enforcing these
+//! constraints.
 //!
-//! This HAL makes it impossible to use invalid [`Pin`]/[`Pad`] combinations.
-//! The [`Pads`] struct is responsible for enforcing these constraints. To
-//! create a set of [`Pads`], start by specifying the [`Sercom`] and [`IoSet`].
+//! A `Pads` type takes up to six type parameters. The first two specify the
+//! `Sercom` and `IoSet`. The remaining four, `DI`, `DO`, `CK` and `SS`, are
+//! effectively [`OptionalPinId`]s for the Data In, Data Out, Sclk and SS `Pad`s
+//! respectively, and each defaults to [`NoneT`]. To be accepted as part of a
+//! [`ValidConfig`], you must specify a `PinId` for `CK` and at least one of
+//! `DI` or `DO`.
 //!
 //! ```
-//! use atsamd_hal::sercom::v2::{Sercom0, pads::IoSet1, spi};
+//! use atsamd_hal::gpio::v2::{PA08, PA09};
+//! use atsamd_hal::sercom::v2::{Sercom0, spi};
+//! use atsamd_hal::sercom::v2::pad::IoSet1;
+//! use atsamd_hal::typelevel::NoneT;
 //!
-//! let pads = spi::Pads::<Sercom0, IoSet1>::new();
+//! type Pads = spi::Pads<Sercom0, IoSet1, PA08, NoneT, PA09>;
 //! ```
 //!
-//! Next, specify the [`Pin`]s and their corresponding [`PadNum`]s, when
-//! necessary. Both `v1` and `v2` pin types are accepted here. The SCLK and SS
-//! signals always use [`Pad1`] and [`Pad2`] respectively, but the Data In and
-//! Data Out [`Pad`]s can change [`PadNum`], based on the [`Dipo`] and [`Dopo`]
-//! configuration. The [`Pads`] struct enforces that the [`Pin`] type matches
-//! the specified [`Sercom`], [`PadNum`], and [`IoSet`].
+//! `Pads` are created using the builder pattern. Start by creating an empty set
+//! of `Pads` using [`Default`]. Then pass each respective `Pin` using the
+//! corresponding methods. Both `v1::Pin` and `v2::Pin` types are accepted here.
+//! Note that the `CK` `Pin` must map to [`Pad1`], and if specified, the `SS`
+//! `Pin` must map to [`Pad2`]. The `DI` and `DO` `Pin`s can vary in [`PadNum`]
+//! based on the [`Dipo`] and [`Dopo`] values.
 //!
 //! ```
 //! use atsamd_hal::target_device::Peripherals;
 //! use atsamd_hal::gpio::v2::Pins;
 //! use atsamd_hal::sercom::v2::{Sercom0, spi};
-//! use atsamd_hal::sercom::v2::pads::{IoSet1, Pad0, Pad3};
+//! use atsamd_hal::sercom::v2::pad::IoSet1;
 //!
 //! let mut peripherals = Peripherals::take().unwrap();
 //! let pins = Pins::new(peripherals.PORT);
-//! let pads = spi::Pads::<Sercom0, IoSet1>::new()
+//! let pads = spi::Pads::<Sercom0, IoSet1>::default()
 //!     .sclk(pins.pa09)
-//!     .data_in::<Pad0, _>(pins.pa08)
-//!     .data_out::<Pad3, _>(pins.pa11);
+//!     .data_in(pins.pa08)
+//!     .data_out(pins.pa11);
 //! ```
-//!
-//! Not every [`Pad`] must be specified. Each [`Pad`] within a set of [`Pads`]
-//! is actually an [`OptionalPad`]. If a [`Pad`] is unused, it can be left as
-//! [`NoneT`]. However, if they are ever going to be used for transactions, the
-//! [`Pads`] must satisfy the requirements specified for a [`ValidConfig`].
-//!
-//! Sometimes it is necessary to specify the full [`Pads`] type, e.g. in
-//! `static` variables. In these cases, the [`pads_alias`] macro can help
-//! simplify the declaration.
 //!
 //! # [`Config`]
 //!
-//! Use the [`Pads`] struct to create a [`Config`] struct, which represents the
-//! SPI peripheral in its disabled state. The [`Config`] takes ownership of both
-//! the [`Pads`] and the PAC [`Sercom`] struct. It also takes a reference to the
-//! MCLK, so that it can enable the APB clock, and a frequency to indicate the
-//! GCLK configuration. Users are responsible for correctly configuring the
-//! GCLK.
+//! Next, create a [`Config`] struct, which represents the SPI peripheral in its
+//! disabled state. A `Config` is specified with three type parameters: the
+//! [`Pads`] type; an [`OpMode`], which defaults to [`Master`]; and a
+//! transaction [`Length`], in bytes, represented at the type level using the
+//! [`typenum`] crate. Valid transaction lengths are provided in the [`lengths`]
+//! sub-module. The default `Length` is [`U1`].
+//!
+//! ```
+//! use atsamd_hal::gpio::v2::{PA08, PA09};
+//! use atsamd_hal::sercom::v2::{Sercom0, spi};
+//! use atsamd_hal::sercom::v2::spi::{Master, lengths::U2};
+//! use atsamd_hal::sercom::v2::pad::IoSet1;
+//! use atsamd_hal::typelevel::NoneT;
+//!
+//! type Pads = spi::Pads<Sercom0, IoSet1, PA08, NoneT, PA09>;
+//! type Config = spi::Config<Pads, Master, U2>;
+//! ```
+//!
+//! The SPI peripheral has two different ways to control the transaction length,
+//! the character size and the length counter. The character size can be set to
+//! 8-bit or 9-bit transactions. The length counter can be set to produce
+//! transactions of any length from 1-255 *bytes*. For simplicity, this module
+//! ignores character size. Instead, the SPI peripheral is always configured to
+//! use 32-bit extension mode and the length counter.
+//!
+//! Upon creation, the [`Config`] takes ownership of both the [`Pads`] and the
+//! PAC [`Sercom`] struct. It takes a reference to the MCLK, so that it can
+//! enable the APB clock, and it takes a frequency to indicate the GCLK
+//! configuration. Users are responsible for correctly configuring the GCLK.
 //!
 //! ```
 //! use atsamd_hal::time::U32Ext;
@@ -72,18 +94,6 @@
 //! let freq = 10.mhz();
 //! let config = spi::Config::new(&mclk, sercom, pads, freq);
 //! ```
-//!
-//! The SPI peripheral has two different ways to control the transaction length,
-//! the character size and the length counter. The character size can be set to
-//! 8-bit or 9-bit transactions. The length counter can be set to produce
-//! transactions of any length from 1-255 bytes. For simplicity, this module
-//! ignores character size. Instead, the SPI peripheral is always configured to
-//! use 32-bit extension mode and the length counter.
-//!
-//! By default, the peripheral is set to use [`Master`] [`Mode`] with a
-//! transaction [`Length`] of one byte. Transaction [`Length`]s are specified at
-//! the type level using the [`typenum`] crate. The usable lengths, [`U1`] to
-//! [`U255`], are re-exported in the [`lengths`] submodule.
 //!
 //! The [`Config`] struct uses the builder pattern to configure the peripheral,
 //! ending with a call to [`enable`], which consumes the [`Config`] and returns
@@ -102,10 +112,26 @@
 //!
 //! # [`Spi`]
 //!
-//! Only the [`Spi`] struct can actually perform transactions. To do so, use the
-//! embedded HAL traits, like [`FullDuplex`], [`Read`] and [`Write`]. See the
-//! [`Spi`] documentation for more information about the trait implementations,
-//! which vary based on the transaction [`Length`] and [`Pads`]. For instance,
+//! An [`Spi`] struct can only be created from a [`Config`], and it has only one
+//! type parameter, the corresponding config.
+//!
+//! ```
+//! use atsamd_hal::gpio::v2::{PA08, PA09};
+//! use atsamd_hal::sercom::v2::{Sercom0, spi};
+//! use atsamd_hal::sercom::v2::spi::{Master, lengths::U2};
+//! use atsamd_hal::sercom::v2::pad::IoSet1;
+//! use atsamd_hal::typelevel::NoneT;
+//!
+//! type Pads = spi::Pads<Sercom0, IoSet1, PA08, NoneT, PA09>;
+//! type Config = spi::Config<Pads, Master, U2>;
+//! type Spi = spi::Spi<Config>;
+//! ```
+//!
+//! Only [`Spi`]s struct can actually perform transactions. To do so, use the
+//! embedded HAL traits, like [`spi::FullDuplex`](FullDuplex),
+//! [`serial::Read`](Read) and [`serial::Write`](Write). See the [`Spi`]
+//! documentation for more information about the trait implementations, which
+//! vary based on the transaction [`Length`] and [`Pads`]. For instance,
 //! [`FullDuplex`] is only implemented if the [`Pads`] are both [`Tx`] and
 //! [`Rx`] and if the transaction [`Length`] is less than [`U4`].
 //!
@@ -119,11 +145,10 @@
 //!
 //! [`enable`]: Config::enable
 //! [`Pin`]: crate::gpio::v2::pin::Pin
-//! [`U255`]: typenum::U255
+//! [`OptionalPinId`]: crate::gpio::v2::pin::OptionalPinId
 
 use core::convert::{TryFrom, TryInto};
 use core::marker::PhantomData;
-use core::mem::transmute;
 
 use bitflags::bitflags;
 use embedded_hal::blocking;
@@ -132,7 +157,6 @@ use embedded_hal::spi::{self, FullDuplex};
 pub use embedded_hal::spi::{Phase, Polarity, MODE_0, MODE_1, MODE_2, MODE_3};
 use nb::Error::WouldBlock;
 use num_traits::{AsPrimitive, PrimInt};
-use paste::paste;
 use seq_macro::seq;
 use typenum::{Unsigned, U0, U1, U2, U3, U4};
 
@@ -141,10 +165,8 @@ use pac::sercom0::spim::ctrla::{CPHA_A, CPOL_A, DIPO_A, DOPO_A, DORD_A, MODE_A};
 use pac::sercom0::RegisterBlock;
 use pac::MCLK;
 
-use crate::gpio::v2::{AnyPin, SpecificPin};
-use crate::sercom::v2::pads::{IoSet, Map, Pad0, Pad1, Pad2, Pad3, PadNum};
-use crate::sercom::v2::pads::{OptionalPad, Pad, SomePad};
-use crate::sercom::v2::Sercom;
+use crate::gpio::v2::AnyPin;
+use crate::sercom::v2::*;
 use crate::time::Hertz;
 use crate::typelevel::{Is, NoneT, Sealed};
 
@@ -160,172 +182,180 @@ pub mod lengths {
 }
 
 //=============================================================================
-// Pad configuration
+// Dipo
 //=============================================================================
 
-macro_rules! define_pad_config_traits {
-    ( $( $name:ident),+ ) => {
-        paste! {
-            $(
-                #[doc = "Control the `" $name:upper "` field as a function of the [`PadNum`] type"]
-                pub trait [<$name:camel>]: Sealed {
-                    /// Corresponding variant from the PAC `enum`
-                    const VARIANT: [<$name:upper _A>];
-                    /// Configure the pad according to [`Self::VARIANT`]
-                    #[inline]
-                    fn configure(sercom: &RegisterBlock) {
-                        sercom.spim().ctrla.modify(|_, w|
-                            w.[<$name:lower>]().variant(Self::VARIANT)
-                        );
-                    }
-                }
-            )+
-        }
-    };
-}
+/// Control the `DIPO` field as a function of the [`PadNum`] type
+pub trait Dipo: Sealed {
+    /// Corresponding variant from the PAC `enum`
+    const DIPO: DIPO_A;
 
-define_pad_config_traits!(dipo, dopo);
-
-impl Dipo for Pad0 {
-    const VARIANT: DIPO_A = DIPO_A::PAD0;
-}
-impl Dipo for Pad1 {
-    const VARIANT: DIPO_A = DIPO_A::PAD1;
-}
-impl Dipo for Pad2 {
-    const VARIANT: DIPO_A = DIPO_A::PAD2;
-}
-impl Dipo for Pad3 {
-    const VARIANT: DIPO_A = DIPO_A::PAD3;
-}
-
-/// Implement [`Dipo`] for each [`Pad`] based on its [`PadNum`]
-impl<S, P, I> Dipo for Pad<S, P, I>
-where
-    S: Sercom,
-    P: PadNum + Dipo,
-    I: IoSet + Map<S, P>,
-{
-    const VARIANT: DIPO_A = P::VARIANT;
+    /// Configure the pad according to [`Self::DIPO`]
     #[inline]
     fn configure(sercom: &RegisterBlock) {
-        P::configure(sercom)
+        sercom
+            .spim()
+            .ctrla
+            .modify(|_, w| w.dipo().variant(Self::DIPO));
     }
 }
 
-/// Implement [`Dipo`] for [`NoneT`] to allow [`OptionalPad`]s
+impl Dipo for Pad0 {
+    const DIPO: DIPO_A = DIPO_A::PAD0;
+}
+impl Dipo for Pad1 {
+    const DIPO: DIPO_A = DIPO_A::PAD1;
+}
+impl Dipo for Pad2 {
+    const DIPO: DIPO_A = DIPO_A::PAD2;
+}
+impl Dipo for Pad3 {
+    const DIPO: DIPO_A = DIPO_A::PAD3;
+}
+
 impl Dipo for NoneT {
     /// This value is arbitrary and meaningless for [`NoneT`]
-    const VARIANT: DIPO_A = DIPO_A::PAD0;
+    const DIPO: DIPO_A = DIPO_A::PAD0;
 
     /// Override the default implementation to do nothing
     fn configure(_: &RegisterBlock) {}
+}
+
+/// Lift the implementations of [`Dipo`] from [`OptionalPadNum`]s to the
+/// corresponding [`Pads`] types.
+impl<S, I, DI, DO, CK, SS> Dipo for Pads<S, I, DI, DO, CK, SS>
+where
+    S: Sercom,
+    I: IoSet,
+    DI: GetOptionalPad<S>,
+    DO: GetOptionalPad<S>,
+    CK: GetOptionalPad<S>,
+    SS: GetOptionalPad<S>,
+    DI::PadNum: Dipo,
+{
+    const DIPO: DIPO_A = DI::PadNum::DIPO;
+}
+
+//=============================================================================
+// Dopo
+//=============================================================================
+
+/// Control the `DOPO` field as a function of the [`PadNum`] type
+pub trait Dopo: Sealed {
+    /// Corresponding variant from the PAC `enum`
+    const DOPO: DOPO_A;
+
+    /// Configure the pad according to [`Self::DOPO`]
+    #[inline]
+    fn configure(sercom: &RegisterBlock) {
+        sercom
+            .spim()
+            .ctrla
+            .modify(|_, w| w.dopo().variant(Self::DOPO));
+    }
 }
 
 impl Dopo for Pad0 {
-    const VARIANT: DOPO_A = DOPO_A::PAD0;
+    const DOPO: DOPO_A = DOPO_A::PAD0;
 }
 impl Dopo for Pad3 {
-    const VARIANT: DOPO_A = DOPO_A::PAD2;
+    const DOPO: DOPO_A = DOPO_A::PAD2;
 }
 
-/// Implement [`Dopo`] for each [`Pad`] based on its [`PadNum`]
-impl<S, P, I> Dopo for Pad<S, P, I>
-where
-    S: Sercom,
-    P: PadNum + Dopo,
-    I: IoSet + Map<S, P>,
-{
-    const VARIANT: DOPO_A = P::VARIANT;
-
-    #[inline]
-    fn configure(sercom: &RegisterBlock) {
-        P::configure(sercom)
-    }
-}
-
-/// Implement [`Dopo`] for [`NoneT`] to allow [`OptionalPad`]s
 impl Dopo for NoneT {
     /// This value is arbitrary and meaningless for [`NoneT`]
-    const VARIANT: DOPO_A = DOPO_A::PAD0;
+    const DOPO: DOPO_A = DOPO_A::PAD0;
 
     /// Override the default implementation to do nothing
     fn configure(_: &RegisterBlock) {}
+}
+
+/// Lift the implementations of [`Dopo`] from [`OptionalPadNum`]s to the
+/// corresponding [`Pads`] types.
+impl<S, I, DI, DO, CK, SS> Dopo for Pads<S, I, DI, DO, CK, SS>
+where
+    S: Sercom,
+    I: IoSet,
+    DI: GetOptionalPad<S>,
+    DO: GetOptionalPad<S>,
+    CK: GetOptionalPad<S>,
+    SS: GetOptionalPad<S>,
+    DO::PadNum: Dopo,
+{
+    const DOPO: DOPO_A = DO::PadNum::DOPO;
 }
 
 //=============================================================================
 // Pads
 //=============================================================================
 
-/// Encapsulate the set of pads for an SPI peripheral
+/// Container for a set of SERCOM [`Pad`]s
 ///
-/// This struct acts to encapsulate up to four [`Pad`]s for use with an SPI
-/// peripheral. All of the [`Pad`]s must share the same [`Sercom`] and
-/// [`IoSet`]. The four type parameters `DI`, `DO`, `CK` and `SS` represent the
-/// respective DI, DO, SCK and SS [`Pad`] types.
+/// A [`Sercom`] can use up to four [`Pin`]s as peripheral [`Pad`]s, but only
+/// certain `Pin` combinations are acceptable. In particular, all `Pin`s must be
+/// mapped to the same `Sercom` and [`IoSet`] (see section 6.2.8.1 of the
+/// datasheet). This HAL makes it impossible to use invalid `Pin`/`Pad`
+/// combinations, and the `Pads` struct is responsible for enforcing these
+/// constraints.
 ///
-/// Each pad in this struct is an [`OptionalPad`]. When first initialized, each
-/// pad is set to [`NoneT`]. Individual pads are set using a builder-pattern
-/// API. Both `v1` and `v2` pin types are accepted. The `CK` and `SS` pads are
-/// always constrained to be [`Pad1`] and [`Pad2`] respectively, while the `DI`
-/// and `DO` pads can vary, based on the [`Dipo`] and [`Dopo`] configuration.
-/// Consequently, the [`data_in`] and [`data_out`] methods take a [`PadNum`] as
-/// a type parameter.
+/// A `Pads` type takes up to six type parameters. The first two specify the
+/// `Sercom` and `IoSet`. The remaining four, `DI`, `DO`, `CK` and `SS`, are
+/// effectively [`OptionalPinId`]s for the Data In, Data Out, Sclk and SS `Pad`s
+/// respectively, and each defaults to [`NoneT`]. To be accepted as part of a
+/// [`ValidConfig`], you must specify a `PinId` for `CK` and at least one of
+/// `DI` or `DO`.
 ///
-/// ```no_run
-/// # use atsamd_hal::target_device::Peripherals;
-/// # use atsamd_hal::gpio::v2::Pins;
-/// # use atsamd_hal::sercom::v2::Sercom4;
-/// # use atsamd_hal::sercom::v2::pads::{IoSet2, Pad0, Pad3};
-/// # use atsamd_hal::sercom::v2::spi;
-/// let mut peripherals = Peripherals::take().unwrap();
-/// let pins = Pins::new(peripherals.PORT);
-/// let pads = spi::Pads::<Sercom4, IoSet2>::new()
-///     .sclk(pins.pb09)
-///     .data_in::<Pad0, _>(pins.pb08)
-///     .data_out::<Pad3, _>(pins.pb11);
+/// ```
+/// use atsamd_hal::gpio::v2::{PA08, PA09};
+/// use atsamd_hal::sercom::v2::{Sercom0, spi};
+/// use atsamd_hal::sercom::v2::pad::IoSet1;
+/// use atsamd_hal::typelevel::NoneT;
+///
+/// type Pads = spi::Pads<Sercom0, IoSet1, PA08, NoneT, PA09>;
 /// ```
 ///
-/// The [`Map`] trait enforces that all [`Pad`]s have the same [`Sercom`] and
-/// [`IoSet`], and that each [`Pad`] uses the correct [`Pin`].
+/// `Pads` are created using the builder pattern. Start by creating an empty set
+/// of `Pads` using [`Default`]. Then pass each respective `Pin` using the
+/// corresponding methods. Both `v1::Pin` and `v2::Pin` types are accepted here.
+/// Note that the `CK` `Pin` must map to [`Pad1`], and if specified, the `SS`
+/// `Pin` must map to [`Pad2`]. The `DI` and `DO` `Pin`s can vary in [`PadNum`]
+/// based on the [`Dipo`] and [`Dopo`] values.
 ///
-/// Keep in mind that the language used here is from the perspective of the
-/// chip, regardless of [`Mode`]. When used in a [`MasterMode`], [`data_in`]
-/// sets the MISO pad, but in [`Slave`] [`Mode`], it sets the MOSI pad.
+/// ```
+/// use atsamd_hal::target_device::Peripherals;
+/// use atsamd_hal::gpio::v2::Pins;
+/// use atsamd_hal::sercom::v2::{Sercom0, spi};
+/// use atsamd_hal::sercom::v2::pad::IoSet1;
 ///
-/// The [`Tx`], [`Rx`], [`NotTx`], [`NotRx`] and [`TxOrRx`] marker traits are
-/// implemented only for [`Pad`] combinations reflecting each trait's name.
-/// Again, the labels here are always from the chips perspective, regardless of
-/// [`Mode`].
+/// let mut peripherals = Peripherals::take().unwrap();
+/// let pins = Pins::new(peripherals.PORT);
+/// let pads = spi::Pads::<Sercom0, IoSet1>::default()
+///     .sclk(pins.pa09)
+///     .data_in(pins.pa08)
+///     .data_out(pins.pa11);
+/// ```
 ///
 /// [`Pin`]: crate::gpio::v2::pin::Pin
-/// [`data_in`]: Pads::data_in
-/// [`data_out`]: Pads::data_out
+/// [`OptionalPinId`]: crate::gpio::v2::pin::OptionalPinId
 pub struct Pads<S, I, DI = NoneT, DO = NoneT, CK = NoneT, SS = NoneT>
 where
     S: Sercom,
     I: IoSet,
-    DI: OptionalPad + Dipo,
-    DO: OptionalPad + Dopo,
-    CK: OptionalPad,
-    SS: OptionalPad,
+    DI: GetOptionalPad<S>,
+    DO: GetOptionalPad<S>,
+    CK: GetOptionalPad<S>,
+    SS: GetOptionalPad<S>,
 {
-    sercom: PhantomData<S>,
     ioset: PhantomData<I>,
-    data_in: DI,
-    data_out: DO,
-    sclk: CK,
-    ss: SS,
+    data_in: DI::Pad,
+    data_out: DO::Pad,
+    sclk: CK::Pad,
+    ss: SS::Pad,
 }
 
-impl<S: Sercom, I: IoSet> Pads<S, I> {
-    /// Create a new [`Pads`] struct
-    ///
-    /// All of the pads are initialized to [`NoneT`]
-    #[inline]
-    pub fn new() -> Pads<S, I> {
-        Pads {
-            sercom: PhantomData,
+impl<S: Sercom, I: IoSet> Default for Pads<S, I> {
+    fn default() -> Self {
+        Self {
             ioset: PhantomData,
             data_in: NoneT,
             data_out: NoneT,
@@ -339,48 +369,44 @@ impl<S, I, DI, DO, CK, SS> Pads<S, I, DI, DO, CK, SS>
 where
     S: Sercom,
     I: IoSet,
-    DI: OptionalPad + Dipo,
-    DO: OptionalPad + Dopo,
-    CK: OptionalPad,
-    SS: OptionalPad,
+    DI: GetOptionalPad<S>,
+    DO: GetOptionalPad<S>,
+    CK: GetOptionalPad<S>,
+    SS: GetOptionalPad<S>,
 {
-    /// Set the `DI` [`Pad`] using [`PadNum`] `P`
+    /// Set the `DI` [`Pad`]
     ///
-    /// In a [`MasterMode`], this is MISO. In [`Slave`] [`Mode`], this is MOSI.
+    /// In a [`MasterMode`], this is MISO. In [`Slave`] [`OpMode`], this is MOSI.
     #[inline]
-    pub fn data_in<P, T>(self, data_in: T) -> Pads<S, I, Pad<S, P, I>, DO, CK, SS>
+    pub fn data_in<Id>(self, pin: impl AnyPin<Id = Id>) -> Pads<S, I, Id, DO, CK, SS>
     where
-        P: PadNum + Dipo,
-        T: AnyPin,
-        I: Map<S, P>,
-        Pad<S, P, I>: From<SpecificPin<T>>,
+        Id: PadInfo<S>,
+        Id::PadNum: Dipo,
+        Pad<S, Id::PadNum, Id>: InIoSet<I>,
     {
         Pads {
-            sercom: self.sercom,
             ioset: self.ioset,
-            data_in: data_in.into().into(),
+            data_in: pin.into().into(),
             data_out: self.data_out,
             sclk: self.sclk,
             ss: self.ss,
         }
     }
 
-    /// Set the `DO` [`Pad`] using [`PadNum`] `P`
+    /// Set the `DO` [`Pad`]
     ///
-    /// In a [`MasterMode`], this is MOSI. In [`Slave`] [`Mode`], this is MISO.
+    /// In a [`MasterMode`], this is MOSI. In [`Slave`] [`OpMode`], this is MISO.
     #[inline]
-    pub fn data_out<P, T>(self, data_out: T) -> Pads<S, I, DI, Pad<S, P, I>, CK, SS>
+    pub fn data_out<Id>(self, pin: impl AnyPin<Id = Id>) -> Pads<S, I, DI, Id, CK, SS>
     where
-        P: PadNum + Dopo,
-        T: AnyPin,
-        I: Map<S, P>,
-        Pad<S, P, I>: From<SpecificPin<T>>,
+        Id: PadInfo<S>,
+        Id::PadNum: Dopo,
+        Pad<S, Id::PadNum, Id>: InIoSet<I>,
     {
         Pads {
-            sercom: self.sercom,
             ioset: self.ioset,
             data_in: self.data_in,
-            data_out: data_out.into().into(),
+            data_out: pin.into().into(),
             sclk: self.sclk,
             ss: self.ss,
         }
@@ -388,261 +414,169 @@ where
 
     /// Set the `SCK` [`Pad`], which is always [`Pad1`]
     #[inline]
-    pub fn sclk<T>(self, sclk: T) -> Pads<S, I, DI, DO, Pad<S, Pad1, I>, SS>
+    pub fn sclk<Id>(self, pin: impl AnyPin<Id = Id>) -> Pads<S, I, DI, DO, Id, SS>
     where
-        T: AnyPin,
-        I: Map<S, Pad1>,
-        Pad<S, Pad1, I>: From<SpecificPin<T>>,
+        Id: PadInfo<S, PadNum = Pad1>,
+        Pad<S, Pad1, Id>: InIoSet<I>,
     {
         Pads {
-            sercom: self.sercom,
             ioset: self.ioset,
             data_in: self.data_in,
             data_out: self.data_out,
-            sclk: sclk.into().into(),
+            sclk: pin.into().into(),
             ss: self.ss,
         }
     }
 
     /// Set the `SS` [`Pad`], which is always [`Pad2`]
     #[inline]
-    pub fn ss<T>(self, ss: T) -> Pads<S, I, DI, DO, CK, Pad<S, Pad2, I>>
+    pub fn ss<Id>(self, pin: impl AnyPin<Id = Id>) -> Pads<S, I, DI, DO, CK, Id>
     where
-        T: AnyPin,
-        I: Map<S, Pad2>,
-        Pad<S, Pad2, I>: From<T>,
-        Pad<S, Pad2, I>: From<SpecificPin<T>>,
+        Id: PadInfo<S, PadNum = Pad2>,
+        Pad<S, Pad2, Id>: InIoSet<I>,
     {
         Pads {
-            sercom: self.sercom,
             ioset: self.ioset,
             data_in: self.data_in,
             data_out: self.data_out,
             sclk: self.sclk,
-            ss: ss.into().into(),
+            ss: pin.into().into(),
         }
     }
 
-    /// Consume the [`Pads`] struct and free the individual [`Pad`]s
+    /// Consume the [`Pads`] and return each individual [`Pad`]
     #[inline]
-    pub fn free(self) -> (DI, DO, CK, SS) {
+    pub fn free(self) -> (DI::Pad, DO::Pad, CK::Pad, SS::Pad) {
         (self.data_in, self.data_out, self.sclk, self.ss)
     }
 }
 
-/// Create an alias for a [`Pads`] type
+//=============================================================================
+// spi_pads_from_pins
+//=============================================================================
+
+/// Define a set of [`spi::Pads`] using [`Pin`]s instead of [`PinId`]s
 ///
-/// Because it takes six type parameters, fully specifying a [`Pads`] type is
-/// tedious and error-prone. In normal code, the type parameters can usually be
-/// inferred. But some cases, like `static` variables, cannot use inference. In
-/// these cases, the [`pads_alias`] macro can make the process easier.
+/// In some cases, it is more convenient to specify a set of `spi::Pads` using
+/// `Pin`s or `Pin` aliases than it is to use the corresponding [`PinId`]s. This
+/// macro makes it easier to do so.
 ///
-/// A normal [`Pads`] alias declaration might look like this:
-///
+/// The first two arguments to the macro are required and represent the
+/// [`Sercom`] and [`IoSet`] respectively. The remaining four arguments are all
+/// optional. Each represents a corresponding type parameter of the `spi::Pads`
+/// type. Some of the types may be omitted, but any types that are specified,
+/// must be done in the order `DI`, `DO`, `CK` & `SS`.
+/// 
 /// ```
-/// use atsamd_hal::sercom::v2::Sercom0;
-/// use atsamd_hal::sercom::v2::pads::{IoSet1, Pad, Pad0, Pad1, Pad2};
-/// use atsamd_hal::sercom::v2::spi;
-/// use atsamd_hal::typelevel::NoneT;
-///
-/// pub type Alias = spi::Pads<
-///     Sercom0,
-///     IoSet1,
-///     Pad<Sercom0, Pad3, IoSet1>,
-///     NoneT,
-///     Pad<Sercom0, Pad1, IoSet1>,
-///     Pad<Sercom0, Pad2, IoSet1>,
-/// >;
+/// use atsamd_hal::pac::Peripherals;
+/// use atsamd_hal::spi_pads_from_pins;
+/// use atsamd_hal::gpio::v2::{Pin, PA08, PA09, AlternateC, Pins};
+/// use atsamd_hal::sercom::v2::{Sercom0, pad::IoSet1, spi};
+/// 
+/// type Miso = Pin<PA08, AlternateC>;
+/// type Sclk = Pin<PA09, AlternateC>;
+/// pub type Pads = spi_pads_from_pins!(Sercom0, IoSet1, DI = Miso, CK = Sclk);
+/// 
+/// pub fn test() -> Pads {
+///     let peripherals = Peripherals::take().unwrap();
+///     let pins = Pins::new(peripherals.PORT);
+///     spi::Pads::<Sercom0, IoSet1>::default()
+///         .sclk(pins.pa09)
+///         .data_in(pins.pa08)
+/// }
 /// ```
 ///
-/// There is a lot of repetition and room for error in this declaration. The
-/// [`pads_alias`] macro simplifies this example to:
-///
-/// ```
-/// use atsamd_hal::pads_alias;
-///
-/// pads_alias!(pub type Alias = Pads<Sercom0, IoSet1, DI = Pad3, SS = Pad2>);
-/// ```
-///
-/// The arguments `DI = Pad3` and `SS = Pad2` specify the [`PadNum`]s for the
-/// Data In and SS lines. No [`PadNum`] argument is provided for `DO`, so the
-/// Data Out [`Pad`] type will be set to [`NoneT`].
-///
-/// The `DI`, `DO` and `SS` arguments are all optional. If a corresponding
-/// [`PadNum`] is not given, the respective [`Pad`] type will be [`NoneT`]. The
-/// SCLK line is always required, and its [`PadNum`] must always be [`Pad1`], so
-/// this macro always includes an implicit `CK = Pad1` argument. Any remaining
-/// [`PadNum`] arguments must be specified in the indicated order: `DI`, `DO`,
-/// `SS`.
+/// [`spi::Pads`]: Pads
+/// [`Pin`]: crate::gpio::v2::Pin
+/// [`PinId`]: crate::gpio::v2::PinId
 #[macro_export]
-macro_rules! pads_alias {
+macro_rules! spi_pads_from_pins {
     (
-        $vis:vis type $Name:ident = Pads<
-            $Sercom:ident,
-            $IoSet:ident
-            $(, DI = $DI:ident)?
-            $(, DO = $DO:ident)?
-            $(, SS = $SS:ident)?
-        >
+        $Sercom:ident,
+        $IoSet:ident
+        $( , DI = $DI:ty )?
+        $( , DO = $DO:ty )?
+        $( , CK = $CK:ty )?
+        $( , SS = $SS:ty )?
     ) => {
-        $vis type $Name = $crate::sercom::v2::spi::Pads<
+        $crate::sercom::v2::spi::Pads<
             $crate::sercom::v2::$Sercom,
-            $crate::sercom::v2::pads::$IoSet,
-            __pad_type!($($Sercom, $DI, $IoSet)?),
-            __pad_type!($($Sercom, $DO, $IoSet)?),
-            __pad_type!($Sercom, Pad1, $IoSet),
-            __pad_type!($($Sercom, $SS, $IoSet)?),
-        >;
-    };
-}
-
-#[macro_export]
-#[doc(hidden)]
-macro_rules! __pad_type {
-    () => { NoneT };
-    ($Sercom:ident, $PadNum:ident, $IoSet:ident) => {
-        $crate::sercom::v2::pads::Pad<
-            $crate::sercom::v2::$Sercom,
-            $crate::sercom::v2::pads::$PadNum,
-            $crate::sercom::v2::pads::$IoSet
+            $crate::sercom::v2::pad::$IoSet,
+            $crate::__opt_type!( $( $crate::gpio::v2::SpecificPinId<$DI> )? ),
+            $crate::__opt_type!( $( $crate::gpio::v2::SpecificPinId<$DO> )? ),
+            $crate::__opt_type!( $( $crate::gpio::v2::SpecificPinId<$CK> )? ),
+            $crate::__opt_type!( $( $crate::gpio::v2::SpecificPinId<$SS> )? ),
         >
     };
 }
 
 //=============================================================================
-// AnyPads
+// PadSet
 //=============================================================================
 
-/// Meta-type representing any set of [`Pads`]
+/// Type-level function to recover the [`OptionalPad`] types from a generic set
+/// of [`Pads`]
 ///
 /// This trait is used as an interface between the [`Pads`] type and other
-/// types in this module. It serves to cut down on the total number of type
-/// parameters needed in the [`Config`] struct. The [`Config`] struct doesn't
-/// need access to the [`Pad`]s directly. Rather, it only needs to apply the
-/// [`SomePad`] trait bound when a [`Pad`] is required. The [`AnyPads`] trait
-/// allows each [`Config`] struct to store an instance of [`Pads`] without
-/// itself being generic over each [`Pad`] type.
+/// types in this module. It acts as a [type-level function], returning the
+/// corresponding [`Sercom`], [`IoSet`] and [`OptionalPad`] types. It serves to
+/// cut down on the total number of type parameters needed in the [`Config`]
+/// struct. The `Config` struct doesn't need access to the [`Pad`]s directly.
+/// Rather, it only needs to apply the [`SomePad`] trait bound when a `Pad` is
+/// required. The `PadSet` trait allows each `Config` struct to store an
+/// instance of `Pads` without itself being generic over all six type parameters
+/// of the `Pads` type.
 ///
-/// The [`configure`] function serves as the interface to configure [`Dipo`]
-/// and [`Dopo`] based on the chosen [`Pads`].
-///
-/// Like other `Any*` types in this HAL, the [`SpecificPads`] type can be
-/// recovered using the [`Into`], [`AsRef`] and [`AsMut`] traits. However, there
-/// is unlikely to be a situation where that is useful for the [`Pads`] type.
-///
-/// [`configure`]: Dipo::configure
-pub trait AnyPads: Sealed + Is<Type = SpecificPads<Self>> {
-    /// [`Sercom`] of the corresponding [`Pads`]
+/// [type-level function]: crate::typelevel#type-level-functions
+pub trait PadSet: Sealed {
     type Sercom: Sercom;
-
-    /// [`IoSet`] of the corresponding [`Pads`]
     type IoSet: IoSet;
-
-    /// Data In [`Pad`] from the corresponding [`Pads`]
-    type DataIn: OptionalPad + Dipo;
-
-    /// Data Out [`Pad`] from the corresponding [`Pads`]
-    type DataOut: OptionalPad + Dopo;
-
-    /// SCLK [`Pad`] from the corresponding [`Pads`]
+    type DataIn: OptionalPad;
+    type DataOut: OptionalPad;
     type Sclk: OptionalPad;
-
-    /// SS [`Pad`] from the corresponding [`Pads`]
     type SS: OptionalPad;
-
-    /// Configure the pads with the correct [`Dipo`] and [`Dopo`] values
-    ///
-    /// This function will have no effect on the corresponding pad if it is
-    /// [`NoneT`].
-    #[inline]
-    fn configure(sercom: &RegisterBlock) {
-        Self::DataIn::configure(sercom);
-        Self::DataOut::configure(sercom);
-    }
 }
-
-/// Type alias to recover the specific [`Pads`] type from an implementation of
-/// [`AnyPads`]
-pub type SpecificPads<P> = Pads<
-    <P as AnyPads>::Sercom,
-    <P as AnyPads>::IoSet,
-    <P as AnyPads>::DataIn,
-    <P as AnyPads>::DataOut,
-    <P as AnyPads>::Sclk,
-    <P as AnyPads>::SS,
->;
-
-/// Type alias to recover the [`Sercom`] type from an implementation of
-/// [`AnyPads`]
-pub type PadsSercom<P> = <P as AnyPads>::Sercom;
-
-/// Type alias to recover the [`IoSet`] type from an implementation of
-/// [`AnyPads`]
-pub type PadsIoSet<P> = <P as AnyPads>::IoSet;
-
-/// Type alias to recover the Data In [`Pad`] type from an implementation of
-/// [`AnyPads`]
-pub type PadsDataIn<P> = <P as AnyPads>::DataIn;
-
-/// Type alias to recover the Data Out [`Pad`] type from an implementation of
-/// [`AnyPads`]
-pub type PadsDataOut<P> = <P as AnyPads>::DataOut;
-
-/// Type alias to recover the SCK [`Pad`] type from an implementation of
-/// [`AnyPads`]
-pub type PadsSclk<P> = <P as AnyPads>::Sclk;
-
-/// Type alias to recover the SS [`Pad`] type from an implementation of
-/// [`AnyPads`]
-pub type PadsSS<P> = <P as AnyPads>::SS;
 
 impl<S, I, DI, DO, CK, SS> Sealed for Pads<S, I, DI, DO, CK, SS>
 where
     S: Sercom,
     I: IoSet,
-    DI: OptionalPad + Dipo,
-    DO: OptionalPad + Dopo,
-    CK: OptionalPad,
-    SS: OptionalPad,
+    DI: GetOptionalPad<S>,
+    DO: GetOptionalPad<S>,
+    CK: GetOptionalPad<S>,
+    SS: GetOptionalPad<S>,
 {
 }
 
-impl<S, I, DI, DO, CK, SS> AnyPads for Pads<S, I, DI, DO, CK, SS>
+impl<S, I, DI, DO, CK, SS> PadSet for Pads<S, I, DI, DO, CK, SS>
 where
     S: Sercom,
     I: IoSet,
-    DI: OptionalPad + Dipo,
-    DO: OptionalPad + Dopo,
-    CK: OptionalPad,
-    SS: OptionalPad,
+    DI: GetOptionalPad<S>,
+    DO: GetOptionalPad<S>,
+    CK: GetOptionalPad<S>,
+    SS: GetOptionalPad<S>,
 {
     type Sercom = S;
     type IoSet = I;
-    type DataIn = DI;
-    type DataOut = DO;
-    type Sclk = CK;
-    type SS = SS;
+    type DataIn = DI::Pad;
+    type DataOut = DO::Pad;
+    type Sclk = CK::Pad;
+    type SS = SS::Pad;
 }
 
-/// Implementation required to satisfy the `Is<Type = SpecificPads<Self>>` bound
-/// on [`AnyPads`]
-impl<P: AnyPads> AsRef<P> for SpecificPads<P> {
-    #[inline]
-    fn as_ref(&self) -> &P {
-        // SAFETY: This is guaranteed to be safe, because P == SpecificPads<P>
-        unsafe { transmute(self) }
-    }
-}
+//=============================================================================
+// ValidPads
+//=============================================================================
 
-/// Implementation required to satisfy the `Is<Type = SpecificPads<Self>>` bound
-/// on [`AnyPads`]
-impl<P: AnyPads> AsMut<P> for SpecificPads<P> {
-    #[inline]
-    fn as_mut(&mut self) -> &mut P {
-        // SAFETY: This is guaranteed to be safe, because P == SpecificPads<P>
-        unsafe { transmute(self) }
-    }
-}
+/// Marker trait for valid sets of [`Pads`]
+///
+/// This trait labels sets of [`Pads`] that satisfy the [`Dipo`] and [`Dopo`]
+/// traits. It guarantees to the [`Config`] struct that this set of `Pads` can
+/// be configured through those traits.
+pub trait ValidPads: PadSet + Dipo + Dopo {}
+
+impl<P: PadSet + Dipo + Dopo> ValidPads for P {}
 
 //=============================================================================
 // Tx/Rx
@@ -651,11 +585,11 @@ impl<P: AnyPads> AsMut<P> for SpecificPads<P> {
 /// Marker trait for a set of [`Pads`] that can transmit
 ///
 /// To transmit, both SCLK and Data Out must be [`SomePad`].
-pub trait Tx: AnyPads {}
+pub trait Tx: ValidPads {}
 
 impl<P> Tx for P
 where
-    P: AnyPads,
+    P: ValidPads,
     P::DataOut: SomePad,
     P::Sclk: SomePad,
 {
@@ -664,11 +598,11 @@ where
 /// Marker trait for a set of [`Pads`] that can receive
 ///
 /// To receive, both SCLK and Data In must be [`SomePad`].
-pub trait Rx: AnyPads {}
+pub trait Rx: ValidPads {}
 
 impl<P> Rx for P
 where
-    P: AnyPads,
+    P: ValidPads,
     P::DataIn: SomePad,
     P::Sclk: SomePad,
 {
@@ -678,31 +612,32 @@ where
 ///
 /// A set of [`Pads`] cannot be used to transmit when the Data Out [`Pad`] is
 /// [`NoneT`].
-pub trait NotTx: AnyPads {}
+pub trait NotTx: ValidPads {}
 
-impl<P> NotTx for P where P: AnyPads<DataOut = NoneT> {}
+impl<P> NotTx for P where P: ValidPads<DataOut = NoneT> {}
 
 /// Marker trait for a set of [`Pads`] that cannot receive
 ///
 /// A set of [`Pads`] cannot be used to receive when the Data In [`Pad`] is
 /// [`NoneT`].
-pub trait NotRx: AnyPads {}
+pub trait NotRx: ValidPads {}
 
-impl<P> NotRx for P where P: AnyPads<DataIn = NoneT> {}
+impl<P> NotRx for P where P: ValidPads<DataIn = NoneT> {}
 
 /// Marker trait for a set of [`Pads`] that can transmit OR receive
 ///
 /// To satisfy this trait, SCLK must always be [`SomePad`] and one or both of
 /// Data In and Data Out must also be [`SomePad`].
-pub trait TxOrRx: AnyPads {}
+pub trait TxOrRx: ValidPads {}
 
 impl<S, I, DI, CK, SS> TxOrRx for Pads<S, I, DI, NoneT, CK, SS>
 where
     S: Sercom,
     I: IoSet,
-    DI: SomePad + Dipo,
-    CK: SomePad,
-    SS: OptionalPad,
+    DI: GetPad<S> + GetPadMarker,
+    CK: GetPad<S>,
+    SS: GetOptionalPad<S>,
+    DI::PadNum: Dipo,
 {
 }
 
@@ -710,26 +645,42 @@ impl<S, I, DO, CK, SS> TxOrRx for Pads<S, I, NoneT, DO, CK, SS>
 where
     S: Sercom,
     I: IoSet,
-    DO: SomePad + Dopo,
-    CK: SomePad,
-    SS: OptionalPad,
+    DO: GetPad<S> + GetPadMarker,
+    CK: GetPad<S>,
+    SS: GetOptionalPad<S>,
+    DO::PadNum: Dopo,
 {
 }
 
-impl<P: Tx + Rx> TxOrRx for P {}
+impl<S, I, DI, DO, CK, SS> TxOrRx for Pads<S, I, DI, DO, CK, SS>
+where
+    S: Sercom,
+    I: IoSet,
+    DI: GetPad<S> + GetPadMarker,
+    DO: GetPad<S> + GetPadMarker,
+    CK: GetPad<S>,
+    SS: GetOptionalPad<S>,
+    DI::PadNum: Dipo,
+    DO::PadNum: Dopo,
+{
+}
 
 //=============================================================================
 // Operating mode
 //=============================================================================
 
-/// Type-level `enum` representing the SPI operating mode
+/// Type-level enum representing the SPI operating mode
+///
+/// See the documentation on [type-level enums] for a discussion of the pattern.
 ///
 /// The available operating modes are [`Master`], [`MasterHWSS`] and [`Slave`].
 /// In [`Master`] mode, the `SS` signal must be handled by the user, so `SS`
-/// is an [`OptionalPad`]. In [`MasterHWSS`] mode, the hardware drives the `SS`
+/// must be [`NoneT`]. In [`MasterHWSS`] mode, the hardware drives the `SS`
 /// line, so [`SomePad`] is required. In [`Slave`] mode, the `SS` [`Pad`] is
 /// required as well, to indicate when data is valid.
-pub trait Mode: Sealed {
+///
+/// [type-level enums]: crate::typelevel#type-level-enums
+pub trait OpMode: Sealed {
     /// Corresponding variant from the PAC enum
     const MODE: MODE_A;
 
@@ -760,30 +711,30 @@ pub trait Mode: Sealed {
     }
 }
 
-/// [`Mode`] variant for Master mode
+/// [`OpMode`] variant for Master mode
 pub enum Master {}
 
-/// [`Mode`] variant for Master mode with hardware-controlled slave select
+/// [`OpMode`] variant for Master mode with hardware-controlled slave select
 pub enum MasterHWSS {}
 
-/// [`Mode`] variant for Slave mode
+/// [`OpMode`] variant for Slave mode
 pub enum Slave {}
 
 impl Sealed for Master {}
 impl Sealed for MasterHWSS {}
 impl Sealed for Slave {}
 
-impl Mode for Master {
+impl OpMode for Master {
     const MODE: MODE_A = MODE_A::SPI_MASTER;
     const MSSEN: bool = false;
 }
 
-impl Mode for MasterHWSS {
+impl OpMode for MasterHWSS {
     const MODE: MODE_A = MODE_A::SPI_MASTER;
     const MSSEN: bool = true;
 }
 
-impl Mode for Slave {
+impl OpMode for Slave {
     const MODE: MODE_A = MODE_A::SPI_SLAVE;
     const MSSEN: bool = false;
 }
@@ -792,7 +743,7 @@ impl Mode for Slave {
 ///
 /// This trait is implemented for [`Master`] and [`MasterHWSS`] but not for
 /// [`Slave`].
-pub trait MasterMode: Mode {}
+pub trait MasterMode: OpMode {}
 
 impl MasterMode for Master {}
 impl MasterMode for MasterHWSS {}
@@ -801,9 +752,13 @@ impl MasterMode for MasterHWSS {}
 // Transaction length
 //=============================================================================
 
-/// Type-level `enum` representing the SPI transaction length, in bytes
+/// Type-level enum representing the SPI transaction length, in bytes
 ///
-/// As mentioned in the [`Mode`] documentation, this module chooses to always
+/// This trait acts as both a [type-level enum], forming a type class for
+/// transaction lengths, as well as a [type-level function] mapping the
+/// corresponding word size.
+///
+/// As mentioned in the [`OpMode`] documentation, this module chooses to always
 /// operate in 32-bit extension mode. The LENGTH counter is used to control the
 /// number of byes in each SPI transaction.
 ///
@@ -817,6 +772,9 @@ impl MasterMode for MasterHWSS {}
 /// traits, as well as other aspects of the SPI API. Transaction lengths of 1-4
 /// only require a single read/write of the DATA register, so they behave
 /// differently than longer transaction lengths.
+///
+/// [type-level enum]: crate::typelevel#type-level-enums
+/// [type-level function]: crate::typelevel#type-level-functions
 pub trait Length: Sealed + Unsigned + 'static {
     /// Word size for the transaction length
     ///
@@ -835,7 +793,8 @@ pub trait Length: Sealed + Unsigned + 'static {
     }
 }
 
-/// Type alias to recover the `Word` type from an implementation of [`Length`]
+/// Type alias to recover the [`Word`](Length::Word) type from an
+/// implementation of [`Length`]
 pub type Word<L> = <L as Length>::Word;
 
 /// Marker type for a run-time dynamic [`Length`]
@@ -931,6 +890,7 @@ pub enum Error {
 
 impl TryFrom<Errors> for () {
     type Error = Error;
+    #[inline]
     fn try_from(errors: Errors) -> Result<(), Error> {
         // Buffer overflow has priority
         if errors.contains(Errors::BUFOVF) {
@@ -950,10 +910,10 @@ impl TryFrom<Errors> for () {
 /// A configurable, disabled SPI peripheral
 ///
 /// This `struct` represents a configurable SPI peripheral in its disabled
-/// state. It is generic over the set of [`Pads`], operating [`Mode`] and
-/// transaction [`Length`]. Upon creation, the [`Config`] takes ownership of the
-/// [`Sercom`] and resets it, returning it configured as an SPI peripheral in
-/// [`Master`] [`Mode`] with [`Length`] [`U1`].
+/// state. It is generic over the set of [`Pads`], [`OpMode`] and transaction
+/// [`Length`]. Upon creation, the [`Config`] takes ownership of the [`Sercom`]
+/// and resets it, returning it configured as an SPI peripheral in [`Master`]
+/// [`OpMode`] with [`Length`] [`U1`].
 ///
 /// [`Config`] uses a builder-pattern API to configure the peripheral,
 /// culminating in a call to [`enable`], which consumes the [`Config`] and
@@ -963,27 +923,29 @@ impl TryFrom<Errors> for () {
 /// [`enable`]: Config::enable
 pub struct Config<P, M = Master, L = U1>
 where
-    P: AnyPads,
-    M: Mode,
+    P: ValidPads,
+    M: OpMode,
     L: Length,
 {
     sercom: P::Sercom,
-    pads: P,
+    pad_map: P,
     mode: PhantomData<M>,
     len: PhantomData<L>,
     freq: Hertz,
 }
 
-impl<P: AnyPads> Config<P> {
+impl<P: ValidPads> Config<P> {
     /// Create a new [`Config`] in the default configuration.
-    fn create(sercom: P::Sercom, pads: P, freq: impl Into<Hertz>) -> Self {
+    #[inline]
+    fn create(sercom: P::Sercom, pad_map: P, freq: impl Into<Hertz>) -> Self {
         Self::swrst(&sercom);
         Master::configure(&sercom);
-        P::configure(&sercom);
+        <P as Dipo>::configure(&sercom);
+        <P as Dopo>::configure(&sercom);
         U1::configure(&sercom);
         Self {
             sercom,
-            pads,
+            pad_map,
             mode: PhantomData,
             len: PhantomData,
             freq: freq.into(),
@@ -994,22 +956,22 @@ impl<P: AnyPads> Config<P> {
     ///
     /// This function will enable the corresponding APB clock, reset the
     /// [`Sercom`] peripheral, and return a [`Config`] in the default
-    /// configuration, [`Master`] [`Mode`] with [`Length`] [`U1`]. [`Config`]
+    /// configuration, [`Master`] [`OpMode`] with [`Length`] [`U1`]. [`Config`]
     /// takes ownership of the [`Sercom`] and [`Pads`].
     ///
     /// Users must configure GCLK manually. The `freq` parameter represents the
     /// GCLK frequency for this [`Sercom`] instance.
     #[inline]
-    pub fn new(mclk: &MCLK, mut sercom: P::Sercom, pads: P, freq: impl Into<Hertz>) -> Self {
+    pub fn new(mclk: &MCLK, mut sercom: P::Sercom, pad_map: P, freq: impl Into<Hertz>) -> Self {
         sercom.enable_apb_clock(mclk);
-        Self::create(sercom, pads, freq)
+        Self::create(sercom, pad_map, freq)
     }
 }
 
 impl<P, M, L> Config<P, M, L>
 where
-    P: AnyPads,
-    M: Mode,
+    P: ValidPads,
+    M: OpMode,
     L: Length,
 {
     /// Reset the SERCOM peripheral
@@ -1025,20 +987,21 @@ where
     /// The state should be reset whenever the peripheral is reset or disabled.
     /// It should not be possible for the state to become out of sync from safe
     /// code.
+    #[inline]
     unsafe fn reset_serial_read_state() {
         SERIAL_READ_STATE[P::Sercom::NUM] = false;
     }
 
-    /// Change the [`Config`] [`Mode`] or [`Length`]
+    /// Change the [`Config`] [`OpMode`] or [`Length`]
     #[inline]
     fn change<M2, L2>(self) -> Config<P, M2, L2>
     where
-        M2: Mode,
+        M2: OpMode,
         L2: Length,
     {
         Config {
             sercom: self.sercom,
-            pads: self.pads,
+            pad_map: self.pad_map,
             mode: PhantomData,
             len: PhantomData,
             freq: self.freq,
@@ -1049,7 +1012,7 @@ where
     /// default configuration.
     #[inline]
     pub fn reset(self) -> Config<P> {
-        Config::create(self.sercom, self.pads, self.freq)
+        Config::create(self.sercom, self.pad_map, self.freq)
     }
 
     /// Obtain a reference to the PAC `SERCOM` struct
@@ -1066,12 +1029,12 @@ where
     #[inline]
     pub fn free(self) -> (P::Sercom, P) {
         Self::swrst(&self.sercom);
-        (self.sercom, self.pads)
+        (self.sercom, self.pad_map)
     }
 
-    /// Change the operating [`Mode`]
+    /// Change the [`OpMode`]
     #[inline]
-    pub fn op_mode<M2: Mode>(self) -> Config<P, M2, L> {
+    pub fn op_mode<M2: OpMode>(self) -> Config<P, M2, L> {
         M2::configure(&self.sercom);
         self.change()
     }
@@ -1198,6 +1161,7 @@ where
     }
 
     /// Enable interrupts for the specified flags
+    #[inline]
     pub fn enable_interrupts(&mut self, flags: Flags) {
         self.sercom
             .spim()
@@ -1206,6 +1170,7 @@ where
     }
 
     /// Disable interrupts for the specified flags
+    #[inline]
     pub fn disable_interrupts(&mut self, flags: Flags) {
         self.sercom
             .spim()
@@ -1241,12 +1206,13 @@ where
 
 impl<P, M> Config<P, M, DynLength>
 where
-    P: AnyPads,
-    M: Mode,
+    P: ValidPads,
+    M: OpMode,
 {
     /// Return the current transaction length
     ///
     /// Read the LENGTH register to determine the current transaction length
+    #[inline]
     pub fn get_dyn_length(&self) -> u8 {
         self.sercom.spim().length.read().len().bits()
     }
@@ -1255,6 +1221,7 @@ where
     ///
     /// Write the LENGTH register to set the transaction length. Panics if the
     /// length is zero.
+    #[inline]
     pub fn set_dyn_length(&mut self, length: u8) {
         if length == 0 {
             panic!("Cannot set SPI LENGTH field to zero")
@@ -1270,119 +1237,73 @@ where
 // AnyConfig
 //=============================================================================
 
-/// Meta-type representing any [`Config`]
+/// Type class for all possible [`Config`] types
 ///
-/// All instances of [`Config`] implement this trait. When used as a trait
-/// bound, it acts to encapsulate a [`Config`]. Without this trait, a
-/// completely generic [`Config`] requires three type parameters, i.e.
-/// `Config<P, M, L>`. But when using this trait, only one type parameter is
-/// required, i.e. `C: AnyConfig`. However, even though we have dropped type
-/// parameters, no information is lost, because the [`Pads`], [`Mode`] and
-/// [`Length`] type parameters are stored as associated types in the trait. The
-/// implementation of [`AnyConfig`] looks like this:
+/// This trait uses the [`AnyKind`] trait pattern to create a [type class] for
+/// [`Config`] types. See the `AnyKind` documentation for more details on the
+/// pattern.
 ///
-/// ```
-/// impl<P: Pads, M: Mode, L: Length> AnyConfig for Config<P, M, L> {
-///     type Pads = P;
-///     type Mode = M;
-///     type Length = L;
-///     // ...
-/// }
-/// ```
+/// In addition to the normal, `AnyKind` associated types. This trait also
+/// copies the [`Sercom`] and [`Word`] types, to make it easier to apply
+/// bounds to these types at the next level of abstraction.
 ///
-/// Thus, there is a one-to-one mapping between `Config<P, M, L>` and
-/// `AnyConfig<Pads = P, Mode = M, Length = L>`, so you can always recover the
-/// specific [`Config`] type from an implementation of [`AnyConfig`]. The type
-/// alias [`SpecificConfig`] is provided for this purpose. You can convert
-/// between [`AnyConfig`] and its corresponding [`SpecificConfig`] using the
-/// [`Into`], [`AsRef`] and [`AsMut`] traits.
-pub trait AnyConfig: Sealed + Is<Type = SpecificConfig<Self>> {
-    type Pads: AnyPads;
-    type Mode: Mode;
-    type Length: Length;
+/// [`AnyKind`]: crate::typelevel#anykind-trait-pattern
+/// [type class]: crate::typelevel#type-classes
+pub trait AnyConfig: Is<Type = SpecificConfig<Self>> {
+    type Sercom: Sercom;
+    type Pads: ValidPads<Sercom = Self::Sercom>;
+    type OpMode: OpMode;
+    type Length: Length<Word = Self::Word>;
+    type Word: 'static;
 }
 
 /// Type alias to recover the specific [`Config`] type from an implementation of
 /// [`AnyConfig`]
 pub type SpecificConfig<C> =
-    Config<<C as AnyConfig>::Pads, <C as AnyConfig>::Mode, <C as AnyConfig>::Length>;
-
-/// Type alias to recover the [`Pads`] type from an implementation of
-/// [`AnyConfig`]
-pub type SpiPads<C> = <C as AnyConfig>::Pads;
-
-/// Type alias to recover the [`Mode`] type from an implementation of
-/// [`AnyConfig`]
-pub type SpiMode<C> = <C as AnyConfig>::Mode;
-
-/// Type alias to recover the [`Length`] type from an implementation of
-/// [`AnyConfig`]
-pub type SpiLength<C> = <C as AnyConfig>::Length;
-
-/// Type alias to recover the [`Pads`]' [`Sercom`] type from an implementation
-/// of [`AnyConfig`]
-pub type SpiSercom<C> = PadsSercom<SpiPads<C>>;
-
-/// Type alias to recover the [`Pads`]' [`IoSet`] type from an implementation of
-/// [`AnyConfig`]
-pub type SpiIoSet<C> = PadsIoSet<SpiPads<C>>;
-
-/// Type alias to recover the [`Pads`]' Data In [`Pad`] type from an
-/// implementation of [`AnyConfig`]
-pub type SpiDataIn<C> = PadsDataIn<SpiPads<C>>;
-
-/// Type alias to recover the [`Pads`]' Data Out [`Pad`] type from an
-/// implementation of [`AnyConfig`]
-pub type SpiDataOut<C> = PadsDataOut<SpiPads<C>>;
-
-/// Type alias to recover the [`Pads`]' SCK [`Pad`] type from an implementation
-/// of [`AnyConfig`]
-pub type SpiSclk<C> = PadsSclk<SpiPads<C>>;
-
-/// Type alias to recover the [`Pads`]' SS [`Pad`] type from an implementation
-/// of [`AnyConfig`]
-pub type SpiSS<C> = PadsSS<SpiPads<C>>;
-
-/// Type alias to recover the [`Length`]'s [`Word`] type from an implementation
-/// of [`AnyConfig`]
-pub type SpiWord<C> = Word<SpiLength<C>>;
+    Config<<C as AnyConfig>::Pads, <C as AnyConfig>::OpMode, <C as AnyConfig>::Length>;
 
 impl<P, M, L> Sealed for Config<P, M, L>
 where
-    P: AnyPads,
-    M: Mode,
+    P: ValidPads,
+    M: OpMode,
     L: Length,
 {
 }
 
 impl<P, M, L> AnyConfig for Config<P, M, L>
 where
-    P: AnyPads,
-    M: Mode,
+    P: ValidPads,
+    M: OpMode,
     L: Length,
 {
+    type Sercom = P::Sercom;
     type Pads = P;
-    type Mode = M;
+    type OpMode = M;
     type Length = L;
+    type Word = L::Word;
 }
 
-/// Implementation required to satisfy the `Is<Type = SpecificConfig<Self>>`
-/// bound on [`AnyConfig`]
-impl<C: AnyConfig> AsRef<C> for SpecificConfig<C> {
+impl<P, M, L> AsRef<Self> for Config<P, M, L>
+where
+    P: ValidPads,
+    M: OpMode,
+    L: Length,
+{
     #[inline]
-    fn as_ref(&self) -> &C {
-        // SAFETY: This is guaranteed to be safe, because C == SpecificConfig<C>
-        unsafe { transmute(self) }
+    fn as_ref(&self) -> &Self {
+        self
     }
 }
 
-/// Implementation required to satisfy the `Is<Type = SpecificConfig<Self>>`
-/// bound on [`AnyConfig`]
-impl<C: AnyConfig> AsMut<C> for SpecificConfig<C> {
+impl<P, M, L> AsMut<Self> for Config<P, M, L>
+where
+    P: ValidPads,
+    M: OpMode,
+    L: Length,
+{
     #[inline]
-    fn as_mut(&mut self) -> &mut C {
-        // SAFETY: This is guaranteed to be safe, because C == SpecificConfig<C>
-        unsafe { transmute(self) }
+    fn as_mut(&mut self) -> &mut Self {
+        self
     }
 }
 
@@ -1393,19 +1314,19 @@ impl<C: AnyConfig> AsMut<C> for SpecificConfig<C> {
 /// Marker trait for valid SPI [`Config`]urations
 ///
 /// A functional SPI peripheral must have, at a minimum, an SCK [`Pad`] and
-/// either a Data In or a Data Out [`Pad`]. Dependeing on the operating
-/// [`Mode`], an SS [`Pad`] may also be required.
+/// either a Data In or a Data Out `Pad`. Dependeing on the [`OpMode`], an SS
+/// `Pad` may also be required.
 ///
-/// The [`ValidConfig`] trait is implemented only for valid combinations of
-/// [`Pads`] and operating [`Mode`]. No [`Config`] is valid if the SCK pad is
-/// [`NoneT`] or if both the Data In and Data Out pads are [`NoneT`]. And when
-/// [`Mode`] is [`MasterHWSS`] or [`Slave`], the SS pad must not be [`NoneT`]
-/// either.
+/// The `ValidConfig` trait is implemented only for valid combinations of
+/// [`Pads`] and [`OpMode`]. No [`Config`] is valid if the SCK pad is [`NoneT`]
+/// or if both the Data In and Data Out pads are `NoneT`. When in [`Master`]
+/// `OpMode`, the `SS` `Pad` must be `NoneT`, while in [`MasterHWSS`] or
+/// [`Slave`] [`OpMode`], the SS pad must be [`SomePad`].
 pub trait ValidConfig: AnyConfig {}
 
 impl<P, L> ValidConfig for Config<P, Master, L>
 where
-    P: TxOrRx,
+    P: TxOrRx<SS = NoneT>,
     L: Length,
 {
 }
@@ -1432,7 +1353,7 @@ where
 
 /// An enabled SPI peripheral that can perform transactions
 ///
-/// As noted in the [`Mode`] and [`Length`] traits, this module chooses to
+/// As noted in the [`OpMode`] and [`Length`] traits, this module chooses to
 /// always operate in 32-bit extension mode and uses the LENGTH counter to set
 /// the number of bytes in each transaction, from 1 to 255. In 32-bit extension
 /// mode, transaction [`Length`]s of four bytes or fewer can be completed in a
@@ -1482,8 +1403,8 @@ where
 /// some tips for finding more information in the `impl` blocks below:
 ///
 /// - [`FullDuplex`] uses a single blanket implementation for [`Length`]s of 1-4
-/// - [`Read`] has two different implementations, one for [`Slave`] [`Mode`] and
-///   another for [`MasterMode`]s
+/// - [`Read`] has two different implementations, one for [`Slave`] [`OpMode`]
+///   and another for [`MasterMode`]s
 /// - [`Write`] uses a single blanket implementation, like [`FullDuplex`].
 ///   However, watch out for ambiguity between [`serial::Write`](Write),
 ///   [`blocking::serial::Write`] and [`blocking::spi::Write`].
@@ -1511,8 +1432,8 @@ impl<C: ValidConfig> Spi<C> {
     /// Directly accessing the `SERCOM` could break the invariants of the
     /// type-level tracking in this module, so it is unsafe.
     #[inline]
-    pub unsafe fn sercom(&self) -> &SpiSercom<C> {
-        &self.config.as_ref().sercom()
+    pub unsafe fn sercom(&self) -> &C::Sercom {
+        self.config.as_ref().sercom()
     }
 
     /// Update the SPI configuration.
@@ -1544,9 +1465,9 @@ impl<C: ValidConfig> Spi<C> {
     /// [`Length`], you **must** wait for a TXC flag before changing to a new
     /// [`Length`].
     #[inline]
-    pub unsafe fn length<L: Length>(self) -> Spi<Config<C::Pads, C::Mode, L>>
+    pub unsafe fn length<L: Length>(self) -> Spi<Config<C::Pads, C::OpMode, L>>
     where
-        Config<C::Pads, C::Mode, L>: ValidConfig,
+        Config<C::Pads, C::OpMode, L>: ValidConfig,
     {
         Spi {
             config: self.config.into().length(),
@@ -1642,15 +1563,18 @@ impl<C: ValidConfig> Spi<C> {
     }
 }
 
-impl<C> Spi<C>
+impl<P, M> Spi<Config<P, M, DynLength>>
 where
-    C: ValidConfig<Length = DynLength>,
+    P: ValidPads,
+    M: OpMode,
+    Config<P, M, DynLength>: ValidConfig,
 {
     /// Return the current transaction length
     ///
     /// Read the LENGTH register to determine the current transaction length
+    #[inline]
     pub fn get_dyn_length(&self) -> u8 {
-        self.config.as_ref().get_dyn_length()
+        self.config.get_dyn_length()
     }
 
     /// Set the transaction length
@@ -1662,8 +1586,9 @@ where
     ///
     /// If you have sent any data at the current transaction length, you
     /// **must** wait for `TXC` before changing the length.
+    #[inline]
     pub unsafe fn set_dyn_length(&mut self, length: u8) {
-        self.config.as_mut().set_dyn_length(length)
+        self.config.set_dyn_length(length)
     }
 }
 
@@ -1671,12 +1596,13 @@ impl<C> Spi<C>
 where
     C: ValidConfig,
     C::Pads: Rx + NotTx,
-    C::Mode: MasterMode,
-    SpiWord<C>: PrimInt,
+    C::OpMode: MasterMode,
+    C::Word: PrimInt,
 {
     /// Reset the internal state tracking `serial` [`Read`] transactions
     ///
     /// See the implementation of [`Read`] for more details.
+    #[inline]
     pub unsafe fn reset_serial_read_state(&mut self) {
         SpecificConfig::<C>::reset_serial_read_state();
     }
@@ -1686,54 +1612,61 @@ where
 // AnySpi
 //=============================================================================
 
-/// Meta-type representing any [`Spi`]
+/// Type class for all possible [`Spi`] types
 ///
-/// This trait is implemented for every instance of [`Spi`]. It allows you to
-/// restrict a generic type to an [`Spi`] with explicitly naming the [`Spi`]
-/// type. Like other `Any*` traits in this HAL, you can recover the specific
-/// [`Spi`] type with the type alias [`SpecificSpi`], and you can convert
-/// between [`AnySpi`] and its corresponding [`SpecificSpi`] using the [`Into`],
-/// [`AsRef`] and [`AsMut`] traits.
+/// This trait uses the [`AnyKind`] trait pattern to create a [type class] for
+/// [`Spi`] types. See the `AnyKind` documentation for more details on the
+/// pattern.
 ///
-/// ```
-/// fn example<P: AnySpi>(mut any_spi: P) {
-///     let spi_mut: &mut SpecificSpi<P> = any_spi.as_mut();
-///     let spi_ref: &SpecificSpi<P> = any_spi.as_ref();
-///     let spi: SpecificSpi<P> = any_spi.into();
-/// }
-/// ```
-pub trait AnySpi: Sealed + Is<Type = SpecificSpi<Self>> {
-    type Config: ValidConfig;
+/// In addition to the normal, `AnyKind` associated types. This trait also
+/// copies the [`Sercom`], [`Pads`], [`OpMode`], [`Length`] and [`Word`] types,
+/// to make it easier to apply bounds to these types at the next level of
+/// abstraction.
+///
+/// [`AnyKind`]: crate::typelevel#anykind-trait-pattern
+/// [type class]: crate::typelevel#type-classes
+pub trait AnySpi: Is<Type = SpecificSpi<Self>> {
+    type Sercom: Sercom;
+    type Pads: ValidPads<Sercom = Self::Sercom>;
+    type OpMode: OpMode;
+    type Length: Length<Word = Self::Word>;
+    type Word: 'static;
+    type Config: ValidConfig<
+        Sercom = Self::Sercom,
+        Pads = Self::Pads,
+        OpMode = Self::OpMode,
+        Length = Self::Length,
+        Word = Self::Word,
+    >;
 }
 
 /// Type alias to recover the specific [`Spi`] type from an implementation of
 /// [`AnySpi`]
-pub type SpecificSpi<T> = Spi<<T as AnySpi>::Config>;
+pub type SpecificSpi<S> = Spi<<S as AnySpi>::Config>;
+
+impl<C: ValidConfig> AsRef<Self> for Spi<C> {
+    #[inline]
+    fn as_ref(&self) -> &Self {
+        self
+    }
+}
+
+impl<C: ValidConfig> AsMut<Self> for Spi<C> {
+    #[inline]
+    fn as_mut(&mut self) -> &mut Self {
+        self
+    }
+}
 
 impl<C: ValidConfig> Sealed for Spi<C> {}
 
 impl<C: ValidConfig> AnySpi for Spi<C> {
+    type Sercom = C::Sercom;
+    type Pads = C::Pads;
+    type OpMode = C::OpMode;
+    type Length = C::Length;
+    type Word = C::Word;
     type Config = C;
-}
-
-/// Implementation required to satisfy the `Is<Type = SpecificSpi<Self>>` bound
-/// on [`AnySpi`]
-impl<S: AnySpi> AsRef<S> for SpecificSpi<S> {
-    #[inline]
-    fn as_ref(&self) -> &S {
-        // SAFETY: This is guaranteed to be safe, because S == SpecificSpi<S>
-        unsafe { transmute(self) }
-    }
-}
-
-/// Implementation required to satisfy the `Is<Type = SpecificSpi<Self>>` bound
-/// on [`AnySpi`]
-impl<S: AnySpi> AsMut<S> for SpecificSpi<S> {
-    #[inline]
-    fn as_mut(&mut self) -> &mut S {
-        // SAFETY: This is guaranteed to be safe, because S == SpecificSpi<S>
-        unsafe { transmute(self) }
-    }
 }
 
 //=============================================================================
@@ -1779,7 +1712,7 @@ where
     /// [`Spi::reset_serial_read_state`] to reset it.
     #[inline]
     fn read(&mut self) -> nb::Result<L::Word, Error> {
-        let index = <PadsSercom<P> as Sercom>::NUM;
+        let index = <P::Sercom as Sercom>::NUM;
         let in_progress = unsafe { &mut SERIAL_READ_STATE[index] };
         let flags = self.read_flags_errors()?;
         if !*in_progress && flags.contains(Flags::DRE) {
@@ -1795,12 +1728,12 @@ where
     }
 }
 
-/// Implement [`Read`] for [`Slave`] [`Mode`]
+/// Implement [`Read`] for [`Slave`] [`OpMode`]
 ///
 /// [`Read`] is only implemented when the [`Pads`] are [`Rx`] but [`NotTx`].
 /// If the [`Pads`] are both [`Rx`] and [`Tx`], then use [`FullDuplex`].
 ///
-/// In [`Slave`] [`Mode`], [`Read`] does not have to initiate transactions, so
+/// In [`Slave`] [`OpMode`], [`Read`] does not have to initiate transactions, so
 /// it does not have to store any internal state. It only has to wait on `RXC`.
 impl<P, L> Read<L::Word> for Spi<Config<P, Slave, L>>
 where
@@ -1832,17 +1765,17 @@ where
 /// Because [`Write`] is only implemented when the [`Pads`] are [`NotRx`], this
 /// implementation never reads the DATA register and ignores all buffer overflow
 /// errors.
-impl<C> Write<SpiWord<C>> for Spi<C>
+impl<C> Write<C::Word> for Spi<C>
 where
     C: ValidConfig,
     C::Pads: Tx + NotRx,
-    SpiWord<C>: PrimInt + AsPrimitive<u32>,
+    C::Word: PrimInt + AsPrimitive<u32>,
 {
     type Error = Error;
 
     /// Wait for a `DRE` flag, then write a word
     #[inline]
-    fn write(&mut self, word: SpiWord<C>) -> nb::Result<(), Error> {
+    fn write(&mut self, word: C::Word) -> nb::Result<(), Error> {
         // Ignore buffer overflow errors
         if self.read_errors().contains(Errors::LENERR) {
             Err(Error::LengthError.into())
@@ -1868,31 +1801,31 @@ where
     }
 }
 
-impl<C> blocking::serial::write::Default<SpiWord<C>> for Spi<C>
+impl<C> blocking::serial::write::Default<C::Word> for Spi<C>
 where
     C: ValidConfig,
-    Spi<C>: Write<SpiWord<C>>,
+    Spi<C>: Write<C::Word>,
 {
 }
 
 /// Implement [`FullDuplex`] for short [`Spi`] transaction [`Length`]s
 ///
 /// [`FullDuplex` is only implemented when [`Pads`] is both [`Tx`] and [`Rx`],
-/// the [`Mode`] is a [`MasterMode`], and the transaction [`Length`] is `<= 4`
-/// bytes. When the [`Length`] is `<= 4`, the [`SpiWord`] is a primitive
+/// the [`OpMode`] is a [`MasterMode`], and the transaction [`Length`] is `<= 4`
+/// bytes. When the [`Length`] is `<= 4`, the [`Word`] is a primitive
 /// integer, with a size that depends on the [`Length`] (`u8`, `u16` or `u32`).
-impl<C> FullDuplex<SpiWord<C>> for Spi<C>
+impl<C> FullDuplex<C::Word> for Spi<C>
 where
     C: ValidConfig,
     C::Pads: Tx + Rx,
-    C::Mode: MasterMode,
-    SpiWord<C>: PrimInt + AsPrimitive<u32>,
-    u32: AsPrimitive<SpiWord<C>>,
+    C::OpMode: MasterMode,
+    C::Word: PrimInt + AsPrimitive<u32>,
+    u32: AsPrimitive<C::Word>,
 {
     type Error = Error;
 
     #[inline]
-    fn read(&mut self) -> nb::Result<SpiWord<C>, Error> {
+    fn read(&mut self) -> nb::Result<C::Word, Error> {
         let flags = self.read_flags_errors()?;
         if flags.contains(Flags::RXC) {
             unsafe { Ok(self.read_data().as_()) }
@@ -1902,7 +1835,7 @@ where
     }
 
     #[inline]
-    fn send(&mut self, word: SpiWord<C>) -> nb::Result<(), Error> {
+    fn send(&mut self, word: C::Word) -> nb::Result<(), Error> {
         let flags = self.read_flags_errors()?;
         if flags.contains(Flags::DRE) {
             unsafe { self.write_data(word.as_()) };
@@ -1928,7 +1861,7 @@ macro_rules! impl_blocking_traits {
             impl<P, M> blocking::spi::Transfer<Word<$Length>> for Spi<Config<P, M, $Length>>
             where
                 P: Rx,
-                M: Mode,
+                M: OpMode,
                 Config<P, M, $Length>: ValidConfig,
             {
                 type Error = Error;
@@ -1970,7 +1903,7 @@ macro_rules! impl_blocking_traits {
             impl<P, M> blocking::spi::Write<Word<$Length>> for Spi<Config<P, M, $Length>>
             where
                 P: Tx + NotRx,
-                M: Mode,
+                M: OpMode,
                 Config<P, M, $Length>: ValidConfig,
             {
                 type Error = Error;
@@ -2008,7 +1941,7 @@ macro_rules! impl_blocking_traits {
             impl<P, M> blocking::spi::WriteIter<Word<$Length>> for Spi<Config<P, M, $Length>>
             where
                 P: Tx + NotRx,
-                M: Mode,
+                M: OpMode,
                 Config<P, M, $Length>: ValidConfig,
             {
                 type Error = Error;
@@ -2049,7 +1982,7 @@ impl<'a, P, M, L> blocking::spi::Transfer<u8> for Spi<Config<P, M, L>>
 where
     Config<P, M, L>: ValidConfig,
     P: Rx,
-    M: Mode,
+    M: OpMode,
     L: GreaterThan4,
 {
     type Error = Error;
@@ -2072,7 +2005,7 @@ where
 impl<P, M> blocking::spi::Transfer<u8> for Spi<Config<P, M, DynLength>>
 where
     P: Rx,
-    M: Mode,
+    M: OpMode,
     Config<P, M, DynLength>: ValidConfig<Length = DynLength>,
 {
     type Error = Error;
@@ -2141,7 +2074,7 @@ impl<P, M, L> blocking::spi::Write<u8> for Spi<Config<P, M, L>>
 where
     Config<P, M, L>: ValidConfig,
     P: Tx,
-    M: Mode,
+    M: OpMode,
     L: GreaterThan4,
 {
     type Error = Error;
@@ -2168,7 +2101,7 @@ where
 impl<P, M> blocking::spi::Write<u8> for Spi<Config<P, M, DynLength>>
 where
     P: Tx,
-    M: Mode,
+    M: OpMode,
     Config<P, M, DynLength>: ValidConfig<Length = DynLength>,
 {
     type Error = Error;

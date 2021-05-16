@@ -1,6 +1,8 @@
 use crate::clock;
+use crate::gpio::v2::pin::AnyPin;
 use crate::hal::spi::{FullDuplex, Mode, Phase, Polarity};
 use crate::sercom::pads::*;
+use crate::sercom::v2;
 use crate::spi_common::CommonSpi;
 use crate::target_device::sercom0::SPI;
 use crate::target_device::{PM, SERCOM0, SERCOM1};
@@ -55,9 +57,12 @@ macro_rules! spi_master {
                     /// Convert from a tuple of (MISO, MOSI, SCK) to SPIMasterXPadout
                     impl<PIN0, PIN1, PIN2> From<([<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, [<$Sercom $pad2>]<PIN2>)> for [<$Type Padout>]<[<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, [<$Sercom $pad2>]<PIN2>>
                     where
-                        PIN0: Map<$Sercom, $pad0>,
-                        PIN1: Map<$Sercom, $pad1>,
-                        PIN2: Map<$Sercom, $pad2>,
+                        PIN0: AnyPin,
+                        PIN1: AnyPin,
+                        PIN2: AnyPin,
+                        PIN0::Id: GetPadMode<$Sercom, $pad0>,
+                        PIN1::Id: GetPadMode<$Sercom, $pad1>,
+                        PIN2::Id: GetPadMode<$Sercom, $pad2>,
                     {
                         fn from(pads: ([<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, [<$Sercom $pad2>]<PIN2>)) -> [<$Type Padout>]<[<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, [<$Sercom $pad2>]<PIN2>> {
                             [<$Type Padout>] { _miso: pads.0, _mosi: pads.1, _sck: pads.2 }
@@ -66,9 +71,34 @@ macro_rules! spi_master {
 
                     impl<PIN0, PIN1, PIN2> DipoDopo for [<$Type Padout>]<[<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, [<$Sercom $pad2>]<PIN2>>
                     where
-                        PIN0: Map<$Sercom, $pad0>,
-                        PIN1: Map<$Sercom, $pad1>,
-                        PIN2: Map<$Sercom, $pad2>,
+                        PIN0: AnyPin,
+                        PIN1: AnyPin,
+                        PIN2: AnyPin,
+                        PIN0::Id: GetPadMode<$Sercom, $pad0>,
+                        PIN1::Id: GetPadMode<$Sercom, $pad1>,
+                        PIN2::Id: GetPadMode<$Sercom, $pad2>,
+                    {
+                        fn dipo_dopo(&self) -> (u8, u8) {
+                            $dipo_dopo
+                        }
+                    }
+
+                    impl<Id0, Id1, Id2> From<(v2::Pad<$Sercom, $pad0, Id0>, v2::Pad<$Sercom, $pad1, Id1>, v2::Pad<$Sercom, $pad2, Id2>)> for [<$Type Padout>]<v2::Pad<$Sercom, $pad0, Id0>, v2::Pad<$Sercom, $pad1, Id1>, v2::Pad<$Sercom, $pad2, Id2>>
+                    where
+                        Id0: v2::GetPadMode<$Sercom, $pad0>,
+                        Id1: v2::GetPadMode<$Sercom, $pad1>,
+                        Id2: v2::GetPadMode<$Sercom, $pad2>,
+                    {
+                        fn from(pads: (v2::Pad<$Sercom, $pad0, Id0>, v2::Pad<$Sercom, $pad1, Id1>, v2::Pad<$Sercom, $pad2, Id2>)) -> Self {
+                            [<$Type Padout>] { _miso: pads.0, _mosi: pads.1, _sck: pads.2 }
+                        }
+                    }
+
+                    impl<Id0, Id1, Id2> DipoDopo for [<$Type Padout>]<v2::Pad<$Sercom, $pad0, Id0>, v2::Pad<$Sercom, $pad1, Id1>, v2::Pad<$Sercom, $pad2, Id2>>
+                    where
+                        Id0: v2::GetPadMode<$Sercom, $pad0>,
+                        Id1: v2::GetPadMode<$Sercom, $pad1>,
+                        Id2: v2::GetPadMode<$Sercom, $pad2>,
                     {
                         fn dipo_dopo(&self) -> (u8, u8) {
                             $dipo_dopo

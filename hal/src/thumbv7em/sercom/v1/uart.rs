@@ -1,7 +1,9 @@
 use crate::clock;
+use crate::gpio::v2::pin::AnyPin;
 use crate::hal::blocking::serial::{write::Default, Write};
 use crate::hal::serial;
 use crate::sercom::pads::*;
+use crate::sercom::v2;
 use crate::target_device::sercom0::USART_INT;
 use crate::target_device::{MCLK, SERCOM0, SERCOM1, SERCOM2, SERCOM3, SERCOM4, SERCOM5};
 #[cfg(feature = "min-samd51n")]
@@ -99,8 +101,10 @@ macro_rules! uart {
                     /// Convert from a tuple of (RX, TX) to UARTXPadout
                     impl<PIN0, PIN1> From<([<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>)> for [<$Type Padout>]<[<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, (), ()>
                     where
-                        PIN0: Map<$Sercom, $pad0>,
-                        PIN1: Map<$Sercom, $pad1>,
+                        PIN0: AnyPin,
+                        PIN1: AnyPin,
+                        PIN0::Id: GetPadMode<$Sercom, $pad0>,
+                        PIN1::Id: GetPadMode<$Sercom, $pad1>,
                     {
                         fn from(pads: ([<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>)) -> [<$Type Padout>]<[<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, (), ()> {
                             [<$Type Padout>] { rx: pads.0, tx: pads.1, rts: (), cts: () }
@@ -109,8 +113,31 @@ macro_rules! uart {
 
                     impl<PIN0, PIN1> RxpoTxpo for [<$Type Padout>]<[<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, (), ()>
                     where
-                        PIN0: Map<$Sercom, $pad0>,
-                        PIN1: Map<$Sercom, $pad1>,
+                        PIN0: AnyPin,
+                        PIN1: AnyPin,
+                        PIN0::Id: GetPadMode<$Sercom, $pad0>,
+                        PIN1::Id: GetPadMode<$Sercom, $pad1>,
+                    {
+                        fn rxpo_txpo(&self) -> (u8, u8) {
+                            $rxpo_txpo
+                        }
+                    }
+
+                    /// Convert from a tuple of (RX, TX, RTS, CTS) to UARTXPadout
+                    impl<Id0, Id1> From<(v2::Pad<$Sercom, $pad0, Id0>, v2::Pad<$Sercom, $pad1, Id1>)> for [<$Type Padout>]<v2::Pad<$Sercom, $pad0, Id0>, v2::Pad<$Sercom, $pad1, Id1>, (), ()>
+                    where
+                        Id0: v2::GetPadMode<$Sercom, $pad0>,
+                        Id1: v2::GetPadMode<$Sercom, $pad1>,
+                    {
+                        fn from(pads: (v2::Pad<$Sercom, $pad0, Id0>, v2::Pad<$Sercom, $pad1, Id1>)) -> Self {
+                            [<$Type Padout>] { rx: pads.0, tx: pads.1, rts: (), cts: () }
+                        }
+                    }
+
+                    impl<Id0, Id1> RxpoTxpo for [<$Type Padout>]<v2::Pad<$Sercom, $pad0, Id0>, v2::Pad<$Sercom, $pad1, Id1>, (), ()>
+                    where
+                        Id0: v2::GetPadMode<$Sercom, $pad0>,
+                        Id1: v2::GetPadMode<$Sercom, $pad1>,
                     {
                         fn rxpo_txpo(&self) -> (u8, u8) {
                             $rxpo_txpo
@@ -123,10 +150,14 @@ macro_rules! uart {
                     /// Convert from a tuple of (RX, TX, RTS, CTS) to UARTXPadout
                     impl<PIN0, PIN1, PIN2, PIN3> From<([<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, [<$Sercom $pad2>]<PIN2>, [<$Sercom $pad3>]<PIN3>)> for [<$Type Padout>]<[<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, [<$Sercom $pad2>]<PIN2>, [<$Sercom $pad3>]<PIN3>>
                     where
-                        PIN0: Map<$Sercom, $pad0>,
-                        PIN1: Map<$Sercom, $pad1>,
-                        PIN2: Map<$Sercom, $pad2>,
-                        PIN3: Map<$Sercom, $pad3>,
+                        PIN0: AnyPin,
+                        PIN1: AnyPin,
+                        PIN2: AnyPin,
+                        PIN3: AnyPin,
+                        PIN0::Id: GetPadMode<$Sercom, $pad0>,
+                        PIN1::Id: GetPadMode<$Sercom, $pad1>,
+                        PIN2::Id: GetPadMode<$Sercom, $pad2>,
+                        PIN3::Id: GetPadMode<$Sercom, $pad3>,
                     {
                         fn from(pads: ([<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, [<$Sercom $pad2>]<PIN2>, [<$Sercom $pad3>]<PIN3>)) -> [<$Type Padout>]<[<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, [<$Sercom $pad2>]<PIN2>, [<$Sercom $pad3>]<PIN3>> {
                             [<$Type Padout>] { rx: pads.0, tx: pads.1, rts: pads.2, cts: pads.3 }
@@ -135,10 +166,39 @@ macro_rules! uart {
 
                     impl<PIN0, PIN1, PIN2, PIN3> RxpoTxpo for [<$Type Padout>]<[<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, [<$Sercom $pad2>]<PIN2>, [<$Sercom $pad3>]<PIN3>>
                     where
-                        PIN0: Map<$Sercom, $pad0>,
-                        PIN1: Map<$Sercom, $pad1>,
-                        PIN2: Map<$Sercom, $pad2>,
-                        PIN3: Map<$Sercom, $pad3>,
+                        PIN0: AnyPin,
+                        PIN1: AnyPin,
+                        PIN2: AnyPin,
+                        PIN3: AnyPin,
+                        PIN0::Id: GetPadMode<$Sercom, $pad0>,
+                        PIN1::Id: GetPadMode<$Sercom, $pad1>,
+                        PIN2::Id: GetPadMode<$Sercom, $pad2>,
+                        PIN3::Id: GetPadMode<$Sercom, $pad3>,
+                    {
+                        fn rxpo_txpo(&self) -> (u8, u8) {
+                            $rxpo_txpo
+                        }
+                    }
+
+                    /// Convert from a tuple of (RX, TX, RTS, CTS) to UARTXPadout
+                    impl<Id0, Id1, Id2, Id3> From<(v2::Pad<$Sercom, $pad0, Id0>, v2::Pad<$Sercom, $pad1, Id1>, v2::Pad<$Sercom, $pad2, Id2>, v2::Pad<$Sercom, $pad3, Id3>)> for [<$Type Padout>]<v2::Pad<$Sercom, $pad0, Id0>, v2::Pad<$Sercom, $pad1, Id1>, v2::Pad<$Sercom, $pad2, Id2>, v2::Pad<$Sercom, $pad3, Id3>>
+                    where
+                        Id0: v2::GetPadMode<$Sercom, $pad0>,
+                        Id1: v2::GetPadMode<$Sercom, $pad1>,
+                        Id2: v2::GetPadMode<$Sercom, $pad2>,
+                        Id3: v2::GetPadMode<$Sercom, $pad3>,
+                    {
+                        fn from(pads: (v2::Pad<$Sercom, $pad0, Id0>, v2::Pad<$Sercom, $pad1, Id1>, v2::Pad<$Sercom, $pad2, Id2>, v2::Pad<$Sercom, $pad3, Id3>)) -> Self {
+                            [<$Type Padout>] { rx: pads.0, tx: pads.1, rts: pads.2, cts: pads.3 }
+                        }
+                    }
+
+                    impl<Id0, Id1, Id2, Id3> RxpoTxpo for [<$Type Padout>]<v2::Pad<$Sercom, $pad0, Id0>, v2::Pad<$Sercom, $pad1, Id1>, v2::Pad<$Sercom, $pad2, Id2>, v2::Pad<$Sercom, $pad3, Id3>>
+                    where
+                        Id0: v2::GetPadMode<$Sercom, $pad0>,
+                        Id1: v2::GetPadMode<$Sercom, $pad1>,
+                        Id2: v2::GetPadMode<$Sercom, $pad2>,
+                        Id3: v2::GetPadMode<$Sercom, $pad3>,
                     {
                         fn rxpo_txpo(&self) -> (u8, u8) {
                             $rxpo_txpo

@@ -93,15 +93,14 @@
 //!
 //! ```
 //! use core::task::Poll;
-//! use atsamd_hal::pads_alias;
+//! use atsamd_hal::gpio::v2::{PA08, PA09, PA10, PA11, Pin, PushPullOutput};
 //! use atsamd_hal::sercom::v2::Sercom0;
-//! use atsamd_hal::sercom::v2::pads::{IoSet1, Pad0, Pad3};
-//! use atsamd_hal::sercom::v2::spi::{Master, lengths::U12};
+//! use atsamd_hal::sercom::v2::pad::{IoSet1, Pad0, Pad1, Pad3};
+//! use atsamd_hal::sercom::v2::spi::{self, Master, lengths::U12};
 //! use atsamd_hal::sercom::v2::spi_future::SpiFuture;
-//! use atsamd_hal::gpio::v2::pins::{Pin, PA10, PushPullOutput};
 //!
+//! type Pads = spi::Pads<Sercom0, IoSet1, (Pad0, PA08), (Pad3, PA11), (Pad1, PA09)>;
 //! type SS = Pin<PA10, PushPullOutput>;
-//! pads_alias!(type Pads = Pads<Sercom0, IoSet1, DI = Pad0, DO = Pad3>);
 //! type Spi = spi::Spi<spi::Config<Pads, Master, U12>>;
 //! type Future = SpiFuture<Spi, [u8; 12], SS, fn()>;
 //!
@@ -126,12 +125,12 @@
 //!             if let Poll::Ready(_) = future.poll() {
 //!                 let (spi, buf, ss) = opt_future.take().unwrap().free();
 //!                 *opt_spi_ss = Some((spi, ss));
-//!                 use_data(buf);
+//!                 consume_data(buf);
 //!             }
 //!         }
 //!         None => {
 //!             if let Some((spi, ss)) = opt_spi_ss.take() {
-//!                 let buf: [u8; 12] = get_data();
+//!                 let buf: [u8; 12] = produce_data();
 //!                 let future = opt_future.get_or_insert(
 //!                     SpiFuture::new(spi, buf)
 //!                         .with_waker(|| { task::spawn().ok(); })
@@ -185,12 +184,12 @@ use super::spi::{AnySpi, Error, Flags};
 
 #[cfg(feature = "min-samd51g")]
 use {
-    super::spi::{Config, DynLength, Mode, Spi, SpiLength, StaticLength, TxOrRx, ValidConfig},
+    super::spi::{Config, DynLength, OpMode, Spi, StaticLength, TxOrRx, ValidConfig},
     typenum::Unsigned,
 };
 
 #[cfg(any(feature = "samd11", feature = "samd21"))]
-use {super::spi::SpiWord, core::mem::size_of};
+use core::mem::size_of;
 
 #[cfg(any(feature = "samd11", feature = "samd21"))]
 type Data = u16;
@@ -208,13 +207,13 @@ pub trait CheckBufLen: AnySpi {
     /// [`Spi`] transaction length
     ///
     /// This value is zero for an [`Spi`] with [`DynLength`]
-    const LEN: usize = <SpiLength<Self::Config> as Unsigned>::USIZE;
+    const LEN: usize = <Self::Length as Unsigned>::USIZE;
 
     #[cfg(any(feature = "samd11", feature = "samd21"))]
     /// [`Spi`] transaction length
     ///
     /// [`Spi`]: super::spi::Spi
-    const LEN: usize = size_of::<SpiWord<Self::Config>>();
+    const LEN: usize = size_of::<Self::Word>();
 
     /// Return the [`Spi`] transaction length
     ///
@@ -272,7 +271,7 @@ impl<S: AnySpi> CheckBufLen for S {}
 impl<P, M, L> CheckBufLen for Spi<Config<P, M, L>>
 where
     P: TxOrRx,
-    M: Mode,
+    M: OpMode,
     L: StaticLength,
     Config<P, M, L>: ValidConfig,
 {
@@ -282,8 +281,8 @@ where
 impl<P, M> CheckBufLen for Spi<Config<P, M, DynLength>>
 where
     P: TxOrRx,
-    M: Mode,
-    Config<P, M, DynLength>: ValidConfig<Length = DynLength>,
+    M: OpMode,
+    Config<P, M, DynLength>: ValidConfig,
 {
     #[inline]
     fn len(&self) -> usize {
