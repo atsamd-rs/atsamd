@@ -63,16 +63,20 @@ impl DeviceDescBank {
     }
 
     /// These bits contains the maximum packet size of the endpoint.
+    ///
+    /// The maximum packet size is encoded in 3 bits; this method takes any u16
+    /// below 1024B and rounds up to the lowest endpoint size value which will
+    /// accommodate `size`.  Panics if a `size` > 1023 is supplied.
     pub fn set_endpoint_size(&mut self, size: u16) {
         let size = match size {
-            8 => 0u32,
-            16 => 1,
-            32 => 2,
-            64 => 3,
-            128 => 4,
-            256 => 5,
-            512 => 6,
-            1023 => 7,
+            1..=8 => 0u32,
+            9..=16 => 1,
+            17..=32 => 2,
+            33..=64 => 3,
+            65..=128 => 4,
+            129..=256 => 5,
+            257..=512 => 6,
+            513..=1023 => 7,
             _ => unreachable!(),
         };
         self.pcksize.set_size(size);
