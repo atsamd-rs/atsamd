@@ -20,8 +20,8 @@
 //! [`PA02`].
 //!
 //! A `PinMode` represents the various pin modes. The available `PinMode`
-//! variants are [`Disabled`], [`Input`], [`Output`] and [`Alternate`], each
-//! with its own corresponding configurations.
+//! variants are [`Disabled`], [`Input`], [`Interrupt`'], [`Output`] and
+//! [`Alternate`], each with its own corresponding configurations.
 //!
 //! It is not possible for users to create new instances of a [`Pin`]. Singleton
 //! instances of each pin are made available to users through the [`Pins`]
@@ -203,6 +203,45 @@ pub type PullDownInput = Input<PullDown>;
 pub type PullUpInput = Input<PullUp>;
 
 //==============================================================================
+//  Interrupt configurations
+//==============================================================================
+
+/// Type-level `enum` for Interrupt configurations
+pub trait InterruptConfig: Sealed {
+    /// Corresponding [`DynInterrupt`](super::DynInterrupt)
+    const DYN: DynInterrupt;
+}
+
+impl InterruptConfig for Floating {
+    const DYN: DynInterrupt = DynInterrupt::Floating;
+}
+impl InterruptConfig for PullDown {
+    const DYN: DynInterrupt = DynInterrupt::PullDown;
+}
+impl InterruptConfig for PullUp {
+    const DYN: DynInterrupt = DynInterrupt::PullUp;
+}
+
+/// Type-level variant of [`PinMode`] for Interrupt modes
+///
+/// Type `C` is one of three Interrupt configurations: [`Floating`],
+/// [`PullDown`] or [`PullUp`]
+pub struct Interrupt<C: InterruptConfig> {
+    cfg: PhantomData<C>,
+}
+
+impl<C: InterruptConfig> Sealed for Interrupt<C> {}
+
+/// Type-level variant of [`PinMode`] for floating Interrupt mode
+pub type FloatingInterrupt = Interrupt<Floating>;
+
+/// Type-level variant of [`PinMode`] for pull-down Interrupt mode
+pub type PullDownInterrupt = Interrupt<PullDown>;
+
+/// Type-level variant of [`PinMode`] for pull-up Interrupt mode
+pub type PullUpInterrupt = Interrupt<PullUp>;
+
+//==============================================================================
 //  Output configurations
 //==============================================================================
 
@@ -289,7 +328,7 @@ macro_rules! alternate {
     };
 }
 
-alternate!(A, B, C, D, E, F, G);
+alternate!(B, C, D, E, F, G);
 
 #[cfg(any(feature = "samd21", feature = "min-samd51g"))]
 alternate!(H);
@@ -327,6 +366,10 @@ impl<C: DisabledConfig> PinMode for Disabled<C> {
 
 impl<C: InputConfig> PinMode for Input<C> {
     const DYN: DynPinMode = DynPinMode::Input(C::DYN);
+}
+
+impl<C: InterruptConfig> PinMode for Interrupt<C> {
+    const DYN: DynPinMode = DynPinMode::Interrupt(C::DYN);
 }
 
 impl<C: OutputConfig> PinMode for Output<C> {
@@ -516,6 +559,24 @@ where
         self.into_mode()
     }
 
+    /// Configure the pin to operate as a floating interrupt
+    #[inline]
+    pub fn into_floating_interrupt(self) -> Pin<I, FloatingInterrupt> {
+        self.into_mode()
+    }
+
+    /// Configure the pin to operate as a pulled down interrupt
+    #[inline]
+    pub fn into_pull_down_interrupt(self) -> Pin<I, PullDownInterrupt> {
+        self.into_mode()
+    }
+
+    /// Configure the pin to operate as a pulled up interrupt
+    #[inline]
+    pub fn into_pull_up_interrupt(self) -> Pin<I, PullUpInterrupt> {
+        self.into_mode()
+    }
+
     /// Configure the pin to operate as a push-pull output
     #[inline]
     pub fn into_push_pull_output(self) -> Pin<I, PushPullOutput> {
@@ -668,7 +729,9 @@ impl_core_convert_from!(
     PullUpInput,
     PushPullOutput,
     ReadableOutput,
-    AlternateA,
+    FloatingInterrupt,
+    PullUpInterrupt,
+    PullDownInterrupt,
     AlternateB,
     AlternateC,
     AlternateD,
