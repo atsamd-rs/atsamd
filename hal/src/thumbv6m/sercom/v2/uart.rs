@@ -1,15 +1,12 @@
 use core::convert::{TryFrom, TryInto};
 use core::marker::PhantomData;
-use core::mem::transmute;
 
 use crate::target_device as pac;
 use crate::time::Hertz;
 use pac::{sercom0::RegisterBlock, PM};
 
-use crate::gpio::v2::{AnyPin, SpecificPin};
-use crate::sercom::v2::pads::{Map, Pad0, Pad1, Pad2, Pad3, PadNum};
-use crate::sercom::v2::pads::{OptionalPad, Pad, SomePad};
-use crate::sercom::v2::Sercom;
+use crate::gpio::v2::AnyPin;
+use crate::sercom::v2::*;
 use crate::typelevel::{Is, NoneT, Sealed};
 
 use bitflags::bitflags;
@@ -17,17 +14,30 @@ use embedded_hal::blocking;
 use embedded_hal::serial::{Read, Write};
 use nb::Error::WouldBlock;
 use num_traits::{AsPrimitive, PrimInt};
-use paste::paste;
 
 //=============================================================================
-// Pad configuration
+// RxpoTxpo
 //=============================================================================
 
-pub trait RxpoTxpo: AnyPads {
+/// Configure the `RXPO` and `TXPO` fields based on a set of [`Pads`]
+///
+/// According to the datasheet, the `RXPO` and `TXPO` values specify which
+/// SERCOM pads are used for various functions. Moreover, depending on which
+/// pads are actually in use, only certain combinations of these values make
+/// sense and are valid.
+///
+/// This trait is implemented for valid, four-tuple combinations of
+/// [`OptionalPadNum`]s. Those implementations are then lifted to the
+/// corresponding [`Pads`] types.
+///
+/// To satisfy this trait, the combination of `OptionalPadNum`s must specify
+/// [`SomePadNum`] for at least one of `RX` and `TX`. Furthermore, no
+/// two [`PadNum`]s can conflict.
+pub trait RxpoTxpo {
     /// `RXPO` field value
     const RXPO: u8;
 
-    /// `TXPO` field value
+    /// `RXPO` field value
     const TXPO: u8;
 
     /// Configure the pad according to [`Self::RXPO`] and [`Self::TXPO`]
@@ -40,491 +50,528 @@ pub trait RxpoTxpo: AnyPads {
     }
 }
 
-/// Implement [`RxpoTxpo`] for different [`PadNum`] combinations
-///
-/// This macro uses the push-down accumulation method to build an implementation
-/// of [`RxpoTxpo`] for a variable number of specified [`PadNum`]s. See this
-/// [link](https://veykril.github.io/tlborm/patterns/push-down-acc.html) for
-/// more details on the technique.
-macro_rules! impl_rxpo_txpo
+/// Lift the implementations of [`RxpoTxpo`] from four-tuples of
+/// [`OptionalPadNum`]s to the corresponding [`Pads`] types.
+impl<S, RX, TX, RTS, CTS> RxpoTxpo for Pads<S, RX, TX, RTS, CTS>
+where
+    S: Sercom,
+    RX: GetOptionalPad<S>,
+    TX: GetOptionalPad<S>,
+    RTS: GetOptionalPad<S>,
+    CTS: GetOptionalPad<S>,
+    (RX::PadNum, TX::PadNum, RTS::PadNum, CTS::PadNum): RxpoTxpo,
 {
-    // This is the entry pattern
-    (
-        ( $($pad:ident),+ ): ($RXPO:literal, $TXPO:literal)
-    ) => {
-        impl_rxpo_txpo!(
-            ( $($pad,)+ ): ($RXPO, $TXPO) -> []
-        );
-    };
+    const RXPO: u8 = <(RX::PadNum, TX::PadNum, RTS::PadNum, CTS::PadNum)>::RXPO;
+    const TXPO: u8 = <(RX::PadNum, TX::PadNum, RTS::PadNum, CTS::PadNum)>::TXPO;
+}
 
-    // If the [`Pad`] type is [`NoneT`], then no extra type parameters or trait
-    // bounds are needed in the implementation.
-    (
-        ( NoneT, $($pad:ident,)* ): ($RXPO:tt, $TXPO:tt) -> [ $($body:tt,)* ]
-    ) => {
-        impl_rxpo_txpo!(
-            ( $($pad,)* ): ($RXPO, $TXPO) -> [ $($body,)* { (), (NoneT) }, ]
-        );
-    };
+//=============================================================================
+// Implement RxpoTxpo
+//=============================================================================
 
+/// Filter [`PadNum`] permutations and implement [`RxpoTxpo`]
+#[rustfmt::skip]
+macro_rules! impl_rxpotxpo {
+    // This is the entry pattern. Start by checking RTS and CTS.
+    ($RX:ident, $TX:ident, $RTS:ident, $CTS:ident) => { impl_rxpotxpo!(@check_rts_cts, $RX, $TX, $RTS, $CTS); };
 
-    // To specify a [`Pad`] type with a particular [`PadNum`], you need to add
-    // a type parameter for the [`Map`] type and a trait bound to enforce it.
-    // Each type parameter must have a unique name, so create one by prepending
-    // the [`PadNum`] type with `M`, using the [`paste`] macro. The actual macro
-    // is not used until the final pattern.
-    (
-        ( $PadNum:ident, $($pad:ident,)* ): ($RXPO:tt, $TXPO:tt) -> [ $($body:tt,)* ]
-    ) => {
-        impl_rxpo_txpo!(
-            ( $($pad,)* ): ($RXPO, $TXPO) ->
-            [
-                $($body,)*
-                {
-                    ( [<M $PadNum>]: Map<S, $PadNum>, ),
-                    ( Pad<S, $PadNum, [<M $PadNum>]> )
-                },
-            ]
-        );
-    };
+    // Check whether RTS and CTS form a valid pair.
+    // They both must be the correct pad or absent.
+    (@check_rts_cts, $RX:ident, $TX:ident, NoneT, NoneT) => { impl_rxpotxpo!(@assign_rxpo, $RX, $TX, NoneT, NoneT); };
+    (@check_rts_cts, $RX:ident, $TX:ident, Pad2, NoneT) => { impl_rxpotxpo!(@assign_rxpo, $RX, $TX, Pad2, NoneT); };
+    (@check_rts_cts, $RX:ident, $TX:ident, NoneT, Pad3) => { impl_rxpotxpo!(@assign_rxpo, $RX, $TX, NoneT, Pad3); };
+    (@check_rts_cts, $RX:ident, $TX:ident, Pad2, Pad3) => { impl_rxpotxpo!(@assign_rxpo, $RX, $TX, Pad2, Pad3); };
 
-    // Build the complete implementation
-    (
-        (): ($RXPO:tt, $TXPO:tt) ->
-        [
-            $(
-                {
-                    ( $($Tp:tt)* ),
-                    ( $($Ty:tt)+ )
-                },
-            )+
-        ]
-    ) => {
-        paste! {
-            impl<S: Sercom, $( $($Tp)* )+ > RxpoTxpo for Pads<S, $( $($Ty)+, )+ > {
-                const RXPO: u8 = $RXPO;
-                const TXPO: u8 = $TXPO;
-            }
+    // If RTS and CTS are not valid, fall through to this pattern.
+    (@check_rts_cts, $RX:ident, $TX:ident, $RTS:ident, $CTS:ident) => { };
+
+    // Assign RXPO based on RX.
+    // Our options are exhaustive, so no fall through pattern is needed.
+    (@assign_rxpo, NoneT, $TX:ident, $RTS:ident, $CTS:ident) => { impl_rxpotxpo!(@assign_txpo, NoneT, $TX, $RTS, $CTS, 0); };
+    (@assign_rxpo, Pad0,  $TX:ident, $RTS:ident, $CTS:ident) => { impl_rxpotxpo!(@assign_txpo, Pad0,  $TX, $RTS, $CTS, 0); };
+    (@assign_rxpo, Pad1,  $TX:ident, $RTS:ident, $CTS:ident) => { impl_rxpotxpo!(@assign_txpo, Pad1,  $TX, $RTS, $CTS, 1); };
+    (@assign_rxpo, Pad2,  $TX:ident, $RTS:ident, $CTS:ident) => { impl_rxpotxpo!(@assign_txpo, Pad2,  $TX, $RTS, $CTS, 2); };
+    (@assign_rxpo, Pad3,  $TX:ident, $RTS:ident, $CTS:ident) => { impl_rxpotxpo!(@assign_txpo, Pad3,  $TX, $RTS, $CTS, 3); };
+
+    // Assign TXPO based on RX and RTS
+    (@assign_txpo, $RX:ident, NoneT, NoneT, $CTS:ident, $RXPO:literal) => { impl_rxpotxpo!(@filter_conflicts, $RX, NoneT, NoneT, $CTS, $RXPO, 0); };
+    (@assign_txpo, $RX:ident, NoneT, Pad2, $CTS:ident, $RXPO:literal) => { impl_rxpotxpo!(@filter_conflicts, $RX, NoneT, Pad2, $CTS, $RXPO, 2); };
+    (@assign_txpo, $RX:ident, Pad0, NoneT, $CTS:ident, $RXPO:literal) => { impl_rxpotxpo!(@filter_conflicts, $RX, Pad0, NoneT, $CTS, $RXPO, 0); };
+    (@assign_txpo, $RX:ident, Pad2, NoneT, $CTS:ident, $RXPO:literal) => { impl_rxpotxpo!(@filter_conflicts, $RX, Pad2, NoneT, $CTS, $RXPO, 1); };
+    (@assign_txpo, $RX:ident, Pad0, Pad2, $CTS:ident, $RXPO:literal) => { impl_rxpotxpo!(@filter_conflicts, $RX, Pad0, Pad2, $CTS, $RXPO, 2); };
+
+    // If TX is not valid, fall through to this pattern.
+    (@assign_txpo, $RX:ident, $TX:ident, $RTS:ident, $CTS:ident, $RXPO:literal) => { };
+
+    // Filter any remaining permutations that conflict.
+    (@filter_conflicts, NoneT, NoneT, $RTS:ident, $CTS:ident, $RXPO:literal, $TXPO:literal) => { };
+    (@filter_conflicts, Pad0, Pad0, $RTS:ident, $CTS:ident, $RXPO:literal, $TXPO:literal) => { };
+    (@filter_conflicts, Pad2, Pad2, $RTS:ident, $CTS:ident, $RXPO:literal, $TXPO:literal) => { };
+    (@filter_conflicts, Pad2, $TX:ident, Pad2, $CTS:ident, $RXPO:literal, $TXPO:literal) => { };
+    (@filter_conflicts, Pad3, $TX:ident, $RTS:ident, Pad3, $RXPO:literal, $TXPO:literal) => { };
+    (@filter_conflicts, $RX:ident, Pad2, Pad2, $CTS:ident, $RXPO:literal, $TXPO:literal) => { };
+
+    // If there are no conflicts, fall through to this pattern and implement RxpoTxpo
+    (@filter_conflicts, $RX:ident, $TX:ident, $RTS:ident, $CTS:ident, $RXPO:literal, $TXPO:literal) => {
+        impl RxpoTxpo for ($RX, $TX, $RTS, $CTS) {
+            const RXPO: u8 = $RXPO;
+            const TXPO: u8 = $TXPO;
         }
     };
 }
 
-// Only combinations with a valid pin for either `RX` or `TX`
-// have been considered. Other combinations would have no practical use.
+/// Try to implement [`RxpoTxpo`] on all possible 4-tuple permutations of
+/// [`OptionalPadNum`]s.
+///
+/// The leading `()` token tree stores a growing permutation of [`PadNum`]s.
+/// When it reaches four [`PadNum`]s, try to implement [`RxpoTxpo`].
+///
+/// The next `[]` token tree is a list of possible [`PadNum`]s to append to the
+/// growing permutation. Loop through this list and append each option to the
+/// permutation.
+///
+/// The final, optional `[]` token tree exists to temporarily store the entire
+/// list before pushing it down for the next permutation element.
+macro_rules! padnum_permutations {
+    // If we have built up four [`PadNum`]s, try to implement [`RxpoTxpo`].
+    // Ignore the remaining list of [`PadNum`]s.
+    (
+        ( $RX:ident $TX:ident $RTS:ident $CTS:ident ) [ $( $Pads:ident )* ]
+    ) => {
+        impl_rxpotxpo!($RX, $TX, $RTS, $CTS);
+    };
+    // If we only have one list of [`PadNum`]s, duplicate it, to save it for the
+    // next permutation element.
+    (
+        ( $($Perm:ident)* ) [ $($Pads:ident)+ ]
+    ) => {
+        padnum_permutations!( ( $($Perm)* ) [ $($Pads)+ ] [ $($Pads)+ ] );
+    };
+    (
+        ( $($Perm:ident)* ) [ $Head:ident $($Tail:ident)* ] [ $($Pads:ident)+ ]
+    ) => {
+        // Append the first [`PadNum`] from the list, then push down to the next
+        // permutation element.
+        padnum_permutations!( ( $($Perm)* $Head ) [ $($Pads)+ ] );
 
-// Rx Only
-impl_rxpo_txpo!((Pad0, NoneT, NoneT, NoneT): (0, 1));
-impl_rxpo_txpo!((Pad1, NoneT, NoneT, NoneT): (1, 0));
-impl_rxpo_txpo!((Pad2, NoneT, NoneT, NoneT): (2, 0));
-impl_rxpo_txpo!((Pad3, NoneT, NoneT, NoneT): (3, 0));
+        // Loop through the remaining [`PadNum`]s to do the same thing for each.
+        padnum_permutations!( ( $($Perm)* ) [ $($Tail)* ] [ $($Pads)+ ] );
+    };
+    // Once the list of [`PadNum`]s is empty, we're done with this element.
+    ( ( $($Perm:ident)* ) [ ] [ $($Pads:ident)+ ] ) => { };
+}
 
-// Rx + Flow Control
-impl_rxpo_txpo!((Pad1, NoneT, NoneT, Pad2): (1, 0));
-
-// Tx Only
-impl_rxpo_txpo!((NoneT, Pad0, NoneT, NoneT): (0, 0));
-impl_rxpo_txpo!((NoneT, Pad2, NoneT, NoneT): (0, 1));
-
-// Tx + Flow Control
-impl_rxpo_txpo!((NoneT, Pad0, Pad3, NoneT): (0, 2));
-
-// Rx + Tx
-impl_rxpo_txpo!((Pad0, Pad2, NoneT, NoneT): (0, 1));
-impl_rxpo_txpo!((Pad1, Pad0, NoneT, NoneT): (1, 0));
-impl_rxpo_txpo!((Pad1, Pad2, NoneT, NoneT): (1, 1));
-impl_rxpo_txpo!((Pad2, Pad0, NoneT, NoneT): (2, 0));
-impl_rxpo_txpo!((Pad3, Pad0, NoneT, NoneT): (3, 0));
-impl_rxpo_txpo!((Pad3, Pad2, NoneT, NoneT): (3,1));
-
-// Rx + Tx + Flow Control
-impl_rxpo_txpo!((Pad1, Pad0, Pad3, Pad2): (1, 2));
+padnum_permutations!( () [NoneT Pad0 Pad1 Pad2 Pad3] );
 
 //=============================================================================
 // Pads
-//============================================================================
+//=============================================================================
 
-/// Encapsulate the set of pads for a UART peripheral
+/// Container for a set of SERCOM [`Pad`]s
 ///
-/// This struct acts to encapsulate up to four [`Pad`]s for use with a UART
-/// peripheral. All of the [`Pad`]s must share the same [`Sercom`]. The four
-/// type parameters `RX`, `TX`, `CTS` and `RTS` represent the respective RX, TX,
-/// CTS and RTS [`Pad`] types.
+/// A [`Sercom`] can use up to four [`Pin`]s as peripheral [`Pad`]s, but only
+/// certain `Pin` combinations are acceptable. In particular, all `Pin`s must be
+/// mapped to the same `Sercom` (see the datasheet). This HAL makes it
+/// impossible to use invalid `Pin`/`Pad` combinations, and the [`Pads`] struct
+/// is responsible for enforcing these constraints.
 ///
-/// Each pad in this struct is an [`OptionalPad`]. When first initialized, each
-/// pad is set to [`NoneT`]. To be accepted as a valid set of [`Pads`] by the
-/// [`Config`] struct, the [`Pads`] must implement [`RxpoTxpo], which requires
-/// either the `RX` or `TX` pad to be [`SomePad`].
+/// A `Pads` type takes up to five type parameters. The first specifies the
+/// `Sercom`. The remaining four, `RX`, `TX`, `RTS` and CTS, represent the Tx
+/// Rx, Ready to send and Clear to send `Pad`s respectively, and they default to
+/// [`NoneT`]. These type parameters take two different forms, depending on the
+/// chip. For SAMD21 chips, they are effectively [`OptionalPinId`]s. While for
+/// SAMD11 chips, they are optional ([`PadNum`], [`PinId`]) tuples. See the
+/// [`GetPad`] trait for an explanation of the reasoning here.
 ///
-/// The [`Sercom`] type must be specified up front and is the same for each
-/// [`Pad`], but each [`Pad`] will have different [`PadNum`] and [`Map`] types.
-/// For SAMD11 and SAMD21 chips, the [`Map`] type is always a [`PinId`].
+/// ```
+/// use atsamd_hal::gpio::v2::{PA04, PA05, PA08, PA09};
+/// use atsamd_hal::sercom::v2::{Sercom0, uart};
+/// use atsamd_hal::sercom::v2::pad::{Pad0, Pad1};
+/// use atsamd_hal::typelevel::NoneT;
 ///
-/// Individual pads are set using a builder-pattern API. The argument to each
-/// function is a GPIO [`Pin`]. Both `v1` and `v2` pin types are accepted here.
-/// The [`PinId`] can be extracted from the [`Pin`] type, so there is no need to
-/// manually specify the [`Map`] type. But you will need to specify the desired
-/// [`PadNum`]. Based on the [`Sercom`], [`PadNum`] and [`PinId`] types, the
-/// [`Pin`] will be converted to the corresponding [`Pad`] automatically.
+/// // For SAMD21 chips
+/// type Pads = uart::Pads<Sercom0, PA08, NoneT, PA09>;
 ///
-/// The following example corresponds to a set of [`Pads`] with `RXPO = 1` and
-/// `TXPO = 0`. It is possible to create a set of [`Pads`] that does not
-/// implement [`RxpoTxpo`], but such [`Pads`] will not be accepted by
-/// [`Config`].
-///
-/// ```no_run
-/// # use atsamd_hal::target_device::Peripherals;
-/// # use atsamd_hal::gpio::v2::Pins;
-/// # use atsamd_hal::sercom::v2::Sercom0;
-/// # use atsamd_hal::sercom::v2::pads::{Pad0, Pad1, Pad2, Pad3};
-/// # use atsamd_hal::sercom::v2::uart;
-/// let mut peripherals = Peripherals::take().unwrap();
-/// let pins = Pins::new(peripherals.PORT);
-/// let pads = uart::Pads::<Sercom0>::new()
-///     .rx::<Pad1, _>(pins.pa09)
-///     .tx::<Pad0, _>(pins.pa08);
+/// // For SAMD11 chips
+/// type Pads = uart::Pads<Sercom0, (Pad0, PA04), NoneT, (Pad1, PA05)>;
 /// ```
 ///
-/// The [`Tx`], [`Rx`], [`NotTx`], [`NotRx`] and [`TxOrRx`] marker traits are
-/// implemented only for [`Pad`] combinations reflecting each trait's name.
+/// `Pads` are created using the builder pattern. Start by creating an empty set
+/// of `Pads` using [`Default`]. Then pass each respective `Pin` using the
+/// corresponding methods. Both `v1::Pin` and `v2::Pin` types are accepted here.
+///
+/// To be accepted as part of a [`ValidConfig`], a set of `Pads` must do two
+/// things: specify a type for at least one of `RX` or `TX`; and
+/// satisfy the [`RxpoTxpo`] trait.
+///
+/// ```
+/// use atsamd_hal::target_device::Peripherals;
+/// use atsamd_hal::gpio::v2::Pins;
+/// use atsamd_hal::sercom::v2::{Sercom0, uart};
+///
+/// let mut peripherals = Peripherals::take().unwrap();
+/// let pins = Pins::new(peripherals.PORT);
+/// let pads = uart::Pads::<Sercom0>::default()
+///     .rx(pins.pa08)
+///     .tx(pins.pa10);
+/// ```
 ///
 /// [`Pin`]: crate::gpio::v2::pin::Pin
 /// [`PinId`]: crate::gpio::v2::pin::PinId
-pub struct Pads<S, RX = NoneT, TX = NoneT, CTS = NoneT, RTS = NoneT>
+/// [`OptionalPinId`]: crate::gpio::v2::pin::OptionalPinId
+pub struct Pads<S, RX = NoneT, TX = NoneT, RTS = NoneT, CTS = NoneT>
 where
     S: Sercom,
-    RX: OptionalPad,
-    TX: OptionalPad,
-    CTS: OptionalPad,
-    RTS: OptionalPad,
+    RX: GetOptionalPad<S>,
+    TX: GetOptionalPad<S>,
+    RTS: GetOptionalPad<S>,
+    CTS: GetOptionalPad<S>,
 {
-    sercom: PhantomData<S>,
-    rx: RX,
-    tx: TX,
-    cts: CTS,
-    rts: RTS,
+    rx: RX::Pad,
+    tx: TX::Pad,
+    ready_to_send: RTS::Pad,
+    clear_to_send: CTS::Pad,
 }
 
-impl<S: Sercom> Pads<S> {
-    /// Create a new [`Pads`] struct
-    ///
-    /// All of the pads are initialized to [`NoneT`]
-    #[inline]
-    pub fn new() -> Pads<S> {
-        Pads {
-            sercom: PhantomData,
+impl<S: Sercom> Default for Pads<S> {
+    fn default() -> Self {
+        Self {
             rx: NoneT,
             tx: NoneT,
-            cts: NoneT,
-            rts: NoneT,
+            ready_to_send: NoneT,
+            clear_to_send: NoneT,
         }
     }
 }
 
-impl<S, RX, TX, CTS, RTS> Pads<S, RX, TX, CTS, RTS>
+impl<S, RX, TX, RTS, CTS> Pads<S, RX, TX, RTS, CTS>
 where
     S: Sercom,
-    RX: OptionalPad,
-    TX: OptionalPad,
-    CTS: OptionalPad,
-    RTS: OptionalPad,
+    RX: GetOptionalPad<S>,
+    TX: GetOptionalPad<S>,
+    RTS: GetOptionalPad<S>,
+    CTS: GetOptionalPad<S>,
 {
-    /// Set the `RX` [`Pad`] using [`PadNum`] `P`
-    ///
-    /// The type parameter `I` represents the GPIO [`Pin`] type. Its
-    /// corresponding [`PinId`] will be used as the [`Pad`]'s [`Map`] type.
-    ///
-    /// [`Pin`]: crate::gpio::v2::pin::Pin
-    /// [`PinId`]: crate::gpio::v2::pin::PinId
+    /// Consume the [`Pads`] and return each individual [`Pad`]
     #[inline]
-    pub fn rx<P, T>(self, rx: T) -> Pads<S, Pad<S, P, T::Id>, TX, CTS, RTS>
-    where
-        P: PadNum,
-        T: AnyPin,
-        T::Id: Map<S, P>,
-        Pad<S, P, T::Id>: From<SpecificPin<T>>,
-    {
-        Pads {
-            sercom: self.sercom,
-            rx: rx.into().into(),
-            tx: self.tx,
-            cts: self.cts,
-            rts: self.rts,
-        }
-    }
-
-    /// Set the `TX` [`Pad`] using [`PadNum`] `P`
-    ///
-    /// The type parameter `I` represents the GPIO [`Pin`] type. Its
-    /// corresponding [`PinId`] will be used as the [`Pad`]'s [`Map`] type.
-    ///
-    /// [`Pin`]: crate::gpio::v2::pin::Pin
-    /// [`PinId`]: crate::gpio::v2::pin::PinId
-    #[inline]
-    pub fn tx<P, T>(self, tx: T) -> Pads<S, RX, Pad<S, P, T::Id>, CTS, RTS>
-    where
-        P: PadNum,
-        T: AnyPin,
-        T::Id: Map<S, P>,
-        Pad<S, P, T::Id>: From<SpecificPin<T>>,
-    {
-        Pads {
-            sercom: self.sercom,
-            rx: self.rx,
-            tx: tx.into().into(),
-            cts: self.cts,
-            rts: self.rts,
-        }
-    }
-
-    /// Set the `CTS` [`Pad`] using [`PadNum`] `P`
-    ///
-    /// The type parameter `I` represents the GPIO [`Pin`] type. Its
-    /// corresponding [`PinId`] will be used as the [`Pad`]'s [`Map`] type.
-    ///
-    /// [`Pin`]: crate::gpio::v2::pin::Pin
-    /// [`PinId`]: crate::gpio::v2::pin::PinId
-    #[inline]
-    pub fn cts<P, T>(self, cts: T) -> Pads<S, RX, TX, Pad<S, P, T::Id>, RTS>
-    where
-        P: PadNum,
-        T: AnyPin,
-        T::Id: Map<S, P>,
-        Pad<S, P, T::Id>: From<SpecificPin<T>>,
-    {
-        Pads {
-            sercom: self.sercom,
-            rx: self.rx,
-            tx: self.tx,
-            cts: cts.into().into(),
-            rts: self.rts,
-        }
-    }
-
-    /// Set the `RTS` [`Pad`] using [`PadNum`] `P`
-    ///
-    /// The type parameter `I` represents the GPIO [`Pin`] type. Its
-    /// corresponding [`PinId`] will be used as the [`Pad`]'s [`Map`] type.
-    ///
-    /// [`Pin`]: crate::gpio::v2::pin::Pin
-    /// [`PinId`]: crate::gpio::v2::pin::PinId
-    #[inline]
-    pub fn rts<P, T>(self, rts: T) -> Pads<S, RX, TX, CTS, Pad<S, P, T::Id>>
-    where
-        P: PadNum,
-        T: AnyPin,
-        T::Id: Map<S, P>,
-        Pad<S, P, T::Id>: From<SpecificPin<T>>,
-    {
-        Pads {
-            sercom: self.sercom,
-            rx: self.rx,
-            tx: self.tx,
-            cts: self.cts,
-            rts: rts.into().into(),
-        }
-    }
-
-    /// Consume the [`Pads`] struct and free the individual [`Pad`]s
-    #[inline]
-    pub fn free(self) -> (RX, TX, CTS, RTS) {
-        (self.rx, self.tx, self.cts, self.rts)
+    pub fn free(self) -> (RX::Pad, TX::Pad, RTS::Pad, CTS::Pad) {
+        (self.rx, self.tx, self.ready_to_send, self.clear_to_send)
     }
 }
 
-/// Create an alias for a [`Pads`] type
+#[cfg(feature = "samd11")]
+impl<S, RX, TX, RTS, CTS> Pads<S, RX, TX, RTS, CTS>
+where
+    S: Sercom,
+    RX: GetOptionalPad<S>,
+    TX: GetOptionalPad<S>,
+    RTS: GetOptionalPad<S>,
+    CTS: GetOptionalPad<S>,
+{
+    /// Set the `RX` [`Pad`]
+    #[inline]
+    pub fn rx<N, I>(self, pin: impl AnyPin<Id = I>) -> Pads<S, (N, I), TX, RTS, CTS>
+    where
+        N: PadNum,
+        I: PadInfo<S, N>,
+    {
+        Pads {
+            rx: pin.into().into(),
+            tx: self.tx,
+            ready_to_send: self.ready_to_send,
+            clear_to_send: self.clear_to_send,
+        }
+    }
+
+    /// Set the `TX` [`Pad`]
+    #[inline]
+    pub fn tx<N, I>(self, pin: impl AnyPin<Id = I>) -> Pads<S, RX, (N, I), RTS, CTS>
+    where
+        N: PadNum,
+        I: PadInfo<S, N>,
+    {
+        Pads {
+            rx: self.rx,
+            tx: pin.into().into(),
+            ready_to_send: self.ready_to_send,
+            clear_to_send: self.clear_to_send,
+        }
+    }
+
+    /// Set the `SCK` [`Pad`]
+    #[inline]
+    pub fn ready_to_send<N, I>(self, pin: impl AnyPin<Id = I>) -> Pads<S, RX, TX, (N, I), CTS>
+    where
+        N: PadNum,
+        I: PadInfo<S, N>,
+    {
+        Pads {
+            rx: self.rx,
+            tx: self.tx,
+            ready_to_send: pin.into().into(),
+            clear_to_send: self.clear_to_send,
+        }
+    }
+
+    /// Set the `CTS` [`Pad`]
+    #[inline]
+    pub fn clear_to_send<N, I>(self, pin: impl AnyPin<Id = I>) -> Pads<S, RX, TX, RTS, (N, I)>
+    where
+        N: PadNum,
+        I: PadInfo<S, N>,
+    {
+        Pads {
+            rx: self.rx,
+            tx: self.tx,
+            ready_to_send: self.ready_to_send,
+            clear_to_send: pin.into().into(),
+        }
+    }
+}
+
+#[cfg(feature = "samd21")]
+impl<S, RX, TX, RTS, CTS> Pads<S, RX, TX, RTS, CTS>
+where
+    S: Sercom,
+    RX: GetOptionalPad<S>,
+    TX: GetOptionalPad<S>,
+    RTS: GetOptionalPad<S>,
+    CTS: GetOptionalPad<S>,
+{
+    /// Set the `RX` [`Pad`]
+    #[inline]
+    pub fn rx<I>(self, pin: impl AnyPin<Id = I>) -> Pads<S, I, TX, RTS, CTS>
+    where
+        I: PadInfo<S>,
+    {
+        Pads {
+            rx: pin.into().into(),
+            tx: self.tx,
+            ready_to_send: self.ready_to_send,
+            clear_to_send: self.clear_to_send,
+        }
+    }
+
+    /// Set the `TX` [`Pad`]
+    #[inline]
+    pub fn tx<I>(self, pin: impl AnyPin<Id = I>) -> Pads<S, RX, I, RTS, CTS>
+    where
+        I: PadInfo<S>,
+    {
+        Pads {
+            rx: self.rx,
+            tx: pin.into().into(),
+            ready_to_send: self.ready_to_send,
+            clear_to_send: self.clear_to_send,
+        }
+    }
+
+    /// Set the `SCK` [`Pad`]
+    #[inline]
+    pub fn ready_to_send<I>(self, pin: impl AnyPin<Id = I>) -> Pads<S, RX, TX, I, CTS>
+    where
+        I: PadInfo<S>,
+    {
+        Pads {
+            rx: self.rx,
+            tx: self.tx,
+            ready_to_send: pin.into().into(),
+            clear_to_send: self.clear_to_send,
+        }
+    }
+
+    /// Set the `CTS` [`Pad`]
+    #[inline]
+    pub fn clear_to_send<I>(self, pin: impl AnyPin<Id = I>) -> Pads<S, RX, TX, RTS, I>
+    where
+        I: PadInfo<S>,
+    {
+        Pads {
+            rx: self.rx,
+            tx: self.tx,
+            ready_to_send: self.ready_to_send,
+            clear_to_send: pin.into().into(),
+        }
+    }
+}
+
+//=============================================================================
+// uart_pads_from_pins
+//=============================================================================
+
+/// Define a set of [`uart::Pads`] using [`Pin`]s instead of
+/// ([`PadNum`], [`PinId`]) tuples
 ///
-/// Because it takes five type parameters, fully specifying a [`Pads`] type is
-/// tedious and error-prone. In normal code, the type parameters can usually be
-/// inferred. But some cases, like `static` variables, cannot use inference. In
-/// these cases, the [`pads_alias`] macro can make the process easier.
+/// In some cases, it is more convenient to specify a set of `uart::Pads` using
+/// `Pin`s or `Pin` aliases than it is to use the corresponding
+/// ([`PadNum`], [`PinId`]) tuples. This macro makes it easier to do so.
 ///
-/// A normal [`Pads`] alias declaration might look like this:
+/// The first argument to the macro is required and represents the [`Sercom`].
+/// The remaining four arguments are all optional. Each represents a
+/// corresponding type parameter of the `uart::Pads` type. Some of the types may
+/// be omitted, but any types that are specified, must be done in the order
+/// `RX`, `TX`, `RTS` & `CTS`.
 ///
 /// ```
-/// use atsamd_hal::sercom::v2::Sercom0;
-/// use atsamd_hal::sercom::v2::pads::{Pad, Pad1, Pad2, Pad3};
-/// use atsamd_hal::sercom::v2::uart;
-/// use atsamd_hal::gpio::v2::pins::{PA09, PA10, PA11};
-/// use atsamd_hal::typelevel::NoneT;
+/// use atsamd_hal::pac::Peripherals;
+/// use atsamd_hal::uart_pads_from_pins;
+/// use atsamd_hal::gpio::v2::{Pin, PA04, PA05, AlternateD, Pins};
+/// use atsamd_hal::sercom::v2::{Sercom0, uart};
 ///
-/// pub type Alias = uart::Pads<
-///     Sercom0,
-///     Pad<Sercom0, Pad1, PA09>,
-///     Pad<Sercom0, Pad0, PA08,
-///     NoneT,
-///     NoneT,
-/// >;
+/// type Rx = Pin<PA08, AlternateC>;
+/// type Rts = Pin<PA10, AlternateC>;
+/// pub type Pads = uart_pads_from_pins!(Sercom0, RX = Rx, RTS = Rts);
+///
+/// pub fn test() -> Pads {
+///     let peripherals = Peripherals::take().unwrap();
+///     let pins = Pins::new(peripherals.PORT);
+///     uart::Pads::<Sercom0>::default()
+///         .rx(pins.pa08)
+///         .tx(pins.pa10)
+/// }
 /// ```
 ///
-/// There is a lot of repetition and room for error in this declaration. The
-/// [`pads_alias`] macro simplifies this example to:
-///
-/// ```
-/// use atsamd_hal::pads_alias;
-///
-/// pads_alias!(pub type Alias = Pads<
-///     Sercom0,
-///     RX = (Pad1, PA09),
-///     TX = (Pad0, PA08)
-/// >);
-/// ```
-///
-/// The arguments specify a [`PadNum`] and [`PinId`] for the Rx and Tx
-/// No argument is provided for `CTS` or RTS, so the CTS and RTS [`Pad`] types
-/// will be set to [`NoneT`].
-///
-/// The `RX`, `TX`, `CTS` and `RTS` arguments are all optional. If a
-/// corresponding [`PadNum`] is not given, the respective [`Pad`] type will be
-/// [`NoneT`]. The [`PadNum`] arguments must always be specified in the
-/// indicated order: `RX`, `TX`, `CTS`, `RTS`.
-///
-/// To be accepted by the [`Config`] struct, the [`Pads`] must implement
-/// [`RxpoTxpo`], which requires [`SomePad`] for at least one of `RX`
-/// or `TX`.
-///
-/// [`PinId`]: crate::gpio::v2::pin::PinId
+/// [`uart::Pads`]: Pads
+/// [`Pin`]: crate::gpio::v2::Pin
+/// [`PinId`]: crate::gpio::v2::PinId
+#[cfg(feature = "samd11")]
 #[macro_export]
-macro_rules! uart_pads_alias {
+macro_rules! uart_pads_from_pins {
     (
-        $vis:vis type $Name:ident = Pads<
-            $Sercom:ident
-            $(, RX = ($RX_PadNum:ident, $TX_Id:ident))?
-            $(, TX = ($TX_PadNum:ident, $RX_Id:ident))?
-            $(, CTS = ($CTS_PadNum:ident, $CTS_Id:ident))?
-            $(, RTS = ($RTS_PadNum:ident, $RTS_Id:ident))?
-        >
+        $Sercom:ident
+        $( , RX = $RX:ty )?
+        $( , TX = $TX:ty )?
+        $( , RTS = $RTS:ty )?
+        $( , CTS = $CTS:ty )?
     ) => {
-        $vis type $Name = $crate::sercom::v2::uart::Pads<
+        $crate::sercom::v2::uart::Pads<
             $crate::sercom::v2::$Sercom,
-            __uart_pad_type!($($Sercom, $RX_PadNum, $RX_Id)?),
-            __uart_pad_type!($($Sercom, $TX_PadNum, $TX_Id)?),
-            __uart_pad_type!($($Sercom, $RTS_PadNum, $CTS_Id)?),
-            __uart_pad_type!($($Sercom, $CTS_PadNum, $RTS_Id)?),
-        >;
+            $crate::__opt_type!( $crate::sercom::v2::pad::PinToNITuple<$RX> ),
+            $crate::__opt_type!( $crate::sercom::v2::pad::PinToNITuple<$TX> ),
+            $crate::__opt_type!( $crate::sercom::v2::pad::PinToNITuple<$RTS> ),
+            $crate::__opt_type!( $crate::sercom::v2::pad::PinToNITuple<$CTS> ),
+        >
     };
 }
 
+/// Define a set of [`uart::Pads`] using [`Pin`]s instead of [`PinId`]s
+///
+/// In some cases, it is more convenient to specify a set of `uart::Pads` using
+/// `Pin`s or `Pin` aliases than it is to use the corresponding [`PinId`]s. This
+/// macro makes it easier to do so.
+///
+/// The first argument to the macro is required and represents the [`Sercom`].
+/// The remaining four arguments are all optional. Each represents a
+/// corresponding type parameter of the `uart::Pads` type. Some of the types may
+/// be omitted, but any types that are specified, must be done in the order
+/// `RX`, `TX`, `RTS` & `CTS`.
+///
+/// ```
+/// use atsamd_hal::pac::Peripherals;
+/// use atsamd_hal::uart_pads_from_pins;
+/// use atsamd_hal::gpio::v2::{Pin, PA08, PA09, AlternateC, Pins};
+/// use atsamd_hal::sercom::v2::{Sercom0, uart};
+///
+/// type Rx = Pin<PA08, AlternateC>;
+/// type Rts = Pin<PA10, AlternateC>;
+/// pub type Pads = uart_pads_from_pins!(Sercom0, RX = Rx, RTS = RTS);
+///
+/// pub fn test() -> Pads {
+///     let peripherals = Peripherals::take().unwrap();
+///     let pins = Pins::new(peripherals.PORT);
+///     uart::Pads::<Sercom0>::default()
+///         .rx(pins.pa08)
+///         .tx(pins.pa10)
+/// }
+/// ```
+///
+/// [`uart::Pads`]: Pads
+/// [`Pin`]: crate::gpio::v2::Pin
+/// [`PinId`]: crate::gpio::v2::PinId
+#[cfg(feature = "samd21")]
 #[macro_export]
-#[doc(hidden)]
-macro_rules! __uart_pad_type {
-    () => { NoneT };
-    ($Sercom:ident, $PadNum:ident, $Id:ident) => {
-        $crate::sercom::v2::pads::Pad<
+
+macro_rules! uart_pads_from_pins {
+    (
+        $Sercom:ident
+        $( , RX = $RX:ty )?
+        $( , TX = $TX:ty )?
+        $( , RTS = $RTS:ty )?
+        $( , CTS = $CTS:ty )?
+    ) => {
+        $crate::sercom::v2::uart::Pads<
             $crate::sercom::v2::$Sercom,
-            $crate::sercom::v2::pads::$PadNum,
-            $crate::gpio::v2::pin::$Id
+            $crate::__opt_type!( $( $crate::gpio::v2::SpecificPinId<$RX> )? ),
+            $crate::__opt_type!( $( $crate::gpio::v2::SpecificPinId<$TX> )? ),
+            $crate::__opt_type!( $( $crate::gpio::v2::SpecificPinId<$RTS> )? ),
+            $crate::__opt_type!( $( $crate::gpio::v2::SpecificPinId<$CTS> )? ),
         >
     };
 }
 
 //=============================================================================
-// AnyPads
+// PadSet
 //=============================================================================
 
-/// Meta-type representing any set of [`Pads`]
+/// Type-level function to recover the [`OptionalPad`] types from a generic set
+/// of [`Pads`]
 ///
 /// This trait is used as an interface between the [`Pads`] type and other
-/// types in this module. It serves to cut down on the total number of type
-/// parameters needed in the [`Config`] struct. The [`Config`] struct doesn't
-/// need access to the [`Pad`]s directly. Rather, it only needs to apply the
-/// [`SomePad`] trait bound when a [`Pad`] is required. The [`AnyPads`] trait
-/// allows each [`Config`] struct to store an instance of [`Pads`] without
-/// itself being generic over each [`Pad`] type.
+/// types in this module. It acts as a [type-level function], returning the
+/// corresponding [`Sercom`] and [`OptionalPad`] types. It serves to cut down on
+/// the total number of type parameters needed in the [`Config`] struct. The
+/// `Config` struct doesn't need access to the [`Pad`]s directly.  Rather, it
+/// only needs to apply the [`SomePad`] trait bound when a `Pad` is required.
+/// The `PadSet` trait allows each `Config` struct to store an instance of
+/// `Pads` without itself being generic over all six type parameters of the
+/// `Pads` type.
 ///
-/// Like other `Any*` types in this HAL, the [`SpecificPads`] type can be
-/// recovered using the [`Into`], [`AsRef`] and [`AsMut`] traits. However, there
-/// is unlikely to be a situation where that is useful for the [`Pads`] type.
-pub trait AnyPads: Sealed + Is<Type = SpecificPads<Self>> {
-    /// [`Sercom`] of the corresponding [`Pads`]
+/// [type-level function]: crate::typelevel#type-level-functions
+pub trait PadSet: Sealed {
     type Sercom: Sercom;
-
-    /// Rx [`Pad`] from the corresponding [`Pads`]
     type Rx: OptionalPad;
-
-    /// Tx [`Pad`] from the corresponding [`Pads`]
     type Tx: OptionalPad;
-
-    /// CTS [`Pad`] from the corresponding [`Pads`]
-    type Cts: OptionalPad;
-
-    /// RTS [`Pad`] from the corresponding [`Pads`]
     type Rts: OptionalPad;
+    type Cts: OptionalPad;
 }
 
-/// Type alias to recover the specific [`Pads`] type from an implementation of
-/// [`AnyPads`]
-pub type SpecificPads<P> = Pads<
-    <P as AnyPads>::Sercom,
-    <P as AnyPads>::Rx,
-    <P as AnyPads>::Tx,
-    <P as AnyPads>::Cts,
-    <P as AnyPads>::Rts,
->;
-
-/// Type alias to recover the [`Sercom`] type from an implementation of
-/// [`AnyPads`]
-pub type PadsSercom<P> = <P as AnyPads>::Sercom;
-
-/// Type alias to recover the Rx [`Pad`] type from an implementation of
-/// [`AnyPads`]
-pub type PadsRx<P> = <P as AnyPads>::Rx;
-
-/// Type alias to recover the Tx [`Pad`] type from an implementation of
-/// [`AnyPads`]
-pub type PadsTx<P> = <P as AnyPads>::Tx;
-
-/// Type alias to recover the CTS [`Pad`] type from an implementation of
-/// [`AnyPads`]
-pub type PadsCts<P> = <P as AnyPads>::Cts;
-
-/// Type alias to recover the Rts [`Pad`] type from an implementation of
-/// [`AnyPads`]
-pub type PadsRts<P> = <P as AnyPads>::Rts;
-
-impl<S, RX, TX, CTS, RTS> Sealed for Pads<S, RX, TX, CTS, RTS>
+impl<S, RX, TX, RTS, CTS> Sealed for Pads<S, RX, TX, RTS, CTS>
 where
     S: Sercom,
-    RX: OptionalPad,
-    TX: OptionalPad,
-    CTS: OptionalPad,
-    RTS: OptionalPad,
+    RX: GetOptionalPad<S>,
+    TX: GetOptionalPad<S>,
+    RTS: GetOptionalPad<S>,
+    CTS: GetOptionalPad<S>,
 {
 }
 
-impl<S, RX, TX, CTS, RTS> AnyPads for Pads<S, RX, TX, CTS, RTS>
+impl<S, RX, TX, RTS, CTS> PadSet for Pads<S, RX, TX, RTS, CTS>
 where
     S: Sercom,
-    RX: OptionalPad,
-    TX: OptionalPad,
-    CTS: OptionalPad,
-    RTS: OptionalPad,
+    RX: GetOptionalPad<S>,
+    TX: GetOptionalPad<S>,
+    RTS: GetOptionalPad<S>,
+    CTS: GetOptionalPad<S>,
 {
     type Sercom = S;
-    type Rx = RX;
-    type Tx = TX;
-    type Cts = CTS;
-    type Rts = RTS;
+    type Rx = RX::Pad;
+    type Tx = TX::Pad;
+    type Rts = RTS::Pad;
+    type Cts = CTS::Pad;
 }
 
-/// Implementation required to satisfy the `Is<Type = SpecificPads<Self>>` bound
-/// on [`AnyPads`]
-impl<P: AnyPads> AsRef<P> for SpecificPads<P> {
-    #[inline]
-    fn as_ref(&self) -> &P {
-        // SAFETY: This is guaranteed to be safe, because P == SpecificPads<P>
-        unsafe { transmute(self) }
-    }
-}
+//=============================================================================
+// ValidPads
+//=============================================================================
 
-/// Implementation required to satisfy the `Is<Type = SpecificPads<Self>>` bound
-/// on [`AnyPads`]
-impl<P: AnyPads> AsMut<P> for SpecificPads<P> {
-    #[inline]
-    fn as_mut(&mut self) -> &mut P {
-        // SAFETY: This is guaranteed to be safe, because P == SpecificPads<P>
-        unsafe { transmute(self) }
-    }
-}
+/// Marker trait for valid sets of [`Pads`]
+///
+/// This trait labels sets of [`Pads`] that satisfy the [`RxpoTxpo`] trait. It
+/// guarantees to the [`Config`] struct that this set of `Pads` can be
+/// configured through that trait.
+pub trait ValidPads: PadSet + RxpoTxpo {}
+
+impl<P: PadSet + RxpoTxpo> ValidPads for P {}
 
 //=============================================================================
 // Tx/Rx
@@ -533,11 +580,11 @@ impl<P: AnyPads> AsMut<P> for SpecificPads<P> {
 /// Marker trait for a set of [`Pads`] that can transmit
 ///
 /// To transmit, Tx must be [`SomePad`].
-pub trait Tx: AnyPads {}
+pub trait Tx: ValidPads {}
 
 impl<P> Tx for P
 where
-    P: AnyPads,
+    P: ValidPads,
     P::Tx: SomePad,
 {
 }
@@ -545,11 +592,11 @@ where
 /// Marker trait for a set of [`Pads`] that can receive
 ///
 /// To receive, Rx must be [`SomePad`].
-pub trait Rx: AnyPads {}
+pub trait Rx: ValidPads {}
 
 impl<P> Rx for P
 where
-    P: AnyPads,
+    P: ValidPads,
     P::Rx: SomePad,
 {
 }
@@ -558,43 +605,55 @@ where
 ///
 /// A set of [`Pads`] cannot be used to transmit when the Tx [`Pad`] is
 /// [`NoneT`].
-pub trait NotTx: AnyPads {}
+pub trait NotTx: ValidPads {}
 
-impl<P> NotTx for P where P: AnyPads<Tx = NoneT> {}
+impl<P> NotTx for P where P: ValidPads<Tx = NoneT> {}
 
 /// Marker trait for a set of [`Pads`] that cannot receive
 ///
 /// A set of [`Pads`] cannot be used to receive when the Rx [`Pad`] is
 /// [`NoneT`].
-pub trait NotRx: AnyPads {}
+pub trait NotRx: ValidPads {}
 
-impl<P> NotRx for P where P: AnyPads<Rx = NoneT> {}
+impl<P> NotRx for P where P: ValidPads<Rx = NoneT> {}
 
 /// Marker trait for a set of [`Pads`] that can transmit OR receive
 ///
-/// To satisfy this trait, one or both of
-/// Rx and Tx must be [`SomePad`].
-pub trait TxOrRx: AnyPads {}
+/// To satisfy this trait, one or both of Rx and Tx must be [`SomePad`].
+pub trait TxOrRx: ValidPads {}
 
-impl<S, RX, CTS, RTS> TxOrRx for Pads<S, RX, NoneT, CTS, RTS>
+impl<S, RX, RTS, CTS> TxOrRx for Pads<S, RX, NoneT, RTS, CTS>
 where
     S: Sercom,
-    RX: SomePad,
-    CTS: SomePad,
-    RTS: OptionalPad,
+    RX: GetPad<S> + GetPadMarker,
+    RTS: GetPad<S>,
+    CTS: GetOptionalPad<S>,
+    Self: RxpoTxpo,
 {
 }
 
-impl<S, TX, CTS, RTS> TxOrRx for Pads<S, NoneT, TX, CTS, RTS>
+impl<S, TX, RTS, CTS> TxOrRx for Pads<S, NoneT, TX, RTS, CTS>
 where
     S: Sercom,
-    TX: SomePad,
-    CTS: SomePad,
-    RTS: OptionalPad,
+    TX: GetPad<S> + GetPadMarker,
+    RTS: GetPad<S>,
+    CTS: GetOptionalPad<S>,
+    Self: RxpoTxpo,
 {
 }
 
-impl<P: Tx + Rx> TxOrRx for P {}
+//impl<P: Tx + Rx> TxOrRx for P {}
+
+impl<S, RX, TX, RTS, CTS> TxOrRx for Pads<S, RX, TX, RTS, CTS>
+where
+    S: Sercom,
+    RX: GetPad<S> + GetPadMarker,
+    TX: GetPad<S> + GetPadMarker,
+    RTS: GetPad<S>,
+    CTS: GetOptionalPad<S>,
+    Self: RxpoTxpo,
+{
+}
 
 //=============================================================================
 // Character size
@@ -711,7 +770,6 @@ bitflags! {
 }
 
 /// Error `enum` for UART transactions
-
 #[derive(Debug)]
 pub enum Error {
     ParityError,
@@ -760,7 +818,7 @@ impl TryFrom<Status> for () {
 /// [`enable`]: Config::enable
 pub struct Config<P, C = EightBit>
 where
-    P: RxpoTxpo,
+    P: ValidPads,
     C: CharSize,
 {
     sercom: P::Sercom,
@@ -769,7 +827,7 @@ where
     freq: Hertz,
 }
 
-impl<P: RxpoTxpo> Config<P> {
+impl<P: ValidPads> Config<P> {
     /// Create a new [`Config`] in the default configuration
     fn create(sercom: P::Sercom, pads: P, freq: impl Into<Hertz>) -> Self {
         Self::swrst(&sercom);
@@ -801,7 +859,7 @@ impl<P: RxpoTxpo> Config<P> {
 
 impl<P, C> Config<P, C>
 where
-    P: RxpoTxpo,
+    P: ValidPads,
     C: CharSize,
 {
     /// Reset the SERCOM peripheral
@@ -1051,105 +1109,66 @@ where
 // AnyConfig
 //=============================================================================
 
-/// Meta-type representing any [`Config`]
+/// Type class for all possible [`Config`] types
 ///
-/// All instances of [`Config`] implement this trait. When used as a trait
-/// bound, it acts to encapsulate a [`Config`]. Without this trait, a
-/// completely generic [`Config`] requires two type parameters, i.e.
-/// `Config<P, C>`. But when using this trait, only one type parameter is
-/// required, i.e. `C: AnyConfig`. However, even though we have dropped type
-/// parameters, no information is lost, because the [`Pads`] and
-/// [`CharSize`] type parameters are stored as associated types in the trait.
-/// The implementation of [`AnyConfig`] looks like this:
+/// This trait uses the [`AnyKind`] trait pattern to create a [type class] for
+/// [`Config`] types. See the `AnyKind` documentation for more details on the
+/// pattern.
 ///
-/// ```
-/// impl<P: Pads, C: CharSize> AnyConfig for Config<P, C> {
-///     type Pads = P;
-///     type CharSize = C;
-/// }
-/// ```
+/// In addition to the normal, `AnyKind` associated types. This trait also
+/// copies the [`Sercom`] and [`Word`] types, to make it easier to apply
+/// bounds to these types at the next level of abstraction.
 ///
-/// Thus, there is a one-to-one mapping between `Config<P, C>` and
-/// `AnyConfig<Pads = P, CharSize = C>`, so you can always recover the
-/// specific [`Config`] type from an implementation of [`AnyConfig`]. The type
-/// alias [`SpecificConfig`] is provided for this purpose. You can convert
-/// between [`AnyConfig`] and its corresponding [`SpecificConfig`] using the
-/// [`Into`], [`AsRef`] and [`AsMut`] traits.
+/// [`AnyKind`]: crate::typelevel#anykind-trait-patter
 pub trait AnyConfig: Sealed + Is<Type = SpecificConfig<Self>> {
-    type Pads: RxpoTxpo;
-    type CharSize: CharSize;
+    type Sercom: Sercom;
+    type Pads: ValidPads<Sercom = Self::Sercom>;
+    type Word: 'static;
+    type CharSize: CharSize<Word = Self::Word>;
 }
 
 /// Type alias to recover the specific [`Config`] type from an implementation of
 /// [`AnyConfig`]
 pub type SpecificConfig<C> = Config<<C as AnyConfig>::Pads, <C as AnyConfig>::CharSize>;
 
-/// Type alias to recover the [`Pads`] type from an implementation of
-/// [`AnyConfig`]
-pub type UartPads<C> = <C as AnyConfig>::Pads;
+impl<P, C> AsRef<Self> for Config<P, C>
+where
+    P: ValidPads,
+    C: CharSize,
+{
+    #[inline]
+    fn as_ref(&self) -> &Self {
+        self
+    }
+}
 
-/// Type alias to recover the [`CharSize`] type from an implementation of
-/// [`AnyConfig`]
-pub type UartCharSize<C> = <C as AnyConfig>::CharSize;
-
-/// Type alias to recover the [`Pads`]' [`Sercom`] type from an implementation
-/// of [`AnyConfig`]
-pub type UartSercom<C> = PadsSercom<UartPads<C>>;
-
-/// Type alias to recover the [`Pads`]' Rx [`Pad`] type from an
-/// implementation of [`AnyConfig`]
-pub type UartRx<C> = PadsRx<UartPads<C>>;
-
-/// Type alias to recover the [`Pads`]' Tx [`Pad`] type from an
-/// implementation of [`AnyConfig`]
-pub type UartTx<C> = PadsTx<UartPads<C>>;
-
-/// Type alias to recover the [`Pads`]' CTS [`Pad`] type from an implementation
-/// of [`AnyConfig`]
-pub type UartCts<C> = PadsCts<UartPads<C>>;
-
-/// Type alias to recover the [`Pads`]' SS [`Pad`] type from an implementation
-/// of [`AnyConfig`]
-pub type UartRts<C> = PadsRts<UartPads<C>>;
-
-/// Type alias to recover the [`CharSize`]'s [`Word`] type from an
-/// implementation of [`AnyConfig`]
-pub type UartWord<C> = Word<UartCharSize<C>>;
+impl<P, C> AsMut<Self> for Config<P, C>
+where
+    P: ValidPads,
+    C: CharSize,
+{
+    #[inline]
+    fn as_mut(&mut self) -> &mut Self {
+        self
+    }
+}
 
 impl<P, C> Sealed for Config<P, C>
 where
-    P: RxpoTxpo,
+    P: ValidPads,
     C: CharSize,
 {
 }
 
 impl<P, C> AnyConfig for Config<P, C>
 where
-    P: RxpoTxpo,
+    P: ValidPads,
     C: CharSize,
 {
+    type Sercom = P::Sercom;
+    type Word = C::Word;
     type Pads = P;
     type CharSize = C;
-}
-
-/// Implementation required to satisfy the `Is<Type = SpecificConfig<Self>>`
-/// bound on [`AnyConfig`]
-impl<C: AnyConfig> AsRef<C> for SpecificConfig<C> {
-    #[inline]
-    fn as_ref(&self) -> &C {
-        // SAFETY: This is guaranteed to be safe, because C == SpecificConfig<C>
-        unsafe { transmute(self) }
-    }
-}
-
-/// Implementation required to satisfy the `Is<Type = SpecificConfig<Self>>`
-/// bound on [`AnyConfig`]
-impl<C: AnyConfig> AsMut<C> for SpecificConfig<C> {
-    #[inline]
-    fn as_mut(&mut self) -> &mut C {
-        // SAFETY: This is guaranteed to be safe, because C == SpecificConfig<C>
-        unsafe { transmute(self) }
-    }
 }
 
 //=============================================================================
@@ -1164,7 +1183,7 @@ pub trait ValidConfig: AnyConfig {}
 
 impl<P, C> ValidConfig for Config<P, C>
 where
-    P: RxpoTxpo + TxOrRx,
+    P: ValidPads + TxOrRx,
     C: CharSize,
 {
 }
@@ -1177,7 +1196,8 @@ where
 ///
 /// When an [`Uart`] is [`Tx`]` + `[`Rx`], it implements [`Read`] + [`Write`],
 /// with a word type that depends on [`CharSize`]. The word type is [`u8`] for
-/// an [`EightBit`] [`CharSize`] and [`u16`] for a [`NineBit`] [`CharSize`].
+/// an [`EightBit`] or less [`CharSize`] and [`u16`] for a [`NineBit`]
+/// [`CharSize`].
 ///
 /// For half-duplex transactions, [`Uart`] implements the `serial` [`Read`] or
 /// [`Write`] traits.
@@ -1199,7 +1219,7 @@ impl<C: ValidConfig> Uart<C> {
     /// Directly accessing the `SERCOM` could break the invariants of the
     /// type-level tracking in this module, so it is unsafe.
     #[inline]
-    pub unsafe fn sercom(&self) -> &UartSercom<C> {
+    pub unsafe fn sercom(&self) -> &C::Sercom {
         &self.config.as_ref().sercom()
     }
 
@@ -1325,54 +1345,58 @@ impl<C: ValidConfig> Uart<C> {
 // AnyUart
 //=============================================================================
 
-/// Meta-type representing any [`Uart`]
+/// Type class for all possible [`Uart`] types
 ///
-/// This trait is implemented for every instance of [`Uart`]. It allows you to
-/// restrict a generic type to an [`Uart`] with explicitly naming the [`Uart`]
-/// type. Like other `Any*` traits in this HAL, you can recover the specific
-/// [`Uart`] type with the type alias [`SpecificUart`], and you can convert
-/// between [`AnyUart`] and its corresponding [`SpecificUart`] using the
-/// [`Into`], [`AsRef`] and [`AsMut`] traits.
+/// This trait uses the [`AnyKind`] trait pattern to create a [type class] for
+/// [`Uart`] types. See the `AnyKind` documentation for more details on the
+/// pattern.
 ///
-/// ```
-/// fn example<P: AnyUart>(mut any_uart: P) {
-///     let uart_mut: &mut SpecificUart<P> = any_uart.as_mut();
-///     let uart_ref: &SpecificUart<P> = any_uart.as_ref();
-///     let uart: SpecificUart<P> = any_uart.into();
-/// }
-/// ```
-pub trait AnyUart: Sealed + Is<Type = SpecificUart<Self>> {
-    type Config: ValidConfig;
+/// In addition to the normal, `AnyKind` associated types. This trait also
+/// copies the [`Sercom`], [`Pads`], [`CharSize`] and [`Word`]
+/// types, to make it easier to apply bounds to these types at the next level of
+/// abstraction.
+///
+/// [`AnyKind`]: crate::typelevel#anykind-trait-pattern
+/// [type class]: crate::typelevel#type-classes
+pub trait AnyUart: Is<Type = SpecificUart<Self>> {
+    type Sercom: Sercom;
+    type Pads: PadSet<Sercom = Self::Sercom>;
+    type CharSize: CharSize<Word = Self::Word>;
+    type Word: 'static;
+    type Config: ValidConfig<
+        Sercom = Self::Sercom,
+        Pads = Self::Pads,
+        CharSize = Self::CharSize,
+        Word = Self::Word,
+    >;
 }
 
 /// Type alias to recover the specific [`Uart`] type from an implementation of
 /// [`AnyUart`]
-pub type SpecificUart<T> = Uart<<T as AnyUart>::Config>;
+pub type SpecificUart<S> = Uart<<S as AnyUart>::Config>;
+
+impl<C: ValidConfig> AsRef<Self> for Uart<C> {
+    #[inline]
+    fn as_ref(&self) -> &Self {
+        self
+    }
+}
+
+impl<C: ValidConfig> AsMut<Self> for Uart<C> {
+    #[inline]
+    fn as_mut(&mut self) -> &mut Self {
+        self
+    }
+}
 
 impl<C: ValidConfig> Sealed for Uart<C> {}
 
 impl<C: ValidConfig> AnyUart for Uart<C> {
+    type Sercom = C::Sercom;
+    type Pads = C::Pads;
+    type CharSize = C::CharSize;
+    type Word = C::Word;
     type Config = C;
-}
-
-/// Implementation required to satisfy the `Is<Type = SpecificUart<Self>>` bound
-/// on [`AnyUart`]
-impl<U: AnyUart> AsRef<U> for SpecificUart<U> {
-    #[inline]
-    fn as_ref(&self) -> &U {
-        // SAFETY: This is guaranteed to be safe, because S == SpecificUart<S>
-        unsafe { transmute(self) }
-    }
-}
-
-/// Implementation required to satisfy the `Is<Type = SpecificUart<Self>>` bound
-/// on [`AnyUart`]
-impl<U: AnyUart> AsMut<U> for SpecificUart<U> {
-    #[inline]
-    fn as_mut(&mut self) -> &mut U {
-        // SAFETY: This is guaranteed to be safe, because S == SpecificUart<S>
-        unsafe { transmute(self) }
-    }
 }
 
 //=============================================================================
@@ -1382,9 +1406,6 @@ impl<U: AnyUart> AsMut<U> for SpecificUart<U> {
 /// Implement [`Read`] for [`Uart`]
 ///
 /// [`Read`] is only implemented when the [`Pads`] are [`Rx`].
-///
-/// [`Read`] does not have to initiate transactions, so
-/// it does not have to store any internal state. It only has to wait on `RXC`.
 impl<P, C> Read<C::Word> for Uart<Config<P, C>>
 where
     Config<P, C>: ValidConfig,
@@ -1413,17 +1434,17 @@ where
 ///
 /// This implementation never reads the DATA register and ignores all buffer
 /// overflow errors.
-impl<C> Write<UartWord<C>> for Uart<C>
+impl<C> Write<C::Word> for Uart<C>
 where
     C: ValidConfig,
     C::Pads: Tx,
-    UartWord<C>: PrimInt + AsPrimitive<u16>,
+    C::Word: PrimInt + AsPrimitive<u16>,
 {
     type Error = Error;
 
     /// Wait for a `DRE` flag, then write a word
     #[inline]
-    fn write(&mut self, word: UartWord<C>) -> nb::Result<(), Error> {
+    fn write(&mut self, word: C::Word) -> nb::Result<(), Error> {
         // Ignore buffer overflow errors
         if self.read_flags().contains(Flags::DRE) {
             unsafe { self.write_data(word.as_()) };
@@ -1445,10 +1466,10 @@ where
     }
 }
 
-impl<C> blocking::serial::write::Default<UartWord<C>> for Uart<C>
+impl<C> blocking::serial::write::Default<C::Word> for Uart<C>
 where
     C: ValidConfig,
-    Uart<C>: Write<UartWord<C>>,
+    Uart<C>: Write<C::Word>,
 {
 }
 
