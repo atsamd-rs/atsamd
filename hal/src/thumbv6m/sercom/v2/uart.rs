@@ -751,7 +751,7 @@ bitflags! {
 }
 
 //=============================================================================
-// Errors
+// Status
 //=============================================================================
 
 bitflags! {
@@ -772,10 +772,15 @@ bitflags! {
 /// Error `enum` for UART transactions
 #[derive(Debug)]
 pub enum Error {
+    /// Detected a parity error
     ParityError,
+    /// Detected a frame error
     FrameError,
+    /// Detected a buffer overflow
     Overflow,
+    /// Detected an inconsistent sync field
     InconsistentSyncField,
+    /// Detected a collision
     CollisionDetected,
 }
 
@@ -869,7 +874,7 @@ where
         while sercom.usart().syncbusy.read().swrst().bit_is_set() {}
     }
 
-    /// Change the [`Config`] [`Mode`] or [`CharSize`]
+    /// Change the [`Config`] [`CharSize`]
     #[inline]
     fn change<C2>(self) -> Config<P, C2>
     where
@@ -926,13 +931,13 @@ where
 
     /// Change the parity setting
     #[inline]
-    pub fn parity(self, parity: Option<ParityMode>) -> Self {
+    pub fn parity(self, parity: Option<Parity>) -> Self {
         // Use only the first two available settings in the FORM field.
         // Ignore auto-baud options.
         let enabled = if let Some(p) = parity {
             let odd = match p {
-                ParityMode::Even => false,
-                ParityMode::Odd => true,
+                Parity::Even => false,
+                Parity::Odd => true,
             };
             self.sercom.usart().ctrlb.modify(|_, w| w.pmode().bit(odd));
             true
@@ -1091,7 +1096,24 @@ where
             .modify(|_, w| w.enable().set_bit());
         while self.sercom.usart().syncbusy.read().enable().bit_is_set() {}
 
-        Uart { config: self }
+        // Perform a copy of the sercom instance, so that
+        // the read and write halves can access the sercom
+        // PAC struct independently.
+        let rx = UartRx {
+            sercom: unsafe { ConfigSercom::<Self>::steal() },
+            _config: PhantomData,
+        };
+
+        let tx = UartTx {
+            sercom: unsafe { ConfigSercom::<Self>::steal() },
+            _config: PhantomData,
+        };
+
+        Uart {
+            config: self,
+            rx,
+            tx,
+        }
     }
 
     /// Enable or disable the SERCOM peripheral, and wait for the ENABLE bit to
@@ -1130,6 +1152,10 @@ pub trait AnyConfig: Sealed + Is<Type = SpecificConfig<Self>> {
 /// Type alias to recover the specific [`Config`] type from an implementation of
 /// [`AnyConfig`]
 pub type SpecificConfig<C> = Config<<C as AnyConfig>::Pads, <C as AnyConfig>::CharSize>;
+
+/// Type alias to recover the specific [`Sercom`] type from an implementation of
+/// [`AnyConfig`]
+pub type ConfigSercom<C> = <C as AnyConfig>::Sercom;
 
 impl<P, C> AsRef<Self> for Config<P, C>
 where
@@ -1188,6 +1214,34 @@ where
 {
 }
 
+trait Registers: Sealed {
+    type Sercom: Sercom;
+    unsafe fn sercom(&self) -> &Self::Sercom;
+
+    /// Read the interrupt flags
+    fn read_flags(&self) -> Flags {
+        let bits = unsafe { self.sercom().usart().intflag.read().bits() };
+        Flags::from_bits_truncate(bits)
+    }
+
+    /// Read the error status flags
+    #[inline]
+    fn read_status(&self) -> Status {
+        let bits = unsafe { self.sercom().usart().status.read().bits() };
+        Status::from_bits_truncate(bits)
+    }
+
+    #[inline]
+    fn read_flags_errors(&self) -> Result<Flags, Error> {
+        self.read_status().try_into()?;
+        Ok(self.read_flags())
+    }
+}
+
+trait RxRegisters: Registers {}
+
+trait TxRegisters: Registers {}
+
 //=============================================================================
 // Uart
 //=============================================================================
@@ -1209,8 +1263,13 @@ where
 /// [`UartFuture`] type.
 ///
 /// [`UartFuture`]: crate::sercom::v2::uart_future::UartFuture
-pub struct Uart<C: ValidConfig> {
+pub struct Uart<C>
+where
+    C: ValidConfig,
+{
     config: C,
+    rx: UartRx<C, ConfigSercom<C>>,
+    tx: UartTx<C, ConfigSercom<C>>,
 }
 
 impl<C: ValidConfig> Uart<C> {
@@ -1239,7 +1298,7 @@ impl<C: ValidConfig> Uart<C> {
         // in case the call to update(self.config) panics. This should be safe
         // as either one of self.config or old_config will be used, and Config
         // does not deallocate when dropped.
-        let old_config = unsafe { core::ptr::read(&mut self.config as *const _) };
+        let old_config = unsafe { core::ptr::read(&mut self.config) };
         replace_with::replace_with(&mut self.config, || old_config, |c| update(c.into()).into());
 
         self.config.as_mut().enable_peripheral(true);
@@ -1255,13 +1314,6 @@ impl<C: ValidConfig> Uart<C> {
     #[inline]
     pub fn disable_interrupts(&mut self, flags: Flags) {
         self.config.as_mut().disable_interrupts(flags);
-    }
-
-    /// Read the interrupt status flags
-    #[inline]
-    pub fn read_flags(&self) -> Flags {
-        let bits = unsafe { self.sercom().usart().intflag.read().bits() };
-        Flags::from_bits_truncate(bits)
     }
 
     /// Clear interrupt status flags
@@ -1283,11 +1335,15 @@ impl<C: ValidConfig> Uart<C> {
         };
     }
 
-    /// Read the error status flags
+    /// Read the interrupt flags
+    pub fn read_flags(&self) -> Flags {
+        <Self as Registers>::read_flags(self)
+    }
+
+    /// Read the status flags
     #[inline]
     pub fn read_status(&self) -> Status {
-        let bits = unsafe { self.sercom().usart().status.read().bits() };
-        Status::from_bits_truncate(bits)
+        <Self as Registers>::read_status(self)
     }
 
     /// Clear error status flags
@@ -1304,10 +1360,11 @@ impl<C: ValidConfig> Uart<C> {
         };
     }
 
+    /// Read the status register and convert into a [`Result`]
+    /// containing the corresponding [`Error`]
     #[inline]
     pub fn read_flags_errors(&self) -> Result<Flags, Error> {
-        self.read_status().try_into()?;
-        Ok(self.read_flags())
+        <Self as Registers>::read_flags_errors(self)
     }
 
     /// Read from the DATA register
@@ -1317,7 +1374,7 @@ impl<C: ValidConfig> Uart<C> {
     /// this module.
     #[inline]
     pub unsafe fn read_data(&mut self) -> u16 {
-        self.sercom().usart().data.read().data().bits()
+        self.rx.read_data()
     }
 
     /// Write to the DATA register
@@ -1327,7 +1384,7 @@ impl<C: ValidConfig> Uart<C> {
     /// module.
     #[inline]
     pub unsafe fn write_data(&mut self, data: u16) {
-        self.sercom().usart().data.write(|w| w.data().bits(data))
+        self.tx.write_data(data)
     }
 
     /// Disable the UART peripheral and return the [`Config`] struct
@@ -1338,6 +1395,37 @@ impl<C: ValidConfig> Uart<C> {
         while usart.syncbusy.read().ctrlb().bit_is_set() {}
         self.config.as_mut().enable_peripheral(false);
         self.config
+    }
+}
+
+impl<C: ValidConfig> Registers for Uart<C> {
+    type Sercom = C::Sercom;
+
+    unsafe fn sercom(&self) -> &Self::Sercom {
+        self.config.as_ref().sercom()
+    }
+}
+
+impl<C> Uart<C>
+where
+    C: ValidConfig,
+    C::Pads: Rx + Tx,
+{
+    /// Split the [`Uart`] into Rx and Tx halves.
+    pub fn split(
+        self,
+    ) -> (
+        UartRx<C, ConfigSercom<C>>,
+        UartTx<C, ConfigSercom<C>>,
+        UartCore<C>,
+    ) {
+        (
+            self.rx,
+            self.tx,
+            UartCore {
+                config: self.config,
+            },
+        )
     }
 }
 
@@ -1400,17 +1488,98 @@ impl<C: ValidConfig> AnyUart for Uart<C> {
 }
 
 //=============================================================================
+// Rx/Tx halves
+//=============================================================================
+
+/// Read half of a split UART
+pub struct UartRx<C: ValidConfig, S: Sercom> {
+    sercom: S,
+    _config: PhantomData<C>,
+}
+
+impl<C: ValidConfig, S: Sercom> UartRx<C, S> {
+    /// Read from the DATA register
+    ///
+    /// Reading from the data register directly is `unsafe`, because it will
+    /// clear the RXC flag, which could break assumptions made elsewhere in
+    /// this module.
+    #[inline]
+    pub unsafe fn read_data(&mut self) -> u16 {
+        self.sercom.usart().data.read().data().bits()
+    }
+}
+
+impl<C: ValidConfig, S: Sercom> Registers for UartRx<C, S> {
+    type Sercom = S;
+
+    unsafe fn sercom(&self) -> &Self::Sercom {
+        &self.sercom
+    }
+}
+
+impl<C: ValidConfig, S: Sercom> Sealed for UartRx<C, S> {}
+
+/// Write half of a split UART
+pub struct UartTx<C: ValidConfig, S: Sercom> {
+    sercom: S,
+    _config: PhantomData<C>,
+}
+
+impl<C: ValidConfig, S: Sercom> UartTx<C, S> {
+    /// Write to the DATA register
+    ///
+    /// Writing to the data register directly is `unsafe`, because it will clear
+    /// the DRE flag, which could break assumptions made elsewhere in this
+    /// module.
+    #[inline]
+    pub unsafe fn write_data(&mut self, data: u16) {
+        self.sercom.usart().data.write(|w| w.data().bits(data))
+    }
+}
+
+impl<C: ValidConfig, S: Sercom> Registers for UartTx<C, S> {
+    type Sercom = S;
+
+    unsafe fn sercom(&self) -> &Self::Sercom {
+        &self.sercom
+    }
+}
+
+impl<C: ValidConfig, S: Sercom> Sealed for UartTx<C, S> {}
+
+/// Struct containing the core [`Config`] when a [`Uart`] is [`split`].
+///
+/// The `rx` and `tx` halves can be `join`ed to form a full-duplex [`Uart`]
+/// struct. `join`ing is necessary in order to reconfigure a [`Uart`], or
+/// [`free`] its resources.
+pub struct UartCore<C: ValidConfig> {
+    config: C,
+}
+
+impl<C> UartCore<C>
+where
+    C: ValidConfig,
+    C::Pads: Tx + Rx,
+{
+    /// Join the Rx and Tx halves back into a full [`Uart`] struct.
+    pub fn join(self, rx: UartRx<C, ConfigSercom<C>>, tx: UartTx<C, ConfigSercom<C>>) -> Uart<C> {
+        Uart {
+            config: self.config,
+            rx,
+            tx,
+        }
+    }
+}
+
+//=============================================================================
 // Embedded HAL traits
 //=============================================================================
 
-/// Implement [`Read`] for [`Uart`]
-///
-/// [`Read`] is only implemented when the [`Pads`] are [`Rx`].
-impl<P, C> Read<C::Word> for Uart<Config<P, C>>
+/// Implement [`Read`] for [`UartRx`].
+impl<C, S> Read<C::Word> for UartRx<C, S>
 where
-    Config<P, C>: ValidConfig,
-    P: RxpoTxpo + Rx,
-    C: CharSize,
+    C: ValidConfig,
+    S: Sercom,
     C::Word: PrimInt,
     u16: AsPrimitive<C::Word>,
 {
@@ -1428,16 +1597,31 @@ where
     }
 }
 
-/// Implement [`Write`] for [`Uart`]
+/// Implement [`Read`] for [`Uart`]
 ///
-/// [`Write`] is only implemented when the [`Pads`] are [`Tx`].
-///
-/// This implementation never reads the DATA register and ignores all buffer
-/// overflow errors.
-impl<C> Write<C::Word> for Uart<C>
+/// [`Read`] is only implemented when the [`Pads`] are [`Rx`].
+impl<C, E> Read<C::Word> for Uart<C>
 where
     C: ValidConfig,
-    C::Pads: Tx,
+    C::Pads: Rx,
+    C::Word: PrimInt,
+    u16: AsPrimitive<C::Word>,
+    UartRx<C, ConfigSercom<C>>: Read<C::Word, Error = E>,
+{
+    type Error = E;
+
+    /// Wait for an `RXC` flag, then read the word
+    #[inline]
+    fn read(&mut self) -> nb::Result<C::Word, E> {
+        self.rx.read()
+    }
+}
+
+/// Implement [`Write`] for [`UartTx`].
+impl<C, S> Write<C::Word> for UartTx<C, S>
+where
+    C: ValidConfig,
+    S: Sercom,
     C::Word: PrimInt + AsPrimitive<u16>,
 {
     type Error = Error;
@@ -1466,6 +1650,34 @@ where
     }
 }
 
+/// Implement [`Write`] for [`Uart`]
+///
+/// [`Write`] is only implemented when the [`Pads`] are [`Tx`].
+///
+/// This implementation never reads the DATA register and ignores all buffer
+/// overflow errors.
+impl<C, E> Write<C::Word> for Uart<C>
+where
+    C: ValidConfig,
+    C::Pads: Tx,
+    C::Word: PrimInt + AsPrimitive<u16>,
+    UartTx<C, ConfigSercom<C>>: Write<C::Word, Error = E>,
+{
+    type Error = E;
+
+    /// Wait for a `DRE` flag, then write a word
+    #[inline]
+    fn write(&mut self, word: C::Word) -> nb::Result<(), E> {
+        self.tx.write(word)
+    }
+
+    /// Wait for a `TXC` flag
+    #[inline]
+    fn flush(&mut self) -> nb::Result<(), E> {
+        self.tx.flush()
+    }
+}
+
 impl<C> blocking::serial::write::Default<C::Word> for Uart<C>
 where
     C: ValidConfig,
@@ -1473,12 +1685,18 @@ where
 {
 }
 
+/// Number of stop bits in a UART frame
 pub enum StopBits {
+    /// 1 stop bit
     OneBit = 0,
+    /// 2 stop bits
     TwoBits = 1,
 }
 
-pub enum ParityMode {
+/// Parity setting of a UART frame
+pub enum Parity {
+    /// Even parity
     Even = 0,
+    /// Odd parity
     Odd = 1,
 }

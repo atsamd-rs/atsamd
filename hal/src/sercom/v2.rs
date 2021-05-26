@@ -55,6 +55,14 @@ pub trait Sercom: Sealed + Deref<Target = sercom0::RegisterBlock> {
     const DMA_TX_TRIGGER: TriggerSource;
     /// Enable the corresponding APB clock
     fn enable_apb_clock(&mut self, ctrl: &APB_CLK_CTRL);
+    /// Get a copy of the corresponding PAC struct
+    ///
+    /// # Safety
+    ///
+    /// If a PAC struct is stolen, an interface should be designed
+    /// to ensure that two objects holding the same PAC struct
+    /// may not write to the same registers.
+    unsafe fn steal() -> Self;
 }
 
 macro_rules! sercom {
@@ -73,6 +81,10 @@ macro_rules! sercom {
                     #[inline]
                     fn enable_apb_clock(&mut self, ctrl: &APB_CLK_CTRL) {
                         ctrl.$apbmask.modify(|_, w| w.[<sercom#N _>]().set_bit());
+                    }
+                    #[inline]
+                    unsafe fn steal() -> Self {
+                        pac::Peripherals::steal().SERCOM#N
                     }
                 }
             }
