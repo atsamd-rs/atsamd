@@ -626,7 +626,7 @@ impl<S, RX, RTS, CTS> TxOrRx for Pads<S, RX, NoneT, RTS, CTS>
 where
     S: Sercom,
     RX: GetPad<S> + GetPadMarker,
-    RTS: GetPad<S>,
+    RTS: GetOptionalPad<S>,
     CTS: GetOptionalPad<S>,
     Self: RxpoTxpo,
 {
@@ -636,7 +636,7 @@ impl<S, TX, RTS, CTS> TxOrRx for Pads<S, NoneT, TX, RTS, CTS>
 where
     S: Sercom,
     TX: GetPad<S> + GetPadMarker,
-    RTS: GetPad<S>,
+    RTS: GetOptionalPad<S>,
     CTS: GetOptionalPad<S>,
     Self: RxpoTxpo,
 {
@@ -649,7 +649,7 @@ where
     S: Sercom,
     RX: GetPad<S> + GetPadMarker,
     TX: GetPad<S> + GetPadMarker,
-    RTS: GetPad<S>,
+    RTS: GetOptionalPad<S>,
     CTS: GetOptionalPad<S>,
     Self: RxpoTxpo,
 {
@@ -741,8 +741,8 @@ bitflags! {
     /// INTFLAG register.
     pub struct Flags: u8 {
         const DRE = 0x01;
-        const RXC = 0x02;
-        const TXC = 0x04;
+        const TXC = 0x02;
+        const RXC = 0x04;
         const RXS = 0x08;
         const CTSIC = 0x10;
         const RXBRK = 0x20;
@@ -997,27 +997,36 @@ where
     ///
     /// This function will calculate the best BAUD register setting based on the
     /// stored GCLK frequency and desired baud rate. The maximum baud rate is
-    /// GCLK frequency/16. Values outside this range will saturate at the
+    /// GCLK frequency/oversampling. Values outside this range will saturate at the
     /// maximum supported baud rate.
     ///
-    /// Note that currently, only 16x oversampling, asynchronous arithmetic mode
-    /// is supported.
+    /// Note that 3x oversampling is not supported.
     #[inline]
-    pub fn baud<B: Into<Hertz>>(self, baud: B) -> Self {
+    pub fn baud<B: Into<Hertz>>(self, baud: B, mode: BaudMode) -> Self {
         let baud: Hertz = baud.into();
 
-        // Use 16x oversampling, asynchronous arithmetic mode
-        const N_SAMPLES: u8 = 16;
         self.sercom
             .usart()
             .ctrla
-            .modify(|_, w| unsafe { w.sampr().bits(0) });
+            .modify(|_, w| unsafe { w.sampr().bits(mode.sampr()) });
 
-        let baud = Self::calculate_baud_asynchronous_arithm(baud.0, self.freq.0, N_SAMPLES);
+        let baud = match mode {
+            BaudMode::Arithmetic(n) => {
+                let n_samples = n as u8;
+                Self::calculate_baud_asynchronous_arithm(baud.0, self.freq.0, n_samples)
+            }
+
+            BaudMode::Fractional(n) => {
+                let n_samples = n as u8;
+                todo!();
+            }
+        };
+
         self.sercom
             .usart()
             .baud()
             .modify(|_, w| unsafe { w.baud().bits(baud) });
+
         self
     }
 
@@ -1026,12 +1035,18 @@ where
     /// 24-2)
     fn calculate_baud_asynchronous_arithm(baudrate: u32, clk_freq: u32, n_samples: u8) -> u16 {
         const SHIFT: u8 = 32;
-        let sample_rate = (n_samples as u64 * baudrate as u64) << 32;
+        let sample_rate = (n_samples as u64 * baudrate as u64) << SHIFT;
         let ratio = sample_rate / clk_freq as u64;
         let scale = (1u64 << SHIFT) - ratio;
         let baud_calculated = (65536u64 * scale) >> SHIFT;
 
         baud_calculated as u16
+    }
+
+    #[inline]
+    /// Calculate baudrate value using the asynchronous frational method (Table 24-2)
+    fn calculate_baud_asynchronous_fractional(baudrate: u32, clk_freq: u32, n_samples: u8) -> u16 {
+        todo!();
     }
 
     /// Control the buffer overflow notification
@@ -1699,4 +1714,40 @@ pub enum Parity {
     Even = 0,
     /// Odd parity
     Odd = 1,
+}
+
+/// Baudrate oversampling values
+///
+/// *NOTE* 3x oversampling has been intentionally left out
+pub enum Oversampling {
+    // 3 samples per bit
+    // Bits3 = 3,
+    /// 8 samples per bit
+    Bits8 = 8,
+    /// 16 samples per bit
+    Bits16 = 16,
+}
+
+/// Baudrate calculation in asynchronous mode
+pub enum BaudMode {
+    Arithmetic(Oversampling),
+    Fractional(Oversampling),
+}
+
+impl BaudMode {
+    pub(super) fn sampr(&self) -> u8 {
+        use BaudMode::*;
+        use Oversampling::*;
+        match self {
+            Arithmetic(n) => match n {
+                Bits16 => 0,
+                Bits8 => 2,
+            },
+
+            Fractional(n) => match n {
+                Bits16 => 1,
+                Bits8 => 3,
+            },
+        }
+    }
 }
