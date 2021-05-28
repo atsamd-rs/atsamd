@@ -89,12 +89,12 @@
 //! transaction, that will now run uninterrupted until it is stopped.
 
 use super::{
-    channel::{AnyChannel, Busy, CallbackStatus, Channel, ChannelId, Ready},
+    channel::{AnyChannel, Busy, CallbackStatus, Channel, ChannelId, InterruptFlags, Ready},
     dma_controller::{ChId, TriggerAction, TriggerSource},
-    BlockTransferControl, DmacDescriptor, DESCRIPTOR_SECTION,
+    BlockTransferControl, DmacDescriptor, DmacError, Result, DESCRIPTOR_SECTION,
 };
 use crate::typelevel::{Is, Sealed};
-use core::{mem, sync::atomic};
+use core::{mem, ptr::null_mut, sync::atomic};
 use modular_bitfield::prelude::*;
 
 //==============================================================================
@@ -149,7 +149,7 @@ impl_beat!(
 pub unsafe trait Buffer {
     type Beat: Beat;
     /// Pointer to the buffer. If the buffer is incrementing, the address should
-    /// point to the last beat transfer in the block.
+    /// point to one past the last beat transfer in the block.
     fn dma_ptr(&mut self) -> *mut Self::Beat;
     /// Return whether the buffer pointer should be incrementing or not
     fn incrementing(&self) -> bool;
@@ -330,17 +330,97 @@ where
         source: S,
         destination: D,
         circular: bool,
-    ) -> Transfer<C, BufferPair<S, D>> {
-        let src_len = source.buffer_len();
-        let dst_len = destination.buffer_len();
-
-        if src_len > 1 && dst_len > 1 {
-            assert_eq!(src_len, dst_len);
-        }
+    ) -> Result<Transfer<C, BufferPair<S, D>>> {
+        Self::check_buffer_pair(&source, &destination)?;
 
         // SAFETY: The safety checks are done by the function signature and the buffer
         // length verification
-        unsafe { Self::new_unchecked(chan, source, destination, circular) }
+        Ok(unsafe { Self::new_unchecked(chan, source, destination, circular) })
+    }
+}
+
+/// Methods on a `Transfer` holding a channel in any status
+impl<S, D, C, P, W> Transfer<C, BufferPair<S, D>, P, W>
+where
+    S: Buffer,
+    D: Buffer<Beat = S::Beat>,
+    C: AnyChannel,
+{
+    fn check_buffer_pair(source: &S, destination: &D) -> Result<()> {
+        let src_len = source.buffer_len();
+        let dst_len = destination.buffer_len();
+
+        if src_len > 1 && dst_len > 1 && src_len != dst_len {
+            Err(DmacError::LengthMismatch)
+        } else {
+            Ok(())
+        }
+    }
+}
+
+/// Methods on a `Transfer` holding a channel in any status
+impl<S, D, C, P, W> Transfer<C, BufferPair<S, D>, P, W>
+where
+    S: Buffer,
+    D: Buffer<Beat = S::Beat>,
+    C: AnyChannel,
+{
+    unsafe fn fill_descriptor(source: &mut S, destination: &mut D, circular: bool) {
+        let id = <C as AnyChannel>::Id::USIZE;
+
+        // Enable support for circular transfers. If circular_xfer is true,
+        // we set the address of the "next" block descriptor to actually
+        // be the same address as the current block descriptor.
+        // Otherwise we set it to NULL, which terminates the transaction.
+        // TODO: Enable support for linked lists (?)
+        let descaddr = if circular {
+            // SAFETY This is safe as we are only reading the descriptor's address,
+            // and not actually writing any data to it. We also assume the descriptor
+            // will never be moved.
+            &mut DESCRIPTOR_SECTION[id] as *mut _
+        } else {
+            null_mut()
+        };
+
+        let src_ptr = source.dma_ptr();
+        let src_inc = source.incrementing();
+        let src_len = source.buffer_len();
+
+        let dst_ptr = destination.dma_ptr();
+        let dst_inc = destination.incrementing();
+        let dst_len = destination.buffer_len();
+
+        let length = core::cmp::max(src_len, dst_len);
+
+        // Channel::xfer_complete() tests the channel enable bit, which indicates
+        // that a transfer has completed iff the blockact field in btctrl is not
+        // set to SUSPEND.  We implicitly leave blockact set to NOACT here; if
+        // that changes Channel::xfer_complete() may need to be modified.
+        let btctrl = BlockTransferControl::new()
+            .with_srcinc(src_inc)
+            .with_dstinc(dst_inc)
+            .with_beatsize(S::Beat::BEATSIZE)
+            .with_valid(true);
+
+        let xfer_descriptor = DmacDescriptor {
+            // Next descriptor address:  0x0 terminates the transaction (no linked list),
+            // any other address points to the next block descriptor
+            descaddr,
+            // Source address: address of the last beat transfer source in block
+            srcaddr: src_ptr as *mut _,
+            // Destination address: address of the last beat transfer destination in block
+            dstaddr: dst_ptr as *mut _,
+            // Block transfer count: number of beats in block transfer
+            btcnt: length as u16,
+            // Block transfer control: Datasheet  section 19.8.2.1 p.329
+            btctrl,
+        };
+
+        // SAFETY this is safe as long as we ONLY write to the descriptor
+        // belonging to OUR channel. We assume this is the only place
+        // in the entire library that this section or the array
+        // will be written to.
+        DESCRIPTOR_SECTION[id] = xfer_descriptor;
     }
 }
 
@@ -371,58 +451,7 @@ where
         mut destination: D,
         circular: bool,
     ) -> Transfer<C, BufferPair<S, D>> {
-        let id = ChannelId::<C>::USIZE;
-
-        // Enable support for circular transfers. If circular_xfer is true,
-        // we set the address of the "next" block descriptor to actually
-        // be the same address as the current block descriptor.
-        // Otherwise we set it to 0 (terminates the transaction)
-        // TODO: Enable support for linked lists (?)
-        #[allow(clippy::zero_ptr)]
-        let descaddr = if circular {
-            // SAFETY This is safe as we are only reading the descriptor's address,
-            // and not actually writing any data to it. We also assume the descriptor
-            // will never be moved.
-            &mut DESCRIPTOR_SECTION[id] as *mut _
-        } else {
-            0 as *mut _
-        };
-
-        let src_ptr = source.dma_ptr();
-        let src_inc = source.incrementing();
-        let src_len = source.buffer_len();
-
-        let dst_ptr = destination.dma_ptr();
-        let dst_inc = destination.incrementing();
-        let dst_len = destination.buffer_len();
-
-        let length = core::cmp::max(src_len, dst_len);
-
-        let btctrl = BlockTransferControl::new()
-            .with_srcinc(src_inc)
-            .with_dstinc(dst_inc)
-            .with_beatsize(S::Beat::BEATSIZE)
-            .with_valid(true);
-
-        let xfer_descriptor = DmacDescriptor {
-            // Next descriptor address:  0x0 terminates the transaction (no linked list),
-            // any other address points to the next block descriptor
-            descaddr,
-            // Source address: address of the last beat transfer source in block
-            srcaddr: src_ptr as *mut _,
-            // Destination address: address of the last beat transfer destination in block
-            dstaddr: dst_ptr as *mut _,
-            // Block transfer count: number of beats in block transfer
-            btcnt: length as u16,
-            // Block transfer control: Datasheet  section 19.8.2.1 p.329
-            btctrl,
-        };
-
-        // SAFETY this is safe as long as we ONLY write to the descriptor
-        // belonging to OUR channel. We assume this is the only place
-        // in the entire library that this section or the array
-        // will be written to.
-        DESCRIPTOR_SECTION[id] = xfer_descriptor;
+        Self::fill_descriptor(&mut source, &mut destination, circular);
 
         let buffers = BufferPair {
             source,
@@ -493,7 +522,7 @@ where
     C: AnyChannel<Status = Ready>,
 {
     /// Begin DMA transfer. If [TriggerSource::DISABLE](TriggerSource::DISABLE)
-    /// is used, a sowftware trigger will be issued to the DMA channel to
+    /// is used, a software trigger will be issued to the DMA channel to
     /// launch the transfer. Is is therefore not necessary, in most cases,
     /// to manually issue a software trigger to the channel.
     pub fn begin(
@@ -558,6 +587,7 @@ where
     pub fn software_trigger(&mut self) {
         self.chan.as_mut().software_trigger();
     }
+
     /// Wait for the DMA transfer to complete and release all owned
     /// resources
     ///
@@ -575,6 +605,43 @@ where
             self.complete = complete;
         }
         self.complete
+    }
+
+    /// Checks and clears the block transfer complete interrupt flag
+    #[inline]
+    pub fn block_transfer_interrupt(&mut self) -> bool {
+        self.chan
+            .as_mut()
+            .check_and_clear_interrupts(InterruptFlags::new().with_tcmpl(true))
+            .tcmpl()
+    }
+
+    /// Modify a completed transfer with new `source` and `destination`, restart
+    ///
+    /// Returns a Result containing the source and destination from the
+    /// completed transfer.
+    pub fn recycle(&mut self, mut source: S, mut destination: D) -> Result<(S, D)> {
+        Self::check_buffer_pair(&source, &destination)?;
+
+        if !self.complete() {
+            return Err(DmacError::InvalidState);
+        }
+
+        // Circular transfers won't ever complete, so never re-fill as one
+        unsafe {
+            Self::fill_descriptor(&mut source, &mut destination, false);
+        }
+
+        let new_buffers = BufferPair {
+            source,
+            destination,
+        };
+
+        let old_buffers = core::mem::replace(&mut self.buffers, new_buffers);
+
+        self.chan.as_mut().restart();
+
+        Ok((old_buffers.source, old_buffers.destination))
     }
 
     /// Non-blocking; Immediately stop the DMA transfer and release all owned

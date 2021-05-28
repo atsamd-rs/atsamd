@@ -174,6 +174,18 @@ impl<Id: ChId, S: Status> Channel<Id, S> {
             .write(|w| unsafe { w.bits(flags.into()) });
     }
 
+    /// Check the specified `flags`, clear then return any that were set
+    #[inline]
+    pub fn check_and_clear_interrupts(&mut self, flags: InterruptFlags) -> InterruptFlags {
+        let mut cleared = 0;
+        self.regs.chintflag.modify(|r, w| {
+            cleared = r.bits() & flags.into_bytes()[0];
+            unsafe { w.bits(cleared) }
+        });
+
+        InterruptFlags::from_bytes([cleared])
+    }
+
     #[inline]
     fn _reset_private(&mut self) {
         // Reset the channel to its startup state and wait for reset to complete
@@ -274,17 +286,9 @@ impl<Id: ChId> Channel<Id, Busy> {
     }
 
     /// Returns whether or not the transfer is complete.
-    ///
-    /// BUSYCH is set when the channel is ACTIVELY transferring;
-    /// PENDCH is set when a trigger request has been received
-    /// but the transfer hasn't been started yet.
-    /// Therefore, when a trigger request is issued, PENDCH will be set first,
-    /// then when the arbiter begins to service the channel, PENDCH is cleared
-    /// and BUSYCH is set. To make sure the transfer is actually complete, the
-    /// channel needs to be both NOT PENDING and NOT BUSY.
     #[inline]
     pub(crate) fn xfer_complete(&self) -> bool {
-        !self.regs.busych.read_bit() && !self.regs.pendch.read_bit()
+        !self.regs.chctrla.read().enable().bit_is_set()
     }
 
     /// Stop transfer on channel whether or not the transfer has completed
@@ -323,6 +327,12 @@ impl<Id: ChId> Channel<Id, Busy> {
         // Default to error if for some reason there was in interrupt
         // flag raised
         CallbackStatus::TransferError
+    }
+
+    /// Restart transfer using previously-configured trigger source and action
+    #[inline]
+    pub(crate) fn restart(&mut self) {
+        self.regs.chctrla.modify(|_, w| w.enable().set_bit());
     }
 }
 
