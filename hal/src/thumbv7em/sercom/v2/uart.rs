@@ -1,3 +1,183 @@
+//! Use the SERCOM peripheral for UART communications
+//!
+//! Configuring an UART peripheral occurs in three steps. First, you must create
+//! a set of [`Pads`] for use by the peripheral. Next, you assemble pieces into
+//! a [`Config`] struct. After configuring the peripheral, you then [`enable`]
+//! it, yielding a functional [`Uart`] struct. Transactions are performed using
+//! the [`serial`](embedded_hal::serial) traits
+//! from embedded HAL.
+//!
+//! # [`Pads`]
+//!
+//! A [`Sercom`] can use up to four [`Pin`]s as peripheral [`Pad`]s, but only
+//! certain `Pin` combinations are acceptable. In particular, all `Pin`s must be
+//! mapped to the same `Sercom` and [`IoSet`] (see section 6.2.8.1 of the
+//! datasheet). This HAL makes it impossible to use invalid `Pin`/`Pad`
+//! combinations, and the [`Pads`] struct is responsible for enforcing these
+//! constraints.
+//!
+//! A `Pads` type takes up to siz type parameters. The two specifiy the
+//! `Sercom` and `IoSet`. The remaining four, `RX`, `TX`, `RTS` and `CTS`,
+//! are effectively [`OptionalPinId`]s for the `RX`, `TX`, `RTS` and `CTS`
+//! `Pad`s respectively, and each defaults to [`NoneT`]. To be accepted as part of a
+//! [`ValidConfig`], you must specify a `PinId` for at least one of
+//! `RX` or `TX`.
+//!
+//! ```
+//! use atsamd_hal::gpio::v2::{PA04, PA05, PA08, PA09};
+//! use atsamd_hal::sercom::v2::{Sercom0, uart};
+//! use atsamd_hal::sercom::v2::pad::{Pad0, Pad1};
+//! use atsamd_hal::typelevel::NoneT;
+//!
+//! // For SAMD21 chips
+//! type Pads = uart::Pads<Sercom0, PA08, NoneT, PA09>;
+//! ```
+//!
+//! `Pads` are created using the builder pattern. Start by creating an empty set
+//! of `Pads` using [`Default`]. Then pass each respective `Pin` using the
+//! corresponding methods. Both `v1::Pin` and `v2::Pin` types are accepted here.
+//! Note that the `TX` `Pin` must map to [`Pad0`], and if specified, the `RTS`
+//! `Pin` must map to [`Pad2`], and the `CTS` `Pin` must map to [`Pad3`].
+//! The `RX` `Pin` can vary in [`PadNum`] based on the [`Rxpo`] values
+//!
+//! To be accepted as part of a [`ValidConfig`], a set of `Pads` must do two
+//! things: specify a type for at least one of `RX` or `TX`; and
+//! satisfy the [`Rxpo`] + [`Txpo`] traits.
+//!
+//! ```
+//! use atsamd_hal::target_device::Peripherals;
+//! use atsamd_hal::gpio::v2::Pins;
+//! use atsamd_hal::sercom::v2::{Sercom0, uart};
+//!
+//! let mut peripherals = Peripherals::take().unwrap();
+//! let pins = Pins::new(peripherals.PORT);
+//! let pads = uart::Pads::<Sercom0>::default()
+//!     .rx(pins.pa08)
+//!     .tx(pins.pa10);
+//! ```
+//!
+//! # [`Config`]
+//!
+//! Next, create a [`Config`] struct, which represents the UART peripheral in its
+//! disabled state. A `Config` is specified with three type parameters: the
+//! [`Pads`] type; an [`OpMode`], which defaults to [`Master`]; and a
+//! [`CharSize`], which defaults to [`EightBit`].
+//!
+//! ```
+//! use atsamd_hal::gpio::v2::{PA08, PA09};
+//! use atsamd_hal::sercom::v2::{Sercom0, uart};
+//! use atsamd_hal::sercom::v2::uart::{Master, NineBit};
+//! use atsamd_hal::typelevel::NoneT;
+//!
+//! // Assuming SAMD21
+//! type Pads = uart::Pads<Sercom0, PA08, NoneT, PA09>;
+//! type Config = uart::Config<Pads, NineBit>;
+//! ```
+//!
+//! Upon creation, the [`Config`] takes ownership of both the [`Pads`] and the
+//! PAC [`Sercom`] struct. It takes a reference to the PM, so that it can
+//! enable the APB clock, and it takes a frequency to indicate the GCLK
+//! configuration. Users are responsible for correctly configuring the GCLK.
+//!
+//! ```
+//! use atsamd_hal::time::U32Ext;
+//!
+//! let pm = peripherals.PM;
+//! let sercom = peripherals.SERCOM0;
+//! // Configure GCLK for 10 MHz
+//! let freq = 10.mhz();
+//! let config = uart::Config::new(&pm, sercom, pads, freq);
+//! ```
+//!
+//! The [`Config`] struct uses the builder pattern to configure the peripheral,
+//! ending with a call to [`enable`], which consumes the [`Config`] and returns
+//! an enabled [`Uart`] peripheral.
+//!
+//! ```
+//! use atsamd_hal::sercom::v2::uart::{StopBits, NineBit};
+//!
+//! let uart = uart::Config::new(&mclk, sercom, pads, freq)
+//!     .baud(1.mhz())
+//!     .char_size::<NineBit>()
+//!     .msb_first(false)
+//!     .stop_bits(StopBits::TwoBits)
+//!     .enable();
+//! ```
+//!
+//! # [`Uart`]
+//!
+//! An [`Uart`] struct can only be created from a [`Config`], and it has only one
+//! type parameter, the corresponding config.
+//!
+//! ```
+//! use atsamd_hal::gpio::v2::{PA08, PA09};
+//! use atsamd_hal::sercom::v2::{Sercom0, uart};
+//! use atsamd_hal::sercom::v2::uart::{Master, NineBit};
+//! use atsamd_hal::typelevel::NoneT;
+//!
+//! // Assuming SAMD21
+//! type Pads = uart::Pads<Sercom0, PA08, NoneT, PA09>;
+//! type Config = uart::Config<Pads, NineBit>;
+//! type Uart = uart::Uart<Config>;
+//! ```
+//!
+//! Only the [`Uart`] struct can actually perform transactions. To do so, use the
+//! embedded HAL traits, like [`serial::Read`](Read) and [`serial::Write`](Write).
+//!
+//! ```
+//! use nb::block;
+//! use embedded_hal::serial::Write;
+//!
+//! block!(uart.write(0x0fe));
+//! ```
+//!
+//! # Splitting and joining
+//!
+//! A fully configured [`Uart`] struct can be split into `Tx` and `Rx` halves.
+//! That way, different parts of the program can individually send or receive UART transactions.
+//! Splitting is only available for [`Uart`]s which can transmit and receive.
+//!
+//! ## Splitting
+//!
+//! Calling [`Uart::split`] will return three objects: a [`UartRx`], a [`UartTx`], and a [`UartCore`].
+//! The [`UartCore`] struct holds the underlying [`Config`], and is necessary to keep around is the two
+//! halves should be recombined by calling [`UartCore::join`].
+//!
+//! ```
+//! use nb::block;
+//! use embedded_hal::serial::{Read, Write};
+//!
+//! // Assume uart is a fully configured `Uart` with transmit/receive capability
+//! let (rx, tx, core) = uart.split();
+//!
+//! block!(tx.write(0xfe));
+//! let _received = block!(rx.read());
+//! ```
+//!
+//! ## Joining
+//!
+//! Recombining the [`UartRx`] and [`UartTx`] halves back into a full [`Uart`] is necessary if the
+//! UART peripheral should be reconfigured
+//!
+//! ```
+//! // Assume uart is a fully configured `Uart` with transmit/receive capability
+//! let (rx, tx, core) = uart.split();
+//!
+//! let uart = core.join(rx, tx);
+//! uart.reconfigure(|c| c.baud(1.mhz()));
+//! ```
+//!
+//! # Non-supported advanced features
+//!
+//! * 32-bit extension mode support is explicitely omitted to allow for different character sizes
+//! * LIN and IrDA modes are not supported
+//! * Synchronous mode is not supported
+//!
+//! [`enable`]: Config::enable
+//! [`Pin`]: crate::gpio::v2::pin::Pin
+//! [`PinId`]: crate::gpio::v2::pin::PinId
+//! [`OptionalPinId`]: crate::gpio::v2::pin::OptionalPinId
+
 use core::convert::{TryFrom, TryInto};
 use core::marker::PhantomData;
 
