@@ -9,16 +9,15 @@
 //!
 //! # [`Pads`]
 //!
-//! A [`Sercom`] can use up to four [`Pin`]s as peripheral [`Pad`]s, but only
+//! A [`Sercom`] can use up to four [`Pin`]s as peripheral pads, but only
 //! certain `Pin` combinations are acceptable. In particular, all `Pin`s must be
 //! mapped to the same `Sercom` and [`IoSet`] (see section 6.2.8.1 of the
-//! datasheet). This HAL makes it impossible to use invalid `Pin`/`Pad`
-//! combinations, and the [`Pads`] struct is responsible for enforcing these
-//! constraints.
+//! datasheet). This HAL makes it impossible to use invalid `Pin` combinations,
+//! and the [`Pads`] struct is responsible for enforcing these constraints.
 //!
 //! A `Pads` type takes up to six type parameters. The first two specify the
 //! `Sercom` and `IoSet`. The remaining four, `DI`, `DO`, `CK` and `SS`, are
-//! effectively [`OptionalPinId`]s for the Data In, Data Out, Sclk and SS `Pad`s
+//! effectively [`OptionalPinId`]s for the Data In, Data Out, Sclk and SS pads
 //! respectively, and each defaults to [`NoneT`]. To be accepted as part of a
 //! [`ValidConfig`], you must specify a `PinId` for `CK` and at least one of
 //! `DI` or `DO`.
@@ -30,6 +29,22 @@
 //! use atsamd_hal::typelevel::NoneT;
 //!
 //! type Pads = spi::Pads<Sercom0, IoSet1, PA08, NoneT, PA09>;
+//! ```
+//!
+//! Alternatively, a `Pads` type can be defined using `Pin` types directly,
+//! using the [`PadsFromPins`] alias. This is useful when you already have `Pin`
+//! aliases defined for each SERCOM pad, which is true when using the
+//! [`bsp_pins`] macro.
+//!
+//! ```
+//! use atsamd_hal::gpio::v2::{PA08, PA09, AlternateC};
+//! use atsamd_hal::sercom::v2::spi;
+//! use atsamd_hal::sercom::v2::pad::IoSet1;
+//! use atsamd_hal::typelevel::NoneT;
+//!
+//! type Miso = Pin<PA08, AlternateC>;
+//! type Sclk = Pin<PA09, AlternateC>;
+//! type Pads = spi::PadsFromPins<IoSet1, Miso, NoneT, Sclk>;
 //! ```
 //!
 //! `Pads` are created using the builder pattern. Start by creating an empty set
@@ -170,6 +185,7 @@
 //! ```
 //!
 //! [`enable`]: Config::enable
+//! [`bsp_pins`]: crate::bsp_pins
 //! [`Pin`]: crate::gpio::v2::pin::Pin
 //! [`OptionalPinId`]: crate::gpio::v2::pin::OptionalPinId
 
@@ -191,7 +207,7 @@ use pac::sercom0::spim::ctrla::{CPHA_A, CPOL_A, DIPO_A, DOPO_A, DORD_A, MODE_A};
 use pac::sercom0::RegisterBlock;
 use pac::MCLK;
 
-use crate::gpio::v2::AnyPin;
+use crate::gpio::v2::{AnyPin, OptionalPin, SomePin};
 use crate::sercom::v2::*;
 use crate::time::Hertz;
 use crate::typelevel::{Is, NoneT, Sealed};
@@ -315,18 +331,17 @@ where
 // Pads
 //=============================================================================
 
-/// Container for a set of SERCOM [`Pad`]s
+/// Container for a set of SERCOM pads
 ///
-/// A [`Sercom`] can use up to four [`Pin`]s as peripheral [`Pad`]s, but only
+/// A [`Sercom`] can use up to four [`Pin`]s as peripheral pads, but only
 /// certain `Pin` combinations are acceptable. In particular, all `Pin`s must be
 /// mapped to the same `Sercom` and [`IoSet`] (see section 6.2.8.1 of the
-/// datasheet). This HAL makes it impossible to use invalid `Pin`/`Pad`
-/// combinations, and the `Pads` struct is responsible for enforcing these
-/// constraints.
+/// datasheet). This HAL makes it impossible to use invalid `Pin` combinations,
+/// and the `Pads` struct is responsible for enforcing these constraints.
 ///
 /// A `Pads` type takes up to six type parameters. The first two specify the
 /// `Sercom` and `IoSet`. The remaining four, `DI`, `DO`, `CK` and `SS`, are
-/// effectively [`OptionalPinId`]s for the Data In, Data Out, Sclk and SS `Pad`s
+/// effectively [`OptionalPinId`]s for the Data In, Data Out, Sclk and SS pads
 /// respectively, and each defaults to [`NoneT`]. To be accepted as part of a
 /// [`ValidConfig`], you must specify a `PinId` for `CK` and at least one of
 /// `DI` or `DO`.
@@ -400,157 +415,141 @@ where
     CK: GetOptionalPad<S>,
     SS: GetOptionalPad<S>,
 {
-    /// Set the `DI` [`Pad`]
+    /// Set the `DI` pad
     ///
     /// In a [`MasterMode`], this is MISO. In [`Slave`] [`OpMode`], this is
     /// MOSI.
     #[inline]
     pub fn data_in<Id>(self, pin: impl AnyPin<Id = Id>) -> Pads<S, I, Id, DO, CK, SS>
     where
-        Id: PadInfo<S>,
+        Id: PadLookup<S>,
         Id::PadNum: Dipo,
-        Pad<S, Id::PadNum, Id>: InIoSet<I>,
+        Pad<S, Id>: InIoSet<I>,
     {
         Pads {
             ioset: self.ioset,
-            data_in: pin.into().into(),
+            data_in: pin.into().into_mode(),
             data_out: self.data_out,
             sclk: self.sclk,
             ss: self.ss,
         }
     }
 
-    /// Set the `DO` [`Pad`]
+    /// Set the `DO` pad
     ///
     /// In a [`MasterMode`], this is MOSI. In [`Slave`] [`OpMode`], this is
     /// MISO.
     #[inline]
     pub fn data_out<Id>(self, pin: impl AnyPin<Id = Id>) -> Pads<S, I, DI, Id, CK, SS>
     where
-        Id: PadInfo<S>,
+        Id: PadLookup<S>,
         Id::PadNum: Dopo,
-        Pad<S, Id::PadNum, Id>: InIoSet<I>,
+        Pad<S, Id>: InIoSet<I>,
     {
         Pads {
             ioset: self.ioset,
             data_in: self.data_in,
-            data_out: pin.into().into(),
+            data_out: pin.into().into_mode(),
             sclk: self.sclk,
             ss: self.ss,
         }
     }
 
-    /// Set the `SCK` [`Pad`], which is always [`Pad1`]
+    /// Set the `SCK` pad, which is always [`Pad1`]
     #[inline]
     pub fn sclk<Id>(self, pin: impl AnyPin<Id = Id>) -> Pads<S, I, DI, DO, Id, SS>
     where
-        Id: PadInfo<S, PadNum = Pad1>,
-        Pad<S, Pad1, Id>: InIoSet<I>,
+        Id: PadLookup<S, PadNum = Pad1>,
+        Pad<S, Id>: InIoSet<I>,
     {
         Pads {
             ioset: self.ioset,
             data_in: self.data_in,
             data_out: self.data_out,
-            sclk: pin.into().into(),
+            sclk: pin.into().into_mode(),
             ss: self.ss,
         }
     }
 
-    /// Set the `SS` [`Pad`], which is always [`Pad2`]
+    /// Set the `SS` pad, which is always [`Pad2`]
     #[inline]
     pub fn ss<Id>(self, pin: impl AnyPin<Id = Id>) -> Pads<S, I, DI, DO, CK, Id>
     where
-        Id: PadInfo<S, PadNum = Pad2>,
-        Pad<S, Pad2, Id>: InIoSet<I>,
+        Id: PadLookup<S, PadNum = Pad2>,
+        Pad<S, Id>: InIoSet<I>,
     {
         Pads {
             ioset: self.ioset,
             data_in: self.data_in,
             data_out: self.data_out,
             sclk: self.sclk,
-            ss: pin.into().into(),
+            ss: pin.into().into_mode(),
         }
     }
 
-    /// Consume the [`Pads`] and return each individual [`Pad`]
+    /// Consume the [`Pads`] and return each individual
+    /// [`Pin`](crate::gpio::v2::Pin)
     #[inline]
     pub fn free(self) -> (DI::Pad, DO::Pad, CK::Pad, SS::Pad) {
         (self.data_in, self.data_out, self.sclk, self.ss)
     }
 }
 
-//=============================================================================
-// spi_pads_from_pins
-//=============================================================================
-
-/// Define a set of [`spi::Pads`] using [`Pin`]s instead of [`PinId`]s
+/// Define a set of [`Pads`] using [`Pin`]s instead of [`PinId`]s
 ///
-/// In some cases, it is more convenient to specify a set of `spi::Pads` using
-/// `Pin`s or `Pin` aliases than it is to use the corresponding [`PinId`]s. This
-/// macro makes it easier to do so.
+/// In some cases, it is more convenient to specify a set of `Pads` using `Pin`s
+/// or `Pin` aliases than it is to use the corresponding [`PinId`]s. This type
+/// alias makes it easier to do so.
 ///
-/// The first two arguments to the macro are required and represent the
-/// [`Sercom`] and [`IoSet`] respectively. The remaining four arguments are all
-/// optional. Each represents a corresponding type parameter of the `spi::Pads`
-/// type. Some of the types may be omitted, but any types that are specified,
-/// must be done in the order `DI`, `DO`, `CK` & `SS`.
+/// The first type argument is the [`IoSet`], and the remaining four arguments
+/// are effectively [`OptionalPin`] types representing the corresponding type
+/// parameters of `spi::Pads`, i.e. `DI`, `DO`, `CK` & `SS`. The `CK` type must
+/// be [`SomePin`], as it determines the corresponding [`Sercom`] type. The
+/// remaining three types may be [`NoneT`].
 ///
 /// ```
 /// use atsamd_hal::pac::Peripherals;
-/// use atsamd_hal::spi_pads_from_pins;
 /// use atsamd_hal::gpio::v2::{Pin, PA08, PA09, AlternateC, Pins};
-/// use atsamd_hal::sercom::v2::{Sercom0, pad::IoSet1, spi};
+/// use atsamd_hal::sercom::v2::pad::IoSet1;
+/// use atsamd_hal::sercom::v2::spi;
+/// use atsamd_hal::typelevel::NoneT;
 ///
 /// type Miso = Pin<PA08, AlternateC>;
 /// type Sclk = Pin<PA09, AlternateC>;
-/// pub type Pads = spi_pads_from_pins!(Sercom0, IoSet1, DI = Miso, CK = Sclk);
+/// pub type Pads = spi::PadsFromPins<IoSet1, Miso, NoneT, Sclk>;
 ///
 /// pub fn test() -> Pads {
 ///     let peripherals = Peripherals::take().unwrap();
 ///     let pins = Pins::new(peripherals.PORT);
-///     spi::Pads::<Sercom0, IoSet1>::default()
-///         .sclk(pins.pa09)
-///         .data_in(pins.pa08)
+///     spi::Pads::default().sclk(pins.pa09).data_in(pins.pa08)
 /// }
 /// ```
 ///
 /// [`spi::Pads`]: Pads
 /// [`Pin`]: crate::gpio::v2::Pin
 /// [`PinId`]: crate::gpio::v2::PinId
-#[macro_export]
-macro_rules! spi_pads_from_pins {
-    (
-        $Sercom:ident,
-        $IoSet:ident
-        $( , DI = $DI:ty )?
-        $( , DO = $DO:ty )?
-        $( , CK = $CK:ty )?
-        $( , SS = $SS:ty )?
-    ) => {
-        $crate::sercom::v2::spi::Pads<
-            $crate::sercom::v2::$Sercom,
-            $crate::sercom::v2::pad::$IoSet,
-            $crate::__opt_type!( $( $crate::gpio::v2::SpecificPinId<$DI> )? ),
-            $crate::__opt_type!( $( $crate::gpio::v2::SpecificPinId<$DO> )? ),
-            $crate::__opt_type!( $( $crate::gpio::v2::SpecificPinId<$CK> )? ),
-            $crate::__opt_type!( $( $crate::gpio::v2::SpecificPinId<$SS> )? ),
-        >
-    };
-}
+pub type PadsFromPins<I, DI, DO, CK, SS = NoneT> = Pads<
+    <CK as IsPad>::Sercom,
+    I,
+    <DI as OptionalPin>::PinId,
+    <DO as OptionalPin>::PinId,
+    <CK as AnyPin>::Id,
+    <SS as OptionalPin>::PinId,
+>;
 
 //=============================================================================
 // PadSet
 //=============================================================================
 
-/// Type-level function to recover the [`OptionalPad`] types from a generic set
+/// Type-level function to recover the [`OptionalPin`] types from a generic set
 /// of [`Pads`]
 ///
 /// This trait is used as an interface between the [`Pads`] type and other
 /// types in this module. It acts as a [type-level function], returning the
-/// corresponding [`Sercom`], [`IoSet`] and [`OptionalPad`] types. It serves to
+/// corresponding [`Sercom`], [`IoSet`] and [`OptionalPin`] types. It serves to
 /// cut down on the total number of type parameters needed in the [`Config`]
-/// struct. The `Config` struct doesn't need access to the [`Pad`]s directly.
-/// Rather, it only needs to apply the [`SomePad`] trait bound when a `Pad` is
+/// struct. The `Config` struct doesn't need access to the pads directly.
+/// Rather, it only needs to apply the [`SomePin`] trait bound when a `Pin` is
 /// required. The `PadSet` trait allows each `Config` struct to store an
 /// instance of `Pads` without itself being generic over all six type parameters
 /// of the `Pads` type.
@@ -559,10 +558,10 @@ macro_rules! spi_pads_from_pins {
 pub trait PadSet: Sealed {
     type Sercom: Sercom;
     type IoSet: IoSet;
-    type DataIn: OptionalPad;
-    type DataOut: OptionalPad;
-    type Sclk: OptionalPad;
-    type SS: OptionalPad;
+    type DataIn: OptionalPin;
+    type DataOut: OptionalPin;
+    type Sclk: OptionalPin;
+    type SS: OptionalPin;
 }
 
 impl<S, I, DI, DO, CK, SS> Sealed for Pads<S, I, DI, DO, CK, SS>
@@ -612,33 +611,33 @@ impl<P: PadSet + Dipo + Dopo> ValidPads for P {}
 
 /// Marker trait for a set of [`Pads`] that can transmit
 ///
-/// To transmit, both SCLK and Data Out must be [`SomePad`].
+/// To transmit, both SCLK and Data Out must be [`SomePin`].
 pub trait Tx: ValidPads {}
 
 impl<P> Tx for P
 where
     P: ValidPads,
-    P::DataOut: SomePad,
-    P::Sclk: SomePad,
+    P::DataOut: SomePin,
+    P::Sclk: SomePin,
 {
 }
 
 /// Marker trait for a set of [`Pads`] that can receive
 ///
-/// To receive, both SCLK and Data In must be [`SomePad`].
+/// To receive, both SCLK and Data In must be [`SomePin`].
 pub trait Rx: ValidPads {}
 
 impl<P> Rx for P
 where
     P: ValidPads,
-    P::DataIn: SomePad,
-    P::Sclk: SomePad,
+    P::DataIn: SomePin,
+    P::Sclk: SomePin,
 {
 }
 
 /// Marker trait for a set of [`Pads`] that cannot transmit
 ///
-/// A set of [`Pads`] cannot be used to transmit when the Data Out [`Pad`] is
+/// A set of [`Pads`] cannot be used to transmit when the Data Out pad is
 /// [`NoneT`].
 pub trait NotTx: ValidPads {}
 
@@ -646,7 +645,7 @@ impl<P> NotTx for P where P: ValidPads<DataOut = NoneT> {}
 
 /// Marker trait for a set of [`Pads`] that cannot receive
 ///
-/// A set of [`Pads`] cannot be used to receive when the Data In [`Pad`] is
+/// A set of [`Pads`] cannot be used to receive when the Data In pad is
 /// [`NoneT`].
 pub trait NotRx: ValidPads {}
 
@@ -654,15 +653,15 @@ impl<P> NotRx for P where P: ValidPads<DataIn = NoneT> {}
 
 /// Marker trait for a set of [`Pads`] that can transmit OR receive
 ///
-/// To satisfy this trait, SCLK must always be [`SomePad`] and one or both of
-/// Data In and Data Out must also be [`SomePad`].
+/// To satisfy this trait, SCLK must always be [`SomePin`] and one or both of
+/// Data In and Data Out must also be [`SomePin`].
 pub trait TxOrRx: ValidPads {}
 
 impl<S, I, DI, CK, SS> TxOrRx for Pads<S, I, DI, NoneT, CK, SS>
 where
     S: Sercom,
     I: IoSet,
-    DI: GetPad<S> + GetPadMarker,
+    DI: GetPad<S> + GetPadKey,
     CK: GetPad<S>,
     SS: GetOptionalPad<S>,
     DI::PadNum: Dipo,
@@ -673,7 +672,7 @@ impl<S, I, DO, CK, SS> TxOrRx for Pads<S, I, NoneT, DO, CK, SS>
 where
     S: Sercom,
     I: IoSet,
-    DO: GetPad<S> + GetPadMarker,
+    DO: GetPad<S> + GetPadKey,
     CK: GetPad<S>,
     SS: GetOptionalPad<S>,
     DO::PadNum: Dopo,
@@ -684,8 +683,8 @@ impl<S, I, DI, DO, CK, SS> TxOrRx for Pads<S, I, DI, DO, CK, SS>
 where
     S: Sercom,
     I: IoSet,
-    DI: GetPad<S> + GetPadMarker,
-    DO: GetPad<S> + GetPadMarker,
+    DI: GetPad<S> + GetPadKey,
+    DO: GetPad<S> + GetPadKey,
     CK: GetPad<S>,
     SS: GetOptionalPad<S>,
     DI::PadNum: Dipo,
@@ -704,7 +703,7 @@ where
 /// The available operating modes are [`Master`], [`MasterHWSS`] and [`Slave`].
 /// In [`Master`] mode, the `SS` signal must be handled by the user, so `SS`
 /// must be [`NoneT`]. In [`MasterHWSS`] mode, the hardware drives the `SS`
-/// line, so [`SomePad`] is required. In [`Slave`] mode, the `SS` [`Pad`] is
+/// line, so [`SomePin`] is required. In [`Slave`] mode, the `SS` pad is
 /// required as well, to indicate when data is valid.
 ///
 /// [type-level enums]: crate::typelevel#type-level-enums
@@ -1341,15 +1340,15 @@ where
 
 /// Marker trait for valid SPI [`Config`]urations
 ///
-/// A functional SPI peripheral must have, at a minimum, an SCK [`Pad`] and
-/// either a Data In or a Data Out `Pad`. Dependeing on the [`OpMode`], an SS
-/// `Pad` may also be required.
+/// A functional SPI peripheral must have, at a minimum, an SCK pad and
+/// either a Data In or a Data Out pad. Dependeing on the [`OpMode`], an SS
+/// pad may also be required.
 ///
 /// The `ValidConfig` trait is implemented only for valid combinations of
 /// [`Pads`] and [`OpMode`]. No [`Config`] is valid if the SCK pad is [`NoneT`]
 /// or if both the Data In and Data Out pads are `NoneT`. When in [`Master`]
-/// `OpMode`, the `SS` `Pad` must be `NoneT`, while in [`MasterHWSS`] or
-/// [`Slave`] [`OpMode`], the SS pad must be [`SomePad`].
+/// `OpMode`, the `SS` pad must be `NoneT`, while in [`MasterHWSS`] or
+/// [`Slave`] [`OpMode`], the SS pad must be [`SomePin`].
 pub trait ValidConfig: AnyConfig {}
 
 impl<P, L> ValidConfig for Config<P, Master, L>
@@ -1363,7 +1362,7 @@ impl<P, L> ValidConfig for Config<P, MasterHWSS, L>
 where
     P: TxOrRx,
     L: Length,
-    P::SS: SomePad,
+    P::SS: SomePin,
 {
 }
 
@@ -1371,7 +1370,7 @@ impl<P, L> ValidConfig for Config<P, Slave, L>
 where
     P: TxOrRx,
     L: Length,
-    P::SS: SomePad,
+    P::SS: SomePin,
 {
 }
 

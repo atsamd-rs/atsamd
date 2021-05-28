@@ -8,10 +8,8 @@ pub use embedded_hal as ehal;
 pub use hal::pac;
 
 use hal::clock::GenericClockController;
-use hal::sercom::v2::pad::PinToPad;
 use hal::sercom::v2::spi;
 use hal::sercom::{I2CMaster3, UART0};
-use hal::spi_pads_from_pins;
 use hal::time::Hertz;
 
 #[cfg(feature = "usb")]
@@ -207,7 +205,10 @@ hal::bsp_pins!(
     },
 );
 
-type SpiPads = spi_pads_from_pins!(Sercom4, DI = Miso, DO = Mosi, CK = Sclk);
+/// SPI pads for the labelled SPI peripheral
+///
+/// You can use these pads with other, user-defined [`spi::Config`]urations.
+pub type SpiPads = spi::PadsFromPins<Miso, Mosi, Sclk>;
 
 /// SPI master for the labelled SPI peripheral
 ///
@@ -238,7 +239,7 @@ pub fn spi_master(
 }
 
 /// I2C master for the labelled SDA & SCL pins
-pub type I2C = I2CMaster3<PinToPad<Sda>, PinToPad<Scl>>;
+pub type I2C = I2CMaster3<Sda, Scl>;
 
 /// Convenience for setting up the labelled SDA, SCL pins to
 /// operate as an I2C master running at the specified frequency.
@@ -253,13 +254,13 @@ pub fn i2c_master(
     let gclk0 = clocks.gclk0();
     let clock = &clocks.sercom3_core(&gclk0).unwrap();
     let baud = baud.into();
-    let sda = sda.into().into();
-    let scl = scl.into().into();
+    let sda = sda.into();
+    let scl = scl.into();
     I2CMaster3::new(clock, baud, sercom3, pm, sda, scl)
 }
 
 /// UART device for the labelled RX & TX pins
-pub type Uart = UART0<PinToPad<UartRx>, PinToPad<UartTx>, (), ()>;
+pub type Uart = UART0<UartRx, UartTx, (), ()>;
 
 /// Convenience for setting up the labelled RX, TX pins to
 /// operate as a UART device running at the specified baud.
@@ -274,7 +275,7 @@ pub fn uart(
     let gclk0 = clocks.gclk0();
     let clock = &clocks.sercom0_core(&gclk0).unwrap();
     let baud = baud.into();
-    let pads = (uart_rx.into().into(), uart_tx.into().into());
+    let pads = (uart_rx.into(), uart_tx.into());
     UART0::new(clock, baud, sercom0, pm, pads)
 }
 

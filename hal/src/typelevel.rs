@@ -685,14 +685,3 @@ where
 {
     type Type = T;
 }
-
-#[macro_export]
-#[doc(hidden)]
-macro_rules! __opt_type {
-    () => {
-        $crate::typelevel::NoneT
-    };
-    ($Type:ty) => {
-        $Type
-    };
-}

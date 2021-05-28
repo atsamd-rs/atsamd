@@ -5,11 +5,9 @@
 )]
 
 use crate::clock;
-use crate::gpio::v2::pin::AnyPin;
 use crate::hal::blocking::serial::{write::Default, Write};
 use crate::hal::serial;
 use crate::sercom::pads::*;
-use crate::sercom::v2;
 use crate::target_device::sercom0::USART;
 use crate::target_device::{PM, SERCOM0, SERCOM1};
 #[cfg(feature = "samd21")]
@@ -25,7 +23,172 @@ use core::marker::PhantomData;
 /// this trait for yourself; only the implementations in the sercom module make
 /// sense.
 pub trait RxpoTxpo {
-    fn rxpo_txpo(&self) -> (u8, u8);
+    const RXPO: u8;
+    const TXPO: u8;
+    fn rxpo_txpo(&self) -> (u8, u8) {
+        (Self::RXPO, Self::TXPO)
+    }
+}
+
+macro_rules! padout {
+    ( ($rxpo:literal, $txpo:literal) => $pad0:ident, $pad1:ident) => {
+        impl RxpoTxpo for ($pad0, $pad1) {
+            const RXPO: u8 = $rxpo;
+            const TXPO: u8 = $txpo;
+        }
+    };
+    ( ($rxpo:literal, $txpo:literal) => $pad0:ident, $pad1:ident, $pad2:ident, $pad3:ident) => {
+        impl RxpoTxpo for ($pad0, $pad1, $pad2, $pad3) {
+            const RXPO: u8 = $rxpo;
+            const TXPO: u8 = $txpo;
+        }
+    };
+}
+
+padout!((0, 1) => Pad0, Pad2);
+
+padout!((1, 0) => Pad1, Pad0);
+padout!((1, 2) => Pad1, Pad0, Pad2, Pad3);
+padout!((1, 1) => Pad1, Pad2);
+
+padout!((2, 0) => Pad2, Pad0);
+
+padout!((3, 0) => Pad3, Pad0);
+padout!((3, 1) => Pad3, Pad2);
+
+/// A pad mapping configuration for the SERCOM in UART mode.
+///
+/// This type can only be constructed using the From implementations
+/// in this module, which are restricted to valid configurations.
+///
+/// Defines which sercom pad is mapped to which UART function.
+pub struct Padout<S, RX, TX, RTS, CTS>
+where
+    S: Sercom,
+{
+    sercom: PhantomData<S>,
+    rx: RX,
+    tx: TX,
+    rts: RTS,
+    cts: CTS,
+}
+
+/// A pad mapping configuration for the receiving half of the SERCOM in UART
+/// mode.
+pub struct RxPadout<S, RX, CTS>
+where
+    S: Sercom,
+{
+    sercom: PhantomData<S>,
+    rx: RX,
+    cts: CTS,
+}
+
+/// A pad mapping configuration for the transmitting half of the SERCOM in UART
+/// mode.
+pub struct TxPadout<S, TX, RTS>
+where
+    S: Sercom,
+{
+    sercom: PhantomData<S>,
+    tx: TX,
+    rts: RTS,
+}
+
+impl<S, RX, TX, RTS, CTS> Padout<S, RX, TX, RTS, CTS>
+where
+    S: Sercom,
+{
+    /// Splits the padout into transmit and receive halves
+    pub fn split(self) -> (TxPadout<S, TX, RTS>, RxPadout<S, RX, CTS>) {
+        (
+            TxPadout {
+                sercom: PhantomData,
+                tx: self.tx,
+                rts: self.rts,
+            },
+            RxPadout {
+                sercom: PhantomData,
+                rx: self.rx,
+                cts: self.cts,
+            },
+        )
+    }
+
+    /// Combines transmit and receive halves back into a duplex padout
+    pub fn join(tx: TxPadout<S, TX, RTS>, rx: RxPadout<S, RX, CTS>) -> Self {
+        Self {
+            sercom: PhantomData,
+            rx: rx.rx,
+            tx: tx.tx,
+            rts: tx.rts,
+            cts: rx.cts,
+        }
+    }
+}
+
+/// Convert from a tuple of (RX, TX) to UARTXPadout
+impl<S, PAD0, PAD1> From<(PAD0, PAD1)> for Padout<S, PAD0, PAD1, (), ()>
+where
+    S: Sercom,
+    PAD0: IsPad<Sercom = S>,
+    PAD1: IsPad<Sercom = S>,
+    (PAD0::PadNum, PAD1::PadNum): RxpoTxpo,
+{
+    fn from(pads: (PAD0, PAD1)) -> Padout<S, PAD0, PAD1, (), ()> {
+        Padout {
+            sercom: PhantomData,
+            rx: pads.0,
+            tx: pads.1,
+            rts: (),
+            cts: (),
+        }
+    }
+}
+
+impl<S, PAD0, PAD1> RxpoTxpo for Padout<S, PAD0, PAD1, (), ()>
+where
+    S: Sercom,
+    PAD0: IsPad<Sercom = S>,
+    PAD1: IsPad<Sercom = S>,
+    (PAD0::PadNum, PAD1::PadNum): RxpoTxpo,
+{
+    const RXPO: u8 = <(PAD0::PadNum, PAD1::PadNum)>::RXPO;
+    const TXPO: u8 = <(PAD0::PadNum, PAD1::PadNum)>::TXPO;
+}
+
+/// Convert from a tuple of (RX, TX, RTS, CTS) to UARTXPadout
+impl<S, PAD0, PAD1, PAD2, PAD3> From<(PAD0, PAD1, PAD2, PAD3)> for Padout<S, PAD0, PAD1, PAD2, PAD3>
+where
+    S: Sercom,
+    PAD0: IsPad<Sercom = S>,
+    PAD1: IsPad<Sercom = S>,
+    PAD2: IsPad<Sercom = S>,
+    PAD3: IsPad<Sercom = S>,
+    (PAD0::PadNum, PAD1::PadNum, PAD2::PadNum, PAD3::PadNum): RxpoTxpo,
+{
+    fn from(pads: (PAD0, PAD1, PAD2, PAD3)) -> Padout<S, PAD0, PAD1, PAD2, PAD3> {
+        Padout {
+            sercom: PhantomData,
+            rx: pads.0,
+            tx: pads.1,
+            rts: pads.2,
+            cts: pads.3,
+        }
+    }
+}
+
+impl<S, PAD0, PAD1, PAD2, PAD3> RxpoTxpo for Padout<S, PAD0, PAD1, PAD2, PAD3>
+where
+    S: Sercom,
+    PAD0: IsPad<Sercom = S>,
+    PAD1: IsPad<Sercom = S>,
+    PAD2: IsPad<Sercom = S>,
+    PAD3: IsPad<Sercom = S>,
+    (PAD0::PadNum, PAD1::PadNum, PAD2::PadNum, PAD3::PadNum): RxpoTxpo,
+{
+    const RXPO: u8 = <(PAD0::PadNum, PAD1::PadNum, PAD2::PadNum, PAD3::PadNum)>::RXPO;
+    const TXPO: u8 = <(PAD0::PadNum, PAD1::PadNum, PAD2::PadNum, PAD3::PadNum)>::TXPO;
 }
 
 /// Define a UARTX type for the given Sercom.
@@ -35,188 +198,10 @@ pub trait RxpoTxpo {
 macro_rules! uart {
     ($Type:ident: ($Sercom:ident, $SERCOM:ident, $powermask:ident, $clock:ident)) => {
         $crate::paste::item! {
-            /// A pad mapping configuration for the SERCOM in UART mode.
-            ///
-            /// This type can only be constructed using the From implementations
-            /// in this module, which are restricted to valid configurations.
-            ///
-            /// Defines which sercom pad is mapped to which UART function.
-            pub struct [<$Type Padout>]<RX, TX, RTS, CTS> {
-                rx: RX,
-                tx: TX,
-                rts: RTS,
-                cts: CTS,
-            }
-
-            /// A pad mapping configuration for the receiving half of the SERCOM in UART mode.
-            pub struct [<$Type RxPadout>]<RX, CTS> {
-                rx: RX,
-                cts: CTS,
-            }
-
-            /// A pad mapping configuration for the transmitting half of the SERCOM in UART mode.
-            pub struct [<$Type TxPadout>]<TX, RTS> {
-                tx: TX,
-                rts: RTS,
-            }
-
-            impl<RX, TX, RTS, CTS> [<$Type Padout>]<RX, TX, RTS, CTS> {
-                /// Splits the padout into transmit and receive halves
-                pub fn split(self) -> ([<$Type TxPadout>]<TX, RTS>, [<$Type RxPadout>]<RX, CTS>) {
-                    (
-                        [<$Type TxPadout>] {
-                            tx: self.tx,
-                            rts: self.rts,
-                        },
-                        [<$Type RxPadout>] {
-                            rx: self.rx,
-                            cts: self.cts,
-                        },
-                    )
-                }
-
-                /// Combines transmit and receive halves back into a duplex padout
-                pub fn join(tx: [<$Type TxPadout>]<TX, RTS>, rx: [<$Type RxPadout>]<RX, CTS>) -> Self {
-                    Self {
-                        rx: rx.rx,
-                        tx: tx.tx,
-                        rts: tx.rts,
-                        cts: rx.cts,
-                    }
-                }
-            }
+            pub type [<$Type Padout>]<RX, TX, RTS, CTS> = Padout<$Sercom, RX, TX, RTS, CTS>;
+            pub type [<$Type TxPadout>]<TX, RTS> = TxPadout<$Sercom, TX, RTS>;
+            pub type [<$Type RxPadout>]<RX, CTS> = RxPadout<$Sercom, RX, CTS>;
         }
-
-        /// Define a From instance for either a tuple of two SercomXPadX
-        /// instances, or a tuple of four SercomXPadX instances that converts
-        /// them into an UARTXPadout instance.
-        ///
-        /// Also defines a RxpoTxpo instance for the constructed padout instance
-        /// that returns the values used to configure the sercom pads for the
-        /// appropriate function in the sercom register file.
-        macro_rules! padout {
-            ($rxpo_txpo:expr => $pad0:ident, $pad1:ident) => {
-                $crate::paste::item! {
-                    /// Convert from a tuple of (RX, TX) to UARTXPadout
-                    impl<PIN0, PIN1> From<([<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>)> for [<$Type Padout>]<[<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, (), ()>
-                    where
-                        PIN0: AnyPin,
-                        PIN1: AnyPin,
-                        PIN0::Id: GetPadMode<$Sercom, $pad0>,
-                        PIN1::Id: GetPadMode<$Sercom, $pad1>,
-                    {
-                        fn from(pads: ([<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>)) -> [<$Type Padout>]<[<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, (), ()> {
-                            [<$Type Padout>] { rx: pads.0, tx: pads.1, rts: (), cts: () }
-                        }
-                    }
-
-                    impl<PIN0, PIN1> RxpoTxpo for [<$Type Padout>]<[<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, (), ()>
-                    where
-                        PIN0: AnyPin,
-                        PIN1: AnyPin,
-                        PIN0::Id: GetPadMode<$Sercom, $pad0>,
-                        PIN1::Id: GetPadMode<$Sercom, $pad1>,
-                    {
-                        fn rxpo_txpo(&self) -> (u8, u8) {
-                            $rxpo_txpo
-                        }
-                    }
-
-                    /// Convert from a tuple of (RX, TX, RTS, CTS) to UARTXPadout
-                    impl<Id0, Id1> From<(v2::Pad<$Sercom, $pad0, Id0>, v2::Pad<$Sercom, $pad1, Id1>)> for [<$Type Padout>]<v2::Pad<$Sercom, $pad0, Id0>, v2::Pad<$Sercom, $pad1, Id1>, (), ()>
-                    where
-                        Id0: v2::GetPadMode<$Sercom, $pad0>,
-                        Id1: v2::GetPadMode<$Sercom, $pad1>,
-                    {
-                        fn from(pads: (v2::Pad<$Sercom, $pad0, Id0>, v2::Pad<$Sercom, $pad1, Id1>)) -> Self {
-                            [<$Type Padout>] { rx: pads.0, tx: pads.1, rts: (), cts: () }
-                        }
-                    }
-
-                    impl<Id0, Id1> RxpoTxpo for [<$Type Padout>]<v2::Pad<$Sercom, $pad0, Id0>, v2::Pad<$Sercom, $pad1, Id1>, (), ()>
-                    where
-                        Id0: v2::GetPadMode<$Sercom, $pad0>,
-                        Id1: v2::GetPadMode<$Sercom, $pad1>,
-                    {
-                        fn rxpo_txpo(&self) -> (u8, u8) {
-                            $rxpo_txpo
-                        }
-                    }
-                }
-            };
-            ($rxpo_txpo:expr => $pad0:ident, $pad1:ident, $pad2:ident, $pad3:ident) => {
-                $crate::paste::item! {
-                    /// Convert from a tuple of (RX, TX, RTS, CTS) to UARTXPadout
-                    impl<PIN0, PIN1, PIN2, PIN3> From<([<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, [<$Sercom $pad2>]<PIN2>, [<$Sercom $pad3>]<PIN3>)> for [<$Type Padout>]<[<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, [<$Sercom $pad2>]<PIN2>, [<$Sercom $pad3>]<PIN3>>
-                    where
-                        PIN0: AnyPin,
-                        PIN1: AnyPin,
-                        PIN2: AnyPin,
-                        PIN3: AnyPin,
-                        PIN0::Id: GetPadMode<$Sercom, $pad0>,
-                        PIN1::Id: GetPadMode<$Sercom, $pad1>,
-                        PIN2::Id: GetPadMode<$Sercom, $pad2>,
-                        PIN3::Id: GetPadMode<$Sercom, $pad3>,
-                    {
-                        fn from(pads: ([<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, [<$Sercom $pad2>]<PIN2>, [<$Sercom $pad3>]<PIN3>)) -> [<$Type Padout>]<[<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, [<$Sercom $pad2>]<PIN2>, [<$Sercom $pad3>]<PIN3>> {
-                            [<$Type Padout>] { rx: pads.0, tx: pads.1, rts: pads.2, cts: pads.3 }
-                        }
-                    }
-
-                    impl<PIN0, PIN1, PIN2, PIN3> RxpoTxpo for [<$Type Padout>]<[<$Sercom $pad0>]<PIN0>, [<$Sercom $pad1>]<PIN1>, [<$Sercom $pad2>]<PIN2>, [<$Sercom $pad3>]<PIN3>>
-                    where
-                        PIN0: AnyPin,
-                        PIN1: AnyPin,
-                        PIN2: AnyPin,
-                        PIN3: AnyPin,
-                        PIN0::Id: GetPadMode<$Sercom, $pad0>,
-                        PIN1::Id: GetPadMode<$Sercom, $pad1>,
-                        PIN2::Id: GetPadMode<$Sercom, $pad2>,
-                        PIN3::Id: GetPadMode<$Sercom, $pad3>,
-                    {
-                        fn rxpo_txpo(&self) -> (u8, u8) {
-                            $rxpo_txpo
-                        }
-                    }
-
-                    /// Convert from a tuple of (RX, TX, RTS, CTS) to UARTXPadout
-                    impl<Id0, Id1, Id2, Id3> From<(v2::Pad<$Sercom, $pad0, Id0>, v2::Pad<$Sercom, $pad1, Id1>, v2::Pad<$Sercom, $pad2, Id2>, v2::Pad<$Sercom, $pad3, Id3>)> for [<$Type Padout>]<v2::Pad<$Sercom, $pad0, Id0>, v2::Pad<$Sercom, $pad1, Id1>, v2::Pad<$Sercom, $pad2, Id2>, v2::Pad<$Sercom, $pad3, Id3>>
-                    where
-                        Id0: v2::GetPadMode<$Sercom, $pad0>,
-                        Id1: v2::GetPadMode<$Sercom, $pad1>,
-                        Id2: v2::GetPadMode<$Sercom, $pad2>,
-                        Id3: v2::GetPadMode<$Sercom, $pad3>,
-                    {
-                        fn from(pads: (v2::Pad<$Sercom, $pad0, Id0>, v2::Pad<$Sercom, $pad1, Id1>, v2::Pad<$Sercom, $pad2, Id2>, v2::Pad<$Sercom, $pad3, Id3>)) -> Self {
-                            [<$Type Padout>] { rx: pads.0, tx: pads.1, rts: pads.2, cts: pads.3 }
-                        }
-                    }
-
-                    impl<Id0, Id1, Id2, Id3> RxpoTxpo for [<$Type Padout>]<v2::Pad<$Sercom, $pad0, Id0>, v2::Pad<$Sercom, $pad1, Id1>, v2::Pad<$Sercom, $pad2, Id2>, v2::Pad<$Sercom, $pad3, Id3>>
-                    where
-                        Id0: v2::GetPadMode<$Sercom, $pad0>,
-                        Id1: v2::GetPadMode<$Sercom, $pad1>,
-                        Id2: v2::GetPadMode<$Sercom, $pad2>,
-                        Id3: v2::GetPadMode<$Sercom, $pad3>,
-                    {
-                        fn rxpo_txpo(&self) -> (u8, u8) {
-                            $rxpo_txpo
-                        }
-                    }
-                }
-            };
-        }
-
-        padout!((0, 1) => Pad0, Pad2);
-
-        padout!((1, 0) => Pad1, Pad0);
-        padout!((1, 2) => Pad1, Pad0, Pad2, Pad3);
-        padout!((1, 1) => Pad1, Pad2);
-
-        padout!((2, 0) => Pad2, Pad0);
-
-        padout!((3, 0) => Pad3, Pad0);
-        padout!((3, 1) => Pad3, Pad2);
 
         $crate::paste::item! {
             /// UARTX represents the corresponding SERCOMX instance
@@ -227,7 +212,7 @@ macro_rules! uart {
             /// This type is generic over any valid pad mapping where there is
             /// a defined "receive pin out transmit pin out" implementation.
             pub struct $Type<RX, TX, RTS, CTS> {
-                padout: [<$Type Padout>]<RX, TX, RTS, CTS>,
+                padout: Padout<$Sercom, RX, TX, RTS, CTS>,
                 sercom: $SERCOM,
             }
 
@@ -240,14 +225,14 @@ macro_rules! uart {
                 /// You can use any tuple of two or four SercomXPadY instances
                 /// for which there exists a From implementation for
                 /// UARTXPadout.
-                pub fn new<F: Into<Hertz>, T: Into<[<$Type Padout>]<RX, TX, RTS, CTS>>>(
+                pub fn new<F: Into<Hertz>, T: Into<Padout<$Sercom, RX, TX, RTS, CTS>>>(
                     clock: &clock::$clock,
                     freq: F,
                     sercom: $SERCOM,
                     pm: &mut PM,
                     padout: T
                 ) -> $Type<RX, TX, RTS, CTS> where
-                    [<$Type Padout>]<RX, TX, RTS, CTS>: RxpoTxpo {
+                    Padout<$Sercom, RX, TX, RTS, CTS>: RxpoTxpo {
                     let padout = padout.into();
 
                     pm.apbcmask.modify(|_, w| w.$powermask().set_bit());
@@ -319,7 +304,7 @@ macro_rules! uart {
                     }
                 }
 
-                pub fn free(self) -> ([<$Type Padout>]<RX, TX, RTS, CTS>, $SERCOM) {
+                pub fn free(self) -> (Padout<$Sercom, RX, TX, RTS, CTS>, $SERCOM) {
                     (self.padout, self.sercom)
                 }
 
@@ -384,7 +369,7 @@ macro_rules! uart {
 
             /// The transmitting half of the corresponding UARTX instance (as returned by `UARTX::split`)
             pub struct [<$Type Tx>]<TX, RTS> {
-                padout: [<$Type TxPadout>]<TX, RTS>,
+                padout: TxPadout<$Sercom, TX, RTS>,
                 /// We store the SERCOM object here so we can retrieve it later,
                 /// but conceptually, ownership is shared between the Rx and Tx halves.
                 sercom: $SERCOM,
@@ -448,7 +433,7 @@ macro_rules! uart {
 
             /// The receiving half of the corresponding UARTX instance (as returned by `UARTX::split`)
             pub struct [<$Type Rx>]<RX, CTS> {
-                padout: [<$Type RxPadout>]<RX, CTS>,
+                padout: RxPadout<$Sercom, RX, CTS>,
                 sercom: PhantomData<$SERCOM>,
             }
 
@@ -505,7 +490,7 @@ macro_rules! uart {
                 }
             }
         }
-    }
+    };
 }
 
 uart!(UART0: (Sercom0, SERCOM0, sercom0_, Sercom0CoreClock));
