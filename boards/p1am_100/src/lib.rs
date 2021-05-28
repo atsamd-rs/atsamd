@@ -15,8 +15,7 @@ pub use hal::common::*;
 pub use hal::target_device as pac;
 
 use hal::clock::GenericClockController;
-use hal::sercom::v2::pad::PinToPad;
-use hal::sercom::v2::{spi, Sercom0};
+use hal::sercom::v2::{spi, Sercom1, Sercom2};
 use hal::sercom::{I2CMaster0, UART5};
 use hal::time::Hertz;
 
@@ -202,6 +201,10 @@ bsp_pins!(
 const BASE_CONTROLLER_FREQ: Hertz = Hertz(1000000);
 const BASE_CONTROLLER_SPI_MODE: embedded_hal::spi::Mode = spi::MODE_2;
 
+pub type Spi0Pads = spi::Pads<Sercom1, Spi0Miso, Spi0Mosi, Spi0Sck>;
+
+pub type Spi0 = spi::Spi<spi::Config<Spi0Pads>>;
+
 /// Convenience for setting up the labeled SPI0 peripheral.
 /// SPI0 has the P1AM base controller connected.
 /// This powers up SERCOM1 and configures it for talking to the
@@ -213,36 +216,42 @@ pub fn base_controller_spi(
     sck: Spi0Sck,
     mosi: Spi0Mosi,
     miso: Spi0Miso,
-) -> sercom::v2::spi::Spi<impl spi::ValidConfig> {
+) -> Spi0 {
     let gclk0 = &clocks.gclk0();
-    let core_clock = &clocks.sercom1_core(&gclk0).unwrap();
+    let clock = &clocks.sercom1_core(&gclk0).unwrap();
     let pads = spi::Pads::default().sclk(sck).data_in(miso).data_out(mosi);
-    spi::Config::new(pm, sercom1, pads, core_clock.freq())
+    spi::Config::new(pm, sercom1, pads, clock.freq())
         .baud(BASE_CONTROLLER_FREQ)
         .spi_mode(BASE_CONTROLLER_SPI_MODE)
         .enable()
 }
 
+type SdPads = spi::Pads<Sercom2, SdMiso, SdMosi, SdSck>;
+
+pub type SdSpi = spi::Spi<spi::Config<SdPads>>;
+
 /// Convenience for setting up the labeled SPI2 peripheral.
 /// SPI2 has the microSD card slot connected.
-/// This powers up SERCOM4 and configures it for talking to the
+/// This powers up SERCOM2 and configures it for talking to the
 /// base controller.
 pub fn sdmmc_spi<F: Into<Hertz>>(
     clocks: &mut GenericClockController,
     bus_speed: F,
-    sercom4: pac::SERCOM4,
+    sercom2: pac::SERCOM2,
     pm: &mut pac::PM,
     sck: SdSck,
     mosi: SdMosi,
     miso: SdMiso,
-) -> sercom::v2::spi::Spi<impl spi::ValidConfig> {
+) -> SdSpi {
     let gclk0 = &clocks.gclk0();
-    let core_clock = &clocks.sercom4_core(&gclk0).unwrap();
+    let clock = &clocks.sercom2_core(&gclk0).unwrap();
     let pads = spi::Pads::default().sclk(sck).data_in(miso).data_out(mosi);
-    spi::Config::new(pm, sercom4, pads, core_clock.freq())
+    spi::Config::new(pm, sercom2, pads, clock.freq())
         .baud(bus_speed)
         .enable()
 }
+
+pub type I2C = I2CMaster0<Sda, Scl>;
 
 /// Convenience for setting up the labelled SDA, SCL pins to
 /// operate as an I2C master running at the specified frequency.
@@ -253,22 +262,13 @@ pub fn i2c_master<F: Into<Hertz>>(
     pm: &mut pac::PM,
     sda: Sda,
     scl: Scl,
-) -> I2CMaster0<
-    impl hal::sercom::AnyPad<Sercom = pac::SERCOM0>,
-    impl hal::sercom::AnyPad<Sercom = pac::SERCOM0>,
-> {
+) -> I2C {
     let gclk0 = clocks.gclk0();
-    I2CMaster0::new(
-        &clocks.sercom0_core(&gclk0).unwrap(),
-        bus_speed.into(),
-        sercom0,
-        pm,
-        hal::sercom::v2::Pad::<Sercom0, _, _>::from(sda),
-        hal::sercom::v2::Pad::<Sercom0, _, _>::from(scl),
-    )
+    let clock = &clocks.sercom0_core(&gclk0).unwrap();
+    I2CMaster0::new(clock, bus_speed.into(), sercom0, pm, sda, scl)
 }
 
-pub type Uart = UART5<PinToPad<UartRx>, PinToPad<UartTx>, (), ()>;
+pub type Uart = UART5<UartRx, UartTx, (), ()>;
 
 /// Convenience for setting up the labelled RX, TX pins to
 /// operate as a UART device running at the specified baud.
@@ -281,14 +281,8 @@ pub fn uart<F: Into<Hertz>>(
     tx: UartTx,
 ) -> Uart {
     let gclk0 = clocks.gclk0();
-
-    UART5::new(
-        &clocks.sercom5_core(&gclk0).unwrap(),
-        baud.into(),
-        sercom5,
-        pm,
-        (rx.into(), tx.into()),
-    )
+    let clock = &clocks.sercom5_core(&gclk0).unwrap();
+    UART5::new(clock, baud.into(), sercom5, pm, (rx, tx))
 }
 
 #[cfg(feature = "usb")]
@@ -300,7 +294,6 @@ pub fn usb_allocator(
     dp: UsbDp,
 ) -> UsbBusAllocator<UsbBus> {
     let gclk0 = clocks.gclk0();
-    let usb_clock = &clocks.usb(&gclk0).unwrap();
-
-    UsbBusAllocator::new(UsbBus::new(usb_clock, pm, dm, dp, usb))
+    let clock = &clocks.usb(&gclk0).unwrap();
+    UsbBusAllocator::new(UsbBus::new(clock, pm, dm, dp, usb))
 }

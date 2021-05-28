@@ -36,7 +36,7 @@ pub struct Display {
     pub backlight: Pc5<Input<Floating>>,
 }
 
-pub type SpiPads = spi::Pads<Sercom7, IoSet4, NoneT, PB19, PB20>;
+pub type SpiPads = spi::PadsFromIds<Sercom7, IoSet4, NoneT, PB19, PB20>;
 
 /// Type alias for the ILI9341 LCD display.
 pub type LCD = Ili9341<
