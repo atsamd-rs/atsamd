@@ -124,7 +124,7 @@
 //! known at run-time.
 //!
 //! At the type level, we don't have the same notion of "run-time", but we do
-//! have two different notions of "comile-time" that form a similar
+//! have two different notions of "compile-time" that form a similar
 //! relationship. There is compile time for the HAL authors, and there is a
 //! separate compile-time for the HAL users. We want to create a type-level
 //! container where the exact type is not known at author-time, but it is known
