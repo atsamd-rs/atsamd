@@ -11,7 +11,6 @@
 pub mod i2c;
 pub mod spi;
 pub mod uart;
-pub use super::v2::pad_map;
 
 pub use self::i2c::*;
 pub use self::spi::*;

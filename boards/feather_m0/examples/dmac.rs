@@ -5,21 +5,20 @@
 #![no_main]
 
 use cortex_m::asm;
-use feather_m0 as hal;
 use panic_halt as _;
 
-use hal::{
-    clock::GenericClockController,
-    entry,
-    pac::{CorePeripherals, Peripherals},
-};
+use bsp::hal;
+use bsp::pac;
+use feather_m0 as bsp;
 
+use bsp::entry;
+use hal::clock::GenericClockController;
 use hal::dmac::{DmaController, PriorityLevel, Transfer, TriggerAction, TriggerSource};
+use pac::Peripherals;
 
 #[entry]
 fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
-    let core = CorePeripherals::take().unwrap();
     let _clocks = GenericClockController::with_internal_32kosc(
         peripherals.GCLK,
         &mut peripherals.PM,
@@ -29,7 +28,6 @@ fn main() -> ! {
 
     let mut pm = peripherals.PM;
     let dmac = peripherals.DMAC;
-    let _nvic = core.NVIC;
 
     // Initialize buffers
     const LENGTH: usize = 50;

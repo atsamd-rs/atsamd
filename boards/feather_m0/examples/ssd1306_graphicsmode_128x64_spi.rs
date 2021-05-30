@@ -51,18 +51,7 @@
 #![no_std]
 #![no_main]
 
-extern crate feather_m0 as hal;
-extern crate panic_halt;
-
-extern crate embedded_graphics;
-extern crate ssd1306;
-
-use hal::clock::GenericClockController;
-use hal::delay::Delay;
-use hal::entry;
-use hal::pac::{CorePeripherals, Peripherals};
-use hal::prelude::*;
-use hal::time::MegaHertz;
+use panic_halt as _;
 
 use embedded_graphics::pixelcolor::BinaryColor;
 use embedded_graphics::prelude::*;
@@ -70,6 +59,17 @@ use embedded_graphics::primitives::{Circle, Rectangle, Triangle};
 use embedded_graphics::style::PrimitiveStyleBuilder;
 use ssd1306::prelude::*;
 use ssd1306::Builder;
+
+use bsp::hal;
+use bsp::pac;
+use feather_m0 as bsp;
+
+use bsp::entry;
+use hal::clock::GenericClockController;
+use hal::delay::Delay;
+use hal::prelude::*;
+use hal::time::MegaHertz;
+use pac::{CorePeripherals, Peripherals};
 
 #[entry]
 fn main() -> ! {
@@ -81,23 +81,22 @@ fn main() -> ! {
         &mut peripherals.SYSCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = hal::Pins::new(peripherals.PORT);
-    let mut red_led = pins.d13.into_open_drain_output(&mut pins.port);
+    let pins = bsp::Pins::new(peripherals.PORT);
+    let mut red_led: bsp::RedLed = pins.d13.into();
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
-    let spi = hal::spi_master(
+    let spi = bsp::spi_master(
         &mut clocks,
         MegaHertz(10),
         peripherals.SERCOM4,
         &mut peripherals.PM,
-        pins.sck,
+        pins.sclk,
         pins.mosi,
         pins.miso,
-        &mut pins.port,
     );
 
-    let dc = pins.d6.into_open_drain_output(&mut pins.port);
-    let mut rst = pins.d9.into_open_drain_output(&mut pins.port);
+    let dc = pins.d6.into_push_pull_output();
+    let mut rst = pins.d9.into_push_pull_output();
 
     // default DisplaySize: 128x64 pixels; see the
     // ssd1306::builder::Builder::new() method definition for more info

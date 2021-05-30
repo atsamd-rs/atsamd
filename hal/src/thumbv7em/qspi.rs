@@ -1,5 +1,5 @@
 use crate::{
-    gpio::{Floating, Input, Pa10, Pa11, Pa8, Pa9, Pb10, Pb11, PfH, Port},
+    gpio::v2::{AlternateH, AnyPin, Pin, PA08, PA09, PA10, PA11, PB10, PB11},
     target_device::qspi::instrframe,
     target_device::{MCLK, QSPI},
 };
@@ -18,12 +18,12 @@ pub struct XIP;
 
 pub struct Qspi<MODE> {
     qspi: QSPI,
-    _sck: Pb10<PfH>,
-    _cs: Pb11<PfH>,
-    _io0: Pa8<PfH>,
-    _io1: Pa9<PfH>,
-    _io2: Pa10<PfH>,
-    _io3: Pa11<PfH>,
+    _sck: Pin<PB10, AlternateH>,
+    _cs: Pin<PB11, AlternateH>,
+    _io0: Pin<PA08, AlternateH>,
+    _io1: Pin<PA09, AlternateH>,
+    _io2: Pin<PA10, AlternateH>,
+    _io3: Pin<PA11, AlternateH>,
     _mode: PhantomData<MODE>,
 }
 
@@ -32,14 +32,13 @@ impl Qspi<OneShot> {
     /// assuming 120mhz system clock, for 4mhz spi mode 0 operation.
     pub fn new(
         mclk: &mut MCLK,
-        port: &mut Port,
         qspi: QSPI,
-        _sck: Pb10<Input<Floating>>,
-        _cs: Pb11<Input<Floating>>,
-        _io0: Pa8<Input<Floating>>,
-        _io1: Pa9<Input<Floating>>,
-        _io2: Pa10<Input<Floating>>,
-        _io3: Pa11<Input<Floating>>,
+        _sck: impl AnyPin<Id = PB10>,
+        _cs: impl AnyPin<Id = PB11>,
+        _io0: impl AnyPin<Id = PA08>,
+        _io1: impl AnyPin<Id = PA09>,
+        _io2: impl AnyPin<Id = PA10>,
+        _io3: impl AnyPin<Id = PA11>,
     ) -> Qspi<OneShot> {
         mclk.apbcmask.modify(|_, w| w.qspi_().set_bit());
         // Enable the clocks for the qspi peripheral in single data rate mode.
@@ -48,12 +47,12 @@ impl Qspi<OneShot> {
             w.qspi_2x_().clear_bit()
         });
 
-        let _sck = _sck.into_function_h(port);
-        let _cs = _cs.into_function_h(port);
-        let _io0 = _io0.into_function_h(port);
-        let _io1 = _io1.into_function_h(port);
-        let _io2 = _io2.into_function_h(port);
-        let _io3 = _io3.into_function_h(port);
+        let _sck = _sck.into().into_alternate();
+        let _cs = _cs.into().into_alternate();
+        let _io0 = _io0.into().into_alternate();
+        let _io1 = _io1.into().into_alternate();
+        let _io2 = _io2.into().into_alternate();
+        let _io3 = _io3.into().into_alternate();
 
         qspi.ctrla.write(|w| w.swrst().set_bit());
         qspi.baud.write(|w| unsafe {

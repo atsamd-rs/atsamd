@@ -50,22 +50,21 @@
 #![no_std]
 #![no_main]
 
-extern crate embedded_graphics;
-extern crate feather_m0 as hal;
-extern crate ssd1306;
-
-// how to panic...
 #[cfg(not(feature = "use_semihosting"))]
-extern crate panic_halt;
+use panic_halt as _;
 #[cfg(feature = "use_semihosting")]
-extern crate panic_semihosting;
+use panic_semihosting as _;
 
+use bsp::hal;
+use bsp::pac;
+use feather_m0 as bsp;
+
+use bsp::entry;
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
-use hal::entry;
-use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 use hal::time::MegaHertz;
+use pac::{CorePeripherals, Peripherals};
 
 use ssd1306::prelude::*;
 use ssd1306::Builder;
@@ -82,22 +81,21 @@ fn main() -> ! {
         &mut peripherals.SYSCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = hal::Pins::new(peripherals.PORT);
-    let mut red_led = pins.d13.into_open_drain_output(&mut pins.port);
+    let pins = bsp::Pins::new(peripherals.PORT);
+    let mut red_led: bsp::RedLed = pins.d13.into();
     let mut delay = Delay::new(core.SYST, &mut clocks);
-    let spi = hal::spi_master(
+    let spi = bsp::spi_master(
         &mut clocks,
         MegaHertz(10),
         peripherals.SERCOM4,
         &mut peripherals.PM,
-        pins.sck,
+        pins.sclk,
         pins.mosi,
         pins.miso,
-        &mut pins.port,
     );
 
-    let dc = pins.d6.into_open_drain_output(&mut pins.port);
-    let mut rst = pins.d9.into_open_drain_output(&mut pins.port);
+    let dc = pins.d6.into_push_pull_output();
+    let mut rst = pins.d9.into_push_pull_output();
 
     // NOTE the `DisplaySize` enum comes from the ssd1306 package,
     // and currently only supports certain display sizes; see

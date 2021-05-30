@@ -132,4 +132,4 @@ required-features = ["dma"]
 
 [[example]]
 name = "clock"
-required-features = ["usb"]
+required-features = ["usb", "unproven"]

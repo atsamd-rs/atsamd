@@ -1,3 +1,5 @@
+#![allow(unused_braces)]
+
 //! # Direct Memory Access Controller
 //!
 //! This library provides a type-safe API with compile-time guarantees

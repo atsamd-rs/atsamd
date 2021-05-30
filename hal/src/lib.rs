@@ -51,6 +51,9 @@ pub use atsame54n as target_device;
 #[cfg(feature = "same54p")]
 pub use atsame54p as target_device;
 
+#[cfg(any(feature = "samd11", feature = "samd21", feature = "min-samd51g"))]
+pub use target_device as pac;
+
 #[cfg(feature = "use_rtt")]
 pub use jlink_rtt;
 
@@ -130,7 +133,6 @@ pub mod common {
     pub use crate::timer_traits;
 
     #[cfg(all(feature = "unproven", feature = "dma"))]
-    #[macro_use]
     pub use crate::dmac;
 
     #[cfg(any(feature = "samd11", feature = "samd21"))]

@@ -1,6 +1,6 @@
 use atsamd_hal::adc::Adc;
 use atsamd_hal::clock::GenericClockController;
-use atsamd_hal::gpio::{Floating, Input, Pc30, Pd11, PfB, Port};
+use atsamd_hal::gpio::{self, Floating, Input, Pc30, Pd11, PfB, Port};
 use atsamd_hal::prelude::*;
 use atsamd_hal::pwm::{TCC0Pinout, Tcc0Pwm};
 use atsamd_hal::target_device::gclk::pchctrl::GEN_A::GCLK11;
@@ -21,7 +21,7 @@ impl Buzzer {
         tcc0: TCC0,
         mclk: &mut MCLK,
         port: &mut Port,
-    ) -> Tcc0Pwm {
+    ) -> Tcc0Pwm<gpio::v2::PD11, gpio::v2::AlternateF> {
         let pinout = TCC0Pinout::Pd11(self.ctr.into_function_f(port));
 
         let gclk0 = clocks.gclk0();

@@ -226,6 +226,11 @@ impl GenericClockController {
         // No wait states needed <= 24 MHz @ 3.3v (ref. 37.12 NVM characteristics)
         #[cfg(feature = "samd21")]
         set_flash_manual_write(nvmctrl);
+
+        // Get rid of unused warning
+        #[cfg(not(feature = "samd21"))]
+        let _ = nvmctrl;
+
         enable_gclk_apb(pm);
 
         state.reset_gclk();

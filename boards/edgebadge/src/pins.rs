@@ -326,7 +326,7 @@ impl Display {
                 Pb5<Output<PushPull>>,
                 Pa0<Output<PushPull>>,
             >,
-            Pwm2,
+            Pwm2<gpio::v2::PA01>,
         ),
         (),
     > {

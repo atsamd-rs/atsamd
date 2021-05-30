@@ -1,10 +1,10 @@
 //! # Version 1 of the SERCOM module
 //!
 //! This module retains the previous SERCOM API. The [`pads`] module provides a
-//! compatibility shim that uses the new [`v2::pads`] module to implement the
+//! compatibility shim that uses the new [`v2::pad`] module to implement the
 //! old API. This API will eventually be deprecated and removed.
 //!
-//! [`v2::pads`]: super::v2::pads
+//! [`v2::pad`]: super::v2::pad
 
 pub mod pads;
 pub use pads::*;

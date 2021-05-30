@@ -2,33 +2,26 @@
 //!
 //! This module provides a type-level API for GPIO pins. It uses the type system
 //! to track the state of pins at compile-time. To do so, it uses traits to
-//! represent meta-types and types as instances of those meta-types. For
-//! example, the trait [`InputConfig`] acts as a type-level `enum` of the
+//! represent [type classes] and types as instances of those type classes. For
+//! example, the trait [`InputConfig`] acts as a [type-level enum] of the
 //! available input configurations, and the types [`Floating`], [`PullDown`] and
-//! [`PullUp`] are the type-level variants of [`InputConfig`].
+//! [`PullUp`] are its type-level variants.
 //!
-//! When applied as a trait bound, meta-types restrict type parameters to the
-//! corresponding variants. All of the traits in this module are closed, using
-//! the `Sealed` trait pattern, so the type-level instances found in this module
-//! are the only possible variants.
+//! When applied as a trait bound, a type-level enum restricts type parameters
+//! to the corresponding variants. All of the traits in this module are closed,
+//! using the `Sealed` trait pattern, so the type-level instances found in this
+//! module are the only possible variants.
 //!
-//! Type-level pins are parameterized by two main meta-types, [`PinId`] and
+//! Type-level [`Pin`]s are parameterized by two type-level enums, [`PinId`] and
 //! [`PinMode`].
 //!
-//! The [`PinId`] meta-type identifies a pin by it's group (A, B, C or D) and
-//! pin number. Each [`PinId`] instance is named according to its datasheet
-//! identifier, e.g. [`PA27`].
+//! A `PinId` identifies a pin by it's group (A, B, C or D) and pin number. Each
+//! `PinId` instance is named according to its datasheet identifier, e.g.
+//! [`PA02`].
 //!
-//! The [`PinMode`] meta-type represents the various pin modes. The available
-//! [`PinMode`] variants are [`Disabled`], [`Input`], [`Output`] and
-//! [`Alternate`], each with its own corresponding configurations.
-//!
-//! The [`Pin`] struct acts as a type-level instance of a pin. It is
-//! parameterized by two type parameters, a [`PinId`] and a [`PinMode`].
-//! [`Pin`]s with different [`PinId`]s or [`PinMode`]s are considered distinct
-//! types by the compiler. As a consequence, converting from one [`PinMode`] to
-//! another requires changing type. Functions that change [`PinMode`] must
-//! consume the existing instance and return a new instance.
+//! A `PinMode` represents the various pin modes. The available `PinMode`
+//! variants are [`Disabled`], [`Input`], [`Output`] and [`Alternate`], each
+//! with its own corresponding configurations.
 //!
 //! It is not possible for users to create new instances of a [`Pin`]. Singleton
 //! instances of each pin are made available to users through the [`Pins`]
@@ -62,72 +55,32 @@
 //! in the corresponding [`PinMode`]s, namely: [`InputPin`], [`OutputPin`],
 //! [`ToggleableOutputPin`] and [`StatefulOutputPin`].
 //!
-//! # Type-level encapsulation
-//!
-//! Normally, storing a generic pin within some data structure requires two type
-//! parameters.
+//! For example, you can control the logic level of an `OutputPin` like so
 //!
 //! ```
-//! struct UserStruct<I: PinId, M: PinMode> {
-//!     pin: Pin<I, M>
-//! }
+//! use atsamd_hal::pac::Peripherals;
+//! use atsamd_hal::gpio::v2::Pins;
+//! use embedded_hal::digital::v2::OutputPin;
+//!
+//! let mut peripherals = Peripherals::take().unwrap();
+//! let mut pins = Pins::new(peripherals.PORT);
+//! pins.pa27.set_high();
 //! ```
 //!
-//! As an alternative, this module provides a trait to encapsulate a pin with a
-//! single type-parameter, [`AnyPin`]. The [`AnyPin`] trait is implemented by
-//! every possible variant of [`Pin`], so it can be used as a trait bound for
-//! pins. With this approach, only one type parameter is required.
+//! # Type-level features
 //!
-//! ```
-//! struct UserStruct<P: AnyPin> {
-//!     pin: P
-//! }
-//! ```
+//! This module also provides additional, type-level tools to work with GPIO
+//! pins.
 //!
-//! Moreover, no information is lost with this approach, because the [`AnyPin`]
-//! trait has associated types for each type parameter of [`Pin`]. Use these
-//! associated types to apply trait bounds or restrict the pin in some way.
+//! The [`OptionalPinId`] and [`OptionalPin`] traits use the [`OptionalKind`]
+//! pattern to act as type-level versions of [`Option`] for `PinId` and `Pin`
+//! respectively. And the [`AnyPin`] trait defines an [`AnyKind`] type class
+//! for all `Pin` types.
 //!
-//! ```
-//! struct UserStruct<P>
-//! where
-//!     P: AnyPin<Mode = AlternateE>,
-//!     P::Id: SomeUserTrait,
-//! {
-//!     pin: P
-//! }
-//! ```
-//!
-//! However, note that working with a generic type constrained by [`AnyPin`] is
-//! a bit different than working directly with a [`Pin`]. See the [`AnyPin`]
-//! documentation for more details.
-//!
-//! # Optional pins
-//!
-//! Finally, this module provides an easy way to implement optional pins. The
-//! trait [`OptionalPin`] is implemented for each [`Pin`] as well as the
-//! [`NoneT`] struct. [`NoneT`] acts as a type-level version of the [`None`]
-//! variant. The [`SomePin`] trait has both [`OptionalPin`] and [`AnyPin`] as
-//! super traits, so it can be used as a bound to guarantee a valid pin and
-//! provide access to the [`AnyPin`] associated types.
-//!
-//! ```
-//! struct UserStruct<P: OptionalPin> {
-//!     pin: P
-//! }
-//!
-//! impl<P: OptionalPin> UserStruct<P> {
-//!     pub fn new() -> UserStruct<NoneT> {
-//!         UserStruct { pin: NoneT }
-//!     }
-//!     pub fn init<Q>(self, pin: Q) -> UserStruct<Q>
-//!     where
-//!         Q: SomePin<Mode = PushPullOutput>,
-//!     {
-//!         UserStruct { pin }
-//!     }
-//! }
-//! ```
+//! [type classes]: crate::typelevel#type-classes
+//! [type-level enum]: crate::typelevel#type-level-enum
+//! [`OptionalKind`]: crate::typelevel#optionalkind-trait-pattern
+//! [`AnyKind`]: crate::typelevel#anykind-trait-pattern
 
 #![allow(clippy::zero_prefixed_literal)]
 
@@ -151,7 +104,12 @@ use super::reg::RegisterInterface;
 //  Disabled configurations
 //==============================================================================
 
-/// Type-level `enum` for disabled configurations
+/// Type-level enum for disabled configurations
+///
+/// The valid options are [`Floating`], [`PullDown`] and [`PullUp`]. See the
+/// [type-level enum] documentation for more details on the pattern.
+///
+/// [type-level enum]: crate::typelevel#type-level-enum
 pub trait DisabledConfig: Sealed {
     /// Corresponding [`DynDisabled`](super::DynDisabled)
     const DYN: DynDisabled;
@@ -204,7 +162,12 @@ pub type Reset = FloatingDisabled;
 //  Input configurations
 //==============================================================================
 
-/// Type-level `enum` for input configurations
+/// Type-level enum for input configurations
+///
+/// The valid options are [`Floating`], [`PullDown`] and [`PullUp`]. See the
+/// [type-level enum] documentation for more details on the pattern.
+///
+/// [type-level enum]: crate::typelevel#type-level-enum
 pub trait InputConfig: Sealed {
     /// Corresponding [`DynInput`](super::DynInput)
     const DYN: DynInput;
@@ -243,7 +206,12 @@ pub type PullUpInput = Input<PullUp>;
 //  Output configurations
 //==============================================================================
 
-/// Type-level `enum` for output configurations
+/// Type-level enum for output configurations
+///
+/// The valid options are [`PushPull`] and [`Readable`]. See the [type-level
+/// enum] documentation for more details on the pattern.
+///
+/// [type-level enum]: crate::typelevel#type-level-enum
 pub trait OutputConfig: Sealed {
     /// Corresponding [`DynOutput`](super::DynOutput)
     const DYN: DynOutput;
@@ -284,7 +252,11 @@ pub type ReadableOutput = Output<Readable>;
 //  Alternate configurations
 //==============================================================================
 
-/// Type-level `enum` for alternate peripheral function configurations
+/// Type-level enum for alternate peripheral function configurations
+///
+/// See the [type-level enum] documentation for more details on the pattern.
+///
+/// [type-level enum]: crate::typelevel#type-level-enum
 pub trait AlternateConfig: Sealed {
     /// Corresponding [`DynAlternate`](super::DynAlternate)
     const DYN: DynAlternate;
@@ -338,8 +310,13 @@ impl<C: AlternateConfig> Sealed for Alternate<C> {}
 //  Pin modes
 //==============================================================================
 
-/// Type-level `enum` representing pin modes
-pub trait PinMode: Sealed + Sized {
+/// Type-level enum representing pin modes
+///
+/// The valid options are [`Disabled`], [`Input`], [`Output`] and [`Alternate`].
+/// See the [type-level enum] documentation for more details on the pattern.
+///
+/// [type-level enum]: crate::typelevel#type-level-enum
+pub trait PinMode: Sealed {
     /// Corresponding [`DynPinMode`](super::DynPinMode)
     const DYN: DynPinMode;
 }
@@ -364,7 +341,13 @@ impl<C: AlternateConfig> PinMode for Alternate<C> {
 //  Pin IDs
 //==============================================================================
 
-/// Type-level `enum` for pin IDs
+/// Type-level enum for pin IDs
+///
+/// Valid options take the form `PXYY`, where `X` is a letter in `A`-`D` and
+/// `YY` is a number between 00-31. See the [type-level enum] documentation for
+/// more details on the pattern.
+///
+/// [type-level enum]: crate::typelevel#type-level-enum
 pub trait PinId: Sealed {
     /// Corresponding [`DynPinId`](super::DynPinId)
     const DYN: DynPinId;
@@ -385,6 +368,30 @@ macro_rules! pin_id {
         }
     };
 }
+
+//==============================================================================
+//  OptionalPinId
+//==============================================================================
+
+/// Type-level equivalent of `Option<PinId>`
+///
+/// See the [`OptionalKind`] documentation for more details on the pattern.
+///
+/// [`OptionalKind`]: crate::typelevel#optionalkind-trait-pattern
+pub trait OptionalPinId {}
+
+impl OptionalPinId for NoneT {}
+
+impl<I: PinId> OptionalPinId for I {}
+
+/// Type-level equivalent of `Some(PinId)`
+///
+/// See the [`OptionalKind`] documentation for more details on the pattern.
+///
+/// [`OptionalKind`]: crate::typelevel#optionalkind-trait-pattern
+pub trait SomePinId: OptionalPinId + PinId {}
+
+impl<I: PinId> SomePinId for I {}
 
 //==============================================================================
 //  Registers
@@ -464,7 +471,11 @@ where
     /// Convert the pin to the requested [`PinMode`]
     #[inline]
     pub fn into_mode<N: PinMode>(mut self) -> Pin<I, N> {
-        self.regs.change_mode::<N>();
+        // Only modify registers if we are actually changing pin mode
+        // This check should compile away
+        if N::DYN != M::DYN {
+            self.regs.change_mode::<N>();
+        }
         // Safe because we drop the existing Pin
         unsafe { Pin::new() }
     }
@@ -684,135 +695,11 @@ impl_core_convert_from!(
 //  AnyPin
 //==============================================================================
 
-/// Meta-type representing any [`Pin`]
+/// Type class for [`Pin`] types
 ///
-/// All instances of [`Pin`] implement this trait. When used as a trait bound,
-/// it acts to encapsulate a [`Pin`]. Without this trait, a completely generic
-/// [`Pin`] requires two type parameters, i.e. `Pin<I, M>`. But when using this
-/// trait, only one type parameter is required, i.e. `P: AnyPin`. However, even
-/// though we have dropped a type parameter, no information is lost, because the
-/// [`PinId`] and [`PinMode`] type parameters are stored as associated types in
-/// the trait. The implementation of [`AnyPin`] looks like this:
-///
-/// ```
-/// impl<I: PinId, M: PinMode> AnyPin for Pin<I, M> {
-///     type Id = I;
-///     type Mode = M;
-/// }
-/// ```
-///
-/// Thus, there is a one-to-one mapping between `Pin<I, M>` and
-/// `AnyPin<Id = I, Mode = M>`, so you can always recover the specific type from
-/// an implementation of [`AnyPin`]. The type alias [`SpecificPin`] is provided
-/// for this purpose. You can convert between [`AnyPin`] and its corresponding
-/// [`SpecificPin`] using the [`Into`], [`AsRef`] and [`AsMut`] traits.
-///
-/// ```
-/// fn example<P: AnyPin>(mut any_pin: P) {
-///     let pin_mut: &mut SpecificPin<P> = any_pin.as_mut();
-///     let pin_ref: &SpecificPin<P> = any_pin.as_ref();
-///     let pin: SpecificPin<P> = any_pin.into();
-/// }
-/// ```
-///
-/// ## [`AnyPin`] as a trait bound
-///
-/// When using [`AnyPin`] as a trait bound, you can constrain the associated
-/// types to restrict the acceptable [`Pin`]s. For example, you could restrict
-/// a function to accept a particular pin in any mode.
-///
-/// ```
-/// fn example<P>(pin: P)
-/// where
-///     P: AnyPin<Id = PA27>
-/// {
-/// }
-/// ```
-///
-/// Or you could accept any pin, as long as it's in the desired mode.
-///
-/// ```
-/// fn example<P>(pin: P)
-/// where
-///     P: AnyPin<Mode = PullDownInput>
-/// {
-/// }
-/// ```
-///
-/// You can also apply more complex bounds. In the following example, `P` must
-/// be an output pin, and its [`PinId`] must satisfy some `UserTrait`.
-///
-/// ```
-/// fn example<P, C>(pin: P)
-/// where
-///     P: AnyPin<Mode = Output<C>>,
-///     C: OutputConfig,
-///     P::Id: UserTrait,
-/// {
-/// }
-/// ```
-///
-/// ## Generic [`AnyPin`]s
-///
-/// Working with a generic type constrained by [`AnyPin`] is slightly different
-/// than working with a [`Pin`] directly. When compiling a generic function, the
-/// compiler cannot assume anything about the specific type. It can only use
-/// what it knows about the [`AnyPin`] trait. To use a generic [`AnyPin`], you
-/// must first convert it to its corresponding [`SpecificPin`] using the
-/// [`Into`], [`AsRef`] or [`AsMut`] trait. In some instances, you may also need
-/// to convert back.
-///
-/// The following example walks through a few different ways to interact with a
-/// generic type constrained by [`AnyPin`]. Suppose you wanted to store a
-/// completely generic [`Pin`] within a struct. You can do so using only one
-/// type parameter and the [`AnyPin`] trait.
-///
-/// ```
-/// pub struct Example<P: AnyPin> {
-///     pin: P,
-/// }
-/// ```
-///
-/// Next, suppose you want to create a method that will take the [`Pin`] out of
-/// the struct, perform some operations in different [`PinMode`]s, and put it
-/// back into the struct before returning. The `elided` method below shows such
-/// an example. However, it can be a bit tricky to follow all of the type
-/// conversions here. For clarity, the `expanded` method shows the same behavior
-/// with each transformation given its proper type annotation.
-///
-/// Notice that it is not enough to simply put back the correct [`SpecificPin`].
-/// Even though the [`SpecificPin`] implements
-/// `AnyPin<Id = P::Id, Mode = P::Mode>` the compiler doesn't understand that
-/// `SpecificPin<P> == P` for all `P`. As far as the compiler is concerned,
-/// there could be several different types that implement
-/// `AnyPin<Id = P::Id, Mode = P::Mode>`. Instead, the compiler requires that
-/// you put back an instance of `P` exactly. The final use of [`Into`] is key
-/// here. It transforms the [`SpecificPin`] back into `P` itself.
-///
-/// ```
-/// impl<P: AnyPin> Example<P> {
-///     pub fn elided(mut self) -> Self {
-///         let pin = self.pin.into();
-///         let mut pin = pin.into_push_pull_output();
-///         pin.set_high().ok();
-///         let pin = pin.into_floating_input();
-///         let _bit = pin.is_low().unwrap();
-///         let pin = pin.into_mode();
-///         self.pin = pin.into();
-///         self
-///     }
-///     pub fn expanded(mut self) -> Self {
-///         let pin: SpecificPin<P> = self.pin.into();
-///         let mut pin: Pin<P::Id, PushPullOutput> = pin.into_push_pull_output();
-///         pin.set_high().ok();
-///         let pin: Pin<P::Id, FloatingInput> = pin.into_floating_input();
-///         let _bit = pin.is_low().unwrap();
-///         let pin: SpecificPin<P> = pin.into_mode::<P::Mode>();
-///         self.pin = pin.into();
-///         self
-///     }
-/// }
-/// ```
+/// This trait uses the [`AnyKind`] trait pattern to create a [type class] for
+/// [`Pin`] types. See the `AnyKind` documentation for more details on the
+/// pattern.
 ///
 /// ## `v1` Compatibility
 ///
@@ -824,6 +711,9 @@ impl_core_convert_from!(
 /// memory layout to begin with. And even if there were, the `v1` `Pin` type is
 /// a newtype wrapper around a `v2` `Pin`, and single-field structs are
 /// guaranteed to have the same layout as the field, even for `repr(Rust)`.
+///
+/// [`AnyKind`]: crate::typelevel#anykind-trait-pattern
+/// [type class]: crate::typelevel#type-classes
 pub trait AnyPin
 where
     Self: Sealed,
@@ -831,8 +721,6 @@ where
     Self: Into<SpecificPin<Self>>,
     Self: AsRef<SpecificPin<Self>>,
     Self: AsMut<SpecificPin<Self>>,
-    SpecificPin<Self>: AsRef<Self>,
-    SpecificPin<Self>: AsMut<Self>,
 {
     /// [`PinId`] of the corresponding [`Pin`]
     type Id: PinId;
@@ -859,11 +747,27 @@ where
 /// Type alias to recover the specific [`Pin`] type from an implementation of
 /// [`AnyPin`]
 ///
-/// By definition, `P == SpecificPin<P>` for all `P: AnyPin`.
+/// See the [`AnyKind`] documentation for more details on the pattern.
+///
+/// [`AnyKind`]: crate::typelevel#anykind-trait-pattern
 pub type SpecificPin<P> = Pin<<P as AnyPin>::Id, <P as AnyPin>::Mode>;
 
-/// Implementation required to satisfy the `Is<Type = SpecificPin<Self>>` bound
-/// on [`AnyPin`]
+/// Type alias to recover the [`PinId`] type from an implementation of
+/// [`AnyPin`]
+///
+/// See the [`AnyKind`] documentation for more details on the pattern.
+///
+/// [`AnyKind`]: crate::typelevel#anykind-trait-pattern
+pub type SpecificPinId<P> = <P as AnyPin>::Id;
+
+/// Type alias to recover the [`PinMode`] type from an implementation of
+/// [`AnyPin`]
+///
+/// See the [`AnyKind`] documentation for more details on the pattern.
+///
+/// [`AnyKind`]: crate::typelevel#anykind-trait-pattern
+pub type SpecificPinMode<P> = <P as AnyPin>::Mode;
+
 impl<P: AnyPin> AsRef<P> for SpecificPin<P> {
     #[inline]
     fn as_ref(&self) -> &P {
@@ -875,8 +779,6 @@ impl<P: AnyPin> AsRef<P> for SpecificPin<P> {
     }
 }
 
-/// Implementation required to satisfy the `Is<Type = SpecificPin<Self>>` bound
-/// on [`AnyPin`]
 impl<P: AnyPin> AsMut<P> for SpecificPin<P> {
     #[inline]
     fn as_mut(&mut self) -> &mut P {
@@ -892,20 +794,20 @@ impl<P: AnyPin> AsMut<P> for SpecificPin<P> {
 //  Optional pins
 //==============================================================================
 
-/// Meta-type representing an optional [`Pin`].
+/// Type-level equivalent of `Option<PinId>`
 ///
-/// This trait is implemented for every [`Pin`], as well as for
-/// [`NoneT`](crate::typelevel::NoneT).
+/// See the [`OptionalKind`] documentation for more details on the pattern.
+///
+/// [`OptionalKind`]: crate::typelevel#optionalkind-trait-pattern
 pub trait OptionalPin: Sealed {}
 impl OptionalPin for NoneT {}
 impl<P: AnyPin> OptionalPin for P {}
 
-/// Meta-type representing a valid [`Pin`].
+/// Type-level equivalent of `Some(PinId)`
 ///
-/// When used as a bound, this trait allows you to exclude
-/// [`NoneT`](crate::typelevel::NoneT) and limit the type to valid [`Pin`]s.
-/// [`AnyPin`] is a super trait to [`SomePin`], so all of its functionality is
-/// still available.
+/// See the [`OptionalKind`] documentation for more details on the pattern.
+///
+/// [`OptionalKind`]: crate::typelevel#optionalkind-trait-pattern
 pub trait SomePin: OptionalPin + AnyPin {}
 impl<P: OptionalPin + AnyPin> SomePin for P {}
 
@@ -1367,14 +1269,15 @@ declare_pins!(
 macro_rules! bsp_pins {
     (
         $(
-            $( #[$name_cfg:meta] )*
-            $Id:ty {
+            $( #[$id_cfg:meta] )*
+            $Id:ident {
+                $( #[$name_doc:meta] )*
                 name: $name:ident $(,)?
                 $(
                     aliases: {
                         $(
                             $( #[$alias_cfg:meta] )*
-                            $Mode:ty: $Alias:ident
+                            $Mode:ident: $Alias:ident
                         ),+
                     }
                 )?
@@ -1391,7 +1294,8 @@ macro_rules! bsp_pins {
             pub struct Pins {
                 port: Option<$crate::target_device::PORT>,
                 $(
-                    $( #[$name_cfg] )*
+                    $( #[$id_cfg] )*
+                    $( #[$name_doc] )*
                     pub $name: $crate::gpio::v2::Pin<
                         $crate::gpio::v2::$Id,
                         $crate::gpio::v2::Reset
@@ -1418,7 +1322,7 @@ macro_rules! bsp_pins {
                     Self {
                         port: Some(unsafe{ pins.port() }),
                         $(
-                            $( #[$name_cfg] )*
+                            $( #[$id_cfg] )*
                             $name: pins.[<$Id:lower>],
                         )+
                     }
@@ -1440,40 +1344,36 @@ macro_rules! bsp_pins {
                     self.port.take().unwrap()
                 }
             }
-
             $(
-                $( #[$name_cfg] )*
-                $(
-                    $(
-                        $( #[$alias_cfg] )*
-                        /// Alias for a configured [`Pin`](atsamd_hal::gpio::v2::Pin)
-                        pub type $Alias = $crate::gpio::v2::Pin<
-                            $crate::gpio::v2::$Id,
-                            $crate::gpio::v2::$Mode
-                        >;
-                    )+
-                )?
-                $( #[$name_cfg] )*
-                $(
-                    $(
-                        $( #[$alias_cfg] )*
-                        #[doc = "[DynPinId](atsamd_hal::gpio::v2::DynPinId) "]
-                        #[doc = "for the `" $Alias "` alias."]
-                        pub const [<$Alias:snake:upper _ID>]: $crate::gpio::v2::DynPinId =
-                        <$crate::gpio::v2::$Id as $crate::gpio::v2::PinId>::DYN;
-                    )+
-                )?
-                $( #[$name_cfg] )*
-                $(
-                    $(
-                        $( #[$alias_cfg] )*
-                        #[doc = "[DynPinMode](atsamd_hal::gpio::v2::DynPinMode) "]
-                        #[doc = "for the `" $Alias "` alias."]
-                        pub const [<$Alias:snake:upper _MODE>]: $crate::gpio::v2::DynPinMode =
-                        <$crate::gpio::v2::$Mode as $crate::gpio::v2::PinMode>::DYN;
-                    )+
-                )?
+                $( #[$id_cfg] )*
+                $crate::bsp_pins!(@aliases, $( $( $( #[$alias_cfg] )* $Id $Mode $Alias )+ )? );
             )+
+        }
+    };
+    ( @aliases, $( $( $( #[$attr:meta] )* $Id:ident $Mode:ident $Alias:ident )+ )? ) => {
+        $crate::paste::paste! {
+            $(
+                $(
+                    $( #[$attr] )*
+                    /// Alias for a configured [`Pin`](atsamd_hal::gpio::v2::Pin)
+                    pub type $Alias = $crate::gpio::v2::Pin<
+                        $crate::gpio::v2::$Id,
+                        $crate::gpio::v2::$Mode
+                    >;
+
+                    $( #[$attr] )*
+                    #[doc = "[DynPinId](atsamd_hal::gpio::v2::DynPinId) "]
+                    #[doc = "for the `" $Alias "` alias."]
+                    pub const [<$Alias:snake:upper _ID>]: $crate::gpio::v2::DynPinId =
+                    <$crate::gpio::v2::$Id as $crate::gpio::v2::PinId>::DYN;
+
+                    $( #[$attr] )*
+                    #[doc = "[DynPinMode](atsamd_hal::gpio::v2::DynPinMode) "]
+                    #[doc = "for the `" $Alias "` alias."]
+                    pub const [<$Alias:snake:upper _MODE>]: $crate::gpio::v2::DynPinMode =
+                    <$crate::gpio::v2::$Mode as $crate::gpio::v2::PinMode>::DYN;
+                )+
+            )?
         }
     };
 }

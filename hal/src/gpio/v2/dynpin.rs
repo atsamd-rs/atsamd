@@ -288,8 +288,11 @@ impl DynPin {
     /// Convert the pin to the requested [`DynPinMode`]
     #[inline]
     pub fn into_mode(&mut self, mode: DynPinMode) {
-        self.regs.change_mode(mode);
-        self.mode = mode;
+        // Only modify registers if we are actually changing pin mode
+        if mode != self.mode {
+            self.regs.change_mode(mode);
+            self.mode = mode;
+        }
     }
 
     /// Disable the pin and set it to float

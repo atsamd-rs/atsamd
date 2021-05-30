@@ -1,74 +1,84 @@
-//! Implementations of the [`pads`] [`Map`] trait
-//!
-//! This module provides implementations of [`Map`] for the SAMD11 and SAMD21
-//! series chips. Unlike the SAMD5x & SAME5x chips, the SAMD11 and SAMD21 chips
-//! do not have any concept of IOSET. A given SERCOM can use any combination of
-//! GPIO pins, so long as those pins can be configured as pads for that SERCOM.
-//!
-//! This module implements [`Map`] directly on [`PinId`]s. For a given
-//! [`Sercom`] and [`PadNum`], the [`Map`] trait identifies the correct
-//! [`PinMode`] for the [`PinId`].
-//!
-//! [`pads`]: crate::sercom::v2::pads
-//! [`Sercom`]: crate::sercom::v2::Sercom
-//! [`PadNum`]: crate::sercom::v2::pads::PadNum
-//! [`Map`]: crate::sercom::v2::pads::Map
-//! [`PinId`]: crate::gpio::v2::PinId
-//! [`PinMode`]: crate::gpio::v2::PinMode
+//! Implementations of the [`PadInfo`] trait
 use crate::gpio::v2::*;
-use crate::sercom::v2::pads::*;
 use crate::sercom::v2::*;
 
 //==============================================================================
 //  Pad definitions
 //==============================================================================
 
-macro_rules! map {
-    // Single instance, with optional attribute
+macro_rules! pad_info {
     (
-        $( #[$cfg:meta] )?
-        $Sercom:ident, $PadNum:ident, $PinId:ident, $Cfg:ident
+        $PinId:ident,
+        $Cfg:ident,
+        $Sercom:ident,
+        $PadNum:ident
     ) => {
-        $( #[$cfg] )?
-        impl Map<$Sercom, $PadNum> for $PinId {
-            type Id = $PinId;
-            type Mode = Alternate<$Cfg>;
+        #[cfg(feature = "samd11")]
+        impl PadInfo<$Sercom, $PadNum> for $PinId {
+            type PinMode = Alternate<$Cfg>;
         }
-    };
-    // Multiple instances, with optional attribute
-    (
-        $(
-            $( #[$cfg:meta] )?
-            $Sercom:ident, $PadNum:ident, $PinId:ident, $Cfg:ident,
-        )+
-    ) => {
-        $(
-            map!(
-                $( #[$cfg] )?
-                $Sercom, $PadNum, $PinId, $Cfg
-            );
-        )+
+
+        #[cfg(feature = "samd21")]
+        impl PadInfo<$Sercom> for $PinId {
+            type PadNum = $PadNum;
+            type PinMode = Alternate<$Cfg>;
+        }
+
+        impl ConvertPinToPad for Pin<$PinId, Alternate<$Cfg>> {
+            type Sercom = $Sercom;
+            type PadNum = $PadNum;
+        }
     };
 }
 
 // Feature gates can be placed on individual configurations or on the entire pin
 macro_rules! pad_table {
     (
+        #[$cfg:meta]
+        $PinId:ident {
+            $(
+                $Cfg:ident: ( $Sercom:ident, $PadNum:ident ),
+            )+
+        }
+    ) => {
         $(
-            $( #[$pinid_cfg:meta] )?
-            $PinId:ident { $(
-                $( #[$padnum_cfg:meta] )?
-                $Cfg:ident: ($Sercom:ident, $PadNum:ident),
-            )+ }
+            #[$cfg]
+            pad_info!( $PinId, $Cfg, $Sercom, $PadNum );
+        )+
+    };
+    (
+        $PinId:ident {
+            $(
+                $( #[$cfg:meta] )?
+                $Cfg:ident: ( $Sercom:ident, $PadNum:ident ),
+            )+
+        }
+    ) => {
+        $(
+            $( #[$cfg] )?
+            pad_info!( $PinId, $Cfg, $Sercom, $PadNum );
+        )+
+    };
+    (
+        $(
+            $( #[$id_cfg:meta] )?
+            $PinId:ident {
+                $(
+                    $( #[$sercom_cfg:meta] )?
+                    $Cfg:ident: ( $Sercom:ident, $PadNum:ident ),
+                )+
+            }
         )+
     ) => {
         $(
-            $( #[$pinid_cfg] )?
-            map!(
-                $(
-                    $( #[$padnum_cfg] )?
-                    $Sercom, $PadNum, $PinId, $Cfg,
-                )+
+            pad_table!(
+                $( #[$id_cfg] )?
+                $PinId{
+                    $(
+                        $( #[$sercom_cfg] )?
+                        $Cfg: ( $Sercom, $PadNum ),
+                    )+
+                }
             );
         )+
     };
