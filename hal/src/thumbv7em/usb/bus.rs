@@ -751,7 +751,20 @@ impl Inner {
         max_packet_size: u16,
         interval: u8,
     ) -> UsbResult<EndpointAddress> {
-        let allocated_size = max_packet_size.max(64);
+        // The USB hardware encodes the maximum packet size in 3 bits, so
+        // reserve enough buffer that the hardware won't overwrite it even if
+        // the other side issues an overly-long transfer.
+        let allocated_size = match max_packet_size {
+            1..=8 => 8,
+            9..=16 => 16,
+            17..=32 => 32,
+            33..=64 => 64,
+            65..=128 => 128,
+            129..=256 => 256,
+            257..=512 => 512,
+            513..=1023 => 1024,
+            _ => return Err(UsbError::Unsupported),
+        };
 
         let buffer = self.buffers.borrow_mut().allocate_buffer(allocated_size)?;
 
