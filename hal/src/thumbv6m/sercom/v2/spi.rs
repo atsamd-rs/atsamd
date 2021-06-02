@@ -1630,7 +1630,7 @@ mod spi_dma {
     unsafe impl<P, M, C> dmac::transfer::Buffer for Spi<Config<P, M, C>>
     where
         Config<P, M, C>: ValidConfig,
-        P: DipoDopo,
+        P: ValidPads,
         M: MasterMode,
         C: CharSize,
         C::Word: dmac::transfer::Beat,
@@ -1690,7 +1690,7 @@ mod spi_dma {
             unsafe { dmac::Transfer::new_unchecked(channel, buf, self, false) }
                 .with_waker(waker)
                 .begin(
-                    SpiSercom::<Config<P, M, C>>::DMA_TX_TRIGGER,
+                    <Self as AnySpi>::Sercom::DMA_TX_TRIGGER,
                     dmac::TriggerAction::BEAT,
                 )
         }
@@ -1728,7 +1728,7 @@ mod spi_dma {
             unsafe { dmac::Transfer::new_unchecked(channel, self, buf, false) }
                 .with_waker(waker)
                 .begin(
-                    SpiSercom::<Config<P, M, C>>::DMA_RX_TRIGGER,
+                    <Self as AnySpi>::Sercom::DMA_RX_TRIGGER,
                     dmac::TriggerAction::BEAT,
                 )
         }
