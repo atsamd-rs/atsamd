@@ -91,7 +91,7 @@
 use super::{
     channel::{AnyChannel, Busy, CallbackStatus, Channel, ChannelId, InterruptFlags, Ready},
     dma_controller::{ChId, TriggerAction, TriggerSource},
-    BlockTransferControl, DmacDescriptor, DmacError, Result, DESCRIPTOR_SECTION,
+    BlockTransferControl, DmacDescriptor, Error, Result, DESCRIPTOR_SECTION,
 };
 use crate::typelevel::{Is, Sealed};
 use core::{ptr::null_mut, sync::atomic};
@@ -147,6 +147,7 @@ impl_beat!(
 
 /// Buffer useable by the DMAC.
 pub unsafe trait Buffer {
+    /// DMAC beat size
     type Beat: Beat;
     /// Pointer to the buffer. If the buffer is incrementing, the address should
     /// point to one past the last beat transfer in the block.
@@ -232,7 +233,9 @@ where
     S: Buffer,
     D: Buffer<Beat = S::Beat>,
 {
+    /// Source buffer
     pub source: S,
+    /// Destination buffer
     pub destination: D,
 }
 
@@ -351,7 +354,7 @@ where
         let dst_len = destination.buffer_len();
 
         if src_len > 1 && dst_len > 1 && src_len != dst_len {
-            Err(DmacError::LengthMismatch)
+            Err(Error::LengthMismatch)
         } else {
             Ok(())
         }
@@ -624,7 +627,7 @@ where
         Self::check_buffer_pair(&source, &destination)?;
 
         if !self.complete() {
-            return Err(DmacError::InvalidState);
+            return Err(Error::InvalidState);
         }
 
         // Circular transfers won't ever complete, so never re-fill as one

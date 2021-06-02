@@ -156,6 +156,7 @@ impl<Id: ChId, S: Status> Channel<Id, S> {
         }
     }
 
+    /// Selectively enable interrupts
     #[inline]
     pub fn enable_interrupts(&mut self, flags: InterruptFlags) {
         // SAFETY: This is safe as InterruptFlags is only capable of writing in
@@ -165,6 +166,7 @@ impl<Id: ChId, S: Status> Channel<Id, S> {
             .write(|w| unsafe { w.bits(flags.into()) });
     }
 
+    /// Selectively disable interrupts
     #[inline]
     pub fn disable_interrupts(&mut self, flags: InterruptFlags) {
         // SAFETY: This is safe as InterruptFlags is only capable of writing in
