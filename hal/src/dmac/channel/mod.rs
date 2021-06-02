@@ -33,7 +33,7 @@
 
 use super::dma_controller::{ChId, PriorityLevel, TriggerAction, TriggerSource};
 use crate::typelevel::{Is, Sealed};
-use core::{marker::PhantomData, mem};
+use core::marker::PhantomData;
 use modular_bitfield::prelude::*;
 
 mod reg;
@@ -333,6 +333,15 @@ impl<Id: ChId> Channel<Id, Busy> {
     #[inline]
     pub(crate) fn restart(&mut self) {
         self.regs.chctrla.modify(|_, w| w.enable().set_bit());
+    }
+}
+
+impl<Id: ChId> From<Channel<Id, Ready>> for Channel<Id, Uninitialized> {
+    fn from(item: Channel<Id, Ready>) -> Self {
+        Channel {
+            regs: item.regs,
+            _status: PhantomData,
+        }
     }
 }
 

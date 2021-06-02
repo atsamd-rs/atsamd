@@ -94,7 +94,7 @@ use super::{
     BlockTransferControl, DmacDescriptor, DmacError, Result, DESCRIPTOR_SECTION,
 };
 use crate::typelevel::{Is, Sealed};
-use core::{mem, ptr::null_mut, sync::atomic};
+use core::{ptr::null_mut, sync::atomic};
 use modular_bitfield::prelude::*;
 
 //==============================================================================

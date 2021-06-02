@@ -45,7 +45,7 @@ fn main() -> ! {
     // Initialize DMA Controller
     let mut dmac = DmaController::init(dmac, &mut pm);
     // Get individual handles to DMA channels
-    let channels = dmac.split();
+    let mut channels = dmac.split();
 
     // Initialize DMA Channel 0
     let chan0 = channels.0.init(PriorityLevel::LVL0);
@@ -69,10 +69,11 @@ fn main() -> ! {
     // Setup a DMA transfer (memory-to-memory -> fixed source, incrementing
     // destination) with a 16-bit beat size. Demonstrate payload management.
     let xfer = Transfer::new(chan0, const_16, buf_16, false)
+        .unwrap()
         .with_payload(pm)
         .begin(TriggerSource::DISABLE, TriggerAction::BLOCK);
 
-    let (chan0, const_16, buf_16, _pm) = xfer.wait();
+    let (chan0, const_16, buf_16, mut pm) = xfer.wait();
 
     // Read the returned buffers
     let _a = *const_16;
@@ -86,13 +87,19 @@ fn main() -> ! {
     // Setup a DMA transfer (memory-to-memory -> incrementing source, fixed
     // destination) with a 16-bit beat size
     let xfer = Transfer::new(chan0, buf_16, const_16, false)
+        .unwrap()
         .begin(TriggerSource::DISABLE, TriggerAction::BLOCK);
 
-    let (_chan0, buf_16, const_16, _) = xfer.wait();
+    let (chan0, buf_16, const_16, _) = xfer.wait();
 
     // Read the returned buffers
     let _a = *const_16; // We expect the value "LENGTH - 1" to end up here
     let _b = buf_16[LENGTH - 1];
+
+    // Move split channels back into the Channels struct
+    channels.0 = chan0.into();
+    // Free the DmaController and return the PAC DMAC struct
+    let _dmac = dmac.free(channels, &mut pm);
 
     loop {
         asm::nop();
