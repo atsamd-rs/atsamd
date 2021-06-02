@@ -223,8 +223,9 @@ impl DmaController {
     /// Release the DMAC and return the register block.
     ///
     /// **Note**: The [`Channels`] struct is consumed by this method. This means
-    /// that any [`Channel`] obtained by [`split`](DmaController::split) must be moved back into the
-    /// [`Channels`] struct before being able to pass it into [`free`](DmaController::free).
+    /// that any [`Channel`] obtained by [`split`](DmaController::split) must be
+    /// moved back into the [`Channels`] struct before being able to pass it
+    /// into [`free`](DmaController::free).
     pub fn free(mut self, _channels: Channels, _pm: &mut PM) -> DMAC {
         self.dmac.ctrl.modify(|_, w| w.dmaenable().clear_bit());
 

@@ -619,10 +619,12 @@ where
             .tcmpl()
     }
 
-    /// Modify a completed transfer with new `source` and `destination`, restart
+    /// Modify a completed transfer with new `source` and `destination`, thern
+    /// restart.
     ///
     /// Returns a Result containing the source and destination from the
-    /// completed transfer.
+    /// completed transfer. Returns `Err(_)` if the buffer lengths are
+    /// mismatched or if the previous transfer has not yet completed.
     pub fn recycle(&mut self, mut source: S, mut destination: D) -> Result<(S, D)> {
         Self::check_buffer_pair(&source, &destination)?;
 

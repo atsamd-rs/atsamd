@@ -156,12 +156,16 @@
 //!
 //! # [`Transfer`] recycling
 //!
-//! A common use-case with DMAC transfers is to trigger a new transfer as soon as the old transfer is completed.
-//! To avoid having to [`stop`](Transfer::stop) a [`Transfer`], build a new [`Transfer`] (with [`new`](Transfer::new) or
-//! [`new_from_arrays`](Transfer::new_from_arrays)) then call [`begin`](Transfer::begin), a [`Transfer::recycle`] method
-//! is provided. If the buffer lengths match and the previous transfer is completed, a new transfer will immediately be triggered
-//! using the provided source and destination buffers. If the recycling operation is succesful, `Ok((source, destination))` containing
-//! the old source and destination buffers is returned. Otherwise, `Err(_)` is returned.
+//! A common use-case with DMAC transfers is to trigger a new transfer as soon
+//! as the old transfer is completed. To avoid having to
+//! [`stop`](Transfer::stop) a [`Transfer`], build a new [`Transfer`] (with
+//! [`new`](Transfer::new) or [`new_from_arrays`](Transfer::new_from_arrays))
+//! then call [`begin`](Transfer::begin), a [`Transfer::recycle`] method
+//! is provided. If the buffer lengths match and the previous transfer is
+//! completed, a new transfer will immediately be triggered using the provided
+//! source and destination buffers. If the recycling operation is succesful,
+//! `Ok((source, destination))` containing the old source and destination
+//! buffers is returned. Otherwise, `Err(_)` is returned.
 //!
 //! ```
 //! let new_source = produce_source();
@@ -173,8 +177,8 @@
 //!
 //! # Waker operation
 //!
-//! A [`Transfer`] can also accept a function or closure that will be called on completion of the transaction,
-//! acting like a [`Waker`].
+//! A [`Transfer`] can also accept a function or closure that will be called on
+//! completion of the transaction, acting like a [`Waker`].
 //!
 //! ```
 //! fn wake_up() {
@@ -198,8 +202,8 @@
 //! The [RTIC] framework provides a convenient way to store a `static`ally
 //! allocated [`Transfer`], so that it can be accessed by both the interrupt
 //! handlers and user code. The following example shows how [`Transfer`]s might
-//! be used for a series of transactions. It uses features from the latest release of
-//! [RTIC], `v0.6-alpha.4`.
+//! be used for a series of transactions. It uses features from the latest
+//! release of [RTIC], `v0.6-alpha.4`.
 //!
 //! ```
 //! use atsamd_hal::dmac::*;
