@@ -619,7 +619,7 @@ where
             .tcmpl()
     }
 
-    /// Modify a completed transfer with new `source` and `destination`, thern
+    /// Modify a completed transfer with new `source` and `destination`, then
     /// restart.
     ///
     /// Returns a Result containing the source and destination from the
@@ -647,6 +647,54 @@ where
         self.chan.as_mut().restart();
 
         Ok((old_buffers.source, old_buffers.destination))
+    }
+
+    /// Modify a completed transfer with a new `destination`, then restart.
+
+    /// Returns a Result containing the destination from the
+    /// completed transfer. Returns `Err(_)` if the buffer lengths are
+    /// mismatched or if the previous transfer has not yet completed.
+    pub fn recycle_source(&mut self, mut destination: D) -> Result<D> {
+        Self::check_buffer_pair(&self.buffers.source, &destination)?;
+
+        if !self.complete() {
+            return Err(Error::InvalidState);
+        }
+
+        // Circular transfers won't ever complete, so never re-fill as one
+        unsafe {
+            Self::fill_descriptor(&mut self.buffers.source, &mut destination, false);
+        }
+
+        let old_destination = core::mem::replace(&mut self.buffers.destination, destination);
+
+        self.chan.as_mut().restart();
+
+        Ok(old_destination)
+    }
+
+    /// Modify a completed transfer with a new `source`, then restart.
+
+    /// Returns a Result containing the source from the
+    /// completed transfer. Returns `Err(_)` if the buffer lengths are
+    /// mismatched or if the previous transfer has not yet completed.
+    pub fn recycle_destination(&mut self, mut source: S) -> Result<S> {
+        Self::check_buffer_pair(&source, &self.buffers.destination)?;
+
+        if !self.complete() {
+            return Err(Error::InvalidState);
+        }
+
+        // Circular transfers won't ever complete, so never re-fill as one
+        unsafe {
+            Self::fill_descriptor(&mut source, &mut self.buffers.destination, false);
+        }
+
+        let old_source = core::mem::replace(&mut self.buffers.source, source);
+
+        self.chan.as_mut().restart();
+
+        Ok(old_source)
     }
 
     /// Non-blocking; Immediately stop the DMA transfer and release all owned
