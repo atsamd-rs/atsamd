@@ -328,6 +328,7 @@ where
     ///
     /// Panics if both buffers have a length > 1 and are not of equal length.
     #[allow(clippy::new_ret_no_self)]
+    #[inline]
     pub fn new(
         chan: C,
         source: S,
@@ -349,6 +350,7 @@ where
     D: Buffer<Beat = S::Beat>,
     C: AnyChannel,
 {
+    #[inline]
     fn check_buffer_pair(source: &S, destination: &D) -> Result<()> {
         let src_len = source.buffer_len();
         let dst_len = destination.buffer_len();
@@ -368,6 +370,7 @@ where
     D: Buffer<Beat = S::Beat>,
     C: AnyChannel,
 {
+    #[inline]
     unsafe fn fill_descriptor(source: &mut S, destination: &mut D, circular: bool) {
         let id = <C as AnyChannel>::Id::USIZE;
 
@@ -448,6 +451,7 @@ where
     ///   exacly the same, unless one or both buffers are of length 1. The
     ///   transfer length will be set to the longest of both buffers if they are
     ///   not of equal size.
+    #[inline]
     pub unsafe fn new_unchecked(
         chan: C,
         mut source: S,
@@ -481,6 +485,7 @@ where
 {
     /// Append a payload to the transfer. This guarantees that it cannot safely
     /// be accessed while the transfer is ongoing.
+    #[inline]
     pub fn with_payload<P>(self, payload: P) -> Transfer<C, BufferPair<S, D>, P, W> {
         Transfer {
             buffers: self.buffers,
@@ -502,6 +507,7 @@ where
 {
     /// Append a waker to the transfer. This will be called when the DMAC
     /// interrupt is called.
+    #[inline]
     pub fn with_waker<W: FnOnce(CallbackStatus) + 'static>(
         self,
         waker: W,
@@ -528,6 +534,7 @@ where
     /// is used, a software trigger will be issued to the DMA channel to
     /// launch the transfer. Is is therefore not necessary, in most cases,
     /// to manually issue a software trigger to the channel.
+    #[inline]
     pub fn begin(
         mut self,
         trig_src: TriggerSource,
@@ -566,6 +573,7 @@ where
     /// [`Transfer::new`](Transfer::new), because it provides compile-time
     /// checking that the array lengths match. It therefore does not panic, and
     /// saves some runtime checking of the array lengths.
+    #[inline]
     pub fn new_from_arrays(
         chan: C,
         source: &'static mut [B; N],
@@ -595,12 +603,15 @@ where
     /// resources
     ///
     /// # Blocking: This method may block
+    #[inline]
     pub fn wait(mut self) -> (Channel<ChannelId<C>, Ready>, S, D, P) {
         // Wait for transfer to complete
         while !self.complete() {}
         self.stop()
     }
 
+    /// Check if the transfer has completed
+    #[inline]
     pub fn complete(&mut self) -> bool {
         if !self.complete {
             let chan = self.chan.as_ref();
@@ -625,6 +636,7 @@ where
     /// Returns a Result containing the source and destination from the
     /// completed transfer. Returns `Err(_)` if the buffer lengths are
     /// mismatched or if the previous transfer has not yet completed.
+    #[inline]
     pub fn recycle(&mut self, mut source: S, mut destination: D) -> Result<(S, D)> {
         Self::check_buffer_pair(&source, &destination)?;
 
@@ -654,6 +666,7 @@ where
     /// Returns a Result containing the destination from the
     /// completed transfer. Returns `Err(_)` if the buffer lengths are
     /// mismatched or if the previous transfer has not yet completed.
+    #[inline]
     pub fn recycle_source(&mut self, mut destination: D) -> Result<D> {
         Self::check_buffer_pair(&self.buffers.source, &destination)?;
 
@@ -678,6 +691,7 @@ where
     /// Returns a Result containing the source from the
     /// completed transfer. Returns `Err(_)` if the buffer lengths are
     /// mismatched or if the previous transfer has not yet completed.
+    #[inline]
     pub fn recycle_destination(&mut self, mut source: S) -> Result<S> {
         Self::check_buffer_pair(&source, &self.buffers.destination)?;
 
@@ -699,6 +713,7 @@ where
 
     /// Non-blocking; Immediately stop the DMA transfer and release all owned
     /// resources
+    #[inline]
     pub fn stop(self) -> (Channel<ChannelId<C>, Ready>, S, D, P) {
         let chan = self.chan.into().free();
 
@@ -725,6 +740,7 @@ where
 {
     /// This function should be put inside the DMAC interrupt handler.
     /// It will take care of calling the [`Transfer`]'s waker (if it exists).
+    #[inline]
     pub fn callback(&mut self) {
         let status = self.chan.as_mut().callback();
 

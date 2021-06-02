@@ -134,6 +134,7 @@ impl DmaController {
     /// [`Transfer`](super::transfer::Transfer)'s. By default, all
     /// priority levels are enabled unless subsequently disabled using the
     /// `level_x_enabled` methods.
+    #[inline]
     pub fn init(mut dmac: DMAC, _pm: &mut PM) -> Self {
         // ----- Initialize clocking ----- //
         #[cfg(any(feature = "samd11", feature = "samd21"))]
@@ -226,6 +227,7 @@ impl DmaController {
     /// that any [`Channel`] obtained by [`split`](DmaController::split) must be
     /// moved back into the [`Channels`] struct before being able to pass it
     /// into [`free`](DmaController::free).
+    #[inline]
     pub fn free(mut self, _channels: Channels, _pm: &mut PM) -> DMAC {
         self.dmac.ctrl.modify(|_, w| w.dmaenable().clear_bit());
 
@@ -254,6 +256,7 @@ macro_rules! define_split {
     ($num_channels:literal) => {
         seq!(N in 0..$num_channels {
             /// Split the DMAC into individual channels
+            #[inline]
             pub fn split(&mut self) -> Channels {
                 Channels(
                     #(
