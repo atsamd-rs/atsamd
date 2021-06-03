@@ -589,13 +589,13 @@ port!([
     #[cfg(not(feature = "samd11"))]
     (PA01, Pa1),
     (PA02, Pa2),
-    #[cfg(not(feature = "samd11"))]
+    #[cfg(not(feature = "samd11c"))]
     (PA03, Pa3),
     (PA04, Pa4),
     (PA05, Pa5),
-    #[cfg(not(feature = "samd11"))]
+    #[cfg(not(feature = "samd11c"))]
     (PA06, Pa6),
-    #[cfg(not(feature = "samd11"))]
+    #[cfg(not(feature = "samd11c"))]
     (PA07, Pa7),
     (PA08, Pa8),
     (PA09, Pa9),
@@ -609,7 +609,7 @@ port!([
     (PA13, Pa13),
     (PA14, Pa14),
     (PA15, Pa15),
-    #[cfg(not(feature = "samd11"))]
+    #[cfg(not(feature = "samd11c"))]
     (PA16, Pa16),
     #[cfg(not(feature = "samd11"))]
     (PA17, Pa17),
@@ -621,9 +621,9 @@ port!([
     (PA20, Pa20),
     #[cfg(any(feature = "min-samd21g", feature = "min-samd51g"))]
     (PA21, Pa21),
-    #[cfg(not(feature = "samd11"))]
+    #[cfg(not(feature = "samd11c"))]
     (PA22, Pa22),
-    #[cfg(not(feature = "samd11"))]
+    #[cfg(not(feature = "samd11c"))]
     (PA23, Pa23),
     (PA24, Pa24),
     (PA25, Pa25),
