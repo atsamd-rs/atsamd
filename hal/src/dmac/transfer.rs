@@ -614,7 +614,7 @@ where
     #[inline]
     pub fn complete(&mut self) -> bool {
         if !self.complete {
-            let chan = self.chan.as_ref();
+            let chan = self.chan.as_mut();
             let complete = chan.xfer_complete();
             self.complete = complete;
         }

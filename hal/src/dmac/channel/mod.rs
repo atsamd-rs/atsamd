@@ -289,7 +289,7 @@ impl<Id: ChId> Channel<Id, Busy> {
 
     /// Returns whether or not the transfer is complete.
     #[inline]
-    pub(crate) fn xfer_complete(&self) -> bool {
+    pub(crate) fn xfer_complete(&mut self) -> bool {
         !self.regs.chctrla.read().enable().bit_is_set()
     }
 

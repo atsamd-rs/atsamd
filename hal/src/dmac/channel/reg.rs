@@ -36,29 +36,45 @@ use target_device::dmac::{channel::CHPRILVL, CHANNEL};
 //==============================================================================
 /// Read/write proxy for DMAC registers accessible to individual channels.
 pub(super) trait Register<Id: ChId> {
+    /// Get a shared reference to the underlying PAC object
+    fn dmac(&self) -> &DMAC;
+
     /// Set channel ID and run the closure. A closure is needed to ensure
     /// the registers are accessed in an interrupt-safe way, as the SAMD21
     /// DMAC is a little funky - It requires setting the channel number in
     /// the CHID register, then access the channel control registers.
-    /// If an interrupt were to change the CHID register, we would be faced
-    /// with undefined behaviour.
+    /// If an interrupt were to change the CHID register and not reset it
+    /// to the expected value, we would be faced with undefined behaviour.
     #[cfg(any(feature = "samd11", feature = "samd21"))]
     #[inline]
-    fn with_chid<F: FnOnce(&DMAC) -> R, R>(&self, dmac: &DMAC, fun: F) -> R {
-        cortex_m::interrupt::free(|_| {
-            // SAFETY: This is ONLY safe if the individual channels are GUARANTEED not to
-            // mess with either:
-            // - The global DMAC configuration
-            // - The configuration of other channels.
-            //
-            // In practice, this means that the DMAC registers should only be accessed
-            // through the `with_chid` method.
-            unsafe {
-                dmac.chid.modify(|_, w| w.id().bits(Id::U8));
-            };
+    fn with_chid<F: FnOnce(&DMAC) -> R, R>(&mut self, fun: F) -> R {
+        // SAFETY: This method is ONLY safe if the individual channels are GUARANTEED
+        // not to mess with either:
+        // - The global DMAC configuration
+        // - The configuration of other channels.
+        //
+        // In practice, this means that the channel-specific registers should only be
+        // accessed through the `with_chid` method.
 
-            fun(dmac)
-        })
+        let dmac = self.dmac();
+
+        let mut old_id = 0;
+
+        dmac.chid.modify(|r, w| {
+            // Get the CHID contents before changing channel
+            old_id = r.id().bits();
+            // Change channels
+            unsafe { w.id().bits(Id::U8) }
+        });
+
+        // Run the provided closure on the channel we own
+        let ret = fun(dmac);
+        // Restore the old CHID value. This way, if we're running `with_chid` from an
+        // ISR, the CHID value will still be what the preempted context expects
+        // when the method returns.
+        unsafe { dmac.chid.write(|w| w.id().bits(old_id)) };
+
+        ret
     }
 
     /// Set channel ID and run the closure. A closure is needed to ensure
@@ -67,15 +83,15 @@ pub(super) trait Register<Id: ChId> {
     /// to the correct channel number and run the closure on that.
     #[cfg(feature = "min-samd51g")]
     #[inline]
-    fn with_chid<F: FnOnce(&CHANNEL) -> R, R>(&self, dmac: &DMAC, fun: F) -> R {
-        // SAFETY: This is ONLY safe if the individual channels are GUARANTEED not to
-        // mess with either:
+    fn with_chid<F: FnOnce(&CHANNEL) -> R, R>(&mut self, fun: F) -> R {
+        // SAFETY: This method is ONLY safe if the individual channels are GUARANTEED
+        // not to mess with either:
         // - The global DMAC configuration
         // - The configuration of other channels.
         //
-        // In practice, this means that the DMAC registers should only be accessed
-        // through the `with_chid` method.
-        let mut ch = &dmac.channel[Id::USIZE];
+        // In practice, this means that the channel-specific registers should only be
+        // accessed through the `with_chid` method.
+        let mut ch = &self.dmac().channel[Id::USIZE];
         fun(&mut ch)
     }
 }
@@ -111,13 +127,17 @@ macro_rules! reg_proxy {
     // Internal rule for a Read-enabled register
     (@read_reg $reg:ident) => {
         paste! {
-            impl<Id: ChId> Register<Id> for [< $reg:camel Proxy >]<Id, [< $reg:upper >]> {}
+            impl<Id: ChId> Register<Id> for [< $reg:camel Proxy >]<Id, [< $reg:upper >]> {
+                fn dmac(&self) -> &DMAC {
+                    &self.dmac
+                }
+            }
 
             impl<Id> [< $reg:camel Proxy >]<Id, [< $reg:upper >]> where Id: ChId, [< $reg:upper >]: target_device::generic::Readable {
                 #[inline]
                 #[allow(dead_code)]
-                pub fn read(&self) -> channel_regs::[< $reg:lower >]::R {
-                    self.with_chid(&self.dmac, |d| d.[< $reg:lower >].read())
+                pub fn read(&mut self) -> channel_regs::[< $reg:lower >]::R {
+                    self.with_chid(|d| d.[< $reg:lower >].read())
                 }
             }
         }
@@ -145,7 +165,7 @@ macro_rules! reg_proxy {
                 where
                     for<'w> F: FnOnce(&'w mut channel_regs::[< $reg:lower >]::W) -> &'w mut channel_regs::[< $reg:lower >]::W,
                 {
-                    self.with_chid(&self.dmac, |d| d.[< $reg:lower >].write(|w| func(w)));
+                    self.with_chid(|d| d.[< $reg:lower >].write(|w| func(w)));
                 }
             }
 
@@ -162,7 +182,7 @@ macro_rules! reg_proxy {
                         &'w mut channel_regs::[< $reg:lower >]::W
                     ) -> &'w mut channel_regs::[< $reg:lower >]::W,
                 {
-                    self.with_chid(&self.dmac, |d| d.[< $reg:lower >].modify(|r, w| func(r, w)));
+                    self.with_chid(|d| d.[< $reg:lower >].modify(|r, w| func(r, w)));
                 }
             }
         }
@@ -171,7 +191,11 @@ macro_rules! reg_proxy {
     // Internal rule for read-enabled bit
     (@read_bit $reg:ident) => {
         paste! {
-            impl<Id: ChId> Register<Id> for [< $reg:camel Proxy >]<Id, [< $reg:upper >]> {}
+            impl<Id: ChId> Register<Id> for [< $reg:camel Proxy >]<Id, [< $reg:upper >]> {
+                fn dmac(&self) -> &DMAC {
+                    &self.dmac
+                }
+            }
 
             impl<Id> [< $reg:camel Proxy >]<Id, [< $reg:upper >]> where Id: ChId, [< $reg:upper >]: target_device::generic::Readable {
                 #[inline]
@@ -203,7 +227,7 @@ macro_rules! reg_proxy {
             {
                 #[inline]
                 #[allow(dead_code)]
-                pub fn write_bit(&self, bit: bool) {
+                pub fn write_bit(&mut self, bit: bool) {
                     // SAFETY: This is safe because we are only writing
                     // to the bit controlled by the channel.
                     self.dmac
