@@ -1637,22 +1637,17 @@ mod spi_dma {
     {
         type Beat = C::Word;
 
-        #[cfg(feature = "min-samd51g")]
         #[inline]
-        fn dma_ptr(&mut self) -> *mut Self::Beat {
-            unsafe { self.sercom().spim().data.as_ptr() as *mut _ }
-        }
-
-        #[inline]
-        #[cfg(any(feature = "samd11", feature = "samd21"))]
         fn dma_ptr(&mut self) -> *mut Self::Beat {
             unsafe { self.sercom().spi().data.as_ptr() as *mut _ }
         }
 
+        #[inline]
         fn incrementing(&self) -> bool {
             false
         }
 
+        #[inline]
         fn buffer_len(&self) -> usize {
             1
         }
@@ -1662,7 +1657,7 @@ mod spi_dma {
     where
         Self: dmac::transfer::Buffer<Beat = C::Word>,
         Config<P, M, C>: ValidConfig,
-        P: DipoDopo + Tx,
+        P: Tx,
         M: MasterMode,
         C: CharSize,
         C::Word: dmac::transfer::Beat,
@@ -1684,6 +1679,7 @@ mod spi_dma {
             channel
                 .as_mut()
                 .enable_interrupts(dmac::channel::InterruptFlags::new().with_tcmpl(true));
+
             // SAFETY: We use new_unchecked to avoid having to pass a 'static self as the
             // destination buffer. This is safe as long as we guarantee the source buffer is
             // static.
@@ -1700,7 +1696,7 @@ mod spi_dma {
     where
         Self: dmac::transfer::Buffer<Beat = C::Word>,
         Config<P, M, C>: ValidConfig,
-        P: DipoDopo + Rx,
+        P: Rx,
         M: MasterMode,
         C: CharSize,
         C::Word: dmac::transfer::Beat,
@@ -1722,6 +1718,7 @@ mod spi_dma {
             channel
                 .as_mut()
                 .enable_interrupts(dmac::channel::InterruptFlags::new().with_tcmpl(true));
+
             // SAFETY: We use new_unchecked to avoid having to pass a 'static self as the
             // destination buffer. This is safe as long as we guarantee the source buffer is
             // static.
