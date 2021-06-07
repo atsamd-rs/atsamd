@@ -1,14 +1,22 @@
+//! Analogue-to-Digital Conversion
 use crate::clock::GenericClockController;
 use crate::gpio::v1;
 use crate::gpio::v2::*;
 use crate::hal::adc::{Channel, OneShot};
 use crate::target_device::{adc, ADC, PM};
 
+/// `Adc` encapsulates the device ADC
 pub struct Adc<ADC> {
     adc: ADC,
 }
 
 impl Adc<ADC> {
+    /// Create a new `Adc` instance. The default configuration is:
+    /// * 1/32 prescaler
+    /// * 12 bit resolution
+    /// * 1 sample
+    /// * 1/2 gain
+    /// * 1/2 VDDANA reference voltage
     pub fn adc(adc: ADC, pm: &mut PM, clocks: &mut GenericClockController) -> Self {
         pm.apbcmask.modify(|_, w| w.adc_().set_bit());
 
@@ -40,6 +48,7 @@ impl Adc<ADC> {
         newadc
     }
 
+    /// Set the sample rate
     pub fn samples(&mut self, samples: adc::avgctrl::SAMPLENUM_A) {
         use adc::avgctrl::SAMPLENUM_A;
         self.adc.avgctrl.modify(|_, w| {
@@ -59,16 +68,35 @@ impl Adc<ADC> {
         while self.adc.status.read().syncbusy().bit_is_set() {}
     }
 
+    /// Set the gain factor
     pub fn gain(&mut self, gain: adc::inputctrl::GAIN_A) {
         self.adc.inputctrl.modify(|_, w| w.gain().variant(gain));
         while self.adc.status.read().syncbusy().bit_is_set() {}
     }
 
+    /// Set the voltage reference source
     pub fn reference(&mut self, reference: adc::refctrl::REFSEL_A) {
         self.adc
             .refctrl
             .modify(|_, w| w.refsel().variant(reference));
         while self.adc.status.read().syncbusy().bit_is_set() {}
+    }
+
+    /// Set the prescaler for adjusting the clock relative to the system clock
+    pub fn prescaler(&mut self, prescaler: adc::ctrlb::PRESCALER_A) {
+        adc.ctrlb.modify(|_, w| {
+            w.prescaler().variant(prescaler);
+        });
+    }
+
+    /// Set the input resolution.
+    ///
+    /// For the resolution of Arduino boards,
+    /// see the [analogueRead docs](https://www.arduino.cc/reference/en/language/functions/analog-io/analogread/)
+    pub fn resolution(&mut self, resolution: adc::ctrlb::RESSEL_A) {
+        adc.ctrlb.modify(|_, w| {
+            w.ressel().variant(resolution);
+        });
     }
 
     fn power_up(&mut self) {
