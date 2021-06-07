@@ -143,6 +143,30 @@
 //! let rcvd: u16 = block!(spi.read());
 //! ```
 //!
+//! # Using SPI with DMA
+//!
+//! This HAL includes support for DMA-enabled SPI transfers. An enabled `Spi`
+//! struct implements the DMAC [`Buffer`](crate::dmac::transfer::Buffer)
+//! trait. The provided [`send_with_dma`](Spi::send_with_dma) and
+//! [`receive_with_dma`](Spi::receive_with_dma) build and begin a
+//! [`dmac::Transfer`](crate::dmac::Transfer), thus starting the SPI in a
+//! non-blocking way. Optionally, interrupts can be enabled on the provided
+//! [`Channel`](crate::dmac::channel::Channel). Note that the `dma` feature must
+//! be enabled. Please refer to the [`dmac`](crate::dmac) module-level
+//! documentation for more information. ```
+//! // Assume channel is a configured `dmac::Channel`, and spi a
+//! fully-configured `Spi`
+//!
+//! // Create data to send
+//! let buffer: [u8; 50] = [0xff; 50]
+//!
+//! // Launch transfer
+//! let dma_transfer = spi.send_with_dma(&mut buffer, channel, ());
+//!
+//! // Wait for transfer to complete and reclaim resources
+//! let (chan0, _, spi, _) = dma_transfer.wait();
+//! ```
+//! 
 //! [`enable`]: Config::enable
 //! [`Pin`]: crate::gpio::v2::pin::Pin
 //! [`OptionalPinId`]: crate::gpio::v2::pin::OptionalPinId
