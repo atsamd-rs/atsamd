@@ -637,19 +637,11 @@ macro_rules! spi_pads_from_pins {
     ) => {
         $crate::sercom::v2::spi::Pads<
             $crate::sercom::v2::$Sercom,
-<<<<<<< HEAD
             $crate::__opt_type!( $crate::sercom::v2::pad::PinToNITuple<$DI> ),
             $crate::__opt_type!( $crate::sercom::v2::pad::PinToNITuple<$DO> ),
             $crate::__opt_type!( $crate::sercom::v2::pad::PinToNITuple<$CK> ),
             $crate::__opt_type!( $crate::sercom::v2::pad::PinToNITuple<$SS> ),
         >
-=======
-            __spi_pad_type!($($Sercom, $DI_PadNum, $DI_Id)?),
-            __spi_pad_type!($($Sercom, $DO_PadNum, $DO_Id)?),
-            __spi_pad_type!($($Sercom, $CK_PadNum, $CK_Id)?),
-            __spi_pad_type!($($Sercom, $SS_PadNum, $SS_Id)?),
-        >;
->>>>>>> 4450d53c7 (Begin implementing v2 UART driver)
     };
 }
 
@@ -689,7 +681,6 @@ macro_rules! spi_pads_from_pins {
 /// [`PinId`]: crate::gpio::v2::PinId
 #[cfg(feature = "samd21")]
 #[macro_export]
-<<<<<<< HEAD
 macro_rules! spi_pads_from_pins {
     (
         $Sercom:ident
@@ -699,13 +690,6 @@ macro_rules! spi_pads_from_pins {
         $( , SS = $SS:ty )?
     ) => {
         $crate::sercom::v2::spi::Pads<
-=======
-#[doc(hidden)]
-macro_rules! __spi_pad_type {
-    () => { NoneT };
-    ($Sercom:ident, $PadNum:ident, $Id:ident) => {
-        $crate::sercom::v2::pads::Pad<
->>>>>>> 4450d53c7 (Begin implementing v2 UART driver)
             $crate::sercom::v2::$Sercom,
             $crate::__opt_type!( $( $crate::gpio::v2::SpecificPinId<$DI> )? ),
             $crate::__opt_type!( $( $crate::gpio::v2::SpecificPinId<$DO> )? ),

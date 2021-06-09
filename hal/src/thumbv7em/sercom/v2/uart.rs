@@ -19,8 +19,8 @@
 //! A `Pads` type takes up to siz type parameters. The two specifiy the
 //! `Sercom` and `IoSet`. The remaining four, `RX`, `TX`, `RTS` and `CTS`,
 //! are effectively [`OptionalPinId`]s for the `RX`, `TX`, `RTS` and `CTS`
-//! `Pad`s respectively, and each defaults to [`NoneT`]. To be accepted as part of a
-//! [`ValidConfig`], you must specify a `PinId` for at least one of
+//! `Pad`s respectively, and each defaults to [`NoneT`]. To be accepted as part
+//! of a [`ValidConfig`], you must specify a `PinId` for at least one of
 //! `RX` or `TX`.
 //!
 //! ```
@@ -58,8 +58,8 @@
 //!
 //! # [`Config`]
 //!
-//! Next, create a [`Config`] struct, which represents the UART peripheral in its
-//! disabled state. A `Config` is specified with three type parameters: the
+//! Next, create a [`Config`] struct, which represents the UART peripheral in
+//! its disabled state. A `Config` is specified with three type parameters: the
 //! [`Pads`] type; an [`OpMode`], which defaults to [`Master`]; and a
 //! [`CharSize`], which defaults to [`EightBit`].
 //!
@@ -106,8 +106,8 @@
 //!
 //! # [`Uart`]
 //!
-//! An [`Uart`] struct can only be created from a [`Config`], and it has only one
-//! type parameter, the corresponding config.
+//! An [`Uart`] struct can only be created from a [`Config`], and it has only
+//! one type parameter, the corresponding config.
 //!
 //! ```
 //! use atsamd_hal::gpio::v2::{PA08, PA09};
@@ -121,8 +121,9 @@
 //! type Uart = uart::Uart<Config>;
 //! ```
 //!
-//! Only the [`Uart`] struct can actually perform transactions. To do so, use the
-//! embedded HAL traits, like [`serial::Read`](Read) and [`serial::Write`](Write).
+//! Only the [`Uart`] struct can actually perform transactions. To do so, use
+//! the embedded HAL traits, like [`serial::Read`](Read) and
+//! [`serial::Write`](Write).
 //!
 //! ```
 //! use nb::block;
@@ -134,14 +135,16 @@
 //! # Splitting and joining
 //!
 //! A fully configured [`Uart`] struct can be split into `Tx` and `Rx` halves.
-//! That way, different parts of the program can individually send or receive UART transactions.
-//! Splitting is only available for [`Uart`]s which can transmit and receive.
+//! That way, different parts of the program can individually send or receive
+//! UART transactions. Splitting is only available for [`Uart`]s which can
+//! transmit and receive.
 //!
 //! ## Splitting
 //!
-//! Calling [`Uart::split`] will return three objects: a [`UartRx`], a [`UartTx`], and a [`UartCore`].
-//! The [`UartCore`] struct holds the underlying [`Config`], and is necessary to keep around is the two
-//! halves should be recombined by calling [`UartCore::join`].
+//! Calling [`Uart::split`] will return three objects: a [`UartRx`], a
+//! [`UartTx`], and a [`UartCore`]. The [`UartCore`] struct holds the underlying
+//! [`Config`], and is necessary to keep around is the two halves should be
+//! recombined by calling [`UartCore::join`].
 //!
 //! ```
 //! use nb::block;
@@ -156,8 +159,8 @@
 //!
 //! ## Joining
 //!
-//! Recombining the [`UartRx`] and [`UartTx`] halves back into a full [`Uart`] is necessary if the
-//! UART peripheral should be reconfigured
+//! Recombining the [`UartRx`] and [`UartTx`] halves back into a full [`Uart`]
+//! is necessary if the UART peripheral should be reconfigured
 //!
 //! ```
 //! // Assume uart is a fully configured `Uart` with transmit/receive capability
@@ -169,7 +172,8 @@
 //!
 //! # Non-supported advanced features
 //!
-//! * 32-bit extension mode support is explicitely omitted to allow for different character sizes
+//! * 32-bit extension mode support is explicitely omitted to allow for
+//!   different character sizes
 //! * LIN and IrDA modes are not supported
 //! * Synchronous mode is not supported
 //!
@@ -183,7 +187,13 @@ use core::marker::PhantomData;
 
 use crate::target_device as pac;
 use crate::time::Hertz;
-use pac::{sercom0::RegisterBlock, PM};
+use pac::{
+    sercom0::{
+        usart_int::ctrla::{RXPO_A, TXPO_A},
+        RegisterBlock,
+    },
+    MCLK,
+};
 
 use crate::gpio::v2::AnyPin;
 use crate::sercom::v2::*;
@@ -194,17 +204,6 @@ use embedded_hal::blocking;
 use embedded_hal::serial::{Read, Write};
 use nb::Error::WouldBlock;
 use num_traits::{AsPrimitive, PrimInt};
-
-/// Re-export [`typenum`] constants for use as [`Length`] type parameters
-///
-/// Only the values `U1` - `U255` are valid [`Length`]s
-pub mod lengths {
-    use seq_macro::seq;
-
-    seq!(N in 1..=255 {
-        pub use typenum::U#N;
-    });
-}
 
 //=============================================================================
 // Rxpo
@@ -219,9 +218,9 @@ pub trait Rxpo: Sealed {
     #[inline]
     fn configure(sercom: &RegisterBlock) {
         sercom
-            .uartm()
+            .usart_int()
             .ctrla
-            .modify(|_, w| w.dipo().variant(Self::RXPO));
+            .modify(|_, w| w.rxpo().variant(Self::RXPO));
     }
 }
 
@@ -274,9 +273,9 @@ pub trait Txpo: Sealed {
     #[inline]
     fn configure(sercom: &RegisterBlock) {
         sercom
-            .uartm()
+            .usart_int()
             .ctrla
-            .modify(|_, w| w.dopo().variant(Self::TXPO));
+            .modify(|_, w| w.txpo().variant(Self::TXPO));
     }
 }
 
@@ -284,7 +283,7 @@ impl Txpo for Pad0 {
     const TXPO: TXPO_A = TXPO_A::PAD0;
 }
 impl Txpo for Pad3 {
-    const TXPO: TXPO_A = TXPO_A::PAD2;
+    const TXPO: TXPO_A = TXPO_A::PAD3;
 }
 
 impl Txpo for NoneT {
@@ -496,8 +495,8 @@ where
 /// use atsamd_hal::sercom::v2::{Sercom0, pad::IoSet1, uart};
 ///
 /// type Miso = Pin<PA08, AlternateC>;
-/// type Sclk = Pin<PA09, AlternateC>;
-/// pub type Pads = uart_pads_from_pins!(Sercom0, IoSet1, RX = Miso, RTS = Sclk);
+/// type RTS = Pin<PA09, AlternateC>;
+/// pub type Pads = uart_pads_from_pins!(Sercom0, IoSet1, RX = Miso, RTS = RTS);
 ///
 /// pub fn test() -> Pads {
 ///     let peripherals = Peripherals::take().unwrap();
@@ -553,9 +552,9 @@ macro_rules! uart_pads_from_pins {
 pub trait PadSet: Sealed {
     type Sercom: Sercom;
     type IoSet: IoSet;
-    type DataIn: OptionalPad;
-    type DataOut: OptionalPad;
-    type Sclk: OptionalPad;
+    type Rx: OptionalPad;
+    type Tx: OptionalPad;
+    type RTS: OptionalPad;
     type CTS: OptionalPad;
 }
 
@@ -581,9 +580,9 @@ where
 {
     type Sercom = S;
     type IoSet = I;
-    type DataIn = RX::Pad;
-    type DataOut = TX::Pad;
-    type Sclk = RTS::Pad;
+    type Rx = RX::Pad;
+    type Tx = TX::Pad;
+    type RTS = RTS::Pad;
     type CTS = CTS::Pad;
 }
 
@@ -704,7 +703,7 @@ pub trait CharSize: Sealed {
     #[inline]
     fn configure(sercom: &RegisterBlock) -> () {
         sercom
-            .usart()
+            .usart_int()
             .ctrlb
             .modify(|_, w| unsafe { w.chsize().bits(Self::BITS) });
     }
@@ -894,8 +893,8 @@ impl<P: ValidPads> Config<P> {
     /// Users must configure GCLK manually. The `freq` parameter represents the
     /// GCLK frequency for this [`Sercom`] instance.
     #[inline]
-    pub fn new(pm: &PM, mut sercom: P::Sercom, pads: P, freq: impl Into<Hertz>) -> Self {
-        sercom.enable_apb_clock(pm);
+    pub fn new(mclk: &MCLK, mut sercom: P::Sercom, pads: P, freq: impl Into<Hertz>) -> Self {
+        sercom.enable_apb_clock(mclk);
         Self::create(sercom, pads, freq)
     }
 }
@@ -908,8 +907,8 @@ where
     /// Reset the SERCOM peripheral
     #[inline]
     fn swrst(sercom: &P::Sercom) {
-        sercom.usart().ctrla.write(|w| w.swrst().set_bit());
-        while sercom.usart().syncbusy.read().swrst().bit_is_set() {}
+        sercom.usart_int().ctrla.write(|w| w.swrst().set_bit());
+        while sercom.usart_int().syncbusy.read().swrst().bit_is_set() {}
     }
 
     /// Change the [`Config`] [`CharSize`]
@@ -961,7 +960,7 @@ where
     #[inline]
     pub fn msb_first(self, msb_first: bool) -> Self {
         self.sercom
-            .usart()
+            .usart_int()
             .ctrla
             .modify(|_, w| w.dord().bit(!msb_first));
         self
@@ -977,14 +976,17 @@ where
                 Parity::Even => false,
                 Parity::Odd => true,
             };
-            self.sercom.usart().ctrlb.modify(|_, w| w.pmode().bit(odd));
+            self.sercom
+                .usart_int()
+                .ctrlb
+                .modify(|_, w| w.pmode().bit(odd));
             true
         } else {
             false
         };
 
         self.sercom
-            .usart()
+            .usart_int()
             .ctrla
             .modify(|_, w| unsafe { w.form().bits(!enabled as u8) });
         self
@@ -999,7 +1001,7 @@ where
         };
 
         self.sercom
-            .usart()
+            .usart_int()
             .ctrlb
             .modify(|_, w| w.sbmode().bit(two_bits));
         self
@@ -1012,7 +1014,7 @@ where
     #[inline]
     pub fn start_of_frame_detection(self, enabled: bool) -> Self {
         self.sercom
-            .usart()
+            .usart_int()
             .ctrlb
             .modify(|_, w| w.sfde().bit(enabled));
         self
@@ -1025,7 +1027,7 @@ where
     #[inline]
     pub fn collision_detection(self, enabled: bool) -> Self {
         self.sercom
-            .usart()
+            .usart_int()
             .ctrlb
             .modify(|_, w| w.colden().bit(enabled));
         self
@@ -1035,8 +1037,8 @@ where
     ///
     /// This function will calculate the best BAUD register setting based on the
     /// stored GCLK frequency and desired baud rate. The maximum baud rate is
-    /// GCLK frequency/oversampling. Values outside this range will saturate at the
-    /// maximum supported baud rate.
+    /// GCLK frequency/oversampling. Values outside this range will saturate at
+    /// the maximum supported baud rate.
     ///
     /// Note that 3x oversampling is not supported.
     #[inline]
@@ -1044,7 +1046,7 @@ where
         let baud: Hertz = baud.into();
 
         self.sercom
-            .usart()
+            .usart_int()
             .ctrla
             .modify(|_, w| unsafe { w.sampr().bits(mode.sampr()) });
 
@@ -1061,7 +1063,7 @@ where
         };
 
         self.sercom
-            .usart()
+            .usart_int()
             .baud()
             .modify(|_, w| unsafe { w.baud().bits(baud) });
 
@@ -1082,7 +1084,8 @@ where
     }
 
     #[inline]
-    /// Calculate baudrate value using the asynchronous frational method (Table 24-2)
+    /// Calculate baudrate value using the asynchronous frational method (Table
+    /// 24-2)
     fn calculate_baud_asynchronous_fractional(baudrate: u32, clk_freq: u32, n_samples: u8) -> u16 {
         todo!();
     }
@@ -1094,7 +1097,10 @@ where
     /// the data stream.
     #[inline]
     pub fn immediate_overflow_notification(&mut self, set: bool) {
-        self.sercom.usart().ctrla.modify(|_, w| w.ibon().bit(set));
+        self.sercom
+            .usart_int()
+            .ctrla
+            .modify(|_, w| w.ibon().bit(set));
     }
 
     /// Run in standby mode
@@ -1104,7 +1110,7 @@ where
     #[inline]
     pub fn run_in_standby(&mut self, set: bool) {
         self.sercom
-            .usart()
+            .usart_int()
             .ctrla
             .modify(|_, w| w.runstdby().bit(set));
     }
@@ -1112,7 +1118,7 @@ where
     /// Enable interrupts for the specified flags
     pub fn enable_interrupts(&mut self, flags: Flags) {
         self.sercom
-            .usart()
+            .usart_int()
             .intenset
             .write(|w| unsafe { w.bits(flags.bits()) });
     }
@@ -1120,7 +1126,7 @@ where
     /// Disable interrupts for the specified flags
     pub fn disable_interrupts(&mut self, flags: Flags) {
         self.sercom
-            .usart()
+            .usart_int()
             .intenclr
             .write(|w| unsafe { w.bits(flags.bits()) });
     }
@@ -1135,19 +1141,32 @@ where
         Self: ValidConfig,
     {
         // Enable RX
-        self.sercom.usart().ctrlb.modify(|_, w| w.rxen().set_bit());
-        while self.sercom.usart().syncbusy.read().ctrlb().bit_is_set() {}
+        self.sercom
+            .usart_int()
+            .ctrlb
+            .modify(|_, w| w.rxen().set_bit());
+        while self.sercom.usart_int().syncbusy.read().ctrlb().bit_is_set() {}
 
         // Enable TX
-        self.sercom.usart().ctrlb.modify(|_, w| w.txen().set_bit());
-        while self.sercom.usart().syncbusy.read().ctrlb().bit_is_set() {}
+        self.sercom
+            .usart_int()
+            .ctrlb
+            .modify(|_, w| w.txen().set_bit());
+        while self.sercom.usart_int().syncbusy.read().ctrlb().bit_is_set() {}
 
         // Globally enable peripheral
         self.sercom
-            .usart()
+            .usart_int()
             .ctrla
             .modify(|_, w| w.enable().set_bit());
-        while self.sercom.usart().syncbusy.read().enable().bit_is_set() {}
+        while self
+            .sercom
+            .usart_int()
+            .syncbusy
+            .read()
+            .enable()
+            .bit_is_set()
+        {}
 
         // Perform a copy of the sercom instance, so that
         // the read and write halves can access the sercom
@@ -1173,10 +1192,17 @@ where
     /// synchronize.
     fn enable_peripheral(&mut self, enable: bool) {
         self.sercom
-            .usart()
+            .usart_int()
             .ctrla
             .modify(|_, w| w.enable().bit(enable));
-        while self.sercom.usart().syncbusy.read().enable().bit_is_set() {}
+        while self
+            .sercom
+            .usart_int()
+            .syncbusy
+            .read()
+            .enable()
+            .bit_is_set()
+        {}
     }
 }
 
@@ -1273,14 +1299,14 @@ trait Registers: Sealed {
 
     /// Read the interrupt flags
     fn read_flags(&self) -> Flags {
-        let bits = unsafe { self.sercom().usart().intflag.read().bits() };
+        let bits = unsafe { self.sercom().usart_int().intflag.read().bits() };
         Flags::from_bits_truncate(bits)
     }
 
     /// Read the error status flags
     #[inline]
     fn read_status(&self) -> Status {
-        let bits = unsafe { self.sercom().usart().status.read().bits() };
+        let bits = unsafe { self.sercom().usart_int().status.read().bits() };
         Status::from_bits_truncate(bits)
     }
 
@@ -1382,7 +1408,7 @@ impl<C: ValidConfig> Uart<C> {
     pub fn clear_flags(&mut self, flags: Flags) {
         unsafe {
             self.sercom()
-                .usart()
+                .usart_int()
                 .intflag
                 .write(|w| w.bits(flags.bits()))
         };
@@ -1407,7 +1433,7 @@ impl<C: ValidConfig> Uart<C> {
     pub fn clear_errors(&mut self, errors: Status) {
         unsafe {
             self.sercom()
-                .usart()
+                .usart_int()
                 .status
                 .write(|w| w.bits(errors.bits()))
         };
@@ -1426,7 +1452,7 @@ impl<C: ValidConfig> Uart<C> {
     /// clear the RXC flag, which could break assumptions made elsewhere in
     /// this module.
     #[inline]
-    pub unsafe fn read_data(&mut self) -> u16 {
+    pub unsafe fn read_data(&mut self) -> u32 {
         self.rx.read_data()
     }
 
@@ -1436,14 +1462,14 @@ impl<C: ValidConfig> Uart<C> {
     /// the DRE flag, which could break assumptions made elsewhere in this
     /// module.
     #[inline]
-    pub unsafe fn write_data(&mut self, data: u16) {
+    pub unsafe fn write_data(&mut self, data: u32) {
         self.tx.write_data(data)
     }
 
     /// Disable the UART peripheral and return the [`Config`] struct
     #[inline]
     pub fn disable(mut self) -> C {
-        let usart = unsafe { self.sercom().usart() };
+        let usart = unsafe { self.sercom().usart_int() };
         usart.ctrlb.modify(|_, w| w.rxen().clear_bit());
         while usart.syncbusy.read().ctrlb().bit_is_set() {}
         self.config.as_mut().enable_peripheral(false);
@@ -1557,8 +1583,8 @@ impl<C: ValidConfig, S: Sercom> UartRx<C, S> {
     /// clear the RXC flag, which could break assumptions made elsewhere in
     /// this module.
     #[inline]
-    pub unsafe fn read_data(&mut self) -> u16 {
-        self.sercom.usart().data.read().data().bits()
+    pub unsafe fn read_data(&mut self) -> u32 {
+        self.sercom.usart_int().data.read().data().bits()
     }
 }
 
@@ -1585,8 +1611,8 @@ impl<C: ValidConfig, S: Sercom> UartTx<C, S> {
     /// the DRE flag, which could break assumptions made elsewhere in this
     /// module.
     #[inline]
-    pub unsafe fn write_data(&mut self, data: u16) {
-        self.sercom.usart().data.write(|w| w.data().bits(data))
+    pub unsafe fn write_data(&mut self, data: u32) {
+        self.sercom.usart_int().data.write(|w| w.data().bits(data))
     }
 }
 
@@ -1634,7 +1660,7 @@ where
     C: ValidConfig,
     S: Sercom,
     C::Word: PrimInt,
-    u16: AsPrimitive<C::Word>,
+    u32: AsPrimitive<C::Word>,
 {
     type Error = Error;
 
@@ -1658,7 +1684,7 @@ where
     C: ValidConfig,
     C::Pads: Rx,
     C::Word: PrimInt,
-    u16: AsPrimitive<C::Word>,
+    u32: AsPrimitive<C::Word>,
     UartRx<C, ConfigSercom<C>>: Read<C::Word, Error = E>,
 {
     type Error = E;
@@ -1675,7 +1701,7 @@ impl<C, S> Write<C::Word> for UartTx<C, S>
 where
     C: ValidConfig,
     S: Sercom,
-    C::Word: PrimInt + AsPrimitive<u16>,
+    C::Word: PrimInt + AsPrimitive<u32>,
 {
     type Error = Error;
 

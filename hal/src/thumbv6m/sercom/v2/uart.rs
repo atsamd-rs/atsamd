@@ -58,8 +58,8 @@
 //!
 //! # [`Config`]
 //!
-//! Next, create a [`Config`] struct, which represents the UART peripheral in its
-//! disabled state. A `Config` is specified with three type parameters: the
+//! Next, create a [`Config`] struct, which represents the UART peripheral in
+//! its disabled state. A `Config` is specified with three type parameters: the
 //! [`Pads`] type; an [`OpMode`], which defaults to [`Master`]; and a
 //! [`CharSize`], which defaults to [`EightBit`].
 //!
@@ -106,8 +106,8 @@
 //!
 //! # [`Uart`]
 //!
-//! An [`Uart`] struct can only be created from a [`Config`], and it has only one
-//! type parameter, the corresponding config.
+//! An [`Uart`] struct can only be created from a [`Config`], and it has only
+//! one type parameter, the corresponding config.
 //!
 //! ```
 //! use atsamd_hal::gpio::v2::{PA08, PA09};
@@ -121,8 +121,9 @@
 //! type Uart = uart::Uart<Config>;
 //! ```
 //!
-//! Only the [`Uart`] struct can actually perform transactions. To do so, use the
-//! embedded HAL traits, like [`serial::Read`](Read) and [`serial::Write`](Write).
+//! Only the [`Uart`] struct can actually perform transactions. To do so, use
+//! the embedded HAL traits, like [`serial::Read`](Read) and
+//! [`serial::Write`](Write).
 //!
 //! ```
 //! use nb::block;
@@ -134,14 +135,16 @@
 //! # Splitting and joining
 //!
 //! A fully configured [`Uart`] struct can be split into `Tx` and `Rx` halves.
-//! That way, different parts of the program can individually send or receive UART transactions.
-//! Splitting is only available for [`Uart`]s which can transmit and receive.
+//! That way, different parts of the program can individually send or receive
+//! UART transactions. Splitting is only available for [`Uart`]s which can
+//! transmit and receive.
 //!
 //! ## Splitting
 //!
-//! Calling [`Uart::split`] will return three objects: a [`UartRx`], a [`UartTx`], and a [`UartCore`].
-//! The [`UartCore`] struct holds the underlying [`Config`], and is necessary to keep around is the two
-//! halves should be recombined by calling [`UartCore::join`].
+//! Calling [`Uart::split`] will return three objects: a [`UartRx`], a
+//! [`UartTx`], and a [`UartCore`]. The [`UartCore`] struct holds the underlying
+//! [`Config`], and is necessary to keep around is the two halves should be
+//! recombined by calling [`UartCore::join`].
 //!
 //! ```
 //! use nb::block;
@@ -156,8 +159,8 @@
 //!
 //! ## Joining
 //!
-//! Recombining the [`UartRx`] and [`UartTx`] halves back into a full [`Uart`] is necessary if the
-//! UART peripheral should be reconfigured
+//! Recombining the [`UartRx`] and [`UartTx`] halves back into a full [`Uart`]
+//! is necessary if the UART peripheral should be reconfigured
 //!
 //! ```
 //! // Assume uart is a fully configured `Uart` with transmit/receive capability
@@ -1176,8 +1179,8 @@ where
     ///
     /// This function will calculate the best BAUD register setting based on the
     /// stored GCLK frequency and desired baud rate. The maximum baud rate is
-    /// GCLK frequency/oversampling. Values outside this range will saturate at the
-    /// maximum supported baud rate.
+    /// GCLK frequency/oversampling. Values outside this range will saturate at
+    /// the maximum supported baud rate.
     ///
     /// Note that 3x oversampling is not supported.
     #[inline]
@@ -1223,7 +1226,8 @@ where
     }
 
     #[inline]
-    /// Calculate baudrate value using the asynchronous frational method (Table 24-2)
+    /// Calculate baudrate value using the asynchronous frational method (Table
+    /// 24-2)
     fn calculate_baud_asynchronous_fractional(baudrate: u32, clk_freq: u32, n_samples: u8) -> u16 {
         todo!();
     }
@@ -1741,7 +1745,8 @@ impl<C: ValidConfig, S: Sercom> Registers for UartTx<C, S> {
 
 impl<C: ValidConfig, S: Sercom> Sealed for UartTx<C, S> {}
 
-/// Struct containing the core [`Config`] when a [`Uart`] is [`split`](Uart::split).
+/// Struct containing the core [`Config`] when a [`Uart`] is
+/// [`split`](Uart::split).
 ///
 /// The `rx` and `tx` halves can be `join`ed to form a full-duplex [`Uart`]
 /// struct. `join`ing is necessary in order to reconfigure a [`Uart`], or
