@@ -5,6 +5,20 @@ use crate::gpio::v2::*;
 use crate::hal::adc::{Channel, OneShot};
 use crate::target_device::{adc, ADC, PM};
 
+/// Samples per reading
+pub use adc::avgctrl::SAMPLENUM_A as SampleRate;
+/// Clock frequency relative to the system clock
+pub use adc::ctrlb::PRESCALER_A as Prescaler;
+/// Reading resolution in bits
+///
+/// For the resolution of Arduino boards,
+/// see the [analogueRead](https://www.arduino.cc/reference/en/language/functions/analog-io/analogread/) docs.
+pub use adc::ctrlb::RESSEL_A as Resolution;
+/// The gain level
+pub use adc::inputctrl::GAIN_A as Gain;
+/// Reference voltage (or its source)
+pub use adc::refctrl::REFSEL_A as Reference;
+
 /// `Adc` encapsulates the device ADC
 pub struct Adc<ADC> {
     adc: ADC,
@@ -49,7 +63,7 @@ impl Adc<ADC> {
     }
 
     /// Set the sample rate
-    pub fn samples(&mut self, samples: adc::avgctrl::SAMPLENUM_A) {
+    pub fn samples(&mut self, samples: SampleRate) {
         use adc::avgctrl::SAMPLENUM_A;
         self.adc.avgctrl.modify(|_, w| {
             w.samplenum().variant(samples);
@@ -69,13 +83,13 @@ impl Adc<ADC> {
     }
 
     /// Set the gain factor
-    pub fn gain(&mut self, gain: adc::inputctrl::GAIN_A) {
+    pub fn gain(&mut self, gain: Gain) {
         self.adc.inputctrl.modify(|_, w| w.gain().variant(gain));
         while self.adc.status.read().syncbusy().bit_is_set() {}
     }
 
-    /// Set the voltage reference source
-    pub fn reference(&mut self, reference: adc::refctrl::REFSEL_A) {
+    /// Set the voltage reference
+    pub fn reference(&mut self, reference: Reference) {
         self.adc
             .refctrl
             .modify(|_, w| w.refsel().variant(reference));
@@ -83,17 +97,14 @@ impl Adc<ADC> {
     }
 
     /// Set the prescaler for adjusting the clock relative to the system clock
-    pub fn prescaler(&mut self, prescaler: adc::ctrlb::PRESCALER_A) {
+    pub fn prescaler(&mut self, prescaler: Prescaler) {
         adc.ctrlb.modify(|_, w| {
             w.prescaler().variant(prescaler);
         });
     }
 
     /// Set the input resolution.
-    ///
-    /// For the resolution of Arduino boards,
-    /// see the [analogueRead docs](https://www.arduino.cc/reference/en/language/functions/analog-io/analogread/)
-    pub fn resolution(&mut self, resolution: adc::ctrlb::RESSEL_A) {
+    pub fn resolution(&mut self, resolution: Resolution) {
         adc.ctrlb.modify(|_, w| {
             w.ressel().variant(resolution);
         });
