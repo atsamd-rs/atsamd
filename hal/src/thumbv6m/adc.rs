@@ -99,14 +99,14 @@ impl Adc<ADC> {
     /// Set the prescaler for adjusting the clock relative to the system clock
     pub fn prescaler(&mut self, prescaler: Prescaler) {
         self.adc.ctrlb.modify(|_, w| {
-            w.prescaler().variant(prescaler);
+            w.prescaler().variant(prescaler)
         });
     }
 
     /// Set the input resolution.
     pub fn resolution(&mut self, resolution: Resolution) {
         self.adc.ctrlb.modify(|_, w| {
-            w.ressel().variant(resolution);
+            w.ressel().variant(resolution)
         });
     }
 
