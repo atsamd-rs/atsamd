@@ -148,10 +148,120 @@
 //!
 //! // Wait for transfer to complete and grab resulting buffers
 //! let (chan0, buf_src, buf_dest, _) = xfer.wait(&mut dmac);
+//!
+//! // (Optional) free the [`DmaController`] struct and return the underlying PAC struct
+//! channels.0 = chan0.into();
+//! let dmac = dmac.free(channels, &mut peripherals.PM);
 //! ```
+//!
+//! # [`Transfer`] recycling
+//!
+//! A common use-case with DMAC transfers is to trigger a new transfer as soon
+//! as the old transfer is completed. To avoid having to
+//! [`stop`](Transfer::stop) a [`Transfer`], build a new [`Transfer`] (with
+//! [`new`](Transfer::new) or [`new_from_arrays`](Transfer::new_from_arrays))
+//! then call [`begin`](Transfer::begin), a [`Transfer::recycle`] method
+//! is provided. If the buffer lengths match and the previous transfer is
+//! completed, a new transfer will immediately be triggered using the provided
+//! source and destination buffers. If the recycling operation is succesful,
+//! `Ok((source, destination))` containing the old source and destination
+//! buffers is returned. Otherwise, `Err(_)` is returned.
+//!
+//! ```
+//! let new_source = produce_source();
+//! let new_destination = produce_destination();
+//!
+//! // Assume xfer is a `Busy` `Transfer`
+//! let (old_source, old_dest) = xfer.recycle(new_source, new_destination).unwrap();
+//! ```
+//!
+//! # Waker operation
+//!
+//! A [`Transfer`] can also accept a function or closure that will be called on
+//! completion of the transaction, acting like a [`Waker`].
+//!
+//! ```
+//! fn wake_up() {
+//!     //...
+//! }
+//!
+//! fn use_waker<const N: usize>(dmac: DmaController,
+//!     source: &'static mut [u8; N],
+//!     destination: &'static mut [u8; N]
+//! ){
+//!     let chan0 = dmac.split().0;
+//!     let xfer = Transfer::new_from_arrays(chan0, source, destination, false)
+//!         .with_waker(wake_up)
+//!         .begin();
+//!     //...
+//! }
+//! ```
+//!
+//! ## RTIC example
+//!
+//! The [RTIC] framework provides a convenient way to store a `static`ally
+//! allocated [`Transfer`], so that it can be accessed by both the interrupt
+//! handlers and user code. The following example shows how [`Transfer`]s might
+//! be used for a series of transactions. It uses features from the latest
+//! release of [RTIC], `v0.6-alpha.4`.
+//!
+//! ```
+//! use atsamd_hal::dmac::*;
+//!
+//! const LENGTH: usize = 50;
+//! type TransferBuffer = &'static mut [u8; LENGTH];
+//! type Xfer = Transfer<Channel<Ch0, Busy>, TransferBuffer, TransferBuffer>;
+//!
+//! #[resources]
+//! struct Resources {
+//!     #[lock_free]
+//!     #[init(None)]
+//!     opt_xfer: Option<Xfer>,
+//!
+//!     #[lock_free]
+//!     #[init(None)]
+//!     opt_channel: Option<Channel<Ch0, Ready>>,
+//! }
+//!
+//! // Note: Assume interrupts have already been enabled for the concerned channel
+//! #[task(resources = [opt_xfer, opt_channel])]
+//! fn task(ctx: task::Context) {
+//!     let task::Context { opt_xfer } = ctx;
+//!     match opt_xfer {
+//!         Some(xfer) => {
+//!             if xfer.complete() {
+//!                 let (chan0, _source, dest, _payload) = xfer.take().unwrap().stop();
+//!                 *opt_channel = Some(chan0);
+//!                 consume_data(buf);
+//!             }
+//!         }
+//!         None => {
+//!             if let Some(chan0) = opt_channel.take() {
+//!                 let source: [u8; 50] = produce_source();
+//!                 let dest: [u8; 50] = produce_destination();
+//!                 let xfer = opt_xfer.get_or_insert(
+//!                     Transfer::new_from_arrays(channel0, source, destination)
+//!                         .with_waker(|| { task::spawn().ok(); })
+//!                         .begin()
+//!                 );
+//!             }
+//!         }
+//!     }
+//! }
+//!
+//! #[task(binds = DMAC, resources = [opt_future])]
+//! fn tcmpl(ctx: tcmpl::Context) {
+//!     ctx.resources.opt_xfer.as_mut().unwrap().callback();
+//! }
+//! ```
+//! [RTIC]: https://rtic.rs
+
+// This is necessary until modular_bitfield fixes all their unused brace warnings
+#![allow(unused_braces)]
 
 use modular_bitfield::prelude::*;
 
+pub use channel::CallbackStatus;
 #[cfg(feature = "min-samd51g")]
 pub use dma_controller::{BurstLength, FifoThreshold};
 pub use dma_controller::{
@@ -159,6 +269,25 @@ pub use dma_controller::{
 };
 use transfer::BeatSize;
 pub use transfer::{Beat, Buffer, Transfer};
+
+#[derive(Debug)]
+/// Runtime errors that may occur when dealing with DMA transfers.
+pub enum Error {
+    /// Supplied buffers both have lengths > 1 beat, but not equal to each other
+    ///
+    /// Buffers need to either have the same length in beats, or one should have
+    /// length == 1.  In cases where one buffer is length 1, that buffer will be
+    /// the source or destination of each beat in the transfer.  If both buffers
+    /// had length >1, but not equal to each other, then it would not be clear
+    /// how to structure the transfer.
+    LengthMismatch,
+
+    /// Operation is not valid in the current state of the object.
+    InvalidState,
+}
+
+/// Result for DMAC operations
+pub type Result<T> = core::result::Result<T, Error>;
 
 #[cfg(all(feature = "samd11", feature = "max-channels"))]
 #[macro_export]
@@ -217,9 +346,12 @@ macro_rules! get {
 /// Number of DMA channels used by the driver
 pub const NUM_CHANNELS: usize = with_num_channels!(get);
 
+// ----- DMAC SRAM registers ----- //
+/// Bitfield representing the BTCTRL SRAM DMAC register
 #[bitfield]
 #[derive(Clone, Copy)]
 #[repr(u16)]
+#[doc(hidden)]
 pub struct BlockTransferControl {
     #[allow(dead_code)]
     valid: bool,
@@ -242,7 +374,6 @@ pub struct BlockTransferControl {
     stepsize: B3,
 }
 
-// ----- DMAC SRAM registers ----- //
 /// Descriptor representing a SRAM register. Datasheet section 19.8.2
 #[derive(Clone, Copy)]
 #[repr(C, align(16))]

@@ -81,6 +81,7 @@ pub struct DmaController {
     dmac: DMAC,
 }
 
+/// Mask representing which priority levels should be enabled/disabled
 #[bitfield]
 #[repr(u16)]
 pub struct PriorityLevelMask {
@@ -102,6 +103,7 @@ pub struct PriorityLevelMask {
     _reserved: B4,
 }
 
+/// Mask representing which priority levels should be configured as round-robin
 #[bitfield]
 #[repr(u32)]
 pub struct RoundRobinMask {
@@ -128,22 +130,11 @@ pub struct RoundRobinMask {
 }
 
 impl DmaController {
-    /// Return a shared reference to the underlying DMAC object exposed by the
-    /// PAC.
-    ///
-    /// # Safety
-    ///
-    /// This function is unsafe because `DmaController` may expect certain
-    /// registers to retain a configuration. Messing with that configuration may
-    /// be unsafe.
-    pub(super) fn dmac(&mut self) -> &DMAC {
-        &mut self.dmac
-    }
-
     /// Initialize the DMAC and return a DmaController object useable by
     /// [`Transfer`](super::transfer::Transfer)'s. By default, all
     /// priority levels are enabled unless subsequently disabled using the
     /// `level_x_enabled` methods.
+    #[inline]
     pub fn init(mut dmac: DMAC, _pm: &mut PM) -> Self {
         // ----- Initialize clocking ----- //
         #[cfg(any(feature = "samd11", feature = "samd21"))]
@@ -230,8 +221,14 @@ impl DmaController {
         }
     }
 
-    /// Release the DMAC and return the register block
-    pub fn free(mut self, _pm: &mut PM) -> DMAC {
+    /// Release the DMAC and return the register block.
+    ///
+    /// **Note**: The [`Channels`] struct is consumed by this method. This means
+    /// that any [`Channel`] obtained by [`split`](DmaController::split) must be
+    /// moved back into the [`Channels`] struct before being able to pass it
+    /// into [`free`](DmaController::free).
+    #[inline]
+    pub fn free(mut self, _channels: Channels, _pm: &mut PM) -> DMAC {
         self.dmac.ctrl.modify(|_, w| w.dmaenable().clear_bit());
 
         Self::swreset(&mut self.dmac);
@@ -259,6 +256,7 @@ macro_rules! define_split {
     ($num_channels:literal) => {
         seq!(N in 0..$num_channels {
             /// Split the DMAC into individual channels
+            #[inline]
             pub fn split(&mut self) -> Channels {
                 Channels(
                     #(
