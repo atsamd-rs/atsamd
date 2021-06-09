@@ -30,6 +30,8 @@ pub use crate::common::thumbv6m::sercom::v2::*;
 #[cfg(feature = "min-samd51g")]
 pub use crate::common::thumbv7em::sercom::v2::*;
 
+#[cfg(feature = "dma")]
+use crate::common::dmac::TriggerSource;
 use crate::typelevel::Sealed;
 
 pub mod pad;
@@ -45,6 +47,12 @@ pub mod spi_future;
 pub trait Sercom: Sealed + Deref<Target = sercom0::RegisterBlock> {
     /// SERCOM number
     const NUM: usize;
+    /// RX Trigger source for DMA transactions
+    #[cfg(feature = "dma")]
+    const DMA_RX_TRIGGER: TriggerSource;
+    /// TX trigger source for DMA transactions
+    #[cfg(feature = "dma")]
+    const DMA_TX_TRIGGER: TriggerSource;
     /// Enable the corresponding APB clock
     fn enable_apb_clock(&mut self, ctrl: &APB_CLK_CTRL);
 }
@@ -58,6 +66,10 @@ macro_rules! sercom {
                 impl Sealed for Sercom#N {}
                 impl Sercom for Sercom#N {
                     const NUM: usize = N;
+                    #[cfg(feature = "dma")]
+                    const DMA_RX_TRIGGER: TriggerSource = TriggerSource::[<SERCOM#N _RX>];
+                    #[cfg(feature = "dma")]
+                    const DMA_TX_TRIGGER: TriggerSource = TriggerSource::[<SERCOM#N _TX>];
                     #[inline]
                     fn enable_apb_clock(&mut self, ctrl: &APB_CLK_CTRL) {
                         ctrl.$apbmask.modify(|_, w| w.[<sercom#N _>]().set_bit());
