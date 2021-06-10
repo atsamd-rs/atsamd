@@ -2,14 +2,6 @@
 
 This crate provides a type-safe API for working with the [Arduino nano 33 IOT board](https://store.arduino.cc/usa/nano-33-iot).
 
-## Examples
-
-* Blinky basic
-* I2C (with the SSD1306 display)
-* Serial
-* SPI (with the ST7735 display)
-* USB logging
-
 ## Requirements
 
 1. Arduino IDE or [arduino CLI](https://github.com/arduino/arduino-cli) installed.
