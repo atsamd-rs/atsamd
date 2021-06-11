@@ -189,7 +189,7 @@ use crate::target_device as pac;
 use crate::time::Hertz;
 use pac::{
     sercom0::{
-        usart_int::ctrla::{RXPO_A, TXPO_A},
+        usart_int::ctrla::{MODE_A, RXPO_A, TXPO_A},
         RegisterBlock,
     },
     MCLK,
@@ -875,6 +875,13 @@ impl<P: ValidPads> Config<P> {
         <P as Rxpo>::configure(&sercom);
         <P as Txpo>::configure(&sercom);
         EightBit::configure(&sercom);
+
+        // Enable internal clock mode
+        sercom
+            .usart()
+            .ctrla
+            .modify(|_, w| w.mode().variant(MODE_A::USART_INT_CLK));
+
         Self {
             sercom,
             pads,
@@ -1129,6 +1136,13 @@ where
             .usart_int()
             .intenclr
             .write(|w| unsafe { w.bits(flags.bits()) });
+    }
+
+    pub fn irda_encoding(&mut self, irda: bool) {
+        self.sercom
+            .usart_int()
+            .ctrlb
+            .modify(|_, w| w.enc().bit(irda));
     }
 
     /// Enable the UART peripheral

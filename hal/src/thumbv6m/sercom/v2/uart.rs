@@ -185,7 +185,10 @@ use core::marker::PhantomData;
 
 use crate::target_device as pac;
 use crate::time::Hertz;
-use pac::{sercom0::RegisterBlock, PM};
+use pac::{
+    sercom0::{usart::ctrla::MODE_A, RegisterBlock},
+    PM,
+};
 
 use crate::gpio::v2::AnyPin;
 use crate::sercom::v2::*;
@@ -1020,6 +1023,13 @@ impl<P: ValidPads> Config<P> {
         Self::swrst(&sercom);
         P::configure(&sercom);
         EightBit::configure(&sercom);
+
+        // Enable internal clock mode
+        sercom
+            .usart()
+            .ctrla
+            .modify(|_, w| w.mode().variant(MODE_A::USART_INT_CLK));
+
         Self {
             sercom,
             pads,
@@ -1268,6 +1278,10 @@ where
             .usart()
             .intenclr
             .write(|w| unsafe { w.bits(flags.bits()) });
+    }
+
+    pub fn irda_encoding(&mut self, irda: bool) {
+        self.sercom.usart().ctrlb.modify(|_, w| w.enc().bit(irda));
     }
 
     /// Enable the UART peripheral
