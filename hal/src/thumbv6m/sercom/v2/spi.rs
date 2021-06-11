@@ -149,12 +149,14 @@
 //! non-blocking way. Optionally, interrupts can be enabled on the provided
 //! [`Channel`](crate::dmac::channel::Channel). Note that the `dma` feature must
 //! be enabled. Please refer to the [`dmac`](crate::dmac) module-level
-//! documentation for more information. ```
+//! documentation for more information.
+//!
+//! ```
 //! // Assume channel is a configured `dmac::Channel`, and spi a
-//! fully-configured `Spi`
+//! // fully-configured `Spi`
 //!
 //! // Create data to send
-//! let buffer: [u8; 50] = [0xff; 50]
+//! let buffer: [u8; 50] = [0xff; 50];
 //!
 //! // Launch transfer
 //! let dma_transfer = spi.send_with_dma(&mut buffer, channel, ());
@@ -162,7 +164,7 @@
 //! // Wait for transfer to complete and reclaim resources
 //! let (chan0, _, spi, _) = dma_transfer.wait();
 //! ```
-//! 
+//!
 //! [`enable`]: Config::enable
 //! [`Pin`]: crate::gpio::v2::pin::Pin
 //! [`PinId`]: crate::gpio::v2::pin::PinId

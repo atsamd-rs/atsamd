@@ -142,7 +142,9 @@
 //!
 //! The `tx` and `rx` fields can be moved out of a [`Uart`] struct. They can
 //! then be used to individually send/receive data over the UART port, perhaps
-//! in different contexts. ```
+//! in different contexts.
+//!
+//! ```
 //! use nb::block;
 //! use embedded_hal::serial::{Read, Write};
 //!
@@ -153,12 +155,13 @@
 //! block!(tx.write(0xfe));
 //! let _received = block!(rx.read());
 //! ```
-//! 
+//!
 //! ## Joining
 //!
 //! Moving the [`UartRx`] and [`UartTx`] halves back into the [`Uart`]
 //! struct is necessary if the UART peripheral should call methods taking `&mut
 //! self`, such as [`reconfigure`](Uart::reconfigure).
+//!
 //! ```
 //! // Assume uart is a fully configured `Uart` with transmit/receive capability
 //! let rx = uart.rx;
@@ -170,7 +173,7 @@
 //! uart.rx = rx;
 //! uart.reconfigure(|c| c.baud(1.mhz()));
 //! ```
-//! 
+//!
 //! # Using UART with DMA
 //!
 //! This HAL includes support for DMA-enabled UART transfers. An enabled `Uart`
@@ -182,7 +185,9 @@
 //! non-blocking way. Optionally, interrupts can be enabled on the provided
 //! [`Channel`](crate::dmac::channel::Channel). Note that the `dma` feature must
 //! be enabled. Please refer to the [`dmac`](crate::dmac) module-level
-//! documentation for more information. ```
+//! documentation for more information.
+//!
+//! ```
 //! // Assume channel0 and channel1 are configured `dmac::Channel`s, and uart a
 //! // fully-configured `Uart`
 //!
@@ -190,14 +195,11 @@
 //! let tx_buffer: [u8; 50] = [0xff; 50];
 //! let rx_buffer: [u8; 100] = [0xab; 100];
 //!
-//! let rx = uart.rx;
-//! let tx = uart.tx;
-//!
 //! // Launch transmit transfer
-//! let tx_dma = tx.send_with_dma(&mut buffer, channel0, ());
+//! let tx_dma = uart.tx.send_with_dma(&mut tx_buffer, channel0, ());
 //!
 //! // Launch receive transfer
-//! let rx_dma = rx.receive_with_dma(&mut buffer, channel1, ());
+//! let rx_dma = uart.rx.receive_with_dma(&mut rx_buffer, channel1, ());
 //!
 //! // Wait for transfers to complete and reclaim resources
 //! let (chan0, _, tx, _) = tx_dma.wait();
@@ -1103,12 +1105,10 @@ where
 
         let baud = match mode {
             BaudMode::Arithmetic(n) => {
-                let n_samples = n as u8;
-                Self::calculate_baud_asynchronous_arithm(baud.0, self.freq.0, n_samples)
+                Self::calculate_baud_asynchronous_arithm(baud.0, self.freq.0, n as u8)
             }
 
             BaudMode::Fractional(n) => {
-                let n_samples = n as u8;
                 todo!();
             }
         };
@@ -1665,10 +1665,10 @@ impl<C: ValidConfig, S: Sercom> Sealed for UartTx<C, S> {}
 // UART DMA transfers
 //=============================================================================
 #[cfg(feature = "dma")]
-pub use spi_dma::*;
+pub use uart_dma::*;
 
 #[cfg(feature = "dma")]
-mod spi_dma {
+mod uart_dma {
     use super::*;
     use crate::dmac::{
         self,
@@ -1686,7 +1686,7 @@ mod spi_dma {
 
         #[inline]
         fn dma_ptr(&mut self) -> *mut Self::Beat {
-            self.sercom.usart().data.as_ptr() as *mut _
+            self.sercom.usart_int().data.as_ptr() as *mut _
         }
 
         #[inline]
@@ -1710,7 +1710,7 @@ mod spi_dma {
 
         #[inline]
         fn dma_ptr(&mut self) -> *mut Self::Beat {
-            self.sercom.usart().data.as_ptr() as *mut _
+            self.sercom.usart_int().data.as_ptr() as *mut _
         }
 
         #[inline]
@@ -1753,7 +1753,7 @@ mod spi_dma {
             // static.
             unsafe { dmac::Transfer::new_unchecked(channel, buf, self, false) }
                 .with_waker(waker)
-                .begin(S::DMA_TX_TRIGGER, dmac::TriggerAction::BEAT)
+                .begin(S::DMA_TX_TRIGGER, dmac::TriggerAction::BURST)
         }
     }
 
@@ -1786,7 +1786,7 @@ mod spi_dma {
             // static.
             unsafe { dmac::Transfer::new_unchecked(channel, self, buf, false) }
                 .with_waker(waker)
-                .begin(S::DMA_RX_TRIGGER, dmac::TriggerAction::BEAT)
+                .begin(S::DMA_RX_TRIGGER, dmac::TriggerAction::BURST)
         }
     }
 }
