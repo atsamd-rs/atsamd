@@ -1504,26 +1504,6 @@ impl<C: ValidConfig> Uart<C> {
         <Self as Registers>::read_flags_errors(self)
     }
 
-    /// Read from the DATA register
-    ///
-    /// Reading from the data register directly is `unsafe`, because it will
-    /// clear the RXC flag, which could break assumptions made elsewhere in
-    /// this module.
-    #[inline]
-    pub unsafe fn read_data(&mut self) -> u32 {
-        self.rx.read_data()
-    }
-
-    /// Write to the DATA register
-    ///
-    /// Writing to the data register directly is `unsafe`, because it will clear
-    /// the DRE flag, which could break assumptions made elsewhere in this
-    /// module.
-    #[inline]
-    pub unsafe fn write_data(&mut self, data: u32) {
-        self.tx.write_data(data)
-    }
-
     /// Disable the UART peripheral and return the [`Config`] struct
     #[inline]
     pub fn disable(mut self) -> C {
@@ -1611,7 +1591,12 @@ pub struct UartRx<C: ValidConfig, S: Sercom> {
     _config: PhantomData<C>,
 }
 
-impl<C: ValidConfig, S: Sercom> UartRx<C, S> {
+impl<C, S> UartRx<C, S>
+where
+    C: ValidConfig,
+    S: Sercom,
+    C::Pads: Rx,
+{
     /// Read from the DATA register
     ///
     /// Reading from the data register directly is `unsafe`, because it will
@@ -1639,7 +1624,12 @@ pub struct UartTx<C: ValidConfig, S: Sercom> {
     _config: PhantomData<C>,
 }
 
-impl<C: ValidConfig, S: Sercom> UartTx<C, S> {
+impl<C, S> UartTx<C, S>
+where
+    C: ValidConfig,
+    S: Sercom,
+    C::Pads: Tx,
+{
     /// Write to the DATA register
     ///
     /// Writing to the data register directly is `unsafe`, because it will clear
@@ -1680,6 +1670,7 @@ mod uart_dma {
     where
         S: Sercom,
         C: ValidConfig,
+        C::Pads: Tx,
         C::Word: dmac::transfer::Beat,
     {
         type Beat = C::Word;
@@ -1704,6 +1695,7 @@ mod uart_dma {
     where
         S: Sercom,
         C: ValidConfig,
+        C::Pads: Rx,
         C::Word: dmac::transfer::Beat,
     {
         type Beat = C::Word;
@@ -1728,6 +1720,7 @@ mod uart_dma {
     where
         Self: dmac::transfer::Buffer<Beat = C::Word>,
         S: Sercom,
+        C::Pads: Tx,
         C: ValidConfig,
     {
         /// Transform an [`UartTx`] into a DMA [`Transfer`]) and
@@ -1761,6 +1754,7 @@ mod uart_dma {
     where
         Self: dmac::transfer::Buffer<Beat = C::Word>,
         S: Sercom,
+        C::Pads: Rx,
         C: ValidConfig,
     {
         /// Transform an [`UartRx`] into a DMA [`Transfer`]) and
@@ -1800,6 +1794,7 @@ impl<C, S> Read<C::Word> for UartRx<C, S>
 where
     C: ValidConfig,
     S: Sercom,
+    C::Pads: Rx,
     C::Word: PrimInt,
     u32: AsPrimitive<C::Word>,
 {
@@ -1817,31 +1812,12 @@ where
     }
 }
 
-/// Implement [`Read`] for [`Uart`]
-///
-/// [`Read`] is only implemented when the [`Pads`] are [`Rx`].
-impl<C, E> Read<C::Word> for Uart<C>
-where
-    C: ValidConfig,
-    C::Pads: Rx,
-    C::Word: PrimInt,
-    u32: AsPrimitive<C::Word>,
-    UartRx<C, ConfigSercom<C>>: Read<C::Word, Error = E>,
-{
-    type Error = E;
-
-    /// Wait for an `RXC` flag, then read the word
-    #[inline]
-    fn read(&mut self) -> nb::Result<C::Word, E> {
-        self.rx.read()
-    }
-}
-
 /// Implement [`Write`] for [`UartTx`].
 impl<C, S> Write<C::Word> for UartTx<C, S>
 where
     C: ValidConfig,
     S: Sercom,
+    C::Pads: Tx,
     C::Word: PrimInt + AsPrimitive<u32>,
 {
     type Error = Error;
@@ -1870,38 +1846,12 @@ where
     }
 }
 
-/// Implement [`Write`] for [`Uart`]
-///
-/// [`Write`] is only implemented when the [`Pads`] are [`Tx`].
-///
-/// This implementation never reads the DATA register and ignores all buffer
-/// overflow errors.
-impl<C, E> Write<C::Word> for Uart<C>
+impl<C, S> blocking::serial::write::Default<C::Word> for UartTx<C, S>
 where
     C: ValidConfig,
+    S: Sercom,
     C::Pads: Tx,
-    C::Word: PrimInt + AsPrimitive<u16>,
-    UartTx<C, ConfigSercom<C>>: Write<C::Word, Error = E>,
-{
-    type Error = E;
-
-    /// Wait for a `DRE` flag, then write a word
-    #[inline]
-    fn write(&mut self, word: C::Word) -> nb::Result<(), E> {
-        self.tx.write(word)
-    }
-
-    /// Wait for a `TXC` flag
-    #[inline]
-    fn flush(&mut self) -> nb::Result<(), E> {
-        self.tx.flush()
-    }
-}
-
-impl<C> blocking::serial::write::Default<C::Word> for Uart<C>
-where
-    C: ValidConfig,
-    Uart<C>: Write<C::Word>,
+    UartTx<C, S>: Write<C::Word>,
 {
 }
 

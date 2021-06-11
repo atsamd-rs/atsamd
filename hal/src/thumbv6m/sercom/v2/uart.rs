@@ -1707,7 +1707,12 @@ pub struct UartRx<C: ValidConfig, S: Sercom> {
     _config: PhantomData<C>,
 }
 
-impl<C: ValidConfig, S: Sercom> UartRx<C, S> {
+impl<C, S> UartRx<C, S>
+where
+    C: ValidConfig,
+    S: Sercom,
+    C::Pads: Rx,
+{
     /// Read from the DATA register
     ///
     /// Reading from the data register directly is `unsafe`, because it will
@@ -1735,7 +1740,12 @@ pub struct UartTx<C: ValidConfig, S: Sercom> {
     _config: PhantomData<C>,
 }
 
-impl<C: ValidConfig, S: Sercom> UartTx<C, S> {
+impl<C, S> UartTx<C, S>
+where
+    C: ValidConfig,
+    S: Sercom,
+    C::Pads: Tx,
+{
     /// Write to the DATA register
     ///
     /// Writing to the data register directly is `unsafe`, because it will clear
@@ -1776,6 +1786,7 @@ mod uart_dma {
     where
         S: Sercom,
         C: ValidConfig,
+        C::Pads: Tx,
         C::Word: dmac::transfer::Beat,
     {
         type Beat = C::Word;
@@ -1800,6 +1811,7 @@ mod uart_dma {
     where
         S: Sercom,
         C: ValidConfig,
+        C::Pads: Rx,
         C::Word: dmac::transfer::Beat,
     {
         type Beat = C::Word;
@@ -1825,6 +1837,7 @@ mod uart_dma {
         Self: dmac::transfer::Buffer<Beat = C::Word>,
         S: Sercom,
         C: ValidConfig,
+        C::Pads: Tx,
     {
         /// Transform an [`UartTx`] into a DMA [`Transfer`]) and
         /// start sending the provided buffer.
@@ -1858,6 +1871,7 @@ mod uart_dma {
         Self: dmac::transfer::Buffer<Beat = C::Word>,
         S: Sercom,
         C: ValidConfig,
+        C::Pads: Rx,
     {
         /// Transform an [`UartRx`] into a DMA [`Transfer`]) and
         /// start receiving into the provided buffer.
@@ -1897,6 +1911,7 @@ where
     C: ValidConfig,
     S: Sercom,
     C::Word: PrimInt,
+    C::Pads: Rx,
     u16: AsPrimitive<C::Word>,
 {
     type Error = Error;
@@ -1918,6 +1933,7 @@ impl<C, S> Write<C::Word> for UartTx<C, S>
 where
     C: ValidConfig,
     S: Sercom,
+    C::Pads: Tx,
     C::Word: PrimInt + AsPrimitive<u16>,
 {
     type Error = Error;
@@ -1950,6 +1966,7 @@ impl<C, S> blocking::serial::write::Default<C::Word> for UartTx<C, S>
 where
     C: ValidConfig,
     S: Sercom,
+    C::Pads: Tx,
     UartTx<C, S>: Write<C::Word>,
 {
 }
