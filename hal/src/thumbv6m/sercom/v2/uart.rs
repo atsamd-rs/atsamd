@@ -136,44 +136,80 @@
 //!
 //! A fully configured [`Uart`] struct can be split into `Tx` and `Rx` halves.
 //! That way, different parts of the program can individually send or receive
-//! UART transactions. Splitting is only available for [`Uart`]s which can
-//! transmit and receive.
+//! UART transactions.
 //!
 //! ## Splitting
 //!
-//! Calling [`Uart::split`] will return three objects: a [`UartRx`], a
-//! [`UartTx`], and a [`UartCore`]. The [`UartCore`] struct holds the underlying
-//! [`Config`], and is necessary to keep around is the two halves should be
-//! recombined by calling [`UartCore::join`].
-//!
-//! ```
+//! The `tx` and `rx` fields can be moved out of a [`Uart`] struct. They can
+//! then be used to individually send/receive data over the UART port, perhaps
+//! in different contexts. ```
 //! use nb::block;
 //! use embedded_hal::serial::{Read, Write};
 //!
 //! // Assume uart is a fully configured `Uart` with transmit/receive capability
-//! let (rx, tx, core) = uart.split();
+//! let rx = uart.rx;
+//! let tx = uart.tx;
 //!
 //! block!(tx.write(0xfe));
 //! let _received = block!(rx.read());
 //! ```
-//!
+//! 
 //! ## Joining
 //!
-//! Recombining the [`UartRx`] and [`UartTx`] halves back into a full [`Uart`]
-//! is necessary if the UART peripheral should be reconfigured
-//!
+//! Moving the [`UartRx`] and [`UartTx`] halves back into the [`Uart`]
+//! struct is necessary if the UART peripheral should call methods taking `&mut
+//! self`, such as [`reconfigure`](Uart::reconfigure).
 //! ```
 //! // Assume uart is a fully configured `Uart` with transmit/receive capability
-//! let (rx, tx, core) = uart.split();
+//! let rx = uart.rx;
+//! let tx = uart.tx
 //!
-//! let uart = core.join(rx, tx);
+//! // Send/receive data with tx/rx...
+//!
+//! uart.tx = tx;
+//! uart.rx = rx;
 //! uart.reconfigure(|c| c.baud(1.mhz()));
+//! ```
+//! 
+//! # Using UART with DMA
+//!
+//! This HAL includes support for DMA-enabled UART transfers. An enabled `Uart`
+//! struct contains `rx` and `tx` fields, which both implement the DMAC
+//! [`Buffer`](crate::dmac::transfer::Buffer) trait. The provided
+//! [`send_with_dma`](UartTx::send_with_dma) and [`receive_with_dma`](UartRx::
+//! receive_with_dma) build and begin a [`dmac::Transfer`](crate::dmac::
+//! Transfer), thus starting the UART in a non-blocking way. Optionally,
+//! interrupts can be enabled on the provided [`Channel`](crate::dmac::channel::
+//! Channel). Note that the `dma` feature must be enabled. Please refer to the
+//! [`dmac`](crate::dmac) module-level documentation for more information. ```
+//! // Assume channel0 and channel1 are configured `dmac::Channel`s, and uart a
+//! // fully-configured `Uart`
+//!
+//! // Create data to send
+//! let tx_buffer: [u8; 50] = [0xff; 50];
+//! let rx_buffer: [u8; 100] = [0xab; 100];
+//!
+//! let rx = uart.rx;
+//! let tx = uart.tx;
+//!
+//! // Launch transmit transfer
+//! let tx_dma = tx.send_with_dma(&mut buffer, channel0, ());
+//!
+//! // Launch receive transfer
+//! let rx_dma = rx.receive_with_dma(&mut buffer, channel1, ());
+//!
+//! // Wait for transfers to complete and reclaim resources
+//! let (chan0, _, tx, _) = tx_dma.wait();
+//! let (chan1, _, rx, _) = rx_dma.wait();
+//!
+//! // Optionally join `rx` and `tx` back into `uart`
+//! uart.tx = tx;
+//! uart.rx = rx;
 //! ```
 //!
 //! # Non-supported advanced features
 //!
-//! * IrDA mode is not supported
-//! * Synchronous mode is not supported
+//! * Synchronous mode (USART) is not supported
 //!
 //! [`enable`]: Config::enable
 //! [`Pin`]: crate::gpio::v2::pin::Pin
@@ -1485,8 +1521,8 @@ where
     C: ValidConfig,
 {
     config: C,
-    rx: UartRx<C, ConfigSercom<C>>,
-    tx: UartTx<C, ConfigSercom<C>>,
+    pub rx: UartRx<C, ConfigSercom<C>>,
+    pub tx: UartTx<C, ConfigSercom<C>>,
 }
 
 impl<C: ValidConfig> Uart<C> {
@@ -1584,26 +1620,6 @@ impl<C: ValidConfig> Uart<C> {
         <Self as Registers>::read_flags_errors(self)
     }
 
-    /// Read from the DATA register
-    ///
-    /// Reading from the data register directly is `unsafe`, because it will
-    /// clear the RXC flag, which could break assumptions made elsewhere in
-    /// this module.
-    #[inline]
-    pub unsafe fn read_data(&mut self) -> u16 {
-        self.rx.read_data()
-    }
-
-    /// Write to the DATA register
-    ///
-    /// Writing to the data register directly is `unsafe`, because it will clear
-    /// the DRE flag, which could break assumptions made elsewhere in this
-    /// module.
-    #[inline]
-    pub unsafe fn write_data(&mut self, data: u16) {
-        self.tx.write_data(data)
-    }
-
     /// Disable the UART peripheral and return the [`Config`] struct
     #[inline]
     pub fn disable(mut self) -> C {
@@ -1620,29 +1636,6 @@ impl<C: ValidConfig> Registers for Uart<C> {
 
     unsafe fn sercom(&self) -> &Self::Sercom {
         self.config.as_ref().sercom()
-    }
-}
-
-impl<C> Uart<C>
-where
-    C: ValidConfig,
-    C::Pads: Rx + Tx,
-{
-    /// Split the [`Uart`] into Rx and Tx halves.
-    pub fn split(
-        self,
-    ) -> (
-        UartRx<C, ConfigSercom<C>>,
-        UartTx<C, ConfigSercom<C>>,
-        UartCore<C>,
-    ) {
-        (
-            self.rx,
-            self.tx,
-            UartCore {
-                config: self.config,
-            },
-        )
     }
 }
 
@@ -1764,27 +1757,132 @@ impl<C: ValidConfig, S: Sercom> Registers for UartTx<C, S> {
 
 impl<C: ValidConfig, S: Sercom> Sealed for UartTx<C, S> {}
 
-/// Struct containing the core [`Config`] when a [`Uart`] is
-/// [`split`](Uart::split).
-///
-/// The `rx` and `tx` halves can be `join`ed to form a full-duplex [`Uart`]
-/// struct. `join`ing is necessary in order to reconfigure a [`Uart`], or
-/// [`free`] its resources.
-pub struct UartCore<C: ValidConfig> {
-    config: C,
-}
+//=============================================================================
+// UART DMA transfers
+//=============================================================================
+#[cfg(feature = "dma")]
+pub use spi_dma::*;
 
-impl<C> UartCore<C>
-where
-    C: ValidConfig,
-    C::Pads: Tx + Rx,
-{
-    /// Join the Rx and Tx halves back into a full [`Uart`] struct.
-    pub fn join(self, rx: UartRx<C, ConfigSercom<C>>, tx: UartTx<C, ConfigSercom<C>>) -> Uart<C> {
-        Uart {
-            config: self.config,
-            rx,
-            tx,
+#[cfg(feature = "dma")]
+mod spi_dma {
+    use super::*;
+    use crate::dmac::{
+        self,
+        channel::{self, Busy, Channel, ChannelId, Ready},
+        transfer, Transfer,
+    };
+
+    unsafe impl<C, S> dmac::transfer::Buffer for UartTx<C, S>
+    where
+        S: Sercom,
+        C: ValidConfig,
+        C::Word: dmac::transfer::Beat,
+    {
+        type Beat = C::Word;
+
+        #[inline]
+        fn dma_ptr(&mut self) -> *mut Self::Beat {
+            self.sercom.usart().data.as_ptr() as *mut _
+        }
+
+        #[inline]
+        fn incrementing(&self) -> bool {
+            false
+        }
+
+        #[inline]
+        fn buffer_len(&self) -> usize {
+            1
+        }
+    }
+
+    unsafe impl<C, S> dmac::transfer::Buffer for UartRx<C, S>
+    where
+        S: Sercom,
+        C: ValidConfig,
+        C::Word: dmac::transfer::Beat,
+    {
+        type Beat = C::Word;
+
+        #[inline]
+        fn dma_ptr(&mut self) -> *mut Self::Beat {
+            self.sercom.usart().data.as_ptr() as *mut _
+        }
+
+        #[inline]
+        fn incrementing(&self) -> bool {
+            false
+        }
+
+        #[inline]
+        fn buffer_len(&self) -> usize {
+            1
+        }
+    }
+
+    impl<C, S> UartTx<C, S>
+    where
+        Self: dmac::transfer::Buffer<Beat = C::Word>,
+        S: Sercom,
+        C: ValidConfig,
+    {
+        /// Transform an [`UartTx`] into a DMA [`Transfer`]) and
+        /// start sending the provided buffer.
+        #[inline]
+        pub fn send_with_dma<Chan, B, W>(
+            self,
+            buf: B,
+            mut channel: Chan,
+            waker: W,
+        ) -> Transfer<Channel<ChannelId<Chan>, Busy>, transfer::BufferPair<B, Self>, (), W>
+        where
+            Chan: channel::AnyChannel<Status = Ready>,
+            B: dmac::Buffer<Beat = C::Word> + 'static,
+            W: FnOnce(crate::dmac::channel::CallbackStatus) + 'static,
+        {
+            channel
+                .as_mut()
+                .enable_interrupts(dmac::channel::InterruptFlags::new().with_tcmpl(true));
+
+            // SAFETY: We use new_unchecked to avoid having to pass a 'static self as the
+            // destination buffer. This is safe as long as we guarantee the source buffer is
+            // static.
+            unsafe { dmac::Transfer::new_unchecked(channel, buf, self, false) }
+                .with_waker(waker)
+                .begin(S::DMA_TX_TRIGGER, dmac::TriggerAction::BEAT)
+        }
+    }
+
+    impl<C, S> UartRx<C, S>
+    where
+        Self: dmac::transfer::Buffer<Beat = C::Word>,
+        S: Sercom,
+        C: ValidConfig,
+    {
+        /// Transform an [`UartRx`] into a DMA [`Transfer`]) and
+        /// start receiving into the provided buffer.
+        #[inline]
+        pub fn receive_with_dma<Chan, B, W>(
+            self,
+            buf: B,
+            mut channel: Chan,
+            waker: W,
+        ) -> Transfer<Channel<ChannelId<Chan>, Busy>, transfer::BufferPair<Self, B>, (), W>
+        where
+            Chan: channel::AnyChannel<Status = Ready>,
+            B: dmac::Buffer<Beat = C::Word> + 'static,
+            W: FnOnce(crate::dmac::channel::CallbackStatus) + 'static,
+        {
+            channel
+                .as_mut()
+                .enable_interrupts(dmac::channel::InterruptFlags::new().with_tcmpl(true));
+
+            // SAFETY: We use new_unchecked to avoid having to pass a 'static self as the
+            // destination buffer. This is safe as long as we guarantee the source buffer is
+            // static.
+            unsafe { dmac::Transfer::new_unchecked(channel, self, buf, false) }
+                .with_waker(waker)
+                .begin(S::DMA_RX_TRIGGER, dmac::TriggerAction::BEAT)
         }
     }
 }
@@ -1812,26 +1910,6 @@ where
         } else {
             Err(WouldBlock)
         }
-    }
-}
-
-/// Implement [`Read`] for [`Uart`]
-///
-/// [`Read`] is only implemented when the [`Pads`] are [`Rx`].
-impl<C, E> Read<C::Word> for Uart<C>
-where
-    C: ValidConfig,
-    C::Pads: Rx,
-    C::Word: PrimInt,
-    u16: AsPrimitive<C::Word>,
-    UartRx<C, ConfigSercom<C>>: Read<C::Word, Error = E>,
-{
-    type Error = E;
-
-    /// Wait for an `RXC` flag, then read the word
-    #[inline]
-    fn read(&mut self) -> nb::Result<C::Word, E> {
-        self.rx.read()
     }
 }
 
@@ -1868,38 +1946,11 @@ where
     }
 }
 
-/// Implement [`Write`] for [`Uart`]
-///
-/// [`Write`] is only implemented when the [`Pads`] are [`Tx`].
-///
-/// This implementation never reads the DATA register and ignores all buffer
-/// overflow errors.
-impl<C, E> Write<C::Word> for Uart<C>
+impl<C, S> blocking::serial::write::Default<C::Word> for UartTx<C, S>
 where
     C: ValidConfig,
-    C::Pads: Tx,
-    C::Word: PrimInt + AsPrimitive<u16>,
-    UartTx<C, ConfigSercom<C>>: Write<C::Word, Error = E>,
-{
-    type Error = E;
-
-    /// Wait for a `DRE` flag, then write a word
-    #[inline]
-    fn write(&mut self, word: C::Word) -> nb::Result<(), E> {
-        self.tx.write(word)
-    }
-
-    /// Wait for a `TXC` flag
-    #[inline]
-    fn flush(&mut self) -> nb::Result<(), E> {
-        self.tx.flush()
-    }
-}
-
-impl<C> blocking::serial::write::Default<C::Word> for Uart<C>
-where
-    C: ValidConfig,
-    Uart<C>: Write<C::Word>,
+    S: Sercom,
+    UartTx<C, S>: Write<C::Word>,
 {
 }
 
