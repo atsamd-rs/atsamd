@@ -412,8 +412,8 @@ where
     RTS: GetOptionalPad<S>,
     CTS: GetOptionalPad<S>,
 {
-    rx: RX::Pad,
-    tx: TX::Pad,
+    receive: RX::Pad,
+    transmit: TX::Pad,
     ready_to_send: RTS::Pad,
     clear_to_send: CTS::Pad,
 }
@@ -421,8 +421,8 @@ where
 impl<S: Sercom> Default for Pads<S> {
     fn default() -> Self {
         Self {
-            rx: NoneT,
-            tx: NoneT,
+            receive: NoneT,
+            transmit: NoneT,
             ready_to_send: NoneT,
             clear_to_send: NoneT,
         }
@@ -440,7 +440,12 @@ where
     /// Consume the [`Pads`] and return each individual [`Pad`]
     #[inline]
     pub fn free(self) -> (RX::Pad, TX::Pad, RTS::Pad, CTS::Pad) {
-        (self.rx, self.tx, self.ready_to_send, self.clear_to_send)
+        (
+            self.receive,
+            self.transmit,
+            self.ready_to_send,
+            self.clear_to_send,
+        )
     }
 }
 
@@ -461,8 +466,8 @@ where
         I: PadInfo<S, N>,
     {
         Pads {
-            rx: pin.into().into(),
-            tx: self.tx,
+            receive: pin.into().into(),
+            transmit: self.transmit,
             ready_to_send: self.ready_to_send,
             clear_to_send: self.clear_to_send,
         }
@@ -476,8 +481,8 @@ where
         I: PadInfo<S, N>,
     {
         Pads {
-            rx: self.rx,
-            tx: pin.into().into(),
+            receive: self.receive,
+            transmit: pin.into().into(),
             ready_to_send: self.ready_to_send,
             clear_to_send: self.clear_to_send,
         }
@@ -485,14 +490,14 @@ where
 
     /// Set the `SCK` [`Pad`]
     #[inline]
-    pub fn ready_to_send<N, I>(self, pin: impl AnyPin<Id = I>) -> Pads<S, RX, TX, (N, I), CTS>
+    pub fn rts<N, I>(self, pin: impl AnyPin<Id = I>) -> Pads<S, RX, TX, (N, I), CTS>
     where
         N: PadNum,
         I: PadInfo<S, N>,
     {
         Pads {
-            rx: self.rx,
-            tx: self.tx,
+            receive: self.receive,
+            transmit: self.transmit,
             ready_to_send: pin.into().into(),
             clear_to_send: self.clear_to_send,
         }
@@ -500,14 +505,14 @@ where
 
     /// Set the `CTS` [`Pad`]
     #[inline]
-    pub fn clear_to_send<N, I>(self, pin: impl AnyPin<Id = I>) -> Pads<S, RX, TX, RTS, (N, I)>
+    pub fn cts<N, I>(self, pin: impl AnyPin<Id = I>) -> Pads<S, RX, TX, RTS, (N, I)>
     where
         N: PadNum,
         I: PadInfo<S, N>,
     {
         Pads {
-            rx: self.rx,
-            tx: self.tx,
+            receive: self.receive,
+            transmit: self.transmit,
             ready_to_send: self.ready_to_send,
             clear_to_send: pin.into().into(),
         }
@@ -530,8 +535,8 @@ where
         I: PadInfo<S>,
     {
         Pads {
-            rx: pin.into().into(),
-            tx: self.tx,
+            receive: pin.into().into(),
+            transmit: self.transmit,
             ready_to_send: self.ready_to_send,
             clear_to_send: self.clear_to_send,
         }
@@ -544,8 +549,8 @@ where
         I: PadInfo<S>,
     {
         Pads {
-            rx: self.rx,
-            tx: pin.into().into(),
+            receive: self.receive,
+            transmit: pin.into().into(),
             ready_to_send: self.ready_to_send,
             clear_to_send: self.clear_to_send,
         }
@@ -553,13 +558,13 @@ where
 
     /// Set the `SCK` [`Pad`]
     #[inline]
-    pub fn ready_to_send<I>(self, pin: impl AnyPin<Id = I>) -> Pads<S, RX, TX, I, CTS>
+    pub fn rts<I>(self, pin: impl AnyPin<Id = I>) -> Pads<S, RX, TX, I, CTS>
     where
         I: PadInfo<S>,
     {
         Pads {
-            rx: self.rx,
-            tx: self.tx,
+            receive: self.receive,
+            transmit: self.transmit,
             ready_to_send: pin.into().into(),
             clear_to_send: self.clear_to_send,
         }
@@ -567,13 +572,13 @@ where
 
     /// Set the `CTS` [`Pad`]
     #[inline]
-    pub fn clear_to_send<I>(self, pin: impl AnyPin<Id = I>) -> Pads<S, RX, TX, RTS, I>
+    pub fn cts<I>(self, pin: impl AnyPin<Id = I>) -> Pads<S, RX, TX, RTS, I>
     where
         I: PadInfo<S>,
     {
         Pads {
-            rx: self.rx,
-            tx: self.tx,
+            receive: self.receive,
+            transmit: self.transmit,
             ready_to_send: self.ready_to_send,
             clear_to_send: pin.into().into(),
         }

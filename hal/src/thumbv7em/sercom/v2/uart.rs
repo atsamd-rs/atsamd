@@ -355,7 +355,7 @@ where
 /// let mut peripherals = Peripherals::take().unwrap();
 /// let pins = Pins::new(peripherals.PORT);
 /// let pads = uart::Pads::<Sercom0, IoSet1>::default()
-///     .ready_to_send(pins.pa09)
+///     .rts(pins.pa09)
 ///     .rx(pins.pa08)
 ///     .tx(pins.pa11);
 /// ```
@@ -372,8 +372,8 @@ where
     CTS: GetOptionalPad<S>,
 {
     ioset: PhantomData<I>,
-    rx: RX::Pad,
-    tx: TX::Pad,
+    receive: RX::Pad,
+    transmit: TX::Pad,
     ready_to_send: RTS::Pad,
     clear_to_send: CTS::Pad,
 }
@@ -382,8 +382,8 @@ impl<S: Sercom, I: IoSet> Default for Pads<S, I> {
     fn default() -> Self {
         Self {
             ioset: PhantomData,
-            rx: NoneT,
-            tx: NoneT,
+            receive: NoneT,
+            transmit: NoneT,
             ready_to_send: NoneT,
             clear_to_send: NoneT,
         }
@@ -409,8 +409,8 @@ where
     {
         Pads {
             ioset: self.ioset,
-            rx: pin.into().into(),
-            tx: self.tx,
+            receive: pin.into().into(),
+            transmit: self.transmit,
             ready_to_send: self.ready_to_send,
             clear_to_send: self.clear_to_send,
         }
@@ -426,8 +426,8 @@ where
     {
         Pads {
             ioset: self.ioset,
-            rx: self.rx,
-            tx: pin.into().into(),
+            receive: self.receive,
+            transmit: pin.into().into(),
             ready_to_send: self.ready_to_send,
             clear_to_send: self.clear_to_send,
         }
@@ -435,15 +435,15 @@ where
 
     /// Set the `RTS` [`Pad`], which is always [`Pad2`]
     #[inline]
-    pub fn ready_to_send<Id>(self, pin: impl AnyPin<Id = Id>) -> Pads<S, I, RX, TX, Id, CTS>
+    pub fn rts<Id>(self, pin: impl AnyPin<Id = Id>) -> Pads<S, I, RX, TX, Id, CTS>
     where
         Id: PadInfo<S, PadNum = Pad1>,
         Pad<S, Pad1, Id>: InIoSet<I>,
     {
         Pads {
             ioset: self.ioset,
-            rx: self.rx,
-            tx: self.tx,
+            receive: self.receive,
+            transmit: self.transmit,
             ready_to_send: pin.into().into(),
             clear_to_send: self.clear_to_send,
         }
@@ -451,15 +451,15 @@ where
 
     /// Set the `CTS` [`Pad`], which is always [`Pad3`]
     #[inline]
-    pub fn clear_to_send<Id>(self, pin: impl AnyPin<Id = Id>) -> Pads<S, I, RX, TX, RTS, Id>
+    pub fn cts<Id>(self, pin: impl AnyPin<Id = Id>) -> Pads<S, I, RX, TX, RTS, Id>
     where
         Id: PadInfo<S, PadNum = Pad2>,
         Pad<S, Pad2, Id>: InIoSet<I>,
     {
         Pads {
             ioset: self.ioset,
-            rx: self.rx,
-            tx: self.tx,
+            receive: self.receive,
+            transmit: self.transmit,
             ready_to_send: self.ready_to_send,
             clear_to_send: pin.into().into(),
         }
@@ -468,7 +468,12 @@ where
     /// Consume the [`Pads`] and return each individual [`Pad`]
     #[inline]
     pub fn free(self) -> (RX::Pad, TX::Pad, RTS::Pad, CTS::Pad) {
-        (self.rx, self.tx, self.ready_to_send, self.clear_to_send)
+        (
+            self.receive,
+            self.transmit,
+            self.ready_to_send,
+            self.clear_to_send,
+        )
     }
 }
 
@@ -878,7 +883,7 @@ impl<P: ValidPads> Config<P> {
 
         // Enable internal clock mode
         sercom
-            .usart()
+            .usart_int()
             .ctrla
             .modify(|_, w| w.mode().variant(MODE_A::USART_INT_CLK));
 
