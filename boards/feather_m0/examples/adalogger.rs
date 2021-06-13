@@ -1,7 +1,6 @@
 #![no_std]
 #![no_main]
 
-use feather_m0 as hal;
 use panic_halt as _;
 
 use core::fmt::Write;
@@ -14,14 +13,17 @@ use usb_device::bus::UsbBusAllocator;
 use usb_device::prelude::*;
 use usbd_serial::{SerialPort, USB_CLASS_CDC};
 
-use feather_m0::hal::clock::{ClockGenId, ClockSource, GenericClockController};
-use feather_m0::hal::delay::Delay;
-use feather_m0::hal::pac::{interrupt, CorePeripherals, Peripherals};
-use feather_m0::hal::prelude::*;
-use feather_m0::hal::rtc;
-use feather_m0::hal::time::U32Ext;
-use feather_m0::hal::usb::UsbBus;
-use hal::entry;
+use bsp::hal;
+use feather_m0 as bsp;
+
+use bsp::entry;
+use hal::clock::{ClockGenId, ClockSource, GenericClockController};
+use hal::delay::Delay;
+use hal::pac::{interrupt, CorePeripherals, Peripherals};
+use hal::prelude::*;
+use hal::rtc;
+use hal::time::U32Ext;
+use hal::usb::UsbBus;
 
 use heapless::consts::U1024;
 use heapless::String;
@@ -46,14 +48,14 @@ fn main() -> ! {
         .unwrap();
     let rtc_clock = clocks.rtc(&timer_clock).unwrap();
     let timer = rtc::Rtc::clock_mode(peripherals.RTC, rtc_clock.freq(), &mut peripherals.PM);
-    let pins = hal::Pins::new(peripherals.PORT);
+    let pins = bsp::Pins::new(peripherals.PORT);
     let mut red_led = pins.d13.into_push_pull_output();
 
     red_led.set_high().unwrap();
     delay.delay_ms(500_u32);
 
     let bus_allocator = unsafe {
-        USB_ALLOCATOR = Some(hal::usb_allocator(
+        USB_ALLOCATOR = Some(bsp::usb_allocator(
             peripherals.USB,
             &mut clocks,
             &mut peripherals.PM,
@@ -84,7 +86,7 @@ fn main() -> ! {
     delay.delay_ms(500_u32);
 
     // Now work on the SD peripherals. Slow SPI speed required on init
-    let spi = hal::spi_master(
+    let spi = bsp::spi_master(
         &mut clocks,
         400_u32.khz(),
         peripherals.SERCOM4,
