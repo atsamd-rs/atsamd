@@ -124,6 +124,8 @@ fn main() -> ! {
 
     match controller.device().init() {
         Ok(_) => {
+            // speed up SPI and read out some info
+            controller.device().spi().reconfigure(|c| c.baud(4.mhz()));
             usbserial_write!("OK!\r\nCard size...\r\n");
             match controller.device().card_size_bytes() {
                 Ok(size) => usbserial_write!("{} bytes\r\n", size),
