@@ -101,11 +101,13 @@ impl Adc<ADC> {
         self.adc
             .ctrlb
             .modify(|_, w| w.prescaler().variant(prescaler));
+        while self.adc.status.read().syncbusy().bit_is_set() {}
     }
 
     /// Set the input resolution.
     pub fn resolution(&mut self, resolution: Resolution) {
         self.adc.ctrlb.modify(|_, w| w.ressel().variant(resolution));
+        while self.adc.status.read().syncbusy().bit_is_set() {}
     }
 
     fn power_up(&mut self) {
