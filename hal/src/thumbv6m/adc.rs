@@ -1,14 +1,36 @@
+//! Analogue-to-Digital Conversion
 use crate::clock::GenericClockController;
 use crate::gpio::v1;
 use crate::gpio::v2::*;
 use crate::hal::adc::{Channel, OneShot};
 use crate::target_device::{adc, ADC, PM};
 
+/// Samples per reading
+pub use adc::avgctrl::SAMPLENUM_A as SampleRate;
+/// Clock frequency relative to the system clock
+pub use adc::ctrlb::PRESCALER_A as Prescaler;
+/// Reading resolution in bits
+///
+/// For the resolution of Arduino boards,
+/// see the [analogueRead](https://www.arduino.cc/reference/en/language/functions/analog-io/analogread/) docs.
+pub use adc::ctrlb::RESSEL_A as Resolution;
+/// The gain level
+pub use adc::inputctrl::GAIN_A as Gain;
+/// Reference voltage (or its source)
+pub use adc::refctrl::REFSEL_A as Reference;
+
+/// `Adc` encapsulates the device ADC
 pub struct Adc<ADC> {
     adc: ADC,
 }
 
 impl Adc<ADC> {
+    /// Create a new `Adc` instance. The default configuration is:
+    /// * 1/32 prescaler
+    /// * 12 bit resolution
+    /// * 1 sample
+    /// * 1/2 gain
+    /// * 1/2 VDDANA reference voltage
     pub fn adc(adc: ADC, pm: &mut PM, clocks: &mut GenericClockController) -> Self {
         pm.apbcmask.modify(|_, w| w.adc_().set_bit());
 
@@ -40,7 +62,8 @@ impl Adc<ADC> {
         newadc
     }
 
-    pub fn samples(&mut self, samples: adc::avgctrl::SAMPLENUM_A) {
+    /// Set the sample rate
+    pub fn samples(&mut self, samples: SampleRate) {
         use adc::avgctrl::SAMPLENUM_A;
         self.adc.avgctrl.modify(|_, w| {
             w.samplenum().variant(samples);
@@ -59,15 +82,31 @@ impl Adc<ADC> {
         while self.adc.status.read().syncbusy().bit_is_set() {}
     }
 
-    pub fn gain(&mut self, gain: adc::inputctrl::GAIN_A) {
+    /// Set the gain factor
+    pub fn gain(&mut self, gain: Gain) {
         self.adc.inputctrl.modify(|_, w| w.gain().variant(gain));
         while self.adc.status.read().syncbusy().bit_is_set() {}
     }
 
-    pub fn reference(&mut self, reference: adc::refctrl::REFSEL_A) {
+    /// Set the voltage reference
+    pub fn reference(&mut self, reference: Reference) {
         self.adc
             .refctrl
             .modify(|_, w| w.refsel().variant(reference));
+        while self.adc.status.read().syncbusy().bit_is_set() {}
+    }
+
+    /// Set the prescaler for adjusting the clock relative to the system clock
+    pub fn prescaler(&mut self, prescaler: Prescaler) {
+        self.adc
+            .ctrlb
+            .modify(|_, w| w.prescaler().variant(prescaler));
+        while self.adc.status.read().syncbusy().bit_is_set() {}
+    }
+
+    /// Set the input resolution.
+    pub fn resolution(&mut self, resolution: Resolution) {
+        self.adc.ctrlb.modify(|_, w| w.ressel().variant(resolution));
         while self.adc.status.read().syncbusy().bit_is_set() {}
     }
 

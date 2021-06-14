@@ -1,3 +1,4 @@
+//! Analogue-to-Digital Conversion
 use crate::clock::GenericClockController;
 #[rustfmt::skip]
 use crate::gpio::v1;
@@ -9,6 +10,15 @@ use crate::target_device::{adc0, ADC0, ADC1, MCLK};
 
 use crate::calibration;
 
+/// Samples per reading
+pub use adc0::avgctrl::SAMPLENUM_A as SampleRate;
+/// Clock frequency relative to the system clock
+pub use adc0::ctrla::PRESCALER_A as Prescaler;
+/// Reading resolution in bits
+pub use adc0::ctrlb::RESSEL_A as Resolution;
+/// Reference voltage (or its source)
+pub use adc0::refctrl::REFSEL_A as Reference;
+
 /// An ADC where results are accessible via interrupt servicing.
 pub struct InterruptAdc<ADC, C>
 where
@@ -18,6 +28,7 @@ where
     m: core::marker::PhantomData<C>,
 }
 
+/// `Adc` encapsulates the device ADC
 pub struct Adc<ADC> {
     adc: ADC,
 }
@@ -64,7 +75,8 @@ impl Adc<$ADC> {
         newadc
     }
 
-    pub fn samples(&mut self, samples: adc0::avgctrl::SAMPLENUM_A) {
+    /// Set the sample rate
+    pub fn samples(&mut self, samples: SampleRate) {
         use adc0::avgctrl::SAMPLENUM_A;
         self.adc.avgctrl.modify(|_, w| {
             w.samplenum().variant(samples);
@@ -83,11 +95,28 @@ impl Adc<$ADC> {
         while self.adc.syncbusy.read().avgctrl().bit_is_set() {}
     }
 
-    pub fn reference(&mut self, reference: adc0::refctrl::REFSEL_A) {
+    /// Set the voltage reference
+    pub fn reference(&mut self, reference: Reference) {
         self.adc
             .refctrl
             .modify(|_, w| w.refsel().variant(reference));
         while self.adc.syncbusy.read().refctrl().bit_is_set() {}
+    }
+
+    /// Set the prescaler for adjusting the clock relative to the system clock
+    pub fn prescaler(&mut self, prescaler: Prescaler) {
+        self.adc
+            .ctrla
+            .modify(|_, w| w.prescaler().variant(prescaler));
+        // Note there is no syncbusy for ctrla
+    }
+
+    /// Set the input resolution
+    pub fn resolution(&mut self, resolution: Resolution) {
+        self.adc
+            .ctrlb
+            .modify(|_, w| w.ressel().variant(resolution));
+        while self.adc.syncbusy.read().ctrlb().bit_is_set() {}
     }
 
     fn power_up(&mut self) {
