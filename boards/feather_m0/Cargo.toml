@@ -47,6 +47,10 @@ optional = true
 version = "0.1"
 optional = true
 
+[dependencies.embedded-sdmmc]
+version = "0.3"
+optional = true
+
 [dev-dependencies]
 cortex-m-semihosting = "0.3"
 ssd1306 = "0.3.1"
@@ -72,6 +76,9 @@ rfm = []
 express = []
 dma = ["atsamd-hal/dma"]
 max-channels = ["dma", "atsamd-hal/max-channels"]
+# Enable pins for the adalogger SD card reader
+adalogger = []
+sdmmc = ["embedded-sdmmc", "atsamd-hal/sdmmc"]
 
 [profile.dev]
 incremental = false
@@ -133,3 +140,7 @@ required-features = ["dma"]
 [[example]]
 name = "clock"
 required-features = ["usb", "unproven"]
+
+[[example]]
+name = "adalogger"
+required-features = ["adalogger", "usb", "sdmmc", "unproven"]
