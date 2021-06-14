@@ -158,7 +158,7 @@ hal::bsp_pins!(
         /// SPI chip select for the RFM module
         name: rfm_cs
     }
-    #[cfg(all(feature = "rfm", not(feature = "express")))]
+    #[cfg(all(feature = "rfm", not(feature = "express"), not(feature = "adalogger")))]
     PA08 {
         /// Reset for the RFM module
         name: rfm_reset
@@ -180,7 +180,7 @@ hal::bsp_pins!(
         /// SPI clock for the external flash
         name: flash_sclk
     }
-    #[cfg(all(feature = "express", not(feature = "rfm")))]
+    #[cfg(all(feature = "express", not(feature = "rfm"), not(feature = "adalogger")))]
     PA08 {
         /// SPI MOSI for the external flash
         name: flash_mosi
@@ -195,6 +195,16 @@ hal::bsp_pins!(
         /// SPI chip select for the external flash
         name: flash_cs
     }
+
+    #[cfg(all(feature = "adalogger", not(feature = "rfm"), not(feature = "express")))]
+    PA08 {
+        /// SD card SPI chip select
+        name: sd_cs
+    },
+    PA21 {
+        /// SD card detect
+        name: sd_cd
+    },
 );
 
 type SpiPads = spi_pads_from_pins!(Sercom4, DI = Miso, DO = Mosi, CK = Sclk);

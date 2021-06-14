@@ -8,6 +8,9 @@ use core::marker::PhantomData;
 use hal::timer::{CountDown, Periodic};
 use void::Void;
 
+#[cfg(feature = "sdmmc")]
+use embedded_sdmmc::{TimeSource, Timestamp};
+
 // SAMx5x imports
 #[cfg(feature = "min-samd51g")]
 use crate::target_device::{
@@ -65,6 +68,20 @@ pub enum Count32Mode {}
 impl RtcMode for Count32Mode {}
 impl Sealed for Count32Mode {}
 
+#[cfg(feature = "sdmmc")]
+impl From<Datetime> for Timestamp {
+    fn from(clock: Datetime) -> Timestamp {
+        Timestamp {
+            year_since_1970: clock.year,
+            zero_indexed_month: clock.month,
+            zero_indexed_day: clock.day,
+            hours: clock.hours,
+            minutes: clock.minutes,
+            seconds: clock.seconds,
+        }
+    }
+}
+
 /// Rtc represents the RTC peripheral for either clock/calendar or timer mode.
 pub struct Rtc<Mode: RtcMode> {
     rtc: RTC,
@@ -75,12 +92,12 @@ pub struct Rtc<Mode: RtcMode> {
 impl<Mode: RtcMode> Rtc<Mode> {
     // --- Helper Functions for M0 vs M4 targets
     #[inline]
-    fn mode0(&mut self) -> &MODE0 {
+    fn mode0(&self) -> &MODE0 {
         self.rtc.mode0()
     }
 
     #[inline]
-    fn mode2(&mut self) -> &MODE2 {
+    fn mode2(&self) -> &MODE2 {
         self.rtc.mode2()
     }
 
@@ -101,7 +118,7 @@ impl<Mode: RtcMode> Rtc<Mode> {
     }
 
     #[inline]
-    fn sync(&mut self) {
+    fn sync(&self) {
         #[cfg(feature = "min-samd51g")]
         while self.mode2().syncbusy.read().bits() != 0 {}
         #[cfg(any(feature = "samd11", feature = "samd21"))]
@@ -279,7 +296,7 @@ impl Rtc<ClockMode> {
     }
 
     /// Returns the current clock/calendar value.
-    pub fn current_time(&mut self) -> Datetime {
+    pub fn current_time(&self) -> Datetime {
         // synchronize this read on SAMD11/21. SAMx5x is automatically synchronized
         #[cfg(any(feature = "samd11", feature = "samd21"))]
         {
@@ -354,6 +371,13 @@ impl InterruptDrivenTimer for Rtc<Count32Mode> {
     /// controller.
     fn disable_interrupt(&mut self) {
         self.mode0().intenclr.write(|w| w.cmp0().set_bit());
+    }
+}
+
+#[cfg(feature = "sdmmc")]
+impl TimeSource for Rtc<ClockMode> {
+    fn get_timestamp(&self) -> Timestamp {
+        self.current_time().into()
     }
 }
 
