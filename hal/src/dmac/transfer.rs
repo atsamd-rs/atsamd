@@ -40,11 +40,6 @@
 //! to periodically retreive a sample from an ADC and send it to a circular
 //! buffer, or send a sample to a DAC.
 //!
-//! # Payloads
-//!
-//! You may add a payload to a `Transfer<_, _, ()>` (normally created by
-//! [`Transfer::new`]) by calling [`Transfer::with_payload`].
-//!
 //! # Starting a transfer
 //!
 //! A transfer is started by calling [`Transfer::begin`]. You will be
@@ -55,7 +50,7 @@
 //! A transfer can waited upon by calling [`wait`](Transfer::wait). This is a
 //! _blocking_ method, meaning it will busy-wait until the transfer is
 //! completed. When it returns, it will release the source and destination
-//! buffers, as well as the DMA channel and the payload.
+//! buffers, as well as the DMA channel.
 //!
 //! # Interrupting (stopping) a transfer
 //!
@@ -63,7 +58,7 @@
 //! calling [`stop`](Transfer::stop). This is _not_ a blocking method,
 //! meaning it will stop the transfer and immediately return. When it returns,
 //! it will release the source and destination buffers, as well as the DMA
-//! channel and the payload.
+//! channel.
 //!
 //! # Trigger sources
 //!
@@ -295,20 +290,17 @@ where
 // TODO change source and dest types to Pin? (see https://docs.rust-embedded.org/embedonomicon/dma.html#immovable-buffers)
 /// DMA transfer, owning the resources until the transfer is done and
 /// [`Transfer::wait`] is called.
-pub struct Transfer<Chan, Buf, Pld = (), W = ()>
+pub struct Transfer<Chan, Buf, W = ()>
 where
     Buf: AnyBufferPair,
     Chan: AnyChannel,
 {
     chan: Chan,
     buffers: Buf,
-    payload: Pld,
     waker: Option<W>,
     complete: bool,
 }
 
-/// These methods are available to an [`Transfer`] holding a `Ready` `Channel`,
-/// as well as static buffers.
 impl<C, S, D> Transfer<C, BufferPair<S, D>>
 where
     S: Buffer + 'static,
@@ -343,8 +335,7 @@ where
     }
 }
 
-/// Methods on a `Transfer` holding a channel in any status
-impl<S, D, C, P, W> Transfer<C, BufferPair<S, D>, P, W>
+impl<S, D, C, W> Transfer<C, BufferPair<S, D>, W>
 where
     S: Buffer,
     D: Buffer<Beat = S::Beat>,
@@ -361,15 +352,7 @@ where
             Ok(())
         }
     }
-}
 
-/// Methods on a `Transfer` holding a channel in any status
-impl<S, D, C, P, W> Transfer<C, BufferPair<S, D>, P, W>
-where
-    S: Buffer,
-    D: Buffer<Beat = S::Beat>,
-    C: AnyChannel,
-{
     #[inline]
     unsafe fn fill_descriptor(source: &mut S, destination: &mut D, circular: bool) {
         let id = <C as AnyChannel>::Id::USIZE;
@@ -430,7 +413,6 @@ where
     }
 }
 
-/// These methods are available to an [`Transfer`] holding a `Ready` `Channel`.
 impl<C, S, D> Transfer<C, BufferPair<S, D>>
 where
     S: Buffer,
@@ -468,38 +450,13 @@ where
         Transfer {
             buffers,
             chan,
-            payload: (),
             waker: None,
             complete: false,
         }
     }
 }
 
-/// These methods are available to an [`Transfer`] holding a `Ready` `Channel`
-/// and a specified waker type
-impl<C, S, D, W> Transfer<C, BufferPair<S, D>, (), W>
-where
-    S: Buffer,
-    D: Buffer<Beat = S::Beat>,
-    C: AnyChannel<Status = Ready>,
-{
-    /// Append a payload to the transfer. This guarantees that it cannot safely
-    /// be accessed while the transfer is ongoing.
-    #[inline]
-    pub fn with_payload<P>(self, payload: P) -> Transfer<C, BufferPair<S, D>, P, W> {
-        Transfer {
-            buffers: self.buffers,
-            chan: self.chan,
-            waker: self.waker,
-            payload,
-            complete: self.complete,
-        }
-    }
-}
-
-/// These methods are available to an [`Transfer`] holding a `Ready` `Channel`
-/// and a specified payload type.
-impl<C, S, D, P> Transfer<C, BufferPair<S, D>, P>
+impl<C, S, D> Transfer<C, BufferPair<S, D>>
 where
     S: Buffer,
     D: Buffer<Beat = S::Beat>,
@@ -511,20 +468,17 @@ where
     pub fn with_waker<W: FnOnce(CallbackStatus) + 'static>(
         self,
         waker: W,
-    ) -> Transfer<C, BufferPair<S, D>, P, W> {
+    ) -> Transfer<C, BufferPair<S, D>, W> {
         Transfer {
             buffers: self.buffers,
             chan: self.chan,
-            payload: self.payload,
             complete: self.complete,
             waker: Some(waker),
         }
     }
 }
 
-/// These methods are available to an `Transfer` holding a `Ready` channel and
-/// specified payload and waker types
-impl<C, S, D, P, W> Transfer<C, BufferPair<S, D>, P, W>
+impl<C, S, D, W> Transfer<C, BufferPair<S, D>, W>
 where
     S: Buffer,
     D: Buffer<Beat = S::Beat>,
@@ -539,7 +493,7 @@ where
         mut self,
         trig_src: TriggerSource,
         trig_act: TriggerAction,
-    ) -> Transfer<Channel<ChannelId<C>, Busy>, BufferPair<S, D>, P, W> {
+    ) -> Transfer<Channel<ChannelId<C>, Busy>, BufferPair<S, D>, W> {
         // Reset the complete flag before triggering the transfer.
         // This way an interrupt handler could set complete to true
         // before this function returns.
@@ -554,14 +508,11 @@ where
         Transfer {
             buffers: self.buffers,
             chan,
-            payload: self.payload,
             waker: self.waker,
             complete: self.complete,
         }
     }
 }
-/// These methods are available to a `Transfer` holding a `Ready` channel and a
-/// `BufferPair` holding two arrays of equal type and length
 impl<B, C, const N: usize> Transfer<C, BufferPair<&'static mut [B; N]>>
 where
     B: 'static + Beat,
@@ -584,8 +535,7 @@ where
     }
 }
 
-/// These methods are available to a `Transfer` holding a `Busy` channel
-impl<S, D, C, P, W> Transfer<C, BufferPair<S, D>, P, W>
+impl<S, D, C, W> Transfer<C, BufferPair<S, D>, W>
 where
     S: Buffer,
     D: Buffer<Beat = S::Beat>,
@@ -604,7 +554,7 @@ where
     ///
     /// # Blocking: This method may block
     #[inline]
-    pub fn wait(mut self) -> (Channel<ChannelId<C>, Ready>, S, D, P) {
+    pub fn wait(mut self) -> (Channel<ChannelId<C>, Ready>, S, D) {
         // Wait for transfer to complete
         while !self.complete() {}
         self.stop()
@@ -714,7 +664,7 @@ where
     /// Non-blocking; Immediately stop the DMA transfer and release all owned
     /// resources
     #[inline]
-    pub fn stop(self) -> (Channel<ChannelId<C>, Ready>, S, D, P) {
+    pub fn stop(self) -> (Channel<ChannelId<C>, Ready>, S, D) {
         let chan = self.chan.into().free();
 
         // Memory barrier to prevent the compiler/CPU from re-ordering read/write
@@ -722,16 +672,11 @@ where
         // (see https://docs.rust-embedded.org/embedonomicon/dma.html#compiler-misoptimizations)
         atomic::fence(atomic::Ordering::Acquire); // ▼
 
-        (
-            chan,
-            self.buffers.source,
-            self.buffers.destination,
-            self.payload,
-        )
+        (chan, self.buffers.source, self.buffers.destination)
     }
 }
 
-impl<S, D, C, P, W> Transfer<C, BufferPair<S, D>, P, W>
+impl<S, D, C, W> Transfer<C, BufferPair<S, D>, W>
 where
     S: Buffer,
     D: Buffer<Beat = S::Beat>,

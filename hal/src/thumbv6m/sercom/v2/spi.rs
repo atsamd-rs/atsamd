@@ -162,7 +162,7 @@
 //! // Wait for transfer to complete and reclaim resources
 //! let (chan0, _, spi, _) = dma_transfer.wait();
 //! ```
-//! 
+//!
 //! [`enable`]: Config::enable
 //! [`Pin`]: crate::gpio::v2::pin::Pin
 //! [`PinId`]: crate::gpio::v2::pin::PinId
@@ -1694,7 +1694,7 @@ mod spi_dma {
             buf: B,
             mut channel: Chan,
             waker: W,
-        ) -> Transfer<Channel<ChannelId<Chan>, Busy>, transfer::BufferPair<B, Self>, (), W>
+        ) -> Transfer<Channel<ChannelId<Chan>, Busy>, transfer::BufferPair<B, Self>, W>
         where
             Chan: channel::AnyChannel<Status = Ready>,
             B: dmac::Buffer<Beat = C::Word> + 'static,
@@ -1733,7 +1733,7 @@ mod spi_dma {
             buf: B,
             mut channel: Chan,
             waker: W,
-        ) -> Transfer<Channel<ChannelId<Chan>, Busy>, transfer::BufferPair<Self, B>, (), W>
+        ) -> Transfer<Channel<ChannelId<Chan>, Busy>, transfer::BufferPair<Self, B>, W>
         where
             Chan: channel::AnyChannel<Status = Ready>,
             B: dmac::Buffer<Beat = C::Word> + 'static,

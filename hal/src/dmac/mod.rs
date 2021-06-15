@@ -89,14 +89,6 @@
 //! the NVIC. You will be responsible for clearing the interrupt flags in the
 //! ISR.
 //!
-//! # Payloads
-//!
-//! You may choose to append a payload to a `Transfer` by using the
-//! [`Transfer::with_payload`] method. This will take ownership of an aribtrary
-//! type until the transfer is released (`stop`ped or `wait`ed). This is useful,
-//! for instance, to take ownership of a peripheral until the transfer is
-//! complete and prevent data races.
-//!
 //! # About static lifetimes
 //!
 //! The safe API this driver offers requires all buffers (source and
