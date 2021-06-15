@@ -8,16 +8,19 @@
 //! requires setting a priority level, as well as enabling or disabling
 //! interrupt requests (only for the specific channel being initialized).
 //!
-//! # Burst Length and FIFO Threshold (SAMD51/SAME5x only)
-//!
-//! The transfer burst length can be configured through the
-//! [`Channel::burst_length`] method. A burst is an atomic,
-//! uninterruptible transfer which length corresponds to a number of beats. See
-//! SAMD5x/E5x datasheet section 22.6.1.1 for more information. The FIFO
-//! threshold can be configured through the
-//! [`Channel::fifo_threshold`] method. This enables the channel
-//! to wait for multiple Beats before sending a Burst. See SAMD5x/E5x datasheet
-//! section 22.6.2.8 for more information.
+#![cfg_attr(
+    not(any(feature = "samd11", feature = "samd21")),
+    doc = "# Burst Length and FIFO Threshold (SAMD51/SAME5x only)
+
+The transfer burst length can be configured through the
+[`Channel::burst_length`] method. A burst is an atomic,
+uninterruptible transfer which length corresponds to a number of beats. See
+SAMD5x/E5x datasheet section 22.6.1.1 for more information. The FIFO
+threshold can be configured through the
+[`Channel::fifo_threshold`] method. This enables the channel
+to wait for multiple Beats before sending a Burst. See SAMD5x/E5x datasheet
+section 22.6.2.8 for more information."
+)]
 //!
 //! # Channel status
 //!

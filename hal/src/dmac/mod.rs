@@ -170,7 +170,7 @@
 //! # Waker operation
 //!
 //! A [`Transfer`] can also accept a function or closure that will be called on
-//! completion of the transaction, acting like a [`Waker`].
+//! completion of the transaction, acting like a waker.
 //!
 //! ```
 //! fn wake_up() {
