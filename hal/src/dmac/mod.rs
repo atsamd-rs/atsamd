@@ -253,14 +253,9 @@
 
 use modular_bitfield::prelude::*;
 
-pub use channel::CallbackStatus;
-#[cfg(feature = "min-samd51g")]
-pub use dma_controller::{BurstLength, FifoThreshold};
-pub use dma_controller::{
-    DmaController, PriorityLevel, PriorityLevelMask, RoundRobinMask, TriggerAction, TriggerSource,
-};
-use transfer::BeatSize;
-pub use transfer::{Beat, Buffer, Transfer};
+pub use channel::*;
+pub use dma_controller::*;
+pub use transfer::*;
 
 #[derive(Debug)]
 /// Runtime errors that may occur when dealing with DMA transfers.
