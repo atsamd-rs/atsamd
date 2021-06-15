@@ -166,7 +166,7 @@
 //! // Wait for transfer to complete and reclaim resources
 //! let (chan0, _, spi, _) = dma_transfer.wait();
 //! ```
-//!
+//! 
 //! [`enable`]: Config::enable
 //! [`Pin`]: crate::gpio::v2::pin::Pin
 //! [`OptionalPinId`]: crate::gpio::v2::pin::OptionalPinId

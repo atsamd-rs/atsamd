@@ -1,14 +1,14 @@
 //! # Channel registers
 //!
 //! This module adds a [`RegisterBlock`] struct, which acts as a proxy for the
-//! registers a single DMAC [`Channel`](super::Channel) can read/write. Its purpose is to
-//! remediate the inadequacies of the PAC. In particular, for SAMD11/SAMD21, the
-//! CHID register must be written with the correct channel ID before accessing
-//! the channel specific registers. There is a provided `with_chid` method that
-//! takes a closure with the register read/write proxies to ensure any
-//! read/write to these registers are done in an interrupt-safe way. For
-//! SAMD51+, `with_chid` returns the register block which contains the registers
-//! owned by a specific channel.
+//! registers a single DMAC [`Channel`](super::Channel) can read/write. Its
+//! purpose is to remediate the inadequacies of the PAC. In particular, for
+//! SAMD11/SAMD21, the CHID register must be written with the correct channel ID
+//! before accessing the channel specific registers. There is a provided
+//! `with_chid` method that takes a closure with the register read/write proxies
+//! to ensure any read/write to these registers are done in an interrupt-safe
+//! way. For SAMD51+, `with_chid` returns the register block which contains the
+//! registers owned by a specific channel.
 
 use super::super::dma_controller::ChId;
 use core::marker::PhantomData;

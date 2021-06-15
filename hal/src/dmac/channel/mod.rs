@@ -7,7 +7,6 @@
 //! use by a [`Transfer`](super::transfer::Transfer). Initializing a channel
 //! requires setting a priority level, as well as enabling or disabling
 //! interrupt requests (only for the specific channel being initialized).
-//!
 #![cfg_attr(
     not(any(feature = "samd11", feature = "samd21")),
     doc = "# Burst Length and FIFO Threshold (SAMD51/SAME5x only)
