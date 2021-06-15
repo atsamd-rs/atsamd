@@ -137,6 +137,7 @@ optional = true
 
 
 [features]
+default = ["unproven"]
 # This section lists our feature name to dependency mapping.  This are separated
 # out so that the board support crates can reference a single feature name to
 # select the appropriate chip, and to keep that separate from the dependency name
