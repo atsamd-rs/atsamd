@@ -980,18 +980,32 @@ pub enum Error {
 impl TryFrom<Status> for () {
     type Error = Error;
     fn try_from(errors: Status) -> Result<(), Error> {
+        use Error::*;
         if errors.contains(Status::PERR) {
-            Err(Error::ParityError)
+            Err(ParityError)
         } else if errors.contains(Status::FERR) {
-            Err(Error::FrameError)
+            Err(FrameError)
         } else if errors.contains(Status::BUFOVF) {
-            Err(Error::Overflow)
+            Err(Overflow)
         } else if errors.contains(Status::ISF) {
-            Err(Error::InconsistentSyncField)
+            Err(InconsistentSyncField)
         } else if errors.contains(Status::COLL) {
-            Err(Error::CollisionDetected)
+            Err(CollisionDetected)
         } else {
             Ok(())
+        }
+    }
+}
+
+impl From<Error> for Status {
+    fn from(err: Error) -> Status {
+        use Error::*;
+        match err {
+            ParityError => Status::PERR,
+            FrameError => Status::FERR,
+            Overflow => Status::BUFOVF,
+            InconsistentSyncField => Status::ISF,
+            CollisionDetected => Status::COLL,
         }
     }
 }
@@ -1254,8 +1268,9 @@ where
     /// overflow occurs. Otherwise, it will not be issued until its place within
     /// the data stream.
     #[inline]
-    pub fn immediate_overflow_notification(&mut self, set: bool) {
+    pub fn immediate_overflow_notification(self, set: bool) -> Self {
         self.sercom.usart().ctrla.modify(|_, w| w.ibon().bit(set));
+        self
     }
 
     /// Run in standby mode
@@ -1263,31 +1278,36 @@ where
     /// When set, the UART peripheral will run in standby mode. See the
     /// datasheet for more details.
     #[inline]
-    pub fn run_in_standby(&mut self, set: bool) {
+    pub fn run_in_standby(self, set: bool) -> Self {
         self.sercom
             .usart()
             .ctrla
             .modify(|_, w| w.runstdby().bit(set));
+        self
     }
 
     /// Enable interrupts for the specified flags
-    pub fn enable_interrupts(&mut self, flags: Flags) {
+    pub fn enable_interrupts(self, flags: Flags) -> Self {
         self.sercom
             .usart()
             .intenset
             .write(|w| unsafe { w.bits(flags.bits()) });
+        self
     }
 
     /// Disable interrupts for the specified flags
-    pub fn disable_interrupts(&mut self, flags: Flags) {
+    pub fn disable_interrupts(self, flags: Flags) -> Self {
         self.sercom
             .usart()
             .intenclr
             .write(|w| unsafe { w.bits(flags.bits()) });
+        self
     }
 
-    pub fn irda_encoding(&mut self, irda: bool) {
+    pub fn irda_encoding(self, irda: bool) -> Self {
+        // TODO pulse length
         self.sercom.usart().ctrlb.modify(|_, w| w.enc().bit(irda));
+        self
     }
 
     /// Enable the UART peripheral
@@ -1523,13 +1543,13 @@ impl<C: ValidConfig> Uart<C> {
     /// Enable interrupts for the specified flags
     #[inline]
     pub fn enable_interrupts(&mut self, flags: Flags) {
-        self.config.as_mut().enable_interrupts(flags)
+        self.reconfigure(|c| c.enable_interrupts(flags));
     }
 
     /// Disable interrupts for the specified flags
     #[inline]
     pub fn disable_interrupts(&mut self, flags: Flags) {
-        self.config.as_mut().disable_interrupts(flags);
+        self.reconfigure(|c| c.disable_interrupts(flags));
     }
 
     /// Clear interrupt status flags
@@ -1554,26 +1574,6 @@ impl<C: ValidConfig> Uart<C> {
     /// Read the interrupt flags
     pub fn read_flags(&self) -> Flags {
         <Self as Registers>::read_flags(self)
-    }
-
-    /// Read the status flags
-    #[inline]
-    pub fn read_status(&self) -> Status {
-        <Self as Registers>::read_status(self)
-    }
-
-    /// Clear error status flags
-    ///
-    /// Setting a flag will clear the error. Clearing any flag will have no
-    /// effect.
-    #[inline]
-    pub fn clear_errors(&mut self, errors: Status) {
-        unsafe {
-            self.sercom()
-                .usart()
-                .status
-                .write(|w| w.bits(errors.bits()))
-        };
     }
 
     /// Read the status register and convert into a [`Result`]
@@ -1673,6 +1673,8 @@ pub struct UartRx<C: ValidConfig, S: Sercom> {
 impl<C, S> UartRx<C, S>
 where
     C: ValidConfig,
+    C::Word: PrimInt,
+    u16: AsPrimitive<C::Word>,
     S: Sercom,
     C::Pads: Rx,
 {
@@ -1684,6 +1686,81 @@ where
     #[inline]
     pub unsafe fn read_data(&mut self) -> u16 {
         self.sercom.usart().data.read().data().bits()
+    }
+
+    /// Clear interrupt status flags
+    ///
+    /// Setting the ERROR, SSL or TXC flag will clear the interrupt. Clearing
+    /// any flag will have no effect. This function has no effect on the DRE or
+    /// RXC flags.
+    ///
+    /// **Warning:** The implementation of of [`Write::flush`] waits on and
+    /// clears the `TXC` flag. Manually clearing this flag could cause it to
+    /// hang indefinitely.
+    #[inline]
+    pub fn clear_flags(&mut self, flags: Flags) {
+        unsafe {
+            self.sercom()
+                .usart()
+                .intflag
+                .write(|w| w.bits(flags.bits()))
+        };
+    }
+
+    /// Clear error status flags
+    ///
+    /// Setting a flag will clear the error. Clearing any flag will have no
+    /// effect.
+    #[inline]
+    pub fn clear_errors(&mut self, errors: Status) {
+        unsafe {
+            self.sercom()
+                .usart()
+                .status
+                .write(|w| w.bits(errors.bits()))
+        };
+    }
+
+    /// Read the interrupt flags
+    pub fn read_flags(&self) -> Flags {
+        <Self as Registers>::read_flags(self)
+    }
+
+    /// Read the status flags
+    #[inline]
+    pub fn read_status(&self) -> Status {
+        <Self as Registers>::read_status(self)
+    }
+
+    /// Flush the RX buffer and clear overflow errors
+    #[inline]
+    pub fn flush(&mut self) {
+        let usart = self.sercom.usart();
+
+        // TODO
+        // The datasheet states that disabling the receiver (RXEN) clears
+        // the RX buffer, and clears the BUFOVF, PERR and FERR bits.
+        // However, in practice, it seems like BUFOVF errors still pop
+        // up after a disable/enable cycle of the receiver, then immediately begin
+        // reading bytes from the DATA register.
+        //
+        // Is this a hardware bug???
+        /*
+        usart.ctrlb.modify(|_, w| w.rxen().clear_bit());
+        while usart.syncbusy.read().ctrlb().bit() || usart.ctrlb.read().rxen().bit_is_set() {}
+
+        usart.ctrlb.modify(|_, w| w.rxen().set_bit());
+        while usart.syncbusy.read().ctrlb().bit() || usart.ctrlb.read().rxen().bit_is_clear() {}
+        */
+
+        // Workaround is to read a few bytes to clear the RX buffer (3 bytes seems to do
+        // the trick), then manually clear the BUFOVF bit Clear rx buffer
+        for _ in 0..=2 {
+            let _data = usart.data.read();
+        }
+
+        // Clear buffer overflow error
+        self.clear_errors(Error::Overflow.into());
     }
 }
 
