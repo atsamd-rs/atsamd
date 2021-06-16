@@ -1092,26 +1092,29 @@ where
     #[inline]
     pub fn baud<B: Into<Hertz>>(self, baud: B, mode: BaudMode) -> Self {
         let baud: Hertz = baud.into();
+        let usart = self.sercom.usart_int();
 
-        self.sercom
-            .usart_int()
+        usart
             .ctrla
             .modify(|_, w| unsafe { w.sampr().bits(mode.sampr()) });
 
-        let baud = match mode {
+        match mode {
             BaudMode::Arithmetic(n) => {
-                Self::calculate_baud_asynchronous_arithm(baud.0, self.freq.0, n as u8)
+                let baud = Self::calculate_baud_asynchronous_arithm(baud.0, self.freq.0, n as u8);
+                unsafe { usart.baud_usartfp_mode().write(|w| w.baud().bits(baud)) };
             }
 
             BaudMode::Fractional(n) => {
-                todo!();
+                let (baud, frac) =
+                    Self::calculate_baud_asynchronous_fractional(baud.0, self.freq.0, n as u8);
+                unsafe {
+                    usart.baud_frac_mode().write(|w| {
+                        w.fp().bits(frac);
+                        w.baud().bits(baud)
+                    });
+                }
             }
         };
-
-        self.sercom
-            .usart_int()
-            .baud()
-            .modify(|_, w| unsafe { w.baud().bits(baud) });
 
         self
     }
@@ -1132,8 +1135,13 @@ where
     #[inline]
     /// Calculate baudrate value using the asynchronous frational method (Table
     /// 24-2)
-    fn calculate_baud_asynchronous_fractional(baudrate: u32, clk_freq: u32, n_samples: u8) -> u16 {
-        todo!();
+    fn calculate_baud_asynchronous_fractional(
+        baudrate: u32,
+        clk_freq: u32,
+        n_samples: u8,
+    ) -> (u16, u8) {
+        let baud_mult = (clk_freq * 8) / (n_samples as u32 * baudrate);
+        ((baud_mult / 8) as u16, (baud_mult % 8) as u8)
     }
 
     /// Control the buffer overflow notification
