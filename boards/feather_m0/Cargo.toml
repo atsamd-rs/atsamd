@@ -49,6 +49,7 @@ optional = true
 
 [dependencies.embedded-sdmmc]
 version = "0.3"
+optional = true
 
 [dependencies.rtic-monotonic]
 version = "=0.1.0-alpha.0"
@@ -154,4 +155,4 @@ required-features = ["adalogger", "usb", "sdmmc", "unproven"]
 
 [[example]]
 name = "blinky_rtic"
-required-features = ["rtic"]
+required-features = ["rtic", "unproven"]

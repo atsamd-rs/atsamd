@@ -10,11 +10,6 @@ use void::Void;
 
 #[cfg(feature = "sdmmc")]
 use embedded_sdmmc::{TimeSource, Timestamp};
-use core::{
-    cmp::Ordering,
-    convert::{Infallible, TryInto},
-    fmt, ops,
-};
 
 #[cfg(feature = "rtic")]
 use rtic_monotonic::{embedded_time, Clock, Fraction, Instant, Monotonic};
