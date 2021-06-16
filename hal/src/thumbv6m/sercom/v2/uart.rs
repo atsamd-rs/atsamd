@@ -60,8 +60,7 @@
 //!
 //! Next, create a [`Config`] struct, which represents the UART peripheral in
 //! its disabled state. A `Config` is specified with three type parameters: the
-//! [`Pads`] type; an [`OpMode`], which defaults to [`Master`]; and a
-//! [`CharSize`], which defaults to [`EightBit`].
+//! [`Pads`] type; and a [`CharSize`], which defaults to [`EightBit`].
 //!
 //! ```
 //! use atsamd_hal::gpio::v2::{PA08, PA09};
@@ -179,12 +178,13 @@
 //! This HAL includes support for DMA-enabled UART transfers. An enabled `Uart`
 //! struct contains `rx` and `tx` fields, which both implement the DMAC
 //! [`Buffer`](crate::dmac::transfer::Buffer) trait. The provided
-//! [`send_with_dma`](UartTx::send_with_dma) and [`receive_with_dma`](UartRx::
-//! receive_with_dma) build and begin a [`dmac::Transfer`](crate::dmac::
-//! Transfer), thus starting the UART in a non-blocking way. Optionally,
-//! interrupts can be enabled on the provided [`Channel`](crate::dmac::channel::
-//! Channel). Note that the `dma` feature must be enabled. Please refer to the
-//! [`dmac`](crate::dmac) module-level documentation for more information.
+//! [`send_with_dma`](UartTx::send_with_dma) and
+//! [`receive_with_dma`](UartRx::receive_with_dma) build and begin a
+//! [`dmac::Transfer`](crate::dmac::transfer::Transfer), thus starting the UART
+//! in a non-blocking way. Optionally, interrupts can be enabled on the provided
+//! [`Channel`](crate::dmac::channel::Channel). Note that the `dma` feature must
+//! be enabled. Please refer to the [`dmac`](crate::dmac) module-level
+//! documentation for more information.
 //!
 //! ```
 //! // Assume channel0 and channel1 are configured `dmac::Channel`s, and uart a
@@ -1467,7 +1467,7 @@ where
 {
 }
 
-trait Registers: Sealed {
+pub(crate) trait Registers: Sealed {
     type Sercom: Sercom;
     unsafe fn sercom(&self) -> &Self::Sercom;
 
@@ -1513,9 +1513,7 @@ trait TxRegisters: Registers {}
 /// traits.
 ///
 /// For a non-blocking alternative that can be used to transfer slices, see the
-/// [`UartFuture`] type.
-///
-/// [`UartFuture`]: crate::sercom::v2::uart_future::UartFuture
+/// provided DMA methods.
 pub struct Uart<C>
 where
     C: ValidConfig,
@@ -1766,140 +1764,6 @@ impl<C: ValidConfig, S: Sercom> Registers for UartTx<C, S> {
 }
 
 impl<C: ValidConfig, S: Sercom> Sealed for UartTx<C, S> {}
-
-//=============================================================================
-// UART DMA transfers
-//=============================================================================
-#[cfg(feature = "dma")]
-pub use uart_dma::*;
-
-#[cfg(feature = "dma")]
-mod uart_dma {
-    use super::*;
-    use crate::dmac::{
-        self,
-        channel::{self, Busy, Channel, ChannelId, Ready},
-        transfer, Transfer,
-    };
-
-    unsafe impl<C, S> dmac::transfer::Buffer for UartTx<C, S>
-    where
-        S: Sercom,
-        C: ValidConfig,
-        C::Pads: Tx,
-        C::Word: dmac::transfer::Beat,
-    {
-        type Beat = C::Word;
-
-        #[inline]
-        fn dma_ptr(&mut self) -> *mut Self::Beat {
-            self.sercom.usart().data.as_ptr() as *mut _
-        }
-
-        #[inline]
-        fn incrementing(&self) -> bool {
-            false
-        }
-
-        #[inline]
-        fn buffer_len(&self) -> usize {
-            1
-        }
-    }
-
-    unsafe impl<C, S> dmac::transfer::Buffer for UartRx<C, S>
-    where
-        S: Sercom,
-        C: ValidConfig,
-        C::Pads: Rx,
-        C::Word: dmac::transfer::Beat,
-    {
-        type Beat = C::Word;
-
-        #[inline]
-        fn dma_ptr(&mut self) -> *mut Self::Beat {
-            self.sercom.usart().data.as_ptr() as *mut _
-        }
-
-        #[inline]
-        fn incrementing(&self) -> bool {
-            false
-        }
-
-        #[inline]
-        fn buffer_len(&self) -> usize {
-            1
-        }
-    }
-
-    impl<C, S> UartTx<C, S>
-    where
-        Self: dmac::transfer::Buffer<Beat = C::Word>,
-        S: Sercom,
-        C: ValidConfig,
-        C::Pads: Tx,
-    {
-        /// Transform an [`UartTx`] into a DMA [`Transfer`]) and
-        /// start sending the provided buffer.
-        #[inline]
-        pub fn send_with_dma<Chan, B, W>(
-            self,
-            buf: B,
-            mut channel: Chan,
-            waker: W,
-        ) -> Transfer<Channel<ChannelId<Chan>, Busy>, transfer::BufferPair<B, Self>, (), W>
-        where
-            Chan: channel::AnyChannel<Status = Ready>,
-            B: dmac::Buffer<Beat = C::Word> + 'static,
-            W: FnOnce(crate::dmac::channel::CallbackStatus) + 'static,
-        {
-            channel
-                .as_mut()
-                .enable_interrupts(dmac::channel::InterruptFlags::new().with_tcmpl(true));
-
-            // SAFETY: We use new_unchecked to avoid having to pass a 'static self as the
-            // destination buffer. This is safe as long as we guarantee the source buffer is
-            // static.
-            unsafe { dmac::Transfer::new_unchecked(channel, buf, self, false) }
-                .with_waker(waker)
-                .begin(S::DMA_TX_TRIGGER, dmac::TriggerAction::BEAT)
-        }
-    }
-
-    impl<C, S> UartRx<C, S>
-    where
-        Self: dmac::transfer::Buffer<Beat = C::Word>,
-        S: Sercom,
-        C: ValidConfig,
-        C::Pads: Rx,
-    {
-        /// Transform an [`UartRx`] into a DMA [`Transfer`]) and
-        /// start receiving into the provided buffer.
-        #[inline]
-        pub fn receive_with_dma<Chan, B, W>(
-            self,
-            buf: B,
-            mut channel: Chan,
-            waker: W,
-        ) -> Transfer<Channel<ChannelId<Chan>, Busy>, transfer::BufferPair<Self, B>, (), W>
-        where
-            Chan: channel::AnyChannel<Status = Ready>,
-            B: dmac::Buffer<Beat = C::Word> + 'static,
-            W: FnOnce(crate::dmac::channel::CallbackStatus) + 'static,
-        {
-            channel
-                .as_mut()
-                .enable_interrupts(dmac::channel::InterruptFlags::new().with_tcmpl(true));
-
-            // SAFETY: We use new_unchecked to avoid having to pass a 'static self as the
-            // destination buffer. This is safe as long as we guarantee the source buffer is
-            // static.
-            unsafe { dmac::Transfer::new_unchecked(channel, self, buf, false) }
-                .with_waker(waker)
-                .begin(S::DMA_RX_TRIGGER, dmac::TriggerAction::BEAT)
-        }
-    }
-}
 
 //=============================================================================
 // Embedded HAL traits
