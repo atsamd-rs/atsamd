@@ -236,7 +236,7 @@ use pac::{
     MCLK,
 };
 
-use crate::gpio::v2::AnyPin;
+use crate::gpio::v2::{AnyPin, OptionalPin, SomePin};
 use crate::sercom::v2::*;
 use crate::typelevel::{Is, NoneT, Sealed};
 
@@ -444,13 +444,13 @@ where
     #[inline]
     pub fn rx<Id>(self, pin: impl AnyPin<Id = Id>) -> Pads<S, I, Id, TX, RTS, CTS>
     where
-        Id: PadInfo<S>,
+        Id: PadLookup<S>,
         Id::PadNum: Rxpo,
-        Pad<S, Id::PadNum, Id>: InIoSet<I>,
+        Pad<S, Id>: InIoSet<I>,
     {
         Pads {
             ioset: self.ioset,
-            receive: pin.into().into(),
+            receive: pin.into().into_mode(),
             transmit: self.transmit,
             ready_to_send: self.ready_to_send,
             clear_to_send: self.clear_to_send,
@@ -461,14 +461,14 @@ where
     #[inline]
     pub fn tx<Id>(self, pin: impl AnyPin<Id = Id>) -> Pads<S, I, RX, Id, RTS, CTS>
     where
-        Id: PadInfo<S>,
+        Id: PadLookup<S>,
         Id::PadNum: Txpo,
-        Pad<S, Id::PadNum, Id>: InIoSet<I>,
+        Pad<S, Id>: InIoSet<I>,
     {
         Pads {
             ioset: self.ioset,
             receive: self.receive,
-            transmit: pin.into().into(),
+            transmit: pin.into().into_mode(),
             ready_to_send: self.ready_to_send,
             clear_to_send: self.clear_to_send,
         }
@@ -478,14 +478,14 @@ where
     #[inline]
     pub fn rts<Id>(self, pin: impl AnyPin<Id = Id>) -> Pads<S, I, RX, TX, Id, CTS>
     where
-        Id: PadInfo<S, PadNum = Pad1>,
-        Pad<S, Pad1, Id>: InIoSet<I>,
+        Id: PadLookup<S>,
+        Pad<S, Id>: InIoSet<I>,
     {
         Pads {
             ioset: self.ioset,
             receive: self.receive,
             transmit: self.transmit,
-            ready_to_send: pin.into().into(),
+            ready_to_send: pin.into().into_mode(),
             clear_to_send: self.clear_to_send,
         }
     }
@@ -494,15 +494,15 @@ where
     #[inline]
     pub fn cts<Id>(self, pin: impl AnyPin<Id = Id>) -> Pads<S, I, RX, TX, RTS, Id>
     where
-        Id: PadInfo<S, PadNum = Pad2>,
-        Pad<S, Pad2, Id>: InIoSet<I>,
+        Id: PadLookup<S>,
+        Pad<S, Id>: InIoSet<I>,
     {
         Pads {
             ioset: self.ioset,
             receive: self.receive,
             transmit: self.transmit,
             ready_to_send: self.ready_to_send,
-            clear_to_send: pin.into().into(),
+            clear_to_send: pin.into().into_mode(),
         }
     }
 
@@ -518,78 +518,59 @@ where
     }
 }
 
-//=============================================================================
-// uart_pads_from_pins
-//=============================================================================
-
-/// Define a set of [`uart::Pads`] using [`Pin`]s instead of [`PinId`]s
+/// Define a set of [`Pads`] using [`Pin`]s instead of [`PinId`]s
 ///
-/// In some cases, it is more convenient to specify a set of `uart::Pads` using
-/// `Pin`s or `Pin` aliases than it is to use the corresponding [`PinId`]s. This
-/// macro makes it easier to do so.
+/// In some cases, it is more convenient to specify a set of `Pads` using `Pin`s
+/// or `Pin` aliases than it is to use the corresponding [`PinId`]s. This type
+/// alias makes it easier to do so.
 ///
-/// The first two arguments to the macro are required and represent the
-/// [`Sercom`] and [`IoSet`] respectively. The remaining four arguments are all
-/// optional. Each represents a corresponding type parameter of the `uart::Pads`
-/// type. Some of the types may be omitted, but any types that are specified,
-/// must be done in the order `RX`, `TX`, `RTS` & `CTS`.
+/// The first type argument is the [`IoSet`], and the remaining four arguments
+/// are effectively [`OptionalPin`] types representing the corresponding type
+/// parameters of `uart::Pads`, i.e. `RX`, `TX`, `RTS` & `CTS`.
 ///
 /// ```
 /// use atsamd_hal::pac::Peripherals;
-/// use atsamd_hal::uart_pads_from_pins;
 /// use atsamd_hal::gpio::v2::{Pin, PA08, PA09, AlternateC, Pins};
-/// use atsamd_hal::sercom::v2::{Sercom0, pad::IoSet1, uart};
+/// use atsamd_hal::sercom::v2::pad::IoSet1;
+/// use atsamd_hal::sercom::v2::uart;
+/// use atsamd_hal::typelevel::NoneT;
 ///
-/// type Miso = Pin<PA08, AlternateC>;
-/// type RTS = Pin<PA09, AlternateC>;
-/// pub type Pads = uart_pads_from_pins!(Sercom0, IoSet1, RX = Miso, RTS = RTS);
+/// type Rx = Pin<PA08, AlternateC>;
+/// type Rts = Pin<PA10, AlternateC>;
+/// pub type Pads = uart::PadsFromPins<IoSet1, Miso, NoneT, Sclk>;
 ///
 /// pub fn test() -> Pads {
 ///     let peripherals = Peripherals::take().unwrap();
 ///     let pins = Pins::new(peripherals.PORT);
-///     uart::Pads::<Sercom0, IoSet1>::default()
-///         .rts(pins.pa09)
-///         .rx(pins.pa08)
+///     uart::Pads::default().rx(pins.pa08).rts(pins.pa10)
 /// }
 /// ```
 ///
 /// [`uart::Pads`]: Pads
 /// [`Pin`]: crate::gpio::v2::Pin
 /// [`PinId`]: crate::gpio::v2::PinId
-#[macro_export]
-macro_rules! uart_pads_from_pins {
-    (
-        $Sercom:ident,
-        $IoSet:ident
-        $( , RX = $RX:ty )?
-        $( , TX = $TX:ty )?
-        $( , RTS = $RTS:ty )?
-        $( , CTS = $CTS:ty )?
-    ) => {
-        $crate::sercom::v2::uart::Pads<
-            $crate::sercom::v2::$Sercom,
-            $crate::sercom::v2::pad::$IoSet,
-            $crate::__opt_type!( $( $crate::gpio::v2::SpecificPinId<$RX> )? ),
-            $crate::__opt_type!( $( $crate::gpio::v2::SpecificPinId<$TX> )? ),
-            $crate::__opt_type!( $( $crate::gpio::v2::SpecificPinId<$RTS> )? ),
-            $crate::__opt_type!( $( $crate::gpio::v2::SpecificPinId<$CTS> )? ),
-        >
-    };
-}
+pub type PadsFromPins<I, RX, TX, RTS = NoneT, CTS = NoneT> = Pads<
+    <RX as IsPad>::Sercom,
+    I,
+    <RX as OptionalPin>::PinId,
+    <TX as OptionalPin>::PinId,
+    <RTS as OptionalPin>::PinId,
+    <CTS as OptionalPin>::PinId,
+>;
 
 //=============================================================================
 // PadSet
 //=============================================================================
 
-/// Type-level function to recover the [`OptionalPad`] types from a generic set
+/// Type-level function to recover the [`OptionalPin`] types from a generic set
 /// of [`Pads`]
 ///
 /// This trait is used as an interface between the [`Pads`] type and other
 /// types in this module. It acts as a [type-level function], returning the
-/// corresponding [`Sercom`], [`IoSet`] and [`OptionalPad`] types. It serves to
+/// corresponding [`Sercom`], [`IoSet`] and [`OptionalPin`] types. It serves to
 /// cut down on the total number of type parameters needed in the [`Config`]
 /// struct. The `Config` struct doesn't need access to the [`Pad`]s directly.
-/// Rather, it only needs to apply the [`SomePad`] trait bound when a `Pad` is
+/// Rather, it only needs to apply the [`SomePin`] trait bound when a `Pin` is
 /// required. The `PadSet` trait allows each `Config` struct to store an
 /// instance of `Pads` without itself being generic over all six type parameters
 /// of the `Pads` type.
@@ -598,10 +579,10 @@ macro_rules! uart_pads_from_pins {
 pub trait PadSet: Sealed {
     type Sercom: Sercom;
     type IoSet: IoSet;
-    type Rx: OptionalPad;
-    type Tx: OptionalPad;
-    type RTS: OptionalPad;
-    type CTS: OptionalPad;
+    type Rx: OptionalPin;
+    type Tx: OptionalPin;
+    type RTS: OptionalPin;
+    type CTS: OptionalPin;
 }
 
 impl<S, I, RX, TX, RTS, CTS> Sealed for Pads<S, I, RX, TX, RTS, CTS>
@@ -651,31 +632,31 @@ impl<P: PadSet + Rxpo + Txpo> ValidPads for P {}
 
 /// Marker trait for a set of [`Pads`] that can transmit
 ///
-/// To transmit, Tx must be [`SomePad`].
+/// To transmit, Tx must be [`SomePin`].
 pub trait Tx: ValidPads {}
 
 impl<P> Tx for P
 where
     P: ValidPads,
-    P::Tx: SomePad,
+    P::Tx: SomePin,
 {
 }
 
 /// Marker trait for a set of [`Pads`] that can receive
 ///
-/// To receive, Rx must be [`SomePad`].
+/// To receive, Rx must be [`SomePin`].
 pub trait Rx: ValidPads {}
 
 impl<P> Rx for P
 where
     P: ValidPads,
-    P::Rx: SomePad,
+    P::Rx: SomePin,
 {
 }
 
 /// Marker trait for a set of [`Pads`] that cannot transmit
 ///
-/// A set of [`Pads`] cannot be used to transmit when the Tx [`Pad`] is
+/// A set of [`Pads`] cannot be used to transmit when the Tx pad is
 /// [`NoneT`].
 pub trait NotTx: ValidPads {}
 
@@ -683,7 +664,7 @@ impl<P> NotTx for P where P: ValidPads<Tx = NoneT> {}
 
 /// Marker trait for a set of [`Pads`] that cannot receive
 ///
-/// A set of [`Pads`] cannot be used to receive when the Rx [`Pad`] is
+/// A set of [`Pads`] cannot be used to receive when the Rx pad is
 /// [`NoneT`].
 pub trait NotRx: ValidPads {}
 
@@ -691,14 +672,14 @@ impl<P> NotRx for P where P: ValidPads<Rx = NoneT> {}
 
 /// Marker trait for a set of [`Pads`] that can transmit OR receive
 ///
-/// To satisfy this trait, one or both of Rx and Tx must be [`SomePad`].
+/// To satisfy this trait, one or both of Rx and Tx must be [`SomePin`].
 pub trait TxOrRx: ValidPads {}
 
 impl<S, I, RX, RTS, CTS> TxOrRx for Pads<S, I, RX, NoneT, RTS, CTS>
 where
     S: Sercom,
     I: IoSet,
-    RX: GetPad<S> + GetPadMarker,
+    RX: GetPad<S> + GetPadKey,
     RTS: GetOptionalPad<S>,
     CTS: GetOptionalPad<S>,
     RX::PadNum: Rxpo,
@@ -709,7 +690,7 @@ impl<S, I, TX, RTS, CTS> TxOrRx for Pads<S, I, NoneT, TX, RTS, CTS>
 where
     S: Sercom,
     I: IoSet,
-    TX: GetPad<S> + GetPadMarker,
+    TX: GetPad<S> + GetPadKey,
     RTS: GetOptionalPad<S>,
     CTS: GetOptionalPad<S>,
     TX::PadNum: Txpo,
@@ -720,8 +701,8 @@ impl<S, I, RX, TX, RTS, CTS> TxOrRx for Pads<S, I, RX, TX, RTS, CTS>
 where
     S: Sercom,
     I: IoSet,
-    RX: GetPad<S> + GetPadMarker,
-    TX: GetPad<S> + GetPadMarker,
+    RX: GetPad<S> + GetPadKey,
+    TX: GetPad<S> + GetPadKey,
     RTS: GetOptionalPad<S>,
     CTS: GetOptionalPad<S>,
     RX::PadNum: Rxpo,
