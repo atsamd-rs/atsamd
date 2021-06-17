@@ -1746,7 +1746,7 @@ where
         <Self as Registers>::read_status(self)
     }
 
-    /// Flush the RX buffer and clear overflow errors
+    /// Flush the RX buffer and clear errors
     #[inline]
     pub fn flush(&mut self) {
         let usart = self.sercom.usart();
@@ -1773,8 +1773,10 @@ where
             let _data = usart.data.read();
         }
 
-        // Clear buffer overflow error
-        self.clear_errors(Error::Overflow.into());
+        // Clear all errors
+        self.clear_errors(
+            Status::BUFOVF | Status::FERR | Status::PERR | Status::ISF | Status::COLL,
+        );
     }
 }
 
