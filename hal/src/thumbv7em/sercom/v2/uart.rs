@@ -890,7 +890,7 @@ impl From<Error> for Status {
 /// state. It is generic over the set of [`Pads`] and [`CharSize`].
 /// Upon creation, the [`Config`] takes ownership of the
 /// [`Sercom`] and resets it, returning it configured as an UART peripheral
-/// with an [`EightBit`], no parity, one stop bit frame .
+/// with an [`EightBit`], no parity, one stop bit frame, LSB-first.
 ///
 /// [`Config`] uses a builder-pattern API to configure the peripheral,
 /// culminating in a call to [`enable`], which consumes the [`Config`] and
@@ -935,7 +935,13 @@ impl<P: ValidPads> Config<P> {
     ///
     /// This function will enable the corresponding APB clock, reset the
     /// [`Sercom`] peripheral, and return a [`Config`] in the default
-    /// configuration, [`EightBit`] [`CharSize`].
+    ///  configuration:
+    ///
+    /// * [`EightBit`] [`CharSize`]
+    /// * No parity
+    /// * One stop bit
+    /// * LSB-first
+    ///
     /// [`Config`] takes ownership of the [`Sercom`] and [`Pads`].
     ///
     /// Users must configure GCLK manually. The `freq` parameter represents the
@@ -943,7 +949,7 @@ impl<P: ValidPads> Config<P> {
     #[inline]
     pub fn new(mclk: &MCLK, mut sercom: P::Sercom, pads: P, freq: impl Into<Hertz>) -> Self {
         sercom.enable_apb_clock(mclk);
-        Self::create(sercom, pads, freq)
+        Self::create(sercom, pads, freq).msb_first(false)
     }
 }
 
