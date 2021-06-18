@@ -12,7 +12,7 @@ use crate::{
     },
     sercom::v2::{
         spi::{self, AnySpi, Spi},
-        uart::{self, Registers, UartRx, UartTx},
+        uart::{self, Uart, UartRx, UartTx},
         Sercom,
     },
 };
@@ -20,9 +20,8 @@ use crate::{
 //=============================================================================
 // UART DMA transfers
 //=============================================================================
-unsafe impl<C, S> Buffer for UartTx<C, S>
+unsafe impl<C> Buffer for UartTx<C>
 where
-    S: Sercom,
     C: uart::ValidConfig,
     C::Pads: uart::Tx,
     C::Word: Beat,
@@ -55,9 +54,8 @@ where
     }
 }
 
-unsafe impl<C, S> Buffer for UartRx<C, S>
+unsafe impl<C> Buffer for UartRx<C>
 where
-    S: Sercom,
     C: uart::ValidConfig,
     C::Pads: uart::Rx,
     C::Word: Beat,
@@ -90,10 +88,9 @@ where
     }
 }
 
-impl<C, S> UartTx<C, S>
+impl<C> UartTx<C>
 where
     Self: Buffer<Beat = C::Word>,
-    S: Sercom,
     C::Pads: uart::Tx,
     C: uart::ValidConfig,
 {
@@ -126,14 +123,13 @@ where
         // static.
         unsafe { dmac::Transfer::new_unchecked(channel, buf, self, false) }
             .with_waker(waker)
-            .begin(S::DMA_TX_TRIGGER, trigger_action)
+            .begin(C::Sercom::DMA_TX_TRIGGER, trigger_action)
     }
 }
 
-impl<C, S> UartRx<C, S>
+impl<C> UartRx<C>
 where
     Self: Buffer<Beat = C::Word>,
-    S: Sercom,
     C::Pads: uart::Rx,
     C: uart::ValidConfig,
 {
@@ -166,7 +162,7 @@ where
         // static.
         unsafe { dmac::Transfer::new_unchecked(channel, self, buf, false) }
             .with_waker(waker)
-            .begin(S::DMA_RX_TRIGGER, trigger_action)
+            .begin(C::Sercom::DMA_RX_TRIGGER, trigger_action)
     }
 }
 
