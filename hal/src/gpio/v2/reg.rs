@@ -70,6 +70,25 @@ impl From<DynPinMode> for ModeFields {
                     }
                 }
             }
+            Interrupt(config) => {
+                fields.pmuxen = true;
+                fields.pmux = 0;
+                use DynInterrupt::*;
+                match config {
+                    Floating => {
+                        fields.pullen = false;
+                        fields.out = false;
+                    }
+                    PullDown => {
+                        fields.pullen = true;
+                        fields.out = false;
+                    }
+                    PullUp => {
+                        fields.pullen = true;
+                        fields.out = true;
+                    }
+                }
+            }
             Output(config) => {
                 fields.dir = true;
                 use DynOutput::*;
@@ -86,9 +105,6 @@ impl From<DynPinMode> for ModeFields {
                 fields.pmuxen = true;
                 use DynAlternate::*;
                 match config {
-                    A => {
-                        fields.pmux = 0;
-                    }
                     B => {
                         fields.pmux = 1;
                     }

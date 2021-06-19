@@ -1,12 +1,27 @@
-use crate::gpio::v2::{self, AlternateA, AnyPin, PinId, PinMode};
-use crate::gpio::{self, IntoFunction, Pin, Port};
+use crate::gpio::{
+    self, v2::AnyPin, v2::FloatingInterrupt, v2::Pin, v2::PinId, v2::PinMode,
+    v2::PullDownInterrupt, v2::PullUpInterrupt, Port,
+};
 use crate::target_device;
 
 /// The EicPin trait makes it more ergonomic to convert a gpio pin into an EIC
 /// pin. You should not implement this trait for yourself; only the
 /// implementations in the EIC module make sense.
-pub trait EicPin<T> {
-    fn into_ei(self, port: &mut Port) -> T;
+// This is more complicated than it needs to be, due to the ExtInt structs being
+// defined through macros below.
+pub trait EicPin {
+    type Floating;
+    type PullUp;
+    type PullDown;
+
+    /// Configure a pin as a floating external interrupt
+    fn into_floating_ei(self, port: &mut Port) -> Self::Floating;
+
+    /// Configure a pin as pulled-up external interrupt
+    fn into_pull_up_ei(self, port: &mut Port) -> Self::PullUp;
+
+    /// Configure a pin as pulled-down external interrupt
+    fn into_pull_down_ei(self, port: &mut Port) -> Self::PullDown;
 }
 
 pub type Sense = target_device::eic::config::SENSE0_A;
@@ -38,7 +53,7 @@ crate::paste::item! {
     where
         GPIO: AnyPin,
     {
-        _pin: v2::Pin<GPIO::Id, AlternateA>,
+        _pin: Pin<GPIO::Id, GPIO::Mode>,
     }
 
     // impl !Send for [<$PadType $num>]<GPIO> {}
@@ -49,8 +64,9 @@ crate::paste::item! {
         /// You may find it more convenient to use the `into_pad` trait
         /// and avoid referencing the pad type.
         pub fn new(pin: GPIO) -> Self {
-            let _pin = pin.into().into_alternate();
-            [<$PadType $num>]{ _pin }
+            [<$PadType $num>]{
+                _pin:pin.into()
+            }
         }
 
         /// Configure the eic with options for this external interrupt
@@ -133,14 +149,26 @@ crate::paste::item! {
 
     $(
         $(#[$attr])*
-        impl<MODE: gpio::PinMode> EicPin<[<$PadType $num>]<gpio::$PinType<gpio::PfA>>> for gpio::$PinType<MODE> {
-            fn into_ei(self, port: &mut Port) -> [<$PadType $num>]<gpio::$PinType<gpio::PfA>> {
-                [<$PadType $num>]::new(self.into_function(port))
+        impl<MODE: PinMode> EicPin for gpio::$PinType<MODE> {
+            type Floating = [<$PadType $num>]<gpio::$PinType<FloatingInterrupt>>;
+            type PullUp = [<$PadType $num>]<gpio::$PinType<PullUpInterrupt>>;
+            type PullDown = [<$PadType $num>]<gpio::$PinType<PullDownInterrupt>>;
+
+            fn into_floating_ei(self, port: &mut Port) -> Self::Floating {
+                [<$PadType $num>]::new(self.into_floating_interrupt(port))
+            }
+
+            fn into_pull_up_ei(self, port: &mut Port) -> Self::PullUp {
+                [<$PadType $num>]::new(self.into_pull_up_interrupt(port))
+            }
+
+            fn into_pull_down_ei(self, port: &mut Port) -> Self::PullDown {
+                [<$PadType $num>]::new(self.into_pull_down_interrupt(port))
             }
         }
 
         $(#[$attr])*
-        impl<MODE: gpio::PinMode> ExternalInterrupt for gpio::$PinType<MODE> {
+        impl<MODE: PinMode> ExternalInterrupt for gpio::$PinType<MODE> {
             fn id(&self) -> ExternalInterruptID {
                 $num
             }
@@ -151,7 +179,7 @@ crate::paste::item! {
     };
 }
 
-impl<I, M> ExternalInterrupt for v2::Pin<I, M>
+impl<I, M> ExternalInterrupt for Pin<I, M>
 where
     I: PinId,
     M: PinMode,

@@ -88,6 +88,14 @@ pub enum DynInput {
     PullUp,
 }
 
+/// Value-level `enum` for interrupt configurations
+#[derive(PartialEq, Eq, Clone, Copy)]
+pub enum DynInterrupt {
+    Floating,
+    PullDown,
+    PullUp,
+}
+
 /// Value-level `enum` for output configurations
 #[derive(PartialEq, Eq, Clone, Copy)]
 pub enum DynOutput {
@@ -98,7 +106,6 @@ pub enum DynOutput {
 /// Value-level `enum` for alternate peripheral function configurations
 #[derive(PartialEq, Eq, Clone, Copy)]
 pub enum DynAlternate {
-    A,
     B,
     C,
     D,
@@ -130,6 +137,7 @@ pub enum DynAlternate {
 pub enum DynPinMode {
     Disabled(DynDisabled),
     Input(DynInput),
+    Interrupt(DynInterrupt),
     Output(DynOutput),
     Alternate(DynAlternate),
 }
@@ -147,6 +155,13 @@ pub const DYN_FLOATING_INPUT: DynPinMode = DynPinMode::Input(DynInput::Floating)
 pub const DYN_PULL_DOWN_INPUT: DynPinMode = DynPinMode::Input(DynInput::PullDown);
 /// Value-level variant of [`DynPinMode`] for pull-up input mode
 pub const DYN_PULL_UP_INPUT: DynPinMode = DynPinMode::Input(DynInput::PullUp);
+
+/// Value-level variant of [`DynPinMode`] for floating interrupt mode
+pub const DYN_FLOATING_INTERRUPT: DynPinMode = DynPinMode::Interrupt(DynInterrupt::Floating);
+/// Value-level variant of [`DynPinMode`] for pull-down interrupt mode
+pub const DYN_PULL_DOWN_INTERRUPT: DynPinMode = DynPinMode::Interrupt(DynInterrupt::PullDown);
+/// Value-level variant of [`DynPinMode`] for pull-up interrupt mode
+pub const DYN_PULL_UP_INTERRUPT: DynPinMode = DynPinMode::Interrupt(DynInterrupt::PullUp);
 
 /// Value-level variant of [`DynPinMode`] for push-pull output mode
 pub const DYN_PUSH_PULL_OUTPUT: DynPinMode = DynPinMode::Output(DynOutput::PushPull);
@@ -168,7 +183,7 @@ macro_rules! dyn_alternate {
     };
 }
 
-dyn_alternate!(A, B, C, D, E, F, G);
+dyn_alternate!(B, C, D, E, F, G);
 #[cfg(any(feature = "samd21", feature = "min-samd51g"))]
 dyn_alternate!(H);
 #[cfg(feature = "min-samd51g")]
@@ -329,6 +344,24 @@ impl DynPin {
     #[inline]
     pub fn into_pull_up_input(&mut self) {
         self.into_mode(DYN_PULL_UP_INPUT);
+    }
+
+    /// Configure the pin to operate as a floating interrupt
+    #[inline]
+    pub fn into_floating_interrupt(&mut self) {
+        self.into_mode(DYN_FLOATING_INTERRUPT);
+    }
+
+    /// Configure the pin to operate as a pulled down interrupt
+    #[inline]
+    pub fn into_pull_down_interrupt(&mut self) {
+        self.into_mode(DYN_PULL_DOWN_INTERRUPT);
+    }
+
+    /// Configure the pin to operate as a pulled up interrupt
+    #[inline]
+    pub fn into_pull_up_interrupt(&mut self) {
+        self.into_mode(DYN_PULL_UP_INTERRUPT);
     }
 
     /// Configure the pin to operate as a push-pull output

@@ -33,6 +33,10 @@ use crate::typelevel::Sealed;
 /// `PullUp`.
 pub type Input<MODE> = v2::Input<MODE>;
 
+/// Represents a pin configured for interrupt.
+/// The MODE type is one of `Floating`, `PullDown` or `PullUp`.
+pub type Interrupt<MODE> = v2::Interrupt<MODE>;
+
 /// Represents a pin configured for output.
 /// The MODE type is typically one of `PushPull`, or
 /// `OpenDrain`.
@@ -59,8 +63,6 @@ pub type OpenDrain = v2::PushPull;
 /// This option actually represents a readable `PushPull` output
 pub type ReadableOpenDrain = v2::Readable;
 
-/// Peripheral Function A
-pub type PfA = v2::AlternateA;
 /// Peripheral Function B
 pub type PfB = v2::AlternateB;
 /// Peripheral Function C
@@ -155,6 +157,33 @@ where
         }
     }
 
+    /// Configures the pin to operate as a floating interrupt
+    #[allow(unused_variables)]
+    #[inline]
+    pub fn into_floating_interrupt(self, port: &mut Port) -> Pin<I, Interrupt<Floating>> {
+        Pin {
+            pin: self.pin.into_floating_interrupt(),
+        }
+    }
+
+    /// Configures the pin to operate as a pulled down interrupt pin
+    #[allow(unused_variables)]
+    #[inline]
+    pub fn into_pull_down_interrupt(self, port: &mut Port) -> Pin<I, Interrupt<PullDown>> {
+        Pin {
+            pin: self.pin.into_pull_down_interrupt(),
+        }
+    }
+
+    /// Configures the pin to operate as a pulled up interrupt pin
+    #[allow(unused_variables)]
+    #[inline]
+    pub fn into_pull_up_interrupt(self, port: &mut Port) -> Pin<I, Interrupt<PullUp>> {
+        Pin {
+            pin: self.pin.into_pull_up_interrupt(),
+        }
+    }
+
     /// Configures the pin to operate as an open drain output
     #[allow(unused_variables)]
     #[inline]
@@ -190,13 +219,6 @@ where
         Pin {
             pin: self.pin.into_alternate(),
         }
-    }
-
-    /// Configures the pin to operate with a peripheral
-    #[allow(unused_variables)]
-    #[inline]
-    pub fn into_function_a(self, port: &mut Port) -> Pin<I, PfA> {
-        self.into_alternate()
     }
 
     /// Configures the pin to operate with a peripheral
