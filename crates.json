@@ -22,7 +22,7 @@
       "build": "cargo build --examples --features=unproven,usb"
     },
     "feather_m0": {
-      "build": "cargo build --examples --features=unproven,usb,dma"
+      "build": "cargo build --examples --features=unproven,usb,dma,rtic"
     },
     "feather_m4": {
       "build": "cargo build --examples --features=unproven,usb"
