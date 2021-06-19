@@ -46,11 +46,11 @@ optional = true
 
 [dependencies.cortex-m-rtic]
 optional = true
-version = "0.6.0-alpha.2"
+version = "0.6.0-alpha.4"
 
 [dependencies.rtic-monotonic]
 optional = true
-version = "0.1.0-alpha.0"
+version = "0.1.0-alpha.1"
 
 [dependencies.void]
 default-features = false

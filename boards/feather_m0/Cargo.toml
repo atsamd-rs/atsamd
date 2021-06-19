@@ -52,7 +52,7 @@ version = "0.3"
 optional = true
 
 [dependencies.rtic-monotonic]
-version = "=0.1.0-alpha.0"
+version = "=0.1.0-alpha.1"
 optional = true
 
 [dev-dependencies]
@@ -65,7 +65,7 @@ nom = { version = "5.1", default-features= false }
 heapless = "0.5"
 
 [dev-dependencies.cortex-m-rtic]
-version = "0.6.0-alpha.2"
+version = "0.6.0-alpha.4"
 
 [features]
 # ask the HAL to enable atsamd21g support
