@@ -11,6 +11,9 @@ use void::Void;
 #[cfg(feature = "sdmmc")]
 use embedded_sdmmc::{TimeSource, Timestamp};
 
+#[cfg(feature = "rtic")]
+use rtic_monotonic::{embedded_time, Clock, Fraction, Instant, Monotonic};
+
 // SAMx5x imports
 #[cfg(feature = "min-samd51g")]
 use crate::target_device::{
@@ -102,7 +105,7 @@ impl<Mode: RtcMode> Rtc<Mode> {
     }
 
     #[inline]
-    fn mode0_ctrla(&mut self) -> &MODE0_CTRLA {
+    fn mode0_ctrla(&self) -> &MODE0_CTRLA {
         #[cfg(feature = "min-samd51g")]
         return &self.mode0().ctrla;
         #[cfg(any(feature = "samd11", feature = "samd21"))]
@@ -110,7 +113,7 @@ impl<Mode: RtcMode> Rtc<Mode> {
     }
 
     #[inline]
-    fn mode2_ctrla(&mut self) -> &MODE2_CTRLA {
+    fn mode2_ctrla(&self) -> &MODE2_CTRLA {
         #[cfg(feature = "min-samd51g")]
         return &self.mode2().ctrla;
         #[cfg(any(feature = "samd11", feature = "samd21"))]
@@ -234,7 +237,7 @@ impl Rtc<Count32Mode> {
 
     /// Returns the internal counter value.
     #[inline]
-    pub fn count32(&mut self) -> u32 {
+    pub fn count32(&self) -> u32 {
         // synchronize this read on SAMD11/21. SAMx5x is automatically synchronized
         #[cfg(any(feature = "samd11", feature = "samd21"))]
         {
@@ -433,5 +436,33 @@ impl TimerParams {
         let cycles: u32 = ticks / divider_value as u32;
 
         TimerParams { divider, cycles }
+    }
+}
+
+#[cfg(feature = "rtic")]
+impl Clock for Rtc<Count32Mode> {
+    const SCALING_FACTOR: Fraction = Fraction::new(1, 32_768);
+    type T = u32;
+
+    fn try_now(&self) -> Result<Instant<Self>, embedded_time::clock::Error> {
+        Ok(Instant::new(self.count32()))
+    }
+}
+
+#[cfg(feature = "rtic")]
+impl Monotonic for Rtc<Count32Mode> {
+    unsafe fn reset(&mut self) {
+        // Since reset is only called once, we use it to enable the interrupt generation
+        // bit.
+        self.mode0().intenset.write(|w| w.cmp0().set_bit());
+    }
+
+    fn set_compare(&mut self, instant: &Instant<Rtc<Count32Mode>>) {
+        let value = *instant.duration_since_epoch().integer();
+        unsafe { self.mode0().comp[0].write(|w| w.comp().bits(value)) }
+    }
+
+    fn clear_compare_flag(&mut self) {
+        self.mode0().intflag.write(|w| w.cmp0().set_bit());
     }
 }
