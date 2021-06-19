@@ -44,6 +44,14 @@ version = "0.2.14"
 version = "0.2"
 optional = true
 
+[dependencies.cortex-m-rtic]
+optional = true
+version = "0.6.0-alpha.4"
+
+[dependencies.rtic-monotonic]
+optional = true
+version = "0.1.0-alpha.1"
+
 [dependencies.void]
 default-features = false
 version = "1.0"
@@ -137,6 +145,7 @@ optional = true
 
 
 [features]
+default = ["unproven"]
 # This section lists our feature name to dependency mapping.  This are separated
 # out so that the board support crates can reference a single feature name to
 # select the appropriate chip, and to keep that separate from the dependency name
@@ -195,3 +204,4 @@ usb = ["usb-device"]
 dma = ["unproven"]
 max-channels = ["dma"]
 sdmmc = ["embedded-sdmmc"]
+rtic = ["cortex-m-rtic", "rtic-monotonic"]

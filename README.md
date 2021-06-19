@@ -97,7 +97,29 @@ $ ./build-all.py
 
 Please note that this script requires Python 3.
 
-## Getting code onto the device: Gemma M0
+## How to use a BSP (i.e. getting started writing your own code)
+
+To bootstrap your own project you should be able to copy/paste the Rust code from the examples folder within the folder of the BSP you've chosen. But you shouldn't copy the `Cargo.toml` file from there, since that's not only used for the examples, but also for the whole BSP itself. You want to make your own `Cargo.toml` file. If you're new to this and have no clue what you're doing then this is probably the line you want in there:
+
+```rust
+[dependencies]
+feather_m0 = { git = "https://github.com/atsamd-rs/atsamd" }
+```
+
+Replace "feather_m0" with the name of the BSP you want to use. Note a few things:
+* By specifying the dependency as a remote git repo without specifying a branch, rather than pinning a specific version, we ask Cargo to always grab the latest master branch from Github. This is probably what you want in the beginning, at least now when the project is young, but expect that you'll later want to pin down a specific version.
+* There's a whole bunch of crates inside that git repo, and Cargo automatically figures out which one you want to use by checking what you're naming the dependency. In this case we named it "feather_m0" so Cargo will try to find a BSP called that, somewhere inside the repo.
+
+Now the imports in your Rust code should work, if they look something like this:
+```rust
+use feather_m0 as bsp;
+use bsp::hal;
+use bsp::pac;
+```
+
+You should now have objects called `bsp` and `hal` and `pac`, which contain all the good stuff.
+
+## Getting code onto the device: Adafruit M0/M4 board (such as Gemma M0 & Feather M0)
 
 If you want to flash the device using the tools that come with the Adafruit arduino support package:
 
@@ -118,9 +140,13 @@ This same technique should work for all of the Adafruit M0/M4 boards, as they al
 
 ## Getting code onto the device: JLink
 
-If you have a board with a SWD debug header, such as the [Metro M0][metro_m0], or if you attached the header yourself, you can  use your JLink together with gdb. @wez prefers using the JLinkGDBServer, but you can also use OpenOCD.
+If you have a board with a SWD debug header, such as the [Metro M0][metro_m0], or if you attached the header yourself, you can use your JLink programmer to either flash the device or debug it (together with gdb).
 
-In one window, run `JLinkGDBServer -if SWD -device ATSAMD21G18`, then in another, run these commands from the root   of this repo so that you pick up its `.gdbinit` file:
+You can use JFlashLiteExe to just flash the .bin file (note that for some boards, such as [Feather M0][feather_m0], you need to specify the program memory starting address offset or you'll just get a nondescript flashing error).
+
+To debug your board you can run JLinkGDBServer instead of JFlashLiteExe. @wez prefers using the JLinkGDBServer, but you can also use OpenOCD. Note that if you have a `load` command within your .gdbinit then starting a debug session triggers a flashing, so you don't need a separate flashing step before this.
+
+In one window, run `JLinkGDBServer -if SWD -device ATSAMD21G18`, then in another, run these commands from the root of this repo so that you pick up its `.gdbinit` file:
 
 ```bash
 $ cargo build --manifest-path metro_m0/Cargo.toml --example blinky_basic
