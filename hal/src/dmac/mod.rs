@@ -89,14 +89,6 @@
 //! the NVIC. You will be responsible for clearing the interrupt flags in the
 //! ISR.
 //!
-//! # Payloads
-//!
-//! You may choose to append a payload to a `Transfer` by using the
-//! [`Transfer::with_payload`] method. This will take ownership of an aribtrary
-//! type until the transfer is released (`stop`ped or `wait`ed). This is useful,
-//! for instance, to take ownership of a peripheral until the transfer is
-//! complete and prevent data races.
-//!
 //! # About static lifetimes
 //!
 //! The safe API this driver offers requires all buffers (source and
@@ -178,7 +170,7 @@
 //! # Waker operation
 //!
 //! A [`Transfer`] can also accept a function or closure that will be called on
-//! completion of the transaction, acting like a [`Waker`].
+//! completion of the transaction, acting like a waker.
 //!
 //! ```
 //! fn wake_up() {
@@ -261,14 +253,9 @@
 
 use modular_bitfield::prelude::*;
 
-pub use channel::CallbackStatus;
-#[cfg(feature = "min-samd51g")]
-pub use dma_controller::{BurstLength, FifoThreshold};
-pub use dma_controller::{
-    DmaController, PriorityLevel, PriorityLevelMask, RoundRobinMask, TriggerAction, TriggerSource,
-};
-use transfer::BeatSize;
-pub use transfer::{Beat, Buffer, Transfer};
+pub use channel::*;
+pub use dma_controller::*;
+pub use transfer::*;
 
 #[derive(Debug)]
 /// Runtime errors that may occur when dealing with DMA transfers.

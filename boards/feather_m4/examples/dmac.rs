@@ -14,10 +14,7 @@ use hal::{
     pac::{CorePeripherals, Peripherals},
 };
 
-use hal::dmac::{
-    BurstLength, DmaController, FifoThreshold, PriorityLevel, Transfer, TriggerAction,
-    TriggerSource,
-};
+use hal::dmac::{DmaController, PriorityLevel, Transfer, TriggerAction, TriggerSource};
 
 #[entry]
 fn main() -> ! {
@@ -56,7 +53,7 @@ fn main() -> ! {
         .begin(TriggerSource::DISABLE, TriggerAction::BLOCK);
 
     // Wait for transfer to complete and grab resulting buffers
-    let (chan0, buf_src, buf_dest, _) = xfer.wait();
+    let (chan0, buf_src, buf_dest) = xfer.wait();
 
     // Read the returned buffers
     let _a = buf_src[LENGTH - 1];
@@ -67,13 +64,12 @@ fn main() -> ! {
         cortex_m::singleton!(:[u16; LENGTH] = [0x0000; LENGTH]).unwrap();
 
     // Setup a DMA transfer (memory-to-memory -> fixed source, incrementing
-    // destination) with a 16-bit beat size. Demonstrate payload management.
+    // destination) with a 16-bit beat size.
     let xfer = Transfer::new(chan0, const_16, buf_16, false)
         .unwrap()
-        .with_payload(pm)
         .begin(TriggerSource::DISABLE, TriggerAction::BLOCK);
 
-    let (chan0, const_16, buf_16, mut pm) = xfer.wait();
+    let (chan0, const_16, buf_16) = xfer.wait();
 
     // Read the returned buffers
     let _a = *const_16;
@@ -90,7 +86,7 @@ fn main() -> ! {
         .unwrap()
         .begin(TriggerSource::DISABLE, TriggerAction::BLOCK);
 
-    let (chan0, buf_16, const_16, _) = xfer.wait();
+    let (chan0, buf_16, const_16) = xfer.wait();
 
     // Read the returned buffers
     let _a = *const_16; // We expect the value "LENGTH - 1" to end up here

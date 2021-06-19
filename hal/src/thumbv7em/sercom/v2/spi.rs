@@ -1753,7 +1753,7 @@ mod spi_dma {
             buf: B,
             mut channel: Chan,
             waker: W,
-        ) -> Transfer<Channel<ChannelId<Chan>, Busy>, transfer::BufferPair<B, Self>, (), W>
+        ) -> Transfer<Channel<ChannelId<Chan>, Busy>, transfer::BufferPair<B, Self>, W>
         where
             Chan: channel::AnyChannel<Status = Ready>,
             B: dmac::Buffer<Beat = L::Word> + 'static,
@@ -1792,7 +1792,7 @@ mod spi_dma {
             buf: B,
             mut channel: Chan,
             waker: W,
-        ) -> Transfer<Channel<ChannelId<Chan>, Busy>, transfer::BufferPair<Self, B>, (), W>
+        ) -> Transfer<Channel<ChannelId<Chan>, Busy>, transfer::BufferPair<Self, B>, W>
         where
             Chan: channel::AnyChannel<Status = Ready>,
             B: dmac::Buffer<Beat = L::Word> + 'static,
