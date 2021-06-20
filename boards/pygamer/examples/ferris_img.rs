@@ -8,9 +8,10 @@
 #![no_std]
 #![no_main]
 
+use bsp::{entry, hal, pac, Pins};
 #[cfg(not(feature = "panic_led"))]
 use panic_halt as _;
-use pygamer::{entry, hal, pac, Pins};
+use pygamer as bsp;
 
 use embedded_graphics::prelude::*;
 use embedded_graphics::primitives::{PrimitiveStyleBuilder, Rectangle};
@@ -30,7 +31,7 @@ fn main() -> ! {
         &mut peripherals.OSCCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = Pins::new(peripherals.PORT).split();
+    let pins = Pins::new(peripherals.PORT).split();
     let mut delay = hal::delay::Delay::new(core.SYST, &mut clocks);
 
     let (mut display, _backlight) = pins
@@ -41,7 +42,6 @@ fn main() -> ! {
             &mut peripherals.MCLK,
             peripherals.TC2,
             &mut delay,
-            &mut pins.port,
         )
         .unwrap();
 

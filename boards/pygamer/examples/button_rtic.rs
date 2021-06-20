@@ -1,23 +1,20 @@
 #![no_std]
 #![no_main]
 
-use bsp::{pins::ButtonReader, pins::Keys, Pins};
+use bsp::{hal, ButtonReader, Keys, Pins, RedLed};
 #[cfg(not(feature = "panic_led"))]
 use panic_halt as _;
 use pygamer as bsp;
 
-#[rtic::app(device = bsp::pac, peripherals = true)]
-mod app {
+use hal::clock::GenericClockController;
+use hal::prelude::*;
+use rtic::app;
 
-    use super::*;
-    use bsp::clock::GenericClockController;
-    use bsp::gpio::{OpenDrain, Output, Pa23};
-    use bsp::prelude::*;
-
-    #[local]
-    struct Local {
-        red_led: Pa23<Output<OpenDrain>>,
-        timer: bsp::timer::TimerCounter3,
+#[app(device = crate::hal::pac, peripherals = true)]
+const APP: () = {
+    struct Resources {
+        red_led: RedLed,
+        timer: hal::timer::TimerCounter3,
         buttons: ButtonReader,
     }
 
@@ -56,7 +53,7 @@ mod app {
             &mut device.NVMCTRL,
         );
 
-        let mut pins = Pins::new(device.PORT).split();
+        let pins = Pins::new(device.PORT).split();
 
         let gclk0 = clocks.gclk0();
         let timer_clock = clocks.tc2_tc3(&gclk0).unwrap();
@@ -66,14 +63,10 @@ mod app {
         tc3.start(200.hz());
         tc3.enable_interrupt();
 
-        (
-            Shared {},
-            Local {
-                buttons: pins.buttons.init(&mut pins.port),
-                red_led: pins.led_pin.into_open_drain_output(&mut pins.port),
-                timer: tc3,
-            },
-            init::Monotonics(),
-        )
+        init::LateResources {
+            buttons: pins.buttons.init(),
+            red_led: pins.led_pin.into(),
+            timer: tc3,
+        }
     }
 }
