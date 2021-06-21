@@ -52,14 +52,14 @@ impl ButtonPins {
         // ExtInt line as up on the joystick. As such, we don't
         // support B1.
 
-        // let mut b1 = self.button1.into_ei(port);
-        let mut b2 = self.button2.into_ei(port);
-        let mut b3 = self.button3.into_ei(port);
-        let mut x = self.switch_x.into_ei(port);
-        let mut y = self.switch_y.into_ei(port);
-        let mut z = self.switch_z.into_ei(port);
-        let mut u = self.switch_u.into_ei(port);
-        let mut b = self.switch_b.into_ei(port);
+        // let mut b1 = self.button1.into_floating_ei(port);
+        let mut b2 = self.button2.into_floating_ei(port);
+        let mut b3 = self.button3.into_floating_ei(port);
+        let mut x = self.switch_x.into_floating_ei(port);
+        let mut y = self.switch_y.into_floating_ei(port);
+        let mut z = self.switch_z.into_floating_ei(port);
+        let mut u = self.switch_u.into_floating_ei(port);
+        let mut b = self.switch_b.into_floating_ei(port);
 
         // b1.sense(&mut eic, Sense::BOTH);
         b2.sense(&mut eic, Sense::BOTH);
@@ -113,15 +113,15 @@ pub struct ButtonEvent {
 
 pub struct ButtonController {
     _eic: eic::EIC,
-    // b1: ExtInt10<Pc26<PfA>>,
-    b2: ExtInt11<Pc27<PfA>>,
-    b3: ExtInt12<Pc28<PfA>>,
+    // b1: ExtInt10<Pc26<Interrupt<Floating>>>,
+    b2: ExtInt11<Pc27<Interrupt<Floating>>>,
+    b3: ExtInt12<Pc28<Interrupt<Floating>>>,
 
-    x: ExtInt3<Pd8<PfA>>,
-    y: ExtInt4<Pd9<PfA>>,
-    z: ExtInt5<Pd10<PfA>>,
-    u: ExtInt10<Pd20<PfA>>,
-    b: ExtInt7<Pd12<PfA>>,
+    x: ExtInt3<Pd8<Interrupt<Floating>>>,
+    y: ExtInt4<Pd9<Interrupt<Floating>>>,
+    z: ExtInt5<Pd10<Interrupt<Floating>>>,
+    u: ExtInt10<Pd20<Interrupt<Floating>>>,
+    b: ExtInt7<Pd12<Interrupt<Floating>>>,
 }
 
 macro_rules! isr {

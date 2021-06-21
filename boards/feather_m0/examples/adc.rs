@@ -1,21 +1,22 @@
 #![no_std]
 #![no_main]
 
-extern crate cortex_m;
-extern crate cortex_m_semihosting;
-extern crate embedded_hal;
-extern crate feather_m0 as hal;
 #[cfg(not(feature = "use_semihosting"))]
-extern crate panic_halt;
+use panic_halt as _;
 #[cfg(feature = "use_semihosting")]
-extern crate panic_semihosting;
+use panic_semihosting as _;
 
 use cortex_m_semihosting::hprintln;
+
+use bsp::hal;
+use bsp::pac;
+use feather_m0 as bsp;
+
+use bsp::entry;
 use hal::adc::Adc;
 use hal::clock::GenericClockController;
-use hal::entry;
-use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
+use pac::{CorePeripherals, Peripherals};
 
 #[entry]
 fn main() -> ! {
@@ -27,10 +28,10 @@ fn main() -> ! {
         &mut peripherals.SYSCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = hal::Pins::new(peripherals.PORT);
+    let pins = bsp::Pins::new(peripherals.PORT);
     let mut delay = hal::delay::Delay::new(core.SYST, &mut clocks);
     let mut adc = Adc::adc(peripherals.ADC, &mut peripherals.PM, &mut clocks);
-    let mut a0 = pins.a0.into_function_b(&mut pins.port);
+    let mut a0: bsp::A0 = pins.a0.into();
 
     loop {
         let data: u16 = adc.read(&mut a0).unwrap();

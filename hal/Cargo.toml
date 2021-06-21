@@ -27,6 +27,7 @@ modular-bitfield = "0.11"
 nb = "0.1"
 paste = "1.0"
 rand_core = "0.5"
+replace_with = { version = "0.1", default-features = false }
 seq-macro = "0.2.1"
 typenum = "1.12.0"
 vcell = "0.1"
@@ -43,6 +44,14 @@ version = "0.2.14"
 version = "0.2"
 optional = true
 
+[dependencies.cortex-m-rtic]
+optional = true
+version = "0.6.0-alpha.4"
+
+[dependencies.rtic-monotonic]
+optional = true
+version = "0.1.0-alpha.1"
+
 [dependencies.void]
 default-features = false
 version = "1.0"
@@ -52,6 +61,11 @@ version = "1.0"
 # We use a feature named "samdFOO" to pull in the dependency named "atsamdFOO"
 [dependencies.atsamd11c]
 path = "../pac/atsamd11c"
+version = "0.9"
+optional = true
+
+[dependencies.atsamd11d]
+path = "../pac/atsamd11d"
 version = "0.9"
 optional = true
 
@@ -125,7 +139,13 @@ path = "../pac/atsame54p"
 version = "0.9"
 optional = true
 
+[dependencies.embedded-sdmmc]
+version = "0.3"
+optional = true
+
+
 [features]
+default = ["unproven"]
 # This section lists our feature name to dependency mapping.  This are separated
 # out so that the board support crates can reference a single feature name to
 # select the appropriate chip, and to keep that separate from the dependency name
@@ -137,6 +157,8 @@ device = [] # Should be included if we are building for a specific target device
 samd11 = ["device"] # Convenience feature for shared configuration of samd11 chips.
 samd11c = ["atsamd11c", "samd11"]
 samd11c-rt = ["samd11c", "atsamd11c/rt"]
+samd11d = ["atsamd11d", "samd11"]
+samd11d-rt = ["samd11d", "atsamd11d/rt"]
 samd21 = ["device"] # Convenience feature for shared configuration of samd21 chips.
 samd21e = ["atsamd21e", "samd21"]
 samd21e-rt = ["samd21e", "atsamd21e/rt"]
@@ -181,3 +203,5 @@ use_rtt = ["jlink_rtt"]
 usb = ["usb-device"]
 dma = ["unproven"]
 max-channels = ["dma"]
+sdmmc = ["embedded-sdmmc"]
+rtic = ["cortex-m-rtic", "rtic-monotonic"]

@@ -47,6 +47,14 @@ optional = true
 version = "0.1"
 optional = true
 
+[dependencies.embedded-sdmmc]
+version = "0.3"
+optional = true
+
+[dependencies.rtic-monotonic]
+version = "=0.1.0-alpha.1"
+optional = true
+
 [dev-dependencies]
 cortex-m-semihosting = "0.3"
 ssd1306 = "0.3.1"
@@ -55,6 +63,9 @@ nb = "0.1"
 drogue-nom-utils = "0.1"
 nom = { version = "5.1", default-features= false }
 heapless = "0.5"
+
+[dev-dependencies.cortex-m-rtic]
+version = "0.6.0-alpha.4"
 
 [features]
 # ask the HAL to enable atsamd21g support
@@ -72,6 +83,10 @@ rfm = []
 express = []
 dma = ["atsamd-hal/dma"]
 max-channels = ["dma", "atsamd-hal/max-channels"]
+# Enable pins for the adalogger SD card reader
+adalogger = []
+sdmmc = ["embedded-sdmmc", "atsamd-hal/sdmmc"]
+rtic = ["atsamd-hal/rtic", "rtic-monotonic"]
 
 [profile.dev]
 incremental = false
@@ -132,4 +147,12 @@ required-features = ["dma"]
 
 [[example]]
 name = "clock"
-required-features = ["usb"]
+required-features = ["usb", "unproven"]
+
+[[example]]
+name = "adalogger"
+required-features = ["adalogger", "usb", "sdmmc", "unproven"]
+
+[[example]]
+name = "blinky_rtic"
+required-features = ["rtic", "unproven"]

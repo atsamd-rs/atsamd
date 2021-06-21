@@ -11,7 +11,7 @@ use hal::prelude::*;
 use hal::*;
 
 pub use hal::common::*;
-pub use hal::samd21::*;
+
 pub use hal::target_device as pac;
 
 use gpio::{Floating, Input, Port};

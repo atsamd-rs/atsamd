@@ -337,7 +337,7 @@ impl Display {
                 Pb5<Output<PushPull>>,
                 Pa0<Output<PushPull>>,
             >,
-            Pwm2,
+            Pwm2<gpio::v2::PA01>,
         ),
         (),
     > {
@@ -567,9 +567,9 @@ pub struct QSPIFlash {
 }
 
 impl QSPIFlash {
-    pub fn init(self, mclk: &mut MCLK, port: &mut Port, qspi: QSPI) -> qspi::Qspi<qspi::OneShot> {
+    pub fn init(self, mclk: &mut MCLK, _port: &mut Port, qspi: QSPI) -> qspi::Qspi<qspi::OneShot> {
         qspi::Qspi::new(
-            mclk, port, qspi, self.sck, self.cs, self.data0, self.data1, self.data2, self.data3,
+            mclk, qspi, self.sck, self.cs, self.data0, self.data1, self.data2, self.data3,
         )
     }
 }

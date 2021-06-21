@@ -1,11 +1,14 @@
 use atsamd_hal::clock::GenericClockController;
+use atsamd_hal::gpio::v2::{PB19, PB20};
 use atsamd_hal::gpio::*;
 use atsamd_hal::hal::blocking::delay::DelayMs;
-use atsamd_hal::hal::spi;
+use atsamd_hal::hal::spi::{Phase, Polarity};
 use atsamd_hal::prelude::*;
-use atsamd_hal::sercom::{PadPin, SPIMaster7, Sercom7Pad1, Sercom7Pad2, Sercom7Pad3};
+use atsamd_hal::sercom::v2::spi::{self, Spi};
+use atsamd_hal::sercom::v2::{IoSet4, Sercom7};
 use atsamd_hal::target_device::{MCLK, SERCOM7};
 use atsamd_hal::time::Hertz;
+use atsamd_hal::typelevel::NoneT;
 use display_interface_spi::SPIInterface;
 use ili9341::{Ili9341, Orientation};
 
@@ -33,13 +36,11 @@ pub struct Display {
     pub backlight: Pc5<Input<Floating>>,
 }
 
+pub type SpiPads = spi::Pads<Sercom7, IoSet4, NoneT, PB19, PB20>;
+
 /// Type alias for the ILI9341 LCD display.
 pub type LCD = Ili9341<
-    SPIInterface<
-        SPIMaster7<Sercom7Pad2<Pb18<PfD>>, Sercom7Pad3<Pb19<PfD>>, Sercom7Pad1<Pb20<PfD>>>,
-        Pc6<Output<PushPull>>,
-        Pb21<Output<PushPull>>,
-    >,
+    SPIInterface<Spi<spi::Config<SpiPads>>, Pc6<Output<PushPull>>, Pb21<Output<PushPull>>>,
     Pc7<Output<PushPull>>,
 >;
 
@@ -55,26 +56,18 @@ impl Display {
         sercom7: SERCOM7,
         mclk: &mut MCLK,
         port: &mut Port,
-        clock_speed: F,
+        baud: F,
         delay: &mut D,
     ) -> Result<(LCD, Pc5<Output<PushPull>>), ()> {
         // Initialize the SPI peripherial on the configured pins, using SERCOM7.
         let gclk0 = clocks.gclk0();
-        let spi = SPIMaster7::new(
-            &clocks.sercom7_core(&gclk0).ok_or(())?,
-            clock_speed,
-            spi::Mode {
-                phase: spi::Phase::CaptureOnFirstTransition,
-                polarity: spi::Polarity::IdleLow,
-            },
-            sercom7,
-            mclk,
-            (
-                self.miso.into_pad(port),
-                self.mosi.into_pad(port),
-                self.sck.into_pad(port),
-            ),
-        );
+        let clock = &clocks.sercom7_core(&gclk0).ok_or(())?;
+        let pads = spi::Pads::default().data_out(self.mosi).sclk(self.sck);
+        let spi = spi::Config::new(mclk, sercom7, pads, clock.freq())
+            .cpol(Polarity::IdleLow)
+            .cpha(Phase::CaptureOnFirstTransition)
+            .baud(baud)
+            .enable();
 
         // Configure the chip select, data/command, and reset pins as push-pull outputs.
         let cs = self.cs.into_push_pull_output(port);
