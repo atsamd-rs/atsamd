@@ -1,9 +1,8 @@
 //! Define a SERCOM pad type
 //!
-//! This module helps configure [`Pin`]s as SERCOM pads. It does not define a
-//! pad type directly. Rather, it provides type-level tools to convert `Pin`s
-//! to the correct [`PinMode`] and enforce type-level constraints at
-//! compile-time.
+//! This module helps configure [`Pin`]s as SERCOM pads. It provides type-level
+//! tools to convert `Pin`s to the correct [`PinMode`] and to enforce type-level
+//! constraints at compile-time.
 //!
 //! # Overview
 //!
@@ -17,23 +16,10 @@
 //!   [`AlternateD`]. It acts as both a [type class] for SERCOM pads and as a
 //!   [type-level function] to recover the corresponding [`Sercom`] and
 //!   [`PadNum`] types from the `Pin`.
-//! - The [`PadLookup`] trait is used primarily to map [`PinId`]s to the
-//!   corresponding `PinMode` for a given SERCOM pad. This relieves a burden on
-//!   users, who no longer need to manually look up the corresponding `PinMode`.
-//!
-//! # The `GetPad` trait
-//!
-//! The [`GetPad<S>`] trait is a type-level function mapping an input type to
-//! a configured `Pin` type for the given `Sercom`. For SAMD21 and SAMx5x
-//! chips, `GetPad` is implemented on `PinId`s, while for SAMD11 chips, `GetPad`
-//! is implemented on (`PadNum`, `PinId`) tuples, marked by the
-#![cfg_attr(feature = "samd11", doc = "[`NITuple`]")]
-#![cfg_attr(not(feature = "samd11"), doc = "`NITuple`")]
-//! [type class].
-//!
-//! `GetPad` serves to improve the ergonomics of specifying pad types. With
-//! knowledge of a desired `Sercom`, `GetPad<S>` allows users to specify a
-//! unique pad with the minimum amount of information for the given chip.
+//! - The [`GetPad`] trait maps each [`PinId`] to its corresponding, pad-related
+//!   types. The [`PadMode`] alias uses `GetPad` to recover the corresponding
+//!   `PinMode` for a given SERCOM pad, while the [`Pad`] alias recovers the
+//!   configured [`Pin`] type.
 //!
 //! [`AlternateC`]: crate::gpio::v2::AlternateC
 //! [`AlternateD`]: crate::gpio::v2::AlternateD
@@ -46,7 +32,7 @@
 \n
 SAMx5x chips do not allow arbitrary combinations of `PinId` for a given
 SERCOM. Instead, all `PinId`s must belong to the same IOSET. This module
-defines a [type-level enum], [`IoSet`], to enforce this restriction. The
+defines a [type-level enum], [`IoSet`], to enforce this restriction, and the
 [`InIoSet`] [type class] is responsible for labeling each `IsPad` type with
 its corresponding, valid `IoSet`\\(s).\n
 \n
@@ -57,6 +43,8 @@ use paste::paste;
 use seq_macro::seq;
 
 use super::Sercom;
+#[cfg(not(feature = "samd11"))]
+use crate::gpio::v2::OptionalPinId;
 use crate::gpio::v2::{AnyPin, OptionalPin, Pin, PinId, PinMode};
 use crate::typelevel::{NoneT, Sealed};
 
@@ -102,100 +90,6 @@ impl OptionalPadNum for NoneT {}
 impl<N: PadNum> OptionalPadNum for N {}
 
 //==============================================================================
-// NITuple
-//==============================================================================
-
-/// Type-class for (`PadNum`, `PinId`) tuples
-///
-/// This trait serves as both a [type class] for ([`PadNum`], [`PinId`]) tuples
-/// and as a [type-level function] mapping each `NITuple` to its constituent
-/// `PadNum` and `PinId` types.
-///
-/// [type class]: crate::typelevel#type-classes
-/// [type-level function]: crate::typelevel#type-level-functions
-#[cfg(feature = "samd11")]
-pub trait NITuple: Sealed {
-    type Num: PadNum;
-    type Id: PinId;
-}
-
-#[cfg(feature = "samd11")]
-impl<N: PadNum, I: PinId> Sealed for (N, I) {}
-
-#[cfg(feature = "samd11")]
-impl<N: PadNum, I: PinId> NITuple for (N, I) {
-    type Num = N;
-    type Id = I;
-}
-
-//==============================================================================
-// OptionalNITuple
-//==============================================================================
-
-/// Type-level equivalent of `Option<NITuple>`
-///
-/// See the [`OptionalKind`] documentation for more details on the pattern.
-///
-/// [`OptionalKind`]: crate::typelevel#optionalkind-trait-pattern
-#[cfg(feature = "samd11")]
-pub trait OptionalNITuple: Sealed {}
-
-#[cfg(feature = "samd11")]
-impl OptionalNITuple for NoneT {}
-
-#[cfg(feature = "samd11")]
-impl<N: NITuple> OptionalNITuple for N {}
-
-//==============================================================================
-// GetNITuple
-//==============================================================================
-
-/// Type-level function to get the corresponding [`NITuple`] for a [`Pin`]
-/// configured as a SERCOM pad
-///
-/// This trait acts as a [type-level function]. As input, it takes a `Pin`
-/// configured as a SERCOM pad, and it uses the [`AnyPin`] and [`IsPad`] traits
-/// to return an `NITuple`.
-///
-/// [type-level function]: crate::typelevel#type-level-functions
-#[cfg(feature = "samd11")]
-pub trait GetNITuple: AnyPin + IsPad {
-    type NITuple: NITuple;
-}
-
-#[cfg(feature = "samd11")]
-impl<P: AnyPin + IsPad> GetNITuple for P {
-    type NITuple = (<P as IsPad>::PadNum, <P as AnyPin>::Id);
-}
-
-//==============================================================================
-// GetOptionalNITuple
-//==============================================================================
-
-/// Type-level function to recover an [`OptionalNITuple`] from an
-/// [`OptionalPin`]
-///
-/// This trait acts as a [type-level function]. In pseudo-Rust, it is the
-/// type-level equivalent of starting with an `Option<Pin>` and calling
-/// `.map(GetNITuple)` to recover an `Option<NITuple>`.
-///
-/// [type-level function]: crate::typelevel#type-level-functions
-#[cfg(feature = "samd11")]
-pub trait GetOptionalNITuple: OptionalPin {
-    type NITuple: OptionalNITuple;
-}
-
-#[cfg(feature = "samd11")]
-impl GetOptionalNITuple for NoneT {
-    type NITuple = NoneT;
-}
-
-#[cfg(feature = "samd11")]
-impl<P: GetNITuple> GetOptionalNITuple for P {
-    type NITuple = P::NITuple;
-}
-
-//==============================================================================
 // IsPad
 //==============================================================================
 
@@ -207,183 +101,151 @@ impl<P: GetNITuple> GetOptionalNITuple for P {
 ///
 /// [type class]: crate::typelevel#type-classes
 /// [type-level function]: crate::typelevel#type-level-functions
-pub trait IsPad {
+pub trait IsPad: AnyPin {
     type Sercom: Sercom;
     type PadNum: PadNum;
 }
 
 //==============================================================================
-// PadLookup
+// OptionalPad
 //==============================================================================
 
-/// Type-level function mapping [`PinId`]s to other pad-related types
+/// Type-level equivalent of `Option<Pad>`
 ///
-/// For SAMD21 and SAMx5x chips, a [`Sercom`] and a [`PinId`] is enough
-/// information to uniquely identify a pad, so this trait returns the
-/// corresponding [`PadNum`] and [`PinMode`].
+/// See the [`OptionalKind`] documentation for more details on the pattern.
 ///
-/// For SAMD11 chips, on the other hand, some `PinId`s can serve as two
-/// different `PadNum`s for the *same* `Sercom`. For these chips, `PadLookup`
-/// requires a second type parameter to specify the `PadNum` and only returns
-/// the `PinMode`.
-#[cfg(feature = "samd11")]
-pub trait PadLookup<S, N>
-where
-    S: Sercom,
-    Self: PinId,
-{
-    type PinMode: PinMode;
+/// [`OptionalKind`]: crate::typelevel#optionalkind-trait-pattern
+pub trait OptionalPad: OptionalPin {
+    type PadNum: OptionalPadNum;
 }
 
-/// Type-level function mapping [`PinId`]s to other pad-related types
-///
-/// For SAMD21 and SAMx5x chips, a [`Sercom`] and a [`PinId`] is enough
-/// information to uniquely identify a pad, so this trait returns the
-/// corresponding [`PadNum`] and [`PinMode`].
-///
-/// For SAMD11 chips, on the other hand, some `PinId`s can serve as two
-/// different `PadNum`s for the *same* `Sercom`. For these chips, `PadLookup`
-/// requires a second type parameter to specify the `PadNum` and only returns
-/// the `PinMode`.
-#[cfg(not(feature = "samd11"))]
-pub trait PadLookup<S>
-where
-    S: Sercom,
-    Self: PinId,
-{
-    type PadNum: PadNum;
-    type PinMode: PinMode;
+impl OptionalPad for NoneT {
+    type PadNum = NoneT;
 }
 
-//==============================================================================
-// GetPadKey
-//==============================================================================
+impl<P: IsPad> OptionalPad for P {
+    type PadNum = P::PadNum;
+}
 
-/// Marker trait for implementers of [`GetPad`]
+/// Type-level equivalent of `Some(Pad)`
 ///
-/// This trait has two purposes. First, it papers over differences between the
-/// SAMD11 chips and all other chips. And second, it acts to prevent
-/// conflicting-implementation errors.
+/// See the [`OptionalKind`] documentation for more details on the pattern.
 ///
-/// The latter purpose is a limitation of the Rust trait system. For some
-/// reason, when a trait takes type parameters, the compiler can't properly
-/// enforce the trait orphan rules. As a workaround, you can use a marker trait
-/// without type parameters, like this one, one to make it possible.
-#[cfg(feature = "samd11")]
-pub trait GetPadKey: NITuple {}
+/// [`OptionalKind`]: crate::typelevel#optionalkind-trait-pattern
+pub trait SomePad: IsPad {}
 
-#[cfg(feature = "samd11")]
-impl<P: NITuple> GetPadKey for P {}
-
-/// Marker trait for implementers of [`GetPad`]
-///
-/// This trait has two purposes. First, it papers over differences between the
-/// SAMD11 chips and all other chips. And second, it acts to prevent
-/// conflicting-implementation errors.
-///
-/// The latter purpose is a limitation of the Rust trait system. For some
-/// reason, when a trait takes type parameters, the compiler can't properly
-/// enforce the trait orphan rules. As a workaround, you can use a marker trait
-/// without type parameters, like this one, one to make it possible.
-#[cfg(not(feature = "samd11"))]
-pub trait GetPadKey: PinId {}
-
-#[cfg(not(feature = "samd11"))]
-impl<I: PinId> GetPadKey for I {}
+impl<P: IsPad> SomePad for P {}
 
 //==============================================================================
 // GetPad
 //==============================================================================
 
-/// Type-level function to uniquely specify a SERCOM [`Pad`] type
+/// Type-level function mapping [`PinId`]s to SERCOM-pad-related types
 ///
-/// This trait acts as a [type-level function] to uniquely specify a `Pad`
-/// type with as little information as possible.
+/// For SAMD21 and SAMx5x chips, a [`Sercom`] and a [`PinId`] is enough
+/// information to uniquely identify a pad, so this trait returns the
+/// corresponding [`PadNum`] and [`PinMode`].
 ///
-/// SAMD21 and SAMx5x chips only ever map a given [`PinId`] to a single
-/// [`PadNum`] for a given [`Sercom`]. SAMD11 chips, on the other hand,
-/// sometimes have the same `PinId` mapped to two different `PadNum`s for the
-/// *same* `Sercom`. As a result, a `Sercom` and a `PinId` is enough information
-/// to uniquely specify a `Pad` for SAMD21 and SAMDx5x chips, but you need to
-/// know the `PadNum` for SAMD11 chips.
+/// For SAMD11 chips, on the other hand, some `PinId`s can serve as two
+/// different `PadNum`s for the *same* `Sercom`. For these chips, `GetPad`
+/// requires a second type parameter to specify the `PadNum` and only returns
+/// the `PinMode`.
 ///
-/// For SAMD21 and SAMx5x chips, this trait is implemented on `PinId`s directly.
-/// For SAMD11 chips, it is implemented on (`PadNum`, `PinId`) tupes, also known
-/// as
-#[cfg_attr(feature = "samd11", doc = "[`NITuple`]s")]
-#[cfg_attr(not(feature = "samd11"), doc = "`NITuple`s")]
+/// See the documentation on [type-level functions] for more details.
 ///
-/// This trait improves the ergonomics of fully specifying a `Pad` in downstream
-/// modules, like the [`spi::Pads`](super::spi::Pads) type.
+/// [type-level functions]: crate::typelevel#type-level-functions
+#[cfg(feature = "samd11")]
+pub trait GetPad<S, N>
+where
+    S: Sercom,
+    N: PadNum,
+    Self: PinId,
+{
+    type PinMode: PinMode;
+}
+
+/// Type-level function mapping [`PinId`]s to SERCOM-pad-related types
 ///
-/// [type-level function]: crate::typelevel#type-level-functions
+/// For SAMD21 and SAMx5x chips, a [`Sercom`] and a [`PinId`] is enough
+/// information to uniquely identify a pad, so this trait returns the
+/// corresponding [`PadNum`] and [`PinMode`].
+///
+/// For SAMD11 chips, on the other hand, some `PinId`s can serve as two
+/// different `PadNum`s for the *same* `Sercom`. For these chips, `GetPad`
+/// requires a second type parameter to specify the `PadNum` and only returns
+/// the `PinMode`.
+///
+/// See the documentation on [type-level functions] for more details.
+///
+/// [type-level functions]: crate::typelevel#type-level-functions
+#[cfg(not(feature = "samd11"))]
 pub trait GetPad<S>
 where
     S: Sercom,
-    Self: GetPadKey,
+    Self: PinId,
 {
     type PadNum: PadNum;
-    type Pad: AnyPin;
+    type PinMode: PinMode;
 }
 
-/// Type alias to recover a [`Pin`] configured as a SERCOM pad using [`GetPad`]
-pub type Pad<S, T> = <T as GetPad<S>>::Pad;
+//==============================================================================
+// GetPad aliases
+//==============================================================================
 
-/// Type alias to recover the corresponding [`PinMode`] for a given
-/// combination of [`Sercom`], [`PadNum`] and [`PinId`]
+/// Type alias using [`GetPad`] to recover the [`PinMode`] for a given SERCOM
+/// pad
 #[cfg(feature = "samd11")]
-pub type PadMode<S, N, I> = <I as PadLookup<S, N>>::PinMode;
+pub type PadMode<S, N, I> = <I as GetPad<S, N>>::PinMode;
 
-#[cfg(feature = "samd11")]
-impl<S, T> GetPad<S> for T
-where
-    S: Sercom,
-    T: NITuple,
-    T::Id: PadLookup<S, T::Num>,
-{
-    type PadNum = T::Num;
-    type Pad = Pin<T::Id, PadMode<S, T::Num, T::Id>>;
-}
-
+/// Type alias using [`GetPad`] to recover the [`PinMode`] for a given SERCOM
+/// pad
 #[cfg(not(feature = "samd11"))]
-impl<S, I> GetPad<S> for I
-where
-    S: Sercom,
-    I: PadLookup<S>,
-{
-    type PadNum = I::PadNum;
-    type Pad = Pin<I, I::PinMode>;
-}
+pub type PadMode<S, I> = <I as GetPad<S>>::PinMode;
+
+/// Type alias to recover a [`Pin`] configured as a SERCOM pad in the correct
+/// [`PadMode`]
+#[cfg(feature = "samd11")]
+pub type Pad<S, N, I> = Pin<I, PadMode<S, N, I>>;
+
+/// Type alias to recover a [`Pin`] configured as a SERCOM pad in the correct
+/// [`PadMode`]
+#[cfg(not(feature = "samd11"))]
+pub type Pad<S, I> = Pin<I, PadMode<S, I>>;
 
 //==============================================================================
 // GetOptionalPad
 //==============================================================================
 
-/// Type-level function to recover an [`OptionalPin`], configured as a SERCOM
-/// pad, from an optional implementer of [`GetPad`]
+/// Type-level function mapping [`OptionalPinId`]s to their corresponding
+/// [`OptionalPad`]s
 ///
-/// This trait acts as a [type-level function]. In pseudo-Rust, it is the
-/// type-level equivalent of starting with an `Option<GetPadKey>` and calling
-/// `.map(GetPad)` to recover an `Option<Pad>`.
+/// This trait acts as a [type-level function] mapping `OptionalPinId`s to their
+/// corresponding `OptionalPad`. In pseudo-Rust, it is the type-level equivalent
+/// of starting with `Option<PinId>` and calling `.map(GetPad)` to recover an
+/// `Option<Pad>`.
 ///
-/// [type-level function]: crate::typelevel#type-level-functions
-pub trait GetOptionalPad<S: Sercom>: Sealed {
+/// [type-level functions]: crate::typelevel#type-level-functions
+#[cfg(not(feature = "samd11"))]
+pub trait GetOptionalPad<S: Sercom>: OptionalPinId {
     type PadNum: OptionalPadNum;
-    type Pad: OptionalPin;
+    type Pad: OptionalPad;
 }
 
+#[cfg(not(feature = "samd11"))]
 impl<S: Sercom> GetOptionalPad<S> for NoneT {
     type PadNum = NoneT;
     type Pad = NoneT;
 }
 
-impl<S, T> GetOptionalPad<S> for T
+#[cfg(not(feature = "samd11"))]
+impl<S, I> GetOptionalPad<S> for I
 where
     S: Sercom,
-    T: GetPad<S> + GetPadKey,
+    I: PinId + GetPad<S>,
+    Pad<S, I>: IsPad,
 {
-    type PadNum = T::PadNum;
-    type Pad = T::Pad;
+    type PadNum = I::PadNum;
+    type Pad = Pad<S, I>;
 }
 
 //==============================================================================

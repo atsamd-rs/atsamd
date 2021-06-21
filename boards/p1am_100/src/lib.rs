@@ -15,7 +15,7 @@ pub use hal::common::*;
 pub use hal::target_device as pac;
 
 use hal::clock::GenericClockController;
-use hal::sercom::v2::spi;
+use hal::sercom::v2::{spi, Sercom1, Sercom2};
 use hal::sercom::{I2CMaster0, UART5};
 use hal::time::Hertz;
 
@@ -201,7 +201,7 @@ bsp_pins!(
 const BASE_CONTROLLER_FREQ: Hertz = Hertz(1000000);
 const BASE_CONTROLLER_SPI_MODE: embedded_hal::spi::Mode = spi::MODE_2;
 
-pub type Spi0Pads = spi::PadsFromPins<Spi0Miso, Spi0Mosi, Spi0Sck>;
+pub type Spi0Pads = spi::Pads<Sercom1, Spi0Miso, Spi0Mosi, Spi0Sck>;
 
 pub type Spi0 = spi::Spi<spi::Config<Spi0Pads>>;
 
@@ -226,7 +226,7 @@ pub fn base_controller_spi(
         .enable()
 }
 
-type SdPads = spi::PadsFromPins<SdMiso, SdMosi, SdSck>;
+type SdPads = spi::Pads<Sercom2, SdMiso, SdMosi, SdSck>;
 
 pub type SdSpi = spi::Spi<spi::Config<SdPads>>;
 

@@ -8,7 +8,7 @@ pub use embedded_hal as ehal;
 pub use hal::pac;
 
 use hal::clock::GenericClockController;
-use hal::sercom::v2::spi;
+use hal::sercom::v2::{spi, Sercom4};
 use hal::sercom::{I2CMaster3, UART0};
 use hal::time::Hertz;
 
@@ -103,14 +103,14 @@ hal::bsp_pins!(
         /// The I2C data line
         name: sda
         aliases: {
-            AlternateD: Sda
+            AlternateC: Sda
         }
     }
     PA23 {
         /// The I2C clock line
         name: scl
         aliases: {
-            AlternateD: Scl
+            AlternateC: Scl
         }
     }
 
@@ -208,7 +208,7 @@ hal::bsp_pins!(
 /// SPI pads for the labelled SPI peripheral
 ///
 /// You can use these pads with other, user-defined [`spi::Config`]urations.
-pub type SpiPads = spi::PadsFromPins<Miso, Mosi, Sclk>;
+pub type SpiPads = spi::Pads<Sercom4, Miso, Mosi, Sclk>;
 
 /// SPI master for the labelled SPI peripheral
 ///

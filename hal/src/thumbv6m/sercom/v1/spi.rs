@@ -7,7 +7,8 @@ use core::marker::PhantomData;
 
 use crate::clock;
 use crate::hal::spi::{FullDuplex, Mode, Phase, Polarity};
-use crate::sercom::pads::*;
+use crate::sercom::v1::pads::CompatiblePad;
+use crate::sercom::v2::*;
 use crate::spi_common::CommonSpi;
 use crate::target_device::sercom0::SPI;
 use crate::target_device::{PM, SERCOM0, SERCOM1};
@@ -75,9 +76,9 @@ where
 impl<S, PAD0, PAD1, PAD2> From<(PAD0, PAD1, PAD2)> for Padout<S, PAD0, PAD1, PAD2>
 where
     S: Sercom,
-    PAD0: IsPad<Sercom = S>,
-    PAD1: IsPad<Sercom = S>,
-    PAD2: IsPad<Sercom = S>,
+    PAD0: CompatiblePad<Sercom = S>,
+    PAD1: CompatiblePad<Sercom = S>,
+    PAD2: CompatiblePad<Sercom = S>,
     (PAD0::PadNum, PAD1::PadNum, PAD2::PadNum): DipoDopo,
 {
     fn from(pads: (PAD0, PAD1, PAD2)) -> Padout<S, PAD0, PAD1, PAD2> {
@@ -93,9 +94,9 @@ where
 impl<S, PAD0, PAD1, PAD2> DipoDopo for Padout<S, PAD0, PAD1, PAD2>
 where
     S: Sercom,
-    PAD0: IsPad<Sercom = S>,
-    PAD1: IsPad<Sercom = S>,
-    PAD2: IsPad<Sercom = S>,
+    PAD0: CompatiblePad<Sercom = S>,
+    PAD1: CompatiblePad<Sercom = S>,
+    PAD2: CompatiblePad<Sercom = S>,
     (PAD0::PadNum, PAD1::PadNum, PAD2::PadNum): DipoDopo,
 {
     const DIPO: u8 = <(PAD0::PadNum, PAD1::PadNum, PAD2::PadNum)>::DIPO;

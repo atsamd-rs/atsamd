@@ -7,7 +7,8 @@
 use crate::clock;
 use crate::hal::blocking::serial::{write::Default, Write};
 use crate::hal::serial;
-use crate::sercom::pads::*;
+use crate::sercom::v1::pads::CompatiblePad;
+use crate::sercom::v2::*;
 use crate::target_device::sercom0::USART_INT;
 use crate::target_device::{MCLK, SERCOM0, SERCOM1, SERCOM2, SERCOM3, SERCOM4, SERCOM5};
 #[cfg(feature = "min-samd51n")]
@@ -137,8 +138,8 @@ where
 impl<S, PAD0, PAD1> From<(PAD0, PAD1)> for Padout<S, PAD0, PAD1, (), ()>
 where
     S: Sercom,
-    PAD0: IsPad<Sercom = S>,
-    PAD1: IsPad<Sercom = S>,
+    PAD0: CompatiblePad<Sercom = S>,
+    PAD1: CompatiblePad<Sercom = S>,
     (PAD0::PadNum, PAD1::PadNum): RxpoTxpo,
 {
     fn from(pads: (PAD0, PAD1)) -> Padout<S, PAD0, PAD1, (), ()> {
@@ -155,8 +156,8 @@ where
 impl<S, PAD0, PAD1> RxpoTxpo for Padout<S, PAD0, PAD1, (), ()>
 where
     S: Sercom,
-    PAD0: IsPad<Sercom = S>,
-    PAD1: IsPad<Sercom = S>,
+    PAD0: CompatiblePad<Sercom = S>,
+    PAD1: CompatiblePad<Sercom = S>,
     (PAD0::PadNum, PAD1::PadNum): RxpoTxpo,
 {
     const RXPO: u8 = <(PAD0::PadNum, PAD1::PadNum)>::RXPO;
@@ -167,10 +168,10 @@ where
 impl<S, PAD0, PAD1, PAD2, PAD3> From<(PAD0, PAD1, PAD2, PAD3)> for Padout<S, PAD0, PAD1, PAD2, PAD3>
 where
     S: Sercom,
-    PAD0: IsPad<Sercom = S>,
-    PAD1: IsPad<Sercom = S>,
-    PAD2: IsPad<Sercom = S>,
-    PAD3: IsPad<Sercom = S>,
+    PAD0: CompatiblePad<Sercom = S>,
+    PAD1: CompatiblePad<Sercom = S>,
+    PAD2: CompatiblePad<Sercom = S>,
+    PAD3: CompatiblePad<Sercom = S>,
     (PAD0::PadNum, PAD1::PadNum, PAD2::PadNum, PAD3::PadNum): RxpoTxpo,
 {
     fn from(pads: (PAD0, PAD1, PAD2, PAD3)) -> Padout<S, PAD0, PAD1, PAD2, PAD3> {
@@ -187,10 +188,10 @@ where
 impl<S, PAD0, PAD1, PAD2, PAD3> RxpoTxpo for Padout<S, PAD0, PAD1, PAD2, PAD3>
 where
     S: Sercom,
-    PAD0: IsPad<Sercom = S>,
-    PAD1: IsPad<Sercom = S>,
-    PAD2: IsPad<Sercom = S>,
-    PAD3: IsPad<Sercom = S>,
+    PAD0: CompatiblePad<Sercom = S>,
+    PAD1: CompatiblePad<Sercom = S>,
+    PAD2: CompatiblePad<Sercom = S>,
+    PAD3: CompatiblePad<Sercom = S>,
     (PAD0::PadNum, PAD1::PadNum, PAD2::PadNum, PAD3::PadNum): RxpoTxpo,
 {
     const RXPO: u8 = <(PAD0::PadNum, PAD1::PadNum, PAD2::PadNum, PAD3::PadNum)>::RXPO;

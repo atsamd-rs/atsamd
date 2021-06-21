@@ -1,4 +1,4 @@
-//! Implementations of the [`IsPad`] and [`PadLookup`] traits
+//! Implementations of the [`IsPad`] and [`GetPad`] traits
 
 use crate::gpio::v2::*;
 use crate::sercom::v2::*;
@@ -15,12 +15,12 @@ macro_rules! pad_info {
         $PadNum:ident
     ) => {
         #[cfg(feature = "samd11")]
-        impl PadLookup<$Sercom, $PadNum> for $PinId {
+        impl GetPad<$Sercom, $PadNum> for $PinId {
             type PinMode = Alternate<$Cfg>;
         }
 
         #[cfg(feature = "samd21")]
-        impl PadLookup<$Sercom> for $PinId {
+        impl GetPad<$Sercom> for $PinId {
             type PadNum = $PadNum;
             type PinMode = Alternate<$Cfg>;
         }

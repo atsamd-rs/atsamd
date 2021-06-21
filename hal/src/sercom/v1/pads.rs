@@ -5,60 +5,98 @@
 //! deprecated and removed.
 //!
 //! To recreate the `v1` API with `v2` types, this module defines its own
-//! [`Pad`] type. The `v1::Pad` type is actually just a wrapper around a
-//! [`v2::Pin`] configured as a SERCOM pad. The `SercomXPadY` types of the
-//! original, `v1` API are recreated as type aliases of the form
-//! `type SercomXPadY<Z> = Pad<SercomX, PadY, Z>`.
+//! [`Pad`] type, which is just a wrapper around a [`Pin`] configured as a
+//! SERCOM pad. The `SercomXPadY` types of the original, `v1` API are recreated
+//! as type aliases of the form
 //!
-//! The [`PadPin`] trait is kept intact, and it is the only way to construct
-//! [`Pad`]s.
+//! ```
+//! type SercomXPadY<Z> = Pad<SercomX, PadY, Z>
+//! ```
+//!
+//! Use the [`PadPin`] trait to construct `Pad`s. The corresponding `Pin` can be
+//! recovered using the [`free`] method.
+//!
+//! ```
+//! use atsamd_hal::pac::Peripherals;
+//! use atsamd_hal::gpio::v1::GpioExt;
+//! use atsamd_hal::sercom::v1::{PadPin, Sercom0Pad0};
+//!
+//! let peripherals = Peripherals::take().unwrap();
+//! let mut parts = peripherals.PORT.split();
+//! let pad: Sercom0Pad0<_> = parts.pa8.into_pad(&mut parts.port);
+//! let pin = pad.free();
+//! ```
+//!
+//! [`free`]: Pad::free
 
 use core::marker::PhantomData;
 
 use paste::paste;
 
-use crate::gpio::v1;
+use crate::gpio::v1::{self, IntoFunction, Pin, Port};
 use crate::gpio::v2::{self, AnyPin, PinId, PinMode};
-use crate::gpio::Port;
+use crate::sercom::v2::*;
 use crate::typelevel::Sealed;
 
-pub use crate::sercom::v2::*;
+//==============================================================================
+// IsPad
+//==============================================================================
+
+/// Extend implementations of [`IsPad`] from [`v2::Pin`]s to [`v1::Pin`]s
+impl<I, M> IsPad for v1::Pin<I, M>
+where
+    I: PinId,
+    M: PinMode,
+    v1::Pin<I, M>: AnyPin,
+    v2::Pin<I, M>: IsPad,
+{
+    type Sercom = <v2::Pin<I, M> as IsPad>::Sercom;
+    type PadNum = <v2::Pin<I, M> as IsPad>::PadNum;
+}
 
 //==============================================================================
 // Pad
 //==============================================================================
 
-/// A GPIO pin configured to act as a SERCOM pad
+/// A GPIO [`Pin`] configured to act as a SERCOM [`Pad`]
 ///
-/// This type is actually just a wrapper around a [`v2::Pin`]. The `SercomXPadY`
-/// types of the original, `v1` API are recreated as type aliases of the form
-/// `type SercomXPadY<Z> = Pad<SercomX, PadY, Z>`.
+/// This type is just a wrapper around a correctly-configured [`Pin`]. The
+/// `SercomXPadY` types of the original, `v1` API are recreated as type aliases
+/// of the form
+///
+/// ```
+/// type SercomXPadY<Z> = Pad<SercomX, PadY, Z>
+/// ```
 pub struct Pad<S, N, P>
 where
     S: Sercom,
     N: PadNum,
-    P: AnyPin,
-    v2::SpecificPin<P>: IsPad<Sercom = S, PadNum = N>,
+    P: IsPad<Sercom = S, PadNum = N>,
 {
     sercom: PhantomData<S>,
     padnum: PhantomData<N>,
-    _pin: P,
+    pin: P,
 }
 
-/// Implement [`IsPad`] for the `v1` [`Pad`] type
-///
-/// This implementation helps simplify compatibility between `v1` and `v2` for
-/// the existing, `v1` SERCOM peripheral modules.
-impl<S, N, I, M> IsPad for Pad<S, N, v1::Pin<I, M>>
+impl<S, N, P> Pad<S, N, P>
 where
     S: Sercom,
     N: PadNum,
-    I: PinId,
-    M: PinMode,
-    v2::Pin<I, M>: IsPad<Sercom = S, PadNum = N>,
+    P: IsPad<Sercom = S, PadNum = N>,
 {
-    type Sercom = S;
-    type PadNum = N;
+    /// Consume the [`Pad`] and recover the corresponding [`Pin`]
+    #[inline]
+    pub fn free(self) -> P {
+        self.pin
+    }
+}
+
+impl<S, N, P> Sealed for Pad<S, N, P>
+where
+    S: Sercom,
+    N: PadNum,
+    P: IsPad<Sercom = S, PadNum = N>,
+{
 }
 
 //==============================================================================
@@ -93,26 +131,42 @@ pad_alias!(Sercom4, Sercom5);
 pad_alias!(Sercom6, Sercom7);
 
 //==============================================================================
-// Internal aliases
+// CompatiblePad
 //==============================================================================
 
-#[cfg(feature = "samd11")]
-type PadMode<S, N, I> = <I as PadLookup<S, N>>::PinMode;
+/// Type class to improve compatibility between `v1` and `v2` SERCOM pad types
+///
+/// The `sercom::v1::pads` module uses a wrapperd [`Pad`] type to represent
+/// SERCOM pads. The `v2::pad` module, on the other hand, does not use a
+/// wrapper. Instead, it labels each correctly-configured [`v2::Pin`] with the
+/// [`IsPad`] trait.
+///
+/// This trait forms a [type class] over both. It allows the [`v1::uart`],
+/// [`v1::spi`] and [`v1::i2c`] modules to accept both `v1` and `v2` pad types.
+///
+/// [`v1::uart`]: super::uart
+/// [`v1::spi`]: super::spi
+/// [`v1::i2c`]: super::i2c
+/// [type class]: crate::typelevel#type-classes
+pub trait CompatiblePad: Sealed {
+    type Sercom: Sercom;
+    type PadNum: PadNum;
+}
 
-#[cfg(not(feature = "samd11"))]
-type PadMode<S, I> = <I as PadLookup<S>>::PinMode;
+impl<S, N, P> CompatiblePad for Pad<S, N, P>
+where
+    S: Sercom,
+    N: PadNum,
+    P: IsPad<Sercom = S, PadNum = N>,
+{
+    type Sercom = S;
+    type PadNum = N;
+}
 
-#[cfg(feature = "samd11")]
-type V1ConfiguredPin<S, N, I> = v1::Pin<I, PadMode<S, N, I>>;
-
-#[cfg(not(feature = "samd11"))]
-type V1ConfiguredPin<S, I> = v1::Pin<I, PadMode<S, I>>;
-
-#[cfg(feature = "samd11")]
-type V2ConfiguredPin<S, N, I> = v2::Pin<I, PadMode<S, N, I>>;
-
-#[cfg(not(feature = "samd11"))]
-type V2ConfiguredPin<S, I> = v2::Pin<I, PadMode<S, I>>;
+impl<P: IsPad> CompatiblePad for P {
+    type Sercom = P::Sercom;
+    type PadNum = P::PadNum;
+}
 
 //==============================================================================
 // PadPin
@@ -126,43 +180,43 @@ pub trait PadPin<P>: Sealed {
 }
 
 #[cfg(feature = "samd11")]
-impl<S, N, I, M> PadPin<Pad<S, N, V1ConfiguredPin<S, N, I>>> for v1::Pin<I, M>
+impl<S, N, I, M> PadPin<Pad<S, N, Pin<I, I::PinMode>>> for Pin<I, M>
 where
     S: Sercom,
     N: PadNum,
-    I: PadLookup<S, N>,
+    I: GetPad<S, N>,
     M: PinMode,
-    V2ConfiguredPin<S, N, I>: IsPad<Sercom = S, PadNum = N>,
+    Pin<I, M>: IntoFunction<Pin<I, I::PinMode>>,
+    Pin<I, I::PinMode>: IsPad<Sercom = S, PadNum = N>,
 {
     #[inline]
-    fn into_pad(self, _port: &mut Port) -> Pad<S, N, V1ConfiguredPin<S, N, I>> {
-        let v2_pin = v2::Pin::<I, M>::from(self);
-        let v1_configured_pin = v2_pin.into_mode().into();
+    fn into_pad(self, port: &mut Port) -> Pad<S, N, Pin<I, I::PinMode>> {
+        let pin = self.into_function(port);
         Pad {
             sercom: PhantomData,
             padnum: PhantomData,
-            _pin: v1_configured_pin,
+            pin,
         }
     }
 }
 
 #[cfg(not(feature = "samd11"))]
-impl<S, N, I, M> PadPin<Pad<S, N, V1ConfiguredPin<S, I>>> for v1::Pin<I, M>
+impl<S, N, I, M> PadPin<Pad<S, N, Pin<I, I::PinMode>>> for Pin<I, M>
 where
     S: Sercom,
     N: PadNum,
-    I: PadLookup<S>,
+    I: GetPad<S>,
     M: PinMode,
-    V2ConfiguredPin<S, I>: IsPad<Sercom = S, PadNum = N>,
+    Pin<I, M>: IntoFunction<Pin<I, I::PinMode>>,
+    Pin<I, I::PinMode>: IsPad<Sercom = S, PadNum = N>,
 {
     #[inline]
-    fn into_pad(self, _port: &mut Port) -> Pad<S, N, V1ConfiguredPin<S, I>> {
-        let v2_pin = v2::Pin::<I, M>::from(self);
-        let v1_configured_pin = v2_pin.into_mode().into();
+    fn into_pad(self, port: &mut Port) -> Pad<S, N, Pin<I, I::PinMode>> {
+        let pin = self.into_function(port);
         Pad {
             sercom: PhantomData,
             padnum: PhantomData,
-            _pin: v1_configured_pin,
+            pin,
         }
     }
 }

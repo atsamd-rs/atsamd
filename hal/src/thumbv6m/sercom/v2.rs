@@ -1,3 +1,3 @@
-pub mod pad_info;
+pub mod impl_pad;
 pub mod spi;
 pub mod uart;

@@ -15,34 +15,49 @@
 //! impossible to use invalid [`Pin`]/[`Pad`] combinations, and the [`Pads`]
 //! struct is responsible for enforcing these constraints.
 //!
-//! A [`Pads`] type takes up to five type parameters. The first specifies the
-//! `Sercom`. The remaining four, `RX`, `TX`, `RTS` and `CTS`, represent Rx,
-//! Tx, RTC and CTS [`Pad`]s respectively, and they default to
-//! [`NoneT`]. These type parameters take two different forms, depending on the
-//! chip. For SAMD21 chips, they are effectively [`OptionalPinId`]s. While for
-//! SAMD11 chips, they are optional ([`PadNum`], [`PinId`]) tuples. See the
-//! [`GetPad`] trait for an explanation of the reasoning here.
+//!
+//! A `Pads` type takes five type parameters. The first specifies the `Sercom`,
+//! while the remaining four, `DI`, `DO`, `CK` and `SS`, represent the Data In,
+//! Data Out, Sclk and SS pads respectively. Each of the remaining type
+//! parameters is an [`OptionalPad`] and defaults to [`NoneT`]. Aliases defining
+//! the pad types can be provided by the [`bsp_pins!`] macro.
 //!
 //! ```
-//! use atsamd_hal::gpio::v2::{PA04, PA05, PA08, PA09};
+//! use atsamd_hal::gpio::v2::{PA08, PA09, AlternateC};
 //! use atsamd_hal::sercom::v2::{Sercom0, uart};
-//! use atsamd_hal::sercom::v2::pad::{Pad0, Pad1};
 //! use atsamd_hal::typelevel::NoneT;
 //!
-//! // For SAMD21 chips
-//! type Pads = uart::Pads<Sercom0, PA08, NoneT, PA09>;
-//!
-//! // For SAMD11 chips
-//! type Pads = uart::Pads<Sercom0, (Pad0, PA04), NoneT, (Pad1, PA05)>;
+//! type Rx = Pin<PA08, AlternateC>;
+//! type Tx = Pin<PA09, AlternateC>;
+//! type Pads = uart::Pads<Sercom0, Rx, Tx>;
 //! ```
+#![cfg_attr(
+    feature = "samd21",
+    doc = "
+Alternatively, you can use the [`PadsFromIds`] alias to define a set of
+`Pads` in terms of [`PinId`]s instead of `Pin`s. This is useful when you
+don't have `Pin` aliases pre-defined.
+
+```
+use atsamd_hal::gpio::v2::{PA08, PA09};
+use atsamd_hal::sercom::v2::{Sercom0, uart};
+use atsamd_hal::typelevel::NoneT;
+
+type Pads = uart::PadsFromIds<Sercom0, PA09, PA09>;
+```
+"
+)]
+//! Instaces of `Pads` are created using the builder pattern. Start by creating
+//! an empty set of `Pads` using [`Default`]. Then pass each respective `Pin`
+//! using the corresponding methods. Both `v1::Pin` and `v2::Pin` types are
+//! accepted here.
 //!
-//! [`Pads`] are created using the builder pattern. Start by creating an empty
-//! set of `Pads` using [`Default`]. Then pass each respective `Pin` using the
-//! corresponding methods. Both `v1::Pin` and `v2::Pin` types are accepted here.
-//!
-//! To be accepted as part of a [`ValidConfig`], a set of [`Pads`] must do two
-//! things: specify a type for at least one of `RX` or `TX`; and
-//! satisfy the [`RxpoTxpo`] trait.
+//! On SAMD21 chips, the builder methods automatically convert each
+//! pin to the correct [`PinMode`]. But for SAMD11 chips, users must manually
+//! convert each pin before calling the builder methods. This is a consequence
+//! of inherent ambiguities in the SAMD11 SERCOM pad definitions. Specifically,
+//! the same `PinId` can correspond to two different `PadNum`s for the *same*
+//! `Sercom`.
 //!
 //! ```
 //! use atsamd_hal::target_device::Peripherals;
@@ -52,9 +67,13 @@
 //! let mut peripherals = Peripherals::take().unwrap();
 //! let pins = Pins::new(peripherals.PORT);
 //! let pads = uart::Pads::<Sercom0>::default()
-//!     .rx(pins.pa08)
-//!     .tx(pins.pa10);
+//!     .rx(pins.pa09)
+//!     .tx(pins.pa08);
 //! ```
+//!
+//! To be accepted as [`ValidPads`], a set of `Pads` must do two things:
+//! - Specify a type for `CK` and at least one of `DI` or `DO`
+//! - Satisfy the [`RxpoTxpo`] trait
 //!
 //! # [`Config`]
 //!
@@ -65,17 +84,16 @@
 //! ```
 //! use atsamd_hal::gpio::v2::{PA08, PA09};
 //! use atsamd_hal::sercom::v2::{Sercom0, uart};
-//! use atsamd_hal::sercom::v2::uart::{Master, NineBit};
+//! use atsamd_hal::sercom::v2::uart::{NineBit};
 //! use atsamd_hal::typelevel::NoneT;
 //!
-//! // Assuming SAMD21
-//! type Pads = uart::Pads<Sercom0, PA08, NoneT, PA09>;
+//! type Pads = uart::PadsFromIds<Sercom0, PA08, PA09>;
 //! type Config = uart::Config<Pads, NineBit>;
 //! ```
 //!
-//! Upon creation, the [`Config`] takes ownership of both the [`Pads`] and the
-//! PAC [`Sercom`] struct. It takes a reference to the PM, so that it can
-//! enable the APB clock, and it takes a frequency to indicate the GCLK
+//! Upon creation, the [`Config`] takes ownership of both the [`Pads`] struct
+//! and the PAC [`Sercom`] struct. It takes a reference to the PM, so that it
+//! can enable the APB clock, and it takes a frequency to indicate the GCLK
 //! configuration. Users are responsible for correctly configuring the GCLK.
 //!
 //! ```
@@ -106,10 +124,13 @@
 //!     .enable();
 //! ```
 //!
+//! To be accepted as a [`ValidConfig`], the [`Config`] must have at least one
+//! of `Rx` or `Tx` pads.
+//!
 //! # [`UartRx`] and [`UartTx`]
 //!
 //! [`UartRx`] and [`UartTx`] structs can only be created from a [`Config`], and
-//! it has only one type parameter, the corresponding config. The nature of the
+//! have only one type parameter, the corresponding config. The nature of the
 //! underlying [`Pads`] contained inside [`Config`] determines the type returned
 //! by a call to [`enable`] If the pads only have a `TX` pin specified (ie, the
 //! [`Pads`] struct is [`Tx`] + [`NotRx`]), then [`enable`] will return a
@@ -126,7 +147,7 @@
 //! use atsamd_hal::typelevel::NoneT;
 //!
 //! // Assuming SAMD21
-//! type Pads = uart::Pads<Sercom0, PA08, NoneT, PA09>;
+//! type Pads = uart::PadsFromIds<Sercom0, PA08, NoneT, PA09>;
 //! type Config = uart::Config<Pads, NineBit>;
 //! type UartRx = uart::UartRx<Config>;
 //! type UartTx = uart::UartTx<Config>;
@@ -176,36 +197,6 @@
 //! (rx, tx).reconfigure(|c| c.baud(1.mhz()));
 //! ```
 //!
-//! # Using UART with DMA
-//!
-//! This HAL includes support for DMA-enabled UART transfers. [`UartRx`] and
-//! [`UartTx`] both implement the DMAC [`Buffer`](crate::dmac::transfer::Buffer)
-//! trait. The provided [`send_with_dma`](UartTx::send_with_dma) and
-//! [`receive_with_dma`](UartRx::receive_with_dma) build and begin a
-//! [`dmac::Transfer`](crate::dmac::transfer::Transfer), thus starting the UART
-//! in a non-blocking way. Optionally, interrupts can be enabled on the provided
-//! [`Channel`](crate::dmac::channel::Channel). Note that the `dma` feature must
-//! be enabled. Please refer to the [`dmac`](crate::dmac) module-level
-//! documentation for more information.
-//!
-//! ```
-//! // Assume channel0 and channel1 are configured `dmac::Channel`s,
-//! // rx is a UartRx, and tx is a UartTx.
-//!
-//! // Create data to send
-//! let tx_buffer: [u8; 50] = [0xff; 50];
-//! let rx_buffer: [u8; 100] = [0xab; 100];
-//!
-//! // Launch transmit transfer
-//! let tx_dma = tx.send_with_dma(&mut tx_buffer, channel0, ());
-//!
-//! // Launch receive transfer
-//! let rx_dma = rx.receive_with_dma(&mut rx_buffer, channel1, ());
-//!
-//! // Wait for transfers to complete and reclaim resources
-//! let (chan0, tx_buffer, tx) = tx_dma.wait();
-//! let (chan1, rx, rx_buffer) = rx_dma.wait();
-//! ```
 //!
 //! # Non-supported advanced features
 //!
@@ -214,9 +205,45 @@
 //! [`enable`]: Enable::enable
 //! [`disable`]: Disable::disable
 //! [`reconfigure`]: Disable::reconfigure
+//! [`bsp_pins`]: crate::bsp_pins
 //! [`Pin`]: crate::gpio::v2::pin::Pin
 //! [`PinId`]: crate::gpio::v2::pin::PinId
-//! [`OptionalPinId`]: crate::gpio::v2::pin::OptionalPinId
+//! [`PinMode`]: crate::gpio::v2::pin::PinMode
+#![cfg_attr(
+    feature = "dma",
+    doc = "
+# Using UART with DMA
+
+This HAL includes support for DMA-enabled UART transfers. [`UartRx`] and
+[`UartTx`] both implement the DMAC [`Buffer`](crate::dmac::transfer::Buffer)
+trait. The provided [`send_with_dma`](UartTx::send_with_dma) and
+[`receive_with_dma`](UartRx::receive_with_dma) build and begin a
+[`dmac::Transfer`](crate::dmac::transfer::Transfer), thus starting the UART
+in a non-blocking way. Optionally, interrupts can be enabled on the provided
+[`Channel`](crate::dmac::channel::Channel). Note that the `dma` feature must
+be enabled. Please refer to the [`dmac`](crate::dmac) module-level
+documentation for more information.
+
+```
+/// Assume channel0 and channel1 are configured `dmac::Channel`s,
+/// rx is a UartRx, and tx is a UartTx.
+
+/// Create data to send
+let tx_buffer: [u8; 50] = [0xff; 50];
+let rx_buffer: [u8; 100] = [0xab; 100];
+
+/// Launch transmit transfer
+let tx_dma = tx.send_with_dma(&mut tx_buffer, channel0, ());
+
+/// Launch receive transfer
+let rx_dma = rx.receive_with_dma(&mut rx_buffer, channel1, ());
+
+/// Wait for transfers to complete and reclaim resources
+let (chan0, tx_buffer, tx) = tx_dma.wait();
+let (chan1, rx, rx_buffer) = rx_dma.wait();
+```
+"
+)]
 
 use core::convert::{TryFrom, TryInto};
 use core::marker::PhantomData;
@@ -228,7 +255,8 @@ use pac::{
     PM,
 };
 
-use crate::gpio::v2::{AnyPin, OptionalPin, SomePin};
+#[cfg(not(feature = "samd11"))]
+use crate::gpio::v2::AnyPin;
 use crate::sercom::v2::*;
 use crate::typelevel::{Is, NoneT, Sealed};
 
@@ -278,10 +306,10 @@ pub trait RxpoTxpo {
 impl<S, RX, TX, RTS, CTS> RxpoTxpo for Pads<S, RX, TX, RTS, CTS>
 where
     S: Sercom,
-    RX: GetOptionalPad<S>,
-    TX: GetOptionalPad<S>,
-    RTS: GetOptionalPad<S>,
-    CTS: GetOptionalPad<S>,
+    RX: OptionalPad,
+    TX: OptionalPad,
+    RTS: OptionalPad,
+    CTS: OptionalPad,
     (RX::PadNum, TX::PadNum, RTS::PadNum, CTS::PadNum): RxpoTxpo,
 {
     const RXPO: u8 = <(RX::PadNum, TX::PadNum, RTS::PadNum, CTS::PadNum)>::RXPO;
@@ -392,74 +420,27 @@ padnum_permutations!( () [NoneT Pad0 Pad1 Pad2 Pad3] );
 
 /// Container for a set of SERCOM [`Pad`]s
 ///
-/// A [`Sercom`] can use up to four [`Pin`]s as peripheral [`Pad`]s, but only
-/// certain [`Pin`] combinations are acceptable. In particular, all [`Pin`]s
-/// must be mapped to the same `Sercom` (see the datasheet). This HAL makes it
-/// impossible to use invalid [`Pin`]/[`Pad`] combinations, and the [`Pads`]
-/// struct is responsible for enforcing these constraints.
-///
-/// A [`Pads`] type takes up to five type parameters. The first specifies the
-/// `Sercom`. The remaining four, `RX`, `TX`, `RTS` and CTS, represent the Tx
-/// Rx, Ready to send and Clear to send [`Pad`]s respectively, and they default
-/// to [`NoneT`]. These type parameters take two different forms, depending on
-/// the chip. For SAMD21 chips, they are effectively [`OptionalPinId`]s. While
-/// for SAMD11 chips, they are optional ([`PadNum`], [`PinId`]) tuples. See the
-/// [`GetPad`] trait for an explanation of the reasoning here.
-///
-/// ```
-/// use atsamd_hal::gpio::v2::{PA04, PA05, PA08, PA09};
-/// use atsamd_hal::sercom::v2::{Sercom0, uart};
-/// use atsamd_hal::sercom::v2::pad::{Pad0, Pad1};
-/// use atsamd_hal::typelevel::NoneT;
-///
-/// // For SAMD21 chips
-/// type Pads = uart::Pads<Sercom0, PA08, NoneT, PA09>;
-///
-/// // For SAMD11 chips
-/// type Pads = uart::Pads<Sercom0, (Pad0, PA04), NoneT, (Pad1, PA05)>;
-/// ```
-///
-/// [`Pads`] are created using the builder pattern. Start by creating an empty
-/// set of [`Pads`] using [`Default`]. Then pass each respective [`Pin`] using
-/// the corresponding methods. Both `v1::Pin` and `v2::Pin` types are accepted
-/// here.
-///
-/// To be accepted as part of a [`ValidConfig`], a set of [`Pads`] must do two
-/// things: specify a type for at least one of `RX` or `TX`; and
-/// satisfy the [`RxpoTxpo`] trait.
-///
-/// ```
-/// use atsamd_hal::target_device::Peripherals;
-/// use atsamd_hal::gpio::v2::Pins;
-/// use atsamd_hal::sercom::v2::{Sercom0, uart};
-///
-/// let mut peripherals = Peripherals::take().unwrap();
-/// let pins = Pins::new(peripherals.PORT);
-/// let pads = uart::Pads::<Sercom0>::default()
-///     .rx(pins.pa08)
-///     .tx(pins.pa10);
-/// ```
-///
-/// [`Pin`]: crate::gpio::v2::pin::Pin
-/// [`PinId`]: crate::gpio::v2::pin::PinId
-/// [`OptionalPinId`]: crate::gpio::v2::pin::OptionalPinId
+/// See the [module-level](self) documentation for more details on specifying
+/// a `Pads` type and creating instances.
 pub struct Pads<S, RX = NoneT, TX = NoneT, RTS = NoneT, CTS = NoneT>
 where
     S: Sercom,
-    RX: GetOptionalPad<S>,
-    TX: GetOptionalPad<S>,
-    RTS: GetOptionalPad<S>,
-    CTS: GetOptionalPad<S>,
+    RX: OptionalPad,
+    TX: OptionalPad,
+    RTS: OptionalPad,
+    CTS: OptionalPad,
 {
-    receive: RX::Pad,
-    transmit: TX::Pad,
-    ready_to_send: RTS::Pad,
-    clear_to_send: CTS::Pad,
+    sercom: PhantomData<S>,
+    receive: RX,
+    transmit: TX,
+    ready_to_send: RTS,
+    clear_to_send: CTS,
 }
 
 impl<S: Sercom> Default for Pads<S> {
     fn default() -> Self {
         Self {
+            sercom: PhantomData,
             receive: NoneT,
             transmit: NoneT,
             ready_to_send: NoneT,
@@ -471,14 +452,14 @@ impl<S: Sercom> Default for Pads<S> {
 impl<S, RX, TX, RTS, CTS> Pads<S, RX, TX, RTS, CTS>
 where
     S: Sercom,
-    RX: GetOptionalPad<S>,
-    TX: GetOptionalPad<S>,
-    RTS: GetOptionalPad<S>,
-    CTS: GetOptionalPad<S>,
+    RX: OptionalPad,
+    TX: OptionalPad,
+    RTS: OptionalPad,
+    CTS: OptionalPad,
 {
     /// Consume the [`Pads`] and return each individual [`Pad`]
     #[inline]
-    pub fn free(self) -> (RX::Pad, TX::Pad, RTS::Pad, CTS::Pad) {
+    pub fn free(self) -> (RX, TX, RTS, CTS) {
         (
             self.receive,
             self.transmit,
@@ -492,20 +473,17 @@ where
 impl<S, RX, TX, RTS, CTS> Pads<S, RX, TX, RTS, CTS>
 where
     S: Sercom,
-    RX: GetOptionalPad<S>,
-    TX: GetOptionalPad<S>,
-    RTS: GetOptionalPad<S>,
-    CTS: GetOptionalPad<S>,
+    RX: OptionalPad,
+    TX: OptionalPad,
+    RTS: OptionalPad,
+    CTS: OptionalPad,
 {
     /// Set the `RX` [`Pad`]
     #[inline]
-    pub fn rx<N, I>(self, pin: impl AnyPin<Id = I>) -> Pads<S, (N, I), TX, RTS, CTS>
-    where
-        N: PadNum,
-        I: PadLookup<S, N>,
-    {
+    pub fn rx<P: IsPad>(self, pin: P) -> Pads<S, P, TX, RTS, CTS> {
         Pads {
-            receive: pin.into().into_mode(),
+            sercom: self.sercom,
+            receive: pin,
             transmit: self.transmit,
             ready_to_send: self.ready_to_send,
             clear_to_send: self.clear_to_send,
@@ -514,14 +492,11 @@ where
 
     /// Set the `TX` [`Pad`]
     #[inline]
-    pub fn tx<N, I>(self, pin: impl AnyPin<Id = I>) -> Pads<S, RX, (N, I), RTS, CTS>
-    where
-        N: PadNum,
-        I: PadLookup<S, N>,
-    {
+    pub fn tx<P: IsPad>(self, pin: P) -> Pads<S, RX, P, RTS, CTS> {
         Pads {
+            sercom: self.sercom,
             receive: self.receive,
-            transmit: pin.into().into_mode(),
+            transmit: pin,
             ready_to_send: self.ready_to_send,
             clear_to_send: self.clear_to_send,
         }
@@ -529,31 +504,25 @@ where
 
     /// Set the `RTS` [`Pad`]
     #[inline]
-    pub fn rts<N, I>(self, pin: impl AnyPin<Id = I>) -> Pads<S, RX, TX, (N, I), CTS>
-    where
-        N: PadNum,
-        I: PadLookup<S, N>,
-    {
+    pub fn rts<P: IsPad>(self, pin: P) -> Pads<S, RX, TX, P, CTS> {
         Pads {
+            sercom: self.sercom,
             receive: self.receive,
             transmit: self.transmit,
-            ready_to_send: pin.into().into_mode(),
+            ready_to_send: pin,
             clear_to_send: self.clear_to_send,
         }
     }
 
     /// Set the `CTS` [`Pad`]
     #[inline]
-    pub fn cts<N, I>(self, pin: impl AnyPin<Id = I>) -> Pads<S, RX, TX, RTS, (N, I)>
-    where
-        N: PadNum,
-        I: PadLookup<S, N>,
-    {
+    pub fn cts<P: IsPad>(self, pin: P) -> Pads<S, RX, TX, RTS, P> {
         Pads {
+            sercom: self.sercom,
             receive: self.receive,
             transmit: self.transmit,
             ready_to_send: self.ready_to_send,
-            clear_to_send: pin.into().into_mode(),
+            clear_to_send: pin,
         }
     }
 }
@@ -562,18 +531,20 @@ where
 impl<S, RX, TX, RTS, CTS> Pads<S, RX, TX, RTS, CTS>
 where
     S: Sercom,
-    RX: GetOptionalPad<S>,
-    TX: GetOptionalPad<S>,
-    RTS: GetOptionalPad<S>,
-    CTS: GetOptionalPad<S>,
+    RX: OptionalPad,
+    TX: OptionalPad,
+    RTS: OptionalPad,
+    CTS: OptionalPad,
 {
     /// Set the `RX` [`Pad`]
     #[inline]
-    pub fn rx<I>(self, pin: impl AnyPin<Id = I>) -> Pads<S, I, TX, RTS, CTS>
+    pub fn rx<I>(self, pin: impl AnyPin<Id = I>) -> Pads<S, Pad<S, I>, TX, RTS, CTS>
     where
-        I: PadLookup<S>,
+        I: GetPad<S>,
+        Pad<S, I>: IsPad,
     {
         Pads {
+            sercom: self.sercom,
             receive: pin.into().into_mode(),
             transmit: self.transmit,
             ready_to_send: self.ready_to_send,
@@ -583,11 +554,13 @@ where
 
     /// Set the `TX` [`Pad`]
     #[inline]
-    pub fn tx<I>(self, pin: impl AnyPin<Id = I>) -> Pads<S, RX, I, RTS, CTS>
+    pub fn tx<I>(self, pin: impl AnyPin<Id = I>) -> Pads<S, RX, Pad<S, I>, RTS, CTS>
     where
-        I: PadLookup<S>,
+        I: GetPad<S>,
+        Pad<S, I>: IsPad,
     {
         Pads {
+            sercom: self.sercom,
             receive: self.receive,
             transmit: pin.into().into_mode(),
             ready_to_send: self.ready_to_send,
@@ -597,11 +570,13 @@ where
 
     /// Set the `RTS` [`Pad`]
     #[inline]
-    pub fn rts<I>(self, pin: impl AnyPin<Id = I>) -> Pads<S, RX, TX, I, CTS>
+    pub fn rts<I>(self, pin: impl AnyPin<Id = I>) -> Pads<S, RX, TX, Pad<S, I>, CTS>
     where
-        I: PadLookup<S>,
+        I: GetPad<S>,
+        Pad<S, I>: IsPad,
     {
         Pads {
+            sercom: self.sercom,
             receive: self.receive,
             transmit: self.transmit,
             ready_to_send: pin.into().into_mode(),
@@ -611,11 +586,13 @@ where
 
     /// Set the `CTS` [`Pad`]
     #[inline]
-    pub fn cts<I>(self, pin: impl AnyPin<Id = I>) -> Pads<S, RX, TX, RTS, I>
+    pub fn cts<I>(self, pin: impl AnyPin<Id = I>) -> Pads<S, RX, TX, RTS, Pad<S, I>>
     where
-        I: PadLookup<S>,
+        I: GetPad<S>,
+        Pad<S, I>: IsPad,
     {
         Pads {
+            sercom: self.sercom,
             receive: self.receive,
             transmit: self.transmit,
             ready_to_send: self.ready_to_send,
@@ -624,97 +601,57 @@ where
     }
 }
 
-/// Define a set of [`Pads`] using [`Pin`]s instead of [`NITuple`]s
+/// Define a set of [`Pads`] using [`PinId`]s instead of [`Pin`]s
 ///
-/// In some cases, it is more convenient to specify a set of [`Pads`] using
-/// [`Pin`]s or [`Pin`] aliases than it is to use the corresponding ([`PadNum`],
-/// [`PinId`]) tuples. This alias makes it easier to do so.
+/// In some cases, it is more convenient to specify a set of `Pads` using
+/// `PinId`s rather than `Pin`s. This alias makes it easier to do so.
 ///
-/// The four arguments are effectively [`OptionalPin`] types representing the
-/// corresponding type parameters of `uart::Pads`, i.e. `RX`, `TX`, `RTS` &
-/// `CTS`.
+/// The first type parameter is the [`Sercom`], while the remaining four are
+/// effectively [`OptionalPinId`]s representing the corresponding type
+/// parameters of [`Pads`], i.e. `RX`, `TX`, `RTS` & `CTS`. Each of the
+/// remaining type parameters defaults to [`NoneT`].
 ///
 /// ```
 /// use atsamd_hal::pac::Peripherals;
-/// use atsamd_hal::gpio::v2::{Pin, PA04, PA05, AlternateD, Pins};
-/// use atsamd_hal::sercom::v2::uart;
+/// use atsamd_hal::gpio::v2::{PA08, PA09, Pins};
+/// use atsamd_hal::sercom::v2::{Sercom0, uart};
 /// use atsamd_hal::typelevel::NoneT;
 ///
-/// type Rx = Pin<PA04, AlternateD>;
-/// type Rts = Pin<PA05, AlternateD>;
-/// pub type Pads = uart::PadsFromPins<Rx, NoneT, Rts>;
+/// pub type Pads = uart::PadsFromIds<Sercom0, PA08, PA09>;
 ///
-/// pub fn test() -> Pads {
+/// pub fn create_pads() -> Pads {
 ///     let peripherals = Peripherals::take().unwrap();
 ///     let pins = Pins::new(peripherals.PORT);
-///     uart::Pads::default().sclk(pins.pa05).data_in(pins.pa04)
+///     uart::Pads::default().rx(pins.pa09).tx(pins.pa08)
 /// }
 /// ```
 ///
-/// [`uart::Pads`]: Pads
 /// [`Pin`]: crate::gpio::v2::Pin
 /// [`PinId`]: crate::gpio::v2::PinId
-#[cfg(feature = "samd11")]
-pub type PadsFromPins<RX, TX, RTS = NoneT, CTS = NoneT> = Pads<
-    <RX as IsPad>::Sercom,
-    <RX as GetOptionalNITuple>::NITuple,
-    <TX as GetOptionalNITuple>::NITuple,
-    <RTS as GetOptionalNITuple>::NITuple,
-    <CTS as GetOptionalNITuple>::NITuple,
->;
+/// [`OptionalPinId`]: crate::gpio::v2::OptionalPinId
 
-/// Define a set of [`Pads`] using [`Pin`]s instead of [`PinId`]s
-///
-/// In some cases, it is more convenient to specify a set of [`Pads`] using
-/// [`Pin`]s or [`Pin`] aliases than it is to use the corresponding [`PinId`]s.
-/// This alias makes it easier to do so.
-///
-/// The four arguments are effectively [`OptionalPin`] types representing the
-/// corresponding type parameters of `uart::Pads`, i.e. `RX`, `TX`, `RTS` &
-/// `CTS`.
-///
-/// ```
-/// use atsamd_hal::pac::Peripherals;
-/// use atsamd_hal::gpio::v2::{Pin, PA08, PA09, AlternateC, Pins};
-/// use atsamd_hal::sercom::v2::uart;
-/// use atsamd_hal::typelevel::NoneT;
-///
-/// type Miso = Pin<PA08, AlternateC>;
-/// type Sclk = Pin<PA09, AlternateC>;
-/// pub type Pads = uart::PadsFromPins<Miso, Mosi, Sclk>;
-///
-/// pub fn test() -> Pads {
-///     let peripherals = Peripherals::take().unwrap();
-///     let pins = Pins::new(peripherals.PORT);
-///     uart::Pads::default().rx(pins.pa08).tx(pins.pa10)
-/// }
-/// ```
-///
-/// [`uart::Pads`]: Pads
-/// [`Pin`]: crate::gpio::v2::Pin
-/// [`PinId`]: crate::gpio::v2::PinId
 #[cfg(feature = "samd21")]
-pub type PadsFromPins<RX, TX, RTS = NoneT, CTS = NoneT> = Pads<
-    <RX as IsPad>::Sercom,
-    <RX as OptionalPin>::PinId,
-    <TX as OptionalPin>::PinId,
-    <RTS as OptionalPin>::PinId,
-    <CTS as OptionalPin>::PinId,
+pub type PadsFromIds<S, RX = NoneT, TX = NoneT, RTS = NoneT, CTS = NoneT> = Pads<
+    S,
+    <RX as GetOptionalPad<S>>::Pad,
+    <TX as GetOptionalPad<S>>::Pad,
+    <RTS as GetOptionalPad<S>>::Pad,
+    <CTS as GetOptionalPad<S>>::Pad,
 >;
 
 //=============================================================================
 // PadSet
 //=============================================================================
 
-/// Type-level function to recover the [`OptionalPin`] types from a generic set
+/// Type-level function to recover the [`OptionalPad`] types from a generic set
 /// of [`Pads`]
 ///
 /// This trait is used as an interface between the [`Pads`] type and other
 /// types in this module. It acts as a [type-level function], returning the
-/// corresponding [`Sercom`] and [`OptionalPin`] types. It serves to cut down on
+/// corresponding [`Sercom`] and [`OptionalPad`] types. It serves to cut down on
 /// the total number of type parameters needed in the [`Config`] struct. The
 /// [`Config`] struct doesn't need access to the [`Pin`]s directly.  Rather, it
-/// only needs to apply the [`SomePin`] trait bound when a `Pin` is required.
+/// only needs to apply the [`SomePad`] trait bound when a `Pin` is required.
 /// The [`PadSet`] trait allows each [`Config`] struct to store an instance of
 /// [`Pads`] without itself being generic over all six type parameters of the
 /// [`Pads`] type.
@@ -723,35 +660,35 @@ pub type PadsFromPins<RX, TX, RTS = NoneT, CTS = NoneT> = Pads<
 /// [type-level function]: crate::typelevel#type-level-functions
 pub trait PadSet: Sealed {
     type Sercom: Sercom;
-    type Rx: OptionalPin;
-    type Tx: OptionalPin;
-    type Rts: OptionalPin;
-    type Cts: OptionalPin;
+    type Rx: OptionalPad;
+    type Tx: OptionalPad;
+    type Rts: OptionalPad;
+    type Cts: OptionalPad;
 }
 
 impl<S, RX, TX, RTS, CTS> Sealed for Pads<S, RX, TX, RTS, CTS>
 where
     S: Sercom,
-    RX: GetOptionalPad<S>,
-    TX: GetOptionalPad<S>,
-    RTS: GetOptionalPad<S>,
-    CTS: GetOptionalPad<S>,
+    RX: OptionalPad,
+    TX: OptionalPad,
+    RTS: OptionalPad,
+    CTS: OptionalPad,
 {
 }
 
 impl<S, RX, TX, RTS, CTS> PadSet for Pads<S, RX, TX, RTS, CTS>
 where
     S: Sercom,
-    RX: GetOptionalPad<S>,
-    TX: GetOptionalPad<S>,
-    RTS: GetOptionalPad<S>,
-    CTS: GetOptionalPad<S>,
+    RX: OptionalPad,
+    TX: OptionalPad,
+    RTS: OptionalPad,
+    CTS: OptionalPad,
 {
     type Sercom = S;
-    type Rx = RX::Pad;
-    type Tx = TX::Pad;
-    type Rts = RTS::Pad;
-    type Cts = CTS::Pad;
+    type Rx = RX;
+    type Tx = TX;
+    type Rts = RTS;
+    type Cts = CTS;
 }
 
 //=============================================================================
@@ -773,25 +710,25 @@ impl<P: PadSet + RxpoTxpo> ValidPads for P {}
 
 /// Marker trait for a set of [`Pads`] that can transmit
 ///
-/// To transmit, Tx must be [`SomePin`].
+/// To transmit, Tx must be [`SomePad`].
 pub trait Tx: ValidPads {}
 
 impl<P> Tx for P
 where
     P: ValidPads,
-    P::Tx: SomePin,
+    P::Tx: SomePad,
 {
 }
 
 /// Marker trait for a set of [`Pads`] that can receive
 ///
-/// To receive, Rx must be [`SomePin`].
+/// To receive, Rx must be [`SomePad`].
 pub trait Rx: ValidPads {}
 
 impl<P> Rx for P
 where
     P: ValidPads,
-    P::Rx: SomePin,
+    P::Rx: SomePad,
 {
 }
 
@@ -813,41 +750,28 @@ impl<P> NotRx for P where P: ValidPads<Rx = NoneT> {}
 
 /// Marker trait for a set of [`Pads`] that can transmit OR receive
 ///
-/// To satisfy this trait, one or both of Rx and Tx must be [`SomePin`].
+/// To satisfy this trait, one or both of Rx and Tx must be [`SomePad`].
 pub trait TxOrRx: ValidPads {}
 
-impl<S, RX, RTS, CTS> TxOrRx for Pads<S, RX, NoneT, RTS, CTS>
+impl<S, RX, RTS> TxOrRx for Pads<S, RX, NoneT, RTS, NoneT>
 where
     S: Sercom,
-    RX: GetPad<S> + GetPadKey,
-    RTS: GetOptionalPad<S>,
-    CTS: GetOptionalPad<S>,
+    RX: SomePad,
+    RTS: OptionalPad,
     Self: RxpoTxpo,
 {
 }
 
-impl<S, TX, RTS, CTS> TxOrRx for Pads<S, NoneT, TX, RTS, CTS>
+impl<S, TX, CTS> TxOrRx for Pads<S, NoneT, TX, NoneT, CTS>
 where
     S: Sercom,
-    TX: GetPad<S> + GetPadKey,
-    RTS: GetOptionalPad<S>,
-    CTS: GetOptionalPad<S>,
+    TX: SomePad,
+    CTS: OptionalPad,
     Self: RxpoTxpo,
 {
 }
 
-//impl<P: Tx + Rx> TxOrRx for P {}
-
-impl<S, RX, TX, RTS, CTS> TxOrRx for Pads<S, RX, TX, RTS, CTS>
-where
-    S: Sercom,
-    RX: GetPad<S> + GetPadKey,
-    TX: GetPad<S> + GetPadKey,
-    RTS: GetOptionalPad<S>,
-    CTS: GetOptionalPad<S>,
-    Self: RxpoTxpo,
-{
-}
+impl<P: Tx + Rx> TxOrRx for P {}
 
 //=============================================================================
 // Character size

@@ -332,6 +332,12 @@
 //! readers understand that a particular type parameter is restricted to an
 //! instances of `Class` when an `OptionalClass` could be accepted.
 //!
+//! Note that when `Class` and `OptionalClass` contain associated types, name
+//! clashes may occur when using `SomeClass` as a trait bound. This can be
+//! avoided by removing the `OptionalClass` super trait from `SomeClass`.
+//! Ultimately, it is redundant anyway, because any implementer of `Class` also
+//! implements `OptionalClass`.
+//!
 //! # `AnyKind` trait pattern
 //!
 //! The `AnyKind` trait pattern allows you to encapsulate types with multiple
@@ -634,6 +640,7 @@ mod private {
 pub(crate) use private::Sealed;
 
 /// Type-level version of the [None] variant
+#[derive(Default)]
 pub struct NoneT;
 impl Sealed for NoneT {}
 

@@ -847,15 +847,15 @@ impl<P: AnyPin> AsMut<P> for SpecificPin<P> {
 ///
 /// [`OptionalKind`]: crate::typelevel#optionalkind-trait-pattern
 pub trait OptionalPin: Sealed {
-    type PinId: OptionalPinId;
+    type Id: OptionalPinId;
 }
 
 impl OptionalPin for NoneT {
-    type PinId = NoneT;
+    type Id = NoneT;
 }
 
 impl<P: AnyPin> OptionalPin for P {
-    type PinId = P::Id;
+    type Id = P::Id;
 }
 
 /// Type-level equivalent of `Some(PinId)`
@@ -863,8 +863,8 @@ impl<P: AnyPin> OptionalPin for P {
 /// See the [`OptionalKind`] documentation for more details on the pattern.
 ///
 /// [`OptionalKind`]: crate::typelevel#optionalkind-trait-pattern
-pub trait SomePin: OptionalPin + AnyPin {}
-impl<P: OptionalPin + AnyPin> SomePin for P {}
+pub trait SomePin: AnyPin {}
+impl<P: AnyPin> SomePin for P {}
 
 //==============================================================================
 //  Embedded HAL traits

@@ -2,6 +2,8 @@
 
 use crate::clock;
 use crate::hal::blocking::i2c::{Read, Write, WriteRead};
+use crate::sercom::v1::pads::CompatiblePad;
+use crate::sercom::v2::{Pad0, Pad1};
 use crate::target_device::sercom0::I2CM;
 use crate::target_device::{MCLK, SERCOM0, SERCOM1, SERCOM2, SERCOM3, SERCOM4, SERCOM5};
 #[cfg(feature = "min-samd51n")]
@@ -19,8 +21,8 @@ macro_rules! i2c {
     ([
         $($Type:ident:
             (
-                $pad0:ident,
-                $pad1:ident,
+                $pad0:ident,  // No longer used
+                $pad1:ident,  // No longer used
                 $SERCOM:ident,
                 $powermask:ident,
                 $clock:ident,
@@ -33,13 +35,21 @@ macro_rules! i2c {
 
 /// Represents the Sercom instance configured to act as an I2C Master.
 /// The embedded_hal blocking I2C traits are implemented by this instance.
-pub struct $Type<$pad0, $pad1> {
-    sda: $pad0,
-    scl: $pad1,
+pub struct $Type<P0, P1>
+where
+    P0: CompatiblePad<Sercom = $SERCOM, PadNum = Pad0>,
+    P1: CompatiblePad<Sercom = $SERCOM, PadNum = Pad1>,
+{
+    sda: P0,
+    scl: P1,
     sercom: $SERCOM,
 }
 
-impl<$pad0, $pad1> $Type<$pad0, $pad1> {
+impl<P0, P1> $Type<P0, P1>
+where
+    P0: CompatiblePad<Sercom = $SERCOM, PadNum = Pad0>,
+    P1: CompatiblePad<Sercom = $SERCOM, PadNum = Pad1>,
+{
     /// Configures the sercom instance to work as an I2C Master.
     /// The clock is obtained via the `GenericClockGenerator` type.
     /// `freq` specifies the bus frequency to use for I2C communication.
@@ -66,8 +76,8 @@ impl<$pad0, $pad1> $Type<$pad0, $pad1> {
         freq: F,
         sercom: $SERCOM,
         mclk: &mut MCLK,
-        sda: $pad0,
-        scl: $pad1,
+        sda: P0,
+        scl: P1,
     ) -> Self {
         // Power up the peripheral bus clock.
         // safe because we're exclusively owning SERCOM
@@ -109,7 +119,7 @@ impl<$pad0, $pad1> $Type<$pad0, $pad1> {
 
     /// Breaks the sercom device up into its constituent pins and the SERCOM
     /// instance.  Does not make any changes to power management.
-    pub fn free(self) -> ($pad0, $pad1, $SERCOM) {
+    pub fn free(self) -> (P0, P1, $SERCOM) {
         (self.sda, self.scl, self.sercom)
     }
 
@@ -280,7 +290,11 @@ impl<$pad0, $pad1> $Type<$pad0, $pad1> {
     }
 }
 
-impl<$pad0, $pad1> Write for $Type<$pad0, $pad1> {
+impl<P0, P1> Write for $Type<P0, P1>
+where
+    P0: CompatiblePad<Sercom = $SERCOM, PadNum = Pad0>,
+    P1: CompatiblePad<Sercom = $SERCOM, PadNum = Pad1>,
+{
     type Error = I2CError;
 
     /// Sends bytes to slave with address `addr`
@@ -291,7 +305,11 @@ impl<$pad0, $pad1> Write for $Type<$pad0, $pad1> {
     }
 }
 
-impl<$pad0, $pad1> Read for $Type<$pad0, $pad1> {
+impl<P0, P1> Read for $Type<P0, P1>
+where
+    P0: CompatiblePad<Sercom = $SERCOM, PadNum = Pad0>,
+    P1: CompatiblePad<Sercom = $SERCOM, PadNum = Pad1>,
+{
     type Error = I2CError;
 
     fn read(&mut self, addr: u8, buffer: &mut [u8]) -> Result<(), Self::Error> {
@@ -301,7 +319,11 @@ impl<$pad0, $pad1> Read for $Type<$pad0, $pad1> {
     }
 }
 
-impl<$pad0, $pad1> WriteRead for $Type<$pad0, $pad1> {
+impl<P0, P1> WriteRead for $Type<P0, P1>
+where
+    P0: CompatiblePad<Sercom = $SERCOM, PadNum = Pad0>,
+    P1: CompatiblePad<Sercom = $SERCOM, PadNum = Pad1>,
+{
     type Error = I2CError;
 
     fn write_read(&mut self, addr: u8, bytes: &[u8], buffer: &mut [u8]) -> Result<(), Self::Error> {
