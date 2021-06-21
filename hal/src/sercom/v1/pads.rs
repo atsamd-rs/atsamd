@@ -136,7 +136,7 @@ pad_alias!(Sercom6, Sercom7);
 
 /// Type class to improve compatibility between `v1` and `v2` SERCOM pad types
 ///
-/// The `sercom::v1::pads` module uses a wrapperd [`Pad`] type to represent
+/// The `sercom::v1::pads` module uses a wrapper [`Pad`] type to represent
 /// SERCOM pads. The `v2::pad` module, on the other hand, does not use a
 /// wrapper. Instead, it labels each correctly-configured [`v2::Pin`] with the
 /// [`IsPad`] trait.
