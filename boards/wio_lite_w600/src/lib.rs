@@ -16,10 +16,9 @@ pub use hal::*;
 
 pub use hal::target_device as pac;
 
-use gpio;
-
 use hal::clock::GenericClockController;
-use hal::sercom::{I2CMaster3, SPIMaster4, UART2};
+use hal::sercom::v2::{spi, PinToPad};
+use hal::sercom::{I2CMaster3, UART0};
 use hal::time::Hertz;
 
 #[cfg(feature = "usb")]
@@ -236,91 +235,76 @@ atsamd_hal::bsp_pins!(
     },
 );
 
+/// I2C master for the labelled SDA & SCL pins
+pub type I2C = I2CMaster3<PinToPad<Sda>, PinToPad<Scl>>;
+
 /// Convenience for setting up the labelled SDA, SCL pins to
 /// operate as an I2C master running at the specified frequency.
-pub fn i2c_master<F: Into<Hertz>>(
+pub fn i2c_master(
     clocks: &mut GenericClockController,
-    bus_speed: F,
+    baud: impl Into<Hertz>,
     sercom3: pac::SERCOM3,
     pm: &mut pac::PM,
-    sda: Sda,
-    scl: Scl,
-) -> hal::sercom::I2CMaster3<
-    hal::sercom::Sercom3Pad0<gpio::v2::PA22>,
-    hal::sercom::Sercom3Pad1<gpio::v2::PA23>,
-> {
-    use sercom::v2::pads::Pad;
-
+    sda: impl Into<Sda>,
+    scl: impl Into<Scl>,
+) -> I2C {
     let gclk0 = clocks.gclk0();
-
-    I2CMaster3::new(
-        &clocks.sercom3_core(&gclk0).unwrap(),
-        bus_speed.into(),
-        sercom3,
-        pm,
-        Pad::new(sda),
-        Pad::new(scl),
-    )
+    let clock = &clocks.sercom3_core(&gclk0).unwrap();
+    let baud = baud.into();
+    let sda = sda.into().into();
+    let scl = scl.into().into();
+    I2CMaster3::new(clock, baud, sercom3, pm, sda, scl)
 }
+
+type SpiPads = spi_pads_from_pins!(Sercom4, DI = Miso, DO = Mosi, CK = Sck);
+
+/// SPI master for the labelled SPI peripheral
+///
+/// This type implements [`FullDuplex<u8>`](ehal::spi::FullDuplex).
+pub type Spi = spi::Spi<spi::Config<SpiPads>>;
 
 /// Convenience function for setting up the D24/SCK, D23/MOSI, and D22/MISO pins
 /// as a SPI Master.
-pub fn spi_master<F: Into<Hertz>>(
+pub fn spi_master(
     clocks: &mut GenericClockController,
-    speed: F,
+    baud: impl Into<Hertz>,
     sercom4: pac::SERCOM4,
     pm: &mut pac::PM,
-    sck: Sck,
-    mosi: Mosi,
-    miso: Miso,
-) -> SPIMaster4<
-    hal::sercom::Sercom4Pad0<gpio::v2::PA12>,
-    hal::sercom::Sercom4Pad2<gpio::v2::PB10>,
-    hal::sercom::Sercom4Pad3<gpio::v2::PB11>,
-> {
-    use sercom::v2::pads::Pad;
-
+    sck: impl Into<Sck>,
+    mosi: impl Into<Mosi>,
+    miso: impl Into<Miso>,
+) -> Spi {
     let gclk0 = clocks.gclk0();
-
-    SPIMaster4::new(
-        &clocks.sercom4_core(&gclk0).unwrap(),
-        speed.into(),
-        hal::hal::spi::Mode {
-            phase: hal::hal::spi::Phase::CaptureOnFirstTransition,
-            polarity: hal::hal::spi::Polarity::IdleLow,
-        },
-        sercom4,
-        pm,
-        (Pad::new(miso), Pad::new(mosi), Pad::new(sck)),
-    )
+    let clock = clocks.sercom4_core(&gclk0).unwrap();
+    let freq = clock.freq();
+    let pads = spi::Pads::default()
+        .data_in(miso.into())
+        .data_out(mosi.into())
+        .sclk(sck.into());
+    spi::Config::new(pm, sercom4, pads, freq)
+        .baud(baud)
+        .spi_mode(spi::MODE_0)
+        .enable()
 }
+
+/// UART device for the labelled RX & TX pins
+pub type Uart = UART0<PinToPad<Rx>, PinToPad<Tx>, (), ()>;
 
 /// Convenience for setting up the D0 and D1 pins to
 /// operate as UART RX/TX (respectively) running at the specified baud.
-pub fn uart<F: Into<Hertz>>(
+pub fn uart(
     clocks: &mut GenericClockController,
-    baud: F,
-    sercom2: pac::SERCOM2,
+    baud: impl Into<Hertz>,
+    sercom0: pac::SERCOM0,
     pm: &mut pac::PM,
-    rx: Rx,
-    tx: Tx,
-) -> UART2<
-    hal::sercom::Sercom2Pad3<gpio::v2::PA11>,
-    hal::sercom::Sercom2Pad2<gpio::v2::PA10>,
-    (),
-    (),
-> {
-    use sercom::v2::pads::Pad;
-
+    uart_rx: impl Into<Rx>,
+    uart_tx: impl Into<Tx>,
+) -> Uart {
     let gclk0 = clocks.gclk0();
-
-    UART2::new(
-        &clocks.sercom2_core(&gclk0).unwrap(),
-        baud.into(),
-        sercom2,
-        pm,
-        (Pad::new(rx), Pad::new(tx)),
-    )
+    let clock = &clocks.sercom0_core(&gclk0).unwrap();
+    let baud = baud.into();
+    let pads = (uart_rx.into().into(), uart_tx.into().into());
+    UART0::new(clock, baud, sercom0, pm, pads)
 }
 
 #[cfg(feature = "usb")]
