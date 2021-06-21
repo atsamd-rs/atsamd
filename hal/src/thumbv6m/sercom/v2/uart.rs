@@ -215,12 +215,12 @@ type Pads = uart::PadsFromIds<Sercom0, PA09, PA09>;
 # Using UART with DMA
 
 This HAL includes support for DMA-enabled UART transfers. [`UartRx`] and
-[`UartTx`] both implement the DMAC [`Buffer`](crate::dmac::transfer::Buffer)
-trait. The provided [`send_with_dma`](UartTx::send_with_dma) and
-[`receive_with_dma`](UartRx::receive_with_dma) build and begin a
-[`dmac::Transfer`](crate::dmac::transfer::Transfer), thus starting the UART
+[`UartTx`] both implement the DMAC [`Buffer`]
+trait. The provided [`send_with_dma`] and
+[`receive_with_dma`] build and begin a
+[`dmac::Transfer`], thus starting the UART
 in a non-blocking way. Optionally, interrupts can be enabled on the provided
-[`Channel`](crate::dmac::channel::Channel). Note that the `dma` feature must
+[`Channel`]. Note that the `dma` feature must
 be enabled. Please refer to the [`dmac`](crate::dmac) module-level
 documentation for more information.
 
@@ -242,6 +242,13 @@ let rx_dma = rx.receive_with_dma(&mut rx_buffer, channel1, ());
 let (chan0, tx_buffer, tx) = tx_dma.wait();
 let (chan1, rx, rx_buffer) = rx_dma.wait();
 ```
+
+[`Buffer`]: crate::dmac::transfer::Buffer
+[`send_with_dma`]: UartTx::send_with_dma
+[`receive_with_dma`]: UartRx::receive_with_dma
+[`dmac::Transfer`]: crate::dmac::Transfer
+[`Channel`]: crate::dmac::channel::Channel
+[`dmac`]: crate::dmac
 "
 )]
 
@@ -1301,9 +1308,23 @@ where
         self
     }
 
-    pub fn irda_encoding(self, irda: bool) -> Self {
-        // TODO pulse length
-        self.sercom.usart().ctrlb.modify(|_, w| w.enc().bit(irda));
+    /// Enable or disable IrDA encoding. The pulse length controls the minimum
+    /// pulse length that is required for a pulse to be accepted by the IrDA
+    /// receiver with regards to the serial engine clock period.
+    /// See datasheet for more information.
+    pub fn irda_encoding(self, pulse_length: Option<u8>) -> Self {
+        match pulse_length {
+            Some(l) => {
+                self.sercom
+                    .usart()
+                    .rxpl
+                    .write(|w| unsafe { w.rxpl().bits(l) });
+                self.sercom.usart().ctrlb.modify(|_, w| w.enc().bit(true));
+            }
+            None => {
+                self.sercom.usart().ctrlb.modify(|_, w| w.enc().bit(false));
+            }
+        }
         self
     }
 

@@ -215,7 +215,7 @@
 //! [`reconfigure`]: Disable::reconfigure
 //! [`Pin`]: crate::gpio::v2::pin::Pin
 //! [`PinId`]: crate::gpio::v2::pin::PinId
-//! [`OptionalPadId`]: crate::gpio::v2::pin::OptionalPadId
+//! [`PinMode`]: crate::gpio::v2::pin::PinMode
 #![cfg_attr(
     feature = "dma",
     doc = "
@@ -254,8 +254,8 @@ uart.rx = rx;
 ```
 
 [`Buffer`]: crate::dmac::transfer::Buffer
-[`send_with_dma`]: Spi::send_with_dma
-[`receive_with_dma`]: Spi::receive_with_dma
+[`send_with_dma`]: UartTx::send_with_dma
+[`receive_with_dma`]: UartRx::receive_with_dma
 [`dmac::Transfer`]: crate::dmac::Transfer
 [`Channel`]: crate::dmac::channel::Channel
 [`dmac`]: crate::dmac
@@ -517,7 +517,7 @@ where
 /// `PinId`s rather than `Pin`s. This alias makes it easier to do so.
 ///
 /// The first two type parameters are the [`Sercom`] and [`IoSet`], while the
-/// remaining four are effectively [`OptionalPadId`]s representing the
+/// remaining four are effectively [`OptionalPinId`]s representing the
 /// corresponding type parameters of [`Pads`], i.e. `RX`, `TX`, `RTS` & `CTS`.
 /// Each of the remaining type parameters defaults to [`NoneT`].
 ///
@@ -539,7 +539,7 @@ where
 ///
 /// [`Pin`]: crate::gpio::v2::Pin
 /// [`PinId`]: crate::gpio::v2::PinId
-/// [`OptionalPadId`]: crate::gpio::v2::OptionalPadId
+/// [`OptionalPinId`]: crate::gpio::v2::OptionalPinId
 pub type PadsFromIds<S, I, RX = NoneT, TX = NoneT, RTS = NoneT, CTS = NoneT> = Pads<
     S,
     I,
@@ -561,7 +561,7 @@ pub type PadsFromIds<S, I, RX = NoneT, TX = NoneT, RTS = NoneT, CTS = NoneT> = P
 /// corresponding [`Sercom`], and [`OptionalPad`] types. It serves to
 /// cut down on the total number of type parameters needed in the [`Config`]
 /// struct. The [`Config`] struct doesn't need access to the [`Pad`]s directly.
-/// Rather, it only needs to apply the [`SomePas`] trait bound when a `Pin` is
+/// Rather, it only needs to apply the [`SomePad`] trait bound when a `Pin` is
 /// required. The [`PadSet`] trait allows each [`Config`] struct to store an
 /// instance of [`Pads`] without itself being generic over all six type
 /// parameters of the [`Pads`] type.
@@ -1226,12 +1226,26 @@ where
         self
     }
 
-    pub fn irda_encoding(self, irda: bool) -> Self {
-        // TODO pulse length
+    /// Enable or disable IrDA encoding. The pulse length controls the minimum
+    /// pulse length that is required for a pulse to be accepted by the IrDA
+    /// receiver with regards to the serial engine clock period.
+    /// See datasheet for more information.
+    pub fn irda_encoding(self, pulse_length: Option<u8>) -> Self {
+        let encoding_enabled = match pulse_length {
+            Some(l) => {
+                self.sercom
+                    .usart_int()
+                    .rxpl
+                    .write(|w| unsafe { w.rxpl().bits(l) });
+                true
+            }
+            None => false,
+        };
+
         self.sercom
             .usart_int()
             .ctrlb
-            .modify(|_, w| w.enc().bit(irda));
+            .modify(|_, w| w.enc().bit(encoding_enabled));
         self
     }
 
