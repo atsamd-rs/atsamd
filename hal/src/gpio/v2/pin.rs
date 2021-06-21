@@ -815,22 +815,6 @@ where
 /// [`AnyKind`]: crate::typelevel#anykind-trait-pattern
 pub type SpecificPin<P> = Pin<<P as AnyPin>::Id, <P as AnyPin>::Mode>;
 
-/// Type alias to recover the [`PinId`] type from an implementation of
-/// [`AnyPin`]
-///
-/// See the [`AnyKind`] documentation for more details on the pattern.
-///
-/// [`AnyKind`]: crate::typelevel#anykind-trait-pattern
-pub type SpecificPinId<P> = <P as AnyPin>::Id;
-
-/// Type alias to recover the [`PinMode`] type from an implementation of
-/// [`AnyPin`]
-///
-/// See the [`AnyKind`] documentation for more details on the pattern.
-///
-/// [`AnyKind`]: crate::typelevel#anykind-trait-pattern
-pub type SpecificPinMode<P> = <P as AnyPin>::Mode;
-
 impl<P: AnyPin> AsRef<P> for SpecificPin<P> {
     #[inline]
     fn as_ref(&self) -> &P {
@@ -862,17 +846,25 @@ impl<P: AnyPin> AsMut<P> for SpecificPin<P> {
 /// See the [`OptionalKind`] documentation for more details on the pattern.
 ///
 /// [`OptionalKind`]: crate::typelevel#optionalkind-trait-pattern
-pub trait OptionalPin: Sealed {}
-impl OptionalPin for NoneT {}
-impl<P: AnyPin> OptionalPin for P {}
+pub trait OptionalPin: Sealed {
+    type Id: OptionalPinId;
+}
+
+impl OptionalPin for NoneT {
+    type Id = NoneT;
+}
+
+impl<P: AnyPin> OptionalPin for P {
+    type Id = P::Id;
+}
 
 /// Type-level equivalent of `Some(PinId)`
 ///
 /// See the [`OptionalKind`] documentation for more details on the pattern.
 ///
 /// [`OptionalKind`]: crate::typelevel#optionalkind-trait-pattern
-pub trait SomePin: OptionalPin + AnyPin {}
-impl<P: OptionalPin + AnyPin> SomePin for P {}
+pub trait SomePin: AnyPin {}
+impl<P: AnyPin> SomePin for P {}
 
 //==============================================================================
 //  Embedded HAL traits
