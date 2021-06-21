@@ -102,7 +102,7 @@ where
         buf: B,
         mut channel: Ch,
         waker: W,
-    ) -> Transfer<Channel<Ch::Id, Busy>, BufferPair<B, Self>, (), W>
+    ) -> Transfer<Channel<Ch::Id, Busy>, BufferPair<B, Self>, W>
     where
         Ch: AnyChannel<Status = Ready>,
         B: Buffer<Beat = C::Word> + 'static,
@@ -141,7 +141,7 @@ where
         buf: B,
         mut channel: Ch,
         waker: W,
-    ) -> Transfer<Channel<Ch::Id, Busy>, BufferPair<Self, B>, (), W>
+    ) -> Transfer<Channel<Ch::Id, Busy>, BufferPair<Self, B>, W>
     where
         Ch: AnyChannel<Status = Ready>,
         B: Buffer<Beat = C::Word> + 'static,
@@ -237,7 +237,7 @@ where
         buf: B,
         mut channel: Ch,
         waker: W,
-    ) -> Transfer<Channel<Ch::Id, Busy>, BufferPair<B, Self>, (), W>
+    ) -> Transfer<Channel<Ch::Id, Busy>, BufferPair<B, Self>, W>
     where
         Ch: AnyChannel<Status = Ready>,
         B: Buffer<Beat = L::Word> + 'static,
@@ -279,7 +279,7 @@ where
         buf: B,
         mut channel: Ch,
         waker: W,
-    ) -> Transfer<Channel<Ch::Id, Busy>, BufferPair<Self, B>, (), W>
+    ) -> Transfer<Channel<Ch::Id, Busy>, BufferPair<Self, B>, W>
     where
         Ch: AnyChannel<Status = Ready>,
         B: Buffer<Beat = L::Word> + 'static,
