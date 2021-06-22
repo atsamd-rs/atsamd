@@ -12,7 +12,7 @@ use crate::{
     },
     sercom::v2::{
         spi::{self, AnySpi, Spi},
-        uart::{self, Uart, UartRx, UartTx},
+        uart::{self, Capability, Receive, Transmit, Uart},
         Sercom,
     },
 };
@@ -20,11 +20,11 @@ use crate::{
 //=============================================================================
 // UART DMA transfers
 //=============================================================================
-unsafe impl<C> Buffer for UartTx<C>
+unsafe impl<C, D> Buffer for Uart<C, D>
 where
     C: uart::ValidConfig,
-    C::Pads: uart::Tx,
     C::Word: Beat,
+    D: Capability,
 {
     type Beat = C::Word;
 
@@ -54,86 +54,13 @@ where
     }
 }
 
-unsafe impl<C> Buffer for UartRx<C>
-where
-    C: uart::ValidConfig,
-    C::Pads: uart::Rx,
-    C::Word: Beat,
-{
-    type Beat = C::Word;
-
-    #[inline]
-    fn dma_ptr(&mut self) -> *mut Self::Beat {
-        unsafe {
-            #[cfg(feature = "min-samd51g")]
-            {
-                self.sercom().usart_int().data.as_ptr() as *mut _
-            }
-
-            #[cfg(any(feature = "samd11", feature = "samd21"))]
-            {
-                self.sercom().usart().data.as_ptr() as *mut _
-            }
-        }
-    }
-
-    #[inline]
-    fn incrementing(&self) -> bool {
-        false
-    }
-
-    #[inline]
-    fn buffer_len(&self) -> usize {
-        1
-    }
-}
-
-impl<C> UartTx<C>
+impl<C, D> Uart<C, D>
 where
     Self: Buffer<Beat = C::Word>,
-    C::Pads: uart::Tx,
     C: uart::ValidConfig,
+    D: Receive,
 {
-    /// Transform an [`UartTx`] into a DMA [`Transfer`]) and
-    /// start sending the provided buffer.
-    #[inline]
-    pub fn send_with_dma<Ch, B, W>(
-        self,
-        buf: B,
-        mut channel: Ch,
-        waker: W,
-    ) -> Transfer<Channel<Ch::Id, Busy>, BufferPair<B, Self>, W>
-    where
-        Ch: AnyChannel<Status = Ready>,
-        B: Buffer<Beat = C::Word> + 'static,
-        W: FnOnce(CallbackStatus) + 'static,
-    {
-        channel
-            .as_mut()
-            .enable_interrupts(InterruptFlags::new().with_tcmpl(true));
-
-        #[cfg(feature = "min-samd51g")]
-        let trigger_action = TriggerAction::BURST;
-
-        #[cfg(any(feature = "samd11", feature = "samd21"))]
-        let trigger_action = TriggerAction::BEAT;
-
-        // SAFETY: We use new_unchecked to avoid having to pass a 'static self as the
-        // destination buffer. This is safe as long as we guarantee the source buffer is
-        // static.
-        unsafe { dmac::Transfer::new_unchecked(channel, buf, self, false) }
-            .with_waker(waker)
-            .begin(C::Sercom::DMA_TX_TRIGGER, trigger_action)
-    }
-}
-
-impl<C> UartRx<C>
-where
-    Self: Buffer<Beat = C::Word>,
-    C::Pads: uart::Rx,
-    C: uart::ValidConfig,
-{
-    /// Transform an [`UartRx`] into a DMA [`Transfer`]) and
+    /// Transform an [`Uart`] into a DMA [`Transfer`]) and
     /// start receiving into the provided buffer.
     #[inline]
     pub fn receive_with_dma<Ch, B, W>(
@@ -163,6 +90,45 @@ where
         unsafe { dmac::Transfer::new_unchecked(channel, self, buf, false) }
             .with_waker(waker)
             .begin(C::Sercom::DMA_RX_TRIGGER, trigger_action)
+    }
+}
+
+impl<C, D> Uart<C, D>
+where
+    Self: Buffer<Beat = C::Word>,
+    C: uart::ValidConfig,
+    D: Transmit,
+{
+    /// Transform an [`Uart`] into a DMA [`Transfer`]) and
+    /// start sending the provided buffer.
+    #[inline]
+    pub fn send_with_dma<Ch, B, W>(
+        self,
+        buf: B,
+        mut channel: Ch,
+        waker: W,
+    ) -> Transfer<Channel<Ch::Id, Busy>, BufferPair<B, Self>, W>
+    where
+        Ch: AnyChannel<Status = Ready>,
+        B: Buffer<Beat = C::Word> + 'static,
+        W: FnOnce(CallbackStatus) + 'static,
+    {
+        channel
+            .as_mut()
+            .enable_interrupts(InterruptFlags::new().with_tcmpl(true));
+
+        #[cfg(feature = "min-samd51g")]
+        let trigger_action = TriggerAction::BURST;
+
+        #[cfg(any(feature = "samd11", feature = "samd21"))]
+        let trigger_action = TriggerAction::BEAT;
+
+        // SAFETY: We use new_unchecked to avoid having to pass a 'static self as the
+        // destination buffer. This is safe as long as we guarantee the source buffer is
+        // static.
+        unsafe { dmac::Transfer::new_unchecked(channel, buf, self, false) }
+            .with_waker(waker)
+            .begin(C::Sercom::DMA_TX_TRIGGER, trigger_action)
     }
 }
 
