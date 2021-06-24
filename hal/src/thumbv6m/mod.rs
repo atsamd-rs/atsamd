@@ -10,13 +10,10 @@ pub mod calibration;
 pub mod clock;
 pub mod timer;
 
-#[cfg(feature = "unproven")]
 pub mod adc;
 
-#[cfg(feature = "unproven")]
 pub mod pwm;
 
-#[cfg(feature = "unproven")]
 pub mod watchdog;
 
 #[cfg(feature = "usb")]

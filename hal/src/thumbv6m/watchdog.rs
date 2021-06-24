@@ -30,6 +30,7 @@ impl Watchdog {
     }
 }
 
+#[cfg(feature = "unproven")]
 impl watchdog::Watchdog for Watchdog {
     /// Feeds an existing watchdog to ensure the processor isn't reset.
     /// Sometimes commonly referred to as "kicking" or "refreshing".
@@ -39,6 +40,7 @@ impl watchdog::Watchdog for Watchdog {
 }
 
 /// Disables a running watchdog timer so the processor won't be reset.
+#[cfg(feature = "unproven")]
 impl watchdog::WatchdogDisable for Watchdog {
     fn disable(&mut self) {
         // Disable the watchdog timer.
@@ -48,6 +50,7 @@ impl watchdog::WatchdogDisable for Watchdog {
     }
 }
 
+#[cfg(feature = "unproven")]
 impl watchdog::WatchdogEnable for Watchdog {
     type Time = u8;
 

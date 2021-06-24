@@ -247,6 +247,7 @@ impl<C> From<Adc<$ADC>> for InterruptAdc<$ADC, C>
     }
 }
 
+#[cfg(feature = "unproven")]
 impl<WORD, PIN> OneShot<$ADC, WORD, PIN> for Adc<$ADC>
 where
    WORD: From<u16>,
@@ -288,6 +289,7 @@ macro_rules! adc_pins {
 
 /// Implement [`Channel`] for [`v1::Pin`]s based on the implementations for
 /// `v2` [`Pin`]s
+#[cfg(feature = "unproven")]
 impl<I, A> Channel<A> for v1::Pin<I, v1::PfB>
 where
     I: PinId,

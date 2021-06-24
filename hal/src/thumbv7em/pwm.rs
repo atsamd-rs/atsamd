@@ -166,6 +166,7 @@ impl<I: PinId> $TYPE<I> {
     }
 }
 
+#[cfg(feature = "unproven")]
 impl<I: PinId> PwmPin for $TYPE<I> {
     type Duty = u16;
 
@@ -486,6 +487,7 @@ impl<I: PinId, M: PinMode> $TYPE<I, M> {
     }
 }
 
+#[cfg(feature = "unproven")]
 impl<I: PinId, M: PinMode> Pwm for $TYPE<I, M> {
     type Channel = Channel;
     type Time = Hertz;

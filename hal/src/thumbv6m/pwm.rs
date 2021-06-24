@@ -97,6 +97,7 @@ impl $TYPE {
     }
 }
 
+#[cfg(feature = "unproven")]
 impl PwmPin for $TYPE {
     type Duty = u16;
 
@@ -213,6 +214,7 @@ impl $TYPE {
     }
 }
 
+#[cfg(feature = "unproven")]
 impl Pwm for $TYPE {
     type Channel = Channel;
     type Time = Hertz;
