@@ -1,7 +1,7 @@
 #![deprecated(
     since = "0.12.0",
-    note = "Please use sercom::v2::uart instead. 
-    sercom::v1::uart will be removed in a later release."
+    note = "Please use sercom::v2::spi instead. 
+    sercom::v1::spi will be removed in a later release."
 )]
 
 use crate::clock;
