@@ -128,10 +128,10 @@ where
 
 #[cfg(feature = "min-samd51g")]
 #[doc(hidden)]
-pub trait CharSize: spi::Length {}
+pub trait CharSize: spi::AtomicLength {}
 
 #[cfg(feature = "min-samd51g")]
-impl<T: spi::Length> CharSize for T {}
+impl<T: spi::AtomicLength> CharSize for T {}
 
 #[cfg(any(feature = "samd11", feature = "samd21"))]
 #[doc(hidden)]

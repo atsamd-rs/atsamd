@@ -804,26 +804,33 @@ impl Length for DynLength {
 /// Marker trait for statically known transaction [`Length`]s
 pub trait StaticLength: Length {}
 
+/// Marker trait for transactions that are performed atomically
+pub trait AtomicLength: Length {}
+
 impl Sealed for U1 {}
 impl StaticLength for U1 {}
+impl AtomicLength for U1 {}
 impl Length for U1 {
     type Word = u8;
 }
 
 impl Sealed for U2 {}
 impl StaticLength for U2 {}
+impl AtomicLength for U2 {}
 impl Length for U2 {
     type Word = u16;
 }
 
 impl Sealed for U3 {}
 impl StaticLength for U3 {}
+impl AtomicLength for U3 {}
 impl Length for U3 {
     type Word = u32;
 }
 
 impl Sealed for U4 {}
 impl StaticLength for U4 {}
+impl AtomicLength for U4 {}
 impl Length for U4 {
     type Word = u32;
 }
