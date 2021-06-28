@@ -403,6 +403,64 @@ impl CharSize for NineBit {
 }
 
 //=============================================================================
+// Stop bits, parity, baud rate
+//=============================================================================
+
+/// Number of stop bits in a UART frame
+pub enum StopBits {
+    /// 1 stop bit
+    OneBit = 0,
+    /// 2 stop bits
+    TwoBits = 1,
+}
+
+/// Parity setting of a UART frame
+pub enum Parity {
+    /// Even parity
+    Even = 0,
+    /// Odd parity
+    Odd = 1,
+}
+
+/// Baudrate oversampling values
+///
+/// *NOTE* 3x oversampling has been intentionally left out
+pub enum Oversampling {
+    // 3 samples per bit
+    // Bits3 = 3,
+    /// 8 samples per bit
+    Bits8 = 8,
+    /// 16 samples per bit
+    Bits16 = 16,
+}
+
+/// Baudrate calculation in asynchronous mode
+pub enum BaudMode {
+    /// Asynchronous arithmetic baud calculation
+    Arithmetic(Oversampling),
+    /// Asynchronous fractional baud calculation
+    Fractional(Oversampling),
+}
+
+impl BaudMode {
+    pub(super) fn sampr(&self) -> u8 {
+        use BaudMode::*;
+        use Oversampling::*;
+        match self {
+            Arithmetic(n) => match n {
+                Bits16 => 0,
+                Bits8 => 2,
+            },
+
+            Fractional(n) => match n {
+                Bits16 => 1,
+                Bits8 => 3,
+            },
+        }
+    }
+}
+
+//=============================================================================
 // Capability
 //=============================================================================
 impl<S, RX, RTS> GetCapability for Pads<S, RX, NoneT, RTS, NoneT>
@@ -1145,7 +1203,7 @@ impl<C: ValidConfig> AsMut<Uart<C, Duplex>> for (&mut Uart<C, RxDuplex>, &mut Ua
     fn as_mut(&mut self) -> &mut Uart<C, Duplex> {
         // SAFETY: Pointer casting &mut Uart<C, RxDuplex> into &mut
         // Uart<C, Duplex> should be safe as long as RxDuplex and Duplex
-        // are both zero-sized.
+        // both only have one nonzero-sized field.
         unsafe { &mut *(self.0 as *mut _ as *mut Uart<C, Duplex>) }
     }
 }
@@ -1296,58 +1354,4 @@ where
     D: Transmit,
     Uart<C, D>: Write<C::Word>,
 {
-}
-
-/// Number of stop bits in a UART frame
-pub enum StopBits {
-    /// 1 stop bit
-    OneBit = 0,
-    /// 2 stop bits
-    TwoBits = 1,
-}
-
-/// Parity setting of a UART frame
-pub enum Parity {
-    /// Even parity
-    Even = 0,
-    /// Odd parity
-    Odd = 1,
-}
-
-/// Baudrate oversampling values
-///
-/// *NOTE* 3x oversampling has been intentionally left out
-pub enum Oversampling {
-    // 3 samples per bit
-    // Bits3 = 3,
-    /// 8 samples per bit
-    Bits8 = 8,
-    /// 16 samples per bit
-    Bits16 = 16,
-}
-
-/// Baudrate calculation in asynchronous mode
-pub enum BaudMode {
-    /// Asynchronous arithmetic baud calculation
-    Arithmetic(Oversampling),
-    /// Asynchronous fractional baud calculation
-    Fractional(Oversampling),
-}
-
-impl BaudMode {
-    pub(super) fn sampr(&self) -> u8 {
-        use BaudMode::*;
-        use Oversampling::*;
-        match self {
-            Arithmetic(n) => match n {
-                Bits16 => 0,
-                Bits8 => 2,
-            },
-
-            Fractional(n) => match n {
-                Bits16 => 1,
-                Bits8 => 3,
-            },
-        }
-    }
 }

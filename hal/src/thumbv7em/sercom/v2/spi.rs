@@ -227,7 +227,7 @@ use pac::sercom0::spim::ctrla::{CPHA_A, CPOL_A, DIPO_A, DOPO_A, DORD_A, MODE_A};
 use pac::sercom0::RegisterBlock;
 use pac::MCLK;
 
-use crate::gpio::v2::{AnyPin, OptionalPin, SomePin};
+use crate::gpio::v2::AnyPin;
 use crate::sercom::v2::*;
 use crate::time::Hertz;
 use crate::typelevel::{Is, NoneT, Sealed};
@@ -520,7 +520,7 @@ pub type PadsFromIds<S, I, DI = NoneT, DO = NoneT, CK = NoneT, SS = NoneT> = Pad
 // PadSet
 //=============================================================================
 
-/// Type-level function to recover the [`OptionalPin`] types from a generic set
+/// Type-level function to recover the [`OptionalPad`] types from a generic set
 /// of [`Pads`]
 ///
 /// This trait is used as an interface between the [`Pads`] type and other
@@ -538,10 +538,10 @@ pub type PadsFromIds<S, I, DI = NoneT, DO = NoneT, CK = NoneT, SS = NoneT> = Pad
 pub trait PadSet: Sealed {
     type Sercom: Sercom;
     type IoSet: IoSet;
-    type DataIn: OptionalPin;
-    type DataOut: OptionalPin;
-    type Sclk: OptionalPin;
-    type SS: OptionalPin;
+    type DataIn: OptionalPad;
+    type DataOut: OptionalPad;
+    type Sclk: OptionalPad;
+    type SS: OptionalPad;
 }
 
 impl<S, I, DI, DO, CK, SS> Sealed for Pads<S, I, DI, DO, CK, SS>
@@ -591,27 +591,27 @@ impl<P: PadSet + Dipo + Dopo> ValidPads for P {}
 
 /// Marker trait for a set of [`Pads`] that can transmit
 ///
-/// To transmit, both SCLK and Data Out must be [`SomePin`].
+/// To transmit, both SCLK and Data Out must be [`SomePad`].
 pub trait Tx: ValidPads {}
 
 impl<P> Tx for P
 where
     P: ValidPads,
-    P::DataOut: SomePin,
-    P::Sclk: SomePin,
+    P::DataOut: SomePad,
+    P::Sclk: SomePad,
 {
 }
 
 /// Marker trait for a set of [`Pads`] that can receive
 ///
-/// To receive, both SCLK and Data In must be [`SomePin`].
+/// To receive, both SCLK and Data In must be [`SomePad`].
 pub trait Rx: ValidPads {}
 
 impl<P> Rx for P
 where
     P: ValidPads,
-    P::DataIn: SomePin,
-    P::Sclk: SomePin,
+    P::DataIn: SomePad,
+    P::Sclk: SomePad,
 {
 }
 
@@ -633,8 +633,8 @@ impl<P> NotRx for P where P: ValidPads<DataIn = NoneT> {}
 
 /// Marker trait for a set of [`Pads`] that can transmit OR receive
 ///
-/// To satisfy this trait, SCLK must always be [`SomePin`] and one or both of
-/// Data In and Data Out must also be [`SomePin`].
+/// To satisfy this trait, SCLK must always be [`SomePad`] and one or both of
+/// Data In and Data Out must also be [`SomePad`].
 pub trait TxOrRx: ValidPads {}
 
 impl<S, I, DI, CK, SS> TxOrRx for Pads<S, I, DI, NoneT, CK, SS>
@@ -1331,7 +1331,7 @@ impl<P, L> ValidConfig for Config<P, MasterHWSS, L>
 where
     P: TxOrRx,
     L: Length,
-    P::SS: SomePin,
+    P::SS: SomePad,
 {
 }
 
@@ -1339,7 +1339,7 @@ impl<P, L> ValidConfig for Config<P, Slave, L>
 where
     P: TxOrRx,
     L: Length,
-    P::SS: SomePin,
+    P::SS: SomePad,
 {
 }
 

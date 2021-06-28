@@ -1160,7 +1160,7 @@ impl<C: ValidConfig> AsMut<Uart<C, Duplex>> for (&mut Uart<C, RxDuplex>, &mut Ua
     fn as_mut(&mut self) -> &mut Uart<C, Duplex> {
         // SAFETY: Pointer casting &mut Uart<C, RxDuplex> into &mut
         // Uart<C, Duplex> should be safe as long as RxDuplex and Duplex
-        // are both zero-sized.
+        // both only have one nonzero-sized field.
         unsafe { &mut *(self.0 as *mut _ as *mut Uart<C, Duplex>) }
     }
 }

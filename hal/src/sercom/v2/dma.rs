@@ -85,7 +85,7 @@ where
         let trigger_action = TriggerAction::BEAT;
 
         // SAFETY: We use new_unchecked to avoid having to pass a 'static self as the
-        // destination buffer. This is safe as long as we guarantee the source buffer is
+        // destination buffer. This is safe as long as we guarantee the destination buffer is
         // static.
         unsafe { dmac::Transfer::new_unchecked(channel, self, buf, false) }
             .with_waker(waker)
@@ -262,7 +262,7 @@ where
         let trigger_action = TriggerAction::BEAT;
 
         // SAFETY: We use new_unchecked to avoid having to pass a 'static self as the
-        // destination buffer. This is safe as long as we guarantee the source buffer is
+        // destination buffer. This is safe as long as we guarantee the destination buffer is
         // static.
         unsafe { Transfer::new_unchecked(channel, self, buf, false) }
             .with_waker(waker)

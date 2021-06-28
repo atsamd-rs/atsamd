@@ -21,7 +21,7 @@
 //! The new [`v2::spi`] and [`v2::uart`] modules are substantially more
 //! configurable and safe than the existing, [`v1::spi`] and [`v1::uart`]
 //! modules. To assist in migration, the [`v2::spi::Pads`] and
-//! [`v2::uart::Pads`] structs accepts both [`v1::Pin`]s and [`v2::Pin`]s.
+//! [`v2::uart::Pads`] structs accept both [`v1::Pin`]s and [`v2::Pin`]s.
 //!
 //! [`Pad`]: v2::pads::Pad
 //! [`v1::Pin`]: crate::gpio::v1::Pin
