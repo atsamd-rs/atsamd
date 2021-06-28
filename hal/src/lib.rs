@@ -128,6 +128,11 @@ pub mod pad {
 }
 
 // This module maintains backwards compatibility within this major release
+#[deprecated(
+    since = "0.13.0",
+    note = "The `common` module is deprecated and will be removed in a future
+    release. Directly use modules from atsamd_hal instead."
+)]
 #[macro_use]
 pub mod common {
     #[cfg(feature = "device")]
@@ -169,23 +174,43 @@ pub mod common {
 // should be removed.
 
 #[cfg(feature = "samd51")]
+#[deprecated(
+    since = "0.13.0",
+    note = "The `samd51` module is deprecated and will be removed in a future
+    release."
+)]
 pub mod samd51 {
     #[cfg(feature = "unproven")]
     pub use crate::pwm;
 }
 
+#[deprecated(
+    since = "0.13.0",
+    note = "The `same51` module is deprecated and will be removed in a future
+    release."
+)]
 #[cfg(feature = "same51")]
 pub mod same51 {
     #[cfg(feature = "unproven")]
     pub use crate::pwm;
 }
 
+#[deprecated(
+    since = "0.13.0",
+    note = "The `same53` module is deprecated and will be removed in a future
+    release."
+)]
 #[cfg(feature = "same53")]
 pub mod same53 {
     #[cfg(feature = "unproven")]
     pub use crate::pwm;
 }
 
+#[deprecated(
+    since = "0.13.0",
+    note = "The `same54` module is deprecated and will be removed in a future
+    release."
+)]
 #[cfg(feature = "same54")]
 pub mod same54 {
     #[cfg(feature = "unproven")]
