@@ -38,6 +38,7 @@ pub mod pad;
 pub use pad::*;
 
 pub mod spi_future;
+pub mod uart;
 
 #[cfg(feature = "dma")]
 pub mod dma;

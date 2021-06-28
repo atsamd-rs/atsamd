@@ -30,17 +30,7 @@ where
 
     #[inline]
     fn dma_ptr(&mut self) -> *mut Self::Beat {
-        unsafe {
-            #[cfg(feature = "min-samd51g")]
-            {
-                self.sercom().usart_int().data.as_ptr() as *mut _
-            }
-
-            #[cfg(any(feature = "samd11", feature = "samd21"))]
-            {
-                self.sercom().usart().data.as_ptr() as *mut _
-            }
-        }
+        self.usart().data.as_ptr() as *mut _
     }
 
     #[inline]
@@ -85,8 +75,8 @@ where
         let trigger_action = TriggerAction::BEAT;
 
         // SAFETY: We use new_unchecked to avoid having to pass a 'static self as the
-        // destination buffer. This is safe as long as we guarantee the destination buffer is
-        // static.
+        // destination buffer. This is safe as long as we guarantee the destination
+        // buffer is static.
         unsafe { dmac::Transfer::new_unchecked(channel, self, buf, false) }
             .with_waker(waker)
             .begin(C::Sercom::DMA_RX_TRIGGER, trigger_action)
@@ -262,8 +252,8 @@ where
         let trigger_action = TriggerAction::BEAT;
 
         // SAFETY: We use new_unchecked to avoid having to pass a 'static self as the
-        // destination buffer. This is safe as long as we guarantee the destination buffer is
-        // static.
+        // destination buffer. This is safe as long as we guarantee the destination
+        // buffer is static.
         unsafe { Transfer::new_unchecked(channel, self, buf, false) }
             .with_waker(waker)
             .begin(<Self as AnySpi>::Sercom::DMA_RX_TRIGGER, trigger_action)

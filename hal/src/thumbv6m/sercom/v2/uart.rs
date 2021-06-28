@@ -1,14 +1,16 @@
-//! Pads for UART peripherals
+//! Pad definitions for UART peripherals
+
+use core::marker::PhantomData;
+
+use crate::target_device as pac;
+use pac::sercom0::RegisterBlock;
+
+use crate::sercom::v2::uart::{AnyConfig, Capability, CharSize, Config, Duplex, Rx, Tx};
+use crate::sercom::v2::*;
+use crate::typelevel::{NoneT, Sealed};
 
 #[cfg(not(feature = "samd11"))]
 use crate::gpio::v2::AnyPin;
-use crate::{
-    sercom::v2::*,
-    target_device as pac,
-    typelevel::{NoneT, Sealed},
-};
-use core::marker::PhantomData;
-use pac::sercom0::RegisterBlock;
 
 //=============================================================================
 // RxpoTxpo
@@ -164,8 +166,8 @@ padnum_permutations!( () [NoneT Pad0 Pad1 Pad2 Pad3] );
 
 /// Container for a set of SERCOM [`Pad`]s
 ///
-/// See the [module-level](super) documentation for more details on specifying
-/// a `Pads` type and creating instances.
+/// See the [module-level](crate::sercom::v2::uart) documentation for more
+/// details on specifying a `Pads` type and creating instances.
 pub struct Pads<S, RX = NoneT, TX = NoneT, RTS = NoneT, CTS = NoneT>
 where
     S: Sercom,
@@ -402,7 +404,7 @@ pub type PadsFromIds<S, RX = NoneT, TX = NoneT, RTS = NoneT, CTS = NoneT> = Pads
 ///
 /// [`Pin`]: crate::gpio::v2::Pin
 /// [type-level function]: crate::typelevel#type-level-functions
-/// [`Config`]: super::Config
+/// [`Config`]: crate::sercom::v2::uart::Config
 pub trait PadSet: Sealed {
     type Sercom: Sercom;
     type Rx: OptionalPad;
@@ -446,7 +448,51 @@ where
 /// guarantees to the [`Config`] struct that this set of `Pads` can be
 /// configured through that trait.
 ///
-/// [`Config`]: super::Config
-pub trait ValidPads: PadSet + RxpoTxpo {}
+/// [`Config`]: crate::sercom::v2::uart::Config
+pub trait ValidPads: PadSet + RxpoTxpo {
+    type Capability: Capability;
+}
 
-impl<P: PadSet + RxpoTxpo> ValidPads for P {}
+impl<S, RX, RTS> ValidPads for Pads<S, RX, NoneT, RTS, NoneT>
+where
+    S: Sercom,
+    RX: SomePad,
+    RTS: OptionalPad,
+    Self: PadSet + RxpoTxpo,
+{
+    type Capability = Rx;
+}
+
+impl<S, TX, CTS> ValidPads for Pads<S, NoneT, TX, NoneT, CTS>
+where
+    S: Sercom,
+    TX: SomePad,
+    CTS: OptionalPad,
+    Self: PadSet + RxpoTxpo,
+{
+    type Capability = Tx;
+}
+
+impl<S, RX, TX, RTS, CTS> ValidPads for Pads<S, RX, TX, RTS, CTS>
+where
+    S: Sercom,
+    RX: SomePad,
+    TX: SomePad,
+    RTS: OptionalPad,
+    CTS: OptionalPad,
+    Self: PadSet + RxpoTxpo,
+{
+    type Capability = Duplex;
+}
+
+//=============================================================================
+// ValidConfig
+//=============================================================================
+
+/// Marker trait for valid UART [`Config`]urations
+///
+/// A functional UART peripheral must have, at a minimum either a Rx or a Tx
+/// [`Pad`].
+pub trait ValidConfig: AnyConfig {}
+
+impl<P: ValidPads, C: CharSize> ValidConfig for Config<P, C> {}

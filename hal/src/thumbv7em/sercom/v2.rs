@@ -1,3 +1,3 @@
 pub mod impl_pad;
 pub mod spi;
-pub mod uart;
+pub(crate) mod uart;
