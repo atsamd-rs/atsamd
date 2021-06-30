@@ -279,8 +279,8 @@ pub trait PadSet: Sealed {
     type IoSet: IoSet;
     type Rx: OptionalPad;
     type Tx: OptionalPad;
-    type RTS: OptionalPad;
-    type CTS: OptionalPad;
+    type Rts: OptionalPad;
+    type Cts: OptionalPad;
 }
 
 impl<S, I, RX, TX, RTS, CTS> Sealed for Pads<S, I, RX, TX, RTS, CTS>
@@ -307,8 +307,8 @@ where
     type IoSet = I;
     type Rx = RX;
     type Tx = TX;
-    type RTS = RTS;
-    type CTS = CTS;
+    type Rts = RTS;
+    type Cts = CTS;
 }
 
 //=============================================================================

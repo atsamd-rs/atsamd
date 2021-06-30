@@ -173,6 +173,26 @@ type Pads = uart::PadsFromIds<Sercom0, PA09, PA09>;
 //! block!(uart_tx.write(0x0fe));
 //! ```
 //!
+//! # UART flow control (CTS/RTS)
+//!
+//! This module supports CTS and RTS pins.
+//!
+//! The `RTS` pin is a fully hardware-controlled output pin that gets deasserted
+//! when:
+//!
+//! * The USART receiver is disabled;
+//! * The USART's RX buffer is full.
+//!
+//! The `CTS` pin is an input pin that provides an interrupt when a change
+//! (rising or falling edge) is detected on the corresponding Pad. This
+//! interrupt, `CTSIC`, can be enabled with the
+//! [`enable_ctsic`](Uart::enable_ctsic) method only when the corresponding
+//! [`Config`] has a `CTS` pad specified. The
+//! [`disable_ctsic`](Uart::disable_ctsic) and
+//! [`clear_ctsic`](Uart::clear_ctsic) methods are also available under the same
+//! conditions. [This application note](https://www.silabs.com/documents/public/application-notes/an0059.0-uart-flow-control.pdf)
+//! provides more information about UART hardware flow control.
+//!
 //! # Splitting
 //!
 //! A `Uart<C, Duplex>` can be split into its [`RxDuplex`] and [`TxDuplex`]
@@ -484,7 +504,7 @@ const ERROR: u8 = 0x80;
 /// Interrupt flags available for RX transactions
 pub const RX_FLAG_MASK: u8 = RXC | RXS | RXBRK | ERROR;
 /// Interrupt flags available for TX transactions
-pub const TX_FLAG_MASK: u8 = DRE | TXC | CTSIC;
+pub const TX_FLAG_MASK: u8 = DRE | TXC;
 /// Interrupt flags available for Duplex transactions
 pub const DUPLEX_FLAG_MASK: u8 = RX_FLAG_MASK | TX_FLAG_MASK;
 
@@ -496,9 +516,9 @@ bitflags! {
     /// INTFLAG bits.
     pub struct Flags: u8 {
         const DRE = DRE;
-        const TXC =TXC;
+        const TXC = TXC;
         const RXC = RXC;
-        const RXS =RXS ;
+        const RXS = RXS ;
         const CTSIC = CTSIC;
         const RXBRK = RXBRK;
         const ERROR = ERROR;
@@ -517,11 +537,9 @@ const ISF: u16 = 0x10;
 const COLL: u16 = 0x20;
 
 /// Status flags available for RX transactions
-const RX_STATUS_MASK: u16 = PERR | FERR | BUFOVF | CTS | ISF | COLL;
-/// Status flags available for TX transactions
-const TX_STATUS_MASK: u16 = CTS;
+const RX_STATUS_MASK: u16 = PERR | FERR | BUFOVF | ISF | COLL;
 /// Status flags available for Duplex transactions
-const DUPLEX_STATUS_MASK: u16 = RX_STATUS_MASK | TX_STATUS_MASK;
+const DUPLEX_STATUS_MASK: u16 = RX_STATUS_MASK;
 
 bitflags! {
     /// Status flags for UART Rx transactions
@@ -651,8 +669,8 @@ impl Capability for Tx {
     // Available interrupt flags for a TX half-UART
     const FLAG_MASK: u8 = TX_FLAG_MASK;
 
-    // Available status flags for a TX half-UART
-    const STATUS_MASK: u16 = TX_STATUS_MASK;
+    // There are no settable/clearable status flags for TX half-UARTs
+    const STATUS_MASK: u16 = 0;
 }
 impl Transmit for Tx {}
 impl Simplex for Tx {}
@@ -676,8 +694,8 @@ impl Capability for TxDuplex {
     // Available interrupt flags for a TX half-UART
     const FLAG_MASK: u8 = TX_FLAG_MASK;
 
-    // Available status flags for a TX half-UART
-    const STATUS_MASK: u16 = TX_STATUS_MASK;
+    // There are no settable/clearable status flags for TX half-UARTs
+    const STATUS_MASK: u16 = 0;
 }
 impl Transmit for TxDuplex {}
 
@@ -1143,7 +1161,10 @@ where
     ///
     /// * Available flags for [`Receive`] capability: `RXC`, `RXS`, `RXBRK` and
     ///   `ERROR`
-    /// * Available flags for [`Transmit`] capability: `DRE`, `TXC` and `CTSIC`
+    /// * Available flags for [`Transmit`] capability: `DRE` and `TXC`.
+    ///   **Note**: The `CTSIC` flag can only be cleared if a `CTS` Pad was
+    ///   specified in the [`Config`] via the [`clear_ctsic`](Uart::clear_ctsic)
+    ///   method.
     /// * Since [`Duplex`] [`Uart`]s are [`Receive`] + [`Transmit`] they have
     ///   all flags available.
     ///
@@ -1163,7 +1184,10 @@ where
     ///
     /// * Available flags for [`Receive`] capability: `RXC`, `RXS`, `RXBRK` and
     ///   `ERROR`
-    /// * Available flags for [`Transmit`] capability: `DRE`, `TXC` and `CTSIC`
+    /// * Available flags for [`Transmit`] capability: `DRE` and `TXC`.
+    ///   **Note**: The `CTSIC` interrupt can only be enabled if a `CTS` Pad was
+    ///   specified in the [`Config`] via the
+    ///   [`enable_ctsic`](Uart::enable_ctsic) method.
     /// * Since [`Duplex`] [`Uart`]s are [`Receive`] + [`Transmit`] they have
     ///   all flags available.
     #[inline]
@@ -1180,7 +1204,10 @@ where
     ///
     /// * Available flags for [`Receive`] capability: `RXC`, `RXS`, `RXBRK` and
     ///   `ERROR`
-    /// * Available flags for [`Transmit`] capability: `DRE`, `TXC` and `CTSIC`
+    /// * Available flags for [`Transmit`] capability: `DRE` and `TXC`.
+    ///   **Note**: The `CTSIC` interrupt can only be disabled if a `CTS` Pad
+    ///   was specified in the [`Config`] via the
+    ///   [`disable_ctsic`](Uart::disable_ctsic) method.
     /// * Since [`Duplex`] [`Uart`]s are [`Receive`] + [`Transmit`] they have
     ///   all flags available.
     pub fn disable_interrupts(&mut self, flags: Flags) {
@@ -1202,8 +1229,8 @@ where
     /// will be cleared. The other stattus flags will be **SILENTLY IGNORED**.
     ///
     /// * Available status flags for [`Receive`] capability: `PERR`, `FERR`,
-    ///   `BUFOVF`, `CTS`, `ISF` and `COLL`
-    /// * Available status flag for [`Transmit`] capability: `CTS`
+    ///   `BUFOVF`, `ISF` and `COLL`
+    /// * [`Transmit`]-only [`Uart`]s have no clearable status flags.
     /// * Since [`Duplex`] [`Uart`]s are [`Receive`] + [`Transmit`] they have
     ///   all status flags available.
     #[inline]
@@ -1230,6 +1257,34 @@ where
 
         self.config = config.config;
         self.config.as_mut().registers.enable_peripheral(true);
+    }
+}
+
+impl<C, D> Uart<C, D>
+where
+    C: ValidConfig,
+    <C::Pads as PadSet>::Cts: SomePad,
+    D: Transmit,
+{
+    /// Clear the `CTSIC` interrupt flag
+    #[inline]
+    pub fn clear_ctsic(&mut self) {
+        let bit = CTSIC;
+        self.config.as_mut().registers.clear_flags(bit);
+    }
+
+    /// Enable the `CTSIC` interrupt
+    #[inline]
+    pub fn enable_ctsic(&mut self) {
+        let bit = CTSIC;
+        self.config.as_mut().registers.enable_interrupts(bit);
+    }
+
+    /// Disable the `CTSIC` interrupt
+    #[inline]
+    pub fn disable_ctsic(&mut self) {
+        let bit = CTSIC;
+        self.config.as_mut().registers.disable_interrupts(bit);
     }
 }
 
