@@ -325,19 +325,12 @@ use crate::{
     typelevel::{Is, Sealed},
 };
 use bitflags::bitflags;
-use pac::sercom0::RegisterBlock;
 
 #[cfg(any(feature = "samd11", feature = "samd21"))]
 pub use crate::thumbv6m::sercom::v2::uart::*;
 
 #[cfg(feature = "min-samd51g")]
 pub use crate::thumbv7em::sercom::v2::uart::*;
-
-#[cfg(any(feature = "samd11", feature = "samd21"))]
-use pac::sercom0::usart::ctrla::MODE_A;
-
-#[cfg(feature = "min-samd51g")]
-use pac::sercom0::usart_int::ctrla::MODE_A;
 
 use embedded_hal::{
     blocking,
@@ -369,20 +362,6 @@ pub trait CharSize: Sealed {
 
     /// Bits to write into the `LENGTH` register
     const BITS: u8;
-
-    /// Configure the `LENGTH` register and enable the `LENGTH` counter
-    #[inline]
-    fn configure(sercom: &RegisterBlock) {
-        #[cfg(any(feature = "samd11", feature = "samd21"))]
-        let usart = sercom.usart();
-
-        #[cfg(feature = "min-samd51g")]
-        let usart = sercom.usart_int();
-
-        usart
-            .ctrlb
-            .modify(|_, w| unsafe { w.chsize().bits(Self::BITS) });
-    }
 }
 
 /// Type alias to recover the `Word` type from an implementation of [`CharSize`]
@@ -737,10 +716,10 @@ where
 }
 
 #[cfg(any(feature = "samd11", feature = "samd21"))]
-type Clock = pac::PM;
+pub type Clock = pac::PM;
 
 #[cfg(feature = "min-samd51g")]
-type Clock = pac::MCLK;
+pub type Clock = pac::MCLK;
 
 impl<P: ValidPads> Config<P> {
     /// Create a new [`Config`] in the default configuration
@@ -760,33 +739,19 @@ impl<P: ValidPads> Config<P> {
     /// GCLK frequency for this [`Sercom`] instance.
     pub fn new(clk: &Clock, mut sercom: P::Sercom, pads: P, freq: impl Into<Hertz>) -> Self {
         sercom.enable_apb_clock(clk);
-        Self::create(sercom, pads, freq).msb_first(false)
+        Self::default(sercom, pads, freq).msb_first(false)
     }
 
     /// Create a new [`Config`] in the default configuration
     #[inline]
-    fn create(sercom: P::Sercom, pads: P, freq: impl Into<Hertz>) -> Self {
-        let mut registers = Registers { sercom };
-        Self::swrst(&mut registers);
-
-        let sercom = registers.sercom();
-
-        #[cfg(any(feature = "samd11", feature = "samd21"))]
-        P::configure(&sercom);
-
-        #[cfg(feature = "min-samd51g")]
-        {
-            <P as Rxpo>::configure(&sercom);
-            <P as Txpo>::configure(&sercom);
-        }
-
-        EightBit::configure(&sercom);
+    fn default(sercom: P::Sercom, pads: P, freq: impl Into<Hertz>) -> Self {
+        let mut registers = Registers::new(sercom);
+        registers.swrst();
 
         // Enable internal clock mode
-        registers
-            .usart()
-            .ctrla
-            .modify(|_, w| w.mode().variant(MODE_A::USART_INT_CLK));
+        registers.configure_mode();
+        registers.configure_pads(P::RXPO as u8, P::TXPO as u8);
+        registers.configure_charsize(EightBit::BITS);
 
         Self {
             registers,
@@ -802,13 +767,6 @@ where
     P: ValidPads,
     C: CharSize,
 {
-    /// Reset the SERCOM peripheral
-    #[inline]
-    fn swrst(registers: &mut Registers<P::Sercom>) {
-        registers.usart().ctrla.write(|w| w.swrst().set_bit());
-        while registers.usart().syncbusy.read().swrst().bit_is_set() {}
-    }
-
     /// Change the [`Config`] [`CharSize`]
     #[inline]
     fn change<C2>(self) -> Config<P, C2>
@@ -827,21 +785,21 @@ where
     /// default configuration.
     #[inline]
     pub fn reset(self) -> Config<P> {
-        Config::create(self.registers.sercom, self.pads, self.freq)
+        Config::default(self.registers.free(), self.pads, self.freq)
     }
 
     /// Consume the [`Config`], reset the peripheral, and return the [`Sercom`]
     /// and [`Pads`]
     #[inline]
     pub fn free(mut self) -> (P::Sercom, P) {
-        Self::swrst(&mut self.registers);
-        (self.registers.sercom, self.pads)
+        self.registers.swrst();
+        (self.registers.free(), self.pads)
     }
 
     /// Change the [`CharSize`]
     #[inline]
-    pub fn char_size<C2: CharSize>(self) -> Config<P, C2> {
-        C2::configure(self.registers.sercom());
+    pub fn char_size<C2: CharSize>(mut self) -> Config<P, C2> {
+        self.registers.configure_charsize(C2::BITS);
         self.change()
     }
 
@@ -1145,22 +1103,15 @@ where
     capability: PhantomData<D>,
 }
 
-#[cfg(any(feature = "samd11", feature = "samd21"))]
-type USART = pac::sercom0::USART;
-
-#[cfg(feature = "min-samd51g")]
-type USART = pac::sercom0::USART_INT;
-
 impl<C, D> Uart<C, D>
 where
     C: ValidConfig,
     D: Capability,
 {
-    /// Helper method to obtain a reference to given `USART` from the PAC
-    /// `SERCOM` struct
+    /// Obtain a pointer to the `DATA` register. Necessary for DMA transfers.
     #[inline]
-    pub(crate) fn usart(&self) -> &USART {
-        self.config.as_ref().registers.usart()
+    pub(crate) fn data_ptr(&self) -> *mut C::Word {
+        self.config.as_ref().registers.data_ptr()
     }
 
     /// Helper method to remove the interrupt flags not pertinent to `Self`'s
@@ -1177,7 +1128,7 @@ where
 
     /// Read the interrupt flags
     pub fn read_flags(&self) -> Flags {
-        let bits = self.usart().intflag.read().bits();
+        let bits = self.config.as_ref().registers.read_flags();
         Flags::from_bits_truncate(bits)
     }
 
@@ -1195,16 +1146,14 @@ where
     /// * Available flags for [`Transmit`] capability: `DRE`, `TXC` and `CTSIC`
     /// * Since [`Duplex`] [`Uart`]s are [`Receive`] + [`Transmit`] they have
     ///   all flags available.
-    pub const TX_FLAG_MASK: u8 = DRE | TXC | CTSIC;
     ///
     /// **Warning:** The implementation of of [`Write::flush`] waits on and
     /// clears the `TXC` flag. Manually clearing this flag could cause it to
     /// hang indefinitely.
     pub fn clear_flags(&mut self, flags: Flags) {
         // Remove flags not pertinent to Self's Capability
-        self.usart()
-            .intflag
-            .modify(|_, w| unsafe { w.bits(Self::capability_flags(flags).bits()) });
+        let bits = Self::capability_flags(flags).bits();
+        self.config.as_mut().registers.clear_flags(bits);
     }
 
     /// Enable interrupts for the specified flags.
@@ -1219,9 +1168,9 @@ where
     ///   all flags available.
     #[inline]
     pub fn enable_interrupts(&mut self, flags: Flags) {
-        self.usart()
-            .intenset
-            .write(|w| unsafe { w.bits(Self::capability_flags(flags).bits()) });
+        // Remove flags not pertinent to Self's Capability
+        let bits = Self::capability_flags(flags).bits();
+        self.config.as_mut().registers.enable_interrupts(bits);
     }
 
     /// Disable interrupts for the specified flags.
@@ -1235,15 +1184,15 @@ where
     /// * Since [`Duplex`] [`Uart`]s are [`Receive`] + [`Transmit`] they have
     ///   all flags available.
     pub fn disable_interrupts(&mut self, flags: Flags) {
-        self.usart()
-            .intenclr
-            .write(|w| unsafe { w.bits(Self::capability_flags(flags).bits()) });
+        // Remove flags not pertinent to Self's Capability
+        let bits = Self::capability_flags(flags).bits();
+        self.config.as_mut().registers.disable_interrupts(bits);
     }
 
     /// Read the status flags
     #[inline]
     pub fn read_status(&self) -> Status {
-        let bits = self.usart().status.read().bits();
+        let bits = self.config.as_ref().registers.read_status();
         Status::from_bits_truncate(bits)
     }
 
@@ -1259,9 +1208,9 @@ where
     ///   all status flags available.
     #[inline]
     pub fn clear_status(&mut self, status: Status) {
-        self.usart()
-            .status
-            .modify(|_, w| unsafe { w.bits(Self::capability_status(status).bits()) });
+        // Remove status flags not pertinent to Self's Capability
+        let bits = Self::capability_status(status).bits();
+        self.config.as_mut().registers.clear_status(bits);
     }
 
     #[inline]
@@ -1297,7 +1246,7 @@ where
         config
     }
 
-    /// Update the UART [`Config`]uration.
+    /// [`Reconfig`]ure the UART.
     ///
     /// Calling this method will temporarily disable the SERCOM peripheral, as
     /// some registers are enable-protected. This may interrupt any ongoing
@@ -1401,7 +1350,7 @@ where
     /// this module.
     #[inline]
     pub unsafe fn read_data(&mut self) -> DataSize {
-        self.usart().data.read().data().bits()
+        self.config.as_mut().registers.read_data()
     }
 
     /// Read the status register and convert into a [`Result`]
@@ -1415,8 +1364,6 @@ where
     /// Flush the RX buffer and clear errors
     #[inline]
     pub fn flush(&mut self) {
-        let usart = self.usart();
-
         // TODO
         // The datasheet states that disabling the receiver (RXEN) clears
         // the RX buffer, and clears the BUFOVF, PERR and FERR bits.
@@ -1436,7 +1383,7 @@ where
         // Workaround is to read a few bytes to clear the RX buffer (3 bytes seems to do
         // the trick), then manually clear the BUFOVF bit Clear rx buffer
         for _ in 0..=2 {
-            let _data = usart.data.read();
+            let _data = unsafe { self.config.as_mut().registers.read_data() };
         }
 
         // Clear all errors
@@ -1460,7 +1407,7 @@ where
     /// module.
     #[inline]
     pub unsafe fn write_data(&mut self, data: DataSize) {
-        self.usart().data.write(|w| w.data().bits(data))
+        self.config.as_mut().registers.write_data(data);
     }
 }
 

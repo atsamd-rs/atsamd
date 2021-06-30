@@ -2,11 +2,7 @@
 
 use core::marker::PhantomData;
 
-use crate::target_device as pac;
-use pac::sercom0::{
-    usart_int::ctrla::{RXPO_A, TXPO_A},
-    RegisterBlock,
-};
+use crate::target_device::sercom0::usart_int::ctrla::{RXPO_A, TXPO_A};
 
 use crate::sercom::v2::uart::{AnyConfig, Capability, CharSize, Config, Duplex, Rx, Tx};
 use crate::sercom::v2::*;
@@ -22,15 +18,6 @@ use crate::gpio::v2::AnyPin;
 pub trait Rxpo: Sealed {
     /// Corresponding variant from the PAC `enum`
     const RXPO: RXPO_A;
-
-    /// Configure the pad according to [`Self::RXPO`]
-    #[inline]
-    fn configure(sercom: &RegisterBlock) {
-        sercom
-            .usart_int()
-            .ctrla
-            .modify(|_, w| w.rxpo().variant(Self::RXPO));
-    }
 }
 
 impl Rxpo for Pad0 {
@@ -49,9 +36,6 @@ impl Rxpo for Pad3 {
 impl Rxpo for NoneT {
     /// This value is arbitrary and meaningless for [`NoneT`]
     const RXPO: RXPO_A = RXPO_A::PAD0;
-
-    /// Override the default implementation to do nothing
-    fn configure(_: &RegisterBlock) {}
 }
 
 /// Lift the implementations of [`Rxpo`] from [`OptionalPadNum`]s to the
@@ -77,15 +61,6 @@ where
 pub trait Txpo: Sealed {
     /// Corresponding variant from the PAC `enum`
     const TXPO: TXPO_A;
-
-    /// Configure the pad according to [`Self::TXPO`]
-    #[inline]
-    fn configure(sercom: &RegisterBlock) {
-        sercom
-            .usart_int()
-            .ctrla
-            .modify(|_, w| w.txpo().variant(Self::TXPO));
-    }
 }
 
 impl Txpo for Pad0 {
@@ -95,9 +70,6 @@ impl Txpo for Pad0 {
 impl Txpo for NoneT {
     /// This value is arbitrary and meaningless for [`NoneT`]
     const TXPO: TXPO_A = TXPO_A::PAD0;
-
-    /// Override the default implementation to do nothing
-    fn configure(_: &RegisterBlock) {}
 }
 
 /// Lift the implementations of [`Txpo`] from [`OptionalPadNum`]s to the

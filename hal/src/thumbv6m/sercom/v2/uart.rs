@@ -2,9 +2,6 @@
 
 use core::marker::PhantomData;
 
-use crate::target_device as pac;
-use pac::sercom0::RegisterBlock;
-
 use crate::sercom::v2::uart::{AnyConfig, Capability, CharSize, Config, Duplex, Rx, Tx};
 use crate::sercom::v2::*;
 use crate::typelevel::{NoneT, Sealed};
@@ -36,15 +33,6 @@ pub trait RxpoTxpo {
 
     /// `RXPO` field value
     const TXPO: u8;
-
-    /// Configure the pad according to [`Self::RXPO`] and [`Self::TXPO`]
-    #[inline]
-    fn configure(sercom: &RegisterBlock) {
-        sercom.usart().ctrla.modify(|_, w| unsafe {
-            w.rxpo().bits(Self::RXPO);
-            w.txpo().bits(Self::TXPO)
-        });
-    }
 }
 
 /// Lift the implementations of [`RxpoTxpo`] from four-tuples of

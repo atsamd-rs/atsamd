@@ -3,29 +3,82 @@
 use super::{BaudMode, Parity, StopBits};
 
 use crate::sercom::v2::*;
+use crate::target_device as pac;
+
+#[cfg(any(feature = "samd11", feature = "samd21"))]
+use pac::sercom0::usart::ctrla::MODE_A;
+
+#[cfg(feature = "min-samd51g")]
+use pac::sercom0::usart_int::ctrla::MODE_A;
+
 use crate::time::Hertz;
 
 pub(super) struct Registers<S: Sercom> {
-    pub(super) sercom: S,
+    sercom: S,
 }
 
 impl<S: Sercom> Registers<S> {
-    /// Helper function to access the given `SERCOM`
-    pub(crate) fn sercom(&self) -> &S {
-        &self.sercom
+    /// Create a new `Registers` instance
+    #[inline]
+    pub(super) fn new(sercom: S) -> Self {
+        Self { sercom }
     }
 
     /// Helper function to access the underlying `USART` from the given `SERCOM`
     #[cfg(any(feature = "samd11", feature = "samd21"))]
-    pub(crate) fn usart(&self) -> &crate::target_device::sercom0::USART {
-        self.sercom().usart()
+    #[inline]
+    fn usart(&self) -> &pac::sercom0::USART {
+        self.sercom.usart()
     }
 
     /// Helper function to access the underlying `USART_INT` from the given
     /// `SERCOM`
     #[cfg(feature = "min-samd51g")]
-    pub(crate) fn usart(&self) -> &crate::target_device::sercom0::USART_INT {
-        self.sercom().usart_int()
+    #[inline]
+    fn usart(&self) -> &pac::sercom0::USART_INT {
+        self.sercom.usart_int()
+    }
+
+    pub(super) fn data_ptr<T>(&self) -> *mut T {
+        self.usart().data.as_ptr() as *mut _
+    }
+
+    /// Free the `Registers` struct and return the underlying `Sercom` instance
+    #[inline]
+    pub(super) fn free(self) -> S {
+        self.sercom
+    }
+
+    /// Reset the SERCOM peripheral
+    #[inline]
+    pub(super) fn swrst(&mut self) {
+        self.usart().ctrla.write(|w| w.swrst().set_bit());
+        while self.usart().syncbusy.read().swrst().bit_is_set() {}
+    }
+
+    /// Configure the SERCOM to use internal clock mode
+    #[inline]
+    pub(super) fn configure_mode(&mut self) {
+        self.usart()
+            .ctrla
+            .modify(|_, w| w.mode().variant(MODE_A::USART_INT_CLK));
+    }
+
+    /// Configure the `SERCOM`'s Pads according to RXPO and TXPO
+    #[inline]
+    pub(super) fn configure_pads(&mut self, rxpo: u8, txpo: u8) {
+        self.usart().ctrla.modify(|_, w| unsafe {
+            w.rxpo().bits(rxpo);
+            w.txpo().bits(txpo)
+        });
+    }
+
+    /// Configure the character size
+    #[inline]
+    pub(super) fn configure_charsize(&mut self, bits: u8) {
+        self.usart()
+            .ctrlb
+            .modify(|_, w| unsafe { w.chsize().bits(bits) });
     }
 
     /// Change the bit order of transmission (MSB/LSB first)
@@ -142,6 +195,7 @@ impl<S: Sercom> Registers<S> {
     // pulse length that is required for a pulse to be accepted by the IrDA
     /// receiver with regards to the serial engine clock period.
     /// See datasheet for more information.
+    #[inline]
     pub(super) fn irda_encoding(&mut self, pulse_length: Option<u8>) {
         match pulse_length {
             Some(l) => {
@@ -152,6 +206,54 @@ impl<S: Sercom> Registers<S> {
                 self.usart().ctrlb.modify(|_, w| w.enc().bit(false));
             }
         }
+    }
+
+    /// Read interrupt flags
+    #[inline]
+    pub fn read_flags(&self) -> u8 {
+        self.usart().intflag.read().bits()
+    }
+
+    /// Clear specified interrupt flags
+    #[inline]
+    pub fn clear_flags(&mut self, bits: u8) {
+        self.usart().intflag.modify(|_, w| unsafe { w.bits(bits) });
+    }
+
+    /// Enable specified interrupts
+    #[inline]
+    pub fn enable_interrupts(&mut self, bits: u8) {
+        self.usart().intenset.write(|w| unsafe { w.bits(bits) });
+    }
+
+    /// Disable specified interrupts
+    #[inline]
+    pub fn disable_interrupts(&mut self, bits: u8) {
+        self.usart().intenclr.write(|w| unsafe { w.bits(bits) });
+    }
+
+    /// Read status flags
+    #[inline]
+    pub fn read_status(&self) -> u16 {
+        self.usart().status.read().bits()
+    }
+
+    /// Clear specified status flags
+    #[inline]
+    pub fn clear_status(&mut self, bits: u16) {
+        self.usart().status.modify(|_, w| unsafe { w.bits(bits) });
+    }
+
+    /// Read from the `DATA` register
+    #[inline]
+    pub unsafe fn read_data(&mut self) -> super::DataSize {
+        self.usart().data.read().data().bits()
+    }
+
+    /// Write to the `DATA` register
+    #[inline]
+    pub unsafe fn write_data(&mut self, data: super::DataSize) {
+        self.usart().data.write(|w| w.data().bits(data))
     }
 
     /// Enable the UART peripheral

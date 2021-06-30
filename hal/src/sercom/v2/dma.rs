@@ -30,7 +30,7 @@ where
 
     #[inline]
     fn dma_ptr(&mut self) -> *mut Self::Beat {
-        self.usart().data.as_ptr() as *mut _
+        self.data_ptr()
     }
 
     #[inline]
