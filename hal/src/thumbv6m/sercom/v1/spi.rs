@@ -1,8 +1,4 @@
-#![deprecated(
-    since = "0.12.0",
-    note = "Please use sercom::v2::spi instead. 
-    sercom::v1::spi will be removed in a later release."
-)]
+use core::marker::PhantomData;
 
 use crate::clock;
 use crate::hal::spi::{FullDuplex, Mode, Phase, Polarity};
@@ -16,7 +12,6 @@ use crate::target_device::{SERCOM2, SERCOM3};
 #[cfg(feature = "min-samd21g")]
 use crate::target_device::{SERCOM4, SERCOM5};
 use crate::time::Hertz;
-use core::marker::PhantomData;
 
 #[derive(Debug)]
 pub enum Error {
