@@ -437,6 +437,7 @@ impl CharSize for NineBit {
 //=============================================================================
 
 /// Number of stop bits in a UART frame
+#[derive(Debug, Clone, Copy)]
 pub enum StopBits {
     /// 1 stop bit
     OneBit = 0,
@@ -445,16 +446,20 @@ pub enum StopBits {
 }
 
 /// Parity setting of a UART frame
+#[derive(Debug, Clone, Copy)]
 pub enum Parity {
+    /// No parity
+    None,
     /// Even parity
-    Even = 0,
+    Even,
     /// Odd parity
-    Odd = 1,
+    Odd,
 }
 
 /// Baudrate oversampling values
 ///
 /// *NOTE* 3x oversampling has been intentionally left out
+#[derive(Debug, Clone, Copy)]
 pub enum Oversampling {
     // 3 samples per bit
     // Bits3 = 3,
@@ -465,6 +470,7 @@ pub enum Oversampling {
 }
 
 /// Baudrate calculation in asynchronous mode
+#[derive(Debug, Clone, Copy)]
 pub enum BaudMode {
     /// Asynchronous arithmetic baud calculation
     Arithmetic(Oversampling),
@@ -563,7 +569,7 @@ bitflags! {
 //=============================================================================
 
 /// Errors available for UART transactions
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub enum Error {
     /// Detected a parity error
     ParityError,
@@ -830,15 +836,15 @@ where
 
     /// Change the parity setting
     #[inline]
-    pub fn parity(mut self, parity: Option<Parity>) -> Self {
+    pub fn parity(mut self, parity: Parity) -> Self {
         self.registers.parity(parity);
         self
     }
 
     /// Change the stop bit setting
     #[inline]
-    pub fn stop_bit(mut self, stop_bit: StopBits) -> Self {
-        self.registers.stop_bit(stop_bit);
+    pub fn stop_bits(mut self, stop_bits: StopBits) -> Self {
+        self.registers.stop_bits(stop_bits);
         self
     }
 
@@ -1016,15 +1022,15 @@ impl<C: ValidConfig> Reconfig<C> {
 
     /// Change the parity setting
     #[inline]
-    pub fn parity(mut self, parity: Option<Parity>) -> Self {
+    pub fn parity(mut self, parity: Parity) -> Self {
         self.config.as_mut().registers.parity(parity);
         self
     }
 
     /// Change the stop bit setting
     #[inline]
-    pub fn stop_bit(mut self, stop_bit: StopBits) -> Self {
-        self.config.as_mut().registers.stop_bit(stop_bit);
+    pub fn stop_bits(mut self, stop_bits: StopBits) -> Self {
+        self.config.as_mut().registers.stop_bits(stop_bits);
         self
     }
 
@@ -1416,9 +1422,9 @@ where
         Ok(self.read_flags())
     }
 
-    /// Flush the RX buffer and clear errors
+    /// Flush the RX buffer and clear RX errors
     #[inline]
-    pub fn flush(&mut self) {
+    pub fn flush_rx_buffer(&mut self) {
         // TODO
         // The datasheet states that disabling the receiver (RXEN) clears
         // the RX buffer, and clears the BUFOVF, PERR and FERR bits.

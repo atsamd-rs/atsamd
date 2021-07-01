@@ -89,18 +89,19 @@ impl<S: Sercom> Registers<S> {
 
     /// Change the parity setting
     #[inline]
-    pub(super) fn parity(&mut self, parity: Option<Parity>) {
+    pub(super) fn parity(&mut self, parity: Parity) {
         // Use only the first two available settings in the FORM field.
         // Ignore auto-baud options.
-        let enabled = if let Some(p) = parity {
-            let odd = match p {
-                Parity::Even => false,
-                Parity::Odd => true,
-            };
-            self.usart().ctrlb.modify(|_, w| w.pmode().bit(odd));
-            true
-        } else {
-            false
+        let enabled = match parity {
+            Parity::None => false,
+            Parity::Odd => {
+                self.usart().ctrlb.modify(|_, w| w.pmode().bit(true));
+                true
+            }
+            Parity::Even => {
+                self.usart().ctrlb.modify(|_, w| w.pmode().bit(false));
+                true
+            }
         };
 
         self.usart()
@@ -110,8 +111,8 @@ impl<S: Sercom> Registers<S> {
 
     /// Change the stop bit setting
     #[inline]
-    pub(super) fn stop_bit(&mut self, stop_bit: StopBits) {
-        let two_bits = match stop_bit {
+    pub(super) fn stop_bits(&mut self, stop_bits: StopBits) {
+        let two_bits = match stop_bits {
             StopBits::OneBit => false,
             StopBits::TwoBits => true,
         };

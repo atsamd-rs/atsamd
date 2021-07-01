@@ -73,7 +73,7 @@ fn main() -> ! {
     }
 
     // We'll now receive data in a blocking way
-    rx.flush();
+    rx.flush_rx_buffer();
     for c in rx_buffer.iter_mut() {
         *c = nb::block!(rx.read()).unwrap();
     }
