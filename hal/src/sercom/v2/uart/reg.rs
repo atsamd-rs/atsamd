@@ -39,6 +39,8 @@ impl<S: Sercom> Registers<S> {
         self.sercom.usart_int()
     }
 
+    #[cfg(feature = "dma")]
+    /// Get a pointer to the `DATA` register
     pub(super) fn data_ptr<T>(&self) -> *mut T {
         self.usart().data.as_ptr() as *mut _
     }

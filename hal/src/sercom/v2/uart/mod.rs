@@ -508,6 +508,7 @@ pub enum StopBits {
 }
 
 impl From<StopBits> for bool {
+    #[inline]
     fn from(item: StopBits) -> bool {
         match item {
             StopBits::OneBit => false,
@@ -517,6 +518,7 @@ impl From<StopBits> for bool {
 }
 
 impl From<bool> for StopBits {
+    #[inline]
     fn from(item: bool) -> StopBits {
         match item {
             false => StopBits::OneBit,
@@ -548,6 +550,7 @@ pub enum BitOrder {
 }
 
 impl From<BitOrder> for bool {
+    #[inline]
     fn from(item: BitOrder) -> bool {
         match item {
             BitOrder::MsbFirst => false,
@@ -556,6 +559,7 @@ impl From<BitOrder> for bool {
     }
 }
 impl From<bool> for BitOrder {
+    #[inline]
     fn from(item: bool) -> BitOrder {
         match item {
             false => BitOrder::MsbFirst,
@@ -588,6 +592,7 @@ pub enum BaudMode {
 }
 
 impl BaudMode {
+    #[inline]
     fn sampr(&self) -> u8 {
         use BaudMode::*;
         use Oversampling::*;
@@ -604,6 +609,7 @@ impl BaudMode {
         }
     }
 
+    #[inline]
     fn get_sampr(sampr: u8) -> Self {
         use BaudMode::*;
         use Oversampling::*;
@@ -882,6 +888,7 @@ impl<P: ValidPads> Config<P> {
     ///
     /// Users must configure GCLK manually. The `freq` parameter represents the
     /// GCLK frequency for this [`Sercom`] instance.
+    #[inline]
     pub fn new(clk: &Clock, mut sercom: P::Sercom, pads: P, freq: impl Into<Hertz>) -> Self {
         sercom.enable_apb_clock(clk);
         Self::default(sercom, pads, freq).bit_order(BitOrder::LsbFirst)
@@ -1159,6 +1166,7 @@ where
     /// The pulse length controls the minimum pulse length that is required for
     /// a pulse to be accepted by the IrDA receiver with regards to the
     /// serial engine clock period. See datasheet for more information.
+    #[inline]
     pub fn irda_encoding(mut self, pulse_length: Option<u8>) -> Self {
         self.set_irda_encoding(pulse_length);
         self
@@ -1169,6 +1177,7 @@ where
     /// The pulse length controls the minimum pulse length that is required for
     /// a pulse to be accepted by the IrDA receiver with regards to the
     /// serial engine clock period. See datasheet for more information.
+    #[inline]
     pub fn set_irda_encoding(&mut self, pulse_length: Option<u8>) {
         self.registers.set_irda_encoding(pulse_length);
     }
@@ -1187,6 +1196,7 @@ impl<P: ValidPads> Config<P, DynCharSize> {
     /// The UART's character size will be changed to the provided `C2`, which is
     /// a [`FixedCharSize`] type, without changing the type of the
     /// underlying [`Config`].
+    #[inline]
     pub fn set_dyn_char_size<C2: FixedCharSize>(&mut self) {
         self.registers.configure_charsize(C2::BITS);
     }
@@ -1309,6 +1319,7 @@ where
     D: Capability,
 {
     /// Obtain a pointer to the `DATA` register. Necessary for DMA transfers.
+    #[cfg(feature = "dma")]
     #[inline]
     pub(crate) fn data_ptr(&self) -> *mut C::Word {
         self.config.as_ref().registers.data_ptr()
@@ -1316,17 +1327,20 @@ where
 
     /// Helper method to remove the interrupt flags not pertinent to `Self`'s
     /// `Capability`
+    #[inline]
     fn capability_flags(flags: Flags) -> Flags {
         flags & unsafe { Flags::from_bits_unchecked(D::FLAG_MASK) }
     }
 
     /// Helper method to remove the status flags not pertinent to `Self`'s
     /// `Capability`
+    #[inline]
     fn capability_status(status: Status) -> Status {
         status & unsafe { Status::from_bits_unchecked(D::STATUS_MASK) }
     }
 
     /// Read the interrupt flags
+    #[inline]
     pub fn read_flags(&self) -> Flags {
         let bits = self.config.as_ref().registers.read_flags();
         Flags::from_bits_truncate(bits)
@@ -1353,6 +1367,7 @@ where
     /// **Warning:** The implementation of of [`Write::flush`] waits on and
     /// clears the `TXC` flag. Manually clearing this flag could cause it to
     /// hang indefinitely.
+    #[inline]
     pub fn clear_flags(&mut self, flags: Flags) {
         // Remove flags not pertinent to Self's Capability
         let bits = Self::capability_flags(flags).bits();
@@ -1392,6 +1407,7 @@ where
     ///   [`disable_ctsic`](Uart::disable_ctsic) method.
     /// * Since [`Duplex`] [`Uart`]s are [`Receive`] + [`Transmit`] they have
     ///   all flags available.
+    #[inline]
     pub fn disable_interrupts(&mut self, flags: Flags) {
         // Remove flags not pertinent to Self's Capability
         let bits = Self::capability_flags(flags).bits();
