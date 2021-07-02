@@ -83,7 +83,7 @@ impl<S: Sercom> Registers<S> {
 
     /// Change the bit order of transmission (MSB/LSB first)
     #[inline]
-    pub(super) fn bit_order(&mut self, bit_order: BitOrder) {
+    pub(super) fn set_bit_order(&mut self, bit_order: BitOrder) {
         self.usart()
             .ctrla
             .modify(|_, w| w.dord().bit(bit_order.into()));
@@ -97,7 +97,7 @@ impl<S: Sercom> Registers<S> {
 
     /// Change the parity setting
     #[inline]
-    pub(super) fn parity(&mut self, parity: Parity) {
+    pub(super) fn set_parity(&mut self, parity: Parity) {
         // Use only the first two available settings in the FORM field.
         // Ignore auto-baud options.
         let enabled = match parity {
@@ -136,7 +136,7 @@ impl<S: Sercom> Registers<S> {
 
     /// Change the stop bit setting
     #[inline]
-    pub(super) fn stop_bits(&mut self, stop_bits: StopBits) {
+    pub(super) fn set_stop_bits(&mut self, stop_bits: StopBits) {
         self.usart()
             .ctrlb
             .modify(|_, w| w.sbmode().bit(stop_bits.into()));
@@ -153,7 +153,7 @@ impl<S: Sercom> Registers<S> {
     /// When set, the UART will generate interrupts for
     /// RXC and/or RXS if these interrupt flags have been enabled.
     #[inline]
-    pub(super) fn start_of_frame_detection(&mut self, enabled: bool) {
+    pub(super) fn set_start_of_frame_detection(&mut self, enabled: bool) {
         self.usart().ctrlb.modify(|_, w| w.sfde().bit(enabled));
     }
 
@@ -168,7 +168,7 @@ impl<S: Sercom> Registers<S> {
     /// When set, the UART will detect collisions and update the
     /// corresponding flag in the STATUS register.
     #[inline]
-    pub(super) fn collision_detection(&mut self, enabled: bool) {
+    pub(super) fn set_collision_detection(&mut self, enabled: bool) {
         self.usart().ctrlb.modify(|_, w| w.colden().bit(enabled));
     }
 
@@ -187,7 +187,7 @@ impl<S: Sercom> Registers<S> {
     ///
     /// Note that 3x oversampling is not supported.
     #[inline]
-    pub(super) fn baud<B: Into<Hertz>>(&mut self, freq: Hertz, baud: B, mode: BaudMode) {
+    pub(super) fn set_baud<B: Into<Hertz>>(&mut self, freq: Hertz, baud: B, mode: BaudMode) {
         let baud: Hertz = baud.into();
         let usart = self.usart();
 
@@ -230,7 +230,7 @@ impl<S: Sercom> Registers<S> {
     /// overflow occurs. Otherwise, it will not be issued until its place within
     /// the data stream.
     #[inline]
-    pub(super) fn immediate_overflow_notification(&mut self, set: bool) {
+    pub(super) fn set_immediate_overflow_notification(&mut self, set: bool) {
         self.usart().ctrla.modify(|_, w| w.ibon().bit(set));
     }
 
@@ -245,7 +245,7 @@ impl<S: Sercom> Registers<S> {
     /// When set, the UART peripheral will run in standby mode. See the
     /// datasheet for more details.
     #[inline]
-    pub(super) fn run_in_standby(&mut self, set: bool) {
+    pub(super) fn set_run_in_standby(&mut self, set: bool) {
         self.usart().ctrla.modify(|_, w| w.runstdby().bit(set));
     }
 
@@ -260,7 +260,7 @@ impl<S: Sercom> Registers<S> {
     /// receiver with regards to the serial engine clock period.
     /// See datasheet for more information.
     #[inline]
-    pub(super) fn irda_encoding(&mut self, pulse_length: Option<u8>) {
+    pub(super) fn set_irda_encoding(&mut self, pulse_length: Option<u8>) {
         match pulse_length {
             Some(l) => {
                 self.usart().rxpl.write(|w| unsafe { w.rxpl().bits(l) });

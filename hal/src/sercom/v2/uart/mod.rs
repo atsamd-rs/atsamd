@@ -939,21 +939,21 @@ where
     /// Change the bit order of transmission (MSB/LSB first)
     #[inline]
     pub fn bit_order(mut self, bit_order: BitOrder) -> Self {
-        self.registers.bit_order(bit_order);
+        self.registers.set_bit_order(bit_order);
         self
     }
 
     /// Change the parity setting
     #[inline]
     pub fn parity(mut self, parity: Parity) -> Self {
-        self.registers.parity(parity);
+        self.registers.set_parity(parity);
         self
     }
 
     /// Change the stop bit setting
     #[inline]
     pub fn stop_bits(mut self, stop_bits: StopBits) -> Self {
-        self.registers.stop_bits(stop_bits);
+        self.registers.set_stop_bits(stop_bits);
         self
     }
 
@@ -963,7 +963,7 @@ where
     /// RXC and/or RXS if these interrupt flags have been enabled.
     #[inline]
     pub fn start_of_frame_detection(mut self, enabled: bool) -> Self {
-        self.registers.start_of_frame_detection(enabled);
+        self.registers.set_start_of_frame_detection(enabled);
         self
     }
 
@@ -973,7 +973,7 @@ where
     /// corresponding flag in the STATUS register.
     #[inline]
     pub fn collision_detection(mut self, enabled: bool) -> Self {
-        self.registers.collision_detection(enabled);
+        self.registers.set_collision_detection(enabled);
         self
     }
 
@@ -987,7 +987,7 @@ where
     /// Note that 3x oversampling is not supported.
     #[inline]
     pub fn baud<B: Into<Hertz>>(mut self, baud: B, mode: BaudMode) -> Self {
-        self.registers.baud(self.freq, baud, mode);
+        self.registers.set_baud(self.freq, baud, mode);
         self
     }
 
@@ -998,7 +998,7 @@ where
     /// the data stream.
     #[inline]
     pub fn immediate_overflow_notification(mut self, set: bool) -> Self {
-        self.registers.immediate_overflow_notification(set);
+        self.registers.set_immediate_overflow_notification(set);
         self
     }
 
@@ -1008,7 +1008,7 @@ where
     /// datasheet for more details.
     #[inline]
     pub fn run_in_standby(mut self, set: bool) -> Self {
-        self.registers.run_in_standby(set);
+        self.registers.set_run_in_standby(set);
         self
     }
 
@@ -1017,7 +1017,7 @@ where
     /// receiver with regards to the serial engine clock period.
     /// See datasheet for more information.
     pub fn irda_encoding(mut self, pulse_length: Option<u8>) -> Self {
-        self.registers.irda_encoding(pulse_length);
+        self.registers.set_irda_encoding(pulse_length);
         self
     }
 }
@@ -1134,22 +1134,22 @@ pub struct Reconfig<C: ValidConfig> {
 impl<C: ValidConfig> Reconfig<C> {
     /// Change the bit order of transmission (MSB/LSB first)
     #[inline]
-    pub fn msb_first(mut self, bit_order: BitOrder) -> Self {
-        self.config.as_mut().registers.bit_order(bit_order);
+    pub fn bit_order(mut self, bit_order: BitOrder) -> Self {
+        self.config.as_mut().registers.set_bit_order(bit_order);
         self
     }
 
     /// Change the parity setting
     #[inline]
     pub fn parity(mut self, parity: Parity) -> Self {
-        self.config.as_mut().registers.parity(parity);
+        self.config.as_mut().registers.set_parity(parity);
         self
     }
 
     /// Change the stop bit setting
     #[inline]
     pub fn stop_bits(mut self, stop_bits: StopBits) -> Self {
-        self.config.as_mut().registers.stop_bits(stop_bits);
+        self.config.as_mut().registers.set_stop_bits(stop_bits);
         self
     }
 
@@ -1162,7 +1162,7 @@ impl<C: ValidConfig> Reconfig<C> {
         self.config
             .as_mut()
             .registers
-            .start_of_frame_detection(enabled);
+            .set_start_of_frame_detection(enabled);
         self
     }
 
@@ -1172,7 +1172,10 @@ impl<C: ValidConfig> Reconfig<C> {
     /// corresponding flag in the STATUS register.
     #[inline]
     pub fn collision_detection(mut self, enabled: bool) -> Self {
-        self.config.as_mut().registers.collision_detection(enabled);
+        self.config
+            .as_mut()
+            .registers
+            .set_collision_detection(enabled);
         self
     }
 
@@ -1187,7 +1190,7 @@ impl<C: ValidConfig> Reconfig<C> {
     #[inline]
     pub fn baud<B: Into<Hertz>>(mut self, baud: B, mode: BaudMode) -> Self {
         let config = self.config.as_mut();
-        config.registers.baud(config.freq, baud, mode);
+        config.registers.set_baud(config.freq, baud, mode);
         self
     }
 
@@ -1201,7 +1204,7 @@ impl<C: ValidConfig> Reconfig<C> {
         self.config
             .as_mut()
             .registers
-            .immediate_overflow_notification(set);
+            .set_immediate_overflow_notification(set);
         self
     }
 
@@ -1211,7 +1214,7 @@ impl<C: ValidConfig> Reconfig<C> {
     /// datasheet for more details.
     #[inline]
     pub fn run_in_standby(mut self, set: bool) -> Self {
-        self.config.as_mut().registers.run_in_standby(set);
+        self.config.as_mut().registers.set_run_in_standby(set);
         self
     }
 
@@ -1220,7 +1223,10 @@ impl<C: ValidConfig> Reconfig<C> {
     /// receiver with regards to the serial engine clock period.
     /// See datasheet for more information.
     pub fn irda_encoding(mut self, pulse_length: Option<u8>) -> Self {
-        self.config.as_mut().registers.irda_encoding(pulse_length);
+        self.config
+            .as_mut()
+            .registers
+            .set_irda_encoding(pulse_length);
         self
     }
 }
