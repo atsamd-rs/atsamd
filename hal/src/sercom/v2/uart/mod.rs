@@ -139,6 +139,13 @@ type Pads = uart::PadsFromIds<Sercom0, PA09, PA09>;
 //! [`change_dyn_char_size`](Reconfig::change_dyn_char_size) method when calling
 //! [`reconfigure`](Uart::reconfigure).
 //!
+//! ## Reading the current configuration
+//!
+//! It is possible to read the current configuration by using the methods
+//! provided by the [`ReadConfig`] trait. This trait is implemented on
+//! [`Config`], [`Uart`] and [`Reconfig`]. Note that the [`ReadConfig`] trait
+//! must be in scope to be able to use its methods.
+//!
 //! # [`Uart`] and capabilities
 //!
 //! [`Uart`] structs can only be created from a [`Config`]. They have two type
@@ -343,6 +350,7 @@ let (chan1, rx, rx_buffer) = rx_dma.wait();
 )]
 
 mod reg;
+pub use reg::ReadConfig;
 use reg::Registers;
 
 use super::*;
@@ -463,10 +471,11 @@ impl CharSize for DynCharSize {
 }
 
 //=============================================================================
-// Stop bits, parity, baud rate
+// Stop bits, parity, baud rate, bit order
 //=============================================================================
 
 /// Number of stop bits in a UART frame
+#[repr(u8)]
 #[derive(Debug, Clone, Copy)]
 pub enum StopBits {
     /// 1 stop bit
@@ -475,7 +484,26 @@ pub enum StopBits {
     TwoBits = 1,
 }
 
+impl From<StopBits> for bool {
+    fn from(item: StopBits) -> bool {
+        match item {
+            StopBits::OneBit => false,
+            StopBits::TwoBits => true,
+        }
+    }
+}
+
+impl From<bool> for StopBits {
+    fn from(item: bool) -> StopBits {
+        match item {
+            false => StopBits::OneBit,
+            true => StopBits::TwoBits,
+        }
+    }
+}
+
 /// Parity setting of a UART frame
+#[repr(u8)]
 #[derive(Debug, Clone, Copy)]
 pub enum Parity {
     /// No parity
@@ -486,9 +514,37 @@ pub enum Parity {
     Odd,
 }
 
+/// Bit order of a UART frame
+#[repr(u8)]
+#[derive(Debug, Clone, Copy)]
+pub enum BitOrder {
+    /// MSB-first
+    MsbFirst = 0,
+    /// LSB-first
+    LsbFirst = 1,
+}
+
+impl From<BitOrder> for bool {
+    fn from(item: BitOrder) -> bool {
+        match item {
+            BitOrder::MsbFirst => false,
+            BitOrder::LsbFirst => true,
+        }
+    }
+}
+impl From<bool> for BitOrder {
+    fn from(item: bool) -> BitOrder {
+        match item {
+            false => BitOrder::MsbFirst,
+            true => BitOrder::LsbFirst,
+        }
+    }
+}
+
 /// Baudrate oversampling values
 ///
 /// *NOTE* 3x oversampling has been intentionally left out
+#[repr(u8)]
 #[derive(Debug, Clone, Copy)]
 pub enum Oversampling {
     // 3 samples per bit
@@ -509,7 +565,7 @@ pub enum BaudMode {
 }
 
 impl BaudMode {
-    pub(super) fn sampr(&self) -> u8 {
+    fn sampr(&self) -> u8 {
         use BaudMode::*;
         use Oversampling::*;
         match self {
@@ -522,6 +578,18 @@ impl BaudMode {
                 Bits16 => 1,
                 Bits8 => 3,
             },
+        }
+    }
+
+    fn get_sampr(sampr: u8) -> Self {
+        use BaudMode::*;
+        use Oversampling::*;
+        match sampr {
+            0 => Arithmetic(Bits16),
+            1 => Fractional(Bits16),
+            2 => Arithmetic(Bits8),
+            3 => Fractional(Bits8),
+            _ => unreachable!(),
         }
     }
 }
@@ -793,7 +861,7 @@ impl<P: ValidPads> Config<P> {
     /// GCLK frequency for this [`Sercom`] instance.
     pub fn new(clk: &Clock, mut sercom: P::Sercom, pads: P, freq: impl Into<Hertz>) -> Self {
         sercom.enable_apb_clock(clk);
-        Self::default(sercom, pads, freq).msb_first(false)
+        Self::default(sercom, pads, freq).bit_order(BitOrder::LsbFirst)
     }
 
     /// Create a new [`Config`] in the default configuration
@@ -870,8 +938,8 @@ where
 
     /// Change the bit order of transmission (MSB/LSB first)
     #[inline]
-    pub fn msb_first(mut self, msb_first: bool) -> Self {
-        self.registers.msb_first(msb_first);
+    pub fn bit_order(mut self, bit_order: BitOrder) -> Self {
+        self.registers.bit_order(bit_order);
         self
     }
 
@@ -974,6 +1042,16 @@ where
     }
 }
 
+impl<P, S> ReadConfig<S> for Config<P>
+where
+    P: ValidPads<Sercom = S>,
+    S: Sercom,
+{
+    fn regs(&self) -> &Registers<S> {
+        &self.registers
+    }
+}
+
 //=============================================================================
 // AnyConfig
 //=============================================================================
@@ -1056,8 +1134,8 @@ pub struct Reconfig<C: ValidConfig> {
 impl<C: ValidConfig> Reconfig<C> {
     /// Change the bit order of transmission (MSB/LSB first)
     #[inline]
-    pub fn msb_first(mut self, msb_first: bool) -> Self {
-        self.config.as_mut().registers.msb_first(msb_first);
+    pub fn msb_first(mut self, bit_order: BitOrder) -> Self {
+        self.config.as_mut().registers.bit_order(bit_order);
         self
     }
 
@@ -1152,6 +1230,17 @@ impl<P: ValidPads> Reconfig<Config<P, DynCharSize>> {
     /// [`DynCharSize`] without changing the underlying [`Config`]'s type.
     pub fn change_dyn_char_size<C: FixedCharSize>(&mut self) {
         self.config.registers.configure_charsize(C::BITS);
+    }
+}
+
+impl<C, P, S> ReadConfig<S> for Reconfig<C>
+where
+    C: ValidConfig<Pads = P>,
+    P: ValidPads<Sercom = S> + 'static,
+    S: Sercom,
+{
+    fn regs(&self) -> &Registers<S> {
+        &self.config.as_ref().registers
     }
 }
 
@@ -1428,6 +1517,18 @@ where
             config: rx.config,
             capability: PhantomData,
         }
+    }
+}
+
+impl<C, P, S, D> ReadConfig<S> for Uart<C, D>
+where
+    C: ValidConfig<Pads = P>,
+    P: ValidPads<Sercom = S> + 'static,
+    S: Sercom,
+    D: Capability,
+{
+    fn regs(&self) -> &Registers<S> {
+        &self.config.as_ref().registers
     }
 }
 

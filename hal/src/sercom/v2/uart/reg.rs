@@ -1,6 +1,6 @@
 //! Register-level access to UART configuration
 
-use super::{BaudMode, Parity, StopBits};
+use super::{BaudMode, BitOrder, Parity, StopBits};
 
 use crate::sercom::v2::*;
 use crate::target_device as pac;
@@ -13,7 +13,7 @@ use pac::sercom0::usart_int::ctrla::MODE_A;
 
 use crate::time::Hertz;
 
-pub(super) struct Registers<S: Sercom> {
+pub struct Registers<S: Sercom> {
     sercom: S,
 }
 
@@ -83,8 +83,16 @@ impl<S: Sercom> Registers<S> {
 
     /// Change the bit order of transmission (MSB/LSB first)
     #[inline]
-    pub(super) fn msb_first(&mut self, msb_first: bool) {
-        self.usart().ctrla.modify(|_, w| w.dord().bit(!msb_first));
+    pub(super) fn bit_order(&mut self, bit_order: BitOrder) {
+        self.usart()
+            .ctrla
+            .modify(|_, w| w.dord().bit(bit_order.into()));
+    }
+
+    /// Get the current bit order
+    #[inline]
+    pub(super) fn get_bit_order(&self) -> BitOrder {
+        self.usart().ctrla.read().dord().bit().into()
     }
 
     /// Change the parity setting
@@ -109,15 +117,35 @@ impl<S: Sercom> Registers<S> {
             .modify(|_, w| unsafe { w.form().bits(!enabled as u8) });
     }
 
+    /// Get the current parity setting
+    #[inline]
+    pub(super) fn get_parity(&self) -> Parity {
+        let enabled = self.usart().ctrla.read().form().bits() != 0;
+
+        if !enabled {
+            return Parity::None;
+        }
+
+        let pmode = self.usart().ctrlb.read().pmode().bit();
+
+        match pmode {
+            false => Parity::Even,
+            true => Parity::Odd,
+        }
+    }
+
     /// Change the stop bit setting
     #[inline]
     pub(super) fn stop_bits(&mut self, stop_bits: StopBits) {
-        let two_bits = match stop_bits {
-            StopBits::OneBit => false,
-            StopBits::TwoBits => true,
-        };
+        self.usart()
+            .ctrlb
+            .modify(|_, w| w.sbmode().bit(stop_bits.into()));
+    }
 
-        self.usart().ctrlb.modify(|_, w| w.sbmode().bit(two_bits));
+    /// Get the current stop bit setting
+    #[inline]
+    pub(super) fn get_stop_bits(&self) -> StopBits {
+        self.usart().ctrlb.read().sbmode().bit().into()
     }
 
     /// Enable or disable the start of frame detector.
@@ -129,6 +157,12 @@ impl<S: Sercom> Registers<S> {
         self.usart().ctrlb.modify(|_, w| w.sfde().bit(enabled));
     }
 
+    /// Get the current SOF detector setting
+    #[inline]
+    pub(super) fn get_start_of_frame_detection(&self) -> bool {
+        self.usart().ctrlb.read().sfde().bit()
+    }
+
     /// Enable or disable the collision detector.
     ///
     /// When set, the UART will detect collisions and update the
@@ -136,6 +170,12 @@ impl<S: Sercom> Registers<S> {
     #[inline]
     pub(super) fn collision_detection(&mut self, enabled: bool) {
         self.usart().ctrlb.modify(|_, w| w.colden().bit(enabled));
+    }
+
+    /// Get the current collision detector setting
+    #[inline]
+    pub(super) fn get_collision_detection(&self) -> bool {
+        self.usart().ctrlb.read().colden().bit()
     }
 
     /// Set the baud rate
@@ -173,6 +213,17 @@ impl<S: Sercom> Registers<S> {
         };
     }
 
+    /// Get the contents of the `BAUD` register and the current baud mode. Note
+    /// that only the CONTENTS of `BAUD` are returned, and not the actual baud
+    /// rate. Refer to the datasheet to convert the `BAUD` register contents
+    /// into a baud rate.
+    #[inline]
+    pub(super) fn get_baud(&self) -> (u16, BaudMode) {
+        let baud = self.usart().baud_usartfp_mode().read().bits();
+        let mode = BaudMode::get_sampr(self.usart().ctrla.read().sampr().bits());
+        (baud, mode)
+    }
+
     /// Control the buffer overflow notification
     ///
     /// If set to true, an [`RxError::Overflow`] will be issued as soon as an
@@ -183,6 +234,12 @@ impl<S: Sercom> Registers<S> {
         self.usart().ctrla.modify(|_, w| w.ibon().bit(set));
     }
 
+    /// Get the current immediate overflow notification setting
+    #[inline]
+    pub(super) fn get_immediate_overflow_notification(&self) -> bool {
+        self.usart().ctrla.read().ibon().bit()
+    }
+
     /// Run in standby mode
     ///
     /// When set, the UART peripheral will run in standby mode. See the
@@ -190,6 +247,12 @@ impl<S: Sercom> Registers<S> {
     #[inline]
     pub(super) fn run_in_standby(&mut self, set: bool) {
         self.usart().ctrla.modify(|_, w| w.runstdby().bit(set));
+    }
+
+    /// Get the current run in standby mode
+    #[inline]
+    pub(super) fn get_run_in_standby(&self) -> bool {
+        self.usart().ctrla.read().runstdby().bit()
     }
 
     /// Enable or disable IrDA encoding. The pulse length controls the minimum
@@ -207,6 +270,17 @@ impl<S: Sercom> Registers<S> {
                 self.usart().ctrlb.modify(|_, w| w.enc().bit(false));
             }
         }
+    }
+
+    /// Get the current IrDA encoding setting. The return type is the pulse
+    /// length wrapped in an [`Option`].
+    #[inline]
+    pub(super) fn get_irda_encoding(&self) -> Option<u8> {
+        if !self.usart().ctrlb.read().enc().bit() {
+            return None;
+        }
+
+        Some(self.usart().rxpl.read().bits())
     }
 
     /// Read interrupt flags
@@ -296,6 +370,70 @@ impl<S: Sercom> Registers<S> {
     pub(super) fn enable_peripheral(&mut self, enable: bool) {
         self.usart().ctrla.modify(|_, w| w.enable().bit(enable));
         while self.usart().syncbusy.read().enable().bit_is_set() {}
+    }
+}
+
+/// Trait enabling a holder of `Registers` to read the UART configuration.
+pub trait ReadConfig<S: Sercom> {
+    /// Get a shared reference to the `Registers` struct
+    fn regs(&self) -> &Registers<S>;
+
+    /// Get the current bit order
+    #[inline]
+    fn get_bit_order(&self) -> BitOrder {
+        self.regs().get_bit_order()
+    }
+
+    /// Get the current parity setting
+    #[inline]
+    fn get_parity(&self) -> Parity {
+        self.regs().get_parity()
+    }
+
+    /// Get the current stop bit setting
+    #[inline]
+    fn get_stop_bits(&self) -> StopBits {
+        self.regs().get_stop_bits()
+    }
+
+    /// Get the current SOF detector setting
+    #[inline]
+    fn get_start_of_frame_detection(&self) -> bool {
+        self.regs().get_start_of_frame_detection()
+    }
+
+    /// Get the current collision detector setting
+    #[inline]
+    fn get_collision_detection(&self) -> bool {
+        self.regs().get_collision_detection()
+    }
+
+    /// Get the contents of the `BAUD` register and the current baud mode. Note
+    /// that only the CONTENTS of `BAUD` are returned, and not the actual baud
+    /// rate. Refer to the datasheet to convert the `BAUD` register contents
+    /// into a baud rate.
+    #[inline]
+    fn get_baud(&self) -> (u16, BaudMode) {
+        self.regs().get_baud()
+    }
+
+    /// Get the current immediate overflow notification setting
+    #[inline]
+    fn get_immediate_overflow_notification(&self) -> bool {
+        self.regs().get_immediate_overflow_notification()
+    }
+
+    /// Get the current run in standby mode
+    #[inline]
+    fn get_run_in_standby(&self) -> bool {
+        self.regs().get_run_in_standby()
+    }
+
+    /// Get the current IrDA encoding setting. The return type is the pulse
+    /// length wrapped in an [`Option`].
+    #[inline]
+    fn get_irda_encoding(&self) -> Option<u8> {
+        self.regs().get_irda_encoding()
     }
 }
 
