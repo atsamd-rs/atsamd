@@ -127,6 +127,18 @@ type Pads = uart::PadsFromIds<Sercom0, PA09, PA09>;
 //! To be accepted as a [`ValidConfig`], the [`Config`] must have at least one
 //! of `Rx` or `Tx` pads.
 //!
+//! ## [`CharSize`]
+//!
+//! The UART peripheral can be configured to use different character sizes. By
+//! default, a [`Config`] is configured with an [`EightBit`] character size.
+//! This can be changed through the [`char_size`](Config::char_size) method.
+//! Changing the character normally also changes the [`Config`]'s type.
+//! Alternatively, you can also use a [`DynCharSize`] through the
+//! [`dyn_char_size`](Config::dyn_char_size) method. This enables you to
+//! dynamically change the character size on the fly through the
+//! [`change_dyn_char_size`](Reconfig::change_dyn_char_size) method when calling
+//! [`reconfigure`](Uart::reconfigure).
+//!
 //! # [`Uart`] and capabilities
 //!
 //! [`Uart`] structs can only be created from a [`Config`]. They have two type
@@ -384,6 +396,9 @@ pub trait CharSize: Sealed {
     const BITS: u8;
 }
 
+/// Type-level `enum` indicating a [`CharSize`] that is not dynamic
+pub trait FixedCharSize: CharSize {}
+
 /// Type alias to recover the `Word` type from an implementation of [`CharSize`]
 pub type Word<C> = <C as CharSize>::Word;
 
@@ -402,34 +417,49 @@ pub enum EightBit {}
 /// [`CharSize`] variant for 9-bit transactions
 pub enum NineBit {}
 
+/// Dynamic [`CharSize`] that can be changed on the fly
+pub enum DynCharSize {}
+
 impl Sealed for FiveBit {}
 impl CharSize for FiveBit {
     type Word = u8;
     const BITS: u8 = 0x5;
 }
+impl FixedCharSize for FiveBit {}
 
 impl Sealed for SixBit {}
 impl CharSize for SixBit {
     type Word = u8;
     const BITS: u8 = 0x6;
 }
+impl FixedCharSize for SixBit {}
 
 impl Sealed for SevenBit {}
 impl CharSize for SevenBit {
     type Word = u8;
     const BITS: u8 = 0x7;
 }
+impl FixedCharSize for SevenBit {}
 
 impl Sealed for EightBit {}
 impl CharSize for EightBit {
     type Word = u8;
     const BITS: u8 = 0x0;
 }
+impl FixedCharSize for EightBit {}
 
 impl Sealed for NineBit {}
 impl CharSize for NineBit {
     type Word = u16;
     const BITS: u8 = 0x1;
+}
+impl FixedCharSize for NineBit {}
+
+impl Sealed for DynCharSize {}
+impl CharSize for DynCharSize {
+    type Word = u16;
+    // Irrelevant for DynCharSize
+    const BITS: u8 = 0x0;
 }
 
 //=============================================================================
@@ -820,9 +850,20 @@ where
         (self.registers.free(), self.pads)
     }
 
-    /// Change the [`CharSize`]
+    /// Change the [`CharSize`].
     #[inline]
-    pub fn char_size<C2: CharSize>(mut self) -> Config<P, C2> {
+    pub fn char_size<C2: FixedCharSize>(mut self) -> Config<P, C2> {
+        self.registers.configure_charsize(C2::BITS);
+        self.change()
+    }
+
+    /// Change the [`CharSize`] to [`DynCharSize`]. The UART's character
+    /// size will be changed to the provided `C2`, which is a [`FixedCharSize`]
+    /// type, and can then be changed dynamically on an enabled [`Uart`]
+    /// without changing the underlying [`Config`]'s type through the
+    /// [`reconfigure`](Uart::reconfigure) method.
+    #[inline]
+    pub fn dyn_char_size<C2: FixedCharSize>(mut self) -> Config<P, DynCharSize> {
         self.registers.configure_charsize(C2::BITS);
         self.change()
     }
@@ -1103,6 +1144,14 @@ impl<C: ValidConfig> Reconfig<C> {
     pub fn irda_encoding(mut self, pulse_length: Option<u8>) -> Self {
         self.config.as_mut().registers.irda_encoding(pulse_length);
         self
+    }
+}
+
+impl<P: ValidPads> Reconfig<Config<P, DynCharSize>> {
+    /// Dynamically change the character size of a [`Reconfig`] with a
+    /// [`DynCharSize`] without changing the underlying [`Config`]'s type.
+    pub fn change_dyn_char_size<C: FixedCharSize>(&mut self) {
+        self.config.registers.configure_charsize(C::BITS);
     }
 }
 
