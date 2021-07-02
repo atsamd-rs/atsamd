@@ -109,20 +109,42 @@ type Pads = uart::PadsFromIds<Sercom0, PA09, PA09>;
 //! let config = uart::Config::new(&pm, sercom, pads, freq);
 //! ```
 //!
-//! The [`Config`] struct uses the builder pattern to configure the peripheral,
-//! ending with a call to [`enable`], which consumes the [`Config`] and returns
-//! an enabled [`Uart`] peripheral.
+//! The [`Config`] struct can configure the peripheral in one of two ways:
+//!
+//! * A set of methods is provided to use in a builder pattern: for example
+//!   [`baud`](Config::baud), [`stop_bits`](Config::stop_bits), etc. These
+//!   methods take `self` and return `Self`.
+//! * A set of methods is provided to use as setters: for example
+//!   [`set_baud`](Config::set_baud), [`set_stop_bits`](Config::set_stop_bits),
+//!   etc. These methods take `&mut self` and return nothing.
+//!
+//! In any case, the peripheral setup ends with a call to [`enable`], which
+//! consumes the [`Config`] and returns an enabled [`Uart`] peripheral.
 //!
 //! ```
-//! use atsamd_hal::sercom::v2::uart::{StopBits, NineBit};
+//! use atsamd_hal::sercom::v2::uart::{StopBits, NineBit, BitOrder, BaudMode, Oversampling};
 //!
 //! let uart = uart::Config::new(&mclk, sercom, pads, freq)
-//!     .baud(1.mhz())
+//!     .baud(1.mhz(), BaudMode::Arithmetic(Oversampling::Bits16))
 //!     .char_size::<NineBit>()
-//!     .msb_first(false)
+//!     .bit_order(BitOrder::LsbFirst)
 //!     .stop_bits(StopBits::TwoBits)
 //!     .enable();
 //! ```
+//!
+//! Alternatively,
+//!
+//! ```
+//! use atsamd_hal::sercom::v2::uart::{StopBits, NineBit, BitOrder, BaudMode, Oversampling};
+//!
+//! let uart = uart::Config::new(&mclk, sercom, pads, freq);
+//!     uart.set_baud(1.mhz(), BaudMode::Arithmetic(Oversampling::Bits16));
+//!     uart.set_char_size::<NineBit>();
+//!     uart.set_bit_order(BitOrder::LsbFirst);
+//!     uart.set_stop_bits(StopBits::TwoBits);
+//!     let uart = uart.enable();
+//! ```
+//!
 //!
 //! To be accepted as a [`ValidConfig`], the [`Config`] must have at least one
 //! of `Rx` or `Tx` pads.
@@ -136,15 +158,15 @@ type Pads = uart::PadsFromIds<Sercom0, PA09, PA09>;
 //! Alternatively, you can also use a [`DynCharSize`] through the
 //! [`dyn_char_size`](Config::dyn_char_size) method. This enables you to
 //! dynamically change the character size on the fly through the
-//! [`change_dyn_char_size`](Reconfig::change_dyn_char_size) method when calling
+//! [`set_dyn_char_size`](Config::set_dyn_char_size) method when calling
 //! [`reconfigure`](Uart::reconfigure).
 //!
 //! ## Reading the current configuration
 //!
-//! It is possible to read the current configuration by using the methods
-//! provided by the [`ReadConfig`] trait. This trait is implemented on
-//! [`Config`], [`Uart`] and [`Reconfig`]. Note that the [`ReadConfig`] trait
-//! must be in scope to be able to use its methods.
+//! It is possible to read the current configuration by using the getter methods
+//! provided: for example [`get_baud`](Config::get_baud),
+//! [`get_stop_bits`](Config::get_stop_bits), etc. These methods are available
+//! for [`Config`] and [`Uart`] structs.
 //!
 //! # [`Uart`] and capabilities
 //!
@@ -254,7 +276,7 @@ type Pads = uart::PadsFromIds<Sercom0, PA09, PA09>;
 //!
 //! // Reconfigure peripheral from mutable references to RxDuplex
 //! // and TxDuplex halves
-//! (&mut rx, &mut tx).as_mut().reconfigure(|c| c.msb_first(true));
+//! (&mut rx, &mut tx).as_mut().reconfigure(|c| c.set_run_in_standby(false));
 //! ```
 //!
 //! # Disabling and reconfiguring
@@ -264,6 +286,9 @@ type Pads = uart::PadsFromIds<Sercom0, PA09, PA09>;
 //! operate on the type that was returned by [`enable`]. This can be `Uart<C,
 //! Rx>`, `Uart<C, Tx>`, or `Uart<C, Duplex>`, depending on how the
 //! peripheral was configured.
+//!
+//! The [`reconfigure`] method gives out an `&mut Config` reference, which can
+//! then use the `set_*` methods.
 //!
 //! ```
 //! use atsamd_hal::sercom::v2::uart::Uart;
@@ -280,12 +305,11 @@ type Pads = uart::PadsFromIds<Sercom0, PA09, PA09>;
 //! let uart = Uart::join(rx, tx);
 //!
 //! // Reconfigure UART peripheral
-//! uart.reconfigure(|c| c.msb_first(true));
+//! uart.reconfigure(|c| c.set_run_in_standby(false));
 //!
 //! // Disable UART peripheral
 //! let config = uart.disable();
 //! ```
-//!
 //!
 //! # Non-supported advanced features
 //!
@@ -350,7 +374,6 @@ let (chan1, rx, rx_buffer) = rx_dma.wait();
 )]
 
 mod reg;
-pub use reg::ReadConfig;
 use reg::Registers;
 
 use super::*;
@@ -936,48 +959,114 @@ where
         self.change()
     }
 
-    /// Change the bit order of transmission (MSB/LSB first)
+    /// Change the bit order of transmission (builder pattern version)
     #[inline]
     pub fn bit_order(mut self, bit_order: BitOrder) -> Self {
-        self.registers.set_bit_order(bit_order);
+        self.set_bit_order(bit_order);
         self
     }
 
-    /// Change the parity setting
+    /// Change the bit order of transmission (setter version)
+    #[inline]
+    pub fn set_bit_order(&mut self, bit_order: BitOrder) {
+        self.registers.set_bit_order(bit_order);
+    }
+
+    /// Get the current bit order
+    #[inline]
+    pub fn get_bit_order(&self) -> BitOrder {
+        self.registers.get_bit_order()
+    }
+
+    /// Change the parity setting (builder pattern version)
     #[inline]
     pub fn parity(mut self, parity: Parity) -> Self {
-        self.registers.set_parity(parity);
+        self.set_parity(parity);
         self
     }
 
-    /// Change the stop bit setting
+    /// Change the parity setting (setter version)
+    #[inline]
+    pub fn set_parity(&mut self, parity: Parity) {
+        self.registers.set_parity(parity);
+    }
+
+    /// Get the current parity setting
+    #[inline]
+    pub fn get_parity(&self) -> Parity {
+        self.registers.get_parity()
+    }
+
+    /// Change the stop bit setting (builder pattern version)
     #[inline]
     pub fn stop_bits(mut self, stop_bits: StopBits) -> Self {
-        self.registers.set_stop_bits(stop_bits);
+        self.set_stop_bits(stop_bits);
         self
     }
 
-    /// Enable or disable the start of frame detector.
+    /// Change the stop bit setting (setter version)
+    #[inline]
+    pub fn set_stop_bits(&mut self, stop_bits: StopBits) {
+        self.registers.set_stop_bits(stop_bits);
+    }
+
+    /// Get the current stop bit setting
+    #[inline]
+    pub fn get_stop_bits(&self) -> StopBits {
+        self.registers.get_stop_bits()
+    }
+
+    /// Enable or disable the start of frame detector (builder pattern version)
     ///
     /// When set, the UART will generate interrupts for
     /// RXC and/or RXS if these interrupt flags have been enabled.
     #[inline]
     pub fn start_of_frame_detection(mut self, enabled: bool) -> Self {
-        self.registers.set_start_of_frame_detection(enabled);
+        self.set_start_of_frame_detection(enabled);
         self
     }
 
-    /// Enable or disable the collision detector.
+    /// Enable or disable the start of frame detector (setter version)
+    ///
+    /// When set, the UART will generate interrupts for
+    /// RXC and/or RXS if these interrupt flags have been enabled.
+    #[inline]
+    pub fn set_start_of_frame_detection(&mut self, enabled: bool) {
+        self.registers.set_start_of_frame_detection(enabled);
+    }
+
+    /// Get the current SOF detector setting
+    #[inline]
+    pub fn get_start_of_frame_detection(&self) -> bool {
+        self.registers.get_start_of_frame_detection()
+    }
+
+    /// Enable or disable the collision detector (builder pattern version)
     ///
     /// When set, the UART will detect collisions and update the
     /// corresponding flag in the STATUS register.
     #[inline]
     pub fn collision_detection(mut self, enabled: bool) -> Self {
-        self.registers.set_collision_detection(enabled);
+        self.set_collision_detection(enabled);
         self
     }
 
-    /// Set the baud rate
+    /// Enable or disable the collision detector (setter version)
+    ///
+    /// When set, the UART will detect collisions and update the
+    /// corresponding flag in the STATUS register.
+    #[inline]
+    pub fn set_collision_detection(&mut self, enabled: bool) {
+        self.registers.set_collision_detection(enabled);
+    }
+
+    /// Get the current collision detector setting
+    #[inline]
+    pub fn get_collision_detection(&self) -> bool {
+        self.registers.get_collision_detection()
+    }
+
+    /// Set the baud rate (builder pattern version)
     ///
     /// This function will calculate the best BAUD register setting based on the
     /// stored GCLK frequency and desired baud rate. The maximum baud rate is
@@ -987,38 +1076,119 @@ where
     /// Note that 3x oversampling is not supported.
     #[inline]
     pub fn baud<B: Into<Hertz>>(mut self, baud: B, mode: BaudMode) -> Self {
-        self.registers.set_baud(self.freq, baud, mode);
+        self.set_baud(baud, mode);
         self
     }
 
-    /// Control the buffer overflow notification
+    /// Set the baud rate (setter version)
+    ///
+    /// This function will calculate the best BAUD register setting based on the
+    /// stored GCLK frequency and desired baud rate. The maximum baud rate is
+    /// GCLK frequency/oversampling. Values outside this range will saturate at
+    /// the maximum supported baud rate.
+    ///
+    /// Note that 3x oversampling is not supported.
+    #[inline]
+    pub fn set_baud<B: Into<Hertz>>(&mut self, baud: B, mode: BaudMode) {
+        self.registers.set_baud(self.freq, baud, mode);
+    }
+
+    /// Get the contents of the `BAUD` register and the current baud mode. Note
+    /// that only the CONTENTS of `BAUD` are returned, and not the actual baud
+    /// rate. Refer to the datasheet to convert the `BAUD` register contents
+    /// into a baud rate.
+    #[inline]
+    pub fn get_baud(&self) -> (u16, BaudMode) {
+        self.registers.get_baud()
+    }
+
+    /// Control the buffer overflow notification (builder pattern version)
     ///
     /// If set to true, an [`Error::Overflow`] will be issued as soon as an
     /// overflow occurs. Otherwise, it will not be issued until its place within
     /// the data stream.
     #[inline]
     pub fn immediate_overflow_notification(mut self, set: bool) -> Self {
-        self.registers.set_immediate_overflow_notification(set);
+        self.set_immediate_overflow_notification(set);
         self
     }
 
-    /// Run in standby mode
+    /// Control the buffer overflow notification (setter version)
+    ///
+    /// If set to true, an [`Error::Overflow`] will be issued as soon as an
+    /// overflow occurs. Otherwise, it will not be issued until its place within
+    /// the data stream.
+    #[inline]
+    pub fn set_immediate_overflow_notification(&mut self, set: bool) {
+        self.registers.set_immediate_overflow_notification(set);
+    }
+
+    /// Get the current immediate overflow notification setting
+    #[inline]
+    pub fn get_immediate_overflow_notification(&self) -> bool {
+        self.registers.get_immediate_overflow_notification()
+    }
+
+    /// Run in standby mode (builder pattern version)
     ///
     /// When set, the UART peripheral will run in standby mode. See the
     /// datasheet for more details.
     #[inline]
     pub fn run_in_standby(mut self, set: bool) -> Self {
-        self.registers.set_run_in_standby(set);
+        self.set_run_in_standby(set);
         self
     }
 
-    /// Enable or disable IrDA encoding. The pulse length controls the minimum
-    /// pulse length that is required for a pulse to be accepted by the IrDA
-    /// receiver with regards to the serial engine clock period.
-    /// See datasheet for more information.
+    /// Run in standby mode (setter version)
+    ///
+    /// When set, the UART peripheral will run in standby mode. See the
+    /// datasheet for more details.
+    #[inline]
+    pub fn set_run_in_standby(&mut self, set: bool) {
+        self.registers.set_run_in_standby(set);
+    }
+
+    /// Get the current run in standby mode
+    #[inline]
+    pub fn get_run_in_standby(&self) -> bool {
+        self.registers.get_run_in_standby()
+    }
+
+    /// Enable or disable IrDA encoding (builder pattern version)
+    ///
+    /// The pulse length controls the minimum pulse length that is required for
+    /// a pulse to be accepted by the IrDA receiver with regards to the
+    /// serial engine clock period. See datasheet for more information.
     pub fn irda_encoding(mut self, pulse_length: Option<u8>) -> Self {
-        self.registers.set_irda_encoding(pulse_length);
+        self.set_irda_encoding(pulse_length);
         self
+    }
+
+    /// Enable or disable IrDA encoding (setter version)
+    ///
+    /// The pulse length controls the minimum pulse length that is required for
+    /// a pulse to be accepted by the IrDA receiver with regards to the
+    /// serial engine clock period. See datasheet for more information.
+    pub fn set_irda_encoding(&mut self, pulse_length: Option<u8>) {
+        self.registers.set_irda_encoding(pulse_length);
+    }
+
+    /// Get the current IrDA encoding setting. The return type is the pulse
+    /// length wrapped in an [`Option`].
+    #[inline]
+    pub fn get_irda_encoding(&self) -> Option<u8> {
+        self.registers.get_irda_encoding()
+    }
+}
+
+impl<P: ValidPads> Config<P, DynCharSize> {
+    /// Dynamically change the character size
+    ///
+    /// The UART's character size will be changed to the provided `C2`, which is
+    /// a [`FixedCharSize`] type, without changing the type of the
+    /// underlying [`Config`].
+    pub fn set_dyn_char_size<C2: FixedCharSize>(&mut self) {
+        self.registers.configure_charsize(C2::BITS);
     }
 }
 
@@ -1039,16 +1209,6 @@ where
             config: self,
             capability: PhantomData,
         }
-    }
-}
-
-impl<P, S> ReadConfig<S> for Config<P>
-where
-    P: ValidPads<Sercom = S>,
-    S: Sercom,
-{
-    fn regs(&self) -> &Registers<S> {
-        &self.registers
     }
 }
 
@@ -1120,134 +1280,6 @@ where
     type Word = C::Word;
     type Pads = P;
     type CharSize = C;
-}
-
-//=============================================================================
-// Reconfig
-//=============================================================================
-
-/// Wrapper struct around a [`Config`] to allow safely `reconfigure`ing
-pub struct Reconfig<C: ValidConfig> {
-    config: C,
-}
-
-impl<C: ValidConfig> Reconfig<C> {
-    /// Change the bit order of transmission (MSB/LSB first)
-    #[inline]
-    pub fn bit_order(mut self, bit_order: BitOrder) -> Self {
-        self.config.as_mut().registers.set_bit_order(bit_order);
-        self
-    }
-
-    /// Change the parity setting
-    #[inline]
-    pub fn parity(mut self, parity: Parity) -> Self {
-        self.config.as_mut().registers.set_parity(parity);
-        self
-    }
-
-    /// Change the stop bit setting
-    #[inline]
-    pub fn stop_bits(mut self, stop_bits: StopBits) -> Self {
-        self.config.as_mut().registers.set_stop_bits(stop_bits);
-        self
-    }
-
-    /// Enable or disable the start of frame detector.
-    ///
-    /// When set, the UART will generate interrupts for
-    /// RXC and/or RXS if these interrupt flags have been enabled.
-    #[inline]
-    pub fn start_of_frame_detection(mut self, enabled: bool) -> Self {
-        self.config
-            .as_mut()
-            .registers
-            .set_start_of_frame_detection(enabled);
-        self
-    }
-
-    /// Enable or disable the collision detector.
-    ///
-    /// When set, the UART will detect collisions and update the
-    /// corresponding flag in the STATUS register.
-    #[inline]
-    pub fn collision_detection(mut self, enabled: bool) -> Self {
-        self.config
-            .as_mut()
-            .registers
-            .set_collision_detection(enabled);
-        self
-    }
-
-    /// Set the baud rate
-    ///
-    /// This function will calculate the best BAUD register setting based on the
-    /// stored GCLK frequency and desired baud rate. The maximum baud rate is
-    /// GCLK frequency/oversampling. Values outside this range will saturate at
-    /// the maximum supported baud rate.
-    ///
-    /// Note that 3x oversampling is not supported.
-    #[inline]
-    pub fn baud<B: Into<Hertz>>(mut self, baud: B, mode: BaudMode) -> Self {
-        let config = self.config.as_mut();
-        config.registers.set_baud(config.freq, baud, mode);
-        self
-    }
-
-    /// Control the buffer overflow notification
-    ///
-    /// If set to true, an [`Error::Overflow`] will be issued as soon as an
-    /// overflow occurs. Otherwise, it will not be issued until its place within
-    /// the data stream.
-    #[inline]
-    pub fn immediate_overflow_notification(mut self, set: bool) -> Self {
-        self.config
-            .as_mut()
-            .registers
-            .set_immediate_overflow_notification(set);
-        self
-    }
-
-    /// Run in standby mode
-    ///
-    /// When set, the UART peripheral will run in standby mode. See the
-    /// datasheet for more details.
-    #[inline]
-    pub fn run_in_standby(mut self, set: bool) -> Self {
-        self.config.as_mut().registers.set_run_in_standby(set);
-        self
-    }
-
-    /// Enable or disable IrDA encoding. The pulse length controls the minimum
-    /// pulse length that is required for a pulse to be accepted by the IrDA
-    /// receiver with regards to the serial engine clock period.
-    /// See datasheet for more information.
-    pub fn irda_encoding(mut self, pulse_length: Option<u8>) -> Self {
-        self.config
-            .as_mut()
-            .registers
-            .set_irda_encoding(pulse_length);
-        self
-    }
-}
-
-impl<P: ValidPads> Reconfig<Config<P, DynCharSize>> {
-    /// Dynamically change the character size of a [`Reconfig`] with a
-    /// [`DynCharSize`] without changing the underlying [`Config`]'s type.
-    pub fn change_dyn_char_size<C: FixedCharSize>(&mut self) {
-        self.config.registers.configure_charsize(C::BITS);
-    }
-}
-
-impl<C, P, S> ReadConfig<S> for Reconfig<C>
-where
-    C: ValidConfig<Pads = P>,
-    P: ValidPads<Sercom = S> + 'static,
-    S: Sercom,
-{
-    fn regs(&self) -> &Registers<S> {
-        &self.config.as_ref().registers
-    }
 }
 
 //=============================================================================
@@ -1390,22 +1422,77 @@ where
         self.config.as_mut().registers.clear_status(bits);
     }
 
+    /// Get the current bit order
+    #[inline]
+    pub fn get_bit_order(&self) -> BitOrder {
+        self.config.as_ref().registers.get_bit_order()
+    }
+
+    /// Get the current parity setting
+    #[inline]
+    pub fn get_parity(&self) -> Parity {
+        self.config.as_ref().registers.get_parity()
+    }
+
+    /// Get the current stop bit setting
+    #[inline]
+    pub fn get_stop_bits(&self) -> StopBits {
+        self.config.as_ref().registers.get_stop_bits()
+    }
+
+    /// Get the current SOF detector setting
+    #[inline]
+    pub fn get_start_of_frame_detection(&self) -> bool {
+        self.config
+            .as_ref()
+            .registers
+            .get_start_of_frame_detection()
+    }
+
+    /// Get the current collision detector setting
+    #[inline]
+    pub fn get_collision_detection(&self) -> bool {
+        self.config.as_ref().registers.get_collision_detection()
+    }
+
+    /// Get the contents of the `BAUD` register and the current baud mode. Note
+    /// that only the CONTENTS of `BAUD` are returned, and not the actual baud
+    /// rate. Refer to the datasheet to convert the `BAUD` register contents
+    /// into a baud rate.
+    #[inline]
+    pub fn get_baud(&self) -> (u16, BaudMode) {
+        self.config.as_ref().registers.get_baud()
+    }
+
+    /// Get the current immediate overflow notification setting
+    #[inline]
+    pub fn get_immediate_overflow_notification(&self) -> bool {
+        self.config
+            .as_ref()
+            .registers
+            .get_immediate_overflow_notification()
+    }
+
+    /// Get the current run in standby mode
+    #[inline]
+    pub fn get_run_in_standby(&self) -> bool {
+        self.config.as_ref().registers.get_run_in_standby()
+    }
+
+    /// Get the current IrDA encoding setting. The return type is the pulse
+    /// length wrapped in an [`Option`].
+    #[inline]
+    pub fn get_irda_encoding(&self) -> Option<u8> {
+        self.config.as_ref().registers.get_irda_encoding()
+    }
+
     #[inline]
     pub(super) fn _reconfigure<F>(&mut self, update: F)
     where
-        F: FnOnce(Reconfig<C>) -> Reconfig<C>,
+        F: FnOnce(&mut C),
     {
         self.config.as_mut().registers.enable_peripheral(false);
-
-        // Perform a bitwise copy of the old configuration.
-        let old_config = unsafe { core::ptr::read(&self.config) };
-
-        // Create a new Config with D = Reconfigure
-        let reconfig = Reconfig { config: old_config };
-
-        let config = update(reconfig);
-
-        self.config = config.config;
+        update(&mut self.config);
         self.config.as_mut().registers.enable_peripheral(true);
     }
 }
@@ -1451,7 +1538,7 @@ where
         config
     }
 
-    /// [`Reconfig`]ure the UART.
+    /// Reconfigure the UART.
     ///
     /// Calling this method will temporarily disable the SERCOM peripheral, as
     /// some registers are enable-protected. This may interrupt any ongoing
@@ -1459,12 +1546,12 @@ where
     ///
     /// ```
     /// use atsamd_hal::sercom::v2::uart::{BaudMode, Oversampling, Uart};
-    /// uart.reconfigure(|c| c.baud(9600, BaudMode::Fractional(Oversampling::Bits16)));
+    /// uart.reconfigure(|c| c.set_run_in_standby(false));
     /// ```
     #[inline]
     pub fn reconfigure<U>(&mut self, update: U)
     where
-        U: FnOnce(Reconfig<C>) -> Reconfig<C>,
+        U: FnOnce(&mut C),
     {
         self._reconfigure(update);
     }
@@ -1506,12 +1593,12 @@ where
     ///
     /// ```
     /// use atsamd_hal::sercom::v2::uart::{BaudMode, Oversampling, Uart};
-    /// uart.reconfigure(|c| c.baud(9600, BaudMode::Fractional(Oversampling::Bits16)));
+    /// uart.reconfigure(|c| c.set_run_in_standby(false));
     /// ```
     #[inline]
     pub fn reconfigure<F>(&mut self, update: F)
     where
-        F: FnOnce(Reconfig<C>) -> Reconfig<C>,
+        F: FnOnce(&mut C),
     {
         self._reconfigure(update);
     }
@@ -1523,18 +1610,6 @@ where
             config: rx.config,
             capability: PhantomData,
         }
-    }
-}
-
-impl<C, P, S, D> ReadConfig<S> for Uart<C, D>
-where
-    C: ValidConfig<Pads = P>,
-    P: ValidPads<Sercom = S> + 'static,
-    S: Sercom,
-    D: Capability,
-{
-    fn regs(&self) -> &Registers<S> {
-        &self.config.as_ref().registers
     }
 }
 
