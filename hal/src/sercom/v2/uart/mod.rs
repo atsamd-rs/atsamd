@@ -165,8 +165,7 @@ type Pads = uart::PadsFromIds<Sercom0, PA09, PA09>;
 //!
 //! It is possible to read the current configuration by using the getter methods
 //! provided: for example [`get_baud`](Config::get_baud),
-//! [`get_stop_bits`](Config::get_stop_bits), etc. These methods are available
-//! for [`Config`] and [`Uart`] structs.
+//! [`get_stop_bits`](Config::get_stop_bits), etc.
 //!
 //! # [`Uart`] and capabilities
 //!
@@ -277,6 +276,17 @@ type Pads = uart::PadsFromIds<Sercom0, PA09, PA09>;
 //! // Reconfigure peripheral from mutable references to RxDuplex
 //! // and TxDuplex halves
 //! (&mut rx, &mut tx).as_mut().reconfigure(|c| c.set_run_in_standby(false));
+//! ```
+//!
+//! # Reading the current configuration
+//!
+//! The `AsRef<Config<P, C>>` trait is implemented for `Uart<Config<P, C>, D>`.
+//! This means you can use the `get_` methods implemented for `Config`, since
+//! they take an `&self` argument.
+//!
+//! ```
+//! // Assume uart is a Uart<C, D>
+//! let (baud, baud_mode) = uart.as_ref().get_baud();
 //! ```
 //!
 //! # Disabling and reconfiguring
@@ -1438,77 +1448,13 @@ where
         self.config.as_mut().registers.clear_status(bits);
     }
 
-    /// Get the current bit order
-    #[inline]
-    pub fn get_bit_order(&self) -> BitOrder {
-        self.config.as_ref().registers.get_bit_order()
-    }
-
-    /// Get the current parity setting
-    #[inline]
-    pub fn get_parity(&self) -> Parity {
-        self.config.as_ref().registers.get_parity()
-    }
-
-    /// Get the current stop bit setting
-    #[inline]
-    pub fn get_stop_bits(&self) -> StopBits {
-        self.config.as_ref().registers.get_stop_bits()
-    }
-
-    /// Get the current SOF detector setting
-    #[inline]
-    pub fn get_start_of_frame_detection(&self) -> bool {
-        self.config
-            .as_ref()
-            .registers
-            .get_start_of_frame_detection()
-    }
-
-    /// Get the current collision detector setting
-    #[inline]
-    pub fn get_collision_detection(&self) -> bool {
-        self.config.as_ref().registers.get_collision_detection()
-    }
-
-    /// Get the contents of the `BAUD` register and the current baud mode. Note
-    /// that only the CONTENTS of `BAUD` are returned, and not the actual baud
-    /// rate. Refer to the datasheet to convert the `BAUD` register contents
-    /// into a baud rate.
-    #[inline]
-    pub fn get_baud(&self) -> (u16, BaudMode) {
-        self.config.as_ref().registers.get_baud()
-    }
-
-    /// Get the current immediate overflow notification setting
-    #[inline]
-    pub fn get_immediate_overflow_notification(&self) -> bool {
-        self.config
-            .as_ref()
-            .registers
-            .get_immediate_overflow_notification()
-    }
-
-    /// Get the current run in standby mode
-    #[inline]
-    pub fn get_run_in_standby(&self) -> bool {
-        self.config.as_ref().registers.get_run_in_standby()
-    }
-
-    /// Get the current IrDA encoding setting. The return type is the pulse
-    /// length wrapped in an [`Option`].
-    #[inline]
-    pub fn get_irda_encoding(&self) -> Option<u8> {
-        self.config.as_ref().registers.get_irda_encoding()
-    }
-
     #[inline]
     pub(super) fn _reconfigure<F>(&mut self, update: F)
     where
-        F: FnOnce(&mut C),
+        F: FnOnce(&mut SpecificConfig<C>),
     {
         self.config.as_mut().registers.enable_peripheral(false);
-        update(&mut self.config);
+        update(&mut self.config.as_mut());
         self.config.as_mut().registers.enable_peripheral(true);
     }
 }
@@ -1567,7 +1513,7 @@ where
     #[inline]
     pub fn reconfigure<U>(&mut self, update: U)
     where
-        U: FnOnce(&mut C),
+        U: FnOnce(&mut SpecificConfig<C>),
     {
         self._reconfigure(update);
     }
@@ -1614,7 +1560,7 @@ where
     #[inline]
     pub fn reconfigure<F>(&mut self, update: F)
     where
-        F: FnOnce(&mut C),
+        F: FnOnce(&mut SpecificConfig<C>),
     {
         self._reconfigure(update);
     }
@@ -1636,6 +1582,17 @@ impl<C: ValidConfig> AsMut<Uart<C, Duplex>> for (&mut Uart<C, RxDuplex>, &mut Ua
         // Uart<C, Duplex> should be safe as long as RxDuplex and Duplex
         // both only have one nonzero-sized field.
         unsafe { &mut *(self.0 as *mut _ as *mut Uart<C, Duplex>) }
+    }
+}
+
+impl<C, D> AsRef<SpecificConfig<C>> for Uart<C, D>
+where
+    C: ValidConfig,
+    D: Capability,
+{
+    #[inline]
+    fn as_ref(&self) -> &SpecificConfig<C> {
+        self.config.as_ref()
     }
 }
 
