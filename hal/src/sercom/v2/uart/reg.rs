@@ -1,6 +1,6 @@
 //! Register-level access to UART configuration
 
-use super::{BaudMode, BitOrder, Parity, StopBits};
+use super::{BaudMode, BitOrder, CharSizeEnum, Parity, StopBits};
 
 use crate::sercom::v2::*;
 use crate::target_device as pac;
@@ -81,10 +81,16 @@ impl<S: Sercom> Registers<S> {
 
     /// Configure the character size
     #[inline]
-    pub(super) fn configure_charsize(&mut self, bits: u8) {
+    pub(super) fn set_char_size(&mut self, bits: u8) {
         self.usart()
             .ctrlb
             .modify(|_, w| unsafe { w.chsize().bits(bits) });
+    }
+
+    /// Get the current character size setting
+    #[inline]
+    pub(super) fn get_char_size(&self) -> CharSizeEnum {
+        self.usart().ctrlb.read().chsize().bits().into()
     }
 
     /// Change the bit order of transmission (MSB/LSB first)

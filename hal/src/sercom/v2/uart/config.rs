@@ -1,8 +1,8 @@
 //! UART [`Config`] definition and implementation\
 
 use super::{
-    BaudMode, BitOrder, CharSize, DataSize, DynCharSize, EightBit, FixedCharSize, Parity,
-    Registers, StopBits, Uart, ValidConfig, ValidPads,
+    BaudMode, BitOrder, CharSize, CharSizeEnum, DataSize, DynCharSize, EightBit, FixedCharSize,
+    Parity, Registers, StopBits, Uart, ValidConfig, ValidPads,
 };
 use crate::{
     sercom::v2::*,
@@ -89,7 +89,7 @@ impl<P: ValidPads> Config<P> {
         // Enable internal clock mode
         registers.configure_mode();
         registers.configure_pads(P::RXPO as u8, P::TXPO as u8);
-        registers.configure_charsize(EightBit::BITS);
+        registers.set_char_size(EightBit::BITS);
 
         Self {
             registers,
@@ -137,7 +137,7 @@ where
     /// Change the [`CharSize`].
     #[inline]
     pub fn char_size<C2: FixedCharSize>(mut self) -> Config<P, C2> {
-        self.registers.configure_charsize(C2::BITS);
+        self.registers.set_char_size(C2::BITS);
         self.change()
     }
 
@@ -148,7 +148,7 @@ where
     /// [`reconfigure`](Uart::reconfigure) method.
     #[inline]
     pub fn dyn_char_size<C2: FixedCharSize>(mut self) -> Config<P, DynCharSize> {
-        self.registers.configure_charsize(C2::BITS);
+        self.registers.set_char_size(C2::BITS);
         self.change()
     }
 
@@ -378,13 +378,14 @@ where
 
 impl<P: ValidPads> Config<P, DynCharSize> {
     /// Dynamically change the character size
-    ///
-    /// The UART's character size will be changed to the provided `C2`, which is
-    /// a [`FixedCharSize`] type, without changing the type of the
-    /// underlying [`Config`].
     #[inline]
-    pub fn set_dyn_char_size<C2: FixedCharSize>(&mut self) {
-        self.registers.configure_charsize(C2::BITS);
+    pub fn set_dyn_char_size(&mut self, char_size: CharSizeEnum) {
+        self.registers.set_char_size(char_size as u8);
+    }
+
+    /// Get the current character size setting
+    pub fn get_char_size(&self) -> CharSizeEnum {
+        self.registers.get_char_size()
     }
 }
 

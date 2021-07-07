@@ -48,6 +48,29 @@ pub enum NineBit {}
 /// Dynamic [`CharSize`] that can be changed on the fly
 pub enum DynCharSize {}
 
+/// `enum` version of [`CharSize`]
+#[repr(u8)]
+pub enum CharSizeEnum {
+    FiveBit = FiveBit::BITS,
+    SixBit = SixBit::BITS,
+    SevenBit = SevenBit::BITS,
+    EightBit = EightBit::BITS,
+    NineBit = NineBit::BITS,
+}
+
+impl From<u8> for CharSizeEnum {
+    fn from(item: u8) -> CharSizeEnum {
+        match item {
+            FiveBit::BITS => CharSizeEnum::FiveBit,
+            SixBit::BITS => CharSizeEnum::SixBit,
+            SevenBit::BITS => CharSizeEnum::SevenBit,
+            EightBit::BITS => CharSizeEnum::EightBit,
+            NineBit::BITS => CharSizeEnum::NineBit,
+            _ => unreachable!(),
+        }
+    }
+}
+
 impl Sealed for FiveBit {}
 impl CharSize for FiveBit {
     type Word = u8;
