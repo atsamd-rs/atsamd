@@ -1,10 +1,10 @@
-//! Pad definitions for UART peripherals
+//! UART pad definitions for thumbv7em targets
 
 use core::marker::PhantomData;
 
 use crate::target_device::sercom0::usart_int::ctrla::{RXPO_A, TXPO_A};
 
-use crate::sercom::v2::uart::{AnyConfig, Capability, CharSize, Config, Duplex, Rx, Tx};
+use super::{AnyConfig, Capability, CharSize, Config, Duplex, Rx, Tx};
 use crate::sercom::v2::*;
 use crate::typelevel::{NoneT, Sealed};
 
