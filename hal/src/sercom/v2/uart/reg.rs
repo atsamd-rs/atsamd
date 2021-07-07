@@ -116,13 +116,14 @@ impl<S: Sercom> Registers<S> {
 
         self.usart()
             .ctrla
-            .modify(|_, w| unsafe { w.form().bits(!enabled as u8) });
+            .modify(|_, w| unsafe { w.form().bits(enabled as u8) });
     }
 
     /// Get the current parity setting
     #[inline]
     pub(super) fn get_parity(&self) -> Parity {
-        let enabled = self.usart().ctrla.read().form().bits() != 0;
+        let form = self.usart().ctrla.read().form().bits();
+        let enabled = form == 0x1 || form == 0x5;
 
         if !enabled {
             return Parity::None;
