@@ -17,6 +17,10 @@ pub struct Registers<S: Sercom> {
     sercom: S,
 }
 
+// SAFETY: It is safe to implement Sync for Registers, because it erases the
+// interior mutability of the PAC SERCOM struct.
+unsafe impl<S: Sercom> Sync for Registers<S> {}
+
 impl<S: Sercom> Registers<S> {
     /// Create a new `Registers` instance
     #[inline]
@@ -286,16 +290,16 @@ impl<S: Sercom> Registers<S> {
         Some(self.usart().rxpl.read().bits())
     }
 
-    /// Read interrupt flags
-    #[inline]
-    pub fn read_flags(&self) -> u8 {
-        self.usart().intflag.read().bits()
-    }
-
     /// Clear specified interrupt flags
     #[inline]
     pub fn clear_flags(&mut self, bits: u8) {
         self.usart().intflag.modify(|_, w| unsafe { w.bits(bits) });
+    }
+
+    /// Read interrupt flags
+    #[inline]
+    pub fn read_flags(&self) -> u8 {
+        self.usart().intflag.read().bits()
     }
 
     /// Enable specified interrupts
@@ -310,16 +314,16 @@ impl<S: Sercom> Registers<S> {
         self.usart().intenclr.write(|w| unsafe { w.bits(bits) });
     }
 
-    /// Read status flags
-    #[inline]
-    pub fn read_status(&self) -> u16 {
-        self.usart().status.read().bits()
-    }
-
     /// Clear specified status flags
     #[inline]
     pub fn clear_status(&mut self, bits: u16) {
         self.usart().status.modify(|_, w| unsafe { w.bits(bits) });
+    }
+
+    /// Read status flags
+    #[inline]
+    pub fn read_status(&self) -> u16 {
+        self.usart().status.read().bits()
     }
 
     /// Read from the `DATA` register
