@@ -64,12 +64,12 @@ pub trait Txpo: Sealed {
 }
 
 impl Txpo for Pad0 {
-    const TXPO: TXPO_A = TXPO_A::PAD0;
+    const TXPO: TXPO_A = TXPO_A::TXPO_2;
 }
 
 impl Txpo for NoneT {
     /// This value is arbitrary and meaningless for [`NoneT`]
-    const TXPO: TXPO_A = TXPO_A::PAD0;
+    const TXPO: TXPO_A = TXPO_A::TXPO_2;
 }
 
 /// Lift the implementations of [`Txpo`] from [`OptionalPadNum`]s to the
