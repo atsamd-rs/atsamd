@@ -343,9 +343,6 @@ macro_rules! clock_generator {
         )+
     ) => {
 
-use crate::clock::v2::pclk::*;
-use crate::sercom::*;
-
 $(
 
 /// A typed token that indicates that the clock for the peripheral(s)
