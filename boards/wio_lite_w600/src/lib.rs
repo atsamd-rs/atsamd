@@ -1,20 +1,10 @@
 #![no_std]
 
-extern crate atsamd_hal as hal;
-
-#[cfg(feature = "rt")]
-extern crate cortex_m_rt;
-
 #[cfg(feature = "rt")]
 pub use cortex_m_rt::entry;
 
-#[cfg(feature = "panic_halt")]
-pub extern crate panic_halt;
-
-pub use hal::prelude::*;
-pub use hal::*;
-
-pub use hal::target_device as pac;
+pub use atsamd_hal as hal;
+pub use hal::pac;
 
 use hal::clock::GenericClockController;
 use hal::sercom::{I2CMaster3, UART0};
