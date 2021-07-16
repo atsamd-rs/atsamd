@@ -17,8 +17,8 @@ pub use hal::*;
 pub use hal::target_device as pac;
 
 use hal::clock::GenericClockController;
-use hal::sercom::v2::{spi, PinToPad};
 use hal::sercom::{I2CMaster3, UART0};
+use hal::sercom::v2::{spi, PinToPad};
 use hal::time::Hertz;
 
 #[cfg(feature = "usb")]
