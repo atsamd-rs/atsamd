@@ -18,7 +18,7 @@ pub use hal::target_device as pac;
 
 use hal::clock::GenericClockController;
 use hal::sercom::{I2CMaster3, UART0};
-use hal::sercom::v2::{spi, PinToPad};
+use hal::sercom::v2::{spi, Sercom4};
 use hal::time::Hertz;
 
 #[cfg(feature = "usb")]
@@ -90,7 +90,7 @@ atsamd_hal::bsp_pins!(
     PA10 {
         name: d1
         aliases: {
-            AlternateC: Tx
+            AlternateC: UartTx
         }
     },
 
@@ -98,7 +98,7 @@ atsamd_hal::bsp_pins!(
     PA11 {
         name: d0
         aliases: {
-            AlternateC: Rx
+            AlternateC: UartRx
         }
     },
 
@@ -106,7 +106,7 @@ atsamd_hal::bsp_pins!(
     PB10 {
         name: d23
         aliases: {
-            AlternateC: Mosi
+            AlternateD: Mosi
         }
     },
 
@@ -114,7 +114,7 @@ atsamd_hal::bsp_pins!(
     PB11 {
         name: d24
         aliases: {
-            AlternateC: Sck
+            AlternateD: Sck
         }
     },
 
@@ -122,7 +122,7 @@ atsamd_hal::bsp_pins!(
     PA12 {
         name: d22
         aliases: {
-            AlternateC: Miso
+            AlternateD: Miso
         }
     },
 
@@ -236,7 +236,7 @@ atsamd_hal::bsp_pins!(
 );
 
 /// I2C master for the labelled SDA & SCL pins
-pub type I2C = I2CMaster3<PinToPad<Sda>, PinToPad<Scl>>;
+pub type I2C = I2CMaster3<Sda, Scl>;
 
 /// Convenience for setting up the labelled SDA, SCL pins to
 /// operate as an I2C master running at the specified frequency.
@@ -251,12 +251,12 @@ pub fn i2c_master(
     let gclk0 = clocks.gclk0();
     let clock = &clocks.sercom3_core(&gclk0).unwrap();
     let baud = baud.into();
-    let sda = sda.into().into();
-    let scl = scl.into().into();
+    let sda = sda.into();
+    let scl = scl.into();
     I2CMaster3::new(clock, baud, sercom3, pm, sda, scl)
 }
 
-type SpiPads = spi_pads_from_pins!(Sercom4, DI = Miso, DO = Mosi, CK = Sck);
+type SpiPads = spi::Pads<Sercom4, Miso, Mosi, Sck>;
 
 /// SPI master for the labelled SPI peripheral
 ///
@@ -288,7 +288,7 @@ pub fn spi_master(
 }
 
 /// UART device for the labelled RX & TX pins
-pub type Uart = UART0<PinToPad<Rx>, PinToPad<Tx>, (), ()>;
+pub type Uart = UART0<UartRx, UartTx, (), ()>;
 
 /// Convenience for setting up the D0 and D1 pins to
 /// operate as UART RX/TX (respectively) running at the specified baud.
@@ -297,13 +297,13 @@ pub fn uart(
     baud: impl Into<Hertz>,
     sercom0: pac::SERCOM0,
     pm: &mut pac::PM,
-    uart_rx: impl Into<Rx>,
-    uart_tx: impl Into<Tx>,
+    uart_rx: impl Into<UartRx>,
+    uart_tx: impl Into<UartTx>,
 ) -> Uart {
     let gclk0 = clocks.gclk0();
     let clock = &clocks.sercom0_core(&gclk0).unwrap();
     let baud = baud.into();
-    let pads = (uart_rx.into().into(), uart_tx.into().into());
+    let pads = (uart_rx.into(), uart_tx.into());
     UART0::new(clock, baud, sercom0, pm, pads)
 }
 
