@@ -14,3 +14,5 @@ pub use hal::digital::v2::OutputPin as _atsamd_hal_embedded_hal_digital_v2_Outpu
 pub use hal::digital::v2::ToggleableOutputPin as _atsamd_hal_embedded_hal_digital_v2_ToggleableOutputPin;
 
 pub use hal::prelude::*;
+
+pub use nb;
