@@ -1,4 +1,4 @@
-# Adafruit Gemma M0 Board Support Crate
+# Adafruit Neo Trinkey Board Support Crate
 
 This crate provides a type-safe API for working with the [Adafruit Neo Trinkey
 board](https://www.adafruit.com/product/4870).
