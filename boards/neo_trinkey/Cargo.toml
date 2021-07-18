@@ -25,7 +25,7 @@ default-features = false
 
 [dev-dependencies]
 panic-halt = "0.2"
-ws2812-timer-delay = "0.3.0"
+ws2812-timer-delay = { version = "0.3.0", features = ["slow"] }
 smart-leds = "0.3.0"
 
 [features]
