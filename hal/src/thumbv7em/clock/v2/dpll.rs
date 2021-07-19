@@ -73,6 +73,10 @@ pub trait DpllSource: Source {
     type Type: DpllSourceMarker;
 }
 
+pub trait DpllSourceXosc32k: DpllSource {}
+
+pub trait DpllSourceXosc: DpllSource {}
+
 //==============================================================================
 // DpllToken
 //==============================================================================
@@ -350,7 +354,7 @@ where
     #[inline]
     pub fn from_xosc32k<S>(token: DpllToken<D>, reference_clk: S) -> (Self, S::Inc)
     where
-        S: DpllSource<Type = T> + Increment,
+        S: DpllSourceXosc32k<Type = T> + Increment,
     {
         let src_freq = reference_clk.freq();
         assert!(src_freq.0 >= 32_000);
@@ -374,7 +378,7 @@ where
     #[inline]
     pub fn free<S>(self, source: S) -> (DpllToken<D>, S::Dec)
     where
-        S: DpllSource<Type = T> + Decrement,
+        S: DpllSourceXosc32k<Type = T> + Decrement,
     {
         (self.token, source.dec())
     }
@@ -400,7 +404,7 @@ where
         predivider: DpllPredivider,
     ) -> (Self, S::Inc)
     where
-        S: DpllSource<Type = T> + Increment,
+        S: DpllSourceXosc<Type = T> + Increment,
     {
         let raw_predivider = predivider;
         let src_freq = reference_clk.freq();
@@ -447,7 +451,7 @@ where
     #[inline]
     pub fn free<S>(self, source: S) -> (DpllToken<D>, S::Dec)
     where
-        S: DpllSource<Type = D> + Decrement,
+        S: DpllSourceXosc<Type = D> + Decrement,
     {
         (self.token, source.dec())
     }

@@ -16,7 +16,7 @@ use crate::gpio::v2::{AnyPin, FloatingDisabled, Pin, PinId, PA14, PA15, PB22, PB
 use crate::time::{Hertz, U32Ext};
 use crate::typelevel::Sealed;
 
-use super::dpll::{DpllSource, DpllSourceMarker, DpllSrc};
+use super::dpll::{DpllSource, DpllSourceMarker, DpllSourceXosc, DpllSrc};
 use super::gclk::{GclkSource, GclkSourceEnum, GclkSourceMarker, GenNum};
 use super::gclkio::NotGclkInput;
 
@@ -532,6 +532,14 @@ where
     N: Counter,
 {
     type Type = X;
+}
+
+impl<X, M, N> DpllSourceXosc for Enabled<Xosc<X, M>, N>
+where
+    X: XoscNum + DpllSourceMarker,
+    M: Mode,
+    N: Counter,
+{
 }
 
 //==============================================================================

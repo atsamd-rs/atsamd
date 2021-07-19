@@ -25,7 +25,7 @@ use crate::clock::v2::{Source, SourceMarker};
 use crate::gpio::v2::{AnyPin, FloatingDisabled, Pin, PA00, PA01};
 use crate::time::{Hertz, U32Ext};
 
-use super::dpll::{DpllSource, DpllSourceMarker, DpllSrc};
+use super::dpll::{DpllSource, DpllSourceMarker, DpllSourceXosc32k, DpllSrc};
 use super::gclk::{GclkSource, GclkSourceMarker, GenNum};
 use super::gclkio::NotGclkInput;
 use super::rtc::*;
@@ -500,6 +500,14 @@ where
     N: Counter,
 {
     type Type = Osc32k;
+}
+
+impl<M, Y, N> DpllSourceXosc32k for Enabled<Xosc32k<M, Active32k, Y>, N>
+where
+    M: Mode,
+    Y: Output1k,
+    N: Counter,
+{
 }
 
 //==============================================================================
