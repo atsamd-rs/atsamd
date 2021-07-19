@@ -209,10 +209,12 @@ impl<D: DpllNum> DpllToken<D> {
 /// * Maxumum division factor: 2048 (register all 1)
 pub type DpllPredivider = u16;
 
-pub trait SrcMode: Sealed {
+pub trait SrcMode<D: DpllNum>: Sealed {
     /// Return value of an effective predivider that can be applied on a
     /// source frequency
     fn predivider(&self) -> DpllPredivider;
+    /// TODO
+    fn enable(&self, token: &mut DpllToken<D>);
 }
 
 pub struct PclkDriven<D, T>
@@ -222,33 +224,59 @@ where
 {
     reference_clk: Pclk<D, T>,
 }
-impl<D: DpllNum + PclkType, T: PclkSourceMarker> SrcMode for PclkDriven<D, T> {
+
+impl<D: DpllNum + PclkType, T: PclkSourceMarker> SrcMode<D> for PclkDriven<D, T> {
     fn predivider(&self) -> DpllPredivider {
         1_u16
     }
+
+    fn enable(&self, token: &mut DpllToken<D>) {
+        // Set the source
+        token.set_source_clock(DpllSrc::GCLK);
+    }
 }
+
 impl<D: DpllNum + PclkType, T: PclkSourceMarker> Sealed for PclkDriven<D, T> {}
 
-pub struct XoscDriven<T: DpllSourceMarker> {
+pub struct XoscDriven<D: DpllNum, T: DpllSourceMarker> {
+    dpll_num: PhantomData<D>,
     src: PhantomData<T>,
     raw_predivider: DpllPredivider,
 }
-impl<T: DpllSourceMarker> SrcMode for XoscDriven<T> {
+
+impl<D: DpllNum, T: DpllSourceMarker> SrcMode<D> for XoscDriven<D, T> {
     fn predivider(&self) -> DpllPredivider {
         2 * (1 + self.raw_predivider)
     }
-}
-impl<T: DpllSourceMarker> Sealed for XoscDriven<T> {}
 
-pub struct Xosc32kDriven<T: DpllSourceMarker> {
+    fn enable(&self, token: &mut DpllToken<D>) {
+        // Set the source
+        token.set_source_clock(T::DPLL_SRC);
+
+        // Set the predivider
+        token.set_source_div(self.raw_predivider);
+    }
+}
+
+impl<D: DpllNum, T: DpllSourceMarker> Sealed for XoscDriven<D, T> {}
+
+pub struct Xosc32kDriven<D: DpllNum, T: DpllSourceMarker> {
+    dpll_num: PhantomData<D>,
     src: PhantomData<T>,
 }
-impl<T: DpllSourceMarker> SrcMode for Xosc32kDriven<T> {
+
+impl<D: DpllNum, T: DpllSourceMarker> SrcMode<D> for Xosc32kDriven<D, T> {
     fn predivider(&self) -> DpllPredivider {
         1_u16
     }
+
+    fn enable(&self, token: &mut DpllToken<D>) {
+        // Set the source
+        token.set_source_clock(T::DPLL_SRC);
+    }
 }
-impl<T: DpllSourceMarker> Sealed for Xosc32kDriven<T> {}
+
+impl<D: DpllNum, T: DpllSourceMarker> Sealed for Xosc32kDriven<D, T> {}
 
 //==============================================================================
 // Dpll
@@ -264,13 +292,12 @@ impl<T: DpllSourceMarker> Sealed for Xosc32kDriven<T> {}
 /// * [Xosc1][super::xosc::Xosc1]
 ///
 /// As indicated in [DpllSrc]
-pub struct Dpll<D, M: SrcMode>
+pub struct Dpll<D, M>
 where
     D: DpllNum,
-    M: SrcMode,
+    M: SrcMode<D>,
 {
     token: DpllToken<D>,
-    src: PhantomData<D>,
     src_freq: Hertz,
     mult: u16,
     frac: u8,
@@ -288,32 +315,18 @@ where
     ///
     /// Hold the Pclk until released on deconstruction
     #[inline]
-    pub fn from_pclk(token: DpllToken<D>, reference_clk: Pclk<D, T>) -> Dpll<D, PclkDriven<D, T>> {
+    pub fn from_pclk(token: DpllToken<D>, reference_clk: Pclk<D, T>) -> Self {
         let src_freq = reference_clk.freq();
         assert!(src_freq.0 >= 32_000);
         assert!(src_freq.0 <= 3_200_000);
         let (mult, frac) = (1, 0);
         Self {
             token,
-            src: PhantomData,
             src_freq,
             mult,
             frac,
             mode: PclkDriven { reference_clk },
         }
-    }
-    /// Enable the DPLL, do all hardware writes
-    pub fn enable(mut self) -> Enabled<Self, U0> {
-        assert!(self.freq().0 >= 96_000_000);
-        assert!(self.freq().0 <= 200_000_000);
-
-        // Set the source
-        self.token.set_source_clock(DpllSrc::GCLK);
-        // Set the loop divider ratio
-        self.token.set_loop_div(self.mult, self.frac);
-        // Enable the DPLL
-        self.token.enable();
-        Enabled::new(self)
     }
 
     /// Deconstruct the DPLL, returns the held Pclk
@@ -323,7 +336,7 @@ where
     }
 }
 
-impl<D, T> Dpll<D, Xosc32kDriven<T>>
+impl<D, T> Dpll<D, Xosc32kDriven<D, T>>
 where
     D: DpllNum,
     T: DpllSourceMarker,
@@ -335,10 +348,7 @@ where
     ///
     /// Increases the count, decreased on deconstruction
     #[inline]
-    pub fn from_xosc32k<S>(
-        token: DpllToken<D>,
-        reference_clk: S,
-    ) -> (Dpll<D, Xosc32kDriven<T>>, S::Inc)
+    pub fn from_xosc32k<S>(token: DpllToken<D>, reference_clk: S) -> (Self, S::Inc)
     where
         S: DpllSource<Type = T> + Increment,
     {
@@ -349,26 +359,15 @@ where
 
         let dpll = Dpll {
             token,
-            src: PhantomData,
             src_freq,
             mult,
             frac,
-            mode: Xosc32kDriven { src: PhantomData },
+            mode: Xosc32kDriven {
+                src: PhantomData,
+                dpll_num: PhantomData,
+            },
         };
         (dpll, reference_clk.inc())
-    }
-
-    pub fn enable(mut self) -> Enabled<Self, U0> {
-        assert!(self.freq().0 >= 96_000_000);
-        assert!(self.freq().0 <= 200_000_000);
-
-        // Set the source
-        self.token.set_source_clock(DpllSrc::XOSC32);
-        // Set the loop divider ratio
-        self.token.set_loop_div(self.mult, self.frac);
-        // Enable the DPLL
-        self.token.enable();
-        Enabled::new(self)
     }
 
     /// Decrease the count, return the disabled DPLL
@@ -381,7 +380,7 @@ where
     }
 }
 
-impl<D, T> Dpll<D, XoscDriven<T>>
+impl<D, T> Dpll<D, XoscDriven<D, T>>
 where
     D: DpllNum,
     T: DpllSourceMarker,
@@ -399,7 +398,7 @@ where
         token: DpllToken<D>,
         reference_clk: S,
         predivider: DpllPredivider,
-    ) -> (Dpll<D, XoscDriven<T>>, S::Inc)
+    ) -> (Self, S::Inc)
     where
         S: DpllSource<Type = T> + Increment,
     {
@@ -413,6 +412,7 @@ where
         // Calculate the Dpll input frequency taking into consideration the
         // raw_predivider, but store the actual input source frequency
         let mode = XoscDriven {
+            dpll_num: PhantomData,
             src: PhantomData,
             raw_predivider,
         };
@@ -422,7 +422,6 @@ where
 
         let dpll = Dpll {
             token,
-            src: PhantomData,
             src_freq,
             mult,
             frac,
@@ -431,20 +430,17 @@ where
         (dpll, reference_clk.inc())
     }
 
-    pub fn enable(mut self) -> Enabled<Self, U0> {
-        // TODO: This assertion is suspicious.
-        //assert!(self.freq().0 >= 96_000_000);
-        assert!(self.freq().0 <= 200_000_000);
-        // Set the source
-        self.token.set_source_clock(T::DPLL_SRC);
-
-        // Set the predivider
-        self.token.set_source_div(self.mode.raw_predivider);
-        // Set the loop divider ratio
-        self.token.set_loop_div(self.mult, self.frac);
-        // Enable the DPLL
-        self.token.enable();
-        Enabled::new(self)
+    /// Set the predivider, see [DpllPredivider]
+    #[inline]
+    pub fn set_source_div(mut self, predivider: DpllPredivider) -> Self {
+        // Assert the source pre-divider does not go outside input frequency
+        // specifications
+        let raw_predivider = predivider;
+        self.mode.raw_predivider = raw_predivider;
+        let frequency = self.src_freq.0 / self.mode.predivider() as u32;
+        assert!(frequency >= 32_000);
+        assert!(frequency <= 3_200_000);
+        self
     }
 
     /// Decrease the count, return the disabled DPLL
@@ -460,7 +456,7 @@ where
 impl<D, M> Dpll<D, M>
 where
     D: DpllNum,
-    M: SrcMode,
+    M: SrcMode<D>,
 {
     /// Set the DPLL divider
     ///
@@ -531,24 +527,17 @@ where
                 * (self.mult as u32 + self.frac as u32 / 32),
         )
     }
-}
 
-impl<D, T> Dpll<D, XoscDriven<T>>
-where
-    D: DpllNum,
-    T: DpllSourceMarker,
-{
-    /// Set the predivider, see [DpllPredivider]
-    #[inline]
-    pub fn set_source_div(mut self, predivider: DpllPredivider) -> Self {
-        // Assert the source pre-divider does not go outside input frequency
-        // specifications
-        let raw_predivider = predivider;
-        self.mode.raw_predivider = raw_predivider;
-        let frequency = self.src_freq.0 / self.mode.predivider() as u32;
-        assert!(frequency >= 32_000);
-        assert!(frequency <= 3_200_000);
-        self
+    pub fn enable(mut self) -> Enabled<Self, U0> {
+        // TODO: This assertion is suspicious.
+        assert!(self.freq().0 <= 200_000_000);
+        // TODO
+        self.mode.enable(&mut self.token);
+        // Set the loop divider ratio
+        self.token.set_loop_div(self.mult, self.frac);
+        // Enable the DPLL
+        self.token.enable();
+        Enabled::new(self)
     }
 }
 
@@ -561,7 +550,7 @@ pub type Dpll1<M> = Dpll<Pll1, M>;
 impl<D, M> Enabled<Dpll<D, M>, U0>
 where
     D: DpllNum,
-    M: SrcMode,
+    M: SrcMode<D>,
 {
     #[inline]
     pub fn disable(mut self) -> Dpll<D, M> {
@@ -594,7 +583,7 @@ impl<G, D, M, N> GclkSource<G> for Enabled<Dpll<D, M>, N>
 where
     G: GenNum,
     D: DpllNum + GclkSourceMarker,
-    M: SrcMode,
+    M: SrcMode<D>,
     N: Counter,
 {
     type Type = D;
@@ -603,7 +592,7 @@ where
 impl<D, M, N> Source for Enabled<Dpll<D, M>, N>
 where
     D: DpllNum + GclkSourceMarker,
-    M: SrcMode,
+    M: SrcMode<D>,
     N: Counter,
 {
     #[inline]
