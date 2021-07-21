@@ -458,7 +458,7 @@ impl Monotonic for Rtc<Count32Mode> {
     }
 
     fn set_compare(&mut self, instant: &Instant<Rtc<Count32Mode>>) {
-        let value = *instant.duration_since_epoch().integer();
+        let value = instant.duration_since_epoch().integer();
         unsafe { self.mode0().comp[0].write(|w| w.comp().bits(value)) }
     }
 
