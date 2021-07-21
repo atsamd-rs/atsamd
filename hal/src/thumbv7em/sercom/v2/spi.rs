@@ -859,8 +859,8 @@ bitflags! {
     /// INTFLAG register.
     pub struct Flags: u8 {
         const DRE = 0x01;
-        const RXC = 0x02;
-        const TXC = 0x04;
+        const TXC = 0x02;
+        const RXC = 0x04;
         const SSL = 0x08;
         const ERROR = 0x80;
     }
