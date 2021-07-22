@@ -26,11 +26,11 @@ use super::pclk::{Dfll48, Pclk, PclkSourceMarker};
 
 /// Token type required to construct a [`Dfll`] type instance.
 ///
-/// From a [`crate`] external user perspective, it does not contain any methods
-/// and serves only a token purpose.
+/// From a [`atsamd_hal`][`crate`] external user perspective, it does not
+/// contain any methods and serves only a token purpose.
 ///
-/// Within a [`crate`], [`DfllToken`] struct is a low-level access abstraction
-/// for HW register calls.
+/// Within a [`atsamd_hal`][`crate`], [`DfllToken`] struct is a low-level access
+/// abstraction for HW register calls.
 pub struct DfllToken {
     __: (),
 }
