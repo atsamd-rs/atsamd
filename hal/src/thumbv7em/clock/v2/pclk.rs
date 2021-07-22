@@ -1,9 +1,19 @@
 #![deny(missing_docs)]
-//! # Pclk - Peripheral Channel Clock
+#![deny(warnings)]
+//! # Pclk - Peripheral Channel (Clock)
 //!
-//! Peripherals recieve clocking through a peripheral channel
+//! Peripheral clocks serve as a last element in a chain within a clocking
+//! system and are directly associated with a specific peripheral in a 1:1
+//! manner. Some of them are reserved for clocking system internal purposes,
+//! like reference clock for Dfll or Dpll.
 //!
-//! TODO
+//! Every [`Pclk`] can be powered by any instantiated and enabled
+//! [`Gclk`][`super::gclk::Gclk`].
+//!
+//! Abstractions representing peripherals that depend on a configured
+//! corresponding [`Pclk`] instance should consume it and release it upon
+//! destruction. Thus, it is possible to freeze adequate part of the clocking
+//! tree that running peripheral depend on.
 
 use core::marker::PhantomData;
 
@@ -27,10 +37,13 @@ use super::gclk::*;
 // PclkToken
 //==============================================================================
 
-/// Peripheral channel token
+/// Token type required to construct a [`Pclk`] type instance.
 ///
-/// A [`PclkToken<P>`] equals a hardware register
-/// Provide a safe register interface for [`Pclk`]
+/// From a [`atsamd_hal`][`crate`] external user perspective, it does not
+/// contain any methods and serves only a token purpose.
+///
+/// Within a [`atsamd_hal`][`crate`], [`PclkToken`] struct is a low-level access
+/// abstraction for HW register calls.
 pub struct PclkToken<P: PclkType> {
     pclk: PhantomData<P>,
 }
@@ -87,8 +100,9 @@ pub trait PclkType: Sealed {
     const ID: PclkId;
 }
 
-// If a suitable type already exists in the HAL, reuse it for the `PclkTypeType`
-// The `Sercom` types are a good example.
+// If a suitable type already exists in the HAL, reuse it to implement
+// `PclkType` trait ([`Pll0`] or `Sercom` type are a good example). Otherwise,
+// define new enum type.
 macro_rules! pclk_type {
     // A type already exists; reuse it
     ( true, $Type:ident, $Id:ident ) => {
@@ -111,11 +125,12 @@ macro_rules! pclk_type {
 // PclkSource
 //==============================================================================
 
-/// PclkSourceMarker
+/// Source marker trait for [`Pclk`] sources
 ///
 /// All [`Gclk`]s can act as a source for [`Pclk`]s
 pub trait PclkSourceMarker: GenNum + SourceMarker {
-    /// Which [`Gclk`] acts as source
+    /// Associated constant provides a variant of a low level enum type from PAC
+    /// that is used during a HW register write
     const PCLK_SRC: PclkSourceEnum;
 }
 
@@ -125,9 +140,12 @@ seq!(N in 0..=11 {
     }
 });
 
-/// Each [`PclkSource`] is also a [`Source`]
+/// This trait represents a [`Pclk`] source provider.
 pub trait PclkSource: Source {
-    /// Associated type for a ['PclkSource`]
+    /// Associated type used in order to mark [`Pclk<_, T: PclkSourceMarker>`]
+    /// type with a proper `T`, according to what `gclk` was passed into the
+    /// [`Pclk::enable`] and to only allow calls into [`Pclk::disable`] with a
+    /// matching `gclk`
     type Type: PclkSourceMarker;
 }
 
@@ -144,7 +162,12 @@ where
 // Pclk - Peripheral Channel Clock
 //==============================================================================
 
-/// Peripheral channel clock
+/// Struct representing a [`Pclk`] abstraction
+///
+/// It is generic over:
+/// - a peripheral it is bound to via concept of [`PclkType`]
+/// - a clock source ([`PclkSourceMarker`]; variants are provided through [`Gen0`],
+///   [`Gen1`], `GenX` types)
 pub struct Pclk<P, T>
 where
     P: PclkType,
