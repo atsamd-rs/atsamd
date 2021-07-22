@@ -7,19 +7,44 @@
 //! Able to source a clock signal through [`GclkIn`]-capable pins
 //! and output clock signals via [`GclkOut`] pins
 //!
-//! Setting up a [`GclkOut`] pin to output `Gclk1` on PB15:
+//! Setting up a [`GclkOut`] pin to output `Gclk0` signal on pin PB14:
 //!
-//! ```ignore
-//! let (_gclk_out1, _gclk1) =
-//!    GclkOut::enable(tokens.gclk_io.gclk_out1, pins.pb15, gclk1, false);
+//! ```no_run
+//! use atsamd_hal::{
+//!     clock::v2::{gclkio::GclkOut, retrieve_clocks},
+//!     gpio::v2::Pins,
+//!     pac::Peripherals,
+//! };
+//! let mut pac = Peripherals::take().unwrap();
+//! let (gclk0, dfll, _, tokens) = retrieve_clocks(
+//!     pac.OSCCTRL,
+//!     pac.OSC32KCTRL,
+//!     pac.GCLK,
+//!     pac.MCLK,
+//!     &mut pac.NVMCTRL,
+//! );
+//! let pins = Pins::new(pac.PORT);
+//! let (gclk_out0, gclk0) = GclkOut::enable(tokens.gclk_io.gclk_out0, pins.pb14, gclk0, false);
 //! ```
 //!
-//!Setting up a [`GclkIn`] pin to receive a 2 MHz signal on PB17:
+//! Setting up a [`GclkIn`] pin to receive a 48 MHz signal on pin PB17:
 //!
-//! ```ignore
-//! /// Input for Gclk3 on pin PB17 (assumed frequency of 2 MHz)
-//! let gclk_in3 = GclkIn::enable(tokens.gclk_io.gclk_in3, pins.pb17, 2.mhz());
-//! let (gclk3, _gclk_in3) = gclk::Gclk::new(tokens.gclks.gclk3, gclk_in3);
+//! ```no_run
+//! # use atsamd_hal::{
+//! #     clock::v2::{gclk::Gclk, gclkio::GclkIn},
+//! #     time::U32Ext,
+//! # };
+//! # let mut pac = atsamd_hal::pac::Peripherals::take().unwrap();
+//! # let (gclk0, dfll, _, tokens) = atsamd_hal::clock::v2::retrieve_clocks(
+//! #     pac.OSCCTRL,
+//! #     pac.OSC32KCTRL,
+//! #     pac.GCLK,
+//! #     pac.MCLK,
+//! #     &mut pac.NVMCTRL,
+//! # );
+//! # let pins = atsamd_hal::gpio::v2::Pins::new(pac.PORT);
+//! let gclk_in3 = GclkIn::enable(tokens.gclk_io.gclk_in3, pins.pb17, 48.mhz());
+//! let (gclk3, gclk_in3) = Gclk::new(tokens.gclks.gclk3, gclk_in3);
 //! let gclk3 = gclk3.enable();
 //! ```
 //!
@@ -27,9 +52,10 @@
 //! dedicated to clock input such as the pins used by [`xosc`][super::xosc] or
 //! [`xosc32k`][super::xosc32k].
 //!
-//! It is possible to feed a [`GclkIn`] from a [`GclkOut`]
-//! Example: Using the code snippets above, and by outputting 2 MHz on PB15,
-//! physically connecting that PB15 to PB17 yields a 2 MHz clock in `gclk_in3`
+//! It is possible to feed a [`GclkIn`] from a [`GclkOut`] by running a proper
+//! wire between GPIO pins. For example, using the code snippets above, by
+//! outputting 48 MHz on PB14 and physically connecting it to PB17 yields a 48
+//! MHz clock in `gclk_in3`
 
 use core::marker::PhantomData;
 
