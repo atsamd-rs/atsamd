@@ -7,8 +7,8 @@ pub use atsamd_hal as hal;
 pub use hal::pac;
 
 use hal::clock::GenericClockController;
-use hal::sercom::{I2CMaster3, UART0};
 use hal::sercom::v2::{spi, Sercom4};
+use hal::sercom::{I2CMaster3, UART0};
 use hal::time::Hertz;
 
 #[cfg(feature = "usb")]

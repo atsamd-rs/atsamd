@@ -47,3 +47,8 @@ Example:
 ```bash
 ~/Library/Arduino15/packages/Seeeduino/tools/bossac/1.7.0-arduino3/bossac --port=cu.usbmodem14601 -idewvRU target/blinky_basic.bin
 ```
+
+#### Wiring
+
+The onboard LED is attached to the W600 module, so blinky_basic uses pin D13 instead. In order to see the example work
+you must attach and LED and appropriate resistor to this pin.

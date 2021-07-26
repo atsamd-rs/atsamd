@@ -6,8 +6,8 @@ use panic_halt as _;
 
 use wio_lite_w600 as bsp;
 
-use bsp::hal;
 use bsp::entry;
+use bsp::hal;
 
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
