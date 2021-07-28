@@ -1,15 +1,8 @@
 //! Character size definitions
 
+use super::DataReg;
 use crate::typelevel::Sealed;
 use num_traits::{AsPrimitive, PrimInt};
-
-/// Size of the SERCOM's `DATA` register
-#[cfg(any(feature = "samd11", feature = "samd21"))]
-pub type DataSize = u16;
-
-/// Size of the SERCOM's `DATA` register
-#[cfg(any(feature = "min-samd51g"))]
-pub type DataSize = u32;
 
 /// Type-level `enum` representing the UART character size
 ///
@@ -18,10 +11,10 @@ pub type DataSize = u32;
 /// use a `u16` word.
 pub trait CharSize: Sealed {
     /// Word size for the character size
-    type Word: 'static + PrimInt + AsPrimitive<DataSize>;
+    type Word: 'static + PrimInt + AsPrimitive<DataReg>;
 
     /// Bits to write into the `LENGTH` register
-    const BITS: u8;
+    const BITS: CharSizeEnum;
 }
 
 /// Type-level `enum` indicating a [`CharSize`] that is not dynamic
@@ -51,58 +44,45 @@ pub enum DynCharSize {}
 /// `enum` version of [`CharSize`]
 #[repr(u8)]
 pub enum CharSizeEnum {
-    FiveBit = FiveBit::BITS,
-    SixBit = SixBit::BITS,
-    SevenBit = SevenBit::BITS,
-    EightBit = EightBit::BITS,
-    NineBit = NineBit::BITS,
-}
-
-impl From<u8> for CharSizeEnum {
-    fn from(item: u8) -> CharSizeEnum {
-        match item {
-            FiveBit::BITS => CharSizeEnum::FiveBit,
-            SixBit::BITS => CharSizeEnum::SixBit,
-            SevenBit::BITS => CharSizeEnum::SevenBit,
-            EightBit::BITS => CharSizeEnum::EightBit,
-            NineBit::BITS => CharSizeEnum::NineBit,
-            _ => unreachable!(),
-        }
-    }
+    FiveBit = 0x5,
+    SixBit = 0x6,
+    SevenBit = 0x7,
+    EightBit = 0x0,
+    NineBit = 0x1,
 }
 
 impl Sealed for FiveBit {}
 impl CharSize for FiveBit {
     type Word = u8;
-    const BITS: u8 = 0x5;
+    const BITS: CharSizeEnum = CharSizeEnum::FiveBit;
 }
 impl FixedCharSize for FiveBit {}
 
 impl Sealed for SixBit {}
 impl CharSize for SixBit {
     type Word = u8;
-    const BITS: u8 = 0x6;
+    const BITS: CharSizeEnum = CharSizeEnum::SixBit;
 }
 impl FixedCharSize for SixBit {}
 
 impl Sealed for SevenBit {}
 impl CharSize for SevenBit {
     type Word = u8;
-    const BITS: u8 = 0x7;
+    const BITS: CharSizeEnum = CharSizeEnum::SevenBit;
 }
 impl FixedCharSize for SevenBit {}
 
 impl Sealed for EightBit {}
 impl CharSize for EightBit {
     type Word = u8;
-    const BITS: u8 = 0x0;
+    const BITS: CharSizeEnum = CharSizeEnum::EightBit;
 }
 impl FixedCharSize for EightBit {}
 
 impl Sealed for NineBit {}
 impl CharSize for NineBit {
     type Word = u16;
-    const BITS: u8 = 0x1;
+    const BITS: CharSizeEnum = CharSizeEnum::NineBit;
 }
 impl FixedCharSize for NineBit {}
 
@@ -110,5 +90,5 @@ impl Sealed for DynCharSize {}
 impl CharSize for DynCharSize {
     type Word = u16;
     // Irrelevant for DynCharSize
-    const BITS: u8 = 0x0;
+    const BITS: CharSizeEnum = CharSizeEnum::EightBit;
 }

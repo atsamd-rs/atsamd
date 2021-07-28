@@ -386,11 +386,11 @@ let (chan1, rx, rx_buffer) = rx_dma.wait();
 )]
 
 #[cfg(any(feature = "samd11", feature = "samd21"))]
-#[path = "pads_thumbv6m.rs"]
+#[path = "uart/pads_thumbv6m.rs"]
 mod pads;
 
 #[cfg(feature = "min-samd51g")]
-#[path = "pads_thumbv7em.rs"]
+#[path = "uart/pads_thumbv7em.rs"]
 mod pads;
 
 pub use pads::*;
@@ -413,38 +413,25 @@ use crate::{sercom::v2::*, typelevel::Sealed};
 use core::{convert::TryInto, marker::PhantomData};
 use num_traits::AsPrimitive;
 
+/// Size of the SERCOM's `DATA` register
+#[cfg(any(feature = "samd11", feature = "samd21"))]
+pub type DataReg = u16;
+
+/// Size of the SERCOM's `DATA` register
+#[cfg(any(feature = "min-samd51g"))]
+pub type DataReg = u32;
+
 //=============================================================================
 // Stop bits, parity, baud rate, bit order
 //=============================================================================
 
 /// Number of stop bits in a UART frame
-#[repr(u8)]
 #[derive(Debug, Clone, Copy)]
 pub enum StopBits {
     /// 1 stop bit
-    OneBit = 0,
+    OneBit,
     /// 2 stop bits
-    TwoBits = 1,
-}
-
-impl From<StopBits> for bool {
-    #[inline]
-    fn from(item: StopBits) -> bool {
-        match item {
-            StopBits::OneBit => false,
-            StopBits::TwoBits => true,
-        }
-    }
-}
-
-impl From<bool> for StopBits {
-    #[inline]
-    fn from(item: bool) -> StopBits {
-        match item {
-            false => StopBits::OneBit,
-            true => StopBits::TwoBits,
-        }
-    }
+    TwoBits,
 }
 
 /// Parity setting of a UART frame
@@ -464,28 +451,9 @@ pub enum Parity {
 #[derive(Debug, Clone, Copy)]
 pub enum BitOrder {
     /// MSB-first
-    MsbFirst = 0,
+    MsbFirst,
     /// LSB-first
-    LsbFirst = 1,
-}
-
-impl From<BitOrder> for bool {
-    #[inline]
-    fn from(item: BitOrder) -> bool {
-        match item {
-            BitOrder::MsbFirst => false,
-            BitOrder::LsbFirst => true,
-        }
-    }
-}
-impl From<bool> for BitOrder {
-    #[inline]
-    fn from(item: bool) -> BitOrder {
-        match item {
-            false => BitOrder::MsbFirst,
-            true => BitOrder::LsbFirst,
-        }
-    }
+    LsbFirst,
 }
 
 /// Baudrate oversampling values
@@ -509,38 +477,6 @@ pub enum BaudMode {
     Arithmetic(Oversampling),
     /// Asynchronous fractional baud calculation
     Fractional(Oversampling),
-}
-
-impl BaudMode {
-    #[inline]
-    fn sampr(&self) -> u8 {
-        use BaudMode::*;
-        use Oversampling::*;
-        match self {
-            Arithmetic(n) => match n {
-                Bits16 => 0,
-                Bits8 => 2,
-            },
-
-            Fractional(n) => match n {
-                Bits16 => 1,
-                Bits8 => 3,
-            },
-        }
-    }
-
-    #[inline]
-    fn get_sampr(sampr: u8) -> Self {
-        use BaudMode::*;
-        use Oversampling::*;
-        match sampr {
-            0 => Arithmetic(Bits16),
-            1 => Fractional(Bits16),
-            2 => Arithmetic(Bits8),
-            3 => Fractional(Bits8),
-            _ => unreachable!(),
-        }
-    }
 }
 
 //=============================================================================
@@ -679,8 +615,7 @@ where
     /// Read the interrupt flags
     #[inline]
     pub fn read_flags(&self) -> Flags {
-        let bits = self.config.as_ref().registers.read_flags();
-        Flags::from_bits_truncate(bits)
+        self.config.as_ref().registers.read_flags()
     }
 
     /// Clear interrupt status flags
@@ -708,8 +643,8 @@ where
     #[inline]
     pub fn clear_flags(&mut self, flags: Flags) {
         // Remove flags not pertinent to Self's Capability
-        let bits = Self::capability_flags(flags).bits();
-        self.config.as_mut().registers.clear_flags(bits);
+        let flags = Self::capability_flags(flags);
+        self.config.as_mut().registers.clear_flags(flags);
     }
 
     /// Enable interrupts for the specified flags.
@@ -728,8 +663,8 @@ where
     #[inline]
     pub fn enable_interrupts(&mut self, flags: Flags) {
         // Remove flags not pertinent to Self's Capability
-        let bits = Self::capability_flags(flags).bits();
-        self.config.as_mut().registers.enable_interrupts(bits);
+        let flags = Self::capability_flags(flags);
+        self.config.as_mut().registers.enable_interrupts(flags);
     }
 
     /// Disable interrupts for the specified flags.
@@ -748,15 +683,14 @@ where
     #[inline]
     pub fn disable_interrupts(&mut self, flags: Flags) {
         // Remove flags not pertinent to Self's Capability
-        let bits = Self::capability_flags(flags).bits();
-        self.config.as_mut().registers.disable_interrupts(bits);
+        let flags = Self::capability_flags(flags);
+        self.config.as_mut().registers.disable_interrupts(flags);
     }
 
     /// Read the status flags
     #[inline]
     pub fn read_status(&self) -> Status {
-        let bits = self.config.as_ref().registers.read_status();
-        Status::from_bits_truncate(bits)
+        self.config.as_ref().registers.read_status()
     }
 
     /// Clear the status flags
@@ -772,8 +706,8 @@ where
     #[inline]
     pub fn clear_status(&mut self, status: Status) {
         // Remove status flags not pertinent to Self's Capability
-        let bits = Self::capability_status(status).bits();
-        self.config.as_mut().registers.clear_status(bits);
+        let flags = Self::capability_status(status);
+        self.config.as_mut().registers.clear_status(flags);
     }
 
     #[inline]
@@ -797,21 +731,30 @@ where
     #[inline]
     pub fn clear_ctsic(&mut self) {
         let bit = CTSIC;
-        self.config.as_mut().registers.clear_flags(bit);
+        self.config
+            .as_mut()
+            .registers
+            .clear_flags(unsafe { Flags::from_bits_unchecked(bit) });
     }
 
     /// Enable the `CTSIC` interrupt
     #[inline]
     pub fn enable_ctsic(&mut self) {
         let bit = CTSIC;
-        self.config.as_mut().registers.enable_interrupts(bit);
+        self.config
+            .as_mut()
+            .registers
+            .enable_interrupts(unsafe { Flags::from_bits_unchecked(bit) });
     }
 
     /// Disable the `CTSIC` interrupt
     #[inline]
     pub fn disable_ctsic(&mut self) {
         let bit = CTSIC;
-        self.config.as_mut().registers.disable_interrupts(bit);
+        self.config
+            .as_mut()
+            .registers
+            .disable_interrupts(unsafe { Flags::from_bits_unchecked(bit) });
     }
 }
 
@@ -932,7 +875,7 @@ impl<C, D> Uart<C, D>
 where
     C: ValidConfig,
     D: Receive,
-    DataSize: AsPrimitive<C::Word>,
+    DataReg: AsPrimitive<C::Word>,
 {
     /// Read from the DATA register
     ///
@@ -942,7 +885,7 @@ where
     /// clear the RXC flag, which could break assumptions made elsewhere in
     /// this module.
     #[inline]
-    pub unsafe fn read_data(&mut self) -> DataSize {
+    pub unsafe fn read_data(&mut self) -> DataReg {
         self.config.as_mut().registers.read_data()
     }
 
@@ -954,17 +897,18 @@ where
         Ok(self.read_flags())
     }
 
-    /// Flush the RX buffer and clear RX errors
+    /// Flush the RX buffer and clear RX errors.
+    ///
+    /// **Note**: The datasheet states that disabling the receiver (RXEN) clears
+    /// the RX buffer, and clears the BUFOVF, PERR and FERR bits.
+    /// However, in practice, it seems like BUFOVF errors still pop
+    /// up after a disable/enable cycle of the receiver, then immediately begin
+    /// reading bytes from the DATA register. Instead, this method uses a
+    /// workaround, which reads a few bytes to clear the RX buffer (3 bytes
+    /// seems to be the trick), then manually clear the error bits.
     #[inline]
     pub fn flush_rx_buffer(&mut self) {
-        // TODO
-        // The datasheet states that disabling the receiver (RXEN) clears
-        // the RX buffer, and clears the BUFOVF, PERR and FERR bits.
-        // However, in practice, it seems like BUFOVF errors still pop
-        // up after a disable/enable cycle of the receiver, then immediately begin
-        // reading bytes from the DATA register.
-        //
-        // Is this a hardware bug???
+        // TODO Is this a hardware bug???
         /*
         usart.ctrlb.modify(|_, w| w.rxen().clear_bit());
         while usart.syncbusy.read().ctrlb().bit() || usart.ctrlb.read().rxen().bit_is_set() {}
@@ -973,8 +917,6 @@ where
         while usart.syncbusy.read().ctrlb().bit() || usart.ctrlb.read().rxen().bit_is_clear() {}
         */
 
-        // Workaround is to read a few bytes to clear the RX buffer (3 bytes seems to do
-        // the trick), then manually clear the BUFOVF bit Clear rx buffer
         for _ in 0..=2 {
             let _data = unsafe { self.config.as_mut().registers.read_data() };
         }
@@ -999,7 +941,7 @@ where
     /// the DRE flag, which could break assumptions made elsewhere in this
     /// module.
     #[inline]
-    pub unsafe fn write_data(&mut self, data: DataSize) {
+    pub unsafe fn write_data(&mut self, data: DataReg) {
         self.config.as_mut().registers.write_data(data);
     }
 }

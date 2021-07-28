@@ -1,6 +1,6 @@
 //! `embedded-hal` trait implementations for [`Uart`]s
 
-use super::{DataSize, Error, Flags, Receive, Transmit, Uart, ValidConfig};
+use super::{DataReg, Error, Flags, Receive, Transmit, Uart, ValidConfig};
 use embedded_hal::{
     blocking,
     serial::{Read, Write},
@@ -12,7 +12,7 @@ impl<C, D> Read<C::Word> for Uart<C, D>
 where
     C: ValidConfig,
     D: Receive,
-    DataSize: AsPrimitive<C::Word>,
+    DataReg: AsPrimitive<C::Word>,
 {
     type Error = Error;
 
@@ -38,7 +38,6 @@ where
     /// Wait for a `DRE` flag, then write a word
     #[inline]
     fn write(&mut self, word: C::Word) -> nb::Result<(), Self::Error> {
-        // Ignore buffer overflow errors
         if self.read_flags().contains(Flags::DRE) {
             unsafe { self.write_data(word.as_()) };
             Ok(())
@@ -50,7 +49,6 @@ where
     /// Wait for a `TXC` flag
     #[inline]
     fn flush(&mut self) -> nb::Result<(), Self::Error> {
-        // Ignore buffer overflow errors
         if self.read_flags().contains(Flags::TXC) {
             self.clear_flags(Flags::TXC);
             Ok(())

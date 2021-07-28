@@ -1,6 +1,6 @@
 //! Register-level access to UART configuration
 
-use super::{BaudMode, BitOrder, CharSizeEnum, Parity, StopBits};
+use super::{BaudMode, BitOrder, CharSizeEnum, Flags, Oversampling, Parity, Status, StopBits};
 
 use crate::sercom::v2::*;
 use crate::target_device as pac;
@@ -13,7 +13,7 @@ use pac::sercom0::usart_int::ctrla::MODE_A;
 
 use crate::time::Hertz;
 
-pub struct Registers<S: Sercom> {
+pub(super) struct Registers<S: Sercom> {
     sercom: S,
 }
 
@@ -81,30 +81,46 @@ impl<S: Sercom> Registers<S> {
 
     /// Configure the character size
     #[inline]
-    pub(super) fn set_char_size(&mut self, bits: u8) {
+    pub(super) fn set_char_size(&mut self, size: CharSizeEnum) {
         self.usart()
             .ctrlb
-            .modify(|_, w| unsafe { w.chsize().bits(bits) });
+            .modify(|_, w| unsafe { w.chsize().bits(size as u8) });
     }
 
     /// Get the current character size setting
     #[inline]
     pub(super) fn get_char_size(&self) -> CharSizeEnum {
-        self.usart().ctrlb.read().chsize().bits().into()
+        let size = self.usart().ctrlb.read().chsize().bits();
+        match size {
+            0x5 => CharSizeEnum::FiveBit,
+            0x6 => CharSizeEnum::SixBit,
+            0x7 => CharSizeEnum::SevenBit,
+            0x0 => CharSizeEnum::EightBit,
+            0x1 => CharSizeEnum::NineBit,
+            _ => unreachable!(),
+        }
     }
 
     /// Change the bit order of transmission (MSB/LSB first)
     #[inline]
     pub(super) fn set_bit_order(&mut self, bit_order: BitOrder) {
-        self.usart()
-            .ctrla
-            .modify(|_, w| w.dord().bit(bit_order.into()));
+        let bits = match bit_order {
+            BitOrder::MsbFirst => false,
+            BitOrder::LsbFirst => true,
+        };
+
+        self.usart().ctrla.modify(|_, w| w.dord().bit(bits));
     }
 
     /// Get the current bit order
     #[inline]
     pub(super) fn get_bit_order(&self) -> BitOrder {
-        self.usart().ctrla.read().dord().bit().into()
+        let bits = self.usart().ctrla.read().dord().bit().into();
+
+        match bits {
+            false => BitOrder::MsbFirst,
+            true => BitOrder::LsbFirst,
+        }
     }
 
     /// Change the parity setting
@@ -150,15 +166,22 @@ impl<S: Sercom> Registers<S> {
     /// Change the stop bit setting
     #[inline]
     pub(super) fn set_stop_bits(&mut self, stop_bits: StopBits) {
-        self.usart()
-            .ctrlb
-            .modify(|_, w| w.sbmode().bit(stop_bits.into()));
+        let bits = match stop_bits {
+            StopBits::OneBit => false,
+            StopBits::TwoBits => true,
+        };
+
+        self.usart().ctrlb.modify(|_, w| w.sbmode().bit(bits));
     }
 
     /// Get the current stop bit setting
     #[inline]
     pub(super) fn get_stop_bits(&self) -> StopBits {
-        self.usart().ctrlb.read().sbmode().bit().into()
+        let bits = self.usart().ctrlb.read().sbmode().bit().into();
+        match bits {
+            false => StopBits::OneBit,
+            true => StopBits::TwoBits,
+        }
     }
 
     /// Enable or disable the start of frame detector.
@@ -201,12 +224,25 @@ impl<S: Sercom> Registers<S> {
     /// Note that 3x oversampling is not supported.
     #[inline]
     pub(super) fn set_baud<B: Into<Hertz>>(&mut self, freq: Hertz, baud: B, mode: BaudMode) {
+        use BaudMode::*;
+        use Oversampling::*;
+
         let baud: Hertz = baud.into();
         let usart = self.usart();
 
-        usart
-            .ctrla
-            .modify(|_, w| unsafe { w.sampr().bits(mode.sampr()) });
+        let sampr = match mode {
+            Arithmetic(n) => match n {
+                Bits16 => 0,
+                Bits8 => 2,
+            },
+
+            Fractional(n) => match n {
+                Bits16 => 1,
+                Bits8 => 3,
+            },
+        };
+
+        usart.ctrla.modify(|_, w| unsafe { w.sampr().bits(sampr) });
 
         match mode {
             BaudMode::Arithmetic(n) => {
@@ -232,8 +268,19 @@ impl<S: Sercom> Registers<S> {
     /// into a baud rate.
     #[inline]
     pub(super) fn get_baud(&self) -> (u16, BaudMode) {
+        use BaudMode::*;
+        use Oversampling::*;
+
         let baud = self.usart().baud_usartfp_mode().read().bits();
-        let mode = BaudMode::get_sampr(self.usart().ctrla.read().sampr().bits());
+        let sampr = self.usart().ctrla.read().sampr().bits();
+        let mode = match sampr {
+            0 => Arithmetic(Bits16),
+            1 => Fractional(Bits16),
+            2 => Arithmetic(Bits8),
+            3 => Fractional(Bits8),
+            _ => unreachable!(),
+        };
+
         (baud, mode)
     }
 
@@ -289,58 +336,66 @@ impl<S: Sercom> Registers<S> {
     /// length wrapped in an [`Option`].
     #[inline]
     pub(super) fn get_irda_encoding(&self) -> Option<u8> {
-        if !self.usart().ctrlb.read().enc().bit() {
-            return None;
+        if self.usart().ctrlb.read().enc().bit() {
+            Some(self.usart().rxpl.read().bits())
+        } else {
+            None
         }
-
-        Some(self.usart().rxpl.read().bits())
     }
 
     /// Clear specified interrupt flags
     #[inline]
-    pub fn clear_flags(&mut self, bits: u8) {
-        self.usart().intflag.modify(|_, w| unsafe { w.bits(bits) });
+    pub(super) fn clear_flags(&mut self, flags: Flags) {
+        self.usart()
+            .intflag
+            .modify(|_, w| unsafe { w.bits(flags.bits()) });
     }
 
     /// Read interrupt flags
     #[inline]
-    pub fn read_flags(&self) -> u8 {
-        self.usart().intflag.read().bits()
+    pub(super) fn read_flags(&self) -> Flags {
+        Flags::from_bits_truncate(self.usart().intflag.read().bits())
     }
 
     /// Enable specified interrupts
     #[inline]
-    pub fn enable_interrupts(&mut self, bits: u8) {
-        self.usart().intenset.write(|w| unsafe { w.bits(bits) });
+    pub(super) fn enable_interrupts(&mut self, flags: Flags) {
+        self.usart()
+            .intenset
+            .write(|w| unsafe { w.bits(flags.bits()) });
     }
 
     /// Disable specified interrupts
     #[inline]
-    pub fn disable_interrupts(&mut self, bits: u8) {
-        self.usart().intenclr.write(|w| unsafe { w.bits(bits) });
+    pub(super) fn disable_interrupts(&mut self, flags: Flags) {
+        self.usart()
+            .intenclr
+            .write(|w| unsafe { w.bits(flags.bits()) });
     }
 
     /// Clear specified status flags
     #[inline]
-    pub fn clear_status(&mut self, bits: u16) {
-        self.usart().status.modify(|_, w| unsafe { w.bits(bits) });
+    pub(super) fn clear_status(&mut self, status: Status) {
+        self.usart()
+            .status
+            .modify(|_, w| unsafe { w.bits(status.bits()) });
     }
 
     /// Read status flags
     #[inline]
-    pub fn read_status(&self) -> u16 {
-        self.usart().status.read().bits()
+    pub(super) fn read_status(&self) -> Status {
+        Status::from_bits_truncate(self.usart().status.read().bits())
     }
 
     /// Read from the `DATA` register
     #[inline]
-    pub unsafe fn read_data(&mut self) -> super::DataSize {
+    pub(super) unsafe fn read_data(&mut self) -> super::DataReg {
         self.usart().data.read().data().bits()
     }
 
     /// Write to the `DATA` register
     #[inline]
-    pub unsafe fn write_data(&mut self, data: super::DataSize) {
+    pub(super) unsafe fn write_data(&mut self, data: super::DataReg) {
         self.usart().data.write(|w| w.data().bits(data))
     }
 

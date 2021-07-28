@@ -1,7 +1,7 @@
 //! UART [`Config`] definition and implementation\
 
 use super::{
-    BaudMode, BitOrder, CharSize, CharSizeEnum, DataSize, DynCharSize, EightBit, FixedCharSize,
+    BaudMode, BitOrder, CharSize, CharSizeEnum, DataReg, DynCharSize, EightBit, FixedCharSize,
     Parity, Registers, StopBits, Uart, ValidConfig, ValidPads,
 };
 use crate::{
@@ -142,13 +142,13 @@ where
     }
 
     /// Change the [`CharSize`] to [`DynCharSize`]. The UART's character
-    /// size will be changed to the provided `C2`, which is a [`FixedCharSize`]
-    /// type, and can then be changed dynamically on an enabled [`Uart`]
-    /// without changing the underlying [`Config`]'s type through the
-    /// [`reconfigure`](Uart::reconfigure) method.
+    /// size will be changed to the default [`CharSizeEnum::EightBit`], and can
+    /// then be changed dynamically on an enabled [`Uart`] without changing
+    /// the underlying [`Config`]'s type through the [`reconfigure`](Uart::
+    /// reconfigure) method.
     #[inline]
-    pub fn dyn_char_size<C2: FixedCharSize>(mut self) -> Config<P, DynCharSize> {
-        self.registers.set_char_size(C2::BITS);
+    pub fn dyn_char_size(mut self) -> Config<P, DynCharSize> {
+        self.registers.set_char_size(CharSizeEnum::EightBit);
         self.change()
     }
 
@@ -380,11 +380,11 @@ impl<P: ValidPads> Config<P, DynCharSize> {
     /// Dynamically change the character size
     #[inline]
     pub fn set_dyn_char_size(&mut self, char_size: CharSizeEnum) {
-        self.registers.set_char_size(char_size as u8);
+        self.registers.set_char_size(char_size);
     }
 
     /// Get the current character size setting
-    pub fn get_char_size(&self) -> CharSizeEnum {
+    pub fn get_dyn_char_size(&self) -> CharSizeEnum {
         self.registers.get_char_size()
     }
 }
@@ -427,7 +427,7 @@ where
 pub trait AnyConfig: Sealed + Is<Type = SpecificConfig<Self>> {
     type Sercom: Sercom;
     type Pads: ValidPads<Sercom = Self::Sercom>;
-    type Word: 'static + PrimInt + AsPrimitive<DataSize>;
+    type Word: 'static + PrimInt + AsPrimitive<DataReg>;
     type CharSize: CharSize<Word = Self::Word>;
 }
 
