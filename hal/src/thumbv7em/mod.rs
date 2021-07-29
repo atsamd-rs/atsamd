@@ -24,3 +24,6 @@ pub mod pwm;
 
 #[cfg(feature = "unproven")]
 pub mod watchdog;
+
+#[cfg(feature = "unproven")]
+pub mod icm;
