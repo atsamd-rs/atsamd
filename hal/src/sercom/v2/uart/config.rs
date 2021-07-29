@@ -1,8 +1,8 @@
 //! UART [`Config`] definition and implementation\
 
 use super::{
-    BaudMode, BitOrder, CharSize, CharSizeEnum, DataReg, DynCharSize, EightBit, FixedCharSize,
-    Parity, Registers, StopBits, Uart, ValidConfig, ValidPads,
+    BaudMode, BitOrder, Capability, CharSize, CharSizeEnum, DataReg, DynCharSize, EightBit,
+    FixedCharSize, Parity, Registers, StopBits, Uart, ValidConfig, ValidPads,
 };
 use crate::{
     sercom::v2::*,
@@ -401,7 +401,8 @@ where
     /// This method is limited to [`ValidConfig`]s
     #[inline]
     pub fn enable(mut self) -> Uart<Self, P::Capability> {
-        self.registers.enable();
+        self.registers
+            .enable(P::Capability::RXEN, P::Capability::TXEN);
         Uart {
             config: self,
             capability: PhantomData,

@@ -403,16 +403,20 @@ impl<S: Sercom> Registers<S> {
     ///
     /// UART transactions are not possible until the peripheral is enabled.
     #[inline]
-    pub(super) fn enable(&mut self) {
+    pub(super) fn enable(&mut self, rxen: bool, txen: bool) {
         let usart = self.usart();
 
         // Enable RX
-        usart.ctrlb.modify(|_, w| w.rxen().set_bit());
-        while usart.syncbusy.read().ctrlb().bit_is_set() {}
+        if rxen {
+            usart.ctrlb.modify(|_, w| w.rxen().set_bit());
+            while usart.syncbusy.read().ctrlb().bit_is_set() {}
+        }
 
         // Enable TX
-        usart.ctrlb.modify(|_, w| w.txen().set_bit());
-        while usart.syncbusy.read().ctrlb().bit_is_set() {}
+        if txen {
+            usart.ctrlb.modify(|_, w| w.txen().set_bit());
+            while usart.syncbusy.read().ctrlb().bit_is_set() {}
+        }
 
         // Globally enable peripheral
         self.enable_peripheral(true);

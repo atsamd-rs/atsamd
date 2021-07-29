@@ -489,6 +489,10 @@ pub trait Capability: Sealed {
     const FLAG_MASK: u8;
     /// Available status flags for the specified capability
     const STATUS_MASK: u16;
+    /// Enable `CTRLA.RXEN` field?
+    const RXEN: bool;
+    /// Enable `CTRLA.TXEN` field?
+    const TXEN: bool;
 }
 
 /// Type-level enum representing a UART that can transmit
@@ -511,6 +515,9 @@ impl Capability for Duplex {
 
     // All status flags are valid for a Duplex UART
     const STATUS_MASK: u16 = DUPLEX_STATUS_MASK;
+
+    const RXEN: bool = true;
+    const TXEN: bool = true;
 }
 impl Receive for Duplex {}
 impl Transmit for Duplex {}
@@ -524,6 +531,9 @@ impl Capability for Rx {
 
     // Available status flags for a RX half-UART
     const STATUS_MASK: u16 = RX_STATUS_MASK;
+
+    const RXEN: bool = true;
+    const TXEN: bool = false;
 }
 impl Receive for Rx {}
 impl Simplex for Rx {}
@@ -537,6 +547,9 @@ impl Capability for Tx {
 
     // There are no settable/clearable status flags for TX half-UARTs
     const STATUS_MASK: u16 = 0;
+
+    const RXEN: bool = false;
+    const TXEN: bool = true;
 }
 impl Transmit for Tx {}
 impl Simplex for Tx {}
@@ -550,6 +563,9 @@ impl Capability for RxDuplex {
 
     // Available status flags for a RX half-UART
     const STATUS_MASK: u16 = RX_STATUS_MASK;
+
+    const RXEN: bool = true;
+    const TXEN: bool = false;
 }
 impl Receive for RxDuplex {}
 
@@ -562,7 +578,11 @@ impl Capability for TxDuplex {
 
     // There are no settable/clearable status flags for TX half-UARTs
     const STATUS_MASK: u16 = 0;
+
+    const RXEN: bool = false;
+    const TXEN: bool = true;
 }
+
 impl Transmit for TxDuplex {}
 
 //=============================================================================
