@@ -12,13 +12,13 @@ use num_traits::{AsPrimitive, PrimInt};
 pub trait CharSize: Sealed {
     /// Word size for the character size
     type Word: 'static + PrimInt + AsPrimitive<DataReg>;
-
-    /// Bits to write into the `LENGTH` register
-    const BITS: CharSizeEnum;
 }
 
 /// Type-level `enum` indicating a [`CharSize`] that is not dynamic
-pub trait FixedCharSize: CharSize {}
+pub trait FixedCharSize: CharSize {
+    /// Bits to write into the `LENGTH` register
+    const SIZE: CharSizeEnum;
+}
 
 /// Type alias to recover the `Word` type from an implementation of [`CharSize`]
 pub type Word<C> = <C as CharSize>::Word;
@@ -54,41 +54,44 @@ pub enum CharSizeEnum {
 impl Sealed for FiveBit {}
 impl CharSize for FiveBit {
     type Word = u8;
-    const BITS: CharSizeEnum = CharSizeEnum::FiveBit;
 }
-impl FixedCharSize for FiveBit {}
+impl FixedCharSize for FiveBit {
+    const SIZE: CharSizeEnum = CharSizeEnum::FiveBit;
+}
 
 impl Sealed for SixBit {}
 impl CharSize for SixBit {
     type Word = u8;
-    const BITS: CharSizeEnum = CharSizeEnum::SixBit;
 }
-impl FixedCharSize for SixBit {}
+impl FixedCharSize for SixBit {
+    const SIZE: CharSizeEnum = CharSizeEnum::SixBit;
+}
 
 impl Sealed for SevenBit {}
 impl CharSize for SevenBit {
     type Word = u8;
-    const BITS: CharSizeEnum = CharSizeEnum::SevenBit;
 }
-impl FixedCharSize for SevenBit {}
+impl FixedCharSize for SevenBit {
+    const SIZE: CharSizeEnum = CharSizeEnum::SevenBit;
+}
 
 impl Sealed for EightBit {}
 impl CharSize for EightBit {
     type Word = u8;
-    const BITS: CharSizeEnum = CharSizeEnum::EightBit;
 }
-impl FixedCharSize for EightBit {}
+impl FixedCharSize for EightBit {
+    const SIZE: CharSizeEnum = CharSizeEnum::EightBit;
+}
 
 impl Sealed for NineBit {}
 impl CharSize for NineBit {
     type Word = u16;
-    const BITS: CharSizeEnum = CharSizeEnum::NineBit;
 }
-impl FixedCharSize for NineBit {}
+impl FixedCharSize for NineBit {
+    const SIZE: CharSizeEnum = CharSizeEnum::NineBit;
+}
 
 impl Sealed for DynCharSize {}
 impl CharSize for DynCharSize {
     type Word = u16;
-    // Irrelevant for DynCharSize
-    const BITS: CharSizeEnum = CharSizeEnum::EightBit;
 }

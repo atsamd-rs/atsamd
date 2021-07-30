@@ -89,7 +89,7 @@ impl<P: ValidPads> Config<P> {
         // Enable internal clock mode
         registers.configure_mode();
         registers.configure_pads(P::RXPO as u8, P::TXPO as u8);
-        registers.set_char_size(EightBit::BITS);
+        registers.set_char_size(EightBit::SIZE);
 
         Self {
             registers,
@@ -137,7 +137,7 @@ where
     /// Change the [`CharSize`].
     #[inline]
     pub fn char_size<C2: FixedCharSize>(mut self) -> Config<P, C2> {
-        self.registers.set_char_size(C2::BITS);
+        self.registers.set_char_size(C2::SIZE);
         self.change()
     }
 
