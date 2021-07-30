@@ -155,12 +155,14 @@ default = ["unproven"]
 # rt feature would link all possible parts in and cause a linker error due to
 # the high degree of similar symbols present in the various parts.
 
-# The `device` feature is enabled by building for a specific target device.
-# atsamd-hal is generally built for a specific chip, so will generate a compile
-# error if this feature is not present.  Usually the `device` feature should not
-# be enabled directly by crates that depend on atsamd-rs, as that could lead to
-# cryptic build errors.
+# The `device` feature is a dependency of each specific target device.  It
+# should not be enabled directly, as that could lead to cryptic build errors.
+# The `library` feature can be enabled to use atsamd-hal without selecting a
+# specific target device.
 device = []
+
+# Bypasses compile-time checks that a specific device is enabled.
+library = []
 
 samd11 = ["device"] # Convenience feature for shared configuration of samd11 chips.
 samd11c = ["atsamd11c", "samd11"]
