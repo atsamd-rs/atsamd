@@ -16,182 +16,188 @@ use hal::time::{Hertz, MegaHertz};
 #[cfg(feature = "usb")]
 use hal::usb::{usb_device::bus::UsbBusAllocator, UsbBus};
 
-hal::bsp_pins!(
-    PA02 {
-        /// Analog pin 0.  Can act as a true analog output
-        /// as it has a DAC (which is not currently supported
-        /// by this hal) as well as input.
-        name: a0
-    }
-    PB08 {
-        /// Analog Pin 1
-        name: a1
-    }
-    PB09 {
-        /// Analog Pin 2
-        name: a2
-    }
-    PA04 {
-        /// Analog Pin 3
-        name: a3
-    }
-    PA05 {
-        /// Analog Pin 4
-        name: a4
-    }
-    PB02 {
-        /// Analog Pin 5
-        name: a5
-    }
-    PA11 {
-        /// Pin 0, UART RX.  Also analog input (A6)
-        name: d0
-        aliases: {
-            AlternateC: UartRx
+/// Definitions related to pins and pin aliases
+pub mod pins {
+    use super::hal;
+
+    hal::bsp_pins!(
+        PA02 {
+            /// Analog pin 0.  Can act as a true analog output
+            /// as it has a DAC (which is not currently supported
+            /// by this hal) as well as input.
+            name: a0
         }
-    }
-    PA10 {
-        /// Pin 1, UART TX.  Also analog input (A7)
-        name: d1
-        aliases: {
-            AlternateC: UartTx
+        PB08 {
+            /// Analog Pin 1
+            name: a1
         }
-    }
-    PA14 {
-        /// Pin 2
-        name: d2
-    }
-    PA09 {
-        /// Pin 3, PWM capable
-        name: d3
-    }
-    PA08 {
-        /// Pin 4, PWM capable.  Also analog input (A8)
-        name: d4
-    }
-    PA15 {
-        /// Pin 5, PWM capable.  Also analog input (A9)
-        name: d5
-    }
-    PA20 {
-        /// Pin 6, PWM capable
-        name: d6
-    }
-    PA21 {
-        /// Pin 7
-        name: d7
-    }
-    PA06 {
-        /// Pin 8, PWM capable.  Also analog input (A10)
-        name: d8
-    }
-    PA07 {
-        /// Pin 9, PWM capable.  Also analog input (A11)
-        name: d9
-    }
-    PA18 {
-        /// Pin 10, PWM capable
-        name: d10
-    }
-    PA16 {
-        /// Pin 11, PWM capable
-        name: d11
-    }
-    PA19 {
-        /// Pin 12, PWM capable
-        name: d12
-    }
-    PA17 {
-        /// Digital pin number 13, which is also attached to
-        /// the red LED.  PWM capable.
-        name: d13
-        aliases: {
-            PushPullOutput: RedLed
+        PB09 {
+            /// Analog Pin 2
+            name: a2
         }
-    }
-    PA22 {
-        /// The I2C data line
-        name: sda
-        aliases: {
-            AlternateC: Sda
+        PA04 {
+            /// Analog Pin 3
+            name: a3
         }
-    }
-    PA23 {
-        /// The I2C clock line
-        name: scl
-        aliases: {
-            AlternateC: Scl
+        PA05 {
+            /// Analog Pin 4
+            name: a4
         }
-    }
-    PA30 {
-        /// The data line attached to the neopixel.
-        /// Is also attached to SWCLK.
-        name: neopixel
-    }
-    PB11 {
-        /// The SPI SCK attached the to 2x3 header
-        name: sck
-        aliases: {
-            AlternateD: Sclk
+        PB02 {
+            /// Analog Pin 5
+            name: a5
         }
-    }
-    PB10 {
-        /// The SPI MOSI attached the to 2x3 header
-        name: mosi
-        aliases: {
-            AlternateD: Mosi
+        PA11 {
+            /// Pin 0, UART RX.  Also analog input (A6)
+            name: d0
+            aliases: {
+                AlternateC: UartRx
+            }
         }
-    }
-    PA12 {
-        /// The SPI MISO attached the to 2x3 header
-        name: miso
-        aliases: {
-            AlternateD: Miso
+        PA10 {
+            /// Pin 1, UART TX.  Also analog input (A7)
+            name: d1
+            aliases: {
+                AlternateC: UartTx
+            }
         }
-    }
-    PB23 {
-        /// The SCK pin attached to the on-board SPI flash
-        name: flash_sck
-        aliases: {
-            AlternateD: FlashSclk
+        PA14 {
+            /// Pin 2
+            name: d2
         }
-    }
-    PB22 {
-        /// The MOSI pin attached to the on-board SPI flash
-        name: flash_mosi
-        aliases: {
-            AlternateD: FlashMosi
+        PA09 {
+            /// Pin 3, PWM capable
+            name: d3
         }
-    }
-    PB03 {
-        /// The MISO pin attached to the on-board SPI flash
-        name: flash_miso
-        aliases: {
-            AlternateD: FlashMiso
+        PA08 {
+            /// Pin 4, PWM capable.  Also analog input (A8)
+            name: d4
         }
-    }
-    PA13 {
-        /// The CS pin attached to the on-board SPI flash
-        name: flash_cs
-        aliases: {
-            PushPullOutput: FlashCs
+        PA15 {
+            /// Pin 5, PWM capable.  Also analog input (A9)
+            name: d5
         }
-    }
-    PA24 {
-        /// The USB D- pad
-        name: usb_dm
-        aliases: {
-            AlternateG: UsbDm
+        PA20 {
+            /// Pin 6, PWM capable
+            name: d6
         }
-    }
-    PA25 {
-        /// The USB D+ pad
-        name: usb_dp
-        aliases: {
-            AlternateG: UsbDp
+        PA21 {
+            /// Pin 7
+            name: d7
         }
-    }
-);
+        PA06 {
+            /// Pin 8, PWM capable.  Also analog input (A10)
+            name: d8
+        }
+        PA07 {
+            /// Pin 9, PWM capable.  Also analog input (A11)
+            name: d9
+        }
+        PA18 {
+            /// Pin 10, PWM capable
+            name: d10
+        }
+        PA16 {
+            /// Pin 11, PWM capable
+            name: d11
+        }
+        PA19 {
+            /// Pin 12, PWM capable
+            name: d12
+        }
+        PA17 {
+            /// Digital pin number 13, which is also attached to
+            /// the red LED.  PWM capable.
+            name: d13
+            aliases: {
+                PushPullOutput: RedLed
+            }
+        }
+        PA22 {
+            /// The I2C data line
+            name: sda
+            aliases: {
+                AlternateC: Sda
+            }
+        }
+        PA23 {
+            /// The I2C clock line
+            name: scl
+            aliases: {
+                AlternateC: Scl
+            }
+        }
+        PA30 {
+            /// The data line attached to the neopixel.
+            /// Is also attached to SWCLK.
+            name: neopixel
+        }
+        PB11 {
+            /// The SPI SCK attached the to 2x3 header
+            name: sck
+            aliases: {
+                AlternateD: Sclk
+            }
+        }
+        PB10 {
+            /// The SPI MOSI attached the to 2x3 header
+            name: mosi
+            aliases: {
+                AlternateD: Mosi
+            }
+        }
+        PA12 {
+            /// The SPI MISO attached the to 2x3 header
+            name: miso
+            aliases: {
+                AlternateD: Miso
+            }
+        }
+        PB23 {
+            /// The SCK pin attached to the on-board SPI flash
+            name: flash_sck
+            aliases: {
+                AlternateD: FlashSclk
+            }
+        }
+        PB22 {
+            /// The MOSI pin attached to the on-board SPI flash
+            name: flash_mosi
+            aliases: {
+                AlternateD: FlashMosi
+            }
+        }
+        PB03 {
+            /// The MISO pin attached to the on-board SPI flash
+            name: flash_miso
+            aliases: {
+                AlternateD: FlashMiso
+            }
+        }
+        PA13 {
+            /// The CS pin attached to the on-board SPI flash
+            name: flash_cs
+            aliases: {
+                PushPullOutput: FlashCs
+            }
+        }
+        PA24 {
+            /// The USB D- pad
+            name: usb_dm
+            aliases: {
+                AlternateG: UsbDm
+            }
+        }
+        PA25 {
+            /// The USB D+ pad
+            name: usb_dp
+            aliases: {
+                AlternateG: UsbDp
+            }
+        }
+    );
+}
+pub use pins::*;
 
 /// SPI pads for the labelled SPI peripheral
 ///

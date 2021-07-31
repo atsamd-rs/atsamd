@@ -1,14 +1,11 @@
 #![no_std]
 
-extern crate atsamd_hal as hal;
+use atsamd_hal as hal;
 
-#[cfg(feature = "rt")]
-extern crate cortex_m_rt;
 #[cfg(feature = "rt")]
 pub use cortex_m_rt::entry;
 
 use embedded_hal;
-use hal::*;
 
 pub use hal::common::*;
 
@@ -24,179 +21,185 @@ use hal::usb::usb_device::bus::UsbBusAllocator;
 #[cfg(feature = "usb")]
 pub use hal::usb::UsbBus;
 
-bsp_pins!(
-    PA02 {
-        name: d15,
-        aliases: {
-            AlternateB: A0
+/// Definitions related to pins and pin aliases
+pub mod pins {
+    use super::hal;
+
+    hal::bsp_pins!(
+        PA02 {
+            name: d15,
+            aliases: {
+                AlternateB: A0
+            }
         }
-    }
-    PA04 {
-        name: d18,
-        aliases: {
-            AlternateB: A3,
-            PushPullOutput: BaseSlaveSelect
+        PA04 {
+            name: d18,
+            aliases: {
+                AlternateB: A3,
+                PushPullOutput: BaseSlaveSelect
+            }
         }
-    }
-    PA05 {
-        name: d19,
-        aliases: {
-            AlternateB: A4,
-            PullUpInput: BaseSlaveAck
+        PA05 {
+            name: d19,
+            aliases: {
+                AlternateB: A4,
+                PullUpInput: BaseSlaveAck
+            }
         }
-    }
-    PA06 {
-        name: d20,
-        aliases: {
-            AlternateB: A5
+        PA06 {
+            name: d20,
+            aliases: {
+                AlternateB: A5
+            }
         }
-    }
-    PA07 {
-        name: d21,
-        aliases: {
-            AlternateB: A6,
-            AlternateG: I2sSerialData
+        PA07 {
+            name: d21,
+            aliases: {
+                AlternateB: A6,
+                AlternateG: I2sSerialData
+            }
         }
-    }
-    PA08 {
-        name: d11,
-        aliases: {
-            AlternateC: Sda
+        PA08 {
+            name: d11,
+            aliases: {
+                AlternateC: Sda
+            }
         }
-    }
-    PA09 {
-        name: d12,
-        aliases: {
-            AlternateC: Scl
+        PA09 {
+            name: d12,
+            aliases: {
+                AlternateC: Scl
+            }
         }
-    }
-    PA10 {
-        name: d2,
-        aliases: {
-            AlternateG: I2sSerialClock
+        PA10 {
+            name: d2,
+            aliases: {
+                AlternateG: I2sSerialClock
+            }
         }
-    }
-    PA11 { name: d3 }
-    PA12 {
-        name: pa12,
-        aliases: {
-            AlternateC: SdMosi
+        PA11 { name: d3 }
+        PA12 {
+            name: pa12,
+            aliases: {
+                AlternateC: SdMosi
+            }
         }
-    }
-    PA13 {
-        name: pa13,
-        aliases: {
-            AlternateC: SdSck
+        PA13 {
+            name: pa13,
+            aliases: {
+                AlternateC: SdSck
+            }
         }
-    }
-    PA14 {
-        name: pa14,
-        aliases: {
-            PushPullOutput: SdSlaveSelect
+        PA14 {
+            name: pa14,
+            aliases: {
+                PushPullOutput: SdSlaveSelect
+            }
         }
-    }
-    PA15 {
-        name: pa15,
-        aliases: {
-            AlternateC: SdMiso
+        PA15 {
+            name: pa15,
+            aliases: {
+                AlternateC: SdMiso
+            }
         }
-    }
-    PA16 {
-        name: d8,
-        aliases: {
-            AlternateC: Spi0Mosi
+        PA16 {
+            name: d8,
+            aliases: {
+                AlternateC: Spi0Mosi
+            }
         }
-    }
-    PA17 {
-        name: d9,
-        aliases: {
-            AlternateC: Spi0Sck
+        PA17 {
+            name: d9,
+            aliases: {
+                AlternateC: Spi0Sck
+            }
         }
-    }
-    PA18 {
-        name: pa18,
-        aliases: {
-            /// Host Enable, drive high to switch into USB host mode
-            #[cfg(feature = "usb")]
-            PushPullOutput: UsbId
+        PA18 {
+            name: pa18,
+            aliases: {
+                /// Host Enable, drive high to switch into USB host mode
+                #[cfg(feature = "usb")]
+                PushPullOutput: UsbId
+            }
         }
-    }
-    PA19 {
-        name: d10,
-        aliases: {
-            AlternateC: Spi0Miso
+        PA19 {
+            name: d10,
+            aliases: {
+                AlternateC: Spi0Miso
+            }
         }
-    }
-    PA20 { name: d6 }
-    PA21 { name: d7 }
-    PA22 { name: d0 }
-    PA23 { name: d1 }
-    PA24 {
-        name: usb_dm,
-        aliases: {
-            #[cfg(feature = "usb")]
-            AlternateG: UsbDm
+        PA20 { name: d6 }
+        PA21 { name: d7 }
+        PA22 { name: d0 }
+        PA23 { name: d1 }
+        PA24 {
+            name: usb_dm,
+            aliases: {
+                #[cfg(feature = "usb")]
+                AlternateG: UsbDm
+            }
         }
-    }
-    PA25 {
-        name: usb_dp,
-        aliases: {
-            #[cfg(feature = "usb")]
-            AlternateG: UsbDp
+        PA25 {
+            name: usb_dp,
+            aliases: {
+                #[cfg(feature = "usb")]
+                AlternateG: UsbDp
+            }
         }
-    }
-    PA27 {
-        name: pa27,
-        aliases: {
-            PullUpInput: SdCardDetect
+        PA27 {
+            name: pa27,
+            aliases: {
+                PullUpInput: SdCardDetect
+            }
         }
-    }
-    PA28 {
-        name: switch,
-        aliases: {
-            PullUpInput: Switch
+        PA28 {
+            name: switch,
+            aliases: {
+                PullUpInput: Switch
+            }
         }
-    }
-    PB02 {
-        name: d16,
-        aliases: {
-            AlternateB: A1
+        PB02 {
+            name: d16,
+            aliases: {
+                AlternateB: A1
+            }
         }
-    }
-    PB03 {
-        name: d17,
-        aliases: {
-            AlternateB: A2
+        PB03 {
+            name: d17,
+            aliases: {
+                AlternateB: A2
+            }
         }
-    }
-    PB08 {
-        name: led,
-        aliases: {
-            PushPullOutput: Led
+        PB08 {
+            name: led,
+            aliases: {
+                PushPullOutput: Led
+            }
         }
-    }
-    PB09 {
-        name: pb09,
-        aliases: {
-            PushPullOutput: BaseEnable,
-            AlternateB: AdcBattery
+        PB09 {
+            name: pb09,
+            aliases: {
+                PushPullOutput: BaseEnable,
+                AlternateB: AdcBattery
+            }
         }
-    }
-    PB10 { name: d4 }
-    PB11 { name: d5 }
-    PB22 {
-        name: d14,
-        aliases: {
-            AlternateD: UartTx
+        PB10 { name: d4 }
+        PB11 { name: d5 }
+        PB22 {
+            name: d14,
+            aliases: {
+                AlternateD: UartTx
+            }
         }
-    }
-    PB23 {
-        name: d13,
-        aliases: {
-            AlternateD: UartRx
+        PB23 {
+            name: d13,
+            aliases: {
+                AlternateD: UartRx
+            }
         }
-    }
-);
+    );
+}
+pub use pins::*;
 
 const BASE_CONTROLLER_FREQ: Hertz = Hertz(1000000);
 const BASE_CONTROLLER_SPI_MODE: embedded_hal::spi::Mode = spi::MODE_2;

@@ -1250,86 +1250,159 @@ declare_pins!(
 //  bsp_pins
 //==============================================================================
 
-/// Helper macro to give meaningful names to GPIO pins
+/// # Helper macro to give meaningful names to GPIO pins
 ///
-/// The normal [`Pins`] struct names each [`Pin`] according to its [`PinId`].
-/// However, BSP authors would prefer to name each [`Pin`] according to its
-/// function. This macro defines a new `Pins` struct with custom field names
-/// for each [`Pin`], and it defines type aliases and constants to make it
-/// easier to work with the [`Pin`]s and [`DynPin`](super::DynPin)s.
+/// The [`atsamd_hal::gpio`](self) module generally refers to each [`Pin`] by
+/// its [`PinId`]. However, in the context of a BSP, pins can often be given
+/// more meaningful names. This macro gives BSP authors a convenient way to
+/// provide custom names for each pin.
 ///
-/// When specifying pin aliases, be sure to use a [`PinMode`]. See
-/// [here](self#types) for a list of the available [`PinMode`] type aliases.
+/// ## Calling the macro
 ///
-/// # Example
+/// The `bsp_pins!` macro takes a series of `PinId` blocks. Each block starts
+/// with a `PinId` and is delimited by curly brackets. Wihtin each block, there
+/// are two optional fields, `name` and `aliases`. The `name` field represents
+/// the *principal* name or function assigned to the pin and is given in
+/// `snake_case`. If the `name` field is absent, the pin name will default to
+/// its `PinId` (converted to `snake_case`). The `aliases` field represents any
+/// number of alternative names for the pin, where each name corresponds to the
+/// pin in a particular [`PinMode`]. Note that each alias is given in
+/// `PascalCase`.
 ///
-/// The following example macro call
+/// The example below defines a `name` and two `aliases` for pin `PA24`. In
+/// `PinMode` [`AlternateC`], the pin is used as an SPI MOSI pin. In `PinMode`
+/// [`AlternateD`], it is used as a UART TX pin. In both cases, it is a serial
+/// output, so its `name` is `serial_out`.
 ///
 /// ```
 /// atsamd_hal::bsp_pins!(
-///     #[cfg(feature = "unproven")]
 ///     PA24 {
-///         name: led_pass,
+///         name: serial_out,
 ///         aliases: {
-///             AlternateH: LedPass,
-///             #[cfg(feature = "usb")]
-///             AlternateM: UsbPin
+///             AlternateC: SpiMosi,
+///             AlternateD: UartTx,
 ///         }
-///     }
-///     PA25 {
-///         name: led_fail
 ///     }
 /// );
 /// ```
 ///
-/// would expand to something like this
+/// ## Expanding the macro
+///
+/// When expanded, the `bsp_pins!` macro will define a number of structs, type
+/// aliases, constants and macros.
+///
+/// ### A new `Pins` struct
+///
+/// First, it will define a new, more-useful `Pins` struct. The [`Pins`] struct
+/// defined in the `gpio` module is intended for general use. It contains *all*
+/// the pins for a given chip, and each pin is named according to its `PinId`.
+/// The `Pins` struct defined by this macro, on the other hand, contains only
+/// the declared pins, and each pin is named appropriately.
+///
+/// The field name for each pin within the `Pins` struct is based on the macro
+/// `name` field. For example, the `serial_out` pin from the example above could
+/// be accessed like this:
 ///
 /// ```
-/// pub struct Pins {
-///     port: Option<PORT>,
-///     #[cfg(feature = "unproven")]
-///     pub led_pass: Pin<PA24, Reset>,
-///     pub led_fail: Pin<PA25, Reset>,
-/// }
+/// let mut peripherals = pac::Peripherals::take().unwrap();
+/// let pins = bsp::Pins::new(peripherals.PORT);
+/// let out = pins.serial_out;
+/// ```
 ///
-/// impl Pins {
+/// However, that is not the only way to access each pin. While the `name` field
+/// represents the principal name, each pin can also be accessed using its
+/// corresponding `aliases`.
 ///
-///     pub fn new(port: PORT) -> Self {
-///         let pins = gpio::Pins::new(port);
-///         Self {
-///             port: Some(unsafe { pins.port() }),
-///             #[cfg(feature = "unproven")]
-///             led_pass: pins.pa24,
-///             led_fail: pins.pa25,
+/// In Rust, each struct field can only have one name. To provide access to the
+/// same struct field using several *different* names, the `bsp_pins!` macro
+/// defines another macro, `pin_alias!`. Based on the example above, we could
+/// use the `pin_alias!` macro to access pin `PA24` without ever referring to
+/// the `serial_out` field.
+///
+/// ```
+/// let mut peripherals = pac::Peripherals::take().unwrap();
+/// let pins = bsp::Pins::new(peripherals.PORT);
+/// let mosi = pin_alias!(pins.spi_mosi);
+/// ```
+///
+/// Note that the `SpiMosi` alias was translated to `snake_case` when accessing
+/// the `Pins` field. The same is true for the `UartTx` alias.
+///
+/// ```
+/// let mut peripherals = pac::Peripherals::take().unwrap();
+/// let pins = bsp::Pins::new(peripherals.PORT);
+/// let tx = pin_alias!(pins.uart_tx);
+/// ```
+///
+/// ### Type aliases
+///
+/// Next, the macro defines several useful type aliases for each pin. It
+/// provides aliases for the corresponding `PinId`, `PinMode` and fully
+/// specified `Pin` type of each alternate name.
+///
+/// The example above would exand to
+///
+/// ```
+/// pub type SpiMosi = Pin<PA24, AlternateC>;
+/// pub type SpiMosiId = PA24;
+/// pub type SpiMosiMode = AlternateC;
+///
+/// pub type UartTx = Pin<PA24, AlternateD>;
+/// pub type UartTxId = PA24;
+/// pub type UartTxMode = AlternateD;
+/// ```
+///
+/// Each `PascalCase` alias provided in the macro is used for the `Pin` type,
+/// and the suffixes `Id` and `Mode` are appended to for the corresponding
+/// `PinId` and `PinMode` types.
+///
+/// ### `DYN` constants
+///
+/// Although the [`pin`](self) API is more common, there are use cases for the
+/// type-erased, [`dyn_pin`](super::dynpin) API as well. The `bsp_pins!` macro
+/// also defines some useful constants for these cases. In particular, it
+/// defines [`DynPinId`] and [`DynPinMode`] constants for each alias.
+///
+/// The example above would effectively expand to
+///
+/// ```
+/// pub const SPI_MOSI_ID: DynPinId = DynPinId { group: DynGroup::A, num: 24 };
+/// pub const SPI_MOSI_MODE: DynPinMode = DYN_ALTERNATE_C;
+///
+/// pub const UART_TX_ID: DynPinId = DynPinId { group: DynGroup::A, num: 24 };
+/// pub const UART_TX_MODE: DynPinMode = DYN_ALTERNATE_D;
+/// ```
+///
+/// The `PascalCase` alias provided in the macro is converted to
+/// `SCREAMING_CASE`, and the suffixes `_ID` and `_MODE` are appended for the
+/// corresponding `DynPinId` and `DynPinMode` constants.
+///
+/// ## Attributes and documentation
+///
+/// BSP authors can also add attributes and documentation to various parts of
+/// the macro declaration. Attributes can be added to the entire `PinId` block.
+/// These attributes will be propagated to every use of the corresponding
+/// `PinId`. Attributes applied to each alias, on the other hand, will only be
+/// propagated to items specific to that alias, like the corresponding `DYN`
+/// constants. Finally, any documentation (or other attributes) provided for the
+/// `name` field will be propagated to the corresponding field of the
+/// `bsp::Pins` struct defined by this macro.
+///
+/// ```
+/// atsamd_hal::bsp_pins!(
+///     #[cfg(feature = "has_pin_PA24")]
+///     PA24 {
+///         /// Documentation that will appear on the corresponding field in the
+///         /// `bsp::Pins` struct
+///         name: serial_out,
+///         aliases: {
+///             #[cfg(feature = "uses_SPI")]
+///             AlternateC: SpiMosi,
+///             #[cfg(feature = "uses_UART")]
+///             AlternateD: UartTx,
 ///         }
 ///     }
-///
-///     #[inline]
-///     pub unsafe fn port(&mut self) -> PORT {
-///         self.port.take().unwrap()
-///     }
-/// }
-///
-/// #[cfg(feature = "unproven")]
-/// pub type LedPass = Pin<PA24, AlternateH>;
-///
-/// #[cfg(feature = "unproven")]
-/// pub const LED_PASS_ID: DynPinId = <PA24 as PinId>::DYN;
-///
-/// #[cfg(feature = "unproven")]
-/// pub const LED_PASS_MODE: DynPinMode = <AlternateH as PinMode>::DYN;
-///
-/// #[cfg(feature = "unproven")]
-/// #[cfg(feature = "usb")]
-/// pub type UsbPin = Pin<PA24, AlternateM>;
-///
-/// #[cfg(feature = "unproven")]
-/// #[cfg(feature = "usb")]
-/// pub const USB_PIN_ID: DynPinId = <PA24 as PinId>::DYN;
-///
-/// #[cfg(feature = "unproven")]
-/// #[cfg(feature = "usb")]
-/// pub const USB_PIN_MODE: DynPinMode = <AlternateM as PinMode>::DYN;
+/// );
 /// ```
 #[macro_export]
 macro_rules! bsp_pins {
@@ -1338,16 +1411,79 @@ macro_rules! bsp_pins {
             $( #[$id_cfg:meta] )*
             $Id:ident {
                 $( #[$name_doc:meta] )*
-                name: $name:ident $(,)?
+                $( name: $name:ident $(,)? )?
                 $(
                     aliases: {
                         $(
                             $( #[$alias_cfg:meta] )*
-                            $Mode:ident: $Alias:ident
-                        ),+
+                            $Mode:ident: $Alias:ident $(,)?
+                        )+
                     }
                 )?
             } $(,)?
+        )+
+    ) => {
+        $crate::paste::paste! {
+
+            $crate::__declare_pins_type!(
+                $(
+                    {
+                        $( #[$id_cfg] )*
+                        $Id
+                        $( #[$name_doc] )*
+                        $(
+                            #[
+                                doc = "\nThis field can also be accessed using the [`pin_alias!`] \
+                                macro with the following alternate names:\n    "
+                            ]
+                            $(
+                                #[doc = $Alias:snake ", "]
+                            )+
+                        )?
+                        ( $( $name )? [<$Id:lower>] )
+                    }
+                )+
+            );
+
+            $(
+                $( #[$id_cfg] )*
+                $crate::__create_pin_aliases!(
+                    $Id
+                    ( $( $name )? [<$Id:lower>] )
+                    $(
+                        $(
+                            $( #[$alias_cfg] )*
+                            { $Mode, $Alias }
+                        )+
+                    )?
+                );
+            )+
+
+            $crate::__define_pin_alias_macro!(
+                $(
+                    $(
+                        $(
+                            [<$Alias:snake>]
+                        )+
+                    )?
+                )+
+            );
+
+        }
+    };
+}
+
+#[macro_export]
+#[doc(hidden)]
+macro_rules! __declare_pins_type {
+    (
+        $(
+            {
+                $( #[$id_cfg:meta] )*
+                $Id:ident
+                $( #[$name_doc:meta] )*
+                ( $name:ident $( $others:ident )* )
+            }
         )+
     ) => {
         $crate::paste::paste! {
@@ -1410,36 +1546,93 @@ macro_rules! bsp_pins {
                     self.port.take().unwrap()
                 }
             }
-            $(
-                $( #[$id_cfg] )*
-                $crate::bsp_pins!(@aliases, $( $( $( #[$alias_cfg] )* $Id $Mode $Alias )+ )? );
-            )+
         }
     };
-    ( @aliases, $( $( $( #[$attr:meta] )* $Id:ident $Mode:ident $Alias:ident )+ )? ) => {
+}
+
+#[macro_export]
+#[doc(hidden)]
+macro_rules! __create_pin_aliases {
+    (
+        $Id:ident
+        ( $name:ident $( $others:ident )* )
+        $(
+            $( #[$attr:meta] )*
+            { $Mode:ident, $Alias:ident }
+        )*
+    ) => {
         $crate::paste::paste! {
             $(
-                $(
-                    $( #[$attr] )*
-                    /// Alias for a configured [`Pin`](atsamd_hal::gpio::v2::Pin)
-                    pub type $Alias = $crate::gpio::v2::Pin<
-                        $crate::gpio::v2::$Id,
-                        $crate::gpio::v2::$Mode
-                    >;
+                $( #[$attr] )*
+                /// Alias for a configured [`Pin`](atsamd_hal::gpio::v2::Pin)
+                pub type $Alias = $crate::gpio::v2::Pin<
+                    $crate::gpio::v2::$Id,
+                    $crate::gpio::v2::$Mode
+                >;
 
-                    $( #[$attr] )*
-                    #[doc = "[DynPinId](atsamd_hal::gpio::v2::DynPinId) "]
-                    #[doc = "for the `" $Alias "` alias."]
-                    pub const [<$Alias:snake:upper _ID>]: $crate::gpio::v2::DynPinId =
-                    <$crate::gpio::v2::$Id as $crate::gpio::v2::PinId>::DYN;
+                $( #[$attr] )*
+                #[doc = "[`PinId`](atsamd_hal::gpio::v2::PinId) for the [`"]
+                #[doc = $Alias "`] alias"]
+                pub type [<$Alias Id>] = $crate::gpio::v2::$Id;
 
-                    $( #[$attr] )*
-                    #[doc = "[DynPinMode](atsamd_hal::gpio::v2::DynPinMode) "]
-                    #[doc = "for the `" $Alias "` alias."]
-                    pub const [<$Alias:snake:upper _MODE>]: $crate::gpio::v2::DynPinMode =
-                    <$crate::gpio::v2::$Mode as $crate::gpio::v2::PinMode>::DYN;
-                )+
-            )?
+                $( #[$attr] )*
+                #[doc = "[`PinMode`](atsamd_hal::gpio::v2::PinMode) for the [`"]
+                #[doc = $Alias "`] alias"]
+                pub type [<$Alias Mode>] = $crate::gpio::v2::$Mode;
+
+                $( #[$attr] )*
+                #[doc = "[DynPinId](atsamd_hal::gpio::v2::DynPinId) "]
+                #[doc = "for the `" $Alias "` alias."]
+                pub const [<$Alias:snake:upper _ID>]: $crate::gpio::v2::DynPinId =
+                <$crate::gpio::v2::$Id as $crate::gpio::v2::PinId>::DYN;
+
+                $( #[$attr] )*
+                #[doc = "[DynPinMode](atsamd_hal::gpio::v2::DynPinMode) "]
+                #[doc = "for the `" $Alias "` alias."]
+                pub const [<$Alias:snake:upper _MODE>]: $crate::gpio::v2::DynPinMode =
+                <$crate::gpio::v2::$Mode as $crate::gpio::v2::PinMode>::DYN;
+
+                $( #[$attr] )*
+                #[macro_export]
+                #[doc(hidden)]
+                macro_rules! [<__pin_alias_ $Alias:snake>] {
+                    ( $pins:ident ) => { $pins.$name };
+                }
+            )*
         }
     };
+}
+
+#[macro_export]
+#[doc(hidden)]
+macro_rules! __define_pin_alias_macro {
+    (
+        $(
+            $alias:ident
+        )+
+    ) => {
+        $crate::paste::paste! {
+            /// Refer to fields of the [`Pins`] struct by alternate names
+            ///
+            /// This macro can be used to access fields of the [`Pins`] struct
+            /// by alternate names. See the `Pins` documentation for a list of
+            /// the availabe pin aliases.
+            ///
+            /// For example. suppose `spi_mosi` were an alternate name for the
+            /// `serial_out` pin of the `Pins` struct. You could use the
+            /// `pin_alias!` macro to access it like this:
+            ///
+            /// ```
+            /// let mut peripherals = pac::Peripherals::take().unwrap();
+            /// let pins = bsp::Pins::new(peripherals.PORT);
+            /// let mosi = pin_alias!(pins.spi_mosi);
+            /// ```
+            #[macro_export]
+            macro_rules! pin_alias {
+                $(
+                    ( $pins:ident . $alias ) => { [<__pin_alias_ $alias>]!($pins) };
+                )+
+            }
+        }
+    }
 }

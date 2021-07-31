@@ -21,196 +21,202 @@ use hal::time::Hertz;
 #[cfg(feature = "usb")]
 use hal::usb::{usb_device::bus::UsbBusAllocator, UsbBus};
 
-hal::bsp_pins!(
-    PA03 {
-        /// AREF pin - has 1uF capacitor to ground
-        name: aref
-    }
-    PA02 {
-        /// Analog pin 0.
-        /// Can act as a true analog output as it has a DAC (which is not
-        /// currently supported by this hal) as well as input.
-        name: a0,
-        aliases: {
-            AlternateB: A0
-        }
-    }
-    PB08 {
-        /// Analog Pin 1
-        name: a1
-    }
-    PB09 {
-        /// Analog Pin 2
-        name: a2
-    }
-    PA04 {
-        /// Analog Pin 3
-        name: a3
-    }
-    PA05 {
-        /// Analog Pin 4
-        name: a4
-    }
-    PB02 {
-        /// Analog Pin 5
-        name: a5
-    }
+/// Definitions related to pins and pin aliases
+pub mod pins {
+    use super::hal;
 
-    PA11 {
-        /// Pin 0, rx
-        name: d0
-        aliases: {
-            AlternateC: UartRx
+    hal::bsp_pins!(
+        PA03 {
+            /// AREF pin - has 1uF capacitor to ground
+            name: aref
         }
-    }
-    PA10 {
-        /// Pin 1, tx
-        name: d1
-        aliases: {
-            AlternateC: UartTx
+        PA02 {
+            /// Analog pin 0.
+            /// Can act as a true analog output as it has a DAC (which is not
+            /// currently supported by this hal) as well as input.
+            name: a0,
+            aliases: {
+                AlternateB: A0
+            }
         }
-    }
-    PA15 {
-        /// Pin 5, PWM capable
-        name: d5
-        aliases: {
-            AlternateE: D5Pwm
+        PB08 {
+            /// Analog Pin 1
+            name: a1
         }
-    }
-    PA20 {
-        /// Pin 6, PWM capable
-        name: d6
-    }
-    PA07 {
-        /// Pin 9, PWM capable.  Also analog input (A7)
-        name: d9
-    }
-    PA18 {
-        /// Pin 10, PWM capable
-        name: d10
-    }
-    PA16 {
-        /// Pin 11, PWM capable
-        name: d11
-    }
-    PA19 {
-        /// Pin 12, PWM capable
-        name: d12
-    }
-    PA17 {
-        /// Pin 13, which is also attached to the red LED. PWM capable.
-        name: d13
-        aliases: {
-            PushPullOutput: RedLed
+        PB09 {
+            /// Analog Pin 2
+            name: a2
         }
-    }
+        PA04 {
+            /// Analog Pin 3
+            name: a3
+        }
+        PA05 {
+            /// Analog Pin 4
+            name: a4
+        }
+        PB02 {
+            /// Analog Pin 5
+            name: a5
+        }
 
-    PA22 {
-        /// The I2C data line
-        name: sda
-        aliases: {
-            AlternateC: Sda
+        PA11 {
+            /// Pin 0, rx
+            name: d0
+            aliases: {
+                AlternateC: UartRx
+            }
         }
-    }
-    PA23 {
-        /// The I2C clock line
-        name: scl
-        aliases: {
-            AlternateC: Scl
+        PA10 {
+            /// Pin 1, tx
+            name: d1
+            aliases: {
+                AlternateC: UartTx
+            }
         }
-    }
+        PA15 {
+            /// Pin 5, PWM capable
+            name: d5
+            aliases: {
+                AlternateE: D5Pwm
+            }
+        }
+        PA20 {
+            /// Pin 6, PWM capable
+            name: d6
+        }
+        PA07 {
+            /// Pin 9, PWM capable.  Also analog input (A7)
+            name: d9
+        }
+        PA18 {
+            /// Pin 10, PWM capable
+            name: d10
+        }
+        PA16 {
+            /// Pin 11, PWM capable
+            name: d11
+        }
+        PA19 {
+            /// Pin 12, PWM capable
+            name: d12
+        }
+        PA17 {
+            /// Pin 13, which is also attached to the red LED. PWM capable.
+            name: d13
+            aliases: {
+                PushPullOutput: RedLed
+            }
+        }
 
-    PB11 {
-        /// The SPI SCLK
-        name: sclk
-        aliases: {
-            AlternateD: Sclk
+        PA22 {
+            /// The I2C data line
+            name: sda
+            aliases: {
+                AlternateC: Sda
+            }
         }
-    }
-    PB10 {
-        /// The SPI MOSI
-        name: mosi
-        aliases: {
-            AlternateD: Mosi
+        PA23 {
+            /// The I2C clock line
+            name: scl
+            aliases: {
+                AlternateC: Scl
+            }
         }
-    }
-    PA12 {
-        /// The SPI MISO
-        name: miso
-        aliases: {
-            AlternateD: Miso
+
+        PB11 {
+            /// The SPI SCLK
+            name: sclk
+            aliases: {
+                AlternateD: Sclk
+            }
         }
-    }
-
-    PA24 {
-        /// The USB D- pad
-        name: usb_dm
-        aliases: {
-            AlternateG: UsbDm
+        PB10 {
+            /// The SPI MOSI
+            name: mosi
+            aliases: {
+                AlternateD: Mosi
+            }
         }
-    }
-    PA25 {
-        /// The USB D+ pad
-        name: usb_dp
-        aliases: {
-            AlternateG: UsbDp
+        PA12 {
+            /// The SPI MISO
+            name: miso
+            aliases: {
+                AlternateD: Miso
+            }
         }
-    }
 
-    #[cfg(all(feature = "rfm", not(feature = "express")))]
-    PA06 {
-        /// SPI chip select for the RFM module
-        name: rfm_cs
-    }
-    #[cfg(all(feature = "rfm", not(feature = "express"), not(feature = "adalogger")))]
-    PA08 {
-        /// Reset for the RFM module
-        name: rfm_reset
-    }
-    #[cfg(all(feature = "rfm", not(feature = "express")))]
-    PA09 {
-        /// Interrupt from the RFM module
-        name: rfm_irq
-    }
+        PA24 {
+            /// The USB D- pad
+            name: usb_dm
+            aliases: {
+                AlternateG: UsbDm
+            }
+        }
+        PA25 {
+            /// The USB D+ pad
+            name: usb_dp
+            aliases: {
+                AlternateG: UsbDp
+            }
+        }
 
-    #[cfg(all(feature = "express", not(feature = "rfm")))]
-    PA06 {
-        /// Neopixel data
-        name: neopixel
-    }
+        #[cfg(all(feature = "rfm", not(feature = "express")))]
+        PA06 {
+            /// SPI chip select for the RFM module
+            name: rfm_cs
+        }
+        #[cfg(all(feature = "rfm", not(feature = "express"), not(feature = "adalogger")))]
+        PA08 {
+            /// Reset for the RFM module
+            name: rfm_reset
+        }
+        #[cfg(all(feature = "rfm", not(feature = "express")))]
+        PA09 {
+            /// Interrupt from the RFM module
+            name: rfm_irq
+        }
 
-    #[cfg(all(feature = "express", not(feature = "rfm")))]
-    PA09 {
-        /// SPI clock for the external flash
-        name: flash_sclk
-    }
-    #[cfg(all(feature = "express", not(feature = "rfm"), not(feature = "adalogger")))]
-    PA08 {
-        /// SPI MOSI for the external flash
-        name: flash_mosi
-    }
-    #[cfg(feature = "express")]
-    PA14 {
-        /// SPI MISO for the external flash
-        name: flash_miso
-    }
-    #[cfg(feature = "express")]
-    PA13 {
-        /// SPI chip select for the external flash
-        name: flash_cs
-    }
+        #[cfg(all(feature = "express", not(feature = "rfm")))]
+        PA06 {
+            /// Neopixel data
+            name: neopixel
+        }
 
-    #[cfg(all(feature = "adalogger", not(feature = "rfm"), not(feature = "express")))]
-    PA08 {
-        /// SD card SPI chip select
-        name: sd_cs
-    },
-    #[cfg(all(feature = "adalogger", not(feature = "rfm"), not(feature = "express")))]
-    PA21 {
-        /// SD card detect
-        name: sd_cd
-    },
-);
+        #[cfg(all(feature = "express", not(feature = "rfm")))]
+        PA09 {
+            /// SPI clock for the external flash
+            name: flash_sclk
+        }
+        #[cfg(all(feature = "express", not(feature = "rfm"), not(feature = "adalogger")))]
+        PA08 {
+            /// SPI MOSI for the external flash
+            name: flash_mosi
+        }
+        #[cfg(feature = "express")]
+        PA14 {
+            /// SPI MISO for the external flash
+            name: flash_miso
+        }
+        #[cfg(feature = "express")]
+        PA13 {
+            /// SPI chip select for the external flash
+            name: flash_cs
+        }
+
+        #[cfg(all(feature = "adalogger", not(feature = "rfm"), not(feature = "express")))]
+        PA08 {
+            /// SD card SPI chip select
+            name: sd_cs
+        },
+        #[cfg(all(feature = "adalogger", not(feature = "rfm"), not(feature = "express")))]
+        PA21 {
+            /// SD card detect
+            name: sd_cd
+        },
+    );
+}
+pub use pins::*;
 
 /// SPI pads for the labelled SPI peripheral
 ///
