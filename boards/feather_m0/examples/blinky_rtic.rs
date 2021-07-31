@@ -29,8 +29,9 @@ mod app {
 
     #[shared]
     struct Shared {
-        red_led:
-            hal::gpio::v2::Pin<hal::gpio::v2::PA17, hal::gpio::v2::Output<hal::gpio::v2::PushPull>>,
+        // The LED could be a local resource, since it is only used in one task
+        // But we want to showcase shared resources and locking
+        red_led: bsp::RedLed,
     }
 
     #[monotonic(binds = RTC, default = true)]
@@ -66,8 +67,9 @@ mod app {
     }
 
     #[task(shared = [red_led])]
-    fn blink(mut _cx: blink::Context) {
-        _cx.shared.red_led.lock(|led| led.toggle().unwrap());
+    fn blink(mut cx: blink::Context) {
+        // If the LED were a local resource, the lock would not be necessary
+        cx.shared.red_led.lock(|led| led.toggle().unwrap());
         blink::spawn_after(1_u32.seconds()).ok();
     }
 }
