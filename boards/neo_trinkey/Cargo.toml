@@ -23,6 +23,18 @@ path = "../../hal"
 version = "0.12"
 default-features = false
 
+[dependencies.usb-device]
+version = "0.2"
+optional = true
+
+[dependencies.usbd-serial]
+version = "0.1"
+optional = true
+
+[dependencies.panic-halt]
+version = "0.2"
+optional = true
+
 [dev-dependencies]
 panic-halt = "0.2"
 ws2812-timer-delay = { version = "0.3.0", features = ["slow"] }
@@ -34,3 +46,5 @@ default = ["rt", "atsamd-hal/samd21e"]
 rt = ["cortex-m-rt", "atsamd-hal/samd21e-rt"]
 unproven = ["atsamd-hal/unproven"]
 use_semihosting = []
+usb = ["atsamd-hal/usb", "usb-device", "usbd-serial"]
+panic_halt = ["panic-halt"]

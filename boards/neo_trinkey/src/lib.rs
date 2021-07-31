@@ -7,13 +7,13 @@ pub use atsamd_hal as hal;
 pub use embedded_hal as ehal;
 pub use hal::pac;
 
-// use hal::clock::GenericClockController;
+use hal::clock::GenericClockController;
 // use hal::sercom::v2::{spi, Sercom4};
 // use hal::sercom::{I2CMaster3, UART0};
 // use hal::time::Hertz;
 
 #[cfg(feature = "usb")]
-use hal::usb::{usb_device::bus::UsbBusAllocator, UsbBus};
+pub use hal::usb::{usb_device::bus::UsbBusAllocator, UsbBus};
 
 hal::bsp_pins!(
     PA03 {
@@ -32,9 +32,36 @@ hal::bsp_pins!(
 
     PA07 {
         name: touch2,
+        aliases: { AlternateB: Touch2 }
+    },
+
+    PA24 {
+        /// The USB D- pad
+        name: usb_dm
         aliases: {
-            AlternateB: Touch2
+            AlternateG: UsbDm
         }
     },
+
+    PA25 {
+        /// The USB D+ pad
+        name: usb_dp
+        aliases: {
+            AlternateG: UsbDp
+        }
+    }
 );
 
+#[cfg(feature = "usb")]
+pub fn usb_allocator(
+    usb: pac::USB,
+    clocks: &mut GenericClockController,
+    pm: &mut pac::PM,
+    dm: impl Into<UsbDm>,
+    dp: impl Into<UsbDp>,
+) -> UsbBusAllocator<UsbBus> {
+    let gclk0 = clocks.gclk0();
+    let clock = &clocks.usb(&gclk0).unwrap();
+    let (dm, dp) = (dm.into(), dp.into());
+    UsbBusAllocator::new(UsbBus::new(clock, pm, dm, dp, usb))
+}

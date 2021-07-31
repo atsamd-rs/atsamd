@@ -16,8 +16,11 @@ https://github.com/atsamd-rs/atsamd/tree/master/boards/neo_trinkey/examples
 * Put your device in bootloader mode usually by hitting the reset button twice.
 * Build and upload in one step
 ```bash
-$ cargo hf2 --release --example blinky_basic --pid 0x00ef --vid 0x239a
+$ cargo hf2 --release --example <example-name> --pid 0x00ef --vid 0x239a
 ```
+> **Note:** If you have a newer version of cargo-hf2 you won't need the pid and vid, it will automatically recognise the 
+> device
+
 You should see the following output
 ```text
 Finished release [optimized] target(s) in 5.55s
@@ -27,3 +30,64 @@ Finished in 0.051s
 ```
 Note: If hf2 can not find your Neo Trinkey, you should check the Product ID (pid) and Vendor ID (vid) in your system
 settings.
+
+## Examples
+
+### Blinky basic
+
+```bash
+$ cargo hf2 --release --example blinky_basic --pid 0x00ef --vid 0x239a
+```
+
+Once the Neo Trinkey has restarted, you will see the 4 leds flash in unison. Each led will be a different color (pink,
+cyan, yellow and white).
+
+**Warning** even though the lights are turned down very low, they are still very bright.
+
+### Blinky rainbow
+
+```bash
+$ cargo hf2 --release --example blinky_rainbow --pid 0x00ef --vid 0x239a
+```
+
+A slightly more satisfying version of blinky where the lights will cycle through the color spectrum.
+
+**Warning** even though the lights are turned down very low, they are still very bright.
+
+### USB echo
+
+```bash
+$ cargo hf2 --release --example usb_echo --pid 0x00ef --vid 0x239a --features usb,panic-halt
+```
+
+Once the device has reset, all the lights will be off. You will then need to find the USB device on your machine.
+
+Usually this is located in `/dev/cu.usbmodemTRINKEY_ECHO1`. though if you have multiple trinkeys plugged in and running
+this example, the number at the end may change.
+
+You can then send the USB device bytes. Each time the device receives data, it will respond with "Received: X" where X
+is the data that it received. To test this in a variety of ways but the easiest is probably with screen.
+
+Connect to the device like this (9600 is the baud rate)
+
+```bash
+$ screen /dev/cu.usbmodemTRINKEY_ECHO1 9600
+```
+
+You can then press keys and you should get a response Eg:
+
+```text
+Received: h
+Received: e
+Received: l
+Received: l
+Received: o
+Received:
+Received: w
+Received: o
+Received: r
+Received: l
+Received: d
+```
+
+To quit screen, use `ctrl-a` followed by `crtl-\`
