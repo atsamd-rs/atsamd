@@ -79,7 +79,9 @@ fn poll_usb() {
                         if i >= count {
                             break;
                         }
+                        serial.write("Received: ".as_bytes()).ok();
                         serial.write(&[c.clone()]).ok();
+                        serial.write("\r\n".as_bytes()).ok();
                     }
                 };
             });

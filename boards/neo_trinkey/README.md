@@ -57,7 +57,7 @@ A slightly more satisfying version of blinky where the lights will cycle through
 ### USB echo
 
 ```bash
-$ cargo hf2 --release --example usb_echo --pid 0x00ef --vid 0x239a --features usb,panic-halt
+$ cargo hf2 --release --example usb_echo --features usb,panic-halt --pid 0x00ef --vid 0x239a
 ```
 
 Once the device has reset, all the lights will be off. You will then need to find the USB device on your machine.
@@ -67,6 +67,27 @@ this example, the number at the end may change.
 
 You can then send the USB device bytes. Each time the device receives data, it will respond with "Received: X" where X
 is the data that it received. To test this in a variety of ways but the easiest is probably with screen.
+
+Connect to the device like this (9600 is the baud rate)
+
+```bash
+$ screen /dev/cu.usbmodemTRINKEY_ECHO1 9600
+```
+
+You can now type, and the characters you type will appear on screen, but the magic here is that what's actually
+happening is your key presses are being sent to the device, and the device is responding with the same data which is
+what you see appearing on the screen.
+
+To quit screen, use `ctrl-a` followed by `crtl-\`
+
+### USB ack
+
+```bash
+$ cargo hf2 --release --example usb_ack --features usb,panic-halt --pid 0x00ef --vid 0x239a
+```
+
+This behaves similarly to the USB echo example above except that each time the device receives data, it will respond
+with "Received: X" where X is the data that it received. This makes what's happening a little clearer.
 
 Connect to the device like this (9600 is the baud rate)
 
