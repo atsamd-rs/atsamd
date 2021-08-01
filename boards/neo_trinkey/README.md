@@ -16,7 +16,7 @@ https://github.com/atsamd-rs/atsamd/tree/master/boards/neo_trinkey/examples
 * Put your device in bootloader mode usually by hitting the reset button twice.
 * Build and upload in one step
 ```bash
-$ cargo hf2 --release --example <example-name> --pid 0x00ef --vid 0x239a
+$ cargo hf2 --release --example <example-name> --features <any-required-features> --pid 0x00ef --vid 0x239a
 ```
 > **Note:** If you have a newer version of cargo-hf2 you won't need the pid and vid, it will automatically recognise the 
 > device
@@ -36,7 +36,7 @@ settings.
 ### Blinky basic
 
 ```bash
-$ cargo hf2 --release --example blinky_basic --pid 0x00ef --vid 0x239a
+$ cargo hf2 --release --example blinky_basic --features leds --pid 0x00ef --vid 0x239a
 ```
 
 Once the Neo Trinkey has restarted, you will see the 4 leds flash in unison. Each led will be a different color (pink,
@@ -47,7 +47,7 @@ cyan, yellow and white).
 ### Blinky rainbow
 
 ```bash
-$ cargo hf2 --release --example blinky_rainbow --pid 0x00ef --vid 0x239a
+$ cargo hf2 --release --example blinky_rainbow --features leds --pid 0x00ef --vid 0x239a
 ```
 
 A slightly more satisfying version of blinky where the lights will cycle through the color spectrum.

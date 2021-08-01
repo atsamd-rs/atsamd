@@ -7,11 +7,6 @@ pub use atsamd_hal as hal;
 pub use embedded_hal as ehal;
 pub use hal::pac;
 
-use hal::clock::GenericClockController;
-// use hal::sercom::v2::{spi, Sercom4};
-// use hal::sercom::{I2CMaster3, UART0};
-// use hal::time::Hertz;
-
 #[cfg(feature = "usb")]
 pub use hal::usb::{usb_device::bus::UsbBusAllocator, UsbBus};
 
@@ -55,7 +50,7 @@ hal::bsp_pins!(
 #[cfg(feature = "usb")]
 pub fn usb_allocator(
     usb: pac::USB,
-    clocks: &mut GenericClockController,
+    clocks: &mut hal::clock::GenericClockController,
     pm: &mut pac::PM,
     dm: impl Into<UsbDm>,
     dp: impl Into<UsbDp>,
