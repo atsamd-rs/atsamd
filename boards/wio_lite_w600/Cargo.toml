@@ -67,16 +67,4 @@ panic_abort = ["panic-abort"]
 panic_semihosting = ["panic-semihosting"]
 
 [[example]]
-name = "pwm"
-required-features = ["unproven"]
-
-[[example]]
 name = "blinky_basic"
-
-[[example]]
-name = "adc"
-required-features = ["unproven"]
-
-[[example]]
-name = "adc_usb"
-required-features = ["unproven", "usb"]
