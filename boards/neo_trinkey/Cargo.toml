@@ -48,3 +48,17 @@ unproven = ["atsamd-hal/unproven"]
 use_semihosting = []
 usb = ["atsamd-hal/usb", "usb-device", "usbd-serial"]
 panic_halt = ["panic-halt"]
+
+[[example]]
+name = "blinky_basic"
+
+[[example]]
+name = "blinky_rainbow"
+
+[[example]]
+name = "usb_ack"
+required-features = ["usb"]
+
+[[example]]
+name = "usb_echo"
+required-features = ["usb"]

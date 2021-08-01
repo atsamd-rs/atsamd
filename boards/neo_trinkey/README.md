@@ -57,7 +57,7 @@ A slightly more satisfying version of blinky where the lights will cycle through
 ### USB echo
 
 ```bash
-$ cargo hf2 --release --example usb_echo --features usb,panic-halt --pid 0x00ef --vid 0x239a
+$ cargo hf2 --release --example usb_echo --features usb --pid 0x00ef --vid 0x239a
 ```
 
 Once the device has reset, all the lights will be off. You will then need to find the USB device on your machine.
@@ -78,12 +78,12 @@ You can now type, and the characters you type will appear on screen, but the mag
 happening is your key presses are being sent to the device, and the device is responding with the same data which is
 what you see appearing on the screen.
 
-To quit screen, use `ctrl-a` followed by `crtl-\`
+To quit screen, use `ctrl-a` followed by `crtl-\` then `y`
 
 ### USB ack
 
 ```bash
-$ cargo hf2 --release --example usb_ack --features usb,panic-halt --pid 0x00ef --vid 0x239a
+$ cargo hf2 --release --example usb_ack --features usb --pid 0x00ef --vid 0x239a
 ```
 
 This behaves similarly to the USB echo example above except that each time the device receives data, it will respond
@@ -111,4 +111,4 @@ Received: l
 Received: d
 ```
 
-To quit screen, use `ctrl-a` followed by `crtl-\`
+To quit screen, use `ctrl-a` followed by `crtl-\` then `y`
