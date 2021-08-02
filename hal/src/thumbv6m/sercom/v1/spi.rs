@@ -1,3 +1,9 @@
+#![deprecated(
+    since = "0.13.0",
+    note = "The `sercom::v1::spi` module is deprecated, and will be removed in a subsequent release.
+    Please use the `sercom::v2::spi` module instead."
+)]
+
 use core::marker::PhantomData;
 
 use crate::clock;
