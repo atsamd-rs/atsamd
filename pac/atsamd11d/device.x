@@ -16,4 +16,5 @@ PROVIDE(TC2 = DefaultHandler);
 PROVIDE(ADC = DefaultHandler);
 PROVIDE(AC = DefaultHandler);
 PROVIDE(DAC = DefaultHandler);
+PROVIDE(PTC = DefaultHandler);
 
