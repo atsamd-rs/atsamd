@@ -1,27 +1,29 @@
 #![no_std]
 #![no_main]
 
-extern crate feather_m0 as hal;
+use core::fmt::Write;
+
 use panic_halt as _;
 
 use cortex_m::interrupt::free as disable_interrupts;
 use cortex_m::peripheral::NVIC;
-
-use hal::clock::{ClockGenId, ClockSource, GenericClockController};
-use hal::delay::Delay;
-use hal::pac::{interrupt, CorePeripherals, Peripherals};
-use hal::prelude::*;
-use hal::{entry, Pins};
-
-use core::fmt::Write;
-use hal::rtc;
 use heapless::consts::U16;
 use heapless::String;
-
-use hal::usb::UsbBus;
 use usb_device::bus::UsbBusAllocator;
 use usb_device::prelude::*;
 use usbd_serial::{SerialPort, USB_CLASS_CDC};
+
+use bsp::hal;
+use bsp::pac;
+use feather_m0 as bsp;
+
+use bsp::entry;
+use hal::clock::{ClockGenId, ClockSource, GenericClockController};
+use hal::delay::Delay;
+use hal::prelude::*;
+use hal::rtc;
+use hal::usb::UsbBus;
+use pac::{interrupt, CorePeripherals, Peripherals};
 
 #[entry]
 fn main() -> ! {
@@ -36,8 +38,8 @@ fn main() -> ! {
     );
 
     let mut delay = Delay::new(core.SYST, &mut clocks);
-    let mut pins = Pins::new(peripherals.PORT);
-    let mut red_led = pins.d13.into_open_drain_output(&mut pins.port);
+    let pins = bsp::Pins::new(peripherals.PORT);
+    let mut red_led: bsp::RedLed = pins.d13.into();
 
     // get the internal 32k running at 1024 Hz for the RTC
     let timer_clock = clocks
@@ -53,7 +55,7 @@ fn main() -> ! {
 
     // initialize USB
     let bus_allocator = unsafe {
-        USB_ALLOCATOR = Some(hal::usb_allocator(
+        USB_ALLOCATOR = Some(bsp::usb_allocator(
             peripherals.USB,
             &mut clocks,
             &mut peripherals.PM,
@@ -80,7 +82,7 @@ fn main() -> ! {
 
     // Print the time forever!
     loop {
-        red_led.toggle();
+        red_led.toggle().ok();
         let time =
             disable_interrupts(|_| unsafe { RTC.as_mut().map(|rtc| rtc.current_time()) }).unwrap();
 

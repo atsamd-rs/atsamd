@@ -51,25 +51,23 @@
 #![no_std]
 #![no_main]
 
-extern crate feather_m0 as hal;
-extern crate panic_halt;
-
-extern crate embedded_graphics;
-extern crate ssd1306;
-
-use hal::clock::GenericClockController;
-use hal::delay::Delay;
-use hal::entry;
-use hal::pac::{CorePeripherals, Peripherals};
-use hal::prelude::*;
-use hal::time::MegaHertz;
+use panic_halt as _;
 
 use embedded_graphics::pixelcolor::BinaryColor;
 use embedded_graphics::prelude::*;
-use embedded_graphics::primitives::{Circle, Rectangle, Triangle};
-use embedded_graphics::style::PrimitiveStyleBuilder;
-use ssd1306::prelude::*;
-use ssd1306::Builder;
+use embedded_graphics::primitives::{Circle, PrimitiveStyleBuilder, Rectangle, Triangle};
+use ssd1306::{prelude::*, Ssd1306};
+
+use bsp::hal;
+use bsp::pac;
+use feather_m0 as bsp;
+
+use bsp::entry;
+use hal::clock::GenericClockController;
+use hal::delay::Delay;
+use hal::prelude::*;
+use hal::time::MegaHertz;
+use pac::{CorePeripherals, Peripherals};
 
 #[entry]
 fn main() -> ! {
@@ -81,27 +79,28 @@ fn main() -> ! {
         &mut peripherals.SYSCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = hal::Pins::new(peripherals.PORT);
-    let mut red_led = pins.d13.into_open_drain_output(&mut pins.port);
+    let pins = bsp::Pins::new(peripherals.PORT);
+    let mut red_led: bsp::RedLed = pins.d13.into();
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
-    let spi = hal::spi_master(
+    let spi = bsp::spi_master(
         &mut clocks,
         MegaHertz(10),
         peripherals.SERCOM4,
         &mut peripherals.PM,
-        pins.sck,
+        pins.sclk,
         pins.mosi,
         pins.miso,
-        &mut pins.port,
     );
 
-    let dc = pins.d6.into_open_drain_output(&mut pins.port);
-    let mut rst = pins.d9.into_open_drain_output(&mut pins.port);
+    let dc = pins.d6.into_push_pull_output();
+    let mut rst = pins.d9.into_push_pull_output();
 
     // default DisplaySize: 128x64 pixels; see the
     // ssd1306::builder::Builder::new() method definition for more info
-    let mut disp: GraphicsMode<_> = Builder::new().connect_spi(spi, dc).into();
+    let interface = SPIInterfaceNoCS::new(spi, dc);
+    let mut disp = Ssd1306::new(interface, DisplaySize128x64, DisplayRotation::Rotate0)
+        .into_buffered_graphics_mode();
 
     disp.reset(&mut rst, &mut delay).unwrap();
     disp.init().unwrap();
@@ -116,7 +115,7 @@ fn main() -> ! {
         .build();
 
     // screen outline
-    Rectangle::new(Point::new(0, 0), Point::new(x_max, y_max))
+    Rectangle::with_corners(Point::new(0, 0), Point::new(x_max, y_max))
         .into_styled(style)
         .draw(&mut disp)
         .unwrap();
@@ -133,7 +132,7 @@ fn main() -> ! {
     .unwrap();
 
     // square
-    Rectangle::new(Point::new(54, yoffset), Point::new(54 + 16, 16 + yoffset))
+    Rectangle::with_corners(Point::new(54, yoffset), Point::new(54 + 16, 16 + yoffset))
         .into_styled(style)
         .draw(&mut disp)
         .unwrap();

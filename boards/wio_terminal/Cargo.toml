@@ -31,7 +31,7 @@ cortex-m = "0.6"
 cortex-m-rt = { version = "0.6", optional = true }
 display-interface-spi = "0.4"
 heapless = "0.5"
-ili9341 = "0.4.1"
+ili9341 = "0.5.0"
 lis3dh = "0.3.0"
 embedded-sdmmc = "0.3.0"
 usb-device = { version = "0.2", optional = true }
@@ -48,7 +48,7 @@ version = "0.12"
 default-features = false
 
 [dev-dependencies]
-embedded-graphics = "0.6"
+embedded-graphics = "0.7.1"
 panic-halt = "0.2"
 
 [features]
@@ -56,6 +56,8 @@ default = ["atsamd-hal/samd51p", "rt", "unproven", "usb", "wifi"]
 rt = ["atsamd-hal/samd51p-rt", "cortex-m-rt"]
 unproven = ["atsamd-hal/unproven"]
 usb = ["atsamd-hal/usb", "usb-device", "usbd-serial", "nom"]
+# enable feature for RTL8720 firmware older than 2.1.2
+wifi-fw-before-212 = []
 wifi = ["bbqueue", "nb", "nom", "generic-array", "seeed-erpc"]
 
 [profile.dev]

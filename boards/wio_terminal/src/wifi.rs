@@ -20,6 +20,8 @@ use cortex_m::peripheral::NVIC;
 pub use erpc::rpcs;
 use seeed_erpc as erpc;
 
+use crate::WIFI_UART_BAUD;
+
 /// The set of pins which are connected to the RTL8720 in some way
 pub struct WifiPins {
     pub pwr: Pa18<Input<Floating>>,
@@ -64,7 +66,7 @@ impl Wifi {
         let rx: Sercom0Pad2<_> = pins.miso.into_pad(port);
         let uart = UART0::new(
             &clocks.sercom0_core(&gclk0).ok_or(())?,
-            Hertz(1843200),
+            Hertz(WIFI_UART_BAUD),
             sercom0,
             mclk,
             (rx, tx),

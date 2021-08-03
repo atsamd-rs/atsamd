@@ -22,7 +22,7 @@
       "build": "cargo build --examples --features=unproven,usb"
     },
     "feather_m0": {
-      "build": "cargo build --examples --example=pwm --features=unproven,usb"
+      "build": "cargo build --examples --features=unproven,usb,dma,rtic"
     },
     "feather_m4": {
       "build": "cargo build --examples --features=unproven,usb"
@@ -40,9 +40,12 @@
       "build": "cargo build --examples --features=unproven,usb,use_rtt"
     },
     "metro_m0": {
-      "build": "cargo build --examples --features=unproven,usb"
+      "build": "cargo build --examples --features=unproven,usb,rtic"
     },
     "metro_m4": {
+      "build": "cargo build --examples --features=unproven,usb"
+    },
+    "p1am_100": {
       "build": "cargo build --examples --features=unproven,usb"
     },
     "pfza_proto1": {
@@ -88,6 +91,10 @@
   "hal_doc_variants": {
     "samd11c": {
       "features": ["samd11c", "unproven"],
+      "target": "thumbv6m-none-eabi"
+    },
+    "samd11d": {
+      "features": ["samd11d", "unproven"],
       "target": "thumbv6m-none-eabi"
     },
 

@@ -1,22 +1,22 @@
 #![no_std]
 #![no_main]
 
-extern crate cortex_m;
-extern crate cortex_m_semihosting;
-extern crate feather_m0 as hal;
-extern crate nb;
 #[cfg(not(feature = "use_semihosting"))]
-extern crate panic_halt;
+use panic_halt as _;
 #[cfg(feature = "use_semihosting")]
-extern crate panic_semihosting;
-
-use hal::clock::GenericClockController;
-use hal::entry;
-use hal::pac::Peripherals;
-use hal::prelude::*;
-use hal::timer::TimerCounter;
+use panic_semihosting as _;
 
 use nb::block;
+
+use bsp::hal;
+use bsp::pac;
+use feather_m0 as bsp;
+
+use bsp::entry;
+use hal::clock::GenericClockController;
+use hal::prelude::*;
+use hal::timer::TimerCounter;
+use pac::Peripherals;
 
 #[entry]
 fn main() -> ! {
@@ -27,8 +27,8 @@ fn main() -> ! {
         &mut peripherals.SYSCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = hal::Pins::new(peripherals.PORT);
-    let mut red_led = pins.d13.into_open_drain_output(&mut pins.port);
+    let pins = bsp::Pins::new(peripherals.PORT);
+    let mut red_led = pins.d13.into_push_pull_output();
 
     // gclk0 represents a configured clock using the system 48MHz oscillator
     let gclk0 = clocks.gclk0();

@@ -1,0 +1,120 @@
+[package]
+name = "p1am_100"
+version = "0.1.0"
+authors = ["Quentin Smith <quentin@mit.edu>"]
+description = "Board Support crate for the Facts Engineering P1AM-100"
+keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/atsamd-rs/atsamd"
+readme = "README.md"
+edition = "2018"
+
+[dependencies]
+cortex-m = "0.6"
+embedded-hal = "0.2.3"
+nb = "0.1"
+
+[dependencies.cortex-m-rt]
+version = "0.6.12"
+optional = true
+
+[dependencies.cortex-m-rtic]
+version = "0.5.1"
+optional = true
+
+[dependencies.atsamd-hal]
+path = "../../hal"
+version = "0.12"
+default-features = false
+
+[dependencies.panic-abort]
+version = "0.3"
+optional = true
+
+[dependencies.panic-halt]
+version = "0.2"
+optional = true
+
+[dependencies.panic-semihosting]
+version = "0.5"
+optional = true
+
+[dependencies.panic_rtt]
+version = "0.1"
+optional = true
+
+[dependencies.usb-device]
+version = "0.2"
+optional = true
+
+[dependencies.usbd-serial]
+version = "0.1"
+optional = true
+
+[dev-dependencies]
+cortex-m-semihosting = "0.3"
+nb = "0.1"
+drogue-nom-utils = "0.1"
+nom = { version = "5.1", default-features= false }
+heapless = "0.5"
+cortex-m-rtic = "0.5.1"
+
+[features]
+# ask the HAL to enable atsamd21g support
+default = ["rt", "atsamd-hal/samd21g", "panic_halt"]
+rt = ["cortex-m-rt", "atsamd-hal/samd21g-rt"]
+unproven = ["atsamd-hal/unproven"]
+use_rtt = ["atsamd-hal/use_rtt", "panic_rtt"]
+usb = ["atsamd-hal/usb", "usb-device", "usbd-serial"]
+panic_halt = ["panic-halt"]
+panic_abort = ["panic-abort"]
+panic_semihosting = ["panic-semihosting"]
+dma = ["atsamd-hal/dma"]
+max-channels = ["dma", "atsamd-hal/max-channels"]
+
+[profile.dev]
+incremental = false
+codegen-units = 1
+debug = true
+lto = false
+
+[profile.release]
+debug = true
+lto = true
+opt-level = "s"
+
+[[example]]
+name = "blinky_basic"
+
+[[example]]
+name = "timers"
+
+[[example]]
+name = "pwm"
+required-features = ["unproven"]
+
+[[example]]
+name = "adc"
+required-features = ["unproven"]
+
+[[example]]
+name = "uart_echo_rtic"
+required-features = ["unproven"]
+
+[[example]]
+name = "usb_echo"
+required-features = ["usb", "unproven"]
+
+[[example]]
+name = "usb_echo_rtic"
+required-features = ["usb", "unproven"]
+
+[[example]]
+name = "sleeping_timer"
+
+[[example]]
+name = "sleeping_timer_rtc"
+
+[[example]]
+name = "clock"
+required-features = ["usb"]

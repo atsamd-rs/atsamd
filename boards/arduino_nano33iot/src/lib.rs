@@ -19,7 +19,7 @@ use hal::sercom::{I2CMaster4, PadPin, SPIMaster1, UART5};
 use hal::time::Hertz;
 
 pub use hal::common::*;
-pub use hal::samd21::*;
+
 pub use hal::target_device as pac;
 
 #[cfg(feature = "usb")]

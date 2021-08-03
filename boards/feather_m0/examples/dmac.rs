@@ -5,21 +5,20 @@
 #![no_main]
 
 use cortex_m::asm;
-use feather_m0 as hal;
 use panic_halt as _;
 
-use hal::{
-    clock::GenericClockController,
-    entry,
-    pac::{CorePeripherals, Peripherals},
-};
+use bsp::hal;
+use bsp::pac;
+use feather_m0 as bsp;
 
+use bsp::entry;
+use hal::clock::GenericClockController;
 use hal::dmac::{DmaController, PriorityLevel, Transfer, TriggerAction, TriggerSource};
+use pac::Peripherals;
 
 #[entry]
 fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
-    let core = CorePeripherals::take().unwrap();
     let _clocks = GenericClockController::with_internal_32kosc(
         peripherals.GCLK,
         &mut peripherals.PM,
@@ -29,7 +28,6 @@ fn main() -> ! {
 
     let mut pm = peripherals.PM;
     let dmac = peripherals.DMAC;
-    let _nvic = core.NVIC;
 
     // Initialize buffers
     const LENGTH: usize = 50;
@@ -41,21 +39,18 @@ fn main() -> ! {
     // Initialize DMA Controller
     let mut dmac = DmaController::init(dmac, &mut pm);
     // Get individual handles to DMA channels
-    let channels = dmac.split();
+    let mut channels = dmac.split();
 
     // Initialize DMA Channel 0
-    let chan0 = channels.0.init(&mut dmac, PriorityLevel::LVL0, false);
+    let chan0 = channels.0.init(PriorityLevel::LVL0);
 
     // Setup a DMA transfer (memory-to-memory -> incrementing source, incrementing
     // destination) with a 8-bit beat size
-    let xfer = Transfer::new_from_arrays(chan0, buf_src, buf_dest, false).begin(
-        &mut dmac,
-        TriggerSource::DISABLE,
-        TriggerAction::BLOCK,
-    );
-
+    let xfer = Transfer::new_from_arrays(chan0, buf_src, buf_dest, false)
+        .with_waker(|_status| asm::nop())
+        .begin(TriggerSource::DISABLE, TriggerAction::BLOCK);
     // Wait for transfer to complete and grab resulting buffers
-    let (chan0, buf_src, buf_dest, _) = xfer.wait(&mut dmac);
+    let (chan0, buf_src, buf_dest) = xfer.wait();
 
     // Read the returned buffers
     let _a = buf_src[LENGTH - 1];
@@ -66,12 +61,12 @@ fn main() -> ! {
         cortex_m::singleton!(:[u16; LENGTH] = [0x0000; LENGTH]).unwrap();
 
     // Setup a DMA transfer (memory-to-memory -> fixed source, incrementing
-    // destination) with a 16-bit beat size. Demonstrate payload management.
+    // destination) with a 16-bit beat size.
     let xfer = Transfer::new(chan0, const_16, buf_16, false)
-        .with_payload(pm)
-        .begin(&mut dmac, TriggerSource::DISABLE, TriggerAction::BLOCK);
+        .unwrap()
+        .begin(TriggerSource::DISABLE, TriggerAction::BLOCK);
 
-    let (chan0, const_16, buf_16, _pm) = xfer.wait(&mut dmac);
+    let (chan0, const_16, buf_16) = xfer.wait();
 
     // Read the returned buffers
     let _a = *const_16;
@@ -84,17 +79,20 @@ fn main() -> ! {
 
     // Setup a DMA transfer (memory-to-memory -> incrementing source, fixed
     // destination) with a 16-bit beat size
-    let xfer = Transfer::new(chan0, buf_16, const_16, false).begin(
-        &mut dmac,
-        TriggerSource::DISABLE,
-        TriggerAction::BLOCK,
-    );
+    let xfer = Transfer::new(chan0, buf_16, const_16, false)
+        .unwrap()
+        .begin(TriggerSource::DISABLE, TriggerAction::BLOCK);
 
-    let (_chan0, buf_16, const_16, _) = xfer.wait(&mut dmac);
+    let (chan0, buf_16, const_16) = xfer.wait();
 
     // Read the returned buffers
     let _a = *const_16; // We expect the value "LENGTH - 1" to end up here
     let _b = buf_16[LENGTH - 1];
+
+    // Move split channels back into the Channels struct
+    channels.0 = chan0.into();
+    // Free the DmaController and return the PAC DMAC struct
+    let _dmac = dmac.free(channels, &mut pm);
 
     loop {
         asm::nop();

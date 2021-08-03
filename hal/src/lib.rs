@@ -9,6 +9,9 @@ pub mod typelevel;
 #[cfg(feature = "samd11c")]
 pub use atsamd11c as target_device;
 
+#[cfg(feature = "samd11d")]
+pub use atsamd11d as target_device;
+
 #[cfg(feature = "samd21e")]
 pub use atsamd21e as target_device;
 
@@ -51,6 +54,9 @@ pub use atsame54n as target_device;
 #[cfg(feature = "same54p")]
 pub use atsame54p as target_device;
 
+#[cfg(any(feature = "samd11", feature = "samd21", feature = "min-samd51g"))]
+pub use target_device as pac;
+
 #[cfg(feature = "use_rtt")]
 pub use jlink_rtt;
 
@@ -72,19 +78,78 @@ macro_rules! dbgprint {
     ($($arg:tt)*) => {{}};
 }
 
+#[cfg(feature = "device")]
+pub mod delay;
+#[cfg(feature = "device")]
+pub mod gpio;
+#[cfg(feature = "device")]
+pub mod prelude;
+#[cfg(feature = "device")]
+pub mod rtc;
+#[cfg(feature = "device")]
+pub mod sercom;
+pub mod sleeping_delay;
+#[cfg(feature = "device")]
+pub mod spi_common;
+pub mod time;
+pub mod timer_params;
+pub mod timer_traits;
+
+#[cfg(all(feature = "unproven", feature = "dma"))]
+pub mod dmac;
+
+#[cfg(any(feature = "samd11", feature = "samd21"))]
+pub mod thumbv6m;
+#[cfg(any(feature = "samd11", feature = "samd21"))]
+pub use crate::thumbv6m::*;
+
+#[cfg(feature = "min-samd51g")]
+pub mod thumbv7em;
+#[cfg(feature = "min-samd51g")]
+pub use crate::thumbv7em::*;
+
+// This module maintains backwards compatibility for the v1 SERCOM pads API
+#[cfg(feature = "device")]
+pub mod pad {
+    pub use crate::sercom::v1::pads::PadPin;
+}
+
+// This module maintains backwards compatibility within this major release
 #[macro_use]
-pub mod common;
-pub use self::common::*;
+pub mod common {
+    #[cfg(feature = "device")]
+    pub use crate::delay;
+    #[cfg(feature = "device")]
+    pub use crate::gpio;
+    #[cfg(feature = "device")]
+    pub use crate::prelude;
+    #[cfg(feature = "device")]
+    pub use crate::rtc;
+    #[cfg(feature = "device")]
+    pub use crate::sercom;
+    pub use crate::sleeping_delay;
+    #[cfg(feature = "device")]
+    pub use crate::spi_common;
+    pub use crate::time;
+    pub use crate::timer_params;
+    pub use crate::timer_traits;
 
-#[cfg(feature = "samd11")]
-pub mod samd11;
-#[cfg(feature = "samd11")]
-pub use self::samd11::*;
+    #[cfg(all(feature = "unproven", feature = "dma"))]
+    pub use crate::dmac;
 
-#[cfg(feature = "samd21")]
-pub mod samd21;
-#[cfg(feature = "samd21")]
-pub use self::samd21::*;
+    #[cfg(any(feature = "samd11", feature = "samd21"))]
+    pub use crate::thumbv6m;
+    #[cfg(any(feature = "samd11", feature = "samd21"))]
+    pub use crate::thumbv6m::*;
+
+    #[cfg(feature = "min-samd51g")]
+    pub use crate::thumbv7em;
+    #[cfg(feature = "min-samd51g")]
+    pub use crate::thumbv7em::*;
+
+    #[cfg(feature = "device")]
+    pub use crate::pad;
+}
 
 // The following modules are included purely for backward compatibility reasons.
 // Whenever major breaking changes are made to the HAL next, these modules

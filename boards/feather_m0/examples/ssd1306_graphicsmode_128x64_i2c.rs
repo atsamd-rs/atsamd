@@ -61,29 +61,26 @@
 //! Build this example with: `cargo build --example
 //! ssd1306_graphicsmode_128x64_i2c`
 
-extern crate embedded_graphics;
-extern crate feather_m0 as hal;
-extern crate ssd1306;
-
-// how to panic...
 #[cfg(not(feature = "use_semihosting"))]
-extern crate panic_halt;
+use panic_halt as _;
 #[cfg(feature = "use_semihosting")]
-extern crate panic_semihosting;
-
-use hal::clock::GenericClockController;
-use hal::delay::Delay;
-use hal::entry;
-use hal::pac::{CorePeripherals, Peripherals};
-use hal::prelude::*;
-use hal::time::KiloHertz;
+use panic_semihosting as _;
 
 use embedded_graphics::pixelcolor::BinaryColor;
 use embedded_graphics::prelude::*;
-use embedded_graphics::primitives::{Circle, Rectangle, Triangle};
-use embedded_graphics::style::PrimitiveStyleBuilder;
-use ssd1306::prelude::*;
-use ssd1306::Builder;
+use embedded_graphics::primitives::{Circle, PrimitiveStyleBuilder, Rectangle, Triangle};
+use ssd1306::{prelude::*, I2CDisplayInterface, Ssd1306};
+
+use bsp::hal;
+use bsp::pac;
+use feather_m0 as bsp;
+
+use bsp::entry;
+use hal::clock::GenericClockController;
+use hal::delay::Delay;
+use hal::prelude::*;
+use hal::time::KiloHertz;
+use pac::{CorePeripherals, Peripherals};
 
 #[entry]
 fn main() -> ! {
@@ -95,23 +92,24 @@ fn main() -> ! {
         &mut peripherals.SYSCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = hal::Pins::new(peripherals.PORT);
-    let mut red_led = pins.d13.into_open_drain_output(&mut pins.port);
+    let pins = bsp::Pins::new(peripherals.PORT);
+    let mut red_led: bsp::RedLed = pins.d13.into();
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
-    let i2c = hal::i2c_master(
+    let i2c = bsp::i2c_master(
         &mut clocks,
         KiloHertz(400),
         peripherals.SERCOM3,
         &mut peripherals.PM,
         pins.sda,
         pins.scl,
-        &mut pins.port,
     );
 
     // default DisplaySize: 128x64 pixels; see the
     // ssd1306::builder::Builder::new() method definition for more info
-    let mut disp: GraphicsMode<_> = Builder::new().connect_i2c(i2c).into();
+    let interface = I2CDisplayInterface::new(i2c);
+    let mut disp = Ssd1306::new(interface, DisplaySize128x64, DisplayRotation::Rotate0)
+        .into_buffered_graphics_mode();
 
     disp.init().unwrap();
     disp.flush().unwrap();
@@ -126,7 +124,7 @@ fn main() -> ! {
     let y_max = 63;
 
     // screen outline
-    Rectangle::new(Point::new(0, 0), Point::new(x_max, y_max))
+    Rectangle::with_corners(Point::new(0, 0), Point::new(x_max, y_max))
         .into_styled(style)
         .draw(&mut disp)
         .unwrap();
@@ -143,7 +141,7 @@ fn main() -> ! {
     .unwrap();
 
     // square
-    Rectangle::new(Point::new(54, yoffset), Point::new(54 + 16, 16 + yoffset))
+    Rectangle::with_corners(Point::new(54, yoffset), Point::new(54 + 16, 16 + yoffset))
         .into_styled(style)
         .draw(&mut disp)
         .unwrap();
