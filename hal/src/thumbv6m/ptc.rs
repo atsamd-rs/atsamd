@@ -1,3 +1,11 @@
+//! Peripheral Touch Controller (PTC)
+//! Please refer to the relevant documentation for your chip for information on how to use this
+//! device peripheral.
+//! - SAMD11: [Section 34 (page 855)](http://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-42363-SAM-D11_Datasheet.pdf)
+//! - SAMD21: [Section 36 (page 1040)](https://ww1.microchip.com/downloads/en/DeviceDoc/SAM_D21_DA1_Family_DataSheet_DS40001882F.pdf)
+//! 
+//! Note that Y channels map to IDs `[0, 16)` and X channels to `[16, 32)`.
+
 use crate::clock::GenericClockController;
 use crate::gpio::v1;
 use crate::gpio::v2::*;
@@ -176,15 +184,27 @@ where
     }
 }
 
+pub struct XAndY {
+    pub x: u8,
+    pub y: u8,
+}
+
 macro_rules! ptc_pins {
-    ($($PinId:ident: $Chan:literal),+) => {
-        $(
-            impl Channel<PTC> for Pin<$PinId, AlternateB> {
-                type ID = u8;
-                fn channel() -> u8 { $Chan }
-            }
-        )+
-    }
+    ($($PinId:ident: $Chan:literal$( / $Chan2:literal)?),+) => {$(
+        ptc_pins!{@$PinId: $Chan$( / $Chan2)?}
+    )+};
+    (@$PinId:ident: $Chan:literal) => {
+        impl Channel<PTC> for Pin<$PinId, AlternateB> {
+            type ID = u8;
+            fn channel() -> u8 { $Chan }
+        }
+    };
+    (@$PinId:ident: $XChan:literal / $YChan:literal) => {
+        impl Channel<PTC> for Pin<$PinId, AlternateB> {
+            type ID = XAndY;
+            fn channel() -> XAndY { XAndY { x: $XChan, y: $YChan } }
+        }
+    };
 }
 
 /// Implement ['Channel`] for [`v1::Pin`]s based on the implementations for
@@ -200,6 +220,32 @@ where
     }
 }
 
+#[cfg(feature = "samd11")]
+ptc_pins! {
+    PA02: 0,
+    PA04: 2,
+    PA05: 3,
+    PA14: 16 / 6,
+    PA15: 17 / 7,
+    PA24: 24 / 14,
+    PA25: 25 / 15
+}
+
+#[cfg(feature = "samd11d")]
+ptc_pins! {
+    PA03: 1,
+    PA06: 4,
+    PA06: 5,
+    PA10: 18 / 8,
+    PA11: 19 / 9,
+    PA16: 20 / 10,
+    PA17: 21 / 11,
+    PA22: 22 / 12,
+    PA23: 23 / 13,
+    PA27: 26
+}
+
+#[cfg(feature = "samd21")]
 ptc_pins! {
     PA02: 0,
     PA03: 1,

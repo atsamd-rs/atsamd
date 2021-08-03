@@ -415,6 +415,7 @@ clock_generator!(
     (ac_ana, AcAnaClock, AC_ANA),
     (ac_dig, AcDigClock, AC_DIG),
     (dac, DacClock, DAC),
+    (ptc, PtcClock, PTC),
 );
 // samd21
 #[cfg(feature = "samd21")]
