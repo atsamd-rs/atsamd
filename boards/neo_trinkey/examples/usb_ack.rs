@@ -30,13 +30,16 @@ fn main() -> ! {
     );
     let pins = bsp::Pins::new(peripherals.PORT);
 
-    let mut bus_allocator = bsp::usb_allocator(
-        peripherals.USB,
-        &mut clocks,
-        &mut peripherals.PM,
-        pins.usb_dm,
-        pins.usb_dp,
-    );
+    let bus_allocator = unsafe {
+        USB_ALLOCATOR = Some(bsp::usb_allocator(
+            peripherals.USB,
+            &mut clocks,
+            &mut peripherals.PM,
+            pins.usb_dm,
+            pins.usb_dp,
+        ));
+        USB_ALLOCATOR.as_ref().unwrap()
+    };
 
     unsafe {
         USB_SERIAL = Some(SerialPort::new(&bus_allocator));
