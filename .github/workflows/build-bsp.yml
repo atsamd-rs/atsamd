@@ -69,4 +69,4 @@ jobs:
       run: |
         set -ex
         cd hal
-        cargo build
+        cargo build --features="library"
