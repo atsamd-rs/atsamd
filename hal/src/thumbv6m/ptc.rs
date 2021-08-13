@@ -1,9 +1,9 @@
 //! Peripheral Touch Controller (PTC)
-//! Please refer to the relevant documentation for your chip for information on how to use this
-//! device peripheral.
+//! Please refer to the relevant documentation for your chip for information on
+//! how to use this device peripheral.
 //! - SAMD11: [Section 34 (page 855)](http://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-42363-SAM-D11_Datasheet.pdf)
 //! - SAMD21: [Section 36 (page 1040)](https://ww1.microchip.com/downloads/en/DeviceDoc/SAM_D21_DA1_Family_DataSheet_DS40001882F.pdf)
-//! 
+//!
 //! Note that Y channels map to IDs `[0, 16)` and X channels to `[16, 32)`.
 
 use crate::clock::GenericClockController;
