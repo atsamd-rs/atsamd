@@ -15,11 +15,11 @@ on:
         required: true
         default: 'none'
       sync_bsp:
-        description: 'Update HAL dep string in BSP crates (yes/no)'
+        description: 'Update HAL dep string in T1 BSP crates (yes/no)'
         required: true
         default: 'yes'
       bsp_bump:
-        description: 'BSP version bump (none/patch/minor/major)'
+        description: 'T1 BSP version bump (none/patch/minor/major)'
         required: true
         default: 'none'
 
@@ -88,18 +88,16 @@ jobs:
         run: |
           set -ex
 
+          T1_BOARDS=$(cat crates.json | jq -Mr -c '[.boards | to_entries | map([.key, .value.tier]) | .[] | select(.[1] == 1) | .[0]] | join(" ")')
+
           # Create a fake workspace file for all BSPs.
           echo "[workspace]" > Cargo.toml
           echo "members = [" >> Cargo.toml
-          for d in boards/*/ ; do echo "    \"${d::-1}\"," >> Cargo.toml; done
+          for d in $T1_BOARDS; do echo "    \"${d}\"," >> Cargo.toml; done
           echo "]" >> Cargo.toml
           echo "" >> Cargo.toml
 
-          # Create a ws2 query string for all boards.
-          boards=$(for d in boards/*/ ; do echo -n "${d:7:${#d}-8} "; done )
-          boards=${boards::-1} # Trim trailing space
-
-          echo "y" | cargo ws2 [ "${boards}" ] publish ${{ github.event.inputs.bsp_bump }}
+          echo "y" | cargo ws2 [ "${T1_BOARDS}" ] publish ${{ github.event.inputs.bsp_bump }}
 
           rm Cargo.toml
 
