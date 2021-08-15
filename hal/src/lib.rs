@@ -147,6 +147,7 @@ pub mod common {
     pub use crate::sercom;
     pub use crate::sleeping_delay;
     #[cfg(feature = "device")]
+    #[allow(deprecated)]
     pub use crate::spi_common;
     pub use crate::time;
     pub use crate::timer_params;

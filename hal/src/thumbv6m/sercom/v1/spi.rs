@@ -16,6 +16,7 @@ use crate::pac::{SERCOM2, SERCOM3};
 use crate::pac::{SERCOM4, SERCOM5};
 use crate::sercom::v1::pads::CompatiblePad;
 use crate::sercom::v2::*;
+#[allow(deprecated)]
 use crate::spi_common::CommonSpi;
 use crate::time::Hertz;
 
@@ -126,6 +127,7 @@ macro_rules! spi_master {
             sercom: $SERCOM,
         }
 
+        #[allow(deprecated)]
         impl<MISO, MOSI, SCK> CommonSpi for $Type<MISO, MOSI, SCK> {
             /// Helper for accessing the spi member of the sercom instance
             fn spi(&self) -> &SPI {
@@ -138,6 +140,7 @@ macro_rules! spi_master {
             }
         }
 
+        #[allow(deprecated)]
         impl<MISO, MOSI, SCK> $Type<MISO, MOSI, SCK> {
             /// Power on and configure SERCOMX to work as an SPI Master operating
             /// with the specified frequency and SPI Mode. The padout specifies
@@ -232,6 +235,7 @@ macro_rules! spi_master {
             }
         }
 
+        #[allow(deprecated)]
         impl<MISO, MOSI, SCK> FullDuplex<u8> for $Type<MISO, MOSI, SCK> {
             type Error = Error;
 
