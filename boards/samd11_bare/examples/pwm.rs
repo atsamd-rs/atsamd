@@ -1,19 +1,22 @@
 #![no_std]
 #![no_main]
 
-use bsp::hal;
 #[cfg(not(feature = "use_semihosting"))]
 use panic_halt as _;
 #[cfg(feature = "use_semihosting")]
 use panic_semihosting as _;
+
 use samd11_bare as bsp;
 
-use cortex_m_rt::entry;
+use bsp::{hal, pac};
+
+use bsp::entry;
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
-use hal::pac::{CorePeripherals, Peripherals};
+use hal::gpio::v2::*;
 use hal::prelude::*;
 use hal::pwm::{Channel, Pwm0};
+use pac::{CorePeripherals, Peripherals};
 
 #[entry]
 fn main() -> ! {
@@ -27,10 +30,10 @@ fn main() -> ! {
         &mut peripherals.NVMCTRL,
     );
     let mut delay = Delay::new(core.SYST, &mut clocks);
-    let mut pins = bsp::Pins::new(peripherals.PORT);
+    let pins = bsp::Pins::new(peripherals.PORT);
 
-    let _d1 = pins.d1.into_function_f(&mut pins.port);
-    let _d14 = pins.d14.into_function_f(&mut pins.port);
+    let _d1: Pin<_, AlternateF> = pins.d1.into_mode();
+    let _d14: Pin<_, AlternateF> = pins.d14.into_mode();
 
     let gclk0 = clocks.gclk0();
     let mut pwm0 = Pwm0::new(

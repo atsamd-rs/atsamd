@@ -78,7 +78,7 @@
     },
     "samd11_bare": {
 	  "tier": 1,
-      "build": "cargo build --release --examples --features=unproven"
+      "build": "cargo build --release --examples --features=unproven,rt,use-semihosting"
     },
     "samd21_mini": {
 	  "tier": 2,

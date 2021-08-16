@@ -23,9 +23,17 @@ path = "../../hal"
 version = "0.12"
 default-features = false
 
+[dependencies.cortex-m-semihosting]
+version = "0.3"
+optional = true
+
+[dependencies.panic-semihosting]
+version = "0.5"
+optional = true
+
 [dev-dependencies]
 panic-halt = "0.2"
-panic-probe = "0.1.0"
+panic-probe = "0.2.0"
 rtt-target = { version = "0.3.0", features = ["cortex-m"] }
 
 [features]
@@ -33,7 +41,7 @@ rtt-target = { version = "0.3.0", features = ["cortex-m"] }
 default = ["rt", "atsamd-hal/samd11c"]
 rt = ["cortex-m-rt", "atsamd-hal/samd11c-rt"]
 unproven = ["atsamd-hal/unproven"]
-use_semihosting = []
+use_semihosting = ["cortex-m-semihosting", "panic-semihosting"]
 
 [profile.release]
 debug = true
@@ -44,7 +52,7 @@ chip = "ATSAMD11C14A"
 
 [[example]]
 name = "adc"
-required-features = ["unproven", "rt"]
+required-features = ["unproven", "rt", "use_semihosting"]
 
 [[example]]
 name = "blinky_basic"
