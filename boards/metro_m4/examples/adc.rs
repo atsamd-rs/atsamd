@@ -15,9 +15,11 @@ use cortex_m_semihosting::hprintln;
 
 use bsp::entry;
 use hal::clock::GenericClockController;
-use hal::delay::Delay;
 use hal::prelude::*;
 use pac::{CorePeripherals, Peripherals};
+use hal::adc::Adc;
+use pac::gclk::pchctrl::GEN_A::GCLK11;
+use hal::gpio::v2::B;
 
 #[entry]
 fn main() -> ! {
@@ -30,10 +32,10 @@ fn main() -> ! {
         &mut peripherals.OSCCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = bsp::Pins::new(peripherals.PORT);
+    let pins = bsp::Pins::new(peripherals.PORT);
     let mut delay = hal::delay::Delay::new(core.SYST, &mut clocks);
     let mut adc0 = Adc::adc0(peripherals.ADC0, &mut peripherals.MCLK, &mut clocks, GCLK11);
-    let mut a0 = pins.a0.into_function_b(&mut pins.port);
+    let mut a0 = pins.a0.into_alternate::<B>();
 
     loop {
         let data: u16 = adc0.read(&mut a0).unwrap();
