@@ -15,9 +15,9 @@ use bsp::entry;
 use hal::clock::GenericClockController;
 use hal::gpio::v2::M;
 
-use pac::Peripherals;
 use pac::gclk::genctrl::SRC_A::DPLL0;
 use pac::gclk::pchctrl::GEN_A::GCLK2;
+use pac::Peripherals;
 
 #[entry]
 fn main() -> ! {

@@ -3,9 +3,9 @@
 
 use metro_m4 as bsp;
 
+use bsp::ehal;
 use bsp::hal;
 use bsp::pac;
-use bsp::ehal;
 
 #[cfg(not(feature = "use_semihosting"))]
 use panic_halt as _;
@@ -14,11 +14,11 @@ use panic_semihosting as _;
 
 use bsp::entry;
 use hal::clock::GenericClockController;
-use pac::{Peripherals, CorePeripherals};
 use hal::prelude::*;
+use pac::{CorePeripherals, Peripherals};
 
-use hal::delay::Delay;
 use ehal::blocking::delay::DelayMs;
+use hal::delay::Delay;
 
 #[entry]
 fn main() -> ! {

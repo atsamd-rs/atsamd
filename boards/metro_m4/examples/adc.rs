@@ -16,9 +16,8 @@ use cortex_m_semihosting::hprintln;
 use bsp::entry;
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
-use pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
-
+use pac::{CorePeripherals, Peripherals};
 
 #[entry]
 fn main() -> ! {
@@ -35,7 +34,6 @@ fn main() -> ! {
     let mut delay = hal::delay::Delay::new(core.SYST, &mut clocks);
     let mut adc0 = Adc::adc0(peripherals.ADC0, &mut peripherals.MCLK, &mut clocks, GCLK11);
     let mut a0 = pins.a0.into_function_b(&mut pins.port);
-
 
     loop {
         let data: u16 = adc0.read(&mut a0).unwrap();

@@ -15,9 +15,9 @@ use cortex_m_semihosting::hprintln;
 
 use bsp::entry;
 use hal::clock::GenericClockController;
-use pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 use hal::trng::Trng;
+use pac::{CorePeripherals, Peripherals};
 
 #[entry]
 fn main() -> ! {

@@ -11,16 +11,16 @@ pub use cortex_m_rt::entry;
 
 use hal::{
     clock::GenericClockController,
+    qspi::{OneShot, Qspi},
     sercom::{
         v2::{
             spi,
             uart::{self, BaudMode, Oversampling},
-            Sercom2, Sercom3, IoSet1
+            IoSet1, Sercom2, Sercom3,
         },
-        I2CMaster5
+        I2CMaster5,
     },
     time::Hertz,
-    qspi::{Qspi, OneShot}
 };
 
 use pac::MCLK;
@@ -141,7 +141,7 @@ hal::bsp_pins!(
     PB22 {
         /// The data line attached to the neopixel.
         /// Is also attached to SWCLK.
-        name: neopixel 
+        name: neopixel
     }
 
     PA13 {
@@ -273,9 +273,17 @@ pub fn qspi_master(
     data2: impl Into<FlashD2>,
     data3: impl Into<FlashD3>,
 ) -> Qspi<OneShot> {
-    Qspi::new(mclk, qspi, sclk.into(), cs.into(), data0.into(), data1.into(), data2.into(), data3.into())
+    Qspi::new(
+        mclk,
+        qspi,
+        sclk.into(),
+        cs.into(),
+        data0.into(),
+        data1.into(),
+        data2.into(),
+        data3.into(),
+    )
 }
-
 
 /// I2C master for the labelled SDA & SCL pins
 pub type I2C = I2CMaster5<Sda, Scl>;
@@ -288,7 +296,7 @@ pub fn i2c_master(
     sercom5: pac::SERCOM5,
     mclk: &mut pac::MCLK,
     sda: impl Into<Sda>,
-    scl: impl Into<Scl>
+    scl: impl Into<Scl>,
 ) -> I2C {
     let gclk0 = clocks.gclk0();
     let clock = &clocks.sercom5_core(&gclk0).unwrap();
@@ -299,7 +307,6 @@ pub fn i2c_master(
 }
 
 pub type UartPads = uart::Pads<Sercom3, IoSet1, UartRx, UartTx>;
-
 
 /// UART device for the labelled RX & TX pins
 pub type Uart = uart::Uart<uart::Config<UartPads>, uart::Duplex>;
@@ -321,7 +328,7 @@ pub fn uart(
     uart::Config::new(mclk, sercom3, pads, clock.freq())
         .baud(baud, BaudMode::Fractional(Oversampling::Bits16))
         .enable()
- }
+}
 
 #[cfg(feature = "usb")]
 pub fn usb_allocator(

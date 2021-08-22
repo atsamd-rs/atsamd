@@ -3,18 +3,18 @@
 
 use metro_m4 as bsp;
 
+use bsp::ehal;
 use bsp::hal;
 use bsp::pac;
-use bsp::ehal;
 
 #[cfg(not(feature = "use_semihosting"))]
 use panic_halt as _;
 #[cfg(feature = "use_semihosting")]
 use panic_semihosting as _;
 
-use ehal::digital::v2::ToggleableOutputPin;
 use cortex_m::asm::delay as cycle_delay;
 use cortex_m::peripheral::NVIC;
+use ehal::digital::v2::ToggleableOutputPin;
 use usb_device::bus::UsbBusAllocator;
 use usb_device::prelude::*;
 use usbd_serial::{SerialPort, USB_CLASS_CDC};

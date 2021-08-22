@@ -10,9 +10,9 @@ use metro_m4 as bsp;
 
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
+use hal::gpio::v2::E;
 use hal::prelude::*;
 use hal::pwm::{Pwm2, TC2Pinout};
-use hal::gpio::v2::E;
 use pac::{CorePeripherals, Peripherals};
 
 #[entry]

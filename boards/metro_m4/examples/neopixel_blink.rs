@@ -14,13 +14,12 @@ use panic_semihosting as _;
 use bsp::entry;
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
-use pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 use hal::timer::TimerCounter;
+use pac::{CorePeripherals, Peripherals};
 
 use smart_leds;
 use ws2812_timer_delay as ws2812;
-
 
 use smart_leds::{brightness, colors, hsv::RGB8, SmartLedsWrite};
 

@@ -14,12 +14,15 @@ use panic_semihosting as _;
 use bsp::entry;
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
-use pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 use hal::timer::TimerCounter;
+use pac::{CorePeripherals, Peripherals};
 
+use smart_leds::{
+    hsv::{hsv2rgb, Hsv},
+    SmartLedsWrite,
+};
 use ws2812_timer_delay as ws2812;
-use smart_leds::{SmartLedsWrite, hsv::{hsv2rgb, Hsv}};
 
 #[entry]
 fn main() -> ! {
@@ -41,7 +44,6 @@ fn main() -> ! {
     let neopixel_pin = pins.neopixel.into_push_pull_output();
     let mut neopixel = ws2812::Ws2812::new(timer, neopixel_pin);
     let mut delay = Delay::new(core.SYST, &mut clocks);
-
 
     loop {
         for j in 0..255u8 {
