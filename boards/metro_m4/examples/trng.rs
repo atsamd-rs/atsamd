@@ -1,8 +1,10 @@
 #![no_std]
 #![no_main]
 
-use bsp::hal;
 use metro_m4 as bsp;
+
+use bsp::hal;
+use bsp::pac;
 
 #[cfg(not(feature = "use_semihosting"))]
 use panic_halt as _;
@@ -13,7 +15,7 @@ use cortex_m_semihosting::hprintln;
 
 use bsp::entry;
 use hal::clock::GenericClockController;
-use hal::pac::{CorePeripherals, Peripherals};
+use pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 use hal::trng::Trng;
 
