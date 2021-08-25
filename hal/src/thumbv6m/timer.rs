@@ -188,19 +188,26 @@ tc! {
     TimerCounter5: (TC5, tc5_, Tc4Tc5Clock),
 }
 
+#[deprecated(
+    since = "0.13.0",
+    note = "`SpinTimer` is deprecated, and will be removed in a subsequent release."
+)]
 #[derive(Clone, Copy)]
 pub struct SpinTimer {
     cycles: u32,
 }
 
+#[allow(deprecated)]
 impl SpinTimer {
     pub fn new(cycles: u32) -> SpinTimer {
         SpinTimer { cycles }
     }
 }
 
+#[allow(deprecated)]
 impl Periodic for SpinTimer {}
 
+#[allow(deprecated)]
 impl CountDown for SpinTimer {
     type Time = u32;
 
