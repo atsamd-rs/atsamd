@@ -99,6 +99,13 @@ impl<$pad0, $pad1> $Type<$pad0, $pad1> {
         Self { sda, scl, sercom }
     }
 
+    /// Clear the error interrupt flag.
+    pub fn clear_error(&mut self) -> bool {
+        let ret = self.sercom.usart().intflag.read().error().bit_is_set();
+        self.sercom.usart().intflag.modify(|_, w| w.error().set_bit());
+        ret
+    }
+
     /// Breaks the sercom device up into its constituent pins and the SERCOM
     /// instance.  Does not make any changes to power management.
     pub fn free(self) -> ($pad0, $pad1, $SERCOM) {
