@@ -19,6 +19,17 @@
 //! These return a queryable structure containing the interrupt register
 //! contents. Allowing multiple different interrupts to be read.
 //!
+//! >**IMPORTANT** - Memory safety considerations
+//! >
+//! >The ICM engine accesses the assigned `DSCR` memory address, so it must be available.
+//! >Depending on the application, this might entail making [`IcmRegion`] **static**.
+//! >
+//! >The same goes for [`IcmHashArea`], but here it is even more important to ensure
+//! >the memory is designated for `IcmHashArea` usage, since the ICM controller may
+//! >write data, depending on ICM configuration.
+//! >
+//! >Setting [`IcmHashArea`] **static** might be the safest path.
+//!
 //! ## Usage:
 //!
 //! ### General ICM setup
@@ -53,6 +64,8 @@
 //! correctly memory aligned.
 //!
 //!  Set the pointer to [`IcmHashArea`] via [`Icm::set_hash_addr()`]
+//!
+//!  **See note about memory safety above**
 //!
 //! ### Hash calculation
 //!
@@ -95,28 +108,30 @@
 //! ```no_run
 //! # use atsamd_hal::{pac::Peripherals, icm::*};
 //!
-//!   // SHA Test data
-//!   static MESSAGE_REF0: [u32; 16] = [
-//!       0x11111111, 0x22222222, 0x33333333, 0x44444444, 0x55555555, 0x66666666, 0x77777777, 0x88888888,
-//!       0x99999999, 0xaaaaaaaa, 0xbbbbbbbb, 0xcccccccc, 0xdddddddd, 0xeeeeeeee, 0xffffffff, 0x00000000,
-//!   ];
+//! // SHA Test data
+//! static MESSAGE_REF0: [u32; 16] = [
+//!     0x11111111, 0x22222222, 0x33333333, 0x44444444, 0x55555555, 0x66666666, 0x77777777, 0x88888888,
+//!     0x99999999, 0xaaaaaaaa, 0xbbbbbbbb, 0xcccccccc, 0xdddddddd, 0xeeeeeeee, 0xffffffff, 0x00000000,
+//! ];
 //!
-//!   static MESSAGE_REF1: [u32; 16] = [
-//!       0x80636261, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
-//!       0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x18000000,
-//!   ];
+//! static MESSAGE_REF1: [u32; 16] = [
+//!     0x80636261, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+//!     0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x18000000,
+//! ];
 //!
-//!   // Expected SHA1 sum result
-//!   static MESSAGE_SHA1_RES: [u32; 8] = [
-//!       0x363e99a9, 0x6a810647, 0x71253eba, 0x6cc25078, 0x9dd8d09c, 0x00000000, 0x00000000, 0x00000000,
-//!   ];
+//! // Expected SHA1 sum result
+//! static MESSAGE_SHA1_RES: [u32; 8] = [
+//!     0x363e99a9, 0x6a810647, 0x71253eba, 0x6cc25078, 0x9dd8d09c, 0x00000000, 0x00000000, 0x00000000,
+//! ];
 //!
-//!   static MESSAGE_SHA224_RES: [u32; 8] = [
-//!       0x227d0923, 0x22d80534, 0x77a44286, 0xb355a2bd, 0xe4bcad2a, 0xf7b3a0bd, 0xa79d6ce3, 0x00000000,
-//!   ];
-//!   static MESSAGE_SHA256_RES: [u32; 8] = [
-//!       0xbf1678ba, 0xeacf018f, 0xde404141, 0x2322ae5d, 0xa36103b0, 0x9c7a1796, 0x61ff10b4, 0xad1500f2,
-//!   ];
+//! static MESSAGE_SHA224_RES: [u32; 8] = [
+//!     0x227d0923, 0x22d80534, 0x77a44286, 0xb355a2bd, 0xe4bcad2a, 0xf7b3a0bd, 0xa79d6ce3, 0x00000000,
+//! ];
+//! static MESSAGE_SHA256_RES: [u32; 8] = [
+//!     0xbf1678ba, 0xeacf018f, 0xde404141, 0x2322ae5d, 0xa36103b0, 0x9c7a1796, 0x61ff10b4, 0xad1500f2,
+//! ];
+//! static mut HASH: IcmHashArea = IcmHashArea::default();
+//! static mut ICM_REGION_DESC: IcmRegion = IcmRegion::default();
 //!
 //! // Enable ICM apb clock
 //! // Clock v1
@@ -240,15 +255,20 @@
 //! // Set Algorithm to SHA256
 //! icm_region_desc.region3.rcfg.set_algo(icm_algorithm::SHA256);
 //!
-//! // Hash Area
-//! let hash = IcmHashArea::default();
+//! unsafe {
+//!     // Hash Area
+//!     // Set HASH addr to the beginning of the Hash area
+//!     icm.set_hash_addr(&HASH);
+//! }
 //!
-//! // Set HASH to the beginning of the Hash area
-//! icm.set_hash_addr(&hash);
-//! // Set DSCR to the beginning of the region descriptor
-//! icm.set_dscr_addr(&icm_region_desc.region0);
-//! // the same but via helper function
-//! //icm_region_desc.region0.set_dscr_addr(&icm);
+//! unsafe {
+//!     // Move the icm_region_desc into static
+//!     ICM_REGION_DESC = icm_region_desc;
+//!     // Set DSCR to the beginning of the region descriptor
+//!     icm.set_dscr_addr(&ICM_REGION_DESC.region0);
+//!     // the same but via helper function
+//!     //ICM_REGION_DESC.region0.set_dscr_addr(&icm);
+//! }
 //!
 //! // Start the ICM calculation
 //! icm.enable();
@@ -273,10 +293,6 @@
 //! icm.set_slbdis(false);
 //! // Automatic Switch to Compare is disabled
 //! icm.set_ascd(false);
-//!
-//!
-//! // Region Descriptor
-//! let mut icm_region_desc = IcmRegion::default();
 //!
 //! // Setup region 0 to monitor memory
 //! icm_region_desc
@@ -341,12 +357,6 @@
 //! message_region1_sha1[4] = 0xDEAD_BEEF;
 //! message_region2_sha224[5] = 0xDEAD_BEEF;
 //! message_region3_sha256[6] = 0xDEAD_BEEF;
-//!
-//! // Set HASH to the beginning of the Hash area
-//! icm.set_hash_addr(&hash);
-//! // Set DSCR to the beginning of the region descriptor
-//! //to trigger ICM module to parse the new settings
-//! icm.set_dscr_addr(&icm_region_desc.region0);
 //!
 //! icm.enable()
 use crate::pac::generic::Variant;
@@ -1164,6 +1174,13 @@ pub trait IcmRegionDescT {
 /// offset to the next descriptor is ensured.
 ///
 /// Follows C-structure conventions and is 64-byte aligned
+///
+/// >**Important**
+/// >
+/// >ICM engine will **read** wherever this
+/// >is instantiated in memory, based on the [`Icm::set_dscr_addr()`]
+/// >so the user must ensure that this variable lives long enough or is
+/// >static
 #[repr(C)]
 #[repr(align(64))]
 pub struct IcmRegion {
@@ -1177,13 +1194,17 @@ pub struct IcmRegion {
     pub region3: IcmRegionDesc<Region3>,
 }
 
-impl Default for IcmRegion {
-    fn default() -> Self {
+impl IcmRegion {
+    pub const fn default() -> Self {
+        let region0 = IcmRegionDesc::new_region0();
+        let region1 = IcmRegionDesc::new_region1();
+        let region2 = IcmRegionDesc::new_region2();
+        let region3 = IcmRegionDesc::new_region3();
         Self {
-            region0: IcmRegionDesc::default(),
-            region1: IcmRegionDesc::default(),
-            region2: IcmRegionDesc::default(),
-            region3: IcmRegionDesc::default(),
+            region0,
+            region1,
+            region2,
+            region3,
         }
     }
 }
@@ -1219,6 +1240,49 @@ impl IcmRegionDesc<Region0> {
             .dscr()
             .write(|w| unsafe { w.dasa().bits((self as *const _) as u32 / 64) })
     }
+
+    const fn new_region0() -> Self {
+        IcmRegionDesc {
+            num: PhantomData,
+            raddr: Raddr::default(),
+            rcfg: Rcfg::default(),
+            rctrl: Rctrl::default(),
+            rnext: Rnext::default(),
+        }
+    }
+}
+impl IcmRegionDesc<Region1> {
+    const fn new_region1() -> Self {
+        IcmRegionDesc {
+            num: PhantomData,
+            raddr: Raddr::default(),
+            rcfg: Rcfg::default(),
+            rctrl: Rctrl::default(),
+            rnext: Rnext::default(),
+        }
+    }
+}
+impl IcmRegionDesc<Region2> {
+    const fn new_region2() -> Self {
+        IcmRegionDesc {
+            num: PhantomData,
+            raddr: Raddr::default(),
+            rcfg: Rcfg::default(),
+            rctrl: Rctrl::default(),
+            rnext: Rnext::default(),
+        }
+    }
+}
+impl IcmRegionDesc<Region3> {
+    const fn new_region3() -> Self {
+        IcmRegionDesc {
+            num: PhantomData,
+            raddr: Raddr::default(),
+            rcfg: Rcfg::default(),
+            rctrl: Rctrl::default(),
+            rnext: Rnext::default(),
+        }
+    }
 }
 
 impl<N: IcmRegionNum> IcmRegionDescT for IcmRegionDesc<N> {
@@ -1250,18 +1314,6 @@ impl<N: IcmRegionNum> IcmRegionDesc<N> {
     #[inline]
     pub fn set_rctrl(mut self, ctrl: Rctrl) {
         self.rctrl = ctrl;
-    }
-}
-
-impl<N: IcmRegionNum> Default for IcmRegionDesc<N> {
-    fn default() -> Self {
-        IcmRegionDesc {
-            num: PhantomData,
-            raddr: Raddr::default(),
-            rcfg: Rcfg::default(),
-            rctrl: Rctrl::default(),
-            rnext: Rnext::default(),
-        }
     }
 }
 
@@ -1304,8 +1356,8 @@ impl IcmRegionDescT for IcmSecondaryRegionDesc {
     }
 }
 
-impl Default for IcmSecondaryRegionDesc {
-    fn default() -> Self {
+impl IcmSecondaryRegionDesc {
+    pub const fn default() -> Self {
         IcmSecondaryRegionDesc {
             raddr: Raddr::default(),
             rcfg: Rcfg::default(),
@@ -1318,6 +1370,13 @@ impl Default for IcmSecondaryRegionDesc {
 /// ICM Hash Area
 ///
 /// Follows C-structure conventions and is 128-byte aligned
+///
+/// >**Important**
+/// >
+/// >ICM engine will **read** or **write** to wherever this
+/// >is instantiated in memory, based on the [`Icm::set_hash_addr()`]
+/// >so the user must ensure that this variable lives long enough or is
+/// >static
 #[derive(Debug)]
 #[repr(C)]
 #[repr(align(128))]
@@ -1341,10 +1400,7 @@ impl IcmHashArea {
     pub fn region3(&self) -> [u32; 8] {
         self.region3
     }
-}
-
-impl Default for IcmHashArea {
-    fn default() -> Self {
+    pub const fn default() -> Self {
         IcmHashArea {
             region0: [0; 8],
             region1: [0; 8],
@@ -1367,10 +1423,7 @@ impl Raddr {
     pub fn set_raddr<T>(&mut self, raddr: *const T) {
         self.raddr = raddr as u32;
     }
-}
-
-impl Default for Raddr {
-    fn default() -> Self {
+    const fn default() -> Self {
         // Unsure what a good Raddr default should be,
         // this is at least easily spotted when debugging...
         Raddr {
@@ -1388,8 +1441,8 @@ pub struct Rcfg {
     rcfg: u32,
 }
 
-impl Default for Rcfg {
-    fn default() -> Self {
+impl Rcfg {
+    const fn default() -> Self {
         Rcfg { rcfg: 0x3F0 }
     }
 }
@@ -1534,8 +1587,8 @@ pub struct Rctrl {
     pub trsize: u16,
 }
 
-impl Default for Rctrl {
-    fn default() -> Self {
+impl Rctrl {
+    const fn default() -> Self {
         Rctrl { trsize: 0 }
     }
 }
@@ -1555,10 +1608,8 @@ impl Rnext {
     pub fn set_rnext(&mut self, rnext: &impl IcmRegionDescT) {
         self.rnext = (rnext as *const _) as u32;
     }
-}
 
-impl Default for Rnext {
-    fn default() -> Self {
+    const fn default() -> Self {
         Rnext { rnext: 0 }
     }
 }
