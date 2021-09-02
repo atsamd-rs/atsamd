@@ -14,10 +14,10 @@
 //!
 //! Reading the Interrupt Status Register (ISR) clears the register,
 //! to provide a workaround for cases where multiple bits needs parsing,
-//! the [`Icm::update_interrupt_cache()`] and
-//! [`IcmRegionToken<I>::update_interrupt_cache()`] are provided.
-//! Together with the `get_**_cached_int` methods the interrupt register
-//! is only read (and cleared) when desirable.
+//! the [`Icm::get_interrupt_status()`] and
+//! [`IcmRegionToken<I>::get_interrupt_status()`] are provided.
+//! These return a queryable structure containing the interrupt register
+//! contents. Allowing multiple different interrupts to be read.
 //!
 //! ## Usage:
 //!
@@ -447,18 +447,122 @@ impl IcmToken {
     }
 }
 
+/// Struct useful for returning the interrupt status
+/// of the ICM. Provides methods for easy parsing of
+/// all the regions or via the `bitmask` argument
+/// narrow it down to the specific set of [`IcmRegionNum`]
+/// of interest.
+pub struct IcmInterrupt {
+    interrupt_vector: u32,
+}
+
+impl IcmInterrupt {
+    /// Region Status Updated interrupt status
+    #[inline]
+    pub fn get_rsu_int(&self, bitmask: u8) -> u8 {
+        (self.interrupt_vector >> 20 & 0x0f) as u8 & bitmask
+    }
+
+    /// Region End bit Condition Detected interrupt status
+    #[inline]
+    pub fn get_rec_int(&self, bitmask: u8) -> u8 {
+        (self.interrupt_vector >> 16 & 0x0f) as u8 & bitmask
+    }
+
+    /// Region Wrap Condition detected interrupt status
+    #[inline]
+    pub fn get_rwc_int(&self, bitmask: u8) -> u8 {
+        (self.interrupt_vector >> 12 & 0x0f) as u8 & bitmask
+    }
+
+    /// Region Bus Error interrupt status
+    #[inline]
+    pub fn get_rbe_int(&self, bitmask: u8) -> u8 {
+        (self.interrupt_vector >> 8 & 0x0f) as u8 & bitmask
+    }
+
+    /// Region Digest Mis interrupt status
+    #[inline]
+    pub fn get_rdm_int(&self, bitmask: u8) -> u8 {
+        (self.interrupt_vector >> 4 & 0x0f) as u8 & bitmask
+    }
+
+    /// Region Hash Completed interrupt status
+    #[inline]
+    pub fn get_rhc_int(&self, bitmask: u8) -> u8 {
+        (self.interrupt_vector & 0x0f) as u8 & bitmask
+    }
+}
+impl Default for IcmInterrupt {
+    fn default() -> Self {
+        Self {
+            interrupt_vector: 0,
+        }
+    }
+}
+
+/// Struct useful for returning the interrupt status
+/// of the ICM. Provides methods for easy parsing of
+/// the region specific [`IcmRegionNum`]
+pub struct IcmRegionInterrupt<I: IcmRegionNum> {
+    region: PhantomData<I>,
+    interrupt_vector: u32,
+}
+
+impl<I: IcmRegionNum> IcmRegionInterrupt<I> {
+    /// Used to mask out the correct bit based on [`IcmRegionNum`]
+    #[inline]
+    fn mask(&self) -> u8 {
+        1 << I::NUM
+    }
+
+    /// Region Status Updated interrupt status
+    #[inline]
+    pub fn get_rsu_int(&self) -> bool {
+        matches!((self.interrupt_vector >> 20 & 0x0f) as u8 & self.mask(), 1)
+    }
+
+    /// Region End bit Condition Detected interrupt status
+    #[inline]
+    pub fn get_rec_int(&self) -> bool {
+        matches!((self.interrupt_vector >> 16 & 0x0f) as u8 & self.mask(), 1)
+    }
+
+    /// Region Wrap Condition detected interrupt status
+    #[inline]
+    pub fn get_rwc_int(&self) -> bool {
+        matches!((self.interrupt_vector >> 12 & 0x0f) as u8 & self.mask(), 1)
+    }
+
+    /// Region Bus Error interrupt status
+    #[inline]
+    pub fn get_rbe_int(&self) -> bool {
+        matches!((self.interrupt_vector >> 8 & 0x0f) as u8 & self.mask(), 1)
+    }
+
+    /// Region Digest Mismatches!( interrupt status
+    #[inline]
+    pub fn get_rdm_int(&self) -> bool {
+        matches!((self.interrupt_vector >> 4 & 0x0f) as u8 & self.mask(), 1)
+    }
+
+    /// Region Hash Completed interrupt status
+    #[inline]
+    pub fn get_rhc_int(&self) -> bool {
+        matches!((self.interrupt_vector & 0x0f) as u8 & self.mask(), 1)
+    }
+}
+
 /// IcmRegionToken provides access to region-specific
 /// settings like interrupts and status
 pub struct IcmRegionToken<I: IcmRegionNum> {
     region: PhantomData<I>,
-    interrupt_cache: u32,
 }
 
 impl<I: IcmRegionNum> IcmRegionToken<I> {
     pub(super) fn new() -> Self {
         Self {
             region: PhantomData,
-            interrupt_cache: 0,
         }
     }
 
@@ -710,47 +814,15 @@ impl<I: IcmRegionNum> IcmRegionToken<I> {
     /// This might result in unexpected results for example
     /// when sequentially trying to determine which interrupt triggered.
     ///
-    /// This is an alternative, store all the data from the register
-    /// and parse later with the designated `get_[name]_cached_int`
+    /// This is an alternative, return all the data from the register
+    /// and parse later with the designated `get_[name]_int` functions.
     #[inline]
-    pub fn update_interrupt_cache(&mut self) {
-        self.interrupt_cache = self.isr().read().bits();
-    }
-
-    /// Region Status Updated interrupt status
-    #[inline]
-    pub fn get_rsu_cached_int(&self) -> bool {
-        matches!((self.interrupt_cache >> 20 & 0x0f) as u8 & self.mask(), 1)
-    }
-
-    /// Region End bit Condition Detected interrupt status
-    #[inline]
-    pub fn get_rec_cached_int(&self) -> bool {
-        matches!((self.interrupt_cache >> 16 & 0x0f) as u8 & self.mask(), 1)
-    }
-
-    /// Region Wrap Condition detected interrupt status
-    #[inline]
-    pub fn get_rwc_cached_int(&self) -> bool {
-        matches!((self.interrupt_cache >> 12 & 0x0f) as u8 & self.mask(), 1)
-    }
-
-    /// Region Bus Error interrupt status
-    #[inline]
-    pub fn get_rbe_cached_int(&self) -> bool {
-        matches!((self.interrupt_cache >> 8 & 0x0f) as u8 & self.mask(), 1)
-    }
-
-    /// Region Digest Mismatches!( interrupt status
-    #[inline]
-    pub fn get_rdm_cached_int(&self) -> bool {
-        matches!((self.interrupt_cache >> 4 & 0x0f) as u8 & self.mask(), 1)
-    }
-
-    /// Region Hash Completed interrupt status
-    #[inline]
-    pub fn get_rhc_cached_int(&self) -> bool {
-        matches!((self.interrupt_cache & 0x0f) as u8 & self.mask(), 1)
+    pub fn get_interrupt_status(&mut self) -> IcmRegionInterrupt<I> {
+        let interrupt_vector = self.isr().read().bits();
+        IcmRegionInterrupt {
+            region: PhantomData,
+            interrupt_vector,
+        }
     }
 }
 
@@ -761,8 +833,6 @@ impl<I: IcmRegionNum> IcmRegionToken<I> {
 pub struct Icm {
     /// IcmToken providing hardware access
     token: IcmToken,
-    /// Cached copy of the ISR register
-    interrupt_cache: u32,
 }
 
 impl Icm {
@@ -1006,49 +1076,13 @@ impl Icm {
     /// This might result in unexpected results for example
     /// when sequentially trying to determine which interrupt triggered.
     ///
-    /// This is an alternative, store all the data from the register
-    /// and parse later with the designated `get_[name]_cached_int`
+    /// This is an alternative, return all the data from the register
+    /// and parse later with the designated `get_[name]_int` functions.
     #[inline]
-    pub fn update_interrupt_cache(&mut self) {
-        self.interrupt_cache = self.token.isr().read().bits();
+    pub fn get_interrupt_status(&mut self) -> IcmInterrupt {
+        let interrupt_vector = self.token.isr().read().bits();
+        IcmInterrupt { interrupt_vector }
     }
-
-    /// Region Status Updated interrupt status
-    #[inline]
-    pub fn get_rsu_cached_int(&self, bitmask: u8) -> u8 {
-        (self.interrupt_cache >> 20 & 0x0f) as u8 & bitmask
-    }
-
-    /// Region End bit Condition Detected interrupt status
-    #[inline]
-    pub fn get_rec_cached_int(&self, bitmask: u8) -> u8 {
-        (self.interrupt_cache >> 16 & 0x0f) as u8 & bitmask
-    }
-
-    /// Region Wrap Condition detected interrupt status
-    #[inline]
-    pub fn get_rwc_cached_int(&self, bitmask: u8) -> u8 {
-        (self.interrupt_cache >> 12 & 0x0f) as u8 & bitmask
-    }
-
-    /// Region Bus Error interrupt status
-    #[inline]
-    pub fn get_rbe_cached_int(&self, bitmask: u8) -> u8 {
-        (self.interrupt_cache >> 8 & 0x0f) as u8 & bitmask
-    }
-
-    /// Region Digest Mis interrupt status
-    #[inline]
-    pub fn get_rdm_cached_int(&self, bitmask: u8) -> u8 {
-        (self.interrupt_cache >> 4 & 0x0f) as u8 & bitmask
-    }
-
-    /// Region Hash Completed interrupt status
-    #[inline]
-    pub fn get_rhc_cached_int(&self, bitmask: u8) -> u8 {
-        (self.interrupt_cache & 0x0f) as u8 & bitmask
-    }
-
     /// Trigger recalculation of memory monitor region specified
     /// by the bitmask:
     /// 0b0001 = region0
