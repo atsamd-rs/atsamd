@@ -21,12 +21,13 @@
 //!
 //! >**IMPORTANT** - Memory safety considerations
 //! >
-//! >The ICM engine accesses the assigned `DSCR` memory address, so it must be available.
-//! >Depending on the application, this might entail making [`IcmRegion`] **static**.
+//! >The ICM engine accesses the assigned `DSCR` memory address, so it must be
+//! >available. Depending on the application, this might entail making
+//! >[`IcmRegion`] **static**.
 //! >
-//! >The same goes for [`IcmHashArea`], but here it is even more important to ensure
-//! >the memory is designated for `IcmHashArea` usage, since the ICM controller may
-//! >write data, depending on ICM configuration.
+//! >The same goes for [`IcmHashArea`], but here it is even more important to
+//! >ensure the memory is designated for `IcmHashArea` usage, since the ICM
+//! >controller may write data, depending on ICM configuration.
 //! >
 //! >Setting [`IcmHashArea`] **static** might be the safest path.
 //!
@@ -142,9 +143,7 @@
 //! let mut peripherals = Peripherals::take().unwrap();
 //!
 //! // Create new ICM
-//! let icmtoken = IcmToken::new(peripherals.ICM);
-//!
-//! let mut icm = Icm::new(icmtoken);
+//! let mut icm = Icm::new(peripherals.ICM);
 //!
 //! // Reset the ICM, clearing past error states
 //! icm.swrst();
@@ -370,23 +369,13 @@ use core::marker::PhantomData;
 pub use crate::icm::cfg::UALGO_A as icm_algorithm;
 
 /// IcmToken represents the peripheral and it encapsulates the hardware register
-pub struct IcmToken {
+struct IcmToken {
     icm: crate::pac::ICM,
 }
 
 impl IcmToken {
     /// Create a new instance of [`IcmToken`]
-    ///
-    /// Don't forget to enable the `APB` bus for ICM
-    ///
-    /// `AHB` bus is on by default at reset
-    ///
-    /// Clock::v1
-    /// `mclk.apbcmask.modify(|_, w| w.icm_().set_bit());`
-    ///
-    /// Clock::v2
-    /// `tokens.apbs.icm.enable();`
-    pub fn new(icm: crate::pac::ICM) -> Self {
+    fn new(icm: crate::pac::ICM) -> Self {
         Self { icm }
     }
 
@@ -838,21 +827,29 @@ impl<I: IcmRegionNum> IcmRegionToken<I> {
 
 /// ICM Peripheral
 ///
-/// Encapsulates the [`IcmToken`] and provides an interface
-/// to the ICM hardware
+/// Encapsulates the PAC which acts as a token
+/// and provides an interface to the ICM hardware
 pub struct Icm {
     /// IcmToken providing hardware access
     token: IcmToken,
 }
 
 impl Icm {
-    /// Enable the ICM peripheral
+    /// Create the interface for the ICM peripheral
+    ///
+    /// Don't forget to enable the `APB` bus for ICM
+    ///
+    /// `AHB` bus is on by default at reset
+    ///
+    /// Clock::v1
+    /// `mclk.apbcmask.modify(|_, w| w.icm_().set_bit());`
+    ///
+    /// Clock::v2
+    /// `tokens.apbs.icm.enable();`
     #[inline]
-    pub fn new(token: IcmToken) -> Self {
-        Self {
-            token,
-            interrupt_cache: 0,
-        }
+    pub fn new(icm: crate::pac::ICM) -> Self {
+        let token = IcmToken::new(icm);
+        Self { token }
     }
 
     /// Enable the ICM peripheral
