@@ -46,7 +46,7 @@ optional = true
 
 [dependencies.cortex-m-rtic]
 optional = true
-version = "0.6.0-alpha.4"
+version = "0.6.0-alpha.5"
 
 [dependencies.rtic-monotonic]
 optional = true
@@ -146,14 +146,24 @@ optional = true
 
 [features]
 default = ["unproven"]
-# This section lists our feature name to dependency mapping.  This are separated
+
+# This section lists our feature name to dependency mapping.  This is separated
 # out so that the board support crates can reference a single feature name to
 # select the appropriate chip, and to keep that separate from the dependency name
 # for the `rt` feature below, which has to list out all possible optional deps.
 # If we simply used feature names that matched the dependency names, enabling the
 # rt feature would link all possible parts in and cause a linker error due to
 # the high degree of similar symbols present in the various parts.
-device = [] # Should be included if we are building for a specific target device.
+
+# The `device` feature is a dependency of each specific target device.  It
+# should not be enabled directly, as that could lead to cryptic build errors.
+# The `library` feature can be enabled to use atsamd-hal without selecting a
+# specific target device.
+device = []
+
+# Bypasses compile-time checks that a specific device is enabled.
+library = []
+
 samd11 = ["device"] # Convenience feature for shared configuration of samd11 chips.
 samd11c = ["atsamd11c", "samd11"]
 samd11c-rt = ["samd11c", "atsamd11c/rt"]

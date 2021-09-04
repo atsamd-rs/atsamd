@@ -24,17 +24,21 @@ mod app {
     use hal::rtc::{Count32Mode, Rtc};
     use rtic_monotonic::Extensions;
 
-    #[resources]
-    struct Resources {
-        red_led:
-            hal::gpio::v2::Pin<hal::gpio::v2::PA17, hal::gpio::v2::Output<hal::gpio::v2::PushPull>>,
+    #[local]
+    struct Local {}
+
+    #[shared]
+    struct Shared {
+        // The LED could be a local resource, since it is only used in one task
+        // But we want to showcase shared resources and locking
+        red_led: bsp::RedLed,
     }
 
     #[monotonic(binds = RTC, default = true)]
     type RtcMonotonic = Rtc<Count32Mode>;
 
     #[init]
-    fn init(cx: init::Context) -> (init::LateResources, init::Monotonics) {
+    fn init(cx: init::Context) -> (Shared, Local, init::Monotonics) {
         let mut peripherals: Peripherals = cx.device;
         let pins = bsp::Pins::new(peripherals.PORT);
         let mut core: rtic::export::Peripherals = cx.core;
@@ -59,12 +63,13 @@ mod app {
         // Start the blink task
         blink::spawn().unwrap();
 
-        (init::LateResources { red_led }, init::Monotonics(rtc))
+        (Shared { red_led }, Local {}, init::Monotonics(rtc))
     }
 
-    #[task(resources = [red_led])]
-    fn blink(mut _cx: blink::Context) {
-        _cx.resources.red_led.lock(|led| led.toggle().unwrap());
+    #[task(shared = [red_led])]
+    fn blink(mut cx: blink::Context) {
+        // If the LED were a local resource, the lock would not be necessary
+        cx.shared.red_led.lock(|led| led.toggle().unwrap());
         blink::spawn_after(1_u32.seconds()).ok();
     }
 }
