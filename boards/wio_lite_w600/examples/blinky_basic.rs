@@ -24,7 +24,7 @@ fn main() -> ! {
         &mut peripherals.SYSCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let pins = hal::Pins::new(peripherals.PORT);
+    let pins = bsp::Pins::new(peripherals.PORT);
 
     // You will need to connect an led to D13 with an appropriate resistor
     let mut led = pins.d13.into_push_pull_output();
