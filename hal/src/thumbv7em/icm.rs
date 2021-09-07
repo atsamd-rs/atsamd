@@ -15,7 +15,7 @@
 //! Reading the Interrupt Status Register (ISR) clears the register,
 //! to provide a workaround for cases where multiple bits needs parsing,
 //! the [`Icm::get_interrupt_status()`] and
-//! [`IcmRegion<I>::get_interrupt_status()`] are provided.
+//! [`Region<I>::get_interrupt_status()`] are provided.
 //! These return a queryable structure containing the interrupt register
 //! contents. Allowing multiple different interrupts to be read.
 //!
@@ -23,13 +23,13 @@
 //! >
 //! >The ICM engine accesses the assigned `DSCR` memory address, so it must be
 //! >available. Depending on the application, this might entail making
-//! >[`IcmRegions`] **static**.
+//! >[`Regions`] **static**.
 //! >
-//! >The same goes for [`IcmHashArea`], but here it is even more important to
-//! >ensure the memory is designated for `IcmHashArea` usage, since the ICM
+//! >The same goes for [`HashArea`], but here it is even more important to
+//! >ensure the memory is designated for `HashArea` usage, since the ICM
 //! >controller may write data, depending on ICM configuration.
 //! >
-//! >Setting [`IcmHashArea`] **static** might be the safest path.
+//! >Setting [`HashArea`] **static** might be the safest path.
 //!
 //! ## Usage:
 //!
@@ -41,10 +41,10 @@
 //!
 //! Enable and create the interface for required memory regions
 //! [`Icm::enable_region0()`] and enable it via
-//! [`IcmRegion::enable_monitoring()`]
+//! [`Region::enable_monitoring()`]
 //!
 //! Depending on the number of regions required, the helper
-//! [`IcmRegions::default()`] alows setting up all 4 regions directly, if one
+//! [`Regions::default()`] alows setting up all 4 regions directly, if one
 //! region is sufficient, manually create  [`MainRegionDesc<Region0>::
 //! default()`].
 //!
@@ -55,16 +55,16 @@
 //!  [`Icm::set_dscr_addr()`] (or via helper in
 //! [`MainRegionDesc<Region0>::set_dscr_addr()`])
 //!
-//!  Via [`IcmRegion`], setup the desired interrupts depending on usecase.
+//!  Via [`Region`], setup the desired interrupts depending on usecase.
 //!
 //!  To view which interrupts has been enabled in the debugger, check the
 //! `ICM->IMR` register.
 //!
 //!  Any object in memory can be used as the "Hash" area, but for convenience
-//! the provided  [`IcmHashArea`] allows indexing of the 4 regions and is
+//! the provided  [`HashArea`] allows indexing of the 4 regions and is
 //! correctly memory aligned.
 //!
-//!  Set the pointer to [`IcmHashArea`] via [`Icm::set_hash_addr()`]
+//!  Set the pointer to [`HashArea`] via [`Icm::set_hash_addr()`]
 //!
 //!  **See note about memory safety above**
 //!
@@ -82,10 +82,10 @@
 //!
 //! ### Memory monitoring
 //!
-//! [`IcmHashArea`] needs to contain the expected SHA-sums of the data to
+//! [`HashArea`] needs to contain the expected SHA-sums of the data to
 //! monitor, [`Icm::set_ascd()`] is provided to help with creating this data.
 //! Alternatively do it manually and then change mode, or prepopulate the
-//! [`IcmHashArea`] with SHA-sums.
+//! [`HashArea`] with SHA-sums.
 //!
 //! Assuming general setup is already done, modify the [`RegionConfiguration`]
 //! which is part of the [`MainRegionDesc`]:
@@ -132,8 +132,8 @@
 //! static MESSAGE_SHA256_RES: [u32; 8] = [
 //!     0xbf1678ba, 0xeacf018f, 0xde404141, 0x2322ae5d, 0xa36103b0, 0x9c7a1796, 0x61ff10b4, 0xad1500f2,
 //! ];
-//! static mut HASH: IcmHashArea = IcmHashArea::default();
-//! static mut ICM_REGION_DESC: IcmRegions = IcmRegions::default();
+//! static mut HASH: HashArea = HashArea::default();
+//! static mut ICM_REGION_DESC: Regions = Regions::default();
 //!
 //! // Enable ICM apb clock
 //! // Clock v1
@@ -159,7 +159,7 @@
 //! icm.set_ascd(false);
 //!
 //! // Region Descriptor
-//! let mut icm_region_desc = IcmRegions::default();
+//! let mut icm_region_desc = Regions::default();
 //!
 //! // Get the interface for Region0 and enable monitoring
 //! let icm_region0 = icm.enable_region0();
@@ -296,7 +296,7 @@
 //!
 //! // Also possible to directly edit `ICM_REGION_DESC`
 //! // in an unsafe block
-//! let mut icm_region_desc = IcmRegions::default();
+//! let mut icm_region_desc = Regions::default();
 //!
 //! // Setup region 0 to monitor memory
 //! icm_region_desc
@@ -454,9 +454,9 @@ bitfield::bitfield! {
     /// Struct useful for returning the interrupt status
     /// of the ICM. Provides methods for easy parsing of
     /// all the regions or via the `bitmask` argument
-    /// narrow it down to the specific set of [`IcmRegionNum`]
+    /// narrow it down to the specific set of [`RegionNum`]
     /// of interest.
-    pub struct IcmInterrupt(u32);
+    pub struct Interrupt(u32);
     impl Debug;
     u8;
     get_rhc, _: 3, 0;
@@ -468,7 +468,7 @@ bitfield::bitfield! {
     get_urad, _: 24, 24;
 }
 
-impl IcmInterrupt {
+impl Interrupt {
     /// Region Status Updated interrupt status
     #[inline]
     pub fn get_rsu_int(&self) -> RegionStatusUpdatedDetected {
@@ -505,22 +505,22 @@ impl IcmInterrupt {
         RegionHashCompleted::from_bits_truncate(self.get_rhc())
     }
 }
-impl Default for IcmInterrupt {
+impl Default for Interrupt {
     fn default() -> Self {
-        IcmInterrupt(0)
+        Interrupt(0)
     }
 }
 
 /// Struct useful for returning the interrupt status
 /// of the ICM. Provides methods for easy parsing of
-/// the region specific [`IcmRegionNum`]
-pub struct IcmRegionInterrupt<I: IcmRegionNum> {
+/// the region specific [`RegionNum`]
+pub struct RegionInterrupt<I: RegionNum> {
     region: PhantomData<I>,
-    interrupt: IcmInterrupt,
+    interrupt: Interrupt,
 }
 
-impl<I: IcmRegionNum> IcmRegionInterrupt<I> {
-    /// Used to mask out the correct bit based on [`IcmRegionNum`]
+impl<I: RegionNum> RegionInterrupt<I> {
+    /// Used to mask out the correct bit based on [`RegionNum`]
     #[inline]
     fn mask(&self) -> u8 {
         1 << I::NUM
@@ -563,30 +563,30 @@ impl<I: IcmRegionNum> IcmRegionInterrupt<I> {
     }
 }
 
-/// IcmRegion provides access to region-specific
+/// Region provides access to region-specific
 /// settings like interrupts and status
-pub struct IcmRegion<I: IcmRegionNum> {
+pub struct Region<I: RegionNum> {
     region: PhantomData<I>,
 }
 
-impl<I: IcmRegionNum> IcmRegion<I> {
+impl<I: RegionNum> Region<I> {
     pub(super) fn new() -> Self {
         Self {
             region: PhantomData,
         }
     }
 
-    /// Used to mask out the correct bit based on [`IcmRegionNum`]
+    /// Used to mask out the correct bit based on [`RegionNum`]
     #[inline]
     fn mask(&self) -> u8 {
         1 << I::NUM
     }
 
-    /// Provides the base pointer to the [`Icm`] registers
+    /// Provides the base pointer to the [``] registers
     ///
     /// # Safety
     ///
-    /// Only one [IcmRegion] accessible at any given time
+    /// Only one [Region] accessible at any given time
     #[inline]
     fn icm(&self) -> &RegisterBlock {
         unsafe { &*crate::pac::ICM::ptr() }
@@ -827,9 +827,9 @@ impl<I: IcmRegionNum> IcmRegion<I> {
     /// This is an alternative, return all the data from the register
     /// and parse later with the designated `get_[name]_int` functions.
     #[inline]
-    pub fn get_interrupt_status(&mut self) -> IcmRegionInterrupt<I> {
-        let interrupt = IcmInterrupt(self.isr().read().bits());
-        IcmRegionInterrupt {
+    pub fn get_interrupt_status(&mut self) -> RegionInterrupt<I> {
+        let interrupt = Interrupt(self.isr().read().bits());
+        RegionInterrupt {
             region: PhantomData,
             interrupt,
         }
@@ -970,51 +970,51 @@ impl Icm {
     // Region specifics
 
     #[inline]
-    pub fn enable_region<N: IcmRegionNum>(&mut self) -> IcmRegion<N> {
-        IcmRegion::<N>::new()
+    pub fn enable_region<N: RegionNum>(&mut self) -> Region<N> {
+        Region::<N>::new()
     }
 
     /// Enable region0
     ///
-    /// Creates an [`IcmRegion`] which provides region specific
+    /// Creates an [`Region`] which provides region specific
     /// settings
     #[inline]
-    pub fn enable_region0(&mut self) -> IcmRegion<Region0> {
-        IcmRegion::new()
+    pub fn enable_region0(&mut self) -> Region<Region0> {
+        Region::new()
     }
     /// Enable region1
     ///
-    /// Creates an [`IcmRegion`] which provides region specific
+    /// Creates an [`Region`] which provides region specific
     /// settings
     #[inline]
-    pub fn enable_region1(&mut self) -> IcmRegion<Region1> {
-        IcmRegion::new()
+    pub fn enable_region1(&mut self) -> Region<Region1> {
+        Region::new()
     }
     /// Enable region2
     ///
-    /// Creates an [`IcmRegion`] which provides region specific
+    /// Creates an [`Region`] which provides region specific
     /// settings
     #[inline]
-    pub fn enable_region2(&mut self) -> IcmRegion<Region2> {
-        IcmRegion::new()
+    pub fn enable_region2(&mut self) -> Region<Region2> {
+        Region::new()
     }
     /// Enable region3
     ///
-    /// Creates an [`IcmRegion`] which provides region specific
+    /// Creates an [`Region`] which provides region specific
     /// settings
     #[inline]
-    pub fn enable_region3(&mut self) -> IcmRegion<Region3> {
-        IcmRegion::new()
+    pub fn enable_region3(&mut self) -> Region<Region3> {
+        Region::new()
     }
 
-    // Configuration of Icm
+    // Configuration of ICM
 
     /// Helper for setting the HASH addr
     ///
     /// Expects a raw pointer to the memory address of the beginning of the
     /// designated variable but expressed as a multiple of 128
     #[inline]
-    pub fn set_hash_addr(&mut self, hash_addr_pointer: &IcmHashArea) {
+    pub fn set_hash_addr(&mut self, hash_addr_pointer: &HashArea) {
         self.hash()
             .write(|w| unsafe { w.hasa().bits((hash_addr_pointer as *const _) as u32 / 128) })
     }
@@ -1164,9 +1164,9 @@ impl Icm {
     /// This is an alternative, return all the data from the register
     /// and parse later with the designated `get_[name]_int` functions.
     #[inline]
-    pub fn get_interrupt_status(&mut self) -> IcmInterrupt {
+    pub fn get_interrupt_status(&mut self) -> Interrupt {
         let interrupt_vector = self.isr().read().bits();
-        IcmInterrupt(interrupt_vector)
+        Interrupt(interrupt_vector)
     }
     /// Trigger recalculation of memory monitor region specified
     /// by the bitmask:
@@ -1186,7 +1186,7 @@ impl Icm {
 /// offset for each ICM Region
 ///
 /// ICM supports 4 memory regions
-pub trait IcmRegionNum: Sealed {
+pub trait RegionNum: Sealed {
     /// Numerical ID of the memory region
     const NUM: usize;
     /// Memory offset
@@ -1198,7 +1198,7 @@ seq!(N in 0..=3 {
         #[doc = "ICM Region " N]
         pub enum Region#N {}
         impl Sealed for Region#N {}
-        impl IcmRegionNum for Region#N {
+        impl RegionNum for Region#N {
             const NUM: usize = N;
             #[allow(clippy::identity_op)]
             #[allow(clippy::erasing_op)]
@@ -1223,7 +1223,7 @@ pub trait RegionDesc {
 
 /// Helper for creating the Region Descriptor structure
 ///
-/// It is also possible to construct the IcmRegion manually,
+/// It is also possible to construct the Region manually,
 /// but then care has to be taken to point `rnext` to the appropriate
 /// place in memory, here the hardware assumption of 0x10
 /// offset to the next descriptor is ensured.
@@ -1238,7 +1238,7 @@ pub trait RegionDesc {
 /// >static
 #[repr(C)]
 #[repr(align(64))]
-pub struct IcmRegions {
+pub struct Regions {
     /// MainRegionDesc0
     pub region0: MainRegionDesc<Region0>,
     /// MainRegionDesc1
@@ -1249,7 +1249,7 @@ pub struct IcmRegions {
     pub region3: MainRegionDesc<Region3>,
 }
 
-impl IcmRegions {
+impl Regions {
     pub const fn default() -> Self {
         let region0 = MainRegionDesc::new_region0();
         let region1 = MainRegionDesc::new_region1();
@@ -1267,10 +1267,10 @@ impl IcmRegions {
 /// Structure ICM Region Descriptor area.
 ///
 /// Follows C-structure conventions and is 16-byte aligned,
-/// being a part of the 64-bytes making up [`IcmRegion`]
+/// being a part of the 64-bytes making up [`Region`]
 #[repr(C)]
 #[repr(align(16))]
-pub struct MainRegionDesc<N: IcmRegionNum> {
+pub struct MainRegionDesc<N: RegionNum> {
     /// Numerical Region Identifier
     num: PhantomData<N>,
     /// The first byte address of the Region.
@@ -1313,7 +1313,7 @@ seq!(N in 0..=3 {
     }
 });
 
-impl<N: IcmRegionNum> RegionDesc for MainRegionDesc<N> {
+impl<N: RegionNum> RegionDesc for MainRegionDesc<N> {
     /// Set [`RegionAddress`]
     #[inline]
     fn set_region_address<T>(&mut self, addr: *const T) {
@@ -1336,7 +1336,7 @@ impl<N: IcmRegionNum> RegionDesc for MainRegionDesc<N> {
     }
 }
 
-impl<N: IcmRegionNum> MainRegionDesc<N> {
+impl<N: RegionNum> MainRegionDesc<N> {
     /// The length of data for the ICM engine to transfer,
     /// expressed as number of `blocks - 1`.
     #[inline]
@@ -1408,16 +1408,16 @@ impl SecondaryRegionDesc {
 #[derive(Debug)]
 #[repr(C)]
 #[repr(align(128))]
-pub struct IcmHashArea {
+pub struct HashArea {
     pub region0: [u32; 8],
     pub region1: [u32; 8],
     pub region2: [u32; 8],
     pub region3: [u32; 8],
 }
 
-impl IcmHashArea {
+impl HashArea {
     pub const fn default() -> Self {
-        IcmHashArea {
+        HashArea {
             region0: [0; 8],
             region1: [0; 8],
             region2: [0; 8],
