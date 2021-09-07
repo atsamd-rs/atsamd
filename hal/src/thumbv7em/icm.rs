@@ -15,7 +15,7 @@
 //! Reading the Interrupt Status Register (ISR) clears the register,
 //! to provide a workaround for cases where multiple bits needs parsing,
 //! the [`Icm::get_interrupt_status()`] and
-//! [`IcmRegionToken<I>::get_interrupt_status()`] are provided.
+//! [`IcmRegion<I>::get_interrupt_status()`] are provided.
 //! These return a queryable structure containing the interrupt register
 //! contents. Allowing multiple different interrupts to be read.
 //!
@@ -23,7 +23,7 @@
 //! >
 //! >The ICM engine accesses the assigned `DSCR` memory address, so it must be
 //! >available. Depending on the application, this might entail making
-//! >[`IcmRegion`] **static**.
+//! >[`IcmRegions`] **static**.
 //! >
 //! >The same goes for [`IcmHashArea`], but here it is even more important to
 //! >ensure the memory is designated for `IcmHashArea` usage, since the ICM
@@ -41,21 +41,21 @@
 //!
 //! Enable and create the interface for required memory regions
 //! [`Icm::enable_region0()`] and enable it via
-//! [`IcmRegionToken::enable_monitoring()`]
+//! [`IcmRegion::enable_monitoring()`]
 //!
 //! Depending on the number of regions required, the helper
-//! [`IcmRegion::default()`] alows setting up all 4 regions directly, if one
-//! region is sufficient, manually create  [`IcmRegionDesc<Region0>::
+//! [`IcmRegions::default()`] alows setting up all 4 regions directly, if one
+//! region is sufficient, manually create  [`MainRegionDesc<Region0>::
 //! default()`].
 //!
-//!  Modify the [`IcmRegionDesc`], see documentation and cargo doc for all
+//!  Modify the [`MainRegionDesc`], see documentation and cargo doc for all
 //! methods.
 //!
-//!  Set the `DSCR` address to the beginning of the [`IcmRegionDesc`] via
+//!  Set the `DSCR` address to the beginning of the [`MainRegionDesc`] via
 //!  [`Icm::set_dscr_addr()`] (or via helper in
-//! [`IcmRegionDesc<Region0>::set_dscr_addr()`])
+//! [`MainRegionDesc<Region0>::set_dscr_addr()`])
 //!
-//!  Via [`IcmRegionToken`], setup the desired interrupts depending on usecase.
+//!  Via [`IcmRegion`], setup the desired interrupts depending on usecase.
 //!
 //!  To view which interrupts has been enabled in the debugger, check the
 //! `ICM->IMR` register.
@@ -70,15 +70,15 @@
 //!
 //! ### Hash calculation
 //!
-//! Assuming general setup is already done, modify the [`Rcfg`] which is part of
-//! the [`IcmRegionDesc`]:
+//! Assuming general setup is already done, modify the [`RegionConfiguration`]
+//! which is part of the [`MainRegionDesc`]:
 //!
-//! * [`Rcfg::set_rhien()`] to `false` to allow interrupts when calculation is
-//!   done
-//! * [`Rcfg::set_eom()`] to `true` only for the last region
+//! * [`RegionConfiguration::set_rhien()`] to `false` to allow interrupts when
+//!   calculation is done
+//! * [`RegionConfiguration::set_eom()`] to `true` only for the last region
 //!
-//! Change [`Raddr`] to point to the object to SHA-sum with
-//! [`IcmRegionDesc<RegionNumT>::set_raddr()`]
+//! Change [`RegionAddress`] to point to the object to SHA-sum with
+//! [`MainRegionDesc<RegionNumT>::set_region_address()`]
 //!
 //! ### Memory monitoring
 //!
@@ -87,13 +87,14 @@
 //! Alternatively do it manually and then change mode, or prepopulate the
 //! [`IcmHashArea`] with SHA-sums.
 //!
-//! Assuming general setup is already done, modify the [`Rcfg`] which is part of
-//! the [`IcmRegionDesc`]:
+//! Assuming general setup is already done, modify the [`RegionConfiguration`]
+//! which is part of the [`MainRegionDesc`]:
 //!
-//! * [`Rcfg::set_dmien()`] to `false` to allow interrupts if mismatch occurs
-//! * [`Rcfg::set_cdwbn()`] to `true` to change to monitor mode
-//! * [`Rcfg::set_wrap()`] to `true` only for the last region if continuous
-//!   monitoring is desired
+//! * [`RegionConfiguration::set_dmien()`] to `false` to allow interrupts if
+//!   mismatch occurs
+//! * [`RegionConfiguration::set_cdwbn()`] to `true` to change to monitor mode
+//! * [`RegionConfiguration::set_wrap()`] to `true` only for the last region if
+//!   continuous monitoring is desired
 //!
 //! ## Examples
 //!
@@ -132,7 +133,7 @@
 //!     0xbf1678ba, 0xeacf018f, 0xde404141, 0x2322ae5d, 0xa36103b0, 0x9c7a1796, 0x61ff10b4, 0xad1500f2,
 //! ];
 //! static mut HASH: IcmHashArea = IcmHashArea::default();
-//! static mut ICM_REGION_DESC: IcmRegion = IcmRegion::default();
+//! static mut ICM_REGION_DESC: IcmRegions = IcmRegions::default();
 //!
 //! // Enable ICM apb clock
 //! // Clock v1
@@ -158,7 +159,7 @@
 //! icm.set_ascd(false);
 //!
 //! // Region Descriptor
-//! let mut icm_region_desc = IcmRegion::default();
+//! let mut icm_region_desc = IcmRegions::default();
 //!
 //! // Get the interface for Region0 and enable monitoring
 //! let icm_region0 = icm.enable_region0();
@@ -170,7 +171,7 @@
 //! icm_region0.set_rhc_int();
 //!
 //! // Region0 raddr
-//! icm_region_desc.region0.set_raddr(MESSAGE_REF0.as_ptr());
+//! icm_region_desc.region0.set_region_address(MESSAGE_REF0.as_ptr());
 //!
 //! // Configure the RCFG
 //!
@@ -200,7 +201,7 @@
 //! icm_region1.set_rhc_int();
 //!
 //! // Region1 raddr
-//! icm_region_desc.region1.set_raddr(MESSAGE_REF1.as_ptr());
+//! icm_region_desc.region1.set_region_address(MESSAGE_REF1.as_ptr());
 //!
 //! // Configure the RCFG
 //! // The RHC flag is set when the field NEXT = 0
@@ -221,7 +222,7 @@
 //! icm_region2.set_rhc_int();
 //!
 //! // Region2 raddr
-//! icm_region_desc.region2.set_raddr(MESSAGE_REF1.as_ptr());
+//! icm_region_desc.region2.set_region_address(MESSAGE_REF1.as_ptr());
 //!
 //! // Configure the RCFG
 //! // The RHC flag is set when the field NEXT = 0
@@ -242,7 +243,7 @@
 //! icm_region3.set_rhc_int();
 //!
 //! // Region3 raddr
-//! icm_region_desc.region3.set_raddr(MESSAGE_REF1.as_ptr());
+//! icm_region_desc.region3.set_region_address(MESSAGE_REF1.as_ptr());
 //!
 //! // Configure the RCFG
 //! //
@@ -293,11 +294,15 @@
 //! // Automatic Switch to Compare is disabled
 //! icm.set_ascd(false);
 //!
+//! // Also possible to directly edit `ICM_REGION_DESC`
+//! // in an unsafe block
+//! let mut icm_region_desc = IcmRegions::default();
+//!
 //! // Setup region 0 to monitor memory
 //! icm_region_desc
 //!     .region0
-//!     .set_raddr(&message_region0_sha1);
-//! icm_region_desc.region0.rcfg.reset_rcfg_to_default();
+//!     .set_region_address(&message_region0_sha1);
+//! icm_region_desc.region0.rcfg.reset_region_configuration_to_default();
 //! icm_region_desc.region0.rcfg.set_algo(icm_algorithm::SHA1);
 //! // Activate Compare Digest (should be true when comparing memory)
 //! icm_region_desc.region0.rcfg.set_cdwbn(true);
@@ -310,8 +315,8 @@
 //! // Setup region 1 to monitor memory
 //! icm_region_desc
 //!     .region1
-//!     .set_raddr(&message_region1_sha1);
-//! icm_region_desc.region1.rcfg.reset_rcfg_to_default();
+//!     .set_region_address(&message_region1_sha1);
+//! icm_region_desc.region1.rcfg.reset_region_configuration_to_default();
 //! icm_region_desc.region1.rcfg.set_algo(icm_algorithm::SHA1);
 //! // Activate Compare Digest (should be true when comparing memory)
 //! icm_region_desc.region1.rcfg.set_cdwbn(true);
@@ -324,8 +329,8 @@
 //! // Setup region 2 to monitor memory
 //! icm_region_desc
 //!     .region2
-//!     .set_raddr(&message_region2_sha224);
-//! icm_region_desc.region2.rcfg.reset_rcfg_to_default();
+//!     .set_region_address(&message_region2_sha224);
+//! icm_region_desc.region2.rcfg.reset_region_configuration_to_default();
 //! icm_region_desc.region2.rcfg.set_algo(icm_algorithm::SHA224);
 //! // Activate Compare Digest (should be true when comparing memory)
 //! icm_region_desc.region2.rcfg.set_cdwbn(true);
@@ -338,8 +343,8 @@
 //! // Setup region 3 to monitor memory
 //! icm_region_desc
 //!     .region3
-//!     .set_raddr(&message_region3_sha256);
-//! icm_region_desc.region3.rcfg.reset_rcfg_to_default();
+//!     .set_region_address(&message_region3_sha256);
+//! icm_region_desc.region3.rcfg.reset_region_configuration_to_default();
 //! icm_region_desc.region3.rcfg.set_algo(icm_algorithm::SHA256);
 //! // Activate Compare Digest (should be true when comparing memory)
 //! icm_region_desc.region3.rcfg.set_cdwbn(true);
@@ -361,6 +366,11 @@
 use crate::pac::generic::Variant;
 use crate::pac::icm::uasr::URAT_A;
 
+use paste::paste;
+use seq_macro::seq;
+
+use bitflags::bitflags;
+
 use crate::pac::icm::*;
 use crate::typelevel::Sealed;
 use core::marker::PhantomData;
@@ -368,135 +378,136 @@ use core::marker::PhantomData;
 /// Reexport the User SHA Algorithm
 pub use crate::icm::cfg::UALGO_A as icm_algorithm;
 
-/// IcmToken represents the peripheral and it encapsulates the hardware register
-struct IcmToken {
-    icm: crate::pac::ICM,
+// Convenient bitflags representing select parts of
+// the status interrupt register `ICM->ISR`
+
+bitflags! {
+    /// Region Hash Completed interrupt
+    ///
+    /// Bit number matches with region number
+    pub struct RegionHashCompleted: u8 {
+        const R0 = 1;
+        const R1 = 2;
+        const R2 = 4;
+        const R3 = 8;
+    }
 }
-
-impl IcmToken {
-    /// Create a new instance of [`IcmToken`]
-    fn new(icm: crate::pac::ICM) -> Self {
-        Self { icm }
-    }
-
-    /// Integrity Check Module
-    #[inline]
-    fn icm(&self) -> &RegisterBlock {
-        &self.icm
-    }
-
-    /// Configuration
-    #[inline]
-    fn cfg(&self) -> &CFG {
-        &self.icm().cfg
-    }
-
-    /// Control
-    #[inline]
-    fn ctrl(&self) -> &CTRL {
-        &self.icm().ctrl
-    }
-
-    /// Region Descriptor Area Start Address
-    #[inline]
-    fn dscr(&self) -> &DSCR {
-        &self.icm().dscr
-    }
-
-    /// Region Hash Area Start Address
-    #[inline]
-    fn hash(&self) -> &HASH {
-        &self.icm().hash
-    }
-
-    /// Interrupt Disable
-    #[inline]
-    fn idr(&self) -> &IDR {
-        &self.icm().idr
-    }
-
-    /// Interrupt Enable
-    #[inline]
-    fn ier(&self) -> &IER {
-        &self.icm().ier
-    }
-
-    /// Interrupt Mask
-    #[inline]
-    pub fn imr(&self) -> &IMR {
-        &self.icm().imr
-    }
-
-    /// Interrupt Status
-    #[inline]
-    fn isr(&self) -> &ISR {
-        &self.icm().isr
-    }
-
-    /// Status
-    #[inline]
-    fn sr(&self) -> &SR {
-        &self.icm().sr
-    }
-
-    /// Undefined Access Status
-    #[inline]
-    fn uasr(&self) -> &UASR {
-        &self.icm().uasr
+bitflags! {
+    /// Region Digest Mismatch interrupt
+    ///
+    /// Bit number matches with region number
+    pub struct RegionDigestMismatch: u8 {
+        const R0 = 1;
+        const R1 = 2;
+        const R2 = 4;
+        const R3 = 8;
     }
 }
 
-/// Struct useful for returning the interrupt status
-/// of the ICM. Provides methods for easy parsing of
-/// all the regions or via the `bitmask` argument
-/// narrow it down to the specific set of [`IcmRegionNum`]
-/// of interest.
-pub struct IcmInterrupt {
-    interrupt_vector: u32,
+bitflags! {
+    /// Region Bus Error interrupt
+    ///
+    /// Bit number matches with region number
+    pub struct RegionBusError: u8 {
+        const R0 = 1;
+        const R1 = 2;
+        const R2 = 4;
+        const R3 = 8;
+    }
+}
+
+bitflags! {
+    /// Region Wrap Condition detected interrupt
+    ///
+    /// Bit number matches with region number
+    pub struct RegionWrapConditionDetected: u8 {
+        const R0 = 1;
+        const R1 = 2;
+        const R2 = 4;
+        const R3 = 8;
+    }
+}
+bitflags! {
+    /// Region End Condition detected interrupt
+    ///
+    /// Bit number matches with region number
+    pub struct RegionEndConditionDetected: u8 {
+        const R0 = 1;
+        const R1 = 2;
+        const R2 = 4;
+        const R3 = 8;
+    }
+}
+bitflags! {
+    /// Region Status Update detected interrupt
+    ///
+    /// Bit number matches with region number
+    pub struct RegionStatusUpdatedDetected: u8 {
+        const R0 = 1;
+        const R1 = 2;
+        const R2 = 4;
+        const R3 = 8;
+    }
+}
+
+bitfield::bitfield! {
+    /// Struct useful for returning the interrupt status
+    /// of the ICM. Provides methods for easy parsing of
+    /// all the regions or via the `bitmask` argument
+    /// narrow it down to the specific set of [`IcmRegionNum`]
+    /// of interest.
+    pub struct IcmInterrupt(u32);
+    impl Debug;
+    u8;
+    get_rhc, _: 3, 0;
+    get_rdm, _: 7, 4;
+    get_rbe, _: 11, 8;
+    get_rwc, _: 15, 12;
+    get_rec, _: 19, 16;
+    get_rsu, _: 23, 20;
+    get_urad, _: 24, 24;
 }
 
 impl IcmInterrupt {
     /// Region Status Updated interrupt status
     #[inline]
-    pub fn get_rsu_int(&self, bitmask: u8) -> u8 {
-        (self.interrupt_vector >> 20 & 0x0f) as u8 & bitmask
+    pub fn get_rsu_int(&self) -> RegionStatusUpdatedDetected {
+        RegionStatusUpdatedDetected::from_bits_truncate(self.get_rsu())
     }
 
     /// Region End bit Condition Detected interrupt status
     #[inline]
-    pub fn get_rec_int(&self, bitmask: u8) -> u8 {
-        (self.interrupt_vector >> 16 & 0x0f) as u8 & bitmask
+    pub fn get_rec_int(&self) -> RegionEndConditionDetected {
+        RegionEndConditionDetected::from_bits_truncate(self.get_rec())
     }
 
     /// Region Wrap Condition detected interrupt status
     #[inline]
-    pub fn get_rwc_int(&self, bitmask: u8) -> u8 {
-        (self.interrupt_vector >> 12 & 0x0f) as u8 & bitmask
+    pub fn get_rwc_int(&self) -> RegionWrapConditionDetected {
+        RegionWrapConditionDetected::from_bits_truncate(self.get_rwc())
     }
 
     /// Region Bus Error interrupt status
     #[inline]
-    pub fn get_rbe_int(&self, bitmask: u8) -> u8 {
-        (self.interrupt_vector >> 8 & 0x0f) as u8 & bitmask
+    pub fn get_rbe_int(&self) -> RegionBusError {
+        RegionBusError::from_bits_truncate(self.get_rbe())
     }
 
     /// Region Digest Mis interrupt status
     #[inline]
-    pub fn get_rdm_int(&self, bitmask: u8) -> u8 {
-        (self.interrupt_vector >> 4 & 0x0f) as u8 & bitmask
+    pub fn get_rdm_int(&self) -> RegionDigestMismatch {
+        RegionDigestMismatch::from_bits_truncate(self.get_rdm())
     }
 
     /// Region Hash Completed interrupt status
     #[inline]
-    pub fn get_rhc_int(&self, bitmask: u8) -> u8 {
-        (self.interrupt_vector & 0x0f) as u8 & bitmask
+    pub fn get_rhc_int(&self) -> RegionHashCompleted {
+        RegionHashCompleted::from_bits_truncate(self.get_rhc())
     }
 }
 impl Default for IcmInterrupt {
     fn default() -> Self {
-        Self {
-            interrupt_vector: 0,
-        }
+        IcmInterrupt(0)
     }
 }
 
@@ -505,7 +516,7 @@ impl Default for IcmInterrupt {
 /// the region specific [`IcmRegionNum`]
 pub struct IcmRegionInterrupt<I: IcmRegionNum> {
     region: PhantomData<I>,
-    interrupt_vector: u32,
+    interrupt: IcmInterrupt,
 }
 
 impl<I: IcmRegionNum> IcmRegionInterrupt<I> {
@@ -518,47 +529,47 @@ impl<I: IcmRegionNum> IcmRegionInterrupt<I> {
     /// Region Status Updated interrupt status
     #[inline]
     pub fn get_rsu_int(&self) -> bool {
-        matches!((self.interrupt_vector >> 20 & 0x0f) as u8 & self.mask(), 1)
+        matches!(self.interrupt.get_rsu() & self.mask(), 1)
     }
 
     /// Region End bit Condition Detected interrupt status
     #[inline]
     pub fn get_rec_int(&self) -> bool {
-        matches!((self.interrupt_vector >> 16 & 0x0f) as u8 & self.mask(), 1)
+        matches!(self.interrupt.get_rec() & self.mask(), 1)
     }
 
     /// Region Wrap Condition detected interrupt status
     #[inline]
     pub fn get_rwc_int(&self) -> bool {
-        matches!((self.interrupt_vector >> 12 & 0x0f) as u8 & self.mask(), 1)
+        matches!(self.interrupt.get_rwc() & self.mask(), 1)
     }
 
     /// Region Bus Error interrupt status
     #[inline]
     pub fn get_rbe_int(&self) -> bool {
-        matches!((self.interrupt_vector >> 8 & 0x0f) as u8 & self.mask(), 1)
+        matches!(self.interrupt.get_rbe() & self.mask(), 1)
     }
 
     /// Region Digest Mismatches!( interrupt status
     #[inline]
     pub fn get_rdm_int(&self) -> bool {
-        matches!((self.interrupt_vector >> 4 & 0x0f) as u8 & self.mask(), 1)
+        matches!(self.interrupt.get_rdm() & self.mask(), 1)
     }
 
     /// Region Hash Completed interrupt status
     #[inline]
     pub fn get_rhc_int(&self) -> bool {
-        matches!((self.interrupt_vector & 0x0f) as u8 & self.mask(), 1)
+        matches!(self.interrupt.get_rhc() & self.mask(), 1)
     }
 }
 
-/// IcmRegionToken provides access to region-specific
+/// IcmRegion provides access to region-specific
 /// settings like interrupts and status
-pub struct IcmRegionToken<I: IcmRegionNum> {
+pub struct IcmRegion<I: IcmRegionNum> {
     region: PhantomData<I>,
 }
 
-impl<I: IcmRegionNum> IcmRegionToken<I> {
+impl<I: IcmRegionNum> IcmRegion<I> {
     pub(super) fn new() -> Self {
         Self {
             region: PhantomData,
@@ -575,7 +586,7 @@ impl<I: IcmRegionNum> IcmRegionToken<I> {
     ///
     /// # Safety
     ///
-    /// Only one [IcmRegionToken] accessible at any given time
+    /// Only one [IcmRegion] accessible at any given time
     #[inline]
     fn icm(&self) -> &RegisterBlock {
         unsafe { &*crate::pac::ICM::ptr() }
@@ -817,10 +828,10 @@ impl<I: IcmRegionNum> IcmRegionToken<I> {
     /// and parse later with the designated `get_[name]_int` functions.
     #[inline]
     pub fn get_interrupt_status(&mut self) -> IcmRegionInterrupt<I> {
-        let interrupt_vector = self.isr().read().bits();
+        let interrupt = IcmInterrupt(self.isr().read().bits());
         IcmRegionInterrupt {
             region: PhantomData,
-            interrupt_vector,
+            interrupt,
         }
     }
 }
@@ -830,8 +841,8 @@ impl<I: IcmRegionNum> IcmRegionToken<I> {
 /// Encapsulates the PAC which acts as a token
 /// and provides an interface to the ICM hardware
 pub struct Icm {
-    /// IcmToken providing hardware access
-    token: IcmToken,
+    /// ICM pac register providing hardware access
+    icm: crate::pac::ICM,
 }
 
 impl Icm {
@@ -848,26 +859,95 @@ impl Icm {
     /// `tokens.apbs.icm.enable();`
     #[inline]
     pub fn new(icm: crate::pac::ICM) -> Self {
-        let token = IcmToken::new(icm);
-        Self { token }
+        Self { icm }
     }
+
+    // Register Interface
+
+    /// Integrity Check Module
+    #[inline]
+    fn icm(&self) -> &RegisterBlock {
+        &self.icm
+    }
+
+    /// Configuration
+    #[inline]
+    fn cfg(&self) -> &CFG {
+        &self.icm().cfg
+    }
+
+    /// Control
+    #[inline]
+    fn ctrl(&self) -> &CTRL {
+        &self.icm().ctrl
+    }
+
+    /// Region Descriptor Area Start Address
+    #[inline]
+    fn dscr(&self) -> &DSCR {
+        &self.icm().dscr
+    }
+
+    /// Region Hash Area Start Address
+    #[inline]
+    fn hash(&self) -> &HASH {
+        &self.icm().hash
+    }
+
+    /// Interrupt Disable
+    #[inline]
+    fn idr(&self) -> &IDR {
+        &self.icm().idr
+    }
+
+    /// Interrupt Enable
+    #[inline]
+    fn ier(&self) -> &IER {
+        &self.icm().ier
+    }
+
+    /// Interrupt Mask
+    #[inline]
+    fn imr(&self) -> &IMR {
+        &self.icm().imr
+    }
+
+    /// Interrupt Status
+    #[inline]
+    fn isr(&self) -> &ISR {
+        &self.icm().isr
+    }
+
+    /// Status
+    #[inline]
+    fn sr(&self) -> &SR {
+        &self.icm().sr
+    }
+
+    /// Undefined Access Status
+    #[inline]
+    fn uasr(&self) -> &UASR {
+        &self.icm().uasr
+    }
+
+    // User interface for ICM
 
     /// Enable the ICM peripheral
     #[inline]
     pub fn enable(&mut self) {
-        self.token.ctrl().write(|w| w.enable().set_bit());
+        self.ctrl().write(|w| w.enable().set_bit());
     }
 
     /// Get enabled status of the ICM peripheral
     #[inline]
     pub fn icm_status(&self) -> bool {
-        self.token.sr().read().enable().bit_is_set()
+        self.sr().read().enable().bit_is_set()
     }
 
     /// Disable the ICM peripheral
     #[inline]
     pub fn disable(&mut self) {
-        self.token.ctrl().write(|w| w.disable().set_bit());
+        self.ctrl().write(|w| w.disable().set_bit());
     }
 
     /// Reset the ICM controller
@@ -878,48 +958,53 @@ impl Icm {
     /// is by resetting the ICM controller
     #[inline]
     pub fn swrst(&mut self) {
-        self.token.ctrl().write(|w| w.swrst().set_bit());
+        self.ctrl().write(|w| w.swrst().set_bit());
     }
 
     /// Destroy the ICM peripheral and return the underlying ICM register
     #[inline]
     pub fn destroy(self) -> crate::pac::ICM {
-        self.token.icm
+        self.icm
     }
 
     // Region specifics
 
+    #[inline]
+    pub fn enable_region<N: IcmRegionNum>(&mut self) -> IcmRegion<N> {
+        IcmRegion::<N>::new()
+    }
+
     /// Enable region0
     ///
-    /// Creates an [`IcmRegionToken`] which provides region specific
+    /// Creates an [`IcmRegion`] which provides region specific
     /// settings
     #[inline]
-    pub fn enable_region0(&mut self) -> IcmRegionToken<Region0> {
-        IcmRegionToken::new()
+    pub fn enable_region0(&mut self) -> IcmRegion<Region0> {
+        IcmRegion::new()
     }
     /// Enable region1
     ///
-    /// Creates an [`IcmRegionToken`] which provides region specific
+    /// Creates an [`IcmRegion`] which provides region specific
     /// settings
     #[inline]
-    pub fn enable_region1(&mut self) -> IcmRegionToken<Region1> {
-        IcmRegionToken::new()
+    pub fn enable_region1(&mut self) -> IcmRegion<Region1> {
+        IcmRegion::new()
     }
     /// Enable region2
     ///
-    /// Creates an [`IcmRegionToken`] which provides region specific
+    /// Creates an [`IcmRegion`] which provides region specific
     /// settings
     #[inline]
-    pub fn enable_region2(&mut self) -> IcmRegionToken<Region2> {
-        IcmRegionToken::new()
+    pub fn enable_region2(&mut self) -> IcmRegion<Region2> {
+        IcmRegion::new()
     }
     /// Enable region3
     ///
-    /// Creates an [`IcmRegionToken`] which provides region specific
+    /// Creates an [`IcmRegion`] which provides region specific
     /// settings
     #[inline]
-    pub fn enable_region3(&mut self) -> IcmRegionToken<Region3> {
-        IcmRegionToken::new()
+    pub fn enable_region3(&mut self) -> IcmRegion<Region3> {
+        IcmRegion::new()
     }
 
     // Configuration of Icm
@@ -930,18 +1015,16 @@ impl Icm {
     /// designated variable but expressed as a multiple of 128
     #[inline]
     pub fn set_hash_addr(&mut self, hash_addr_pointer: &IcmHashArea) {
-        self.token
-            .hash()
+        self.hash()
             .write(|w| unsafe { w.hasa().bits((hash_addr_pointer as *const _) as u32 / 128) })
     }
 
-    /// Set the DSCR addr to a specific IcmRegionDesc
+    /// Set the DSCR addr to a specific MainRegionDesc
     ///
     /// HW expects a raw pointer to the memory address of the beginning of the
-    /// [`IcmRegionDesc`] but expressed as a multiple of 64
-    pub fn set_dscr_addr(&self, icm_region_desc: &IcmRegionDesc<Region0>) {
-        self.token
-            .dscr()
+    /// [`MainRegionDesc`] but expressed as a multiple of 64
+    pub fn set_dscr_addr(&self, icm_region_desc: &MainRegionDesc<Region0>) {
+        self.dscr()
             .write(|w| unsafe { w.dasa().bits((icm_region_desc as *const _) as u32 / 64) })
     }
 
@@ -949,14 +1032,14 @@ impl Icm {
     #[inline]
     pub fn set_user_initial_hash_value(&self, user_initial_hash_value: [u32; 8]) {
         for (index, initial_value) in user_initial_hash_value.iter().enumerate() {
-            self.token.icm().uihval[index].write(|w| unsafe { w.val().bits(*initial_value) });
+            self.icm().uihval[index].write(|w| unsafe { w.val().bits(*initial_value) });
         }
     }
 
     /// Set the user hashing algorithm
     #[inline]
     pub fn set_user_algorithm(self, algo: icm_algorithm) {
-        self.token.cfg().write(|w| w.ualgo().variant(algo));
+        self.cfg().write(|w| w.ualgo().variant(algo));
     }
 
     /// Activate user hash mode
@@ -965,15 +1048,13 @@ impl Icm {
     /// * hash initial value
     /// * Hash algorithm
     ///
-    /// Disables the `ALGO` field in [`IcmRegionDesc`]
+    /// Disables the `ALGO` field in [`MainRegionDesc`]
     ///
     /// Set initial hash value via [`Icm::set_user_initial_hash_value()`]
     /// Set hash algorithm via [`Icm::set_user_algorithm()`]
     #[inline]
     pub fn set_user_configurable_hash(&self, user_configurable_hash: bool) {
-        self.token
-            .cfg()
-            .write(|w| w.uihash().bit(user_configurable_hash));
+        self.cfg().write(|w| w.uihash().bit(user_configurable_hash));
     }
 
     /// Control dual input buffer
@@ -982,7 +1063,7 @@ impl Icm {
     /// at the cost of higher bandwith requirements on the system bus
     #[inline]
     pub fn set_dual_input_buffer(&self, dualbuffer: bool) {
-        self.token.cfg().write(|w| w.dualbuff().bit(dualbuffer));
+        self.cfg().write(|w| w.dualbuff().bit(dualbuffer));
     }
 
     /// Automatic switch to Compare Digest
@@ -994,7 +1075,7 @@ impl Icm {
     /// `1` needs to be written to End of Monitoring (`RCFG.EOM`)
     #[inline]
     pub fn set_ascd(&self, automaticswitch: bool) {
-        self.token.cfg().write(|w| w.ascd().bit(automaticswitch));
+        self.cfg().write(|w| w.ascd().bit(automaticswitch));
     }
 
     /// Bus burden control
@@ -1006,9 +1087,7 @@ impl Icm {
     /// Maximum delay is 32768 cycles
     #[inline]
     pub fn set_busburden(&self, busburden: u8) {
-        self.token
-            .cfg()
-            .write(|w| unsafe { w.bbc().bits(busburden) });
+        self.cfg().write(|w| unsafe { w.bbc().bits(busburden) });
     }
 
     /// Secondary List Branching Disable
@@ -1018,8 +1097,7 @@ impl Icm {
     ///   always considered 0.
     #[inline]
     pub fn set_slbdis(&self, disable_secondary_lists: bool) {
-        self.token
-            .cfg()
+        self.cfg()
             .write(|w| w.slbdis().bit(disable_secondary_lists));
     }
 
@@ -1030,7 +1108,7 @@ impl Icm {
     ///   has no effect.
     #[inline]
     pub fn set_eomdis(&self, disable_eom: bool) {
-        self.token.cfg().write(|w| w.eomdis().bit(disable_eom));
+        self.cfg().write(|w| w.eomdis().bit(disable_eom));
     }
 
     /// Write Back Disable
@@ -1041,7 +1119,7 @@ impl Icm {
     ///   The `CDWBN` bit of the `RCFG` structure member has no effect.
     #[inline]
     pub fn set_wbdis(&self, disable_eom: bool) {
-        self.token.cfg().write(|w| w.wbdis().bit(disable_eom));
+        self.cfg().write(|w| w.wbdis().bit(disable_eom));
     }
 
     // Security and tamper settings
@@ -1049,25 +1127,25 @@ impl Icm {
     /// Set Undefined Register Access Detection interrupt enable
     #[inline]
     pub fn set_urad_int(self) {
-        self.token.ier().write(|w| unsafe { w.rsu().bits(1) });
+        self.ier().write(|w| unsafe { w.rsu().bits(1) });
     }
 
     /// Disable Undefined Register Access Detection interrupt enable
     #[inline]
     pub fn disable_urad_int(self) {
-        self.token.idr().write(|w| unsafe { w.rsu().bits(1) });
+        self.idr().write(|w| unsafe { w.rsu().bits(1) });
     }
 
     /// Get Undefined Register Access Detection interrupt mask
     #[inline]
     pub fn get_urad_int_mask(&self) -> bool {
-        self.token.imr().read().urad().bits()
+        self.imr().read().urad().bits()
     }
 
     /// Get Undefined Register Access Detection interrupt status
     #[inline]
     pub fn get_urad_int(&self) -> bool {
-        self.token.isr().read().urad().bits()
+        self.isr().read().urad().bits()
     }
 
     /// Get Undefined Register Access Trace
@@ -1075,7 +1153,7 @@ impl Icm {
     /// This field is only reset by `swrst`
     #[inline]
     pub fn get_urat(&self) -> Variant<u8, URAT_A> {
-        self.token.uasr().read().urat().variant()
+        self.uasr().read().urat().variant()
     }
 
     /// When reading the interrupt (ISR) register, it is cleared
@@ -1087,8 +1165,8 @@ impl Icm {
     /// and parse later with the designated `get_[name]_int` functions.
     #[inline]
     pub fn get_interrupt_status(&mut self) -> IcmInterrupt {
-        let interrupt_vector = self.token.isr().read().bits();
-        IcmInterrupt { interrupt_vector }
+        let interrupt_vector = self.isr().read().bits();
+        IcmInterrupt(interrupt_vector)
     }
     /// Trigger recalculation of memory monitor region specified
     /// by the bitmask:
@@ -1100,9 +1178,7 @@ impl Icm {
     /// 0b1111 = all regions
     #[inline]
     pub fn trigger_rehash(&self, bitmask: u8) {
-        self.token
-            .ctrl()
-            .write(|w| unsafe { w.rehash().bits(bitmask) });
+        self.ctrl().write(|w| unsafe { w.rehash().bits(bitmask) });
     }
 }
 
@@ -1117,50 +1193,32 @@ pub trait IcmRegionNum: Sealed {
     const OFFSET: u32;
 }
 
-/// ICM Region 0
-pub enum Region0 {}
-impl Sealed for Region0 {}
-impl IcmRegionNum for Region0 {
-    const NUM: usize = 0;
-    const OFFSET: u32 = 0;
-}
+seq!(N in 0..=3 {
+    paste! {
+        #[doc = "ICM Region " N]
+        pub enum Region#N {}
+        impl Sealed for Region#N {}
+        impl IcmRegionNum for Region#N {
+            const NUM: usize = N;
+            #[allow(clippy::identity_op)]
+            #[allow(clippy::erasing_op)]
+            const OFFSET: u32 = 0x10 * N;
+        }
+    }
+});
 
-/// ICM Region 1
-pub enum Region1 {}
-impl Sealed for Region1 {}
-impl IcmRegionNum for Region1 {
-    const NUM: usize = 1;
-    const OFFSET: u32 = 0x10;
-}
-
-/// ICM Region 2
-pub enum Region2 {}
-impl Sealed for Region2 {}
-impl IcmRegionNum for Region2 {
-    const NUM: usize = 2;
-    const OFFSET: u32 = 0x10 * 2;
-}
-
-/// ICM Region 3
-pub enum Region3 {}
-impl Sealed for Region3 {}
-impl IcmRegionNum for Region3 {
-    const NUM: usize = 3;
-    const OFFSET: u32 = 0x10 * 3;
-}
-
-/// Functions required by [`IcmRegionDesc`]
+/// Functions required by [`MainRegionDesc`]
 ///
 /// Both Main List descriptors and Secondary List descriptors
-pub trait IcmRegionDescT {
-    /// Set the [`Raddr`] start of the region memory region
-    fn set_raddr<T>(&mut self, addr: *const T);
+pub trait RegionDesc {
+    /// Set the [`RegionAddress`] start of the region memory region
+    fn set_region_address<T>(&mut self, addr: *const T);
     /// Set the specific region configuration
-    fn set_rcfg(&mut self, cfg: Rcfg);
+    fn set_region_configuration(&mut self, cfg: RegionConfiguration);
     /// Set the link to next region descriptor
-    fn set_rnext(&mut self, next: Rnext);
-    /// Reset Rcfg to default values
-    fn reset_rcfg_to_default(&mut self);
+    fn set_region_next(&mut self, next: RegionNext);
+    /// Reset RegionConfiguration to default values
+    fn reset_region_configuration_to_default(&mut self);
 }
 
 /// Helper for creating the Region Descriptor structure
@@ -1180,23 +1238,23 @@ pub trait IcmRegionDescT {
 /// >static
 #[repr(C)]
 #[repr(align(64))]
-pub struct IcmRegion {
-    /// IcmRegionDesc0
-    pub region0: IcmRegionDesc<Region0>,
-    /// IcmRegionDesc1
-    pub region1: IcmRegionDesc<Region1>,
-    /// IcmRegionDesc2
-    pub region2: IcmRegionDesc<Region2>,
-    /// IcmRegionDesc3
-    pub region3: IcmRegionDesc<Region3>,
+pub struct IcmRegions {
+    /// MainRegionDesc0
+    pub region0: MainRegionDesc<Region0>,
+    /// MainRegionDesc1
+    pub region1: MainRegionDesc<Region1>,
+    /// MainRegionDesc2
+    pub region2: MainRegionDesc<Region2>,
+    /// MainRegionDesc3
+    pub region3: MainRegionDesc<Region3>,
 }
 
-impl IcmRegion {
+impl IcmRegions {
     pub const fn default() -> Self {
-        let region0 = IcmRegionDesc::new_region0();
-        let region1 = IcmRegionDesc::new_region1();
-        let region2 = IcmRegionDesc::new_region2();
-        let region3 = IcmRegionDesc::new_region3();
+        let region0 = MainRegionDesc::new_region0();
+        let region1 = MainRegionDesc::new_region1();
+        let region2 = MainRegionDesc::new_region2();
+        let region3 = MainRegionDesc::new_region3();
         Self {
             region0,
             region1,
@@ -1212,104 +1270,77 @@ impl IcmRegion {
 /// being a part of the 64-bytes making up [`IcmRegion`]
 #[repr(C)]
 #[repr(align(16))]
-pub struct IcmRegionDesc<N: IcmRegionNum> {
+pub struct MainRegionDesc<N: IcmRegionNum> {
     /// Numerical Region Identifier
     num: PhantomData<N>,
     /// The first byte address of the Region.
-    pub raddr: Raddr,
+    pub raddr: RegionAddress,
     /// Configuration Structure Member.
-    pub rcfg: Rcfg,
+    pub rcfg: RegionConfiguration,
     /// Control Structure Member.
-    pub rctrl: Rctrl,
+    pub rctrl: RegionControl,
     /// Next Address Structure Member.
-    pub rnext: Rnext,
+    pub rnext: RegionNext,
 }
 
-impl IcmRegionDesc<Region0> {
-    /// Helper for setting the DSCR addr to a the first IcmRegionDesc
+impl MainRegionDesc<Region0> {
+    /// Helper for setting the DSCR addr to a the first MainRegionDesc
     ///
     /// See [`Icm::set_dscr_addr()`] for the regular workflow
     ///
     /// HW expects a raw pointer to the memory address of the beginning of the
-    /// [`IcmRegionDesc`] but expressed as a multiple of 64
+    /// [`MainRegionDesc`] but expressed as a multiple of 64
     pub fn set_dscr_addr(&self, icm: &Icm) {
-        icm.token
-            .dscr()
+        icm.dscr()
             .write(|w| unsafe { w.dasa().bits((self as *const _) as u32 / 64) })
     }
-
-    const fn new_region0() -> Self {
-        IcmRegionDesc {
-            num: PhantomData,
-            raddr: Raddr::default(),
-            rcfg: Rcfg::default(),
-            rctrl: Rctrl::default(),
-            rnext: Rnext::default(),
-        }
-    }
-}
-impl IcmRegionDesc<Region1> {
-    const fn new_region1() -> Self {
-        IcmRegionDesc {
-            num: PhantomData,
-            raddr: Raddr::default(),
-            rcfg: Rcfg::default(),
-            rctrl: Rctrl::default(),
-            rnext: Rnext::default(),
-        }
-    }
-}
-impl IcmRegionDesc<Region2> {
-    const fn new_region2() -> Self {
-        IcmRegionDesc {
-            num: PhantomData,
-            raddr: Raddr::default(),
-            rcfg: Rcfg::default(),
-            rctrl: Rctrl::default(),
-            rnext: Rnext::default(),
-        }
-    }
-}
-impl IcmRegionDesc<Region3> {
-    const fn new_region3() -> Self {
-        IcmRegionDesc {
-            num: PhantomData,
-            raddr: Raddr::default(),
-            rcfg: Rcfg::default(),
-            rctrl: Rctrl::default(),
-            rnext: Rnext::default(),
-        }
-    }
 }
 
-impl<N: IcmRegionNum> IcmRegionDescT for IcmRegionDesc<N> {
-    /// Set [`Raddr`]
-    #[inline]
-    fn set_raddr<T>(&mut self, addr: *const T) {
-        self.raddr.set_raddr(addr);
+seq!(N in 0..=3 {
+    paste! {
+        #[doc = "Create region descriptor " N]
+        impl MainRegionDesc<Region#N> {
+            const fn new_region#N() -> Self {
+                MainRegionDesc {
+                    num: PhantomData,
+                    raddr: RegionAddress::default(),
+                    rcfg: RegionConfiguration::default(),
+                    rctrl: RegionControl::default(),
+                    rnext: RegionNext::default(),
+                }
+            }
+        }
     }
-    /// Set [`Rcfg`]
+});
+
+impl<N: IcmRegionNum> RegionDesc for MainRegionDesc<N> {
+    /// Set [`RegionAddress`]
     #[inline]
-    fn set_rcfg(&mut self, cfg: Rcfg) {
+    fn set_region_address<T>(&mut self, addr: *const T) {
+        self.raddr.set_region_address(addr);
+    }
+    /// Set [`RegionConfiguration`]
+    #[inline]
+    fn set_region_configuration(&mut self, cfg: RegionConfiguration) {
         self.rcfg = cfg;
     }
-    /// Reset [`Rcfg`] to default values
+    /// Reset [`RegionConfiguration`] to default values
     #[inline]
-    fn reset_rcfg_to_default(&mut self) {
-        self.rcfg = Rcfg::default();
+    fn reset_region_configuration_to_default(&mut self) {
+        self.rcfg = RegionConfiguration::default();
     }
-    /// Set [`Rnext`]
+    /// Set [`RegionNext`]
     #[inline]
-    fn set_rnext(&mut self, next: Rnext) {
+    fn set_region_next(&mut self, next: RegionNext) {
         self.rnext = next;
     }
 }
 
-impl<N: IcmRegionNum> IcmRegionDesc<N> {
+impl<N: IcmRegionNum> MainRegionDesc<N> {
     /// The length of data for the ICM engine to transfer,
     /// expressed as number of `blocks - 1`.
     #[inline]
-    pub fn set_rctrl(mut self, ctrl: Rctrl) {
+    pub fn set_rctrl(mut self, ctrl: RegionControl) {
         self.rctrl = ctrl;
     }
 }
@@ -1321,45 +1352,45 @@ impl<N: IcmRegionNum> IcmRegionDesc<N> {
 /// Used to build the linked lists for non-contiguous memory
 #[repr(C)]
 #[repr(align(16))]
-pub struct IcmSecondaryRegionDesc {
+pub struct SecondaryRegionDesc {
     /// the first byte address of the Region.
-    pub raddr: Raddr,
+    pub raddr: RegionAddress,
     /// Configuration Structure Member.
-    pub rcfg: Rcfg,
+    pub rcfg: RegionConfiguration,
     /// Not used in Secondary Region Descriptor
     _pad: u32,
     /// Next Address Structure Member.
-    pub rnext: Rnext,
+    pub rnext: RegionNext,
 }
 
-impl IcmRegionDescT for IcmSecondaryRegionDesc {
-    fn set_raddr<T>(&mut self, addr: *const T) {
-        self.raddr.set_raddr(addr);
+impl RegionDesc for SecondaryRegionDesc {
+    fn set_region_address<T>(&mut self, addr: *const T) {
+        self.raddr.set_region_address(addr);
     }
-    /// Set [`Rcfg`]
+    /// Set [`RegionConfiguration`]
     #[inline]
-    fn set_rcfg(&mut self, cfg: Rcfg) {
+    fn set_region_configuration(&mut self, cfg: RegionConfiguration) {
         self.rcfg = cfg;
     }
-    /// Reset [`Rcfg`] to default values
+    /// Reset [`RegionConfiguration`] to default values
     #[inline]
-    fn reset_rcfg_to_default(&mut self) {
-        self.rcfg = Rcfg::default();
+    fn reset_region_configuration_to_default(&mut self) {
+        self.rcfg = RegionConfiguration::default();
     }
-    /// Set [`Rnext`]
+    /// Set [`RegionNext`]
     #[inline]
-    fn set_rnext(&mut self, next: Rnext) {
+    fn set_region_next(&mut self, next: RegionNext) {
         self.rnext = next;
     }
 }
 
-impl IcmSecondaryRegionDesc {
+impl SecondaryRegionDesc {
     pub const fn default() -> Self {
-        IcmSecondaryRegionDesc {
-            raddr: Raddr::default(),
-            rcfg: Rcfg::default(),
+        SecondaryRegionDesc {
+            raddr: RegionAddress::default(),
+            rcfg: RegionConfiguration::default(),
             _pad: 0,
-            rnext: Rnext::default(),
+            rnext: RegionNext::default(),
         }
     }
 }
@@ -1385,18 +1416,6 @@ pub struct IcmHashArea {
 }
 
 impl IcmHashArea {
-    pub fn region0(&self) -> [u32; 8] {
-        self.region0
-    }
-    pub fn region1(&self) -> [u32; 8] {
-        self.region1
-    }
-    pub fn region2(&self) -> [u32; 8] {
-        self.region2
-    }
-    pub fn region3(&self) -> [u32; 8] {
-        self.region3
-    }
     pub const fn default() -> Self {
         IcmHashArea {
             region0: [0; 8],
@@ -1412,55 +1431,53 @@ impl IcmHashArea {
 /// Follows C-structure conventions
 #[derive(Clone, Copy)]
 #[repr(C)]
-pub struct Raddr {
+pub struct RegionAddress {
     pub raddr: u32,
 }
 
-impl Raddr {
-    pub fn set_raddr<T>(&mut self, raddr: *const T) {
+impl RegionAddress {
+    pub fn set_region_address<T>(&mut self, raddr: *const T) {
         self.raddr = raddr as u32;
     }
     const fn default() -> Self {
-        // Unsure what a good Raddr default should be,
+        // Unsure what a good RegionAddress default should be,
         // this is at least easily spotted when debugging...
-        Raddr {
+        RegionAddress {
             raddr: 0xDEADBEEF_u32,
         }
     }
 }
 
-/// Region Configuration Structure
-///
-/// Follows C-structure conventions
+/*
 #[derive(Clone, Copy)]
 #[repr(C)]
-pub struct Rcfg {
+pub struct RegionConfiguration {
     rcfg: u32,
 }
+*/
 
-impl Rcfg {
-    const fn default() -> Self {
-        Rcfg { rcfg: 0x3F0 }
-    }
-}
-
-impl Rcfg {
+bitfield::bitfield! {
+    /// Region Configuration Structure
+    ///
+    /// Follows C-structure conventions
+    #[derive(Clone, Copy)]
+    #[repr(C)]
+    pub struct RegionConfiguration(u32);
+    impl Debug;
+    u8;
     /// Compare Digest or Write Back Digest
     ///
     /// * true: in Compare Digest mode.
     /// * false: in Write Back Digest mode.
     #[inline]
-    pub fn set_cdwbn(&mut self, value: bool) {
-        self.rcfg = (self.rcfg & !0x01) | (value as u32);
-    }
+    pub get_cdwbn, set_cdwbn: 0;
     /// Wrap Command
     ///
     /// * true: next region descriptor address loaded is `DSCR`.
     /// * false: the next region descriptor address is `current + 0x10`.
     #[inline]
-    pub fn set_wrap(&mut self, value: bool) {
-        self.rcfg = (self.rcfg & !(0x01 << 1)) | ((value as u32) << 1);
-    }
+    pub
+    get_wrap, set_wrap: 1;
     /// End of Monitoring
     ///
     /// * true: the current descriptor terminates the Main List, WRAP bit has
@@ -1468,18 +1485,16 @@ impl Rcfg {
     /// * false: the current descriptor does not terminate the
     /// monitoring.
     #[inline]
-    pub fn set_eom(&mut self, value: bool) {
-        self.rcfg = (self.rcfg & !(0x01 << 2)) | ((value as u32) << 2);
-    }
+    pub
+    get_eom, set_eom:  2;
     /// Region Hash Completed Interrupt Disable
     /// * true: the `RHC` flag remains cleared even if the setting condition is
     /// met.
     /// * false: the `RHC` flag is set when the field `NEXT = 0` is
     /// found in main or secondary list.
     #[inline]
-    pub fn set_rhien(&mut self, value: bool) {
-        self.rcfg = (self.rcfg & !(0x01 << 4)) | ((value as u32) << 4);
-    }
+    pub
+    get_rhien, set_rhien: 4;
     /// Digest Mismatch Interrupt Disable
     ///
     /// * true: the `RBE` flag remains cleared even if the setting condition is
@@ -1488,27 +1503,23 @@ impl Rcfg {
     /// calculated from the processed region differs from expected hash
     /// value.
     #[inline]
-    pub fn set_dmien(&mut self, value: bool) {
-        self.rcfg = (self.rcfg & !(0x01 << 5)) | ((value as u32) << 5);
-    }
+    pub
+    get_dmien, set_dmien: 5;
     /// Bus Error Interrupt Disable
     ///
     /// * true: the flag remains cleared even if the setting condition is met.
     /// * false: the flag is set when an error is reported on the sysstem bus
     /// by the bus MATRIX.
     #[inline]
-    pub fn set_beien(&mut self, value: bool) {
-        self.rcfg = (self.rcfg & !(0x01 << 6)) | ((value as u32) << 6);
-    }
+    pub
+    get_beien, set_beien: 6;
     /// Wrap Condition Interrupt Disable
     ///
     /// * true: the `RWC` flag remains cleared even if the setting condition is
     /// met.
     /// * false: the `RWC` flag is set when the WRAP is encountered.
     #[inline]
-    pub fn set_wcien(&mut self, value: bool) {
-        self.rcfg = (self.rcfg & !(0x01 << 7)) | ((value as u32) << 7);
-    }
+    pub get_wcien, set_wcien: 7;
     /// End Bit Condition Interrupt Enable
     ///
     /// * true: the `REC` flag remains cleared even if the setting condition is
@@ -1516,40 +1527,57 @@ impl Rcfg {
     /// * false: the `REC` flag is set when the descriptor having the
     /// `EOM` bit set is processed.
     #[inline]
-    pub fn set_ecien(&mut self, value: bool) {
-        self.rcfg = (self.rcfg & !(0x01 << 8)) | ((value as u32) << 8);
-    }
+    pub get_ecien, set_ecien: 8;
     /// Monitoring Status Updated Condition Interrupt Enable
     ///
     /// * true: the `RSU` flag remains cleared even if the condition is met.
     /// * false: the `RSU` flag is set when the corresponding descriptor is
     /// loaded from memory to ICM.
     #[inline]
-    pub fn set_suien(&mut self, value: bool) {
-        self.rcfg = (self.rcfg & !(0x01 << 9)) | ((value as u32) << 9);
-    }
+    pub get_suien, set_suien: 9;
     /// Processing Delay
     ///
     /// Allows setting short or long delay.
     ///
     /// See [`Procdly`]
     #[inline]
-    pub fn set_procdly(&mut self, value: Procdly) {
-        self.rcfg = (self.rcfg & !(0x01 << 10)) | ((value as u32) << 10);
+    pub get_procdly, set_procdly: 10;
+    get_algo_bits, set_algo_bits: 14, 12;
+}
+
+impl RegionConfiguration {
+    const fn default() -> Self {
+        //RegionConfiguration { rcfg: 0x3F0 }
+        RegionConfiguration(0x3F0)
     }
+}
+
+impl RegionConfiguration {
     /// User SHA Algorithm
     ///
     /// Allow setting this regions [`icm_algorithm`].
     #[inline]
     pub fn set_algo(&mut self, value: icm_algorithm) {
-        self.rcfg = (self.rcfg & !(0x07 << 12)) | (((value as u32) & 0x07) << 12);
+        self.set_algo_bits(value.into());
     }
-    /// Reset the [`Rcfg`] to default values
+
+    /// User SHA Algorithm
+    ///
+    /// Get the current user sha algorithm
+    #[inline]
+    pub fn get_algo(&mut self) -> icm_algorithm {
+        match self.get_algo_bits() {
+            2 => icm_algorithm::SHA224,
+            4 => icm_algorithm::SHA256,
+            _ => icm_algorithm::SHA1,
+        }
+    }
+    /// Reset the [`RegionConfiguration`] to default values
     ///
     /// Useful if changing between hashing and monitoring, etc.
     #[inline]
-    pub fn reset_rcfg_to_default(&mut self) {
-        self.rcfg = 0x3F0;
+    pub fn reset_region_configuration_to_default(&mut self) {
+        self.0 = 0x3F0_u32;
     }
 }
 
@@ -1580,33 +1608,33 @@ pub enum Procdly {
 /// Follows C-structure conventions
 #[derive(Clone, Copy)]
 #[repr(C)]
-pub struct Rctrl {
+pub struct RegionControl {
     pub trsize: u16,
 }
 
-impl Rctrl {
+impl RegionControl {
     const fn default() -> Self {
-        Rctrl { trsize: 0 }
+        RegionControl { trsize: 0 }
     }
 }
 
 /// Region Next Address Structure
 ///
-/// Is the same as Raddr<N+1>
+/// Is the same as RegionAddress<N+1>
 ///
 /// Follows C-structure conventions
 #[derive(Clone, Copy)]
 #[repr(C)]
-pub struct Rnext {
+pub struct RegionNext {
     rnext: u32,
 }
 
-impl Rnext {
-    pub fn set_rnext(&mut self, rnext: &impl IcmRegionDescT) {
+impl RegionNext {
+    pub fn set_region_next(&mut self, rnext: &impl RegionDesc) {
         self.rnext = (rnext as *const _) as u32;
     }
 
     const fn default() -> Self {
-        Rnext { rnext: 0 }
+        RegionNext { rnext: 0 }
     }
 }
