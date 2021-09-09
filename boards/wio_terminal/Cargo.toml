@@ -43,7 +43,7 @@ generic-array = { version = "0.14", optional = true }
 seeed-erpc = { version = "0.1.1", optional = true }
 
 [dependencies.atsamd-hal]
-version = "0.12"
+version = "0.13"
 default-features = false
 
 [dev-dependencies]
