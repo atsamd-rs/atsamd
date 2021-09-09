@@ -48,7 +48,7 @@ pub struct OscUlp32kToken {
 }
 
 impl OscUlp32kToken {
-    /// Create a new instance of [`Xosc32kToken`]
+    /// Create a new instance of [`OscUlp32kToken`]
     #[inline]
     pub(crate) unsafe fn new() -> Self {
         Self { __: () }

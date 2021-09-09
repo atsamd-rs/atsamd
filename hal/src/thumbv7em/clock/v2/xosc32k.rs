@@ -1,5 +1,5 @@
-//! # Xosc32k - External Oscillator 32 kHz
-//! TODO
+#![deny(missing_docs)]
+//! # Xosc32k - External 32 kHz oscillator
 //!
 //! Provides 32 kHz outputs for [`gclk`][super::gclk]s, [`rtc`][super::rtc]
 //! and [`dpll`][super::dpll].
@@ -35,13 +35,17 @@ use crate::typelevel::Sealed;
 // Xosc32kToken
 //==============================================================================
 
-pub struct Xosc32kToken;
+/// Token struct that is essential in order to construct an instance of an
+/// [`Xosc32k`].
+pub struct Xosc32kToken {
+    __: (),
+}
 
 impl Xosc32kToken {
     /// Create a new instance of [`Xosc32kToken`]
     #[inline]
     pub(super) unsafe fn new() -> Self {
-        Self
+        Self { __: () }
     }
 
     #[inline]
@@ -142,12 +146,20 @@ pub type XOut32 = Pin<PA01, FloatingDisabled>;
 // Mode structure for Xosc32k
 //==============================================================================
 
+/// Trait that defines a mode [`Xosc32k`] is operating in
 pub trait Mode: Sealed {}
 
+/// Struct representing a clock mode for [`Xosc32k`]
+///
+/// In that mode [`Xosc32k`] requires a single clocking signal
 pub struct ClockMode {}
 impl Mode for ClockMode {}
 impl Sealed for ClockMode {}
 
+/// Struct representing a crystal mode for [`Xosc32k`]
+///
+/// In that mode [`Xosc32k`] requires two signals coming from an external
+/// crystal
 pub struct CrystalMode {
     xout32: XOut32,
     /// Control external crystal tuning
@@ -160,6 +172,12 @@ impl Sealed for CrystalMode {}
 // Xosc32k
 //==============================================================================
 
+/// Struct representing a disabled external oscillator
+///
+/// It is generic over:
+/// - a mode (crystal or clock mode)
+/// - An output state of a 32 kHz signal (active/inactive)
+/// - An output state of a 1 kHz signal (active/inactive)
 pub struct Xosc32k<M, X, Y>
 where
     M: Mode,
@@ -189,14 +207,14 @@ where
         self
     }
 
-    /// Controls how Xosc32k behaves when a peripheral clock request is detected
+    /// Controls how [`Xosc32k`] behaves when a peripheral clock request is detected
     #[inline]
     pub fn set_on_demand(mut self, on_demand: bool) -> Self {
         self.on_demand_mode = on_demand;
         self
     }
 
-    /// Controls how Xosc32k should behave during standby
+    /// Controls how [`Xosc32k`] should behave during standby
     #[inline]
     pub fn set_run_standby(mut self, run_standby: bool) -> Self {
         self.run_standby = run_standby;
@@ -210,7 +228,7 @@ where
 }
 
 impl Xosc32k<ClockMode, Inactive32k, Inactive1k> {
-    /// Construct a Xosc32k from a single pin oscillator clock signal
+    /// Construct a [`Xosc32k`] from a single pin oscillator clock signal
     #[inline]
     pub fn from_clock(token: Xosc32kToken, xin32: impl AnyPin<Id = PA00>) -> Self {
         // Configure input pin
@@ -227,11 +245,10 @@ impl Xosc32k<ClockMode, Inactive32k, Inactive1k> {
         }
     }
 
-    /// Enable the Xosc32k, allowing it to be used by other peripherals
+    /// Enable the [`Xosc32k`], allowing it to be used by other peripherals
     ///
     /// To output a 32 kHz clock signal the output must be activated with
     /// the method: [`Enabled<Xosc32k>::activate_32k`]
-    ///
     #[inline]
     pub fn enable(mut self) -> Enabled<Self, U0> {
         self.token.from_clock();
@@ -248,7 +265,7 @@ where
     X: Output32k,
     Y: Output1k,
 {
-    /// Deconstruct the Xosc32k into a Xosc32kToken and the associated GPIO pin
+    /// Deconstruct the [`Xosc32k`] into a Xosc32kToken and the associated GPIO pin
     #[inline]
     pub fn free(self) -> (Xosc32kToken, XIn32) {
         (self.token, self.xin32)
@@ -256,7 +273,7 @@ where
 }
 
 impl Xosc32k<CrystalMode, Inactive32k, Inactive1k> {
-    /// Construct a Xosc32k from a two pin crystal oscillator signal
+    /// Construct a [`Xosc32k`] from a two pin crystal oscillator signal
     #[inline]
     pub fn from_crystal(
         token: Xosc32kToken,
@@ -292,7 +309,7 @@ impl Xosc32k<CrystalMode, Inactive32k, Inactive1k> {
         self
     }
 
-    /// Enable the Xosc32k, allowing it to be used by other peripherals
+    /// Enable the [`Xosc32k`], allowing it to be used by other peripherals
     ///
     /// To output a 32 kHz clock signal the output must be activated with
     /// the method: [`Enabled<Xosc32k>::activate_32k`]
@@ -315,7 +332,8 @@ where
     X: Output32k,
     Y: Output1k,
 {
-    /// Deconstruct the Xosc32k into a Xosc32kToken and the two associated GPIO pins
+    /// Deconstruct the [`Xosc32k`] into a Xosc32kToken and the two associated GPIO
+    /// pins
     #[inline]
     pub fn free(self) -> (Xosc32kToken, XIn32, XOut32) {
         (self.token, self.xin32, self.mode.xout32)
@@ -327,7 +345,7 @@ where
     M: Mode,
     Y: Output1k,
 {
-    /// Enable the output of 32 kHz clock
+    /// Activate the 32 kHz signal output
     #[inline]
     pub fn activate_32k(mut self) -> Enabled<Xosc32k<M, Active32k, Y>, U0> {
         self.0.token.activate_32k(true);
@@ -350,7 +368,7 @@ where
     M: Mode,
     Y: Output1k,
 {
-    /// Disable the output of 32 kHz clock
+    /// Deactivate the 32 kHz signal output
     #[inline]
     pub fn deactivate_32k(mut self) -> Enabled<Xosc32k<M, Inactive32k, Y>, U0> {
         self.0.token.activate_32k(false);
@@ -373,7 +391,7 @@ where
     M: Mode,
     X: Output32k,
 {
-    /// Enable the output of 1 kHz (1024 Hz) clock
+    /// Activate the 1 kHz signal output
     ///
     /// Used by RTC only
     #[inline]
@@ -398,7 +416,7 @@ where
     M: Mode,
     X: Output32k,
 {
-    /// Disable the output of 1 kHz (1024 Hz) clock
+    /// Deactivate the 1 kHz signal output
     ///
     /// Used by RTC only
     #[inline]
@@ -424,12 +442,7 @@ where
     X: Output32k,
     Y: Output1k,
 {
-    /// Disable the enabled Xosc32k
-    ///
-    /// Only possible with no users
-    ///
-    /// This allows changing the configuration or retrieving the Xosc32kToken
-    /// and GPIO pin
+    /// Disable the enabled [`Xosc32k`]
     #[inline]
     pub fn disable(mut self) -> Xosc32k<M, X, Y> {
         self.0.token.activate_32k(false);
@@ -443,6 +456,7 @@ where
 // GclkSource
 //==============================================================================
 
+/// A marker type. More information at [`SourceMarker`] documentation entry
 pub enum Osc32k {}
 
 impl Sealed for Osc32k {}
