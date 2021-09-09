@@ -1,8 +1,13 @@
+#![deny(missing_docs)]
 //! # Osculp32k - Ultra Low power 32 kHz oscillator
-//! TODO
 //!
 //! Always-on internal oscillator capable of producing
 //! 32 kHz and 1 kHz output.
+//!
+//! * 1 kHz signal is only accessible by specific peripherals (datasheet c.
+//!   13.1)
+//! * 32 kHz signal is a general purpose source that can be used by any
+//! [`Gclk`](crate::clock::v2::gclk::Gclk).
 //!
 //! Independently controllable default-on outputs for 32 kHz and 1 kHz
 //!
@@ -30,6 +35,14 @@ use super::rtc::*;
 // OscUlp32kToken
 //==============================================================================
 
+/// Token struct that is essential in order to construct an instance of a
+/// [`OscUlp32k`].
+///
+/// Irrelevant to the user as
+/// * [`Enabled`]`<`[`OscUlp32k`]`>` is undisableable and undeconstructable
+/// * [`Enabled`]`<`[`OscUlp32k`]`>` is already provided within a tuple as
+///   return value from [`retrieve_clocks`](crate::clock::v2::retrieve_clocks)
+///   and one does not have to create it
 pub struct OscUlp32kToken {
     __: (),
 }
@@ -72,6 +85,21 @@ impl OscUlp32kToken {
 // OscUlp32k
 //==============================================================================
 
+/// Struct representing a disabled ultra low power oscillator
+///
+/// In reality, this oscillator is always enabled and
+/// [`Enabled`]`<`[`OscUlp32k`]`>` does not have a `disable` method that would
+/// allow to retreive underlying [`OscUlp32k`] struct.
+///
+/// User can only activate/deactivate outgoing signals (as in making them
+/// visible outside of an oscillator).
+/// Therefore [`Enabled`]`<`[`OscUlp32k`]`<`[`Inactive32k`]`, `[`Inactive1k`]`>,
+/// _>` represents an **always** enabled oscillator with disabled outgoing
+/// signals.
+///
+/// It is generic over:
+/// - An output state of a 32 kHz signal (active/inactive)
+/// - An output state of a 1 kHz signal (active/inactive)
 pub struct OscUlp32k<X, Y>
 where
     X: Output32k,
@@ -87,7 +115,7 @@ where
     X: Output32k,
     Y: Output1k,
 {
-    /// Create a new instance of [`OscUlp32kToken`]
+    /// Create a new instance of [`OscUlp32k`]
     #[inline]
     pub(crate) fn new(token: OscUlp32kToken) -> Self {
         Self {
@@ -107,8 +135,9 @@ where
     ///
     /// This data is used to compensate for process variations
     ///
-    /// These register bits gets populated by data from Flash Calibration
-    /// at startup
+    /// This method performs a HW register write. At startup, this register is
+    /// populated with a default parametrization from Flash Calibration at
+    /// startup
     #[inline]
     pub fn set_calibration(mut self, calib: u8) -> Self {
         self.0.token.set_calib(calib);
@@ -120,9 +149,7 @@ impl<Y> Enabled<OscUlp32k<Inactive32k, Y>, U0>
 where
     Y: Output1k,
 {
-    /// Enable the 32 kHz output
-    ///
-    /// by performing the required register writes
+    /// Activate the 32 kHz signal output
     #[inline]
     pub fn activate_32k(mut self) -> Enabled<OscUlp32k<Active32k, Y>, U0> {
         self.0.token.activate_32k(true);
@@ -139,6 +166,7 @@ impl<Y> Enabled<OscUlp32k<Active32k, Y>, U0>
 where
     Y: Output1k,
 {
+    /// Deactivate the 32 kHz signal output
     #[inline]
     pub fn deactivate_32k(mut self) -> Enabled<OscUlp32k<Inactive32k, Y>, U0> {
         self.0.token.activate_32k(false);
@@ -155,9 +183,7 @@ impl<X> Enabled<OscUlp32k<X, Inactive1k>, U0>
 where
     X: Output32k,
 {
-    /// Enable the output of 1 kHz (1024 Hz) clock
-    ///
-    /// Output enabled at reset
+    /// Activate the 1 kHz signal output
     #[inline]
     pub fn activate_1k(mut self) -> Enabled<OscUlp32k<X, Active1k>, U0> {
         self.0.token.activate_1k(true);
@@ -174,9 +200,7 @@ impl<X> Enabled<OscUlp32k<X, Active1k>, U0>
 where
     X: Output32k,
 {
-    /// Disable the output of 1 kHz (1024 Hz) clock
-    ///
-    /// Output enabled at reset
+    /// Deactivate the 1 kHz signal output
     #[inline]
     pub fn deactivate_1k(mut self) -> Enabled<OscUlp32k<X, Inactive1k>, U0> {
         self.0.token.activate_1k(false);
@@ -212,6 +236,7 @@ where
 // GclkSource
 //==============================================================================
 
+/// A marker type. More information at [`SourceMarker`] documentation entry
 pub enum Ulp32k {}
 
 impl Sealed for Ulp32k {}
