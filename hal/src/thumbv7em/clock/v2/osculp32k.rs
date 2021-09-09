@@ -22,7 +22,7 @@ use crate::pac::gclk::genctrl::SRC_A;
 use crate::pac::osc32kctrl::rtcctrl::RTCSEL_A;
 use crate::pac::osc32kctrl::OSCULP32K;
 
-use crate::clock::types::{Counter, Enabled, PrivateIncrement};
+use crate::clock::types::{Counter, Enabled};
 use crate::clock::v2::{Source, SourceMarker};
 use crate::time::{Hertz, U32Ext};
 use crate::typelevel::Sealed;
@@ -210,25 +210,6 @@ where
             output1k: PhantomData,
         };
         Enabled::new(osculp32k)
-    }
-}
-
-impl<X, Y, N> Enabled<OscUlp32k<X, Y>, N>
-where
-    X: Output32k,
-    Y: Output1k,
-    N: Counter + PrivateIncrement,
-{
-    /// Write lock the OscUlp32k
-    ///
-    /// Locked until a Power-On Reset (POR) is detected.
-    ///
-    /// TODO, how should we model the hardware write lock?
-    /// For now artificially raise the use counter by 1
-    #[inline]
-    pub fn write_lock(mut self) -> <Self as PrivateIncrement>::Inc {
-        self.0.token.wrtlock();
-        self.inc()
     }
 }
 
