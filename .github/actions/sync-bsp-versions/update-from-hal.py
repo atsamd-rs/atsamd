@@ -27,7 +27,8 @@ hal_version = '.'.join(h['package']['version'].split('.')[:-1]) # Trim the patch
 
 
 with open('crates.json', 'r') as f:
-    bsps = [b for b in json.load(f)['boards'].keys()]
+    j = json.load(f)
+    bsps = [b for b in j['boards'].keys() if j['boards'][b]['tier'] == 1]
 
 for bsp in bsps:
     cargo = toml.load("boards/" + bsp + "/Cargo.toml")
