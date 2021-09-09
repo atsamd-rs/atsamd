@@ -30,13 +30,15 @@ use super::rtc::*;
 // OscUlp32kToken
 //==============================================================================
 
-pub struct OscUlp32kToken;
+pub struct OscUlp32kToken {
+    __: (),
+}
 
 impl OscUlp32kToken {
     /// Create a new instance of [`Xosc32kToken`]
     #[inline]
     pub(crate) unsafe fn new() -> Self {
-        Self
+        Self { __: () }
     }
 
     #[inline]
