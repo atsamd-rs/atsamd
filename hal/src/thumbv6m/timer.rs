@@ -1,4 +1,5 @@
 //! Working with timer counter hardware
+use crate::ehal::timer::{CountDown, Periodic};
 #[cfg(feature = "samd11")]
 use crate::pac::tc1::COUNT16;
 #[cfg(feature = "samd21")]
@@ -10,7 +11,6 @@ use crate::pac::{PM, TC1};
 #[cfg(feature = "samd21")]
 use crate::pac::{PM, TC3, TC4, TC5};
 use crate::timer_params::TimerParams;
-use hal::timer::{CountDown, Periodic};
 
 use crate::clock;
 use crate::time::{Hertz, Nanoseconds};

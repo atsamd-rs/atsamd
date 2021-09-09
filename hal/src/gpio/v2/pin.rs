@@ -99,9 +99,9 @@ use core::convert::Infallible;
 use core::marker::PhantomData;
 use core::mem::transmute;
 
-use hal::digital::v2::OutputPin;
+use crate::ehal::digital::v2::OutputPin;
 #[cfg(feature = "unproven")]
-use hal::digital::v2::{InputPin, StatefulOutputPin, ToggleableOutputPin};
+use crate::ehal::digital::v2::{InputPin, StatefulOutputPin, ToggleableOutputPin};
 use paste::paste;
 
 use crate::pac::PORT;

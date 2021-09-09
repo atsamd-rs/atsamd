@@ -19,11 +19,10 @@
     Please use the gpio::v2 module instead."
 )]
 
-use crate::pac::PORT;
-use hal::digital::v2::OutputPin;
-
+use crate::ehal::digital::v2::OutputPin;
 #[cfg(feature = "unproven")]
-use hal::digital::v2::{InputPin, StatefulOutputPin, ToggleableOutputPin};
+use crate::ehal::digital::v2::{InputPin, StatefulOutputPin, ToggleableOutputPin};
+use crate::pac::PORT;
 
 use crate::gpio::v2::{self, Alternate, AlternateConfig, AnyPin, OutputConfig};
 pub use crate::gpio::v2::{PinId, PinMode};

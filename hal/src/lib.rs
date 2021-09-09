@@ -1,6 +1,12 @@
 #![no_std]
 
-pub extern crate embedded_hal as hal;
+#[deprecated(
+    since = "0.13.0",
+    note = "`atsamd_hal::hal` is deprecated and will be removed in a future release. \
+    Use `atsamd_hal::ehal` instead"
+)]
+pub use embedded_hal as hal;
+pub use embedded_hal as ehal;
 
 pub use paste;
 
@@ -60,6 +66,13 @@ pub use atsame54n as pac;
 
 #[cfg(feature = "same54p")]
 pub use atsame54p as pac;
+
+#[deprecated(
+    since = "0.13.0",
+    note = "`atsamd_hal::target_device` is deprecated and will be removed in a future release. \
+    Use `atsamd_hal::pac` instead"
+)]
+pub use pac as target_device;
 
 #[cfg(feature = "use_rtt")]
 pub use jlink_rtt;
