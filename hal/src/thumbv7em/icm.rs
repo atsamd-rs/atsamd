@@ -1562,7 +1562,7 @@ bitfield::bitfield! {
     ///
     /// Allows setting short or long delay.
     ///
-    /// See [`Procdly`]
+    /// See [`ProcessingDelay`]
     #[inline]
     pub get_procdly, set_procdly: 10;
     get_algo_bits, set_algo_bits: 14, 12;
@@ -1607,7 +1607,7 @@ impl RegionConfiguration {
 /// Processing Delay
 ///
 /// For a given SHA algorithm, the runtime period has two possible lengths
-pub enum Procdly {
+pub enum ProcessingDelay {
     /// Shortest processing delay
     ///
     /// `SHA1`: 85
