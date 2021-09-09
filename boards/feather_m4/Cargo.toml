@@ -20,7 +20,6 @@ version = "0.6.12"
 optional = true
 
 [dependencies.atsamd-hal]
-path = "../../hal"
 version = "0.12"
 default-features = false
 
