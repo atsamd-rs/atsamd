@@ -25,11 +25,23 @@
 //! >available. Depending on the application, this might entail making
 //! >[`Regions`] **static**.
 //! >
-//! >The same goes for [`HashArea`], but here it is even more important to
+//! >The same goes for [`HashArea`], but here it is even more **important** to
 //! >ensure the memory is designated for `HashArea` usage, since the ICM
-//! >controller may write data, depending on ICM configuration.
+//! >controller will, depending on ICM configuration, write data to that
+//! >address.
 //! >
 //! >Setting [`HashArea`] **static** might be the safest path.
+//! >
+//! > Another alternative is to utilise the singleton macro provided by
+//! > [`cortex_m::singleton`](https://docs.rs/cortex-m/latest/cortex_m/macro.singleton.html)
+//! > ```no_run
+//! > # use atsamd_hal::{pac::Peripherals, icm::*};
+//! > use cortex_m::singleton;
+//! >
+//! > let hasharea: &'static mut HashArea =
+//! >     singleton!(: HashArea = HashArea::default()).unwrap();
+//! > ```
+
 //!
 //! ## Usage:
 //!
@@ -134,6 +146,10 @@
 //! ];
 //! static mut HASH: HashArea = HashArea::default();
 //! static mut ICM_REGION_DESC: Regions = Regions::default();
+//!
+//! // Alternatively
+//! //use cortex_m::singleton;
+//! //let hasharea: &'static mut HashArea = singleton!(: HashArea = HashArea::default()).unwrap();
 //!
 //! // Enable ICM apb clock
 //! // Clock v1
