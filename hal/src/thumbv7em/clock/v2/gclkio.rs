@@ -158,7 +158,7 @@ where
     I: GclkIo<G>,
 {
     /// Consume a [`GclkInToken`], `gpio` pin and a provided frequency to
-    /// receive a  enabled [`GclkIn`]
+    /// receive an enabled [`GclkIn`]
     pub fn enable<F>(token: GclkInToken<G>, pin: impl AnyPin<Id = I>, freq: F) -> Enabled<Self, U0>
     where
         F: Into<Hertz>,

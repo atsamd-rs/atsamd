@@ -13,7 +13,7 @@
 //! Abstractions representing peripherals that depend on a configured
 //! corresponding [`Pclk`] instance should consume it and release it upon
 //! destruction. Thus, it is possible to freeze adequate part of the clocking
-//! tree that running peripheral depend on.
+//! tree that running peripheral depends on.
 
 use core::marker::PhantomData;
 
@@ -53,7 +53,7 @@ impl<P: PclkType> PclkToken<P> {
     ///
     /// # Safety
     ///
-    /// Users must never create two simulatenous instances of this `struct` with
+    /// Users must never create two simultaneous instances of this `struct` with
     /// the same [`PclkType`]
     #[inline]
     unsafe fn new() -> Self {
