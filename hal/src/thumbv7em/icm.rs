@@ -519,6 +519,14 @@ pub struct RegionInterrupt<I: RegionNum> {
     interrupt: Interrupt,
 }
 
+macro_rules! match_on_interrupt_status {
+    ($self:ident, $name:ident) => {
+        paste! {
+            matches!($self.interrupt.[<get_$name>]() & $self.mask(), 1)
+        }
+    };
+}
+
 impl<I: RegionNum> RegionInterrupt<I> {
     /// Used to mask out the correct bit based on [`RegionNum`]
     #[inline]
@@ -529,37 +537,37 @@ impl<I: RegionNum> RegionInterrupt<I> {
     /// Region Status Updated interrupt status
     #[inline]
     pub fn get_rsu_int(&self) -> bool {
-        matches!(self.interrupt.get_rsu() & self.mask(), 1)
+        match_on_interrupt_status!(self, rsu)
     }
 
     /// Region End bit Condition Detected interrupt status
     #[inline]
     pub fn get_rec_int(&self) -> bool {
-        matches!(self.interrupt.get_rec() & self.mask(), 1)
+        match_on_interrupt_status!(self, rec)
     }
 
     /// Region Wrap Condition detected interrupt status
     #[inline]
     pub fn get_rwc_int(&self) -> bool {
-        matches!(self.interrupt.get_rwc() & self.mask(), 1)
+        match_on_interrupt_status!(self, rwc)
     }
 
     /// Region Bus Error interrupt status
     #[inline]
     pub fn get_rbe_int(&self) -> bool {
-        matches!(self.interrupt.get_rbe() & self.mask(), 1)
+        match_on_interrupt_status!(self, rbe)
     }
 
-    /// Region Digest Mismatches!( interrupt status
+    /// Region Digest Mismatch interrupt status
     #[inline]
     pub fn get_rdm_int(&self) -> bool {
-        matches!(self.interrupt.get_rdm() & self.mask(), 1)
+        match_on_interrupt_status!(self, rdm)
     }
 
     /// Region Hash Completed interrupt status
     #[inline]
     pub fn get_rhc_int(&self) -> bool {
-        matches!(self.interrupt.get_rhc() & self.mask(), 1)
+        match_on_interrupt_status!(self, rhc)
     }
 }
 
@@ -567,6 +575,21 @@ impl<I: RegionNum> RegionInterrupt<I> {
 /// settings like interrupts and status
 pub struct Region<I: RegionNum> {
     region: PhantomData<I>,
+}
+
+macro_rules! match_on_interrupt_mask {
+    ($self:ident, $name:ident) => {
+        paste! {
+            matches!($self.imr().read().[<$name>]().bits() & $self.mask(), 1)
+        }
+    };
+}
+macro_rules! match_on_interrupt_status {
+    ($self:ident, $name:ident) => {
+        paste! {
+            matches!($self.isr().read().[<$name>]().bits() & $self.mask(), 1)
+        }
+    };
 }
 
 impl<I: RegionNum> Region<I> {
@@ -750,73 +773,73 @@ impl<I: RegionNum> Region<I> {
     /// Get Region Status Updated interrupt enable mask
     #[inline]
     pub fn get_rsu_int_mask(&self) -> bool {
-        matches!(self.imr().read().rsu().bits() & self.mask(), 1)
+        match_on_interrupt_mask!(self, rsu)
     }
 
     /// Get Region End bit Condition Detected interrupt enable mask
     #[inline]
     pub fn get_rec_int_mask(&self) -> bool {
-        matches!(self.imr().read().rec().bits() & self.mask(), 1)
+        match_on_interrupt_mask!(self, rec)
     }
 
     /// Get Region Wrap Condition detected interrupt enable mask
     #[inline]
     pub fn get_rwc_int_mask(&self) -> bool {
-        matches!(self.imr().read().rwc().bits() & self.mask(), 1)
+        match_on_interrupt_mask!(self, rwc)
     }
 
     /// Get Region Bus Error interrupt enable mask
     #[inline]
     pub fn get_rbe_int_mask(&self) -> bool {
-        matches!(self.imr().read().rbe().bits() & self.mask(), 1)
+        match_on_interrupt_mask!(self, rbe)
     }
 
-    /// Get Region Digest Mismatches!( interrupt enable mask
+    /// Get Region Digest Mismatch interrupt enable mask
     #[inline]
     pub fn get_rdm_int_mask(&self) -> bool {
-        matches!(self.imr().read().rdm().bits() & self.mask(), 1)
+        match_on_interrupt_mask!(self, rdm)
     }
 
     /// Get Region Hash Completed interrupt enable mask
     #[inline]
     pub fn get_rhc_int_mask(&self) -> bool {
-        matches!(self.imr().read().rhc().bits() & self.mask(), 1)
+        match_on_interrupt_mask!(self, rhc)
     }
 
     /// Region Status Updated interrupt status
     #[inline]
     pub fn get_rsu_int(&self) -> bool {
-        matches!(self.isr().read().rsu().bits() & self.mask(), 1)
+        match_on_interrupt_status!(self, rsu)
     }
 
     /// Region End bit Condition Detected interrupt status
     #[inline]
     pub fn get_rec_int(&self) -> bool {
-        matches!(self.isr().read().rec().bits() & self.mask(), 1)
+        match_on_interrupt_status!(self, rec)
     }
 
     /// Region Wrap Condition detected interrupt status
     #[inline]
     pub fn get_rwc_int(&self) -> bool {
-        matches!(self.isr().read().rwc().bits() & self.mask(), 1)
+        match_on_interrupt_status!(self, rwc)
     }
 
     /// Region Bus Error interrupt status
     #[inline]
     pub fn get_rbe_int(&self) -> bool {
-        matches!(self.isr().read().rbe().bits() & self.mask(), 1)
+        match_on_interrupt_status!(self, rbe)
     }
 
-    /// Region Digest Mismatches!( interrupt status
+    /// Region Digest Mismatch interrupt status
     #[inline]
     pub fn get_rdm_int(&self) -> bool {
-        matches!(self.isr().read().rdm().bits() & self.mask(), 1)
+        match_on_interrupt_status!(self, rdm)
     }
 
     /// Region Hash Completed interrupt status
     #[inline]
     pub fn get_rhc_int(&self) -> bool {
-        matches!(self.isr().read().rhc().bits() & self.mask(), 1)
+        match_on_interrupt_status!(self, rhc)
     }
 
     /// When reading the interrupt (ISR) register, it is cleared
