@@ -8,7 +8,7 @@ https://github.com/atsamd-rs/atsamd/tree/master/boards/pyportal/examples
 
 ## Prerequisites
 * Install the cross compile toolchain `rustup target add thumbv7em-none-eabihf`
-* Install [hf2-cli] the uf2 bootloader flasher tool(https://crates.io/crates/hf2-cli) however your platform requires
+* Install [hf2-cli](https://crates.io/crates/hf2-cli) the uf2 bootloader flasher tool however your platform requires
 
 * Be in this directory `cd boards/pyportal`
 * Put your device in bootloader mode usually by hitting the reset button twice.
