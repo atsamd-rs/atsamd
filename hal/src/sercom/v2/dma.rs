@@ -11,8 +11,8 @@ use crate::{
         Beat, Buffer, Transfer, TriggerAction,
     },
     sercom::v2::{
-        spi::{self, AnySpi, Spi},
-        uart::{self, Capability, Receive, Transmit, Uart},
+        spi::{self, Spi},
+        uart::{self, Uart},
         Sercom,
     },
 };
@@ -24,7 +24,7 @@ unsafe impl<C, D> Buffer for Uart<C, D>
 where
     C: uart::ValidConfig,
     C::Word: Beat,
-    D: Capability,
+    D: uart::Capability,
 {
     type Beat = C::Word;
 
@@ -48,7 +48,7 @@ impl<C, D> Uart<C, D>
 where
     Self: Buffer<Beat = C::Word>,
     C: uart::ValidConfig,
-    D: Receive,
+    D: uart::Receive,
 {
     /// Transform an [`Uart`] into a DMA [`Transfer`]) and
     /// start receiving into the provided buffer.
@@ -87,7 +87,7 @@ impl<C, D> Uart<C, D>
 where
     Self: Buffer<Beat = C::Word>,
     C: uart::ValidConfig,
-    D: Transmit,
+    D: uart::Transmit,
 {
     /// Transform an [`Uart`] into a DMA [`Transfer`]) and
     /// start sending the provided buffer.
@@ -126,43 +126,19 @@ where
 // SPI DMA transfers
 //=============================================================================
 
-#[cfg(feature = "min-samd51g")]
-#[doc(hidden)]
-pub trait CharSize: spi::AtomicLength {}
-
-#[cfg(feature = "min-samd51g")]
-impl<T: spi::AtomicLength> CharSize for T {}
-
-#[cfg(any(feature = "samd11", feature = "samd21"))]
-#[doc(hidden)]
-pub trait CharSize: spi::CharSize {}
-
-#[cfg(any(feature = "samd11", feature = "samd21"))]
-impl<T: spi::CharSize> CharSize for T {}
-
-unsafe impl<P, M, L> Buffer for Spi<spi::Config<P, M, L>>
+unsafe impl<C, A> Buffer for Spi<C, A>
 where
-    spi::Config<P, M, L>: spi::ValidConfig,
-    P: spi::ValidPads,
-    M: spi::MasterMode,
-    L: CharSize,
-    L::Word: Beat,
+    C: spi::ValidConfig,
+    C::OpMode: spi::MasterMode,
+    C::Size: spi::AtomicSize<Word = C::Word>,
+    C::Word: Beat,
+    A: spi::Capability,
 {
-    type Beat = L::Word;
+    type Beat = C::Word;
 
     #[inline]
     fn dma_ptr(&mut self) -> *mut Self::Beat {
-        unsafe {
-            #[cfg(feature = "min-samd51g")]
-            {
-                self.sercom().spim().data.as_ptr() as *mut _
-            }
-
-            #[cfg(any(feature = "samd11", feature = "samd21"))]
-            {
-                self.sercom().spi().data.as_ptr() as *mut _
-            }
-        }
+        self.data_ptr()
     }
 
     #[inline]
@@ -176,14 +152,11 @@ where
     }
 }
 
-impl<P, M, L> Spi<spi::Config<P, M, L>>
+impl<C, A> Spi<C, A>
 where
-    Self: Buffer<Beat = L::Word>,
-    spi::Config<P, M, L>: spi::ValidConfig,
-    P: spi::Tx,
-    M: spi::MasterMode,
-    L: CharSize,
-    L::Word: Beat,
+    C: spi::ValidConfig,
+    A: spi::Transmit,
+    Self: Buffer<Beat = C::Word>,
 {
     /// Transform an [`Spi`] into a DMA [`Transfer`]) and
     /// start a send transaction.
@@ -196,7 +169,7 @@ where
     ) -> Transfer<Channel<Ch::Id, Busy>, BufferPair<B, Self>, W>
     where
         Ch: AnyChannel<Status = Ready>,
-        B: Buffer<Beat = L::Word> + 'static,
+        B: Buffer<Beat = C::Word> + 'static,
         W: FnOnce(CallbackStatus) + 'static,
     {
         channel
@@ -214,18 +187,15 @@ where
         // static.
         unsafe { Transfer::new_unchecked(channel, buf, self, false) }
             .with_waker(waker)
-            .begin(<Self as AnySpi>::Sercom::DMA_TX_TRIGGER, trigger_action)
+            .begin(C::Sercom::DMA_TX_TRIGGER, trigger_action)
     }
 }
 
-impl<P, M, L> Spi<spi::Config<P, M, L>>
+impl<C, A> Spi<C, A>
 where
-    Self: Buffer<Beat = L::Word>,
-    spi::Config<P, M, L>: spi::ValidConfig,
-    P: spi::Rx,
-    M: spi::MasterMode,
-    L: CharSize,
-    L::Word: Beat,
+    C: spi::ValidConfig,
+    A: spi::Receive,
+    Self: Buffer<Beat = C::Word>,
 {
     /// Transform an [`Spi`] into a DMA [`Transfer`]) and
     /// start a receive transaction.
@@ -238,7 +208,7 @@ where
     ) -> Transfer<Channel<Ch::Id, Busy>, BufferPair<Self, B>, W>
     where
         Ch: AnyChannel<Status = Ready>,
-        B: Buffer<Beat = L::Word> + 'static,
+        B: Buffer<Beat = C::Word> + 'static,
         W: FnOnce(CallbackStatus) + 'static,
     {
         channel
@@ -256,6 +226,6 @@ where
         // buffer is static.
         unsafe { Transfer::new_unchecked(channel, self, buf, false) }
             .with_waker(waker)
-            .begin(<Self as AnySpi>::Sercom::DMA_RX_TRIGGER, trigger_action)
+            .begin(C::Sercom::DMA_RX_TRIGGER, trigger_action)
     }
 }

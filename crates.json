@@ -70,7 +70,7 @@
     },
     "pygamer": {
 	  "tier": 1,
-      "build": "cargo build --examples --features=unproven,usb,math"
+      "build": "cargo build --examples --features=unproven,usb,math,sd-card"
     },
     "pyportal": {
 	  "tier": 2,
