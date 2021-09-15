@@ -95,11 +95,11 @@ crate::paste::item! {
         }
 
         pub fn is_interrupt(&mut self) -> bool {
-            unsafe { (*target_device::EIC::ptr()) }.intflag.read().[<extint $num>]().bit_is_set()
+            unsafe { &(*target_device::EIC::ptr()) }.intflag.read().[<extint $num>]().bit_is_set()
         }
 
         pub fn clear_interrupt(&mut self) {
-            unsafe { (*target_device::EIC::ptr()) }.intflag.modify(|_, w| {
+            unsafe { &(*target_device::EIC::ptr()) }.intflag.modify(|_, w| {
                 w.[<extint $num>]().set_bit()
             });
         }
