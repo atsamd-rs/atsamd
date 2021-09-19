@@ -137,7 +137,7 @@ pad_table!(
         D: (Sercom3, Pad1, IoSet3),
     }
     PA17 {
-        C: (Sercom1, Pad1, IoSet1),
+        C: (Sercom1, Pad1, IoSet1, IoSet3),
         D: (Sercom3, Pad0, IoSet3),
     }
     PA18 {
