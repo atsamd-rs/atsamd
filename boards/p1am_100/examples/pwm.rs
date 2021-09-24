@@ -3,7 +3,10 @@
 
 extern crate cortex_m_rt;
 extern crate p1am_100 as hal;
-extern crate panic_halt;
+#[cfg(not(feature = "use_semihosting"))]
+use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
 
 use core::fmt::Write;
 

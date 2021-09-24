@@ -5,9 +5,9 @@ extern crate cortex_m;
 extern crate cortex_m_semihosting;
 extern crate embedded_hal;
 #[cfg(not(feature = "use_semihosting"))]
-extern crate panic_halt;
+use panic_halt as _;
 #[cfg(feature = "use_semihosting")]
-extern crate panic_semihosting;
+use panic_semihosting as _;
 extern crate wio_lite_mg126 as hal;
 
 use cortex_m_semihosting::hprintln;

@@ -3,7 +3,10 @@
 
 extern crate cortex_m;
 extern crate p1am_100 as hal;
-extern crate panic_halt;
+#[cfg(not(feature = "use_semihosting"))]
+use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
 
 use hal::clock::GenericClockController;
 use hal::delay::Delay;

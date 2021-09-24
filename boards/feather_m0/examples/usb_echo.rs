@@ -1,7 +1,10 @@
 #![no_std]
 #![no_main]
 
+#[cfg(not(feature = "use_semihosting"))]
 use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
 
 use cortex_m::asm::delay as cycle_delay;
 use cortex_m::peripheral::NVIC;
