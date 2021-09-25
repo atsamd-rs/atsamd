@@ -6,7 +6,6 @@ use panic_halt as _;
 #[cfg(feature = "use_semihosting")]
 use panic_semihosting as _;
 
-
 use bsp::hal;
 use bsp::pac;
 use feather_m0 as bsp;
