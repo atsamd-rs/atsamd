@@ -1,16 +1,16 @@
 #![no_std]
 #![no_main]
 
+use bsp::hal;
 /// This example is intended to be used with a pushbutton connected between D0
 /// and ground.  The LED should toggle when the button is pressed (perhaps more
 /// than once due to the lack of debouncing).
 use panic_halt as _;
-use trinket_m0 as hal;
+use trinket_m0 as bsp;
 
-use cortex_m::asm::delay as cycle_delay;
+use bsp::entry;
 use hal::clock::GenericClockController;
 use hal::eic::{pin::Sense, EIC};
-use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 
@@ -26,7 +26,7 @@ fn main() -> ! {
         &mut peripherals.NVMCTRL,
     );
 
-    let mut pins = hal::Pins::new(peripherals.PORT);
+    let mut pins = bsp::Pins::new(peripherals.PORT);
     let mut led = pins.d13.into_push_pull_output(&mut pins.port);
     led.set_high().unwrap();
 

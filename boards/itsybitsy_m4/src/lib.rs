@@ -3,7 +3,7 @@
 
 pub mod pins;
 
-use atsamd_hal as hal;
+pub use atsamd_hal as hal;
 
 use hal::*;
 

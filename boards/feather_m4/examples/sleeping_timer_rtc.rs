@@ -2,15 +2,15 @@
 #![no_std]
 #![no_main]
 
-extern crate cortex_m;
-extern crate feather_m4 as hal;
+use bsp::hal;
+use feather_m4 as bsp;
 #[cfg(not(feature = "use_semihosting"))]
-extern crate panic_halt;
+use panic_halt as _;
 #[cfg(feature = "use_semihosting")]
-extern crate panic_semihosting;
+use panic_semihosting as _;
 
+use bsp::entry;
 use hal::clock::GenericClockController;
-use hal::entry;
 use hal::pac::{interrupt, CorePeripherals, Peripherals, RTC};
 use hal::prelude::*;
 use hal::rtc;
@@ -65,7 +65,7 @@ fn main() -> ! {
     });
 
     // Configure our red LED and blink forever, sleeping between!
-    let mut pins = hal::Pins::new(peripherals.PORT);
+    let mut pins = bsp::Pins::new(peripherals.PORT);
     let mut red_led = pins.d13.into_open_drain_output(&mut pins.port);
     loop {
         red_led.set_low().unwrap();

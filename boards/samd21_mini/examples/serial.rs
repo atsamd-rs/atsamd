@@ -1,8 +1,9 @@
 #![no_std]
 #![no_main]
 
+use bsp::hal;
 use panic_halt as _;
-use samd21_mini as hal;
+use samd21_mini as bsp;
 
 use hal::clock::GenericClockController;
 use hal::gpio::{OpenDrain, Output, Pa10, Pa11, Pa17, Pa27, Pb3, PfC};
@@ -10,7 +11,6 @@ use hal::pac::gclk::clkctrl::GEN_A;
 use hal::pac::gclk::genctrl::SRC_A;
 use hal::prelude::*;
 use hal::sercom::{PadPin, Sercom0Pad2, Sercom0Pad3, UART0};
-use nb::block;
 use rtic::app;
 
 macro_rules! dbgprint {
@@ -30,7 +30,7 @@ const APP: () = {
     fn init(c: init::Context) -> init::LateResources {
         let mut device = c.device;
 
-        let mut pins = hal::Pins::new(device.PORT);
+        let mut pins = bsp::Pins::new(device.PORT);
 
         let mut clocks = GenericClockController::with_internal_32kosc(
             device.GCLK,
@@ -87,7 +87,7 @@ const APP: () = {
     #[task(binds = SERCOM0, resources = [blue_led, tx_led, uart, rx_led])]
     fn SERCOM0(c: SERCOM0::Context) {
         c.resources.rx_led.set_low().unwrap();
-        let data = match block!(c.resources.uart.read()) {
+        let data = match nb::block!(c.resources.uart.read()) {
             Ok(v) => {
                 c.resources.rx_led.set_high().unwrap();
                 v
@@ -96,7 +96,7 @@ const APP: () = {
         };
 
         c.resources.tx_led.set_low().unwrap();
-        match block!(c.resources.uart.write(data)) {
+        match nb::block!(c.resources.uart.write(data)) {
             Ok(_) => {
                 c.resources.tx_led.set_high().unwrap();
             }

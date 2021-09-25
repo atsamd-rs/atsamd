@@ -1,6 +1,6 @@
 #![no_std]
 
-extern crate atsamd_hal as hal;
+pub use atsamd_hal as hal;
 
 use hal::prelude::*;
 use hal::*;

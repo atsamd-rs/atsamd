@@ -1,14 +1,16 @@
 #![no_std]
 #![no_main]
 
-extern crate cortex_m;
-extern crate panic_halt;
-extern crate usb_device;
-extern crate usbd_serial;
-extern crate xiao_m0 as hal;
+#[cfg(not(feature = "use_semihosting"))]
+use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
 
+use bsp::hal;
+use xiao_m0 as bsp;
+
+use bsp::entry;
 use hal::clock::GenericClockController;
-use hal::entry;
 use hal::gpio::{OpenDrain, Output, Pa18};
 use hal::pac::{interrupt, CorePeripherals, Peripherals};
 
@@ -31,11 +33,11 @@ fn main() -> ! {
         &mut peripherals.SYSCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = hal::Pins::new(peripherals.PORT);
+    let mut pins = bsp::Pins::new(peripherals.PORT);
     let mut led0 = pins.led0.into_open_drain_output(&mut pins.port);
 
     let bus_allocator = unsafe {
-        USB_ALLOCATOR = Some(hal::usb_allocator(
+        USB_ALLOCATOR = Some(bsp::usb_allocator(
             peripherals.USB,
             &mut clocks,
             &mut peripherals.PM,

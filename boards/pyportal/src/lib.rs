@@ -2,7 +2,7 @@
 #![recursion_limit = "1024"]
 
 pub mod pins;
-use atsamd_hal as hal;
+pub use atsamd_hal as hal;
 
 #[cfg(feature = "rt")]
 pub use cortex_m_rt::entry;

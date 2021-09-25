@@ -10,7 +10,7 @@ pub use adxl343;
 #[cfg(feature = "keypad-unproven")]
 pub use keypad;
 
-use atsamd_hal as hal;
+pub use atsamd_hal as hal;
 
 use hal::*;
 

@@ -1,9 +1,11 @@
 #![no_std]
 
-extern crate atsamd_hal as hal;
+pub use atsamd_hal as hal;
+pub use hal::common::*;
+pub use hal::target_device as pac;
 
 #[cfg(feature = "rt")]
-extern crate cortex_m_rt;
+use cortex_m_rt;
 #[cfg(feature = "rt")]
 pub use cortex_m_rt::entry;
 
@@ -14,10 +16,6 @@ use hal::clock::GenericClockController;
 use hal::time::Hertz;
 
 use hal::sercom::{PadPin, UART5};
-
-pub use hal::common::*;
-
-pub use hal::target_device as pac;
 
 use gpio::{Floating, Input, PfD, Port};
 

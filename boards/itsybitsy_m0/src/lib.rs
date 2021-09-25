@@ -3,7 +3,7 @@
 pub mod pins;
 pub use pins::Pins;
 
-extern crate atsamd_hal as hal;
+pub use atsamd_hal as hal;
 
 #[cfg(feature = "rt")]
 extern crate cortex_m_rt;

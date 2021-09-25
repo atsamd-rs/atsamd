@@ -12,18 +12,20 @@
 #![no_std]
 #![no_main]
 
-extern crate arduino_nano33iot as hal;
-extern crate rand;
-extern crate ssd1306;
+use arduino_nano33iot as bsp;
+use bsp::hal;
+
+use rand;
+use ssd1306;
 
 #[cfg(not(feature = "use_semihosting"))]
 use panic_halt as _;
 #[cfg(feature = "use_semihosting")]
 use panic_semihosting as _;
 
+use bsp::entry;
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
-use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 use hal::time::KiloHertz;
@@ -45,12 +47,12 @@ fn main() -> ! {
         &mut peripherals.SYSCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = hal::Pins::new(peripherals.PORT);
+    let mut pins = bsp::Pins::new(peripherals.PORT);
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
     delay.delay_ms(BOOT_DELAY_MS);
 
-    let i2c = hal::i2c_master(
+    let i2c = bsp::i2c_master(
         &mut clocks,
         KiloHertz(400),
         peripherals.SERCOM4,

@@ -4,8 +4,9 @@
 #![no_std]
 #![no_main]
 
+use bsp::hal;
 use cortex_m::asm;
-use feather_m4 as hal;
+use feather_m4 as bsp;
 use panic_halt as _;
 
 use hal::{

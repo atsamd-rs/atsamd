@@ -14,13 +14,12 @@
 #![no_std]
 #![no_main]
 
-extern crate cortex_m;
-extern crate embedded_hal;
-extern crate samd11_bare as hal;
+use bsp::hal;
+use samd11_bare as bsp;
 
+use bsp::entry;
 use hal::adc::Adc;
 use hal::clock::GenericClockController;
-use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 use panic_probe as _;
@@ -40,7 +39,7 @@ fn main() -> ! {
         &mut peripherals.NVMCTRL,
     );
     let mut delay = hal::delay::Delay::new(core.SYST, &mut clocks);
-    let mut pins = hal::Pins::new(peripherals.PORT);
+    let mut pins = bsp::Pins::new(peripherals.PORT);
 
     let mut adc = Adc::adc(peripherals.ADC, &mut peripherals.PM, &mut clocks);
     let mut a0 = pins.d1.into_function_b(&mut pins.port);

@@ -1,11 +1,12 @@
 #![no_std]
 #![no_main]
 
+use bsp::hal;
 use panic_halt as _;
-use trinket_m0 as hal;
+use trinket_m0 as bsp;
 
+use bsp::entry;
 use hal::clock::GenericClockController;
-use hal::entry;
 use hal::pac::{interrupt, CorePeripherals, Peripherals};
 
 use hal::usb::UsbBus;
@@ -27,11 +28,11 @@ fn main() -> ! {
         &mut peripherals.SYSCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = hal::Pins::new(peripherals.PORT);
+    let mut pins = bsp::Pins::new(peripherals.PORT);
     let mut red_led = pins.d13.into_open_drain_output(&mut pins.port);
 
     let bus_allocator = unsafe {
-        USB_ALLOCATOR = Some(hal::usb_allocator(
+        USB_ALLOCATOR = Some(bsp::usb_allocator(
             peripherals.USB,
             &mut clocks,
             &mut peripherals.PM,
