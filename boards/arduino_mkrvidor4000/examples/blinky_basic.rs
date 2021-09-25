@@ -1,7 +1,12 @@
 #![no_std]
 #![no_main]
 
-extern crate arduino_mkrvidor4000 as hal;
+use arduino_mkrvidor4000 as hal;
+
+#[cfg(not(feature = "use_semihosting"))]
+use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
 
 use hal::clock::GenericClockController;
 use hal::delay::Delay;

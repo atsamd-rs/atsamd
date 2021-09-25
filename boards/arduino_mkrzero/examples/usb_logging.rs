@@ -1,11 +1,15 @@
 #![no_std]
 #![no_main]
 
-extern crate arduino_mkrzero as hal;
-extern crate cortex_m;
-extern crate panic_halt;
-extern crate usb_device;
-extern crate usbd_serial;
+use arduino_mkrzero as hal;
+use cortex_m;
+use usb_device;
+use usbd_serial;
+
+#[cfg(not(feature = "use_semihosting"))]
+use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
 
 use hal::clock::GenericClockController;
 use hal::delay::Delay;

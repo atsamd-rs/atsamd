@@ -16,6 +16,11 @@ extern crate arduino_nano33iot as hal;
 extern crate rand;
 extern crate ssd1306;
 
+#[cfg(not(feature = "use_semihosting"))]
+use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
+
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
 use hal::entry;

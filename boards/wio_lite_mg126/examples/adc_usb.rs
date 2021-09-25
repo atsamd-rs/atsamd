@@ -5,7 +5,10 @@ extern crate cortex_m;
 extern crate cortex_m_semihosting;
 extern crate embedded_hal;
 extern crate numtoa;
-extern crate panic_halt;
+#[cfg(not(feature = "use_semihosting"))]
+use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
 extern crate usb_device;
 extern crate usbd_serial;
 extern crate wio_lite_mg126 as hal;

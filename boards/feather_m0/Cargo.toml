@@ -23,18 +23,6 @@ path = "../../hal"
 version = "0.12"
 default-features = false
 
-[dependencies.panic-abort]
-version = "0.3"
-optional = true
-
-[dependencies.panic-halt]
-version = "0.2"
-optional = true
-
-[dependencies.panic-semihosting]
-version = "0.5"
-optional = true
-
 [dependencies.panic_rtt]
 version = "0.1"
 optional = true
@@ -63,20 +51,19 @@ nb = "0.1"
 drogue-nom-utils = "0.1"
 nom = { version = "5.1", default-features = false }
 heapless = "0.5"
+panic-halt = "0.2"
+panic-semihosting = "0.5"
 
 [dev-dependencies.cortex-m-rtic]
 version = "0.6.0-alpha.5"
 
 [features]
 # ask the HAL to enable atsamd21g support
-default = ["rt", "atsamd-hal/samd21g", "panic_halt"]
+default = ["rt", "atsamd-hal/samd21g"]
 rt = ["cortex-m-rt", "atsamd-hal/samd21g-rt"]
 unproven = ["atsamd-hal/unproven"]
 use_rtt = ["atsamd-hal/use_rtt", "panic_rtt"]
 usb = ["atsamd-hal/usb", "usb-device", "usbd-serial"]
-panic_halt = ["panic-halt"]
-panic_abort = ["panic-abort"]
-panic_semihosting = ["panic-semihosting"]
 # Enable pins for the radio on "RadioFruits" with RFM95, RFM96, RFM69
 rfm = []
 # Enable pins for the flash and neopixel on the Feather M0 Express
@@ -87,6 +74,7 @@ max-channels = ["dma", "atsamd-hal/max-channels"]
 adalogger = []
 sdmmc = ["embedded-sdmmc", "atsamd-hal/sdmmc"]
 rtic = ["atsamd-hal/rtic", "rtic-monotonic"]
+use_semihosting = []
 
 [profile.dev]
 incremental = false
