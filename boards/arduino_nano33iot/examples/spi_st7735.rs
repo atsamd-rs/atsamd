@@ -5,6 +5,11 @@ extern crate arduino_nano33iot as hal;
 extern crate embedded_graphics;
 extern crate st7735_lcd;
 
+#[cfg(not(feature = "use_semihosting"))]
+use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
+
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
 use hal::entry;

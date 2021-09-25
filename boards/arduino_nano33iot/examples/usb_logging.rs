@@ -3,9 +3,13 @@
 
 extern crate arduino_nano33iot as hal;
 extern crate cortex_m;
-extern crate panic_halt;
 extern crate usb_device;
 extern crate usbd_serial;
+
+#[cfg(not(feature = "use_semihosting"))]
+use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
 
 use hal::clock::GenericClockController;
 use hal::entry;

@@ -1,8 +1,12 @@
 #![no_std]
 #![no_main]
 
-extern crate arduino_mkrzero as hal;
-extern crate atsamd_hal;
+use arduino_mkrzero as hal;
+
+#[cfg(not(feature = "use_semihosting"))]
+use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
 
 use hal::clock::{GenericClockController, Tcc0Tcc1Clock};
 use hal::delay::Delay;
