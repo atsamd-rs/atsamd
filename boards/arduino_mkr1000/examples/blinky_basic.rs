@@ -2,7 +2,11 @@
 #![no_main]
 
 extern crate arduino_mkr1000 as hal;
-extern crate panic_halt;
+
+#[cfg(not(feature = "use_semihosting"))]
+use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
 
 use hal::clock::GenericClockController;
 use hal::delay::Delay;

@@ -3,6 +3,11 @@
 
 extern crate arduino_mkrvidor4000 as hal;
 
+#[cfg(not(feature = "use_semihosting"))]
+use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
+
 use hal::clock::GenericClockController;
 use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
