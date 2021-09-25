@@ -1,7 +1,7 @@
 #![no_std]
 #![no_main]
 
-extern crate arduino_mkrzero as hal;
+use arduino_mkrzero as hal;
 
 #[cfg(not(feature = "use_semihosting"))]
 use panic_halt as _;

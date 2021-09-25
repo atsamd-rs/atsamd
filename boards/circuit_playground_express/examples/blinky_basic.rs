@@ -1,9 +1,13 @@
 #![no_std]
 #![no_main]
 
-extern crate circuit_playground_express as hal;
-extern crate cortex_m_rt;
-extern crate panic_halt;
+use circuit_playground_express as hal;
+use cortex_m_rt;
+
+#[cfg(not(feature = "use_semihosting"))]
+use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
 
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
