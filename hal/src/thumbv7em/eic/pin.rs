@@ -100,9 +100,7 @@ crate::paste::item! {
 
         pub fn clear_interrupt(&mut self) {
             unsafe {
-                &(*target_device::EIC::ptr()).intflag.write(|w| {
-                    w.bits(1 << $num)
-                });
+                {&(*target_device::EIC::ptr())}.intflag.write(|w| { w.bits(1 << $num) });
             }
         }
 
