@@ -24,12 +24,12 @@ use paste::paste;
 use seq_macro::seq;
 
 #[cfg(any(feature = "samd11", feature = "samd21"))]
-pub use crate::target_device::dmac::chctrlb::{
+pub use crate::pac::dmac::chctrlb::{
     LVL_A as PriorityLevel, TRIGACT_A as TriggerAction, TRIGSRC_A as TriggerSource,
 };
 
 #[cfg(feature = "min-samd51g")]
-pub use crate::target_device::dmac::channel::{
+pub use crate::pac::dmac::channel::{
     chctrla::{
         BURSTLEN_A as BurstLength, THRESHOLD_A as FifoThreshold, TRIGACT_A as TriggerAction,
         TRIGSRC_A as TriggerSource,
@@ -41,7 +41,7 @@ use super::{
     channel::{new_chan, Channel, Uninitialized},
     DESCRIPTOR_SECTION, WRITEBACK,
 };
-use crate::target_device::{DMAC, PM};
+use crate::pac::{DMAC, PM};
 
 /// Trait representing a DMA channel ID
 pub trait ChId {

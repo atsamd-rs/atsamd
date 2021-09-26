@@ -1,6 +1,6 @@
 //! NeoTrellis M4 Express pins
 
-use super::{hal, pac::MCLK, pac::SERCOM2, pac::SERCOM4, target_device};
+use super::{hal, pac, pac::MCLK, pac::SERCOM2, pac::SERCOM4};
 
 use hal::clock::*;
 use hal::define_pins;
@@ -17,7 +17,7 @@ define_pins!(
     /// Maps the pins to their arduino names and
     /// the numbers printed on the board.
     struct Pins,
-    target_device: target_device,
+    pac: pac,
 
     /// Analog pin 0
     pin a0 = a2,

@@ -12,7 +12,7 @@ use hal::*;
 
 pub use hal::common::*;
 
-pub use hal::target_device as pac;
+pub use hal::pac;
 
 use gpio::{Floating, Input, PfD, Port};
 
@@ -24,7 +24,7 @@ define_pins!(
     /// Maps the pins to their arduino names and
     /// the numbers printed on the board.
     struct Pins,
-    target_device: target_device,
+    pac: pac,
 
     /// arduino header digital pins
     /// rx/ d0

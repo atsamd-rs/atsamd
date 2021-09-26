@@ -5,10 +5,10 @@ use crate::hal::spi::{FullDuplex, Mode, Phase, Polarity};
 use crate::sercom::v1::pads::CompatiblePad;
 use crate::sercom::v2::*;
 use crate::spi_common::CommonSpi;
-use crate::target_device::sercom0::SPIM;
-use crate::target_device::{MCLK, SERCOM0, SERCOM1, SERCOM2, SERCOM3, SERCOM4, SERCOM5};
+use crate::pac::sercom0::SPIM;
+use crate::pac::{MCLK, SERCOM0, SERCOM1, SERCOM2, SERCOM3, SERCOM4, SERCOM5};
 #[cfg(feature = "min-samd51n")]
-use crate::target_device::{SERCOM6, SERCOM7};
+use crate::pac::{SERCOM6, SERCOM7};
 use crate::time::Hertz;
 
 #[derive(Debug)]

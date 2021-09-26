@@ -2,7 +2,7 @@ use crate::gpio::{
     self, v2::AnyPin, v2::FloatingInterrupt, v2::Pin, v2::PinId, v2::PinMode,
     v2::PullDownInterrupt, v2::PullUpInterrupt, Port,
 };
-use crate::target_device;
+use crate::pac;
 
 /// The EicPin trait makes it more ergonomic to convert a gpio pin into an EIC
 /// pin. You should not implement this trait for yourself; only the
@@ -24,7 +24,7 @@ pub trait EicPin {
     fn into_pull_down_ei(self, port: &mut Port) -> Self::PullDown;
 }
 
-pub type Sense = target_device::eic::config::SENSE0_A;
+pub type Sense = pac::eic::config::SENSE0_A;
 
 pub type ExternalInterruptID = usize;
 
@@ -89,25 +89,25 @@ crate::paste::item! {
         }
 
         pub fn is_interrupt(&mut self) -> bool {
-            let intflag = unsafe { &(*target_device::EIC::ptr()) }.intflag.read().bits();
+            let intflag = unsafe { &(*pac::EIC::ptr()) }.intflag.read().bits();
             intflag & (1 << $num) != 0
         }
 
         pub fn state(&mut self) -> bool {
-            let state = unsafe { &(*target_device::EIC::ptr()) }.pinstate.read().bits();
+            let state = unsafe { &(*pac::EIC::ptr()) }.pinstate.read().bits();
             state & (1 << $num) != 0
         }
 
         pub fn clear_interrupt(&mut self) {
             unsafe {
-                {&(*target_device::EIC::ptr())}.intflag.write(|w| { w.bits(1 << $num) });
+                {&(*pac::EIC::ptr())}.intflag.write(|w| { w.bits(1 << $num) });
             }
         }
 
         pub fn sense(&mut self, _eic: &mut super::ConfigurableEIC, sense: Sense) {
             // Which of the two config blocks this eic config is in
             let offset = ($num >> 3) & 0b0001;
-            let config = unsafe { &(*target_device::EIC::ptr()).config[offset] };
+            let config = unsafe { &(*pac::EIC::ptr()).config[offset] };
 
             config.modify(|_, w| unsafe {
                 // Which of the eight eic configs in this config block
@@ -128,7 +128,7 @@ crate::paste::item! {
         pub fn filter(&mut self, _eic: &mut super::ConfigurableEIC, filter: bool) {
             // Which of the two config blocks this eic config is in
             let offset = ($num >> 3) & 0b0001;
-            let config = unsafe { &(*target_device::EIC::ptr()).config[offset] };
+            let config = unsafe { &(*pac::EIC::ptr()).config[offset] };
 
             config.modify(|_, w| {
                 // Which of the eight eic configs in this config block

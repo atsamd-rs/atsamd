@@ -3,15 +3,15 @@
 //! before you can set up most of the peripherals on the atsamd21 device.
 //! The other types in this module are used to enforce at compile time
 //! that the peripherals have been correctly configured.
-use crate::target_device::gclk::clkctrl::GEN_A::*;
-use crate::target_device::gclk::clkctrl::ID_A::*;
-use crate::target_device::gclk::genctrl::SRC_A::*;
-use crate::target_device::{self, GCLK, NVMCTRL, PM, SYSCTRL};
+use crate::pac::gclk::clkctrl::GEN_A::*;
+use crate::pac::gclk::clkctrl::ID_A::*;
+use crate::pac::gclk::genctrl::SRC_A::*;
+use crate::pac::{self, GCLK, NVMCTRL, PM, SYSCTRL};
 use crate::time::{Hertz, U32Ext};
 
-pub type ClockId = target_device::gclk::clkctrl::ID_A;
-pub type ClockGenId = target_device::gclk::clkctrl::GEN_A;
-pub type ClockSource = target_device::gclk::genctrl::SRC_A;
+pub type ClockId = pac::gclk::clkctrl::ID_A;
+pub type ClockGenId = pac::gclk::clkctrl::GEN_A;
+pub type ClockSource = pac::gclk::genctrl::SRC_A;
 
 /// Represents a configured clock generator.
 /// Can be converted into the effective clock frequency.

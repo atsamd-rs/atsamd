@@ -9,7 +9,7 @@ pub use atsamd_hal as hal;
 
 pub use hal::common::*;
 
-pub use hal::target_device as pac;
+pub use hal::pac;
 
 use hal::prelude::*;
 use hal::*;
@@ -20,7 +20,7 @@ define_pins!(
     /// Maps the pins to their arduino names and
     /// the numbers printed on the board.
     struct Pins,
-    target_device: target_device,
+    pac: pac,
 
     pin tx = a10,
     pin rx = a11,

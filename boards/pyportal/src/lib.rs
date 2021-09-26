@@ -11,8 +11,8 @@ use hal::*;
 
 pub use crate::pins::Pins;
 pub use hal::common::*;
+pub use hal::pac;
 pub use hal::samd51::*;
-pub use hal::target_device as pac;
 
 use gpio::{Floating, Input, PfC, Port};
 use hal::clock::GenericClockController;

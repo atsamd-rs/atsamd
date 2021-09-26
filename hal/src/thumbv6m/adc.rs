@@ -3,7 +3,7 @@ use crate::clock::GenericClockController;
 use crate::gpio::v1;
 use crate::gpio::v2::*;
 use crate::hal::adc::{Channel, OneShot};
-use crate::target_device::{adc, ADC, PM};
+use crate::pac::{adc, ADC, PM};
 
 /// Samples per reading
 pub use adc::avgctrl::SAMPLENUM_A as SampleRate;

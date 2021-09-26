@@ -1,12 +1,12 @@
 //! Working with timer counter hardware
 use crate::hal::timer::{CountDown, Periodic};
-use crate::target_device::tc0::COUNT16;
+use crate::pac::tc0::COUNT16;
 #[allow(unused)]
-use crate::target_device::{MCLK, TC2, TC3};
+use crate::pac::{MCLK, TC2, TC3};
 use crate::timer_params::TimerParams;
 // Only the G variants are missing these timers
 #[cfg(feature = "min-samd51j")]
-use crate::target_device::{TC4, TC5};
+use crate::pac::{TC4, TC5};
 use crate::timer_traits::InterruptDrivenTimer;
 
 use crate::clock;

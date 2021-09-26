@@ -6,7 +6,7 @@ use super::{
 };
 use crate::{
     sercom::v2::*,
-    target_device as pac,
+    pac as pac,
     time::Hertz,
     typelevel::{Is, Sealed},
 };

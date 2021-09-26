@@ -1,11 +1,11 @@
 use atsamd_hal::clock::GenericClockController;
 use atsamd_hal::delay::Delay;
 use atsamd_hal::gpio::*;
+use atsamd_hal::pac::{interrupt, MCLK};
 use atsamd_hal::prelude::*;
-use atsamd_hal::target_device::{interrupt, MCLK};
 
+use atsamd_hal::pac::SERCOM0;
 use atsamd_hal::sercom::{PadPin, Sercom0Pad0, Sercom0Pad2, UART0};
-use atsamd_hal::target_device::SERCOM0;
 use atsamd_hal::time::Hertz;
 
 use bbqueue;
@@ -287,9 +287,9 @@ impl Wifi {
 pub mod wifi_prelude {
     pub use crate::wifi::*;
     pub use atsamd_hal::gpio::Port;
+    pub use atsamd_hal::pac::SERCOM0;
+    pub use atsamd_hal::pac::{interrupt, MCLK};
     pub use atsamd_hal::sercom::{Sercom0Pad0, Sercom0Pad2, UART0};
-    pub use atsamd_hal::target_device::SERCOM0;
-    pub use atsamd_hal::target_device::{interrupt, MCLK};
     pub use bbqueue::{
         consts::{U128, U512},
         BBBuffer, ConstBBBuffer, Producer,

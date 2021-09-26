@@ -12,7 +12,7 @@ use hal::*;
 
 pub use hal::common::*;
 
-pub use hal::target_device as pac;
+pub use hal::pac;
 
 use gpio::{self, *};
 
@@ -32,7 +32,7 @@ define_pins!(
     /// Maps the pins to their arduino names and the numbers printed on the board.
     /// Information pulled from datasheet and board files for arduino IDE : <https://wiki.seeedstudio.com/Wio-Lite-MG126/#tech-support>
     struct Pins,
-    target_device: target_device,
+    pac: pac,
 
     /// Digital 32: SDA
     pin d32 = a22,

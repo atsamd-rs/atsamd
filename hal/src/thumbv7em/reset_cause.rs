@@ -29,6 +29,6 @@ impl From<u8> for ResetCause {
 }
 
 /// Returns the cause of the last reset.
-pub fn reset_cause(rstc: &crate::target_device::RSTC) -> ResetCause {
+pub fn reset_cause(rstc: &crate::pac::RSTC) -> ResetCause {
     ResetCause::from(rstc.rcause.read().bits())
 }

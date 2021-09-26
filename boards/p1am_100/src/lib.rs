@@ -12,7 +12,7 @@ use hal::*;
 
 pub use hal::common::*;
 
-pub use hal::target_device as pac;
+pub use hal::pac;
 
 use hal::clock::GenericClockController;
 use hal::sercom::v2::{spi, Sercom1, Sercom2};
