@@ -7,8 +7,6 @@ pub use atsamd_hal as hal;
 #[cfg(feature = "rt")]
 pub use cortex_m_rt::entry;
 
-use hal::*;
-
 pub use crate::pins::Pins;
 pub use hal::common::*;
 pub use hal::pac;

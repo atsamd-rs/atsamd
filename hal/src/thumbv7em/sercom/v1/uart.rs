@@ -1,12 +1,12 @@
 use crate::clock;
 use crate::hal::blocking::serial::{write::Default, Write};
 use crate::hal::serial;
-use crate::sercom::v1::pads::CompatiblePad;
-use crate::sercom::v2::*;
 use crate::pac::sercom0::USART_INT;
 use crate::pac::{MCLK, SERCOM0, SERCOM1, SERCOM2, SERCOM3, SERCOM4, SERCOM5};
 #[cfg(feature = "min-samd51n")]
 use crate::pac::{SERCOM6, SERCOM7};
+use crate::sercom::v1::pads::CompatiblePad;
+use crate::sercom::v2::*;
 use crate::time::Hertz;
 use core::fmt;
 use core::marker::PhantomData;

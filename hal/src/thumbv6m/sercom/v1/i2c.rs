@@ -2,14 +2,14 @@
 
 use crate::clock;
 use crate::hal::blocking::i2c::{Read, Write, WriteRead};
-use crate::sercom::v1::pads::CompatiblePad;
-use crate::sercom::v2::pad::{Pad0, Pad1};
 use crate::pac::sercom0::I2CM;
 use crate::pac::{PM, SERCOM0, SERCOM1};
 #[cfg(feature = "samd21")]
 use crate::pac::{SERCOM2, SERCOM3};
 #[cfg(feature = "min-samd21g")]
 use crate::pac::{SERCOM4, SERCOM5};
+use crate::sercom::v1::pads::CompatiblePad;
+use crate::sercom::v2::pad::{Pad0, Pad1};
 use crate::time::Hertz;
 
 const BUS_STATE_UNKNOWN: u8 = 0;

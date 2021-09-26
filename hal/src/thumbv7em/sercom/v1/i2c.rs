@@ -2,12 +2,12 @@
 
 use crate::clock;
 use crate::hal::blocking::i2c::{Read, Write, WriteRead};
-use crate::sercom::v1::pads::CompatiblePad;
-use crate::sercom::v2::{Pad0, Pad1};
 use crate::pac::sercom0::I2CM;
 use crate::pac::{MCLK, SERCOM0, SERCOM1, SERCOM2, SERCOM3, SERCOM4, SERCOM5};
 #[cfg(feature = "min-samd51n")]
 use crate::pac::{SERCOM6, SERCOM7};
+use crate::sercom::v1::pads::CompatiblePad;
+use crate::sercom::v2::{Pad0, Pad1};
 use crate::time::Hertz;
 
 const BUS_STATE_IDLE: u8 = 1;

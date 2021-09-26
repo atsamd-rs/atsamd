@@ -12,11 +12,9 @@ pub use cortex_m_rt::entry;
 
 pub use pins::Pins;
 
-use hal::*;
-
 pub use hal::common::*;
-pub use hal::samd51::*;
 pub use hal::pac;
+pub use hal::samd51::*;
 
 pub mod util {
     /// Analogous to Arduinos map function

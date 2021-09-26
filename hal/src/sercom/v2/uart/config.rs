@@ -5,8 +5,8 @@ use super::{
     FixedCharSize, Parity, Registers, StopBits, Uart, ValidConfig, ValidPads,
 };
 use crate::{
+    pac,
     sercom::v2::*,
-    pac as pac,
     time::Hertz,
     typelevel::{Is, Sealed},
 };

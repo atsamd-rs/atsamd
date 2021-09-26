@@ -1,13 +1,11 @@
 #![no_std]
 
 pub use atsamd_hal as hal;
+pub use hal::common::*;
+pub use hal::pac;
 
 #[cfg(feature = "rt")]
 pub use cortex_m_rt::entry;
-
-pub use hal::common::*;
-
-pub use hal::pac;
 
 use hal::prelude::*;
 use hal::{
@@ -15,7 +13,6 @@ use hal::{
     define_pins,
     gpio::PfD,
     gpio::{Floating, Input, Port},
-    pac,
     pad::PadPin,
     sercom::{I2CMaster2, SPIMaster0, UART4},
     time::Hertz,

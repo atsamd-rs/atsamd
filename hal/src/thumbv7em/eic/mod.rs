@@ -41,11 +41,7 @@ impl ConfigurableEIC {
 /// init_with_ulp32k initializes the EIC and wires it up to the
 /// ultra-low-power 32kHz clock source. finalize() must be called
 /// before the EIC is ready for use.
-pub fn init_with_ulp32k(
-    mclk: &mut pac::MCLK,
-    _clock: EicClock,
-    eic: pac::EIC,
-) -> ConfigurableEIC {
+pub fn init_with_ulp32k(mclk: &mut pac::MCLK, _clock: EicClock, eic: pac::EIC) -> ConfigurableEIC {
     mclk.apbamask.modify(|_, w| w.eic_().set_bit());
 
     eic.ctrla.modify(|_, w| w.swrst().set_bit());

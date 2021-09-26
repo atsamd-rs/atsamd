@@ -12,8 +12,6 @@ pub use keypad;
 
 pub use atsamd_hal as hal;
 
-use hal::*;
-
 pub use hal::common::*;
 pub use hal::pac;
 pub use hal::samd51::*;

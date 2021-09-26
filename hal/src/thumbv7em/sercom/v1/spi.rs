@@ -2,13 +2,13 @@ use core::marker::PhantomData;
 
 use crate::clock;
 use crate::hal::spi::{FullDuplex, Mode, Phase, Polarity};
-use crate::sercom::v1::pads::CompatiblePad;
-use crate::sercom::v2::*;
-use crate::spi_common::CommonSpi;
 use crate::pac::sercom0::SPIM;
 use crate::pac::{MCLK, SERCOM0, SERCOM1, SERCOM2, SERCOM3, SERCOM4, SERCOM5};
 #[cfg(feature = "min-samd51n")]
 use crate::pac::{SERCOM6, SERCOM7};
+use crate::sercom::v1::pads::CompatiblePad;
+use crate::sercom::v2::*;
+use crate::spi_common::CommonSpi;
 use crate::time::Hertz;
 
 #[derive(Debug)]
