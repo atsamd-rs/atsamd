@@ -1,6 +1,6 @@
 //! ItsyBitsy M4 Express pins
 
-use super::{hal, pac::MCLK, pac::SERCOM1, pac::SERCOM2, pac::SERCOM3, target_device};
+use super::{hal, pac, pac::MCLK, pac::SERCOM1, pac::SERCOM2, pac::SERCOM3};
 
 use embedded_hal::timer::{CountDown, Periodic};
 use hal::define_pins;
@@ -21,7 +21,7 @@ define_pins!(
     /// Maps the pins to their arduino names and
     /// the numbers printed on the board.
     struct Pins,
-    target_device: target_device,
+    pac: pac,
 
     /// Pin A0 (analog). Can act as a true analog output as it has a DAC (which is
     /// currently not supported by this hal) as well as input.

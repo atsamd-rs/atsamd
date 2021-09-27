@@ -1,16 +1,16 @@
 #![no_std]
 #![no_main]
 
-extern crate cortex_m;
-extern crate panic_halt;
-extern crate samd11_bare as hal;
+use bsp::hal;
+#[cfg(not(feature = "use_semihosting"))]
+use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
+use samd11_bare as bsp;
 
-#[macro_use(block)]
-extern crate nb;
-
+use bsp::entry;
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
-use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 
@@ -35,7 +35,7 @@ fn main() -> ! {
         .get_gclk(GEN_A::GCLK2)
         .expect("Could not get clock 2");
 
-    let mut pins = hal::Pins::new(peripherals.PORT);
+    let mut pins = bsp::Pins::new(peripherals.PORT);
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
     let rx: Sercom0Pad1<_> = pins
@@ -63,7 +63,7 @@ fn main() -> ! {
         for byte in b"Hello, world!" {
             // NOTE `block!` blocks until `uart.write()` completes and returns
             // `Result<(), Error>`
-            block!(uart.write(*byte)).unwrap();
+            nb::block!(uart.write(*byte)).unwrap();
         }
         delay.delay_ms(1000u16);
     }

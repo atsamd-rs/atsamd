@@ -1,26 +1,24 @@
 #![no_std]
 #![no_main]
 
-extern crate cortex_m;
-extern crate metro_m4 as hal;
+use bsp::hal;
+use metro_m4 as bsp;
 
 use panic_probe as _; //for probe-run
 use rtt_target::{rprintln, rtt_init_print};
 //use panic_rtt as _; //for cargo embed
 
+use bsp::entry;
 use hal::clock::GenericClockController;
-use hal::delay::Delay;
-use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
-use hal::prelude::*;
 
 #[entry]
 fn main() -> ! {
     rtt_init_print!();
 
     let mut peripherals = Peripherals::take().unwrap();
-    let core = CorePeripherals::take().unwrap();
-    let mut clocks = GenericClockController::with_external_32kosc(
+    let _core = CorePeripherals::take().unwrap();
+    let _clocks = GenericClockController::with_external_32kosc(
         peripherals.GCLK,
         &mut peripherals.MCLK,
         &mut peripherals.OSC32KCTRL,

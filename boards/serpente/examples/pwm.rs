@@ -1,12 +1,17 @@
 #![no_std]
 #![no_main]
 
-extern crate panic_halt;
-extern crate serpente as hal;
+use bsp::hal;
+use serpente as bsp;
 
+#[cfg(not(feature = "use_semihosting"))]
+use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
+
+use bsp::entry;
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
-use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 use hal::pwm::{Channel, Pwm0};
@@ -23,7 +28,7 @@ fn main() -> ! {
     );
     let gclk0 = clocks.gclk0();
 
-    let mut pins = hal::Pins::new(peripherals.PORT);
+    let mut pins = bsp::Pins::new(peripherals.PORT);
     let mut _red_led = pins.led_r.into_function_f(&mut pins.port);
     let mut _green_led = pins.led_g.into_function_f(&mut pins.port);
     let mut _blue_led = pins.led_b.into_function_f(&mut pins.port);

@@ -1,14 +1,16 @@
 #![no_std]
 #![no_main]
 
-extern crate cortex_m;
-extern crate p1am_100 as hal;
+use bsp::hal;
+use p1am_100 as bsp;
+
 #[cfg(not(feature = "use_semihosting"))]
 use panic_halt as _;
 #[cfg(feature = "use_semihosting")]
 use panic_semihosting as _;
-extern crate usb_device;
-extern crate usbd_serial;
+
+use usb_device;
+use usbd_serial;
 
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
@@ -20,10 +22,10 @@ use usb_device::bus::UsbBusAllocator;
 use usb_device::prelude::*;
 use usbd_serial::{SerialPort, USB_CLASS_CDC};
 
-#[rtic::app(device = hal::pac, peripherals = true)]
+#[rtic::app(device = p1am_100::pac, peripherals = true)]
 const APP: () = {
     struct Resources {
-        led: hal::Led,
+        led: bsp::Led,
         usb_serial: SerialPort<'static, UsbBus>,
         usb_dev: UsbDevice<'static, UsbBus>,
         delay: Delay,
@@ -39,10 +41,10 @@ const APP: () = {
             &mut peripherals.SYSCTRL,
             &mut peripherals.NVMCTRL,
         );
-        let pins = hal::Pins::new(peripherals.PORT);
-        let led: hal::Led = pins.led.into();
+        let pins = bsp::Pins::new(peripherals.PORT);
+        let led: bsp::Led = pins.led.into();
 
-        *USB_ALLOCATOR = Some(hal::usb_allocator(
+        *USB_ALLOCATOR = Some(bsp::usb_allocator(
             peripherals.USB,
             &mut clocks,
             &mut peripherals.PM,

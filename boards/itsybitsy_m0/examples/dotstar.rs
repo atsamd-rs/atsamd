@@ -1,12 +1,17 @@
 #![no_std]
 #![no_main]
 
-extern crate itsybitsy_m0 as hal;
-extern crate panic_halt;
+use bsp::hal;
+use itsybitsy_m0 as bsp;
 
+#[cfg(not(feature = "use_semihosting"))]
+use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
+
+use bsp::entry;
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
-use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 use hal::timer::SpinTimer;
@@ -51,7 +56,7 @@ fn main() -> ! {
     );
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
-    let mut pins = hal::Pins::new(peripherals.PORT).split();
+    let mut pins = bsp::Pins::new(peripherals.PORT).split();
 
     let mut rgb = pins.dotstar.init(SpinTimer::new(12), &mut pins.port);
 

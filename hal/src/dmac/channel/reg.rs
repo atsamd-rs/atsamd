@@ -14,22 +14,22 @@ use super::super::dma_controller::ChId;
 use core::marker::PhantomData;
 use paste::paste;
 
-use crate::target_device::{
+use crate::pac::{
     self,
     dmac::{BUSYCH, INTSTATUS, PENDCH, SWTRIGCTRL},
     Peripherals, DMAC,
 };
 
 #[cfg(any(feature = "samd11", feature = "samd21"))]
-use target_device::dmac as channel_regs;
+use pac::dmac as channel_regs;
 
 #[cfg(feature = "min-samd51g")]
-use target_device::dmac::channel as channel_regs;
+use pac::dmac::channel as channel_regs;
 
 use channel_regs::{CHCTRLA, CHCTRLB, CHINTENCLR, CHINTENSET, CHINTFLAG, CHSTATUS};
 
 #[cfg(feature = "min-samd51g")]
-use target_device::dmac::{channel::CHPRILVL, CHANNEL};
+use pac::dmac::{channel::CHPRILVL, CHANNEL};
 
 //==============================================================================
 // RegisterBlock
@@ -133,7 +133,7 @@ macro_rules! reg_proxy {
                 }
             }
 
-            impl<Id> [< $reg:camel Proxy >]<Id, [< $reg:upper >]> where Id: ChId, [< $reg:upper >]: target_device::generic::Readable {
+            impl<Id> [< $reg:camel Proxy >]<Id, [< $reg:upper >]> where Id: ChId, [< $reg:upper >]: pac::generic::Readable {
                 #[inline]
                 #[allow(dead_code)]
                 pub fn read(&mut self) -> channel_regs::[< $reg:lower >]::R {
@@ -158,7 +158,7 @@ macro_rules! reg_proxy {
             reg_proxy!(@new $reg);
             reg_proxy!(@read_reg $reg);
 
-            impl<Id> [< $reg:camel Proxy >]<Id, [< $reg:upper >]> where Id: ChId, [< $reg:upper >]: target_device::generic::Writable {
+            impl<Id> [< $reg:camel Proxy >]<Id, [< $reg:upper >]> where Id: ChId, [< $reg:upper >]: pac::generic::Writable {
                 #[inline]
                 #[allow(dead_code)]
                 pub fn write<F>(&mut self, func: F)
@@ -171,7 +171,7 @@ macro_rules! reg_proxy {
 
             impl<Id>[< $reg:camel Proxy >]<Id, [< $reg:upper >]> where
                 Id: ChId,
-                [< $reg:upper >]: target_device::generic::Writable + target_device::generic::Readable
+                [< $reg:upper >]: pac::generic::Writable + pac::generic::Readable
             {
                 #[inline]
                 #[allow(dead_code)]
@@ -197,7 +197,7 @@ macro_rules! reg_proxy {
                 }
             }
 
-            impl<Id> [< $reg:camel Proxy >]<Id, [< $reg:upper >]> where Id: ChId, [< $reg:upper >]: target_device::generic::Readable {
+            impl<Id> [< $reg:camel Proxy >]<Id, [< $reg:upper >]> where Id: ChId, [< $reg:upper >]: pac::generic::Readable {
                 #[inline]
                 #[allow(dead_code)]
                 pub fn read_bit(&self) -> bool {
@@ -223,7 +223,7 @@ macro_rules! reg_proxy {
 
             impl<Id> [< $reg:camel Proxy >]<Id, [< $reg:upper>]> where
                 Id: ChId,
-                [< $reg:upper >]: target_device::generic::Readable + target_device::generic::Writable
+                [< $reg:upper >]: pac::generic::Readable + pac::generic::Writable
             {
                 #[inline]
                 #[allow(dead_code)]

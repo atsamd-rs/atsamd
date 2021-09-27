@@ -1,8 +1,9 @@
 #![no_std]
 #![no_main]
 
-extern crate cortex_m;
-extern crate p1am_100 as hal;
+use bsp::hal;
+use p1am_100 as bsp;
+
 #[cfg(not(feature = "use_semihosting"))]
 use panic_halt as _;
 #[cfg(feature = "use_semihosting")]
@@ -13,14 +14,11 @@ use hal::delay::Delay;
 use hal::pac::Interrupt;
 use hal::prelude::*;
 
-use nb;
-use nb::block;
-
-#[rtic::app(device = hal::pac, peripherals = true)]
+#[rtic::app(device = p1am_100::pac, peripherals = true)]
 const APP: () = {
     struct Resources {
-        led: hal::Led,
-        uart: hal::Uart,
+        led: bsp::Led,
+        uart: bsp::Uart,
         delay: Delay,
     }
     #[init()]
@@ -32,12 +30,12 @@ const APP: () = {
             &mut peripherals.SYSCTRL,
             &mut peripherals.NVMCTRL,
         );
-        let pins = hal::Pins::new(peripherals.PORT);
-        let led: hal::Led = pins.led.into();
+        let pins = bsp::Pins::new(peripherals.PORT);
+        let led: bsp::Led = pins.led.into();
 
         let delay = Delay::new(cx.core.SYST, &mut clocks);
 
-        let mut uart = hal::uart(
+        let mut uart = bsp::uart(
             &mut clocks,
             9600.hz(),
             peripherals.SERCOM5,
@@ -51,7 +49,7 @@ const APP: () = {
         });
 
         for byte in b"Hello, world!\r\n" {
-            block!(uart.write(*byte)).unwrap();
+            nb::block!(uart.write(*byte)).unwrap();
         }
 
         rtic::pend(Interrupt::SERCOM5);
@@ -73,7 +71,7 @@ const APP: () = {
         match cx.resources.uart.read() {
             Ok(byte) => {
                 cx.resources.led.toggle().unwrap();
-                block!(cx.resources.uart.write(byte)).unwrap();
+                nb::block!(cx.resources.uart.write(byte)).unwrap();
             }
             Err(_) => {}
         };

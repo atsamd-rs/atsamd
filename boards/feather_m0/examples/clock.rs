@@ -167,9 +167,8 @@ pub struct Time {
     second: usize,
 }
 
-#[macro_use]
-extern crate nom;
 use drogue_nom_utils::parse_usize;
+use nom::{char, do_parse, named, opt, tag};
 
 named!(
     pub timespec<Time>,

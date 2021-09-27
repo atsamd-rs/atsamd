@@ -1,5 +1,5 @@
 use atsamd_hal::gpio::{self, *};
-use atsamd_hal::{define_pins, target_device};
+use atsamd_hal::{define_pins, pac};
 
 use super::buttons::ButtonPins;
 use super::display::Display;
@@ -12,7 +12,7 @@ use super::wifi::WifiPins;
 define_pins!(
     /// Map the desired pin names to their physical pins
     struct Pins,
-    target_device: target_device,
+    pac: pac,
 
     // NOTE:
     // The following pin names were adapted from the labels in the schematic.

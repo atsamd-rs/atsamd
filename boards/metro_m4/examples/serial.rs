@@ -1,20 +1,17 @@
 #![no_std]
 #![no_main]
 
-extern crate cortex_m;
-extern crate cortex_m_semihosting;
-extern crate metro_m4 as hal;
+use bsp::hal;
+use metro_m4 as bsp;
+
 #[cfg(not(feature = "use_semihosting"))]
-extern crate panic_halt;
+use panic_halt as _;
 #[cfg(feature = "use_semihosting")]
-extern crate panic_semihosting;
+use panic_semihosting as _;
 
-#[macro_use(block)]
-extern crate nb;
-
+use bsp::entry;
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
-use hal::entry;
 use hal::pac::gclk::genctrl::SRC_A;
 use hal::pac::gclk::pchctrl::GEN_A;
 use hal::pac::{CorePeripherals, Peripherals};
@@ -37,7 +34,7 @@ fn main() -> ! {
         .get_gclk(GEN_A::GCLK2)
         .expect("Could not get clock 2");
 
-    let mut pins = hal::Pins::new(peripherals.PORT);
+    let mut pins = bsp::Pins::new(peripherals.PORT);
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
     let rx: Sercom3Pad1<_> = pins
@@ -64,7 +61,7 @@ fn main() -> ! {
         for byte in b"Hello, world!" {
             // NOTE `block!` blocks until `uart.write()` completes and returns
             // `Result<(), Error>`
-            block!(uart.write(*byte)).unwrap();
+            nb::block!(uart.write(*byte)).unwrap();
         }
         delay.delay_ms(1000u16);
     }

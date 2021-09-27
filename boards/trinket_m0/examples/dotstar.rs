@@ -1,12 +1,13 @@
 #![no_std]
 #![no_main]
 
+use bsp::hal;
 use panic_halt as _;
-use trinket_m0 as hal;
+use trinket_m0 as bsp;
 
+use bsp::entry;
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
-use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 use hal::timer::SpinTimer;
@@ -49,7 +50,7 @@ fn main() -> ! {
         &mut peripherals.SYSCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = hal::Pins::new(peripherals.PORT).split();
+    let mut pins = bsp::Pins::new(peripherals.PORT).split();
     let mut delay = Delay::new(core.SYST, &mut clocks);
     let mut rgb = pins.dotstar.init(SpinTimer::new(12), &mut pins.port);
 

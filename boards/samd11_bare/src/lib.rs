@@ -1,6 +1,6 @@
 #![no_std]
 
-extern crate atsamd_hal as hal;
+pub use atsamd_hal as hal;
 
 #[cfg(feature = "rt")]
 extern crate cortex_m_rt;
@@ -12,7 +12,7 @@ use hal::*;
 
 pub use hal::common::*;
 
-pub use hal::target_device as pac;
+pub use hal::pac;
 
 use gpio::{Floating, Input, PfC, Port};
 
@@ -23,7 +23,7 @@ use hal::time::Hertz;
 define_pins!(
     /// Maps the pins to their physical pins.
     struct Pins,
-    target_device: target_device,
+    pac: pac,
 
     pin d1 = a5,
     pin d2 = a8,

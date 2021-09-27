@@ -1,15 +1,15 @@
 #[cfg(any(feature = "samd11", feature = "samd21"))]
-use crate::target_device::port::{
+use crate::pac::port::{
     CTRL, DIR, DIRCLR, DIRSET, DIRTGL, IN, OUT, OUTCLR, OUTSET, OUTTGL, PINCFG0_ as PINCFG,
     PMUX0_ as PMUX, WRCONFIG,
 };
 
 #[cfg(feature = "min-samd51g")]
-use crate::target_device::port::group::{
+use crate::pac::port::group::{
     CTRL, DIR, DIRCLR, DIRSET, DIRTGL, IN, OUT, OUTCLR, OUTSET, OUTTGL, PINCFG, PMUX, WRCONFIG,
 };
 
-use crate::target_device::PORT;
+use crate::pac::PORT;
 
 use super::dynpin::*;
 

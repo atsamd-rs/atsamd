@@ -1,7 +1,7 @@
 #![no_std]
 #![recursion_limit = "1024"]
 
-pub extern crate atsamd_hal as hal;
+pub use atsamd_hal as hal;
 
 #[cfg(feature = "rt")]
 extern crate cortex_m_rt;
@@ -12,8 +12,8 @@ use hal::prelude::*;
 use hal::*;
 
 pub use hal::common::*;
+pub use hal::pac;
 pub use hal::samd51::*;
-pub use hal::target_device as pac;
 
 use gpio::{Floating, Input, PfC, Port};
 use hal::clock::GenericClockController;
@@ -32,7 +32,7 @@ define_pins!(
     /// Maps the pins to their arduino names and
     /// the numbers printed on the board.
     struct Pins,
-    target_device: target_device,
+    pac: pac,
 
     /// Analog pin 0.  Can act as a true analog output
     /// as it has a DAC (which is not currently supported

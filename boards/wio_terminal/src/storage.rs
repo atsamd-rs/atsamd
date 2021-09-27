@@ -5,10 +5,10 @@ use atsamd_hal::gpio::{
     Port, PushPull,
 };
 use atsamd_hal::hal::spi;
+use atsamd_hal::pac::{MCLK, QSPI, SERCOM6};
 use atsamd_hal::prelude::*;
 use atsamd_hal::qspi;
 use atsamd_hal::sercom::{PadPin, SPIMaster6, Sercom6Pad0, Sercom6Pad1, Sercom6Pad2};
-use atsamd_hal::target_device::{MCLK, QSPI, SERCOM6};
 use atsamd_hal::time::Hertz;
 use embedded_sdmmc::{SdMmcSpi, TimeSource};
 

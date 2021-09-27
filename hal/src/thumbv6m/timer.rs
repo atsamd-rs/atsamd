@@ -1,14 +1,14 @@
 //! Working with timer counter hardware
 #[cfg(feature = "samd11")]
-use crate::target_device::tc1::COUNT16;
+use crate::pac::tc1::COUNT16;
 #[cfg(feature = "samd21")]
-use crate::target_device::tc3::COUNT16;
+use crate::pac::tc3::COUNT16;
 #[allow(unused)]
 #[cfg(feature = "samd11")]
-use crate::target_device::{PM, TC1};
+use crate::pac::{PM, TC1};
 #[allow(unused)]
 #[cfg(feature = "samd21")]
-use crate::target_device::{PM, TC3, TC4, TC5};
+use crate::pac::{PM, TC3, TC4, TC5};
 use crate::timer_params::TimerParams;
 use hal::timer::{CountDown, Periodic};
 

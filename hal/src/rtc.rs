@@ -1,6 +1,6 @@
 //! Real-time clock/counter
-use crate::target_device::rtc::{MODE0, MODE2};
-use crate::target_device::RTC;
+use crate::pac::rtc::{MODE0, MODE2};
+use crate::pac::RTC;
 use crate::time::{Hertz, Nanoseconds};
 use crate::timer_traits::InterruptDrivenTimer;
 use crate::typelevel::Sealed;
@@ -16,14 +16,14 @@ use rtic_monotonic::{embedded_time, Clock, Fraction, Instant, Monotonic};
 
 // SAMx5x imports
 #[cfg(feature = "min-samd51g")]
-use crate::target_device::{
+use crate::pac::{
     rtc::mode0::ctrla::PRESCALER_A, rtc::mode0::CTRLA as MODE0_CTRLA,
     rtc::mode2::CTRLA as MODE2_CTRLA, MCLK as PM,
 };
 
 // SAMD11/SAMD21 imports
 #[cfg(any(feature = "samd11", feature = "samd21"))]
-use crate::target_device::{
+use crate::pac::{
     rtc::mode0::ctrl::PRESCALER_A, rtc::mode0::CTRL as MODE0_CTRLA,
     rtc::mode2::CTRL as MODE2_CTRLA, PM,
 };
@@ -39,7 +39,7 @@ pub struct Datetime {
     pub year: u8,
 }
 
-type ClockR = crate::target_device::rtc::mode2::clock::R;
+type ClockR = crate::pac::rtc::mode2::clock::R;
 
 impl From<ClockR> for Datetime {
     fn from(clock: ClockR) -> Datetime {

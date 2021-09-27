@@ -224,9 +224,8 @@ fn atoi(digits: &[u8]) -> u32 {
     num
 }
 
-#[macro_use]
-extern crate nom;
 use nom::character::streaming::digit1 as nom_ascii_digit;
+use nom::{char, do_parse, opt, tag};
 
 nom::named!(
     pub timespec<Time>,

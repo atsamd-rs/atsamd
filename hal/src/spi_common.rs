@@ -3,7 +3,7 @@ use crate::hal::spi::{Mode, Phase, Polarity};
 use crate::time::{Hertz, U32Ext};
 
 #[cfg(any(feature = "samd11", feature = "samd21"))]
-use crate::target_device::sercom0::SPI;
+use crate::pac::sercom0::SPI;
 
 #[cfg(any(
     feature = "samd51",
@@ -11,7 +11,7 @@ use crate::target_device::sercom0::SPI;
     feature = "same53",
     feature = "same54"
 ))]
-use crate::target_device::sercom0::SPIM as SPI;
+use crate::pac::sercom0::SPIM as SPI;
 
 pub trait CommonSpi {
     /// Helper for accessing the spi member of the sercom instance

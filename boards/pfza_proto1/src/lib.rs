@@ -1,7 +1,10 @@
 #![no_std]
 #![recursion_limit = "1024"]
 
-extern crate atsamd_hal as hal;
+pub use atsamd_hal as hal;
+pub use hal::common::*;
+pub use hal::pac;
+pub use hal::same54::*;
 
 #[cfg(feature = "rt")]
 extern crate cortex_m_rt;
@@ -11,10 +14,6 @@ pub use cortex_m_rt::entry;
 use hal::prelude::*;
 use hal::*;
 
-pub use hal::common::*;
-pub use hal::same54::*;
-pub use hal::target_device as pac;
-
 use gpio::{Floating, Input, Port};
 use hal::clock::GenericClockController;
 use hal::sercom::{I2CMaster7, PadPin, SPIMaster6};
@@ -23,7 +22,7 @@ use hal::time::Hertz;
 define_pins!(
     /// Maps the pins to their names
     struct Pins,
-    target_device: target_device,
+    pac: pac,
 
     /// LED Pin
     pin led0 = b21,
