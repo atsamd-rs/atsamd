@@ -1,5 +1,6 @@
 //! Analogue-to-Digital Conversion
 use crate::clock::GenericClockController;
+#[allow(deprecated)]
 use crate::gpio::v1;
 use crate::gpio::v2::*;
 use crate::hal::adc::{Channel, OneShot};
@@ -179,6 +180,7 @@ macro_rules! adc_pins {
 
 /// Implement [`Channel`] for [`v1::Pin`]s based on the implementations for
 /// `v2` [`Pin`]s
+#[allow(deprecated)]
 impl<I> Channel<ADC> for v1::Pin<I, v1::PfB>
 where
     I: PinId,

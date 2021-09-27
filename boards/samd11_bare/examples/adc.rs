@@ -14,15 +14,17 @@
 #![no_std]
 #![no_main]
 
+use panic_probe as _;
+
 use bsp::hal;
 use samd11_bare as bsp;
 
 use bsp::entry;
 use hal::adc::Adc;
 use hal::clock::GenericClockController;
+use hal::gpio::v2::*;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
-use panic_probe as _;
 use rtt_target::{rprintln, rtt_init_print};
 
 #[entry]
@@ -39,10 +41,10 @@ fn main() -> ! {
         &mut peripherals.NVMCTRL,
     );
     let mut delay = hal::delay::Delay::new(core.SYST, &mut clocks);
-    let mut pins = bsp::Pins::new(peripherals.PORT);
+    let pins = bsp::Pins::new(peripherals.PORT);
 
     let mut adc = Adc::adc(peripherals.ADC, &mut peripherals.PM, &mut clocks);
-    let mut a0 = pins.d1.into_function_b(&mut pins.port);
+    let mut a0: Pin<_, AlternateB> = pins.d1.into_mode();
 
     loop {
         let data: u16 = adc.read(&mut a0).unwrap();

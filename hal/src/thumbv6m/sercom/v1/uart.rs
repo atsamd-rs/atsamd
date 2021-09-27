@@ -1,3 +1,9 @@
+#![deprecated(
+    since = "0.13.0",
+    note = "The `sercom::v1::uart` module is deprecated, and will be removed in a subsequent release.
+    Please use the `sercom::v2::uart` module instead."
+)]
+
 use crate::clock;
 use crate::hal::blocking::serial::{write::Default, Write};
 use crate::hal::serial;

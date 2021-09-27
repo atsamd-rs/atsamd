@@ -33,7 +33,7 @@
       "build": "cargo build --examples --features=unproven,usb,dma,rtic"
     },
     "feather_m4": {
-	  "tier": 1,
+	  "tier": 2,
       "build": "cargo build --examples --features=unproven,usb"
     },
     "gemma_m0": {
@@ -78,7 +78,7 @@
     },
     "samd11_bare": {
 	  "tier": 1,
-      "build": "cargo build --release --examples --features=unproven"
+      "build": "cargo build --release --examples --features=unproven,rt,use-semihosting"
     },
     "samd21_mini": {
 	  "tier": 2,

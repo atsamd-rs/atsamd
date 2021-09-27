@@ -1,6 +1,6 @@
 [package]
 name = "gemma_m0"
-version = "0.9.0"
+version = "0.10.0"
 authors = ["Wez Furlong <wez@wezfurlong.org>"]
 description = "Board Support crate for the Adafruit Gemma M0"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
@@ -19,8 +19,7 @@ version = "0.6.12"
 optional = true
 
 [dependencies.atsamd-hal]
-path = "../../hal"
-version = "0.12"
+version = "0.13"
 default-features = false
 
 [dev-dependencies]

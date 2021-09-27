@@ -13,5 +13,9 @@ pub mod spi;
 pub mod uart;
 
 pub use self::i2c::*;
+
+#[allow(deprecated)]
 pub use self::spi::*;
+
+#[allow(deprecated)]
 pub use self::uart::*;

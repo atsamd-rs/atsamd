@@ -1,6 +1,6 @@
 [package]
 name = "sodaq_sara_aff"
-version = "0.7.0"
+version = "0.8.0"
 authors = ["Stefan de Lange <langestefan@msn.com>"]
 description = "Board Support crate for the Sodaq SARA AFF"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
@@ -19,8 +19,7 @@ version = "0.6.12"
 optional = true
 
 [dependencies.atsamd-hal]
-path = "../../hal"
-version = "0.12"
+version = "0.13"
 default-features = false
 
 [dev-dependencies]

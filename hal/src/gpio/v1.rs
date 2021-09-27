@@ -13,12 +13,16 @@
 //! use of type states to make the interface (ideally, or at least practically)
 //! impossible to misuse.
 
-use crate::pac::PORT;
+#![deprecated(
+    since = "0.13.0",
+    note = "The gpio::v1 module is deprecated, and will be removed in a subsequent release.
+    Please use the gpio::v2 module instead."
+)]
 
-use hal::digital::v2::OutputPin;
-
+use crate::ehal::digital::v2::OutputPin;
 #[cfg(feature = "unproven")]
-use hal::digital::v2::{InputPin, StatefulOutputPin, ToggleableOutputPin};
+use crate::ehal::digital::v2::{InputPin, StatefulOutputPin, ToggleableOutputPin};
+use crate::pac::PORT;
 
 use crate::gpio::v2::{self, Alternate, AlternateConfig, AnyPin, OutputConfig};
 pub use crate::gpio::v2::{PinId, PinMode};

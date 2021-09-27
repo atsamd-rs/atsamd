@@ -1,6 +1,12 @@
 #![no_std]
 
-pub extern crate embedded_hal as hal;
+#[deprecated(
+    since = "0.13.0",
+    note = "`atsamd_hal::hal` is deprecated and will be removed in a future release. \
+    Use `atsamd_hal::ehal` instead"
+)]
+pub use embedded_hal as hal;
+pub use embedded_hal as ehal;
 
 pub use paste;
 
@@ -60,6 +66,14 @@ pub use atsame54n as pac;
 
 #[cfg(feature = "same54p")]
 pub use atsame54p as pac;
+
+#[deprecated(
+    since = "0.13.0",
+    note = "`atsamd_hal::target_device` is deprecated and will be removed in a future release. \
+    Use `atsamd_hal::pac` instead"
+)]
+#[cfg(not(feature = "library"))]
+pub use pac as target_device;
 
 #[cfg(feature = "use_rtt")]
 pub use jlink_rtt;
@@ -128,6 +142,11 @@ pub mod pad {
 }
 
 // This module maintains backwards compatibility within this major release
+#[deprecated(
+    since = "0.13.0",
+    note = "The `common` module is deprecated and will be removed in a future
+    release. Directly use modules from atsamd_hal instead."
+)]
 #[macro_use]
 pub mod common {
     #[cfg(feature = "device")]
@@ -142,6 +161,7 @@ pub mod common {
     pub use crate::sercom;
     pub use crate::sleeping_delay;
     #[cfg(feature = "device")]
+    #[allow(deprecated)]
     pub use crate::spi_common;
     pub use crate::time;
     pub use crate::timer_params;
@@ -169,23 +189,43 @@ pub mod common {
 // should be removed.
 
 #[cfg(feature = "samd51")]
+#[deprecated(
+    since = "0.13.0",
+    note = "The `samd51` module is deprecated and will be removed in a future
+    release."
+)]
 pub mod samd51 {
     #[cfg(feature = "unproven")]
     pub use crate::pwm;
 }
 
+#[deprecated(
+    since = "0.13.0",
+    note = "The `same51` module is deprecated and will be removed in a future
+    release."
+)]
 #[cfg(feature = "same51")]
 pub mod same51 {
     #[cfg(feature = "unproven")]
     pub use crate::pwm;
 }
 
+#[deprecated(
+    since = "0.13.0",
+    note = "The `same53` module is deprecated and will be removed in a future
+    release."
+)]
 #[cfg(feature = "same53")]
 pub mod same53 {
     #[cfg(feature = "unproven")]
     pub use crate::pwm;
 }
 
+#[deprecated(
+    since = "0.13.0",
+    note = "The `same54` module is deprecated and will be removed in a future
+    release."
+)]
 #[cfg(feature = "same54")]
 pub mod same54 {
     #[cfg(feature = "unproven")]

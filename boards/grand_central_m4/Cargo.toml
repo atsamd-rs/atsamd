@@ -1,6 +1,6 @@
 [package]
 name = "grand_central_m4"
-version = "0.3.0"
+version = "0.4.0"
 authors = [
     "Dustin Little <dlittle@toyatech.net>"
 ]
@@ -22,8 +22,7 @@ version = "0.6.12"
 optional = true
 
 [dependencies.atsamd-hal]
-path = "../../hal"
-version = "0.12"
+version = "0.13"
 default-features = false
 
 [dependencies.usb-device]

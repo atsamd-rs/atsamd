@@ -97,6 +97,8 @@
 //! [`bsp_pins`]: crate::bsp_pins
 
 pub mod v1;
+
+#[allow(deprecated)]
 pub use v1::*;
 
 pub mod v2;

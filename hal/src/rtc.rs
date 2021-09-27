@@ -1,11 +1,11 @@
 //! Real-time clock/counter
+use crate::ehal::timer::{CountDown, Periodic};
 use crate::pac::rtc::{MODE0, MODE2};
 use crate::pac::RTC;
 use crate::time::{Hertz, Nanoseconds};
 use crate::timer_traits::InterruptDrivenTimer;
 use crate::typelevel::Sealed;
 use core::marker::PhantomData;
-use hal::timer::{CountDown, Periodic};
 use void::Void;
 
 #[cfg(feature = "sdmmc")]
