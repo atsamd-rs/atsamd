@@ -1,6 +1,6 @@
 [package]
 name = "p1am_100"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Quentin Smith <quentin@mit.edu>"]
 description = "Board Support crate for the Facts Engineering P1AM-100"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]

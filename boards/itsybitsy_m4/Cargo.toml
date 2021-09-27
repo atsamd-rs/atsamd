@@ -1,6 +1,6 @@
 [package]
 name = "itsybitsy_m4"
-version = "0.5.0"
+version = "0.6.0"
 authors = [
     "Nic Hartley <nxh9052@rit.edu>",
     "Tom <twitchyliquid64@ciphersink.net>",

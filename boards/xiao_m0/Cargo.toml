@@ -1,6 +1,6 @@
 [package]
 name = "xiao_m0"
-version = "0.9.0"
+version = "0.10.0"
 authors = ["Garret Kelly <gdk@google.com>"]
 description = "Board support crate for the Seeed Studio Seeeduino XIAO"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
