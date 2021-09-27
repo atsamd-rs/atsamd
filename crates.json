@@ -33,7 +33,7 @@
       "build": "cargo build --examples --features=unproven,usb,dma,rtic"
     },
     "feather_m4": {
-	  "tier": 1,
+	  "tier": 2,
       "build": "cargo build --examples --features=unproven,usb"
     },
     "gemma_m0": {
