@@ -72,6 +72,7 @@ pub use atsame54p as pac;
     note = "`atsamd_hal::target_device` is deprecated and will be removed in a future release. \
     Use `atsamd_hal::pac` instead"
 )]
+#[cfg(not(feature = "library"))]
 pub use pac as target_device;
 
 #[cfg(feature = "use_rtt")]
