@@ -84,6 +84,8 @@ jobs:
         run: |
           set -ex
 
+          sleep 30 # Give crates.io some more time to settle down
+
           # Install random crate to force update of the registry
           cargo install lazy_static || true
 
@@ -95,6 +97,8 @@ jobs:
         shell: bash
         run: |
           set -ex
+
+          sleep 30 # Give crates.io some more time to settle down
 
           # Install random crate to force update of the registry
           cargo install lazy_static || true
