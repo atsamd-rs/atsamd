@@ -93,7 +93,7 @@ jobs:
           # Create a fake workspace file for all BSPs.
           echo "[workspace]" > Cargo.toml
           echo "members = [" >> Cargo.toml
-          for d in $T1_BOARDS; do echo "    \"${d}\"," >> Cargo.toml; done
+          for d in $T1_BOARDS; do echo "    \"boards/${d}\"," >> Cargo.toml; done
           echo "]" >> Cargo.toml
           echo "" >> Cargo.toml
 
