@@ -27,101 +27,153 @@ use hal::usb::usb_device::bus::UsbBusAllocator;
 pub use hal::usb::UsbBus;
 
 // The docs could be further improved with details of the specific channels etc
-define_pins!(
-    /// Maps the pins to their arduino names and the numbers printed on the board.
-    /// Information from: <https://github.com/arduino/ArduinoCore-samd/blob/master/variants/nano_33_iot/variant.cpp>
-    struct Pins,
-    pac: pac,
-
-    /// RX
-    pin rx = b23,
-
-    /// TX
-    pin tx = b22,
-
-    /// Digital 2: PWM, TC
-    pin d2 = b10,
-
-    /// Digital 3: PWM, TC
-    pin d3 = b11,
-
-    /// Digital 4: TCC
-    pin d4 = a7,
-
-    /// Digital 5: PWM, TCC, ADC
-    pin d5 = a5,
-
-    /// Digital 6: PWM, TCC, ADC
-    pin d6 = a4,
-
-    /// Digital 7: ADC
-    pin d7 = a6,
-
-    /// Digital 8
-    pin d8 = a18,
-
-    /// Digital 9: PWM, TCC
-    pin d9 = a20,
-
-    /// Digital 10: PWM, TCC
-    pin d10 = a21,
-
-    /// Digital 11/SCI MISO: PWM, TCC
-    pin miso = a19,
-
-    /// Digital 12/SCI MOSI: PWM, TCC
-    pin mosi = a16,
-
-    /// Digital 13/LED/SPI SCK: ON-BOARD-LED
-    pin led_sck = a17,
-
-    /// Analog 0: DAC
-    pin a0 = a2,
-
-    /// Analog 1
-    pin a1 = b2,
-
-    /// Analog 2: PWM, TCC
-    pin a2 = a11,
-
-    /// Analog 3: PWM, TCC
-    pin a3 = a10,
-
-    /// Analog 4/SDA
-    pin sda = b8,
-
-    /// Analog 5/SCL: PWM< TCC
-    pin scl = b9,
-
-    /// Analog 6
-    pin a6 = a9,
-
-    /// Analog 7
-    pin a7 = b3,
-
-    /// SPI (Lefacy ICSP) 1 / NINA MOSI
-    pin nina_mosi = a12,
-    /// SPI (Lefacy ICSP) 2 / NINA MISO
-    pin nina_miso = a13,
-    /// SPI (Lefacy ICSP) 3 / NINA CS
-    pin nina_cs = a14,
-    /// SPI (Lefacy ICSP) 4 / NINA SCK
-    pin nina_sck = a15,
-    pin nina_gpio0 = a27,
-    pin nina_resetn = a8,
-    pin nina_ack = a28,
-
-    /// SerialNina 29: PWM, TC
-    pin serial_nina29 = a22,
-    /// SerialNina 30: PWM, TC
-    pin serial_nina30 = a23,
-
-    pin usb_dm = a24,
-    pin usb_dp = a25,
-    pin aref = a3,
-
-    pin p34 = a30,
-    pin p35 = a31,
+// Maps the pins to their arduino names and the numbers printed on the board.
+// Information from: <https://github.com/arduino/ArduinoCore-samd/blob/master/variants/nano_33_iot/variant.cpp>
+bsp_pins!(
+    PB23 {
+        /// RX
+        name: rx
+    }
+    PB22 {
+        /// TX
+        name: tx
+    }
+    PB10 {
+        /// Digital 2: PWM, TC
+        name: d2
+    }
+    PB11 {
+        /// Digital 3: PWM, TC
+        name: d3
+    }
+    PA07 {
+        /// Digital 4: TCC
+        name: d4
+    }
+    PA05 {
+        /// Digital 5: PWM, TCC, ADC
+        name: d5
+    }
+    PA04 {
+        /// Digital 6: PWM, TCC, ADC
+        name: d6
+    }
+    PA06 {
+        /// Digital 7: ADC
+        name: d7
+    }
+    PA18 {
+        /// Digital 8
+        name: d8
+    }
+    PA20 {
+        /// Digital 9: PWM, TCC
+        name: d9
+    }
+    PA21 {
+        /// Digital 10: PWM, TCC
+        name: d10
+    }
+    PA19 {
+        /// Digital 11/SCI MISO: PWM, TCC
+        name: miso
+    }
+    PA16 {
+        /// Digital 12/SCI MOSI: PWM, TCC
+        name: mosi
+    }
+    PA17 {
+        /// Digital 13/LED/SPI SCK: ON-BOARD-LED
+        name: led_sck
+    }
+    PA02 {
+        /// Analog 0: DAC
+        name: a0
+    }
+    PB02 {
+        /// Analog 1
+        name: a1
+    }
+    PA11 {
+        /// Analog 2: PWM, TCC
+        name: a2
+    }
+    PA10 {
+        /// Analog 3: PWM, TCC
+        name: a3
+    }
+    PB08 {
+        /// Analog 4/SDA
+        name: sda
+    }
+    PB09 {
+        /// Analog 5/SCL: PWM< TCC
+        name: scl
+    }
+    PA09 {
+        /// Analog 6
+        name: a6
+    }
+    PB03 {
+        /// Analog 7
+        name: a7
+    }
+    PA03 {
+        /// AREF
+        name: aref
+    }
+    PA12 {
+        /// SPI (Lefacy ICSP) 1 / NINA MOSI
+        name: nina_mosi
+    }
+    PA13 {
+        /// SPI (Lefacy ICSP) 2 / NINA MISO
+        name: nina_miso
+    }
+    PA14 {
+        /// SPI (Lefacy ICSP) 3 / NINA CS
+        name: nina_cs
+    }
+    PA15 {
+        /// SPI (Lefacy ICSP) 4 / NINA SCK
+        name: nina_sck
+    }
+    PA27 {
+        /// NINA GPIO0
+        name: nina_gpio0
+    }
+    PA08 {
+        /// NINA RESET_N
+        name: nina_resetn
+    }
+    PA28 {
+        /// NINA ACK
+        name: nina_ack
+    }
+    PA22 {
+        /// SerialNina 29: PWM, TC
+        name: serial_nina29
+    }
+    PA23 {
+        /// SerialNina 30: PWM, TC
+        name: serial_nina30
+    }
+    PA24 {
+        /// USB/DM
+        name: usb_dm
+    }
+    PA25 {
+        /// USB/DP
+        name: usb_dp
+    }
+    PA30 {
+        /// SWCLK
+        name: p34
+    }
+    PA31 {
+        /// SWDIO
+        name: p35
+    }
 );
 
 #[cfg(feature = "usb")]
