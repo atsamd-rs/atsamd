@@ -13,7 +13,7 @@ use crate::clock::types::Enabled;
 use crate::pac::{GCLK, MCLK, NVMCTRL, OSC32KCTRL, OSCCTRL};
 use crate::time::Hertz;
 
-use rtc::{Active32k, Active1k};
+use rtc::{Active1k, Active32k};
 
 mod presets;
 
@@ -46,6 +46,14 @@ impl PacClocks {
     /// This is especially useful when V2 clocking API must interact with
     /// legacy V1 clocking API based peripherals; E.g. access to [`MCLK`] is
     /// necessary in most circumstances.
+    ///
+    /// # Safety
+    ///
+    /// Stealing the PAC resources allows for full control of
+    /// clocking, something clocking v2 cannot observe or detect.
+    ///
+    /// Thus changing clocking "behind the back" of v2 clocking might invalidate
+    /// typestates representing the current configuration as seen by v2.
     pub unsafe fn steal(self) -> (OSCCTRL, OSC32KCTRL, GCLK, MCLK) {
         (self.oscctrl, self.osc32kctrl, self.gclk, self.mclk)
     }

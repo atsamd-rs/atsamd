@@ -112,6 +112,7 @@ impl Xosc32kToken {
         self.xosc32k().modify(|_, w| w.enable().bit(true));
     }
 
+    #[allow(dead_code)]
     #[inline]
     fn wrtlock(&mut self) {
         self.xosc32k().modify(|_, w| w.wrtlock().bit(true));
@@ -207,7 +208,8 @@ where
         self
     }
 
-    /// Controls how [`Xosc32k`] behaves when a peripheral clock request is detected
+    /// Controls how [`Xosc32k`] behaves when a peripheral clock request is
+    /// detected
     #[inline]
     pub fn set_on_demand(mut self, on_demand: bool) -> Self {
         self.on_demand_mode = on_demand;
@@ -265,7 +267,8 @@ where
     X: Output32k,
     Y: Output1k,
 {
-    /// Deconstruct the [`Xosc32k`] into a Xosc32kToken and the associated GPIO pin
+    /// Deconstruct the [`Xosc32k`] into a Xosc32kToken and the associated GPIO
+    /// pin
     #[inline]
     pub fn free(self) -> (Xosc32kToken, XIn32) {
         (self.token, self.xin32)
@@ -332,8 +335,8 @@ where
     X: Output32k,
     Y: Output1k,
 {
-    /// Deconstruct the [`Xosc32k`] into a Xosc32kToken and the two associated GPIO
-    /// pins
+    /// Deconstruct the [`Xosc32k`] into a Xosc32kToken and the two associated
+    /// GPIO pins
     #[inline]
     pub fn free(self) -> (Xosc32kToken, XIn32, XOut32) {
         (self.token, self.xin32, self.mode.xout32)

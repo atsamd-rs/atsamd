@@ -79,23 +79,23 @@ impl DfllToken {
 
     #[inline]
     fn wait_sync_enable(&self) {
-        while self.dfllsync().read().enable().bit() == true {}
+        while self.dfllsync().read().enable().bit() {}
     }
 
     #[inline]
     fn wait_sync_dfllmul(&self) {
-        while self.dfllsync().read().dfllmul().bit() == true {}
+        while self.dfllsync().read().dfllmul().bit() {}
     }
 
     #[allow(dead_code)]
     #[inline]
     fn wait_sync_dfllval(&self) {
-        while self.dfllsync().read().dfllval().bit() == true {}
+        while self.dfllsync().read().dfllval().bit() {}
     }
 
     #[inline]
     fn wait_sync_dfllctrlb(&self) {
-        while self.dfllsync().read().dfllctrlb().bit() == true {}
+        while self.dfllsync().read().dfllctrlb().bit() {}
     }
 
     #[inline]

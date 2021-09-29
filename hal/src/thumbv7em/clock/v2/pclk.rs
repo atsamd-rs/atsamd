@@ -166,8 +166,8 @@ where
 ///
 /// It is generic over:
 /// - a peripheral it is bound to via concept of [`PclkType`]
-/// - a clock source ([`PclkSourceMarker`]; variants are provided through [`Gen0`],
-///   [`Gen1`], `GenX` types)
+/// - a clock source ([`PclkSourceMarker`]; variants are provided through
+///   [`Gen0`], [`Gen1`], `GenX` types)
 pub struct Pclk<P, T>
 where
     P: PclkType,

@@ -5,8 +5,8 @@
 /// - [`Dfll<OpenLoop>`][`super::dfll::Dfll`] (`48 MHz`)
 /// - [`Gclk5<Dfll>`][`super::gclk::Gclk5`] (`48 MHz / 24 -> 2 MHz`)
 /// - [`Pclk<Pll0, Gen5>`][`super::pclk::Pclk`]
-/// - [`Dpll0<PclkDriven<Pll0, Gen5>>`][`super::dpll::Dpll0`] (`2 MHz * 60 -> 120
-///   MHz`)
+/// - [`Dpll0<PclkDriven<Pll0, Gen5>>`][`super::dpll::Dpll0`] (`2 MHz * 60 ->
+///   120 MHz`)
 /// - [`Gclk0<Pll0>`][`super::gclk::Gclk0`] (`120 MHz`)
 ///
 /// Input arguments for this macro can be retrieved by calling
@@ -52,7 +52,8 @@ macro_rules! clocking_preset_gclk0_120mhz_gclk5_2mhz {
 /// - [`Dfll<OpenLoop>`][`super::dfll::Dfll`] (`48 MHz`)
 /// - [`Gclk5<Dfll>`][`super::gclk::Gclk5`] (`48 MHz / 24 -> 2 MHz`)
 /// - [`Pclk<Pll0, Gen5>`][`super::pclk::Pclk`]
-/// - [`Dpll0<PclkDriven<Pll0, Gen5>>`][`super::dpll::Dpll0`] (`2 MHz * 60 -> 120 MHz`)
+/// - [`Dpll0<PclkDriven<Pll0, Gen5>>`][`super::dpll::Dpll0`] (`2 MHz * 60 ->
+///   120 MHz`)
 /// - [`Gclk0<Pll0>`][`super::gclk::Gclk0`] (`120 MHz`)
 ///
 /// with configured external 32k crystal oscillator:
@@ -108,7 +109,8 @@ macro_rules! clocking_preset_gclk0_120mhz_gclk5_2mhz_gclk1_external_32khz {
 /// - [`Dfll<OpenLoop>`][`super::dfll::Dfll`] (`48 MHz`)
 /// - [`Gclk5<Dfll>`][`super::gclk::Gclk5`] (`48 MHz / 24 -> 2 MHz`)
 /// - [`Pclk<Pll0, Gen5>`][`super::pclk::Pclk`]
-/// - [`Dpll0<PclkDriven<Pll0, Gen5>>`][`super::dpll::Dpll0`] (`2 MHz * 60 -> 120 MHz`)
+/// - [`Dpll0<PclkDriven<Pll0, Gen5>>`][`super::dpll::Dpll0`] (`2 MHz * 60 ->
+///   120 MHz`)
 /// - [`Gclk0<Pll0>`][`super::gclk::Gclk0`] (`120 MHz`)
 ///
 /// with internal, ultra low power 32k oscillator:

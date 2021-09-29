@@ -75,6 +75,7 @@ impl OscUlp32kToken {
         self.osculp32k().modify(|_, w| w.en32k().bit(enabled));
     }
 
+    #[allow(dead_code)]
     #[inline]
     fn wrtlock(&mut self) {
         self.osculp32k().modify(|_, w| w.wrtlock().bit(true));
