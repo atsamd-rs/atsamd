@@ -59,7 +59,7 @@ name = "blinky_basic"
 
 [[example]]
 name = "usb_logging"
-required-features = ["usb"]
+required-features = ["usb", "unproven"]
 
 [[example]]
 name = "serial"

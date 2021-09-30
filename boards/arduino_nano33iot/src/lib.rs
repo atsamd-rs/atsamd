@@ -1,42 +1,37 @@
 #![no_std]
 
-pub use atsamd_hal as hal;
-
-#[cfg(feature = "rt")]
-extern crate cortex_m_rt;
 #[cfg(feature = "rt")]
 pub use cortex_m_rt::entry;
 
-use hal::prelude::*;
-use hal::*;
-
-use gpio::{Floating, Input, PfC, PfD, Port};
-use hal::clock::GenericClockController;
-use hal::sercom::{I2CMaster4, PadPin, SPIMaster1, UART5};
-use hal::time::Hertz;
-
-pub use hal::common::*;
-
+pub use atsamd_hal as hal;
+pub use embedded_hal as ehal;
 pub use hal::pac;
 
+use hal::clock::GenericClockController;
+use hal::sercom::v2::{spi, uart, Sercom1, Sercom5};
+use hal::sercom::I2CMaster4;
+use hal::time::Hertz;
+
 #[cfg(feature = "usb")]
-use gpio::v2::{AnyPin, PA24, PA25};
-#[cfg(feature = "usb")]
-use hal::usb::usb_device::bus::UsbBusAllocator;
-#[cfg(feature = "usb")]
-pub use hal::usb::UsbBus;
+use hal::usb::{usb_device::bus::UsbBusAllocator, UsbBus};
 
 // The docs could be further improved with details of the specific channels etc
 // Maps the pins to their arduino names and the numbers printed on the board.
 // Information from: <https://github.com/arduino/ArduinoCore-samd/blob/master/variants/nano_33_iot/variant.cpp>
-bsp_pins!(
+hal::bsp_pins!(
     PB23 {
         /// RX
         name: rx
+        aliases: {
+            AlternateD: Rx
+        }
     }
     PB22 {
         /// TX
         name: tx
+        aliases: {
+            AlternateD: Tx
+        }
     }
     PB10 {
         /// Digital 2: PWM, TC
@@ -77,14 +72,24 @@ bsp_pins!(
     PA19 {
         /// Digital 11/SCI MISO: PWM, TCC
         name: miso
+        aliases: {
+            AlternateC: Miso
+        }
     }
     PA16 {
         /// Digital 12/SCI MOSI: PWM, TCC
         name: mosi
+        aliases: {
+            AlternateC: Mosi
+        }
     }
     PA17 {
         /// Digital 13/LED/SPI SCK: ON-BOARD-LED
         name: led_sck
+        aliases: {
+            PushPullOutput: Led,
+            AlternateC: Sck
+        }
     }
     PA02 {
         /// Analog 0: DAC
@@ -105,10 +110,16 @@ bsp_pins!(
     PB08 {
         /// Analog 4/SDA
         name: sda
+        aliases: {
+            AlternateD: Sda
+        }
     }
     PB09 {
         /// Analog 5/SCL: PWM< TCC
         name: scl
+        aliases: {
+            AlternateD: Scl
+        }
     }
     PA09 {
         /// Analog 6
@@ -159,12 +170,18 @@ bsp_pins!(
         name: serial_nina30
     }
     PA24 {
-        /// USB/DM
+        /// USB D- Pad
         name: usb_dm
+        aliases: {
+            AlternateG: UsbDm
+        }
     }
     PA25 {
-        /// USB/DP
+        /// USB D+ Pad
         name: usb_dp
+        aliases: {
+            AlternateG: UsbDp
+        }
     }
     PA30 {
         /// SWCLK
@@ -181,12 +198,12 @@ pub fn usb_allocator(
     usb: pac::USB,
     clocks: &mut GenericClockController,
     pm: &mut pac::PM,
-    dm: impl AnyPin<Id = PA24>,
-    dp: impl AnyPin<Id = PA25>,
+    dm: impl Into<UsbDm>,
+    dp: impl Into<UsbDp>,
 ) -> UsbBusAllocator<UsbBus> {
     let gclk0 = clocks.gclk0();
     let usb_clock = &clocks.usb(&gclk0).unwrap();
-
+    let (dm, dp) = (dm.into(), dp.into());
     UsbBusAllocator::new(UsbBus::new(usb_clock, pm, dm, dp, usb))
 }
 
@@ -194,82 +211,74 @@ pub fn usb_allocator(
 
 /// Convenience for setting up the labelled SDA, SCL pins to
 /// operate as an I2C master running at the specified frequency.
-pub fn i2c_master<F: Into<Hertz>>(
+pub fn i2c_master(
     clocks: &mut GenericClockController,
-    bus_speed: F,
+    bus_speed: impl Into<Hertz>,
     sercom4: pac::SERCOM4,
     pm: &mut pac::PM,
-    sda: gpio::Pb8<Input<Floating>>,
-    scl: gpio::Pb9<Input<Floating>>,
-    port: &mut Port,
-) -> I2CMaster4<hal::sercom::Sercom4Pad0<gpio::Pb8<PfD>>, hal::sercom::Sercom4Pad1<gpio::Pb9<PfD>>>
-{
-    let gclk0 = clocks.gclk0();
-    I2CMaster4::new(
-        &clocks.sercom4_core(&gclk0).unwrap(),
-        bus_speed.into(),
-        sercom4,
-        pm,
-        sda.into_pad(port),
-        scl.into_pad(port),
-    )
+    sda: impl Into<Sda>,
+    scl: impl Into<Scl>,
+) -> I2CMaster4<Sda, Scl> {
+    let gclk0 = &clocks.gclk0();
+    let clock = &clocks.sercom4_core(&gclk0).unwrap();
+    let (bus_speed, sda, scl) = (bus_speed.into(), sda.into(), scl.into());
+
+    I2CMaster4::new(clock, bus_speed, sercom4, pm, sda, scl)
 }
+
+pub type UartPads = uart::Pads<Sercom5, Rx, Tx>;
+/// UART device for the labelled RX & TX pins
+pub type Uart = uart::Uart<uart::Config<UartPads>, uart::Duplex>;
 
 /// Convenience for setting up the labelled RX, TX pins to
 /// operate as a UART device running at the specified baud.
-pub fn uart<F: Into<Hertz>>(
+pub fn uart(
     clocks: &mut GenericClockController,
-    baud: F,
+    baud: impl Into<Hertz>,
     sercom5: pac::SERCOM5,
     pm: &mut pac::PM,
-    rx: gpio::Pb23<Input<Floating>>,
-    tx: gpio::Pb22<Input<Floating>>,
-    port: &mut Port,
-) -> UART5<
-    hal::sercom::Sercom5Pad3<gpio::Pb23<PfD>>,
-    hal::sercom::Sercom5Pad2<gpio::Pb22<PfD>>,
-    (),
-    (),
-> {
+    rx: impl Into<Rx>,
+    tx: impl Into<Tx>,
+) -> Uart {
     let gclk0 = clocks.gclk0();
+    let clock = &clocks.sercom5_core(&gclk0).unwrap();
+    let baud = baud.into();
+    let pads = uart::Pads::default().rx(rx.into()).tx(tx.into());
 
-    UART5::new(
-        &clocks.sercom5_core(&gclk0).unwrap(),
-        baud.into(),
-        sercom5,
-        pm,
-        (rx.into_pad(port), tx.into_pad(port)),
-    )
+    uart::Config::new(pm, sercom5, pads, clock.freq())
+        .baud(baud, uart::BaudMode::Fractional(uart::Oversampling::Bits16))
+        .enable()
 }
 
+// SPI pads for the labelled SPI peripheral
+///
+/// You can use these pads with other, user-defined [`spi::Config`]urations.
+pub type SpiPads = spi::Pads<Sercom1, Miso, Mosi, Sck>;
+
+/// SPI master for the labelled SPI peripheral
+///
+/// This type implements [`FullDuplex<u8>`](ehal::spi::FullDuplex).
+pub type Spi = spi::Spi<spi::Config<SpiPads>>;
+
 /// Convenience for setting up the labelled SPI peripheral.
-/// This powers up SERCOM4 and configures it for use as an
+/// This powers up SERCOM1 and configures it for use as an
 /// SPI Master in SPI Mode 0.
-pub fn spi_master<F: Into<Hertz>>(
+pub fn spi_master(
     clocks: &mut GenericClockController,
-    bus_speed: F,
+    baud: impl Into<Hertz>,
     sercom1: pac::SERCOM1,
     pm: &mut pac::PM,
-    sck: gpio::Pa17<Input<Floating>>,
-    mosi: gpio::Pa16<Input<Floating>>,
-    miso: gpio::Pa19<Input<Floating>>,
-    port: &mut Port,
-) -> SPIMaster1<
-    hal::sercom::Sercom1Pad3<gpio::Pa19<PfC>>,
-    hal::sercom::Sercom1Pad0<gpio::Pa16<PfC>>,
-    hal::sercom::Sercom1Pad1<gpio::Pa17<PfC>>,
-> {
+    sck: impl Into<Sck>,
+    mosi: impl Into<Mosi>,
+    miso: impl Into<Miso>,
+) -> Spi {
     let gclk0 = clocks.gclk0();
+    let clock = clocks.sercom1_core(&gclk0).unwrap();
+    let (miso, mosi, sclk) = (miso.into(), mosi.into(), sck.into());
+    let pads = spi::Pads::default().data_in(miso).data_out(mosi).sclk(sclk);
 
-    SPIMaster1::new(
-        &clocks.sercom1_core(&gclk0).unwrap(),
-        bus_speed.into(),
-        hal::hal::spi::Mode {
-            phase: hal::hal::spi::Phase::CaptureOnFirstTransition,
-            polarity: hal::hal::spi::Polarity::IdleLow,
-        },
-        sercom1,
-        pm,
-        (miso.into_pad(port), mosi.into_pad(port), sck.into_pad(port)),
-    )
+    spi::Config::new(pm, sercom1, pads, clock.freq())
+        .baud(baud)
+        .spi_mode(spi::MODE_0)
+        .enable()
 }

@@ -25,7 +25,7 @@ fn main() -> ! {
         &mut peripherals.SYSCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = bsp::Pins::new(peripherals.PORT);
+    let pins = bsp::Pins::new(peripherals.PORT);
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
     let mut uart = bsp::uart(
@@ -35,7 +35,6 @@ fn main() -> ! {
         &mut peripherals.PM,
         pins.rx,
         pins.tx,
-        &mut pins.port,
     );
 
     loop {
