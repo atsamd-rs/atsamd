@@ -30,7 +30,7 @@
     },
     "feather_m0": {
 	  "tier": 1,
-      "build": "cargo build --examples --features=unproven,usb,dma,rtic"
+      "build": "cargo build --examples --features=unproven,dma,usb,rtic,sdmmc,adalogger"
     },
     "feather_m4": {
 	  "tier": 2,
@@ -78,7 +78,7 @@
     },
     "samd11_bare": {
 	  "tier": 1,
-      "build": "cargo build --release --examples --features=unproven,rt,use-semihosting"
+      "build": "cargo build --release --examples --features=unproven,rt,use_semihosting"
     },
     "samd21_mini": {
 	  "tier": 2,

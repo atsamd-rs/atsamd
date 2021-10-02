@@ -1,6 +1,6 @@
 [package]
 name = "feather_m0"
-version = "0.10.0"
+version = "0.10.1"
 authors = ["Ben Bergman <ben@benbergman.ca>"]
 description = "Board Support crate for the Adafruit Feather M0"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
@@ -8,6 +8,7 @@ license = "MIT OR Apache-2.0"
 repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
 edition = "2018"
+resolver = "2"
 
 [dependencies]
 cortex-m = "0.6"
@@ -40,7 +41,11 @@ version = "0.3"
 optional = true
 
 [dependencies.rtic-monotonic]
-version = "=0.1.0-alpha.2"
+version = "=0.1.0-rc.1"
+optional = true
+
+[dependencies.cortex-m-rtic]
+version = "=0.6.0-rc.2"
 optional = true
 
 [dev-dependencies]
@@ -53,9 +58,6 @@ nom = { version = "5.1", default-features = false }
 heapless = "0.5"
 panic-halt = "0.2"
 panic-semihosting = "0.5"
-
-[dev-dependencies.cortex-m-rtic]
-version = "0.6.0-alpha.5"
 
 [features]
 # ask the HAL to enable atsamd21g support
@@ -73,7 +75,7 @@ max-channels = ["dma", "atsamd-hal/max-channels"]
 # Enable pins for the adalogger SD card reader
 adalogger = []
 sdmmc = ["embedded-sdmmc", "atsamd-hal/sdmmc"]
-rtic = ["atsamd-hal/rtic", "rtic-monotonic"]
+rtic = ["atsamd-hal/rtic", "rtic-monotonic", "cortex-m-rtic"]
 use_semihosting = []
 
 [profile.dev]

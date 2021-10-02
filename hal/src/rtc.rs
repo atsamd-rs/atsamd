@@ -64,8 +64,8 @@ impl RtcMode for ClockMode {}
 impl Sealed for ClockMode {}
 
 /// Count32Mode represents the 32-bit counter mode. This is a free running
-/// count-up timer, the counter value is preserved when using the CountDown /
-/// Periodic traits (which are using the compare register only).
+/// count-up timer. When used in Periodic/CountDown mode with the embedded-hal
+/// trait(s), it resets to zero on compare and starts counting up again.
 pub enum Count32Mode {}
 
 impl RtcMode for Count32Mode {}
@@ -339,13 +339,28 @@ impl CountDown for Rtc<Count32Mode> {
     where
         T: Into<Self::Time>,
     {
-        let ticks: u32 =
-            (timeout.into().0 as u64 * self.rtc_clock_freq.0 as u64 / 1_000_000_000) as u32;
-        let comp = self.count32().wrapping_add(ticks);
+        let params = TimerParams::new_us(timeout, self.rtc_clock_freq.0);
+        let divider = params.divider;
+        let cycles = params.cycles;
+
+        // Disable the timer while we reconfigure it
+        self.enable(false);
+
+        // Now that we have a clock routed to the peripheral, we
+        // can ask it to perform a reset.
+        self.reset();
+        while self.mode0_ctrla().read().swrst().bit_is_set() {}
 
         // set cycles to compare to...
-        self.sync();
-        self.mode0().comp[0].write(|w| unsafe { w.comp().bits(comp) });
+        self.mode0().comp[0].write(|w| unsafe { w.comp().bits(cycles) });
+        self.mode0_ctrla().modify(|_, w| {
+            // set clock divider...
+            w.prescaler().variant(divider);
+            // clear timer on match for periodicity...
+            w.matchclr().set_bit();
+            // and enable RTC.
+            w.enable().set_bit()
+        });
     }
 
     fn wait(&mut self) -> nb::Result<(), Void> {
