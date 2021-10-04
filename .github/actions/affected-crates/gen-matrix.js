@@ -25,7 +25,7 @@ async function getAffectedCrates (files) {
 async function generateBuildMatrix(files) {
   const affectedCrates = [...new Set(await getAffectedCrates(files))]
   console.log('affected crates: ', affectedCrates)
-  return affectedCrates.length ? { crate: affectedCrates } : null
+  return affectedCrates.length ? { crate: affectedCrates, toolchain: ['nightly', 'stable'] } : null
 }
 
 exports.generateBuildMatrix = generateBuildMatrix
