@@ -7,5 +7,5 @@
   - [ ] No new warnings or clippy suggestions have been introduced (see CI or check locally)
 
 ## If Adding a new Board
-  - [ ] Board CI added to `crates.json`
+  - [ ] Board `Cargo.toml` includes a `[package.metadata.atsamd.bsp]` with appropriate build and suppport instructions
   - [ ] Board is properly following "Tier 2" conventions, unless otherwise decided to be "Tier 1"
