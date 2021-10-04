@@ -1,13 +1,20 @@
 #![no_std]
 #![no_main]
 
-extern crate arduino_nano33iot as hal;
-extern crate embedded_graphics;
-extern crate st7735_lcd;
+use arduino_nano33iot as bsp;
+use bsp::hal;
 
+use embedded_graphics;
+use st7735_lcd;
+
+#[cfg(not(feature = "use_semihosting"))]
+use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
+
+use bsp::entry;
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
-use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 use hal::time::MegaHertz;
@@ -33,12 +40,12 @@ fn main() -> ! {
         &mut peripherals.SYSCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = hal::Pins::new(peripherals.PORT);
+    let mut pins = bsp::Pins::new(peripherals.PORT);
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
     delay.delay_ms(BOOT_DELAY_MS);
 
-    let spi = hal::spi_master(
+    let spi = bsp::spi_master(
         &mut clocks,
         MegaHertz(16),
         peripherals.SERCOM1,

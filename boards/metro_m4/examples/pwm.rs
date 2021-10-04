@@ -1,9 +1,13 @@
 #![no_std]
 #![no_main]
 
-extern crate cortex_m_rt;
-extern crate metro_m4 as hal;
-extern crate panic_halt;
+use bsp::hal;
+use metro_m4 as bsp;
+
+#[cfg(not(feature = "use_semihosting"))]
+use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
 
 use cortex_m_rt::entry;
 use hal::clock::GenericClockController;
@@ -25,7 +29,7 @@ fn main() -> ! {
         &mut peripherals.NVMCTRL,
     );
     let mut delay = Delay::new(core.SYST, &mut clocks);
-    let mut pins = hal::Pins::new(peripherals.PORT);
+    let mut pins = bsp::Pins::new(peripherals.PORT);
 
     let d12 = pins.d12.into_function_e(&mut pins.port);
 

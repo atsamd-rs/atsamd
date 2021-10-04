@@ -6,8 +6,6 @@ use panic_halt as _;
 #[cfg(feature = "use_semihosting")]
 use panic_semihosting as _;
 
-use nb::block;
-
 use bsp::hal;
 use bsp::pac;
 use feather_m0 as bsp;
@@ -41,9 +39,9 @@ fn main() -> ! {
 
     // toggle the red LED at the frequency set by the timer
     loop {
-        block!(timer.wait()).unwrap();
+        nb::block!(timer.wait()).unwrap();
         red_led.set_high().unwrap();
-        block!(timer.wait()).unwrap();
+        nb::block!(timer.wait()).unwrap();
         red_led.set_low().unwrap();
     }
 }

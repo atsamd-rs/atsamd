@@ -1,10 +1,10 @@
 use atsamd_hal::adc::Adc;
 use atsamd_hal::clock::GenericClockController;
 use atsamd_hal::gpio::{Floating, Input, Pa12, Pa13, Pd1, PfB, PfD, Port};
+use atsamd_hal::pac::gclk::pchctrl::GEN_A::GCLK11;
+use atsamd_hal::pac::{ADC1, MCLK, SERCOM4};
 use atsamd_hal::prelude::*;
 use atsamd_hal::sercom::{I2CMaster4, PadPin, Sercom4Pad0, Sercom4Pad1};
-use atsamd_hal::target_device::gclk::pchctrl::GEN_A::GCLK11;
-use atsamd_hal::target_device::{ADC1, MCLK, SERCOM4};
 
 use lis3dh::{Lis3dh, SlaveAddr};
 

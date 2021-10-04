@@ -5,18 +5,18 @@
 #![no_std]
 #![no_main]
 
-extern crate cortex_m;
-extern crate cortex_m_semihosting;
-extern crate feather_m0 as bsp;
+use feather_m0 as bsp;
+
 #[cfg(not(feature = "use_semihosting"))]
-extern crate panic_halt;
+use panic_halt as _;
 #[cfg(feature = "use_semihosting")]
-extern crate panic_semihosting;
-extern crate rtic;
+use panic_semihosting as _;
+use rtic;
 
 #[rtic::app(device = bsp::pac, peripherals = true, dispatchers = [EVSYS])]
 mod app {
 
+    use super::*;
     use bsp::hal;
     use hal::clock::{ClockGenId, ClockSource, GenericClockController};
     use hal::pac::Peripherals;

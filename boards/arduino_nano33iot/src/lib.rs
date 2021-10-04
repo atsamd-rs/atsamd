@@ -1,14 +1,11 @@
 #![no_std]
 
-extern crate atsamd_hal as hal;
+pub use atsamd_hal as hal;
 
 #[cfg(feature = "rt")]
 extern crate cortex_m_rt;
 #[cfg(feature = "rt")]
 pub use cortex_m_rt::entry;
-
-#[cfg(feature = "panic_halt")]
-pub extern crate panic_halt;
 
 use hal::prelude::*;
 use hal::*;
@@ -20,7 +17,7 @@ use hal::time::Hertz;
 
 pub use hal::common::*;
 
-pub use hal::target_device as pac;
+pub use hal::pac;
 
 #[cfg(feature = "usb")]
 use gpio::v2::{AnyPin, PA24, PA25};
@@ -34,7 +31,7 @@ define_pins!(
     /// Maps the pins to their arduino names and the numbers printed on the board.
     /// Information from: <https://github.com/arduino/ArduinoCore-samd/blob/master/variants/nano_33_iot/variant.cpp>
     struct Pins,
-    target_device: target_device,
+    pac: pac,
 
     /// RX
     pin rx = b23,

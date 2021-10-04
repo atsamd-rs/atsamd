@@ -1,12 +1,13 @@
 //! Analogue-to-Digital Conversion
 use crate::clock::GenericClockController;
 #[rustfmt::skip]
+#[allow(deprecated)]
 use crate::gpio::v1;
 use crate::gpio::v2::*;
 use crate::hal::adc::{Channel, OneShot};
-use crate::target_device::gclk::genctrl::SRC_A::DFLL;
-use crate::target_device::gclk::pchctrl::GEN_A;
-use crate::target_device::{adc0, ADC0, ADC1, MCLK};
+use crate::pac::gclk::genctrl::SRC_A::DFLL;
+use crate::pac::gclk::pchctrl::GEN_A;
+use crate::pac::{adc0, ADC0, ADC1, MCLK};
 
 use crate::calibration;
 
@@ -288,6 +289,7 @@ macro_rules! adc_pins {
 
 /// Implement [`Channel`] for [`v1::Pin`]s based on the implementations for
 /// `v2` [`Pin`]s
+#[allow(deprecated)]
 impl<I, A> Channel<A> for v1::Pin<I, v1::PfB>
 where
     I: PinId,

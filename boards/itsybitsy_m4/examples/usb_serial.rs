@@ -1,6 +1,7 @@
 #![no_std]
 #![no_main]
 
+use bsp::hal;
 /// Makes the itsybitsy_m4 appear as a USB serial port. The color of the
 /// dotstar LED can be changed by sending bytes to the serial port.
 ///
@@ -10,14 +11,18 @@
 /// $> sudo bash -c "echo 'R' > /dev/ttyACM0"
 /// $> sudo bash -c "echo 'G' > /dev/ttyACM0"
 /// $> sudo bash -c "echo 'O' > /dev/ttyACM0"
-extern crate itsybitsy_m4 as hal;
-extern crate panic_halt;
+use itsybitsy_m4 as bsp;
+
+#[cfg(not(feature = "use_semihosting"))]
+use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
 
 use hal::clock::GenericClockController;
 
+use bsp::entry;
 use cortex_m::interrupt::free as disable_interrupts;
 use cortex_m::peripheral::NVIC;
-use hal::entry;
 use hal::pac::{interrupt, CorePeripherals, Peripherals};
 
 use hal::usb::UsbBus;
@@ -26,9 +31,9 @@ use usb_device::bus::UsbBusAllocator;
 use usb_device::prelude::*;
 use usbd_serial::{SerialPort, USB_CLASS_CDC};
 
+use bsp::uart;
 use hal::dbgprint;
 use hal::time::Hertz;
-use hal::uart;
 
 use hal::timer::SpinTimer;
 use smart_leds::{hsv::RGB8, SmartLedsWrite};
@@ -44,10 +49,10 @@ fn main() -> ! {
         &mut peripherals.OSCCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = hal::Pins::new(peripherals.PORT).split();
+    let mut pins = bsp::Pins::new(peripherals.PORT).split();
     let rstc = &peripherals.RSTC;
 
-    let mut rgb = hal::dotstar_bitbang(pins.dotstar, &mut pins.port, SpinTimer::new(12));
+    let mut rgb = bsp::dotstar_bitbang(pins.dotstar, &mut pins.port, SpinTimer::new(12));
     rgb.write([RGB8 { r: 0, g: 0, b: 0 }].iter().cloned())
         .unwrap();
 

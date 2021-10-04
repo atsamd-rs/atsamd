@@ -1,6 +1,6 @@
 //! EdgeBadge pins
 
-use super::{hal, pac, target_device};
+use super::{hal, pac};
 
 use embedded_hal::{digital::v1_compat::OldOutputPin, timer::CountDown, timer::Periodic};
 use gpio::{Floating, Input, Output, Port, PushPull};
@@ -35,7 +35,7 @@ define_pins!(
     /// Maps the pins to their arduino names and
     /// the numbers printed on the board.
     struct Pins,
-    target_device: target_device,
+    pac: pac,
 
     /// Analog pin 0.  Can act as a true analog output
     /// as it has a DAC (which is not currently supported

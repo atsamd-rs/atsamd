@@ -1,11 +1,11 @@
 //! Real-time clock/counter
-use crate::target_device::rtc::{MODE0, MODE2};
-use crate::target_device::RTC;
+use crate::ehal::timer::{CountDown, Periodic};
+use crate::pac::rtc::{MODE0, MODE2};
+use crate::pac::RTC;
 use crate::time::{Hertz, Nanoseconds};
 use crate::timer_traits::InterruptDrivenTimer;
 use crate::typelevel::Sealed;
 use core::marker::PhantomData;
-use hal::timer::{CountDown, Periodic};
 use void::Void;
 
 #[cfg(feature = "sdmmc")]
@@ -16,14 +16,14 @@ use rtic_monotonic::{embedded_time, Clock, Fraction, Instant, Monotonic};
 
 // SAMx5x imports
 #[cfg(feature = "min-samd51g")]
-use crate::target_device::{
+use crate::pac::{
     rtc::mode0::ctrla::PRESCALER_A, rtc::mode0::CTRLA as MODE0_CTRLA,
     rtc::mode2::CTRLA as MODE2_CTRLA, MCLK as PM,
 };
 
 // SAMD11/SAMD21 imports
 #[cfg(any(feature = "samd11", feature = "samd21"))]
-use crate::target_device::{
+use crate::pac::{
     rtc::mode0::ctrl::PRESCALER_A, rtc::mode0::CTRL as MODE0_CTRLA,
     rtc::mode2::CTRL as MODE2_CTRLA, PM,
 };
@@ -39,7 +39,7 @@ pub struct Datetime {
     pub year: u8,
 }
 
-type ClockR = crate::target_device::rtc::mode2::clock::R;
+type ClockR = crate::pac::rtc::mode2::clock::R;
 
 impl From<ClockR> for Datetime {
     fn from(clock: ClockR) -> Datetime {
@@ -64,8 +64,8 @@ impl RtcMode for ClockMode {}
 impl Sealed for ClockMode {}
 
 /// Count32Mode represents the 32-bit counter mode. This is a free running
-/// count-up timer, the counter value is preserved when using the CountDown /
-/// Periodic traits (which are using the compare register only).
+/// count-up timer. When used in Periodic/CountDown mode with the embedded-hal
+/// trait(s), it resets to zero on compare and starts counting up again.
 pub enum Count32Mode {}
 
 impl RtcMode for Count32Mode {}
@@ -339,13 +339,28 @@ impl CountDown for Rtc<Count32Mode> {
     where
         T: Into<Self::Time>,
     {
-        let ticks: u32 =
-            (timeout.into().0 as u64 * self.rtc_clock_freq.0 as u64 / 1_000_000_000) as u32;
-        let comp = self.count32().wrapping_add(ticks);
+        let params = TimerParams::new_us(timeout, self.rtc_clock_freq.0);
+        let divider = params.divider;
+        let cycles = params.cycles;
+
+        // Disable the timer while we reconfigure it
+        self.enable(false);
+
+        // Now that we have a clock routed to the peripheral, we
+        // can ask it to perform a reset.
+        self.reset();
+        while self.mode0_ctrla().read().swrst().bit_is_set() {}
 
         // set cycles to compare to...
-        self.sync();
-        self.mode0().comp[0].write(|w| unsafe { w.comp().bits(comp) });
+        self.mode0().comp[0].write(|w| unsafe { w.comp().bits(cycles) });
+        self.mode0_ctrla().modify(|_, w| {
+            // set clock divider...
+            w.prescaler().variant(divider);
+            // clear timer on match for periodicity...
+            w.matchclr().set_bit();
+            // and enable RTC.
+            w.enable().set_bit()
+        });
     }
 
     fn wait(&mut self) -> nb::Result<(), Void> {

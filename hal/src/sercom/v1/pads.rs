@@ -29,6 +29,8 @@
 //!
 //! [`free`]: Pad::free
 
+#![allow(deprecated)]
+
 use core::marker::PhantomData;
 
 use paste::paste;

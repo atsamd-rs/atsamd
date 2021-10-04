@@ -1,6 +1,6 @@
 [package]
 name = "arduino_nano33iot"
-version = "0.4.0"
+version = "0.5.0"
 authors = ["Gus Wynn <guswynn@gmail.com>"]
 description = "Board Support crate for the Arduino Nano 33 IOT"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal", "arduino"]
@@ -18,13 +18,8 @@ nb = "1.0"
 version = "0.6.12"
 optional = true
 
-[dependencies.panic-halt]
-version = "0.2"
-optional = true
-
 [dependencies.atsamd-hal]
-path = "../../hal"
-version = "0.12"
+version = "0.13"
 default-features = false
 
 [dependencies.usb-device]
@@ -41,18 +36,23 @@ default-features = false
 features = ["small_rng"]
 
 [dev-dependencies]
+panic-halt = "0.2"
+panic-semihosting = "0.5"
 embedded-graphics = "0.7.1"
 st7735-lcd = "0.8.1"
 ssd1306 = { version = "0.6", features = ["graphics"] }
 
 [features]
 # ask the HAL to enable atsamd21g support
-default = ["rt", "panic_halt", "atsamd-hal/samd21g"]
+default = ["rt", "atsamd-hal/samd21g"]
 rt = ["cortex-m-rt", "atsamd-hal/samd21g-rt"]
 usb = ["atsamd-hal/usb", "usb-device", "usbd-serial"]
-panic_halt = ["panic-halt"]
 unproven = ["atsamd-hal/unproven"]
 use_semihosting = []
+
+# for cargo flash
+[package.metadata]
+chip = "ATSAMD21G18A"
 
 [[example]]
 name = "blinky_basic"

@@ -1,5 +1,5 @@
-use crate::target_device::WDT;
-use hal::watchdog;
+use crate::ehal::watchdog;
+use crate::pac::WDT;
 
 /// WatchdogTimeout enumerates usable values for configuring
 /// the timeout of the watchdog peripheral.

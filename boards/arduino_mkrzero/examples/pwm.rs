@@ -1,12 +1,17 @@
 #![no_std]
 #![no_main]
 
-extern crate arduino_mkrzero as hal;
-extern crate atsamd_hal;
+use arduino_mkrzero as bsp;
+use bsp::hal;
 
+#[cfg(not(feature = "use_semihosting"))]
+use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
+
+use bsp::entry;
 use hal::clock::{GenericClockController, Tcc0Tcc1Clock};
 use hal::delay::Delay;
-use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 use hal::pwm::{Channel, Pwm0};
@@ -22,7 +27,7 @@ fn main() -> ! {
         &mut peripherals.NVMCTRL,
     );
     let mut delay = Delay::new(core.SYST, &mut clocks);
-    let mut pins = hal::Pins::new(peripherals.PORT);
+    let mut pins = bsp::Pins::new(peripherals.PORT);
 
     // PWM0_CH1 is A4 on the board - pin 19 or PA05
     // see: https://github.com/arduino/ArduinoCore-samd/blob/master/variants/mkrzero/variant.cpp

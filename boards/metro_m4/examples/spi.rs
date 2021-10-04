@@ -1,22 +1,20 @@
 #![no_std]
 #![no_main]
 
-extern crate cortex_m;
-extern crate cortex_m_semihosting;
-extern crate metro_m4 as hal;
-extern crate nb;
-#[cfg(not(feature = "use_semihosting"))]
-extern crate panic_halt;
-#[cfg(feature = "use_semihosting")]
-extern crate panic_semihosting;
+use bsp::hal;
+use metro_m4 as bsp;
 
+#[cfg(not(feature = "use_semihosting"))]
+use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
+
+use bsp::entry;
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
-use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 use hal::sercom::PadPin;
-use nb::block;
 
 #[entry]
 fn main() -> ! {
@@ -31,7 +29,7 @@ fn main() -> ! {
     );
 
     let mut delay = Delay::new(core.SYST, &mut clocks);
-    let mut pins = hal::Pins::new(peripherals.PORT);
+    let mut pins = bsp::Pins::new(peripherals.PORT);
     let gclk = clocks.gclk0();
 
     let mut spi: hal::sercom::SPIMaster3<
@@ -56,7 +54,7 @@ fn main() -> ! {
 
     loop {
         for byte in b"Hello, world!" {
-            block!(spi.send(*byte)).unwrap();
+            nb::block!(spi.send(*byte)).unwrap();
         }
         delay.delay_ms(1000u16);
     }

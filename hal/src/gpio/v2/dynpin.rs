@@ -61,9 +61,9 @@ use core::convert::TryFrom;
 
 use paste::paste;
 
-use hal::digital::v2::OutputPin;
+use crate::ehal::digital::v2::OutputPin;
 #[cfg(feature = "unproven")]
-use hal::digital::v2::{InputPin, StatefulOutputPin, ToggleableOutputPin};
+use crate::ehal::digital::v2::{InputPin, StatefulOutputPin, ToggleableOutputPin};
 
 use super::pin::*;
 use super::reg::RegisterInterface;

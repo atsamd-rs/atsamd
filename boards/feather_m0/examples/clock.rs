@@ -3,7 +3,10 @@
 
 use core::fmt::Write;
 
+#[cfg(not(feature = "use_semihosting"))]
 use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
 
 use cortex_m::interrupt::free as disable_interrupts;
 use cortex_m::peripheral::NVIC;
@@ -164,9 +167,8 @@ pub struct Time {
     second: usize,
 }
 
-#[macro_use]
-extern crate nom;
 use drogue_nom_utils::parse_usize;
+use nom::{char, do_parse, named, opt, tag};
 
 named!(
     pub timespec<Time>,

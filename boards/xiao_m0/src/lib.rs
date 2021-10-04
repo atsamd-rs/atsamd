@@ -1,13 +1,11 @@
 #![no_std]
 
-pub extern crate atsamd_hal as hal;
+pub use atsamd_hal as hal;
+pub use hal::common::*;
+pub use hal::pac;
 
 #[cfg(feature = "rt")]
 pub use cortex_m_rt::entry;
-
-pub use hal::common::*;
-
-pub use hal::target_device as pac;
 
 use hal::prelude::*;
 use hal::{
@@ -17,7 +15,6 @@ use hal::{
     gpio::{Floating, Input, Port},
     pad::PadPin,
     sercom::{I2CMaster2, SPIMaster0, UART4},
-    target_device,
     time::Hertz,
 };
 
@@ -30,7 +27,7 @@ pub use hal::usb::UsbBus;
 
 define_pins!(
     struct Pins,
-    target_device: target_device,
+    pac: pac,
 
     /// Pin A0/D0/DAC
     pin a0 = a2,

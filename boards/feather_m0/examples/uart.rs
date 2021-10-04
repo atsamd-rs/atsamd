@@ -4,7 +4,10 @@
 #![no_main]
 
 use cortex_m::asm;
+#[cfg(not(feature = "use_semihosting"))]
 use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
 
 use bsp::hal;
 use bsp::pac;
