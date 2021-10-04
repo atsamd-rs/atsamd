@@ -1,12 +1,19 @@
 name: 'Get Affected Crates'
 description: 'Creates a matrix of all crates affected by the event'
 inputs:
-  all:
+  added:
     description: "files modified or added by event"
-    required: true
+    required: false
   deleted:
     description: "files deleted by change"
     required: false
+  renamed:
+    description: "files rename by change"
+    required: false
+  modified: 
+    description: "files modified by change"
+    required: false
+
 outputs:
   matrix:
     description: "Matrix of Affected Crates"
@@ -26,7 +33,7 @@ runs:
       with:
         script: |
           const {generateBuildMatrix} = require('${{ github.action_path}}/gen-matrix')
-          const files = [${{inputs.all}}, ${{inputs.deleted}}].flat()
+          const files = [${{inputs.added}}, ${{inputs.deleted}}, $${{inputs.renamed}}, {{inputs.modified}}].flat()
           let matrix = await generateBuildMatrix(files)
           console.log('matrix:', matrix)
           return matrix

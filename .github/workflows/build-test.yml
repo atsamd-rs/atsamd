@@ -32,8 +32,10 @@ jobs:
         uses: ./.github/actions/affected-crates
         id: affected-crates
         with:
-          all: ${{ steps.diff.outputs.all }}
+          added: ${{ steps.diff.outputs.added }}
           deleted: ${{ steps.diff.outputs.deleted }}
+          renamed: ${{ steps.diff.outputs.renamed }}
+          modified: ${{ steps.diff.outputs.modified }}
 
     outputs: 
       matrix: ${{ steps.affected-crates.outputs.matrix }}
