@@ -1,11 +1,87 @@
+#![warn(missing_docs)]
 //! # Clocking API v2
-//! TODO
 //!
-//! Functionality:
+//! This module provides the set of abstractions allowing a user to manipulate
+//! an ATSAMD's clocking system in a safe and expressive manner.
 //!
-//! * Type-safe management of ATSAMD clocking system
-//! * Full flexibility: API design allows to represent any logical clocking
-//!   configuration forseen by a HW manufacturer
+//! Foundation of an API is a [`retrieve_clocks`] function that returns a tuple
+//! of instantiated clocking abstractions that are enabled on reset.
+//!
+//! To reconfigure a clocking tree, user can instantiate additional clocking
+//! components or reconfigure existing ones and connect them. Type-safe nature
+//! of the API prevents user from building an application with an unsound clock
+//! tree setup.
+//!
+//! Example:
+//! ```no_run
+//! use atsamd_hal::{
+//!     clock::v1,
+//!     clock::v2::{retrieve_clocks, apb, gclkio, xosc, gclk, dpll, pclk},
+//!     gpio::v2::Pins,
+//!     pac::Peripherals,
+//!     time::U32Ext,
+//! };
+//!
+//! let mut pac = Peripherals::take().unwrap();
+//! let (gclk0, dfll, osculp32k, tokens) = retrieve_clocks(
+//!     pac.OSCCTRL,
+//!     pac.OSC32KCTRL,
+//!     pac.GCLK,
+//!     pac.MCLK,
+//!     &mut pac.NVMCTRL,
+//! );
+//!
+//! let pins = Pins::new(pac.PORT);
+//!
+//! // Asynchronous clocking domain
+//!
+//! // Xosc0 (8 MHz) set up using pins PA14 and PA15
+//! let xosc0 = xosc::Xosc::from_crystal(tokens.xosc0, pins.pa14, pins.pa15, 8.mhz()).enable();
+//!
+//! // Dfll (48 MHz) -> Gclk1 (48 MHz / 24) -> 2 MHz
+//! let (gclk1, dfll) = gclk::Gclk::new(tokens.gclks.gclk1, dfll);
+//! let _gclk1 = gclk1.div(gclk::Gclk1Div::Div(24)).enable();
+//!
+//! // Xosc based Dpll OutFreq: InFreq * (int + frac / 32) / (2 * (1 + predivider))
+//! // Xosc (8 MHz) -> Dpll0 (8 MHz * (50 + 0 / 32) / (2 * (1 + 1)) -> 100 MHz
+//! let (dpll0, _xosc0) = dpll::Dpll::from_xosc(tokens.dpll0, xosc0, 1);
+//! let dpll0 = dpll0.set_loop_div(50, 0).enable();
+//!
+//! // Swap Dfll (48 MHz) for Dpll0 (100 MHz) in Gclk0
+//! // Gclk0 drives MCLK and CPU, it can be neither disabled nor deconstructed
+//! let (gclk0, _dfll, _dpll0) = gclk0.swap(dfll, dpll0);
+//!
+//! //// Output Gclk0 on a pin PB14
+//! let (_gclk_out0, gclk0) =
+//!     gclkio::GclkOut::enable(tokens.gclk_io.gclk_out0, pins.pb14, gclk0, false);
+//!
+//! // Pclk to be consumed by an adequate peripheral abstraction
+//! let (sercom0_pclk, gclk0) = pclk::Pclk::enable(tokens.pclks.sercom0, gclk0);
+//!
+//! // Clocking API V1 compatibility layer:
+//! // Access to pac::MCLK
+//! let (_, _, _, mclk) = unsafe { tokens.pac.steal() };
+//! // v2's Pclks are convertible to v1's CoreClocks
+//! let sercom0_core_clock: v1::Sercom0CoreClock = sercom0_pclk.into();
+//!
+//! // Synchronous clocking domain (v1's MCLK)
+//!
+//! // Synchronous clocks are also expressed by typestates
+//! let trng_apb: apb::ApbToken<apb::Trng> = tokens.apbs.trng;
+//! let trng_apb: apb::ApbClk<apb::Trng> = trng_apb.enable();
+//! ```
+//!
+//! More information on technicalities regarding implementation and principle of
+//! operations can be found in a [`types`](super::types) module documentation.
+//!
+//! HAL also provides macros with ready-to-use presets. These presets correspond
+//! to opinionated clock setup from API v1:
+//! - [`clocking_preset_gclk0_120mhz_gclk5_2mhz`](crate::
+//!   clocking_preset_gclk0_120mhz_gclk5_2mhz)
+//! - [`clocking_preset_gclk0_120mhz_gclk5_2mhz_gclk1_internal_32khz`](crate::
+//!   clocking_preset_gclk0_120mhz_gclk5_2mhz_gclk1_internal_32khz)
+//! - [`clocking_preset_gclk0_120mhz_gclk5_2mhz_gclk1_external_32khz`](crate::
+//!   clocking_preset_gclk0_120mhz_gclk5_2mhz_gclk1_external_32khz)
 
 use typenum::{U0, U1};
 
@@ -70,16 +146,27 @@ impl PacClocks {
 /// expose low-level API to HW register of finer granularity than regular PAC
 /// structs.
 pub struct Tokens {
+    /// Wrapper for low level PAC -- can be unsafely stolen if needed
     pub pac: PacClocks,
+    /// Synchronous clocking domain clocks -- AHB bus
     pub ahbs: ahb::AhbClks,
+    /// Synchronous clocking domain clocks -- APB buses
     pub apbs: apb::ApbClks,
+    /// Construction token for [`dpll::Dpll0`]
     pub dpll0: dpll::DpllToken<dpll::Pll0>,
+    /// Construction token for [`dpll::Dpll1`]
     pub dpll1: dpll::DpllToken<dpll::Pll1>,
+    /// Construction tokens for [`gclkio::GclkIo`]
     pub gclk_io: gclkio::Tokens,
+    /// Construction tokens for [`gclk::Gclk`]
     pub gclks: gclk::Tokens,
+    /// Construction tokens for [`pclk::Pclk`]
     pub pclks: pclk::Tokens,
+    /// Construction token for [`xosc::Xosc0`]
     pub xosc0: xosc::XoscToken<xosc::Osc0>,
+    /// Construction token for [`xosc::Xosc1`]
     pub xosc1: xosc::XoscToken<xosc::Osc1>,
+    /// Construction token for [`xosc32k::Xosc32k`]
     pub xosc32k: xosc32k::Xosc32kToken,
 }
 
