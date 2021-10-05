@@ -43,11 +43,11 @@ use crate::pac;
 use crate::pac::NVMCTRL;
 
 pub use crate::pac::gclk::genctrl::{DIVSEL_A, SRC_A as GclkSourceEnum};
-pub use crate::pac::gclk::{RegisterBlock, GENCTRL};
 
 use super::gclkio::NotGclkInput;
 use crate::clock::types::{Counter, Decrement, Enabled, Increment, PrivateIncrement};
 use crate::clock::v2::{Source, SourceMarker};
+use crate::pac::gclk::{RegisterBlock, GENCTRL};
 use crate::time::Hertz;
 use crate::typelevel::Sealed;
 
