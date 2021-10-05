@@ -21,7 +21,7 @@ features = ["samd21g", "samd21g-rt", "unproven", "usb"]
 [dependencies]
 bitfield = "0.13"
 bitflags = "1.2.1"
-cortex-m = "0.6"
+cortex-m = "0.7"
 embedded-hal = "0.2"
 modular-bitfield = "0.11"
 nb = "0.1"
