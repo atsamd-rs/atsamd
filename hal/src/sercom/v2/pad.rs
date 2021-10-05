@@ -293,8 +293,8 @@ mod ioset {
     ///
     /// This trait is used to label each [`Pin`] implementing [`IsPad`] with its
     /// corresponding [`IoSet`]\(s). Downstream types can use this trait as a
-    /// [type class] to restrict [`Pin`]s to a given [`IoSet`]. See the [type class]
-    /// documentation for more details on the pattern.
+    /// [type class] to restrict [`Pin`]s to a given [`IoSet`]. See the [type
+    /// class] documentation for more details on the pattern.
     ///
     /// [type class]: crate::typelevel#type-classes
     #[cfg(feature = "min-samd51g")]
