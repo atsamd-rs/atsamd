@@ -1,8 +1,10 @@
-//! Configuring the system clock sources.
-//! You will typically need to create an instance of `GenericClockController`
-//! before you can set up most of the peripherals on the atsamd51 device.
-//! The other types in this module are used to enforce at compile time
-//! that the peripherals have been correctly configured.
+//! Clocking API v1
+//!
+//! Configuring the system clock sources. You will typically need to create an
+//! instance of `GenericClockController` before you can set up most of the
+//! peripherals on the atsamd51 device. The other types in this module are used
+//! to enforce at compile time that the peripherals have been correctly
+//! configured.
 #![allow(clippy::from_over_into)]
 
 use crate::clock::v2::pclk::*;
