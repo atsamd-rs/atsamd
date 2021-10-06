@@ -59,7 +59,7 @@ macro_rules! clocking_preset_gclk0_120mhz_gclk5_2mhz {
 /// with configured external 32k crystal oscillator:
 ///
 /// - [`Xosc32k<Xosc32kMode>`][`super::xosc32k::Xosc32k`] (`32 kHz`)
-/// - [`Gclk1<Osc32k>`][`super::gclk::Gclk1`] (`32 kHz`)
+/// - [`Gclk1<marker::Xosc32k>`][`super::gclk::Gclk1`] (`32 kHz`)
 ///
 /// Input arguments for this macro can be retrieved by calling
 /// [`retrieve_clocks`][`crate::clock::v2::retrieve_clocks`] function.
@@ -116,7 +116,7 @@ macro_rules! clocking_preset_gclk0_120mhz_gclk5_2mhz_gclk1_external_32khz {
 /// with internal, ultra low power 32k oscillator:
 ///
 /// - [`OscUlp32k`][`super::osculp32k::OscUlp32k`] (`32 kHz`)
-/// - [`Gclk1<Ulp32k>`][`super::gclk::Gclk1`] (`32 kHz`)
+/// - [`Gclk1<marker::OscUlp32k>`][`super::gclk::Gclk1`] (`32 kHz`)
 ///
 /// Input arguments for this macro can be retrieved by calling
 /// [`retrieve_clocks`][`crate::clock::v2::retrieve_clocks`] function.

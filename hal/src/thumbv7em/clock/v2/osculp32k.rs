@@ -220,18 +220,24 @@ where
 // GclkSource
 //==============================================================================
 
-/// A marker type. More information at [`SourceMarker`] documentation entry
-pub enum Ulp32k {}
+/// A module that creates a namespace difference between a [`marker::OscUlp32k`]
+/// marker type and a [`OscUlp32k`] builder type
+pub mod marker {
+    use super::*;
 
-impl Sealed for Ulp32k {}
+    /// A marker type. More information at [`SourceMarker`] documentation entry
+    pub enum OscUlp32k {}
 
-impl SourceMarker for Ulp32k {}
+    impl Sealed for OscUlp32k {}
 
-impl GclkSourceMarker for Ulp32k {
-    const GCLK_SRC: SRC_A = SRC_A::OSCULP32K;
+    impl SourceMarker for OscUlp32k {}
+
+    impl GclkSourceMarker for OscUlp32k {
+        const GCLK_SRC: SRC_A = SRC_A::OSCULP32K;
+    }
+
+    impl NotGclkInput for OscUlp32k {}
 }
-
-impl NotGclkInput for Ulp32k {}
 
 impl<G, Y, N> GclkSource<G> for Enabled<OscUlp32k<Active32k, Y>, N>
 where
@@ -239,7 +245,7 @@ where
     Y: Output1k,
     N: Counter,
 {
-    type Type = Ulp32k;
+    type Type = marker::OscUlp32k;
 }
 
 impl<Y, N> Source for Enabled<OscUlp32k<Active32k, Y>, N>

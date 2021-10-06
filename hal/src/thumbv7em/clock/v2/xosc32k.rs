@@ -14,7 +14,6 @@
 use core::marker::PhantomData;
 use typenum::U0;
 
-use crate::pac::gclk::genctrl::SRC_A;
 use crate::pac::osc32kctrl::rtcctrl::RTCSEL_A;
 use crate::pac::osc32kctrl::xosc32k::{CGM_A, STARTUP_A};
 
@@ -28,7 +27,7 @@ use crate::gpio::v2::{AnyPin, FloatingDisabled, Pin, PA00, PA01};
 use crate::time::{Hertz, U32Ext};
 
 use super::dpll::{DpllSource, DpllSourceMarker, DpllSourceXosc32k, DpllSrc};
-use super::gclk::{GclkSource, GclkSourceMarker, GenNum};
+use super::gclk::{GclkSource, GclkSourceMarker, GclkSourceEnum, GenNum};
 use super::gclkio::NotGclkInput;
 use super::rtc::*;
 use crate::typelevel::Sealed;
@@ -457,22 +456,30 @@ where
     }
 }
 
+pub mod marker {
+    use super::*;
+
+    /// A marker type. More information at [`SourceMarker`] documentation entry
+    pub enum Xosc32k {}
+
+    impl Sealed for Xosc32k {}
+
+    impl SourceMarker for Xosc32k {}
+
+    impl GclkSourceMarker for Xosc32k {
+        const GCLK_SRC: GclkSourceEnum = GclkSourceEnum::XOSC32K;
+    }
+
+    impl DpllSourceMarker for marker::Xosc32k {
+        const DPLL_SRC: DpllSrc = DpllSrc::XOSC32;
+    }
+
+    impl NotGclkInput for Xosc32k {}
+}
+
 //==============================================================================
 // GclkSource
 //==============================================================================
-
-/// A marker type. More information at [`SourceMarker`] documentation entry
-pub enum Osc32k {}
-
-impl Sealed for Osc32k {}
-
-impl SourceMarker for Osc32k {}
-
-impl GclkSourceMarker for Osc32k {
-    const GCLK_SRC: SRC_A = SRC_A::XOSC32K;
-}
-
-impl NotGclkInput for Osc32k {}
 
 impl<G, M, Y, N> GclkSource<G> for Enabled<Xosc32k<M, Active32k, Y>, N>
 where
@@ -481,16 +488,12 @@ where
     Y: Output1k,
     N: Counter,
 {
-    type Type = Osc32k;
+    type Type = marker::Xosc32k;
 }
 
 //==============================================================================
 // DpllSource
 //==============================================================================
-
-impl DpllSourceMarker for Osc32k {
-    const DPLL_SRC: DpllSrc = DpllSrc::XOSC32;
-}
 
 impl<M, Y, N> DpllSource for Enabled<Xosc32k<M, Active32k, Y>, N>
 where
@@ -498,7 +501,7 @@ where
     Y: Output1k,
     N: Counter,
 {
-    type Type = Osc32k;
+    type Type = marker::Xosc32k;
 }
 
 impl<M, Y, N> DpllSourceXosc32k for Enabled<Xosc32k<M, Active32k, Y>, N>
