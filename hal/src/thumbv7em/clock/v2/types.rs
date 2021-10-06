@@ -1,8 +1,10 @@
-#![warn(missing_docs)]
 //! # Clocking API v2 type infrastructure
 //!
-//! In order to model _one-to-many_ type of relationship between dependencies in
-//! a Clocking API v2 a few additional concepts/abstractions were introduced.
+//! In order to model _one-to-many_ type of relationship between dependencies
+//! (eg. different [`Gclks`](super::gclk::Gclk) can be powered by a single
+//! [`Xosc`](super::xosc::Xosc); different [`Pclks`](super::pclk::Pclk) can be
+//! powered by a single [`Gclk`](super::gclk::Gclk) etc.) a few additional
+//! concepts/abstractions were introduced.
 //!
 //! ## [`Enabled`] type and its helper types/traits
 //!
@@ -10,7 +12,7 @@
 //! state while also holding an information about current amount of dependencies
 //! (usually [`zero`](typenum::U0) upon construction). This amount of
 //! dependencies is embedded into the type via second generic parameter
-//! leveraging [`typenum::UInt`] [`typenum::UTerm`] types.
+//! leveraging [`typenum::UInt`]/[`typenum::UTerm`] types.
 //!
 //! ```no_run
 //! # use core::marker::PhantomData;
@@ -33,7 +35,7 @@
 //!
 //! Via specialized implementation blocks for this type (like for
 //! `Enabled<Dfll<TMode>, U0>`) it is possible to introduce special behaviour;
-//! e.g. [`Enabled::disable`] will only exist for clocking component having
+//! e.g. [`Enabled::disable`] will only exist for a clocking component having
 //! [`zero`](typenum::U0) current users.
 //!
 //! ## `SourceMarker` trait and its subtraits
@@ -87,8 +89,8 @@
 //! ## `Source` trait and its subtraits
 //!
 //! This trait represents a source of clocking signal while subtraits its more
-//! specialized flavours (source of signal for [`Dpll`](super::v2::dpll::Dpll),
-//! [`Pclk`](super::v2::pclk::Pclk), [`Gclk`](super::v2::gclk::Gclk), etc.).
+//! specialized flavours (source of signal for [`Dpll`](super::dpll::Dpll),
+//! [`Pclk`](super::pclk::Pclk), [`Gclk`](super::gclk::Gclk), etc.).
 //! ```no_run
 //! # use atsamd_hal::time::Hertz;
 //! # use atsamd_hal::clock::v2::gclk::{GenNum, GclkSourceMarker};
@@ -145,19 +147,8 @@
 //!
 //! Regardless of how complicated it might seem to look, it can be roughly
 //! understood as:
-//! - Enabled [`Dpll`](super::v2::dpll::Dpll) peripheral can be a source of
-//!   signal for any [`Gclk`](super::v2::gclk::Gclk).
-//!
-//! ## `*Token` types
-//! Unfortunately, [`Peripherals`](crate::pac::Peripherals) granularity is too
-//! low for them to be useful when spliting clocking system into such small,
-//! semi-independent pieces. In order to solve this problem, we consume PAC
-//! in [`retrieve_clocks`](super::v2::retrieve_clocks) and return a set of
-//! tokens that internally use appropriate `RegisterBlock` directly, retrieved
-//! from a raw pointer . It is safe because register regions managed by
-//! different tokens do not overlap. Tokens cannot be created by a user; they
-//! are provided during initialization and do not expose any public API. Memory
-//! accesses are read/write-synchronized.
+//! - Enabled [`Dpll`](super::dpll::Dpll) peripheral can be a source of signal
+//!   for any [`Gclk`](super::gclk::Gclk).
 //!
 //! ## `Source/SourceMarker` traits usage in an API
 //!
@@ -186,7 +177,9 @@
 //!     // (e.g. ordering number via associated constant)
 //!     G: GenNum,
 //!     // Practical application of `SourceMarker`; it makes a connection between
-//!     // `Source` and a `Gclk` used by it
+//!     // `source: S` and a `Gclk` used by it. Otherwise, it would be possible to
+//!     // `fn free` a `Gclk` instance with *any* type implementing `GclkSource`;
+//!     // not only with the one that was used during a call to `fn new`.
 //!     T: GclkSourceMarker,
 //! {
 //!     pub fn new<S>(token: GclkToken<G>, source: S) -> (Self, S::Inc)
@@ -227,29 +220,40 @@
 //! }
 //! ```
 //!
-//! [`Gclk::new`](super::v2::gclk::Gclk::new) consumes, upon construction, a
-//! [`GclkSource`](super::v2::gclk::GclkSource) provided to it and returns it
+//! [`Gclk::new`](super::gclk::Gclk::new) consumes, upon construction, a
+//! [`GclkSource`](super::gclk::GclkSource) provided to it and returns it
 //! with a type of `Enabled<_, N++>` (as mentioned previously, specializations
-//! of [`Enabled`] implement `Source` based traits). Analogically,
-//! [`Gclk::free`](super::v2::gclk::Gclk::free) consumes a
-//! [`GclkSource`](super::v2::gclk::GclkSource) passed in and returns it with a
+//! of [`Enabled`] implement [`Source`](super::Source) based traits).
+//! Analogically, [`Gclk::free`](super::gclk::Gclk::free) consumes a
+//! [`GclkSource`](super::gclk::GclkSource) passed in and returns it with a
 //! new type of `Enabled<_, N-->`. By design it is impossible to go below
-//! [`zero`](typenum::U0), because there is always less or equal amount of users
-//! than a counter value.
+//! [`zero`](typenum::U0), because the amount of users is always lesser or equal
+//! to a counter value.
 //!
 //! ## `Gclk0` case
 //!
 //! Amount of users might be less than a value of a counter in case of special
-//! types like [`Gclk0`](super::v2::gclk::Gclk0) which always has an implicit
+//! types like [`Gclk0`](super::gclk::Gclk0) which always has an implicit
 //! single user -- synchronous clocking domain. Minimal amount of users for it
 //! is [`one`](typenum::U1), making it impossible to disable and therefore
 //! consistent with its documented HW characteristics.
 //!
 //! It also makes it impossible to change a configuration of a
-//! [`Gclk0`](super::v2::gclk::Gclk0) as a `Enabled<Gclk0, _>` cannot be
+//! [`Gclk0`](super::gclk::Gclk0) as a `Enabled<Gclk0, _>` cannot be
 //! deconstructed. Therefore, `Enabled<Gclk0, U1>` exposes additional methods
-//! that are usually available only for disabled
-//! [`Gclks`](super::v2::gclk::Gclk).
+//! (like [`Enabled<Gclk0, U1>::swap`]) that are usually available only for
+//! disabled [`Gclks`](super::gclk::Gclk).
+//!
+//! ## `*Token` types
+//! Unfortunately, [`Peripherals`](crate::pac::Peripherals) granularity is too
+//! low for them to be useful when spliting clocking system into such small,
+//! semi-independent pieces. In order to solve this problem, we consume PAC
+//! in [`retrieve_clocks`](super::retrieve_clocks) and return a set of
+//! tokens that internally use appropriate `RegisterBlock` directly, retrieved
+//! from a raw pointer. It is safe because register regions managed by
+//! different tokens do not overlap. Tokens cannot be created by a user; they
+//! are provided during initialization and do not expose any public API. Memory
+//! accesses are read/write-synchronized.
 use core::marker::PhantomData;
 use core::ops::{Add, Sub};
 use typenum::{Add1, Sub1, Unsigned, B1};

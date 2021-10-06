@@ -1,4 +1,4 @@
-//! Clocking API v1
+//! # Clocking API v1
 //!
 //! Configuring the system clock sources. You will typically need to create an
 //! instance of `GenericClockController` before you can set up most of the

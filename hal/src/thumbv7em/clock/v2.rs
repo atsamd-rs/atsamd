@@ -76,8 +76,8 @@
 //! let trng_apb: ApbClk<Trng> = trng_apb.enable();
 //! ```
 //!
-//! More information on technicalities regarding implementation and principle of
-//! operations can be found in a [`types`](super::types) module documentation.
+//! More information on technicalities regarding implementation and principles
+//! of operations can be found in a [`types`] module documentation.
 //!
 //! HAL also provides macros with ready-to-use presets. These presets correspond
 //! to opinionated clock setup from API v1:
