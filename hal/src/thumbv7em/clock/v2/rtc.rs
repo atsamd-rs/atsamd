@@ -44,8 +44,9 @@ where
 }
 
 /// TODO This is only a workaround
+/// Unsafe because you can unlock any `RtcSource32k` implementing source?
 /// FIXME
-pub fn unset_rtc_clock_32k<S>(source: S) -> S::Dec
+pub unsafe fn unset_rtc_clock_32k<S>(source: S) -> S::Dec
 where
     S: RtcSource32k + Decrement,
 {
@@ -54,7 +55,7 @@ where
 
 /// TODO This is only a workaround
 /// FIXME
-pub fn unset_rtc_clock_1k<S>(source: S) -> S::Dec
+pub unsafe fn unset_rtc_clock_1k<S>(source: S) -> S::Dec
 where
     S: RtcSource1k + Decrement,
 {
