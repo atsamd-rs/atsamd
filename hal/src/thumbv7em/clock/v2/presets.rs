@@ -4,8 +4,8 @@
 ///
 /// - [`Dfll<OpenLoop>`][`super::dfll::Dfll`] (`48 MHz`)
 /// - [`Gclk5<marker::Dfll>`][`super::gclk::Gclk5`] (`48 MHz / 24 -> 2 MHz`)
-/// - [`Pclk<marker::Dpll0, Gen5>`][`super::pclk::Pclk`]
-/// - [`Dpll0<PclkDriven<marker::Dpll0, Gen5>>`][`super::dpll::Dpll0`] (`2 MHz * 60 ->
+/// - [`Pclk<marker::Dpll0, marker::Gclk5>`][`super::pclk::Pclk`]
+/// - [`Dpll0<PclkDriven<marker::Dpll0, marker::Gclk5>>`][`super::dpll::Dpll0`] (`2 MHz * 60 ->
 ///   120 MHz`)
 /// - [`Gclk0<marker::Dpll0>`][`super::gclk::Gclk0`] (`120 MHz`)
 ///
@@ -51,8 +51,8 @@ macro_rules! clocking_preset_gclk0_120mhz_gclk5_2mhz {
 ///
 /// - [`Dfll<OpenLoop>`][`super::dfll::Dfll`] (`48 MHz`)
 /// - [`Gclk5<marker::Dfll>`][`super::gclk::Gclk5`] (`48 MHz / 24 -> 2 MHz`)
-/// - [`Pclk<marker::Dpll0, Gen5>`][`super::pclk::Pclk`]
-/// - [`Dpll0<PclkDriven<marker::Dpll0, Gen5>>`][`super::dpll::Dpll0`] (`2 MHz * 60 ->
+/// - [`Pclk<marker::Dpll0, marker::Gclk5>`][`super::pclk::Pclk`]
+/// - [`Dpll0<PclkDriven<marker::Dpll0, marker::Gclk5>>`][`super::dpll::Dpll0`] (`2 MHz * 60 ->
 ///   120 MHz`)
 /// - [`Gclk0<marker::Dpll0>`][`super::gclk::Gclk0`] (`120 MHz`)
 ///
@@ -108,8 +108,8 @@ macro_rules! clocking_preset_gclk0_120mhz_gclk5_2mhz_gclk1_external_32khz {
 ///
 /// - [`Dfll<OpenLoop>`][`super::dfll::Dfll`] (`48 MHz`)
 /// - [`Gclk5<marker::Dfll>`][`super::gclk::Gclk5`] (`48 MHz / 24 -> 2 MHz`)
-/// - [`Pclk<marker::Dpll0, Gen5>`][`super::pclk::Pclk`]
-/// - [`Dpll0<PclkDriven<marker::Dpll0, Gen5>>`][`super::dpll::Dpll0`] (`2 MHz * 60 ->
+/// - [`Pclk<marker::Dpll0, marker::Gclk5>`][`super::pclk::Pclk`]
+/// - [`Dpll0<PclkDriven<marker::Dpll0, marker::Gclk5>>`][`super::dpll::Dpll0`] (`2 MHz * 60 ->
 ///   120 MHz`)
 /// - [`Gclk0<marker::Dpll0>`][`super::gclk::Gclk0`] (`120 MHz`)
 ///

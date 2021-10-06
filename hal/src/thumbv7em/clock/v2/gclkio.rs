@@ -79,43 +79,43 @@ use super::gclk::*;
 /// Trait for binding [`gpio`] pins to specific [`Gclk`][`super::gclk]
 pub trait GclkIo<G: GclkNum>: PinId {}
 
-impl GclkIo<Gen4> for gpio::PA10 {}
-impl GclkIo<Gen5> for gpio::PA11 {}
+impl GclkIo<marker::Gclk4> for gpio::PA10 {}
+impl GclkIo<marker::Gclk5> for gpio::PA11 {}
 
-impl GclkIo<Gen0> for gpio::PA14 {}
-impl GclkIo<Gen1> for gpio::PA15 {}
-impl GclkIo<Gen2> for gpio::PA16 {}
-impl GclkIo<Gen3> for gpio::PA17 {}
+impl GclkIo<marker::Gclk0> for gpio::PA14 {}
+impl GclkIo<marker::Gclk1> for gpio::PA15 {}
+impl GclkIo<marker::Gclk2> for gpio::PA16 {}
+impl GclkIo<marker::Gclk3> for gpio::PA17 {}
 
-impl GclkIo<Gen1> for gpio::PA27 {}
-impl GclkIo<Gen0> for gpio::PA30 {}
+impl GclkIo<marker::Gclk1> for gpio::PA27 {}
+impl GclkIo<marker::Gclk0> for gpio::PA30 {}
 
-impl GclkIo<Gen4> for gpio::PB10 {}
-impl GclkIo<Gen5> for gpio::PB11 {}
+impl GclkIo<marker::Gclk4> for gpio::PB10 {}
+impl GclkIo<marker::Gclk5> for gpio::PB11 {}
 #[cfg(feature = "min-samd51j")]
-impl GclkIo<Gen6> for gpio::PB12 {}
+impl GclkIo<marker::Gclk6> for gpio::PB12 {}
 #[cfg(feature = "min-samd51j")]
-impl GclkIo<Gen7> for gpio::PB13 {}
+impl GclkIo<marker::Gclk7> for gpio::PB13 {}
 
 #[cfg(feature = "min-samd51j")]
-impl GclkIo<Gen0> for gpio::PB14 {}
+impl GclkIo<marker::Gclk0> for gpio::PB14 {}
 #[cfg(feature = "min-samd51j")]
-impl GclkIo<Gen1> for gpio::PB15 {}
+impl GclkIo<marker::Gclk1> for gpio::PB15 {}
 #[cfg(feature = "min-samd51j")]
-impl GclkIo<Gen2> for gpio::PB16 {}
+impl GclkIo<marker::Gclk2> for gpio::PB16 {}
 #[cfg(feature = "min-samd51j")]
-impl GclkIo<Gen3> for gpio::PB17 {}
+impl GclkIo<marker::Gclk3> for gpio::PB17 {}
 #[cfg(feature = "min-samd51n")]
-impl GclkIo<Gen4> for gpio::PB18 {}
+impl GclkIo<marker::Gclk4> for gpio::PB18 {}
 #[cfg(feature = "min-samd51n")]
-impl GclkIo<Gen5> for gpio::PB19 {}
+impl GclkIo<marker::Gclk5> for gpio::PB19 {}
 #[cfg(feature = "min-samd51n")]
-impl GclkIo<Gen6> for gpio::PB20 {}
+impl GclkIo<marker::Gclk6> for gpio::PB20 {}
 #[cfg(feature = "min-samd51n")]
-impl GclkIo<Gen7> for gpio::PB21 {}
+impl GclkIo<marker::Gclk7> for gpio::PB21 {}
 
-impl GclkIo<Gen0> for gpio::PB22 {}
-impl GclkIo<Gen1> for gpio::PB23 {}
+impl GclkIo<marker::Gclk0> for gpio::PB22 {}
+impl GclkIo<marker::Gclk1> for gpio::PB23 {}
 
 //==============================================================================
 // GclkInToken
@@ -370,9 +370,9 @@ seq!(N in 0..=11 {
     /// Tokens for every [`GclkIn`] and [`GclkOut`]
     pub struct Tokens {
         #( /// GclkIn #N
-           pub gclk_in#N: GclkInToken<Gen#N>, )*
+           pub gclk_in#N: GclkInToken<marker::Gclk#N>, )*
         #( /// GclkOut #N
-           pub gclk_out#N: GclkOutToken<Gen#N>, )*
+           pub gclk_out#N: GclkOutToken<marker::Gclk#N>, )*
     }
 
     impl Tokens {

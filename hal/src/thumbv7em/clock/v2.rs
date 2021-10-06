@@ -139,9 +139,9 @@ impl PacClocks {
 /// This struct contains instantiated `Token` structs that can be used to
 /// construct clocking components.
 ///
-/// E.g. to call [`gclk::Gclk<gclk::Gen5, _>::new`] one needs
+/// E.g. to call [`gclk::Gclk<marker::Gclk5, _>::new`] one needs
 /// [`gclk::Tokens::gclk5`] from within [`Tokens::gclks`]. Thus, it is
-/// impossible to create multiple instances of [`gclk::Gclk<gclk::Gen5, _>`].
+/// impossible to create multiple instances of [`gclk::Gclk5<_>`].
 ///
 /// These do not expose any API externally. Inside of the HAL crate, these
 /// expose low-level API to HW register of finer granularity than regular PAC

@@ -200,6 +200,9 @@ pub trait GclkNum: Sealed {
     type DividerType: GclkDivider;
 }
 
+/// A module that creates a namespace difference between a [`marker::Gclk0`] ..
+/// [`marker::Gclk1`] marker types and a [`Gclk0`] .. [`Gclk1`] builder type
+/// aliases
 pub mod marker {
     use super::*;
 
@@ -208,8 +211,8 @@ pub mod marker {
     /// Trait allowing to pick all `GclkX` except [`Gclk1`]
     pub trait NotGclk1: GclkNum {}
 
-    /// [`Gclk0`] serves as a source marker for a [`super::Gclk0`] and provides
-    /// numerical identity for it
+    /// Type which serves as a source marker for the corresponding
+    /// [`super::Gclk`] and provides numerical identity for it
     ///
     /// [`super::Gclk0`] is directly coupled to `MCLK` which provides the
     /// drives a synchronous clocking domain and the main clock
@@ -223,8 +226,8 @@ pub mod marker {
         type DividerType = GclkDiv;
     }
 
-    /// [`Gclk1`] serves as a source marker for a [`super::Gclk1`] and provides
-    /// numerical identity for it
+    /// Type which serves as a source marker for the corresponding
+    /// [`super::Gclk`] and provides numerical identity for it
     ///
     /// [`super::Gclk1`] has the ability to be fed into other [`Gclk`]s as a
     /// source
@@ -240,10 +243,33 @@ pub mod marker {
         type DividerType = Gclk1Div;
     }
 
+    impl GclkSourceMarker for Gclk1 {
+        const GCLK_SRC: GclkSourceEnum = GclkSourceEnum::GCLKGEN1;
+    }
+
+    impl NotGclkInput for Gclk1 {}
+
+    macro_rules! impl_gclk1_source {
+        ($GclkNum:ident) => {
+            impl<T, N> GclkSource<$GclkNum> for Enabled<super::Gclk1<T>, N>
+            where
+                T: GclkSourceMarker,
+                N: Counter,
+            {
+                type Type = Gclk1;
+            }
+        };
+    }
+
+    impl_gclk1_source!(Gclk0);
+
     seq!(N in 2..=11 {
-        /// Type which serves as a source marker for types
-        /// [`super::Gclk2`] .. [`super::Gclk11`] and provides numerical identity
-        /// for them
+        impl_gclk1_source!(Gclk#N);
+    });
+
+    seq!(N in 2..=11 {
+        /// Type which serves as a source marker for the corresponding
+        /// [`super::Gclk`] and provides numerical identity for it
         ///
         /// Standard division factor, see [`GclkDiv`]
         pub enum Gclk#N {}
@@ -624,8 +650,8 @@ impl<T: GclkSourceMarker> Enabled<Gclk0<T>, U1> {
         new: New,
     ) -> (Enabled<Gclk0<New::Type>, U1>, Old::Dec, New::Inc)
     where
-        Old: GclkSource<Gen0, Type = T> + Decrement,
-        New: GclkSource<Gen0> + Increment,
+        Old: GclkSource<marker::Gclk0, Type = T> + Decrement,
+        New: GclkSource<marker::Gclk0> + Increment,
     {
         let (config, old, new) = self.0.swap(old, new);
         (config.enable().inc(), old, new)
@@ -653,36 +679,8 @@ impl<T: GclkSourceMarker> Enabled<Gclk0<T>, U1> {
 //==============================================================================
 
 seq!(G in 0..=11 {
-    /// `GclkX` aliased to `Gclk<GenX>`
-    pub type Gclk#G<S> = Gclk<Gen#G, S>;
-});
-
-//==============================================================================
-// Gclk1 SourceMarker
-//==============================================================================
-
-impl GclkSourceMarker for Gen1 {
-    const GCLK_SRC: GclkSourceEnum = GclkSourceEnum::GCLKGEN1;
-}
-
-impl NotGclkInput for Gen1 {}
-
-macro_rules! impl_gclk1_source {
-    ($GclkNum:ident) => {
-        impl<T, N> GclkSource<$GclkNum> for Enabled<Gclk1<T>, N>
-        where
-            T: GclkSourceMarker,
-            N: Counter,
-        {
-            type Type = Gen1;
-        }
-    };
-}
-
-impl_gclk1_source!(Gen0);
-
-seq!(N in 2..=11 {
-    impl_gclk1_source!(Gen#N);
+    /// `GclkX` aliased to [`Gclk`]`<marker::GclkX, _>`
+    pub type Gclk#G<S> = Gclk<marker::Gclk#G, S>;
 });
 
 //==============================================================================
@@ -693,7 +691,7 @@ seq!(N in 1..=11 {
     /// [`Gclk`] tokens ensuring there only exists one instance of each [`Gclk`]
     pub struct Tokens {
         #( /// GclkToken for Gclk#N
-           pub gclk#N: GclkToken<Gen#N>, )*
+           pub gclk#N: GclkToken<marker::Gclk#N>, )*
     }
 
     impl Tokens {
