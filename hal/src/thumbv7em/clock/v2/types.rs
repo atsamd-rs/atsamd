@@ -127,8 +127,8 @@
 //! e.g.:
 //!
 //! ```no_run
-//! # use atsamd_hal::clock::types::{Counter, Enabled};
 //! # use atsamd_hal::clock::v2::Source;
+//! # use atsamd_hal::clock::v2::types::{Counter, Enabled};
 //! # use atsamd_hal::clock::v2::dpll::{Dpll, DpllNum, SrcMode};
 //! # use atsamd_hal::clock::v2::gclk::{GclkSourceMarker, GenNum};
 //! # pub trait GclkSource<G: GenNum>: Source {
@@ -159,7 +159,7 @@
 //! ```no_run
 //! # use core::marker::PhantomData;
 //! # use typenum::U0;
-//! # use atsamd_hal::clock::types::{Counter, Decrement, Increment};
+//! # use atsamd_hal::clock::v2::types::{Counter, Decrement, Increment};
 //! # use atsamd_hal::clock::v2::gclk::{GenNum, GclkSourceMarker, GclkToken, GclkSource};
 //! # pub struct Enabled<T, N: Counter>(pub(crate) T, PhantomData<N>);
 //! # impl<T, N: Counter> Enabled<T, N> {

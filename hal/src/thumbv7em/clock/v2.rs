@@ -232,10 +232,10 @@ pub trait SourceMarker: crate::typelevel::Sealed {}
 
 /// Supertrait unifying family of more specific source traits.
 ///
-/// These are implemented by specific specialized forms of
-/// [`super::types::Enabled`]. They are used during a construction (`fn ::{new,
-/// enable}`) and deconstruction (`fn ::{free, disable}`) of clocking components
-/// and they express the type of dependency needed by a dependee. For examples,
+/// These are implemented by specific specialized forms of [`types::Enabled`].
+/// They are used during a construction (`fn ::{new, enable}`) and
+/// deconstruction (`fn ::{free, disable}`) of clocking components and they
+/// express the type of dependency needed by a dependee. For examples,
 /// [`gclk::Gclk::new`] will only consume source implementing
 /// [`gclk::GclkSource`] trait.
 pub trait Source: crate::typelevel::Sealed {
