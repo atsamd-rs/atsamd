@@ -85,7 +85,7 @@
 
 use typenum::{U0, U1};
 
-use crate::clock::types::Enabled;
+use types::Enabled;
 use crate::pac::{GCLK, MCLK, NVMCTRL, OSC32KCTRL, OSCCTRL};
 use crate::time::Hertz;
 
@@ -102,6 +102,7 @@ pub mod gclkio;
 pub mod osculp32k;
 pub mod pclk;
 pub mod rtc;
+pub mod types;
 pub mod xosc;
 pub mod xosc32k;
 

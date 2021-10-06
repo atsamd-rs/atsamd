@@ -10,8 +10,10 @@ use typenum::U0;
 use crate::pac::oscctrl::xoscctrl::{CFDPRESC_A, STARTUP_A};
 use crate::pac::oscctrl::{RegisterBlock, XOSCCTRL};
 
-use crate::clock::types::{Counter, Enabled};
-use crate::clock::v2::{Source, SourceMarker};
+use crate::clock::v2::{
+    types::{Counter, Enabled},
+    Source, SourceMarker,
+};
 use crate::gpio::v2::{AnyPin, FloatingDisabled, Pin, PinId, PA14, PA15, PB22, PB23};
 use crate::time::{Hertz, U32Ext};
 use crate::typelevel::Sealed;

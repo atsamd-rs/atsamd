@@ -4,7 +4,7 @@
 //! This is a bit of a hack right now. I think it might be best if the RTC
 //! migrates into the `clock` module, since it's so integrated with OSC32KCTRL.
 
-use crate::clock::types::{Decrement, Increment};
+use crate::clock::v2::types::{Decrement, Increment};
 use crate::pac::osc32kctrl::rtcctrl::RTCSEL_A;
 use crate::pac::OSC32KCTRL;
 use crate::typelevel::Sealed;

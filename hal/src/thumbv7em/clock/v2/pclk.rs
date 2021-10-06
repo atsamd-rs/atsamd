@@ -24,8 +24,10 @@ use crate::pac;
 
 pub use crate::pac::gclk::pchctrl::GEN_A as PclkSourceEnum;
 
-use crate::clock::types::{Counter, Decrement, Enabled, Increment};
-use crate::clock::v2::{Source, SourceMarker};
+use crate::clock::v2::{
+    types::{Counter, Decrement, Enabled, Increment},
+    Source, SourceMarker,
+};
 use crate::sercom::v2::*;
 use crate::time::Hertz;
 use crate::typelevel::Sealed;

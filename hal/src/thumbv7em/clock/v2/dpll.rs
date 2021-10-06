@@ -32,8 +32,10 @@ use crate::pac::oscctrl::DPLL;
 
 pub use crate::pac::oscctrl::dpll::dpllctrlb::REFCLK_A as DpllSrc;
 
-use crate::clock::types::{Counter, Decrement, Enabled, Increment};
-use crate::clock::v2::{Source, SourceMarker};
+use crate::clock::v2::{
+    types::{Counter, Decrement, Enabled, Increment},
+    Source, SourceMarker,
+};
 use crate::time::Hertz;
 use crate::typelevel::Sealed;
 
