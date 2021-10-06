@@ -60,7 +60,7 @@
 //! }
 //!
 //! pub trait DpllSourceMarker: SourceMarker {
-//!     const DPLL_SRC: atsamd_hal::pac::oscctrl::dpll::dpllctrlb::REFCLK_A /* DpllSrc */;
+//!     const DPLL_SRC: atsamd_hal::pac::oscctrl::dpll::dpllctrlb::REFCLK_A /* DpllSourceEnum */;
 //! }
 //!
 //! pub trait GclkOutSourceMarker: GenNum + SourceMarker {}

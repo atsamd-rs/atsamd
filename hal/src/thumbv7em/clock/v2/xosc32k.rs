@@ -26,7 +26,7 @@ use crate::clock::v2::{
 use crate::gpio::v2::{AnyPin, FloatingDisabled, Pin, PA00, PA01};
 use crate::time::{Hertz, U32Ext};
 
-use super::dpll::{DpllSource, DpllSourceMarker, DpllSourceXosc32k, DpllSrc};
+use super::dpll::{DpllSource, DpllSourceMarker, DpllSourceXosc32k, DpllSourceEnum};
 use super::gclk::{GclkSource, GclkSourceMarker, GclkSourceEnum, GenNum};
 use super::gclkio::NotGclkInput;
 use super::rtc::*;
@@ -471,7 +471,7 @@ pub mod marker {
     }
 
     impl DpllSourceMarker for marker::Xosc32k {
-        const DPLL_SRC: DpllSrc = DpllSrc::XOSC32;
+        const DPLL_SRC: DpllSourceEnum = DpllSourceEnum::XOSC32;
     }
 
     impl NotGclkInput for Xosc32k {}

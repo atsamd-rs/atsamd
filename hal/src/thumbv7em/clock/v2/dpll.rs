@@ -30,7 +30,7 @@ use typenum::U0;
 use crate::pac::oscctrl::dpll::{dpllstatus, dpllsyncbusy, DPLLCTRLA, DPLLCTRLB, DPLLRATIO};
 use crate::pac::oscctrl::DPLL;
 
-pub use crate::pac::oscctrl::dpll::dpllctrlb::REFCLK_A as DpllSrc;
+pub use crate::pac::oscctrl::dpll::dpllctrlb::REFCLK_A as DpllSourceEnum;
 
 use crate::clock::v2::{
     types::{Counter, Decrement, Enabled, Increment},
@@ -92,7 +92,7 @@ impl DpllNum for Pll1 {
 pub trait DpllSourceMarker: SourceMarker {
     /// Associated constant provides a variant of a low level enum type from PAC
     /// that is used during a HW register write
-    const DPLL_SRC: DpllSrc;
+    const DPLL_SRC: DpllSourceEnum;
 }
 
 /// This trait represents a [`Dpll`] source provider.
@@ -193,7 +193,7 @@ impl<D: DpllNum> DpllToken<D> {
 
     /// Set the clock source.
     #[inline]
-    fn set_source_clock(&mut self, variant: DpllSrc) {
+    fn set_source_clock(&mut self, variant: DpllSourceEnum) {
         self.ctrlb().modify(|_, w| w.refclk().variant(variant));
     }
 
@@ -290,7 +290,7 @@ impl<D: DpllNum + PclkType, T: PclkSourceMarker> SrcMode<D> for PclkDriven<D, T>
 
     fn enable(&self, token: &mut DpllToken<D>) {
         // Set the source
-        token.set_source_clock(DpllSrc::GCLK);
+        token.set_source_clock(DpllSourceEnum::GCLK);
     }
 }
 

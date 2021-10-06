@@ -18,7 +18,7 @@ use crate::gpio::v2::{AnyPin, FloatingDisabled, Pin, PinId, PA14, PA15, PB22, PB
 use crate::time::{Hertz, U32Ext};
 use crate::typelevel::Sealed;
 
-use super::dpll::{DpllSource, DpllSourceMarker, DpllSourceXosc, DpllSrc};
+use super::dpll::{DpllSource, DpllSourceMarker, DpllSourceXosc, DpllSourceEnum};
 use super::gclk::{GclkSource, GclkSourceEnum, GclkSourceMarker, GenNum};
 use super::gclkio::NotGclkInput;
 
@@ -28,7 +28,7 @@ use super::gclkio::NotGclkInput;
 
 pub trait XoscNum: Sealed {
     const NUM: usize;
-    const DPLL_SRC: DpllSrc;
+    const DPLL_SRC: DpllSourceEnum;
     type XIn: PinId;
     type XOut: PinId;
 }
@@ -40,7 +40,7 @@ impl Sealed for Osc0 {}
 
 impl XoscNum for Osc0 {
     const NUM: usize = 0;
-    const DPLL_SRC: DpllSrc = DpllSrc::XOSC0;
+    const DPLL_SRC: DpllSourceEnum = DpllSourceEnum::XOSC0;
     type XIn = PA14;
     type XOut = PA15;
 }
@@ -52,7 +52,7 @@ impl Sealed for Osc1 {}
 
 impl XoscNum for Osc1 {
     const NUM: usize = 1;
-    const DPLL_SRC: DpllSrc = DpllSrc::XOSC1;
+    const DPLL_SRC: DpllSourceEnum = DpllSourceEnum::XOSC1;
     type XIn = PB22;
     type XOut = PB23;
 }
@@ -518,13 +518,13 @@ where
 impl SourceMarker for Osc0 {}
 
 impl DpllSourceMarker for Osc0 {
-    const DPLL_SRC: DpllSrc = DpllSrc::XOSC0;
+    const DPLL_SRC: DpllSourceEnum = DpllSourceEnum::XOSC0;
 }
 
 impl SourceMarker for Osc1 {}
 
 impl DpllSourceMarker for Osc1 {
-    const DPLL_SRC: DpllSrc = DpllSrc::XOSC1;
+    const DPLL_SRC: DpllSourceEnum = DpllSourceEnum::XOSC1;
 }
 
 impl<X, M, N> DpllSource for Enabled<Xosc<X, M>, N>
