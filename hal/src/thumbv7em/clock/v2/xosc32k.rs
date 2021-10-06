@@ -456,6 +456,8 @@ where
     }
 }
 
+/// A module that creates a namespace difference between a [`marker::Xosc32k`]
+/// marker type and a [`Xosc32k`] builder type
 pub mod marker {
     use super::*;
 
@@ -470,7 +472,7 @@ pub mod marker {
         const GCLK_SRC: GclkSourceEnum = GclkSourceEnum::XOSC32K;
     }
 
-    impl DpllSourceMarker for marker::Xosc32k {
+    impl DpllSourceMarker for Xosc32k {
         const DPLL_SRC: DpllSourceEnum = DpllSourceEnum::XOSC32;
     }
 

@@ -32,7 +32,7 @@ use crate::sercom::v2::*;
 use crate::time::Hertz;
 use crate::typelevel::Sealed;
 
-use super::dpll::{Pll0, Pll1};
+use super::dpll::marker::{Dpll0 as Dpll0Marker, Dpll1 as Dpll1Marker};
 use super::gclk::*;
 
 //==============================================================================
@@ -102,9 +102,9 @@ pub trait PclkType: Sealed {
     const ID: PclkId;
 }
 
-// If a suitable type already exists in the HAL, reuse it to implement
-// `PclkType` trait ([`Pll0`] or `Sercom` type are a good example). Otherwise,
-// define new enum type.
+/// If a suitable type already exists in the HAL, reuse it to implement
+/// `PclkType` trait ([`Dpll0Marker`] or `Sercom` type are a good example).
+/// Otherwise, define new enum type.
 macro_rules! pclk_type {
     // A type already exists; reuse it
     ( true, $Type:ident, $Id:ident ) => {
@@ -285,8 +285,8 @@ macro_rules! pclks {
 // Try to use existing types as tokens, if possible. Otherwise, create new ones.
 pclks!(
     (false, dfll48, dfll48),
-    (true, Pll0, dpll0),
-    (true, Pll1, dpll1),
+    (true, Dpll0Marker, dpll0),
+    (true, Dpll1Marker, dpll1),
     (false, slow_32k, slow_32k),
     (false, eic, eic),
     (false, freqm_msr, freqm_msr),

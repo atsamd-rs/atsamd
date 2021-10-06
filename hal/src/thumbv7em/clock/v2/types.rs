@@ -75,8 +75,8 @@
 //! # pub trait GclkSourceMarker /*: SourceMarker */ {
 //! #     const GCLK_SRC: atsamd_hal::pac::gclk::genctrl::SRC_A /* GclkSourceEnum */;
 //! # }
-//! pub enum Pll1 {}
-//! impl GclkSourceMarker for Pll1 {
+//! pub enum Dpll1 {}
+//! impl GclkSourceMarker for Dpll1 {
 //!     const GCLK_SRC: GclkSourceEnum = GclkSourceEnum::DPLL1;
 //! }
 //! // or

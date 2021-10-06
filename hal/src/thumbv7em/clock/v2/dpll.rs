@@ -8,8 +8,8 @@
 //!
 //! There are two DPLLs that are available
 //!
-//! - [`Enabled`]`<`[`Dpll`]`<`[`Pll0`]`, _>>`: [`Dpll0`]
-//! - [`Enabled`]`<`[`Dpll`]`<`[`Pll1`]`, _>>`: [`Dpll1`]
+//! - [`Enabled`]`<`[`Dpll`]`<`[`marker::Dpll0`]`, _>>`: [`Dpll0`]
+//! - [`Enabled`]`<`[`Dpll`]`<`[`marker::Dpll1`]`, _>>`: [`Dpll1`]
 //!
 //! Each of them can operate in 3 different modes
 //!
@@ -55,30 +55,53 @@ pub trait DpllNum: Sealed {
     const NUM: usize;
 }
 
-/// Type defining a [`Dpll`] providing a numeric identity
-///
-/// Goal of this type is to be a `Dpll` variant identifier used as a generic
-/// parameter in an [`Dpll`]. Also as a source marker type in [`Dpll`]'s
-/// dependees.
-pub enum Pll0 {}
+/// A module that creates a namespace difference between a
+/// [`marker::Dpll0`]/[`marker::Dpll1`] marker types and a [`Dpll0`]/[`Dpll1`]
+/// builder type aliases
+pub mod marker {
+    use super::*;
 
-impl Sealed for Pll0 {}
+    /// Type defining a [`Dpll`] providing a numeric identity
+    ///
+    /// Goal of this type is to be a `Dpll` variant identifier used as a generic
+    /// parameter in an [`Dpll`]. Also as a source marker type in [`Dpll`]'s
+    /// dependees.
+    pub enum Dpll0 {}
 
-impl DpllNum for Pll0 {
-    const NUM: usize = 0;
-}
+    impl Sealed for Dpll0 {}
 
-/// Type defining a [`Dpll`] providing a numeric identity
-///
-/// Goal of this type is to be a `Dpll` variant identifier used as a generic
-/// parameter in an [`Dpll`]. Also as a source marker type in [`Dpll`]'s
-/// dependees.
-pub enum Pll1 {}
+    impl DpllNum for Dpll0 {
+        const NUM: usize = 0;
+    }
 
-impl Sealed for Pll1 {}
+    impl GclkSourceMarker for Dpll0 {
+        const GCLK_SRC: GclkSourceEnum = GclkSourceEnum::DPLL0;
+    }
 
-impl DpllNum for Pll1 {
-    const NUM: usize = 1;
+    impl NotGclkInput for Dpll0 {}
+
+    impl SourceMarker for Dpll0 {}
+
+    /// Type defining a [`Dpll`] providing a numeric identity
+    ///
+    /// Goal of this type is to be a `Dpll` variant identifier used as a generic
+    /// parameter in an [`Dpll`]. Also as a source marker type in [`Dpll`]'s
+    /// dependees.
+    pub enum Dpll1 {}
+
+    impl Sealed for Dpll1 {}
+
+    impl DpllNum for Dpll1 {
+        const NUM: usize = 1;
+    }
+
+    impl GclkSourceMarker for Dpll1 {
+        const GCLK_SRC: GclkSourceEnum = GclkSourceEnum::DPLL1;
+    }
+
+    impl NotGclkInput for Dpll1 {}
+
+    impl SourceMarker for Dpll1 {}
 }
 
 //==============================================================================
@@ -347,7 +370,8 @@ impl<D: DpllNum, T: DpllSourceMarker> Sealed for Xosc32kDriven<D, T> {}
 /// Struct representing a [`Dpll`] abstraction
 ///
 /// It is generic over:
-/// - a numeric variant ([`DpllNum`]; available variants: [`Pll0`], [`Pll1`])
+/// - a numeric variant ([`DpllNum`]; available variants: [`marker::Dpll0`],
+///   [`marker::Dpll1`])
 /// - a mode of operation ([`SrcMode<D>`]; available modes: [`PclkDriven`],
 ///   [`XoscDriven`], [`Xosc32kDriven`])
 pub struct Dpll<D, M>
@@ -604,10 +628,10 @@ where
 }
 
 /// Encapsulation for Dpll0
-pub type Dpll0<M> = Dpll<Pll0, M>;
+pub type Dpll0<M> = Dpll<marker::Dpll0, M>;
 
 /// Encapsulation for Dpll1
-pub type Dpll1<M> = Dpll<Pll1, M>;
+pub type Dpll1<M> = Dpll<marker::Dpll1, M>;
 
 impl<D, M> Enabled<Dpll<D, M>, U0>
 where
@@ -625,22 +649,6 @@ where
 //==============================================================================
 // GclkSource
 //==============================================================================
-
-impl GclkSourceMarker for Pll0 {
-    const GCLK_SRC: GclkSourceEnum = GclkSourceEnum::DPLL0;
-}
-
-impl NotGclkInput for Pll0 {}
-
-impl SourceMarker for Pll0 {}
-
-impl GclkSourceMarker for Pll1 {
-    const GCLK_SRC: GclkSourceEnum = GclkSourceEnum::DPLL1;
-}
-
-impl NotGclkInput for Pll1 {}
-
-impl SourceMarker for Pll1 {}
 
 impl<G, D, M, N> GclkSource<G> for Enabled<Dpll<D, M>, N>
 where

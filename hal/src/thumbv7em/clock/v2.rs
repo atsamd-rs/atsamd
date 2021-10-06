@@ -154,9 +154,9 @@ pub struct Tokens {
     /// Synchronous clocking domain clocks -- APB buses
     pub apbs: apb::ApbClks,
     /// Construction token for [`dpll::Dpll0`]
-    pub dpll0: dpll::DpllToken<dpll::Pll0>,
+    pub dpll0: dpll::DpllToken<dpll::marker::Dpll0>,
     /// Construction token for [`dpll::Dpll1`]
-    pub dpll1: dpll::DpllToken<dpll::Pll1>,
+    pub dpll1: dpll::DpllToken<dpll::marker::Dpll1>,
     /// Construction tokens for [`gclkio::GclkIo`]
     pub gclk_io: gclkio::Tokens,
     /// Construction tokens for [`gclk::Gclk`]
