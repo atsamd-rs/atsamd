@@ -39,7 +39,7 @@ use crate::clock::v2::{
 use crate::time::Hertz;
 use crate::typelevel::Sealed;
 
-use super::gclk::{GclkSource, GclkSourceEnum, GclkSourceMarker, GenNum};
+use super::gclk::{GclkSource, GclkSourceEnum, GclkSourceMarker, GclkNum};
 use super::gclkio::NotGclkInput;
 use super::pclk::{Pclk, PclkSourceMarker, PclkType};
 
@@ -652,7 +652,7 @@ where
 
 impl<G, D, M, N> GclkSource<G> for Enabled<Dpll<D, M>, N>
 where
-    G: GenNum,
+    G: GclkNum,
     D: DpllNum + GclkSourceMarker,
     M: SrcMode<D>,
     N: Counter,

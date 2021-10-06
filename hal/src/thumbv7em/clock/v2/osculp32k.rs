@@ -29,7 +29,7 @@ use crate::clock::v2::{
 use crate::time::{Hertz, U32Ext};
 use crate::typelevel::Sealed;
 
-use super::gclk::{GclkSource, GclkSourceMarker, GenNum};
+use super::gclk::{GclkSource, GclkSourceMarker, GclkNum};
 use super::gclkio::NotGclkInput;
 use super::rtc::*;
 
@@ -241,7 +241,7 @@ pub mod marker {
 
 impl<G, Y, N> GclkSource<G> for Enabled<OscUlp32k<Active32k, Y>, N>
 where
-    G: GenNum,
+    G: GclkNum,
     Y: Output1k,
     N: Counter,
 {

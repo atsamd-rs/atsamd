@@ -27,7 +27,7 @@ use crate::gpio::v2::{AnyPin, FloatingDisabled, Pin, PA00, PA01};
 use crate::time::{Hertz, U32Ext};
 
 use super::dpll::{DpllSource, DpllSourceMarker, DpllSourceXosc32k, DpllSourceEnum};
-use super::gclk::{GclkSource, GclkSourceMarker, GclkSourceEnum, GenNum};
+use super::gclk::{GclkSource, GclkSourceMarker, GclkSourceEnum, GclkNum};
 use super::gclkio::NotGclkInput;
 use super::rtc::*;
 use crate::typelevel::Sealed;
@@ -485,7 +485,7 @@ pub mod marker {
 
 impl<G, M, Y, N> GclkSource<G> for Enabled<Xosc32k<M, Active32k, Y>, N>
 where
-    G: GenNum,
+    G: GclkNum,
     M: Mode,
     Y: Output1k,
     N: Counter,

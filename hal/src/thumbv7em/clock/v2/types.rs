@@ -48,14 +48,14 @@
 //! performing a HW register write.
 //!
 //! ```no_run
-//! # use atsamd_hal::clock::v2::gclk::GenNum;
+//! # use atsamd_hal::clock::v2::gclk::GclkNum;
 //! pub trait SourceMarker {}
 //!
 //! pub trait GclkSourceMarker: SourceMarker {
 //!     const GCLK_SRC: atsamd_hal::pac::gclk::genctrl::SRC_A /* GclkSourceEnum */;
 //! }
 //!
-//! pub trait PclkSourceMarker: GenNum + SourceMarker {
+//! pub trait PclkSourceMarker: GclkNum + SourceMarker {
 //!     const PCLK_SRC: atsamd_hal::pac::gclk::pchctrl::GEN_A /* PclkSourceEnum */;
 //! }
 //!
@@ -63,7 +63,7 @@
 //!     const DPLL_SRC: atsamd_hal::pac::oscctrl::dpll::dpllctrlb::REFCLK_A /* DpllSourceEnum */;
 //! }
 //!
-//! pub trait GclkOutSourceMarker: GenNum + SourceMarker {}
+//! pub trait GclkOutSourceMarker: GclkNum + SourceMarker {}
 //! ```
 //!
 //! These are implemented by marker types corresponding to existing clocking
@@ -93,7 +93,7 @@
 //! [`Pclk`](super::pclk::Pclk), [`Gclk`](super::gclk::Gclk), etc.).
 //! ```no_run
 //! # use atsamd_hal::time::Hertz;
-//! # use atsamd_hal::clock::v2::gclk::{GenNum, GclkSourceMarker};
+//! # use atsamd_hal::clock::v2::gclk::{GclkNum, GclkSourceMarker};
 //! # use atsamd_hal::clock::v2::pclk::PclkSourceMarker;
 //! # use atsamd_hal::clock::v2::dpll::DpllSourceMarker;
 //! # use atsamd_hal::clock::v2::gclkio::GclkOutSourceMarker;
@@ -101,7 +101,7 @@
 //!     fn freq(&self) -> Hertz;
 //! }
 //!
-//! pub trait GclkSource<G: GenNum>: Source {
+//! pub trait GclkSource<G: GclkNum>: Source {
 //!     type Type: GclkSourceMarker;
 //! }
 //!
@@ -130,13 +130,13 @@
 //! # use atsamd_hal::clock::v2::Source;
 //! # use atsamd_hal::clock::v2::types::{Counter, Enabled};
 //! # use atsamd_hal::clock::v2::dpll::{Dpll, DpllNum, SrcMode};
-//! # use atsamd_hal::clock::v2::gclk::{GclkSourceMarker, GenNum};
-//! # pub trait GclkSource<G: GenNum>: Source {
+//! # use atsamd_hal::clock::v2::gclk::{GclkSourceMarker, GclkNum};
+//! # pub trait GclkSource<G: GclkNum>: Source {
 //! #     type Type: GclkSourceMarker;
 //! # }
 //! impl<G, D, M, N> GclkSource<G> for Enabled<Dpll<D, M>, N>
 //! where
-//!     G: GenNum,
+//!     G: GclkNum,
 //!     D: DpllNum + GclkSourceMarker,
 //!     M: SrcMode<D>,
 //!     N: Counter,
@@ -160,22 +160,22 @@
 //! # use core::marker::PhantomData;
 //! # use typenum::U0;
 //! # use atsamd_hal::clock::v2::types::{Counter, Decrement, Increment};
-//! # use atsamd_hal::clock::v2::gclk::{GenNum, GclkSourceMarker, GclkToken, GclkSource};
+//! # use atsamd_hal::clock::v2::gclk::{GclkNum, GclkSourceMarker, GclkToken, GclkSource};
 //! # pub struct Enabled<T, N: Counter>(pub(crate) T, PhantomData<N>);
 //! # impl<T, N: Counter> Enabled<T, N> {
 //! #     pub(crate) fn new(t: T) -> Self {
 //! #         Enabled(t, PhantomData)
 //! #     }
 //! # }
-//! # struct Gclk<G: GenNum, T: GclkSourceMarker> {
+//! # struct Gclk<G: GclkNum, T: GclkSourceMarker> {
 //! #    token: GclkToken<G>,
 //! #    src: PhantomData<T>,
 //! # }
 //! impl<G, T> Gclk<G, T>
 //! where
-//!     // `GenNum` is a generalization of a Gclk compile time parameters
+//!     // `GclkNum` is a generalization of a Gclk compile time parameters
 //!     // (e.g. ordering number via associated constant)
-//!     G: GenNum,
+//!     G: GclkNum,
 //!     // Practical application of `SourceMarker`; it makes a connection between
 //!     // `source: S` and a `Gclk` used by it. Otherwise, it would be possible to
 //!     // `fn free` a `Gclk` instance with *any* type implementing `GclkSource`;
@@ -210,7 +210,7 @@
 //! }
 //! impl<G, T> Enabled<Gclk<G, T>, U0>
 //! where
-//!     G: GenNum,
+//!     G: GclkNum,
 //!     T: GclkSourceMarker,
 //! {
 //!     fn disable(mut self) -> Gclk<G, T> {

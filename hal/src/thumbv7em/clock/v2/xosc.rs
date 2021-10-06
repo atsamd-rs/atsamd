@@ -19,7 +19,7 @@ use crate::time::{Hertz, U32Ext};
 use crate::typelevel::Sealed;
 
 use super::dpll::{DpllSource, DpllSourceMarker, DpllSourceXosc, DpllSourceEnum};
-use super::gclk::{GclkSource, GclkSourceEnum, GclkSourceMarker, GenNum};
+use super::gclk::{GclkSource, GclkSourceEnum, GclkSourceMarker, GclkNum};
 use super::gclkio::NotGclkInput;
 
 //==============================================================================
@@ -503,7 +503,7 @@ impl NotGclkInput for Osc1 {}
 
 impl<G, X, M, N> GclkSource<G> for Enabled<Xosc<X, M>, N>
 where
-    G: GenNum,
+    G: GclkNum,
     X: XoscNum + GclkSourceMarker,
     M: Mode,
     N: Counter,

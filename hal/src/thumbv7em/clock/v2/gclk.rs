@@ -60,25 +60,25 @@ use crate::typelevel::Sealed;
 /// A [`GclkToken`] equals a hardware register
 /// Provide a safe register interface for [`Gclk`]s
 ///
-/// This `struct` takes ownership of a [`GenNum`] and provides an API to
+/// This `struct` takes ownership of a [`GclkNum`] and provides an API to
 /// access the corresponding registers
-pub struct GclkToken<G: GenNum> {
+pub struct GclkToken<G: GclkNum> {
     gen: PhantomData<G>,
 }
 
-impl<G: GenNum> GclkToken<G> {
+impl<G: GclkNum> GclkToken<G> {
     /// Create a new instance of [`GclkToken`]
     ///
     /// # Safety
     ///
     /// Users must never create two simulatenous instances of this `struct` with
-    /// the same [`GenNum`]
+    /// the same [`GclkNum`]
     #[inline]
     pub(super) unsafe fn new() -> Self {
         GclkToken { gen: PhantomData }
     }
 
-    /// Used to mask out the correct bit based on [`GenNum`]
+    /// Used to mask out the correct bit based on [`GclkNum`]
     #[inline]
     fn mask(&self) -> u16 {
         1 << G::NUM
@@ -189,62 +189,73 @@ impl<G: GenNum> GclkToken<G> {
 }
 
 //==============================================================================
-// GenNum
+// GclkNum
 //==============================================================================
 
-/// Trait ensuring all `GenNum` has a numeric identifier
-pub trait GenNum: Sealed {
+/// Trait ensuring all `GclkNum` has a numeric identifier
+pub trait GclkNum: Sealed {
     /// All [`Gclk`] needs a numeric identifier
     const NUM: usize;
     /// Each [`Gclk`] has a divider
     type DividerType: GclkDivider;
 }
 
-/// Trait allowing to pick all `GenX` except [`Gen0`]
-pub trait NotGen0: GenNum {}
-/// Trait allowing to pick all `GenX` except [`Gen1`]
-pub trait NotGen1: GenNum {}
+pub mod marker {
+    use super::*;
 
-/// [`Gclk0`] is directly coupled to `MCLK` which provides the synchronous
-/// clocking and the main clock
-///
-/// [`NotGen0`] can be used to exclude this [`Gen0`]
-pub enum Gen0 {}
-impl Sealed for Gen0 {}
-impl NotGen1 for Gen0 {}
-impl GenNum for Gen0 {
-    const NUM: usize = 0;
-    type DividerType = GclkDiv;
-}
+    /// Trait allowing to pick all `GclkX` except [`Gclk0`]
+    pub trait NotGclk0: GclkNum {}
+    /// Trait allowing to pick all `GclkX` except [`Gclk1`]
+    pub trait NotGclk1: GclkNum {}
 
-/// [`Gclk1`] has the ability to be fed into other [`Gclk`]s as a source
-///
-/// [`NotGen1`] can be used to exclude this [`Gen1`]
-///
-/// Increased division factor, see [`Gclk1Div`]
-pub enum Gen1 {}
-impl Sealed for Gen1 {}
-impl NotGen0 for Gen1 {}
-impl GenNum for Gen1 {
-    const NUM: usize = 1;
-    type DividerType = Gclk1Div;
-}
-
-seq!(N in 2..=11 {
-    /// Generic Clock Generator
+    /// [`Gclk0`] serves as a source marker for a [`super::Gclk0`] and provides
+    /// numerical identity for it
     ///
-    /// [`Gclk2`] to [`Gclk11`]
+    /// [`super::Gclk0`] is directly coupled to `MCLK` which provides the
+    /// drives a synchronous clocking domain and the main clock
     ///
-    /// Standard division factor, see [`GclkDiv`]
-    pub enum Gen#N {}
-    impl Sealed for Gen#N {}
-    impl NotGen0 for Gen#N {}
-    impl NotGen1 for Gen#N {}
-    impl GenNum for Gen#N {
-        const NUM: usize = N;
+    /// [`NotGclk0`] can be used to exclude this [`Gclk0`]
+    pub enum Gclk0 {}
+    impl Sealed for Gclk0 {}
+    impl NotGclk1 for Gclk0 {}
+    impl GclkNum for Gclk0 {
+        const NUM: usize = 0;
         type DividerType = GclkDiv;
     }
-});
+
+    /// [`Gclk1`] serves as a source marker for a [`super::Gclk1`] and provides
+    /// numerical identity for it
+    ///
+    /// [`super::Gclk1`] has the ability to be fed into other [`Gclk`]s as a
+    /// source
+    ///
+    /// [`NotGclk1`] can be used to exclude this [`Gclk1`]
+    ///
+    /// Increased division factor, see [`Gclk1Div`]
+    pub enum Gclk1 {}
+    impl Sealed for Gclk1 {}
+    impl NotGclk0 for Gclk1 {}
+    impl GclkNum for Gclk1 {
+        const NUM: usize = 1;
+        type DividerType = Gclk1Div;
+    }
+
+    seq!(N in 2..=11 {
+        /// Type which serves as a source marker for types
+        /// [`super::Gclk2`] .. [`super::Gclk11`] and provides numerical identity
+        /// for them
+        ///
+        /// Standard division factor, see [`GclkDiv`]
+        pub enum Gclk#N {}
+        impl Sealed for Gclk#N {}
+        impl NotGclk0 for Gclk#N {}
+        impl NotGclk1 for Gclk#N {}
+        impl GclkNum for Gclk#N {
+            const NUM: usize = N;
+            type DividerType = GclkDiv;
+        }
+    });
+}
 
 //==============================================================================
 // Div
@@ -413,16 +424,16 @@ pub trait GclkSourceMarker: SourceMarker {
 }
 
 /// [`GclkSource`] must implement `freq()` since it is a [`Source`]
-pub trait GclkSource<G: GenNum>: Source {
+pub trait GclkSource<G: GclkNum>: Source {
     /// Associated source marker type
     type Type: GclkSourceMarker;
 }
 
-impl<G: GenNum> SourceMarker for G {}
+impl<G: GclkNum> SourceMarker for G {}
 
 impl<G, T, N> Source for Enabled<Gclk<G, T>, N>
 where
-    G: GenNum,
+    G: GclkNum,
     T: GclkSourceMarker,
     N: Counter,
 {
@@ -439,7 +450,7 @@ where
 /// [`Gclk`] is a generic clock generator
 pub struct Gclk<G, T>
 where
-    G: GenNum,
+    G: GclkNum,
     T: GclkSourceMarker,
 {
     /// Unique [`GclkToken`]
@@ -457,7 +468,7 @@ where
 
 impl<G, T> Gclk<G, T>
 where
-    G: GenNum,
+    G: GclkNum,
     T: GclkSourceMarker,
 {
     /// Create a new [`Gclk`]
@@ -563,7 +574,7 @@ where
 /// [`GclkOutSource`][super::sources::GclkOutSource]
 impl<G, T, N> Enabled<Gclk<G, T>, N>
 where
-    G: GenNum,
+    G: GclkNum,
     T: GclkSourceMarker,
     N: Counter,
 {
@@ -588,7 +599,7 @@ where
 
 impl<G, T> Enabled<Gclk<G, T>, U0>
 where
-    G: GenNum,
+    G: GclkNum,
     T: GclkSourceMarker,
 {
     /// Disable the [`Gclk`], possible
@@ -657,8 +668,8 @@ impl GclkSourceMarker for Gen1 {
 impl NotGclkInput for Gen1 {}
 
 macro_rules! impl_gclk1_source {
-    ($GenNum:ident) => {
-        impl<T, N> GclkSource<$GenNum> for Enabled<Gclk1<T>, N>
+    ($GclkNum:ident) => {
+        impl<T, N> GclkSource<$GclkNum> for Enabled<Gclk1<T>, N>
         where
             T: GclkSourceMarker,
             N: Counter,

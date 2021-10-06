@@ -130,7 +130,7 @@ macro_rules! pclk_type {
 /// Source marker trait for [`Pclk`] sources
 ///
 /// All [`Gclk`]s can act as a source for [`Pclk`]s
-pub trait PclkSourceMarker: GenNum + SourceMarker {
+pub trait PclkSourceMarker: GclkNum + SourceMarker {
     /// Associated constant provides a variant of a low level enum type from PAC
     /// that is used during a HW register write
     const PCLK_SRC: PclkSourceEnum;

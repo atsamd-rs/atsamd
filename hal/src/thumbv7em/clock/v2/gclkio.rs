@@ -77,7 +77,7 @@ use super::gclk::*;
 //==============================================================================
 
 /// Trait for binding [`gpio`] pins to specific [`Gclk`][`super::gclk]
-pub trait GclkIo<G: GenNum>: PinId {}
+pub trait GclkIo<G: GclkNum>: PinId {}
 
 impl GclkIo<Gen4> for gpio::PA10 {}
 impl GclkIo<Gen5> for gpio::PA11 {}
@@ -123,13 +123,13 @@ impl GclkIo<Gen1> for gpio::PB23 {}
 
 /// [`GclkInToken`] are singular for each `Gclk`, ensuring that
 /// inputs are not multiply constructed
-pub struct GclkInToken<G: GenNum> {
+pub struct GclkInToken<G: GclkNum> {
     gen: PhantomData<G>,
 }
 
 impl<G> GclkInToken<G>
 where
-    G: GenNum,
+    G: GclkNum,
 {
     /// Create a new [`GclkInToken`] associated to the given
     /// [`Gclk`][`super::gclk]
@@ -146,7 +146,7 @@ where
 /// and relies on the user specifying the expected input frequency
 pub struct GclkIn<G, I>
 where
-    G: GenNum,
+    G: GclkNum,
     I: GclkIo<G>,
 {
     token: GclkInToken<G>,
@@ -156,7 +156,7 @@ where
 
 impl<G, I> GclkIn<G, I>
 where
-    G: GenNum,
+    G: GclkNum,
     I: GclkIo<G>,
 {
     /// Consume a [`GclkInToken`], `gpio` pin and a provided frequency to
@@ -178,14 +178,14 @@ where
 
 impl<G, I> Sealed for GclkIn<G, I>
 where
-    G: GenNum,
+    G: GclkNum,
     I: GclkIo<G>,
 {
 }
 
 impl<G, I> Enabled<GclkIn<G, I>, U0>
 where
-    G: GenNum,
+    G: GclkNum,
     I: GclkIo<G>,
 {
     /// Disable the [`GclkIn`], deconstruct it and return the [`GclkInToken`]
@@ -215,7 +215,7 @@ impl SourceMarker for GclkInput {}
 
 impl<G, I, N> GclkSource<G> for Enabled<GclkIn<G, I>, N>
 where
-    G: GenNum,
+    G: GclkNum,
     I: GclkIo<G>,
     N: Counter,
 {
@@ -224,7 +224,7 @@ where
 
 impl<G, I, N> Source for Enabled<GclkIn<G, I>, N>
 where
-    G: GenNum,
+    G: GclkNum,
     I: GclkIo<G>,
     N: Counter,
 {
@@ -240,11 +240,11 @@ where
 
 /// [`GclkOutToken`] are singular for each `Gclk`, ensuring that
 /// outputs are not multiply constructed
-pub struct GclkOutToken<G: GenNum> {
+pub struct GclkOutToken<G: GclkNum> {
     gen: PhantomData<G>,
 }
 
-impl<G: GenNum> GclkOutToken<G> {
+impl<G: GclkNum> GclkOutToken<G> {
     /// Create a new [`GclkOutToken`] associated to the given
     /// [`Gclk`][`super::gclk]
     unsafe fn new() -> GclkOutToken<G> {
@@ -257,9 +257,9 @@ impl<G: GenNum> GclkOutToken<G> {
 //==============================================================================
 
 /// A [`GclkOut`] is associated with a [`Gclk`]
-pub trait GclkOutSourceMarker: GenNum + SourceMarker {}
+pub trait GclkOutSourceMarker: GclkNum + SourceMarker {}
 
-impl<G: GenNum> GclkOutSourceMarker for G {}
+impl<G: GclkNum> GclkOutSourceMarker for G {}
 
 mod private {
     use super::*;
@@ -316,7 +316,7 @@ where
 /// and will assume the frequency from the source [`Gclk`]
 pub struct GclkOut<G, I>
 where
-    G: GenNum,
+    G: GclkNum,
     I: GclkIo<G>,
 {
     token: GclkOutToken<G>,
@@ -326,7 +326,7 @@ where
 
 impl<G, I> GclkOut<G, I>
 where
-    G: GenNum,
+    G: GclkNum,
     I: GclkIo<G>,
 {
     /// Consume a [`GclkOutToken`], `gpio` pin, `gclk` and the desired  receive

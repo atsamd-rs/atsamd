@@ -22,7 +22,7 @@ use crate::clock::v2::{
 use crate::time::{Hertz, U32Ext};
 use crate::typelevel::Sealed;
 
-use super::gclk::{Gclk0, GclkSource, GclkSourceEnum, GclkSourceMarker, GenNum};
+use super::gclk::{Gclk0, GclkSource, GclkSourceEnum, GclkSourceMarker, GclkNum};
 use super::gclkio::NotGclkInput;
 use super::pclk::{Dfll48, Pclk, PclkSourceMarker};
 
@@ -401,7 +401,7 @@ impl<T: PclkSourceMarker> Enabled<Dfll<ClosedLoop<T>>, U1> {
 // GclkSource
 //==============================================================================
 
-impl<G: GenNum, T: LoopMode, N: Counter> GclkSource<G> for Enabled<Dfll<T>, N> {
+impl<G: GclkNum, T: LoopMode, N: Counter> GclkSource<G> for Enabled<Dfll<T>, N> {
     type Type = marker::Dfll;
 }
 
