@@ -47,6 +47,32 @@ hal::bsp_pins!(
     }
 );
 
+/// Convenience method for getting the USB Bus Allocator.
+///
+/// Basic usage would look like the below:
+/// ```no_run
+/// use neo_trinkey::hal::clock::GenericClockController;
+/// use neo_trinkey::pac::Peripherals;
+///
+/// let mut peripherals = Peripherals::take().unwrap();
+/// let mut clocks = GenericClockController::with_internal_32kosc(
+///     peripherals.GCLK,
+///     &mut peripherals.PM,
+///     &mut peripherals.SYSCTRL,
+///     &mut peripherals.NVMCTRL,
+/// );
+/// let pins = bsp::Pins::new(peripherals.PORT);
+///
+/// let bus_allocator = bsp::usb_allocator(
+///     peripherals.USB,
+///     &mut clocks,
+///     &mut peripherals.PM,
+///     pins.usb_dm,
+///     pins.usb_dp,
+/// );
+/// ```
+/// However to take advantage of USB interrupts you will need, to do some unsafe rust. See the USB
+/// code examples in the `examples/` directory of the project.
 #[cfg(feature = "usb")]
 pub fn usb_allocator(
     usb: pac::USB,
