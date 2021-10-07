@@ -16,7 +16,6 @@ cortex-m-rt = { version = "0.6.12", optional = true }
 atsamd-hal = { version = "0.13", default-features = false }
 usb-device = { version = "0.2", optional = true }
 usbd-serial = { version = "0.1", optional = true }
-panic-halt = { version = "0.2", optional = true }
 smart-leds = { version = "0.3.0", optional = true }
 ws2812-timer-delay = { version = "0.3.0", features = ["slow"], optional = true }
 
@@ -27,7 +26,6 @@ panic-halt = "0.2"
 # ask the HAL to enable atsamd21e support
 default = ["rt", "atsamd-hal/samd21e"]
 leds = ["ws2812-timer-delay", "smart-leds"]
-panic_halt = ["panic-halt"]
 rt = ["cortex-m-rt", "atsamd-hal/samd21e-rt"]
 unproven = ["atsamd-hal/unproven"]
 use_semihosting = []
