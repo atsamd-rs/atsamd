@@ -164,9 +164,9 @@ pub struct Tokens {
     /// Construction tokens for [`pclk::Pclk`]
     pub pclks: pclk::Tokens,
     /// Construction token for [`xosc::Xosc0`]
-    pub xosc0: xosc::XoscToken<xosc::Osc0>,
+    pub xosc0: xosc::XoscToken<xosc::marker::Xosc0>,
     /// Construction token for [`xosc::Xosc1`]
-    pub xosc1: xosc::XoscToken<xosc::Osc1>,
+    pub xosc1: xosc::XoscToken<xosc::marker::Xosc1>,
     /// Construction token for [`xosc32k::Xosc32k`]
     pub xosc32k: xosc32k::Xosc32kToken,
 }
