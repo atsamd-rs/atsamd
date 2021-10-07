@@ -1,6 +1,5 @@
 #![no_std]
 #![no_main]
-
 use panic_halt as _;
 
 use cortex_m::asm::delay as cycle_delay;
@@ -9,11 +8,12 @@ use usb_device::bus::UsbBusAllocator;
 use usb_device::prelude::*;
 use usbd_serial::{SerialPort, USB_CLASS_CDC};
 
-use bsp::hal;
-use bsp::pac;
 use neo_trinkey as bsp;
 
 use bsp::entry;
+use bsp::hal;
+use bsp::pac;
+
 use hal::clock::GenericClockController;
 use hal::usb::UsbBus;
 use pac::{interrupt, CorePeripherals, Peripherals};

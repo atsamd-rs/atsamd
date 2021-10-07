@@ -1,11 +1,12 @@
 #![no_std]
 #![no_main]
+use panic_halt as _;
 
 use neo_trinkey as bsp;
-use panic_halt as _;
 
 use bsp::entry;
 use bsp::hal;
+
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
 use hal::pac::{CorePeripherals, Peripherals};
