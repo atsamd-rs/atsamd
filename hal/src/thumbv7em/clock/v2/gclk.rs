@@ -30,7 +30,7 @@
 //! `mclk`.
 //!
 //! All preconfigured clocks and gclks are returned by
-//! [`retrieve_clocks()`][super::retrieve_clocks]
+//! [`retrieve_clocks`][super::retrieve_clocks]
 //!
 //!  #TODO
 
@@ -192,11 +192,14 @@ impl<G: GclkNum> GclkToken<G> {
 // GclkNum
 //==============================================================================
 
-/// Trait ensuring all `GclkNum` has a numeric identifier
+/// Trait ensuring all [`Gclks`](Gclk) have numeric identifiers
 pub trait GclkNum: Sealed {
-    /// All [`Gclk`] needs a numeric identifier
+    /// Associated constant marking an index of a [`Gclk`] type. It is useful in
+    /// [`GclkToken`] in order to properly apply the offset to get an adequate
+    /// [`GENCTRL`] register
     const NUM: usize;
-    /// Each [`Gclk`] has a divider
+    /// Each [`Gclk`] has a divider; its resolution might vary though. See
+    /// [`GclkDivider`] implementors.
     type DividerType: GclkDivider;
 }
 
@@ -218,6 +221,8 @@ pub mod marker {
     /// drives a synchronous clocking domain and the main clock
     ///
     /// [`NotGclk0`] can be used to exclude this [`Gclk0`]
+    ///
+    /// Standard division factor, see [`GclkDiv`]
     pub enum Gclk0 {}
     impl Sealed for Gclk0 {}
     impl NotGclk1 for Gclk0 {}
@@ -679,7 +684,7 @@ impl<T: GclkSourceMarker> Enabled<Gclk0<T>, U1> {
 //==============================================================================
 
 seq!(G in 0..=11 {
-    /// `GclkX` aliased to [`Gclk`]`<marker::GclkX, _>`
+    /// Alias of [`Gclk`]`<marker::GclkX, _>`
     pub type Gclk#G<S> = Gclk<marker::Gclk#G, S>;
 });
 
