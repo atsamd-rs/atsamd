@@ -16,4 +16,3 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   - blinky_basic
   - blinky_rainbow
   - usb_ack
-  - usb_echo

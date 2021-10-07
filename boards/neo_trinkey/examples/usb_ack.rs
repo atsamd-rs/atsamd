@@ -47,7 +47,7 @@ fn main() -> ! {
             UsbDeviceBuilder::new(&bus_allocator, UsbVidPid(0x16c0, 0x27dd))
                 .manufacturer("Fake company")
                 .product("Serial port")
-                .serial_number("TRINKEY_ECHO")
+                .serial_number("TRINKEY_ACK")
                 .device_class(USB_CLASS_CDC)
                 .build(),
         );

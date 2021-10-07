@@ -45,7 +45,3 @@ required-features = ["leds"]
 [[example]]
 name = "usb_ack"
 required-features = ["usb"]
-
-[[example]]
-name = "usb_echo"
-required-features = ["usb"]
