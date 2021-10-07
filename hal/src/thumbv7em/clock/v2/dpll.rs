@@ -1,12 +1,10 @@
-#![warn(missing_docs)]
-#![deny(warnings)]
 //! Digital Phase Locked Loop (DPLL)
 //!
 //! DPLL allows user to multiply an input signal and supports a handful of them.
 //! It maintains the output signal frequency by constant phase comparison
 //! against the reference, input signal.
 //!
-//! There are two DPLLs that are available
+//! There are two Dplls that are available
 //!
 //! - [`Enabled`]`<`[`Dpll`]`<`[`marker::Dpll0`]`, _>>`: [`Dpll0`]
 //! - [`Enabled`]`<`[`Dpll`]`<`[`marker::Dpll1`]`, _>>`: [`Dpll1`]
@@ -20,8 +18,10 @@
 //!   reference_clk
 //!
 //! These can be created by using an appropriate construction function:
-//! [`Dpll::from_pclk`], [`Dpll::from_xosc32k`] or [`Dpll::from_xosc`]
-//! and enabled by [`Dpll::enable`] function call
+//! - [`Dpll::from_pclk`]
+//! - [`Dpll::from_xosc`]
+//! - [`Dpll::from_xosc32k`]
+//! and then enabled by [`Dpll::enable`] function call
 
 use core::marker::PhantomData;
 
@@ -39,7 +39,7 @@ use crate::clock::v2::{
 use crate::time::Hertz;
 use crate::typelevel::Sealed;
 
-use super::gclk::{GclkSource, GclkSourceEnum, GclkSourceMarker, GclkNum};
+use super::gclk::{GclkNum, GclkSource, GclkSourceEnum, GclkSourceMarker};
 use super::gclkio::NotGclkInput;
 use super::pclk::{Pclk, PclkSourceMarker, PclkType};
 
@@ -47,10 +47,10 @@ use super::pclk::{Pclk, PclkSourceMarker, PclkType};
 // DpllNum
 //==============================================================================
 
-/// Trait ensuring all [`DpllNum`] has a numeric identities
+/// Trait ensuring all [`Dplls`](Dpll) have numeric identifiers
 pub trait DpllNum: Sealed {
     /// Associated constant marking an index of a [`Dpll`] type. It is useful in
-    /// [`DpllToken`] in order to properly apply the offset to get adequate
+    /// [`DpllToken`] in order to properly apply the offset to get an adequate
     /// [`DPLL`] register
     const NUM: usize;
 }
@@ -61,11 +61,8 @@ pub trait DpllNum: Sealed {
 pub mod marker {
     use super::*;
 
-    /// Type defining a [`Dpll`] providing a numeric identity
-    ///
-    /// Goal of this type is to be a `Dpll` variant identifier used as a generic
-    /// parameter in an [`Dpll`]. Also as a source marker type in [`Dpll`]'s
-    /// dependees.
+    /// Type which serves as a source marker for the [`super::Dpll0`] and
+    /// provides numerical identity for it
     pub enum Dpll0 {}
 
     impl Sealed for Dpll0 {}
@@ -82,11 +79,8 @@ pub mod marker {
 
     impl SourceMarker for Dpll0 {}
 
-    /// Type defining a [`Dpll`] providing a numeric identity
-    ///
-    /// Goal of this type is to be a `Dpll` variant identifier used as a generic
-    /// parameter in an [`Dpll`]. Also as a source marker type in [`Dpll`]'s
-    /// dependees.
+    /// Type which serves as a source marker for the [`super::Dpll1`] and
+    /// provides numerical identity for it
     pub enum Dpll1 {}
 
     impl Sealed for Dpll1 {}
@@ -370,10 +364,10 @@ impl<D: DpllNum, T: DpllSourceMarker> Sealed for Xosc32kDriven<D, T> {}
 /// Struct representing a [`Dpll`] abstraction
 ///
 /// It is generic over:
-/// - a numeric variant ([`DpllNum`]; available variants: [`marker::Dpll0`],
+/// - a numeric variant (available variants: [`marker::Dpll0`],
 ///   [`marker::Dpll1`])
-/// - a mode of operation ([`SrcMode<D>`]; available modes: [`PclkDriven`],
-///   [`XoscDriven`], [`Xosc32kDriven`])
+/// - a mode of operation (available modes: [`PclkDriven`], [`XoscDriven`],
+///   [`Xosc32kDriven`])
 pub struct Dpll<D, M>
 where
     D: DpllNum,
@@ -627,10 +621,10 @@ where
     }
 }
 
-/// Encapsulation for Dpll0
+/// Alias of [`Dpll`]`<`[`marker::Dpll0`]`, _>`
 pub type Dpll0<M> = Dpll<marker::Dpll0, M>;
 
-/// Encapsulation for Dpll1
+/// Alias of [`Dpll`]`<`[`marker::Dpll1`]`, _>`
 pub type Dpll1<M> = Dpll<marker::Dpll1, M>;
 
 impl<D, M> Enabled<Dpll<D, M>, U0>
