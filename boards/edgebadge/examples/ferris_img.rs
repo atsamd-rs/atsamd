@@ -11,10 +11,10 @@
 use edgebadge::{self as hal, entry, pac, Pins};
 use panic_halt as _;
 
+use embedded_graphics::image::Image;
 use embedded_graphics::pixelcolor::{Rgb565, RgbColor};
 use embedded_graphics::prelude::*;
 use embedded_graphics::primitives::{PrimitiveStyleBuilder, Rectangle};
-use embedded_graphics::{image::Image, image::ImageRaw, image::ImageRawLE};
 use hal::clock::GenericClockController;
 use pac::{CorePeripherals, Peripherals};
 use tinybmp::Bmp;

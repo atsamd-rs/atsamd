@@ -49,9 +49,33 @@ jobs:
           set -ex
 
           # Run `cargo publish` on each PAC.
+          # Unfortunately, cargo publish errors if the crate is already uploaded,
+          # and there is no way to turn that off. As a result, we need to do some
+          # janky hacks to detect that condition and ignore it.
+          #
+          # Specifically, we ignore the exit code but capture the stderr. If
+          # the standard error contains ' is already uploaded', then it must
+          # be the error we dont care about, so we exit the subshell with a
+          # success status.
+          #
+          # All errors start with the form 'error: ', so we detect that and
+          # bail the subshell to crash out on other publish errors.
+
           for d in pac/*/
           do
-            (cd "${d}" && cargo publish );
+            (
+              cd "${d}"
+              set +e
+              PUBLISH_ERR=$(cargo publish 2>&1 >/dev/null)
+              set -e
+              if [[ "$PUBLISH_ERR" == *" is already uploaded"* ]]; then
+                exit 0
+              fi
+              if [[ "$PUBLISH_ERR" == *"error: "* ]]; then
+                echo "$PUBLISH_ERR"
+                exit 1
+              fi
+            )
           done
 
       - name: Release HAL crate
@@ -88,7 +112,7 @@ jobs:
           #
           # All errors start with the form 'error: ', so we detect that and
           # bail the subshell to crash out on other publish errors.
-          
+
           for bsp in $(cat crates.json | jq -Mr -c '.boards | keys[]');
           do
             (

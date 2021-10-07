@@ -1,12 +1,13 @@
 [package]
 name = "arduino_mkr1000"
-version = "0.3.0"
+version = "0.4.0"
 authors = ["Eric Rushing <rushinge@gmail.com>"]
 description = "Board Support crate for the Arduino MKR 1000 WiFi"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
+edition = "2018"
 
 [dependencies]
 cortex-m = "0.6"
@@ -18,8 +19,7 @@ version = "0.6.12"
 optional = true
 
 [dependencies.atsamd-hal]
-path = "../../hal"
-version = "0.12"
+version = "0.13"
 default-features = false
 
 [dependencies.usb-device]
@@ -32,6 +32,7 @@ optional = true
 
 [dev-dependencies]
 panic-halt = "0.2"
+panic-semihosting = "0.5"
 
 [features]
 # ask the HAL to enable atsamd21g support
@@ -40,3 +41,7 @@ rt = ["cortex-m-rt", "atsamd-hal/samd21g-rt"]
 usb = ["atsamd-hal/usb", "usb-device", "usbd-serial"]
 unproven = ["atsamd-hal/unproven"]
 use_semihosting = []
+
+# for cargo flash
+[package.metadata]
+chip = "ATSAMD21G18A"

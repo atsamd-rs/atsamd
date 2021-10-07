@@ -1,6 +1,6 @@
 //! Grand Central M4 Express Pins
 
-use super::{hal, pac::MCLK, pac::SERCOM2, pac::SERCOM6, pac::SERCOM7, target_device};
+use super::{hal, pac, pac::MCLK, pac::SERCOM2, pac::SERCOM6, pac::SERCOM7};
 
 use hal::define_pins;
 use hal::gpio::{self, *};
@@ -23,7 +23,7 @@ define_pins!(
     /// Maps the pins to their names and
     /// the numbers printed on the board.
     struct Pins,
-    target_device: target_device,
+    pac: pac,
 
     pin sw0 = b31,
     pin led = c18,

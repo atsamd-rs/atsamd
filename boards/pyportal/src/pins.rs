@@ -1,6 +1,6 @@
 //! PyPortal pins
 
-use super::{hal, target_device};
+use super::{hal, pac};
 
 use crate::hal::gpio::{self, *};
 use hal::define_pins;
@@ -9,7 +9,7 @@ define_pins!(
     /// Maps the pins to their arduino names and
     /// the numbers printed on the board.
     struct Pins,
-    target_device: target_device,
+    pac: pac,
 
     /// Analog pin 0.  Can act as a true analog output
     /// as it has a DAC (which is not currently supported

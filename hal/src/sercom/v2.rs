@@ -9,7 +9,7 @@ use core::ops::Deref;
 use paste::paste;
 use seq_macro::seq;
 
-use crate::target_device as pac;
+use crate::pac;
 
 #[cfg(feature = "min-samd51g")]
 use pac::MCLK as APB_CLK_CTRL;

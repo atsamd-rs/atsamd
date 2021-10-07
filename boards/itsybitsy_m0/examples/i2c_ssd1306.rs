@@ -1,15 +1,20 @@
 #![no_std]
 #![no_main]
 
-extern crate itsybitsy_m0 as hal;
-extern crate panic_halt;
+use bsp::hal;
+use itsybitsy_m0 as bsp;
 
-extern crate embedded_graphics;
-extern crate ssd1306;
+#[cfg(not(feature = "use_semihosting"))]
+use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
 
+use embedded_graphics;
+use ssd1306;
+
+use bsp::entry;
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
-use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 use hal::time::KiloHertz;
@@ -29,11 +34,11 @@ fn main() -> ! {
         &mut peripherals.SYSCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = hal::Pins::new(peripherals.PORT);
+    let mut pins = bsp::Pins::new(peripherals.PORT);
     let mut red_led = pins.d13.into_open_drain_output(&mut pins.port);
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
-    let i2c = hal::i2c_master(
+    let i2c = bsp::i2c_master(
         &mut clocks,
         KiloHertz(400),
         peripherals.SERCOM3,

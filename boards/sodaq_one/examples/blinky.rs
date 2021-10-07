@@ -1,20 +1,20 @@
 #![no_std]
 #![no_main]
 
-extern crate cortex_m;
-extern crate cortex_m_semihosting;
 #[cfg(not(feature = "use_semihosting"))]
-extern crate panic_halt;
+use panic_halt as _;
 #[cfg(feature = "use_semihosting")]
-extern crate panic_semihosting;
-extern crate sodaq_one as hal;
+use panic_semihosting as _;
+
+use bsp::hal;
+use sodaq_one as bsp;
 
 #[cfg(feature = "use_semihosting")]
 use cortex_m_semihosting::hprintln;
 
+use bsp::entry;
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
-use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 
@@ -28,7 +28,7 @@ fn main() -> ! {
         &mut peripherals.SYSCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = hal::Pins::new(peripherals.PORT);
+    let mut pins = bsp::Pins::new(peripherals.PORT);
     let mut red_led = pins.led_red.into_open_drain_output(&mut pins.port);
     let mut green_led = pins.led_green.into_open_drain_output(&mut pins.port);
     let mut blue_led = pins.led_blue.into_open_drain_output(&mut pins.port);

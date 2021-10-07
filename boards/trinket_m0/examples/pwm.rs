@@ -1,8 +1,9 @@
 #![no_std]
 #![no_main]
 
+use bsp::hal;
 use panic_halt as _;
-use trinket_m0 as hal;
+use trinket_m0 as bsp;
 
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
@@ -24,7 +25,7 @@ fn main() -> ! {
         &mut peripherals.NVMCTRL,
     );
     let mut delay = Delay::new(core.SYST, &mut clocks);
-    let mut pins = hal::Pins::new(peripherals.PORT);
+    let mut pins = bsp::Pins::new(peripherals.PORT);
 
     let _d13 = pins.d13.into_function_e(&mut pins.port);
 

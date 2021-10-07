@@ -1,11 +1,13 @@
 #![no_std]
 #![no_main]
 
-extern crate cortex_m_rt;
-extern crate embedded_hal;
-extern crate metro_m4 as hal;
-extern crate nb;
-extern crate panic_halt;
+use bsp::hal;
+use metro_m4 as bsp;
+
+#[cfg(not(feature = "use_semihosting"))]
+use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
 
 use crate::hal::clock::GenericClockController;
 use crate::hal::pac::gclk::genctrl::SRC_A::DPLL0;
@@ -23,7 +25,7 @@ fn main() -> ! {
         &mut peripherals.OSCCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = hal::Pins::new(peripherals.PORT);
+    let mut pins = bsp::Pins::new(peripherals.PORT);
 
     let _gclk2 = clocks
         .configure_gclk_divider_and_source(GCLK2, 12, DPLL0, false)

@@ -1,85 +1,116 @@
 #![no_std]
 
-extern crate atsamd_hal as hal;
-
 #[cfg(feature = "rt")]
 extern crate cortex_m_rt;
 #[cfg(feature = "rt")]
 pub use cortex_m_rt::entry;
 
-use hal::prelude::*;
-use hal::*;
-
-pub use hal::common::*;
-
-pub use hal::target_device as pac;
-
-use gpio::{Floating, Input, PfC, Port};
+pub use atsamd_hal as hal;
+pub use embedded_hal as ehal;
+pub use hal::pac;
 
 use hal::clock::GenericClockController;
-use hal::sercom::{I2CMaster0, PadPin, UART0};
+use hal::sercom::{
+    v2::{
+        uart::{self, BaudMode, Oversampling},
+        Sercom0,
+    },
+    I2CMaster0,
+};
 use hal::time::Hertz;
 
-define_pins!(
-    /// Maps the pins to their physical pins.
-    struct Pins,
-    target_device: target_device,
+hal::bsp_pins! {
+    PA05 {
+        name: d1
+        aliases: {
+            AlternateC: UartRx
+        }
+    }
+    PA08 {
+        name: d2
+        aliases: {
+            PushPullOutput: Led
+        }
+    }
+    PA09 {
+        name: d3
+    }
+    PA14 {
+        name: d4
+        aliases: {
+            AlternateC: Sda
+        }
+    }
+    PA15 {
+        name: d5
+        aliases: {
+            AlternateC: Scl
+        }
+    }
+    PA28 {
+        /// RST pin
+        name: d6
+    }
+    PA30 {
+        name: d7
+    }
+    PA31 {
+        name: d8
+    }
+    PA24 {
+        name: d9
+    }
+    PA25 {
+        name: d10
+    }
+    PA02 {
+        name: d13
+    }
+    PA04 {
+        name: d14
+        aliases: {
+            AlternateC: UartTx
+        }
+    }
+}
 
-    pin d1 = a5,
-    pin d2 = a8,
-    pin d3 = a9,
-    pin d4 = a14,
-    pin d5 = a15,
-    pin d6 = a28, // RST
-    pin d7 = a30,
+pub type UartPads = uart::Pads<Sercom0, UartRx, UartTx>;
 
-    pin d8 = a31,
-    pin d9 = a24,
-    pin d10 = a25,
-
-    // 11 & 12 are GND/VCC
-
-    pin d13 = a2,
-    pin d14 = a4,
-);
+/// UART device for the labelled RX & TX pins
+pub type Uart = uart::Uart<uart::Config<UartPads>, uart::Duplex>;
 
 /// Convenience for setting up the D1 and D14 pins to
 /// operate as UART RX/TX (respectively) running at the specified baud.
-pub fn uart<F: Into<Hertz>>(
+pub fn uart(
     clocks: &mut GenericClockController,
-    baud: F,
+    baud: impl Into<Hertz>,
     sercom0: pac::SERCOM0,
     pm: &mut pac::PM,
-    d1: gpio::Pa5<Input<Floating>>,
-    d14: gpio::Pa4<Input<Floating>>,
-    port: &mut Port,
-) -> UART0<hal::sercom::Sercom0Pad3<gpio::Pa5<PfC>>, hal::sercom::Sercom0Pad2<gpio::Pa4<PfC>>, (), ()>
-{
+    rx: impl Into<UartRx>,
+    tx: impl Into<UartTx>,
+) -> Uart {
     let gclk0 = clocks.gclk0();
-
-    UART0::new(
-        &clocks.sercom0_core(&gclk0).unwrap(),
-        baud.into(),
-        sercom0,
-        pm,
-        (d1.into_pad(port), d14.into_pad(port)),
-    )
+    let clock = &clocks.sercom0_core(&gclk0).unwrap();
+    let baud = baud.into();
+    let pads = uart::Pads::default().rx(rx.into()).tx(tx.into());
+    uart::Config::new(pm, sercom0, pads, clock.freq())
+        .baud(baud, BaudMode::Fractional(Oversampling::Bits16))
+        .enable()
 }
+
+/// I2C master for the labelled SDA & SCL pins
+pub type I2C = I2CMaster0<Sda, Scl>;
 
 /// Convenience for setting up the D4 and D5 pins to operate as I²C
 /// SDA/SDL (respectively) running at the specified baud.
-pub fn i2c_master<F: Into<Hertz>>(
+pub fn i2c_master(
     clocks: &mut GenericClockController,
-    bus_speed: F,
+    bus_speed: impl Into<Hertz>,
     sercom0: pac::SERCOM0,
     pm: &mut pac::PM,
-    sda: gpio::Pa14<Input<Floating>>,
-    scl: gpio::Pa15<Input<Floating>>,
-    port: &mut Port,
-) -> I2CMaster0<
-    hal::sercom::Sercom0Pad0<gpio::Pa14<gpio::PfC>>,
-    hal::sercom::Sercom0Pad1<gpio::Pa15<gpio::PfC>>,
-> {
+    sda: impl Into<Sda>,
+    scl: impl Into<Scl>,
+) -> I2C {
     let gclk0 = clocks.gclk0();
 
     I2CMaster0::new(
@@ -87,7 +118,7 @@ pub fn i2c_master<F: Into<Hertz>>(
         bus_speed.into(),
         sercom0,
         pm,
-        sda.into_pad(port),
-        scl.into_pad(port),
+        sda.into(),
+        scl.into(),
     )
 }
