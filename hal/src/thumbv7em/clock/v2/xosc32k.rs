@@ -1,15 +1,33 @@
-#![deny(missing_docs)]
 //! # Xosc32k - External 32 kHz oscillator
 //!
-//! Provides 32 kHz outputs for [`gclk`][super::gclk]s, [`rtc`][super::rtc]
-//! and [`dpll`][super::dpll].
+//! Provides 32 kHz outputs for [`Gclks`][super::gclk], [`Rtc`][super::rtc]
+//! and [`Dplls`][super::dpll].
 //! Additionally provides 1 kHz output for the [`rtc`][super::rtc] module.
 //!
-//! Independently controllable outputs for 32 kHz and 1 kHz
+//! There are two modes of operation that are available:
+//! - [`Enabled`]`<`[`Xosc32k`]`<`[`CrystalMode`]`, _, _>>`: Xosc32k is being
+//!   powered by an external crystal (2 pins)
+//! - [`Enabled`]`<`[`Xosc32k`]`<`[`ClockMode`]`, _, _>>`: Xosc32k is being
+//!   powered by an external signal (1 pin)
 //!
-//! See:
-//! * [`Enabled<Xosc32k>::activate_32k`]
-//! * [`Enabled<Xosc32k>::activate_1k`]
+//! Signal outputs are independently controllable and also expressed as typestates
+//! - [`Enabled`]`<`[`Xosc32k`]`<_, `[`Active32k`]`, _>>`: Xosc32k 32 kHz signal
+//!   output is active
+//! - [`Enabled`]`<`[`Xosc32k`]`<_, `[`Inactive32k`]`, _>>`: Xosc32k 32 kHz
+//!   signal output is inactive
+//! - [`Enabled`]`<`[`Xosc32k`]`<_, _, `[`Active1k`]`>>`: Xosc32k 1 kHz signal
+//!   output is active
+//! - [`Enabled`]`<`[`Xosc32k`]`<_, _, `[`Inactive1k`]`>>`: Xosc32k 1 kHz signal
+//!   output is inactive
+//!
+//! To activate outputs, see:
+//! - [`Enabled<Xosc32k>::activate_32k`]
+//! - [`Enabled<Xosc32k>::activate_1k`]
+//!
+//! To construct a Xosc32k in a proper mode use an appropriate construction function:
+//! - [`Xosc32k::from_clock`]
+//! - [`Xosc32k::from_crystal`]
+//! Then, enable it with a [`Xosc32k::enable`] function call
 
 use core::marker::PhantomData;
 use typenum::U0;
@@ -26,8 +44,8 @@ use crate::clock::v2::{
 use crate::gpio::v2::{AnyPin, FloatingDisabled, Pin, PA00, PA01};
 use crate::time::{Hertz, U32Ext};
 
-use super::dpll::{DpllSource, DpllSourceMarker, DpllSourceXosc32k, DpllSourceEnum};
-use super::gclk::{GclkSource, GclkSourceMarker, GclkSourceEnum, GclkNum};
+use super::dpll::{DpllSource, DpllSourceEnum, DpllSourceMarker, DpllSourceXosc32k};
+use super::gclk::{GclkNum, GclkSource, GclkSourceEnum, GclkSourceMarker};
 use super::gclkio::NotGclkInput;
 use super::rtc::*;
 use crate::typelevel::Sealed;
@@ -177,9 +195,9 @@ impl Sealed for CrystalMode {}
 /// Struct representing a disabled external oscillator
 ///
 /// It is generic over:
-/// - a mode (crystal or clock mode)
-/// - An output state of a 32 kHz signal (active/inactive)
-/// - An output state of a 1 kHz signal (active/inactive)
+/// - a mode of operation (available modes: [`ClockMode`], [`CrystalMode`])
+/// - An output state of a 32 kHz signal ([`Active32k`]/[`Inactive32k`])
+/// - An output state of a 1 kHz signal ([`Active1k`]/[`Inactive1k`])
 pub struct Xosc32k<M, X, Y>
 where
     M: Mode,
