@@ -12,36 +12,13 @@ edition = "2018"
 [dependencies]
 cortex-m = "0.6"
 embedded-hal = "0.2.3"
-
-[dependencies.cortex-m-rt]
-version = "0.6.12"
-optional = true
-
-[dependencies.atsamd-hal]
-path = "../../hal"
-version = "0.12"
-default-features = false
-
-[dependencies.usb-device]
-version = "0.2"
-optional = true
-
-[dependencies.usbd-serial]
-version = "0.1"
-optional = true
-
-[dependencies.panic-halt]
-version = "0.2"
-optional = true
-
-[dependencies.ws2812-timer-delay]
-version = "0.3.0"
-features = ["slow"]
-optional = true
-
-[dependencies.smart-leds]
-version = "0.3.0"
-optional = true
+cortex-m-rt = { version = "0.6.12", optional = true }
+atsamd-hal = { version = "0.13", default-features = false }
+usb-device = { version = "0.2", optional = true }
+usbd-serial = { version = "0.1", optional = true }
+panic-halt = { version = "0.2", optional = true }
+smart-leds = { version = "0.3.0", optional = true }
+ws2812-timer-delay = { version = "0.3.0", features = ["slow"], optional = true }
 
 [dev-dependencies]
 panic-halt = "0.2"

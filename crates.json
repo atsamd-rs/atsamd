@@ -61,6 +61,7 @@
       "build": "cargo build --examples --features=unproven,usb"
     },
     "neo_trinkey": {
+	  "tier": 2,
       "build": "cargo build --examples --features=leds,unproven,usb"
     },
     "p1am_100": {
