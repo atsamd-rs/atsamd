@@ -71,8 +71,8 @@ hal::bsp_pins!(
 ///     pins.usb_dp,
 /// );
 /// ```
-/// However to take advantage of USB interrupts you will need, to do some unsafe rust. See the USB
-/// code examples in the `examples/` directory of the project.
+/// However to take advantage of USB interrupts you will need, to do some unsafe
+/// rust. See the USB code examples in the `examples/` directory of the project.
 #[cfg(feature = "usb")]
 pub fn usb_allocator(
     usb: pac::USB,

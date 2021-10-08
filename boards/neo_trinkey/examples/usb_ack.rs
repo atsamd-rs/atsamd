@@ -91,8 +91,9 @@ fn poll_usb() {
 
 #[interrupt]
 fn USB() {
-    // Note: USB is the name of the interrupt, you can not attach the #[interrupt] tag to poll_usb.
-    // Although you could add the contents of poll_usb into this function, separating them allows
-    // you to add more functions to run on the USB interrupt in the future.
+    // Note: USB is the name of the interrupt, you can not attach the #[interrupt]
+    // tag to poll_usb. Although you could add the contents of poll_usb into
+    // this function, separating them allows you to add more functions to run on
+    // the USB interrupt in the future.
     poll_usb();
 }
