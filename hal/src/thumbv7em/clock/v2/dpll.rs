@@ -290,8 +290,9 @@ pub trait SrcMode<D: DpllNum>: Sealed {
     fn enable(&self, token: &mut DpllToken<D>);
 }
 
-/// Struct representing a [`Dpll<PllX, _>`] mode when it is powered by a
-/// [`Gclk`][`crate::clock::v2::gclk::Gclk`] of choice via [`Pclk<PllX, _>`]
+/// Struct representing a [`Dpll<marker::DpllX, _>`] mode when it is powered by
+/// a [`Gclk`][`crate::clock::v2::gclk::Gclk`] of choice via
+/// [`Pclk<marker::DpllX, _>`]
 pub struct PclkDriven<D, T>
 where
     D: DpllNum + PclkType,
@@ -306,7 +307,6 @@ impl<D: DpllNum + PclkType, T: PclkSourceMarker> SrcMode<D> for PclkDriven<D, T>
     }
 
     fn enable(&self, token: &mut DpllToken<D>) {
-        // Set the source
         token.set_source_clock(DpllSourceEnum::GCLK);
     }
 }
