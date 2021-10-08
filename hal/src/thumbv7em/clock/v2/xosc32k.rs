@@ -495,6 +495,8 @@ pub mod marker {
     }
 
     impl NotGclkInput for Xosc32k {}
+
+    impl RtcSourceMarker for Xosc32k {}
 }
 
 //==============================================================================
@@ -568,4 +570,14 @@ where
     N: Counter,
 {
     const RTC_SRC_1K: RTCSEL_A = RTCSEL_A::XOSC1K;
+}
+
+impl<M, X, Y, N> RtcSource for Enabled<Xosc32k<M, X, Y>, N>
+where
+    M: Mode,
+    X: Output32k,
+    Y: Output1k,
+    N: Counter,
+{
+    type Type = marker::Xosc32k;
 }

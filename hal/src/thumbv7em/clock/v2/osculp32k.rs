@@ -25,6 +25,7 @@ use crate::pac::osc32kctrl::OSCULP32K;
 use crate::clock::v2::{
     types::{Counter, Enabled},
     Source, SourceMarker,
+    rtc::{RtcSourceMarker}
 };
 use crate::time::{Hertz, U32Ext};
 use crate::typelevel::Sealed;
@@ -237,6 +238,8 @@ pub mod marker {
     }
 
     impl NotGclkInput for OscUlp32k {}
+
+    impl RtcSourceMarker for OscUlp32k {}
 }
 
 impl<G, Y, N> GclkSource<G> for Enabled<OscUlp32k<Active32k, Y>, N>
@@ -277,4 +280,13 @@ where
     N: Counter,
 {
     const RTC_SRC_1K: RTCSEL_A = RTCSEL_A::ULP1K;
+}
+
+impl<X, Y, N> RtcSource for Enabled<OscUlp32k<X, Y>, N>
+where
+    X: Output32k,
+    Y: Output1k,
+    N: Counter,
+{
+    type Type = marker::OscUlp32k;
 }
