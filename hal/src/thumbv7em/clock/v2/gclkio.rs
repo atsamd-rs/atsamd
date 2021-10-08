@@ -8,11 +8,11 @@
 //! Setting up a [`GclkOut`] pin to output `Gclk0` signal on pin PB14:
 //!
 //! ```no_run
-//! use atsamd_hal::{
-//!     clock::v2::{gclkio::GclkOut, retrieve_clocks},
-//!     gpio::v2::Pins,
-//!     pac::Peripherals,
-//! };
+//! # use atsamd_hal::{
+//! #     clock::v2::{gclkio::GclkOut, retrieve_clocks},
+//! #     gpio::v2::Pins,
+//! #     pac::Peripherals,
+//! # };
 //! let mut pac = Peripherals::take().unwrap();
 //! let (gclk0, dfll, _, tokens) = retrieve_clocks(
 //!     pac.OSCCTRL,
@@ -197,11 +197,19 @@ where
 // GclkSource
 //==============================================================================
 
+/// Used to ensure a [`Gclk`] either acts as [`GclkIn`] or [`GclkOut`]
+///
+/// [`GclkOut`] cannot be constructed for a [`Gclk`] that is powered from a
+/// [`GclkIn`] because of HW limitations (tested empirically; documentation does
+/// not mention it).
+///
+/// As negated trait bounds are not available in Rust, a _negated_
+/// [`NotGclkInput`] trait was introduced which is implemented by a subset of
+/// [`GclkSourceMarkers`](GclkSourceMarker) that are not [`GclkIns`](GclkIn).
+pub trait NotGclkInput: GclkSourceMarker {}
+
 /// A [`GclkIn`] can act as a clock source for a [`Gclk`]
 pub enum GclkInput {}
-
-/// Used to ensure a [`Gclk`] either acts as [`GclkIn`] or [`GclkOut`]
-pub trait NotGclkInput: GclkSourceMarker {}
 
 impl Sealed for GclkInput {}
 
