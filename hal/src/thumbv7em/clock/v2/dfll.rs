@@ -158,8 +158,6 @@ impl DfllToken {
 type MultiplicationFactor = u16;
 type CoarseMaximumStep = u8;
 type FineMaximumStep = u8;
-type Fine = u8;
-type Coarse = u8;
 
 /// Trait generalizing over the concept of [`Dfll`] operation mode. Implemented
 /// by structs representing specific modes
@@ -174,12 +172,9 @@ pub trait LoopMode: Sealed {
 /// implementations blocks for [`Enabled`]`<`[`Dfll`]`<`[`OpenLoop`]`>>` and
 /// [`Dfll`]`<`[`OpenLoop`]`>` structs
 pub struct OpenLoop {
-    // TODO: Add support for custom fine and coarse? Otherwise remove it.
-    #[allow(dead_code)]
-    fine: Option<Fine>,
-    #[allow(dead_code)]
-    coarse: Option<Coarse>,
+    __: ()
 }
+
 impl LoopMode for OpenLoop {
     fn enable(&self, token: &mut DfllToken) {
         token.set_open_mode();
@@ -265,8 +260,7 @@ impl Dfll<OpenLoop> {
             token,
             freq: 48.mhz().into(),
             mode: OpenLoop {
-                fine: None,
-                coarse: None,
+                __: ()
             },
             multiplication_factor: 1_u16,
             run_standby: false,
