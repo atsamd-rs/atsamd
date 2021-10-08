@@ -147,7 +147,7 @@ impl PacClocks {
 /// expose low-level API to HW register of finer granularity than regular PAC
 /// structs.
 pub struct Tokens {
-    /// Wrapper for low level PAC -- can be unsafely stolen if needed
+    /// Wrapper for low-level PAC -- can be unsafely stolen if needed
     pub pac: PacClocks,
     /// Synchronous clocking domain clocks -- AHB bus
     pub ahbs: ahb::AhbClks,
@@ -239,5 +239,6 @@ pub trait SourceMarker: crate::typelevel::Sealed {}
 /// [`gclk::Gclk::new`] will only consume source implementing
 /// [`gclk::GclkSource`] trait.
 pub trait Source: crate::typelevel::Sealed {
+    /// Returns a clock signal frequency produced by a source
     fn freq(&self) -> Hertz;
 }
