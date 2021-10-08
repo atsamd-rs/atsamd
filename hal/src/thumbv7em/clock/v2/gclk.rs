@@ -502,7 +502,8 @@ where
 /// This struct represents a disabled [`Gclk`] - generic clock generator
 ///
 /// It is generic over:
-/// - a numeric variant (available variants: [`GclkNum`] implementors - eg. [`marker::Gclk3`])
+/// - a numeric variant (available variants: [`GclkNum`] implementors - eg.
+///   [`marker::Gclk3`])
 /// - a current signal source (expressed via source's marker type)
 pub struct Gclk<G, T>
 where

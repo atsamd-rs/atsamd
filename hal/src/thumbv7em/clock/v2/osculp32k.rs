@@ -22,14 +22,14 @@ use crate::pac::osc32kctrl::rtcctrl::RTCSEL_A;
 use crate::pac::osc32kctrl::OSCULP32K;
 
 use crate::clock::v2::{
+    rtc::RtcSourceMarker,
     types::{Counter, Enabled},
     Source, SourceMarker,
-    rtc::{RtcSourceMarker}
 };
 use crate::time::{Hertz, U32Ext};
 use crate::typelevel::Sealed;
 
-use super::gclk::{GclkSource, GclkSourceMarker, GclkNum};
+use super::gclk::{GclkNum, GclkSource, GclkSourceMarker};
 use super::gclkio::NotGclkInput;
 use super::rtc::*;
 

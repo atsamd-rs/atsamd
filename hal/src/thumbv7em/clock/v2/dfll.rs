@@ -20,7 +20,7 @@ use crate::clock::v2::{
 use crate::time::{Hertz, U32Ext};
 use crate::typelevel::Sealed;
 
-use super::gclk::{Gclk0, GclkSource, GclkSourceEnum, GclkSourceMarker, GclkNum};
+use super::gclk::{Gclk0, GclkNum, GclkSource, GclkSourceEnum, GclkSourceMarker};
 use super::gclkio::NotGclkInput;
 use super::pclk::{Dfll48, Pclk, PclkSourceMarker};
 
@@ -170,7 +170,7 @@ pub trait LoopMode: Sealed {
 /// implementations blocks for [`Enabled`]`<`[`Dfll`]`<`[`OpenLoop`]`>>` and
 /// [`Dfll`]`<`[`OpenLoop`]`>` structs
 pub struct OpenLoop {
-    __: ()
+    __: (),
 }
 
 impl LoopMode for OpenLoop {
@@ -257,9 +257,7 @@ impl Dfll<OpenLoop> {
         Self {
             token,
             freq: 48.mhz().into(),
-            mode: OpenLoop {
-                __: ()
-            },
+            mode: OpenLoop { __: () },
             multiplication_factor: 1_u16,
             run_standby: false,
             on_demand_mode: true,

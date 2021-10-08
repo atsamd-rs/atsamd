@@ -10,7 +10,8 @@
 //! - [`Enabled`]`<`[`Xosc32k`]`<`[`ClockMode`]`, _, _>>`: Xosc32k is being
 //!   powered by an external signal (1 pin)
 //!
-//! Signal outputs are independently controllable and also expressed as typestates
+//! Signal outputs are independently controllable and also expressed as
+//! typestates
 //! - [`Enabled`]`<`[`Xosc32k`]`<_, `[`Active32k`]`, _>>`: Xosc32k 32 kHz signal
 //!   output is active
 //! - [`Enabled`]`<`[`Xosc32k`]`<_, `[`Inactive32k`]`, _>>`: Xosc32k 32 kHz
@@ -24,7 +25,8 @@
 //! - [`Enabled<Xosc32k>::activate_32k`]
 //! - [`Enabled<Xosc32k>::activate_1k`]
 //!
-//! To construct a Xosc32k in a proper mode use an appropriate construction function:
+//! To construct a Xosc32k in a proper mode use an appropriate construction
+//! function:
 //! - [`Xosc32k::from_clock`]
 //! - [`Xosc32k::from_crystal`]
 //! Then, enable it with a [`Xosc32k::enable`] function call
