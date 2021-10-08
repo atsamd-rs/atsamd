@@ -1,4 +1,3 @@
-#![deny(missing_docs)]
 //! # Osculp32k - Ultra Low power 32 kHz oscillator
 //!
 //! Always-on internal oscillator capable of producing

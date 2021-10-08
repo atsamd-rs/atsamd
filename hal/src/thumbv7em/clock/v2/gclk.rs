@@ -1,5 +1,3 @@
-#![deny(missing_docs)]
-#![deny(warnings)]
 //! # GCLK - Generic Clock Controller
 //!
 //! Functionality:

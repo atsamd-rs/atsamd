@@ -1,5 +1,3 @@
-#![deny(missing_docs)]
-#![deny(warnings)]
 //! # GCLK - Generic Clock Controller Input-Output
 //!
 //! Used to input and output clock signals over GPIO pins

@@ -1,5 +1,3 @@
-#![deny(missing_docs)]
-#![deny(warnings)]
 //! # Pclk - Peripheral Channel (Clock)
 //!
 //! Peripheral clocks serve as a last element in a chain within a clocking

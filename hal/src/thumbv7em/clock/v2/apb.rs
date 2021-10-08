@@ -1,5 +1,3 @@
-#![deny(missing_docs)]
-#![deny(warnings)]
 //! # APBx bus clocks
 //!
 //! This module provides abstractions allowing to deal with a synchronous

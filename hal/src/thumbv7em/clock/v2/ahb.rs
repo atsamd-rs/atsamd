@@ -1,5 +1,3 @@
-#![deny(missing_docs)]
-#![deny(warnings)]
 //! # AHB bus clocks
 //!
 //! This module provides abstractions allowing to deal with a synchronous

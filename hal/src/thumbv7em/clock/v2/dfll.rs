@@ -1,5 +1,3 @@
-#![deny(missing_docs)]
-#![deny(warnings)]
 //! # DFLL48M - Digital Frequency Locked Loop
 //!
 //! Dfll is an internal 48 MHz oscillator that provides two different modes of
