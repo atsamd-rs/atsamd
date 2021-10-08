@@ -2,35 +2,57 @@
 //!
 //! Functionality:
 //!
-//! * Provides 12 Generic Clock Generators fed by clock sources implementing the
-//!   [super::Source]
-//! trait
+//! * Provides 12 [Gclks](Gclk) fed by clock sources implementing the
+//!   [GclkSource] trait
 //! * Each Generic Clock Generator provides clock division
 //! * Generic Clock Generator output may be consumed by one or many Peripheral
 //!   Channels [super::pclk]
 //! * The Peripheral Channels outputs the clock to the peripheral modules
 //!
 //! Gclks are a core part of the clocking system, typically acting as an
-//! intermediate step connecting [`Source`] and [Peripheral channels
-//! (Pclk)][super::pclk] but are not limited to this, [`Gclk1`] in particular
-//! has the ability to be fed back as a clock `Source` to other [`Gclk`]s.
+//! intermediate step connecting [`GclkSources`](GclkSource) and
+//! [`Pclks`](super::pclk::Pclk). [`Pclks`](super::pclk::Pclk) can share
+//! a single [`Gclk`].
 //!
-//! Additionally, [`Gclk`]s provides clock division, see [`GclkDiv`], and yet
-//! again [`Gclk1`] stands out by providing larger division factors than other
-//! [`Gclk`]s, see [`Gclk1Div`].
+//! Additionally, [`Gclk1`] has the ability to serve as a [`GclkSource`] itself
+//! and provide a signal for other [`Gclks`](Gclk).
 //!
-//! [`Gclk0`] is unique as it is permanently coupled to the `mclk` component
-//! which is responsible for the synchronous clocking domain including the CPU
-//! clock.
+//! [`Gclks`](Gclk) provides clock division capability (see [`GclkDiv`]), and
+//! yet again [`Gclk1`] stands out by providing larger division factors than
+//! other [`Gclks`](Gclk) (see [`Gclk1Div`]).
 //!
-//! [`Gclk0`] must be configured (to have CPU activity) and therefore hardware
-//! has a default state where [`DFLL48`][super::dfll] provides clocking to
-//! `mclk`.
+//! [`Gclk0`] is unique as it is hardwired to drive the
+//! ([`MCLK`](crate::pac::MCLK)) which is responsible for the synchronous
+//! clocking domain including the CPU clock. It must be configured (to have CPU
+//! activity) and therefore hardware has a default state where
+//! [`Dpll`][super::dfll::Dfll] is a clock signal source (48 MHz).
 //!
-//! All preconfigured clocks and gclks are returned by
-//! [`retrieve_clocks`][super::retrieve_clocks]
+//! [`Gclk0`] is returned by [`retrieve_clocks`][super::retrieve_clocks]
+//! function. In order to construct other [`Gclks`](Gclk), [`Gclk::new`]
+//! function can be used. When [`Gclk`] is configured, it can be enabled by
+//! [`Gclk::enable`].
 //!
-//!  #TODO
+//! ```no_run
+//! # use atsamd_hal::{
+//! #     clock::v2::{gclk::Gclk, gclkio::GclkOut, retrieve_clocks, pclk::Pclk},
+//! #     gpio::v2::Pins,
+//! #     pac::Peripherals,
+//! # };
+//! let mut pac = Peripherals::take().unwrap();
+//! let (gclk0, dfll, _, tokens) = retrieve_clocks(
+//!     pac.OSCCTRL,
+//!     pac.OSC32KCTRL,
+//!     pac.GCLK,
+//!     pac.MCLK,
+//!     &mut pac.NVMCTRL,
+//! );
+//! let pins = Pins::new(pac.PORT);
+//! let (gclk1, dfll) = Gclk::new(tokens.gclks.gclk1, dfll);
+//! let gclk1 = gclk1.enable();
+//! let (gclk2, gclk1) = Gclk::new(tokens.gclks.gclk2, gclk1);
+//! let gclk2 = gclk2.enable();
+//! let (pclk_sercom0, gclk2) = Pclk::enable(tokens.pclks.sercom0, gclk2);
+//! ```
 
 use core::marker::PhantomData;
 
@@ -201,8 +223,10 @@ pub trait GclkNum: Sealed {
     type DividerType: GclkDivider;
 }
 
+impl<G: GclkNum> SourceMarker for G {}
+
 /// A module that creates a namespace difference between a [`marker::Gclk0`] ..
-/// [`marker::Gclk1`] marker types and a [`Gclk0`] .. [`Gclk1`] builder type
+/// [`marker::Gclk11`] marker types and a [`Gclk0`] .. [`Gclk11`] builder type
 /// aliases
 pub mod marker {
     use super::*;
@@ -444,21 +468,20 @@ impl GclkDivider for GclkDiv {
 // GclkSource
 //==============================================================================
 
-/// All possible input sources to [`Gclk`]s enumerated
-///
-/// Provided by PAC in [`genctrl::SRC_A`][crate::pac::gclk::genctrl::SRC_A]
+/// Trait generalizing over the markers for [`GclkSources`](GclkSource)
 pub trait GclkSourceMarker: SourceMarker {
-    /// Which source is feeding the [`Gclk`]
+    /// Associated constant describing a source that is feeding the [`Gclk`]
+    ///
+    /// Expressed by a low-level enum variant (used for a HW write) provided by
+    /// a PAC in [`genctrl::SRC_A`][crate::pac::gclk::genctrl::SRC_A]
     const GCLK_SRC: GclkSourceEnum;
 }
 
-/// [`GclkSource`] must implement `freq()` since it is a [`Source`]
+/// Trait generalizing over the clock signal source for a [`Gclk`]
 pub trait GclkSource<G: GclkNum>: Source {
     /// Associated source marker type
     type Type: GclkSourceMarker;
 }
-
-impl<G: GclkNum> SourceMarker for G {}
 
 impl<G, T, N> Source for Enabled<Gclk<G, T>, N>
 where
@@ -476,7 +499,11 @@ where
 // Gclk
 //==============================================================================
 
-/// [`Gclk`] is a generic clock generator
+/// This struct represents a disabled [`Gclk`] - generic clock generator
+///
+/// It is generic over:
+/// - a numeric variant (available variants: [`GclkNum`] implementors - eg. [`marker::Gclk3`])
+/// - a current signal source (expressed via source's marker type)
 pub struct Gclk<G, T>
 where
     G: GclkNum,
@@ -502,8 +529,7 @@ where
 {
     /// Create a new [`Gclk`]
     ///
-    /// Hardware calls are deferred until `.enable()` is called
-    /// except for the divider
+    /// Hardware calls are deferred until the call to [`Gclk::enable`]
     #[inline]
     pub fn new<S>(token: GclkToken<G>, source: S) -> (Gclk<G, T>, S::Inc)
     where
