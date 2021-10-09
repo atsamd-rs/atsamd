@@ -215,3 +215,16 @@ dma = ["unproven"]
 max-channels = ["dma"]
 sdmmc = ["embedded-sdmmc"]
 rtic = ["cortex-m-rtic", "rtic-monotonic"]
+
+# features just for selecting a BSC for examples
+bsc-feather_m0 = []
+bsc-metro_m0 = []
+
+[dev-dependencies]
+panic-halt = "0.2"
+feather_m0 = {path = "../boards/feather_m0"}
+metro_m0 = {path = "../boards/metro_m0"}
+
+[[example]]
+name = "blinky_rtic"
+required-features = ["rtic"]

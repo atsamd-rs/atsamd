@@ -5,7 +5,12 @@
 #![no_std]
 #![no_main]
 
+#[cfg(feature = "bsc-feather_m0")]
 use feather_m0 as bsp;
+#[cfg(feature = "bsc-metro_m0")]
+use metro_m0 as bsp;
+#[cfg(not(any(feature = "bsc-feather_m0", feature = "bsc-metro_m0")))]
+compile_error!("Need to select a BSC for this example");
 
 #[cfg(not(feature = "use_semihosting"))]
 use panic_halt as _;
