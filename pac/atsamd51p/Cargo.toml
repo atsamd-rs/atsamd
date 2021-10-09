@@ -11,11 +11,11 @@ edition = "2018"
 
 [dependencies]
 bare-metal = "0.2"
-cortex-m = "0.6"
+cortex-m = "0.7.3"
 vcell = "0.1.2"
 
 [dependencies.cortex-m-rt]
-version = "0.6.12"
+version = "0.7"
 optional = true
 
 [features]
