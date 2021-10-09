@@ -227,4 +227,4 @@ metro_m0 = {path = "../boards/metro_m0"}
 
 [[example]]
 name = "blinky_rtic"
-required-features = ["rtic"]
+required-features = ["rtic", "unproven"]

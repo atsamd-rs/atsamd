@@ -148,9 +148,5 @@ name = "adalogger"
 required-features = ["adalogger", "usb", "sdmmc", "unproven"]
 
 [[example]]
-name = "blinky_rtic"
-required-features = ["rtic", "unproven"]
-
-[[example]]
 name = "uart"
 required-features = ["dma"]
