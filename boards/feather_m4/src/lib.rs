@@ -15,7 +15,7 @@ use hal::sercom::{
     v2::{
         spi,
         uart::{self, BaudMode, Oversampling},
-        IoSet1, IoSet3, Sercom1, Sercom5,
+        IoSet1, Sercom1, Sercom5, UndocIoSet1,
     },
     I2CMaster2,
 };
@@ -158,7 +158,7 @@ hal::bsp_pins!(
 /// SPI pads for the labelled SPI peripheral
 ///
 /// You can use these pads with other, user-defined [`spi::Config`]urations.
-pub type SpiPads = spi::Pads<Sercom1, IoSet3, Miso, Mosi, Sclk, NoneT>;
+pub type SpiPads = spi::Pads<Sercom1, UndocIoSet1, Miso, Mosi, Sclk, NoneT>;
 
 /// SPI master for the labelled SPI peripheral
 ///
