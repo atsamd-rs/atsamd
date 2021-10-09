@@ -1,0 +1,55 @@
+name: build-test
+
+on:
+  push:
+    paths-ignore:
+      - "**/*.md"
+      - "*.sh"
+      - "*.py"
+
+  pull_request:
+    paths-ignore:
+      - "**/*.md"
+      - "*.sh"
+      - "*.py"
+
+jobs:
+  gen-matrix:
+    name: generate-matrix
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: Calculate file differences
+        uses: lots0logs/gh-action-get-changed-files@2.1.4
+        id: diff
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Generate testing matrix
+        uses: ./.github/actions/affected-crates
+        id: affected-crates
+        with:
+          added: ${{ steps.diff.outputs.added }}
+          deleted: ${{ steps.diff.outputs.deleted }}
+          renamed: ${{ steps.diff.outputs.renamed }}
+          modified: ${{ steps.diff.outputs.modified }}
+
+    outputs: 
+      matrix: ${{ steps.affected-crates.outputs.matrix }}
+  
+
+  build:
+    if: ${{ fromJson(needs.gen-matrix.outputs.matrix) }}
+    needs: gen-matrix
+    name: build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.gen-matrix.outputs.matrix) }}
+   
+    steps:
+      - name: test build
+        run: echo ${{ needs.gen-matrix.outputs.matrix }}
