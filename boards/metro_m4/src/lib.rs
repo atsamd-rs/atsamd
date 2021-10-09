@@ -306,6 +306,7 @@ pub fn i2c_master(
     I2CMaster5::new(clock, baud, sercom5, mclk, sda, scl)
 }
 
+/// UART Pads for the labelled UART peripheral
 pub type UartPads = uart::Pads<Sercom3, IoSet1, UartRx, UartTx>;
 
 /// UART device for the labelled RX & TX pins
