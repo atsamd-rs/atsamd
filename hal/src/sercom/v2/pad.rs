@@ -252,58 +252,54 @@ where
 // IoSet
 //==============================================================================
 
-mod ioset {
-    /// Type-level enum representing a SERCOM IOSET
-    ///
-    /// See the [type-level enum] documentation for more details on the pattern.
-    ///
-    /// [type-level enum]: crate::typelevel#type-level-enum
-    #[cfg(feature = "min-samd51g")]
-    pub trait IoSet: Sealed {}
+/// Type-level enum representing a SERCOM IOSET
+///
+/// See the [type-level enum] documentation for more details on the pattern.
+///
+/// [type-level enum]: crate::typelevel#type-level-enum
+#[cfg(feature = "min-samd51g")]
+pub trait IoSet: Sealed {}
 
-    #[cfg(feature = "min-samd51g")]
-    seq!(N in 1..=6 {
-        paste! {
-            #[doc = "Type-level variant of [`IoSet`] representing SERCOM IOSET " N]
-            ///
-            /// See the [type-level enum] documentation for more details on the
-            /// pattern.
-            ///
-            /// [type-level enum]: crate::typelevel#type-level-enum
-            pub enum IoSet#N {}
-            impl Sealed for IoSet#N {}
-            impl IoSet for IoSet#N {}
-        }
-    });
-
-    /// Type-level variant of [`IoSet`] representing an undocumented SERCOM
-    /// IOSET
-    ///
-    /// See the [type-level enum] documentation for more details on the pattern.
-    ///
-    /// [type-level enum]: crate::typelevel#type-level-enum
-    #[cfg(feature = "min-samd51g")]
-    pub enum UndocIoSet1 {}
-    #[cfg(feature = "min-samd51g")]
-    impl Sealed for UndocIoSet1 {}
-    #[cfg(feature = "min-samd51g")]
-    impl IoSet for UndocIoSet1 {}
-
-    /// Type class for SERCOM pads in a given [`IoSet`]
-    ///
-    /// This trait is used to label each [`Pin`] implementing [`IsPad`] with its
-    /// corresponding [`IoSet`]\(s). Downstream types can use this trait as a
-    /// [type class] to restrict [`Pin`]s to a given [`IoSet`]. See the [type
-    /// class] documentation for more details on the pattern.
-    ///
-    /// [type class]: crate::typelevel#type-classes
-    #[cfg(feature = "min-samd51g")]
-    pub trait InIoSet<I>
-    where
-        Self: IsPad,
-        I: IoSet,
-    {
+#[cfg(feature = "min-samd51g")]
+seq!(N in 1..=6 {
+    paste! {
+        #[doc = "Type-level variant of [`IoSet`] representing SERCOM IOSET " N]
+        ///
+        /// See the [type-level enum] documentation for more details on the
+        /// pattern.
+        ///
+        /// [type-level enum]: crate::typelevel#type-level-enum
+        pub enum IoSet#N {}
+        impl Sealed for IoSet#N {}
+        impl IoSet for IoSet#N {}
     }
-}
+});
 
-pub use ioset::*;
+/// Type-level variant of [`IoSet`] representing an undocumented SERCOM
+/// IOSET
+///
+/// See the [type-level enum] documentation for more details on the pattern.
+///
+/// [type-level enum]: crate::typelevel#type-level-enum
+#[cfg(feature = "min-samd51g")]
+pub enum UndocIoSet1 {}
+#[cfg(feature = "min-samd51g")]
+impl Sealed for UndocIoSet1 {}
+#[cfg(feature = "min-samd51g")]
+impl IoSet for UndocIoSet1 {}
+
+/// Type class for SERCOM pads in a given [`IoSet`]
+///
+/// This trait is used to label each [`Pin`] implementing [`IsPad`] with its
+/// corresponding [`IoSet`]\(s). Downstream types can use this trait as a
+/// [type class] to restrict [`Pin`]s to a given [`IoSet`]. See the [type class]
+/// documentation for more details on the pattern.
+///
+/// [type class]: crate::typelevel#type-classes
+#[cfg(feature = "min-samd51g")]
+pub trait InIoSet<I>
+where
+    Self: IsPad,
+    I: IoSet,
+{
+}
