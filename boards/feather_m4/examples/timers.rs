@@ -29,8 +29,8 @@ fn main() -> ! {
         &mut peripherals.NVMCTRL,
     );
     // Using the red LED as the feedback for this simple timer example.
-    let mut pins = bsp::Pins::new(peripherals.PORT);
-    let mut red_led = pins.d13.into_open_drain_output(&mut pins.port);
+    let pins = bsp::Pins::new(peripherals.PORT);
+    let mut red_led = pins.d13.into_push_pull_output();
 
     // gclk0 represents a configured clock using the 120MHz oscillator.
     let gclk0 = clocks.gclk0();

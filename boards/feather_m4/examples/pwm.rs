@@ -7,6 +7,7 @@
 
 use bsp::hal;
 use feather_m4 as bsp;
+
 #[cfg(not(feature = "use_semihosting"))]
 use panic_halt as _;
 #[cfg(feature = "use_semihosting")]
@@ -33,8 +34,8 @@ fn main() -> ! {
     );
 
     let mut delay = Delay::new(core.SYST, &mut clocks);
-    let mut pins = bsp::Pins::new(peripherals.PORT);
-    let red_led = pins.d13.into_function_e(&mut pins.port);
+    let pins = bsp::Pins::new(peripherals.PORT);
+    let red_led: bsp::RedLedPwm = pins.d13.into();
 
     let gclk0 = clocks.gclk0();
     let mut pwm4 = Pwm4::new(

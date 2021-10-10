@@ -1,7 +1,6 @@
 #![no_std]
 #![no_main]
 
-use bsp::hal;
 use feather_m4 as bsp;
 #[cfg(not(feature = "use_semihosting"))]
 use panic_halt as _;
@@ -9,6 +8,7 @@ use panic_halt as _;
 use panic_semihosting as _;
 
 use bsp::entry;
+use bsp::hal;
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
 use hal::pac::{CorePeripherals, Peripherals};
@@ -25,8 +25,8 @@ fn main() -> ! {
         &mut peripherals.OSCCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = bsp::Pins::new(peripherals.PORT);
-    let mut red_led = pins.d13.into_open_drain_output(&mut pins.port);
+    let pins = bsp::Pins::new(peripherals.PORT);
+    let mut red_led = pins.d13.into_push_pull_output();
     let mut delay = Delay::new(core.SYST, &mut clocks);
     loop {
         delay.delay_ms(2000u16);

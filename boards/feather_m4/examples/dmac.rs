@@ -9,15 +9,15 @@ use cortex_m::asm;
 use feather_m4 as bsp;
 use panic_halt as _;
 
+use bsp::hal;
 use hal::{
     clock::GenericClockController,
-    entry,
     pac::{CorePeripherals, Peripherals},
 };
 
 use hal::dmac::{DmaController, PriorityLevel, Transfer, TriggerAction, TriggerSource};
 
-#[entry]
+#[bsp::entry]
 fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
     let core = CorePeripherals::take().unwrap();
