@@ -20,10 +20,7 @@ use hal::sercom::{
     I2CMaster2,
 };
 use hal::time::Hertz;
-use hal::typelevel::NoneT;
 
-#[cfg(feature = "usb")]
-use hal::gpio::v2::{AnyPin, PA24, PA25};
 #[cfg(feature = "usb")]
 use hal::usb::usb_device::bus::UsbBusAllocator;
 #[cfg(feature = "usb")]
@@ -58,7 +55,7 @@ hal::bsp_pins!(
     }
     PB01 {
         /// Analog Vdiv (1/2 resistor divider for monitoring the battery)
-        name: a6,
+        name: battery,
     }
 
     PB17 {
@@ -153,17 +150,23 @@ hal::bsp_pins!(
     PA24 {
         /// The USB D- pad
         name: usb_dm,
+        aliases: {
+            AlternateG: UsbDm
+        }
     }
     PA25 {
         /// The USB D+ pad
         name: usb_dp,
+        aliases: {
+            AlternateG: UsbDp
+        }
     }
 );
 
 /// SPI pads for the labelled SPI peripheral
 ///
 /// You can use these pads with other, user-defined [`spi::Config`]urations.
-pub type SpiPads = spi::Pads<Sercom1, UndocIoSet1, Miso, Mosi, Sclk, NoneT>;
+pub type SpiPads = spi::Pads<Sercom1, UndocIoSet1, Miso, Mosi, Sclk>;
 
 /// SPI master for the labelled SPI peripheral
 ///
@@ -246,8 +249,8 @@ pub fn uart(
 #[cfg(feature = "usb")]
 /// Convenience function for setting up USB
 pub fn usb_allocator(
-    dm: impl AnyPin<Id = PA24>,
-    dp: impl AnyPin<Id = PA25>,
+    dm: impl Into<UsbDm>,
+    dp: impl Into<UsbDp>,
     usb: pac::USB,
     clocks: &mut GenericClockController,
     mclk: &mut pac::MCLK,
@@ -257,6 +260,6 @@ pub fn usb_allocator(
     clocks.configure_gclk_divider_and_source(GEN_A::GCLK2, 1, SRC_A::DFLL, false);
     let usb_gclk = clocks.get_gclk(GEN_A::GCLK2).unwrap();
     let usb_clock = &clocks.usb(&usb_gclk).unwrap();
-
+    let (dm, dp) = (dm.into(), dp.into());
     UsbBusAllocator::new(UsbBus::new(usb_clock, mclk, dm, dp, usb))
 }
