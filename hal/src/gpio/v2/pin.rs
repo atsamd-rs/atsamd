@@ -1625,6 +1625,9 @@ macro_rules! __define_pin_alias_macro {
             /// ```
             /// let mut peripherals = pac::Peripherals::take().unwrap();
             /// let pins = bsp::Pins::new(peripherals.PORT);
+            /// // Replace this
+            /// let mosi = pins.serial_out;
+            /// // With this
             /// let mosi = pin_alias!(pins.spi_mosi);
             /// ```
             #[macro_export]
