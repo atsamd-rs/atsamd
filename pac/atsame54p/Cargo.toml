@@ -1,7 +1,7 @@
 [package]
 name = "atsame54p"
 description = "Peripheral access API for ATSAME54P microcontrollers (generated using svd2rust)"
-version = "0.9.0"
+version = "0.10.0"
 authors = [
    "Wez Furlong <wez@wezfurlong.org>",
    "Paul Sajna <sajattack@gmail.com>",
@@ -15,11 +15,11 @@ readme = "README.md"
 
 [dependencies]
 bare-metal = "0.2"
-cortex-m = "0.6"
+cortex-m = "0.7.3"
 vcell = "0.1.2"
 
 [dependencies.cortex-m-rt]
-version = "0.6.12"
+version = "0.7"
 optional = true
 
 [features]

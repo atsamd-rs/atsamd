@@ -39,7 +39,7 @@
 //! struct.
 //!
 //! To create the [`Pins`] struct, users must supply the PAC
-//! [`PORT`](crate::target_device::PORT) peripheral. The [`Pins`] struct takes
+//! [`PORT`](crate::pac::PORT) peripheral. The [`Pins`] struct takes
 //! ownership of the [`PORT`] and provides the corresponding pins. Each [`Pin`]
 //! within the [`Pins`] struct can be moved out and used individually.
 //!
@@ -99,12 +99,12 @@ use core::convert::Infallible;
 use core::marker::PhantomData;
 use core::mem::transmute;
 
-use hal::digital::v2::OutputPin;
+use crate::ehal::digital::v2::OutputPin;
 #[cfg(feature = "unproven")]
-use hal::digital::v2::{InputPin, StatefulOutputPin, ToggleableOutputPin};
+use crate::ehal::digital::v2::{InputPin, StatefulOutputPin, ToggleableOutputPin};
 use paste::paste;
 
-use crate::target_device::PORT;
+use crate::pac::PORT;
 
 use crate::typelevel::{NoneT, Sealed};
 
@@ -985,7 +985,7 @@ macro_rules! pins{
             }
             impl Pins {
                 /// Take ownership of the PAC
-                /// [`PORT`](crate::target_device::PORT) and split it into
+                /// [`PORT`](crate::pac::PORT) and split it into
                 /// discrete [`Pin`]s
                 #[inline]
                 pub fn new(port: PORT) -> Pins {
@@ -1008,7 +1008,7 @@ macro_rules! pins{
                 /// Direct access to the [`PORT`] could allow you to invalidate
                 /// the compiler's type-level tracking, so it is unsafe.
                 ///
-                /// [`PORT`](crate::target_device::PORT)
+                /// [`PORT`](crate::pac::PORT)
                 #[inline]
                 pub unsafe fn port(&mut self) -> PORT {
                     self.port.take().unwrap()
@@ -1494,7 +1494,7 @@ macro_rules! __declare_pins_type {
             /// This type is intended to provide more meaningful names for the
             /// given pins.
             pub struct Pins {
-                port: Option<$crate::target_device::PORT>,
+                port: Option<$crate::pac::PORT>,
                 $(
                     $( #[$id_cfg] )*
                     $( #[$name_doc] )*
@@ -1515,11 +1515,11 @@ macro_rules! __declare_pins_type {
                 /// each [`Pin`] in a BSP. Any [`Pin`] not defined by the BSP is
                 /// dropped.
                 ///
-                /// [`PORT`](atsamd_hal::target_device::PORT)
+                /// [`PORT`](atsamd_hal::pac::PORT)
                 /// [`Pin`](atsamd_hal::gpio::v2::Pin)
                 /// [`Pins`](atsamd_hal::gpio::v2::Pins)
                 #[inline]
-                pub fn new(port: $crate::target_device::PORT) -> Self {
+                pub fn new(port: $crate::pac::PORT) -> Self {
                     let mut pins = $crate::gpio::v2::Pins::new(port);
                     Self {
                         port: Some(unsafe{ pins.port() }),
@@ -1540,9 +1540,9 @@ macro_rules! __declare_pins_type {
                 /// Direct access to the [`PORT`] could allow you to invalidate
                 /// the compiler's type-level tracking, so it is unsafe.
                 ///
-                /// [`PORT`](atsamd_hal::target_device::PORT)
+                /// [`PORT`](atsamd_hal::pac::PORT)
                 #[inline]
-                pub unsafe fn port(&mut self) -> $crate::target_device::PORT {
+                pub unsafe fn port(&mut self) -> $crate::pac::PORT {
                     self.port.take().unwrap()
                 }
             }

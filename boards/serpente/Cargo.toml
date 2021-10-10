@@ -1,12 +1,13 @@
 [package]
 name = "serpente"
-version = "0.5.0"
+version = "0.6.0"
 authors = ["Jens Andersen <jens.andersen@gmail.com>"]
 description = "Board Support crate for the Serpente board"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
+edition = "2018"
 
 [dependencies]
 cortex-m = "0.6"
@@ -18,8 +19,7 @@ version = "0.6.12"
 optional = true
 
 [dependencies.atsamd-hal]
-path = "../../hal"
-version = "0.12"
+version = "0.13"
 default-features = false
 
 [dev-dependencies]
@@ -31,6 +31,10 @@ default = ["rt", "atsamd-hal/samd21e"]
 rt = ["cortex-m-rt", "atsamd-hal/samd21e-rt"]
 unproven = ["atsamd-hal/unproven"]
 use_semihosting = []
+
+# for cargo flash
+[package.metadata]
+chip = "ATSAMD21E18A"
 
 [[example]]
 name = "blinky_basic"

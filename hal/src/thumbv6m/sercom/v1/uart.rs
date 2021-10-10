@@ -1,14 +1,20 @@
+#![deprecated(
+    since = "0.13.0",
+    note = "The `sercom::v1::uart` module is deprecated, and will be removed in a subsequent release.
+    Please use the `sercom::v2::uart` module instead."
+)]
+
 use crate::clock;
 use crate::hal::blocking::serial::{write::Default, Write};
 use crate::hal::serial;
+use crate::pac::sercom0::USART;
+use crate::pac::{PM, SERCOM0, SERCOM1};
+#[cfg(feature = "samd21")]
+use crate::pac::{SERCOM2, SERCOM3};
+#[cfg(feature = "min-samd21g")]
+use crate::pac::{SERCOM4, SERCOM5};
 use crate::sercom::v1::pads::CompatiblePad;
 use crate::sercom::v2::*;
-use crate::target_device::sercom0::USART;
-use crate::target_device::{PM, SERCOM0, SERCOM1};
-#[cfg(feature = "samd21")]
-use crate::target_device::{SERCOM2, SERCOM3};
-#[cfg(feature = "min-samd21g")]
-use crate::target_device::{SERCOM4, SERCOM5};
 use crate::time::Hertz;
 use core::fmt;
 use core::marker::PhantomData;
@@ -334,7 +340,7 @@ macro_rules! uart {
                 }
 
                 pub fn intenset<F>(&mut self, f: F)
-                where F: FnOnce(&mut crate::target_device::sercom0::usart::intenset::W)
+                where F: FnOnce(&mut crate::pac::sercom0::usart::intenset::W)
                 {
                     unsafe {
                         self.usart().intenset.write(|w| {
@@ -345,7 +351,7 @@ macro_rules! uart {
                 }
 
                 pub fn intenclr<F>(&mut self, f: F)
-                where F: FnOnce(&mut crate::target_device::sercom0::usart::intenclr::W)
+                where F: FnOnce(&mut crate::pac::sercom0::usart::intenclr::W)
                 {
                     unsafe {
                         self.usart().intenclr.write(|w| {
@@ -355,7 +361,7 @@ macro_rules! uart {
                     }
                 }
 
-                pub fn flags(&self) -> crate::target_device::sercom0::usart::status::R {
+                pub fn flags(&self) -> crate::pac::sercom0::usart::status::R {
                     unsafe {
                         self.usart().status.read()
                     }

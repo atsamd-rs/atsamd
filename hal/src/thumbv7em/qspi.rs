@@ -1,7 +1,7 @@
 use crate::{
     gpio::v2::{AlternateH, AnyPin, Pin, PA08, PA09, PA10, PA11, PB10, PB11},
-    target_device::qspi::instrframe,
-    target_device::{MCLK, QSPI},
+    pac::qspi::instrframe,
+    pac::{MCLK, QSPI},
 };
 use core::marker::PhantomData;
 

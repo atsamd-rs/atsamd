@@ -14,13 +14,18 @@
 //! Note leds may appear white during debug. Either build for release or add
 //! opt-level = 2 to profile.dev in Cargo.toml
 
-use grand_central_m4 as hal;
-use panic_halt as _;
+use bsp::hal;
+use grand_central_m4 as bsp;
 
+#[cfg(not(feature = "use_semihosting"))]
+use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
+
+use bsp::entry;
 use cortex_m::interrupt::free as disable_interrupts;
 use cortex_m::peripheral::NVIC;
 use hal::clock::GenericClockController;
-use hal::entry;
 use hal::pac::{interrupt, CorePeripherals, Peripherals};
 use hal::timer::SpinTimer;
 use hal::usb::UsbBus;
@@ -40,7 +45,7 @@ fn main() -> ! {
         &mut peripherals.OSCCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = hal::Pins::new(peripherals.PORT).split();
+    let mut pins = bsp::Pins::new(peripherals.PORT).split();
 
     let timer = SpinTimer::new(4);
     let mut neopixel = pins.neopixel.init(timer, &mut pins.port);

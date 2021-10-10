@@ -1,12 +1,18 @@
+#![deprecated(
+    since = "0.13.0",
+    note = "The `sercom::v1::uart` module is deprecated, and will be removed in a subsequent release.
+    Please use the `sercom::v2::uart` module instead."
+)]
+
 use crate::clock;
 use crate::hal::blocking::serial::{write::Default, Write};
 use crate::hal::serial;
+use crate::pac::sercom0::USART_INT;
+use crate::pac::{MCLK, SERCOM0, SERCOM1, SERCOM2, SERCOM3, SERCOM4, SERCOM5};
+#[cfg(feature = "min-samd51n")]
+use crate::pac::{SERCOM6, SERCOM7};
 use crate::sercom::v1::pads::CompatiblePad;
 use crate::sercom::v2::*;
-use crate::target_device::sercom0::USART_INT;
-use crate::target_device::{MCLK, SERCOM0, SERCOM1, SERCOM2, SERCOM3, SERCOM4, SERCOM5};
-#[cfg(feature = "min-samd51n")]
-use crate::target_device::{SERCOM6, SERCOM7};
 use crate::time::Hertz;
 use core::fmt;
 use core::marker::PhantomData;
@@ -344,7 +350,7 @@ macro_rules! uart {
                 }
 
                 pub fn intenset<F>(&mut self, f: F)
-                where F: FnOnce(&mut crate::target_device::sercom0::usart_int::intenset::W)
+                where F: FnOnce(&mut crate::pac::sercom0::usart_int::intenset::W)
                 {
                     self.usart().intenset.write(|w| {
                         f(w);
@@ -353,7 +359,7 @@ macro_rules! uart {
                 }
 
                 pub fn intenclr<F>(&mut self, f: F)
-                where F: FnOnce(&mut crate::target_device::sercom0::usart_int::intenclr::W)
+                where F: FnOnce(&mut crate::pac::sercom0::usart_int::intenclr::W)
                 {
                     self.usart().intenclr.write(|w| {
                         f(w);
@@ -361,7 +367,7 @@ macro_rules! uart {
                     });
                 }
 
-                pub fn flags(&self) -> crate::target_device::sercom0::usart_int::status::R {
+                pub fn flags(&self) -> crate::pac::sercom0::usart_int::status::R {
                     self.usart().status.read()
                 }
             }

@@ -1,10 +1,16 @@
 #![no_std]
 #![no_main]
 
-extern crate arduino_mkrvidor4000 as hal;
+use arduino_mkrvidor4000 as bsp;
+use bsp::hal;
 
+#[cfg(not(feature = "use_semihosting"))]
+use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
+
+use bsp::entry;
 use hal::clock::GenericClockController;
-use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::pad::PadPin;
 use hal::prelude::*;
@@ -26,7 +32,7 @@ fn main() -> ! {
         &mut peripherals.SYSCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = hal::Pins::new(peripherals.PORT);
+    let mut pins = bsp::Pins::new(peripherals.PORT);
     let mut _led = pins.led_builtin.into_open_drain_output(&mut pins.port);
     let gclk0 = clocks.gclk0();
 

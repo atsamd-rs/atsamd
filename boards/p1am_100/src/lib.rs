@@ -1,6 +1,6 @@
 #![no_std]
 
-use atsamd_hal as hal;
+pub use atsamd_hal as hal;
 
 #[cfg(feature = "rt")]
 pub use cortex_m_rt::entry;
@@ -9,7 +9,7 @@ use embedded_hal;
 
 pub use hal::common::*;
 
-pub use hal::target_device as pac;
+pub use hal::pac;
 
 use hal::clock::GenericClockController;
 use hal::sercom::v2::{spi, Sercom1, Sercom2};

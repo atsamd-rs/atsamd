@@ -1,22 +1,19 @@
 #![no_std]
 #![no_main]
 
-extern crate cortex_m;
-extern crate cortex_m_semihosting;
-extern crate nb;
-extern crate p1am_100 as hal;
-#[cfg(not(feature = "use_semihosting"))]
-extern crate panic_halt;
-#[cfg(feature = "use_semihosting")]
-extern crate panic_semihosting;
+use bsp::hal;
+use p1am_100 as bsp;
 
+#[cfg(not(feature = "use_semihosting"))]
+use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
+
+use bsp::entry;
 use hal::clock::GenericClockController;
-use hal::entry;
 use hal::pac::Peripherals;
 use hal::prelude::*;
 use hal::timer::TimerCounter;
-
-use nb::block;
 
 #[entry]
 fn main() -> ! {
@@ -27,8 +24,8 @@ fn main() -> ! {
         &mut peripherals.SYSCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let pins = hal::Pins::new(peripherals.PORT);
-    let mut led: hal::Led = pins.led.into();
+    let pins = bsp::Pins::new(peripherals.PORT);
+    let mut led: bsp::Led = pins.led.into();
 
     // gclk0 represents a configured clock using the system 48MHz oscillator
     let gclk0 = clocks.gclk0();
@@ -41,9 +38,9 @@ fn main() -> ! {
 
     // toggle the red LED at the frequency set by the timer
     loop {
-        block!(timer.wait()).unwrap();
+        nb::block!(timer.wait()).unwrap();
         led.set_high().unwrap();
-        block!(timer.wait()).unwrap();
+        nb::block!(timer.wait()).unwrap();
         led.set_low().unwrap();
     }
 }

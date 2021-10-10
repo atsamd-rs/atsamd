@@ -7,11 +7,11 @@ use crate::hal::{Pwm, PwmPin};
 use crate::time::Hertz;
 use crate::timer_params::TimerParams;
 
-use crate::target_device::{MCLK, TC0, TC1, TC2, TC3, TCC0, TCC1, TCC2};
+use crate::pac::{MCLK, TC0, TC1, TC2, TC3, TCC0, TCC1, TCC2};
 #[cfg(feature = "min-samd51j")]
-use crate::target_device::{TC4, TC5, TCC3, TCC4};
+use crate::pac::{TC4, TC5, TCC3, TCC4};
 #[cfg(feature = "min-samd51n")]
-use crate::target_device::{TC6, TC7};
+use crate::pac::{TC6, TC7};
 
 // Timer/Counter (TCx)
 

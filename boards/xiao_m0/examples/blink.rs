@@ -1,13 +1,17 @@
 #![no_main]
 #![no_std]
 
-extern crate cortex_m;
-extern crate panic_halt;
-extern crate xiao_m0 as hal;
+#[cfg(not(feature = "use_semihosting"))]
+use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
 
+use bsp::hal;
+use xiao_m0 as bsp;
+
+use bsp::entry;
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
-use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 
@@ -21,7 +25,7 @@ fn main() -> ! {
         &mut peripherals.SYSCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = hal::Pins::new(peripherals.PORT);
+    let mut pins = bsp::Pins::new(peripherals.PORT);
     let mut led0 = pins.led0.into_open_drain_output(&mut pins.port);
     let mut led1 = pins.led1.into_open_drain_output(&mut pins.port);
     let mut led2 = pins.led2.into_open_drain_output(&mut pins.port);

@@ -8,13 +8,16 @@
 //
 // // Needs to be compiled with --release for the timing to be correct
 
-extern crate cortex_m;
-extern crate feather_m4 as hal;
-extern crate panic_halt;
+use bsp::hal;
+use feather_m4 as bsp;
+#[cfg(not(feature = "use_semihosting"))]
+use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
 
+use bsp::entry;
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
-use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 use hal::timer::*;
@@ -36,7 +39,7 @@ fn main() -> ! {
         &mut peripherals.OSCCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = hal::Pins::new(peripherals.PORT);
+    let mut pins = bsp::Pins::new(peripherals.PORT);
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
     // (Re-)configure PB3 as output

@@ -2,7 +2,7 @@ use atsamd_hal::clock::GenericClockController;
 use atsamd_hal::common::eic;
 use atsamd_hal::common::eic::pin::*;
 use atsamd_hal::gpio::*;
-use atsamd_hal::target_device::{interrupt, EIC, MCLK};
+use atsamd_hal::pac::{interrupt, EIC, MCLK};
 
 use cortex_m::peripheral::NVIC;
 

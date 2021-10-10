@@ -1,19 +1,21 @@
 #![no_std]
 #![no_main]
 
-extern crate panic_halt;
-extern crate samd11_bare as hal;
+#[cfg(not(feature = "use_semihosting"))]
+use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
 
-extern crate cortex_m_rt;
-extern crate embedded_hal;
-extern crate nb;
+use samd11_bare as bsp;
 
+use bsp::hal;
+use bsp::pac;
+
+use bsp::entry;
 use hal::clock::GenericClockController;
-use hal::entry;
-use hal::pac::Peripherals;
 use hal::prelude::*;
 use hal::timer::TimerCounter;
-use nb::block;
+use pac::Peripherals;
 
 #[entry]
 fn main() -> ! {
@@ -31,13 +33,13 @@ fn main() -> ! {
     let mut timer = TimerCounter::tc1_(&timer_clock, peripherals.TC1, &mut peripherals.PM);
     timer.start(1u32.hz());
 
-    let mut pins = hal::Pins::new(peripherals.PORT);
-    let mut d2 = pins.d2.into_open_drain_output(&mut pins.port);
+    let pins = bsp::Pins::new(peripherals.PORT);
+    let mut d2: bsp::Led = pins.d2.into();
 
     loop {
         d2.set_high().unwrap();
-        block!(timer.wait()).ok();
+        nb::block!(timer.wait()).ok();
         d2.set_low().unwrap();
-        block!(timer.wait()).ok();
+        nb::block!(timer.wait()).ok();
     }
 }

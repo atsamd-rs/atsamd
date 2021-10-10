@@ -3,7 +3,7 @@
 pub mod pins;
 pub use pins::Pins;
 
-extern crate atsamd_hal as hal;
+pub use atsamd_hal as hal;
 
 #[cfg(feature = "rt")]
 extern crate cortex_m_rt;
@@ -11,11 +11,10 @@ extern crate cortex_m_rt;
 pub use cortex_m_rt::entry;
 
 use hal::prelude::*;
-use hal::*;
 
 pub use hal::common::*;
 
-pub use hal::target_device as pac;
+pub use hal::pac;
 
 use gpio::{Floating, Input, PfC, Port};
 use hal::clock::GenericClockController;

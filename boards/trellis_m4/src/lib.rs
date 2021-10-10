@@ -10,13 +10,11 @@ pub use adxl343;
 #[cfg(feature = "keypad-unproven")]
 pub use keypad;
 
-use atsamd_hal as hal;
-
-use hal::*;
+pub use atsamd_hal as hal;
 
 pub use hal::common::*;
+pub use hal::pac;
 pub use hal::samd51::*;
-pub use hal::target_device as pac;
 
 #[cfg(feature = "rt")]
 pub use cortex_m_rt::entry;

@@ -57,7 +57,7 @@
 //! based on the [`Dipo`] and [`Dopo`] values.
 //!
 //! ```
-//! use atsamd_hal::target_device::Peripherals;
+//! use atsamd_hal::pac::Peripherals;
 //! use atsamd_hal::gpio::v2::Pins;
 //! use atsamd_hal::sercom::v2::{Sercom0, spi};
 //! use atsamd_hal::sercom::v2::pad::IoSet1;
@@ -222,7 +222,7 @@ use num_traits::{AsPrimitive, PrimInt};
 use seq_macro::seq;
 use typenum::{Unsigned, U0, U1, U2, U3, U4};
 
-use crate::target_device as pac;
+use crate::pac;
 use pac::sercom0::spim::ctrla::{CPHA_A, CPOL_A, DIPO_A, DOPO_A, DORD_A, MODE_A};
 use pac::sercom0::RegisterBlock;
 use pac::MCLK;

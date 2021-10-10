@@ -1,17 +1,18 @@
 #![no_std]
 #![no_main]
 
+use bsp::hal;
 use panic_halt as _;
-use trinket_m0 as hal;
+use trinket_m0 as bsp;
 
 use core::fmt::Write;
 
+use bsp::{entry, reset_cause};
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 use hal::watchdog::{Watchdog, WatchdogTimeout};
-use hal::{entry, reset_cause};
 
 macro_rules! uprint {
     ($serial:expr, $($arg:tt)*) => {
@@ -40,9 +41,9 @@ fn main() -> ! {
         &mut peripherals.NVMCTRL,
     );
     let mut delay = Delay::new(core.SYST, &mut clocks);
-    let mut pins = hal::Pins::new(peripherals.PORT);
+    let mut pins = bsp::Pins::new(peripherals.PORT);
 
-    let mut uart = hal::uart(
+    let mut uart = bsp::uart(
         &mut clocks,
         115200.hz(),
         peripherals.SERCOM0,

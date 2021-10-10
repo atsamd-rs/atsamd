@@ -1,9 +1,13 @@
 #![no_std]
 #![no_main]
 
-extern crate cortex_m_rt;
-extern crate p1am_100 as hal;
-extern crate panic_halt;
+use bsp::hal;
+use p1am_100 as bsp;
+
+#[cfg(not(feature = "use_semihosting"))]
+use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
 
 use core::fmt::Write;
 
@@ -41,9 +45,9 @@ fn main() -> ! {
         &mut peripherals.NVMCTRL,
     );
     let mut delay = Delay::new(core.SYST, &mut clocks);
-    let pins = hal::Pins::new(peripherals.PORT);
+    let pins = bsp::Pins::new(peripherals.PORT);
 
-    let mut uart = hal::uart(
+    let mut uart = bsp::uart(
         &mut clocks,
         9600.hz(),
         peripherals.SERCOM5,

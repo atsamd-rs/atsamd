@@ -59,7 +59,7 @@ type Pads = spi::PadsFromIds<Sercom0, PA08, NoneT, PA09>;
 //! `Sercom`.
 //!
 //! ```
-//! use atsamd_hal::target_device::Peripherals;
+//! use atsamd_hal::pac::Peripherals;
 //! use atsamd_hal::gpio::v2::Pins;
 //! use atsamd_hal::sercom::v2::{Sercom0, spi};
 //!
@@ -212,7 +212,7 @@ pub use embedded_hal::spi::{Phase, Polarity, MODE_0, MODE_1, MODE_2, MODE_3};
 use nb::Error::WouldBlock;
 use num_traits::{AsPrimitive, PrimInt};
 
-use crate::target_device as pac;
+use crate::pac;
 use pac::sercom0::spi::ctrla::MODE_A;
 use pac::sercom0::RegisterBlock;
 use pac::PM;

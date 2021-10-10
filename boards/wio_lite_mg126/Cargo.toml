@@ -1,6 +1,6 @@
 [package]
 name = "wio_lite_mg126"
-version = "0.2.0"
+version = "0.3.0"
 authors = ["Max Khardin <max.khardin@gmail.com"]
 description = "Board Support crate for the Wio Lite MG126"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal", "arduino"]
@@ -19,25 +19,12 @@ nb = "0.1"
 version = "0.6.12"
 optional = true
 
-[dependencies.panic-abort]
-version = "0.3"
-optional = true
-
-[dependencies.panic-halt]
-version = "0.2"
-optional = true
-
-[dependencies.panic-semihosting]
-version = "0.5"
-optional = true
-
 [dependencies.panic_rtt]
 version = "0.1"
 optional = true
 
 [dependencies.atsamd-hal]
-path = "../../hal"
-version = "0.12"
+version = "0.13"
 default-features = false
 
 [dependencies.usb-device]
@@ -54,17 +41,21 @@ optional = true
 
 [dev-dependencies]
 cortex-m-semihosting = "0.3"
+panic-halt = "0.2"
+panic-semihosting = "0.5"
 
 [features]
 # ask the HAL to enable atsamd21g support
-default = ["rt", "panic_halt", "atsamd-hal/samd21g"]
+default = ["rt", "atsamd-hal/samd21g"]
 rt = ["cortex-m-rt", "atsamd-hal/samd21g-rt"]
 unproven = ["atsamd-hal/unproven"]
 use_rtt = ["atsamd-hal/use_rtt", "panic_rtt"]
 usb = ["atsamd-hal/usb", "usb-device", "usbd-serial", "numtoa"]
-panic_halt = ["panic-halt"]
-panic_abort = ["panic-abort"]
-panic_semihosting = ["panic-semihosting"]
+use_semihosting = []
+
+# for cargo flash
+[package.metadata]
+chip = "ATSAMD21G18A"
 
 [[example]]
 name = "pwm"

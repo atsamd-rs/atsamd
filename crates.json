@@ -30,10 +30,10 @@
     },
     "feather_m0": {
 	  "tier": 1,
-      "build": "cargo build --examples --features=unproven,usb,dma,rtic"
+      "build": "cargo build --examples --features=unproven,dma,usb,rtic,sdmmc,adalogger"
     },
     "feather_m4": {
-	  "tier": 1,
+	  "tier": 2,
       "build": "cargo build --examples --features=unproven,usb"
     },
     "gemma_m0": {
@@ -60,6 +60,10 @@
 	  "tier": 1,
       "build": "cargo build --examples --features=unproven,usb"
     },
+    "neo_trinkey": {
+	  "tier": 2,
+      "build": "cargo build --examples --features=leds,unproven,usb"
+    },
     "p1am_100": {
 	  "tier": 2,
       "build": "cargo build --examples --features=unproven,usb"
@@ -78,7 +82,7 @@
     },
     "samd11_bare": {
 	  "tier": 1,
-      "build": "cargo build --release --examples --features=unproven"
+      "build": "cargo build --release --examples --features=unproven,rt,use_semihosting"
     },
     "samd21_mini": {
 	  "tier": 2,
