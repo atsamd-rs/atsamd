@@ -56,6 +56,11 @@ hal::bsp_pins!(
         /// Analog Pin 5
         name: a5,
     }
+    PB01 {
+        /// Analog Vdiv (1/2 resistor divider for monitoring the battery)
+        name: a6,
+    }
+
     PB17 {
         /// Pin 0, UART rx
         name: d0,
