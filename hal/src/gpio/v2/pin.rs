@@ -1260,7 +1260,7 @@ declare_pins!(
 /// ## Calling the macro
 ///
 /// The `bsp_pins!` macro takes a series of `PinId` blocks. Each block starts
-/// with a `PinId` and is delimited by curly brackets. Wihtin each block, there
+/// with a `PinId` and is delimited by curly brackets. Within each block, there
 /// are two optional fields, `name` and `aliases`. The `name` field represents
 /// the *principal* name or function assigned to the pin and is given in
 /// `snake_case`. If the `name` field is absent, the pin name will default to
