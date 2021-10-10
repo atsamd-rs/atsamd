@@ -10,6 +10,7 @@
 
 use bsp::hal;
 use feather_m4 as bsp;
+
 #[cfg(not(feature = "use_semihosting"))]
 use panic_halt as _;
 #[cfg(feature = "use_semihosting")]
@@ -39,11 +40,11 @@ fn main() -> ! {
         &mut peripherals.OSCCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = bsp::Pins::new(peripherals.PORT);
+    let pins = bsp::Pins::new(peripherals.PORT);
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
     // (Re-)configure PB3 as output
-    let ws_data_pin = pins.neopixel.into_push_pull_output(&mut pins.port);
+    let ws_data_pin = pins.neopixel.into_push_pull_output();
     // Create a spin timer whoes period will be 9 x 120MHz clock cycles (75ns)
     let timer = SpinTimer::new(9);
     let mut neopixel = ws2812::Ws2812::new(timer, ws_data_pin);

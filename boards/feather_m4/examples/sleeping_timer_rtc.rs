@@ -4,6 +4,7 @@
 
 use bsp::hal;
 use feather_m4 as bsp;
+
 #[cfg(not(feature = "use_semihosting"))]
 use panic_halt as _;
 #[cfg(feature = "use_semihosting")]
@@ -65,8 +66,8 @@ fn main() -> ! {
     });
 
     // Configure our red LED and blink forever, sleeping between!
-    let mut pins = bsp::Pins::new(peripherals.PORT);
-    let mut red_led = pins.d13.into_open_drain_output(&mut pins.port);
+    let pins = bsp::Pins::new(peripherals.PORT);
+    let mut red_led = pins.d13.into_push_pull_output();
     loop {
         red_led.set_low().unwrap();
         sleeping_delay.delay_ms(1_000u32);
