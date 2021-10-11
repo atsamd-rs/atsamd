@@ -131,6 +131,7 @@ where
 {
     /// Create a new [`GclkInToken`] associated to the given
     /// [`Gclk`][`super::gclk]
+    #[inline]
     unsafe fn new() -> GclkInToken<G> {
         GclkInToken { gen: PhantomData }
     }
@@ -159,6 +160,7 @@ where
 {
     /// Consume a [`GclkInToken`], `gpio` pin and a provided frequency to
     /// receive an enabled [`GclkIn`]
+    #[inline]
     pub fn enable<F>(token: GclkInToken<G>, pin: impl AnyPin<Id = I>, freq: F) -> Enabled<Self, U0>
     where
         F: Into<Hertz>,
@@ -169,6 +171,7 @@ where
     }
 
     /// Deconstruct the [`GclkIn`] and return the [`GclkInToken`] and `gpio` pin
+    #[inline]
     fn disable(self) -> (GclkInToken<G>, Pin<I, AlternateM>) {
         (self.token, self.pin)
     }
@@ -188,6 +191,7 @@ where
 {
     /// Disable the [`GclkIn`], deconstruct it and return the [`GclkInToken`]
     /// and `gpio` pin
+    #[inline]
     pub fn disable(self) -> (GclkInToken<G>, Pin<I, AlternateM>) {
         self.0.disable()
     }
@@ -253,6 +257,7 @@ pub struct GclkOutToken<G: GclkNum> {
 impl<G: GclkNum> GclkOutToken<G> {
     /// Create a new [`GclkOutToken`] associated to the given
     /// [`Gclk`][`super::gclk]
+    #[inline]
     unsafe fn new() -> GclkOutToken<G> {
         GclkOutToken { gen: PhantomData }
     }
@@ -301,6 +306,7 @@ where
     /// Enable the gclk_out
     ///
     /// See [Enabled<Gclk>::enable_gclk_out][super::gclk::Gclk::enable_gclk_out]
+    #[inline]
     fn enable_gclk_out(&mut self, polarity: bool) {
         self.enable_gclk_out(polarity);
     }
@@ -309,6 +315,7 @@ where
     ///
     /// See [Enabled<Gclk>::disable_gclk_out][super::gclk::Gclk::
     /// disable_gclk_out]
+    #[inline]
     fn disable_gclk_out(&mut self) {
         self.disable_gclk_out();
     }
@@ -337,6 +344,7 @@ where
 {
     /// Consume a [`GclkOutToken`], `gpio` pin, `gclk` and the desired  receive
     /// a enabled [`GclkIn`]
+    #[inline]
     pub fn enable<S>(
         token: GclkOutToken<G>,
         pin: impl AnyPin<Id = I>,
@@ -354,11 +362,13 @@ where
     }
 
     /// Returns the frequency as reported by the encapsulated [`super::gclk`]
+    #[inline]
     pub fn freq(&self) -> Hertz {
         self.freq
     }
 
     /// Deconstruct the GclkOut
+    #[inline]
     pub fn disable<S>(self, mut gclk: S) -> (GclkOutToken<G>, Pin<I, AlternateM>, S::Dec)
     where
         S: GclkOutSource<Type = G> + Decrement,
@@ -383,6 +393,7 @@ seq!(N in 0..=11 {
 
     impl Tokens {
         // Populate the Tokens struct and return it
+        #[inline]
         pub(super) unsafe fn new() -> Tokens {
             Tokens {
                 #( gclk_in#N: GclkInToken::new(), )*

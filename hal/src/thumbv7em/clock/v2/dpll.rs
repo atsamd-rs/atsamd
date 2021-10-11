@@ -304,10 +304,12 @@ where
 }
 
 impl<D: DpllNum + PclkType, T: PclkSourceMarker> SrcMode<D> for PclkDriven<D, T> {
+    #[inline]
     fn predivider(&self) -> DpllPredivider {
         1_u16
     }
 
+    #[inline]
     fn enable(&self, token: &mut DpllToken<D>) {
         token.set_source_clock(DpllSourceEnum::GCLK);
     }
@@ -324,10 +326,12 @@ pub struct XoscDriven<D: DpllNum, T: DpllSourceMarker> {
 }
 
 impl<D: DpllNum, T: DpllSourceMarker> SrcMode<D> for XoscDriven<D, T> {
+    #[inline]
     fn predivider(&self) -> DpllPredivider {
         2 * (1 + self.raw_predivider)
     }
 
+    #[inline]
     fn enable(&self, token: &mut DpllToken<D>) {
         token.set_source_clock(T::DPLL_SRC);
         token.set_source_div(self.raw_predivider);
@@ -344,10 +348,12 @@ pub struct Xosc32kDriven<D: DpllNum, T: DpllSourceMarker> {
 }
 
 impl<D: DpllNum, T: DpllSourceMarker> SrcMode<D> for Xosc32kDriven<D, T> {
+    #[inline]
     fn predivider(&self) -> DpllPredivider {
         1_u16
     }
 
+    #[inline]
     fn enable(&self, token: &mut DpllToken<D>) {
         token.set_source_clock(T::DPLL_SRC);
     }

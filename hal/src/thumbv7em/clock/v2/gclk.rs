@@ -397,18 +397,21 @@ impl Sealed for GclkDiv {}
 impl Sealed for Gclk1Div {}
 
 impl Default for GclkDiv {
+    #[inline]
     fn default() -> Self {
         Self::Div(0)
     }
 }
 
 impl Default for Gclk1Div {
+    #[inline]
     fn default() -> Self {
         Self::Div(0)
     }
 }
 
 impl GclkDivider for Gclk1Div {
+    #[inline]
     fn get_div(&self) -> u32 {
         match self {
             // Maximum reach of DIV1 mode is 65535
@@ -422,6 +425,7 @@ impl GclkDivider for Gclk1Div {
         }
     }
 
+    #[inline]
     fn get_inner(&self) -> (DIVSEL_A, u16) {
         match self {
             // Maximum reach of DIV1 mode is 65535
@@ -437,6 +441,7 @@ impl GclkDivider for Gclk1Div {
 }
 
 impl GclkDivider for GclkDiv {
+    #[inline]
     fn get_div(&self) -> u32 {
         match self {
             // Maximum reach of DIV1 mode is 255
@@ -450,6 +455,7 @@ impl GclkDivider for GclkDiv {
         }
     }
 
+    #[inline]
     fn get_inner(&self) -> (DIVSEL_A, u16) {
         match self {
             // Maximum reach of DIV1 mode is 255
@@ -725,6 +731,7 @@ seq!(N in 1..=11 {
     }
 
     impl Tokens {
+        #[inline]
         pub(super) fn new(nvmctrl: &mut NVMCTRL) -> Self {
             // Use auto wait states
             nvmctrl.ctrla.modify(|_, w| w.autows().set_bit());

@@ -211,6 +211,7 @@ macro_rules! ahb_clks {
                 )+
             }
             impl AhbClks {
+                #[inline]
                 pub(super) unsafe fn new() -> Self {
                     AhbClks {
                         $(

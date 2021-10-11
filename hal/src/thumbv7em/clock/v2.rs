@@ -180,6 +180,7 @@ pub struct Tokens {
 /// And also ultra low power internal 32k oscillator:
 ///
 /// - [`osculp32k::OscUlp32k`] (`32 kHz`)
+#[inline]
 pub fn retrieve_clocks(
     oscctrl: OSCCTRL,
     osc32kctrl: OSC32KCTRL,

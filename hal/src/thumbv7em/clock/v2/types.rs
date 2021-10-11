@@ -295,6 +295,7 @@ where
     Add1<N>: Sealed + Unsigned,
 {
     type Inc = Add1<N>;
+    #[inline]
     fn inc(self) -> Self::Inc {
         Self::Inc::default()
     }
@@ -306,6 +307,7 @@ where
     Sub1<N>: Sealed + Unsigned,
 {
     type Dec = Sub1<N>;
+    #[inline]
     fn dec(self) -> Self::Dec {
         Self::Dec::default()
     }
@@ -324,6 +326,7 @@ impl<N: Unsigned + Sealed> Counter for N {}
 pub struct Enabled<T, N: Counter>(pub(crate) T, PhantomData<N>);
 
 impl<T, N: Counter> Enabled<T, N> {
+    #[inline]
     pub(crate) fn new(t: T) -> Self {
         Enabled(t, PhantomData)
     }
@@ -336,6 +339,7 @@ impl<T, N: Counter> Sealed for Enabled<T, N> {}
 impl<T, N: PrivateIncrement> PrivateIncrement for Enabled<T, N> {
     type Inc = Enabled<T, N::Inc>;
 
+    #[inline]
     fn inc(self) -> Self::Inc {
         Enabled(self.0, PhantomData)
     }
@@ -346,6 +350,7 @@ impl<T, N: PrivateIncrement> Increment for Enabled<T, N> {}
 impl<T, N: PrivateDecrement> PrivateDecrement for Enabled<T, N> {
     type Dec = Enabled<T, N::Dec>;
 
+    #[inline]
     fn dec(self) -> Self::Dec {
         Enabled(self.0, PhantomData)
     }

@@ -129,6 +129,7 @@ pub enum CrystalCurrent {
 
 impl CrystalCurrent {
     /// Get the current multiplier
+    #[inline]
     pub fn imult(&self) -> u8 {
         match &self {
             Self::BaseFreq8m => 3,
@@ -139,6 +140,7 @@ impl CrystalCurrent {
     }
 
     /// Get the current reference
+    #[inline]
     pub fn iptat(&self) -> u8 {
         match &self {
             Self::BaseFreq8m => 2,

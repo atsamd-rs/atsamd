@@ -266,6 +266,7 @@ macro_rules! pclks {
             }
 
             impl Tokens {
+                #[inline]
                 pub(super) fn new() -> Self {
                     Tokens {
                         $(

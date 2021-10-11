@@ -360,6 +360,7 @@ macro_rules! apb_clks {
                 )+
             }
             impl ApbClks {
+                #[inline]
                 pub(super) unsafe fn new() -> Self {
                     ApbClks {
                         $(
