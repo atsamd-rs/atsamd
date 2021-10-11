@@ -1,20 +1,22 @@
 #![no_std]
 #![no_main]
 
-use bsp::hal;
 use metro_m4 as bsp;
+
+use bsp::hal;
 
 #[cfg(not(feature = "use_semihosting"))]
 use panic_halt as _;
 #[cfg(feature = "use_semihosting")]
 use panic_semihosting as _;
 
+use nb::block;
+
 use bsp::entry;
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
-use hal::sercom::PadPin;
 
 #[entry]
 fn main() -> ! {
@@ -29,28 +31,15 @@ fn main() -> ! {
     );
 
     let mut delay = Delay::new(core.SYST, &mut clocks);
-    let mut pins = bsp::Pins::new(peripherals.PORT);
-    let gclk = clocks.gclk0();
+    let pins = bsp::Pins::new(peripherals.PORT);
 
-    let mut spi: hal::sercom::SPIMaster3<
-        hal::sercom::Sercom3Pad3<hal::gpio::Pa21<hal::gpio::PfD>>,
-        hal::sercom::Sercom3Pad0<hal::gpio::Pa22<hal::gpio::PfC>>,
-        hal::sercom::Sercom3Pad1<hal::gpio::Pa23<hal::gpio::PfC>>,
-    > = hal::sercom::SPIMaster3::new(
-        &clocks.sercom3_core(&gclk).unwrap(),
-        3_000_000u32.hz(),
-        embedded_hal::spi::Mode {
-            polarity: embedded_hal::spi::Polarity::IdleLow,
-            phase: embedded_hal::spi::Phase::CaptureOnFirstTransition,
-        },
-        peripherals.SERCOM3,
-        &mut peripherals.MCLK,
-        (
-            pins.d8.into_pad(&mut pins.port),
-            pins.d1.into_pad(&mut pins.port),
-            pins.d0.into_pad(&mut pins.port),
-        ),
-    );
+    let miso = pins.miso;
+    let mosi = pins.mosi;
+    let sclk = pins.sclk;
+    let sercom2 = peripherals.SERCOM2;
+    let mclk = &mut peripherals.MCLK;
+
+    let mut spi = bsp::spi_master(&mut clocks, 3.mhz(), sercom2, mclk, sclk, mosi, miso);
 
     loop {
         for byte in b"Hello, world!" {

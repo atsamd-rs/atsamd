@@ -1,22 +1,22 @@
 #![no_std]
 #![no_main]
 
-use bsp::hal;
 use metro_m4 as bsp;
+
+use bsp::hal;
 
 #[cfg(not(feature = "use_semihosting"))]
 use panic_halt as _;
 #[cfg(feature = "use_semihosting")]
 use panic_semihosting as _;
 
+use nb::block;
+
 use bsp::entry;
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
-use hal::pac::gclk::genctrl::SRC_A;
-use hal::pac::gclk::pchctrl::GEN_A;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
-use hal::sercom::{PadPin, Sercom3Pad0, Sercom3Pad1, UART3};
 
 #[entry]
 fn main() -> ! {
@@ -29,32 +29,18 @@ fn main() -> ! {
         &mut peripherals.OSCCTRL,
         &mut peripherals.NVMCTRL,
     );
-    clocks.configure_gclk_divider_and_source(GEN_A::GCLK2, 1, SRC_A::DFLL, false);
-    let gclk2 = clocks
-        .get_gclk(GEN_A::GCLK2)
-        .expect("Could not get clock 2");
 
-    let mut pins = bsp::Pins::new(peripherals.PORT);
+    let pins = bsp::Pins::new(peripherals.PORT);
+    let (rx_pin, tx_pin) = (pins.d0, pins.d1);
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
-    let rx: Sercom3Pad1<_> = pins
-        .d0
-        .into_pull_down_input(&mut pins.port)
-        .into_pad(&mut pins.port);
-    let tx: Sercom3Pad0<_> = pins
-        .d1
-        .into_pull_down_input(&mut pins.port)
-        .into_pad(&mut pins.port);
-    let uart_clk = clocks
-        .sercom3_core(&gclk2)
-        .expect("Could not configure sercom3 clock");
-
-    let mut uart = UART3::new(
-        &uart_clk,
+    let mut uart = bsp::uart(
+        &mut clocks,
         9600.hz(),
         peripherals.SERCOM3,
         &mut peripherals.MCLK,
-        (rx, tx),
+        rx_pin,
+        tx_pin,
     );
 
     loop {
