@@ -623,7 +623,8 @@ where
         }
     }
 
-    /// Forcibly enables [`Dpll`] without additional checks in local configuration
+    /// Forcibly enables [`Dpll`] without additional checks in local
+    /// configuration
     ///
     /// - Performs HW register writes
     #[inline]
