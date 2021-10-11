@@ -1,7 +1,7 @@
-//! Digital Phase Locked Loop (DPLL)
+//! # Digital Phase Locked Loop (DPLL)
 //!
-//! DPLL allows user to multiply an input signal and supports a handful of them.
-//! It maintains the output signal frequency by constant phase comparison
+//! [`Dpll`] allows user to multiply an input signal and supports a handful of
+//! them. It maintains the output signal frequency by constant phase comparison
 //! against the reference, input signal.
 //!
 //! There are two Dplls that are available
@@ -233,13 +233,13 @@ impl<D: DpllNum> DpllToken<D> {
         self.ctrlb().modify(|_, w| w.wuf().bit(wuf));
     }
 
-    /// Wait until the DPLL clock is ready.
+    /// Wait until the [`Dpll`] clock is ready.
     #[inline]
     fn wait_until_ready(&self) {
         while self.status().clkrdy().bit_is_clear() {}
     }
 
-    /// Wait until the DPLL clock is locked.
+    /// Wait until the [`Dpll`] clock is locked.
     #[inline]
     fn wait_until_locked(&self) {
         while self.status().lock().bit_is_clear() {}
@@ -251,14 +251,14 @@ impl<D: DpllNum> DpllToken<D> {
         while self.syncbusy().enable().bit_is_set() {}
     }
 
-    /// Enable the DPLL, ensure register write is synchronized.
+    /// Enable the [`Dpll`], ensure register write is synchronized.
     #[inline]
     fn enable(&mut self) {
         self.ctrla().modify(|_, w| w.enable().set_bit());
         self.wait_until_enable_synced();
     }
 
-    /// Disable the DPLL, ensure register write is synchronized.
+    /// Disable the [`Dpll`], ensure register write is synchronized.
     #[inline]
     fn disable(&mut self) {
         self.ctrla().modify(|_, w| w.enable().clear_bit());
@@ -375,6 +375,8 @@ where
     src_freq: Hertz,
     mult: u16,
     frac: u8,
+    lock_bypass: bool,
+    wake_up_fast: bool,
     mode: M,
 }
 
@@ -398,6 +400,8 @@ where
             src_freq,
             mult,
             frac,
+            lock_bypass: false,
+            wake_up_fast: false,
             mode: PclkDriven { reference_clk },
         }
     }
@@ -427,11 +431,13 @@ where
         let src_freq = reference_clk.freq();
         let (mult, frac) = (1, 0);
 
-        let dpll = Dpll {
+        let dpll = Self {
             token,
             src_freq,
             mult,
             frac,
+            lock_bypass: false,
+            wake_up_fast: false,
             mode: Xosc32kDriven {
                 src: PhantomData,
                 dpll_num: PhantomData,
@@ -483,18 +489,19 @@ where
             raw_predivider,
         };
 
-        let dpll = Dpll {
+        let dpll = Self {
             token,
             src_freq,
             mult,
             frac,
+            lock_bypass: false,
+            wake_up_fast: false,
             mode,
         };
         (dpll, reference_clk.inc())
     }
 
     /// Set the predivider, see [`DpllPredivider`]
-    ///
     #[inline]
     pub fn set_source_div(mut self, predivider: DpllPredivider) -> Self {
         self.mode.raw_predivider = predivider;
@@ -517,7 +524,7 @@ where
     D: DpllNum,
     M: SrcMode<D>,
 {
-    /// Set the DPLL divider
+    /// Set the [`Dpll`] divider
     ///
     /// Calculated as
     ///
@@ -546,7 +553,6 @@ where
     /// ```
     #[inline]
     pub fn set_loop_div(mut self, int: u16, frac: u8) -> Self {
-        self.token.set_loop_div(int, frac);
         self.mult = int;
         self.frac = frac;
         self
@@ -556,29 +562,34 @@ where
     /// lock status
     #[inline]
     pub fn set_lock_bypass(mut self, bypass: bool) -> Self {
-        self.token.set_lock_bypass(bypass);
+        self.lock_bypass = bypass;
         self
     }
 
-    /// Set to skip waiting for DPLL lock before outputting clock
+    /// Set to skip waiting for [`Dpll`] lock before outputting clock
     #[inline]
     pub fn set_wake_up_fast(mut self, wuf: bool) -> Self {
-        self.token.set_wake_up_fast(wuf);
+        self.wake_up_fast = wuf;
         self
     }
-    /// Busy-wait until DPLL has achieved lock
+
+    // TODO: What's the point of having this blocking method on *disabled* `Dpll`?
+    /// Busy-wait until [`Dpll`] has achieved lock
     #[inline]
     pub fn wait_until_locked(self) -> Self {
         self.token.wait_until_locked();
         self
     }
-    /// Busy-wait until DPLL is ready
+
+    // TODO: What's the point of having this blocking method on *disabled* `Dpll`?
+    /// Busy-wait until [`Dpll`] is ready
     #[inline]
     pub fn wait_until_ready(self) -> Self {
         self.token.wait_until_ready();
         self
     }
-    /// Return the frequency of the DPLL
+
+    /// Return the frequency of the [`Dpll`]
     #[inline]
     pub fn freq(&self) -> Hertz {
         Hertz(
@@ -587,8 +598,9 @@ where
         )
     }
 
-    /// Enabling a [`Dpll`] modifies hardware to match the configuration stored
-    /// within
+    /// Enables [`Dpll`] and performs assertions in local configuration
+    ///
+    /// - Performs HW register writes
     #[inline]
     pub fn enable(self) -> Result<Enabled<Self, U0>, Self> {
         let predivider = self.mode.predivider() as u32;
@@ -605,14 +617,18 @@ where
         }
     }
 
-    /// Enabling a [`Dpll`] modifies hardware to match the configuration stored
-    /// within
+    /// Forcibly enables [`Dpll`] without additional checks in local configuration
+    ///
+    /// - Performs HW register writes
     #[inline]
     pub unsafe fn force_enable(mut self) -> Enabled<Self, U0> {
+        // Enable the specified mode
         self.mode.enable(&mut self.token);
-        // Set the loop divider ratio
+        // Set the loop divider ratio and other settings
         self.token.set_loop_div(self.mult, self.frac);
-        // Enable the DPLL
+        self.token.set_lock_bypass(self.lock_bypass);
+        self.token.set_wake_up_fast(self.wake_up_fast);
+        // Enable the [`Dpll`]
         self.token.enable();
         Enabled::new(self)
     }
