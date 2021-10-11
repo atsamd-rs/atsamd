@@ -375,6 +375,7 @@ where
         self
     }
 
+    // TODO: What's the point of having this blocking method on *disabled* `Xosc`?
     /// Busy-wait until ready
     #[inline]
     pub fn wait_ready(&self) {
