@@ -218,7 +218,7 @@ impl<D: DpllNum> DpllToken<D> {
     #[inline]
     fn set_source_div(&mut self, div: u16) {
         self.ctrlb()
-            .modify(|_, w| unsafe { w.div().bits(div & 0x7FF) });
+            .modify(|_, w| unsafe { w.div().bits(div & ((1 << 10) - 1)) });
     }
 
     /// Ignore the lock, CLK_DPLLn is always running.
@@ -278,6 +278,8 @@ impl<D: DpllNum> DpllToken<D> {
 ///
 /// * Default division factor: 2 (register all 0)
 /// * Maxumum division factor: 2048 (register all 1)
+///
+/// This value is relevant only for a [`Dpll`] that is [`XoscDriven`].
 pub type DpllPredivider = u16;
 
 /// This trait introduces a notion of different modes for [`Dpll`]
@@ -327,10 +329,7 @@ impl<D: DpllNum, T: DpllSourceMarker> SrcMode<D> for XoscDriven<D, T> {
     }
 
     fn enable(&self, token: &mut DpllToken<D>) {
-        // Set the source
         token.set_source_clock(T::DPLL_SRC);
-
-        // Set the predivider
         token.set_source_div(self.raw_predivider);
     }
 }
@@ -350,7 +349,6 @@ impl<D: DpllNum, T: DpllSourceMarker> SrcMode<D> for Xosc32kDriven<D, T> {
     }
 
     fn enable(&self, token: &mut DpllToken<D>) {
-        // Set the source
         token.set_source_clock(T::DPLL_SRC);
     }
 }
@@ -394,8 +392,6 @@ where
     #[inline]
     pub fn from_pclk(token: DpllToken<D>, reference_clk: Pclk<D, T>) -> Self {
         let src_freq = reference_clk.freq();
-        assert!(src_freq.0 >= 32_000);
-        assert!(src_freq.0 <= 3_200_000);
         let (mult, frac) = (1, 0);
         Self {
             token,
@@ -429,8 +425,6 @@ where
         S: DpllSourceXosc32k<Type = T> + Increment,
     {
         let src_freq = reference_clk.freq();
-        assert!(src_freq.0 >= 32_000);
-        assert!(src_freq.0 <= 3_200_000);
         let (mult, frac) = (1, 0);
 
         let dpll = Dpll {
@@ -467,7 +461,7 @@ where
     ///
     /// Input frequency must be between 32 kHz and 3.2 MHz
     ///
-    /// Provides additional input pre-divider, see [DpllPredivider]
+    /// Provides additional input pre-divider, see [`DpllPredivider`]
     ///
     /// Increments a counter in `reference_clk`
     #[inline]
@@ -483,19 +477,11 @@ where
         let src_freq = reference_clk.freq();
         let (mult, frac) = (1, 0);
 
-        // Assert that the raw_predivider is valid!
-        // 2 to 2048
-
-        // Calculate the Dpll input frequency taking into consideration the
-        // raw_predivider, but store the actual input source frequency
         let mode = XoscDriven {
             dpll_num: PhantomData,
             src: PhantomData,
             raw_predivider,
         };
-        let frequency = src_freq.0 / mode.predivider() as u32;
-        assert!(frequency >= 32_000);
-        assert!(frequency <= 3_200_000);
 
         let dpll = Dpll {
             token,
@@ -507,16 +493,11 @@ where
         (dpll, reference_clk.inc())
     }
 
-    /// Set the predivider, see [DpllPredivider]
+    /// Set the predivider, see [`DpllPredivider`]
+    ///
     #[inline]
     pub fn set_source_div(mut self, predivider: DpllPredivider) -> Self {
-        // Assert the source pre-divider does not go outside input frequency
-        // specifications
-        let raw_predivider = predivider;
-        self.mode.raw_predivider = raw_predivider;
-        let frequency = self.src_freq.0 / self.mode.predivider() as u32;
-        assert!(frequency >= 32_000);
-        assert!(frequency <= 3_200_000);
+        self.mode.raw_predivider = predivider;
         self
     }
 
@@ -609,9 +590,25 @@ where
     /// Enabling a [`Dpll`] modifies hardware to match the configuration stored
     /// within
     #[inline]
-    pub fn enable(mut self) -> Enabled<Self, U0> {
-        // TODO: This assertion is suspicious.
-        assert!(self.freq().0 <= 200_000_000);
+    pub fn enable(self) -> Result<Enabled<Self, U0>, Self> {
+        let predivider = self.mode.predivider() as u32;
+        let input_frequency = self.src_freq.0 / predivider;
+        let output_frequency = self.freq().0;
+
+        if (2..=2048).contains(&predivider)
+            && (32_000..=3_200_000).contains(&input_frequency)
+            && (96_000_000..=200_000_000).contains(&output_frequency)
+        {
+            unsafe { Ok(self.force_enable()) }
+        } else {
+            Err(self)
+        }
+    }
+
+    /// Enabling a [`Dpll`] modifies hardware to match the configuration stored
+    /// within
+    #[inline]
+    pub unsafe fn force_enable(mut self) -> Enabled<Self, U0> {
         self.mode.enable(&mut self.token);
         // Set the loop divider ratio
         self.token.set_loop_div(self.mult, self.frac);
