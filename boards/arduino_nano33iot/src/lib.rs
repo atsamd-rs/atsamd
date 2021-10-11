@@ -207,8 +207,6 @@ pub fn usb_allocator(
     UsbBusAllocator::new(UsbBus::new(usb_clock, pm, dm, dp, usb))
 }
 
-/// EXPERIMENTAL FEATURE STARTS HERE
-
 /// Convenience for setting up the labelled SDA, SCL pins to
 /// operate as an I2C master running at the specified frequency.
 pub fn i2c_master(
@@ -226,6 +224,7 @@ pub fn i2c_master(
     I2CMaster4::new(clock, bus_speed, sercom4, pm, sda, scl)
 }
 
+/// UART pads
 pub type UartPads = uart::Pads<Sercom5, Rx, Tx>;
 /// UART device for the labelled RX & TX pins
 pub type Uart = uart::Uart<uart::Config<UartPads>, uart::Duplex>;
