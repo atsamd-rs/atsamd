@@ -40,7 +40,7 @@ fn main() -> ! {
         &mut peripherals.SYSCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = bsp::Pins::new(peripherals.PORT);
+    let pins = bsp::Pins::new(peripherals.PORT);
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
     delay.delay_ms(BOOT_DELAY_MS);
@@ -53,11 +53,10 @@ fn main() -> ! {
         pins.led_sck,
         pins.mosi,
         pins.miso,
-        &mut pins.port,
     );
 
-    let dc = pins.d6.into_open_drain_output(&mut pins.port);
-    let rst = pins.d9.into_open_drain_output(&mut pins.port);
+    let dc = pins.d6.into_push_pull_output();
+    let rst = pins.d9.into_push_pull_output();
 
     let mut disp = st7735_lcd::ST7735::new(spi, dc, rst, true, false, 160, 128);
 
