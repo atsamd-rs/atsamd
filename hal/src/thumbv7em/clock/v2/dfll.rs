@@ -332,7 +332,6 @@ impl<TMode: LoopMode> Enabled<Dfll<TMode>, U0> {
     /// Disable the [`Dfll`]
     #[inline]
     pub fn disable(mut self) -> Dfll<TMode> {
-        // TODO: Make sure Dfll is disabled correctly
         self.0.token.disable();
         self.0
     }
