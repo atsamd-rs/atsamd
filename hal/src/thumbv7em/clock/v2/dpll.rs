@@ -534,7 +534,7 @@ where
     ///
     /// Calculated as
     ///
-    /// ```
+    /// ```text
     /// f_clk_dpll = clk_src * (int + (frac / 32))
     /// ```
     ///
@@ -542,7 +542,7 @@ where
     /// underlying register write function
     ///
     /// Example 1:
-    /// ```
+    /// ```text
     /// clk_src = 2 MHz
     /// int = 50
     /// frac = 0
@@ -550,7 +550,7 @@ where
     /// 2 * 50 = 100 MHz
     /// ```
     /// Example 2:
-    /// ```
+    /// ```text
     /// clk_src = 32 kHz
     /// int = 3000
     /// frac = 24

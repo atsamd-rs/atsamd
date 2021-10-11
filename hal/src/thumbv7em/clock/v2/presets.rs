@@ -40,7 +40,8 @@ macro_rules! clocking_preset_gclk0_120mhz_gclk5_2mhz {
         let (pclk_dpll0, gclk5) = pclk::Pclk::enable($tokens.pclks.dpll0, gclk5);
         let dpll0 = dpll::Dpll0::from_pclk($tokens.dpll0, pclk_dpll0)
             .set_loop_div(60, 0)
-            .enable();
+            .enable()
+            .unwrap_or_else(|_| panic!("Dpll did not pass assertion checks!"));
         let (gclk0, dfll, dpll0) = $gclk0.swap(dfll, dpll0);
         (gclk0, gclk5, dpll0, dfll)
     }};
