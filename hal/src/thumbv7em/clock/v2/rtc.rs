@@ -54,31 +54,11 @@ pub enum Freq1k {}
 impl Sealed for Freq1k {}
 impl FreqMode for Freq1k {}
 
-impl<T: RtcSourceMarker> Rtc<ClockMode, Freq32k, T> {
-    /// Type-safe variant of [`crate::rtc::Rtc::clock_mode`] function setting
-    /// [`Rtc`] up to run on 32 kHz signal source
-    #[inline]
-    pub fn clock_mode_from_32k_source<S: RtcSource32k<Type = T> + Increment>(
-        rtc: RTC,
-        rtc_signal_source: S,
-        mclk: &mut MCLK,
-    ) -> (Self, S::Inc) {
-        (
-            Self {
-                rtc: InnerRtc::clock_mode(rtc, 32.khz().into(), mclk),
-                f: PhantomData,
-                t: PhantomData,
-            },
-            unsafe { set_rtc_clock_32k(rtc_signal_source) },
-        )
-    }
-}
-
 impl<T: RtcSourceMarker> Rtc<ClockMode, Freq1k, T> {
     /// Type-safe variant of [`crate::rtc::Rtc::clock_mode`] function setting
     /// [`Rtc`] up to run on 1 kHz signal source
     #[inline]
-    pub fn clock_mode_from_1k_source<S: RtcSource1k<Type = T> + Increment>(
+    pub fn clock_mode<S: RtcSource1k<Type = T> + Increment>(
         rtc: RTC,
         rtc_signal_source: S,
         mclk: &mut MCLK,
