@@ -12,8 +12,11 @@
 //! definitions. [`Pukcc`] wraps this low-level access API and exposes it in a
 //! safe manner.
 //!
-//! ## Disclaimer:
-//! This module was not evaluated for correctness and possible attack vectors.
+//! ## WARNING!
+//! This module has not been evaluated for correctness nor suitability for any
+//! use-case. Subtle implementation details may have catastrophic implications
+//! for the security of your cryptosystem, and users are advised to engage a
+//! cryptographer before making use of this module.
 
 pub mod c_abi;
 pub mod curves;
