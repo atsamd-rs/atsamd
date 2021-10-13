@@ -114,7 +114,48 @@ pub mod marker {
     impl NotGclkInput for Xosc1 {}
 }
 
-#[derive(Clone, PartialEq)]
+/// Encapsulates a hardware crystal configuration
+///
+/// Supported crystal frequencies: between 8 MHz and 48 MHz
+///
+/// User must provide the correct hardware frequency here,
+/// that allows configuring hardware to optimise for specific frequencies used.
+pub struct CrystalConfig {
+    src_freq: Hertz,
+    current: CrystalCurrent,
+}
+
+impl CrystalConfig {
+    /// Create a new [`CrystalConfig`] running at frequency `src_freq`
+    pub fn new(&self, src_freq: impl Into<Hertz>) -> Result<Self, ()> {
+        // Calculate the CrystalCurrent from the supplied
+        // crystal frequency
+        let (current, src_freq) = match src_freq.into().0 {
+            freq @ 8_000_000 => (CrystalCurrent::BaseFreq8m, freq),
+            freq @ 8_000_001..=16_000_000 => (CrystalCurrent::LowFreq8mTo16m, freq),
+            freq @ 16_000_001..=24_000_000 => (CrystalCurrent::MedFreq16mTo24m, freq),
+            freq @ 24_000_001..=48_000_000 => (CrystalCurrent::HighFreq24mTo48m, freq),
+            _ => return Err(()),
+        };
+
+        Ok(Self {
+            src_freq: src_freq.hz(),
+            current,
+        })
+    }
+
+    /// Return the frequency of the crystal
+    pub fn freq(&self) -> Hertz {
+        self.src_freq
+    }
+
+    /// Return the crystal current parameters based on frequency
+    pub fn get_current(&self) -> CrystalCurrent {
+        self.current
+    }
+}
+
+#[derive(Clone, Copy, PartialEq)]
 /// Current mutliplier/reference pair
 pub enum CrystalCurrent {
     /// 8MHz
@@ -447,20 +488,12 @@ impl<X: XoscNum> Xosc<X, CrystalMode<X>> {
         token: XoscToken<X>,
         xin: impl AnyPin<Id = X::XIn>,
         xout: impl AnyPin<Id = X::XOut>,
-        src_freq: impl Into<Hertz>,
+        src: CrystalConfig,
     ) -> Self {
         let xin = xin.into().into_floating_disabled();
         let xout = xout.into().into_floating_disabled();
 
-        // Calculate the CrystalCurrent from the supplied
-        // crystal frequency
-        let (current, frequency) = match src_freq.into().0 {
-            freq @ 8_000_000 => (CrystalCurrent::BaseFreq8m, freq),
-            freq @ 8_000_001..=16_000_000 => (CrystalCurrent::LowFreq8mTo16m, freq),
-            freq @ 16_000_001..=24_000_000 => (CrystalCurrent::MedFreq16mTo24m, freq),
-            freq @ 24_000_001..=48_000_000 => (CrystalCurrent::HighFreq24mTo48m, freq),
-            _ => panic!("Xosc fed with invalid frequency"),
-        };
+        let current = src.get_current();
 
         // Lowers power usage and protects the crystal
         let amplitude_loop_control = true;
@@ -480,7 +513,7 @@ impl<X: XoscNum> Xosc<X, CrystalMode<X>> {
                 low_buf_gain,
             },
             xin,
-            src_freq: frequency.hz(),
+            src_freq: src.freq(),
             start_up_cycles,
             on_demand,
             run_standby,
