@@ -65,7 +65,7 @@ impl<T: RtcSourceMarker> Rtc<ClockMode, Freq1k, T> {
     ) -> (Self, S::Inc) {
         (
             Self {
-                rtc: InnerRtc::clock_mode(rtc, 1.khz().into(), mclk),
+                rtc: InnerRtc::clock_mode(rtc, 1_024.hz().into(), mclk),
                 f: PhantomData,
                 t: PhantomData,
             },
@@ -85,7 +85,7 @@ impl<T: RtcSourceMarker> Rtc<Count32Mode, Freq32k, T> {
     ) -> (Self, S::Inc) {
         (
             Self {
-                rtc: InnerRtc::count32_mode(rtc, 32.khz().into(), mclk),
+                rtc: InnerRtc::count32_mode(rtc, 32_768.hz().into(), mclk),
                 f: PhantomData,
                 t: PhantomData,
             },
@@ -105,7 +105,7 @@ impl<T: RtcSourceMarker> Rtc<Count32Mode, Freq1k, T> {
     ) -> (Self, S::Inc) {
         (
             Self {
-                rtc: InnerRtc::count32_mode(rtc, 1.khz().into(), mclk),
+                rtc: InnerRtc::count32_mode(rtc, 1_024.hz().into(), mclk),
                 f: PhantomData,
                 t: PhantomData,
             },
