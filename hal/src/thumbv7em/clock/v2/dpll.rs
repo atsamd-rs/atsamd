@@ -613,7 +613,9 @@ where
         let input_frequency = self.src_freq.0 / predivider;
         let output_frequency = self.freq().0;
 
-        if (2..=2048).contains(&predivider)
+        // If Xosc mode: Predivider should be within a range <2, 2048>
+        // Else: Predivider should be 1
+        if (1..=2048).contains(&predivider)
             && (32_000..=3_200_000).contains(&input_frequency)
             && (96_000_000..=200_000_000).contains(&output_frequency)
         {
