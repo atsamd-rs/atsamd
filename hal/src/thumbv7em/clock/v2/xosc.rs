@@ -127,7 +127,7 @@ pub struct CrystalConfig {
 
 impl CrystalConfig {
     /// Create a new [`CrystalConfig`] running at frequency `src_freq`
-    pub fn new(&self, src_freq: impl Into<Hertz>) -> Result<Self, ()> {
+    pub fn new(src_freq: impl Into<Hertz>) -> Result<Self, ()> {
         // Calculate the CrystalCurrent from the supplied
         // crystal frequency
         let (current, src_freq) = match src_freq.into().0 {
