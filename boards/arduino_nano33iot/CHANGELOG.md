@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+* removed unnecessary dependency on `nb` (#510)
+
 ## 0.6.0
 
 * `Pins` is now generated through `bsp_pins` macro and uses `gpio.v2` pins.
