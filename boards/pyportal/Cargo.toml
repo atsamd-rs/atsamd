@@ -28,7 +28,6 @@ default-features = false
 [dev-dependencies]
 panic-halt = "0.2"
 panic-semihosting = "0.5"
-panic_rtt = "0.2"
 cortex-m-semihosting = "0.3"
 cortex-m-rtic = "0.5.1"
 smart-leds = "~0.3"

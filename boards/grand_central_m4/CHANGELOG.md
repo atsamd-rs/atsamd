@@ -1,6 +1,6 @@
 # Unreleased
 
-- removed unnecessary dependency on `nb` (#510)
+- removed unnecessary dependency on `nb` and `panic_rtt` (#510)
 
 ---
 

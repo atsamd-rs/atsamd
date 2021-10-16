@@ -38,7 +38,6 @@ panic-semihosting = "0.5"
 cortex-m-semihosting = "0.3"
 smart-leds = "0.3"
 cortex-m-rtic = "0.5.1"
-panic_rtt = "0.2"
 
 [features]
 default = ["rt", "atsamd-hal/samd51p", "atsamd-hal/samd51", "atsamd-hal/unproven"]

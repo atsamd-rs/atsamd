@@ -23,10 +23,6 @@ path = "../../hal"
 version = "0.13"
 default-features = false
 
-[dependencies.panic_rtt]
-version = "0.1"
-optional = true
-
 [dependencies.usb-device]
 version = "0.2"
 optional = true
@@ -62,7 +58,7 @@ panic-semihosting = "0.5"
 default = ["rt", "atsamd-hal/samd21g"]
 rt = ["cortex-m-rt", "atsamd-hal/samd21g-rt"]
 unproven = ["atsamd-hal/unproven"]
-use_rtt = ["atsamd-hal/use_rtt", "panic_rtt"]
+use_rtt = ["atsamd-hal/use_rtt"]
 usb = ["atsamd-hal/usb", "usb-device", "usbd-serial"]
 # Enable pins for the radio on "RadioFruits" with RFM95, RFM96, RFM69
 rfm = []

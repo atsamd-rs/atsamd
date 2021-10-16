@@ -18,10 +18,6 @@ embedded-hal = "0.2.3"
 version = "0.6.12"
 optional = true
 
-[dependencies.panic_rtt]
-version = "0.1"
-optional = true
-
 [dependencies.atsamd-hal]
 version = "0.13"
 default-features = false
@@ -48,7 +44,7 @@ panic-semihosting = "0.5"
 default = ["rt", "atsamd-hal/samd21g"]
 rt = ["cortex-m-rt", "atsamd-hal/samd21g-rt"]
 unproven = ["atsamd-hal/unproven"]
-use_rtt = ["atsamd-hal/use_rtt", "panic_rtt"]
+use_rtt = ["atsamd-hal/use_rtt"]
 usb = ["atsamd-hal/usb", "usb-device", "usbd-serial", "numtoa"]
 use_semihosting = []
 
