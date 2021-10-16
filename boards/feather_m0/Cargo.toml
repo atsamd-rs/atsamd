@@ -93,6 +93,11 @@ opt-level = "s"
 [package.metadata]
 chip = "ATSAMD21G18A"
 
+# for build and release automation
+[package.metadata.atsamd.bsp]
+tier =1
+build_command = "cargo build --examples --features=unproven,dma,usb,rtic,sdmmc,adalogger"
+
 [[example]]
 name = "blinky_basic"
 

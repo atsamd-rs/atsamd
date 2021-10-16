@@ -50,6 +50,10 @@ debug = true
 [package.metadata]
 chip = "ATSAMD11C14A"
 
+[package.metadata.atsamd.bsp]
+tier = 1
+build_command = "cargo build --examples --features=unproven,rt,use_semihosting"
+
 [[example]]
 name = "adc"
 required-features = ["unproven", "rt", "use_semihosting"]

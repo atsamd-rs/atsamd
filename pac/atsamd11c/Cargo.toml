@@ -19,3 +19,7 @@ optional = true
 
 [features]
 rt = ["cortex-m-rt/device"]
+
+[package.metadata.atsamd.pac]
+target = "thumbv6m-none-eabi"
+features = ["samd11c", "unproven"]

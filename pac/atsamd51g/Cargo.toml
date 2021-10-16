@@ -19,3 +19,7 @@ optional = true
 
 [features]
 rt = ["cortex-m-rt/device"]
+
+[package.metadata.atsamd.pac]
+target = "thumbv7em-none-eabihf"
+features = ["samd51g", "unproven", "usb"]
