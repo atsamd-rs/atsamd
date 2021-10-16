@@ -30,11 +30,8 @@ optional = true
 version = "0.2"
 optional = true
 
-[dependencies.usbd-serial]
-version = "0.1"
-optional = true
-
 [dev-dependencies]
+usbd-serial = "0.1"
 panic-halt = "0.2"
 panic-semihosting = "0.5"
 cortex-m-semihosting = "0.3"
@@ -48,7 +45,7 @@ rt = ["cortex-m-rt", "atsamd-hal/samd21g-rt"]
 rtic = ["atsamd-hal/rtic", "rtic-monotonic"]
 unproven = ["atsamd-hal/unproven"]
 use_rtt = ["atsamd-hal/use_rtt"]
-usb = ["atsamd-hal/usb", "usb-device", "usbd-serial"]
+usb = ["atsamd-hal/usb", "usb-device"]
 use_semihosting = []
 
 [profile.dev]

@@ -28,11 +28,8 @@ default-features = false
 version = "0.2"
 optional = true
 
-[dependencies.usbd-serial]
-version = "0.1"
-optional = true
-
 [dev-dependencies]
+usbd-serial = "0.1"
 panic-halt = "0.2"
 
 [features]
@@ -40,7 +37,7 @@ panic-halt = "0.2"
 default = ["rt", "atsamd-hal/samd21e"]
 rt = ["cortex-m-rt", "atsamd-hal/samd21e-rt"]
 unproven = ["atsamd-hal/unproven"]
-usb = ["atsamd-hal/usb", "usb-device", "usbd-serial"]
+usb = ["atsamd-hal/usb", "usb-device"]
 use_semihosting = []
 
 # for cargo flash
