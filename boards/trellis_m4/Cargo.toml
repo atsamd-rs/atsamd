@@ -69,6 +69,10 @@ opt-level = "s"
 [package.metadata]
 chip = "ATSAMD51G19A"
 
+[package.metadata.atsamd.bsp]
+tier = 2
+build_command = "cargo build --examples --features=keypad-unproven"
+
 [[example]]
 name = "neopixel_accel"
 required-features = ["adxl343"]

@@ -68,6 +68,10 @@ opt-level = "s"
 [package.metadata]
 chip = "ATSAMD21G18A"
 
+[package.metadata.atsamd.bsp]
+tier = 1 
+build_command = "cargo build --examples --features=unproven,usb,rtic"
+
 [[example]]
 name = "usb_echo"
 required-features = ["usb", "unproven"]

@@ -36,6 +36,10 @@ use_semihosting = []
 [package.metadata]
 chip = "ATSAMD21E18A"
 
+[package.metadata.atsamd.bsp]
+tier = 2
+build_command = "cargo build --examples --features=unproven"
+
 [[example]]
 name = "blinky_basic"
 

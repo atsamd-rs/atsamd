@@ -65,6 +65,10 @@ opt-level = 3
 [package.metadata]
 chip = "ATSAMD51J19A"
 
+[package.metadata.atsamd.bsp]
+tier = 1
+build_command = "cargo build --examples --features=unproven,usb"
+
 [[example]]
 name = "blinky_basic"
 

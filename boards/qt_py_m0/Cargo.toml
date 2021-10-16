@@ -32,3 +32,7 @@ rt = ["cortex-m-rt", "atsamd-hal/samd21e-rt"]
 unproven = ["atsamd-hal/unproven"]
 use_semihosting = []
 usb = ["atsamd-hal/usb", "usb-device", "usbd-serial"]
+
+[package.metadata.atsamd.bsp]
+tier = 2
+build_command = "cargo build --examples --features=unproven,usb"

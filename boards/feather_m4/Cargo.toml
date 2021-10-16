@@ -63,6 +63,10 @@ opt-level = "s"
 [package.metadata]
 chip = "ATSAMD51J19A"
 
+[package.metadata.atsamd.bsp]
+tier = 1
+build_command = "cargo build --examples --features=unproven,usb"
+
 [[example]]
 name = "pwm"
 required-features = ["unproven"]

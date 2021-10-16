@@ -35,3 +35,7 @@ use_semihosting = []
 # for cargo flash
 [package.metadata]
 chip = "ATSAMD21J18A"
+
+[package.metadata.atsamd.bsp]
+tier = 2
+build_command = "cargo build --examples --features=unproven"
