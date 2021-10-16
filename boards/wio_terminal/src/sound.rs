@@ -1,10 +1,10 @@
 use atsamd_hal::adc::Adc;
 use atsamd_hal::clock::GenericClockController;
 use atsamd_hal::gpio::{self, Floating, Input, Pc30, Pd11, PfB, Port};
+use atsamd_hal::pac::gclk::pchctrl::GEN_A::GCLK11;
+use atsamd_hal::pac::{ADC1, MCLK, TCC0};
 use atsamd_hal::prelude::*;
 use atsamd_hal::pwm::{TCC0Pinout, Tcc0Pwm};
-use atsamd_hal::target_device::gclk::pchctrl::GEN_A::GCLK11;
-use atsamd_hal::target_device::{ADC1, MCLK, TCC0};
 
 /// Buzzer pins
 pub struct Buzzer {

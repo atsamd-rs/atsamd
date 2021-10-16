@@ -1,21 +1,18 @@
 #![no_std]
 
-extern crate atsamd_hal as hal;
+pub use atsamd_hal as hal;
 
 #[cfg(feature = "rt")]
 extern crate cortex_m_rt;
 #[cfg(feature = "rt")]
 pub use cortex_m_rt::entry;
 
-#[cfg(feature = "panic_halt")]
-pub extern crate panic_halt;
-
 use hal::prelude::*;
 use hal::*;
 
 pub use hal::common::*;
 
-pub use hal::target_device as pac;
+pub use hal::pac;
 
 use gpio::{self, *};
 
@@ -35,7 +32,7 @@ define_pins!(
     /// Maps the pins to their arduino names and the numbers printed on the board.
     /// Information pulled from datasheet and board files for arduino IDE : <https://wiki.seeedstudio.com/Wio-Lite-MG126/#tech-support>
     struct Pins,
-    target_device: target_device,
+    pac: pac,
 
     /// Digital 32: SDA
     pin d32 = a22,

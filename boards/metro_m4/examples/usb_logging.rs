@@ -1,23 +1,28 @@
 #![no_std]
 #![no_main]
 
-extern crate cortex_m;
-extern crate metro_m4 as hal;
-extern crate panic_halt;
-extern crate usb_device;
-extern crate usbd_serial;
+use metro_m4 as bsp;
 
-use hal::clock::GenericClockController;
-use hal::entry;
-use hal::pac::{interrupt, CorePeripherals, Peripherals};
+use bsp::ehal;
+use bsp::hal;
+use bsp::pac;
 
-use hal::usb::UsbBus;
+#[cfg(not(feature = "use_semihosting"))]
+use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
+
+use cortex_m::asm::delay as cycle_delay;
+use cortex_m::peripheral::NVIC;
+use ehal::digital::v2::ToggleableOutputPin;
 use usb_device::bus::UsbBusAllocator;
 use usb_device::prelude::*;
 use usbd_serial::{SerialPort, USB_CLASS_CDC};
 
-use cortex_m::asm::delay as cycle_delay;
-use cortex_m::peripheral::NVIC;
+use bsp::entry;
+use hal::clock::GenericClockController;
+use hal::usb::UsbBus;
+use pac::{interrupt, CorePeripherals, Peripherals};
 
 #[entry]
 fn main() -> ! {
@@ -31,16 +36,16 @@ fn main() -> ! {
         &mut peripherals.NVMCTRL,
     );
 
-    let mut pins = hal::Pins::new(peripherals.PORT);
-    let mut red_led = pins.d13.into_open_drain_output(&mut pins.port);
+    let pins = bsp::Pins::new(peripherals.PORT);
+    let mut red_led = pins.d13.into_push_pull_output();
 
     let bus_allocator = unsafe {
-        USB_ALLOCATOR = Some(hal::usb_allocator(
-            pins.usb_dm,
-            pins.usb_dp,
+        USB_ALLOCATOR = Some(bsp::usb_allocator(
             peripherals.USB,
             &mut clocks,
             &mut peripherals.MCLK,
+            pins.usb_dm,
+            pins.usb_dp,
         ));
         USB_ALLOCATOR.as_ref().unwrap()
     };
@@ -72,13 +77,13 @@ fn main() -> ! {
     // entirely interrupt driven.
     loop {
         cycle_delay(5 * 1024 * 1024);
-        red_led.toggle();
+        red_led.toggle().unwrap();
 
         // Turn off interrupts so we don't fight with the interrupt
         cortex_m::interrupt::free(|_| unsafe {
             USB_BUS.as_mut().map(|_| {
                 USB_SERIAL.as_mut().map(|serial| {
-                    let _ = serial.write("Hello USB".as_bytes());
+                    let _ = serial.write("Hello USB\n".as_bytes());
                 });
             })
         });

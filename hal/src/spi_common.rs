@@ -1,9 +1,14 @@
-/// Consolidated common logic for dealing with ATSAMD SPI peripherals.
+#![deprecated(
+    since = "0.13.0",
+    note = "The `spi_common` module is deprecated, and will be removed in a subsequent release.
+    Please use the `sercom::v2::spi::AnySpi` trait instead."
+)]
+
 use crate::hal::spi::{Mode, Phase, Polarity};
 use crate::time::{Hertz, U32Ext};
 
 #[cfg(any(feature = "samd11", feature = "samd21"))]
-use crate::target_device::sercom0::SPI;
+use crate::pac::sercom0::SPI;
 
 #[cfg(any(
     feature = "samd51",
@@ -11,8 +16,9 @@ use crate::target_device::sercom0::SPI;
     feature = "same53",
     feature = "same54"
 ))]
-use crate::target_device::sercom0::SPIM as SPI;
+use crate::pac::sercom0::SPIM as SPI;
 
+/// Consolidated common logic for dealing with ATSAMD SPI peripherals.
 pub trait CommonSpi {
     /// Helper for accessing the spi member of the sercom instance
     fn spi(&self) -> &SPI;

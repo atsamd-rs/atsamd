@@ -1,9 +1,11 @@
 #![no_std]
 
-extern crate atsamd_hal as hal;
+pub use atsamd_hal as hal;
+pub use hal::common::*;
+pub use hal::pac;
 
 #[cfg(feature = "rt")]
-extern crate cortex_m_rt;
+use cortex_m_rt;
 #[cfg(feature = "rt")]
 pub use cortex_m_rt::entry;
 
@@ -15,17 +17,13 @@ use hal::time::Hertz;
 
 use hal::sercom::{PadPin, UART5};
 
-pub use hal::common::*;
-
-pub use hal::target_device as pac;
-
 use gpio::{Floating, Input, PfD, Port};
 
 define_pins!(
     /// Maps the pins to their arduino names and
     /// the numbers printed on the board.
     struct Pins,
-    target_device: target_device,
+    pac: pac,
 
     /// RX
     pin rx = b23,

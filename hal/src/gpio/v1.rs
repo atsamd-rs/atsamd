@@ -5,7 +5,7 @@
 //!
 //! Working with GPIO pins.
 //! The pins are associated with the PORT hardware. This module defines a
-//! [split](GpioExt::split) method on the [PORT](crate::target_device::PORT)
+//! [split](GpioExt::split) method on the [PORT](crate::pac::PORT)
 //! type that is used to safely reference the individual pin configuration.
 //! The IO pins can be switched into alternate function modes, which
 //! routes the pins to different peripherals depending on the mode
@@ -13,12 +13,16 @@
 //! use of type states to make the interface (ideally, or at least practically)
 //! impossible to misuse.
 
-use crate::target_device::PORT;
+#![deprecated(
+    since = "0.13.0",
+    note = "The gpio::v1 module is deprecated, and will be removed in a subsequent release.
+    Please use the gpio::v2 module instead."
+)]
 
-use hal::digital::v2::OutputPin;
-
+use crate::ehal::digital::v2::OutputPin;
 #[cfg(feature = "unproven")]
-use hal::digital::v2::{InputPin, StatefulOutputPin, ToggleableOutputPin};
+use crate::ehal::digital::v2::{InputPin, StatefulOutputPin, ToggleableOutputPin};
+use crate::pac::PORT;
 
 use crate::gpio::v2::{self, Alternate, AlternateConfig, AnyPin, OutputConfig};
 pub use crate::gpio::v2::{PinId, PinMode};
@@ -795,7 +799,7 @@ port!([
 #[macro_export]
 macro_rules! define_pins {
     ($(#[$topattr:meta])* struct $Type:ident,
-     target_device: $target_device:ident,
+     pac: $pac:ident,
      $( $(#[$attr:meta])* pin $name:ident = $pin_ident:ident),+ , ) => {
 
 $crate::paste::item! {
@@ -814,7 +818,7 @@ $crate::paste::item! {
 impl $Type {
     /// Returns the pins for the device
     $crate::paste::item! {
-        pub fn new(port: $target_device::PORT) -> Self {
+        pub fn new(port: $pac::PORT) -> Self {
             let pins = port.split();
             $Type {
                 port: pins.port,

@@ -266,6 +266,7 @@ pub fn i2c_master(
     I2CMaster3::new(clock, baud, sercom3, pm, sda, scl)
 }
 
+/// UART pads for the labelled RX & TX pins
 pub type UartPads = uart::Pads<Sercom0, UartRx, UartTx>;
 
 /// UART device for the labelled RX & TX pins
@@ -291,6 +292,7 @@ pub fn uart(
 }
 
 #[cfg(feature = "usb")]
+/// Convenience function for setting up USB
 pub fn usb_allocator(
     usb: pac::USB,
     clocks: &mut GenericClockController,

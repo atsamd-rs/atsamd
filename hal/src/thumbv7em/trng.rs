@@ -1,4 +1,4 @@
-use crate::target_device::{MCLK, TRNG};
+use crate::pac::{MCLK, TRNG};
 
 use rand_core::{CryptoRng, RngCore};
 

@@ -62,7 +62,7 @@ type Pads = uart::PadsFromIds<Sercom0, PA09, PA09>;
 //! *same* `Sercom`.
 //!
 //! ```
-//! use atsamd_hal::target_device::Peripherals;
+//! use atsamd_hal::pac::Peripherals;
 //! use atsamd_hal::gpio::v2::Pins;
 //! use atsamd_hal::sercom::v2::{Sercom0, uart};
 //!
@@ -690,7 +690,7 @@ where
     /// Disable interrupts for the specified flags.
     ///
     /// Note that only the flags pertinent to `Self`'s [`Capability`]
-    /// will be cleared. The other flags will be **SILENTLY IGNORED**    
+    /// will be cleared. The other flags will be **SILENTLY IGNORED**
     ///
     /// * Available flags for [`Receive`] capability: `RXC`, `RXS`, `RXBRK` and
     ///   `ERROR`

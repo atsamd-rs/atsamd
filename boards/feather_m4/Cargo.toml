@@ -1,6 +1,6 @@
 [package]
 name = "feather_m4"
-version = "0.7.0"
+version = "0.8.0"
 edition = "2018"
 authors = ["Theodore DeRego <tderego94@gmail.com>"]
 description = "Board Support crate for the Adafruit Feather M4"
@@ -11,17 +11,16 @@ readme = "README.md"
 documentation = "https://atsamd-rs.github.io/atsamd/atsamd51j/feather_m4/"
 
 [dependencies]
-cortex-m = "~0.6"
+cortex-m = "0.7"
 embedded-hal = "0.2.3"
 nb = "0.1"
 
 [dependencies.cortex-m-rt]
-version = "0.6.12"
+version = "0.7"
 optional = true
 
 [dependencies.atsamd-hal]
 path = "../../hal"
-version = "0.12"
 default-features = false
 
 [dependencies.usb-device]
@@ -38,6 +37,7 @@ panic-semihosting = "0.5"
 cortex-m-semihosting = "0.3"
 smart-leds = "0.3.0"
 ws2812-timer-delay = "0.3.0"
+heapless = "0.7.0"
 
 [features]
 # ask the HAL to enable atsamd51j support
@@ -59,6 +59,10 @@ lto = true
 debug = true
 lto = true
 opt-level = "s"
+
+# for cargo flash
+[package.metadata]
+chip = "ATSAMD51J19A"
 
 [[example]]
 name = "pwm"

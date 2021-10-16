@@ -1,27 +1,26 @@
 #![no_std]
 #![no_main]
 
-extern crate cortex_m;
-extern crate cortex_m_semihosting;
-extern crate samd11_bare as hal;
+use bsp::hal;
+use samd11_bare as bsp;
 
-#[cfg(not(feature = "use_semihosting"))]
-extern crate panic_halt;
-#[cfg(feature = "use_semihosting")]
-extern crate panic_semihosting;
-
-#[macro_use(block)]
-extern crate nb;
-
+use bsp::entry;
 use hal::clock::GenericClockController;
-use hal::delay::Delay;
-use hal::entry;
-use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 
-use hal::pac::gclk::clkctrl::GEN_A;
-use hal::pac::gclk::genctrl::SRC_A;
-use hal::sercom::{PadPin, Sercom0Pad0, Sercom0Pad1, UART0};
+#[cfg(not(feature = "use_semihosting"))]
+use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
+
+use hal::delay::Delay;
+use hal::pac::{CorePeripherals, Peripherals};
+
+use hal::pac::gclk::{clkctrl::GEN_A, genctrl::SRC_A};
+use hal::sercom::v2::{
+    uart::{self, BaudMode, Oversampling},
+    Sercom0,
+};
 
 #[entry]
 fn main() -> ! {
@@ -40,35 +39,32 @@ fn main() -> ! {
         .get_gclk(GEN_A::GCLK2)
         .expect("Could not get clock 2");
 
-    let mut pins = hal::Pins::new(peripherals.PORT);
+    let pins = bsp::Pins::new(peripherals.PORT);
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
-    let rx: Sercom0Pad1<_> = pins
-        .d1
-        .into_pull_down_input(&mut pins.port)
-        .into_pad(&mut pins.port);
-    let tx: Sercom0Pad0<_> = pins
-        .d14
-        .into_pull_down_input(&mut pins.port)
-        .into_pad(&mut pins.port);
+    let rx: bsp::UartRx = pins.d1.into();
+    let tx: bsp::UartTx = pins.d14.into();
 
     let uart_clk = clocks
         .sercom0_core(&gclk2)
         .expect("Could not configure sercom0 clock");
 
-    let mut uart = UART0::new(
-        &uart_clk,
-        9600.hz(),
-        peripherals.SERCOM0,
+    let pads = uart::Pads::<Sercom0>::default().rx(rx).tx(tx);
+
+    let mut uart = uart::Config::new(
         &mut peripherals.PM,
-        (rx, tx),
-    );
+        peripherals.SERCOM0,
+        pads,
+        uart_clk.freq(),
+    )
+    .baud(9600.hz(), BaudMode::Fractional(Oversampling::Bits16))
+    .enable();
 
     loop {
         for byte in b"Hello, world!" {
             // NOTE `block!` blocks until `uart.write()` completes and returns
             // `Result<(), Error>`
-            block!(uart.write(*byte)).unwrap();
+            nb::block!(uart.write(*byte)).unwrap();
         }
         delay.delay_ms(1000u16);
     }

@@ -1,17 +1,23 @@
 #![no_std]
 #![no_main]
 
-extern crate cortex_m_rt;
-extern crate embedded_hal;
-extern crate metro_m4 as hal;
-extern crate nb;
-extern crate panic_halt;
+use metro_m4 as bsp;
 
-use crate::hal::clock::GenericClockController;
-use crate::hal::pac::gclk::genctrl::SRC_A::DPLL0;
-use crate::hal::pac::gclk::pchctrl::GEN_A::GCLK2;
-use crate::hal::pac::Peripherals;
-use cortex_m_rt::entry;
+use bsp::hal;
+use bsp::pac;
+
+#[cfg(not(feature = "use_semihosting"))]
+use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
+
+use bsp::entry;
+use hal::clock::GenericClockController;
+use hal::gpio::v2::M;
+
+use pac::gclk::genctrl::SRC_A::DPLL0;
+use pac::gclk::pchctrl::GEN_A::GCLK2;
+use pac::Peripherals;
 
 #[entry]
 fn main() -> ! {
@@ -23,11 +29,12 @@ fn main() -> ! {
         &mut peripherals.OSCCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = hal::Pins::new(peripherals.PORT);
+    let pins = bsp::Pins::new(peripherals.PORT);
 
-    let _gclk2 = clocks
+    // assuming 120MHz main clock, output a 10MHz clock on d7
+    let _ = clocks
         .configure_gclk_divider_and_source(GCLK2, 12, DPLL0, false)
         .unwrap();
-    pins.d13.into_function_m(&mut pins.port);
+    let _ = pins.d7.into_alternate::<M>();
     loop {}
 }

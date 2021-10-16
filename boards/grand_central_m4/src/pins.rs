@@ -1,8 +1,8 @@
 //! Grand Central M4 Express Pins
 
 use super::{
-    hal, pac::MCLK, pac::SERCOM0, pac::SERCOM1, pac::SERCOM4, pac::SERCOM5, pac::SERCOM6,
-    pac::SERCOM7, target_device,
+    hal, pac, pac::MCLK, pac::SERCOM0, pac::SERCOM1, pac::SERCOM4, pac::SERCOM5, pac::SERCOM6,
+    pac::SERCOM7,
 };
 
 use hal::define_pins;
@@ -30,7 +30,7 @@ define_pins!(
     /// Maps the pins to their arduino names and
     /// the numbers printed on the board.
     struct Pins,
-    target_device: target_device,
+    pac: pac,
 
     /// # LED Pins
 

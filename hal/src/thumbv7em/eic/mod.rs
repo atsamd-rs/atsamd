@@ -1,15 +1,15 @@
 use crate::clock::EicClock;
-use crate::target_device;
+use crate::pac;
 
 pub mod pin;
 
 /// An External Interrupt Controller which is being configured.
 pub struct ConfigurableEIC {
-    eic: target_device::EIC,
+    eic: pac::EIC,
 }
 
 impl ConfigurableEIC {
-    fn new(eic: target_device::EIC) -> Self {
+    fn new(eic: pac::EIC) -> Self {
         Self { eic }
     }
 
@@ -41,11 +41,7 @@ impl ConfigurableEIC {
 /// init_with_ulp32k initializes the EIC and wires it up to the
 /// ultra-low-power 32kHz clock source. finalize() must be called
 /// before the EIC is ready for use.
-pub fn init_with_ulp32k(
-    mclk: &mut target_device::MCLK,
-    _clock: EicClock,
-    eic: target_device::EIC,
-) -> ConfigurableEIC {
+pub fn init_with_ulp32k(mclk: &mut pac::MCLK, _clock: EicClock, eic: pac::EIC) -> ConfigurableEIC {
     mclk.apbamask.modify(|_, w| w.eic_().set_bit());
 
     eic.ctrla.modify(|_, w| w.swrst().set_bit());
@@ -61,7 +57,7 @@ pub fn init_with_ulp32k(
 
 /// A configured External Interrupt Controller.
 pub struct EIC {
-    _eic: target_device::EIC,
+    _eic: pac::EIC,
 }
 
 impl From<ConfigurableEIC> for EIC {

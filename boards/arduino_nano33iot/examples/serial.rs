@@ -1,11 +1,17 @@
 #![no_std]
 #![no_main]
 
-extern crate arduino_nano33iot as hal;
+use arduino_nano33iot as bsp;
+use bsp::hal;
 
+#[cfg(not(feature = "use_semihosting"))]
+use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
+
+use bsp::entry;
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
-use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 
@@ -19,17 +25,16 @@ fn main() -> ! {
         &mut peripherals.SYSCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = hal::Pins::new(peripherals.PORT);
+    let pins = bsp::Pins::new(peripherals.PORT);
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
-    let mut uart = hal::uart(
+    let mut uart = bsp::uart(
         &mut clocks,
         9600.hz(),
         peripherals.SERCOM5,
         &mut peripherals.PM,
         pins.rx,
         pins.tx,
-        &mut pins.port,
     );
 
     loop {

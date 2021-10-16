@@ -1,13 +1,13 @@
 use atsamd_hal::clock::GenericClockController;
 use atsamd_hal::gpio::{Floating, Input, Pa24, Pa25, Pb26, Pb27, PfC, Port};
+use atsamd_hal::pac::{self, MCLK, SERCOM2};
 use atsamd_hal::sercom::{PadPin, Sercom2Pad0, Sercom2Pad1, UART2};
-use atsamd_hal::target_device::{self, MCLK, SERCOM2};
 use atsamd_hal::time::Hertz;
 
 #[cfg(feature = "usb")]
 use atsamd_hal::usb::{usb_device::bus::UsbBusAllocator, UsbBus};
 #[cfg(feature = "usb")]
-use target_device::gclk::{genctrl::SRC_A, pchctrl::GEN_A};
+use pac::gclk::{genctrl::SRC_A, pchctrl::GEN_A};
 
 /// UART pins (uses `SERCOM2`)
 pub struct UART {
@@ -54,7 +54,7 @@ impl USB {
     /// Create a USB allocator.
     pub fn usb_allocator(
         self,
-        usb: target_device::USB,
+        usb: pac::USB,
         clocks: &mut GenericClockController,
         mclk: &mut MCLK,
     ) -> UsbBusAllocator<UsbBus> {

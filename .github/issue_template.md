@@ -1,0 +1,1 @@
+**NOTE**: Tier 2 BSPs are _expected_ to have deprecation warnings for "v1" HALs. If you would like them fixed, please open a pull request to update your BSP rather than opening an issue for this. See the `README.md` for more information.

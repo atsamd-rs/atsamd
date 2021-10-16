@@ -1,19 +1,23 @@
 #![no_std]
 #![no_main]
 
-extern crate cortex_m_rt;
-extern crate cortex_m_semihosting;
-extern crate embedded_hal;
-extern crate metro_m4 as hal;
-extern crate panic_semihosting;
+use metro_m4 as bsp;
+
+use bsp::hal;
+use bsp::pac;
+
+#[cfg(not(feature = "use_semihosting"))]
+use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
 
 use cortex_m_semihosting::hprintln;
 
+use bsp::entry;
 use hal::clock::GenericClockController;
-use hal::entry;
-use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 use hal::trng::Trng;
+use pac::{CorePeripherals, Peripherals};
 
 #[entry]
 fn main() -> ! {

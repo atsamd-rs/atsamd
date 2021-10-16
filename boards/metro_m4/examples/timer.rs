@@ -1,17 +1,21 @@
 #![no_std]
 #![no_main]
 
-extern crate cortex_m_rt;
-extern crate embedded_hal;
-extern crate metro_m4 as hal;
-extern crate nb;
-extern crate panic_halt;
+use metro_m4 as bsp;
 
-use crate::hal::clock::GenericClockController;
-use crate::hal::pac::Peripherals;
-use crate::hal::timer::TimerCounter;
-use cortex_m_rt::entry;
+use bsp::hal;
+
+#[cfg(not(feature = "use_semihosting"))]
+use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
+
+use bsp::entry;
+use hal::clock::GenericClockController;
+use hal::pac::Peripherals;
 use hal::prelude::*;
+use hal::timer::TimerCounter;
+
 use nb::block;
 
 #[entry]
@@ -24,17 +28,20 @@ fn main() -> ! {
         &mut peripherals.OSCCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = hal::Pins::new(peripherals.PORT);
+    let pins = bsp::Pins::new(peripherals.PORT);
 
     let gclk0 = clocks.gclk0();
-    let timer_clock = clocks.tc2_tc3(&gclk0).unwrap();
-    let mut timer = TimerCounter::tc3_(&timer_clock, peripherals.TC3, &mut peripherals.MCLK);
-    timer.start(9600u32.hz());
-    let mut d0 = pins.d0.into_push_pull_output(&mut pins.port);
+    let tc2_3 = clocks.tc2_tc3(&gclk0).unwrap();
+    let mut timer = TimerCounter::tc3_(&tc2_3, peripherals.TC3, &mut peripherals.MCLK);
+    // start a 5Hz timer
+    timer.start(5.hz());
+    let mut red_led = pins.d13.into_push_pull_output();
+
+    // toggle the led at the frequency set by the timer
     loop {
-        d0.set_high().unwrap();
+        red_led.set_high().unwrap();
         block!(timer.wait()).ok();
-        d0.set_low().unwrap();
+        red_led.set_low().unwrap();
         block!(timer.wait()).ok();
     }
 }
