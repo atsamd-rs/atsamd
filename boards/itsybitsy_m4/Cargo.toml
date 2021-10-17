@@ -12,6 +12,7 @@ edition = "2018"
 repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
 
+[dependencies]
 bitbang-hal = "0.3"
 apa102-spi = "0.3"
 smart-leds = "0.3"

@@ -11,6 +11,7 @@ edition = "2018"
 repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
 
+[dependencies]
 ws2812-timer-delay = "0.3"
 
 [dependencies.cortex-m-rt]

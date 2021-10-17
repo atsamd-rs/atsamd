@@ -9,6 +9,7 @@ repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
 edition = "2018"
 
+[dependencies]
 cortex-m-rt = { version = "0.6.12", optional = true }
 usb-device = { version = "0.2", optional = true }
 smart-leds = { version = "0.3.0", optional = true }
