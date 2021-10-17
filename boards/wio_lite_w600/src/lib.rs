@@ -20,207 +20,215 @@ pub use hal::usb::UsbBus;
 atsamd_hal::bsp_pins!(
     // ---------- Left Hand Side ----------
 
-    // A0_PA02_AIN0
     PA02 {
+        /// A0_PA02_AIN0
         name: a0,
         aliases: {
             AlternateB: AIn0
         }
     }
 
-    // AREF
     PA03 {
+        /// AREF
         name: aref,
     }
 
-    // A1_PB08_AIN2
     PB08 {
+        /// A1_PB08_AIN2
         name: a1
         aliases: {
             AlternateB: AIn1
         }
     },
 
-    // A2_PB09_AIN2
     PB09 {
+        /// A2_PB09_AIN2
         name: a2
         aliases: {
             AlternateB: AIn2
         }
     },
 
-    // A3_PB04_AIN2
     PA04 {
+        /// A3_PB04_AIN2
         name: a3
         aliases: {
             AlternateB: AIn3
         }
     },
 
-    // A4_PB05_AIN2
     PA05 {
+        /// A4_PB05_AIN2
         name: a4
         aliases: {
             AlternateB: AIn4
         }
     },
 
-    // D8_DGI_GPIO2/VBAT
     // ToDo: What is this?
     PA06 {
+        /// D8_DGI_GPIO2/VBAT
         name: vbat
     },
 
-    // D9_DGI_GPIO3
     PA07 {
+        /// D9_DGI_GPIO3
         name: d9
     },
 
-    // D1/TX_PA10_TCC0-W2
     PA10 {
+        /// D1/TX_PA10_TCC0-W2
         name: d1
         aliases: {
             AlternateC: UartTx
         }
     },
 
-    // D0/RX_PA11_TCC0-W3
     PA11 {
+        /// D0/RX_PA11_TCC0-W3
         name: d0
         aliases: {
             AlternateC: UartRx
         }
     },
 
-    // D23_PB10_S4_SPI_MOSI
     PB10 {
+        /// D23_PB10_S4_SPI_MOSI
         name: d23
         aliases: {
             AlternateD: Mosi
         }
     },
 
-    // D24_PB11_S4_SPI_SCK
     PB11 {
+        /// D24_PB11_S4_SPI_SCK
         name: d24
         aliases: {
             AlternateD: Sck
         }
     },
 
-    // D22_PA12_S4_SPI_MISO
     PA12 {
+        /// D22_PA12_S4_SPI_MISO
         name: d22
         aliases: {
             AlternateD: Miso
         }
     },
 
-    // D5_PA15_TCC0-W5
     PA15 {
+        /// D5_PA15_TCC0-W5
         name: d5
     },
 
     // ---------- Right Hand Side ----------
 
-    // PB03_RX_LED
     // ToDo: What is this?
     PB03 {
+        /// PB03_RX_LED
         name: rx_led
     },
 
-    // A5_PB02_AIN10
     PB02 {
+        /// A5_PB02_AIN10
         name: a5
     },
 
-    // PA31_SWDIO
     // ToDo: Is this ever useful in software?
     PA31 {
+        /// PA31_SWDIO
         name: swdio
     },
 
-    // PA30_SWCLK
     // ToDo: Is this ever useful in software?
     PA30 {
+        /// PA30_SWCLK
         name: swclk
     },
 
-    // PA27_TX_LED
     // ToDo: What is this?
     PA27 {
+        /// PA27_TX_LED
         name: tx_led
     },
 
-    // UART1/TX_PB12_A4 (Tx for W600)
     PB23 {
+        /// UART1/TX_PB12_A4
+        ///
+        /// Tx for W600
         name: w600_tx
     },
 
-    // UART1/RX_PB11_A3 (Rx for W600)
     PB22 {
+        /// UART1/RX_PB11_A3
+        ///
+        /// Rx for W600
         name: w600_rx
     },
 
-    // SAMD21_D+ (USB Data Plus)
     PA25 {
+        /// SAMD21_D+
+        ///
+        /// USB Data Plus
         name: usb_dp
         aliases: {
             AlternateG: UsbDp
         }
     },
 
-    // SAMD21_D- (USB Data Minus)
     PA24 {
+        /// SAMD21_D-
+        ///
+        /// USB Data Minus
         name: usb_dm
         aliases: {
             AlternateG: UsbDm
         }
     },
 
-    // D33/SCL/PA23
     PA23 {
+        /// D33/SCL/PA23
         name: d33,
         aliases: {
             AlternateC: Scl
         }
     },
 
-    // D32/SDA/PA22
     PA22 {
+        /// D32/SDA/PA22
         name: d32,
         aliases: {
             AlternateC: Sda
         }
     },
 
-    // RESET_W600
     PA21 {
+        /// RESET_W600
         name: reset_w600
     },
 
-    // D6_PA20_TCC0-W6
     PA20 {
+        /// D6_PA20_TCC0-W6
         name: d6
     },
 
-    // D12_MISO
     PA19 {
+        /// D12_MISO
         name: d12
     },
 
-    // D10_SS
     PA18 {
+        /// D10_SS
         name: d10
     },
 
-    // D13_SCK
     PA17 {
+        /// D13_SCK
         name: d13
     },
 
-    // D11_MOSI
     PA16 {
+        /// D11_MOSI
         name: d11
     },
 );
