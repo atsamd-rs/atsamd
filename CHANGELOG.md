@@ -1,5 +1,6 @@
 # Unreleased Changes
 
+- Improve the `bsp_pins!` macro (#475 & #483)
 - Add undocumented but valid IOSet for ATSAMD5x/ATSAME5x (#506)
 - Fixed the RTC implementation of embedded-hal timer traits to be periodic again (#490)
 
