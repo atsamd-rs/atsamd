@@ -10,14 +10,15 @@ readme = "README.md"
 edition = "2018"
 
 [dependencies]
-cortex-m = "0.6.3"
+cortex-m = "0.7"
 embedded-hal = "0.2.3"
 
 [dependencies.cortex-m-rt]
-version = "0.6.13"
+version = "0.7"
 optional = true
 
 [dependencies.atsamd-hal]
+path = "../../hal"
 version = "0.13"
 default-features = false
 
@@ -27,7 +28,7 @@ optional = true
 
 [dev-dependencies]
 usbd-serial = "0.1"
-panic-probe = "0.1.0"
+panic-probe = "0.2"
 panic-halt = "0.2"
 panic-semihosting = "0.5"
 panic-rtt-target = { version = "0.1.1", features = ["cortex-m"] }
