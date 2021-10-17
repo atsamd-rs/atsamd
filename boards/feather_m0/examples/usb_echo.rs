@@ -16,7 +16,7 @@ use bsp::hal;
 use bsp::pac;
 use feather_m0 as bsp;
 
-use bsp::entry;
+use bsp::{entry, pin_alias};
 use hal::clock::GenericClockController;
 use hal::prelude::*;
 use hal::usb::UsbBus;
@@ -33,7 +33,7 @@ fn main() -> ! {
         &mut peripherals.NVMCTRL,
     );
     let pins = bsp::Pins::new(peripherals.PORT);
-    let mut red_led: bsp::RedLed = pins.d13.into();
+    let mut red_led: bsp::RedLed = pin_alias!(pins.red_led).into();
 
     let bus_allocator = unsafe {
         USB_ALLOCATOR = Some(bsp::usb_allocator(

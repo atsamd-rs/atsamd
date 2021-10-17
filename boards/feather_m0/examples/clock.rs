@@ -19,7 +19,7 @@ use bsp::hal;
 use bsp::pac;
 use feather_m0 as bsp;
 
-use bsp::entry;
+use bsp::{entry, pin_alias};
 use hal::clock::{ClockGenId, ClockSource, GenericClockController};
 use hal::delay::Delay;
 use hal::prelude::*;
@@ -41,7 +41,7 @@ fn main() -> ! {
 
     let mut delay = Delay::new(core.SYST, &mut clocks);
     let pins = bsp::Pins::new(peripherals.PORT);
-    let mut red_led: bsp::RedLed = pins.d13.into();
+    let mut red_led: bsp::RedLed = pin_alias!(pins.red_led).into();
 
     // get the internal 32k running at 1024 Hz for the RTC
     let timer_clock = clocks
