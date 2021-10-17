@@ -61,82 +61,82 @@ version = "1.0"
 # We use a feature named "samdFOO" to pull in the dependency named "atsamdFOO"
 [dependencies.atsamd11c]
 path = "../pac/atsamd11c"
-version = "0.10"
+version = "0.11"
 optional = true
 
 [dependencies.atsamd11d]
 path = "../pac/atsamd11d"
-version = "0.10"
+version = "0.11"
 optional = true
 
 [dependencies.atsamd21e]
 path = "../pac/atsamd21e"
-version = "0.10"
+version = "0.11"
 optional = true
 
 [dependencies.atsamd21g]
 path = "../pac/atsamd21g"
-version = "0.10"
+version = "0.11"
 optional = true
 
 [dependencies.atsamd21j]
 path = "../pac/atsamd21j"
-version = "0.10"
+version = "0.11"
 optional = true
 
 [dependencies.atsamd51g]
 path = "../pac/atsamd51g"
-version = "0.10"
+version = "0.11"
 optional = true
 
 [dependencies.atsamd51j]
 path = "../pac/atsamd51j"
-version = "0.10"
+version = "0.11"
 optional = true
 
 [dependencies.atsamd51n]
 path = "../pac/atsamd51n"
-version = "0.10"
+version = "0.11"
 optional = true
 
 [dependencies.atsamd51p]
 path = "../pac/atsamd51p"
-version = "0.10"
+version = "0.11"
 optional = true
 
 [dependencies.atsame51g]
 path = "../pac/atsame51g"
-version = "0.10"
+version = "0.11"
 optional = true
 
 [dependencies.atsame51j]
 path = "../pac/atsame51j"
-version = "0.10"
+version = "0.11"
 optional = true
 
 [dependencies.atsame51n]
 path = "../pac/atsame51n"
-version = "0.10"
+version = "0.11"
 optional = true
 
 [dependencies.atsame53j]
 path = "../pac/atsame53j"
-version = "0.10"
+version = "0.11"
 optional = true
 
 [dependencies.atsame53n]
 path = "../pac/atsame53n"
-version = "0.10"
+version = "0.11"
 optional = true
 
 [dependencies.atsame54n]
 path = "../pac/atsame54n"
-version = "0.10"
+version = "0.11"
 optional = true
 
 [dependencies.atsame54p]
 path = "../pac/atsame54p"
-version = "0.10"
+version = "0.11"
 optional = true
 
 [dependencies.embedded-sdmmc]
