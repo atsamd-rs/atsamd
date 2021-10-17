@@ -34,3 +34,6 @@ usb = ["atsamd-hal/usb", "usb-device"]
 
 [[example]]
 name = "blinky_basic"
+
+[[example]]
+name = "usb_ack"

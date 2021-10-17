@@ -289,6 +289,7 @@ pub fn spi_master(
 pub type Uart = UART0<UartRx, UartTx, (), ()>;
 
 /// Convenience for setting up the D0 and D1 pins to
+///
 /// operate as UART RX/TX (respectively) running at the specified baud.
 pub fn uart(
     clocks: &mut GenericClockController,
@@ -305,16 +306,42 @@ pub fn uart(
     UART0::new(clock, baud, sercom0, pm, pads)
 }
 
+/// Convenience method for getting the USB Bus Allocator.
+///
+/// Basic usage would look like the below:
+/// ```no_run
+/// use wio_lite_w600::hal::clock::GenericClockController;
+/// use wio_lite_w600::pac::Peripherals;
+///
+/// let mut peripherals = Peripherals::take().unwrap();
+/// let mut clocks = GenericClockController::with_internal_32kosc(
+///     peripherals.GCLK,
+///     &mut peripherals.PM,
+///     &mut peripherals.SYSCTRL,
+///     &mut peripherals.NVMCTRL,
+/// );
+/// let pins = bsp::Pins::new(peripherals.PORT);
+///
+/// let bus_allocator = bsp::usb_allocator(
+///     peripherals.USB,
+///     &mut clocks,
+///     &mut peripherals.PM,
+///     pins.usb_dm,
+///     pins.usb_dp,
+/// );
+/// ```
+/// However to take advantage of USB interrupts you will need, to do some unsafe
+/// rust. See the USB code examples in the `examples/` directory of the project.
 #[cfg(feature = "usb")]
 pub fn usb_allocator(
     usb: pac::USB,
-    clocks: &mut GenericClockController,
+    clocks: &mut hal::clock::GenericClockController,
     pm: &mut pac::PM,
-    dm: UsbDm,
-    dp: UsbDp,
+    dm: impl Into<UsbDm>,
+    dp: impl Into<UsbDp>,
 ) -> UsbBusAllocator<UsbBus> {
     let gclk0 = clocks.gclk0();
-    let usb_clock = &clocks.usb(&gclk0).unwrap();
-
-    UsbBusAllocator::new(UsbBus::new(usb_clock, pm, dm, dp, usb))
+    let clock = &clocks.usb(&gclk0).unwrap();
+    let (dm, dp) = (dm.into(), dp.into());
+    UsbBusAllocator::new(UsbBus::new(clock, pm, dm, dp, usb))
 }
