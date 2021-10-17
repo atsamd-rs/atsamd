@@ -28,7 +28,7 @@ use hal::sercom::{I2CMaster4, UART4};
 use hal::time::Hertz;
 
 #[cfg(feature = "keypad-unproven")]
-use embedded_hal::digital::v1_compat::{OldInputPin, OldOutputPin};
+use hal::ehal::digital::v1_compat::{OldInputPin, OldOutputPin};
 #[cfg(feature = "keypad-unproven")]
 use hal::gpio::{OpenDrain, Output, PullUp};
 #[cfg(feature = "keypad-unproven")]

@@ -9,7 +9,7 @@
 use edgebadge::{entry, hal, pac, Pins};
 use panic_halt as _;
 
-use embedded_hal::digital::v1_compat::OldOutputPin;
+use hal::ehal::digital::v1_compat::OldOutputPin;
 use hal::adc::Adc;
 use hal::prelude::*;
 use hal::timer::SpinTimer;

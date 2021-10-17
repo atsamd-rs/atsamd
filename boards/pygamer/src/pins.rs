@@ -2,10 +2,10 @@
 
 use super::{hal, pac};
 
-use embedded_hal::{digital::v1_compat::OldOutputPin, timer::CountDown, timer::Periodic};
 use gpio::{Floating, Input, Output, Port, PushPull};
 use hal::clock::GenericClockController;
 use hal::define_pins;
+use hal::ehal::{digital::v1_compat::OldOutputPin, timer::CountDown, timer::Periodic};
 use hal::gpio::{self, *};
 use hal::hal::spi;
 use hal::prelude::*;

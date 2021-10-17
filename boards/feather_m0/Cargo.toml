@@ -12,7 +12,6 @@ resolver = "2"
 
 [dependencies]
 cortex-m = "0.7"
-embedded-hal = "0.2.3"
 
 [dependencies.cortex-m-rt]
 version = "0.7"
