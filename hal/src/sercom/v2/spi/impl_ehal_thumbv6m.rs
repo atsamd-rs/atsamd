@@ -18,8 +18,10 @@
 //! implement `spi::FullDuplex<u16>`.
 //!
 //! Note that embedded HAL does not offer a way to transmit slices in a
-//! non-blocking fashion, but this can be done using interrupts and the
-//! [`spi_future`](super::super::spi_future) module.
+//! non-blocking fashion, but this can be done using
+#![cfg_attr(feature = "dma", doc = "[`DMA`](crate::dmac)")]
+#![cfg_attr(not(feature = "dma"), doc = "`DMA`")]
+//! or using interrupts and the [`spi_future`](super::super::spi_future) module.
 //!
 //! # Variations by [`Capability`]
 //!

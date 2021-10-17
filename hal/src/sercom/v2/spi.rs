@@ -748,7 +748,7 @@ where
         self.change()
     }
 
-    /// Change the [`CharSize`] using the builder patter
+    /// Change the [`CharSize`] using the builder pattern
     #[cfg(any(feature = "samd11", feature = "samd21"))]
     #[inline]
     pub fn char_size<C2: CharSize>(mut self) -> Config<P, M, C2> {
@@ -756,7 +756,7 @@ where
         self.change()
     }
 
-    /// Change the transaction [`Length`] using the builder patter
+    /// Change the transaction [`Length`] using the builder pattern
     ///
     /// To use a run-time dynamic length, set the [`Length`] type to
     /// [`DynLength`] and then use the [`dyn_length`] method.
@@ -1153,12 +1153,12 @@ where
     /// Change the transaction [`Length`]
     ///
     /// Changing the transaction [`Length`] while is enabled is permissible but
-    /// `unsafe`. If you have sent or received *any* bytes at the current
+    /// dangerous. If you have sent or received *any* bytes at the current
     /// [`Length`], you **must** wait for a TXC flag before changing to a new
     /// [`Length`].
     #[inline]
     #[cfg(feature = "min-samd51g")]
-    pub unsafe fn length<L: Length>(self) -> Spi<Config<C::Pads, C::OpMode, L>, A>
+    pub fn length<L: Length>(self) -> Spi<Config<C::Pads, C::OpMode, L>, A>
     where
         Config<C::Pads, C::OpMode, L>: ValidConfig,
     {
@@ -1280,12 +1280,12 @@ where
     /// Write the LENGTH register to set the transaction length. Panics if the
     /// length is zero.
     ///
-    /// # Safety
-    ///
-    /// If you have sent any data at the current transaction length, you
-    /// **must** wait for `TXC` before changing the length.
+    /// Changing the transaction `LENGTH` while is enabled is permissible but
+    /// dangerous. If you have sent or received *any* bytes at the current
+    /// `LENGTH`, you **must** wait for a TXC flag before changing to a new
+    /// `LENGTH`.
     #[inline]
-    pub unsafe fn set_dyn_length(&mut self, length: u8) {
+    pub fn set_dyn_length(&mut self, length: u8) {
         self.config.set_dyn_length(length);
     }
 }

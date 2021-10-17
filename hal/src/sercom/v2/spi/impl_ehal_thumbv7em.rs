@@ -40,7 +40,10 @@
 //! corresponding `Spi` structs only implement the `blocking` traits as well.
 //!
 //! For a non-blocking alternative that can be used to transfer arbitrary-length
-//! slices, see the [`spi_future`](super::super::spi_future) module.
+//! slices, you could use either
+#![cfg_attr(feature = "dma", doc = "[`DMA`](crate::dmac)")]
+#![cfg_attr(not(feature = "dma"), doc = "`DMA`")]
+//! or the [`spi_future`](super::super::spi_future) module.
 //!
 //! # Variations by [`Capability`]
 //!
@@ -174,7 +177,7 @@ where
 impl<C> serial::Write<C::Word> for Spi<C, Tx>
 where
     C: ValidConfig,
-    C::Word: PrimInt + AsPrimitive<u32>,
+    C::Word: AtomicSize + PrimInt + AsPrimitive<u32>,
 {
     type Error = Error;
 
@@ -228,7 +231,7 @@ where
 impl<C> spi::FullDuplex<C::Word> for Spi<C, Duplex>
 where
     C: ValidConfig,
-    C::Word: PrimInt + AsPrimitive<u32>,
+    C::Word: AtomicSize + PrimInt + AsPrimitive<u32>,
     u32: AsPrimitive<C::Word>,
 {
     type Error = Error;
