@@ -10,7 +10,6 @@ readme = "README.md"
 edition = "2018"
 
 [dependencies]
-cortex-m = "0.6"
 cortex-m-rt = { version = "0.6.12", optional = true }
 usb-device = { version = "0.2", optional = true }
 smart-leds = { version = "0.3.0", optional = true }
@@ -21,6 +20,7 @@ version = "0.13"
 default-features = false
 
 [dev-dependencies]
+cortex-m = "0.7"
 usbd-serial = "0.1"
 panic-halt = "0.2"
 
