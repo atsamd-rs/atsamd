@@ -13,15 +13,15 @@
 
 #[cfg(not(feature = "panic_led"))]
 use panic_halt as _;
-use pygamer::{self as hal, entry, pac, Pins};
+use pygamer::{entry, hal, pac, Pins};
 
 use embedded_graphics::prelude::*;
 use embedded_graphics::primitives::{PrimitiveStyleBuilder, Rectangle};
 use embedded_graphics::{image::Image, pixelcolor::Rgb565};
-use embedded_hal::digital::v1_compat::OldOutputPin;
 use embedded_sdmmc::{TimeSource, Timestamp, VolumeIdx};
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
+use hal::ehal::digital::v1_compat::OldOutputPin;
 use hal::prelude::*;
 use hal::time::MegaHertz;
 use pac::{CorePeripherals, Peripherals};

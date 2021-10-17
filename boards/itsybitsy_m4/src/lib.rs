@@ -14,9 +14,9 @@ pub use hal::samd51::*;
 pub use cortex_m_rt::entry;
 pub use pins::Pins;
 
-use embedded_hal::timer::{CountDown, Periodic};
 use gpio::{PfC, Port};
 use hal::clock::GenericClockController;
+use hal::ehal::timer::{CountDown, Periodic};
 use hal::gpio::*;
 use hal::sercom::{I2CMaster2, SPIMaster1, UART3};
 use hal::time::Hertz;

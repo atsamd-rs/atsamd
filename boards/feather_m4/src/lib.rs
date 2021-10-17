@@ -7,7 +7,7 @@ use cortex_m_rt;
 pub use cortex_m_rt::entry;
 
 pub use atsamd_hal as hal;
-pub use embedded_hal as ehal;
+pub use hal::ehal;
 pub use hal::pac;
 
 use hal::clock::GenericClockController;

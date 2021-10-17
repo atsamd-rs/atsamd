@@ -3,7 +3,7 @@
 use super::{hal, pac};
 
 #[cfg(feature = "unproven")]
-use embedded_hal::timer::{CountDown, Periodic};
+use hal::ehal::timer::{CountDown, Periodic};
 
 use hal::clock::GenericClockController;
 use hal::define_pins;

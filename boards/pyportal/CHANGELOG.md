@@ -1,5 +1,6 @@
 # Unreleased
 
+- remove extraneous `embedded-hal` dependencies from BSPs
 - removed unnecessary dependency on `nb` and `panic_rtt` (#510)
 
 ---

@@ -2,8 +2,8 @@
 
 use super::{hal, pac, pac::MCLK, pac::SERCOM1, pac::SERCOM2, pac::SERCOM3};
 
-use embedded_hal::timer::{CountDown, Periodic};
 use hal::define_pins;
+use hal::ehal::timer::{CountDown, Periodic};
 use hal::gpio::{self, *};
 use hal::sercom::{I2CMaster2, PadPin, SPIMaster1, Sercom2Pad0, Sercom2Pad1, UART3};
 use hal::time::Hertz;

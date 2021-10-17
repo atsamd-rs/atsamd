@@ -14,7 +14,7 @@
 //! Note leds may appear white during debug. Either build for release or add
 //! opt-level = 2 to profile.dev in Cargo.toml
 
-use edgebadge::{self as hal, entry, pac, Pins};
+use edgebadge::{entry, hal, pac, Pins};
 use panic_halt as _;
 
 use cortex_m::interrupt::free as disable_interrupts;

@@ -8,10 +8,10 @@
 
 #[cfg(not(feature = "panic_led"))]
 use panic_halt as _;
-use pygamer::{self as hal, entry, pac, Pins};
+use pygamer::{entry, hal, pac, Pins};
 
-use embedded_hal::digital::v1_compat::OldOutputPin;
 use hal::adc::Adc;
+use hal::ehal::digital::v1_compat::OldOutputPin;
 use hal::prelude::*;
 use hal::timer::SpinTimer;
 use hal::{clock::GenericClockController, delay::Delay};
