@@ -47,7 +47,7 @@ fn main() -> ! {
         &mut peripherals.SYSCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = bsp::Pins::new(peripherals.PORT);
+    let pins = bsp::Pins::new(peripherals.PORT);
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
     delay.delay_ms(BOOT_DELAY_MS);
@@ -59,7 +59,6 @@ fn main() -> ! {
         &mut peripherals.PM,
         pins.sda,
         pins.scl,
-        &mut pins.port,
     );
 
     let interface = I2CDisplayInterface::new(i2c);

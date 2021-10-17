@@ -9,7 +9,6 @@ use cortex_m::asm;
 use feather_m4 as bsp;
 use panic_halt as _;
 
-use bsp::hal;
 use hal::{
     clock::GenericClockController,
     pac::{CorePeripherals, Peripherals},

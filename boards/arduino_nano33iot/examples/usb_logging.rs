@@ -3,6 +3,7 @@
 
 use arduino_nano33iot as bsp;
 use bsp::hal;
+use bsp::hal::prelude::*;
 
 use usb_device;
 use usbd_serial;
@@ -34,8 +35,8 @@ fn main() -> ! {
         &mut peripherals.SYSCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = bsp::Pins::new(peripherals.PORT);
-    let mut red_led = pins.led_sck.into_open_drain_output(&mut pins.port);
+    let pins = bsp::Pins::new(peripherals.PORT);
+    let mut led: bsp::Led = pins.led_sck.into();
 
     let bus_allocator = unsafe {
         USB_ALLOCATOR = Some(bsp::usb_allocator(
@@ -69,7 +70,7 @@ fn main() -> ! {
     // entirely interrupt driven.
     loop {
         cycle_delay(5 * 1024 * 1024);
-        red_led.toggle();
+        led.toggle().unwrap();
 
         // Turn off interrupts so we don't fight with the interrupt
         cortex_m::interrupt::free(|_| unsafe {
