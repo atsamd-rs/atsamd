@@ -8,7 +8,7 @@
 
 #[cfg(not(feature = "panic_led"))]
 use panic_halt as _;
-use pygamer::{hal, entry, pac, Pins};
+use pygamer::{entry, hal, pac, Pins};
 
 use hal::adc::Adc;
 use hal::pac::gclk::pchctrl::GEN_A::GCLK11;
