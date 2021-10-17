@@ -6,7 +6,7 @@
 #![no_std]
 #![no_main]
 
-use edgebadge::{self as hal, entry, pac, Pins};
+use edgebadge::{entry, hal, pac, Pins};
 use panic_halt as _;
 
 use embedded_hal::digital::v1_compat::OldOutputPin;

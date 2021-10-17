@@ -9,7 +9,7 @@
 
 #[cfg(not(feature = "panic_led"))]
 use panic_halt as _;
-use pygamer::{self as hal, entry, pac, Pins};
+use pygamer::{hal, entry, pac, Pins};
 
 use hal::prelude::*;
 use hal::sercom::PadPin;
