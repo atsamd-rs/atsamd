@@ -34,7 +34,7 @@
     },
     "feather_m4": {
 	  "tier": 1,
-      "build": "cargo build --examples --features=unproven,usb"
+      "build": "cargo build --examples --all-features"
     },
     "gemma_m0": {
 	  "tier": 2,

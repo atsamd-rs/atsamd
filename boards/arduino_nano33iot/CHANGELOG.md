@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+* move `usbd-x` crates used only in examples to `[dev-dependencies]`
+* removed unnecessary dependency on `nb` (#510)
+
 ## 0.6.0
 
 * `Pins` is now generated through `bsp_pins` macro and uses `gpio.v2` pins.

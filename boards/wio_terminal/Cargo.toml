@@ -35,10 +35,7 @@ ili9341 = "0.5.0"
 lis3dh = "0.3.0"
 embedded-sdmmc = "0.3.0"
 usb-device = { version = "0.2", optional = true }
-usbd-serial = { version = "0.1", optional = true }
 bbqueue = { version = "^0.4.11", optional = true }
-nb = { version = "0.1", optional = true }
-nom = { version = "^6.0", default-features = false, optional = true }
 generic-array = { version = "0.14", optional = true }
 seeed-erpc = { version = "0.1.1", optional = true }
 
@@ -47,17 +44,19 @@ version = "0.13"
 default-features = false
 
 [dev-dependencies]
+usbd-serial = "0.1"
 embedded-graphics = "0.7.1"
 panic-halt = "0.2"
+nom = { version = "^6.0", default-features = false }
 
 [features]
 default = ["atsamd-hal/samd51p", "rt", "unproven", "usb", "wifi"]
 rt = ["atsamd-hal/samd51p-rt", "cortex-m-rt"]
 unproven = ["atsamd-hal/unproven"]
-usb = ["atsamd-hal/usb", "usb-device", "usbd-serial", "nom"]
+usb = ["atsamd-hal/usb", "usb-device"]
 # enable feature for RTL8720 firmware older than 2.1.2
 wifi-fw-before-212 = []
-wifi = ["bbqueue", "nb", "nom", "generic-array", "seeed-erpc"]
+wifi = ["bbqueue", "generic-array", "seeed-erpc"]
 
 [profile.dev]
 incremental = false

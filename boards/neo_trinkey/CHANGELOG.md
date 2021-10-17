@@ -7,6 +7,8 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+- move `usbd-x` crates used only in examples to `[dev-dependencies]`
+
 ## [0.1.0] - 2021-10-07
 
 ### Added
