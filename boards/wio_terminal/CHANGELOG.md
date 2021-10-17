@@ -1,6 +1,6 @@
 # Unreleased
 
-- move `usbd-x` crates used only in examples to `[dev-dependencies]`
+- moved crates used only in examples to `[dev-dependencies]`
 
 ---
 
