@@ -1,5 +1,6 @@
 # Unreleased
 
+- move `usbd-x` crates used only in examples to `[dev-dependencies]`
 - removed unnecessary dependency on `nb` and `panic_rtt` (#510)
 
 ---

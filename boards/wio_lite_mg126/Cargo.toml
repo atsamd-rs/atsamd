@@ -26,15 +26,9 @@ default-features = false
 version = "0.2"
 optional = true
 
-[dependencies.usbd-serial]
-version = "0.1"
-optional = true
-
-[dependencies.numtoa]
-version = "0.2"
-optional = true
-
 [dev-dependencies]
+usbd-serial = "0.1"
+numtoa = "0.2"
 cortex-m-semihosting = "0.3"
 panic-halt = "0.2"
 panic-semihosting = "0.5"
@@ -45,7 +39,7 @@ default = ["rt", "atsamd-hal/samd21g"]
 rt = ["cortex-m-rt", "atsamd-hal/samd21g-rt"]
 unproven = ["atsamd-hal/unproven"]
 use_rtt = ["atsamd-hal/use_rtt"]
-usb = ["atsamd-hal/usb", "usb-device", "usbd-serial", "numtoa"]
+usb = ["atsamd-hal/usb", "usb-device"]
 use_semihosting = []
 
 # for cargo flash
