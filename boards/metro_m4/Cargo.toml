@@ -25,11 +25,8 @@ default-features = false
 version = "0.2"
 optional = true
 
-[dependencies.usbd-serial]
-version = "0.1"
-optional = true
-
 [dev-dependencies]
+usbd-serial = "0.1"
 panic-probe = "0.1.0"
 panic-halt = "0.2"
 panic-semihosting = "0.5"
@@ -47,7 +44,7 @@ version = "0.3"
 default = ["rt", "atsamd-hal/samd51j", "atsamd-hal/samd51"]
 rt = ["cortex-m-rt", "atsamd-hal/samd51j-rt"]
 unproven = ["atsamd-hal/unproven"]
-usb = ["atsamd-hal/usb", "usb-device", "usbd-serial"]
+usb = ["atsamd-hal/usb", "usb-device"]
 
 [profile.dev]
 incremental = false

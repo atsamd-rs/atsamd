@@ -25,11 +25,8 @@ default-features = false
 version = "0.2"
 optional = true
 
-[dependencies.usbd-serial]
-version = "0.1"
-optional = true
-
 [dev-dependencies]
+usbd-serial = "0.1"
 panic-halt = "0.2"
 panic-semihosting = "0.5"
 
@@ -37,7 +34,7 @@ panic-semihosting = "0.5"
 # ask the HAL to enable atsamd21g support
 default = ["rt", "atsamd-hal/samd21g", "usb"]
 rt = ["cortex-m-rt", "atsamd-hal/samd21g-rt"]
-usb = ["atsamd-hal/usb", "usb-device", "usbd-serial"]
+usb = ["atsamd-hal/usb", "usb-device"]
 unproven = ["atsamd-hal/unproven"]
 use_semihosting = []
 

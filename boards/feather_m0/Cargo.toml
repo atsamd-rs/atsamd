@@ -27,10 +27,6 @@ default-features = false
 version = "0.2"
 optional = true
 
-[dependencies.usbd-serial]
-version = "0.1"
-optional = true
-
 [dependencies.embedded-sdmmc]
 version = "0.3"
 optional = true
@@ -44,6 +40,7 @@ version = "=0.6.0-rc.2"
 optional = true
 
 [dev-dependencies]
+usbd-serial = "0.1"
 cortex-m-semihosting = "0.3"
 ssd1306 = "0.6.0"
 embedded-graphics = "0.7.1"
@@ -59,7 +56,7 @@ default = ["rt", "atsamd-hal/samd21g"]
 rt = ["cortex-m-rt", "atsamd-hal/samd21g-rt"]
 unproven = ["atsamd-hal/unproven"]
 use_rtt = ["atsamd-hal/use_rtt"]
-usb = ["atsamd-hal/usb", "usb-device", "usbd-serial"]
+usb = ["atsamd-hal/usb", "usb-device"]
 # Enable pins for the radio on "RadioFruits" with RFM95, RFM96, RFM69
 rfm = []
 # Enable pins for the flash and neopixel on the Feather M0 Express
