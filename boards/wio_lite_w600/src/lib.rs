@@ -7,8 +7,8 @@ pub use atsamd_hal as hal;
 pub use hal::pac;
 
 use hal::clock::GenericClockController;
-use hal::sercom::v2::{spi, Sercom4};
-use hal::sercom::{I2CMaster3, UART0};
+use hal::sercom::v2::{spi, uart, Sercom0, Sercom4};
+use hal::sercom::I2CMaster3;
 use hal::time::Hertz;
 
 #[cfg(feature = "usb")]
@@ -288,8 +288,10 @@ pub fn spi_master(
         .enable()
 }
 
+/// UART pads
+pub type UartPads = uart::Pads<Sercom0, UartRx, UartTx>;
 /// UART device for the labelled RX & TX pins
-pub type Uart = UART0<UartRx, UartTx, (), ()>;
+pub type Uart = uart::Uart<uart::Config<UartPads>, uart::Duplex>;
 
 /// Convenience for setting up the D0 and D1 pins to
 ///
@@ -299,14 +301,17 @@ pub fn uart(
     baud: impl Into<Hertz>,
     sercom0: pac::SERCOM0,
     pm: &mut pac::PM,
-    uart_rx: impl Into<UartRx>,
-    uart_tx: impl Into<UartTx>,
+    rx: impl Into<UartRx>,
+    tx: impl Into<UartTx>,
 ) -> Uart {
     let gclk0 = clocks.gclk0();
     let clock = &clocks.sercom0_core(&gclk0).unwrap();
     let baud = baud.into();
-    let pads = (uart_rx.into(), uart_tx.into());
-    UART0::new(clock, baud, sercom0, pm, pads)
+    let pads = uart::Pads::default().rx(rx.into()).tx(tx.into());
+
+    uart::Config::new(pm, sercom0, pads, clock.freq())
+        .baud(baud, uart::BaudMode::Fractional(uart::Oversampling::Bits16))
+        .enable()
 }
 
 /// Convenience method for getting the USB Bus Allocator.
