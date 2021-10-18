@@ -280,7 +280,7 @@ pub type Result<T> = core::result::Result<T, Error>;
 #[macro_export]
 macro_rules! with_num_channels {
     ($some_macro:ident) => {
-        $some_macro!(6);
+        $some_macro! {6}
     };
 }
 
@@ -288,7 +288,7 @@ macro_rules! with_num_channels {
 #[macro_export]
 macro_rules! with_num_channels {
     ($some_macro:ident) => {
-        $some_macro!(12);
+        $some_macro! {12}
     };
 }
 
@@ -296,7 +296,7 @@ macro_rules! with_num_channels {
 #[macro_export]
 macro_rules! with_num_channels {
     ($some_macro:ident) => {
-        $some_macro!(32);
+        $some_macro! {32}
     };
 }
 
@@ -304,7 +304,7 @@ macro_rules! with_num_channels {
 #[macro_export]
 macro_rules! with_num_channels {
     ($some_macro:ident) => {
-        $some_macro!(3);
+        $some_macro! {3}
     };
 }
 
@@ -312,7 +312,7 @@ macro_rules! with_num_channels {
 #[macro_export]
 macro_rules! with_num_channels {
     ($some_macro:ident) => {
-        $some_macro!(6);
+        $some_macro! {6}
     };
 }
 
@@ -320,7 +320,7 @@ macro_rules! with_num_channels {
 #[macro_export]
 macro_rules! with_num_channels {
     ($some_macro:ident) => {
-        $some_macro!(16);
+        $some_macro! {16}
     };
 }
 
