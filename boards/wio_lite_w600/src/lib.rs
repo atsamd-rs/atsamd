@@ -65,11 +65,12 @@ atsamd_hal::bsp_pins!(
         }
     },
 
-    // ToDo: What is this?
-    PA06 {
-        /// D8_DGI_GPIO2/VBAT
-        name: vbat
-    },
+    // This pin is listed on the board schematic but seems to be connected to the battery pins and
+    // probably should not be used in software
+    // PA06 {
+    //     /// D8_DGI_GPIO2/VBAT
+    //     name: vbat
+    // },
 
     PA07 {
         /// D9_DGI_GPIO3
@@ -123,34 +124,36 @@ atsamd_hal::bsp_pins!(
 
     // ---------- Right Hand Side ----------
 
-    // ToDo: What is this?
-    PB03 {
-        /// PB03_RX_LED
-        name: rx_led
-    },
+    // This pin is listed on the board schematic but its unclear what its attached to
+    // PB03 {
+    //     /// PB03_RX_LED
+    //     name: rx_led
+    // },
 
     PB02 {
         /// A5_PB02_AIN10
         name: a5
     },
 
-    // ToDo: Is this ever useful in software?
-    PA31 {
-        /// PA31_SWDIO
-        name: swdio
-    },
+    // This pin is listed on the board schematic but is related to debugging and probably should
+    // not be used in software
+    // PA31 {
+    //     /// PA31_SWDIO
+    //     name: swdio
+    // },
 
-    // ToDo: Is this ever useful in software?
-    PA30 {
-        /// PA30_SWCLK
-        name: swclk
-    },
+    // This pin is listed on the board schematic but is related to debugging and probably should
+    // not be used in software
+    // PA30 {
+    //     /// PA30_SWCLK
+    //     name: swclk
+    // },
 
-    // ToDo: What is this?
-    PA27 {
-        /// PA27_TX_LED
-        name: tx_led
-    },
+    // This pin is listed on the board schematic but its unclear what its attached to
+    // PA27 {
+    //     /// PA27_TX_LED
+    //     name: tx_led
+    // },
 
     PB23 {
         /// UART1/TX_PB12_A4
