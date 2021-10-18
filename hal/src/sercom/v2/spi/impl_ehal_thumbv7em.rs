@@ -177,7 +177,8 @@ where
 impl<C> serial::Write<C::Word> for Spi<C, Tx>
 where
     C: ValidConfig,
-    C::Word: AtomicSize + PrimInt + AsPrimitive<u32>,
+    C::Size: AtomicSize,
+    C::Word: PrimInt + AsPrimitive<u32>,
 {
     type Error = Error;
 
@@ -231,7 +232,8 @@ where
 impl<C> spi::FullDuplex<C::Word> for Spi<C, Duplex>
 where
     C: ValidConfig,
-    C::Word: AtomicSize + PrimInt + AsPrimitive<u32>,
+    C::Size: AtomicSize,
+    C::Word: PrimInt + AsPrimitive<u32>,
     u32: AsPrimitive<C::Word>,
 {
     type Error = Error;
