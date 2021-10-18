@@ -34,7 +34,7 @@ pub mod util {
 #[inline(never)]
 #[panic_handler]
 fn panic(_info: &core::panic::PanicInfo) -> ! {
-    use embedded_hal::digital::v2::OutputPin;
+    use hal::ehal::digital::v2::OutputPin;
 
     let peripherals = unsafe { crate::pac::Peripherals::steal() };
     let mut pins = Pins::new(peripherals.PORT);

@@ -10,10 +10,6 @@ repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
 documentation = "https://atsamd-rs.github.io/atsamd/atsamd51j/feather_m4/"
 
-[dependencies]
-cortex-m = "0.7"
-embedded-hal = "0.2.3"
-
 [dependencies.cortex-m-rt]
 version = "0.7"
 optional = true
@@ -27,6 +23,7 @@ version = "0.2"
 optional = true
 
 [dev-dependencies]
+cortex-m = "0.7"
 usbd-serial = "0.1"
 panic-halt = "0.2"
 panic-semihosting = "0.5"

@@ -5,8 +5,6 @@ pub use atsamd_hal as hal;
 #[cfg(feature = "rt")]
 pub use cortex_m_rt::entry;
 
-use embedded_hal;
-
 pub use hal::common::*;
 
 pub use hal::pac;
@@ -202,7 +200,7 @@ pub mod pins {
 pub use pins::*;
 
 const BASE_CONTROLLER_FREQ: Hertz = Hertz(1000000);
-const BASE_CONTROLLER_SPI_MODE: embedded_hal::spi::Mode = spi::MODE_2;
+const BASE_CONTROLLER_SPI_MODE: hal::ehal::spi::Mode = spi::MODE_2;
 
 pub type Spi0Pads = spi::Pads<Sercom1, Spi0Miso, Spi0Mosi, Spi0Sck>;
 

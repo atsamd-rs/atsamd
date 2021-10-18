@@ -9,7 +9,7 @@
 
 #[cfg(not(feature = "panic_led"))]
 use panic_halt as _;
-use pygamer::{self as hal, entry, pac, Pins};
+use pygamer::{entry, hal, pac, Pins};
 
 use hal::prelude::*;
 use hal::sercom::PadPin;
@@ -41,9 +41,9 @@ fn main() -> ! {
     > = hal::sercom::SPIMaster2::new(
         &clocks.sercom2_core(&gclk).unwrap(),
         MegaHertz(3),
-        embedded_hal::spi::Mode {
-            phase: embedded_hal::spi::Phase::CaptureOnFirstTransition,
-            polarity: embedded_hal::spi::Polarity::IdleLow,
+        hal::ehal::spi::Mode {
+            phase: hal::ehal::spi::Phase::CaptureOnFirstTransition,
+            polarity: hal::ehal::spi::Polarity::IdleLow,
         },
         peripherals.SERCOM2,
         &mut peripherals.MCLK,
