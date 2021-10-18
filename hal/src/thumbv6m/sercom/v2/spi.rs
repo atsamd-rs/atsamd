@@ -909,6 +909,7 @@ bitflags! {
 ///
 /// The SPI peripheral only has one error type: buffer overflow.
 #[derive(Debug)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 pub enum Error {
     Overflow,
 }

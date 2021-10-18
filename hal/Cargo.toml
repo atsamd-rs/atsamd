@@ -56,6 +56,10 @@ version = "0.1.0-alpha.1"
 default-features = false
 version = "1.0"
 
+[dependencies.defmt]
+version = "0.2"
+optional = true
+
 # Each of the supported chips is listed as an optional dependency here.
 # This makes it available when the corresponding feature name is referenced.
 # We use a feature named "samdFOO" to pull in the dependency named "atsamdFOO"

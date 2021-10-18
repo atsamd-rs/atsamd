@@ -418,6 +418,7 @@ i2c!([
 ]);
 
 #[derive(Debug)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 pub enum I2CError {
     ArbitrationLost,
     AddressError,
