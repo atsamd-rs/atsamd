@@ -6,6 +6,7 @@
 - Fixed the RTC implementation of embedded-hal timer traits to be periodic again (#490)
 - Add Integrity Check Monitor (ICM) abstraction (#480)
 - Add Public Key Cryptography Controller (PUKCC) support (#486)
+- Refactor the SPI module (#467)
 
 ---
 
