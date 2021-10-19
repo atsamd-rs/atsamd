@@ -17,8 +17,8 @@ use feather_m0 as bsp;
 use bsp::entry;
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
+use hal::eic::pin::{ExtInt2, Sense};
 use hal::eic::EIC;
-use hal::eic::pin::{Sense, ExtInt2};
 use hal::gpio::v2::{Pin, PullUpInterrupt};
 use hal::prelude::*;
 use pac::{interrupt, CorePeripherals, Peripherals};
@@ -53,8 +53,8 @@ fn main() -> ! {
 
     // Enable EIC interrupt in the NVIC
     unsafe {
-      core.NVIC.set_priority(interrupt::EIC, 1);
-      NVIC::unmask(interrupt::EIC);
+        core.NVIC.set_priority(interrupt::EIC, 1);
+        NVIC::unmask(interrupt::EIC);
     }
 
     // Blink the LED once to show that we have started up.
@@ -67,13 +67,13 @@ fn main() -> ! {
     loop {
         let new_counter_value = COUNTER.load(Ordering::SeqCst);
         if last_counter_value != new_counter_value {
-          last_counter_value = new_counter_value;
-          for _ in 0..new_counter_value {
-            red_led.set_high().unwrap();
-            delay.delay_ms(200u8);
-            red_led.set_low().unwrap();
-            delay.delay_ms(200u8);
-          }
+            last_counter_value = new_counter_value;
+            for _ in 0..new_counter_value {
+                red_led.set_high().unwrap();
+                delay.delay_ms(200u8);
+                red_led.set_low().unwrap();
+                delay.delay_ms(200u8);
+            }
         }
     }
 }
@@ -81,9 +81,10 @@ fn main() -> ! {
 #[interrupt]
 fn EIC() {
     // Increase the counter and clear the interrupt.
-    unsafe { // Accessing registers from interrupts context is safe
-      let eic = &*pac::EIC::ptr();
-      eic.intflag.modify(|_, w| w.extint2().set_bit());
+    unsafe {
+        // Accessing registers from interrupts context is safe
+        let eic = &*pac::EIC::ptr();
+        eic.intflag.modify(|_, w| w.extint2().set_bit());
     }
-    COUNTER.store(COUNTER.load(Ordering::SeqCst)+1, Ordering::SeqCst);
+    COUNTER.store(COUNTER.load(Ordering::SeqCst) + 1, Ordering::SeqCst);
 }
