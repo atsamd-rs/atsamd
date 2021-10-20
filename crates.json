@@ -116,6 +116,10 @@
 	  "tier": 2,
       "build": "cargo build --examples --features=unproven,usb"
     },
+    "wio_lite_w600": {
+	  "tier": 2,
+      "build": "cargo build --examples --features=unproven,usb"
+    },
     "wio_terminal": {
 	  "tier": 1,
       "build": "cargo build --examples --features=usb"
