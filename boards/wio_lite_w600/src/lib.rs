@@ -67,7 +67,7 @@ atsamd_hal::bsp_pins!(
 
     PA06 {
         /// D8_DGI_GPIO2/VBAT
-        name: vbat
+        name: battery
         aliases: {
             AlternateB: Battery
         }
