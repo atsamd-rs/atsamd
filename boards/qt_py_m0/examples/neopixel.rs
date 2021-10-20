@@ -6,7 +6,7 @@
 //!
 //! *NOTE*: This example currently only works in release mode.
 
-use embedded_hal::digital::v1_compat::OldOutputPin;
+use hal::ehal::digital::v1_compat::OldOutputPin;
 use panic_halt as _;
 use smart_leds::hsv::hsv2rgb;
 use smart_leds::hsv::Hsv;

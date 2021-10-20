@@ -5,7 +5,7 @@
 
 #[cfg(not(feature = "panic_led"))]
 use panic_halt as _;
-use pygamer::{self as hal, entry, pac, Pins};
+use pygamer::{entry, hal, pac, Pins};
 
 use core::f32::consts::FRAC_PI_2;
 use hal::clock::GenericClockController;

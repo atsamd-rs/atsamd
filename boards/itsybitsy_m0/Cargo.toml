@@ -10,8 +10,6 @@ repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
 
 [dependencies]
-cortex-m = "0.6"
-embedded-hal = "0.2.3"
 bitbang-hal = "0.3"
 apa102-spi = "0.3"
 smart-leds = "0.3"
@@ -29,6 +27,7 @@ version = "0.2"
 optional = true
 
 [dev-dependencies]
+cortex-m = "0.7"
 usbd-serial = "0.1"
 usbd-hid = "0.4"
 panic-halt = "0.2"

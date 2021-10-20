@@ -1,0 +1,59 @@
+[package]
+name = "neokey_trinkey"
+version = "0.1.0"
+authors = ["Broderick Carlin <broderick.carlin@gmail.com>"]
+description = "Board Support crate for the Adafruit Neokey Trinkey"
+keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/atsamd-rs/atsamd"
+readme = "README.md"
+edition = "2018"
+
+[dependencies]
+
+[dependencies.cortex-m-rt]
+version = "0.6.12"
+optional = true
+
+[dependencies.atsamd-hal]
+version = "0.13.0"
+default-features = false
+
+[dependencies.usb-device]
+version = "0.2"
+optional = true
+
+[dependencies.ws2812-timer-delay]
+version = "0.3.0"
+features = ["slow"]
+optional = true
+
+[dependencies.smart-leds]
+version = "0.3.0"
+optional = true
+
+[dev-dependencies]
+cortex-m = "0.7"
+panic-halt = "0.2"
+usbd-serial = "0.1"
+
+[features]
+# ask the HAL to enable atsamd21e support
+default = ["rt", "atsamd-hal/samd21e"]
+leds = ["ws2812-timer-delay", "smart-leds"]
+rt = ["cortex-m-rt", "atsamd-hal/samd21e-rt"]
+unproven = ["atsamd-hal/unproven"]
+use_semihosting = []
+usb = ["atsamd-hal/usb", "usb-device"]
+
+[[example]]
+name = "blinky"
+required-features = ["leds"]
+
+[[example]]
+name = "button"
+required-features = ["leds", "unproven"]
+
+[[example]]
+name = "usb_echo"
+required-features = ["usb"]

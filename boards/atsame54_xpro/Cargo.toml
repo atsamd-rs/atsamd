@@ -11,10 +11,6 @@ edition = "2018"
 repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
 
-[dependencies]
-cortex-m = "0.6"
-embedded-hal = "0.2.3"
-
 [dependencies.cortex-m-rt]
 version = "0.6.12"
 optional = true

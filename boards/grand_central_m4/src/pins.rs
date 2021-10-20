@@ -14,7 +14,7 @@ use hal::sercom::{
 };
 use hal::time::Hertz;
 
-use embedded_hal::{digital::v1_compat::OldOutputPin, timer::CountDown, timer::Periodic};
+use hal::ehal::{digital::v1_compat::OldOutputPin, timer::CountDown, timer::Periodic};
 use ws2812_timer_delay as ws2812;
 
 use hal::clock::GenericClockController;
@@ -792,7 +792,7 @@ impl Neopixel {
         port: &mut Port,
     ) -> ws2812::Ws2812<
         T,
-        embedded_hal::digital::v1_compat::OldOutputPin<
+        hal::ehal::digital::v1_compat::OldOutputPin<
             atsamd_hal::common::gpio::Pc24<
                 atsamd_hal::common::gpio::Output<atsamd_hal::common::gpio::PushPull>,
             >,

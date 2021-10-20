@@ -4,7 +4,7 @@
 pub use cortex_m_rt::entry;
 
 pub use atsamd_hal as hal;
-pub use embedded_hal as ehal;
+pub use hal::ehal;
 pub use hal::pac;
 
 use hal::clock::GenericClockController;
@@ -226,7 +226,7 @@ pub type SpiPads = spi::Pads<Sercom4, Miso, Mosi, Sclk>;
 /// SPI master for the labelled SPI peripheral
 ///
 /// This type implements [`FullDuplex<u8>`](ehal::spi::FullDuplex).
-pub type Spi = spi::Spi<spi::Config<SpiPads>>;
+pub type Spi = spi::Spi<spi::Config<SpiPads>, spi::Duplex>;
 
 /// Convenience for setting up the labelled SPI peripheral.
 /// This powers up SERCOM4 and configures it for use as an

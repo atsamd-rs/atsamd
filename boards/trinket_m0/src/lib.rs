@@ -21,7 +21,7 @@ use hal::time::Hertz;
 #[cfg(feature = "unproven")]
 use apa102_spi::Apa102;
 #[cfg(feature = "unproven")]
-use embedded_hal::timer::{CountDown, Periodic};
+use hal::ehal::timer::{CountDown, Periodic};
 
 #[cfg(feature = "usb")]
 use gpio::v2::{AnyPin, PA24, PA25};

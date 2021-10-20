@@ -12,7 +12,7 @@ use panic_semihosting as _;
 use smart_leds;
 use ws2812_timer_delay as ws2812;
 
-use embedded_hal::digital::v1_compat::OldOutputPin;
+use hal::ehal::digital::v1_compat::OldOutputPin;
 
 use bsp::entry;
 use hal::pac::{CorePeripherals, Peripherals};
