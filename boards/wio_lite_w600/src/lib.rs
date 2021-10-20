@@ -65,12 +65,13 @@ atsamd_hal::bsp_pins!(
         }
     },
 
-    // This pin is listed on the board schematic but seems to be connected to the battery pins and
-    // probably should not be used in software
-    // PA06 {
-    //     /// D8_DGI_GPIO2/VBAT
-    //     name: vbat
-    // },
+    PA06 {
+        /// D8_DGI_GPIO2/VBAT
+        name: vbat
+        aliases: {
+            AlternateB: Battery
+        }
+    },
 
     PA07 {
         /// D9_DGI_GPIO3
