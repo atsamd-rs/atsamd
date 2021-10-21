@@ -1,8 +1,8 @@
 //! Non-volatile Memory Controller
 //! TODO: this might be a good fit for generalizing over multiple chips later
 //! on, but for now it will only be tested on the SAME54
-#![deny(missing_docs)]
-#![deny(warnings)]
+
+pub mod smart_eeprom;
 
 pub use crate::target_device::nvmctrl::ctrla::PRM_A;
 use crate::target_device::nvmctrl::ctrlb::CMD_AW;
@@ -394,6 +394,10 @@ impl Nvm {
 
         let boot = &(Bank::Active.address()..(Bank::Active.address() + bp_space));
         self.is_boot_protected() && range_overlap(inp, boot)
+    }
+
+    pub fn smart_eeprom(&mut self) -> smart_eeprom::Result {
+        smart_eeprom::SmartEepromMode::retrieve(self)
     }
 }
 
