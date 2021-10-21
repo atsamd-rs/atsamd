@@ -1,7 +1,6 @@
 #![no_std]
 #![no_main]
 
-#[cfg(not(feature = "use_semihosting"))]
 use panic_halt as _;
 
 use wio_lite_w600 as bsp;
