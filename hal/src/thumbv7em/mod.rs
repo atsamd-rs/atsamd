@@ -28,5 +28,5 @@ pub mod watchdog;
 #[cfg(feature = "unproven")]
 pub mod icm;
 
-pub mod nvm;
 pub mod dsu;
+pub mod nvm;
