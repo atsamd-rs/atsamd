@@ -1,6 +1,7 @@
 //! Non-volatile Memory Controller
 //! TODO: this might be a good fit for generalizing over multiple chips later
 //! on, but for now it will only be tested on the SAME54
+#![warn(missing_docs)]
 
 pub mod smart_eeprom;
 
@@ -396,6 +397,7 @@ impl Nvm {
         self.is_boot_protected() && range_overlap(inp, boot)
     }
 
+    /// Retrieve SmartEERPOM
     pub fn smart_eeprom(&mut self) -> smart_eeprom::Result {
         smart_eeprom::SmartEepromMode::retrieve(self)
     }
