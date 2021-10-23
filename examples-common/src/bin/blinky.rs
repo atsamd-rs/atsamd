@@ -11,14 +11,14 @@ use hal::prelude::*;
 fn main() -> ! {
     let peripherals = pac::Peripherals::take().unwrap();
     let core = pac::CorePeripherals::take().unwrap();
-    let (pins, mut clocks) = OurBoard::init(peripherals);
+    let (mut clocks, led, _usb) = OurBoard::init(peripherals);
 
-    let mut red_led = pins.d13.into_push_pull_output();
+    let mut red_led = led;
     let mut delay = hal::delay::Delay::new(core.SYST, &mut clocks);
     loop {
         red_led.set_low().unwrap();
-        delay.delay_ms(250_u16);
+        delay.delay_ms(200_u8);
         red_led.set_high().unwrap();
-        delay.delay_ms(500_u16);
+        delay.delay_ms(200_u8);
     }
 }

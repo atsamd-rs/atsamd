@@ -60,8 +60,14 @@ mod thumbv7em;
 ))]
 pub use crate::thumbv7em::*;
 
+pub use bsp::hal::usb::{usb_device::bus::UsbBusAllocator, UsbBus};
+
 pub trait Board {
     fn init(
         peripherals: bsp::pac::Peripherals,
-    ) -> (bsp::Pins, bsp::hal::clock::GenericClockController);
+    ) -> (
+        bsp::hal::clock::GenericClockController,
+        bsp::RedLed,
+        UsbBusAllocator<UsbBus>,
+    );
 }
