@@ -35,3 +35,6 @@ chip = "ATSAMD21G18A"
 
 [[example]]
 name = "blinky_basic"
+
+[[example]]
+name = "uart"

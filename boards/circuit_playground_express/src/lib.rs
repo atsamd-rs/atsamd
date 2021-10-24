@@ -9,7 +9,9 @@ pub use hal::pac;
 
 use hal::clock::GenericClockController;
 use hal::prelude::*;
-use hal::sercom::v2::{spi, Sercom3};
+use hal::sercom::v2::spi;
+use hal::sercom::v2::uart::{self, BaudMode, Oversampling};
+use hal::sercom::v2::{Sercom3, Sercom4};
 use hal::sercom::I2CMaster5;
 use hal::time::{Hertz, MegaHertz};
 
@@ -196,4 +198,29 @@ pub fn i2c_master(
     let sda = sda.into();
     let scl = scl.into();
     I2CMaster5::new(clock, baud, sercom5, pm, sda, scl)
+}
+
+/// UART pads for the labelled RX & TX pins
+pub type UartPads = uart::Pads<Sercom4, UartRx, UartTx>;
+
+/// UART device for the labelled RX & TX pins
+pub type Uart = uart::Uart<uart::Config<UartPads>, uart::Duplex>;
+
+/// Convenience for setting up the labelled RX, TX pins to
+/// operate as a UART device running at the specified baud.
+pub fn uart(
+    clocks: &mut GenericClockController,
+    baud: impl Into<Hertz>,
+    sercom4: pac::SERCOM4,
+    pm: &mut pac::PM,
+    uart_rx: impl Into<UartRx>,
+    uart_tx: impl Into<UartTx>,
+) -> Uart {
+    let gclk0 = clocks.gclk0();
+    let clock = &clocks.sercom4_core(&gclk0).unwrap();
+    let baud = baud.into();
+    let pads = uart::Pads::default().rx(uart_rx.into()).tx(uart_tx.into());
+    uart::Config::new(pm, sercom4, pads, clock.freq())
+        .baud(baud, BaudMode::Fractional(Oversampling::Bits16))
+        .enable()
 }
