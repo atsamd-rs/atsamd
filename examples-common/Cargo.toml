@@ -52,12 +52,14 @@ optional = true
 
 [features]
 default = ["bsp-feather_m4"]
+thumbv7 = []
+thumbv6 = []
 
 # board support package selection
-bsp-feather_m0 = ["feather_m0"]
-bsp-feather_m4 = ["feather_m4"]
-bsp-metro_m0 = ["metro_m0"]
-bsp-metro_m4 = ["metro_m4"]
-bsp-samd11_bare = ["samd11_bare"]
-# bsp-pygamer = ["pygamer"]
-# bsp-wio_terminal = ["wio_terminal"]
+bsp-feather_m0 = ["feather_m0", "thumbv6"]
+bsp-feather_m4 = ["feather_m4", "thumbv7"]
+bsp-metro_m0 = ["metro_m0", "thumbv6"]
+bsp-metro_m4 = ["metro_m4", "thumbv7"]
+bsp-samd11_bare = ["samd11_bare", "thumbv6"]
+# bsp-pygamer = ["pygamer", "thumbv7"]
+# bsp-wio_terminal = ["wio_terminal", "thumbv7"]

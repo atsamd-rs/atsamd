@@ -10,8 +10,8 @@ impl Board for OurBoard {
         mut peripherals: bsp::pac::Peripherals,
     ) -> (
         bsp::hal::clock::GenericClockController,
-        Option<bsp::RedLed>,
-        Option<UsbBusAllocator<UsbBus>>,
+        bsp::RedLed,
+        UsbBusAllocator<UsbBus>,
     ) {
         let mut clocks = bsp::hal::clock::GenericClockController::with_external_32kosc(
             peripherals.GCLK,
@@ -21,23 +21,15 @@ impl Board for OurBoard {
         );
         let pins = bsp::Pins::new(peripherals.PORT);
 
-        let led = if enable_led {
-            Some(pins.d13.into())
-        } else {
-            None
-        };
+        let led = pins.d13.into();
 
-        let usb = if enable_usb {
-            Some(bsp::usb_allocator(
-                peripherals.USB,
-                &mut clocks,
-                &mut peripherals.PM,
-                pins.usb_dm,
-                pins.usb_dp,
-            ))
-        } else {
-            None
-        };
+        let usb = bsp::usb_allocator(
+            peripherals.USB,
+            &mut clocks,
+            &mut peripherals.PM,
+            pins.usb_dm,
+            pins.usb_dp,
+        );
 
         (clocks, led, usb)
     }

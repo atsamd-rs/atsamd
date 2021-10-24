@@ -77,18 +77,28 @@ fn poll_usb() {
 
 #[interrupt]
 #[allow(non_snake_case)]
+#[cfg(feature = "thumbv6")]
+fn USB() {
+    poll_usb();
+}
+
+#[interrupt]
+#[allow(non_snake_case)]
+#[cfg(feature = "thumbv7")]
 fn USB_OTHER() {
     poll_usb();
 }
 
 #[interrupt]
 #[allow(non_snake_case)]
+#[cfg(feature = "thumbv7")]
 fn USB_TRCPT0() {
     poll_usb();
 }
 
 #[interrupt]
 #[allow(non_snake_case)]
+#[cfg(feature = "thumbv7")]
 fn USB_TRCPT1() {
     poll_usb();
 }
