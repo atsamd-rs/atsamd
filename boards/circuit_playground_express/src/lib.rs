@@ -15,6 +15,9 @@ use hal::sercom::v2::{Sercom3, Sercom4};
 use hal::sercom::I2CMaster5;
 use hal::time::{Hertz, MegaHertz};
 
+#[cfg(feature = "usb")]
+use hal::usb::{usb_device::bus::UsbBusAllocator, UsbBus};
+
 /// Definitions related to pins and pin aliases
 pub mod pins {
     use super::hal;
@@ -140,6 +143,20 @@ pub mod pins {
         PA01 {
             name: accel_scl,
         },
+        PA24 {
+            /// The USB D- pad
+            name: usb_dm
+            aliases: {
+                AlternateG: UsbDm
+            }
+        }
+        PA25 {
+            /// The USB D+ pad
+            name: usb_dp
+            aliases: {
+                AlternateG: UsbDp
+            }
+        }
     );
 }
 pub use pins::*;
@@ -223,4 +240,19 @@ pub fn uart(
     uart::Config::new(pm, sercom4, pads, clock.freq())
         .baud(baud, BaudMode::Fractional(Oversampling::Bits16))
         .enable()
+}
+
+#[cfg(feature = "usb")]
+/// Convenience function for setting up USB
+pub fn usb_allocator(
+    usb: pac::USB,
+    clocks: &mut GenericClockController,
+    pm: &mut pac::PM,
+    dm: impl Into<UsbDm>,
+    dp: impl Into<UsbDp>,
+) -> UsbBusAllocator<UsbBus> {
+    let gclk0 = clocks.gclk0();
+    let clock = &clocks.usb(&gclk0).unwrap();
+    let (dm, dp) = (dm.into(), dp.into());
+    UsbBusAllocator::new(UsbBus::new(clock, pm, dm, dp, usb))
 }

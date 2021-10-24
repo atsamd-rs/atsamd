@@ -18,15 +18,22 @@ path = "../../hal"
 version = "0.13"
 default-features = false
 
+[dependencies.usb-device]
+version = "0.2"
+optional = true
+
 [dev-dependencies]
+cortex-m = "0.7"
 panic-halt = "0.2"
 panic-semihosting = "0.5"
+usbd-serial = "0.1"
 
 [features]
 # ask the HAL to enable atsamd21g support
 default = ["rt", "atsamd-hal/samd21g"]
 rt = ["cortex-m-rt", "atsamd-hal/samd21g-rt"]
 unproven = ["atsamd-hal/unproven"]
+usb = ["atsamd-hal/usb", "usb-device"]
 use_semihosting = []
 
 [profile.release]
@@ -41,3 +48,7 @@ name = "blinky_basic"
 
 [[example]]
 name = "uart"
+
+[[example]]
+name = "usb_serial"
+required-features = ["usb"]
