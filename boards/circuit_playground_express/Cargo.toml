@@ -9,19 +9,23 @@ repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
 edition = "2018"
 
+[dependencies.cortex-m-rt]
+version = "0.7"
+optional = true
+
 [dependencies.atsamd-hal]
+path = "../../hal"
 version = "0.13"
 default-features = false
 
 [dev-dependencies]
 panic-halt = "0.2"
 panic-semihosting = "0.5"
-cortex-m-rt = "0.6.12"
 
 [features]
 # ask the HAL to enable atsamd21g support
 default = ["rt", "atsamd-hal/samd21g"]
-rt = ["atsamd-hal/samd21g-rt"]
+rt = ["cortex-m-rt", "atsamd-hal/samd21g-rt"]
 unproven = ["atsamd-hal/unproven"]
 use_semihosting = []
 
