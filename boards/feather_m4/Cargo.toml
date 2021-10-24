@@ -62,10 +62,6 @@ name = "pwm"
 required-features = ["unproven"]
 
 [[example]]
-name = "usb_echo"
-required-features = ["usb"]
-
-[[example]]
 name = "dmac"
 required-features = ["dma"]
 

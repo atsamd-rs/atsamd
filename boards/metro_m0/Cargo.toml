@@ -61,12 +61,5 @@ opt-level = "s"
 chip = "ATSAMD21G18A"
 
 [[example]]
-name = "usb_echo"
-required-features = ["usb", "unproven"]
-
-[[example]]
 name = "blinky_rtic"
 required-features = ["rtic", "unproven"]
-
-[[example]]
-name = "blinky_basic"

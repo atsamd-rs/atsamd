@@ -60,9 +60,6 @@ opt-level = 3
 chip = "ATSAMD51J19A"
 
 [[example]]
-name = "blinky_basic"
-
-[[example]]
 name = "clock_out"
 
 [[example]]

@@ -82,9 +82,6 @@ opt-level = "s"
 chip = "ATSAMD21G18A"
 
 [[example]]
-name = "blinky_basic"
-
-[[example]]
 name = "timers"
 
 [[example]]
@@ -112,10 +109,6 @@ name = "ssd1306_graphicsmode_128x64_spi"
 
 [[example]]
 name = "ssd1306_terminalmode_128x64_spi"
-
-[[example]]
-name = "usb_echo"
-required-features = ["usb", "unproven"]
 
 [[example]]
 name = "sleeping_timer"

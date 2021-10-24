@@ -43,9 +43,6 @@ name = "adc"
 required-features = ["unproven", "rt", "use_semihosting"]
 
 [[example]]
-name = "blinky_basic"
-
-[[example]]
 name = "pwm"
 required-features = ["unproven"]
 
