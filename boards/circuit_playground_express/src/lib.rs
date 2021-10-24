@@ -20,11 +20,17 @@ pub mod pins {
     hal::bsp_pins!(
         PB09 {
             /// Pin 0, rx. Also analog input (A6)
-            name: rx,
+            name: a6,
+            aliases: {
+                AlternateD: UartRx
+            }
         },
         PB08 {
             /// Pin 1, tx. Also analog input (A7)
-            name: tx,
+            name: a7,
+            aliases: {
+                AlternateD: UartTx
+            }
         },
         PA28 {
             /// Pin 4, button A.
@@ -51,37 +57,52 @@ pub mod pins {
         },
         PB02 {
             /// The I2C SDA. Also D2 and A5.
-            name: sda,
+            name: a5,
             aliases: {
                 AlternateD: Sda
             }
         },
         PB03 {
             /// The I2C SCL. Also D3 and A4
-            name: scl,
+            name: a4,
             aliases: {
                 AlternateD: Scl
             }
         },
         PB23 {
             /// The data line attached to the neopixel. Also D8.
-            name: neopixel,
+            name: d8,
+            aliases: {
+                PushPullOutput: NeoPixel
+            }
         },
         PA02 {
             /// The line attached to the speaker. Also D12 and A0.
-            name: speaker,
+            name: a0,
+            aliases: {
+                PushPullOutput: Speaker
+            }
         },
         PA05 {
             /// The SPI SCK. Also D6 and A1
-            name: sck,
+            name: a1,
+            aliases: {
+                AlternateD: Sck
+            }
         },
         PA07 {
             /// The SPI MOSI. Also D10 and A3
-            name: mosi,
+            name: a3,
+            aliases: {
+                AlternateD: Mosi
+            }
         },
         PA06 {
             /// The SPI MISO. Also D9 and A2
-            name: miso,
+            name: a2,
+            aliases: {
+                AlternateD: Miso
+            }
         },
         PA21 {
             /// The SCK pin attached to the on-board SPI flash
