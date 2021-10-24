@@ -11,7 +11,7 @@ use hal::clock::GenericClockController;
 use hal::prelude::*;
 use hal::sercom::v2::spi;
 use hal::sercom::v2::uart::{self, BaudMode, Oversampling};
-use hal::sercom::v2::{Sercom3, Sercom4};
+use hal::sercom::v2::{Sercom0, Sercom3, Sercom4};
 use hal::sercom::I2CMaster5;
 use hal::time::{Hertz, MegaHertz};
 
@@ -160,6 +160,43 @@ pub mod pins {
     );
 }
 pub use pins::*;
+
+/// SPI pads for the labelled SPI peripheral
+///
+/// You can use these pads with other, user-defined [`spi::Config`]urations.
+pub type SpiPads = spi::Pads<Sercom0, Miso, Mosi, Sck>;
+
+/// SPI master for the labelled SPI peripheral
+///
+/// This type implements [`FullDuplex<u8>`](ehal::spi::FullDuplex).
+pub type Spi = spi::Spi<spi::Config<SpiPads>, spi::Duplex>;
+
+/// Convenience for setting up the SPI bus on A1, A2, A3.
+/// This powers up SERCOM0 and configures it for use as an
+/// SPI Master in SPI Mode 0.
+/// Unlike the `flash_spi_master` function, this
+/// one does not accept a CS pin; configuring a pin for CS
+/// is the responsibility of the caller, because it could be
+/// any OutputPin, or even a pulled up line on the slave.
+pub fn spi_master(
+    clocks: &mut GenericClockController,
+    baud: impl Into<Hertz>,
+    sercom0: pac::SERCOM0,
+    pm: &mut pac::PM,
+    sck: impl Into<Sck>,
+    mosi: impl Into<Mosi>,
+    miso: impl Into<Miso>,
+) -> Spi {
+    let gclk0 = clocks.gclk0();
+    let clock = clocks.sercom0_core(&gclk0).unwrap();
+    let freq = clock.freq();
+    let (miso, mosi, sck) = (miso.into(), mosi.into(), sck.into());
+    let pads = spi::Pads::default().data_in(miso).data_out(mosi).sclk(sck);
+    spi::Config::new(pm, sercom0, pads, freq)
+        .baud(baud)
+        .spi_mode(spi::MODE_0)
+        .enable()
+}
 
 /// SPI pads for the flash chip
 pub type FlashPads = spi::Pads<Sercom3, FlashMiso, FlashMosi, FlashSck>;
