@@ -1,6 +1,8 @@
-//! Device Service Unit abstraction
-//! TODO: this might be a good fit for generalizing over multiple chips later
-//! on, but for now it will only be tested on the SAME54
+//! # Device Service Unit
+//!
+//! This module allows users to interact with a DSU peripheral.
+//!
+//! - Run a CRC32 checksum over memory
 #![deny(missing_docs)]
 #![deny(warnings)]
 
@@ -90,9 +92,12 @@ impl Dsu {
         self.dsu.data.write(|w| unsafe { w.data().bits(data) });
     }
 
-    /// Calculate CRC32 of a region
-    /// `address` is an address within `bank`, which must be word-aligned and
-    pub fn crc32(&mut self, bank: &Bank, address: u32, num_words: u32) -> Result<u32> {
+    /// Calculate CRC32 of a memory region
+    ///
+    /// - `address` is an address within a chosen `bank`; must be word-aligned
+    /// - `length` is a length of memory region that is being processed. Must be
+    ///   word-aligned
+    pub fn crc32(&mut self, bank: &Bank, address: u32, length: u32) -> Result<u32> {
         // The algorithm employed is the industry standard CRC32 algorithm using the
         // generator polynomial 0xEDB88320
         // (reversed representation of 0x04C11DB7).
@@ -103,6 +108,12 @@ impl Dsu {
         if address % 4 != 0 {
             return Err(Error::AlignmentError);
         }
+
+        if length % 4 != 0 {
+            return Err(Error::AlignmentError);
+        }
+
+        let num_words = length / 4;
 
         // Calculate bank offset
         let bank_address = bank.address() / 4;
