@@ -118,7 +118,6 @@ pub unsafe trait Beat: Sealed {
 macro_rules! impl_beat {
     ( $( ($Type:ty, $Size:ident) ),+ ) => {
         $(
-            impl Sealed for $Type {}
             unsafe impl Beat for $Type {
                 const BEATSIZE: BeatSize = BeatSize::$Size;
             }
