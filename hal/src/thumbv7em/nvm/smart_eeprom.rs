@@ -1,4 +1,4 @@
-//! Module implementing a support for SmartEERPOM.
+//! # SmartEEPROM
 //!
 //! SmartEEPROM is a feature of NVM controller that simulates a RAM-like memory
 //! within a flash. As bits in flash cannot switch from 0 to 1 because of its
@@ -66,6 +66,10 @@ pub enum SmartEepromRetrievalFailure {
     /// SmartEERPOM is disabled and user page is misconfigured. [`More details
     /// in module-level documentation`](self).
     Disabled,
+    /// Support for disabled automatic page reallocation is not implemented.
+    DisabledAutomaticPageReallocationNotSupported,
+    /// Support for buffered writes to NVM is not implemented.
+    BufferedWritesNotSupported,
     /// `SBLK` must be in range `1..=10`. `SBLK` is represented by 4 bits in a
     /// user page which means that it can be between `0` and `15`. Documentation
     /// does not cover cases for `11..=15`, therefore API considers them
@@ -94,10 +98,10 @@ impl<'a> SmartEepromMode<'a> {
         use SmartEepromMode as Mode;
         use SmartEepromRetrievalFailure::*;
         if nvm.nvm.seecfg.read().aprdis().bit_is_set() {
-            unimplemented!("Support for disabled automatic page reallocation is not implemented.");
+            return Err(DisabledAutomaticPageReallocationNotSupported);
         }
         if nvm.nvm.seecfg.read().wmode().is_buffered() {
-            unimplemented!("Support for buffered writes to NVM is not implemented.");
+            return Err(BufferedWritesNotSupported);
         }
         let sblk = nvm.nvm.seestat.read().sblk().bits() as u32;
         let psz = nvm.nvm.seestat.read().psz().bits() as u32;
