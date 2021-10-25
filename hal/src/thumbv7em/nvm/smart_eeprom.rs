@@ -191,11 +191,8 @@ impl<'a, T: SmartEepromState> SmartEeprom<'a, T> {
 pub trait SmartEepromPointableSize: Sealed + Copy {}
 
 impl SmartEepromPointableSize for u8 {}
-impl Sealed for u8 {}
 impl SmartEepromPointableSize for u16 {}
-impl Sealed for u16 {}
 impl SmartEepromPointableSize for u32 {}
-impl Sealed for u32 {}
 
 impl<'a> SmartEeprom<'a, Unlocked> {
     /// Returns a mutable slice to SmartEEPROM mapped address space.
