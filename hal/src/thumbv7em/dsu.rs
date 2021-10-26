@@ -3,8 +3,7 @@
 //! This module allows users to interact with a DSU peripheral.
 //!
 //! - Run a CRC32 checksum over memory
-#![deny(missing_docs)]
-#![deny(warnings)]
+#![warn(missing_docs)]
 
 use super::nvm::Bank;
 use crate::target_device::{DSU, PAC};
