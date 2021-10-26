@@ -54,7 +54,7 @@ pub const PAGESIZE: u32 = 512;
 /// Size of one block
 pub const BLOCKSIZE: u32 = 512 * 16;
 
-/// Non-colatile memory controller
+/// Non-volatile memory controller
 pub struct Nvm {
     /// PAC peripheral
     nvm: NVMCTRL,
@@ -209,8 +209,6 @@ impl Nvm {
 
     /// Set address for reading/writing
     fn set_address(&mut self, address: u32) {
-        // Safety: the entire register is used for address, invalid addresses are
-        // signalled by the hardware
         unsafe {
             self.nvm
                 .addr
@@ -397,7 +395,9 @@ impl Nvm {
         self.erase(address, num_blocks, EraseGranularity::Block)
     }
 
-    /// length is in units depending on the erase granularity.
+    /// Erase flash memory.
+    ///
+    /// Unit of `length` depends on a chosen erasing granularity.
     pub fn erase(
         &mut self,
         address: u32,
