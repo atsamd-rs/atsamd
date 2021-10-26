@@ -390,15 +390,6 @@ impl Nvm {
         }
     }
 
-    /// Erase a page in the auxilliary space (user page, calibration page,
-    /// factory and signature page). Page erase is not supported for main
-    /// memory.
-    pub fn erase_aux_page(&mut self, address: u32, num_pages: u32) -> Result<()> {
-        // TODO since there are few pages that are erased this way, we could enumerate
-        // them instead of taking an address.
-        self.erase(address, num_pages, EraseGranularity::Page)
-    }
-
     /// Erase a block of main memory
     /// `address` is the address *within* the bank.
     pub fn erase_block(&mut self, bank: &Bank, address: u32, num_blocks: u32) -> Result<()> {
