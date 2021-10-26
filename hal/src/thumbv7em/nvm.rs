@@ -222,25 +222,18 @@ impl Nvm {
         self.nvm.status.read().ready().bit()
     }
 
-    /// Run a flash command
+    /// Execute a command, do not wait for it to finish
     fn command(&mut self, command: CMD_AW) {
         self.nvm
             .ctrlb
             .write(|w| w.cmdex().key().cmd().variant(command));
     }
 
-    /// Check if flash command done
-    fn command_done(&self) -> bool {
-        self.nvm.intflag.read().done().bit()
-    }
-
-    /// Run a flash, wait for done
+    /// Execute a command, wait until it is done
     fn command_sync(&mut self, command: CMD_AW) {
         self.command(command);
 
-        while !self.command_done() {
-            cortex_m::asm::nop();
-        }
+        while !self.nvm.intflag.read().done().bit() {}
         self.nvm.intflag.write(|w| w.done().set_bit());
     }
 
