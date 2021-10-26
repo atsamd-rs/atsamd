@@ -13,31 +13,39 @@ use crate::target_device::nvmctrl::ctrlb::CMD_AW;
 use crate::target_device::NVMCTRL;
 use core::ops::Range;
 
-extern "C" {
-    /// This symbol has to be populated by a user in a `memory.x` file as
-    /// follows:
-    ///
-    /// ```text
-    /// _flash_end = ORIGIN(FLASH) + LENGTH(FLASH);
-    /// ```
-    ///
-    /// Address of this symbol *must point to the end of the physical FLASH* of
-    /// the device. This value is used to calculate banks boundaries.
-    ///
-    /// Linker will report a missing symbol definiton error only if this module
-    /// is used. Otherwise it can be skipped.
-    static _flash_end: [u8; 0];
-}
 
 #[inline(always)]
-fn get_flash_end() -> u32 {
-    unsafe { &_flash_end as *const _ as _ }
+fn retrieve_flash_size() -> u32 {
+    // Safety: Lazy initialization of a static variable. Even in case of a data
+    // race, it is populated by a technically constant value
+    unsafe {
+        match FLASHSIZE {
+            Some(x) => x,
+            None => {
+                let nvm = &*NVMCTRL::ptr();
+                let nvm_params = nvm.param.read();
+                let nvm_pages = nvm_params.nvmp().bits() as u32;
+                // PSZ register value -> page size
+                // 0 -> 8
+                // 1 -> 16
+                // ...
+                // 6 -> 512
+                // 7 -> 1024
+                let nvm_page_size = 8_u32 << (nvm_params.psz().bits() as u8);
+                let flash_size = nvm_pages * nvm_page_size;
+                FLASHSIZE = Some(flash_size);
+                flash_size
+            }
+        }
+    }
 }
 
 #[inline(always)]
 fn get_bank_size() -> u32 {
-    get_flash_end() / 2
+    retrieve_flash_size() / 2
 }
+
+static mut FLASHSIZE: Option<u32> = None;
 
 /// Size of a page in bytes
 pub const PAGESIZE: u32 = 512;
