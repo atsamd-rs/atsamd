@@ -321,13 +321,6 @@ impl Nvm {
         }
     }
 
-    /// `offset` is the word-aligned offset (in bytes) from the start of the
-    /// bank where the write should start.
-    pub fn flash_write(&mut self, bank: &Bank, offset: u32, data: &[u32]) -> Result<()> {
-        let address = bank.address() + offset;
-        self.write(address, data)
-    }
-
     /// Write to flash memory
     /// If `address` is not word-aligned, an error is returned.
     pub fn write(&mut self, address: u32, data: &[u32]) -> Result<()> {
@@ -386,13 +379,6 @@ impl Nvm {
 
             self.manage_error_states()
         }
-    }
-
-    /// Erase a block of main memory
-    /// `address` is the address *within* the bank.
-    pub fn erase_block(&mut self, bank: &Bank, address: u32, num_blocks: u32) -> Result<()> {
-        let address = bank.address() + address;
-        self.erase(address, num_blocks, EraseGranularity::Block)
     }
 
     /// Erase flash memory.
