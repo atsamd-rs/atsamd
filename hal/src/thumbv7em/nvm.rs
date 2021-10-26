@@ -302,9 +302,7 @@ impl Nvm {
         // Check if requested state differs from current state
         if self.is_boot_protected() != protect {
             // Wait until ready
-            while !self.is_ready() {
-                cortex_m::asm::nop();
-            }
+            while !self.is_ready() {}
 
             // Requires both command and key so the command is allowed to execute
             if !protect {
@@ -337,9 +335,7 @@ impl Nvm {
         if self.contains_bootprotected(&write_addrs) {
             Err(Error::Protected)
         } else {
-            while !self.is_ready() {
-                cortex_m::asm::nop();
-            }
+            while !self.is_ready() {}
             self.command_sync(CMD_AW::PBC);
             // Track whether we have unwritten data in the page buffer
             let mut dirty = false;
@@ -355,9 +351,7 @@ impl Nvm {
                 // to flash
                 if addr % PAGESIZE >= PAGESIZE - step_size {
                     // Wait until ready
-                    while !self.is_ready() {
-                        cortex_m::asm::nop();
-                    }
+                    while !self.is_ready() {}
 
                     dirty = false;
                     // Perform a write
@@ -366,9 +360,7 @@ impl Nvm {
             }
 
             // Wait until the last write operation is finished
-            while !self.is_ready() {
-                cortex_m::asm::nop();
-            }
+            while !self.is_ready() {}
 
             if dirty {
                 // The dirty flag has fulfilled its role here, so we don't bother to maintain
@@ -404,9 +396,7 @@ impl Nvm {
                 self.set_address(address);
 
                 // Wait until ready
-                while !self.is_ready() {
-                    cortex_m::asm::nop();
-                }
+                while !self.is_ready() {}
 
                 // Erase block/page, wait for completion
                 self.command_sync(granularity.command());
