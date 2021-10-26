@@ -138,6 +138,27 @@ impl Bank {
 /// NVM result type
 pub type Result<T> = core::result::Result<T, Error>;
 
+/// Type wrapper limiting possible values of wait states
+#[derive(Copy, Clone, Debug)]
+pub struct WaitState(u8);
+
+impl WaitState {
+    /// Constructor
+    pub fn new(v: u8) -> core::result::Result<Self, ()> {
+        if v < 16 {
+            Ok(Self(v))
+        } else {
+            Err(())
+        }
+    }
+}
+
+impl Into<u8> for WaitState {
+    fn into(self) -> u8 {
+        self.0
+    }
+}
+
 impl Nvm {
     /// Create a new NVM controller or handle failure from DSU
     pub fn new(nvm: NVMCTRL) -> Self {
@@ -160,9 +181,10 @@ impl Nvm {
     /// Configure the wait state
     /// Safety: the implementor must guarantee (empirically) that the amount of
     /// wait states satisfy their requirements
-    pub unsafe fn wait_state(&mut self, ws: u8) {
-        assert!(ws < 16, "invalid wait state");
-        self.nvm.ctrla.modify(|_, w| w.rws().bits(ws));
+    pub unsafe fn wait_state(&mut self, wait_state: WaitState) {
+        self.nvm
+            .ctrla
+            .modify(|_, w| w.rws().bits(wait_state.into()));
     }
 
     /// Set the power reduction mode
