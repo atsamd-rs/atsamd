@@ -5,7 +5,6 @@
 //! - Run a CRC32 checksum over memory
 #![warn(missing_docs)]
 
-use super::nvm::Bank;
 use crate::target_device::{DSU, PAC};
 
 /// Device Service Unit
@@ -93,10 +92,10 @@ impl Dsu {
 
     /// Calculate CRC32 of a memory region
     ///
-    /// - `address` is an address within a chosen `bank`; must be word-aligned
+    /// - `address` is an address within a flash; must be word-aligned
     /// - `length` is a length of memory region that is being processed. Must be
     ///   word-aligned
-    pub fn crc32(&mut self, bank: &Bank, address: u32, length: u32) -> Result<u32> {
+    pub fn crc32(&mut self, address: u32, length: u32) -> Result<u32> {
         // The algorithm employed is the industry standard CRC32 algorithm using the
         // generator polynomial 0xEDB88320
         // (reversed representation of 0x04C11DB7).
@@ -114,11 +113,8 @@ impl Dsu {
 
         let num_words = length / 4;
 
-        // Calculate bank offset
-        let bank_address = bank.address() / 4;
-
         // Calculate target flash address
-        let flash_address = bank_address + address / 4;
+        let flash_address = address / 4;
 
         // Set the ADDR of where to start calculation, as number of words
         self.set_address(flash_address)?;
