@@ -13,6 +13,7 @@ use crate::target_device::nvmctrl::ctrlb::CMD_AW;
 use crate::target_device::NVMCTRL;
 use core::ops::Range;
 
+use bitfield::bitfield;
 
 #[inline(always)]
 fn retrieve_flash_size() -> u32 {
@@ -259,21 +260,43 @@ impl Nvm {
         state
     }
 
-        }
-    }
-
-    }
-
     /// Read the user page
-    pub fn user_page(&self) -> [u32; PAGESIZE as usize / 4] {
-        let mut output = [0u32; PAGESIZE as usize / 4];
-        let base_addr: *const u32 = 0x80_4000 as *const u32;
+    pub fn user_page(&self) -> Userpage {
+        let mut buffer = 0_u128;
+        let base_addr: *const u8 = 0x0080_4000 as *const u8;
 
-        for (i, o) in output.iter_mut().enumerate() {
-            *o = unsafe { core::ptr::read_volatile(base_addr.offset(i as isize)) };
+        for i in 0..16 {
+            buffer |= unsafe { core::ptr::read_volatile(base_addr.offset(i as isize)) as u128 }
+                << (i * 8);
         }
 
-        output
+        Userpage(buffer)
+    }
+
+    /// Read the calibration area
+    pub fn calibration_area(&self) -> CalibrationArea {
+        let mut buffer = 0_u64;
+        let base_addr: *const u8 = 0x0080_0080 as *const u8;
+
+        for i in 0..6 {
+            buffer |=
+                unsafe { core::ptr::read_volatile(base_addr.offset(i as isize)) as u64 } << (i * 8);
+        }
+
+        CalibrationArea(buffer)
+    }
+
+    /// Read the calibration area for temperatures
+    pub fn temperatures_calibration_area(&self) -> TemperaturesCalibrationArea {
+        let mut buffer = 0_u128;
+        let base_addr: *const u8 = 0x0080_0100 as *const u8;
+
+        for i in 0..11 {
+            buffer |= unsafe { core::ptr::read_volatile(base_addr.offset(i as isize)) as u128 }
+                << (i * 8);
+        }
+
+        TemperaturesCalibrationArea(buffer)
     }
 
     /// Turn boot protection on/off
@@ -464,4 +487,64 @@ impl EraseGranularity {
 fn range_overlap(a: &Range<u32>, b: &Range<u32>) -> bool {
     // When start == end, the range includes no points
     a.start != a.end && b.start != b.end && a.start <= b.end && b.start <= a.end
+}
+
+bitfield! {
+    #[derive(Copy, Clone, Default)]
+    /// POD-style struct representing NVM user page
+    pub struct Userpage(u128);
+    impl Debug;
+    u32;
+    bod33_disable, _: 0;
+    bod33_level, _: 8, 1;
+    bod33_action, _: 10, 9;
+    bod33_hysteresis, _: 14, 11;
+    bod12_calibration_parameters, _: 25, 12;
+    nvm_bootloader_size, _: 29, 26;
+    see_sblk, _: 35, 32;
+    see_psz, _: 38, 36;
+    ram_ecc_disable, _: 39;
+    wdt_enable, _: 48;
+    wdt_always_on, _: 49;
+    wdt_period, _: 53, 50;
+    wdt_window, _: 57, 54;
+    wdt_ewoffset, _: 61, 58;
+    wdt_wen, _: 62;
+    nvm_locks, _: 95, 64;
+    user_page, _: 127, 96;
+}
+
+bitfield! {
+    #[derive(Copy, Clone, Default)]
+    /// POD-style struct representing NVM calibration area
+    pub struct CalibrationArea(u64);
+    impl Debug;
+    u32;
+    ac_bias, _: 1, 0;
+    adc0_biascomp, _: 4, 2;
+    adc0_biasrefbuf, _: 7, 5;
+    adc0_biasr2r, _: 10, 8;
+    adc1_biascomp, _: 18, 16;
+    adc1_biasrefbuf, _: 21, 19;
+    adc1_biasr2r, _: 24, 22;
+    usb_transn, _: 36, 32;
+    usb_transp, _: 41, 37;
+    usb_trim, _: 44, 42;
+}
+
+bitfield! {
+    #[derive(Copy, Clone, Default)]
+    /// POD-style struct representing NVM calibration area for
+    /// temperature calibration
+    pub struct TemperaturesCalibrationArea(u128);
+    impl Debug;
+    u32;
+    tli, _: 7, 0;
+    tld, _: 11, 8;
+    thi, _: 19, 12;
+    thd, _: 23, 20;
+    vpl, _: 51, 40;
+    vph, _: 63, 52;
+    vcl, _: 75, 63;
+    vch, _: 87, 76;
 }
