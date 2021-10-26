@@ -123,6 +123,7 @@ pub enum Bank {
 
 impl Bank {
     /// Provides the address of the bank
+    #[inline]
     pub fn address(&self) -> u32 {
         match self {
             Bank::Active => 0,
@@ -131,6 +132,7 @@ impl Bank {
     }
 
     /// Provides bank length in bytes
+    #[inline]
     pub fn length(&self) -> u32 {
         get_bank_size()
     }
@@ -145,6 +147,7 @@ pub struct WaitState(u8);
 
 impl WaitState {
     /// Constructor
+    #[inline]
     pub fn new(v: u8) -> core::result::Result<Self, ()> {
         if v < 16 {
             Ok(Self(v))
@@ -162,6 +165,7 @@ impl Into<u8> for WaitState {
 
 impl Nvm {
     /// Create a new NVM controller or handle failure from DSU
+    #[inline]
     pub fn new(nvm: NVMCTRL) -> Self {
         Self { nvm }
     }
@@ -189,16 +193,19 @@ impl Nvm {
     }
 
     /// Set the power reduction mode
+    #[inline]
     pub fn power_reduction_mode(&mut self, prm: PRM_A) {
         self.nvm.ctrla.modify(|_, w| w.prm().variant(prm));
     }
 
     /// Check if the flash is boot protected
+    #[inline]
     pub fn is_boot_protected(&self) -> bool {
         !self.nvm.status.read().bpdis().bit()
     }
 
     /// Get first bank
+    #[inline]
     pub fn first_bank(&self) -> PhysicalBank {
         if self.nvm.status.read().afirst().bit() {
             PhysicalBank::A
@@ -217,6 +224,7 @@ impl Nvm {
     }
 
     /// Determine if the controller is busy writing or erasing
+    #[inline]
     pub fn is_ready(&self) -> bool {
         self.nvm.status.read().ready().bit()
     }
@@ -259,6 +267,7 @@ impl Nvm {
     }
 
     /// Read the user page
+    #[inline]
     pub fn user_page(&self) -> Userpage {
         let mut buffer = 0_u128;
         let base_addr: *const u8 = 0x0080_4000 as *const u8;
@@ -272,6 +281,7 @@ impl Nvm {
     }
 
     /// Read the calibration area
+    #[inline]
     pub fn calibration_area(&self) -> CalibrationArea {
         let mut buffer = 0_u64;
         let base_addr: *const u8 = 0x0080_0080 as *const u8;
@@ -285,6 +295,7 @@ impl Nvm {
     }
 
     /// Read the calibration area for temperatures
+    #[inline]
     pub fn temperatures_calibration_area(&self) -> TemperaturesCalibrationArea {
         let mut buffer = 0_u128;
         let base_addr: *const u8 = 0x0080_0100 as *const u8;
@@ -298,6 +309,7 @@ impl Nvm {
     }
 
     /// Turn boot protection on/off
+    #[inline]
     pub fn boot_protection(&mut self, protect: bool) -> Result<()> {
         // Check if requested state differs from current state
         if self.is_boot_protected() != protect {
@@ -321,6 +333,7 @@ impl Nvm {
 
     /// Write to flash memory
     /// If `address` is not word-aligned, an error is returned.
+    #[inline]
     pub fn write(&mut self, address: u32, data: &[u32]) -> Result<()> {
         // Length of memory step
         let step_size: u32 = core::mem::size_of::<u32>() as u32;
@@ -376,6 +389,7 @@ impl Nvm {
     /// Erase flash memory.
     ///
     /// Unit of `length` depends on a chosen erasing granularity.
+    #[inline]
     pub fn erase(
         &mut self,
         address: u32,
@@ -421,6 +435,7 @@ impl Nvm {
     }
 
     /// Retrieve SmartEERPOM
+    #[inline]
     pub fn smart_eeprom(&mut self) -> smart_eeprom::Result {
         smart_eeprom::SmartEepromMode::retrieve(self)
     }

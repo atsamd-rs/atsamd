@@ -38,6 +38,7 @@ pub type Result<T> = core::result::Result<T, Error>;
 
 impl Dsu {
     /// Unlock the DSU and instantiate peripheral
+    #[inline]
     pub fn new(dsu: DSU, pac: &PAC) -> Result<Self> {
         // Attempt to unlock DSU
         pac.wrctrl
@@ -95,6 +96,7 @@ impl Dsu {
     /// - `address` is an address within a flash; must be word-aligned
     /// - `length` is a length of memory region that is being processed. Must be
     ///   word-aligned
+    #[inline]
     pub fn crc32(&mut self, address: u32, length: u32) -> Result<u32> {
         // The algorithm employed is the industry standard CRC32 algorithm using the
         // generator polynomial 0xEDB88320
