@@ -244,39 +244,31 @@ impl Nvm {
         self.nvm.intflag.write(|w| w.done().set_bit());
     }
 
-    /// Check if there was a programming fault
-    fn programming_error(&self) -> Result<()> {
-        if self.nvm.intflag.read().proge().bit() {
-            // Clear the error flag
-            self.nvm.intflag.write(|w| w.proge().set_bit());
-
+    /// Read the peripheral state to check error flags and clear the up
+    /// afterwards
+    fn manage_error_states(&mut self) -> Result<()> {
+        let read_intflag = self.nvm.intflag.read();
+        // Check ADDRE and LOCKE first as it is more specific than PROGE
+        let state = if read_intflag.addre().bit_is_set() {
+            Err(Error::Peripheral(PeripheralError::AddressError))
+        } else if read_intflag.locke().bit_is_set() {
+            Err(Error::Peripheral(PeripheralError::LockError))
+        } else if read_intflag.proge().bit_is_set() {
             Err(Error::Peripheral(PeripheralError::ProgrammingError))
         } else {
             Ok(())
-        }
-    }
+        };
 
-    /// Clear the programming error flag
-    fn programming_error_clear(&self) -> Result<()> {
-        // Clear the error flag
-        self.nvm.intflag.write(|w| w.proge().set_bit());
-        Ok(())
-    }
-
-    /// Check if there was a section lock fault
-    fn lock_error(&self) -> Result<()> {
-        if self.nvm.intflag.read().locke().bit() {
-            Err(Error::Peripheral(PeripheralError::LockError))
-        } else {
-            Ok(())
-        }
-    }
-
-    /// Clear the lock error flag
-    fn lock_error_clear(&self) -> Result<()> {
-        // Clear the error flag
+        // Clear error flags
+        self.nvm.intflag.write(|w| w.addre().set_bit());
         self.nvm.intflag.write(|w| w.locke().set_bit());
-        Ok(())
+        self.nvm.intflag.write(|w| w.proge().set_bit());
+        state
+    }
+
+        }
+    }
+
     }
 
     /// Read the user page
@@ -309,7 +301,7 @@ impl Nvm {
                 self.command_sync(CMD_AW::CBPDIS);
             }
 
-            self.programming_error()
+            self.manage_error_states()
         } else {
             Err(Error::NoChangeBootProtection)
         }
@@ -378,18 +370,7 @@ impl Nvm {
                 self.command_sync(CMD_AW::WP);
             }
 
-            // Check if there was a programming fault
-            if let Err(e) = self.programming_error() {
-                self.lock_error()?;
-
-                // Clear the error flags
-                self.programming_error_clear()?;
-                self.lock_error_clear()?;
-
-                Err(e)
-            } else {
-                Ok(())
-            }
+            self.manage_error_states()
         }
     }
 
@@ -437,16 +418,7 @@ impl Nvm {
                 // Erase block/page, wait for completion
                 self.command_sync(granularity.command());
 
-                // Check if there was a programming fault
-                if let Err(e) = self.programming_error() {
-                    self.lock_error()?;
-
-                    // Clear the error flags
-                    self.programming_error_clear()?;
-                    self.lock_error_clear()?;
-
-                    return Err(e);
-                }
+                self.manage_error_states()?
             }
 
             Ok(())
