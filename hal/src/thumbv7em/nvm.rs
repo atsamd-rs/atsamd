@@ -167,9 +167,9 @@ impl WaitState {
     }
 }
 
-impl Into<u8> for WaitState {
-    fn into(self) -> u8 {
-        self.0
+impl From<WaitState> for u8 {
+    fn from(wait_state: WaitState) -> Self {
+        wait_state.0
     }
 }
 
