@@ -31,6 +31,7 @@ use bitfield::bitfield;
 
 #[inline(always)]
 fn retrieve_flash_size() -> u32 {
+    static mut FLASHSIZE: Option<u32> = None;
     // Safety: Lazy initialization of a static variable. Even in case of a data
     // race, it is populated by a technically constant value
     unsafe {
@@ -59,8 +60,6 @@ fn retrieve_flash_size() -> u32 {
 fn get_bank_size() -> u32 {
     retrieve_flash_size() / 2
 }
-
-static mut FLASHSIZE: Option<u32> = None;
 
 /// Size of a page in bytes
 pub const PAGESIZE: u32 = 512;
