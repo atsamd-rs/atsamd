@@ -348,7 +348,7 @@ impl Nvm {
     /// Write to flash memory
     /// If `address` is not word-aligned, an error is returned.
     #[inline]
-    pub fn write(&mut self, address: u32, data: &[u32]) -> Result<()> {
+    pub unsafe fn write(&mut self, address: u32, data: &[u32]) -> Result<()> {
         // Length of memory step
         let step_size: u32 = core::mem::size_of::<u32>() as u32;
         // Length of data to flash
@@ -371,7 +371,7 @@ impl Nvm {
                 // Write to memory, 32 bits, 1 word.
                 // The data is placed in the page buffer and ADDR is updated automatically.
                 // Memory is not written until the write page command is issued later.
-                unsafe { core::ptr::write_volatile(addr as *mut u32, data[counter] as u32) }
+                core::ptr::write_volatile(addr as *mut u32, data[counter] as u32);
                 dirty = true;
 
                 // If we are about to cross a page boundary (and run out of page buffer), write
@@ -404,7 +404,7 @@ impl Nvm {
     ///
     /// Unit of `length` depends on a chosen erasing granularity.
     #[inline]
-    pub fn erase(
+    pub unsafe fn erase(
         &mut self,
         address: u32,
         length: u32,
