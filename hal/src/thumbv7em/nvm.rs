@@ -87,6 +87,7 @@ pub enum PeripheralError {
 }
 
 /// Driver errors
+#[non_exhaustive]
 #[derive(Debug)]
 pub enum Error {
     /// Target sector is protected
