@@ -318,7 +318,11 @@ impl Nvm {
         TemperaturesCalibrationArea(buffer)
     }
 
-    /// Turn boot protection on/off
+    /// Enable/disable boot protection on/off
+    ///
+    /// Userpage's NVM BOOT field defines a memory region that is supposed to be
+    /// protected. `NVMCTRL.STATUS.BOOTPROT` is a readonly HW register populated
+    /// on reset with a value from a userpage. By default, 0
     #[inline]
     pub fn boot_protection(&mut self, protect: bool) -> Result<()> {
         // Check if requested state differs from current state
