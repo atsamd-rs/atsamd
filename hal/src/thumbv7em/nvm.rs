@@ -40,15 +40,11 @@ fn retrieve_flash_size() -> u32 {
             None => {
                 let nvm = &*NVMCTRL::ptr();
                 let nvm_params = nvm.param.read();
+                if !nvm_params.psz().is_512() {
+                    unreachable!("NVM page size is always expected to be 512 bytes");
+                }
                 let nvm_pages = nvm_params.nvmp().bits() as u32;
-                // PSZ register value -> page size
-                // 0 -> 8
-                // 1 -> 16
-                // ...
-                // 6 -> 512
-                // 7 -> 1024
-                let nvm_page_size = 8_u32 << (nvm_params.psz().bits() as u8);
-                let flash_size = nvm_pages * nvm_page_size;
+                let flash_size = nvm_pages * 512;
                 FLASHSIZE = Some(flash_size);
                 flash_size
             }
