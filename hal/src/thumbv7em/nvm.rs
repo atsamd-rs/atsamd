@@ -1,7 +1,21 @@
 //! # Non-volatile Memory Controller
 //!
-//! This module allows users to interact with Non-volatile memory controller.
+//! This module allows users to interact with non-volatile memory controller.
 //!
+//! NVMCTRL is an intermediary between memory buses and physical non-volatile
+//! memory. It provides means of managing a flash memory content, its properties
+//! (cache, wait states, bootloader blocks protection), power management and
+//! address remapping if necessary (in case bank mechanism is used). It also
+//! provides an indirection mechanism to achieve non-volatile RAM-like memory
+//! within last sectors of a physical flash (More in [`smart_eeprom`] module).
+//!
+//! NVM supports splitting flash into two sections (opt-in feature) called
+//! banks. Bank considered active is mapped to _virtual_ address `0x0`, meaning
+//! it contains currently executed application. Through NVM command & control
+//! interface, banks can be swapped and MCU reset, so the firmware from the
+//! other bank will run after restart.
+//!
+//! Module features:
 //! - Erase & write over non-volatile memory in a device.
 //! - Swap banks
 #![warn(missing_docs)]
