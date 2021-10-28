@@ -7,6 +7,7 @@
 - Add Integrity Check Monitor (ICM) abstraction (#480)
 - Add Public Key Cryptography Controller (PUKCC) support (#486)
 - Refactor the SPI module (#467)
+- Bump Rust edition to 2021 and MSRV to 1.56 (#535)
 
 ---
 
