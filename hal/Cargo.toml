@@ -13,7 +13,8 @@ license = "MIT OR Apache-2.0"
 repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
 documentation = "https://docs.rs/crate/atsamd-hal/"
-edition = "2018"
+edition = "2021"
+rust-version = "1.56"
 
 [package.metadata.docs.rs]
 features = ["samd21g", "samd21g-rt", "unproven", "usb"]

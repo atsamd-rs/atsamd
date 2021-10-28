@@ -90,10 +90,10 @@ impl Length for U4 {
 pub trait GreaterThan4: Length {}
 
 seq!(N in 5..=255 {
-    impl Sealed for typenum::U#N {}
-    impl StaticLength for typenum::U#N {}
-    impl GreaterThan4 for typenum::U#N {}
-    impl Length for typenum::U#N {
-        type Word = [u8; typenum::U#N::USIZE];
+    impl Sealed for typenum::U #N {}
+    impl StaticLength for typenum::U #N {}
+    impl GreaterThan4 for typenum::U #N {}
+    impl Length for typenum::U #N {
+        type Word = [u8; typenum::U #N::USIZE];
     }
 });

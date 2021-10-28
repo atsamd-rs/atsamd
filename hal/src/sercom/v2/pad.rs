@@ -76,9 +76,9 @@ seq!(N in 0..=3 {
         /// pattern.
         ///
         /// [type-level enum]: crate::typelevel#type-level-enum
-        pub enum Pad#N {}
-        impl Sealed for Pad#N {}
-        impl PadNum for Pad#N {}
+        pub enum Pad #N {}
+        impl Sealed for Pad #N {}
+        impl PadNum for Pad #N {}
     }
 });
 
@@ -280,9 +280,9 @@ mod ioset {
             /// pattern.
             ///
             /// [type-level enum]: crate::typelevel#type-level-enum
-            pub enum IoSet#N {}
-            impl Sealed for IoSet#N {}
-            impl IoSet for IoSet#N {}
+            pub enum IoSet #N {}
+            impl Sealed for IoSet #N {}
+            impl IoSet for IoSet #N {}
         }
     });
 
