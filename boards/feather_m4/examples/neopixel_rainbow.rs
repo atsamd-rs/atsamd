@@ -27,7 +27,7 @@ use smart_leds::{
     hsv::{hsv2rgb, Hsv},
     SmartLedsWrite,
 };
-use ws2812_timer_delay as ws2812;
+use ws2812_timer_delay::Ws2812;
 
 #[entry]
 fn main() -> ! {
@@ -43,11 +43,13 @@ fn main() -> ! {
     let pins = bsp::Pins::new(peripherals.PORT);
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
-    // (Re-)configure PB3 as output
-    let ws_data_pin = pins.neopixel.into_push_pull_output();
-    // Create a spin timer whoes period will be 9 x 120MHz clock cycles (75ns)
-    let timer = SpinTimer::new(9);
-    let mut neopixel = ws2812::Ws2812::new(timer, ws_data_pin);
+    let gclk0 = clocks.gclk0();
+    let timer_clock = clocks.tc2_tc3(&gclk0).unwrap();
+    let mut timer = TimerCounter::tc3_(&timer_clock, peripherals.TC3, &mut peripherals.MCLK);
+    timer.start(3.mhz());
+
+    let neopixel_pin = pins.neopixel.into_push_pull_output();
+    let mut neopixel = Ws2812::new(timer, neopixel_pin);
 
     // Loop through all of the available hue values (colors) to make a
     // rainbow effect from the onboard neopixel
