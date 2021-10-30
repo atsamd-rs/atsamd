@@ -27,6 +27,11 @@ cortex-m = "0.7"
 panic-halt = "0.2"
 panic-semihosting = "0.5"
 usbd-serial = "0.1"
+smart-leds = "0.3.0"
+
+[dev-dependencies.ws2812-timer-delay]
+features = ["slow"]
+version = "0.3.0"
 
 [features]
 # ask the HAL to enable atsamd21g support
