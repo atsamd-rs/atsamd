@@ -30,7 +30,7 @@ use core::ops::Range;
 use bitfield::bitfield;
 
 #[inline(always)]
-fn retrieve_flash_size() -> u32 {
+pub fn retrieve_flash_size() -> u32 {
     static mut FLASHSIZE: Option<u32> = None;
     // Safety: Lazy initialization of a static variable. Even in case of a data
     // race, it is populated by a technically constant value
@@ -53,7 +53,7 @@ fn retrieve_flash_size() -> u32 {
 }
 
 #[inline(always)]
-fn get_bank_size() -> u32 {
+pub fn retrieve_bank_size() -> u32 {
     retrieve_flash_size() / 2
 }
 
@@ -137,14 +137,14 @@ impl Bank {
     pub fn address(&self) -> u32 {
         match self {
             Bank::Active => 0,
-            Bank::Inactive => get_bank_size(),
+            Bank::Inactive => retrieve_bank_size(),
         }
     }
 
     /// Provides bank length in bytes
     #[inline]
     pub fn length(&self) -> u32 {
-        get_bank_size()
+        retrieve_bank_size()
     }
 }
 
