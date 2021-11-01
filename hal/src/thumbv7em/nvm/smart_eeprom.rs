@@ -107,8 +107,8 @@ impl<'a> SmartEepromMode<'a> {
         let psz = nvm.nvm.seestat.read().psz().bits() as u32;
         let virtual_size = match (sblk, psz) {
             (0, _) => return Err(Disabled),
-            (sblk @ 11.., _) => return Err(InvalidBlockCount { sblk }),
-            (_, 8..) => {
+            (sblk @ 11..=u32::MAX, _) => return Err(InvalidBlockCount { sblk }),
+            (_, 8..=u32::MAX) => {
                 unreachable!("`NVMCTRL.SEESTAT.PSZ` value is represented with 3 bits in user page")
             }
             others => Self::map_sblk_psz_to_virtual_size(others),
