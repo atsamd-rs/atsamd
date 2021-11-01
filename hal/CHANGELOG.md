@@ -6,7 +6,7 @@
 - Fixed the RTC implementation of embedded-hal timer traits to be periodic again (#490)
 - Add Integrity Check Monitor (ICM) abstraction (#480)
 - Add Public Key Cryptography Controller (PUKCC) support (#486)
-- Made SPI Error type support `defmt::Format` trait (behind the `defmt` feature)
+- Made SPI/I2C Error types support `defmt::Format` trait (behind the `defmt` feature)
 
 ---
 
