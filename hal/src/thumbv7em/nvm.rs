@@ -29,6 +29,7 @@ use core::ops::Range;
 
 use bitfield::bitfield;
 
+/// Retrieve a total NVM size using HW registers
 #[inline(always)]
 pub fn retrieve_flash_size() -> u32 {
     static mut FLASHSIZE: Option<u32> = None;
@@ -52,6 +53,7 @@ pub fn retrieve_flash_size() -> u32 {
     }
 }
 
+/// Retrieve a bank size using HW registers
 #[inline(always)]
 pub fn retrieve_bank_size() -> u32 {
     retrieve_flash_size() / 2
