@@ -62,6 +62,7 @@ impl Sealed for Unlocked {}
 
 /// Enum representing possible failure modes of SmartEEPROM while its state is
 /// being retrieved from HW registers.
+#[derive(Debug)]
 pub enum SmartEepromRetrievalFailure {
     /// SmartEERPOM is disabled and user page is misconfigured. [`More details
     /// in module-level documentation`](self).
@@ -90,6 +91,14 @@ pub enum SmartEepromMode<'a> {
 
 /// Type alias for locally used [`Result`] type.
 pub type Result<'a> = core::result::Result<SmartEepromMode<'a>, SmartEepromRetrievalFailure>;
+
+#[inline]
+fn wait_if_busy() {
+    // Workaround: Cannot access `NVMCTRL` through `self.nvm.nvm` because of double
+    // borrowing in iterator for [`SmartEeprom::set`]. This should be safe though.
+    let nvmctrl = unsafe { &*NVMCTRL::ptr() };
+    while nvmctrl.seestat.read().busy().bit_is_set() {}
+}
 
 impl<'a> SmartEepromMode<'a> {
     /// Retrieve [`SmartEeprom`] instance using information found in relevant HW
@@ -176,18 +185,18 @@ impl<'a, T: SmartEepromState> SmartEeprom<'a, T> {
             .iter_mut()
             .zip(slice.iter().skip(offset))
             .for_each(|(target, source)| {
-                Self::wait_if_busy();
+                wait_if_busy();
                 *target = *source
             });
     }
 
-    #[inline]
-    fn wait_if_busy() {
-        // Workaround: Cannot access `NVMCTRL` through `self.nvm.nvm` because of double
-        // borrowing in iterator for [`SmartEeprom::set`]. This should be safe though.
-        let nvmctrl = unsafe { &*NVMCTRL::ptr() };
-        while nvmctrl.seestat.read().busy().bit_is_set() {}
+    /// Returns an  iterator over SmartEEPROM address space.
+    pub fn iter<TP: SmartEepromPointableSize>(
+        &'a self,
+    ) -> SmartEepromIter<'a, TP> {
+        SmartEepromIter { iter: unsafe { self.get_slice().iter() } }
     }
+
 }
 
 /// Trait generalizing over primitive types that are permitted to be used as
@@ -224,9 +233,16 @@ impl<'a> SmartEeprom<'a, Unlocked> {
             .iter()
             .zip(slice.iter_mut().skip(offset))
             .for_each(|(source, target)| {
-                Self::wait_if_busy();
+                wait_if_busy();
                 *target = *source
             });
+    }
+
+    /// Returns a mutable iterator over SmartEEPROM address space.
+    pub fn iter_mut<TP: SmartEepromPointableSize>(
+        &'a mut self,
+    ) -> SmartEepromIterMut<'a, TP> {
+        SmartEepromIterMut { iter: unsafe { self.get_mut_slice().iter_mut() } }
     }
 
     /// Locks SmartEEPROM, allowing only to perform read operations
@@ -255,6 +271,46 @@ impl<'a> SmartEeprom<'a, Locked> {
             virtual_size,
             __: PhantomData,
         }
+    }
+}
+
+/// A type representing an immutable iterator over SmartEEPROM address space
+pub struct SmartEepromIter<'a, TP: SmartEepromPointableSize> {
+    iter: core::slice::Iter<'a, TP>,
+}
+
+impl<'a, TP: SmartEepromPointableSize> Iterator for SmartEepromIter<'a, TP> {
+    type Item = &'a TP;
+    fn next(&mut self) -> Option<Self::Item> {
+        wait_if_busy();
+        self.iter.next()
+    }
+}
+
+impl<'a, TP: SmartEepromPointableSize> DoubleEndedIterator for SmartEepromIter<'a, TP> {
+    fn next_back(&mut self) -> Option<Self::Item> {
+        wait_if_busy();
+        self.iter.next_back()
+    }
+}
+
+/// A type representing a mutable iterator over SmartEEPROM address space
+pub struct SmartEepromIterMut<'a, TP: SmartEepromPointableSize> {
+    iter: core::slice::IterMut<'a, TP>,
+}
+
+impl<'a, TP: SmartEepromPointableSize> Iterator for SmartEepromIterMut<'a, TP> {
+    type Item = &'a mut TP;
+    fn next(&mut self) -> Option<Self::Item> {
+        wait_if_busy();
+        self.iter.next()
+    }
+}
+
+impl<'a, TP: SmartEepromPointableSize> DoubleEndedIterator for SmartEepromIterMut<'a, TP> {
+    fn next_back(&mut self) -> Option<Self::Item> {
+        wait_if_busy();
+        self.iter.next_back()
     }
 }
 
