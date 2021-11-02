@@ -25,6 +25,7 @@ pub mod smart_eeprom;
 pub use crate::target_device::nvmctrl::ctrla::PRM_A;
 use crate::target_device::nvmctrl::ctrlb::CMD_AW;
 use crate::target_device::NVMCTRL;
+use core::num::NonZeroU32;
 use core::ops::Range;
 
 use bitfield::bitfield;
@@ -32,12 +33,12 @@ use bitfield::bitfield;
 /// Retrieve a total NVM size using HW registers
 #[inline(always)]
 pub fn retrieve_flash_size() -> u32 {
-    static mut FLASHSIZE: Option<u32> = None;
-    // Safety: Lazy initialization of a static variable. Even in case of a data
-    // race, it is populated by a technically constant value
+    static mut FLASHSIZE: Option<NonZeroU32> = None;
+    // Safety: Lazy initialization of a static variable - interactions with
+    // `Option<NonZeroU32>` should be atomic
     unsafe {
         match FLASHSIZE {
-            Some(x) => x,
+            Some(x) => x.into(),
             None => {
                 let nvm = &*NVMCTRL::ptr();
                 let nvm_params = nvm.param.read();
@@ -46,7 +47,8 @@ pub fn retrieve_flash_size() -> u32 {
                 }
                 let nvm_pages = nvm_params.nvmp().bits() as u32;
                 let flash_size = nvm_pages * 512;
-                FLASHSIZE = Some(flash_size);
+                // Safety: `flash_size` will never be 0
+                FLASHSIZE = Some(NonZeroU32::new_unchecked(flash_size));
                 flash_size
             }
         }
