@@ -191,12 +191,11 @@ impl<'a, T: SmartEepromState> SmartEeprom<'a, T> {
     }
 
     /// Returns an  iterator over SmartEEPROM address space.
-    pub fn iter<TP: SmartEepromPointableSize>(
-        &'a self,
-    ) -> SmartEepromIter<'a, TP> {
-        SmartEepromIter { iter: unsafe { self.get_slice().iter() } }
+    pub fn iter<TP: SmartEepromPointableSize>(&'a self) -> SmartEepromIter<'a, TP> {
+        SmartEepromIter {
+            iter: unsafe { self.get_slice().iter() },
+        }
     }
-
 }
 
 /// Trait generalizing over primitive types that are permitted to be used as
@@ -239,10 +238,10 @@ impl<'a> SmartEeprom<'a, Unlocked> {
     }
 
     /// Returns a mutable iterator over SmartEEPROM address space.
-    pub fn iter_mut<TP: SmartEepromPointableSize>(
-        &'a mut self,
-    ) -> SmartEepromIterMut<'a, TP> {
-        SmartEepromIterMut { iter: unsafe { self.get_mut_slice().iter_mut() } }
+    pub fn iter_mut<TP: SmartEepromPointableSize>(&'a mut self) -> SmartEepromIterMut<'a, TP> {
+        SmartEepromIterMut {
+            iter: unsafe { self.get_mut_slice().iter_mut() },
+        }
     }
 
     /// Locks SmartEEPROM, allowing only to perform read operations
