@@ -386,9 +386,9 @@ seq!(N in 0..=11 {
     /// Tokens for every [`GclkIn`] and [`GclkOut`]
     pub struct Tokens {
         #( /// GclkIn #N
-           pub gclk_in#N: GclkInToken<marker::Gclk#N>, )*
+           pub gclk_in #N: GclkInToken<marker::Gclk #N>, )*
         #( /// GclkOut #N
-           pub gclk_out#N: GclkOutToken<marker::Gclk#N>, )*
+           pub gclk_out #N: GclkOutToken<marker::Gclk #N>, )*
     }
 
     impl Tokens {
@@ -396,8 +396,8 @@ seq!(N in 0..=11 {
         #[inline]
         pub(super) unsafe fn new() -> Tokens {
             Tokens {
-                #( gclk_in#N: GclkInToken::new(), )*
-                #( gclk_out#N: GclkOutToken::new(), )*
+                #( gclk_in #N: GclkInToken::new(), )*
+                #( gclk_out #N: GclkOutToken::new(), )*
             }
         }
     }

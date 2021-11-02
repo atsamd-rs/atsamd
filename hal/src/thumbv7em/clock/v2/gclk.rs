@@ -291,7 +291,7 @@ pub mod marker {
     impl_gclk1_source!(Gclk0);
 
     seq!(N in 2..=11 {
-        impl_gclk1_source!(Gclk#N);
+        impl_gclk1_source!(Gclk #N);
     });
 
     seq!(N in 2..=11 {
@@ -299,11 +299,11 @@ pub mod marker {
         /// [`super::Gclk`] and provides numerical identity for it
         ///
         /// Standard division factor, see [`GclkDiv`]
-        pub enum Gclk#N {}
-        impl Sealed for Gclk#N {}
-        impl NotGclk0 for Gclk#N {}
-        impl NotGclk1 for Gclk#N {}
-        impl GclkNum for Gclk#N {
+        pub enum Gclk #N {}
+        impl Sealed for Gclk #N {}
+        impl NotGclk0 for Gclk #N {}
+        impl NotGclk1 for Gclk #N {}
+        impl GclkNum for Gclk #N {
             const NUM: usize = N;
             type DividerType = GclkDiv;
         }
@@ -716,7 +716,7 @@ impl<T: GclkSourceMarker> Enabled<Gclk0<T>, U1> {
 
 seq!(G in 0..=11 {
     /// Alias of [`Gclk`]`<marker::GclkX, _>`
-    pub type Gclk#G<S> = Gclk<marker::Gclk#G, S>;
+    pub type Gclk #G<S> = Gclk<marker::Gclk #G, S>;
 });
 
 //==============================================================================
@@ -727,7 +727,7 @@ seq!(N in 1..=11 {
     /// [`Gclk`] tokens ensuring there only exists one instance of each [`Gclk`]
     pub struct Tokens {
         #( /// GclkToken for Gclk#N
-           pub gclk#N: GclkToken<marker::Gclk#N>, )*
+           pub gclk #N: GclkToken<marker::Gclk #N>, )*
     }
 
     impl Tokens {
@@ -738,7 +738,7 @@ seq!(N in 1..=11 {
             // Return all tokens when initially created
             unsafe {
                 Tokens {
-                    #( gclk#N: GclkToken::new(), )*
+                    #( gclk #N: GclkToken::new(), )*
                 }
             }
         }

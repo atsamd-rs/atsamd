@@ -135,8 +135,8 @@ pub trait PclkSourceMarker: GclkNum + SourceMarker {
 }
 
 seq!(N in 0..=11 {
-    impl PclkSourceMarker for marker::Gclk#N {
-        const PCLK_SRC: PclkSourceEnum = PclkSourceEnum::GCLK#N;
+    impl PclkSourceMarker for marker::Gclk #N {
+        const PCLK_SRC: PclkSourceEnum = PclkSourceEnum::GCLK #N;
     }
 });
 
