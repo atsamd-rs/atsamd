@@ -1,27 +1,16 @@
 #![no_std]
 #![no_main]
 
-#[cfg(not(feature = "use_semihosting"))]
-use panic_halt as _;
-#[cfg(feature = "use_semihosting")]
-use panic_semihosting as _;
+extern crate panic_halt;
 
-use bsp::hal;
-use xiao_m0 as bsp;
-
-use bsp::entry;
-use hal::clock::GenericClockController;
-use hal::gpio::{OpenDrain, Output, Pa18};
-use hal::pac::{interrupt, CorePeripherals, Peripherals};
-
-use hal::usb::UsbBus;
-use usb_device::bus::UsbBusAllocator;
-
-use usb_device::prelude::*;
+use cortex_m::{asm::delay as asm_delay, peripheral::NVIC};
+use hal::{clock::GenericClockController, prelude::*, usb::UsbBus};
+use pac::{interrupt, CorePeripherals, Peripherals};
+use usb_device::{bus::UsbBusAllocator, prelude::*};
 use usbd_serial::{SerialPort, USB_CLASS_CDC};
 
-use cortex_m::asm::delay as cycle_delay;
-use cortex_m::peripheral::NVIC;
+use bsp::{entry, hal, pac, Led0, Led1};
+use xiao_m0 as bsp;
 
 #[entry]
 fn main() -> ! {
@@ -33,9 +22,7 @@ fn main() -> ! {
         &mut peripherals.SYSCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = bsp::Pins::new(peripherals.PORT);
-    let mut led0 = pins.led0.into_open_drain_output(&mut pins.port);
-
+    let pins = bsp::Pins::new(peripherals.PORT);
     let bus_allocator = unsafe {
         USB_ALLOCATOR = Some(bsp::usb_allocator(
             peripherals.USB,
@@ -50,14 +37,14 @@ fn main() -> ! {
     unsafe {
         USB_SERIAL = Some(SerialPort::new(&bus_allocator));
         USB_BUS = Some(
-            UsbDeviceBuilder::new(&bus_allocator, UsbVidPid(0x16c0, 0x27dd))
-                .manufacturer("Fake company")
-                .product("Serial port")
-                .serial_number("TEST")
+            UsbDeviceBuilder::new(&bus_allocator, UsbVidPid(0xdead, 0xbeef))
+                .manufacturer("Hackers University")
+                .product("xiao_usb_echo")
+                .serial_number("42")
                 .device_class(USB_CLASS_CDC)
                 .build(),
         );
-        LED = Some(pins.led1.into_open_drain_output(&mut pins.port));
+        LED_DATA = Some(pins.led1.into_mode());
     }
 
     unsafe {
@@ -65,18 +52,19 @@ fn main() -> ! {
         NVIC::unmask(interrupt::USB);
     }
 
-    // Flash the LED in a spin loop to demonstrate that USB is
-    // entirely interrupt driven.
+    // Flash the LED in a spin loop to demonstrate
+    // that USB is entirely interrupt driven.
+    let mut led_loop: Led0 = pins.led0.into_push_pull_output();
     loop {
-        cycle_delay(15 * 1024 * 1024);
-        led0.toggle();
+        asm_delay(15 * 1024 * 1024);
+        led_loop.toggle().unwrap();
     }
 }
 
 static mut USB_ALLOCATOR: Option<UsbBusAllocator<UsbBus>> = None;
 static mut USB_BUS: Option<UsbDevice<UsbBus>> = None;
 static mut USB_SERIAL: Option<SerialPort<UsbBus>> = None;
-static mut LED: Option<Pa18<Output<OpenDrain>>> = None;
+static mut LED_DATA: Option<Led1> = None;
 
 fn poll_usb() {
     unsafe {
@@ -91,7 +79,7 @@ fn poll_usb() {
                             break;
                         }
                         serial.write(&[c.clone()]).unwrap();
-                        LED.as_mut().map(|led| led.toggle());
+                        LED_DATA.as_mut().map(|led| led.toggle());
                     }
                 };
             });

@@ -1,16 +1,16 @@
 [package]
 name = "xiao_m0"
-version = "0.10.0"
-authors = ["Garret Kelly <gdk@google.com>"]
+version = "0.11.0"
+authors = ["Garret Kelly <gdk@google.com>", "Maciej Procyk <macieekprocyk@gmail.com>"]
 description = "Board support crate for the Seeed Studio Seeeduino XIAO"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
-edition = "2018"
+edition = "2021"
 
 [dependencies.cortex-m-rt]
-version = "0.6.12"
+version = "0.6.15"
 optional = true
 
 [dependencies.atsamd-hal]
@@ -25,6 +25,10 @@ optional = true
 cortex-m = "0.7"
 usbd-serial = "0.1"
 panic-halt = "0.2"
+ssd1306 = "0.6.0"
+embedded-graphics = "0.7.1"
+mpu6050 = "0.1.4"
+shared-bus = "0.2.2"
 
 [features]
 default = ["rt", "atsamd-hal/samd21g"]
@@ -34,12 +38,20 @@ usb = ["atsamd-hal/usb", "usb-device"]
 
 [[example]]
 name = "blink"
+required-features = ["unproven"]
 
 [[example]]
-name = "usb_serial"
-required-features = ["usb"]
+name = "shared_i2c"
+
+[[example]]
+name = "ssd1306_i2c"
+
+[[example]]
+name = "usb_echo"
+required-features = ["usb", "unproven"]
 
 [profile.release]
+debug = false
 lto = true
 opt-level = "s"
 

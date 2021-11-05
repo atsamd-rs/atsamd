@@ -1,19 +1,13 @@
 #![no_main]
 #![no_std]
 
-#[cfg(not(feature = "use_semihosting"))]
-use panic_halt as _;
-#[cfg(feature = "use_semihosting")]
-use panic_semihosting as _;
+extern crate panic_halt;
 
-use bsp::hal;
+use hal::{clock::GenericClockController, delay::Delay, prelude::*};
+use pac::{CorePeripherals, Peripherals};
+
+use bsp::{entry, hal, pac, Led0};
 use xiao_m0 as bsp;
-
-use bsp::entry;
-use hal::clock::GenericClockController;
-use hal::delay::Delay;
-use hal::pac::{CorePeripherals, Peripherals};
-use hal::prelude::*;
 
 #[entry]
 fn main() -> ! {
@@ -25,24 +19,13 @@ fn main() -> ! {
         &mut peripherals.SYSCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = bsp::Pins::new(peripherals.PORT);
-    let mut led0 = pins.led0.into_open_drain_output(&mut pins.port);
-    let mut led1 = pins.led1.into_open_drain_output(&mut pins.port);
-    let mut led2 = pins.led2.into_open_drain_output(&mut pins.port);
-    let mut delay = Delay::new(core.SYST, &mut clocks);
+    let pins = bsp::Pins::new(peripherals.PORT);
 
-    let mut counter = 0u8;
+    let mut delay = Delay::new(core.SYST, &mut clocks);
+    let mut led0: Led0 = pins.led0.into_push_pull_output();
+
     loop {
-        counter = counter.wrapping_add(1);
-        delay.delay_ms(100u8);
-        if counter & (1 << 0) != 0 {
-            led0.toggle();
-        }
-        if counter & (1 << 1) != 0 {
-            led1.toggle();
-        }
-        if counter & (1 << 2) != 0 {
-            led2.toggle();
-        }
+        delay.delay_ms(200u8);
+        led0.toggle().unwrap();
     }
 }
