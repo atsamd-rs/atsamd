@@ -94,6 +94,8 @@ pub enum PeripheralError {
 #[non_exhaustive]
 #[derive(Debug)]
 pub enum Error {
+    /// Address range outside of flash
+    NonFlash,
     /// Target sector is protected
     Protected,
     /// Memory region is used by SmartEEPROM
@@ -345,7 +347,9 @@ impl Nvm {
             return Err(Error::Alignment);
         }
 
-        if self.contains_bootprotected(&write_addresses) {
+        if self.contains_non_flash_memory_area(&write_addresses) {
+            Err(Error::NonFlash)
+        } else if self.contains_bootprotected(&write_addresses) {
             Err(Error::Protected)
         } else if self.contains_smart_eeprom(&write_addresses) {
             Err(Error::SmartEepromArea)
@@ -408,7 +412,9 @@ impl Nvm {
         let flash_address = address - address % granularity.size();
         let range_to_erase = flash_address..(flash_address + length * granularity.size());
 
-        if self.contains_bootprotected(&range_to_erase) {
+        if self.contains_non_flash_memory_area(&range_to_erase) {
+            Err(Error::NonFlash)
+        } else if self.contains_bootprotected(&range_to_erase) {
             Err(Error::Protected)
         } else if self.contains_smart_eeprom(&range_to_erase) {
             Err(Error::SmartEepromArea)
@@ -430,7 +436,7 @@ impl Nvm {
         }
     }
 
-    fn contains_bootprotected(&self, inp: &Range<u32>) -> bool {
+    fn contains_bootprotected(&self, input: &Range<u32>) -> bool {
         // Calculate size that is protected for bootloader
         //   * 15 = no bootprotection, default value
         //   * 0 = max bootprotection, 15 * 8Kibyte = 120KiB
@@ -439,11 +445,24 @@ impl Nvm {
         let bp_space = 8 * 1024 * (15 - bootprot) as u32;
 
         let boot = &(Bank::Active.address()..(Bank::Active.address() + bp_space));
-        self.is_boot_protected() && range_overlap(inp, boot)
+        self.is_boot_protected() && range_overlap(input, boot)
     }
 
-    fn contains_smart_eeprom(&self, _inp: &Range<u32>) -> bool {
-        false
+    fn contains_smart_eeprom(&self, input: &Range<u32>) -> bool {
+        let smart_eeprom_allocated_blocks = self.nvm.seestat.read().sblk().bits() as u32;
+        let smart_eeprom_end = Bank::Inactive.address() + Bank::Inactive.length();
+        let smart_eeprom_start = smart_eeprom_end - smart_eeprom_allocated_blocks * BLOCKSIZE;
+        let smart_eeprom = &(smart_eeprom_start..smart_eeprom_end);
+        range_overlap(input, smart_eeprom)
+    }
+
+    fn contains_non_flash_memory_area(&self, input: &Range<u32>) -> bool {
+        let flash_start = 0x0;
+        let flash_end = retrieve_flash_size();
+        input.start >= flash_start
+            && input.start < flash_end
+            && input.end >= flash_start
+            && input.end < flash_end
     }
 
     /// Retrieve SmartEERPOM
