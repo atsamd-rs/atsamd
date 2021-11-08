@@ -17,7 +17,7 @@ use hal::clock::GenericClockController;
 use hal::dsu::Dsu;
 use hal::nvm::{retrieve_bank_size, Bank, EraseGranularity, Nvm, BLOCKSIZE};
 use hal::pac::{interrupt, CorePeripherals, Peripherals};
-use hal::{pukcc::*, usb::UsbBus};
+use hal::usb::UsbBus;
 
 use usb_device::bus::UsbBusAllocator;
 use usb_device::prelude::*;
@@ -105,8 +105,12 @@ fn main() -> ! {
             )
             .unwrap();
             serial_writeln!("Overwrite inactive bank with active bank");
-            nvm.write(inactive_bank_address, active_bank_address, bank_size_in_words)
-                .unwrap();
+            nvm.write(
+                inactive_bank_address,
+                active_bank_address,
+                bank_size_in_words,
+            )
+            .unwrap();
             serial_writeln!("Swapping banks & reset!");
             nvm.bank_swap();
         }
