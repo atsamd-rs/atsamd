@@ -17,7 +17,7 @@ for examples.
 * Put your device in bootloader mode by bridging the `RST` pads _twice_ in
   quick succession. The orange LED will pulse when the device is in bootloader
   mode.
-* Build and upload in one step: `cargo hf2 --release --example blink`
+* Build and upload in one step: `cargo hf2 --release --example blink --features="unproven"`
   * Note that if you're using an older `cargo-hf2` that you'll need to specify
     the VID/PID when flashing: `cargo hf2 --vid 0x2886 --pid 0x002f --release
-    --example blink`
+    --example blink --features="unproven"`
