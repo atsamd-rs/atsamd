@@ -325,6 +325,19 @@ impl Nvm {
     /// Write to flash memory
     /// If `address` is not word-aligned, an error is returned.
     #[inline]
+    pub unsafe fn write_from_slice(
+        &mut self,
+        destination_address: u32,
+        source_slice: &[u32],
+    ) -> Result<()> {
+        let source_address = source_slice.as_ptr() as u32;
+        let words = source_slice.len() as u32;
+        self.write(destination_address, source_address, words)
+    }
+
+    /// Write to flash memory
+    /// If `address` is not word-aligned, an error is returned.
+    #[inline]
     pub unsafe fn write(
         &mut self,
         destination_address: u32,
@@ -457,12 +470,7 @@ impl Nvm {
     }
 
     fn contains_non_flash_memory_area(&self, input: &Range<u32>) -> bool {
-        let flash_start = 0x0;
-        let flash_end = retrieve_flash_size();
-        input.start >= flash_start
-            && input.start < flash_end
-            && input.end >= flash_start
-            && input.end < flash_end
+        input.end >= retrieve_flash_size()
     }
 
     /// Retrieve SmartEERPOM
