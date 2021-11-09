@@ -470,7 +470,7 @@ impl Nvm {
     }
 
     fn contains_non_flash_memory_area(&self, input: &Range<u32>) -> bool {
-        input.end >= retrieve_flash_size()
+        input.end > retrieve_flash_size()
     }
 
     /// Retrieve SmartEERPOM
@@ -506,8 +506,7 @@ impl EraseGranularity {
 }
 
 fn range_overlap(a: &Range<u32>, b: &Range<u32>) -> bool {
-    // When start == end, the range includes no points
-    a.start != a.end && b.start != b.end && a.start <= b.end && b.start <= a.end
+    a.start < b.end && b.start < a.end
 }
 
 bitfield! {
