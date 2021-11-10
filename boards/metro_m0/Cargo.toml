@@ -18,10 +18,6 @@ path = "../../hal"
 version = "0.13"
 default-features = false
 
-[dependencies.rtic-monotonic]
-version = "=0.1.0-rc.1"
-optional = true
-
 [dependencies.usb-device]
 version = "0.2"
 optional = true
@@ -32,14 +28,14 @@ usbd-serial = "0.1"
 panic-halt = "0.2"
 panic-semihosting = "0.5"
 cortex-m-semihosting = "0.3"
-cortex-m-rtic = "=0.6.0-rc.2"
+cortex-m-rtic = "=0.6.0-rc.4"
 sx1509 = "0.2"
 
 [features]
 # ask the HAL to enable atsamd21g support
 default = ["rt", "atsamd-hal/samd21g"]
 rt = ["cortex-m-rt", "atsamd-hal/samd21g-rt"]
-rtic = ["atsamd-hal/rtic", "rtic-monotonic"]
+rtic = ["atsamd-hal/rtic"]
 unproven = ["atsamd-hal/unproven"]
 use_rtt = ["atsamd-hal/use_rtt"]
 usb = ["atsamd-hal/usb", "usb-device"]
