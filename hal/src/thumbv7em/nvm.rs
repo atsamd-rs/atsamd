@@ -322,8 +322,9 @@ impl Nvm {
         }
     }
 
-    /// Write to flash memory
-    /// If `address` is not word-aligned, an error is returned.
+    /// Write to flash memory from a slice
+    ///
+    /// If `destination_address` is not word-aligned, an error is returned.
     #[inline]
     pub unsafe fn write_from_slice(
         &mut self,
@@ -336,7 +337,9 @@ impl Nvm {
     }
 
     /// Write to flash memory
-    /// If `address` is not word-aligned, an error is returned.
+    ///
+    /// If either `destination_address` or `source_address` are not
+    /// word-aligned, an error is returned.
     #[inline]
     pub unsafe fn write(
         &mut self,
