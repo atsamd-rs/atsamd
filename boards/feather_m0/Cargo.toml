@@ -27,15 +27,8 @@ optional = true
 version = "0.3"
 optional = true
 
-[dependencies.rtic-monotonic]
-version = "=0.1.0-rc.1"
-optional = true
-
-[dependencies.cortex-m-rtic]
-version = "=0.6.0-rc.2"
-optional = true
-
 [dev-dependencies]
+cortex-m-rtic = "=0.6.0-rc.4"
 cortex-m = "0.7"
 usbd-serial = "0.1"
 cortex-m-semihosting = "0.3"
@@ -63,7 +56,7 @@ max-channels = ["dma", "atsamd-hal/max-channels"]
 # Enable pins for the adalogger SD card reader
 adalogger = []
 sdmmc = ["embedded-sdmmc", "atsamd-hal/sdmmc"]
-rtic = ["atsamd-hal/rtic", "rtic-monotonic", "cortex-m-rtic"]
+rtic = ["atsamd-hal/rtic"]
 use_semihosting = []
 
 [profile.dev]

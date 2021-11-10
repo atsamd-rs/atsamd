@@ -12,7 +12,13 @@ use void::Void;
 use embedded_sdmmc::{TimeSource, Timestamp};
 
 #[cfg(feature = "rtic")]
-use rtic_monotonic::{embedded_time, Clock, Fraction, Instant, Monotonic};
+use fugit;
+#[cfg(feature = "rtic")]
+pub type Instant = fugit::Instant<u32, 1, 32_768>;
+#[cfg(feature = "rtic")]
+pub type Duration = fugit::Duration<u32, 1, 32_768>;
+#[cfg(feature = "rtic")]
+use rtic_monotonic::Monotonic;
 
 // SAMx5x imports
 #[cfg(feature = "min-samd51g")]
@@ -455,26 +461,25 @@ impl TimerParams {
 }
 
 #[cfg(feature = "rtic")]
-impl Clock for Rtc<Count32Mode> {
-    const SCALING_FACTOR: Fraction = Fraction::new(1, 32_768);
-    type T = u32;
-
-    fn try_now(&self) -> Result<Instant<Self>, embedded_time::clock::Error> {
-        Ok(Instant::new(self.count32()))
-    }
-}
-
-#[cfg(feature = "rtic")]
 impl Monotonic for Rtc<Count32Mode> {
+    type Instant = Instant;
+    type Duration = Duration;
     unsafe fn reset(&mut self) {
         // Since reset is only called once, we use it to enable the interrupt generation
         // bit.
         self.mode0().intenset.write(|w| w.cmp0().set_bit());
     }
 
-    fn set_compare(&mut self, instant: &Instant<Rtc<Count32Mode>>) {
-        let value = instant.duration_since_epoch().integer();
-        unsafe { self.mode0().comp[0].write(|w| w.comp().bits(value)) }
+    fn now(&mut self) -> Self::Instant {
+        Self::Instant::from_ticks(self.count32())
+    }
+
+    fn zero() -> Self::Instant {
+        Self::Instant::from_ticks(0)
+    }
+
+    fn set_compare(&mut self, instant: Self::Instant) {
+        unsafe { self.mode0().comp[0].write(|w| w.comp().bits(instant.ticks())) }
     }
 
     fn clear_compare_flag(&mut self) {

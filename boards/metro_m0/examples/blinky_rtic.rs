@@ -20,8 +20,7 @@ mod app {
     use hal::clock::{ClockGenId, ClockSource, GenericClockController};
     use hal::pac::Peripherals;
     use hal::prelude::*;
-    use hal::rtc::{Count32Mode, Rtc};
-    use rtic_monotonic::Extensions;
+    use hal::rtc::{Count32Mode, Duration, Rtc};
 
     #[local]
     struct Local {}
@@ -69,6 +68,6 @@ mod app {
     fn blink(mut cx: blink::Context) {
         // If the LED were a local resource, the lock would not be necessary
         cx.shared.red_led.lock(|led| led.toggle().unwrap());
-        blink::spawn_after(1_u32.seconds()).ok();
+        blink::spawn_after(Duration::secs(1)).ok();
     }
 }
