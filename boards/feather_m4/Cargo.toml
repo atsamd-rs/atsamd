@@ -72,3 +72,7 @@ required-features = ["dma"]
 [[example]]
 name = "uart"
 required-features = ["dma"]
+
+[[example]]
+name = "pukcc_test"
+required-features = ["unproven", "usb"]
