@@ -23,8 +23,8 @@
 //! - [`Dpll::from_xosc32k`]
 //! and then enabled by [`Dpll::enable`] function call
 
-use core::marker::PhantomData;
 use core::convert::Infallible;
+use core::marker::PhantomData;
 
 use typenum::U0;
 
@@ -239,8 +239,7 @@ impl<D: DpllNum> DpllToken<D> {
     fn wait_until_ready(&self) -> nb::Result<(), Infallible> {
         if self.status().clkrdy().bit_is_clear() {
             Err(nb::Error::WouldBlock)
-        }
-        else {
+        } else {
             Ok(())
         }
     }
@@ -250,8 +249,7 @@ impl<D: DpllNum> DpllToken<D> {
     fn wait_until_locked(&self) -> nb::Result<(), Infallible> {
         if self.status().lock().bit_is_clear() {
             Err(nb::Error::WouldBlock)
-        }
-        else {
+        } else {
             Ok(())
         }
     }
@@ -674,7 +672,6 @@ where
     pub fn wait_until_ready(&self) -> nb::Result<(), Infallible> {
         self.0.token.wait_until_ready()
     }
-
 }
 
 //==============================================================================

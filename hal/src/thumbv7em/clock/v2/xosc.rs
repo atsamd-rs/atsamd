@@ -18,8 +18,8 @@
 //! - [`Xosc::from_crystal`]
 //! Then, enable it with a [`Xosc::enable`] function call
 
-use core::marker::PhantomData;
 use core::convert::Infallible;
+use core::marker::PhantomData;
 
 use typenum::U0;
 
@@ -260,8 +260,7 @@ impl<X: XoscNum> XoscToken<X> {
         let mask = 1 << X::NUM;
         if self.oscctrl().status.read().bits() & mask == 0 {
             Err(nb::Error::WouldBlock)
-        }
-        else {
+        } else {
             Ok(())
         }
     }
