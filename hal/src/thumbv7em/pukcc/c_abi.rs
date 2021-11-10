@@ -778,7 +778,6 @@ pub trait CryptoRamSlice: crate::typelevel::Sealed {
 
 impl CryptoRamSlice for &[u8] {
     unsafe fn pukcc_base(&self) -> nu1 {
-        use core::convert::TryInto;
         (self.as_ptr() as usize & 0x0000FFFF).try_into().unwrap()
     }
 }
