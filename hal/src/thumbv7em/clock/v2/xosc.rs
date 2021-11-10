@@ -19,6 +19,7 @@
 //! Then, enable it with a [`Xosc::enable`] function call
 
 use core::marker::PhantomData;
+use core::convert::Infallible;
 
 use typenum::U0;
 
@@ -255,9 +256,14 @@ impl<X: XoscNum> XoscToken<X> {
     }
 
     #[inline]
-    fn wait_ready(&self) {
+    fn wait_ready(&self) -> nb::Result<(), Infallible> {
         let mask = 1 << X::NUM;
-        while self.oscctrl().status.read().bits() & mask == 0 {}
+        if self.oscctrl().status.read().bits() & mask == 0 {
+            Err(nb::Error::WouldBlock)
+        }
+        else {
+            Ok(())
+        }
     }
 
     #[inline]
@@ -416,13 +422,6 @@ where
     pub fn set_clock_switch(mut self, swben: bool) -> Self {
         self.clock_switch = swben;
         self
-    }
-
-    // TODO: What's the point of having this blocking method on *disabled* `Xosc`?
-    /// Busy-wait until ready
-    #[inline]
-    pub fn wait_ready(&self) {
-        self.token.wait_ready();
     }
 }
 
@@ -591,6 +590,19 @@ where
     pub fn disable(mut self) -> Xosc<X, M> {
         self.0.token.disable();
         self.0
+    }
+}
+
+impl<X, M, N> Enabled<Xosc<X, M>, N>
+where
+    X: XoscNum,
+    M: Mode,
+    N: Counter,
+{
+    /// Busy-wait until ready
+    #[inline]
+    pub fn wait_ready(&self) -> nb::Result<(), Infallible> {
+        self.0.token.wait_ready()
     }
 }
 

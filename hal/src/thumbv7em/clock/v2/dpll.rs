@@ -24,6 +24,7 @@
 //! and then enabled by [`Dpll::enable`] function call
 
 use core::marker::PhantomData;
+use core::convert::Infallible;
 
 use typenum::U0;
 
@@ -233,16 +234,26 @@ impl<D: DpllNum> DpllToken<D> {
         self.ctrlb().modify(|_, w| w.wuf().bit(wuf));
     }
 
-    /// Wait until the [`Dpll`] clock is ready.
+    /// Check if [`Dpll`] clock is ready.
     #[inline]
-    fn wait_until_ready(&self) {
-        while self.status().clkrdy().bit_is_clear() {}
+    fn wait_until_ready(&self) -> nb::Result<(), Infallible> {
+        if self.status().clkrdy().bit_is_clear() {
+            Err(nb::Error::WouldBlock)
+        }
+        else {
+            Ok(())
+        }
     }
 
-    /// Wait until the [`Dpll`] clock is locked.
+    /// Check if [`Dpll`] clock is locked.
     #[inline]
-    fn wait_until_locked(&self) {
-        while self.status().lock().bit_is_clear() {}
+    fn wait_until_locked(&self) -> nb::Result<(), Infallible> {
+        if self.status().lock().bit_is_clear() {
+            Err(nb::Error::WouldBlock)
+        }
+        else {
+            Ok(())
+        }
     }
 
     /// Wait until register has been synchronized.
@@ -579,22 +590,6 @@ where
         self
     }
 
-    // TODO: What's the point of having this blocking method on *disabled* `Dpll`?
-    /// Busy-wait until [`Dpll`] has achieved lock
-    #[inline]
-    pub fn wait_until_locked(self) -> Self {
-        self.token.wait_until_locked();
-        self
-    }
-
-    // TODO: What's the point of having this blocking method on *disabled* `Dpll`?
-    /// Busy-wait until [`Dpll`] is ready
-    #[inline]
-    pub fn wait_until_ready(self) -> Self {
-        self.token.wait_until_ready();
-        self
-    }
-
     /// Return the frequency of the [`Dpll`]
     #[inline]
     pub fn freq(&self) -> Hertz {
@@ -660,6 +655,26 @@ where
         self.0.token.disable();
         self.0
     }
+}
+
+impl<D, M, N> Enabled<Dpll<D, M>, N>
+where
+    D: DpllNum,
+    M: SrcMode<D>,
+    N: Counter,
+{
+    /// Check if [`Dpll`] has achieved lock
+    #[inline]
+    pub fn wait_until_locked(&self) -> nb::Result<(), Infallible> {
+        self.0.token.wait_until_locked()
+    }
+
+    /// Check if [`Dpll`] is ready
+    #[inline]
+    pub fn wait_until_ready(&self) -> nb::Result<(), Infallible> {
+        self.0.token.wait_until_ready()
+    }
+
 }
 
 //==============================================================================
