@@ -72,7 +72,12 @@ fn main() -> ! {
     }
 
     match nvm.smart_eeprom() {
-        Ok(smart_eeprom::SmartEepromMode::Unlocked(mut seeprom)) => {
+        Ok(se) => {
+            use smart_eeprom::SmartEepromMode::*;
+            let mut seeprom = match se {
+                Unlocked(se) => se,
+                Locked(se) => se.unlock(),
+            };
             let write_buf = [0x01u8, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef];
             serial_writeln!("Write dummy data");
             seeprom.set(0x10, &write_buf);
@@ -86,9 +91,6 @@ fn main() -> ! {
             } else {
                 serial_writeln!("Smart EEPROM test failed");
             }
-        }
-        Ok(smart_eeprom::SmartEepromMode::Locked(_seeprom)) => {
-            serial_writeln!("Smart EEPROM locked => Test not possible!");
         }
         Err(e) => {
             serial_writeln!("Failed to initialize Smart EEPROM: {:?}!", e);
