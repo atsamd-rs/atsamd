@@ -720,9 +720,7 @@ macro_rules! __opt_type {
 }
 
 /// Sealed trait implemented for all [`UInt<U, B>`] types
-/// TODO
 impl<U: Unsigned, B: Bit> Sealed for UInt<U, B> {}
 
 /// Sealed trait implemented for [`UTerm`] type
-/// TODO
 impl Sealed for UTerm {}
