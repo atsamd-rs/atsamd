@@ -11,6 +11,7 @@
 - Implement `rtic::Monotonic` for `RTC` using `fugit` (#540)
   - RTIC spawn task API will now require `fugit::Duration<_, _, _>` (aliased
   at `atsamd_hal::rtc::Duration`) instead of `embedded_time::Duration`
+- Add Device Service Unit (DSU), Non-volatile Controller (NVM), SmartEEPROM support (#526)
 ---
 
 Changelog tracking started at v0.13
