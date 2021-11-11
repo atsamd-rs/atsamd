@@ -25,6 +25,8 @@ use usbd_serial::{SerialPort, USB_CLASS_CDC};
 use cortex_m::asm::delay as cycle_delay;
 use cortex_m::peripheral::NVIC;
 
+use core::sync::atomic;
+
 #[entry]
 fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
@@ -71,6 +73,11 @@ fn main() -> ! {
         NVIC::unmask(interrupt::USB_OTHER);
         NVIC::unmask(interrupt::USB_TRCPT0);
         NVIC::unmask(interrupt::USB_TRCPT1);
+    }
+
+    while USER_PRESENT.load(atomic::Ordering::Acquire) == false {
+        cycle_delay(25 * 1024 * 1024);
+        red_led.toggle().ok();
     }
 
     serial_writeln!("Booted - Active bank: {:?}!\r\n", nvm.first_bank());
@@ -126,6 +133,8 @@ fn main() -> ! {
 static mut USB_ALLOCATOR: Option<UsbBusAllocator<UsbBus>> = None;
 static mut USB_BUS: Option<UsbDevice<UsbBus>> = None;
 static mut USB_SERIAL: Option<SerialPort<UsbBus>> = None;
+
+static USER_PRESENT: atomic::AtomicBool = atomic::AtomicBool::new(false);
 
 /// Borrows the global singleton `UsbSerial` for a brief period with interrupts
 /// disabled
@@ -209,12 +218,10 @@ fn poll_usb() {
                 let mut buf = [0u8; 64];
 
                 if let Ok(count) = serial.read(&mut buf) {
-                    for (i, c) in buf.iter().enumerate() {
-                        if i >= count {
-                            break;
-                        }
-                        serial.write(&[c.clone()]).unwrap();
+                    if count > 0 {
+                        USER_PRESENT.store(true, atomic::Ordering::Release);
                     }
+                    serial.write(&buf[..count]).unwrap();
                 };
             });
         });
