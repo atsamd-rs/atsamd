@@ -6,13 +6,13 @@ use panic_halt as _;
 use wio_terminal as wio;
 
 use cortex_m::peripheral::NVIC;
+use wio::entry;
 use wio::hal::adc::{FreeRunning, InterruptAdc};
 use wio::hal::clock::GenericClockController;
 use wio::hal::delay::Delay;
 use wio::pac::{interrupt, ADC1};
 use wio::pac::{CorePeripherals, Peripherals};
 use wio::prelude::*;
-use wio::{entry, Pins, Sets};
 
 use core::fmt::Write;
 use eg::mono_font::{ascii::FONT_6X12, MonoTextStyle};
@@ -47,7 +47,7 @@ fn main() -> ! {
         &mut peripherals.NVMCTRL,
     );
     let mut delay = Delay::new(core.SYST, &mut clocks);
-    let mut sets: Sets = Pins::new(peripherals.PORT).split();
+    let sets = wio::Pins::new(peripherals.PORT).split();
 
     // Set up the display so we can log our progress.
     let (display, _backlight) = sets
@@ -56,7 +56,6 @@ fn main() -> ! {
             &mut clocks,
             peripherals.SERCOM7,
             &mut peripherals.MCLK,
-            &mut sets.port,
             24.mhz(),
             &mut delay,
         )
@@ -64,17 +63,14 @@ fn main() -> ! {
     let mut terminal = Terminal::new(display);
     let mut textbuffer = String::<U256>::new();
 
-    let mut user_led = sets.user_led.into_open_drain_output(&mut sets.port);
+    let mut user_led = sets.user_led.into_push_pull_output();
     user_led.set_high().unwrap();
 
     // Construct an InterruptAdc with free-running mode.
     let (mut microphone_adc, mut microphone_pin) = {
-        let (adc, pin) = sets.microphone.init(
-            peripherals.ADC1,
-            &mut clocks,
-            &mut peripherals.MCLK,
-            &mut sets.port,
-        );
+        let (adc, pin) = sets
+            .microphone
+            .init(peripherals.ADC1, &mut clocks, &mut peripherals.MCLK);
         let interrupt_adc: InterruptAdc<_, ConversionMode> = InterruptAdc::from(adc);
         (interrupt_adc, pin)
     };

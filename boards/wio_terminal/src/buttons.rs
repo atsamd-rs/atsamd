@@ -1,7 +1,7 @@
 use atsamd_hal::clock::GenericClockController;
 use atsamd_hal::common::eic;
 use atsamd_hal::common::eic::pin::*;
-use atsamd_hal::gpio::*;
+use atsamd_hal::gpio::v2::*;
 use atsamd_hal::pac::{interrupt, EIC, MCLK};
 
 use cortex_m::peripheral::NVIC;
@@ -9,22 +9,22 @@ use cortex_m::peripheral::NVIC;
 /// pushbuttons and joystick
 pub struct ButtonPins {
     /// button1 pin
-    pub button1: Pc26<Input<Floating>>,
+    pub button1: Pin<PC26, Disabled<Floating>>,
     /// button2 pin
-    pub button2: Pc27<Input<Floating>>,
+    pub button2: Pin<PC27, Disabled<Floating>>,
     /// button3 pin
-    pub button3: Pc28<Input<Floating>>,
+    pub button3: Pin<PC28, Disabled<Floating>>,
 
     /// Joystick X
-    pub switch_x: Pd8<Input<Floating>>,
+    pub switch_x: Pin<PD08, Disabled<Floating>>,
     /// Joystick Y
-    pub switch_y: Pd9<Input<Floating>>,
+    pub switch_y: Pin<PD09, Disabled<Floating>>,
     /// Joystick Z
-    pub switch_z: Pd10<Input<Floating>>,
+    pub switch_z: Pin<PD10, Disabled<Floating>>,
     /// Joystick U
-    pub switch_u: Pd20<Input<Floating>>,
+    pub switch_u: Pin<PD20, Disabled<Floating>>,
     /// Joystick B
-    pub switch_b: Pd12<Input<Floating>>,
+    pub switch_b: Pin<PD12, Disabled<Floating>>,
 }
 
 impl ButtonPins {
@@ -33,10 +33,12 @@ impl ButtonPins {
         eic: EIC,
         clocks: &mut GenericClockController,
         mclk: &mut MCLK,
-        port: &mut Port,
     ) -> ButtonController {
-        let clk = clocks.gclk1();
-        let mut eic = eic::init_with_ulp32k(mclk, clocks.eic(&clk).unwrap(), eic);
+        let gclk1 = clocks.gclk1();
+        let eic_clock = clocks.eic(&gclk1).unwrap();
+        let mut eic = eic::init_with_ulp32k(mclk, eic_clock, eic);
+
+        /*
         eic.button_debounce_pins(&[
             self.button1.id(),
             self.button2.id(),
@@ -47,19 +49,20 @@ impl ButtonPins {
             self.switch_u.id(),
             self.switch_b.id(),
         ]);
+        */
 
         // Unfortunately, the pin assigned to B1 shares the same
         // ExtInt line as up on the joystick. As such, we don't
         // support B1.
 
         // let mut b1 = self.button1.into_floating_ei(port);
-        let mut b2 = self.button2.into_floating_ei(port);
-        let mut b3 = self.button3.into_floating_ei(port);
-        let mut x = self.switch_x.into_floating_ei(port);
-        let mut y = self.switch_y.into_floating_ei(port);
-        let mut z = self.switch_z.into_floating_ei(port);
-        let mut u = self.switch_u.into_floating_ei(port);
-        let mut b = self.switch_b.into_floating_ei(port);
+        let mut b2 = ExtInt11::new(self.button2.into());
+        let mut b3 = ExtInt12::new(self.button3.into());
+        let mut x = ExtInt3::new(self.switch_x.into());
+        let mut y = ExtInt4::new(self.switch_y.into());
+        let mut z = ExtInt5::new(self.switch_z.into());
+        let mut u = ExtInt10::new(self.switch_u.into());
+        let mut b = ExtInt7::new(self.switch_b.into());
 
         // b1.sense(&mut eic, Sense::BOTH);
         b2.sense(&mut eic, Sense::BOTH);
@@ -114,14 +117,14 @@ pub struct ButtonEvent {
 pub struct ButtonController {
     _eic: eic::EIC,
     // b1: ExtInt10<Pc26<Interrupt<Floating>>>,
-    b2: ExtInt11<Pc27<Interrupt<Floating>>>,
-    b3: ExtInt12<Pc28<Interrupt<Floating>>>,
+    b2: ExtInt11<Pin<PC27, Interrupt<Floating>>>,
+    b3: ExtInt12<Pin<PC28, Interrupt<Floating>>>,
 
-    x: ExtInt3<Pd8<Interrupt<Floating>>>,
-    y: ExtInt4<Pd9<Interrupt<Floating>>>,
-    z: ExtInt5<Pd10<Interrupt<Floating>>>,
-    u: ExtInt10<Pd20<Interrupt<Floating>>>,
-    b: ExtInt7<Pd12<Interrupt<Floating>>>,
+    x: ExtInt3<Pin<PD08, Interrupt<Floating>>>,
+    y: ExtInt4<Pin<PD09, Interrupt<Floating>>>,
+    z: ExtInt5<Pin<PD10, Interrupt<Floating>>>,
+    u: ExtInt10<Pin<PD20, Interrupt<Floating>>>,
+    b: ExtInt7<Pin<PD12, Interrupt<Floating>>>,
 }
 
 macro_rules! isr {

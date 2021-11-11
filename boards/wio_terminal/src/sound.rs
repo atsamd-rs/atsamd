@@ -1,18 +1,25 @@
+use crate::pins::MicOutput;
 use atsamd_hal::adc::Adc;
 use atsamd_hal::clock::GenericClockController;
-use atsamd_hal::gpio::{self, Floating, Input, Pc30, Pd11, PfB, Port};
+use atsamd_hal::gpio::v2::*;
 use atsamd_hal::pac::gclk::pchctrl::GEN_A::GCLK11;
 use atsamd_hal::pac::{ADC1, MCLK, TCC0};
 use atsamd_hal::prelude::*;
 use atsamd_hal::pwm::{TCC0Pinout, Tcc0Pwm};
 
 /// Buzzer pins
-pub struct Buzzer {
+pub struct Buzzer<C>
+where
+    C: AnyPin<Id = PD11>,
+{
     /// Buzzer control pin
-    pub ctr: Pd11<Input<Floating>>,
+    pub ctr: C,
 }
 
-impl Buzzer {
+impl<C> Buzzer<C>
+where
+    C: AnyPin<Id = PD11>,
+{
     /// Initialize the pin connected to the piezo buzzer. Configure the pin as a
     /// PWM output using TCC0, and return the Pwm instance.
     pub fn init(
@@ -20,9 +27,8 @@ impl Buzzer {
         clocks: &mut GenericClockController,
         tcc0: TCC0,
         mclk: &mut MCLK,
-        port: &mut Port,
-    ) -> Tcc0Pwm<gpio::v2::PD11, gpio::v2::AlternateF> {
-        let pinout = TCC0Pinout::Pd11(self.ctr.into_function_f(port));
+    ) -> Tcc0Pwm<PD11, AlternateF> {
+        let pinout = TCC0Pinout::Pd11(self.ctr.into());
 
         let gclk0 = clocks.gclk0();
         let pwm0 = Tcc0Pwm::new(
@@ -38,12 +44,18 @@ impl Buzzer {
 }
 
 /// Microphone pins
-pub struct Microphone {
+pub struct Microphone<M>
+where
+    M: Into<MicOutput>,
+{
     /// Microphone output (analog input) pin
-    pub mic: Pc30<Input<Floating>>,
+    pub mic: M,
 }
 
-impl Microphone {
+impl<M> Microphone<M>
+where
+    M: Into<MicOutput>,
+{
     /// Initialize Pd1 as an ADC input, and return a Tuple containing the ADC
     /// peripheral and the configured pin.
     pub fn init(
@@ -51,11 +63,9 @@ impl Microphone {
         adc: ADC1,
         clocks: &mut GenericClockController,
         mclk: &mut MCLK,
-        port: &mut Port,
-    ) -> (Adc<ADC1>, Pc30<PfB>) {
+    ) -> (Adc<ADC1>, MicOutput) {
         let adc1 = Adc::adc1(adc, mclk, clocks, GCLK11);
-        let pc30 = self.mic.into_function_b(port);
 
-        (adc1, pc30)
+        (adc1, self.mic.into())
     }
 }

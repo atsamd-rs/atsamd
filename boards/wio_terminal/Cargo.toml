@@ -1,15 +1,15 @@
 [package]
 name = "wio_terminal"
-version = "0.4.0"
+version = "0.5.0"
 authors = [
     "Jesse Braham <jesse@beta7.io>",
     "Tom <twitchyliquid64@ciphersink.net>"
 ]
-edition = "2018"
+edition = "2021"
 description = "Board support crate for the Seeed Studio Wio Terminal"
 documentation = "https://docs.rs/wio-terminal/"
 readme = "README.md"
-repository = "https://github.com/jessebraham/wio-terminal"
+repository = "https://github.com/atsamd-rs/atsamd"
 license = "MIT OR Apache-2.0"
 keywords = [
     "arm",
@@ -27,19 +27,20 @@ exclude = ["assets"]
 
 [dependencies]
 bitfield = "0.13"
-cortex-m = "0.6"
-cortex-m-rt = { version = "0.6", optional = true }
+cortex-m = "0.7.3"
+cortex-m-rt = { version = "0.7", optional = true }
 display-interface-spi = "0.4"
 heapless = "0.5"
 ili9341 = "0.5.0"
 lis3dh = "0.3.0"
 embedded-sdmmc = "0.3.0"
 usb-device = { version = "0.2", optional = true }
-bbqueue = { version = "^0.4.11", optional = true }
+bbqueue = { version = "0.5", optional = true }
 generic-array = { version = "0.14", optional = true }
 seeed-erpc = { version = "0.1.1", optional = true }
 
 [dependencies.atsamd-hal]
+path = "../../hal"
 version = "0.13"
 default-features = false
 

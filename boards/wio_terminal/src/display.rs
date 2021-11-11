@@ -1,6 +1,5 @@
 use atsamd_hal::clock::GenericClockController;
-use atsamd_hal::gpio::v2::{PB19, PB20};
-use atsamd_hal::gpio::*;
+use atsamd_hal::gpio::v2::*;
 use atsamd_hal::hal::blocking::delay::DelayMs;
 use atsamd_hal::hal::spi::{Phase, Polarity};
 use atsamd_hal::pac::{MCLK, SERCOM7};
@@ -15,34 +14,34 @@ use ili9341::{DisplaySize240x320, Ili9341, Orientation};
 /// ILI9341 LCD display pins (uses `SERCOM7`)
 pub struct Display {
     /// LCD MISO pin
-    pub miso: Pb18<Input<Floating>>,
+    pub miso: Pin<PB18, Disabled<Floating>>,
 
     /// LCD MOSI pin
-    pub mosi: Pb19<Input<Floating>>,
+    pub mosi: Pin<PB19, Disabled<Floating>>,
 
     /// LCD SCK pin
-    pub sck: Pb20<Input<Floating>>,
+    pub sck: Pin<PB20, Disabled<Floating>>,
 
     /// LCD chip select pin
-    pub cs: Pb21<Input<Floating>>,
+    pub cs: Pin<PB21, Disabled<Floating>>,
 
     /// LCD data/command pin
-    pub dc: Pc6<Input<Floating>>,
+    pub dc: Pin<PC06, Disabled<Floating>>,
 
     /// LCD reset pin
-    pub reset: Pc7<Input<Floating>>,
+    pub reset: Pin<PC07, Disabled<Floating>>,
 
     /// LCD backlight pin
-    pub backlight: Pc5<Input<Floating>>,
+    pub backlight: Pin<PC05, Disabled<Floating>>,
 }
 
 pub type LcdPads = spi::PadsFromIds<Sercom7, IoSet4, NoneT, PB19, PB20>;
-pub type LcdSpi = spi::Spi<spi::Config<LcdPads>>;
+pub type LcdSpi = spi::Spi<spi::Config<LcdPads>, spi::Tx>;
 
 /// Type alias for the ILI9341 LCD display.
 pub type LCD = Ili9341<
-    SPIInterface<LcdSpi, Pc6<Output<PushPull>>, Pb21<Output<PushPull>>>,
-    Pc7<Output<PushPull>>,
+    SPIInterface<LcdSpi, Pin<PC06, Output<PushPull>>, Pin<PB21, Output<PushPull>>>,
+    Pin<PC07, Output<PushPull>>,
 >;
 
 pub use ili9341::Scroller;
@@ -56,10 +55,9 @@ impl Display {
         clocks: &mut GenericClockController,
         sercom7: SERCOM7,
         mclk: &mut MCLK,
-        port: &mut Port,
         baud: F,
         delay: &mut D,
-    ) -> Result<(LCD, Pc5<Output<PushPull>>), ()> {
+    ) -> Result<(LCD, Pin<PC05, Output<PushPull>>), ()> {
         // Initialize the SPI peripherial on the configured pins, using SERCOM7.
         let gclk0 = clocks.gclk0();
         let clock = &clocks.sercom7_core(&gclk0).ok_or(())?;
@@ -71,9 +69,9 @@ impl Display {
             .enable();
 
         // Configure the chip select, data/command, and reset pins as push-pull outputs.
-        let cs = self.cs.into_push_pull_output(port);
-        let dc = self.dc.into_push_pull_output(port);
-        let reset = self.reset.into_push_pull_output(port);
+        let cs = self.cs.into_push_pull_output();
+        let dc = self.dc.into_push_pull_output();
+        let reset = self.reset.into_push_pull_output();
 
         // Create a SPIInterface over the peripheral, then create the ILI9341 driver
         // using said interface and set its default orientation.
@@ -91,8 +89,8 @@ impl Display {
         // does not appear to support PWM.
         //   HIGH - backlight enabled
         //   LOW  - backlight disabled
-        let mut backlight = self.backlight.into_push_pull_output(port);
-        backlight.set_high()?;
+        let mut backlight = self.backlight.into_push_pull_output();
+        backlight.set_high().ok();
 
         // Return a result consisting of a Tuple containing the display driver and
         // backlight pin.
