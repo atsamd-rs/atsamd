@@ -512,6 +512,7 @@ impl Pukcc {
                 expected_length: ExpectedLengthError::AtLeast(MINIMUM_MODULUS_LEN),
             });
         }
+        // Input validation
         // I guess this is easier than checking MSBs of `input` and `modulus`.
         if input.len() >= modulus.len() {
             return Err(RsaSignFailure::WrongInputParameterLength {
@@ -529,13 +530,13 @@ impl Pukcc {
             });
         }
 
-        let (modulus_cr, cns_cr, hash_cr, workspace, exponent_cr, mut __);
+        let (modulus_cr, cns_cr, output, workspace, exponent_cr, mut __);
 
         let cns = self.zp_calculate_cns(buffer, modulus)?;
-
         let padding_for_cns = padding_for_len(cns.len());
         // Sanity check in case someone changes `zp_calculate_cns` implementation
         assert!(cns.len() + padding_for_cns == modulus.len() + 8);
+        let padding_for_exponent = padding_for_len(exponent.len());
 
         let mut crypto_ram = unsafe { c_abi::CryptoRam::new() };
         copy_to_cryptoram! {
@@ -544,25 +545,31 @@ impl Pukcc {
             (__, repeat(0).take(4)),
             (cns_cr, cns.iter().cloned().rev()),
             (__, repeat(0).take(padding_for_cns)),
-            (hash_cr, input.iter().cloned().rev().chain(repeat(0).take(modulus.len() - input.len()))),
+            // 1. `input` is replaced with an outcome of the computation
+            // 2. `input` is padded to match `len(modulus)`
+            (output, input.iter().cloned().rev().chain(repeat(0).take(modulus.len() - input.len()))),
+            // `input` area is used for computation and requires additional 4 0_u32 on MSB side
             (__, repeat(0).take(16)),
+            // Exponent is required to have 0_u32 on LSB side
+            // `exponent_cr` is only used to get a pointer during `pukcl_params` initialization
             (exponent_cr, repeat(0).take(4)),
             (__, exponent.iter().cloned().rev()),
-            (__, repeat(0).take(padding_for_len(exponent.len()))),
+            (__, repeat(0).take(padding_for_exponent)),
             (workspace, 0..0)
         };
         let mut pukcl_params = c_abi::PukclParams::default();
         unsafe {
+            // Note: `ExpMod` service supports both regular and fast modular exponentation
             pukcl_params.header.u2Option =
                 PUKCL_EXPMOD_REGULARRSA | PUKCL_EXPMOD_EXPINPUKCCRAM | PUKCL_EXPMOD_WINDOWSIZE_1;
             let mut service_params = &mut pukcl_params.params.ExpMod;
-            service_params.nu1XBase = hash_cr.pukcc_base();
+            service_params.nu1XBase = output.pukcc_base();
             service_params.nu1ModBase = modulus_cr.pukcc_base();
             service_params.nu1CnsBase = cns_cr.pukcc_base();
             service_params.nu1PrecompBase = workspace.pukcc_base();
             service_params.pfu1ExpBase = exponent_cr.as_ptr() as _;
             service_params.u2ModLength = modulus.len() as _;
-            service_params.u2ExpLength = exponent.len() as _;
+            service_params.u2ExpLength = (exponent.len() + padding_for_exponent) as _;
             service_params.u1Blinding = 0;
         }
 
@@ -574,7 +581,7 @@ impl Pukcc {
 
         buffer
             .iter_mut()
-            .zip(hash_cr.iter().take(modulus.len()).rev())
+            .zip(output.iter().rev())
             .for_each(|(target_iter, source_iter)| *target_iter = *source_iter);
 
         Ok(&buffer[..modulus.len()])
