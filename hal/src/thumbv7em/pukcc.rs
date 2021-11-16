@@ -485,14 +485,14 @@ impl Pukcc {
             )),
         }
     }
-    pub fn modular_exponentation(
+
+    pub fn modular_exponentation<'a>(
         &self,
-        output: &mut [u8],
         input: &[u8],
         exponent: &[u8],
         modulus: &[u8],
-        cns_buffer: &mut [u8],
-    ) -> Result<(), RsaSignFailure> {
+        buffer: &'a mut [u8],
+    ) -> Result<&'a [u8], RsaSignFailure> {
         const PUKCL_EXPMOD_REGULARRSA: u16 = 0x01;
         const PUKCL_EXPMOD_EXPINPUKCCRAM: u16 = 0x02;
         const PUKCL_EXPMOD_WINDOWSIZE_1: u16 = 0x00;
@@ -512,21 +512,7 @@ impl Pukcc {
                 expected_length: ExpectedLengthError::AtLeast(MINIMUM_MODULUS_LEN),
             });
         }
-        // Output validation
-        if output.len() < modulus.len() {
-            return Err(RsaSignFailure::WrongInputParameterLength {
-                faulty_slice: "output",
-                actual_length: output.len(),
-                expected_length: ExpectedLengthError::AtLeast(modulus.len()),
-            });
-        }
-        // Input validation
-        if input.len() % 4 != 0 {
-            return Err(RsaSignFailure::WrongInputParameterAlignment {
-                faulty_slice: "input",
-            });
-        }
-        // I guess this is easier than checking MSBs of input and modulus.
+        // I guess this is easier than checking MSBs of `input` and `modulus`.
         if input.len() >= modulus.len() {
             return Err(RsaSignFailure::WrongInputParameterLength {
                 faulty_slice: "input",
@@ -534,11 +520,7 @@ impl Pukcc {
                 expected_length: ExpectedLengthError::AtMost(modulus.len() - 1),
             });
         }
-        if exponent.len() % 4 != 0 {
-            return Err(RsaSignFailure::WrongInputParameterAlignment {
-                faulty_slice: "exponent",
-            });
-        }
+        // Exponent validation
         if exponent.len() > modulus.len() {
             return Err(RsaSignFailure::WrongInputParameterLength {
                 faulty_slice: "exponent",
@@ -549,34 +531,28 @@ impl Pukcc {
 
         let (modulus_cr, cns_cr, hash_cr, workspace, exponent_cr, mut __);
 
+        let cns = self.zp_calculate_cns(buffer, modulus)?;
+
+        let padding_for_cns = padding_for_len(cns.len());
+        // Sanity check in case someone changes `zp_calculate_cns` implementation
+        assert!(cns.len() + padding_for_cns == modulus.len() + 8);
+
         let mut crypto_ram = unsafe { c_abi::CryptoRam::new() };
-
-        // TODO: Consider passing CNS buffer as a part of input arguments
-        let mut cns = [0_u8; 512 + 12];
-        let cns = self.zp_calculate_cns(&mut cns, modulus)?;
-
-        let mut input_buffer = [0_u8; 512];
-
-        input_buffer
-            .iter_mut()
-            .rev()
-            .zip(input.iter().rev())
-            .for_each(|(target_iter, source_iter)| *target_iter = *source_iter);
-
         copy_to_cryptoram! {
             crypto_ram,
             (modulus_cr, modulus.iter().cloned().rev()),
             (__, repeat(0).take(4)),
             (cns_cr, cns.iter().cloned().rev()),
-            (hash_cr, input_buffer.iter().cloned().rev()),
+            (__, repeat(0).take(padding_for_cns)),
+            (hash_cr, input.iter().cloned().rev().chain(repeat(0).take(modulus.len() - input.len()))),
             (__, repeat(0).take(16)),
             (exponent_cr, repeat(0).take(4)),
             (__, exponent.iter().cloned().rev()),
+            (__, repeat(0).take(padding_for_len(exponent.len()))),
             (workspace, 0..0)
         };
         let mut pukcl_params = c_abi::PukclParams::default();
         unsafe {
-            pukcl_params.header.u1Service = 0x6c;
             pukcl_params.header.u2Option =
                 PUKCL_EXPMOD_REGULARRSA | PUKCL_EXPMOD_EXPINPUKCCRAM | PUKCL_EXPMOD_WINDOWSIZE_1;
             let mut service_params = &mut pukcl_params.params.ExpMod;
@@ -596,26 +572,38 @@ impl Pukcc {
             error_code => return Err(RsaSignFailure::ServiceFailure(error_code)),
         }
 
-        output
+        buffer
             .iter_mut()
             .zip(hash_cr.iter().take(modulus.len()).rev())
             .for_each(|(target_iter, source_iter)| *target_iter = *source_iter);
 
-        Ok(())
+        Ok(&buffer[..modulus.len()])
     }
 
-    /// CNS is rotated from little endian to big endian, copy_to_cryptoram can
-    /// be used
-    fn zp_calculate_cns<'a>(
+    /// CNS in GF(p); GF(2n) is not implemented
+    pub fn zp_calculate_cns<'a>(
         &self,
         buffer: &'a mut [u8],
         modulus: &[u8],
     ) -> Result<&'a [u8], CalculateCnsFailure> {
         const PUKCL_REDMOD_SETUP: u16 = 0x0100;
-        if modulus.len() > buffer.len() {
-            return Err(CalculateCnsFailure::BufferTooSmall {
-                current_length: buffer.len(),
-                minimum_required: modulus.len(),
+        if modulus.len() % 4 != 0 {
+            return Err(CalculateCnsFailure::WrongInputParameterAlignment {
+                faulty_slice: "modulus",
+            });
+        }
+
+        // Even though documentation says that CNS occupies len(modulus) + 12 of space,
+        // it is only needed for computation, 7 MSB bytes are zeroes. This distinction
+        // between lenghts allows to skip these 7 MSB zero bytes.
+        let cns_length = modulus.len() + 12;
+        let actual_cns_length = modulus.len() + 5;
+
+        if buffer.len() < actual_cns_length {
+            return Err(CalculateCnsFailure::WrongInputParameterLength {
+                faulty_slice: "buffer",
+                actual_length: buffer.len(),
+                expected_length: ExpectedLengthError::AtLeast(actual_cns_length),
             });
         }
         let (modulus_cr, cns_cr, workspace_r, workspace_x, mut __);
@@ -624,9 +612,10 @@ impl Pukcc {
             crypto_ram,
             (modulus_cr, modulus.iter().cloned().rev()),
             (__, repeat(0).take(4)),
-            // `buffer` is used only to establish proper amount of space in CryptoRAM
-            (cns_cr, (&buffer[..modulus.len() + 12]).iter().cloned().rev()),
-            (workspace_r, repeat(0).take(64)), // GF(p) -> 64 bytes
+            (cns_cr, repeat(0).take(actual_cns_length)),
+            (__, repeat(0).take(cns_length - actual_cns_length)),
+             // GF(p) -> 64 bytes
+            (workspace_r, repeat(0).take(64)),
             (workspace_x, 0..0)
         };
         let mut pukcl_params = c_abi::PukclParams::default();
@@ -648,9 +637,9 @@ impl Pukcc {
 
         buffer
             .iter_mut()
-            .zip(cns_cr.iter().take(modulus.len() + 12).rev())
+            .zip(cns_cr.iter().rev())
             .for_each(|(target_iter, source_iter)| *target_iter = *source_iter);
-        Ok(&buffer[..modulus.len() + 12])
+        Ok(&buffer[..actual_cns_length])
     }
 }
 
@@ -696,10 +685,6 @@ pub enum ExpectedLengthError {
 
 #[derive(Debug)]
 pub enum RsaSignFailure {
-    /// Should be either 1024, 2048 or 4096 bits long
-    WrongModulusLength {
-        actual_length: usize,
-    },
     WrongInputParameterLength {
         faulty_slice: &'static str,
         expected_length: ExpectedLengthError,
@@ -715,9 +700,14 @@ pub enum RsaSignFailure {
 
 #[derive(Debug)]
 pub enum CalculateCnsFailure {
-    BufferTooSmall {
-        current_length: usize,
-        minimum_required: usize,
+    WrongInputParameterLength {
+        faulty_slice: &'static str,
+        expected_length: ExpectedLengthError,
+        actual_length: usize,
+    },
+    /// Should be 4-aligned
+    WrongInputParameterAlignment {
+        faulty_slice: &'static str,
     },
     ServiceFailure(PukclReturnCode),
 }
@@ -862,4 +852,13 @@ pub enum PukclReturnCodeSevere {
     MalformedKey,
     AprioriOk,
     WrongService,
+}
+
+fn padding_for_len(len: usize) -> usize {
+    const ALIGNMENT: usize = 4;
+    if len % ALIGNMENT != 0 {
+        ALIGNMENT - (len % ALIGNMENT)
+    } else {
+        0
+    }
 }
