@@ -21,6 +21,8 @@
 pub mod c_abi;
 pub mod curves;
 
+use core::iter::{once, repeat};
+
 use crate::pac::MCLK;
 use c_abi::{u4, CryptoRamSlice, Service};
 use curves::Curve;
@@ -44,16 +46,18 @@ macro_rules! copy_to_cryptoram {
             {
             (&[])
                 .iter()
+                .cloned()
             $(
-                .chain($data.iter().rev()) // > Little endian format! <
+                .chain($data)
             )+
             .zip($crypto_ram.iter_mut())
-            .for_each(|(data_iter, cr_iter)| *cr_iter = *data_iter);
+            .for_each(|(data_iter, cr_iter)| *cr_iter = data_iter);
 
             let mut _offset = 0;
             $(
-                $name = &$crypto_ram[_offset.._offset + $data.len()];
-                _offset += $data.len();
+                let len = $data.size_hint().1.unwrap_or_else(|| panic!("provided iterator has no size hint"));
+                $name = &$crypto_ram[_offset.._offset + len];
+                _offset += len;
             )+
             }
         }
@@ -225,28 +229,28 @@ impl Pukcc {
         };
 
         if signature.len() != (2 * C::MOD_LENGTH).into() {
-            return Err(EcdsaSignFailure::WrongInputParameter {
+            return Err(EcdsaSignFailure::WrongInputParameterLength {
                 faulty_slice: "signature",
                 expected_length: (2 * C::MOD_LENGTH).into(),
                 actual_length: signature.len(),
             });
         }
         if hash.len() != (C::SCALAR_LENGTH).into() {
-            return Err(EcdsaSignFailure::WrongInputParameter {
+            return Err(EcdsaSignFailure::WrongInputParameterLength {
                 faulty_slice: "hash",
                 expected_length: (C::SCALAR_LENGTH).into(),
                 actual_length: hash.len(),
             });
         }
         if private_key.len() != (C::SCALAR_LENGTH).into() {
-            return Err(EcdsaSignFailure::WrongInputParameter {
+            return Err(EcdsaSignFailure::WrongInputParameterLength {
                 faulty_slice: "private_key",
                 expected_length: (C::SCALAR_LENGTH).into(),
                 actual_length: private_key.len(),
             });
         }
         if k.len() != (C::SCALAR_LENGTH).into() {
-            return Err(EcdsaSignFailure::WrongInputParameter {
+            return Err(EcdsaSignFailure::WrongInputParameterLength {
                 faulty_slice: "k",
                 expected_length: (C::SCALAR_LENGTH).into(),
                 actual_length: k.len(),
@@ -276,23 +280,23 @@ impl Pukcc {
         // slices.
         copy_to_cryptoram! {
             crypto_ram,
-            (modulo_p, C::MODULO_P),
-            (a_curve, C::A_CURVE),
-            (base_point_a_x, C::BASE_POINT_A_X),
-            (base_point_a_y, C::BASE_POINT_A_Y),
-            (base_point_a_z, C::BASE_POINT_A_Z),
-            (order_point, C::ORDER_POINT),
-            (cns, C::CNS),
-            (hash_cr, hash),
-            (__, &[0_u8; 4]),
-            (private_key_cr, private_key),
-            (__, &[0_u8; 4]),
-            (k_cr, k),
-            (__, &[0_u8; 4]),
+            (modulo_p, C::MODULO_P.iter().cloned().rev()),
+            (a_curve, C::A_CURVE.iter().cloned().rev()),
+            (base_point_a_x, C::BASE_POINT_A_X.iter().cloned().rev()),
+            (base_point_a_y, C::BASE_POINT_A_Y.iter().cloned().rev()),
+            (base_point_a_z, C::BASE_POINT_A_Z.iter().cloned().rev()),
+            (order_point, C::ORDER_POINT.iter().cloned().rev()),
+            (cns, C::CNS.iter().cloned().rev()),
+            (hash_cr, hash.iter().cloned().rev()),
+            (__, repeat(0).take(4)),
+            (private_key_cr, private_key.iter().cloned().rev()),
+            (__, repeat(0).take(4)),
+            (k_cr, k.iter().cloned().rev()),
+            (__, repeat(0).take(4)),
             // Workspace is just marked with a zero length slice just to get its address. As
             // it is placed at the end, idea is that algorithm will use whatever amount of
             // memory it needs
-            (workspace, &[0_u8; 0])
+            (workspace, 0..0)
         };
         let mut pukcl_params = c_abi::PukclParams::default();
         unsafe {
@@ -387,25 +391,31 @@ impl Pukcc {
             mut __,
         );
         if signature.len() != (2 * C::SCALAR_LENGTH).into() {
-            return Err(EcdsaSignatureVerificationFailure::WrongInputParameter {
-                faulty_slice: "signature",
-                expected_length: (2 * C::SCALAR_LENGTH).into(),
-                actual_length: signature.len(),
-            });
+            return Err(
+                EcdsaSignatureVerificationFailure::WrongInputParameterLength {
+                    faulty_slice: "signature",
+                    expected_length: (2 * C::SCALAR_LENGTH).into(),
+                    actual_length: signature.len(),
+                },
+            );
         }
         if hash.len() != (C::SCALAR_LENGTH).into() {
-            return Err(EcdsaSignatureVerificationFailure::WrongInputParameter {
-                faulty_slice: "hash",
-                expected_length: (C::SCALAR_LENGTH).into(),
-                actual_length: hash.len(),
-            });
+            return Err(
+                EcdsaSignatureVerificationFailure::WrongInputParameterLength {
+                    faulty_slice: "hash",
+                    expected_length: (C::SCALAR_LENGTH).into(),
+                    actual_length: hash.len(),
+                },
+            );
         }
         if public_key.len() != (2 * C::MOD_LENGTH).into() {
-            return Err(EcdsaSignatureVerificationFailure::WrongInputParameter {
-                faulty_slice: "public_key",
-                expected_length: (2 * C::MOD_LENGTH).into(),
-                actual_length: public_key.len(),
-            });
+            return Err(
+                EcdsaSignatureVerificationFailure::WrongInputParameterLength {
+                    faulty_slice: "public_key",
+                    expected_length: (2 * C::MOD_LENGTH).into(),
+                    actual_length: public_key.len(),
+                },
+            );
         }
         let mut crypto_ram = unsafe { c_abi::CryptoRam::new() };
         // 32-byte padding with zeroes on a MSB side of every parameter is required by
@@ -417,41 +427,38 @@ impl Pukcc {
         // slices.
         copy_to_cryptoram! {
             crypto_ram,
-            (modulo_p, C::MODULO_P),
-            (a_curve, C::A_CURVE),
-            (base_point_a_x, C::BASE_POINT_A_X),
-            (__, C::BASE_POINT_A_Y),
-            (__, C::BASE_POINT_A_Z),
-            (order_point, C::ORDER_POINT),
-            (cns, C::CNS),
+            (modulo_p, C::MODULO_P.iter().cloned().rev()),
+            (a_curve, C::A_CURVE.iter().cloned().rev()),
+            (base_point_a_x, C::BASE_POINT_A_X.iter().cloned().rev()),
+            (__, C::BASE_POINT_A_Y.iter().cloned().rev()),
+            (__, C::BASE_POINT_A_Z.iter().cloned().rev()),
+            (order_point, C::ORDER_POINT.iter().cloned().rev()),
+            (cns, C::CNS.iter().cloned().rev()),
             // Signature has to be split into two parts + padding must be added
             // Signature layout:
             //   [ R: (little endian) ][ 0_u32 ]..
+            (signature_cr, signature.iter().cloned().take(C::SCALAR_LENGTH.into()).rev()),
+            (__, repeat(0).take(4)),
             // ..[ S: (little endian) ][ 0_u32 ]
-            (signature_cr, signature[..C::SCALAR_LENGTH.into()]),
-            (__, &[0_u8; 4]),
-            (__, signature[C::SCALAR_LENGTH.into()..(2*C::SCALAR_LENGTH).into()]),
-            (__, &[0_u8; 4]),
-            (hash_cr, hash),
-            (__, &[0_u8; 4]),
+            (__, signature.iter().cloned().skip(C::SCALAR_LENGTH.into()).take(C::SCALAR_LENGTH.into()).rev()),
+            (__, repeat(0).take(4)),
+            (hash_cr, hash.iter().cloned().rev()),
+            (__, repeat(0).take(4)),
             // Public key has to be represented as a point + padding must be added
             // Public key layout:
             //   [ X coordinate: (little endian) ][ 0_u32 ]..
+            (public_key_cr, public_key.iter().cloned().take(C::MOD_LENGTH.into()).rev()),
+            (__, repeat(0).take(4)),
             // ..[ Y coordinate: (little endian) ][ 0_u32 ]
-            // ..[ Z coordinate: (little endian) ][ 0_u32 ]
-            (public_key_cr, public_key[..C::MOD_LENGTH.into()]),
-            (__, &[0_u8; 4]),
-            (__, public_key[C::MOD_LENGTH.into()..(2*C::MOD_LENGTH).into()]),
-            (__, &[0_u8; 4]),
-            // Public Key Z coordinate == 1
-            // Workaround: Reusing base point Z coordinate as it also == 1
-            // and has the same length
-            (__, C::BASE_POINT_A_Z),
-            (__, &[0_u8; 4]),
+            (__, public_key.iter().cloned().skip(C::MOD_LENGTH.into()).take(C::MOD_LENGTH.into()).rev()),
+            (__, repeat(0).take(4)),
+            // ..[ Z coordinate: (little endian) ][ 0_u32 ] == 1
+            (__, once(1).chain(repeat(0).take((C::MOD_LENGTH - 1).into()))),
+            (__, repeat(0).take(4)),
             // Workspace is just marked with a zero length slice just to get its address. As
             // it is placed at the end, idea is that algorithm will use whatever amount of
             // memory it needs
-            (workspace, &[0_u8; 0])
+            (workspace, 0..0)
         };
         let mut pukcl_params = c_abi::PukclParams::default();
         unsafe {
@@ -489,7 +496,7 @@ pub struct SelfTestFailure(c_abi::SelfTest);
 #[allow(missing_docs)]
 #[derive(Debug)]
 pub enum EcdsaSignFailure {
-    WrongInputParameter {
+    WrongInputParameterLength {
         faulty_slice: &'static str,
         expected_length: usize,
         actual_length: usize,
@@ -504,7 +511,7 @@ pub enum EcdsaSignFailure {
 #[allow(missing_docs)]
 #[derive(Debug)]
 pub enum EcdsaSignatureVerificationFailure {
-    WrongInputParameter {
+    WrongInputParameterLength {
         faulty_slice: &'static str,
         expected_length: usize,
         actual_length: usize,
