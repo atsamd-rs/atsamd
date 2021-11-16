@@ -485,6 +485,173 @@ impl Pukcc {
             )),
         }
     }
+    pub fn modular_exponentation(
+        &self,
+        output: &mut [u8],
+        input: &[u8],
+        exponent: &[u8],
+        modulus: &[u8],
+        cns_buffer: &mut [u8],
+    ) -> Result<(), RsaSignFailure> {
+        const PUKCL_EXPMOD_REGULARRSA: u16 = 0x01;
+        const PUKCL_EXPMOD_EXPINPUKCCRAM: u16 = 0x02;
+        const PUKCL_EXPMOD_WINDOWSIZE_1: u16 = 0x00;
+
+        // Modulus validation
+        if modulus.len() % 4 != 0 {
+            return Err(RsaSignFailure::WrongInputParameterAlignment {
+                faulty_slice: "modulus",
+            });
+        }
+        // Modulus size must be at least 12 bytes (43.3.5.2.3 of DS60001507F datasheet)
+        const MINIMUM_MODULUS_LEN: usize = 12;
+        if modulus.len() < MINIMUM_MODULUS_LEN {
+            return Err(RsaSignFailure::WrongInputParameterLength {
+                faulty_slice: "modulus",
+                actual_length: modulus.len(),
+                expected_length: ExpectedLengthError::AtLeast(MINIMUM_MODULUS_LEN),
+            });
+        }
+        // Output validation
+        if output.len() < modulus.len() {
+            return Err(RsaSignFailure::WrongInputParameterLength {
+                faulty_slice: "output",
+                actual_length: output.len(),
+                expected_length: ExpectedLengthError::AtLeast(modulus.len()),
+            });
+        }
+        // Input validation
+        if input.len() % 4 != 0 {
+            return Err(RsaSignFailure::WrongInputParameterAlignment {
+                faulty_slice: "input",
+            });
+        }
+        // I guess this is easier than checking MSBs of input and modulus.
+        if input.len() >= modulus.len() {
+            return Err(RsaSignFailure::WrongInputParameterLength {
+                faulty_slice: "input",
+                actual_length: input.len(),
+                expected_length: ExpectedLengthError::AtMost(modulus.len() - 1),
+            });
+        }
+        if exponent.len() % 4 != 0 {
+            return Err(RsaSignFailure::WrongInputParameterAlignment {
+                faulty_slice: "exponent",
+            });
+        }
+        if exponent.len() > modulus.len() {
+            return Err(RsaSignFailure::WrongInputParameterLength {
+                faulty_slice: "exponent",
+                actual_length: exponent.len(),
+                expected_length: ExpectedLengthError::AtMost(modulus.len()),
+            });
+        }
+
+        let (modulus_cr, cns_cr, hash_cr, workspace, exponent_cr, mut __);
+
+        let mut crypto_ram = unsafe { c_abi::CryptoRam::new() };
+
+        // TODO: Consider passing CNS buffer as a part of input arguments
+        let mut cns = [0_u8; 512 + 12];
+        let cns = self.zp_calculate_cns(&mut cns, modulus)?;
+
+        let mut input_buffer = [0_u8; 512];
+
+        input_buffer
+            .iter_mut()
+            .rev()
+            .zip(input.iter().rev())
+            .for_each(|(target_iter, source_iter)| *target_iter = *source_iter);
+
+        copy_to_cryptoram! {
+            crypto_ram,
+            (modulus_cr, modulus.iter().cloned().rev()),
+            (__, repeat(0).take(4)),
+            (cns_cr, cns.iter().cloned().rev()),
+            (hash_cr, input_buffer.iter().cloned().rev()),
+            (__, repeat(0).take(16)),
+            (exponent_cr, repeat(0).take(4)),
+            (__, exponent.iter().cloned().rev()),
+            (workspace, 0..0)
+        };
+        let mut pukcl_params = c_abi::PukclParams::default();
+        unsafe {
+            pukcl_params.header.u1Service = 0x6c;
+            pukcl_params.header.u2Option =
+                PUKCL_EXPMOD_REGULARRSA | PUKCL_EXPMOD_EXPINPUKCCRAM | PUKCL_EXPMOD_WINDOWSIZE_1;
+            let mut service_params = &mut pukcl_params.params.ExpMod;
+            service_params.nu1XBase = hash_cr.pukcc_base();
+            service_params.nu1ModBase = modulus_cr.pukcc_base();
+            service_params.nu1CnsBase = cns_cr.pukcc_base();
+            service_params.nu1PrecompBase = workspace.pukcc_base();
+            service_params.pfu1ExpBase = exponent_cr.as_ptr() as _;
+            service_params.u2ModLength = modulus.len() as _;
+            service_params.u2ExpLength = exponent.len() as _;
+            service_params.u1Blinding = 0;
+        }
+
+        unsafe { c_abi::ExpMod::call(&mut pukcl_params) };
+        match pukcl_params.header.u2Status.into() {
+            PukclReturnCode::Ok => {}
+            error_code => return Err(RsaSignFailure::ServiceFailure(error_code)),
+        }
+
+        output
+            .iter_mut()
+            .zip(hash_cr.iter().take(modulus.len()).rev())
+            .for_each(|(target_iter, source_iter)| *target_iter = *source_iter);
+
+        Ok(())
+    }
+
+    /// CNS is rotated from little endian to big endian, copy_to_cryptoram can
+    /// be used
+    fn zp_calculate_cns<'a>(
+        &self,
+        buffer: &'a mut [u8],
+        modulus: &[u8],
+    ) -> Result<&'a [u8], CalculateCnsFailure> {
+        const PUKCL_REDMOD_SETUP: u16 = 0x0100;
+        if modulus.len() > buffer.len() {
+            return Err(CalculateCnsFailure::BufferTooSmall {
+                current_length: buffer.len(),
+                minimum_required: modulus.len(),
+            });
+        }
+        let (modulus_cr, cns_cr, workspace_r, workspace_x, mut __);
+        let mut crypto_ram = unsafe { c_abi::CryptoRam::new() };
+        copy_to_cryptoram! {
+            crypto_ram,
+            (modulus_cr, modulus.iter().cloned().rev()),
+            (__, repeat(0).take(4)),
+            // `buffer` is used only to establish proper amount of space in CryptoRAM
+            (cns_cr, (&buffer[..modulus.len() + 12]).iter().cloned().rev()),
+            (workspace_r, repeat(0).take(64)), // GF(p) -> 64 bytes
+            (workspace_x, 0..0)
+        };
+        let mut pukcl_params = c_abi::PukclParams::default();
+        unsafe {
+            // Flag that switches behaviour of `RedMod` service into CNS generator
+            pukcl_params.header.u2Option = PUKCL_REDMOD_SETUP;
+            let mut service_params = &mut pukcl_params.params.RedMod;
+            service_params.nu1ModBase = modulus_cr.pukcc_base();
+            service_params.nu1CnsBase = cns_cr.pukcc_base();
+            service_params.u2ModLength = modulus.len() as _;
+            service_params.nu1RBase = workspace_r.pukcc_base();
+            service_params.nu1XBase = workspace_x.pukcc_base();
+        }
+        unsafe { c_abi::RedMod::call(&mut pukcl_params) };
+        match pukcl_params.header.u2Status.into() {
+            PukclReturnCode::Ok => {}
+            error_code => return Err(CalculateCnsFailure::ServiceFailure(error_code)),
+        }
+
+        buffer
+            .iter_mut()
+            .zip(cns_cr.iter().take(modulus.len() + 12).rev())
+            .for_each(|(target_iter, source_iter)| *target_iter = *source_iter);
+        Ok(&buffer[..modulus.len() + 12])
+    }
 }
 
 /// An error type representing failure modes a [`Pukcc::self_test`] service
@@ -518,6 +685,47 @@ pub enum EcdsaSignatureVerificationFailure {
     },
     InvalidCurve(curves::CurveVerficationFailure),
     ServiceFailure(PukclReturnCode),
+}
+
+#[derive(Debug)]
+pub enum ExpectedLengthError {
+    AtMost(usize),
+    AtLeast(usize),
+    Exactly(usize),
+}
+
+#[derive(Debug)]
+pub enum RsaSignFailure {
+    /// Should be either 1024, 2048 or 4096 bits long
+    WrongModulusLength {
+        actual_length: usize,
+    },
+    WrongInputParameterLength {
+        faulty_slice: &'static str,
+        expected_length: ExpectedLengthError,
+        actual_length: usize,
+    },
+    /// Should be 4-aligned
+    WrongInputParameterAlignment {
+        faulty_slice: &'static str,
+    },
+    CalculateCnsFailure(CalculateCnsFailure),
+    ServiceFailure(PukclReturnCode),
+}
+
+#[derive(Debug)]
+pub enum CalculateCnsFailure {
+    BufferTooSmall {
+        current_length: usize,
+        minimum_required: usize,
+    },
+    ServiceFailure(PukclReturnCode),
+}
+
+impl From<CalculateCnsFailure> for RsaSignFailure {
+    fn from(f: CalculateCnsFailure) -> Self {
+        RsaSignFailure::CalculateCnsFailure(f)
+    }
 }
 
 // PukclReturnCode <-> c_abi::PukclReturnCode
