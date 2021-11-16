@@ -8,6 +8,7 @@
 #![no_std]
 #![no_main]
 
+use bsp::{hal, Led0, Led1};
 use core::cell::RefCell;
 use cortex_m::{
     interrupt::{free, Mutex},
@@ -24,7 +25,7 @@ use hal::{
     prelude::*,
 };
 use panic_halt as _;
-use xiao_m0::{hal, Led0, Led1};
+use xiao_m0 as bsp;
 
 static LED_1: Mutex<RefCell<Option<Led1>>> = Mutex::new(RefCell::new(None));
 
