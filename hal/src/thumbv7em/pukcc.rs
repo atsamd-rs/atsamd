@@ -24,7 +24,7 @@ pub mod curves;
 use core::iter::{once, repeat};
 
 use crate::pac::MCLK;
-use c_abi::{u4, CryptoRamSlice, Service};
+use c_abi::{u2, u4, CryptoRamSlice, Service};
 use curves::Curve;
 
 use rand_core::{CryptoRng, RngCore};
@@ -491,22 +491,24 @@ impl Pukcc {
         input: &[u8],
         exponent: &[u8],
         modulus: &[u8],
+        mode: ExpModMode,
+        window_size: ExpModWindowSize,
         buffer: &'a mut [u8],
-    ) -> Result<&'a [u8], RsaSignFailure> {
+    ) -> Result<&'a [u8], ExpModFailure> {
         const PUKCL_EXPMOD_REGULARRSA: u16 = 0x01;
         const PUKCL_EXPMOD_EXPINPUKCCRAM: u16 = 0x02;
         const PUKCL_EXPMOD_WINDOWSIZE_1: u16 = 0x00;
 
         // Modulus validation
         if modulus.len() % 4 != 0 {
-            return Err(RsaSignFailure::WrongInputParameterAlignment {
+            return Err(ExpModFailure::WrongInputParameterAlignment {
                 faulty_slice: "modulus",
             });
         }
         // Modulus size must be at least 12 bytes (43.3.5.2.3 of DS60001507F datasheet)
         const MINIMUM_MODULUS_LEN: usize = 12;
         if modulus.len() < MINIMUM_MODULUS_LEN {
-            return Err(RsaSignFailure::WrongInputParameterLength {
+            return Err(ExpModFailure::WrongInputParameterLength {
                 faulty_slice: "modulus",
                 actual_length: modulus.len(),
                 expected_length: ExpectedLengthError::AtLeast(MINIMUM_MODULUS_LEN),
@@ -515,7 +517,7 @@ impl Pukcc {
         // Input validation
         // I guess this is easier than checking MSBs of `input` and `modulus`.
         if input.len() >= modulus.len() {
-            return Err(RsaSignFailure::WrongInputParameterLength {
+            return Err(ExpModFailure::WrongInputParameterLength {
                 faulty_slice: "input",
                 actual_length: input.len(),
                 expected_length: ExpectedLengthError::AtMost(modulus.len() - 1),
@@ -523,7 +525,7 @@ impl Pukcc {
         }
         // Exponent validation
         if exponent.len() > modulus.len() {
-            return Err(RsaSignFailure::WrongInputParameterLength {
+            return Err(ExpModFailure::WrongInputParameterLength {
                 faulty_slice: "exponent",
                 actual_length: exponent.len(),
                 expected_length: ExpectedLengthError::AtMost(modulus.len()),
@@ -557,11 +559,26 @@ impl Pukcc {
             (__, repeat(0).take(padding_for_exponent)),
             (workspace, 0..0)
         };
+        // Table 43-52; 43.3.5.2.5 in DS60001507F
+        let workspace_len: usize = match window_size {
+            ExpModWindowSize::One => 3 * (modulus.len() + 4) + 8,
+            ExpModWindowSize::Two => 4 * (modulus.len() + 4) + 8,
+            ExpModWindowSize::Three => 6 * (modulus.len() + 4) + 8,
+            ExpModWindowSize::Four => 10 * (modulus.len() + 4) + 8,
+        };
+        let workspace_end_ptr = workspace.as_ptr().wrapping_add(workspace_len);
+        let crypto_ram_end_ptr = crypto_ram.as_ptr_range().end;
+        if workspace_end_ptr > crypto_ram_end_ptr {
+            return Err(ExpModFailure::RunOutOfCryptoRam {
+                workspace_end_ptr,
+                crypto_ram_end_ptr,
+            });
+        }
         let mut pukcl_params = c_abi::PukclParams::default();
         unsafe {
-            // Note: `ExpMod` service supports both regular and fast modular exponentation
+            // Note: `exponent` outside of Crypto RAM is currently not supported
             pukcl_params.header.u2Option =
-                PUKCL_EXPMOD_REGULARRSA | PUKCL_EXPMOD_EXPINPUKCCRAM | PUKCL_EXPMOD_WINDOWSIZE_1;
+                PUKCL_EXPMOD_EXPINPUKCCRAM | window_size.get_windows_size_mask() | mode.get_mode_mask();
             let mut service_params = &mut pukcl_params.params.ExpMod;
             service_params.nu1XBase = output.pukcc_base();
             service_params.nu1ModBase = modulus_cr.pukcc_base();
@@ -576,7 +593,7 @@ impl Pukcc {
         unsafe { c_abi::ExpMod::call(&mut pukcl_params) };
         match pukcl_params.header.u2Status.into() {
             PukclReturnCode::Ok => {}
-            error_code => return Err(RsaSignFailure::ServiceFailure(error_code)),
+            error_code => return Err(ExpModFailure::ServiceFailure(error_code)),
         }
 
         buffer
@@ -691,7 +708,43 @@ pub enum ExpectedLengthError {
 }
 
 #[derive(Debug)]
-pub enum RsaSignFailure {
+pub enum ExpModMode {
+    Regular,
+    Fast
+}
+
+impl ExpModMode {
+    pub fn get_mode_mask(&self) -> u2 {
+        use ExpModMode::*;
+        match self {
+            Regular => 0x01,
+            Fast => 0x04,
+        }
+    }
+}
+
+#[derive(Debug)]
+pub enum ExpModWindowSize {
+    One,
+    Two,
+    Three,
+    Four,
+}
+
+impl ExpModWindowSize {
+    pub fn get_windows_size_mask(&self) -> u2 {
+        use ExpModWindowSize::*;
+        match self {
+            One => 0x00,
+            Two => 0x08,
+            Three => 0x10,
+            Four => 0x18,
+        }
+    }
+}
+
+#[derive(Debug)]
+pub enum ExpModFailure {
     WrongInputParameterLength {
         faulty_slice: &'static str,
         expected_length: ExpectedLengthError,
@@ -700,6 +753,10 @@ pub enum RsaSignFailure {
     /// Should be 4-aligned
     WrongInputParameterAlignment {
         faulty_slice: &'static str,
+    },
+    RunOutOfCryptoRam {
+        workspace_end_ptr: *const u8,
+        crypto_ram_end_ptr: *const u8,
     },
     CalculateCnsFailure(CalculateCnsFailure),
     ServiceFailure(PukclReturnCode),
@@ -719,9 +776,9 @@ pub enum CalculateCnsFailure {
     ServiceFailure(PukclReturnCode),
 }
 
-impl From<CalculateCnsFailure> for RsaSignFailure {
+impl From<CalculateCnsFailure> for ExpModFailure {
     fn from(f: CalculateCnsFailure) -> Self {
-        RsaSignFailure::CalculateCnsFailure(f)
+        ExpModFailure::CalculateCnsFailure(f)
     }
 }
 
