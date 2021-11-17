@@ -486,7 +486,92 @@ impl Pukcc {
         }
     }
 
-    pub fn modular_exponentation<'a>(
+    /// Service performing a modular exponentiation.
+    ///
+    /// ```text
+    /// result = pow(input, exponent) % modulus
+    /// ```
+    ///
+    /// Input parameters:
+    /// - `input`: `&[u8]`
+    ///     - Requirements:
+    ///         - `len(input) < len(modulus)`
+    ///     - Message, hash, any slice of data that will undergo modular
+    ///       exponentiation
+    /// - `exponent`: `&[u8]`
+    ///     - Requirements:
+    ///         - `len(exponent) <= len(modulus)`
+    /// - `modulus`: `&[u8]`
+    ///     - Requirements:
+    ///         - `len(modulus) % 4`
+    ///         - `12 <= len(modulus) < ?`
+    ///     - Note: Maximum size depends on few factors like CryptoRAM and
+    ///       workspace window size. Consult the table with data layout down
+    ///       below.
+    /// - `mode`: [`ExpModMode`]
+    ///     - Mode of operation: use regular or fast variant of the underlying
+    ///       algorithm
+    ///     - This parameter does not influence the end result of a computation
+    /// - `window_size`: [`ExpModWindowSize`]
+    ///     - Enum describing 4 predefined workspace sizes (from smallest to
+    ///       biggest) in CryptoRAM.
+    ///     - Bigger the workspace size - faster the algorithm can operate -
+    ///       greater limitations on input parameters are put (as they occupy
+    ///       CryptoRAM address space as well). Consult the table with data
+    ///       layout down below.
+    ///     - This parameter does not influence the end result of a computation
+    /// - `buffer`: `&'a mut [u8]`
+    ///     - `len(buffer) >= len(modulus) + 5`
+    ///     - Buffer used internally for CNS calculation. Piece of it is used
+    ///       also for a return value.
+    ///
+    /// Return value:
+    /// - `Result::Ok(&'a [u8])`
+    ///     - A result of modular exponentiation
+    /// - `Result::Err`
+    ///     - Possible failure scenarios are encapsulated in a [`ExpModFailure`]
+    ///       enum type
+    ///
+    /// Failing to meet the requirements for any input parameter will end up
+    /// with an error being returned.
+    ///
+    /// CryptoRAM is `4KiB` (`0x1000` bytes) in size. Data layout in CryptoRAM
+    /// looks as follows and its size cannot go over the threshold of `4KiB`.
+    ///
+    /// ```text
+    /// - modulus: len(modulus) + 4
+    /// - cns (reduction constant): len(modulus) + 8
+    /// - output/input (after/before calculation): len(modulus) + 16
+    /// - exponent: len(exponent) + 4 (+ padding to be % 4)
+    /// - workspace: (depending on `window_size`)
+    ///     - ExpModWindowSize::One => 3 * (modulus.len() + 4) + 8
+    ///     - ExpModWindowSize::Two => 4 * (modulus.len() + 4) + 8
+    ///     - ExpModWindowSize::Three => 6 * (modulus.len() + 4) + 8
+    ///     - ExpModWindowSize::Four => 10 * (modulus.len() + 4) + 8
+    /// ```
+    ///
+    /// # RSA
+    ///
+    /// This function can be used to perform RSA related computation like
+    /// encryption, decryption, signature generation and validation.
+    /// - To **encrypt** `input` value, split _public key_ into _public_
+    ///   `exponent` and `modulus` and pass them into the function. Return value
+    ///   is going to be a cipher of an `input`.
+    /// - To **decrypt** `input` value, split _private key_ into _private_
+    ///   `exponent` and `modulus` and pass them into the function. Return value
+    ///   is going to be a decrypted `input`.
+    /// - To **generate a signature**, pass the _hash_ of a message being signed
+    ///   as an `input` into the function and use a _private key_. Return value
+    ///   is going to be a signature (encrypted _hash_).
+    /// - To **validate a signature**, pass it as an `input` into the function
+    ///   and use the _public key_. Decrypted signature is an expected hash of a
+    ///   message. Calculate the hash of your message and compare it with an
+    ///   expected value. If they are the same, validation can be considered
+    ///   successful.
+    ///
+    /// All RSA variants up to **RSA4096** (included) will fit into CryptoRAM
+    /// and therefore are supported.
+    pub fn modular_exponentiation<'a>(
         &self,
         input: &[u8],
         exponent: &[u8],
@@ -495,9 +580,7 @@ impl Pukcc {
         window_size: ExpModWindowSize,
         buffer: &'a mut [u8],
     ) -> Result<&'a [u8], ExpModFailure> {
-        const PUKCL_EXPMOD_REGULARRSA: u16 = 0x01;
         const PUKCL_EXPMOD_EXPINPUKCCRAM: u16 = 0x02;
-        const PUKCL_EXPMOD_WINDOWSIZE_1: u16 = 0x00;
 
         // Modulus validation
         if modulus.len() % 4 != 0 {
@@ -577,8 +660,9 @@ impl Pukcc {
         let mut pukcl_params = c_abi::PukclParams::default();
         unsafe {
             // Note: `exponent` outside of Crypto RAM is currently not supported
-            pukcl_params.header.u2Option =
-                PUKCL_EXPMOD_EXPINPUKCCRAM | window_size.get_windows_size_mask() | mode.get_mode_mask();
+            pukcl_params.header.u2Option = PUKCL_EXPMOD_EXPINPUKCCRAM
+                | window_size.get_windows_size_mask()
+                | mode.get_mode_mask();
             let mut service_params = &mut pukcl_params.params.ExpMod;
             service_params.nu1XBase = output.pukcc_base();
             service_params.nu1ModBase = modulus_cr.pukcc_base();
@@ -604,8 +688,8 @@ impl Pukcc {
         Ok(&buffer[..modulus.len()])
     }
 
-    /// CNS in GF(p); GF(2n) is not implemented
-    pub fn zp_calculate_cns<'a>(
+    /// Service producing a reduction constant value
+    fn zp_calculate_cns<'a>(
         &self,
         buffer: &'a mut [u8],
         modulus: &[u8],
@@ -671,8 +755,9 @@ impl Pukcc {
 #[derive(Debug)]
 pub struct SelfTestFailure(c_abi::SelfTest);
 
-/// An error type representing failure modes for a [`Pukcc::zp_ecdsa_sign`]
-/// service
+/// An error type representing failure modes for a
+/// [`Pukcc::zp_ecdsa_sign_with_entropy`] and
+/// [`Pukcc::zp_ecdsa_sign_with_raw_k`] service
 #[allow(missing_docs)]
 #[derive(Debug)]
 pub enum EcdsaSignFailure {
@@ -700,6 +785,8 @@ pub enum EcdsaSignatureVerificationFailure {
     ServiceFailure(PukclReturnCode),
 }
 
+/// An error type specifing an expected length of a slice in question
+#[allow(missing_docs)]
 #[derive(Debug)]
 pub enum ExpectedLengthError {
     AtMost(usize),
@@ -707,13 +794,18 @@ pub enum ExpectedLengthError {
     Exactly(usize),
 }
 
+/// An enum describing available modes of operation of
+/// `Pukcc::modular_exponentiation` algoritm
+#[allow(missing_docs)]
 #[derive(Debug)]
 pub enum ExpModMode {
     Regular,
-    Fast
+    Fast,
 }
 
 impl ExpModMode {
+    /// Function mapping the enum variant with a low level mask value needed in
+    /// [`c_abi::PukclHeader::u2Option`] for [`c_abi::ExpMod`] service
     pub fn get_mode_mask(&self) -> u2 {
         use ExpModMode::*;
         match self {
@@ -723,15 +815,24 @@ impl ExpModMode {
     }
 }
 
+/// An enum describing allowed, predefined window sizes for a calculation
+/// workspace in CryptoRAM for [`Pukcc::modular_exponentiation`] algorithm
+#[allow(missing_docs)]
 #[derive(Debug)]
 pub enum ExpModWindowSize {
+    /// 3 * (len(modulus) + 4) + 8 bytes allowed to be used as a workspace
     One,
+    /// 4 * (len(modulus) + 4) + 8 bytes allowed to be used as a workspace
     Two,
+    /// 6 * (len(modulus) + 4) + 8 bytes allowed to be used as a workspace
     Three,
+    /// 10 * (len(modulus) + 4) + 8 bytes allowed to be used as a workspace
     Four,
 }
 
 impl ExpModWindowSize {
+    /// Function mapping the enum variant with a low level mask value needed in
+    /// [`c_abi::PukclHeader::u2Option`] for [`c_abi::ExpMod`] service
     pub fn get_windows_size_mask(&self) -> u2 {
         use ExpModWindowSize::*;
         match self {
@@ -743,6 +844,9 @@ impl ExpModWindowSize {
     }
 }
 
+/// An error type representing failure modes for a
+/// [`Pukcc::modular_exponentiation`] service
+#[allow(missing_docs)]
 #[derive(Debug)]
 pub enum ExpModFailure {
     WrongInputParameterLength {
@@ -762,6 +866,9 @@ pub enum ExpModFailure {
     ServiceFailure(PukclReturnCode),
 }
 
+/// An error type representing failure modes for a
+/// `Pukcc::zp_calculate_cns` service
+#[allow(missing_docs)]
 #[derive(Debug)]
 pub enum CalculateCnsFailure {
     WrongInputParameterLength {
