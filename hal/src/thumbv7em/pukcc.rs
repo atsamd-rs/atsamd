@@ -521,12 +521,14 @@ impl Pukcc {
     ///       layout down below.
     ///     - This parameter does not influence the end result of a computation
     /// - `buffer`: `&'a mut [u8]`
-    ///     - `len(buffer) >= len(modulus) + 5`
+    ///     - Requirements:
+    ///         - `len(buffer) >= len(modulus) + 5`
     ///     - Buffer used internally for CNS calculation. Piece of it is used
     ///       also for a return value.
     ///
     /// Return value:
     /// - `Result::Ok(&'a [u8])`
+    ///     - Length: `len(modulus)`
     ///     - A result of modular exponentiation
     /// - `Result::Err`
     ///     - Possible failure scenarios are encapsulated in a [`ExpModFailure`]
@@ -598,15 +600,18 @@ impl Pukcc {
             });
         }
         // Input validation
-        // I guess this is easier than checking MSBs of `input` and `modulus`.
-        if input.len() >= modulus.len() {
+        // Note: Only length is checked but in theory value itself being larger than
+        // modulus is probably wrong as well
+        if input.len() > modulus.len() {
             return Err(ExpModFailure::WrongInputParameterLength {
                 faulty_slice: "input",
                 actual_length: input.len(),
-                expected_length: ExpectedLengthError::AtMost(modulus.len() - 1),
+                expected_length: ExpectedLengthError::AtMost(modulus.len()),
             });
         }
         // Exponent validation
+        // Note: Only length is checked but in theory value itself being larger than
+        // modulus is probably wrong as well
         if exponent.len() > modulus.len() {
             return Err(ExpModFailure::WrongInputParameterLength {
                 faulty_slice: "exponent",
