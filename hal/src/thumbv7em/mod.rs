@@ -1,3 +1,4 @@
+pub mod aes;
 pub mod calibration;
 pub mod clock;
 pub mod eic;
