@@ -41,6 +41,10 @@ name = "blink"
 required-features = ["unproven"]
 
 [[example]]
+name = "eic"
+required-features = ["unproven"]
+
+[[example]]
 name = "shared_i2c"
 
 [[example]]
