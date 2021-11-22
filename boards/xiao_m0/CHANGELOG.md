@@ -1,3 +1,7 @@
+# Unreleased
+
+- create `eic` example to show the relation between `Pin`, `ExtIntX` and `INTFLAG` 
+
 # 0.11.0
 
 - update gpio and sercom dependencies to v2
