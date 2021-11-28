@@ -72,45 +72,45 @@ use super::gclk::*;
 //==============================================================================
 
 /// Trait for binding [`gpio`] pins to specific [`Gclk`][`super::gclk]
-pub trait GclkIo<G: GclkNum>: PinId {}
+pub trait GclkIo<G: GclkId>: PinId {}
 
-impl GclkIo<marker::Gclk4> for gpio::PA10 {}
-impl GclkIo<marker::Gclk5> for gpio::PA11 {}
+impl GclkIo<GclkId4> for gpio::PA10 {}
+impl GclkIo<GclkId5> for gpio::PA11 {}
 
-impl GclkIo<marker::Gclk0> for gpio::PA14 {}
-impl GclkIo<marker::Gclk1> for gpio::PA15 {}
-impl GclkIo<marker::Gclk2> for gpio::PA16 {}
-impl GclkIo<marker::Gclk3> for gpio::PA17 {}
+impl GclkIo<GclkId0> for gpio::PA14 {}
+impl GclkIo<GclkId1> for gpio::PA15 {}
+impl GclkIo<GclkId2> for gpio::PA16 {}
+impl GclkIo<GclkId3> for gpio::PA17 {}
 
-impl GclkIo<marker::Gclk1> for gpio::PA27 {}
-impl GclkIo<marker::Gclk0> for gpio::PA30 {}
+impl GclkIo<GclkId1> for gpio::PA27 {}
+impl GclkIo<GclkId0> for gpio::PA30 {}
 
-impl GclkIo<marker::Gclk4> for gpio::PB10 {}
-impl GclkIo<marker::Gclk5> for gpio::PB11 {}
+impl GclkIo<GclkId4> for gpio::PB10 {}
+impl GclkIo<GclkId5> for gpio::PB11 {}
 #[cfg(feature = "min-samd51j")]
-impl GclkIo<marker::Gclk6> for gpio::PB12 {}
+impl GclkIo<GclkId6> for gpio::PB12 {}
 #[cfg(feature = "min-samd51j")]
-impl GclkIo<marker::Gclk7> for gpio::PB13 {}
+impl GclkIo<GclkId7> for gpio::PB13 {}
 
 #[cfg(feature = "min-samd51j")]
-impl GclkIo<marker::Gclk0> for gpio::PB14 {}
+impl GclkIo<GclkId0> for gpio::PB14 {}
 #[cfg(feature = "min-samd51j")]
-impl GclkIo<marker::Gclk1> for gpio::PB15 {}
+impl GclkIo<GclkId1> for gpio::PB15 {}
 #[cfg(feature = "min-samd51j")]
-impl GclkIo<marker::Gclk2> for gpio::PB16 {}
+impl GclkIo<GclkId2> for gpio::PB16 {}
 #[cfg(feature = "min-samd51j")]
-impl GclkIo<marker::Gclk3> for gpio::PB17 {}
+impl GclkIo<GclkId3> for gpio::PB17 {}
 #[cfg(feature = "min-samd51n")]
-impl GclkIo<marker::Gclk4> for gpio::PB18 {}
+impl GclkIo<GclkId4> for gpio::PB18 {}
 #[cfg(feature = "min-samd51n")]
-impl GclkIo<marker::Gclk5> for gpio::PB19 {}
+impl GclkIo<GclkId5> for gpio::PB19 {}
 #[cfg(feature = "min-samd51n")]
-impl GclkIo<marker::Gclk6> for gpio::PB20 {}
+impl GclkIo<GclkId6> for gpio::PB20 {}
 #[cfg(feature = "min-samd51n")]
-impl GclkIo<marker::Gclk7> for gpio::PB21 {}
+impl GclkIo<GclkId7> for gpio::PB21 {}
 
-impl GclkIo<marker::Gclk0> for gpio::PB22 {}
-impl GclkIo<marker::Gclk1> for gpio::PB23 {}
+impl GclkIo<GclkId0> for gpio::PB22 {}
+impl GclkIo<GclkId1> for gpio::PB23 {}
 
 //==============================================================================
 // GclkInToken
@@ -118,13 +118,13 @@ impl GclkIo<marker::Gclk1> for gpio::PB23 {}
 
 /// [`GclkInToken`] are singular for each `Gclk`, ensuring that
 /// inputs are not multiply constructed
-pub struct GclkInToken<G: GclkNum> {
+pub struct GclkInToken<G: GclkId> {
     gen: PhantomData<G>,
 }
 
 impl<G> GclkInToken<G>
 where
-    G: GclkNum,
+    G: GclkId,
 {
     /// Create a new [`GclkInToken`] associated to the given
     /// [`Gclk`][`super::gclk]
@@ -142,7 +142,7 @@ where
 /// and relies on the user specifying the expected input frequency
 pub struct GclkIn<G, I>
 where
-    G: GclkNum,
+    G: GclkId,
     I: GclkIo<G>,
 {
     token: GclkInToken<G>,
@@ -152,7 +152,7 @@ where
 
 impl<G, I> GclkIn<G, I>
 where
-    G: GclkNum,
+    G: GclkId,
     I: GclkIo<G>,
 {
     /// Consume a [`GclkInToken`], `gpio` pin and a provided frequency to
@@ -176,14 +176,14 @@ where
 
 impl<G, I> Sealed for GclkIn<G, I>
 where
-    G: GclkNum,
+    G: GclkId,
     I: GclkIo<G>,
 {
 }
 
 impl<G, I> Enabled<GclkIn<G, I>, U0>
 where
-    G: GclkNum,
+    G: GclkId,
     I: GclkIo<G>,
 {
     /// Disable the [`GclkIn`], deconstruct it and return the [`GclkInToken`]
@@ -207,31 +207,36 @@ where
 /// As negated trait bounds are not available in Rust, a _negated_
 /// [`NotGclkInput`] trait was introduced which is implemented by a subset of
 /// [`GclkSourceMarkers`](GclkSourceMarker) that are not [`GclkIns`](GclkIn).
-pub trait NotGclkInput: GclkSourceMarker {}
+pub trait NotGclkInput: GclkSourceId {}
 
-/// A [`GclkIn`] can act as a clock source for a [`Gclk`]
-pub enum GclkInput {}
+/// Type-level variant representing the identity of an GCLK input clock
+///
+/// This type is a member of several [type-level enums]. See the documentation
+/// on [type-level enums] for more details on the pattern.
+///
+/// [type-level enums]: crate::typelevel#type-level-enum
+pub enum GclkInId {}
 
-impl Sealed for GclkInput {}
+impl Sealed for GclkInId {}
 
-impl GclkSourceMarker for GclkInput {
-    const GCLK_SRC: GclkSourceEnum = GclkSourceEnum::GCLKIN;
+impl GclkSourceId for GclkInId {
+    const DYN: DynGclkSourceId = DynGclkSourceId::GCLKIN;
 }
 
-impl SourceMarker for GclkInput {}
+impl SourceMarker for GclkInId {}
 
 impl<G, I, N> GclkSource<G> for Enabled<GclkIn<G, I>, N>
 where
-    G: GclkNum,
+    G: GclkId,
     I: GclkIo<G>,
     N: Counter,
 {
-    type Type = GclkInput;
+    type Type = GclkInId;
 }
 
 impl<G, I, N> Source for Enabled<GclkIn<G, I>, N>
 where
-    G: GclkNum,
+    G: GclkId,
     I: GclkIo<G>,
     N: Counter,
 {
@@ -247,11 +252,11 @@ where
 
 /// [`GclkOutToken`] are singular for each `Gclk`, ensuring that
 /// outputs are not multiply constructed
-pub struct GclkOutToken<G: GclkNum> {
+pub struct GclkOutToken<G: GclkId> {
     gen: PhantomData<G>,
 }
 
-impl<G: GclkNum> GclkOutToken<G> {
+impl<G: GclkId> GclkOutToken<G> {
     /// Create a new [`GclkOutToken`] associated to the given
     /// [`Gclk`][`super::gclk]
     #[inline]
@@ -265,9 +270,9 @@ impl<G: GclkNum> GclkOutToken<G> {
 //==============================================================================
 
 /// A [`GclkOut`] is associated with a [`Gclk`]
-pub trait GclkOutSourceMarker: GclkNum + SourceMarker {}
+pub trait GclkOutSourceMarker: GclkId + SourceMarker {}
 
-impl<G: GclkNum> GclkOutSourceMarker for G {}
+impl<G: GclkId> GclkOutSourceMarker for G {}
 
 mod private {
     use super::*;
@@ -288,7 +293,7 @@ pub trait GclkOutSource: PrivateGclkOutSource {
 impl<G, T, N> GclkOutSource for Enabled<Gclk<G, T>, N>
 where
     G: GclkOutSourceMarker,
-    T: GclkSourceMarker + NotGclkInput,
+    T: GclkSourceId + NotGclkInput,
     N: Counter,
 {
     type Type = G;
@@ -297,7 +302,7 @@ where
 impl<G, T, N> PrivateGclkOutSource for Enabled<Gclk<G, T>, N>
 where
     G: GclkOutSourceMarker,
-    T: GclkSourceMarker + NotGclkInput,
+    T: GclkSourceId + NotGclkInput,
     N: Counter,
 {
     /// Enable the gclk_out
@@ -326,7 +331,7 @@ where
 /// and will assume the frequency from the source [`Gclk`]
 pub struct GclkOut<G, I>
 where
-    G: GclkNum,
+    G: GclkId,
     I: GclkIo<G>,
 {
     token: GclkOutToken<G>,
@@ -336,7 +341,7 @@ where
 
 impl<G, I> GclkOut<G, I>
 where
-    G: GclkNum,
+    G: GclkId,
     I: GclkIo<G>,
 {
     /// Consume a [`GclkOutToken`], `gpio` pin, `gclk` and the desired  receive
@@ -383,9 +388,9 @@ seq!(N in 0..=11 {
     /// Tokens for every [`GclkIn`] and [`GclkOut`]
     pub struct Tokens {
         #( /// GclkIn #N
-           pub gclk_in #N: GclkInToken<marker::Gclk #N>, )*
+           pub gclk_in #N: GclkInToken<GclkId #N>, )*
         #( /// GclkOut #N
-           pub gclk_out #N: GclkOutToken<marker::Gclk #N>, )*
+           pub gclk_out #N: GclkOutToken<GclkId #N>, )*
     }
 
     impl Tokens {

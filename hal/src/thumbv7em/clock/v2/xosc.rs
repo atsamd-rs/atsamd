@@ -31,86 +31,91 @@ use crate::gpio::v2::{AnyPin, FloatingDisabled, Pin, PinId, PA14, PA15, PB22, PB
 use crate::time::{Hertz, U32Ext};
 use crate::typelevel::{Counter, Sealed};
 
-use super::dpll::{DpllSource, DpllSourceEnum, DpllSourceMarker, DpllSourceXosc};
-use super::gclk::{GclkNum, GclkSource, GclkSourceEnum, GclkSourceMarker};
+use super::dpll::{DpllSource, DpllSourceId, DpllSourceXosc, DynDpllSourceId};
+use super::gclk::{DynGclkSourceId, GclkId, GclkSource, GclkSourceId};
 use super::gclkio::NotGclkInput;
 
 //==============================================================================
 // XoscNum
 //==============================================================================
 
-/// Trait ensuring all [`Xosces`](Xosc) have numeric identifiers
-pub trait XoscNum: Sealed {
-    /// Associated constant marking an index of a [`Xosc`] type. It is useful in
-    /// [`XoscToken`] in order to properly apply the offset to get an adequate
-    /// [`XOSCCTRL`] register
+/// Type-level `enum` for XOSC identifiers
+///
+/// See the documentation / on [type-level enums] for more details on the
+/// pattern.
+///
+/// [type-level enums]: crate::typelevel#type-level-enum
+pub trait XoscId: Sealed {
+    /// Corresponding numeric index
     const NUM: usize;
     /// Associated constant providing a low-level enum variant for a Dpll's HW
     /// setup regarding signal source
-    const DPLL_SRC: DpllSourceEnum;
-    /// Acceptable XIn pin identifier for `XoscX`
+    const DPLL_SRC: DynDpllSourceId;
+    /// Corresponding XIN [`PinId`]
     type XIn: PinId;
-    /// Acceptable XOut pin identifier for `XoscX`
+    /// Corresponding XOUT [`PinId`]
     type XOut: PinId;
 }
 
-/// A module that creates a namespace difference between a
-/// [`marker::Xosc0`]/[`marker::Xosc1`] marker types and a [`Xosc0`]/[`Xosc1`]
-/// builder type aliases
-pub mod marker {
-    use super::*;
+/// Type-level variant representing the identity of XOSC0
+///
+/// This type is a member of several [type-level enums]. See the documentation
+/// on [type-level enums] for more details on the pattern.
+///
+/// [type-level enums]: crate::typelevel#type-level-enum
+pub enum XoscId0 {}
 
-    /// Oscillator Source 0
-    pub enum Xosc0 {}
+impl Sealed for XoscId0 {}
 
-    impl Sealed for Xosc0 {}
-
-    /// Type which serves as a source marker for the [`super::Xosc0`] and
-    /// provides numerical identity for it
-    impl XoscNum for Xosc0 {
-        const NUM: usize = 0;
-        const DPLL_SRC: DpllSourceEnum = DpllSourceEnum::XOSC0;
-        type XIn = PA14;
-        type XOut = PA15;
-    }
-
-    impl GclkSourceMarker for Xosc0 {
-        const GCLK_SRC: GclkSourceEnum = GclkSourceEnum::XOSC0;
-    }
-
-    impl DpllSourceMarker for Xosc0 {
-        const DPLL_SRC: DpllSourceEnum = DpllSourceEnum::XOSC0;
-    }
-
-    impl SourceMarker for Xosc0 {}
-
-    impl NotGclkInput for Xosc0 {}
-
-    /// Type which serves as a source marker for the [`super::Xosc1`] and
-    /// provides numerical identity for it
-    pub enum Xosc1 {}
-
-    impl Sealed for Xosc1 {}
-
-    impl XoscNum for Xosc1 {
-        const NUM: usize = 1;
-        const DPLL_SRC: DpllSourceEnum = DpllSourceEnum::XOSC1;
-        type XIn = PB22;
-        type XOut = PB23;
-    }
-
-    impl GclkSourceMarker for Xosc1 {
-        const GCLK_SRC: GclkSourceEnum = GclkSourceEnum::XOSC1;
-    }
-
-    impl DpllSourceMarker for Xosc1 {
-        const DPLL_SRC: DpllSourceEnum = DpllSourceEnum::XOSC1;
-    }
-
-    impl SourceMarker for Xosc1 {}
-
-    impl NotGclkInput for Xosc1 {}
+/// Type which serves as a source marker for the [`super::Xosc0`] and
+/// provides numerical identity for it
+impl XoscId for XoscId0 {
+    const NUM: usize = 0;
+    const DPLL_SRC: DynDpllSourceId = DynDpllSourceId::XOSC0;
+    type XIn = PA14;
+    type XOut = PA15;
 }
+
+impl GclkSourceId for XoscId0 {
+    const DYN: DynGclkSourceId = DynGclkSourceId::XOSC0;
+}
+
+impl DpllSourceId for XoscId0 {
+    const DYN: DynDpllSourceId = DynDpllSourceId::XOSC0;
+}
+
+impl SourceMarker for XoscId0 {}
+
+impl NotGclkInput for XoscId0 {}
+
+/// Type-level variant representing the identity of XOSC1
+///
+/// This type is a member of several [type-level enums]. See the documentation
+/// on [type-level enums] for more details on the pattern.
+///
+/// [type-level enums]: crate::typelevel#type-level-enum
+pub enum XoscId1 {}
+
+impl Sealed for XoscId1 {}
+
+impl XoscId for XoscId1 {
+    const NUM: usize = 1;
+    const DPLL_SRC: DynDpllSourceId = DynDpllSourceId::XOSC1;
+    type XIn = PB22;
+    type XOut = PB23;
+}
+
+impl GclkSourceId for XoscId1 {
+    const DYN: DynGclkSourceId = DynGclkSourceId::XOSC1;
+}
+
+impl DpllSourceId for XoscId1 {
+    const DYN: DynDpllSourceId = DynDpllSourceId::XOSC1;
+}
+
+impl SourceMarker for XoscId1 {}
+
+impl NotGclkInput for XoscId1 {}
 
 /// Encapsulates a hardware crystal configuration
 ///
@@ -196,11 +201,11 @@ impl CrystalCurrent {
 
 /// Token struct that is essential in order to construct an instance of an
 /// [`Xosc`].
-pub struct XoscToken<X: XoscNum> {
+pub struct XoscToken<X: XoscId> {
     osc: PhantomData<X>,
 }
 
-impl<X: XoscNum> XoscToken<X> {
+impl<X: XoscId> XoscToken<X> {
     /// Create a new instance of [`XoscToken`]
     #[inline]
     pub(super) unsafe fn new() -> Self {
@@ -308,10 +313,10 @@ impl<X: XoscNum> XoscToken<X> {
 pub type StartUp = STARTUP_A;
 
 /// Type alias for Xosc Input pin
-pub type XIn<X> = Pin<<X as XoscNum>::XIn, FloatingDisabled>;
+pub type XIn<X> = Pin<<X as XoscId>::XIn, FloatingDisabled>;
 
 /// Type alias for Xosc Output pin
-pub type XOut<X> = Pin<<X as XoscNum>::XOut, FloatingDisabled>;
+pub type XOut<X> = Pin<<X as XoscId>::XOut, FloatingDisabled>;
 
 //==============================================================================
 // Mode structure for Xosc
@@ -331,14 +336,14 @@ impl Sealed for ClockMode {}
 ///
 /// In that mode [`Xosc`] requires two signals coming from an external
 /// crystal
-pub struct CrystalMode<X: XoscNum> {
+pub struct CrystalMode<X: XoscId> {
     xout: XOut<X>,
     current: CrystalCurrent,
     amplitude_loop_control: bool,
     low_buf_gain: bool,
 }
-impl<X: XoscNum> Mode for CrystalMode<X> {}
-impl<X: XoscNum> Sealed for CrystalMode<X> {}
+impl<X: XoscId> Mode for CrystalMode<X> {}
+impl<X: XoscId> Sealed for CrystalMode<X> {}
 
 //==============================================================================
 // Xosc
@@ -352,7 +357,7 @@ impl<X: XoscNum> Sealed for CrystalMode<X> {}
 /// - a mode of operation (available modes: [`ClockMode`], [`CrystalMode`])
 pub struct Xosc<X, M>
 where
-    X: XoscNum,
+    X: XoscId,
     M: Mode,
 {
     token: XoscToken<X>,
@@ -366,14 +371,14 @@ where
 }
 
 /// Alias of [`Xosc`]`<`[`marker::Xosc0`]`, _>`
-pub type Xosc0<M> = Xosc<marker::Xosc0, M>;
+pub type Xosc0<M> = Xosc<XoscId0, M>;
 
 /// Alias of [`Xosc`]`<`[`marker::Xosc1`]`, _>`
-pub type Xosc1<M> = Xosc<marker::Xosc1, M>;
+pub type Xosc1<M> = Xosc<XoscId1, M>;
 
 impl<X, M> Xosc<X, M>
 where
-    X: XoscNum,
+    X: XoscId,
     M: Mode,
 {
     /// Returns the frequency of the oscillator
@@ -421,7 +426,7 @@ where
     }
 }
 
-impl<X: XoscNum> Xosc<X, ClockMode> {
+impl<X: XoscId> Xosc<X, ClockMode> {
     /// Construct a [`Xosc`] from a single pin oscillator clock signal
     #[inline]
     pub fn from_clock(
@@ -470,7 +475,7 @@ impl<X: XoscNum> Xosc<X, ClockMode> {
     }
 }
 
-impl<X: XoscNum> Xosc<X, CrystalMode<X>> {
+impl<X: XoscId> Xosc<X, CrystalMode<X>> {
     /// Construct a [`Xosc`] from a two pin crystal oscillator signal
     ///
     /// The crystal oscillator frequency must be supported, for valid
@@ -576,7 +581,7 @@ impl<X: XoscNum> Xosc<X, CrystalMode<X>> {
 
 impl<X, M> Enabled<Xosc<X, M>, U0>
 where
-    X: XoscNum,
+    X: XoscId,
     M: Mode,
 {
     /// Disable the [`Xosc`]
@@ -591,7 +596,7 @@ where
 
 impl<X, M, N> Enabled<Xosc<X, M>, N>
 where
-    X: XoscNum,
+    X: XoscId,
     M: Mode,
     N: Counter,
 {
@@ -608,8 +613,8 @@ where
 
 impl<G, X, M, N> GclkSource<G> for Enabled<Xosc<X, M>, N>
 where
-    G: GclkNum,
-    X: XoscNum + GclkSourceMarker,
+    G: GclkId,
+    X: XoscId + GclkSourceId,
     M: Mode,
     N: Counter,
 {
@@ -622,7 +627,7 @@ where
 
 impl<X, M, N> DpllSource for Enabled<Xosc<X, M>, N>
 where
-    X: XoscNum + DpllSourceMarker,
+    X: XoscId + DpllSourceId,
     M: Mode,
     N: Counter,
 {
@@ -631,7 +636,7 @@ where
 
 impl<X, M, N> DpllSourceXosc for Enabled<Xosc<X, M>, N>
 where
-    X: XoscNum + DpllSourceMarker,
+    X: XoscId + DpllSourceId,
     M: Mode,
     N: Counter,
 {
@@ -643,7 +648,7 @@ where
 
 impl<X, M, N> Source for Enabled<Xosc<X, M>, N>
 where
-    X: XoscNum,
+    X: XoscId,
     M: Mode,
     N: Counter,
 {

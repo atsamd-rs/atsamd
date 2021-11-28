@@ -31,83 +31,88 @@ use typenum::U0;
 use crate::pac::oscctrl::dpll::{dpllstatus, dpllsyncbusy, DPLLCTRLA, DPLLCTRLB, DPLLRATIO};
 use crate::pac::oscctrl::DPLL;
 
-pub use crate::pac::oscctrl::dpll::dpllctrlb::REFCLK_A as DpllSourceEnum;
+pub use crate::pac::oscctrl::dpll::dpllctrlb::REFCLK_A as DynDpllSourceId;
 
 use crate::clock::v2::{types::Enabled, Source, SourceMarker};
 use crate::time::Hertz;
 use crate::typelevel::{Counter, Decrement, Increment, Sealed};
 
-use super::gclk::{GclkNum, GclkSource, GclkSourceEnum, GclkSourceMarker};
+use super::gclk::{DynGclkSourceId, GclkId, GclkSource, GclkSourceId};
 use super::gclkio::NotGclkInput;
-use super::pclk::{Pclk, PclkSourceMarker, PclkType};
+use super::pclk::{Pclk, PclkId, PclkSourceId};
 
 //==============================================================================
-// DpllNum
+// DpllId
 //==============================================================================
 
-/// Trait ensuring all [`Dplls`](Dpll) have numeric identifiers
-pub trait DpllNum: Sealed {
-    /// Associated constant marking an index of a [`Dpll`] type. It is useful in
-    /// [`DpllToken`] in order to properly apply the offset to get an adequate
-    /// [`DPLL`] register
+/// Type-level `enum` for DPLL identifiers
+///
+/// See the documentation / on [type-level enums] for more details on the
+/// pattern.
+///
+/// [type-level enums]: crate::typelevel#type-level-enum
+pub trait DpllId: Sealed {
+    /// Corresponding numeric index
     const NUM: usize;
 }
 
-/// A module that creates a namespace difference between a
-/// [`marker::Dpll0`]/[`marker::Dpll1`] marker types and a [`Dpll0`]/[`Dpll1`]
-/// builder type aliases
-pub mod marker {
-    use super::*;
+/// Type-level variant representing the identity of DPLL0
+///
+/// This type is a member of several [type-level enums]. See the documentation
+/// on [type-level enums] for more details on the pattern.
+///
+/// [type-level enums]: crate::typelevel#type-level-enum
+pub enum DpllId0 {}
 
-    /// Type which serves as a source marker for the [`super::Dpll0`] and
-    /// provides numerical identity for it
-    pub enum Dpll0 {}
+impl Sealed for DpllId0 {}
 
-    impl Sealed for Dpll0 {}
-
-    impl DpllNum for Dpll0 {
-        const NUM: usize = 0;
-    }
-
-    impl GclkSourceMarker for Dpll0 {
-        const GCLK_SRC: GclkSourceEnum = GclkSourceEnum::DPLL0;
-    }
-
-    impl NotGclkInput for Dpll0 {}
-
-    impl SourceMarker for Dpll0 {}
-
-    /// Type which serves as a source marker for the [`super::Dpll1`] and
-    /// provides numerical identity for it
-    pub enum Dpll1 {}
-
-    impl Sealed for Dpll1 {}
-
-    impl DpllNum for Dpll1 {
-        const NUM: usize = 1;
-    }
-
-    impl GclkSourceMarker for Dpll1 {
-        const GCLK_SRC: GclkSourceEnum = GclkSourceEnum::DPLL1;
-    }
-
-    impl NotGclkInput for Dpll1 {}
-
-    impl SourceMarker for Dpll1 {}
+impl DpllId for DpllId0 {
+    const NUM: usize = 0;
 }
+
+impl GclkSourceId for DpllId0 {
+    const DYN: DynGclkSourceId = DynGclkSourceId::DPLL0;
+}
+
+impl NotGclkInput for DpllId0 {}
+
+impl SourceMarker for DpllId0 {}
+
+/// Type-level variant representing the identity of DPLL1
+///
+/// This type is a member of several [type-level enums]. See the documentation
+/// on [type-level enums] for more details on the pattern.
+///
+/// [type-level enums]: crate::typelevel#type-level-enum
+pub enum DpllId1 {}
+
+impl Sealed for DpllId1 {}
+
+impl DpllId for DpllId1 {
+    const NUM: usize = 1;
+}
+
+impl GclkSourceId for DpllId1 {
+    const DYN: DynGclkSourceId = DynGclkSourceId::DPLL1;
+}
+
+impl NotGclkInput for DpllId1 {}
+
+impl SourceMarker for DpllId1 {}
 
 //==============================================================================
 // DpllSource
 //==============================================================================
 
-/// Source marker trait for [`Dpll`] sources
+/// Type-level `enum` for DPLL sources
 ///
-/// Note: This trait is used inconsistently; [`Pclk`] as a source is used
-/// directly in an API and therefore matching over this type is redundant.
-pub trait DpllSourceMarker: SourceMarker {
-    /// Associated constant provides a variant of a low level enum type from PAC
-    /// that is used during a HW register write
-    const DPLL_SRC: DpllSourceEnum;
+/// See the documentation / on [type-level enums] for more details on the
+/// pattern.
+///
+/// [type-level enums]: crate::typelevel#type-level-enum
+pub trait DpllSourceId: SourceMarker {
+    /// Corresponding variant of [`DynDpllSourceId`]
+    const DYN: DynDpllSourceId;
 }
 
 /// This trait represents a [`Dpll`] source provider.
@@ -121,7 +126,7 @@ pub trait DpllSource: Source {
     /// a proper `T`, according to what `source` was passed into the
     /// [`Dpll::from_xosc`]/[`Dpll::from_xosc32k`] and to only allow calls into
     /// [`Dpll::free`] with a matching `source`
-    type Type: DpllSourceMarker;
+    type Type: DpllSourceId;
 }
 
 /// [`DpllSource`] subtrait that is used to distinguish between external 32kHz
@@ -143,11 +148,11 @@ pub trait DpllSourceXosc: DpllSource {}
 ///
 /// Within an [`atsamd_hal`][`crate`], [`DpllToken`] struct is a low-level
 /// access abstraction for HW register calls.
-pub struct DpllToken<D: DpllNum> {
+pub struct DpllToken<D: DpllId> {
     dpll: PhantomData<D>,
 }
 
-impl<D: DpllNum> DpllToken<D> {
+impl<D: DpllId> DpllToken<D> {
     /// Constructor
     ///
     /// Unsafe: There should always be only a single instance thereof. It can be
@@ -208,7 +213,7 @@ impl<D: DpllNum> DpllToken<D> {
 
     /// Set the clock source.
     #[inline]
-    fn set_source_clock(&mut self, variant: DpllSourceEnum) {
+    fn set_source_clock(&mut self, variant: DynDpllSourceId) {
         self.ctrlb().modify(|_, w| w.refclk().variant(variant));
     }
 
@@ -289,7 +294,7 @@ impl<D: DpllNum> DpllToken<D> {
 pub type DpllPredivider = u16;
 
 /// This trait introduces a notion of different modes for [`Dpll`]
-pub trait SrcMode<D: DpllNum>: Sealed {
+pub trait SrcMode<D: DpllId>: Sealed {
     /// Return value of an effective predivider that can be applied on a
     /// source frequency
     fn predivider(&self) -> DpllPredivider;
@@ -303,13 +308,13 @@ pub trait SrcMode<D: DpllNum>: Sealed {
 /// [`Pclk<marker::DpllX, _>`]
 pub struct PclkDriven<D, T>
 where
-    D: DpllNum + PclkType,
-    T: PclkSourceMarker,
+    D: DpllId + PclkId,
+    T: PclkSourceId,
 {
     reference_clk: Pclk<D, T>,
 }
 
-impl<D: DpllNum + PclkType, T: PclkSourceMarker> SrcMode<D> for PclkDriven<D, T> {
+impl<D: DpllId + PclkId, T: PclkSourceId> SrcMode<D> for PclkDriven<D, T> {
     #[inline]
     fn predivider(&self) -> DpllPredivider {
         1_u16
@@ -317,21 +322,21 @@ impl<D: DpllNum + PclkType, T: PclkSourceMarker> SrcMode<D> for PclkDriven<D, T>
 
     #[inline]
     fn enable(&self, token: &mut DpllToken<D>) {
-        token.set_source_clock(DpllSourceEnum::GCLK);
+        token.set_source_clock(DynDpllSourceId::GCLK);
     }
 }
 
-impl<D: DpllNum + PclkType, T: PclkSourceMarker> Sealed for PclkDriven<D, T> {}
+impl<D: DpllId + PclkId, T: PclkSourceId> Sealed for PclkDriven<D, T> {}
 
 /// Struct representing a [`Dpll`] mode when it is powered by a non-32kHz
 /// external oscillator
-pub struct XoscDriven<D: DpllNum, T: DpllSourceMarker> {
+pub struct XoscDriven<D: DpllId, T: DpllSourceId> {
     dpll_num: PhantomData<D>,
     src: PhantomData<T>,
     raw_predivider: DpllPredivider,
 }
 
-impl<D: DpllNum, T: DpllSourceMarker> SrcMode<D> for XoscDriven<D, T> {
+impl<D: DpllId, T: DpllSourceId> SrcMode<D> for XoscDriven<D, T> {
     #[inline]
     fn predivider(&self) -> DpllPredivider {
         2 * (1 + self.raw_predivider)
@@ -339,21 +344,21 @@ impl<D: DpllNum, T: DpllSourceMarker> SrcMode<D> for XoscDriven<D, T> {
 
     #[inline]
     fn enable(&self, token: &mut DpllToken<D>) {
-        token.set_source_clock(T::DPLL_SRC);
+        token.set_source_clock(T::DYN);
         token.set_source_div(self.raw_predivider);
     }
 }
 
-impl<D: DpllNum, T: DpllSourceMarker> Sealed for XoscDriven<D, T> {}
+impl<D: DpllId, T: DpllSourceId> Sealed for XoscDriven<D, T> {}
 
 /// Struct representing a [`Dpll`] mode when it is powered by a 32kHz
 /// external oscillator
-pub struct Xosc32kDriven<D: DpllNum, T: DpllSourceMarker> {
+pub struct Xosc32kDriven<D: DpllId, T: DpllSourceId> {
     dpll_num: PhantomData<D>,
     src: PhantomData<T>,
 }
 
-impl<D: DpllNum, T: DpllSourceMarker> SrcMode<D> for Xosc32kDriven<D, T> {
+impl<D: DpllId, T: DpllSourceId> SrcMode<D> for Xosc32kDriven<D, T> {
     #[inline]
     fn predivider(&self) -> DpllPredivider {
         1_u16
@@ -361,11 +366,11 @@ impl<D: DpllNum, T: DpllSourceMarker> SrcMode<D> for Xosc32kDriven<D, T> {
 
     #[inline]
     fn enable(&self, token: &mut DpllToken<D>) {
-        token.set_source_clock(T::DPLL_SRC);
+        token.set_source_clock(T::DYN);
     }
 }
 
-impl<D: DpllNum, T: DpllSourceMarker> Sealed for Xosc32kDriven<D, T> {}
+impl<D: DpllId, T: DpllSourceId> Sealed for Xosc32kDriven<D, T> {}
 
 //==============================================================================
 // Dpll
@@ -380,7 +385,7 @@ impl<D: DpllNum, T: DpllSourceMarker> Sealed for Xosc32kDriven<D, T> {}
 ///   [`Xosc32kDriven`])
 pub struct Dpll<D, M>
 where
-    D: DpllNum,
+    D: DpllId,
     M: SrcMode<D>,
 {
     token: DpllToken<D>,
@@ -394,8 +399,8 @@ where
 
 impl<D, T> Dpll<D, PclkDriven<D, T>>
 where
-    D: DpllNum + PclkType,
-    T: PclkSourceMarker,
+    D: DpllId + PclkId,
+    T: PclkSourceId,
 {
     /// Create a [`Dpll`] from Peripheral Channel (Pclk) fed from Gclk
     ///
@@ -427,8 +432,8 @@ where
 
 impl<D, T> Dpll<D, Xosc32kDriven<D, T>>
 where
-    D: DpllNum,
-    T: DpllSourceMarker,
+    D: DpllId,
+    T: DpllSourceId,
 {
     /// Create a [`Dpll`] from an external 32k oscillator
     ///
@@ -471,8 +476,8 @@ where
 
 impl<D, T> Dpll<D, XoscDriven<D, T>>
 where
-    D: DpllNum,
-    T: DpllSourceMarker,
+    D: DpllId,
+    T: DpllSourceId,
 {
     /// Create a [`Dpll`] from an external oscillator
     /// ([Xosc0][super::xosc::Xosc0]/[Xosc1][super::xosc::Xosc1])
@@ -533,7 +538,7 @@ where
 
 impl<D, M> Dpll<D, M>
 where
-    D: DpllNum,
+    D: DpllId,
     M: SrcMode<D>,
 {
     /// Set the [`Dpll`] divider
@@ -634,14 +639,14 @@ where
 }
 
 /// Alias of [`Dpll`]`<`[`marker::Dpll0`]`, _>`
-pub type Dpll0<M> = Dpll<marker::Dpll0, M>;
+pub type Dpll0<M> = Dpll<DpllId0, M>;
 
 /// Alias of [`Dpll`]`<`[`marker::Dpll1`]`, _>`
-pub type Dpll1<M> = Dpll<marker::Dpll1, M>;
+pub type Dpll1<M> = Dpll<DpllId1, M>;
 
 impl<D, M> Enabled<Dpll<D, M>, U0>
 where
-    D: DpllNum,
+    D: DpllId,
     M: SrcMode<D>,
 {
     /// Disable the [`Dpll`]
@@ -654,7 +659,7 @@ where
 
 impl<D, M, N> Enabled<Dpll<D, M>, N>
 where
-    D: DpllNum,
+    D: DpllId,
     M: SrcMode<D>,
     N: Counter,
 {
@@ -677,8 +682,8 @@ where
 
 impl<G, D, M, N> GclkSource<G> for Enabled<Dpll<D, M>, N>
 where
-    G: GclkNum,
-    D: DpllNum + GclkSourceMarker,
+    G: GclkId,
+    D: DpllId + GclkSourceId,
     M: SrcMode<D>,
     N: Counter,
 {
@@ -687,7 +692,7 @@ where
 
 impl<D, M, N> Source for Enabled<Dpll<D, M>, N>
 where
-    D: DpllNum + GclkSourceMarker,
+    D: DpllId + GclkSourceId,
     M: SrcMode<D>,
     N: Counter,
 {

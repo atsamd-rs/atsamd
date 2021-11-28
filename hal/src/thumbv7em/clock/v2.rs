@@ -154,9 +154,9 @@ pub struct Tokens {
     /// Synchronous clocking domain clocks -- APB buses
     pub apbs: apb::ApbClks,
     /// Construction token for [`dpll::Dpll0`]
-    pub dpll0: dpll::DpllToken<dpll::marker::Dpll0>,
+    pub dpll0: dpll::DpllToken<dpll::DpllId0>,
     /// Construction token for [`dpll::Dpll1`]
-    pub dpll1: dpll::DpllToken<dpll::marker::Dpll1>,
+    pub dpll1: dpll::DpllToken<dpll::DpllId1>,
     /// Construction tokens for [`gclkio::GclkIo`]
     pub gclk_io: gclkio::Tokens,
     /// Construction tokens for [`gclk::Gclk`]
@@ -164,9 +164,9 @@ pub struct Tokens {
     /// Construction tokens for [`pclk::Pclk`]
     pub pclks: pclk::Tokens,
     /// Construction token for [`xosc::Xosc0`]
-    pub xosc0: xosc::XoscToken<xosc::marker::Xosc0>,
+    pub xosc0: xosc::XoscToken<xosc::XoscId0>,
     /// Construction token for [`xosc::Xosc1`]
-    pub xosc1: xosc::XoscToken<xosc::marker::Xosc1>,
+    pub xosc1: xosc::XoscToken<xosc::XoscId1>,
     /// Construction token for [`xosc32k::Xosc32k`]
     pub xosc32k: xosc32k::Xosc32kToken,
 }
@@ -175,7 +175,7 @@ pub struct Tokens {
 /// representing a default state of a clocking system. For `thumbv7em` based
 /// devices it is a chain of:
 /// - [`dfll::Dfll<OpenLoop>`] (`48 MHz`)
-/// - [`gclk::Gclk0<Dfll>`] (`48 MHz`)
+/// - [`gclk::Gclk0<DfllId>`] (`48 MHz`)
 ///
 /// And also ultra low power internal 32k oscillator:
 ///
@@ -188,7 +188,7 @@ pub fn retrieve_clocks(
     mclk: MCLK,
     nvmctrl: &mut NVMCTRL,
 ) -> (
-    Enabled<gclk::Gclk0<dfll::marker::Dfll>, U1>,
+    Enabled<gclk::Gclk0<dfll::DfllId>, U1>,
     Enabled<dfll::Dfll<dfll::OpenLoop>, U1>,
     Enabled<osculp32k::OscUlp32k<Active32k, Active1k>, U0>,
     Tokens,

@@ -17,9 +17,9 @@ use crate::clock::v2::{types::Enabled, Source, SourceMarker};
 use crate::time::{Hertz, U32Ext};
 use crate::typelevel::{Counter, PrivateIncrement, Sealed};
 
-use super::gclk::{Gclk0, GclkNum, GclkSource, GclkSourceEnum, GclkSourceMarker};
+use super::gclk::{DynGclkSourceId, Gclk0, GclkId, GclkSource, GclkSourceId};
 use super::gclkio::NotGclkInput;
-use super::pclk::{Dfll48, Pclk, PclkSourceMarker};
+use super::pclk::{Dfll48, Pclk, PclkSourceId};
 
 /// Token type required to construct a [`Dfll`] type instance.
 ///
@@ -185,13 +185,13 @@ impl Sealed for OpenLoop {}
 /// It is used as a generic parameter allowing to create specialized
 /// implementations blocks for [`Enabled`]`<`[`Dfll`]`<`[`ClosedLoop<T>`]`>>`
 /// and [`Dfll`]`<`[`ClosedLoop<T>`]`>` structs
-pub struct ClosedLoop<T: PclkSourceMarker> {
+pub struct ClosedLoop<T: PclkSourceId> {
     reference_clk: Pclk<Dfll48, T>,
     coarse_maximum_step: CoarseMaximumStep,
     fine_maximum_step: FineMaximumStep,
 }
-impl<T: PclkSourceMarker> Sealed for ClosedLoop<T> {}
-impl<T: PclkSourceMarker> LoopMode for ClosedLoop<T> {
+impl<T: PclkSourceId> Sealed for ClosedLoop<T> {}
+impl<T: PclkSourceId> LoopMode for ClosedLoop<T> {
     #[inline]
     fn enable(&self, token: &mut DfllToken) {
         token.set_fine_maximum_step(self.fine_maximum_step);
@@ -275,7 +275,7 @@ impl Dfll<OpenLoop> {
     }
 }
 
-impl<T: PclkSourceMarker> Dfll<ClosedLoop<T>> {
+impl<T: PclkSourceId> Dfll<ClosedLoop<T>> {
     /// Constructs a builder of [`Dfll`] in a [`ClosedLoop`]. To affect the
     /// hardware, it requires an additional call to [`Dfll::enable`]
     #[inline]
@@ -354,17 +354,14 @@ impl Enabled<Dfll<OpenLoop>, U1> {
     /// mode of a [`Dfll`] actively used by [`Gclk0`], which is a very common
     /// scenario
     #[inline]
-    pub fn to_closed_mode<T: PclkSourceMarker>(
+    pub fn to_closed_mode<T: PclkSourceId>(
         self,
-        gclk0: Enabled<Gclk0<marker::Dfll>, U1>,
+        gclk0: Enabled<Gclk0<DfllId>, U1>,
         reference_clk: Pclk<Dfll48, T>,
         multiplication_factor: MultiplicationFactor,
         coarse_maximum_step: CoarseMaximumStep,
         fine_maximum_step: FineMaximumStep,
-    ) -> (
-        Enabled<Dfll<ClosedLoop<T>>, U1>,
-        Enabled<Gclk0<marker::Dfll>, U1>,
-    ) {
+    ) -> (Enabled<Dfll<ClosedLoop<T>>, U1>, Enabled<Gclk0<DfllId>, U1>) {
         let token = self.0.free();
         let dfll = Dfll::in_closed_mode(
             token,
@@ -377,7 +374,7 @@ impl Enabled<Dfll<OpenLoop>, U1> {
     }
 }
 
-impl<T: PclkSourceMarker> Enabled<Dfll<ClosedLoop<T>>, U1> {
+impl<T: PclkSourceId> Enabled<Dfll<ClosedLoop<T>>, U1> {
     /// Special, helper method allowing to change a mode of [`Dfll`] operation
     /// in place. It is implemented only for an enabled [`Dfll`] having a single
     /// user (which is a [`Gclk0`]). Without it, it becomes unwieldy to change a
@@ -386,10 +383,10 @@ impl<T: PclkSourceMarker> Enabled<Dfll<ClosedLoop<T>>, U1> {
     #[inline]
     pub fn to_open_mode(
         self,
-        gclk0: Enabled<Gclk0<marker::Dfll>, U1>,
+        gclk0: Enabled<Gclk0<DfllId>, U1>,
     ) -> (
         Enabled<Dfll<OpenLoop>, U1>,
-        Enabled<Gclk0<marker::Dfll>, U1>,
+        Enabled<Gclk0<DfllId>, U1>,
         Pclk<Dfll48, T>,
     ) {
         let (token, pclk) = self.0.free();
@@ -402,8 +399,8 @@ impl<T: PclkSourceMarker> Enabled<Dfll<ClosedLoop<T>>, U1> {
 // GclkSource
 //==============================================================================
 
-impl<G: GclkNum, T: LoopMode, N: Counter> GclkSource<G> for Enabled<Dfll<T>, N> {
-    type Type = marker::Dfll;
+impl<G: GclkId, T: LoopMode, N: Counter> GclkSource<G> for Enabled<Dfll<T>, N> {
+    type Type = DfllId;
 }
 
 impl<T: LoopMode, N: Counter> Source for Enabled<Dfll<T>, N> {
@@ -413,21 +410,20 @@ impl<T: LoopMode, N: Counter> Source for Enabled<Dfll<T>, N> {
     }
 }
 
-/// A module that creates a namespace difference between a [`marker::Dfll`]
-/// marker type and a [`Dfll`] builder type
-pub mod marker {
-    use super::*;
+/// Type-level variant representing the identity of the DFLL clock
+///
+/// This type is a member of several [type-level enums]. See the documentation
+/// on [type-level enums] for more details on the pattern.
+///
+/// [type-level enums]: crate::typelevel#type-level-enum
+pub enum DfllId {}
 
-    /// A marker type. More information at [`SourceMarker`] documentation entry
-    pub enum Dfll {}
+impl Sealed for DfllId {}
 
-    impl Sealed for Dfll {}
-
-    impl GclkSourceMarker for Dfll {
-        const GCLK_SRC: GclkSourceEnum = GclkSourceEnum::DFLL;
-    }
-
-    impl NotGclkInput for Dfll {}
-
-    impl SourceMarker for Dfll {}
+impl GclkSourceId for DfllId {
+    const DYN: DynGclkSourceId = DynGclkSourceId::DFLL;
 }
+
+impl NotGclkInput for DfllId {}
+
+impl SourceMarker for DfllId {}

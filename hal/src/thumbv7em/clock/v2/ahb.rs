@@ -33,11 +33,11 @@ use crate::pac::{mclk, MCLK};
 /// [`Registers`] struct is a low-level access abstraction for HW register
 /// calls. It is generic over [`AhbType`] as it needs appropriate mask values
 /// depending on a peripheral.
-struct Registers<A: AhbType> {
+struct Registers<A: AhbId> {
     ahb: PhantomData<A>,
 }
 
-impl<A: AhbType> Registers<A> {
+impl<A: AhbId> Registers<A> {
     #[inline(always)]
     unsafe fn new() -> Self {
         Registers { ahb: PhantomData }
@@ -67,24 +67,31 @@ impl<A: AhbType> Registers<A> {
 }
 
 //==============================================================================
-// AhbType
+// AhbId
 //==============================================================================
 
-/// Trait implemented by a specific synchronous peripheral clock. Provides
-/// essential compile-time informations needed during HW register writes
-pub trait AhbType: crate::typelevel::Sealed {
-    /// Associated constant providing information regarding which mask offset
-    /// is applicable for this specific peripheral clock during HW register
-    /// writes
-    const ID: AhbId;
-    /// Helper associated constant that expands to the specific mask from
-    /// a provided offset
-    const MASK: u32 = 1 << (Self::ID as u8);
+/// Type-level `enum` for AHB clocks
+///
+/// See the documentation on [type-level enums] for more details on the pattern.
+/// The value-level equivalent is [`DynAhbId`].
+///
+/// [type-level enums]: crate::typelevel#type-level-enum
+pub trait AhbId: crate::typelevel::Sealed {
+    /// Corresponding variant of [`DynAhbId`]
+    const DYN: DynAhbId;
+    /// Mask for the corresponding bit of the AHBMASK register
+    const MASK: u32 = 1 << (Self::DYN as u8);
 }
 
-/// Enum representing mask offsets for different peripheral clocks
+/// Enum of all AHB clocks
+///
+/// Note that this type is `repr(u8)` and each variant maps to the corresponding
+/// bit within the AHBMASK register.
+///
+/// This is the value-level equivalent of [`AhbId`].
+#[repr(u8)]
 #[allow(missing_docs)]
-pub enum AhbId {
+pub enum DynAhbId {
     Hpb0 = 0,
     Hpb1 = 1,
     Hpb2 = 2,
@@ -112,19 +119,19 @@ pub enum AhbId {
     NvmCtrlCache = 23,
 }
 
-/// Macro implementing an [`AhbType`] for a marker type and defining one if
-/// necessary
-macro_rules! ahb_type {
+/// Create a type-level variant of [`AhbId`]
+macro_rules! ahb_id {
+    // If the type doesn't yet exist, define it
     (false, $Type:ident) => {
-        /// Marker type implementing [`AhbType`] for a specific synchronous peripheral
-        /// clock
+        /// Type-level variant of [`AhbId`] for the corresponding AHB clock
         pub enum $Type {}
         impl crate::typelevel::Sealed for $Type {}
-        ahb_type!(true, $Type);
+        ahb_id!(true, $Type);
     };
+    // If the type does exist, implement `AhbId`
     (true, $Type:ident) => {
-        impl AhbType for $Type {
-            const ID: AhbId = AhbId::$Type;
+        impl AhbId for $Type {
+            const DYN: DynAhbId = DynAhbId::$Type;
         }
     };
 }
@@ -134,11 +141,11 @@ macro_rules! ahb_type {
 //==============================================================================
 
 /// A type representing a synchronous peripheral clock in a disabled state
-pub struct AhbToken<A: AhbType> {
+pub struct AhbToken<A: AhbId> {
     regs: Registers<A>,
 }
 
-impl<A: AhbType> AhbToken<A> {
+impl<A: AhbId> AhbToken<A> {
     /// Constructor
     ///
     /// Unsafe: There should always be only a single instance thereof. It is
@@ -163,11 +170,11 @@ impl<A: AhbType> AhbToken<A> {
 //==============================================================================
 
 /// A type representing a synchronous peripheral clock in an enabled state
-pub struct AhbClk<A: AhbType> {
+pub struct AhbClk<A: AhbId> {
     token: AhbToken<A>,
 }
 
-impl<A: AhbType> AhbClk<A> {
+impl<A: AhbId> AhbClk<A> {
     /// Constructor
     #[inline]
     fn new(token: AhbToken<A>) -> Self {
@@ -199,7 +206,7 @@ macro_rules! ahb_clks {
         paste! {
             $(
                 $( #[$cfg] )?
-                ahb_type!($exists, $Type);
+                ahb_id!($exists, $Type);
             )+
             /// Struct aggregating [`AhbClk`] type instances representing
             /// default states of synchronous peripheral clocks

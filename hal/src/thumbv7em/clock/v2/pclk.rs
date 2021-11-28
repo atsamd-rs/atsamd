@@ -20,14 +20,14 @@ use seq_macro::seq;
 
 use crate::pac;
 
-pub use crate::pac::gclk::pchctrl::GEN_A as PclkSourceEnum;
+pub use crate::pac::gclk::pchctrl::GEN_A as DynPclkSourceId;
 
 use crate::clock::v2::{types::Enabled, Source, SourceMarker};
 use crate::sercom::v2::*;
 use crate::time::Hertz;
 use crate::typelevel::{Counter, Decrement, Increment, Sealed};
 
-use super::dpll::marker::{Dpll0 as Dpll0Marker, Dpll1 as Dpll1Marker};
+use super::dpll::{DpllId0, DpllId1};
 use super::gclk::*;
 
 //==============================================================================
@@ -41,11 +41,11 @@ use super::gclk::*;
 ///
 /// Within a [`atsamd_hal`][`crate`], [`PclkToken`] struct is a low-level access
 /// abstraction for HW register calls.
-pub struct PclkToken<P: PclkType> {
+pub struct PclkToken<P: PclkId> {
     pclk: PhantomData<P>,
 }
 
-impl<P: PclkType> PclkToken<P> {
+impl<P: PclkId> PclkToken<P> {
     /// Create a new instance of [`PclkToken`]
     ///
     /// # Safety
@@ -65,12 +65,12 @@ impl<P: PclkType> PclkToken<P> {
     /// Provide access to pchctrl, primary control interface for Pclk
     #[inline]
     fn pchctrl(&self) -> &pac::gclk::PCHCTRL {
-        &self.gclk().pchctrl[P::ID as usize]
+        &self.gclk().pchctrl[P::DYN as usize]
     }
 
     /// Set a clock as the [`Pclk`] source
     #[inline]
-    fn set_source(&mut self, variant: PclkSourceEnum) {
+    fn set_source(&mut self, variant: DynPclkSourceId) {
         self.pchctrl().modify(|_, w| w.gen().variant(variant));
     }
 
@@ -91,29 +91,26 @@ impl<P: PclkType> PclkToken<P> {
 // PclkType
 //==============================================================================
 
-/// Type-level `enum` for the 48 peripheral clock variants
-pub trait PclkType: Sealed {
-    /// Numeric Pclk ID
-    const ID: PclkId;
+/// Type-level `enum` for the 48 peripheral channel clock variants
+pub trait PclkId: Sealed {
+    /// Corresponding variant of [`DynPclkId`]
+    const DYN: DynPclkId;
 }
 
-/// If a suitable type already exists in the HAL, reuse it to implement
-/// `PclkType` trait ([`Dpll0Marker`] or `Sercom` type are a good example).
-/// Otherwise, define new enum type.
-macro_rules! pclk_type {
-    // A type already exists; reuse it
-    ( true, $Type:ident, $Id:ident ) => {
-        impl PclkType for $Type {
-            const ID: PclkId = PclkId::$Id;
-        }
-    };
-    // A type does not exist yet; create one
+/// Create a type-level variant of [`PclkId`]
+macro_rules! pclk_id {
+    // If the type doesn't yet exist, define it
     ( false, $Type:ident, $Id:ident ) => {
-        /// [`PclkType`] variant
+        /// Type-level variant of [`PclkId`] for the corresponding peripheral
+        /// channel clock
         pub enum $Type {}
         impl Sealed for $Type {}
-        impl PclkType for $Type {
-            const ID: PclkId = PclkId::$Id;
+        pclk_id!(true, $Type, $Id);
+    };
+    // If the type does exist, implement `PclkId`
+    ( true, $Type:ident, $Id:ident ) => {
+        impl PclkId for $Type {
+            const DYN: DynPclkId = DynPclkId::$Id;
         }
     };
 }
@@ -122,18 +119,22 @@ macro_rules! pclk_type {
 // PclkSource
 //==============================================================================
 
-/// Source marker trait for [`Pclk`] sources
+/// Type-level `enum` for PCLK sources
 ///
-/// All [`Gclk`]s can act as a source for [`Pclk`]s
-pub trait PclkSourceMarker: GclkNum + SourceMarker {
+/// [`Pclk`]s can only be driven by [`Gclk`]s, so the only valid variants are
+/// [`GclkId`]s. See the documentation / on [type-level enums] for more details
+/// on the pattern.
+///
+/// [type-level enums]: crate::typelevel#type-level-enum
+pub trait PclkSourceId: GclkId + SourceMarker {
     /// Associated constant provides a variant of a low level enum type from PAC
     /// that is used during a HW register write
-    const PCLK_SRC: PclkSourceEnum;
+    const DYN: DynPclkSourceId;
 }
 
 seq!(N in 0..=11 {
-    impl PclkSourceMarker for marker::Gclk #N {
-        const PCLK_SRC: PclkSourceEnum = PclkSourceEnum::GCLK #N;
+    impl PclkSourceId for GclkId #N {
+        const DYN: DynPclkSourceId = DynPclkSourceId::GCLK #N;
     }
 });
 
@@ -143,13 +144,13 @@ pub trait PclkSource: Source {
     /// type with a proper `T`, according to what `gclk` was passed into the
     /// [`Pclk::enable`] and to only allow calls into [`Pclk::disable`] with a
     /// matching `gclk`
-    type Type: PclkSourceMarker;
+    type Type: PclkSourceId;
 }
 
 impl<G, T, N> PclkSource for Enabled<Gclk<G, T>, N>
 where
-    G: PclkSourceMarker,
-    T: GclkSourceMarker,
+    G: PclkSourceId,
+    T: GclkSourceId,
     N: Counter,
 {
     type Type = G;
@@ -167,8 +168,8 @@ where
 ///   [`marker::Gclk0`], [`marker::Gclk1`], `marker::GclkX` types)
 pub struct Pclk<P, T>
 where
-    P: PclkType,
-    T: PclkSourceMarker,
+    P: PclkId,
+    T: PclkSourceId,
 {
     token: PclkToken<P>,
     src: PhantomData<T>,
@@ -177,8 +178,8 @@ where
 
 impl<P, T> Pclk<P, T>
 where
-    P: PclkType,
-    T: PclkSourceMarker,
+    P: PclkId,
+    T: PclkSourceId,
 {
     /// Enable a peripheral channel clock
     ///
@@ -189,7 +190,7 @@ where
         S: PclkSource<Type = T> + Increment,
     {
         let freq = gclk.freq();
-        token.set_source(T::PCLK_SRC);
+        token.set_source(T::DYN);
         token.enable();
         let pclk = Pclk {
             token,
@@ -220,8 +221,8 @@ where
 
 impl<P, T> Sealed for Pclk<P, T>
 where
-    P: PclkType,
-    T: PclkSourceMarker,
+    P: PclkId,
+    T: PclkSourceId,
 {
 }
 
@@ -240,7 +241,7 @@ macro_rules! pclks {
         paste! {
             /// Internal `enum` used to index the correct peripheral channel
             /// register
-            pub enum PclkId {
+            pub enum DynPclkId {
                 $(
                     $( #[$cfg] )?
                     /// PclkId
@@ -250,7 +251,7 @@ macro_rules! pclks {
 
             $(
                 $( #[$cfg] )?
-                pclk_type!( $exists, [<$Type:camel>], [<$Id:camel>] );
+                pclk_id!( $exists, [<$Type:camel>], [<$Id:camel>] );
             )+
 
             /// Struct containing all possible peripheral clock tokens
@@ -281,8 +282,8 @@ macro_rules! pclks {
 // Try to use existing types as tokens, if possible. Otherwise, create new ones.
 pclks!(
     (false, dfll48, dfll48),
-    (true, Dpll0Marker, dpll0),
-    (true, Dpll1Marker, dpll1),
+    (true, DpllId0, dpll0),
+    (true, DpllId1, dpll1),
     (false, slow_32k, slow_32k),
     (false, eic, eic),
     (false, freqm_msr, freqm_msr),

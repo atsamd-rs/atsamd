@@ -341,7 +341,7 @@ macro_rules! clock_generator {
     (
         $(
             $(#[$attr:meta])*
-            ($id:ident, $Type:ident, $clock:ident, $PclkType:ident),
+            ($id:ident, $Type:ident, $clock:ident, $PclkId:ident),
         )+
     ) => {
 
@@ -378,8 +378,8 @@ impl Into<Hertz> for $Type {
 /// into corresponding V1 `*Clock` types. Thus, user can manage V1 clocking
 /// compatible peripherals while using V2 clocking API
 $(#[$attr])*
-impl<T: PclkSourceMarker> core::convert::From<Pclk<$PclkType, T>> for $Type {
-    fn from(pclk: Pclk<$PclkType, T>) -> Self {
+impl<T: PclkSourceId> core::convert::From<Pclk<$PclkId, T>> for $Type {
+    fn from(pclk: Pclk<$PclkId, T>) -> Self {
         $Type {
             freq: pclk.freq()
         }

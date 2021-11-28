@@ -17,7 +17,6 @@
 use core::marker::PhantomData;
 use typenum::U0;
 
-use crate::pac::gclk::genctrl::SRC_A;
 use crate::pac::osc32kctrl::rtcctrl::RTCSEL_A;
 use crate::pac::osc32kctrl::OSCULP32K;
 
@@ -25,7 +24,7 @@ use crate::clock::v2::{rtc::RtcSourceMarker, types::Enabled, Source, SourceMarke
 use crate::time::{Hertz, U32Ext};
 use crate::typelevel::{Counter, Sealed};
 
-use super::gclk::{GclkNum, GclkSource, GclkSourceMarker};
+use super::gclk::{DynGclkSourceId, GclkId, GclkSource, GclkSourceId};
 use super::gclkio::NotGclkInput;
 use super::rtc::*;
 
@@ -216,34 +215,33 @@ where
 // GclkSource
 //==============================================================================
 
-/// A module that creates a namespace difference between a [`marker::OscUlp32k`]
-/// marker type and a [`OscUlp32k`] builder type
-pub mod marker {
-    use super::*;
+/// Type-level variant representing the identity of the OSCULP32K clock
+///
+/// This type is a member of several [type-level enums]. See the documentation
+/// on [type-level enums] for more details on the pattern.
+///
+/// [type-level enums]: crate::typelevel#type-level-enum
+pub enum OscUlp32kId {}
 
-    /// A marker type. More information at [`SourceMarker`] documentation entry
-    pub enum OscUlp32k {}
+impl Sealed for OscUlp32kId {}
 
-    impl Sealed for OscUlp32k {}
+impl SourceMarker for OscUlp32kId {}
 
-    impl SourceMarker for OscUlp32k {}
-
-    impl GclkSourceMarker for OscUlp32k {
-        const GCLK_SRC: SRC_A = SRC_A::OSCULP32K;
-    }
-
-    impl NotGclkInput for OscUlp32k {}
-
-    impl RtcSourceMarker for OscUlp32k {}
+impl GclkSourceId for OscUlp32kId {
+    const DYN: DynGclkSourceId = DynGclkSourceId::OSCULP32K;
 }
+
+impl NotGclkInput for OscUlp32kId {}
+
+impl RtcSourceMarker for OscUlp32kId {}
 
 impl<G, Y, N> GclkSource<G> for Enabled<OscUlp32k<Active32k, Y>, N>
 where
-    G: GclkNum,
+    G: GclkId,
     Y: Output1k,
     N: Counter,
 {
-    type Type = marker::OscUlp32k;
+    type Type = OscUlp32kId;
 }
 
 impl<Y, N> Source for Enabled<OscUlp32k<Active32k, Y>, N>
@@ -283,5 +281,5 @@ where
     Y: Output1k,
     N: Counter,
 {
-    type Type = marker::OscUlp32k;
+    type Type = OscUlp32kId;
 }

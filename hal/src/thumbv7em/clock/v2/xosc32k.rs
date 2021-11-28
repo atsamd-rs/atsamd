@@ -43,8 +43,8 @@ use crate::clock::v2::{types::Enabled, Source, SourceMarker};
 use crate::gpio::v2::{AnyPin, FloatingDisabled, Pin, PA00, PA01};
 use crate::time::{Hertz, U32Ext};
 
-use super::dpll::{DpllSource, DpllSourceEnum, DpllSourceMarker, DpllSourceXosc32k};
-use super::gclk::{GclkNum, GclkSource, GclkSourceEnum, GclkSourceMarker};
+use super::dpll::{DpllSource, DpllSourceId, DpllSourceXosc32k, DynDpllSourceId};
+use super::gclk::{DynGclkSourceId, GclkId, GclkSource, GclkSourceId};
 use super::gclkio::NotGclkInput;
 use super::rtc::*;
 use crate::typelevel::{Counter, Sealed};
@@ -473,30 +473,29 @@ where
     }
 }
 
-/// A module that creates a namespace difference between a [`marker::Xosc32k`]
-/// marker type and a [`Xosc32k`] builder type
-pub mod marker {
-    use super::*;
+/// Type-level variant representing the identity of the XOSC32K clock
+///
+/// This type is a member of several [type-level enums]. See the documentation
+/// on [type-level enums] for more details on the pattern.
+///
+/// [type-level enums]: crate::typelevel#type-level-enum
+pub enum Xosc32kId {}
 
-    /// A marker type. More information at [`SourceMarker`] documentation entry
-    pub enum Xosc32k {}
+impl Sealed for Xosc32kId {}
 
-    impl Sealed for Xosc32k {}
+impl SourceMarker for Xosc32kId {}
 
-    impl SourceMarker for Xosc32k {}
-
-    impl GclkSourceMarker for Xosc32k {
-        const GCLK_SRC: GclkSourceEnum = GclkSourceEnum::XOSC32K;
-    }
-
-    impl DpllSourceMarker for Xosc32k {
-        const DPLL_SRC: DpllSourceEnum = DpllSourceEnum::XOSC32;
-    }
-
-    impl NotGclkInput for Xosc32k {}
-
-    impl RtcSourceMarker for Xosc32k {}
+impl GclkSourceId for Xosc32kId {
+    const DYN: DynGclkSourceId = DynGclkSourceId::XOSC32K;
 }
+
+impl DpllSourceId for Xosc32kId {
+    const DYN: DynDpllSourceId = DynDpllSourceId::XOSC32;
+}
+
+impl NotGclkInput for Xosc32kId {}
+
+impl RtcSourceMarker for Xosc32kId {}
 
 //==============================================================================
 // GclkSource
@@ -504,12 +503,12 @@ pub mod marker {
 
 impl<G, M, Y, N> GclkSource<G> for Enabled<Xosc32k<M, Active32k, Y>, N>
 where
-    G: GclkNum,
+    G: GclkId,
     M: Mode,
     Y: Output1k,
     N: Counter,
 {
-    type Type = marker::Xosc32k;
+    type Type = Xosc32kId;
 }
 
 //==============================================================================
@@ -522,7 +521,7 @@ where
     Y: Output1k,
     N: Counter,
 {
-    type Type = marker::Xosc32k;
+    type Type = Xosc32kId;
 }
 
 impl<M, Y, N> DpllSourceXosc32k for Enabled<Xosc32k<M, Active32k, Y>, N>
@@ -578,5 +577,5 @@ where
     Y: Output1k,
     N: Counter,
 {
-    type Type = marker::Xosc32k;
+    type Type = Xosc32kId;
 }

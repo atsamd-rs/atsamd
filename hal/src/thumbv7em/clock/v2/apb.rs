@@ -27,6 +27,7 @@ use paste::paste;
 use crate::pac::{mclk, MCLK};
 
 use crate::sercom::v2::*;
+use crate::typelevel::Sealed;
 
 //==============================================================================
 // Registers
@@ -35,11 +36,11 @@ use crate::sercom::v2::*;
 /// [`Registers`] struct is a low-level access abstraction for HW register
 /// calls. It is generic over [`ApbType`] as it needs appropriate mask values
 /// and register variants depending on a peripheral.
-struct Registers<A: ApbType> {
+struct Registers<A: ApbId> {
     apb: PhantomData<A>,
 }
 
-impl<A: ApbType> Registers<A> {
+impl<A: ApbId> Registers<A> {
     #[inline(always)]
     unsafe fn new() -> Self {
         Registers { apb: PhantomData }
@@ -73,17 +74,17 @@ impl<A: ApbType> Registers<A> {
     #[inline(always)]
     fn enable(&mut self) {
         unsafe {
-            match A::ID {
-                ApbId::A(_) => {
+            match A::DYN {
+                DynApbId::A(_) => {
                     self.apbamask().modify(|r, w| w.bits(r.bits() | A::MASK));
                 }
-                ApbId::B(_) => {
+                DynApbId::B(_) => {
                     self.apbbmask().modify(|r, w| w.bits(r.bits() | A::MASK));
                 }
-                ApbId::C(_) => {
+                DynApbId::C(_) => {
                     self.apbcmask().modify(|r, w| w.bits(r.bits() | A::MASK));
                 }
-                ApbId::D(_) => {
+                DynApbId::D(_) => {
                     self.apbdmask().modify(|r, w| w.bits(r.bits() | A::MASK));
                 }
             }
@@ -93,17 +94,17 @@ impl<A: ApbType> Registers<A> {
     #[inline(always)]
     fn disable(&mut self) {
         unsafe {
-            match A::ID {
-                ApbId::A(_) => {
+            match A::DYN {
+                DynApbId::A(_) => {
                     self.apbamask().modify(|r, w| w.bits(r.bits() & !A::MASK));
                 }
-                ApbId::B(_) => {
+                DynApbId::B(_) => {
                     self.apbbmask().modify(|r, w| w.bits(r.bits() & !A::MASK));
                 }
-                ApbId::C(_) => {
+                DynApbId::C(_) => {
                     self.apbcmask().modify(|r, w| w.bits(r.bits() & !A::MASK));
                 }
-                ApbId::D(_) => {
+                DynApbId::D(_) => {
                     self.apbdmask().modify(|r, w| w.bits(r.bits() & !A::MASK));
                 }
             }
@@ -112,13 +113,16 @@ impl<A: ApbType> Registers<A> {
 }
 
 //==============================================================================
-// ApbIds
+// DynApbId
 //==============================================================================
 
-/// Enum representing mask offsets for peripheral clocks contained within a
-/// bridge `A` of APB bus
+/// Enum of all APB clocks in bridge `A`
+///
+/// Note that this type is `repr(u8)` and each variant maps to the corresponding
+/// bit within the APBAMASK register.
+#[repr(u8)]
 #[allow(missing_docs)]
-pub enum ApbAId {
+pub enum DynApbAId {
     Pac = 0,
     Pm = 1,
     Mclk = 2,
@@ -137,10 +141,13 @@ pub enum ApbAId {
     Tc1 = 15,
 }
 
-/// Enum representing mask offsets for peripheral clocks contained within a
-/// bridge `B` of APB bus
+/// Enum of all APB clocks in bridge `B`
+///
+/// Note that this type is `repr(u8)` and each variant maps to the corresponding
+/// bit within the APBBMASK register.
+#[repr(u8)]
 #[allow(missing_docs)]
-pub enum ApbBId {
+pub enum DynApbBId {
     Usb = 0,
     Dsu = 1,
     NvmCtrl = 2,
@@ -155,10 +162,13 @@ pub enum ApbBId {
     RamEcc = 16,
 }
 
-/// Enum representing mask offsets for peripheral clocks contained within a
-/// bridge `C` of APB bus
+/// Enum of all APB clocks in bridge `C`
+///
+/// Note that this type is `repr(u8)` and each variant maps to the corresponding
+/// bit within the APBCMASK register.
+#[repr(u8)]
 #[allow(missing_docs)]
-pub enum ApbCId {
+pub enum DynApbCId {
     #[cfg(any(feature = "same53", feature = "same54"))]
     Gmac = 2,
     Tcc2 = 3,
@@ -177,10 +187,13 @@ pub enum ApbCId {
     Ccl = 14,
 }
 
-/// Enum representing mask offsets for peripheral clocks contained within a
-/// bridge `D` of APB bus
+/// Enum of all APB clocks in bridge `D`
+///
+/// Note that this type is `repr(u8)` and each variant maps to the corresponding
+/// bit within the APBDMASK register.
+#[repr(u8)]
 #[allow(missing_docs)]
-pub enum ApbDId {
+pub enum DynApbDId {
     Sercom4 = 0,
     Sercom5 = 1,
     #[cfg(feature = "min-samd51n")]
@@ -201,51 +214,57 @@ pub enum ApbDId {
     Pcc = 11,
 }
 
-/// Enum representing mask offsets across all APB bus bridges
+/// Enum of all APB clocks
+///
+/// Note that each variant of `ApbId` is `repr(u8)` and each maps its variants
+/// to the bit within the corresponding APB mask register.
+///
+/// This is the value-level equivalent of [`ApbId`].
 #[allow(missing_docs)]
-pub enum ApbId {
-    A(ApbAId),
-    B(ApbBId),
-    C(ApbCId),
-    D(ApbDId),
+pub enum DynApbId {
+    A(DynApbAId),
+    B(DynApbBId),
+    C(DynApbCId),
+    D(DynApbDId),
 }
 
 //==============================================================================
-// ApbType
+// ApbId
 //==============================================================================
 
-/// Trait implemented by a specific synchronous peripheral clock. Provides
-/// essential compile-time informations needed during HW register writes
-pub trait ApbType: crate::typelevel::Sealed {
-    /// Associated constant providing information regarding which mask offset
-    /// and bridge variant of APB bus is applicable for this specific peripheral
-    /// clock during HW register writes
-    const ID: ApbId;
-    /// Helper associated constant that expands to the specific mask from
-    /// provided offset
+/// Type-level `enum` for APB clocks
+///
+/// See the documentation on [type-level enums] for more details on the pattern.
+/// The value-level equivalent is [`DynApbId`].
+///
+/// [type-level enums]: crate::typelevel#type-level-enum
+pub trait ApbId: Sealed {
+    /// Corresponding variant of [`DynApbId`]
+    const DYN: DynApbId;
+    /// Mask for the bit of the corresponding APB mask register
     const MASK: u32 = 1
-        << match Self::ID {
-            ApbId::A(id) => id as u8,
-            ApbId::B(id) => id as u8,
-            ApbId::C(id) => id as u8,
-            ApbId::D(id) => id as u8,
+        << match Self::DYN {
+            DynApbId::A(id) => id as u8,
+            DynApbId::B(id) => id as u8,
+            DynApbId::C(id) => id as u8,
+            DynApbId::D(id) => id as u8,
         };
 }
 
 /// Macro implementing an [`ApbType`] for a marker type and defining one if
 /// necessary
-macro_rules! apb_type {
+macro_rules! apb_id {
     (false, $Reg:ident, $Type:ident) => {
         /// Marker type implementing [`ApbType`] for a specific synchronous peripheral
         /// clock
         pub enum $Type {}
-        impl crate::typelevel::Sealed for $Type {}
-        apb_type!(true, $Reg, $Type);
+        impl Sealed for $Type {}
+        apb_id!(true, $Reg, $Type);
     };
     (true, $Reg:ident, $Type:ident) => {
         paste! {
-            impl ApbType for $Type {
-                const ID: ApbId = ApbId::$Reg([<Apb $Reg Id>]::$Type);
+            impl ApbId for $Type {
+                const DYN: DynApbId = DynApbId::$Reg([<DynApb $Reg Id>]::$Type);
             }
         }
     };
@@ -256,11 +275,11 @@ macro_rules! apb_type {
 //==============================================================================
 
 /// A type representing a synchronous peripheral clock in a disabled state
-pub struct ApbToken<A: ApbType> {
+pub struct ApbToken<A: ApbId> {
     regs: Registers<A>,
 }
 
-impl<A: ApbType> ApbToken<A> {
+impl<A: ApbId> ApbToken<A> {
     /// Constructor
     ///
     /// Unsafe: There should always be only a single instance thereof. It is
@@ -285,11 +304,11 @@ impl<A: ApbType> ApbToken<A> {
 //==============================================================================
 
 /// A type representing a synchronous peripheral clock in an enabled state
-pub struct ApbClk<A: ApbType> {
+pub struct ApbClk<A: ApbId> {
     token: ApbToken<A>,
 }
 
-impl<A: ApbType> ApbClk<A> {
+impl<A: ApbId> ApbClk<A> {
     /// Constructor
     #[inline]
     fn new(token: ApbToken<A>) -> Self {
@@ -345,7 +364,7 @@ macro_rules! apb_clks {
             $(
                 $(
                     $( #[$cfg] )?
-                    apb_type!($exists, $Reg, $Type);
+                    apb_id!($exists, $Reg, $Type);
                 )+
             )+
             /// Struct aggregating [`ApbClk`] and [`ApbToken`] type instances
