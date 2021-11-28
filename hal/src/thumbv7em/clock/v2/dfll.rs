@@ -13,7 +13,7 @@
 //! - in a return value of [`crate::clock::v2::retrieve_clocks`]
 use typenum::{U0, U1};
 
-use crate::clock::v2::{types::Enabled, Source, SourceMarker};
+use crate::clock::v2::{Enabled, Source, SourceMarker};
 use crate::time::{Hertz, U32Ext};
 use crate::typelevel::{Counter, PrivateIncrement, Sealed};
 

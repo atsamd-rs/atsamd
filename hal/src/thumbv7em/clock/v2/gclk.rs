@@ -66,7 +66,7 @@ use crate::pac::NVMCTRL;
 pub use crate::pac::gclk::genctrl::SRC_A as DynGclkSourceId;
 
 use super::gclkio::NotGclkInput;
-use crate::clock::v2::{types::Enabled, Source, SourceMarker};
+use crate::clock::v2::{Enabled, Source, SourceMarker};
 use crate::pac::gclk::{RegisterBlock, GENCTRL};
 use crate::time::Hertz;
 use crate::typelevel::{Counter, Decrement, Increment, PrivateIncrement, Sealed};

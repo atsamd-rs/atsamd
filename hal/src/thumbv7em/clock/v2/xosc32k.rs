@@ -39,7 +39,7 @@ use crate::pac::osc32kctrl::xosc32k::{CGM_A, STARTUP_A};
 
 use crate::pac::osc32kctrl::{RegisterBlock, STATUS, XOSC32K};
 
-use crate::clock::v2::{types::Enabled, Source, SourceMarker};
+use crate::clock::v2::{Enabled, Source, SourceMarker};
 use crate::gpio::v2::{AnyPin, FloatingDisabled, Pin, PA00, PA01};
 use crate::time::{Hertz, U32Ext};
 

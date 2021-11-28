@@ -83,11 +83,12 @@
 //! to opinionated clock setup from API v1:
 //! [`atsamd_hal::clocking_preset_*`](crate#macros)
 
-use typenum::{U0, U1};
+use typenum::{Unsigned, U0, U1};
 
 use crate::pac::{GCLK, MCLK, NVMCTRL, OSC32KCTRL, OSCCTRL};
+
 use crate::time::Hertz;
-use types::Enabled;
+use crate::typelevel::{Counter, Decrement, Increment, PrivateDecrement, PrivateIncrement, Sealed};
 
 use rtc::{Active1k, Active32k};
 
@@ -243,3 +244,41 @@ pub trait Source: crate::typelevel::Sealed {
     /// Returns a clock signal frequency produced by a source
     fn freq(&self) -> Hertz;
 }
+
+/// Wrapper type representing enabled multiuser clocking abstraction
+///
+/// Specialized implementations for this type usually allow for a specific
+/// behaviour dependent on a user count. For instance, clocking components are
+/// disableable only when no one is using them.
+pub struct Enabled<T, N: Counter>(pub(crate) T, N);
+
+impl<T, N: Counter> Sealed for Enabled<T, N> {}
+
+impl<T, N: Unsigned + Counter> Enabled<T, N> {
+    #[inline]
+    pub(crate) fn new(t: T) -> Self {
+        Enabled(t, N::default())
+    }
+}
+
+impl<T, N: PrivateIncrement> PrivateIncrement for Enabled<T, N> {
+    type Inc = Enabled<T, N::Inc>;
+
+    #[inline]
+    fn inc(self) -> Self::Inc {
+        Enabled(self.0, self.1.inc())
+    }
+}
+
+impl<T, N: PrivateDecrement> PrivateDecrement for Enabled<T, N> {
+    type Dec = Enabled<T, N::Dec>;
+
+    #[inline]
+    fn dec(self) -> Self::Dec {
+        Enabled(self.0, self.1.dec())
+    }
+}
+
+impl<T, N: PrivateIncrement> Increment for Enabled<T, N> {}
+impl<T, N: PrivateDecrement> Decrement for Enabled<T, N> {}
+impl<T, N: Counter> Counter for Enabled<T, N> {}

@@ -22,7 +22,7 @@ use crate::pac;
 
 pub use crate::pac::gclk::pchctrl::GEN_A as DynPclkSourceId;
 
-use crate::clock::v2::{types::Enabled, Source, SourceMarker};
+use crate::clock::v2::{Enabled, Source, SourceMarker};
 use crate::sercom::v2::*;
 use crate::time::Hertz;
 use crate::typelevel::{Counter, Decrement, Increment, Sealed};

@@ -33,7 +33,7 @@ use crate::pac::oscctrl::DPLL;
 
 pub use crate::pac::oscctrl::dpll::dpllctrlb::REFCLK_A as DynDpllSourceId;
 
-use crate::clock::v2::{types::Enabled, Source, SourceMarker};
+use crate::clock::v2::{Enabled, Source, SourceMarker};
 use crate::time::Hertz;
 use crate::typelevel::{Counter, Decrement, Increment, Sealed};
 
