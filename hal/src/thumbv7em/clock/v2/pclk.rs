@@ -22,13 +22,13 @@ use crate::pac;
 
 pub use crate::pac::gclk::pchctrl::GEN_A as DynPclkSourceId;
 
-use crate::clock::v2::{Enabled, Source, SourceMarker};
 use crate::sercom::v2::*;
 use crate::time::Hertz;
-use crate::typelevel::{Counter, Decrement, Increment, Sealed};
+use crate::typelevel::{Decrement, Increment, Sealed};
 
 use super::dpll::{DpllId0, DpllId1};
 use super::gclk::*;
+use super::Driver;
 
 //==============================================================================
 // PclkToken
@@ -126,7 +126,7 @@ macro_rules! pclk_id {
 /// on the pattern.
 ///
 /// [type-level enums]: crate::typelevel#type-level-enum
-pub trait PclkSourceId: GclkId + SourceMarker {
+pub trait PclkSourceId: GclkId {
     /// Associated constant provides a variant of a low level enum type from PAC
     /// that is used during a HW register write
     const DYN: DynPclkSourceId;
@@ -137,24 +137,6 @@ seq!(N in 0..=11 {
         const DYN: DynPclkSourceId = DynPclkSourceId::GCLK #N;
     }
 });
-
-/// This trait represents a [`Pclk`] source provider.
-pub trait PclkSource: Source {
-    /// Associated type used in order to mark [`Pclk<_, T: PclkSourceMarker>`]
-    /// type with a proper `T`, according to what `gclk` was passed into the
-    /// [`Pclk::enable`] and to only allow calls into [`Pclk::disable`] with a
-    /// matching `gclk`
-    type Type: PclkSourceId;
-}
-
-impl<G, T, N> PclkSource for Enabled<Gclk<G, T>, N>
-where
-    G: PclkSourceId,
-    T: GclkSourceId,
-    N: Counter,
-{
-    type Type = G;
-}
 
 //==============================================================================
 // Pclk - Peripheral Channel Clock
@@ -187,7 +169,7 @@ where
     #[inline]
     pub fn enable<S>(mut token: PclkToken<P>, gclk: S) -> (Self, S::Inc)
     where
-        S: PclkSource<Type = T> + Increment,
+        S: Driver<Source = T> + Increment,
     {
         let freq = gclk.freq();
         token.set_source(T::DYN);
@@ -206,7 +188,7 @@ where
     #[inline]
     pub fn disable<S>(mut self, gclk: S) -> (PclkToken<P>, S::Dec)
     where
-        S: PclkSource<Type = T> + Decrement,
+        S: Driver<Source = T> + Decrement,
     {
         self.token.disable();
         (self.token, gclk.dec())

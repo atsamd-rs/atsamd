@@ -20,13 +20,11 @@ use typenum::U0;
 use crate::pac::osc32kctrl::rtcctrl::RTCSEL_A;
 use crate::pac::osc32kctrl::OSCULP32K;
 
-use crate::clock::v2::{rtc::RtcSourceMarker, Enabled, Source, SourceMarker};
 use crate::time::{Hertz, U32Ext};
 use crate::typelevel::{Counter, Sealed};
 
-use super::gclk::{DynGclkSourceId, GclkId, GclkSource, GclkSourceId};
-use super::gclkio::NotGclkInput;
 use super::rtc::*;
+use super::{Driver, Enabled};
 
 //==============================================================================
 // OscUlp32kToken
@@ -212,7 +210,7 @@ where
 }
 
 //==============================================================================
-// GclkSource
+// OscUlp32kId
 //==============================================================================
 
 /// Type-level variant representing the identity of the OSCULP32K clock
@@ -225,30 +223,19 @@ pub enum OscUlp32kId {}
 
 impl Sealed for OscUlp32kId {}
 
-impl SourceMarker for OscUlp32kId {}
-
-impl GclkSourceId for OscUlp32kId {
-    const DYN: DynGclkSourceId = DynGclkSourceId::OSCULP32K;
-}
-
-impl NotGclkInput for OscUlp32kId {}
-
 impl RtcSourceMarker for OscUlp32kId {}
 
-impl<G, Y, N> GclkSource<G> for Enabled<OscUlp32k<Active32k, Y>, N>
-where
-    G: GclkId,
-    Y: Output1k,
-    N: Counter,
-{
-    type Type = OscUlp32kId;
-}
+//==============================================================================
+// Driver
+//==============================================================================
 
-impl<Y, N> Source for Enabled<OscUlp32k<Active32k, Y>, N>
+impl<Y, N> Driver for Enabled<OscUlp32k<Active32k, Y>, N>
 where
     Y: Output1k,
     N: Counter,
 {
+    type Source = OscUlp32kId;
+
     #[inline]
     fn freq(&self) -> Hertz {
         32768.hz()

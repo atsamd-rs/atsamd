@@ -60,12 +60,17 @@ use core::marker::PhantomData;
 use seq_macro::seq;
 use typenum::U0;
 
-use crate::clock::v2::{Enabled, Source, SourceMarker};
 use crate::gpio::v2::{self as gpio, AlternateM, AnyPin, Pin, PinId};
 use crate::time::Hertz;
 use crate::typelevel::{Counter, Decrement, Increment, Sealed};
 
+use super::dfll::DfllId;
+use super::dpll::{DpllId0, DpllId1};
 use super::gclk::*;
+use super::osculp32k::OscUlp32kId;
+use super::xosc::{XoscId0, XoscId1};
+use super::xosc32k::Xosc32kId;
+use super::{Driver, Enabled};
 
 //==============================================================================
 // GclkIo
@@ -195,19 +200,32 @@ where
 }
 
 //==============================================================================
-// GclkSource
+// NotGclkInId
 //==============================================================================
 
-/// Used to ensure a [`Gclk`] either acts as [`GclkIn`] or [`GclkOut`]
+/// Type-level enum for all [`GclkSourceId`]s *except* [`GclkInId`]
 ///
-/// [`GclkOut`] cannot be constructed for a [`Gclk`] that is powered from a
-/// [`GclkIn`] because of HW limitations (tested empirically; documentation does
-/// not mention it).
+/// This trait helps ensure that a [`Gclk`] never acts as both a [`GclkIn`] and
+/// [`GclkOut`]. Although the documentation does not mention it, testing shows
+/// it is impossible to do so.
 ///
-/// As negated trait bounds are not available in Rust, a _negated_
-/// [`NotGclkInput`] trait was introduced which is implemented by a subset of
-/// [`GclkSourceMarkers`](GclkSourceMarker) that are not [`GclkIns`](GclkIn).
-pub trait NotGclkInput: GclkSourceId {}
+/// See the documentation on [type-level enums] for more details on the pattern.
+///
+/// [type-level enums]: crate::typelevel#type-level-enum
+pub trait NotGclkInId: GclkSourceId {}
+
+impl NotGclkInId for DfllId {}
+impl NotGclkInId for DpllId0 {}
+impl NotGclkInId for DpllId1 {}
+impl NotGclkInId for GclkId1 {}
+impl NotGclkInId for OscUlp32kId {}
+impl NotGclkInId for XoscId0 {}
+impl NotGclkInId for XoscId1 {}
+impl NotGclkInId for Xosc32kId {}
+
+//==============================================================================
+// GclkInId
+//==============================================================================
 
 /// Type-level variant representing the identity of an GCLK input clock
 ///
@@ -219,27 +237,18 @@ pub enum GclkInId {}
 
 impl Sealed for GclkInId {}
 
-impl GclkSourceId for GclkInId {
-    const DYN: DynGclkSourceId = DynGclkSourceId::GCLKIN;
-}
+//==============================================================================
+// Driver
+//==============================================================================
 
-impl SourceMarker for GclkInId {}
-
-impl<G, I, N> GclkSource<G> for Enabled<GclkIn<G, I>, N>
+impl<G, I, N> Driver for Enabled<GclkIn<G, I>, N>
 where
     G: GclkId,
     I: GclkIo<G>,
     N: Counter,
 {
-    type Type = GclkInId;
-}
+    type Source = GclkInId;
 
-impl<G, I, N> Source for Enabled<GclkIn<G, I>, N>
-where
-    G: GclkId,
-    I: GclkIo<G>,
-    N: Counter,
-{
     #[inline]
     fn freq(&self) -> Hertz {
         self.0.freq
@@ -269,59 +278,38 @@ impl<G: GclkId> GclkOutToken<G> {
 // GclkOutSource
 //==============================================================================
 
-/// A [`GclkOut`] is associated with a [`Gclk`]
-pub trait GclkOutSourceMarker: GclkId + SourceMarker {}
-
-impl<G: GclkId> GclkOutSourceMarker for G {}
-
 mod private {
-    use super::*;
-    pub trait GclkOutSource: Source {
-        fn enable_gclk_out(&mut self, polarity: bool);
-        fn disable_gclk_out(&mut self);
+    use super::{Counter, Driver, Enabled, Gclk, GclkId, GclkSourceId, NotGclkInId};
+
+    type EnabledGclk<T> = Enabled<
+        Gclk<<T as Driver>::Source, <T as AsEnabledGclk>::GclkSource>,
+        <T as AsEnabledGclk>::Count,
+    >;
+
+    pub trait AsEnabledGclk: Driver
+    where
+        Self::Source: GclkId,
+    {
+        type GclkSource: GclkSourceId + NotGclkInId;
+        type Count: Counter;
+        fn as_enabled_gclk(&mut self) -> &mut EnabledGclk<Self>;
+    }
+
+    impl<G, S, N> AsEnabledGclk for Enabled<Gclk<G, S>, N>
+    where
+        G: GclkId,
+        S: GclkSourceId + NotGclkInId,
+        N: Counter,
+    {
+        type GclkSource = S;
+        type Count = N;
+        fn as_enabled_gclk(&mut self) -> &mut EnabledGclk<Self> {
+            self
+        }
     }
 }
 
-pub(crate) use private::GclkOutSource as PrivateGclkOutSource;
-
-/// [`GclkOutSource`] is the clock source for a [`GclkOut`]
-pub trait GclkOutSource: PrivateGclkOutSource {
-    /// Associated type
-    type Type: GclkOutSourceMarker;
-}
-
-impl<G, T, N> GclkOutSource for Enabled<Gclk<G, T>, N>
-where
-    G: GclkOutSourceMarker,
-    T: GclkSourceId + NotGclkInput,
-    N: Counter,
-{
-    type Type = G;
-}
-
-impl<G, T, N> PrivateGclkOutSource for Enabled<Gclk<G, T>, N>
-where
-    G: GclkOutSourceMarker,
-    T: GclkSourceId + NotGclkInput,
-    N: Counter,
-{
-    /// Enable the gclk_out
-    ///
-    /// See [Enabled<Gclk>::enable_gclk_out][super::gclk::Gclk::enable_gclk_out]
-    #[inline]
-    fn enable_gclk_out(&mut self, polarity: bool) {
-        self.enable_gclk_out(polarity);
-    }
-
-    /// Disable the gclk_out
-    ///
-    /// See [Enabled<Gclk>::disable_gclk_out][super::gclk::Gclk::
-    /// disable_gclk_out]
-    #[inline]
-    fn disable_gclk_out(&mut self) {
-        self.disable_gclk_out();
-    }
-}
+use private::AsEnabledGclk;
 
 //==============================================================================
 // GclkOut
@@ -354,11 +342,11 @@ where
         polarity: bool,
     ) -> (GclkOut<G, I>, S::Inc)
     where
-        S: GclkOutSource<Type = G> + Increment,
+        S: Driver<Source = G> + AsEnabledGclk + Increment,
     {
         let freq = gclk.freq();
         let pin = pin.into().into_alternate();
-        gclk.enable_gclk_out(polarity);
+        gclk.as_enabled_gclk().enable_gclk_out(polarity);
         let gclk_out = GclkOut { token, freq, pin };
         (gclk_out, gclk.inc())
     }
@@ -373,9 +361,9 @@ where
     #[inline]
     pub fn disable<S>(self, mut gclk: S) -> (GclkOutToken<G>, Pin<I, AlternateM>, S::Dec)
     where
-        S: GclkOutSource<Type = G> + Decrement,
+        S: Driver<Source = G> + AsEnabledGclk + Decrement,
     {
-        gclk.disable_gclk_out();
+        gclk.as_enabled_gclk().disable_gclk_out();
         (self.token, self.pin, gclk.dec())
     }
 }

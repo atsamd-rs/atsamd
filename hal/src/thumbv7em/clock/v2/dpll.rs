@@ -33,13 +33,15 @@ use crate::pac::oscctrl::DPLL;
 
 pub use crate::pac::oscctrl::dpll::dpllctrlb::REFCLK_A as DynDpllSourceId;
 
-use crate::clock::v2::{Enabled, Source, SourceMarker};
 use crate::time::Hertz;
 use crate::typelevel::{Counter, Decrement, Increment, Sealed};
 
-use super::gclk::{DynGclkSourceId, GclkId, GclkSource, GclkSourceId};
-use super::gclkio::NotGclkInput;
+use super::gclk::GclkSourceId;
 use super::pclk::{Pclk, PclkId, PclkSourceId};
+use super::rtc;
+use super::xosc::{self, Xosc, XoscId, XoscId0, XoscId1};
+use super::xosc32k::{self, Xosc32k, Xosc32kId};
+use super::{Driver, Enabled};
 
 //==============================================================================
 // DpllId
@@ -70,14 +72,6 @@ impl DpllId for DpllId0 {
     const NUM: usize = 0;
 }
 
-impl GclkSourceId for DpllId0 {
-    const DYN: DynGclkSourceId = DynGclkSourceId::DPLL0;
-}
-
-impl NotGclkInput for DpllId0 {}
-
-impl SourceMarker for DpllId0 {}
-
 /// Type-level variant representing the identity of DPLL1
 ///
 /// This type is a member of several [type-level enums]. See the documentation
@@ -92,14 +86,6 @@ impl DpllId for DpllId1 {
     const NUM: usize = 1;
 }
 
-impl GclkSourceId for DpllId1 {
-    const DYN: DynGclkSourceId = DynGclkSourceId::DPLL1;
-}
-
-impl NotGclkInput for DpllId1 {}
-
-impl SourceMarker for DpllId1 {}
-
 //==============================================================================
 // DpllSource
 //==============================================================================
@@ -110,32 +96,46 @@ impl SourceMarker for DpllId1 {}
 /// pattern.
 ///
 /// [type-level enums]: crate::typelevel#type-level-enum
-pub trait DpllSourceId: SourceMarker {
+pub trait DpllSourceId {
     /// Corresponding variant of [`DynDpllSourceId`]
     const DYN: DynDpllSourceId;
 }
 
-/// This trait represents a [`Dpll`] source provider.
-///
-/// Note: This trait is used inconsistently; [`Pclk`] as a source is used
-/// directly in an API and therefore abstracting away through this trait is
-/// redundant.
-pub trait DpllSource: Source {
-    /// Associated type used in order to mark
-    /// [`Dpll<_, XoscDriven<_, T>>`]/[`Dpll<_, Xosc32kDriven<_, T>>`] type with
-    /// a proper `T`, according to what `source` was passed into the
-    /// [`Dpll::from_xosc`]/[`Dpll::from_xosc32k`] and to only allow calls into
-    /// [`Dpll::free`] with a matching `source`
-    type Type: DpllSourceId;
+impl DpllSourceId for XoscId0 {
+    const DYN: DynDpllSourceId = DynDpllSourceId::XOSC0;
+}
+
+impl DpllSourceId for XoscId1 {
+    const DYN: DynDpllSourceId = DynDpllSourceId::XOSC1;
+}
+
+impl DpllSourceId for Xosc32kId {
+    const DYN: DynDpllSourceId = DynDpllSourceId::XOSC32;
 }
 
 /// [`DpllSource`] subtrait that is used to distinguish between external 32kHz
 /// and non-32kHz oscillators
-pub trait DpllSourceXosc32k: DpllSource {}
+pub trait DpllSourceXosc32k: Driver {}
+
+impl<M, Y, N> DpllSourceXosc32k for Enabled<Xosc32k<M, rtc::Active32k, Y>, N>
+where
+    M: xosc32k::Mode,
+    Y: rtc::Output1k,
+    N: Counter,
+{
+}
 
 /// [`DpllSource`] subtrait that is used to distinguish between external 32kHz
 /// and non-32kHz oscillators
-pub trait DpllSourceXosc: DpllSource {}
+pub trait DpllSourceXosc: Driver {}
+
+impl<X, M, N> DpllSourceXosc for Enabled<Xosc<X, M>, N>
+where
+    X: XoscId + DpllSourceId,
+    M: xosc::Mode,
+    N: Counter,
+{
+}
 
 //==============================================================================
 // DpllToken
@@ -443,7 +443,7 @@ where
     #[inline]
     pub fn from_xosc32k<S>(token: DpllToken<D>, reference_clk: S) -> (Self, S::Inc)
     where
-        S: DpllSourceXosc32k<Type = T> + Increment,
+        S: DpllSourceXosc32k<Source = T> + Increment,
     {
         let src_freq = reference_clk.freq();
         let (mult, frac) = (1, 0);
@@ -468,7 +468,7 @@ where
     #[inline]
     pub fn free<S>(self, reference_clk: S) -> (DpllToken<D>, S::Dec)
     where
-        S: DpllSourceXosc32k<Type = T> + Decrement,
+        S: DpllSourceXosc32k<Source = T> + Decrement,
     {
         (self.token, reference_clk.dec())
     }
@@ -494,7 +494,7 @@ where
         predivider: DpllPredivider,
     ) -> (Self, S::Inc)
     where
-        S: DpllSourceXosc<Type = T> + Increment,
+        S: DpllSourceXosc<Source = T> + Increment,
     {
         let raw_predivider = predivider;
         let src_freq = reference_clk.freq();
@@ -530,7 +530,7 @@ where
     #[inline]
     pub fn free<S>(self, reference_clk: S) -> (DpllToken<D>, S::Dec)
     where
-        S: DpllSourceXosc<Type = D> + Decrement,
+        S: DpllSourceXosc<Source = D> + Decrement,
     {
         (self.token, reference_clk.dec())
     }
@@ -680,22 +680,14 @@ where
 // GclkSource
 //==============================================================================
 
-impl<G, D, M, N> GclkSource<G> for Enabled<Dpll<D, M>, N>
+impl<D, M, N> Driver for Enabled<Dpll<D, M>, N>
 where
-    G: GclkId,
     D: DpllId + GclkSourceId,
     M: SrcMode<D>,
     N: Counter,
 {
-    type Type = D;
-}
+    type Source = D;
 
-impl<D, M, N> Source for Enabled<Dpll<D, M>, N>
-where
-    D: DpllId + GclkSourceId,
-    M: SrcMode<D>,
-    N: Counter,
-{
     #[inline]
     fn freq(&self) -> Hertz {
         self.0.freq()

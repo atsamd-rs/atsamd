@@ -39,15 +39,12 @@ use crate::pac::osc32kctrl::xosc32k::{CGM_A, STARTUP_A};
 
 use crate::pac::osc32kctrl::{RegisterBlock, STATUS, XOSC32K};
 
-use crate::clock::v2::{Enabled, Source, SourceMarker};
 use crate::gpio::v2::{AnyPin, FloatingDisabled, Pin, PA00, PA01};
 use crate::time::{Hertz, U32Ext};
-
-use super::dpll::{DpllSource, DpllSourceId, DpllSourceXosc32k, DynDpllSourceId};
-use super::gclk::{DynGclkSourceId, GclkId, GclkSource, GclkSourceId};
-use super::gclkio::NotGclkInput;
-use super::rtc::*;
 use crate::typelevel::{Counter, Sealed};
+
+use super::rtc::*;
+use super::{Driver, Enabled};
 
 //==============================================================================
 // Xosc32kToken
@@ -483,65 +480,20 @@ pub enum Xosc32kId {}
 
 impl Sealed for Xosc32kId {}
 
-impl SourceMarker for Xosc32kId {}
-
-impl GclkSourceId for Xosc32kId {
-    const DYN: DynGclkSourceId = DynGclkSourceId::XOSC32K;
-}
-
-impl DpllSourceId for Xosc32kId {
-    const DYN: DynDpllSourceId = DynDpllSourceId::XOSC32;
-}
-
-impl NotGclkInput for Xosc32kId {}
-
 impl RtcSourceMarker for Xosc32kId {}
 
 //==============================================================================
-// GclkSource
+// Driver
 //==============================================================================
 
-impl<G, M, Y, N> GclkSource<G> for Enabled<Xosc32k<M, Active32k, Y>, N>
-where
-    G: GclkId,
-    M: Mode,
-    Y: Output1k,
-    N: Counter,
-{
-    type Type = Xosc32kId;
-}
-
-//==============================================================================
-// DpllSource
-//==============================================================================
-
-impl<M, Y, N> DpllSource for Enabled<Xosc32k<M, Active32k, Y>, N>
+impl<M, Y, N> Driver for Enabled<Xosc32k<M, Active32k, Y>, N>
 where
     M: Mode,
     Y: Output1k,
     N: Counter,
 {
-    type Type = Xosc32kId;
-}
+    type Source = Xosc32kId;
 
-impl<M, Y, N> DpllSourceXosc32k for Enabled<Xosc32k<M, Active32k, Y>, N>
-where
-    M: Mode,
-    Y: Output1k,
-    N: Counter,
-{
-}
-
-//==============================================================================
-// Source
-//==============================================================================
-
-impl<M, Y, N> Source for Enabled<Xosc32k<M, Active32k, Y>, N>
-where
-    M: Mode,
-    Y: Output1k,
-    N: Counter,
-{
     #[inline]
     fn freq(&self) -> Hertz {
         32768.hz()

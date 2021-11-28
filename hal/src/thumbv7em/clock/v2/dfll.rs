@@ -13,13 +13,12 @@
 //! - in a return value of [`crate::clock::v2::retrieve_clocks`]
 use typenum::{U0, U1};
 
-use crate::clock::v2::{Enabled, Source, SourceMarker};
 use crate::time::{Hertz, U32Ext};
 use crate::typelevel::{Counter, PrivateIncrement, Sealed};
 
-use super::gclk::{DynGclkSourceId, Gclk0, GclkId, GclkSource, GclkSourceId};
-use super::gclkio::NotGclkInput;
+use super::gclk::Gclk0;
 use super::pclk::{Dfll48, Pclk, PclkSourceId};
+use super::{Driver, Enabled};
 
 /// Token type required to construct a [`Dfll`] type instance.
 ///
@@ -396,19 +395,21 @@ impl<T: PclkSourceId> Enabled<Dfll<ClosedLoop<T>>, U1> {
 }
 
 //==============================================================================
-// GclkSource
+// Driver
 //==============================================================================
 
-impl<G: GclkId, T: LoopMode, N: Counter> GclkSource<G> for Enabled<Dfll<T>, N> {
-    type Type = DfllId;
-}
+impl<T: LoopMode, N: Counter> Driver for Enabled<Dfll<T>, N> {
+    type Source = DfllId;
 
-impl<T: LoopMode, N: Counter> Source for Enabled<Dfll<T>, N> {
     #[inline]
     fn freq(&self) -> Hertz {
         self.0.freq()
     }
 }
+
+//==============================================================================
+// DfllId
+//==============================================================================
 
 /// Type-level variant representing the identity of the DFLL clock
 ///
@@ -419,11 +420,3 @@ impl<T: LoopMode, N: Counter> Source for Enabled<Dfll<T>, N> {
 pub enum DfllId {}
 
 impl Sealed for DfllId {}
-
-impl GclkSourceId for DfllId {
-    const DYN: DynGclkSourceId = DynGclkSourceId::DFLL;
-}
-
-impl NotGclkInput for DfllId {}
-
-impl SourceMarker for DfllId {}

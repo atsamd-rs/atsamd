@@ -26,14 +26,12 @@ use typenum::U0;
 use crate::pac::oscctrl::xoscctrl::{CFDPRESC_A, STARTUP_A};
 use crate::pac::oscctrl::{RegisterBlock, XOSCCTRL};
 
-use crate::clock::v2::{Enabled, Source, SourceMarker};
 use crate::gpio::v2::{AnyPin, FloatingDisabled, Pin, PinId, PA14, PA15, PB22, PB23};
 use crate::time::{Hertz, U32Ext};
 use crate::typelevel::{Counter, Sealed};
 
-use super::dpll::{DpllSource, DpllSourceId, DpllSourceXosc, DynDpllSourceId};
-use super::gclk::{DynGclkSourceId, GclkId, GclkSource, GclkSourceId};
-use super::gclkio::NotGclkInput;
+use super::dpll::DynDpllSourceId;
+use super::{Driver, Enabled};
 
 //==============================================================================
 // XoscNum
@@ -76,18 +74,6 @@ impl XoscId for XoscId0 {
     type XOut = PA15;
 }
 
-impl GclkSourceId for XoscId0 {
-    const DYN: DynGclkSourceId = DynGclkSourceId::XOSC0;
-}
-
-impl DpllSourceId for XoscId0 {
-    const DYN: DynDpllSourceId = DynDpllSourceId::XOSC0;
-}
-
-impl SourceMarker for XoscId0 {}
-
-impl NotGclkInput for XoscId0 {}
-
 /// Type-level variant representing the identity of XOSC1
 ///
 /// This type is a member of several [type-level enums]. See the documentation
@@ -104,18 +90,6 @@ impl XoscId for XoscId1 {
     type XIn = PB22;
     type XOut = PB23;
 }
-
-impl GclkSourceId for XoscId1 {
-    const DYN: DynGclkSourceId = DynGclkSourceId::XOSC1;
-}
-
-impl DpllSourceId for XoscId1 {
-    const DYN: DynDpllSourceId = DynDpllSourceId::XOSC1;
-}
-
-impl SourceMarker for XoscId1 {}
-
-impl NotGclkInput for XoscId1 {}
 
 /// Encapsulates a hardware crystal configuration
 ///
@@ -608,50 +582,17 @@ where
 }
 
 //==============================================================================
-// GclkSource
+// Driver
 //==============================================================================
 
-impl<G, X, M, N> GclkSource<G> for Enabled<Xosc<X, M>, N>
-where
-    G: GclkId,
-    X: XoscId + GclkSourceId,
-    M: Mode,
-    N: Counter,
-{
-    type Type = X;
-}
-
-//==============================================================================
-// DpllSource
-//==============================================================================
-
-impl<X, M, N> DpllSource for Enabled<Xosc<X, M>, N>
-where
-    X: XoscId + DpllSourceId,
-    M: Mode,
-    N: Counter,
-{
-    type Type = X;
-}
-
-impl<X, M, N> DpllSourceXosc for Enabled<Xosc<X, M>, N>
-where
-    X: XoscId + DpllSourceId,
-    M: Mode,
-    N: Counter,
-{
-}
-
-//==============================================================================
-// Source
-//==============================================================================
-
-impl<X, M, N> Source for Enabled<Xosc<X, M>, N>
+impl<X, M, N> Driver for Enabled<Xosc<X, M>, N>
 where
     X: XoscId,
     M: Mode,
     N: Counter,
 {
+    type Source = X;
+
     #[inline]
     fn freq(&self) -> Hertz {
         self.0.freq()

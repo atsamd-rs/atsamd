@@ -222,34 +222,38 @@ pub fn retrieve_clocks(
     }
 }
 
-/// Marker supertrait unifying family of more specific source marker traits.
+/// Marks clock types that can drive downstream clocks
 ///
-/// These ones are essential during a construction (`fn ::{new, enable}`) and
+/// Implementers of this type can drive downstream clocks in the clock tree.
+/// Typically, implementors are [`Enabled`] clocks. The `Source` associated type
+/// maps to the corresponding `Id` type of the implementer.
 ///
-/// deconstruction (`fn ::{free, disable}`) of clocking components as they
-/// provide information to the constructed/deconstructed type what its source is
-/// and which variant of source (associated constant) is applicable while
-/// performing a HW register write.
-pub trait SourceMarker: crate::typelevel::Sealed {}
+/// For example, `Enabled<Gclk5<DfllId>>` would implement
+/// `Driver<Source = GclkId5>`.
+pub trait Driver: Sealed {
+    /// `Id` type of the implementer, e.g. [`GclkId5`](gclk::GclkId5) for
+    /// `Enabled<Gclk5<DfllId>>`
+    type Source;
 
-/// Supertrait unifying family of more specific source traits.
-///
-/// These are implemented by specific specialized forms of [`types::Enabled`].
-/// They are used during a construction (`fn ::{new, enable}`) and
-/// deconstruction (`fn ::{free, disable}`) of clocking components and they
-/// express the type of dependency needed by a dependee. For examples,
-/// [`gclk::Gclk::new`] will only consume source implementing
-/// [`gclk::GclkSource`] trait.
-pub trait Source: crate::typelevel::Sealed {
     /// Returns a clock signal frequency produced by a source
     fn freq(&self) -> Hertz;
 }
 
-/// Wrapper type representing enabled multiuser clocking abstraction
+/// An enabled clock with compile-time counting of downstream users
 ///
-/// Specialized implementations for this type usually allow for a specific
-/// behaviour dependent on a user count. For instance, clocking components are
-/// disableable only when no one is using them.
+/// This struct is a wrapper around other clock types from this module. It
+/// represents a clock that has been enabled, and it maintains a compile-time
+/// count of its uses by downstream clocks in the clock tree.
+///
+/// Compile-time counting allows the API to enforce when clocks may be enabled
+/// or disabled. In particular, most clocks can only be disabled when their
+/// counter is zero. However, there are exceptions, most notably [`Gclk0`],
+/// which can never be disabled, because it is the main clock.
+///
+/// The count is maintained using the [`Counter`] trait, along with type-level,
+/// [`Unsigned`] integers from the [`typenum`] crate.
+///
+/// [`Gclk0`]: gclk::Gclk0
 pub struct Enabled<T, N: Counter>(pub(crate) T, N);
 
 impl<T, N: Counter> Sealed for Enabled<T, N> {}

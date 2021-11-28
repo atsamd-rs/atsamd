@@ -65,11 +65,17 @@ use crate::pac::NVMCTRL;
 
 pub use crate::pac::gclk::genctrl::SRC_A as DynGclkSourceId;
 
-use super::gclkio::NotGclkInput;
-use crate::clock::v2::{Enabled, Source, SourceMarker};
 use crate::pac::gclk::{RegisterBlock, GENCTRL};
 use crate::time::Hertz;
 use crate::typelevel::{Counter, Decrement, Increment, PrivateIncrement, Sealed};
+
+use super::dfll::DfllId;
+use super::dpll::{DpllId0, DpllId1};
+use super::gclkio::GclkInId;
+use super::osculp32k::OscUlp32kId;
+use super::xosc::{XoscId0, XoscId1};
+use super::xosc32k::Xosc32kId;
+use super::{Driver, Enabled};
 
 //==============================================================================
 // GclkToken
@@ -226,10 +232,8 @@ pub trait GclkId: Sealed {
     type DividerType: GclkDivider;
 }
 
-impl<G: GclkId> SourceMarker for G {}
-
 /// Trait allowing to pick all `GclkIdX` except [`GclkId1`]
-pub trait NotGclk1: GclkId {}
+pub trait NotGclkId1: GclkId {}
 
 /// Type-level variant representing the identity of GCLK0
 ///
@@ -239,7 +243,7 @@ pub trait NotGclk1: GclkId {}
 /// [type-level enums]: crate::typelevel#type-level-enum
 pub enum GclkId0 {}
 impl Sealed for GclkId0 {}
-impl NotGclk1 for GclkId0 {}
+impl NotGclkId1 for GclkId0 {}
 impl GclkId for GclkId0 {
     const NUM: usize = 0;
     type DividerType = GclkDiv;
@@ -258,30 +262,6 @@ impl GclkId for GclkId1 {
     type DividerType = Gclk1Div;
 }
 
-impl GclkSourceId for GclkId1 {
-    const DYN: DynGclkSourceId = DynGclkSourceId::GCLKGEN1;
-}
-
-impl NotGclkInput for GclkId1 {}
-
-macro_rules! impl_gclk1_source {
-    ($GclkNum:ident) => {
-        impl<T, N> GclkSource<$GclkNum> for Enabled<Gclk1<T>, N>
-        where
-            T: GclkSourceId,
-            N: Counter,
-        {
-            type Type = GclkId1;
-        }
-    };
-}
-
-impl_gclk1_source!(GclkId0);
-
-seq!(N in 2..=11 {
-    impl_gclk1_source!(GclkId #N);
-});
-
 seq!(N in 2..=11 {
     /// Type-level variant representing the identity of the corresponding GCLK
     ///
@@ -291,7 +271,7 @@ seq!(N in 2..=11 {
     /// [type-level enums]: crate::typelevel#type-level-enum
     pub enum GclkId #N {}
     impl Sealed for GclkId #N {}
-    impl NotGclk1 for GclkId #N {}
+    impl NotGclkId1 for GclkId #N {}
     impl GclkId for GclkId #N {
         const NUM: usize = N;
         type DividerType = GclkDiv;
@@ -459,7 +439,7 @@ impl GclkDivider for GclkDiv {
 }
 
 //==============================================================================
-// GclkSource
+// GclkSourceId
 //==============================================================================
 
 /// Type-level `enum` for GCLK sources
@@ -468,28 +448,50 @@ impl GclkDivider for GclkDiv {
 /// pattern.
 ///
 /// [type-level enums]: crate::typelevel#type-level-enum
-pub trait GclkSourceId: SourceMarker {
+pub trait GclkSourceId {
     /// Corresponding variant of [`DynGclkSourceId`]
     const DYN: DynGclkSourceId;
 }
 
-/// Trait generalizing over the clock signal source for a [`Gclk`]
-pub trait GclkSource<G: GclkId>: Source {
-    /// Associated source marker type
-    type Type: GclkSourceId;
+impl GclkSourceId for DfllId {
+    const DYN: DynGclkSourceId = DynGclkSourceId::DFLL;
+}
+impl GclkSourceId for DpllId0 {
+    const DYN: DynGclkSourceId = DynGclkSourceId::DPLL0;
+}
+impl GclkSourceId for DpllId1 {
+    const DYN: DynGclkSourceId = DynGclkSourceId::DPLL1;
+}
+impl GclkSourceId for GclkId1 {
+    const DYN: DynGclkSourceId = DynGclkSourceId::GCLKGEN1;
+}
+impl GclkSourceId for GclkInId {
+    const DYN: DynGclkSourceId = DynGclkSourceId::GCLKIN;
+}
+impl GclkSourceId for OscUlp32kId {
+    const DYN: DynGclkSourceId = DynGclkSourceId::OSCULP32K;
+}
+impl GclkSourceId for XoscId0 {
+    const DYN: DynGclkSourceId = DynGclkSourceId::XOSC0;
+}
+impl GclkSourceId for XoscId1 {
+    const DYN: DynGclkSourceId = DynGclkSourceId::XOSC1;
+}
+impl GclkSourceId for Xosc32kId {
+    const DYN: DynGclkSourceId = DynGclkSourceId::XOSC32K;
 }
 
-impl<G, T, N> Source for Enabled<Gclk<G, T>, N>
-where
-    G: GclkId,
-    T: GclkSourceId,
-    N: Counter,
-{
-    #[inline]
-    fn freq(&self) -> Hertz {
-        self.0.freq()
-    }
-}
+/// Type-level enum for all [`GclkSourceId`]s *except* [`GclkId1`]
+pub trait NotGclk1Source: GclkSourceId {}
+
+impl NotGclk1Source for DfllId {}
+impl NotGclk1Source for DpllId0 {}
+impl NotGclk1Source for DpllId1 {}
+impl NotGclk1Source for GclkInId {}
+impl NotGclk1Source for OscUlp32kId {}
+impl NotGclk1Source for XoscId0 {}
+impl NotGclk1Source for XoscId1 {}
+impl NotGclk1Source for Xosc32kId {}
 
 //==============================================================================
 // Gclk
@@ -519,20 +521,83 @@ where
     improve_duty_cycle: bool,
 }
 
-impl<G, T> Gclk<G, T>
+seq!(N in 0..=11 {
+    /// Type alias for the corresponding [`Gclk`]
+    pub type Gclk #N<S> = Gclk<GclkId #N, S>;
+});
+
+impl<S> Gclk1<S>
 where
-    G: GclkId,
-    T: GclkSourceId,
+    S: NotGclk1Source,
 {
     /// Create a new [`Gclk`]
     ///
     /// Hardware calls are deferred until the call to [`Gclk::enable`]
     #[inline]
-    pub fn new<S>(token: GclkToken<G>, source: S) -> (Gclk<G, T>, S::Inc)
+    pub fn new<D>(token: GclkToken<GclkId1>, driver: D) -> (Gclk1<S>, D::Inc)
     where
-        S: GclkSource<G, Type = T> + Increment,
+        D: Driver<Source = S> + Increment,
     {
-        let src_freq = source.freq();
+        Self::new_internal(token, driver)
+    }
+
+    /// Swap [`Gclk`] source
+    ///
+    /// Provided a [`GclkSource`] the [`Gclk`] is updated,
+    /// the old clock source token released and returned
+    #[inline]
+    pub fn swap<Old, New>(self, old: Old, new: New) -> (Gclk1<New::Source>, Old::Dec, New::Inc)
+    where
+        Old: Driver<Source = S> + Decrement,
+        New: Driver + Increment,
+        New::Source: NotGclk1Source,
+    {
+        self.swap_internal(old, new)
+    }
+}
+
+impl<G, S> Gclk<G, S>
+where
+    G: NotGclkId1,
+    S: GclkSourceId,
+{
+    /// Create a new [`Gclk`]
+    ///
+    /// Hardware calls are deferred until the call to [`Gclk::enable`]
+    #[inline]
+    pub fn new<D>(token: GclkToken<G>, driver: D) -> (Gclk<G, S>, D::Inc)
+    where
+        D: Driver<Source = S> + Increment,
+    {
+        Self::new_internal(token, driver)
+    }
+
+    /// Swap [`Gclk`] source
+    ///
+    /// Provided a [`GclkSource`] the [`Gclk`] is updated,
+    /// the old clock source token released and returned
+    #[inline]
+    pub fn swap<Old, New>(self, old: Old, new: New) -> (Gclk<G, New::Source>, Old::Dec, New::Inc)
+    where
+        Old: Driver<Source = S> + Decrement,
+        New: Driver + Increment,
+        New::Source: GclkSourceId,
+    {
+        self.swap_internal(old, new)
+    }
+}
+
+impl<G, S> Gclk<G, S>
+where
+    G: GclkId,
+    S: GclkSourceId,
+{
+    #[inline]
+    fn new_internal<D>(token: GclkToken<G>, driver: D) -> (Gclk<G, S>, D::Inc)
+    where
+        D: Driver<Source = S> + Increment,
+    {
+        let src_freq = driver.freq();
         let improve_duty_cycle = false;
         let config = Gclk {
             token,
@@ -541,30 +606,31 @@ where
             div: G::DividerType::default(),
             improve_duty_cycle,
         };
-        (config, source.inc())
+        (config, driver.inc())
     }
 
     /// Deconstruct the [`Gclk`] and return the inner [`GclkToken`]
     #[inline]
-    pub fn free<S>(self, source: S) -> (GclkToken<G>, S::Dec)
+    pub fn free<D>(self, driver: D) -> (GclkToken<G>, D::Dec)
     where
-        S: GclkSource<G, Type = T> + Decrement,
+        D: Driver<Source = S> + Decrement,
     {
-        (self.token, source.dec())
+        (self.token, driver.dec())
     }
 
-    /// Swap [`Gclk`] source
-    ///
-    /// Provided a [`GclkSource`] the [`Gclk`] is updated,
-    /// the old clock source token released and returned
     #[inline]
-    pub fn swap<Old, New>(self, old: Old, new: New) -> (Gclk<G, New::Type>, Old::Dec, New::Inc)
+    fn swap_internal<Old, New>(
+        self,
+        old: Old,
+        new: New,
+    ) -> (Gclk<G, New::Source>, Old::Dec, New::Inc)
     where
-        Old: GclkSource<G, Type = T> + Decrement,
-        New: GclkSource<G> + Increment,
+        Old: Driver<Source = S> + Decrement,
+        New: Driver + Increment,
+        New::Source: GclkSourceId,
     {
         let (token, old) = self.free(old);
-        let (config, new) = Gclk::new(token, new);
+        let (config, new) = Gclk::new_internal(token, new);
         (config, old, new)
     }
 
@@ -611,8 +677,8 @@ where
     /// Enabling a [`Gclk`] modifies hardware to match the configuration
     /// stored within.
     #[inline]
-    pub fn enable(mut self) -> Enabled<Gclk<G, T>, U0> {
-        self.token.set_source(T::DYN);
+    pub fn enable(mut self) -> Enabled<Gclk<G, S>, U0> {
+        self.token.set_source(S::DYN);
         self.token.improve_duty_cycle(self.improve_duty_cycle);
         self.token.set_div(self.div);
         self.token.enable();
@@ -674,10 +740,11 @@ impl<T: GclkSourceId> Enabled<Gclk0<T>, U1> {
         self,
         old: Old,
         new: New,
-    ) -> (Enabled<Gclk0<New::Type>, U1>, Old::Dec, New::Inc)
+    ) -> (Enabled<Gclk0<New::Source>, U1>, Old::Dec, New::Inc)
     where
-        Old: GclkSource<GclkId0, Type = T> + Decrement,
-        New: GclkSource<GclkId0> + Increment,
+        Old: Driver<Source = T> + Decrement,
+        New: Driver + Increment,
+        New::Source: GclkSourceId,
     {
         let (config, old, new) = self.0.swap(old, new);
         (config.enable().inc(), old, new)
@@ -701,13 +768,22 @@ impl<T: GclkSourceId> Enabled<Gclk0<T>, U1> {
 }
 
 //==============================================================================
-// Gclk aliases
+// Driver
 //==============================================================================
 
-seq!(N in 0..=11 {
-    /// Type alias for the corresponding [`Gclk`]
-    pub type Gclk #N<S> = Gclk<GclkId #N, S>;
-});
+impl<G, T, N> Driver for Enabled<Gclk<G, T>, N>
+where
+    G: GclkId,
+    T: GclkSourceId,
+    N: Counter,
+{
+    type Source = G;
+
+    #[inline]
+    fn freq(&self) -> Hertz {
+        self.0.freq()
+    }
+}
 
 //==============================================================================
 // Gclks
