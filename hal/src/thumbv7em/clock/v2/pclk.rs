@@ -22,13 +22,10 @@ use crate::pac;
 
 pub use crate::pac::gclk::pchctrl::GEN_A as PclkSourceEnum;
 
-use crate::clock::v2::{
-    types::{Counter, Decrement, Enabled, Increment},
-    Source, SourceMarker,
-};
+use crate::clock::v2::{types::Enabled, Source, SourceMarker};
 use crate::sercom::v2::*;
 use crate::time::Hertz;
-use crate::typelevel::Sealed;
+use crate::typelevel::{Counter, Decrement, Increment, Sealed};
 
 use super::dpll::marker::{Dpll0 as Dpll0Marker, Dpll1 as Dpll1Marker};
 use super::gclk::*;

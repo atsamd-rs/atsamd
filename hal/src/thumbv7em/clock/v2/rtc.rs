@@ -14,13 +14,12 @@ use core::marker::PhantomData;
 use core::ops::Deref;
 use core::ops::DerefMut;
 
-use crate::clock::v2::types::{Decrement, Increment};
 use crate::pac::osc32kctrl::rtcctrl::RTCSEL_A;
 use crate::pac::OSC32KCTRL;
 use crate::pac::{MCLK, RTC};
 use crate::rtc::{ClockMode, Count32Mode, Rtc as InnerRtc, RtcMode};
 use crate::time::U32Ext;
-use crate::typelevel::Sealed;
+use crate::typelevel::{Decrement, Increment, Sealed};
 
 /// Wrapper type for [`crate::rtc::Rtc`]
 ///

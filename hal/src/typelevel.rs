@@ -631,9 +631,13 @@
 //! you put back an instance of `P` exactly. The final use of [`Into`] is key
 //! here. It transforms the `SpecificPin` back into `P` itself.
 
-use typenum::{Bit, UInt, UTerm, Unsigned};
+use core::ops::{Add, Sub};
+
+use typenum::{Add1, Bit, Sub1, UInt, Unsigned, B1, U0};
 
 mod private {
+    use super::Counter;
+
     /// Super trait used to mark traits with an exhaustive set of
     /// implementations
     pub trait Sealed {}
@@ -645,8 +649,26 @@ mod private {
     impl Sealed for u32 {}
     impl Sealed for i32 {}
     impl Sealed for f32 {}
+
+    /// Mapping from an instance of [`Counter`] to its successor
+    pub trait Increment: Counter {
+        /// Successor type of `Self`
+        type Inc: Counter;
+        /// Consume an instance of `Self` and return its successor
+        fn inc(self) -> Self::Inc;
+    }
+
+    /// Mapping from an instance of [`Counter`] to its predecessor
+    pub trait Decrement: Counter {
+        /// Predecessor type of `Self`
+        type Dec: Counter;
+        /// Consume an instance of `Self` and return its predecessor
+        fn dec(self) -> Self::Dec;
+    }
 }
 
+pub(crate) use private::Decrement as PrivateDecrement;
+pub(crate) use private::Increment as PrivateIncrement;
 pub(crate) use private::Sealed;
 
 /// Type-level version of the [`None`] variant
@@ -708,19 +730,70 @@ where
     type Type = T;
 }
 
-#[macro_export]
-#[doc(hidden)]
-macro_rules! __opt_type {
-    () => {
-        $crate::typelevel::NoneT
-    };
-    ($Type:ty) => {
-        $Type
-    };
-}
+//==============================================================================
+// Counting
+//==============================================================================
 
-/// Sealed trait implemented for all [`UInt<U, B>`] types
+/// Implement `Sealed` for [`U0`]
+impl Sealed for U0 {}
+
+/// Implement `Sealed` for all type-level, [`Unsigned`] integers *except* [`U0`]
 impl<U: Unsigned, B: Bit> Sealed for UInt<U, B> {}
 
-/// Sealed trait implemented for [`UTerm`] type
-impl Sealed for UTerm {}
+/// Marker trait for countable types
+///
+/// This trait marks a set of types related through [`Increment`] and
+/// [`Decrement`]. As a set, the types are isomorphic to the natural numbers.
+///
+/// The [`typelevel`] module provides an implementation over the [`Unsigned`]
+/// integers from [`typenum`]. All further implementations of `Counter` are
+/// built from this root implementation.
+pub trait Counter: Sealed {}
+
+/// Mapping from an instance of [`Counter`] to its successor
+///
+/// This trait provides both type-level and value-level functions to map from an
+/// instance of [`Counter`] to its successor. See the documentation on
+/// [type-level functions](#type-level-functions) for more details.
+///
+/// The actual implementation is contained within the `PrivateIncrement` trait.
+/// Access to the implementation is restricted to types in this crate, so that
+/// safe interfaces can be built on top.
+pub trait Increment: PrivateIncrement {}
+
+/// Mapping from an instance of [`Counter`] to its predecessor
+///
+/// This trait provides both type-level and value-level functions to map from an
+/// instance of [`Counter`] to its predecessor. See the documentation on
+/// [type-level functions](#type-level-functions) for more details.
+///
+/// The actual implementation is contained within the `PrivateDecrement` trait.
+/// Access to the implementation is restricted to types in this crate, so that
+/// safe interfaces can be built on top.
+pub trait Decrement: PrivateDecrement {}
+
+impl<N: Unsigned + Sealed> Counter for N {}
+
+impl<N> PrivateIncrement for N
+where
+    N: Sealed + Unsigned + Add<B1>,
+    Add1<N>: Sealed + Unsigned,
+{
+    type Inc = Add1<N>;
+    #[inline]
+    fn inc(self) -> Self::Inc {
+        Self::Inc::default()
+    }
+}
+
+impl<N> PrivateDecrement for N
+where
+    N: Sealed + Unsigned + Sub<B1>,
+    Sub1<N>: Sealed + Unsigned,
+{
+    type Dec = Sub1<N>;
+    #[inline]
+    fn dec(self) -> Self::Dec {
+        Self::Dec::default()
+    }
+}

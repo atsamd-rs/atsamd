@@ -65,13 +65,10 @@ use crate::pac::NVMCTRL;
 pub use crate::pac::gclk::genctrl::{DIVSEL_A, SRC_A as GclkSourceEnum};
 
 use super::gclkio::NotGclkInput;
-use crate::clock::v2::{
-    types::{Counter, Decrement, Enabled, Increment, PrivateIncrement},
-    Source, SourceMarker,
-};
+use crate::clock::v2::{types::Enabled, Source, SourceMarker};
 use crate::pac::gclk::{RegisterBlock, GENCTRL};
 use crate::time::Hertz;
-use crate::typelevel::Sealed;
+use crate::typelevel::{Counter, Decrement, Increment, PrivateIncrement, Sealed};
 
 //==============================================================================
 // GclkToken

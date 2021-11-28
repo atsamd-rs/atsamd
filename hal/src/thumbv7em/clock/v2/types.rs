@@ -254,106 +254,45 @@
 //! different tokens do not overlap. Tokens cannot be created by a user; they
 //! are provided during initialization and do not expose any public API. Memory
 //! accesses are read/write-synchronized.
-use core::marker::PhantomData;
-use core::ops::{Add, Sub};
-use typenum::{Add1, Sub1, Unsigned, B1};
 
-use crate::typelevel::Sealed;
+use typenum::Unsigned;
 
-mod private {
-    use super::*;
-    pub trait Increment: Counter {
-        type Inc: Counter;
-        fn inc(self) -> Self::Inc;
-    }
-    pub trait Decrement: Counter {
-        type Dec: Counter;
-        fn dec(self) -> Self::Dec;
-    }
-}
-
-pub(crate) use private::Decrement as PrivateDecrement;
-pub(crate) use private::Increment as PrivateIncrement;
-
-/// Trait indicating that type can be _incremented_.
-///
-/// In practice, it is used as a type constraint for a generic source during a
-/// construction phase (`fn ::{new, enable}`) and is implemented by [`Enabled`]
-/// types of `N >= `[`0`](typenum::U0)
-pub trait Increment: PrivateIncrement {}
-
-/// Trait indicating that type can be _decremented_.
-///
-/// In practice, it is used as a type constraint for a generic source during a
-/// destruction phase (`fn ::{free, disable}`) and is implemented by [`Enabled`]
-/// types of `N > `[`0`](typenum::U0)
-pub trait Decrement: PrivateDecrement {}
-
-impl<N> PrivateIncrement for N
-where
-    N: Sealed + Unsigned + Add<B1>,
-    Add1<N>: Sealed + Unsigned,
-{
-    type Inc = Add1<N>;
-    #[inline]
-    fn inc(self) -> Self::Inc {
-        Self::Inc::default()
-    }
-}
-
-impl<N> PrivateDecrement for N
-where
-    N: Sealed + Unsigned + Sub<B1>,
-    Sub1<N>: Sealed + Unsigned,
-{
-    type Dec = Sub1<N>;
-    #[inline]
-    fn dec(self) -> Self::Dec {
-        Self::Dec::default()
-    }
-}
-
-/// Trait generalizing over _countable_ types.
-pub trait Counter: Sealed {}
-
-impl<N: Unsigned + Sealed> Counter for N {}
+use crate::typelevel::{Counter, Decrement, Increment, PrivateDecrement, PrivateIncrement, Sealed};
 
 /// Wrapper type representing enabled multiuser clocking abstraction
 ///
 /// Specialized implementations for this type usually allow for a specific
 /// behaviour dependent on a user count. For instance, clocking components are
 /// disableable only when no one is using them.
-pub struct Enabled<T, N: Counter>(pub(crate) T, PhantomData<N>);
-
-impl<T, N: Counter> Enabled<T, N> {
-    #[inline]
-    pub(crate) fn new(t: T) -> Self {
-        Enabled(t, PhantomData)
-    }
-}
-
-impl<T, N: Counter> Counter for Enabled<T, N> {}
+pub struct Enabled<T, N: Counter>(pub(crate) T, N);
 
 impl<T, N: Counter> Sealed for Enabled<T, N> {}
+
+impl<T, N: Unsigned + Counter> Enabled<T, N> {
+    #[inline]
+    pub(crate) fn new(t: T) -> Self {
+        Enabled(t, N::default())
+    }
+}
 
 impl<T, N: PrivateIncrement> PrivateIncrement for Enabled<T, N> {
     type Inc = Enabled<T, N::Inc>;
 
     #[inline]
     fn inc(self) -> Self::Inc {
-        Enabled(self.0, PhantomData)
+        Enabled(self.0, self.1.inc())
     }
 }
-
-impl<T, N: PrivateIncrement> Increment for Enabled<T, N> {}
 
 impl<T, N: PrivateDecrement> PrivateDecrement for Enabled<T, N> {
     type Dec = Enabled<T, N::Dec>;
 
     #[inline]
     fn dec(self) -> Self::Dec {
-        Enabled(self.0, PhantomData)
+        Enabled(self.0, self.1.dec())
     }
 }
 
+impl<T, N: PrivateIncrement> Increment for Enabled<T, N> {}
 impl<T, N: PrivateDecrement> Decrement for Enabled<T, N> {}
+impl<T, N: Counter> Counter for Enabled<T, N> {}

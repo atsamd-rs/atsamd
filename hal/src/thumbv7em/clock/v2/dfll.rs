@@ -13,12 +13,9 @@
 //! - in a return value of [`crate::clock::v2::retrieve_clocks`]
 use typenum::{U0, U1};
 
-use crate::clock::v2::{
-    types::{Counter, Enabled, PrivateIncrement},
-    Source, SourceMarker,
-};
+use crate::clock::v2::{types::Enabled, Source, SourceMarker};
 use crate::time::{Hertz, U32Ext};
-use crate::typelevel::Sealed;
+use crate::typelevel::{Counter, PrivateIncrement, Sealed};
 
 use super::gclk::{Gclk0, GclkNum, GclkSource, GclkSourceEnum, GclkSourceMarker};
 use super::gclkio::NotGclkInput;
