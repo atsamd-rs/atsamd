@@ -130,7 +130,7 @@ pub trait DpllSourceXosc: Driver {}
 impl<X, M, N> DpllSourceXosc for Enabled<Xosc<X, M>, N>
 where
     X: XoscId + DpllSourceId,
-    M: xosc::Mode,
+    M: xosc::Mode<X>,
     N: Counter,
 {
 }
