@@ -38,7 +38,6 @@ use crate::typelevel::{Counter, Decrement, Increment, Sealed};
 
 use super::gclk::GclkSourceId;
 use super::pclk::{Pclk, PclkId, PclkSourceId};
-use super::rtc;
 use super::xosc::{self, Xosc, XoscId, XoscId0, XoscId1};
 use super::xosc32k::{self, Xosc32k, Xosc32kId};
 use super::{Driver, Enabled};
@@ -117,10 +116,9 @@ impl DpllSourceId for Xosc32kId {
 /// and non-32kHz oscillators
 pub trait DpllSourceXosc32k: Driver {}
 
-impl<M, Y, N> DpllSourceXosc32k for Enabled<Xosc32k<M, rtc::Active32k, Y>, N>
+impl<M, N> DpllSourceXosc32k for Enabled<Xosc32k<M>, N>
 where
     M: xosc32k::Mode,
-    Y: rtc::Output1k,
     N: Counter,
 {
 }

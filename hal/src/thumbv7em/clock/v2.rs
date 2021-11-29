@@ -90,8 +90,6 @@ use crate::pac::{GCLK, MCLK, NVMCTRL, OSC32KCTRL, OSCCTRL};
 use crate::time::Hertz;
 use crate::typelevel::{Counter, Decrement, Increment, PrivateDecrement, PrivateIncrement, Sealed};
 
-use rtc::{Active1k, Active32k};
-
 mod presets;
 
 pub mod ahb;
@@ -102,7 +100,7 @@ pub mod gclk;
 pub mod gclkio;
 pub mod osculp32k;
 pub mod pclk;
-pub mod rtc;
+pub mod rtcosc;
 pub mod types;
 pub mod xosc;
 pub mod xosc32k;
@@ -164,6 +162,8 @@ pub struct Tokens {
     pub gclks: gclk::Tokens,
     /// Construction tokens for [`pclk::Pclk`]
     pub pclks: pclk::Tokens,
+    /// Construction token for [`rtc::RtcOsc`]
+    pub rtc_osc: rtcosc::RtcOscToken,
     /// Construction token for [`xosc::Xosc0`]
     pub xosc0: xosc::XoscToken<xosc::XoscId0>,
     /// Construction token for [`xosc::Xosc1`]
@@ -191,7 +191,7 @@ pub fn retrieve_clocks(
 ) -> (
     Enabled<gclk::Gclk0<dfll::DfllId>, U1>,
     Enabled<dfll::Dfll<dfll::OpenLoop>, U1>,
-    Enabled<osculp32k::OscUlp32k<Active32k, Active1k>, U0>,
+    Enabled<osculp32k::OscUlp32k, U0>,
     Tokens,
 ) {
     // Safe because registers are instantiated only once
@@ -210,6 +210,7 @@ pub fn retrieve_clocks(
             gclk_io: gclkio::Tokens::new(),
             gclks: gclk::Tokens::new(nvmctrl),
             pclks: pclk::Tokens::new(),
+            rtc_osc: rtcosc::RtcOscToken::new(),
             xosc0: xosc::XoscToken::new(),
             xosc1: xosc::XoscToken::new(),
             xosc32k: xosc32k::Xosc32kToken::new(),

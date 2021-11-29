@@ -31,19 +31,15 @@
 //! - [`Xosc32k::from_crystal`]
 //! Then, enable it with a [`Xosc32k::enable`] function call
 
-use core::marker::PhantomData;
 use typenum::U0;
 
-use crate::pac::osc32kctrl::rtcctrl::RTCSEL_A;
 use crate::pac::osc32kctrl::xosc32k::{CGM_A, STARTUP_A};
-
 use crate::pac::osc32kctrl::{RegisterBlock, STATUS, XOSC32K};
 
 use crate::gpio::v2::{AnyPin, FloatingDisabled, Pin, PA00, PA01};
 use crate::time::{Hertz, U32Ext};
 use crate::typelevel::{Counter, Sealed};
 
-use super::rtc::*;
 use super::{Driver, Enabled};
 
 //==============================================================================
@@ -103,12 +99,12 @@ impl Xosc32kToken {
     }
 
     #[inline]
-    fn activate_1k(&mut self, enabled: bool) {
+    pub(super) fn activate_1k(&mut self, enabled: bool) {
         self.xosc32k().modify(|_, w| w.en1k().bit(enabled));
     }
 
     #[inline]
-    fn activate_32k(&mut self, enabled: bool) {
+    pub(super) fn activate_32k(&mut self, enabled: bool) {
         self.xosc32k().modify(|_, w| w.en32k().bit(enabled));
     }
 
@@ -194,28 +190,19 @@ impl Sealed for CrystalMode {}
 /// - a mode of operation (available modes: [`ClockMode`], [`CrystalMode`])
 /// - An output state of a 32 kHz signal ([`Active32k`]/[`Inactive32k`])
 /// - An output state of a 1 kHz signal ([`Active1k`]/[`Inactive1k`])
-pub struct Xosc32k<M, X, Y>
+pub struct Xosc32k<M>
 where
     M: Mode,
-    X: Output32k,
-    Y: Output1k,
 {
-    token: Xosc32kToken,
+    pub(super) token: Xosc32kToken,
     xin32: XIn32,
     mode: M,
     run_standby: bool,
     on_demand_mode: bool,
     start_up_masking: StartUp32k,
-    output32k: PhantomData<X>,
-    output1k: PhantomData<Y>,
 }
 
-impl<M, X, Y> Xosc32k<M, X, Y>
-where
-    M: Mode,
-    X: Output32k,
-    Y: Output1k,
-{
+impl<M: Mode> Xosc32k<M> {
     /// Set for how long the clock output should be masked during startup
     #[inline]
     pub fn set_start_up(mut self, start_up: StartUp32k) -> Self {
@@ -244,7 +231,7 @@ where
     }
 }
 
-impl Xosc32k<ClockMode, Inactive32k, Inactive1k> {
+impl Xosc32k<ClockMode> {
     /// Construct a [`Xosc32k`] from a single pin oscillator clock signal
     #[inline]
     pub fn from_clock(token: Xosc32kToken, xin32: impl AnyPin<Id = PA00>) -> Self {
@@ -257,8 +244,6 @@ impl Xosc32k<ClockMode, Inactive32k, Inactive1k> {
             run_standby: false,
             on_demand_mode: true,
             start_up_masking: StartUp32k::CYCLE2048,
-            output32k: PhantomData,
-            output1k: PhantomData,
         }
     }
 
@@ -275,13 +260,7 @@ impl Xosc32k<ClockMode, Inactive32k, Inactive1k> {
         self.token.enable();
         Enabled::new(self)
     }
-}
 
-impl<X, Y> Xosc32k<ClockMode, X, Y>
-where
-    X: Output32k,
-    Y: Output1k,
-{
     /// Deconstruct the [`Xosc32k`] into a Xosc32kToken and the associated GPIO
     /// pin
     #[inline]
@@ -290,7 +269,7 @@ where
     }
 }
 
-impl Xosc32k<CrystalMode, Inactive32k, Inactive1k> {
+impl Xosc32k<CrystalMode> {
     /// Construct a [`Xosc32k`] from a two pin crystal oscillator signal
     #[inline]
     pub fn from_crystal(
@@ -313,8 +292,6 @@ impl Xosc32k<CrystalMode, Inactive32k, Inactive1k> {
             run_standby: false,
             on_demand_mode: true,
             start_up_masking: StartUp32k::CYCLE2048,
-            output32k: PhantomData,
-            output1k: PhantomData,
         }
     }
 
@@ -343,13 +320,7 @@ impl Xosc32k<CrystalMode, Inactive32k, Inactive1k> {
         self.token.enable();
         Enabled::new(self)
     }
-}
 
-impl<X, Y> Xosc32k<CrystalMode, X, Y>
-where
-    X: Output32k,
-    Y: Output1k,
-{
     /// Deconstruct the [`Xosc32k`] into a Xosc32kToken and the two associated
     /// GPIO pins
     #[inline]
@@ -358,117 +329,20 @@ where
     }
 }
 
-impl<M, Y> Enabled<Xosc32k<M, Inactive32k, Y>, U0>
-where
-    M: Mode,
-    Y: Output1k,
-{
-    /// Activate the 32 kHz signal output
-    #[inline]
-    pub fn activate_32k(mut self) -> Enabled<Xosc32k<M, Active32k, Y>, U0> {
-        self.0.token.activate_32k(true);
-        let xosc32k = Xosc32k {
-            token: self.0.token,
-            xin32: self.0.xin32,
-            mode: self.0.mode,
-            run_standby: self.0.run_standby,
-            on_demand_mode: self.0.on_demand_mode,
-            start_up_masking: self.0.start_up_masking,
-            output32k: PhantomData,
-            output1k: self.0.output1k,
-        };
-        Enabled::new(xosc32k)
-    }
-}
-
-impl<M, Y> Enabled<Xosc32k<M, Active32k, Y>, U0>
-where
-    M: Mode,
-    Y: Output1k,
-{
-    /// Deactivate the 32 kHz signal output
-    #[inline]
-    pub fn deactivate_32k(mut self) -> Enabled<Xosc32k<M, Inactive32k, Y>, U0> {
-        self.0.token.activate_32k(false);
-        let xosc32k = Xosc32k {
-            token: self.0.token,
-            xin32: self.0.xin32,
-            mode: self.0.mode,
-            run_standby: self.0.run_standby,
-            on_demand_mode: self.0.on_demand_mode,
-            start_up_masking: self.0.start_up_masking,
-            output32k: PhantomData,
-            output1k: self.0.output1k,
-        };
-        Enabled::new(xosc32k)
-    }
-}
-
-impl<M, X> Enabled<Xosc32k<M, X, Inactive1k>, U0>
-where
-    M: Mode,
-    X: Output32k,
-{
-    /// Activate the 1 kHz signal output
-    ///
-    /// Used by RTC only
-    #[inline]
-    pub fn activate_1k(mut self) -> Enabled<Xosc32k<M, X, Active1k>, U0> {
-        self.0.token.activate_1k(true);
-        let xosc32k = Xosc32k {
-            token: self.0.token,
-            xin32: self.0.xin32,
-            mode: self.0.mode,
-            run_standby: self.0.run_standby,
-            on_demand_mode: self.0.on_demand_mode,
-            start_up_masking: self.0.start_up_masking,
-            output32k: self.0.output32k,
-            output1k: PhantomData,
-        };
-        Enabled::new(xosc32k)
-    }
-}
-
-impl<M, X> Enabled<Xosc32k<M, X, Active1k>, U0>
-where
-    M: Mode,
-    X: Output32k,
-{
-    /// Deactivate the 1 kHz signal output
-    ///
-    /// Used by RTC only
-    #[inline]
-    pub fn deactivate_1k(mut self) -> Enabled<Xosc32k<M, X, Inactive1k>, U0> {
-        self.0.token.activate_1k(false);
-        let xosc32k = Xosc32k {
-            token: self.0.token,
-            xin32: self.0.xin32,
-            mode: self.0.mode,
-            run_standby: self.0.run_standby,
-            on_demand_mode: self.0.on_demand_mode,
-            start_up_masking: self.0.start_up_masking,
-            output32k: self.0.output32k,
-            output1k: PhantomData,
-        };
-        Enabled::new(xosc32k)
-    }
-}
-
-impl<M, X, Y> Enabled<Xosc32k<M, X, Y>, U0>
-where
-    M: Mode,
-    X: Output32k,
-    Y: Output1k,
-{
+impl<M: Mode> Enabled<Xosc32k<M>, U0> {
     /// Disable the enabled [`Xosc32k`]
     #[inline]
-    pub fn disable(mut self) -> Xosc32k<M, X, Y> {
+    pub fn disable(mut self) -> Xosc32k<M> {
         self.0.token.activate_32k(false);
         self.0.token.activate_1k(false);
         self.0.token.disable();
         self.0
     }
 }
+
+//==============================================================================
+// Xosc32kId
+//==============================================================================
 
 /// Type-level variant representing the identity of the XOSC32K clock
 ///
@@ -480,16 +354,13 @@ pub enum Xosc32kId {}
 
 impl Sealed for Xosc32kId {}
 
-impl RtcSourceMarker for Xosc32kId {}
-
 //==============================================================================
 // Driver
 //==============================================================================
 
-impl<M, Y, N> Driver for Enabled<Xosc32k<M, Active32k, Y>, N>
+impl<M, N> Driver for Enabled<Xosc32k<M>, N>
 where
     M: Mode,
-    Y: Output1k,
     N: Counter,
 {
     type Source = Xosc32kId;
@@ -498,36 +369,4 @@ where
     fn freq(&self) -> Hertz {
         32768.hz()
     }
-}
-
-//==============================================================================
-// RtcClock
-//==============================================================================
-
-impl<M, Y, N> RtcSource32k for Enabled<Xosc32k<M, Active32k, Y>, N>
-where
-    M: Mode,
-    Y: Output1k,
-    N: Counter,
-{
-    const RTC_SRC_32K: RTCSEL_A = RTCSEL_A::XOSC32K;
-}
-
-impl<M, X, N> RtcSource1k for Enabled<Xosc32k<M, X, Active1k>, N>
-where
-    M: Mode,
-    X: Output32k,
-    N: Counter,
-{
-    const RTC_SRC_1K: RTCSEL_A = RTCSEL_A::XOSC1K;
-}
-
-impl<M, X, Y, N> RtcSource for Enabled<Xosc32k<M, X, Y>, N>
-where
-    M: Mode,
-    X: Output32k,
-    Y: Output1k,
-    N: Counter,
-{
-    type Type = Xosc32kId;
 }
