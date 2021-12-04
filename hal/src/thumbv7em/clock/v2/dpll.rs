@@ -38,8 +38,8 @@ use crate::typelevel::{Counter, Decrement, Increment, Sealed};
 
 use super::gclk::GclkSourceId;
 use super::pclk::{Pclk, PclkId, PclkSourceId};
-use super::xosc::{self, Xosc, XoscId, XoscId0, XoscId1};
-use super::xosc32k::{self, Xosc32k, Xosc32kId};
+use super::xosc::{XoscId, XoscId0, XoscId1};
+use super::xosc32k::Xosc32kId;
 use super::{Driver, Enabled};
 
 //==============================================================================
@@ -110,29 +110,6 @@ impl DpllSourceId for XoscId1 {
 
 impl DpllSourceId for Xosc32kId {
     const DYN: DynDpllSourceId = DynDpllSourceId::XOSC32;
-}
-
-/// [`DpllSource`] subtrait that is used to distinguish between external 32kHz
-/// and non-32kHz oscillators
-pub trait DpllSourceXosc32k: Driver {}
-
-impl<M, N> DpllSourceXosc32k for Enabled<Xosc32k<M>, N>
-where
-    M: xosc32k::Mode,
-    N: Counter,
-{
-}
-
-/// [`DpllSource`] subtrait that is used to distinguish between external 32kHz
-/// and non-32kHz oscillators
-pub trait DpllSourceXosc: Driver {}
-
-impl<X, M, N> DpllSourceXosc for Enabled<Xosc<X, M>, N>
-where
-    X: XoscId + DpllSourceId,
-    M: xosc::Mode<X>,
-    N: Counter,
-{
 }
 
 //==============================================================================
@@ -428,10 +405,9 @@ where
     }
 }
 
-impl<D, T> Dpll<D, Xosc32kDriven<D, T>>
+impl<D> Dpll<D, Xosc32kDriven<D, Xosc32kId>>
 where
     D: DpllId,
-    T: DpllSourceId,
 {
     /// Create a [`Dpll`] from an external 32k oscillator
     ///
@@ -441,7 +417,7 @@ where
     #[inline]
     pub fn from_xosc32k<S>(token: DpllToken<D>, reference_clk: S) -> (Self, S::Inc)
     where
-        S: DpllSourceXosc32k<Source = T> + Increment,
+        S: Driver<Source = Xosc32kId> + Increment,
     {
         let src_freq = reference_clk.freq();
         let (mult, frac) = (1, 0);
@@ -466,7 +442,7 @@ where
     #[inline]
     pub fn free<S>(self, reference_clk: S) -> (DpllToken<D>, S::Dec)
     where
-        S: DpllSourceXosc32k<Source = T> + Decrement,
+        S: Driver<Source = Xosc32kId> + Decrement,
     {
         (self.token, reference_clk.dec())
     }
@@ -475,7 +451,7 @@ where
 impl<D, T> Dpll<D, XoscDriven<D, T>>
 where
     D: DpllId,
-    T: DpllSourceId,
+    T: DpllSourceId + XoscId,
 {
     /// Create a [`Dpll`] from an external oscillator
     /// ([Xosc0][super::xosc::Xosc0]/[Xosc1][super::xosc::Xosc1])
@@ -492,7 +468,7 @@ where
         predivider: DpllPredivider,
     ) -> (Self, S::Inc)
     where
-        S: DpllSourceXosc<Source = T> + Increment,
+        S: Driver<Source = T> + Increment,
     {
         let raw_predivider = predivider;
         let src_freq = reference_clk.freq();
@@ -528,7 +504,7 @@ where
     #[inline]
     pub fn free<S>(self, reference_clk: S) -> (DpllToken<D>, S::Dec)
     where
-        S: DpllSourceXosc<Source = D> + Decrement,
+        S: Driver<Source = T> + Decrement,
     {
         (self.token, reference_clk.dec())
     }
@@ -675,7 +651,7 @@ where
 }
 
 //==============================================================================
-// GclkSource
+// Driver
 //==============================================================================
 
 impl<D, M, N> Driver for Enabled<Dpll<D, M>, N>

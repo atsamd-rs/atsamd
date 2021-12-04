@@ -1,73 +1,67 @@
 //! # Osculp32k - Ultra Low power 32 kHz oscillator
 //!
-//! Always-on internal oscillator capable of producing
-//! 32 kHz and 1 kHz output.
-//!
-//! * 1 kHz signal is only accessible by specific peripherals (datasheet c.
-//!   13.1)
-//! * 32 kHz signal is a general purpose source that can be used by any
-//! [`Gclk`](crate::clock::v2::gclk::Gclk).
-//!
-//! Independently controllable default-on outputs for 32 kHz and 1 kHz
-//!
-//! See:
-//! * [`Enabled<Osculp32k>::activate_32k`]
-//! * [`Enabled<Osculp32k>::activate_1k`]
+
+#![allow(missing_docs)]
 
 use typenum::U0;
 
 use crate::pac::osc32kctrl::OSCULP32K;
 
-use crate::time::{Hertz, U32Ext};
-use crate::typelevel::{Counter, Sealed};
+use crate::time::Hertz;
+use crate::typelevel::{Counter, Decrement, Increment, PrivateDecrement, PrivateIncrement, Sealed};
 
 use super::{Driver, Enabled};
 
 //==============================================================================
-// OscUlp32kToken
+// Tokens
 //==============================================================================
 
-/// Token struct that is essential in order to construct an instance of a
-/// [`OscUlp32k`].
-///
-/// Irrelevant to the user as
-/// * [`Enabled`]`<`[`OscUlp32k`]`>` is undisableable and undeconstructable
-/// * [`Enabled`]`<`[`OscUlp32k`]`>` is already provided within a tuple as
-///   return value from [`retrieve_clocks`](crate::clock::v2::retrieve_clocks)
-///   and one does not have to create it
-pub struct OscUlp32kToken {
-    __: (),
+pub struct OscUlpBaseToken(());
+
+pub struct OscUlp1kToken(());
+
+pub struct OscUlp32kToken(());
+
+pub struct Tokens {
+    pub osculp1k: OscUlp1kToken,
+    pub osculp32k: OscUlp32kToken,
 }
 
-impl OscUlp32kToken {
-    /// Create a new instance of [`OscUlp32kToken`]
-    #[inline]
-    pub(crate) unsafe fn new() -> Self {
-        Self { __: () }
+impl Tokens {
+    /// Create a new set of tokens
+    ///
+    /// Safety: There must never be more than one instance of a token at any
+    /// given time.
+    pub(super) unsafe fn new() -> Self {
+        Self {
+            osculp1k: OscUlp1kToken(()),
+            osculp32k: OscUlp32kToken(()),
+        }
     }
+}
 
+impl OscUlpBaseToken {
     #[inline]
     fn osculp32k(&self) -> &OSCULP32K {
         unsafe { &(*crate::pac::OSC32KCTRL::ptr()).osculp32k }
     }
 
     #[inline]
-    fn set_calib(&mut self, calib: u8) {
+    fn set_calibration(&mut self, calib: u8) {
         self.osculp32k()
-            .modify(|_, w| unsafe { w.calib().bits(calib & 0x3F) });
+            .modify(|_, w| unsafe { w.calib().bits(calib) });
     }
 
     #[inline]
-    pub(super) fn activate_1k(&mut self, enabled: bool) {
+    fn enable_1k(&mut self, enabled: bool) {
         self.osculp32k().modify(|_, w| w.en1k().bit(enabled));
     }
 
     #[inline]
-    pub(super) fn activate_32k(&mut self, enabled: bool) {
+    fn enable_32k(&mut self, enabled: bool) {
         self.osculp32k().modify(|_, w| w.en32k().bit(enabled));
     }
 
-    #[allow(dead_code)]
     #[inline]
     fn wrtlock(&mut self) {
         self.osculp32k().modify(|_, w| w.wrtlock().bit(true));
@@ -75,54 +69,56 @@ impl OscUlp32kToken {
 }
 
 //==============================================================================
-// OscUlp32k
+// OscUlpBase
 //==============================================================================
 
-/// Struct representing a disabled ultra low power oscillator
-///
-/// In reality, this oscillator is always enabled and
-/// [`Enabled`]`<`[`OscUlp32k`]`>` does not have a `disable` method that would
-/// allow to retreive underlying [`OscUlp32k`] struct.
-///
-/// User can only activate/deactivate outgoing signals (as in making them
-/// visible outside of an oscillator).
-/// Therefore [`Enabled`]`<`[`OscUlp32k`]`<`[`Inactive32k`]`, `[`Inactive1k`]`>,
-/// _>` represents an **always** enabled oscillator with disabled outgoing
-/// signals.
-///
-/// It is generic over:
-/// - An output state of a 32 kHz signal (active/inactive)
-/// - An output state of a 1 kHz signal (active/inactive)
-pub struct OscUlp32k {
-    pub(super) token: OscUlp32kToken,
+pub struct OscUlpBase {
+    token: OscUlpBaseToken,
 }
 
-impl OscUlp32k {
-    /// Create a new instance of [`OscUlp32k`]
+impl OscUlpBase {
+    /// Create the ultra-low power base oscillator
+    ///
+    /// Safety: There must never be more than one instance of this struct at any
+    /// given time.
     #[inline]
-    pub(crate) fn new(token: OscUlp32kToken) -> Self {
-        Self { token }
+    pub(super) unsafe fn new() -> Enabled<Self, U0> {
+        let token = OscUlpBaseToken(());
+        Enabled::new(Self { token })
     }
 }
 
-impl Enabled<OscUlp32k, U0> {
-    /// Set calibration parameters
-    ///
-    /// This data is used to compensate for process variations
-    ///
-    /// This method performs a HW register write. At startup, this register is
-    /// populated with a default parametrization from Flash Calibration at
-    /// startup
+impl<N: Counter> Enabled<OscUlpBase, N> {
+    /// Override the factory-default calibration value
     #[inline]
-    pub fn set_calibration(mut self, calib: u8) -> Self {
-        self.0.token.set_calib(calib);
-        self
+    pub fn set_calibration(&mut self, calib: u8) {
+        self.0.token.set_calibration(calib);
+    }
+
+    /// Set the write-lock, which will last until POR
+    ///
+    /// This function sets the write-lock bit, which lasts until power-on reset.
+    /// It also consumes and drops the [`XoscBase`], which destroys API access
+    /// to the registers.
+    #[inline]
+    pub fn write_lock(mut self) {
+        self.0.token.wrtlock();
     }
 }
 
 //==============================================================================
-// OscUlp32kId
+// Ids
 //==============================================================================
+
+/// Type-level variant representing the identity of the OSCULP1K clock
+///
+/// This type is a member of several [type-level enums]. See the documentation
+/// on [type-level enums] for more details on the pattern.
+///
+/// [type-level enums]: crate::typelevel#type-level-enum
+pub enum OscUlp1kId {}
+
+impl Sealed for OscUlp1kId {}
 
 /// Type-level variant representing the identity of the OSCULP32K clock
 ///
@@ -135,14 +131,99 @@ pub enum OscUlp32kId {}
 impl Sealed for OscUlp32kId {}
 
 //==============================================================================
-// Driver
+// OscUlp1k
 //==============================================================================
+
+pub struct OscUlp1k {
+    token: OscUlp1kToken,
+}
+
+impl OscUlp1k {
+    /// Enable the 1 kHz output from OSCULP32K
+    ///
+    /// This clock is derived from the [`Enabled`] [`OscUlpBase`] clock.
+    ///
+    /// ```
+    /// let token = tokens.osculp.osculp1k;
+    /// let (osculp1k, osculp) = OscUlp1k::enable(token, osculp);
+    /// ```
+    #[inline]
+    pub fn enable<N: Increment>(
+        token: OscUlp1kToken,
+        mut base: Enabled<OscUlpBase, N>,
+    ) -> (Enabled<Self, U0>, Enabled<OscUlpBase, N::Inc>) {
+        base.0.token.enable_1k(true);
+        (Enabled::new(Self { token }), base.inc())
+    }
+}
+
+impl Enabled<OscUlp1k, U0> {
+    /// Disable the 1 kHz output from OSCULP32K
+    ///
+    /// Doing so will clear one usage of the [`Enabled`] [`OscUlpBase`] clock
+    #[inline]
+    pub fn disable<N: Decrement>(
+        self,
+        mut base: Enabled<OscUlpBase, N>,
+    ) -> (OscUlp1kToken, Enabled<OscUlpBase, N::Dec>) {
+        base.0.token.enable_1k(false);
+        (self.0.token, base.dec())
+    }
+}
+
+impl<N: Counter> Driver for Enabled<OscUlp1k, N> {
+    type Source = OscUlp1kId;
+
+    fn freq(&self) -> Hertz {
+        Hertz(1024)
+    }
+}
+
+//==============================================================================
+// OscUlp32k
+//==============================================================================
+
+pub struct OscUlp32k {
+    token: OscUlp32kToken,
+}
+
+impl OscUlp32k {
+    /// Enable the 32 kHz output from OSCULP32K
+    ///
+    /// This clock is derived from the [`Enabled`] [`OscUlpBase`] clock.
+    ///
+    /// ```
+    /// let token = tokens.osculp.osculp32k;
+    /// let (osculp1k, osculp) = OscUlp1k::enable(token, osculp);
+    /// ```
+    #[inline]
+    pub fn enable<N: Increment>(
+        token: OscUlp32kToken,
+        mut base: Enabled<OscUlpBase, N>,
+    ) -> (Enabled<Self, U0>, Enabled<OscUlpBase, N::Inc>) {
+        base.0.token.enable_32k(true);
+        (Enabled::new(Self { token }), base.inc())
+    }
+}
+
+impl Enabled<OscUlp32k, U0> {
+    /// Disable the 32 kHz output from OSCULP32K
+    ///
+    /// Doing so will clear one usage of the [`Enabled`] [`OscUlpBase`] clock
+    #[inline]
+    pub fn disable<N: Decrement>(
+        self,
+        mut base: Enabled<OscUlpBase, N>,
+    ) -> (OscUlp32kToken, Enabled<OscUlpBase, N::Dec>) {
+        base.0.token.enable_32k(false);
+        (self.0.token, base.dec())
+    }
+}
 
 impl<N: Counter> Driver for Enabled<OscUlp32k, N> {
     type Source = OscUlp32kId;
 
-    #[inline]
     fn freq(&self) -> Hertz {
-        32768.hz()
+        Hertz(32_768)
     }
 }

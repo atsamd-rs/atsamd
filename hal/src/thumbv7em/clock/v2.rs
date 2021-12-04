@@ -168,8 +168,10 @@ pub struct Tokens {
     pub xosc0: xosc::XoscToken<xosc::XoscId0>,
     /// Construction token for [`xosc::Xosc1`]
     pub xosc1: xosc::XoscToken<xosc::XoscId1>,
-    /// Construction token for [`xosc32k::Xosc32k`]
-    pub xosc32k: xosc32k::Xosc32kToken,
+    /// Construction tokens for [`xosc32k::XoscBase`], [`xosc32k::Xosc1k`] and [`xosc32k::Xosc32k`]
+    pub xosc32k: xosc32k::Tokens,
+    /// Construction tokens for [`osculp32k::OscUlp1k`] and [`osculp32k::OscUlp32k`]
+    pub osculp: osculp32k::Tokens,
 }
 
 /// Standalone function returning a set of instantiated clocking abstractions
@@ -191,7 +193,7 @@ pub fn retrieve_clocks(
 ) -> (
     Enabled<gclk::Gclk0<dfll::DfllId>, U1>,
     Enabled<dfll::Dfll<dfll::OpenLoop>, U1>,
-    Enabled<osculp32k::OscUlp32k, U0>,
+    Enabled<osculp32k::OscUlpBase, U0>,
     Tokens,
 ) {
     // Safe because registers are instantiated only once
@@ -213,13 +215,14 @@ pub fn retrieve_clocks(
             rtc_osc: rtcosc::RtcOscToken::new(),
             xosc0: xosc::XoscToken::new(),
             xosc1: xosc::XoscToken::new(),
-            xosc32k: xosc32k::Xosc32kToken::new(),
+            xosc32k: xosc32k::Tokens::new(),
+            osculp: osculp32k::Tokens::new(),
         };
         let dfll = Enabled::<_, U0>::new(dfll::Dfll::in_open_mode(dfll::DfllToken::new()));
         let (gclk0, dfll) = gclk::Gclk0::new(gclk::GclkToken::new(), dfll);
         let gclk0 = Enabled::new(gclk0);
-        let osculp32k = Enabled::new(osculp32k::OscUlp32k::new(osculp32k::OscUlp32kToken::new()));
-        (gclk0, dfll, osculp32k, tokens)
+        let osculp = osculp32k::OscUlpBase::new();
+        (gclk0, dfll, osculp, tokens)
     }
 }
 

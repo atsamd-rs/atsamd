@@ -1,4 +1,5 @@
 // TODO
+
 #![allow(missing_docs)]
 
 use core::marker::PhantomData;
@@ -6,11 +7,12 @@ use core::marker::PhantomData;
 use crate::pac::osc32kctrl::rtcctrl::RTCSEL_A;
 use crate::pac::osc32kctrl::{RegisterBlock, RTCCTRL};
 
-use crate::typelevel::{Counter, Decrement, Increment, Sealed};
+use crate::time::Hertz;
+use crate::typelevel::{Decrement, Increment};
 
-use super::osculp32k::{OscUlp32k, OscUlp32kId};
-use super::xosc32k::{self, Xosc32k, Xosc32kId};
-use super::Enabled;
+use super::osculp32k::{OscUlp1kId, OscUlp32kId};
+use super::xosc32k::{Xosc1kId, Xosc32kId};
+use super::Driver;
 
 //==============================================================================
 // Registers
@@ -27,16 +29,14 @@ impl Registers {
     }
 
     #[inline]
-    fn set_source_freq(&mut self, source: DynRtcSourceId, freq: DynRtcFreq) {
-        use DynRtcFreq::*;
+    fn set_source_freq(&mut self, source: DynRtcSourceId) {
         use DynRtcSourceId::*;
         use RTCSEL_A::*;
-
-        let variant = match (source, freq) {
-            (OscUlp32k, Freq1k) => ULP1K,
-            (OscUlp32k, Freq32k) => ULP32K,
-            (Xosc32k, Freq1k) => XOSC32K,
-            (Xosc32k, Freq32k) => XOSC1K,
+        let variant = match source {
+            OscUlp1k => ULP1K,
+            OscUlp32k => ULP32K,
+            Xosc1k => XOSC1K,
+            Xosc32k => XOSC32K,
         };
         self.rtcctrl().write(|w| w.rtcsel().variant(variant));
     }
@@ -55,6 +55,10 @@ pub struct RtcOscToken {
 }
 
 impl RtcOscToken {
+    /// Create a new instance of the token
+    ///
+    /// Safety: There must never be more than one instance of this token at any
+    /// given time.
     pub(super) unsafe fn new() -> Self {
         Self { regs: Registers }
     }
@@ -66,142 +70,62 @@ impl RtcOscToken {
 
 #[derive(Copy, Clone, PartialEq, Eq)]
 pub enum DynRtcSourceId {
+    OscUlp1k,
     OscUlp32k,
+    Xosc1k,
     Xosc32k,
 }
 
 pub trait RtcSourceId {
     const DYN: DynRtcSourceId;
+    const FREQ: Hertz;
 }
 
+impl RtcSourceId for OscUlp1kId {
+    const DYN: DynRtcSourceId = DynRtcSourceId::OscUlp1k;
+    const FREQ: Hertz = Hertz(1024);
+}
 impl RtcSourceId for OscUlp32kId {
     const DYN: DynRtcSourceId = DynRtcSourceId::OscUlp32k;
+    const FREQ: Hertz = Hertz(32_768);
 }
-
+impl RtcSourceId for Xosc1kId {
+    const DYN: DynRtcSourceId = DynRtcSourceId::Xosc1k;
+    const FREQ: Hertz = Hertz(1024);
+}
 impl RtcSourceId for Xosc32kId {
     const DYN: DynRtcSourceId = DynRtcSourceId::Xosc32k;
-}
-
-//==============================================================================
-// RtcFreq
-//==============================================================================
-
-#[derive(Copy, Clone, PartialEq, Eq)]
-pub enum DynRtcFreq {
-    Freq1k,
-    Freq32k,
-}
-
-pub trait RtcFreq: Sealed {
-    const DYN: DynRtcFreq;
-}
-
-pub enum Freq32k {}
-impl Sealed for Freq32k {}
-impl RtcFreq for Freq32k {
-    const DYN: DynRtcFreq = DynRtcFreq::Freq32k;
-}
-
-pub enum Freq1k {}
-impl Sealed for Freq1k {}
-impl RtcFreq for Freq1k {
-    const DYN: DynRtcFreq = DynRtcFreq::Freq1k;
-}
-
-//==============================================================================
-// RtcDriver
-//==============================================================================
-
-mod private {
-    use super::super::Driver;
-    use super::{DynRtcFreq, RtcSourceId};
-
-    pub trait RtcDriver: Driver
-    where
-        Self::Source: RtcSourceId,
-    {
-        fn enable_rtc_osc(&mut self, freq: DynRtcFreq);
-        fn disable_rtc_osc(&mut self, freq: DynRtcFreq);
-    }
-}
-
-use private::RtcDriver;
-
-impl<N> RtcDriver for Enabled<OscUlp32k, N>
-where
-    N: Counter,
-{
-    fn enable_rtc_osc(&mut self, freq: DynRtcFreq) {
-        use DynRtcFreq::*;
-        match freq {
-            Freq1k => self.0.token.activate_1k(true),
-            Freq32k => self.0.token.activate_32k(true),
-        }
-    }
-    fn disable_rtc_osc(&mut self, freq: DynRtcFreq) {
-        use DynRtcFreq::*;
-        match freq {
-            Freq1k => self.0.token.activate_1k(false),
-            Freq32k => self.0.token.activate_32k(false),
-        }
-    }
-}
-
-impl<M, N> RtcDriver for Enabled<Xosc32k<M>, N>
-where
-    M: xosc32k::Mode,
-    N: Counter,
-{
-    fn enable_rtc_osc(&mut self, freq: DynRtcFreq) {
-        use DynRtcFreq::*;
-        match freq {
-            Freq1k => self.0.token.activate_1k(true),
-            Freq32k => self.0.token.activate_32k(true),
-        }
-    }
-    fn disable_rtc_osc(&mut self, freq: DynRtcFreq) {
-        use DynRtcFreq::*;
-        match freq {
-            Freq1k => self.0.token.activate_1k(false),
-            Freq32k => self.0.token.activate_32k(false),
-        }
-    }
+    const FREQ: Hertz = Hertz(32_768);
 }
 
 //==============================================================================
 // RtcOsc
 //==============================================================================
 
-pub struct RtcOsc<S: RtcSourceId, F: RtcFreq> {
+pub struct RtcOsc<S: RtcSourceId> {
     regs: Registers,
     source: PhantomData<S>,
-    freq: PhantomData<F>,
 }
 
-impl<S: RtcSourceId, F: RtcFreq> RtcOsc<S, F> {
-    pub fn enable<D>(token: RtcOscToken, mut driver: D) -> (Self, D::Inc)
+impl<S: RtcSourceId> RtcOsc<S> {
+    pub fn enable<D>(mut token: RtcOscToken, driver: D) -> (Self, D::Inc)
     where
-        D: RtcDriver<Source = S> + Increment,
+        D: Driver<Source = S> + Increment,
     {
-        let mut regs = token.regs;
-        driver.enable_rtc_osc(F::DYN);
-        regs.set_source_freq(S::DYN, F::DYN);
+        token.regs.set_source_freq(S::DYN);
         let rtc_osc = Self {
-            regs,
+            regs: token.regs,
             source: PhantomData,
-            freq: PhantomData,
         };
         (rtc_osc, driver.inc())
     }
 
-    pub fn disable<D>(self, mut driver: D) -> (RtcOscToken, D::Dec)
+    pub fn disable<D>(mut self, driver: D) -> (RtcOscToken, D::Dec)
     where
-        D: RtcDriver<Source = S> + Decrement,
+        D: Driver<Source = S> + Decrement,
     {
-        let mut regs = self.regs;
-        regs.reset_source_freq();
-        driver.disable_rtc_osc(F::DYN);
-        let token = RtcOscToken { regs };
+        self.regs.reset_source_freq();
+        let token = RtcOscToken { regs: self.regs };
         (token, driver.dec())
     }
 }

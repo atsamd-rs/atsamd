@@ -1,64 +1,50 @@
 //! # Xosc32k - External 32 kHz oscillator
 //!
-//! Provides 32 kHz outputs for [`Gclks`][super::gclk], [`Rtc`][super::rtc]
-//! and [`Dplls`][super::dpll].
-//! Additionally provides 1 kHz output for the [`rtc`][super::rtc] module.
-//!
-//! There are two modes of operation that are available:
-//! - [`Enabled`]`<`[`Xosc32k`]`<`[`CrystalMode`]`, _, _>>`: Xosc32k is being
-//!   powered by an external crystal (2 pins)
-//! - [`Enabled`]`<`[`Xosc32k`]`<`[`ClockMode`]`, _, _>>`: Xosc32k is being
-//!   powered by an external signal (1 pin)
-//!
-//! Signal outputs are independently controllable and also expressed as
-//! typestates
-//! - [`Enabled`]`<`[`Xosc32k`]`<_, `[`Active32k`]`, _>>`: Xosc32k 32 kHz signal
-//!   output is active
-//! - [`Enabled`]`<`[`Xosc32k`]`<_, `[`Inactive32k`]`, _>>`: Xosc32k 32 kHz
-//!   signal output is inactive
-//! - [`Enabled`]`<`[`Xosc32k`]`<_, _, `[`Active1k`]`>>`: Xosc32k 1 kHz signal
-//!   output is active
-//! - [`Enabled`]`<`[`Xosc32k`]`<_, _, `[`Inactive1k`]`>>`: Xosc32k 1 kHz signal
-//!   output is inactive
-//!
-//! To activate outputs, see:
-//! - [`Enabled<Xosc32k>::activate_32k`]
-//! - [`Enabled<Xosc32k>::activate_1k`]
-//!
-//! To construct a Xosc32k in a proper mode use an appropriate construction
-//! function:
-//! - [`Xosc32k::from_clock`]
-//! - [`Xosc32k::from_crystal`]
-//! Then, enable it with a [`Xosc32k::enable`] function call
+
+#![allow(missing_docs)]
 
 use typenum::U0;
 
 use crate::pac::osc32kctrl::xosc32k::{CGM_A, STARTUP_A};
 use crate::pac::osc32kctrl::{RegisterBlock, STATUS, XOSC32K};
 
-use crate::gpio::v2::{AnyPin, FloatingDisabled, Pin, PA00, PA01};
-use crate::time::{Hertz, U32Ext};
-use crate::typelevel::{Counter, Sealed};
+use crate::gpio::v2::{FloatingDisabled, Pin, PA00, PA01};
+use crate::time::Hertz;
+use crate::typelevel::{Counter, Decrement, Increment, PrivateDecrement, PrivateIncrement, Sealed};
 
 use super::{Driver, Enabled};
 
 //==============================================================================
-// Xosc32kToken
+// Tokens
 //==============================================================================
 
-/// Token struct that is essential in order to construct an instance of an
-/// [`Xosc32k`].
-pub struct Xosc32kToken {
-    __: (),
+pub struct XoscBaseToken(());
+
+pub struct Xosc1kToken(());
+
+pub struct Xosc32kToken(());
+
+pub struct Tokens {
+    pub base: XoscBaseToken,
+    pub xosc1k: Xosc1kToken,
+    pub xosc32k: Xosc32kToken,
 }
 
-impl Xosc32kToken {
-    /// Create a new instance of [`Xosc32kToken`]
-    #[inline]
+impl Tokens {
+    /// Create a new set of tokens
+    ///
+    /// Safety: There must never be more than one instance of a token at any
+    /// given time.
     pub(super) unsafe fn new() -> Self {
-        Self { __: () }
+        Self {
+            base: XoscBaseToken(()),
+            xosc1k: Xosc1kToken(()),
+            xosc32k: Xosc32kToken(()),
+        }
     }
+}
 
+impl XoscBaseToken {
     #[inline]
     fn osc32kctrl(&self) -> &RegisterBlock {
         unsafe { &*crate::pac::OSC32KCTRL::ptr() }
@@ -75,10 +61,10 @@ impl Xosc32kToken {
     }
 
     #[inline]
-    fn set_gain_mode(&mut self, high_speed: bool) {
-        let variant = match high_speed {
-            false => CGM_A::XT,
-            true => CGM_A::HS,
+    fn set_control_gain_mode(&mut self, cgm: ControlGainMode) {
+        let variant = match cgm {
+            ControlGainMode::Standard => CGM_A::XT,
+            ControlGainMode::HighSpeed => CGM_A::HS,
         };
         self.xosc32k().modify(|_, w| w.cgm().variant(variant));
     }
@@ -99,23 +85,18 @@ impl Xosc32kToken {
     }
 
     #[inline]
-    pub(super) fn activate_1k(&mut self, enabled: bool) {
+    fn enable_1k(&mut self, enabled: bool) {
         self.xosc32k().modify(|_, w| w.en1k().bit(enabled));
     }
 
     #[inline]
-    pub(super) fn activate_32k(&mut self, enabled: bool) {
+    fn enable_32k(&mut self, enabled: bool) {
         self.xosc32k().modify(|_, w| w.en32k().bit(enabled));
     }
 
     #[inline]
-    fn from_clock(&mut self) {
-        self.xosc32k().modify(|_, w| w.xtalen().bit(false));
-    }
-
-    #[inline]
-    fn from_crystal(&mut self) {
-        self.xosc32k().modify(|_, w| w.xtalen().bit(true));
+    fn set_xtalen(&mut self, xtalen: bool) {
+        self.xosc32k().modify(|_, w| w.xtalen().bit(xtalen));
     }
 
     #[inline]
@@ -123,7 +104,6 @@ impl Xosc32kToken {
         self.xosc32k().modify(|_, w| w.enable().bit(true));
     }
 
-    #[allow(dead_code)]
     #[inline]
     fn wrtlock(&mut self) {
         self.xosc32k().modify(|_, w| w.wrtlock().bit(true));
@@ -144,57 +124,89 @@ impl Xosc32kToken {
 // Aliases
 //==============================================================================
 
-/// For how long should the clock output be masked to prevent
-/// unstable clocking output
+/// Clock start-up time, in cycles
+///
+/// At start-up, the XOSC32K clock output is masked to guard against clock
+/// instability. This `enum` represents the duration of that start-up time, in
+/// clock cycles.
 pub type StartUp32k = STARTUP_A;
 
-/// Pin alias type to ensure proper GPIO is used
+/// [`Pin`] alias for the XOSC32K input pin
+///
+/// This pin is required in both [`ClockMode`] and [`CrystalMode`]
 pub type XIn32 = Pin<PA00, FloatingDisabled>;
 
-/// Pin alias type to ensure proper GPIO is used
+/// [`Pin`] alias for the XOSC32K output pin
+///
+/// This pin is only required in [`CrystalMode`]
 pub type XOut32 = Pin<PA01, FloatingDisabled>;
 
 //==============================================================================
-// Mode structure for Xosc32k
+// ControlGainMode
 //==============================================================================
 
-/// Trait that defines a mode [`Xosc32k`] is operating in
-pub trait Mode: Sealed {}
+#[derive(Copy, Clone, PartialEq, Eq)]
+pub enum ControlGainMode {
+    Standard,
+    HighSpeed,
+}
 
-/// Struct representing a clock mode for [`Xosc32k`]
+//==============================================================================
+// Mode
+//==============================================================================
+
+/// Type-level enum for the XOSC32K operation mode
 ///
-/// In that mode [`Xosc32k`] requires a single clocking signal
-pub struct ClockMode {}
-impl Mode for ClockMode {}
+/// The XOSC32K clock can be sourced from an external clock or a crystal
+/// oscillator. The [`ClockMode`] and [`CrystalMode`] types act as type-level
+/// variants. See the documentation on [type-level enums] for more details on
+/// the pattern.
+///
+/// [type-level enums]: crate::typelevel#type-level-enum
+pub trait Mode: Sealed {
+    const XTALEN: bool;
+    fn control_gain_mode(&self) -> ControlGainMode;
+}
+
+/// Type-level variant of the XOSC32K operating [`Mode`]
+///
+/// In this `Mode`, the XOSC32K clock will be sourced from an external clock.
+/// See the documentation on [type-level enums] for more details on the pattern.
+///
+/// [type-level enums]: crate::typelevel#type-level-enum
+pub struct ClockMode;
 impl Sealed for ClockMode {}
+impl Mode for ClockMode {
+    const XTALEN: bool = false;
+    fn control_gain_mode(&self) -> ControlGainMode {
+        ControlGainMode::Standard
+    }
+}
 
-/// Struct representing a crystal mode for [`Xosc32k`]
+/// Type-level variant of the XOSC32K operating [`Mode`]
 ///
-/// In that mode [`Xosc32k`] requires two signals coming from an external
-/// crystal
+/// In this `Mode`, the XOSC32K clock will be sourced from a crystal oscillator.
+/// See the documentation on [type-level enums] for more details on the pattern.
+///
+/// [type-level enums]: crate::typelevel#type-level-enum
 pub struct CrystalMode {
     xout32: XOut32,
-    /// Control external crystal tuning
-    control_gain_mode_high_speed: bool,
+    cgm: ControlGainMode,
 }
-impl Mode for CrystalMode {}
 impl Sealed for CrystalMode {}
+impl Mode for CrystalMode {
+    const XTALEN: bool = true;
+    fn control_gain_mode(&self) -> ControlGainMode {
+        self.cgm
+    }
+}
 
 //==============================================================================
-// Xosc32k
+// XoscBase
 //==============================================================================
 
-/// Struct representing a disabled external oscillator
-///
-/// It is generic over:
-/// - a mode of operation (available modes: [`ClockMode`], [`CrystalMode`])
-/// - An output state of a 32 kHz signal ([`Active32k`]/[`Inactive32k`])
-/// - An output state of a 1 kHz signal ([`Active1k`]/[`Inactive1k`])
-pub struct Xosc32k<M>
-where
-    M: Mode,
-{
-    pub(super) token: Xosc32kToken,
+pub struct XoscBase<M: Mode> {
+    token: XoscBaseToken,
     xin32: XIn32,
     mode: M,
     run_standby: bool,
@@ -202,10 +214,73 @@ where
     start_up_masking: StartUp32k,
 }
 
-impl<M: Mode> Xosc32k<M> {
+impl XoscBase<ClockMode> {
+    /// Initialize the XOSC32K from an external clock signal
+    ///
+    /// This mode only uses the [`XIn32`] [`Pin`]. The [`XOut32`] `Pin` is still
+    /// available to be used as GPIO.
+    #[inline]
+    pub fn from_clock(token: XoscBaseToken, xin32: impl Into<XIn32>) -> Self {
+        let xin32 = xin32.into().into_floating_disabled();
+        Self::new(token, xin32, ClockMode)
+    }
+
+    /// Consume the [`XoscBase`] and return its token and the [`XIn32`] [`Pin`]
+    #[inline]
+    pub fn free(self) -> (XoscBaseToken, XIn32) {
+        (self.token, self.xin32)
+    }
+}
+
+impl XoscBase<CrystalMode> {
+    /// Initialize the XOSC32K from a crystal oscillator
+    ///
+    /// This mode only uses both the [`XIn32`] [`Pin`] and the [`XOut32`] `Pin`.
+    #[inline]
+    pub fn from_crystal(
+        token: XoscBaseToken,
+        xin32: impl Into<XIn32>,
+        xout32: impl Into<XOut32>,
+    ) -> Self {
+        let xin32 = xin32.into().into_floating_disabled();
+        let xout32 = xout32.into().into_floating_disabled();
+        let cgm = ControlGainMode::Standard;
+        let mode = CrystalMode { xout32, cgm };
+        Self::new(token, xin32, mode)
+    }
+
+    /// Set the crystal oscillator control gain mode
+    ///
+    /// Pick between high speed or low power consumption
+    #[inline]
+    pub fn control_gain_mode(mut self, cgm: ControlGainMode) -> Self {
+        self.mode.cgm = cgm;
+        self
+    }
+
+    /// Consume the [`XoscBase`] and return its token and both GPIO [`Pin`]s
+    #[inline]
+    pub fn free(self) -> (XoscBaseToken, XIn32, XOut32) {
+        (self.token, self.xin32, self.mode.xout32)
+    }
+}
+
+impl<M: Mode> XoscBase<M> {
+    #[inline]
+    fn new(token: XoscBaseToken, xin32: XIn32, mode: M) -> Self {
+        Self {
+            token,
+            xin32,
+            mode,
+            run_standby: false,
+            on_demand_mode: true,
+            start_up_masking: StartUp32k::CYCLE2048,
+        }
+    }
+
     /// Set for how long the clock output should be masked during startup
     #[inline]
-    pub fn set_start_up(mut self, start_up: StartUp32k) -> Self {
+    pub fn start_up(mut self, start_up: StartUp32k) -> Self {
         self.start_up_masking = start_up;
         self
     }
@@ -213,136 +288,80 @@ impl<M: Mode> Xosc32k<M> {
     /// Controls how [`Xosc32k`] behaves when a peripheral clock request is
     /// detected
     #[inline]
-    pub fn set_on_demand(mut self, on_demand: bool) -> Self {
+    pub fn on_demand(mut self, on_demand: bool) -> Self {
         self.on_demand_mode = on_demand;
         self
     }
 
     /// Controls how [`Xosc32k`] should behave during standby
     #[inline]
-    pub fn set_run_standby(mut self, run_standby: bool) -> Self {
+    pub fn run_standby(mut self, run_standby: bool) -> Self {
         self.run_standby = run_standby;
         self
     }
-    /// Busy wait until the clock source is ready
+
+    /// Wait until the clock source is ready
     #[inline]
     pub fn wait_ready(&self) {
         self.token.wait_ready();
     }
-}
 
-impl Xosc32k<ClockMode> {
-    /// Construct a [`Xosc32k`] from a single pin oscillator clock signal
+    /// Set the write-lock, which will last until POR
+    ///
+    /// This function sets the write-lock bit, which lasts until power-on reset.
+    /// It also consumes and drops the [`XoscBase`], which destroys API access
+    /// to the registers.
+    ///
+    /// **NOTE:** Because the `XoscBase` is not enabled, calling `write_lock`
+    /// will lock both the 1 kHz and 32 kHz clocks in their disabled state.
     #[inline]
-    pub fn from_clock(token: Xosc32kToken, xin32: impl AnyPin<Id = PA00>) -> Self {
-        // Configure input pin
-        let xin32 = xin32.into().into_floating_disabled();
-        Self {
-            token,
-            xin32,
-            mode: ClockMode {},
-            run_standby: false,
-            on_demand_mode: true,
-            start_up_masking: StartUp32k::CYCLE2048,
-        }
+    pub fn write_lock(mut self) {
+        self.token.wrtlock();
     }
 
-    /// Enable the [`Xosc32k`], allowing it to be used by other peripherals
-    ///
-    /// To output a 32 kHz clock signal the output must be activated with
-    /// the method: [`Enabled<Xosc32k>::activate_32k`]
     #[inline]
     pub fn enable(mut self) -> Enabled<Self, U0> {
-        self.token.from_clock();
+        self.token.set_xtalen(M::XTALEN);
         self.token.set_on_demand(self.on_demand_mode);
         self.token.set_run_standby(self.run_standby);
         self.token.set_start_up(self.start_up_masking);
-        self.token.enable();
-        Enabled::new(self)
-    }
-
-    /// Deconstruct the [`Xosc32k`] into a Xosc32kToken and the associated GPIO
-    /// pin
-    #[inline]
-    pub fn free(self) -> (Xosc32kToken, XIn32) {
-        (self.token, self.xin32)
-    }
-}
-
-impl Xosc32k<CrystalMode> {
-    /// Construct a [`Xosc32k`] from a two pin crystal oscillator signal
-    #[inline]
-    pub fn from_crystal(
-        token: Xosc32kToken,
-        xin32: impl AnyPin<Id = PA00>,
-        xout32: impl AnyPin<Id = PA01>,
-    ) -> Self {
-        // Configure input pins
-        let xin32 = xin32.into().into_floating_disabled();
-        let xout32 = xout32.into().into_floating_disabled();
-        // Set to default reset value
-        let control_gain_mode_high_speed = false;
-        Self {
-            token,
-            xin32,
-            mode: CrystalMode {
-                xout32,
-                control_gain_mode_high_speed,
-            },
-            run_standby: false,
-            on_demand_mode: true,
-            start_up_masking: StartUp32k::CYCLE2048,
-        }
-    }
-
-    /// Crystal oscillator gain
-    ///
-    /// Pick between high speed or low power consumption
-    #[inline]
-    pub fn set_gain_mode(mut self, high_speed: bool) -> Self {
-        self.mode.control_gain_mode_high_speed = high_speed;
-        self
-    }
-
-    /// Enable the [`Xosc32k`], allowing it to be used by other peripherals
-    ///
-    /// To output a 32 kHz clock signal the output must be activated with
-    /// the method: [`Enabled<Xosc32k>::activate_32k`]
-    #[inline]
-    pub fn enable(mut self) -> Enabled<Self, U0> {
-        self.token.from_crystal();
-        self.token.set_on_demand(self.on_demand_mode);
-        self.token.set_run_standby(self.run_standby);
-        self.token.set_start_up(self.start_up_masking);
-
         self.token
-            .set_gain_mode(self.mode.control_gain_mode_high_speed);
+            .set_control_gain_mode(self.mode.control_gain_mode());
         self.token.enable();
         Enabled::new(self)
     }
-
-    /// Deconstruct the [`Xosc32k`] into a Xosc32kToken and the two associated
-    /// GPIO pins
-    #[inline]
-    pub fn free(self) -> (Xosc32kToken, XIn32, XOut32) {
-        (self.token, self.xin32, self.mode.xout32)
-    }
 }
 
-impl<M: Mode> Enabled<Xosc32k<M>, U0> {
-    /// Disable the enabled [`Xosc32k`]
+impl<M: Mode, N: Counter> Enabled<XoscBase<M>, N> {
+    /// Set the write-lock, which will last until POR
+    ///
+    /// This function sets the write-lock bit, which lasts until power-on reset.
+    /// It also consumes and drops the [`XoscBase`], which destroys API access
+    /// to the registers.
     #[inline]
-    pub fn disable(mut self) -> Xosc32k<M> {
-        self.0.token.activate_32k(false);
-        self.0.token.activate_1k(false);
+    pub fn write_lock(mut self) {
+        self.0.token.wrtlock();
+    }
+
+    pub fn disable(mut self) -> XoscBase<M> {
         self.0.token.disable();
         self.0
     }
 }
 
 //==============================================================================
-// Xosc32kId
+// Ids
 //==============================================================================
+
+/// Type-level variant representing the identity of the XOSC1K clock
+///
+/// This type is a member of several [type-level enums]. See the documentation
+/// on [type-level enums] for more details on the pattern.
+///
+/// [type-level enums]: crate::typelevel#type-level-enum
+pub enum Xosc1kId {}
+
+impl Sealed for Xosc1kId {}
 
 /// Type-level variant representing the identity of the XOSC32K clock
 ///
@@ -355,18 +374,117 @@ pub enum Xosc32kId {}
 impl Sealed for Xosc32kId {}
 
 //==============================================================================
-// Driver
+// Xosc1k
 //==============================================================================
 
-impl<M, N> Driver for Enabled<Xosc32k<M>, N>
-where
-    M: Mode,
-    N: Counter,
-{
+pub struct Xosc1k {
+    token: Xosc1kToken,
+}
+
+impl Xosc1k {
+    /// Enable the 1 kHz output from XOSC32K
+    ///
+    /// This clock is derived from the [`Enabled`] [`XoscBase`] clock.
+    ///
+    /// ```
+    /// let token = tokens.xosc32k.base
+    /// let base = XoscBase::from_clock(token, pins.pa00).enable();
+    /// let (xosc1k, base) = Xosc1k::enable(tokens.xosc32k.xosc1k, base);
+    /// ```
+    #[inline]
+    pub fn enable<M, N>(
+        token: Xosc1kToken,
+        mut base: Enabled<XoscBase<M>, N>,
+    ) -> (Enabled<Self, U0>, Enabled<XoscBase<M>, N::Inc>)
+    where
+        M: Mode,
+        N: Increment,
+    {
+        base.0.token.enable_1k(true);
+        (Enabled::new(Self { token }), base.inc())
+    }
+}
+
+impl Enabled<Xosc1k, U0> {
+    /// Disable the 1 kHz output from XOSC32K
+    ///
+    /// Doing so will clear one usage of the [`Enabled`] [`XoscBase`] clock
+    #[inline]
+    pub fn disable<M, N>(
+        self,
+        mut base: Enabled<XoscBase<M>, N>,
+    ) -> (Xosc1kToken, Enabled<XoscBase<M>, N::Dec>)
+    where
+        M: Mode,
+        N: Decrement,
+    {
+        base.0.token.enable_1k(false);
+        (self.0.token, base.dec())
+    }
+}
+
+impl<N: Counter> Driver for Enabled<Xosc1k, N> {
+    type Source = Xosc1kId;
+
+    fn freq(&self) -> Hertz {
+        Hertz(1024)
+    }
+}
+
+//==============================================================================
+// Xosc32k
+//==============================================================================
+
+pub struct Xosc32k {
+    token: Xosc32kToken,
+}
+
+impl Xosc32k {
+    /// Enable the 32 kHz output from XOSC32K
+    ///
+    /// This clock is derived from the [`Enabled`] [`XoscBase`] clock.
+    ///
+    /// ```
+    /// let token = tokens.xosc32k.base
+    /// let base = XoscBase::from_clock(token, pins.pa00).enable();
+    /// let (xosc32k, base) = Xosc1k::enable(tokens.xosc32k.xosc32k, base);
+    /// ```
+    #[inline]
+    pub fn enable<M, N>(
+        token: Xosc32kToken,
+        mut base: Enabled<XoscBase<M>, N>,
+    ) -> (Enabled<Self, U0>, Enabled<XoscBase<M>, N::Inc>)
+    where
+        M: Mode,
+        N: Increment,
+    {
+        base.0.token.enable_32k(true);
+        (Enabled::new(Self { token }), base.inc())
+    }
+}
+
+impl Enabled<Xosc32k, U0> {
+    /// Disable the 32 kHz output from XOSC32K
+    ///
+    /// Doing so will clear one usage of the [`Enabled`] [`XoscBase`] clock
+    #[inline]
+    pub fn disable<M, N>(
+        self,
+        mut base: Enabled<XoscBase<M>, N>,
+    ) -> (Xosc32kToken, Enabled<XoscBase<M>, N::Dec>)
+    where
+        M: Mode,
+        N: Decrement,
+    {
+        base.0.token.enable_32k(false);
+        (self.0.token, base.dec())
+    }
+}
+
+impl<N: Counter> Driver for Enabled<Xosc32k, N> {
     type Source = Xosc32kId;
 
-    #[inline]
     fn freq(&self) -> Hertz {
-        32768.hz()
+        Hertz(32_768)
     }
 }
