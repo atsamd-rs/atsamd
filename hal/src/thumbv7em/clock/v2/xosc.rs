@@ -26,7 +26,7 @@ use typenum::U0;
 use crate::pac::oscctrl::xoscctrl::{CFDPRESC_A, STARTUP_A};
 use crate::pac::oscctrl::{RegisterBlock, XOSCCTRL};
 
-use crate::gpio::v2::{AnyPin, FloatingDisabled, Pin, PinId, PA14, PA15, PB22, PB23};
+use crate::gpio::v2::{FloatingDisabled, Pin, PinId, PA14, PA15, PB22, PB23};
 use crate::time::Hertz;
 use crate::typelevel::{Counter, Sealed};
 
@@ -100,9 +100,13 @@ impl XoscId for XoscId1 {
 ///
 /// However, the datasheet notes that the next lower setting can be used if the
 /// capacitive load is particularly small, which would save power.
+///
+/// The `Zero` variant will leave `IMULT` and `IPTAT` at their default settings
+/// of zero.
 #[derive(Clone, Copy, PartialEq, Eq)]
 #[allow(missing_docs)]
 pub enum CrystalCurrent {
+    Zero,
     Low,
     Medium,
     High,
@@ -114,6 +118,7 @@ impl CrystalCurrent {
     #[inline]
     fn imult(&self) -> u8 {
         match self {
+            Self::Zero => 0,
             Self::Low => 3,
             Self::Medium => 4,
             Self::High => 5,
@@ -125,26 +130,11 @@ impl CrystalCurrent {
     #[inline]
     fn iptat(&self) -> u8 {
         match self {
+            Self::Zero => 0,
             Self::Low => 2,
             Self::Medium => 3,
             Self::High => 3,
             Self::ExtraHigh => 3,
-        }
-    }
-}
-
-impl From<Hertz> for CrystalCurrent {
-    fn from(freq: Hertz) -> Self {
-        use CrystalCurrent::*;
-        match freq.0 {
-            _freq @ 8_000_000 => Low,
-            _freq @ 8_000_001..=16_000_000 => Medium,
-            _freq @ 16_000_001..=24_000_000 => High,
-            _freq @ 24_000_001..=48_000_000 => ExtraHigh,
-            // The crystal frequency should be known statically.
-            // I see no reason to return a `Result`, because the user would
-            // have no meaningful way to handle it.
-            _ => panic!("Invalid crystal frequency"),
         }
     }
 }
@@ -273,30 +263,8 @@ pub type XIn<X> = Pin<<X as XoscId>::XIn, FloatingDisabled>;
 pub type XOut<X> = Pin<<X as XoscId>::XOut, FloatingDisabled>;
 
 //==============================================================================
-// Mode structure for Xosc
+// Mode
 //==============================================================================
-
-mod private {
-    use super::{CrystalCurrent, Sealed, XOut, XoscId, XoscToken};
-
-    /// Private trait to restrict access to the `configure` function
-    pub trait Mode<X: XoscId>: Sealed {
-        const FROM_CRYSTAL: bool;
-        type Config;
-        fn configure(token: &mut XoscToken<X>, config: &Self::Config);
-    }
-
-    /// Implementation detail of [`CrystalMode`]
-    pub struct CrystalConfig<X: XoscId> {
-        pub xout: XOut<X>,
-        pub current: CrystalCurrent,
-        pub amplitude_loop_control: bool,
-        pub low_buf_gain: bool,
-    }
-}
-
-use private::CrystalConfig;
-use private::Mode as PrivateMode;
 
 /// Type-level `enum` for the [`Xosc`] operation mode
 ///
@@ -307,9 +275,18 @@ use private::Mode as PrivateMode;
 /// See the [type-level enum] documentation for more details on the pattern.
 ///
 /// [type-level enum]: crate::typelevel#type-level-enum
-pub trait Mode<X: XoscId>: PrivateMode<X> {}
-
-impl<X: XoscId, M: PrivateMode<X>> Mode<X> for M {}
+pub trait Mode<X: XoscId>: Sealed {
+    /// `XTALEN` field for the corresponding mode
+    const XTALEN: bool;
+    /// Corresponding [`XOut`] type, if any
+    type XOut;
+    /// Get the [`CrystalCurrent`]
+    fn current(&self) -> CrystalCurrent;
+    /// Get the amplitude loop control bit
+    fn amplitude_loop_control(&self) -> bool;
+    /// Get the low buf gain bit
+    fn low_buf_gain(&self) -> bool;
+}
 
 /// Type-level variant of the [`Xosc`] operation [`Mode`]
 ///
@@ -318,12 +295,25 @@ impl<X: XoscId, M: PrivateMode<X>> Mode<X> for M {}
 /// See the [type-level enum] documentation for more details on the pattern.
 ///
 /// [type-level enum]: crate::typelevel#type-level-enum
-pub enum ClockMode {}
+pub struct ClockMode;
+
 impl Sealed for ClockMode {}
-impl<X: XoscId> PrivateMode<X> for ClockMode {
-    const FROM_CRYSTAL: bool = false;
-    type Config = ();
-    fn configure(_: &mut XoscToken<X>, _: &Self::Config) {}
+
+impl<X: XoscId> Mode<X> for ClockMode {
+    const XTALEN: bool = false;
+    type XOut = ();
+    #[inline]
+    fn current(&self) -> CrystalCurrent {
+        CrystalCurrent::Zero
+    }
+    #[inline]
+    fn amplitude_loop_control(&self) -> bool {
+        false
+    }
+    #[inline]
+    fn low_buf_gain(&self) -> bool {
+        false
+    }
 }
 
 /// Type-level variant of the [`Xosc`] operation [`Mode`]
@@ -333,15 +323,28 @@ impl<X: XoscId> PrivateMode<X> for ClockMode {
 /// See the [type-level enum] documentation for more details on the pattern.
 ///
 /// [type-level enum]: crate::typelevel#type-level-enum
-pub enum CrystalMode {}
+pub struct CrystalMode {
+    current: CrystalCurrent,
+    amplitude_loop_control: bool,
+    low_buf_gain: bool,
+}
+
 impl Sealed for CrystalMode {}
-impl<X: XoscId> PrivateMode<X> for CrystalMode {
-    const FROM_CRYSTAL: bool = true;
-    type Config = CrystalConfig<X>;
-    fn configure(token: &mut XoscToken<X>, config: &Self::Config) {
-        token.set_current(config.current);
-        token.set_amplitude_loop_control(config.amplitude_loop_control);
-        token.set_low_buf_gain(config.low_buf_gain);
+
+impl<X: XoscId> Mode<X> for CrystalMode {
+    const XTALEN: bool = true;
+    type XOut = XOut<X>;
+    #[inline]
+    fn current(&self) -> CrystalCurrent {
+        self.current
+    }
+    #[inline]
+    fn amplitude_loop_control(&self) -> bool {
+        self.amplitude_loop_control
+    }
+    #[inline]
+    fn low_buf_gain(&self) -> bool {
+        self.low_buf_gain
     }
 }
 
@@ -361,8 +364,9 @@ where
     M: Mode<X>,
 {
     token: XoscToken<X>,
-    config: M::Config,
+    mode: M,
     xin: XIn<X>,
+    xout: M::XOut,
     src_freq: Hertz,
     start_up_cycles: StartUp,
     on_demand: bool,
@@ -432,12 +436,15 @@ where
     #[inline]
     pub fn enable(mut self) -> Enabled<Xosc<X, M>, U0> {
         self.token.reset();
-        self.token.set_source(M::FROM_CRYSTAL);
+        self.token.set_source(M::XTALEN);
         self.token.set_start_up(self.start_up_cycles);
         self.token.set_on_demand(self.on_demand);
         self.token.set_run_standby(self.run_standby);
         self.token.set_clock_switch(self.clock_switch);
-        M::configure(&mut self.token, &self.config);
+        self.token
+            .set_amplitude_loop_control(self.mode.amplitude_loop_control());
+        self.token.set_low_buf_gain(self.mode.low_buf_gain());
+        self.token.set_current(self.mode.current());
         self.token.enable();
         Enabled::new(self)
     }
@@ -448,7 +455,7 @@ impl<X: XoscId> Xosc<X, ClockMode> {
     #[inline]
     pub fn from_clock(
         token: XoscToken<X>,
-        xin: impl AnyPin<Id = X::XIn>,
+        xin: impl Into<XIn<X>>,
         src_freq: impl Into<Hertz>,
     ) -> Self {
         let xin = xin.into().into_floating_disabled();
@@ -459,8 +466,9 @@ impl<X: XoscId> Xosc<X, ClockMode> {
         let clock_switch = false;
         Self {
             token,
-            config: (),
+            mode: ClockMode,
             xin,
+            xout: (),
             src_freq: src_freq.into(),
             start_up_cycles,
             on_demand,
@@ -487,15 +495,14 @@ impl<X: XoscId> Xosc<X, CrystalMode> {
     #[inline]
     pub fn from_crystal(
         token: XoscToken<X>,
-        xin: impl AnyPin<Id = X::XIn>,
-        xout: impl AnyPin<Id = X::XOut>,
+        xin: impl Into<XIn<X>>,
+        xout: impl Into<XOut<X>>,
         src_freq: impl Into<Hertz>,
+        current: CrystalCurrent,
     ) -> Self {
-        let xin = xin.into().into_floating_disabled();
-        let xout = xout.into().into_floating_disabled();
-
+        let xin = xin.into();
+        let xout = xout.into();
         let src_freq = src_freq.into();
-        let current = src_freq.into();
 
         // Lowers power usage and protects the crystal
         let amplitude_loop_control = true;
@@ -506,16 +513,16 @@ impl<X: XoscId> Xosc<X, CrystalMode> {
         let on_demand = true;
         let run_standby = false;
         let clock_switch = false;
-        let config = CrystalConfig {
-            xout,
+        let mode = CrystalMode {
             current,
             amplitude_loop_control,
             low_buf_gain,
         };
         Self {
             token,
-            config,
+            mode,
             xin,
+            xout,
             src_freq,
             start_up_cycles,
             on_demand,
@@ -529,7 +536,7 @@ impl<X: XoscId> Xosc<X, CrystalMode> {
     /// See [CrystalCurrent] for possible values
     #[inline]
     pub fn set_current(mut self, current: CrystalCurrent) -> Self {
-        self.config.current = current;
+        self.mode.current = current;
         self
     }
 
@@ -539,7 +546,7 @@ impl<X: XoscId> Xosc<X, CrystalMode> {
     /// and lowers power consumption. See datasheet c. 54.13 p. 1811
     #[inline]
     pub fn set_amplitude_loop_control(mut self, enalc: bool) -> Self {
-        self.config.amplitude_loop_control = enalc;
+        self.mode.amplitude_loop_control = enalc;
         self
     }
 
@@ -550,14 +557,14 @@ impl<X: XoscId> Xosc<X, CrystalMode> {
     /// oscillators. Can be used to solve stability issues.
     #[inline]
     pub fn set_low_buf_gain(mut self, lowbufgain: bool) -> Self {
-        self.config.low_buf_gain = lowbufgain;
+        self.mode.low_buf_gain = lowbufgain;
         self
     }
 
     /// Deconstruct the Xosc and return the inner XoscToken
     #[inline]
     pub fn free(self) -> (XoscToken<X>, XIn<X>, XOut<X>) {
-        (self.token, self.xin, self.config.xout)
+        (self.token, self.xin, self.xout)
     }
 }
 
