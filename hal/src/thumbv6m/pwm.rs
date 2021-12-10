@@ -93,7 +93,7 @@ impl $TYPE {
         let count = self.tc.count16();
         let divisor = count.ctrla.read().prescaler().bits();
         let top = count.cc[0].read().cc().bits();
-        Hertz(self.clock_freq.0 / divisor as u32 / (top + 1) as u32)
+        Hertz(self.clock_freq.0 / (1u32 << divisor) / (top + 1) as u32)
     }
 }
 
@@ -229,7 +229,7 @@ impl Pwm for $TYPE {
     fn get_period(&self) -> Self::Time {
         let divisor = self.tcc.ctrla.read().prescaler().bits();
         let top = self.tcc.per().read().bits();
-        Hertz(self.clock_freq.0 / divisor as u32 / (top + 1) as u32)
+        Hertz(self.clock_freq.0 / (1u32 << divisor) / (top + 1) as u32)
     }
 
     fn get_duty(&self, channel: Self::Channel) -> Self::Duty {
