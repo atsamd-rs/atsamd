@@ -31,10 +31,6 @@ use rand_core::{CryptoRng, RngCore};
 
 /// This macro linearly copies provided iterable slices/arrays to CryptoRAM and
 /// assigns slices to provided declared local variables from outer scope
-///
-/// All parameters are stored in big endian format. PUKCC algorithms require
-/// little endian format. This is solved by copying data in reverse within a
-/// macro.
 macro_rules! copy_to_cryptoram {
         (
             $crypto_ram:expr,
@@ -272,8 +268,7 @@ impl Pukcc {
         );
         let mut crypto_ram = unsafe { c_abi::CryptoRam::new() };
         // 32-byte padding with zeroes on a MSB side of every parameter is required by
-        // PUKCC algorithms. Endianess of parameters themselves is resolved
-        // within macro. Little endianess requires padding *after* a parameter
+        // PUKCC algorithms. Little endianess requires padding *after* a parameter
         // as MSB is placed on high addresses.
 
         // 32-byte zero padding for curve parameters should be included in original
@@ -293,9 +288,9 @@ impl Pukcc {
             (__, repeat(0).take(4)),
             (k_cr, k.iter().cloned().rev()),
             (__, repeat(0).take(4)),
-            // Workspace is just marked with a zero length slice just to get its address. As
-            // it is placed at the end, idea is that algorithm will use whatever amount of
-            // memory it needs
+            // Workspace is just marked with a zero length iterator just to get its address.
+            // As it is placed at the end, idea is that algorithm will use whatever amount
+            // of memory it needs
             (workspace, 0..0)
         };
         let mut pukcl_params = c_abi::PukclParams::default();
@@ -419,8 +414,7 @@ impl Pukcc {
         }
         let mut crypto_ram = unsafe { c_abi::CryptoRam::new() };
         // 32-byte padding with zeroes on a MSB side of every parameter is required by
-        // PUKCC algorithms. Endianess of parameters themselves is resolved
-        // within macro. Little endianess requires padding *after* a parameter
+        // PUKCC algorithms. Little endianess requires padding *after* a parameter
         // as MSB is placed on high addresses.
 
         // 32-byte zero padding for curve parameters should be included in original
@@ -455,9 +449,9 @@ impl Pukcc {
             // ..[ Z coordinate: (little endian) ][ 0_u32 ] == 1
             (__, once(1).chain(repeat(0).take((C::MOD_LENGTH - 1).into()))),
             (__, repeat(0).take(4)),
-            // Workspace is just marked with a zero length slice just to get its address. As
-            // it is placed at the end, idea is that algorithm will use whatever amount of
-            // memory it needs
+            // Workspace is just marked with a zero length iterator just to get its address.
+            // As it is placed at the end, idea is that algorithm will use whatever amount
+            // of memory it needs
             (workspace, 0..0)
         };
         let mut pukcl_params = c_abi::PukclParams::default();
@@ -495,7 +489,7 @@ impl Pukcc {
     /// Input parameters:
     /// - `input`: `&[u8]`
     ///     - Requirements:
-    ///         - `len(input) < len(modulus)`
+    ///         - `len(input) <= len(modulus)`
     ///     - Message, hash, any slice of data that will undergo modular
     ///       exponentiation
     /// - `exponent`: `&[u8]`
@@ -629,6 +623,9 @@ impl Pukcc {
         let padding_for_exponent = padding_for_len(exponent.len());
 
         let mut crypto_ram = unsafe { c_abi::CryptoRam::new() };
+        // 32-byte padding with zeroes on a MSB side of every parameter is required by
+        // PUKCC algorithms (unless said otherwise). Little endianess requires padding
+        // *after* a parameter as MSB is placed on high addresses.
         copy_to_cryptoram! {
             crypto_ram,
             (modulus_cr, modulus.iter().cloned().rev()),
@@ -645,6 +642,9 @@ impl Pukcc {
             (exponent_cr, repeat(0).take(4)),
             (__, exponent.iter().cloned().rev()),
             (__, repeat(0).take(padding_for_exponent)),
+            // Workspace is just marked with a zero length slice just to get its address. As
+            // it is placed at the end, idea is that algorithm will use whatever amount of
+            // memory it needs
             (workspace, 0..0)
         };
         // Table 43-52; 43.3.5.2.5 in DS60001507F
@@ -664,7 +664,7 @@ impl Pukcc {
         }
         let mut pukcl_params = c_abi::PukclParams::default();
         unsafe {
-            // Note: `exponent` outside of Crypto RAM is currently not supported
+            // Note: `exponent` outside of Crypto RAM is not supported
             pukcl_params.header.u2Option = PUKCL_EXPMOD_EXPINPUKCCRAM
                 | window_size.get_windows_size_mask()
                 | mode.get_mode_mask();
