@@ -435,3 +435,11 @@ impl InIoSet<UndocIoSet1> for Pin<PA16, Alternate<C>> {}
 impl InIoSet<UndocIoSet1> for Pin<PA17, Alternate<C>> {}
 impl InIoSet<UndocIoSet1> for Pin<PB22, Alternate<C>> {}
 impl InIoSet<UndocIoSet1> for Pin<PB23, Alternate<C>> {}
+
+// Implement an undocumented `IoSet` for PA00, PA01, PB22 & PB23 configured for
+// `Sercom1`. The itsybitsy_m4 uses this combination, but it is not
+// listed as valid in the datasheet.
+impl InIoSet<UndocIoSet2> for Pin<PA00, Alternate<D>> {}
+impl InIoSet<UndocIoSet2> for Pin<PA01, Alternate<D>> {}
+impl InIoSet<UndocIoSet2> for Pin<PB22, Alternate<C>> {}
+impl InIoSet<UndocIoSet2> for Pin<PB23, Alternate<C>> {}
