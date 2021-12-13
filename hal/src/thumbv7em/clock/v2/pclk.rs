@@ -25,6 +25,7 @@ use crate::sercom::v2::*;
 use crate::time::Hertz;
 use crate::typelevel::{Decrement, Increment, Sealed};
 
+use super::dfll::DfllId;
 use super::dpll::{DpllId0, DpllId1};
 use super::gclk::*;
 use super::Source;
@@ -273,7 +274,7 @@ macro_rules! pclks {
 
 // Try to use existing types as tokens, if possible. Otherwise, create new ones.
 pclks!(
-    (false, dfll48, dfll48),
+    (true, DfllId, dfll48),
     (true, DpllId0, dpll0),
     (true, DpllId1, dpll1),
     (false, slow_32k, slow_32k),
