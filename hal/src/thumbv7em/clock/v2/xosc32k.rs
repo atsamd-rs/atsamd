@@ -12,7 +12,7 @@ use crate::gpio::v2::{FloatingDisabled, Pin, PA00, PA01};
 use crate::time::Hertz;
 use crate::typelevel::{Counter, Decrement, Increment, PrivateDecrement, PrivateIncrement, Sealed};
 
-use super::{Driver, Enabled};
+use super::{Enabled, Source};
 
 //==============================================================================
 // Tokens
@@ -423,8 +423,8 @@ impl Enabled<Xosc1k, U0> {
     }
 }
 
-impl<N: Counter> Driver for Enabled<Xosc1k, N> {
-    type Source = Xosc1kId;
+impl<N: Counter> Source for Enabled<Xosc1k, N> {
+    type Id = Xosc1kId;
 
     fn freq(&self) -> Hertz {
         Hertz(1024)
@@ -481,8 +481,8 @@ impl Enabled<Xosc32k, U0> {
     }
 }
 
-impl<N: Counter> Driver for Enabled<Xosc32k, N> {
-    type Source = Xosc32kId;
+impl<N: Counter> Source for Enabled<Xosc32k, N> {
+    type Id = Xosc32kId;
 
     fn freq(&self) -> Hertz {
         Hertz(32_768)

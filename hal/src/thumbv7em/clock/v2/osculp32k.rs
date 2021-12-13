@@ -10,7 +10,7 @@ use crate::pac::osc32kctrl::OSCULP32K;
 use crate::time::Hertz;
 use crate::typelevel::{Counter, Decrement, Increment, PrivateDecrement, PrivateIncrement, Sealed};
 
-use super::{Driver, Enabled};
+use super::{Enabled, Source};
 
 //==============================================================================
 // Tokens
@@ -171,8 +171,8 @@ impl Enabled<OscUlp1k, U0> {
     }
 }
 
-impl<N: Counter> Driver for Enabled<OscUlp1k, N> {
-    type Source = OscUlp1kId;
+impl<N: Counter> Source for Enabled<OscUlp1k, N> {
+    type Id = OscUlp1kId;
 
     fn freq(&self) -> Hertz {
         Hertz(1024)
@@ -220,8 +220,8 @@ impl Enabled<OscUlp32k, U0> {
     }
 }
 
-impl<N: Counter> Driver for Enabled<OscUlp32k, N> {
-    type Source = OscUlp32kId;
+impl<N: Counter> Source for Enabled<OscUlp32k, N> {
+    type Id = OscUlp32kId;
 
     fn freq(&self) -> Hertz {
         Hertz(32_768)

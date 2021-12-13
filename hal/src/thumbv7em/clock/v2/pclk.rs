@@ -27,7 +27,7 @@ use crate::typelevel::{Decrement, Increment, Sealed};
 
 use super::dpll::{DpllId0, DpllId1};
 use super::gclk::*;
-use super::Driver;
+use super::Source;
 
 //==============================================================================
 // PclkToken
@@ -179,7 +179,7 @@ where
     #[inline]
     pub fn enable<S>(mut token: PclkToken<P>, gclk: S) -> (Self, S::Inc)
     where
-        S: Driver<Source = T> + Increment,
+        S: Source<Id = T> + Increment,
     {
         let freq = gclk.freq();
         token.set_source(T::DYN);
@@ -198,7 +198,7 @@ where
     #[inline]
     pub fn disable<S>(mut self, gclk: S) -> (PclkToken<P>, S::Dec)
     where
-        S: Driver<Source = T> + Decrement,
+        S: Source<Id = T> + Decrement,
     {
         self.token.disable();
         (self.token, gclk.dec())

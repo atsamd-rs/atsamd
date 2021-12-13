@@ -18,7 +18,7 @@ use crate::typelevel::{Counter, PrivateIncrement, Sealed};
 
 use super::gclk::Gclk0;
 use super::pclk::{Dfll48, Pclk, PclkSourceId};
-use super::{Driver, Enabled};
+use super::{Enabled, Source};
 
 /// Token type required to construct a [`Dfll`] type instance.
 ///
@@ -395,11 +395,11 @@ impl<T: PclkSourceId> Enabled<Dfll<ClosedLoop<T>>, U1> {
 }
 
 //==============================================================================
-// Driver
+// Source
 //==============================================================================
 
-impl<T: LoopMode, N: Counter> Driver for Enabled<Dfll<T>, N> {
-    type Source = DfllId;
+impl<T: LoopMode, N: Counter> Source for Enabled<Dfll<T>, N> {
+    type Id = DfllId;
 
     #[inline]
     fn freq(&self) -> Hertz {

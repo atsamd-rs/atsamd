@@ -42,7 +42,7 @@ use super::gclk::{GclkId, GclkSourceId};
 use super::pclk::{Pclk, PclkId};
 use super::xosc::{XoscId0, XoscId1};
 use super::xosc32k::Xosc32kId;
-use super::{Driver, Enabled};
+use super::{Enabled, Source};
 
 //==============================================================================
 // DpllId
@@ -389,7 +389,7 @@ where
     #[inline]
     pub fn from_xosc32k<S>(token: DpllToken<D>, xosc32k: S) -> (Self, S::Inc)
     where
-        S: Driver<Source = Xosc32kId> + Increment,
+        S: Source<Id = Xosc32kId> + Increment,
     {
         let src_freq = xosc32k.freq();
         let (mult, frac) = (1, 0);
@@ -412,7 +412,7 @@ where
     #[inline]
     pub fn free<S>(self, xosc32k: S) -> (DpllToken<D>, S::Dec)
     where
-        S: Driver<Source = Xosc32kId> + Decrement,
+        S: Source<Id = Xosc32kId> + Decrement,
     {
         (self.token, xosc32k.dec())
     }
@@ -434,7 +434,7 @@ seq!(N in 0..=1 {
             raw_prediv: RawPredivider,
         ) -> (Self, S::Inc)
         where
-            S: Driver<Source = XoscId #N> + Increment,
+            S: Source<Id = XoscId #N> + Increment,
         {
             let src_freq = xosc.freq();
             let (mult, frac) = (1, 0);
@@ -464,7 +464,7 @@ seq!(N in 0..=1 {
         #[inline]
         pub fn free<S>(self, xosc: S) -> (DpllToken<D>, S::Dec)
         where
-            S: Driver<Source = XoscId #N> + Decrement,
+            S: Source<Id = XoscId #N> + Decrement,
         {
             (self.token, xosc.dec())
         }
@@ -618,16 +618,16 @@ where
 }
 
 //==============================================================================
-// Driver
+// Source
 //==============================================================================
 
-impl<D, I, N> Driver for Enabled<Dpll<D, I>, N>
+impl<D, I, N> Source for Enabled<Dpll<D, I>, N>
 where
     D: DpllId + GclkSourceId,
     I: DpllSourceId<D>,
     N: Counter,
 {
-    type Source = D;
+    type Id = D;
 
     #[inline]
     fn freq(&self) -> Hertz {

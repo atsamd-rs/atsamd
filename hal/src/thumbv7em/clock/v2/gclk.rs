@@ -75,7 +75,7 @@ use super::gclkio::GclkInId;
 use super::osculp32k::OscUlp32kId;
 use super::xosc::{XoscId0, XoscId1};
 use super::xosc32k::Xosc32kId;
-use super::{Driver, Enabled};
+use super::{Enabled, Source};
 
 //==============================================================================
 // GclkToken
@@ -528,15 +528,15 @@ impl NotGclk1Source for Xosc32kId {}
 /// - a numeric variant (available variants: [`GclkId`] implementors - eg.
 ///   [`GclkId3`])
 /// - a current signal source (expressed via source's marker type)
-pub struct Gclk<G, T>
+pub struct Gclk<G, I>
 where
     G: GclkId,
-    T: GclkSourceId,
+    I: GclkSourceId,
 {
     /// Unique [`GclkToken`]
     token: GclkToken<G>,
     /// Clock source feeding the [`Gclk`]
-    src: PhantomData<T>,
+    src: PhantomData<I>,
     /// Frequency of the clock source [`Gclk.src`] feeding the [`Gclk`]
     src_freq: Hertz,
     /// [`Gclk`] divider, modifying the [`Gclk.src_freq`]uency; affecting the
@@ -551,19 +551,19 @@ seq!(N in 0..=11 {
     pub type Gclk #N<S> = Gclk<GclkId #N, S>;
 });
 
-impl<S> Gclk1<S>
+impl<I> Gclk1<I>
 where
-    S: NotGclk1Source,
+    I: NotGclk1Source,
 {
     /// Create a new [`Gclk`]
     ///
     /// Hardware calls are deferred until the call to [`Gclk::enable`]
     #[inline]
-    pub fn new<D>(token: GclkToken<GclkId1>, driver: D) -> (Gclk1<S>, D::Inc)
+    pub fn new<S>(token: GclkToken<GclkId1>, source: S) -> (Gclk1<I>, S::Inc)
     where
-        D: Driver<Source = S> + Increment,
+        S: Source<Id = I> + Increment,
     {
-        Self::new_internal(token, driver)
+        Self::new_internal(token, source)
     }
 
     /// Swap [`Gclk`] source
@@ -571,30 +571,30 @@ where
     /// Provided a [`GclkSource`] the [`Gclk`] is updated,
     /// the old clock source token released and returned
     #[inline]
-    pub fn swap<Old, New>(self, old: Old, new: New) -> (Gclk1<New::Source>, Old::Dec, New::Inc)
+    pub fn swap<Old, New>(self, old: Old, new: New) -> (Gclk1<New::Id>, Old::Dec, New::Inc)
     where
-        Old: Driver<Source = S> + Decrement,
-        New: Driver + Increment,
-        New::Source: NotGclk1Source,
+        Old: Source<Id = I> + Decrement,
+        New: Source + Increment,
+        New::Id: NotGclk1Source,
     {
         self.swap_internal(old, new)
     }
 }
 
-impl<G, S> Gclk<G, S>
+impl<G, I> Gclk<G, I>
 where
     G: NotGclkId1,
-    S: GclkSourceId,
+    I: GclkSourceId,
 {
     /// Create a new [`Gclk`]
     ///
     /// Hardware calls are deferred until the call to [`Gclk::enable`]
     #[inline]
-    pub fn new<D>(token: GclkToken<G>, driver: D) -> (Gclk<G, S>, D::Inc)
+    pub fn new<S>(token: GclkToken<G>, source: S) -> (Gclk<G, I>, S::Inc)
     where
-        D: Driver<Source = S> + Increment,
+        S: Source<Id = I> + Increment,
     {
-        Self::new_internal(token, driver)
+        Self::new_internal(token, source)
     }
 
     /// Swap [`Gclk`] source
@@ -602,27 +602,27 @@ where
     /// Provided a [`GclkSource`] the [`Gclk`] is updated,
     /// the old clock source token released and returned
     #[inline]
-    pub fn swap<Old, New>(self, old: Old, new: New) -> (Gclk<G, New::Source>, Old::Dec, New::Inc)
+    pub fn swap<Old, New>(self, old: Old, new: New) -> (Gclk<G, New::Id>, Old::Dec, New::Inc)
     where
-        Old: Driver<Source = S> + Decrement,
-        New: Driver + Increment,
-        New::Source: GclkSourceId,
+        Old: Source<Id = I> + Decrement,
+        New: Source + Increment,
+        New::Id: GclkSourceId,
     {
         self.swap_internal(old, new)
     }
 }
 
-impl<G, S> Gclk<G, S>
+impl<G, I> Gclk<G, I>
 where
     G: GclkId,
-    S: GclkSourceId,
+    I: GclkSourceId,
 {
     #[inline]
-    fn new_internal<D>(token: GclkToken<G>, driver: D) -> (Gclk<G, S>, D::Inc)
+    fn new_internal<S>(token: GclkToken<G>, source: S) -> (Gclk<G, I>, S::Inc)
     where
-        D: Driver<Source = S> + Increment,
+        S: Source<Id = I> + Increment,
     {
-        let src_freq = driver.freq();
+        let src_freq = source.freq();
         let improve_duty_cycle = false;
         let config = Gclk {
             token,
@@ -631,28 +631,24 @@ where
             div: G::DividerType::default(),
             improve_duty_cycle,
         };
-        (config, driver.inc())
+        (config, source.inc())
     }
 
     /// Deconstruct the [`Gclk`] and return the inner [`GclkToken`]
     #[inline]
-    pub fn free<D>(self, driver: D) -> (GclkToken<G>, D::Dec)
+    pub fn free<S>(self, source: S) -> (GclkToken<G>, S::Dec)
     where
-        D: Driver<Source = S> + Decrement,
+        S: Source<Id = I> + Decrement,
     {
-        (self.token, driver.dec())
+        (self.token, source.dec())
     }
 
     #[inline]
-    fn swap_internal<Old, New>(
-        self,
-        old: Old,
-        new: New,
-    ) -> (Gclk<G, New::Source>, Old::Dec, New::Inc)
+    fn swap_internal<Old, New>(self, old: Old, new: New) -> (Gclk<G, New::Id>, Old::Dec, New::Inc)
     where
-        Old: Driver<Source = S> + Decrement,
-        New: Driver + Increment,
-        New::Source: GclkSourceId,
+        Old: Source<Id = I> + Decrement,
+        New: Source + Increment,
+        New::Id: GclkSourceId,
     {
         let (token, old) = self.free(old);
         let (config, new) = Gclk::new_internal(token, new);
@@ -702,8 +698,8 @@ where
     /// Enabling a [`Gclk`] modifies hardware to match the configuration
     /// stored within.
     #[inline]
-    pub fn enable(mut self) -> Enabled<Gclk<G, S>, U0> {
-        self.token.set_source(S::DYN);
+    pub fn enable(mut self) -> Enabled<Gclk<G, I>, U0> {
+        self.token.set_source(I::DYN);
         self.token.improve_duty_cycle(self.improve_duty_cycle);
         self.token.set_div(self.div);
         self.token.enable();
@@ -765,11 +761,11 @@ impl<T: GclkSourceId> Enabled<Gclk0<T>, U1> {
         self,
         old: Old,
         new: New,
-    ) -> (Enabled<Gclk0<New::Source>, U1>, Old::Dec, New::Inc)
+    ) -> (Enabled<Gclk0<New::Id>, U1>, Old::Dec, New::Inc)
     where
-        Old: Driver<Source = T> + Decrement,
-        New: Driver + Increment,
-        New::Source: GclkSourceId,
+        Old: Source<Id = T> + Decrement,
+        New: Source + Increment,
+        New::Id: GclkSourceId,
     {
         let (config, old, new) = self.0.swap(old, new);
         (config.enable().inc(), old, new)
@@ -793,16 +789,16 @@ impl<T: GclkSourceId> Enabled<Gclk0<T>, U1> {
 }
 
 //==============================================================================
-// Driver
+// Source
 //==============================================================================
 
-impl<G, T, N> Driver for Enabled<Gclk<G, T>, N>
+impl<G, T, N> Source for Enabled<Gclk<G, T>, N>
 where
     G: GclkId,
     T: GclkSourceId,
     N: Counter,
 {
-    type Source = G;
+    type Id = G;
 
     #[inline]
     fn freq(&self) -> Hertz {

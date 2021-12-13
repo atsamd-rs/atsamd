@@ -70,7 +70,7 @@ use super::gclk::*;
 use super::osculp32k::OscUlp32kId;
 use super::xosc::{XoscId0, XoscId1};
 use super::xosc32k::Xosc32kId;
-use super::{Driver, Enabled};
+use super::{Enabled, Source};
 
 //==============================================================================
 // GclkIo
@@ -238,16 +238,16 @@ pub enum GclkInId {}
 impl Sealed for GclkInId {}
 
 //==============================================================================
-// Driver
+// Source
 //==============================================================================
 
-impl<G, I, N> Driver for Enabled<GclkIn<G, I>, N>
+impl<G, I, N> Source for Enabled<GclkIn<G, I>, N>
 where
     G: GclkId,
     I: GclkIo<G>,
     N: Counter,
 {
-    type Source = GclkInId;
+    type Id = GclkInId;
 
     #[inline]
     fn freq(&self) -> Hertz {
@@ -279,16 +279,16 @@ impl<G: GclkId> GclkOutToken<G> {
 //==============================================================================
 
 mod private {
-    use super::{Counter, Driver, Enabled, Gclk, GclkId, GclkSourceId, NotGclkInId};
+    use super::{Counter, Enabled, Gclk, GclkId, GclkSourceId, NotGclkInId, Source};
 
     type EnabledGclk<T> = Enabled<
-        Gclk<<T as Driver>::Source, <T as AsEnabledGclk>::GclkSource>,
+        Gclk<<T as Source>::Id, <T as AsEnabledGclk>::GclkSource>,
         <T as AsEnabledGclk>::Count,
     >;
 
-    pub trait AsEnabledGclk: Driver
+    pub trait AsEnabledGclk: Source
     where
-        Self::Source: GclkId,
+        Self::Id: GclkId,
     {
         type GclkSource: GclkSourceId + NotGclkInId;
         type Count: Counter;
@@ -342,7 +342,7 @@ where
         polarity: bool,
     ) -> (GclkOut<G, I>, S::Inc)
     where
-        S: Driver<Source = G> + AsEnabledGclk + Increment,
+        S: Source<Id = G> + AsEnabledGclk + Increment,
     {
         let freq = gclk.freq();
         let pin = pin.into().into_alternate();
@@ -361,7 +361,7 @@ where
     #[inline]
     pub fn disable<S>(self, mut gclk: S) -> (GclkOutToken<G>, Pin<I, AlternateM>, S::Dec)
     where
-        S: Driver<Source = G> + AsEnabledGclk + Decrement,
+        S: Source<Id = G> + AsEnabledGclk + Decrement,
     {
         gclk.as_enabled_gclk().disable_gclk_out();
         (self.token, self.pin, gclk.dec())

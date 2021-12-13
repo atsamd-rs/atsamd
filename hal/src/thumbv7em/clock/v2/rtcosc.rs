@@ -12,7 +12,7 @@ use crate::typelevel::{Decrement, Increment};
 
 use super::osculp32k::{OscUlp1kId, OscUlp32kId};
 use super::xosc32k::{Xosc1kId, Xosc32kId};
-use super::Driver;
+use super::Source;
 
 //==============================================================================
 // Registers
@@ -102,30 +102,30 @@ impl RtcSourceId for Xosc32kId {
 // RtcOsc
 //==============================================================================
 
-pub struct RtcOsc<S: RtcSourceId> {
+pub struct RtcOsc<I: RtcSourceId> {
     regs: Registers,
-    source: PhantomData<S>,
+    source: PhantomData<I>,
 }
 
-impl<S: RtcSourceId> RtcOsc<S> {
-    pub fn enable<D>(mut token: RtcOscToken, driver: D) -> (Self, D::Inc)
+impl<I: RtcSourceId> RtcOsc<I> {
+    pub fn enable<S>(mut token: RtcOscToken, source: S) -> (Self, S::Inc)
     where
-        D: Driver<Source = S> + Increment,
+        S: Source<Id = I> + Increment,
     {
-        token.regs.set_source_freq(S::DYN);
+        token.regs.set_source_freq(I::DYN);
         let rtc_osc = Self {
             regs: token.regs,
             source: PhantomData,
         };
-        (rtc_osc, driver.inc())
+        (rtc_osc, source.inc())
     }
 
-    pub fn disable<D>(mut self, driver: D) -> (RtcOscToken, D::Dec)
+    pub fn disable<S>(mut self, source: S) -> (RtcOscToken, S::Dec)
     where
-        D: Driver<Source = S> + Decrement,
+        S: Source<Id = I> + Decrement,
     {
         self.regs.reset_source_freq();
         let token = RtcOscToken { regs: self.regs };
-        (token, driver.dec())
+        (token, source.dec())
     }
 }

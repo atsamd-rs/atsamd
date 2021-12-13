@@ -30,7 +30,7 @@ use crate::gpio::v2::{FloatingDisabled, Pin, PinId, PA14, PA15, PB22, PB23};
 use crate::time::Hertz;
 use crate::typelevel::{Counter, Sealed};
 
-use super::{Driver, Enabled};
+use super::{Enabled, Source};
 
 //==============================================================================
 // XoscId
@@ -597,16 +597,16 @@ where
 }
 
 //==============================================================================
-// Driver
+// Source
 //==============================================================================
 
-impl<X, M, N> Driver for Enabled<Xosc<X, M>, N>
+impl<X, M, N> Source for Enabled<Xosc<X, M>, N>
 where
     X: XoscId,
     M: Mode<X>,
     N: Counter,
 {
-    type Source = X;
+    type Id = X;
 
     #[inline]
     fn freq(&self) -> Hertz {

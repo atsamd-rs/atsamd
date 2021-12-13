@@ -226,18 +226,18 @@ pub fn retrieve_clocks(
     }
 }
 
-/// Marks clock types that can drive downstream clocks
+/// Marks clock types that can act as a source for downstream clocks
 ///
 /// Implementers of this type can drive downstream clocks in the clock tree.
-/// Typically, implementors are [`Enabled`] clocks. The `Source` associated type
-/// maps to the corresponding `Id` type of the implementer.
+/// Typically, implementors are [`Enabled`] clocks. The `Id` associated type
+/// maps to the corresponding `*Id` type of the implementer.
 ///
 /// For example, `Enabled<Gclk5<DfllId>>` would implement
-/// `Driver<Source = GclkId5>`.
-pub trait Driver: Sealed {
+/// `Source<Id = GclkId5>`.
+pub trait Source: Sealed {
     /// `Id` type of the implementer, e.g. [`GclkId5`](gclk::GclkId5) for
     /// `Enabled<Gclk5<DfllId>>`
-    type Source;
+    type Id;
 
     /// Returns a clock signal frequency produced by a source
     fn freq(&self) -> Hertz;
