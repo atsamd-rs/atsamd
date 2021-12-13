@@ -216,6 +216,26 @@ impl<G: GclkId> GclkToken<G> {
 // GclkId
 //==============================================================================
 
+/// Value-level equivalent of [`GclkId`]
+///
+/// This is the value-level version of the type-level `enum` [`GclkId`]. It
+/// selects among the 12 possible GCLKs.
+#[allow(missing_docs)]
+pub enum DynGclkId {
+    Gclk0,
+    Gclk1,
+    Gclk2,
+    Gclk3,
+    Gclk4,
+    Gclk5,
+    Gclk6,
+    Gclk7,
+    Gclk8,
+    Gclk9,
+    Gclk10,
+    Gclk11,
+}
+
 /// Type-level `enum` for GCLK identifiers
 ///
 /// See the documentation / on [type-level enums] for more details on the
@@ -223,6 +243,8 @@ impl<G: GclkId> GclkToken<G> {
 ///
 /// [type-level enums]: crate::typelevel#type-level-enum
 pub trait GclkId: Sealed {
+    /// Corresponding variant of [`DynGclkId`]
+    const DYN: DynGclkId;
     /// Corresponding numeric index
     const NUM: usize;
     /// Corresponding divider type
@@ -245,6 +267,7 @@ pub enum GclkId0 {}
 impl Sealed for GclkId0 {}
 impl NotGclkId1 for GclkId0 {}
 impl GclkId for GclkId0 {
+    const DYN: DynGclkId = DynGclkId::Gclk0;
     const NUM: usize = 0;
     type DividerType = GclkDiv;
 }
@@ -258,6 +281,7 @@ impl GclkId for GclkId0 {
 pub enum GclkId1 {}
 impl Sealed for GclkId1 {}
 impl GclkId for GclkId1 {
+    const DYN: DynGclkId = DynGclkId::Gclk1;
     const NUM: usize = 1;
     type DividerType = Gclk1Div;
 }
@@ -273,6 +297,7 @@ seq!(N in 2..=11 {
     impl Sealed for GclkId #N {}
     impl NotGclkId1 for GclkId #N {}
     impl GclkId for GclkId #N {
+        const DYN: DynGclkId = DynGclkId::Gclk #N;
         const NUM: usize = N;
         type DividerType = GclkDiv;
     }

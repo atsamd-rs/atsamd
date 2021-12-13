@@ -19,8 +19,7 @@ use paste::paste;
 use seq_macro::seq;
 
 use crate::pac;
-
-pub use crate::pac::gclk::pchctrl::GEN_A as DynPclkSourceId;
+use crate::pac::gclk::pchctrl::GEN_A;
 
 use crate::sercom::v2::*;
 use crate::time::Hertz;
@@ -70,8 +69,8 @@ impl<P: PclkId> PclkToken<P> {
 
     /// Set a clock as the [`Pclk`] source
     #[inline]
-    fn set_source(&mut self, variant: DynPclkSourceId) {
-        self.pchctrl().modify(|_, w| w.gen().variant(variant));
+    fn set_source(&mut self, source: DynPclkSourceId) {
+        self.pchctrl().modify(|_, w| w.gen().variant(source.into()));
     }
 
     /// Enable the [`Pclk`]
@@ -116,27 +115,38 @@ macro_rules! pclk_id {
 }
 
 //==============================================================================
-// PclkSource
+// PclkSourceId
 //==============================================================================
+
+/// Value-level version of [`PclkSourceId`]
+///
+/// Peripheral channel clocks must be sourced from a GCLK, so `DynPclkSourceId`
+/// is just a type alias for [`DynGclkId`]
+pub type DynPclkSourceId = DynGclkId;
+
+/// Convert from [`DynPclkSourceId`] to the equivalent [PAC](crate::pac) type
+impl From<DynPclkSourceId> for GEN_A {
+    fn from(source: DynPclkSourceId) -> Self {
+        seq!(N in 0..=11 {
+            match source {
+                #(
+                    DynPclkSourceId::Gclk #N => GEN_A::GCLK #N,
+                )*
+            }
+        })
+    }
+}
 
 /// Type-level `enum` for PCLK sources
 ///
 /// [`Pclk`]s can only be driven by [`Gclk`]s, so the only valid variants are
-/// [`GclkId`]s. See the documentation / on [type-level enums] for more details
+/// [`GclkId`]s. See the documentation on [type-level enums] for more details
 /// on the pattern.
 ///
 /// [type-level enums]: crate::typelevel#type-level-enum
-pub trait PclkSourceId: GclkId {
-    /// Associated constant provides a variant of a low level enum type from PAC
-    /// that is used during a HW register write
-    const DYN: DynPclkSourceId;
-}
+pub trait PclkSourceId: GclkId {}
 
-seq!(N in 0..=11 {
-    impl PclkSourceId for GclkId #N {
-        const DYN: DynPclkSourceId = DynPclkSourceId::GCLK #N;
-    }
-});
+impl<G: GclkId> PclkSourceId for G {}
 
 //==============================================================================
 // Pclk - Peripheral Channel Clock
