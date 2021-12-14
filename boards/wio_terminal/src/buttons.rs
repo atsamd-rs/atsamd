@@ -6,25 +6,27 @@ use atsamd_hal::pac::{interrupt, EIC, MCLK};
 
 use cortex_m::peripheral::NVIC;
 
+use super::pins::*;
+
 /// pushbuttons and joystick
 pub struct ButtonPins {
     /// button1 pin
-    pub button1: Pin<PC26, Disabled<Floating>>,
+    pub button1: Button1Reset,
     /// button2 pin
-    pub button2: Pin<PC27, Disabled<Floating>>,
+    pub button2: Button2Reset,
     /// button3 pin
-    pub button3: Pin<PC28, Disabled<Floating>>,
+    pub button3: Button3Reset,
 
     /// Joystick X
-    pub switch_x: Pin<PD08, Disabled<Floating>>,
+    pub switch_x: SwitchXReset,
     /// Joystick Y
-    pub switch_y: Pin<PD09, Disabled<Floating>>,
+    pub switch_y: SwitchYReset,
     /// Joystick Z
-    pub switch_z: Pin<PD10, Disabled<Floating>>,
+    pub switch_z: SwitchZReset,
     /// Joystick U
-    pub switch_u: Pin<PD20, Disabled<Floating>>,
+    pub switch_u: SwitchUReset,
     /// Joystick B
-    pub switch_b: Pin<PD12, Disabled<Floating>>,
+    pub switch_b: SwitchBReset,
 }
 
 impl ButtonPins {
@@ -116,15 +118,15 @@ pub struct ButtonEvent {
 
 pub struct ButtonController {
     _eic: eic::EIC,
-    // b1: ExtInt10<Pc26<Interrupt<Floating>>>,
-    b2: ExtInt11<Pin<PC27, Interrupt<Floating>>>,
-    b3: ExtInt12<Pin<PC28, Interrupt<Floating>>>,
+    // b1: ExtInt10<Button1>,
+    b2: ExtInt11<Button2>,
+    b3: ExtInt12<Button3>,
 
-    x: ExtInt3<Pin<PD08, Interrupt<Floating>>>,
-    y: ExtInt4<Pin<PD09, Interrupt<Floating>>>,
-    z: ExtInt5<Pin<PD10, Interrupt<Floating>>>,
-    u: ExtInt10<Pin<PD20, Interrupt<Floating>>>,
-    b: ExtInt7<Pin<PD12, Interrupt<Floating>>>,
+    x: ExtInt3<SwitchX>,
+    y: ExtInt4<SwitchY>,
+    z: ExtInt5<SwitchZ>,
+    u: ExtInt10<SwitchU>,
+    b: ExtInt7<SwitchB>,
 }
 
 macro_rules! isr {

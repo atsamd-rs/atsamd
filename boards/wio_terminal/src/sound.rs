@@ -7,19 +7,15 @@ use atsamd_hal::pac::{ADC1, MCLK, TCC0};
 use atsamd_hal::prelude::*;
 use atsamd_hal::pwm::{TCC0Pinout, Tcc0Pwm};
 
+use super::pins::*;
+
 /// Buzzer pins
-pub struct Buzzer<C>
-where
-    C: AnyPin<Id = PD11>,
-{
+pub struct Buzzer {
     /// Buzzer control pin
-    pub ctr: C,
+    pub ctr: BuzzerCtrlReset,
 }
 
-impl<C> Buzzer<C>
-where
-    C: AnyPin<Id = PD11>,
-{
+impl Buzzer {
     /// Initialize the pin connected to the piezo buzzer. Configure the pin as a
     /// PWM output using TCC0, and return the Pwm instance.
     pub fn init(
@@ -27,8 +23,8 @@ where
         clocks: &mut GenericClockController,
         tcc0: TCC0,
         mclk: &mut MCLK,
-    ) -> Tcc0Pwm<PD11, AlternateF> {
-        let pinout = TCC0Pinout::Pd11(self.ctr.into());
+    ) -> Tcc0Pwm<PD11, BuzzerCtrlMode> {
+        let pinout = TCC0Pinout::Pd11(self.ctr);
 
         let gclk0 = clocks.gclk0();
         let pwm0 = Tcc0Pwm::new(
@@ -44,18 +40,12 @@ where
 }
 
 /// Microphone pins
-pub struct Microphone<M>
-where
-    M: Into<MicOutput>,
-{
+pub struct Microphone {
     /// Microphone output (analog input) pin
-    pub mic: M,
+    pub mic: MicOutputReset,
 }
 
-impl<M> Microphone<M>
-where
-    M: Into<MicOutput>,
-{
+impl Microphone {
     /// Initialize Pd1 as an ADC input, and return a Tuple containing the ADC
     /// peripheral and the configured pin.
     pub fn init(

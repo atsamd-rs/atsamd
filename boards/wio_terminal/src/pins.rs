@@ -13,43 +13,78 @@ hal::bsp_pins!(
     /// User LED
         name: user_led,
         aliases: {
-            PushPullOutput: UserLed
+            PushPullOutput: UserLed,
+            Reset: UserLedReset
         }
     }
     PC26 {
         name: button1
+        aliases: {
+            FloatingInterrupt: Button1,
+            Reset: Button1Reset
+        }
     }
     PC27 {
         name: button2
+        aliases: {
+            FloatingInterrupt: Button2,
+            Reset: Button2Reset
+        }
     }
     PC28 {
         name: button3
+        aliases: {
+            FloatingInterrupt: Button3,
+            Reset: Button3Reset
+        }
     }
     PD08 {
         name: switch_x
+        aliases: {
+            FloatingInterrupt: SwitchX,
+            Reset: SwitchXReset
+        }
     }
     PD09 {
         name: switch_y
+        aliases: {
+            FloatingInterrupt: SwitchY,
+            Reset: SwitchYReset
+        }
     }
     PD10 {
         name: switch_z
+        aliases: {
+            FloatingInterrupt: SwitchZ,
+            Reset: SwitchZReset
+        }
     }
     PD12 {
         name: switch_b
+        aliases: {
+            FloatingInterrupt: SwitchB,
+            Reset: SwitchBReset
+        }
     }
     PD20 {
         name: switch_u
+        aliases: {
+            FloatingInterrupt: SwitchU,
+            Reset: SwitchUReset
+        }
     }
     PA12 {
         name: i2c0_scl,
         aliases: {
-            AlternateD: I2c0Scl
+            AlternateD: I2c0Scl,
+            Reset: I2c0SclReset
         }
     }
     PA13 {
         name: i2c0_sda,
         aliases: {
-            AlternateD: I2c0Sda
+            AlternateD: I2c0Sda,
+            Reset: I2c0SdaReset
         }
     }
     PA16 {
@@ -73,44 +108,82 @@ hal::bsp_pins!(
     PB26 {
         name: uart_tx,
         aliases: {
-            AlternateC: UartTx
+            AlternateC: UartTx,
+            Reset: UartTxReset
         }
     }
     PB27 {
         name: uart_rx,
         aliases: {
-            AlternateC: UartRx
+            AlternateC: UartRx,
+            Reset: UartRxReset
         }
     }
     PA24 {
         name: usb_dm
+        aliases: {
+            AlternateH: UsbDm,
+            Reset: UsbDmReset
+        }
     }
     PA25 {
         name: usb_dp
+        aliases: {
+            AlternateH: UsbDp,
+            Reset: UsbDpReset
+        }
     }
     PA27 {
         name: usb_host_en
     }
     PB18 {
         name: lcd_miso
+        aliases: {
+            AlternateD: LcdMiso,
+            Reset: LcdMisoReset
+        }
     }
     PB19 {
         name: lcd_mosi
+        aliases: {
+            AlternateD: LcdMosi,
+            Reset: LcdMosiReset
+        }
     }
     PB20 {
         name: lcd_sck
+        aliases: {
+            AlternateD: LcdSck,
+            Reset: LcdSckReset
+        }
     }
     PB21 {
         name: lcd_cs
+        aliases: {
+            PushPullOutput: LcdCs,
+            Reset: LcdCsReset
+        }
     }
     PC05 {
         name: lcd_backlight
+        aliases: {
+            PushPullOutput: LcdBacklight,
+            Reset: LcdBacklightReset
+        }
     }
     PC06 {
         name: lcd_dc
+        aliases: {
+            PushPullOutput: LcdDc,
+            Reset: LcdDcReset
+        }
     }
     PC07 {
         name: lcd_reset
+        aliases: {
+            PushPullOutput: LcdReset,
+            Reset: LcdResetReset
+        }
     }
     PC10 {
         name: lcd_xl
@@ -140,120 +213,208 @@ hal::bsp_pins!(
         name: i2s_blck
     }
     PD11 {
-    /// BUZZER
+        /// BUZZER
         name: buzzer_ctr
+        aliases: {
+            AlternateF: BuzzerCtrl,
+            Reset: BuzzerCtrlReset
+        }
     }
     PC30 {
-    /// MICROPHONE
+        /// MICROPHONE
         name: mic_output,
         aliases: {
             AlternateB: MicOutput,
+            Reset: MicOutputReset
         }
     }
     PA08 {
         name: mcu_flash_qspi_io0
+        aliases: {
+            AlternateH: QspiD0,
+            Reset: QspiD0Reset
+        }
     }
     PA09 {
         name: mcu_flash_qspi_io1
+        aliases: {
+            AlternateH: QspiD1,
+            Reset: QspiD1Reset
+        }
     }
     PA10 {
         name: mcu_flash_qspi_io2
+        aliases: {
+            AlternateH: QspiD2,
+            Reset: QspiD2Reset
+        }
     }
     PA11 {
         name: mcu_flash_qspi_io3
+        aliases: {
+            AlternateH: QspiD3,
+            Reset: QspiD3Reset
+        }
     }
     PB10 {
         name: mcu_flash_qspi_clk
+        aliases: {
+            AlternateH: QspiSck,
+            Reset: QspiSckReset
+        }
     }
     PB11 {
         name: mcu_flash_qspi_cs
+        aliases: {
+            AlternateH: QspiCs,
+            Reset: QspiCsReset
+        }
     }
     PC16 {
         name: sd_mosi,
         aliases: {
-            AlternateC: SdMosi
+            AlternateC: SdMosi,
+            Reset: SdMosiReset
         }
     }
     PC17 {
         name: sd_sck,
         aliases: {
-            AlternateC: SdSck
+            AlternateC: SdSck,
+            Reset: SdSckReset
         }
     }
     PC18 {
         name: sd_miso,
         aliases: {
-            AlternateC: SdMiso
+            AlternateC: SdMiso,
+            Reset: SdMisoReset
         }
     }
     PC19 {
         name: sd_cs,
         aliases: {
-            PushPullOutput: SdCs
+            PushPullOutput: SdCs,
+            Reset: SdCsReset
         }
     }
     PD21 {
         name: sd_det,
+        aliases: {
+            FloatingInput: SdDet,
+            Reset: SdDetReset
+        }
     }
     PA18 {
         name: rtl8720d_chip_pu
+        aliases: {
+            PushPullOutput: WifiPwr,
+            Reset: WifiPwrReset,
+        }
     }
     PB24 {
         name: rtl8720d_hspi_mosi,
         aliases: {
-            AlternateC: WifiTx
+            AlternateC: WifiTx,
+            Reset: WifiTxReset
         }
     }
     PB25 {
         name: rtl8720d_hspi_clk
+        aliases: {
+            Reset: WifiClkReset
+        }
     }
     PC22 {
         name: rtl8720d_rxd
+        aliases: {
+            Reset: WifiRxdReset
+        }
     }
     PC23 {
         name: rtl8720d_txd
+        aliases: {
+            Reset: WifiTxdReset
+        }
     }
     PC24 {
         name: rtl8720d_hspi_miso,
         aliases: {
-            AlternateC: WifiRx
+            AlternateC: WifiRx,
+            Reset: WifiRxReset
         }
     }
     PC25 {
         name: rtl8720d_hspi_cs
+        aliases: {
+            Reset: WifiCsReset
+        }
     }
     PC20 {
         name: rtl8720d_data_ready
+        aliases: {
+            Reset: WifiReadyReset
+        }
     }
     PA19 {
         name: rtl8720d_dir
+        aliases: {
+            Reset: WifiDirReset
+        }
     }
     PB08 {
         name: a0_d0
+        aliases: {
+            Reset: A0D0Reset
+        }
     }
     PB09 {
         name: a1_d1
+        aliases: {
+            Reset: A1D1Reset
+        }
     }
     PA07 {
         name: a2_d2
+        aliases: {
+            Reset: A2D2Reset
+        }
     }
     PB04 {
         name: a3_d3
+        aliases: {
+            Reset: A3D3Reset
+        }
     }
     PB05 {
         name: a4_d4
+        aliases: {
+            Reset: A4D4Reset
+        }
     }
     PB06 {
         name: a5_d5
+        aliases: {
+            Reset: A5D5Reset
+        }
     }
     PA04 {
         name: a6_d6
+        aliases: {
+            Reset: A6D6Reset
+        }
     }
     PB07 {
         name: a7_d7
+        aliases: {
+            Reset: A7D7Reset
+        }
     }
     PA06 {
         name: a8_d8
+        aliases: {
+            Reset: A8D8Reset
+        }
     }
     PB28 {
         name: fpc_d3_pwm3
@@ -288,7 +449,8 @@ hal::bsp_pins!(
     PD01 {
         name: fpc_d13_a13,
         aliases: {
-            AlternateB: LightSensorAdc
+            AlternateB: LightSensorAdc,
+            Reset: LightSensorAdcReset
         }
     }
     PA02 {
@@ -335,10 +497,10 @@ hal::bsp_pins!(
 /// Sets of pins split apart by category
 pub struct Sets {
     /// Accelerometer I2C pins
-    pub accelerometer: Accelerometer<Pin<PA12, Disabled<Floating>>, Pin<PA13, Disabled<Floating>>>,
+    pub accelerometer: Accelerometer,
 
     /// Buzzer pins
-    pub buzzer: Buzzer<Pin<PD11, Disabled<Floating>>>,
+    pub buzzer: Buzzer,
 
     /// LCD display pins
     pub display: Display,
@@ -347,36 +509,26 @@ pub struct Sets {
     pub flash: QSPIFlash,
 
     /// Analog Light Sensor pins
-    pub light_sensor: LightSensor<Pin<PD01, Disabled<Floating>>>,
+    pub light_sensor: LightSensor,
 
     /// Microphone output pins
-    pub microphone: Microphone<Pin<PC30, Disabled<Floating>>>,
+    pub microphone: Microphone,
 
     /// SD Card pins
     pub sd_card: SDCard,
 
     /// UART (external pinout) pins
-    pub uart: Uart<Pin<PB27, Disabled<Floating>>, Pin<PB26, Disabled<Floating>>>,
+    pub uart: Uart,
 
     /// USB pins
-    pub usb: Usb<Pin<PA24, Disabled<Floating>>, Pin<PA25, Disabled<Floating>>>,
+    pub usb: Usb,
 
     /// LED pin
-    pub user_led: Pin<PA15, PushPullOutput>,
+    pub user_led: UserLedReset,
 
     pub buttons: ButtonPins,
     // WiFi pins
-    pub wifi: WifiPins<
-        Pin<PA18, Disabled<Floating>>,
-        Pin<PC22, Disabled<Floating>>,
-        Pin<PC23, Disabled<Floating>>,
-        Pin<PB24, Disabled<Floating>>,
-        Pin<PB25, Disabled<Floating>>,
-        Pin<PC24, Disabled<Floating>>,
-        Pin<PC25, Disabled<Floating>>,
-        Pin<PC20, Disabled<Floating>>,
-        Pin<PA19, Disabled<Floating>>,
-    >,
+    pub wifi: WifiPins,
 
     pub header_pins: HeaderPins,
 }
@@ -494,13 +646,13 @@ impl Pins {
 
 /// Other pins broken out to the RPi-compatible header.
 pub struct HeaderPins {
-    pub a0_d0: Pin<PB08, Disabled<Floating>>,
-    pub a1_d1: Pin<PB09, Disabled<Floating>>,
-    pub a2_d2: Pin<PA07, Disabled<Floating>>,
-    pub a3_d3: Pin<PB04, Disabled<Floating>>,
-    pub a4_d4: Pin<PB05, Disabled<Floating>>,
-    pub a5_d5: Pin<PB06, Disabled<Floating>>,
-    pub a6_d6: Pin<PA04, Disabled<Floating>>,
-    pub a7_d7: Pin<PB07, Disabled<Floating>>,
-    pub a8_d8: Pin<PA06, Disabled<Floating>>,
+    pub a0_d0: A0D0Reset,
+    pub a1_d1: A1D1Reset,
+    pub a2_d2: A2D2Reset,
+    pub a3_d3: A3D3Reset,
+    pub a4_d4: A4D4Reset,
+    pub a5_d5: A5D5Reset,
+    pub a6_d6: A6D6Reset,
+    pub a7_d7: A7D7Reset,
+    pub a8_d8: A8D8Reset,
 }

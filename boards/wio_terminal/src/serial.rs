@@ -10,17 +10,15 @@ use atsamd_hal::usb::{usb_device::bus::UsbBusAllocator, UsbBus};
 #[cfg(feature = "usb")]
 use pac::gclk::{genctrl::SRC_A, pchctrl::GEN_A};
 
+use super::pins::*;
+
 /// Uart pins (uses `SERCOM2`)
-pub struct Uart<Rx, Tx>
-where
-    Rx: AnyPin<Id = PB27>,
-    Tx: AnyPin<Id = PB26>,
-{
+pub struct Uart {
     /// UART transmit pin
-    pub tx: Tx,
+    pub tx: UartTxReset,
 
     /// UART receive pin
-    pub rx: Rx,
+    pub rx: UartRxReset,
 }
 
 /// UART pads for the labelled RX & TX pins
@@ -29,11 +27,7 @@ pub type UartPads = uart::Pads<Sercom2, IoSet2, UartRx, UartTx>;
 /// UART device for the labelled RX & TX pins
 pub type HalUart = uart::Uart<uart::Config<UartPads>, uart::Duplex>;
 
-impl<Rx, Tx> Uart<Rx, Tx>
-where
-    Rx: AnyPin<Id = PB27>,
-    Tx: AnyPin<Id = PB26>,
-{
+impl Uart {
     /// Set up the labelled TX/RX pins to operate as a UART device at the
     /// specified baud rate.
     pub fn init<F: Into<Hertz>>(
@@ -44,7 +38,7 @@ where
         mclk: &mut MCLK,
     ) -> HalUart {
         let gclk0 = clocks.gclk0();
-        let pads = uart::Pads::default().rx(self.rx.into()).tx(self.tx.into());
+        let pads = uart::Pads::default().rx(self.rx).tx(self.tx);
         uart::Config::new(
             mclk,
             sercom2,
@@ -60,23 +54,15 @@ where
 }
 
 /// USB pins
-pub struct Usb<Dm, Dp>
-where
-    Dm: AnyPin<Id = PA24>,
-    Dp: AnyPin<Id = PA25>,
-{
+pub struct Usb {
     /// USB data-minus pin
-    pub dm: Dm,
+    pub dm: UsbDmReset,
 
     /// USB data-plus pin
-    pub dp: Dp,
+    pub dp: UsbDpReset,
 }
 
-impl<Dm, Dp> Usb<Dm, Dp>
-where
-    Dm: AnyPin<Id = PA24>,
-    Dp: AnyPin<Id = PA25>,
-{
+impl Usb {
     #[cfg(feature = "usb")]
     /// Create a USB allocator.
     pub fn usb_allocator(

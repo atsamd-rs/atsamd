@@ -9,24 +9,18 @@ use atsamd_hal::sercom::{I2CMaster4, PadPin, Sercom4Pad0, Sercom4Pad1};
 
 use lis3dh::{Lis3dh, SlaveAddr};
 
+use super::pins::*;
+
 /// I2C Accelerometer pins (uses `SERCOM4`)
-pub struct Accelerometer<C, D>
-where
-    C: Into<I2c0Scl>,
-    D: Into<I2c0Sda>,
-{
+pub struct Accelerometer {
     /// `I2C0` bus clock pin
-    pub scl: C,
+    pub scl: I2c0SclReset,
 
     /// `I2C0` bus data pin
-    pub sda: D,
+    pub sda: I2c0SdaReset,
 }
 
-impl<C, D> Accelerometer<C, D>
-where
-    C: Into<I2c0Scl>,
-    D: Into<I2c0Sda>,
-{
+impl Accelerometer {
     /// Initialize the LIS3DH accelerometer using the correct pins and
     // peripherals. Use the driver's default settings.
     pub fn init(
@@ -55,18 +49,12 @@ where
 }
 
 /// Analog Light Sensor
-pub struct LightSensor<P>
-where
-    P: Into<LightSensorAdc>,
-{
+pub struct LightSensor {
     /// Analog Light Sensor input pin
-    pub pd1: P,
+    pub pd1: LightSensorAdcReset,
 }
 
-impl<P> LightSensor<P>
-where
-    P: Into<LightSensorAdc>,
-{
+impl LightSensor {
     /// Initialize Pd1 as an ADC input, and return a Tuple containing the ADC
     /// peripheral and the configured pin.
     pub fn init(
@@ -74,9 +62,9 @@ where
         adc: ADC1,
         clocks: &mut GenericClockController,
         mclk: &mut MCLK,
-    ) -> (Adc<ADC1>, Pin<PD01, Alternate<B>>) {
+    ) -> (Adc<ADC1>, LightSensorAdc) {
         let adc1 = Adc::adc1(adc, mclk, clocks, GCLK11);
 
-        (adc1, self.pd1.into().into())
+        (adc1, self.pd1.into())
     }
 }

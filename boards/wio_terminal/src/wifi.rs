@@ -17,35 +17,26 @@ use cortex_m::peripheral::NVIC;
 pub use erpc::rpcs;
 use seeed_erpc as erpc;
 
+use super::pins::*;
+
 use crate::WIFI_UART_BAUD;
 
 /// The set of pins which are connected to the RTL8720 in some way
-pub struct WifiPins<Pwr, Rxd, Txd, Mosi, Clk, Miso, Cs, Ready, Dir>
-where
-    Pwr: AnyPin<Id = PA18>,
-    Rxd: AnyPin<Id = PC22>,
-    Txd: AnyPin<Id = PC23>,
-    Mosi: AnyPin<Id = PB24>,
-    Clk: AnyPin<Id = PB25>,
-    Miso: AnyPin<Id = PC24>,
-    Cs: AnyPin<Id = PC25>,
-    Ready: AnyPin<Id = PC20>,
-    Dir: AnyPin<Id = PA19>,
-{
-    pub pwr: Pwr,
-    pub rxd: Rxd,
-    pub txd: Txd,
-    pub mosi: Mosi,
-    pub clk: Clk,
-    pub miso: Miso,
-    pub cs: Cs,
-    pub ready: Ready,
-    pub dir: Dir,
+pub struct WifiPins {
+    pub pwr: WifiPwrReset,
+    pub rxd: WifiRxdReset,
+    pub txd: WifiTxdReset,
+    pub mosi: WifiTxReset,
+    pub clk: WifiClkReset,
+    pub miso: WifiRxReset,
+    pub cs: WifiCsReset,
+    pub ready: WifiReadyReset,
+    pub dir: WifiDirReset,
 }
 
 /// eRPC-based protocol to the RTL8720 chip
 pub struct Wifi {
-    _pwr: Pin<PA18, Output<PushPull>>,
+    _pwr: WifiPwr,
     uart: WifiUart,
 
     rx_buff_isr: Producer<'static, 512>,
@@ -63,26 +54,15 @@ pub type WifiUartPads = uart::Pads<Sercom0, IoSet2, WifiRx, WifiTx>;
 pub type WifiUart = uart::Uart<uart::Config<WifiUartPads>, uart::Duplex>;
 
 impl Wifi {
-    pub fn init<Pwr, Rxd, Txd, Mosi, Clk, Miso, Cs, Ready, Dir>(
-        pins: WifiPins<Pwr, Rxd, Txd, Mosi, Clk, Miso, Cs, Ready, Dir>,
+    pub fn init(
+        pins: WifiPins,
         sercom0: SERCOM0,
         clocks: &mut GenericClockController,
         mclk: &mut MCLK,
         delay: &mut Delay,
         rx_buff: &'static BBBuffer<512>,
         tx_buff: &'static BBBuffer<128>,
-    ) -> Wifi
-    where
-        Pwr: AnyPin<Id = PA18>,
-        Rxd: AnyPin<Id = PC22>,
-        Txd: AnyPin<Id = PC23>,
-        Mosi: AnyPin<Id = PB24>,
-        Clk: AnyPin<Id = PB25>,
-        Miso: AnyPin<Id = PC24>,
-        Cs: AnyPin<Id = PC25>,
-        Ready: AnyPin<Id = PC20>,
-        Dir: AnyPin<Id = PA19>,
-    {
+    ) -> Wifi {
         let gclk0 = clocks.gclk0();
 
         let pads = uart::Pads::default().rx(pins.miso).tx(pins.mosi);
@@ -101,7 +81,7 @@ impl Wifi {
         delay.delay_ms(10u8);
 
         // Reset the RTL8720 MCU.
-        let mut pwr = pins.pwr.into().into_push_pull_output();
+        let mut pwr: WifiPwr = pins.pwr.into();
         pwr.set_low().ok();
         delay.delay_ms(100u8);
         pwr.set_high().ok();
@@ -324,35 +304,15 @@ macro_rules! wifi_singleton {
         static WIFI_RX: BBBuffer<512> = BBBuffer::new();
         static WIFI_TX: BBBuffer<128> = BBBuffer::new();
 
-        use atsamd_hal::gpio::v2::PA18 as __PA18;
-        use atsamd_hal::gpio::v2::PA19 as __PA19;
-        use atsamd_hal::gpio::v2::PB24 as __PB24;
-        use atsamd_hal::gpio::v2::PB25 as __PB25;
-        use atsamd_hal::gpio::v2::PC20 as __PC20;
-        use atsamd_hal::gpio::v2::PC22 as __PC22;
-        use atsamd_hal::gpio::v2::PC23 as __PC23;
-        use atsamd_hal::gpio::v2::PC24 as __PC24;
-        use atsamd_hal::gpio::v2::PC25 as __PC25;
-
         /// Initializes the wifi controller from within an interrupt-free context.
-        unsafe fn wifi_init<Pwr, Rxd, Txd, Mosi, Clk, Miso, Cs, Ready, Dir>(
+        unsafe fn wifi_init(
             _cs: &CriticalSection,
-            pins: WifiPins<Pwr, Rxd, Txd, Mosi, Clk, Miso, Cs, Ready, Dir>,
+            pins: WifiPins,
             sercom0: SERCOM0,
             clocks: &mut GenericClockController,
             mclk: &mut MCLK,
             delay: &mut Delay,
-        ) where
-            Pwr: atsamd_hal::gpio::v2::AnyPin<Id = __PA18>,
-            Rxd: atsamd_hal::gpio::v2::AnyPin<Id = __PC22>,
-            Txd: atsamd_hal::gpio::v2::AnyPin<Id = __PC23>,
-            Mosi: atsamd_hal::gpio::v2::AnyPin<Id = __PB24>,
-            Clk: atsamd_hal::gpio::v2::AnyPin<Id = __PB25>,
-            Miso: atsamd_hal::gpio::v2::AnyPin<Id = __PC24>,
-            Cs: atsamd_hal::gpio::v2::AnyPin<Id = __PC25>,
-            Ready: atsamd_hal::gpio::v2::AnyPin<Id = __PC20>,
-            Dir: atsamd_hal::gpio::v2::AnyPin<Id = __PA19>,
-        {
+        ) {
             unsafe {
                 $global_name = Some(Wifi::init(
                     pins, sercom0, clocks, mclk, delay, &WIFI_RX, &WIFI_TX,

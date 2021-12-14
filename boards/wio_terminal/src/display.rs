@@ -11,38 +11,37 @@ use atsamd_hal::typelevel::NoneT;
 use display_interface_spi::SPIInterface;
 use ili9341::{DisplaySize240x320, Ili9341, Orientation};
 
+use super::pins::*;
+
 /// ILI9341 LCD display pins (uses `SERCOM7`)
 pub struct Display {
     /// LCD MISO pin
-    pub miso: Pin<PB18, Disabled<Floating>>,
+    pub miso: LcdMisoReset,
 
     /// LCD MOSI pin
-    pub mosi: Pin<PB19, Disabled<Floating>>,
+    pub mosi: LcdMosiReset,
 
     /// LCD SCK pin
-    pub sck: Pin<PB20, Disabled<Floating>>,
+    pub sck: LcdSckReset,
 
     /// LCD chip select pin
-    pub cs: Pin<PB21, Disabled<Floating>>,
+    pub cs: LcdCsReset,
 
     /// LCD data/command pin
-    pub dc: Pin<PC06, Disabled<Floating>>,
+    pub dc: LcdDcReset,
 
     /// LCD reset pin
-    pub reset: Pin<PC07, Disabled<Floating>>,
+    pub reset: LcdResetReset,
 
     /// LCD backlight pin
-    pub backlight: Pin<PC05, Disabled<Floating>>,
+    pub backlight: LcdBacklightReset,
 }
 
-pub type LcdPads = spi::PadsFromIds<Sercom7, IoSet4, NoneT, PB19, PB20>;
+pub type LcdPads = spi::Pads<Sercom7, IoSet4, NoneT, LcdMosi, LcdSck>;
 pub type LcdSpi = spi::Spi<spi::Config<LcdPads>, spi::Tx>;
 
 /// Type alias for the ILI9341 LCD display.
-pub type LCD = Ili9341<
-    SPIInterface<LcdSpi, Pin<PC06, Output<PushPull>>, Pin<PB21, Output<PushPull>>>,
-    Pin<PC07, Output<PushPull>>,
->;
+pub type LCD = Ili9341<SPIInterface<LcdSpi, LcdDc, LcdCs>, LcdReset>;
 
 pub use ili9341::Scroller;
 
@@ -57,14 +56,13 @@ impl Display {
         mclk: &mut MCLK,
         baud: F,
         delay: &mut D,
-    ) -> Result<(LCD, Pin<PC05, Output<PushPull>>), ()> {
+    ) -> Result<(LCD, LcdBacklight), ()> {
         // Initialize the SPI peripherial on the configured pins, using SERCOM7.
         let gclk0 = clocks.gclk0();
         let clock = &clocks.sercom7_core(&gclk0).ok_or(())?;
         let pads = spi::Pads::default().data_out(self.mosi).sclk(self.sck);
         let spi = spi::Config::new(mclk, sercom7, pads, clock.freq())
-            .cpol(Polarity::IdleLow)
-            .cpha(Phase::CaptureOnFirstTransition)
+            .spi_mode(spi::MODE_0)
             .baud(baud)
             .enable();
 

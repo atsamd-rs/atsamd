@@ -5,34 +5,33 @@ use atsamd_hal::{
     pac::{MCLK, QSPI, SERCOM6},
     prelude::*,
     qspi,
-    sercom::v2::{
-        spi::{self, Phase, Polarity},
-        IoSet1, Sercom6,
-    },
+    sercom::v2::{spi, IoSet1, Sercom6},
     time::Hertz,
     typelevel::NoneT,
 };
 use embedded_sdmmc::{SdMmcSpi, TimeSource};
 
+use super::pins::*;
+
 /// QSPI Flash pins (uses `SERCOM4`)
 pub struct QSPIFlash {
     /// QSPI Flash `sck` pin
-    pub sck: Pin<PB10, Disabled<Floating>>,
+    pub sck: QspiSckReset,
 
     /// QSPI Flash chip select pin
-    pub cs: Pin<PB11, Disabled<Floating>>,
+    pub cs: QspiCsReset,
 
     /// QSPI Flash `d0` pin
-    pub d0: Pin<PA08, Disabled<Floating>>,
+    pub d0: QspiD0Reset,
 
     /// QSPI Flash `d1` pin
-    pub d1: Pin<PA09, Disabled<Floating>>,
+    pub d1: QspiD1Reset,
 
     /// QSPI Flash `d2` pin
-    pub d2: Pin<PA10, Disabled<Floating>>,
+    pub d2: QspiD2Reset,
 
     /// QSPI Flash `d3` pin
-    pub d3: Pin<PA11, Disabled<Floating>>,
+    pub d3: QspiD3Reset,
 }
 
 impl QSPIFlash {
@@ -46,19 +45,19 @@ impl QSPIFlash {
 /// SD Card pins (uses `SERCOM6`)
 pub struct SDCard {
     /// SD Card chip select pin
-    pub cs: Pin<PC19, Disabled<Floating>>,
+    pub cs: SdCsReset,
 
     /// SD Card `mosi` pin
-    pub mosi: Pin<PC16, Disabled<Floating>>,
+    pub mosi: SdMosiReset,
 
     /// SD Card `sck` pin
-    pub sck: Pin<PC17, Disabled<Floating>>,
+    pub sck: SdSckReset,
 
     /// SD Card `miso` pin
-    pub miso: Pin<PC18, Disabled<Floating>>,
+    pub miso: SdMisoReset,
 
     /// SD Card detect pin
-    pub det: Pin<PD21, Disabled<Floating>>,
+    pub det: SdDetReset,
 }
 
 pub type SdPads = spi::Pads<Sercom6, IoSet1, SdMiso, SdMosi, SdSck>;
@@ -101,7 +100,7 @@ impl SDCard {
         sercom6: SERCOM6,
         mclk: &mut MCLK,
         ts: TS,
-    ) -> Result<(SDCardController<TS>, Pin<PD21, Input<Floating>>), ()> {
+    ) -> Result<(SDCardController<TS>, SdDet), ()> {
         let gclk0 = clocks.gclk0();
         let sercom6_clk = clocks.sercom6_core(&gclk0).ok_or(())?;
         let pads = spi::Pads::default()
@@ -109,8 +108,7 @@ impl SDCard {
             .data_in(self.miso)
             .sclk(self.sck);
         let spi = spi::Config::new(mclk, sercom6, pads, sercom6_clk.freq())
-            .cpol(Polarity::IdleLow)
-            .cpha(Phase::CaptureOnFirstTransition)
+            .spi_mode(spi::MODE_0)
             .baud(400.khz())
             .enable();
 
