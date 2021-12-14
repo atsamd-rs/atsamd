@@ -1,17 +1,14 @@
-use crate::pins::{SdCs, SdMiso, SdMosi, SdSck};
 use atsamd_hal::{
     clock::{GenericClockController, Sercom6CoreClock},
-    gpio::v2::*,
     pac::{MCLK, QSPI, SERCOM6},
-    prelude::*,
     qspi,
     sercom::v2::{spi, IoSet1, Sercom6},
-    time::Hertz,
+    time::{Hertz, U32Ext},
     typelevel::NoneT,
 };
 use embedded_sdmmc::{SdMmcSpi, TimeSource};
 
-use super::pins::*;
+use super::pins::aliases::*;
 
 /// QSPI Flash pins (uses `SERCOM4`)
 pub struct QSPIFlash {

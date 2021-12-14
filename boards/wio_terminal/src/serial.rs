@@ -1,6 +1,4 @@
-use crate::pins::{UartRx, UartTx};
 use atsamd_hal::clock::GenericClockController;
-use atsamd_hal::gpio::v2::*;
 use atsamd_hal::pac::{self, MCLK, SERCOM2};
 use atsamd_hal::sercom::v2::{uart, IoSet2, Sercom2};
 use atsamd_hal::time::Hertz;
@@ -10,7 +8,7 @@ use atsamd_hal::usb::{usb_device::bus::UsbBusAllocator, UsbBus};
 #[cfg(feature = "usb")]
 use pac::gclk::{genctrl::SRC_A, pchctrl::GEN_A};
 
-use super::pins::*;
+use super::pins::aliases::*;
 
 /// Uart pins (uses `SERCOM2`)
 pub struct Uart {

@@ -1,9 +1,8 @@
 use atsamd_hal::clock::GenericClockController;
-use atsamd_hal::gpio::v2::*;
+use atsamd_hal::ehal::digital::v2::OutputPin;
 use atsamd_hal::hal::blocking::delay::DelayMs;
 use atsamd_hal::hal::spi::{Phase, Polarity};
 use atsamd_hal::pac::{MCLK, SERCOM7};
-use atsamd_hal::prelude::*;
 use atsamd_hal::sercom::v2::spi;
 use atsamd_hal::sercom::v2::{IoSet4, Sercom7};
 use atsamd_hal::time::Hertz;
@@ -11,7 +10,7 @@ use atsamd_hal::typelevel::NoneT;
 use display_interface_spi::SPIInterface;
 use ili9341::{DisplaySize240x320, Ili9341, Orientation};
 
-use super::pins::*;
+use super::pins::aliases::*;
 
 /// ILI9341 LCD display pins (uses `SERCOM7`)
 pub struct Display {

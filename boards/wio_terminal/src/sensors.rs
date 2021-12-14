@@ -1,15 +1,13 @@
-use crate::pins::{I2c0Scl, I2c0Sda, LightSensorAdc};
 use atsamd_hal::adc::Adc;
 use atsamd_hal::clock::GenericClockController;
-use atsamd_hal::gpio::v2::*;
 use atsamd_hal::pac::gclk::pchctrl::GEN_A::GCLK11;
 use atsamd_hal::pac::{ADC1, MCLK, SERCOM4};
-use atsamd_hal::prelude::*;
 use atsamd_hal::sercom::{I2CMaster4, PadPin, Sercom4Pad0, Sercom4Pad1};
+use atsamd_hal::time::U32Ext;
 
 use lis3dh::{Lis3dh, SlaveAddr};
 
-use super::pins::*;
+use super::pins::aliases::*;
 
 /// I2C Accelerometer pins (uses `SERCOM4`)
 pub struct Accelerometer {

@@ -1,13 +1,11 @@
-use crate::pins::MicOutput;
 use atsamd_hal::adc::Adc;
 use atsamd_hal::clock::GenericClockController;
-use atsamd_hal::gpio::v2::*;
 use atsamd_hal::pac::gclk::pchctrl::GEN_A::GCLK11;
 use atsamd_hal::pac::{ADC1, MCLK, TCC0};
-use atsamd_hal::prelude::*;
 use atsamd_hal::pwm::{TCC0Pinout, Tcc0Pwm};
+use atsamd_hal::time::U32Ext;
 
-use super::pins::*;
+use super::pins::aliases::*;
 
 /// Buzzer pins
 pub struct Buzzer {
@@ -23,7 +21,7 @@ impl Buzzer {
         clocks: &mut GenericClockController,
         tcc0: TCC0,
         mclk: &mut MCLK,
-    ) -> Tcc0Pwm<PD11, BuzzerCtrlMode> {
+    ) -> Tcc0Pwm<BuzzerCtrlId, BuzzerCtrlMode> {
         let pinout = TCC0Pinout::Pd11(self.ctr);
 
         let gclk0 = clocks.gclk0();

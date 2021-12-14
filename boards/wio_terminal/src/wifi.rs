@@ -1,12 +1,13 @@
-use crate::pins::{WifiRx, WifiTx};
 use atsamd_hal::{
     clock::GenericClockController,
     delay::Delay,
-    gpio::v2::*,
+    ehal::blocking::delay::DelayMs,
+    ehal::digital::v2::OutputPin,
+    ehal::serial::{Read, Write},
     pac::{interrupt, MCLK, SERCOM0},
-    prelude::*,
+    prelude::nb,
     sercom::v2::{uart, IoSet2, Sercom0},
-    time::Hertz,
+    time::{Hertz, U32Ext},
 };
 use bbqueue::{self, BBBuffer, Consumer, Producer};
 use heapless::consts::*;
@@ -17,7 +18,7 @@ use cortex_m::peripheral::NVIC;
 pub use erpc::rpcs;
 use seeed_erpc as erpc;
 
-use super::pins::*;
+use super::pins::aliases::*;
 
 use crate::WIFI_UART_BAUD;
 
@@ -70,7 +71,7 @@ impl Wifi {
             mclk,
             sercom0,
             pads,
-            clocks.sercom2_core(&gclk0).unwrap().freq(),
+            clocks.sercom0_core(&gclk0).unwrap().freq(),
         )
         .baud(
             WIFI_UART_BAUD.hz(),

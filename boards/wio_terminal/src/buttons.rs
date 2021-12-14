@@ -1,12 +1,13 @@
 use atsamd_hal::clock::GenericClockController;
 use atsamd_hal::common::eic;
-use atsamd_hal::common::eic::pin::*;
-use atsamd_hal::gpio::v2::*;
+use atsamd_hal::common::eic::pin::{
+    ExtInt10, ExtInt11, ExtInt12, ExtInt3, ExtInt4, ExtInt5, ExtInt7, Sense,
+};
 use atsamd_hal::pac::{interrupt, EIC, MCLK};
 
 use cortex_m::peripheral::NVIC;
 
-use super::pins::*;
+use super::pins::aliases::*;
 
 /// pushbuttons and joystick
 pub struct ButtonPins {
