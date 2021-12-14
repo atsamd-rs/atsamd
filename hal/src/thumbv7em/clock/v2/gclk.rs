@@ -254,9 +254,6 @@ pub trait GclkId: Sealed {
     type DividerType: GclkDivider;
 }
 
-/// Trait allowing to pick all `GclkIdX` except [`GclkId1`]
-pub trait NotGclkId1: GclkId {}
-
 /// Type-level variant representing the identity of GCLK0
 ///
 /// This type is a member of several [type-level enums]. See the documentation
@@ -265,7 +262,6 @@ pub trait NotGclkId1: GclkId {}
 /// [type-level enums]: crate::typelevel#type-level-enum
 pub enum GclkId0 {}
 impl Sealed for GclkId0 {}
-impl NotGclkId1 for GclkId0 {}
 impl GclkId for GclkId0 {
     const DYN: DynGclkId = DynGclkId::Gclk0;
     const NUM: usize = 0;
@@ -295,7 +291,6 @@ seq!(N in 2..=11 {
     /// [type-level enums]: crate::typelevel#type-level-enum
     pub enum GclkId #N {}
     impl Sealed for GclkId #N {}
-    impl NotGclkId1 for GclkId #N {}
     impl GclkId for GclkId #N {
         const DYN: DynGclkId = DynGclkId::Gclk #N;
         const NUM: usize = N;
@@ -506,18 +501,6 @@ impl GclkSourceId for Xosc32kId {
     const DYN: DynGclkSourceId = DynGclkSourceId::XOSC32K;
 }
 
-/// Type-level enum for all [`GclkSourceId`]s *except* [`GclkId1`]
-pub trait NotGclk1Source: GclkSourceId {}
-
-impl NotGclk1Source for DfllId {}
-impl NotGclk1Source for DpllId0 {}
-impl NotGclk1Source for DpllId1 {}
-impl NotGclk1Source for GclkInId {}
-impl NotGclk1Source for OscUlp32kId {}
-impl NotGclk1Source for XoscId0 {}
-impl NotGclk1Source for XoscId1 {}
-impl NotGclk1Source for Xosc32kId {}
-
 //==============================================================================
 // Gclk
 //==============================================================================
@@ -551,39 +534,9 @@ seq!(N in 0..=11 {
     pub type Gclk #N<S> = Gclk<GclkId #N, S>;
 });
 
-impl<I> Gclk1<I>
-where
-    I: NotGclk1Source,
-{
-    /// Create a new [`Gclk`]
-    ///
-    /// Hardware calls are deferred until the call to [`Gclk::enable`]
-    #[inline]
-    pub fn new<S>(token: GclkToken<GclkId1>, source: S) -> (Gclk1<I>, S::Inc)
-    where
-        S: Source<Id = I> + Increment,
-    {
-        Self::new_internal(token, source)
-    }
-
-    /// Swap [`Gclk`] source
-    ///
-    /// Provided a [`GclkSource`] the [`Gclk`] is updated,
-    /// the old clock source token released and returned
-    #[inline]
-    pub fn swap<Old, New>(self, old: Old, new: New) -> (Gclk1<New::Id>, Old::Dec, New::Inc)
-    where
-        Old: Source<Id = I> + Decrement,
-        New: Source + Increment,
-        New::Id: NotGclk1Source,
-    {
-        self.swap_internal(old, new)
-    }
-}
-
 impl<G, I> Gclk<G, I>
 where
-    G: NotGclkId1,
+    G: GclkId,
     I: GclkSourceId,
 {
     /// Create a new [`Gclk`]
@@ -591,34 +544,6 @@ where
     /// Hardware calls are deferred until the call to [`Gclk::enable`]
     #[inline]
     pub fn new<S>(token: GclkToken<G>, source: S) -> (Gclk<G, I>, S::Inc)
-    where
-        S: Source<Id = I> + Increment,
-    {
-        Self::new_internal(token, source)
-    }
-
-    /// Swap [`Gclk`] source
-    ///
-    /// Provided a [`GclkSource`] the [`Gclk`] is updated,
-    /// the old clock source token released and returned
-    #[inline]
-    pub fn swap<Old, New>(self, old: Old, new: New) -> (Gclk<G, New::Id>, Old::Dec, New::Inc)
-    where
-        Old: Source<Id = I> + Decrement,
-        New: Source + Increment,
-        New::Id: GclkSourceId,
-    {
-        self.swap_internal(old, new)
-    }
-}
-
-impl<G, I> Gclk<G, I>
-where
-    G: GclkId,
-    I: GclkSourceId,
-{
-    #[inline]
-    fn new_internal<S>(token: GclkToken<G>, source: S) -> (Gclk<G, I>, S::Inc)
     where
         S: Source<Id = I> + Increment,
     {
@@ -643,15 +568,19 @@ where
         (self.token, source.dec())
     }
 
+    /// Swap [`Gclk`] source
+    ///
+    /// Provided a [`GclkSource`] the [`Gclk`] is updated,
+    /// the old clock source token released and returned
     #[inline]
-    fn swap_internal<Old, New>(self, old: Old, new: New) -> (Gclk<G, New::Id>, Old::Dec, New::Inc)
+    pub fn swap<Old, New>(self, old: Old, new: New) -> (Gclk<G, New::Id>, Old::Dec, New::Inc)
     where
         Old: Source<Id = I> + Decrement,
         New: Source + Increment,
         New::Id: GclkSourceId,
     {
         let (token, old) = self.free(old);
-        let (config, new) = Gclk::new_internal(token, new);
+        let (config, new) = Gclk::new(token, new);
         (config, old, new)
     }
 
