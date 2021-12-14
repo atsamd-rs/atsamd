@@ -428,7 +428,7 @@ seq!(N in 0..=1 {
         /// [`Increment`] the `Xosc` [`Enabled`] [`Counter`] to indicate it is
         /// being used by the `Dpll`
         #[inline]
-        pub fn from_xosc<S>(
+        pub fn from_xosc #N<S>(
             token: DpllToken<D>,
             xosc: S,
             raw_prediv: RawPredivider,
