@@ -292,11 +292,15 @@ mod ioset {
     /// After implementing `IoSet` type checking, it became clear that some
     /// existing boards were using a combinations of pins that did not match any
     /// IOSET in the datasheet. From that, we infer that there must be at least
-    /// one undocumented IOSET, and we added this new `IoSet` to account for it.
+    /// two undocumented IOSETs, and we added these new `IoSet`s to account for
+    /// it.
     ///
-    /// As of writing this documentation, only one undocumented IOSET has been
-    /// discovered: PA16, PA17, PB22 & PB23 configured for `Sercom1`. Both the
+    /// As of writing this documentation, only two undocumented IOSETs have been
+    /// discovered:
+    /// - PA16, PA17, PB22 & PB23 configured for `Sercom1`. Both the
     /// pygamer & feather_m4 uses this combination.
+    /// - PA00, PA01, PB22 & PB23 configured for `Sercom1`. The itsybitsy_m4
+    ///   uses this combination.
     ///
     /// See the [type-level enum] documentation for more details on type-level
     /// variants.
@@ -305,6 +309,10 @@ mod ioset {
     pub enum UndocIoSet1 {}
     impl Sealed for UndocIoSet1 {}
     impl IoSet for UndocIoSet1 {}
+
+    pub enum UndocIoSet2 {}
+    impl Sealed for UndocIoSet2 {}
+    impl IoSet for UndocIoSet2 {}
 
     /// Type class for SERCOM pads in a given [`IoSet`]
     ///
