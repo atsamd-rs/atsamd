@@ -80,6 +80,11 @@ path = "../pac/atsamd21g"
 version = "0.11"
 optional = true
 
+[dependencies.atsamd20j]
+path = "../pac/atsamd20j"
+version = "0.11"
+optional = true
+
 [dependencies.atsamd21j]
 path = "../pac/atsamd21j"
 version = "0.11"
@@ -170,6 +175,9 @@ samd11c = ["atsamd11c", "samd11"]
 samd11c-rt = ["samd11c", "atsamd11c/rt"]
 samd11d = ["atsamd11d", "samd11"]
 samd11d-rt = ["samd11d", "atsamd11d/rt"]
+samd20 = ["device"] # Convenience feature for shared configuration of samd20 chips.
+samd20j = ["atsamd20j", "samd20", "min-samd20j"]
+samd20j-rt = ["samd20j", "atsamd20j/rt"]
 samd21 = ["device"] # Convenience feature for shared configuration of samd21 chips.
 samd21e = ["atsamd21e", "samd21"]
 samd21e-rt = ["samd21e", "atsamd21e/rt"]

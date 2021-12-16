@@ -31,6 +31,9 @@ pub use atsamd21e as pac;
 #[cfg(feature = "samd21g")]
 pub use atsamd21g as pac;
 
+#[cfg(feature = "samd20j")]
+pub use atsamd20j as pac;
+
 #[cfg(feature = "samd21j")]
 pub use atsamd21j as pac;
 
