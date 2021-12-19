@@ -21,13 +21,10 @@ use seq_macro::seq;
 use crate::pac;
 use crate::pac::gclk::pchctrl::GEN_A;
 
-use crate::sercom::v2::*;
 use crate::time::Hertz;
 use crate::typelevel::{Decrement, Increment, Sealed};
 
-use super::dfll::DfllId;
-use super::dpll::{DpllId0, DpllId1};
-use super::gclk::*;
+use super::gclk::{DynGclkId, GclkId};
 use super::Source;
 
 //==============================================================================
@@ -53,7 +50,7 @@ impl<P: PclkId> PclkToken<P> {
     /// Users must never create two simultaneous instances of this `struct` with
     /// the same [`PclkType`]
     #[inline]
-    unsafe fn new() -> Self {
+    pub(super) unsafe fn new() -> Self {
         PclkToken { pclk: PhantomData }
     }
 
@@ -88,7 +85,299 @@ impl<P: PclkId> PclkToken<P> {
 }
 
 //==============================================================================
-// PclkType
+// DynPclkId
+//==============================================================================
+
+/// Internal `enum` used to index the correct peripheral channel register
+#[allow(missing_docs)]
+pub enum DynPclkId {
+    Dfll,
+    Dpll0,
+    Dpll1,
+    Slow,
+    Eic,
+    FreqmMeasure,
+    FreqmReference,
+    Sercom0,
+    Sercom1,
+    Tc0Tc1,
+    Usb,
+    EvSys0,
+    EvSys1,
+    EvSys2,
+    EvSys3,
+    EvSys4,
+    EvSys5,
+    EvSys6,
+    EvSys7,
+    EvSys8,
+    EvSys9,
+    EvSys10,
+    EvSys11,
+    Sercom2,
+    Sercom3,
+    Tcc0Tcc1,
+    Tc2Tc3,
+    Can0,
+    Can1,
+    Tcc2Tcc3,
+    Tc4Tc5,
+    Pdec,
+    Ac,
+    Ccl,
+    Sercom4,
+    Sercom5,
+    #[cfg(feature = "min-samd51n")]
+    Sercom6,
+    #[cfg(feature = "min-samd51n")]
+    Sercom7,
+    Tcc4,
+    Tc6Tc7,
+    Adc0,
+    Adc1,
+    Dac,
+    I2s0,
+    I2s1,
+    Sdhc0,
+    Sdhc1,
+    Cm4Trace,
+}
+
+//==============================================================================
+// PclkId types
+//==============================================================================
+
+/// Append the list of all [`PclkId`] types and `snake_case` id names to the
+/// arguments of a macro call
+///
+/// This macro will perform the embedded macro call with a list of tuples
+/// appended to the arguments. Each tuple contains a type implementing
+/// [`PclkId`] and the `snake_case` name of the corresponding token in the
+/// [`pclk::Tokens`](Tokens) struct.
+///
+/// **Note:** The entries within [`DynPclkId`] do not match the type names.
+/// Rather, they match the `snake_case` names converted to `CamelCase`.
+///
+/// An optional attribute is added just before each tuple. These are mainly used
+/// to declare the conditions under which the corresponding peripheral exists.
+/// For example, `Sercom6` and `Sercom7` are tagged with
+/// `#[cfg(feature = "min-samd51n")]`.
+///
+/// The example below shows the pattern that should be used to match against the
+/// appended tokens.
+///
+/// ```
+/// macro_rules! some_macro {
+///     (
+///         $first_arg:tt,
+///         $second_arg:tt
+///         $(
+///             $( #[$cfg:meta] )?
+///             ($Type:ident, $Id:ident)
+///         )+
+///     ) =>
+///     {
+///         // implementation here ...
+///     }
+/// }
+///
+/// with_pclk_types_ids!(some_macro!(first, second));
+/// ```
+macro_rules! with_pclk_types_ids {
+    ( $some_macro:ident ! ( $( $args:tt )* ) ) => {
+        crate::thumbv7em::clock::v2::pclk::__dispatch!(
+            without_existence,
+            $some_macro ! ( $( $args )* )
+        );
+    };
+}
+
+/// Append information about the [`PclkId`] types to the arguments of a macro
+/// call
+///
+/// This macro is nearly identical to [`with_pclk_types_ids`]. The only
+/// difference is that a third element is added to each tuple. This element is
+/// either `already_exists`, if the type is already defined elsewhere in the
+/// HAL, or it is `does_not_exist`, if the corresponding peripheral has no HAL
+/// implementation. The types marked `does_not_exist` will be created here in
+/// the [`pclk::ids`](ids) module.
+///
+/// It is unlikely this macro will find use outside of this module.
+macro_rules! with_pclk_types_ids_existence {
+    ( $some_macro:ident ! ( $( $args:tt )* ) ) => {
+        crate::thumbv7em::clock::v2::pclk::__dispatch!(
+            with_existence,
+            $some_macro ! ( $( $args )* )
+        );
+    };
+}
+
+/// Internal implementation detail of the `with_pclk_type_ids*` macros
+///
+/// Append the [`PclkId`] type information and dispatch to the correct branch of
+/// [`__call_macro`].
+macro_rules! __dispatch {
+    ( $existence:ident, $some_macro:ident ! ( $( $args:tt )* ) ) => {
+        crate::thumbv7em::clock::v2::pclk::__call_macro!(
+            $existence,
+            $some_macro ! ( $( $args )* ),
+            (DfllId, dfll, already_exists)
+            (DpllId0, dpll0, already_exists)
+            (DpllId1, dpll1, already_exists)
+            (Slow, slow, does_not_exist)
+            (Eic, eic, does_not_exist)
+            (FreqmMeasure, freqm_measure, does_not_exist)
+            (FreqmReference, freqm_reference, does_not_exist)
+            (Sercom0, sercom0, already_exists)
+            (Sercom1, sercom1, already_exists)
+            (Tc0Tc1, tc0_tc1, does_not_exist)
+            (Usb, usb, does_not_exist)
+            (EvSys0, ev_sys0, does_not_exist)
+            (EvSys1, ev_sys1, does_not_exist)
+            (EvSys2, ev_sys2, does_not_exist)
+            (EvSys3, ev_sys3, does_not_exist)
+            (EvSys4, ev_sys4, does_not_exist)
+            (EvSys5, ev_sys5, does_not_exist)
+            (EvSys6, ev_sys6, does_not_exist)
+            (EvSys7, ev_sys7, does_not_exist)
+            (EvSys8, ev_sys8, does_not_exist)
+            (EvSys9, ev_sys9, does_not_exist)
+            (EvSys10, ev_sys10, does_not_exist)
+            (EvSys11, ev_sys11, does_not_exist)
+            (Sercom2, sercom2, already_exists)
+            (Sercom3, sercom3, already_exists)
+            (Tcc0Tcc1, tcc0_tcc1, does_not_exist)
+            (Tc2Tc3, tc2_tc3, does_not_exist)
+            (Can0, can0, does_not_exist)
+            (Can1, can1, does_not_exist)
+            (Tcc2Tcc3, tcc2_tcc3, does_not_exist)
+            (Tc4Tc5, tc4_tc5, does_not_exist)
+            (PDec, pdec, does_not_exist)
+            (AC, ac, does_not_exist)
+            (CCL, ccl, does_not_exist)
+            (Sercom4, sercom4, already_exists)
+            (Sercom5, sercom5, already_exists)
+            #[cfg(feature = "min-samd51n")]
+            (Sercom6, sercom6, already_exists)
+            #[cfg(feature = "min-samd51n")]
+            (Sercom7, sercom7, already_exists)
+            (Tcc4, tcc4, does_not_exist)
+            (Tc6Tc7, tc6_tc7, does_not_exist)
+            (Adc0, adc0, does_not_exist)
+            (Adc1, adc1, does_not_exist)
+            (Dac, dac, does_not_exist)
+            (I2S0, i2s0, does_not_exist)
+            (I2S1, i2s1, does_not_exist)
+            (Sdhc0, sdhc0, does_not_exist)
+            (Sdhc1, sdhc1, does_not_exist)
+            (CM4Trace, cm4_trace, does_not_exist)
+        );
+    };
+}
+
+/// Internal implementation detail of the `with_pclk_type_ids*` macros
+///
+/// Call the supplied macro and append the [`PclkId`] type information. Filter
+/// out the "existence" tokens when they are not requested.
+macro_rules! __call_macro {
+    (
+        without_existence,
+        $some_macro:ident ! ( $( $args:tt )* ),
+        $(
+            $( #[$cfg:meta] )?
+            ($Type:ident, $id:ident, $existence:ident)
+        )+
+    ) => {
+        $some_macro!(
+            $( $args )*
+            $(
+                $( #[$cfg] )?
+                ($Type, $id)
+            )+
+        );
+    };
+    (
+        with_existence,
+        $some_macro:ident ! ( $( $args:tt )* ),
+        $(
+            $( #[$cfg:meta] )?
+            ($Type:ident, $id:ident, $existence:ident)
+        )+
+    ) => {
+        $some_macro!(
+            $( $args )*
+            $(
+                $( #[$cfg] )?
+                ($Type, $id, $existence)
+            )+
+        );
+    };
+}
+
+pub(super) use __call_macro;
+pub(super) use __dispatch;
+pub(super) use with_pclk_types_ids;
+pub(super) use with_pclk_types_ids_existence;
+
+/// Module containing only the types implementing [`PclkId`]
+///
+/// Because there are so many types that implement `PclkId`, it is helpful to
+/// have them defined in a separate module, so that you can import all of them
+/// with a wildcard (`*`) without importing anything else, i.e.
+///
+/// ```
+/// use pclk::ids::*;
+/// ```
+pub(crate) mod ids {
+
+    use crate::typelevel::Sealed;
+
+    #[cfg(feature = "min-samd51g")]
+    pub use crate::sercom::v2::{Sercom0, Sercom1, Sercom2, Sercom3, Sercom4, Sercom5};
+    #[cfg(feature = "min-samd51n")]
+    pub use crate::sercom::v2::{Sercom6, Sercom7};
+
+    pub use super::super::dfll::DfllId;
+    pub use super::super::dpll::{DpllId0, DpllId1};
+    pub use super::super::gclk::{
+        GclkId0, GclkId1, GclkId10, GclkId11, GclkId2, GclkId3, GclkId4, GclkId5, GclkId6, GclkId7,
+        GclkId8, GclkId9,
+    };
+
+    /// Define any [`PclkId`] types that are not already defined by some
+    /// existing HAL peripheral
+    macro_rules! define_pclk_types {
+
+        // Ignore types that already exist
+        ($Type:ident, $id:ident, already_exists) => {};
+
+        // Define types that don't exist
+        ($Type:ident, $id:ident, does_not_exist) => {
+            pub enum $Type {}
+            impl Sealed for $Type {}
+        };
+
+        // Convert a single call with a list of tokens to a list of calls
+        (
+            $(
+                $( #[$cfg:meta] )?
+                ( $Type:ident, $id:ident, $existence:ident )
+            )+
+        ) => {
+            $(
+                $( #[$cfg] )?
+                define_pclk_types!($Type, $id, $existence);
+            )+
+        };
+    }
+
+    super::with_pclk_types_ids_existence!(define_pclk_types!());
+}
+
+use ids::*;
+
+//==============================================================================
+// PclkId
 //==============================================================================
 
 /// Type-level `enum` for the 48 peripheral channel clock variants
@@ -97,23 +386,24 @@ pub trait PclkId: Sealed {
     const DYN: DynPclkId;
 }
 
-/// Create a type-level variant of [`PclkId`]
-macro_rules! pclk_id {
-    // If the type doesn't yet exist, define it
-    ( false, $Type:ident, $Id:ident ) => {
-        /// Type-level variant of [`PclkId`] for the corresponding peripheral
-        /// channel clock
-        pub enum $Type {}
-        impl Sealed for $Type {}
-        pclk_id!(true, $Type, $Id);
-    };
-    // If the type does exist, implement `PclkId`
-    ( true, $Type:ident, $Id:ident ) => {
-        impl PclkId for $Type {
-            const DYN: DynPclkId = DynPclkId::$Id;
-        }
+macro_rules! impl_pclk_id {
+    (
+        $(
+            $( #[$cfg:meta] )?
+            ($Type:ident, $Id:ident)
+        )+
+    ) => {
+        $(
+            paste! {
+                impl PclkId for $Type {
+                    const DYN: DynPclkId = DynPclkId::[<$Id:camel>];
+                }
+            }
+        )+
     };
 }
+
+with_pclk_types_ids!(impl_pclk_id!());
 
 //==============================================================================
 // PclkSourceId
@@ -220,50 +510,36 @@ where
 }
 
 //==============================================================================
-// Pclks generation
+// Tokens
 //==============================================================================
 
-macro_rules! pclks {
+macro_rules! define_pclk_tokens_struct {
     (
+        $( #[$docs:meta] )?
+        $Tokens:ident
         $(
             $( #[$cfg:meta] )?
-            ($exists:literal, $Type:ident, $Id:ident)
-        ),+
+            ($Type:ident, $Id:ident)
+        )+
     ) =>
     {
-        paste! {
-            /// Internal `enum` used to index the correct peripheral channel
-            /// register
-            pub enum DynPclkId {
-                $(
-                    $( #[$cfg] )?
-                    /// PclkId
-                    [<$Id:camel>],
-                )+
-            }
-
+        $( #[$docs] )?
+        #[allow(missing_docs)]
+        pub struct $Tokens {
             $(
                 $( #[$cfg] )?
-                pclk_id!( $exists, [<$Type:camel>], [<$Id:camel>] );
+                pub $Id: PclkToken<$Type>,
             )+
+        }
 
-            /// Struct containing all possible peripheral clock tokens
-            pub struct Tokens {
-                $(
-                    $( #[$cfg] )?
-                    /// Exposed [`PclkToken`]
-                    pub [<$Id:lower>]: PclkToken<[<$Type:camel>]>,
-                )+
-            }
-
-            impl Tokens {
-                #[inline]
-                pub(super) fn new() -> Self {
-                    Tokens {
+        impl $Tokens {
+            #[inline]
+            pub(super) fn new() -> Self {
+                unsafe {
+                    $Tokens {
                         $(
-                            // Create new [`PclkToken`]
                             $( #[$cfg] )?
-                            [<$Id:lower>]: unsafe { PclkToken::new() },
+                            $Id: PclkToken::new(),
                         )+
                     }
                 }
@@ -272,56 +548,9 @@ macro_rules! pclks {
     };
 }
 
-// Try to use existing types as tokens, if possible. Otherwise, create new ones.
-pclks!(
-    (true, DfllId, dfll48),
-    (true, DpllId0, dpll0),
-    (true, DpllId1, dpll1),
-    (false, slow_32k, slow_32k),
-    (false, eic, eic),
-    (false, freqm_msr, freqm_msr),
-    (false, freqm_ref, freqm_ref),
-    (true, sercom0, sercom0),
-    (true, sercom1, sercom1),
-    (false, tc0_tc1, tc0_tc1),
-    (false, usb, usb),
-    (false, evsys0, evsys0),
-    (false, evsys1, evsys1),
-    (false, evsys2, evsys2),
-    (false, evsys3, evsys3),
-    (false, evsys4, evsys4),
-    (false, evsys5, evsys5),
-    (false, evsys6, evsys6),
-    (false, evsys7, evsys7),
-    (false, evsys8, evsys8),
-    (false, evsys9, evsys9),
-    (false, evsys10, evsys10),
-    (false, evsys11, evsys11),
-    (true, sercom2, sercom2),
-    (true, sercom3, sercom3),
-    (false, tcc0_tcc1, tcc0_tcc1),
-    (false, tc2_tc3, tc2_tc3),
-    (false, can0, can0),
-    (false, can1, can1),
-    (false, tcc2_tcc3, tcc2_tcc3),
-    (false, tc4_tc5, tc4_tc5),
-    (false, pdec, pdec),
-    (false, ac, ac),
-    (false, ccl, ccl),
-    (true, sercom4, sercom4),
-    (true, sercom5, sercom5),
-    #[cfg(feature = "min-samd51n")]
-    (true, sercom6, sercom6),
-    #[cfg(feature = "min-samd51n")]
-    (true, sercom7, sercom7),
-    (false, tcc4, tcc4),
-    (false, tc6_tc7, tc6_tc7),
-    (false, adc0, adc0),
-    (false, adc1, adc1),
-    (false, dac, dac),
-    (false, i2s0, i2s0),
-    (false, i2s1, i2s1),
-    (false, sdhc0, sdhc0),
-    (false, sdhc1, sdhc1),
-    (false, cm4_trace, cm4_trace)
-);
+pub(super) use define_pclk_tokens_struct;
+
+with_pclk_types_ids!(define_pclk_tokens_struct!(
+    /// Struct containing all possible peripheral clock tokens
+    Tokens
+));

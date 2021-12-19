@@ -761,6 +761,8 @@ pub trait Counter: Sealed {}
 /// safe interfaces can be built on top.
 pub trait Increment: PrivateIncrement {}
 
+impl<T: PrivateIncrement> Increment for T {}
+
 /// Mapping from an instance of [`Counter`] to its predecessor
 ///
 /// This trait provides both type-level and value-level functions to map from an
@@ -771,6 +773,8 @@ pub trait Increment: PrivateIncrement {}
 /// Access to the implementation is restricted to types in this crate, so that
 /// safe interfaces can be built on top.
 pub trait Decrement: PrivateDecrement {}
+
+impl<T: PrivateDecrement> Decrement for T {}
 
 impl<N: Unsigned + Sealed> Counter for N {}
 

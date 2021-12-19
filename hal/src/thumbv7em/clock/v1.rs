@@ -7,7 +7,7 @@
 //! configured.
 #![allow(clippy::from_over_into)]
 
-use crate::clock::v2::pclk::*;
+use crate::clock::v2::pclk::{ids::*, Pclk, PclkSourceId};
 use crate::pac::gclk::genctrl::SRC_A::*;
 use crate::pac::gclk::pchctrl::GEN_A::*;
 use crate::pac::{self, GCLK, MCLK, NVMCTRL, OSC32KCTRL, OSCCTRL};
@@ -442,31 +442,31 @@ clock_generator!(
     (adc0, Adc0Clock, ADC0, Adc0),
     (adc1, Adc1Clock, ADC1, Adc1),
     (eic, EicClock, EIC, Eic),
-    (freq_m_msr, FreqmMsrClock, FREQM_MSR, FreqmMsr),
-    (freq_m_ref, FreqmRefClock, FREQM_REF, FreqmRef),
-    (evsys0, Evsys0Clock, EVSYS0, Evsys0),
-    (evsys1, Evsys1Clock, EVSYS1, Evsys1),
-    (evsys2, Evsys2Clock, EVSYS2, Evsys2),
-    (evsys3, Evsys3Clock, EVSYS3, Evsys3),
-    (evsys4, Evsys4Clock, EVSYS4, Evsys4),
-    (evsys5, Evsys5Clock, EVSYS5, Evsys5),
-    (evsys6, Evsys6Clock, EVSYS6, Evsys6),
-    (evsys7, Evsys7Clock, EVSYS7, Evsys7),
-    (evsys8, Evsys8Clock, EVSYS8, Evsys8),
-    (evsys9, Evsys9Clock, EVSYS9, Evsys9),
-    (evsys10, Evsys10Clock, EVSYS10, Evsys10),
-    (evsys11, Evsys11Clock, EVSYS11, Evsys11),
+    (freq_m_msr, FreqmMsrClock, FREQM_MSR, FreqmMeasure),
+    (freq_m_ref, FreqmRefClock, FREQM_REF, FreqmReference),
+    (evsys0, Evsys0Clock, EVSYS0, EvSys0),
+    (evsys1, Evsys1Clock, EVSYS1, EvSys1),
+    (evsys2, Evsys2Clock, EVSYS2, EvSys2),
+    (evsys3, Evsys3Clock, EVSYS3, EvSys3),
+    (evsys4, Evsys4Clock, EVSYS4, EvSys4),
+    (evsys5, Evsys5Clock, EVSYS5, EvSys5),
+    (evsys6, Evsys6Clock, EVSYS6, EvSys6),
+    (evsys7, Evsys7Clock, EVSYS7, EvSys7),
+    (evsys8, Evsys8Clock, EVSYS8, EvSys8),
+    (evsys9, Evsys9Clock, EVSYS9, EvSys9),
+    (evsys10, Evsys10Clock, EVSYS10, EvSys10),
+    (evsys11, Evsys11Clock, EVSYS11, EvSys11),
     (can0, Can0Clock, CAN0, Can0),
     (can1, Can1Clock, CAN1, Can1),
-    (pdec, PdecClock, PDEC, Pdec),
-    (ac, AcClock, AC, Ac),
-    (ccl, CclClock, CCL, Ccl),
+    (pdec, PdecClock, PDEC, PDec),
+    (ac, AcClock, AC, AC),
+    (ccl, CclClock, CCL, CCL),
     (dac, DacClock, DAC, Dac),
-    (i2s0, I2S0Clock, I2S0, I2s0),
-    (i2s1, I2S1Clock, I2S1, I2s1),
+    (i2s0, I2S0Clock, I2S0, I2S0),
+    (i2s1, I2S1Clock, I2S1, I2S1),
     (sdhc0, Sdhc0Clock, SDHC0, Sdhc0),
     (sdhc1, Sdhc1Clock, SDHC1, Sdhc1),
-    (cm4_trace, Cm4TraceClock, CM4_TRACE, Cm4Trace),
+    (cm4_trace, Cm4TraceClock, CM4_TRACE, CM4Trace),
 );
 
 /// The frequency of the 48Mhz source.

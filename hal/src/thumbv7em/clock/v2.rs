@@ -83,14 +83,12 @@
 //! to opinionated clock setup from API v1:
 //! [`atsamd_hal::clocking_preset_*`](crate#macros)
 
-use typenum::{Unsigned, U0, U1};
+use typenum::Unsigned;
 
-use crate::pac::{GCLK, MCLK, NVMCTRL, OSC32KCTRL, OSCCTRL};
+use crate::pac::{GCLK, MCLK, OSC32KCTRL, OSCCTRL};
 
 use crate::time::Hertz;
-use crate::typelevel::{Counter, Decrement, Increment, PrivateDecrement, PrivateIncrement, Sealed};
-
-mod presets;
+use crate::typelevel::{Counter, PrivateDecrement, PrivateIncrement, Sealed};
 
 pub mod ahb;
 pub mod apb;
@@ -105,19 +103,22 @@ pub mod types;
 pub mod xosc;
 pub mod xosc32k;
 
+pub mod configurations;
+pub use configurations::reset::*;
+
 /// Collection of low-level PAC structs.
 ///
 /// Gathers all clocking related peripherals consumed by [`retrieve_clocks`]
 /// function that are then being contained within [`Tokens::pac`] field. PAC
 /// structs can be accessed using unsafe [`PacClocks::steal`] function.
-pub struct PacClocks {
+pub struct PacStructs {
     oscctrl: OSCCTRL,
     osc32kctrl: OSC32KCTRL,
     gclk: GCLK,
     mclk: MCLK,
 }
 
-impl PacClocks {
+impl PacStructs {
     /// Escape hatch allowing to access low-level PAC structs.
     /// This is especially useful when V2 clocking API must interact with
     /// legacy V1 clocking API based peripherals; E.g. access to [`MCLK`] is
@@ -132,97 +133,6 @@ impl PacClocks {
     /// typestates representing the current configuration as seen by v2.
     pub unsafe fn steal(self) -> (OSCCTRL, OSC32KCTRL, GCLK, MCLK) {
         (self.oscctrl, self.osc32kctrl, self.gclk, self.mclk)
-    }
-}
-
-/// This struct contains instantiated `Token` structs that can be used to
-/// construct clocking components.
-///
-/// E.g. to call [`gclk::Gclk<marker::Gclk5, _>::new`] one needs
-/// [`gclk::Tokens::gclk5`] from within [`Tokens::gclks`]. Thus, it is
-/// impossible to create multiple instances of [`gclk::Gclk5<_>`].
-///
-/// These do not expose any API externally. Inside of the HAL crate, these
-/// expose low-level API to HW register of finer granularity than regular PAC
-/// structs.
-pub struct Tokens {
-    /// Wrapper for low-level PAC -- can be unsafely stolen if needed
-    pub pac: PacClocks,
-    /// Synchronous clocking domain clocks -- AHB bus
-    pub ahbs: ahb::AhbClks,
-    /// Synchronous clocking domain clocks -- APB buses
-    pub apbs: apb::ApbClks,
-    /// Construction token for [`dpll::Dpll0`]
-    pub dpll0: dpll::DpllToken<dpll::DpllId0>,
-    /// Construction token for [`dpll::Dpll1`]
-    pub dpll1: dpll::DpllToken<dpll::DpllId1>,
-    /// Construction tokens for [`gclkio::GclkIo`]
-    pub gclk_io: gclkio::Tokens,
-    /// Construction tokens for [`gclk::Gclk`]
-    pub gclks: gclk::Tokens,
-    /// Construction tokens for [`pclk::Pclk`]
-    pub pclks: pclk::Tokens,
-    /// Construction token for [`rtc::RtcOsc`]
-    pub rtc_osc: rtcosc::RtcOscToken,
-    /// Construction token for [`xosc::Xosc0`]
-    pub xosc0: xosc::XoscToken<xosc::XoscId0>,
-    /// Construction token for [`xosc::Xosc1`]
-    pub xosc1: xosc::XoscToken<xosc::XoscId1>,
-    /// Construction tokens for [`xosc32k::XoscBase`], [`xosc32k::Xosc1k`] and [`xosc32k::Xosc32k`]
-    pub xosc32k: xosc32k::Tokens,
-    /// Construction tokens for [`osculp32k::OscUlp1k`] and [`osculp32k::OscUlp32k`]
-    pub osculp: osculp32k::Tokens,
-}
-
-/// Standalone function returning a set of instantiated clocking abstractions
-/// representing a default state of a clocking system. For `thumbv7em` based
-/// devices it is a chain of:
-/// - [`dfll::Dfll<OpenLoop>`] (`48 MHz`)
-/// - [`gclk::Gclk0<DfllId>`] (`48 MHz`)
-///
-/// And also ultra low power internal 32k oscillator:
-///
-/// - [`osculp32k::OscUlp32k`] (`32 kHz`)
-#[inline]
-pub fn retrieve_clocks(
-    oscctrl: OSCCTRL,
-    osc32kctrl: OSC32KCTRL,
-    gclk: GCLK,
-    mclk: MCLK,
-    nvmctrl: &mut NVMCTRL,
-) -> (
-    Enabled<gclk::Gclk0<dfll::DfllId>, U1>,
-    Enabled<dfll::Dfll<dfll::OpenLoop>, U1>,
-    Enabled<osculp32k::OscUlpBase, U0>,
-    Tokens,
-) {
-    // Safe because registers are instantiated only once
-    unsafe {
-        let tokens = Tokens {
-            pac: PacClocks {
-                oscctrl,
-                osc32kctrl,
-                gclk,
-                mclk,
-            },
-            ahbs: ahb::AhbClks::new(),
-            apbs: apb::ApbClks::new(),
-            dpll0: dpll::DpllToken::new(),
-            dpll1: dpll::DpllToken::new(),
-            gclk_io: gclkio::Tokens::new(),
-            gclks: gclk::Tokens::new(nvmctrl),
-            pclks: pclk::Tokens::new(),
-            rtc_osc: rtcosc::RtcOscToken::new(),
-            xosc0: xosc::XoscToken::new(),
-            xosc1: xosc::XoscToken::new(),
-            xosc32k: xosc32k::Tokens::new(),
-            osculp: osculp32k::Tokens::new(),
-        };
-        let dfll = Enabled::<_, U0>::new(dfll::Dfll::in_open_mode(dfll::DfllToken::new()));
-        let (gclk0, dfll) = gclk::Gclk0::new(gclk::GclkToken::new(), dfll);
-        let gclk0 = Enabled::new(gclk0);
-        let osculp = osculp32k::OscUlpBase::new();
-        (gclk0, dfll, osculp, tokens)
     }
 }
 
@@ -287,6 +197,60 @@ impl<T, N: PrivateDecrement> PrivateDecrement for Enabled<T, N> {
     }
 }
 
-impl<T, N: PrivateIncrement> Increment for Enabled<T, N> {}
-impl<T, N: PrivateDecrement> Decrement for Enabled<T, N> {}
 impl<T, N: Counter> Counter for Enabled<T, N> {}
+
+/// Test
+pub fn test() {
+    use crate::{
+        clock::v2::{
+            dpll::Dpll,
+            gclk::{Gclk, Gclk1Div},
+            gclkio::GclkOut,
+            pclk::Pclk,
+            xosc::{CrystalCurrent, Xosc},
+        },
+        gpio::v2::Pins,
+        pac::Peripherals,
+        time::U32Ext,
+    };
+    let mut pac = Peripherals::take().unwrap();
+    let (clocks, tokens) = reset_clocks_tokens(
+        pac.OSCCTRL,
+        pac.OSC32KCTRL,
+        pac.GCLK,
+        pac.MCLK,
+        &mut pac.NVMCTRL,
+    );
+
+    let pins = Pins::new(pac.PORT);
+
+    // Asynchronous clocking domain
+    // Xosc0 (8 MHz) set up using pins PA14 and PA15
+    let xosc0 = Xosc::from_crystal(
+        tokens.xosc0,
+        pins.pa14,
+        pins.pa15,
+        8.mhz(),
+        CrystalCurrent::Low,
+    )
+    .enable();
+
+    // Dfll (48 MHz) -> Gclk1 (48 MHz / 24) -> 2 MHz
+    let (gclk1, dfll) = Gclk::new(tokens.gclks.gclk1, clocks.dfll);
+    let _gclk1 = gclk1.div(Gclk1Div::Div(24)).enable();
+
+    // Xosc based Dpll OutFreq: InFreq * (int + frac / 32) / (2 * (1 + predivider))
+    // Xosc (8 MHz) -> Dpll0 (8 MHz * (50 + 0 / 32) / (2 * (1 + 1)) -> 100 MHz
+    let (dpll0, _xosc0) = Dpll::from_xosc0(tokens.dpll0, xosc0, 1);
+    let dpll0 = dpll0.set_loop_div(50, 0).enable().ok().unwrap();
+
+    // Swap Dfll (48 MHz) for Dpll0 (100 MHz) in Gclk0
+    // Gclk0 drives MCLK and CPU, it can be neither disabled nor deconstructed
+    let (gclk0, _dfll, _dpll0) = clocks.gclk0.swap(dfll, dpll0);
+
+    //// Output Gclk0 on a pin PB14
+    let (_gclk_out0, gclk0) = GclkOut::enable(tokens.gclk_io.gclk_out0, pins.pb14, gclk0, false);
+
+    // Pclk to be consumed by an adequate peripheral abstraction
+    let (_sercom0_pclk, _gclk0) = Pclk::enable(tokens.pclks.sercom0, gclk0);
+}
