@@ -1,5 +1,6 @@
 # Unreleased Changes
 
+- Add implementation of InputPin for Interrupt pins
 - Add additional undocumented but valid IOSet for ATSAMD5x/ATSAME5x
 - Update PACs to v0.11.0 (#518)
 - Improve the `bsp_pins!` macro (#475 & #483)
