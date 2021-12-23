@@ -933,6 +933,23 @@ where
 }
 
 #[cfg(feature = "unproven")]
+impl<I, C> InputPin for Pin<I, Interrupt<C>>
+where
+    I: PinId,
+    C: InterruptConfig,
+{
+    type Error = Infallible;
+    #[inline]
+    fn is_high(&self) -> Result<bool, Self::Error> {
+        Ok(self._is_high())
+    }
+    #[inline]
+    fn is_low(&self) -> Result<bool, Self::Error> {
+        Ok(self._is_low())
+    }
+}
+
+#[cfg(feature = "unproven")]
 impl<I, C> ToggleableOutputPin for Pin<I, Output<C>>
 where
     I: PinId,
