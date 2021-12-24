@@ -77,7 +77,7 @@
       "build": "cargo build --examples --features=unproven"
     },
     "pygamer": {
-	  "tier": 1,
+	  "tier": 2,
       "build": "cargo build --examples --features=unproven,usb,math"
     },
     "pyportal": {
