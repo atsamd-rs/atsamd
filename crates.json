@@ -88,6 +88,10 @@
 	  "tier": 1,
       "build": "cargo build --release --examples --features=unproven,rt,use_semihosting"
     },
+    "samd20_xplained_pro": {
+	  "tier": 2,
+      "build": "cargo build --examples --features=unproven"
+    },
     "samd21_mini": {
 	  "tier": 2,
       "build": "cargo build --examples --features=unproven"
