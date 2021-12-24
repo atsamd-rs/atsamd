@@ -2,12 +2,12 @@ use core::convert::TryInto;
 
 use embedded_hal::spi;
 
-#[cfg(any(feature = "samd11", feature = "samd21"))]
+#[cfg(any(feature = "samd11", feature = "samd20", feature = "samd21"))]
 use crate::pac::sercom0::SPI;
 #[cfg(feature = "min-samd51g")]
 use crate::pac::sercom0::SPIM;
 
-#[cfg(any(feature = "samd11", feature = "samd21"))]
+#[cfg(any(feature = "samd11", feature = "samd20", feature = "samd21"))]
 use crate::pac::sercom0::spi::ctrla::MODE_A;
 #[cfg(feature = "min-samd51g")]
 use crate::pac::sercom0::spim::ctrla::MODE_A;
@@ -36,7 +36,7 @@ pub(super) struct Registers<S: Sercom> {
 unsafe impl<S: Sercom> Sync for Registers<S> {}
 
 impl<S: Sercom> Registers<S> {
-    #[cfg(any(feature = "samd11", feature = "samd21"))]
+    #[cfg(any(feature = "samd11", feature = "samd20", feature = "samd21"))]
     #[inline]
     pub fn spi(&self) -> &SPI {
         self.sercom.spi()
@@ -52,6 +52,9 @@ impl<S: Sercom> Registers<S> {
     #[inline]
     pub fn reset(&mut self) {
         self.spi().ctrla.write(|w| w.swrst().set_bit());
+        #[cfg(feature = "samd20")]
+        while self.spi().status.read().syncbusy().bit_is_set() {}
+        #[cfg(not(feature = "samd20"))]
         while self.spi().syncbusy.read().swrst().bit_is_set() {}
     }
 
@@ -80,12 +83,16 @@ impl<S: Sercom> Registers<S> {
     #[inline]
     pub fn set_op_mode(&mut self, mode: MODE_A, mssen: bool) -> () {
         self.spi().ctrla.modify(|_, w| w.mode().variant(mode));
+        #[cfg(not(feature = "samd20"))]
         self.spi().ctrlb.modify(|_, w| w.mssen().bit(mssen));
         #[cfg(feature = "min-samd51g")]
         self.spi().ctrlc.write(|w| unsafe {
             w.data32b().data_trans_32bit();
             w.icspace().bits(1)
         });
+        #[cfg(feature = "samd20")]
+        while self.spi().status.read().syncbusy().bit_is_set() {}
+        #[cfg(not(feature = "samd20"))]
         while self.spi().syncbusy.read().ctrlb().bit_is_set() {}
     }
 
@@ -105,11 +112,14 @@ impl<S: Sercom> Registers<S> {
             w.len().bits(length);
             w.lenen().set_bit()
         });
+        #[cfg(feature = "samd20")]
+        while self.spi().status.read().syncbusy().bit_is_set() {}
+        #[cfg(not(feature = "samd20"))]
         while self.spi().syncbusy.read().length().bit_is_set() {}
     }
 
     /// Set the character size
-    #[cfg(any(feature = "samd11", feature = "samd21"))]
+    #[cfg(any(feature = "samd11", feature = "samd20", feature = "samd21"))]
     #[inline]
     pub fn set_char_size(&mut self, bits: u8) {
         self.spi()
@@ -274,6 +284,9 @@ impl<S: Sercom> Registers<S> {
     #[inline]
     pub fn rx_enable(&mut self) {
         self.spi().ctrlb.modify(|_, w| w.rxen().set_bit());
+        #[cfg(feature = "samd20")]
+        while self.spi().status.read().syncbusy().bit_is_set() {}
+        #[cfg(not(feature = "samd20"))]
         while self.spi().syncbusy.read().ctrlb().bit_is_set() {}
     }
 
@@ -281,6 +294,9 @@ impl<S: Sercom> Registers<S> {
     #[inline]
     pub fn rx_disable(&mut self) {
         self.spi().ctrlb.modify(|_, w| w.rxen().clear_bit());
+        #[cfg(feature = "samd20")]
+        while self.spi().status.read().syncbusy().bit_is_set() {}
+        #[cfg(not(feature = "samd20"))]
         while self.spi().syncbusy.read().ctrlb().bit_is_set() {}
     }
 
@@ -288,6 +304,9 @@ impl<S: Sercom> Registers<S> {
     #[inline]
     pub fn enable(&mut self) {
         self.spi().ctrla.modify(|_, w| w.enable().set_bit());
+        #[cfg(feature = "samd20")]
+        while self.spi().status.read().syncbusy().bit_is_set() {}
+        #[cfg(not(feature = "samd20"))]
         while self.spi().syncbusy.read().enable().bit_is_set() {}
     }
 
@@ -295,6 +314,9 @@ impl<S: Sercom> Registers<S> {
     #[inline]
     pub fn disable(&mut self) {
         self.spi().ctrla.modify(|_, w| w.enable().clear_bit());
+        #[cfg(feature = "samd20")]
+        while self.spi().status.read().syncbusy().bit_is_set() {}
+        #[cfg(not(feature = "samd20"))]
         while self.spi().syncbusy.read().enable().bit_is_set() {}
     }
 

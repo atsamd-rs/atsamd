@@ -190,10 +190,10 @@ use {
     typenum::Unsigned,
 };
 
-#[cfg(any(feature = "samd11", feature = "samd21"))]
+#[cfg(any(feature = "samd11", feature = "samd20", feature = "samd21"))]
 use core::mem::size_of;
 
-#[cfg(any(feature = "samd11", feature = "samd21"))]
+#[cfg(any(feature = "samd11", feature = "samd20", feature = "samd21"))]
 type Data = u16;
 
 #[cfg(feature = "min-samd51g")]
@@ -211,7 +211,7 @@ pub trait CheckBufLen: AnySpi {
     /// This value is zero for an [`Spi`] with [`DynLength`]
     const LEN: usize = <Self::Size as Unsigned>::USIZE;
 
-    #[cfg(any(feature = "samd11", feature = "samd21"))]
+    #[cfg(any(feature = "samd11", feature = "samd20", feature = "samd21"))]
     /// [`Spi`] transaction length
     ///
     /// [`Spi`]: super::spi::Spi
@@ -266,7 +266,7 @@ pub trait CheckBufLen: AnySpi {
     }
 }
 
-#[cfg(any(feature = "samd11", feature = "samd21"))]
+#[cfg(any(feature = "samd11", feature = "samd20", feature = "samd21"))]
 impl<S: AnySpi> CheckBufLen for S {}
 
 #[cfg(feature = "min-samd51g")]

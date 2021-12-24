@@ -17,7 +17,7 @@ edition = "2021"
 rust-version = "1.56"
 
 [package.metadata.docs.rs]
-features = ["samd21g", "samd21g-rt", "unproven", "usb"]
+features = ["device", "samd20", "samd20j-rt", "samd21g", "samd21g-rt", "unproven", "usb"]
 
 [dependencies]
 bitfield = "0.13"
@@ -70,6 +70,11 @@ path = "../pac/atsamd11d"
 version = "0.11"
 optional = true
 
+[dependencies.atsamd20j]
+path = "../pac/atsamd20j"
+version = "0.1"
+optional = true
+
 [dependencies.atsamd21e]
 path = "../pac/atsamd21e"
 version = "0.11"
@@ -77,11 +82,6 @@ optional = true
 
 [dependencies.atsamd21g]
 path = "../pac/atsamd21g"
-version = "0.11"
-optional = true
-
-[dependencies.atsamd20j]
-path = "../pac/atsamd20j"
 version = "0.11"
 optional = true
 
@@ -211,6 +211,7 @@ same54n = ["atsame54n", "same54", "min-samd51n"]
 same54n-rt = ["same54n", "atsame54n/rt"]
 same54p = ["atsame54p", "same54", "min-samd51p"]
 same54p-rt = ["same54p", "atsame54p/rt"]
+min-samd20j = []
 min-samd21g = []
 min-samd21j = ["min-samd21g"]
 min-samd51g = []

@@ -3,12 +3,12 @@
 //! This module adds a [`RegisterBlock`] struct, which acts as a proxy for the
 //! registers a single DMAC [`Channel`](super::Channel) can read/write. Its
 //! purpose is to remediate the inadequacies of the PAC. In particular, for
-//! SAMD11/SAMD21, the CHID register must be written with the correct channel ID
-//! before accessing the channel specific registers. There is a provided
-//! `with_chid` method that takes a closure with the register read/write proxies
-//! to ensure any read/write to these registers are done in an interrupt-safe
-//! way. For SAMD51+, `with_chid` returns the register block which contains the
-//! registers owned by a specific channel.
+//! SAMD11/SAMD20/SAMD21, the CHID register must be written with the correct
+//! channel ID before accessing the channel specific registers. There is a
+//! provided `with_chid` method that takes a closure with the register
+//! read/write proxies to ensure any read/write to these registers are done in
+//! an interrupt-safe way. For SAMD51+, `with_chid` returns the register block
+//! which contains the registers owned by a specific channel.
 
 use super::super::dma_controller::ChId;
 use core::marker::PhantomData;
@@ -20,7 +20,7 @@ use crate::pac::{
     Peripherals, DMAC,
 };
 
-#[cfg(any(feature = "samd11", feature = "samd21"))]
+#[cfg(any(feature = "samd11", feature = "samd20", feature = "samd21"))]
 use pac::dmac as channel_regs;
 
 #[cfg(feature = "min-samd51g")]
@@ -45,7 +45,7 @@ pub(super) trait Register<Id: ChId> {
     /// the CHID register, then access the channel control registers.
     /// If an interrupt were to change the CHID register and not reset it
     /// to the expected value, we would be faced with undefined behaviour.
-    #[cfg(any(feature = "samd11", feature = "samd21"))]
+    #[cfg(any(feature = "samd11", feature = "samd20", feature = "samd21"))]
     #[inline]
     fn with_chid<F: FnOnce(&DMAC) -> R, R>(&mut self, fun: F) -> R {
         // SAFETY: This method is ONLY safe if the individual channels are GUARANTEED

@@ -112,7 +112,7 @@ pub enum DynAlternate {
     E,
     F,
     G,
-    #[cfg(any(feature = "samd21", feature = "min-samd51g"))]
+    #[cfg(any(feature = "samd20", feature = "samd21", feature = "min-samd51g"))]
     H,
     #[cfg(feature = "min-samd51g")]
     I,
@@ -184,7 +184,7 @@ macro_rules! dyn_alternate {
 }
 
 dyn_alternate!(B, C, D, E, F, G);
-#[cfg(any(feature = "samd21", feature = "min-samd51g"))]
+#[cfg(any(feature = "samd20", feature = "samd21", feature = "min-samd51g"))]
 dyn_alternate!(H);
 #[cfg(feature = "min-samd51g")]
 dyn_alternate!(I, J, K, L, M, N);
@@ -197,7 +197,7 @@ dyn_alternate!(I, J, K, L, M, N);
 #[derive(PartialEq, Clone, Copy)]
 pub enum DynGroup {
     A,
-    #[cfg(any(feature = "samd21", feature = "min-samd51g"))]
+    #[cfg(any(feature = "samd20", feature = "samd21", feature = "min-samd51g"))]
     B,
     #[cfg(feature = "min-samd51n")]
     C,

@@ -13,13 +13,17 @@ use crate::pac;
 
 #[cfg(feature = "min-samd51g")]
 use pac::MCLK as APB_CLK_CTRL;
-#[cfg(any(feature = "samd11", feature = "samd21"))]
+#[cfg(any(feature = "samd11", feature = "samd20", feature = "samd21"))]
 use pac::PM as APB_CLK_CTRL;
 
 use pac::{sercom0, SERCOM0, SERCOM1};
-#[cfg(any(feature = "samd21", feature = "min-samd51g"))]
+#[cfg(any(feature = "samd20", feature = "samd21", feature = "min-samd51g"))]
 use pac::{SERCOM2, SERCOM3};
-#[cfg(any(feature = "min-samd21g", feature = "min-samd51g"))]
+#[cfg(any(
+    feature = "min-samd20j",
+    feature = "min-samd21g",
+    feature = "min-samd51g"
+))]
 use pac::{SERCOM4, SERCOM5};
 #[cfg(feature = "min-samd51n")]
 use pac::{SERCOM6, SERCOM7};
@@ -81,11 +85,11 @@ macro_rules! sercom {
     };
 }
 
-#[cfg(any(feature = "samd11", feature = "samd21"))]
+#[cfg(any(feature = "samd11", feature = "samd20", feature = "samd21"))]
 sercom!(apbcmask: (0, 1));
-#[cfg(feature = "samd21")]
+#[cfg(any(feature = "samd20", feature = "samd21"))]
 sercom!(apbcmask: (2, 3));
-#[cfg(feature = "min-samd21g")]
+#[cfg(any(feature = "min-samd20j", feature = "min-samd21g"))]
 sercom!(apbcmask: (4, 5));
 
 #[cfg(feature = "min-samd51g")]

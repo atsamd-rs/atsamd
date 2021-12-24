@@ -1,4 +1,4 @@
-#[cfg(any(feature = "samd11", feature = "samd21"))]
+#[cfg(any(feature = "samd11", feature = "samd20", feature = "samd21"))]
 use crate::pac::port::{
     CTRL, DIR, DIRCLR, DIRSET, DIRTGL, IN, OUT, OUTCLR, OUTSET, OUTTGL, PINCFG0_ as PINCFG,
     PMUX0_ as PMUX, WRCONFIG,
@@ -122,7 +122,7 @@ impl From<DynPinMode> for ModeFields {
                     G => {
                         fields.pmux = 6;
                     }
-                    #[cfg(any(feature = "samd21", feature = "min-samd51g"))]
+                    #[cfg(any(feature = "samd20", feature = "samd21", feature = "min-samd51g"))]
                     H => {
                         fields.pmux = 7;
                     }
@@ -230,7 +230,7 @@ pub(super) unsafe trait RegisterInterface {
     fn group(&self) -> &GROUP {
         let offset = match self.id().group {
             DynGroup::A => 0,
-            #[cfg(any(feature = "samd21", feature = "min-samd51g"))]
+            #[cfg(any(feature = "samd20", feature = "samd21", feature = "min-samd51g"))]
             DynGroup::B => 1,
             #[cfg(feature = "min-samd51n")]
             DynGroup::C => 2,

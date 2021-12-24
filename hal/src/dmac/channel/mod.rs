@@ -8,7 +8,7 @@
 //! requires setting a priority level, as well as enabling or disabling
 //! interrupt requests (only for the specific channel being initialized).
 #![cfg_attr(
-    not(any(feature = "samd11", feature = "samd21")),
+    feature = "min-samd51g",
     doc = "# Burst Length and FIFO Threshold (SAMD51/SAME5x only)
 
 The transfer burst length can be configured through the
@@ -145,7 +145,7 @@ impl<Id: ChId, S: Status> Channel<Id, S> {
         // Software reset the channel for good measure
         self._reset_private();
 
-        #[cfg(any(feature = "samd11", feature = "samd21"))]
+        #[cfg(not(feature = "min-samd51g"))]
         // Setup priority level
         self.regs.chctrlb.modify(|_, w| w.lvl().bits(lvl as u8));
 
@@ -253,7 +253,7 @@ impl<Id: ChId> Channel<Id, Ready> {
         // SAFETY: This is actually safe because we are writing the correct enum value
         // (imported from the PAC) into the register
         unsafe {
-            #[cfg(any(feature = "samd11", feature = "samd21"))]
+            #[cfg(not(feature = "min-samd51g"))]
             self.regs.chctrlb.modify(|_, w| {
                 w.trigsrc().bits(trig_src as u8);
                 w.trigact().bits(trig_act as u8)

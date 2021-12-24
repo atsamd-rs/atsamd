@@ -7,7 +7,7 @@
 use crate::hal::spi::{Mode, Phase, Polarity};
 use crate::time::{Hertz, U32Ext};
 
-#[cfg(any(feature = "samd11", feature = "samd21"))]
+#[cfg(any(feature = "samd11", feature = "samd20", feature = "samd21"))]
 use crate::pac::sercom0::SPI;
 
 #[cfg(any(
@@ -30,6 +30,9 @@ pub trait CommonSpi {
     fn disable(&mut self) {
         self.spi_mut().ctrla.modify(|_, w| w.enable().clear_bit());
         // wait for configuration to take effect
+        #[cfg(feature = "samd20")]
+        while self.spi().status.read().syncbusy().bit_is_set() {}
+        #[cfg(not(feature = "samd20"))]
         while self.spi().syncbusy.read().enable().bit_is_set() {}
     }
 
@@ -37,6 +40,9 @@ pub trait CommonSpi {
     fn enable(&mut self) {
         self.spi_mut().ctrla.modify(|_, w| w.enable().set_bit());
         // wait for configuration to take effect
+        #[cfg(feature = "samd20")]
+        while self.spi().status.read().syncbusy().bit_is_set() {}
+        #[cfg(not(feature = "samd20"))]
         while self.spi().syncbusy.read().enable().bit_is_set() {}
     }
 

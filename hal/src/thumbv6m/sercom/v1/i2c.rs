@@ -4,9 +4,9 @@ use crate::clock;
 use crate::hal::blocking::i2c::{Read, Write, WriteRead};
 use crate::pac::sercom0::I2CM;
 use crate::pac::{PM, SERCOM0, SERCOM1};
-#[cfg(feature = "samd21")]
+#[cfg(any(feature = "samd20", feature = "samd21"))]
 use crate::pac::{SERCOM2, SERCOM3};
-#[cfg(feature = "min-samd21g")]
+#[cfg(any(feature = "samd20", feature = "min-samd21g"))]
 use crate::pac::{SERCOM4, SERCOM5};
 use crate::sercom::v1::pads::CompatiblePad;
 use crate::sercom::v2::pad::{Pad0, Pad1};
@@ -89,6 +89,11 @@ where
             // reset the sercom instance
             sercom.i2cm().ctrla.modify(|_, w| w.swrst().set_bit());
             // wait for reset to complete
+            #[cfg(feature = "samd20")]
+            while sercom.i2cm().status.read().syncbusy().bit_is_set()
+                || sercom.i2cm().ctrla.read().swrst().bit_is_set()
+            {}
+            #[cfg(not(feature = "samd20"))]
             while sercom.i2cm().syncbusy.read().swrst().bit_is_set()
                 || sercom.i2cm().ctrla.read().swrst().bit_is_set()
             {}
@@ -96,6 +101,9 @@ where
             // Put the hardware into i2c master mode
             sercom.i2cm().ctrla.modify(|_, w| w.mode().i2c_master());
             // wait for configuration to take effect
+            #[cfg(feature = "samd20")]
+            while sercom.i2cm().status.read().syncbusy().bit_is_set() {}
+            #[cfg(not(feature = "samd20"))]
             while sercom.i2cm().syncbusy.read().enable().bit_is_set() {}
 
             // set the baud rate
@@ -105,6 +113,9 @@ where
 
             sercom.i2cm().ctrla.modify(|_, w| w.enable().set_bit());
             // wait for configuration to take effect
+            #[cfg(feature = "samd20")]
+            while sercom.i2cm().status.read().syncbusy().bit_is_set() {}
+            #[cfg(not(feature = "samd20"))]
             while sercom.i2cm().syncbusy.read().enable().bit_is_set() {}
 
             // set the bus idle
@@ -113,6 +124,9 @@ where
                 .status
                 .modify(|_, w| w.busstate().bits(BUS_STATE_IDLE));
             // wait for it to take effect
+            #[cfg(feature = "samd20")]
+            while sercom.i2cm().status.read().syncbusy().bit_is_set() {}
+            #[cfg(not(feature = "samd20"))]
             while sercom.i2cm().syncbusy.read().sysop().bit_is_set() {}
         }
 
@@ -136,6 +150,11 @@ where
 
         // Signal start and transmit encoded address.
         unsafe {
+            #[cfg(feature = "samd20")]
+            self.i2cm()
+                .addr
+                .write(|w| w.addr().bits(addr));
+            #[cfg(not(feature = "samd20"))]
             self.i2cm()
                 .addr
                 .write(|w| w.addr().bits((addr as u16) << 1));
@@ -158,6 +177,12 @@ where
         if status.rxnack().bit_is_set() {
             return Err(I2CError::Nack);
         }
+
+        #[cfg(feature = "samd20")]
+        if status.lowtout().bit_is_set() {
+            return Err(I2CError::Timeout);
+        }
+        #[cfg(not(feature = "samd20"))]
         if status.lowtout().bit_is_set() || status.sexttout().bit_is_set()
             || status.mexttout().bit_is_set()
         {
@@ -176,11 +201,18 @@ where
             return Err(I2CError::BusError);
         }
 
+        #[cfg(not(feature = "samd20"))]
         self.i2cm().intflag.modify(|_, w| w.error().clear_bit());
 
         // Signal start (or rep start if appropriate)
         // and transmit encoded address.
         unsafe {
+
+            #[cfg(feature = "samd20")]
+            self.i2cm()
+                .addr
+                .write(|w| w.addr().bits((((addr as u16) << 1) | 1) as u8));
+            #[cfg(not(feature = "samd20"))]
             self.i2cm()
                 .addr
                 .write(|w| w.addr().bits(((addr as u16) << 1) | 1));
@@ -193,6 +225,11 @@ where
             if intflag.mb().bit_is_set() {
                 return Err(I2CError::ArbitrationLost);
             }
+            #[cfg(feature = "samd20")]
+            if intflag.sb().bit_is_set() {
+                break;
+            }
+            #[cfg(not(feature = "samd20"))]
             if intflag.sb().bit_is_set() || intflag.error().bit_is_set() {
                 break;
             }
@@ -202,6 +239,9 @@ where
     }
 
     fn wait_sync(&mut self) {
+        #[cfg(feature = "samd20")]
+        while self.i2cm().status.read().syncbusy().bit_is_set() {}
+        #[cfg(not(feature = "samd20"))]
         while self.i2cm().syncbusy.read().sysop().bit_is_set() {}
     }
 
@@ -239,6 +279,11 @@ where
 
             loop {
                 let intflag = self.i2cm().intflag.read();
+                #[cfg(feature = "samd20")]
+                if intflag.mb().bit_is_set() {
+                    break;
+                }
+                #[cfg(not(feature = "samd20"))]
                 if intflag.mb().bit_is_set() || intflag.error().bit_is_set() {
                     break;
                 }
@@ -359,7 +404,7 @@ i2c!([
         ),
 ]);
 
-#[cfg(feature = "samd21")]
+#[cfg(any(feature = "samd20", feature = "samd21"))]
 i2c!([
     I2CMaster2:
         (
@@ -379,7 +424,7 @@ i2c!([
         ),
 ]);
 
-#[cfg(feature = "min-samd21g")]
+#[cfg(any(feature = "min-samd20j", feature = "min-samd21g"))]
 i2c!([
     I2CMaster4:
         (

@@ -161,7 +161,7 @@ impl GenericClockController {
         let mut state = State { gclk };
 
         set_flash_to_half_auto_wait_state(nvmctrl);
-        #[cfg(feature = "samd21")]
+        #[cfg(any(feature = "samd20", feature = "samd21"))]
         set_flash_manual_write(nvmctrl);
         enable_gclk_apb(pm);
         if use_external_crystal {
@@ -180,16 +180,24 @@ impl GenericClockController {
         }
 
         // Feed 32khz into the DFLL48
-        state.enable_clock_generator(DFLL48, GCLK1);
+        #[cfg(not(feature = "samd20"))]
+        state.enable_clock_generator(ClockId::DFLL48, GCLK1);
+        #[cfg(feature = "samd20")]
+        state.enable_clock_generator(ClockId::DFLL48M, GCLK1);
         // Enable the DFLL48
         configure_and_enable_dfll48m(sysctrl, use_external_crystal);
         // Feed DFLL48 into the main clock
-        state.set_gclk_divider_and_source(GCLK0, 1, DFLL48M, true);
+        state.set_gclk_divider_and_source(GCLK0, 1, ClockSource::DFLL48M, true);
         // We are now running at 48Mhz
 
         // Reset various dividers back to 1
         sysctrl.osc8m.modify(|_, w| {
+            #[cfg(not(feature = "samd20"))]
             w.presc()._0();
+            #[cfg(feature = "samd20")]
+            unsafe {
+                w.presc().bits(0);
+            }
             w.ondemand().clear_bit()
         });
         pm.cpusel.write(|w| w.cpudiv().div1());
@@ -197,6 +205,10 @@ impl GenericClockController {
         pm.apbbsel.write(|w| w.apbbdiv().div1());
         pm.apbcsel.write(|w| w.apbcdiv().div1());
 
+        #[cfg(not(feature = "samd20"))]
+        let used_clocks = 1u64 << u8::from(ClockId::DFLL48);
+        #[cfg(feature = "samd20")]
+        let used_clocks = 1u64 << u8::from(ClockId::DFLL48M);
         Self {
             state,
             gclks: [
@@ -209,7 +221,7 @@ impl GenericClockController {
                 Hertz(0),
                 Hertz(0),
             ],
-            used_clocks: 1u64 << u8::from(ClockId::DFLL48),
+            used_clocks,
         }
     }
 
@@ -224,7 +236,7 @@ impl GenericClockController {
         let mut state = State { gclk };
 
         // No wait states needed <= 24 MHz @ 3.3v (ref. 37.12 NVM characteristics)
-        #[cfg(feature = "samd21")]
+        #[cfg(any(feature = "samd20", feature = "samd21"))]
         set_flash_manual_write(nvmctrl);
 
         // Get rid of unused warning
@@ -240,7 +252,12 @@ impl GenericClockController {
 
         // Reset various dividers back to 1
         sysctrl.osc8m.modify(|_, w| {
+            #[cfg(not(feature = "samd20"))]
             w.presc()._0();
+            #[cfg(feature = "samd20")]
+            unsafe {
+                w.presc().bits(0);
+            }
             w.ondemand().clear_bit()
         });
         pm.cpusel.write(|w| w.cpudiv().div1());
@@ -321,7 +338,7 @@ impl GenericClockController {
             XOSC32K | OSC32K | OSCULP32K => OSC32K_FREQ,
             GCLKGEN1 => self.gclks[1],
             OSC8M => OSC8M_FREQ,
-            DFLL48M => OSC48M_FREQ,
+            ClockSource::DFLL48M => OSC48M_FREQ,
             DPLL96M => 96.mhz().into(),
             GCLKIN | XOSC => unimplemented!(),
         };
@@ -416,6 +433,33 @@ clock_generator!(
     (ac_dig, AcDigClock, AC_DIG),
     (dac, DacClock, DAC),
 );
+// samd20
+#[cfg(feature = "samd20")]
+clock_generator!(
+    (tc4_tc5, Tc4Tc5Clock, TC4_TC5),
+    (tc6_tc7, Tc6Tc7Clock, TC6_TC7),
+    (sercom0_core, Sercom0CoreClock, SERCOM0_CORE),
+    (sercom1_core, Sercom1CoreClock, SERCOM1_CORE),
+    (sercom2_core, Sercom2CoreClock, SERCOM2_CORE),
+    (sercom3_core, Sercom3CoreClock, SERCOM3_CORE),
+    (sercom4_core, Sercom4CoreClock, SERCOM4_CORE),
+    (sercom5_core, Sercom5CoreClock, SERCOM5_CORE),
+    (rtc, RtcClock, RTC),
+    (adc, AdcClock, ADC),
+    (wdt, WdtClock, WDT),
+    (eic, EicClock, EIC),
+    (evsys0, Evsys0Clock, EVSYS_0),
+    (evsys1, Evsys1Clock, EVSYS_1),
+    (evsys2, Evsys2Clock, EVSYS_2),
+    (evsys3, Evsys3Clock, EVSYS_3),
+    (evsys4, Evsys4Clock, EVSYS_4),
+    (evsys5, Evsys5Clock, EVSYS_5),
+    (evsys6, Evsys6Clock, EVSYS_6),
+    (evsys7, Evsys7Clock, EVSYS_7),
+    (ac_ana, AcAnaClock, AC_ANA),
+    (ac_dig, AcDigClock, AC_DIG),
+    (dac, DacClock, DAC),
+);
 // samd21
 #[cfg(feature = "samd21")]
 clock_generator!(
@@ -465,7 +509,7 @@ fn set_flash_to_half_auto_wait_state(nvmctrl: &mut NVMCTRL) {
 }
 
 /// Prevent automatic writes to flash by pointers to flash area
-#[cfg(feature = "samd21")]
+#[cfg(any(feature = "samd20", feature = "samd21"))]
 fn set_flash_manual_write(nvmctrl: &mut NVMCTRL) {
     nvmctrl.ctrlb.modify(|_, w| w.manw().set_bit());
 }
@@ -542,6 +586,7 @@ fn configure_and_enable_dfll48m(sysctrl: &mut SYSCTRL, use_external_crystal: boo
             // closed loop mode
             w.mode().set_bit();
 
+            #[cfg(not(feature = "samd20"))]
             w.waitlock().set_bit();
 
             // Disable quick lock
@@ -583,7 +628,10 @@ fn configure_and_enable_dfll48m(sysctrl: &mut SYSCTRL, use_external_crystal: boo
             w.usbcrm().set_bit();
 
             // bypass coarse lock (have calibration data)
-            w.bplckc().set_bit()
+            #[cfg(not(feature = "samd20"))]
+            w.bplckc().set_bit();
+
+            w
         });
     }
 
@@ -592,7 +640,7 @@ fn configure_and_enable_dfll48m(sysctrl: &mut SYSCTRL, use_external_crystal: boo
     // and finally enable it!
     sysctrl.dfllctrl.modify(|_, w| w.enable().set_bit());
 
-    #[cfg(feature = "samd21")]
+    #[cfg(any(feature = "samd20", feature = "samd21"))]
     if use_external_crystal {
         // wait for lock
         while sysctrl.pclksr.read().dflllckc().bit_is_clear()
