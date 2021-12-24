@@ -15,11 +15,11 @@ use eg::text::Text;
 
 use cortex_m::peripheral::NVIC;
 
+use wio::entry;
 use wio::hal::clock::GenericClockController;
 use wio::hal::delay::Delay;
 use wio::pac::{interrupt, CorePeripherals, Peripherals};
 use wio::prelude::*;
-use wio::{entry, Pins, Sets};
 use wio::{Scroller, LCD};
 
 use usb_device::bus::UsbBusAllocator;
@@ -44,10 +44,9 @@ fn main() -> ! {
     );
 
     let mut delay = Delay::new(core.SYST, &mut clocks);
-    let pins = Pins::new(peripherals.PORT);
-    let mut sets: Sets = pins.split();
+    let sets = wio::Pins::new(peripherals.PORT).split();
 
-    let mut user_led = sets.user_led.into_open_drain_output(&mut sets.port);
+    let mut user_led = sets.user_led.into_push_pull_output();
     user_led.set_low().unwrap();
 
     // Initialize the ILI9341-based LCD display. Create a black backdrop the size of
@@ -58,7 +57,6 @@ fn main() -> ! {
             &mut clocks,
             peripherals.SERCOM7,
             &mut peripherals.MCLK,
-            &mut sets.port,
             58.mhz(),
             &mut delay,
         )
@@ -74,9 +72,9 @@ fn main() -> ! {
         USB_ALLOCATOR.as_ref().unwrap()
     };
     unsafe {
-        USB_SERIAL = Some(SerialPort::new(&bus_allocator));
+        USB_SERIAL = Some(SerialPort::new(bus_allocator));
         USB_BUS = Some(
-            UsbDeviceBuilder::new(&bus_allocator, UsbVidPid(0x16c0, 0x27dd))
+            UsbDeviceBuilder::new(bus_allocator, UsbVidPid(0x16c0, 0x27dd))
                 .manufacturer("Fake company")
                 .product("Serial port")
                 .serial_number("TEST")
@@ -104,7 +102,7 @@ fn main() -> ! {
     loop {
         if let Some(segment) = consumer.dequeue() {
             t.write(segment);
-            user_led.toggle();
+            user_led.toggle().ok();
         }
     }
 }
@@ -181,7 +179,7 @@ impl<'a> Terminal<'a> {
                 .ok()
                 .unwrap();
             Rectangle::with_corners(
-                Point::new(x + 0, 0),
+                Point::new(x, 0),
                 Point::new(x + FONT_6X12.character_size.width as i32, 240),
             )
             .into_styled(
@@ -207,8 +205,8 @@ static mut Q: Queue<TextSegment, U16> = Queue(heapless::i::Queue::new());
 
 fn poll_usb() {
     unsafe {
-        USB_BUS.as_mut().map(|usb_dev| {
-            USB_SERIAL.as_mut().map(|serial| {
+        if let Some(usb_dev) = USB_BUS.as_mut() {
+            if let Some(serial) = USB_SERIAL.as_mut() {
                 usb_dev.poll(&mut [serial]);
                 let mut buf = [0u8; 32];
                 let mut terminal = Q.split().0;
@@ -216,8 +214,8 @@ fn poll_usb() {
                 if let Ok(count) = serial.read(&mut buf) {
                     terminal.enqueue((buf, count)).ok().unwrap();
                 };
-            });
-        });
+            }
+        }
     };
 }
 

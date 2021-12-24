@@ -4,11 +4,11 @@
 use panic_halt as _;
 use wio_terminal as wio;
 
+use wio::entry;
 use wio::hal::clock::GenericClockController;
 use wio::hal::delay::Delay;
 use wio::pac::{CorePeripherals, Peripherals};
 use wio::prelude::*;
-use wio::{entry, Pins, Sets};
 
 #[entry]
 fn main() -> ! {
@@ -24,12 +24,12 @@ fn main() -> ! {
     );
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
-    let mut sets: Sets = Pins::new(peripherals.PORT).split();
-    let mut user_led = sets.user_led.into_open_drain_output(&mut sets.port);
+    let sets = wio::Pins::new(peripherals.PORT).split();
+    let mut user_led = sets.user_led.into_push_pull_output();
     user_led.set_low().unwrap();
 
     loop {
-        user_led.toggle();
+        user_led.toggle().ok();
         delay.delay_ms(200u8);
     }
 }

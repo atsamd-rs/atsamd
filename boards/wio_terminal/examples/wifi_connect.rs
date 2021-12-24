@@ -12,7 +12,7 @@ use wio::prelude::*;
 use wio::wifi_prelude::*;
 use wio::wifi_rpcs as rpc;
 use wio::wifi_types::Security;
-use wio::{entry, wifi_singleton, Pins, Sets};
+use wio::{entry, wifi_singleton};
 
 use core::fmt::Write;
 use cortex_m::interrupt::free as disable_interrupts;
@@ -37,7 +37,7 @@ fn main() -> ! {
         &mut peripherals.NVMCTRL,
     );
     let mut delay = Delay::new(core.SYST, &mut clocks);
-    let mut sets: Sets = Pins::new(peripherals.PORT).split();
+    let sets = wio::Pins::new(peripherals.PORT).split();
 
     // Set up the display so we can print out APs.
     let (mut display, _backlight) = sets
@@ -46,7 +46,6 @@ fn main() -> ! {
             &mut clocks,
             peripherals.SERCOM7,
             &mut peripherals.MCLK,
-            &mut sets.port,
             24.mhz(),
             &mut delay,
         )
@@ -54,24 +53,23 @@ fn main() -> ! {
     clear(&mut display);
     let mut textbuffer = String::<U256>::new();
 
-    let mut user_led = sets.user_led.into_open_drain_output(&mut sets.port);
+    let mut user_led = sets.user_led.into_push_pull_output();
     user_led.set_low().unwrap();
 
     // Initialize the wifi peripheral.
-    let args = (
-        sets.wifi,
-        peripherals.SERCOM0,
-        &mut clocks,
-        &mut peripherals.MCLK,
-        &mut sets.port,
-        &mut delay,
-    );
     let nvic = &mut core.NVIC;
     disable_interrupts(|cs| unsafe {
-        wifi_init(cs, args.0, args.1, args.2, args.3, args.4, args.5).unwrap();
-        WIFI.as_mut().map(|wifi| {
+        wifi_init(
+            cs,
+            sets.wifi,
+            peripherals.SERCOM0,
+            &mut clocks,
+            &mut peripherals.MCLK,
+            &mut delay,
+        );
+        if let Some(wifi) = WIFI.as_mut() {
             wifi.enable(cs, nvic);
-        });
+        }
     });
 
     let version = unsafe {
@@ -121,7 +119,7 @@ fn main() -> ! {
     textbuffer.truncate(0);
 
     loop {
-        user_led.toggle();
+        user_led.toggle().ok();
         delay.delay_ms(200u8);
     }
 }

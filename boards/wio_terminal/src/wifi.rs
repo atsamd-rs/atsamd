@@ -1,18 +1,16 @@
-use atsamd_hal::clock::GenericClockController;
-use atsamd_hal::delay::Delay;
-use atsamd_hal::gpio::*;
-use atsamd_hal::pac::{interrupt, MCLK};
-use atsamd_hal::prelude::*;
-
-use atsamd_hal::pac::SERCOM0;
-use atsamd_hal::sercom::{PadPin, Sercom0Pad0, Sercom0Pad2, UART0};
-use atsamd_hal::time::Hertz;
-
-use bbqueue;
-use bbqueue::{
-    consts::{U128, U512, U64},
-    BBBuffer, Consumer, Producer,
+use atsamd_hal::{
+    clock::GenericClockController,
+    delay::Delay,
+    ehal::blocking::delay::DelayMs,
+    ehal::digital::v2::OutputPin,
+    ehal::serial::{Read, Write},
+    pac::{interrupt, MCLK, SERCOM0},
+    prelude::nb,
+    sercom::v2::{uart, IoSet2, Sercom0},
+    time::{Hertz, U32Ext},
 };
+use bbqueue::{self, BBBuffer, Consumer, Producer};
+use heapless::consts::*;
 
 use cortex_m::interrupt::CriticalSection;
 use cortex_m::peripheral::NVIC;
@@ -20,35 +18,41 @@ use cortex_m::peripheral::NVIC;
 pub use erpc::rpcs;
 use seeed_erpc as erpc;
 
+use super::pins::aliases::*;
+
 use crate::WIFI_UART_BAUD;
 
 /// The set of pins which are connected to the RTL8720 in some way
 pub struct WifiPins {
-    pub pwr: Pa18<Input<Floating>>,
-    pub rxd: Pc22<Input<Floating>>,
-    pub txd: Pc23<Input<Floating>>,
-    pub mosi: Pb24<Input<Floating>>,
-    pub clk: Pb25<Input<Floating>>,
-    pub miso: Pc24<Input<Floating>>,
-    pub cs: Pc25<Input<Floating>>,
-    pub ready: Pc20<Input<Floating>>,
-    pub dir: Pa19<Input<Floating>>,
+    pub pwr: WifiPwrReset,
+    pub rxd: WifiRxdReset,
+    pub txd: WifiTxdReset,
+    pub mosi: WifiTxReset,
+    pub clk: WifiClkReset,
+    pub miso: WifiRxReset,
+    pub cs: WifiCsReset,
+    pub ready: WifiReadyReset,
+    pub dir: WifiDirReset,
 }
 
 /// eRPC-based protocol to the RTL8720 chip
 pub struct Wifi {
-    _pwr: Pa18<Output<PushPull>>,
-    uart: WifiUART,
+    _pwr: WifiPwr,
+    uart: WifiUart,
 
-    rx_buff_isr: Producer<'static, U512>,
-    rx_buff_input: Consumer<'static, U512>,
-    tx_buff_isr: Consumer<'static, U128>,
-    tx_buff_input: Producer<'static, U128>,
+    rx_buff_isr: Producer<'static, 512>,
+    rx_buff_input: Consumer<'static, 512>,
+    tx_buff_isr: Consumer<'static, 128>,
+    tx_buff_input: Producer<'static, 128>,
 
     sequence: u32,
 }
 
-type WifiUART = UART0<Sercom0Pad2<Pc24<PfC>>, Sercom0Pad0<Pb24<PfC>>, (), ()>;
+/// UART pads for the labelled RX & TX pins
+pub type WifiUartPads = uart::Pads<Sercom0, IoSet2, WifiRx, WifiTx>;
+
+/// UART device for the labelled RX & TX pins
+pub type WifiUart = uart::Uart<uart::Config<WifiUartPads>, uart::Duplex>;
 
 impl Wifi {
     pub fn init(
@@ -56,28 +60,32 @@ impl Wifi {
         sercom0: SERCOM0,
         clocks: &mut GenericClockController,
         mclk: &mut MCLK,
-        port: &mut Port,
         delay: &mut Delay,
-        rx_buff: &'static BBBuffer<U512>,
-        tx_buff: &'static BBBuffer<U128>,
-    ) -> Result<Wifi, ()> {
+        rx_buff: &'static BBBuffer<512>,
+        tx_buff: &'static BBBuffer<128>,
+    ) -> Wifi {
         let gclk0 = clocks.gclk0();
-        let tx: Sercom0Pad0<_> = pins.mosi.into_pad(port);
-        let rx: Sercom0Pad2<_> = pins.miso.into_pad(port);
-        let uart = UART0::new(
-            &clocks.sercom0_core(&gclk0).ok_or(())?,
-            Hertz(WIFI_UART_BAUD),
-            sercom0,
+
+        let pads = uart::Pads::default().rx(pins.miso).tx(pins.mosi);
+        let uart = uart::Config::new(
             mclk,
-            (rx, tx),
-        );
+            sercom0,
+            pads,
+            clocks.sercom0_core(&gclk0).unwrap().freq(),
+        )
+        .baud(
+            WIFI_UART_BAUD.hz(),
+            uart::BaudMode::Fractional(uart::Oversampling::Bits16),
+        )
+        .enable();
+
         delay.delay_ms(10u8);
 
         // Reset the RTL8720 MCU.
-        let mut pwr = pins.pwr.into_push_pull_output(port);
-        pwr.set_low()?;
+        let mut pwr: WifiPwr = pins.pwr.into();
+        pwr.set_low().ok();
         delay.delay_ms(100u8);
-        pwr.set_high()?;
+        pwr.set_high().ok();
         delay.delay_ms(200u8);
 
         let (rx_buff_isr, rx_buff_input) = rx_buff.try_split().unwrap();
@@ -85,7 +93,7 @@ impl Wifi {
 
         let sequence = 0;
 
-        Ok(Wifi {
+        Wifi {
             _pwr: pwr,
             uart,
             rx_buff_isr,
@@ -93,7 +101,7 @@ impl Wifi {
             tx_buff_isr,
             tx_buff_input,
             sequence,
-        })
+        }
     }
 
     /// Turns on internal interrupts. Call this after you have finished
@@ -107,9 +115,7 @@ impl Wifi {
             NVIC::unmask(interrupt::SERCOM0_2);
         }
 
-        self.uart.intenset(|w| {
-            w.rxc().set_bit();
-        });
+        self.uart.enable_interrupts(uart::Flags::RXC);
     }
 
     /// Convenience function to connection an access point with the given
@@ -163,11 +169,11 @@ impl Wifi {
                     panic!("overrun");
                 }
             }
-            Err(e) => {
-                if e != nb::Error::WouldBlock {
-                    panic!("unrecoverable read error");
-                }
+            Err(nb::Error::Other(e)) => {
+                panic!("unrecoverable read error");
             }
+            // Skip WouldBlock
+            Err(nb::Error::WouldBlock) => (),
         };
     }
 
@@ -179,9 +185,7 @@ impl Wifi {
             self.uart.write(buf[0]).ok();
             rgr.release(1);
         } else {
-            self.uart.intenclr(|w| {
-                w.dre().set_bit();
-            });
+            self.uart.disable_interrupts(uart::Flags::DRE);
         }
     }
 
@@ -259,7 +263,7 @@ impl Wifi {
         }
     }
 
-    fn write_frame(&mut self, msg: &heapless::Vec<u8, heapless::consts::U64>) -> Result<(), ()> {
+    fn write_frame(&mut self, msg: &heapless::Vec<u8, U64>) -> Result<(), ()> {
         let header = erpc::FrameHeader::new_from_msg(msg);
         self.tx(header.as_bytes().iter().chain(msg));
         Ok(())
@@ -271,9 +275,7 @@ impl Wifi {
                 wgr[0] = *b;
                 wgr.commit(1);
             }
-            self.uart.intenset(|w| {
-                w.dre().set_bit();
-            });
+            self.uart.enable_interrupts(uart::Flags::DRE);
         }
     }
 
@@ -290,10 +292,7 @@ pub mod wifi_prelude {
     pub use atsamd_hal::pac::SERCOM0;
     pub use atsamd_hal::pac::{interrupt, MCLK};
     pub use atsamd_hal::sercom::{Sercom0Pad0, Sercom0Pad2, UART0};
-    pub use bbqueue::{
-        consts::{U128, U512},
-        BBBuffer, ConstBBBuffer, Producer,
-    };
+    pub use bbqueue::{BBBuffer, Producer};
 
     pub use cortex_m::interrupt::CriticalSection;
 }
@@ -303,8 +302,8 @@ pub mod wifi_prelude {
 macro_rules! wifi_singleton {
     ($global_name:ident) => {
         static mut $global_name: Option<Wifi> = None;
-        static WIFI_RX: BBBuffer<U512> = BBBuffer(ConstBBBuffer::new());
-        static WIFI_TX: BBBuffer<U128> = BBBuffer(ConstBBBuffer::new());
+        static WIFI_RX: BBBuffer<512> = BBBuffer::new();
+        static WIFI_TX: BBBuffer<128> = BBBuffer::new();
 
         /// Initializes the wifi controller from within an interrupt-free context.
         unsafe fn wifi_init(
@@ -313,15 +312,13 @@ macro_rules! wifi_singleton {
             sercom0: SERCOM0,
             clocks: &mut GenericClockController,
             mclk: &mut MCLK,
-            port: &mut Port,
             delay: &mut Delay,
-        ) -> Result<(), ()> {
+        ) {
             unsafe {
                 $global_name = Some(Wifi::init(
-                    pins, sercom0, clocks, mclk, port, delay, &WIFI_RX, &WIFI_TX,
-                )?);
+                    pins, sercom0, clocks, mclk, delay, &WIFI_RX, &WIFI_TX,
+                ));
             }
-            Ok(())
         }
 
         #[interrupt]

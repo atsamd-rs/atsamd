@@ -1,15 +1,16 @@
 use atsamd_hal::adc::Adc;
 use atsamd_hal::clock::GenericClockController;
-use atsamd_hal::gpio::{self, Floating, Input, Pc30, Pd11, PfB, Port};
 use atsamd_hal::pac::gclk::pchctrl::GEN_A::GCLK11;
 use atsamd_hal::pac::{ADC1, MCLK, TCC0};
-use atsamd_hal::prelude::*;
 use atsamd_hal::pwm::{TCC0Pinout, Tcc0Pwm};
+use atsamd_hal::time::U32Ext;
+
+use super::pins::aliases::*;
 
 /// Buzzer pins
 pub struct Buzzer {
     /// Buzzer control pin
-    pub ctr: Pd11<Input<Floating>>,
+    pub ctr: BuzzerCtrlReset,
 }
 
 impl Buzzer {
@@ -20,9 +21,8 @@ impl Buzzer {
         clocks: &mut GenericClockController,
         tcc0: TCC0,
         mclk: &mut MCLK,
-        port: &mut Port,
-    ) -> Tcc0Pwm<gpio::v2::PD11, gpio::v2::AlternateF> {
-        let pinout = TCC0Pinout::Pd11(self.ctr.into_function_f(port));
+    ) -> Tcc0Pwm<BuzzerCtrlId, BuzzerCtrlMode> {
+        let pinout = TCC0Pinout::Pd11(self.ctr);
 
         let gclk0 = clocks.gclk0();
         let pwm0 = Tcc0Pwm::new(
@@ -40,7 +40,7 @@ impl Buzzer {
 /// Microphone pins
 pub struct Microphone {
     /// Microphone output (analog input) pin
-    pub mic: Pc30<Input<Floating>>,
+    pub mic: MicOutputReset,
 }
 
 impl Microphone {
@@ -51,11 +51,9 @@ impl Microphone {
         adc: ADC1,
         clocks: &mut GenericClockController,
         mclk: &mut MCLK,
-        port: &mut Port,
-    ) -> (Adc<ADC1>, Pc30<PfB>) {
+    ) -> (Adc<ADC1>, MicOutput) {
         let adc1 = Adc::adc1(adc, mclk, clocks, GCLK11);
-        let pc30 = self.mic.into_function_b(port);
 
-        (adc1, pc30)
+        (adc1, self.mic.into())
     }
 }

@@ -40,7 +40,7 @@ fn main() -> ! {
         &mut peripherals.NVMCTRL,
     );
     let mut delay = Delay::new(core.SYST, &mut clocks);
-    let mut sets: Sets = Pins::new(peripherals.PORT).split();
+    let sets: Sets = Pins::new(peripherals.PORT).split();
 
     // Set up the display so we can log our progress.
     let (display, _backlight) = sets
@@ -49,7 +49,6 @@ fn main() -> ! {
             &mut clocks,
             peripherals.SERCOM7,
             &mut peripherals.MCLK,
-            &mut sets.port,
             24.mhz(),
             &mut delay,
         )
@@ -57,12 +56,10 @@ fn main() -> ! {
     let mut terminal = Terminal::new(display);
     let mut textbuffer = String::<U256>::new();
 
-    let mut user_led = sets.user_led.into_open_drain_output(&mut sets.port);
+    let mut user_led = sets.user_led.into_push_pull_output();
     user_led.set_high().unwrap();
 
-    let mut flash = sets
-        .flash
-        .init(&mut peripherals.MCLK, &mut sets.port, peripherals.QSPI);
+    let mut flash = sets.flash.init(&mut peripherals.MCLK, peripherals.QSPI);
 
     // We don't know the current state of the chip, so lets chill out and
     // reset it.
@@ -121,7 +118,7 @@ fn main() -> ! {
         // If we did not read back the same data flash the status
         // LED.
         loop {
-            user_led.toggle();
+            user_led.toggle().ok();
             delay.delay_ms(200u8);
         }
     }
@@ -155,7 +152,7 @@ fn main() -> ! {
         // If we did not read back the same data flash the status
         // LED.
         loop {
-            user_led.toggle();
+            user_led.toggle().ok();
             delay.delay_ms(200u8);
         }
     }
@@ -173,12 +170,14 @@ fn main() -> ! {
         // If we did not read back the same data flash the status
         // LED.
         loop {
-            user_led.toggle();
+            user_led.toggle().ok();
             delay.delay_ms(200u8);
         }
     }
     user_led.set_low().unwrap();
-    loop {}
+    loop {
+        cortex_m::asm::wfi();
+    }
 }
 
 /// Handly helper for logging text to the screen.
