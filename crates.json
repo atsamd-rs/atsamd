@@ -139,6 +139,11 @@
       "target": "thumbv6m-none-eabi"
     },
 
+    "samd20j": {
+      "features": ["samd20j", "unproven"],
+      "target": "thumbv6m-none-eabi"
+    },
+
     "samd21g": {
       "features": ["samd21g", "unproven", "usb"],
       "target": "thumbv6m-none-eabi"
