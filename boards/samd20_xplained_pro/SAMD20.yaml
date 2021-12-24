@@ -1,0 +1,1329 @@
+---
+name: SAMD20
+manufacturer: ~
+variants:
+  - name: ATSAMD20E14
+    part: ~
+    cores:
+      - name: main
+        type: armv6m
+        core_access_options:
+          Arm:
+            ap: 0
+            psel: 0
+    memory_map:
+      - Ram:
+          range:
+            start: 536870912
+            end: 536872960
+          is_boot_memory: false
+          cores:
+            - main
+      - Nvm:
+          range:
+            start: 0
+            end: 16384
+          is_boot_memory: true
+          cores:
+            - main
+    flash_algorithms:
+      - atsamd20_16
+  - name: ATSAMD20E14B
+    part: ~
+    cores:
+      - name: main
+        type: armv6m
+        core_access_options:
+          Arm:
+            ap: 0
+            psel: 0
+    memory_map:
+      - Ram:
+          range:
+            start: 536870912
+            end: 536872960
+          is_boot_memory: false
+          cores:
+            - main
+      - Nvm:
+          range:
+            start: 0
+            end: 16384
+          is_boot_memory: true
+          cores:
+            - main
+    flash_algorithms:
+      - atsamd20_16
+  - name: ATSAMD20E15
+    part: ~
+    cores:
+      - name: main
+        type: armv6m
+        core_access_options:
+          Arm:
+            ap: 0
+            psel: 0
+    memory_map:
+      - Ram:
+          range:
+            start: 536870912
+            end: 536875008
+          is_boot_memory: false
+          cores:
+            - main
+      - Nvm:
+          range:
+            start: 0
+            end: 32768
+          is_boot_memory: true
+          cores:
+            - main
+    flash_algorithms:
+      - atsamd20_32
+  - name: ATSAMD20E15B
+    part: ~
+    cores:
+      - name: main
+        type: armv6m
+        core_access_options:
+          Arm:
+            ap: 0
+            psel: 0
+    memory_map:
+      - Ram:
+          range:
+            start: 536870912
+            end: 536875008
+          is_boot_memory: false
+          cores:
+            - main
+      - Nvm:
+          range:
+            start: 0
+            end: 32768
+          is_boot_memory: true
+          cores:
+            - main
+    flash_algorithms:
+      - atsamd20_32
+  - name: ATSAMD20E15BU
+    part: ~
+    cores:
+      - name: main
+        type: armv6m
+        core_access_options:
+          Arm:
+            ap: 0
+            psel: 0
+    memory_map:
+      - Ram:
+          range:
+            start: 536870912
+            end: 536875008
+          is_boot_memory: false
+          cores:
+            - main
+      - Nvm:
+          range:
+            start: 0
+            end: 32768
+          is_boot_memory: true
+          cores:
+            - main
+    flash_algorithms: []
+  - name: ATSAMD20E16
+    part: ~
+    cores:
+      - name: main
+        type: armv6m
+        core_access_options:
+          Arm:
+            ap: 0
+            psel: 0
+    memory_map:
+      - Ram:
+          range:
+            start: 536870912
+            end: 536879104
+          is_boot_memory: false
+          cores:
+            - main
+      - Nvm:
+          range:
+            start: 0
+            end: 65536
+          is_boot_memory: true
+          cores:
+            - main
+    flash_algorithms:
+      - atsamd20_64
+  - name: ATSAMD20E16B
+    part: ~
+    cores:
+      - name: main
+        type: armv6m
+        core_access_options:
+          Arm:
+            ap: 0
+            psel: 0
+    memory_map:
+      - Ram:
+          range:
+            start: 536870912
+            end: 536879104
+          is_boot_memory: false
+          cores:
+            - main
+      - Nvm:
+          range:
+            start: 0
+            end: 65536
+          is_boot_memory: true
+          cores:
+            - main
+    flash_algorithms:
+      - atsamd20_64
+  - name: ATSAMD20E16BU
+    part: ~
+    cores:
+      - name: main
+        type: armv6m
+        core_access_options:
+          Arm:
+            ap: 0
+            psel: 0
+    memory_map:
+      - Ram:
+          range:
+            start: 536870912
+            end: 536879104
+          is_boot_memory: false
+          cores:
+            - main
+      - Nvm:
+          range:
+            start: 0
+            end: 65536
+          is_boot_memory: true
+          cores:
+            - main
+    flash_algorithms: []
+  - name: ATSAMD20E17
+    part: ~
+    cores:
+      - name: main
+        type: armv6m
+        core_access_options:
+          Arm:
+            ap: 0
+            psel: 0
+    memory_map:
+      - Ram:
+          range:
+            start: 536870912
+            end: 536887296
+          is_boot_memory: false
+          cores:
+            - main
+      - Nvm:
+          range:
+            start: 0
+            end: 131072
+          is_boot_memory: true
+          cores:
+            - main
+    flash_algorithms:
+      - atsamd20_128
+  - name: ATSAMD20E18
+    part: ~
+    cores:
+      - name: main
+        type: armv6m
+        core_access_options:
+          Arm:
+            ap: 0
+            psel: 0
+    memory_map:
+      - Ram:
+          range:
+            start: 536870912
+            end: 536903680
+          is_boot_memory: false
+          cores:
+            - main
+      - Nvm:
+          range:
+            start: 0
+            end: 262144
+          is_boot_memory: true
+          cores:
+            - main
+    flash_algorithms:
+      - atsamd20_256
+  - name: ATSAMD20G14
+    part: ~
+    cores:
+      - name: main
+        type: armv6m
+        core_access_options:
+          Arm:
+            ap: 0
+            psel: 0
+    memory_map:
+      - Ram:
+          range:
+            start: 536870912
+            end: 536872960
+          is_boot_memory: false
+          cores:
+            - main
+      - Nvm:
+          range:
+            start: 0
+            end: 16384
+          is_boot_memory: true
+          cores:
+            - main
+    flash_algorithms:
+      - atsamd20_16
+  - name: ATSAMD20G14B
+    part: ~
+    cores:
+      - name: main
+        type: armv6m
+        core_access_options:
+          Arm:
+            ap: 0
+            psel: 0
+    memory_map:
+      - Ram:
+          range:
+            start: 536870912
+            end: 536872960
+          is_boot_memory: false
+          cores:
+            - main
+      - Nvm:
+          range:
+            start: 0
+            end: 16384
+          is_boot_memory: true
+          cores:
+            - main
+    flash_algorithms:
+      - atsamd20_16
+  - name: ATSAMD20G15
+    part: ~
+    cores:
+      - name: main
+        type: armv6m
+        core_access_options:
+          Arm:
+            ap: 0
+            psel: 0
+    memory_map:
+      - Ram:
+          range:
+            start: 536870912
+            end: 536875008
+          is_boot_memory: false
+          cores:
+            - main
+      - Nvm:
+          range:
+            start: 0
+            end: 32768
+          is_boot_memory: true
+          cores:
+            - main
+    flash_algorithms:
+      - atsamd20_32
+  - name: ATSAMD20G15B
+    part: ~
+    cores:
+      - name: main
+        type: armv6m
+        core_access_options:
+          Arm:
+            ap: 0
+            psel: 0
+    memory_map:
+      - Ram:
+          range:
+            start: 536870912
+            end: 536875008
+          is_boot_memory: false
+          cores:
+            - main
+      - Nvm:
+          range:
+            start: 0
+            end: 32768
+          is_boot_memory: true
+          cores:
+            - main
+    flash_algorithms:
+      - atsamd20_32
+  - name: ATSAMD20G16
+    part: ~
+    cores:
+      - name: main
+        type: armv6m
+        core_access_options:
+          Arm:
+            ap: 0
+            psel: 0
+    memory_map:
+      - Ram:
+          range:
+            start: 536870912
+            end: 536879104
+          is_boot_memory: false
+          cores:
+            - main
+      - Nvm:
+          range:
+            start: 0
+            end: 65536
+          is_boot_memory: true
+          cores:
+            - main
+    flash_algorithms:
+      - atsamd20_64
+  - name: ATSAMD20G16B
+    part: ~
+    cores:
+      - name: main
+        type: armv6m
+        core_access_options:
+          Arm:
+            ap: 0
+            psel: 0
+    memory_map:
+      - Ram:
+          range:
+            start: 536870912
+            end: 536879104
+          is_boot_memory: false
+          cores:
+            - main
+      - Nvm:
+          range:
+            start: 0
+            end: 65536
+          is_boot_memory: true
+          cores:
+            - main
+    flash_algorithms:
+      - atsamd20_64
+  - name: ATSAMD20G17
+    part: ~
+    cores:
+      - name: main
+        type: armv6m
+        core_access_options:
+          Arm:
+            ap: 0
+            psel: 0
+    memory_map:
+      - Ram:
+          range:
+            start: 536870912
+            end: 536887296
+          is_boot_memory: false
+          cores:
+            - main
+      - Nvm:
+          range:
+            start: 0
+            end: 131072
+          is_boot_memory: true
+          cores:
+            - main
+    flash_algorithms:
+      - atsamd20_128
+  - name: ATSAMD20G17U
+    part: ~
+    cores:
+      - name: main
+        type: armv6m
+        core_access_options:
+          Arm:
+            ap: 0
+            psel: 0
+    memory_map:
+      - Ram:
+          range:
+            start: 536870912
+            end: 536887296
+          is_boot_memory: false
+          cores:
+            - main
+      - Nvm:
+          range:
+            start: 0
+            end: 131072
+          is_boot_memory: true
+          cores:
+            - main
+    flash_algorithms:
+      - atsamd20_128
+  - name: ATSAMD20G18
+    part: ~
+    cores:
+      - name: main
+        type: armv6m
+        core_access_options:
+          Arm:
+            ap: 0
+            psel: 0
+    memory_map:
+      - Ram:
+          range:
+            start: 536870912
+            end: 536903680
+          is_boot_memory: false
+          cores:
+            - main
+      - Nvm:
+          range:
+            start: 0
+            end: 262144
+          is_boot_memory: true
+          cores:
+            - main
+    flash_algorithms:
+      - atsamd20_256
+  - name: ATSAMD20G18U
+    part: ~
+    cores:
+      - name: main
+        type: armv6m
+        core_access_options:
+          Arm:
+            ap: 0
+            psel: 0
+    memory_map:
+      - Ram:
+          range:
+            start: 536870912
+            end: 536903680
+          is_boot_memory: false
+          cores:
+            - main
+      - Nvm:
+          range:
+            start: 0
+            end: 262144
+          is_boot_memory: true
+          cores:
+            - main
+    flash_algorithms:
+      - atsamd20_256
+  - name: ATSAMD20J14
+    part: ~
+    cores:
+      - name: main
+        type: armv6m
+        core_access_options:
+          Arm:
+            ap: 0
+            psel: 0
+    memory_map:
+      - Ram:
+          range:
+            start: 536870912
+            end: 536872960
+          is_boot_memory: false
+          cores:
+            - main
+      - Nvm:
+          range:
+            start: 0
+            end: 16384
+          is_boot_memory: true
+          cores:
+            - main
+    flash_algorithms:
+      - atsamd20_16
+  - name: ATSAMD20J14B
+    part: ~
+    cores:
+      - name: main
+        type: armv6m
+        core_access_options:
+          Arm:
+            ap: 0
+            psel: 0
+    memory_map:
+      - Ram:
+          range:
+            start: 536870912
+            end: 536872960
+          is_boot_memory: false
+          cores:
+            - main
+      - Nvm:
+          range:
+            start: 0
+            end: 16384
+          is_boot_memory: true
+          cores:
+            - main
+    flash_algorithms:
+      - atsamd20_16
+  - name: ATSAMD20J15
+    part: ~
+    cores:
+      - name: main
+        type: armv6m
+        core_access_options:
+          Arm:
+            ap: 0
+            psel: 0
+    memory_map:
+      - Ram:
+          range:
+            start: 536870912
+            end: 536875008
+          is_boot_memory: false
+          cores:
+            - main
+      - Nvm:
+          range:
+            start: 0
+            end: 32768
+          is_boot_memory: true
+          cores:
+            - main
+    flash_algorithms:
+      - atsamd20_32
+  - name: ATSAMD20J15B
+    part: ~
+    cores:
+      - name: main
+        type: armv6m
+        core_access_options:
+          Arm:
+            ap: 0
+            psel: 0
+    memory_map:
+      - Ram:
+          range:
+            start: 536870912
+            end: 536875008
+          is_boot_memory: false
+          cores:
+            - main
+      - Nvm:
+          range:
+            start: 0
+            end: 32768
+          is_boot_memory: true
+          cores:
+            - main
+    flash_algorithms:
+      - atsamd20_32
+  - name: ATSAMD20J16
+    part: ~
+    cores:
+      - name: main
+        type: armv6m
+        core_access_options:
+          Arm:
+            ap: 0
+            psel: 0
+    memory_map:
+      - Ram:
+          range:
+            start: 536870912
+            end: 536879104
+          is_boot_memory: false
+          cores:
+            - main
+      - Nvm:
+          range:
+            start: 0
+            end: 65536
+          is_boot_memory: true
+          cores:
+            - main
+    flash_algorithms:
+      - atsamd20_64
+  - name: ATSAMD20J16B
+    part: ~
+    cores:
+      - name: main
+        type: armv6m
+        core_access_options:
+          Arm:
+            ap: 0
+            psel: 0
+    memory_map:
+      - Ram:
+          range:
+            start: 536870912
+            end: 536879104
+          is_boot_memory: false
+          cores:
+            - main
+      - Nvm:
+          range:
+            start: 0
+            end: 65536
+          is_boot_memory: true
+          cores:
+            - main
+    flash_algorithms:
+      - atsamd20_64
+  - name: ATSAMD20J17
+    part: ~
+    cores:
+      - name: main
+        type: armv6m
+        core_access_options:
+          Arm:
+            ap: 0
+            psel: 0
+    memory_map:
+      - Ram:
+          range:
+            start: 536870912
+            end: 536887296
+          is_boot_memory: false
+          cores:
+            - main
+      - Nvm:
+          range:
+            start: 0
+            end: 131072
+          is_boot_memory: true
+          cores:
+            - main
+    flash_algorithms:
+      - atsamd20_128
+  - name: ATSAMD20J18
+    part: ~
+    cores:
+      - name: main
+        type: armv6m
+        core_access_options:
+          Arm:
+            ap: 0
+            psel: 0
+    memory_map:
+      - Ram:
+          range:
+            start: 536870912
+            end: 536903680
+          is_boot_memory: false
+          cores:
+            - main
+      - Nvm:
+          range:
+            start: 0
+            end: 262144
+          is_boot_memory: true
+          cores:
+            - main
+    flash_algorithms:
+      - atsamd20_256
+flash_algorithms:
+  - name: atsamd20_16
+    description: ATSAMD20 16kB Flash
+    default: true
+    instructions: QSEJBgpoUgcB1QQiCmAoSiZJUWAnSUlECGAAIHBHACBwRw8hiQIBQEIIDyBAAgJAELUfSMJhIEoCgAJ90gf80B1MASI/PJICixgM4EoIwmEEgAJ90gf80AJ9kgcB1QEgEL3/MQExmULw0wAgEL0QtRFMD0vkHByAHH3kB/zQyRyJCIkAAuAQygkfEMAAKfrRCUg9OBiAGH3AB/zQGH2ABwHVASAQvQAgEL0AAJ4ABAAAQABBBAAAAEGlAAAAAAAAAAAAAA==
+    load_address: ~
+    pc_init: 1
+    pc_uninit: 31
+    pc_program_page: 111
+    pc_erase_sector: 35
+    pc_erase_all: ~
+    data_section_offset: 188
+    flash_properties:
+      address_range:
+        start: 0
+        end: 16384
+      page_size: 64
+      erased_byte_value: 255
+      program_page_timeout: 100
+      erase_sector_timeout: 1000
+      sectors:
+        - size: 1024
+          address: 0
+    cores: []
+  - name: atsamd20_16
+    description: ATSAMD20 16kB Flash
+    default: true
+    instructions: QSEJBgpoUgcB1QQiCmAoSiZJUWAnSUlECGAAIHBHACBwRw8hiQIBQEIIDyBAAgJAELUfSMJhIEoCgAJ90gf80B1MASI/PJICixgM4EoIwmEEgAJ90gf80AJ9kgcB1QEgEL3/MQExmULw0wAgEL0QtRFMD0vkHByAHH3kB/zQyRyJCIkAAuAQygkfEMAAKfrRCUg9OBiAGH3AB/zQGH2ABwHVASAQvQAgEL0AAJ4ABAAAQABBBAAAAEGlAAAAAAAAAAAAAA==
+    load_address: ~
+    pc_init: 1
+    pc_uninit: 31
+    pc_program_page: 111
+    pc_erase_sector: 35
+    pc_erase_all: ~
+    data_section_offset: 188
+    flash_properties:
+      address_range:
+        start: 0
+        end: 16384
+      page_size: 64
+      erased_byte_value: 255
+      program_page_timeout: 100
+      erase_sector_timeout: 1000
+      sectors:
+        - size: 1024
+          address: 0
+    cores: []
+  - name: atsamd20_32
+    description: ATSAMD20 32kB Flash
+    default: true
+    instructions: QSEJBgpoUgcB1QQiCmAoSiZJUWAnSUlECGAAIHBHACBwRw8hyQIBQEIIDyCAAgJAELUfSMJhIEoCgAJ90gf80B1MASI/PNICixgM4EoIwmEEgAJ90gf80AJ9kgcB1QEgEL3/MQExmULw0wAgEL0QtRFMD0vkHByAHH3kB/zQyRyJCIkAAuAQygkfEMAAKfrRCUg9OBiAGH3AB/zQGH2ABwHVASAQvQAgEL0AAJ4ABAAAQABBBAAAAEGlAAAAAAAAAAAAAA==
+    load_address: ~
+    pc_init: 1
+    pc_uninit: 31
+    pc_program_page: 111
+    pc_erase_sector: 35
+    pc_erase_all: ~
+    data_section_offset: 188
+    flash_properties:
+      address_range:
+        start: 0
+        end: 32768
+      page_size: 64
+      erased_byte_value: 255
+      program_page_timeout: 100
+      erase_sector_timeout: 1000
+      sectors:
+        - size: 2048
+          address: 0
+    cores: []
+  - name: atsamd20_32
+    description: ATSAMD20 32kB Flash
+    default: true
+    instructions: QSEJBgpoUgcB1QQiCmAoSiZJUWAnSUlECGAAIHBHACBwRw8hyQIBQEIIDyCAAgJAELUfSMJhIEoCgAJ90gf80B1MASI/PNICixgM4EoIwmEEgAJ90gf80AJ9kgcB1QEgEL3/MQExmULw0wAgEL0QtRFMD0vkHByAHH3kB/zQyRyJCIkAAuAQygkfEMAAKfrRCUg9OBiAGH3AB/zQGH2ABwHVASAQvQAgEL0AAJ4ABAAAQABBBAAAAEGlAAAAAAAAAAAAAA==
+    load_address: ~
+    pc_init: 1
+    pc_uninit: 31
+    pc_program_page: 111
+    pc_erase_sector: 35
+    pc_erase_all: ~
+    data_section_offset: 188
+    flash_properties:
+      address_range:
+        start: 0
+        end: 32768
+      page_size: 64
+      erased_byte_value: 255
+      program_page_timeout: 100
+      erase_sector_timeout: 1000
+      sectors:
+        - size: 2048
+          address: 0
+    cores: []
+  - name: atsamd20_64
+    description: ATSAMD20 64kB Flash
+    default: true
+    instructions: QSEJBgpoUgcB1QQiCmAoSiZJUWAnSUlECGAAIHBHACBwRw8hCQMBQEIIDyDAAgJAELUfSMJhIEoCgAJ90gf80B1MASI/PBIDixgM4EoIwmEEgAJ90gf80AJ9kgcB1QEgEL3/MQExmULw0wAgEL0QtRFMD0vkHByAHH3kB/zQyRyJCIkAAuAQygkfEMAAKfrRCUg9OBiAGH3AB/zQGH2ABwHVASAQvQAgEL0AAJ4ABAAAQABBBAAAAEGlAAAAAAAAAAAAAA==
+    load_address: ~
+    pc_init: 1
+    pc_uninit: 31
+    pc_program_page: 111
+    pc_erase_sector: 35
+    pc_erase_all: ~
+    data_section_offset: 188
+    flash_properties:
+      address_range:
+        start: 0
+        end: 65536
+      page_size: 64
+      erased_byte_value: 255
+      program_page_timeout: 100
+      erase_sector_timeout: 1000
+      sectors:
+        - size: 4096
+          address: 0
+    cores: []
+  - name: atsamd20_64
+    description: ATSAMD20 64kB Flash
+    default: true
+    instructions: QSEJBgpoUgcB1QQiCmAoSiZJUWAnSUlECGAAIHBHACBwRw8hCQMBQEIIDyDAAgJAELUfSMJhIEoCgAJ90gf80B1MASI/PBIDixgM4EoIwmEEgAJ90gf80AJ9kgcB1QEgEL3/MQExmULw0wAgEL0QtRFMD0vkHByAHH3kB/zQyRyJCIkAAuAQygkfEMAAKfrRCUg9OBiAGH3AB/zQGH2ABwHVASAQvQAgEL0AAJ4ABAAAQABBBAAAAEGlAAAAAAAAAAAAAA==
+    load_address: ~
+    pc_init: 1
+    pc_uninit: 31
+    pc_program_page: 111
+    pc_erase_sector: 35
+    pc_erase_all: ~
+    data_section_offset: 188
+    flash_properties:
+      address_range:
+        start: 0
+        end: 65536
+      page_size: 64
+      erased_byte_value: 255
+      program_page_timeout: 100
+      erase_sector_timeout: 1000
+      sectors:
+        - size: 4096
+          address: 0
+    cores: []
+  - name: atsamd20_128
+    description: ATSAMD20 128kB Flash
+    default: true
+    instructions: QSEJBgpoUgcB1QQiCmAoSiZJUWAnSUlECGAAIHBHACBwRw8hSQMBQEIIDyAAAwJAELUfSMJhIEoCgAJ90gf80B1MASI/PFIDixgM4EoIwmEEgAJ90gf80AJ9kgcB1QEgEL3/MQExmULw0wAgEL0QtRFMD0vkHByAHH3kB/zQyRyJCIkAAuAQygkfEMAAKfrRCUg9OBiAGH3AB/zQGH2ABwHVASAQvQAgEL0AAJ4ABAAAQABBBAAAAEGlAAAAAAAAAAAAAA==
+    load_address: ~
+    pc_init: 1
+    pc_uninit: 31
+    pc_program_page: 111
+    pc_erase_sector: 35
+    pc_erase_all: ~
+    data_section_offset: 188
+    flash_properties:
+      address_range:
+        start: 0
+        end: 131072
+      page_size: 64
+      erased_byte_value: 255
+      program_page_timeout: 100
+      erase_sector_timeout: 1000
+      sectors:
+        - size: 8192
+          address: 0
+    cores: []
+  - name: atsamd20_256
+    description: ATSAMD20 256kB Flash
+    default: true
+    instructions: QSEJBgpoUgcB1QQiCmAoSiZJUWAnSUlECGAAIHBHACBwRw8hiQMBQEIIDyBAAwJAELUfSMJhIEoCgAJ90gf80B1MASI/PJIDixgM4EoIwmEEgAJ90gf80AJ9kgcB1QEgEL3/MQExmULw0wAgEL0QtRFMD0vkHByAHH3kB/zQyRyJCIkAAuAQygkfEMAAKfrRCUg9OBiAGH3AB/zQGH2ABwHVASAQvQAgEL0AAJ4ABAAAQABBBAAAAEGlAAAAAAAAAAAAAA==
+    load_address: ~
+    pc_init: 1
+    pc_uninit: 31
+    pc_program_page: 111
+    pc_erase_sector: 35
+    pc_erase_all: ~
+    data_section_offset: 188
+    flash_properties:
+      address_range:
+        start: 0
+        end: 262144
+      page_size: 64
+      erased_byte_value: 255
+      program_page_timeout: 100
+      erase_sector_timeout: 1000
+      sectors:
+        - size: 16384
+          address: 0
+    cores: []
+  - name: atsamd20_16
+    description: ATSAMD20 16kB Flash
+    default: true
+    instructions: QSEJBgpoUgcB1QQiCmAoSiZJUWAnSUlECGAAIHBHACBwRw8hiQIBQEIIDyBAAgJAELUfSMJhIEoCgAJ90gf80B1MASI/PJICixgM4EoIwmEEgAJ90gf80AJ9kgcB1QEgEL3/MQExmULw0wAgEL0QtRFMD0vkHByAHH3kB/zQyRyJCIkAAuAQygkfEMAAKfrRCUg9OBiAGH3AB/zQGH2ABwHVASAQvQAgEL0AAJ4ABAAAQABBBAAAAEGlAAAAAAAAAAAAAA==
+    load_address: ~
+    pc_init: 1
+    pc_uninit: 31
+    pc_program_page: 111
+    pc_erase_sector: 35
+    pc_erase_all: ~
+    data_section_offset: 188
+    flash_properties:
+      address_range:
+        start: 0
+        end: 16384
+      page_size: 64
+      erased_byte_value: 255
+      program_page_timeout: 100
+      erase_sector_timeout: 1000
+      sectors:
+        - size: 1024
+          address: 0
+    cores: []
+  - name: atsamd20_16
+    description: ATSAMD20 16kB Flash
+    default: true
+    instructions: QSEJBgpoUgcB1QQiCmAoSiZJUWAnSUlECGAAIHBHACBwRw8hiQIBQEIIDyBAAgJAELUfSMJhIEoCgAJ90gf80B1MASI/PJICixgM4EoIwmEEgAJ90gf80AJ9kgcB1QEgEL3/MQExmULw0wAgEL0QtRFMD0vkHByAHH3kB/zQyRyJCIkAAuAQygkfEMAAKfrRCUg9OBiAGH3AB/zQGH2ABwHVASAQvQAgEL0AAJ4ABAAAQABBBAAAAEGlAAAAAAAAAAAAAA==
+    load_address: ~
+    pc_init: 1
+    pc_uninit: 31
+    pc_program_page: 111
+    pc_erase_sector: 35
+    pc_erase_all: ~
+    data_section_offset: 188
+    flash_properties:
+      address_range:
+        start: 0
+        end: 16384
+      page_size: 64
+      erased_byte_value: 255
+      program_page_timeout: 100
+      erase_sector_timeout: 1000
+      sectors:
+        - size: 1024
+          address: 0
+    cores: []
+  - name: atsamd20_32
+    description: ATSAMD20 32kB Flash
+    default: true
+    instructions: QSEJBgpoUgcB1QQiCmAoSiZJUWAnSUlECGAAIHBHACBwRw8hyQIBQEIIDyCAAgJAELUfSMJhIEoCgAJ90gf80B1MASI/PNICixgM4EoIwmEEgAJ90gf80AJ9kgcB1QEgEL3/MQExmULw0wAgEL0QtRFMD0vkHByAHH3kB/zQyRyJCIkAAuAQygkfEMAAKfrRCUg9OBiAGH3AB/zQGH2ABwHVASAQvQAgEL0AAJ4ABAAAQABBBAAAAEGlAAAAAAAAAAAAAA==
+    load_address: ~
+    pc_init: 1
+    pc_uninit: 31
+    pc_program_page: 111
+    pc_erase_sector: 35
+    pc_erase_all: ~
+    data_section_offset: 188
+    flash_properties:
+      address_range:
+        start: 0
+        end: 32768
+      page_size: 64
+      erased_byte_value: 255
+      program_page_timeout: 100
+      erase_sector_timeout: 1000
+      sectors:
+        - size: 2048
+          address: 0
+    cores: []
+  - name: atsamd20_32
+    description: ATSAMD20 32kB Flash
+    default: true
+    instructions: QSEJBgpoUgcB1QQiCmAoSiZJUWAnSUlECGAAIHBHACBwRw8hyQIBQEIIDyCAAgJAELUfSMJhIEoCgAJ90gf80B1MASI/PNICixgM4EoIwmEEgAJ90gf80AJ9kgcB1QEgEL3/MQExmULw0wAgEL0QtRFMD0vkHByAHH3kB/zQyRyJCIkAAuAQygkfEMAAKfrRCUg9OBiAGH3AB/zQGH2ABwHVASAQvQAgEL0AAJ4ABAAAQABBBAAAAEGlAAAAAAAAAAAAAA==
+    load_address: ~
+    pc_init: 1
+    pc_uninit: 31
+    pc_program_page: 111
+    pc_erase_sector: 35
+    pc_erase_all: ~
+    data_section_offset: 188
+    flash_properties:
+      address_range:
+        start: 0
+        end: 32768
+      page_size: 64
+      erased_byte_value: 255
+      program_page_timeout: 100
+      erase_sector_timeout: 1000
+      sectors:
+        - size: 2048
+          address: 0
+    cores: []
+  - name: atsamd20_64
+    description: ATSAMD20 64kB Flash
+    default: true
+    instructions: QSEJBgpoUgcB1QQiCmAoSiZJUWAnSUlECGAAIHBHACBwRw8hCQMBQEIIDyDAAgJAELUfSMJhIEoCgAJ90gf80B1MASI/PBIDixgM4EoIwmEEgAJ90gf80AJ9kgcB1QEgEL3/MQExmULw0wAgEL0QtRFMD0vkHByAHH3kB/zQyRyJCIkAAuAQygkfEMAAKfrRCUg9OBiAGH3AB/zQGH2ABwHVASAQvQAgEL0AAJ4ABAAAQABBBAAAAEGlAAAAAAAAAAAAAA==
+    load_address: ~
+    pc_init: 1
+    pc_uninit: 31
+    pc_program_page: 111
+    pc_erase_sector: 35
+    pc_erase_all: ~
+    data_section_offset: 188
+    flash_properties:
+      address_range:
+        start: 0
+        end: 65536
+      page_size: 64
+      erased_byte_value: 255
+      program_page_timeout: 100
+      erase_sector_timeout: 1000
+      sectors:
+        - size: 4096
+          address: 0
+    cores: []
+  - name: atsamd20_64
+    description: ATSAMD20 64kB Flash
+    default: true
+    instructions: QSEJBgpoUgcB1QQiCmAoSiZJUWAnSUlECGAAIHBHACBwRw8hCQMBQEIIDyDAAgJAELUfSMJhIEoCgAJ90gf80B1MASI/PBIDixgM4EoIwmEEgAJ90gf80AJ9kgcB1QEgEL3/MQExmULw0wAgEL0QtRFMD0vkHByAHH3kB/zQyRyJCIkAAuAQygkfEMAAKfrRCUg9OBiAGH3AB/zQGH2ABwHVASAQvQAgEL0AAJ4ABAAAQABBBAAAAEGlAAAAAAAAAAAAAA==
+    load_address: ~
+    pc_init: 1
+    pc_uninit: 31
+    pc_program_page: 111
+    pc_erase_sector: 35
+    pc_erase_all: ~
+    data_section_offset: 188
+    flash_properties:
+      address_range:
+        start: 0
+        end: 65536
+      page_size: 64
+      erased_byte_value: 255
+      program_page_timeout: 100
+      erase_sector_timeout: 1000
+      sectors:
+        - size: 4096
+          address: 0
+    cores: []
+  - name: atsamd20_128
+    description: ATSAMD20 128kB Flash
+    default: true
+    instructions: QSEJBgpoUgcB1QQiCmAoSiZJUWAnSUlECGAAIHBHACBwRw8hSQMBQEIIDyAAAwJAELUfSMJhIEoCgAJ90gf80B1MASI/PFIDixgM4EoIwmEEgAJ90gf80AJ9kgcB1QEgEL3/MQExmULw0wAgEL0QtRFMD0vkHByAHH3kB/zQyRyJCIkAAuAQygkfEMAAKfrRCUg9OBiAGH3AB/zQGH2ABwHVASAQvQAgEL0AAJ4ABAAAQABBBAAAAEGlAAAAAAAAAAAAAA==
+    load_address: ~
+    pc_init: 1
+    pc_uninit: 31
+    pc_program_page: 111
+    pc_erase_sector: 35
+    pc_erase_all: ~
+    data_section_offset: 188
+    flash_properties:
+      address_range:
+        start: 0
+        end: 131072
+      page_size: 64
+      erased_byte_value: 255
+      program_page_timeout: 100
+      erase_sector_timeout: 1000
+      sectors:
+        - size: 8192
+          address: 0
+    cores: []
+  - name: atsamd20_128
+    description: ATSAMD20 128kB Flash
+    default: true
+    instructions: QSEJBgpoUgcB1QQiCmAoSiZJUWAnSUlECGAAIHBHACBwRw8hSQMBQEIIDyAAAwJAELUfSMJhIEoCgAJ90gf80B1MASI/PFIDixgM4EoIwmEEgAJ90gf80AJ9kgcB1QEgEL3/MQExmULw0wAgEL0QtRFMD0vkHByAHH3kB/zQyRyJCIkAAuAQygkfEMAAKfrRCUg9OBiAGH3AB/zQGH2ABwHVASAQvQAgEL0AAJ4ABAAAQABBBAAAAEGlAAAAAAAAAAAAAA==
+    load_address: ~
+    pc_init: 1
+    pc_uninit: 31
+    pc_program_page: 111
+    pc_erase_sector: 35
+    pc_erase_all: ~
+    data_section_offset: 188
+    flash_properties:
+      address_range:
+        start: 0
+        end: 131072
+      page_size: 64
+      erased_byte_value: 255
+      program_page_timeout: 100
+      erase_sector_timeout: 1000
+      sectors:
+        - size: 8192
+          address: 0
+    cores: []
+  - name: atsamd20_256
+    description: ATSAMD20 256kB Flash
+    default: true
+    instructions: QSEJBgpoUgcB1QQiCmAoSiZJUWAnSUlECGAAIHBHACBwRw8hiQMBQEIIDyBAAwJAELUfSMJhIEoCgAJ90gf80B1MASI/PJIDixgM4EoIwmEEgAJ90gf80AJ9kgcB1QEgEL3/MQExmULw0wAgEL0QtRFMD0vkHByAHH3kB/zQyRyJCIkAAuAQygkfEMAAKfrRCUg9OBiAGH3AB/zQGH2ABwHVASAQvQAgEL0AAJ4ABAAAQABBBAAAAEGlAAAAAAAAAAAAAA==
+    load_address: ~
+    pc_init: 1
+    pc_uninit: 31
+    pc_program_page: 111
+    pc_erase_sector: 35
+    pc_erase_all: ~
+    data_section_offset: 188
+    flash_properties:
+      address_range:
+        start: 0
+        end: 262144
+      page_size: 64
+      erased_byte_value: 255
+      program_page_timeout: 100
+      erase_sector_timeout: 1000
+      sectors:
+        - size: 16384
+          address: 0
+    cores: []
+  - name: atsamd20_256
+    description: ATSAMD20 256kB Flash
+    default: true
+    instructions: QSEJBgpoUgcB1QQiCmAoSiZJUWAnSUlECGAAIHBHACBwRw8hiQMBQEIIDyBAAwJAELUfSMJhIEoCgAJ90gf80B1MASI/PJIDixgM4EoIwmEEgAJ90gf80AJ9kgcB1QEgEL3/MQExmULw0wAgEL0QtRFMD0vkHByAHH3kB/zQyRyJCIkAAuAQygkfEMAAKfrRCUg9OBiAGH3AB/zQGH2ABwHVASAQvQAgEL0AAJ4ABAAAQABBBAAAAEGlAAAAAAAAAAAAAA==
+    load_address: ~
+    pc_init: 1
+    pc_uninit: 31
+    pc_program_page: 111
+    pc_erase_sector: 35
+    pc_erase_all: ~
+    data_section_offset: 188
+    flash_properties:
+      address_range:
+        start: 0
+        end: 262144
+      page_size: 64
+      erased_byte_value: 255
+      program_page_timeout: 100
+      erase_sector_timeout: 1000
+      sectors:
+        - size: 16384
+          address: 0
+    cores: []
+  - name: atsamd20_16
+    description: ATSAMD20 16kB Flash
+    default: true
+    instructions: QSEJBgpoUgcB1QQiCmAoSiZJUWAnSUlECGAAIHBHACBwRw8hiQIBQEIIDyBAAgJAELUfSMJhIEoCgAJ90gf80B1MASI/PJICixgM4EoIwmEEgAJ90gf80AJ9kgcB1QEgEL3/MQExmULw0wAgEL0QtRFMD0vkHByAHH3kB/zQyRyJCIkAAuAQygkfEMAAKfrRCUg9OBiAGH3AB/zQGH2ABwHVASAQvQAgEL0AAJ4ABAAAQABBBAAAAEGlAAAAAAAAAAAAAA==
+    load_address: ~
+    pc_init: 1
+    pc_uninit: 31
+    pc_program_page: 111
+    pc_erase_sector: 35
+    pc_erase_all: ~
+    data_section_offset: 188
+    flash_properties:
+      address_range:
+        start: 0
+        end: 16384
+      page_size: 64
+      erased_byte_value: 255
+      program_page_timeout: 100
+      erase_sector_timeout: 1000
+      sectors:
+        - size: 1024
+          address: 0
+    cores: []
+  - name: atsamd20_16
+    description: ATSAMD20 16kB Flash
+    default: true
+    instructions: QSEJBgpoUgcB1QQiCmAoSiZJUWAnSUlECGAAIHBHACBwRw8hiQIBQEIIDyBAAgJAELUfSMJhIEoCgAJ90gf80B1MASI/PJICixgM4EoIwmEEgAJ90gf80AJ9kgcB1QEgEL3/MQExmULw0wAgEL0QtRFMD0vkHByAHH3kB/zQyRyJCIkAAuAQygkfEMAAKfrRCUg9OBiAGH3AB/zQGH2ABwHVASAQvQAgEL0AAJ4ABAAAQABBBAAAAEGlAAAAAAAAAAAAAA==
+    load_address: ~
+    pc_init: 1
+    pc_uninit: 31
+    pc_program_page: 111
+    pc_erase_sector: 35
+    pc_erase_all: ~
+    data_section_offset: 188
+    flash_properties:
+      address_range:
+        start: 0
+        end: 16384
+      page_size: 64
+      erased_byte_value: 255
+      program_page_timeout: 100
+      erase_sector_timeout: 1000
+      sectors:
+        - size: 1024
+          address: 0
+    cores: []
+  - name: atsamd20_32
+    description: ATSAMD20 32kB Flash
+    default: true
+    instructions: QSEJBgpoUgcB1QQiCmAoSiZJUWAnSUlECGAAIHBHACBwRw8hyQIBQEIIDyCAAgJAELUfSMJhIEoCgAJ90gf80B1MASI/PNICixgM4EoIwmEEgAJ90gf80AJ9kgcB1QEgEL3/MQExmULw0wAgEL0QtRFMD0vkHByAHH3kB/zQyRyJCIkAAuAQygkfEMAAKfrRCUg9OBiAGH3AB/zQGH2ABwHVASAQvQAgEL0AAJ4ABAAAQABBBAAAAEGlAAAAAAAAAAAAAA==
+    load_address: ~
+    pc_init: 1
+    pc_uninit: 31
+    pc_program_page: 111
+    pc_erase_sector: 35
+    pc_erase_all: ~
+    data_section_offset: 188
+    flash_properties:
+      address_range:
+        start: 0
+        end: 32768
+      page_size: 64
+      erased_byte_value: 255
+      program_page_timeout: 100
+      erase_sector_timeout: 1000
+      sectors:
+        - size: 2048
+          address: 0
+    cores: []
+  - name: atsamd20_32
+    description: ATSAMD20 32kB Flash
+    default: true
+    instructions: QSEJBgpoUgcB1QQiCmAoSiZJUWAnSUlECGAAIHBHACBwRw8hyQIBQEIIDyCAAgJAELUfSMJhIEoCgAJ90gf80B1MASI/PNICixgM4EoIwmEEgAJ90gf80AJ9kgcB1QEgEL3/MQExmULw0wAgEL0QtRFMD0vkHByAHH3kB/zQyRyJCIkAAuAQygkfEMAAKfrRCUg9OBiAGH3AB/zQGH2ABwHVASAQvQAgEL0AAJ4ABAAAQABBBAAAAEGlAAAAAAAAAAAAAA==
+    load_address: ~
+    pc_init: 1
+    pc_uninit: 31
+    pc_program_page: 111
+    pc_erase_sector: 35
+    pc_erase_all: ~
+    data_section_offset: 188
+    flash_properties:
+      address_range:
+        start: 0
+        end: 32768
+      page_size: 64
+      erased_byte_value: 255
+      program_page_timeout: 100
+      erase_sector_timeout: 1000
+      sectors:
+        - size: 2048
+          address: 0
+    cores: []
+  - name: atsamd20_64
+    description: ATSAMD20 64kB Flash
+    default: true
+    instructions: QSEJBgpoUgcB1QQiCmAoSiZJUWAnSUlECGAAIHBHACBwRw8hCQMBQEIIDyDAAgJAELUfSMJhIEoCgAJ90gf80B1MASI/PBIDixgM4EoIwmEEgAJ90gf80AJ9kgcB1QEgEL3/MQExmULw0wAgEL0QtRFMD0vkHByAHH3kB/zQyRyJCIkAAuAQygkfEMAAKfrRCUg9OBiAGH3AB/zQGH2ABwHVASAQvQAgEL0AAJ4ABAAAQABBBAAAAEGlAAAAAAAAAAAAAA==
+    load_address: ~
+    pc_init: 1
+    pc_uninit: 31
+    pc_program_page: 111
+    pc_erase_sector: 35
+    pc_erase_all: ~
+    data_section_offset: 188
+    flash_properties:
+      address_range:
+        start: 0
+        end: 65536
+      page_size: 64
+      erased_byte_value: 255
+      program_page_timeout: 100
+      erase_sector_timeout: 1000
+      sectors:
+        - size: 4096
+          address: 0
+    cores: []
+  - name: atsamd20_64
+    description: ATSAMD20 64kB Flash
+    default: true
+    instructions: QSEJBgpoUgcB1QQiCmAoSiZJUWAnSUlECGAAIHBHACBwRw8hCQMBQEIIDyDAAgJAELUfSMJhIEoCgAJ90gf80B1MASI/PBIDixgM4EoIwmEEgAJ90gf80AJ9kgcB1QEgEL3/MQExmULw0wAgEL0QtRFMD0vkHByAHH3kB/zQyRyJCIkAAuAQygkfEMAAKfrRCUg9OBiAGH3AB/zQGH2ABwHVASAQvQAgEL0AAJ4ABAAAQABBBAAAAEGlAAAAAAAAAAAAAA==
+    load_address: ~
+    pc_init: 1
+    pc_uninit: 31
+    pc_program_page: 111
+    pc_erase_sector: 35
+    pc_erase_all: ~
+    data_section_offset: 188
+    flash_properties:
+      address_range:
+        start: 0
+        end: 65536
+      page_size: 64
+      erased_byte_value: 255
+      program_page_timeout: 100
+      erase_sector_timeout: 1000
+      sectors:
+        - size: 4096
+          address: 0
+    cores: []
+  - name: atsamd20_128
+    description: ATSAMD20 128kB Flash
+    default: true
+    instructions: QSEJBgpoUgcB1QQiCmAoSiZJUWAnSUlECGAAIHBHACBwRw8hSQMBQEIIDyAAAwJAELUfSMJhIEoCgAJ90gf80B1MASI/PFIDixgM4EoIwmEEgAJ90gf80AJ9kgcB1QEgEL3/MQExmULw0wAgEL0QtRFMD0vkHByAHH3kB/zQyRyJCIkAAuAQygkfEMAAKfrRCUg9OBiAGH3AB/zQGH2ABwHVASAQvQAgEL0AAJ4ABAAAQABBBAAAAEGlAAAAAAAAAAAAAA==
+    load_address: ~
+    pc_init: 1
+    pc_uninit: 31
+    pc_program_page: 111
+    pc_erase_sector: 35
+    pc_erase_all: ~
+    data_section_offset: 188
+    flash_properties:
+      address_range:
+        start: 0
+        end: 131072
+      page_size: 64
+      erased_byte_value: 255
+      program_page_timeout: 100
+      erase_sector_timeout: 1000
+      sectors:
+        - size: 8192
+          address: 0
+    cores: []
+  - name: atsamd20_256
+    description: ATSAMD20 256kB Flash
+    default: true
+    instructions: QSEJBgpoUgcB1QQiCmAoSiZJUWAnSUlECGAAIHBHACBwRw8hiQMBQEIIDyBAAwJAELUfSMJhIEoCgAJ90gf80B1MASI/PJIDixgM4EoIwmEEgAJ90gf80AJ9kgcB1QEgEL3/MQExmULw0wAgEL0QtRFMD0vkHByAHH3kB/zQyRyJCIkAAuAQygkfEMAAKfrRCUg9OBiAGH3AB/zQGH2ABwHVASAQvQAgEL0AAJ4ABAAAQABBBAAAAEGlAAAAAAAAAAAAAA==
+    load_address: ~
+    pc_init: 1
+    pc_uninit: 31
+    pc_program_page: 111
+    pc_erase_sector: 35
+    pc_erase_all: ~
+    data_section_offset: 188
+    flash_properties:
+      address_range:
+        start: 0
+        end: 262144
+      page_size: 64
+      erased_byte_value: 255
+      program_page_timeout: 100
+      erase_sector_timeout: 1000
+      sectors:
+        - size: 16384
+          address: 0
+    cores: []
