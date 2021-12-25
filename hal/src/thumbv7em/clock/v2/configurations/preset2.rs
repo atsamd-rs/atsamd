@@ -28,7 +28,7 @@
 //! found in [`ResetClocks`]. Consequently, the `Preset2Tokens` struct does not
 //! contain the corresponding tokens used to create and configure those clocks.
 
-use typenum::{U0, U1, U2};
+use typenum::{U1, U2};
 
 use crate::pac::{GCLK, MCLK, NVMCTRL, OSC32KCTRL, OSCCTRL};
 
@@ -57,14 +57,14 @@ pub struct Preset2Clocks {
     /// and [`Xosc32k`](xosc32k::Xosc32k) clocks.
     pub xosc_base: Enabled<xosc32k::XoscBase<xosc32k::CrystalMode>, U2>,
     /// 1 kHz output from the XOSC32K
-    pub xosc1k: Enabled<xosc32k::Xosc1k, U0>,
+    pub xosc1k: Enabled<xosc32k::Xosc1k>,
     /// 32 kHz output from the XOSC32K
     pub xosc32k: Enabled<xosc32k::Xosc32k, U1>,
     /// GCLK1 driven by XOSC32K at 32 kHz
-    pub gclk1: Enabled<gclk::Gclk1<xosc32k::Xosc32kId>, U0>,
+    pub gclk1: Enabled<gclk::Gclk1<xosc32k::Xosc32kId>>,
     /// Always-enabled base oscillator for the [`OscUlp1k`](osculp32k::OscUlp1k)
     /// and [`OscUlp32k`](osculp32k::OscUlp32k) clocks.
-    pub osculp_base: Enabled<osculp32k::OscUlpBase, U0>,
+    pub osculp_base: Enabled<osculp32k::OscUlpBase>,
 }
 
 //==============================================================================

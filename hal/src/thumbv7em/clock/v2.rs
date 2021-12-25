@@ -83,7 +83,7 @@
 //! to opinionated clock setup from API v1:
 //! [`atsamd_hal::clocking_preset_*`](crate#macros)
 
-use typenum::Unsigned;
+use typenum::{Unsigned, U0};
 
 use crate::pac::{GCLK, MCLK, OSC32KCTRL, OSCCTRL};
 
@@ -168,7 +168,7 @@ pub trait Source: Sealed {
 /// [`Unsigned`] integers from the [`typenum`] crate.
 ///
 /// [`Gclk0`]: gclk::Gclk0
-pub struct Enabled<T, N: Counter>(pub(crate) T, N);
+pub struct Enabled<T, N: Counter = U0>(pub(crate) T, N);
 
 impl<T, N: Counter> Sealed for Enabled<T, N> {}
 

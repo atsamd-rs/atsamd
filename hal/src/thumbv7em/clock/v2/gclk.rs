@@ -57,7 +57,7 @@
 use core::marker::PhantomData;
 
 use seq_macro::seq;
-use typenum::{U0, U1};
+use typenum::U1;
 
 use crate::pac;
 use crate::pac::gclk::genctrl::DIVSEL_A;
@@ -627,7 +627,7 @@ where
     /// Enabling a [`Gclk`] modifies hardware to match the configuration
     /// stored within.
     #[inline]
-    pub fn enable(mut self) -> Enabled<Gclk<G, I>, U0> {
+    pub fn enable(mut self) -> Enabled<Gclk<G, I>> {
         self.token.set_source(I::DYN);
         self.token.improve_duty_cycle(self.improve_duty_cycle);
         self.token.set_div(self.div);
@@ -665,7 +665,7 @@ where
     }
 }
 
-impl<G, T> Enabled<Gclk<G, T>, U0>
+impl<G, T> Enabled<Gclk<G, T>>
 where
     G: GclkId,
     T: GclkSourceId,

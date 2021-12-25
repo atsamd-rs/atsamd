@@ -11,7 +11,7 @@
 //!
 //! Dfll in a default state is provided
 //! - in a return value of [`crate::clock::v2::retrieve_clocks`]
-use typenum::{U0, U1};
+use typenum::{U1};
 
 use crate::time::{Hertz, U32Ext};
 use crate::typelevel::{Counter, PrivateIncrement, Sealed};
@@ -296,7 +296,7 @@ impl<M: Mode> Dfll<M> {
     /// Enabling a [`Dfll`] modifies hardware to match the configuration stored
     /// within
     #[inline]
-    pub fn enable(mut self) -> Enabled<Self, U0> {
+    pub fn enable(mut self) -> Enabled<Self> {
         if M::DYN == DynMode::ClosedLoop {
             self.token.set_coarse_max_step(self.mode.coarse_max_step());
             self.token.set_fine_max_step(self.mode.fine_max_step());
@@ -397,7 +397,7 @@ impl<G: GclkId> Dfll<ClosedLoop<G>> {
     }
 }
 
-impl<M: Mode> Enabled<Dfll<M>, U0> {
+impl<M: Mode> Enabled<Dfll<M>> {
     /// Disable the [`Dfll`]
     #[inline]
     pub fn disable(mut self) -> Dfll<M> {

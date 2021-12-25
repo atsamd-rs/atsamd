@@ -23,7 +23,7 @@
 //! found in [`ResetClocks`]. Consequently, the `Preset1Tokens` struct does not
 //! contain the corresponding tokens used to create and configure those clocks.
 
-use typenum::{U0, U1};
+use typenum::U1;
 
 use crate::pac::{GCLK, MCLK, NVMCTRL, OSC32KCTRL, OSCCTRL};
 
@@ -49,7 +49,7 @@ pub struct Preset1Clocks {
     pub gclk0: Enabled<gclk::Gclk0<dpll::DpllId0>, U1>,
     /// Always-enabled base oscillator for the [`OscUlp1k`](osculp32k::OscUlp1k)
     /// and [`OscUlp32k`](osculp32k::OscUlp32k) clocks.
-    pub osculp_base: Enabled<osculp32k::OscUlpBase, U0>,
+    pub osculp_base: Enabled<osculp32k::OscUlpBase>,
 }
 
 //==============================================================================

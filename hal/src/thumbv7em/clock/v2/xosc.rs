@@ -21,8 +21,6 @@
 use core::convert::Infallible;
 use core::marker::PhantomData;
 
-use typenum::U0;
-
 use crate::pac::oscctrl::xoscctrl::{CFDPRESC_A, STARTUP_A};
 use crate::pac::oscctrl::{RegisterBlock, XOSCCTRL};
 
@@ -434,7 +432,7 @@ where
     ///
     /// Returns the enabled Xosc
     #[inline]
-    pub fn enable(mut self) -> Enabled<Xosc<X, M>, U0> {
+    pub fn enable(mut self) -> Enabled<Xosc<X, M>> {
         self.token.reset();
         self.token.set_source(M::XTALEN);
         self.token.set_start_up(self.start_up_cycles);
@@ -568,7 +566,7 @@ impl<X: XoscId> Xosc<X, CrystalMode> {
     }
 }
 
-impl<X, M> Enabled<Xosc<X, M>, U0>
+impl<X, M> Enabled<Xosc<X, M>>
 where
     X: XoscId,
     M: Mode<X>,

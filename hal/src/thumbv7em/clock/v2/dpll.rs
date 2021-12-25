@@ -28,8 +28,6 @@ use core::marker::PhantomData;
 
 use seq_macro::seq;
 
-use typenum::U0;
-
 use crate::pac::oscctrl::dpll::{dpllstatus, dpllsyncbusy, DPLLCTRLA, DPLLCTRLB, DPLLRATIO};
 use crate::pac::oscctrl::DPLL;
 
@@ -538,7 +536,7 @@ where
     ///
     /// - Performs HW register writes
     #[inline]
-    pub fn enable(self) -> Result<Enabled<Self, U0>, Self> {
+    pub fn enable(self) -> Result<Enabled<Self>, Self> {
         let predivider = I::predivider(self.raw_prediv);
         let input_frequency = self.src_freq.0 / predivider;
         let output_frequency = self.freq().0;
@@ -560,7 +558,7 @@ where
     ///
     /// - Performs HW register writes
     #[inline]
-    pub unsafe fn force_enable(mut self) -> Enabled<Self, U0> {
+    pub unsafe fn force_enable(mut self) -> Enabled<Self> {
         // Enable the specified mode
         self.token.set_source_clock(I::DYN);
         match I::DYN {
@@ -585,7 +583,7 @@ pub type Dpll0<M> = Dpll<DpllId0, M>;
 /// Alias of [`Dpll`]`<`[`marker::Dpll1`]`, _>`
 pub type Dpll1<M> = Dpll<DpllId1, M>;
 
-impl<D, I> Enabled<Dpll<D, I>, U0>
+impl<D, I> Enabled<Dpll<D, I>>
 where
     D: DpllId,
     I: DpllSourceId<D>,

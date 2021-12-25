@@ -2,7 +2,7 @@
 //! from the `v2` module, which is where the corresponding documentation will
 //! appear.
 
-use typenum::{U0, U1};
+use typenum::U1;
 
 use crate::pac::{GCLK, MCLK, NVMCTRL, OSC32KCTRL, OSCCTRL};
 
@@ -30,7 +30,7 @@ pub struct ResetClocks {
     pub dfll: Enabled<dfll::Dfll<dfll::OpenLoop>, U1>,
     /// Always-enabled base oscillator for the [`OscUlp1k`](osculp32k::OscUlp1k)
     /// and [`OscUlp32k`](osculp32k::OscUlp32k) clocks.
-    pub osculp_base: Enabled<osculp32k::OscUlpBase, U0>,
+    pub osculp_base: Enabled<osculp32k::OscUlpBase>,
 }
 
 /// Type-level tokens for unused clocks at power-on reset
@@ -144,7 +144,7 @@ pub fn reset_clocks_tokens(
             xosc32k: xosc32k::Tokens::new(),
             osculp: osculp32k::Tokens::new(),
         };
-        let dfll = Enabled::<_, U0>::new(dfll::Dfll::in_open_mode(dfll::DfllToken::new()));
+        let dfll: Enabled<_> = Enabled::new(dfll::Dfll::in_open_mode(dfll::DfllToken::new()));
         let (gclk0, dfll) = gclk::Gclk0::new(gclk::GclkToken::new(), dfll);
         let gclk0 = Enabled::new(gclk0);
         let osculp_base = osculp32k::OscUlpBase::new();

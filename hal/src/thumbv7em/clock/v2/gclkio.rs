@@ -58,7 +58,6 @@
 use core::marker::PhantomData;
 
 use seq_macro::seq;
-use typenum::U0;
 
 use crate::gpio::v2::{self as gpio, AlternateM, AnyPin, Pin, PinId};
 use crate::time::Hertz;
@@ -163,7 +162,7 @@ where
     /// Consume a [`GclkInToken`], `gpio` pin and a provided frequency to
     /// receive an enabled [`GclkIn`]
     #[inline]
-    pub fn enable<F>(token: GclkInToken<G>, pin: impl AnyPin<Id = I>, freq: F) -> Enabled<Self, U0>
+    pub fn enable<F>(token: GclkInToken<G>, pin: impl AnyPin<Id = I>, freq: F) -> Enabled<Self>
     where
         F: Into<Hertz>,
     {
@@ -186,7 +185,7 @@ where
 {
 }
 
-impl<G, I> Enabled<GclkIn<G, I>, U0>
+impl<G, I> Enabled<GclkIn<G, I>>
 where
     G: GclkId,
     I: GclkIo<G>,

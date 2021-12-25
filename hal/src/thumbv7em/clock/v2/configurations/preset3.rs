@@ -26,7 +26,7 @@
 //! found in [`ResetClocks`]. Consequently, the `Preset3Tokens` struct does not
 //! contain the corresponding tokens used to create and configure those clocks.
 
-use typenum::{U0, U1};
+use typenum::U1;
 
 use crate::pac::{GCLK, MCLK, NVMCTRL, OSC32KCTRL, OSCCTRL};
 
@@ -56,7 +56,7 @@ pub struct Preset3Clocks {
     /// 32 kHz output from the OSCULP32K
     pub osculp32k: Enabled<osculp32k::OscUlp32k, U1>,
     /// GCLK1 driven by OSCULP32K at 32 kHz
-    pub gclk1: Enabled<gclk::Gclk1<osculp32k::OscUlp32kId>, U0>,
+    pub gclk1: Enabled<gclk::Gclk1<osculp32k::OscUlp32kId>>,
 }
 
 //==============================================================================

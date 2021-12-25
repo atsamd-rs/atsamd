@@ -3,8 +3,6 @@
 
 #![allow(missing_docs)]
 
-use typenum::U0;
-
 use crate::pac::osc32kctrl::xosc32k::{CGM_A, STARTUP_A};
 use crate::pac::osc32kctrl::{RegisterBlock, STATUS, XOSC32K};
 
@@ -320,7 +318,7 @@ impl<M: Mode> XoscBase<M> {
     }
 
     #[inline]
-    pub fn enable(mut self) -> Enabled<Self, U0> {
+    pub fn enable(mut self) -> Enabled<Self> {
         self.token.set_xtalen(M::XTALEN);
         self.token.set_on_demand(self.on_demand_mode);
         self.token.set_run_standby(self.run_standby);
@@ -395,7 +393,7 @@ impl Xosc1k {
     pub fn enable<M, N>(
         token: Xosc1kToken,
         mut base: Enabled<XoscBase<M>, N>,
-    ) -> (Enabled<Self, U0>, Enabled<XoscBase<M>, N::Inc>)
+    ) -> (Enabled<Self>, Enabled<XoscBase<M>, N::Inc>)
     where
         M: Mode,
         N: Increment,
@@ -405,7 +403,7 @@ impl Xosc1k {
     }
 }
 
-impl Enabled<Xosc1k, U0> {
+impl Enabled<Xosc1k> {
     /// Disable the 1 kHz output from XOSC32K
     ///
     /// Doing so will clear one usage of the [`Enabled`] [`XoscBase`] clock
@@ -453,7 +451,7 @@ impl Xosc32k {
     pub fn enable<M, N>(
         token: Xosc32kToken,
         mut base: Enabled<XoscBase<M>, N>,
-    ) -> (Enabled<Self, U0>, Enabled<XoscBase<M>, N::Inc>)
+    ) -> (Enabled<Self>, Enabled<XoscBase<M>, N::Inc>)
     where
         M: Mode,
         N: Increment,
@@ -463,7 +461,7 @@ impl Xosc32k {
     }
 }
 
-impl Enabled<Xosc32k, U0> {
+impl Enabled<Xosc32k> {
     /// Disable the 32 kHz output from XOSC32K
     ///
     /// Doing so will clear one usage of the [`Enabled`] [`XoscBase`] clock
