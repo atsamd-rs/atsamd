@@ -1,5 +1,7 @@
 # Unreleased
 
+# v0.11.0
+
 - added the `neopixel_rainbow` example
 - remove extraneous `embedded-hal` dependencies from BSPs
 - cleanup `cortex_m` dependency

@@ -1,5 +1,7 @@
 # Unreleased
 
+# v0.9.0
+
 - replace deprecated `SpinTimer` with `TimerCounter` in the `neopixel_rainbow` example
 - remove extraneous `embedded-hal` dependencies from BSPs
 - cleanup `cortex_m` dependency
