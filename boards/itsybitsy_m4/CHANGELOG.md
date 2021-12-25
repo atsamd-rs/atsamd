@@ -1,5 +1,9 @@
-# Unreleased
+# 0.7.0
 
+- update bsp to use the v2 API
+- bump cortex-m dependency to 0.7
+- add SPI example
+- change dotstar and usb_serial examples to replace deprecated `SpinTimer` with `TimerCounter`
 - remove extraneous `embedded-hal` dependencies from BSPs
 - cleanup `cortex_m` dependency
 - move `usbd-x` crates used only in examples to `[dev-dependencies]`

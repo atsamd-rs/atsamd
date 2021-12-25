@@ -1,6 +1,6 @@
 [package]
 name = "itsybitsy_m4"
-version = "0.6.0"
+version = "0.7.0"
 authors = [
     "Nic Hartley <nxh9052@rit.edu>",
     "Tom <twitchyliquid64@ciphersink.net>",
@@ -18,11 +18,11 @@ apa102-spi = "0.3"
 smart-leds = "0.3"
 
 [dependencies.cortex-m-rt]
-version = "0.6.12"
+version = "0.7"
 optional = true
 
 [dependencies.atsamd-hal]
-version = "0.13"
+version = "0.14"
 default-features = false
 
 [dependencies.usb-device]
@@ -65,6 +65,9 @@ name = "blinky_basic"
 
 [[example]]
 name = "dotstar"
+
+[[example]]
+name = "spi"
 
 [[example]]
 name = "usb_serial"
