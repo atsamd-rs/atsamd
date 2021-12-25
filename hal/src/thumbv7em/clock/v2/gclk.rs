@@ -56,6 +56,7 @@
 
 use core::marker::PhantomData;
 
+use paste::paste;
 use seq_macro::seq;
 use typenum::{U0, U1};
 
@@ -70,10 +71,10 @@ use crate::time::Hertz;
 use crate::typelevel::{Counter, Decrement, Increment, PrivateIncrement, Sealed};
 
 use super::dfll::DfllId;
-use super::dpll::{DpllId0, DpllId1};
+use super::dpll::{Dpll0Id, Dpll1Id};
 use super::gclkio::GclkInId;
 use super::osculp32k::OscUlp32kId;
-use super::xosc::{XoscId0, XoscId1};
+use super::xosc::{Xosc0Id, Xosc1Id};
 use super::xosc32k::Xosc32kId;
 use super::{Enabled, Source};
 
@@ -260,9 +261,9 @@ pub trait GclkId: Sealed {
 /// on [type-level enums] for more details on the pattern.
 ///
 /// [type-level enums]: crate::typelevel#type-level-enum
-pub enum GclkId0 {}
-impl Sealed for GclkId0 {}
-impl GclkId for GclkId0 {
+pub enum Gclk0Id {}
+impl Sealed for Gclk0Id {}
+impl GclkId for Gclk0Id {
     const DYN: DynGclkId = DynGclkId::Gclk0;
     const NUM: usize = 0;
     type DividerType = GclkDiv;
@@ -274,27 +275,29 @@ impl GclkId for GclkId0 {
 /// on [type-level enums] for more details on the pattern.
 ///
 /// [type-level enums]: crate::typelevel#type-level-enum
-pub enum GclkId1 {}
-impl Sealed for GclkId1 {}
-impl GclkId for GclkId1 {
+pub enum Gclk1Id {}
+impl Sealed for Gclk1Id {}
+impl GclkId for Gclk1Id {
     const DYN: DynGclkId = DynGclkId::Gclk1;
     const NUM: usize = 1;
     type DividerType = Gclk1Div;
 }
 
 seq!(N in 2..=11 {
-    /// Type-level variant representing the identity of the corresponding GCLK
-    ///
-    /// This type is a member of several [type-level enums]. See the documentation
-    /// on [type-level enums] for more details on the pattern.
-    ///
-    /// [type-level enums]: crate::typelevel#type-level-enum
-    pub enum GclkId~N {}
-    impl Sealed for GclkId~N {}
-    impl GclkId for GclkId~N {
-        const DYN: DynGclkId = DynGclkId::Gclk~N;
-        const NUM: usize = N;
-        type DividerType = GclkDiv;
+    paste! {
+        /// Type-level variant representing the identity of the corresponding GCLK
+        ///
+        /// This type is a member of several [type-level enums]. See the documentation
+        /// on [type-level enums] for more details on the pattern.
+        ///
+        /// [type-level enums]: crate::typelevel#type-level-enum
+        pub enum [<Gclk N Id>] {}
+        impl Sealed for [<Gclk N Id>] {}
+        impl GclkId for [<Gclk N Id>] {
+            const DYN: DynGclkId = DynGclkId::Gclk~N;
+            const NUM: usize = N;
+            type DividerType = GclkDiv;
+        }
     }
 });
 
@@ -476,13 +479,13 @@ pub trait GclkSourceId {
 impl GclkSourceId for DfllId {
     const DYN: DynGclkSourceId = DynGclkSourceId::DFLL;
 }
-impl GclkSourceId for DpllId0 {
+impl GclkSourceId for Dpll0Id {
     const DYN: DynGclkSourceId = DynGclkSourceId::DPLL0;
 }
-impl GclkSourceId for DpllId1 {
+impl GclkSourceId for Dpll1Id {
     const DYN: DynGclkSourceId = DynGclkSourceId::DPLL1;
 }
-impl GclkSourceId for GclkId1 {
+impl GclkSourceId for Gclk1Id {
     const DYN: DynGclkSourceId = DynGclkSourceId::GCLKGEN1;
 }
 impl GclkSourceId for GclkInId {
@@ -491,10 +494,10 @@ impl GclkSourceId for GclkInId {
 impl GclkSourceId for OscUlp32kId {
     const DYN: DynGclkSourceId = DynGclkSourceId::OSCULP32K;
 }
-impl GclkSourceId for XoscId0 {
+impl GclkSourceId for Xosc0Id {
     const DYN: DynGclkSourceId = DynGclkSourceId::XOSC0;
 }
-impl GclkSourceId for XoscId1 {
+impl GclkSourceId for Xosc1Id {
     const DYN: DynGclkSourceId = DynGclkSourceId::XOSC1;
 }
 impl GclkSourceId for Xosc32kId {
@@ -532,10 +535,12 @@ where
 pub type EnabledGclk<G, I, N = U0> = Enabled<Gclk<G, I>, N>;
 
 seq!(G in 0..=11 {
-    /// Type alias for the corresponding [`Gclk`]
-    pub type Gclk~G<I> = Gclk<GclkId~G, I>;
+    paste! {
+        /// Type alias for the corresponding [`Gclk`]
+        pub type Gclk~G<I> = Gclk<[<Gclk G Id>], I>;
 
-    pub type EnabledGclk~G<I, N = U0> = EnabledGclk<GclkId~G, I, N>;
+        pub type EnabledGclk~G<I, N = U0> = EnabledGclk<[<Gclk G Id>], I, N>;
+    }
 });
 
 impl<G, I> Gclk<G, I>
@@ -744,21 +749,23 @@ where
 //==============================================================================
 
 seq!(N in 1..=11 {
-    /// [`Gclk`] tokens ensuring there only exists one instance of each [`Gclk`]
-    pub struct Tokens {
-        #( /// GclkToken for the corresponding GCLK
-           pub gclk~N: GclkToken<GclkId~N>, )*
-    }
+    paste! {
+        /// [`Gclk`] tokens ensuring there only exists one instance of each [`Gclk`]
+        pub struct Tokens {
+            #( /// GclkToken for the corresponding GCLK
+               pub gclk~N: GclkToken<[<Gclk N Id>]>, )*
+        }
 
-    impl Tokens {
-        #[inline]
-        pub(super) fn new(nvmctrl: &mut NVMCTRL) -> Self {
-            // Use auto wait states
-            nvmctrl.ctrla.modify(|_, w| w.autows().set_bit());
-            // Return all tokens when initially created
-            unsafe {
-                Tokens {
-                    #( gclk~N: GclkToken::new(), )*
+        impl Tokens {
+            #[inline]
+            pub(super) fn new(nvmctrl: &mut NVMCTRL) -> Self {
+                // Use auto wait states
+                nvmctrl.ctrla.modify(|_, w| w.autows().set_bit());
+                // Return all tokens when initially created
+                unsafe {
+                    Tokens {
+                        #( gclk~N: GclkToken::new(), )*
+                    }
                 }
             }
         }

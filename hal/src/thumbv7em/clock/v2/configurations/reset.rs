@@ -59,9 +59,9 @@ pub struct ResetTokens {
     /// Synchronous clocking domain clocks -- APB buses
     pub apbs: apb::ApbClks,
     /// Construction token for [`dpll::Dpll0`]
-    pub dpll0: dpll::DpllToken<dpll::DpllId0>,
+    pub dpll0: dpll::DpllToken<dpll::Dpll0Id>,
     /// Construction token for [`dpll::Dpll1`]
-    pub dpll1: dpll::DpllToken<dpll::DpllId1>,
+    pub dpll1: dpll::DpllToken<dpll::Dpll1Id>,
     /// Construction tokens for [`gclkio::GclkIo`]
     pub gclk_io: gclkio::Tokens,
     /// Construction tokens for [`gclk::Gclk`]
@@ -71,9 +71,9 @@ pub struct ResetTokens {
     /// Construction token for [`rtc::RtcOsc`]
     pub rtcosc: rtcosc::RtcOscToken,
     /// Construction token for [`xosc::Xosc0`]
-    pub xosc0: xosc::XoscToken<xosc::XoscId0>,
+    pub xosc0: xosc::XoscToken<xosc::Xosc0Id>,
     /// Construction token for [`xosc::Xosc1`]
-    pub xosc1: xosc::XoscToken<xosc::XoscId1>,
+    pub xosc1: xosc::XoscToken<xosc::Xosc1Id>,
     /// Construction tokens for [`xosc32k::XoscBase`], [`xosc32k::Xosc1k`] and [`xosc32k::Xosc32k`]
     pub xosc32k: xosc32k::Tokens,
     /// Construction tokens for [`osculp32k::OscUlp1k`] and [`osculp32k::OscUlp32k`]

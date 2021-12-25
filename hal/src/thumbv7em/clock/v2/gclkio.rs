@@ -57,6 +57,7 @@
 
 use core::marker::PhantomData;
 
+use paste::paste;
 use seq_macro::seq;
 use typenum::U0;
 
@@ -65,10 +66,10 @@ use crate::time::Hertz;
 use crate::typelevel::{Counter, Decrement, Increment, PrivateDecrement, PrivateIncrement, Sealed};
 
 use super::dfll::DfllId;
-use super::dpll::{DpllId0, DpllId1};
+use super::dpll::{Dpll0Id, Dpll1Id};
 use super::gclk::*;
 use super::osculp32k::OscUlp32kId;
-use super::xosc::{XoscId0, XoscId1};
+use super::xosc::{Xosc0Id, Xosc1Id};
 use super::xosc32k::Xosc32kId;
 use super::{Enabled, Source};
 
@@ -79,43 +80,43 @@ use super::{Enabled, Source};
 /// Trait for binding [`gpio`] pins to specific [`Gclk`][`super::gclk]
 pub trait GclkIo<G: GclkId>: PinId {}
 
-impl GclkIo<GclkId4> for gpio::PA10 {}
-impl GclkIo<GclkId5> for gpio::PA11 {}
+impl GclkIo<Gclk4Id> for gpio::PA10 {}
+impl GclkIo<Gclk5Id> for gpio::PA11 {}
 
-impl GclkIo<GclkId0> for gpio::PA14 {}
-impl GclkIo<GclkId1> for gpio::PA15 {}
-impl GclkIo<GclkId2> for gpio::PA16 {}
-impl GclkIo<GclkId3> for gpio::PA17 {}
+impl GclkIo<Gclk0Id> for gpio::PA14 {}
+impl GclkIo<Gclk1Id> for gpio::PA15 {}
+impl GclkIo<Gclk2Id> for gpio::PA16 {}
+impl GclkIo<Gclk3Id> for gpio::PA17 {}
 
-impl GclkIo<GclkId1> for gpio::PA27 {}
-impl GclkIo<GclkId0> for gpio::PA30 {}
+impl GclkIo<Gclk1Id> for gpio::PA27 {}
+impl GclkIo<Gclk0Id> for gpio::PA30 {}
 
-impl GclkIo<GclkId4> for gpio::PB10 {}
-impl GclkIo<GclkId5> for gpio::PB11 {}
+impl GclkIo<Gclk4Id> for gpio::PB10 {}
+impl GclkIo<Gclk5Id> for gpio::PB11 {}
 #[cfg(feature = "min-samd51j")]
-impl GclkIo<GclkId6> for gpio::PB12 {}
+impl GclkIo<Gclk6Id> for gpio::PB12 {}
 #[cfg(feature = "min-samd51j")]
-impl GclkIo<GclkId7> for gpio::PB13 {}
+impl GclkIo<Gclk7Id> for gpio::PB13 {}
 
 #[cfg(feature = "min-samd51j")]
-impl GclkIo<GclkId0> for gpio::PB14 {}
+impl GclkIo<Gclk0Id> for gpio::PB14 {}
 #[cfg(feature = "min-samd51j")]
-impl GclkIo<GclkId1> for gpio::PB15 {}
+impl GclkIo<Gclk1Id> for gpio::PB15 {}
 #[cfg(feature = "min-samd51j")]
-impl GclkIo<GclkId2> for gpio::PB16 {}
+impl GclkIo<Gclk2Id> for gpio::PB16 {}
 #[cfg(feature = "min-samd51j")]
-impl GclkIo<GclkId3> for gpio::PB17 {}
+impl GclkIo<Gclk3Id> for gpio::PB17 {}
 #[cfg(feature = "min-samd51n")]
-impl GclkIo<GclkId4> for gpio::PB18 {}
+impl GclkIo<Gclk4Id> for gpio::PB18 {}
 #[cfg(feature = "min-samd51n")]
-impl GclkIo<GclkId5> for gpio::PB19 {}
+impl GclkIo<Gclk5Id> for gpio::PB19 {}
 #[cfg(feature = "min-samd51n")]
-impl GclkIo<GclkId6> for gpio::PB20 {}
+impl GclkIo<Gclk6Id> for gpio::PB20 {}
 #[cfg(feature = "min-samd51n")]
-impl GclkIo<GclkId7> for gpio::PB21 {}
+impl GclkIo<Gclk7Id> for gpio::PB21 {}
 
-impl GclkIo<GclkId0> for gpio::PB22 {}
-impl GclkIo<GclkId1> for gpio::PB23 {}
+impl GclkIo<Gclk0Id> for gpio::PB22 {}
+impl GclkIo<Gclk1Id> for gpio::PB23 {}
 
 //==============================================================================
 // GclkInToken
@@ -130,10 +131,12 @@ pub struct GclkInToken<G: GclkId> {
 pub type EnabledGclkIn<G, I, N = U0> = Enabled<GclkIn<G, I>, N>;
 
 seq!(G in 0..=11 {
-    /// Type alias for the corresponding [`Gclk`]
-    pub type GclkIn~G<I> = GclkIn<GclkId~G, I>;
+    paste! {
+        /// Type alias for the corresponding [`Gclk`]
+        pub type GclkIn~G<I> = GclkIn<[<Gclk G Id>], I>;
 
-    pub type EnabledGclkIn~G<I, N = U0> = EnabledGclkIn<GclkId~G, I, N>;
+        pub type EnabledGclkIn~G<I, N = U0> = EnabledGclkIn<[<Gclk G Id>], I, N>;
+    }
 });
 
 impl<G> GclkInToken<G>
@@ -228,12 +231,12 @@ where
 pub trait NotGclkInId: GclkSourceId {}
 
 impl NotGclkInId for DfllId {}
-impl NotGclkInId for DpllId0 {}
-impl NotGclkInId for DpllId1 {}
-impl NotGclkInId for GclkId1 {}
+impl NotGclkInId for Dpll0Id {}
+impl NotGclkInId for Dpll1Id {}
+impl NotGclkInId for Gclk1Id {}
 impl NotGclkInId for OscUlp32kId {}
-impl NotGclkInId for XoscId0 {}
-impl NotGclkInId for XoscId1 {}
+impl NotGclkInId for Xosc0Id {}
+impl NotGclkInId for Xosc1Id {}
 impl NotGclkInId for Xosc32kId {}
 
 //==============================================================================
@@ -358,21 +361,23 @@ where
 //==============================================================================
 
 seq!(N in 0..=11 {
-    /// Tokens for every [`GclkIn`] and [`GclkOut`]
-    pub struct Tokens {
-        #( /// GclkIn~N
-           pub gclk_in~N: GclkInToken<GclkId~N>, )*
-        #( /// GclkOut~N
-           pub gclk_out~N: GclkOutToken<GclkId~N>, )*
-    }
+    paste! {
+        /// Tokens for every [`GclkIn`] and [`GclkOut`]
+        pub struct Tokens {
+            #( /// GclkIn~N
+               pub gclk_in~N: GclkInToken<[<Gclk N Id>]>, )*
+            #( /// GclkOut~N
+               pub gclk_out~N: GclkOutToken<[<Gclk N Id>]>, )*
+        }
 
-    impl Tokens {
-        // Populate the Tokens struct and return it
-        #[inline]
-        pub(super) unsafe fn new() -> Tokens {
-            Tokens {
-                #( gclk_in~N: GclkInToken::new(), )*
-                #( gclk_out~N: GclkOutToken::new(), )*
+        impl Tokens {
+            // Populate the Tokens struct and return it
+            #[inline]
+            pub(super) unsafe fn new() -> Tokens {
+                Tokens {
+                    #( gclk_in~N: GclkInToken::new(), )*
+                    #( gclk_out~N: GclkOutToken::new(), )*
+                }
             }
         }
     }

@@ -26,6 +26,7 @@
 use core::convert::Infallible;
 use core::marker::PhantomData;
 
+use paste::paste;
 use seq_macro::seq;
 use typenum::U0;
 
@@ -39,7 +40,7 @@ use crate::typelevel::{Counter, Decrement, Increment, Sealed};
 
 use super::gclk::{GclkId, GclkSourceId};
 use super::pclk::{Pclk, PclkId};
-use super::xosc::{XoscId0, XoscId1};
+use super::xosc::{Xosc0Id, Xosc1Id};
 use super::xosc32k::Xosc32kId;
 use super::{Enabled, Source};
 
@@ -64,11 +65,11 @@ pub trait DpllId: Sealed {
 /// on [type-level enums] for more details on the pattern.
 ///
 /// [type-level enums]: crate::typelevel#type-level-enum
-pub enum DpllId0 {}
+pub enum Dpll0Id {}
 
-impl Sealed for DpllId0 {}
+impl Sealed for Dpll0Id {}
 
-impl DpllId for DpllId0 {
+impl DpllId for Dpll0Id {
     const NUM: usize = 0;
 }
 
@@ -78,11 +79,11 @@ impl DpllId for DpllId0 {
 /// on [type-level enums] for more details on the pattern.
 ///
 /// [type-level enums]: crate::typelevel#type-level-enum
-pub enum DpllId1 {}
+pub enum Dpll1Id {}
 
-impl Sealed for DpllId1 {}
+impl Sealed for Dpll1Id {}
 
-impl DpllId for DpllId1 {
+impl DpllId for Dpll1Id {
     const NUM: usize = 1;
 }
 
@@ -159,12 +160,14 @@ impl<D: DpllId + PclkId, G: GclkId> DpllSourceId<D> for G {
 }
 
 seq!(N in 0..=1 {
-    impl<D: DpllId> DpllSourceId<D> for XoscId~N {
-        const DYN: DynDpllSourceId = DynDpllSourceId::Xosc~N;
-        type Pclk = ();
-        #[inline]
-        fn predivider(raw_prediv: RawPredivider) -> u32 {
-            2 * (1 + raw_prediv as u32)
+    paste! {
+        impl<D: DpllId> DpllSourceId<D> for [<Xosc N Id>] {
+            const DYN: DynDpllSourceId = DynDpllSourceId::Xosc~N;
+            type Pclk = ();
+            #[inline]
+            fn predivider(raw_prediv: RawPredivider) -> u32 {
+                2 * (1 + raw_prediv as u32)
+            }
         }
     }
 });
@@ -418,54 +421,56 @@ where
 }
 
 seq!(N in 0..=1 {
-    impl<D: DpllId> Dpll<D, XoscId~N> {
-        /// Create a [`Dpll`] from an external oscillator
-        ///
-        /// After division by the clock divider (see [`RawPredivider`]), the
-        /// input frequency must be between 32 kHz and 3.2 MHz.
-        ///
-        /// [`Increment`] the `Xosc` [`Enabled`] [`Counter`] to indicate it is
-        /// being used by the `Dpll`
-        #[inline]
-        pub fn from_xosc~N<S>(
-            token: DpllToken<D>,
-            xosc: S,
-            raw_prediv: RawPredivider,
-        ) -> (Self, S::Inc)
-        where
-            S: Source<Id = XoscId~N> + Increment,
-        {
-            let src_freq = xosc.freq();
-            let (mult, frac) = (1, 0);
+    paste! {
+        impl<D: DpllId> Dpll<D, [<Xosc N Id>]> {
+            /// Create a [`Dpll`] from an external oscillator
+            ///
+            /// After division by the clock divider (see [`RawPredivider`]), the
+            /// input frequency must be between 32 kHz and 3.2 MHz.
+            ///
+            /// [`Increment`] the `Xosc` [`Enabled`] [`Counter`] to indicate it is
+            /// being used by the `Dpll`
+            #[inline]
+            pub fn from_xosc~N<S>(
+                token: DpllToken<D>,
+                xosc: S,
+                raw_prediv: RawPredivider,
+            ) -> (Self, S::Inc)
+            where
+                S: Source<Id = [<Xosc N Id>]> + Increment,
+            {
+                let src_freq = xosc.freq();
+                let (mult, frac) = (1, 0);
 
-            let dpll = Self {
-                token,
-                src_freq,
-                mult,
-                frac,
-                lock_bypass: false,
-                wake_up_fast: false,
-                pclk: (),
-                raw_prediv,
-            };
-            (dpll, xosc.inc())
-        }
+                let dpll = Self {
+                    token,
+                    src_freq,
+                    mult,
+                    frac,
+                    lock_bypass: false,
+                    wake_up_fast: false,
+                    pclk: (),
+                    raw_prediv,
+                };
+                (dpll, xosc.inc())
+            }
 
-        /// Set the raw predivider, see [`RawPredivider`]
-        #[inline]
-        pub fn set_raw_prediv(mut self, raw_prediv: RawPredivider) -> Self {
-            self.raw_prediv = raw_prediv;
-            self
-        }
+            /// Set the raw predivider, see [`RawPredivider`]
+            #[inline]
+            pub fn set_raw_prediv(mut self, raw_prediv: RawPredivider) -> Self {
+                self.raw_prediv = raw_prediv;
+                self
+            }
 
-        /// Deconstruct the [`Dpll`], release the token, and [`Decrement`] the
-        /// [`Xosc`](super::xosc::Xosc) [`Enabled`] [`Counter`]
-        #[inline]
-        pub fn free<S>(self, xosc: S) -> (DpllToken<D>, S::Dec)
-        where
-            S: Source<Id = XoscId~N> + Decrement,
-        {
-            (self.token, xosc.dec())
+            /// Deconstruct the [`Dpll`], release the token, and [`Decrement`] the
+            /// [`Xosc`](super::xosc::Xosc) [`Enabled`] [`Counter`]
+            #[inline]
+            pub fn free<S>(self, xosc: S) -> (DpllToken<D>, S::Dec)
+            where
+                S: Source<Id = [<Xosc N Id>]> + Decrement,
+            {
+                (self.token, xosc.dec())
+            }
         }
     }
 });
@@ -579,16 +584,16 @@ where
 }
 
 /// Alias of [`Dpll`]`<`[`marker::Dpll0`]`, _>`
-pub type Dpll0<M> = Dpll<DpllId0, M>;
+pub type Dpll0<M> = Dpll<Dpll0Id, M>;
 
 /// Alias of [`Dpll`]`<`[`marker::Dpll1`]`, _>`
-pub type Dpll1<M> = Dpll<DpllId1, M>;
+pub type Dpll1<M> = Dpll<Dpll1Id, M>;
 
 pub type EnabledDpll<D, I, N = U0> = Enabled<Dpll<D, I>, N>;
 
-pub type EnabledDpll0<I, N = U0> = EnabledDpll<DpllId0, I, N>;
+pub type EnabledDpll0<I, N = U0> = EnabledDpll<Dpll0Id, I, N>;
 
-pub type EnabledDpll1<I, N = U0> = EnabledDpll<DpllId1, I, N>;
+pub type EnabledDpll1<I, N = U0> = EnabledDpll<Dpll1Id, I, N>;
 
 impl<D, I> EnabledDpll<D, I>
 where

@@ -57,13 +57,13 @@ pub trait XoscId: Sealed {
 /// on [type-level enums] for more details on the pattern.
 ///
 /// [type-level enums]: crate::typelevel#type-level-enum
-pub enum XoscId0 {}
+pub enum Xosc0Id {}
 
-impl Sealed for XoscId0 {}
+impl Sealed for Xosc0Id {}
 
 /// Type which serves as a source marker for the [`super::Xosc0`] and
 /// provides numerical identity for it
-impl XoscId for XoscId0 {
+impl XoscId for Xosc0Id {
     const NUM: usize = 0;
     type XIn = PA14;
     type XOut = PA15;
@@ -75,11 +75,11 @@ impl XoscId for XoscId0 {
 /// on [type-level enums] for more details on the pattern.
 ///
 /// [type-level enums]: crate::typelevel#type-level-enum
-pub enum XoscId1 {}
+pub enum Xosc1Id {}
 
-impl Sealed for XoscId1 {}
+impl Sealed for Xosc1Id {}
 
-impl XoscId for XoscId1 {
+impl XoscId for Xosc1Id {
     const NUM: usize = 1;
     type XIn = PB22;
     type XOut = PB23;
@@ -375,16 +375,16 @@ where
 }
 
 /// Alias for the corresponding [`Xosc`]
-pub type Xosc0<M> = Xosc<XoscId0, M>;
+pub type Xosc0<M> = Xosc<Xosc0Id, M>;
 
 /// Alias for the corresponding [`Xosc`]
-pub type Xosc1<M> = Xosc<XoscId1, M>;
+pub type Xosc1<M> = Xosc<Xosc1Id, M>;
 
 pub type EnabledXosc<X, M, N = U0> = Enabled<Xosc<X, M>, N>;
 
-pub type EnabledXosc0<M, N = U0> = EnabledXosc<XoscId0, M, N>;
+pub type EnabledXosc0<M, N = U0> = EnabledXosc<Xosc0Id, M, N>;
 
-pub type EnabledXosc1<M, N = U0> = EnabledXosc<XoscId1, M, N>;
+pub type EnabledXosc1<M, N = U0> = EnabledXosc<Xosc1Id, M, N>;
 
 impl<X, M> Xosc<X, M>
 where

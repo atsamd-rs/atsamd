@@ -44,9 +44,9 @@ pub struct Preset1Clocks {
     /// GCLK5 driven by the DFLL. Divides by 24 for 2 MHz output
     pub gclk5: Enabled<gclk::Gclk5<dfll::DfllId>, U1>,
     /// DPLL0 driven by GCLK5. Multiplies by 60 for 120 MHz output
-    pub dpll0: Enabled<dpll::Dpll0<gclk::GclkId5>, U1>,
+    pub dpll0: Enabled<dpll::Dpll0<gclk::Gclk5Id>, U1>,
     /// Main system clock driven by DPLL0 at 120 MHz
-    pub gclk0: Enabled<gclk::Gclk0<dpll::DpllId0>, U1>,
+    pub gclk0: Enabled<gclk::Gclk0<dpll::Dpll0Id>, U1>,
     /// Always-enabled base oscillator for the [`OscUlp1k`](osculp32k::OscUlp1k)
     /// and [`OscUlp32k`](osculp32k::OscUlp32k) clocks.
     pub osculp_base: Enabled<osculp32k::OscUlpBase>,
@@ -59,16 +59,16 @@ pub struct Preset1Clocks {
 /// Contains all of the [`GclkToken`]s except the one for [`Gclk5`](gclk::Gclk5)
 #[allow(missing_docs)]
 pub struct Preset1GclkTokens {
-    pub gclk1: GclkToken<GclkId1>,
-    pub gclk2: GclkToken<GclkId2>,
-    pub gclk3: GclkToken<GclkId3>,
-    pub gclk4: GclkToken<GclkId4>,
-    pub gclk6: GclkToken<GclkId6>,
-    pub gclk7: GclkToken<GclkId7>,
-    pub gclk8: GclkToken<GclkId8>,
-    pub gclk9: GclkToken<GclkId9>,
-    pub gclk10: GclkToken<GclkId10>,
-    pub gclk11: GclkToken<GclkId11>,
+    pub gclk1: GclkToken<Gclk1Id>,
+    pub gclk2: GclkToken<Gclk2Id>,
+    pub gclk3: GclkToken<Gclk3Id>,
+    pub gclk4: GclkToken<Gclk4Id>,
+    pub gclk6: GclkToken<Gclk6Id>,
+    pub gclk7: GclkToken<Gclk7Id>,
+    pub gclk8: GclkToken<Gclk8Id>,
+    pub gclk9: GclkToken<Gclk9Id>,
+    pub gclk10: GclkToken<Gclk10Id>,
+    pub gclk11: GclkToken<Gclk11Id>,
 }
 
 //==============================================================================
@@ -98,7 +98,7 @@ pub struct Preset1Tokens {
     /// Synchronous clocking domain clocks -- APB buses
     pub apbs: apb::ApbClks,
     /// Construction token for [`dpll::Dpll1`]
-    pub dpll1: dpll::DpllToken<dpll::DpllId1>,
+    pub dpll1: dpll::DpllToken<dpll::Dpll1Id>,
     /// Construction tokens for [`gclkio::GclkIo`]
     pub gclk_io: gclkio::Tokens,
     /// Construction tokens for [`gclk::Gclk`]
@@ -108,9 +108,9 @@ pub struct Preset1Tokens {
     /// Construction token for [`rtc::RtcOsc`]
     pub rtcosc: rtcosc::RtcOscToken,
     /// Construction token for [`xosc::Xosc0`]
-    pub xosc0: xosc::XoscToken<xosc::XoscId0>,
+    pub xosc0: xosc::XoscToken<xosc::Xosc0Id>,
     /// Construction token for [`xosc::Xosc1`]
-    pub xosc1: xosc::XoscToken<xosc::XoscId1>,
+    pub xosc1: xosc::XoscToken<xosc::Xosc1Id>,
     /// Construction tokens for [`xosc32k::XoscBase`], [`xosc32k::Xosc1k`] and [`xosc32k::Xosc32k`]
     pub xosc32k: xosc32k::Tokens,
     /// Construction tokens for [`osculp32k::OscUlp1k`] and [`osculp32k::OscUlp32k`]

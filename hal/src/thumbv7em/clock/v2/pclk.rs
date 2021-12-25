@@ -222,8 +222,8 @@ macro_rules! __dispatch {
             $existence,
             $some_macro ! ( $( $args )* ),
             (DfllId, dfll, already_exists)
-            (DpllId0, dpll0, already_exists)
-            (DpllId1, dpll1, already_exists)
+            (Dpll0Id, dpll0, already_exists)
+            (Dpll1Id, dpll1, already_exists)
             (Slow, slow, does_not_exist)
             (Eic, eic, does_not_exist)
             (FreqmMeasure, freqm_measure, does_not_exist)
@@ -338,10 +338,10 @@ pub(crate) mod ids {
     pub use crate::sercom::v2::{Sercom6, Sercom7};
 
     pub use super::super::dfll::DfllId;
-    pub use super::super::dpll::{DpllId0, DpllId1};
+    pub use super::super::dpll::{Dpll0Id, Dpll1Id};
     pub use super::super::gclk::{
-        GclkId0, GclkId1, GclkId10, GclkId11, GclkId2, GclkId3, GclkId4, GclkId5, GclkId6, GclkId7,
-        GclkId8, GclkId9,
+        Gclk0Id, Gclk10Id, Gclk11Id, Gclk1Id, Gclk2Id, Gclk3Id, Gclk4Id, Gclk5Id, Gclk6Id, Gclk7Id,
+        Gclk8Id, Gclk9Id,
     };
 
     /// Define any [`PclkId`] types that are not already defined by some
