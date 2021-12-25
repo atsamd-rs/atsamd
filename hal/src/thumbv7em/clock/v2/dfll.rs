@@ -11,12 +11,12 @@
 //!
 //! Dfll in a default state is provided
 //! - in a return value of [`crate::clock::v2::retrieve_clocks`]
-use typenum::{U1};
+use typenum::{U0, U1};
 
 use crate::time::{Hertz, U32Ext};
 use crate::typelevel::{Counter, PrivateIncrement, Sealed};
 
-use super::gclk::{Gclk0, GclkId};
+use super::gclk::{EnabledGclk0, GclkId};
 use super::pclk::Pclk;
 use super::{Enabled, Source};
 
@@ -296,7 +296,7 @@ impl<M: Mode> Dfll<M> {
     /// Enabling a [`Dfll`] modifies hardware to match the configuration stored
     /// within
     #[inline]
-    pub fn enable(mut self) -> Enabled<Self> {
+    pub fn enable(mut self) -> EnabledDfll<M> {
         if M::DYN == DynMode::ClosedLoop {
             self.token.set_coarse_max_step(self.mode.coarse_max_step());
             self.token.set_fine_max_step(self.mode.fine_max_step());
@@ -397,7 +397,7 @@ impl<G: GclkId> Dfll<ClosedLoop<G>> {
     }
 }
 
-impl<M: Mode> Enabled<Dfll<M>> {
+impl<M: Mode> EnabledDfll<M> {
     /// Disable the [`Dfll`]
     #[inline]
     pub fn disable(mut self) -> Dfll<M> {
@@ -406,7 +406,9 @@ impl<M: Mode> Enabled<Dfll<M>> {
     }
 }
 
-impl Enabled<Dfll<OpenLoop>, U1> {
+pub type EnabledDfll<M, N = U0> = Enabled<Dfll<M>, N>;
+
+impl EnabledDfll<OpenLoop, U1> {
     /// Special, helper method allowing to change a mode of [`Dfll`] operation
     /// in place. It is implemented only for an enabled [`Dfll`] having a single
     /// user (which is a [`Gclk0`]). Without it, it becomes unwieldy to change a
@@ -415,12 +417,12 @@ impl Enabled<Dfll<OpenLoop>, U1> {
     #[inline]
     pub fn to_closed_mode<G: GclkId>(
         self,
-        gclk0: Enabled<Gclk0<DfllId>, U1>,
+        gclk0: EnabledGclk0<DfllId, U1>,
         reference_clk: Pclk<DfllId, G>,
         multiplication_factor: MultFactor,
         coarse_maximum_step: CoarseMaxStep,
         fine_maximum_step: FineMaxStep,
-    ) -> (Enabled<Dfll<ClosedLoop<G>>, U1>, Enabled<Gclk0<DfllId>, U1>) {
+    ) -> (EnabledDfll<ClosedLoop<G>, U1>, EnabledGclk0<DfllId, U1>) {
         let token = self.0.free();
         let dfll = Dfll::in_closed_mode(
             token,
@@ -433,7 +435,7 @@ impl Enabled<Dfll<OpenLoop>, U1> {
     }
 }
 
-impl<G: GclkId> Enabled<Dfll<ClosedLoop<G>>, U1> {
+impl<G: GclkId> EnabledDfll<ClosedLoop<G>, U1> {
     /// Special, helper method allowing to change a mode of [`Dfll`] operation
     /// in place. It is implemented only for an enabled [`Dfll`] having a single
     /// user (which is a [`Gclk0`]). Without it, it becomes unwieldy to change a
@@ -442,10 +444,10 @@ impl<G: GclkId> Enabled<Dfll<ClosedLoop<G>>, U1> {
     #[inline]
     pub fn to_open_mode(
         self,
-        gclk0: Enabled<Gclk0<DfllId>, U1>,
+        gclk0: EnabledGclk0<DfllId, U1>,
     ) -> (
-        Enabled<Dfll<OpenLoop>, U1>,
-        Enabled<Gclk0<DfllId>, U1>,
+        EnabledDfll<OpenLoop, U1>,
+        EnabledGclk0<DfllId, U1>,
         Pclk<DfllId, G>,
     ) {
         let (token, pclk) = self.0.free();
@@ -458,7 +460,7 @@ impl<G: GclkId> Enabled<Dfll<ClosedLoop<G>>, U1> {
 // Source
 //==============================================================================
 
-impl<M: Mode, N: Counter> Source for Enabled<Dfll<M>, N> {
+impl<M: Mode, N: Counter> Source for EnabledDfll<M, N> {
     type Id = DfllId;
 
     #[inline]

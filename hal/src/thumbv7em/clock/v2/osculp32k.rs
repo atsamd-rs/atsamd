@@ -3,6 +3,8 @@
 
 #![allow(missing_docs)]
 
+use typenum::U0;
+
 use crate::pac::osc32kctrl::OSCULP32K;
 
 use crate::time::Hertz;
@@ -74,19 +76,21 @@ pub struct OscUlpBase {
     token: OscUlpBaseToken,
 }
 
+pub type EnabledOscUlpBase<N = U0> = Enabled<OscUlpBase, N>;
+
 impl OscUlpBase {
     /// Create the ultra-low power base oscillator
     ///
     /// Safety: There must never be more than one instance of this struct at any
     /// given time.
     #[inline]
-    pub(super) unsafe fn new() -> Enabled<Self> {
+    pub(super) unsafe fn new() -> EnabledOscUlpBase {
         let token = OscUlpBaseToken(());
         Enabled::new(Self { token })
     }
 }
 
-impl<N: Counter> Enabled<OscUlpBase, N> {
+impl<N: Counter> EnabledOscUlpBase<N> {
     /// Override the factory-default calibration value
     #[inline]
     pub fn set_calibration(&mut self, calib: u8) {
@@ -136,6 +140,8 @@ pub struct OscUlp1k {
     token: OscUlp1kToken,
 }
 
+pub type EnabledOscUlp1k<N = U0> = Enabled<OscUlp1k, N>;
+
 impl OscUlp1k {
     /// Enable the 1 kHz output from OSCULP32K
     ///
@@ -148,28 +154,28 @@ impl OscUlp1k {
     #[inline]
     pub fn enable<N: Increment>(
         token: OscUlp1kToken,
-        mut base: Enabled<OscUlpBase, N>,
-    ) -> (Enabled<Self>, Enabled<OscUlpBase, N::Inc>) {
+        mut base: EnabledOscUlpBase<N>,
+    ) -> (EnabledOscUlp1k, EnabledOscUlpBase<N::Inc>) {
         base.0.token.enable_1k(true);
         (Enabled::new(Self { token }), base.inc())
     }
 }
 
-impl Enabled<OscUlp1k> {
+impl EnabledOscUlp1k {
     /// Disable the 1 kHz output from OSCULP32K
     ///
     /// Doing so will clear one usage of the [`Enabled`] [`OscUlpBase`] clock
     #[inline]
     pub fn disable<N: Decrement>(
         self,
-        mut base: Enabled<OscUlpBase, N>,
-    ) -> (OscUlp1kToken, Enabled<OscUlpBase, N::Dec>) {
+        mut base: EnabledOscUlpBase<N>,
+    ) -> (OscUlp1kToken, EnabledOscUlpBase<N::Dec>) {
         base.0.token.enable_1k(false);
         (self.0.token, base.dec())
     }
 }
 
-impl<N: Counter> Source for Enabled<OscUlp1k, N> {
+impl<N: Counter> Source for EnabledOscUlp1k<N> {
     type Id = OscUlp1kId;
 
     fn freq(&self) -> Hertz {
@@ -185,6 +191,8 @@ pub struct OscUlp32k {
     token: OscUlp32kToken,
 }
 
+pub type EnabledOscUlp32k<N = U0> = Enabled<OscUlp32k, N>;
+
 impl OscUlp32k {
     /// Enable the 32 kHz output from OSCULP32K
     ///
@@ -197,28 +205,28 @@ impl OscUlp32k {
     #[inline]
     pub fn enable<N: Increment>(
         token: OscUlp32kToken,
-        mut base: Enabled<OscUlpBase, N>,
-    ) -> (Enabled<Self>, Enabled<OscUlpBase, N::Inc>) {
+        mut base: EnabledOscUlpBase<N>,
+    ) -> (EnabledOscUlp32k, EnabledOscUlpBase<N::Inc>) {
         base.0.token.enable_32k(true);
         (Enabled::new(Self { token }), base.inc())
     }
 }
 
-impl Enabled<OscUlp32k> {
+impl EnabledOscUlp32k {
     /// Disable the 32 kHz output from OSCULP32K
     ///
     /// Doing so will clear one usage of the [`Enabled`] [`OscUlpBase`] clock
     #[inline]
     pub fn disable<N: Decrement>(
         self,
-        mut base: Enabled<OscUlpBase, N>,
-    ) -> (OscUlp32kToken, Enabled<OscUlpBase, N::Dec>) {
+        mut base: EnabledOscUlpBase<N>,
+    ) -> (OscUlp32kToken, EnabledOscUlpBase<N::Dec>) {
         base.0.token.enable_32k(false);
         (self.0.token, base.dec())
     }
 }
 
-impl<N: Counter> Source for Enabled<OscUlp32k, N> {
+impl<N: Counter> Source for EnabledOscUlp32k<N> {
     type Id = OscUlp32kId;
 
     fn freq(&self) -> Hertz {

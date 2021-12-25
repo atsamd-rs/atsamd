@@ -58,10 +58,11 @@
 use core::marker::PhantomData;
 
 use seq_macro::seq;
+use typenum::U0;
 
 use crate::gpio::v2::{self as gpio, AlternateM, AnyPin, Pin, PinId};
 use crate::time::Hertz;
-use crate::typelevel::{Counter, Decrement, Increment, Sealed};
+use crate::typelevel::{Counter, Decrement, Increment, PrivateDecrement, PrivateIncrement, Sealed};
 
 use super::dfll::DfllId;
 use super::dpll::{DpllId0, DpllId1};
@@ -126,6 +127,15 @@ pub struct GclkInToken<G: GclkId> {
     gen: PhantomData<G>,
 }
 
+pub type EnabledGclkIn<G, I, N = U0> = Enabled<GclkIn<G, I>, N>;
+
+seq!(G in 0..=11 {
+    /// Type alias for the corresponding [`Gclk`]
+    pub type GclkIn~G<I> = GclkIn<GclkId~G, I>;
+
+    pub type EnabledGclkIn~G<I, N = U0> = EnabledGclkIn<GclkId~G, I, N>;
+});
+
 impl<G> GclkInToken<G>
 where
     G: GclkId,
@@ -162,7 +172,11 @@ where
     /// Consume a [`GclkInToken`], `gpio` pin and a provided frequency to
     /// receive an enabled [`GclkIn`]
     #[inline]
-    pub fn enable<F>(token: GclkInToken<G>, pin: impl AnyPin<Id = I>, freq: F) -> Enabled<Self>
+    pub fn enable<F>(
+        token: GclkInToken<G>,
+        pin: impl AnyPin<Id = I>,
+        freq: F,
+    ) -> EnabledGclkIn<G, I>
     where
         F: Into<Hertz>,
     {
@@ -185,7 +199,7 @@ where
 {
 }
 
-impl<G, I> Enabled<GclkIn<G, I>>
+impl<G, I> EnabledGclkIn<G, I>
 where
     G: GclkId,
     I: GclkIo<G>,
@@ -240,7 +254,7 @@ impl Sealed for GclkInId {}
 // Source
 //==============================================================================
 
-impl<G, I, N> Source for Enabled<GclkIn<G, I>, N>
+impl<G, I, N> Source for EnabledGclkIn<G, I, N>
 where
     G: GclkId,
     I: GclkIo<G>,
@@ -274,43 +288,6 @@ impl<G: GclkId> GclkOutToken<G> {
 }
 
 //==============================================================================
-// GclkOutSource
-//==============================================================================
-
-mod private {
-    use super::{Counter, Enabled, Gclk, GclkId, GclkSourceId, NotGclkInId, Source};
-
-    type EnabledGclk<T> = Enabled<
-        Gclk<<T as Source>::Id, <T as AsEnabledGclk>::GclkSource>,
-        <T as AsEnabledGclk>::Count,
-    >;
-
-    pub trait AsEnabledGclk: Source
-    where
-        Self::Id: GclkId,
-    {
-        type GclkSource: GclkSourceId + NotGclkInId;
-        type Count: Counter;
-        fn as_enabled_gclk(&mut self) -> &mut EnabledGclk<Self>;
-    }
-
-    impl<G, S, N> AsEnabledGclk for Enabled<Gclk<G, S>, N>
-    where
-        G: GclkId,
-        S: GclkSourceId + NotGclkInId,
-        N: Counter,
-    {
-        type GclkSource = S;
-        type Count = N;
-        fn as_enabled_gclk(&mut self) -> &mut EnabledGclk<Self> {
-            self
-        }
-    }
-}
-
-use private::AsEnabledGclk;
-
-//==============================================================================
 // GclkOut
 //==============================================================================
 
@@ -334,18 +311,19 @@ where
     /// Consume a [`GclkOutToken`], `gpio` pin, `gclk` and the desired  receive
     /// a enabled [`GclkIn`]
     #[inline]
-    pub fn enable<S>(
+    pub fn enable<S, N>(
         token: GclkOutToken<G>,
         pin: impl AnyPin<Id = I>,
-        mut gclk: S,
+        mut gclk: EnabledGclk<G, S, N>,
         polarity: bool,
-    ) -> (GclkOut<G, I>, S::Inc)
+    ) -> (GclkOut<G, I>, EnabledGclk<G, S, N::Inc>)
     where
-        S: Source<Id = G> + AsEnabledGclk + Increment,
+        S: GclkSourceId,
+        N: Increment,
     {
         let freq = gclk.freq();
         let pin = pin.into().into_alternate();
-        gclk.as_enabled_gclk().enable_gclk_out(polarity);
+        gclk.enable_gclk_out(polarity);
         let gclk_out = GclkOut { token, freq, pin };
         (gclk_out, gclk.inc())
     }
@@ -358,11 +336,19 @@ where
 
     /// Deconstruct the GclkOut
     #[inline]
-    pub fn disable<S>(self, mut gclk: S) -> (GclkOutToken<G>, Pin<I, AlternateM>, S::Dec)
+    pub fn disable<S, N>(
+        self,
+        mut gclk: EnabledGclk<G, S, N>,
+    ) -> (
+        GclkOutToken<G>,
+        Pin<I, AlternateM>,
+        EnabledGclk<G, S, N::Dec>,
+    )
     where
-        S: Source<Id = G> + AsEnabledGclk + Decrement,
+        S: GclkSourceId,
+        N: Decrement,
     {
-        gclk.as_enabled_gclk().disable_gclk_out();
+        gclk.disable_gclk_out();
         (self.token, self.pin, gclk.dec())
     }
 }
@@ -374,10 +360,10 @@ where
 seq!(N in 0..=11 {
     /// Tokens for every [`GclkIn`] and [`GclkOut`]
     pub struct Tokens {
-        #( /// GclkIn #N
-           pub gclk_in #N: GclkInToken<GclkId #N>, )*
-        #( /// GclkOut #N
-           pub gclk_out #N: GclkOutToken<GclkId #N>, )*
+        #( /// GclkIn~N
+           pub gclk_in~N: GclkInToken<GclkId~N>, )*
+        #( /// GclkOut~N
+           pub gclk_out~N: GclkOutToken<GclkId~N>, )*
     }
 
     impl Tokens {
@@ -385,8 +371,8 @@ seq!(N in 0..=11 {
         #[inline]
         pub(super) unsafe fn new() -> Tokens {
             Tokens {
-                #( gclk_in #N: GclkInToken::new(), )*
-                #( gclk_out #N: GclkOutToken::new(), )*
+                #( gclk_in~N: GclkInToken::new(), )*
+                #( gclk_out~N: GclkOutToken::new(), )*
             }
         }
     }

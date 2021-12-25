@@ -27,6 +27,7 @@ use core::convert::Infallible;
 use core::marker::PhantomData;
 
 use seq_macro::seq;
+use typenum::U0;
 
 use crate::pac::oscctrl::dpll::{dpllstatus, dpllsyncbusy, DPLLCTRLA, DPLLCTRLB, DPLLRATIO};
 use crate::pac::oscctrl::DPLL;
@@ -158,8 +159,8 @@ impl<D: DpllId + PclkId, G: GclkId> DpllSourceId<D> for G {
 }
 
 seq!(N in 0..=1 {
-    impl<D: DpllId> DpllSourceId<D> for XoscId #N {
-        const DYN: DynDpllSourceId = DynDpllSourceId::Xosc #N;
+    impl<D: DpllId> DpllSourceId<D> for XoscId~N {
+        const DYN: DynDpllSourceId = DynDpllSourceId::Xosc~N;
         type Pclk = ();
         #[inline]
         fn predivider(raw_prediv: RawPredivider) -> u32 {
@@ -417,7 +418,7 @@ where
 }
 
 seq!(N in 0..=1 {
-    impl<D: DpllId> Dpll<D, XoscId #N> {
+    impl<D: DpllId> Dpll<D, XoscId~N> {
         /// Create a [`Dpll`] from an external oscillator
         ///
         /// After division by the clock divider (see [`RawPredivider`]), the
@@ -426,13 +427,13 @@ seq!(N in 0..=1 {
         /// [`Increment`] the `Xosc` [`Enabled`] [`Counter`] to indicate it is
         /// being used by the `Dpll`
         #[inline]
-        pub fn from_xosc #N<S>(
+        pub fn from_xosc~N<S>(
             token: DpllToken<D>,
             xosc: S,
             raw_prediv: RawPredivider,
         ) -> (Self, S::Inc)
         where
-            S: Source<Id = XoscId #N> + Increment,
+            S: Source<Id = XoscId~N> + Increment,
         {
             let src_freq = xosc.freq();
             let (mult, frac) = (1, 0);
@@ -462,7 +463,7 @@ seq!(N in 0..=1 {
         #[inline]
         pub fn free<S>(self, xosc: S) -> (DpllToken<D>, S::Dec)
         where
-            S: Source<Id = XoscId #N> + Decrement,
+            S: Source<Id = XoscId~N> + Decrement,
         {
             (self.token, xosc.dec())
         }
@@ -536,7 +537,7 @@ where
     ///
     /// - Performs HW register writes
     #[inline]
-    pub fn enable(self) -> Result<Enabled<Self>, Self> {
+    pub fn enable(self) -> Result<EnabledDpll<D, I>, Self> {
         let predivider = I::predivider(self.raw_prediv);
         let input_frequency = self.src_freq.0 / predivider;
         let output_frequency = self.freq().0;
@@ -558,7 +559,7 @@ where
     ///
     /// - Performs HW register writes
     #[inline]
-    pub unsafe fn force_enable(mut self) -> Enabled<Self> {
+    pub unsafe fn force_enable(mut self) -> EnabledDpll<D, I> {
         // Enable the specified mode
         self.token.set_source_clock(I::DYN);
         match I::DYN {
@@ -583,7 +584,13 @@ pub type Dpll0<M> = Dpll<DpllId0, M>;
 /// Alias of [`Dpll`]`<`[`marker::Dpll1`]`, _>`
 pub type Dpll1<M> = Dpll<DpllId1, M>;
 
-impl<D, I> Enabled<Dpll<D, I>>
+pub type EnabledDpll<D, I, N = U0> = Enabled<Dpll<D, I>, N>;
+
+pub type EnabledDpll0<I, N = U0> = EnabledDpll<DpllId0, I, N>;
+
+pub type EnabledDpll1<I, N = U0> = EnabledDpll<DpllId1, I, N>;
+
+impl<D, I> EnabledDpll<D, I>
 where
     D: DpllId,
     I: DpllSourceId<D>,
@@ -596,7 +603,7 @@ where
     }
 }
 
-impl<D, I, N> Enabled<Dpll<D, I>, N>
+impl<D, I, N> EnabledDpll<D, I, N>
 where
     D: DpllId,
     I: DpllSourceId<D>,
@@ -619,7 +626,7 @@ where
 // Source
 //==============================================================================
 
-impl<D, I, N> Source for Enabled<Dpll<D, I>, N>
+impl<D, I, N> Source for EnabledDpll<D, I, N>
 where
     D: DpllId + GclkSourceId,
     I: DpllSourceId<D>,

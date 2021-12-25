@@ -57,7 +57,7 @@
 use core::marker::PhantomData;
 
 use seq_macro::seq;
-use typenum::U1;
+use typenum::{U0, U1};
 
 use crate::pac;
 use crate::pac::gclk::genctrl::DIVSEL_A;
@@ -289,10 +289,10 @@ seq!(N in 2..=11 {
     /// on [type-level enums] for more details on the pattern.
     ///
     /// [type-level enums]: crate::typelevel#type-level-enum
-    pub enum GclkId #N {}
-    impl Sealed for GclkId #N {}
-    impl GclkId for GclkId #N {
-        const DYN: DynGclkId = DynGclkId::Gclk #N;
+    pub enum GclkId~N {}
+    impl Sealed for GclkId~N {}
+    impl GclkId for GclkId~N {
+        const DYN: DynGclkId = DynGclkId::Gclk~N;
         const NUM: usize = N;
         type DividerType = GclkDiv;
     }
@@ -529,9 +529,13 @@ where
     improve_duty_cycle: bool,
 }
 
-seq!(N in 0..=11 {
+pub type EnabledGclk<G, I, N = U0> = Enabled<Gclk<G, I>, N>;
+
+seq!(G in 0..=11 {
     /// Type alias for the corresponding [`Gclk`]
-    pub type Gclk #N<S> = Gclk<GclkId #N, S>;
+    pub type Gclk~G<I> = Gclk<GclkId~G, I>;
+
+    pub type EnabledGclk~G<I, N = U0> = EnabledGclk<GclkId~G, I, N>;
 });
 
 impl<G, I> Gclk<G, I>
@@ -627,7 +631,7 @@ where
     /// Enabling a [`Gclk`] modifies hardware to match the configuration
     /// stored within.
     #[inline]
-    pub fn enable(mut self) -> Enabled<Gclk<G, I>> {
+    pub fn enable(mut self) -> EnabledGclk<G, I> {
         self.token.set_source(I::DYN);
         self.token.improve_duty_cycle(self.improve_duty_cycle);
         self.token.set_div(self.div);
@@ -640,7 +644,7 @@ where
 ///
 /// Provide methods for enable and disable gclk_out to
 /// [`GclkOutSource`][super::sources::GclkOutSource]
-impl<G, T, N> Enabled<Gclk<G, T>, N>
+impl<G, T, N> EnabledGclk<G, T, N>
 where
     G: GclkId,
     T: GclkSourceId,
@@ -665,7 +669,7 @@ where
     }
 }
 
-impl<G, T> Enabled<Gclk<G, T>>
+impl<G, T> EnabledGclk<G, T>
 where
     G: GclkId,
     T: GclkSourceId,
@@ -679,7 +683,7 @@ where
     }
 }
 
-impl<T: GclkSourceId> Enabled<Gclk0<T>, U1> {
+impl<T: GclkSourceId> EnabledGclk0<T, U1> {
     /// Swap source for [`Gclk0`]
     ///
     /// [`Gclk0`] is special since it always has `Mclk`
@@ -690,7 +694,7 @@ impl<T: GclkSourceId> Enabled<Gclk0<T>, U1> {
         self,
         old: Old,
         new: New,
-    ) -> (Enabled<Gclk0<New::Id>, U1>, Old::Dec, New::Inc)
+    ) -> (EnabledGclk0<New::Id, U1>, Old::Dec, New::Inc)
     where
         Old: Source<Id = T> + Decrement,
         New: Source + Increment,
@@ -721,7 +725,7 @@ impl<T: GclkSourceId> Enabled<Gclk0<T>, U1> {
 // Source
 //==============================================================================
 
-impl<G, T, N> Source for Enabled<Gclk<G, T>, N>
+impl<G, T, N> Source for EnabledGclk<G, T, N>
 where
     G: GclkId,
     T: GclkSourceId,
@@ -742,8 +746,8 @@ where
 seq!(N in 1..=11 {
     /// [`Gclk`] tokens ensuring there only exists one instance of each [`Gclk`]
     pub struct Tokens {
-        #( /// GclkToken for Gclk#N
-           pub gclk #N: GclkToken<GclkId #N>, )*
+        #( /// GclkToken for the corresponding GCLK
+           pub gclk~N: GclkToken<GclkId~N>, )*
     }
 
     impl Tokens {
@@ -754,7 +758,7 @@ seq!(N in 1..=11 {
             // Return all tokens when initially created
             unsafe {
                 Tokens {
-                    #( gclk #N: GclkToken::new(), )*
+                    #( gclk~N: GclkToken::new(), )*
                 }
             }
         }

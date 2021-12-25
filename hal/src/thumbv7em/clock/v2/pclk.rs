@@ -421,7 +421,7 @@ impl From<DynPclkSourceId> for GEN_A {
         seq!(N in 0..=11 {
             match source {
                 #(
-                    DynPclkSourceId::Gclk #N => GEN_A::GCLK #N,
+                    DynPclkSourceId::Gclk~N => GEN_A::GCLK~N,
                 )*
             }
         })
