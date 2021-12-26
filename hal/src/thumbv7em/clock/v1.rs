@@ -378,8 +378,8 @@ impl Into<Hertz> for $Type {
 /// into corresponding V1 `*Clock` types. Thus, user can manage V1 clocking
 /// compatible peripherals while using V2 clocking API
 $(#[$attr])*
-impl<T: PclkSourceId> core::convert::From<Pclk<$PclkId, T>> for $Type {
-    fn from(pclk: Pclk<$PclkId, T>) -> Self {
+impl<I: PclkSourceId> core::convert::From<Pclk<$PclkId, I>> for $Type {
+    fn from(pclk: Pclk<$PclkId, I>) -> Self {
         $Type {
             freq: pclk.freq()
         }

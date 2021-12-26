@@ -685,10 +685,10 @@ where
 ///
 /// Provide methods for enable and disable gclk_out to
 /// [`GclkOutSource`][super::sources::GclkOutSource]
-impl<G, T, N> EnabledGclk<G, T, N>
+impl<G, I, N> EnabledGclk<G, I, N>
 where
     G: GclkId,
-    T: GclkSourceId,
+    I: GclkSourceId,
     N: Counter,
 {
     /// Enable the [`Gclk`] clock output
@@ -710,21 +710,21 @@ where
     }
 }
 
-impl<G, T> EnabledGclk<G, T>
+impl<G, I> EnabledGclk<G, I>
 where
     G: GclkId,
-    T: GclkSourceId,
+    I: GclkSourceId,
 {
     /// Disable the [`Gclk`], possible
     /// when nothing depends on the `Gclk`
     #[inline]
-    pub fn disable(mut self) -> Gclk<G, T> {
+    pub fn disable(mut self) -> Gclk<G, I> {
         self.0.token.disable();
         self.0
     }
 }
 
-impl<T: GclkSourceId> EnabledGclk0<T, U1> {
+impl<I: GclkSourceId> EnabledGclk0<I, U1> {
     /// Swap source for [`Gclk0`]
     ///
     /// [`Gclk0`] is special since it always has `Mclk`
@@ -737,7 +737,7 @@ impl<T: GclkSourceId> EnabledGclk0<T, U1> {
         new: New,
     ) -> (EnabledGclk0<New::Id, U1>, Old::Dec, New::Inc)
     where
-        Old: Source<Id = T> + Decrement,
+        Old: Source<Id = I> + Decrement,
         New: Source + Increment,
         New::Id: GclkSourceId,
     {
@@ -766,10 +766,10 @@ impl<T: GclkSourceId> EnabledGclk0<T, U1> {
 // Source
 //==============================================================================
 
-impl<G, T, N> Source for EnabledGclk<G, T, N>
+impl<G, I, N> Source for EnabledGclk<G, I, N>
 where
     G: GclkId,
-    T: GclkSourceId,
+    I: GclkSourceId,
     N: Counter,
 {
     type Id = G;

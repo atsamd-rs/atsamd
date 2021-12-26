@@ -449,20 +449,20 @@ impl<G: GclkId> PclkSourceId for G {}
 /// - a peripheral it is bound to via concept of [`PclkType`]
 /// - a clock source ([`PclkSourceMarker`]; variants are provided through
 ///   [`marker::Gclk0`], [`marker::Gclk1`], `marker::GclkX` types)
-pub struct Pclk<P, T>
+pub struct Pclk<P, I>
 where
     P: PclkId,
-    T: PclkSourceId,
+    I: PclkSourceId,
 {
     token: PclkToken<P>,
-    src: PhantomData<T>,
+    src: PhantomData<I>,
     freq: Hertz,
 }
 
-impl<P, T> Pclk<P, T>
+impl<P, I> Pclk<P, I>
 where
     P: PclkId,
-    T: PclkSourceId,
+    I: PclkSourceId,
 {
     /// Enable a peripheral channel clock
     ///
@@ -470,10 +470,10 @@ where
     #[inline]
     pub fn enable<S>(mut token: PclkToken<P>, gclk: S) -> (Self, S::Inc)
     where
-        S: Source<Id = T> + Increment,
+        S: Source<Id = I> + Increment,
     {
         let freq = gclk.freq();
-        token.set_source(T::DYN);
+        token.set_source(I::DYN);
         token.enable();
         let pclk = Pclk {
             token,
@@ -489,7 +489,7 @@ where
     #[inline]
     pub fn disable<S>(mut self, gclk: S) -> (PclkToken<P>, S::Dec)
     where
-        S: Source<Id = T> + Decrement,
+        S: Source<Id = I> + Decrement,
     {
         self.token.disable();
         (self.token, gclk.dec())
@@ -502,10 +502,10 @@ where
     }
 }
 
-impl<P, T> Sealed for Pclk<P, T>
+impl<P, I> Sealed for Pclk<P, I>
 where
     P: PclkId,
-    T: PclkSourceId,
+    I: PclkSourceId,
 {
 }
 
