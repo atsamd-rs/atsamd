@@ -64,8 +64,7 @@ use crate::pac;
 use crate::pac::gclk::genctrl::DIVSEL_A;
 use crate::pac::NVMCTRL;
 
-pub use crate::pac::gclk::genctrl::SRC_A as DynGclkSourceId;
-
+use crate::pac::gclk::genctrl::SRC_A;
 use crate::pac::gclk::{RegisterBlock, GENCTRL};
 use crate::time::Hertz;
 use crate::typelevel::{Counter, Decrement, Increment, PrivateIncrement, Sealed};
@@ -144,8 +143,8 @@ impl<G: GclkId> GclkToken<G> {
 
     /// Set the clock source for the [`Gclk`] generator
     #[inline]
-    fn set_source(&mut self, variant: DynGclkSourceId) {
-        self.genctrl().modify(|_, w| w.src().variant(variant));
+    fn set_source(&mut self, source: DynGclkSourceId) {
+        self.genctrl().modify(|_, w| w.src().variant(source.into()));
         self.wait_syncbusy();
     }
 
@@ -465,6 +464,43 @@ impl GclkDivider for GclkDiv {
 // GclkSourceId
 //==============================================================================
 
+/// Value-level enum of GCLK sources
+///
+/// This is the value-level equivalent of the [`GclkSourceId`]
+/// [type-level enum]. It lists all possible [`Source`]s for each [`Gclk`].
+///
+/// [type-level enum]: crate::typelevel#type-level-enum
+#[allow(missing_docs)]
+pub enum DynGclkSourceId {
+    Dfll,
+    Dpll0,
+    Dpll1,
+    Gclk1,
+    GclkIn,
+    OscUlp32k,
+    Xosc0,
+    Xosc1,
+    Xosc32k,
+}
+
+impl From<DynGclkSourceId> for SRC_A {
+    fn from(source: DynGclkSourceId) -> Self {
+        use DynGclkSourceId::*;
+        use SRC_A::*;
+        match source {
+            Dfll => DFLL,
+            Dpll0 => DPLL0,
+            Dpll1 => DPLL1,
+            Gclk1 => GCLKGEN1,
+            GclkIn => GCLKIN,
+            OscUlp32k => OSCULP32K,
+            Xosc0 => XOSC0,
+            Xosc1 => XOSC1,
+            Xosc32k => XOSC32K,
+        }
+    }
+}
+
 /// Type-level `enum` for GCLK sources
 ///
 /// See the documentation / on [type-level enums] for more details on the
@@ -477,31 +513,31 @@ pub trait GclkSourceId {
 }
 
 impl GclkSourceId for DfllId {
-    const DYN: DynGclkSourceId = DynGclkSourceId::DFLL;
+    const DYN: DynGclkSourceId = DynGclkSourceId::Dfll;
 }
 impl GclkSourceId for Dpll0Id {
-    const DYN: DynGclkSourceId = DynGclkSourceId::DPLL0;
+    const DYN: DynGclkSourceId = DynGclkSourceId::Dpll0;
 }
 impl GclkSourceId for Dpll1Id {
-    const DYN: DynGclkSourceId = DynGclkSourceId::DPLL1;
+    const DYN: DynGclkSourceId = DynGclkSourceId::Dpll1;
 }
 impl GclkSourceId for Gclk1Id {
-    const DYN: DynGclkSourceId = DynGclkSourceId::GCLKGEN1;
+    const DYN: DynGclkSourceId = DynGclkSourceId::Gclk1;
 }
 impl GclkSourceId for GclkInId {
-    const DYN: DynGclkSourceId = DynGclkSourceId::GCLKIN;
+    const DYN: DynGclkSourceId = DynGclkSourceId::GclkIn;
 }
 impl GclkSourceId for OscUlp32kId {
-    const DYN: DynGclkSourceId = DynGclkSourceId::OSCULP32K;
+    const DYN: DynGclkSourceId = DynGclkSourceId::OscUlp32k;
 }
 impl GclkSourceId for Xosc0Id {
-    const DYN: DynGclkSourceId = DynGclkSourceId::XOSC0;
+    const DYN: DynGclkSourceId = DynGclkSourceId::Xosc0;
 }
 impl GclkSourceId for Xosc1Id {
-    const DYN: DynGclkSourceId = DynGclkSourceId::XOSC1;
+    const DYN: DynGclkSourceId = DynGclkSourceId::Xosc1;
 }
 impl GclkSourceId for Xosc32kId {
-    const DYN: DynGclkSourceId = DynGclkSourceId::XOSC32K;
+    const DYN: DynGclkSourceId = DynGclkSourceId::Xosc32k;
 }
 
 //==============================================================================
