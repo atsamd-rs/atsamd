@@ -6,7 +6,7 @@ use crate::pac::sercom0::I2CM;
 use crate::pac::{PM, SERCOM0, SERCOM1};
 #[cfg(feature = "samd2x")]
 use crate::pac::{SERCOM2, SERCOM3};
-#[cfg(any(feature = "samd20", feature = "min-samd21g"))]
+#[cfg(feature = "min-samd2x")]
 use crate::pac::{SERCOM4, SERCOM5};
 use crate::sercom::v1::pads::CompatiblePad;
 use crate::sercom::v2::pad::{Pad0, Pad1};
@@ -18,6 +18,12 @@ const BUS_STATE_BUSY: u8 = 3;
 
 const MASTER_ACT_READ: u8 = 2;
 const MASTER_ACT_STOP: u8 = 3;
+
+enum i2c_reg_sync {
+    SwRst,
+    Enable,
+    SysOp,
+}
 
 /// Define an I2C master type for the given SERCOM and pad pair.
 macro_rules! i2c {
@@ -85,52 +91,53 @@ where
         // safe because we're exclusively owning SERCOM
         pm.apbcmask.modify(|_, w| w.$powermask().set_bit());
 
+        let mut s = Self { sda, scl, sercom };
+
         unsafe {
             // reset the sercom instance
-            sercom.i2cm().ctrla.modify(|_, w| w.swrst().set_bit());
+            s.sercom.i2cm().ctrla.modify(|_, w| w.swrst().set_bit());
             // wait for reset to complete
-            #[cfg(feature = "samd20")]
-            while sercom.i2cm().status.read().syncbusy().bit_is_set()
-                || sercom.i2cm().ctrla.read().swrst().bit_is_set()
-            {}
-            #[cfg(not(feature = "samd20"))]
-            while sercom.i2cm().syncbusy.read().swrst().bit_is_set()
-                || sercom.i2cm().ctrla.read().swrst().bit_is_set()
+            while !s.is_register_synced(i2c_reg_sync::SwRst)
+                || s.sercom.i2cm().ctrla.read().swrst().bit_is_set()
             {}
 
             // Put the hardware into i2c master mode
-            sercom.i2cm().ctrla.modify(|_, w| w.mode().i2c_master());
+            s.sercom.i2cm().ctrla.modify(|_, w| w.mode().i2c_master());
             // wait for configuration to take effect
-            #[cfg(feature = "samd20")]
-            while sercom.i2cm().status.read().syncbusy().bit_is_set() {}
-            #[cfg(not(feature = "samd20"))]
-            while sercom.i2cm().syncbusy.read().enable().bit_is_set() {}
+            while !s.is_register_synced(i2c_reg_sync::Enable) {}
 
             // set the baud rate
             let gclk = clock.freq();
             let baud = (gclk.0 / (2 * freq.into().0) - 1) as u8;
-            sercom.i2cm().baud.modify(|_, w| w.baud().bits(baud));
+            s.sercom.i2cm().baud.modify(|_, w| w.baud().bits(baud));
 
-            sercom.i2cm().ctrla.modify(|_, w| w.enable().set_bit());
+            s.sercom.i2cm().ctrla.modify(|_, w| w.enable().set_bit());
             // wait for configuration to take effect
-            #[cfg(feature = "samd20")]
-            while sercom.i2cm().status.read().syncbusy().bit_is_set() {}
-            #[cfg(not(feature = "samd20"))]
-            while sercom.i2cm().syncbusy.read().enable().bit_is_set() {}
+            while s.is_register_synced(i2c_reg_sync::Enable) {}
 
             // set the bus idle
-            sercom
+            s.sercom
                 .i2cm()
                 .status
                 .modify(|_, w| w.busstate().bits(BUS_STATE_IDLE));
             // wait for it to take effect
-            #[cfg(feature = "samd20")]
-            while sercom.i2cm().status.read().syncbusy().bit_is_set() {}
-            #[cfg(not(feature = "samd20"))]
-            while sercom.i2cm().syncbusy.read().sysop().bit_is_set() {}
+            while !s.is_register_synced(i2c_reg_sync::SysOp) {}
         }
 
-        Self { sda, scl, sercom }
+        s
+    }
+
+    /// Wait for the registers synchronization
+    #[inline]
+    fn is_register_synced(&mut self, synced_reg: i2c_reg_sync) -> bool {
+        #[cfg(feature = "samd20")]
+        return !self.i2cm().status.read().syncbusy().bit_is_set();
+        #[cfg(not(feature = "samd20"))]
+        match synced_reg {
+            reg_sync::Enable => !self.i2cm().syncbusy.read().enable().bit_is_set(),
+            reg_sync::SwRst => !self.i2cm().syncbusy.read().swrst().bit_is_set(),
+            reg_sync::SysOp=> !self.i2cm().syncbusy.read().sysop().bit_is_set(),
+        }
     }
 
     /// Breaks the sercom device up into its constituent pins and the SERCOM
@@ -238,18 +245,11 @@ where
         self.status_to_err()
     }
 
-    fn wait_sync(&mut self) {
-        #[cfg(feature = "samd20")]
-        while self.i2cm().status.read().syncbusy().bit_is_set() {}
-        #[cfg(not(feature = "samd20"))]
-        while self.i2cm().syncbusy.read().sysop().bit_is_set() {}
-    }
-
     fn cmd(&mut self, cmd: u8) {
         unsafe {
             self.i2cm().ctrlb.modify(|_, w| w.cmd().bits(cmd));
         }
-        self.wait_sync();
+        while !self.is_register_synced(i2c_reg_sync::SysOp) {}
     }
 
     fn cmd_stop(&mut self) {
@@ -264,7 +264,7 @@ where
                 w.cmd().bits(MASTER_ACT_READ)
             });
         }
-        self.wait_sync();
+        while !self.is_register_synced(i2c_reg_sync::SysOp) {}
     }
 
     fn i2cm(&mut self) -> &I2CM {

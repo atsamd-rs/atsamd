@@ -12,7 +12,7 @@ use crate::pac::sercom0::spi::ctrla::MODE_A;
 #[cfg(feature = "min-samd51g")]
 use crate::pac::sercom0::spim::ctrla::MODE_A;
 
-use crate::sercom::v2::Sercom;
+use crate::sercom::v2::{reg_sync, Sercom};
 use crate::time::Hertz;
 
 use super::{BitOrder, DataWidth, Error, Flags, Phase, Polarity, Status};
@@ -52,10 +52,7 @@ impl<S: Sercom> Registers<S> {
     #[inline]
     pub fn reset(&mut self) {
         self.spi().ctrla.write(|w| w.swrst().set_bit());
-        #[cfg(feature = "samd20")]
-        while self.spi().status.read().syncbusy().bit_is_set() {}
-        #[cfg(not(feature = "samd20"))]
-        while self.spi().syncbusy.read().swrst().bit_is_set() {}
+        while !self.is_register_synced(reg_sync::SwRst) {}
     }
 
     #[cfg(feature = "dma")]
@@ -74,6 +71,20 @@ impl<S: Sercom> Registers<S> {
         });
     }
 
+    /// Wait for the registers synchronization
+    #[inline]
+    fn is_register_synced(&mut self, synced_reg: reg_sync) -> bool {
+        #[cfg(feature = "samd20")]
+        return !self.spi().status.read().syncbusy().bit_is_set();
+        #[cfg(not(feature = "samd20"))]
+        match synced_reg {
+            reg_sync::CtrlB => !self.spi().syncbusy.read().ctrlb().bit_is_set(),
+            reg_sync::Length => !self.spi().syncbusy.read().length().bit_is_set(),
+            reg_sync::Enable => !self.spi().syncbusy.read().enable().bit_is_set(),
+            reg_sync::SwRst => !self.spi().syncbusy.read().swrst().bit_is_set(),
+        }
+    }
+
     /// Configure the SPI operating mode
     ///
     /// For maximum flexibility, this module chooses to always operate in 32-bit
@@ -90,10 +101,7 @@ impl<S: Sercom> Registers<S> {
             w.data32b().data_trans_32bit();
             w.icspace().bits(1)
         });
-        #[cfg(feature = "samd20")]
-        while self.spi().status.read().syncbusy().bit_is_set() {}
-        #[cfg(not(feature = "samd20"))]
-        while self.spi().syncbusy.read().ctrlb().bit_is_set() {}
+        while !self.is_register_synced(reg_sync::CtrlB) {}
     }
 
     /// Return the current transaction length
@@ -112,10 +120,7 @@ impl<S: Sercom> Registers<S> {
             w.len().bits(length);
             w.lenen().set_bit()
         });
-        #[cfg(feature = "samd20")]
-        while self.spi().status.read().syncbusy().bit_is_set() {}
-        #[cfg(not(feature = "samd20"))]
-        while self.spi().syncbusy.read().length().bit_is_set() {}
+        while !self.is_register_synced(reg_sync::Length) {}
     }
 
     /// Set the character size
@@ -284,40 +289,28 @@ impl<S: Sercom> Registers<S> {
     #[inline]
     pub fn rx_enable(&mut self) {
         self.spi().ctrlb.modify(|_, w| w.rxen().set_bit());
-        #[cfg(feature = "samd20")]
-        while self.spi().status.read().syncbusy().bit_is_set() {}
-        #[cfg(not(feature = "samd20"))]
-        while self.spi().syncbusy.read().ctrlb().bit_is_set() {}
+        while !self.is_register_synced(reg_sync::CtrlB) {}
     }
 
     /// Disable the receiver
     #[inline]
     pub fn rx_disable(&mut self) {
         self.spi().ctrlb.modify(|_, w| w.rxen().clear_bit());
-        #[cfg(feature = "samd20")]
-        while self.spi().status.read().syncbusy().bit_is_set() {}
-        #[cfg(not(feature = "samd20"))]
-        while self.spi().syncbusy.read().ctrlb().bit_is_set() {}
+        while !self.is_register_synced(reg_sync::CtrlB) {}
     }
 
     /// Enable the peripheral
     #[inline]
     pub fn enable(&mut self) {
         self.spi().ctrla.modify(|_, w| w.enable().set_bit());
-        #[cfg(feature = "samd20")]
-        while self.spi().status.read().syncbusy().bit_is_set() {}
-        #[cfg(not(feature = "samd20"))]
-        while self.spi().syncbusy.read().enable().bit_is_set() {}
+        while !self.is_register_synced(reg_sync::Enable) {}
     }
 
     /// Disable the peripheral
     #[inline]
     pub fn disable(&mut self) {
         self.spi().ctrla.modify(|_, w| w.enable().clear_bit());
-        #[cfg(feature = "samd20")]
-        while self.spi().status.read().syncbusy().bit_is_set() {}
-        #[cfg(not(feature = "samd20"))]
-        while self.spi().syncbusy.read().enable().bit_is_set() {}
+        while !self.is_register_synced(reg_sync::Enable) {}
     }
 
     /// Read from the `DATA` register

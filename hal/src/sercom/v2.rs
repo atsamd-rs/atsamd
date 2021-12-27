@@ -40,6 +40,14 @@ pub mod uart;
 #[cfg(feature = "dma")]
 pub mod dma;
 
+/// Register synchronization flags
+pub enum reg_sync {
+    CtrlB,
+    Length,
+    Enable,
+    SwRst,
+}
+
 //==============================================================================
 //  Sercom
 //==============================================================================

@@ -26,24 +26,27 @@ pub trait CommonSpi {
     /// Helper for accessing the spi member of the sercom instance
     fn spi_mut(&mut self) -> &SPI;
 
+    /// Wait for the registers synchronization
+    #[inline]
+    fn is_register_synced(&mut self) -> bool {
+        #[cfg(feature = "samd20")]
+        return !self.spi().status.read().syncbusy().bit_is_set();
+        #[cfg(not(feature = "samd20"))]
+        !self.spi().syncbusy.read().enable().bit_is_set()
+    }
+
     /// Disable the SPI
     fn disable(&mut self) {
         self.spi_mut().ctrla.modify(|_, w| w.enable().clear_bit());
         // wait for configuration to take effect
-        #[cfg(feature = "samd20")]
-        while self.spi().status.read().syncbusy().bit_is_set() {}
-        #[cfg(not(feature = "samd20"))]
-        while self.spi().syncbusy.read().enable().bit_is_set() {}
+        while !self.is_register_synced() {}
     }
 
     /// Enable the SPI
     fn enable(&mut self) {
         self.spi_mut().ctrla.modify(|_, w| w.enable().set_bit());
         // wait for configuration to take effect
-        #[cfg(feature = "samd20")]
-        while self.spi().status.read().syncbusy().bit_is_set() {}
-        #[cfg(not(feature = "samd20"))]
-        while self.spi().syncbusy.read().enable().bit_is_set() {}
+        while !self.is_register_synced() {}
     }
 
     /// Set the polarity (CPOL) and phase (CPHA) of the SPI

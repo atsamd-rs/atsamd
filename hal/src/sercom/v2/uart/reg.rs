@@ -55,15 +55,26 @@ impl<S: Sercom> Registers<S> {
         self.sercom
     }
 
+    /// Wait for the registers synchronization
+    #[inline]
+    pub fn is_register_synced(&mut self, synced_reg: reg_sync) -> bool {
+        #[cfg(feature = "samd20")]
+        return !self.usart().status.read().syncbusy().bit_is_set();
+        #[cfg(not(feature = "samd20"))]
+        match synced_reg {
+            reg_sync::CtrlB => !self.usart().syncbusy.read().ctrlb().bit_is_set(),
+            reg_sync::Length => !self.usart().syncbusy.read().length().bit_is_set(),
+            reg_sync::Enable => !self.usart().syncbusy.read().enable().bit_is_set(),
+            reg_sync::SwRst => !self.usart().syncbusy.read().swrst().bit_is_set(),
+        }
+    }
+
     /// Reset the SERCOM peripheral
     #[inline]
     pub(super) fn swrst(&mut self) {
         self.usart().ctrla.write(|w| w.swrst().set_bit());
 
-        #[cfg(feature = "samd20")]
-        while self.usart().status.read().syncbusy().bit_is_set() {}
-        #[cfg(not(feature = "samd20"))]
-        while self.usart().syncbusy.read().swrst().bit_is_set() {}
+        while !self.is_register_synced(reg_sync::SwRst) {}
     }
 
     /// Configure the SERCOM to use internal clock mode
@@ -291,24 +302,24 @@ impl<S: Sercom> Registers<S> {
         use Oversampling::*;
 
         #[cfg(feature = "samd20")]
-        let baud = self.usart().baud.read().bits();
-        #[cfg(feature = "samd20")]
-        let mode = Arithmetic(Bits16);
-
+        {
+            let baud = self.usart().baud.read().bits();
+            let mode = Arithmetic(Bits16);
+            return (baud, mode);
+        }
         #[cfg(not(feature = "samd20"))]
-        let baud = self.usart().baud_usartfp_mode().read().bits();
-        #[cfg(not(feature = "samd20"))]
-        let sampr = self.usart().ctrla.read().sampr().bits();
-        #[cfg(not(feature = "samd20"))]
-        let mode = match sampr {
-            0 => Arithmetic(Bits16),
-            1 => Fractional(Bits16),
-            2 => Arithmetic(Bits8),
-            3 => Fractional(Bits8),
-            _ => unreachable!(),
-        };
-
-        (baud, mode)
+        {
+            let baud = self.usart().baud_usartfp_mode().read().bits();
+            let sampr = self.usart().ctrla.read().sampr().bits();
+            let mode = match sampr {
+                0 => Arithmetic(Bits16),
+                1 => Fractional(Bits16),
+                2 => Arithmetic(Bits8),
+                3 => Fractional(Bits8),
+                _ => unreachable!(),
+            };
+            (baud, mode)
+        }
     }
 
     /// Control the buffer overflow notification
@@ -433,24 +444,16 @@ impl<S: Sercom> Registers<S> {
     /// UART transactions are not possible until the peripheral is enabled.
     #[inline]
     pub(super) fn enable(&mut self, rxen: bool, txen: bool) {
-        let usart = self.usart();
-
         // Enable RX
         if rxen {
-            usart.ctrlb.modify(|_, w| w.rxen().set_bit());
-            #[cfg(feature = "samd20")]
-            while usart.status.read().syncbusy().bit_is_set() {}
-            #[cfg(not(feature = "samd20"))]
-            while usart.syncbusy.read().ctrlb().bit_is_set() {}
+            self.usart().ctrlb.modify(|_, w| w.rxen().set_bit());
+            while !self.is_register_synced(reg_sync::CtrlB) {}
         }
 
         // Enable TX
         if txen {
-            usart.ctrlb.modify(|_, w| w.txen().set_bit());
-            #[cfg(feature = "samd20")]
-            while usart.status.read().syncbusy().bit_is_set() {}
-            #[cfg(not(feature = "samd20"))]
-            while usart.syncbusy.read().ctrlb().bit_is_set() {}
+            self.usart().ctrlb.modify(|_, w| w.txen().set_bit());
+            while !self.is_register_synced(reg_sync::CtrlB) {}
         }
 
         // Globally enable peripheral
@@ -459,21 +462,13 @@ impl<S: Sercom> Registers<S> {
 
     #[inline]
     pub(super) fn disable(&mut self) {
-        let usart = self.usart();
-
         // Disable RX
-        usart.ctrlb.modify(|_, w| w.rxen().clear_bit());
-        #[cfg(feature = "samd20")]
-        while usart.status.read().syncbusy().bit_is_set() {}
-        #[cfg(not(feature = "samd20"))]
-        while usart.syncbusy.read().ctrlb().bit_is_set() {}
+        self.usart().ctrlb.modify(|_, w| w.rxen().clear_bit());
+        while !self.is_register_synced(reg_sync::CtrlB) {}
 
         // Disable TX
-        usart.ctrlb.modify(|_, w| w.txen().clear_bit());
-        #[cfg(feature = "samd20")]
-        while usart.status.read().syncbusy().bit_is_set() {}
-        #[cfg(not(feature = "samd20"))]
-        while usart.syncbusy.read().ctrlb().bit_is_set() {}
+        self.usart().ctrlb.modify(|_, w| w.txen().clear_bit());
+        while !self.is_register_synced(reg_sync::CtrlB) {}
 
         self.enable_peripheral(false);
     }
@@ -482,10 +477,7 @@ impl<S: Sercom> Registers<S> {
     /// synchronize.
     pub(super) fn enable_peripheral(&mut self, enable: bool) {
         self.usart().ctrla.modify(|_, w| w.enable().bit(enable));
-        #[cfg(feature = "samd20")]
-        while self.usart().status.read().syncbusy().bit_is_set() {}
-        #[cfg(not(feature = "samd20"))]
-        while self.usart().syncbusy.read().enable().bit_is_set() {}
+        while !self.is_register_synced(reg_sync::Enable) {}
     }
 }
 

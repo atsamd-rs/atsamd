@@ -180,11 +180,11 @@ impl GenericClockController {
         }
 
         // Feed 32khz into the DFLL48
-        state.enable_clock_generator(ClockId::DFLL48, GCLK1);
+        state.enable_clock_generator(DFLL48, GCLK1);
         // Enable the DFLL48
         configure_and_enable_dfll48m(sysctrl, use_external_crystal);
         // Feed DFLL48 into the main clock
-        state.set_gclk_divider_and_source(GCLK0, 1, ClockSource::DFLL48M, true);
+        state.set_gclk_divider_and_source(GCLK0, 1, DFLL48M, true);
         // We are now running at 48Mhz
 
         // Reset various dividers back to 1
@@ -202,7 +202,6 @@ impl GenericClockController {
         pm.apbbsel.write(|w| w.apbbdiv().div1());
         pm.apbcsel.write(|w| w.apbcdiv().div1());
 
-        let used_clocks = 1u64 << u8::from(ClockId::DFLL48);
         Self {
             state,
             gclks: [
@@ -215,7 +214,7 @@ impl GenericClockController {
                 Hertz(0),
                 Hertz(0),
             ],
-            used_clocks,
+            used_clocks: 1u64 << u8::from(ClockId::DFLL48),
         }
     }
 

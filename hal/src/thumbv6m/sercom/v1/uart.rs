@@ -11,7 +11,7 @@ use crate::pac::sercom0::USART;
 use crate::pac::{PM, SERCOM0, SERCOM1};
 #[cfg(feature = "samd2x")]
 use crate::pac::{SERCOM2, SERCOM3};
-#[cfg(any(feature = "samd20", feature = "min-samd21g"))]
+#[cfg(feature = "min-samd2x")]
 use crate::pac::{SERCOM4, SERCOM5};
 use crate::sercom::v1::pads::CompatiblePad;
 use crate::sercom::v2::*;
