@@ -91,7 +91,7 @@ macro_rules! define_filtered_pclk_token_struct {
                     (
                         $d(
                             $d( #[$d cfg:meta] )?
-                            ($d Type:ident, $d id:ident)
+                            ($d Type:ident = $d N:literal, $d id:ident)
                         )+
                     ) => {
                         filter_pclk_tokens!(
@@ -187,7 +187,7 @@ macro_rules! define_filtered_pclk_token_struct {
                             $Struct
                             $d(
                                 $d( #[$d cfg] )?
-                                ($d Type, $d id)
+                                ($d Type = 0, $d id)
                             )+
                         );
                     }

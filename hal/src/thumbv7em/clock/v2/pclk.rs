@@ -85,75 +85,52 @@ impl<P: PclkId> PclkToken<P> {
 }
 
 //==============================================================================
-// DynPclkId
-//==============================================================================
-
-/// Internal `enum` used to index the correct peripheral channel register
-#[allow(missing_docs)]
-pub enum DynPclkId {
-    Dfll,
-    Dpll0,
-    Dpll1,
-    Slow,
-    Eic,
-    FreqmMeasure,
-    FreqmReference,
-    Sercom0,
-    Sercom1,
-    Tc0Tc1,
-    Usb,
-    EvSys0,
-    EvSys1,
-    EvSys2,
-    EvSys3,
-    EvSys4,
-    EvSys5,
-    EvSys6,
-    EvSys7,
-    EvSys8,
-    EvSys9,
-    EvSys10,
-    EvSys11,
-    Sercom2,
-    Sercom3,
-    Tcc0Tcc1,
-    Tc2Tc3,
-    Can0,
-    Can1,
-    Tcc2Tcc3,
-    Tc4Tc5,
-    Pdec,
-    Ac,
-    Ccl,
-    Sercom4,
-    Sercom5,
-    #[cfg(feature = "min-samd51n")]
-    Sercom6,
-    #[cfg(feature = "min-samd51n")]
-    Sercom7,
-    Tcc4,
-    Tc6Tc7,
-    Adc0,
-    Adc1,
-    Dac,
-    I2s0,
-    I2s1,
-    Sdhc0,
-    Sdhc1,
-    Cm4Trace,
-}
-
-//==============================================================================
 // PclkId types
 //==============================================================================
+
+/// Module containing only the types implementing [`PclkId`]
+///
+/// Because there are so many types that implement `PclkId`, it is helpful to
+/// have them defined in a separate module, so that you can import all of them
+/// using a wildcard (`*`) without importing anything else, i.e.
+///
+/// ```
+/// use pclk::ids::*;
+/// ```
+pub(crate) mod ids {
+
+    pub use crate::sercom::v2::{Sercom0, Sercom1, Sercom2, Sercom3, Sercom4, Sercom5};
+    #[cfg(feature = "min-samd51n")]
+    pub use crate::sercom::v2::{Sercom6, Sercom7};
+
+    pub use super::super::dfll::DfllId;
+    pub use super::super::dpll::{Dpll0Id, Dpll1Id};
+    pub use super::super::gclk::{
+        Gclk0Id, Gclk10Id, Gclk11Id, Gclk1Id, Gclk2Id, Gclk3Id, Gclk4Id, Gclk5Id, Gclk6Id, Gclk7Id,
+        Gclk8Id, Gclk9Id,
+    };
+    pub use super::super::types::{
+        Ac, Adc0, Adc1, CM4Trace, Ccl, Dac, Eic, EvSys0, EvSys1, EvSys10, EvSys11, EvSys2, EvSys3,
+        EvSys4, EvSys5, EvSys6, EvSys7, EvSys8, EvSys9, FreqMMeasure, FreqMReference, PDec, Sdhc0,
+        SlowClk, Tc0Tc1, Tc2Tc3, Tcc0Tcc1, Tcc2Tcc3, Usb,
+    };
+    #[cfg(any(feature = "same51", feature = "same53", feature = "same54"))]
+    pub use super::super::types::{Can0, Can1};
+    #[cfg(feature = "min-samd51n")]
+    pub use super::super::types::{Sdhc1, Tc6Tc7};
+    #[cfg(feature = "min-samd51j")]
+    pub use super::super::types::{Tc4Tc5, Tcc4, I2S0, I2S1};
+}
+
+use ids::*;
 
 /// Append the list of all [`PclkId`] types and `snake_case` id names to the
 /// arguments of a macro call
 ///
 /// This macro will perform the embedded macro call with a list of tuples
 /// appended to the arguments. Each tuple contains a type implementing
-/// [`PclkId`] and the `snake_case` name of the corresponding token in the
-/// [`pclk::Tokens`](Tokens) struct.
+/// [`PclkId`], its corresponding `PCHCTRL` register index, and the `snake_case`
+/// name of the corresponding token in the [`pclk::Tokens`](Tokens) struct.
 ///
 /// **Note:** The entries within [`DynPclkId`] do not match the type names.
 /// Rather, they match the `snake_case` names converted to `CamelCase`.
@@ -173,7 +150,7 @@ pub enum DynPclkId {
 ///         $second_arg:tt
 ///         $(
 ///             $( #[$cfg:meta] )?
-///             ($Type:ident, $Id:ident)
+///             ($Type:ident = $N:literal, $Id:ident)
 ///         )+
 ///     ) =>
 ///     {
@@ -185,196 +162,71 @@ pub enum DynPclkId {
 /// ```
 macro_rules! with_pclk_types_ids {
     ( $some_macro:ident ! ( $( $args:tt )* ) ) => {
-        crate::thumbv7em::clock::v2::pclk::__dispatch!(
-            without_existence,
-            $some_macro ! ( $( $args )* )
-        );
-    };
-}
-
-/// Append information about the [`PclkId`] types to the arguments of a macro
-/// call
-///
-/// This macro is nearly identical to [`with_pclk_types_ids`]. The only
-/// difference is that a third element is added to each tuple. This element is
-/// either `already_exists`, if the type is already defined elsewhere in the
-/// HAL, or it is `does_not_exist`, if the corresponding peripheral has no HAL
-/// implementation. The types marked `does_not_exist` will be created here in
-/// the [`pclk::ids`](ids) module.
-///
-/// It is unlikely this macro will find use outside of this module.
-macro_rules! with_pclk_types_ids_existence {
-    ( $some_macro:ident ! ( $( $args:tt )* ) ) => {
-        crate::thumbv7em::clock::v2::pclk::__dispatch!(
-            with_existence,
-            $some_macro ! ( $( $args )* )
-        );
-    };
-}
-
-/// Internal implementation detail of the `with_pclk_type_ids*` macros
-///
-/// Append the [`PclkId`] type information and dispatch to the correct branch of
-/// [`__call_macro`].
-macro_rules! __dispatch {
-    ( $existence:ident, $some_macro:ident ! ( $( $args:tt )* ) ) => {
-        crate::thumbv7em::clock::v2::pclk::__call_macro!(
-            $existence,
-            $some_macro ! ( $( $args )* ),
-            (DfllId, dfll, already_exists)
-            (Dpll0Id, dpll0, already_exists)
-            (Dpll1Id, dpll1, already_exists)
-            (Slow, slow, does_not_exist)
-            (Eic, eic, does_not_exist)
-            (FreqmMeasure, freqm_measure, does_not_exist)
-            (FreqmReference, freqm_reference, does_not_exist)
-            (Sercom0, sercom0, already_exists)
-            (Sercom1, sercom1, already_exists)
-            (Tc0Tc1, tc0_tc1, does_not_exist)
-            (Usb, usb, does_not_exist)
-            (EvSys0, ev_sys0, does_not_exist)
-            (EvSys1, ev_sys1, does_not_exist)
-            (EvSys2, ev_sys2, does_not_exist)
-            (EvSys3, ev_sys3, does_not_exist)
-            (EvSys4, ev_sys4, does_not_exist)
-            (EvSys5, ev_sys5, does_not_exist)
-            (EvSys6, ev_sys6, does_not_exist)
-            (EvSys7, ev_sys7, does_not_exist)
-            (EvSys8, ev_sys8, does_not_exist)
-            (EvSys9, ev_sys9, does_not_exist)
-            (EvSys10, ev_sys10, does_not_exist)
-            (EvSys11, ev_sys11, does_not_exist)
-            (Sercom2, sercom2, already_exists)
-            (Sercom3, sercom3, already_exists)
-            (Tcc0Tcc1, tcc0_tcc1, does_not_exist)
-            (Tc2Tc3, tc2_tc3, does_not_exist)
-            (Can0, can0, does_not_exist)
-            (Can1, can1, does_not_exist)
-            (Tcc2Tcc3, tcc2_tcc3, does_not_exist)
-            (Tc4Tc5, tc4_tc5, does_not_exist)
-            (PDec, pdec, does_not_exist)
-            (AC, ac, does_not_exist)
-            (CCL, ccl, does_not_exist)
-            (Sercom4, sercom4, already_exists)
-            (Sercom5, sercom5, already_exists)
-            #[cfg(feature = "min-samd51n")]
-            (Sercom6, sercom6, already_exists)
-            #[cfg(feature = "min-samd51n")]
-            (Sercom7, sercom7, already_exists)
-            (Tcc4, tcc4, does_not_exist)
-            (Tc6Tc7, tc6_tc7, does_not_exist)
-            (Adc0, adc0, does_not_exist)
-            (Adc1, adc1, does_not_exist)
-            (Dac, dac, does_not_exist)
-            (I2S0, i2s0, does_not_exist)
-            (I2S1, i2s1, does_not_exist)
-            (Sdhc0, sdhc0, does_not_exist)
-            (Sdhc1, sdhc1, does_not_exist)
-            (CM4Trace, cm4_trace, does_not_exist)
-        );
-    };
-}
-
-/// Internal implementation detail of the `with_pclk_type_ids*` macros
-///
-/// Call the supplied macro and append the [`PclkId`] type information. Filter
-/// out the "existence" tokens when they are not requested.
-macro_rules! __call_macro {
-    (
-        without_existence,
-        $some_macro:ident ! ( $( $args:tt )* ),
-        $(
-            $( #[$cfg:meta] )?
-            ($Type:ident, $id:ident, $existence:ident)
-        )+
-    ) => {
         $some_macro!(
             $( $args )*
-            $(
-                $( #[$cfg] )?
-                ($Type, $id)
-            )+
-        );
-    };
-    (
-        with_existence,
-        $some_macro:ident ! ( $( $args:tt )* ),
-        $(
-            $( #[$cfg:meta] )?
-            ($Type:ident, $id:ident, $existence:ident)
-        )+
-    ) => {
-        $some_macro!(
-            $( $args )*
-            $(
-                $( #[$cfg] )?
-                ($Type, $id, $existence)
-            )+
+            (DfllId = 0, dfll)
+            (Dpll0Id = 1, dpll0)
+            (Dpll1Id = 2, dpll1)
+            (SlowClk = 3, slow)
+            (Eic = 4, eic)
+            (FreqMMeasure = 5, freq_m_measure)
+            (FreqMReference = 6, freq_m_reference)
+            (Sercom0 = 7, sercom0)
+            (Sercom1 = 8, sercom1)
+            (Tc0Tc1 = 9, tc0_tc1)
+            (Usb = 10, usb)
+            (EvSys0 = 11, ev_sys0)
+            (EvSys1 = 12, ev_sys1)
+            (EvSys2 = 13, ev_sys2)
+            (EvSys3 = 14, ev_sys3)
+            (EvSys4 = 15, ev_sys4)
+            (EvSys5 = 16, ev_sys5)
+            (EvSys6 = 17, ev_sys6)
+            (EvSys7 = 18, ev_sys7)
+            (EvSys8 = 19, ev_sys8)
+            (EvSys9 = 20, ev_sys9)
+            (EvSys10 = 21, ev_sys10)
+            (EvSys11 = 22, ev_sys11)
+            (Sercom2 = 23, sercom2)
+            (Sercom3 = 24, sercom3)
+            (Tcc0Tcc1 = 25, tcc0_tcc1)
+            (Tc2Tc3 = 26, tc2_tc3)
+            #[cfg(any(feature = "same51", feature = "same53", feature = "same54"))]
+            (Can0 = 27, can0)
+            #[cfg(any(feature = "same51", feature = "same53", feature = "same54"))]
+            (Can1 = 28, can1)
+            (Tcc2Tcc3 = 29, tcc2_tcc3)
+            #[cfg(feature = "min-samd51j")]
+            (Tc4Tc5 = 30, tc4_tc5)
+            (PDec = 31, pdec)
+            (Ac = 32, ac)
+            (Ccl = 33, ccl)
+            (Sercom4 = 34, sercom4)
+            (Sercom5 = 35, sercom5)
+            #[cfg(feature = "min-samd51n")]
+            (Sercom6 = 36, sercom6)
+            #[cfg(feature = "min-samd51n")]
+            (Sercom7 = 37, sercom7)
+            #[cfg(feature = "min-samd51j")]
+            (Tcc4 = 38, tcc4)
+            #[cfg(feature = "min-samd51n")]
+            (Tc6Tc7 = 39, tc6_tc7)
+            (Adc0 = 40, adc0)
+            (Adc1 = 41, adc1)
+            (Dac = 42, dac)
+            #[cfg(feature = "min-samd51j")]
+            (I2S0 = 43, i2s0)
+            #[cfg(feature = "min-samd51j")]
+            (I2S1 = 44, i2s1)
+            (Sdhc0 = 45, sdhc0)
+            #[cfg(feature = "min-samd51n")]
+            (Sdhc1 = 46, sdhc1)
+            (CM4Trace = 47, cm4_trace)
         );
     };
 }
 
-pub(super) use __call_macro;
-pub(super) use __dispatch;
 pub(super) use with_pclk_types_ids;
-pub(super) use with_pclk_types_ids_existence;
-
-/// Module containing only the types implementing [`PclkId`]
-///
-/// Because there are so many types that implement `PclkId`, it is helpful to
-/// have them defined in a separate module, so that you can import all of them
-/// with a wildcard (`*`) without importing anything else, i.e.
-///
-/// ```
-/// use pclk::ids::*;
-/// ```
-pub(crate) mod ids {
-
-    use crate::typelevel::Sealed;
-
-    #[cfg(feature = "min-samd51g")]
-    pub use crate::sercom::v2::{Sercom0, Sercom1, Sercom2, Sercom3, Sercom4, Sercom5};
-    #[cfg(feature = "min-samd51n")]
-    pub use crate::sercom::v2::{Sercom6, Sercom7};
-
-    pub use super::super::dfll::DfllId;
-    pub use super::super::dpll::{Dpll0Id, Dpll1Id};
-    pub use super::super::gclk::{
-        Gclk0Id, Gclk10Id, Gclk11Id, Gclk1Id, Gclk2Id, Gclk3Id, Gclk4Id, Gclk5Id, Gclk6Id, Gclk7Id,
-        Gclk8Id, Gclk9Id,
-    };
-
-    /// Define any [`PclkId`] types that are not already defined by some
-    /// existing HAL peripheral
-    macro_rules! define_pclk_types {
-
-        // Ignore types that already exist
-        ($Type:ident, $id:ident, already_exists) => {};
-
-        // Define types that don't exist
-        ($Type:ident, $id:ident, does_not_exist) => {
-            pub enum $Type {}
-            impl Sealed for $Type {}
-        };
-
-        // Convert a single call with a list of tokens to a list of calls
-        (
-            $(
-                $( #[$cfg:meta] )?
-                ( $Type:ident, $id:ident, $existence:ident )
-            )+
-        ) => {
-            $(
-                $( #[$cfg] )?
-                define_pclk_types!($Type, $id, $existence);
-            )+
-        };
-    }
-
-    super::with_pclk_types_ids_existence!(define_pclk_types!());
-}
-
-use ids::*;
 
 //==============================================================================
 // PclkId
@@ -386,24 +238,41 @@ pub trait PclkId: Sealed {
     const DYN: DynPclkId;
 }
 
-macro_rules! impl_pclk_id {
+macro_rules! pclk_id {
     (
         $(
             $( #[$cfg:meta] )?
-            ($Type:ident, $Id:ident)
+            ($Type:ident = $N:literal, $id:ident)
         )+
     ) => {
-        $(
-            paste! {
-                impl PclkId for $Type {
-                    const DYN: DynPclkId = DynPclkId::[<$Id:camel>];
-                }
+        paste! {
+            /// Value-level `enum` of all peripheral channel clocks
+            ///
+            /// This is the value-level equivalent of the [type-level enum]
+            /// [`PclkId`]. When cast to an integer type, like `u8`, each variant
+            /// of this `enum` maps to the corresponding index in the array of
+            /// `PCHCTRL` registers
+            ///
+            /// [type-level enum]: crate::typelevel#type-level-enum
+            #[allow(missing_docs)]
+            pub enum DynPclkId {
+                $(
+                    $( #[$cfg] )?
+                    [<$id:camel>] = $N,
+                )+
             }
-        )+
+
+            $(
+                $( #[$cfg] )?
+                impl PclkId for $Type {
+                    const DYN: DynPclkId = DynPclkId::[<$id:camel>];
+                }
+            )+
+        }
     };
 }
 
-with_pclk_types_ids!(impl_pclk_id!());
+with_pclk_types_ids!(pclk_id!());
 
 //==============================================================================
 // PclkSourceId
@@ -418,10 +287,12 @@ pub type DynPclkSourceId = DynGclkId;
 /// Convert from [`DynPclkSourceId`] to the equivalent [PAC](crate::pac) type
 impl From<DynPclkSourceId> for GEN_A {
     fn from(source: DynPclkSourceId) -> Self {
+        use DynGclkId::*;
+        use GEN_A::*;
         seq!(N in 0..=11 {
             match source {
                 #(
-                    DynPclkSourceId::Gclk~N => GEN_A::GCLK~N,
+                    Gclk~N => GCLK~N,
                 )*
             }
         })
@@ -519,7 +390,7 @@ macro_rules! define_pclk_tokens_struct {
         $Tokens:ident
         $(
             $( #[$cfg:meta] )?
-            ($Type:ident, $Id:ident)
+            ($Type:ident = $_:literal, $id:ident)
         )+
     ) =>
     {
@@ -528,7 +399,7 @@ macro_rules! define_pclk_tokens_struct {
         pub struct $Tokens {
             $(
                 $( #[$cfg] )?
-                pub $Id: PclkToken<$Type>,
+                pub $id: PclkToken<$Type>,
             )+
         }
 
@@ -539,7 +410,7 @@ macro_rules! define_pclk_tokens_struct {
                     $Tokens {
                         $(
                             $( #[$cfg] )?
-                            $Id: PclkToken::new(),
+                            $id: PclkToken::new(),
                         )+
                     }
                 }

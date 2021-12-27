@@ -1,256 +1,102 @@
-//! # Clocking API v2 type infrastructure
+//! Module defining or exporting peripheral types for the ['ahb'], ['apb'] and
+//! ['pclk'] modules
 //!
-//! In order to model _one-to-many_ type of relationship between dependencies
-//! (eg. different [`Gclks`](super::gclk::Gclk) can be powered by a single
-//! [`Xosc`](super::xosc::Xosc); different [`Pclks`](super::pclk::Pclk) can be
-//! powered by a single [`Gclk`](super::gclk::Gclk) etc.) a few additional
-//! concepts/abstractions were introduced.
+//! The `ahb`, `apb` and `pclk` modules each define structs that are
+//! generic over a type parameter representing a peripheral. Some peripheral
+//! modules already define suitable types for this purpose. For example,
+//! [`sercom::v2`] defines the [`Sercom0`], [`Sercom1`], etc. types. But other
+//! peripherals are either not yet implemented in the HAL or do not define a
+//! suitable type. This module defines a type for such peripherals. If/when a
+//! suitable type is added for a given peripheral, the type defined here should
+//! be deprecated or removed.
 //!
-//! ## [`Enabled`] type and its helper types/traits
-//!
-//! [`Enabled`] type wrapper represents a clocking component in its enabled
-//! state while also holding an information about current amount of dependencies
-//! (usually [`zero`](typenum::U0) upon construction). This amount of
-//! dependencies is embedded into the type via second generic parameter
-//! leveraging [`typenum::UInt`]/[`typenum::UTerm`] types.
-//!
-//! ```no_run
-//! # use core::marker::PhantomData;
-//! pub trait Counter {} /* implemented for every `typenum::Unsigned` */
-//!
-//! pub trait Increment: Counter {
-//!     /* implemented for every `typenum::Unsigned` and `Enabled` */
-//!     type Inc: Counter;
-//!     fn inc(self) -> Self::Inc;
-//! }
-//!
-//! pub trait Decrement: Counter {
-//!     /* implemented for every `typenum::Unsigned` and `Enabled` */
-//!     type Dec: Counter;
-//!     fn dec(self) -> Self::Dec;
-//! }
-//!
-//! pub struct Enabled<T, N: Counter>(pub(crate) T, PhantomData<N>);
-//! ```
-//!
-//! Via specialized implementation blocks for this type (like for
-//! `Enabled<Dfll<TMode>, U0>`) it is possible to introduce special behaviour;
-//! e.g. [`Enabled::disable`] will only exist for a clocking component having
-//! [`zero`](typenum::U0) current users.
-//!
-//! ## `SourceMarker` trait and its subtraits
-//!
-//! This marker trait unifies family of more specific traits. These ones are
-//! essential during a construction `fn ::{new, enable}` and deconstruction `fn
-//! ::{free, disable}` of clocking components as they provide information to the
-//! constructed/deconstructed type what its source is (shown in the example
-//! later) and which variant of source (associated constant) is applicable while
-//! performing a HW register write.
-//!
-//! ```no_run
-//! # use atsamd_hal::clock::v2::gclk::GclkNum;
-//! pub trait SourceMarker {}
-//!
-//! pub trait GclkSourceMarker: SourceMarker {
-//!     const GCLK_SRC: atsamd_hal::pac::gclk::genctrl::SRC_A /* GclkSourceEnum */;
-//! }
-//!
-//! pub trait PclkSourceMarker: GclkNum + SourceMarker {
-//!     const PCLK_SRC: atsamd_hal::pac::gclk::pchctrl::GEN_A /* PclkSourceEnum */;
-//! }
-//!
-//! pub trait DpllSourceMarker: SourceMarker {
-//!     const DPLL_SRC: atsamd_hal::pac::oscctrl::dpll::dpllctrlb::REFCLK_A /* DpllSourceEnum */;
-//! }
-//!
-//! pub trait GclkOutSourceMarker: GclkNum + SourceMarker {}
-//! ```
-//!
-//! These are implemented by marker types corresponding to existing clocking
-//! abstractions e.g.:
-//!
-//! ```no_run
-//! # use atsamd_hal::clock::v2::gclk::GclkSourceEnum;
-//! # pub trait SourceMarker {}
-//! # pub trait GclkSourceMarker /*: SourceMarker */ {
-//! #     const GCLK_SRC: atsamd_hal::pac::gclk::genctrl::SRC_A /* GclkSourceEnum */;
-//! # }
-//! pub enum Dpll1 {}
-//! impl GclkSourceMarker for Dpll1 {
-//!     const GCLK_SRC: GclkSourceEnum = GclkSourceEnum::DPLL1;
-//! }
-//! // or
-//! pub enum Dfll {}
-//! impl GclkSourceMarker for Dfll {
-//!     const GCLK_SRC: GclkSourceEnum = GclkSourceEnum::DFLL;
-//! }
-//! ```
-//!
-//! ## `Source` trait and its subtraits
-//!
-//! This trait represents a source of clocking signal while subtraits its more
-//! specialized flavours (source of signal for [`Dpll`](super::dpll::Dpll),
-//! [`Pclk`](super::pclk::Pclk), [`Gclk`](super::gclk::Gclk), etc.).
-//! ```no_run
-//! # use atsamd_hal::time::Hertz;
-//! # use atsamd_hal::clock::v2::gclk::{GclkNum, GclkSourceMarker};
-//! # use atsamd_hal::clock::v2::pclk::PclkSourceMarker;
-//! # use atsamd_hal::clock::v2::dpll::DpllSourceMarker;
-//! # use atsamd_hal::clock::v2::gclkio::GclkOutSourceMarker;
-//! pub trait Source {
-//!     fn freq(&self) -> Hertz;
-//! }
-//!
-//! pub trait GclkSource<G: GclkNum>: Source {
-//!     type Type: GclkSourceMarker;
-//! }
-//!
-//! pub trait PclkSource: Source {
-//!     type Type: PclkSourceMarker;
-//! }
-//!
-//! pub trait DpllSource: Source {
-//!     type Type: DpllSourceMarker;
-//! }
-//!
-//! pub trait PrivateGclkOutSource: Source {
-//!     fn enable_gclk_out(&mut self, polarity: bool);
-//!     fn disable_gclk_out(&mut self);
-//! }
-//!
-//! pub trait GclkOutSource: PrivateGclkOutSource {
-//!     type Type: GclkOutSourceMarker;
-//! }
-//! ```
-//!
-//! These are implemented by corresponding specialized types of [`Enabled`]
-//! e.g.:
-//!
-//! ```no_run
-//! # use atsamd_hal::clock::v2::Source;
-//! # use atsamd_hal::clock::v2::types::{Counter, Enabled};
-//! # use atsamd_hal::clock::v2::dpll::{Dpll, DpllNum, SrcMode};
-//! # use atsamd_hal::clock::v2::gclk::{GclkSourceMarker, GclkNum};
-//! # pub trait GclkSource<G: GclkNum>: Source {
-//! #     type Type: GclkSourceMarker;
-//! # }
-//! impl<G, D, M, N> GclkSource<G> for Enabled<Dpll<D, M>, N>
-//! where
-//!     G: GclkNum,
-//!     D: DpllNum + GclkSourceMarker,
-//!     M: SrcMode<D>,
-//!     N: Counter,
-//! {
-//!     type Type = D;
-//! }
-//! ```
-//!
-//! Regardless of how complicated it might seem to look, it can be roughly
-//! understood as:
-//! - Enabled [`Dpll`](super::dpll::Dpll) peripheral can be a source of signal
-//!   for any [`Gclk`](super::gclk::Gclk).
-//!
-//! ## `Source/SourceMarker` traits usage in an API
-//!
-//! This is a slightly simplified example of how more less every clocking
-//! component that relies on _one-to-many_ depenedency relationships is
-//! implemented
-//!
-//! ```no_run
-//! # use core::marker::PhantomData;
-//! # use typenum::U0;
-//! # use atsamd_hal::clock::v2::types::{Counter, Decrement, Increment};
-//! # use atsamd_hal::clock::v2::gclk::{GclkNum, GclkSourceMarker, GclkToken, GclkSource};
-//! # pub struct Enabled<T, N: Counter>(pub(crate) T, PhantomData<N>);
-//! # impl<T, N: Counter> Enabled<T, N> {
-//! #     pub(crate) fn new(t: T) -> Self {
-//! #         Enabled(t, PhantomData)
-//! #     }
-//! # }
-//! # struct Gclk<G: GclkNum, T: GclkSourceMarker> {
-//! #    token: GclkToken<G>,
-//! #    src: PhantomData<T>,
-//! # }
-//! impl<G, T> Gclk<G, T>
-//! where
-//!     // `GclkNum` is a generalization of a Gclk compile time parameters
-//!     // (e.g. ordering number via associated constant)
-//!     G: GclkNum,
-//!     // Practical application of `SourceMarker`; it makes a connection between
-//!     // `source: S` and a `Gclk` used by it. Otherwise, it would be possible to
-//!     // `fn free` a `Gclk` instance with *any* type implementing `GclkSource`;
-//!     // not only with the one that was used during a call to `fn new`.
-//!     T: GclkSourceMarker,
-//! {
-//!     pub fn new<S>(token: GclkToken<G>, source: S) -> (Self, S::Inc)
-//!     where
-//!         S: GclkSource<G, Type = T> + Increment,
-//!     {
-//!         // .. implementation details ..
-//!         let gclk = Gclk {
-//!             token,
-//! #           src: PhantomData,
-//!             /* ... */
-//!         };
-//!         (gclk, source.inc())
-//!     }
-//!
-//!     pub fn free<S>(self, source: S) -> (GclkToken<G>, S::Dec)
-//!     where
-//!         S: GclkSource<G, Type = T> + Decrement,
-//!     {
-//!         (self.token, source.dec())
-//!     }
-//!
-//!     pub fn enable(mut self) -> Enabled<Self, U0> {
-//!         // HW register writes
-//!         Enabled::new(self)
-//!     }
-//!     // Other functions operating on a disabled `Gclk<G, T>`
-//! }
-//! impl<G, T> Enabled<Gclk<G, T>, U0>
-//! where
-//!     G: GclkNum,
-//!     T: GclkSourceMarker,
-//! {
-//!     fn disable(mut self) -> Gclk<G, T> {
-//!         // HW register writes
-//!         self.0
-//!     }
-//! }
-//! ```
-//!
-//! [`Gclk::new`](super::gclk::Gclk::new) consumes, upon construction, a
-//! [`GclkSource`](super::gclk::GclkSource) provided to it and returns it
-//! with a type of `Enabled<_, N++>` (as mentioned previously, specializations
-//! of [`Enabled`] implement [`Source`](super::Source) based traits).
-//! Analogically, [`Gclk::free`](super::gclk::Gclk::free) consumes a
-//! [`GclkSource`](super::gclk::GclkSource) passed in and returns it with a
-//! new type of `Enabled<_, N-->`. By design it is impossible to go below
-//! [`zero`](typenum::U0), because the amount of users is always lesser or equal
-//! to a counter value.
-//!
-//! ## `Gclk0` case
-//!
-//! Amount of users might be less than a value of a counter in case of special
-//! types like [`Gclk0`](super::gclk::Gclk0) which always has an implicit
-//! single user -- synchronous clocking domain. Minimal amount of users for it
-//! is [`one`](typenum::U1), making it impossible to disable and therefore
-//! consistent with its documented HW characteristics.
-//!
-//! It also makes it impossible to change a configuration of a
-//! [`Gclk0`](super::gclk::Gclk0) as a `Enabled<Gclk0, _>` cannot be
-//! deconstructed. Therefore, `Enabled<Gclk0, U1>` exposes additional methods
-//! (like [`Enabled<Gclk0, U1>::swap`]) that are usually available only for
-//! disabled [`Gclks`](super::gclk::Gclk).
-//!
-//! ## `*Token` types
-//! Unfortunately, [`Peripherals`](crate::pac::Peripherals) granularity is too
-//! low for them to be useful when spliting clocking system into such small,
-//! semi-independent pieces. In order to solve this problem, we consume PAC
-//! in [`retrieve_clocks`](super::retrieve_clocks) and return a set of
-//! tokens that internally use appropriate `RegisterBlock` directly, retrieved
-//! from a raw pointer. It is safe because register regions managed by
-//! different tokens do not overlap. Tokens cannot be created by a user; they
-//! are provided during initialization and do not expose any public API. Memory
-//! accesses are read/write-synchronized.
+//! [`ahb`]: super::ahb
+//! [`apb`]: super::apb
+//! [`pclk`]: super::pclk
+//! [`sercom::v2`]: crate::sercom::v2
+//! [`Sercom0`]: crate::sercom::v2::Sercom0
+//! [`Sercom1`]: crate::sercom::v2::Sercom1
+
+use crate::typelevel::Sealed;
+
+#[cfg(feature = "min-samd51g")]
+pub use crate::sercom::v2::{Sercom0, Sercom1, Sercom2, Sercom3, Sercom4, Sercom5};
+#[cfg(feature = "min-samd51n")]
+pub use crate::sercom::v2::{Sercom6, Sercom7};
+
+macro_rules! create_types {
+    (
+        $(
+            $Type:ident
+        ),+
+    ) => {
+        $(
+            /// Marker type representing the corresponding peripheral
+            ///
+            /// This type is defined by and used within the [`clock`](super)
+            /// module. See the the [`types`](self) module documentation for
+            /// more details.
+            pub enum $Type {}
+            impl Sealed for $Type {}
+        )+
+    };
+}
+
+create_types!(Ac);
+create_types!(Adc0, Adc1);
+create_types!(Aes);
+#[cfg(any(feature = "same51", feature = "same53", feature = "same54"))]
+create_types!(Can0, Can1);
+create_types!(Ccl);
+create_types!(Cmcc);
+create_types!(CM4Trace);
+create_types!(Dac);
+create_types!(Dmac);
+create_types!(Dsu);
+create_types!(Eic);
+create_types!(
+    EvSys, EvSys0, EvSys1, EvSys2, EvSys3, EvSys4, EvSys5, EvSys6, EvSys7, EvSys8, EvSys9, EvSys10,
+    EvSys11
+);
+create_types!(FreqM);
+create_types!(FreqMMeasure);
+create_types!(FreqMReference);
+create_types!(Gclk);
+#[cfg(any(feature = "same53", feature = "same54"))]
+create_types!(Gmac);
+create_types!(Hpb0, Hpb1, Hpb2, Hpb3);
+create_types!(Icm);
+create_types!(Mclk);
+create_types!(NvmCtrl, NvmCtrlSmeeProm, NvmCtrlCache);
+#[cfg(feature = "min-samd51j")]
+create_types!(I2S, I2S0, I2S1);
+create_types!(OscCtrl);
+create_types!(Osc32kCtrl);
+create_types!(Pac);
+create_types!(Pcc);
+create_types!(PDec);
+create_types!(Pm);
+create_types!(Port);
+create_types!(Pukcc);
+create_types!(Qspi, Qspi2x);
+create_types!(RamEcc);
+create_types!(RstC);
+create_types!(Rtc);
+create_types!(Sdhc0);
+#[cfg(feature = "min-samd51n")]
+create_types!(Sdhc1);
+create_types!(SlowClk);
+create_types!(SupC);
+create_types!(Tc0Tc1, Tc0, Tc1);
+create_types!(Tc2Tc3, Tc2, Tc3);
+#[cfg(feature = "min-samd51j")]
+create_types!(Tc4Tc5, Tc4, Tc5);
+#[cfg(feature = "min-samd51n")]
+create_types!(Tc6Tc7, Tc6, Tc7);
+create_types!(Tcc0Tcc1, Tcc0, Tcc1);
+create_types!(Tcc2Tcc3, Tcc2);
+#[cfg(feature = "min-samd51j")]
+create_types!(Tcc3, Tcc4);
+create_types!(Trng);
+create_types!(Usb);
+create_types!(Wdt);

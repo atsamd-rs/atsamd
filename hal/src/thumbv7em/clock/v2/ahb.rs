@@ -26,6 +26,8 @@ use paste::paste;
 
 use crate::pac::{mclk, MCLK};
 
+use super::types::*;
+
 //==============================================================================
 // Registers
 //==============================================================================
@@ -81,59 +83,6 @@ pub trait AhbId: crate::typelevel::Sealed {
     const DYN: DynAhbId;
     /// Mask for the corresponding bit of the AHBMASK register
     const MASK: u32 = 1 << (Self::DYN as u8);
-}
-
-/// Enum of all AHB clocks
-///
-/// Note that this type is `repr(u8)` and each variant maps to the corresponding
-/// bit within the AHBMASK register.
-///
-/// This is the value-level equivalent of [`AhbId`].
-#[repr(u8)]
-#[allow(missing_docs)]
-pub enum DynAhbId {
-    Hpb0 = 0,
-    Hpb1 = 1,
-    Hpb2 = 2,
-    Hpb3 = 3,
-    Dsu = 4,
-    Nvmctrl = 6,
-    Cmcc = 8,
-    Dmac = 9,
-    Usb = 10,
-    Pac = 12,
-    Qspi = 13,
-    #[cfg(any(feature = "same53", feature = "same54"))]
-    Gmac = 14,
-    Sdhc0 = 15,
-    #[cfg(feature = "min-samd51n")]
-    Sdhc1 = 16,
-    #[cfg(any(feature = "same51", feature = "same53", feature = "same54"))]
-    Can0 = 17,
-    #[cfg(any(feature = "same51", feature = "same53", feature = "same54"))]
-    Can1 = 18,
-    Icm = 19,
-    Pukcc = 20,
-    Qspi2x = 21,
-    NvmCtrlSmeeProm = 22,
-    NvmCtrlCache = 23,
-}
-
-/// Create a type-level variant of [`AhbId`]
-macro_rules! ahb_id {
-    // If the type doesn't yet exist, define it
-    (false, $Type:ident) => {
-        /// Type-level variant of [`AhbId`] for the corresponding AHB clock
-        pub enum $Type {}
-        impl crate::typelevel::Sealed for $Type {}
-        ahb_id!(true, $Type);
-    };
-    // If the type does exist, implement `AhbId`
-    (true, $Type:ident) => {
-        impl AhbId for $Type {
-            const DYN: DynAhbId = DynAhbId::$Type;
-        }
-    };
 }
 
 //==============================================================================
@@ -200,14 +149,33 @@ macro_rules! ahb_clks {
     (
         $(
             $( #[$cfg:meta] )?
-            ($exists:literal, $Type:ident),
+            $Type:ident = $N:literal,
         )+
     ) => {
         paste! {
+            /// Value-level `enum` of all AHB clocks
+            ///
+            /// This is the value-level equivalent of the [type-level enum]
+            /// [`AhbId`]. When cast to an integer type, like `u8`, each variant
+            /// of this `enum` maps to the corresponding bit number within the
+            /// AHBMASK register.
+            ///
+            /// [type-level enum]: crate::typelevel#type-level-enum
+            #[allow(missing_docs)]
+            pub enum DynAhbId {
+                $(
+                    $( #[$cfg] )?
+                    $Type = $N,
+                )+
+            }
+
             $(
                 $( #[$cfg] )?
-                ahb_id!($exists, $Type);
+                impl AhbId for $Type {
+                    const DYN: DynAhbId = DynAhbId::$Type;
+                }
             )+
+
             /// Struct aggregating [`AhbClk`] type instances representing
             /// default states of synchronous peripheral clocks
             #[allow(missing_docs)]
@@ -233,29 +201,29 @@ macro_rules! ahb_clks {
 }
 
 ahb_clks!(
-    (false, Hpb0),
-    (false, Hpb1),
-    (false, Hpb2),
-    (false, Hpb3),
-    (false, Dsu),
-    (false, Nvmctrl),
-    (false, Cmcc),
-    (false, Dmac),
-    (false, Usb),
-    (false, Pac),
-    (false, Qspi),
+    Hpb0 = 0,
+    Hpb1 = 1,
+    Hpb2 = 2,
+    Hpb3 = 3,
+    Dsu = 4,
+    NvmCtrl = 6,
+    Cmcc = 8,
+    Dmac = 9,
+    Usb = 10,
+    Pac = 12,
+    Qspi = 13,
     #[cfg(any(feature = "same53", feature = "same54"))]
-    (false, Gmac),
-    (false, Sdhc0),
+    Gmac = 14,
+    Sdhc0 = 15,
     #[cfg(feature = "min-samd51n")]
-    (false, Sdhc1),
+    Sdhc1 = 16,
     #[cfg(any(feature = "same51", feature = "same53", feature = "same54"))]
-    (false, Can0),
+    Can0 = 17,
     #[cfg(any(feature = "same51", feature = "same53", feature = "same54"))]
-    (false, Can1),
-    (false, Icm),
-    (false, Pukcc),
-    (false, Qspi2x),
-    (false, NvmCtrlSmeeProm),
-    (false, NvmCtrlCache),
+    Can1 = 18,
+    Icm = 19,
+    Pukcc = 20,
+    Qspi2x = 21,
+    NvmCtrlSmeeProm = 22,
+    NvmCtrlCache = 23,
 );

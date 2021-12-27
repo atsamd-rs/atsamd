@@ -26,8 +26,9 @@ use paste::paste;
 
 use crate::pac::{mclk, MCLK};
 
-use crate::sercom::v2::*;
 use crate::typelevel::Sealed;
+
+use super::types::*;
 
 //==============================================================================
 // Registers
@@ -116,110 +117,13 @@ impl<A: ApbId> Registers<A> {
 // DynApbId
 //==============================================================================
 
-/// Enum of all APB clocks in bridge `A`
+/// Value-level `enum` of all APB clocks
 ///
-/// Note that this type is `repr(u8)` and each variant maps to the corresponding
-/// bit within the APBAMASK register.
-#[repr(u8)]
-#[allow(missing_docs)]
-pub enum DynApbAId {
-    Pac = 0,
-    Pm = 1,
-    Mclk = 2,
-    RstC = 3,
-    OscCtrl = 4,
-    Osc32kCtrl = 5,
-    SupC = 6,
-    Gclk = 7,
-    Wdt = 8,
-    Rtc = 9,
-    Eic = 10,
-    FreqM = 11,
-    Sercom0 = 12,
-    Sercom1 = 13,
-    Tc0 = 14,
-    Tc1 = 15,
-}
-
-/// Enum of all APB clocks in bridge `B`
+/// This is the value-level equivalent of the [type-level enum] [`ApbId`]. The
+/// contents of each variant can be cast to an integer type, like `u8`, to
+/// recover the clock's bit number within the corresponding `APBMASK` register.
 ///
-/// Note that this type is `repr(u8)` and each variant maps to the corresponding
-/// bit within the APBBMASK register.
-#[repr(u8)]
-#[allow(missing_docs)]
-pub enum DynApbBId {
-    Usb = 0,
-    Dsu = 1,
-    NvmCtrl = 2,
-    Port = 4,
-    EvSys = 7,
-    Sercom2 = 9,
-    Sercom3 = 10,
-    Tcc0 = 11,
-    Tcc1 = 12,
-    Tc2 = 13,
-    Tc3 = 14,
-    RamEcc = 16,
-}
-
-/// Enum of all APB clocks in bridge `C`
-///
-/// Note that this type is `repr(u8)` and each variant maps to the corresponding
-/// bit within the APBCMASK register.
-#[repr(u8)]
-#[allow(missing_docs)]
-pub enum DynApbCId {
-    #[cfg(any(feature = "same53", feature = "same54"))]
-    Gmac = 2,
-    Tcc2 = 3,
-    #[cfg(feature = "min-samd51j")]
-    Tcc3 = 4,
-    #[cfg(feature = "min-samd51j")]
-    Tc4 = 5,
-    #[cfg(feature = "min-samd51j")]
-    Tc5 = 6,
-    Pdec = 7,
-    Ac = 8,
-    Aes = 9,
-    Trng = 10,
-    Icm = 11,
-    Qspi = 13,
-    Ccl = 14,
-}
-
-/// Enum of all APB clocks in bridge `D`
-///
-/// Note that this type is `repr(u8)` and each variant maps to the corresponding
-/// bit within the APBDMASK register.
-#[repr(u8)]
-#[allow(missing_docs)]
-pub enum DynApbDId {
-    Sercom4 = 0,
-    Sercom5 = 1,
-    #[cfg(feature = "min-samd51n")]
-    Sercom6 = 2,
-    #[cfg(feature = "min-samd51n")]
-    Sercom7 = 3,
-    #[cfg(feature = "min-samd51j")]
-    Tcc4 = 4,
-    #[cfg(feature = "min-samd51n")]
-    Tc6 = 5,
-    #[cfg(feature = "min-samd51n")]
-    Tc7 = 6,
-    Adc0 = 7,
-    Adc1 = 8,
-    Dac = 9,
-    #[cfg(feature = "min-samd51j")]
-    I2S = 10,
-    Pcc = 11,
-}
-
-/// Enum of all APB clocks
-///
-/// Note that each variant of `ApbId` is `repr(u8)` and each maps its variants
-/// to the bit within the corresponding APB mask register.
-///
-/// This is the value-level equivalent of [`ApbId`].
+/// [type-level enum]: crate::typelevel#type-level-enum
 #[allow(missing_docs)]
 pub enum DynApbId {
     A(DynApbAId),
@@ -249,25 +153,6 @@ pub trait ApbId: Sealed {
             DynApbId::C(id) => id as u8,
             DynApbId::D(id) => id as u8,
         };
-}
-
-/// Macro implementing an [`ApbType`] for a marker type and defining one if
-/// necessary
-macro_rules! apb_id {
-    (false, $Reg:ident, $Type:ident) => {
-        /// Marker type implementing [`ApbType`] for a specific synchronous peripheral
-        /// clock
-        pub enum $Type {}
-        impl Sealed for $Type {}
-        apb_id!(true, $Reg, $Type);
-    };
-    (true, $Reg:ident, $Type:ident) => {
-        paste! {
-            impl ApbId for $Type {
-                const DYN: DynApbId = DynApbId::$Reg([<DynApb $Reg Id>]::$Type);
-            }
-        }
-    };
 }
 
 //==============================================================================
@@ -355,16 +240,31 @@ macro_rules! apb_clks {
             [
                 $(
                     $( #[$cfg:meta] )?
-                    ($exists:literal, $Type:ident, $init:ident),
+                    ($Type:ident = $N:literal, $init:ident),
                 )+
             ],
         )+
     ) => {
         paste! {
             $(
+                #[
+                    doc = "Value-level `enum` of all APB clocks in bridge `" $Reg "`\n\n"
+                    "When cast to an integer type, like `u8`, each variant maps "
+                    "to the corresponding bit within the `APB" $Reg "MASK` register."
+                ]
+                #[allow(missing_docs)]
+                pub enum [<DynApb $Reg Id>] {
+                    $(
+                        $( #[$cfg] )?
+                        $Type = $N,
+                    )+
+                }
+
                 $(
                     $( #[$cfg] )?
-                    apb_id!($exists, $Reg, $Type);
+                    impl ApbId for $Type {
+                        const DYN: DynApbId = DynApbId::$Reg([<DynApb $Reg Id>]::$Type);
+                    }
                 )+
             )+
             /// Struct aggregating [`ApbClk`] and [`ApbToken`] type instances
@@ -398,76 +298,76 @@ macro_rules! apb_clks {
 apb_clks!(
     A:
     [
-        (false, Pac, enabled),
-        (false, Pm, enabled),
-        (false, Mclk, enabled),
-        (false, RstC, enabled),
-        (false, OscCtrl, enabled),
-        (false, Osc32kCtrl, enabled),
-        (false, SupC, enabled),
-        (false, Gclk, enabled),
-        (false, Wdt, enabled),
-        (false, Rtc, enabled),
-        (false, Eic, enabled),
-        (false, FreqM, disabled),
-        (true, Sercom0, disabled),
-        (true, Sercom1, disabled),
-        (false, Tc0, disabled),
-        (false, Tc1, disabled),
+        (Pac = 0, enabled),
+        (Pm = 1, enabled),
+        (Mclk = 2, enabled),
+        (RstC = 3, enabled),
+        (OscCtrl = 4, enabled),
+        (Osc32kCtrl = 5, enabled),
+        (SupC = 6, enabled),
+        (Gclk = 7, enabled),
+        (Wdt = 8, enabled),
+        (Rtc = 9, enabled),
+        (Eic = 10, enabled),
+        (FreqM = 11, disabled),
+        (Sercom0 = 12, disabled),
+        (Sercom1 = 13, disabled),
+        (Tc0 = 14, disabled),
+        (Tc1 = 15, disabled),
     ],
     B:
     [
-        (false, Usb, disabled),
-        (false, Dsu, enabled),
-        (false, NvmCtrl, enabled),
-        (false, Port, enabled),
-        (false, EvSys, disabled),
-        (true, Sercom2, disabled),
-        (true, Sercom3, disabled),
-        (false, Tcc0, disabled),
-        (false, Tcc1, disabled),
-        (false, Tc2, disabled),
-        (false, Tc3, disabled),
-        (false, RamEcc, enabled),
+        (Usb = 0, disabled),
+        (Dsu = 1, enabled),
+        (NvmCtrl = 2, enabled),
+        (Port = 4, enabled),
+        (EvSys = 7, disabled),
+        (Sercom2 = 9, disabled),
+        (Sercom3 = 10, disabled),
+        (Tcc0 = 11, disabled),
+        (Tcc1 = 12, disabled),
+        (Tc2 = 13, disabled),
+        (Tc3 = 14, disabled),
+        (RamEcc = 16, enabled),
     ],
     C:
     [
         #[cfg(any(feature = "same53", feature = "same54"))]
-        (false, Gmac, enabled),
-        (false, Tcc2, disabled),
+        (Gmac = 2, enabled),
+        (Tcc2 = 3, disabled),
         #[cfg(feature = "min-samd51j")]
-        (false, Tcc3, disabled),
+        (Tcc3 = 4, disabled),
         #[cfg(feature = "min-samd51j")]
-        (false, Tc4, enabled),
+        (Tc4 = 5, enabled),
         #[cfg(feature = "min-samd51j")]
-        (false, Tc5, disabled),
-        (false, Pdec, disabled),
-        (false, Ac, disabled),
-        (false, Aes, disabled),
-        (false, Trng, disabled),
-        (false, Icm, disabled),
-        (false, Qspi, enabled),
-        (false, Ccl, disabled),
+        (Tc5 = 6, disabled),
+        (PDec = 7, disabled),
+        (Ac = 8, disabled),
+        (Aes = 9, disabled),
+        (Trng = 10, disabled),
+        (Icm = 11, disabled),
+        (Qspi = 13, enabled),
+        (Ccl = 14, disabled),
     ],
     D:
     [
-        (true, Sercom4, disabled),
-        (true, Sercom5, disabled),
+        (Sercom4 = 0, disabled),
+        (Sercom5 = 1, disabled),
         #[cfg(feature = "min-samd51n")]
-        (true, Sercom6, disabled),
+        (Sercom6 = 2, disabled),
         #[cfg(feature = "min-samd51n")]
-        (true, Sercom7, disabled),
+        (Sercom7 = 3, disabled),
         #[cfg(feature = "min-samd51j")]
-        (false, Tcc4, disabled),
+        (Tcc4 = 4, disabled),
         #[cfg(feature = "min-samd51n")]
-        (false, Tc6, disabled),
+        (Tc6 = 5, disabled),
         #[cfg(feature = "min-samd51n")]
-        (false, Tc7, disabled),
-        (false, Adc0, disabled),
-        (false, Adc1, disabled),
-        (false, Dac, disabled),
+        (Tc7 = 6, disabled),
+        (Adc0 = 7, disabled),
+        (Adc1 = 8, disabled),
+        (Dac = 9, disabled),
         #[cfg(feature = "min-samd51j")]
-        (false, I2S, disabled),
-        (false, Pcc, disabled),
+        (I2S = 10, disabled),
+        (Pcc = 11, disabled),
     ],
 );
