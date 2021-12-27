@@ -66,6 +66,7 @@ hal::bsp_pins!(
         name: a4
         aliases: {
             AlternateB: Analog4
+            AlternateD: IoSet3Sercom0Pad0
         }
     }
     PA06 {
@@ -73,6 +74,7 @@ hal::bsp_pins!(
         name: a5
         aliases: {
             AlternateB: Analog5
+            AlternateD: IoSet3Sercom0Pad2
         }
     }
     PA16 {

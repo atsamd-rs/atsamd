@@ -1,3 +1,9 @@
+# Unreleased
+
+- add `sercom_interrupt` example to show how to
+  - manually configure sercom for uart operation
+  - use sercom interrupts
+
 # 0.7.0
 
 - update bsp to use the v2 API
