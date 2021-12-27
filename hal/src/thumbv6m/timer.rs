@@ -10,7 +10,7 @@ use crate::pac::tc3::COUNT16;
 #[cfg(feature = "samd11")]
 use crate::pac::{PM, TC1};
 #[allow(unused)]
-#[cfg(any(feature = "samd20", feature = "samd21"))]
+#[cfg(feature = "samd2x")]
 use crate::pac::{PM, TC3, TC4, TC5};
 use crate::timer_params::TimerParams;
 

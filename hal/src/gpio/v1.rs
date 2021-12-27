@@ -80,7 +80,7 @@ pub type PfF = v2::AlternateF;
 /// Peripheral Function G
 pub type PfG = v2::AlternateG;
 /// Peripheral Function H
-#[cfg(any(feature = "samd20", feature = "samd21", feature = "min-samd51g"))]
+#[cfg(any(feature = "samd2x", feature = "min-samd51g"))]
 pub type PfH = v2::AlternateH;
 /// Peripheral Function I
 #[cfg(feature = "min-samd51g")]
@@ -256,7 +256,7 @@ where
     }
 
     /// Configures the pin to operate with a peripheral
-    #[cfg(any(feature = "samd20", feature = "samd21", feature = "min-samd51g"))]
+    #[cfg(any(feature = "samd2x", feature = "min-samd51g"))]
     #[allow(unused_variables)]
     #[inline]
     pub fn into_function_h(self, port: &mut Port) -> Pin<I, PfH> {
@@ -659,7 +659,7 @@ port!([
     (PA25, Pa25),
     #[cfg(not(feature = "samd11"))]
     (PA27, Pa27),
-    #[cfg(any(feature = "samd11", feature = "samd20", feature = "samd21"))]
+    #[cfg(any(feature = "samd11", feature = "samd2x"))]
     (PA28, Pa28),
     (PA30, Pa30),
     (PA31, Pa31),

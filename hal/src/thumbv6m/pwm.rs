@@ -10,7 +10,7 @@ use crate::pac::PM;
 use crate::pac::TCC0;
 #[cfg(feature = "samd11")]
 use crate::pac::{TC1, TC2};
-#[cfg(any(feature = "samd20", feature = "samd21"))]
+#[cfg(feature = "samd2x")]
 use crate::pac::{TC3, TC4, TC5};
 #[cfg(any(feature = "samd20j", feature = "samd21j"))]
 use crate::pac::{TC6, TC7};

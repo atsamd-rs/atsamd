@@ -341,7 +341,7 @@ macro_rules! alternate {
 
 alternate!(B, C, D, E, F, G);
 
-#[cfg(any(feature = "samd20", feature = "samd21", feature = "min-samd51g"))]
+#[cfg(any(feature = "samd2x", feature = "min-samd51g"))]
 alternate!(H);
 
 #[cfg(feature = "min-samd51g")]
@@ -749,7 +749,7 @@ impl_core_convert_from!(
     AlternateE,
     AlternateF,
     AlternateG,
-    #[cfg(any(feature = "samd20", feature = "samd21", feature = "min-samd51g"))]
+    #[cfg(any(feature = "samd2x", feature = "min-samd51g"))]
     AlternateH,
     #[cfg(feature = "min-samd51g")]
     AlternateI,
@@ -1110,7 +1110,7 @@ declare_pins!(
         (PA25, 25),
         #[cfg(not(feature = "samd11"))]
         (PA27, 27),
-        #[cfg(any(feature = "samd11", feature = "samd20", feature = "samd21"))]
+        #[cfg(any(feature = "samd11", feature = "samd2x"))]
         (PA28, 28),
         (PA30, 30),
         (PA31, 31),

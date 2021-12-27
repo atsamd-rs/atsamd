@@ -20,7 +20,7 @@ use crate::pac::{
     Peripherals, DMAC,
 };
 
-#[cfg(any(feature = "samd11", feature = "samd20", feature = "samd21"))]
+#[cfg(any(feature = "samd11", feature = "samd2x"))]
 use pac::dmac as channel_regs;
 
 #[cfg(feature = "min-samd51g")]
@@ -45,7 +45,7 @@ pub(super) trait Register<Id: ChId> {
     /// the CHID register, then access the channel control registers.
     /// If an interrupt were to change the CHID register and not reset it
     /// to the expected value, we would be faced with undefined behaviour.
-    #[cfg(any(feature = "samd11", feature = "samd20", feature = "samd21"))]
+    #[cfg(any(feature = "samd11", feature = "samd2x"))]
     #[inline]
     fn with_chid<F: FnOnce(&DMAC) -> R, R>(&mut self, fun: F) -> R {
         // SAFETY: This method is ONLY safe if the individual channels are GUARANTEED

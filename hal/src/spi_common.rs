@@ -7,7 +7,7 @@
 use crate::hal::spi::{Mode, Phase, Polarity};
 use crate::time::{Hertz, U32Ext};
 
-#[cfg(any(feature = "samd11", feature = "samd20", feature = "samd21"))]
+#[cfg(any(feature = "samd11", feature = "samd2x"))]
 use crate::pac::sercom0::SPI;
 
 #[cfg(any(

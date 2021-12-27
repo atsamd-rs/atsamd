@@ -10,7 +10,7 @@ use crate::clock;
 use crate::hal::spi::{FullDuplex, Mode, Phase, Polarity};
 use crate::pac::sercom0::SPI;
 use crate::pac::{PM, SERCOM0, SERCOM1};
-#[cfg(any(feature = "samd20", feature = "samd21"))]
+#[cfg(feature = "samd2x")]
 use crate::pac::{SERCOM2, SERCOM3};
 #[cfg(any(feature = "min-samd20j", feature = "min-samd21g"))]
 use crate::pac::{SERCOM4, SERCOM5};
@@ -297,9 +297,9 @@ macro_rules! spi_master {
 
 spi_master!(SPIMaster0: (Sercom0, SERCOM0, sercom0_, Sercom0CoreClock));
 spi_master!(SPIMaster1: (Sercom1, SERCOM1, sercom1_, Sercom1CoreClock));
-#[cfg(any(feature = "samd20", feature = "samd21"))]
+#[cfg(feature = "samd2x")]
 spi_master!(SPIMaster2: (Sercom2, SERCOM2, sercom2_, Sercom2CoreClock));
-#[cfg(any(feature = "samd20", feature = "samd21"))]
+#[cfg(feature = "samd2x")]
 spi_master!(SPIMaster3: (Sercom3, SERCOM3, sercom3_, Sercom3CoreClock));
 #[cfg(any(feature = "min-samd20j", feature = "min-samd21g"))]
 spi_master!(SPIMaster4: (Sercom4, SERCOM4, sercom4_, Sercom4CoreClock));

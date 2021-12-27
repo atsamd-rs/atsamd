@@ -5,7 +5,7 @@ use super::{BaudMode, BitOrder, CharSizeEnum, Flags, Oversampling, Parity, Statu
 use crate::pac;
 use crate::sercom::v2::*;
 
-#[cfg(any(feature = "samd11", feature = "samd20", feature = "samd21"))]
+#[cfg(any(feature = "samd11", feature = "samd2x"))]
 use pac::sercom0::usart::ctrla::MODE_A;
 
 #[cfg(feature = "min-samd51g")]
@@ -29,7 +29,7 @@ impl<S: Sercom> Registers<S> {
     }
 
     /// Helper function to access the underlying `USART` from the given `SERCOM`
-    #[cfg(any(feature = "samd11", feature = "samd20", feature = "samd21"))]
+    #[cfg(any(feature = "samd11", feature = "samd2x"))]
     #[inline]
     fn usart(&self) -> &pac::sercom0::USART {
         self.sercom.usart()

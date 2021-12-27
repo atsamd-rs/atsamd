@@ -13,11 +13,11 @@ use crate::pac;
 
 #[cfg(feature = "min-samd51g")]
 use pac::MCLK as APB_CLK_CTRL;
-#[cfg(any(feature = "samd11", feature = "samd20", feature = "samd21"))]
+#[cfg(any(feature = "samd11", feature = "samd2x"))]
 use pac::PM as APB_CLK_CTRL;
 
 use pac::{sercom0, SERCOM0, SERCOM1};
-#[cfg(any(feature = "samd20", feature = "samd21", feature = "min-samd51g"))]
+#[cfg(any(feature = "samd2x", feature = "min-samd51g"))]
 use pac::{SERCOM2, SERCOM3};
 #[cfg(any(
     feature = "min-samd20j",
@@ -85,9 +85,9 @@ macro_rules! sercom {
     };
 }
 
-#[cfg(any(feature = "samd11", feature = "samd20", feature = "samd21"))]
+#[cfg(any(feature = "samd11", feature = "samd2x"))]
 sercom!(apbcmask: (0, 1));
-#[cfg(any(feature = "samd20", feature = "samd21"))]
+#[cfg(feature = "samd2x")]
 sercom!(apbcmask: (2, 3));
 #[cfg(any(feature = "min-samd20j", feature = "min-samd21g"))]
 sercom!(apbcmask: (4, 5));

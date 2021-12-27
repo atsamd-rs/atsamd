@@ -237,7 +237,7 @@ ei!(ExtInt[7] {
 
 // SAMD21
 
-#[cfg(any(feature = "samd20", feature = "samd21"))]
+#[cfg(feature = "samd2x")]
 ei!(ExtInt[0] {
     Pa0,
     Pa16,
@@ -247,7 +247,7 @@ ei!(ExtInt[0] {
     Pb16,
 });
 
-#[cfg(any(feature = "samd20", feature = "samd21"))]
+#[cfg(feature = "samd2x")]
 ei!(ExtInt[1] {
     Pa1,
     Pa17,
@@ -257,7 +257,7 @@ ei!(ExtInt[1] {
     Pb17,
 });
 
-#[cfg(any(feature = "samd20", feature = "samd21"))]
+#[cfg(feature = "samd2x")]
 ei!(ExtInt[2] {
     Pa2,
     Pa18,
@@ -265,7 +265,7 @@ ei!(ExtInt[2] {
     Pb2,
 });
 
-#[cfg(any(feature = "samd20", feature = "samd21"))]
+#[cfg(feature = "samd2x")]
 ei!(ExtInt[3] {
     Pa3,
     Pa19,
@@ -273,7 +273,7 @@ ei!(ExtInt[3] {
     Pb3,
 });
 
-#[cfg(any(feature = "samd20", feature = "samd21"))]
+#[cfg(feature = "samd2x")]
 ei!(ExtInt[4] {
     Pa4,
     #[cfg(any(feature = "min-samd20j", feature = "min-samd21g"))]
@@ -282,7 +282,7 @@ ei!(ExtInt[4] {
     Pb4,
 });
 
-#[cfg(any(feature = "samd20", feature = "samd21"))]
+#[cfg(feature = "samd2x")]
 ei!(ExtInt[5] {
     Pa5,
     #[cfg(any(feature = "min-samd20j", feature = "min-samd21g"))]
@@ -291,7 +291,7 @@ ei!(ExtInt[5] {
     Pb5,
 });
 
-#[cfg(any(feature = "samd20", feature = "samd21"))]
+#[cfg(feature = "samd2x")]
 ei!(ExtInt[6] {
     Pa6,
     Pa22,
@@ -301,7 +301,7 @@ ei!(ExtInt[6] {
     Pb22,
 });
 
-#[cfg(any(feature = "samd20", feature = "samd21"))]
+#[cfg(feature = "samd2x")]
 ei!(ExtInt[7] {
     Pa7,
     Pa23,
@@ -311,21 +311,21 @@ ei!(ExtInt[7] {
     Pb23,
 });
 
-#[cfg(any(feature = "samd20", feature = "samd21"))]
+#[cfg(feature = "samd2x")]
 ei!(ExtInt[8] {
     Pa28,
     #[cfg(any(feature = "min-samd20j", feature = "min-samd21g"))]
     Pb8,
 });
 
-#[cfg(any(feature = "samd20", feature = "samd21"))]
+#[cfg(feature = "samd2x")]
 ei!(ExtInt[9] {
     Pa9,
     #[cfg(any(feature = "min-samd20j", feature = "min-samd21g"))]
     Pb9,
 });
 
-#[cfg(any(feature = "samd20", feature = "samd21"))]
+#[cfg(feature = "samd2x")]
 ei!(ExtInt[10] {
     Pa10,
     Pa30,
@@ -333,7 +333,7 @@ ei!(ExtInt[10] {
     Pb10,
 });
 
-#[cfg(any(feature = "samd20", feature = "samd21"))]
+#[cfg(feature = "samd2x")]
 ei!(ExtInt[11] {
    Pa11,
    Pa31,
@@ -341,7 +341,7 @@ ei!(ExtInt[11] {
    Pb11,
 });
 
-#[cfg(any(feature = "samd20", feature = "samd21"))]
+#[cfg(feature = "samd2x")]
 ei!(ExtInt[12] {
     #[cfg(any(feature = "min-samd20j", feature = "min-samd21g"))]
     Pa12,
@@ -350,7 +350,7 @@ ei!(ExtInt[12] {
     Pb12,
 });
 
-#[cfg(any(feature = "samd20", feature = "samd21"))]
+#[cfg(feature = "samd2x")]
 ei!(ExtInt[13] {
     #[cfg(any(feature = "min-samd20j", feature = "min-samd21g"))]
     Pa13,
@@ -359,7 +359,7 @@ ei!(ExtInt[13] {
     Pb13,
 });
 
-#[cfg(any(feature = "samd20", feature = "samd21"))]
+#[cfg(feature = "samd2x")]
 ei!(ExtInt[14] {
     Pa14,
     #[cfg(any(feature = "min-samd20j", feature = "min-samd21j"))]
@@ -368,7 +368,7 @@ ei!(ExtInt[14] {
     Pb30,
 });
 
-#[cfg(any(feature = "samd20", feature = "samd21"))]
+#[cfg(feature = "samd2x")]
 ei!(ExtInt[15] {
     Pa15,
     Pa27,

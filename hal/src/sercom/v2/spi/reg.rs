@@ -2,12 +2,12 @@ use core::convert::TryInto;
 
 use embedded_hal::spi;
 
-#[cfg(any(feature = "samd11", feature = "samd20", feature = "samd21"))]
+#[cfg(any(feature = "samd11", feature = "samd2x"))]
 use crate::pac::sercom0::SPI;
 #[cfg(feature = "min-samd51g")]
 use crate::pac::sercom0::SPIM;
 
-#[cfg(any(feature = "samd11", feature = "samd20", feature = "samd21"))]
+#[cfg(any(feature = "samd11", feature = "samd2x"))]
 use crate::pac::sercom0::spi::ctrla::MODE_A;
 #[cfg(feature = "min-samd51g")]
 use crate::pac::sercom0::spim::ctrla::MODE_A;
@@ -36,7 +36,7 @@ pub(super) struct Registers<S: Sercom> {
 unsafe impl<S: Sercom> Sync for Registers<S> {}
 
 impl<S: Sercom> Registers<S> {
-    #[cfg(any(feature = "samd11", feature = "samd20", feature = "samd21"))]
+    #[cfg(any(feature = "samd11", feature = "samd2x"))]
     #[inline]
     pub fn spi(&self) -> &SPI {
         self.sercom.spi()
@@ -119,7 +119,7 @@ impl<S: Sercom> Registers<S> {
     }
 
     /// Set the character size
-    #[cfg(any(feature = "samd11", feature = "samd20", feature = "samd21"))]
+    #[cfg(any(feature = "samd11", feature = "samd2x"))]
     #[inline]
     pub fn set_char_size(&mut self, bits: u8) {
         self.spi()

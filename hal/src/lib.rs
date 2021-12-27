@@ -128,9 +128,9 @@ compile_error!("'usb' is enabled, but USB isn't supported on SAMD11");
 ))]
 compile_error!("The 'usb' feature is enabled, but not a chip with USB support");
 
-#[cfg(any(feature = "samd11", feature = "samd20", feature = "samd21"))]
+#[cfg(any(feature = "samd11", feature = "samd2x"))]
 pub mod thumbv6m;
-#[cfg(any(feature = "samd11", feature = "samd20", feature = "samd21"))]
+#[cfg(any(feature = "samd11", feature = "samd2x"))]
 pub use crate::thumbv6m::*;
 
 #[cfg(feature = "min-samd51g")]
@@ -173,9 +173,9 @@ pub mod common {
     #[cfg(all(feature = "unproven", feature = "dma"))]
     pub use crate::dmac;
 
-    #[cfg(any(feature = "samd11", feature = "samd20", feature = "samd21"))]
+    #[cfg(any(feature = "samd11", feature = "samd2x"))]
     pub use crate::thumbv6m;
-    #[cfg(any(feature = "samd11", feature = "samd20", feature = "samd21"))]
+    #[cfg(any(feature = "samd11", feature = "samd2x"))]
     pub use crate::thumbv6m::*;
 
     #[cfg(feature = "min-samd51g")]

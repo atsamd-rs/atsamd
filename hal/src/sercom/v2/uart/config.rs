@@ -50,7 +50,7 @@ where
 
 /// Clock type needed to create a new [`Config`]. [`PM`](pac::PM) for thumbv6m
 /// targets.
-#[cfg(any(feature = "samd11", feature = "samd20", feature = "samd21"))]
+#[cfg(any(feature = "samd11", feature = "samd2x"))]
 pub type Clock = pac::PM;
 
 /// Clock type needed to create a new [`Config`]. [`MCLK`](pac::MCLK) for

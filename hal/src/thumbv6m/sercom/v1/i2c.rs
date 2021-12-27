@@ -4,7 +4,7 @@ use crate::clock;
 use crate::hal::blocking::i2c::{Read, Write, WriteRead};
 use crate::pac::sercom0::I2CM;
 use crate::pac::{PM, SERCOM0, SERCOM1};
-#[cfg(any(feature = "samd20", feature = "samd21"))]
+#[cfg(feature = "samd2x")]
 use crate::pac::{SERCOM2, SERCOM3};
 #[cfg(any(feature = "samd20", feature = "min-samd21g"))]
 use crate::pac::{SERCOM4, SERCOM5};
@@ -404,7 +404,7 @@ i2c!([
         ),
 ]);
 
-#[cfg(any(feature = "samd20", feature = "samd21"))]
+#[cfg(feature = "samd2x")]
 i2c!([
     I2CMaster2:
         (

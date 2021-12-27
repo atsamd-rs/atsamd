@@ -19,7 +19,7 @@ macro_rules! pad_info {
             type PinMode = Alternate<$Cfg>;
         }
 
-        #[cfg(any(feature = "samd20", feature = "samd21"))]
+        #[cfg(feature = "samd2x")]
         impl GetPad<$Sercom> for $PinId {
             type PadNum = $PadNum;
             type PinMode = Alternate<$Cfg>;
@@ -86,11 +86,11 @@ macro_rules! pad_table {
 }
 
 pad_table!(
-    #[cfg(any(feature = "samd20", feature = "samd21"))]
+    #[cfg(feature = "samd2x")]
     PA00 {
         D: (Sercom1, Pad0),
     }
-    #[cfg(any(feature = "samd20", feature = "samd21"))]
+    #[cfg(feature = "samd2x")]
     PA01 {
         D: (Sercom1, Pad1),
     }
@@ -104,11 +104,11 @@ pad_table!(
         C: (Sercom0, Pad3),
         D: (Sercom0, Pad1),
     }
-    #[cfg(any(feature = "samd20", feature = "samd21"))]
+    #[cfg(feature = "samd2x")]
     PA06 {
         D: (Sercom0, Pad2),
     }
-    #[cfg(any(feature = "samd20", feature = "samd21"))]
+    #[cfg(feature = "samd2x")]
     PA07 {
         D: (Sercom0, Pad3),
     }
@@ -117,9 +117,9 @@ pad_table!(
         C: (Sercom1, Pad2),
         #[cfg(feature = "samd11")]
         D: (Sercom0, Pad2),
-        #[cfg(any(feature = "samd20", feature = "samd21"))]
+        #[cfg(feature = "samd2x")]
         C: (Sercom0, Pad0),
-        #[cfg(any(feature = "samd20", feature = "samd21"))]
+        #[cfg(feature = "samd2x")]
         D: (Sercom2, Pad0),
     }
     PA09 {
@@ -127,17 +127,17 @@ pad_table!(
         C: (Sercom1, Pad3),
         #[cfg(feature = "samd11")]
         D: (Sercom0, Pad3),
-        #[cfg(any(feature = "samd20", feature = "samd21"))]
+        #[cfg(feature = "samd2x")]
         C: (Sercom0, Pad1),
-        #[cfg(any(feature = "samd20", feature = "samd21"))]
+        #[cfg(feature = "samd2x")]
         D: (Sercom2, Pad1),
     }
-    #[cfg(any(feature = "samd20", feature = "samd21"))]
+    #[cfg(feature = "samd2x")]
     PA10 {
         C: (Sercom0, Pad2),
         D: (Sercom2, Pad2),
     }
-    #[cfg(any(feature = "samd20", feature = "samd21"))]
+    #[cfg(feature = "samd2x")]
     PA11 {
         C: (Sercom0, Pad3),
         D: (Sercom2, Pad3),
@@ -155,7 +155,7 @@ pad_table!(
     PA14 {
         #[cfg(feature = "samd11")]
         C: (Sercom0, Pad0),
-        #[cfg(any(feature = "samd20", feature = "samd21"))]
+        #[cfg(feature = "samd2x")]
         C: (Sercom2, Pad2),
         #[cfg(any(feature = "min-samd20j", feature = "min-samd21g"))]
         D: (Sercom4, Pad2),
@@ -163,27 +163,27 @@ pad_table!(
     PA15 {
         #[cfg(feature = "samd11")]
         C: (Sercom0, Pad1),
-        #[cfg(any(feature = "samd20", feature = "samd21"))]
+        #[cfg(feature = "samd2x")]
         C: (Sercom2, Pad3),
         #[cfg(any(feature = "min-samd20j", feature = "min-samd21g"))]
         D: (Sercom4, Pad3),
     }
-    #[cfg(any(feature = "samd20", feature = "samd21"))]
+    #[cfg(feature = "samd2x")]
     PA16 {
         C: (Sercom1, Pad0),
         D: (Sercom3, Pad0),
     }
-    #[cfg(any(feature = "samd20", feature = "samd21"))]
+    #[cfg(feature = "samd2x")]
     PA17 {
         C: (Sercom1, Pad1),
         D: (Sercom3, Pad1),
     }
-    #[cfg(any(feature = "samd20", feature = "samd21"))]
+    #[cfg(feature = "samd2x")]
     PA18 {
         C: (Sercom1, Pad2),
         D: (Sercom3, Pad2),
     }
-    #[cfg(any(feature = "samd20", feature = "samd21"))]
+    #[cfg(feature = "samd2x")]
     PA19 {
         C: (Sercom1, Pad3),
         D: (Sercom3, Pad3),
@@ -199,13 +199,13 @@ pad_table!(
         D: (Sercom3, Pad3),
     }
     PA22 {
-        #[cfg(any(feature = "samd20", feature = "samd21"))]
+        #[cfg(feature = "samd2x")]
         C: (Sercom3, Pad0),
         #[cfg(any(feature = "min-samd20j", feature = "min-samd21g"))]
         D: (Sercom5, Pad0),
     }
     PA23 {
-        #[cfg(any(feature = "samd20", feature = "samd21"))]
+        #[cfg(feature = "samd2x")]
         C: (Sercom3, Pad1),
         #[cfg(any(feature = "min-samd20j", feature = "min-samd21g"))]
         D: (Sercom5, Pad1),
@@ -213,7 +213,7 @@ pad_table!(
     PA24 {
         #[cfg(feature = "samd11")]
         C: (Sercom1, Pad2),
-        #[cfg(any(feature = "samd20", feature = "samd21"))]
+        #[cfg(feature = "samd2x")]
         C: (Sercom3, Pad2),
         #[cfg(any(feature = "min-samd20j", feature = "min-samd21g"))]
         D: (Sercom5, Pad2),
@@ -221,7 +221,7 @@ pad_table!(
     PA25 {
         #[cfg(feature = "samd11")]
         C: (Sercom1, Pad3),
-        #[cfg(any(feature = "samd20", feature = "samd21"))]
+        #[cfg(feature = "samd2x")]
         C: (Sercom3, Pad3),
         #[cfg(any(feature = "min-samd20j", feature = "min-samd21g"))]
         D: (Sercom5, Pad3),

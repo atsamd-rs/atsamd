@@ -125,7 +125,7 @@ macro_rules! pad_alias {
 }
 
 pad_alias!(Sercom0, Sercom1);
-#[cfg(any(feature = "samd20", feature = "samd21", feature = "min-samd51g"))]
+#[cfg(any(feature = "samd2x", feature = "min-samd51g"))]
 pad_alias!(Sercom2, Sercom3);
 #[cfg(any(
     feature = "min-samd20j",
