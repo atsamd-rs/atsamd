@@ -34,8 +34,8 @@ fn main() -> ! {
         &mut peripherals.SYSCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = bsp::Pins::new(peripherals.PORT);
-    let mut red_led = pins.d13.into_open_drain_output(&mut pins.port);
+    let pins = bsp::Pins::new(peripherals.PORT);
+    let mut red_led: bsp::RedLed = pins.d13.into();
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
     let spi = bsp::spi_master(
@@ -43,14 +43,13 @@ fn main() -> ! {
         MegaHertz(10),
         peripherals.SERCOM4,
         &mut peripherals.PM,
-        pins.sck,
+        pins.sclk,
         pins.mosi,
         pins.miso,
-        &mut pins.port,
     );
 
-    let dc = pins.d9.into_open_drain_output(&mut pins.port);
-    let mut rst = pins.d7.into_open_drain_output(&mut pins.port);
+    let dc = pins.d7.into_push_pull_output();
+    let mut rst = pins.d9.into_push_pull_output();
 
     // NOTE the `DisplaySize` enum comes from the ssd1306 package,
     // and currently only supports certain display sizes; see

@@ -8,8 +8,8 @@ use itsybitsy_m0 as bsp;
 use panic_halt as _;
 #[cfg(feature = "use_semihosting")]
 use panic_semihosting as _;
-use usb_device;
-use usbd_hid;
+/// TODO use usb_device;
+/// TODO use usbd_hid;
 
 use bsp::entry;
 use hal::clock::GenericClockController;
@@ -37,8 +37,8 @@ fn main() -> ! {
         &mut peripherals.SYSCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = bsp::Pins::new(peripherals.PORT);
-    let mut red_led = pins.d13.into_open_drain_output(&mut pins.port);
+    let pins = bsp::Pins::new(peripherals.PORT);
+    let mut red_led: bsp::RedLed = pins.d13.into();
     red_led.set_low().unwrap();
 
     let bus_allocator = unsafe {

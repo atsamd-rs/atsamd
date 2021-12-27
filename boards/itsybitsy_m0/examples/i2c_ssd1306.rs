@@ -34,8 +34,8 @@ fn main() -> ! {
         &mut peripherals.SYSCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = bsp::Pins::new(peripherals.PORT);
-    let mut red_led = pins.d13.into_open_drain_output(&mut pins.port);
+    let pins = bsp::Pins::new(peripherals.PORT);
+    let mut red_led: bsp::RedLed = pins.d13.into();
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
     let i2c = bsp::i2c_master(
@@ -45,7 +45,6 @@ fn main() -> ! {
         &mut peripherals.PM,
         pins.sda,
         pins.scl,
-        &mut pins.port,
     );
 
     // NOTE the `DisplaySize` enum comes from the ssd1306 package,

@@ -14,7 +14,8 @@ use hal::clock::GenericClockController;
 use hal::delay::Delay;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
-use hal::timer::SpinTimer;
+use hal::time::MegaHertz;
+use hal::timer::TimerCounter;
 
 use smart_leds::{hsv::RGB8, SmartLedsWrite};
 
@@ -56,9 +57,22 @@ fn main() -> ! {
     );
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
-    let mut pins = bsp::Pins::new(peripherals.PORT).split();
+    let pins = bsp::Pins::new(peripherals.PORT);
 
-    let mut rgb = pins.dotstar.init(SpinTimer::new(12), &mut pins.port);
+    // gclk0 represents a configured clock using the system 48MHz oscillator
+    let gclk0 = clocks.gclk0();
+    // configure a clock for the TC4 and TC5 peripherals
+    let tc45 = &clocks.tc4_tc5(&gclk0).unwrap();
+    // instantiate a timer objec for the TC4 peripheral
+    let mut timer = TimerCounter::tc4_(tc45, peripherals.TC4, &mut peripherals.PM);
+    // start a 4 MHz timer
+    timer.start(MegaHertz(4));
+    let mut rgb = bsp::dotstar_bitbang(
+        pins.dotstar_miso.into(),
+        pins.dotstar_mosi.into(),
+        pins.dotstar_sck.into(),
+        timer,
+    );
 
     let mut val: u8 = 0;
     loop {
