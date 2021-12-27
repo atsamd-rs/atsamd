@@ -241,9 +241,9 @@ ei!(ExtInt[7] {
 ei!(ExtInt[0] {
     Pa0,
     Pa16,
-    #[cfg(any(feature = "min-samd20j", feature = "min-samd21j"))]
+    #[cfg(feature = "min-samd2x")]
     Pb0,
-    #[cfg(any(feature = "min-samd20j", feature = "min-samd21j"))]
+    #[cfg(feature = "min-samd2x")]
     Pb16,
 });
 
@@ -251,9 +251,9 @@ ei!(ExtInt[0] {
 ei!(ExtInt[1] {
     Pa1,
     Pa17,
-    #[cfg(any(feature = "min-samd20j", feature = "min-samd21j"))]
+    #[cfg(feature = "min-samd2x")]
     Pb1,
-    #[cfg(any(feature = "min-samd20j", feature = "min-samd21j"))]
+    #[cfg(feature = "min-samd2x")]
     Pb17,
 });
 
@@ -261,7 +261,7 @@ ei!(ExtInt[1] {
 ei!(ExtInt[2] {
     Pa2,
     Pa18,
-    #[cfg(any(feature = "min-samd20j", feature = "min-samd21g"))]
+    #[cfg(feature = "min-samd2x")]
     Pb2,
 });
 
@@ -269,25 +269,25 @@ ei!(ExtInt[2] {
 ei!(ExtInt[3] {
     Pa3,
     Pa19,
-    #[cfg(any(feature = "min-samd20j", feature = "min-samd21g"))]
+    #[cfg(feature = "min-samd2x")]
     Pb3,
 });
 
 #[cfg(feature = "samd2x")]
 ei!(ExtInt[4] {
     Pa4,
-    #[cfg(any(feature = "min-samd20j", feature = "min-samd21g"))]
+    #[cfg(feature = "min-samd2x")]
     Pa20,
-    #[cfg(any(feature = "min-samd20j", feature = "min-samd21j"))]
+    #[cfg(feature = "min-samd2x")]
     Pb4,
 });
 
 #[cfg(feature = "samd2x")]
 ei!(ExtInt[5] {
     Pa5,
-    #[cfg(any(feature = "min-samd20j", feature = "min-samd21g"))]
+    #[cfg(feature = "min-samd2x")]
     Pa21,
-    #[cfg(any(feature = "min-samd20j", feature = "min-samd21j"))]
+    #[cfg(feature = "min-samd2x")]
     Pb5,
 });
 
@@ -295,9 +295,9 @@ ei!(ExtInt[5] {
 ei!(ExtInt[6] {
     Pa6,
     Pa22,
-    #[cfg(any(feature = "min-samd20j", feature = "min-samd21j"))]
+    #[cfg(feature = "min-samd2x")]
     Pb6,
-    #[cfg(any(feature = "min-samd20j", feature = "min-samd21g"))]
+    #[cfg(feature = "min-samd2x")]
     Pb22,
 });
 
@@ -305,23 +305,23 @@ ei!(ExtInt[6] {
 ei!(ExtInt[7] {
     Pa7,
     Pa23,
-    #[cfg(any(feature = "min-samd20j", feature = "min-samd21j"))]
+    #[cfg(feature = "min-samd2x")]
     Pb7,
-    #[cfg(any(feature = "min-samd20j", feature = "min-samd21g"))]
+    #[cfg(feature = "min-samd2x")]
     Pb23,
 });
 
 #[cfg(feature = "samd2x")]
 ei!(ExtInt[8] {
     Pa28,
-    #[cfg(any(feature = "min-samd20j", feature = "min-samd21g"))]
+    #[cfg(feature = "min-samd2x")]
     Pb8,
 });
 
 #[cfg(feature = "samd2x")]
 ei!(ExtInt[9] {
     Pa9,
-    #[cfg(any(feature = "min-samd20j", feature = "min-samd21g"))]
+    #[cfg(feature = "min-samd2x")]
     Pb9,
 });
 
@@ -329,7 +329,7 @@ ei!(ExtInt[9] {
 ei!(ExtInt[10] {
     Pa10,
     Pa30,
-    #[cfg(any(feature = "min-samd20j", feature = "min-samd21g"))]
+    #[cfg(feature = "min-samd2x")]
     Pb10,
 });
 
@@ -337,34 +337,34 @@ ei!(ExtInt[10] {
 ei!(ExtInt[11] {
    Pa11,
    Pa31,
-   #[cfg(any(feature = "min-samd20j", feature = "min-samd21g"))]
+   #[cfg(feature = "min-samd2x")]
    Pb11,
 });
 
 #[cfg(feature = "samd2x")]
 ei!(ExtInt[12] {
-    #[cfg(any(feature = "min-samd20j", feature = "min-samd21g"))]
+    #[cfg(feature = "min-samd2x")]
     Pa12,
     Pa24,
-    #[cfg(any(feature = "min-samd20j", feature = "min-samd21j"))]
+    #[cfg(feature = "min-samd2x")]
     Pb12,
 });
 
 #[cfg(feature = "samd2x")]
 ei!(ExtInt[13] {
-    #[cfg(any(feature = "min-samd20j", feature = "min-samd21g"))]
+    #[cfg(feature = "min-samd2x")]
     Pa13,
     Pa25,
-    #[cfg(any(feature = "min-samd20j", feature = "min-samd21j"))]
+    #[cfg(feature = "min-samd2x")]
     Pb13,
 });
 
 #[cfg(feature = "samd2x")]
 ei!(ExtInt[14] {
     Pa14,
-    #[cfg(any(feature = "min-samd20j", feature = "min-samd21j"))]
+    #[cfg(feature = "min-samd2x")]
     Pb14,
-    #[cfg(any(feature = "min-samd20j", feature = "min-samd21j"))]
+    #[cfg(feature = "min-samd2x")]
     Pb30,
 });
 
@@ -372,8 +372,8 @@ ei!(ExtInt[14] {
 ei!(ExtInt[15] {
     Pa15,
     Pa27,
-    #[cfg(any(feature = "min-samd20j", feature = "min-samd21j"))]
+    #[cfg(feature = "min-samd2x")]
     Pb15,
-    #[cfg(any(feature = "min-samd20j", feature = "min-samd21j"))]
+    #[cfg(feature = "min-samd2x")]
     Pb31,
 });

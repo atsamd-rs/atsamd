@@ -617,17 +617,9 @@ port!([
     (PA10, Pa10),
     #[cfg(not(feature = "samd11"))]
     (PA11, Pa11),
-    #[cfg(any(
-        feature = "min-samd20j",
-        feature = "min-samd21g",
-        feature = "min-samd51g"
-    ))]
+    #[cfg(any(feature = "min-samd2x", feature = "min-samd51g"))]
     (PA12, Pa12),
-    #[cfg(any(
-        feature = "min-samd20j",
-        feature = "min-samd21g",
-        feature = "min-samd51g"
-    ))]
+    #[cfg(any(feature = "min-samd2x", feature = "min-samd51g"))]
     (PA13, Pa13),
     (PA14, Pa14),
     (PA15, Pa15),
@@ -639,17 +631,9 @@ port!([
     (PA18, Pa18),
     #[cfg(not(feature = "samd11"))]
     (PA19, Pa19),
-    #[cfg(any(
-        feature = "min-samd20j",
-        feature = "min-samd21g",
-        feature = "min-samd51g"
-    ))]
+    #[cfg(any(feature = "min-samd2x", feature = "min-samd51g"))]
     (PA20, Pa20),
-    #[cfg(any(
-        feature = "min-samd20j",
-        feature = "min-samd21g",
-        feature = "min-samd51g"
-    ))]
+    #[cfg(any(feature = "min-samd2x", feature = "min-samd51g"))]
     (PA21, Pa21),
     #[cfg(not(feature = "samd11c"))]
     (PA22, Pa22),
@@ -663,113 +647,41 @@ port!([
     (PA28, Pa28),
     (PA30, Pa30),
     (PA31, Pa31),
-    #[cfg(any(
-        feature = "min-samd20j",
-        feature = "min-samd21j",
-        feature = "min-samd51j"
-    ))]
+    #[cfg(any(feature = "min-samd2x", feature = "min-samd51g"))]
     (PB00, Pb0),
-    #[cfg(any(
-        feature = "min-samd20j",
-        feature = "min-samd21j",
-        feature = "min-samd51j"
-    ))]
+    #[cfg(any(feature = "min-samd2x", feature = "min-samd51g"))]
     (PB01, Pb1),
-    #[cfg(any(
-        feature = "min-samd20j",
-        feature = "min-samd21g",
-        feature = "min-samd51g"
-    ))]
+    #[cfg(any(feature = "min-samd2x", feature = "min-samd51g"))]
     (PB02, Pb2),
-    #[cfg(any(
-        feature = "min-samd20j",
-        feature = "min-samd21g",
-        feature = "min-samd51g"
-    ))]
+    #[cfg(any(feature = "min-samd2x", feature = "min-samd51g"))]
     (PB03, Pb3),
-    #[cfg(any(
-        feature = "min-samd20j",
-        feature = "min-samd21j",
-        feature = "min-samd51j"
-    ))]
+    #[cfg(any(feature = "min-samd2x", feature = "min-samd51g"))]
     (PB04, Pb4),
-    #[cfg(any(
-        feature = "min-samd20j",
-        feature = "min-samd21j",
-        feature = "min-samd51j"
-    ))]
+    #[cfg(any(feature = "min-samd2x", feature = "min-samd51g"))]
     (PB05, Pb5),
-    #[cfg(any(
-        feature = "min-samd20j",
-        feature = "min-samd21j",
-        feature = "min-samd51j"
-    ))]
+    #[cfg(any(feature = "min-samd2x", feature = "min-samd51g"))]
     (PB06, Pb6),
-    #[cfg(any(
-        feature = "min-samd20j",
-        feature = "min-samd21j",
-        feature = "min-samd51j"
-    ))]
+    #[cfg(any(feature = "min-samd2x", feature = "min-samd51g"))]
     (PB07, Pb7),
-    #[cfg(any(
-        feature = "min-samd20j",
-        feature = "min-samd21g",
-        feature = "min-samd51g"
-    ))]
+    #[cfg(any(feature = "min-samd2x", feature = "min-samd51g"))]
     (PB08, Pb8),
-    #[cfg(any(
-        feature = "min-samd20j",
-        feature = "min-samd21g",
-        feature = "min-samd51g"
-    ))]
+    #[cfg(any(feature = "min-samd2x", feature = "min-samd51g"))]
     (PB09, Pb9),
-    #[cfg(any(
-        feature = "min-samd20j",
-        feature = "min-samd21g",
-        feature = "min-samd51g"
-    ))]
+    #[cfg(any(feature = "min-samd2x", feature = "min-samd51g"))]
     (PB10, Pb10),
-    #[cfg(any(
-        feature = "min-samd20j",
-        feature = "min-samd21g",
-        feature = "min-samd51g"
-    ))]
+    #[cfg(any(feature = "min-samd2x", feature = "min-samd51g"))]
     (PB11, Pb11),
-    #[cfg(any(
-        feature = "min-samd20j",
-        feature = "min-samd21j",
-        feature = "min-samd51j"
-    ))]
+    #[cfg(any(feature = "min-samd2x", feature = "min-samd51g"))]
     (PB12, Pb12),
-    #[cfg(any(
-        feature = "min-samd20j",
-        feature = "min-samd21j",
-        feature = "min-samd51j"
-    ))]
+    #[cfg(any(feature = "min-samd2x", feature = "min-samd51g"))]
     (PB13, Pb13),
-    #[cfg(any(
-        feature = "min-samd20j",
-        feature = "min-samd21j",
-        feature = "min-samd51j"
-    ))]
+    #[cfg(any(feature = "min-samd2x", feature = "min-samd51g"))]
     (PB14, Pb14),
-    #[cfg(any(
-        feature = "min-samd20j",
-        feature = "min-samd21j",
-        feature = "min-samd51j"
-    ))]
+    #[cfg(any(feature = "min-samd2x", feature = "min-samd51g"))]
     (PB15, Pb15),
-    #[cfg(any(
-        feature = "min-samd20j",
-        feature = "min-samd21j",
-        feature = "min-samd51j"
-    ))]
+    #[cfg(any(feature = "min-samd2x", feature = "min-samd51g"))]
     (PB16, Pb16),
-    #[cfg(any(
-        feature = "min-samd20j",
-        feature = "min-samd21j",
-        feature = "min-samd51j"
-    ))]
+    #[cfg(any(feature = "min-samd2x", feature = "min-samd51g"))]
     (PB17, Pb17),
     #[cfg(any(feature = "min-samd51n"))]
     (PB18, Pb18),
@@ -779,17 +691,9 @@ port!([
     (PB20, Pb20),
     #[cfg(any(feature = "min-samd51n"))]
     (PB21, Pb21),
-    #[cfg(any(
-        feature = "min-samd20j",
-        feature = "min-samd21g",
-        feature = "min-samd51g"
-    ))]
+    #[cfg(any(feature = "min-samd2x", feature = "min-samd51g"))]
     (PB22, Pb22),
-    #[cfg(any(
-        feature = "min-samd20j",
-        feature = "min-samd21g",
-        feature = "min-samd51g"
-    ))]
+    #[cfg(any(feature = "min-samd2x", feature = "min-samd51g"))]
     (PB23, Pb23),
     #[cfg(any(feature = "min-samd51n"))]
     (PB24, Pb24),
@@ -803,17 +707,9 @@ port!([
     (PB28, Pb28),
     #[cfg(any(feature = "min-samd51p"))]
     (PB29, Pb29),
-    #[cfg(any(
-        feature = "min-samd20j",
-        feature = "min-samd21j",
-        feature = "min-samd51j"
-    ))]
+    #[cfg(any(feature = "min-samd2x", feature = "min-samd51g"))]
     (PB30, Pb30),
-    #[cfg(any(
-        feature = "min-samd20j",
-        feature = "min-samd21j",
-        feature = "min-samd51j"
-    ))]
+    #[cfg(any(feature = "min-samd2x", feature = "min-samd51g"))]
     (PB31, Pb31),
     #[cfg(any(feature = "min-samd51n"))]
     (PC00, Pc0),

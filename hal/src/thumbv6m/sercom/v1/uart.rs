@@ -524,9 +524,9 @@ uart!(UART1: (Sercom1, SERCOM1, sercom1_, Sercom1CoreClock));
 uart!(UART2: (Sercom2, SERCOM2, sercom2_, Sercom2CoreClock));
 #[cfg(feature = "samd2x")]
 uart!(UART3: (Sercom3, SERCOM3, sercom3_, Sercom3CoreClock));
-#[cfg(any(feature = "min-samd20j", feature = "min-samd21g"))]
+#[cfg(feature = "min-samd2x")]
 uart!(UART4: (Sercom4, SERCOM4, sercom4_, Sercom4CoreClock));
-#[cfg(any(feature = "min-samd20j", feature = "min-samd21g"))]
+#[cfg(feature = "min-samd2x")]
 uart!(UART5: (Sercom5, SERCOM5, sercom5_, Sercom5CoreClock));
 
 const SHIFT: u8 = 32;

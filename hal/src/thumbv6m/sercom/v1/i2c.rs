@@ -424,7 +424,7 @@ i2c!([
         ),
 ]);
 
-#[cfg(any(feature = "min-samd20j", feature = "min-samd21g"))]
+#[cfg(feature = "min-samd2x")]
 i2c!([
     I2CMaster4:
         (

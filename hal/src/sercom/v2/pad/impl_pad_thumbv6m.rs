@@ -142,12 +142,12 @@ pad_table!(
         C: (Sercom0, Pad3),
         D: (Sercom2, Pad3),
     }
-    #[cfg(any(feature = "min-samd20j", feature = "min-samd21g"))]
+    #[cfg(feature = "min-samd2x")]
     PA12 {
         C: (Sercom2, Pad0),
         D: (Sercom4, Pad0),
     }
-    #[cfg(any(feature = "min-samd20j", feature = "min-samd21g"))]
+    #[cfg(feature = "min-samd2x")]
     PA13 {
         C: (Sercom2, Pad1),
         D: (Sercom4, Pad1),
@@ -157,7 +157,7 @@ pad_table!(
         C: (Sercom0, Pad0),
         #[cfg(feature = "samd2x")]
         C: (Sercom2, Pad2),
-        #[cfg(any(feature = "min-samd20j", feature = "min-samd21g"))]
+        #[cfg(feature = "min-samd2x")]
         D: (Sercom4, Pad2),
     }
     PA15 {
@@ -165,7 +165,7 @@ pad_table!(
         C: (Sercom0, Pad1),
         #[cfg(feature = "samd2x")]
         C: (Sercom2, Pad3),
-        #[cfg(any(feature = "min-samd20j", feature = "min-samd21g"))]
+        #[cfg(feature = "min-samd2x")]
         D: (Sercom4, Pad3),
     }
     #[cfg(feature = "samd2x")]
@@ -188,12 +188,12 @@ pad_table!(
         C: (Sercom1, Pad3),
         D: (Sercom3, Pad3),
     }
-    #[cfg(any(feature = "min-samd20j", feature = "min-samd21g"))]
+    #[cfg(feature = "min-samd2x")]
     PA20 {
         C: (Sercom5, Pad2),
         D: (Sercom3, Pad2),
     }
-    #[cfg(any(feature = "min-samd20j", feature = "min-samd21g"))]
+    #[cfg(feature = "min-samd2x")]
     PA21 {
         C: (Sercom5, Pad3),
         D: (Sercom3, Pad3),
@@ -201,13 +201,13 @@ pad_table!(
     PA22 {
         #[cfg(feature = "samd2x")]
         C: (Sercom3, Pad0),
-        #[cfg(any(feature = "min-samd20j", feature = "min-samd21g"))]
+        #[cfg(feature = "min-samd2x")]
         D: (Sercom5, Pad0),
     }
     PA23 {
         #[cfg(feature = "samd2x")]
         C: (Sercom3, Pad1),
-        #[cfg(any(feature = "min-samd20j", feature = "min-samd21g"))]
+        #[cfg(feature = "min-samd2x")]
         D: (Sercom5, Pad1),
     }
     PA24 {
@@ -215,7 +215,7 @@ pad_table!(
         C: (Sercom1, Pad2),
         #[cfg(feature = "samd2x")]
         C: (Sercom3, Pad2),
-        #[cfg(any(feature = "min-samd20j", feature = "min-samd21g"))]
+        #[cfg(feature = "min-samd2x")]
         D: (Sercom5, Pad2),
     }
     PA25 {
@@ -223,7 +223,7 @@ pad_table!(
         C: (Sercom1, Pad3),
         #[cfg(feature = "samd2x")]
         C: (Sercom3, Pad3),
-        #[cfg(any(feature = "min-samd20j", feature = "min-samd21g"))]
+        #[cfg(feature = "min-samd2x")]
         D: (Sercom5, Pad3),
     }
     PA30 {
@@ -236,75 +236,75 @@ pad_table!(
         C: (Sercom1, Pad1),
         D: (Sercom1, Pad3),
     }
-    #[cfg(any(feature = "min-samd20j", feature = "min-samd21j"))]
+    #[cfg(feature = "min-samd2x")]
     PB00 {
         D: (Sercom5, Pad2),
     }
-    #[cfg(any(feature = "min-samd20j", feature = "min-samd21j"))]
+    #[cfg(feature = "min-samd2x")]
     PB01 {
         D: (Sercom5, Pad3),
     }
-    #[cfg(any(feature = "min-samd20j", feature = "min-samd21g"))]
+    #[cfg(feature = "min-samd2x")]
     PB02 {
         D: (Sercom5, Pad0),
     }
-    #[cfg(any(feature = "min-samd20j", feature = "min-samd21g"))]
+    #[cfg(feature = "min-samd2x")]
     PB03 {
         D: (Sercom5, Pad1),
     }
-    #[cfg(any(feature = "min-samd20j", feature = "min-samd21g"))]
+    #[cfg(feature = "min-samd2x")]
     PB08 {
         D: (Sercom4, Pad0),
     }
-    #[cfg(any(feature = "min-samd20j", feature = "min-samd21g"))]
+    #[cfg(feature = "min-samd2x")]
     PB09 {
         D: (Sercom4, Pad1),
     }
-    #[cfg(any(feature = "min-samd20j", feature = "min-samd21g"))]
+    #[cfg(feature = "min-samd2x")]
     PB10 {
         D: (Sercom4, Pad2),
     }
-    #[cfg(any(feature = "min-samd20j", feature = "min-samd21g"))]
+    #[cfg(feature = "min-samd2x")]
     PB11 {
         D: (Sercom4, Pad3),
     }
-    #[cfg(any(feature = "min-samd20j", feature = "min-samd21j"))]
+    #[cfg(feature = "min-samd2x")]
     PB12 {
         C: (Sercom4, Pad0),
     }
-    #[cfg(any(feature = "min-samd20j", feature = "min-samd21j"))]
+    #[cfg(feature = "min-samd2x")]
     PB13 {
         C: (Sercom4, Pad1),
     }
-    #[cfg(any(feature = "min-samd20j", feature = "min-samd21j"))]
+    #[cfg(feature = "min-samd2x")]
     PB14 {
         C: (Sercom4, Pad2),
     }
-    #[cfg(any(feature = "min-samd20j", feature = "min-samd21j"))]
+    #[cfg(feature = "min-samd2x")]
     PB15 {
         C: (Sercom4, Pad3),
     }
-    #[cfg(any(feature = "min-samd20j", feature = "min-samd21j"))]
+    #[cfg(feature = "min-samd2x")]
     PB16 {
         C: (Sercom5, Pad0),
     }
-    #[cfg(any(feature = "min-samd20j", feature = "min-samd21j"))]
+    #[cfg(feature = "min-samd2x")]
     PB17 {
         C: (Sercom5, Pad1),
     }
-    #[cfg(any(feature = "min-samd20j", feature = "min-samd21g"))]
+    #[cfg(feature = "min-samd2x")]
     PB22 {
         D: (Sercom5, Pad2),
     }
-    #[cfg(any(feature = "min-samd20j", feature = "min-samd21g"))]
+    #[cfg(feature = "min-samd2x")]
     PB23 {
         D: (Sercom5, Pad3),
     }
-    #[cfg(any(feature = "min-samd20j", feature = "min-samd21j"))]
+    #[cfg(feature = "min-samd2x")]
     PB30 {
         D: (Sercom5, Pad0),
     }
-    #[cfg(any(feature = "min-samd20j", feature = "min-samd21j"))]
+    #[cfg(feature = "min-samd2x")]
     PB31 {
         D: (Sercom5, Pad1),
     }

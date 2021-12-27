@@ -19,11 +19,7 @@ use pac::PM as APB_CLK_CTRL;
 use pac::{sercom0, SERCOM0, SERCOM1};
 #[cfg(any(feature = "samd2x", feature = "min-samd51g"))]
 use pac::{SERCOM2, SERCOM3};
-#[cfg(any(
-    feature = "min-samd20j",
-    feature = "min-samd21g",
-    feature = "min-samd51g"
-))]
+#[cfg(any(feature = "min-samd2x", feature = "min-samd51g"))]
 use pac::{SERCOM4, SERCOM5};
 #[cfg(feature = "min-samd51n")]
 use pac::{SERCOM6, SERCOM7};
@@ -89,7 +85,7 @@ macro_rules! sercom {
 sercom!(apbcmask: (0, 1));
 #[cfg(feature = "samd2x")]
 sercom!(apbcmask: (2, 3));
-#[cfg(any(feature = "min-samd20j", feature = "min-samd21g"))]
+#[cfg(feature = "min-samd2x")]
 sercom!(apbcmask: (4, 5));
 
 #[cfg(feature = "min-samd51g")]
