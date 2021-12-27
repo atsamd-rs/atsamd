@@ -14,8 +14,8 @@ impl crate::ResetValue for super::CLKCTRL {
 #[derive(Clone, Copy, Debug, PartialEq)]
 #[repr(u8)]
 pub enum ID_A {
-    #[doc = "0: DFLL48M Reference"]
-    DFLL48M = 0,
+    #[doc = "0: DFLL48 Reference"]
+    DFLL48 = 0,
     #[doc = "1: WDT"]
     WDT = 1,
     #[doc = "2: RTC"]
@@ -83,7 +83,7 @@ impl ID_R {
     pub fn variant(&self) -> crate::Variant<u8, ID_A> {
         use crate::Variant::*;
         match self.bits {
-            0 => Val(ID_A::DFLL48M),
+            0 => Val(ID_A::DFLL48),
             1 => Val(ID_A::WDT),
             2 => Val(ID_A::RTC),
             3 => Val(ID_A::EIC),
@@ -113,10 +113,10 @@ impl ID_R {
             i => Res(i),
         }
     }
-    #[doc = "Checks if the value of the field is `DFLL48M`"]
+    #[doc = "Checks if the value of the field is `DFLL48`"]
     #[inline(always)]
-    pub fn is_dfll48m(&self) -> bool {
-        *self == ID_A::DFLL48M
+    pub fn is_dfll48(&self) -> bool {
+        *self == ID_A::DFLL48
     }
     #[doc = "Checks if the value of the field is `WDT`"]
     #[inline(always)]
@@ -259,10 +259,10 @@ impl<'a> ID_W<'a> {
     pub fn variant(self, variant: ID_A) -> &'a mut W {
         unsafe { self.bits(variant.into()) }
     }
-    #[doc = "DFLL48M Reference"]
+    #[doc = "DFLL48 Reference"]
     #[inline(always)]
-    pub fn dfll48m(self) -> &'a mut W {
-        self.variant(ID_A::DFLL48M)
+    pub fn dfll48(self) -> &'a mut W {
+        self.variant(ID_A::DFLL48)
     }
     #[doc = "WDT"]
     #[inline(always)]

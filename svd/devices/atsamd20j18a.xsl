@@ -4,11 +4,14 @@
   <xsl:include href="include/atsamd20.xsl"/>
 
   <xsl:template match="/device/peripherals/peripheral[name='GCLK']/registers/register[name='CLKCTRL']/fields/field[name='ID']/enumeratedValues">
+  </xsl:template>
+
+  <xsl:template match="/device/peripherals/peripheral[name='GCLK']/registers/register[name='CLKCTRL']/fields/field[name='ID']/enumeratedValues">
     <enumeratedValues>
       <name>IDSelect</name>
       <enumeratedValue>
-        <name>DFLL48M</name>
-        <description>DFLL48M Reference</description>
+        <name>DFLL48</name>
+        <description>DFLL48 Reference</description>
         <value>0x0</value>
       </enumeratedValue>
       <enumeratedValue>

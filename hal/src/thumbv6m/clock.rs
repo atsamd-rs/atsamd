@@ -180,10 +180,7 @@ impl GenericClockController {
         }
 
         // Feed 32khz into the DFLL48
-        #[cfg(not(feature = "samd20"))]
         state.enable_clock_generator(ClockId::DFLL48, GCLK1);
-        #[cfg(feature = "samd20")]
-        state.enable_clock_generator(ClockId::DFLL48M, GCLK1);
         // Enable the DFLL48
         configure_and_enable_dfll48m(sysctrl, use_external_crystal);
         // Feed DFLL48 into the main clock
@@ -205,10 +202,7 @@ impl GenericClockController {
         pm.apbbsel.write(|w| w.apbbdiv().div1());
         pm.apbcsel.write(|w| w.apbcdiv().div1());
 
-        #[cfg(not(feature = "samd20"))]
         let used_clocks = 1u64 << u8::from(ClockId::DFLL48);
-        #[cfg(feature = "samd20")]
-        let used_clocks = 1u64 << u8::from(ClockId::DFLL48M);
         Self {
             state,
             gclks: [
@@ -338,7 +332,7 @@ impl GenericClockController {
             XOSC32K | OSC32K | OSCULP32K => OSC32K_FREQ,
             GCLKGEN1 => self.gclks[1],
             OSC8M => OSC8M_FREQ,
-            ClockSource::DFLL48M => OSC48M_FREQ,
+            DFLL48M => OSC48M_FREQ,
             DPLL96M => 96.mhz().into(),
             GCLKIN | XOSC => unimplemented!(),
         };
