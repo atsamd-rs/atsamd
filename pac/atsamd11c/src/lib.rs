@@ -47,6 +47,7 @@ extern "C" {
     fn ADC();
     fn AC();
     fn DAC();
+    fn PTC();
 }
 #[doc(hidden)]
 pub union Vector {
@@ -57,7 +58,7 @@ pub union Vector {
 #[doc(hidden)]
 #[link_section = ".vector_table.interrupts"]
 #[no_mangle]
-pub static __INTERRUPTS: [Vector; 18] = [
+pub static __INTERRUPTS: [Vector; 19] = [
     Vector { _handler: PM },
     Vector { _handler: SYSCTRL },
     Vector { _handler: WDT },
@@ -76,6 +77,7 @@ pub static __INTERRUPTS: [Vector; 18] = [
     Vector { _handler: ADC },
     Vector { _handler: AC },
     Vector { _handler: DAC },
+    Vector { _handler: PTC },
 ];
 #[doc = r"Enumeration of all the interrupts"]
 #[derive(Copy, Clone, Debug)]
@@ -115,6 +117,8 @@ pub enum Interrupt {
     AC = 16,
     #[doc = "17 - DAC"]
     DAC = 17,
+    #[doc = "18 - PTC"]
+    PTC = 18,
 }
 unsafe impl bare_metal::Nr for Interrupt {
     #[inline(always)]
@@ -668,6 +672,27 @@ impl Deref for WDT {
 }
 #[doc = "Watchdog Timer"]
 pub mod wdt;
+#[doc = "Peripheral Touch Controller"]
+pub struct PTC {
+    _marker: PhantomData<*const ()>,
+}
+unsafe impl Send for PTC {}
+impl PTC {
+    #[doc = r"Returns a pointer to the register block"]
+    #[inline(always)]
+    pub const fn ptr() -> *const ptc::RegisterBlock {
+        0x4200_4c00 as *const _
+    }
+}
+impl Deref for PTC {
+    type Target = ptc::RegisterBlock;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        unsafe { &*PTC::ptr() }
+    }
+}
+#[doc = "Peripheral Touch Controller"]
+pub mod ptc;
 #[no_mangle]
 static mut DEVICE_PERIPHERALS: bool = false;
 #[doc = r"All the peripherals"]
@@ -725,6 +750,8 @@ pub struct Peripherals {
     pub USB: USB,
     #[doc = "WDT"]
     pub WDT: WDT,
+    #[doc = "PTC"]
+    pub PTC: PTC,
 }
 impl Peripherals {
     #[doc = r"Returns all the peripherals *once*"]
@@ -819,6 +846,9 @@ impl Peripherals {
                 _marker: PhantomData,
             },
             WDT: WDT {
+                _marker: PhantomData,
+            },
+            PTC: PTC {
                 _marker: PhantomData,
             },
         }

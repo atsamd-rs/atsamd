@@ -23,4 +23,7 @@ pub mod watchdog;
 #[cfg(feature = "samd21")]
 pub mod usb;
 
+#[cfg(feature = "unproven")]
+pub mod ptc;
+
 pub(crate) mod sercom;
