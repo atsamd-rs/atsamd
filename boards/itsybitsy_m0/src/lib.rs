@@ -80,7 +80,7 @@ hal::bsp_pins!(
         name: d3
     }
     PA08 {
-        /// Pin 4, PWM capable. Also analog input or I2S data channel 1
+        /// Pin 4, PWM capable. Also analog input or I2S data channel 1. Cannot be interrupt pin
         name: d4
     }                
     PA15 {
