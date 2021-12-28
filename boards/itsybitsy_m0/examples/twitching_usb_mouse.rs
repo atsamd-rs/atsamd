@@ -8,8 +8,8 @@ use itsybitsy_m0 as bsp;
 use panic_halt as _;
 #[cfg(feature = "use_semihosting")]
 use panic_semihosting as _;
-/// TODO use usb_device;
-/// TODO use usbd_hid;
+use usb_device;
+use usbd_hid;
 
 use bsp::entry;
 use hal::clock::GenericClockController;
