@@ -37,8 +37,8 @@
 //!         3V3 -> VCC
 //!         SCK -> Clk (Adafruit) or D0 (generic)
 //!        MOSI -> Data (Adafruit) or D1 (generic)
-//!    PA7 (D9) -> Rst (Adafruit) or RES (generic)
-//!   PA21 (D7) -> DC
+//!          D9 -> Rst (Adafruit) or RES (generic)
+//!          D7 -> DC
 //!         GND -> CS (see note above about grounding 'CS' pin)
 //! ```
 //!
