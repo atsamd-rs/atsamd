@@ -8,6 +8,7 @@ pub use hal::ehal;
 pub use hal::pac;
 
 use hal::clock::GenericClockController;
+use hal::ehal::timer::{CountDown, Periodic};
 use hal::sercom::{
     v2::{
         spi,
@@ -17,7 +18,6 @@ use hal::sercom::{
     I2CMaster3,
 };
 use hal::time::Hertz;
-use hal::ehal::timer::{CountDown, Periodic};
 
 #[cfg(feature = "usb")]
 use hal::usb::{usb_device::bus::UsbBusAllocator, UsbBus};
@@ -82,7 +82,7 @@ hal::bsp_pins!(
     PA08 {
         /// Pin 4, PWM capable. Also analog input or I2S data channel 1. Cannot be interrupt pin
         name: d4
-    }                
+    }
     PA15 {
         /// Pin 5, PWM capable. This is a special OUTPUT-only pin, that is level-shifted up to Vhi voltage
         name: d5
@@ -93,7 +93,7 @@ hal::bsp_pins!(
     PA21 {
         /// Pin 7. Also I2S LRCLK
         name: d7
-    }        
+    }
     PA07 {
         /// Pin 9, PWM capable, hardware capacitive touch capability
         /// Also analog input or I2S data channel 0
