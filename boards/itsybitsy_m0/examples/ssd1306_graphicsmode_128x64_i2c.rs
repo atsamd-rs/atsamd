@@ -1,14 +1,16 @@
-//! Draw a square, circle and triangle bounded inside of a box on the screen
-//! borders of an OLED using the `embedded_graphics` crate, and blink the red
-//! LED connected to pin13
+#![no_std]
+#![no_main]
+
+//! Draw a square, circle and triangle on the screen of a SSD1306-backed
+//! display using the `embedded_graphics` crate.
 //!
 //! This example is for the _Adafruit ItsyBitsy M0_ series boards connected to
-//! an SPI OLED display board based on the SSD1306 chipset which has 128x64
-//! pixel resolution.
+//! a display module with an SSD1306 chipset, using I2C to communicate between
+//! the processor board and the display module/board.
 //!
 //! This example is based on:
-//! - https://github.com/jamwaffles/ssd1306/blob/master/examples/graphics.rs
-//! - A previous example located in boards/itsybitsy_m0/examples/spi_ssd1306.rs
+//! - https://github.com/jamwaffles/ssd1306/blob/master/examples/graphics_i2c.rs
+//! - A previous example located in boards/itsybitsy_m0/examples/i2c_ssd1306.rs
 //!   which is not available anymore
 //!
 //! You can either use the USB port on the ItsyBitsy M0 + BOSSAC or a SWD
@@ -16,38 +18,47 @@
 //!
 //! Adafruit ItsyBitsy M0 Board: https://www.adafruit.com/product/3727
 //!
-//! Adafruit OLED module that was used for this demo:
-//! - https://www.adafruit.com/product/938
+//! Adafruit sells a SSD1306 display module called a "Featherwing"
+//! (https://www.adafruit.com/product/2900), which can plug in to other
+//! Feather boards if the correct headers are used, or can be plugged directly
+//! into a breadboard and connected with wires.  They also sell other I2C and
+//! SPI "modules" that have the SSD1306 chipset and a display of some sort,
+//! which you then connect to the ItsyBitsy M0 with wires.  Even more SSD1306
+//! modules can also be found on various shopping websites (Amazon, Ebay, //!
+//! Ali*), although it may be hard to tell from item listings if the module is
+//! using an SSD1306 chipset or not.
 //!
-//! All Adafruit OLED modules (SPI/I2C)
-//! - https://www.adafruit.com/category/98
+//! Note that most SSD1306-backed display modules are usually either 128x64
+//! pixels or 128x32 pixels in size, but there are other sizes running around
+//! in the wild.
 //!
-//! Other "generic" SPI SSD1306 modules found on Amazon/Ebay/Ali* should work
-//! with this example as well.
+//! The default display size for the Rust `ssd1306` library (if no size is
+//! passed in to the constructor as a parameter) is 128x64 pixels;
 //!
-//! For this demo, it's assumed that the SSD1306 display is the only device on
-//! the SPI bus, so the "CS" pin of the display needs to be connected to GND
-//! for the demo to work.
+//! https://jamwaffles.github.io/ssd1306/master/ssd1306/builder/struct.Builder.html#method.new
 //!
-//! Wiring connections for the Adafruit/generic OLED SSD1306 displays:
+//! Wiring connections for the Adafruit OLED Featherwing:
 //!
 //! ```
-//! ItsyBitsy M0  -> SPI SSD1306 OLED Display
-//! ---------------------------------------
-//!         GND -> GND
-//!         3V3 -> VCC
-//!         SCK -> Clk (Adafruit) or D0 (generic)
-//!        MOSI -> Data (Adafruit) or D1 (generic)
-//!          D9 -> Rst (Adafruit) or RES (generic)
-//!          D7 -> DC
-//!         GND -> CS (see note above about grounding 'CS' pin)
+//! OLED Featherwing -> ItsyBitsy M0
+//!     GND -> GND
+//!      3v -> 3v3
+//! GPIOSDA -> SDA
+//! GPIOSCL -> SCL
+//! ```
+//!
+//! Wiring connections for generic OLED modules:
+//!
+//! ```
+//!  OLED module -> ItsyBitsy M0
+//! (black)  GND -> GND
+//! (red)    +3V -> VCC
+//! (yellow) SDA -> SDA
+//! (green)  SCL -> SCL
 //! ```
 //!
 //! Build this example with: `cargo build --example
-//! ssd1306_graphicsmode_128x64_spi`
-
-#![no_std]
-#![no_main]
+//! ssd1306_graphicsmode_128x64_i2c`
 
 #[cfg(not(feature = "use_semihosting"))]
 use panic_halt as _;
@@ -57,7 +68,7 @@ use panic_semihosting as _;
 use embedded_graphics::pixelcolor::BinaryColor;
 use embedded_graphics::prelude::*;
 use embedded_graphics::primitives::{Circle, PrimitiveStyleBuilder, Rectangle, Triangle};
-use ssd1306::{prelude::*, Ssd1306};
+use ssd1306::{prelude::*, I2CDisplayInterface, Ssd1306};
 
 use bsp::hal;
 use bsp::pac;
@@ -67,7 +78,7 @@ use bsp::entry;
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
 use hal::prelude::*;
-use hal::time::MegaHertz;
+use hal::time::KiloHertz;
 use pac::{CorePeripherals, Peripherals};
 
 #[entry]
@@ -84,36 +95,32 @@ fn main() -> ! {
     let mut red_led: bsp::RedLed = pins.d13.into();
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
-    let spi = bsp::spi_master(
+    let i2c = bsp::i2c_master(
         &mut clocks,
-        MegaHertz(10),
-        peripherals.SERCOM4,
+        KiloHertz(400),
+        peripherals.SERCOM3,
         &mut peripherals.PM,
-        pins.sclk,
-        pins.mosi,
-        pins.miso,
+        pins.sda,
+        pins.scl,
     );
-
-    let dc = pins.d7.into_push_pull_output();
-    let mut rst = pins.d9.into_push_pull_output();
 
     // default DisplaySize: 128x64 pixels; see the
     // ssd1306::builder::Builder::new() method definition for more info
-    let interface = SPIInterfaceNoCS::new(spi, dc);
+    let interface = I2CDisplayInterface::new(i2c);
     let mut disp = Ssd1306::new(interface, DisplaySize128x64, DisplayRotation::Rotate0)
         .into_buffered_graphics_mode();
 
-    disp.reset(&mut rst, &mut delay).unwrap();
     disp.init().unwrap();
-
-    let yoffset = 24;
-    let x_max = 127;
-    let y_max = 63;
+    disp.flush().unwrap();
 
     let style = PrimitiveStyleBuilder::new()
         .stroke_color(BinaryColor::On)
         .stroke_width(1)
         .build();
+
+    let yoffset = 24;
+    let x_max = 127;
+    let y_max = 63;
 
     // screen outline
     Rectangle::with_corners(Point::new(0, 0), Point::new(x_max, y_max))
@@ -146,10 +153,11 @@ fn main() -> ! {
 
     disp.flush().unwrap();
 
+    // blink the onboard blinkenlight (digital pin 13)
     loop {
-        delay.delay_ms(400_u16);
+        delay.delay_ms(200u8);
         red_led.set_high().unwrap();
-        delay.delay_ms(400_u16);
+        delay.delay_ms(200u8);
         red_led.set_low().unwrap();
     }
 }

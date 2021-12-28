@@ -89,12 +89,6 @@ name = "adc"
 name = "ssd1306_graphicsmode_128x64_i2c"
 
 [[example]]
-name = "ssd1306_graphicsmode_128x32_i2c"
-
-[[example]]
-name = "ssd1306_terminalmode_128x32_i2c"
-
-[[example]]
 name = "ssd1306_terminalmode_128x64_i2c"
 
 [[example]]
@@ -106,6 +100,9 @@ name = "ssd1306_terminalmode_128x64_spi"
 [[example]]
 name = "usb_echo"
 required-features = ["usb"]
+
+[[example]]
+name = "twitching_usb_mouse"
 
 [[example]]
 name = "sleeping_timer"
