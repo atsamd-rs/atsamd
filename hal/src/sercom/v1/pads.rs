@@ -35,8 +35,7 @@ use core::marker::PhantomData;
 
 use paste::paste;
 
-use crate::gpio::v1::{self, IntoFunction, Pin, Port};
-use crate::gpio::v2::{self, AnyPin, PinId, PinMode};
+use crate::gpio::{self, AnyPin, PinId, PinMode};
 use crate::sercom::v2::*;
 use crate::typelevel::Sealed;
 

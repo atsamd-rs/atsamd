@@ -21,8 +21,8 @@
 //!   `PinMode` for a given SERCOM pad, while the [`Pad`] alias recovers the
 //!   configured [`Pin`] type.
 //!
-//! [`AlternateC`]: crate::gpio::v2::AlternateC
-//! [`AlternateD`]: crate::gpio::v2::AlternateD
+//! [`AlternateC`]: crate::gpio::AlternateC
+//! [`AlternateD`]: crate::gpio::AlternateD
 //! [type class]: crate::typelevel#type-classes
 //! [type-level function]: crate::typelevel#type-level-functions
 #![cfg_attr(
@@ -44,8 +44,8 @@ use seq_macro::seq;
 
 use super::Sercom;
 #[cfg(not(feature = "samd11"))]
-use crate::gpio::v2::OptionalPinId;
-use crate::gpio::v2::{AnyPin, OptionalPin, Pin, PinId, PinMode};
+use crate::gpio::OptionalPinId;
+use crate::gpio::{AnyPin, OptionalPin, Pin, PinId, PinMode};
 use crate::typelevel::{NoneT, Sealed};
 
 #[cfg(any(feature = "samd11", feature = "samd21"))]

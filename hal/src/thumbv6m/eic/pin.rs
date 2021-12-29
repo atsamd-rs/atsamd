@@ -1,8 +1,6 @@
-#![allow(deprecated)]
-
 use crate::gpio::{
-    self, v2::AnyPin, v2::FloatingInterrupt, v2::Pin, v2::PinId, v2::PinMode,
-    v2::PullDownInterrupt, v2::PullUpInterrupt, Port,
+    self, pin::*, AnyPin, FloatingInterrupt, Pin, PinId, PinMode, PullDownInterrupt,
+    PullUpInterrupt,
 };
 use crate::pac;
 
@@ -17,13 +15,13 @@ pub trait EicPin {
     type PullDown;
 
     /// Configure a pin as a floating external interrupt
-    fn into_floating_ei(self, port: &mut Port) -> Self::Floating;
+    fn into_floating_ei(self) -> Self::Floating;
 
     /// Configure a pin as pulled-up external interrupt
-    fn into_pull_up_ei(self, port: &mut Port) -> Self::PullUp;
+    fn into_pull_up_ei(self) -> Self::PullUp;
 
     /// Configure a pin as pulled-down external interrupt
-    fn into_pull_down_ei(self, port: &mut Port) -> Self::PullDown;
+    fn into_pull_down_ei(self) -> Self::PullDown;
 }
 
 pub type Sense = pac::eic::config::SENSE0_A;
@@ -151,26 +149,26 @@ crate::paste::item! {
 
     $(
         $(#[$attr])*
-        impl<MODE: PinMode> EicPin for gpio::$PinType<MODE> {
-            type Floating = [<$PadType $num>]<gpio::$PinType<FloatingInterrupt>>;
-            type PullUp = [<$PadType $num>]<gpio::$PinType<PullUpInterrupt>>;
-            type PullDown = [<$PadType $num>]<gpio::$PinType<PullDownInterrupt>>;
+        impl<MODE: PinMode> EicPin for gpio::Pin<$PinType, MODE> {
+            type Floating = [<$PadType $num>]<gpio::Pin<$PinType, FloatingInterrupt>>;
+            type PullUp = [<$PadType $num>]<gpio::Pin<$PinType, PullUpInterrupt>>;
+            type PullDown = [<$PadType $num>]<gpio::Pin<$PinType, PullDownInterrupt>>;
 
-            fn into_floating_ei(self, port: &mut Port) -> Self::Floating {
-                [<$PadType $num>]::new(self.into_floating_interrupt(port))
+            fn into_floating_ei(self) -> Self::Floating {
+                [<$PadType $num>]::new(self.into_floating_interrupt())
             }
 
-            fn into_pull_up_ei(self, port: &mut Port) -> Self::PullUp {
-                [<$PadType $num>]::new(self.into_pull_up_interrupt(port))
+            fn into_pull_up_ei(self) -> Self::PullUp {
+                [<$PadType $num>]::new(self.into_pull_up_interrupt())
             }
 
-            fn into_pull_down_ei(self, port: &mut Port) -> Self::PullDown {
-                [<$PadType $num>]::new(self.into_pull_down_interrupt(port))
+            fn into_pull_down_ei(self) -> Self::PullDown {
+                [<$PadType $num>]::new(self.into_pull_down_interrupt())
             }
         }
 
         $(#[$attr])*
-        impl<MODE: PinMode> ExternalInterrupt for gpio::$PinType<MODE> {
+        impl<MODE: PinMode> ExternalInterrupt for gpio::Pin<$PinType, MODE> {
             fn id(&self) -> ExternalInterruptID {
                 $num
             }
@@ -200,180 +198,180 @@ where
 
 #[cfg(feature = "samd11")]
 ei!(ExtInt[1] {
-    Pa15,
+    PA15,
 });
 
 #[cfg(feature = "samd11")]
 ei!(ExtInt[2] {
-    Pa2,
+    PA02,
 });
 
 #[cfg(feature = "samd11")]
 ei!(ExtInt[3] {
-    Pa31,
+    PA31,
 });
 
 #[cfg(feature = "samd11")]
 ei!(ExtInt[4] {
-    Pa4,
-    Pa24,
+    PA04,
+    PA24,
 });
 
 #[cfg(feature = "samd11")]
 ei!(ExtInt[5] {
-    Pa5,
-    Pa25,
+    PA05,
+    PA25,
 });
 
 #[cfg(feature = "samd11")]
 ei!(ExtInt[6] {
-    Pa8,
+    PA08,
 });
 
 #[cfg(feature = "samd11")]
 ei!(ExtInt[7] {
-    Pa9,
+    PA09,
 });
 
 // SAMD21
 
 #[cfg(feature = "samd21")]
 ei!(ExtInt[0] {
-    Pa0,
-    Pa16,
+    PA00,
+    PA16,
     #[cfg(feature = "min-samd21j")]
-    Pb0,
+    PB00,
     #[cfg(feature = "min-samd21j")]
-    Pb16,
+    PB16,
 });
 
 #[cfg(feature = "samd21")]
 ei!(ExtInt[1] {
-    Pa1,
-    Pa17,
+    PA01,
+    PA17,
     #[cfg(feature = "min-samd21j")]
-    Pb1,
+    PB01,
     #[cfg(feature = "min-samd21j")]
-    Pb17,
+    PB17,
 });
 
 #[cfg(feature = "samd21")]
 ei!(ExtInt[2] {
-    Pa2,
-    Pa18,
+    PA02,
+    PA18,
     #[cfg(feature = "min-samd21g")]
-    Pb2,
+    PB02,
 });
 
 #[cfg(feature = "samd21")]
 ei!(ExtInt[3] {
-    Pa3,
-    Pa19,
+    PA03,
+    PA19,
     #[cfg(feature = "min-samd21g")]
-    Pb3,
+    PB03,
 });
 
 #[cfg(feature = "samd21")]
 ei!(ExtInt[4] {
-    Pa4,
+    PA04,
     #[cfg(feature = "min-samd21g")]
-    Pa20,
+    PA20,
     #[cfg(feature = "min-samd21j")]
-    Pb4,
+    PB04,
 });
 
 #[cfg(feature = "samd21")]
 ei!(ExtInt[5] {
-    Pa5,
+    PA05,
     #[cfg(feature = "min-samd21g")]
-    Pa21,
+    PA21,
     #[cfg(feature = "min-samd21j")]
-    Pb5,
+    PB05,
 });
 
 #[cfg(feature = "samd21")]
 ei!(ExtInt[6] {
-    Pa6,
-    Pa22,
+    PA06,
+    PA22,
     #[cfg(feature = "min-samd21j")]
-    Pb6,
+    PB06,
     #[cfg(feature = "min-samd21g")]
-    Pb22,
+    PB22,
 });
 
 #[cfg(feature = "samd21")]
 ei!(ExtInt[7] {
-    Pa7,
-    Pa23,
+    PA07,
+    PA23,
     #[cfg(feature = "min-samd21j")]
-    Pb7,
+    PB07,
     #[cfg(feature = "min-samd21g")]
-    Pb23,
+    PB23,
 });
 
 #[cfg(feature = "samd21")]
 ei!(ExtInt[8] {
-    Pa28,
+    PA28,
     #[cfg(feature = "min-samd21g")]
-    Pb8,
+    PB08,
 });
 
 #[cfg(feature = "samd21")]
 ei!(ExtInt[9] {
-    Pa9,
+    PA09,
     #[cfg(feature = "min-samd21g")]
-    Pb9,
+    PB09,
 });
 
 #[cfg(feature = "samd21")]
 ei!(ExtInt[10] {
-    Pa10,
-    Pa30,
+    PA10,
+    PA30,
     #[cfg(feature = "min-samd21g")]
-    Pb10,
+    PB10,
 });
 
 #[cfg(feature = "samd21")]
 ei!(ExtInt[11] {
-   Pa11,
-   Pa31,
+   PA11,
+   PA31,
    #[cfg(feature = "min-samd21g")]
-   Pb11,
+   PB11,
 });
 
 #[cfg(feature = "samd21")]
 ei!(ExtInt[12] {
     #[cfg(feature = "min-samd21g")]
-    Pa12,
-    Pa24,
+    PA12,
+    PA24,
     #[cfg(feature = "min-samd21j")]
-    Pb12,
+    PB12,
 });
 
 #[cfg(feature = "samd21")]
 ei!(ExtInt[13] {
     #[cfg(feature = "min-samd21g")]
-    Pa13,
-    Pa25,
+    PA13,
+    PA25,
     #[cfg(feature = "min-samd21j")]
-    Pb13,
+    PB13,
 });
 
 #[cfg(feature = "samd21")]
 ei!(ExtInt[14] {
-    Pa14,
+    PA14,
     #[cfg(feature = "min-samd21j")]
-    Pb14,
+    PB14,
     #[cfg(feature = "min-samd21j")]
-    Pb30,
+    PB30,
 });
 
 #[cfg(feature = "samd21")]
 ei!(ExtInt[15] {
-    Pa15,
-    Pa27,
+    PA15,
+    PA27,
     #[cfg(feature = "min-samd21j")]
-    Pb15,
+    PB15,
     #[cfg(feature = "min-samd21j")]
-    Pb31,
+    PB31,
 });

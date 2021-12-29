@@ -26,7 +26,7 @@
 //! used to define convenient type aliases for [`Pad`] types.
 //!
 //! ```
-//! use atsamd_hal::gpio::v2::{PA08, PA09, AlternateC};
+//! use atsamd_hal::gpio::{PA08, PA09, AlternateC};
 //! use atsamd_hal::sercom::v2::{Sercom0, uart};
 //! use atsamd_hal::typelevel::NoneT;
 //!
@@ -42,7 +42,7 @@ Alternatively, you can use the [`PadsFromIds`] alias to define a set of
 don't have [`Pin`] aliases pre-defined.
 
 ```
-use atsamd_hal::gpio::v2::{PA08, PA09};
+use atsamd_hal::gpio::{PA08, PA09};
 use atsamd_hal::sercom::v2::{Sercom0, uart};
 
 type Pads = uart::PadsFromIds<Sercom0, PA08, PA09>;
@@ -65,7 +65,7 @@ type Pads = uart::PadsFromIds<Sercom0, PA08, PA09>;
 //!
 //! ```
 //! use atsamd_hal::pac::Peripherals;
-//! use atsamd_hal::gpio::v2::Pins;
+//! use atsamd_hal::gpio::Pins;
 //! use atsamd_hal::sercom::v2::{Sercom0, uart};
 //!
 //! let mut peripherals = Peripherals::take().unwrap();
@@ -87,7 +87,7 @@ type Pads = uart::PadsFromIds<Sercom0, PA08, PA09>;
 //! [`Pads`] type; and a [`CharSize`], which defaults to [`EightBit`].
 //!
 //! ```
-//! use atsamd_hal::gpio::v2::{PA08, PA09};
+//! use atsamd_hal::gpio::{PA08, PA09};
 //! use atsamd_hal::sercom::v2::{Sercom0, uart};
 //! use atsamd_hal::sercom::v2::uart::{NineBit};
 //! use atsamd_hal::typelevel::NoneT;
@@ -192,7 +192,7 @@ type Pads = uart::PadsFromIds<Sercom0, PA08, PA09>;
 //! RxDuplex>` and a `Uart<C, TxDuplex>`.
 //!
 //! ```
-//! use atsamd_hal::gpio::v2::{PA08, PA09};
+//! use atsamd_hal::gpio::{PA08, PA09};
 //! use atsamd_hal::sercom::v2::{Sercom0, uart};
 //! use atsamd_hal::sercom::v2::uart::NineBit;
 //! use atsamd_hal::typelevel::NoneT;

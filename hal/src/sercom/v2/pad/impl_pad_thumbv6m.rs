@@ -1,6 +1,6 @@
 //! Implementations of the [`IsPad`], [`IsI2cPad`], [`GetPad`] traits
 
-use crate::gpio::v2::*;
+use crate::gpio::*;
 use crate::sercom::v2::*;
 
 //==============================================================================

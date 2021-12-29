@@ -3,7 +3,7 @@
 //! See the [i2c module](super) documentation for more details on declaring and
 //! instantiating a [`Pads`] type.
 
-use crate::{gpio::v2::AnyPin, sercom::v2::*, typelevel::Sealed};
+use crate::{gpio::AnyPin, sercom::v2::*, typelevel::Sealed};
 use core::marker::PhantomData;
 
 /// Container for a set of SERCOM [`Pad`]s

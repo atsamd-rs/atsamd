@@ -7,7 +7,7 @@ use crate::sercom::v2::*;
 use crate::typelevel::{NoneT, Sealed};
 
 #[cfg(not(feature = "samd11"))]
-use crate::gpio::v2::AnyPin;
+use crate::gpio::AnyPin;
 
 //=============================================================================
 // RxpoTxpo
@@ -350,7 +350,7 @@ where
 ///
 /// ```
 /// use atsamd_hal::pac::Peripherals;
-/// use atsamd_hal::gpio::v2::{PA08, PA09, Pins};
+/// use atsamd_hal::gpio::{PA08, PA09, Pins};
 /// use atsamd_hal::sercom::v2::{Sercom0, uart};
 /// use atsamd_hal::typelevel::NoneT;
 ///
@@ -363,9 +363,9 @@ where
 /// }
 /// ```
 ///
-/// [`Pin`]: crate::gpio::v2::Pin
-/// [`PinId`]: crate::gpio::v2::PinId
-/// [`OptionalPinId`]: crate::gpio::v2::OptionalPinId
+/// [`Pin`]: crate::gpio::Pin
+/// [`PinId`]: crate::gpio::PinId
+/// [`OptionalPinId`]: crate::gpio::OptionalPinId
 
 #[cfg(feature = "samd21")]
 pub type PadsFromIds<S, RX = NoneT, TX = NoneT, RTS = NoneT, CTS = NoneT> = Pads<
@@ -393,7 +393,7 @@ pub type PadsFromIds<S, RX = NoneT, TX = NoneT, RTS = NoneT, CTS = NoneT> = Pads
 /// [`Pads`] without itself being generic over all six type parameters of the
 /// [`Pads`] type.
 ///
-/// [`Pin`]: crate::gpio::v2::Pin
+/// [`Pin`]: crate::gpio::Pin
 /// [type-level function]: crate::typelevel#type-level-functions
 /// [`Config`]: crate::sercom::v2::uart::Config
 pub trait PadSet: Sealed {

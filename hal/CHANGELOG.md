@@ -1,5 +1,6 @@
-# Unreleased Changes
+# v0.15.0
 
+- Remove `gpio::v1`, `sercom::v1` module, promote `gpio::v2` to `gpio` and `sercom::v2` to `sercom`.
 - Cleanup most `clippy` lints
 - Update `seq_macro` and remove `replace_with` dependencies (#568)
 - Add a `bsp_peripherals!` macro and fix a bug in `bsp_pins!` (#515)

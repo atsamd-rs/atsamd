@@ -29,7 +29,7 @@
 //! used to define convenient type aliases for `Pad` types.
 //!
 //! ```
-//! use atsamd_hal::gpio::v2::{PA08, PA09, AlternateC};
+//! use atsamd_hal::gpio::{PA08, PA09, AlternateC};
 //! use atsamd_hal::sercom::v2::{Sercom0, spi};
 //! use atsamd_hal::typelevel::NoneT;
 //!
@@ -46,10 +46,10 @@
 //! ```
 //!
 //! [`enable`]: Config::enable
-//! [`gpio`]: crate::gpio::v2
-//! [`Pin`]: crate::gpio::v2::pin::Pin
-//! [`PinId`]: crate::gpio::v2::pin::PinId
-//! [`PinMode`]: crate::gpio::v2::pin::PinMode
+//! [`gpio`]: crate::gpio
+//! [`Pin`]: crate::gpio::pin::Pin
+//! [`PinId`]: crate::gpio::pin::PinId
+//! [`PinMode`]: crate::gpio::pin::PinMode
 #![cfg_attr(
     not(feature = "samd11"),
     doc = "
@@ -82,7 +82,7 @@ type Pads = spi::PadsFromIds<Sercom0, IoSet1, PA08, NoneT, PA09>;
 //!
 //! ```
 //! use atsamd_hal::target_device::Peripherals;
-//! use atsamd_hal::gpio::v2::Pins;
+//! use atsamd_hal::gpio::Pins;
 //! use atsamd_hal::sercom::v2::{Sercom0, spi};
 //!
 //! // SAMx5x-specific imports
@@ -133,7 +133,7 @@ type Pads = spi::PadsFromIds<Sercom0, IoSet1, PA08, NoneT, PA09>;
 //! sub-module.
 //!
 //! ```
-//! use atsamd_hal::gpio::v2::{PA08, PA09};
+//! use atsamd_hal::gpio::{PA08, PA09};
 //! use atsamd_hal::sercom::v2::{Sercom0, spi};
 //! use atsamd_hal::sercom::v2::spi::Master;
 //! use atsamd_hal::typelevel::NoneT;
@@ -230,7 +230,7 @@ type Pads = spi::PadsFromIds<Sercom0, IoSet1, PA08, NoneT, PA09>;
 //! automaically from the set of [`ValidPads`].
 //!
 //! ```
-//! use atsamd_hal::gpio::v2::{PA08, PA09};
+//! use atsamd_hal::gpio::{PA08, PA09};
 //! use atsamd_hal::sercom::v2::{Sercom0, spi};
 //! use atsamd_hal::sercom::v2::spi::{Master, Rx};
 //! use atsamd_hal::typelevel::NoneT;
@@ -271,10 +271,10 @@ type Pads = spi::PadsFromIds<Sercom0, IoSet1, PA08, NoneT, PA09>;
 //! ```
 //!
 //! [`enable`]: Config::enable
-//! [`gpio`]: crate::gpio::v2
-//! [`Pin`]: crate::gpio::v2::pin::Pin
-//! [`PinId`]: crate::gpio::v2::pin::PinId
-//! [`PinMode`]: crate::gpio::v2::pin::PinMode
+//! [`gpio`]: crate::gpio
+//! [`Pin`]: crate::gpio::pin::Pin
+//! [`PinId`]: crate::gpio::pin::PinId
+//! [`PinMode`]: crate::gpio::pin::PinMode
 #![cfg_attr(
     feature = "dma",
     doc = "

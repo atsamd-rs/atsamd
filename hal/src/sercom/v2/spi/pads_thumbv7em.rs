@@ -5,7 +5,7 @@
 
 use core::marker::PhantomData;
 
-use crate::gpio::v2::AnyPin;
+use crate::gpio::AnyPin;
 use crate::sercom::v2::*;
 use crate::typelevel::{NoneT, Sealed};
 
@@ -230,7 +230,7 @@ where
     }
 
     /// Consume the [`Pads`] and return each individual
-    /// [`Pin`](crate::gpio::v2::Pin)
+    /// [`Pin`](crate::gpio::Pin)
     #[inline]
     pub fn free(self) -> (DI, DO, CK, SS) {
         (self.data_in, self.data_out, self.sclk, self.ss)
@@ -253,7 +253,7 @@ where
 ///
 /// ```
 /// use atsamd_hal::pac::Peripherals;
-/// use atsamd_hal::gpio::v2::{PA08, PA09, Pins};
+/// use atsamd_hal::gpio::{PA08, PA09, Pins};
 /// use atsamd_hal::sercom::v2::{Sercom0, spi};
 /// use atsamd_hal::sercom::v2::pad::IoSet1;
 /// use atsamd_hal::typelevel::NoneT;
@@ -267,9 +267,9 @@ where
 /// }
 /// ```
 ///
-/// [`Pin`]: crate::gpio::v2::Pin
-/// [`PinId`]: crate::gpio::v2::PinId
-/// [`OptionalPinId`]: crate::gpio::v2::OptionalPinId
+/// [`Pin`]: crate::gpio::Pin
+/// [`PinId`]: crate::gpio::PinId
+/// [`OptionalPinId`]: crate::gpio::OptionalPinId
 pub type PadsFromIds<S, I, DI = NoneT, DO = NoneT, CK = NoneT, SS = NoneT> = Pads<
     S,
     I,
@@ -298,7 +298,7 @@ pub type PadsFromIds<S, I, DI = NoneT, DO = NoneT, CK = NoneT, SS = NoneT> = Pad
 ///
 /// This trait is a simplified version of the [`AnyKind`] trait pattern.
 ///
-/// [`Pin`]: crate::gpio::v2::Pin
+/// [`Pin`]: crate::gpio::Pin
 /// [type-level function]: crate::typelevel#type-level-functions
 /// [`AnyKind`]: crate::typelevel#anykind-trait-pattern
 pub trait PadSet: Sealed {

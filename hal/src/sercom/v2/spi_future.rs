@@ -21,7 +21,7 @@
 //! transaction.
 //!
 //! ```
-//! use atsamd_hal::gpio::v2::{Pin, PA10, PushPullOutput};
+//! use atsamd_hal::gpio::{Pin, PA10, PushPullOutput};
 //! use atsamd_hal::sercom::v2::spi::AnySpi;
 //! use atsamd_hal::sercom::v2::spi_future::SpiFuture;
 //!
@@ -93,7 +93,7 @@
 //!
 //! ```
 //! use core::task::Poll;
-//! use atsamd_hal::gpio::v2::{PA08, PA09, PA10, PA11, Pin, PushPullOutput};
+//! use atsamd_hal::gpio::{PA08, PA09, PA10, PA11, Pin, PushPullOutput};
 //! use atsamd_hal::sercom::v2::Sercom0;
 //! use atsamd_hal::sercom::v2::pad::{IoSet1, Pad0, Pad1, Pad3};
 //! use atsamd_hal::sercom::v2::spi::{self, Master, lengths::U12};
@@ -166,7 +166,7 @@
 //! [`EightBit`]: super::spi::EightBit
 //! [`NineBit`]: super::spi::NineBit
 //! [`Length`]: super::spi::Length
-//! [`Pin`]: crate::gpio::v2::pin::Pin
+//! [`Pin`]: crate::gpio::pin::Pin
 //! [`Future`]: core::future::Future
 //! [`Waker`]: core::task::Waker
 //! [`Poll`]: core::task::Poll
@@ -177,7 +177,7 @@ use core::task::Poll;
 
 use embedded_hal::digital::v2::OutputPin;
 
-use crate::gpio::v2::pin::{OptionalPin, SomePin};
+use crate::gpio::pin::{OptionalPin, SomePin};
 use crate::typelevel::NoneT;
 
 use super::spi::{AnySpi, Error, Flags};

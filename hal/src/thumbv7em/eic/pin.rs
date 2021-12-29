@@ -1,8 +1,6 @@
-#![allow(deprecated)]
-
 use crate::gpio::{
-    self, v2::AnyPin, v2::FloatingInterrupt, v2::Pin, v2::PinId, v2::PinMode,
-    v2::PullDownInterrupt, v2::PullUpInterrupt, Port,
+    self, pin::*, AnyPin, FloatingInterrupt, Pin, PinId, PinMode, PullDownInterrupt,
+    PullUpInterrupt,
 };
 use crate::pac;
 
@@ -17,13 +15,13 @@ pub trait EicPin {
     type PullDown;
 
     /// Configure a pin as a floating external interrupt
-    fn into_floating_ei(self, port: &mut Port) -> Self::Floating;
+    fn into_floating_ei(self) -> Self::Floating;
 
     /// Configure a pin as pulled-up external interrupt
-    fn into_pull_up_ei(self, port: &mut Port) -> Self::PullUp;
+    fn into_pull_up_ei(self) -> Self::PullUp;
 
     /// Configure a pin as pulled-down external interrupt
-    fn into_pull_down_ei(self, port: &mut Port) -> Self::PullDown;
+    fn into_pull_down_ei(self) -> Self::PullDown;
 }
 
 pub type Sense = pac::eic::config::SENSE0_A;
@@ -151,26 +149,26 @@ crate::paste::item! {
 
     $(
         $(#[$attr])*
-        impl<MODE: PinMode> EicPin for gpio::$PinType<MODE> {
-            type Floating = [<$PadType $num>]<gpio::$PinType<FloatingInterrupt>>;
-            type PullUp = [<$PadType $num>]<gpio::$PinType<PullUpInterrupt>>;
-            type PullDown = [<$PadType $num>]<gpio::$PinType<PullDownInterrupt>>;
+        impl<MODE: PinMode> EicPin for gpio::Pin<$PinType, MODE> {
+            type Floating = [<$PadType $num>]<gpio::Pin<$PinType, FloatingInterrupt>>;
+            type PullUp = [<$PadType $num>]<gpio::Pin<$PinType, PullUpInterrupt>>;
+            type PullDown = [<$PadType $num>]<gpio::Pin<$PinType, PullDownInterrupt>>;
 
-            fn into_floating_ei(self, port: &mut Port) -> Self::Floating {
-                [<$PadType $num>]::new(self.into_floating_interrupt(port))
+            fn into_floating_ei(self) -> Self::Floating {
+                [<$PadType $num>]::new(self.into_floating_interrupt())
             }
 
-            fn into_pull_up_ei(self, port: &mut Port) -> Self::PullUp {
-                [<$PadType $num>]::new(self.into_pull_up_interrupt(port))
+            fn into_pull_up_ei(self) -> Self::PullUp {
+                [<$PadType $num>]::new(self.into_pull_up_interrupt())
             }
 
-            fn into_pull_down_ei(self, port: &mut Port) -> Self::PullDown {
-                [<$PadType $num>]::new(self.into_pull_down_interrupt(port))
+            fn into_pull_down_ei(self) -> Self::PullDown {
+                [<$PadType $num>]::new(self.into_pull_down_interrupt())
             }
         }
 
         $(#[$attr])*
-        impl<MODE: PinMode> ExternalInterrupt for gpio::$PinType<MODE> {
+        impl<MODE: PinMode> ExternalInterrupt for gpio::Pin<$PinType, MODE> {
             fn id(&self) -> ExternalInterruptID {
                 $num
             }
@@ -193,209 +191,209 @@ where
 }
 
 ei!(ExtInt[0] {
-    Pa0,
-    Pa16,
+    PA00,
+    PA16,
     #[cfg(feature = "min-samd51j")]
-    Pb0,
+    PB00,
     #[cfg(feature = "min-samd51j")]
-    Pb16,
+    PB16,
     #[cfg(feature = "min-samd51n")]
-    Pc0,
+    PC00,
     #[cfg(feature = "min-samd51n")]
-    Pc16,
+    PC16,
     #[cfg(feature = "min-samd51p")]
-    Pd0,
+    PD00,
 });
 
 ei!(ExtInt[1] {
-    Pa1,
-    Pa17,
+    PA01,
+    PA17,
     #[cfg(feature = "min-samd51j")]
-    Pb1,
+    PB01,
     #[cfg(feature = "min-samd51j")]
-    Pb17,
+    PB17,
     #[cfg(feature = "min-samd51n")]
-    Pc1,
+    PC01,
     #[cfg(feature = "min-samd51n")]
-    Pc17,
+    PC17,
     #[cfg(feature = "min-samd51p")]
-    Pd1,
+    PD01,
 });
 
 ei!(ExtInt[2] {
-    Pa2,
-    Pa18,
-    Pb2,
+    PA02,
+    PA18,
+    PB02,
     #[cfg(feature = "min-samd51n")]
-    Pb18,
+    PB18,
     #[cfg(feature = "min-samd51n")]
-    Pc2,
+    PC02,
     #[cfg(feature = "min-samd51n")]
-    Pc18,
+    PC18,
 });
 
 ei!(ExtInt[3] {
-    Pa3,
-    Pa19,
-    Pb3,
+    PA03,
+    PA19,
+    PB03,
     #[cfg(feature = "min-samd51n")]
-    Pb19,
+    PB19,
     #[cfg(feature = "min-samd51n")]
-    Pc3,
+    PC03,
     #[cfg(feature = "min-samd51n")]
-    Pc19,
+    PC19,
     #[cfg(feature = "min-samd51p")]
-    Pd8,
+    PD08,
 });
 
 ei!(ExtInt[4] {
-    Pa4,
-    Pa20,
+    PA04,
+    PA20,
     #[cfg(feature = "min-samd51j")]
-    Pb4,
+    PB04,
     #[cfg(feature = "min-samd51n")]
-    Pb20,
+    PB20,
     #[cfg(feature = "min-samd51p")]
-    Pc4,
+    PC04,
     #[cfg(feature = "min-samd51n")]
-    Pc20,
+    PC20,
     #[cfg(feature = "min-samd51p")]
-    Pd9,
+    PD09,
 });
 
 ei!(ExtInt[5] {
-    Pa5,
-    Pa21,
+    PA05,
+    PA21,
     #[cfg(feature = "min-samd51j")]
-    Pb5,
+    PB05,
     #[cfg(feature = "min-samd51n")]
-    Pb21,
+    PB21,
     #[cfg(feature = "min-samd51n")]
-    Pc5,
+    PC05,
     #[cfg(feature = "min-samd51n")]
-    Pc21,
+    PC21,
     #[cfg(feature = "min-samd51p")]
-    Pd10,
+    PD10,
 });
 
 ei!(ExtInt[6] {
-    Pa6,
-    Pa22,
+    PA06,
+    PA22,
     #[cfg(feature = "min-samd51j")]
-    Pb6,
-    Pb22,
+    PB06,
+    PB22,
     #[cfg(feature = "min-samd51n")]
-    Pc6,
+    PC06,
     #[cfg(feature = "min-samd51p")]
-    Pc22,
+    PC22,
     #[cfg(feature = "min-samd51p")]
-    Pd11,
+    PD11,
 });
 
 ei!(ExtInt[7] {
-    Pa7,
-    Pa23,
+    PA07,
+    PA23,
     #[cfg(feature = "min-samd51j")]
-    Pb7,
-    Pb23,
+    PB07,
+    PB23,
     #[cfg(feature = "min-samd51p")]
-    Pc23,
+    PC23,
     #[cfg(feature = "min-samd51p")]
-    Pd12,
+    PD12,
 });
 
 ei!(ExtInt[8] {
-    Pa24,
-    Pb8,
+    PA24,
+    PB08,
     #[cfg(feature = "min-samd51n")]
-    Pb24,
+    PB24,
     #[cfg(feature = "min-samd51n")]
-    Pc24,
+    PC24,
 });
 
 ei!(ExtInt[9] {
-    Pa9,
-    Pa25,
-    Pb9,
+    PA09,
+    PA25,
+    PB09,
     #[cfg(feature = "min-samd51n")]
-    Pb25,
+    PB25,
     #[cfg(feature = "min-samd51n")]
-    Pc7,
+    PC07,
     #[cfg(feature = "min-samd51n")]
-    Pc25,
+    PC25,
 });
 
 ei!(ExtInt[10] {
-    Pa10,
-    Pb10,
+    PA10,
+    PB10,
     #[cfg(feature = "min-samd51n")]
-    Pc10,
+    PC10,
     #[cfg(feature = "min-samd51n")]
-    Pc26,
+    PC26,
     #[cfg(feature = "min-samd51p")]
-    Pd20,
+    PD20,
 });
 
 ei!(ExtInt[11] {
-    Pa11,
-    Pa27,
-    Pb11,
+    PA11,
+    PA27,
+    PB11,
     #[cfg(feature = "min-samd51n")]
-    Pc11,
+    PC11,
     #[cfg(feature = "min-samd51n")]
-    Pc27,
+    PC27,
     #[cfg(feature = "min-samd51p")]
-    Pd21,
+    PD21,
 });
 
 ei!(ExtInt[12] {
-    Pa12,
+    PA12,
     #[cfg(feature = "min-samd51j")]
-    Pb12,
+    PB12,
     #[cfg(feature = "min-samd51p")]
-    Pb26,
+    PB26,
     #[cfg(feature = "min-samd51n")]
-    Pc12,
+    PC12,
     #[cfg(feature = "min-samd51n")]
-    Pc28,
+    PC28,
 });
 
 ei!(ExtInt[13] {
-    Pa13,
+    PA13,
     #[cfg(feature = "min-samd51j")]
-    Pb13,
+    PB13,
     #[cfg(feature = "min-samd51p")]
-    Pb27,
+    PB27,
     #[cfg(feature = "min-samd51n")]
-    Pc13,
+    PC13,
 });
 
 ei!(ExtInt[14] {
-    Pa14,
-    Pa30,
+    PA14,
+    PA30,
     #[cfg(feature = "min-samd51j")]
-    Pb14,
+    PB14,
     #[cfg(feature = "min-samd51p")]
-    Pb28,
+    PB28,
     #[cfg(feature = "min-samd51j")]
-    Pb30,
+    PB30,
     #[cfg(feature = "min-samd51n")]
-    Pc14,
+    PC14,
     #[cfg(feature = "min-samd51p")]
-    Pc30,
+    PC30,
 });
 
 ei!(ExtInt[15] {
-    Pa15,
-    Pa31,
+    PA15,
+    PA31,
     #[cfg(feature = "min-samd51j")]
-    Pb15,
+    PB15,
     #[cfg(feature = "min-samd51p")]
-    Pb29,
+    PB29,
     #[cfg(feature = "min-samd51j")]
-    Pb31,
+    PB31,
     #[cfg(feature = "min-samd51n")]
-    Pc15,
+    PC15,
     #[cfg(feature = "min-samd51p")]
-    Pc31,
+    PC31,
 });
