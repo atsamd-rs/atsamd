@@ -136,3 +136,7 @@ required-features = ["rtic", "unproven"]
 [[example]]
 name = "uart"
 required-features = ["dma"]
+
+[[example]]
+name = "i2c"
+required-features = ["dma"]

@@ -115,6 +115,17 @@ pub trait IsPad: AnyPin {
 }
 
 //==============================================================================
+// IsI2c
+//==============================================================================
+
+/// Type class for [`Pin`]s which can be used as I2C pads
+///
+/// This trait serves as a [type class] for `Pin`s configured as I2C pads.
+///
+/// [type class]: crate::typelevel#type-classes
+pub trait IsI2cPad: IsPad {}
+
+//==============================================================================
 // OptionalPad
 //==============================================================================
 

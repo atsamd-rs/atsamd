@@ -32,8 +32,8 @@ use crate::typelevel::Sealed;
 pub mod pad;
 pub use pad::*;
 
+pub mod i2c;
 pub mod spi;
-
 pub mod spi_future;
 pub mod uart;
 

@@ -1,4 +1,4 @@
-//! Implementations of the [`IsPad`] and [`GetPad`] traits
+//! Implementations of the [`IsPad`], [`IsI2c`], [`GetPad`] traits
 
 use crate::gpio::v2::*;
 use crate::sercom::v2::*;
@@ -8,7 +8,30 @@ use crate::sercom::v2::*;
 //==============================================================================
 
 macro_rules! pad_info {
+    // This is the entry pattern when the pad is not I2C enabled.
     (
+        $PinId:ident,
+        $Cfg:ident,
+        $Sercom:ident,
+        $PadNum:ident
+    ) => {
+        pad_info!(@impl_pad, $PinId, $Cfg, $Sercom, $PadNum);
+    };
+
+    // This is the entry pattern when the pad is I2C enabled.
+    (
+        $PinId:ident,
+        $Cfg:ident,
+        $Sercom:ident,
+        $PadNum:ident
+        + I2C
+    ) => {
+        impl IsI2cPad for Pin<$PinId, Alternate<$Cfg>> {}
+        pad_info!(@impl_pad, $PinId, $Cfg, $Sercom, $PadNum);
+    };
+
+    (
+        @impl_pad,
         $PinId:ident,
         $Cfg:ident,
         $Sercom:ident,
@@ -38,35 +61,37 @@ macro_rules! pad_table {
         #[$cfg:meta]
         $PinId:ident {
             $(
-                $Cfg:ident: ( $Sercom:ident, $PadNum:ident ),
+                $Cfg:ident: ( $Sercom:ident, $PadNum:ident ) $( + $I2C:ident )?,
             )+
         }
     ) => {
         $(
             #[$cfg]
-            pad_info!( $PinId, $Cfg, $Sercom, $PadNum );
+            pad_info!( $PinId, $Cfg, $Sercom, $PadNum $( + $I2C )? );
         )+
     };
+
     (
         $PinId:ident {
             $(
                 $( #[$cfg:meta] )?
-                $Cfg:ident: ( $Sercom:ident, $PadNum:ident ),
+                $Cfg:ident: ( $Sercom:ident, $PadNum:ident ) $( + $I2C:ident )?,
             )+
         }
     ) => {
         $(
             $( #[$cfg] )?
-            pad_info!( $PinId, $Cfg, $Sercom, $PadNum );
+            pad_info!( $PinId, $Cfg, $Sercom, $PadNum $( + $I2C )?  );
         )+
     };
+
     (
         $(
             $( #[$id_cfg:meta] )?
             $PinId:ident {
                 $(
                     $( #[$sercom_cfg:meta] )?
-                    $Cfg:ident: ( $Sercom:ident, $PadNum:ident ),
+                    $Cfg:ident: ( $Sercom:ident, $PadNum:ident ) $( + $I2C:ident )?,
                 )+
             }
         )+
@@ -74,10 +99,10 @@ macro_rules! pad_table {
         $(
             pad_table!(
                 $( #[$id_cfg] )?
-                $PinId{
+                $PinId {
                     $(
                         $( #[$sercom_cfg] )?
-                        $Cfg: ( $Sercom, $PadNum ),
+                        $Cfg: ( $Sercom, $PadNum ) $( + $I2C )?,
                     )+
                 }
             );
@@ -118,9 +143,9 @@ pad_table!(
         #[cfg(feature = "samd11")]
         D: (Sercom0, Pad2),
         #[cfg(feature = "samd21")]
-        C: (Sercom0, Pad0),
+        C: (Sercom0, Pad0) + I2C,
         #[cfg(feature = "samd21")]
-        D: (Sercom2, Pad0),
+        D: (Sercom2, Pad0) + I2C,
     }
     PA09 {
         #[cfg(feature = "samd11")]
@@ -128,9 +153,9 @@ pad_table!(
         #[cfg(feature = "samd11")]
         D: (Sercom0, Pad3),
         #[cfg(feature = "samd21")]
-        C: (Sercom0, Pad1),
+        C: (Sercom0, Pad1) + I2C,
         #[cfg(feature = "samd21")]
-        D: (Sercom2, Pad1),
+        D: (Sercom2, Pad1) + I2C,
     }
     #[cfg(feature = "samd21")]
     PA10 {
@@ -144,13 +169,13 @@ pad_table!(
     }
     #[cfg(feature = "min-samd21g")]
     PA12 {
-        C: (Sercom2, Pad0),
-        D: (Sercom4, Pad0),
+        C: (Sercom2, Pad0) + I2C,
+        D: (Sercom4, Pad0) + I2C,
     }
     #[cfg(feature = "min-samd21g")]
     PA13 {
-        C: (Sercom2, Pad1),
-        D: (Sercom4, Pad1),
+        C: (Sercom2, Pad1) + I2C,
+        D: (Sercom4, Pad1) + I2C,
     }
     PA14 {
         #[cfg(feature = "samd11")]
@@ -170,13 +195,13 @@ pad_table!(
     }
     #[cfg(feature = "samd21")]
     PA16 {
-        C: (Sercom1, Pad0),
-        D: (Sercom3, Pad0),
+        C: (Sercom1, Pad0) + I2C,
+        D: (Sercom3, Pad0) + I2C,
     }
     #[cfg(feature = "samd21")]
     PA17 {
-        C: (Sercom1, Pad1),
-        D: (Sercom3, Pad1),
+        C: (Sercom1, Pad1) + I2C,
+        D: (Sercom3, Pad1) + I2C,
     }
     #[cfg(feature = "samd21")]
     PA18 {
@@ -200,15 +225,15 @@ pad_table!(
     }
     PA22 {
         #[cfg(feature = "samd21")]
-        C: (Sercom3, Pad0),
+        C: (Sercom3, Pad0) + I2C,
         #[cfg(feature = "min-samd21g")]
-        D: (Sercom5, Pad0),
+        D: (Sercom5, Pad0) + I2C,
     }
     PA23 {
         #[cfg(feature = "samd21")]
-        C: (Sercom3, Pad1),
+        C: (Sercom3, Pad1) + I2C,
         #[cfg(feature = "min-samd21g")]
-        D: (Sercom5, Pad1),
+        D: (Sercom5, Pad1) + I2C,
     }
     PA24 {
         #[cfg(feature = "samd11")]
@@ -270,11 +295,11 @@ pad_table!(
     }
     #[cfg(feature = "min-samd21j")]
     PB12 {
-        C: (Sercom4, Pad0),
+        C: (Sercom4, Pad0) + I2C,
     }
     #[cfg(feature = "min-samd21j")]
     PB13 {
-        C: (Sercom4, Pad1),
+        C: (Sercom4, Pad1) + I2C,
     }
     #[cfg(feature = "min-samd21j")]
     PB14 {
@@ -286,11 +311,11 @@ pad_table!(
     }
     #[cfg(feature = "min-samd21j")]
     PB16 {
-        C: (Sercom5, Pad0),
+        C: (Sercom5, Pad0) + I2C,
     }
     #[cfg(feature = "min-samd21j")]
     PB17 {
-        C: (Sercom5, Pad1),
+        C: (Sercom5, Pad1) + I2C,
     }
     #[cfg(feature = "min-samd21g")]
     PB22 {
@@ -302,10 +327,10 @@ pad_table!(
     }
     #[cfg(feature = "min-samd21j")]
     PB30 {
-        D: (Sercom5, Pad0),
+        D: (Sercom5, Pad0) + I2C,
     }
     #[cfg(feature = "min-samd21j")]
     PB31 {
-        D: (Sercom5, Pad1),
+        D: (Sercom5, Pad1) + I2C,
     }
 );
