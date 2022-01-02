@@ -1,18 +1,55 @@
-#[doc = "Reader of register BSR"]
-pub type R = crate::R<u16, super::BSR>;
-#[doc = "Writer for register BSR"]
-pub type W = crate::W<u16, super::BSR>;
-#[doc = "Register BSR `reset()`'s with value 0"]
-impl crate::ResetValue for super::BSR {
-    type Type = u16;
+#[doc = "Register `BSR` reader"]
+pub struct R(crate::R<BSR_SPEC>);
+impl core::ops::Deref for R {
+    type Target = crate::R<BSR_SPEC>;
     #[inline(always)]
-    fn reset_value() -> Self::Type {
-        0
+    fn deref(&self) -> &Self::Target {
+        &self.0
     }
 }
-#[doc = "Reader of field `BLOCKSIZE`"]
-pub type BLOCKSIZE_R = crate::R<u16, u16>;
-#[doc = "Write proxy for field `BLOCKSIZE`"]
+impl From<crate::R<BSR_SPEC>> for R {
+    #[inline(always)]
+    fn from(reader: crate::R<BSR_SPEC>) -> Self {
+        R(reader)
+    }
+}
+#[doc = "Register `BSR` writer"]
+pub struct W(crate::W<BSR_SPEC>);
+impl core::ops::Deref for W {
+    type Target = crate::W<BSR_SPEC>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl core::ops::DerefMut for W {
+    #[inline(always)]
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+impl From<crate::W<BSR_SPEC>> for W {
+    #[inline(always)]
+    fn from(writer: crate::W<BSR_SPEC>) -> Self {
+        W(writer)
+    }
+}
+#[doc = "Field `BLOCKSIZE` reader - Transfer Block Size"]
+pub struct BLOCKSIZE_R(crate::FieldReader<u16, u16>);
+impl BLOCKSIZE_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u16) -> Self {
+        BLOCKSIZE_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for BLOCKSIZE_R {
+    type Target = crate::FieldReader<u16, u16>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `BLOCKSIZE` writer - Transfer Block Size"]
 pub struct BLOCKSIZE_W<'a> {
     w: &'a mut W,
 }
@@ -20,7 +57,7 @@ impl<'a> BLOCKSIZE_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub unsafe fn bits(self, value: u16) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x03ff) | ((value as u16) & 0x03ff);
+        self.w.bits = (self.w.bits & !0x03ff) | (value as u16 & 0x03ff);
         self.w
     }
 }
@@ -51,9 +88,13 @@ impl From<BOUNDARY_A> for u8 {
         variant as _
     }
 }
-#[doc = "Reader of field `BOUNDARY`"]
-pub type BOUNDARY_R = crate::R<u8, BOUNDARY_A>;
+#[doc = "Field `BOUNDARY` reader - SDMA Buffer Boundary"]
+pub struct BOUNDARY_R(crate::FieldReader<u8, BOUNDARY_A>);
 impl BOUNDARY_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        BOUNDARY_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
     pub fn variant(&self) -> BOUNDARY_A {
@@ -72,45 +113,52 @@ impl BOUNDARY_R {
     #[doc = "Checks if the value of the field is `_4K`"]
     #[inline(always)]
     pub fn is_4k(&self) -> bool {
-        *self == BOUNDARY_A::_4K
+        **self == BOUNDARY_A::_4K
     }
     #[doc = "Checks if the value of the field is `_8K`"]
     #[inline(always)]
     pub fn is_8k(&self) -> bool {
-        *self == BOUNDARY_A::_8K
+        **self == BOUNDARY_A::_8K
     }
     #[doc = "Checks if the value of the field is `_16K`"]
     #[inline(always)]
     pub fn is_16k(&self) -> bool {
-        *self == BOUNDARY_A::_16K
+        **self == BOUNDARY_A::_16K
     }
     #[doc = "Checks if the value of the field is `_32K`"]
     #[inline(always)]
     pub fn is_32k(&self) -> bool {
-        *self == BOUNDARY_A::_32K
+        **self == BOUNDARY_A::_32K
     }
     #[doc = "Checks if the value of the field is `_64K`"]
     #[inline(always)]
     pub fn is_64k(&self) -> bool {
-        *self == BOUNDARY_A::_64K
+        **self == BOUNDARY_A::_64K
     }
     #[doc = "Checks if the value of the field is `_128K`"]
     #[inline(always)]
     pub fn is_128k(&self) -> bool {
-        *self == BOUNDARY_A::_128K
+        **self == BOUNDARY_A::_128K
     }
     #[doc = "Checks if the value of the field is `_256K`"]
     #[inline(always)]
     pub fn is_256k(&self) -> bool {
-        *self == BOUNDARY_A::_256K
+        **self == BOUNDARY_A::_256K
     }
     #[doc = "Checks if the value of the field is `_512K`"]
     #[inline(always)]
     pub fn is_512k(&self) -> bool {
-        *self == BOUNDARY_A::_512K
+        **self == BOUNDARY_A::_512K
     }
 }
-#[doc = "Write proxy for field `BOUNDARY`"]
+impl core::ops::Deref for BOUNDARY_R {
+    type Target = crate::FieldReader<u8, BOUNDARY_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `BOUNDARY` writer - SDMA Buffer Boundary"]
 pub struct BOUNDARY_W<'a> {
     w: &'a mut W,
 }
@@ -118,9 +166,7 @@ impl<'a> BOUNDARY_W<'a> {
     #[doc = r"Writes `variant` to the field"]
     #[inline(always)]
     pub fn variant(self, variant: BOUNDARY_A) -> &'a mut W {
-        {
-            self.bits(variant.into())
-        }
+        self.bits(variant.into())
     }
     #[doc = "4k bytes"]
     #[inline(always)]
@@ -165,7 +211,7 @@ impl<'a> BOUNDARY_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x07 << 12)) | (((value as u16) & 0x07) << 12);
+        self.w.bits = (self.w.bits & !(0x07 << 12)) | ((value as u16 & 0x07) << 12);
         self.w
     }
 }
@@ -191,5 +237,31 @@ impl W {
     #[inline(always)]
     pub fn boundary(&mut self) -> BOUNDARY_W {
         BOUNDARY_W { w: self }
+    }
+    #[doc = "Writes raw bits to the register."]
+    #[inline(always)]
+    pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {
+        self.0.bits(bits);
+        self
+    }
+}
+#[doc = "Block Size\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [bsr](index.html) module"]
+pub struct BSR_SPEC;
+impl crate::RegisterSpec for BSR_SPEC {
+    type Ux = u16;
+}
+#[doc = "`read()` method returns [bsr::R](R) reader structure"]
+impl crate::Readable for BSR_SPEC {
+    type Reader = R;
+}
+#[doc = "`write(|w| ..)` method takes [bsr::W](W) writer structure"]
+impl crate::Writable for BSR_SPEC {
+    type Writer = W;
+}
+#[doc = "`reset()` method sets BSR to value 0"]
+impl crate::Resettable for BSR_SPEC {
+    #[inline(always)]
+    fn reset_value() -> Self::Ux {
+        0
     }
 }

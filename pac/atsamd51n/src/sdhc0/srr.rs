@@ -1,13 +1,37 @@
-#[doc = "Reader of register SRR"]
-pub type R = crate::R<u8, super::SRR>;
-#[doc = "Writer for register SRR"]
-pub type W = crate::W<u8, super::SRR>;
-#[doc = "Register SRR `reset()`'s with value 0"]
-impl crate::ResetValue for super::SRR {
-    type Type = u8;
+#[doc = "Register `SRR` reader"]
+pub struct R(crate::R<SRR_SPEC>);
+impl core::ops::Deref for R {
+    type Target = crate::R<SRR_SPEC>;
     #[inline(always)]
-    fn reset_value() -> Self::Type {
-        0
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl From<crate::R<SRR_SPEC>> for R {
+    #[inline(always)]
+    fn from(reader: crate::R<SRR_SPEC>) -> Self {
+        R(reader)
+    }
+}
+#[doc = "Register `SRR` writer"]
+pub struct W(crate::W<SRR_SPEC>);
+impl core::ops::Deref for W {
+    type Target = crate::W<SRR_SPEC>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl core::ops::DerefMut for W {
+    #[inline(always)]
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+impl From<crate::W<SRR_SPEC>> for W {
+    #[inline(always)]
+    fn from(writer: crate::W<SRR_SPEC>) -> Self {
+        W(writer)
     }
 }
 #[doc = "Software Reset For All\n\nValue on reset: 0"]
@@ -24,9 +48,13 @@ impl From<SWRSTALL_A> for bool {
         variant as u8 != 0
     }
 }
-#[doc = "Reader of field `SWRSTALL`"]
-pub type SWRSTALL_R = crate::R<bool, SWRSTALL_A>;
+#[doc = "Field `SWRSTALL` reader - Software Reset For All"]
+pub struct SWRSTALL_R(crate::FieldReader<bool, SWRSTALL_A>);
 impl SWRSTALL_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        SWRSTALL_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
     pub fn variant(&self) -> SWRSTALL_A {
@@ -38,15 +66,22 @@ impl SWRSTALL_R {
     #[doc = "Checks if the value of the field is `WORK`"]
     #[inline(always)]
     pub fn is_work(&self) -> bool {
-        *self == SWRSTALL_A::WORK
+        **self == SWRSTALL_A::WORK
     }
     #[doc = "Checks if the value of the field is `RESET`"]
     #[inline(always)]
     pub fn is_reset(&self) -> bool {
-        *self == SWRSTALL_A::RESET
+        **self == SWRSTALL_A::RESET
     }
 }
-#[doc = "Write proxy for field `SWRSTALL`"]
+impl core::ops::Deref for SWRSTALL_R {
+    type Target = crate::FieldReader<bool, SWRSTALL_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `SWRSTALL` writer - Software Reset For All"]
 pub struct SWRSTALL_W<'a> {
     w: &'a mut W,
 }
@@ -54,9 +89,7 @@ impl<'a> SWRSTALL_W<'a> {
     #[doc = r"Writes `variant` to the field"]
     #[inline(always)]
     pub fn variant(self, variant: SWRSTALL_A) -> &'a mut W {
-        {
-            self.bit(variant.into())
-        }
+        self.bit(variant.into())
     }
     #[doc = "Work"]
     #[inline(always)]
@@ -81,7 +114,7 @@ impl<'a> SWRSTALL_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | ((value as u8) & 0x01);
+        self.w.bits = (self.w.bits & !0x01) | (value as u8 & 0x01);
         self.w
     }
 }
@@ -99,9 +132,13 @@ impl From<SWRSTCMD_A> for bool {
         variant as u8 != 0
     }
 }
-#[doc = "Reader of field `SWRSTCMD`"]
-pub type SWRSTCMD_R = crate::R<bool, SWRSTCMD_A>;
+#[doc = "Field `SWRSTCMD` reader - Software Reset For CMD Line"]
+pub struct SWRSTCMD_R(crate::FieldReader<bool, SWRSTCMD_A>);
 impl SWRSTCMD_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        SWRSTCMD_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
     pub fn variant(&self) -> SWRSTCMD_A {
@@ -113,15 +150,22 @@ impl SWRSTCMD_R {
     #[doc = "Checks if the value of the field is `WORK`"]
     #[inline(always)]
     pub fn is_work(&self) -> bool {
-        *self == SWRSTCMD_A::WORK
+        **self == SWRSTCMD_A::WORK
     }
     #[doc = "Checks if the value of the field is `RESET`"]
     #[inline(always)]
     pub fn is_reset(&self) -> bool {
-        *self == SWRSTCMD_A::RESET
+        **self == SWRSTCMD_A::RESET
     }
 }
-#[doc = "Write proxy for field `SWRSTCMD`"]
+impl core::ops::Deref for SWRSTCMD_R {
+    type Target = crate::FieldReader<bool, SWRSTCMD_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `SWRSTCMD` writer - Software Reset For CMD Line"]
 pub struct SWRSTCMD_W<'a> {
     w: &'a mut W,
 }
@@ -129,9 +173,7 @@ impl<'a> SWRSTCMD_W<'a> {
     #[doc = r"Writes `variant` to the field"]
     #[inline(always)]
     pub fn variant(self, variant: SWRSTCMD_A) -> &'a mut W {
-        {
-            self.bit(variant.into())
-        }
+        self.bit(variant.into())
     }
     #[doc = "Work"]
     #[inline(always)]
@@ -156,7 +198,7 @@ impl<'a> SWRSTCMD_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | (((value as u8) & 0x01) << 1);
+        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u8 & 0x01) << 1);
         self.w
     }
 }
@@ -174,9 +216,13 @@ impl From<SWRSTDAT_A> for bool {
         variant as u8 != 0
     }
 }
-#[doc = "Reader of field `SWRSTDAT`"]
-pub type SWRSTDAT_R = crate::R<bool, SWRSTDAT_A>;
+#[doc = "Field `SWRSTDAT` reader - Software Reset For DAT Line"]
+pub struct SWRSTDAT_R(crate::FieldReader<bool, SWRSTDAT_A>);
 impl SWRSTDAT_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        SWRSTDAT_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
     pub fn variant(&self) -> SWRSTDAT_A {
@@ -188,15 +234,22 @@ impl SWRSTDAT_R {
     #[doc = "Checks if the value of the field is `WORK`"]
     #[inline(always)]
     pub fn is_work(&self) -> bool {
-        *self == SWRSTDAT_A::WORK
+        **self == SWRSTDAT_A::WORK
     }
     #[doc = "Checks if the value of the field is `RESET`"]
     #[inline(always)]
     pub fn is_reset(&self) -> bool {
-        *self == SWRSTDAT_A::RESET
+        **self == SWRSTDAT_A::RESET
     }
 }
-#[doc = "Write proxy for field `SWRSTDAT`"]
+impl core::ops::Deref for SWRSTDAT_R {
+    type Target = crate::FieldReader<bool, SWRSTDAT_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `SWRSTDAT` writer - Software Reset For DAT Line"]
 pub struct SWRSTDAT_W<'a> {
     w: &'a mut W,
 }
@@ -204,9 +257,7 @@ impl<'a> SWRSTDAT_W<'a> {
     #[doc = r"Writes `variant` to the field"]
     #[inline(always)]
     pub fn variant(self, variant: SWRSTDAT_A) -> &'a mut W {
-        {
-            self.bit(variant.into())
-        }
+        self.bit(variant.into())
     }
     #[doc = "Work"]
     #[inline(always)]
@@ -231,7 +282,7 @@ impl<'a> SWRSTDAT_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 2)) | (((value as u8) & 0x01) << 2);
+        self.w.bits = (self.w.bits & !(0x01 << 2)) | ((value as u8 & 0x01) << 2);
         self.w
     }
 }
@@ -267,5 +318,31 @@ impl W {
     #[inline(always)]
     pub fn swrstdat(&mut self) -> SWRSTDAT_W {
         SWRSTDAT_W { w: self }
+    }
+    #[doc = "Writes raw bits to the register."]
+    #[inline(always)]
+    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
+        self.0.bits(bits);
+        self
+    }
+}
+#[doc = "Software Reset\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [srr](index.html) module"]
+pub struct SRR_SPEC;
+impl crate::RegisterSpec for SRR_SPEC {
+    type Ux = u8;
+}
+#[doc = "`read()` method returns [srr::R](R) reader structure"]
+impl crate::Readable for SRR_SPEC {
+    type Reader = R;
+}
+#[doc = "`write(|w| ..)` method takes [srr::W](W) writer structure"]
+impl crate::Writable for SRR_SPEC {
+    type Writer = W;
+}
+#[doc = "`reset()` method sets SRR to value 0"]
+impl crate::Resettable for SRR_SPEC {
+    #[inline(always)]
+    fn reset_value() -> Self::Ux {
+        0
     }
 }

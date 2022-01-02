@@ -1,80 +1,65 @@
 #[doc = r"Register block"]
 #[repr(C)]
 pub struct RegisterBlock {
-    _reserved_0_count8: [u8; 56usize],
+    _reserved_0_count8: [u8; 0x38],
 }
 impl RegisterBlock {
-    #[doc = "0x00 - 32-bit Counter Mode"]
+    #[doc = "0x00..0x38 - 32-bit Counter Mode"]
     #[inline(always)]
     pub fn count32(&self) -> &COUNT32 {
         unsafe { &*(((self as *const Self) as *const u8).add(0usize) as *const COUNT32) }
     }
-    #[doc = "0x00 - 32-bit Counter Mode"]
-    #[inline(always)]
-    pub fn count32_mut(&self) -> &mut COUNT32 {
-        unsafe { &mut *(((self as *const Self) as *mut u8).add(0usize) as *mut COUNT32) }
-    }
-    #[doc = "0x00 - 16-bit Counter Mode"]
+    #[doc = "0x00..0x34 - 16-bit Counter Mode"]
     #[inline(always)]
     pub fn count16(&self) -> &COUNT16 {
         unsafe { &*(((self as *const Self) as *const u8).add(0usize) as *const COUNT16) }
     }
-    #[doc = "0x00 - 16-bit Counter Mode"]
-    #[inline(always)]
-    pub fn count16_mut(&self) -> &mut COUNT16 {
-        unsafe { &mut *(((self as *const Self) as *mut u8).add(0usize) as *mut COUNT16) }
-    }
-    #[doc = "0x00 - 8-bit Counter Mode"]
+    #[doc = "0x00..0x32 - 8-bit Counter Mode"]
     #[inline(always)]
     pub fn count8(&self) -> &COUNT8 {
         unsafe { &*(((self as *const Self) as *const u8).add(0usize) as *const COUNT8) }
-    }
-    #[doc = "0x00 - 8-bit Counter Mode"]
-    #[inline(always)]
-    pub fn count8_mut(&self) -> &mut COUNT8 {
-        unsafe { &mut *(((self as *const Self) as *mut u8).add(0usize) as *mut COUNT8) }
     }
 }
 #[doc = r"Register block"]
 #[repr(C)]
 pub struct COUNT8 {
     #[doc = "0x00 - Control A"]
-    pub ctrla: self::count8::CTRLA,
+    pub ctrla: crate::Reg<self::count8::ctrla::CTRLA_SPEC>,
     #[doc = "0x04 - Control B Clear"]
-    pub ctrlbclr: self::count8::CTRLBCLR,
+    pub ctrlbclr: crate::Reg<self::count8::ctrlbclr::CTRLBCLR_SPEC>,
     #[doc = "0x05 - Control B Set"]
-    pub ctrlbset: self::count8::CTRLBSET,
+    pub ctrlbset: crate::Reg<self::count8::ctrlbset::CTRLBSET_SPEC>,
     #[doc = "0x06 - Event Control"]
-    pub evctrl: self::count8::EVCTRL,
+    pub evctrl: crate::Reg<self::count8::evctrl::EVCTRL_SPEC>,
     #[doc = "0x08 - Interrupt Enable Clear"]
-    pub intenclr: self::count8::INTENCLR,
+    pub intenclr: crate::Reg<self::count8::intenclr::INTENCLR_SPEC>,
     #[doc = "0x09 - Interrupt Enable Set"]
-    pub intenset: self::count8::INTENSET,
+    pub intenset: crate::Reg<self::count8::intenset::INTENSET_SPEC>,
     #[doc = "0x0a - Interrupt Flag Status and Clear"]
-    pub intflag: self::count8::INTFLAG,
+    pub intflag: crate::Reg<self::count8::intflag::INTFLAG_SPEC>,
     #[doc = "0x0b - Status"]
-    pub status: self::count8::STATUS,
+    pub status: crate::Reg<self::count8::status::STATUS_SPEC>,
     #[doc = "0x0c - Waveform Generation Control"]
-    pub wave: self::count8::WAVE,
+    pub wave: crate::Reg<self::count8::wave::WAVE_SPEC>,
     #[doc = "0x0d - Control C"]
-    pub drvctrl: self::count8::DRVCTRL,
-    _reserved10: [u8; 1usize],
+    pub drvctrl: crate::Reg<self::count8::drvctrl::DRVCTRL_SPEC>,
+    _reserved10: [u8; 0x01],
     #[doc = "0x0f - Debug Control"]
-    pub dbgctrl: self::count8::DBGCTRL,
+    pub dbgctrl: crate::Reg<self::count8::dbgctrl::DBGCTRL_SPEC>,
     #[doc = "0x10 - Synchronization Status"]
-    pub syncbusy: self::count8::SYNCBUSY,
+    pub syncbusy: crate::Reg<self::count8::syncbusy::SYNCBUSY_SPEC>,
     #[doc = "0x14 - COUNT8 Count"]
-    pub count: self::count8::COUNT,
-    _reserved13: [u8; 6usize],
+    pub count: crate::Reg<self::count8::count::COUNT_SPEC>,
+    _reserved13: [u8; 0x06],
     #[doc = "0x1b - COUNT8 Period"]
-    pub per: self::count8::PER,
+    pub per: crate::Reg<self::count8::per::PER_SPEC>,
     #[doc = "0x1c - COUNT8 Compare and Capture"]
-    pub cc: [self::count8::CC; 2],
-    _reserved15: [u8; 17usize],
+    pub cc: [crate::Reg<self::count8::cc::CC_SPEC>; 2],
+    _reserved15: [u8; 0x11],
     #[doc = "0x2f - COUNT8 Period Buffer"]
-    pub perbuf: self::count8::PERBUF,
+    pub perbuf: crate::Reg<self::count8::perbuf::PERBUF_SPEC>,
     #[doc = "0x30 - COUNT8 Compare and Capture Buffer"]
-    pub ccbuf: [self::count8::CCBUF; 2],
+    pub ccbuf: [crate::Reg<self::count8::ccbuf::CCBUF_SPEC>; 2],
 }
 #[doc = r"Register block"]
 #[doc = "8-bit Counter Mode"]
@@ -83,38 +68,38 @@ pub mod count8;
 #[repr(C)]
 pub struct COUNT16 {
     #[doc = "0x00 - Control A"]
-    pub ctrla: self::count16::CTRLA,
+    pub ctrla: crate::Reg<self::count16::ctrla::CTRLA_SPEC>,
     #[doc = "0x04 - Control B Clear"]
-    pub ctrlbclr: self::count16::CTRLBCLR,
+    pub ctrlbclr: crate::Reg<self::count16::ctrlbclr::CTRLBCLR_SPEC>,
     #[doc = "0x05 - Control B Set"]
-    pub ctrlbset: self::count16::CTRLBSET,
+    pub ctrlbset: crate::Reg<self::count16::ctrlbset::CTRLBSET_SPEC>,
     #[doc = "0x06 - Event Control"]
-    pub evctrl: self::count16::EVCTRL,
+    pub evctrl: crate::Reg<self::count16::evctrl::EVCTRL_SPEC>,
     #[doc = "0x08 - Interrupt Enable Clear"]
-    pub intenclr: self::count16::INTENCLR,
+    pub intenclr: crate::Reg<self::count16::intenclr::INTENCLR_SPEC>,
     #[doc = "0x09 - Interrupt Enable Set"]
-    pub intenset: self::count16::INTENSET,
+    pub intenset: crate::Reg<self::count16::intenset::INTENSET_SPEC>,
     #[doc = "0x0a - Interrupt Flag Status and Clear"]
-    pub intflag: self::count16::INTFLAG,
+    pub intflag: crate::Reg<self::count16::intflag::INTFLAG_SPEC>,
     #[doc = "0x0b - Status"]
-    pub status: self::count16::STATUS,
+    pub status: crate::Reg<self::count16::status::STATUS_SPEC>,
     #[doc = "0x0c - Waveform Generation Control"]
-    pub wave: self::count16::WAVE,
+    pub wave: crate::Reg<self::count16::wave::WAVE_SPEC>,
     #[doc = "0x0d - Control C"]
-    pub drvctrl: self::count16::DRVCTRL,
-    _reserved10: [u8; 1usize],
+    pub drvctrl: crate::Reg<self::count16::drvctrl::DRVCTRL_SPEC>,
+    _reserved10: [u8; 0x01],
     #[doc = "0x0f - Debug Control"]
-    pub dbgctrl: self::count16::DBGCTRL,
+    pub dbgctrl: crate::Reg<self::count16::dbgctrl::DBGCTRL_SPEC>,
     #[doc = "0x10 - Synchronization Status"]
-    pub syncbusy: self::count16::SYNCBUSY,
+    pub syncbusy: crate::Reg<self::count16::syncbusy::SYNCBUSY_SPEC>,
     #[doc = "0x14 - COUNT16 Count"]
-    pub count: self::count16::COUNT,
-    _reserved13: [u8; 6usize],
+    pub count: crate::Reg<self::count16::count::COUNT_SPEC>,
+    _reserved13: [u8; 0x06],
     #[doc = "0x1c - COUNT16 Compare and Capture"]
-    pub cc: [self::count16::CC; 2],
-    _reserved14: [u8; 16usize],
+    pub cc: [crate::Reg<self::count16::cc::CC_SPEC>; 2],
+    _reserved14: [u8; 0x10],
     #[doc = "0x30 - COUNT16 Compare and Capture Buffer"]
-    pub ccbuf: [self::count16::CCBUF; 2],
+    pub ccbuf: [crate::Reg<self::count16::ccbuf::CCBUF_SPEC>; 2],
 }
 #[doc = r"Register block"]
 #[doc = "16-bit Counter Mode"]
@@ -123,38 +108,38 @@ pub mod count16;
 #[repr(C)]
 pub struct COUNT32 {
     #[doc = "0x00 - Control A"]
-    pub ctrla: self::count32::CTRLA,
+    pub ctrla: crate::Reg<self::count32::ctrla::CTRLA_SPEC>,
     #[doc = "0x04 - Control B Clear"]
-    pub ctrlbclr: self::count32::CTRLBCLR,
+    pub ctrlbclr: crate::Reg<self::count32::ctrlbclr::CTRLBCLR_SPEC>,
     #[doc = "0x05 - Control B Set"]
-    pub ctrlbset: self::count32::CTRLBSET,
+    pub ctrlbset: crate::Reg<self::count32::ctrlbset::CTRLBSET_SPEC>,
     #[doc = "0x06 - Event Control"]
-    pub evctrl: self::count32::EVCTRL,
+    pub evctrl: crate::Reg<self::count32::evctrl::EVCTRL_SPEC>,
     #[doc = "0x08 - Interrupt Enable Clear"]
-    pub intenclr: self::count32::INTENCLR,
+    pub intenclr: crate::Reg<self::count32::intenclr::INTENCLR_SPEC>,
     #[doc = "0x09 - Interrupt Enable Set"]
-    pub intenset: self::count32::INTENSET,
+    pub intenset: crate::Reg<self::count32::intenset::INTENSET_SPEC>,
     #[doc = "0x0a - Interrupt Flag Status and Clear"]
-    pub intflag: self::count32::INTFLAG,
+    pub intflag: crate::Reg<self::count32::intflag::INTFLAG_SPEC>,
     #[doc = "0x0b - Status"]
-    pub status: self::count32::STATUS,
+    pub status: crate::Reg<self::count32::status::STATUS_SPEC>,
     #[doc = "0x0c - Waveform Generation Control"]
-    pub wave: self::count32::WAVE,
+    pub wave: crate::Reg<self::count32::wave::WAVE_SPEC>,
     #[doc = "0x0d - Control C"]
-    pub drvctrl: self::count32::DRVCTRL,
-    _reserved10: [u8; 1usize],
+    pub drvctrl: crate::Reg<self::count32::drvctrl::DRVCTRL_SPEC>,
+    _reserved10: [u8; 0x01],
     #[doc = "0x0f - Debug Control"]
-    pub dbgctrl: self::count32::DBGCTRL,
+    pub dbgctrl: crate::Reg<self::count32::dbgctrl::DBGCTRL_SPEC>,
     #[doc = "0x10 - Synchronization Status"]
-    pub syncbusy: self::count32::SYNCBUSY,
+    pub syncbusy: crate::Reg<self::count32::syncbusy::SYNCBUSY_SPEC>,
     #[doc = "0x14 - COUNT32 Count"]
-    pub count: self::count32::COUNT,
-    _reserved13: [u8; 4usize],
-    #[doc = "0x1c - COUNT32 Compare and Capture"]
-    pub cc: [self::count32::CC; 2],
-    _reserved14: [u8; 12usize],
-    #[doc = "0x30 - COUNT32 Compare and Capture Buffer"]
-    pub ccbuf: [self::count32::CCBUF; 2],
+    pub count: crate::Reg<self::count32::count::COUNT_SPEC>,
+    _reserved13: [u8; 0x04],
+    #[doc = "0x1c..0x24 - COUNT32 Compare and Capture"]
+    pub cc: [crate::Reg<self::count32::cc::CC_SPEC>; 2],
+    _reserved14: [u8; 0x0c],
+    #[doc = "0x30..0x38 - COUNT32 Compare and Capture Buffer"]
+    pub ccbuf: [crate::Reg<self::count32::ccbuf::CCBUF_SPEC>; 2],
 }
 #[doc = r"Register block"]
 #[doc = "32-bit Counter Mode"]

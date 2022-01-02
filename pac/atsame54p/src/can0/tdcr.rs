@@ -1,18 +1,55 @@
-#[doc = "Reader of register TDCR"]
-pub type R = crate::R<u32, super::TDCR>;
-#[doc = "Writer for register TDCR"]
-pub type W = crate::W<u32, super::TDCR>;
-#[doc = "Register TDCR `reset()`'s with value 0"]
-impl crate::ResetValue for super::TDCR {
-    type Type = u32;
+#[doc = "Register `TDCR` reader"]
+pub struct R(crate::R<TDCR_SPEC>);
+impl core::ops::Deref for R {
+    type Target = crate::R<TDCR_SPEC>;
     #[inline(always)]
-    fn reset_value() -> Self::Type {
-        0
+    fn deref(&self) -> &Self::Target {
+        &self.0
     }
 }
-#[doc = "Reader of field `TDCF`"]
-pub type TDCF_R = crate::R<u8, u8>;
-#[doc = "Write proxy for field `TDCF`"]
+impl From<crate::R<TDCR_SPEC>> for R {
+    #[inline(always)]
+    fn from(reader: crate::R<TDCR_SPEC>) -> Self {
+        R(reader)
+    }
+}
+#[doc = "Register `TDCR` writer"]
+pub struct W(crate::W<TDCR_SPEC>);
+impl core::ops::Deref for W {
+    type Target = crate::W<TDCR_SPEC>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl core::ops::DerefMut for W {
+    #[inline(always)]
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+impl From<crate::W<TDCR_SPEC>> for W {
+    #[inline(always)]
+    fn from(writer: crate::W<TDCR_SPEC>) -> Self {
+        W(writer)
+    }
+}
+#[doc = "Field `TDCF` reader - Transmitter Delay Compensation Filter Length"]
+pub struct TDCF_R(crate::FieldReader<u8, u8>);
+impl TDCF_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        TDCF_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TDCF_R {
+    type Target = crate::FieldReader<u8, u8>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TDCF` writer - Transmitter Delay Compensation Filter Length"]
 pub struct TDCF_W<'a> {
     w: &'a mut W,
 }
@@ -20,13 +57,26 @@ impl<'a> TDCF_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x7f) | ((value as u32) & 0x7f);
+        self.w.bits = (self.w.bits & !0x7f) | (value as u32 & 0x7f);
         self.w
     }
 }
-#[doc = "Reader of field `TDCO`"]
-pub type TDCO_R = crate::R<u8, u8>;
-#[doc = "Write proxy for field `TDCO`"]
+#[doc = "Field `TDCO` reader - Transmitter Delay Compensation Offset"]
+pub struct TDCO_R(crate::FieldReader<u8, u8>);
+impl TDCO_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        TDCO_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TDCO_R {
+    type Target = crate::FieldReader<u8, u8>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TDCO` writer - Transmitter Delay Compensation Offset"]
 pub struct TDCO_W<'a> {
     w: &'a mut W,
 }
@@ -34,7 +84,7 @@ impl<'a> TDCO_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x7f << 8)) | (((value as u32) & 0x7f) << 8);
+        self.w.bits = (self.w.bits & !(0x7f << 8)) | ((value as u32 & 0x7f) << 8);
         self.w
     }
 }
@@ -60,5 +110,31 @@ impl W {
     #[inline(always)]
     pub fn tdco(&mut self) -> TDCO_W {
         TDCO_W { w: self }
+    }
+    #[doc = "Writes raw bits to the register."]
+    #[inline(always)]
+    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+        self.0.bits(bits);
+        self
+    }
+}
+#[doc = "Extended ID Filter Configuration\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [tdcr](index.html) module"]
+pub struct TDCR_SPEC;
+impl crate::RegisterSpec for TDCR_SPEC {
+    type Ux = u32;
+}
+#[doc = "`read()` method returns [tdcr::R](R) reader structure"]
+impl crate::Readable for TDCR_SPEC {
+    type Reader = R;
+}
+#[doc = "`write(|w| ..)` method takes [tdcr::W](W) writer structure"]
+impl crate::Writable for TDCR_SPEC {
+    type Writer = W;
+}
+#[doc = "`reset()` method sets TDCR to value 0"]
+impl crate::Resettable for TDCR_SPEC {
+    #[inline(always)]
+    fn reset_value() -> Self::Ux {
+        0
     }
 }

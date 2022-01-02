@@ -1,9 +1,48 @@
-#[doc = "Reader of register TIMESTAMP"]
-pub type R = crate::R<u32, super::TIMESTAMP>;
-#[doc = "Reader of field `SECOND`"]
-pub type SECOND_R = crate::R<u8, u8>;
-#[doc = "Reader of field `MINUTE`"]
-pub type MINUTE_R = crate::R<u8, u8>;
+#[doc = "Register `TIMESTAMP` reader"]
+pub struct R(crate::R<TIMESTAMP_SPEC>);
+impl core::ops::Deref for R {
+    type Target = crate::R<TIMESTAMP_SPEC>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl From<crate::R<TIMESTAMP_SPEC>> for R {
+    #[inline(always)]
+    fn from(reader: crate::R<TIMESTAMP_SPEC>) -> Self {
+        R(reader)
+    }
+}
+#[doc = "Field `SECOND` reader - Second Timestamp Value"]
+pub struct SECOND_R(crate::FieldReader<u8, u8>);
+impl SECOND_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        SECOND_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for SECOND_R {
+    type Target = crate::FieldReader<u8, u8>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `MINUTE` reader - Minute Timestamp Value"]
+pub struct MINUTE_R(crate::FieldReader<u8, u8>);
+impl MINUTE_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        MINUTE_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for MINUTE_R {
+    type Target = crate::FieldReader<u8, u8>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
 #[doc = "Hour Timestamp Value\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
 #[repr(u8)]
@@ -19,36 +58,85 @@ impl From<HOUR_A> for u8 {
         variant as _
     }
 }
-#[doc = "Reader of field `HOUR`"]
-pub type HOUR_R = crate::R<u8, HOUR_A>;
+#[doc = "Field `HOUR` reader - Hour Timestamp Value"]
+pub struct HOUR_R(crate::FieldReader<u8, HOUR_A>);
 impl HOUR_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        HOUR_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> crate::Variant<u8, HOUR_A> {
-        use crate::Variant::*;
+    pub fn variant(&self) -> Option<HOUR_A> {
         match self.bits {
-            0 => Val(HOUR_A::AM),
-            16 => Val(HOUR_A::PM),
-            i => Res(i),
+            0 => Some(HOUR_A::AM),
+            16 => Some(HOUR_A::PM),
+            _ => None,
         }
     }
     #[doc = "Checks if the value of the field is `AM`"]
     #[inline(always)]
     pub fn is_am(&self) -> bool {
-        *self == HOUR_A::AM
+        **self == HOUR_A::AM
     }
     #[doc = "Checks if the value of the field is `PM`"]
     #[inline(always)]
     pub fn is_pm(&self) -> bool {
-        *self == HOUR_A::PM
+        **self == HOUR_A::PM
     }
 }
-#[doc = "Reader of field `DAY`"]
-pub type DAY_R = crate::R<u8, u8>;
-#[doc = "Reader of field `MONTH`"]
-pub type MONTH_R = crate::R<u8, u8>;
-#[doc = "Reader of field `YEAR`"]
-pub type YEAR_R = crate::R<u8, u8>;
+impl core::ops::Deref for HOUR_R {
+    type Target = crate::FieldReader<u8, HOUR_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `DAY` reader - Day Timestamp Value"]
+pub struct DAY_R(crate::FieldReader<u8, u8>);
+impl DAY_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        DAY_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for DAY_R {
+    type Target = crate::FieldReader<u8, u8>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `MONTH` reader - Month Timestamp Value"]
+pub struct MONTH_R(crate::FieldReader<u8, u8>);
+impl MONTH_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        MONTH_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for MONTH_R {
+    type Target = crate::FieldReader<u8, u8>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `YEAR` reader - Year Timestamp Value"]
+pub struct YEAR_R(crate::FieldReader<u8, u8>);
+impl YEAR_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        YEAR_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for YEAR_R {
+    type Target = crate::FieldReader<u8, u8>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
 impl R {
     #[doc = "Bits 0:5 - Second Timestamp Value"]
     #[inline(always)]
@@ -79,5 +167,21 @@ impl R {
     #[inline(always)]
     pub fn year(&self) -> YEAR_R {
         YEAR_R::new(((self.bits >> 26) & 0x3f) as u8)
+    }
+}
+#[doc = "MODE2 Timestamp\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [timestamp](index.html) module"]
+pub struct TIMESTAMP_SPEC;
+impl crate::RegisterSpec for TIMESTAMP_SPEC {
+    type Ux = u32;
+}
+#[doc = "`read()` method returns [timestamp::R](R) reader structure"]
+impl crate::Readable for TIMESTAMP_SPEC {
+    type Reader = R;
+}
+#[doc = "`reset()` method sets TIMESTAMP to value 0"]
+impl crate::Resettable for TIMESTAMP_SPEC {
+    #[inline(always)]
+    fn reset_value() -> Self::Ux {
+        0
     }
 }

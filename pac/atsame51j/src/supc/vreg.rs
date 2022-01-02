@@ -1,18 +1,55 @@
-#[doc = "Reader of register VREG"]
-pub type R = crate::R<u32, super::VREG>;
-#[doc = "Writer for register VREG"]
-pub type W = crate::W<u32, super::VREG>;
-#[doc = "Register VREG `reset()`'s with value 0x02"]
-impl crate::ResetValue for super::VREG {
-    type Type = u32;
+#[doc = "Register `VREG` reader"]
+pub struct R(crate::R<VREG_SPEC>);
+impl core::ops::Deref for R {
+    type Target = crate::R<VREG_SPEC>;
     #[inline(always)]
-    fn reset_value() -> Self::Type {
-        0x02
+    fn deref(&self) -> &Self::Target {
+        &self.0
     }
 }
-#[doc = "Reader of field `ENABLE`"]
-pub type ENABLE_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `ENABLE`"]
+impl From<crate::R<VREG_SPEC>> for R {
+    #[inline(always)]
+    fn from(reader: crate::R<VREG_SPEC>) -> Self {
+        R(reader)
+    }
+}
+#[doc = "Register `VREG` writer"]
+pub struct W(crate::W<VREG_SPEC>);
+impl core::ops::Deref for W {
+    type Target = crate::W<VREG_SPEC>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl core::ops::DerefMut for W {
+    #[inline(always)]
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+impl From<crate::W<VREG_SPEC>> for W {
+    #[inline(always)]
+    fn from(writer: crate::W<VREG_SPEC>) -> Self {
+        W(writer)
+    }
+}
+#[doc = "Field `ENABLE` reader - Enable"]
+pub struct ENABLE_R(crate::FieldReader<bool, bool>);
+impl ENABLE_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        ENABLE_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for ENABLE_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `ENABLE` writer - Enable"]
 pub struct ENABLE_W<'a> {
     w: &'a mut W,
 }
@@ -30,7 +67,7 @@ impl<'a> ENABLE_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | (((value as u32) & 0x01) << 1);
+        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u32 & 0x01) << 1);
         self.w
     }
 }
@@ -48,9 +85,13 @@ impl From<SEL_A> for bool {
         variant as u8 != 0
     }
 }
-#[doc = "Reader of field `SEL`"]
-pub type SEL_R = crate::R<bool, SEL_A>;
+#[doc = "Field `SEL` reader - Voltage Regulator Selection"]
+pub struct SEL_R(crate::FieldReader<bool, SEL_A>);
 impl SEL_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        SEL_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
     pub fn variant(&self) -> SEL_A {
@@ -62,15 +103,22 @@ impl SEL_R {
     #[doc = "Checks if the value of the field is `LDO`"]
     #[inline(always)]
     pub fn is_ldo(&self) -> bool {
-        *self == SEL_A::LDO
+        **self == SEL_A::LDO
     }
     #[doc = "Checks if the value of the field is `BUCK`"]
     #[inline(always)]
     pub fn is_buck(&self) -> bool {
-        *self == SEL_A::BUCK
+        **self == SEL_A::BUCK
     }
 }
-#[doc = "Write proxy for field `SEL`"]
+impl core::ops::Deref for SEL_R {
+    type Target = crate::FieldReader<bool, SEL_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `SEL` writer - Voltage Regulator Selection"]
 pub struct SEL_W<'a> {
     w: &'a mut W,
 }
@@ -78,9 +126,7 @@ impl<'a> SEL_W<'a> {
     #[doc = r"Writes `variant` to the field"]
     #[inline(always)]
     pub fn variant(self, variant: SEL_A) -> &'a mut W {
-        {
-            self.bit(variant.into())
-        }
+        self.bit(variant.into())
     }
     #[doc = "LDO selection"]
     #[inline(always)]
@@ -105,13 +151,26 @@ impl<'a> SEL_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 2)) | (((value as u32) & 0x01) << 2);
+        self.w.bits = (self.w.bits & !(0x01 << 2)) | ((value as u32 & 0x01) << 2);
         self.w
     }
 }
-#[doc = "Reader of field `RUNBKUP`"]
-pub type RUNBKUP_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `RUNBKUP`"]
+#[doc = "Field `RUNBKUP` reader - Run in Backup mode"]
+pub struct RUNBKUP_R(crate::FieldReader<bool, bool>);
+impl RUNBKUP_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        RUNBKUP_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for RUNBKUP_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `RUNBKUP` writer - Run in Backup mode"]
 pub struct RUNBKUP_W<'a> {
     w: &'a mut W,
 }
@@ -129,13 +188,26 @@ impl<'a> RUNBKUP_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 7)) | (((value as u32) & 0x01) << 7);
+        self.w.bits = (self.w.bits & !(0x01 << 7)) | ((value as u32 & 0x01) << 7);
         self.w
     }
 }
-#[doc = "Reader of field `VSEN`"]
-pub type VSEN_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `VSEN`"]
+#[doc = "Field `VSEN` reader - Voltage Scaling Enable"]
+pub struct VSEN_R(crate::FieldReader<bool, bool>);
+impl VSEN_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        VSEN_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for VSEN_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `VSEN` writer - Voltage Scaling Enable"]
 pub struct VSEN_W<'a> {
     w: &'a mut W,
 }
@@ -153,13 +225,26 @@ impl<'a> VSEN_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 16)) | (((value as u32) & 0x01) << 16);
+        self.w.bits = (self.w.bits & !(0x01 << 16)) | ((value as u32 & 0x01) << 16);
         self.w
     }
 }
-#[doc = "Reader of field `VSPER`"]
-pub type VSPER_R = crate::R<u8, u8>;
-#[doc = "Write proxy for field `VSPER`"]
+#[doc = "Field `VSPER` reader - Voltage Scaling Period"]
+pub struct VSPER_R(crate::FieldReader<u8, u8>);
+impl VSPER_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        VSPER_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for VSPER_R {
+    type Target = crate::FieldReader<u8, u8>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `VSPER` writer - Voltage Scaling Period"]
 pub struct VSPER_W<'a> {
     w: &'a mut W,
 }
@@ -167,7 +252,7 @@ impl<'a> VSPER_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x07 << 24)) | (((value as u32) & 0x07) << 24);
+        self.w.bits = (self.w.bits & !(0x07 << 24)) | ((value as u32 & 0x07) << 24);
         self.w
     }
 }
@@ -223,5 +308,31 @@ impl W {
     #[inline(always)]
     pub fn vsper(&mut self) -> VSPER_W {
         VSPER_W { w: self }
+    }
+    #[doc = "Writes raw bits to the register."]
+    #[inline(always)]
+    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+        self.0.bits(bits);
+        self
+    }
+}
+#[doc = "VREG Control\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [vreg](index.html) module"]
+pub struct VREG_SPEC;
+impl crate::RegisterSpec for VREG_SPEC {
+    type Ux = u32;
+}
+#[doc = "`read()` method returns [vreg::R](R) reader structure"]
+impl crate::Readable for VREG_SPEC {
+    type Reader = R;
+}
+#[doc = "`write(|w| ..)` method takes [vreg::W](W) writer structure"]
+impl crate::Writable for VREG_SPEC {
+    type Writer = W;
+}
+#[doc = "`reset()` method sets VREG to value 0x02"]
+impl crate::Resettable for VREG_SPEC {
+    #[inline(always)]
+    fn reset_value() -> Self::Ux {
+        0x02
     }
 }

@@ -1,5 +1,18 @@
-#[doc = "Reader of register STATUS"]
-pub type R = crate::R<u8, super::STATUS>;
+#[doc = "Register `STATUS` reader"]
+pub struct R(crate::R<STATUS_SPEC>);
+impl core::ops::Deref for R {
+    type Target = crate::R<STATUS_SPEC>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl From<crate::R<STATUS_SPEC>> for R {
+    #[inline(always)]
+    fn from(reader: crate::R<STATUS_SPEC>) -> Self {
+        R(reader)
+    }
+}
 #[doc = "Speed Status\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
 #[repr(u8)]
@@ -17,34 +30,44 @@ impl From<SPEED_A> for u8 {
         variant as _
     }
 }
-#[doc = "Reader of field `SPEED`"]
-pub type SPEED_R = crate::R<u8, SPEED_A>;
+#[doc = "Field `SPEED` reader - Speed Status"]
+pub struct SPEED_R(crate::FieldReader<u8, SPEED_A>);
 impl SPEED_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        SPEED_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> crate::Variant<u8, SPEED_A> {
-        use crate::Variant::*;
+    pub fn variant(&self) -> Option<SPEED_A> {
         match self.bits {
-            0 => Val(SPEED_A::FS),
-            1 => Val(SPEED_A::LS),
-            2 => Val(SPEED_A::HS),
-            i => Res(i),
+            0 => Some(SPEED_A::FS),
+            1 => Some(SPEED_A::LS),
+            2 => Some(SPEED_A::HS),
+            _ => None,
         }
     }
     #[doc = "Checks if the value of the field is `FS`"]
     #[inline(always)]
     pub fn is_fs(&self) -> bool {
-        *self == SPEED_A::FS
+        **self == SPEED_A::FS
     }
     #[doc = "Checks if the value of the field is `LS`"]
     #[inline(always)]
     pub fn is_ls(&self) -> bool {
-        *self == SPEED_A::LS
+        **self == SPEED_A::LS
     }
     #[doc = "Checks if the value of the field is `HS`"]
     #[inline(always)]
     pub fn is_hs(&self) -> bool {
-        *self == SPEED_A::HS
+        **self == SPEED_A::HS
+    }
+}
+impl core::ops::Deref for SPEED_R {
+    type Target = crate::FieldReader<u8, SPEED_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
     }
 }
 #[doc = "USB Line State Status\n\nValue on reset: 1"]
@@ -64,34 +87,44 @@ impl From<LINESTATE_A> for u8 {
         variant as _
     }
 }
-#[doc = "Reader of field `LINESTATE`"]
-pub type LINESTATE_R = crate::R<u8, LINESTATE_A>;
+#[doc = "Field `LINESTATE` reader - USB Line State Status"]
+pub struct LINESTATE_R(crate::FieldReader<u8, LINESTATE_A>);
 impl LINESTATE_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        LINESTATE_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> crate::Variant<u8, LINESTATE_A> {
-        use crate::Variant::*;
+    pub fn variant(&self) -> Option<LINESTATE_A> {
         match self.bits {
-            0 => Val(LINESTATE_A::_0),
-            1 => Val(LINESTATE_A::_1),
-            2 => Val(LINESTATE_A::_2),
-            i => Res(i),
+            0 => Some(LINESTATE_A::_0),
+            1 => Some(LINESTATE_A::_1),
+            2 => Some(LINESTATE_A::_2),
+            _ => None,
         }
     }
     #[doc = "Checks if the value of the field is `_0`"]
     #[inline(always)]
     pub fn is_0(&self) -> bool {
-        *self == LINESTATE_A::_0
+        **self == LINESTATE_A::_0
     }
     #[doc = "Checks if the value of the field is `_1`"]
     #[inline(always)]
     pub fn is_1(&self) -> bool {
-        *self == LINESTATE_A::_1
+        **self == LINESTATE_A::_1
     }
     #[doc = "Checks if the value of the field is `_2`"]
     #[inline(always)]
     pub fn is_2(&self) -> bool {
-        *self == LINESTATE_A::_2
+        **self == LINESTATE_A::_2
+    }
+}
+impl core::ops::Deref for LINESTATE_R {
+    type Target = crate::FieldReader<u8, LINESTATE_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
     }
 }
 impl R {
@@ -104,5 +137,21 @@ impl R {
     #[inline(always)]
     pub fn linestate(&self) -> LINESTATE_R {
         LINESTATE_R::new(((self.bits >> 6) & 0x03) as u8)
+    }
+}
+#[doc = "DEVICE Status\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [status](index.html) module"]
+pub struct STATUS_SPEC;
+impl crate::RegisterSpec for STATUS_SPEC {
+    type Ux = u8;
+}
+#[doc = "`read()` method returns [status::R](R) reader structure"]
+impl crate::Readable for STATUS_SPEC {
+    type Reader = R;
+}
+#[doc = "`reset()` method sets STATUS to value 0x40"]
+impl crate::Resettable for STATUS_SPEC {
+    #[inline(always)]
+    fn reset_value() -> Self::Ux {
+        0x40
     }
 }

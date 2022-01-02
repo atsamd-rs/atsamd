@@ -1,14 +1,37 @@
-#[doc = "Reader of register CONFIG[%s]"]
-pub type R = crate::R<u32, super::CONFIG>;
-#[doc = "Writer for register CONFIG[%s]"]
-pub type W = crate::W<u32, super::CONFIG>;
-#[doc = "Register CONFIG[%s]
-`reset()`'s with value 0"]
-impl crate::ResetValue for super::CONFIG {
-    type Type = u32;
+#[doc = "Register `CONFIG[%s]` reader"]
+pub struct R(crate::R<CONFIG_SPEC>);
+impl core::ops::Deref for R {
+    type Target = crate::R<CONFIG_SPEC>;
     #[inline(always)]
-    fn reset_value() -> Self::Type {
-        0
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl From<crate::R<CONFIG_SPEC>> for R {
+    #[inline(always)]
+    fn from(reader: crate::R<CONFIG_SPEC>) -> Self {
+        R(reader)
+    }
+}
+#[doc = "Register `CONFIG[%s]` writer"]
+pub struct W(crate::W<CONFIG_SPEC>);
+impl core::ops::Deref for W {
+    type Target = crate::W<CONFIG_SPEC>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl core::ops::DerefMut for W {
+    #[inline(always)]
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+impl From<crate::W<CONFIG_SPEC>> for W {
+    #[inline(always)]
+    fn from(writer: crate::W<CONFIG_SPEC>) -> Self {
+        W(writer)
     }
 }
 #[doc = "Input Sense Configuration 0\n\nValue on reset: 0"]
@@ -34,55 +57,65 @@ impl From<SENSE0_A> for u8 {
         variant as _
     }
 }
-#[doc = "Reader of field `SENSE0`"]
-pub type SENSE0_R = crate::R<u8, SENSE0_A>;
+#[doc = "Field `SENSE0` reader - Input Sense Configuration 0"]
+pub struct SENSE0_R(crate::FieldReader<u8, SENSE0_A>);
 impl SENSE0_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        SENSE0_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> crate::Variant<u8, SENSE0_A> {
-        use crate::Variant::*;
+    pub fn variant(&self) -> Option<SENSE0_A> {
         match self.bits {
-            0 => Val(SENSE0_A::NONE),
-            1 => Val(SENSE0_A::RISE),
-            2 => Val(SENSE0_A::FALL),
-            3 => Val(SENSE0_A::BOTH),
-            4 => Val(SENSE0_A::HIGH),
-            5 => Val(SENSE0_A::LOW),
-            i => Res(i),
+            0 => Some(SENSE0_A::NONE),
+            1 => Some(SENSE0_A::RISE),
+            2 => Some(SENSE0_A::FALL),
+            3 => Some(SENSE0_A::BOTH),
+            4 => Some(SENSE0_A::HIGH),
+            5 => Some(SENSE0_A::LOW),
+            _ => None,
         }
     }
     #[doc = "Checks if the value of the field is `NONE`"]
     #[inline(always)]
     pub fn is_none(&self) -> bool {
-        *self == SENSE0_A::NONE
+        **self == SENSE0_A::NONE
     }
     #[doc = "Checks if the value of the field is `RISE`"]
     #[inline(always)]
     pub fn is_rise(&self) -> bool {
-        *self == SENSE0_A::RISE
+        **self == SENSE0_A::RISE
     }
     #[doc = "Checks if the value of the field is `FALL`"]
     #[inline(always)]
     pub fn is_fall(&self) -> bool {
-        *self == SENSE0_A::FALL
+        **self == SENSE0_A::FALL
     }
     #[doc = "Checks if the value of the field is `BOTH`"]
     #[inline(always)]
     pub fn is_both(&self) -> bool {
-        *self == SENSE0_A::BOTH
+        **self == SENSE0_A::BOTH
     }
     #[doc = "Checks if the value of the field is `HIGH`"]
     #[inline(always)]
     pub fn is_high(&self) -> bool {
-        *self == SENSE0_A::HIGH
+        **self == SENSE0_A::HIGH
     }
     #[doc = "Checks if the value of the field is `LOW`"]
     #[inline(always)]
     pub fn is_low(&self) -> bool {
-        *self == SENSE0_A::LOW
+        **self == SENSE0_A::LOW
     }
 }
-#[doc = "Write proxy for field `SENSE0`"]
+impl core::ops::Deref for SENSE0_R {
+    type Target = crate::FieldReader<u8, SENSE0_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `SENSE0` writer - Input Sense Configuration 0"]
 pub struct SENSE0_W<'a> {
     w: &'a mut W,
 }
@@ -125,13 +158,26 @@ impl<'a> SENSE0_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x07) | ((value as u32) & 0x07);
+        self.w.bits = (self.w.bits & !0x07) | (value as u32 & 0x07);
         self.w
     }
 }
-#[doc = "Reader of field `FILTEN0`"]
-pub type FILTEN0_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `FILTEN0`"]
+#[doc = "Field `FILTEN0` reader - Filter Enable 0"]
+pub struct FILTEN0_R(crate::FieldReader<bool, bool>);
+impl FILTEN0_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        FILTEN0_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for FILTEN0_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `FILTEN0` writer - Filter Enable 0"]
 pub struct FILTEN0_W<'a> {
     w: &'a mut W,
 }
@@ -149,7 +195,7 @@ impl<'a> FILTEN0_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 3)) | (((value as u32) & 0x01) << 3);
+        self.w.bits = (self.w.bits & !(0x01 << 3)) | ((value as u32 & 0x01) << 3);
         self.w
     }
 }
@@ -176,55 +222,65 @@ impl From<SENSE1_A> for u8 {
         variant as _
     }
 }
-#[doc = "Reader of field `SENSE1`"]
-pub type SENSE1_R = crate::R<u8, SENSE1_A>;
+#[doc = "Field `SENSE1` reader - Input Sense Configuration 1"]
+pub struct SENSE1_R(crate::FieldReader<u8, SENSE1_A>);
 impl SENSE1_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        SENSE1_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> crate::Variant<u8, SENSE1_A> {
-        use crate::Variant::*;
+    pub fn variant(&self) -> Option<SENSE1_A> {
         match self.bits {
-            0 => Val(SENSE1_A::NONE),
-            1 => Val(SENSE1_A::RISE),
-            2 => Val(SENSE1_A::FALL),
-            3 => Val(SENSE1_A::BOTH),
-            4 => Val(SENSE1_A::HIGH),
-            5 => Val(SENSE1_A::LOW),
-            i => Res(i),
+            0 => Some(SENSE1_A::NONE),
+            1 => Some(SENSE1_A::RISE),
+            2 => Some(SENSE1_A::FALL),
+            3 => Some(SENSE1_A::BOTH),
+            4 => Some(SENSE1_A::HIGH),
+            5 => Some(SENSE1_A::LOW),
+            _ => None,
         }
     }
     #[doc = "Checks if the value of the field is `NONE`"]
     #[inline(always)]
     pub fn is_none(&self) -> bool {
-        *self == SENSE1_A::NONE
+        **self == SENSE1_A::NONE
     }
     #[doc = "Checks if the value of the field is `RISE`"]
     #[inline(always)]
     pub fn is_rise(&self) -> bool {
-        *self == SENSE1_A::RISE
+        **self == SENSE1_A::RISE
     }
     #[doc = "Checks if the value of the field is `FALL`"]
     #[inline(always)]
     pub fn is_fall(&self) -> bool {
-        *self == SENSE1_A::FALL
+        **self == SENSE1_A::FALL
     }
     #[doc = "Checks if the value of the field is `BOTH`"]
     #[inline(always)]
     pub fn is_both(&self) -> bool {
-        *self == SENSE1_A::BOTH
+        **self == SENSE1_A::BOTH
     }
     #[doc = "Checks if the value of the field is `HIGH`"]
     #[inline(always)]
     pub fn is_high(&self) -> bool {
-        *self == SENSE1_A::HIGH
+        **self == SENSE1_A::HIGH
     }
     #[doc = "Checks if the value of the field is `LOW`"]
     #[inline(always)]
     pub fn is_low(&self) -> bool {
-        *self == SENSE1_A::LOW
+        **self == SENSE1_A::LOW
     }
 }
-#[doc = "Write proxy for field `SENSE1`"]
+impl core::ops::Deref for SENSE1_R {
+    type Target = crate::FieldReader<u8, SENSE1_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `SENSE1` writer - Input Sense Configuration 1"]
 pub struct SENSE1_W<'a> {
     w: &'a mut W,
 }
@@ -267,13 +323,26 @@ impl<'a> SENSE1_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x07 << 4)) | (((value as u32) & 0x07) << 4);
+        self.w.bits = (self.w.bits & !(0x07 << 4)) | ((value as u32 & 0x07) << 4);
         self.w
     }
 }
-#[doc = "Reader of field `FILTEN1`"]
-pub type FILTEN1_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `FILTEN1`"]
+#[doc = "Field `FILTEN1` reader - Filter Enable 1"]
+pub struct FILTEN1_R(crate::FieldReader<bool, bool>);
+impl FILTEN1_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        FILTEN1_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for FILTEN1_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `FILTEN1` writer - Filter Enable 1"]
 pub struct FILTEN1_W<'a> {
     w: &'a mut W,
 }
@@ -291,7 +360,7 @@ impl<'a> FILTEN1_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 7)) | (((value as u32) & 0x01) << 7);
+        self.w.bits = (self.w.bits & !(0x01 << 7)) | ((value as u32 & 0x01) << 7);
         self.w
     }
 }
@@ -318,55 +387,65 @@ impl From<SENSE2_A> for u8 {
         variant as _
     }
 }
-#[doc = "Reader of field `SENSE2`"]
-pub type SENSE2_R = crate::R<u8, SENSE2_A>;
+#[doc = "Field `SENSE2` reader - Input Sense Configuration 2"]
+pub struct SENSE2_R(crate::FieldReader<u8, SENSE2_A>);
 impl SENSE2_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        SENSE2_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> crate::Variant<u8, SENSE2_A> {
-        use crate::Variant::*;
+    pub fn variant(&self) -> Option<SENSE2_A> {
         match self.bits {
-            0 => Val(SENSE2_A::NONE),
-            1 => Val(SENSE2_A::RISE),
-            2 => Val(SENSE2_A::FALL),
-            3 => Val(SENSE2_A::BOTH),
-            4 => Val(SENSE2_A::HIGH),
-            5 => Val(SENSE2_A::LOW),
-            i => Res(i),
+            0 => Some(SENSE2_A::NONE),
+            1 => Some(SENSE2_A::RISE),
+            2 => Some(SENSE2_A::FALL),
+            3 => Some(SENSE2_A::BOTH),
+            4 => Some(SENSE2_A::HIGH),
+            5 => Some(SENSE2_A::LOW),
+            _ => None,
         }
     }
     #[doc = "Checks if the value of the field is `NONE`"]
     #[inline(always)]
     pub fn is_none(&self) -> bool {
-        *self == SENSE2_A::NONE
+        **self == SENSE2_A::NONE
     }
     #[doc = "Checks if the value of the field is `RISE`"]
     #[inline(always)]
     pub fn is_rise(&self) -> bool {
-        *self == SENSE2_A::RISE
+        **self == SENSE2_A::RISE
     }
     #[doc = "Checks if the value of the field is `FALL`"]
     #[inline(always)]
     pub fn is_fall(&self) -> bool {
-        *self == SENSE2_A::FALL
+        **self == SENSE2_A::FALL
     }
     #[doc = "Checks if the value of the field is `BOTH`"]
     #[inline(always)]
     pub fn is_both(&self) -> bool {
-        *self == SENSE2_A::BOTH
+        **self == SENSE2_A::BOTH
     }
     #[doc = "Checks if the value of the field is `HIGH`"]
     #[inline(always)]
     pub fn is_high(&self) -> bool {
-        *self == SENSE2_A::HIGH
+        **self == SENSE2_A::HIGH
     }
     #[doc = "Checks if the value of the field is `LOW`"]
     #[inline(always)]
     pub fn is_low(&self) -> bool {
-        *self == SENSE2_A::LOW
+        **self == SENSE2_A::LOW
     }
 }
-#[doc = "Write proxy for field `SENSE2`"]
+impl core::ops::Deref for SENSE2_R {
+    type Target = crate::FieldReader<u8, SENSE2_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `SENSE2` writer - Input Sense Configuration 2"]
 pub struct SENSE2_W<'a> {
     w: &'a mut W,
 }
@@ -409,13 +488,26 @@ impl<'a> SENSE2_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x07 << 8)) | (((value as u32) & 0x07) << 8);
+        self.w.bits = (self.w.bits & !(0x07 << 8)) | ((value as u32 & 0x07) << 8);
         self.w
     }
 }
-#[doc = "Reader of field `FILTEN2`"]
-pub type FILTEN2_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `FILTEN2`"]
+#[doc = "Field `FILTEN2` reader - Filter Enable 2"]
+pub struct FILTEN2_R(crate::FieldReader<bool, bool>);
+impl FILTEN2_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        FILTEN2_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for FILTEN2_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `FILTEN2` writer - Filter Enable 2"]
 pub struct FILTEN2_W<'a> {
     w: &'a mut W,
 }
@@ -433,7 +525,7 @@ impl<'a> FILTEN2_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 11)) | (((value as u32) & 0x01) << 11);
+        self.w.bits = (self.w.bits & !(0x01 << 11)) | ((value as u32 & 0x01) << 11);
         self.w
     }
 }
@@ -460,55 +552,65 @@ impl From<SENSE3_A> for u8 {
         variant as _
     }
 }
-#[doc = "Reader of field `SENSE3`"]
-pub type SENSE3_R = crate::R<u8, SENSE3_A>;
+#[doc = "Field `SENSE3` reader - Input Sense Configuration 3"]
+pub struct SENSE3_R(crate::FieldReader<u8, SENSE3_A>);
 impl SENSE3_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        SENSE3_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> crate::Variant<u8, SENSE3_A> {
-        use crate::Variant::*;
+    pub fn variant(&self) -> Option<SENSE3_A> {
         match self.bits {
-            0 => Val(SENSE3_A::NONE),
-            1 => Val(SENSE3_A::RISE),
-            2 => Val(SENSE3_A::FALL),
-            3 => Val(SENSE3_A::BOTH),
-            4 => Val(SENSE3_A::HIGH),
-            5 => Val(SENSE3_A::LOW),
-            i => Res(i),
+            0 => Some(SENSE3_A::NONE),
+            1 => Some(SENSE3_A::RISE),
+            2 => Some(SENSE3_A::FALL),
+            3 => Some(SENSE3_A::BOTH),
+            4 => Some(SENSE3_A::HIGH),
+            5 => Some(SENSE3_A::LOW),
+            _ => None,
         }
     }
     #[doc = "Checks if the value of the field is `NONE`"]
     #[inline(always)]
     pub fn is_none(&self) -> bool {
-        *self == SENSE3_A::NONE
+        **self == SENSE3_A::NONE
     }
     #[doc = "Checks if the value of the field is `RISE`"]
     #[inline(always)]
     pub fn is_rise(&self) -> bool {
-        *self == SENSE3_A::RISE
+        **self == SENSE3_A::RISE
     }
     #[doc = "Checks if the value of the field is `FALL`"]
     #[inline(always)]
     pub fn is_fall(&self) -> bool {
-        *self == SENSE3_A::FALL
+        **self == SENSE3_A::FALL
     }
     #[doc = "Checks if the value of the field is `BOTH`"]
     #[inline(always)]
     pub fn is_both(&self) -> bool {
-        *self == SENSE3_A::BOTH
+        **self == SENSE3_A::BOTH
     }
     #[doc = "Checks if the value of the field is `HIGH`"]
     #[inline(always)]
     pub fn is_high(&self) -> bool {
-        *self == SENSE3_A::HIGH
+        **self == SENSE3_A::HIGH
     }
     #[doc = "Checks if the value of the field is `LOW`"]
     #[inline(always)]
     pub fn is_low(&self) -> bool {
-        *self == SENSE3_A::LOW
+        **self == SENSE3_A::LOW
     }
 }
-#[doc = "Write proxy for field `SENSE3`"]
+impl core::ops::Deref for SENSE3_R {
+    type Target = crate::FieldReader<u8, SENSE3_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `SENSE3` writer - Input Sense Configuration 3"]
 pub struct SENSE3_W<'a> {
     w: &'a mut W,
 }
@@ -551,13 +653,26 @@ impl<'a> SENSE3_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x07 << 12)) | (((value as u32) & 0x07) << 12);
+        self.w.bits = (self.w.bits & !(0x07 << 12)) | ((value as u32 & 0x07) << 12);
         self.w
     }
 }
-#[doc = "Reader of field `FILTEN3`"]
-pub type FILTEN3_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `FILTEN3`"]
+#[doc = "Field `FILTEN3` reader - Filter Enable 3"]
+pub struct FILTEN3_R(crate::FieldReader<bool, bool>);
+impl FILTEN3_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        FILTEN3_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for FILTEN3_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `FILTEN3` writer - Filter Enable 3"]
 pub struct FILTEN3_W<'a> {
     w: &'a mut W,
 }
@@ -575,7 +690,7 @@ impl<'a> FILTEN3_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 15)) | (((value as u32) & 0x01) << 15);
+        self.w.bits = (self.w.bits & !(0x01 << 15)) | ((value as u32 & 0x01) << 15);
         self.w
     }
 }
@@ -602,55 +717,65 @@ impl From<SENSE4_A> for u8 {
         variant as _
     }
 }
-#[doc = "Reader of field `SENSE4`"]
-pub type SENSE4_R = crate::R<u8, SENSE4_A>;
+#[doc = "Field `SENSE4` reader - Input Sense Configuration 4"]
+pub struct SENSE4_R(crate::FieldReader<u8, SENSE4_A>);
 impl SENSE4_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        SENSE4_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> crate::Variant<u8, SENSE4_A> {
-        use crate::Variant::*;
+    pub fn variant(&self) -> Option<SENSE4_A> {
         match self.bits {
-            0 => Val(SENSE4_A::NONE),
-            1 => Val(SENSE4_A::RISE),
-            2 => Val(SENSE4_A::FALL),
-            3 => Val(SENSE4_A::BOTH),
-            4 => Val(SENSE4_A::HIGH),
-            5 => Val(SENSE4_A::LOW),
-            i => Res(i),
+            0 => Some(SENSE4_A::NONE),
+            1 => Some(SENSE4_A::RISE),
+            2 => Some(SENSE4_A::FALL),
+            3 => Some(SENSE4_A::BOTH),
+            4 => Some(SENSE4_A::HIGH),
+            5 => Some(SENSE4_A::LOW),
+            _ => None,
         }
     }
     #[doc = "Checks if the value of the field is `NONE`"]
     #[inline(always)]
     pub fn is_none(&self) -> bool {
-        *self == SENSE4_A::NONE
+        **self == SENSE4_A::NONE
     }
     #[doc = "Checks if the value of the field is `RISE`"]
     #[inline(always)]
     pub fn is_rise(&self) -> bool {
-        *self == SENSE4_A::RISE
+        **self == SENSE4_A::RISE
     }
     #[doc = "Checks if the value of the field is `FALL`"]
     #[inline(always)]
     pub fn is_fall(&self) -> bool {
-        *self == SENSE4_A::FALL
+        **self == SENSE4_A::FALL
     }
     #[doc = "Checks if the value of the field is `BOTH`"]
     #[inline(always)]
     pub fn is_both(&self) -> bool {
-        *self == SENSE4_A::BOTH
+        **self == SENSE4_A::BOTH
     }
     #[doc = "Checks if the value of the field is `HIGH`"]
     #[inline(always)]
     pub fn is_high(&self) -> bool {
-        *self == SENSE4_A::HIGH
+        **self == SENSE4_A::HIGH
     }
     #[doc = "Checks if the value of the field is `LOW`"]
     #[inline(always)]
     pub fn is_low(&self) -> bool {
-        *self == SENSE4_A::LOW
+        **self == SENSE4_A::LOW
     }
 }
-#[doc = "Write proxy for field `SENSE4`"]
+impl core::ops::Deref for SENSE4_R {
+    type Target = crate::FieldReader<u8, SENSE4_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `SENSE4` writer - Input Sense Configuration 4"]
 pub struct SENSE4_W<'a> {
     w: &'a mut W,
 }
@@ -693,13 +818,26 @@ impl<'a> SENSE4_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x07 << 16)) | (((value as u32) & 0x07) << 16);
+        self.w.bits = (self.w.bits & !(0x07 << 16)) | ((value as u32 & 0x07) << 16);
         self.w
     }
 }
-#[doc = "Reader of field `FILTEN4`"]
-pub type FILTEN4_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `FILTEN4`"]
+#[doc = "Field `FILTEN4` reader - Filter Enable 4"]
+pub struct FILTEN4_R(crate::FieldReader<bool, bool>);
+impl FILTEN4_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        FILTEN4_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for FILTEN4_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `FILTEN4` writer - Filter Enable 4"]
 pub struct FILTEN4_W<'a> {
     w: &'a mut W,
 }
@@ -717,7 +855,7 @@ impl<'a> FILTEN4_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 19)) | (((value as u32) & 0x01) << 19);
+        self.w.bits = (self.w.bits & !(0x01 << 19)) | ((value as u32 & 0x01) << 19);
         self.w
     }
 }
@@ -744,55 +882,65 @@ impl From<SENSE5_A> for u8 {
         variant as _
     }
 }
-#[doc = "Reader of field `SENSE5`"]
-pub type SENSE5_R = crate::R<u8, SENSE5_A>;
+#[doc = "Field `SENSE5` reader - Input Sense Configuration 5"]
+pub struct SENSE5_R(crate::FieldReader<u8, SENSE5_A>);
 impl SENSE5_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        SENSE5_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> crate::Variant<u8, SENSE5_A> {
-        use crate::Variant::*;
+    pub fn variant(&self) -> Option<SENSE5_A> {
         match self.bits {
-            0 => Val(SENSE5_A::NONE),
-            1 => Val(SENSE5_A::RISE),
-            2 => Val(SENSE5_A::FALL),
-            3 => Val(SENSE5_A::BOTH),
-            4 => Val(SENSE5_A::HIGH),
-            5 => Val(SENSE5_A::LOW),
-            i => Res(i),
+            0 => Some(SENSE5_A::NONE),
+            1 => Some(SENSE5_A::RISE),
+            2 => Some(SENSE5_A::FALL),
+            3 => Some(SENSE5_A::BOTH),
+            4 => Some(SENSE5_A::HIGH),
+            5 => Some(SENSE5_A::LOW),
+            _ => None,
         }
     }
     #[doc = "Checks if the value of the field is `NONE`"]
     #[inline(always)]
     pub fn is_none(&self) -> bool {
-        *self == SENSE5_A::NONE
+        **self == SENSE5_A::NONE
     }
     #[doc = "Checks if the value of the field is `RISE`"]
     #[inline(always)]
     pub fn is_rise(&self) -> bool {
-        *self == SENSE5_A::RISE
+        **self == SENSE5_A::RISE
     }
     #[doc = "Checks if the value of the field is `FALL`"]
     #[inline(always)]
     pub fn is_fall(&self) -> bool {
-        *self == SENSE5_A::FALL
+        **self == SENSE5_A::FALL
     }
     #[doc = "Checks if the value of the field is `BOTH`"]
     #[inline(always)]
     pub fn is_both(&self) -> bool {
-        *self == SENSE5_A::BOTH
+        **self == SENSE5_A::BOTH
     }
     #[doc = "Checks if the value of the field is `HIGH`"]
     #[inline(always)]
     pub fn is_high(&self) -> bool {
-        *self == SENSE5_A::HIGH
+        **self == SENSE5_A::HIGH
     }
     #[doc = "Checks if the value of the field is `LOW`"]
     #[inline(always)]
     pub fn is_low(&self) -> bool {
-        *self == SENSE5_A::LOW
+        **self == SENSE5_A::LOW
     }
 }
-#[doc = "Write proxy for field `SENSE5`"]
+impl core::ops::Deref for SENSE5_R {
+    type Target = crate::FieldReader<u8, SENSE5_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `SENSE5` writer - Input Sense Configuration 5"]
 pub struct SENSE5_W<'a> {
     w: &'a mut W,
 }
@@ -835,13 +983,26 @@ impl<'a> SENSE5_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x07 << 20)) | (((value as u32) & 0x07) << 20);
+        self.w.bits = (self.w.bits & !(0x07 << 20)) | ((value as u32 & 0x07) << 20);
         self.w
     }
 }
-#[doc = "Reader of field `FILTEN5`"]
-pub type FILTEN5_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `FILTEN5`"]
+#[doc = "Field `FILTEN5` reader - Filter Enable 5"]
+pub struct FILTEN5_R(crate::FieldReader<bool, bool>);
+impl FILTEN5_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        FILTEN5_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for FILTEN5_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `FILTEN5` writer - Filter Enable 5"]
 pub struct FILTEN5_W<'a> {
     w: &'a mut W,
 }
@@ -859,7 +1020,7 @@ impl<'a> FILTEN5_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 23)) | (((value as u32) & 0x01) << 23);
+        self.w.bits = (self.w.bits & !(0x01 << 23)) | ((value as u32 & 0x01) << 23);
         self.w
     }
 }
@@ -886,55 +1047,65 @@ impl From<SENSE6_A> for u8 {
         variant as _
     }
 }
-#[doc = "Reader of field `SENSE6`"]
-pub type SENSE6_R = crate::R<u8, SENSE6_A>;
+#[doc = "Field `SENSE6` reader - Input Sense Configuration 6"]
+pub struct SENSE6_R(crate::FieldReader<u8, SENSE6_A>);
 impl SENSE6_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        SENSE6_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> crate::Variant<u8, SENSE6_A> {
-        use crate::Variant::*;
+    pub fn variant(&self) -> Option<SENSE6_A> {
         match self.bits {
-            0 => Val(SENSE6_A::NONE),
-            1 => Val(SENSE6_A::RISE),
-            2 => Val(SENSE6_A::FALL),
-            3 => Val(SENSE6_A::BOTH),
-            4 => Val(SENSE6_A::HIGH),
-            5 => Val(SENSE6_A::LOW),
-            i => Res(i),
+            0 => Some(SENSE6_A::NONE),
+            1 => Some(SENSE6_A::RISE),
+            2 => Some(SENSE6_A::FALL),
+            3 => Some(SENSE6_A::BOTH),
+            4 => Some(SENSE6_A::HIGH),
+            5 => Some(SENSE6_A::LOW),
+            _ => None,
         }
     }
     #[doc = "Checks if the value of the field is `NONE`"]
     #[inline(always)]
     pub fn is_none(&self) -> bool {
-        *self == SENSE6_A::NONE
+        **self == SENSE6_A::NONE
     }
     #[doc = "Checks if the value of the field is `RISE`"]
     #[inline(always)]
     pub fn is_rise(&self) -> bool {
-        *self == SENSE6_A::RISE
+        **self == SENSE6_A::RISE
     }
     #[doc = "Checks if the value of the field is `FALL`"]
     #[inline(always)]
     pub fn is_fall(&self) -> bool {
-        *self == SENSE6_A::FALL
+        **self == SENSE6_A::FALL
     }
     #[doc = "Checks if the value of the field is `BOTH`"]
     #[inline(always)]
     pub fn is_both(&self) -> bool {
-        *self == SENSE6_A::BOTH
+        **self == SENSE6_A::BOTH
     }
     #[doc = "Checks if the value of the field is `HIGH`"]
     #[inline(always)]
     pub fn is_high(&self) -> bool {
-        *self == SENSE6_A::HIGH
+        **self == SENSE6_A::HIGH
     }
     #[doc = "Checks if the value of the field is `LOW`"]
     #[inline(always)]
     pub fn is_low(&self) -> bool {
-        *self == SENSE6_A::LOW
+        **self == SENSE6_A::LOW
     }
 }
-#[doc = "Write proxy for field `SENSE6`"]
+impl core::ops::Deref for SENSE6_R {
+    type Target = crate::FieldReader<u8, SENSE6_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `SENSE6` writer - Input Sense Configuration 6"]
 pub struct SENSE6_W<'a> {
     w: &'a mut W,
 }
@@ -977,13 +1148,26 @@ impl<'a> SENSE6_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x07 << 24)) | (((value as u32) & 0x07) << 24);
+        self.w.bits = (self.w.bits & !(0x07 << 24)) | ((value as u32 & 0x07) << 24);
         self.w
     }
 }
-#[doc = "Reader of field `FILTEN6`"]
-pub type FILTEN6_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `FILTEN6`"]
+#[doc = "Field `FILTEN6` reader - Filter Enable 6"]
+pub struct FILTEN6_R(crate::FieldReader<bool, bool>);
+impl FILTEN6_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        FILTEN6_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for FILTEN6_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `FILTEN6` writer - Filter Enable 6"]
 pub struct FILTEN6_W<'a> {
     w: &'a mut W,
 }
@@ -1001,7 +1185,7 @@ impl<'a> FILTEN6_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 27)) | (((value as u32) & 0x01) << 27);
+        self.w.bits = (self.w.bits & !(0x01 << 27)) | ((value as u32 & 0x01) << 27);
         self.w
     }
 }
@@ -1028,55 +1212,65 @@ impl From<SENSE7_A> for u8 {
         variant as _
     }
 }
-#[doc = "Reader of field `SENSE7`"]
-pub type SENSE7_R = crate::R<u8, SENSE7_A>;
+#[doc = "Field `SENSE7` reader - Input Sense Configuration 7"]
+pub struct SENSE7_R(crate::FieldReader<u8, SENSE7_A>);
 impl SENSE7_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        SENSE7_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> crate::Variant<u8, SENSE7_A> {
-        use crate::Variant::*;
+    pub fn variant(&self) -> Option<SENSE7_A> {
         match self.bits {
-            0 => Val(SENSE7_A::NONE),
-            1 => Val(SENSE7_A::RISE),
-            2 => Val(SENSE7_A::FALL),
-            3 => Val(SENSE7_A::BOTH),
-            4 => Val(SENSE7_A::HIGH),
-            5 => Val(SENSE7_A::LOW),
-            i => Res(i),
+            0 => Some(SENSE7_A::NONE),
+            1 => Some(SENSE7_A::RISE),
+            2 => Some(SENSE7_A::FALL),
+            3 => Some(SENSE7_A::BOTH),
+            4 => Some(SENSE7_A::HIGH),
+            5 => Some(SENSE7_A::LOW),
+            _ => None,
         }
     }
     #[doc = "Checks if the value of the field is `NONE`"]
     #[inline(always)]
     pub fn is_none(&self) -> bool {
-        *self == SENSE7_A::NONE
+        **self == SENSE7_A::NONE
     }
     #[doc = "Checks if the value of the field is `RISE`"]
     #[inline(always)]
     pub fn is_rise(&self) -> bool {
-        *self == SENSE7_A::RISE
+        **self == SENSE7_A::RISE
     }
     #[doc = "Checks if the value of the field is `FALL`"]
     #[inline(always)]
     pub fn is_fall(&self) -> bool {
-        *self == SENSE7_A::FALL
+        **self == SENSE7_A::FALL
     }
     #[doc = "Checks if the value of the field is `BOTH`"]
     #[inline(always)]
     pub fn is_both(&self) -> bool {
-        *self == SENSE7_A::BOTH
+        **self == SENSE7_A::BOTH
     }
     #[doc = "Checks if the value of the field is `HIGH`"]
     #[inline(always)]
     pub fn is_high(&self) -> bool {
-        *self == SENSE7_A::HIGH
+        **self == SENSE7_A::HIGH
     }
     #[doc = "Checks if the value of the field is `LOW`"]
     #[inline(always)]
     pub fn is_low(&self) -> bool {
-        *self == SENSE7_A::LOW
+        **self == SENSE7_A::LOW
     }
 }
-#[doc = "Write proxy for field `SENSE7`"]
+impl core::ops::Deref for SENSE7_R {
+    type Target = crate::FieldReader<u8, SENSE7_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `SENSE7` writer - Input Sense Configuration 7"]
 pub struct SENSE7_W<'a> {
     w: &'a mut W,
 }
@@ -1119,13 +1313,26 @@ impl<'a> SENSE7_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x07 << 28)) | (((value as u32) & 0x07) << 28);
+        self.w.bits = (self.w.bits & !(0x07 << 28)) | ((value as u32 & 0x07) << 28);
         self.w
     }
 }
-#[doc = "Reader of field `FILTEN7`"]
-pub type FILTEN7_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `FILTEN7`"]
+#[doc = "Field `FILTEN7` reader - Filter Enable 7"]
+pub struct FILTEN7_R(crate::FieldReader<bool, bool>);
+impl FILTEN7_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        FILTEN7_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for FILTEN7_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `FILTEN7` writer - Filter Enable 7"]
 pub struct FILTEN7_W<'a> {
     w: &'a mut W,
 }
@@ -1143,7 +1350,7 @@ impl<'a> FILTEN7_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 31)) | (((value as u32) & 0x01) << 31);
+        self.w.bits = (self.w.bits & !(0x01 << 31)) | ((value as u32 & 0x01) << 31);
         self.w
     }
 }
@@ -1309,5 +1516,32 @@ impl W {
     #[inline(always)]
     pub fn filten7(&mut self) -> FILTEN7_W {
         FILTEN7_W { w: self }
+    }
+    #[doc = "Writes raw bits to the register."]
+    #[inline(always)]
+    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+        self.0.bits(bits);
+        self
+    }
+}
+#[doc = "External Interrupt Sense Configuration\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [config](index.html) module"]
+pub struct CONFIG_SPEC;
+impl crate::RegisterSpec for CONFIG_SPEC {
+    type Ux = u32;
+}
+#[doc = "`read()` method returns [config::R](R) reader structure"]
+impl crate::Readable for CONFIG_SPEC {
+    type Reader = R;
+}
+#[doc = "`write(|w| ..)` method takes [config::W](W) writer structure"]
+impl crate::Writable for CONFIG_SPEC {
+    type Writer = W;
+}
+#[doc = "`reset()` method sets CONFIG[%s]
+to value 0"]
+impl crate::Resettable for CONFIG_SPEC {
+    #[inline(always)]
+    fn reset_value() -> Self::Ux {
+        0
     }
 }

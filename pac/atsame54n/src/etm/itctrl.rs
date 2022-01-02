@@ -1,18 +1,55 @@
-#[doc = "Reader of register ITCTRL"]
-pub type R = crate::R<u32, super::ITCTRL>;
-#[doc = "Writer for register ITCTRL"]
-pub type W = crate::W<u32, super::ITCTRL>;
-#[doc = "Register ITCTRL `reset()`'s with value 0"]
-impl crate::ResetValue for super::ITCTRL {
-    type Type = u32;
+#[doc = "Register `ITCTRL` reader"]
+pub struct R(crate::R<ITCTRL_SPEC>);
+impl core::ops::Deref for R {
+    type Target = crate::R<ITCTRL_SPEC>;
     #[inline(always)]
-    fn reset_value() -> Self::Type {
-        0
+    fn deref(&self) -> &Self::Target {
+        &self.0
     }
 }
-#[doc = "Reader of field `INTEGRATION`"]
-pub type INTEGRATION_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `INTEGRATION`"]
+impl From<crate::R<ITCTRL_SPEC>> for R {
+    #[inline(always)]
+    fn from(reader: crate::R<ITCTRL_SPEC>) -> Self {
+        R(reader)
+    }
+}
+#[doc = "Register `ITCTRL` writer"]
+pub struct W(crate::W<ITCTRL_SPEC>);
+impl core::ops::Deref for W {
+    type Target = crate::W<ITCTRL_SPEC>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl core::ops::DerefMut for W {
+    #[inline(always)]
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+impl From<crate::W<ITCTRL_SPEC>> for W {
+    #[inline(always)]
+    fn from(writer: crate::W<ITCTRL_SPEC>) -> Self {
+        W(writer)
+    }
+}
+#[doc = "Field `INTEGRATION` reader - "]
+pub struct INTEGRATION_R(crate::FieldReader<bool, bool>);
+impl INTEGRATION_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        INTEGRATION_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for INTEGRATION_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `INTEGRATION` writer - "]
 pub struct INTEGRATION_W<'a> {
     w: &'a mut W,
 }
@@ -30,7 +67,7 @@ impl<'a> INTEGRATION_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | ((value as u32) & 0x01);
+        self.w.bits = (self.w.bits & !0x01) | (value as u32 & 0x01);
         self.w
     }
 }
@@ -46,5 +83,31 @@ impl W {
     #[inline(always)]
     pub fn integration(&mut self) -> INTEGRATION_W {
         INTEGRATION_W { w: self }
+    }
+    #[doc = "Writes raw bits to the register."]
+    #[inline(always)]
+    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+        self.0.bits(bits);
+        self
+    }
+}
+#[doc = "ETM Integration Mode Control Register\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [itctrl](index.html) module"]
+pub struct ITCTRL_SPEC;
+impl crate::RegisterSpec for ITCTRL_SPEC {
+    type Ux = u32;
+}
+#[doc = "`read()` method returns [itctrl::R](R) reader structure"]
+impl crate::Readable for ITCTRL_SPEC {
+    type Reader = R;
+}
+#[doc = "`write(|w| ..)` method takes [itctrl::W](W) writer structure"]
+impl crate::Writable for ITCTRL_SPEC {
+    type Writer = W;
+}
+#[doc = "`reset()` method sets ITCTRL to value 0"]
+impl crate::Resettable for ITCTRL_SPEC {
+    #[inline(always)]
+    fn reset_value() -> Self::Ux {
+        0
     }
 }

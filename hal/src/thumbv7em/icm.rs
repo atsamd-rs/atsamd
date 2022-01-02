@@ -379,7 +379,6 @@
 //! message_region3_sha256[6] = 0xDEAD_BEEF;
 //!
 //! icm.enable()
-use crate::pac::generic::Variant;
 use crate::pac::icm::uasr::URAT_A;
 
 use paste::paste;
@@ -1191,8 +1190,8 @@ impl Icm {
     ///
     /// This field is only reset by `swrst`
     #[inline]
-    pub fn get_urat(&self) -> Variant<u8, URAT_A> {
-        self.uasr().read().urat().variant()
+    pub fn get_urat(&self) -> URAT_A {
+        self.uasr().read().urat().variant().unwrap()
     }
 
     /// When reading the interrupt (ISR) register, it is cleared

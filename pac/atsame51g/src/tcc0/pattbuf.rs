@@ -1,18 +1,55 @@
-#[doc = "Reader of register PATTBUF"]
-pub type R = crate::R<u16, super::PATTBUF>;
-#[doc = "Writer for register PATTBUF"]
-pub type W = crate::W<u16, super::PATTBUF>;
-#[doc = "Register PATTBUF `reset()`'s with value 0"]
-impl crate::ResetValue for super::PATTBUF {
-    type Type = u16;
+#[doc = "Register `PATTBUF` reader"]
+pub struct R(crate::R<PATTBUF_SPEC>);
+impl core::ops::Deref for R {
+    type Target = crate::R<PATTBUF_SPEC>;
     #[inline(always)]
-    fn reset_value() -> Self::Type {
-        0
+    fn deref(&self) -> &Self::Target {
+        &self.0
     }
 }
-#[doc = "Reader of field `PGEB0`"]
-pub type PGEB0_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `PGEB0`"]
+impl From<crate::R<PATTBUF_SPEC>> for R {
+    #[inline(always)]
+    fn from(reader: crate::R<PATTBUF_SPEC>) -> Self {
+        R(reader)
+    }
+}
+#[doc = "Register `PATTBUF` writer"]
+pub struct W(crate::W<PATTBUF_SPEC>);
+impl core::ops::Deref for W {
+    type Target = crate::W<PATTBUF_SPEC>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl core::ops::DerefMut for W {
+    #[inline(always)]
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+impl From<crate::W<PATTBUF_SPEC>> for W {
+    #[inline(always)]
+    fn from(writer: crate::W<PATTBUF_SPEC>) -> Self {
+        W(writer)
+    }
+}
+#[doc = "Field `PGEB0` reader - Pattern Generator 0 Output Enable Buffer"]
+pub struct PGEB0_R(crate::FieldReader<bool, bool>);
+impl PGEB0_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        PGEB0_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for PGEB0_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `PGEB0` writer - Pattern Generator 0 Output Enable Buffer"]
 pub struct PGEB0_W<'a> {
     w: &'a mut W,
 }
@@ -30,13 +67,26 @@ impl<'a> PGEB0_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | ((value as u16) & 0x01);
+        self.w.bits = (self.w.bits & !0x01) | (value as u16 & 0x01);
         self.w
     }
 }
-#[doc = "Reader of field `PGEB1`"]
-pub type PGEB1_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `PGEB1`"]
+#[doc = "Field `PGEB1` reader - Pattern Generator 1 Output Enable Buffer"]
+pub struct PGEB1_R(crate::FieldReader<bool, bool>);
+impl PGEB1_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        PGEB1_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for PGEB1_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `PGEB1` writer - Pattern Generator 1 Output Enable Buffer"]
 pub struct PGEB1_W<'a> {
     w: &'a mut W,
 }
@@ -54,13 +104,26 @@ impl<'a> PGEB1_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | (((value as u16) & 0x01) << 1);
+        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u16 & 0x01) << 1);
         self.w
     }
 }
-#[doc = "Reader of field `PGEB2`"]
-pub type PGEB2_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `PGEB2`"]
+#[doc = "Field `PGEB2` reader - Pattern Generator 2 Output Enable Buffer"]
+pub struct PGEB2_R(crate::FieldReader<bool, bool>);
+impl PGEB2_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        PGEB2_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for PGEB2_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `PGEB2` writer - Pattern Generator 2 Output Enable Buffer"]
 pub struct PGEB2_W<'a> {
     w: &'a mut W,
 }
@@ -78,13 +141,26 @@ impl<'a> PGEB2_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 2)) | (((value as u16) & 0x01) << 2);
+        self.w.bits = (self.w.bits & !(0x01 << 2)) | ((value as u16 & 0x01) << 2);
         self.w
     }
 }
-#[doc = "Reader of field `PGEB3`"]
-pub type PGEB3_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `PGEB3`"]
+#[doc = "Field `PGEB3` reader - Pattern Generator 3 Output Enable Buffer"]
+pub struct PGEB3_R(crate::FieldReader<bool, bool>);
+impl PGEB3_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        PGEB3_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for PGEB3_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `PGEB3` writer - Pattern Generator 3 Output Enable Buffer"]
 pub struct PGEB3_W<'a> {
     w: &'a mut W,
 }
@@ -102,13 +178,26 @@ impl<'a> PGEB3_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 3)) | (((value as u16) & 0x01) << 3);
+        self.w.bits = (self.w.bits & !(0x01 << 3)) | ((value as u16 & 0x01) << 3);
         self.w
     }
 }
-#[doc = "Reader of field `PGEB4`"]
-pub type PGEB4_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `PGEB4`"]
+#[doc = "Field `PGEB4` reader - Pattern Generator 4 Output Enable Buffer"]
+pub struct PGEB4_R(crate::FieldReader<bool, bool>);
+impl PGEB4_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        PGEB4_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for PGEB4_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `PGEB4` writer - Pattern Generator 4 Output Enable Buffer"]
 pub struct PGEB4_W<'a> {
     w: &'a mut W,
 }
@@ -126,13 +215,26 @@ impl<'a> PGEB4_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 4)) | (((value as u16) & 0x01) << 4);
+        self.w.bits = (self.w.bits & !(0x01 << 4)) | ((value as u16 & 0x01) << 4);
         self.w
     }
 }
-#[doc = "Reader of field `PGEB5`"]
-pub type PGEB5_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `PGEB5`"]
+#[doc = "Field `PGEB5` reader - Pattern Generator 5 Output Enable Buffer"]
+pub struct PGEB5_R(crate::FieldReader<bool, bool>);
+impl PGEB5_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        PGEB5_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for PGEB5_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `PGEB5` writer - Pattern Generator 5 Output Enable Buffer"]
 pub struct PGEB5_W<'a> {
     w: &'a mut W,
 }
@@ -150,13 +252,26 @@ impl<'a> PGEB5_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 5)) | (((value as u16) & 0x01) << 5);
+        self.w.bits = (self.w.bits & !(0x01 << 5)) | ((value as u16 & 0x01) << 5);
         self.w
     }
 }
-#[doc = "Reader of field `PGEB6`"]
-pub type PGEB6_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `PGEB6`"]
+#[doc = "Field `PGEB6` reader - Pattern Generator 6 Output Enable Buffer"]
+pub struct PGEB6_R(crate::FieldReader<bool, bool>);
+impl PGEB6_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        PGEB6_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for PGEB6_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `PGEB6` writer - Pattern Generator 6 Output Enable Buffer"]
 pub struct PGEB6_W<'a> {
     w: &'a mut W,
 }
@@ -174,13 +289,26 @@ impl<'a> PGEB6_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 6)) | (((value as u16) & 0x01) << 6);
+        self.w.bits = (self.w.bits & !(0x01 << 6)) | ((value as u16 & 0x01) << 6);
         self.w
     }
 }
-#[doc = "Reader of field `PGEB7`"]
-pub type PGEB7_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `PGEB7`"]
+#[doc = "Field `PGEB7` reader - Pattern Generator 7 Output Enable Buffer"]
+pub struct PGEB7_R(crate::FieldReader<bool, bool>);
+impl PGEB7_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        PGEB7_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for PGEB7_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `PGEB7` writer - Pattern Generator 7 Output Enable Buffer"]
 pub struct PGEB7_W<'a> {
     w: &'a mut W,
 }
@@ -198,13 +326,26 @@ impl<'a> PGEB7_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 7)) | (((value as u16) & 0x01) << 7);
+        self.w.bits = (self.w.bits & !(0x01 << 7)) | ((value as u16 & 0x01) << 7);
         self.w
     }
 }
-#[doc = "Reader of field `PGVB0`"]
-pub type PGVB0_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `PGVB0`"]
+#[doc = "Field `PGVB0` reader - Pattern Generator 0 Output Enable"]
+pub struct PGVB0_R(crate::FieldReader<bool, bool>);
+impl PGVB0_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        PGVB0_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for PGVB0_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `PGVB0` writer - Pattern Generator 0 Output Enable"]
 pub struct PGVB0_W<'a> {
     w: &'a mut W,
 }
@@ -222,13 +363,26 @@ impl<'a> PGVB0_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 8)) | (((value as u16) & 0x01) << 8);
+        self.w.bits = (self.w.bits & !(0x01 << 8)) | ((value as u16 & 0x01) << 8);
         self.w
     }
 }
-#[doc = "Reader of field `PGVB1`"]
-pub type PGVB1_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `PGVB1`"]
+#[doc = "Field `PGVB1` reader - Pattern Generator 1 Output Enable"]
+pub struct PGVB1_R(crate::FieldReader<bool, bool>);
+impl PGVB1_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        PGVB1_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for PGVB1_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `PGVB1` writer - Pattern Generator 1 Output Enable"]
 pub struct PGVB1_W<'a> {
     w: &'a mut W,
 }
@@ -246,13 +400,26 @@ impl<'a> PGVB1_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 9)) | (((value as u16) & 0x01) << 9);
+        self.w.bits = (self.w.bits & !(0x01 << 9)) | ((value as u16 & 0x01) << 9);
         self.w
     }
 }
-#[doc = "Reader of field `PGVB2`"]
-pub type PGVB2_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `PGVB2`"]
+#[doc = "Field `PGVB2` reader - Pattern Generator 2 Output Enable"]
+pub struct PGVB2_R(crate::FieldReader<bool, bool>);
+impl PGVB2_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        PGVB2_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for PGVB2_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `PGVB2` writer - Pattern Generator 2 Output Enable"]
 pub struct PGVB2_W<'a> {
     w: &'a mut W,
 }
@@ -270,13 +437,26 @@ impl<'a> PGVB2_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 10)) | (((value as u16) & 0x01) << 10);
+        self.w.bits = (self.w.bits & !(0x01 << 10)) | ((value as u16 & 0x01) << 10);
         self.w
     }
 }
-#[doc = "Reader of field `PGVB3`"]
-pub type PGVB3_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `PGVB3`"]
+#[doc = "Field `PGVB3` reader - Pattern Generator 3 Output Enable"]
+pub struct PGVB3_R(crate::FieldReader<bool, bool>);
+impl PGVB3_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        PGVB3_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for PGVB3_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `PGVB3` writer - Pattern Generator 3 Output Enable"]
 pub struct PGVB3_W<'a> {
     w: &'a mut W,
 }
@@ -294,13 +474,26 @@ impl<'a> PGVB3_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 11)) | (((value as u16) & 0x01) << 11);
+        self.w.bits = (self.w.bits & !(0x01 << 11)) | ((value as u16 & 0x01) << 11);
         self.w
     }
 }
-#[doc = "Reader of field `PGVB4`"]
-pub type PGVB4_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `PGVB4`"]
+#[doc = "Field `PGVB4` reader - Pattern Generator 4 Output Enable"]
+pub struct PGVB4_R(crate::FieldReader<bool, bool>);
+impl PGVB4_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        PGVB4_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for PGVB4_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `PGVB4` writer - Pattern Generator 4 Output Enable"]
 pub struct PGVB4_W<'a> {
     w: &'a mut W,
 }
@@ -318,13 +511,26 @@ impl<'a> PGVB4_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 12)) | (((value as u16) & 0x01) << 12);
+        self.w.bits = (self.w.bits & !(0x01 << 12)) | ((value as u16 & 0x01) << 12);
         self.w
     }
 }
-#[doc = "Reader of field `PGVB5`"]
-pub type PGVB5_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `PGVB5`"]
+#[doc = "Field `PGVB5` reader - Pattern Generator 5 Output Enable"]
+pub struct PGVB5_R(crate::FieldReader<bool, bool>);
+impl PGVB5_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        PGVB5_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for PGVB5_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `PGVB5` writer - Pattern Generator 5 Output Enable"]
 pub struct PGVB5_W<'a> {
     w: &'a mut W,
 }
@@ -342,13 +548,26 @@ impl<'a> PGVB5_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 13)) | (((value as u16) & 0x01) << 13);
+        self.w.bits = (self.w.bits & !(0x01 << 13)) | ((value as u16 & 0x01) << 13);
         self.w
     }
 }
-#[doc = "Reader of field `PGVB6`"]
-pub type PGVB6_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `PGVB6`"]
+#[doc = "Field `PGVB6` reader - Pattern Generator 6 Output Enable"]
+pub struct PGVB6_R(crate::FieldReader<bool, bool>);
+impl PGVB6_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        PGVB6_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for PGVB6_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `PGVB6` writer - Pattern Generator 6 Output Enable"]
 pub struct PGVB6_W<'a> {
     w: &'a mut W,
 }
@@ -366,13 +585,26 @@ impl<'a> PGVB6_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 14)) | (((value as u16) & 0x01) << 14);
+        self.w.bits = (self.w.bits & !(0x01 << 14)) | ((value as u16 & 0x01) << 14);
         self.w
     }
 }
-#[doc = "Reader of field `PGVB7`"]
-pub type PGVB7_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `PGVB7`"]
+#[doc = "Field `PGVB7` reader - Pattern Generator 7 Output Enable"]
+pub struct PGVB7_R(crate::FieldReader<bool, bool>);
+impl PGVB7_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        PGVB7_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for PGVB7_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `PGVB7` writer - Pattern Generator 7 Output Enable"]
 pub struct PGVB7_W<'a> {
     w: &'a mut W,
 }
@@ -390,7 +622,7 @@ impl<'a> PGVB7_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 15)) | (((value as u16) & 0x01) << 15);
+        self.w.bits = (self.w.bits & !(0x01 << 15)) | ((value as u16 & 0x01) << 15);
         self.w
     }
 }
@@ -556,5 +788,31 @@ impl W {
     #[inline(always)]
     pub fn pgvb7(&mut self) -> PGVB7_W {
         PGVB7_W { w: self }
+    }
+    #[doc = "Writes raw bits to the register."]
+    #[inline(always)]
+    pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {
+        self.0.bits(bits);
+        self
+    }
+}
+#[doc = "Pattern Buffer\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [pattbuf](index.html) module"]
+pub struct PATTBUF_SPEC;
+impl crate::RegisterSpec for PATTBUF_SPEC {
+    type Ux = u16;
+}
+#[doc = "`read()` method returns [pattbuf::R](R) reader structure"]
+impl crate::Readable for PATTBUF_SPEC {
+    type Reader = R;
+}
+#[doc = "`write(|w| ..)` method takes [pattbuf::W](W) writer structure"]
+impl crate::Writable for PATTBUF_SPEC {
+    type Writer = W;
+}
+#[doc = "`reset()` method sets PATTBUF to value 0"]
+impl crate::Resettable for PATTBUF_SPEC {
+    #[inline(always)]
+    fn reset_value() -> Self::Ux {
+        0
     }
 }

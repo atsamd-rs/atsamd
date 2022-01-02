@@ -1,18 +1,55 @@
-#[doc = "Reader of register DFLLSYNC"]
-pub type R = crate::R<u8, super::DFLLSYNC>;
-#[doc = "Writer for register DFLLSYNC"]
-pub type W = crate::W<u8, super::DFLLSYNC>;
-#[doc = "Register DFLLSYNC `reset()`'s with value 0"]
-impl crate::ResetValue for super::DFLLSYNC {
-    type Type = u8;
+#[doc = "Register `DFLLSYNC` reader"]
+pub struct R(crate::R<DFLLSYNC_SPEC>);
+impl core::ops::Deref for R {
+    type Target = crate::R<DFLLSYNC_SPEC>;
     #[inline(always)]
-    fn reset_value() -> Self::Type {
-        0
+    fn deref(&self) -> &Self::Target {
+        &self.0
     }
 }
-#[doc = "Reader of field `ENABLE`"]
-pub type ENABLE_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `ENABLE`"]
+impl From<crate::R<DFLLSYNC_SPEC>> for R {
+    #[inline(always)]
+    fn from(reader: crate::R<DFLLSYNC_SPEC>) -> Self {
+        R(reader)
+    }
+}
+#[doc = "Register `DFLLSYNC` writer"]
+pub struct W(crate::W<DFLLSYNC_SPEC>);
+impl core::ops::Deref for W {
+    type Target = crate::W<DFLLSYNC_SPEC>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl core::ops::DerefMut for W {
+    #[inline(always)]
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+impl From<crate::W<DFLLSYNC_SPEC>> for W {
+    #[inline(always)]
+    fn from(writer: crate::W<DFLLSYNC_SPEC>) -> Self {
+        W(writer)
+    }
+}
+#[doc = "Field `ENABLE` reader - ENABLE Synchronization Busy"]
+pub struct ENABLE_R(crate::FieldReader<bool, bool>);
+impl ENABLE_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        ENABLE_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for ENABLE_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `ENABLE` writer - ENABLE Synchronization Busy"]
 pub struct ENABLE_W<'a> {
     w: &'a mut W,
 }
@@ -30,13 +67,26 @@ impl<'a> ENABLE_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | (((value as u8) & 0x01) << 1);
+        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u8 & 0x01) << 1);
         self.w
     }
 }
-#[doc = "Reader of field `DFLLCTRLB`"]
-pub type DFLLCTRLB_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `DFLLCTRLB`"]
+#[doc = "Field `DFLLCTRLB` reader - DFLLCTRLB Synchronization Busy"]
+pub struct DFLLCTRLB_R(crate::FieldReader<bool, bool>);
+impl DFLLCTRLB_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        DFLLCTRLB_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for DFLLCTRLB_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `DFLLCTRLB` writer - DFLLCTRLB Synchronization Busy"]
 pub struct DFLLCTRLB_W<'a> {
     w: &'a mut W,
 }
@@ -54,13 +104,26 @@ impl<'a> DFLLCTRLB_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 2)) | (((value as u8) & 0x01) << 2);
+        self.w.bits = (self.w.bits & !(0x01 << 2)) | ((value as u8 & 0x01) << 2);
         self.w
     }
 }
-#[doc = "Reader of field `DFLLVAL`"]
-pub type DFLLVAL_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `DFLLVAL`"]
+#[doc = "Field `DFLLVAL` reader - DFLLVAL Synchronization Busy"]
+pub struct DFLLVAL_R(crate::FieldReader<bool, bool>);
+impl DFLLVAL_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        DFLLVAL_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for DFLLVAL_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `DFLLVAL` writer - DFLLVAL Synchronization Busy"]
 pub struct DFLLVAL_W<'a> {
     w: &'a mut W,
 }
@@ -78,13 +141,26 @@ impl<'a> DFLLVAL_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 3)) | (((value as u8) & 0x01) << 3);
+        self.w.bits = (self.w.bits & !(0x01 << 3)) | ((value as u8 & 0x01) << 3);
         self.w
     }
 }
-#[doc = "Reader of field `DFLLMUL`"]
-pub type DFLLMUL_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `DFLLMUL`"]
+#[doc = "Field `DFLLMUL` reader - DFLLMUL Synchronization Busy"]
+pub struct DFLLMUL_R(crate::FieldReader<bool, bool>);
+impl DFLLMUL_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        DFLLMUL_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for DFLLMUL_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `DFLLMUL` writer - DFLLMUL Synchronization Busy"]
 pub struct DFLLMUL_W<'a> {
     w: &'a mut W,
 }
@@ -102,7 +178,7 @@ impl<'a> DFLLMUL_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 4)) | (((value as u8) & 0x01) << 4);
+        self.w.bits = (self.w.bits & !(0x01 << 4)) | ((value as u8 & 0x01) << 4);
         self.w
     }
 }
@@ -148,5 +224,31 @@ impl W {
     #[inline(always)]
     pub fn dfllmul(&mut self) -> DFLLMUL_W {
         DFLLMUL_W { w: self }
+    }
+    #[doc = "Writes raw bits to the register."]
+    #[inline(always)]
+    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
+        self.0.bits(bits);
+        self
+    }
+}
+#[doc = "DFLL48M Synchronization\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [dfllsync](index.html) module"]
+pub struct DFLLSYNC_SPEC;
+impl crate::RegisterSpec for DFLLSYNC_SPEC {
+    type Ux = u8;
+}
+#[doc = "`read()` method returns [dfllsync::R](R) reader structure"]
+impl crate::Readable for DFLLSYNC_SPEC {
+    type Reader = R;
+}
+#[doc = "`write(|w| ..)` method takes [dfllsync::W](W) writer structure"]
+impl crate::Writable for DFLLSYNC_SPEC {
+    type Writer = W;
+}
+#[doc = "`reset()` method sets DFLLSYNC to value 0"]
+impl crate::Resettable for DFLLSYNC_SPEC {
+    #[inline(always)]
+    fn reset_value() -> Self::Ux {
+        0
     }
 }

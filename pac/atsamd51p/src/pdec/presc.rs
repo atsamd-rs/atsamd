@@ -1,13 +1,37 @@
-#[doc = "Reader of register PRESC"]
-pub type R = crate::R<u8, super::PRESC>;
-#[doc = "Writer for register PRESC"]
-pub type W = crate::W<u8, super::PRESC>;
-#[doc = "Register PRESC `reset()`'s with value 0"]
-impl crate::ResetValue for super::PRESC {
-    type Type = u8;
+#[doc = "Register `PRESC` reader"]
+pub struct R(crate::R<PRESC_SPEC>);
+impl core::ops::Deref for R {
+    type Target = crate::R<PRESC_SPEC>;
     #[inline(always)]
-    fn reset_value() -> Self::Type {
-        0
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl From<crate::R<PRESC_SPEC>> for R {
+    #[inline(always)]
+    fn from(reader: crate::R<PRESC_SPEC>) -> Self {
+        R(reader)
+    }
+}
+#[doc = "Register `PRESC` writer"]
+pub struct W(crate::W<PRESC_SPEC>);
+impl core::ops::Deref for W {
+    type Target = crate::W<PRESC_SPEC>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl core::ops::DerefMut for W {
+    #[inline(always)]
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+impl From<crate::W<PRESC_SPEC>> for W {
+    #[inline(always)]
+    fn from(writer: crate::W<PRESC_SPEC>) -> Self {
+        W(writer)
     }
 }
 #[doc = "Prescaler Value\n\nValue on reset: 0"]
@@ -43,85 +67,95 @@ impl From<PRESC_A> for u8 {
         variant as _
     }
 }
-#[doc = "Reader of field `PRESC`"]
-pub type PRESC_R = crate::R<u8, PRESC_A>;
+#[doc = "Field `PRESC` reader - Prescaler Value"]
+pub struct PRESC_R(crate::FieldReader<u8, PRESC_A>);
 impl PRESC_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        PRESC_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> crate::Variant<u8, PRESC_A> {
-        use crate::Variant::*;
+    pub fn variant(&self) -> Option<PRESC_A> {
         match self.bits {
-            0 => Val(PRESC_A::DIV1),
-            1 => Val(PRESC_A::DIV2),
-            2 => Val(PRESC_A::DIV4),
-            3 => Val(PRESC_A::DIV8),
-            4 => Val(PRESC_A::DIV16),
-            5 => Val(PRESC_A::DIV32),
-            6 => Val(PRESC_A::DIV64),
-            7 => Val(PRESC_A::DIV128),
-            8 => Val(PRESC_A::DIV256),
-            9 => Val(PRESC_A::DIV512),
-            10 => Val(PRESC_A::DIV1024),
-            i => Res(i),
+            0 => Some(PRESC_A::DIV1),
+            1 => Some(PRESC_A::DIV2),
+            2 => Some(PRESC_A::DIV4),
+            3 => Some(PRESC_A::DIV8),
+            4 => Some(PRESC_A::DIV16),
+            5 => Some(PRESC_A::DIV32),
+            6 => Some(PRESC_A::DIV64),
+            7 => Some(PRESC_A::DIV128),
+            8 => Some(PRESC_A::DIV256),
+            9 => Some(PRESC_A::DIV512),
+            10 => Some(PRESC_A::DIV1024),
+            _ => None,
         }
     }
     #[doc = "Checks if the value of the field is `DIV1`"]
     #[inline(always)]
     pub fn is_div1(&self) -> bool {
-        *self == PRESC_A::DIV1
+        **self == PRESC_A::DIV1
     }
     #[doc = "Checks if the value of the field is `DIV2`"]
     #[inline(always)]
     pub fn is_div2(&self) -> bool {
-        *self == PRESC_A::DIV2
+        **self == PRESC_A::DIV2
     }
     #[doc = "Checks if the value of the field is `DIV4`"]
     #[inline(always)]
     pub fn is_div4(&self) -> bool {
-        *self == PRESC_A::DIV4
+        **self == PRESC_A::DIV4
     }
     #[doc = "Checks if the value of the field is `DIV8`"]
     #[inline(always)]
     pub fn is_div8(&self) -> bool {
-        *self == PRESC_A::DIV8
+        **self == PRESC_A::DIV8
     }
     #[doc = "Checks if the value of the field is `DIV16`"]
     #[inline(always)]
     pub fn is_div16(&self) -> bool {
-        *self == PRESC_A::DIV16
+        **self == PRESC_A::DIV16
     }
     #[doc = "Checks if the value of the field is `DIV32`"]
     #[inline(always)]
     pub fn is_div32(&self) -> bool {
-        *self == PRESC_A::DIV32
+        **self == PRESC_A::DIV32
     }
     #[doc = "Checks if the value of the field is `DIV64`"]
     #[inline(always)]
     pub fn is_div64(&self) -> bool {
-        *self == PRESC_A::DIV64
+        **self == PRESC_A::DIV64
     }
     #[doc = "Checks if the value of the field is `DIV128`"]
     #[inline(always)]
     pub fn is_div128(&self) -> bool {
-        *self == PRESC_A::DIV128
+        **self == PRESC_A::DIV128
     }
     #[doc = "Checks if the value of the field is `DIV256`"]
     #[inline(always)]
     pub fn is_div256(&self) -> bool {
-        *self == PRESC_A::DIV256
+        **self == PRESC_A::DIV256
     }
     #[doc = "Checks if the value of the field is `DIV512`"]
     #[inline(always)]
     pub fn is_div512(&self) -> bool {
-        *self == PRESC_A::DIV512
+        **self == PRESC_A::DIV512
     }
     #[doc = "Checks if the value of the field is `DIV1024`"]
     #[inline(always)]
     pub fn is_div1024(&self) -> bool {
-        *self == PRESC_A::DIV1024
+        **self == PRESC_A::DIV1024
     }
 }
-#[doc = "Write proxy for field `PRESC`"]
+impl core::ops::Deref for PRESC_R {
+    type Target = crate::FieldReader<u8, PRESC_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `PRESC` writer - Prescaler Value"]
 pub struct PRESC_W<'a> {
     w: &'a mut W,
 }
@@ -189,7 +223,7 @@ impl<'a> PRESC_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x0f) | ((value as u8) & 0x0f);
+        self.w.bits = (self.w.bits & !0x0f) | (value as u8 & 0x0f);
         self.w
     }
 }
@@ -205,5 +239,31 @@ impl W {
     #[inline(always)]
     pub fn presc(&mut self) -> PRESC_W {
         PRESC_W { w: self }
+    }
+    #[doc = "Writes raw bits to the register."]
+    #[inline(always)]
+    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
+        self.0.bits(bits);
+        self
+    }
+}
+#[doc = "Prescaler Value\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [presc](index.html) module"]
+pub struct PRESC_SPEC;
+impl crate::RegisterSpec for PRESC_SPEC {
+    type Ux = u8;
+}
+#[doc = "`read()` method returns [presc::R](R) reader structure"]
+impl crate::Readable for PRESC_SPEC {
+    type Reader = R;
+}
+#[doc = "`write(|w| ..)` method takes [presc::W](W) writer structure"]
+impl crate::Writable for PRESC_SPEC {
+    type Writer = W;
+}
+#[doc = "`reset()` method sets PRESC to value 0"]
+impl crate::Resettable for PRESC_SPEC {
+    #[inline(always)]
+    fn reset_value() -> Self::Ux {
+        0
     }
 }

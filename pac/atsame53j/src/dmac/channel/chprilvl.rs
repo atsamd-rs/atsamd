@@ -1,13 +1,37 @@
-#[doc = "Reader of register CHPRILVL"]
-pub type R = crate::R<u8, super::CHPRILVL>;
-#[doc = "Writer for register CHPRILVL"]
-pub type W = crate::W<u8, super::CHPRILVL>;
-#[doc = "Register CHPRILVL `reset()`'s with value 0"]
-impl crate::ResetValue for super::CHPRILVL {
-    type Type = u8;
+#[doc = "Register `CHPRILVL` reader"]
+pub struct R(crate::R<CHPRILVL_SPEC>);
+impl core::ops::Deref for R {
+    type Target = crate::R<CHPRILVL_SPEC>;
     #[inline(always)]
-    fn reset_value() -> Self::Type {
-        0
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl From<crate::R<CHPRILVL_SPEC>> for R {
+    #[inline(always)]
+    fn from(reader: crate::R<CHPRILVL_SPEC>) -> Self {
+        R(reader)
+    }
+}
+#[doc = "Register `CHPRILVL` writer"]
+pub struct W(crate::W<CHPRILVL_SPEC>);
+impl core::ops::Deref for W {
+    type Target = crate::W<CHPRILVL_SPEC>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl core::ops::DerefMut for W {
+    #[inline(always)]
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+impl From<crate::W<CHPRILVL_SPEC>> for W {
+    #[inline(always)]
+    fn from(writer: crate::W<CHPRILVL_SPEC>) -> Self {
+        W(writer)
     }
 }
 #[doc = "Channel Priority Level\n\nValue on reset: 0"]
@@ -29,9 +53,13 @@ impl From<PRILVL_A> for u8 {
         variant as _
     }
 }
-#[doc = "Reader of field `PRILVL`"]
-pub type PRILVL_R = crate::R<u8, PRILVL_A>;
+#[doc = "Field `PRILVL` reader - Channel Priority Level"]
+pub struct PRILVL_R(crate::FieldReader<u8, PRILVL_A>);
 impl PRILVL_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        PRILVL_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
     pub fn variant(&self) -> PRILVL_A {
@@ -46,25 +74,32 @@ impl PRILVL_R {
     #[doc = "Checks if the value of the field is `LVL0`"]
     #[inline(always)]
     pub fn is_lvl0(&self) -> bool {
-        *self == PRILVL_A::LVL0
+        **self == PRILVL_A::LVL0
     }
     #[doc = "Checks if the value of the field is `LVL1`"]
     #[inline(always)]
     pub fn is_lvl1(&self) -> bool {
-        *self == PRILVL_A::LVL1
+        **self == PRILVL_A::LVL1
     }
     #[doc = "Checks if the value of the field is `LVL2`"]
     #[inline(always)]
     pub fn is_lvl2(&self) -> bool {
-        *self == PRILVL_A::LVL2
+        **self == PRILVL_A::LVL2
     }
     #[doc = "Checks if the value of the field is `LVL3`"]
     #[inline(always)]
     pub fn is_lvl3(&self) -> bool {
-        *self == PRILVL_A::LVL3
+        **self == PRILVL_A::LVL3
     }
 }
-#[doc = "Write proxy for field `PRILVL`"]
+impl core::ops::Deref for PRILVL_R {
+    type Target = crate::FieldReader<u8, PRILVL_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `PRILVL` writer - Channel Priority Level"]
 pub struct PRILVL_W<'a> {
     w: &'a mut W,
 }
@@ -72,9 +107,7 @@ impl<'a> PRILVL_W<'a> {
     #[doc = r"Writes `variant` to the field"]
     #[inline(always)]
     pub fn variant(self, variant: PRILVL_A) -> &'a mut W {
-        {
-            self.bits(variant.into())
-        }
+        self.bits(variant.into())
     }
     #[doc = "Channel Priority Level 0 (Lowest Level)"]
     #[inline(always)]
@@ -99,7 +132,7 @@ impl<'a> PRILVL_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x03) | ((value as u8) & 0x03);
+        self.w.bits = (self.w.bits & !0x03) | (value as u8 & 0x03);
         self.w
     }
 }
@@ -115,5 +148,31 @@ impl W {
     #[inline(always)]
     pub fn prilvl(&mut self) -> PRILVL_W {
         PRILVL_W { w: self }
+    }
+    #[doc = "Writes raw bits to the register."]
+    #[inline(always)]
+    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
+        self.0.bits(bits);
+        self
+    }
+}
+#[doc = "Channel n Priority Level\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [chprilvl](index.html) module"]
+pub struct CHPRILVL_SPEC;
+impl crate::RegisterSpec for CHPRILVL_SPEC {
+    type Ux = u8;
+}
+#[doc = "`read()` method returns [chprilvl::R](R) reader structure"]
+impl crate::Readable for CHPRILVL_SPEC {
+    type Reader = R;
+}
+#[doc = "`write(|w| ..)` method takes [chprilvl::W](W) writer structure"]
+impl crate::Writable for CHPRILVL_SPEC {
+    type Writer = W;
+}
+#[doc = "`reset()` method sets CHPRILVL to value 0"]
+impl crate::Resettable for CHPRILVL_SPEC {
+    #[inline(always)]
+    fn reset_value() -> Self::Ux {
+        0
     }
 }

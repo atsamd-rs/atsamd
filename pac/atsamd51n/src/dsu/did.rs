@@ -1,11 +1,63 @@
-#[doc = "Reader of register DID"]
-pub type R = crate::R<u32, super::DID>;
-#[doc = "Reader of field `DEVSEL`"]
-pub type DEVSEL_R = crate::R<u8, u8>;
-#[doc = "Reader of field `REVISION`"]
-pub type REVISION_R = crate::R<u8, u8>;
-#[doc = "Reader of field `DIE`"]
-pub type DIE_R = crate::R<u8, u8>;
+#[doc = "Register `DID` reader"]
+pub struct R(crate::R<DID_SPEC>);
+impl core::ops::Deref for R {
+    type Target = crate::R<DID_SPEC>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl From<crate::R<DID_SPEC>> for R {
+    #[inline(always)]
+    fn from(reader: crate::R<DID_SPEC>) -> Self {
+        R(reader)
+    }
+}
+#[doc = "Field `DEVSEL` reader - Device Select"]
+pub struct DEVSEL_R(crate::FieldReader<u8, u8>);
+impl DEVSEL_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        DEVSEL_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for DEVSEL_R {
+    type Target = crate::FieldReader<u8, u8>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `REVISION` reader - Revision Number"]
+pub struct REVISION_R(crate::FieldReader<u8, u8>);
+impl REVISION_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        REVISION_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for REVISION_R {
+    type Target = crate::FieldReader<u8, u8>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `DIE` reader - Die Number"]
+pub struct DIE_R(crate::FieldReader<u8, u8>);
+impl DIE_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        DIE_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for DIE_R {
+    type Target = crate::FieldReader<u8, u8>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
 #[doc = "Series\n\nValue on reset: 6"]
 #[derive(Clone, Copy, Debug, PartialEq)]
 #[repr(u8)]
@@ -21,28 +73,38 @@ impl From<SERIES_A> for u8 {
         variant as _
     }
 }
-#[doc = "Reader of field `SERIES`"]
-pub type SERIES_R = crate::R<u8, SERIES_A>;
+#[doc = "Field `SERIES` reader - Series"]
+pub struct SERIES_R(crate::FieldReader<u8, SERIES_A>);
 impl SERIES_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        SERIES_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> crate::Variant<u8, SERIES_A> {
-        use crate::Variant::*;
+    pub fn variant(&self) -> Option<SERIES_A> {
         match self.bits {
-            0 => Val(SERIES_A::_0),
-            1 => Val(SERIES_A::_1),
-            i => Res(i),
+            0 => Some(SERIES_A::_0),
+            1 => Some(SERIES_A::_1),
+            _ => None,
         }
     }
     #[doc = "Checks if the value of the field is `_0`"]
     #[inline(always)]
     pub fn is_0(&self) -> bool {
-        *self == SERIES_A::_0
+        **self == SERIES_A::_0
     }
     #[doc = "Checks if the value of the field is `_1`"]
     #[inline(always)]
     pub fn is_1(&self) -> bool {
-        *self == SERIES_A::_1
+        **self == SERIES_A::_1
+    }
+}
+impl core::ops::Deref for SERIES_R {
+    type Target = crate::FieldReader<u8, SERIES_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
     }
 }
 #[doc = "Family\n\nValue on reset: 0"]
@@ -60,28 +122,38 @@ impl From<FAMILY_A> for u8 {
         variant as _
     }
 }
-#[doc = "Reader of field `FAMILY`"]
-pub type FAMILY_R = crate::R<u8, FAMILY_A>;
+#[doc = "Field `FAMILY` reader - Family"]
+pub struct FAMILY_R(crate::FieldReader<u8, FAMILY_A>);
 impl FAMILY_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        FAMILY_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> crate::Variant<u8, FAMILY_A> {
-        use crate::Variant::*;
+    pub fn variant(&self) -> Option<FAMILY_A> {
         match self.bits {
-            0 => Val(FAMILY_A::_0),
-            1 => Val(FAMILY_A::_1),
-            i => Res(i),
+            0 => Some(FAMILY_A::_0),
+            1 => Some(FAMILY_A::_1),
+            _ => None,
         }
     }
     #[doc = "Checks if the value of the field is `_0`"]
     #[inline(always)]
     pub fn is_0(&self) -> bool {
-        *self == FAMILY_A::_0
+        **self == FAMILY_A::_0
     }
     #[doc = "Checks if the value of the field is `_1`"]
     #[inline(always)]
     pub fn is_1(&self) -> bool {
-        *self == FAMILY_A::_1
+        **self == FAMILY_A::_1
+    }
+}
+impl core::ops::Deref for FAMILY_R {
+    type Target = crate::FieldReader<u8, FAMILY_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
     }
 }
 #[doc = "Processor\n\nValue on reset: 6"]
@@ -107,52 +179,62 @@ impl From<PROCESSOR_A> for u8 {
         variant as _
     }
 }
-#[doc = "Reader of field `PROCESSOR`"]
-pub type PROCESSOR_R = crate::R<u8, PROCESSOR_A>;
+#[doc = "Field `PROCESSOR` reader - Processor"]
+pub struct PROCESSOR_R(crate::FieldReader<u8, PROCESSOR_A>);
 impl PROCESSOR_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        PROCESSOR_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> crate::Variant<u8, PROCESSOR_A> {
-        use crate::Variant::*;
+    pub fn variant(&self) -> Option<PROCESSOR_A> {
         match self.bits {
-            1 => Val(PROCESSOR_A::CM0P),
-            2 => Val(PROCESSOR_A::CM23),
-            3 => Val(PROCESSOR_A::CM3),
-            5 => Val(PROCESSOR_A::CM4),
-            6 => Val(PROCESSOR_A::CM4F),
-            7 => Val(PROCESSOR_A::CM33),
-            i => Res(i),
+            1 => Some(PROCESSOR_A::CM0P),
+            2 => Some(PROCESSOR_A::CM23),
+            3 => Some(PROCESSOR_A::CM3),
+            5 => Some(PROCESSOR_A::CM4),
+            6 => Some(PROCESSOR_A::CM4F),
+            7 => Some(PROCESSOR_A::CM33),
+            _ => None,
         }
     }
     #[doc = "Checks if the value of the field is `CM0P`"]
     #[inline(always)]
     pub fn is_cm0p(&self) -> bool {
-        *self == PROCESSOR_A::CM0P
+        **self == PROCESSOR_A::CM0P
     }
     #[doc = "Checks if the value of the field is `CM23`"]
     #[inline(always)]
     pub fn is_cm23(&self) -> bool {
-        *self == PROCESSOR_A::CM23
+        **self == PROCESSOR_A::CM23
     }
     #[doc = "Checks if the value of the field is `CM3`"]
     #[inline(always)]
     pub fn is_cm3(&self) -> bool {
-        *self == PROCESSOR_A::CM3
+        **self == PROCESSOR_A::CM3
     }
     #[doc = "Checks if the value of the field is `CM4`"]
     #[inline(always)]
     pub fn is_cm4(&self) -> bool {
-        *self == PROCESSOR_A::CM4
+        **self == PROCESSOR_A::CM4
     }
     #[doc = "Checks if the value of the field is `CM4F`"]
     #[inline(always)]
     pub fn is_cm4f(&self) -> bool {
-        *self == PROCESSOR_A::CM4F
+        **self == PROCESSOR_A::CM4F
     }
     #[doc = "Checks if the value of the field is `CM33`"]
     #[inline(always)]
     pub fn is_cm33(&self) -> bool {
-        *self == PROCESSOR_A::CM33
+        **self == PROCESSOR_A::CM33
+    }
+}
+impl core::ops::Deref for PROCESSOR_R {
+    type Target = crate::FieldReader<u8, PROCESSOR_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
     }
 }
 impl R {
@@ -185,5 +267,21 @@ impl R {
     #[inline(always)]
     pub fn processor(&self) -> PROCESSOR_R {
         PROCESSOR_R::new(((self.bits >> 28) & 0x0f) as u8)
+    }
+}
+#[doc = "Device Identification\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [did](index.html) module"]
+pub struct DID_SPEC;
+impl crate::RegisterSpec for DID_SPEC {
+    type Ux = u32;
+}
+#[doc = "`read()` method returns [did::R](R) reader structure"]
+impl crate::Readable for DID_SPEC {
+    type Reader = R;
+}
+#[doc = "`reset()` method sets DID to value 0x6006_0202"]
+impl crate::Resettable for DID_SPEC {
+    #[inline(always)]
+    fn reset_value() -> Self::Ux {
+        0x6006_0202
     }
 }
