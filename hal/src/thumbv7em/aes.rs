@@ -194,7 +194,7 @@ bitfield::bitfield! {
 /// there is no AES peripheral functionality exposed
 pub struct AesRustCrypto {
     /// AES pac register providing hardware access
-    aes: crate::pac::AES,
+    aes: Aes,
 }
 
 impl AesRustCrypto {
@@ -210,14 +210,14 @@ impl AesRustCrypto {
     /// Clock::v2
     /// `tokens.apbs.aes.enable();`
     #[inline]
-    pub fn new(aes: crate::pac::AES) -> Self {
+    pub fn new(aes: Aes) -> Self {
         Self { aes }
     }
 
     /// Destroy the AES RustCrypto backend and return the underlying AES
     /// register
     #[inline]
-    pub fn destroy(self) -> crate::pac::AES {
+    pub fn destroy(self) -> Aes {
         self.aes
     }
 
@@ -276,8 +276,8 @@ impl Aes {
     /// Clock::v2
     /// `tokens.apbs.aes.enable();`
     #[inline]
-    pub fn new_rustcrypto_backend(aes: crate::pac::AES) -> AesRustCrypto {
-        AesRustCrypto { aes }
+    pub fn activate_rustcrypto_backend(self) -> AesRustCrypto {
+        AesRustCrypto::new(self)
     }
 
     // Register Interface
