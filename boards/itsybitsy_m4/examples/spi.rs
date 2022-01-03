@@ -14,15 +14,20 @@ use panic_semihosting as _;
 
 use itsybitsy_m4 as bsp;
 
-use atsamd_hal::{delay::Delay, time::MegaHertz};
 use bsp::{
     entry,
     hal::{
         clock::GenericClockController,
+        delay::Delay,
+        ehal::{
+            blocking::{delay::DelayMs, spi::Transfer},
+            serial::Write,
+        },
         pac::{CorePeripherals, Peripherals},
         prelude::*,
+        time::{Hertz, MegaHertz},
     },
-    spi_master, Hertz,
+    spi_master,
 };
 
 #[entry]

@@ -1,6 +1,13 @@
 # Unreleased
 
-- create `eic` example to show the relation between `Pin`, `ExtIntX` and `INTFLAG` 
+# 0.12.0
+
+- bump hal dependency to 0.14.0
+- bump cortex-m dependency to 0.7
+- add `sercom_interrupt` example to show how to
+  - manually configure sercom for uart operation
+  - use sercom interrupts
+- create `eic` example to show the relation between `Pin`, `ExtIntX` and `INTFLAG`
 
 # 0.11.0
 
