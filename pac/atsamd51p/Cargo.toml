@@ -10,7 +10,7 @@ readme = "README.md"
 edition = "2018"
 
 [dependencies]
-bare-metal = "0.2"
+bare-metal = "1.0"
 cortex-m = "0.7.3"
 vcell = "0.1.2"
 

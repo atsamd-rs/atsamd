@@ -1,13 +1,37 @@
-#[doc = "Reader of register RXESC"]
-pub type R = crate::R<u32, super::RXESC>;
-#[doc = "Writer for register RXESC"]
-pub type W = crate::W<u32, super::RXESC>;
-#[doc = "Register RXESC `reset()`'s with value 0"]
-impl crate::ResetValue for super::RXESC {
-    type Type = u32;
+#[doc = "Register `RXESC` reader"]
+pub struct R(crate::R<RXESC_SPEC>);
+impl core::ops::Deref for R {
+    type Target = crate::R<RXESC_SPEC>;
     #[inline(always)]
-    fn reset_value() -> Self::Type {
-        0
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl From<crate::R<RXESC_SPEC>> for R {
+    #[inline(always)]
+    fn from(reader: crate::R<RXESC_SPEC>) -> Self {
+        R(reader)
+    }
+}
+#[doc = "Register `RXESC` writer"]
+pub struct W(crate::W<RXESC_SPEC>);
+impl core::ops::Deref for W {
+    type Target = crate::W<RXESC_SPEC>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl core::ops::DerefMut for W {
+    #[inline(always)]
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+impl From<crate::W<RXESC_SPEC>> for W {
+    #[inline(always)]
+    fn from(writer: crate::W<RXESC_SPEC>) -> Self {
+        W(writer)
     }
 }
 #[doc = "Rx FIFO 0 Data Field Size\n\nValue on reset: 0"]
@@ -37,9 +61,13 @@ impl From<F0DS_A> for u8 {
         variant as _
     }
 }
-#[doc = "Reader of field `F0DS`"]
-pub type F0DS_R = crate::R<u8, F0DS_A>;
+#[doc = "Field `F0DS` reader - Rx FIFO 0 Data Field Size"]
+pub struct F0DS_R(crate::FieldReader<u8, F0DS_A>);
 impl F0DS_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        F0DS_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
     pub fn variant(&self) -> F0DS_A {
@@ -58,45 +86,52 @@ impl F0DS_R {
     #[doc = "Checks if the value of the field is `DATA8`"]
     #[inline(always)]
     pub fn is_data8(&self) -> bool {
-        *self == F0DS_A::DATA8
+        **self == F0DS_A::DATA8
     }
     #[doc = "Checks if the value of the field is `DATA12`"]
     #[inline(always)]
     pub fn is_data12(&self) -> bool {
-        *self == F0DS_A::DATA12
+        **self == F0DS_A::DATA12
     }
     #[doc = "Checks if the value of the field is `DATA16`"]
     #[inline(always)]
     pub fn is_data16(&self) -> bool {
-        *self == F0DS_A::DATA16
+        **self == F0DS_A::DATA16
     }
     #[doc = "Checks if the value of the field is `DATA20`"]
     #[inline(always)]
     pub fn is_data20(&self) -> bool {
-        *self == F0DS_A::DATA20
+        **self == F0DS_A::DATA20
     }
     #[doc = "Checks if the value of the field is `DATA24`"]
     #[inline(always)]
     pub fn is_data24(&self) -> bool {
-        *self == F0DS_A::DATA24
+        **self == F0DS_A::DATA24
     }
     #[doc = "Checks if the value of the field is `DATA32`"]
     #[inline(always)]
     pub fn is_data32(&self) -> bool {
-        *self == F0DS_A::DATA32
+        **self == F0DS_A::DATA32
     }
     #[doc = "Checks if the value of the field is `DATA48`"]
     #[inline(always)]
     pub fn is_data48(&self) -> bool {
-        *self == F0DS_A::DATA48
+        **self == F0DS_A::DATA48
     }
     #[doc = "Checks if the value of the field is `DATA64`"]
     #[inline(always)]
     pub fn is_data64(&self) -> bool {
-        *self == F0DS_A::DATA64
+        **self == F0DS_A::DATA64
     }
 }
-#[doc = "Write proxy for field `F0DS`"]
+impl core::ops::Deref for F0DS_R {
+    type Target = crate::FieldReader<u8, F0DS_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `F0DS` writer - Rx FIFO 0 Data Field Size"]
 pub struct F0DS_W<'a> {
     w: &'a mut W,
 }
@@ -104,9 +139,7 @@ impl<'a> F0DS_W<'a> {
     #[doc = r"Writes `variant` to the field"]
     #[inline(always)]
     pub fn variant(self, variant: F0DS_A) -> &'a mut W {
-        {
-            self.bits(variant.into())
-        }
+        self.bits(variant.into())
     }
     #[doc = "8 byte data field"]
     #[inline(always)]
@@ -151,7 +184,7 @@ impl<'a> F0DS_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x07) | ((value as u32) & 0x07);
+        self.w.bits = (self.w.bits & !0x07) | (value as u32 & 0x07);
         self.w
     }
 }
@@ -182,9 +215,13 @@ impl From<F1DS_A> for u8 {
         variant as _
     }
 }
-#[doc = "Reader of field `F1DS`"]
-pub type F1DS_R = crate::R<u8, F1DS_A>;
+#[doc = "Field `F1DS` reader - Rx FIFO 1 Data Field Size"]
+pub struct F1DS_R(crate::FieldReader<u8, F1DS_A>);
 impl F1DS_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        F1DS_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
     pub fn variant(&self) -> F1DS_A {
@@ -203,45 +240,52 @@ impl F1DS_R {
     #[doc = "Checks if the value of the field is `DATA8`"]
     #[inline(always)]
     pub fn is_data8(&self) -> bool {
-        *self == F1DS_A::DATA8
+        **self == F1DS_A::DATA8
     }
     #[doc = "Checks if the value of the field is `DATA12`"]
     #[inline(always)]
     pub fn is_data12(&self) -> bool {
-        *self == F1DS_A::DATA12
+        **self == F1DS_A::DATA12
     }
     #[doc = "Checks if the value of the field is `DATA16`"]
     #[inline(always)]
     pub fn is_data16(&self) -> bool {
-        *self == F1DS_A::DATA16
+        **self == F1DS_A::DATA16
     }
     #[doc = "Checks if the value of the field is `DATA20`"]
     #[inline(always)]
     pub fn is_data20(&self) -> bool {
-        *self == F1DS_A::DATA20
+        **self == F1DS_A::DATA20
     }
     #[doc = "Checks if the value of the field is `DATA24`"]
     #[inline(always)]
     pub fn is_data24(&self) -> bool {
-        *self == F1DS_A::DATA24
+        **self == F1DS_A::DATA24
     }
     #[doc = "Checks if the value of the field is `DATA32`"]
     #[inline(always)]
     pub fn is_data32(&self) -> bool {
-        *self == F1DS_A::DATA32
+        **self == F1DS_A::DATA32
     }
     #[doc = "Checks if the value of the field is `DATA48`"]
     #[inline(always)]
     pub fn is_data48(&self) -> bool {
-        *self == F1DS_A::DATA48
+        **self == F1DS_A::DATA48
     }
     #[doc = "Checks if the value of the field is `DATA64`"]
     #[inline(always)]
     pub fn is_data64(&self) -> bool {
-        *self == F1DS_A::DATA64
+        **self == F1DS_A::DATA64
     }
 }
-#[doc = "Write proxy for field `F1DS`"]
+impl core::ops::Deref for F1DS_R {
+    type Target = crate::FieldReader<u8, F1DS_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `F1DS` writer - Rx FIFO 1 Data Field Size"]
 pub struct F1DS_W<'a> {
     w: &'a mut W,
 }
@@ -249,9 +293,7 @@ impl<'a> F1DS_W<'a> {
     #[doc = r"Writes `variant` to the field"]
     #[inline(always)]
     pub fn variant(self, variant: F1DS_A) -> &'a mut W {
-        {
-            self.bits(variant.into())
-        }
+        self.bits(variant.into())
     }
     #[doc = "8 byte data field"]
     #[inline(always)]
@@ -296,7 +338,7 @@ impl<'a> F1DS_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x07 << 4)) | (((value as u32) & 0x07) << 4);
+        self.w.bits = (self.w.bits & !(0x07 << 4)) | ((value as u32 & 0x07) << 4);
         self.w
     }
 }
@@ -327,9 +369,13 @@ impl From<RBDS_A> for u8 {
         variant as _
     }
 }
-#[doc = "Reader of field `RBDS`"]
-pub type RBDS_R = crate::R<u8, RBDS_A>;
+#[doc = "Field `RBDS` reader - Rx Buffer Data Field Size"]
+pub struct RBDS_R(crate::FieldReader<u8, RBDS_A>);
 impl RBDS_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        RBDS_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
     pub fn variant(&self) -> RBDS_A {
@@ -348,45 +394,52 @@ impl RBDS_R {
     #[doc = "Checks if the value of the field is `DATA8`"]
     #[inline(always)]
     pub fn is_data8(&self) -> bool {
-        *self == RBDS_A::DATA8
+        **self == RBDS_A::DATA8
     }
     #[doc = "Checks if the value of the field is `DATA12`"]
     #[inline(always)]
     pub fn is_data12(&self) -> bool {
-        *self == RBDS_A::DATA12
+        **self == RBDS_A::DATA12
     }
     #[doc = "Checks if the value of the field is `DATA16`"]
     #[inline(always)]
     pub fn is_data16(&self) -> bool {
-        *self == RBDS_A::DATA16
+        **self == RBDS_A::DATA16
     }
     #[doc = "Checks if the value of the field is `DATA20`"]
     #[inline(always)]
     pub fn is_data20(&self) -> bool {
-        *self == RBDS_A::DATA20
+        **self == RBDS_A::DATA20
     }
     #[doc = "Checks if the value of the field is `DATA24`"]
     #[inline(always)]
     pub fn is_data24(&self) -> bool {
-        *self == RBDS_A::DATA24
+        **self == RBDS_A::DATA24
     }
     #[doc = "Checks if the value of the field is `DATA32`"]
     #[inline(always)]
     pub fn is_data32(&self) -> bool {
-        *self == RBDS_A::DATA32
+        **self == RBDS_A::DATA32
     }
     #[doc = "Checks if the value of the field is `DATA48`"]
     #[inline(always)]
     pub fn is_data48(&self) -> bool {
-        *self == RBDS_A::DATA48
+        **self == RBDS_A::DATA48
     }
     #[doc = "Checks if the value of the field is `DATA64`"]
     #[inline(always)]
     pub fn is_data64(&self) -> bool {
-        *self == RBDS_A::DATA64
+        **self == RBDS_A::DATA64
     }
 }
-#[doc = "Write proxy for field `RBDS`"]
+impl core::ops::Deref for RBDS_R {
+    type Target = crate::FieldReader<u8, RBDS_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `RBDS` writer - Rx Buffer Data Field Size"]
 pub struct RBDS_W<'a> {
     w: &'a mut W,
 }
@@ -394,9 +447,7 @@ impl<'a> RBDS_W<'a> {
     #[doc = r"Writes `variant` to the field"]
     #[inline(always)]
     pub fn variant(self, variant: RBDS_A) -> &'a mut W {
-        {
-            self.bits(variant.into())
-        }
+        self.bits(variant.into())
     }
     #[doc = "8 byte data field"]
     #[inline(always)]
@@ -441,7 +492,7 @@ impl<'a> RBDS_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x07 << 8)) | (((value as u32) & 0x07) << 8);
+        self.w.bits = (self.w.bits & !(0x07 << 8)) | ((value as u32 & 0x07) << 8);
         self.w
     }
 }
@@ -477,5 +528,31 @@ impl W {
     #[inline(always)]
     pub fn rbds(&mut self) -> RBDS_W {
         RBDS_W { w: self }
+    }
+    #[doc = "Writes raw bits to the register."]
+    #[inline(always)]
+    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+        self.0.bits(bits);
+        self
+    }
+}
+#[doc = "Rx Buffer / FIFO Element Size Configuration\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [rxesc](index.html) module"]
+pub struct RXESC_SPEC;
+impl crate::RegisterSpec for RXESC_SPEC {
+    type Ux = u32;
+}
+#[doc = "`read()` method returns [rxesc::R](R) reader structure"]
+impl crate::Readable for RXESC_SPEC {
+    type Reader = R;
+}
+#[doc = "`write(|w| ..)` method takes [rxesc::W](W) writer structure"]
+impl crate::Writable for RXESC_SPEC {
+    type Writer = W;
+}
+#[doc = "`reset()` method sets RXESC to value 0"]
+impl crate::Resettable for RXESC_SPEC {
+    #[inline(always)]
+    fn reset_value() -> Self::Ux {
+        0
     }
 }

@@ -1,13 +1,37 @@
-#[doc = "Reader of register INPUTCTRL"]
-pub type R = crate::R<u16, super::INPUTCTRL>;
-#[doc = "Writer for register INPUTCTRL"]
-pub type W = crate::W<u16, super::INPUTCTRL>;
-#[doc = "Register INPUTCTRL `reset()`'s with value 0"]
-impl crate::ResetValue for super::INPUTCTRL {
-    type Type = u16;
+#[doc = "Register `INPUTCTRL` reader"]
+pub struct R(crate::R<INPUTCTRL_SPEC>);
+impl core::ops::Deref for R {
+    type Target = crate::R<INPUTCTRL_SPEC>;
     #[inline(always)]
-    fn reset_value() -> Self::Type {
-        0
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl From<crate::R<INPUTCTRL_SPEC>> for R {
+    #[inline(always)]
+    fn from(reader: crate::R<INPUTCTRL_SPEC>) -> Self {
+        R(reader)
+    }
+}
+#[doc = "Register `INPUTCTRL` writer"]
+pub struct W(crate::W<INPUTCTRL_SPEC>);
+impl core::ops::Deref for W {
+    type Target = crate::W<INPUTCTRL_SPEC>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl core::ops::DerefMut for W {
+    #[inline(always)]
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+impl From<crate::W<INPUTCTRL_SPEC>> for W {
+    #[inline(always)]
+    fn from(writer: crate::W<INPUTCTRL_SPEC>) -> Self {
+        W(writer)
     }
 }
 #[doc = "Positive Mux Input Selection\n\nValue on reset: 0"]
@@ -85,9 +109,13 @@ impl From<MUXPOS_A> for u8 {
         variant as _
     }
 }
-#[doc = "Reader of field `MUXPOS`"]
-pub type MUXPOS_R = crate::R<u8, MUXPOS_A>;
+#[doc = "Field `MUXPOS` reader - Positive Mux Input Selection"]
+pub struct MUXPOS_R(crate::FieldReader<u8, MUXPOS_A>);
 impl MUXPOS_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        MUXPOS_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
     pub fn variant(&self) -> MUXPOS_A {
@@ -130,165 +158,172 @@ impl MUXPOS_R {
     #[doc = "Checks if the value of the field is `AIN0`"]
     #[inline(always)]
     pub fn is_ain0(&self) -> bool {
-        *self == MUXPOS_A::AIN0
+        **self == MUXPOS_A::AIN0
     }
     #[doc = "Checks if the value of the field is `AIN1`"]
     #[inline(always)]
     pub fn is_ain1(&self) -> bool {
-        *self == MUXPOS_A::AIN1
+        **self == MUXPOS_A::AIN1
     }
     #[doc = "Checks if the value of the field is `AIN2`"]
     #[inline(always)]
     pub fn is_ain2(&self) -> bool {
-        *self == MUXPOS_A::AIN2
+        **self == MUXPOS_A::AIN2
     }
     #[doc = "Checks if the value of the field is `AIN3`"]
     #[inline(always)]
     pub fn is_ain3(&self) -> bool {
-        *self == MUXPOS_A::AIN3
+        **self == MUXPOS_A::AIN3
     }
     #[doc = "Checks if the value of the field is `AIN4`"]
     #[inline(always)]
     pub fn is_ain4(&self) -> bool {
-        *self == MUXPOS_A::AIN4
+        **self == MUXPOS_A::AIN4
     }
     #[doc = "Checks if the value of the field is `AIN5`"]
     #[inline(always)]
     pub fn is_ain5(&self) -> bool {
-        *self == MUXPOS_A::AIN5
+        **self == MUXPOS_A::AIN5
     }
     #[doc = "Checks if the value of the field is `AIN6`"]
     #[inline(always)]
     pub fn is_ain6(&self) -> bool {
-        *self == MUXPOS_A::AIN6
+        **self == MUXPOS_A::AIN6
     }
     #[doc = "Checks if the value of the field is `AIN7`"]
     #[inline(always)]
     pub fn is_ain7(&self) -> bool {
-        *self == MUXPOS_A::AIN7
+        **self == MUXPOS_A::AIN7
     }
     #[doc = "Checks if the value of the field is `AIN8`"]
     #[inline(always)]
     pub fn is_ain8(&self) -> bool {
-        *self == MUXPOS_A::AIN8
+        **self == MUXPOS_A::AIN8
     }
     #[doc = "Checks if the value of the field is `AIN9`"]
     #[inline(always)]
     pub fn is_ain9(&self) -> bool {
-        *self == MUXPOS_A::AIN9
+        **self == MUXPOS_A::AIN9
     }
     #[doc = "Checks if the value of the field is `AIN10`"]
     #[inline(always)]
     pub fn is_ain10(&self) -> bool {
-        *self == MUXPOS_A::AIN10
+        **self == MUXPOS_A::AIN10
     }
     #[doc = "Checks if the value of the field is `AIN11`"]
     #[inline(always)]
     pub fn is_ain11(&self) -> bool {
-        *self == MUXPOS_A::AIN11
+        **self == MUXPOS_A::AIN11
     }
     #[doc = "Checks if the value of the field is `AIN12`"]
     #[inline(always)]
     pub fn is_ain12(&self) -> bool {
-        *self == MUXPOS_A::AIN12
+        **self == MUXPOS_A::AIN12
     }
     #[doc = "Checks if the value of the field is `AIN13`"]
     #[inline(always)]
     pub fn is_ain13(&self) -> bool {
-        *self == MUXPOS_A::AIN13
+        **self == MUXPOS_A::AIN13
     }
     #[doc = "Checks if the value of the field is `AIN14`"]
     #[inline(always)]
     pub fn is_ain14(&self) -> bool {
-        *self == MUXPOS_A::AIN14
+        **self == MUXPOS_A::AIN14
     }
     #[doc = "Checks if the value of the field is `AIN15`"]
     #[inline(always)]
     pub fn is_ain15(&self) -> bool {
-        *self == MUXPOS_A::AIN15
+        **self == MUXPOS_A::AIN15
     }
     #[doc = "Checks if the value of the field is `AIN16`"]
     #[inline(always)]
     pub fn is_ain16(&self) -> bool {
-        *self == MUXPOS_A::AIN16
+        **self == MUXPOS_A::AIN16
     }
     #[doc = "Checks if the value of the field is `AIN17`"]
     #[inline(always)]
     pub fn is_ain17(&self) -> bool {
-        *self == MUXPOS_A::AIN17
+        **self == MUXPOS_A::AIN17
     }
     #[doc = "Checks if the value of the field is `AIN18`"]
     #[inline(always)]
     pub fn is_ain18(&self) -> bool {
-        *self == MUXPOS_A::AIN18
+        **self == MUXPOS_A::AIN18
     }
     #[doc = "Checks if the value of the field is `AIN19`"]
     #[inline(always)]
     pub fn is_ain19(&self) -> bool {
-        *self == MUXPOS_A::AIN19
+        **self == MUXPOS_A::AIN19
     }
     #[doc = "Checks if the value of the field is `AIN20`"]
     #[inline(always)]
     pub fn is_ain20(&self) -> bool {
-        *self == MUXPOS_A::AIN20
+        **self == MUXPOS_A::AIN20
     }
     #[doc = "Checks if the value of the field is `AIN21`"]
     #[inline(always)]
     pub fn is_ain21(&self) -> bool {
-        *self == MUXPOS_A::AIN21
+        **self == MUXPOS_A::AIN21
     }
     #[doc = "Checks if the value of the field is `AIN22`"]
     #[inline(always)]
     pub fn is_ain22(&self) -> bool {
-        *self == MUXPOS_A::AIN22
+        **self == MUXPOS_A::AIN22
     }
     #[doc = "Checks if the value of the field is `AIN23`"]
     #[inline(always)]
     pub fn is_ain23(&self) -> bool {
-        *self == MUXPOS_A::AIN23
+        **self == MUXPOS_A::AIN23
     }
     #[doc = "Checks if the value of the field is `SCALEDCOREVCC`"]
     #[inline(always)]
     pub fn is_scaledcorevcc(&self) -> bool {
-        *self == MUXPOS_A::SCALEDCOREVCC
+        **self == MUXPOS_A::SCALEDCOREVCC
     }
     #[doc = "Checks if the value of the field is `SCALEDVBAT`"]
     #[inline(always)]
     pub fn is_scaledvbat(&self) -> bool {
-        *self == MUXPOS_A::SCALEDVBAT
+        **self == MUXPOS_A::SCALEDVBAT
     }
     #[doc = "Checks if the value of the field is `SCALEDIOVCC`"]
     #[inline(always)]
     pub fn is_scalediovcc(&self) -> bool {
-        *self == MUXPOS_A::SCALEDIOVCC
+        **self == MUXPOS_A::SCALEDIOVCC
     }
     #[doc = "Checks if the value of the field is `BANDGAP`"]
     #[inline(always)]
     pub fn is_bandgap(&self) -> bool {
-        *self == MUXPOS_A::BANDGAP
+        **self == MUXPOS_A::BANDGAP
     }
     #[doc = "Checks if the value of the field is `PTAT`"]
     #[inline(always)]
     pub fn is_ptat(&self) -> bool {
-        *self == MUXPOS_A::PTAT
+        **self == MUXPOS_A::PTAT
     }
     #[doc = "Checks if the value of the field is `CTAT`"]
     #[inline(always)]
     pub fn is_ctat(&self) -> bool {
-        *self == MUXPOS_A::CTAT
+        **self == MUXPOS_A::CTAT
     }
     #[doc = "Checks if the value of the field is `DAC`"]
     #[inline(always)]
     pub fn is_dac(&self) -> bool {
-        *self == MUXPOS_A::DAC
+        **self == MUXPOS_A::DAC
     }
     #[doc = "Checks if the value of the field is `PTC`"]
     #[inline(always)]
     pub fn is_ptc(&self) -> bool {
-        *self == MUXPOS_A::PTC
+        **self == MUXPOS_A::PTC
     }
 }
-#[doc = "Write proxy for field `MUXPOS`"]
+impl core::ops::Deref for MUXPOS_R {
+    type Target = crate::FieldReader<u8, MUXPOS_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `MUXPOS` writer - Positive Mux Input Selection"]
 pub struct MUXPOS_W<'a> {
     w: &'a mut W,
 }
@@ -296,9 +331,7 @@ impl<'a> MUXPOS_W<'a> {
     #[doc = r"Writes `variant` to the field"]
     #[inline(always)]
     pub fn variant(self, variant: MUXPOS_A) -> &'a mut W {
-        {
-            self.bits(variant.into())
-        }
+        self.bits(variant.into())
     }
     #[doc = "ADC AIN0 Pin"]
     #[inline(always)]
@@ -463,13 +496,26 @@ impl<'a> MUXPOS_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x1f) | ((value as u16) & 0x1f);
+        self.w.bits = (self.w.bits & !0x1f) | (value as u16 & 0x1f);
         self.w
     }
 }
-#[doc = "Reader of field `DIFFMODE`"]
-pub type DIFFMODE_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `DIFFMODE`"]
+#[doc = "Field `DIFFMODE` reader - Differential Mode"]
+pub struct DIFFMODE_R(crate::FieldReader<bool, bool>);
+impl DIFFMODE_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        DIFFMODE_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for DIFFMODE_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `DIFFMODE` writer - Differential Mode"]
 pub struct DIFFMODE_W<'a> {
     w: &'a mut W,
 }
@@ -487,7 +533,7 @@ impl<'a> DIFFMODE_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 7)) | (((value as u16) & 0x01) << 7);
+        self.w.bits = (self.w.bits & !(0x01 << 7)) | ((value as u16 & 0x01) << 7);
         self.w
     }
 }
@@ -520,73 +566,83 @@ impl From<MUXNEG_A> for u8 {
         variant as _
     }
 }
-#[doc = "Reader of field `MUXNEG`"]
-pub type MUXNEG_R = crate::R<u8, MUXNEG_A>;
+#[doc = "Field `MUXNEG` reader - Negative Mux Input Selection"]
+pub struct MUXNEG_R(crate::FieldReader<u8, MUXNEG_A>);
 impl MUXNEG_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        MUXNEG_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> crate::Variant<u8, MUXNEG_A> {
-        use crate::Variant::*;
+    pub fn variant(&self) -> Option<MUXNEG_A> {
         match self.bits {
-            0 => Val(MUXNEG_A::AIN0),
-            1 => Val(MUXNEG_A::AIN1),
-            2 => Val(MUXNEG_A::AIN2),
-            3 => Val(MUXNEG_A::AIN3),
-            4 => Val(MUXNEG_A::AIN4),
-            5 => Val(MUXNEG_A::AIN5),
-            6 => Val(MUXNEG_A::AIN6),
-            7 => Val(MUXNEG_A::AIN7),
-            24 => Val(MUXNEG_A::GND),
-            i => Res(i),
+            0 => Some(MUXNEG_A::AIN0),
+            1 => Some(MUXNEG_A::AIN1),
+            2 => Some(MUXNEG_A::AIN2),
+            3 => Some(MUXNEG_A::AIN3),
+            4 => Some(MUXNEG_A::AIN4),
+            5 => Some(MUXNEG_A::AIN5),
+            6 => Some(MUXNEG_A::AIN6),
+            7 => Some(MUXNEG_A::AIN7),
+            24 => Some(MUXNEG_A::GND),
+            _ => None,
         }
     }
     #[doc = "Checks if the value of the field is `AIN0`"]
     #[inline(always)]
     pub fn is_ain0(&self) -> bool {
-        *self == MUXNEG_A::AIN0
+        **self == MUXNEG_A::AIN0
     }
     #[doc = "Checks if the value of the field is `AIN1`"]
     #[inline(always)]
     pub fn is_ain1(&self) -> bool {
-        *self == MUXNEG_A::AIN1
+        **self == MUXNEG_A::AIN1
     }
     #[doc = "Checks if the value of the field is `AIN2`"]
     #[inline(always)]
     pub fn is_ain2(&self) -> bool {
-        *self == MUXNEG_A::AIN2
+        **self == MUXNEG_A::AIN2
     }
     #[doc = "Checks if the value of the field is `AIN3`"]
     #[inline(always)]
     pub fn is_ain3(&self) -> bool {
-        *self == MUXNEG_A::AIN3
+        **self == MUXNEG_A::AIN3
     }
     #[doc = "Checks if the value of the field is `AIN4`"]
     #[inline(always)]
     pub fn is_ain4(&self) -> bool {
-        *self == MUXNEG_A::AIN4
+        **self == MUXNEG_A::AIN4
     }
     #[doc = "Checks if the value of the field is `AIN5`"]
     #[inline(always)]
     pub fn is_ain5(&self) -> bool {
-        *self == MUXNEG_A::AIN5
+        **self == MUXNEG_A::AIN5
     }
     #[doc = "Checks if the value of the field is `AIN6`"]
     #[inline(always)]
     pub fn is_ain6(&self) -> bool {
-        *self == MUXNEG_A::AIN6
+        **self == MUXNEG_A::AIN6
     }
     #[doc = "Checks if the value of the field is `AIN7`"]
     #[inline(always)]
     pub fn is_ain7(&self) -> bool {
-        *self == MUXNEG_A::AIN7
+        **self == MUXNEG_A::AIN7
     }
     #[doc = "Checks if the value of the field is `GND`"]
     #[inline(always)]
     pub fn is_gnd(&self) -> bool {
-        *self == MUXNEG_A::GND
+        **self == MUXNEG_A::GND
     }
 }
-#[doc = "Write proxy for field `MUXNEG`"]
+impl core::ops::Deref for MUXNEG_R {
+    type Target = crate::FieldReader<u8, MUXNEG_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `MUXNEG` writer - Negative Mux Input Selection"]
 pub struct MUXNEG_W<'a> {
     w: &'a mut W,
 }
@@ -644,13 +700,26 @@ impl<'a> MUXNEG_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x1f << 8)) | (((value as u16) & 0x1f) << 8);
+        self.w.bits = (self.w.bits & !(0x1f << 8)) | ((value as u16 & 0x1f) << 8);
         self.w
     }
 }
-#[doc = "Reader of field `DSEQSTOP`"]
-pub type DSEQSTOP_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `DSEQSTOP`"]
+#[doc = "Field `DSEQSTOP` reader - Stop DMA Sequencing"]
+pub struct DSEQSTOP_R(crate::FieldReader<bool, bool>);
+impl DSEQSTOP_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        DSEQSTOP_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for DSEQSTOP_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `DSEQSTOP` writer - Stop DMA Sequencing"]
 pub struct DSEQSTOP_W<'a> {
     w: &'a mut W,
 }
@@ -668,7 +737,7 @@ impl<'a> DSEQSTOP_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 15)) | (((value as u16) & 0x01) << 15);
+        self.w.bits = (self.w.bits & !(0x01 << 15)) | ((value as u16 & 0x01) << 15);
         self.w
     }
 }
@@ -714,5 +783,31 @@ impl W {
     #[inline(always)]
     pub fn dseqstop(&mut self) -> DSEQSTOP_W {
         DSEQSTOP_W { w: self }
+    }
+    #[doc = "Writes raw bits to the register."]
+    #[inline(always)]
+    pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {
+        self.0.bits(bits);
+        self
+    }
+}
+#[doc = "Input Control\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [inputctrl](index.html) module"]
+pub struct INPUTCTRL_SPEC;
+impl crate::RegisterSpec for INPUTCTRL_SPEC {
+    type Ux = u16;
+}
+#[doc = "`read()` method returns [inputctrl::R](R) reader structure"]
+impl crate::Readable for INPUTCTRL_SPEC {
+    type Reader = R;
+}
+#[doc = "`write(|w| ..)` method takes [inputctrl::W](W) writer structure"]
+impl crate::Writable for INPUTCTRL_SPEC {
+    type Writer = W;
+}
+#[doc = "`reset()` method sets INPUTCTRL to value 0"]
+impl crate::Resettable for INPUTCTRL_SPEC {
+    #[inline(always)]
+    fn reset_value() -> Self::Ux {
+        0
     }
 }

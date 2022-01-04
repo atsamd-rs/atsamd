@@ -1,13 +1,37 @@
-#[doc = "Reader of register CHCTRLB"]
-pub type R = crate::R<u32, super::CHCTRLB>;
-#[doc = "Writer for register CHCTRLB"]
-pub type W = crate::W<u32, super::CHCTRLB>;
-#[doc = "Register CHCTRLB `reset()`'s with value 0"]
-impl crate::ResetValue for super::CHCTRLB {
-    type Type = u32;
+#[doc = "Register `CHCTRLB` reader"]
+pub struct R(crate::R<CHCTRLB_SPEC>);
+impl core::ops::Deref for R {
+    type Target = crate::R<CHCTRLB_SPEC>;
     #[inline(always)]
-    fn reset_value() -> Self::Type {
-        0
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl From<crate::R<CHCTRLB_SPEC>> for R {
+    #[inline(always)]
+    fn from(reader: crate::R<CHCTRLB_SPEC>) -> Self {
+        R(reader)
+    }
+}
+#[doc = "Register `CHCTRLB` writer"]
+pub struct W(crate::W<CHCTRLB_SPEC>);
+impl core::ops::Deref for W {
+    type Target = crate::W<CHCTRLB_SPEC>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl core::ops::DerefMut for W {
+    #[inline(always)]
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+impl From<crate::W<CHCTRLB_SPEC>> for W {
+    #[inline(always)]
+    fn from(writer: crate::W<CHCTRLB_SPEC>) -> Self {
+        W(writer)
     }
 }
 #[doc = "Event Input Action\n\nValue on reset: 0"]
@@ -35,61 +59,71 @@ impl From<EVACT_A> for u8 {
         variant as _
     }
 }
-#[doc = "Reader of field `EVACT`"]
-pub type EVACT_R = crate::R<u8, EVACT_A>;
+#[doc = "Field `EVACT` reader - Event Input Action"]
+pub struct EVACT_R(crate::FieldReader<u8, EVACT_A>);
 impl EVACT_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        EVACT_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> crate::Variant<u8, EVACT_A> {
-        use crate::Variant::*;
+    pub fn variant(&self) -> Option<EVACT_A> {
         match self.bits {
-            0 => Val(EVACT_A::NOACT),
-            1 => Val(EVACT_A::TRIG),
-            2 => Val(EVACT_A::CTRIG),
-            3 => Val(EVACT_A::CBLOCK),
-            4 => Val(EVACT_A::SUSPEND),
-            5 => Val(EVACT_A::RESUME),
-            6 => Val(EVACT_A::SSKIP),
-            i => Res(i),
+            0 => Some(EVACT_A::NOACT),
+            1 => Some(EVACT_A::TRIG),
+            2 => Some(EVACT_A::CTRIG),
+            3 => Some(EVACT_A::CBLOCK),
+            4 => Some(EVACT_A::SUSPEND),
+            5 => Some(EVACT_A::RESUME),
+            6 => Some(EVACT_A::SSKIP),
+            _ => None,
         }
     }
     #[doc = "Checks if the value of the field is `NOACT`"]
     #[inline(always)]
     pub fn is_noact(&self) -> bool {
-        *self == EVACT_A::NOACT
+        **self == EVACT_A::NOACT
     }
     #[doc = "Checks if the value of the field is `TRIG`"]
     #[inline(always)]
     pub fn is_trig(&self) -> bool {
-        *self == EVACT_A::TRIG
+        **self == EVACT_A::TRIG
     }
     #[doc = "Checks if the value of the field is `CTRIG`"]
     #[inline(always)]
     pub fn is_ctrig(&self) -> bool {
-        *self == EVACT_A::CTRIG
+        **self == EVACT_A::CTRIG
     }
     #[doc = "Checks if the value of the field is `CBLOCK`"]
     #[inline(always)]
     pub fn is_cblock(&self) -> bool {
-        *self == EVACT_A::CBLOCK
+        **self == EVACT_A::CBLOCK
     }
     #[doc = "Checks if the value of the field is `SUSPEND`"]
     #[inline(always)]
     pub fn is_suspend(&self) -> bool {
-        *self == EVACT_A::SUSPEND
+        **self == EVACT_A::SUSPEND
     }
     #[doc = "Checks if the value of the field is `RESUME`"]
     #[inline(always)]
     pub fn is_resume(&self) -> bool {
-        *self == EVACT_A::RESUME
+        **self == EVACT_A::RESUME
     }
     #[doc = "Checks if the value of the field is `SSKIP`"]
     #[inline(always)]
     pub fn is_sskip(&self) -> bool {
-        *self == EVACT_A::SSKIP
+        **self == EVACT_A::SSKIP
     }
 }
-#[doc = "Write proxy for field `EVACT`"]
+impl core::ops::Deref for EVACT_R {
+    type Target = crate::FieldReader<u8, EVACT_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `EVACT` writer - Event Input Action"]
 pub struct EVACT_W<'a> {
     w: &'a mut W,
 }
@@ -137,13 +171,26 @@ impl<'a> EVACT_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x07) | ((value as u32) & 0x07);
+        self.w.bits = (self.w.bits & !0x07) | (value as u32 & 0x07);
         self.w
     }
 }
-#[doc = "Reader of field `EVIE`"]
-pub type EVIE_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `EVIE`"]
+#[doc = "Field `EVIE` reader - Channel Event Input Enable"]
+pub struct EVIE_R(crate::FieldReader<bool, bool>);
+impl EVIE_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        EVIE_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for EVIE_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `EVIE` writer - Channel Event Input Enable"]
 pub struct EVIE_W<'a> {
     w: &'a mut W,
 }
@@ -161,13 +208,26 @@ impl<'a> EVIE_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 3)) | (((value as u32) & 0x01) << 3);
+        self.w.bits = (self.w.bits & !(0x01 << 3)) | ((value as u32 & 0x01) << 3);
         self.w
     }
 }
-#[doc = "Reader of field `EVOE`"]
-pub type EVOE_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `EVOE`"]
+#[doc = "Field `EVOE` reader - Channel Event Output Enable"]
+pub struct EVOE_R(crate::FieldReader<bool, bool>);
+impl EVOE_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        EVOE_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for EVOE_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `EVOE` writer - Channel Event Output Enable"]
 pub struct EVOE_W<'a> {
     w: &'a mut W,
 }
@@ -185,7 +245,7 @@ impl<'a> EVOE_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 4)) | (((value as u32) & 0x01) << 4);
+        self.w.bits = (self.w.bits & !(0x01 << 4)) | ((value as u32 & 0x01) << 4);
         self.w
     }
 }
@@ -208,9 +268,13 @@ impl From<LVL_A> for u8 {
         variant as _
     }
 }
-#[doc = "Reader of field `LVL`"]
-pub type LVL_R = crate::R<u8, LVL_A>;
+#[doc = "Field `LVL` reader - Channel Arbitration Level"]
+pub struct LVL_R(crate::FieldReader<u8, LVL_A>);
 impl LVL_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        LVL_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
     pub fn variant(&self) -> LVL_A {
@@ -225,25 +289,32 @@ impl LVL_R {
     #[doc = "Checks if the value of the field is `LVL0`"]
     #[inline(always)]
     pub fn is_lvl0(&self) -> bool {
-        *self == LVL_A::LVL0
+        **self == LVL_A::LVL0
     }
     #[doc = "Checks if the value of the field is `LVL1`"]
     #[inline(always)]
     pub fn is_lvl1(&self) -> bool {
-        *self == LVL_A::LVL1
+        **self == LVL_A::LVL1
     }
     #[doc = "Checks if the value of the field is `LVL2`"]
     #[inline(always)]
     pub fn is_lvl2(&self) -> bool {
-        *self == LVL_A::LVL2
+        **self == LVL_A::LVL2
     }
     #[doc = "Checks if the value of the field is `LVL3`"]
     #[inline(always)]
     pub fn is_lvl3(&self) -> bool {
-        *self == LVL_A::LVL3
+        **self == LVL_A::LVL3
     }
 }
-#[doc = "Write proxy for field `LVL`"]
+impl core::ops::Deref for LVL_R {
+    type Target = crate::FieldReader<u8, LVL_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `LVL` writer - Channel Arbitration Level"]
 pub struct LVL_W<'a> {
     w: &'a mut W,
 }
@@ -251,9 +322,7 @@ impl<'a> LVL_W<'a> {
     #[doc = r"Writes `variant` to the field"]
     #[inline(always)]
     pub fn variant(self, variant: LVL_A) -> &'a mut W {
-        {
-            self.bits(variant.into())
-        }
+        self.bits(variant.into())
     }
     #[doc = "Channel Priority Level 0"]
     #[inline(always)]
@@ -278,7 +347,7 @@ impl<'a> LVL_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x03 << 5)) | (((value as u32) & 0x03) << 5);
+        self.w.bits = (self.w.bits & !(0x03 << 5)) | ((value as u32 & 0x03) << 5);
         self.w
     }
 }
@@ -393,319 +462,329 @@ impl From<TRIGSRC_A> for u8 {
         variant as _
     }
 }
-#[doc = "Reader of field `TRIGSRC`"]
-pub type TRIGSRC_R = crate::R<u8, TRIGSRC_A>;
+#[doc = "Field `TRIGSRC` reader - Trigger Source"]
+pub struct TRIGSRC_R(crate::FieldReader<u8, TRIGSRC_A>);
 impl TRIGSRC_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        TRIGSRC_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> crate::Variant<u8, TRIGSRC_A> {
-        use crate::Variant::*;
+    pub fn variant(&self) -> Option<TRIGSRC_A> {
         match self.bits {
-            0 => Val(TRIGSRC_A::DISABLE),
-            1 => Val(TRIGSRC_A::SERCOM0_RX),
-            2 => Val(TRIGSRC_A::SERCOM0_TX),
-            3 => Val(TRIGSRC_A::SERCOM1_RX),
-            4 => Val(TRIGSRC_A::SERCOM1_TX),
-            5 => Val(TRIGSRC_A::SERCOM2_RX),
-            6 => Val(TRIGSRC_A::SERCOM2_TX),
-            7 => Val(TRIGSRC_A::SERCOM3_RX),
-            8 => Val(TRIGSRC_A::SERCOM3_TX),
-            9 => Val(TRIGSRC_A::SERCOM4_RX),
-            10 => Val(TRIGSRC_A::SERCOM4_TX),
-            11 => Val(TRIGSRC_A::SERCOM5_RX),
-            12 => Val(TRIGSRC_A::SERCOM5_TX),
-            13 => Val(TRIGSRC_A::TCC0_OVF),
-            14 => Val(TRIGSRC_A::TCC0_MC0),
-            15 => Val(TRIGSRC_A::TCC0_MC1),
-            16 => Val(TRIGSRC_A::TCC0_MC2),
-            17 => Val(TRIGSRC_A::TCC0_MC3),
-            18 => Val(TRIGSRC_A::TCC1_OVF),
-            19 => Val(TRIGSRC_A::TCC1_MC0),
-            20 => Val(TRIGSRC_A::TCC1_MC1),
-            21 => Val(TRIGSRC_A::TCC2_OVF),
-            22 => Val(TRIGSRC_A::TCC2_MC0),
-            23 => Val(TRIGSRC_A::TCC2_MC1),
-            24 => Val(TRIGSRC_A::TC3_OVF),
-            25 => Val(TRIGSRC_A::TC3_MC0),
-            26 => Val(TRIGSRC_A::TC3_MC1),
-            27 => Val(TRIGSRC_A::TC4_OVF),
-            28 => Val(TRIGSRC_A::TC4_MC0),
-            29 => Val(TRIGSRC_A::TC4_MC1),
-            30 => Val(TRIGSRC_A::TC5_OVF),
-            31 => Val(TRIGSRC_A::TC5_MC0),
-            32 => Val(TRIGSRC_A::TC5_MC1),
-            33 => Val(TRIGSRC_A::TC6_OVF),
-            34 => Val(TRIGSRC_A::TC6_MC0),
-            35 => Val(TRIGSRC_A::TC6_MC1),
-            36 => Val(TRIGSRC_A::TC7_OVF),
-            37 => Val(TRIGSRC_A::TC7_MC0),
-            38 => Val(TRIGSRC_A::TC7_MC1),
-            39 => Val(TRIGSRC_A::ADC_RESRDY),
-            40 => Val(TRIGSRC_A::DAC_EMPTY),
-            41 => Val(TRIGSRC_A::I2S_RX_0),
-            42 => Val(TRIGSRC_A::I2S_RX_1),
-            43 => Val(TRIGSRC_A::I2S_TX_0),
-            44 => Val(TRIGSRC_A::I2S_TX_1),
-            45 => Val(TRIGSRC_A::TCC3_OVF),
-            46 => Val(TRIGSRC_A::TCC3_MC0),
-            47 => Val(TRIGSRC_A::TCC3_MC1),
-            48 => Val(TRIGSRC_A::TCC3_MC2),
-            49 => Val(TRIGSRC_A::TCC3_MC3),
-            i => Res(i),
+            0 => Some(TRIGSRC_A::DISABLE),
+            1 => Some(TRIGSRC_A::SERCOM0_RX),
+            2 => Some(TRIGSRC_A::SERCOM0_TX),
+            3 => Some(TRIGSRC_A::SERCOM1_RX),
+            4 => Some(TRIGSRC_A::SERCOM1_TX),
+            5 => Some(TRIGSRC_A::SERCOM2_RX),
+            6 => Some(TRIGSRC_A::SERCOM2_TX),
+            7 => Some(TRIGSRC_A::SERCOM3_RX),
+            8 => Some(TRIGSRC_A::SERCOM3_TX),
+            9 => Some(TRIGSRC_A::SERCOM4_RX),
+            10 => Some(TRIGSRC_A::SERCOM4_TX),
+            11 => Some(TRIGSRC_A::SERCOM5_RX),
+            12 => Some(TRIGSRC_A::SERCOM5_TX),
+            13 => Some(TRIGSRC_A::TCC0_OVF),
+            14 => Some(TRIGSRC_A::TCC0_MC0),
+            15 => Some(TRIGSRC_A::TCC0_MC1),
+            16 => Some(TRIGSRC_A::TCC0_MC2),
+            17 => Some(TRIGSRC_A::TCC0_MC3),
+            18 => Some(TRIGSRC_A::TCC1_OVF),
+            19 => Some(TRIGSRC_A::TCC1_MC0),
+            20 => Some(TRIGSRC_A::TCC1_MC1),
+            21 => Some(TRIGSRC_A::TCC2_OVF),
+            22 => Some(TRIGSRC_A::TCC2_MC0),
+            23 => Some(TRIGSRC_A::TCC2_MC1),
+            24 => Some(TRIGSRC_A::TC3_OVF),
+            25 => Some(TRIGSRC_A::TC3_MC0),
+            26 => Some(TRIGSRC_A::TC3_MC1),
+            27 => Some(TRIGSRC_A::TC4_OVF),
+            28 => Some(TRIGSRC_A::TC4_MC0),
+            29 => Some(TRIGSRC_A::TC4_MC1),
+            30 => Some(TRIGSRC_A::TC5_OVF),
+            31 => Some(TRIGSRC_A::TC5_MC0),
+            32 => Some(TRIGSRC_A::TC5_MC1),
+            33 => Some(TRIGSRC_A::TC6_OVF),
+            34 => Some(TRIGSRC_A::TC6_MC0),
+            35 => Some(TRIGSRC_A::TC6_MC1),
+            36 => Some(TRIGSRC_A::TC7_OVF),
+            37 => Some(TRIGSRC_A::TC7_MC0),
+            38 => Some(TRIGSRC_A::TC7_MC1),
+            39 => Some(TRIGSRC_A::ADC_RESRDY),
+            40 => Some(TRIGSRC_A::DAC_EMPTY),
+            41 => Some(TRIGSRC_A::I2S_RX_0),
+            42 => Some(TRIGSRC_A::I2S_RX_1),
+            43 => Some(TRIGSRC_A::I2S_TX_0),
+            44 => Some(TRIGSRC_A::I2S_TX_1),
+            45 => Some(TRIGSRC_A::TCC3_OVF),
+            46 => Some(TRIGSRC_A::TCC3_MC0),
+            47 => Some(TRIGSRC_A::TCC3_MC1),
+            48 => Some(TRIGSRC_A::TCC3_MC2),
+            49 => Some(TRIGSRC_A::TCC3_MC3),
+            _ => None,
         }
     }
     #[doc = "Checks if the value of the field is `DISABLE`"]
     #[inline(always)]
     pub fn is_disable(&self) -> bool {
-        *self == TRIGSRC_A::DISABLE
+        **self == TRIGSRC_A::DISABLE
     }
     #[doc = "Checks if the value of the field is `SERCOM0_RX`"]
     #[inline(always)]
     pub fn is_sercom0_rx(&self) -> bool {
-        *self == TRIGSRC_A::SERCOM0_RX
+        **self == TRIGSRC_A::SERCOM0_RX
     }
     #[doc = "Checks if the value of the field is `SERCOM0_TX`"]
     #[inline(always)]
     pub fn is_sercom0_tx(&self) -> bool {
-        *self == TRIGSRC_A::SERCOM0_TX
+        **self == TRIGSRC_A::SERCOM0_TX
     }
     #[doc = "Checks if the value of the field is `SERCOM1_RX`"]
     #[inline(always)]
     pub fn is_sercom1_rx(&self) -> bool {
-        *self == TRIGSRC_A::SERCOM1_RX
+        **self == TRIGSRC_A::SERCOM1_RX
     }
     #[doc = "Checks if the value of the field is `SERCOM1_TX`"]
     #[inline(always)]
     pub fn is_sercom1_tx(&self) -> bool {
-        *self == TRIGSRC_A::SERCOM1_TX
+        **self == TRIGSRC_A::SERCOM1_TX
     }
     #[doc = "Checks if the value of the field is `SERCOM2_RX`"]
     #[inline(always)]
     pub fn is_sercom2_rx(&self) -> bool {
-        *self == TRIGSRC_A::SERCOM2_RX
+        **self == TRIGSRC_A::SERCOM2_RX
     }
     #[doc = "Checks if the value of the field is `SERCOM2_TX`"]
     #[inline(always)]
     pub fn is_sercom2_tx(&self) -> bool {
-        *self == TRIGSRC_A::SERCOM2_TX
+        **self == TRIGSRC_A::SERCOM2_TX
     }
     #[doc = "Checks if the value of the field is `SERCOM3_RX`"]
     #[inline(always)]
     pub fn is_sercom3_rx(&self) -> bool {
-        *self == TRIGSRC_A::SERCOM3_RX
+        **self == TRIGSRC_A::SERCOM3_RX
     }
     #[doc = "Checks if the value of the field is `SERCOM3_TX`"]
     #[inline(always)]
     pub fn is_sercom3_tx(&self) -> bool {
-        *self == TRIGSRC_A::SERCOM3_TX
+        **self == TRIGSRC_A::SERCOM3_TX
     }
     #[doc = "Checks if the value of the field is `SERCOM4_RX`"]
     #[inline(always)]
     pub fn is_sercom4_rx(&self) -> bool {
-        *self == TRIGSRC_A::SERCOM4_RX
+        **self == TRIGSRC_A::SERCOM4_RX
     }
     #[doc = "Checks if the value of the field is `SERCOM4_TX`"]
     #[inline(always)]
     pub fn is_sercom4_tx(&self) -> bool {
-        *self == TRIGSRC_A::SERCOM4_TX
+        **self == TRIGSRC_A::SERCOM4_TX
     }
     #[doc = "Checks if the value of the field is `SERCOM5_RX`"]
     #[inline(always)]
     pub fn is_sercom5_rx(&self) -> bool {
-        *self == TRIGSRC_A::SERCOM5_RX
+        **self == TRIGSRC_A::SERCOM5_RX
     }
     #[doc = "Checks if the value of the field is `SERCOM5_TX`"]
     #[inline(always)]
     pub fn is_sercom5_tx(&self) -> bool {
-        *self == TRIGSRC_A::SERCOM5_TX
+        **self == TRIGSRC_A::SERCOM5_TX
     }
     #[doc = "Checks if the value of the field is `TCC0_OVF`"]
     #[inline(always)]
     pub fn is_tcc0_ovf(&self) -> bool {
-        *self == TRIGSRC_A::TCC0_OVF
+        **self == TRIGSRC_A::TCC0_OVF
     }
     #[doc = "Checks if the value of the field is `TCC0_MC0`"]
     #[inline(always)]
     pub fn is_tcc0_mc0(&self) -> bool {
-        *self == TRIGSRC_A::TCC0_MC0
+        **self == TRIGSRC_A::TCC0_MC0
     }
     #[doc = "Checks if the value of the field is `TCC0_MC1`"]
     #[inline(always)]
     pub fn is_tcc0_mc1(&self) -> bool {
-        *self == TRIGSRC_A::TCC0_MC1
+        **self == TRIGSRC_A::TCC0_MC1
     }
     #[doc = "Checks if the value of the field is `TCC0_MC2`"]
     #[inline(always)]
     pub fn is_tcc0_mc2(&self) -> bool {
-        *self == TRIGSRC_A::TCC0_MC2
+        **self == TRIGSRC_A::TCC0_MC2
     }
     #[doc = "Checks if the value of the field is `TCC0_MC3`"]
     #[inline(always)]
     pub fn is_tcc0_mc3(&self) -> bool {
-        *self == TRIGSRC_A::TCC0_MC3
+        **self == TRIGSRC_A::TCC0_MC3
     }
     #[doc = "Checks if the value of the field is `TCC1_OVF`"]
     #[inline(always)]
     pub fn is_tcc1_ovf(&self) -> bool {
-        *self == TRIGSRC_A::TCC1_OVF
+        **self == TRIGSRC_A::TCC1_OVF
     }
     #[doc = "Checks if the value of the field is `TCC1_MC0`"]
     #[inline(always)]
     pub fn is_tcc1_mc0(&self) -> bool {
-        *self == TRIGSRC_A::TCC1_MC0
+        **self == TRIGSRC_A::TCC1_MC0
     }
     #[doc = "Checks if the value of the field is `TCC1_MC1`"]
     #[inline(always)]
     pub fn is_tcc1_mc1(&self) -> bool {
-        *self == TRIGSRC_A::TCC1_MC1
+        **self == TRIGSRC_A::TCC1_MC1
     }
     #[doc = "Checks if the value of the field is `TCC2_OVF`"]
     #[inline(always)]
     pub fn is_tcc2_ovf(&self) -> bool {
-        *self == TRIGSRC_A::TCC2_OVF
+        **self == TRIGSRC_A::TCC2_OVF
     }
     #[doc = "Checks if the value of the field is `TCC2_MC0`"]
     #[inline(always)]
     pub fn is_tcc2_mc0(&self) -> bool {
-        *self == TRIGSRC_A::TCC2_MC0
+        **self == TRIGSRC_A::TCC2_MC0
     }
     #[doc = "Checks if the value of the field is `TCC2_MC1`"]
     #[inline(always)]
     pub fn is_tcc2_mc1(&self) -> bool {
-        *self == TRIGSRC_A::TCC2_MC1
+        **self == TRIGSRC_A::TCC2_MC1
     }
     #[doc = "Checks if the value of the field is `TC3_OVF`"]
     #[inline(always)]
     pub fn is_tc3_ovf(&self) -> bool {
-        *self == TRIGSRC_A::TC3_OVF
+        **self == TRIGSRC_A::TC3_OVF
     }
     #[doc = "Checks if the value of the field is `TC3_MC0`"]
     #[inline(always)]
     pub fn is_tc3_mc0(&self) -> bool {
-        *self == TRIGSRC_A::TC3_MC0
+        **self == TRIGSRC_A::TC3_MC0
     }
     #[doc = "Checks if the value of the field is `TC3_MC1`"]
     #[inline(always)]
     pub fn is_tc3_mc1(&self) -> bool {
-        *self == TRIGSRC_A::TC3_MC1
+        **self == TRIGSRC_A::TC3_MC1
     }
     #[doc = "Checks if the value of the field is `TC4_OVF`"]
     #[inline(always)]
     pub fn is_tc4_ovf(&self) -> bool {
-        *self == TRIGSRC_A::TC4_OVF
+        **self == TRIGSRC_A::TC4_OVF
     }
     #[doc = "Checks if the value of the field is `TC4_MC0`"]
     #[inline(always)]
     pub fn is_tc4_mc0(&self) -> bool {
-        *self == TRIGSRC_A::TC4_MC0
+        **self == TRIGSRC_A::TC4_MC0
     }
     #[doc = "Checks if the value of the field is `TC4_MC1`"]
     #[inline(always)]
     pub fn is_tc4_mc1(&self) -> bool {
-        *self == TRIGSRC_A::TC4_MC1
+        **self == TRIGSRC_A::TC4_MC1
     }
     #[doc = "Checks if the value of the field is `TC5_OVF`"]
     #[inline(always)]
     pub fn is_tc5_ovf(&self) -> bool {
-        *self == TRIGSRC_A::TC5_OVF
+        **self == TRIGSRC_A::TC5_OVF
     }
     #[doc = "Checks if the value of the field is `TC5_MC0`"]
     #[inline(always)]
     pub fn is_tc5_mc0(&self) -> bool {
-        *self == TRIGSRC_A::TC5_MC0
+        **self == TRIGSRC_A::TC5_MC0
     }
     #[doc = "Checks if the value of the field is `TC5_MC1`"]
     #[inline(always)]
     pub fn is_tc5_mc1(&self) -> bool {
-        *self == TRIGSRC_A::TC5_MC1
+        **self == TRIGSRC_A::TC5_MC1
     }
     #[doc = "Checks if the value of the field is `TC6_OVF`"]
     #[inline(always)]
     pub fn is_tc6_ovf(&self) -> bool {
-        *self == TRIGSRC_A::TC6_OVF
+        **self == TRIGSRC_A::TC6_OVF
     }
     #[doc = "Checks if the value of the field is `TC6_MC0`"]
     #[inline(always)]
     pub fn is_tc6_mc0(&self) -> bool {
-        *self == TRIGSRC_A::TC6_MC0
+        **self == TRIGSRC_A::TC6_MC0
     }
     #[doc = "Checks if the value of the field is `TC6_MC1`"]
     #[inline(always)]
     pub fn is_tc6_mc1(&self) -> bool {
-        *self == TRIGSRC_A::TC6_MC1
+        **self == TRIGSRC_A::TC6_MC1
     }
     #[doc = "Checks if the value of the field is `TC7_OVF`"]
     #[inline(always)]
     pub fn is_tc7_ovf(&self) -> bool {
-        *self == TRIGSRC_A::TC7_OVF
+        **self == TRIGSRC_A::TC7_OVF
     }
     #[doc = "Checks if the value of the field is `TC7_MC0`"]
     #[inline(always)]
     pub fn is_tc7_mc0(&self) -> bool {
-        *self == TRIGSRC_A::TC7_MC0
+        **self == TRIGSRC_A::TC7_MC0
     }
     #[doc = "Checks if the value of the field is `TC7_MC1`"]
     #[inline(always)]
     pub fn is_tc7_mc1(&self) -> bool {
-        *self == TRIGSRC_A::TC7_MC1
+        **self == TRIGSRC_A::TC7_MC1
     }
     #[doc = "Checks if the value of the field is `ADC_RESRDY`"]
     #[inline(always)]
     pub fn is_adc_resrdy(&self) -> bool {
-        *self == TRIGSRC_A::ADC_RESRDY
+        **self == TRIGSRC_A::ADC_RESRDY
     }
     #[doc = "Checks if the value of the field is `DAC_EMPTY`"]
     #[inline(always)]
     pub fn is_dac_empty(&self) -> bool {
-        *self == TRIGSRC_A::DAC_EMPTY
+        **self == TRIGSRC_A::DAC_EMPTY
     }
     #[doc = "Checks if the value of the field is `I2S_RX_0`"]
     #[inline(always)]
     pub fn is_i2s_rx_0(&self) -> bool {
-        *self == TRIGSRC_A::I2S_RX_0
+        **self == TRIGSRC_A::I2S_RX_0
     }
     #[doc = "Checks if the value of the field is `I2S_RX_1`"]
     #[inline(always)]
     pub fn is_i2s_rx_1(&self) -> bool {
-        *self == TRIGSRC_A::I2S_RX_1
+        **self == TRIGSRC_A::I2S_RX_1
     }
     #[doc = "Checks if the value of the field is `I2S_TX_0`"]
     #[inline(always)]
     pub fn is_i2s_tx_0(&self) -> bool {
-        *self == TRIGSRC_A::I2S_TX_0
+        **self == TRIGSRC_A::I2S_TX_0
     }
     #[doc = "Checks if the value of the field is `I2S_TX_1`"]
     #[inline(always)]
     pub fn is_i2s_tx_1(&self) -> bool {
-        *self == TRIGSRC_A::I2S_TX_1
+        **self == TRIGSRC_A::I2S_TX_1
     }
     #[doc = "Checks if the value of the field is `TCC3_OVF`"]
     #[inline(always)]
     pub fn is_tcc3_ovf(&self) -> bool {
-        *self == TRIGSRC_A::TCC3_OVF
+        **self == TRIGSRC_A::TCC3_OVF
     }
     #[doc = "Checks if the value of the field is `TCC3_MC0`"]
     #[inline(always)]
     pub fn is_tcc3_mc0(&self) -> bool {
-        *self == TRIGSRC_A::TCC3_MC0
+        **self == TRIGSRC_A::TCC3_MC0
     }
     #[doc = "Checks if the value of the field is `TCC3_MC1`"]
     #[inline(always)]
     pub fn is_tcc3_mc1(&self) -> bool {
-        *self == TRIGSRC_A::TCC3_MC1
+        **self == TRIGSRC_A::TCC3_MC1
     }
     #[doc = "Checks if the value of the field is `TCC3_MC2`"]
     #[inline(always)]
     pub fn is_tcc3_mc2(&self) -> bool {
-        *self == TRIGSRC_A::TCC3_MC2
+        **self == TRIGSRC_A::TCC3_MC2
     }
     #[doc = "Checks if the value of the field is `TCC3_MC3`"]
     #[inline(always)]
     pub fn is_tcc3_mc3(&self) -> bool {
-        *self == TRIGSRC_A::TCC3_MC3
+        **self == TRIGSRC_A::TCC3_MC3
     }
 }
-#[doc = "Write proxy for field `TRIGSRC`"]
+impl core::ops::Deref for TRIGSRC_R {
+    type Target = crate::FieldReader<u8, TRIGSRC_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TRIGSRC` writer - Trigger Source"]
 pub struct TRIGSRC_W<'a> {
     w: &'a mut W,
 }
@@ -968,7 +1047,7 @@ impl<'a> TRIGSRC_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x3f << 8)) | (((value as u32) & 0x3f) << 8);
+        self.w.bits = (self.w.bits & !(0x3f << 8)) | ((value as u32 & 0x3f) << 8);
         self.w
     }
 }
@@ -989,37 +1068,47 @@ impl From<TRIGACT_A> for u8 {
         variant as _
     }
 }
-#[doc = "Reader of field `TRIGACT`"]
-pub type TRIGACT_R = crate::R<u8, TRIGACT_A>;
+#[doc = "Field `TRIGACT` reader - Trigger Action"]
+pub struct TRIGACT_R(crate::FieldReader<u8, TRIGACT_A>);
 impl TRIGACT_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        TRIGACT_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> crate::Variant<u8, TRIGACT_A> {
-        use crate::Variant::*;
+    pub fn variant(&self) -> Option<TRIGACT_A> {
         match self.bits {
-            0 => Val(TRIGACT_A::BLOCK),
-            2 => Val(TRIGACT_A::BEAT),
-            3 => Val(TRIGACT_A::TRANSACTION),
-            i => Res(i),
+            0 => Some(TRIGACT_A::BLOCK),
+            2 => Some(TRIGACT_A::BEAT),
+            3 => Some(TRIGACT_A::TRANSACTION),
+            _ => None,
         }
     }
     #[doc = "Checks if the value of the field is `BLOCK`"]
     #[inline(always)]
     pub fn is_block(&self) -> bool {
-        *self == TRIGACT_A::BLOCK
+        **self == TRIGACT_A::BLOCK
     }
     #[doc = "Checks if the value of the field is `BEAT`"]
     #[inline(always)]
     pub fn is_beat(&self) -> bool {
-        *self == TRIGACT_A::BEAT
+        **self == TRIGACT_A::BEAT
     }
     #[doc = "Checks if the value of the field is `TRANSACTION`"]
     #[inline(always)]
     pub fn is_transaction(&self) -> bool {
-        *self == TRIGACT_A::TRANSACTION
+        **self == TRIGACT_A::TRANSACTION
     }
 }
-#[doc = "Write proxy for field `TRIGACT`"]
+impl core::ops::Deref for TRIGACT_R {
+    type Target = crate::FieldReader<u8, TRIGACT_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TRIGACT` writer - Trigger Action"]
 pub struct TRIGACT_W<'a> {
     w: &'a mut W,
 }
@@ -1047,7 +1136,7 @@ impl<'a> TRIGACT_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x03 << 22)) | (((value as u32) & 0x03) << 22);
+        self.w.bits = (self.w.bits & !(0x03 << 22)) | ((value as u32 & 0x03) << 22);
         self.w
     }
 }
@@ -1068,37 +1157,47 @@ impl From<CMD_A> for u8 {
         variant as _
     }
 }
-#[doc = "Reader of field `CMD`"]
-pub type CMD_R = crate::R<u8, CMD_A>;
+#[doc = "Field `CMD` reader - Software Command"]
+pub struct CMD_R(crate::FieldReader<u8, CMD_A>);
 impl CMD_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        CMD_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> crate::Variant<u8, CMD_A> {
-        use crate::Variant::*;
+    pub fn variant(&self) -> Option<CMD_A> {
         match self.bits {
-            0 => Val(CMD_A::NOACT),
-            1 => Val(CMD_A::SUSPEND),
-            2 => Val(CMD_A::RESUME),
-            i => Res(i),
+            0 => Some(CMD_A::NOACT),
+            1 => Some(CMD_A::SUSPEND),
+            2 => Some(CMD_A::RESUME),
+            _ => None,
         }
     }
     #[doc = "Checks if the value of the field is `NOACT`"]
     #[inline(always)]
     pub fn is_noact(&self) -> bool {
-        *self == CMD_A::NOACT
+        **self == CMD_A::NOACT
     }
     #[doc = "Checks if the value of the field is `SUSPEND`"]
     #[inline(always)]
     pub fn is_suspend(&self) -> bool {
-        *self == CMD_A::SUSPEND
+        **self == CMD_A::SUSPEND
     }
     #[doc = "Checks if the value of the field is `RESUME`"]
     #[inline(always)]
     pub fn is_resume(&self) -> bool {
-        *self == CMD_A::RESUME
+        **self == CMD_A::RESUME
     }
 }
-#[doc = "Write proxy for field `CMD`"]
+impl core::ops::Deref for CMD_R {
+    type Target = crate::FieldReader<u8, CMD_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `CMD` writer - Software Command"]
 pub struct CMD_W<'a> {
     w: &'a mut W,
 }
@@ -1126,7 +1225,7 @@ impl<'a> CMD_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x03 << 24)) | (((value as u32) & 0x03) << 24);
+        self.w.bits = (self.w.bits & !(0x03 << 24)) | ((value as u32 & 0x03) << 24);
         self.w
     }
 }
@@ -1202,5 +1301,31 @@ impl W {
     #[inline(always)]
     pub fn cmd(&mut self) -> CMD_W {
         CMD_W { w: self }
+    }
+    #[doc = "Writes raw bits to the register."]
+    #[inline(always)]
+    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+        self.0.bits(bits);
+        self
+    }
+}
+#[doc = "Channel Control B\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [chctrlb](index.html) module"]
+pub struct CHCTRLB_SPEC;
+impl crate::RegisterSpec for CHCTRLB_SPEC {
+    type Ux = u32;
+}
+#[doc = "`read()` method returns [chctrlb::R](R) reader structure"]
+impl crate::Readable for CHCTRLB_SPEC {
+    type Reader = R;
+}
+#[doc = "`write(|w| ..)` method takes [chctrlb::W](W) writer structure"]
+impl crate::Writable for CHCTRLB_SPEC {
+    type Writer = W;
+}
+#[doc = "`reset()` method sets CHCTRLB to value 0"]
+impl crate::Resettable for CHCTRLB_SPEC {
+    #[inline(always)]
+    fn reset_value() -> Self::Ux {
+        0
     }
 }

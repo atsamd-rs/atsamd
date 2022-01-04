@@ -1,21 +1,138 @@
-#[doc = "Reader of register SYNCBUSY"]
-pub type R = crate::R<u32, super::SYNCBUSY>;
-#[doc = "Reader of field `SWRST`"]
-pub type SWRST_R = crate::R<bool, bool>;
-#[doc = "Reader of field `ENABLE`"]
-pub type ENABLE_R = crate::R<bool, bool>;
-#[doc = "Reader of field `CTRLB`"]
-pub type CTRLB_R = crate::R<bool, bool>;
-#[doc = "Reader of field `STATUS`"]
-pub type STATUS_R = crate::R<bool, bool>;
-#[doc = "Reader of field `COUNT`"]
-pub type COUNT_R = crate::R<bool, bool>;
-#[doc = "Reader of field `PER`"]
-pub type PER_R = crate::R<bool, bool>;
-#[doc = "Reader of field `CC0`"]
-pub type CC0_R = crate::R<bool, bool>;
-#[doc = "Reader of field `CC1`"]
-pub type CC1_R = crate::R<bool, bool>;
+#[doc = "Register `SYNCBUSY` reader"]
+pub struct R(crate::R<SYNCBUSY_SPEC>);
+impl core::ops::Deref for R {
+    type Target = crate::R<SYNCBUSY_SPEC>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl From<crate::R<SYNCBUSY_SPEC>> for R {
+    #[inline(always)]
+    fn from(reader: crate::R<SYNCBUSY_SPEC>) -> Self {
+        R(reader)
+    }
+}
+#[doc = "Field `SWRST` reader - swrst"]
+pub struct SWRST_R(crate::FieldReader<bool, bool>);
+impl SWRST_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        SWRST_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for SWRST_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `ENABLE` reader - enable"]
+pub struct ENABLE_R(crate::FieldReader<bool, bool>);
+impl ENABLE_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        ENABLE_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for ENABLE_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `CTRLB` reader - CTRLB"]
+pub struct CTRLB_R(crate::FieldReader<bool, bool>);
+impl CTRLB_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        CTRLB_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for CTRLB_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `STATUS` reader - STATUS"]
+pub struct STATUS_R(crate::FieldReader<bool, bool>);
+impl STATUS_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        STATUS_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for STATUS_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `COUNT` reader - Counter"]
+pub struct COUNT_R(crate::FieldReader<bool, bool>);
+impl COUNT_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        COUNT_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for COUNT_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `PER` reader - Period"]
+pub struct PER_R(crate::FieldReader<bool, bool>);
+impl PER_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        PER_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for PER_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `CC0` reader - Compare Channel 0"]
+pub struct CC0_R(crate::FieldReader<bool, bool>);
+impl CC0_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        CC0_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for CC0_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `CC1` reader - Compare Channel 1"]
+pub struct CC1_R(crate::FieldReader<bool, bool>);
+impl CC1_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        CC1_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for CC1_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
 impl R {
     #[doc = "Bit 0 - swrst"]
     #[inline(always)]
@@ -56,5 +173,21 @@ impl R {
     #[inline(always)]
     pub fn cc1(&self) -> CC1_R {
         CC1_R::new(((self.bits >> 7) & 0x01) != 0)
+    }
+}
+#[doc = "Synchronization Status\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [syncbusy](index.html) module"]
+pub struct SYNCBUSY_SPEC;
+impl crate::RegisterSpec for SYNCBUSY_SPEC {
+    type Ux = u32;
+}
+#[doc = "`read()` method returns [syncbusy::R](R) reader structure"]
+impl crate::Readable for SYNCBUSY_SPEC {
+    type Reader = R;
+}
+#[doc = "`reset()` method sets SYNCBUSY to value 0"]
+impl crate::Resettable for SYNCBUSY_SPEC {
+    #[inline(always)]
+    fn reset_value() -> Self::Ux {
+        0
     }
 }

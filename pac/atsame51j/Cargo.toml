@@ -7,9 +7,10 @@ keywords = ["no-std", "arm", "cortex-m"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
+edition = "2021"
 
 [dependencies]
-bare-metal = "0.2"
+bare-metal = "1.0"
 cortex-m = "0.7.3"
 vcell = "0.1.2"
 

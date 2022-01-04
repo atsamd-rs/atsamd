@@ -1,13 +1,37 @@
-#[doc = "Reader of register ASYNCH"]
-pub type R = crate::R<u32, super::ASYNCH>;
-#[doc = "Writer for register ASYNCH"]
-pub type W = crate::W<u32, super::ASYNCH>;
-#[doc = "Register ASYNCH `reset()`'s with value 0"]
-impl crate::ResetValue for super::ASYNCH {
-    type Type = u32;
+#[doc = "Register `ASYNCH` reader"]
+pub struct R(crate::R<ASYNCH_SPEC>);
+impl core::ops::Deref for R {
+    type Target = crate::R<ASYNCH_SPEC>;
     #[inline(always)]
-    fn reset_value() -> Self::Type {
-        0
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl From<crate::R<ASYNCH_SPEC>> for R {
+    #[inline(always)]
+    fn from(reader: crate::R<ASYNCH_SPEC>) -> Self {
+        R(reader)
+    }
+}
+#[doc = "Register `ASYNCH` writer"]
+pub struct W(crate::W<ASYNCH_SPEC>);
+impl core::ops::Deref for W {
+    type Target = crate::W<ASYNCH_SPEC>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl core::ops::DerefMut for W {
+    #[inline(always)]
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+impl From<crate::W<ASYNCH_SPEC>> for W {
+    #[inline(always)]
+    fn from(writer: crate::W<ASYNCH_SPEC>) -> Self {
+        W(writer)
     }
 }
 #[doc = "Asynchronous Edge Detection Mode\n\nValue on reset: 0"]
@@ -25,31 +49,41 @@ impl From<ASYNCH_A> for u16 {
         variant as _
     }
 }
-#[doc = "Reader of field `ASYNCH`"]
-pub type ASYNCH_R = crate::R<u16, ASYNCH_A>;
+#[doc = "Field `ASYNCH` reader - Asynchronous Edge Detection Mode"]
+pub struct ASYNCH_R(crate::FieldReader<u16, ASYNCH_A>);
 impl ASYNCH_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u16) -> Self {
+        ASYNCH_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> crate::Variant<u16, ASYNCH_A> {
-        use crate::Variant::*;
+    pub fn variant(&self) -> Option<ASYNCH_A> {
         match self.bits {
-            0 => Val(ASYNCH_A::SYNC),
-            1 => Val(ASYNCH_A::ASYNC),
-            i => Res(i),
+            0 => Some(ASYNCH_A::SYNC),
+            1 => Some(ASYNCH_A::ASYNC),
+            _ => None,
         }
     }
     #[doc = "Checks if the value of the field is `SYNC`"]
     #[inline(always)]
     pub fn is_sync(&self) -> bool {
-        *self == ASYNCH_A::SYNC
+        **self == ASYNCH_A::SYNC
     }
     #[doc = "Checks if the value of the field is `ASYNC`"]
     #[inline(always)]
-    pub fn is_async_(&self) -> bool {
-        *self == ASYNCH_A::ASYNC
+    pub fn is_async(&self) -> bool {
+        **self == ASYNCH_A::ASYNC
     }
 }
-#[doc = "Write proxy for field `ASYNCH`"]
+impl core::ops::Deref for ASYNCH_R {
+    type Target = crate::FieldReader<u16, ASYNCH_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `ASYNCH` writer - Asynchronous Edge Detection Mode"]
 pub struct ASYNCH_W<'a> {
     w: &'a mut W,
 }
@@ -72,7 +106,7 @@ impl<'a> ASYNCH_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub unsafe fn bits(self, value: u16) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0xffff) | ((value as u32) & 0xffff);
+        self.w.bits = (self.w.bits & !0xffff) | (value as u32 & 0xffff);
         self.w
     }
 }
@@ -88,5 +122,31 @@ impl W {
     #[inline(always)]
     pub fn asynch(&mut self) -> ASYNCH_W {
         ASYNCH_W { w: self }
+    }
+    #[doc = "Writes raw bits to the register."]
+    #[inline(always)]
+    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+        self.0.bits(bits);
+        self
+    }
+}
+#[doc = "External Interrupt Asynchronous Mode\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [asynch](index.html) module"]
+pub struct ASYNCH_SPEC;
+impl crate::RegisterSpec for ASYNCH_SPEC {
+    type Ux = u32;
+}
+#[doc = "`read()` method returns [asynch::R](R) reader structure"]
+impl crate::Readable for ASYNCH_SPEC {
+    type Reader = R;
+}
+#[doc = "`write(|w| ..)` method takes [asynch::W](W) writer structure"]
+impl crate::Writable for ASYNCH_SPEC {
+    type Writer = W;
+}
+#[doc = "`reset()` method sets ASYNCH to value 0"]
+impl crate::Resettable for ASYNCH_SPEC {
+    #[inline(always)]
+    fn reset_value() -> Self::Ux {
+        0
     }
 }

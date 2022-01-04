@@ -1,13 +1,37 @@
-#[doc = "Reader of register CTRLA"]
-pub type R = crate::R<u16, super::CTRLA>;
-#[doc = "Writer for register CTRLA"]
-pub type W = crate::W<u16, super::CTRLA>;
-#[doc = "Register CTRLA `reset()`'s with value 0"]
-impl crate::ResetValue for super::CTRLA {
-    type Type = u16;
+#[doc = "Register `CTRLA` reader"]
+pub struct R(crate::R<CTRLA_SPEC>);
+impl core::ops::Deref for R {
+    type Target = crate::R<CTRLA_SPEC>;
     #[inline(always)]
-    fn reset_value() -> Self::Type {
-        0
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl From<crate::R<CTRLA_SPEC>> for R {
+    #[inline(always)]
+    fn from(reader: crate::R<CTRLA_SPEC>) -> Self {
+        R(reader)
+    }
+}
+#[doc = "Register `CTRLA` writer"]
+pub struct W(crate::W<CTRLA_SPEC>);
+impl core::ops::Deref for W {
+    type Target = crate::W<CTRLA_SPEC>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl core::ops::DerefMut for W {
+    #[inline(always)]
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+impl From<crate::W<CTRLA_SPEC>> for W {
+    #[inline(always)]
+    fn from(writer: crate::W<CTRLA_SPEC>) -> Self {
+        W(writer)
     }
 }
 #[doc = "Command\n\nValue on reset: 0"]
@@ -47,97 +71,107 @@ impl From<CMD_A> for u8 {
         variant as _
     }
 }
-#[doc = "Reader of field `CMD`"]
-pub type CMD_R = crate::R<u8, CMD_A>;
+#[doc = "Field `CMD` reader - Command"]
+pub struct CMD_R(crate::FieldReader<u8, CMD_A>);
 impl CMD_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        CMD_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> crate::Variant<u8, CMD_A> {
-        use crate::Variant::*;
+    pub fn variant(&self) -> Option<CMD_A> {
         match self.bits {
-            2 => Val(CMD_A::ER),
-            4 => Val(CMD_A::WP),
-            5 => Val(CMD_A::EAR),
-            6 => Val(CMD_A::WAP),
-            10 => Val(CMD_A::SF),
-            15 => Val(CMD_A::WL),
-            64 => Val(CMD_A::LR),
-            65 => Val(CMD_A::UR),
-            66 => Val(CMD_A::SPRM),
-            67 => Val(CMD_A::CPRM),
-            68 => Val(CMD_A::PBC),
-            69 => Val(CMD_A::SSB),
-            70 => Val(CMD_A::INVALL),
-            i => Res(i),
+            2 => Some(CMD_A::ER),
+            4 => Some(CMD_A::WP),
+            5 => Some(CMD_A::EAR),
+            6 => Some(CMD_A::WAP),
+            10 => Some(CMD_A::SF),
+            15 => Some(CMD_A::WL),
+            64 => Some(CMD_A::LR),
+            65 => Some(CMD_A::UR),
+            66 => Some(CMD_A::SPRM),
+            67 => Some(CMD_A::CPRM),
+            68 => Some(CMD_A::PBC),
+            69 => Some(CMD_A::SSB),
+            70 => Some(CMD_A::INVALL),
+            _ => None,
         }
     }
     #[doc = "Checks if the value of the field is `ER`"]
     #[inline(always)]
     pub fn is_er(&self) -> bool {
-        *self == CMD_A::ER
+        **self == CMD_A::ER
     }
     #[doc = "Checks if the value of the field is `WP`"]
     #[inline(always)]
     pub fn is_wp(&self) -> bool {
-        *self == CMD_A::WP
+        **self == CMD_A::WP
     }
     #[doc = "Checks if the value of the field is `EAR`"]
     #[inline(always)]
     pub fn is_ear(&self) -> bool {
-        *self == CMD_A::EAR
+        **self == CMD_A::EAR
     }
     #[doc = "Checks if the value of the field is `WAP`"]
     #[inline(always)]
     pub fn is_wap(&self) -> bool {
-        *self == CMD_A::WAP
+        **self == CMD_A::WAP
     }
     #[doc = "Checks if the value of the field is `SF`"]
     #[inline(always)]
     pub fn is_sf(&self) -> bool {
-        *self == CMD_A::SF
+        **self == CMD_A::SF
     }
     #[doc = "Checks if the value of the field is `WL`"]
     #[inline(always)]
     pub fn is_wl(&self) -> bool {
-        *self == CMD_A::WL
+        **self == CMD_A::WL
     }
     #[doc = "Checks if the value of the field is `LR`"]
     #[inline(always)]
     pub fn is_lr(&self) -> bool {
-        *self == CMD_A::LR
+        **self == CMD_A::LR
     }
     #[doc = "Checks if the value of the field is `UR`"]
     #[inline(always)]
     pub fn is_ur(&self) -> bool {
-        *self == CMD_A::UR
+        **self == CMD_A::UR
     }
     #[doc = "Checks if the value of the field is `SPRM`"]
     #[inline(always)]
     pub fn is_sprm(&self) -> bool {
-        *self == CMD_A::SPRM
+        **self == CMD_A::SPRM
     }
     #[doc = "Checks if the value of the field is `CPRM`"]
     #[inline(always)]
     pub fn is_cprm(&self) -> bool {
-        *self == CMD_A::CPRM
+        **self == CMD_A::CPRM
     }
     #[doc = "Checks if the value of the field is `PBC`"]
     #[inline(always)]
     pub fn is_pbc(&self) -> bool {
-        *self == CMD_A::PBC
+        **self == CMD_A::PBC
     }
     #[doc = "Checks if the value of the field is `SSB`"]
     #[inline(always)]
     pub fn is_ssb(&self) -> bool {
-        *self == CMD_A::SSB
+        **self == CMD_A::SSB
     }
     #[doc = "Checks if the value of the field is `INVALL`"]
     #[inline(always)]
     pub fn is_invall(&self) -> bool {
-        *self == CMD_A::INVALL
+        **self == CMD_A::INVALL
     }
 }
-#[doc = "Write proxy for field `CMD`"]
+impl core::ops::Deref for CMD_R {
+    type Target = crate::FieldReader<u8, CMD_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `CMD` writer - Command"]
 pub struct CMD_W<'a> {
     w: &'a mut W,
 }
@@ -215,7 +249,7 @@ impl<'a> CMD_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x7f) | ((value as u16) & 0x7f);
+        self.w.bits = (self.w.bits & !0x7f) | (value as u16 & 0x7f);
         self.w
     }
 }
@@ -232,25 +266,35 @@ impl From<CMDEX_A> for u8 {
         variant as _
     }
 }
-#[doc = "Reader of field `CMDEX`"]
-pub type CMDEX_R = crate::R<u8, CMDEX_A>;
+#[doc = "Field `CMDEX` reader - Command Execution"]
+pub struct CMDEX_R(crate::FieldReader<u8, CMDEX_A>);
 impl CMDEX_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        CMDEX_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> crate::Variant<u8, CMDEX_A> {
-        use crate::Variant::*;
+    pub fn variant(&self) -> Option<CMDEX_A> {
         match self.bits {
-            165 => Val(CMDEX_A::KEY),
-            i => Res(i),
+            165 => Some(CMDEX_A::KEY),
+            _ => None,
         }
     }
     #[doc = "Checks if the value of the field is `KEY`"]
     #[inline(always)]
     pub fn is_key(&self) -> bool {
-        *self == CMDEX_A::KEY
+        **self == CMDEX_A::KEY
     }
 }
-#[doc = "Write proxy for field `CMDEX`"]
+impl core::ops::Deref for CMDEX_R {
+    type Target = crate::FieldReader<u8, CMDEX_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `CMDEX` writer - Command Execution"]
 pub struct CMDEX_W<'a> {
     w: &'a mut W,
 }
@@ -268,7 +312,7 @@ impl<'a> CMDEX_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0xff << 8)) | (((value as u16) & 0xff) << 8);
+        self.w.bits = (self.w.bits & !(0xff << 8)) | ((value as u16 & 0xff) << 8);
         self.w
     }
 }
@@ -294,5 +338,31 @@ impl W {
     #[inline(always)]
     pub fn cmdex(&mut self) -> CMDEX_W {
         CMDEX_W { w: self }
+    }
+    #[doc = "Writes raw bits to the register."]
+    #[inline(always)]
+    pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {
+        self.0.bits(bits);
+        self
+    }
+}
+#[doc = "Control A\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [ctrla](index.html) module"]
+pub struct CTRLA_SPEC;
+impl crate::RegisterSpec for CTRLA_SPEC {
+    type Ux = u16;
+}
+#[doc = "`read()` method returns [ctrla::R](R) reader structure"]
+impl crate::Readable for CTRLA_SPEC {
+    type Reader = R;
+}
+#[doc = "`write(|w| ..)` method takes [ctrla::W](W) writer structure"]
+impl crate::Writable for CTRLA_SPEC {
+    type Writer = W;
+}
+#[doc = "`reset()` method sets CTRLA to value 0"]
+impl crate::Resettable for CTRLA_SPEC {
+    #[inline(always)]
+    fn reset_value() -> Self::Ux {
+        0
     }
 }

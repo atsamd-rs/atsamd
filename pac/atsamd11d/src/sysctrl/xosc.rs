@@ -1,18 +1,55 @@
-#[doc = "Reader of register XOSC"]
-pub type R = crate::R<u16, super::XOSC>;
-#[doc = "Writer for register XOSC"]
-pub type W = crate::W<u16, super::XOSC>;
-#[doc = "Register XOSC `reset()`'s with value 0x80"]
-impl crate::ResetValue for super::XOSC {
-    type Type = u16;
+#[doc = "Register `XOSC` reader"]
+pub struct R(crate::R<XOSC_SPEC>);
+impl core::ops::Deref for R {
+    type Target = crate::R<XOSC_SPEC>;
     #[inline(always)]
-    fn reset_value() -> Self::Type {
-        0x80
+    fn deref(&self) -> &Self::Target {
+        &self.0
     }
 }
-#[doc = "Reader of field `ENABLE`"]
-pub type ENABLE_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `ENABLE`"]
+impl From<crate::R<XOSC_SPEC>> for R {
+    #[inline(always)]
+    fn from(reader: crate::R<XOSC_SPEC>) -> Self {
+        R(reader)
+    }
+}
+#[doc = "Register `XOSC` writer"]
+pub struct W(crate::W<XOSC_SPEC>);
+impl core::ops::Deref for W {
+    type Target = crate::W<XOSC_SPEC>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl core::ops::DerefMut for W {
+    #[inline(always)]
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+impl From<crate::W<XOSC_SPEC>> for W {
+    #[inline(always)]
+    fn from(writer: crate::W<XOSC_SPEC>) -> Self {
+        W(writer)
+    }
+}
+#[doc = "Field `ENABLE` reader - Oscillator Enable"]
+pub struct ENABLE_R(crate::FieldReader<bool, bool>);
+impl ENABLE_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        ENABLE_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for ENABLE_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `ENABLE` writer - Oscillator Enable"]
 pub struct ENABLE_W<'a> {
     w: &'a mut W,
 }
@@ -30,13 +67,26 @@ impl<'a> ENABLE_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | (((value as u16) & 0x01) << 1);
+        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u16 & 0x01) << 1);
         self.w
     }
 }
-#[doc = "Reader of field `XTALEN`"]
-pub type XTALEN_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `XTALEN`"]
+#[doc = "Field `XTALEN` reader - Crystal Oscillator Enable"]
+pub struct XTALEN_R(crate::FieldReader<bool, bool>);
+impl XTALEN_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        XTALEN_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for XTALEN_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `XTALEN` writer - Crystal Oscillator Enable"]
 pub struct XTALEN_W<'a> {
     w: &'a mut W,
 }
@@ -54,13 +104,26 @@ impl<'a> XTALEN_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 2)) | (((value as u16) & 0x01) << 2);
+        self.w.bits = (self.w.bits & !(0x01 << 2)) | ((value as u16 & 0x01) << 2);
         self.w
     }
 }
-#[doc = "Reader of field `RUNSTDBY`"]
-pub type RUNSTDBY_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `RUNSTDBY`"]
+#[doc = "Field `RUNSTDBY` reader - Run in Standby"]
+pub struct RUNSTDBY_R(crate::FieldReader<bool, bool>);
+impl RUNSTDBY_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        RUNSTDBY_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for RUNSTDBY_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `RUNSTDBY` writer - Run in Standby"]
 pub struct RUNSTDBY_W<'a> {
     w: &'a mut W,
 }
@@ -78,13 +141,26 @@ impl<'a> RUNSTDBY_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 6)) | (((value as u16) & 0x01) << 6);
+        self.w.bits = (self.w.bits & !(0x01 << 6)) | ((value as u16 & 0x01) << 6);
         self.w
     }
 }
-#[doc = "Reader of field `ONDEMAND`"]
-pub type ONDEMAND_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `ONDEMAND`"]
+#[doc = "Field `ONDEMAND` reader - On Demand Control"]
+pub struct ONDEMAND_R(crate::FieldReader<bool, bool>);
+impl ONDEMAND_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        ONDEMAND_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for ONDEMAND_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `ONDEMAND` writer - On Demand Control"]
 pub struct ONDEMAND_W<'a> {
     w: &'a mut W,
 }
@@ -102,7 +178,7 @@ impl<'a> ONDEMAND_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 7)) | (((value as u16) & 0x01) << 7);
+        self.w.bits = (self.w.bits & !(0x01 << 7)) | ((value as u16 & 0x01) << 7);
         self.w
     }
 }
@@ -127,49 +203,59 @@ impl From<GAIN_A> for u8 {
         variant as _
     }
 }
-#[doc = "Reader of field `GAIN`"]
-pub type GAIN_R = crate::R<u8, GAIN_A>;
+#[doc = "Field `GAIN` reader - Oscillator Gain"]
+pub struct GAIN_R(crate::FieldReader<u8, GAIN_A>);
 impl GAIN_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        GAIN_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> crate::Variant<u8, GAIN_A> {
-        use crate::Variant::*;
+    pub fn variant(&self) -> Option<GAIN_A> {
         match self.bits {
-            0 => Val(GAIN_A::_0),
-            1 => Val(GAIN_A::_1),
-            2 => Val(GAIN_A::_2),
-            3 => Val(GAIN_A::_3),
-            4 => Val(GAIN_A::_4),
-            i => Res(i),
+            0 => Some(GAIN_A::_0),
+            1 => Some(GAIN_A::_1),
+            2 => Some(GAIN_A::_2),
+            3 => Some(GAIN_A::_3),
+            4 => Some(GAIN_A::_4),
+            _ => None,
         }
     }
     #[doc = "Checks if the value of the field is `_0`"]
     #[inline(always)]
     pub fn is_0(&self) -> bool {
-        *self == GAIN_A::_0
+        **self == GAIN_A::_0
     }
     #[doc = "Checks if the value of the field is `_1`"]
     #[inline(always)]
     pub fn is_1(&self) -> bool {
-        *self == GAIN_A::_1
+        **self == GAIN_A::_1
     }
     #[doc = "Checks if the value of the field is `_2`"]
     #[inline(always)]
     pub fn is_2(&self) -> bool {
-        *self == GAIN_A::_2
+        **self == GAIN_A::_2
     }
     #[doc = "Checks if the value of the field is `_3`"]
     #[inline(always)]
     pub fn is_3(&self) -> bool {
-        *self == GAIN_A::_3
+        **self == GAIN_A::_3
     }
     #[doc = "Checks if the value of the field is `_4`"]
     #[inline(always)]
     pub fn is_4(&self) -> bool {
-        *self == GAIN_A::_4
+        **self == GAIN_A::_4
     }
 }
-#[doc = "Write proxy for field `GAIN`"]
+impl core::ops::Deref for GAIN_R {
+    type Target = crate::FieldReader<u8, GAIN_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `GAIN` writer - Oscillator Gain"]
 pub struct GAIN_W<'a> {
     w: &'a mut W,
 }
@@ -207,13 +293,26 @@ impl<'a> GAIN_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x07 << 8)) | (((value as u16) & 0x07) << 8);
+        self.w.bits = (self.w.bits & !(0x07 << 8)) | ((value as u16 & 0x07) << 8);
         self.w
     }
 }
-#[doc = "Reader of field `AMPGC`"]
-pub type AMPGC_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `AMPGC`"]
+#[doc = "Field `AMPGC` reader - Automatic Amplitude Gain Control"]
+pub struct AMPGC_R(crate::FieldReader<bool, bool>);
+impl AMPGC_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        AMPGC_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for AMPGC_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `AMPGC` writer - Automatic Amplitude Gain Control"]
 pub struct AMPGC_W<'a> {
     w: &'a mut W,
 }
@@ -231,13 +330,26 @@ impl<'a> AMPGC_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 11)) | (((value as u16) & 0x01) << 11);
+        self.w.bits = (self.w.bits & !(0x01 << 11)) | ((value as u16 & 0x01) << 11);
         self.w
     }
 }
-#[doc = "Reader of field `STARTUP`"]
-pub type STARTUP_R = crate::R<u8, u8>;
-#[doc = "Write proxy for field `STARTUP`"]
+#[doc = "Field `STARTUP` reader - Start-Up Time"]
+pub struct STARTUP_R(crate::FieldReader<u8, u8>);
+impl STARTUP_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        STARTUP_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for STARTUP_R {
+    type Target = crate::FieldReader<u8, u8>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `STARTUP` writer - Start-Up Time"]
 pub struct STARTUP_W<'a> {
     w: &'a mut W,
 }
@@ -245,7 +357,7 @@ impl<'a> STARTUP_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x0f << 12)) | (((value as u16) & 0x0f) << 12);
+        self.w.bits = (self.w.bits & !(0x0f << 12)) | ((value as u16 & 0x0f) << 12);
         self.w
     }
 }
@@ -321,5 +433,31 @@ impl W {
     #[inline(always)]
     pub fn startup(&mut self) -> STARTUP_W {
         STARTUP_W { w: self }
+    }
+    #[doc = "Writes raw bits to the register."]
+    #[inline(always)]
+    pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {
+        self.0.bits(bits);
+        self
+    }
+}
+#[doc = "External Multipurpose Crystal Oscillator (XOSC) Control\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [xosc](index.html) module"]
+pub struct XOSC_SPEC;
+impl crate::RegisterSpec for XOSC_SPEC {
+    type Ux = u16;
+}
+#[doc = "`read()` method returns [xosc::R](R) reader structure"]
+impl crate::Readable for XOSC_SPEC {
+    type Reader = R;
+}
+#[doc = "`write(|w| ..)` method takes [xosc::W](W) writer structure"]
+impl crate::Writable for XOSC_SPEC {
+    type Writer = W;
+}
+#[doc = "`reset()` method sets XOSC to value 0x80"]
+impl crate::Resettable for XOSC_SPEC {
+    #[inline(always)]
+    fn reset_value() -> Self::Ux {
+        0x80
     }
 }

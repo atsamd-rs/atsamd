@@ -1,13 +1,37 @@
-#[doc = "Reader of register HIBCFG"]
-pub type R = crate::R<u8, super::HIBCFG>;
-#[doc = "Writer for register HIBCFG"]
-pub type W = crate::W<u8, super::HIBCFG>;
-#[doc = "Register HIBCFG `reset()`'s with value 0"]
-impl crate::ResetValue for super::HIBCFG {
-    type Type = u8;
+#[doc = "Register `HIBCFG` reader"]
+pub struct R(crate::R<HIBCFG_SPEC>);
+impl core::ops::Deref for R {
+    type Target = crate::R<HIBCFG_SPEC>;
     #[inline(always)]
-    fn reset_value() -> Self::Type {
-        0
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl From<crate::R<HIBCFG_SPEC>> for R {
+    #[inline(always)]
+    fn from(reader: crate::R<HIBCFG_SPEC>) -> Self {
+        R(reader)
+    }
+}
+#[doc = "Register `HIBCFG` writer"]
+pub struct W(crate::W<HIBCFG_SPEC>);
+impl core::ops::Deref for W {
+    type Target = crate::W<HIBCFG_SPEC>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl core::ops::DerefMut for W {
+    #[inline(always)]
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+impl From<crate::W<HIBCFG_SPEC>> for W {
+    #[inline(always)]
+    fn from(writer: crate::W<HIBCFG_SPEC>) -> Self {
+        W(writer)
     }
 }
 #[doc = "Ram Configuration\n\nValue on reset: 0"]
@@ -27,37 +51,47 @@ impl From<RAMCFG_A> for u8 {
         variant as _
     }
 }
-#[doc = "Reader of field `RAMCFG`"]
-pub type RAMCFG_R = crate::R<u8, RAMCFG_A>;
+#[doc = "Field `RAMCFG` reader - Ram Configuration"]
+pub struct RAMCFG_R(crate::FieldReader<u8, RAMCFG_A>);
 impl RAMCFG_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        RAMCFG_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> crate::Variant<u8, RAMCFG_A> {
-        use crate::Variant::*;
+    pub fn variant(&self) -> Option<RAMCFG_A> {
         match self.bits {
-            0 => Val(RAMCFG_A::RET),
-            1 => Val(RAMCFG_A::PARTIAL),
-            2 => Val(RAMCFG_A::OFF),
-            i => Res(i),
+            0 => Some(RAMCFG_A::RET),
+            1 => Some(RAMCFG_A::PARTIAL),
+            2 => Some(RAMCFG_A::OFF),
+            _ => None,
         }
     }
     #[doc = "Checks if the value of the field is `RET`"]
     #[inline(always)]
     pub fn is_ret(&self) -> bool {
-        *self == RAMCFG_A::RET
+        **self == RAMCFG_A::RET
     }
     #[doc = "Checks if the value of the field is `PARTIAL`"]
     #[inline(always)]
     pub fn is_partial(&self) -> bool {
-        *self == RAMCFG_A::PARTIAL
+        **self == RAMCFG_A::PARTIAL
     }
     #[doc = "Checks if the value of the field is `OFF`"]
     #[inline(always)]
     pub fn is_off(&self) -> bool {
-        *self == RAMCFG_A::OFF
+        **self == RAMCFG_A::OFF
     }
 }
-#[doc = "Write proxy for field `RAMCFG`"]
+impl core::ops::Deref for RAMCFG_R {
+    type Target = crate::FieldReader<u8, RAMCFG_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `RAMCFG` writer - Ram Configuration"]
 pub struct RAMCFG_W<'a> {
     w: &'a mut W,
 }
@@ -85,7 +119,7 @@ impl<'a> RAMCFG_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x03) | ((value as u8) & 0x03);
+        self.w.bits = (self.w.bits & !0x03) | (value as u8 & 0x03);
         self.w
     }
 }
@@ -106,37 +140,47 @@ impl From<BRAMCFG_A> for u8 {
         variant as _
     }
 }
-#[doc = "Reader of field `BRAMCFG`"]
-pub type BRAMCFG_R = crate::R<u8, BRAMCFG_A>;
+#[doc = "Field `BRAMCFG` reader - Backup Ram Configuration"]
+pub struct BRAMCFG_R(crate::FieldReader<u8, BRAMCFG_A>);
 impl BRAMCFG_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        BRAMCFG_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> crate::Variant<u8, BRAMCFG_A> {
-        use crate::Variant::*;
+    pub fn variant(&self) -> Option<BRAMCFG_A> {
         match self.bits {
-            0 => Val(BRAMCFG_A::RET),
-            1 => Val(BRAMCFG_A::PARTIAL),
-            2 => Val(BRAMCFG_A::OFF),
-            i => Res(i),
+            0 => Some(BRAMCFG_A::RET),
+            1 => Some(BRAMCFG_A::PARTIAL),
+            2 => Some(BRAMCFG_A::OFF),
+            _ => None,
         }
     }
     #[doc = "Checks if the value of the field is `RET`"]
     #[inline(always)]
     pub fn is_ret(&self) -> bool {
-        *self == BRAMCFG_A::RET
+        **self == BRAMCFG_A::RET
     }
     #[doc = "Checks if the value of the field is `PARTIAL`"]
     #[inline(always)]
     pub fn is_partial(&self) -> bool {
-        *self == BRAMCFG_A::PARTIAL
+        **self == BRAMCFG_A::PARTIAL
     }
     #[doc = "Checks if the value of the field is `OFF`"]
     #[inline(always)]
     pub fn is_off(&self) -> bool {
-        *self == BRAMCFG_A::OFF
+        **self == BRAMCFG_A::OFF
     }
 }
-#[doc = "Write proxy for field `BRAMCFG`"]
+impl core::ops::Deref for BRAMCFG_R {
+    type Target = crate::FieldReader<u8, BRAMCFG_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `BRAMCFG` writer - Backup Ram Configuration"]
 pub struct BRAMCFG_W<'a> {
     w: &'a mut W,
 }
@@ -164,7 +208,7 @@ impl<'a> BRAMCFG_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x03 << 2)) | (((value as u8) & 0x03) << 2);
+        self.w.bits = (self.w.bits & !(0x03 << 2)) | ((value as u8 & 0x03) << 2);
         self.w
     }
 }
@@ -190,5 +234,31 @@ impl W {
     #[inline(always)]
     pub fn bramcfg(&mut self) -> BRAMCFG_W {
         BRAMCFG_W { w: self }
+    }
+    #[doc = "Writes raw bits to the register."]
+    #[inline(always)]
+    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
+        self.0.bits(bits);
+        self
+    }
+}
+#[doc = "Hibernate Configuration\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [hibcfg](index.html) module"]
+pub struct HIBCFG_SPEC;
+impl crate::RegisterSpec for HIBCFG_SPEC {
+    type Ux = u8;
+}
+#[doc = "`read()` method returns [hibcfg::R](R) reader structure"]
+impl crate::Readable for HIBCFG_SPEC {
+    type Reader = R;
+}
+#[doc = "`write(|w| ..)` method takes [hibcfg::W](W) writer structure"]
+impl crate::Writable for HIBCFG_SPEC {
+    type Writer = W;
+}
+#[doc = "`reset()` method sets HIBCFG to value 0"]
+impl crate::Resettable for HIBCFG_SPEC {
+    #[inline(always)]
+    fn reset_value() -> Self::Ux {
+        0
     }
 }

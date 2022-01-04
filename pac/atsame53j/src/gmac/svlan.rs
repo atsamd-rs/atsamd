@@ -1,18 +1,55 @@
-#[doc = "Reader of register SVLAN"]
-pub type R = crate::R<u32, super::SVLAN>;
-#[doc = "Writer for register SVLAN"]
-pub type W = crate::W<u32, super::SVLAN>;
-#[doc = "Register SVLAN `reset()`'s with value 0"]
-impl crate::ResetValue for super::SVLAN {
-    type Type = u32;
+#[doc = "Register `SVLAN` reader"]
+pub struct R(crate::R<SVLAN_SPEC>);
+impl core::ops::Deref for R {
+    type Target = crate::R<SVLAN_SPEC>;
     #[inline(always)]
-    fn reset_value() -> Self::Type {
-        0
+    fn deref(&self) -> &Self::Target {
+        &self.0
     }
 }
-#[doc = "Reader of field `VLAN_TYPE`"]
-pub type VLAN_TYPE_R = crate::R<u16, u16>;
-#[doc = "Write proxy for field `VLAN_TYPE`"]
+impl From<crate::R<SVLAN_SPEC>> for R {
+    #[inline(always)]
+    fn from(reader: crate::R<SVLAN_SPEC>) -> Self {
+        R(reader)
+    }
+}
+#[doc = "Register `SVLAN` writer"]
+pub struct W(crate::W<SVLAN_SPEC>);
+impl core::ops::Deref for W {
+    type Target = crate::W<SVLAN_SPEC>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl core::ops::DerefMut for W {
+    #[inline(always)]
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+impl From<crate::W<SVLAN_SPEC>> for W {
+    #[inline(always)]
+    fn from(writer: crate::W<SVLAN_SPEC>) -> Self {
+        W(writer)
+    }
+}
+#[doc = "Field `VLAN_TYPE` reader - User Defined VLAN_TYPE Field"]
+pub struct VLAN_TYPE_R(crate::FieldReader<u16, u16>);
+impl VLAN_TYPE_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u16) -> Self {
+        VLAN_TYPE_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for VLAN_TYPE_R {
+    type Target = crate::FieldReader<u16, u16>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `VLAN_TYPE` writer - User Defined VLAN_TYPE Field"]
 pub struct VLAN_TYPE_W<'a> {
     w: &'a mut W,
 }
@@ -20,13 +57,26 @@ impl<'a> VLAN_TYPE_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub unsafe fn bits(self, value: u16) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0xffff) | ((value as u32) & 0xffff);
+        self.w.bits = (self.w.bits & !0xffff) | (value as u32 & 0xffff);
         self.w
     }
 }
-#[doc = "Reader of field `ESVLAN`"]
-pub type ESVLAN_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `ESVLAN`"]
+#[doc = "Field `ESVLAN` reader - Enable Stacked VLAN Processing Mode"]
+pub struct ESVLAN_R(crate::FieldReader<bool, bool>);
+impl ESVLAN_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        ESVLAN_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for ESVLAN_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `ESVLAN` writer - Enable Stacked VLAN Processing Mode"]
 pub struct ESVLAN_W<'a> {
     w: &'a mut W,
 }
@@ -44,7 +94,7 @@ impl<'a> ESVLAN_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 31)) | (((value as u32) & 0x01) << 31);
+        self.w.bits = (self.w.bits & !(0x01 << 31)) | ((value as u32 & 0x01) << 31);
         self.w
     }
 }
@@ -70,5 +120,31 @@ impl W {
     #[inline(always)]
     pub fn esvlan(&mut self) -> ESVLAN_W {
         ESVLAN_W { w: self }
+    }
+    #[doc = "Writes raw bits to the register."]
+    #[inline(always)]
+    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+        self.0.bits(bits);
+        self
+    }
+}
+#[doc = "Stacked VLAN Register\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [svlan](index.html) module"]
+pub struct SVLAN_SPEC;
+impl crate::RegisterSpec for SVLAN_SPEC {
+    type Ux = u32;
+}
+#[doc = "`read()` method returns [svlan::R](R) reader structure"]
+impl crate::Readable for SVLAN_SPEC {
+    type Reader = R;
+}
+#[doc = "`write(|w| ..)` method takes [svlan::W](W) writer structure"]
+impl crate::Writable for SVLAN_SPEC {
+    type Writer = W;
+}
+#[doc = "`reset()` method sets SVLAN to value 0"]
+impl crate::Resettable for SVLAN_SPEC {
+    #[inline(always)]
+    fn reset_value() -> Self::Ux {
+        0
     }
 }

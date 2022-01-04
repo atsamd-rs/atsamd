@@ -1,69 +1,498 @@
-#[doc = "Reader of register TXBRP"]
-pub type R = crate::R<u32, super::TXBRP>;
-#[doc = "Reader of field `TRP0`"]
-pub type TRP0_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TRP1`"]
-pub type TRP1_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TRP2`"]
-pub type TRP2_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TRP3`"]
-pub type TRP3_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TRP4`"]
-pub type TRP4_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TRP5`"]
-pub type TRP5_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TRP6`"]
-pub type TRP6_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TRP7`"]
-pub type TRP7_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TRP8`"]
-pub type TRP8_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TRP9`"]
-pub type TRP9_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TRP10`"]
-pub type TRP10_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TRP11`"]
-pub type TRP11_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TRP12`"]
-pub type TRP12_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TRP13`"]
-pub type TRP13_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TRP14`"]
-pub type TRP14_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TRP15`"]
-pub type TRP15_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TRP16`"]
-pub type TRP16_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TRP17`"]
-pub type TRP17_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TRP18`"]
-pub type TRP18_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TRP19`"]
-pub type TRP19_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TRP20`"]
-pub type TRP20_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TRP21`"]
-pub type TRP21_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TRP22`"]
-pub type TRP22_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TRP23`"]
-pub type TRP23_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TRP24`"]
-pub type TRP24_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TRP25`"]
-pub type TRP25_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TRP26`"]
-pub type TRP26_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TRP27`"]
-pub type TRP27_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TRP28`"]
-pub type TRP28_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TRP29`"]
-pub type TRP29_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TRP30`"]
-pub type TRP30_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TRP31`"]
-pub type TRP31_R = crate::R<bool, bool>;
+#[doc = "Register `TXBRP` reader"]
+pub struct R(crate::R<TXBRP_SPEC>);
+impl core::ops::Deref for R {
+    type Target = crate::R<TXBRP_SPEC>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl From<crate::R<TXBRP_SPEC>> for R {
+    #[inline(always)]
+    fn from(reader: crate::R<TXBRP_SPEC>) -> Self {
+        R(reader)
+    }
+}
+#[doc = "Field `TRP0` reader - Transmission Request Pending 0"]
+pub struct TRP0_R(crate::FieldReader<bool, bool>);
+impl TRP0_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TRP0_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TRP0_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TRP1` reader - Transmission Request Pending 1"]
+pub struct TRP1_R(crate::FieldReader<bool, bool>);
+impl TRP1_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TRP1_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TRP1_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TRP2` reader - Transmission Request Pending 2"]
+pub struct TRP2_R(crate::FieldReader<bool, bool>);
+impl TRP2_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TRP2_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TRP2_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TRP3` reader - Transmission Request Pending 3"]
+pub struct TRP3_R(crate::FieldReader<bool, bool>);
+impl TRP3_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TRP3_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TRP3_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TRP4` reader - Transmission Request Pending 4"]
+pub struct TRP4_R(crate::FieldReader<bool, bool>);
+impl TRP4_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TRP4_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TRP4_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TRP5` reader - Transmission Request Pending 5"]
+pub struct TRP5_R(crate::FieldReader<bool, bool>);
+impl TRP5_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TRP5_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TRP5_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TRP6` reader - Transmission Request Pending 6"]
+pub struct TRP6_R(crate::FieldReader<bool, bool>);
+impl TRP6_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TRP6_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TRP6_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TRP7` reader - Transmission Request Pending 7"]
+pub struct TRP7_R(crate::FieldReader<bool, bool>);
+impl TRP7_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TRP7_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TRP7_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TRP8` reader - Transmission Request Pending 8"]
+pub struct TRP8_R(crate::FieldReader<bool, bool>);
+impl TRP8_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TRP8_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TRP8_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TRP9` reader - Transmission Request Pending 9"]
+pub struct TRP9_R(crate::FieldReader<bool, bool>);
+impl TRP9_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TRP9_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TRP9_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TRP10` reader - Transmission Request Pending 10"]
+pub struct TRP10_R(crate::FieldReader<bool, bool>);
+impl TRP10_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TRP10_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TRP10_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TRP11` reader - Transmission Request Pending 11"]
+pub struct TRP11_R(crate::FieldReader<bool, bool>);
+impl TRP11_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TRP11_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TRP11_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TRP12` reader - Transmission Request Pending 12"]
+pub struct TRP12_R(crate::FieldReader<bool, bool>);
+impl TRP12_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TRP12_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TRP12_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TRP13` reader - Transmission Request Pending 13"]
+pub struct TRP13_R(crate::FieldReader<bool, bool>);
+impl TRP13_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TRP13_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TRP13_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TRP14` reader - Transmission Request Pending 14"]
+pub struct TRP14_R(crate::FieldReader<bool, bool>);
+impl TRP14_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TRP14_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TRP14_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TRP15` reader - Transmission Request Pending 15"]
+pub struct TRP15_R(crate::FieldReader<bool, bool>);
+impl TRP15_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TRP15_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TRP15_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TRP16` reader - Transmission Request Pending 16"]
+pub struct TRP16_R(crate::FieldReader<bool, bool>);
+impl TRP16_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TRP16_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TRP16_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TRP17` reader - Transmission Request Pending 17"]
+pub struct TRP17_R(crate::FieldReader<bool, bool>);
+impl TRP17_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TRP17_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TRP17_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TRP18` reader - Transmission Request Pending 18"]
+pub struct TRP18_R(crate::FieldReader<bool, bool>);
+impl TRP18_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TRP18_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TRP18_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TRP19` reader - Transmission Request Pending 19"]
+pub struct TRP19_R(crate::FieldReader<bool, bool>);
+impl TRP19_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TRP19_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TRP19_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TRP20` reader - Transmission Request Pending 20"]
+pub struct TRP20_R(crate::FieldReader<bool, bool>);
+impl TRP20_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TRP20_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TRP20_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TRP21` reader - Transmission Request Pending 21"]
+pub struct TRP21_R(crate::FieldReader<bool, bool>);
+impl TRP21_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TRP21_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TRP21_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TRP22` reader - Transmission Request Pending 22"]
+pub struct TRP22_R(crate::FieldReader<bool, bool>);
+impl TRP22_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TRP22_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TRP22_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TRP23` reader - Transmission Request Pending 23"]
+pub struct TRP23_R(crate::FieldReader<bool, bool>);
+impl TRP23_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TRP23_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TRP23_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TRP24` reader - Transmission Request Pending 24"]
+pub struct TRP24_R(crate::FieldReader<bool, bool>);
+impl TRP24_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TRP24_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TRP24_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TRP25` reader - Transmission Request Pending 25"]
+pub struct TRP25_R(crate::FieldReader<bool, bool>);
+impl TRP25_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TRP25_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TRP25_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TRP26` reader - Transmission Request Pending 26"]
+pub struct TRP26_R(crate::FieldReader<bool, bool>);
+impl TRP26_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TRP26_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TRP26_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TRP27` reader - Transmission Request Pending 27"]
+pub struct TRP27_R(crate::FieldReader<bool, bool>);
+impl TRP27_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TRP27_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TRP27_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TRP28` reader - Transmission Request Pending 28"]
+pub struct TRP28_R(crate::FieldReader<bool, bool>);
+impl TRP28_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TRP28_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TRP28_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TRP29` reader - Transmission Request Pending 29"]
+pub struct TRP29_R(crate::FieldReader<bool, bool>);
+impl TRP29_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TRP29_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TRP29_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TRP30` reader - Transmission Request Pending 30"]
+pub struct TRP30_R(crate::FieldReader<bool, bool>);
+impl TRP30_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TRP30_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TRP30_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TRP31` reader - Transmission Request Pending 31"]
+pub struct TRP31_R(crate::FieldReader<bool, bool>);
+impl TRP31_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TRP31_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TRP31_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
 impl R {
     #[doc = "Bit 0 - Transmission Request Pending 0"]
     #[inline(always)]
@@ -224,5 +653,21 @@ impl R {
     #[inline(always)]
     pub fn trp31(&self) -> TRP31_R {
         TRP31_R::new(((self.bits >> 31) & 0x01) != 0)
+    }
+}
+#[doc = "Tx Buffer Request Pending\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [txbrp](index.html) module"]
+pub struct TXBRP_SPEC;
+impl crate::RegisterSpec for TXBRP_SPEC {
+    type Ux = u32;
+}
+#[doc = "`read()` method returns [txbrp::R](R) reader structure"]
+impl crate::Readable for TXBRP_SPEC {
+    type Reader = R;
+}
+#[doc = "`reset()` method sets TXBRP to value 0"]
+impl crate::Resettable for TXBRP_SPEC {
+    #[inline(always)]
+    fn reset_value() -> Self::Ux {
+        0
     }
 }

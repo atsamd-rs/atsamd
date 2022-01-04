@@ -1,5 +1,7 @@
 # Unreleased Changes
 
+- updated HAL to be compatible with PAC updates due to svd2rust upgrade
+
 # v0.14.0
 
 - Add implementation of InputPin for Interrupt pins

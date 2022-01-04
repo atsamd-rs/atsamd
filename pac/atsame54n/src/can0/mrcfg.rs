@@ -1,13 +1,37 @@
-#[doc = "Reader of register MRCFG"]
-pub type R = crate::R<u32, super::MRCFG>;
-#[doc = "Writer for register MRCFG"]
-pub type W = crate::W<u32, super::MRCFG>;
-#[doc = "Register MRCFG `reset()`'s with value 0x02"]
-impl crate::ResetValue for super::MRCFG {
-    type Type = u32;
+#[doc = "Register `MRCFG` reader"]
+pub struct R(crate::R<MRCFG_SPEC>);
+impl core::ops::Deref for R {
+    type Target = crate::R<MRCFG_SPEC>;
     #[inline(always)]
-    fn reset_value() -> Self::Type {
-        0x02
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl From<crate::R<MRCFG_SPEC>> for R {
+    #[inline(always)]
+    fn from(reader: crate::R<MRCFG_SPEC>) -> Self {
+        R(reader)
+    }
+}
+#[doc = "Register `MRCFG` writer"]
+pub struct W(crate::W<MRCFG_SPEC>);
+impl core::ops::Deref for W {
+    type Target = crate::W<MRCFG_SPEC>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl core::ops::DerefMut for W {
+    #[inline(always)]
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+impl From<crate::W<MRCFG_SPEC>> for W {
+    #[inline(always)]
+    fn from(writer: crate::W<MRCFG_SPEC>) -> Self {
+        W(writer)
     }
 }
 #[doc = "Quality of Service\n\nValue on reset: 2"]
@@ -29,9 +53,13 @@ impl From<QOS_A> for u8 {
         variant as _
     }
 }
-#[doc = "Reader of field `QOS`"]
-pub type QOS_R = crate::R<u8, QOS_A>;
+#[doc = "Field `QOS` reader - Quality of Service"]
+pub struct QOS_R(crate::FieldReader<u8, QOS_A>);
 impl QOS_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        QOS_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
     pub fn variant(&self) -> QOS_A {
@@ -46,25 +74,32 @@ impl QOS_R {
     #[doc = "Checks if the value of the field is `DISABLE`"]
     #[inline(always)]
     pub fn is_disable(&self) -> bool {
-        *self == QOS_A::DISABLE
+        **self == QOS_A::DISABLE
     }
     #[doc = "Checks if the value of the field is `LOW`"]
     #[inline(always)]
     pub fn is_low(&self) -> bool {
-        *self == QOS_A::LOW
+        **self == QOS_A::LOW
     }
     #[doc = "Checks if the value of the field is `MEDIUM`"]
     #[inline(always)]
     pub fn is_medium(&self) -> bool {
-        *self == QOS_A::MEDIUM
+        **self == QOS_A::MEDIUM
     }
     #[doc = "Checks if the value of the field is `HIGH`"]
     #[inline(always)]
     pub fn is_high(&self) -> bool {
-        *self == QOS_A::HIGH
+        **self == QOS_A::HIGH
     }
 }
-#[doc = "Write proxy for field `QOS`"]
+impl core::ops::Deref for QOS_R {
+    type Target = crate::FieldReader<u8, QOS_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `QOS` writer - Quality of Service"]
 pub struct QOS_W<'a> {
     w: &'a mut W,
 }
@@ -72,9 +107,7 @@ impl<'a> QOS_W<'a> {
     #[doc = r"Writes `variant` to the field"]
     #[inline(always)]
     pub fn variant(self, variant: QOS_A) -> &'a mut W {
-        {
-            self.bits(variant.into())
-        }
+        self.bits(variant.into())
     }
     #[doc = "Background (no sensitive operation)"]
     #[inline(always)]
@@ -99,7 +132,7 @@ impl<'a> QOS_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x03) | ((value as u32) & 0x03);
+        self.w.bits = (self.w.bits & !0x03) | (value as u32 & 0x03);
         self.w
     }
 }
@@ -115,5 +148,31 @@ impl W {
     #[inline(always)]
     pub fn qos(&mut self) -> QOS_W {
         QOS_W { w: self }
+    }
+    #[doc = "Writes raw bits to the register."]
+    #[inline(always)]
+    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+        self.0.bits(bits);
+        self
+    }
+}
+#[doc = "Message RAM Configuration\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [mrcfg](index.html) module"]
+pub struct MRCFG_SPEC;
+impl crate::RegisterSpec for MRCFG_SPEC {
+    type Ux = u32;
+}
+#[doc = "`read()` method returns [mrcfg::R](R) reader structure"]
+impl crate::Readable for MRCFG_SPEC {
+    type Reader = R;
+}
+#[doc = "`write(|w| ..)` method takes [mrcfg::W](W) writer structure"]
+impl crate::Writable for MRCFG_SPEC {
+    type Writer = W;
+}
+#[doc = "`reset()` method sets MRCFG to value 0x02"]
+impl crate::Resettable for MRCFG_SPEC {
+    #[inline(always)]
+    fn reset_value() -> Self::Ux {
+        0x02
     }
 }

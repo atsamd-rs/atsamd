@@ -1,37 +1,258 @@
-#[doc = "Reader of register STATUSA"]
-pub type R = crate::R<u32, super::STATUSA>;
-#[doc = "Reader of field `PAC_`"]
-pub type PAC__R = crate::R<bool, bool>;
-#[doc = "Reader of field `PM_`"]
-pub type PM__R = crate::R<bool, bool>;
-#[doc = "Reader of field `MCLK_`"]
-pub type MCLK__R = crate::R<bool, bool>;
-#[doc = "Reader of field `RSTC_`"]
-pub type RSTC__R = crate::R<bool, bool>;
-#[doc = "Reader of field `OSCCTRL_`"]
-pub type OSCCTRL__R = crate::R<bool, bool>;
-#[doc = "Reader of field `OSC32KCTRL_`"]
-pub type OSC32KCTRL__R = crate::R<bool, bool>;
-#[doc = "Reader of field `SUPC_`"]
-pub type SUPC__R = crate::R<bool, bool>;
-#[doc = "Reader of field `GCLK_`"]
-pub type GCLK__R = crate::R<bool, bool>;
-#[doc = "Reader of field `WDT_`"]
-pub type WDT__R = crate::R<bool, bool>;
-#[doc = "Reader of field `RTC_`"]
-pub type RTC__R = crate::R<bool, bool>;
-#[doc = "Reader of field `EIC_`"]
-pub type EIC__R = crate::R<bool, bool>;
-#[doc = "Reader of field `FREQM_`"]
-pub type FREQM__R = crate::R<bool, bool>;
-#[doc = "Reader of field `SERCOM0_`"]
-pub type SERCOM0__R = crate::R<bool, bool>;
-#[doc = "Reader of field `SERCOM1_`"]
-pub type SERCOM1__R = crate::R<bool, bool>;
-#[doc = "Reader of field `TC0_`"]
-pub type TC0__R = crate::R<bool, bool>;
-#[doc = "Reader of field `TC1_`"]
-pub type TC1__R = crate::R<bool, bool>;
+#[doc = "Register `STATUSA` reader"]
+pub struct R(crate::R<STATUSA_SPEC>);
+impl core::ops::Deref for R {
+    type Target = crate::R<STATUSA_SPEC>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl From<crate::R<STATUSA_SPEC>> for R {
+    #[inline(always)]
+    fn from(reader: crate::R<STATUSA_SPEC>) -> Self {
+        R(reader)
+    }
+}
+#[doc = "Field `PAC_` reader - PAC APB Protect Enable"]
+pub struct PAC__R(crate::FieldReader<bool, bool>);
+impl PAC__R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        PAC__R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for PAC__R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `PM_` reader - PM APB Protect Enable"]
+pub struct PM__R(crate::FieldReader<bool, bool>);
+impl PM__R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        PM__R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for PM__R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `MCLK_` reader - MCLK APB Protect Enable"]
+pub struct MCLK__R(crate::FieldReader<bool, bool>);
+impl MCLK__R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        MCLK__R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for MCLK__R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `RSTC_` reader - RSTC APB Protect Enable"]
+pub struct RSTC__R(crate::FieldReader<bool, bool>);
+impl RSTC__R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        RSTC__R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for RSTC__R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `OSCCTRL_` reader - OSCCTRL APB Protect Enable"]
+pub struct OSCCTRL__R(crate::FieldReader<bool, bool>);
+impl OSCCTRL__R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        OSCCTRL__R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for OSCCTRL__R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `OSC32KCTRL_` reader - OSC32KCTRL APB Protect Enable"]
+pub struct OSC32KCTRL__R(crate::FieldReader<bool, bool>);
+impl OSC32KCTRL__R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        OSC32KCTRL__R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for OSC32KCTRL__R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `SUPC_` reader - SUPC APB Protect Enable"]
+pub struct SUPC__R(crate::FieldReader<bool, bool>);
+impl SUPC__R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        SUPC__R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for SUPC__R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `GCLK_` reader - GCLK APB Protect Enable"]
+pub struct GCLK__R(crate::FieldReader<bool, bool>);
+impl GCLK__R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        GCLK__R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for GCLK__R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `WDT_` reader - WDT APB Protect Enable"]
+pub struct WDT__R(crate::FieldReader<bool, bool>);
+impl WDT__R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        WDT__R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for WDT__R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `RTC_` reader - RTC APB Protect Enable"]
+pub struct RTC__R(crate::FieldReader<bool, bool>);
+impl RTC__R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        RTC__R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for RTC__R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `EIC_` reader - EIC APB Protect Enable"]
+pub struct EIC__R(crate::FieldReader<bool, bool>);
+impl EIC__R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        EIC__R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for EIC__R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `FREQM_` reader - FREQM APB Protect Enable"]
+pub struct FREQM__R(crate::FieldReader<bool, bool>);
+impl FREQM__R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        FREQM__R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for FREQM__R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `SERCOM0_` reader - SERCOM0 APB Protect Enable"]
+pub struct SERCOM0__R(crate::FieldReader<bool, bool>);
+impl SERCOM0__R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        SERCOM0__R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for SERCOM0__R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `SERCOM1_` reader - SERCOM1 APB Protect Enable"]
+pub struct SERCOM1__R(crate::FieldReader<bool, bool>);
+impl SERCOM1__R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        SERCOM1__R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for SERCOM1__R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TC0_` reader - TC0 APB Protect Enable"]
+pub struct TC0__R(crate::FieldReader<bool, bool>);
+impl TC0__R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TC0__R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TC0__R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TC1_` reader - TC1 APB Protect Enable"]
+pub struct TC1__R(crate::FieldReader<bool, bool>);
+impl TC1__R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TC1__R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TC1__R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
 impl R {
     #[doc = "Bit 0 - PAC APB Protect Enable"]
     #[inline(always)]
@@ -112,5 +333,21 @@ impl R {
     #[inline(always)]
     pub fn tc1_(&self) -> TC1__R {
         TC1__R::new(((self.bits >> 15) & 0x01) != 0)
+    }
+}
+#[doc = "Peripheral write protection status - Bridge A\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [statusa](index.html) module"]
+pub struct STATUSA_SPEC;
+impl crate::RegisterSpec for STATUSA_SPEC {
+    type Ux = u32;
+}
+#[doc = "`read()` method returns [statusa::R](R) reader structure"]
+impl crate::Readable for STATUSA_SPEC {
+    type Reader = R;
+}
+#[doc = "`reset()` method sets STATUSA to value 0x0001_0000"]
+impl crate::Resettable for STATUSA_SPEC {
+    #[inline(always)]
+    fn reset_value() -> Self::Ux {
+        0x0001_0000
     }
 }
