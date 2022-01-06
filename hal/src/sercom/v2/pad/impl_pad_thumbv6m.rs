@@ -1,4 +1,4 @@
-//! Implementations of the [`IsPad`], [`IsI2c`], [`GetPad`] traits
+//! Implementations of the [`IsPad`], [`IsI2cPad`], [`GetPad`] traits
 
 use crate::gpio::v2::*;
 use crate::sercom::v2::*;

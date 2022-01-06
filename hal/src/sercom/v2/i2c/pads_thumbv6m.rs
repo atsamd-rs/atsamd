@@ -3,38 +3,46 @@
 //! See the [i2c module](super) documentation for more details on declaring and
 //! instantiating a [`Pads`] type.
 
-use crate::sercom::v2::*;
-use crate::typelevel::{NoneT, Sealed};
+use crate::{gpio::v2::AnyPin, sercom::v2::*, typelevel::Sealed};
 use core::marker::PhantomData;
 
 pub struct Pads<S, SDA, SCL>
 where
     S: Sercom,
-    SDA: IsPad<PadNum = Pad0, Sercom = S> + IsI2cPad,
-    SCL: IsPad<PadNum = Pad1, Sercom = S> + IsI2cPad,
+    SDA: IsI2cPad<PadNum = Pad0, Sercom = S>,
+    SCL: IsI2cPad<PadNum = Pad1, Sercom = S>,
 {
     sercom: PhantomData<S>,
     sda: SDA,
     scl: SCL,
 }
 
+impl<S, DI, CI> Pads<S, Pad<S, DI>, Pad<S, CI>>
+where
+    S: Sercom,
+    DI: GetPad<S>,
+    CI: GetPad<S>,
+    Pad<S, DI>: IsI2cPad<PadNum = Pad0, Sercom = S>,
+    Pad<S, CI>: IsI2cPad<PadNum = Pad1, Sercom = S>,
+{
+    /// Create a new [`Pads`] struct. `SDA` must always be SERCOM pad 0, and
+    /// `SCL` SERCOM pad 1.{
+    #[inline]
+    pub fn new(sda: impl AnyPin<Id = DI>, scl: impl AnyPin<Id = CI>) -> Self {
+        Self {
+            sercom: PhantomData,
+            sda: sda.into().into_mode(),
+            scl: scl.into().into_mode(),
+        }
+    }
+}
+
 impl<S, SDA, SCL> Pads<S, SDA, SCL>
 where
     S: Sercom,
-    SDA: IsPad<PadNum = Pad0, Sercom = S> + IsI2cPad,
-    SCL: IsPad<PadNum = Pad1, Sercom = S> + IsI2cPad,
+    SDA: IsI2cPad<PadNum = Pad0, Sercom = S>,
+    SCL: IsI2cPad<PadNum = Pad1, Sercom = S>,
 {
-    /// Create a new [`Pads`] struct. `SDA` must always be SERCOM pad 0, and
-    /// `SCL` SERCOM pad 1.
-    #[inline]
-    pub fn new(sda: impl Into<SDA>, scl: impl Into<SCL>) -> Self {
-        Self {
-            sercom: PhantomData,
-            sda: sda.into(),
-            scl: scl.into(),
-        }
-    }
-
     /// Consume the [`Pads`] and return each individual
     /// [`Pin`](crate::gpio::v2::Pin)
     #[inline]
@@ -53,9 +61,8 @@ where
 /// `PinId`s rather than `Pin`s. This alias makes it easier to do so.
 ///
 /// The first type parameter is the [`Sercom`], while the remaining two are
-/// effectively [`OptionalPinId`]s representing the corresponding type
-/// parameters of [`Pads`], i.e. `SDA` & `SCL`. Each of the
-/// remaining type parameters defaults to [`NoneT`].
+/// [`PinId`]s representing the corresponding type
+/// parameters of [`Pads`], i.e. `SDA` & `SCL`.
 ///
 /// ```
 /// use atsamd_hal::pac::Peripherals;
@@ -63,7 +70,7 @@ where
 /// use atsamd_hal::sercom::v2::{Sercom0, i2c};
 /// use atsamd_hal::typelevel::NoneT;
 ///
-/// pub type Pads = spi::PadsFromIds<Sercom0, PA08, PA09>;
+/// pub type Pads = i2c::PadsFromIds<Sercom0, PA08, PA09>;
 ///
 /// pub fn create_pads() -> Pads {
 ///     let peripherals = Peripherals::take().unwrap();
@@ -74,16 +81,14 @@ where
 ///
 /// [`Pin`]: crate::gpio::v2::Pin
 /// [`PinId`]: crate::gpio::v2::PinId
-/// [`OptionalPinId`]: crate::gpio::v2::OptionalPinId
 #[cfg(feature = "samd21")]
-pub type PadsFromIds<S, SDA = NoneT, SCL = NoneT> =
-    Pads<S, <SDA as GetOptionalPad<S>>::Pad, <SCL as GetOptionalPad<S>>::Pad>;
+pub type PadsFromIds<S, SDA, SCL> = Pads<S, Pad<S, SDA>, Pad<S, SCL>>;
 
 //=============================================================================
 // PadSet
 //=============================================================================
 
-/// Type-level function to recover the [`OptionalPad`] types from a generic set
+/// Type-level function to recover the [`Pad`] types from a generic set
 /// of [`Pads`]
 ///
 /// This trait is used as an interface between the [`Pads`] type and other
@@ -104,23 +109,23 @@ pub type PadsFromIds<S, SDA = NoneT, SCL = NoneT> =
 /// [`AnyKind`]: crate::typelevel#anykind-trait-pattern
 pub trait PadSet: Sealed {
     type Sercom: Sercom;
-    type Sda: IsPad<PadNum = Pad0, Sercom = Self::Sercom> + IsI2cPad;
-    type Scl: IsPad<PadNum = Pad1, Sercom = Self::Sercom> + IsI2cPad;
+    type Sda: IsI2cPad<PadNum = Pad0, Sercom = Self::Sercom>;
+    type Scl: IsI2cPad<PadNum = Pad1, Sercom = Self::Sercom>;
 }
 
 impl<S, SDA, SCL> Sealed for Pads<S, SDA, SCL>
 where
     S: Sercom,
-    SDA: IsPad<PadNum = Pad0, Sercom = S> + IsI2cPad,
-    SCL: IsPad<PadNum = Pad1, Sercom = S> + IsI2cPad,
+    SDA: IsI2cPad<PadNum = Pad0, Sercom = S>,
+    SCL: IsI2cPad<PadNum = Pad1, Sercom = S>,
 {
 }
 
 impl<S, SDA, SCL> PadSet for Pads<S, SDA, SCL>
 where
     S: Sercom,
-    SDA: IsPad<PadNum = Pad0, Sercom = S> + IsI2cPad,
-    SCL: IsPad<PadNum = Pad1, Sercom = S> + IsI2cPad,
+    SDA: IsI2cPad<PadNum = Pad0, Sercom = S>,
+    SCL: IsI2cPad<PadNum = Pad1, Sercom = S>,
 {
     type Sercom = S;
     type Sda = SDA;

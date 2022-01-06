@@ -242,7 +242,8 @@ impl<P: PadSet> Config<P> {
 
     /// Set the inactive timeout (builder pattern version).
     ///
-    /// Timeout after which the bus state will be set to IDLE. Necessary for SMBus compatibility.
+    /// Timeout after which the bus state will be set to IDLE. Necessary for
+    /// SMBus compatibility.
     #[inline]
     pub fn inactive_timeout(mut self, timeout: super::InactiveTimeout) -> Self {
         self.set_inactive_timeout(timeout);
@@ -251,7 +252,8 @@ impl<P: PadSet> Config<P> {
 
     /// Set the inactive timeout (setter version).
     ///
-    /// Timeout after which the bus state will be set to IDLE. Necessary for SMBus compatibility.
+    /// Timeout after which the bus state will be set to IDLE. Necessary for
+    /// SMBus compatibility.
     #[inline]
     pub fn set_inactive_timeout(&mut self, timeout: super::InactiveTimeout) {
         self.registers.set_inactive_timeout(timeout);

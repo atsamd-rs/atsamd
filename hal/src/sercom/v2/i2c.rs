@@ -1,6 +1,13 @@
 //! Use the SERCOM peripheral for I2C communications.
 
+#[cfg(any(feature = "samd11", feature = "samd21"))]
+#[path = "i2c/pads_thumbv6m.rs"]
 mod pads;
+
+#[cfg(feature = "min-samd51g")]
+#[path = "i2c/pads_thumbv7em.rs"]
+mod pads;
+
 pub use pads::*;
 
 mod reg;
@@ -12,7 +19,7 @@ pub use flags::*;
 mod config;
 pub use config::*;
 
-pub mod impl_ehal;
+mod impl_ehal;
 
 /// Size of the SERCOM's `DATA` register
 #[cfg(any(feature = "samd11", feature = "samd21"))]

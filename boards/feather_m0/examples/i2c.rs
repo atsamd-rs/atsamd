@@ -47,11 +47,9 @@ fn main() -> ! {
     let chan0 = channels.0.init(PriorityLevel::LVL0);
     let chan1 = channels.1.init(PriorityLevel::LVL0);
 
-    type Pads = i2c::Pads<Sercom3, bsp::Sda, bsp::Scl>;
-
     let gclk0 = clocks.gclk0();
     let sercom3_clock = &clocks.sercom3_core(&gclk0).unwrap();
-    let pads: Pads = i2c::Pads::new(sda, scl);
+    let pads = i2c::Pads::new(sda, scl);
     let mut i2c = i2c::Config::new(&pm, peripherals.SERCOM3, pads, sercom3_clock.freq())
         .baud(100.khz())
         .enable();

@@ -101,7 +101,8 @@ impl<S: Sercom> Registers<S> {
         self.i2c_master().ctrla.read().lowtouten().bit()
     }
 
-    /// Set the inactive timeout after which the bus state will be set to IDLE. Necessary for SMBus compatibility.
+    /// Set the inactive timeout after which the bus state will be set to IDLE.
+    /// Necessary for SMBus compatibility.
     #[inline]
     pub(super) fn set_inactive_timeout(&mut self, timeout: super::InactiveTimeout) {
         self.i2c_master()
