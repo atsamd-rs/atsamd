@@ -28,7 +28,6 @@ use hal::rtc;
 use hal::time::U32Ext;
 use hal::usb::UsbBus;
 
-use heapless::consts::U1024;
 use heapless::String;
 
 #[entry]
@@ -166,7 +165,7 @@ fn main() -> ! {
 #[macro_export]
 macro_rules! usbserial_write {
     ($($tt:tt)*) => {{
-        let mut s: String<U1024> = String::new();
+        let mut s: String<1024> = String::new();
         write!(s, $($tt)*).unwrap();
         let message_bytes = s.as_bytes();
         let mut total_written = 0;

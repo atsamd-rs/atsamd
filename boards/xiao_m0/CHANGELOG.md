@@ -1,5 +1,6 @@
 # Unreleased
 
+- Updated to 2021 edition, updated dependencies, removed unused dependencies
 # 0.12.0
 
 - bump hal dependency to 0.14.0

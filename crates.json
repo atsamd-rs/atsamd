@@ -22,7 +22,7 @@
     },
     "circuit_playground_express": {
 	  "tier": 2,
-      "build": "cargo build --examples --features=unproven"
+      "build": "cargo build --examples --features=unproven,usb"
     },
     "edgebadge": {
 	  "tier": 2,
@@ -126,7 +126,7 @@
     },
     "xiao_m0": {
 	  "tier": 2,
-      "build": "cargo build --examples --features=usb"
+      "build": "cargo build --examples --features=unproven,usb"
     }
   },
   "hal_doc_variants": {

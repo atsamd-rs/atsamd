@@ -4,15 +4,15 @@ description = "Peripheral access API for ATSAME51G microcontrollers (generated u
 version = "0.11.0"
 authors = ["Karsten Große <karsten.grosse@sympatron.de>"]
 keywords = ["no-std", "arm", "cortex-m"]
+categories = ["embedded", "hardware-support", "no-std"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
 edition = "2021"
 
 [dependencies]
-bare-metal = "1.0"
-cortex-m = "0.7.3"
-vcell = "0.1.2"
+cortex-m = "0.7"
+vcell = "0.1"
 
 [dependencies.cortex-m-rt]
 version = "0.7"

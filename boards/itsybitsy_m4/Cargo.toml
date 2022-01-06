@@ -7,8 +7,9 @@ authors = [
 ]
 description = "Board Support crate for the Adafruit ItsyBitsy M4 Express"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
+categories = ["embedded", "hardware-support", "no-std"]
 license = "MIT OR Apache-2.0"
-edition = "2018"
+edition = "2021"
 repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
 
@@ -34,8 +35,6 @@ cortex-m = "0.7"
 usbd-serial = "0.1"
 panic-halt = "0.2"
 panic-semihosting = "0.5"
-cortex-m-semihosting = "0.3"
-cortex-m-rtic = "0.5.1"
 
 [features]
 # ask the HAL to enable atsamd51g support

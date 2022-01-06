@@ -1,5 +1,7 @@
 # Unreleased
 
+- Updated to 2021 edition, updated dependencies, removed unused dependencies
+
 # v0.10.0
 
 - remove extraneous `embedded-hal` dependencies from BSPs
