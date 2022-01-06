@@ -1,6 +1,6 @@
 # Unreleased
 
-- Updated to 2021 edition, updated dependencies, removed unused dependencies
+- Updated to 2021 edition, updated dependencies, removed unused dependencies (#562)
 - remove extraneous `embedded-hal` dependencies from BSPs
 - move `usbd-x` crates used only in examples to `[dev-dependencies]`
 - removed unnecessary dependency on `nb` (#510)

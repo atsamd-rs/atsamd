@@ -1,6 +1,6 @@
 # Unreleased
 
-- Updated to 2021 edition, updated dependencies, removed unused dependencies
+- Updated to 2021 edition, updated dependencies, removed unused dependencies (#562)
 
 # v0.10.0
 
