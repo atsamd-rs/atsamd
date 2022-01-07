@@ -281,6 +281,11 @@ impl<D: DpllId> DpllToken<D> {
         self.ctrlb().modify(|_, w| w.wuf().bit(wuf));
     }
 
+    #[inline]
+    fn set_on_demand(&mut self, on_demand: bool) {
+        self.ctrla().modify(|_, w| w.ondemand().bit(on_demand));
+    }
+
     /// Check if [`Dpll`] clock is ready.
     #[inline]
     fn wait_until_ready(&self) -> nb::Result<(), Infallible> {
@@ -344,6 +349,7 @@ where
     frac: u8,
     lock_bypass: bool,
     wake_up_fast: bool,
+    on_demand: bool,
     pclk: I::Pclk,
     raw_prediv: RawPredivider,
 }
@@ -368,6 +374,7 @@ where
             frac,
             lock_bypass: false,
             wake_up_fast: false,
+            on_demand: true,
             pclk,
             raw_prediv: 1,
         }
@@ -403,6 +410,7 @@ where
             frac,
             lock_bypass: false,
             wake_up_fast: false,
+            on_demand: true,
             pclk: (),
             raw_prediv: 1,
         };
@@ -449,6 +457,7 @@ seq!(N in 0..=1 {
                     frac,
                     lock_bypass: false,
                     wake_up_fast: false,
+                    on_demand: true,
                     pclk: (),
                     raw_prediv,
                 };
@@ -529,6 +538,12 @@ where
         self
     }
 
+    #[inline]
+    pub fn set_on_demand(mut self, on_demand: bool) -> Self {
+        self.on_demand = on_demand;
+        self
+    }
+
     /// Return the frequency of the [`Dpll`]
     #[inline]
     pub fn freq(&self) -> Hertz {
@@ -577,6 +592,7 @@ where
         self.token.set_loop_div(self.mult, self.frac);
         self.token.set_lock_bypass(self.lock_bypass);
         self.token.set_wake_up_fast(self.wake_up_fast);
+        self.token.set_on_demand(self.on_demand);
         // Enable the [`Dpll`]
         self.token.enable();
         Enabled::new(self)
