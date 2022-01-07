@@ -184,7 +184,7 @@ pub fn preset1_clocks_tokens(
         gclks,
         // SAFETY: Only the DPLL0 token was used, the rest will be dropped and
         // recreated here
-        pclks: unsafe { Preset1PclkTokens::new() },
+        pclks: Preset1PclkTokens::new(),
         rtcosc: tokens.rtcosc,
         xosc0: tokens.xosc0,
         xosc1: tokens.xosc1,
