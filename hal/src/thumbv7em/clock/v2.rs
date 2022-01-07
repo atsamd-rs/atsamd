@@ -1,4 +1,5 @@
-#![warn(missing_docs)]
+//#![warn(missing_docs)]
+
 //! # Clocking API v2
 //!
 //! This module provides the set of abstractions allowing a user to manipulate

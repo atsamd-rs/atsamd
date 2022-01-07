@@ -1,5 +1,3 @@
-//! TODO
-
 use core::marker::PhantomData;
 
 use crate::pac::osc32kctrl::rtcctrl::RTCSEL_A;
