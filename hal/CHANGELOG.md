@@ -1,5 +1,6 @@
 # Unreleased Changes
 
+- Updated to 2021 edition, updated dependencies, removed unused dependencies (#562)
 - updated HAL to be compatible with PAC updates due to svd2rust upgrade
 
 # v0.14.0

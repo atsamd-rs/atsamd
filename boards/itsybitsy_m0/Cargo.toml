@@ -4,8 +4,9 @@ version = "0.11.0"
 authors = ["Ben Bergman <ben@benbergman.ca>"]
 description = "Board Support crate for the Adafruit ItsyBitsy M0"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
+categories = ["embedded", "hardware-support", "no-std"]
 license = "MIT OR Apache-2.0"
-edition = "2018"
+edition = "2021"
 repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
 
@@ -31,7 +32,7 @@ cortex-m = "0.7"
 usbd-serial = "0.1"
 usbd-hid = "0.4"
 panic-halt = "0.2"
-ssd1306 = "0.6.0"
+ssd1306 = "0.7"
 embedded-graphics = "0.7.1"
 
 [features]
