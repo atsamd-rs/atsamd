@@ -1,18 +1,55 @@
-#[doc = "Reader of register CTRLB"]
-pub type R = crate::R<u16, super::CTRLB>;
-#[doc = "Writer for register CTRLB"]
-pub type W = crate::W<u16, super::CTRLB>;
-#[doc = "Register CTRLB `reset()`'s with value 0"]
-impl crate::ResetValue for super::CTRLB {
-    type Type = u16;
+#[doc = "Register `CTRLB` reader"]
+pub struct R(crate::R<CTRLB_SPEC>);
+impl core::ops::Deref for R {
+    type Target = crate::R<CTRLB_SPEC>;
     #[inline(always)]
-    fn reset_value() -> Self::Type {
-        0
+    fn deref(&self) -> &Self::Target {
+        &self.0
     }
 }
-#[doc = "Reader of field `DIFFMODE`"]
-pub type DIFFMODE_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `DIFFMODE`"]
+impl From<crate::R<CTRLB_SPEC>> for R {
+    #[inline(always)]
+    fn from(reader: crate::R<CTRLB_SPEC>) -> Self {
+        R(reader)
+    }
+}
+#[doc = "Register `CTRLB` writer"]
+pub struct W(crate::W<CTRLB_SPEC>);
+impl core::ops::Deref for W {
+    type Target = crate::W<CTRLB_SPEC>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl core::ops::DerefMut for W {
+    #[inline(always)]
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+impl From<crate::W<CTRLB_SPEC>> for W {
+    #[inline(always)]
+    fn from(writer: crate::W<CTRLB_SPEC>) -> Self {
+        W(writer)
+    }
+}
+#[doc = "Field `DIFFMODE` reader - Differential Mode"]
+pub struct DIFFMODE_R(crate::FieldReader<bool, bool>);
+impl DIFFMODE_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        DIFFMODE_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for DIFFMODE_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `DIFFMODE` writer - Differential Mode"]
 pub struct DIFFMODE_W<'a> {
     w: &'a mut W,
 }
@@ -30,13 +67,26 @@ impl<'a> DIFFMODE_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | ((value as u16) & 0x01);
+        self.w.bits = (self.w.bits & !0x01) | (value as u16 & 0x01);
         self.w
     }
 }
-#[doc = "Reader of field `LEFTADJ`"]
-pub type LEFTADJ_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `LEFTADJ`"]
+#[doc = "Field `LEFTADJ` reader - Left-Adjusted Result"]
+pub struct LEFTADJ_R(crate::FieldReader<bool, bool>);
+impl LEFTADJ_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        LEFTADJ_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for LEFTADJ_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `LEFTADJ` writer - Left-Adjusted Result"]
 pub struct LEFTADJ_W<'a> {
     w: &'a mut W,
 }
@@ -54,13 +104,26 @@ impl<'a> LEFTADJ_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | (((value as u16) & 0x01) << 1);
+        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u16 & 0x01) << 1);
         self.w
     }
 }
-#[doc = "Reader of field `FREERUN`"]
-pub type FREERUN_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `FREERUN`"]
+#[doc = "Field `FREERUN` reader - Free Running Mode"]
+pub struct FREERUN_R(crate::FieldReader<bool, bool>);
+impl FREERUN_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        FREERUN_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for FREERUN_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `FREERUN` writer - Free Running Mode"]
 pub struct FREERUN_W<'a> {
     w: &'a mut W,
 }
@@ -78,13 +141,26 @@ impl<'a> FREERUN_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 2)) | (((value as u16) & 0x01) << 2);
+        self.w.bits = (self.w.bits & !(0x01 << 2)) | ((value as u16 & 0x01) << 2);
         self.w
     }
 }
-#[doc = "Reader of field `CORREN`"]
-pub type CORREN_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `CORREN`"]
+#[doc = "Field `CORREN` reader - Digital Correction Logic Enabled"]
+pub struct CORREN_R(crate::FieldReader<bool, bool>);
+impl CORREN_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        CORREN_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for CORREN_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `CORREN` writer - Digital Correction Logic Enabled"]
 pub struct CORREN_W<'a> {
     w: &'a mut W,
 }
@@ -102,7 +178,7 @@ impl<'a> CORREN_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 3)) | (((value as u16) & 0x01) << 3);
+        self.w.bits = (self.w.bits & !(0x01 << 3)) | ((value as u16 & 0x01) << 3);
         self.w
     }
 }
@@ -125,9 +201,13 @@ impl From<RESSEL_A> for u8 {
         variant as _
     }
 }
-#[doc = "Reader of field `RESSEL`"]
-pub type RESSEL_R = crate::R<u8, RESSEL_A>;
+#[doc = "Field `RESSEL` reader - Conversion Result Resolution"]
+pub struct RESSEL_R(crate::FieldReader<u8, RESSEL_A>);
 impl RESSEL_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        RESSEL_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
     pub fn variant(&self) -> RESSEL_A {
@@ -142,25 +222,32 @@ impl RESSEL_R {
     #[doc = "Checks if the value of the field is `_12BIT`"]
     #[inline(always)]
     pub fn is_12bit(&self) -> bool {
-        *self == RESSEL_A::_12BIT
+        **self == RESSEL_A::_12BIT
     }
     #[doc = "Checks if the value of the field is `_16BIT`"]
     #[inline(always)]
     pub fn is_16bit(&self) -> bool {
-        *self == RESSEL_A::_16BIT
+        **self == RESSEL_A::_16BIT
     }
     #[doc = "Checks if the value of the field is `_10BIT`"]
     #[inline(always)]
     pub fn is_10bit(&self) -> bool {
-        *self == RESSEL_A::_10BIT
+        **self == RESSEL_A::_10BIT
     }
     #[doc = "Checks if the value of the field is `_8BIT`"]
     #[inline(always)]
     pub fn is_8bit(&self) -> bool {
-        *self == RESSEL_A::_8BIT
+        **self == RESSEL_A::_8BIT
     }
 }
-#[doc = "Write proxy for field `RESSEL`"]
+impl core::ops::Deref for RESSEL_R {
+    type Target = crate::FieldReader<u8, RESSEL_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `RESSEL` writer - Conversion Result Resolution"]
 pub struct RESSEL_W<'a> {
     w: &'a mut W,
 }
@@ -168,9 +255,7 @@ impl<'a> RESSEL_W<'a> {
     #[doc = r"Writes `variant` to the field"]
     #[inline(always)]
     pub fn variant(self, variant: RESSEL_A) -> &'a mut W {
-        {
-            self.bits(variant.into())
-        }
+        self.bits(variant.into())
     }
     #[doc = "12-bit result"]
     #[inline(always)]
@@ -195,7 +280,7 @@ impl<'a> RESSEL_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x03 << 4)) | (((value as u16) & 0x03) << 4);
+        self.w.bits = (self.w.bits & !(0x03 << 4)) | ((value as u16 & 0x03) << 4);
         self.w
     }
 }
@@ -226,9 +311,13 @@ impl From<PRESCALER_A> for u8 {
         variant as _
     }
 }
-#[doc = "Reader of field `PRESCALER`"]
-pub type PRESCALER_R = crate::R<u8, PRESCALER_A>;
+#[doc = "Field `PRESCALER` reader - Prescaler Configuration"]
+pub struct PRESCALER_R(crate::FieldReader<u8, PRESCALER_A>);
 impl PRESCALER_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        PRESCALER_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
     pub fn variant(&self) -> PRESCALER_A {
@@ -247,45 +336,52 @@ impl PRESCALER_R {
     #[doc = "Checks if the value of the field is `DIV4`"]
     #[inline(always)]
     pub fn is_div4(&self) -> bool {
-        *self == PRESCALER_A::DIV4
+        **self == PRESCALER_A::DIV4
     }
     #[doc = "Checks if the value of the field is `DIV8`"]
     #[inline(always)]
     pub fn is_div8(&self) -> bool {
-        *self == PRESCALER_A::DIV8
+        **self == PRESCALER_A::DIV8
     }
     #[doc = "Checks if the value of the field is `DIV16`"]
     #[inline(always)]
     pub fn is_div16(&self) -> bool {
-        *self == PRESCALER_A::DIV16
+        **self == PRESCALER_A::DIV16
     }
     #[doc = "Checks if the value of the field is `DIV32`"]
     #[inline(always)]
     pub fn is_div32(&self) -> bool {
-        *self == PRESCALER_A::DIV32
+        **self == PRESCALER_A::DIV32
     }
     #[doc = "Checks if the value of the field is `DIV64`"]
     #[inline(always)]
     pub fn is_div64(&self) -> bool {
-        *self == PRESCALER_A::DIV64
+        **self == PRESCALER_A::DIV64
     }
     #[doc = "Checks if the value of the field is `DIV128`"]
     #[inline(always)]
     pub fn is_div128(&self) -> bool {
-        *self == PRESCALER_A::DIV128
+        **self == PRESCALER_A::DIV128
     }
     #[doc = "Checks if the value of the field is `DIV256`"]
     #[inline(always)]
     pub fn is_div256(&self) -> bool {
-        *self == PRESCALER_A::DIV256
+        **self == PRESCALER_A::DIV256
     }
     #[doc = "Checks if the value of the field is `DIV512`"]
     #[inline(always)]
     pub fn is_div512(&self) -> bool {
-        *self == PRESCALER_A::DIV512
+        **self == PRESCALER_A::DIV512
     }
 }
-#[doc = "Write proxy for field `PRESCALER`"]
+impl core::ops::Deref for PRESCALER_R {
+    type Target = crate::FieldReader<u8, PRESCALER_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `PRESCALER` writer - Prescaler Configuration"]
 pub struct PRESCALER_W<'a> {
     w: &'a mut W,
 }
@@ -293,9 +389,7 @@ impl<'a> PRESCALER_W<'a> {
     #[doc = r"Writes `variant` to the field"]
     #[inline(always)]
     pub fn variant(self, variant: PRESCALER_A) -> &'a mut W {
-        {
-            self.bits(variant.into())
-        }
+        self.bits(variant.into())
     }
     #[doc = "Peripheral clock divided by 4"]
     #[inline(always)]
@@ -340,7 +434,7 @@ impl<'a> PRESCALER_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x07 << 8)) | (((value as u16) & 0x07) << 8);
+        self.w.bits = (self.w.bits & !(0x07 << 8)) | ((value as u16 & 0x07) << 8);
         self.w
     }
 }
@@ -406,5 +500,31 @@ impl W {
     #[inline(always)]
     pub fn prescaler(&mut self) -> PRESCALER_W {
         PRESCALER_W { w: self }
+    }
+    #[doc = "Writes raw bits to the register."]
+    #[inline(always)]
+    pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {
+        self.0.bits(bits);
+        self
+    }
+}
+#[doc = "Control B\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [ctrlb](index.html) module"]
+pub struct CTRLB_SPEC;
+impl crate::RegisterSpec for CTRLB_SPEC {
+    type Ux = u16;
+}
+#[doc = "`read()` method returns [ctrlb::R](R) reader structure"]
+impl crate::Readable for CTRLB_SPEC {
+    type Reader = R;
+}
+#[doc = "`write(|w| ..)` method takes [ctrlb::W](W) writer structure"]
+impl crate::Writable for CTRLB_SPEC {
+    type Writer = W;
+}
+#[doc = "`reset()` method sets CTRLB to value 0"]
+impl crate::Resettable for CTRLB_SPEC {
+    #[inline(always)]
+    fn reset_value() -> Self::Ux {
+        0
     }
 }

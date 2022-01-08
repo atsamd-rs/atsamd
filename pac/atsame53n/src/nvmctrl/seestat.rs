@@ -1,19 +1,123 @@
-#[doc = "Reader of register SEESTAT"]
-pub type R = crate::R<u32, super::SEESTAT>;
-#[doc = "Reader of field `ASEES`"]
-pub type ASEES_R = crate::R<bool, bool>;
-#[doc = "Reader of field `LOAD`"]
-pub type LOAD_R = crate::R<bool, bool>;
-#[doc = "Reader of field `BUSY`"]
-pub type BUSY_R = crate::R<bool, bool>;
-#[doc = "Reader of field `LOCK`"]
-pub type LOCK_R = crate::R<bool, bool>;
-#[doc = "Reader of field `RLOCK`"]
-pub type RLOCK_R = crate::R<bool, bool>;
-#[doc = "Reader of field `SBLK`"]
-pub type SBLK_R = crate::R<u8, u8>;
-#[doc = "Reader of field `PSZ`"]
-pub type PSZ_R = crate::R<u8, u8>;
+#[doc = "Register `SEESTAT` reader"]
+pub struct R(crate::R<SEESTAT_SPEC>);
+impl core::ops::Deref for R {
+    type Target = crate::R<SEESTAT_SPEC>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl From<crate::R<SEESTAT_SPEC>> for R {
+    #[inline(always)]
+    fn from(reader: crate::R<SEESTAT_SPEC>) -> Self {
+        R(reader)
+    }
+}
+#[doc = "Field `ASEES` reader - Active SmartEEPROM Sector"]
+pub struct ASEES_R(crate::FieldReader<bool, bool>);
+impl ASEES_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        ASEES_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for ASEES_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `LOAD` reader - Page Buffer Loaded"]
+pub struct LOAD_R(crate::FieldReader<bool, bool>);
+impl LOAD_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        LOAD_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for LOAD_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `BUSY` reader - Busy"]
+pub struct BUSY_R(crate::FieldReader<bool, bool>);
+impl BUSY_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        BUSY_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for BUSY_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `LOCK` reader - SmartEEPROM Write Access Is Locked"]
+pub struct LOCK_R(crate::FieldReader<bool, bool>);
+impl LOCK_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        LOCK_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for LOCK_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `RLOCK` reader - SmartEEPROM Write Access To Register Address Space Is Locked"]
+pub struct RLOCK_R(crate::FieldReader<bool, bool>);
+impl RLOCK_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        RLOCK_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for RLOCK_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `SBLK` reader - Blocks Number In a Sector"]
+pub struct SBLK_R(crate::FieldReader<u8, u8>);
+impl SBLK_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        SBLK_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for SBLK_R {
+    type Target = crate::FieldReader<u8, u8>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `PSZ` reader - SmartEEPROM Page Size"]
+pub struct PSZ_R(crate::FieldReader<u8, u8>);
+impl PSZ_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        PSZ_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for PSZ_R {
+    type Target = crate::FieldReader<u8, u8>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
 impl R {
     #[doc = "Bit 0 - Active SmartEEPROM Sector"]
     #[inline(always)]
@@ -49,5 +153,21 @@ impl R {
     #[inline(always)]
     pub fn psz(&self) -> PSZ_R {
         PSZ_R::new(((self.bits >> 16) & 0x07) as u8)
+    }
+}
+#[doc = "SmartEEPROM Status Register\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [seestat](index.html) module"]
+pub struct SEESTAT_SPEC;
+impl crate::RegisterSpec for SEESTAT_SPEC {
+    type Ux = u32;
+}
+#[doc = "`read()` method returns [seestat::R](R) reader structure"]
+impl crate::Readable for SEESTAT_SPEC {
+    type Reader = R;
+}
+#[doc = "`reset()` method sets SEESTAT to value 0"]
+impl crate::Resettable for SEESTAT_SPEC {
+    #[inline(always)]
+    fn reset_value() -> Self::Ux {
+        0
     }
 }

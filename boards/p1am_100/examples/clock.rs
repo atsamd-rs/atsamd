@@ -20,7 +20,6 @@ use hal::prelude::*;
 
 use core::fmt::Write;
 use hal::rtc;
-use heapless::consts::U16;
 use heapless::String;
 
 use hal::usb::UsbBus;
@@ -89,7 +88,7 @@ fn main() -> ! {
         let time =
             disable_interrupts(|_| unsafe { RTC.as_mut().map(|rtc| rtc.current_time()) }).unwrap();
 
-        let mut data = String::<U16>::new();
+        let mut data = String::<16>::new();
         write!(
             data,
             "{:02}:{:02}:{:02}\r\n",

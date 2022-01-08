@@ -1,13 +1,37 @@
-#[doc = "Reader of register EVCTRL"]
-pub type R = crate::R<u16, super::EVCTRL>;
-#[doc = "Writer for register EVCTRL"]
-pub type W = crate::W<u16, super::EVCTRL>;
-#[doc = "Register EVCTRL `reset()`'s with value 0"]
-impl crate::ResetValue for super::EVCTRL {
-    type Type = u16;
+#[doc = "Register `EVCTRL` reader"]
+pub struct R(crate::R<EVCTRL_SPEC>);
+impl core::ops::Deref for R {
+    type Target = crate::R<EVCTRL_SPEC>;
     #[inline(always)]
-    fn reset_value() -> Self::Type {
-        0
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl From<crate::R<EVCTRL_SPEC>> for R {
+    #[inline(always)]
+    fn from(reader: crate::R<EVCTRL_SPEC>) -> Self {
+        R(reader)
+    }
+}
+#[doc = "Register `EVCTRL` writer"]
+pub struct W(crate::W<EVCTRL_SPEC>);
+impl core::ops::Deref for W {
+    type Target = crate::W<EVCTRL_SPEC>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl core::ops::DerefMut for W {
+    #[inline(always)]
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+impl From<crate::W<EVCTRL_SPEC>> for W {
+    #[inline(always)]
+    fn from(writer: crate::W<EVCTRL_SPEC>) -> Self {
+        W(writer)
     }
 }
 #[doc = "Event Action\n\nValue on reset: 0"]
@@ -27,37 +51,47 @@ impl From<EVACT_A> for u8 {
         variant as _
     }
 }
-#[doc = "Reader of field `EVACT`"]
-pub type EVACT_R = crate::R<u8, EVACT_A>;
+#[doc = "Field `EVACT` reader - Event Action"]
+pub struct EVACT_R(crate::FieldReader<u8, EVACT_A>);
 impl EVACT_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        EVACT_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> crate::Variant<u8, EVACT_A> {
-        use crate::Variant::*;
+    pub fn variant(&self) -> Option<EVACT_A> {
         match self.bits {
-            0 => Val(EVACT_A::OFF),
-            1 => Val(EVACT_A::RETRIGGER),
-            2 => Val(EVACT_A::COUNT),
-            i => Res(i),
+            0 => Some(EVACT_A::OFF),
+            1 => Some(EVACT_A::RETRIGGER),
+            2 => Some(EVACT_A::COUNT),
+            _ => None,
         }
     }
     #[doc = "Checks if the value of the field is `OFF`"]
     #[inline(always)]
     pub fn is_off(&self) -> bool {
-        *self == EVACT_A::OFF
+        **self == EVACT_A::OFF
     }
     #[doc = "Checks if the value of the field is `RETRIGGER`"]
     #[inline(always)]
     pub fn is_retrigger(&self) -> bool {
-        *self == EVACT_A::RETRIGGER
+        **self == EVACT_A::RETRIGGER
     }
     #[doc = "Checks if the value of the field is `COUNT`"]
     #[inline(always)]
     pub fn is_count(&self) -> bool {
-        *self == EVACT_A::COUNT
+        **self == EVACT_A::COUNT
     }
 }
-#[doc = "Write proxy for field `EVACT`"]
+impl core::ops::Deref for EVACT_R {
+    type Target = crate::FieldReader<u8, EVACT_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `EVACT` writer - Event Action"]
 pub struct EVACT_W<'a> {
     w: &'a mut W,
 }
@@ -85,13 +119,26 @@ impl<'a> EVACT_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x03) | ((value as u16) & 0x03);
+        self.w.bits = (self.w.bits & !0x03) | (value as u16 & 0x03);
         self.w
     }
 }
-#[doc = "Reader of field `EVINV`"]
-pub type EVINV_R = crate::R<u8, u8>;
-#[doc = "Write proxy for field `EVINV`"]
+#[doc = "Field `EVINV` reader - Inverted Event Input Enable"]
+pub struct EVINV_R(crate::FieldReader<u8, u8>);
+impl EVINV_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        EVINV_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for EVINV_R {
+    type Target = crate::FieldReader<u8, u8>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `EVINV` writer - Inverted Event Input Enable"]
 pub struct EVINV_W<'a> {
     w: &'a mut W,
 }
@@ -99,13 +146,26 @@ impl<'a> EVINV_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x07 << 2)) | (((value as u16) & 0x07) << 2);
+        self.w.bits = (self.w.bits & !(0x07 << 2)) | ((value as u16 & 0x07) << 2);
         self.w
     }
 }
-#[doc = "Reader of field `EVEI`"]
-pub type EVEI_R = crate::R<u8, u8>;
-#[doc = "Write proxy for field `EVEI`"]
+#[doc = "Field `EVEI` reader - Event Input Enable"]
+pub struct EVEI_R(crate::FieldReader<u8, u8>);
+impl EVEI_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        EVEI_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for EVEI_R {
+    type Target = crate::FieldReader<u8, u8>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `EVEI` writer - Event Input Enable"]
 pub struct EVEI_W<'a> {
     w: &'a mut W,
 }
@@ -113,13 +173,26 @@ impl<'a> EVEI_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x07 << 5)) | (((value as u16) & 0x07) << 5);
+        self.w.bits = (self.w.bits & !(0x07 << 5)) | ((value as u16 & 0x07) << 5);
         self.w
     }
 }
-#[doc = "Reader of field `OVFEO`"]
-pub type OVFEO_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `OVFEO`"]
+#[doc = "Field `OVFEO` reader - Overflow/Underflow Output Event Enable"]
+pub struct OVFEO_R(crate::FieldReader<bool, bool>);
+impl OVFEO_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        OVFEO_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for OVFEO_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `OVFEO` writer - Overflow/Underflow Output Event Enable"]
 pub struct OVFEO_W<'a> {
     w: &'a mut W,
 }
@@ -137,13 +210,26 @@ impl<'a> OVFEO_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 8)) | (((value as u16) & 0x01) << 8);
+        self.w.bits = (self.w.bits & !(0x01 << 8)) | ((value as u16 & 0x01) << 8);
         self.w
     }
 }
-#[doc = "Reader of field `ERREO`"]
-pub type ERREO_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `ERREO`"]
+#[doc = "Field `ERREO` reader - Error Output Event Enable"]
+pub struct ERREO_R(crate::FieldReader<bool, bool>);
+impl ERREO_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        ERREO_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for ERREO_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `ERREO` writer - Error Output Event Enable"]
 pub struct ERREO_W<'a> {
     w: &'a mut W,
 }
@@ -161,13 +247,26 @@ impl<'a> ERREO_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 9)) | (((value as u16) & 0x01) << 9);
+        self.w.bits = (self.w.bits & !(0x01 << 9)) | ((value as u16 & 0x01) << 9);
         self.w
     }
 }
-#[doc = "Reader of field `DIREO`"]
-pub type DIREO_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `DIREO`"]
+#[doc = "Field `DIREO` reader - Direction Output Event Enable"]
+pub struct DIREO_R(crate::FieldReader<bool, bool>);
+impl DIREO_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        DIREO_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for DIREO_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `DIREO` writer - Direction Output Event Enable"]
 pub struct DIREO_W<'a> {
     w: &'a mut W,
 }
@@ -185,13 +284,26 @@ impl<'a> DIREO_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 10)) | (((value as u16) & 0x01) << 10);
+        self.w.bits = (self.w.bits & !(0x01 << 10)) | ((value as u16 & 0x01) << 10);
         self.w
     }
 }
-#[doc = "Reader of field `VLCEO`"]
-pub type VLCEO_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `VLCEO`"]
+#[doc = "Field `VLCEO` reader - Velocity Output Event Enable"]
+pub struct VLCEO_R(crate::FieldReader<bool, bool>);
+impl VLCEO_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        VLCEO_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for VLCEO_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `VLCEO` writer - Velocity Output Event Enable"]
 pub struct VLCEO_W<'a> {
     w: &'a mut W,
 }
@@ -209,13 +321,26 @@ impl<'a> VLCEO_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 11)) | (((value as u16) & 0x01) << 11);
+        self.w.bits = (self.w.bits & !(0x01 << 11)) | ((value as u16 & 0x01) << 11);
         self.w
     }
 }
-#[doc = "Reader of field `MCEO0`"]
-pub type MCEO0_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `MCEO0`"]
+#[doc = "Field `MCEO0` reader - Match Channel 0 Event Output Enable"]
+pub struct MCEO0_R(crate::FieldReader<bool, bool>);
+impl MCEO0_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        MCEO0_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for MCEO0_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `MCEO0` writer - Match Channel 0 Event Output Enable"]
 pub struct MCEO0_W<'a> {
     w: &'a mut W,
 }
@@ -233,13 +358,26 @@ impl<'a> MCEO0_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 12)) | (((value as u16) & 0x01) << 12);
+        self.w.bits = (self.w.bits & !(0x01 << 12)) | ((value as u16 & 0x01) << 12);
         self.w
     }
 }
-#[doc = "Reader of field `MCEO1`"]
-pub type MCEO1_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `MCEO1`"]
+#[doc = "Field `MCEO1` reader - Match Channel 1 Event Output Enable"]
+pub struct MCEO1_R(crate::FieldReader<bool, bool>);
+impl MCEO1_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        MCEO1_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for MCEO1_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `MCEO1` writer - Match Channel 1 Event Output Enable"]
 pub struct MCEO1_W<'a> {
     w: &'a mut W,
 }
@@ -257,7 +395,7 @@ impl<'a> MCEO1_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 13)) | (((value as u16) & 0x01) << 13);
+        self.w.bits = (self.w.bits & !(0x01 << 13)) | ((value as u16 & 0x01) << 13);
         self.w
     }
 }
@@ -353,5 +491,31 @@ impl W {
     #[inline(always)]
     pub fn mceo1(&mut self) -> MCEO1_W {
         MCEO1_W { w: self }
+    }
+    #[doc = "Writes raw bits to the register."]
+    #[inline(always)]
+    pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {
+        self.0.bits(bits);
+        self
+    }
+}
+#[doc = "Event Control\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [evctrl](index.html) module"]
+pub struct EVCTRL_SPEC;
+impl crate::RegisterSpec for EVCTRL_SPEC {
+    type Ux = u16;
+}
+#[doc = "`read()` method returns [evctrl::R](R) reader structure"]
+impl crate::Readable for EVCTRL_SPEC {
+    type Reader = R;
+}
+#[doc = "`write(|w| ..)` method takes [evctrl::W](W) writer structure"]
+impl crate::Writable for EVCTRL_SPEC {
+    type Writer = W;
+}
+#[doc = "`reset()` method sets EVCTRL to value 0"]
+impl crate::Resettable for EVCTRL_SPEC {
+    #[inline(always)]
+    fn reset_value() -> Self::Ux {
+        0
     }
 }

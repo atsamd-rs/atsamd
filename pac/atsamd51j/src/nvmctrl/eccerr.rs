@@ -1,7 +1,33 @@
-#[doc = "Reader of register ECCERR"]
-pub type R = crate::R<u32, super::ECCERR>;
-#[doc = "Reader of field `ADDR`"]
-pub type ADDR_R = crate::R<u32, u32>;
+#[doc = "Register `ECCERR` reader"]
+pub struct R(crate::R<ECCERR_SPEC>);
+impl core::ops::Deref for R {
+    type Target = crate::R<ECCERR_SPEC>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl From<crate::R<ECCERR_SPEC>> for R {
+    #[inline(always)]
+    fn from(reader: crate::R<ECCERR_SPEC>) -> Self {
+        R(reader)
+    }
+}
+#[doc = "Field `ADDR` reader - Error Address"]
+pub struct ADDR_R(crate::FieldReader<u32, u32>);
+impl ADDR_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u32) -> Self {
+        ADDR_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for ADDR_R {
+    type Target = crate::FieldReader<u32, u32>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
 #[doc = "Low Double-Word Error Type\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq)]
 #[repr(u8)]
@@ -19,34 +45,44 @@ impl From<TYPEL_A> for u8 {
         variant as _
     }
 }
-#[doc = "Reader of field `TYPEL`"]
-pub type TYPEL_R = crate::R<u8, TYPEL_A>;
+#[doc = "Field `TYPEL` reader - Low Double-Word Error Type"]
+pub struct TYPEL_R(crate::FieldReader<u8, TYPEL_A>);
 impl TYPEL_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        TYPEL_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> crate::Variant<u8, TYPEL_A> {
-        use crate::Variant::*;
+    pub fn variant(&self) -> Option<TYPEL_A> {
         match self.bits {
-            0 => Val(TYPEL_A::NONE),
-            1 => Val(TYPEL_A::SINGLE),
-            2 => Val(TYPEL_A::DUAL),
-            i => Res(i),
+            0 => Some(TYPEL_A::NONE),
+            1 => Some(TYPEL_A::SINGLE),
+            2 => Some(TYPEL_A::DUAL),
+            _ => None,
         }
     }
     #[doc = "Checks if the value of the field is `NONE`"]
     #[inline(always)]
     pub fn is_none(&self) -> bool {
-        *self == TYPEL_A::NONE
+        **self == TYPEL_A::NONE
     }
     #[doc = "Checks if the value of the field is `SINGLE`"]
     #[inline(always)]
     pub fn is_single(&self) -> bool {
-        *self == TYPEL_A::SINGLE
+        **self == TYPEL_A::SINGLE
     }
     #[doc = "Checks if the value of the field is `DUAL`"]
     #[inline(always)]
     pub fn is_dual(&self) -> bool {
-        *self == TYPEL_A::DUAL
+        **self == TYPEL_A::DUAL
+    }
+}
+impl core::ops::Deref for TYPEL_R {
+    type Target = crate::FieldReader<u8, TYPEL_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
     }
 }
 #[doc = "High Double-Word Error Type\n\nValue on reset: 0"]
@@ -66,34 +102,44 @@ impl From<TYPEH_A> for u8 {
         variant as _
     }
 }
-#[doc = "Reader of field `TYPEH`"]
-pub type TYPEH_R = crate::R<u8, TYPEH_A>;
+#[doc = "Field `TYPEH` reader - High Double-Word Error Type"]
+pub struct TYPEH_R(crate::FieldReader<u8, TYPEH_A>);
 impl TYPEH_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        TYPEH_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> crate::Variant<u8, TYPEH_A> {
-        use crate::Variant::*;
+    pub fn variant(&self) -> Option<TYPEH_A> {
         match self.bits {
-            0 => Val(TYPEH_A::NONE),
-            1 => Val(TYPEH_A::SINGLE),
-            2 => Val(TYPEH_A::DUAL),
-            i => Res(i),
+            0 => Some(TYPEH_A::NONE),
+            1 => Some(TYPEH_A::SINGLE),
+            2 => Some(TYPEH_A::DUAL),
+            _ => None,
         }
     }
     #[doc = "Checks if the value of the field is `NONE`"]
     #[inline(always)]
     pub fn is_none(&self) -> bool {
-        *self == TYPEH_A::NONE
+        **self == TYPEH_A::NONE
     }
     #[doc = "Checks if the value of the field is `SINGLE`"]
     #[inline(always)]
     pub fn is_single(&self) -> bool {
-        *self == TYPEH_A::SINGLE
+        **self == TYPEH_A::SINGLE
     }
     #[doc = "Checks if the value of the field is `DUAL`"]
     #[inline(always)]
     pub fn is_dual(&self) -> bool {
-        *self == TYPEH_A::DUAL
+        **self == TYPEH_A::DUAL
+    }
+}
+impl core::ops::Deref for TYPEH_R {
+    type Target = crate::FieldReader<u8, TYPEH_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
     }
 }
 impl R {
@@ -111,5 +157,21 @@ impl R {
     #[inline(always)]
     pub fn typeh(&self) -> TYPEH_R {
         TYPEH_R::new(((self.bits >> 30) & 0x03) as u8)
+    }
+}
+#[doc = "ECC Error Status Register\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [eccerr](index.html) module"]
+pub struct ECCERR_SPEC;
+impl crate::RegisterSpec for ECCERR_SPEC {
+    type Ux = u32;
+}
+#[doc = "`read()` method returns [eccerr::R](R) reader structure"]
+impl crate::Readable for ECCERR_SPEC {
+    type Reader = R;
+}
+#[doc = "`reset()` method sets ECCERR to value 0"]
+impl crate::Resettable for ECCERR_SPEC {
+    #[inline(always)]
+    fn reset_value() -> Self::Ux {
+        0
     }
 }

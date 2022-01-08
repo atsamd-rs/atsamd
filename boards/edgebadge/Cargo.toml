@@ -4,10 +4,11 @@ version = "0.8.0"
 authors = ["Jacob Rosenthal <@jacobrosenthal>"]
 description = "Board Support crate for the Adafruit EdgeBadge"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
+categories = ["embedded", "hardware-support", "no-std"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
-edition = "2018"
+edition = "2021"
 exclude = ["assets"]
 
 [dependencies]
@@ -24,7 +25,7 @@ version = "0.13"
 default-features = false
 
 [dependencies.micromath]
-version = "0.5.1"
+version = "2"
 optional = true
 
 [dependencies.usb-device]
@@ -36,7 +37,6 @@ usbd-serial = "0.1"
 panic-halt = "0.2"
 embedded-graphics = "0.7.1"
 smart-leds = "0.3"
-ws2812-spi = { version = "0.4.0", features = ["mosi_idle_high"] }
 lis3dh = "0.1.0"
 cortex-m-rtic = "0.5.1"
 tinybmp = "0.3.1"

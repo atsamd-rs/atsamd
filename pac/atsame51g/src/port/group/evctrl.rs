@@ -1,18 +1,55 @@
-#[doc = "Reader of register EVCTRL"]
-pub type R = crate::R<u32, super::EVCTRL>;
-#[doc = "Writer for register EVCTRL"]
-pub type W = crate::W<u32, super::EVCTRL>;
-#[doc = "Register EVCTRL `reset()`'s with value 0"]
-impl crate::ResetValue for super::EVCTRL {
-    type Type = u32;
+#[doc = "Register `EVCTRL` reader"]
+pub struct R(crate::R<EVCTRL_SPEC>);
+impl core::ops::Deref for R {
+    type Target = crate::R<EVCTRL_SPEC>;
     #[inline(always)]
-    fn reset_value() -> Self::Type {
-        0
+    fn deref(&self) -> &Self::Target {
+        &self.0
     }
 }
-#[doc = "Reader of field `PID0`"]
-pub type PID0_R = crate::R<u8, u8>;
-#[doc = "Write proxy for field `PID0`"]
+impl From<crate::R<EVCTRL_SPEC>> for R {
+    #[inline(always)]
+    fn from(reader: crate::R<EVCTRL_SPEC>) -> Self {
+        R(reader)
+    }
+}
+#[doc = "Register `EVCTRL` writer"]
+pub struct W(crate::W<EVCTRL_SPEC>);
+impl core::ops::Deref for W {
+    type Target = crate::W<EVCTRL_SPEC>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl core::ops::DerefMut for W {
+    #[inline(always)]
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+impl From<crate::W<EVCTRL_SPEC>> for W {
+    #[inline(always)]
+    fn from(writer: crate::W<EVCTRL_SPEC>) -> Self {
+        W(writer)
+    }
+}
+#[doc = "Field `PID0` reader - PORT Event Pin Identifier 0"]
+pub struct PID0_R(crate::FieldReader<u8, u8>);
+impl PID0_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        PID0_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for PID0_R {
+    type Target = crate::FieldReader<u8, u8>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `PID0` writer - PORT Event Pin Identifier 0"]
 pub struct PID0_W<'a> {
     w: &'a mut W,
 }
@@ -20,7 +57,7 @@ impl<'a> PID0_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x1f) | ((value as u32) & 0x1f);
+        self.w.bits = (self.w.bits & !0x1f) | (value as u32 & 0x1f);
         self.w
     }
 }
@@ -43,9 +80,13 @@ impl From<EVACT0_A> for u8 {
         variant as _
     }
 }
-#[doc = "Reader of field `EVACT0`"]
-pub type EVACT0_R = crate::R<u8, EVACT0_A>;
+#[doc = "Field `EVACT0` reader - PORT Event Action 0"]
+pub struct EVACT0_R(crate::FieldReader<u8, EVACT0_A>);
 impl EVACT0_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        EVACT0_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
     pub fn variant(&self) -> EVACT0_A {
@@ -60,25 +101,32 @@ impl EVACT0_R {
     #[doc = "Checks if the value of the field is `OUT`"]
     #[inline(always)]
     pub fn is_out(&self) -> bool {
-        *self == EVACT0_A::OUT
+        **self == EVACT0_A::OUT
     }
     #[doc = "Checks if the value of the field is `SET`"]
     #[inline(always)]
     pub fn is_set(&self) -> bool {
-        *self == EVACT0_A::SET
+        **self == EVACT0_A::SET
     }
     #[doc = "Checks if the value of the field is `CLR`"]
     #[inline(always)]
     pub fn is_clr(&self) -> bool {
-        *self == EVACT0_A::CLR
+        **self == EVACT0_A::CLR
     }
     #[doc = "Checks if the value of the field is `TGL`"]
     #[inline(always)]
     pub fn is_tgl(&self) -> bool {
-        *self == EVACT0_A::TGL
+        **self == EVACT0_A::TGL
     }
 }
-#[doc = "Write proxy for field `EVACT0`"]
+impl core::ops::Deref for EVACT0_R {
+    type Target = crate::FieldReader<u8, EVACT0_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `EVACT0` writer - PORT Event Action 0"]
 pub struct EVACT0_W<'a> {
     w: &'a mut W,
 }
@@ -86,9 +134,7 @@ impl<'a> EVACT0_W<'a> {
     #[doc = r"Writes `variant` to the field"]
     #[inline(always)]
     pub fn variant(self, variant: EVACT0_A) -> &'a mut W {
-        {
-            self.bits(variant.into())
-        }
+        self.bits(variant.into())
     }
     #[doc = "Event output to pin"]
     #[inline(always)]
@@ -113,13 +159,26 @@ impl<'a> EVACT0_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x03 << 5)) | (((value as u32) & 0x03) << 5);
+        self.w.bits = (self.w.bits & !(0x03 << 5)) | ((value as u32 & 0x03) << 5);
         self.w
     }
 }
-#[doc = "Reader of field `PORTEI0`"]
-pub type PORTEI0_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `PORTEI0`"]
+#[doc = "Field `PORTEI0` reader - PORT Event Input Enable 0"]
+pub struct PORTEI0_R(crate::FieldReader<bool, bool>);
+impl PORTEI0_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        PORTEI0_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for PORTEI0_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `PORTEI0` writer - PORT Event Input Enable 0"]
 pub struct PORTEI0_W<'a> {
     w: &'a mut W,
 }
@@ -137,13 +196,26 @@ impl<'a> PORTEI0_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 7)) | (((value as u32) & 0x01) << 7);
+        self.w.bits = (self.w.bits & !(0x01 << 7)) | ((value as u32 & 0x01) << 7);
         self.w
     }
 }
-#[doc = "Reader of field `PID1`"]
-pub type PID1_R = crate::R<u8, u8>;
-#[doc = "Write proxy for field `PID1`"]
+#[doc = "Field `PID1` reader - PORT Event Pin Identifier 1"]
+pub struct PID1_R(crate::FieldReader<u8, u8>);
+impl PID1_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        PID1_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for PID1_R {
+    type Target = crate::FieldReader<u8, u8>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `PID1` writer - PORT Event Pin Identifier 1"]
 pub struct PID1_W<'a> {
     w: &'a mut W,
 }
@@ -151,13 +223,26 @@ impl<'a> PID1_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x1f << 8)) | (((value as u32) & 0x1f) << 8);
+        self.w.bits = (self.w.bits & !(0x1f << 8)) | ((value as u32 & 0x1f) << 8);
         self.w
     }
 }
-#[doc = "Reader of field `EVACT1`"]
-pub type EVACT1_R = crate::R<u8, u8>;
-#[doc = "Write proxy for field `EVACT1`"]
+#[doc = "Field `EVACT1` reader - PORT Event Action 1"]
+pub struct EVACT1_R(crate::FieldReader<u8, u8>);
+impl EVACT1_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        EVACT1_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for EVACT1_R {
+    type Target = crate::FieldReader<u8, u8>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `EVACT1` writer - PORT Event Action 1"]
 pub struct EVACT1_W<'a> {
     w: &'a mut W,
 }
@@ -165,13 +250,26 @@ impl<'a> EVACT1_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x03 << 13)) | (((value as u32) & 0x03) << 13);
+        self.w.bits = (self.w.bits & !(0x03 << 13)) | ((value as u32 & 0x03) << 13);
         self.w
     }
 }
-#[doc = "Reader of field `PORTEI1`"]
-pub type PORTEI1_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `PORTEI1`"]
+#[doc = "Field `PORTEI1` reader - PORT Event Input Enable 1"]
+pub struct PORTEI1_R(crate::FieldReader<bool, bool>);
+impl PORTEI1_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        PORTEI1_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for PORTEI1_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `PORTEI1` writer - PORT Event Input Enable 1"]
 pub struct PORTEI1_W<'a> {
     w: &'a mut W,
 }
@@ -189,13 +287,26 @@ impl<'a> PORTEI1_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 15)) | (((value as u32) & 0x01) << 15);
+        self.w.bits = (self.w.bits & !(0x01 << 15)) | ((value as u32 & 0x01) << 15);
         self.w
     }
 }
-#[doc = "Reader of field `PID2`"]
-pub type PID2_R = crate::R<u8, u8>;
-#[doc = "Write proxy for field `PID2`"]
+#[doc = "Field `PID2` reader - PORT Event Pin Identifier 2"]
+pub struct PID2_R(crate::FieldReader<u8, u8>);
+impl PID2_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        PID2_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for PID2_R {
+    type Target = crate::FieldReader<u8, u8>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `PID2` writer - PORT Event Pin Identifier 2"]
 pub struct PID2_W<'a> {
     w: &'a mut W,
 }
@@ -203,13 +314,26 @@ impl<'a> PID2_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x1f << 16)) | (((value as u32) & 0x1f) << 16);
+        self.w.bits = (self.w.bits & !(0x1f << 16)) | ((value as u32 & 0x1f) << 16);
         self.w
     }
 }
-#[doc = "Reader of field `EVACT2`"]
-pub type EVACT2_R = crate::R<u8, u8>;
-#[doc = "Write proxy for field `EVACT2`"]
+#[doc = "Field `EVACT2` reader - PORT Event Action 2"]
+pub struct EVACT2_R(crate::FieldReader<u8, u8>);
+impl EVACT2_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        EVACT2_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for EVACT2_R {
+    type Target = crate::FieldReader<u8, u8>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `EVACT2` writer - PORT Event Action 2"]
 pub struct EVACT2_W<'a> {
     w: &'a mut W,
 }
@@ -217,13 +341,26 @@ impl<'a> EVACT2_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x03 << 21)) | (((value as u32) & 0x03) << 21);
+        self.w.bits = (self.w.bits & !(0x03 << 21)) | ((value as u32 & 0x03) << 21);
         self.w
     }
 }
-#[doc = "Reader of field `PORTEI2`"]
-pub type PORTEI2_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `PORTEI2`"]
+#[doc = "Field `PORTEI2` reader - PORT Event Input Enable 2"]
+pub struct PORTEI2_R(crate::FieldReader<bool, bool>);
+impl PORTEI2_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        PORTEI2_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for PORTEI2_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `PORTEI2` writer - PORT Event Input Enable 2"]
 pub struct PORTEI2_W<'a> {
     w: &'a mut W,
 }
@@ -241,13 +378,26 @@ impl<'a> PORTEI2_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 23)) | (((value as u32) & 0x01) << 23);
+        self.w.bits = (self.w.bits & !(0x01 << 23)) | ((value as u32 & 0x01) << 23);
         self.w
     }
 }
-#[doc = "Reader of field `PID3`"]
-pub type PID3_R = crate::R<u8, u8>;
-#[doc = "Write proxy for field `PID3`"]
+#[doc = "Field `PID3` reader - PORT Event Pin Identifier 3"]
+pub struct PID3_R(crate::FieldReader<u8, u8>);
+impl PID3_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        PID3_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for PID3_R {
+    type Target = crate::FieldReader<u8, u8>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `PID3` writer - PORT Event Pin Identifier 3"]
 pub struct PID3_W<'a> {
     w: &'a mut W,
 }
@@ -255,13 +405,26 @@ impl<'a> PID3_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x1f << 24)) | (((value as u32) & 0x1f) << 24);
+        self.w.bits = (self.w.bits & !(0x1f << 24)) | ((value as u32 & 0x1f) << 24);
         self.w
     }
 }
-#[doc = "Reader of field `EVACT3`"]
-pub type EVACT3_R = crate::R<u8, u8>;
-#[doc = "Write proxy for field `EVACT3`"]
+#[doc = "Field `EVACT3` reader - PORT Event Action 3"]
+pub struct EVACT3_R(crate::FieldReader<u8, u8>);
+impl EVACT3_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        EVACT3_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for EVACT3_R {
+    type Target = crate::FieldReader<u8, u8>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `EVACT3` writer - PORT Event Action 3"]
 pub struct EVACT3_W<'a> {
     w: &'a mut W,
 }
@@ -269,13 +432,26 @@ impl<'a> EVACT3_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x03 << 29)) | (((value as u32) & 0x03) << 29);
+        self.w.bits = (self.w.bits & !(0x03 << 29)) | ((value as u32 & 0x03) << 29);
         self.w
     }
 }
-#[doc = "Reader of field `PORTEI3`"]
-pub type PORTEI3_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `PORTEI3`"]
+#[doc = "Field `PORTEI3` reader - PORT Event Input Enable 3"]
+pub struct PORTEI3_R(crate::FieldReader<bool, bool>);
+impl PORTEI3_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        PORTEI3_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for PORTEI3_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `PORTEI3` writer - PORT Event Input Enable 3"]
 pub struct PORTEI3_W<'a> {
     w: &'a mut W,
 }
@@ -293,7 +469,7 @@ impl<'a> PORTEI3_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 31)) | (((value as u32) & 0x01) << 31);
+        self.w.bits = (self.w.bits & !(0x01 << 31)) | ((value as u32 & 0x01) << 31);
         self.w
     }
 }
@@ -419,5 +595,31 @@ impl W {
     #[inline(always)]
     pub fn portei3(&mut self) -> PORTEI3_W {
         PORTEI3_W { w: self }
+    }
+    #[doc = "Writes raw bits to the register."]
+    #[inline(always)]
+    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+        self.0.bits(bits);
+        self
+    }
+}
+#[doc = "Event Input Control\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [evctrl](index.html) module"]
+pub struct EVCTRL_SPEC;
+impl crate::RegisterSpec for EVCTRL_SPEC {
+    type Ux = u32;
+}
+#[doc = "`read()` method returns [evctrl::R](R) reader structure"]
+impl crate::Readable for EVCTRL_SPEC {
+    type Reader = R;
+}
+#[doc = "`write(|w| ..)` method takes [evctrl::W](W) writer structure"]
+impl crate::Writable for EVCTRL_SPEC {
+    type Writer = W;
+}
+#[doc = "`reset()` method sets EVCTRL to value 0"]
+impl crate::Resettable for EVCTRL_SPEC {
+    #[inline(always)]
+    fn reset_value() -> Self::Ux {
+        0
     }
 }

@@ -1,13 +1,37 @@
-#[doc = "Reader of register MASK0"]
-pub type R = crate::R<u8, super::MASK0>;
-#[doc = "Writer for register MASK0"]
-pub type W = crate::W<u8, super::MASK0>;
-#[doc = "Register MASK0 `reset()`'s with value 0"]
-impl crate::ResetValue for super::MASK0 {
-    type Type = u8;
+#[doc = "Register `MASK0` reader"]
+pub struct R(crate::R<MASK0_SPEC>);
+impl core::ops::Deref for R {
+    type Target = crate::R<MASK0_SPEC>;
     #[inline(always)]
-    fn reset_value() -> Self::Type {
-        0
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl From<crate::R<MASK0_SPEC>> for R {
+    #[inline(always)]
+    fn from(reader: crate::R<MASK0_SPEC>) -> Self {
+        R(reader)
+    }
+}
+#[doc = "Register `MASK0` writer"]
+pub struct W(crate::W<MASK0_SPEC>);
+impl core::ops::Deref for W {
+    type Target = crate::W<MASK0_SPEC>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl core::ops::DerefMut for W {
+    #[inline(always)]
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+impl From<crate::W<MASK0_SPEC>> for W {
+    #[inline(always)]
+    fn from(writer: crate::W<MASK0_SPEC>) -> Self {
+        W(writer)
     }
 }
 #[doc = "Alarm Mask Selection\n\nValue on reset: 0"]
@@ -35,61 +59,71 @@ impl From<SEL_A> for u8 {
         variant as _
     }
 }
-#[doc = "Reader of field `SEL`"]
-pub type SEL_R = crate::R<u8, SEL_A>;
+#[doc = "Field `SEL` reader - Alarm Mask Selection"]
+pub struct SEL_R(crate::FieldReader<u8, SEL_A>);
 impl SEL_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        SEL_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> crate::Variant<u8, SEL_A> {
-        use crate::Variant::*;
+    pub fn variant(&self) -> Option<SEL_A> {
         match self.bits {
-            0 => Val(SEL_A::OFF),
-            1 => Val(SEL_A::SS),
-            2 => Val(SEL_A::MMSS),
-            3 => Val(SEL_A::HHMMSS),
-            4 => Val(SEL_A::DDHHMMSS),
-            5 => Val(SEL_A::MMDDHHMMSS),
-            6 => Val(SEL_A::YYMMDDHHMMSS),
-            i => Res(i),
+            0 => Some(SEL_A::OFF),
+            1 => Some(SEL_A::SS),
+            2 => Some(SEL_A::MMSS),
+            3 => Some(SEL_A::HHMMSS),
+            4 => Some(SEL_A::DDHHMMSS),
+            5 => Some(SEL_A::MMDDHHMMSS),
+            6 => Some(SEL_A::YYMMDDHHMMSS),
+            _ => None,
         }
     }
     #[doc = "Checks if the value of the field is `OFF`"]
     #[inline(always)]
     pub fn is_off(&self) -> bool {
-        *self == SEL_A::OFF
+        **self == SEL_A::OFF
     }
     #[doc = "Checks if the value of the field is `SS`"]
     #[inline(always)]
     pub fn is_ss(&self) -> bool {
-        *self == SEL_A::SS
+        **self == SEL_A::SS
     }
     #[doc = "Checks if the value of the field is `MMSS`"]
     #[inline(always)]
     pub fn is_mmss(&self) -> bool {
-        *self == SEL_A::MMSS
+        **self == SEL_A::MMSS
     }
     #[doc = "Checks if the value of the field is `HHMMSS`"]
     #[inline(always)]
     pub fn is_hhmmss(&self) -> bool {
-        *self == SEL_A::HHMMSS
+        **self == SEL_A::HHMMSS
     }
     #[doc = "Checks if the value of the field is `DDHHMMSS`"]
     #[inline(always)]
     pub fn is_ddhhmmss(&self) -> bool {
-        *self == SEL_A::DDHHMMSS
+        **self == SEL_A::DDHHMMSS
     }
     #[doc = "Checks if the value of the field is `MMDDHHMMSS`"]
     #[inline(always)]
     pub fn is_mmddhhmmss(&self) -> bool {
-        *self == SEL_A::MMDDHHMMSS
+        **self == SEL_A::MMDDHHMMSS
     }
     #[doc = "Checks if the value of the field is `YYMMDDHHMMSS`"]
     #[inline(always)]
     pub fn is_yymmddhhmmss(&self) -> bool {
-        *self == SEL_A::YYMMDDHHMMSS
+        **self == SEL_A::YYMMDDHHMMSS
     }
 }
-#[doc = "Write proxy for field `SEL`"]
+impl core::ops::Deref for SEL_R {
+    type Target = crate::FieldReader<u8, SEL_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `SEL` writer - Alarm Mask Selection"]
 pub struct SEL_W<'a> {
     w: &'a mut W,
 }
@@ -137,7 +171,7 @@ impl<'a> SEL_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x07) | ((value as u8) & 0x07);
+        self.w.bits = (self.w.bits & !0x07) | (value as u8 & 0x07);
         self.w
     }
 }
@@ -153,5 +187,31 @@ impl W {
     #[inline(always)]
     pub fn sel(&mut self) -> SEL_W {
         SEL_W { w: self }
+    }
+    #[doc = "Writes raw bits to the register."]
+    #[inline(always)]
+    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
+        self.0.bits(bits);
+        self
+    }
+}
+#[doc = "MODE2_ALARM Alarm n Mask\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [mask0](index.html) module"]
+pub struct MASK0_SPEC;
+impl crate::RegisterSpec for MASK0_SPEC {
+    type Ux = u8;
+}
+#[doc = "`read()` method returns [mask0::R](R) reader structure"]
+impl crate::Readable for MASK0_SPEC {
+    type Reader = R;
+}
+#[doc = "`write(|w| ..)` method takes [mask0::W](W) writer structure"]
+impl crate::Writable for MASK0_SPEC {
+    type Writer = W;
+}
+#[doc = "`reset()` method sets MASK0 to value 0"]
+impl crate::Resettable for MASK0_SPEC {
+    #[inline(always)]
+    fn reset_value() -> Self::Ux {
+        0
     }
 }

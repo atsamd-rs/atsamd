@@ -1,11 +1,22 @@
-#[doc = "Writer for register FEREIS"]
-pub type W = crate::W<u16, super::FEREIS>;
-#[doc = "Register FEREIS `reset()`'s with value 0"]
-impl crate::ResetValue for super::FEREIS {
-    type Type = u16;
+#[doc = "Register `FEREIS` writer"]
+pub struct W(crate::W<FEREIS_SPEC>);
+impl core::ops::Deref for W {
+    type Target = crate::W<FEREIS_SPEC>;
     #[inline(always)]
-    fn reset_value() -> Self::Type {
-        0
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl core::ops::DerefMut for W {
+    #[inline(always)]
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+impl From<crate::W<FEREIS_SPEC>> for W {
+    #[inline(always)]
+    fn from(writer: crate::W<FEREIS_SPEC>) -> Self {
+        W(writer)
     }
 }
 #[doc = "Force Event for Command Timeout Error\n\nValue on reset: 0"]
@@ -22,7 +33,7 @@ impl From<CMDTEO_AW> for bool {
         variant as u8 != 0
     }
 }
-#[doc = "Write proxy for field `CMDTEO`"]
+#[doc = "Field `CMDTEO` writer - Force Event for Command Timeout Error"]
 pub struct CMDTEO_W<'a> {
     w: &'a mut W,
 }
@@ -30,9 +41,7 @@ impl<'a> CMDTEO_W<'a> {
     #[doc = r"Writes `variant` to the field"]
     #[inline(always)]
     pub fn variant(self, variant: CMDTEO_AW) -> &'a mut W {
-        {
-            self.bit(variant.into())
-        }
+        self.bit(variant.into())
     }
     #[doc = "No Interrupt"]
     #[inline(always)]
@@ -57,7 +66,7 @@ impl<'a> CMDTEO_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | ((value as u16) & 0x01);
+        self.w.bits = (self.w.bits & !0x01) | (value as u16 & 0x01);
         self.w
     }
 }
@@ -75,7 +84,7 @@ impl From<CMDCRC_AW> for bool {
         variant as u8 != 0
     }
 }
-#[doc = "Write proxy for field `CMDCRC`"]
+#[doc = "Field `CMDCRC` writer - Force Event for Command CRC Error"]
 pub struct CMDCRC_W<'a> {
     w: &'a mut W,
 }
@@ -83,9 +92,7 @@ impl<'a> CMDCRC_W<'a> {
     #[doc = r"Writes `variant` to the field"]
     #[inline(always)]
     pub fn variant(self, variant: CMDCRC_AW) -> &'a mut W {
-        {
-            self.bit(variant.into())
-        }
+        self.bit(variant.into())
     }
     #[doc = "No Interrupt"]
     #[inline(always)]
@@ -110,7 +117,7 @@ impl<'a> CMDCRC_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | (((value as u16) & 0x01) << 1);
+        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u16 & 0x01) << 1);
         self.w
     }
 }
@@ -128,7 +135,7 @@ impl From<CMDEND_AW> for bool {
         variant as u8 != 0
     }
 }
-#[doc = "Write proxy for field `CMDEND`"]
+#[doc = "Field `CMDEND` writer - Force Event for Command End Bit Error"]
 pub struct CMDEND_W<'a> {
     w: &'a mut W,
 }
@@ -136,9 +143,7 @@ impl<'a> CMDEND_W<'a> {
     #[doc = r"Writes `variant` to the field"]
     #[inline(always)]
     pub fn variant(self, variant: CMDEND_AW) -> &'a mut W {
-        {
-            self.bit(variant.into())
-        }
+        self.bit(variant.into())
     }
     #[doc = "No Interrupt"]
     #[inline(always)]
@@ -163,7 +168,7 @@ impl<'a> CMDEND_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 2)) | (((value as u16) & 0x01) << 2);
+        self.w.bits = (self.w.bits & !(0x01 << 2)) | ((value as u16 & 0x01) << 2);
         self.w
     }
 }
@@ -181,7 +186,7 @@ impl From<CMDIDX_AW> for bool {
         variant as u8 != 0
     }
 }
-#[doc = "Write proxy for field `CMDIDX`"]
+#[doc = "Field `CMDIDX` writer - Force Event for Command Index Error"]
 pub struct CMDIDX_W<'a> {
     w: &'a mut W,
 }
@@ -189,9 +194,7 @@ impl<'a> CMDIDX_W<'a> {
     #[doc = r"Writes `variant` to the field"]
     #[inline(always)]
     pub fn variant(self, variant: CMDIDX_AW) -> &'a mut W {
-        {
-            self.bit(variant.into())
-        }
+        self.bit(variant.into())
     }
     #[doc = "No Interrupt"]
     #[inline(always)]
@@ -216,7 +219,7 @@ impl<'a> CMDIDX_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 3)) | (((value as u16) & 0x01) << 3);
+        self.w.bits = (self.w.bits & !(0x01 << 3)) | ((value as u16 & 0x01) << 3);
         self.w
     }
 }
@@ -234,7 +237,7 @@ impl From<DATTEO_AW> for bool {
         variant as u8 != 0
     }
 }
-#[doc = "Write proxy for field `DATTEO`"]
+#[doc = "Field `DATTEO` writer - Force Event for Data Timeout Error"]
 pub struct DATTEO_W<'a> {
     w: &'a mut W,
 }
@@ -242,9 +245,7 @@ impl<'a> DATTEO_W<'a> {
     #[doc = r"Writes `variant` to the field"]
     #[inline(always)]
     pub fn variant(self, variant: DATTEO_AW) -> &'a mut W {
-        {
-            self.bit(variant.into())
-        }
+        self.bit(variant.into())
     }
     #[doc = "No Interrupt"]
     #[inline(always)]
@@ -269,7 +270,7 @@ impl<'a> DATTEO_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 4)) | (((value as u16) & 0x01) << 4);
+        self.w.bits = (self.w.bits & !(0x01 << 4)) | ((value as u16 & 0x01) << 4);
         self.w
     }
 }
@@ -287,7 +288,7 @@ impl From<DATCRC_AW> for bool {
         variant as u8 != 0
     }
 }
-#[doc = "Write proxy for field `DATCRC`"]
+#[doc = "Field `DATCRC` writer - Force Event for Data CRC Error"]
 pub struct DATCRC_W<'a> {
     w: &'a mut W,
 }
@@ -295,9 +296,7 @@ impl<'a> DATCRC_W<'a> {
     #[doc = r"Writes `variant` to the field"]
     #[inline(always)]
     pub fn variant(self, variant: DATCRC_AW) -> &'a mut W {
-        {
-            self.bit(variant.into())
-        }
+        self.bit(variant.into())
     }
     #[doc = "No Interrupt"]
     #[inline(always)]
@@ -322,7 +321,7 @@ impl<'a> DATCRC_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 5)) | (((value as u16) & 0x01) << 5);
+        self.w.bits = (self.w.bits & !(0x01 << 5)) | ((value as u16 & 0x01) << 5);
         self.w
     }
 }
@@ -340,7 +339,7 @@ impl From<DATEND_AW> for bool {
         variant as u8 != 0
     }
 }
-#[doc = "Write proxy for field `DATEND`"]
+#[doc = "Field `DATEND` writer - Force Event for Data End Bit Error"]
 pub struct DATEND_W<'a> {
     w: &'a mut W,
 }
@@ -348,9 +347,7 @@ impl<'a> DATEND_W<'a> {
     #[doc = r"Writes `variant` to the field"]
     #[inline(always)]
     pub fn variant(self, variant: DATEND_AW) -> &'a mut W {
-        {
-            self.bit(variant.into())
-        }
+        self.bit(variant.into())
     }
     #[doc = "No Interrupt"]
     #[inline(always)]
@@ -375,7 +372,7 @@ impl<'a> DATEND_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 6)) | (((value as u16) & 0x01) << 6);
+        self.w.bits = (self.w.bits & !(0x01 << 6)) | ((value as u16 & 0x01) << 6);
         self.w
     }
 }
@@ -393,7 +390,7 @@ impl From<CURLIM_AW> for bool {
         variant as u8 != 0
     }
 }
-#[doc = "Write proxy for field `CURLIM`"]
+#[doc = "Field `CURLIM` writer - Force Event for Current Limit Error"]
 pub struct CURLIM_W<'a> {
     w: &'a mut W,
 }
@@ -401,9 +398,7 @@ impl<'a> CURLIM_W<'a> {
     #[doc = r"Writes `variant` to the field"]
     #[inline(always)]
     pub fn variant(self, variant: CURLIM_AW) -> &'a mut W {
-        {
-            self.bit(variant.into())
-        }
+        self.bit(variant.into())
     }
     #[doc = "No Interrupt"]
     #[inline(always)]
@@ -428,7 +423,7 @@ impl<'a> CURLIM_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 7)) | (((value as u16) & 0x01) << 7);
+        self.w.bits = (self.w.bits & !(0x01 << 7)) | ((value as u16 & 0x01) << 7);
         self.w
     }
 }
@@ -446,7 +441,7 @@ impl From<ACMD_AW> for bool {
         variant as u8 != 0
     }
 }
-#[doc = "Write proxy for field `ACMD`"]
+#[doc = "Field `ACMD` writer - Force Event for Auto CMD Error"]
 pub struct ACMD_W<'a> {
     w: &'a mut W,
 }
@@ -454,9 +449,7 @@ impl<'a> ACMD_W<'a> {
     #[doc = r"Writes `variant` to the field"]
     #[inline(always)]
     pub fn variant(self, variant: ACMD_AW) -> &'a mut W {
-        {
-            self.bit(variant.into())
-        }
+        self.bit(variant.into())
     }
     #[doc = "No Interrupt"]
     #[inline(always)]
@@ -481,7 +474,7 @@ impl<'a> ACMD_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 8)) | (((value as u16) & 0x01) << 8);
+        self.w.bits = (self.w.bits & !(0x01 << 8)) | ((value as u16 & 0x01) << 8);
         self.w
     }
 }
@@ -499,7 +492,7 @@ impl From<ADMA_AW> for bool {
         variant as u8 != 0
     }
 }
-#[doc = "Write proxy for field `ADMA`"]
+#[doc = "Field `ADMA` writer - Force Event for ADMA Error"]
 pub struct ADMA_W<'a> {
     w: &'a mut W,
 }
@@ -507,9 +500,7 @@ impl<'a> ADMA_W<'a> {
     #[doc = r"Writes `variant` to the field"]
     #[inline(always)]
     pub fn variant(self, variant: ADMA_AW) -> &'a mut W {
-        {
-            self.bit(variant.into())
-        }
+        self.bit(variant.into())
     }
     #[doc = "No Interrupt"]
     #[inline(always)]
@@ -534,7 +525,7 @@ impl<'a> ADMA_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 9)) | (((value as u16) & 0x01) << 9);
+        self.w.bits = (self.w.bits & !(0x01 << 9)) | ((value as u16 & 0x01) << 9);
         self.w
     }
 }
@@ -552,7 +543,7 @@ impl From<BOOTAE_AW> for bool {
         variant as u8 != 0
     }
 }
-#[doc = "Write proxy for field `BOOTAE`"]
+#[doc = "Field `BOOTAE` writer - Force Event for Boot Acknowledge Error"]
 pub struct BOOTAE_W<'a> {
     w: &'a mut W,
 }
@@ -560,9 +551,7 @@ impl<'a> BOOTAE_W<'a> {
     #[doc = r"Writes `variant` to the field"]
     #[inline(always)]
     pub fn variant(self, variant: BOOTAE_AW) -> &'a mut W {
-        {
-            self.bit(variant.into())
-        }
+        self.bit(variant.into())
     }
     #[doc = "No Interrupt"]
     #[inline(always)]
@@ -587,7 +576,7 @@ impl<'a> BOOTAE_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 12)) | (((value as u16) & 0x01) << 12);
+        self.w.bits = (self.w.bits & !(0x01 << 12)) | ((value as u16 & 0x01) << 12);
         self.w
     }
 }
@@ -646,5 +635,27 @@ impl W {
     #[inline(always)]
     pub fn bootae(&mut self) -> BOOTAE_W {
         BOOTAE_W { w: self }
+    }
+    #[doc = "Writes raw bits to the register."]
+    #[inline(always)]
+    pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {
+        self.0.bits(bits);
+        self
+    }
+}
+#[doc = "Force Event for Error Interrupt Status\n\nThis register you can [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [fereis](index.html) module"]
+pub struct FEREIS_SPEC;
+impl crate::RegisterSpec for FEREIS_SPEC {
+    type Ux = u16;
+}
+#[doc = "`write(|w| ..)` method takes [fereis::W](W) writer structure"]
+impl crate::Writable for FEREIS_SPEC {
+    type Writer = W;
+}
+#[doc = "`reset()` method sets FEREIS to value 0"]
+impl crate::Resettable for FEREIS_SPEC {
+    #[inline(always)]
+    fn reset_value() -> Self::Ux {
+        0
     }
 }

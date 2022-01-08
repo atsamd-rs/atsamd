@@ -1,13 +1,37 @@
-#[doc = "Reader of register APBASEL"]
-pub type R = crate::R<u8, super::APBASEL>;
-#[doc = "Writer for register APBASEL"]
-pub type W = crate::W<u8, super::APBASEL>;
-#[doc = "Register APBASEL `reset()`'s with value 0"]
-impl crate::ResetValue for super::APBASEL {
-    type Type = u8;
+#[doc = "Register `APBASEL` reader"]
+pub struct R(crate::R<APBASEL_SPEC>);
+impl core::ops::Deref for R {
+    type Target = crate::R<APBASEL_SPEC>;
     #[inline(always)]
-    fn reset_value() -> Self::Type {
-        0
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl From<crate::R<APBASEL_SPEC>> for R {
+    #[inline(always)]
+    fn from(reader: crate::R<APBASEL_SPEC>) -> Self {
+        R(reader)
+    }
+}
+#[doc = "Register `APBASEL` writer"]
+pub struct W(crate::W<APBASEL_SPEC>);
+impl core::ops::Deref for W {
+    type Target = crate::W<APBASEL_SPEC>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl core::ops::DerefMut for W {
+    #[inline(always)]
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+impl From<crate::W<APBASEL_SPEC>> for W {
+    #[inline(always)]
+    fn from(writer: crate::W<APBASEL_SPEC>) -> Self {
+        W(writer)
     }
 }
 #[doc = "APBA Prescaler Selection\n\nValue on reset: 0"]
@@ -37,9 +61,13 @@ impl From<APBADIV_A> for u8 {
         variant as _
     }
 }
-#[doc = "Reader of field `APBADIV`"]
-pub type APBADIV_R = crate::R<u8, APBADIV_A>;
+#[doc = "Field `APBADIV` reader - APBA Prescaler Selection"]
+pub struct APBADIV_R(crate::FieldReader<u8, APBADIV_A>);
 impl APBADIV_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        APBADIV_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
     pub fn variant(&self) -> APBADIV_A {
@@ -58,45 +86,52 @@ impl APBADIV_R {
     #[doc = "Checks if the value of the field is `DIV1`"]
     #[inline(always)]
     pub fn is_div1(&self) -> bool {
-        *self == APBADIV_A::DIV1
+        **self == APBADIV_A::DIV1
     }
     #[doc = "Checks if the value of the field is `DIV2`"]
     #[inline(always)]
     pub fn is_div2(&self) -> bool {
-        *self == APBADIV_A::DIV2
+        **self == APBADIV_A::DIV2
     }
     #[doc = "Checks if the value of the field is `DIV4`"]
     #[inline(always)]
     pub fn is_div4(&self) -> bool {
-        *self == APBADIV_A::DIV4
+        **self == APBADIV_A::DIV4
     }
     #[doc = "Checks if the value of the field is `DIV8`"]
     #[inline(always)]
     pub fn is_div8(&self) -> bool {
-        *self == APBADIV_A::DIV8
+        **self == APBADIV_A::DIV8
     }
     #[doc = "Checks if the value of the field is `DIV16`"]
     #[inline(always)]
     pub fn is_div16(&self) -> bool {
-        *self == APBADIV_A::DIV16
+        **self == APBADIV_A::DIV16
     }
     #[doc = "Checks if the value of the field is `DIV32`"]
     #[inline(always)]
     pub fn is_div32(&self) -> bool {
-        *self == APBADIV_A::DIV32
+        **self == APBADIV_A::DIV32
     }
     #[doc = "Checks if the value of the field is `DIV64`"]
     #[inline(always)]
     pub fn is_div64(&self) -> bool {
-        *self == APBADIV_A::DIV64
+        **self == APBADIV_A::DIV64
     }
     #[doc = "Checks if the value of the field is `DIV128`"]
     #[inline(always)]
     pub fn is_div128(&self) -> bool {
-        *self == APBADIV_A::DIV128
+        **self == APBADIV_A::DIV128
     }
 }
-#[doc = "Write proxy for field `APBADIV`"]
+impl core::ops::Deref for APBADIV_R {
+    type Target = crate::FieldReader<u8, APBADIV_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `APBADIV` writer - APBA Prescaler Selection"]
 pub struct APBADIV_W<'a> {
     w: &'a mut W,
 }
@@ -104,9 +139,7 @@ impl<'a> APBADIV_W<'a> {
     #[doc = r"Writes `variant` to the field"]
     #[inline(always)]
     pub fn variant(self, variant: APBADIV_A) -> &'a mut W {
-        {
-            self.bits(variant.into())
-        }
+        self.bits(variant.into())
     }
     #[doc = "Divide by 1"]
     #[inline(always)]
@@ -151,7 +184,7 @@ impl<'a> APBADIV_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x07) | ((value as u8) & 0x07);
+        self.w.bits = (self.w.bits & !0x07) | (value as u8 & 0x07);
         self.w
     }
 }
@@ -167,5 +200,31 @@ impl W {
     #[inline(always)]
     pub fn apbadiv(&mut self) -> APBADIV_W {
         APBADIV_W { w: self }
+    }
+    #[doc = "Writes raw bits to the register."]
+    #[inline(always)]
+    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
+        self.0.bits(bits);
+        self
+    }
+}
+#[doc = "APBA Clock Select\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [apbasel](index.html) module"]
+pub struct APBASEL_SPEC;
+impl crate::RegisterSpec for APBASEL_SPEC {
+    type Ux = u8;
+}
+#[doc = "`read()` method returns [apbasel::R](R) reader structure"]
+impl crate::Readable for APBASEL_SPEC {
+    type Reader = R;
+}
+#[doc = "`write(|w| ..)` method takes [apbasel::W](W) writer structure"]
+impl crate::Writable for APBASEL_SPEC {
+    type Writer = W;
+}
+#[doc = "`reset()` method sets APBASEL to value 0"]
+impl crate::Resettable for APBASEL_SPEC {
+    #[inline(always)]
+    fn reset_value() -> Self::Ux {
+        0
     }
 }

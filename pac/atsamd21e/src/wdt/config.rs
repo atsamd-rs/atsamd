@@ -1,13 +1,37 @@
-#[doc = "Reader of register CONFIG"]
-pub type R = crate::R<u8, super::CONFIG>;
-#[doc = "Writer for register CONFIG"]
-pub type W = crate::W<u8, super::CONFIG>;
-#[doc = "Register CONFIG `reset()`'s with value 0xbb"]
-impl crate::ResetValue for super::CONFIG {
-    type Type = u8;
+#[doc = "Register `CONFIG` reader"]
+pub struct R(crate::R<CONFIG_SPEC>);
+impl core::ops::Deref for R {
+    type Target = crate::R<CONFIG_SPEC>;
     #[inline(always)]
-    fn reset_value() -> Self::Type {
-        0xbb
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl From<crate::R<CONFIG_SPEC>> for R {
+    #[inline(always)]
+    fn from(reader: crate::R<CONFIG_SPEC>) -> Self {
+        R(reader)
+    }
+}
+#[doc = "Register `CONFIG` writer"]
+pub struct W(crate::W<CONFIG_SPEC>);
+impl core::ops::Deref for W {
+    type Target = crate::W<CONFIG_SPEC>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl core::ops::DerefMut for W {
+    #[inline(always)]
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+impl From<crate::W<CONFIG_SPEC>> for W {
+    #[inline(always)]
+    fn from(writer: crate::W<CONFIG_SPEC>) -> Self {
+        W(writer)
     }
 }
 #[doc = "Time-Out Period\n\nValue on reset: 11"]
@@ -45,91 +69,101 @@ impl From<PER_A> for u8 {
         variant as _
     }
 }
-#[doc = "Reader of field `PER`"]
-pub type PER_R = crate::R<u8, PER_A>;
+#[doc = "Field `PER` reader - Time-Out Period"]
+pub struct PER_R(crate::FieldReader<u8, PER_A>);
 impl PER_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        PER_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> crate::Variant<u8, PER_A> {
-        use crate::Variant::*;
+    pub fn variant(&self) -> Option<PER_A> {
         match self.bits {
-            0 => Val(PER_A::_8),
-            1 => Val(PER_A::_16),
-            2 => Val(PER_A::_32),
-            3 => Val(PER_A::_64),
-            4 => Val(PER_A::_128),
-            5 => Val(PER_A::_256),
-            6 => Val(PER_A::_512),
-            7 => Val(PER_A::_1K),
-            8 => Val(PER_A::_2K),
-            9 => Val(PER_A::_4K),
-            10 => Val(PER_A::_8K),
-            11 => Val(PER_A::_16K),
-            i => Res(i),
+            0 => Some(PER_A::_8),
+            1 => Some(PER_A::_16),
+            2 => Some(PER_A::_32),
+            3 => Some(PER_A::_64),
+            4 => Some(PER_A::_128),
+            5 => Some(PER_A::_256),
+            6 => Some(PER_A::_512),
+            7 => Some(PER_A::_1K),
+            8 => Some(PER_A::_2K),
+            9 => Some(PER_A::_4K),
+            10 => Some(PER_A::_8K),
+            11 => Some(PER_A::_16K),
+            _ => None,
         }
     }
     #[doc = "Checks if the value of the field is `_8`"]
     #[inline(always)]
     pub fn is_8(&self) -> bool {
-        *self == PER_A::_8
+        **self == PER_A::_8
     }
     #[doc = "Checks if the value of the field is `_16`"]
     #[inline(always)]
     pub fn is_16(&self) -> bool {
-        *self == PER_A::_16
+        **self == PER_A::_16
     }
     #[doc = "Checks if the value of the field is `_32`"]
     #[inline(always)]
     pub fn is_32(&self) -> bool {
-        *self == PER_A::_32
+        **self == PER_A::_32
     }
     #[doc = "Checks if the value of the field is `_64`"]
     #[inline(always)]
     pub fn is_64(&self) -> bool {
-        *self == PER_A::_64
+        **self == PER_A::_64
     }
     #[doc = "Checks if the value of the field is `_128`"]
     #[inline(always)]
     pub fn is_128(&self) -> bool {
-        *self == PER_A::_128
+        **self == PER_A::_128
     }
     #[doc = "Checks if the value of the field is `_256`"]
     #[inline(always)]
     pub fn is_256(&self) -> bool {
-        *self == PER_A::_256
+        **self == PER_A::_256
     }
     #[doc = "Checks if the value of the field is `_512`"]
     #[inline(always)]
     pub fn is_512(&self) -> bool {
-        *self == PER_A::_512
+        **self == PER_A::_512
     }
     #[doc = "Checks if the value of the field is `_1K`"]
     #[inline(always)]
     pub fn is_1k(&self) -> bool {
-        *self == PER_A::_1K
+        **self == PER_A::_1K
     }
     #[doc = "Checks if the value of the field is `_2K`"]
     #[inline(always)]
     pub fn is_2k(&self) -> bool {
-        *self == PER_A::_2K
+        **self == PER_A::_2K
     }
     #[doc = "Checks if the value of the field is `_4K`"]
     #[inline(always)]
     pub fn is_4k(&self) -> bool {
-        *self == PER_A::_4K
+        **self == PER_A::_4K
     }
     #[doc = "Checks if the value of the field is `_8K`"]
     #[inline(always)]
     pub fn is_8k(&self) -> bool {
-        *self == PER_A::_8K
+        **self == PER_A::_8K
     }
     #[doc = "Checks if the value of the field is `_16K`"]
     #[inline(always)]
     pub fn is_16k(&self) -> bool {
-        *self == PER_A::_16K
+        **self == PER_A::_16K
     }
 }
-#[doc = "Write proxy for field `PER`"]
+impl core::ops::Deref for PER_R {
+    type Target = crate::FieldReader<u8, PER_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `PER` writer - Time-Out Period"]
 pub struct PER_W<'a> {
     w: &'a mut W,
 }
@@ -202,7 +236,7 @@ impl<'a> PER_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x0f) | ((value as u8) & 0x0f);
+        self.w.bits = (self.w.bits & !0x0f) | (value as u8 & 0x0f);
         self.w
     }
 }
@@ -241,91 +275,101 @@ impl From<WINDOW_A> for u8 {
         variant as _
     }
 }
-#[doc = "Reader of field `WINDOW`"]
-pub type WINDOW_R = crate::R<u8, WINDOW_A>;
+#[doc = "Field `WINDOW` reader - Window Mode Time-Out Period"]
+pub struct WINDOW_R(crate::FieldReader<u8, WINDOW_A>);
 impl WINDOW_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        WINDOW_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> crate::Variant<u8, WINDOW_A> {
-        use crate::Variant::*;
+    pub fn variant(&self) -> Option<WINDOW_A> {
         match self.bits {
-            0 => Val(WINDOW_A::_8),
-            1 => Val(WINDOW_A::_16),
-            2 => Val(WINDOW_A::_32),
-            3 => Val(WINDOW_A::_64),
-            4 => Val(WINDOW_A::_128),
-            5 => Val(WINDOW_A::_256),
-            6 => Val(WINDOW_A::_512),
-            7 => Val(WINDOW_A::_1K),
-            8 => Val(WINDOW_A::_2K),
-            9 => Val(WINDOW_A::_4K),
-            10 => Val(WINDOW_A::_8K),
-            11 => Val(WINDOW_A::_16K),
-            i => Res(i),
+            0 => Some(WINDOW_A::_8),
+            1 => Some(WINDOW_A::_16),
+            2 => Some(WINDOW_A::_32),
+            3 => Some(WINDOW_A::_64),
+            4 => Some(WINDOW_A::_128),
+            5 => Some(WINDOW_A::_256),
+            6 => Some(WINDOW_A::_512),
+            7 => Some(WINDOW_A::_1K),
+            8 => Some(WINDOW_A::_2K),
+            9 => Some(WINDOW_A::_4K),
+            10 => Some(WINDOW_A::_8K),
+            11 => Some(WINDOW_A::_16K),
+            _ => None,
         }
     }
     #[doc = "Checks if the value of the field is `_8`"]
     #[inline(always)]
     pub fn is_8(&self) -> bool {
-        *self == WINDOW_A::_8
+        **self == WINDOW_A::_8
     }
     #[doc = "Checks if the value of the field is `_16`"]
     #[inline(always)]
     pub fn is_16(&self) -> bool {
-        *self == WINDOW_A::_16
+        **self == WINDOW_A::_16
     }
     #[doc = "Checks if the value of the field is `_32`"]
     #[inline(always)]
     pub fn is_32(&self) -> bool {
-        *self == WINDOW_A::_32
+        **self == WINDOW_A::_32
     }
     #[doc = "Checks if the value of the field is `_64`"]
     #[inline(always)]
     pub fn is_64(&self) -> bool {
-        *self == WINDOW_A::_64
+        **self == WINDOW_A::_64
     }
     #[doc = "Checks if the value of the field is `_128`"]
     #[inline(always)]
     pub fn is_128(&self) -> bool {
-        *self == WINDOW_A::_128
+        **self == WINDOW_A::_128
     }
     #[doc = "Checks if the value of the field is `_256`"]
     #[inline(always)]
     pub fn is_256(&self) -> bool {
-        *self == WINDOW_A::_256
+        **self == WINDOW_A::_256
     }
     #[doc = "Checks if the value of the field is `_512`"]
     #[inline(always)]
     pub fn is_512(&self) -> bool {
-        *self == WINDOW_A::_512
+        **self == WINDOW_A::_512
     }
     #[doc = "Checks if the value of the field is `_1K`"]
     #[inline(always)]
     pub fn is_1k(&self) -> bool {
-        *self == WINDOW_A::_1K
+        **self == WINDOW_A::_1K
     }
     #[doc = "Checks if the value of the field is `_2K`"]
     #[inline(always)]
     pub fn is_2k(&self) -> bool {
-        *self == WINDOW_A::_2K
+        **self == WINDOW_A::_2K
     }
     #[doc = "Checks if the value of the field is `_4K`"]
     #[inline(always)]
     pub fn is_4k(&self) -> bool {
-        *self == WINDOW_A::_4K
+        **self == WINDOW_A::_4K
     }
     #[doc = "Checks if the value of the field is `_8K`"]
     #[inline(always)]
     pub fn is_8k(&self) -> bool {
-        *self == WINDOW_A::_8K
+        **self == WINDOW_A::_8K
     }
     #[doc = "Checks if the value of the field is `_16K`"]
     #[inline(always)]
     pub fn is_16k(&self) -> bool {
-        *self == WINDOW_A::_16K
+        **self == WINDOW_A::_16K
     }
 }
-#[doc = "Write proxy for field `WINDOW`"]
+impl core::ops::Deref for WINDOW_R {
+    type Target = crate::FieldReader<u8, WINDOW_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `WINDOW` writer - Window Mode Time-Out Period"]
 pub struct WINDOW_W<'a> {
     w: &'a mut W,
 }
@@ -398,7 +442,7 @@ impl<'a> WINDOW_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x0f << 4)) | (((value as u8) & 0x0f) << 4);
+        self.w.bits = (self.w.bits & !(0x0f << 4)) | ((value as u8 & 0x0f) << 4);
         self.w
     }
 }
@@ -424,5 +468,31 @@ impl W {
     #[inline(always)]
     pub fn window(&mut self) -> WINDOW_W {
         WINDOW_W { w: self }
+    }
+    #[doc = "Writes raw bits to the register."]
+    #[inline(always)]
+    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
+        self.0.bits(bits);
+        self
+    }
+}
+#[doc = "Configuration\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [config](index.html) module"]
+pub struct CONFIG_SPEC;
+impl crate::RegisterSpec for CONFIG_SPEC {
+    type Ux = u8;
+}
+#[doc = "`read()` method returns [config::R](R) reader structure"]
+impl crate::Readable for CONFIG_SPEC {
+    type Reader = R;
+}
+#[doc = "`write(|w| ..)` method takes [config::W](W) writer structure"]
+impl crate::Writable for CONFIG_SPEC {
+    type Writer = W;
+}
+#[doc = "`reset()` method sets CONFIG to value 0xbb"]
+impl crate::Resettable for CONFIG_SPEC {
+    #[inline(always)]
+    fn reset_value() -> Self::Ux {
+        0xbb
     }
 }

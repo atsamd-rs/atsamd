@@ -1,18 +1,55 @@
-#[doc = "Reader of register INTENCLR"]
-pub type R = crate::R<u32, super::INTENCLR>;
-#[doc = "Writer for register INTENCLR"]
-pub type W = crate::W<u32, super::INTENCLR>;
-#[doc = "Register INTENCLR `reset()`'s with value 0"]
-impl crate::ResetValue for super::INTENCLR {
-    type Type = u32;
+#[doc = "Register `INTENCLR` reader"]
+pub struct R(crate::R<INTENCLR_SPEC>);
+impl core::ops::Deref for R {
+    type Target = crate::R<INTENCLR_SPEC>;
     #[inline(always)]
-    fn reset_value() -> Self::Type {
-        0
+    fn deref(&self) -> &Self::Target {
+        &self.0
     }
 }
-#[doc = "Reader of field `EXTINT0`"]
-pub type EXTINT0_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `EXTINT0`"]
+impl From<crate::R<INTENCLR_SPEC>> for R {
+    #[inline(always)]
+    fn from(reader: crate::R<INTENCLR_SPEC>) -> Self {
+        R(reader)
+    }
+}
+#[doc = "Register `INTENCLR` writer"]
+pub struct W(crate::W<INTENCLR_SPEC>);
+impl core::ops::Deref for W {
+    type Target = crate::W<INTENCLR_SPEC>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl core::ops::DerefMut for W {
+    #[inline(always)]
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+impl From<crate::W<INTENCLR_SPEC>> for W {
+    #[inline(always)]
+    fn from(writer: crate::W<INTENCLR_SPEC>) -> Self {
+        W(writer)
+    }
+}
+#[doc = "Field `EXTINT0` reader - External Interrupt 0 Enable"]
+pub struct EXTINT0_R(crate::FieldReader<bool, bool>);
+impl EXTINT0_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        EXTINT0_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for EXTINT0_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `EXTINT0` writer - External Interrupt 0 Enable"]
 pub struct EXTINT0_W<'a> {
     w: &'a mut W,
 }
@@ -30,13 +67,26 @@ impl<'a> EXTINT0_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | ((value as u32) & 0x01);
+        self.w.bits = (self.w.bits & !0x01) | (value as u32 & 0x01);
         self.w
     }
 }
-#[doc = "Reader of field `EXTINT1`"]
-pub type EXTINT1_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `EXTINT1`"]
+#[doc = "Field `EXTINT1` reader - External Interrupt 1 Enable"]
+pub struct EXTINT1_R(crate::FieldReader<bool, bool>);
+impl EXTINT1_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        EXTINT1_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for EXTINT1_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `EXTINT1` writer - External Interrupt 1 Enable"]
 pub struct EXTINT1_W<'a> {
     w: &'a mut W,
 }
@@ -54,13 +104,26 @@ impl<'a> EXTINT1_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | (((value as u32) & 0x01) << 1);
+        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u32 & 0x01) << 1);
         self.w
     }
 }
-#[doc = "Reader of field `EXTINT2`"]
-pub type EXTINT2_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `EXTINT2`"]
+#[doc = "Field `EXTINT2` reader - External Interrupt 2 Enable"]
+pub struct EXTINT2_R(crate::FieldReader<bool, bool>);
+impl EXTINT2_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        EXTINT2_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for EXTINT2_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `EXTINT2` writer - External Interrupt 2 Enable"]
 pub struct EXTINT2_W<'a> {
     w: &'a mut W,
 }
@@ -78,13 +141,26 @@ impl<'a> EXTINT2_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 2)) | (((value as u32) & 0x01) << 2);
+        self.w.bits = (self.w.bits & !(0x01 << 2)) | ((value as u32 & 0x01) << 2);
         self.w
     }
 }
-#[doc = "Reader of field `EXTINT3`"]
-pub type EXTINT3_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `EXTINT3`"]
+#[doc = "Field `EXTINT3` reader - External Interrupt 3 Enable"]
+pub struct EXTINT3_R(crate::FieldReader<bool, bool>);
+impl EXTINT3_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        EXTINT3_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for EXTINT3_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `EXTINT3` writer - External Interrupt 3 Enable"]
 pub struct EXTINT3_W<'a> {
     w: &'a mut W,
 }
@@ -102,13 +178,26 @@ impl<'a> EXTINT3_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 3)) | (((value as u32) & 0x01) << 3);
+        self.w.bits = (self.w.bits & !(0x01 << 3)) | ((value as u32 & 0x01) << 3);
         self.w
     }
 }
-#[doc = "Reader of field `EXTINT4`"]
-pub type EXTINT4_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `EXTINT4`"]
+#[doc = "Field `EXTINT4` reader - External Interrupt 4 Enable"]
+pub struct EXTINT4_R(crate::FieldReader<bool, bool>);
+impl EXTINT4_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        EXTINT4_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for EXTINT4_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `EXTINT4` writer - External Interrupt 4 Enable"]
 pub struct EXTINT4_W<'a> {
     w: &'a mut W,
 }
@@ -126,13 +215,26 @@ impl<'a> EXTINT4_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 4)) | (((value as u32) & 0x01) << 4);
+        self.w.bits = (self.w.bits & !(0x01 << 4)) | ((value as u32 & 0x01) << 4);
         self.w
     }
 }
-#[doc = "Reader of field `EXTINT5`"]
-pub type EXTINT5_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `EXTINT5`"]
+#[doc = "Field `EXTINT5` reader - External Interrupt 5 Enable"]
+pub struct EXTINT5_R(crate::FieldReader<bool, bool>);
+impl EXTINT5_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        EXTINT5_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for EXTINT5_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `EXTINT5` writer - External Interrupt 5 Enable"]
 pub struct EXTINT5_W<'a> {
     w: &'a mut W,
 }
@@ -150,13 +252,26 @@ impl<'a> EXTINT5_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 5)) | (((value as u32) & 0x01) << 5);
+        self.w.bits = (self.w.bits & !(0x01 << 5)) | ((value as u32 & 0x01) << 5);
         self.w
     }
 }
-#[doc = "Reader of field `EXTINT6`"]
-pub type EXTINT6_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `EXTINT6`"]
+#[doc = "Field `EXTINT6` reader - External Interrupt 6 Enable"]
+pub struct EXTINT6_R(crate::FieldReader<bool, bool>);
+impl EXTINT6_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        EXTINT6_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for EXTINT6_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `EXTINT6` writer - External Interrupt 6 Enable"]
 pub struct EXTINT6_W<'a> {
     w: &'a mut W,
 }
@@ -174,13 +289,26 @@ impl<'a> EXTINT6_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 6)) | (((value as u32) & 0x01) << 6);
+        self.w.bits = (self.w.bits & !(0x01 << 6)) | ((value as u32 & 0x01) << 6);
         self.w
     }
 }
-#[doc = "Reader of field `EXTINT7`"]
-pub type EXTINT7_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `EXTINT7`"]
+#[doc = "Field `EXTINT7` reader - External Interrupt 7 Enable"]
+pub struct EXTINT7_R(crate::FieldReader<bool, bool>);
+impl EXTINT7_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        EXTINT7_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for EXTINT7_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `EXTINT7` writer - External Interrupt 7 Enable"]
 pub struct EXTINT7_W<'a> {
     w: &'a mut W,
 }
@@ -198,13 +326,26 @@ impl<'a> EXTINT7_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 7)) | (((value as u32) & 0x01) << 7);
+        self.w.bits = (self.w.bits & !(0x01 << 7)) | ((value as u32 & 0x01) << 7);
         self.w
     }
 }
-#[doc = "Reader of field `EXTINT8`"]
-pub type EXTINT8_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `EXTINT8`"]
+#[doc = "Field `EXTINT8` reader - External Interrupt 8 Enable"]
+pub struct EXTINT8_R(crate::FieldReader<bool, bool>);
+impl EXTINT8_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        EXTINT8_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for EXTINT8_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `EXTINT8` writer - External Interrupt 8 Enable"]
 pub struct EXTINT8_W<'a> {
     w: &'a mut W,
 }
@@ -222,13 +363,26 @@ impl<'a> EXTINT8_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 8)) | (((value as u32) & 0x01) << 8);
+        self.w.bits = (self.w.bits & !(0x01 << 8)) | ((value as u32 & 0x01) << 8);
         self.w
     }
 }
-#[doc = "Reader of field `EXTINT9`"]
-pub type EXTINT9_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `EXTINT9`"]
+#[doc = "Field `EXTINT9` reader - External Interrupt 9 Enable"]
+pub struct EXTINT9_R(crate::FieldReader<bool, bool>);
+impl EXTINT9_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        EXTINT9_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for EXTINT9_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `EXTINT9` writer - External Interrupt 9 Enable"]
 pub struct EXTINT9_W<'a> {
     w: &'a mut W,
 }
@@ -246,13 +400,26 @@ impl<'a> EXTINT9_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 9)) | (((value as u32) & 0x01) << 9);
+        self.w.bits = (self.w.bits & !(0x01 << 9)) | ((value as u32 & 0x01) << 9);
         self.w
     }
 }
-#[doc = "Reader of field `EXTINT10`"]
-pub type EXTINT10_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `EXTINT10`"]
+#[doc = "Field `EXTINT10` reader - External Interrupt 10 Enable"]
+pub struct EXTINT10_R(crate::FieldReader<bool, bool>);
+impl EXTINT10_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        EXTINT10_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for EXTINT10_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `EXTINT10` writer - External Interrupt 10 Enable"]
 pub struct EXTINT10_W<'a> {
     w: &'a mut W,
 }
@@ -270,13 +437,26 @@ impl<'a> EXTINT10_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 10)) | (((value as u32) & 0x01) << 10);
+        self.w.bits = (self.w.bits & !(0x01 << 10)) | ((value as u32 & 0x01) << 10);
         self.w
     }
 }
-#[doc = "Reader of field `EXTINT11`"]
-pub type EXTINT11_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `EXTINT11`"]
+#[doc = "Field `EXTINT11` reader - External Interrupt 11 Enable"]
+pub struct EXTINT11_R(crate::FieldReader<bool, bool>);
+impl EXTINT11_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        EXTINT11_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for EXTINT11_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `EXTINT11` writer - External Interrupt 11 Enable"]
 pub struct EXTINT11_W<'a> {
     w: &'a mut W,
 }
@@ -294,13 +474,26 @@ impl<'a> EXTINT11_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 11)) | (((value as u32) & 0x01) << 11);
+        self.w.bits = (self.w.bits & !(0x01 << 11)) | ((value as u32 & 0x01) << 11);
         self.w
     }
 }
-#[doc = "Reader of field `EXTINT12`"]
-pub type EXTINT12_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `EXTINT12`"]
+#[doc = "Field `EXTINT12` reader - External Interrupt 12 Enable"]
+pub struct EXTINT12_R(crate::FieldReader<bool, bool>);
+impl EXTINT12_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        EXTINT12_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for EXTINT12_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `EXTINT12` writer - External Interrupt 12 Enable"]
 pub struct EXTINT12_W<'a> {
     w: &'a mut W,
 }
@@ -318,13 +511,26 @@ impl<'a> EXTINT12_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 12)) | (((value as u32) & 0x01) << 12);
+        self.w.bits = (self.w.bits & !(0x01 << 12)) | ((value as u32 & 0x01) << 12);
         self.w
     }
 }
-#[doc = "Reader of field `EXTINT13`"]
-pub type EXTINT13_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `EXTINT13`"]
+#[doc = "Field `EXTINT13` reader - External Interrupt 13 Enable"]
+pub struct EXTINT13_R(crate::FieldReader<bool, bool>);
+impl EXTINT13_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        EXTINT13_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for EXTINT13_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `EXTINT13` writer - External Interrupt 13 Enable"]
 pub struct EXTINT13_W<'a> {
     w: &'a mut W,
 }
@@ -342,13 +548,26 @@ impl<'a> EXTINT13_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 13)) | (((value as u32) & 0x01) << 13);
+        self.w.bits = (self.w.bits & !(0x01 << 13)) | ((value as u32 & 0x01) << 13);
         self.w
     }
 }
-#[doc = "Reader of field `EXTINT14`"]
-pub type EXTINT14_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `EXTINT14`"]
+#[doc = "Field `EXTINT14` reader - External Interrupt 14 Enable"]
+pub struct EXTINT14_R(crate::FieldReader<bool, bool>);
+impl EXTINT14_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        EXTINT14_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for EXTINT14_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `EXTINT14` writer - External Interrupt 14 Enable"]
 pub struct EXTINT14_W<'a> {
     w: &'a mut W,
 }
@@ -366,13 +585,26 @@ impl<'a> EXTINT14_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 14)) | (((value as u32) & 0x01) << 14);
+        self.w.bits = (self.w.bits & !(0x01 << 14)) | ((value as u32 & 0x01) << 14);
         self.w
     }
 }
-#[doc = "Reader of field `EXTINT15`"]
-pub type EXTINT15_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `EXTINT15`"]
+#[doc = "Field `EXTINT15` reader - External Interrupt 15 Enable"]
+pub struct EXTINT15_R(crate::FieldReader<bool, bool>);
+impl EXTINT15_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        EXTINT15_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for EXTINT15_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `EXTINT15` writer - External Interrupt 15 Enable"]
 pub struct EXTINT15_W<'a> {
     w: &'a mut W,
 }
@@ -390,7 +622,7 @@ impl<'a> EXTINT15_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 15)) | (((value as u32) & 0x01) << 15);
+        self.w.bits = (self.w.bits & !(0x01 << 15)) | ((value as u32 & 0x01) << 15);
         self.w
     }
 }
@@ -556,5 +788,31 @@ impl W {
     #[inline(always)]
     pub fn extint15(&mut self) -> EXTINT15_W {
         EXTINT15_W { w: self }
+    }
+    #[doc = "Writes raw bits to the register."]
+    #[inline(always)]
+    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+        self.0.bits(bits);
+        self
+    }
+}
+#[doc = "Interrupt Enable Clear\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [intenclr](index.html) module"]
+pub struct INTENCLR_SPEC;
+impl crate::RegisterSpec for INTENCLR_SPEC {
+    type Ux = u32;
+}
+#[doc = "`read()` method returns [intenclr::R](R) reader structure"]
+impl crate::Readable for INTENCLR_SPEC {
+    type Reader = R;
+}
+#[doc = "`write(|w| ..)` method takes [intenclr::W](W) writer structure"]
+impl crate::Writable for INTENCLR_SPEC {
+    type Writer = W;
+}
+#[doc = "`reset()` method sets INTENCLR to value 0"]
+impl crate::Resettable for INTENCLR_SPEC {
+    #[inline(always)]
+    fn reset_value() -> Self::Ux {
+        0
     }
 }

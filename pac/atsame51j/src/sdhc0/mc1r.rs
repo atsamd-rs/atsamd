@@ -1,13 +1,37 @@
-#[doc = "Reader of register MC1R"]
-pub type R = crate::R<u8, super::MC1R>;
-#[doc = "Writer for register MC1R"]
-pub type W = crate::W<u8, super::MC1R>;
-#[doc = "Register MC1R `reset()`'s with value 0"]
-impl crate::ResetValue for super::MC1R {
-    type Type = u8;
+#[doc = "Register `MC1R` reader"]
+pub struct R(crate::R<MC1R_SPEC>);
+impl core::ops::Deref for R {
+    type Target = crate::R<MC1R_SPEC>;
     #[inline(always)]
-    fn reset_value() -> Self::Type {
-        0
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl From<crate::R<MC1R_SPEC>> for R {
+    #[inline(always)]
+    fn from(reader: crate::R<MC1R_SPEC>) -> Self {
+        R(reader)
+    }
+}
+#[doc = "Register `MC1R` writer"]
+pub struct W(crate::W<MC1R_SPEC>);
+impl core::ops::Deref for W {
+    type Target = crate::W<MC1R_SPEC>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl core::ops::DerefMut for W {
+    #[inline(always)]
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+impl From<crate::W<MC1R_SPEC>> for W {
+    #[inline(always)]
+    fn from(writer: crate::W<MC1R_SPEC>) -> Self {
+        W(writer)
     }
 }
 #[doc = "e.MMC Command Type\n\nValue on reset: 0"]
@@ -29,9 +53,13 @@ impl From<CMDTYP_A> for u8 {
         variant as _
     }
 }
-#[doc = "Reader of field `CMDTYP`"]
-pub type CMDTYP_R = crate::R<u8, CMDTYP_A>;
+#[doc = "Field `CMDTYP` reader - e.MMC Command Type"]
+pub struct CMDTYP_R(crate::FieldReader<u8, CMDTYP_A>);
 impl CMDTYP_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        CMDTYP_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
     pub fn variant(&self) -> CMDTYP_A {
@@ -46,25 +74,32 @@ impl CMDTYP_R {
     #[doc = "Checks if the value of the field is `NORMAL`"]
     #[inline(always)]
     pub fn is_normal(&self) -> bool {
-        *self == CMDTYP_A::NORMAL
+        **self == CMDTYP_A::NORMAL
     }
     #[doc = "Checks if the value of the field is `WAITIRQ`"]
     #[inline(always)]
     pub fn is_waitirq(&self) -> bool {
-        *self == CMDTYP_A::WAITIRQ
+        **self == CMDTYP_A::WAITIRQ
     }
     #[doc = "Checks if the value of the field is `STREAM`"]
     #[inline(always)]
     pub fn is_stream(&self) -> bool {
-        *self == CMDTYP_A::STREAM
+        **self == CMDTYP_A::STREAM
     }
     #[doc = "Checks if the value of the field is `BOOT`"]
     #[inline(always)]
     pub fn is_boot(&self) -> bool {
-        *self == CMDTYP_A::BOOT
+        **self == CMDTYP_A::BOOT
     }
 }
-#[doc = "Write proxy for field `CMDTYP`"]
+impl core::ops::Deref for CMDTYP_R {
+    type Target = crate::FieldReader<u8, CMDTYP_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `CMDTYP` writer - e.MMC Command Type"]
 pub struct CMDTYP_W<'a> {
     w: &'a mut W,
 }
@@ -72,9 +107,7 @@ impl<'a> CMDTYP_W<'a> {
     #[doc = r"Writes `variant` to the field"]
     #[inline(always)]
     pub fn variant(self, variant: CMDTYP_A) -> &'a mut W {
-        {
-            self.bits(variant.into())
-        }
+        self.bits(variant.into())
     }
     #[doc = "Not a MMC specific command"]
     #[inline(always)]
@@ -99,13 +132,26 @@ impl<'a> CMDTYP_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x03) | ((value as u8) & 0x03);
+        self.w.bits = (self.w.bits & !0x03) | (value as u8 & 0x03);
         self.w
     }
 }
-#[doc = "Reader of field `DDR`"]
-pub type DDR_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `DDR`"]
+#[doc = "Field `DDR` reader - e.MMC HSDDR Mode"]
+pub struct DDR_R(crate::FieldReader<bool, bool>);
+impl DDR_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        DDR_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for DDR_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `DDR` writer - e.MMC HSDDR Mode"]
 pub struct DDR_W<'a> {
     w: &'a mut W,
 }
@@ -123,13 +169,26 @@ impl<'a> DDR_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 3)) | (((value as u8) & 0x01) << 3);
+        self.w.bits = (self.w.bits & !(0x01 << 3)) | ((value as u8 & 0x01) << 3);
         self.w
     }
 }
-#[doc = "Reader of field `OPD`"]
-pub type OPD_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `OPD`"]
+#[doc = "Field `OPD` reader - e.MMC Open Drain Mode"]
+pub struct OPD_R(crate::FieldReader<bool, bool>);
+impl OPD_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        OPD_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for OPD_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `OPD` writer - e.MMC Open Drain Mode"]
 pub struct OPD_W<'a> {
     w: &'a mut W,
 }
@@ -147,13 +206,26 @@ impl<'a> OPD_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 4)) | (((value as u8) & 0x01) << 4);
+        self.w.bits = (self.w.bits & !(0x01 << 4)) | ((value as u8 & 0x01) << 4);
         self.w
     }
 }
-#[doc = "Reader of field `BOOTA`"]
-pub type BOOTA_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `BOOTA`"]
+#[doc = "Field `BOOTA` reader - e.MMC Boot Acknowledge Enable"]
+pub struct BOOTA_R(crate::FieldReader<bool, bool>);
+impl BOOTA_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        BOOTA_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for BOOTA_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `BOOTA` writer - e.MMC Boot Acknowledge Enable"]
 pub struct BOOTA_W<'a> {
     w: &'a mut W,
 }
@@ -171,13 +243,26 @@ impl<'a> BOOTA_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 5)) | (((value as u8) & 0x01) << 5);
+        self.w.bits = (self.w.bits & !(0x01 << 5)) | ((value as u8 & 0x01) << 5);
         self.w
     }
 }
-#[doc = "Reader of field `RSTN`"]
-pub type RSTN_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `RSTN`"]
+#[doc = "Field `RSTN` reader - e.MMC Reset Signal"]
+pub struct RSTN_R(crate::FieldReader<bool, bool>);
+impl RSTN_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        RSTN_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for RSTN_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `RSTN` writer - e.MMC Reset Signal"]
 pub struct RSTN_W<'a> {
     w: &'a mut W,
 }
@@ -195,13 +280,26 @@ impl<'a> RSTN_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 6)) | (((value as u8) & 0x01) << 6);
+        self.w.bits = (self.w.bits & !(0x01 << 6)) | ((value as u8 & 0x01) << 6);
         self.w
     }
 }
-#[doc = "Reader of field `FCD`"]
-pub type FCD_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `FCD`"]
+#[doc = "Field `FCD` reader - e.MMC Force Card Detect"]
+pub struct FCD_R(crate::FieldReader<bool, bool>);
+impl FCD_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        FCD_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for FCD_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `FCD` writer - e.MMC Force Card Detect"]
 pub struct FCD_W<'a> {
     w: &'a mut W,
 }
@@ -219,7 +317,7 @@ impl<'a> FCD_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 7)) | (((value as u8) & 0x01) << 7);
+        self.w.bits = (self.w.bits & !(0x01 << 7)) | ((value as u8 & 0x01) << 7);
         self.w
     }
 }
@@ -285,5 +383,31 @@ impl W {
     #[inline(always)]
     pub fn fcd(&mut self) -> FCD_W {
         FCD_W { w: self }
+    }
+    #[doc = "Writes raw bits to the register."]
+    #[inline(always)]
+    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
+        self.0.bits(bits);
+        self
+    }
+}
+#[doc = "MMC Control 1\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [mc1r](index.html) module"]
+pub struct MC1R_SPEC;
+impl crate::RegisterSpec for MC1R_SPEC {
+    type Ux = u8;
+}
+#[doc = "`read()` method returns [mc1r::R](R) reader structure"]
+impl crate::Readable for MC1R_SPEC {
+    type Reader = R;
+}
+#[doc = "`write(|w| ..)` method takes [mc1r::W](W) writer structure"]
+impl crate::Writable for MC1R_SPEC {
+    type Writer = W;
+}
+#[doc = "`reset()` method sets MC1R to value 0"]
+impl crate::Resettable for MC1R_SPEC {
+    #[inline(always)]
+    fn reset_value() -> Self::Ux {
+        0
     }
 }

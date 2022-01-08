@@ -226,16 +226,56 @@ This is the preferred pure rust ecosystem method for interacting with bootloader
 
 The `cargo-hf2` crate replaces the `cargo build` command to include flashing over USB to connected UF2 devices, using hf2 flashing over HID protocol.
 
-```bash
+```Shell
 $ cargo install cargo-hf2
 ```
 
 and from a bsp directory
-```
+
+```Shell
 $ cargo hf2 --example blinky_basic --features unproven --release
 ```
 
+If you are on Linux and hf2 fails to flash your board even if it is connected and in bootloader
+mode, you might need to add some `udev` rules if you have not done that yet.
+
+You might want to have all the hf2 related rules in a single file, i.e. `/etc/udev/rules.d/99-hf2-boards.rules`,
+or have a different rules file for each vendor.
+
+The rules for Seeeduino and Adafruit boards look like this:
+
+```Shell
+#adafruit rules
+ATTRS{idVendor}=="239a", ENV{ID_MM_DEVICE_IGNORE}="1"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="239a", MODE="0666"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="239a", MODE="0666"
+
+#seeeduino rules
+ATTRS{idVendor}=="2886", ENV{ID_MM_DEVICE_IGNORE}="1"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="2886", MODE="0666"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="2886", MODE="0666"
+```
+
+If you want to add boards from another vendor, you can get the vendor id with the `lsusb` command,
+for example:
+
+```Shell
+$ lsusb
+Bus 001 Device 005: ID 2886:002f Seeed Technology Co., Ltd. Seeeduino XIAO
+...
+```
+
+Here `2886` is the vendor id and `002f` the product id.
+
+After adding the rules remember to reboot or run:
+
+```Shell
+sudo udevadm control --reload-rules
+sudo udevadm trigger
+```
+
 For more information, refer to the `README` files for each crate:
+
 * [hf2 library (`hf2`)](https://github.com/jacobrosenthal/hf2-rs/tree/master/hf2)
 * [hf2 binary (`hf2-cli`)](https://github.com/jacobrosenthal/hf2-rs/tree/master/hf2-cli)
 * [hf2 cargo subcommand (`hf2-cargo`)](https://github.com/jacobrosenthal/hf2-rs/tree/master/cargo-hf2)

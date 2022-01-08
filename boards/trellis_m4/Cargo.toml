@@ -8,8 +8,9 @@ authors = [
 ]
 description = "Board Support crate for the Adafruit NeoTrellis M4 Express"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
+categories = ["embedded", "hardware-support", "no-std"]
 license = "MIT OR Apache-2.0"
-edition = "2018"
+edition = "2021"
 repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
 
@@ -21,7 +22,7 @@ version = "0.6.12"
 optional = true
 
 [dependencies.adxl343]
-version = "0.4"
+version = "0.8"
 optional = true
 
 [dependencies.atsamd-hal]
@@ -35,8 +36,6 @@ optional = true
 [dev-dependencies]
 panic-halt = "0.2"
 panic-semihosting = "0.5"
-cortex-m-semihosting = "0.3"
-cortex-m-rtic = "0.5.1"
 smart-leds = "0.3"
 
 [dev-dependencies.ws2812-timer-delay]

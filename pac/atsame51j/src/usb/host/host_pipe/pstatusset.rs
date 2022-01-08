@@ -1,14 +1,25 @@
-#[doc = "Writer for register PSTATUSSET"]
-pub type W = crate::W<u8, super::PSTATUSSET>;
-#[doc = "Register PSTATUSSET `reset()`'s with value 0"]
-impl crate::ResetValue for super::PSTATUSSET {
-    type Type = u8;
+#[doc = "Register `PSTATUSSET` writer"]
+pub struct W(crate::W<PSTATUSSET_SPEC>);
+impl core::ops::Deref for W {
+    type Target = crate::W<PSTATUSSET_SPEC>;
     #[inline(always)]
-    fn reset_value() -> Self::Type {
-        0
+    fn deref(&self) -> &Self::Target {
+        &self.0
     }
 }
-#[doc = "Write proxy for field `DTGL`"]
+impl core::ops::DerefMut for W {
+    #[inline(always)]
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+impl From<crate::W<PSTATUSSET_SPEC>> for W {
+    #[inline(always)]
+    fn from(writer: crate::W<PSTATUSSET_SPEC>) -> Self {
+        W(writer)
+    }
+}
+#[doc = "Field `DTGL` writer - Data Toggle Set"]
 pub struct DTGL_W<'a> {
     w: &'a mut W,
 }
@@ -26,11 +37,11 @@ impl<'a> DTGL_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | ((value as u8) & 0x01);
+        self.w.bits = (self.w.bits & !0x01) | (value as u8 & 0x01);
         self.w
     }
 }
-#[doc = "Write proxy for field `CURBK`"]
+#[doc = "Field `CURBK` writer - Current Bank Set"]
 pub struct CURBK_W<'a> {
     w: &'a mut W,
 }
@@ -48,11 +59,11 @@ impl<'a> CURBK_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 2)) | (((value as u8) & 0x01) << 2);
+        self.w.bits = (self.w.bits & !(0x01 << 2)) | ((value as u8 & 0x01) << 2);
         self.w
     }
 }
-#[doc = "Write proxy for field `PFREEZE`"]
+#[doc = "Field `PFREEZE` writer - Pipe Freeze Set"]
 pub struct PFREEZE_W<'a> {
     w: &'a mut W,
 }
@@ -70,11 +81,11 @@ impl<'a> PFREEZE_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 4)) | (((value as u8) & 0x01) << 4);
+        self.w.bits = (self.w.bits & !(0x01 << 4)) | ((value as u8 & 0x01) << 4);
         self.w
     }
 }
-#[doc = "Write proxy for field `BK0RDY`"]
+#[doc = "Field `BK0RDY` writer - Bank 0 Ready Set"]
 pub struct BK0RDY_W<'a> {
     w: &'a mut W,
 }
@@ -92,11 +103,11 @@ impl<'a> BK0RDY_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 6)) | (((value as u8) & 0x01) << 6);
+        self.w.bits = (self.w.bits & !(0x01 << 6)) | ((value as u8 & 0x01) << 6);
         self.w
     }
 }
-#[doc = "Write proxy for field `BK1RDY`"]
+#[doc = "Field `BK1RDY` writer - Bank 1 Ready Set"]
 pub struct BK1RDY_W<'a> {
     w: &'a mut W,
 }
@@ -114,7 +125,7 @@ impl<'a> BK1RDY_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 7)) | (((value as u8) & 0x01) << 7);
+        self.w.bits = (self.w.bits & !(0x01 << 7)) | ((value as u8 & 0x01) << 7);
         self.w
     }
 }
@@ -143,5 +154,27 @@ impl W {
     #[inline(always)]
     pub fn bk1rdy(&mut self) -> BK1RDY_W {
         BK1RDY_W { w: self }
+    }
+    #[doc = "Writes raw bits to the register."]
+    #[inline(always)]
+    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
+        self.0.bits(bits);
+        self
+    }
+}
+#[doc = "HOST_PIPE End Point Pipe Status Set\n\nThis register you can [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [pstatusset](index.html) module"]
+pub struct PSTATUSSET_SPEC;
+impl crate::RegisterSpec for PSTATUSSET_SPEC {
+    type Ux = u8;
+}
+#[doc = "`write(|w| ..)` method takes [pstatusset::W](W) writer structure"]
+impl crate::Writable for PSTATUSSET_SPEC {
+    type Writer = W;
+}
+#[doc = "`reset()` method sets PSTATUSSET to value 0"]
+impl crate::Resettable for PSTATUSSET_SPEC {
+    #[inline(always)]
+    fn reset_value() -> Self::Ux {
+        0
     }
 }

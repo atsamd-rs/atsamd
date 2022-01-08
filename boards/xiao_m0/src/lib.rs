@@ -45,6 +45,7 @@ pub mod pins {
             name: a4
             aliases: {
                 AlternateC: Sda
+                AlternateC: A4Sercom0Pad0
             }
         }
         PA09 {
@@ -52,6 +53,7 @@ pub mod pins {
             name: a5
             aliases: {
                 AlternateC: Scl
+                AlternateC: A5Sercom0Pad1
             }
         }
         PB08 {
@@ -179,7 +181,7 @@ pub fn i2c_master(
 pub type SpiPads = Pads<Sercom0, Miso, Mosi, Sclk>;
 
 /// SPI master for the labelled SPI peripheral
-pub type Spi = spi::Spi<spi::Config<SpiPads>>;
+pub type Spi = spi::Spi<spi::Config<SpiPads>, spi::Duplex>;
 
 /// Convenience for setting up the labelled SPI peripheral.
 /// This powers up SERCOM0 and configures it for use as an

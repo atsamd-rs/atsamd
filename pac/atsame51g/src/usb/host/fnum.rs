@@ -1,18 +1,55 @@
-#[doc = "Reader of register FNUM"]
-pub type R = crate::R<u16, super::FNUM>;
-#[doc = "Writer for register FNUM"]
-pub type W = crate::W<u16, super::FNUM>;
-#[doc = "Register FNUM `reset()`'s with value 0"]
-impl crate::ResetValue for super::FNUM {
-    type Type = u16;
+#[doc = "Register `FNUM` reader"]
+pub struct R(crate::R<FNUM_SPEC>);
+impl core::ops::Deref for R {
+    type Target = crate::R<FNUM_SPEC>;
     #[inline(always)]
-    fn reset_value() -> Self::Type {
-        0
+    fn deref(&self) -> &Self::Target {
+        &self.0
     }
 }
-#[doc = "Reader of field `MFNUM`"]
-pub type MFNUM_R = crate::R<u8, u8>;
-#[doc = "Write proxy for field `MFNUM`"]
+impl From<crate::R<FNUM_SPEC>> for R {
+    #[inline(always)]
+    fn from(reader: crate::R<FNUM_SPEC>) -> Self {
+        R(reader)
+    }
+}
+#[doc = "Register `FNUM` writer"]
+pub struct W(crate::W<FNUM_SPEC>);
+impl core::ops::Deref for W {
+    type Target = crate::W<FNUM_SPEC>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl core::ops::DerefMut for W {
+    #[inline(always)]
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+impl From<crate::W<FNUM_SPEC>> for W {
+    #[inline(always)]
+    fn from(writer: crate::W<FNUM_SPEC>) -> Self {
+        W(writer)
+    }
+}
+#[doc = "Field `MFNUM` reader - Micro Frame Number"]
+pub struct MFNUM_R(crate::FieldReader<u8, u8>);
+impl MFNUM_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        MFNUM_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for MFNUM_R {
+    type Target = crate::FieldReader<u8, u8>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `MFNUM` writer - Micro Frame Number"]
 pub struct MFNUM_W<'a> {
     w: &'a mut W,
 }
@@ -20,13 +57,26 @@ impl<'a> MFNUM_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x07) | ((value as u16) & 0x07);
+        self.w.bits = (self.w.bits & !0x07) | (value as u16 & 0x07);
         self.w
     }
 }
-#[doc = "Reader of field `FNUM`"]
-pub type FNUM_R = crate::R<u16, u16>;
-#[doc = "Write proxy for field `FNUM`"]
+#[doc = "Field `FNUM` reader - Frame Number"]
+pub struct FNUM_R(crate::FieldReader<u16, u16>);
+impl FNUM_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u16) -> Self {
+        FNUM_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for FNUM_R {
+    type Target = crate::FieldReader<u16, u16>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `FNUM` writer - Frame Number"]
 pub struct FNUM_W<'a> {
     w: &'a mut W,
 }
@@ -34,7 +84,7 @@ impl<'a> FNUM_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub unsafe fn bits(self, value: u16) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x07ff << 3)) | (((value as u16) & 0x07ff) << 3);
+        self.w.bits = (self.w.bits & !(0x07ff << 3)) | ((value as u16 & 0x07ff) << 3);
         self.w
     }
 }
@@ -60,5 +110,31 @@ impl W {
     #[inline(always)]
     pub fn fnum(&mut self) -> FNUM_W {
         FNUM_W { w: self }
+    }
+    #[doc = "Writes raw bits to the register."]
+    #[inline(always)]
+    pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {
+        self.0.bits(bits);
+        self
+    }
+}
+#[doc = "HOST Host Frame Number\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [fnum](index.html) module"]
+pub struct FNUM_SPEC;
+impl crate::RegisterSpec for FNUM_SPEC {
+    type Ux = u16;
+}
+#[doc = "`read()` method returns [fnum::R](R) reader structure"]
+impl crate::Readable for FNUM_SPEC {
+    type Reader = R;
+}
+#[doc = "`write(|w| ..)` method takes [fnum::W](W) writer structure"]
+impl crate::Writable for FNUM_SPEC {
+    type Writer = W;
+}
+#[doc = "`reset()` method sets FNUM to value 0"]
+impl crate::Resettable for FNUM_SPEC {
+    #[inline(always)]
+    fn reset_value() -> Self::Ux {
+        0
     }
 }
