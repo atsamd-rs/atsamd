@@ -71,7 +71,7 @@ where
         #[cfg(feature = "min-samd51g")]
         let trigger_action = TriggerAction::BURST;
 
-        #[cfg(any(feature = "samd11", feature = "samd21"))]
+        #[cfg(any(feature = "samd11", feature = "samd2x"))]
         let trigger_action = TriggerAction::BEAT;
 
         // SAFETY: We use new_unchecked to avoid having to pass a 'static self as the
@@ -110,7 +110,7 @@ where
         #[cfg(feature = "min-samd51g")]
         let trigger_action = TriggerAction::BURST;
 
-        #[cfg(any(feature = "samd11", feature = "samd21"))]
+        #[cfg(any(feature = "samd11", feature = "samd2x"))]
         let trigger_action = TriggerAction::BEAT;
 
         // SAFETY: We use new_unchecked to avoid having to pass a 'static self as the
@@ -179,7 +179,7 @@ where
         #[cfg(feature = "min-samd51g")]
         let trigger_action = TriggerAction::BURST;
 
-        #[cfg(any(feature = "samd11", feature = "samd21"))]
+        #[cfg(any(feature = "samd11", feature = "samd2x"))]
         let trigger_action = TriggerAction::BEAT;
 
         // SAFETY: We use new_unchecked to avoid having to pass a 'static self as the
@@ -218,7 +218,7 @@ where
         #[cfg(feature = "min-samd51g")]
         let trigger_action = TriggerAction::BURST;
 
-        #[cfg(any(feature = "samd11", feature = "samd21"))]
+        #[cfg(any(feature = "samd11", feature = "samd2x"))]
         let trigger_action = TriggerAction::BEAT;
 
         // SAFETY: We use new_unchecked to avoid having to pass a 'static self as the

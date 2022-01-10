@@ -50,7 +50,7 @@ where
 
 /// Clock type needed to create a new [`Config`]. [`PM`](pac::PM) for thumbv6m
 /// targets.
-#[cfg(any(feature = "samd11", feature = "samd21"))]
+#[cfg(any(feature = "samd11", feature = "samd2x"))]
 pub type Clock = pac::PM;
 
 /// Clock type needed to create a new [`Config`]. [`MCLK`](pac::MCLK) for
@@ -239,6 +239,7 @@ where
     /// When set, the UART will detect collisions and update the
     /// corresponding flag in the STATUS register.
     #[inline]
+    #[cfg(not(feature = "samd20"))]
     pub fn collision_detection(mut self, enabled: bool) -> Self {
         self.set_collision_detection(enabled);
         self
@@ -249,12 +250,14 @@ where
     /// When set, the UART will detect collisions and update the
     /// corresponding flag in the STATUS register.
     #[inline]
+    #[cfg(not(feature = "samd20"))]
     pub fn set_collision_detection(&mut self, enabled: bool) {
         self.registers.set_collision_detection(enabled);
     }
 
     /// Get the current collision detector setting
     #[inline]
+    #[cfg(not(feature = "samd20"))]
     pub fn get_collision_detection(&self) -> bool {
         self.registers.get_collision_detection()
     }
@@ -353,6 +356,7 @@ where
     /// a pulse to be accepted by the IrDA receiver with regards to the
     /// serial engine clock period. See datasheet for more information.
     #[inline]
+    #[cfg(not(feature = "samd20"))]
     pub fn irda_encoding(mut self, pulse_length: Option<u8>) -> Self {
         self.set_irda_encoding(pulse_length);
         self
@@ -364,6 +368,7 @@ where
     /// a pulse to be accepted by the IrDA receiver with regards to the
     /// serial engine clock period. See datasheet for more information.
     #[inline]
+    #[cfg(not(feature = "samd20"))]
     pub fn set_irda_encoding(&mut self, pulse_length: Option<u8>) {
         self.registers.set_irda_encoding(pulse_length);
     }
@@ -371,6 +376,7 @@ where
     /// Get the current IrDA encoding setting. The return type is the pulse
     /// length wrapped in an [`Option`].
     #[inline]
+    #[cfg(not(feature = "samd20"))]
     pub fn get_irda_encoding(&self) -> Option<u8> {
         self.registers.get_irda_encoding()
     }

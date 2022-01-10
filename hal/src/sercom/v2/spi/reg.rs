@@ -2,17 +2,17 @@ use core::convert::TryInto;
 
 use embedded_hal::spi;
 
-#[cfg(any(feature = "samd11", feature = "samd21"))]
+#[cfg(any(feature = "samd11", feature = "samd2x"))]
 use crate::pac::sercom0::SPI;
 #[cfg(feature = "min-samd51g")]
 use crate::pac::sercom0::SPIM;
 
-#[cfg(any(feature = "samd11", feature = "samd21"))]
+#[cfg(any(feature = "samd11", feature = "samd2x"))]
 use crate::pac::sercom0::spi::ctrla::MODE_A;
 #[cfg(feature = "min-samd51g")]
 use crate::pac::sercom0::spim::ctrla::MODE_A;
 
-use crate::sercom::v2::Sercom;
+use crate::sercom::v2::{reg_sync, Sercom};
 use crate::time::Hertz;
 
 use super::{BitOrder, DataWidth, Error, Flags, Phase, Polarity, Status};
@@ -36,7 +36,7 @@ pub(super) struct Registers<S: Sercom> {
 unsafe impl<S: Sercom> Sync for Registers<S> {}
 
 impl<S: Sercom> Registers<S> {
-    #[cfg(any(feature = "samd11", feature = "samd21"))]
+    #[cfg(any(feature = "samd11", feature = "samd2x"))]
     #[inline]
     pub fn spi(&self) -> &SPI {
         self.sercom.spi()
@@ -52,7 +52,7 @@ impl<S: Sercom> Registers<S> {
     #[inline]
     pub fn reset(&mut self) {
         self.spi().ctrla.write(|w| w.swrst().set_bit());
-        while self.spi().syncbusy.read().swrst().bit_is_set() {}
+        while !self.is_register_synced(reg_sync::SwRst) {}
     }
 
     #[cfg(feature = "dma")]
@@ -71,6 +71,20 @@ impl<S: Sercom> Registers<S> {
         });
     }
 
+    /// Wait for the registers synchronization
+    #[inline]
+    fn is_register_synced(&mut self, synced_reg: reg_sync) -> bool {
+        #[cfg(feature = "samd20")]
+        return !self.spi().status.read().syncbusy().bit_is_set();
+        #[cfg(not(feature = "samd20"))]
+        match synced_reg {
+            reg_sync::CtrlB => !self.spi().syncbusy.read().ctrlb().bit_is_set(),
+            reg_sync::Length => !self.spi().syncbusy.read().length().bit_is_set(),
+            reg_sync::Enable => !self.spi().syncbusy.read().enable().bit_is_set(),
+            reg_sync::SwRst => !self.spi().syncbusy.read().swrst().bit_is_set(),
+        }
+    }
+
     /// Configure the SPI operating mode
     ///
     /// For maximum flexibility, this module chooses to always operate in 32-bit
@@ -80,13 +94,14 @@ impl<S: Sercom> Registers<S> {
     #[inline]
     pub fn set_op_mode(&mut self, mode: MODE_A, mssen: bool) -> () {
         self.spi().ctrla.modify(|_, w| w.mode().variant(mode));
+        #[cfg(not(feature = "samd20"))]
         self.spi().ctrlb.modify(|_, w| w.mssen().bit(mssen));
         #[cfg(feature = "min-samd51g")]
         self.spi().ctrlc.write(|w| unsafe {
             w.data32b().data_trans_32bit();
             w.icspace().bits(1)
         });
-        while self.spi().syncbusy.read().ctrlb().bit_is_set() {}
+        while !self.is_register_synced(reg_sync::CtrlB) {}
     }
 
     /// Return the current transaction length
@@ -105,11 +120,11 @@ impl<S: Sercom> Registers<S> {
             w.len().bits(length);
             w.lenen().set_bit()
         });
-        while self.spi().syncbusy.read().length().bit_is_set() {}
+        while !self.is_register_synced(reg_sync::Length) {}
     }
 
     /// Set the character size
-    #[cfg(any(feature = "samd11", feature = "samd21"))]
+    #[cfg(any(feature = "samd11", feature = "samd2x"))]
     #[inline]
     pub fn set_char_size(&mut self, bits: u8) {
         self.spi()
@@ -274,28 +289,28 @@ impl<S: Sercom> Registers<S> {
     #[inline]
     pub fn rx_enable(&mut self) {
         self.spi().ctrlb.modify(|_, w| w.rxen().set_bit());
-        while self.spi().syncbusy.read().ctrlb().bit_is_set() {}
+        while !self.is_register_synced(reg_sync::CtrlB) {}
     }
 
     /// Disable the receiver
     #[inline]
     pub fn rx_disable(&mut self) {
         self.spi().ctrlb.modify(|_, w| w.rxen().clear_bit());
-        while self.spi().syncbusy.read().ctrlb().bit_is_set() {}
+        while !self.is_register_synced(reg_sync::CtrlB) {}
     }
 
     /// Enable the peripheral
     #[inline]
     pub fn enable(&mut self) {
         self.spi().ctrla.modify(|_, w| w.enable().set_bit());
-        while self.spi().syncbusy.read().enable().bit_is_set() {}
+        while !self.is_register_synced(reg_sync::Enable) {}
     }
 
     /// Disable the peripheral
     #[inline]
     pub fn disable(&mut self) {
         self.spi().ctrla.modify(|_, w| w.enable().clear_bit());
-        while self.spi().syncbusy.read().enable().bit_is_set() {}
+        while !self.is_register_synced(reg_sync::Enable) {}
     }
 
     /// Read from the `DATA` register

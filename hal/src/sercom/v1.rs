@@ -9,7 +9,7 @@
 pub mod pads;
 pub use pads::*;
 
-#[cfg(any(feature = "samd11", feature = "samd21"))]
+#[cfg(any(feature = "samd11", feature = "samd2x"))]
 pub use crate::common::thumbv6m::sercom::v1::*;
 
 #[cfg(feature = "min-samd51g")]

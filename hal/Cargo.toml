@@ -71,6 +71,11 @@ path = "../pac/atsamd11d"
 version = "0.11"
 optional = true
 
+[dependencies.atsamd20j]
+path = "../pac/atsamd20j"
+version = "0.1"
+optional = true
+
 [dependencies.atsamd21e]
 path = "../pac/atsamd21e"
 version = "0.11"
@@ -171,7 +176,11 @@ samd11c = ["atsamd11c", "samd11"]
 samd11c-rt = ["samd11c", "atsamd11c/rt"]
 samd11d = ["atsamd11d", "samd11"]
 samd11d-rt = ["samd11d", "atsamd11d/rt"]
-samd21 = ["device"] # Convenience feature for shared configuration of samd21 chips.
+samd2x = ["device"] # Convenience feature for samd20 and samd21 chips.
+samd20 = ["samd2x"] # Convenience feature for shared configuration of samd20 chips.
+samd20j = ["atsamd20j", "samd20", "min-samd20j"]
+samd20j-rt = ["samd20j", "atsamd20j/rt"]
+samd21 = ["samd2x"] # Convenience feature for shared configuration of samd21 chips.
 samd21e = ["atsamd21e", "samd21"]
 samd21e-rt = ["samd21e", "atsamd21e/rt"]
 samd21g = ["atsamd21g", "samd21", "min-samd21g"]
@@ -204,7 +213,9 @@ same54n = ["atsame54n", "same54", "min-samd51n"]
 same54n-rt = ["same54n", "atsame54n/rt"]
 same54p = ["atsame54p", "same54", "min-samd51p"]
 same54p-rt = ["same54p", "atsame54p/rt"]
-min-samd21g = []
+min-samd2x = []
+min-samd20j = ["min-samd2x"]
+min-samd21g = ["min-samd2x"]
 min-samd21j = ["min-samd21g"]
 min-samd51g = []
 min-samd51j = ["min-samd51g"]

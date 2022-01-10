@@ -56,6 +56,6 @@ pub fn usb_transp_cal() -> u8 {
 pub fn usb_trim_cal() -> u8 {
     #[cfg(feature = "samd11")]
     return cal_with_errata(4, 23, 7, 7, 5) as u8;
-    #[cfg(feature = "samd21")]
+    #[cfg(feature = "samd2x")]
     return cal_with_errata(4, 23, 7, 7, 3) as u8;
 }

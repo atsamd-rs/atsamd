@@ -5,7 +5,7 @@ use super::{BaudMode, BitOrder, CharSizeEnum, Flags, Oversampling, Parity, Statu
 use crate::pac;
 use crate::sercom::v2::*;
 
-#[cfg(any(feature = "samd11", feature = "samd21"))]
+#[cfg(any(feature = "samd11", feature = "samd2x"))]
 use pac::sercom0::usart::ctrla::MODE_A;
 
 #[cfg(feature = "min-samd51g")]
@@ -29,7 +29,7 @@ impl<S: Sercom> Registers<S> {
     }
 
     /// Helper function to access the underlying `USART` from the given `SERCOM`
-    #[cfg(any(feature = "samd11", feature = "samd21"))]
+    #[cfg(any(feature = "samd11", feature = "samd2x"))]
     #[inline]
     fn usart(&self) -> &pac::sercom0::USART {
         self.sercom.usart()
@@ -55,11 +55,26 @@ impl<S: Sercom> Registers<S> {
         self.sercom
     }
 
+    /// Wait for the registers synchronization
+    #[inline]
+    pub fn is_register_synced(&mut self, synced_reg: reg_sync) -> bool {
+        #[cfg(feature = "samd20")]
+        return !self.usart().status.read().syncbusy().bit_is_set();
+        #[cfg(not(feature = "samd20"))]
+        match synced_reg {
+            reg_sync::CtrlB => !self.usart().syncbusy.read().ctrlb().bit_is_set(),
+            reg_sync::Length => !self.usart().syncbusy.read().length().bit_is_set(),
+            reg_sync::Enable => !self.usart().syncbusy.read().enable().bit_is_set(),
+            reg_sync::SwRst => !self.usart().syncbusy.read().swrst().bit_is_set(),
+        }
+    }
+
     /// Reset the SERCOM peripheral
     #[inline]
     pub(super) fn swrst(&mut self) {
         self.usart().ctrla.write(|w| w.swrst().set_bit());
-        while self.usart().syncbusy.read().swrst().bit_is_set() {}
+
+        while !self.is_register_synced(reg_sync::SwRst) {}
     }
 
     /// Configure the SERCOM to use internal clock mode
@@ -74,8 +89,11 @@ impl<S: Sercom> Registers<S> {
     #[inline]
     pub(super) fn configure_pads(&mut self, rxpo: u8, txpo: u8) {
         self.usart().ctrla.modify(|_, w| unsafe {
-            w.rxpo().bits(rxpo);
-            w.txpo().bits(txpo)
+            #[cfg(feature = "samd20")]
+            w.txpo().bit(txpo != 0);
+            #[cfg(not(feature = "samd20"))]
+            w.txpo().bits(txpo);
+            w.rxpo().bits(rxpo)
         });
     }
 
@@ -204,12 +222,14 @@ impl<S: Sercom> Registers<S> {
     /// When set, the UART will detect collisions and update the
     /// corresponding flag in the STATUS register.
     #[inline]
+    #[cfg(not(feature = "samd20"))]
     pub(super) fn set_collision_detection(&mut self, enabled: bool) {
         self.usart().ctrlb.modify(|_, w| w.colden().bit(enabled));
     }
 
     /// Get the current collision detector setting
     #[inline]
+    #[cfg(not(feature = "samd20"))]
     pub(super) fn get_collision_detection(&self) -> bool {
         self.usart().ctrlb.read().colden().bit()
     }
@@ -236,20 +256,30 @@ impl<S: Sercom> Registers<S> {
                 Bits8 => 2,
             },
 
+            #[cfg(not(feature = "samd20"))]
             Fractional(n) => match n {
                 Bits16 => 1,
                 Bits8 => 3,
             },
         };
 
+        #[cfg(not(feature = "samd20"))]
         usart.ctrla.modify(|_, w| unsafe { w.sampr().bits(sampr) });
 
         match mode {
             BaudMode::Arithmetic(n) => {
                 let baud = calculate_baud_asynchronous_arithm(baud.0, freq.0, n as u8);
-                unsafe { usart.baud_usartfp_mode().write(|w| w.baud().bits(baud)) };
+                #[cfg(feature = "samd20")]
+                unsafe {
+                    usart.baud.write(|w| w.baud().bits(baud))
+                };
+                #[cfg(not(feature = "samd20"))]
+                unsafe {
+                    usart.baud_usartfp_mode().write(|w| w.baud().bits(baud))
+                };
             }
 
+            #[cfg(not(feature = "samd20"))]
             BaudMode::Fractional(n) => {
                 let (baud, frac) = calculate_baud_asynchronous_fractional(baud.0, freq.0, n as u8);
                 unsafe {
@@ -271,17 +301,25 @@ impl<S: Sercom> Registers<S> {
         use BaudMode::*;
         use Oversampling::*;
 
-        let baud = self.usart().baud_usartfp_mode().read().bits();
-        let sampr = self.usart().ctrla.read().sampr().bits();
-        let mode = match sampr {
-            0 => Arithmetic(Bits16),
-            1 => Fractional(Bits16),
-            2 => Arithmetic(Bits8),
-            3 => Fractional(Bits8),
-            _ => unreachable!(),
-        };
-
-        (baud, mode)
+        #[cfg(feature = "samd20")]
+        {
+            let baud = self.usart().baud.read().bits();
+            let mode = Arithmetic(Bits16);
+            return (baud, mode);
+        }
+        #[cfg(not(feature = "samd20"))]
+        {
+            let baud = self.usart().baud_usartfp_mode().read().bits();
+            let sampr = self.usart().ctrla.read().sampr().bits();
+            let mode = match sampr {
+                0 => Arithmetic(Bits16),
+                1 => Fractional(Bits16),
+                2 => Arithmetic(Bits8),
+                3 => Fractional(Bits8),
+                _ => unreachable!(),
+            };
+            (baud, mode)
+        }
     }
 
     /// Control the buffer overflow notification
@@ -320,6 +358,7 @@ impl<S: Sercom> Registers<S> {
     /// receiver with regards to the serial engine clock period.
     /// See datasheet for more information.
     #[inline]
+    #[cfg(not(feature = "samd20"))]
     pub(super) fn set_irda_encoding(&mut self, pulse_length: Option<u8>) {
         match pulse_length {
             Some(l) => {
@@ -335,6 +374,7 @@ impl<S: Sercom> Registers<S> {
     /// Get the current IrDA encoding setting. The return type is the pulse
     /// length wrapped in an [`Option`].
     #[inline]
+    #[cfg(not(feature = "samd20"))]
     pub(super) fn get_irda_encoding(&self) -> Option<u8> {
         if self.usart().ctrlb.read().enc().bit() {
             Some(self.usart().rxpl.read().bits())
@@ -404,18 +444,16 @@ impl<S: Sercom> Registers<S> {
     /// UART transactions are not possible until the peripheral is enabled.
     #[inline]
     pub(super) fn enable(&mut self, rxen: bool, txen: bool) {
-        let usart = self.usart();
-
         // Enable RX
         if rxen {
-            usart.ctrlb.modify(|_, w| w.rxen().set_bit());
-            while usart.syncbusy.read().ctrlb().bit_is_set() {}
+            self.usart().ctrlb.modify(|_, w| w.rxen().set_bit());
+            while !self.is_register_synced(reg_sync::CtrlB) {}
         }
 
         // Enable TX
         if txen {
-            usart.ctrlb.modify(|_, w| w.txen().set_bit());
-            while usart.syncbusy.read().ctrlb().bit_is_set() {}
+            self.usart().ctrlb.modify(|_, w| w.txen().set_bit());
+            while !self.is_register_synced(reg_sync::CtrlB) {}
         }
 
         // Globally enable peripheral
@@ -424,15 +462,13 @@ impl<S: Sercom> Registers<S> {
 
     #[inline]
     pub(super) fn disable(&mut self) {
-        let usart = self.usart();
-
         // Disable RX
-        usart.ctrlb.modify(|_, w| w.rxen().clear_bit());
-        while usart.syncbusy.read().ctrlb().bit_is_set() {}
+        self.usart().ctrlb.modify(|_, w| w.rxen().clear_bit());
+        while !self.is_register_synced(reg_sync::CtrlB) {}
 
         // Disable TX
-        usart.ctrlb.modify(|_, w| w.txen().clear_bit());
-        while usart.syncbusy.read().ctrlb().bit_is_set() {}
+        self.usart().ctrlb.modify(|_, w| w.txen().clear_bit());
+        while !self.is_register_synced(reg_sync::CtrlB) {}
 
         self.enable_peripheral(false);
     }
@@ -441,7 +477,7 @@ impl<S: Sercom> Registers<S> {
     /// synchronize.
     pub(super) fn enable_peripheral(&mut self, enable: bool) {
         self.usart().ctrla.modify(|_, w| w.enable().bit(enable));
-        while self.usart().syncbusy.read().enable().bit_is_set() {}
+        while !self.is_register_synced(reg_sync::Enable) {}
     }
 }
 

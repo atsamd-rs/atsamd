@@ -5,7 +5,7 @@
 
 use core::marker::PhantomData;
 
-#[cfg(feature = "samd21")]
+#[cfg(feature = "samd2x")]
 use crate::gpio::v2::AnyPin;
 use crate::sercom::v2::*;
 use crate::typelevel::{NoneT, Sealed};
@@ -284,7 +284,7 @@ where
     }
 }
 
-#[cfg(feature = "samd21")]
+#[cfg(feature = "samd2x")]
 impl<S, DI, DO, CK, SS> Pads<S, DI, DO, CK, SS>
 where
     S: Sercom,
@@ -404,7 +404,7 @@ where
 /// [`Pin`]: crate::gpio::v2::Pin
 /// [`PinId`]: crate::gpio::v2::PinId
 /// [`OptionalPinId`]: crate::gpio::v2::OptionalPinId
-#[cfg(feature = "samd21")]
+#[cfg(feature = "samd2x")]
 pub type PadsFromIds<S, DI = NoneT, DO = NoneT, CK = NoneT, SS = NoneT> = Pads<
     S,
     <DI as GetOptionalPad<S>>::Pad,

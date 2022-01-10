@@ -10,9 +10,9 @@ use crate::clock;
 use crate::hal::spi::{FullDuplex, Mode, Phase, Polarity};
 use crate::pac::sercom0::SPI;
 use crate::pac::{PM, SERCOM0, SERCOM1};
-#[cfg(feature = "samd21")]
+#[cfg(feature = "samd2x")]
 use crate::pac::{SERCOM2, SERCOM3};
-#[cfg(feature = "min-samd21g")]
+#[cfg(feature = "min-samd2x")]
 use crate::pac::{SERCOM4, SERCOM5};
 use crate::sercom::v1::pads::CompatiblePad;
 use crate::sercom::v2::*;
@@ -168,6 +168,11 @@ macro_rules! spi_master {
                 // reset the sercom instance
                 sercom.spi().ctrla.modify(|_, w| w.swrst().set_bit());
                 // wait for reset to complete
+                #[cfg(feature = "samd20")]
+                while sercom.spi().status.read().syncbusy().bit_is_set()
+                    || sercom.spi().ctrla.read().swrst().bit_is_set()
+                {}
+                #[cfg(not(feature = "samd20"))]
                 while sercom.spi().syncbusy.read().swrst().bit_is_set()
                     || sercom.spi().ctrla.read().swrst().bit_is_set()
                 {}
@@ -175,6 +180,9 @@ macro_rules! spi_master {
                 // Put the hardware into spi master mode
                 sercom.spi().ctrla.modify(|_, w| w.mode().spi_master());
                 // wait for configuration to take effect
+                #[cfg(feature = "samd20")]
+                while sercom.spi().status.read().syncbusy().bit_is_set() {}
+                #[cfg(not(feature = "samd20"))]
                 while sercom.spi().syncbusy.read().enable().bit_is_set() {}
 
                 // 8 bit data size and enable the receiver
@@ -213,6 +221,9 @@ macro_rules! spi_master {
 
                 sercom.spi().ctrla.modify(|_, w| w.enable().set_bit());
                 // wait for configuration to take effect
+                #[cfg(feature = "samd20")]
+                while sercom.spi().status.read().syncbusy().bit_is_set() {}
+                #[cfg(not(feature = "samd20"))]
                 while sercom.spi().syncbusy.read().enable().bit_is_set() {}
 
                 Self { padout, sercom }
@@ -286,11 +297,11 @@ macro_rules! spi_master {
 
 spi_master!(SPIMaster0: (Sercom0, SERCOM0, sercom0_, Sercom0CoreClock));
 spi_master!(SPIMaster1: (Sercom1, SERCOM1, sercom1_, Sercom1CoreClock));
-#[cfg(feature = "samd21")]
+#[cfg(feature = "samd2x")]
 spi_master!(SPIMaster2: (Sercom2, SERCOM2, sercom2_, Sercom2CoreClock));
-#[cfg(feature = "samd21")]
+#[cfg(feature = "samd2x")]
 spi_master!(SPIMaster3: (Sercom3, SERCOM3, sercom3_, Sercom3CoreClock));
-#[cfg(feature = "min-samd21g")]
+#[cfg(feature = "min-samd2x")]
 spi_master!(SPIMaster4: (Sercom4, SERCOM4, sercom4_, Sercom4CoreClock));
-#[cfg(feature = "min-samd21g")]
+#[cfg(feature = "min-samd2x")]
 spi_master!(SPIMaster5: (Sercom5, SERCOM5, sercom5_, Sercom5CoreClock));

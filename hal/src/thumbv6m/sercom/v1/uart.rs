@@ -9,9 +9,9 @@ use crate::hal::blocking::serial::{write::Default, Write};
 use crate::hal::serial;
 use crate::pac::sercom0::USART;
 use crate::pac::{PM, SERCOM0, SERCOM1};
-#[cfg(feature = "samd21")]
+#[cfg(feature = "samd2x")]
 use crate::pac::{SERCOM2, SERCOM3};
-#[cfg(feature = "min-samd21g")]
+#[cfg(feature = "min-samd2x")]
 use crate::pac::{SERCOM4, SERCOM5};
 use crate::sercom::v1::pads::CompatiblePad;
 use crate::sercom::v2::*;
@@ -242,6 +242,12 @@ macro_rules! uart {
                     unsafe {
                         // Reset
                         sercom.usart().ctrla.modify(|_, w| w.swrst().set_bit());
+                        #[cfg(feature = "samd20")]
+                        while sercom.usart().status.read().syncbusy().bit_is_set()
+                            || sercom.usart().ctrla.read().swrst().bit_is_set() {
+                            // wait for sync of CTRLA.SWRST
+                        }
+                        #[cfg(not(feature = "samd20"))]
                         while sercom.usart().syncbusy.read().swrst().bit_is_set()
                             || sercom.usart().ctrla.read().swrst().bit_is_set() {
                             // wait for sync of CTRLA.SWRST
@@ -253,10 +259,17 @@ macro_rules! uart {
 
                             let (rxpo, txpo) = padout.rxpo_txpo();
                             w.rxpo().bits(rxpo);
+                            #[cfg(feature = "samd20")]
+                            w.txpo().bit(txpo != 0);
+                            #[cfg(not(feature = "samd20"))]
                             w.txpo().bits(txpo);
 
                             w.form().bits(0x00);
-                            w.sampr().bits(0x00); // 16x oversample fractional
+
+                            // 16x oversample fractional
+                            #[cfg(not(feature = "samd20"))]
+                            w.sampr().bits(0x00);
+
                             w.runstdby().set_bit(); // Run in standby
                             w.form().bits(0); // 0 is no parity bits
 
@@ -281,6 +294,11 @@ macro_rules! uart {
                         // Asynchronous arithmetic mode (Table 24-2 in datasheet)
                         let baud = calculate_baud_value(freq.into().0, fref, sample_rate);
 
+                        #[cfg(feature = "samd20")]
+                        sercom.usart().baud.modify(|_, w| {
+                            w.baud().bits(baud)
+                        });
+                        #[cfg(not(feature = "samd20"))]
                         sercom.usart().baud().modify(|_, w| {
                             w.baud().bits(baud)
                         });
@@ -292,10 +310,16 @@ macro_rules! uart {
                             w.rxen().set_bit()
                         });
 
+                        #[cfg(feature = "samd20")]
+                        while sercom.usart().status.read().syncbusy().bit_is_set() {}
+                        #[cfg(not(feature = "samd20"))]
                         while sercom.usart().syncbusy.read().ctrlb().bit_is_set() {}
 
                         sercom.usart().ctrla.modify(|_, w| w.enable().set_bit());
                         // wait for sync of ENABLE
+                        #[cfg(feature = "samd20")]
+                        while sercom.usart().status.read().syncbusy().bit_is_set() {}
+                        #[cfg(not(feature = "samd20"))]
                         while sercom.usart().syncbusy.read().enable().bit_is_set() {}
                     }
 
@@ -496,13 +520,13 @@ macro_rules! uart {
 
 uart!(UART0: (Sercom0, SERCOM0, sercom0_, Sercom0CoreClock));
 uart!(UART1: (Sercom1, SERCOM1, sercom1_, Sercom1CoreClock));
-#[cfg(feature = "samd21")]
+#[cfg(feature = "samd2x")]
 uart!(UART2: (Sercom2, SERCOM2, sercom2_, Sercom2CoreClock));
-#[cfg(feature = "samd21")]
+#[cfg(feature = "samd2x")]
 uart!(UART3: (Sercom3, SERCOM3, sercom3_, Sercom3CoreClock));
-#[cfg(feature = "min-samd21g")]
+#[cfg(feature = "min-samd2x")]
 uart!(UART4: (Sercom4, SERCOM4, sercom4_, Sercom4CoreClock));
-#[cfg(feature = "min-samd21g")]
+#[cfg(feature = "min-samd2x")]
 uart!(UART5: (Sercom5, SERCOM5, sercom5_, Sercom5CoreClock));
 
 const SHIFT: u8 = 32;

@@ -1,6 +1,6 @@
 # HAL for working with atsamd & atsame devices
 
-This crate provides a type-safe API for working with `samd11`, `samd21`, `samd51`, `same51`, `same53`, and `same54` based devices.
+This crate provides a type-safe API for working with `samd11`, `samd20`, `samd21`, `samd51`, `same51`, `same53`, and `same54` based devices.
 
 [![Crates.io](https://img.shields.io/crates/v/atsamd-hal.svg)](https://crates.io/crates/atsamd-hal)
 [![Docs](https://docs.rs/atsamd-hal/badge.svg)](https://docs.rs/atsamd-hal/)
@@ -11,6 +11,7 @@ This crate provides a type-safe API for working with `samd11`, `samd21`, `samd51
 ## Supported Devices
 
 * `atsamd11c` (via the `samd11c` feature) [[pac]](https://github.com/atsamd-rs/atsamd/tree/master/pac/atsamd11c)
+* `atsamd20j` (via the `samd20j` feature) [[pac]](https://github.com/atsamd-rs/atsamd/tree/master/pac/atsamd20j)
 * `atsamd21e` (via the `samd21e` feature) [[pac]](https://github.com/atsamd-rs/atsamd/tree/master/pac/atsamd21e)
 * `atsamd21g` (via the `samd21g` feature) [[pac]](https://github.com/atsamd-rs/atsamd/tree/master/pac/atsamd21g)
 * `atsamd21j` (via the `samd21j` feature) [[pac]](https://github.com/atsamd-rs/atsamd/tree/master/pac/atsamd21j)

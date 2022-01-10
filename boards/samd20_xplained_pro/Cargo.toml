@@ -1,0 +1,40 @@
+[package]
+name = "samd20_xplained_pro"
+version = "0.1.0"
+authors = ["Kaizen Sparc <kaizenwoof@integralement.nu>"]
+description = "Board Support crate for the Microchip SAMD20 Xplained Pro eval board"
+keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/atsamd-rs/atsamd"
+readme = "README.md"
+edition = "2018"
+
+[dependencies.cortex-m-rt]
+version = "0.7"
+optional = true
+
+[dependencies.atsamd-hal]
+path = "../../hal"
+version = "0.14"
+default-features = false
+
+[dev-dependencies]
+cortex-m = "0.7"
+panic-halt = "0.2"
+panic-semihosting = "0.5"
+cortex-m-semihosting = "0.3"
+cortex-m-rtic = "0.5.1"
+
+[features]
+# ask the HAL to enable atsamd20j support
+default = ["rt", "atsamd-hal/samd20j", "atsamd-hal/samd20"]
+rt = ["cortex-m-rt", "atsamd-hal/samd20j-rt"]
+unproven = ["atsamd-hal/unproven"]
+use_semihosting = []
+
+# for cargo flash
+[package.metadata]
+chip = "ATSAMD20J18"
+
+[[example]]
+name = "blinky_basic"

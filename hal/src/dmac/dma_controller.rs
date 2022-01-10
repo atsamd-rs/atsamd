@@ -23,7 +23,7 @@ use modular_bitfield::prelude::*;
 use paste::paste;
 use seq_macro::seq;
 
-#[cfg(any(feature = "samd11", feature = "samd21"))]
+#[cfg(any(feature = "samd11", feature = "samd2x"))]
 pub use crate::pac::dmac::chctrlb::{
     LVL_A as PriorityLevel, TRIGACT_A as TriggerAction, TRIGSRC_A as TriggerSource,
 };

@@ -1,15 +1,21 @@
 use crate::clock;
-use crate::hal::{Pwm, PwmPin};
+#[cfg(not(feature = "samd20"))]
+use crate::hal::Pwm;
+use crate::hal::PwmPin;
 use crate::time::Hertz;
 use crate::timer_params::TimerParams;
 
-use crate::pac::{PM, TCC0};
+use crate::pac::PM;
+#[cfg(not(feature = "samd20"))]
+use crate::pac::TCC0;
 #[cfg(feature = "samd11")]
 use crate::pac::{TC1, TC2};
-#[cfg(feature = "samd21")]
-use crate::pac::{TC3, TC4, TC5, TCC1, TCC2};
-#[cfg(feature = "samd21j")]
+#[cfg(feature = "samd2x")]
+use crate::pac::{TC3, TC4, TC5};
+#[cfg(any(feature = "samd20j", feature = "samd21j"))]
 use crate::pac::{TC6, TC7};
+#[cfg(feature = "samd21")]
+use crate::pac::{TCC1, TCC2};
 
 // Timer/Counter (TCx)
 
@@ -136,6 +142,12 @@ pwm! {
     Pwm2: (TC2, Tc1Tc2Clock, apbcmask, tc2_, Pwm2Wrapper),
 }
 
+#[cfg(feature = "samd20")]
+pwm! {
+    Pwm4: (TC4, Tc4Tc5Clock, apbcmask, tc4_, Pwm4Wrapper),
+    Pwm5: (TC5, Tc4Tc5Clock, apbcmask, tc5_, Pwm5Wrapper),
+}
+
 #[cfg(feature = "samd21")]
 pwm! {
     Pwm3: (TC3, Tcc2Tc3Clock, apbcmask, tc3_, Pwm3Wrapper),
@@ -143,7 +155,7 @@ pwm! {
     Pwm5: (TC5, Tc4Tc5Clock, apbcmask, tc5_, Pwm5Wrapper),
 }
 
-#[cfg(feature = "samd21j")]
+#[cfg(any(feature = "samd20j", feature = "samd21j"))]
 pwm! {
     Pwm6: (TC6, Tc6Tc7Clock, apbcmask, tc6_, Pwm6Wrapper),
     Pwm7: (TC7, Tc6Tc7Clock, apbcmask, tc7_, Pwm7Wrapper),
@@ -159,6 +171,7 @@ pub enum Channel {
     _3,
 }
 
+#[cfg(not(feature = "samd20"))]
 macro_rules! pwm_tcc {
     ($($TYPE:ident: ($TCC:ident, $clock:ident, $apmask:ident, $apbits:ident, $wrapper:ident),)+) => {
         $(
