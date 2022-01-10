@@ -257,7 +257,7 @@ pub type SpiPads = spi::Pads<Sercom1, Miso, Mosi, Sck>;
 /// SPI master for the labelled SPI peripheral
 ///
 /// This type implements [`FullDuplex<u8>`](ehal::spi::FullDuplex).
-pub type Spi = spi::Spi<spi::Config<SpiPads>>;
+pub type Spi = spi::Spi<spi::Config<SpiPads>, spi::Duplex>;
 
 /// Convenience for setting up the labelled SPI peripheral.
 /// This powers up SERCOM1 and configures it for use as an

@@ -202,9 +202,10 @@ pub use pins::*;
 const BASE_CONTROLLER_FREQ: Hertz = Hertz(1000000);
 const BASE_CONTROLLER_SPI_MODE: hal::ehal::spi::Mode = spi::MODE_2;
 
-pub type Spi0Pads = spi::Pads<Sercom1, Spi0Miso, Spi0Mosi, Spi0Sck>;
+type Spi0Pads = spi::Pads<Sercom1, Spi0Miso, Spi0Mosi, Spi0Sck>;
 
-pub type Spi0 = spi::Spi<spi::Config<Spi0Pads>>;
+/// The [`spi::Spi`] type for the SPI labeled `SPI0`.
+pub type Spi0 = spi::Spi<spi::Config<Spi0Pads>, spi::Duplex>;
 
 /// Convenience for setting up the labeled SPI0 peripheral.
 /// SPI0 has the P1AM base controller connected.
@@ -229,7 +230,8 @@ pub fn base_controller_spi(
 
 type SdPads = spi::Pads<Sercom2, SdMiso, SdMosi, SdSck>;
 
-pub type SdSpi = spi::Spi<spi::Config<SdPads>>;
+/// The [`spi::Spi`] type for the SD card labeled `SPI2`.
+pub type SdSpi = spi::Spi<spi::Config<SdPads>, spi::Duplex>;
 
 /// Convenience for setting up the labeled SPI2 peripheral.
 /// SPI2 has the microSD card slot connected.

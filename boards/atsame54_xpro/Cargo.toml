@@ -13,11 +13,11 @@ repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
 
 [dependencies.cortex-m-rt]
-version = "0.6.12"
+version = "0.7"
 optional = true
 
 [dependencies.atsamd-hal]
-version = "0.13"
+version = "0.14"
 default-features = false
 
 [dependencies.usb-device]

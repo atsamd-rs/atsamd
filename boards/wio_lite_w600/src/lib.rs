@@ -263,7 +263,7 @@ type SpiPads = spi::Pads<Sercom4, Miso, Mosi, Sck>;
 /// SPI master for the labelled SPI peripheral
 ///
 /// This type implements [`FullDuplex<u8>`](ehal::spi::FullDuplex).
-pub type Spi = spi::Spi<spi::Config<SpiPads>>;
+pub type Spi = spi::Spi<spi::Config<SpiPads>, spi::Duplex>;
 
 /// Convenience function for setting up the D24/SCK, D23/MOSI, and D22/MISO pins
 /// as a SPI Master.

@@ -4,17 +4,18 @@ version = "0.11.0"
 authors = ["Wez Furlong <wez@wezfurlong.org>", "David McGillicuddy <contact@djmcgill.co.uk>"]
 description = "Board Support crate for the Arduino MKRZERO"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal", "arduino"]
+categories = ["embedded", "hardware-support", "no-std"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
-edition = "2018"
+edition = "2021"
 
 [dependencies.cortex-m-rt]
-version = "0.6.12"
+version = "0.7"
 optional = true
 
 [dependencies.atsamd-hal]
-version = "0.13"
+version = "0.14"
 default-features = false
 
 [dependencies.usb-device]

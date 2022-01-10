@@ -4,7 +4,8 @@ version = "0.10.0"
 authors = ["Ben Bergman <ben@benbergman.ca>"]
 description = "Board Support crate for the Adafruit Trinket M0"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
-edition = "2018"
+categories = ["embedded", "hardware-support", "no-std"]
+edition = "2021"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
@@ -15,11 +16,11 @@ apa102-spi = "0.3"
 smart-leds = "0.3"
 
 [dependencies.cortex-m-rt]
-version = "~0.6.12"
+version = "0.7"
 optional = true
 
 [dependencies.atsamd-hal]
-version = "0.13"
+version = "0.14"
 default-features = false
 
 [dependencies.usb-device]
