@@ -8,13 +8,14 @@
 //! [atsamd-hal]: https://github.com/atsamd-rs/atsamd
 
 #![no_std]
-
-// Re-export the HAL and the PAC to give the user lower-level access to the
-// device should they need it.
-pub use atsamd_hal::{self as hal, target_device as pac};
+#![allow(warnings)]
 
 #[cfg(feature = "rt")]
 pub use cortex_m_rt::entry;
+
+// Re-export the HAL and the PAC to give the user lower-level access to the
+// device should they need it.
+pub use atsamd_hal::{self as hal, pac};
 
 // The accelerometer crate contains a number of traits and types which may be
 // useful to the user.
@@ -34,6 +35,7 @@ mod storage;
 
 pub use buttons::*;
 pub use display::*;
+pub use pins::Pins;
 pub use pins::*;
 pub use sensors::*;
 pub use serial::*;

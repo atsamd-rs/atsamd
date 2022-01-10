@@ -1,18 +1,55 @@
-#[doc = "Reader of register TXBCIE"]
-pub type R = crate::R<u32, super::TXBCIE>;
-#[doc = "Writer for register TXBCIE"]
-pub type W = crate::W<u32, super::TXBCIE>;
-#[doc = "Register TXBCIE `reset()`'s with value 0"]
-impl crate::ResetValue for super::TXBCIE {
-    type Type = u32;
+#[doc = "Register `TXBCIE` reader"]
+pub struct R(crate::R<TXBCIE_SPEC>);
+impl core::ops::Deref for R {
+    type Target = crate::R<TXBCIE_SPEC>;
     #[inline(always)]
-    fn reset_value() -> Self::Type {
-        0
+    fn deref(&self) -> &Self::Target {
+        &self.0
     }
 }
-#[doc = "Reader of field `CFIE0`"]
-pub type CFIE0_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `CFIE0`"]
+impl From<crate::R<TXBCIE_SPEC>> for R {
+    #[inline(always)]
+    fn from(reader: crate::R<TXBCIE_SPEC>) -> Self {
+        R(reader)
+    }
+}
+#[doc = "Register `TXBCIE` writer"]
+pub struct W(crate::W<TXBCIE_SPEC>);
+impl core::ops::Deref for W {
+    type Target = crate::W<TXBCIE_SPEC>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl core::ops::DerefMut for W {
+    #[inline(always)]
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+impl From<crate::W<TXBCIE_SPEC>> for W {
+    #[inline(always)]
+    fn from(writer: crate::W<TXBCIE_SPEC>) -> Self {
+        W(writer)
+    }
+}
+#[doc = "Field `CFIE0` reader - Cancellation Finished Interrupt Enable 0"]
+pub struct CFIE0_R(crate::FieldReader<bool, bool>);
+impl CFIE0_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        CFIE0_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for CFIE0_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `CFIE0` writer - Cancellation Finished Interrupt Enable 0"]
 pub struct CFIE0_W<'a> {
     w: &'a mut W,
 }
@@ -30,13 +67,26 @@ impl<'a> CFIE0_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | ((value as u32) & 0x01);
+        self.w.bits = (self.w.bits & !0x01) | (value as u32 & 0x01);
         self.w
     }
 }
-#[doc = "Reader of field `CFIE1`"]
-pub type CFIE1_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `CFIE1`"]
+#[doc = "Field `CFIE1` reader - Cancellation Finished Interrupt Enable 1"]
+pub struct CFIE1_R(crate::FieldReader<bool, bool>);
+impl CFIE1_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        CFIE1_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for CFIE1_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `CFIE1` writer - Cancellation Finished Interrupt Enable 1"]
 pub struct CFIE1_W<'a> {
     w: &'a mut W,
 }
@@ -54,13 +104,26 @@ impl<'a> CFIE1_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | (((value as u32) & 0x01) << 1);
+        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u32 & 0x01) << 1);
         self.w
     }
 }
-#[doc = "Reader of field `CFIE2`"]
-pub type CFIE2_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `CFIE2`"]
+#[doc = "Field `CFIE2` reader - Cancellation Finished Interrupt Enable 2"]
+pub struct CFIE2_R(crate::FieldReader<bool, bool>);
+impl CFIE2_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        CFIE2_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for CFIE2_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `CFIE2` writer - Cancellation Finished Interrupt Enable 2"]
 pub struct CFIE2_W<'a> {
     w: &'a mut W,
 }
@@ -78,13 +141,26 @@ impl<'a> CFIE2_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 2)) | (((value as u32) & 0x01) << 2);
+        self.w.bits = (self.w.bits & !(0x01 << 2)) | ((value as u32 & 0x01) << 2);
         self.w
     }
 }
-#[doc = "Reader of field `CFIE3`"]
-pub type CFIE3_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `CFIE3`"]
+#[doc = "Field `CFIE3` reader - Cancellation Finished Interrupt Enable 3"]
+pub struct CFIE3_R(crate::FieldReader<bool, bool>);
+impl CFIE3_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        CFIE3_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for CFIE3_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `CFIE3` writer - Cancellation Finished Interrupt Enable 3"]
 pub struct CFIE3_W<'a> {
     w: &'a mut W,
 }
@@ -102,13 +178,26 @@ impl<'a> CFIE3_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 3)) | (((value as u32) & 0x01) << 3);
+        self.w.bits = (self.w.bits & !(0x01 << 3)) | ((value as u32 & 0x01) << 3);
         self.w
     }
 }
-#[doc = "Reader of field `CFIE4`"]
-pub type CFIE4_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `CFIE4`"]
+#[doc = "Field `CFIE4` reader - Cancellation Finished Interrupt Enable 4"]
+pub struct CFIE4_R(crate::FieldReader<bool, bool>);
+impl CFIE4_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        CFIE4_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for CFIE4_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `CFIE4` writer - Cancellation Finished Interrupt Enable 4"]
 pub struct CFIE4_W<'a> {
     w: &'a mut W,
 }
@@ -126,13 +215,26 @@ impl<'a> CFIE4_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 4)) | (((value as u32) & 0x01) << 4);
+        self.w.bits = (self.w.bits & !(0x01 << 4)) | ((value as u32 & 0x01) << 4);
         self.w
     }
 }
-#[doc = "Reader of field `CFIE5`"]
-pub type CFIE5_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `CFIE5`"]
+#[doc = "Field `CFIE5` reader - Cancellation Finished Interrupt Enable 5"]
+pub struct CFIE5_R(crate::FieldReader<bool, bool>);
+impl CFIE5_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        CFIE5_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for CFIE5_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `CFIE5` writer - Cancellation Finished Interrupt Enable 5"]
 pub struct CFIE5_W<'a> {
     w: &'a mut W,
 }
@@ -150,13 +252,26 @@ impl<'a> CFIE5_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 5)) | (((value as u32) & 0x01) << 5);
+        self.w.bits = (self.w.bits & !(0x01 << 5)) | ((value as u32 & 0x01) << 5);
         self.w
     }
 }
-#[doc = "Reader of field `CFIE6`"]
-pub type CFIE6_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `CFIE6`"]
+#[doc = "Field `CFIE6` reader - Cancellation Finished Interrupt Enable 6"]
+pub struct CFIE6_R(crate::FieldReader<bool, bool>);
+impl CFIE6_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        CFIE6_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for CFIE6_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `CFIE6` writer - Cancellation Finished Interrupt Enable 6"]
 pub struct CFIE6_W<'a> {
     w: &'a mut W,
 }
@@ -174,13 +289,26 @@ impl<'a> CFIE6_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 6)) | (((value as u32) & 0x01) << 6);
+        self.w.bits = (self.w.bits & !(0x01 << 6)) | ((value as u32 & 0x01) << 6);
         self.w
     }
 }
-#[doc = "Reader of field `CFIE7`"]
-pub type CFIE7_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `CFIE7`"]
+#[doc = "Field `CFIE7` reader - Cancellation Finished Interrupt Enable 7"]
+pub struct CFIE7_R(crate::FieldReader<bool, bool>);
+impl CFIE7_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        CFIE7_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for CFIE7_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `CFIE7` writer - Cancellation Finished Interrupt Enable 7"]
 pub struct CFIE7_W<'a> {
     w: &'a mut W,
 }
@@ -198,13 +326,26 @@ impl<'a> CFIE7_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 7)) | (((value as u32) & 0x01) << 7);
+        self.w.bits = (self.w.bits & !(0x01 << 7)) | ((value as u32 & 0x01) << 7);
         self.w
     }
 }
-#[doc = "Reader of field `CFIE8`"]
-pub type CFIE8_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `CFIE8`"]
+#[doc = "Field `CFIE8` reader - Cancellation Finished Interrupt Enable 8"]
+pub struct CFIE8_R(crate::FieldReader<bool, bool>);
+impl CFIE8_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        CFIE8_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for CFIE8_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `CFIE8` writer - Cancellation Finished Interrupt Enable 8"]
 pub struct CFIE8_W<'a> {
     w: &'a mut W,
 }
@@ -222,13 +363,26 @@ impl<'a> CFIE8_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 8)) | (((value as u32) & 0x01) << 8);
+        self.w.bits = (self.w.bits & !(0x01 << 8)) | ((value as u32 & 0x01) << 8);
         self.w
     }
 }
-#[doc = "Reader of field `CFIE9`"]
-pub type CFIE9_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `CFIE9`"]
+#[doc = "Field `CFIE9` reader - Cancellation Finished Interrupt Enable 9"]
+pub struct CFIE9_R(crate::FieldReader<bool, bool>);
+impl CFIE9_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        CFIE9_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for CFIE9_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `CFIE9` writer - Cancellation Finished Interrupt Enable 9"]
 pub struct CFIE9_W<'a> {
     w: &'a mut W,
 }
@@ -246,13 +400,26 @@ impl<'a> CFIE9_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 9)) | (((value as u32) & 0x01) << 9);
+        self.w.bits = (self.w.bits & !(0x01 << 9)) | ((value as u32 & 0x01) << 9);
         self.w
     }
 }
-#[doc = "Reader of field `CFIE10`"]
-pub type CFIE10_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `CFIE10`"]
+#[doc = "Field `CFIE10` reader - Cancellation Finished Interrupt Enable 10"]
+pub struct CFIE10_R(crate::FieldReader<bool, bool>);
+impl CFIE10_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        CFIE10_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for CFIE10_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `CFIE10` writer - Cancellation Finished Interrupt Enable 10"]
 pub struct CFIE10_W<'a> {
     w: &'a mut W,
 }
@@ -270,13 +437,26 @@ impl<'a> CFIE10_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 10)) | (((value as u32) & 0x01) << 10);
+        self.w.bits = (self.w.bits & !(0x01 << 10)) | ((value as u32 & 0x01) << 10);
         self.w
     }
 }
-#[doc = "Reader of field `CFIE11`"]
-pub type CFIE11_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `CFIE11`"]
+#[doc = "Field `CFIE11` reader - Cancellation Finished Interrupt Enable 11"]
+pub struct CFIE11_R(crate::FieldReader<bool, bool>);
+impl CFIE11_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        CFIE11_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for CFIE11_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `CFIE11` writer - Cancellation Finished Interrupt Enable 11"]
 pub struct CFIE11_W<'a> {
     w: &'a mut W,
 }
@@ -294,13 +474,26 @@ impl<'a> CFIE11_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 11)) | (((value as u32) & 0x01) << 11);
+        self.w.bits = (self.w.bits & !(0x01 << 11)) | ((value as u32 & 0x01) << 11);
         self.w
     }
 }
-#[doc = "Reader of field `CFIE12`"]
-pub type CFIE12_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `CFIE12`"]
+#[doc = "Field `CFIE12` reader - Cancellation Finished Interrupt Enable 12"]
+pub struct CFIE12_R(crate::FieldReader<bool, bool>);
+impl CFIE12_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        CFIE12_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for CFIE12_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `CFIE12` writer - Cancellation Finished Interrupt Enable 12"]
 pub struct CFIE12_W<'a> {
     w: &'a mut W,
 }
@@ -318,13 +511,26 @@ impl<'a> CFIE12_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 12)) | (((value as u32) & 0x01) << 12);
+        self.w.bits = (self.w.bits & !(0x01 << 12)) | ((value as u32 & 0x01) << 12);
         self.w
     }
 }
-#[doc = "Reader of field `CFIE13`"]
-pub type CFIE13_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `CFIE13`"]
+#[doc = "Field `CFIE13` reader - Cancellation Finished Interrupt Enable 13"]
+pub struct CFIE13_R(crate::FieldReader<bool, bool>);
+impl CFIE13_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        CFIE13_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for CFIE13_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `CFIE13` writer - Cancellation Finished Interrupt Enable 13"]
 pub struct CFIE13_W<'a> {
     w: &'a mut W,
 }
@@ -342,13 +548,26 @@ impl<'a> CFIE13_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 13)) | (((value as u32) & 0x01) << 13);
+        self.w.bits = (self.w.bits & !(0x01 << 13)) | ((value as u32 & 0x01) << 13);
         self.w
     }
 }
-#[doc = "Reader of field `CFIE14`"]
-pub type CFIE14_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `CFIE14`"]
+#[doc = "Field `CFIE14` reader - Cancellation Finished Interrupt Enable 14"]
+pub struct CFIE14_R(crate::FieldReader<bool, bool>);
+impl CFIE14_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        CFIE14_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for CFIE14_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `CFIE14` writer - Cancellation Finished Interrupt Enable 14"]
 pub struct CFIE14_W<'a> {
     w: &'a mut W,
 }
@@ -366,13 +585,26 @@ impl<'a> CFIE14_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 14)) | (((value as u32) & 0x01) << 14);
+        self.w.bits = (self.w.bits & !(0x01 << 14)) | ((value as u32 & 0x01) << 14);
         self.w
     }
 }
-#[doc = "Reader of field `CFIE15`"]
-pub type CFIE15_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `CFIE15`"]
+#[doc = "Field `CFIE15` reader - Cancellation Finished Interrupt Enable 15"]
+pub struct CFIE15_R(crate::FieldReader<bool, bool>);
+impl CFIE15_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        CFIE15_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for CFIE15_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `CFIE15` writer - Cancellation Finished Interrupt Enable 15"]
 pub struct CFIE15_W<'a> {
     w: &'a mut W,
 }
@@ -390,13 +622,26 @@ impl<'a> CFIE15_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 15)) | (((value as u32) & 0x01) << 15);
+        self.w.bits = (self.w.bits & !(0x01 << 15)) | ((value as u32 & 0x01) << 15);
         self.w
     }
 }
-#[doc = "Reader of field `CFIE16`"]
-pub type CFIE16_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `CFIE16`"]
+#[doc = "Field `CFIE16` reader - Cancellation Finished Interrupt Enable 16"]
+pub struct CFIE16_R(crate::FieldReader<bool, bool>);
+impl CFIE16_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        CFIE16_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for CFIE16_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `CFIE16` writer - Cancellation Finished Interrupt Enable 16"]
 pub struct CFIE16_W<'a> {
     w: &'a mut W,
 }
@@ -414,13 +659,26 @@ impl<'a> CFIE16_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 16)) | (((value as u32) & 0x01) << 16);
+        self.w.bits = (self.w.bits & !(0x01 << 16)) | ((value as u32 & 0x01) << 16);
         self.w
     }
 }
-#[doc = "Reader of field `CFIE17`"]
-pub type CFIE17_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `CFIE17`"]
+#[doc = "Field `CFIE17` reader - Cancellation Finished Interrupt Enable 17"]
+pub struct CFIE17_R(crate::FieldReader<bool, bool>);
+impl CFIE17_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        CFIE17_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for CFIE17_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `CFIE17` writer - Cancellation Finished Interrupt Enable 17"]
 pub struct CFIE17_W<'a> {
     w: &'a mut W,
 }
@@ -438,13 +696,26 @@ impl<'a> CFIE17_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 17)) | (((value as u32) & 0x01) << 17);
+        self.w.bits = (self.w.bits & !(0x01 << 17)) | ((value as u32 & 0x01) << 17);
         self.w
     }
 }
-#[doc = "Reader of field `CFIE18`"]
-pub type CFIE18_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `CFIE18`"]
+#[doc = "Field `CFIE18` reader - Cancellation Finished Interrupt Enable 18"]
+pub struct CFIE18_R(crate::FieldReader<bool, bool>);
+impl CFIE18_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        CFIE18_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for CFIE18_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `CFIE18` writer - Cancellation Finished Interrupt Enable 18"]
 pub struct CFIE18_W<'a> {
     w: &'a mut W,
 }
@@ -462,13 +733,26 @@ impl<'a> CFIE18_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 18)) | (((value as u32) & 0x01) << 18);
+        self.w.bits = (self.w.bits & !(0x01 << 18)) | ((value as u32 & 0x01) << 18);
         self.w
     }
 }
-#[doc = "Reader of field `CFIE19`"]
-pub type CFIE19_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `CFIE19`"]
+#[doc = "Field `CFIE19` reader - Cancellation Finished Interrupt Enable 19"]
+pub struct CFIE19_R(crate::FieldReader<bool, bool>);
+impl CFIE19_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        CFIE19_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for CFIE19_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `CFIE19` writer - Cancellation Finished Interrupt Enable 19"]
 pub struct CFIE19_W<'a> {
     w: &'a mut W,
 }
@@ -486,13 +770,26 @@ impl<'a> CFIE19_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 19)) | (((value as u32) & 0x01) << 19);
+        self.w.bits = (self.w.bits & !(0x01 << 19)) | ((value as u32 & 0x01) << 19);
         self.w
     }
 }
-#[doc = "Reader of field `CFIE20`"]
-pub type CFIE20_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `CFIE20`"]
+#[doc = "Field `CFIE20` reader - Cancellation Finished Interrupt Enable 20"]
+pub struct CFIE20_R(crate::FieldReader<bool, bool>);
+impl CFIE20_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        CFIE20_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for CFIE20_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `CFIE20` writer - Cancellation Finished Interrupt Enable 20"]
 pub struct CFIE20_W<'a> {
     w: &'a mut W,
 }
@@ -510,13 +807,26 @@ impl<'a> CFIE20_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 20)) | (((value as u32) & 0x01) << 20);
+        self.w.bits = (self.w.bits & !(0x01 << 20)) | ((value as u32 & 0x01) << 20);
         self.w
     }
 }
-#[doc = "Reader of field `CFIE21`"]
-pub type CFIE21_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `CFIE21`"]
+#[doc = "Field `CFIE21` reader - Cancellation Finished Interrupt Enable 21"]
+pub struct CFIE21_R(crate::FieldReader<bool, bool>);
+impl CFIE21_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        CFIE21_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for CFIE21_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `CFIE21` writer - Cancellation Finished Interrupt Enable 21"]
 pub struct CFIE21_W<'a> {
     w: &'a mut W,
 }
@@ -534,13 +844,26 @@ impl<'a> CFIE21_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 21)) | (((value as u32) & 0x01) << 21);
+        self.w.bits = (self.w.bits & !(0x01 << 21)) | ((value as u32 & 0x01) << 21);
         self.w
     }
 }
-#[doc = "Reader of field `CFIE22`"]
-pub type CFIE22_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `CFIE22`"]
+#[doc = "Field `CFIE22` reader - Cancellation Finished Interrupt Enable 22"]
+pub struct CFIE22_R(crate::FieldReader<bool, bool>);
+impl CFIE22_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        CFIE22_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for CFIE22_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `CFIE22` writer - Cancellation Finished Interrupt Enable 22"]
 pub struct CFIE22_W<'a> {
     w: &'a mut W,
 }
@@ -558,13 +881,26 @@ impl<'a> CFIE22_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 22)) | (((value as u32) & 0x01) << 22);
+        self.w.bits = (self.w.bits & !(0x01 << 22)) | ((value as u32 & 0x01) << 22);
         self.w
     }
 }
-#[doc = "Reader of field `CFIE23`"]
-pub type CFIE23_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `CFIE23`"]
+#[doc = "Field `CFIE23` reader - Cancellation Finished Interrupt Enable 23"]
+pub struct CFIE23_R(crate::FieldReader<bool, bool>);
+impl CFIE23_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        CFIE23_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for CFIE23_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `CFIE23` writer - Cancellation Finished Interrupt Enable 23"]
 pub struct CFIE23_W<'a> {
     w: &'a mut W,
 }
@@ -582,13 +918,26 @@ impl<'a> CFIE23_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 23)) | (((value as u32) & 0x01) << 23);
+        self.w.bits = (self.w.bits & !(0x01 << 23)) | ((value as u32 & 0x01) << 23);
         self.w
     }
 }
-#[doc = "Reader of field `CFIE24`"]
-pub type CFIE24_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `CFIE24`"]
+#[doc = "Field `CFIE24` reader - Cancellation Finished Interrupt Enable 24"]
+pub struct CFIE24_R(crate::FieldReader<bool, bool>);
+impl CFIE24_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        CFIE24_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for CFIE24_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `CFIE24` writer - Cancellation Finished Interrupt Enable 24"]
 pub struct CFIE24_W<'a> {
     w: &'a mut W,
 }
@@ -606,13 +955,26 @@ impl<'a> CFIE24_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 24)) | (((value as u32) & 0x01) << 24);
+        self.w.bits = (self.w.bits & !(0x01 << 24)) | ((value as u32 & 0x01) << 24);
         self.w
     }
 }
-#[doc = "Reader of field `CFIE25`"]
-pub type CFIE25_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `CFIE25`"]
+#[doc = "Field `CFIE25` reader - Cancellation Finished Interrupt Enable 25"]
+pub struct CFIE25_R(crate::FieldReader<bool, bool>);
+impl CFIE25_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        CFIE25_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for CFIE25_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `CFIE25` writer - Cancellation Finished Interrupt Enable 25"]
 pub struct CFIE25_W<'a> {
     w: &'a mut W,
 }
@@ -630,13 +992,26 @@ impl<'a> CFIE25_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 25)) | (((value as u32) & 0x01) << 25);
+        self.w.bits = (self.w.bits & !(0x01 << 25)) | ((value as u32 & 0x01) << 25);
         self.w
     }
 }
-#[doc = "Reader of field `CFIE26`"]
-pub type CFIE26_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `CFIE26`"]
+#[doc = "Field `CFIE26` reader - Cancellation Finished Interrupt Enable 26"]
+pub struct CFIE26_R(crate::FieldReader<bool, bool>);
+impl CFIE26_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        CFIE26_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for CFIE26_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `CFIE26` writer - Cancellation Finished Interrupt Enable 26"]
 pub struct CFIE26_W<'a> {
     w: &'a mut W,
 }
@@ -654,13 +1029,26 @@ impl<'a> CFIE26_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 26)) | (((value as u32) & 0x01) << 26);
+        self.w.bits = (self.w.bits & !(0x01 << 26)) | ((value as u32 & 0x01) << 26);
         self.w
     }
 }
-#[doc = "Reader of field `CFIE27`"]
-pub type CFIE27_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `CFIE27`"]
+#[doc = "Field `CFIE27` reader - Cancellation Finished Interrupt Enable 27"]
+pub struct CFIE27_R(crate::FieldReader<bool, bool>);
+impl CFIE27_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        CFIE27_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for CFIE27_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `CFIE27` writer - Cancellation Finished Interrupt Enable 27"]
 pub struct CFIE27_W<'a> {
     w: &'a mut W,
 }
@@ -678,13 +1066,26 @@ impl<'a> CFIE27_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 27)) | (((value as u32) & 0x01) << 27);
+        self.w.bits = (self.w.bits & !(0x01 << 27)) | ((value as u32 & 0x01) << 27);
         self.w
     }
 }
-#[doc = "Reader of field `CFIE28`"]
-pub type CFIE28_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `CFIE28`"]
+#[doc = "Field `CFIE28` reader - Cancellation Finished Interrupt Enable 28"]
+pub struct CFIE28_R(crate::FieldReader<bool, bool>);
+impl CFIE28_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        CFIE28_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for CFIE28_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `CFIE28` writer - Cancellation Finished Interrupt Enable 28"]
 pub struct CFIE28_W<'a> {
     w: &'a mut W,
 }
@@ -702,13 +1103,26 @@ impl<'a> CFIE28_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 28)) | (((value as u32) & 0x01) << 28);
+        self.w.bits = (self.w.bits & !(0x01 << 28)) | ((value as u32 & 0x01) << 28);
         self.w
     }
 }
-#[doc = "Reader of field `CFIE29`"]
-pub type CFIE29_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `CFIE29`"]
+#[doc = "Field `CFIE29` reader - Cancellation Finished Interrupt Enable 29"]
+pub struct CFIE29_R(crate::FieldReader<bool, bool>);
+impl CFIE29_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        CFIE29_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for CFIE29_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `CFIE29` writer - Cancellation Finished Interrupt Enable 29"]
 pub struct CFIE29_W<'a> {
     w: &'a mut W,
 }
@@ -726,13 +1140,26 @@ impl<'a> CFIE29_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 29)) | (((value as u32) & 0x01) << 29);
+        self.w.bits = (self.w.bits & !(0x01 << 29)) | ((value as u32 & 0x01) << 29);
         self.w
     }
 }
-#[doc = "Reader of field `CFIE30`"]
-pub type CFIE30_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `CFIE30`"]
+#[doc = "Field `CFIE30` reader - Cancellation Finished Interrupt Enable 30"]
+pub struct CFIE30_R(crate::FieldReader<bool, bool>);
+impl CFIE30_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        CFIE30_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for CFIE30_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `CFIE30` writer - Cancellation Finished Interrupt Enable 30"]
 pub struct CFIE30_W<'a> {
     w: &'a mut W,
 }
@@ -750,13 +1177,26 @@ impl<'a> CFIE30_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 30)) | (((value as u32) & 0x01) << 30);
+        self.w.bits = (self.w.bits & !(0x01 << 30)) | ((value as u32 & 0x01) << 30);
         self.w
     }
 }
-#[doc = "Reader of field `CFIE31`"]
-pub type CFIE31_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `CFIE31`"]
+#[doc = "Field `CFIE31` reader - Cancellation Finished Interrupt Enable 31"]
+pub struct CFIE31_R(crate::FieldReader<bool, bool>);
+impl CFIE31_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        CFIE31_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for CFIE31_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `CFIE31` writer - Cancellation Finished Interrupt Enable 31"]
 pub struct CFIE31_W<'a> {
     w: &'a mut W,
 }
@@ -774,7 +1214,7 @@ impl<'a> CFIE31_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 31)) | (((value as u32) & 0x01) << 31);
+        self.w.bits = (self.w.bits & !(0x01 << 31)) | ((value as u32 & 0x01) << 31);
         self.w
     }
 }
@@ -1100,5 +1540,31 @@ impl W {
     #[inline(always)]
     pub fn cfie31(&mut self) -> CFIE31_W {
         CFIE31_W { w: self }
+    }
+    #[doc = "Writes raw bits to the register."]
+    #[inline(always)]
+    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+        self.0.bits(bits);
+        self
+    }
+}
+#[doc = "Tx Buffer Cancellation Finished Interrupt Enable\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [txbcie](index.html) module"]
+pub struct TXBCIE_SPEC;
+impl crate::RegisterSpec for TXBCIE_SPEC {
+    type Ux = u32;
+}
+#[doc = "`read()` method returns [txbcie::R](R) reader structure"]
+impl crate::Readable for TXBCIE_SPEC {
+    type Reader = R;
+}
+#[doc = "`write(|w| ..)` method takes [txbcie::W](W) writer structure"]
+impl crate::Writable for TXBCIE_SPEC {
+    type Writer = W;
+}
+#[doc = "`reset()` method sets TXBCIE to value 0"]
+impl crate::Resettable for TXBCIE_SPEC {
+    #[inline(always)]
+    fn reset_value() -> Self::Ux {
+        0
     }
 }

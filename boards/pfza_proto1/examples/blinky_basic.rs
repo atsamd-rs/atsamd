@@ -1,17 +1,17 @@
 #![no_std]
 #![no_main]
 
-extern crate cortex_m;
-extern crate cortex_m_semihosting;
-#[cfg(not(feature = "use_semihosting"))]
-extern crate panic_halt;
-#[cfg(feature = "use_semihosting")]
-extern crate panic_semihosting;
-extern crate pfza_proto1 as hal;
+use bsp::hal;
+use pfza_proto1 as bsp;
 
+#[cfg(not(feature = "use_semihosting"))]
+use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
+
+use bsp::entry;
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
-use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 
@@ -26,7 +26,7 @@ fn main() -> ! {
         &mut peripherals.OSCCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = hal::Pins::new(peripherals.PORT);
+    let mut pins = bsp::Pins::new(peripherals.PORT);
     let mut red_led = pins.led0.into_open_drain_output(&mut pins.port);
     let mut delay = Delay::new(core.SYST, &mut clocks);
     loop {

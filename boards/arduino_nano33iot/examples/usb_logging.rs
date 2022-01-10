@@ -1,14 +1,20 @@
 #![no_std]
 #![no_main]
 
-extern crate arduino_nano33iot as hal;
-extern crate cortex_m;
-extern crate panic_halt;
-extern crate usb_device;
-extern crate usbd_serial;
+use arduino_nano33iot as bsp;
+use bsp::hal;
+use bsp::hal::prelude::*;
 
+use usb_device;
+use usbd_serial;
+
+#[cfg(not(feature = "use_semihosting"))]
+use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
+
+use bsp::entry;
 use hal::clock::GenericClockController;
-use hal::entry;
 use hal::pac::{interrupt, CorePeripherals, Peripherals};
 
 use hal::usb::UsbBus;
@@ -29,11 +35,11 @@ fn main() -> ! {
         &mut peripherals.SYSCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = hal::Pins::new(peripherals.PORT);
-    let mut red_led = pins.led_sck.into_open_drain_output(&mut pins.port);
+    let pins = bsp::Pins::new(peripherals.PORT);
+    let mut led: bsp::Led = pins.led_sck.into();
 
     let bus_allocator = unsafe {
-        USB_ALLOCATOR = Some(hal::usb_allocator(
+        USB_ALLOCATOR = Some(bsp::usb_allocator(
             peripherals.USB,
             &mut clocks,
             &mut peripherals.PM,
@@ -64,7 +70,7 @@ fn main() -> ! {
     // entirely interrupt driven.
     loop {
         cycle_delay(5 * 1024 * 1024);
-        red_led.toggle();
+        led.toggle().unwrap();
 
         // Turn off interrupts so we don't fight with the interrupt
         cortex_m::interrupt::free(|_| unsafe {

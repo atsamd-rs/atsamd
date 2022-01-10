@@ -1,7 +1,10 @@
 #![no_std]
 #![no_main]
 
+#[cfg(not(feature = "use_semihosting"))]
 use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
 
 use core::fmt::Write;
 use core::sync::atomic;
@@ -25,7 +28,6 @@ use hal::rtc;
 use hal::time::U32Ext;
 use hal::usb::UsbBus;
 
-use heapless::consts::U1024;
 use heapless::String;
 
 #[entry]
@@ -125,7 +127,10 @@ fn main() -> ! {
     match controller.device().init() {
         Ok(_) => {
             // speed up SPI and read out some info
-            controller.device().spi().reconfigure(|c| c.baud(4.mhz()));
+            controller
+                .device()
+                .spi()
+                .reconfigure(|c| c.set_baud(4.mhz()));
             usbserial_write!("OK!\r\nCard size...\r\n");
             match controller.device().card_size_bytes() {
                 Ok(size) => usbserial_write!("{} bytes\r\n", size),
@@ -160,7 +165,7 @@ fn main() -> ! {
 #[macro_export]
 macro_rules! usbserial_write {
     ($($tt:tt)*) => {{
-        let mut s: String<U1024> = String::new();
+        let mut s: String<1024> = String::new();
         write!(s, $($tt)*).unwrap();
         let message_bytes = s.as_bytes();
         let mut total_written = 0;

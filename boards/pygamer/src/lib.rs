@@ -5,18 +5,16 @@
 pub mod buttons;
 
 pub mod pins;
-use atsamd_hal as hal;
+pub use atsamd_hal as hal;
 
 #[cfg(feature = "rt")]
 pub use cortex_m_rt::entry;
 
 pub use pins::Pins;
 
-use hal::*;
-
 pub use hal::common::*;
+pub use hal::pac;
 pub use hal::samd51::*;
-pub use hal::target_device as pac;
 
 pub mod util {
     /// Analogous to Arduinos map function
@@ -36,7 +34,7 @@ pub mod util {
 #[inline(never)]
 #[panic_handler]
 fn panic(_info: &core::panic::PanicInfo) -> ! {
-    use embedded_hal::digital::v2::OutputPin;
+    use hal::ehal::digital::v2::OutputPin;
 
     let peripherals = unsafe { crate::pac::Peripherals::steal() };
     let mut pins = Pins::new(peripherals.PORT);

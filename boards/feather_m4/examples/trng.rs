@@ -3,12 +3,16 @@
 
 // True Random Number Generator - trng
 
-extern crate cortex_m_rt;
-extern crate feather_m4 as hal;
-extern crate panic_halt;
+use bsp::hal;
+use feather_m4 as bsp;
 
+#[cfg(not(feature = "use_semihosting"))]
+use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
+
+use bsp::entry;
 use hal::clock::GenericClockController;
-use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 
@@ -27,8 +31,8 @@ fn main() -> ! {
     );
     // We will use the red led and a delay in this simplest possible
     // demonstration of the random number generator.
-    let mut pins = hal::Pins::new(peripherals.PORT);
-    let mut red_led = pins.d13.into_open_drain_output(&mut pins.port);
+    let pins = bsp::Pins::new(peripherals.PORT);
+    let mut red_led = pins.d13.into_push_pull_output();
     let mut delay = hal::delay::Delay::new(core.SYST, &mut clocks);
 
     // Create a struct as a representation of the random number generator peripheral

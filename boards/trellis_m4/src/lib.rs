@@ -10,13 +10,11 @@ pub use adxl343;
 #[cfg(feature = "keypad-unproven")]
 pub use keypad;
 
-use atsamd_hal as hal;
-
-use hal::*;
+pub use atsamd_hal as hal;
 
 pub use hal::common::*;
+pub use hal::pac;
 pub use hal::samd51::*;
-pub use hal::target_device as pac;
 
 #[cfg(feature = "rt")]
 pub use cortex_m_rt::entry;
@@ -30,7 +28,7 @@ use hal::sercom::{I2CMaster4, UART4};
 use hal::time::Hertz;
 
 #[cfg(feature = "keypad-unproven")]
-use embedded_hal::digital::v1_compat::{OldInputPin, OldOutputPin};
+use hal::ehal::digital::v1_compat::{OldInputPin, OldOutputPin};
 #[cfg(feature = "keypad-unproven")]
 use hal::gpio::{OpenDrain, Output, PullUp};
 #[cfg(feature = "keypad-unproven")]

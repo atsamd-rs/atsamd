@@ -1,6 +1,6 @@
 [package]
 name = "sodaq_sara_aff"
-version = "0.7.0"
+version = "0.8.0"
 authors = ["Stefan de Lange <langestefan@msn.com>"]
 description = "Board Support crate for the Sodaq SARA AFF"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
@@ -9,18 +9,12 @@ repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
 edition = "2018"
 
-[dependencies]
-cortex-m = "0.6"
-embedded-hal = "0.2.3"
-nb = "0.1"
-
 [dependencies.cortex-m-rt]
 version = "0.6.12"
 optional = true
 
 [dependencies.atsamd-hal]
-path = "../../hal"
-version = "0.12"
+version = "0.13"
 default-features = false
 
 [dev-dependencies]
@@ -32,3 +26,7 @@ default = ["rt", "atsamd-hal/samd21j"]
 rt = ["cortex-m-rt", "atsamd-hal/samd21j-rt"]
 unproven = ["atsamd-hal/unproven"]
 use_semihosting = []
+
+# for cargo flash
+[package.metadata]
+chip = "ATSAMD21J18A"

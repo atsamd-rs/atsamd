@@ -1,6 +1,7 @@
 #![no_std]
 #![no_main]
 
+use bsp::hal;
 /// Makes the itsybitsy_m4 appear as a USB serial port. The color of the
 /// dotstar LED can be changed by sending bytes to the serial port.
 ///
@@ -10,28 +11,28 @@
 /// $> sudo bash -c "echo 'R' > /dev/ttyACM0"
 /// $> sudo bash -c "echo 'G' > /dev/ttyACM0"
 /// $> sudo bash -c "echo 'O' > /dev/ttyACM0"
-extern crate itsybitsy_m4 as hal;
-extern crate panic_halt;
+use itsybitsy_m4 as bsp;
 
-use hal::clock::GenericClockController;
+#[cfg(not(feature = "use_semihosting"))]
+use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
 
+use bsp::entry;
 use cortex_m::interrupt::free as disable_interrupts;
 use cortex_m::peripheral::NVIC;
-use hal::entry;
-use hal::pac::{interrupt, CorePeripherals, Peripherals};
-
-use hal::usb::UsbBus;
-use usb_device::bus::UsbBusAllocator;
-
-use usb_device::prelude::*;
-use usbd_serial::{SerialPort, USB_CLASS_CDC};
-
-use hal::dbgprint;
-use hal::time::Hertz;
-use hal::uart;
-
-use hal::timer::SpinTimer;
+use hal::{
+    clock::GenericClockController,
+    dbgprint,
+    ehal::timer::CountDown,
+    pac::{interrupt, CorePeripherals, Peripherals},
+    time::MegaHertz,
+    timer::TimerCounter,
+    usb::UsbBus,
+};
 use smart_leds::{hsv::RGB8, SmartLedsWrite};
+use usb_device::{bus::UsbBusAllocator, prelude::*};
+use usbd_serial::{SerialPort, USB_CLASS_CDC};
 
 #[entry]
 fn main() -> ! {
@@ -44,40 +45,44 @@ fn main() -> ! {
         &mut peripherals.OSCCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = hal::Pins::new(peripherals.PORT).split();
-    let rstc = &peripherals.RSTC;
-
-    let mut rgb = hal::dotstar_bitbang(pins.dotstar, &mut pins.port, SpinTimer::new(12));
+    let pins = bsp::Pins::new(peripherals.PORT);
+    let gclk0 = clocks.gclk0();
+    let tc2_3 = clocks.tc2_tc3(&gclk0).unwrap();
+    let mut timer = TimerCounter::tc3_(&tc2_3, peripherals.TC3, &mut peripherals.MCLK);
+    timer.start(MegaHertz(4));
+    let mut rgb = bsp::dotstar_bitbang(
+        pins.dotstar_miso.into(),
+        pins.dotstar_mosi.into(),
+        pins.dotstar_sck.into(),
+        timer,
+    );
     rgb.write([RGB8 { r: 0, g: 0, b: 0 }].iter().cloned())
         .unwrap();
 
-    uart(
-        pins.uart,
-        &mut clocks,
-        Hertz(115200),
-        peripherals.SERCOM3,
-        &mut peripherals.MCLK,
-        &mut pins.port,
-    );
     dbgprint!(
         "\n\n\n\n~========== STARTING {:?} ==========~\n",
         hal::serial_number()
     );
-    dbgprint!("Last reset was from {:?}\n", hal::reset_cause(rstc));
+    dbgprint!(
+        "Last reset was from {:?}\n",
+        hal::reset_cause(&peripherals.RSTC)
+    );
 
     let bus_allocator = unsafe {
-        USB_ALLOCATOR = Some(pins.usb.usb_allocator(
+        USB_ALLOCATOR = Some(bsp::usb_allocator(
             peripherals.USB,
             &mut clocks,
             &mut peripherals.MCLK,
+            pins.usb_dm,
+            pins.usb_dp,
         ));
         USB_ALLOCATOR.as_ref().unwrap()
     };
 
     unsafe {
-        USB_SERIAL = Some(SerialPort::new(&bus_allocator));
+        USB_SERIAL = Some(SerialPort::new(bus_allocator));
         USB_BUS = Some(
-            UsbDeviceBuilder::new(&bus_allocator, UsbVidPid(0x16c0, 0x27dd))
+            UsbDeviceBuilder::new(bus_allocator, UsbVidPid(0x16c0, 0x27dd))
                 .manufacturer("Fake company")
                 .product("Serial port")
                 .serial_number("TEST")
@@ -114,8 +119,8 @@ static mut PENDING_COLOR: Option<[RGB8; 1]> = None;
 
 fn poll_usb() {
     unsafe {
-        USB_BUS.as_mut().map(|usb_dev| {
-            USB_SERIAL.as_mut().map(|serial| {
+        if let Some(usb_dev) = USB_BUS.as_mut() {
+            if let Some(serial) = USB_SERIAL.as_mut() {
                 usb_dev.poll(&mut [serial]);
                 let mut buf = [0u8; 64];
 
@@ -124,7 +129,7 @@ fn poll_usb() {
                         if i >= count {
                             break;
                         }
-                        match c.clone() as char {
+                        match *c as char {
                             'R' => {
                                 PENDING_COLOR = Some([RGB8 { r: 120, g: 0, b: 0 }]);
                             }
@@ -138,8 +143,8 @@ fn poll_usb() {
                         }
                     }
                 };
-            });
-        });
+            };
+        };
     };
 }
 

@@ -3,15 +3,18 @@
 #![no_std]
 #![no_main]
 
-#[allow(unused_imports)]
-use panic_halt;
-use trellis_m4 as hal;
+use bsp::hal;
+#[cfg(not(feature = "use_semihosting"))]
+use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
+use trellis_m4 as bsp;
 use ws2812_timer_delay as ws2812;
 
-use embedded_hal::digital::v1_compat::OldOutputPin;
+use hal::ehal::digital::v1_compat::OldOutputPin;
 
+use bsp::entry;
 use hal::adxl343::accelerometer::Accelerometer;
-use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 use hal::timer::SpinTimer;
@@ -33,7 +36,7 @@ fn main() -> ! {
     );
 
     let mut delay = Delay::new(core_peripherals.SYST, &mut clocks);
-    let mut pins = hal::Pins::new(peripherals.PORT).split();
+    let mut pins = bsp::Pins::new(peripherals.PORT).split();
 
     // neopixels
     let timer = SpinTimer::new(4);

@@ -1,12 +1,12 @@
 //! Working with timer counter hardware
 use crate::hal::timer::{CountDown, Periodic};
-use crate::target_device::tc0::COUNT16;
+use crate::pac::tc0::COUNT16;
 #[allow(unused)]
-use crate::target_device::{MCLK, TC2, TC3};
+use crate::pac::{MCLK, TC2, TC3};
 use crate::timer_params::TimerParams;
 // Only the G variants are missing these timers
 #[cfg(feature = "min-samd51j")]
-use crate::target_device::{TC4, TC5};
+use crate::pac::{TC4, TC5};
 use crate::timer_traits::InterruptDrivenTimer;
 
 use crate::clock;
@@ -184,19 +184,26 @@ tc! {
     TimerCounter5: (TC5, tc5_, Tc4Tc5Clock, apbcmask),
 }
 
+#[deprecated(
+    since = "0.13.0",
+    note = "`SpinTimer` is deprecated, and will be removed in a subsequent release."
+)]
 #[derive(Clone, Copy)]
 pub struct SpinTimer {
     cycles: u32,
 }
 
+#[allow(deprecated)]
 impl SpinTimer {
     pub fn new(cycles: u32) -> SpinTimer {
         SpinTimer { cycles }
     }
 }
 
+#[allow(deprecated)]
 impl Periodic for SpinTimer {}
 
+#[allow(deprecated)]
 impl CountDown for SpinTimer {
     type Time = u32;
 

@@ -13,11 +13,11 @@ use eg::prelude::*;
 use eg::primitives::{PrimitiveStyleBuilder, Rectangle};
 use eg::text::Text;
 
+use wio::entry;
 use wio::hal::clock::GenericClockController;
 use wio::hal::delay::Delay;
 use wio::pac::{CorePeripherals, Peripherals};
 use wio::prelude::*;
-use wio::{entry, Pins, Sets};
 
 use core::fmt::Write;
 use heapless::consts::U128;
@@ -40,8 +40,7 @@ fn main() -> ! {
     );
 
     let mut delay = Delay::new(core.SYST, &mut clocks);
-    let pins = Pins::new(peripherals.PORT);
-    let mut sets: Sets = pins.split();
+    let sets = wio::Pins::new(peripherals.PORT).split();
 
     let (mut cont, _sd_present) = sets
         .sd_card
@@ -49,7 +48,6 @@ fn main() -> ! {
             &mut clocks,
             peripherals.SERCOM6,
             &mut peripherals.MCLK,
-            &mut sets.port,
             Clock,
         )
         .unwrap();
@@ -62,7 +60,6 @@ fn main() -> ! {
             &mut clocks,
             peripherals.SERCOM7,
             &mut peripherals.MCLK,
-            &mut sets.port,
             24.mhz(),
             &mut delay,
         )
@@ -107,7 +104,7 @@ fn main() -> ! {
             }
         }
 
-        delay.delay_ms(2500 as u16);
+        delay.delay_ms(2500_u16);
         Rectangle::with_corners(Point::new(0, 0), Point::new(320, 240))
             .into_styled(
                 PrimitiveStyleBuilder::new()

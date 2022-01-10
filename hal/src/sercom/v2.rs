@@ -9,7 +9,7 @@ use core::ops::Deref;
 use paste::paste;
 use seq_macro::seq;
 
-use crate::target_device as pac;
+use crate::pac;
 
 #[cfg(feature = "min-samd51g")]
 use pac::MCLK as APB_CLK_CTRL;
@@ -24,18 +24,15 @@ use pac::{SERCOM4, SERCOM5};
 #[cfg(feature = "min-samd51n")]
 use pac::{SERCOM6, SERCOM7};
 
-#[cfg(any(feature = "samd11", feature = "samd21"))]
-pub use crate::common::thumbv6m::sercom::v2::*;
-
-#[cfg(feature = "min-samd51g")]
-pub use crate::common::thumbv7em::sercom::v2::*;
-
 #[cfg(feature = "dma")]
 use crate::common::dmac::TriggerSource;
+
 use crate::typelevel::Sealed;
 
 pub mod pad;
 pub use pad::*;
+
+pub mod spi;
 
 pub mod spi_future;
 pub mod uart;
@@ -66,17 +63,17 @@ macro_rules! sercom {
         seq!(N in $start..=$end {
             paste! {
                 /// Type alias for the corresponding SERCOM instance
-                pub type Sercom#N = SERCOM#N;
-                impl Sealed for Sercom#N {}
-                impl Sercom for Sercom#N {
+                pub type Sercom #N = SERCOM #N;
+                impl Sealed for Sercom #N {}
+                impl Sercom for Sercom #N {
                     const NUM: usize = N;
                     #[cfg(feature = "dma")]
-                    const DMA_RX_TRIGGER: TriggerSource = TriggerSource::[<SERCOM#N _RX>];
+                    const DMA_RX_TRIGGER: TriggerSource = TriggerSource::[<SERCOM #N _RX>];
                     #[cfg(feature = "dma")]
-                    const DMA_TX_TRIGGER: TriggerSource = TriggerSource::[<SERCOM#N _TX>];
+                    const DMA_TX_TRIGGER: TriggerSource = TriggerSource::[<SERCOM #N _TX>];
                     #[inline]
                     fn enable_apb_clock(&mut self, ctrl: &APB_CLK_CTRL) {
-                        ctrl.$apbmask.modify(|_, w| w.[<sercom#N _>]().set_bit());
+                        ctrl.$apbmask.modify(|_, w| w.[<sercom #N _>]().set_bit());
                     }
                 }
             }

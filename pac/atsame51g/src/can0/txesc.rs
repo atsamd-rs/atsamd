@@ -1,13 +1,37 @@
-#[doc = "Reader of register TXESC"]
-pub type R = crate::R<u32, super::TXESC>;
-#[doc = "Writer for register TXESC"]
-pub type W = crate::W<u32, super::TXESC>;
-#[doc = "Register TXESC `reset()`'s with value 0"]
-impl crate::ResetValue for super::TXESC {
-    type Type = u32;
+#[doc = "Register `TXESC` reader"]
+pub struct R(crate::R<TXESC_SPEC>);
+impl core::ops::Deref for R {
+    type Target = crate::R<TXESC_SPEC>;
     #[inline(always)]
-    fn reset_value() -> Self::Type {
-        0
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl From<crate::R<TXESC_SPEC>> for R {
+    #[inline(always)]
+    fn from(reader: crate::R<TXESC_SPEC>) -> Self {
+        R(reader)
+    }
+}
+#[doc = "Register `TXESC` writer"]
+pub struct W(crate::W<TXESC_SPEC>);
+impl core::ops::Deref for W {
+    type Target = crate::W<TXESC_SPEC>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl core::ops::DerefMut for W {
+    #[inline(always)]
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+impl From<crate::W<TXESC_SPEC>> for W {
+    #[inline(always)]
+    fn from(writer: crate::W<TXESC_SPEC>) -> Self {
+        W(writer)
     }
 }
 #[doc = "Tx Buffer Data Field Size\n\nValue on reset: 0"]
@@ -37,9 +61,13 @@ impl From<TBDS_A> for u8 {
         variant as _
     }
 }
-#[doc = "Reader of field `TBDS`"]
-pub type TBDS_R = crate::R<u8, TBDS_A>;
+#[doc = "Field `TBDS` reader - Tx Buffer Data Field Size"]
+pub struct TBDS_R(crate::FieldReader<u8, TBDS_A>);
 impl TBDS_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        TBDS_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
     pub fn variant(&self) -> TBDS_A {
@@ -58,45 +86,52 @@ impl TBDS_R {
     #[doc = "Checks if the value of the field is `DATA8`"]
     #[inline(always)]
     pub fn is_data8(&self) -> bool {
-        *self == TBDS_A::DATA8
+        **self == TBDS_A::DATA8
     }
     #[doc = "Checks if the value of the field is `DATA12`"]
     #[inline(always)]
     pub fn is_data12(&self) -> bool {
-        *self == TBDS_A::DATA12
+        **self == TBDS_A::DATA12
     }
     #[doc = "Checks if the value of the field is `DATA16`"]
     #[inline(always)]
     pub fn is_data16(&self) -> bool {
-        *self == TBDS_A::DATA16
+        **self == TBDS_A::DATA16
     }
     #[doc = "Checks if the value of the field is `DATA20`"]
     #[inline(always)]
     pub fn is_data20(&self) -> bool {
-        *self == TBDS_A::DATA20
+        **self == TBDS_A::DATA20
     }
     #[doc = "Checks if the value of the field is `DATA24`"]
     #[inline(always)]
     pub fn is_data24(&self) -> bool {
-        *self == TBDS_A::DATA24
+        **self == TBDS_A::DATA24
     }
     #[doc = "Checks if the value of the field is `DATA32`"]
     #[inline(always)]
     pub fn is_data32(&self) -> bool {
-        *self == TBDS_A::DATA32
+        **self == TBDS_A::DATA32
     }
     #[doc = "Checks if the value of the field is `DATA48`"]
     #[inline(always)]
     pub fn is_data48(&self) -> bool {
-        *self == TBDS_A::DATA48
+        **self == TBDS_A::DATA48
     }
     #[doc = "Checks if the value of the field is `DATA64`"]
     #[inline(always)]
     pub fn is_data64(&self) -> bool {
-        *self == TBDS_A::DATA64
+        **self == TBDS_A::DATA64
     }
 }
-#[doc = "Write proxy for field `TBDS`"]
+impl core::ops::Deref for TBDS_R {
+    type Target = crate::FieldReader<u8, TBDS_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TBDS` writer - Tx Buffer Data Field Size"]
 pub struct TBDS_W<'a> {
     w: &'a mut W,
 }
@@ -104,9 +139,7 @@ impl<'a> TBDS_W<'a> {
     #[doc = r"Writes `variant` to the field"]
     #[inline(always)]
     pub fn variant(self, variant: TBDS_A) -> &'a mut W {
-        {
-            self.bits(variant.into())
-        }
+        self.bits(variant.into())
     }
     #[doc = "8 byte data field"]
     #[inline(always)]
@@ -151,7 +184,7 @@ impl<'a> TBDS_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x07) | ((value as u32) & 0x07);
+        self.w.bits = (self.w.bits & !0x07) | (value as u32 & 0x07);
         self.w
     }
 }
@@ -167,5 +200,31 @@ impl W {
     #[inline(always)]
     pub fn tbds(&mut self) -> TBDS_W {
         TBDS_W { w: self }
+    }
+    #[doc = "Writes raw bits to the register."]
+    #[inline(always)]
+    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+        self.0.bits(bits);
+        self
+    }
+}
+#[doc = "Tx Buffer Element Size Configuration\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [txesc](index.html) module"]
+pub struct TXESC_SPEC;
+impl crate::RegisterSpec for TXESC_SPEC {
+    type Ux = u32;
+}
+#[doc = "`read()` method returns [txesc::R](R) reader structure"]
+impl crate::Readable for TXESC_SPEC {
+    type Reader = R;
+}
+#[doc = "`write(|w| ..)` method takes [txesc::W](W) writer structure"]
+impl crate::Writable for TXESC_SPEC {
+    type Writer = W;
+}
+#[doc = "`reset()` method sets TXESC to value 0"]
+impl crate::Resettable for TXESC_SPEC {
+    #[inline(always)]
+    fn reset_value() -> Self::Ux {
+        0
     }
 }

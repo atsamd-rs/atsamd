@@ -1,19 +1,17 @@
 #![no_std]
 #![no_main]
 
-extern crate cortex_m;
-extern crate cortex_m_semihosting;
-extern crate embedded_hal;
+use bsp::hal;
 #[cfg(not(feature = "use_semihosting"))]
-extern crate panic_halt;
+use panic_halt as _;
 #[cfg(feature = "use_semihosting")]
-extern crate panic_semihosting;
-extern crate wio_lite_mg126 as hal;
+use panic_semihosting as _;
+use wio_lite_mg126 as bsp;
 
+use bsp::entry;
 use cortex_m_semihosting::hprintln;
 use hal::adc::Adc;
 use hal::clock::GenericClockController;
-use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 
@@ -27,7 +25,7 @@ fn main() -> ! {
         &mut peripherals.SYSCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = hal::Pins::new(peripherals.PORT);
+    let mut pins = bsp::Pins::new(peripherals.PORT);
     let mut delay = hal::delay::Delay::new(core.SYST, &mut clocks);
     let mut adc = Adc::adc(peripherals.ADC, &mut peripherals.PM, &mut clocks);
     let mut a0 = pins.a0.into_function_b(&mut pins.port);

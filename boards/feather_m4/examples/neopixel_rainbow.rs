@@ -8,13 +8,17 @@
 //
 // // Needs to be compiled with --release for the timing to be correct
 
-extern crate cortex_m;
-extern crate feather_m4 as hal;
-extern crate panic_halt;
+use bsp::hal;
+use feather_m4 as bsp;
 
+#[cfg(not(feature = "use_semihosting"))]
+use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
+
+use bsp::entry;
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
-use hal::entry;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 use hal::timer::*;
@@ -23,7 +27,7 @@ use smart_leds::{
     hsv::{hsv2rgb, Hsv},
     SmartLedsWrite,
 };
-use ws2812_timer_delay as ws2812;
+use ws2812_timer_delay::Ws2812;
 
 #[entry]
 fn main() -> ! {
@@ -36,14 +40,16 @@ fn main() -> ! {
         &mut peripherals.OSCCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = hal::Pins::new(peripherals.PORT);
+    let pins = bsp::Pins::new(peripherals.PORT);
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
-    // (Re-)configure PB3 as output
-    let ws_data_pin = pins.neopixel.into_push_pull_output(&mut pins.port);
-    // Create a spin timer whoes period will be 9 x 120MHz clock cycles (75ns)
-    let timer = SpinTimer::new(9);
-    let mut neopixel = ws2812::Ws2812::new(timer, ws_data_pin);
+    let gclk0 = clocks.gclk0();
+    let timer_clock = clocks.tc2_tc3(&gclk0).unwrap();
+    let mut timer = TimerCounter::tc3_(&timer_clock, peripherals.TC3, &mut peripherals.MCLK);
+    timer.start(3.mhz());
+
+    let neopixel_pin = pins.neopixel.into_push_pull_output();
+    let mut neopixel = Ws2812::new(timer, neopixel_pin);
 
     // Loop through all of the available hue values (colors) to make a
     // rainbow effect from the onboard neopixel

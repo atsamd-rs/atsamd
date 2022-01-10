@@ -1,29 +1,198 @@
-#[doc = "Reader of register READYUSR"]
-pub type R = crate::R<u32, super::READYUSR>;
-#[doc = "Reader of field `READYUSR0`"]
-pub type READYUSR0_R = crate::R<bool, bool>;
-#[doc = "Reader of field `READYUSR1`"]
-pub type READYUSR1_R = crate::R<bool, bool>;
-#[doc = "Reader of field `READYUSR2`"]
-pub type READYUSR2_R = crate::R<bool, bool>;
-#[doc = "Reader of field `READYUSR3`"]
-pub type READYUSR3_R = crate::R<bool, bool>;
-#[doc = "Reader of field `READYUSR4`"]
-pub type READYUSR4_R = crate::R<bool, bool>;
-#[doc = "Reader of field `READYUSR5`"]
-pub type READYUSR5_R = crate::R<bool, bool>;
-#[doc = "Reader of field `READYUSR6`"]
-pub type READYUSR6_R = crate::R<bool, bool>;
-#[doc = "Reader of field `READYUSR7`"]
-pub type READYUSR7_R = crate::R<bool, bool>;
-#[doc = "Reader of field `READYUSR8`"]
-pub type READYUSR8_R = crate::R<bool, bool>;
-#[doc = "Reader of field `READYUSR9`"]
-pub type READYUSR9_R = crate::R<bool, bool>;
-#[doc = "Reader of field `READYUSR10`"]
-pub type READYUSR10_R = crate::R<bool, bool>;
-#[doc = "Reader of field `READYUSR11`"]
-pub type READYUSR11_R = crate::R<bool, bool>;
+#[doc = "Register `READYUSR` reader"]
+pub struct R(crate::R<READYUSR_SPEC>);
+impl core::ops::Deref for R {
+    type Target = crate::R<READYUSR_SPEC>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl From<crate::R<READYUSR_SPEC>> for R {
+    #[inline(always)]
+    fn from(reader: crate::R<READYUSR_SPEC>) -> Self {
+        R(reader)
+    }
+}
+#[doc = "Field `READYUSR0` reader - Ready User for Channel 0"]
+pub struct READYUSR0_R(crate::FieldReader<bool, bool>);
+impl READYUSR0_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        READYUSR0_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for READYUSR0_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `READYUSR1` reader - Ready User for Channel 1"]
+pub struct READYUSR1_R(crate::FieldReader<bool, bool>);
+impl READYUSR1_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        READYUSR1_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for READYUSR1_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `READYUSR2` reader - Ready User for Channel 2"]
+pub struct READYUSR2_R(crate::FieldReader<bool, bool>);
+impl READYUSR2_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        READYUSR2_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for READYUSR2_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `READYUSR3` reader - Ready User for Channel 3"]
+pub struct READYUSR3_R(crate::FieldReader<bool, bool>);
+impl READYUSR3_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        READYUSR3_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for READYUSR3_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `READYUSR4` reader - Ready User for Channel 4"]
+pub struct READYUSR4_R(crate::FieldReader<bool, bool>);
+impl READYUSR4_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        READYUSR4_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for READYUSR4_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `READYUSR5` reader - Ready User for Channel 5"]
+pub struct READYUSR5_R(crate::FieldReader<bool, bool>);
+impl READYUSR5_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        READYUSR5_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for READYUSR5_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `READYUSR6` reader - Ready User for Channel 6"]
+pub struct READYUSR6_R(crate::FieldReader<bool, bool>);
+impl READYUSR6_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        READYUSR6_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for READYUSR6_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `READYUSR7` reader - Ready User for Channel 7"]
+pub struct READYUSR7_R(crate::FieldReader<bool, bool>);
+impl READYUSR7_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        READYUSR7_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for READYUSR7_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `READYUSR8` reader - Ready User for Channel 8"]
+pub struct READYUSR8_R(crate::FieldReader<bool, bool>);
+impl READYUSR8_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        READYUSR8_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for READYUSR8_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `READYUSR9` reader - Ready User for Channel 9"]
+pub struct READYUSR9_R(crate::FieldReader<bool, bool>);
+impl READYUSR9_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        READYUSR9_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for READYUSR9_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `READYUSR10` reader - Ready User for Channel 10"]
+pub struct READYUSR10_R(crate::FieldReader<bool, bool>);
+impl READYUSR10_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        READYUSR10_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for READYUSR10_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `READYUSR11` reader - Ready User for Channel 11"]
+pub struct READYUSR11_R(crate::FieldReader<bool, bool>);
+impl READYUSR11_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        READYUSR11_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for READYUSR11_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
 impl R {
     #[doc = "Bit 0 - Ready User for Channel 0"]
     #[inline(always)]
@@ -84,5 +253,21 @@ impl R {
     #[inline(always)]
     pub fn readyusr11(&self) -> READYUSR11_R {
         READYUSR11_R::new(((self.bits >> 11) & 0x01) != 0)
+    }
+}
+#[doc = "Ready Users\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [readyusr](index.html) module"]
+pub struct READYUSR_SPEC;
+impl crate::RegisterSpec for READYUSR_SPEC {
+    type Ux = u32;
+}
+#[doc = "`read()` method returns [readyusr::R](R) reader structure"]
+impl crate::Readable for READYUSR_SPEC {
+    type Reader = R;
+}
+#[doc = "`reset()` method sets READYUSR to value 0xffff_ffff"]
+impl crate::Resettable for READYUSR_SPEC {
+    #[inline(always)]
+    fn reset_value() -> Self::Ux {
+        0xffff_ffff
     }
 }

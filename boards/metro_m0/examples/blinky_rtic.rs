@@ -5,24 +5,22 @@
 #![no_std]
 #![no_main]
 
-extern crate cortex_m;
-extern crate cortex_m_semihosting;
-extern crate metro_m0 as bsp;
+use metro_m0 as bsp;
 #[cfg(not(feature = "use_semihosting"))]
-extern crate panic_halt;
+use panic_halt as _;
 #[cfg(feature = "use_semihosting")]
-extern crate panic_semihosting;
-extern crate rtic;
+use panic_semihosting as _;
+use rtic;
 
 #[rtic::app(device = bsp::pac, peripherals = true, dispatchers = [EVSYS])]
 mod app {
 
+    use super::*;
     use bsp::hal;
     use hal::clock::{ClockGenId, ClockSource, GenericClockController};
     use hal::pac::Peripherals;
     use hal::prelude::*;
-    use hal::rtc::{Count32Mode, Rtc};
-    use rtic_monotonic::Extensions;
+    use hal::rtc::{Count32Mode, Duration, Rtc};
 
     #[local]
     struct Local {}
@@ -70,6 +68,6 @@ mod app {
     fn blink(mut cx: blink::Context) {
         // If the LED were a local resource, the lock would not be necessary
         cx.shared.red_led.lock(|led| led.toggle().unwrap());
-        blink::spawn_after(1_u32.seconds()).ok();
+        blink::spawn_after(Duration::secs(1)).ok();
     }
 }

@@ -4,194 +4,200 @@
 pub use cortex_m_rt::entry;
 
 pub use atsamd_hal as hal;
-pub use embedded_hal as ehal;
+pub use hal::ehal;
 pub use hal::pac;
 
 use hal::clock::GenericClockController;
 use hal::prelude::*;
-use hal::sercom::v2::{spi, Sercom4, Sercom5};
-use hal::sercom::{I2CMaster3, UART0};
+use hal::sercom::v2::{spi, uart, Sercom0, Sercom4, Sercom5};
+use hal::sercom::I2CMaster3;
 use hal::time::{Hertz, MegaHertz};
 
 #[cfg(feature = "usb")]
 use hal::usb::{usb_device::bus::UsbBusAllocator, UsbBus};
 
-hal::bsp_pins!(
-    PA02 {
-        /// Analog pin 0.  Can act as a true analog output
-        /// as it has a DAC (which is not currently supported
-        /// by this hal) as well as input.
-        name: a0
-    }
-    PB08 {
-        /// Analog Pin 1
-        name: a1
-    }
-    PB09 {
-        /// Analog Pin 2
-        name: a2
-    }
-    PA04 {
-        /// Analog Pin 3
-        name: a3
-    }
-    PA05 {
-        /// Analog Pin 4
-        name: a4
-    }
-    PB02 {
-        /// Analog Pin 5
-        name: a5
-    }
-    PA11 {
-        /// Pin 0, UART RX.  Also analog input (A6)
-        name: d0
-        aliases: {
-            AlternateC: UartRx
+/// Definitions related to pins and pin aliases
+pub mod pins {
+    use super::hal;
+
+    hal::bsp_pins!(
+        PA02 {
+            /// Analog pin 0.  Can act as a true analog output
+            /// as it has a DAC (which is not currently supported
+            /// by this hal) as well as input.
+            name: a0
         }
-    }
-    PA10 {
-        /// Pin 1, UART TX.  Also analog input (A7)
-        name: d1
-        aliases: {
-            AlternateC: UartTx
+        PB08 {
+            /// Analog Pin 1
+            name: a1
         }
-    }
-    PA14 {
-        /// Pin 2
-        name: d2
-    }
-    PA09 {
-        /// Pin 3, PWM capable
-        name: d3
-    }
-    PA08 {
-        /// Pin 4, PWM capable.  Also analog input (A8)
-        name: d4
-    }
-    PA15 {
-        /// Pin 5, PWM capable.  Also analog input (A9)
-        name: d5
-    }
-    PA20 {
-        /// Pin 6, PWM capable
-        name: d6
-    }
-    PA21 {
-        /// Pin 7
-        name: d7
-    }
-    PA06 {
-        /// Pin 8, PWM capable.  Also analog input (A10)
-        name: d8
-    }
-    PA07 {
-        /// Pin 9, PWM capable.  Also analog input (A11)
-        name: d9
-    }
-    PA18 {
-        /// Pin 10, PWM capable
-        name: d10
-    }
-    PA16 {
-        /// Pin 11, PWM capable
-        name: d11
-    }
-    PA19 {
-        /// Pin 12, PWM capable
-        name: d12
-    }
-    PA17 {
-        /// Digital pin number 13, which is also attached to
-        /// the red LED.  PWM capable.
-        name: d13
-        aliases: {
-            PushPullOutput: RedLed
+        PB09 {
+            /// Analog Pin 2
+            name: a2
         }
-    }
-    PA22 {
-        /// The I2C data line
-        name: sda
-        aliases: {
-            AlternateC: Sda
+        PA04 {
+            /// Analog Pin 3
+            name: a3
         }
-    }
-    PA23 {
-        /// The I2C clock line
-        name: scl
-        aliases: {
-            AlternateC: Scl
+        PA05 {
+            /// Analog Pin 4
+            name: a4
         }
-    }
-    PA30 {
-        /// The data line attached to the neopixel.
-        /// Is also attached to SWCLK.
-        name: neopixel
-    }
-    PB11 {
-        /// The SPI SCK attached the to 2x3 header
-        name: sck
-        aliases: {
-            AlternateD: Sclk
+        PB02 {
+            /// Analog Pin 5
+            name: a5
         }
-    }
-    PB10 {
-        /// The SPI MOSI attached the to 2x3 header
-        name: mosi
-        aliases: {
-            AlternateD: Mosi
+        PA11 {
+            /// Pin 0, UART RX.  Also analog input (A6)
+            name: d0
+            aliases: {
+                AlternateC: UartRx
+            }
         }
-    }
-    PA12 {
-        /// The SPI MISO attached the to 2x3 header
-        name: miso
-        aliases: {
-            AlternateD: Miso
+        PA10 {
+            /// Pin 1, UART TX.  Also analog input (A7)
+            name: d1
+            aliases: {
+                AlternateC: UartTx
+            }
         }
-    }
-    PB23 {
-        /// The SCK pin attached to the on-board SPI flash
-        name: flash_sck
-        aliases: {
-            AlternateD: FlashSclk
+        PA14 {
+            /// Pin 2
+            name: d2
         }
-    }
-    PB22 {
-        /// The MOSI pin attached to the on-board SPI flash
-        name: flash_mosi
-        aliases: {
-            AlternateD: FlashMosi
+        PA09 {
+            /// Pin 3, PWM capable
+            name: d3
         }
-    }
-    PB03 {
-        /// The MISO pin attached to the on-board SPI flash
-        name: flash_miso
-        aliases: {
-            AlternateD: FlashMiso
+        PA08 {
+            /// Pin 4, PWM capable.  Also analog input (A8)
+            name: d4
         }
-    }
-    PA13 {
-        /// The CS pin attached to the on-board SPI flash
-        name: flash_cs
-        aliases: {
-            PushPullOutput: FlashCs
+        PA15 {
+            /// Pin 5, PWM capable.  Also analog input (A9)
+            name: d5
         }
-    }
-    PA24 {
-        /// The USB D- pad
-        name: usb_dm
-        aliases: {
-            AlternateG: UsbDm
+        PA20 {
+            /// Pin 6, PWM capable
+            name: d6
         }
-    }
-    PA25 {
-        /// The USB D+ pad
-        name: usb_dp
-        aliases: {
-            AlternateG: UsbDp
+        PA21 {
+            /// Pin 7
+            name: d7
         }
-    }
-);
+        PA06 {
+            /// Pin 8, PWM capable.  Also analog input (A10)
+            name: d8
+        }
+        PA07 {
+            /// Pin 9, PWM capable.  Also analog input (A11)
+            name: d9
+        }
+        PA18 {
+            /// Pin 10, PWM capable
+            name: d10
+        }
+        PA16 {
+            /// Pin 11, PWM capable
+            name: d11
+        }
+        PA19 {
+            /// Pin 12, PWM capable
+            name: d12
+        }
+        PA17 {
+            /// Digital pin number 13, which is also attached to
+            /// the red LED.  PWM capable.
+            name: d13
+            aliases: {
+                PushPullOutput: RedLed
+            }
+        }
+        PA22 {
+            /// The I2C data line
+            name: sda
+            aliases: {
+                AlternateC: Sda
+            }
+        }
+        PA23 {
+            /// The I2C clock line
+            name: scl
+            aliases: {
+                AlternateC: Scl
+            }
+        }
+        PA30 {
+            /// The data line attached to the neopixel.
+            /// Is also attached to SWCLK.
+            name: neopixel
+        }
+        PB11 {
+            /// The SPI SCK attached the to 2x3 header
+            name: sck
+            aliases: {
+                AlternateD: Sclk
+            }
+        }
+        PB10 {
+            /// The SPI MOSI attached the to 2x3 header
+            name: mosi
+            aliases: {
+                AlternateD: Mosi
+            }
+        }
+        PA12 {
+            /// The SPI MISO attached the to 2x3 header
+            name: miso
+            aliases: {
+                AlternateD: Miso
+            }
+        }
+        PB23 {
+            /// The SCK pin attached to the on-board SPI flash
+            name: flash_sck
+            aliases: {
+                AlternateD: FlashSclk
+            }
+        }
+        PB22 {
+            /// The MOSI pin attached to the on-board SPI flash
+            name: flash_mosi
+            aliases: {
+                AlternateD: FlashMosi
+            }
+        }
+        PB03 {
+            /// The MISO pin attached to the on-board SPI flash
+            name: flash_miso
+            aliases: {
+                AlternateD: FlashMiso
+            }
+        }
+        PA13 {
+            /// The CS pin attached to the on-board SPI flash
+            name: flash_cs
+            aliases: {
+                PushPullOutput: FlashCs
+            }
+        }
+        PA24 {
+            /// The USB D- pad
+            name: usb_dm
+            aliases: {
+                AlternateG: UsbDm
+            }
+        }
+        PA25 {
+            /// The USB D+ pad
+            name: usb_dp
+            aliases: {
+                AlternateG: UsbDp
+            }
+        }
+    );
+}
+pub use pins::*;
 
 /// SPI pads for the labelled SPI peripheral
 ///
@@ -201,7 +207,7 @@ pub type SpiPads = spi::Pads<Sercom4, Miso, Mosi, Sclk>;
 /// SPI master for the labelled SPI peripheral
 ///
 /// This type implements [`FullDuplex<u8>`](ehal::spi::FullDuplex).
-pub type Spi = spi::Spi<spi::Config<SpiPads>>;
+pub type Spi = spi::Spi<spi::Config<SpiPads>, spi::Duplex>;
 
 /// Convenience for setting up the 2x3 header block for SPI.
 /// This powers up SERCOM4 and configures it for use as an
@@ -236,7 +242,7 @@ pub type FlashPads = spi::Pads<Sercom5, FlashMiso, FlashMosi, FlashSclk>;
 /// SPI master for the labelled SPI peripheral
 ///
 /// This type implements [`FullDuplex<u8>`](ehal::spi::FullDuplex).
-pub type FlashSpi = (spi::Spi<spi::Config<FlashPads>>, FlashCs);
+pub type FlashSpi = (spi::Spi<spi::Config<FlashPads>, spi::Duplex>, FlashCs);
 
 /// Convenience for accessing the on-board SPI Flash device.
 /// This powers up SERCOM5 and configures it for use as an
@@ -286,8 +292,11 @@ pub fn i2c_master(
     I2CMaster3::new(clock, baud, sercom3, pm, sda, scl)
 }
 
+/// UART pads
+pub type UartPads = uart::Pads<Sercom0, UartRx, UartTx>;
+
 /// UART device for the labelled RX & TX pins
-pub type Uart = UART0<UartRx, UartTx, (), ()>;
+pub type Uart = uart::Uart<uart::Config<UartPads>, uart::Duplex>;
 
 /// Convenience for setting up the labelled RX, TX pins to
 /// operate as a UART device running at the specified baud.
@@ -302,8 +311,10 @@ pub fn uart(
     let gclk0 = clocks.gclk0();
     let clock = &clocks.sercom0_core(&gclk0).unwrap();
     let baud = baud.into();
-    let pads = (uart_rx.into(), uart_tx.into());
-    UART0::new(clock, baud, sercom0, pm, pads)
+    let pads = uart::Pads::default().rx(uart_rx.into()).tx(uart_tx.into());
+    uart::Config::new(pm, sercom0, pads, clock.freq())
+        .baud(baud, uart::BaudMode::Fractional(uart::Oversampling::Bits16))
+        .enable()
 }
 
 #[cfg(feature = "usb")]

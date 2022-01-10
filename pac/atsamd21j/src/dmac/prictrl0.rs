@@ -1,18 +1,55 @@
-#[doc = "Reader of register PRICTRL0"]
-pub type R = crate::R<u32, super::PRICTRL0>;
-#[doc = "Writer for register PRICTRL0"]
-pub type W = crate::W<u32, super::PRICTRL0>;
-#[doc = "Register PRICTRL0 `reset()`'s with value 0"]
-impl crate::ResetValue for super::PRICTRL0 {
-    type Type = u32;
+#[doc = "Register `PRICTRL0` reader"]
+pub struct R(crate::R<PRICTRL0_SPEC>);
+impl core::ops::Deref for R {
+    type Target = crate::R<PRICTRL0_SPEC>;
     #[inline(always)]
-    fn reset_value() -> Self::Type {
-        0
+    fn deref(&self) -> &Self::Target {
+        &self.0
     }
 }
-#[doc = "Reader of field `LVLPRI0`"]
-pub type LVLPRI0_R = crate::R<u8, u8>;
-#[doc = "Write proxy for field `LVLPRI0`"]
+impl From<crate::R<PRICTRL0_SPEC>> for R {
+    #[inline(always)]
+    fn from(reader: crate::R<PRICTRL0_SPEC>) -> Self {
+        R(reader)
+    }
+}
+#[doc = "Register `PRICTRL0` writer"]
+pub struct W(crate::W<PRICTRL0_SPEC>);
+impl core::ops::Deref for W {
+    type Target = crate::W<PRICTRL0_SPEC>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl core::ops::DerefMut for W {
+    #[inline(always)]
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+impl From<crate::W<PRICTRL0_SPEC>> for W {
+    #[inline(always)]
+    fn from(writer: crate::W<PRICTRL0_SPEC>) -> Self {
+        W(writer)
+    }
+}
+#[doc = "Field `LVLPRI0` reader - Level 0 Channel Priority Number"]
+pub struct LVLPRI0_R(crate::FieldReader<u8, u8>);
+impl LVLPRI0_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        LVLPRI0_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for LVLPRI0_R {
+    type Target = crate::FieldReader<u8, u8>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `LVLPRI0` writer - Level 0 Channel Priority Number"]
 pub struct LVLPRI0_W<'a> {
     w: &'a mut W,
 }
@@ -20,13 +57,26 @@ impl<'a> LVLPRI0_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x0f) | ((value as u32) & 0x0f);
+        self.w.bits = (self.w.bits & !0x0f) | (value as u32 & 0x0f);
         self.w
     }
 }
-#[doc = "Reader of field `RRLVLEN0`"]
-pub type RRLVLEN0_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `RRLVLEN0`"]
+#[doc = "Field `RRLVLEN0` reader - Level 0 Round-Robin Scheduling Enable"]
+pub struct RRLVLEN0_R(crate::FieldReader<bool, bool>);
+impl RRLVLEN0_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        RRLVLEN0_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for RRLVLEN0_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `RRLVLEN0` writer - Level 0 Round-Robin Scheduling Enable"]
 pub struct RRLVLEN0_W<'a> {
     w: &'a mut W,
 }
@@ -44,13 +94,26 @@ impl<'a> RRLVLEN0_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 7)) | (((value as u32) & 0x01) << 7);
+        self.w.bits = (self.w.bits & !(0x01 << 7)) | ((value as u32 & 0x01) << 7);
         self.w
     }
 }
-#[doc = "Reader of field `LVLPRI1`"]
-pub type LVLPRI1_R = crate::R<u8, u8>;
-#[doc = "Write proxy for field `LVLPRI1`"]
+#[doc = "Field `LVLPRI1` reader - Level 1 Channel Priority Number"]
+pub struct LVLPRI1_R(crate::FieldReader<u8, u8>);
+impl LVLPRI1_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        LVLPRI1_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for LVLPRI1_R {
+    type Target = crate::FieldReader<u8, u8>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `LVLPRI1` writer - Level 1 Channel Priority Number"]
 pub struct LVLPRI1_W<'a> {
     w: &'a mut W,
 }
@@ -58,13 +121,26 @@ impl<'a> LVLPRI1_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x0f << 8)) | (((value as u32) & 0x0f) << 8);
+        self.w.bits = (self.w.bits & !(0x0f << 8)) | ((value as u32 & 0x0f) << 8);
         self.w
     }
 }
-#[doc = "Reader of field `RRLVLEN1`"]
-pub type RRLVLEN1_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `RRLVLEN1`"]
+#[doc = "Field `RRLVLEN1` reader - Level 1 Round-Robin Scheduling Enable"]
+pub struct RRLVLEN1_R(crate::FieldReader<bool, bool>);
+impl RRLVLEN1_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        RRLVLEN1_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for RRLVLEN1_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `RRLVLEN1` writer - Level 1 Round-Robin Scheduling Enable"]
 pub struct RRLVLEN1_W<'a> {
     w: &'a mut W,
 }
@@ -82,13 +158,26 @@ impl<'a> RRLVLEN1_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 15)) | (((value as u32) & 0x01) << 15);
+        self.w.bits = (self.w.bits & !(0x01 << 15)) | ((value as u32 & 0x01) << 15);
         self.w
     }
 }
-#[doc = "Reader of field `LVLPRI2`"]
-pub type LVLPRI2_R = crate::R<u8, u8>;
-#[doc = "Write proxy for field `LVLPRI2`"]
+#[doc = "Field `LVLPRI2` reader - Level 2 Channel Priority Number"]
+pub struct LVLPRI2_R(crate::FieldReader<u8, u8>);
+impl LVLPRI2_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        LVLPRI2_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for LVLPRI2_R {
+    type Target = crate::FieldReader<u8, u8>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `LVLPRI2` writer - Level 2 Channel Priority Number"]
 pub struct LVLPRI2_W<'a> {
     w: &'a mut W,
 }
@@ -96,13 +185,26 @@ impl<'a> LVLPRI2_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x0f << 16)) | (((value as u32) & 0x0f) << 16);
+        self.w.bits = (self.w.bits & !(0x0f << 16)) | ((value as u32 & 0x0f) << 16);
         self.w
     }
 }
-#[doc = "Reader of field `RRLVLEN2`"]
-pub type RRLVLEN2_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `RRLVLEN2`"]
+#[doc = "Field `RRLVLEN2` reader - Level 2 Round-Robin Scheduling Enable"]
+pub struct RRLVLEN2_R(crate::FieldReader<bool, bool>);
+impl RRLVLEN2_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        RRLVLEN2_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for RRLVLEN2_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `RRLVLEN2` writer - Level 2 Round-Robin Scheduling Enable"]
 pub struct RRLVLEN2_W<'a> {
     w: &'a mut W,
 }
@@ -120,13 +222,26 @@ impl<'a> RRLVLEN2_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 23)) | (((value as u32) & 0x01) << 23);
+        self.w.bits = (self.w.bits & !(0x01 << 23)) | ((value as u32 & 0x01) << 23);
         self.w
     }
 }
-#[doc = "Reader of field `LVLPRI3`"]
-pub type LVLPRI3_R = crate::R<u8, u8>;
-#[doc = "Write proxy for field `LVLPRI3`"]
+#[doc = "Field `LVLPRI3` reader - Level 3 Channel Priority Number"]
+pub struct LVLPRI3_R(crate::FieldReader<u8, u8>);
+impl LVLPRI3_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        LVLPRI3_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for LVLPRI3_R {
+    type Target = crate::FieldReader<u8, u8>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `LVLPRI3` writer - Level 3 Channel Priority Number"]
 pub struct LVLPRI3_W<'a> {
     w: &'a mut W,
 }
@@ -134,13 +249,26 @@ impl<'a> LVLPRI3_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x0f << 24)) | (((value as u32) & 0x0f) << 24);
+        self.w.bits = (self.w.bits & !(0x0f << 24)) | ((value as u32 & 0x0f) << 24);
         self.w
     }
 }
-#[doc = "Reader of field `RRLVLEN3`"]
-pub type RRLVLEN3_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `RRLVLEN3`"]
+#[doc = "Field `RRLVLEN3` reader - Level 3 Round-Robin Scheduling Enable"]
+pub struct RRLVLEN3_R(crate::FieldReader<bool, bool>);
+impl RRLVLEN3_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        RRLVLEN3_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for RRLVLEN3_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `RRLVLEN3` writer - Level 3 Round-Robin Scheduling Enable"]
 pub struct RRLVLEN3_W<'a> {
     w: &'a mut W,
 }
@@ -158,7 +286,7 @@ impl<'a> RRLVLEN3_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 31)) | (((value as u32) & 0x01) << 31);
+        self.w.bits = (self.w.bits & !(0x01 << 31)) | ((value as u32 & 0x01) << 31);
         self.w
     }
 }
@@ -244,5 +372,31 @@ impl W {
     #[inline(always)]
     pub fn rrlvlen3(&mut self) -> RRLVLEN3_W {
         RRLVLEN3_W { w: self }
+    }
+    #[doc = "Writes raw bits to the register."]
+    #[inline(always)]
+    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+        self.0.bits(bits);
+        self
+    }
+}
+#[doc = "Priority Control 0\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [prictrl0](index.html) module"]
+pub struct PRICTRL0_SPEC;
+impl crate::RegisterSpec for PRICTRL0_SPEC {
+    type Ux = u32;
+}
+#[doc = "`read()` method returns [prictrl0::R](R) reader structure"]
+impl crate::Readable for PRICTRL0_SPEC {
+    type Reader = R;
+}
+#[doc = "`write(|w| ..)` method takes [prictrl0::W](W) writer structure"]
+impl crate::Writable for PRICTRL0_SPEC {
+    type Writer = W;
+}
+#[doc = "`reset()` method sets PRICTRL0 to value 0"]
+impl crate::Resettable for PRICTRL0_SPEC {
+    #[inline(always)]
+    fn reset_value() -> Self::Ux {
+        0
     }
 }

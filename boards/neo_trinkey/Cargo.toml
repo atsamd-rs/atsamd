@@ -1,0 +1,46 @@
+[package]
+name = "neo_trinkey"
+version = "0.1.0"
+authors = ["Daniel Mason <daniel@danielmason.com>"]
+description = "Board Support crate for the Adafruit Neo Trinkey"
+keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/atsamd-rs/atsamd"
+readme = "README.md"
+edition = "2018"
+
+[dependencies]
+cortex-m-rt = { version = "0.6.12", optional = true }
+usb-device = { version = "0.2", optional = true }
+smart-leds = { version = "0.3.0", optional = true }
+ws2812-timer-delay = { version = "0.3.0", features = ["slow"], optional = true }
+
+[dependencies.atsamd-hal]
+version = "0.13"
+default-features = false
+
+[dev-dependencies]
+cortex-m = "0.7"
+usbd-serial = "0.1"
+panic-halt = "0.2"
+
+[features]
+# ask the HAL to enable atsamd21e support
+default = ["rt", "atsamd-hal/samd21e"]
+leds = ["ws2812-timer-delay", "smart-leds"]
+rt = ["cortex-m-rt", "atsamd-hal/samd21e-rt"]
+unproven = ["atsamd-hal/unproven"]
+use_semihosting = []
+usb = ["atsamd-hal/usb", "usb-device"]
+
+[[example]]
+name = "blinky_basic"
+required-features = ["leds"]
+
+[[example]]
+name = "blinky_rainbow"
+required-features = ["leds"]
+
+[[example]]
+name = "usb_ack"
+required-features = ["usb"]

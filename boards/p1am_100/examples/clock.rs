@@ -1,21 +1,25 @@
 #![no_std]
 #![no_main]
 
-extern crate p1am_100 as hal;
+use bsp::hal;
+use p1am_100 as bsp;
+
+#[cfg(not(feature = "use_semihosting"))]
 use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
 
 use cortex_m::interrupt::free as disable_interrupts;
 use cortex_m::peripheral::NVIC;
 
+use bsp::{entry, Pins};
 use hal::clock::{ClockGenId, ClockSource, GenericClockController};
 use hal::delay::Delay;
 use hal::pac::{interrupt, CorePeripherals, Peripherals};
 use hal::prelude::*;
-use hal::{entry, Pins};
 
 use core::fmt::Write;
 use hal::rtc;
-use heapless::consts::U16;
 use heapless::String;
 
 use hal::usb::UsbBus;
@@ -37,7 +41,7 @@ fn main() -> ! {
 
     let mut delay = Delay::new(core.SYST, &mut clocks);
     let pins = Pins::new(peripherals.PORT);
-    let mut led: hal::Led = pins.led.into();
+    let mut led: bsp::Led = pins.led.into();
 
     // get the internal 32k running at 1024 Hz for the RTC
     let timer_clock = clocks
@@ -53,7 +57,7 @@ fn main() -> ! {
 
     // initialize USB
     let bus_allocator = unsafe {
-        USB_ALLOCATOR = Some(hal::usb_allocator(
+        USB_ALLOCATOR = Some(bsp::usb_allocator(
             peripherals.USB,
             &mut clocks,
             &mut peripherals.PM,
@@ -84,7 +88,7 @@ fn main() -> ! {
         let time =
             disable_interrupts(|_| unsafe { RTC.as_mut().map(|rtc| rtc.current_time()) }).unwrap();
 
-        let mut data = String::<U16>::new();
+        let mut data = String::<16>::new();
         write!(
             data,
             "{:02}:{:02}:{:02}\r\n",
@@ -162,9 +166,8 @@ pub struct Time {
     second: usize,
 }
 
-#[macro_use]
-extern crate nom;
 use drogue_nom_utils::parse_usize;
+use nom::{char, do_parse, named, opt, tag};
 
 named!(
     pub timespec<Time>,

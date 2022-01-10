@@ -1,69 +1,498 @@
-#[doc = "Reader of register TXBTO"]
-pub type R = crate::R<u32, super::TXBTO>;
-#[doc = "Reader of field `TO0`"]
-pub type TO0_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TO1`"]
-pub type TO1_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TO2`"]
-pub type TO2_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TO3`"]
-pub type TO3_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TO4`"]
-pub type TO4_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TO5`"]
-pub type TO5_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TO6`"]
-pub type TO6_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TO7`"]
-pub type TO7_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TO8`"]
-pub type TO8_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TO9`"]
-pub type TO9_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TO10`"]
-pub type TO10_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TO11`"]
-pub type TO11_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TO12`"]
-pub type TO12_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TO13`"]
-pub type TO13_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TO14`"]
-pub type TO14_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TO15`"]
-pub type TO15_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TO16`"]
-pub type TO16_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TO17`"]
-pub type TO17_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TO18`"]
-pub type TO18_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TO19`"]
-pub type TO19_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TO20`"]
-pub type TO20_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TO21`"]
-pub type TO21_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TO22`"]
-pub type TO22_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TO23`"]
-pub type TO23_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TO24`"]
-pub type TO24_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TO25`"]
-pub type TO25_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TO26`"]
-pub type TO26_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TO27`"]
-pub type TO27_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TO28`"]
-pub type TO28_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TO29`"]
-pub type TO29_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TO30`"]
-pub type TO30_R = crate::R<bool, bool>;
-#[doc = "Reader of field `TO31`"]
-pub type TO31_R = crate::R<bool, bool>;
+#[doc = "Register `TXBTO` reader"]
+pub struct R(crate::R<TXBTO_SPEC>);
+impl core::ops::Deref for R {
+    type Target = crate::R<TXBTO_SPEC>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl From<crate::R<TXBTO_SPEC>> for R {
+    #[inline(always)]
+    fn from(reader: crate::R<TXBTO_SPEC>) -> Self {
+        R(reader)
+    }
+}
+#[doc = "Field `TO0` reader - Transmission Occurred 0"]
+pub struct TO0_R(crate::FieldReader<bool, bool>);
+impl TO0_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TO0_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TO0_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TO1` reader - Transmission Occurred 1"]
+pub struct TO1_R(crate::FieldReader<bool, bool>);
+impl TO1_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TO1_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TO1_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TO2` reader - Transmission Occurred 2"]
+pub struct TO2_R(crate::FieldReader<bool, bool>);
+impl TO2_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TO2_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TO2_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TO3` reader - Transmission Occurred 3"]
+pub struct TO3_R(crate::FieldReader<bool, bool>);
+impl TO3_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TO3_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TO3_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TO4` reader - Transmission Occurred 4"]
+pub struct TO4_R(crate::FieldReader<bool, bool>);
+impl TO4_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TO4_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TO4_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TO5` reader - Transmission Occurred 5"]
+pub struct TO5_R(crate::FieldReader<bool, bool>);
+impl TO5_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TO5_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TO5_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TO6` reader - Transmission Occurred 6"]
+pub struct TO6_R(crate::FieldReader<bool, bool>);
+impl TO6_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TO6_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TO6_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TO7` reader - Transmission Occurred 7"]
+pub struct TO7_R(crate::FieldReader<bool, bool>);
+impl TO7_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TO7_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TO7_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TO8` reader - Transmission Occurred 8"]
+pub struct TO8_R(crate::FieldReader<bool, bool>);
+impl TO8_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TO8_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TO8_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TO9` reader - Transmission Occurred 9"]
+pub struct TO9_R(crate::FieldReader<bool, bool>);
+impl TO9_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TO9_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TO9_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TO10` reader - Transmission Occurred 10"]
+pub struct TO10_R(crate::FieldReader<bool, bool>);
+impl TO10_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TO10_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TO10_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TO11` reader - Transmission Occurred 11"]
+pub struct TO11_R(crate::FieldReader<bool, bool>);
+impl TO11_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TO11_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TO11_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TO12` reader - Transmission Occurred 12"]
+pub struct TO12_R(crate::FieldReader<bool, bool>);
+impl TO12_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TO12_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TO12_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TO13` reader - Transmission Occurred 13"]
+pub struct TO13_R(crate::FieldReader<bool, bool>);
+impl TO13_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TO13_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TO13_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TO14` reader - Transmission Occurred 14"]
+pub struct TO14_R(crate::FieldReader<bool, bool>);
+impl TO14_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TO14_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TO14_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TO15` reader - Transmission Occurred 15"]
+pub struct TO15_R(crate::FieldReader<bool, bool>);
+impl TO15_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TO15_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TO15_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TO16` reader - Transmission Occurred 16"]
+pub struct TO16_R(crate::FieldReader<bool, bool>);
+impl TO16_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TO16_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TO16_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TO17` reader - Transmission Occurred 17"]
+pub struct TO17_R(crate::FieldReader<bool, bool>);
+impl TO17_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TO17_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TO17_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TO18` reader - Transmission Occurred 18"]
+pub struct TO18_R(crate::FieldReader<bool, bool>);
+impl TO18_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TO18_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TO18_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TO19` reader - Transmission Occurred 19"]
+pub struct TO19_R(crate::FieldReader<bool, bool>);
+impl TO19_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TO19_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TO19_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TO20` reader - Transmission Occurred 20"]
+pub struct TO20_R(crate::FieldReader<bool, bool>);
+impl TO20_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TO20_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TO20_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TO21` reader - Transmission Occurred 21"]
+pub struct TO21_R(crate::FieldReader<bool, bool>);
+impl TO21_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TO21_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TO21_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TO22` reader - Transmission Occurred 22"]
+pub struct TO22_R(crate::FieldReader<bool, bool>);
+impl TO22_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TO22_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TO22_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TO23` reader - Transmission Occurred 23"]
+pub struct TO23_R(crate::FieldReader<bool, bool>);
+impl TO23_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TO23_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TO23_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TO24` reader - Transmission Occurred 24"]
+pub struct TO24_R(crate::FieldReader<bool, bool>);
+impl TO24_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TO24_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TO24_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TO25` reader - Transmission Occurred 25"]
+pub struct TO25_R(crate::FieldReader<bool, bool>);
+impl TO25_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TO25_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TO25_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TO26` reader - Transmission Occurred 26"]
+pub struct TO26_R(crate::FieldReader<bool, bool>);
+impl TO26_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TO26_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TO26_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TO27` reader - Transmission Occurred 27"]
+pub struct TO27_R(crate::FieldReader<bool, bool>);
+impl TO27_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TO27_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TO27_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TO28` reader - Transmission Occurred 28"]
+pub struct TO28_R(crate::FieldReader<bool, bool>);
+impl TO28_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TO28_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TO28_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TO29` reader - Transmission Occurred 29"]
+pub struct TO29_R(crate::FieldReader<bool, bool>);
+impl TO29_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TO29_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TO29_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TO30` reader - Transmission Occurred 30"]
+pub struct TO30_R(crate::FieldReader<bool, bool>);
+impl TO30_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TO30_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TO30_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TO31` reader - Transmission Occurred 31"]
+pub struct TO31_R(crate::FieldReader<bool, bool>);
+impl TO31_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TO31_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for TO31_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
 impl R {
     #[doc = "Bit 0 - Transmission Occurred 0"]
     #[inline(always)]
@@ -224,5 +653,21 @@ impl R {
     #[inline(always)]
     pub fn to31(&self) -> TO31_R {
         TO31_R::new(((self.bits >> 31) & 0x01) != 0)
+    }
+}
+#[doc = "Tx Buffer Transmission Occurred\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [txbto](index.html) module"]
+pub struct TXBTO_SPEC;
+impl crate::RegisterSpec for TXBTO_SPEC {
+    type Ux = u32;
+}
+#[doc = "`read()` method returns [txbto::R](R) reader structure"]
+impl crate::Readable for TXBTO_SPEC {
+    type Reader = R;
+}
+#[doc = "`reset()` method sets TXBTO to value 0"]
+impl crate::Resettable for TXBTO_SPEC {
+    #[inline(always)]
+    fn reset_value() -> Self::Ux {
+        0
     }
 }

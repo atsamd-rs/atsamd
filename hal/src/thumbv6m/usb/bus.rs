@@ -9,9 +9,9 @@ use super::Descriptors;
 use crate::calibration::{usb_transn_cal, usb_transp_cal, usb_trim_cal};
 use crate::clock;
 use crate::gpio::v2::{AlternateG, AnyPin, Pin, PA24, PA25};
-use crate::target_device;
-use crate::target_device::usb::DEVICE;
-use crate::target_device::{PM, USB};
+use crate::pac;
+use crate::pac::usb::DEVICE;
+use crate::pac::{PM, USB};
 use crate::usb::devicedesc::DeviceDescBank;
 use core::cell::{Ref, RefCell, RefMut};
 use core::marker::PhantomData;
@@ -220,7 +220,7 @@ macro_rules! ep {
      $e3:ident, $e4:ident, $e5:ident, $e6:ident, $e7:ident) => {
         #[allow(unused)]
         #[inline]
-        fn $name(&self, endpoint: usize) -> &target_device::usb::device::$type {
+        fn $name(&self, endpoint: usize) -> &pac::usb::device::$type {
             match endpoint {
                 0 => &self.usb().$e0,
                 1 => &self.usb().$e1,

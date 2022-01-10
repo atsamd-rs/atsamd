@@ -1,6 +1,7 @@
 pub mod calibration;
 pub mod clock;
 pub mod eic;
+pub mod pukcc;
 pub mod qspi;
 pub(crate) mod sercom;
 pub mod timer;
@@ -23,3 +24,9 @@ pub mod pwm;
 
 #[cfg(feature = "unproven")]
 pub mod watchdog;
+
+#[cfg(feature = "unproven")]
+pub mod icm;
+
+pub mod dsu;
+pub mod nvm;

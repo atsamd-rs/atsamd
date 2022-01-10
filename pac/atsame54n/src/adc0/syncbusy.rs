@@ -1,29 +1,198 @@
-#[doc = "Reader of register SYNCBUSY"]
-pub type R = crate::R<u32, super::SYNCBUSY>;
-#[doc = "Reader of field `SWRST`"]
-pub type SWRST_R = crate::R<bool, bool>;
-#[doc = "Reader of field `ENABLE`"]
-pub type ENABLE_R = crate::R<bool, bool>;
-#[doc = "Reader of field `INPUTCTRL`"]
-pub type INPUTCTRL_R = crate::R<bool, bool>;
-#[doc = "Reader of field `CTRLB`"]
-pub type CTRLB_R = crate::R<bool, bool>;
-#[doc = "Reader of field `REFCTRL`"]
-pub type REFCTRL_R = crate::R<bool, bool>;
-#[doc = "Reader of field `AVGCTRL`"]
-pub type AVGCTRL_R = crate::R<bool, bool>;
-#[doc = "Reader of field `SAMPCTRL`"]
-pub type SAMPCTRL_R = crate::R<bool, bool>;
-#[doc = "Reader of field `WINLT`"]
-pub type WINLT_R = crate::R<bool, bool>;
-#[doc = "Reader of field `WINUT`"]
-pub type WINUT_R = crate::R<bool, bool>;
-#[doc = "Reader of field `GAINCORR`"]
-pub type GAINCORR_R = crate::R<bool, bool>;
-#[doc = "Reader of field `OFFSETCORR`"]
-pub type OFFSETCORR_R = crate::R<bool, bool>;
-#[doc = "Reader of field `SWTRIG`"]
-pub type SWTRIG_R = crate::R<bool, bool>;
+#[doc = "Register `SYNCBUSY` reader"]
+pub struct R(crate::R<SYNCBUSY_SPEC>);
+impl core::ops::Deref for R {
+    type Target = crate::R<SYNCBUSY_SPEC>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl From<crate::R<SYNCBUSY_SPEC>> for R {
+    #[inline(always)]
+    fn from(reader: crate::R<SYNCBUSY_SPEC>) -> Self {
+        R(reader)
+    }
+}
+#[doc = "Field `SWRST` reader - SWRST Synchronization Busy"]
+pub struct SWRST_R(crate::FieldReader<bool, bool>);
+impl SWRST_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        SWRST_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for SWRST_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `ENABLE` reader - ENABLE Synchronization Busy"]
+pub struct ENABLE_R(crate::FieldReader<bool, bool>);
+impl ENABLE_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        ENABLE_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for ENABLE_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `INPUTCTRL` reader - Input Control Synchronization Busy"]
+pub struct INPUTCTRL_R(crate::FieldReader<bool, bool>);
+impl INPUTCTRL_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        INPUTCTRL_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for INPUTCTRL_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `CTRLB` reader - Control B Synchronization Busy"]
+pub struct CTRLB_R(crate::FieldReader<bool, bool>);
+impl CTRLB_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        CTRLB_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for CTRLB_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `REFCTRL` reader - Reference Control Synchronization Busy"]
+pub struct REFCTRL_R(crate::FieldReader<bool, bool>);
+impl REFCTRL_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        REFCTRL_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for REFCTRL_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `AVGCTRL` reader - Average Control Synchronization Busy"]
+pub struct AVGCTRL_R(crate::FieldReader<bool, bool>);
+impl AVGCTRL_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        AVGCTRL_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for AVGCTRL_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `SAMPCTRL` reader - Sampling Time Control Synchronization Busy"]
+pub struct SAMPCTRL_R(crate::FieldReader<bool, bool>);
+impl SAMPCTRL_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        SAMPCTRL_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for SAMPCTRL_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `WINLT` reader - Window Monitor Lower Threshold Synchronization Busy"]
+pub struct WINLT_R(crate::FieldReader<bool, bool>);
+impl WINLT_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        WINLT_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for WINLT_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `WINUT` reader - Window Monitor Upper Threshold Synchronization Busy"]
+pub struct WINUT_R(crate::FieldReader<bool, bool>);
+impl WINUT_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        WINUT_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for WINUT_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `GAINCORR` reader - Gain Correction Synchronization Busy"]
+pub struct GAINCORR_R(crate::FieldReader<bool, bool>);
+impl GAINCORR_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        GAINCORR_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for GAINCORR_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `OFFSETCORR` reader - Offset Correction Synchronization Busy"]
+pub struct OFFSETCORR_R(crate::FieldReader<bool, bool>);
+impl OFFSETCORR_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        OFFSETCORR_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for OFFSETCORR_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `SWTRIG` reader - Software Trigger Synchronization Busy"]
+pub struct SWTRIG_R(crate::FieldReader<bool, bool>);
+impl SWTRIG_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        SWTRIG_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for SWTRIG_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
 impl R {
     #[doc = "Bit 0 - SWRST Synchronization Busy"]
     #[inline(always)]
@@ -84,5 +253,21 @@ impl R {
     #[inline(always)]
     pub fn swtrig(&self) -> SWTRIG_R {
         SWTRIG_R::new(((self.bits >> 11) & 0x01) != 0)
+    }
+}
+#[doc = "Synchronization Busy\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [syncbusy](index.html) module"]
+pub struct SYNCBUSY_SPEC;
+impl crate::RegisterSpec for SYNCBUSY_SPEC {
+    type Ux = u32;
+}
+#[doc = "`read()` method returns [syncbusy::R](R) reader structure"]
+impl crate::Readable for SYNCBUSY_SPEC {
+    type Reader = R;
+}
+#[doc = "`reset()` method sets SYNCBUSY to value 0"]
+impl crate::Resettable for SYNCBUSY_SPEC {
+    #[inline(always)]
+    fn reset_value() -> Self::Ux {
+        0
     }
 }

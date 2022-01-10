@@ -2,7 +2,7 @@
 
 use core::marker::PhantomData;
 
-use crate::target_device::sercom0::usart_int::ctrla::{RXPO_A, TXPO_A};
+use crate::pac::sercom0::usart_int::ctrla::{RXPO_A, TXPO_A};
 
 use super::{AnyConfig, Capability, CharSize, Config, Duplex, Rx, Tx};
 use crate::sercom::v2::*;

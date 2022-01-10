@@ -2,296 +2,157 @@
 #[repr(C)]
 pub struct RegisterBlock {
     #[doc = "0x00 - MTB Position"]
-    pub position: POSITION,
+    pub position: crate::Reg<position::POSITION_SPEC>,
     #[doc = "0x04 - MTB Master"]
-    pub master: MASTER,
+    pub master: crate::Reg<master::MASTER_SPEC>,
     #[doc = "0x08 - MTB Flow"]
-    pub flow: FLOW,
+    pub flow: crate::Reg<flow::FLOW_SPEC>,
     #[doc = "0x0c - MTB Base"]
-    pub base: BASE,
-    _reserved4: [u8; 3824usize],
+    pub base: crate::Reg<base::BASE_SPEC>,
+    _reserved4: [u8; 0x0ef0],
     #[doc = "0xf00 - MTB Integration Mode Control"]
-    pub itctrl: ITCTRL,
-    _reserved5: [u8; 156usize],
+    pub itctrl: crate::Reg<itctrl::ITCTRL_SPEC>,
+    _reserved5: [u8; 0x9c],
     #[doc = "0xfa0 - MTB Claim Set"]
-    pub claimset: CLAIMSET,
+    pub claimset: crate::Reg<claimset::CLAIMSET_SPEC>,
     #[doc = "0xfa4 - MTB Claim Clear"]
-    pub claimclr: CLAIMCLR,
-    _reserved7: [u8; 8usize],
+    pub claimclr: crate::Reg<claimclr::CLAIMCLR_SPEC>,
+    _reserved7: [u8; 0x08],
     #[doc = "0xfb0 - MTB Lock Access"]
-    pub lockaccess: LOCKACCESS,
+    pub lockaccess: crate::Reg<lockaccess::LOCKACCESS_SPEC>,
     #[doc = "0xfb4 - MTB Lock Status"]
-    pub lockstatus: LOCKSTATUS,
+    pub lockstatus: crate::Reg<lockstatus::LOCKSTATUS_SPEC>,
     #[doc = "0xfb8 - MTB Authentication Status"]
-    pub authstatus: AUTHSTATUS,
+    pub authstatus: crate::Reg<authstatus::AUTHSTATUS_SPEC>,
     #[doc = "0xfbc - MTB Device Architecture"]
-    pub devarch: DEVARCH,
-    _reserved11: [u8; 8usize],
+    pub devarch: crate::Reg<devarch::DEVARCH_SPEC>,
+    _reserved11: [u8; 0x08],
     #[doc = "0xfc8 - MTB Device Configuration"]
-    pub devid: DEVID,
+    pub devid: crate::Reg<devid::DEVID_SPEC>,
     #[doc = "0xfcc - MTB Device Type"]
-    pub devtype: DEVTYPE,
+    pub devtype: crate::Reg<devtype::DEVTYPE_SPEC>,
     #[doc = "0xfd0 - CoreSight"]
-    pub pid4: PID4,
+    pub pid4: crate::Reg<pid4::PID4_SPEC>,
     #[doc = "0xfd4 - CoreSight"]
-    pub pid5: PID5,
+    pub pid5: crate::Reg<pid5::PID5_SPEC>,
     #[doc = "0xfd8 - CoreSight"]
-    pub pid6: PID6,
+    pub pid6: crate::Reg<pid6::PID6_SPEC>,
     #[doc = "0xfdc - CoreSight"]
-    pub pid7: PID7,
+    pub pid7: crate::Reg<pid7::PID7_SPEC>,
     #[doc = "0xfe0 - CoreSight"]
-    pub pid0: PID0,
+    pub pid0: crate::Reg<pid0::PID0_SPEC>,
     #[doc = "0xfe4 - CoreSight"]
-    pub pid1: PID1,
+    pub pid1: crate::Reg<pid1::PID1_SPEC>,
     #[doc = "0xfe8 - CoreSight"]
-    pub pid2: PID2,
+    pub pid2: crate::Reg<pid2::PID2_SPEC>,
     #[doc = "0xfec - CoreSight"]
-    pub pid3: PID3,
+    pub pid3: crate::Reg<pid3::PID3_SPEC>,
     #[doc = "0xff0 - CoreSight"]
-    pub cid0: CID0,
+    pub cid0: crate::Reg<cid0::CID0_SPEC>,
     #[doc = "0xff4 - CoreSight"]
-    pub cid1: CID1,
+    pub cid1: crate::Reg<cid1::CID1_SPEC>,
     #[doc = "0xff8 - CoreSight"]
-    pub cid2: CID2,
+    pub cid2: crate::Reg<cid2::CID2_SPEC>,
     #[doc = "0xffc - CoreSight"]
-    pub cid3: CID3,
+    pub cid3: crate::Reg<cid3::CID3_SPEC>,
 }
-#[doc = "MTB Position\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [position](position) module"]
-pub type POSITION = crate::Reg<u32, _POSITION>;
-#[allow(missing_docs)]
-#[doc(hidden)]
-pub struct _POSITION;
-#[doc = "`read()` method returns [position::R](position::R) reader structure"]
-impl crate::Readable for POSITION {}
-#[doc = "`write(|w| ..)` method takes [position::W](position::W) writer structure"]
-impl crate::Writable for POSITION {}
+#[doc = "POSITION register accessor: an alias for `Reg<POSITION_SPEC>`"]
+pub type POSITION = crate::Reg<position::POSITION_SPEC>;
 #[doc = "MTB Position"]
 pub mod position;
-#[doc = "MTB Master\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [master](master) module"]
-pub type MASTER = crate::Reg<u32, _MASTER>;
-#[allow(missing_docs)]
-#[doc(hidden)]
-pub struct _MASTER;
-#[doc = "`read()` method returns [master::R](master::R) reader structure"]
-impl crate::Readable for MASTER {}
-#[doc = "`write(|w| ..)` method takes [master::W](master::W) writer structure"]
-impl crate::Writable for MASTER {}
+#[doc = "MASTER register accessor: an alias for `Reg<MASTER_SPEC>`"]
+pub type MASTER = crate::Reg<master::MASTER_SPEC>;
 #[doc = "MTB Master"]
 pub mod master;
-#[doc = "MTB Flow\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [flow](flow) module"]
-pub type FLOW = crate::Reg<u32, _FLOW>;
-#[allow(missing_docs)]
-#[doc(hidden)]
-pub struct _FLOW;
-#[doc = "`read()` method returns [flow::R](flow::R) reader structure"]
-impl crate::Readable for FLOW {}
-#[doc = "`write(|w| ..)` method takes [flow::W](flow::W) writer structure"]
-impl crate::Writable for FLOW {}
+#[doc = "FLOW register accessor: an alias for `Reg<FLOW_SPEC>`"]
+pub type FLOW = crate::Reg<flow::FLOW_SPEC>;
 #[doc = "MTB Flow"]
 pub mod flow;
-#[doc = "MTB Base\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [base](base) module"]
-pub type BASE = crate::Reg<u32, _BASE>;
-#[allow(missing_docs)]
-#[doc(hidden)]
-pub struct _BASE;
-#[doc = "`read()` method returns [base::R](base::R) reader structure"]
-impl crate::Readable for BASE {}
+#[doc = "BASE register accessor: an alias for `Reg<BASE_SPEC>`"]
+pub type BASE = crate::Reg<base::BASE_SPEC>;
 #[doc = "MTB Base"]
 pub mod base;
-#[doc = "MTB Integration Mode Control\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [itctrl](itctrl) module"]
-pub type ITCTRL = crate::Reg<u32, _ITCTRL>;
-#[allow(missing_docs)]
-#[doc(hidden)]
-pub struct _ITCTRL;
-#[doc = "`read()` method returns [itctrl::R](itctrl::R) reader structure"]
-impl crate::Readable for ITCTRL {}
-#[doc = "`write(|w| ..)` method takes [itctrl::W](itctrl::W) writer structure"]
-impl crate::Writable for ITCTRL {}
+#[doc = "ITCTRL register accessor: an alias for `Reg<ITCTRL_SPEC>`"]
+pub type ITCTRL = crate::Reg<itctrl::ITCTRL_SPEC>;
 #[doc = "MTB Integration Mode Control"]
 pub mod itctrl;
-#[doc = "MTB Claim Set\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [claimset](claimset) module"]
-pub type CLAIMSET = crate::Reg<u32, _CLAIMSET>;
-#[allow(missing_docs)]
-#[doc(hidden)]
-pub struct _CLAIMSET;
-#[doc = "`read()` method returns [claimset::R](claimset::R) reader structure"]
-impl crate::Readable for CLAIMSET {}
-#[doc = "`write(|w| ..)` method takes [claimset::W](claimset::W) writer structure"]
-impl crate::Writable for CLAIMSET {}
+#[doc = "CLAIMSET register accessor: an alias for `Reg<CLAIMSET_SPEC>`"]
+pub type CLAIMSET = crate::Reg<claimset::CLAIMSET_SPEC>;
 #[doc = "MTB Claim Set"]
 pub mod claimset;
-#[doc = "MTB Claim Clear\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [claimclr](claimclr) module"]
-pub type CLAIMCLR = crate::Reg<u32, _CLAIMCLR>;
-#[allow(missing_docs)]
-#[doc(hidden)]
-pub struct _CLAIMCLR;
-#[doc = "`read()` method returns [claimclr::R](claimclr::R) reader structure"]
-impl crate::Readable for CLAIMCLR {}
-#[doc = "`write(|w| ..)` method takes [claimclr::W](claimclr::W) writer structure"]
-impl crate::Writable for CLAIMCLR {}
+#[doc = "CLAIMCLR register accessor: an alias for `Reg<CLAIMCLR_SPEC>`"]
+pub type CLAIMCLR = crate::Reg<claimclr::CLAIMCLR_SPEC>;
 #[doc = "MTB Claim Clear"]
 pub mod claimclr;
-#[doc = "MTB Lock Access\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [lockaccess](lockaccess) module"]
-pub type LOCKACCESS = crate::Reg<u32, _LOCKACCESS>;
-#[allow(missing_docs)]
-#[doc(hidden)]
-pub struct _LOCKACCESS;
-#[doc = "`read()` method returns [lockaccess::R](lockaccess::R) reader structure"]
-impl crate::Readable for LOCKACCESS {}
-#[doc = "`write(|w| ..)` method takes [lockaccess::W](lockaccess::W) writer structure"]
-impl crate::Writable for LOCKACCESS {}
+#[doc = "LOCKACCESS register accessor: an alias for `Reg<LOCKACCESS_SPEC>`"]
+pub type LOCKACCESS = crate::Reg<lockaccess::LOCKACCESS_SPEC>;
 #[doc = "MTB Lock Access"]
 pub mod lockaccess;
-#[doc = "MTB Lock Status\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [lockstatus](lockstatus) module"]
-pub type LOCKSTATUS = crate::Reg<u32, _LOCKSTATUS>;
-#[allow(missing_docs)]
-#[doc(hidden)]
-pub struct _LOCKSTATUS;
-#[doc = "`read()` method returns [lockstatus::R](lockstatus::R) reader structure"]
-impl crate::Readable for LOCKSTATUS {}
+#[doc = "LOCKSTATUS register accessor: an alias for `Reg<LOCKSTATUS_SPEC>`"]
+pub type LOCKSTATUS = crate::Reg<lockstatus::LOCKSTATUS_SPEC>;
 #[doc = "MTB Lock Status"]
 pub mod lockstatus;
-#[doc = "MTB Authentication Status\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [authstatus](authstatus) module"]
-pub type AUTHSTATUS = crate::Reg<u32, _AUTHSTATUS>;
-#[allow(missing_docs)]
-#[doc(hidden)]
-pub struct _AUTHSTATUS;
-#[doc = "`read()` method returns [authstatus::R](authstatus::R) reader structure"]
-impl crate::Readable for AUTHSTATUS {}
+#[doc = "AUTHSTATUS register accessor: an alias for `Reg<AUTHSTATUS_SPEC>`"]
+pub type AUTHSTATUS = crate::Reg<authstatus::AUTHSTATUS_SPEC>;
 #[doc = "MTB Authentication Status"]
 pub mod authstatus;
-#[doc = "MTB Device Architecture\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [devarch](devarch) module"]
-pub type DEVARCH = crate::Reg<u32, _DEVARCH>;
-#[allow(missing_docs)]
-#[doc(hidden)]
-pub struct _DEVARCH;
-#[doc = "`read()` method returns [devarch::R](devarch::R) reader structure"]
-impl crate::Readable for DEVARCH {}
+#[doc = "DEVARCH register accessor: an alias for `Reg<DEVARCH_SPEC>`"]
+pub type DEVARCH = crate::Reg<devarch::DEVARCH_SPEC>;
 #[doc = "MTB Device Architecture"]
 pub mod devarch;
-#[doc = "MTB Device Configuration\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [devid](devid) module"]
-pub type DEVID = crate::Reg<u32, _DEVID>;
-#[allow(missing_docs)]
-#[doc(hidden)]
-pub struct _DEVID;
-#[doc = "`read()` method returns [devid::R](devid::R) reader structure"]
-impl crate::Readable for DEVID {}
+#[doc = "DEVID register accessor: an alias for `Reg<DEVID_SPEC>`"]
+pub type DEVID = crate::Reg<devid::DEVID_SPEC>;
 #[doc = "MTB Device Configuration"]
 pub mod devid;
-#[doc = "MTB Device Type\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [devtype](devtype) module"]
-pub type DEVTYPE = crate::Reg<u32, _DEVTYPE>;
-#[allow(missing_docs)]
-#[doc(hidden)]
-pub struct _DEVTYPE;
-#[doc = "`read()` method returns [devtype::R](devtype::R) reader structure"]
-impl crate::Readable for DEVTYPE {}
+#[doc = "DEVTYPE register accessor: an alias for `Reg<DEVTYPE_SPEC>`"]
+pub type DEVTYPE = crate::Reg<devtype::DEVTYPE_SPEC>;
 #[doc = "MTB Device Type"]
 pub mod devtype;
-#[doc = "CoreSight\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [pid4](pid4) module"]
-pub type PID4 = crate::Reg<u32, _PID4>;
-#[allow(missing_docs)]
-#[doc(hidden)]
-pub struct _PID4;
-#[doc = "`read()` method returns [pid4::R](pid4::R) reader structure"]
-impl crate::Readable for PID4 {}
+#[doc = "PID4 register accessor: an alias for `Reg<PID4_SPEC>`"]
+pub type PID4 = crate::Reg<pid4::PID4_SPEC>;
 #[doc = "CoreSight"]
 pub mod pid4;
-#[doc = "CoreSight\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [pid5](pid5) module"]
-pub type PID5 = crate::Reg<u32, _PID5>;
-#[allow(missing_docs)]
-#[doc(hidden)]
-pub struct _PID5;
-#[doc = "`read()` method returns [pid5::R](pid5::R) reader structure"]
-impl crate::Readable for PID5 {}
+#[doc = "PID5 register accessor: an alias for `Reg<PID5_SPEC>`"]
+pub type PID5 = crate::Reg<pid5::PID5_SPEC>;
 #[doc = "CoreSight"]
 pub mod pid5;
-#[doc = "CoreSight\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [pid6](pid6) module"]
-pub type PID6 = crate::Reg<u32, _PID6>;
-#[allow(missing_docs)]
-#[doc(hidden)]
-pub struct _PID6;
-#[doc = "`read()` method returns [pid6::R](pid6::R) reader structure"]
-impl crate::Readable for PID6 {}
+#[doc = "PID6 register accessor: an alias for `Reg<PID6_SPEC>`"]
+pub type PID6 = crate::Reg<pid6::PID6_SPEC>;
 #[doc = "CoreSight"]
 pub mod pid6;
-#[doc = "CoreSight\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [pid7](pid7) module"]
-pub type PID7 = crate::Reg<u32, _PID7>;
-#[allow(missing_docs)]
-#[doc(hidden)]
-pub struct _PID7;
-#[doc = "`read()` method returns [pid7::R](pid7::R) reader structure"]
-impl crate::Readable for PID7 {}
+#[doc = "PID7 register accessor: an alias for `Reg<PID7_SPEC>`"]
+pub type PID7 = crate::Reg<pid7::PID7_SPEC>;
 #[doc = "CoreSight"]
 pub mod pid7;
-#[doc = "CoreSight\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [pid0](pid0) module"]
-pub type PID0 = crate::Reg<u32, _PID0>;
-#[allow(missing_docs)]
-#[doc(hidden)]
-pub struct _PID0;
-#[doc = "`read()` method returns [pid0::R](pid0::R) reader structure"]
-impl crate::Readable for PID0 {}
+#[doc = "PID0 register accessor: an alias for `Reg<PID0_SPEC>`"]
+pub type PID0 = crate::Reg<pid0::PID0_SPEC>;
 #[doc = "CoreSight"]
 pub mod pid0;
-#[doc = "CoreSight\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [pid1](pid1) module"]
-pub type PID1 = crate::Reg<u32, _PID1>;
-#[allow(missing_docs)]
-#[doc(hidden)]
-pub struct _PID1;
-#[doc = "`read()` method returns [pid1::R](pid1::R) reader structure"]
-impl crate::Readable for PID1 {}
+#[doc = "PID1 register accessor: an alias for `Reg<PID1_SPEC>`"]
+pub type PID1 = crate::Reg<pid1::PID1_SPEC>;
 #[doc = "CoreSight"]
 pub mod pid1;
-#[doc = "CoreSight\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [pid2](pid2) module"]
-pub type PID2 = crate::Reg<u32, _PID2>;
-#[allow(missing_docs)]
-#[doc(hidden)]
-pub struct _PID2;
-#[doc = "`read()` method returns [pid2::R](pid2::R) reader structure"]
-impl crate::Readable for PID2 {}
+#[doc = "PID2 register accessor: an alias for `Reg<PID2_SPEC>`"]
+pub type PID2 = crate::Reg<pid2::PID2_SPEC>;
 #[doc = "CoreSight"]
 pub mod pid2;
-#[doc = "CoreSight\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [pid3](pid3) module"]
-pub type PID3 = crate::Reg<u32, _PID3>;
-#[allow(missing_docs)]
-#[doc(hidden)]
-pub struct _PID3;
-#[doc = "`read()` method returns [pid3::R](pid3::R) reader structure"]
-impl crate::Readable for PID3 {}
+#[doc = "PID3 register accessor: an alias for `Reg<PID3_SPEC>`"]
+pub type PID3 = crate::Reg<pid3::PID3_SPEC>;
 #[doc = "CoreSight"]
 pub mod pid3;
-#[doc = "CoreSight\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [cid0](cid0) module"]
-pub type CID0 = crate::Reg<u32, _CID0>;
-#[allow(missing_docs)]
-#[doc(hidden)]
-pub struct _CID0;
-#[doc = "`read()` method returns [cid0::R](cid0::R) reader structure"]
-impl crate::Readable for CID0 {}
+#[doc = "CID0 register accessor: an alias for `Reg<CID0_SPEC>`"]
+pub type CID0 = crate::Reg<cid0::CID0_SPEC>;
 #[doc = "CoreSight"]
 pub mod cid0;
-#[doc = "CoreSight\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [cid1](cid1) module"]
-pub type CID1 = crate::Reg<u32, _CID1>;
-#[allow(missing_docs)]
-#[doc(hidden)]
-pub struct _CID1;
-#[doc = "`read()` method returns [cid1::R](cid1::R) reader structure"]
-impl crate::Readable for CID1 {}
+#[doc = "CID1 register accessor: an alias for `Reg<CID1_SPEC>`"]
+pub type CID1 = crate::Reg<cid1::CID1_SPEC>;
 #[doc = "CoreSight"]
 pub mod cid1;
-#[doc = "CoreSight\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [cid2](cid2) module"]
-pub type CID2 = crate::Reg<u32, _CID2>;
-#[allow(missing_docs)]
-#[doc(hidden)]
-pub struct _CID2;
-#[doc = "`read()` method returns [cid2::R](cid2::R) reader structure"]
-impl crate::Readable for CID2 {}
+#[doc = "CID2 register accessor: an alias for `Reg<CID2_SPEC>`"]
+pub type CID2 = crate::Reg<cid2::CID2_SPEC>;
 #[doc = "CoreSight"]
 pub mod cid2;
-#[doc = "CoreSight\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [cid3](cid3) module"]
-pub type CID3 = crate::Reg<u32, _CID3>;
-#[allow(missing_docs)]
-#[doc(hidden)]
-pub struct _CID3;
-#[doc = "`read()` method returns [cid3::R](cid3::R) reader structure"]
-impl crate::Readable for CID3 {}
+#[doc = "CID3 register accessor: an alias for `Reg<CID3_SPEC>`"]
+pub type CID3 = crate::Reg<cid3::CID3_SPEC>;
 #[doc = "CoreSight"]
 pub mod cid3;

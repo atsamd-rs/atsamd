@@ -1,20 +1,21 @@
 [package]
 name = "atsame51n"
 description = "Peripheral access API for ATSAME51N microcontrollers (generated using svd2rust)"
-version = "0.9.0"
+version = "0.11.0"
 authors = ["Karsten Große <karsten.grosse@sympatron.de>"]
 keywords = ["no-std", "arm", "cortex-m"]
+categories = ["embedded", "hardware-support", "no-std"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
+edition = "2021"
 
 [dependencies]
-bare-metal = "0.2"
-cortex-m = "0.6"
-vcell = "0.1.2"
+cortex-m = "0.7"
+vcell = "0.1"
 
 [dependencies.cortex-m-rt]
-version = "0.6.12"
+version = "0.7"
 optional = true
 
 [features]

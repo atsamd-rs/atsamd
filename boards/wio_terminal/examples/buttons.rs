@@ -13,12 +13,11 @@ use wio::hal::clock::GenericClockController;
 use wio::hal::delay::Delay;
 use wio::pac::{interrupt, CorePeripherals, Peripherals};
 use wio::prelude::*;
-use wio::{button_interrupt, entry, Button, ButtonController, ButtonEvent, Pins, Sets};
+use wio::{button_interrupt, entry, Button, ButtonController, ButtonEvent};
 
 use cortex_m::interrupt::{free as disable_interrupts, CriticalSection};
 
-use heapless::consts::U8;
-use heapless::spsc::Queue;
+use heapless::{consts::U8, spsc::Queue};
 
 #[entry]
 fn main() -> ! {
@@ -34,8 +33,7 @@ fn main() -> ! {
     );
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
-    let pins = Pins::new(peripherals.PORT);
-    let mut sets: Sets = pins.split();
+    let sets = wio::Pins::new(peripherals.PORT).split();
 
     // Initialize the ILI9341-based LCD display. Create a black backdrop the size of
     // the screen, load an image of Ferris from a RAW file, and draw it to the
@@ -47,7 +45,6 @@ fn main() -> ! {
             &mut clocks,
             peripherals.SERCOM7,
             &mut peripherals.MCLK,
-            &mut sets.port,
             58.mhz(),
             &mut delay,
         )
@@ -60,12 +57,9 @@ fn main() -> ! {
         Rectangle::with_corners(Point::new(0, 0), Point::new(320, 320)).into_styled(style);
     backdrop.draw(&mut display).unwrap();
 
-    let button_ctrlr = sets.buttons.init(
-        peripherals.EIC,
-        &mut clocks,
-        &mut peripherals.MCLK,
-        &mut sets.port,
-    );
+    let button_ctrlr = sets
+        .buttons
+        .init(peripherals.EIC, &mut clocks, &mut peripherals.MCLK);
     let nvic = &mut core.NVIC;
     disable_interrupts(|_| unsafe {
         button_ctrlr.enable(nvic);

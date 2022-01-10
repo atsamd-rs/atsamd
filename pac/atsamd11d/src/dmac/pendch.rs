@@ -1,17 +1,108 @@
-#[doc = "Reader of register PENDCH"]
-pub type R = crate::R<u32, super::PENDCH>;
-#[doc = "Reader of field `PENDCH0`"]
-pub type PENDCH0_R = crate::R<bool, bool>;
-#[doc = "Reader of field `PENDCH1`"]
-pub type PENDCH1_R = crate::R<bool, bool>;
-#[doc = "Reader of field `PENDCH2`"]
-pub type PENDCH2_R = crate::R<bool, bool>;
-#[doc = "Reader of field `PENDCH3`"]
-pub type PENDCH3_R = crate::R<bool, bool>;
-#[doc = "Reader of field `PENDCH4`"]
-pub type PENDCH4_R = crate::R<bool, bool>;
-#[doc = "Reader of field `PENDCH5`"]
-pub type PENDCH5_R = crate::R<bool, bool>;
+#[doc = "Register `PENDCH` reader"]
+pub struct R(crate::R<PENDCH_SPEC>);
+impl core::ops::Deref for R {
+    type Target = crate::R<PENDCH_SPEC>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl From<crate::R<PENDCH_SPEC>> for R {
+    #[inline(always)]
+    fn from(reader: crate::R<PENDCH_SPEC>) -> Self {
+        R(reader)
+    }
+}
+#[doc = "Field `PENDCH0` reader - Pending Channel 0"]
+pub struct PENDCH0_R(crate::FieldReader<bool, bool>);
+impl PENDCH0_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        PENDCH0_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for PENDCH0_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `PENDCH1` reader - Pending Channel 1"]
+pub struct PENDCH1_R(crate::FieldReader<bool, bool>);
+impl PENDCH1_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        PENDCH1_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for PENDCH1_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `PENDCH2` reader - Pending Channel 2"]
+pub struct PENDCH2_R(crate::FieldReader<bool, bool>);
+impl PENDCH2_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        PENDCH2_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for PENDCH2_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `PENDCH3` reader - Pending Channel 3"]
+pub struct PENDCH3_R(crate::FieldReader<bool, bool>);
+impl PENDCH3_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        PENDCH3_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for PENDCH3_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `PENDCH4` reader - Pending Channel 4"]
+pub struct PENDCH4_R(crate::FieldReader<bool, bool>);
+impl PENDCH4_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        PENDCH4_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for PENDCH4_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `PENDCH5` reader - Pending Channel 5"]
+pub struct PENDCH5_R(crate::FieldReader<bool, bool>);
+impl PENDCH5_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        PENDCH5_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for PENDCH5_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
 impl R {
     #[doc = "Bit 0 - Pending Channel 0"]
     #[inline(always)]
@@ -42,5 +133,21 @@ impl R {
     #[inline(always)]
     pub fn pendch5(&self) -> PENDCH5_R {
         PENDCH5_R::new(((self.bits >> 5) & 0x01) != 0)
+    }
+}
+#[doc = "Pending Channels\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [pendch](index.html) module"]
+pub struct PENDCH_SPEC;
+impl crate::RegisterSpec for PENDCH_SPEC {
+    type Ux = u32;
+}
+#[doc = "`read()` method returns [pendch::R](R) reader structure"]
+impl crate::Readable for PENDCH_SPEC {
+    type Reader = R;
+}
+#[doc = "`reset()` method sets PENDCH to value 0"]
+impl crate::Resettable for PENDCH_SPEC {
+    #[inline(always)]
+    fn reset_value() -> Self::Ux {
+        0
     }
 }

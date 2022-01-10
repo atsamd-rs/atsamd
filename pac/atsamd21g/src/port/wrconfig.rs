@@ -1,14 +1,25 @@
-#[doc = "Writer for register WRCONFIG%s"]
-pub type W = crate::W<u32, super::WRCONFIG>;
-#[doc = "Register WRCONFIG%s `reset()`'s with value 0"]
-impl crate::ResetValue for super::WRCONFIG {
-    type Type = u32;
+#[doc = "Register `WRCONFIG%s` writer"]
+pub struct W(crate::W<WRCONFIG_SPEC>);
+impl core::ops::Deref for W {
+    type Target = crate::W<WRCONFIG_SPEC>;
     #[inline(always)]
-    fn reset_value() -> Self::Type {
-        0
+    fn deref(&self) -> &Self::Target {
+        &self.0
     }
 }
-#[doc = "Write proxy for field `PINMASK`"]
+impl core::ops::DerefMut for W {
+    #[inline(always)]
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+impl From<crate::W<WRCONFIG_SPEC>> for W {
+    #[inline(always)]
+    fn from(writer: crate::W<WRCONFIG_SPEC>) -> Self {
+        W(writer)
+    }
+}
+#[doc = "Field `PINMASK` writer - Pin Mask for Multiple Pin Configuration"]
 pub struct PINMASK_W<'a> {
     w: &'a mut W,
 }
@@ -16,11 +27,11 @@ impl<'a> PINMASK_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub unsafe fn bits(self, value: u16) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0xffff) | ((value as u32) & 0xffff);
+        self.w.bits = (self.w.bits & !0xffff) | (value as u32 & 0xffff);
         self.w
     }
 }
-#[doc = "Write proxy for field `PMUXEN`"]
+#[doc = "Field `PMUXEN` writer - Peripheral Multiplexer Enable"]
 pub struct PMUXEN_W<'a> {
     w: &'a mut W,
 }
@@ -38,11 +49,11 @@ impl<'a> PMUXEN_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 16)) | (((value as u32) & 0x01) << 16);
+        self.w.bits = (self.w.bits & !(0x01 << 16)) | ((value as u32 & 0x01) << 16);
         self.w
     }
 }
-#[doc = "Write proxy for field `INEN`"]
+#[doc = "Field `INEN` writer - Input Enable"]
 pub struct INEN_W<'a> {
     w: &'a mut W,
 }
@@ -60,11 +71,11 @@ impl<'a> INEN_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 17)) | (((value as u32) & 0x01) << 17);
+        self.w.bits = (self.w.bits & !(0x01 << 17)) | ((value as u32 & 0x01) << 17);
         self.w
     }
 }
-#[doc = "Write proxy for field `PULLEN`"]
+#[doc = "Field `PULLEN` writer - Pull Enable"]
 pub struct PULLEN_W<'a> {
     w: &'a mut W,
 }
@@ -82,11 +93,11 @@ impl<'a> PULLEN_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 18)) | (((value as u32) & 0x01) << 18);
+        self.w.bits = (self.w.bits & !(0x01 << 18)) | ((value as u32 & 0x01) << 18);
         self.w
     }
 }
-#[doc = "Write proxy for field `DRVSTR`"]
+#[doc = "Field `DRVSTR` writer - Output Driver Strength Selection"]
 pub struct DRVSTR_W<'a> {
     w: &'a mut W,
 }
@@ -104,11 +115,11 @@ impl<'a> DRVSTR_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 22)) | (((value as u32) & 0x01) << 22);
+        self.w.bits = (self.w.bits & !(0x01 << 22)) | ((value as u32 & 0x01) << 22);
         self.w
     }
 }
-#[doc = "Write proxy for field `PMUX`"]
+#[doc = "Field `PMUX` writer - Peripheral Multiplexing"]
 pub struct PMUX_W<'a> {
     w: &'a mut W,
 }
@@ -116,11 +127,11 @@ impl<'a> PMUX_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x0f << 24)) | (((value as u32) & 0x0f) << 24);
+        self.w.bits = (self.w.bits & !(0x0f << 24)) | ((value as u32 & 0x0f) << 24);
         self.w
     }
 }
-#[doc = "Write proxy for field `WRPMUX`"]
+#[doc = "Field `WRPMUX` writer - Write PMUX"]
 pub struct WRPMUX_W<'a> {
     w: &'a mut W,
 }
@@ -138,11 +149,11 @@ impl<'a> WRPMUX_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 28)) | (((value as u32) & 0x01) << 28);
+        self.w.bits = (self.w.bits & !(0x01 << 28)) | ((value as u32 & 0x01) << 28);
         self.w
     }
 }
-#[doc = "Write proxy for field `WRPINCFG`"]
+#[doc = "Field `WRPINCFG` writer - Write PINCFG"]
 pub struct WRPINCFG_W<'a> {
     w: &'a mut W,
 }
@@ -160,11 +171,11 @@ impl<'a> WRPINCFG_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 30)) | (((value as u32) & 0x01) << 30);
+        self.w.bits = (self.w.bits & !(0x01 << 30)) | ((value as u32 & 0x01) << 30);
         self.w
     }
 }
-#[doc = "Write proxy for field `HWSEL`"]
+#[doc = "Field `HWSEL` writer - Half-Word Select"]
 pub struct HWSEL_W<'a> {
     w: &'a mut W,
 }
@@ -182,7 +193,7 @@ impl<'a> HWSEL_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 31)) | (((value as u32) & 0x01) << 31);
+        self.w.bits = (self.w.bits & !(0x01 << 31)) | ((value as u32 & 0x01) << 31);
         self.w
     }
 }
@@ -231,5 +242,27 @@ impl W {
     #[inline(always)]
     pub fn hwsel(&mut self) -> HWSEL_W {
         HWSEL_W { w: self }
+    }
+    #[doc = "Writes raw bits to the register."]
+    #[inline(always)]
+    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+        self.0.bits(bits);
+        self
+    }
+}
+#[doc = "Write Configuration\n\nThis register you can [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [wrconfig](index.html) module"]
+pub struct WRCONFIG_SPEC;
+impl crate::RegisterSpec for WRCONFIG_SPEC {
+    type Ux = u32;
+}
+#[doc = "`write(|w| ..)` method takes [wrconfig::W](W) writer structure"]
+impl crate::Writable for WRCONFIG_SPEC {
+    type Writer = W;
+}
+#[doc = "`reset()` method sets WRCONFIG%s to value 0"]
+impl crate::Resettable for WRCONFIG_SPEC {
+    #[inline(always)]
+    fn reset_value() -> Self::Ux {
+        0
     }
 }

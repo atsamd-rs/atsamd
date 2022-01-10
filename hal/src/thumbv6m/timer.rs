@@ -1,16 +1,16 @@
 //! Working with timer counter hardware
+use crate::ehal::timer::{CountDown, Periodic};
 #[cfg(feature = "samd11")]
-use crate::target_device::tc1::COUNT16;
+use crate::pac::tc1::COUNT16;
 #[cfg(feature = "samd21")]
-use crate::target_device::tc3::COUNT16;
+use crate::pac::tc3::COUNT16;
 #[allow(unused)]
 #[cfg(feature = "samd11")]
-use crate::target_device::{PM, TC1};
+use crate::pac::{PM, TC1};
 #[allow(unused)]
 #[cfg(feature = "samd21")]
-use crate::target_device::{PM, TC3, TC4, TC5};
+use crate::pac::{PM, TC3, TC4, TC5};
 use crate::timer_params::TimerParams;
-use hal::timer::{CountDown, Periodic};
 
 use crate::clock;
 use crate::time::{Hertz, Nanoseconds};
@@ -188,19 +188,26 @@ tc! {
     TimerCounter5: (TC5, tc5_, Tc4Tc5Clock),
 }
 
+#[deprecated(
+    since = "0.13.0",
+    note = "`SpinTimer` is deprecated, and will be removed in a subsequent release."
+)]
 #[derive(Clone, Copy)]
 pub struct SpinTimer {
     cycles: u32,
 }
 
+#[allow(deprecated)]
 impl SpinTimer {
     pub fn new(cycles: u32) -> SpinTimer {
         SpinTimer { cycles }
     }
 }
 
+#[allow(deprecated)]
 impl Periodic for SpinTimer {}
 
+#[allow(deprecated)]
 impl CountDown for SpinTimer {
     type Time = u32;
 

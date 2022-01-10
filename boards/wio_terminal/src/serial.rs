@@ -1,24 +1,31 @@
 use atsamd_hal::clock::GenericClockController;
-use atsamd_hal::gpio::{Floating, Input, Pa24, Pa25, Pb26, Pb27, PfC, Port};
-use atsamd_hal::sercom::{PadPin, Sercom2Pad0, Sercom2Pad1, UART2};
-use atsamd_hal::target_device::{self, MCLK, SERCOM2};
+use atsamd_hal::pac::{self, MCLK, SERCOM2};
+use atsamd_hal::sercom::v2::{uart, IoSet2, Sercom2};
 use atsamd_hal::time::Hertz;
 
 #[cfg(feature = "usb")]
 use atsamd_hal::usb::{usb_device::bus::UsbBusAllocator, UsbBus};
 #[cfg(feature = "usb")]
-use target_device::gclk::{genctrl::SRC_A, pchctrl::GEN_A};
+use pac::gclk::{genctrl::SRC_A, pchctrl::GEN_A};
 
-/// UART pins (uses `SERCOM2`)
-pub struct UART {
+use super::pins::aliases::*;
+
+/// Uart pins (uses `SERCOM2`)
+pub struct Uart {
     /// UART transmit pin
-    pub tx: Pb26<Input<Floating>>,
+    pub tx: UartTxReset,
 
     /// UART receive pin
-    pub rx: Pb27<Input<Floating>>,
+    pub rx: UartRxReset,
 }
 
-impl UART {
+/// UART pads for the labelled RX & TX pins
+pub type UartPads = uart::Pads<Sercom2, IoSet2, UartRx, UartTx>;
+
+/// UART device for the labelled RX & TX pins
+pub type HalUart = uart::Uart<uart::Config<UartPads>, uart::Duplex>;
+
+impl Uart {
     /// Set up the labelled TX/RX pins to operate as a UART device at the
     /// specified baud rate.
     pub fn init<F: Into<Hertz>>(
@@ -27,34 +34,38 @@ impl UART {
         baud: F,
         sercom2: SERCOM2,
         mclk: &mut MCLK,
-        port: &mut Port,
-    ) -> UART2<Sercom2Pad1<Pb27<PfC>>, Sercom2Pad0<Pb26<PfC>>, (), ()> {
+    ) -> HalUart {
         let gclk0 = clocks.gclk0();
-        UART2::new(
-            &clocks.sercom2_core(&gclk0).unwrap(),
-            baud.into(),
-            sercom2,
+        let pads = uart::Pads::default().rx(self.rx).tx(self.tx);
+        uart::Config::new(
             mclk,
-            (self.rx.into_pad(port), self.tx.into_pad(port)),
+            sercom2,
+            pads,
+            clocks.sercom2_core(&gclk0).unwrap().freq(),
         )
+        .baud(
+            baud.into(),
+            uart::BaudMode::Fractional(uart::Oversampling::Bits16),
+        )
+        .enable()
     }
 }
 
 /// USB pins
-pub struct USB {
+pub struct Usb {
     /// USB data-minus pin
-    pub dm: Pa24<Input<Floating>>,
+    pub dm: UsbDmReset,
 
     /// USB data-plus pin
-    pub dp: Pa25<Input<Floating>>,
+    pub dp: UsbDpReset,
 }
 
-impl USB {
+impl Usb {
     #[cfg(feature = "usb")]
     /// Create a USB allocator.
     pub fn usb_allocator(
         self,
-        usb: target_device::USB,
+        usb: pac::USB,
         clocks: &mut GenericClockController,
         mclk: &mut MCLK,
     ) -> UsbBusAllocator<UsbBus> {

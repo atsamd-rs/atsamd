@@ -1,43 +1,303 @@
-#[doc = "Reader of register STATUS"]
-pub type R = crate::R<u32, super::STATUS>;
-#[doc = "Reader of field `XOSCRDY0`"]
-pub type XOSCRDY0_R = crate::R<bool, bool>;
-#[doc = "Reader of field `XOSCRDY1`"]
-pub type XOSCRDY1_R = crate::R<bool, bool>;
-#[doc = "Reader of field `XOSCFAIL0`"]
-pub type XOSCFAIL0_R = crate::R<bool, bool>;
-#[doc = "Reader of field `XOSCFAIL1`"]
-pub type XOSCFAIL1_R = crate::R<bool, bool>;
-#[doc = "Reader of field `XOSCCKSW0`"]
-pub type XOSCCKSW0_R = crate::R<bool, bool>;
-#[doc = "Reader of field `XOSCCKSW1`"]
-pub type XOSCCKSW1_R = crate::R<bool, bool>;
-#[doc = "Reader of field `DFLLRDY`"]
-pub type DFLLRDY_R = crate::R<bool, bool>;
-#[doc = "Reader of field `DFLLOOB`"]
-pub type DFLLOOB_R = crate::R<bool, bool>;
-#[doc = "Reader of field `DFLLLCKF`"]
-pub type DFLLLCKF_R = crate::R<bool, bool>;
-#[doc = "Reader of field `DFLLLCKC`"]
-pub type DFLLLCKC_R = crate::R<bool, bool>;
-#[doc = "Reader of field `DFLLRCS`"]
-pub type DFLLRCS_R = crate::R<bool, bool>;
-#[doc = "Reader of field `DPLL0LCKR`"]
-pub type DPLL0LCKR_R = crate::R<bool, bool>;
-#[doc = "Reader of field `DPLL0LCKF`"]
-pub type DPLL0LCKF_R = crate::R<bool, bool>;
-#[doc = "Reader of field `DPLL0TO`"]
-pub type DPLL0TO_R = crate::R<bool, bool>;
-#[doc = "Reader of field `DPLL0LDRTO`"]
-pub type DPLL0LDRTO_R = crate::R<bool, bool>;
-#[doc = "Reader of field `DPLL1LCKR`"]
-pub type DPLL1LCKR_R = crate::R<bool, bool>;
-#[doc = "Reader of field `DPLL1LCKF`"]
-pub type DPLL1LCKF_R = crate::R<bool, bool>;
-#[doc = "Reader of field `DPLL1TO`"]
-pub type DPLL1TO_R = crate::R<bool, bool>;
-#[doc = "Reader of field `DPLL1LDRTO`"]
-pub type DPLL1LDRTO_R = crate::R<bool, bool>;
+#[doc = "Register `STATUS` reader"]
+pub struct R(crate::R<STATUS_SPEC>);
+impl core::ops::Deref for R {
+    type Target = crate::R<STATUS_SPEC>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl From<crate::R<STATUS_SPEC>> for R {
+    #[inline(always)]
+    fn from(reader: crate::R<STATUS_SPEC>) -> Self {
+        R(reader)
+    }
+}
+#[doc = "Field `XOSCRDY0` reader - XOSC 0 Ready"]
+pub struct XOSCRDY0_R(crate::FieldReader<bool, bool>);
+impl XOSCRDY0_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        XOSCRDY0_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for XOSCRDY0_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `XOSCRDY1` reader - XOSC 1 Ready"]
+pub struct XOSCRDY1_R(crate::FieldReader<bool, bool>);
+impl XOSCRDY1_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        XOSCRDY1_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for XOSCRDY1_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `XOSCFAIL0` reader - XOSC 0 Clock Failure Detector"]
+pub struct XOSCFAIL0_R(crate::FieldReader<bool, bool>);
+impl XOSCFAIL0_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        XOSCFAIL0_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for XOSCFAIL0_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `XOSCFAIL1` reader - XOSC 1 Clock Failure Detector"]
+pub struct XOSCFAIL1_R(crate::FieldReader<bool, bool>);
+impl XOSCFAIL1_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        XOSCFAIL1_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for XOSCFAIL1_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `XOSCCKSW0` reader - XOSC 0 Clock Switch"]
+pub struct XOSCCKSW0_R(crate::FieldReader<bool, bool>);
+impl XOSCCKSW0_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        XOSCCKSW0_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for XOSCCKSW0_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `XOSCCKSW1` reader - XOSC 1 Clock Switch"]
+pub struct XOSCCKSW1_R(crate::FieldReader<bool, bool>);
+impl XOSCCKSW1_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        XOSCCKSW1_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for XOSCCKSW1_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `DFLLRDY` reader - DFLL Ready"]
+pub struct DFLLRDY_R(crate::FieldReader<bool, bool>);
+impl DFLLRDY_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        DFLLRDY_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for DFLLRDY_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `DFLLOOB` reader - DFLL Out Of Bounds"]
+pub struct DFLLOOB_R(crate::FieldReader<bool, bool>);
+impl DFLLOOB_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        DFLLOOB_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for DFLLOOB_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `DFLLLCKF` reader - DFLL Lock Fine"]
+pub struct DFLLLCKF_R(crate::FieldReader<bool, bool>);
+impl DFLLLCKF_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        DFLLLCKF_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for DFLLLCKF_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `DFLLLCKC` reader - DFLL Lock Coarse"]
+pub struct DFLLLCKC_R(crate::FieldReader<bool, bool>);
+impl DFLLLCKC_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        DFLLLCKC_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for DFLLLCKC_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `DFLLRCS` reader - DFLL Reference Clock Stopped"]
+pub struct DFLLRCS_R(crate::FieldReader<bool, bool>);
+impl DFLLRCS_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        DFLLRCS_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for DFLLRCS_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `DPLL0LCKR` reader - DPLL0 Lock Rise"]
+pub struct DPLL0LCKR_R(crate::FieldReader<bool, bool>);
+impl DPLL0LCKR_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        DPLL0LCKR_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for DPLL0LCKR_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `DPLL0LCKF` reader - DPLL0 Lock Fall"]
+pub struct DPLL0LCKF_R(crate::FieldReader<bool, bool>);
+impl DPLL0LCKF_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        DPLL0LCKF_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for DPLL0LCKF_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `DPLL0TO` reader - DPLL0 Timeout"]
+pub struct DPLL0TO_R(crate::FieldReader<bool, bool>);
+impl DPLL0TO_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        DPLL0TO_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for DPLL0TO_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `DPLL0LDRTO` reader - DPLL0 Loop Divider Ratio Update Complete"]
+pub struct DPLL0LDRTO_R(crate::FieldReader<bool, bool>);
+impl DPLL0LDRTO_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        DPLL0LDRTO_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for DPLL0LDRTO_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `DPLL1LCKR` reader - DPLL1 Lock Rise"]
+pub struct DPLL1LCKR_R(crate::FieldReader<bool, bool>);
+impl DPLL1LCKR_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        DPLL1LCKR_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for DPLL1LCKR_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `DPLL1LCKF` reader - DPLL1 Lock Fall"]
+pub struct DPLL1LCKF_R(crate::FieldReader<bool, bool>);
+impl DPLL1LCKF_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        DPLL1LCKF_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for DPLL1LCKF_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `DPLL1TO` reader - DPLL1 Timeout"]
+pub struct DPLL1TO_R(crate::FieldReader<bool, bool>);
+impl DPLL1TO_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        DPLL1TO_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for DPLL1TO_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `DPLL1LDRTO` reader - DPLL1 Loop Divider Ratio Update Complete"]
+pub struct DPLL1LDRTO_R(crate::FieldReader<bool, bool>);
+impl DPLL1LDRTO_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        DPLL1LDRTO_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for DPLL1LDRTO_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
 impl R {
     #[doc = "Bit 0 - XOSC 0 Ready"]
     #[inline(always)]
@@ -133,5 +393,21 @@ impl R {
     #[inline(always)]
     pub fn dpll1ldrto(&self) -> DPLL1LDRTO_R {
         DPLL1LDRTO_R::new(((self.bits >> 27) & 0x01) != 0)
+    }
+}
+#[doc = "Status\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [status](index.html) module"]
+pub struct STATUS_SPEC;
+impl crate::RegisterSpec for STATUS_SPEC {
+    type Ux = u32;
+}
+#[doc = "`read()` method returns [status::R](R) reader structure"]
+impl crate::Readable for STATUS_SPEC {
+    type Reader = R;
+}
+#[doc = "`reset()` method sets STATUS to value 0"]
+impl crate::Resettable for STATUS_SPEC {
+    #[inline(always)]
+    fn reset_value() -> Self::Ux {
+        0
     }
 }

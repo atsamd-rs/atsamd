@@ -1,13 +1,37 @@
-#[doc = "Reader of register BGCR"]
-pub type R = crate::R<u8, super::BGCR>;
-#[doc = "Writer for register BGCR"]
-pub type W = crate::W<u8, super::BGCR>;
-#[doc = "Register BGCR `reset()`'s with value 0"]
-impl crate::ResetValue for super::BGCR {
-    type Type = u8;
+#[doc = "Register `BGCR` reader"]
+pub struct R(crate::R<BGCR_SPEC>);
+impl core::ops::Deref for R {
+    type Target = crate::R<BGCR_SPEC>;
     #[inline(always)]
-    fn reset_value() -> Self::Type {
-        0
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl From<crate::R<BGCR_SPEC>> for R {
+    #[inline(always)]
+    fn from(reader: crate::R<BGCR_SPEC>) -> Self {
+        R(reader)
+    }
+}
+#[doc = "Register `BGCR` writer"]
+pub struct W(crate::W<BGCR_SPEC>);
+impl core::ops::Deref for W {
+    type Target = crate::W<BGCR_SPEC>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl core::ops::DerefMut for W {
+    #[inline(always)]
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+impl From<crate::W<BGCR_SPEC>> for W {
+    #[inline(always)]
+    fn from(writer: crate::W<BGCR_SPEC>) -> Self {
+        W(writer)
     }
 }
 #[doc = "Stop at Block Gap Request\n\nValue on reset: 0"]
@@ -24,9 +48,13 @@ impl From<STPBGR_A> for bool {
         variant as u8 != 0
     }
 }
-#[doc = "Reader of field `STPBGR`"]
-pub type STPBGR_R = crate::R<bool, STPBGR_A>;
+#[doc = "Field `STPBGR` reader - Stop at Block Gap Request"]
+pub struct STPBGR_R(crate::FieldReader<bool, STPBGR_A>);
 impl STPBGR_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        STPBGR_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
     pub fn variant(&self) -> STPBGR_A {
@@ -38,15 +66,22 @@ impl STPBGR_R {
     #[doc = "Checks if the value of the field is `TRANSFER`"]
     #[inline(always)]
     pub fn is_transfer(&self) -> bool {
-        *self == STPBGR_A::TRANSFER
+        **self == STPBGR_A::TRANSFER
     }
     #[doc = "Checks if the value of the field is `STOP`"]
     #[inline(always)]
     pub fn is_stop(&self) -> bool {
-        *self == STPBGR_A::STOP
+        **self == STPBGR_A::STOP
     }
 }
-#[doc = "Write proxy for field `STPBGR`"]
+impl core::ops::Deref for STPBGR_R {
+    type Target = crate::FieldReader<bool, STPBGR_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `STPBGR` writer - Stop at Block Gap Request"]
 pub struct STPBGR_W<'a> {
     w: &'a mut W,
 }
@@ -54,9 +89,7 @@ impl<'a> STPBGR_W<'a> {
     #[doc = r"Writes `variant` to the field"]
     #[inline(always)]
     pub fn variant(self, variant: STPBGR_A) -> &'a mut W {
-        {
-            self.bit(variant.into())
-        }
+        self.bit(variant.into())
     }
     #[doc = "Transfer"]
     #[inline(always)]
@@ -81,7 +114,7 @@ impl<'a> STPBGR_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | ((value as u8) & 0x01);
+        self.w.bits = (self.w.bits & !0x01) | (value as u8 & 0x01);
         self.w
     }
 }
@@ -99,9 +132,13 @@ impl From<CONTR_A> for bool {
         variant as u8 != 0
     }
 }
-#[doc = "Reader of field `CONTR`"]
-pub type CONTR_R = crate::R<bool, CONTR_A>;
+#[doc = "Field `CONTR` reader - Continue Request"]
+pub struct CONTR_R(crate::FieldReader<bool, CONTR_A>);
 impl CONTR_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        CONTR_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
     pub fn variant(&self) -> CONTR_A {
@@ -113,15 +150,22 @@ impl CONTR_R {
     #[doc = "Checks if the value of the field is `GO_ON`"]
     #[inline(always)]
     pub fn is_go_on(&self) -> bool {
-        *self == CONTR_A::GO_ON
+        **self == CONTR_A::GO_ON
     }
     #[doc = "Checks if the value of the field is `RESTART`"]
     #[inline(always)]
     pub fn is_restart(&self) -> bool {
-        *self == CONTR_A::RESTART
+        **self == CONTR_A::RESTART
     }
 }
-#[doc = "Write proxy for field `CONTR`"]
+impl core::ops::Deref for CONTR_R {
+    type Target = crate::FieldReader<bool, CONTR_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `CONTR` writer - Continue Request"]
 pub struct CONTR_W<'a> {
     w: &'a mut W,
 }
@@ -129,9 +173,7 @@ impl<'a> CONTR_W<'a> {
     #[doc = r"Writes `variant` to the field"]
     #[inline(always)]
     pub fn variant(self, variant: CONTR_A) -> &'a mut W {
-        {
-            self.bit(variant.into())
-        }
+        self.bit(variant.into())
     }
     #[doc = "Not affected"]
     #[inline(always)]
@@ -156,7 +198,7 @@ impl<'a> CONTR_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | (((value as u8) & 0x01) << 1);
+        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u8 & 0x01) << 1);
         self.w
     }
 }
@@ -174,9 +216,13 @@ impl From<RWCTRL_A> for bool {
         variant as u8 != 0
     }
 }
-#[doc = "Reader of field `RWCTRL`"]
-pub type RWCTRL_R = crate::R<bool, RWCTRL_A>;
+#[doc = "Field `RWCTRL` reader - Read Wait Control"]
+pub struct RWCTRL_R(crate::FieldReader<bool, RWCTRL_A>);
 impl RWCTRL_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        RWCTRL_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
     pub fn variant(&self) -> RWCTRL_A {
@@ -188,15 +234,22 @@ impl RWCTRL_R {
     #[doc = "Checks if the value of the field is `DISABLE`"]
     #[inline(always)]
     pub fn is_disable(&self) -> bool {
-        *self == RWCTRL_A::DISABLE
+        **self == RWCTRL_A::DISABLE
     }
     #[doc = "Checks if the value of the field is `ENABLE`"]
     #[inline(always)]
     pub fn is_enable(&self) -> bool {
-        *self == RWCTRL_A::ENABLE
+        **self == RWCTRL_A::ENABLE
     }
 }
-#[doc = "Write proxy for field `RWCTRL`"]
+impl core::ops::Deref for RWCTRL_R {
+    type Target = crate::FieldReader<bool, RWCTRL_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `RWCTRL` writer - Read Wait Control"]
 pub struct RWCTRL_W<'a> {
     w: &'a mut W,
 }
@@ -204,9 +257,7 @@ impl<'a> RWCTRL_W<'a> {
     #[doc = r"Writes `variant` to the field"]
     #[inline(always)]
     pub fn variant(self, variant: RWCTRL_A) -> &'a mut W {
-        {
-            self.bit(variant.into())
-        }
+        self.bit(variant.into())
     }
     #[doc = "Disable Read Wait Control"]
     #[inline(always)]
@@ -231,7 +282,7 @@ impl<'a> RWCTRL_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 2)) | (((value as u8) & 0x01) << 2);
+        self.w.bits = (self.w.bits & !(0x01 << 2)) | ((value as u8 & 0x01) << 2);
         self.w
     }
 }
@@ -249,9 +300,13 @@ impl From<INTBG_A> for bool {
         variant as u8 != 0
     }
 }
-#[doc = "Reader of field `INTBG`"]
-pub type INTBG_R = crate::R<bool, INTBG_A>;
+#[doc = "Field `INTBG` reader - Interrupt at Block Gap"]
+pub struct INTBG_R(crate::FieldReader<bool, INTBG_A>);
 impl INTBG_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        INTBG_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
     pub fn variant(&self) -> INTBG_A {
@@ -263,15 +318,22 @@ impl INTBG_R {
     #[doc = "Checks if the value of the field is `DISABLED`"]
     #[inline(always)]
     pub fn is_disabled(&self) -> bool {
-        *self == INTBG_A::DISABLED
+        **self == INTBG_A::DISABLED
     }
     #[doc = "Checks if the value of the field is `ENABLED`"]
     #[inline(always)]
     pub fn is_enabled(&self) -> bool {
-        *self == INTBG_A::ENABLED
+        **self == INTBG_A::ENABLED
     }
 }
-#[doc = "Write proxy for field `INTBG`"]
+impl core::ops::Deref for INTBG_R {
+    type Target = crate::FieldReader<bool, INTBG_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `INTBG` writer - Interrupt at Block Gap"]
 pub struct INTBG_W<'a> {
     w: &'a mut W,
 }
@@ -279,9 +341,7 @@ impl<'a> INTBG_W<'a> {
     #[doc = r"Writes `variant` to the field"]
     #[inline(always)]
     pub fn variant(self, variant: INTBG_A) -> &'a mut W {
-        {
-            self.bit(variant.into())
-        }
+        self.bit(variant.into())
     }
     #[doc = "Disabled"]
     #[inline(always)]
@@ -306,7 +366,7 @@ impl<'a> INTBG_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 3)) | (((value as u8) & 0x01) << 3);
+        self.w.bits = (self.w.bits & !(0x01 << 3)) | ((value as u8 & 0x01) << 3);
         self.w
     }
 }
@@ -352,5 +412,31 @@ impl W {
     #[inline(always)]
     pub fn intbg(&mut self) -> INTBG_W {
         INTBG_W { w: self }
+    }
+    #[doc = "Writes raw bits to the register."]
+    #[inline(always)]
+    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
+        self.0.bits(bits);
+        self
+    }
+}
+#[doc = "Block Gap Control\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [bgcr](index.html) module"]
+pub struct BGCR_SPEC;
+impl crate::RegisterSpec for BGCR_SPEC {
+    type Ux = u8;
+}
+#[doc = "`read()` method returns [bgcr::R](R) reader structure"]
+impl crate::Readable for BGCR_SPEC {
+    type Reader = R;
+}
+#[doc = "`write(|w| ..)` method takes [bgcr::W](W) writer structure"]
+impl crate::Writable for BGCR_SPEC {
+    type Writer = W;
+}
+#[doc = "`reset()` method sets BGCR to value 0"]
+impl crate::Resettable for BGCR_SPEC {
+    #[inline(always)]
+    fn reset_value() -> Self::Ux {
+        0
     }
 }

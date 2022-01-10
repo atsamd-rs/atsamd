@@ -1,13 +1,37 @@
-#[doc = "Reader of register BBPS"]
-pub type R = crate::R<u32, super::BBPS>;
-#[doc = "Writer for register BBPS"]
-pub type W = crate::W<u32, super::BBPS>;
-#[doc = "Register BBPS `reset()`'s with value 0"]
-impl crate::ResetValue for super::BBPS {
-    type Type = u32;
+#[doc = "Register `BBPS` reader"]
+pub struct R(crate::R<BBPS_SPEC>);
+impl core::ops::Deref for R {
+    type Target = crate::R<BBPS_SPEC>;
     #[inline(always)]
-    fn reset_value() -> Self::Type {
-        0
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl From<crate::R<BBPS_SPEC>> for R {
+    #[inline(always)]
+    fn from(reader: crate::R<BBPS_SPEC>) -> Self {
+        R(reader)
+    }
+}
+#[doc = "Register `BBPS` writer"]
+pub struct W(crate::W<BBPS_SPEC>);
+impl core::ops::Deref for W {
+    type Target = crate::W<BBPS_SPEC>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl core::ops::DerefMut for W {
+    #[inline(always)]
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+impl From<crate::W<BBPS_SPEC>> for W {
+    #[inline(always)]
+    fn from(writer: crate::W<BBPS_SPEC>) -> Self {
+        W(writer)
     }
 }
 #[doc = "Battery Backup Configuration\n\nValue on reset: 0"]
@@ -24,9 +48,13 @@ impl From<CONF_A> for bool {
         variant as u8 != 0
     }
 }
-#[doc = "Reader of field `CONF`"]
-pub type CONF_R = crate::R<bool, CONF_A>;
+#[doc = "Field `CONF` reader - Battery Backup Configuration"]
+pub struct CONF_R(crate::FieldReader<bool, CONF_A>);
 impl CONF_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        CONF_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
     pub fn variant(&self) -> CONF_A {
@@ -38,15 +66,22 @@ impl CONF_R {
     #[doc = "Checks if the value of the field is `BOD33`"]
     #[inline(always)]
     pub fn is_bod33(&self) -> bool {
-        *self == CONF_A::BOD33
+        **self == CONF_A::BOD33
     }
     #[doc = "Checks if the value of the field is `FORCED`"]
     #[inline(always)]
     pub fn is_forced(&self) -> bool {
-        *self == CONF_A::FORCED
+        **self == CONF_A::FORCED
     }
 }
-#[doc = "Write proxy for field `CONF`"]
+impl core::ops::Deref for CONF_R {
+    type Target = crate::FieldReader<bool, CONF_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `CONF` writer - Battery Backup Configuration"]
 pub struct CONF_W<'a> {
     w: &'a mut W,
 }
@@ -54,9 +89,7 @@ impl<'a> CONF_W<'a> {
     #[doc = r"Writes `variant` to the field"]
     #[inline(always)]
     pub fn variant(self, variant: CONF_A) -> &'a mut W {
-        {
-            self.bit(variant.into())
-        }
+        self.bit(variant.into())
     }
     #[doc = "The power switch is handled by the BOD33"]
     #[inline(always)]
@@ -81,13 +114,26 @@ impl<'a> CONF_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | ((value as u32) & 0x01);
+        self.w.bits = (self.w.bits & !0x01) | (value as u32 & 0x01);
         self.w
     }
 }
-#[doc = "Reader of field `WAKEEN`"]
-pub type WAKEEN_R = crate::R<bool, bool>;
-#[doc = "Write proxy for field `WAKEEN`"]
+#[doc = "Field `WAKEEN` reader - Wake Enable"]
+pub struct WAKEEN_R(crate::FieldReader<bool, bool>);
+impl WAKEEN_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        WAKEEN_R(crate::FieldReader::new(bits))
+    }
+}
+impl core::ops::Deref for WAKEEN_R {
+    type Target = crate::FieldReader<bool, bool>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `WAKEEN` writer - Wake Enable"]
 pub struct WAKEEN_W<'a> {
     w: &'a mut W,
 }
@@ -105,7 +151,7 @@ impl<'a> WAKEEN_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 2)) | (((value as u32) & 0x01) << 2);
+        self.w.bits = (self.w.bits & !(0x01 << 2)) | ((value as u32 & 0x01) << 2);
         self.w
     }
 }
@@ -131,5 +177,31 @@ impl W {
     #[inline(always)]
     pub fn wakeen(&mut self) -> WAKEEN_W {
         WAKEEN_W { w: self }
+    }
+    #[doc = "Writes raw bits to the register."]
+    #[inline(always)]
+    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+        self.0.bits(bits);
+        self
+    }
+}
+#[doc = "Battery Backup Power Switch\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [bbps](index.html) module"]
+pub struct BBPS_SPEC;
+impl crate::RegisterSpec for BBPS_SPEC {
+    type Ux = u32;
+}
+#[doc = "`read()` method returns [bbps::R](R) reader structure"]
+impl crate::Readable for BBPS_SPEC {
+    type Reader = R;
+}
+#[doc = "`write(|w| ..)` method takes [bbps::W](W) writer structure"]
+impl crate::Writable for BBPS_SPEC {
+    type Writer = W;
+}
+#[doc = "`reset()` method sets BBPS to value 0"]
+impl crate::Resettable for BBPS_SPEC {
+    #[inline(always)]
+    fn reset_value() -> Self::Ux {
+        0
     }
 }

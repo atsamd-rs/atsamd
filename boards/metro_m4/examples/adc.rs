@@ -1,20 +1,25 @@
 #![no_std]
 #![no_main]
 
-extern crate cortex_m_rt;
-extern crate embedded_hal;
-extern crate metro_m4 as hal;
-extern crate panic_semihosting;
+use metro_m4 as bsp;
 
-use core::fmt::Write;
+use bsp::hal;
+use bsp::pac;
 
+#[cfg(not(feature = "use_semihosting"))]
+use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
+
+use cortex_m_semihosting::hprintln;
+
+use bsp::entry;
 use hal::adc::Adc;
 use hal::clock::GenericClockController;
-use hal::entry;
-use hal::pac::gclk::pchctrl::GEN_A::GCLK11;
-use hal::pac::{CorePeripherals, Peripherals};
+use hal::gpio::v2::B;
 use hal::prelude::*;
-use hal::sercom::{PadPin, Sercom3Pad0, Sercom3Pad1, UART3};
+use pac::gclk::pchctrl::GEN_A::GCLK11;
+use pac::{CorePeripherals, Peripherals};
 
 #[entry]
 fn main() -> ! {
@@ -27,35 +32,14 @@ fn main() -> ! {
         &mut peripherals.OSCCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = hal::Pins::new(peripherals.PORT);
+    let pins = bsp::Pins::new(peripherals.PORT);
     let mut delay = hal::delay::Delay::new(core.SYST, &mut clocks);
     let mut adc0 = Adc::adc0(peripherals.ADC0, &mut peripherals.MCLK, &mut clocks, GCLK11);
-    let mut a0 = pins.a0.into_function_b(&mut pins.port);
-
-    let gclk0 = clocks.gclk0();
-    let rx: Sercom3Pad1<_> = pins
-        .d0
-        .into_pull_down_input(&mut pins.port)
-        .into_pad(&mut pins.port);
-    let tx: Sercom3Pad0<_> = pins
-        .d1
-        .into_pull_down_input(&mut pins.port)
-        .into_pad(&mut pins.port);
-    let uart_clk = clocks
-        .sercom3_core(&gclk0)
-        .expect("Could not configure sercom3 clock");
-
-    let mut uart = UART3::new(
-        &uart_clk,
-        9600.hz(),
-        peripherals.SERCOM3,
-        &mut peripherals.MCLK,
-        (rx, tx),
-    );
+    let mut a0 = pins.a0.into_alternate::<B>();
 
     loop {
         let data: u16 = adc0.read(&mut a0).unwrap();
-        uart.write_fmt(format_args!("{}\n", data)).unwrap();
+        hprintln!("{}", data).ok();
         delay.delay_ms(1000u16);
     }
 }

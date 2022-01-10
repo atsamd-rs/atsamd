@@ -1,13 +1,37 @@
-#[doc = "Reader of register DPRESCALER"]
-pub type R = crate::R<u32, super::DPRESCALER>;
-#[doc = "Writer for register DPRESCALER"]
-pub type W = crate::W<u32, super::DPRESCALER>;
-#[doc = "Register DPRESCALER `reset()`'s with value 0"]
-impl crate::ResetValue for super::DPRESCALER {
-    type Type = u32;
+#[doc = "Register `DPRESCALER` reader"]
+pub struct R(crate::R<DPRESCALER_SPEC>);
+impl core::ops::Deref for R {
+    type Target = crate::R<DPRESCALER_SPEC>;
     #[inline(always)]
-    fn reset_value() -> Self::Type {
-        0
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl From<crate::R<DPRESCALER_SPEC>> for R {
+    #[inline(always)]
+    fn from(reader: crate::R<DPRESCALER_SPEC>) -> Self {
+        R(reader)
+    }
+}
+#[doc = "Register `DPRESCALER` writer"]
+pub struct W(crate::W<DPRESCALER_SPEC>);
+impl core::ops::Deref for W {
+    type Target = crate::W<DPRESCALER_SPEC>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl core::ops::DerefMut for W {
+    #[inline(always)]
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+impl From<crate::W<DPRESCALER_SPEC>> for W {
+    #[inline(always)]
+    fn from(writer: crate::W<DPRESCALER_SPEC>) -> Self {
+        W(writer)
     }
 }
 #[doc = "Debouncer Prescaler\n\nValue on reset: 0"]
@@ -37,9 +61,13 @@ impl From<PRESCALER0_A> for u8 {
         variant as _
     }
 }
-#[doc = "Reader of field `PRESCALER0`"]
-pub type PRESCALER0_R = crate::R<u8, PRESCALER0_A>;
+#[doc = "Field `PRESCALER0` reader - Debouncer Prescaler"]
+pub struct PRESCALER0_R(crate::FieldReader<u8, PRESCALER0_A>);
 impl PRESCALER0_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        PRESCALER0_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
     pub fn variant(&self) -> PRESCALER0_A {
@@ -58,45 +86,52 @@ impl PRESCALER0_R {
     #[doc = "Checks if the value of the field is `DIV2`"]
     #[inline(always)]
     pub fn is_div2(&self) -> bool {
-        *self == PRESCALER0_A::DIV2
+        **self == PRESCALER0_A::DIV2
     }
     #[doc = "Checks if the value of the field is `DIV4`"]
     #[inline(always)]
     pub fn is_div4(&self) -> bool {
-        *self == PRESCALER0_A::DIV4
+        **self == PRESCALER0_A::DIV4
     }
     #[doc = "Checks if the value of the field is `DIV8`"]
     #[inline(always)]
     pub fn is_div8(&self) -> bool {
-        *self == PRESCALER0_A::DIV8
+        **self == PRESCALER0_A::DIV8
     }
     #[doc = "Checks if the value of the field is `DIV16`"]
     #[inline(always)]
     pub fn is_div16(&self) -> bool {
-        *self == PRESCALER0_A::DIV16
+        **self == PRESCALER0_A::DIV16
     }
     #[doc = "Checks if the value of the field is `DIV32`"]
     #[inline(always)]
     pub fn is_div32(&self) -> bool {
-        *self == PRESCALER0_A::DIV32
+        **self == PRESCALER0_A::DIV32
     }
     #[doc = "Checks if the value of the field is `DIV64`"]
     #[inline(always)]
     pub fn is_div64(&self) -> bool {
-        *self == PRESCALER0_A::DIV64
+        **self == PRESCALER0_A::DIV64
     }
     #[doc = "Checks if the value of the field is `DIV128`"]
     #[inline(always)]
     pub fn is_div128(&self) -> bool {
-        *self == PRESCALER0_A::DIV128
+        **self == PRESCALER0_A::DIV128
     }
     #[doc = "Checks if the value of the field is `DIV256`"]
     #[inline(always)]
     pub fn is_div256(&self) -> bool {
-        *self == PRESCALER0_A::DIV256
+        **self == PRESCALER0_A::DIV256
     }
 }
-#[doc = "Write proxy for field `PRESCALER0`"]
+impl core::ops::Deref for PRESCALER0_R {
+    type Target = crate::FieldReader<u8, PRESCALER0_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `PRESCALER0` writer - Debouncer Prescaler"]
 pub struct PRESCALER0_W<'a> {
     w: &'a mut W,
 }
@@ -104,9 +139,7 @@ impl<'a> PRESCALER0_W<'a> {
     #[doc = r"Writes `variant` to the field"]
     #[inline(always)]
     pub fn variant(self, variant: PRESCALER0_A) -> &'a mut W {
-        {
-            self.bits(variant.into())
-        }
+        self.bits(variant.into())
     }
     #[doc = "EIC clock divided by 2"]
     #[inline(always)]
@@ -151,7 +184,7 @@ impl<'a> PRESCALER0_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x07) | ((value as u32) & 0x07);
+        self.w.bits = (self.w.bits & !0x07) | (value as u32 & 0x07);
         self.w
     }
 }
@@ -169,9 +202,13 @@ impl From<STATES0_A> for bool {
         variant as u8 != 0
     }
 }
-#[doc = "Reader of field `STATES0`"]
-pub type STATES0_R = crate::R<bool, STATES0_A>;
+#[doc = "Field `STATES0` reader - Debouncer number of states"]
+pub struct STATES0_R(crate::FieldReader<bool, STATES0_A>);
 impl STATES0_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        STATES0_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
     pub fn variant(&self) -> STATES0_A {
@@ -183,15 +220,22 @@ impl STATES0_R {
     #[doc = "Checks if the value of the field is `LFREQ3`"]
     #[inline(always)]
     pub fn is_lfreq3(&self) -> bool {
-        *self == STATES0_A::LFREQ3
+        **self == STATES0_A::LFREQ3
     }
     #[doc = "Checks if the value of the field is `LFREQ7`"]
     #[inline(always)]
     pub fn is_lfreq7(&self) -> bool {
-        *self == STATES0_A::LFREQ7
+        **self == STATES0_A::LFREQ7
     }
 }
-#[doc = "Write proxy for field `STATES0`"]
+impl core::ops::Deref for STATES0_R {
+    type Target = crate::FieldReader<bool, STATES0_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `STATES0` writer - Debouncer number of states"]
 pub struct STATES0_W<'a> {
     w: &'a mut W,
 }
@@ -199,9 +243,7 @@ impl<'a> STATES0_W<'a> {
     #[doc = r"Writes `variant` to the field"]
     #[inline(always)]
     pub fn variant(self, variant: STATES0_A) -> &'a mut W {
-        {
-            self.bit(variant.into())
-        }
+        self.bit(variant.into())
     }
     #[doc = "3 low frequency samples"]
     #[inline(always)]
@@ -226,7 +268,7 @@ impl<'a> STATES0_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 3)) | (((value as u32) & 0x01) << 3);
+        self.w.bits = (self.w.bits & !(0x01 << 3)) | ((value as u32 & 0x01) << 3);
         self.w
     }
 }
@@ -257,9 +299,13 @@ impl From<PRESCALER1_A> for u8 {
         variant as _
     }
 }
-#[doc = "Reader of field `PRESCALER1`"]
-pub type PRESCALER1_R = crate::R<u8, PRESCALER1_A>;
+#[doc = "Field `PRESCALER1` reader - Debouncer Prescaler"]
+pub struct PRESCALER1_R(crate::FieldReader<u8, PRESCALER1_A>);
 impl PRESCALER1_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: u8) -> Self {
+        PRESCALER1_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
     pub fn variant(&self) -> PRESCALER1_A {
@@ -278,45 +324,52 @@ impl PRESCALER1_R {
     #[doc = "Checks if the value of the field is `DIV2`"]
     #[inline(always)]
     pub fn is_div2(&self) -> bool {
-        *self == PRESCALER1_A::DIV2
+        **self == PRESCALER1_A::DIV2
     }
     #[doc = "Checks if the value of the field is `DIV4`"]
     #[inline(always)]
     pub fn is_div4(&self) -> bool {
-        *self == PRESCALER1_A::DIV4
+        **self == PRESCALER1_A::DIV4
     }
     #[doc = "Checks if the value of the field is `DIV8`"]
     #[inline(always)]
     pub fn is_div8(&self) -> bool {
-        *self == PRESCALER1_A::DIV8
+        **self == PRESCALER1_A::DIV8
     }
     #[doc = "Checks if the value of the field is `DIV16`"]
     #[inline(always)]
     pub fn is_div16(&self) -> bool {
-        *self == PRESCALER1_A::DIV16
+        **self == PRESCALER1_A::DIV16
     }
     #[doc = "Checks if the value of the field is `DIV32`"]
     #[inline(always)]
     pub fn is_div32(&self) -> bool {
-        *self == PRESCALER1_A::DIV32
+        **self == PRESCALER1_A::DIV32
     }
     #[doc = "Checks if the value of the field is `DIV64`"]
     #[inline(always)]
     pub fn is_div64(&self) -> bool {
-        *self == PRESCALER1_A::DIV64
+        **self == PRESCALER1_A::DIV64
     }
     #[doc = "Checks if the value of the field is `DIV128`"]
     #[inline(always)]
     pub fn is_div128(&self) -> bool {
-        *self == PRESCALER1_A::DIV128
+        **self == PRESCALER1_A::DIV128
     }
     #[doc = "Checks if the value of the field is `DIV256`"]
     #[inline(always)]
     pub fn is_div256(&self) -> bool {
-        *self == PRESCALER1_A::DIV256
+        **self == PRESCALER1_A::DIV256
     }
 }
-#[doc = "Write proxy for field `PRESCALER1`"]
+impl core::ops::Deref for PRESCALER1_R {
+    type Target = crate::FieldReader<u8, PRESCALER1_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `PRESCALER1` writer - Debouncer Prescaler"]
 pub struct PRESCALER1_W<'a> {
     w: &'a mut W,
 }
@@ -324,9 +377,7 @@ impl<'a> PRESCALER1_W<'a> {
     #[doc = r"Writes `variant` to the field"]
     #[inline(always)]
     pub fn variant(self, variant: PRESCALER1_A) -> &'a mut W {
-        {
-            self.bits(variant.into())
-        }
+        self.bits(variant.into())
     }
     #[doc = "EIC clock divided by 2"]
     #[inline(always)]
@@ -371,7 +422,7 @@ impl<'a> PRESCALER1_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x07 << 4)) | (((value as u32) & 0x07) << 4);
+        self.w.bits = (self.w.bits & !(0x07 << 4)) | ((value as u32 & 0x07) << 4);
         self.w
     }
 }
@@ -389,9 +440,13 @@ impl From<STATES1_A> for bool {
         variant as u8 != 0
     }
 }
-#[doc = "Reader of field `STATES1`"]
-pub type STATES1_R = crate::R<bool, STATES1_A>;
+#[doc = "Field `STATES1` reader - Debouncer number of states"]
+pub struct STATES1_R(crate::FieldReader<bool, STATES1_A>);
 impl STATES1_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        STATES1_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
     pub fn variant(&self) -> STATES1_A {
@@ -403,15 +458,22 @@ impl STATES1_R {
     #[doc = "Checks if the value of the field is `LFREQ3`"]
     #[inline(always)]
     pub fn is_lfreq3(&self) -> bool {
-        *self == STATES1_A::LFREQ3
+        **self == STATES1_A::LFREQ3
     }
     #[doc = "Checks if the value of the field is `LFREQ7`"]
     #[inline(always)]
     pub fn is_lfreq7(&self) -> bool {
-        *self == STATES1_A::LFREQ7
+        **self == STATES1_A::LFREQ7
     }
 }
-#[doc = "Write proxy for field `STATES1`"]
+impl core::ops::Deref for STATES1_R {
+    type Target = crate::FieldReader<bool, STATES1_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `STATES1` writer - Debouncer number of states"]
 pub struct STATES1_W<'a> {
     w: &'a mut W,
 }
@@ -419,9 +481,7 @@ impl<'a> STATES1_W<'a> {
     #[doc = r"Writes `variant` to the field"]
     #[inline(always)]
     pub fn variant(self, variant: STATES1_A) -> &'a mut W {
-        {
-            self.bit(variant.into())
-        }
+        self.bit(variant.into())
     }
     #[doc = "3 low frequency samples"]
     #[inline(always)]
@@ -446,7 +506,7 @@ impl<'a> STATES1_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 7)) | (((value as u32) & 0x01) << 7);
+        self.w.bits = (self.w.bits & !(0x01 << 7)) | ((value as u32 & 0x01) << 7);
         self.w
     }
 }
@@ -464,9 +524,13 @@ impl From<TICKON_A> for bool {
         variant as u8 != 0
     }
 }
-#[doc = "Reader of field `TICKON`"]
-pub type TICKON_R = crate::R<bool, TICKON_A>;
+#[doc = "Field `TICKON` reader - Pin Sampler frequency selection"]
+pub struct TICKON_R(crate::FieldReader<bool, TICKON_A>);
 impl TICKON_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        TICKON_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
     pub fn variant(&self) -> TICKON_A {
@@ -478,15 +542,22 @@ impl TICKON_R {
     #[doc = "Checks if the value of the field is `CLK_GCLK_EIC`"]
     #[inline(always)]
     pub fn is_clk_gclk_eic(&self) -> bool {
-        *self == TICKON_A::CLK_GCLK_EIC
+        **self == TICKON_A::CLK_GCLK_EIC
     }
     #[doc = "Checks if the value of the field is `CLK_LFREQ`"]
     #[inline(always)]
     pub fn is_clk_lfreq(&self) -> bool {
-        *self == TICKON_A::CLK_LFREQ
+        **self == TICKON_A::CLK_LFREQ
     }
 }
-#[doc = "Write proxy for field `TICKON`"]
+impl core::ops::Deref for TICKON_R {
+    type Target = crate::FieldReader<bool, TICKON_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `TICKON` writer - Pin Sampler frequency selection"]
 pub struct TICKON_W<'a> {
     w: &'a mut W,
 }
@@ -494,9 +565,7 @@ impl<'a> TICKON_W<'a> {
     #[doc = r"Writes `variant` to the field"]
     #[inline(always)]
     pub fn variant(self, variant: TICKON_A) -> &'a mut W {
-        {
-            self.bit(variant.into())
-        }
+        self.bit(variant.into())
     }
     #[doc = "Clocked by GCLK"]
     #[inline(always)]
@@ -521,7 +590,7 @@ impl<'a> TICKON_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 16)) | (((value as u32) & 0x01) << 16);
+        self.w.bits = (self.w.bits & !(0x01 << 16)) | ((value as u32 & 0x01) << 16);
         self.w
     }
 }
@@ -577,5 +646,31 @@ impl W {
     #[inline(always)]
     pub fn tickon(&mut self) -> TICKON_W {
         TICKON_W { w: self }
+    }
+    #[doc = "Writes raw bits to the register."]
+    #[inline(always)]
+    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+        self.0.bits(bits);
+        self
+    }
+}
+#[doc = "Debouncer Prescaler\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [dprescaler](index.html) module"]
+pub struct DPRESCALER_SPEC;
+impl crate::RegisterSpec for DPRESCALER_SPEC {
+    type Ux = u32;
+}
+#[doc = "`read()` method returns [dprescaler::R](R) reader structure"]
+impl crate::Readable for DPRESCALER_SPEC {
+    type Reader = R;
+}
+#[doc = "`write(|w| ..)` method takes [dprescaler::W](W) writer structure"]
+impl crate::Writable for DPRESCALER_SPEC {
+    type Writer = W;
+}
+#[doc = "`reset()` method sets DPRESCALER to value 0"]
+impl crate::Resettable for DPRESCALER_SPEC {
+    #[inline(always)]
+    fn reset_value() -> Self::Ux {
+        0
     }
 }

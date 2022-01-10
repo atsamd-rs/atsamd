@@ -1,7 +1,7 @@
 //! # GPIO
 //!
 //! The GPIO module is used to configure GPIO pins through the
-//! [PORT](crate::target_device::PORT) interface.
+//! [PORT](crate::pac::PORT) interface.
 //!
 //! ## Versions
 //!
@@ -97,6 +97,8 @@
 //! [`bsp_pins`]: crate::bsp_pins
 
 pub mod v1;
+
+#[allow(deprecated)]
 pub use v1::*;
 
 pub mod v2;

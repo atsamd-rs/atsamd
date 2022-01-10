@@ -1,14 +1,14 @@
 use crate::clock::EicClock;
-use crate::target_device;
+use crate::pac;
 
 pub mod pin;
 
 pub struct EIC {
-    eic: target_device::EIC,
+    eic: pac::EIC,
 }
 
 impl EIC {
-    pub fn init(pm: &mut target_device::PM, _clock: EicClock, eic: target_device::EIC) -> Self {
+    pub fn init(pm: &mut pac::PM, _clock: EicClock, eic: pac::EIC) -> Self {
         pm.apbamask.modify(|_, w| w.eic_().set_bit());
 
         eic.ctrl.modify(|_, w| w.enable().set_bit());

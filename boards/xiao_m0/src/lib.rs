@@ -1,163 +1,222 @@
 #![no_std]
 
-pub extern crate atsamd_hal as hal;
-
+pub use atsamd_hal as hal;
 #[cfg(feature = "rt")]
 pub use cortex_m_rt::entry;
-
-pub use hal::common::*;
-
-pub use hal::target_device as pac;
-
-use hal::prelude::*;
-use hal::{
-    clock::GenericClockController,
-    define_pins,
-    gpio::PfD,
-    gpio::{Floating, Input, Port},
-    pad::PadPin,
-    sercom::{I2CMaster2, SPIMaster0, UART4},
-    target_device,
-    time::Hertz,
+use hal::clock::GenericClockController;
+pub use hal::ehal;
+pub use hal::pac;
+use hal::sercom::{
+    v2::{uart, Sercom0, Sercom4},
+    I2CMaster0,
 };
-
+use hal::time::Hertz;
 #[cfg(feature = "usb")]
-use hal::gpio::v2::{AnyPin, PA24, PA25};
-#[cfg(feature = "usb")]
-use hal::usb::usb_device::bus::UsbBusAllocator;
-#[cfg(feature = "usb")]
-pub use hal::usb::UsbBus;
+use hal::usb::{usb_device::bus::UsbBusAllocator, UsbBus};
+use spi::Pads;
 
-define_pins!(
-    struct Pins,
-    target_device: target_device,
+use crate::hal::sercom::v2::spi;
+use crate::hal::sercom::v2::uart::{BaudMode, Oversampling};
+pub use pins::*;
 
-    /// Pin A0/D0/DAC
-    pin a0 = a2,
-    /// Pin A1/D1
-    pin a1 = a4,
-    /// Pin A2/D2
-    pin a2 = a10,
-    /// Pin A3/D3
-    pin a3 = a11,
-    /// Pin A4/D4/SDA
-    pin a4 = a8,
-    /// Pin A5/D5/SCL
-    pin a5 = a9,
-    /// Pin A6/D6/TX
-    pin a6 = b8,
-    /// Pin A7/D7/RX
-    pin a7 = b9,
-    /// Pin A8/D8/SCK
-    pin a8 = a7,
-    /// Pin A9/D9/MISO
-    pin a9 = a5,
-    /// Pin A10/D10/MOSI
-    pin a10 = a6,
+/// Definitions related to pins and pin aliases
+pub mod pins {
+    use super::hal;
 
-    /// On-board yellow 'L' LED.
-    pin led0 = a17,
-    /// On-board blue 'RX' LED.
-    pin led1 = a18,
-    /// On-board blue 'TX' LED.
-    pin led2 = a19,
+    hal::bsp_pins!(
+        PA02 {
+            /// Pin A0/D0/DAC
+            name: a0
+        }
+        PA04 {
+            /// Pin A1/D1
+            name: a1
+        }
+        PA10 {
+            /// Pin A2/D2
+            name: a2
+        }
+        PA11 {
+            /// Pin A3/D3
+            name: a3
+        }
+        PA08 {
+            /// Pin A4/D4/SDA
+            name: a4
+            aliases: {
+                AlternateC: Sda
+                AlternateC: A4Sercom0Pad0
+            }
+        }
+        PA09 {
+            /// Pin A5/D5/SCL
+            name: a5
+            aliases: {
+                AlternateC: Scl
+                AlternateC: A5Sercom0Pad1
+            }
+        }
+        PB08 {
+            /// Pin A6/D6/TX
+            name: a6
+            aliases: {
+                AlternateD: UartTx
+            }
+        }
+        PB09 {
+            /// Pin A7/D7/RX
+            name: a7
+            aliases: {
+                AlternateD: UartRx
+            }
+        }
+        PA07 {
+            /// Pin A8/D8/SCK
+            name: a8
+            aliases: {
+                AlternateD: Sclk
+            }
+        }
+        PA05 {
+            /// Pin A9/D9/MISO
+            name: a9
+            aliases: {
+                AlternateD: Miso
+            }
+        }
+        PA06 {
+            /// Pin A10/D10/MOSI
+            name: a10
+            aliases: {
+                AlternateD: Mosi
+            }
+        }
+        PA17 {
+            /// On-board yellow 'L' LED
+            name: led0
+            aliases: {
+                PushPullOutput: Led0
+            }
+        }
+        PA18 {
+            /// On-board blue 'RX' LED
+            name: led1
+            aliases: {
+                PushPullOutput: Led1
+            }
+        }
+        PA19 {
+            /// On-board blue 'TX' LED
+            name: led2
+            aliases: {
+                PushPullOutput: Led2
+            }
+        }
+        PA24 {
+            /// The USB D- pad
+            name: usb_dm
+            aliases: {
+                AlternateG: UsbDm
+            }
+        }
+        PA25 {
+            /// The USB D+ pad
+            name: usb_dp
+            aliases: {
+                AlternateG: UsbDp
+            }
+        }
+    );
+}
 
-    /// The USB D- pad.
-    pin usb_dm = a24,
-    /// The USB D+ pad.
-    pin usb_dp = a25,
-);
+/// UART pads for the labelled RX & TX pins
+pub type UartPads = uart::Pads<Sercom4, UartRx, UartTx>;
 
-/// Convenience function for setting up the TX (A6/D6) and RX (A7/D7) pins as a
-/// UART operating at `baud`.
-pub fn uart<F: Into<Hertz>>(
+/// UART device for the labelled RX & TX pins
+pub type Uart = uart::Uart<uart::Config<UartPads>, uart::Duplex>;
+
+/// Convenience for setting up the labelled RX, TX pins to
+/// operate as a UART device running at the specified baud.
+pub fn uart(
     clocks: &mut GenericClockController,
-    baud: F,
+    baud: impl Into<Hertz>,
     sercom4: pac::SERCOM4,
     pm: &mut pac::PM,
-    a7: gpio::Pb9<Input<Floating>>,
-    a6: gpio::Pb8<Input<Floating>>,
-    port: &mut Port,
-) -> UART4<hal::sercom::Sercom4Pad1<gpio::Pb9<PfD>>, hal::sercom::Sercom4Pad0<gpio::Pb8<PfD>>, (), ()>
-{
+    uart_rx: impl Into<UartRx>,
+    uart_tx: impl Into<UartTx>,
+) -> Uart {
     let gclk0 = clocks.gclk0();
-
-    UART4::new(
-        &clocks.sercom4_core(&gclk0).unwrap(),
-        baud.into(),
-        sercom4,
-        pm,
-        (a7.into_pad(port), a6.into_pad(port)),
-    )
+    let clock = &clocks.sercom4_core(&gclk0).unwrap();
+    let baud = baud.into();
+    let pads = uart::Pads::default().rx(uart_rx.into()).tx(uart_tx.into());
+    uart::Config::new(pm, sercom4, pads, clock.freq())
+        .baud(baud, BaudMode::Fractional(Oversampling::Bits16))
+        .enable()
 }
 
-/// Convenience function for setting up the A4/D4/SDA and A5/D5/SCL pins as an
-/// I2C master operating at `speed`.
-pub fn i2c_master<F: Into<Hertz>>(
-    clocks: &mut GenericClockController,
-    speed: F,
-    sercom2: pac::SERCOM2,
-    pm: &mut pac::PM,
-    a4: gpio::Pa8<Input<Floating>>,
-    a5: gpio::Pa9<Input<Floating>>,
-    port: &mut Port,
-) -> hal::sercom::I2CMaster2<
-    hal::sercom::Sercom2Pad0<gpio::Pa8<gpio::PfD>>,
-    hal::sercom::Sercom2Pad1<gpio::Pa9<gpio::PfD>>,
-> {
-    let gclk0 = clocks.gclk0();
+/// I2C master for the labelled SDA & SCL pins
+pub type I2C = I2CMaster0<Sda, Scl>;
 
-    I2CMaster2::new(
-        &clocks.sercom2_core(&gclk0).unwrap(),
-        speed.into(),
-        sercom2,
-        pm,
-        a4.into_pad(port),
-        a5.into_pad(port),
-    )
-}
-
-/// Convenience function for setting up the A8/D8/SCK, A10/D10/MOSI, and
-/// A9/D9/MISO pins as an SPI master in SPI mode 0.
-pub fn spi_master<F: Into<Hertz>>(
+/// Convenience for setting up the labelled SDA, SCL pins to
+/// operate as an I2C master running at the specified frequency.
+pub fn i2c_master(
     clocks: &mut GenericClockController,
-    speed: F,
+    baud: impl Into<Hertz>,
     sercom0: pac::SERCOM0,
     pm: &mut pac::PM,
-    sck: gpio::Pa7<Input<Floating>>,
-    mosi: gpio::Pa6<Input<Floating>>,
-    miso: gpio::Pa5<Input<Floating>>,
-    port: &mut Port,
-) -> SPIMaster0<
-    hal::sercom::Sercom0Pad1<gpio::Pa5<gpio::PfD>>,
-    hal::sercom::Sercom0Pad2<gpio::Pa6<gpio::PfD>>,
-    hal::sercom::Sercom0Pad3<gpio::Pa7<gpio::PfD>>,
-> {
+    sda: impl Into<Sda>,
+    scl: impl Into<Scl>,
+) -> I2C {
     let gclk0 = clocks.gclk0();
+    let clock = &clocks.sercom0_core(&gclk0).unwrap();
+    let baud = baud.into();
+    let sda = sda.into();
+    let scl = scl.into();
+    I2CMaster0::new(clock, baud, sercom0, pm, sda, scl)
+}
 
-    SPIMaster0::new(
-        &clocks.sercom0_core(&gclk0).unwrap(),
-        speed.into(),
-        hal::hal::spi::Mode {
-            phase: hal::hal::spi::Phase::CaptureOnFirstTransition,
-            polarity: hal::hal::spi::Polarity::IdleLow,
-        },
-        sercom0,
-        pm,
-        (miso.into_pad(port), mosi.into_pad(port), sck.into_pad(port)),
-    )
+/// SPI pads for the labelled SPI peripheral
+///
+/// You can use these pads with other, user-defined [`spi::Config`]urations.
+pub type SpiPads = Pads<Sercom0, Miso, Mosi, Sclk>;
+
+/// SPI master for the labelled SPI peripheral
+pub type Spi = spi::Spi<spi::Config<SpiPads>, spi::Duplex>;
+
+/// Convenience for setting up the labelled SPI peripheral.
+/// This powers up SERCOM0 and configures it for use as an
+/// SPI Master in SPI Mode 0.
+pub fn spi_master(
+    clocks: &mut GenericClockController,
+    baud: impl Into<Hertz>,
+    sercom0: pac::SERCOM0,
+    pm: &mut pac::PM,
+    sclk: impl Into<Sclk>,
+    mosi: impl Into<Mosi>,
+    miso: impl Into<Miso>,
+) -> Spi {
+    let gclk0 = clocks.gclk0();
+    let clock = clocks.sercom4_core(&gclk0).unwrap();
+    let freq = clock.freq();
+    let (miso, mosi, sclk) = (miso.into(), mosi.into(), sclk.into());
+    let pads = Pads::default().data_in(miso).data_out(mosi).sclk(sclk);
+    spi::Config::new(pm, sercom0, pads, freq)
+        .baud(baud)
+        .spi_mode(spi::MODE_0)
+        .enable()
 }
 
 #[cfg(feature = "usb")]
+/// Convenience function for setting up USB
 pub fn usb_allocator(
     usb: pac::USB,
     clocks: &mut GenericClockController,
     pm: &mut pac::PM,
-    dm: impl AnyPin<Id = PA24>,
-    dp: impl AnyPin<Id = PA25>,
+    dm: impl Into<UsbDm>,
+    dp: impl Into<UsbDp>,
 ) -> UsbBusAllocator<UsbBus> {
     let gclk0 = clocks.gclk0();
-    let usb_clock = &clocks.usb(&gclk0).unwrap();
-
-    UsbBusAllocator::new(UsbBus::new(usb_clock, pm, dm, dp, usb))
+    let clock = &clocks.usb(&gclk0).unwrap();
+    let (dm, dp) = (dm.into(), dp.into());
+    UsbBusAllocator::new(UsbBus::new(clock, pm, dm, dp, usb))
 }

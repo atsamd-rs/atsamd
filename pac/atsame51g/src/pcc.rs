@@ -2,96 +2,52 @@
 #[repr(C)]
 pub struct RegisterBlock {
     #[doc = "0x00 - Mode Register"]
-    pub mr: MR,
+    pub mr: crate::Reg<mr::MR_SPEC>,
     #[doc = "0x04 - Interrupt Enable Register"]
-    pub ier: IER,
+    pub ier: crate::Reg<ier::IER_SPEC>,
     #[doc = "0x08 - Interrupt Disable Register"]
-    pub idr: IDR,
+    pub idr: crate::Reg<idr::IDR_SPEC>,
     #[doc = "0x0c - Interrupt Mask Register"]
-    pub imr: IMR,
+    pub imr: crate::Reg<imr::IMR_SPEC>,
     #[doc = "0x10 - Interrupt Status Register"]
-    pub isr: ISR,
+    pub isr: crate::Reg<isr::ISR_SPEC>,
     #[doc = "0x14 - Reception Holding Register"]
-    pub rhr: RHR,
-    _reserved6: [u8; 200usize],
+    pub rhr: crate::Reg<rhr::RHR_SPEC>,
+    _reserved6: [u8; 0xc8],
     #[doc = "0xe0 - Write Protection Mode Register"]
-    pub wpmr: WPMR,
+    pub wpmr: crate::Reg<wpmr::WPMR_SPEC>,
     #[doc = "0xe4 - Write Protection Status Register"]
-    pub wpsr: WPSR,
+    pub wpsr: crate::Reg<wpsr::WPSR_SPEC>,
 }
-#[doc = "Mode Register\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [mr](mr) module"]
-pub type MR = crate::Reg<u32, _MR>;
-#[allow(missing_docs)]
-#[doc(hidden)]
-pub struct _MR;
-#[doc = "`read()` method returns [mr::R](mr::R) reader structure"]
-impl crate::Readable for MR {}
-#[doc = "`write(|w| ..)` method takes [mr::W](mr::W) writer structure"]
-impl crate::Writable for MR {}
+#[doc = "MR register accessor: an alias for `Reg<MR_SPEC>`"]
+pub type MR = crate::Reg<mr::MR_SPEC>;
 #[doc = "Mode Register"]
 pub mod mr;
-#[doc = "Interrupt Enable Register\n\nThis register you can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [ier](ier) module"]
-pub type IER = crate::Reg<u32, _IER>;
-#[allow(missing_docs)]
-#[doc(hidden)]
-pub struct _IER;
-#[doc = "`write(|w| ..)` method takes [ier::W](ier::W) writer structure"]
-impl crate::Writable for IER {}
+#[doc = "IER register accessor: an alias for `Reg<IER_SPEC>`"]
+pub type IER = crate::Reg<ier::IER_SPEC>;
 #[doc = "Interrupt Enable Register"]
 pub mod ier;
-#[doc = "Interrupt Disable Register\n\nThis register you can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [idr](idr) module"]
-pub type IDR = crate::Reg<u32, _IDR>;
-#[allow(missing_docs)]
-#[doc(hidden)]
-pub struct _IDR;
-#[doc = "`write(|w| ..)` method takes [idr::W](idr::W) writer structure"]
-impl crate::Writable for IDR {}
+#[doc = "IDR register accessor: an alias for `Reg<IDR_SPEC>`"]
+pub type IDR = crate::Reg<idr::IDR_SPEC>;
 #[doc = "Interrupt Disable Register"]
 pub mod idr;
-#[doc = "Interrupt Mask Register\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [imr](imr) module"]
-pub type IMR = crate::Reg<u32, _IMR>;
-#[allow(missing_docs)]
-#[doc(hidden)]
-pub struct _IMR;
-#[doc = "`read()` method returns [imr::R](imr::R) reader structure"]
-impl crate::Readable for IMR {}
+#[doc = "IMR register accessor: an alias for `Reg<IMR_SPEC>`"]
+pub type IMR = crate::Reg<imr::IMR_SPEC>;
 #[doc = "Interrupt Mask Register"]
 pub mod imr;
-#[doc = "Interrupt Status Register\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [isr](isr) module"]
-pub type ISR = crate::Reg<u32, _ISR>;
-#[allow(missing_docs)]
-#[doc(hidden)]
-pub struct _ISR;
-#[doc = "`read()` method returns [isr::R](isr::R) reader structure"]
-impl crate::Readable for ISR {}
+#[doc = "ISR register accessor: an alias for `Reg<ISR_SPEC>`"]
+pub type ISR = crate::Reg<isr::ISR_SPEC>;
 #[doc = "Interrupt Status Register"]
 pub mod isr;
-#[doc = "Reception Holding Register\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [rhr](rhr) module"]
-pub type RHR = crate::Reg<u32, _RHR>;
-#[allow(missing_docs)]
-#[doc(hidden)]
-pub struct _RHR;
-#[doc = "`read()` method returns [rhr::R](rhr::R) reader structure"]
-impl crate::Readable for RHR {}
+#[doc = "RHR register accessor: an alias for `Reg<RHR_SPEC>`"]
+pub type RHR = crate::Reg<rhr::RHR_SPEC>;
 #[doc = "Reception Holding Register"]
 pub mod rhr;
-#[doc = "Write Protection Mode Register\n\nThis register you can [`read`](crate::generic::Reg::read), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [wpmr](wpmr) module"]
-pub type WPMR = crate::Reg<u32, _WPMR>;
-#[allow(missing_docs)]
-#[doc(hidden)]
-pub struct _WPMR;
-#[doc = "`read()` method returns [wpmr::R](wpmr::R) reader structure"]
-impl crate::Readable for WPMR {}
-#[doc = "`write(|w| ..)` method takes [wpmr::W](wpmr::W) writer structure"]
-impl crate::Writable for WPMR {}
+#[doc = "WPMR register accessor: an alias for `Reg<WPMR_SPEC>`"]
+pub type WPMR = crate::Reg<wpmr::WPMR_SPEC>;
 #[doc = "Write Protection Mode Register"]
 pub mod wpmr;
-#[doc = "Write Protection Status Register\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [wpsr](wpsr) module"]
-pub type WPSR = crate::Reg<u32, _WPSR>;
-#[allow(missing_docs)]
-#[doc(hidden)]
-pub struct _WPSR;
-#[doc = "`read()` method returns [wpsr::R](wpsr::R) reader structure"]
-impl crate::Readable for WPSR {}
+#[doc = "WPSR register accessor: an alias for `Reg<WPSR_SPEC>`"]
+pub type WPSR = crate::Reg<wpsr::WPSR_SPEC>;
 #[doc = "Write Protection Status Register"]
 pub mod wpsr;

@@ -1,7 +1,7 @@
 [package]
 name = "atsame54p"
 description = "Peripheral access API for ATSAME54P microcontrollers (generated using svd2rust)"
-version = "0.9.0"
+version = "0.11.0"
 authors = [
    "Wez Furlong <wez@wezfurlong.org>",
    "Paul Sajna <sajattack@gmail.com>",
@@ -9,17 +9,18 @@ authors = [
    "Michael van Niekerk <mvniekerk@gmail.com>"
 ]
 keywords = ["no-std", "arm", "cortex-m"]
+categories = ["embedded", "hardware-support", "no-std"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
+edition = "2021"
 
 [dependencies]
-bare-metal = "0.2"
-cortex-m = "0.6"
-vcell = "0.1.2"
+cortex-m = "0.7"
+vcell = "0.1"
 
 [dependencies.cortex-m-rt]
-version = "0.6.12"
+version = "0.7"
 optional = true
 
 [features]

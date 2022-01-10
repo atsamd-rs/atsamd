@@ -1,8 +1,8 @@
 //! Grand Central M4 Express Pins
 
 use super::{
-    hal, pac::MCLK, pac::SERCOM0, pac::SERCOM1, pac::SERCOM4, pac::SERCOM5, pac::SERCOM6,
-    pac::SERCOM7, target_device,
+    hal, pac, pac::MCLK, pac::SERCOM0, pac::SERCOM1, pac::SERCOM4, pac::SERCOM5, pac::SERCOM6,
+    pac::SERCOM7,
 };
 
 use hal::define_pins;
@@ -14,7 +14,7 @@ use hal::sercom::{
 };
 use hal::time::Hertz;
 
-use embedded_hal::{digital::v1_compat::OldOutputPin, timer::CountDown, timer::Periodic};
+use hal::ehal::{digital::v1_compat::OldOutputPin, timer::CountDown, timer::Periodic};
 use ws2812_timer_delay as ws2812;
 
 use hal::clock::GenericClockController;
@@ -30,7 +30,7 @@ define_pins!(
     /// Maps the pins to their arduino names and
     /// the numbers printed on the board.
     struct Pins,
-    target_device: target_device,
+    pac: pac,
 
     /// # LED Pins
 
@@ -792,7 +792,7 @@ impl Neopixel {
         port: &mut Port,
     ) -> ws2812::Ws2812<
         T,
-        embedded_hal::digital::v1_compat::OldOutputPin<
+        hal::ehal::digital::v1_compat::OldOutputPin<
             atsamd_hal::common::gpio::Pc24<
                 atsamd_hal::common::gpio::Output<atsamd_hal::common::gpio::PushPull>,
             >,

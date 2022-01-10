@@ -1,0 +1,37 @@
+[package]
+name = "wio_lite_w600"
+version = "0.2.1"
+authors = ["Daniel Mason <daniel@danielmason.com"]
+description = "Board Support crate for the Wio Lite W600"
+keywords = ["no-std", "arm", "cortex-m", "embedded-hal", "arduino"]
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/atsamd-rs/atsamd"
+readme = "README.md"
+documentation = "https://atsamd-rs.github.io/atsamd/atsamd21g/wio_lite_w600/"
+edition = "2018"
+
+[dependencies]
+cortex-m = "0.6"
+cortex-m-rt = { version = "0.6", optional = true }
+usb-device = { version = "0.2", optional = true }
+
+[dependencies.atsamd-hal]
+version = "0.13"
+default-features = false
+
+[dev-dependencies]
+usbd-serial = "0.1"
+panic-halt = "0.2"
+
+[features]
+# ask the HAL to enable atsamd21g support
+default = ["rt", "atsamd-hal/samd21g"]
+rt = ["cortex-m-rt", "atsamd-hal/samd21g-rt"]
+unproven = ["atsamd-hal/unproven"]
+usb = ["atsamd-hal/usb", "usb-device"]
+
+[[example]]
+name = "blinky_basic"
+
+[[example]]
+name = "usb_ack"

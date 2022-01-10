@@ -3,17 +3,18 @@
 
 // Simple Peripheral Timer Example
 
-extern crate cortex_m_rt;
-extern crate feather_m4 as hal;
-extern crate nb;
-extern crate panic_halt;
+use bsp::hal;
+use feather_m4 as bsp;
 
+#[cfg(not(feature = "use_semihosting"))]
+use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
+
+use bsp::entry;
 use hal::clock::GenericClockController;
-use hal::entry;
 use hal::pac::Peripherals;
 use hal::prelude::*;
-
-use nb::block;
 
 use hal::timer::TimerCounter;
 
@@ -28,8 +29,8 @@ fn main() -> ! {
         &mut peripherals.NVMCTRL,
     );
     // Using the red LED as the feedback for this simple timer example.
-    let mut pins = hal::Pins::new(peripherals.PORT);
-    let mut red_led = pins.d13.into_open_drain_output(&mut pins.port);
+    let pins = bsp::Pins::new(peripherals.PORT);
+    let mut red_led = pins.d13.into_push_pull_output();
 
     // gclk0 represents a configured clock using the 120MHz oscillator.
     let gclk0 = clocks.gclk0();
@@ -43,8 +44,8 @@ fn main() -> ! {
     // Toggle the red LED at the frequency set by the timer above.
     loop {
         red_led.set_high().unwrap();
-        block!(timer.wait()).ok();
+        nb::block!(timer.wait()).ok();
         red_led.set_low().unwrap();
-        block!(timer.wait()).ok();
+        nb::block!(timer.wait()).ok();
     }
 }

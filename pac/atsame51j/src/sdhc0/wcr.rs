@@ -1,13 +1,37 @@
-#[doc = "Reader of register WCR"]
-pub type R = crate::R<u8, super::WCR>;
-#[doc = "Writer for register WCR"]
-pub type W = crate::W<u8, super::WCR>;
-#[doc = "Register WCR `reset()`'s with value 0"]
-impl crate::ResetValue for super::WCR {
-    type Type = u8;
+#[doc = "Register `WCR` reader"]
+pub struct R(crate::R<WCR_SPEC>);
+impl core::ops::Deref for R {
+    type Target = crate::R<WCR_SPEC>;
     #[inline(always)]
-    fn reset_value() -> Self::Type {
-        0
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl From<crate::R<WCR_SPEC>> for R {
+    #[inline(always)]
+    fn from(reader: crate::R<WCR_SPEC>) -> Self {
+        R(reader)
+    }
+}
+#[doc = "Register `WCR` writer"]
+pub struct W(crate::W<WCR_SPEC>);
+impl core::ops::Deref for W {
+    type Target = crate::W<WCR_SPEC>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl core::ops::DerefMut for W {
+    #[inline(always)]
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+impl From<crate::W<WCR_SPEC>> for W {
+    #[inline(always)]
+    fn from(writer: crate::W<WCR_SPEC>) -> Self {
+        W(writer)
     }
 }
 #[doc = "Wakeup Event Enable on Card Interrupt\n\nValue on reset: 0"]
@@ -24,9 +48,13 @@ impl From<WKENCINT_A> for bool {
         variant as u8 != 0
     }
 }
-#[doc = "Reader of field `WKENCINT`"]
-pub type WKENCINT_R = crate::R<bool, WKENCINT_A>;
+#[doc = "Field `WKENCINT` reader - Wakeup Event Enable on Card Interrupt"]
+pub struct WKENCINT_R(crate::FieldReader<bool, WKENCINT_A>);
 impl WKENCINT_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        WKENCINT_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
     pub fn variant(&self) -> WKENCINT_A {
@@ -38,15 +66,22 @@ impl WKENCINT_R {
     #[doc = "Checks if the value of the field is `DISABLE`"]
     #[inline(always)]
     pub fn is_disable(&self) -> bool {
-        *self == WKENCINT_A::DISABLE
+        **self == WKENCINT_A::DISABLE
     }
     #[doc = "Checks if the value of the field is `ENABLE`"]
     #[inline(always)]
     pub fn is_enable(&self) -> bool {
-        *self == WKENCINT_A::ENABLE
+        **self == WKENCINT_A::ENABLE
     }
 }
-#[doc = "Write proxy for field `WKENCINT`"]
+impl core::ops::Deref for WKENCINT_R {
+    type Target = crate::FieldReader<bool, WKENCINT_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `WKENCINT` writer - Wakeup Event Enable on Card Interrupt"]
 pub struct WKENCINT_W<'a> {
     w: &'a mut W,
 }
@@ -54,9 +89,7 @@ impl<'a> WKENCINT_W<'a> {
     #[doc = r"Writes `variant` to the field"]
     #[inline(always)]
     pub fn variant(self, variant: WKENCINT_A) -> &'a mut W {
-        {
-            self.bit(variant.into())
-        }
+        self.bit(variant.into())
     }
     #[doc = "Disable"]
     #[inline(always)]
@@ -81,7 +114,7 @@ impl<'a> WKENCINT_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | ((value as u8) & 0x01);
+        self.w.bits = (self.w.bits & !0x01) | (value as u8 & 0x01);
         self.w
     }
 }
@@ -99,9 +132,13 @@ impl From<WKENCINS_A> for bool {
         variant as u8 != 0
     }
 }
-#[doc = "Reader of field `WKENCINS`"]
-pub type WKENCINS_R = crate::R<bool, WKENCINS_A>;
+#[doc = "Field `WKENCINS` reader - Wakeup Event Enable on Card Insertion"]
+pub struct WKENCINS_R(crate::FieldReader<bool, WKENCINS_A>);
 impl WKENCINS_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        WKENCINS_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
     pub fn variant(&self) -> WKENCINS_A {
@@ -113,15 +150,22 @@ impl WKENCINS_R {
     #[doc = "Checks if the value of the field is `DISABLE`"]
     #[inline(always)]
     pub fn is_disable(&self) -> bool {
-        *self == WKENCINS_A::DISABLE
+        **self == WKENCINS_A::DISABLE
     }
     #[doc = "Checks if the value of the field is `ENABLE`"]
     #[inline(always)]
     pub fn is_enable(&self) -> bool {
-        *self == WKENCINS_A::ENABLE
+        **self == WKENCINS_A::ENABLE
     }
 }
-#[doc = "Write proxy for field `WKENCINS`"]
+impl core::ops::Deref for WKENCINS_R {
+    type Target = crate::FieldReader<bool, WKENCINS_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `WKENCINS` writer - Wakeup Event Enable on Card Insertion"]
 pub struct WKENCINS_W<'a> {
     w: &'a mut W,
 }
@@ -129,9 +173,7 @@ impl<'a> WKENCINS_W<'a> {
     #[doc = r"Writes `variant` to the field"]
     #[inline(always)]
     pub fn variant(self, variant: WKENCINS_A) -> &'a mut W {
-        {
-            self.bit(variant.into())
-        }
+        self.bit(variant.into())
     }
     #[doc = "Disable"]
     #[inline(always)]
@@ -156,7 +198,7 @@ impl<'a> WKENCINS_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | (((value as u8) & 0x01) << 1);
+        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u8 & 0x01) << 1);
         self.w
     }
 }
@@ -174,9 +216,13 @@ impl From<WKENCREM_A> for bool {
         variant as u8 != 0
     }
 }
-#[doc = "Reader of field `WKENCREM`"]
-pub type WKENCREM_R = crate::R<bool, WKENCREM_A>;
+#[doc = "Field `WKENCREM` reader - Wakeup Event Enable on Card Removal"]
+pub struct WKENCREM_R(crate::FieldReader<bool, WKENCREM_A>);
 impl WKENCREM_R {
+    #[inline(always)]
+    pub(crate) fn new(bits: bool) -> Self {
+        WKENCREM_R(crate::FieldReader::new(bits))
+    }
     #[doc = r"Get enumerated values variant"]
     #[inline(always)]
     pub fn variant(&self) -> WKENCREM_A {
@@ -188,15 +234,22 @@ impl WKENCREM_R {
     #[doc = "Checks if the value of the field is `DISABLE`"]
     #[inline(always)]
     pub fn is_disable(&self) -> bool {
-        *self == WKENCREM_A::DISABLE
+        **self == WKENCREM_A::DISABLE
     }
     #[doc = "Checks if the value of the field is `ENABLE`"]
     #[inline(always)]
     pub fn is_enable(&self) -> bool {
-        *self == WKENCREM_A::ENABLE
+        **self == WKENCREM_A::ENABLE
     }
 }
-#[doc = "Write proxy for field `WKENCREM`"]
+impl core::ops::Deref for WKENCREM_R {
+    type Target = crate::FieldReader<bool, WKENCREM_A>;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+#[doc = "Field `WKENCREM` writer - Wakeup Event Enable on Card Removal"]
 pub struct WKENCREM_W<'a> {
     w: &'a mut W,
 }
@@ -204,9 +257,7 @@ impl<'a> WKENCREM_W<'a> {
     #[doc = r"Writes `variant` to the field"]
     #[inline(always)]
     pub fn variant(self, variant: WKENCREM_A) -> &'a mut W {
-        {
-            self.bit(variant.into())
-        }
+        self.bit(variant.into())
     }
     #[doc = "Disable"]
     #[inline(always)]
@@ -231,7 +282,7 @@ impl<'a> WKENCREM_W<'a> {
     #[doc = r"Writes raw bits to the field"]
     #[inline(always)]
     pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 2)) | (((value as u8) & 0x01) << 2);
+        self.w.bits = (self.w.bits & !(0x01 << 2)) | ((value as u8 & 0x01) << 2);
         self.w
     }
 }
@@ -267,5 +318,31 @@ impl W {
     #[inline(always)]
     pub fn wkencrem(&mut self) -> WKENCREM_W {
         WKENCREM_W { w: self }
+    }
+    #[doc = "Writes raw bits to the register."]
+    #[inline(always)]
+    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
+        self.0.bits(bits);
+        self
+    }
+}
+#[doc = "Wakeup Control\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [wcr](index.html) module"]
+pub struct WCR_SPEC;
+impl crate::RegisterSpec for WCR_SPEC {
+    type Ux = u8;
+}
+#[doc = "`read()` method returns [wcr::R](R) reader structure"]
+impl crate::Readable for WCR_SPEC {
+    type Reader = R;
+}
+#[doc = "`write(|w| ..)` method takes [wcr::W](W) writer structure"]
+impl crate::Writable for WCR_SPEC {
+    type Writer = W;
+}
+#[doc = "`reset()` method sets WCR to value 0"]
+impl crate::Resettable for WCR_SPEC {
+    #[inline(always)]
+    fn reset_value() -> Self::Ux {
+        0
     }
 }

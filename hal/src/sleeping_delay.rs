@@ -2,9 +2,9 @@
 use core::sync::atomic;
 use cortex_m::asm;
 
+use crate::ehal::blocking::delay::{DelayMs, DelayUs};
 use crate::time::U32Ext;
 use crate::timer_traits::InterruptDrivenTimer;
-use hal::blocking::delay::{DelayMs, DelayUs};
 
 const NUM_US_IN_S: u32 = 1_000_000;
 

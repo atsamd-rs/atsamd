@@ -3,11 +3,13 @@
 
 use core::fmt::Write;
 
+#[cfg(not(feature = "use_semihosting"))]
 use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
 
 use cortex_m::interrupt::free as disable_interrupts;
 use cortex_m::peripheral::NVIC;
-use heapless::consts::U16;
 use heapless::String;
 use usb_device::bus::UsbBusAllocator;
 use usb_device::prelude::*;
@@ -86,7 +88,7 @@ fn main() -> ! {
         let time =
             disable_interrupts(|_| unsafe { RTC.as_mut().map(|rtc| rtc.current_time()) }).unwrap();
 
-        let mut data = String::<U16>::new();
+        let mut data = String::<16>::new();
         write!(
             data,
             "{:02}:{:02}:{:02}\r\n",
@@ -164,9 +166,8 @@ pub struct Time {
     second: usize,
 }
 
-#[macro_use]
-extern crate nom;
 use drogue_nom_utils::parse_usize;
+use nom::{char, do_parse, named, opt, tag};
 
 named!(
     pub timespec<Time>,

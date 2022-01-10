@@ -6,12 +6,11 @@
 
 #[cfg(not(feature = "panic_led"))]
 use panic_halt as _;
-use pygamer::{self as hal, entry, pac, Pins};
+use pygamer::{entry, hal, pac, Pins};
 
 use hal::clock::GenericClockController;
 use hal::prelude::*;
 use hal::timer::TimerCounter;
-use nb::block;
 use pac::Peripherals;
 
 #[entry]
@@ -35,8 +34,8 @@ fn main() -> ! {
     //50% duty cycle, so 500khz period
     loop {
         let _ = d5.set_high();
-        let _ = block!(timer.wait());
+        let _ = nb::block!(timer.wait());
         let _ = d5.set_low();
-        let _ = block!(timer.wait());
+        let _ = nb::block!(timer.wait());
     }
 }
