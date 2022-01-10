@@ -22,6 +22,7 @@ usbd-serial = "0.1"
 panic-halt = "0.2"
 smart-leds = "0.3"
 ws2812-timer-delay = { version = "0.3", features = ["slow"] }
+cortex-m = "0.6"
 
 [features]
 default = ["rt", "atsamd-hal/samd21e"]
