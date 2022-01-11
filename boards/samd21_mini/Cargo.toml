@@ -21,7 +21,7 @@ default-features = false
 [dev-dependencies]
 panic-halt = "0.2"
 panic-semihosting = "0.5"
-cortex-m-rtic = "0.5.1"
+cortex-m-rtic = "1.0"
 
 [features]
 # ask the HAL to enable atsamd21g support

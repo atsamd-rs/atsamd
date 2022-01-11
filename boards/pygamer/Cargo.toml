@@ -46,7 +46,7 @@ embedded-graphics = "0.7.1"
 smart-leds = "0.3"
 ws2812-spi = { version = "0.4.0", features = ["mosi_idle_high"] }
 lis3dh = "0.1.0"
-cortex-m-rtic = "0.5.1"
+cortex-m-rtic = "1.0"
 tinybmp = "0.3.1"
 
 [features]

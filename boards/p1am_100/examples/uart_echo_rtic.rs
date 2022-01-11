@@ -15,14 +15,21 @@ use hal::pac::Interrupt;
 use hal::prelude::*;
 
 #[rtic::app(device = p1am_100::pac, peripherals = true)]
-const APP: () = {
-    struct Resources {
-        led: bsp::Led,
+mod app {
+    use super::*;
+
+    #[local]
+    struct Local {
         uart: bsp::Uart,
         delay: Delay,
     }
+
+    #[shared]
+    struct Shared {
+        led: bsp::Led,
+    }
     #[init()]
-    fn init(cx: init::Context) -> init::LateResources {
+    fn init(cx: init::Context) -> (Shared, Local, init::Monotonics) {
         let mut peripherals = cx.device;
         let mut clocks = GenericClockController::with_internal_32kosc(
             peripherals.GCLK,
@@ -54,26 +61,26 @@ const APP: () = {
 
         rtic::pend(Interrupt::SERCOM5);
 
-        init::LateResources { led, uart, delay }
+        (Shared { led }, Local { uart, delay }, init::Monotonics())
     }
 
-    #[idle(resources=[led, delay])]
+    #[idle(shared=[led], local=[delay])]
     fn idle(mut cx: idle::Context) -> ! {
         // Flash the LED in a spin loop to confirm we are alive.
         loop {
-            cx.resources.delay.delay_ms(200u32);
-            cx.resources.led.lock(|l| l.toggle().unwrap());
+            cx.local.delay.delay_ms(200u32);
+            cx.shared.led.lock(|l| l.toggle().unwrap());
         }
     }
 
-    #[task(binds = SERCOM5, resources=[uart, led], priority = 2)]
-    fn poll_uart(cx: poll_uart::Context) {
-        match cx.resources.uart.read() {
+    #[task(binds = SERCOM5, shared=[led], local=[uart], priority = 2)]
+    fn poll_uart(mut cx: poll_uart::Context) {
+        match cx.local.uart.read() {
             Ok(byte) => {
-                cx.resources.led.toggle().unwrap();
-                nb::block!(cx.resources.uart.write(byte)).unwrap();
+                cx.shared.led.lock(|l| l.toggle().unwrap());
+                nb::block!(cx.local.uart.write(byte)).unwrap();
             }
             Err(_) => {}
         };
     }
-};
+}
