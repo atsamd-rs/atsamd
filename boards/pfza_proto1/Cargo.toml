@@ -1,6 +1,6 @@
 [package]
 name = "pfza_proto1"
-version = "0.5.0"
+version = "0.6.0"
 authors = ["Michael van Niekerk <mvniekerk@gmail.com>"]
 description = "Board Support crate for the PathfinderZA Proto1"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
@@ -11,11 +11,11 @@ readme = "README.md"
 edition = "2021"
 
 [dependencies.cortex-m-rt]
-version = "0.6.12"
+version = "0.7"
 optional = true
 
 [dependencies.atsamd-hal]
-version = "0.13"
+version = "0.14"
 default-features = false
 
 [dev-dependencies]

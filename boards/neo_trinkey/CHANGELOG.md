@@ -7,6 +7,9 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+# v0.2.0
+
+- update to `atsamd-hal-0.14` and other latest dependencies (#564)
 - move `usbd-x` crates used only in examples to `[dev-dependencies]`
 
 ## [0.1.0] - 2021-10-07

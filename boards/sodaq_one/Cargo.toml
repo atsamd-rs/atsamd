@@ -1,20 +1,21 @@
 [package]
 name = "sodaq_one"
-version = "0.9.0"
+version = "0.10.0"
 authors = ["Robert Hennig <robert.hennig@freylax.de>"]
 description = "Board Support crate for the SODAQ ONE"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
+categories = ["embedded", "hardware-support", "no-std"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
-edition = "2018"
+edition = "2021"
 
 [dependencies.cortex-m-rt]
-version = "0.6.12"
+version = "0.7"
 optional = true
 
 [dependencies.atsamd-hal]
-version = "0.13"
+version = "0.14"
 default-features = false
 
 [dev-dependencies]
