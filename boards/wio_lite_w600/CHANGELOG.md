@@ -1,4 +1,7 @@
 # Unreleased
+# v0.3.0
+
+- update to `atsamd-hal-0.14` and other latest dependencies (#564)
 
 # v0.2.1
 

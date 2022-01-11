@@ -1,6 +1,6 @@
 [package]
 name = "edgebadge"
-version = "0.8.0"
+version = "0.9.0"
 authors = ["Jacob Rosenthal <@jacobrosenthal>"]
 description = "Board Support crate for the Adafruit EdgeBadge"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]

@@ -24,6 +24,8 @@ def main(clean=False, build=False):
             subprocess.check_call(shlex.split("cargo update"), cwd=crate_path)
         if build:
             subprocess.check_call(command, cwd=crate_path)
+        else:
+            subprocess.check_call(shlex.split("cargo outdated"), cwd=crate_path)
 
 
 if __name__ == "__main__":
