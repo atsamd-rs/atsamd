@@ -12,6 +12,7 @@ use bsp::hal;
 use bsp::pac;
 use feather_m0 as bsp;
 
+use bsp::pin_alias;
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
 use hal::prelude::*;
@@ -32,7 +33,7 @@ fn main() -> ! {
     let mut delay = Delay::new(core.SYST, &mut clocks);
     let pins = bsp::Pins::new(peripherals.PORT);
 
-    let _d5: bsp::D5Pwm = pins.d5.into();
+    let _d5: bsp::D5Pwm = pin_alias!(pins.d5_pwm).into();
 
     let gclk0 = clocks.gclk0();
     let mut pwm3 = Pwm3::new(
