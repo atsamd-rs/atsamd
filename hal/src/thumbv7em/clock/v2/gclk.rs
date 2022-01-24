@@ -625,8 +625,15 @@ where
         New: Source + Increment,
         New::Id: GclkSourceId,
     {
-        let (token, old) = self.free(old);
-        let (config, new) = Gclk::new(token, new);
+        let config = Gclk {
+            token: self.token,
+            src: PhantomData,
+            src_freq: new.freq(),
+            div: self.div,
+            improve_duty_cycle: self.improve_duty_cycle,
+        };
+        let old = old.dec();
+        let new = new.inc();
         (config, old, new)
     }
 
@@ -751,7 +758,9 @@ impl<I: GclkSourceId> EnabledGclk0<I, U1> {
     /// See [`GclkDiv`] for possible divider factors
     #[inline]
     pub fn div(self, div: GclkDiv) -> Self {
-        Enabled::new(self.0.div(div))
+        let mut config = self.0.div(div);
+        config.token.set_div(div);
+        Enabled::new(config)
     }
 
     /// When dividing an input clock with a odd division factor the duty-cycle
@@ -759,7 +768,9 @@ impl<I: GclkSourceId> EnabledGclk0<I, U1> {
     /// resulting generator clock
     #[inline]
     pub fn improve_duty_cycle(self, flag: bool) -> Self {
-        Enabled::new(self.0.improve_duty_cycle(flag))
+        let mut config = self.0.improve_duty_cycle(flag);
+        config.token.improve_duty_cycle(flag);
+        Enabled::new(config)
     }
 }
 
