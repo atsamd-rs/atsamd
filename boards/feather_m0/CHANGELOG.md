@@ -1,5 +1,6 @@
 # Unreleased
 
+- Add an `i2c` example
 - Make use of `bsp_peripherals`, `periph_alias` and `pin_alias` macros
 - Updated to 2021 edition, updated dependencies, removed unused dependencies (#562)
 
