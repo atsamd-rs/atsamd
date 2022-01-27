@@ -65,3 +65,7 @@ required-features = ["rtic", "unproven"]
 
 [[example]]
 name = "blinky_basic"
+
+[[example]]
+name = "i2c"
+required-features = ["atsamd-hal/dma"]

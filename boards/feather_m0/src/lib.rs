@@ -8,12 +8,9 @@ pub use hal::ehal;
 pub use hal::pac;
 
 use hal::clock::GenericClockController;
-use hal::sercom::{
-    v2::{
-        spi,
-        uart::{self, BaudMode, Oversampling},
-    },
-    I2CMaster3,
+use hal::sercom::v2::{
+    i2c, spi,
+    uart::{self, BaudMode, Oversampling},
 };
 use hal::time::Hertz;
 
@@ -268,8 +265,15 @@ pub fn spi_master(
         .enable()
 }
 
-/// I2C master for the labelled SDA & SCL pins
-pub type I2C = I2CMaster3<Sda, Scl>;
+/// I2C pads for the labelled I2C peripheral
+///
+/// You can use these pads with other, user-defined [`i2c::Config`]urations.
+pub type I2cPads = i2c::Pads<I2cSercom, Sda, Scl>;
+
+/// I2C master for the labelled I2C peripheral
+///
+/// This type implements [`Read`](ehal::blocking::i2c::Read), [`Write`](ehal::blocking::i2c::Write) and [`WriteRead`](ehal::blocking::i2c::WriteRead).
+pub type I2c = i2c::I2c<i2c::Config<I2cPads>>;
 
 /// Convenience for setting up the labelled SDA, SCL pins to
 /// operate as an I2C master running at the specified frequency.
@@ -280,13 +284,13 @@ pub fn i2c_master(
     pm: &mut pac::PM,
     sda: impl Into<Sda>,
     scl: impl Into<Scl>,
-) -> I2C {
+) -> I2c {
     let gclk0 = clocks.gclk0();
     let clock = &clocks.sercom3_core(&gclk0).unwrap();
+    let freq = clock.freq();
     let baud = baud.into();
-    let sda = sda.into();
-    let scl = scl.into();
-    I2CMaster3::new(clock, baud, sercom, pm, sda, scl)
+    let pads = i2c::Pads::new(sda.into(), scl.into());
+    i2c::Config::new(pm, sercom, pads, freq).baud(baud).enable()
 }
 
 /// UART pads for the labelled RX & TX pins

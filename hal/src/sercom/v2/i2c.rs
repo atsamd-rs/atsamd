@@ -45,7 +45,7 @@ pub struct I2c<C: AnyConfig> {
 impl<C: AnyConfig> I2c<C> {
     /// Obtain a pointer to the `DATA` register. Necessary for DMA transfers.
     #[inline]
-    pub(crate) fn data_ptr(&self) -> *mut Word {
+    pub fn data_ptr(&self) -> *mut Word {
         self.config.as_ref().registers.data_ptr()
     }
 

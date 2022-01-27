@@ -54,3 +54,7 @@ name = "serial"
 
 [[example]]
 name = "timer"
+
+[[example]]
+name = "i2c"
+required-features = ["atsamd-hal/dma"]

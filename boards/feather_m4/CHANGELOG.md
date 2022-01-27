@@ -1,6 +1,7 @@
 # Unreleased
 
 - Add an `i2c` example
+- Update `i2c_master` convenience function to use the new `sercom::v2::i2c` API
 - Updated to 2021 edition, updated dependencies, removed unused dependencies (#562)
 
 # v0.9.0

@@ -12,13 +12,10 @@ pub use cortex_m_rt::entry;
 use hal::{
     clock::GenericClockController,
     qspi::{OneShot, Qspi},
-    sercom::{
-        v2::{
-            spi,
-            uart::{self, BaudMode, Oversampling},
-            IoSet1, Sercom2, Sercom3,
-        },
-        I2CMaster5,
+    sercom::v2::{
+        i2c, spi,
+        uart::{self, BaudMode, Oversampling},
+        IoSet1, IoSet6, Sercom2, Sercom3, Sercom5,
     },
     time::Hertz,
 };
@@ -263,6 +260,7 @@ pub fn spi_master(
 /// Convenience for setting up the onboard QSPI flash.
 /// Enables the clocks for the QSPI peripheral in single data rate mode
 /// assuming 120MHz system clock, for 4MHz QSPI mode 0 operation.
+#[allow(clippy::too_many_arguments)]
 pub fn qspi_master(
     mclk: &mut MCLK,
     qspi: pac::QSPI,
@@ -285,25 +283,34 @@ pub fn qspi_master(
     )
 }
 
-/// I2C master for the labelled SDA & SCL pins
-pub type I2C = I2CMaster5<Sda, Scl>;
+/// I2C pads for the labelled I2C peripheral
+///
+/// You can use these pads with other, user-defined [`i2c::Config`]urations.
+pub type I2cPads = i2c::Pads<Sercom5, IoSet6, Sda, Scl>;
+
+/// I2C master for the labelled I2C peripheral
+///
+/// This type implements [`Read`](ehal::blocking::i2c::Read), [`Write`](ehal::blocking::i2c::Write) and [`WriteRead`](ehal::blocking::i2c::WriteRead).
+pub type I2c = i2c::I2c<i2c::Config<I2cPads>>;
 
 /// Convenience for setting up the labelled SDA, SCL pins to
 /// operate as an I2C master running at the specified frequency.
 pub fn i2c_master(
     clocks: &mut GenericClockController,
     baud: impl Into<Hertz>,
-    sercom5: pac::SERCOM5,
+    sercom: Sercom5,
     mclk: &mut pac::MCLK,
     sda: impl Into<Sda>,
     scl: impl Into<Scl>,
-) -> I2C {
+) -> I2c {
     let gclk0 = clocks.gclk0();
     let clock = &clocks.sercom5_core(&gclk0).unwrap();
+    let freq = clock.freq();
     let baud = baud.into();
-    let sda = sda.into();
-    let scl = scl.into();
-    I2CMaster5::new(clock, baud, sercom5, mclk, sda, scl)
+    let pads = i2c::Pads::new(sda.into(), scl.into());
+    i2c::Config::new(mclk, sercom, pads, freq)
+        .baud(baud)
+        .enable()
 }
 
 /// UART Pads for the labelled UART peripheral

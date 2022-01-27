@@ -85,3 +85,7 @@ required-features = ["unproven", "usb"]
 [[example]]
 name = "smart_eeprom"
 required-features = ["unproven", "usb"]
+
+[[example]]
+name = "i2c"
+required-features = ["atsamd-hal/dma"]

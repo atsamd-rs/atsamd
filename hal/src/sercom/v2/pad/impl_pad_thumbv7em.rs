@@ -215,10 +215,11 @@ pad_table!(
         D: (Sercom5, Pad3, IoSet5, IoSet6),
     }
     PB02 {
-        D: (Sercom5, Pad0, IoSet6),
+        // According to Metro M4, PB02 is I2C-capable. This disagrees with datasheet table 6-8.
+        D: (Sercom5, Pad0, IoSet6) + I2C,
     }
-    PB03 {
-        D: (Sercom5, Pad1, IoSet6),
+    PB03 {// According to Metro M4, PB03 is I2C-capable. This disagrees with datasheet table 6-8.
+        D: (Sercom5, Pad1, IoSet6) + I2C,
     }
     PB08 {
         D: (Sercom4, Pad0, IoSet2),
