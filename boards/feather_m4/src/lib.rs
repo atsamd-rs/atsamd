@@ -2,8 +2,6 @@
 #![recursion_limit = "1024"]
 
 #[cfg(feature = "rt")]
-use cortex_m_rt;
-#[cfg(feature = "rt")]
 pub use cortex_m_rt::entry;
 
 pub use atsamd_hal as hal;

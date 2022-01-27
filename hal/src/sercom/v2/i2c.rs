@@ -21,13 +21,8 @@ pub use config::*;
 
 mod impl_ehal;
 
-/// Size of the SERCOM's `DATA` register
-#[cfg(any(feature = "samd11", feature = "samd21"))]
-pub type DataReg = u16;
-
-/// Size of the SERCOM's `DATA` register
-#[cfg(any(feature = "min-samd51g"))]
-pub type DataReg = u32;
+/// Word size for an I2C message
+pub type Word = u8;
 
 /// Inactive timeout configuration
 #[repr(u8)]
@@ -49,9 +44,8 @@ pub struct I2c<C: AnyConfig> {
 
 impl<C: AnyConfig> I2c<C> {
     /// Obtain a pointer to the `DATA` register. Necessary for DMA transfers.
-    #[cfg(feature = "dma")]
     #[inline]
-    pub(crate) fn data_ptr(&self) -> *mut DataReg {
+    pub(crate) fn data_ptr(&self) -> *mut Word {
         self.config.as_ref().registers.data_ptr()
     }
 
@@ -91,6 +85,29 @@ impl<C: AnyConfig> I2c<C> {
         self.config.as_mut().registers.clear_status(status);
     }
 
+    #[cfg(feature = "dma")]
+    #[inline]
+    pub(super) fn start_dma_write(&mut self, address: u8, xfer_len: u8) {
+        self.config
+            .as_mut()
+            .registers
+            .start_dma_write(address, xfer_len)
+    }
+
+    #[cfg(feature = "dma")]
+    #[inline]
+    pub(super) fn start_dma_read(&mut self, address: u8, xfer_len: u8) {
+        self.config
+            .as_mut()
+            .registers
+            .start_dma_read(address, xfer_len)
+    }
+
+    #[inline]
+    pub(super) fn check_bus_status(&self) -> Result<(), Error> {
+        self.config.as_ref().registers.check_bus_status()
+    }
+
     #[inline]
     fn do_write(&mut self, addr: u8, bytes: &[u8]) -> Result<(), Error> {
         self.config.as_mut().registers.do_write(addr, bytes)
@@ -108,7 +125,6 @@ impl<C: AnyConfig> I2c<C> {
             .registers
             .do_write_read(addr, bytes, buffer)
     }
-
     #[inline]
     fn cmd_stop(&mut self) {
         self.config.as_mut().registers.cmd_stop()

@@ -17,6 +17,28 @@ where
     scl: SCL,
 }
 
+#[cfg(feature = "samd11")]
+impl<S, DI, CI> Pads<S, Pad<S, DI>, Pad<S, CI>>
+where
+    S: Sercom,
+    DI: GetPad<S>,
+    CI: GetPad<S>,
+    Pad<S, DI>: IsI2cPad<PadNum = Pad0, Sercom = S>,
+    Pad<S, CI>: IsI2cPad<PadNum = Pad1, Sercom = S>,
+{
+    /// Create a new [`Pads`] struct. `SDA` must always be SERCOM pad 0, and
+    /// `SCL` SERCOM pad 1.{
+    #[inline]
+    pub fn new(sda: impl AnyPin<Id = DI>, scl: impl AnyPin<Id = CI>) -> Self {
+        Self {
+            sercom: PhantomData,
+            sda: sda.into().into_mode(),
+            scl: scl.into().into_mode(),
+        }
+    }
+}
+
+#[cfg(not(feature = "samd11"))]
 impl<S, DI, CI> Pads<S, Pad<S, DI>, Pad<S, CI>>
 where
     S: Sercom,

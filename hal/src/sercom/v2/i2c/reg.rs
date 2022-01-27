@@ -31,7 +31,6 @@ impl<S: Sercom> Registers<S> {
         self.sercom.i2cm()
     }
 
-    #[cfg(feature = "dma")]
     /// Get a pointer to the `DATA` register
     pub(super) fn data_ptr<T>(&self) -> *mut T {
         self.i2c_master().data.as_ptr() as *mut _
@@ -139,6 +138,18 @@ impl<S: Sercom> Registers<S> {
         self.i2c_master().ctrla.read().runstdby().bit()
     }
 
+    /// Set Smart Mode
+    #[inline]
+    pub(super) fn set_smart_mode(&mut self, set: bool) {
+        self.i2c_master().ctrlb.modify(|_, w| w.smen().bit(set));
+    }
+
+    /// Get the current Smart Mode setting
+    #[inline]
+    pub(super) fn get_smart_mode(&self) -> bool {
+        self.i2c_master().ctrlb.read().smen().bit()
+    }
+
     /// Clear specified interrupt flags
     #[inline]
     pub(super) fn clear_flags(&mut self, flags: Flags) {
@@ -183,22 +194,35 @@ impl<S: Sercom> Registers<S> {
         self.i2c_master().status.read().bits().into()
     }
 
-    /// Start a write transaction
-    #[inline]
-    pub(super) fn start_tx_write(&mut self, addr: u8) -> Result<(), Error> {
+    pub(super) fn check_bus_status(&self) -> Result<(), Error> {
         let status = self.read_status();
         if status.busstate() == BusState::Busy
             || (status.arblost() && status.busstate() != BusState::Idle)
             || status.busstate() == BusState::Unknown
         {
             return Err(Error::BusError);
+        } else {
+            Ok(())
+        }
+    }
+
+    /// Start a blocking write transaction
+    #[inline]
+    pub(super) fn start_write_blocking(&mut self, addr: u8) -> Result<(), Error> {
+        if self.get_smart_mode() {
+            self.disable();
+            self.set_smart_mode(false);
+            self.enable();
         }
 
-        // Signal start and transmit encoded address.
+        self.check_bus_status()?;
+
+        // RESET the `ADDR` register, then signal start and transmit encoded
+        // address for a write transaction.
         unsafe {
             self.i2c_master()
                 .addr
-                .write(|w| w.addr().bits((addr as u16) << 1));
+                .write(|w| w.addr().bits(encode_write_address(addr)));
         }
 
         // wait for transmission to complete
@@ -206,27 +230,27 @@ impl<S: Sercom> Registers<S> {
         self.read_status().try_into()
     }
 
-    /// Start a read transaction
+    /// Start a blocking read transaction
     #[inline]
-    pub(super) fn start_tx_read(&mut self, addr: u8) -> Result<(), Error> {
-        let status = self.read_status();
-        if status.busstate() == BusState::Busy
-            || (status.arblost() && status.busstate() != BusState::Idle)
-            || status.busstate() == BusState::Unknown
-        {
-            return Err(Error::BusError);
+    pub(super) fn start_read_blocking(&mut self, addr: u8) -> Result<(), Error> {
+        if self.get_smart_mode() {
+            self.disable();
+            self.set_smart_mode(false);
+            self.enable();
         }
+
+        self.check_bus_status()?;
 
         self.i2c_master()
             .intflag
             .modify(|_, w| w.error().clear_bit());
 
-        // Signal start (or rep start if appropriate)
-        // and transmit encoded address.
+        // RESET the `ADDR` register, then signal start (or repeated start if
+        // appropriate) and transmit encoded address for a read transaction.
         unsafe {
             self.i2c_master()
                 .addr
-                .write(|w| w.addr().bits(((addr as u16) << 1) | 1));
+                .write(|w| w.addr().bits(encode_read_address(addr)));
         }
 
         // wait for transmission to complete
@@ -244,9 +268,54 @@ impl<S: Sercom> Registers<S> {
         self.read_status().try_into()
     }
 
+    /// Start DMA write:
+    /// * Write `ADDR.LENEN` to 1
+    /// * Write the transaction length in `ADDR.LEN`.
+    /// * Write `ADDR.ADDR` to the encoded write address
+    ///
+    /// After ADDR.LEN bytes have been transmitted, a NACK (for master reads)
+    /// and STOP are automatically generated.
+    #[cfg(feature = "dma")]
     #[inline]
-    pub(super) fn wait_sync(&mut self) {
-        while self.i2c_master().syncbusy.read().sysop().bit_is_set() {}
+    pub(super) fn start_dma_write(&mut self, address: u8, xfer_len: u8) {
+        if !self.get_smart_mode() {
+            self.disable();
+            self.set_smart_mode(true);
+            self.enable();
+        }
+
+        self.i2c_master().addr.write(|w| unsafe {
+            w.addr().bits(encode_write_address(address));
+            w.len().bits(xfer_len);
+            w.lenen().set_bit()
+        });
+
+        self.sync_sysop();
+    }
+
+    /// Start DMA read:
+    /// * Write `ADDR.LENEN` to 1
+    /// * Write the transaction length in `ADDR.LEN`.
+    /// * Write `ADDR.ADDR` to the encoded write address
+    ///
+    /// After ADDR.LEN bytes have been received, a NACK (for master reads) and
+    /// STOP are automatically generated.
+    #[cfg(feature = "dma")]
+    #[inline]
+    pub(super) fn start_dma_read(&mut self, address: u8, xfer_len: u8) {
+        if !self.get_smart_mode() {
+            self.disable();
+            self.set_smart_mode(true);
+            self.enable();
+        }
+
+        self.i2c_master().addr.write(|w| unsafe {
+            w.addr().bits(encode_read_address(address));
+            w.len().bits(xfer_len);
+            w.lenen().set_bit()
+        });
+
+        self.sync_sysop();
     }
 
     #[inline]
@@ -255,7 +324,7 @@ impl<S: Sercom> Registers<S> {
             .ctrlb
             .modify(|_, w| unsafe { w.cmd().bits(cmd) });
 
-        self.wait_sync();
+        self.sync_sysop();
     }
 
     #[inline]
@@ -272,7 +341,7 @@ impl<S: Sercom> Registers<S> {
                 w.cmd().bits(MASTER_ACT_READ)
             });
         }
-        self.wait_sync();
+        self.sync_sysop();
     }
 
     #[inline]
@@ -325,13 +394,13 @@ impl<S: Sercom> Registers<S> {
 
     #[inline]
     pub(super) fn do_write(&mut self, addr: u8, bytes: &[u8]) -> Result<(), Error> {
-        self.start_tx_write(addr)?;
+        self.start_write_blocking(addr)?;
         self.send_bytes(bytes)
     }
 
     #[inline]
     pub(super) fn do_read(&mut self, addr: u8, buffer: &mut [u8]) -> Result<(), Error> {
-        self.start_tx_read(addr)?;
+        self.start_read_blocking(addr)?;
         self.fill_buffer(buffer)
     }
 
@@ -342,10 +411,11 @@ impl<S: Sercom> Registers<S> {
         bytes: &[u8],
         buffer: &mut [u8],
     ) -> Result<(), Error> {
-        self.start_tx_write(addr)?;
+        self.start_write_blocking(addr)?;
         self.send_bytes(bytes)?;
-        self.start_tx_read(addr)?;
-        self.fill_buffer(buffer)
+        self.start_read_blocking(addr)?;
+        self.fill_buffer(buffer)?;
+        Ok(())
     }
 
     /// Set the bus to IDLE
@@ -356,6 +426,11 @@ impl<S: Sercom> Registers<S> {
             .status
             .modify(|_, w| unsafe { w.busstate().bits(BusState::Idle as u8) });
         // Wait for it to take effect
+        self.sync_sysop();
+    }
+
+    #[inline]
+    fn sync_sysop(&mut self) {
         while self.i2c_master().syncbusy.read().sysop().bit_is_set() {}
     }
 
@@ -384,4 +459,12 @@ impl<S: Sercom> Registers<S> {
             .modify(|_, w| w.enable().bit(enable));
         while self.i2c_master().syncbusy.read().enable().bit_is_set() {}
     }
+}
+
+fn encode_write_address(addr_7_bits: u8) -> u16 {
+    (addr_7_bits as u16) << 1
+}
+
+fn encode_read_address(addr_7_bits: u8) -> u16 {
+    (addr_7_bits as u16) << 1 | 1
 }

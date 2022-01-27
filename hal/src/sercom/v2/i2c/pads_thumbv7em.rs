@@ -38,7 +38,7 @@ where
     }
 }
 
-impl<S, I, SDA, SCL> Pads<S, SDA, SCL>
+impl<S, I, SDA, SCL> Pads<S, I, SDA, SCL>
 where
     S: Sercom,
     I: IoSet,
@@ -125,7 +125,7 @@ where
 {
 }
 
-impl<S, I, SDA, SCL> PadSet for Pads<S, SDA, SCL>
+impl<S, I, SDA, SCL> PadSet for Pads<S, I, SDA, SCL>
 where
     S: Sercom,
     I: IoSet,

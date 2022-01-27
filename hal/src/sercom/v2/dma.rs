@@ -1,7 +1,7 @@
 //! Use the DMA Controller to perform transfers using the SERCOM peripheral
 //!
-//! See the [`mod@uart`] and [`mod@spi`] modules for the corresponding DMA
-//! transfer implementations.
+//! See the [`mod@uart`], [`mod@i2c`] and [`mod@spi`] modules for the
+//! corresponding DMA transfer implementations.
 
 use crate::{
     dmac::{
@@ -11,11 +11,145 @@ use crate::{
         Beat, Buffer, Transfer, TriggerAction,
     },
     sercom::v2::{
+        i2c::{self, I2c},
         spi::{self, Spi},
         uart::{self, Uart},
         Sercom,
     },
 };
+
+//=============================================================================
+// I2C DMA transfers
+//=============================================================================
+
+/// Token type representing an [`I2c`](super::i2c::I2c) for which the bus is
+/// ready to start a transaction. For use with [`send_with_dma`] and
+/// [`receive_with_dma`].
+pub struct I2cBusReady;
+
+unsafe impl<C: i2c::AnyConfig> Buffer for I2c<C> {
+    type Beat = i2c::Word;
+
+    #[inline]
+    fn dma_ptr(&mut self) -> *mut Self::Beat {
+        self.data_ptr()
+    }
+
+    #[inline]
+    fn incrementing(&self) -> bool {
+        false
+    }
+
+    #[inline]
+    fn buffer_len(&self) -> usize {
+        1
+    }
+}
+
+impl<C: i2c::AnyConfig> I2c<C> {
+    /// Initialize the bus to start receiving with DMA.
+    ///
+    /// In reality, this function only checks whether or not the I2C bus is
+    /// ready to accept a new transaction. A call to [`init_dma_transfer`]
+    /// should immediately be followed by a call to [`send_with_dma`] or
+    /// [`receive_with_dma`].
+    ///
+    /// ```
+    /// // Assume `i2c` is a fully configured `I2c`, and `chan0` a fully configured `dmac::Channel`.
+    /// let token = i2c.init_dma_transfer()?;
+    /// i2c.send_with_dma(ADDRESS, token, buf_src, chan0, |_| {});
+    /// ```
+    pub fn init_dma_transfer(&mut self) -> Result<I2cBusReady, super::i2c::Error> {
+        self.check_bus_status()?;
+        Ok(I2cBusReady)
+    }
+
+    /// Transform an [`I2c`] into a DMA [`Transfer`]) and
+    /// start receiving into the provided buffer. The buffer length must be 255
+    /// bytes or shorter.
+    pub fn receive_with_dma<Ch, B, W>(
+        self,
+        address: u8,
+        _ready_token: I2cBusReady,
+        buf: B,
+        mut channel: Ch,
+        waker: W,
+    ) -> Transfer<Channel<Ch::Id, Busy>, BufferPair<Self, B>, W>
+    where
+        Ch: AnyChannel<Status = Ready>,
+        B: Buffer<Beat = i2c::Word> + 'static,
+        W: FnOnce(CallbackStatus) + 'static,
+    {
+        let len = buf.buffer_len();
+        assert!(len > 0 && len <= 255);
+
+        channel
+            .as_mut()
+            .enable_interrupts(InterruptFlags::new().with_tcmpl(true));
+
+        #[cfg(feature = "min-samd51g")]
+        let trigger_action = TriggerAction::BURST;
+
+        #[cfg(any(feature = "samd11", feature = "samd21"))]
+        let trigger_action = TriggerAction::BEAT;
+
+        // SAFETY: We use new_unchecked to avoid having to pass a 'static self as the
+        // destination buffer. This is safe as long as we guarantee the destination
+        // buffer is static.
+        let xfer = unsafe { dmac::Transfer::new_unchecked(channel, self, buf, false) };
+        let mut xfer = xfer
+            .with_waker(waker)
+            .begin(C::Sercom::DMA_RX_TRIGGER, trigger_action);
+
+        unsafe { xfer.borrow_source().start_dma_read(address, len as u8) };
+        xfer
+    }
+
+    /// Transform an [`I2c`] into a DMA [`Transfer`]) and
+    /// start sending the provided buffer. The buffer length must be 255 bytes
+    /// or shorter.
+    #[inline]
+    pub fn send_with_dma<Ch, B, W>(
+        self,
+        address: u8,
+        _ready_token: I2cBusReady,
+        buf: B,
+        mut channel: Ch,
+        waker: W,
+    ) -> Transfer<Channel<Ch::Id, Busy>, BufferPair<B, Self>, W>
+    where
+        Ch: AnyChannel<Status = Ready>,
+        B: Buffer<Beat = i2c::Word> + 'static,
+        W: FnOnce(CallbackStatus) + 'static,
+    {
+        let len = buf.buffer_len();
+        assert!(len > 0 && len <= 255);
+
+        channel
+            .as_mut()
+            .enable_interrupts(InterruptFlags::new().with_tcmpl(true));
+
+        #[cfg(feature = "min-samd51g")]
+        let trigger_action = TriggerAction::BURST;
+
+        #[cfg(any(feature = "samd11", feature = "samd21"))]
+        let trigger_action = TriggerAction::BEAT;
+
+        // SAFETY: We use new_unchecked to avoid having to pass a 'static self as the
+        // destination buffer. This is safe as long as we guarantee the source buffer is
+        // static.
+        let xfer = unsafe { dmac::Transfer::new_unchecked(channel, buf, self, false) };
+        let mut xfer = xfer
+            .with_waker(waker)
+            .begin(C::Sercom::DMA_TX_TRIGGER, trigger_action);
+
+        unsafe {
+            xfer.borrow_destination()
+                .start_dma_write(address, len as u8)
+        };
+        xfer
+    }
+}
 
 //=============================================================================
 // UART DMA transfers
@@ -77,8 +211,8 @@ where
         // SAFETY: We use new_unchecked to avoid having to pass a 'static self as the
         // destination buffer. This is safe as long as we guarantee the destination
         // buffer is static.
-        unsafe { dmac::Transfer::new_unchecked(channel, self, buf, false) }
-            .with_waker(waker)
+        let xfer = unsafe { dmac::Transfer::new_unchecked(channel, self, buf, false) };
+        xfer.with_waker(waker)
             .begin(C::Sercom::DMA_RX_TRIGGER, trigger_action)
     }
 }
@@ -116,8 +250,8 @@ where
         // SAFETY: We use new_unchecked to avoid having to pass a 'static self as the
         // destination buffer. This is safe as long as we guarantee the source buffer is
         // static.
-        unsafe { dmac::Transfer::new_unchecked(channel, buf, self, false) }
-            .with_waker(waker)
+        let xfer = unsafe { dmac::Transfer::new_unchecked(channel, buf, self, false) };
+        xfer.with_waker(waker)
             .begin(C::Sercom::DMA_TX_TRIGGER, trigger_action)
     }
 }
@@ -185,8 +319,8 @@ where
         // SAFETY: We use new_unchecked to avoid having to pass a 'static self as the
         // destination buffer. This is safe as long as we guarantee the source buffer is
         // static.
-        unsafe { Transfer::new_unchecked(channel, buf, self, false) }
-            .with_waker(waker)
+        let xfer = unsafe { Transfer::new_unchecked(channel, buf, self, false) };
+        xfer.with_waker(waker)
             .begin(C::Sercom::DMA_TX_TRIGGER, trigger_action)
     }
 }
@@ -224,8 +358,8 @@ where
         // SAFETY: We use new_unchecked to avoid having to pass a 'static self as the
         // destination buffer. This is safe as long as we guarantee the destination
         // buffer is static.
-        unsafe { Transfer::new_unchecked(channel, self, buf, false) }
-            .with_waker(waker)
+        let xfer = unsafe { Transfer::new_unchecked(channel, self, buf, false) };
+        xfer.with_waker(waker)
             .begin(C::Sercom::DMA_RX_TRIGGER, trigger_action)
     }
 }

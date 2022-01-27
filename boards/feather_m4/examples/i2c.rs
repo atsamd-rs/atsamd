@@ -8,7 +8,7 @@ use panic_halt as _;
 #[cfg(feature = "use_semihosting")]
 use panic_semihosting as _;
 
-use feather_m0 as bsp;
+use feather_m4 as bsp;
 
 use bsp::entry;
 use bsp::hal;
@@ -29,14 +29,15 @@ const ADDRESS: u8 = 0x77;
 #[entry]
 fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
-    let mut clocks = GenericClockController::with_internal_32kosc(
+    let mut clocks = GenericClockController::with_external_32kosc(
         peripherals.GCLK,
-        &mut peripherals.PM,
-        &mut peripherals.SYSCTRL,
+        &mut peripherals.MCLK,
+        &mut peripherals.OSC32KCTRL,
+        &mut peripherals.OSCCTRL,
         &mut peripherals.NVMCTRL,
     );
 
-    let mut pm = peripherals.PM;
+    let mclk = peripherals.MCLK;
     let dmac = peripherals.DMAC;
     let pins = bsp::Pins::new(peripherals.PORT);
 
@@ -44,7 +45,7 @@ fn main() -> ! {
     let (sda, scl) = (pins.sda, pins.scl);
 
     // Setup DMA channels for later use
-    let mut dmac = DmaController::init(dmac, &mut pm);
+    let mut dmac = DmaController::init(dmac, &mut peripherals.PM);
     let channels = dmac.split();
     let chan0 = channels.0.init(PriorityLevel::LVL0);
 
@@ -54,9 +55,9 @@ fn main() -> ! {
         cortex_m::singleton!(: [u8; LENGTH] = [0x00; LENGTH]).unwrap();
 
     let gclk0 = clocks.gclk0();
-    let sercom3_clock = &clocks.sercom3_core(&gclk0).unwrap();
+    let sercom2_clock = &clocks.sercom2_core(&gclk0).unwrap();
     let pads = i2c::Pads::new(sda, scl);
-    let mut i2c = i2c::Config::new(&pm, peripherals.SERCOM3, pads, sercom3_clock.freq())
+    let mut i2c = i2c::Config::new(&mclk, peripherals.SERCOM2, pads, sercom2_clock.freq())
         .baud(100.khz())
         .enable();
 

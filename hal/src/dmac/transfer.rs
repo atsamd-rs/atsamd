@@ -548,6 +548,18 @@ where
         self.chan.as_mut().software_trigger();
     }
 
+    /// Unsafely and mutably borrow the source buffer
+    #[inline]
+    pub(crate) unsafe fn borrow_source(&mut self) -> &mut S {
+        &mut self.buffers.source
+    }
+
+    // Unsafely and mutably borrow the destinationbuffer
+    #[inline]
+    pub(crate) unsafe fn borrow_destination(&mut self) -> &mut D {
+        &mut self.buffers.destination
+    }
+
     /// Wait for the DMA transfer to complete and release all owned
     /// resources
     ///
