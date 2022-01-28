@@ -139,9 +139,15 @@ pub mod pins {
         },
         PA00 {
             name: accel_sda,
+            aliases: {
+                AlternateD: AccelSda
+            }
         },
         PA01 {
             name: accel_scl,
+            aliases: {
+                AlternateD: AccelScl
+            }
         },
         PA24 {
             /// The USB D- pad
