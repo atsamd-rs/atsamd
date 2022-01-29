@@ -6,7 +6,7 @@ use typenum::U1;
 
 use crate::pac::{GCLK, MCLK, NVMCTRL, OSC32KCTRL, OSCCTRL};
 
-use super::super::*;
+use super::*;
 
 /// Enabled clocks at power-on reset
 ///

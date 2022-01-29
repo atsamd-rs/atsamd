@@ -104,8 +104,8 @@ pub mod types;
 pub mod xosc;
 pub mod xosc32k;
 
-pub mod configurations;
-pub use configurations::reset::*;
+mod reset;
+pub use reset::*;
 
 /// Collection of low-level PAC structs.
 ///
