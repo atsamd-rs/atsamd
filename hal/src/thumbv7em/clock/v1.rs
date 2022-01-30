@@ -427,6 +427,7 @@ clock_generator!(
     (tcc2_tcc3, Tcc2Tcc3Clock, TCC2_TCC3, Tcc2Tcc3),
     (tc4_tc5, Tc4Tc5Clock, TC4_TC5, Tc4Tc5),
     (tcc4, Tcc4Clock, TCC4, Tcc4),
+    #[cfg(feature = "min-samd51n")]
     (tc6_tc7, Tc6Tc7Clock, TC6_TC7, Tc6Tc7),
     (sercom0_core, Sercom0CoreClock, SERCOM0_CORE, Sercom0),
     (sercom1_core, Sercom1CoreClock, SERCOM1_CORE, Sercom1),
@@ -467,6 +468,7 @@ clock_generator!(
     (i2s0, I2S0Clock, I2S0, I2S0),
     (i2s1, I2S1Clock, I2S1, I2S1),
     (sdhc0, Sdhc0Clock, SDHC0, Sdhc0),
+    #[cfg(feature = "min-samd51n")]
     (sdhc1, Sdhc1Clock, SDHC1, Sdhc1),
     (cm4_trace, Cm4TraceClock, CM4_TRACE, CM4Trace),
 );

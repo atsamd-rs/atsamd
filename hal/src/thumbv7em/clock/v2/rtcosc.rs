@@ -30,6 +30,7 @@ impl Registers {
         self.rtcctrl().write(|w| w.rtcsel().variant(source.into()));
     }
 
+    #[inline]
     fn reset_source(&mut self) {
         self.rtcctrl().reset();
     }
@@ -49,6 +50,7 @@ impl RtcOscToken {
     ///
     /// Safety: There must never be more than one instance of this token at any
     /// given time.
+    #[inline]
     pub(super) unsafe fn new() -> Self {
         Self { regs: Registers }
     }
@@ -74,6 +76,7 @@ pub enum DynRtcSourceId {
 }
 
 impl From<DynRtcSourceId> for RTCSEL_A {
+    #[inline]
     fn from(source: DynRtcSourceId) -> Self {
         use DynRtcSourceId::*;
         use RTCSEL_A::*;
@@ -135,6 +138,7 @@ impl<I: RtcSourceId> RtcOsc<I> {
     /// Enabling the `RtcOsc` will [`Increment`] the
     /// [`Counter`](crate::typelevel::Counter) of the
     /// [`Enabled`](super::Enabled) clock [`Source`].
+    #[inline]
     pub fn enable<S>(mut token: RtcOscToken, source: S) -> (Self, S::Inc)
     where
         S: Source<Id = I> + Increment,
@@ -152,6 +156,7 @@ impl<I: RtcSourceId> RtcOsc<I> {
     /// Disabling the `RtcOsc` will [`Decrement`] the
     /// [`Counter`](crate::typelevel::Counter) of its
     /// [`Enabled`](super::Enabled) clock [`Source`].
+    #[inline]
     pub fn disable<S>(mut self, source: S) -> (RtcOscToken, S::Dec)
     where
         S: Source<Id = I> + Decrement,
@@ -159,5 +164,10 @@ impl<I: RtcSourceId> RtcOsc<I> {
         self.regs.reset_source();
         let token = RtcOscToken { regs: self.regs };
         (token, source.dec())
+    }
+
+    #[inline]
+    pub fn freq(&self) -> Hertz {
+        I::FREQ
     }
 }
