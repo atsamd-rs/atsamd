@@ -50,7 +50,7 @@ pub struct Apb(());
 
 impl Apb {
     #[inline]
-    unsafe fn new() -> Self {
+    pub(super) unsafe fn new() -> Self {
         Self(())
     }
 

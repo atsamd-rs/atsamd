@@ -86,8 +86,6 @@
 
 use typenum::{Unsigned, U0};
 
-use crate::pac::{GCLK, MCLK, OSC32KCTRL, OSCCTRL};
-
 use crate::time::Hertz;
 use crate::typelevel::{Counter, PrivateDecrement, PrivateIncrement, Sealed};
 
@@ -106,36 +104,6 @@ pub mod xosc32k;
 
 mod reset;
 pub use reset::*;
-
-/// Collection of low-level PAC structs.
-///
-/// Gathers all clocking related peripherals consumed by [`retrieve_clocks`]
-/// function that are then being contained within [`Tokens::pac`] field. PAC
-/// structs can be accessed using unsafe [`PacClocks::steal`] function.
-pub struct PacStructs {
-    oscctrl: OSCCTRL,
-    osc32kctrl: OSC32KCTRL,
-    gclk: GCLK,
-    mclk: MCLK,
-}
-
-impl PacStructs {
-    /// Escape hatch allowing to access low-level PAC structs.
-    /// This is especially useful when V2 clocking API must interact with
-    /// legacy V1 clocking API based peripherals; E.g. access to [`MCLK`] is
-    /// necessary in most circumstances.
-    ///
-    /// # Safety
-    ///
-    /// Stealing the PAC resources allows for full control of
-    /// clocking, something clocking v2 cannot observe or detect.
-    ///
-    /// Thus changing clocking "behind the back" of v2 clocking might invalidate
-    /// typestates representing the current configuration as seen by v2.
-    pub unsafe fn steal(self) -> (OSCCTRL, OSC32KCTRL, GCLK, MCLK) {
-        (self.oscctrl, self.osc32kctrl, self.gclk, self.mclk)
-    }
-}
 
 /// Marks clock types that can act as a source for downstream clocks
 ///
@@ -215,7 +183,7 @@ pub fn test() {
         time::U32Ext,
     };
     let mut pac = Peripherals::take().unwrap();
-    let (clocks, tokens) = reset_clocks_tokens(
+    let (_buses, clocks, tokens) = por_state(
         pac.OSCCTRL,
         pac.OSC32KCTRL,
         pac.GCLK,

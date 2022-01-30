@@ -54,7 +54,7 @@ pub struct Ahb(());
 
 impl Ahb {
     #[inline]
-    unsafe fn new() -> Self {
+    pub(super) unsafe fn new() -> Self {
         Self(())
     }
 
