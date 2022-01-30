@@ -120,7 +120,8 @@ pub struct Tokens {
     pub xosc0: xosc::XoscToken<xosc::Xosc0Id>,
     /// Token to create [`xosc::Xosc1`]
     pub xosc1: xosc::XoscToken<xosc::Xosc1Id>,
-    /// Tokens to create [`xosc32k::XoscBase`], [`xosc32k::Xosc1k`] and [`xosc32k::Xosc32k`]
+    /// Tokens to create [`xosc32k::XoscBase`], [`xosc32k::Xosc1k`] and
+    /// [`xosc32k::Xosc32k`]
     pub xosc32k: xosc32k::Tokens,
     /// Tokens to create [`osculp32k::OscUlp1k`] and [`osculp32k::OscUlp32k`]
     pub osculp: osculp32k::Tokens,

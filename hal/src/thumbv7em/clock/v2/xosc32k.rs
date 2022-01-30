@@ -1,5 +1,4 @@
 //! # Xosc32k - External 32 kHz oscillator
-//!
 
 #![allow(missing_docs)]
 

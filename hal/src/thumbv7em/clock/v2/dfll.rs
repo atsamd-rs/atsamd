@@ -221,7 +221,8 @@ impl Mode for OpenLoop {
     }
 }
 
-/// Type-level variant of [`Mode`] representing closed loop operation of the DFLL
+/// Type-level variant of [`Mode`] representing closed loop operation of the
+/// DFLL
 ///
 /// In closed loop operation, the DFLL output is referenced to the its [`Pclk`].
 /// Consequently, this type takes a [`GclkId`] representing the

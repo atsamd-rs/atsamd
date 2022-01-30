@@ -93,9 +93,9 @@ impl XoscId for Xosc1Id {
 ///
 /// The crystal current fields (`IMULT` and `IPTAT`) are usually set by the
 /// crystal frequency range. Normally:
-/// - 8 MHz -> `Low`      
-/// - 8 MHz to 16 MHz -> `Medium`   
-/// - 16 MHz to 24 MHz -> `High`     
+/// - 8 MHz -> `Low`
+/// - 8 MHz to 16 MHz -> `Medium`
+/// - 16 MHz to 24 MHz -> `High`
 /// - 24 MHz to 48 MHz -> `ExtraHigh`
 ///
 /// However, the datasheet notes that the next lower setting can be used if the

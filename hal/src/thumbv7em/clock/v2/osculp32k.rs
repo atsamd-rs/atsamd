@@ -1,5 +1,4 @@
 //! # Osculp32k - Ultra Low power 32 kHz oscillator
-//!
 
 #![allow(missing_docs)]
 
