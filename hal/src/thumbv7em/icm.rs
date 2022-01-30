@@ -1234,9 +1234,9 @@ pub trait RegionNum: Sealed {
 seq!(N in 0..=3 {
     paste! {
         #[doc = "ICM Region " N]
-        pub enum Region #N {}
-        impl Sealed for Region #N {}
-        impl RegionNum for Region #N {
+        pub enum Region~N {}
+        impl Sealed for Region~N {}
+        impl RegionNum for Region~N {
             const NUM: usize = N;
             #[allow(clippy::identity_op)]
             #[allow(clippy::erasing_op)]
@@ -1337,8 +1337,8 @@ impl MainRegionDesc<Region0> {
 seq!(N in 0..=3 {
     paste! {
         #[doc = "Create region descriptor " N]
-        impl MainRegionDesc<Region #N> {
-            const fn new_region #N() -> Self {
+        impl MainRegionDesc<Region~N> {
+            const fn new_region~N() -> Self {
                 MainRegionDesc {
                     num: PhantomData,
                     raddr: RegionAddress::default(),
