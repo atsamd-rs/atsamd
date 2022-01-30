@@ -63,17 +63,17 @@ macro_rules! sercom {
         seq!(N in $start..=$end {
             paste! {
                 /// Type alias for the corresponding SERCOM instance
-                pub type Sercom #N = SERCOM #N;
-                impl Sealed for Sercom #N {}
-                impl Sercom for Sercom #N {
+                pub type Sercom~N = SERCOM~N;
+                impl Sealed for Sercom~N {}
+                impl Sercom for Sercom~N {
                     const NUM: usize = N;
                     #[cfg(feature = "dma")]
-                    const DMA_RX_TRIGGER: TriggerSource = TriggerSource::[<SERCOM #N _RX>];
+                    const DMA_RX_TRIGGER: TriggerSource = TriggerSource::[<SERCOM~N _RX>];
                     #[cfg(feature = "dma")]
-                    const DMA_TX_TRIGGER: TriggerSource = TriggerSource::[<SERCOM #N _TX>];
+                    const DMA_TX_TRIGGER: TriggerSource = TriggerSource::[<SERCOM~N _TX>];
                     #[inline]
                     fn enable_apb_clock(&mut self, ctrl: &APB_CLK_CTRL) {
-                        ctrl.$apbmask.modify(|_, w| w.[<sercom #N _>]().set_bit());
+                        ctrl.$apbmask.modify(|_, w| w.[<sercom~N _>]().set_bit());
                     }
                 }
             }

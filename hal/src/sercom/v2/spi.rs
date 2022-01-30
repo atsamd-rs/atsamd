@@ -349,7 +349,7 @@ pub use size::*;
 #[cfg(feature = "min-samd51g")]
 pub mod lengths {
     seq_macro::seq!(N in 1..=255 {
-        pub use typenum::U #N;
+        pub use typenum::U~N;
     });
 }
 
@@ -547,7 +547,7 @@ impl<C: CharSize> AtomicSize for C {}
 
 #[cfg(feature = "min-samd51g")]
 seq!(N in 1..=4 {
-    impl AtomicSize for lengths::U #N {}
+    impl AtomicSize for lengths::U~N {}
 });
 
 //==============================================================================
