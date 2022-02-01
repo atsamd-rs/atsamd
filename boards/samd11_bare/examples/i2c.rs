@@ -41,7 +41,7 @@ fn main() -> ! {
     let pins = bsp::Pins::new(peripherals.PORT);
 
     // Take SDA and SCL
-    let (sda, scl) = (pins.sda, pins.scl);
+    let (sda, scl) = (pins.d4, pins.d5);
 
     // Setup DMA channels for later use
     let mut dmac = DmaController::init(dmac, &mut pm);

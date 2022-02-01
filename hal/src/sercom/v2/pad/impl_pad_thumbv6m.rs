@@ -179,7 +179,7 @@ pad_table!(
     }
     PA14 {
         #[cfg(feature = "samd11")]
-        C: (Sercom0, Pad0),
+        C: (Sercom0, Pad0) + I2C,
         #[cfg(feature = "samd21")]
         C: (Sercom2, Pad2),
         #[cfg(feature = "min-samd21g")]
@@ -187,7 +187,7 @@ pad_table!(
     }
     PA15 {
         #[cfg(feature = "samd11")]
-        C: (Sercom0, Pad1),
+        C: (Sercom0, Pad1) + I2C,
         #[cfg(feature = "samd21")]
         C: (Sercom2, Pad3),
         #[cfg(feature = "min-samd21g")]

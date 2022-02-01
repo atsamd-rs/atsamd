@@ -19,6 +19,7 @@ version = "0.14"
 default-features = false
 
 [dev-dependencies]
+cortex-m = "0.7"
 panic-halt = "0.2"
 panic-semihosting = "0.5"
 panic-probe = "0.2.0"

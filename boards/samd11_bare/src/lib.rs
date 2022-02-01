@@ -10,13 +10,10 @@ pub use hal::ehal;
 pub use hal::pac;
 
 use hal::clock::GenericClockController;
-use hal::sercom::{
-    v2::{
-        i2c,
-        uart::{self, BaudMode, Oversampling},
-        Sercom0,
-    },
-    I2CMaster0,
+use hal::sercom::v2::{
+    i2c,
+    uart::{self, BaudMode, Oversampling},
+    Sercom0,
 };
 use hal::time::Hertz;
 
@@ -114,7 +111,7 @@ pub type I2c = i2c::I2c<i2c::Config<I2cPads>>;
 pub fn i2c_master(
     clocks: &mut GenericClockController,
     baud: impl Into<Hertz>,
-    sercom: Sercom0,
+    sercom: pac::SERCOM0,
     pm: &mut pac::PM,
     sda: impl Into<Sda>,
     scl: impl Into<Scl>,

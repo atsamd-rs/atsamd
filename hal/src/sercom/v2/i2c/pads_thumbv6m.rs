@@ -18,13 +18,13 @@ where
 }
 
 #[cfg(feature = "samd11")]
-impl<S, DI, CI> Pads<S, Pad<S, DI>, Pad<S, CI>>
+impl<S, DI, CI> Pads<S, Pad<S, Pad0, DI>, Pad<S, Pad1, CI>>
 where
     S: Sercom,
-    DI: GetPad<S>,
-    CI: GetPad<S>,
-    Pad<S, DI>: IsI2cPad<PadNum = Pad0, Sercom = S>,
-    Pad<S, CI>: IsI2cPad<PadNum = Pad1, Sercom = S>,
+    DI: GetPad<S, Pad0>,
+    CI: GetPad<S, Pad1>,
+    Pad<S, Pad0, DI>: IsI2cPad<PadNum = Pad0, Sercom = S>,
+    Pad<S, Pad1, CI>: IsI2cPad<PadNum = Pad1, Sercom = S>,
 {
     /// Create a new [`Pads`] struct. `SDA` must always be SERCOM pad 0, and
     /// `SCL` SERCOM pad 1.{
