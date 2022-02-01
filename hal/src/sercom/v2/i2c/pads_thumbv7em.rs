@@ -6,6 +6,10 @@
 use crate::{gpio::v2::AnyPin, sercom::v2::*, typelevel::Sealed};
 use core::marker::PhantomData;
 
+/// Container for a set of SERCOM [`Pad`]s
+///
+/// See the [module-level](crate::sercom::v2::i2c) documentation for more
+/// details on specifying a `Pads` type and creating instances.
 pub struct Pads<S, I, SDA, SCL>
 where
     S: Sercom,

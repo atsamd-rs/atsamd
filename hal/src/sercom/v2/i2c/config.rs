@@ -9,57 +9,20 @@ use crate::{
 };
 
 //=============================================================================
-// Operating mode
-//=============================================================================
-
-/// Type-level enum representing the I2C operating mode
-///
-/// See the documentation on [type-level enums] for a discussion of the pattern.
-///
-/// The available operating modes are [`Master`] and [`Slave`].
-/// [type-level enums]: crate::typelevel#type-level-enums
-pub trait OpMode: Sealed {
-    /// Corresponding variant from the PAC enum
-    const MODE: MODE_A;
-}
-
-/// [`OpMode`] variant for Master mode
-pub enum Master {}
-/// [`OpMode`] variant for Slave mode
-pub enum Slave {}
-
-impl Sealed for Master {}
-impl OpMode for Master {
-    const MODE: MODE_A = MODE_A::I2C_MASTER;
-}
-
-impl Sealed for Slave {}
-/*
-impl OpMode for Slave {
-    const MODE: MODE_A = MODE_A::I2C_SLAVE;
-}
-*/
-
-//=============================================================================
 // Config
 //=============================================================================
 
-/// A configurable, disabled UART peripheral
+/// A configurable, disabled I2C peripheral
 ///
-/// This `struct` represents a configurable UART peripheral in its disabled
-/// state. It is generic over the set of [`Pads`] and [`CharSize`].
+/// This `struct` represents a configurable I2C peripheral in its disabled
+/// state. It is generic over the set of [`Pads`].
 /// Upon creation, the [`Config`] takes ownership of the
-/// [`Sercom`] and resets it, returning it configured as an UART peripheral
-/// with a default configuration:
-///
-/// * [`EightBit`]
-/// * No parity
-/// * One stop bit
-/// * LSB-first
+/// [`Sercom`] and resets it, returning it configured as an I2C peripheral
+/// with a default configuration in Master mode.
 ///
 /// [`Config`] uses a builder-pattern API to configure the peripheral,
 /// culminating in a call to [`enable`], which consumes the [`Config`] and
-/// returns enabled [`Uart`].
+/// returns an enabled [`I2c`].
 ///
 /// [`enable`]: Config::enable
 /// [`Pads`]: super::Pads
@@ -78,7 +41,7 @@ impl<P: PadSet> Config<P> {
     fn default(sercom: P::Sercom, pads: P, freq: impl Into<Hertz>) -> Self {
         let mut registers = Registers::new(sercom);
         registers.swrst();
-        registers.set_op_mode(Master::MODE);
+        registers.set_op_mode(MODE_A::I2C_MASTER);
         Self {
             registers,
             pads,
@@ -90,18 +53,10 @@ impl<P: PadSet> Config<P> {
     ///
     /// This function will enable the corresponding APB clock, reset the
     /// [`Sercom`] peripheral, and return a [`Config`] in the default
-    /// configuration. The default [`OpMode`] is [`Master`], while the default
-    /// [`Size`] is an
-    #[cfg_attr(
-        any(feature = "samd11", feature = "samd21"),
-        doc = "[`EightBit`] [`CharSize`]"
-    )]
-    #[cfg_attr(feature = "min-samd51g", doc = "`EightBit` `CharSize`")]
-    /// for SAMD11 and SAMD21 chips or a
-    #[cfg_attr(any(feature = "samd11", feature = "samd21"), doc = "`Length` of `U1`")]
-    #[cfg_attr(feature = "min-samd51g", doc = "[`Length`] of `U1`")]
-    /// for SAMx5x chips. Note that [`Config`] takes ownership of both the
-    /// PAC [`Sercom`] struct as well as the [`Pads`].
+    /// configuration. The only available operating mode is currently Master.
+    ///
+    /// Note that [`Config`] takes ownership of both the
+    /// PAC [`Sercom`] struct as well as the [`Pads`](super::Pads).
     ///
     /// Users must configure GCLK manually. The `freq` parameter represents the
     /// GCLK frequency for this [`Sercom`] instance.
@@ -135,7 +90,7 @@ impl<P: PadSet> Config<P> {
     }
 
     /// Consume the [`Config`], reset the peripheral, and return the [`Sercom`]
-    /// and [`Pads`]
+    /// and [`Pads`](super::Pads)
     #[inline]
     pub fn free(mut self) -> (P::Sercom, P) {
         self.registers.swrst();
@@ -144,7 +99,7 @@ impl<P: PadSet> Config<P> {
 
     /// Run in standby mode (builder pattern version)
     ///
-    /// When set, the UART peripheral will run in standby mode. See the
+    /// When set, the I2C peripheral will run in standby mode. See the
     /// datasheet for more details.
     #[inline]
     pub fn run_in_standby(mut self, set: bool) -> Self {
@@ -154,7 +109,7 @@ impl<P: PadSet> Config<P> {
 
     /// Run in standby mode (setter version)
     ///
-    /// When set, the UART peripheral will run in standby mode. See the
+    /// When set, the I2C peripheral will run in standby mode. See the
     /// datasheet for more details.
     #[inline]
     pub fn set_run_in_standby(&mut self, set: bool) {
@@ -171,7 +126,7 @@ impl<P: PadSet> Config<P> {
     ///
     /// This function will calculate the best BAUD register setting based on the
     /// stored GCLK frequency and desired baud rate. The maximum baud rate is
-    /// GCLK frequency/oversampling. Values outside this range will saturate at
+    /// GCLK frequency/10. Values outside this range will saturate at
     /// the maximum supported baud rate.
     ///
     /// Note that 3x oversampling is not supported.
@@ -185,10 +140,8 @@ impl<P: PadSet> Config<P> {
     ///
     /// This function will calculate the best BAUD register setting based on the
     /// stored GCLK frequency and desired baud rate. The maximum baud rate is
-    /// GCLK frequency/oversampling. Values outside this range will saturate at
+    /// GCLK frequency/10. Values outside this range will saturate at
     /// the maximum supported baud rate.
-    ///
-    /// Note that 3x oversampling is not supported.
     #[inline]
     pub fn set_baud(&mut self, baud: impl Into<Hertz>) {
         self.registers.set_baud(self.freq, baud);
@@ -228,7 +181,7 @@ impl<P: PadSet> Config<P> {
         self.registers.set_low_timeout(set);
     }
 
-    /// Get SCL Low Time-Out
+    /// Get SCL Low Time-Out setting
     ///
     /// If SCL is held low for 25ms-35ms, the master will release its clock
     /// hold, if enabled, and complete the current transaction. A stop condition
@@ -286,11 +239,11 @@ impl<P: PadSet> Config<P> {
 /// Type class for all possible [`Config`] types
 ///
 /// This trait uses the [`AnyKind`] trait pattern to create a [type class] for
-/// [`Config`] types. See the `AnyKind` documentation for more details on the
+/// [`Config`] types. See the [`AnyKind`] documentation for more details on the
 /// pattern.
 ///
-/// In addition to the normal, `AnyKind` associated types. This trait also
-/// copies the [`Sercom`], [`Capability`] and [`Word`] types, to make it easier
+/// In addition to the normal, [`AnyKind`] associated types. This trait also
+/// copies the [`Sercom`] type, to make it easier
 /// to apply bounds to these types at the next level of abstraction.
 ///
 /// [`AnyKind`]: crate::typelevel#anykind-trait-pattern
@@ -303,6 +256,10 @@ pub trait AnyConfig: Is<Type = SpecificConfig<Self>> {
 /// Type alias to recover the specific [`Config`] type from an implementation of
 /// [`AnyConfig`]
 pub type SpecificConfig<C> = Config<<C as AnyConfig>::Pads>;
+
+/// Type alias to recover the specific [`Sercom`] type from an implementation of
+/// [`AnyConfig`]
+pub type ConfigSercom<C> = <C as AnyConfig>::Sercom;
 
 impl<P: PadSet> Sealed for Config<P> {}
 

@@ -45,9 +45,9 @@
 //! type Pads = spi::Pads<Sercom0, IoSet1, Miso, NoneT, Sclk>;
 //! ```
 //!
-//! Alternatively, you can use the [`PadsFromIds`] alias to define a set of
-//! `Pads` in terms of [`PinId`]s instead of `Pin`s. This is useful when you
-//! don't have `Pin` aliases pre-defined.
+//! Alternatively, you can use the `PadsFromIds` alias (not available for
+//! SAMD11) to define a set of `Pads` in terms of [`PinId`]s instead of `Pin`s.
+//! This is useful when you don't have `Pin` aliases pre-defined.
 //!
 //! ```
 //! use atsamd_hal::gpio::v2::{PA08, PA09};
@@ -57,7 +57,7 @@
 //! // SAMx5x-specific imports
 //! use atsamd_hal::sercom::v2::pad::IoSet1;
 //!
-//! // SAMD11/SAMD21 version
+//! // SAMD21 version
 //! type Pads = spi::PadsFromIds<Sercom0, PA08, NoneT, PA09>;
 //! // SAMx5x version
 //! type Pads = spi::PadsFromIds<Sercom0, IoSet1, PA08, NoneT, PA09>;

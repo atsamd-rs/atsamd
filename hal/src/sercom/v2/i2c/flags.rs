@@ -1,5 +1,4 @@
 //! Flag definitions
-
 #![allow(unused_braces)]
 
 use bitflags::bitflags;
@@ -13,12 +12,16 @@ bitflags! {
     /// The available interrupt flags are `MB`, `SB`, and `ERROR`. The binary format of the underlying bits exactly matches the
     /// INTFLAG bits.
     pub struct Flags: u8 {
+        /// Master on bus interrupt
         const MB = 0x01;
+        /// Slave on bus interrupt
         const SB = 0x02;
+        /// Error interrupt
         const ERROR = 0x80;
     }
 }
 
+/// Type representing the current bus state
 #[derive(BitfieldSpecifier, PartialEq)]
 pub enum BusState {
     Unknown = 0x00,
@@ -27,15 +30,15 @@ pub enum BusState {
     Busy = 0x03,
 }
 
+/// Status flags for I2C transactions
+///
+/// The available status flags are `BUSERR`, `ARBLOST`, `RXNACK`,
+/// `BUSSTATE`, `LOWTOUT` and `CLKHOLD`, `MEXTTOUT`, `SEXTTOUT` and
+/// `LENERR`. The binary format of the underlying bits exactly matches
+/// the STATUS bits.
 #[bitfield]
 #[repr(u16)]
 pub struct Status {
-    /// Status flags for I2C transactions
-    ///
-    /// The available status flags are `BUSERR`, `ARBLOST`, `RXNACK`,
-    /// `BUSSTATE`, `LOWTOUT` and `CLKHOLD`, `MEXTTOUT`, `SEXTTOUT` and
-    /// `LENERR`. The binary format of the underlying bits exactly matches
-    /// the STATUS bits.
     pub buserr: bool,
     pub arblost: bool,
     #[skip(setters)]
@@ -53,6 +56,7 @@ pub struct Status {
     _reserved: B5,
 }
 
+/// Errors available for I2C transactions
 #[derive(Debug, Clone, Copy)]
 pub enum Error {
     BusError,
@@ -80,15 +84,3 @@ impl TryFrom<Status> for () {
         }
     }
 }
-
-// impl From<Error> for Status {
-//     #[inline]
-//     fn from(err: Error) -> Self {
-//         match err {
-//             Error::BusError => Status::new().with_buserr(true),
-//             Error::ArbitrationLost => Status::new().with_arblost(true),
-//             Error::LengthError => Status::new().with_lenerr(true),
-//             Error::Nack => Status::new().with_rxnack(true),
-//         }
-//     }
-// }

@@ -23,8 +23,9 @@ use crate::{
 //=============================================================================
 
 /// Token type representing an [`I2c`](super::i2c::I2c) for which the bus is
-/// ready to start a transaction. For use with [`send_with_dma`] and
-/// [`receive_with_dma`].
+/// ready to start a transaction. For use with
+/// [`send_with_dma`](super::i2c::I2c::send_with_dma) and
+/// [`receive_with_dma`](super::i2c::I2c::send_with_dma).
 pub struct I2cBusReady;
 
 unsafe impl<C: i2c::AnyConfig> Buffer for I2c<C> {
@@ -59,6 +60,10 @@ impl<C: i2c::AnyConfig> I2c<C> {
     /// let token = i2c.init_dma_transfer()?;
     /// i2c.send_with_dma(ADDRESS, token, buf_src, chan0, |_| {});
     /// ```
+    ///
+    /// [`init_dma_transfer`]: super::i2c::I2c::init_dma_transfer
+    /// [`send_with_dma`]: super::i2c::I2c::send_with_dma
+    /// [`receive_with_dma`]: super::i2c::I2c::receive_with_dma
     pub fn init_dma_transfer(&mut self) -> Result<I2cBusReady, super::i2c::Error> {
         self.check_bus_status()?;
         Ok(I2cBusReady)
