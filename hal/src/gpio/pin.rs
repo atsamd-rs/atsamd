@@ -70,7 +70,7 @@
 //!
 //! ```
 //! use atsamd_hal::pac::Peripherals;
-//! use atsamd_hal::gpio::v2::Pins;
+//! use atsamd_hal::gpio::Pins;
 //! use embedded_hal::digital::v2::OutputPin;
 //!
 //! let mut peripherals = Peripherals::take().unwrap();
@@ -1508,7 +1508,7 @@ macro_rules! __declare_pins_type {
         )+
     ) => {
         /// BSP replacement for the HAL
-        /// [`Pins`](atsamd_hal::gpio::v2::Pins) type
+        /// [`Pins`](atsamd_hal::gpio::Pins) type
         ///
         /// This type is intended to provide more meaningful names for the
         /// given pins.
@@ -1517,9 +1517,9 @@ macro_rules! __declare_pins_type {
             $(
                 $( #[$id_cfg] )*
                 $( #[$name_doc] )*
-                pub $name: $crate::gpio::v2::Pin<
-                    $crate::gpio::v2::$Id,
-                    $crate::gpio::v2::Reset
+                pub $name: $crate::gpio::Pin<
+                    $crate::gpio::$Id,
+                    $crate::gpio::Reset
                 >,
             )+
         }
@@ -1535,11 +1535,11 @@ macro_rules! __declare_pins_type {
             /// dropped.
             ///
             /// [`PORT`](atsamd_hal::pac::PORT)
-            /// [`Pin`](atsamd_hal::gpio::v2::Pin)
-            /// [`Pins`](atsamd_hal::gpio::v2::Pins)
+            /// [`Pin`](atsamd_hal::gpio::Pin)
+            /// [`Pins`](atsamd_hal::gpio::Pins)
             #[inline]
             pub fn new(port: $crate::pac::PORT) -> Self {
-                let mut pins = $crate::gpio::v2::Pins::new(port);
+                let mut pins = $crate::gpio::Pins::new(port);
                 Self {
                     port: Some(unsafe{ pins.port() }),
                     $(
@@ -1582,33 +1582,33 @@ macro_rules! __create_pin_aliases {
         $crate::paste::paste! {
             $(
                 $( #[$attr] )*
-                /// Alias for a configured [`Pin`](atsamd_hal::gpio::v2::Pin)
-                pub type $Alias = $crate::gpio::v2::Pin<
-                    $crate::gpio::v2::$Id,
-                    $crate::gpio::v2::$Mode
+                /// Alias for a configured [`Pin`](atsamd_hal::gpio::Pin)
+                pub type $Alias = $crate::gpio::Pin<
+                    $crate::gpio::$Id,
+                    $crate::gpio::$Mode
                 >;
 
                 $( #[$attr] )*
-                #[doc = "[`PinId`](atsamd_hal::gpio::v2::PinId) for the [`"]
+                #[doc = "[`PinId`](atsamd_hal::gpio::PinId) for the [`"]
                 #[doc = $Alias "`] alias"]
-                pub type [<$Alias Id>] = $crate::gpio::v2::$Id;
+                pub type [<$Alias Id>] = $crate::gpio::$Id;
 
                 $( #[$attr] )*
-                #[doc = "[`PinMode`](atsamd_hal::gpio::v2::PinMode) for the [`"]
+                #[doc = "[`PinMode`](atsamd_hal::gpio::PinMode) for the [`"]
                 #[doc = $Alias "`] alias"]
-                pub type [<$Alias Mode>] = $crate::gpio::v2::$Mode;
+                pub type [<$Alias Mode>] = $crate::gpio::$Mode;
 
                 $( #[$attr] )*
-                #[doc = "[DynPinId](atsamd_hal::gpio::v2::DynPinId) "]
+                #[doc = "[DynPinId](atsamd_hal::gpio::DynPinId) "]
                 #[doc = "for the `" $Alias "` alias."]
-                pub const [<$Alias:snake:upper _ID>]: $crate::gpio::v2::DynPinId =
-                <$crate::gpio::v2::$Id as $crate::gpio::v2::PinId>::DYN;
+                pub const [<$Alias:snake:upper _ID>]: $crate::gpio::DynPinId =
+                <$crate::gpio::$Id as $crate::gpio::PinId>::DYN;
 
                 $( #[$attr] )*
-                #[doc = "[DynPinMode](atsamd_hal::gpio::v2::DynPinMode) "]
+                #[doc = "[DynPinMode](atsamd_hal::gpio::DynPinMode) "]
                 #[doc = "for the `" $Alias "` alias."]
-                pub const [<$Alias:snake:upper _MODE>]: $crate::gpio::v2::DynPinMode =
-                <$crate::gpio::v2::$Mode as $crate::gpio::v2::PinMode>::DYN;
+                pub const [<$Alias:snake:upper _MODE>]: $crate::gpio::DynPinMode =
+                <$crate::gpio::$Mode as $crate::gpio::PinMode>::DYN;
             )*
         }
     };

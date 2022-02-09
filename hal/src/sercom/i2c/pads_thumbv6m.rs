@@ -3,12 +3,12 @@
 //! See the [i2c module](super) documentation for more details on declaring and
 //! instantiating a [`Pads`] type.
 
-use crate::{gpio::AnyPin, sercom::v2::*, typelevel::Sealed};
+use crate::{gpio::AnyPin, sercom::*, typelevel::Sealed};
 use core::marker::PhantomData;
 
 /// Container for a set of SERCOM [`Pad`]s
 ///
-/// See the [module-level](crate::sercom::v2::i2c) documentation for more
+/// See the [module-level](crate::sercom::i2c) documentation for more
 /// details on specifying a `Pads` type and creating instances.
 pub struct Pads<S, SDA, SCL>
 where
@@ -70,7 +70,7 @@ where
     SCL: IsI2cPad<PadNum = Pad1, Sercom = S>,
 {
     /// Consume the [`Pads`] and return each individual
-    /// [`Pin`](crate::gpio::v2::Pin)
+    /// [`Pin`](crate::gpio::Pin)
     #[inline]
     pub fn free(self) -> (SDA, SCL) {
         (self.sda, self.scl)
@@ -92,8 +92,8 @@ where
 ///
 /// ```
 /// use atsamd_hal::pac::Peripherals;
-/// use atsamd_hal::gpio::v2::{PA08, PA09, Pins};
-/// use atsamd_hal::sercom::v2::{Sercom0, i2c};
+/// use atsamd_hal::gpio::{PA08, PA09, Pins};
+/// use atsamd_hal::sercom::{Sercom0, i2c};
 /// use atsamd_hal::typelevel::NoneT;
 ///
 /// pub type Pads = i2c::PadsFromIds<Sercom0, PA08, PA09>;
@@ -105,8 +105,8 @@ where
 /// }
 /// ```
 ///
-/// [`Pin`]: crate::gpio::v2::Pin
-/// [`PinId`]: crate::gpio::v2::PinId
+/// [`Pin`]: crate::gpio::Pin
+/// [`PinId`]: crate::gpio::PinId
 #[cfg(feature = "samd11")]
 pub type PadsFromIds<S, SDA, SCL> = Pads<S, Pad<S, Pad0, SDA>, Pad<S, Pad1, SCL>>;
 
@@ -121,8 +121,8 @@ pub type PadsFromIds<S, SDA, SCL> = Pads<S, Pad<S, Pad0, SDA>, Pad<S, Pad1, SCL>
 ///
 /// ```
 /// use atsamd_hal::pac::Peripherals;
-/// use atsamd_hal::gpio::v2::{PA08, PA09, Pins};
-/// use atsamd_hal::sercom::v2::{Sercom0, i2c};
+/// use atsamd_hal::gpio::{PA08, PA09, Pins};
+/// use atsamd_hal::sercom::{Sercom0, i2c};
 /// use atsamd_hal::typelevel::NoneT;
 ///
 /// pub type Pads = i2c::PadsFromIds<Sercom0, PA08, PA09>;
@@ -134,8 +134,8 @@ pub type PadsFromIds<S, SDA, SCL> = Pads<S, Pad<S, Pad0, SDA>, Pad<S, Pad1, SCL>
 /// }
 /// ```
 ///
-/// [`Pin`]: crate::gpio::v2::Pin
-/// [`PinId`]: crate::gpio::v2::PinId
+/// [`Pin`]: crate::gpio::Pin
+/// [`PinId`]: crate::gpio::PinId
 #[cfg(feature = "samd21")]
 pub type PadsFromIds<S, SDA, SCL> = Pads<S, Pad<S, SDA>, Pad<S, SCL>>;
 
@@ -158,7 +158,7 @@ pub type PadsFromIds<S, SDA, SCL> = Pads<S, Pad<S, SDA>, Pad<S, SCL>>;
 ///
 /// This trait is a simplified version of the [`AnyKind`] trait pattern.
 ///
-/// [`Pin`]: crate::gpio::v2::Pin
+/// [`Pin`]: crate::gpio::Pin
 /// [`Config`]: super::Config
 /// [type-level function]: crate::typelevel#type-level-functions
 /// [`AnyKind`]: crate::typelevel#anykind-trait-pattern

@@ -3,7 +3,7 @@
 use core::marker::PhantomData;
 
 use super::{AnyConfig, Capability, CharSize, Config, Duplex, Rx, Tx};
-use crate::sercom::v2::*;
+use crate::sercom::*;
 use crate::typelevel::{NoneT, Sealed};
 
 #[cfg(not(feature = "samd11"))]
@@ -157,7 +157,7 @@ padnum_permutations!( () [NoneT Pad0 Pad1 Pad2 Pad3] );
 
 /// Container for a set of SERCOM [`Pad`]s
 ///
-/// See the [module-level](crate::sercom::v2::uart) documentation for more
+/// See the [module-level](crate::sercom::uart) documentation for more
 /// details on specifying a `Pads` type and creating instances.
 pub struct Pads<S, RX = NoneT, TX = NoneT, RTS = NoneT, CTS = NoneT>
 where
@@ -351,7 +351,7 @@ where
 /// ```
 /// use atsamd_hal::pac::Peripherals;
 /// use atsamd_hal::gpio::{PA08, PA09, Pins};
-/// use atsamd_hal::sercom::v2::{Sercom0, uart};
+/// use atsamd_hal::sercom::{Sercom0, uart};
 /// use atsamd_hal::typelevel::NoneT;
 ///
 /// pub type Pads = uart::PadsFromIds<Sercom0, PA08, PA09>;
@@ -395,7 +395,7 @@ pub type PadsFromIds<S, RX = NoneT, TX = NoneT, RTS = NoneT, CTS = NoneT> = Pads
 ///
 /// [`Pin`]: crate::gpio::Pin
 /// [type-level function]: crate::typelevel#type-level-functions
-/// [`Config`]: crate::sercom::v2::uart::Config
+/// [`Config`]: crate::sercom::uart::Config
 pub trait PadSet: Sealed {
     type Sercom: Sercom;
     type Rx: OptionalPad;
@@ -439,7 +439,7 @@ where
 /// guarantees to the [`Config`] struct that this set of `Pads` can be
 /// configured through that trait.
 ///
-/// [`Config`]: crate::sercom::v2::uart::Config
+/// [`Config`]: crate::sercom::uart::Config
 pub trait ValidPads: PadSet + RxpoTxpo {
     type Capability: Capability;
 }

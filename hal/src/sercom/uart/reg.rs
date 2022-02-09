@@ -3,7 +3,7 @@
 use super::{BaudMode, BitOrder, CharSizeEnum, Flags, Oversampling, Parity, Status, StopBits};
 
 use crate::pac;
-use crate::sercom::v2::*;
+use crate::sercom::*;
 
 #[cfg(any(feature = "samd11", feature = "samd21"))]
 use pac::sercom0::usart::ctrla::MODE_A;

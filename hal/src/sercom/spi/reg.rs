@@ -12,7 +12,7 @@ use crate::pac::sercom0::spi::ctrla::MODE_A;
 #[cfg(feature = "min-samd51g")]
 use crate::pac::sercom0::spim::ctrla::MODE_A;
 
-use crate::sercom::v2::Sercom;
+use crate::sercom::Sercom;
 use crate::time::Hertz;
 
 use super::{BitOrder, DataWidth, Error, Flags, Phase, Polarity, Status};

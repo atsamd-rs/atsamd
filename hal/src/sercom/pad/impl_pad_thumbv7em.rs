@@ -1,7 +1,7 @@
 //! Implementations of the [`IsPad`], [`GetPad`] and [`InIoSet`] traits
 
 use crate::gpio::*;
-use crate::sercom::v2::*;
+use crate::sercom::*;
 
 //==============================================================================
 //  Pad definitions

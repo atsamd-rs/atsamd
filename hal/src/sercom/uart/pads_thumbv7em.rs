@@ -5,7 +5,7 @@ use core::marker::PhantomData;
 use crate::pac::sercom0::usart_int::ctrla::{RXPO_A, TXPO_A};
 
 use super::{AnyConfig, Capability, CharSize, Config, Duplex, Rx, Tx};
-use crate::sercom::v2::*;
+use crate::sercom::*;
 use crate::typelevel::{NoneT, Sealed};
 
 use crate::gpio::AnyPin;
@@ -93,7 +93,7 @@ where
 
 /// Container for a set of SERCOM [`Pad`]s
 ///
-/// See the [module-level](crate::sercom::v2::uart) documentation for more
+/// See the [module-level](crate::sercom::uart) documentation for more
 /// details on specifying a `Pads` type and creating instances.
 pub struct Pads<S, I, RX = NoneT, TX = NoneT, RTS = NoneT, CTS = NoneT>
 where
@@ -229,8 +229,8 @@ where
 /// ```
 /// use atsamd_hal::pac::Peripherals;
 /// use atsamd_hal::gpio::{PA08, PA09, Pins};
-/// use atsamd_hal::sercom::v2::{Sercom0, uart};
-/// use atsamd_hal::sercom::v2::pad::IoSet1;
+/// use atsamd_hal::sercom::{Sercom0, uart};
+/// use atsamd_hal::sercom::pad::IoSet1;
 /// use atsamd_hal::typelevel::NoneT;
 ///
 /// pub type Pads = uart::PadsFromIds<Sercom0, IoSet1, PA09T, PA08>;
@@ -272,7 +272,7 @@ pub type PadsFromIds<S, I, RX = NoneT, TX = NoneT, RTS = NoneT, CTS = NoneT> = P
 /// parameters of the [`Pads`] type.
 ///
 /// [`Pin`]: crate::gpio::Pin
-/// [`Config`]: crate::sercom::v2::uart::Config
+/// [`Config`]: crate::sercom::uart::Config
 /// [type-level function]: crate::typelevel#type-level-functions
 pub trait PadSet: Sealed {
     type Sercom: Sercom;
@@ -321,7 +321,7 @@ where
 /// traits. It guarantees to the [`Config`] struct that this set of `Pads` can
 /// be configured through those traits.
 ///
-/// [`Config`]: crate::sercom::v2::uart::Config
+/// [`Config`]: crate::sercom::uart::Config
 pub trait ValidPads: PadSet + Rxpo + Txpo {
     type Capability: Capability;
 }

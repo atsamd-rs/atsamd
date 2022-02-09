@@ -27,7 +27,7 @@
 //!
 //! ```
 //! use atsamd_hal::gpio::{PA08, PA09, AlternateC};
-//! use atsamd_hal::sercom::v2::{Sercom0, uart};
+//! use atsamd_hal::sercom::{Sercom0, uart};
 //! use atsamd_hal::typelevel::NoneT;
 //!
 //! type Rx = Pin<PA08, AlternateC>;
@@ -43,7 +43,7 @@ don't have [`Pin`] aliases pre-defined.
 
 ```
 use atsamd_hal::gpio::{PA08, PA09};
-use atsamd_hal::sercom::v2::{Sercom0, uart};
+use atsamd_hal::sercom::{Sercom0, uart};
 
 type Pads = uart::PadsFromIds<Sercom0, PA08, PA09>;
 ```
@@ -53,8 +53,7 @@ type Pads = uart::PadsFromIds<Sercom0, PA08, PA09>;
 //!
 //! Instances of [`Pads`] are created using the builder pattern. Start by
 //! creating an empty set of [`Pads`] using [`Default`]. Then pass each
-//! respective [`Pin`] using the corresponding methods. Both [`v1::Pin`] and
-//! [`v2::Pin`] types are accepted here.
+//! respective [`Pin`] using the corresponding methods.
 //!
 //! On SAMD21 and SAMx5x chips, the builder methods automatically convert each
 //! pin to the correct [`PinMode`]. But for SAMD11 chips, users must manually
@@ -66,7 +65,7 @@ type Pads = uart::PadsFromIds<Sercom0, PA08, PA09>;
 //! ```
 //! use atsamd_hal::pac::Peripherals;
 //! use atsamd_hal::gpio::Pins;
-//! use atsamd_hal::sercom::v2::{Sercom0, uart};
+//! use atsamd_hal::sercom::{Sercom0, uart};
 //!
 //! let mut peripherals = Peripherals::take().unwrap();
 //! let pins = Pins::new(peripherals.PORT);
@@ -88,8 +87,8 @@ type Pads = uart::PadsFromIds<Sercom0, PA08, PA09>;
 //!
 //! ```
 //! use atsamd_hal::gpio::{PA08, PA09};
-//! use atsamd_hal::sercom::v2::{Sercom0, uart};
-//! use atsamd_hal::sercom::v2::uart::{NineBit};
+//! use atsamd_hal::sercom::{Sercom0, uart};
+//! use atsamd_hal::sercom::uart::{NineBit};
 //! use atsamd_hal::typelevel::NoneT;
 //!
 //! type Pads = uart::PadsFromIds<Sercom0, PA08, PA09>;
@@ -124,7 +123,7 @@ type Pads = uart::PadsFromIds<Sercom0, PA08, PA09>;
 //! consumes the [`Config`] and returns an enabled [`Uart`] peripheral.
 //!
 //! ```
-//! use atsamd_hal::sercom::v2::uart::{StopBits, NineBit, BitOrder, BaudMode, Oversampling};
+//! use atsamd_hal::sercom::uart::{StopBits, NineBit, BitOrder, BaudMode, Oversampling};
 //!
 //! let uart = uart::Config::new(&mclk, sercom, pads, freq)
 //!     .baud(1.mhz(), BaudMode::Arithmetic(Oversampling::Bits16))
@@ -137,7 +136,7 @@ type Pads = uart::PadsFromIds<Sercom0, PA08, PA09>;
 //! Alternatively,
 //!
 //! ```
-//! use atsamd_hal::sercom::v2::uart::{StopBits, NineBit, BitOrder, BaudMode, Oversampling};
+//! use atsamd_hal::sercom::uart::{StopBits, NineBit, BitOrder, BaudMode, Oversampling};
 //!
 //! let uart = uart::Config::new(&mclk, sercom, pads, freq);
 //!     uart.set_baud(1.mhz(), BaudMode::Arithmetic(Oversampling::Bits16));
@@ -193,8 +192,8 @@ type Pads = uart::PadsFromIds<Sercom0, PA08, PA09>;
 //!
 //! ```
 //! use atsamd_hal::gpio::{PA08, PA09};
-//! use atsamd_hal::sercom::v2::{Sercom0, uart};
-//! use atsamd_hal::sercom::v2::uart::NineBit;
+//! use atsamd_hal::sercom::{Sercom0, uart};
+//! use atsamd_hal::sercom::uart::NineBit;
 //! use atsamd_hal::typelevel::NoneT;
 //!
 //! // Assuming SAMD21 or SAMx5x
@@ -241,7 +240,7 @@ type Pads = uart::PadsFromIds<Sercom0, PA08, PA09>;
 //! constituents:
 //!
 //! ```
-//! use atsamd_hal::sercom::v2::uart::Uart;
+//! use atsamd_hal::sercom::uart::Uart;
 //! // Assume uart is a Uart<C, Duplex>
 //! let (rx, tx) = uart.split();
 //! ```
@@ -255,7 +254,7 @@ type Pads = uart::PadsFromIds<Sercom0, PA08, PA09>;
 //! [`Uart`].
 //!
 //! ```
-//! use atsamd_hal::sercom::v2::uart::Uart;
+//! use atsamd_hal::sercom::uart::Uart;
 //!
 //! // Assume rx is a Uart<C, RxDuplex> and tx is a Uart<C, TxDuplex>
 //! let uart = Uart::join(rx, tx);
@@ -270,7 +269,7 @@ type Pads = uart::PadsFromIds<Sercom0, PA08, PA09>;
 //! and [`TxDuplex`] halves.
 //!
 //! ```
-//! use atsamd_hal::sercom::v2::uart::Uart;
+//! use atsamd_hal::sercom::uart::Uart;
 //! use atsamd_hal::time::*;
 //!
 //! // Assume rx is a Uart<C, RxDuplex> and tx is a Uart<C, TxDuplex>
@@ -303,7 +302,7 @@ type Pads = uart::PadsFromIds<Sercom0, PA08, PA09>;
 //! then use the `set_*` methods.
 //!
 //! ```
-//! use atsamd_hal::sercom::v2::uart::Uart;
+//! use atsamd_hal::sercom::uart::Uart;
 //! use atsamd_hal::time::*;
 //!
 //! // Assume config is a valid Duplex UART Config struct
@@ -335,11 +334,10 @@ type Pads = uart::PadsFromIds<Sercom0, PA08, PA09>;
 //! [`disable`]: Uart::disable
 //! [`reconfigure`]: Uart::reconfigure
 //! [`bsp_pins`]: crate::bsp_pins
-//! [`Pin`]: crate::gpio::v2::pin::Pin
-//! [`v1::Pin`]: crate::gpio::v1::Pin
-//! [`v2::Pin`]: crate::gpio::v2::pin::Pin
-//! [`PinId`]: crate::gpio::v2::pin::PinId
-//! [`PinMode`]: crate::gpio::v2::pin::PinMode
+//! [`Pin`]: crate::gpio::pin::Pin
+//! [`Pin`]: crate::gpio::pin::Pin
+//! [`PinId`]: crate::gpio::pin::PinId
+//! [`PinMode`]: crate::gpio::pin::PinMode
 //! [`split`]: Uart::split
 //! [`join`]: Uart::join
 //! [`NoneT`]: crate::typelevel::NoneT
@@ -413,7 +411,7 @@ pub use config::*;
 
 pub mod impl_ehal;
 
-use crate::{sercom::v2::*, typelevel::Sealed};
+use crate::{sercom::*, typelevel::Sealed};
 use core::{convert::TryInto, marker::PhantomData};
 use num_traits::AsPrimitive;
 
@@ -802,7 +800,7 @@ where
     /// transactions.
     ///
     /// ```
-    /// use atsamd_hal::sercom::v2::uart::{BaudMode, Oversampling, Uart};
+    /// use atsamd_hal::sercom::uart::{BaudMode, Oversampling, Uart};
     /// uart.reconfigure(|c| c.set_run_in_standby(false));
     /// ```
     #[inline]
@@ -849,7 +847,7 @@ where
     /// transactions.
     ///
     /// ```
-    /// use atsamd_hal::sercom::v2::uart::{BaudMode, Oversampling, Uart};
+    /// use atsamd_hal::sercom::uart::{BaudMode, Oversampling, Uart};
     /// uart.reconfigure(|c| c.set_run_in_standby(false));
     /// ```
     #[inline]

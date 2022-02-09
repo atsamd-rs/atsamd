@@ -10,7 +10,7 @@ use crate::{
         transfer::BufferPair,
         Beat, Buffer, Transfer, TriggerAction,
     },
-    sercom::v2::{
+    sercom::{
         i2c::{self, I2c},
         spi::{self, Spi},
         uart::{self, Uart},

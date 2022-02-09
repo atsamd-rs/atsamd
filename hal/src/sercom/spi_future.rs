@@ -22,8 +22,8 @@
 //!
 //! ```
 //! use atsamd_hal::gpio::{Pin, PA10, PushPullOutput};
-//! use atsamd_hal::sercom::v2::spi::AnySpi;
-//! use atsamd_hal::sercom::v2::spi_future::SpiFuture;
+//! use atsamd_hal::sercom::spi::AnySpi;
+//! use atsamd_hal::sercom::spi_future::SpiFuture;
 //!
 //! fn wake_up() {
 //!     //...
@@ -94,10 +94,10 @@
 //! ```
 //! use core::task::Poll;
 //! use atsamd_hal::gpio::{PA08, PA09, PA10, PA11, Pin, PushPullOutput};
-//! use atsamd_hal::sercom::v2::Sercom0;
-//! use atsamd_hal::sercom::v2::pad::{IoSet1, Pad0, Pad1, Pad3};
-//! use atsamd_hal::sercom::v2::spi::{self, Master, lengths::U12};
-//! use atsamd_hal::sercom::v2::spi_future::SpiFuture;
+//! use atsamd_hal::sercom::Sercom0;
+//! use atsamd_hal::sercom::pad::{IoSet1, Pad0, Pad1, Pad3};
+//! use atsamd_hal::sercom::spi::{self, Master, lengths::U12};
+//! use atsamd_hal::sercom::spi_future::SpiFuture;
 //!
 //! type Pads = spi::Pads<Sercom0, IoSet1, (Pad0, PA08), (Pad3, PA11), (Pad1, PA09)>;
 //! type SS = Pin<PA10, PushPullOutput>;

@@ -6,7 +6,7 @@
 use core::marker::PhantomData;
 
 use crate::gpio::AnyPin;
-use crate::sercom::v2::*;
+use crate::sercom::*;
 use crate::typelevel::{NoneT, Sealed};
 
 use super::{Capability, Duplex, Rx, Tx};
@@ -254,8 +254,8 @@ where
 /// ```
 /// use atsamd_hal::pac::Peripherals;
 /// use atsamd_hal::gpio::{PA08, PA09, Pins};
-/// use atsamd_hal::sercom::v2::{Sercom0, spi};
-/// use atsamd_hal::sercom::v2::pad::IoSet1;
+/// use atsamd_hal::sercom::{Sercom0, spi};
+/// use atsamd_hal::sercom::pad::IoSet1;
 /// use atsamd_hal::typelevel::NoneT;
 ///
 /// pub type Pads = spi::PadsFromIds<Sercom0, IoSet1, PA08, NoneT, PA09>;

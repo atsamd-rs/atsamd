@@ -30,11 +30,11 @@
 //!
 //! ```
 //! use atsamd_hal::gpio::{PA08, PA09, AlternateC};
-//! use atsamd_hal::sercom::v2::{Sercom0, spi};
+//! use atsamd_hal::sercom::{Sercom0, spi};
 //! use atsamd_hal::typelevel::NoneT;
 //!
 //! // SAMx5x-specific imports
-//! use atsamd_hal::sercom::v2::pad::IoSet1;
+//! use atsamd_hal::sercom::pad::IoSet1;
 //!
 //! type Miso = Pin<PA08, AlternateC>;
 //! type Sclk = Pin<PA09, AlternateC>;
@@ -58,12 +58,12 @@ Alternatively, you can use the `PadsFromIds` alias to define a set of
 don't have [`Pin`] aliases pre-defined.
 
 ```
-use atsamd_hal::gpio::v2::{PA08, PA09};
-use atsamd_hal::sercom::v2::{Sercom0, spi};
+use atsamd_hal::gpio::{PA08, PA09};
+use atsamd_hal::sercom::{Sercom0, spi};
 use atsamd_hal::typelevel::NoneT;
 
 // SAMx5x-specific imports
-use atsamd_hal::sercom::v2::pad::IoSet1;
+use atsamd_hal::sercom::pad::IoSet1;
 
 // SAMD21 version
 type Pads = spi::PadsFromIds<Sercom0, PA08, NoneT, PA09>;
@@ -83,10 +83,10 @@ type Pads = spi::PadsFromIds<Sercom0, IoSet1, PA08, NoneT, PA09>;
 //! ```
 //! use atsamd_hal::target_device::Peripherals;
 //! use atsamd_hal::gpio::Pins;
-//! use atsamd_hal::sercom::v2::{Sercom0, spi};
+//! use atsamd_hal::sercom::{Sercom0, spi};
 //!
 //! // SAMx5x-specific imports
-//! use atsamd_hal::sercom::v2::pad::IoSet1;
+//! use atsamd_hal::sercom::pad::IoSet1;
 //!
 //! let mut peripherals = Peripherals::take().unwrap();
 //! let pins = Pins::new(peripherals.PORT);
@@ -134,16 +134,16 @@ type Pads = spi::PadsFromIds<Sercom0, IoSet1, PA08, NoneT, PA09>;
 //!
 //! ```
 //! use atsamd_hal::gpio::{PA08, PA09};
-//! use atsamd_hal::sercom::v2::{Sercom0, spi};
-//! use atsamd_hal::sercom::v2::spi::Master;
+//! use atsamd_hal::sercom::{Sercom0, spi};
+//! use atsamd_hal::sercom::spi::Master;
 //! use atsamd_hal::typelevel::NoneT;
 //!
 //! // SAMD11/SAMD21-specific imports
-//! use atsamd_hal::sercom::v2::spi::NineBit;
+//! use atsamd_hal::sercom::spi::NineBit;
 //!
 //! // SAMx5x-specific imports
-//! use atsamd_hal::sercom::v2::spi::lengths::U2;
-//! use atsamd_hal::sercom::v2::pad::IoSet1;
+//! use atsamd_hal::sercom::spi::lengths::U2;
+//! use atsamd_hal::sercom::pad::IoSet1;
 //!
 //! // SAMD11/SAMD21 version
 //! type Pads = spi::PadsFromIds<Sercom0, PA08, NoneT, PA09>;
@@ -231,16 +231,16 @@ type Pads = spi::PadsFromIds<Sercom0, IoSet1, PA08, NoneT, PA09>;
 //!
 //! ```
 //! use atsamd_hal::gpio::{PA08, PA09};
-//! use atsamd_hal::sercom::v2::{Sercom0, spi};
-//! use atsamd_hal::sercom::v2::spi::{Master, Rx};
+//! use atsamd_hal::sercom::{Sercom0, spi};
+//! use atsamd_hal::sercom::spi::{Master, Rx};
 //! use atsamd_hal::typelevel::NoneT;
 //!
 //! // SAMD11/SAMD21-specific imports
-//! use atsamd_hal::sercom::v2::spi::NineBit;
+//! use atsamd_hal::sercom::spi::NineBit;
 //!
 //! // SAMx5x-specific imports
-//! use atsamd_hal::sercom::v2::spi::lengths::U2;
-//! use atsamd_hal::sercom::v2::pad::IoSet1;
+//! use atsamd_hal::sercom::spi::lengths::U2;
+//! use atsamd_hal::sercom::pad::IoSet1;
 //!
 //! // SAMD11/SAMD21 version
 //! type Pads = spi::PadsFromIds<Sercom0, PA08, NoneT, PA09>;
@@ -319,7 +319,7 @@ use bitflags::bitflags;
 use embedded_hal::spi;
 pub use embedded_hal::spi::{Phase, Polarity, MODE_0, MODE_1, MODE_2, MODE_3};
 
-use crate::sercom::v2::*;
+use crate::sercom::*;
 use crate::time::Hertz;
 use crate::typelevel::{Is, NoneT, Sealed};
 

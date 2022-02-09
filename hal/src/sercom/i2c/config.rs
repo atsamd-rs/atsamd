@@ -3,7 +3,7 @@
 use super::{I2c, InactiveTimeout, PadSet, Registers};
 use crate::{
     pac::sercom0::i2cm::ctrla::MODE_A,
-    sercom::v2::*,
+    sercom::*,
     time::Hertz,
     typelevel::{Is, Sealed},
 };

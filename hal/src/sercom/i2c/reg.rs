@@ -4,7 +4,7 @@ use super::flags::{BusState, Error};
 use super::InactiveTimeout;
 use super::{Flags, Status};
 use crate::pac;
-use crate::sercom::v2::*;
+use crate::sercom::*;
 use crate::time::Hertz;
 
 const MASTER_ACT_READ: u8 = 2;
