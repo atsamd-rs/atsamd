@@ -135,12 +135,6 @@ pub mod thumbv7em;
 #[cfg(feature = "min-samd51g")]
 pub use crate::thumbv7em::*;
 
-// This module maintains backwards compatibility for the v1 SERCOM pads API
-#[cfg(feature = "device")]
-pub mod pad {
-    pub use crate::sercom::v1::pads::PadPin;
-}
-
 // This module maintains backwards compatibility within this major release
 #[deprecated(
     since = "0.13.0",
@@ -179,9 +173,6 @@ pub mod common {
     pub use crate::thumbv7em;
     #[cfg(feature = "min-samd51g")]
     pub use crate::thumbv7em::*;
-
-    #[cfg(feature = "device")]
-    pub use crate::pad;
 }
 
 // The following modules are included purely for backward compatibility reasons.
