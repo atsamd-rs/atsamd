@@ -1,5 +1,6 @@
 # Unreleased Changes
 
+- Cleanup most `clippy` lints
 - Update `seq_macro` and remove `replace_with` dependencies (#568)
 - Add a `bsp_peripherals!` macro and fix a bug in `bsp_pins!` (#515)
 - Updated to 2021 edition, updated dependencies, removed unused dependencies (#562)
