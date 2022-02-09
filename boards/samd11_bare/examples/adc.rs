@@ -22,7 +22,7 @@ use samd11_bare as bsp;
 use bsp::entry;
 use hal::adc::Adc;
 use hal::clock::GenericClockController;
-use hal::gpio::v2::*;
+use hal::gpio::*;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 use rtt_target::{rprintln, rtt_init_print};
