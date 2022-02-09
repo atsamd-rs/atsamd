@@ -78,7 +78,7 @@ impl<S: Sercom> Registers<S> {
     /// in each SPI transaction. Due to a hardware bug, ICSPACE must be at least
     /// one. See the silicon errata for more details.
     #[inline]
-    pub fn set_op_mode(&mut self, mode: MODE_A, mssen: bool) -> () {
+    pub fn set_op_mode(&mut self, mode: MODE_A, mssen: bool) {
         self.spi().ctrla.modify(|_, w| w.mode().variant(mode));
         self.spi().ctrlb.modify(|_, w| w.mssen().bit(mssen));
         #[cfg(feature = "min-samd51g")]

@@ -167,6 +167,7 @@ impl<'a, T: SmartEepromState> SmartEeprom<'a, T> {
     /// Unsafety:
     /// `NVMCTRL.SEESTAT.BUSY` register must be 0 before memory access can be
     /// performed.
+    #[allow(clippy::missing_safety_doc)]
     pub unsafe fn get_slice<TP: SmartEepromPointableSize>(&self) -> &[TP] {
         core::slice::from_raw_parts_mut(
             Self::SEEPROM_ADDR as _,
@@ -215,6 +216,7 @@ impl<'a> SmartEeprom<'a, Unlocked> {
     /// Unsafety:
     /// `NVMCTRL.SEESTAT.BUSY` register must be 0 before memory access can be
     /// performed.
+    #[allow(clippy::missing_safety_doc)]
     pub unsafe fn get_mut_slice<TP: SmartEepromPointableSize>(&mut self) -> &mut [TP] {
         core::slice::from_raw_parts_mut(
             Self::SEEPROM_ADDR as _,

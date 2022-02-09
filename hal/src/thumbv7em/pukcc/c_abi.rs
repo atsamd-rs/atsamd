@@ -3,6 +3,7 @@
 #![allow(missing_docs)]
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
+#![allow(clippy::missing_safety_doc)]
 
 use bitfield::bitfield;
 
@@ -753,7 +754,7 @@ pub unsafe fn wait_for_crypto_ram_clear_process() {
     const PUKCCSR: *mut u32 = 0x4200302C as _;
     const BIT_PUKCCSR_CLRRAM_BUSY: u32 = 0x1;
 
-    while *PUKCCSR & BIT_PUKCCSR_CLRRAM_BUSY != 0 {}
+    while core::ptr::read_volatile(PUKCCSR) & BIT_PUKCCSR_CLRRAM_BUSY != 0 {}
 }
 
 /// Slice wrapper that provides Rust-like access to CryptoRAM memory area

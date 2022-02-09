@@ -202,6 +202,7 @@ impl Pukcc {
     /// multiplication can become reversible (lack of _trapdoor function_
     /// property) and an attacker might be able to reverse engineer a
     /// `private_key` from a `signature`.
+    #[allow(clippy::missing_safety_doc)]
     pub unsafe fn zp_ecdsa_sign_with_raw_k<C: Curve>(
         &self,
         signature: &mut [u8],
@@ -212,6 +213,7 @@ impl Pukcc {
         self.zp_ecdsa_sign::<C>(signature, hash, private_key, k)
     }
 
+    #[allow(clippy::just_underscores_and_digits)]
     fn zp_ecdsa_sign<C: Curve>(
         &self,
         signature: &mut [u8],
@@ -219,10 +221,7 @@ impl Pukcc {
         private_key: &[u8],
         k: &[u8],
     ) -> Result<(), EcdsaSignFailure> {
-        match C::verify_curve() {
-            Err(e) => return Err(EcdsaSignFailure::InvalidCurve(e)),
-            _ => {}
-        };
+        C::verify_curve().map_err(EcdsaSignFailure::InvalidCurve)?;
 
         if signature.len() != (2 * C::MOD_LENGTH).into() {
             return Err(EcdsaSignFailure::WrongInputParameterLength {
@@ -362,16 +361,14 @@ impl Pukcc {
     /// [`EcdsaSignatureVerificationFailure::ServiceFailure`]`(`
     /// [`Warning`][`PukclReturnCode::Warning`]`(`
     /// [`WrongSignature`][`PukclReturnCodeWarning::WrongSignature`]`))`
+    #[allow(clippy::just_underscores_and_digits)]
     pub fn zp_ecdsa_verify_signature<C: Curve>(
         &self,
         signature: &[u8],
         hash: &[u8],
         public_key: &[u8],
     ) -> Result<(), EcdsaSignatureVerificationFailure> {
-        match C::verify_curve() {
-            Err(e) => return Err(EcdsaSignatureVerificationFailure::InvalidCurve(e)),
-            _ => {}
-        };
+        C::verify_curve().map_err(EcdsaSignatureVerificationFailure::InvalidCurve)?;
 
         let (
             modulo_p,
@@ -567,6 +564,7 @@ impl Pukcc {
     ///
     /// All RSA variants up to **RSA4096** (included) will fit into CryptoRAM
     /// and therefore are supported.
+    #[allow(clippy::just_underscores_and_digits)]
     pub fn modular_exponentiation<'a>(
         &self,
         input: &[u8],
@@ -694,6 +692,7 @@ impl Pukcc {
     }
 
     /// Service producing a reduction constant value
+    #[allow(clippy::just_underscores_and_digits)]
     fn zp_calculate_cns<'a>(
         &self,
         buffer: &'a mut [u8],

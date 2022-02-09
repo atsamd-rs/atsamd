@@ -115,7 +115,7 @@ impl<S: Sercom> Registers<S> {
     /// Get the current bit order
     #[inline]
     pub(super) fn get_bit_order(&self) -> BitOrder {
-        let bits = self.usart().ctrla.read().dord().bit().into();
+        let bits = self.usart().ctrla.read().dord().bit();
 
         match bits {
             false => BitOrder::MsbFirst,
@@ -177,7 +177,7 @@ impl<S: Sercom> Registers<S> {
     /// Get the current stop bit setting
     #[inline]
     pub(super) fn get_stop_bits(&self) -> StopBits {
-        let bits = self.usart().ctrlb.read().sbmode().bit().into();
+        let bits = self.usart().ctrlb.read().sbmode().bit();
         match bits {
             false => StopBits::OneBit,
             true => StopBits::TwoBits,

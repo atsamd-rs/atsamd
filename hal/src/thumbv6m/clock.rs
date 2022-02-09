@@ -24,9 +24,9 @@ pub struct GClock {
     freq: Hertz,
 }
 
-impl Into<Hertz> for GClock {
-    fn into(self) -> Hertz {
-        self.freq
+impl From<GClock> for Hertz {
+    fn from(item: GClock) -> Hertz {
+        item.freq
     }
 }
 
@@ -64,10 +64,8 @@ impl State {
             if divider >= 2_u16.pow(5) {
                 divisor_invalid = true;
             }
-        } else {
-            if divider >= 2_u16.pow(8) {
-                divisor_invalid = true;
-            }
+        } else if divider >= 2_u16.pow(8) {
+            divisor_invalid = true;
         }
         if divisor_invalid {
             panic!("invalid divisor {} for GCLK {}", divider, gclk as u8);
@@ -357,9 +355,9 @@ impl $Type {
         self.freq
     }
 }
-impl Into<Hertz> for $Type {
-    fn into(self) -> Hertz {
-        self.freq
+impl From<$Type> for Hertz {
+    fn from(item: $Type) -> Hertz {
+        item.freq
     }
 }
 )+
