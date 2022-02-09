@@ -113,7 +113,8 @@ pub enum BeatSize {
 ///
 /// # Safety
 ///
-/// This trait should not be implemented outside of the crate-provided implementations
+/// This trait should not be implemented outside of the crate-provided
+/// implementations
 pub unsafe trait Beat: Sealed {
     /// Convert to BeatSize enum
     const BEATSIZE: BeatSize;
@@ -147,9 +148,11 @@ impl_beat!(
 ///
 /// # Safety
 ///
-/// This trait should only be implemented for valid DMAC sources/sinks. That is, you need to make sure that:
+/// This trait should only be implemented for valid DMAC sources/sinks. That is,
+/// you need to make sure that:
 /// * `dma_ptr` points to a valid memory location useable by the DMAC
-/// * `incrementing` is correct for the source/sink. For example, an `&[u8]` of size one is not incrementing.
+/// * `incrementing` is correct for the source/sink. For example, an `&[u8]` of
+///   size one is not incrementing.
 /// * `buffer_len` is correct for the source/sink.
 pub unsafe trait Buffer {
     /// DMAC beat size
