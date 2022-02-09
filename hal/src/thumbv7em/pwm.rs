@@ -1,8 +1,8 @@
 #![allow(non_snake_case)]
 
 use crate::clock;
-use crate::gpio::v2::{AlternateE, AnyPin, Pin};
 use crate::gpio::*;
+use crate::gpio::{AlternateE, AnyPin, Pin};
 use crate::hal::{Pwm, PwmPin};
 use crate::time::Hertz;
 use crate::timer_params::TimerParams;
@@ -19,13 +19,13 @@ use crate::pac::{TC6, TC7};
 ///
 /// The previous Pinout types were enums that took specific v1::Pin types. As a
 /// result, there was no way to make that implementation simultaneously
-/// compatible with both v1::Pin and v2::Pin.
+/// compatible with both v1::Pin and Pin.
 ///
 /// BUT, the enum variant syntax is the same as the namespaced function syntax.
 /// I converted the enums to structs, and I created constructor methods with the
 /// same names as the previous enum variants. By constructing Pinout types with
 /// functions rather than enum variants, you can make it generic over v1::Pin
-/// and v2::Pin types.
+/// and Pin types.
 ///
 /// This is (mostly) backwards compatible with the current syntax, and all the
 /// existing calls compile. The only incompatible change is the requirement of
@@ -46,9 +46,9 @@ macro_rules! impl_tc_pinout {
 
         $(
             $( #[$attr] )?
-            impl $Type<v2::$Id> {
+            impl $Type<$Id> {
                 #[inline]
-                pub fn $func(pin: impl AnyPin<Id = v2::$Id>) -> Self {
+                pub fn $func(pin: impl AnyPin<Id = $Id>) -> Self {
                     let _pin = pin.into().into_alternate();
                     Self { _pin }
                 }
@@ -237,13 +237,13 @@ pub enum Channel {
 ///
 /// The previous Pinout types were enums that took specific v1::Pin types. As a
 /// result, there was no way to make that implementation simultaneously
-/// compatible with both v1::Pin and v2::Pin.
+/// compatible with both v1::Pin and Pin.
 ///
 /// BUT, the enum variant syntax is the same as the namespaced function syntax.
 /// I converted the enums to structs, and I created constructor methods with the
 /// same names as the previous enum variants. By constructing Pinout types with
 /// functions rather than enum variants, you can make it generic over v1::Pin
-/// and v2::Pin types.
+/// and Pin types.
 ///
 /// This is (mostly) backwards compatible with the current syntax, and all the
 /// existing calls compile. The only incompatible change is the requirement of
@@ -264,9 +264,9 @@ macro_rules! impl_tcc_pinout {
 
         $(
             $( #[$attr] )?
-            impl $Type<v2::$Id, v2::$Mode> {
+            impl $Type<$Id, $Mode> {
                 #[inline]
-                pub fn $func(pin: impl AnyPin<Id = v2::$Id>) -> Self {
+                pub fn $func(pin: impl AnyPin<Id = $Id>) -> Self {
                     let _pin = pin.into().into_alternate();
                     Self { _pin }
                 }
