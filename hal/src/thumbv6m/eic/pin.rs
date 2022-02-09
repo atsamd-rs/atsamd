@@ -1,6 +1,7 @@
+#![allow(deprecated)]
+
 use crate::gpio::{
-    self, pin::*, AnyPin, FloatingInterrupt, Pin, PinId, PinMode, PullDownInterrupt,
-    PullUpInterrupt,
+    self, pin::*, AnyPin, FloatingInterrupt, PinId, PinMode, PullDownInterrupt, PullUpInterrupt,
 };
 use crate::pac;
 
@@ -149,10 +150,10 @@ crate::paste::item! {
 
     $(
         $(#[$attr])*
-        impl<MODE: PinMode> EicPin for gpio::Pin<$PinType, MODE> {
-            type Floating = [<$PadType $num>]<gpio::Pin<$PinType, FloatingInterrupt>>;
-            type PullUp = [<$PadType $num>]<gpio::Pin<$PinType, PullUpInterrupt>>;
-            type PullDown = [<$PadType $num>]<gpio::Pin<$PinType, PullDownInterrupt>>;
+        impl<M: PinMode> EicPin for Pin<gpio::$PinType, M> {
+            type Floating = [<$PadType $num>]<Pin<gpio::$PinType, FloatingInterrupt>>;
+            type PullUp = [<$PadType $num>]<Pin<gpio::$PinType, PullUpInterrupt>>;
+            type PullDown = [<$PadType $num>]<Pin<gpio::$PinType, PullDownInterrupt>>;
 
             fn into_floating_ei(self) -> Self::Floating {
                 [<$PadType $num>]::new(self.into_floating_interrupt())
@@ -168,7 +169,7 @@ crate::paste::item! {
         }
 
         $(#[$attr])*
-        impl<MODE: PinMode> ExternalInterrupt for gpio::Pin<$PinType, MODE> {
+        impl ExternalInterrupt for gpio::$PinType {
             fn id(&self) -> ExternalInterruptID {
                 $num
             }
