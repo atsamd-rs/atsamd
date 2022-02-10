@@ -550,7 +550,6 @@ where
     ///
     /// [`Spi`]: super::spi::Spi
     #[inline]
-    #[allow(clippy::missing_safety_doc)]
     pub unsafe fn free_unchecked(self) -> (S, B, SS) {
         (self.spi, self.buf, self.ss)
     }

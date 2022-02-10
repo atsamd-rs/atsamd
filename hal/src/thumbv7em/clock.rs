@@ -3,6 +3,8 @@
 //! before you can set up most of the peripherals on the atsamd51 device.
 //! The other types in this module are used to enforce at compile time
 //! that the peripherals have been correctly configured.
+#![allow(clippy::from_over_into)]
+
 use crate::pac::gclk::genctrl::SRC_A::*;
 use crate::pac::gclk::pchctrl::GEN_A::*;
 use crate::pac::{self, GCLK, MCLK, NVMCTRL, OSC32KCTRL, OSCCTRL};
@@ -80,9 +82,9 @@ pub struct GClock {
     freq: Hertz,
 }
 
-impl From<GClock> for Hertz {
-    fn from(item: GClock) -> Hertz {
-        item.freq
+impl Into<Hertz> for GClock {
+    fn into(self) -> Hertz {
+        self.freq
     }
 }
 
@@ -362,9 +364,9 @@ impl $Type {
     }
 }
 $(#[$attr])*
-impl From<$Type> for Hertz {
-    fn from(item: $Type) -> Hertz {
-        item.freq
+impl Into<Hertz> for $Type {
+    fn into(self) -> Hertz {
+        self.freq
     }
 }
 )+

@@ -725,7 +725,6 @@ where
     /// Directly accessing the `SERCOM` could break the invariants of the
     /// type-level tracking in this module, so it is unsafe.
     #[inline]
-    #[allow(clippy::missing_safety_doc)]
     pub unsafe fn sercom(&self) -> &P::Sercom {
         &self.regs.sercom
     }
@@ -1247,7 +1246,6 @@ where
     /// clear the RXC flag, which could break assumptions made elsewhere in
     /// this module.
     #[inline]
-    #[allow(clippy::missing_safety_doc)]
     pub unsafe fn read_data(&mut self) -> DataWidth {
         self.config.as_mut().regs.read_data()
     }
@@ -1257,7 +1255,6 @@ where
     /// Writing to the data register directly is `unsafe`, because it will clear
     /// the DRE flag, which could break assumptions made elsewhere in this
     /// module.
-    #[allow(clippy::missing_safety_doc)]
     #[inline]
     pub unsafe fn write_data(&mut self, data: DataWidth) {
         self.config.as_mut().regs.write_data(data);

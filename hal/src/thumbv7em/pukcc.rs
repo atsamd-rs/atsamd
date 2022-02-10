@@ -202,7 +202,6 @@ impl Pukcc {
     /// multiplication can become reversible (lack of _trapdoor function_
     /// property) and an attacker might be able to reverse engineer a
     /// `private_key` from a `signature`.
-    #[allow(clippy::missing_safety_doc)]
     pub unsafe fn zp_ecdsa_sign_with_raw_k<C: Curve>(
         &self,
         signature: &mut [u8],

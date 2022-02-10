@@ -3,7 +3,6 @@
 #![allow(missing_docs)]
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
-#![allow(clippy::missing_safety_doc)]
 
 use bitfield::bitfield;
 

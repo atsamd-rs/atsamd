@@ -326,7 +326,6 @@ impl Nvm {
     ///
     /// If `destination_address` is not word-aligned, an error is returned.
     #[inline]
-    #[allow(clippy::missing_safety_doc)]
     pub unsafe fn write_from_slice(
         &mut self,
         destination_address: u32,
@@ -342,7 +341,6 @@ impl Nvm {
     /// If either `destination_address` or `source_address` are not
     /// word-aligned, an error is returned.
     #[inline]
-    #[allow(clippy::missing_safety_doc)]
     pub unsafe fn write(
         &mut self,
         destination_address: u32,
@@ -418,7 +416,6 @@ impl Nvm {
     ///
     /// Unit of `length` depends on a chosen erasing granularity.
     #[inline]
-    #[allow(clippy::missing_safety_doc)]
     pub unsafe fn erase(
         &mut self,
         address: u32,
