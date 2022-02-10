@@ -323,7 +323,7 @@ pub fn uart(
     uart_tx: impl Into<UartTx>,
 ) -> Uart {
     let gclk0 = clocks.gclk0();
-    let clock = &clocks.sercom0_core(&gclk0).unwrap();
+    let clock = &clocks.sercom3_core(&gclk0).unwrap();
     let baud = baud.into();
     let pads = uart::Pads::default().rx(uart_rx.into()).tx(uart_tx.into());
     uart::Config::new(mclk, sercom3, pads, clock.freq())
