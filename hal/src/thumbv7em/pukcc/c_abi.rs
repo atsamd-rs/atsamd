@@ -794,7 +794,8 @@ impl CryptoRam {
 /// way of downcasting pointers in a form accepted by PUKCC ABI
 pub trait CryptoRamSlice: crate::typelevel::Sealed {
     /// Take a slice base-pointer and mask out a halfword according to
-    /// the expected format of CryptoRAM pointers in [`PukclParams`]-related structs.
+    /// the expected format of CryptoRAM pointers in [`PukclParams`]-related
+    /// structs.
     ///
     /// # Safety
     ///

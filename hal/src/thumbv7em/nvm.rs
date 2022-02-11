@@ -433,8 +433,7 @@ impl Nvm {
     /// Erasing flash goes through the NVM controller
     /// NVM controller sets the `PROGE`/`LOCKE` flag if an error occurs,
     /// this is checked in `manage_error_states` to propagate
-    /// the relevant error code
-    ///
+    /// the relevant error code.
     #[inline]
     pub unsafe fn erase(
         &mut self,
