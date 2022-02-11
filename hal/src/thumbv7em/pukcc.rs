@@ -17,7 +17,7 @@
 //! use-case. Subtle implementation details may have catastrophic implications
 //! for the security of your cryptosystem, and users are advised to engage a
 //! cryptographer before making use of this module.
-
+#![allow(clippy::just_underscores_and_digits)]
 pub mod c_abi;
 pub mod curves;
 
@@ -214,7 +214,6 @@ impl Pukcc {
         self.zp_ecdsa_sign::<C>(signature, hash, private_key, k)
     }
 
-    #[allow(clippy::just_underscores_and_digits)]
     fn zp_ecdsa_sign<C: Curve>(
         &self,
         signature: &mut [u8],
@@ -362,7 +361,6 @@ impl Pukcc {
     /// [`EcdsaSignatureVerificationFailure::ServiceFailure`]`(`
     /// [`Warning`][`PukclReturnCode::Warning`]`(`
     /// [`WrongSignature`][`PukclReturnCodeWarning::WrongSignature`]`))`
-    #[allow(clippy::just_underscores_and_digits)]
     pub fn zp_ecdsa_verify_signature<C: Curve>(
         &self,
         signature: &[u8],
@@ -565,7 +563,6 @@ impl Pukcc {
     ///
     /// All RSA variants up to **RSA4096** (included) will fit into CryptoRAM
     /// and therefore are supported.
-    #[allow(clippy::just_underscores_and_digits)]
     pub fn modular_exponentiation<'a>(
         &self,
         input: &[u8],
@@ -693,7 +690,6 @@ impl Pukcc {
     }
 
     /// Service producing a reduction constant value
-    #[allow(clippy::just_underscores_and_digits)]
     fn zp_calculate_cns<'a>(
         &self,
         buffer: &'a mut [u8],
