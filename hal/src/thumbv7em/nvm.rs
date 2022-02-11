@@ -497,7 +497,7 @@ impl Nvm {
 
     /// Retrieve SmartEEPROM
     #[inline]
-    pub fn smart_eeprom(&mut self) -> smart_eeprom::Result {
+    pub fn smart_eeprom(&mut self) -> smart_eeprom::Result<'_> {
         smart_eeprom::SmartEepromMode::retrieve(self)
     }
 }
