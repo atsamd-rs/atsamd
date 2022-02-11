@@ -664,6 +664,12 @@ pub struct ZpEcRandomiseCoordinate {
 pub trait Service: crate::typelevel::Sealed {
     const SERVICE_NUM: u8;
     const FUNCTION_ADDRESS: usize;
+    /// Call to PUKCC functions
+    ///
+    /// # Safety
+    ///
+    /// User must ensure that [`PukclParams`] is correctly initialised
+    /// according to the service being called
     unsafe fn call(pukcl_params: &mut PukclParams) {
         pukcl_params.header.u1Service = Self::SERVICE_NUM;
         pukcl_params.header.u2Status =
@@ -749,6 +755,12 @@ services!(
 );
 
 /// Function that has to be called before using PUKCC peripheral
+///
+/// # Safety
+///
+/// Defensively put as unsafe
+///
+/// Only useful for low-level ABI calls
 pub unsafe fn wait_for_crypto_ram_clear_process() {
     const PUKCCSR: *mut u32 = 0x4200302C as _;
     const BIT_PUKCCSR_CLRRAM_BUSY: u32 = 0x1;
@@ -762,6 +774,14 @@ pub struct CryptoRam(&'static mut [u8]);
 impl CryptoRam {
     const CRYPTORAM_BASE: *mut u8 = 0x02011000 as _;
     const CRYPTORAM_LENGTH: usize = 0x1000;
+    /// Create CryptoRam
+    ///
+    /// # Safety
+    ///
+    /// Might break aliasing rules if more than one instance is used.
+    ///
+    /// Only to be used exclusively for low-level access,
+    /// never together with the high level API.
     pub unsafe fn new() -> Self {
         Self(core::slice::from_raw_parts_mut(
             Self::CRYPTORAM_BASE,
@@ -773,6 +793,15 @@ impl CryptoRam {
 /// Trait implemented for all `&[u8]` slices in order to provide a normalized
 /// way of downcasting pointers in a form accepted by PUKCC ABI
 pub trait CryptoRamSlice: crate::typelevel::Sealed {
+    /// Take a slice base-pointer and mask out a halfword according to
+    /// the expected format of CryptoRAM pointers in [`PukclParams`]-related structs.
+    ///
+    /// # Safety
+    ///
+    /// Might break aliasing rules if more than one instance is used.
+    ///
+    /// Only to be used exclusively for low-level access,
+    /// never together with the high level API.
     unsafe fn pukcc_base(&self) -> nu1;
 }
 

@@ -61,7 +61,7 @@ macro_rules! copy_to_cryptoram {
 
 /// Struct representing a PUKCC peripheral.
 ///
-/// It provides an access to cryptograhic algorithms in a safe, high-level
+/// It provides an access to cryptographic algorithms in a safe, high-level
 /// manner
 pub struct Pukcc {
     __: (),
@@ -164,8 +164,6 @@ impl Pukcc {
 
     /// Service generating an ECDSA signature.
     ///
-    /// Unsafe: `k` value must be cryptograhically secure.
-    ///
     /// GF(p) service. GF(2^n) variant is not implemented -- use low-level API.
     ///
     /// Input parameters:
@@ -202,6 +200,10 @@ impl Pukcc {
     /// multiplication can become reversible (lack of _trapdoor function_
     /// property) and an attacker might be able to reverse engineer a
     /// `private_key` from a `signature`.
+    ///
+    /// # Safety
+    ///
+    /// `k` value must be cryptographically secure.
     pub unsafe fn zp_ecdsa_sign_with_raw_k<C: Curve>(
         &self,
         signature: &mut [u8],
@@ -266,7 +268,7 @@ impl Pukcc {
         );
         let mut crypto_ram = unsafe { c_abi::CryptoRam::new() };
         // 32-byte padding with zeroes on a MSB side of every parameter is required by
-        // PUKCC algorithms. Little endianess requires padding *after* a parameter
+        // PUKCC algorithms. Little endianness requires padding *after* a parameter
         // as MSB is placed on high addresses.
 
         // 32-byte zero padding for curve parameters should be included in original
@@ -410,7 +412,7 @@ impl Pukcc {
         }
         let mut crypto_ram = unsafe { c_abi::CryptoRam::new() };
         // 32-byte padding with zeroes on a MSB side of every parameter is required by
-        // PUKCC algorithms. Little endianess requires padding *after* a parameter
+        // PUKCC algorithms. Little endianness requires padding *after* a parameter
         // as MSB is placed on high addresses.
 
         // 32-byte zero padding for curve parameters should be included in original
@@ -621,7 +623,7 @@ impl Pukcc {
 
         let mut crypto_ram = unsafe { c_abi::CryptoRam::new() };
         // 32-byte padding with zeroes on a MSB side of every parameter is required by
-        // PUKCC algorithms (unless said otherwise). Little endianess requires padding
+        // PUKCC algorithms (unless said otherwise). Little endianness requires padding
         // *after* a parameter as MSB is placed on high addresses.
         copy_to_cryptoram! {
             crypto_ram,
@@ -706,7 +708,7 @@ impl Pukcc {
 
         // Even though documentation says that CNS occupies len(modulus) + 12 of space,
         // it is only needed for computation, 7 MSB bytes are zeroes. This distinction
-        // between lenghts allows to skip these 7 MSB zero bytes.
+        // between lengths allows to skip these 7 MSB zero bytes.
         let cns_length = modulus.len() + 12;
         let actual_cns_length = modulus.len() + 5;
 
@@ -769,7 +771,7 @@ pub enum EcdsaSignFailure {
         expected_length: usize,
         actual_length: usize,
     },
-    InvalidCurve(curves::CurveVerficationFailure),
+    InvalidCurve(curves::CurveVerificationFailure),
     BasePointZCoordinateIsNotZero,
     ServiceFailure(PukclReturnCode),
 }
@@ -784,11 +786,11 @@ pub enum EcdsaSignatureVerificationFailure {
         expected_length: usize,
         actual_length: usize,
     },
-    InvalidCurve(curves::CurveVerficationFailure),
+    InvalidCurve(curves::CurveVerificationFailure),
     ServiceFailure(PukclReturnCode),
 }
 
-/// An error type specifing an expected length of a slice in question
+/// An error type specifying an expected length of a slice in question
 #[allow(missing_docs)]
 #[derive(Debug)]
 pub enum ExpectedLengthError {
@@ -911,7 +913,7 @@ impl core::convert::From<c_abi::PukclReturnCode> for PukclReturnCode {
             0xC012 => Severe(PukclReturnCodeSevere::ParamNotInRam),
             0xC013 => Severe(PukclReturnCodeSevere::ParamNotInCpuram),
             0xC014 => Severe(PukclReturnCodeSevere::ParamWrongLength),
-            0xC015 => Severe(PukclReturnCodeSevere::ParamBadAlignement),
+            0xC015 => Severe(PukclReturnCodeSevere::ParamBadAlignment),
             0xC016 => Severe(PukclReturnCodeSevere::ParamXBiggerThanY),
             0xC017 => Severe(PukclReturnCodeSevere::ParamLengthTooSmall),
             0xC101 => Severe(PukclReturnCodeSevere::DivisionByZero),
@@ -949,7 +951,7 @@ impl core::convert::From<PukclReturnCode> for c_abi::PukclReturnCode {
             Severe(PukclReturnCodeSevere::ParamNotInRam) => 0xC012,
             Severe(PukclReturnCodeSevere::ParamNotInCpuram) => 0xC013,
             Severe(PukclReturnCodeSevere::ParamWrongLength) => 0xC014,
-            Severe(PukclReturnCodeSevere::ParamBadAlignement) => 0xC015,
+            Severe(PukclReturnCodeSevere::ParamBadAlignment) => 0xC015,
             Severe(PukclReturnCodeSevere::ParamXBiggerThanY) => 0xC016,
             Severe(PukclReturnCodeSevere::ParamLengthTooSmall) => 0xC017,
             Severe(PukclReturnCodeSevere::DivisionByZero) => 0xC101,
@@ -1017,7 +1019,7 @@ pub enum PukclReturnCodeSevere {
     ParamNotInRam,
     ParamNotInCpuram,
     ParamWrongLength,
-    ParamBadAlignement,
+    ParamBadAlignment,
     ParamXBiggerThanY,
     ParamLengthTooSmall,
     DivisionByZero,

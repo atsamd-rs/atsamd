@@ -170,6 +170,7 @@ impl Nvm {
     /// inactive bank will become the active bank.
     ///
     /// # Safety
+    ///
     /// Ensure there is a working, memory safe program in place in the inactive
     /// bank before calling.
     pub unsafe fn bank_swap(&mut self) -> ! {
@@ -324,7 +325,11 @@ impl Nvm {
 
     /// Write to flash memory from a slice
     ///
+    /// # Safety
+    ///
     /// If `destination_address` is not word-aligned, an error is returned.
+    ///
+    /// Using [`write()`][Nvm::write]
     #[inline]
     pub unsafe fn write_from_slice(
         &mut self,
@@ -338,8 +343,15 @@ impl Nvm {
 
     /// Write to flash memory
     ///
+    /// # Safety
+    ///
     /// If either `destination_address` or `source_address` are not
     /// word-aligned, an error is returned.
+    ///
+    /// Writes to flash goes through the NVM controller
+    /// NVM controller sets the `PROGE`/`LOCKE` flag if an error occurs,
+    /// this is checked in `manage_error_states` to propagate
+    /// the relevant error code
     #[inline]
     pub unsafe fn write(
         &mut self,
@@ -415,6 +427,14 @@ impl Nvm {
     /// Erase flash memory.
     ///
     /// Unit of `length` depends on a chosen erasing granularity.
+    ///
+    /// # Safety
+    ///
+    /// Erasing flash goes through the NVM controller
+    /// NVM controller sets the `PROGE`/`LOCKE` flag if an error occurs,
+    /// this is checked in `manage_error_states` to propagate
+    /// the relevant error code
+    ///
     #[inline]
     pub unsafe fn erase(
         &mut self,
@@ -476,7 +496,7 @@ impl Nvm {
         input.end > retrieve_flash_size()
     }
 
-    /// Retrieve SmartEERPOM
+    /// Retrieve SmartEEPROM
     #[inline]
     pub fn smart_eeprom(&mut self) -> smart_eeprom::Result {
         smart_eeprom::SmartEepromMode::retrieve(self)
