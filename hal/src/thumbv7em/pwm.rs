@@ -1,9 +1,9 @@
 #![allow(non_snake_case)]
 
 use crate::clock;
+use crate::ehal::{Pwm, PwmPin};
 use crate::gpio::*;
 use crate::gpio::{AlternateE, AnyPin, Pin};
-use crate::hal::{Pwm, PwmPin};
 use crate::time::Hertz;
 use crate::timer_params::TimerParams;
 

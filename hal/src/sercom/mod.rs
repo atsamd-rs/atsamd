@@ -52,7 +52,7 @@ use pac::{SERCOM4, SERCOM5};
 use pac::{SERCOM6, SERCOM7};
 
 #[cfg(feature = "dma")]
-use crate::common::dmac::TriggerSource;
+use crate::dmac::TriggerSource;
 
 use crate::typelevel::Sealed;
 

@@ -1,5 +1,3 @@
-#![allow(deprecated)]
-
 use crate::gpio::{
     self, pin::*, AnyPin, FloatingInterrupt, PinId, PinMode, PullDownInterrupt, PullUpInterrupt,
 };

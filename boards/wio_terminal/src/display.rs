@@ -1,7 +1,7 @@
 use atsamd_hal::clock::GenericClockController;
+use atsamd_hal::ehal::blocking::delay::DelayMs;
 use atsamd_hal::ehal::digital::v2::OutputPin;
-use atsamd_hal::hal::blocking::delay::DelayMs;
-use atsamd_hal::hal::spi::{Phase, Polarity};
+use atsamd_hal::ehal::spi::{Phase, Polarity};
 use atsamd_hal::pac::{MCLK, SERCOM7};
 use atsamd_hal::sercom::spi;
 use atsamd_hal::sercom::{IoSet4, Sercom7};

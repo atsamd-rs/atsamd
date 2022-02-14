@@ -1,7 +1,7 @@
 //! Analogue-to-Digital Conversion
 use crate::clock::GenericClockController;
+use crate::ehal::adc::{Channel, OneShot};
 use crate::gpio::*;
-use crate::hal::adc::{Channel, OneShot};
 use crate::pac::{adc, ADC, PM};
 
 /// Samples per reading

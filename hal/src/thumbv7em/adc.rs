@@ -2,7 +2,7 @@
 use crate::clock::GenericClockController;
 #[rustfmt::skip]
 use crate::gpio::*;
-use crate::hal::adc::{Channel, OneShot};
+use crate::ehal::adc::{Channel, OneShot};
 use crate::pac::gclk::genctrl::SRC_A::DFLL;
 use crate::pac::gclk::pchctrl::GEN_A;
 use crate::pac::{adc0, ADC0, ADC1, MCLK};
