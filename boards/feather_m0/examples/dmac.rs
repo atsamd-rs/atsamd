@@ -77,8 +77,8 @@ fn main() -> ! {
     let _b = buf_16[LENGTH - 1];
 
     // Manipulate the returned buffer for fun
-    for i in 0..LENGTH {
-        buf_16[i] = i as u16;
+    for (i, item) in buf_16.iter_mut().enumerate() {
+        *item = i as u16;
     }
 
     // Setup a DMA transfer (memory-to-memory -> incrementing source, fixed

@@ -68,9 +68,9 @@ fn main() -> ! {
     };
 
     unsafe {
-        USB_SERIAL = Some(SerialPort::new(&bus_allocator));
+        USB_SERIAL = Some(SerialPort::new(bus_allocator));
         USB_BUS = Some(
-            UsbDeviceBuilder::new(&bus_allocator, UsbVidPid(0x16c0, 0x27dd))
+            UsbDeviceBuilder::new(bus_allocator, UsbVidPid(0x16c0, 0x27dd))
                 .manufacturer("Fake company")
                 .product("Serial port")
                 .serial_number("TEST")
@@ -109,7 +109,7 @@ fn main() -> ! {
     red_led.set_low().unwrap();
     delay.delay_ms(500_u32);
 
-    while USB_DATA_RECEIVED.load(atomic::Ordering::Relaxed) == false {
+    while !USB_DATA_RECEIVED.load(atomic::Ordering::Relaxed) {
         delay.delay_ms(250_u32);
         red_led.toggle().unwrap();
     }
@@ -192,8 +192,8 @@ static USB_DATA_RECEIVED: atomic::AtomicBool = atomic::AtomicBool::new(false);
 #[interrupt]
 fn USB() {
     unsafe {
-        USB_BUS.as_mut().map(|usb_dev| {
-            USB_SERIAL.as_mut().map(|serial| {
+        if let Some(usb_dev) = USB_BUS.as_mut() {
+            if let Some(serial) = USB_SERIAL.as_mut() {
                 usb_dev.poll(&mut [serial]);
                 let mut buf = [0u8; 16];
                 if let Ok(count) = serial.read(&mut buf) {
@@ -201,7 +201,7 @@ fn USB() {
                         USB_DATA_RECEIVED.store(true, atomic::Ordering::Relaxed);
                     }
                 }
-            });
-        });
+            };
+        };
     };
 }

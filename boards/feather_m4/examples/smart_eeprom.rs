@@ -1,5 +1,6 @@
 #![no_std]
 #![no_main]
+#![allow(clippy::bool_comparison)]
 
 use bsp::ehal;
 use bsp::hal;
@@ -53,9 +54,9 @@ fn main() -> ! {
     };
 
     unsafe {
-        USB_SERIAL = Some(SerialPort::new(&bus_allocator));
+        USB_SERIAL = Some(SerialPort::new(bus_allocator));
         USB_BUS = Some(
-            UsbDeviceBuilder::new(&bus_allocator, UsbVidPid(0x16c0, 0x27dd))
+            UsbDeviceBuilder::new(bus_allocator, UsbVidPid(0x16c0, 0x27dd))
                 .manufacturer("Fake company")
                 .product("Serial port")
                 .serial_number("TEST")
@@ -93,7 +94,7 @@ fn main() -> ! {
             let mut read_buf = [0u8; 14];
             seeprom.get(0x14, &mut read_buf);
             read_buf.rotate_left(4);
-            if &read_buf[..8] == &write_buf {
+            if read_buf[..8] == write_buf {
                 serial_writeln!("Smart EEPROM test successful");
             } else {
                 serial_writeln!("Smart EEPROM test failed");
@@ -135,8 +136,8 @@ where
     T: Fn(&mut SerialPort<UsbBus>) -> R,
 {
     usb_free(|_| unsafe {
-        let mut usb_serial = USB_SERIAL.as_mut().expect("UsbSerial not initialized");
-        borrower(&mut usb_serial)
+        let usb_serial = USB_SERIAL.as_mut().expect("UsbSerial not initialized");
+        borrower(usb_serial)
     })
 }
 
@@ -192,8 +193,8 @@ macro_rules! serial_writeln {
 
 fn poll_usb() {
     unsafe {
-        USB_BUS.as_mut().map(|usb_dev| {
-            USB_SERIAL.as_mut().map(|serial| {
+        if let Some(usb_dev) = USB_BUS.as_mut() {
+            if let Some(serial) = USB_SERIAL.as_mut() {
                 usb_dev.poll(&mut [serial]);
                 let mut buf = [0u8; 64];
 
@@ -203,8 +204,8 @@ fn poll_usb() {
                     }
                     serial.write(&buf[..count]).unwrap();
                 };
-            });
-        });
+            };
+        }
     };
 }
 
