@@ -1,22 +1,23 @@
 [package]
 name = "wio_lite_w600"
-version = "0.2.1"
+version = "0.3.0"
 authors = ["Daniel Mason <daniel@danielmason.com"]
 description = "Board Support crate for the Wio Lite W600"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal", "arduino"]
+categories = ["embedded", "hardware-support", "no-std"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
 documentation = "https://atsamd-rs.github.io/atsamd/atsamd21g/wio_lite_w600/"
-edition = "2018"
+edition = "2021"
 
 [dependencies]
-cortex-m = "0.6"
-cortex-m-rt = { version = "0.6", optional = true }
+cortex-m = "0.7"
+cortex-m-rt = { version = "0.7", optional = true }
 usb-device = { version = "0.2", optional = true }
 
 [dependencies.atsamd-hal]
-version = "0.13"
+version = "0.14"
 default-features = false
 
 [dev-dependencies]

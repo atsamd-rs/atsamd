@@ -1446,7 +1446,7 @@ macro_rules! bsp_pins {
                 $(
                     {
                         $( #[$id_cfg] )*
-                        $Id
+                        ( $Id, [<$Id:lower>] )
                         $( #[$name_doc] )*
                         $(
                             #[
@@ -1478,11 +1478,15 @@ macro_rules! bsp_pins {
 
             $crate::__define_pin_alias_macro!(
                 $(
-                    $(
+                    {
+                        ( $( $name )? [<$Id:lower>] )
                         $(
-                            [<$Alias:snake>]
-                        )+
-                    )?
+                            $(
+                                $( #[$alias_cfg] )*
+                                [<$Alias:snake>]
+                            )+
+                        )?
+                    }
                 )+
             );
 
@@ -1497,71 +1501,68 @@ macro_rules! __declare_pins_type {
         $(
             {
                 $( #[$id_cfg:meta] )*
-                $Id:ident
+                ( $Id:ident, $id:ident )
                 $( #[$name_doc:meta] )*
                 ( $name:ident $( $others:ident )* )
             }
         )+
     ) => {
-        $crate::paste::paste! {
+        /// BSP replacement for the HAL
+        /// [`Pins`](atsamd_hal::gpio::v2::Pins) type
+        ///
+        /// This type is intended to provide more meaningful names for the
+        /// given pins.
+        pub struct Pins {
+            port: Option<$crate::pac::PORT>,
+            $(
+                $( #[$id_cfg] )*
+                $( #[$name_doc] )*
+                pub $name: $crate::gpio::v2::Pin<
+                    $crate::gpio::v2::$Id,
+                    $crate::gpio::v2::Reset
+                >,
+            )+
+        }
 
-            /// BSP replacement for the HAL
-            /// [`Pins`](atsamd_hal::gpio::v2::Pins) type
+        impl Pins {
+
+            /// Take ownership of the PAC [`PORT`] and split it into
+            /// discrete [`Pin`]s.
             ///
-            /// This type is intended to provide more meaningful names for the
-            /// given pins.
-            pub struct Pins {
-                port: Option<$crate::pac::PORT>,
-                $(
-                    $( #[$id_cfg] )*
-                    $( #[$name_doc] )*
-                    pub $name: $crate::gpio::v2::Pin<
-                        $crate::gpio::v2::$Id,
-                        $crate::gpio::v2::Reset
-                    >,
-                )+
+            /// This struct serves as a replacement for the HAL [`Pins`]
+            /// struct. It is intended to provide more meaningful names for
+            /// each [`Pin`] in a BSP. Any [`Pin`] not defined by the BSP is
+            /// dropped.
+            ///
+            /// [`PORT`](atsamd_hal::pac::PORT)
+            /// [`Pin`](atsamd_hal::gpio::v2::Pin)
+            /// [`Pins`](atsamd_hal::gpio::v2::Pins)
+            #[inline]
+            pub fn new(port: $crate::pac::PORT) -> Self {
+                let mut pins = $crate::gpio::v2::Pins::new(port);
+                Self {
+                    port: Some(unsafe{ pins.port() }),
+                    $(
+                        $( #[$id_cfg] )*
+                        $name: pins.$id,
+                    )+
+                }
             }
 
-            impl Pins {
-
-                /// Take ownership of the PAC [`PORT`] and split it into
-                /// discrete [`Pin`]s.
-                ///
-                /// This struct serves as a replacement for the HAL [`Pins`]
-                /// struct. It is intended to provide more meaningful names for
-                /// each [`Pin`] in a BSP. Any [`Pin`] not defined by the BSP is
-                /// dropped.
-                ///
-                /// [`PORT`](atsamd_hal::pac::PORT)
-                /// [`Pin`](atsamd_hal::gpio::v2::Pin)
-                /// [`Pins`](atsamd_hal::gpio::v2::Pins)
-                #[inline]
-                pub fn new(port: $crate::pac::PORT) -> Self {
-                    let mut pins = $crate::gpio::v2::Pins::new(port);
-                    Self {
-                        port: Some(unsafe{ pins.port() }),
-                        $(
-                            $( #[$id_cfg] )*
-                            $name: pins.[<$Id:lower>],
-                        )+
-                    }
-                }
-
-                /// Take the PAC [`PORT`]
-                ///
-                /// The [`PORT`] can only be taken once. Subsequent calls to
-                /// this function will panic.
-                ///
-                /// # Safety
-                ///
-                /// Direct access to the [`PORT`] could allow you to invalidate
-                /// the compiler's type-level tracking, so it is unsafe.
-                ///
-                /// [`PORT`](atsamd_hal::pac::PORT)
-                #[inline]
-                pub unsafe fn port(&mut self) -> $crate::pac::PORT {
-                    self.port.take().unwrap()
-                }
+            /// Take the PAC [`PORT`]
+            ///
+            /// The [`PORT`] can only be taken once. Subsequent calls to
+            /// this function will panic.
+            ///
+            /// # Safety
+            ///
+            /// Direct access to the [`PORT`] could allow you to invalidate
+            /// the compiler's type-level tracking, so it is unsafe.
+            ///
+            /// [`PORT`](atsamd_hal::pac::PORT)
+            #[inline]
+            pub unsafe fn port(&mut self) -> $crate::pac::PORT {
+                self.port.take().unwrap()
             }
         }
     };
@@ -1608,13 +1609,6 @@ macro_rules! __create_pin_aliases {
                 #[doc = "for the `" $Alias "` alias."]
                 pub const [<$Alias:snake:upper _MODE>]: $crate::gpio::v2::DynPinMode =
                 <$crate::gpio::v2::$Mode as $crate::gpio::v2::PinMode>::DYN;
-
-                $( #[$attr] )*
-                #[macro_export]
-                #[doc(hidden)]
-                macro_rules! [<__pin_alias_ $Alias:snake>] {
-                    ( $pins:ident ) => { $pins.$name };
-                }
             )*
         }
     };
@@ -1625,7 +1619,13 @@ macro_rules! __create_pin_aliases {
 macro_rules! __define_pin_alias_macro {
     (
         $(
-            $alias:ident
+            {
+                ( $name:ident $( $others:ident )* )
+                $(
+                    $( #[$attr:meta] )*
+                    $alias:ident
+                )*
+            }
         )+
     ) => {
         $crate::paste::paste! {
@@ -1650,7 +1650,17 @@ macro_rules! __define_pin_alias_macro {
             #[macro_export]
             macro_rules! pin_alias {
                 $(
-                    ( $pins:ident . $alias ) => { [<__pin_alias_ $alias>]!($pins) };
+                    $(
+                        ( $pins:ident . $alias ) => {
+                            {
+                                $( #[$attr] )*
+                                macro_rules! [<pin_alias_ $alias>] {
+                                    () => { $pins.$name };
+                                }
+                                [<pin_alias_ $alias>]!()
+                            }
+                        };
+                    )*
                 )+
             }
         }

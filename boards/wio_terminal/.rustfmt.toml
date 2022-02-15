@@ -1,5 +1,5 @@
 # `wrap_comments` currently requires nightly; if you are not on the nightly
 # channel it will give you a warning but otherwise be ignored.
 
-edition = "2018"
+edition = "2021"
 wrap_comments = true

@@ -25,9 +25,9 @@ pub use hal::pac;
 use hal::bsp_pins;
 use hal::clock::GenericClockController;
 use hal::sercom::v2::spi;
-use hal::sercom::v2::Sercom2;
+use hal::sercom::v2::uart::{self, BaudMode, Oversampling};
+use hal::sercom::v2::{Sercom0, Sercom2};
 use hal::sercom::I2CMaster1;
-use hal::sercom::UART0;
 use hal::time::Hertz;
 
 #[cfg(feature = "rt")]
@@ -261,6 +261,12 @@ pub struct Uart {
     pub rx: UartRxReset,
 }
 
+/// UART pads for the labelled RX & TX pins
+pub type UartPads = uart::Pads<Sercom0, UartRx, UartTx>;
+
+/// UART device for the labelled RX & TX pins
+pub type UartConfig = uart::Uart<uart::Config<UartPads>, uart::Duplex>;
+
 impl Uart {
     /// Convenience function for creating a UART on the TX/RX pins.
     pub fn init(
@@ -269,16 +275,15 @@ impl Uart {
         freq: impl Into<Hertz>,
         sercom0: pac::SERCOM0,
         pm: &mut pac::PM,
-    ) -> UART0<UartRx, UartTx, (), ()> {
+    ) -> UartConfig {
         let gclk0 = clocks.gclk0();
         let clock = &clocks.sercom0_core(&gclk0).unwrap();
-        UART0::new(
-            clock,
-            freq.into(),
-            sercom0,
-            pm,
-            (self.rx.into(), self.tx.into()),
-        )
+        let rx: UartRx = self.rx.into();
+        let tx: UartTx = self.tx.into();
+        let pads = uart::Pads::default().rx(rx).tx(tx);
+        uart::Config::new(pm, sercom0, pads, clock.freq())
+            .baud(freq.into(), BaudMode::Fractional(Oversampling::Bits16))
+            .enable()
     }
 }
 
@@ -292,11 +297,10 @@ pub struct Spi {
     pub sclk: SckReset,
 }
 
-#[allow(missing_docs)]
-pub type SpiPads = spi::Pads<Sercom2, SpiMiso, SpiMosi, SpiSck>;
+type SpiPads = spi::Pads<Sercom2, SpiMiso, SpiMosi, SpiSck>;
 
-#[allow(missing_docs)]
-pub type SpiConfig = spi::Spi<spi::Config<SpiPads>>;
+/// The SPI type for the labeled SPI bus.
+pub type SpiConfig = spi::Spi<spi::Config<SpiPads>, spi::Duplex>;
 
 impl Spi {
     /// Convenience function for creating a mode 0 SPI interface on the SPI

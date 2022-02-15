@@ -111,57 +111,6 @@ A BSP (**B**oard **S**upport **P**ackage) is a crate that contains definitions s
 
 * `wio_terminal`
 
-
-### Tier 2 BSPs
-
-* `arduino_mkr1000`
-
-* `arduino_mkrvidor4000`
-
-* `arduino_mkrzero`
-
-* `arduino_nano33iot`
-
-* `atsame54_xpro`
-
-* `circuit_playground_express`
-
-* `edgebadge`
-
-* `gemma_m0`
-
-* `grand_central_m4`
-
-* `itsybitsy_m0`
-
-* `itsybitsy_m4`
-
-* `p1am_100`
-
-* `pfza_proto1`
-
-* `pyportal`
-
-* `qt_py_m0`
-
-* `samd21_mini`
-
-* `serpente`
-
-* `sodaq_one`
-
-* `sodaq_sara_aff`
-
-* `trellis_m4`
-
-* `trinket_m0`
-
-* `wio_lite_mg126`
-
-* `wio_lite_w600`
-
-* `xiao_m0`
-
 To bootstrap your own project you should be able to copy/paste the Rust code from the examples folder within the folder of the BSP you've chosen. But you shouldn't copy the `Cargo.toml` file from there, since that's not only used for the examples, but also for the whole BSP itself. You want to make your own `Cargo.toml` file. If you're new to this and have no clue what you're doing then this is probably the line you want in there:
 
 ```rust

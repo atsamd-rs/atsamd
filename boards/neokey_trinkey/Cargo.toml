@@ -1,22 +1,23 @@
 [package]
 name = "neokey_trinkey"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Broderick Carlin <broderick.carlin@gmail.com>"]
 description = "Board Support crate for the Adafruit Neokey Trinkey"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
+categories = ["embedded", "hardware-support", "no-std"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
-edition = "2018"
+edition = "2021"
 
 [dependencies]
 
 [dependencies.cortex-m-rt]
-version = "0.6.12"
+version = "0.7"
 optional = true
 
 [dependencies.atsamd-hal]
-version = "0.13.0"
+version = "0.14"
 default-features = false
 
 [dependencies.usb-device]
@@ -24,12 +25,12 @@ version = "0.2"
 optional = true
 
 [dependencies.ws2812-timer-delay]
-version = "0.3.0"
+version = "0.3"
 features = ["slow"]
 optional = true
 
 [dependencies.smart-leds]
-version = "0.3.0"
+version = "0.3"
 optional = true
 
 [dev-dependencies]

@@ -231,3 +231,7 @@ pub mod same54 {
     #[cfg(feature = "unproven")]
     pub use crate::pwm;
 }
+
+#[macro_use]
+mod bsp_peripherals_macro;
+pub use bsp_peripherals_macro::*;

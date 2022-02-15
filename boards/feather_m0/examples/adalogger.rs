@@ -19,7 +19,7 @@ use usbd_serial::{SerialPort, USB_CLASS_CDC};
 use bsp::hal;
 use feather_m0 as bsp;
 
-use bsp::entry;
+use bsp::{entry, periph_alias, pin_alias};
 use hal::clock::{ClockGenId, ClockSource, GenericClockController};
 use hal::delay::Delay;
 use hal::pac::{interrupt, CorePeripherals, Peripherals};
@@ -51,7 +51,7 @@ fn main() -> ! {
     let rtc_clock = clocks.rtc(&timer_clock).unwrap();
     let timer = rtc::Rtc::clock_mode(peripherals.RTC, rtc_clock.freq(), &mut peripherals.PM);
     let pins = bsp::Pins::new(peripherals.PORT);
-    let mut red_led = pins.d13.into_push_pull_output();
+    let mut red_led: bsp::RedLed = pin_alias!(pins.red_led).into();
 
     red_led.set_high().unwrap();
     delay.delay_ms(500_u32);
@@ -88,10 +88,11 @@ fn main() -> ! {
     delay.delay_ms(500_u32);
 
     // Now work on the SD peripherals. Slow SPI speed required on init
+    let spi_sercom = periph_alias!(peripherals.spi_sercom);
     let spi = bsp::spi_master(
         &mut clocks,
         400_u32.khz(),
-        peripherals.SERCOM4,
+        spi_sercom,
         &mut peripherals.PM,
         pins.sclk,
         pins.mosi,
@@ -101,8 +102,8 @@ fn main() -> ! {
     red_led.set_high().unwrap();
     delay.delay_ms(500_u32);
 
-    let sd_cd = pins.sd_cd.into_pull_up_input();
-    let mut sd_cs = pins.sd_cs.into_push_pull_output();
+    let sd_cd: bsp::SdCd = pins.sd_cd.into();
+    let mut sd_cs: bsp::SdCs = pins.sd_cs.into();
     sd_cs.set_high().unwrap();
 
     red_led.set_low().unwrap();

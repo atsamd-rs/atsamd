@@ -18,16 +18,22 @@ macro_rules! dbgprint {
 }
 
 #[app(device = crate::hal::pac, peripherals = true)]
-const APP: () = {
-    struct Resources {
+mod app {
+    use super::*;
+
+    #[local]
+    struct Local {
         blue_led: Pa17<Output<OpenDrain>>,
         tx_led: Pa27<Output<OpenDrain>>,
         rx_led: Pb3<Output<OpenDrain>>,
         uart: UART0<Sercom0Pad3<Pa11<PfC>>, Sercom0Pad2<Pa10<PfC>>, (), ()>,
     }
 
+    #[shared]
+    struct Shared {}
+
     #[init]
-    fn init(c: init::Context) -> init::LateResources {
+    fn init(c: init::Context) -> (Shared, Local, init::Monotonics) {
         let mut device = c.device;
 
         let mut pins = bsp::Pins::new(device.PORT);
@@ -76,31 +82,35 @@ const APP: () = {
 
         dbgprint!("done init");
 
-        init::LateResources {
-            blue_led: led,
-            tx_led,
-            rx_led,
-            uart,
-        }
+        (
+            Shared {},
+            Local {
+                blue_led: led,
+                tx_led,
+                rx_led,
+                uart,
+            },
+            init::Monotonics(),
+        )
     }
 
-    #[task(binds = SERCOM0, resources = [blue_led, tx_led, uart, rx_led])]
-    fn SERCOM0(c: SERCOM0::Context) {
-        c.resources.rx_led.set_low().unwrap();
-        let data = match nb::block!(c.resources.uart.read()) {
+    #[task(binds = SERCOM0, local = [blue_led, tx_led, uart, rx_led])]
+    fn sercom0_handler(c: sercom0_handler::Context) {
+        c.local.rx_led.set_low().unwrap();
+        let data = match nb::block!(c.local.uart.read()) {
             Ok(v) => {
-                c.resources.rx_led.set_high().unwrap();
+                c.local.rx_led.set_high().unwrap();
                 v
             }
             Err(_) => 0 as u8,
         };
 
-        c.resources.tx_led.set_low().unwrap();
-        match nb::block!(c.resources.uart.write(data)) {
+        c.local.tx_led.set_low().unwrap();
+        match nb::block!(c.local.uart.write(data)) {
             Ok(_) => {
-                c.resources.tx_led.set_high().unwrap();
+                c.local.tx_led.set_high().unwrap();
             }
             Err(_) => unimplemented!(),
         }
     }
-};
+}

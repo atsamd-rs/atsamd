@@ -4,17 +4,18 @@ version = "0.10.0"
 authors = ["Garret Kelly <gkelly@gkel.ly>"]
 description = "Board Support crate for the Adafruit QT Py"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
+categories = ["embedded", "hardware-support", "no-std"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
 edition = "2018"
 
 [dependencies]
-cortex-m-rt = { version = "0.6.12", optional = true }
+cortex-m-rt = { version = "0.7", optional = true }
 usb-device = { version = "0.2", optional = true }
 
 [dependencies.atsamd-hal]
-version = "0.13"
+version = "0.14"
 default-features = false
 
 [dev-dependencies]
@@ -22,6 +23,7 @@ usbd-serial = "0.1"
 panic-halt = "0.2"
 smart-leds = "0.3"
 ws2812-timer-delay = { version = "0.3", features = ["slow"] }
+cortex-m = "0.7"
 
 [features]
 default = ["rt", "atsamd-hal/samd21e"]
