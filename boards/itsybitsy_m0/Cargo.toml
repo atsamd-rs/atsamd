@@ -9,7 +9,6 @@ license = "MIT OR Apache-2.0"
 repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
 edition = "2021"
-resolver = "2"
 
 [dependencies]
 bitbang-hal = "0.3"

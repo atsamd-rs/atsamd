@@ -16,7 +16,7 @@ use rtic;
 #[rtic::app(device = bsp::pac, peripherals = true, dispatchers = [EVSYS])]
 mod app {
     use super::*;
-    use bsp::hal;
+    use bsp::{hal, pin_alias};
     use hal::clock::{ClockGenId, ClockSource, GenericClockController};
     use hal::pac::Peripherals;
     use hal::prelude::*;
@@ -53,7 +53,7 @@ mod app {
         clocks.configure_standby(ClockGenId::GCLK2, true);
         let rtc_clock = clocks.rtc(&rtc_clock_src).unwrap();
         let rtc = Rtc::count32_mode(peripherals.RTC, rtc_clock.freq(), &mut peripherals.PM);
-        let red_led: bsp::RedLed = pins.d13.into();
+        let red_led: bsp::RedLed = pin_alias!(pins.red_led).into();
 
         // We can use the RTC in standby for maximum power savings
         core.SCB.set_sleepdeep();

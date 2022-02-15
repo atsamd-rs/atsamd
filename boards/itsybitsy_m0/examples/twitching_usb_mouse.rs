@@ -37,8 +37,8 @@ fn main() -> ! {
         &mut peripherals.SYSCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let pins = bsp::Pins::new(peripherals.PORT);
-    let mut red_led: bsp::RedLed = pins.d13.into();
+    let mut pins = bsp::Pins::new(peripherals.PORT);
+    let mut red_led = pins.d13.into_open_drain_output(&mut pins.port);
     red_led.set_low().unwrap();
 
     let bus_allocator = unsafe {
