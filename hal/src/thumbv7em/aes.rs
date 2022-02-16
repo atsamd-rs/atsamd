@@ -106,9 +106,13 @@ pub use crate::pac::aes::ctrla::{
 
 // Re-export Aes128 with hardware backing
 // TODO Should all these items here be reexported? (Aes*, Aes*Enc, Aes*Dec)
+#[cfg(feature = "enable_unsafe_aes_newblock_cipher")]
 mod rustcrypto;
+
+#[cfg(feature = "enable_unsafe_aes_newblock_cipher")]
 pub use rustcrypto::{Aes128, Aes192, Aes256};
 
+#[cfg(feature = "enable_unsafe_aes_newblock_cipher")]
 pub use cipher::{
     consts::{U1, U16, U24, U32, U8},
     generic_array::*,
@@ -119,6 +123,7 @@ use crate::pac::aes::*;
 
 use bitfield::BitRange;
 
+#[cfg(feature = "enable_unsafe_aes_newblock_cipher")]
 use aes::Block;
 
 type Dataptr = u8;
@@ -192,11 +197,13 @@ bitfield::bitfield! {
 ///
 /// Apart from creating new RustCrypto
 /// there is no AES peripheral functionality exposed
+#[cfg(feature = "enable_unsafe_aes_newblock_cipher")]
 pub struct AesRustCrypto {
     /// AES pac register providing hardware access
     aes: Aes,
 }
 
+#[cfg(feature = "enable_unsafe_aes_newblock_cipher")]
 impl AesRustCrypto {
     /// Use the AES peripheral as hardware backend for RustCrypto AES
     ///
@@ -263,6 +270,8 @@ impl Aes {
 
     /// Use the AES peripheral as hardware backend for RustCrypto AES
     ///
+    /// Requires the feature `enable_unsafe_aes_newblock_cipher` to be enabled
+    ///
     /// > **WARNING**
     /// > RustCrypto backend assumes full ownership of AES hardware peripheral
     ///
@@ -275,6 +284,7 @@ impl Aes {
     ///
     /// Clock::v2
     /// `tokens.apbs.aes.enable();`
+    #[cfg(feature = "enable_unsafe_aes_newblock_cipher")]
     #[inline]
     pub fn activate_rustcrypto_backend(self) -> AesRustCrypto {
         AesRustCrypto::new(self)
