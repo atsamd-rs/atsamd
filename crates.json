@@ -46,7 +46,7 @@
     },
     "itsybitsy_m0": {
       "tier": 2,
-      "build": "cargo build --examples --features=unproven,usb"
+      "build": "cargo build --examples --features=unproven,usb,dma,sdmmc,rtic"
     },
     "itsybitsy_m4": {
       "tier": 2,

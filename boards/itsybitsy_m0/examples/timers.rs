@@ -12,14 +12,13 @@ use itsybitsy_m0 as bsp;
 
 use bsp::{entry, pin_alias};
 use hal::clock::GenericClockController;
-use hal::delay::Delay;
 use hal::prelude::*;
-use pac::{CorePeripherals, Peripherals};
+use hal::timer::TimerCounter;
+use pac::Peripherals;
 
 #[entry]
 fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
-    let core = CorePeripherals::take().unwrap();
     let mut clocks = GenericClockController::with_internal_32kosc(
         peripherals.GCLK,
         &mut peripherals.PM,
@@ -28,11 +27,21 @@ fn main() -> ! {
     );
     let pins = bsp::Pins::new(peripherals.PORT);
     let mut red_led: bsp::RedLed = pin_alias!(pins.red_led).into();
-    let mut delay = Delay::new(core.SYST, &mut clocks);
+
+    // gclk0 represents a configured clock using the system 48MHz oscillator
+    let gclk0 = clocks.gclk0();
+    // configure a clock for the TC4 and TC5 peripherals
+    let tc45 = &clocks.tc4_tc5(&gclk0).unwrap();
+    // instantiate a timer objec for the TC4 peripheral
+    let mut timer = TimerCounter::tc4_(tc45, peripherals.TC4, &mut peripherals.PM);
+    // start a 5Hz timer
+    timer.start(5.hz());
+
+    // toggle the red LED at the frequency set by the timer
     loop {
-        delay.delay_ms(200u8);
+        nb::block!(timer.wait()).unwrap();
         red_led.set_high().unwrap();
-        delay.delay_ms(200u8);
+        nb::block!(timer.wait()).unwrap();
         red_led.set_low().unwrap();
     }
 }

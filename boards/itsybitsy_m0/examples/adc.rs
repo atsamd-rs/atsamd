@@ -6,13 +6,15 @@ use panic_halt as _;
 #[cfg(feature = "use_semihosting")]
 use panic_semihosting as _;
 
+use cortex_m_semihosting::hprintln;
+
 use bsp::hal;
 use bsp::pac;
 use itsybitsy_m0 as bsp;
 
-use bsp::{entry, pin_alias};
+use bsp::entry;
+use hal::adc::Adc;
 use hal::clock::GenericClockController;
-use hal::delay::Delay;
 use hal::prelude::*;
 use pac::{CorePeripherals, Peripherals};
 
@@ -27,12 +29,13 @@ fn main() -> ! {
         &mut peripherals.NVMCTRL,
     );
     let pins = bsp::Pins::new(peripherals.PORT);
-    let mut red_led: bsp::RedLed = pin_alias!(pins.red_led).into();
-    let mut delay = Delay::new(core.SYST, &mut clocks);
+    let mut delay = hal::delay::Delay::new(core.SYST, &mut clocks);
+    let mut adc = Adc::adc(peripherals.ADC, &mut peripherals.PM, &mut clocks);
+    let mut a0: bsp::A0 = pins.a0.into();
+
     loop {
-        delay.delay_ms(200u8);
-        red_led.set_high().unwrap();
-        delay.delay_ms(200u8);
-        red_led.set_low().unwrap();
+        let data: u16 = adc.read(&mut a0).unwrap();
+        hprintln!("{}", data).ok();
+        delay.delay_ms(1000u16);
     }
 }

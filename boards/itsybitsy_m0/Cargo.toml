@@ -6,9 +6,9 @@ description = "Board Support crate for the Adafruit ItsyBitsy M0"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
 categories = ["embedded", "hardware-support", "no-std"]
 license = "MIT OR Apache-2.0"
-edition = "2021"
 repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
+edition = "2021"
 
 [dependencies]
 bitbang-hal = "0.3"
@@ -20,6 +20,7 @@ version = "0.7"
 optional = true
 
 [dependencies.atsamd-hal]
+path = "../../hal"
 version = "0.14"
 default-features = false
 
@@ -27,21 +28,47 @@ default-features = false
 version = "0.2"
 optional = true
 
+[dependencies.embedded-sdmmc]
+version = "0.3"
+optional = true
+
 [dev-dependencies]
+cortex-m-rtic = "1.0"
 cortex-m = "0.7"
 usbd-serial = "0.1"
 usbd-hid = "0.4"
-panic-halt = "0.2"
+cortex-m-semihosting = "0.3"
 ssd1306 = "0.7"
 embedded-graphics = "0.7.1"
+drogue-nom-utils = "0.1"
+nom = { version = "5", default-features = false }
+heapless = "0.7"
+panic-halt = "0.2"
+panic-semihosting = "0.5"
 
 [features]
 # ask the HAL to enable atsamd21g support
-default = ["rt", "atsamd-hal/samd21g"]
+default = ["rt", "atsamd-hal/samd21g", "atsamd-hal/unproven"]
 rt = ["cortex-m-rt", "atsamd-hal/samd21g-rt"]
-usb = ["atsamd-hal/usb", "usb-device"]
 unproven = ["atsamd-hal/unproven"]
+use_rtt = ["atsamd-hal/use_rtt"]
+usb = ["atsamd-hal/usb", "usb-device"]
+dma = ["atsamd-hal/dma"]
+max-channels = ["dma", "atsamd-hal/max-channels"]
+sdmmc = ["embedded-sdmmc", "atsamd-hal/sdmmc"]
+rtic = ["atsamd-hal/rtic"]
 use_semihosting = []
+
+[profile.dev]
+incremental = false
+codegen-units = 1
+debug = true
+lto = false
+
+[profile.release]
+debug = true
+lto = true
+opt-level = "s"
 
 # for cargo flash
 [package.metadata]
@@ -51,14 +78,25 @@ chip = "ATSAMD21G18A"
 name = "blinky_basic"
 
 [[example]]
-name = "dotstar"
-required-features = ["unproven"]
+name = "timers"
 
 [[example]]
-name = "i2c_ssd1306"
+name = "pwm"
 
 [[example]]
-name = "spi_ssd1306"
+name = "adc"
+
+[[example]]
+name = "ssd1306_graphicsmode_128x64_i2c"
+
+[[example]]
+name = "ssd1306_terminalmode_128x64_i2c"
+
+[[example]]
+name = "ssd1306_graphicsmode_128x64_spi"
+
+[[example]]
+name = "ssd1306_terminalmode_128x64_spi"
 
 [[example]]
 name = "usb_echo"
@@ -67,3 +105,31 @@ required-features = ["usb"]
 [[example]]
 name = "twitching_usb_mouse"
 required-features = ["usb"]
+
+[[example]]
+name = "sleeping_timer"
+
+[[example]]
+name = "sleeping_timer_rtc"
+
+[[example]]
+name = "dmac"
+required-features = ["dma"]
+
+[[example]]
+name = "clock"
+required-features = ["usb"]
+
+[[example]]
+name = "dotstar_flashing"
+
+[[example]]
+name = "dotstar_rainbow"
+
+[[example]]
+name = "blinky_rtic"
+required-features = ["rtic"]
+
+[[example]]
+name = "uart"
+required-features = ["dma"]

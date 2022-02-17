@@ -1,14 +1,7 @@
 # Unreleased
 
-# v0.12.0
-
-- update to `atsamd-hal-0.14` and other latest dependencies (#564)
-- Updated to 2021 edition, updated dependencies, removed unused dependencies (#562)
-- remove extraneous `embedded-hal` dependencies from BSPs
-- cleanup `cortex_m` dependency
-- move `usbd-x` crates used only in examples to `[dev-dependencies]`
-- removed unnecessary dependency on `nb` (#510)
+- Big rework of board code by copying the code from feather_m0 and implementing the HW differences (both boards are now more similar to each other) and the corresponding examples
 
 ---
 
-Changelog tracking started at v0.11.0
+Changelog tracking started at v0.12.0
