@@ -8,8 +8,6 @@ use itsybitsy_m0 as bsp;
 use panic_halt as _;
 #[cfg(feature = "use_semihosting")]
 use panic_semihosting as _;
-use usb_device;
-use usbd_hid;
 
 use bsp::entry;
 use hal::clock::GenericClockController;
@@ -53,9 +51,9 @@ fn main() -> ! {
     };
 
     unsafe {
-        USB_HID = Some(HIDClass::new(&bus_allocator, MouseReport::desc(), 60));
+        USB_HID = Some(HIDClass::new(bus_allocator, MouseReport::desc(), 60));
         USB_BUS = Some(
-            UsbDeviceBuilder::new(&bus_allocator, UsbVidPid(0x16c0, 0x27dd))
+            UsbDeviceBuilder::new(bus_allocator, UsbVidPid(0x16c0, 0x27dd))
                 .manufacturer("Fake company")
                 .product("Twitchy Mousey")
                 .serial_number("TEST")
@@ -99,11 +97,9 @@ static mut USB_HID: Option<HIDClass<UsbBus>> = None;
 
 fn poll_usb() {
     unsafe {
-        USB_BUS.as_mut().map(|usb_dev| {
-            USB_HID.as_mut().map(|hid| {
-                usb_dev.poll(&mut [hid]);
-            });
-        });
+        if let (Some(usb_dev), Some(hid)) = (USB_BUS.as_mut(), USB_HID.as_mut()) {
+            usb_dev.poll(&mut [hid]);
+        }
     };
 }
 

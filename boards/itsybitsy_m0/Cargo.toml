@@ -1,6 +1,6 @@
 [package]
 name = "itsybitsy_m0"
-version = "0.12.0"
+version = "0.13.0"
 authors = ["Ben Bergman <ben@benbergman.ca>"]
 description = "Board Support crate for the Adafruit ItsyBitsy M0"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
@@ -20,7 +20,6 @@ version = "0.7"
 optional = true
 
 [dependencies.atsamd-hal]
-path = "../../hal"
 version = "0.14"
 default-features = false
 
@@ -33,7 +32,7 @@ version = "0.3"
 optional = true
 
 [dev-dependencies]
-cortex-m-rtic = "1.0"
+cortex-m-rtic = "0.6.0-rc.4"
 cortex-m = "0.7"
 usbd-serial = "0.1"
 usbd-hid = "0.4"

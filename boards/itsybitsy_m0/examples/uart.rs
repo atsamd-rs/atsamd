@@ -13,7 +13,7 @@ use bsp::hal;
 use bsp::pac;
 use itsybitsy_m0 as bsp;
 
-use bsp::{entry, periph_alias, pin_alias};
+use bsp::entry;
 use hal::clock::GenericClockController;
 use hal::dmac::{DmaController, PriorityLevel};
 use hal::prelude::*;
@@ -42,9 +42,9 @@ fn main() -> ! {
     let chan1 = channels.1.init(PriorityLevel::LVL0);
 
     // Take peripheral and pins
-    let uart_sercom = periph_alias!(peripherals.uart_sercom);
-    let uart_rx = pin_alias!(pins.uart_rx);
-    let uart_tx = pin_alias!(pins.uart_tx);
+    let uart_sercom: bsp::UartSercom = peripherals.SERCOM0;
+    let uart_rx = pins.d0;
+    let uart_tx = pins.d1;
 
     // Setup UART peripheral
     let uart = bsp::uart(
