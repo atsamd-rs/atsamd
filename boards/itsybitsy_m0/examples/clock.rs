@@ -19,7 +19,7 @@ use bsp::hal;
 use bsp::pac;
 use itsybitsy_m0 as bsp;
 
-use bsp::{entry, pin_alias};
+use bsp::entry;
 use hal::clock::{ClockGenId, ClockSource, GenericClockController};
 use hal::delay::Delay;
 use hal::prelude::*;
@@ -41,7 +41,7 @@ fn main() -> ! {
 
     let mut delay = Delay::new(core.SYST, &mut clocks);
     let pins = bsp::Pins::new(peripherals.PORT);
-    let mut red_led: bsp::RedLed = pin_alias!(pins.red_led).into();
+    let mut red_led: bsp::RedLed = pins.d13.into();
 
     // get the internal 32k running at 1024 Hz for the RTC
     let timer_clock = clocks
@@ -67,9 +67,9 @@ fn main() -> ! {
         USB_ALLOCATOR.as_ref().unwrap()
     };
     unsafe {
-        USB_SERIAL = Some(SerialPort::new(&bus_allocator));
+        USB_SERIAL = Some(SerialPort::new(bus_allocator));
         USB_BUS = Some(
-            UsbDeviceBuilder::new(&bus_allocator, UsbVidPid(0x16c0, 0x27dd))
+            UsbDeviceBuilder::new(bus_allocator, UsbVidPid(0x16c0, 0x27dd))
                 .manufacturer("Fake company")
                 .product("Serial port")
                 .serial_number("TEST")
@@ -109,48 +109,46 @@ static mut RTC: Option<rtc::Rtc<rtc::ClockMode>> = None;
 
 fn write_serial(bytes: &[u8]) {
     unsafe {
-        USB_SERIAL.as_mut().map(|serial| {
+        if let Some(serial) = USB_SERIAL.as_mut() {
             serial.write(bytes).unwrap();
-        });
+        };
     }
 }
 
 fn poll_usb() {
     unsafe {
-        USB_BUS.as_mut().map(|usb_dev| {
-            USB_SERIAL.as_mut().map(|serial| {
-                usb_dev.poll(&mut [serial]);
-                let mut buf = [0u8; 32];
+        if let (Some(usb_dev), Some(serial)) = (USB_BUS.as_mut(), USB_SERIAL.as_mut()) {
+            usb_dev.poll(&mut [serial]);
+            let mut buf = [0u8; 32];
 
-                if let Ok(count) = serial.read(&mut buf) {
-                    let mut buffer: &[u8] = &buf[..count];
-                    // echo to terminal
-                    serial.write(buffer).unwrap();
+            if let Ok(count) = serial.read(&mut buf) {
+                let mut buffer: &[u8] = &buf[..count];
+                // echo to terminal
+                serial.write(buffer).unwrap();
 
-                    // Look for setting of time
-                    while buffer.len() > 5 {
-                        match timespec(buffer) {
-                            Ok((remaining, time)) => {
-                                buffer = remaining;
-                                disable_interrupts(|_| {
-                                    RTC.as_mut().map(|rtc| {
-                                        rtc.set_time(rtc::Datetime {
-                                            seconds: time.second as u8,
-                                            minutes: time.minute as u8,
-                                            hours: time.hour as u8,
-                                            day: 0,
-                                            month: 0,
-                                            year: 0,
-                                        });
+                // Look for setting of time
+                while buffer.len() > 5 {
+                    match timespec(buffer) {
+                        Ok((remaining, time)) => {
+                            buffer = remaining;
+                            disable_interrupts(|_| {
+                                if let Some(ref mut rtc) = RTC {
+                                    rtc.set_time(rtc::Datetime {
+                                        seconds: time.second as u8,
+                                        minutes: time.minute as u8,
+                                        hours: time.hour as u8,
+                                        day: 0,
+                                        month: 0,
+                                        year: 0,
                                     });
-                                });
-                            }
-                            _ => break,
-                        };
-                    }
-                };
-            });
-        });
+                                };
+                            });
+                        }
+                        _ => break,
+                    };
+                }
+            };
+        }
     };
 }
 

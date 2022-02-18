@@ -74,7 +74,7 @@ use bsp::hal;
 use bsp::pac;
 use itsybitsy_m0 as bsp;
 
-use bsp::{entry, periph_alias, pin_alias};
+use bsp::entry;
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
 use hal::prelude::*;
@@ -92,10 +92,10 @@ fn main() -> ! {
         &mut peripherals.NVMCTRL,
     );
     let pins = bsp::Pins::new(peripherals.PORT);
-    let mut red_led: bsp::RedLed = pin_alias!(pins.red_led).into();
+    let mut red_led: bsp::RedLed = pins.d13.into();
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
-    let i2c_sercom = periph_alias!(peripherals.i2c_sercom);
+    let i2c_sercom: bsp::I2cSercom = peripherals.SERCOM3;
     let i2c = bsp::i2c_master(
         &mut clocks,
         KiloHertz(400),

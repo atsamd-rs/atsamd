@@ -17,15 +17,15 @@ use hal::sercom::{
     I2CMaster3,
 };
 use hal::time::Hertz;
+use pac::{SERCOM0, SERCOM3, SERCOM4};
 
 #[cfg(feature = "usb")]
 use hal::usb::{usb_device::bus::UsbBusAllocator, UsbBus};
 
-hal::bsp_peripherals!(
-    SERCOM0 { UartSercom }
-    SERCOM3 { I2cSercom }
-    SERCOM4 { SpiSercom }
-);
+// Temporary until we can use the `bsp_pins!` macro
+pub type UartSercom = SERCOM0;
+pub type I2cSercom = SERCOM3;
+pub type SpiSercom = SERCOM4;
 
 hal::bsp_pins!(
     PA03 {

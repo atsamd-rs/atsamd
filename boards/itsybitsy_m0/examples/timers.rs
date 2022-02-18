@@ -10,7 +10,7 @@ use bsp::hal;
 use bsp::pac;
 use itsybitsy_m0 as bsp;
 
-use bsp::{entry, pin_alias};
+use bsp::entry;
 use hal::clock::GenericClockController;
 use hal::prelude::*;
 use hal::timer::TimerCounter;
@@ -26,7 +26,7 @@ fn main() -> ! {
         &mut peripherals.NVMCTRL,
     );
     let pins = bsp::Pins::new(peripherals.PORT);
-    let mut red_led: bsp::RedLed = pin_alias!(pins.red_led).into();
+    let mut red_led: bsp::RedLed = pins.d13.into();
 
     // gclk0 represents a configured clock using the system 48MHz oscillator
     let gclk0 = clocks.gclk0();

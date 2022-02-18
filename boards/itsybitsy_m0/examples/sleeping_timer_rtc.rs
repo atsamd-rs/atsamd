@@ -26,7 +26,7 @@ use bsp::hal;
 use bsp::pac;
 use itsybitsy_m0 as bsp;
 
-use bsp::{entry, pin_alias};
+use bsp::entry;
 use hal::clock::{enable_internal_32kosc, ClockGenId, ClockSource, GenericClockController};
 use hal::prelude::*;
 use hal::rtc;
@@ -91,7 +91,7 @@ fn main() -> ! {
 
     // Configure our red LED and blink forever, sleeping between!
     let pins = bsp::Pins::new(peripherals.PORT);
-    let mut red_led: bsp::RedLed = pin_alias!(pins.red_led).into();
+    let mut red_led: bsp::RedLed = pins.d13.into();
     loop {
         red_led.set_low().unwrap();
         sleeping_delay.delay_ms(1_000u32);
