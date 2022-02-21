@@ -94,7 +94,8 @@ pub mod pins {
             /// Pin 9, PWM capable.  Also analog input (A7)
             name: d9
             aliases: {
-                PushPullOutput: Ssd1306Rst
+                PushPullOutput: Ssd1306Rst,
+                AlternateB: Battery
             }
         }
         PA18 {
