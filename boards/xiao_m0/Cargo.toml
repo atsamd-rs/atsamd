@@ -36,6 +36,7 @@ default = ["rt", "atsamd-hal/samd21g", "atsamd-hal/unproven"]
 rt = ["cortex-m-rt", "atsamd-hal/samd21g-rt"]
 unproven = ["atsamd-hal/unproven"]
 usb = ["atsamd-hal/usb", "usb-device"]
+rtic = [ "atsamd-hal/rtic"]
 
 [[example]]
 name = "blink"
