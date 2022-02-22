@@ -21,10 +21,6 @@ where
     scl: SCL,
 }
 
-/// Container for a set of SERCOM [`Pad`]s
-///
-/// See the [module-level](crate::sercom::v2::i2c) documentation for more
-/// details on specifying a `Pads` type and creating instances.
 #[cfg(feature = "samd11")]
 impl<S, DI, CI> Pads<S, Pad<S, Pad0, DI>, Pad<S, Pad1, CI>>
 where
@@ -47,7 +43,7 @@ where
 }
 
 #[cfg(not(feature = "samd11"))]
-impl<S, DI, CI> Pads<S, Pad<S, DI>, Pad<S, CI>>
+impl<S, DI, CI> PadsFromIds<S, DI, CI>
 where
     S: Sercom,
     DI: GetPad<S>,

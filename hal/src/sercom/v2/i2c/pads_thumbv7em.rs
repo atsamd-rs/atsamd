@@ -23,7 +23,7 @@ where
     scl: SCL,
 }
 
-impl<S, I, DI, CI> Pads<S, I, Pad<S, DI>, Pad<S, CI>>
+impl<S, I, DI, CI> PadsFromIds<S, I, DI, CI>
 where
     S: Sercom,
     I: IoSet,
@@ -87,7 +87,6 @@ where
 ///
 /// [`Pin`]: crate::gpio::v2::Pin
 /// [`PinId`]: crate::gpio::v2::PinId
-#[cfg(feature = "samd21")]
 pub type PadsFromIds<S, I, SDA, SCL> = Pads<S, I, Pad<S, SDA>, Pad<S, SCL>>;
 
 //=============================================================================
