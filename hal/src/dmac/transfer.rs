@@ -512,6 +512,7 @@ where
         }
     }
 }
+
 impl<B, C, const N: usize> Transfer<C, BufferPair<&'static mut [B; N]>>
 where
     B: 'static + Beat,
@@ -549,12 +550,23 @@ where
     }
 
     /// Unsafely and mutably borrow the source buffer
+    ///
+    /// # Safety
+    ///
+    /// The source buffer should never be borrowed when a transfer is in
+    /// progress, as it is getting mutated or read in another context (ie,
+    /// the DMAC hardware "thread").
     #[inline]
     pub(crate) unsafe fn borrow_source(&mut self) -> &mut S {
         &mut self.buffers.source
     }
 
-    // Unsafely and mutably borrow the destinationbuffer
+    /// Unsafely and mutably borrow the destination buffer.
+    /// # Safety
+    ///
+    /// The destination buffer should never be borrowed when a transfer is in
+    /// progress, as it is getting mutated or read in another context (ie,
+    /// the DMAC hardware "thread").
     #[inline]
     pub(crate) unsafe fn borrow_destination(&mut self) -> &mut D {
         &mut self.buffers.destination

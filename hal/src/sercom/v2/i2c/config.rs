@@ -75,6 +75,8 @@ impl<P: PadSet> Config<P> {
 impl<P: PadSet> Config<P> {
     /// Obtain a reference to the PAC `SERCOM` struct
     ///
+    /// # Safety
+    ///
     /// Directly accessing the `SERCOM` could break the invariants of the
     /// type-level tracking in this module, so it is unsafe.
     #[inline]

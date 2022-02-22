@@ -55,10 +55,12 @@ impl<C: i2c::AnyConfig> I2c<C> {
     /// should immediately be followed by a call to [`send_with_dma`] or
     /// [`receive_with_dma`].
     ///
-    /// ```
+    /// ```no_run
+    /// # fn init_transfer<A: i2c::AnyConfig, C: AnyChannel<dmac::Ready>>(i2c: I2c<A>, chan0: C, buf_src: &'static mut [u8]){
     /// // Assume `i2c` is a fully configured `I2c`, and `chan0` a fully configured `dmac::Channel`.
     /// let token = i2c.init_dma_transfer()?;
     /// i2c.send_with_dma(ADDRESS, token, buf_src, chan0, |_| {});
+    /// # }
     /// ```
     ///
     /// [`init_dma_transfer`]: super::i2c::I2c::init_dma_transfer
@@ -98,14 +100,17 @@ impl<C: i2c::AnyConfig> I2c<C> {
         #[cfg(any(feature = "samd11", feature = "samd21"))]
         let trigger_action = TriggerAction::BEAT;
 
-        // SAFETY: We use new_unchecked to avoid having to pass a 'static self as the
-        // destination buffer. This is safe as long as we guarantee the destination
-        // buffer is static.
+        // SAFETY: This is safe because the of the `'static` bound check
+        // for `B`, and the fact that the buffer length of an `I2c` is always 1.
         let xfer = unsafe { dmac::Transfer::new_unchecked(channel, self, buf, false) };
         let mut xfer = xfer
             .with_waker(waker)
             .begin(C::Sercom::DMA_RX_TRIGGER, trigger_action);
 
+        // SAFETY: we borrow the source from under a `Busy` transfer. While the type
+        // system believes the transfer is running, we haven't enabled it in the
+        // I2C peripheral yet, and so a trigger won't happen until we call
+        // `start_dma_read`.
         unsafe { xfer.borrow_source().start_dma_read(address, len as u8) };
         xfer
     }
@@ -140,14 +145,17 @@ impl<C: i2c::AnyConfig> I2c<C> {
         #[cfg(any(feature = "samd11", feature = "samd21"))]
         let trigger_action = TriggerAction::BEAT;
 
-        // SAFETY: We use new_unchecked to avoid having to pass a 'static self as the
-        // destination buffer. This is safe as long as we guarantee the source buffer is
-        // static.
+        // SAFETY: This is safe because the of the `'static` bound check
+        // for `B`, and the fact that the buffer length of an `I2c` is always 1.
         let xfer = unsafe { dmac::Transfer::new_unchecked(channel, buf, self, false) };
         let mut xfer = xfer
             .with_waker(waker)
             .begin(C::Sercom::DMA_TX_TRIGGER, trigger_action);
 
+        // SAFETY: we borrow the source from under a `Busy` transfer. While the type
+        // system believes the transfer is running, we haven't enabled it in the
+        // I2C peripheral yet, and so a trigger won't happen until we call
+        // `start_dma_write`.
         unsafe {
             xfer.borrow_destination()
                 .start_dma_write(address, len as u8)
@@ -213,9 +221,8 @@ where
         #[cfg(any(feature = "samd11", feature = "samd21"))]
         let trigger_action = TriggerAction::BEAT;
 
-        // SAFETY: We use new_unchecked to avoid having to pass a 'static self as the
-        // destination buffer. This is safe as long as we guarantee the destination
-        // buffer is static.
+        // SAFETY: This is safe because the of the `'static` bound check
+        // for `B`, and the fact that the buffer length of an `Uart` is always 1.
         let xfer = unsafe { dmac::Transfer::new_unchecked(channel, self, buf, false) };
         xfer.with_waker(waker)
             .begin(C::Sercom::DMA_RX_TRIGGER, trigger_action)
@@ -252,9 +259,8 @@ where
         #[cfg(any(feature = "samd11", feature = "samd21"))]
         let trigger_action = TriggerAction::BEAT;
 
-        // SAFETY: We use new_unchecked to avoid having to pass a 'static self as the
-        // destination buffer. This is safe as long as we guarantee the source buffer is
-        // static.
+        // SAFETY: This is safe because the of the `'static` bound check
+        // for `B`, and the fact that the buffer length of an `Uart` is always 1.
         let xfer = unsafe { dmac::Transfer::new_unchecked(channel, buf, self, false) };
         xfer.with_waker(waker)
             .begin(C::Sercom::DMA_TX_TRIGGER, trigger_action)
@@ -321,9 +327,8 @@ where
         #[cfg(any(feature = "samd11", feature = "samd21"))]
         let trigger_action = TriggerAction::BEAT;
 
-        // SAFETY: We use new_unchecked to avoid having to pass a 'static self as the
-        // destination buffer. This is safe as long as we guarantee the source buffer is
-        // static.
+        // SAFETY: This is safe because the of the `'static` bound check
+        // for `B`, and the fact that the buffer length of an `Spi` is always 1.
         let xfer = unsafe { Transfer::new_unchecked(channel, buf, self, false) };
         xfer.with_waker(waker)
             .begin(C::Sercom::DMA_TX_TRIGGER, trigger_action)
@@ -360,9 +365,8 @@ where
         #[cfg(any(feature = "samd11", feature = "samd21"))]
         let trigger_action = TriggerAction::BEAT;
 
-        // SAFETY: We use new_unchecked to avoid having to pass a 'static self as the
-        // destination buffer. This is safe as long as we guarantee the destination
-        // buffer is static.
+        // SAFETY: This is safe because the of the `'static` bound check
+        // for `B`, and the fact that the buffer length of an `Spi` is always 1.
         let xfer = unsafe { Transfer::new_unchecked(channel, self, buf, false) };
         xfer.with_waker(waker)
             .begin(C::Sercom::DMA_RX_TRIGGER, trigger_action)

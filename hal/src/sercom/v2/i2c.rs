@@ -25,7 +25,7 @@
 //! [`bsp_pins!`](crate::bsp_pins) macro can be used to define convenient type
 //! aliases for [`Pad`] types.
 //!
-//! ```
+//! ```no_run
 //! use atsamd_hal::gpio::v2::{PA08, PA09, AlternateC};
 //! use atsamd_hal::sercom::v2::{Sercom0, i2c};
 //! use atsamd_hal::typelevel::NoneT;
@@ -48,7 +48,7 @@ Alternatively, you can use the `PadsFromIds` alias to define a set of
 `Pads` in terms of [`PinId`]s instead of [`Pin`]s. This is useful when you
 don't have [`Pin`] aliases pre-defined.
 
-```
+```no_run
 use atsamd_hal::gpio::v2::{PA08, PA09};
 use atsamd_hal::sercom::v2::{Sercom0, i2c};
 
@@ -68,7 +68,7 @@ type Pads = i2c::PadsFromIds<Sercom0, PA08, PA09>;
 //! Specifically, the same [`PinId`] can correspond to two different [`PadNum`]s
 //! for the *same* `Sercom`.
 //!
-//! ```
+//! ```no_run
 //! use atsamd_hal::pac::Peripherals;
 //! use atsamd_hal::gpio::v2::Pins;
 //! use atsamd_hal::sercom::v2::{Sercom0, i2c};
@@ -89,7 +89,7 @@ type Pads = i2c::PadsFromIds<Sercom0, PA08, PA09>;
 //! can enable the APB clock, and it takes a frequency to indicate the GCLK
 //! configuration. Users are responsible for correctly configuring the GCLK.
 //!
-//! ```
+//! ```no_run
 //! use atsamd_hal::gpio::v2::{PA08, PA09};
 //! use atsamd_hal::sercom::v2::{Sercom0, i2c};
 //!
@@ -116,7 +116,7 @@ type Pads = i2c::PadsFromIds<Sercom0, PA08, PA09>;
 //! In any case, the peripheral setup ends with a call to [`enable`], which
 //! consumes the [`Config`] and returns an enabled [`I2c`] peripheral.
 //!
-//! ```
+//! ```no_run
 //! let i2c = i2c::Config::new(&pm, sercom, pads, freq)
 //!     .baud(1.mhz())
 //!     .enable();
@@ -124,7 +124,7 @@ type Pads = i2c::PadsFromIds<Sercom0, PA08, PA09>;
 //!
 //! Alternatively,
 //!
-//! ```
+//! ```no_run
 //! let i2c = i2c::Config::new(&mclk, sercom, pads, freq);
 //!     i2c.set_baud(1.mhz());
 //!     let i2c = i2c.enable();
@@ -157,7 +157,7 @@ type Pads = i2c::PadsFromIds<Sercom0, PA08, PA09>;
 //! This means you can use the `get_` methods implemented for `Config`, since
 //! they take an `&self` argument.
 //!
-//! ```
+//! ```no_run
 //! // Assume i2c is a I2c<C<P>>
 //! let baud = i2c.as_ref().get_baud();
 //! ```
@@ -167,7 +167,7 @@ type Pads = i2c::PadsFromIds<Sercom0, PA08, PA09>;
 //! The [`reconfigure`] method gives out an `&mut Config` reference, which can
 //! then use the `set_*` methods.
 //!
-//! ```
+//! ```no_run
 //! use atsamd_hal::sercom::v2::i2c::I2c;
 //! use atsamd_hal::time::*;
 //!
@@ -232,7 +232,7 @@ Optionally, interrupts can be enabled on the provided
 be enabled. Please refer to the [`dmac`](crate::dmac) module-level
 documentation for more information.
 
-```
+```no_run
 // Assume channel0 and channel1 are configured `dmac::Channel`s,
 // i2c is an I2c<C>.
 
