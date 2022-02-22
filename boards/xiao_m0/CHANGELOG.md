@@ -2,6 +2,7 @@
 
 - Updated to 2021 edition, updated dependencies, removed unused dependencies (#562)
 - added `rtic` feature flag to enable `rtic` feature in the hal
+- added `blinky_rtic` example to demonstrate a simple rtic app on the xiao_m0
 
 # 0.12.0
 
