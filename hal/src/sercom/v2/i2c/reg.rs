@@ -200,7 +200,7 @@ impl<S: Sercom> Registers<S> {
             || (status.arblost() && status.busstate() != BusState::Idle)
             || status.busstate() == BusState::Unknown
         {
-            return Err(Error::BusError);
+            Err(Error::BusError)
         } else {
             Ok(())
         }

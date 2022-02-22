@@ -74,6 +74,9 @@ impl<C: i2c::AnyConfig> I2c<C> {
     /// Transform an [`I2c`] into a DMA [`Transfer`]) and
     /// start receiving into the provided buffer. The buffer length must be 255
     /// bytes or shorter.
+    ///
+    /// It is recommended that you check for errors after the transfer is
+    /// complete by calling [`read_status`](I2c::read_status).
     pub fn receive_with_dma<Ch, B, W>(
         self,
         address: u8,
@@ -118,6 +121,9 @@ impl<C: i2c::AnyConfig> I2c<C> {
     /// Transform an [`I2c`] into a DMA [`Transfer`]) and
     /// start sending the provided buffer. The buffer length must be 255 bytes
     /// or shorter.
+    ///
+    /// It is recommended that you check for errors after the transfer is
+    /// complete by calling [`read_status`](I2c::read_status).
     #[inline]
     pub fn send_with_dma<Ch, B, W>(
         self,

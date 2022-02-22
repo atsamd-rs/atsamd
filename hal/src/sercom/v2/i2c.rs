@@ -233,18 +233,23 @@ be enabled. Please refer to the [`dmac`](crate::dmac) module-level
 documentation for more information.
 
 ```no_run
-// Assume channel0 and channel1 are configured `dmac::Channel`s,
-// i2c is an I2c<C>.
+use atsamd_hal::dmac::channel::{AnyChannel, Ready};
+use atsand_hal::sercom::v2::i2c::{I2c, AnyConfig, Error};
+fn i2c_send_with_dma<A: AnyConfig, C: AnyChannel<Status = Ready>>(i2c: I2c<A>, channel: C) -> Result<(), Error>{
+    // Create data to send. Note that it must be `'static`.
+    let buffer: [u8; 50] = [0xff; 50];
 
-// Create data to send. Note that it must be `'static`.
-let buffer: [u8; 50] = [0xff; 50];
+    // Initialize the bus and check for errors
+    let token = i2c.init_dma_transfer()?;
+    let transfer = i2c.send_with_dma(0x54, token, buffer, channel0, |_| {})
 
-// Initialize the bus and check for errors
-let token = i2c.init_dma_transfer()?;
-let transfer = i2c.send_with_dma(0x54, token, buffer, channel0, |_| {})
 
-// Wait for transfers to complete and reclaim resources
-let (chan0, buffer, i2c) = transfer.wait();
+    // Wait for transfers to complete and reclaim resources
+    let (chan0, buffer, i2c) = transfer.wait();
+
+    // Check for errors that may have occured during the transfer.
+    i2c.read_status().try_into()?;
+}
 ```
 
 [`Buffer`]: crate::dmac::transfer::Buffer
@@ -405,7 +410,7 @@ impl<C: AnyConfig> I2c<C> {
         F: FnOnce(&mut SpecificConfig<C>),
     {
         self.config.as_mut().registers.enable_peripheral(false);
-        update(&mut self.config.as_mut());
+        update(self.config.as_mut());
         self.config.as_mut().registers.enable_peripheral(true);
     }
 

@@ -1,4 +1,5 @@
 //! Flag definitions
+#![allow(clippy::identity_op)]
 #![allow(unused_braces)]
 
 use bitflags::bitflags;
