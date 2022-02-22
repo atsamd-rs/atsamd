@@ -3,6 +3,34 @@
 //! This module provides a new API for the SERCOM peripherals. So far, only the
 //! [`pad`] and [`spi`] modules have been updated, but it is expected that the
 //! `uart`, and `i2c` modules will eventually receive updates as well.
+#![cfg_attr(
+    feature = "min-samd51g",
+    doc = "
+# Undocumented features
+ 
+The ATSAMx5x chips contain certain features that aren't documented in the datasheet. 
+These features are implemented in the HAL based on experimentation with certain boards
+which have verifiably demonstrated that those features work as intended.
+
+* [`UndocIoSet1`](pad::UndocIoSet1): Implement an undocumented `IoSet` for PA16, PA17,
+PB22 & PB23 configured for [`Sercom1`]. The pygamer & feather_m4 use this combination,
+but it is not listed as valid in the datasheet.
+
+* [`UndocIoSet2`](pad::UndocIoSet2): Implement an undocumented `IoSet` for PA00, PA01,
+PB22 & PB23 configured for [`Sercom1`]. The itsybitsy_m4 uses this combination, but it is
+not listed as valid in the datasheet.
+
+* [`PB02`] is I2C-capable according to metro_m4. As such, [`PB02`]
+implements [`IsI2cPad`].
+
+* [`PB03`] is I2C-capable according to metro_m4. As such, [`PB03`]
+implements [`IsI2cPad`](pad::IsI2cPad).
+
+[`PB02`]: crate::gpio::v2::pin::PB02
+[`PB03`]: crate::gpio::v2::pin::PB03
+[`IsI2cPad`]: pad::IsI2cPad
+"
+)]
 
 use core::ops::Deref;
 

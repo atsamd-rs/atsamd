@@ -104,6 +104,9 @@ impl<S: Sercom> Registers<S> {
     /// Necessary for SMBus compatibility.
     #[inline]
     pub(super) fn set_inactive_timeout(&mut self, timeout: super::InactiveTimeout) {
+        // `unused_unsafe` is allowed here because `inactout().bits()` is unsafe on
+        // thumbv6m targets, but not thumbv7em.
+        #[allow(unused_unsafe)]
         self.i2c_master()
             .ctrla
             .modify(|_, w| unsafe { w.inactout().bits(timeout as u8) })
