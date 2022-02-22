@@ -403,37 +403,37 @@ impl Aes {
     /// Set AES Mode
     #[inline]
     pub fn set_aesmode(self, mode: AESMODE_A) {
-        self.ctrla().modify(|_, w| w.aesmode().variant(mode))
+        self.ctrla().modify(|_, w| w.aesmode().variant(mode));
     }
 
     /// Set Cipher Feedback Block Size (CFBS)
     #[inline]
     pub fn set_cfbs(self, blocksize: CFBS_A) {
-        self.ctrla().modify(|_, w| w.cfbs().variant(blocksize))
+        self.ctrla().modify(|_, w| w.cfbs().variant(blocksize));
     }
 
     /// Set Encryption Key Size
     #[inline]
     pub fn set_keysize(self, keysize: KEYSIZE_A) {
-        self.ctrla().modify(|_, w| w.keysize().variant(keysize))
+        self.ctrla().modify(|_, w| w.keysize().variant(keysize));
     }
 
     /// Set Cipher Mode
     #[inline]
     pub fn set_cipher(self, mode: CIPHER_A) {
-        self.ctrla().modify(|_, w| w.cipher().variant(mode))
+        self.ctrla().modify(|_, w| w.cipher().variant(mode));
     }
 
     /// Set Start Mode
     #[inline]
     pub fn set_startmode(self, mode: STARTMODE_A) {
-        self.ctrla().modify(|_, w| w.startmode().variant(mode))
+        self.ctrla().modify(|_, w| w.startmode().variant(mode));
     }
 
     /// Set Last Output Data (LOD) Mode
     #[inline]
     pub fn set_lod(self, mode: LOD_A) {
-        self.ctrla().modify(|_, w| w.lod().variant(mode))
+        self.ctrla().modify(|_, w| w.lod().variant(mode));
     }
 
     /// Start Last Key Generation
@@ -441,7 +441,7 @@ impl Aes {
     /// Compute last NK words of expanded key
     #[inline]
     pub fn set_keygen(self, keygen_start: bool) {
-        self.ctrla().modify(|_, w| w.keygen().bit(keygen_start))
+        self.ctrla().modify(|_, w| w.keygen().bit(keygen_start));
     }
 
     /// XOR Key Generation
@@ -449,14 +449,14 @@ impl Aes {
     /// The user keyword gets XORed with the previous keyword register content
     #[inline]
     pub fn set_xorkey(self, mode: XORKEY_A) {
-        self.ctrla().modify(|_, w| w.xorkey().variant(mode))
+        self.ctrla().modify(|_, w| w.xorkey().variant(mode));
     }
 
     /// Counter Measure Type
     #[inline]
     pub fn set_ctype(self, countermeasures: Ctype) {
         self.ctrla()
-            .modify(|_, w| unsafe { w.ctype().bits(countermeasures.bit_range(3, 0)) })
+            .modify(|_, w| unsafe { w.ctype().bits(countermeasures.bit_range(3, 0)) });
     }
 
     // Control B
@@ -464,7 +464,7 @@ impl Aes {
     /// Start Encryption/Decryption
     #[inline]
     pub fn start(&self) {
-        self.ctrlb().modify(|_, w| w.start().set_bit())
+        self.ctrlb().modify(|_, w| w.start().set_bit());
     }
 
     /// New Message
@@ -474,7 +474,7 @@ impl Aes {
     /// message.
     #[inline]
     pub fn newmsg(&self) {
-        self.ctrlb().modify(|_, w| w.newmsg().set_bit())
+        self.ctrlb().modify(|_, w| w.newmsg().set_bit());
     }
 
     /// End of Message (GCM mode only)
@@ -482,7 +482,7 @@ impl Aes {
     /// This triggers generation of final `GHASH` value for the message
     #[inline]
     pub fn eom(&self) {
-        self.ctrlb().modify(|_, w| w.eom().set_bit())
+        self.ctrlb().modify(|_, w| w.eom().set_bit());
     }
 
     /// GF Multiplication (GCM mode only)
@@ -491,7 +491,7 @@ impl Aes {
     /// register content.
     #[inline]
     pub fn gfmul(&self) {
-        self.ctrlb().modify(|_, w| w.gfmul().set_bit())
+        self.ctrlb().modify(|_, w| w.gfmul().set_bit());
     }
 
     // Interrupt Enable Clear
@@ -499,13 +499,13 @@ impl Aes {
     /// Disable Encryption Complete Interrupt
     #[inline]
     pub fn disable_enccmp(&self) {
-        self.intenclr().modify(|_, w| w.enccmp().set_bit())
+        self.intenclr().modify(|_, w| w.enccmp().set_bit());
     }
 
     /// Disable GF Multiplication Complete Interrupt
     #[inline]
     pub fn disable_gfmcmp(&self) {
-        self.intenclr().modify(|_, w| w.gfmcmp().set_bit())
+        self.intenclr().modify(|_, w| w.gfmcmp().set_bit());
     }
 
     // Interrupt Enable Set
@@ -513,13 +513,13 @@ impl Aes {
     /// Enable Encryption Complete Interrupt
     #[inline]
     pub fn enable_enccmp(&self) {
-        self.intenset().modify(|_, w| w.enccmp().set_bit())
+        self.intenset().modify(|_, w| w.enccmp().set_bit());
     }
 
     /// Enable GF Multiplication Complete Interrupt
     #[inline]
     pub fn enable_gfmcmp(&self) {
-        self.intenset().modify(|_, w| w.gfmcmp().set_bit())
+        self.intenset().modify(|_, w| w.gfmcmp().set_bit());
     }
 
     // Interrupt Flag Status and Clear
@@ -532,7 +532,7 @@ impl Aes {
     /// 2. Reading from GHASHx register
     #[inline]
     pub fn clear_enccmp(&self) {
-        self.intflag().modify(|_, w| w.enccmp().set_bit())
+        self.intflag().modify(|_, w| w.enccmp().set_bit());
     }
 
     /// Clear GF Multiplication Complete Interrupt
@@ -545,7 +545,7 @@ impl Aes {
     /// 2. Reading from Hash Key register (`HASHKEYx`)
     #[inline]
     pub fn clear_gfmcmp(&self) {
-        self.intflag().modify(|_, w| w.gfmcmp().set_bit())
+        self.intflag().modify(|_, w| w.gfmcmp().set_bit());
     }
 
     /// Read Encryption Complete Interrupt
