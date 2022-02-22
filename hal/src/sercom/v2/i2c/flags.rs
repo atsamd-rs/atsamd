@@ -3,7 +3,6 @@
 #![allow(unused_braces)]
 
 use bitflags::bitflags;
-use core::convert::TryFrom;
 use modular_bitfield::specifiers::{B1, B5};
 use modular_bitfield::*;
 
@@ -57,6 +56,22 @@ pub struct Status {
     _reserved: B5,
 }
 
+impl Status {
+    pub fn try_error(self) -> Result<(), Error> {
+        if self.buserr() {
+            Err(Error::BusError)
+        } else if self.arblost() {
+            Err(Error::ArbitrationLost)
+        } else if self.lenerr() {
+            Err(Error::LengthError)
+        } else if self.rxnack() {
+            Err(Error::Nack)
+        } else {
+            Ok(())
+        }
+    }
+}
+
 /// Errors available for I2C transactions
 #[derive(Debug, Clone, Copy)]
 pub enum Error {
@@ -65,23 +80,4 @@ pub enum Error {
     LengthError,
     Nack,
     Timeout,
-}
-
-impl TryFrom<Status> for () {
-    type Error = Error;
-
-    #[inline]
-    fn try_from(errors: Status) -> Result<(), Error> {
-        if errors.buserr() {
-            Err(Error::BusError)
-        } else if errors.arblost() {
-            Err(Error::ArbitrationLost)
-        } else if errors.lenerr() {
-            Err(Error::LengthError)
-        } else if errors.rxnack() {
-            Err(Error::Nack)
-        } else {
-            Ok(())
-        }
-    }
 }
