@@ -230,7 +230,7 @@ impl<S: Sercom> Registers<S> {
 
         // wait for transmission to complete
         while !self.i2c_master().intflag.read().mb().bit_is_set() {}
-        self.read_status().try_error()
+        self.read_status().check_bus_error()
     }
 
     /// Start a blocking read transaction
@@ -268,7 +268,7 @@ impl<S: Sercom> Registers<S> {
             }
         }
 
-        self.read_status().try_error()
+        self.read_status().check_bus_error()
     }
 
     /// Start DMA write:
@@ -360,7 +360,7 @@ impl<S: Sercom> Registers<S> {
                     break;
                 }
             }
-            self.read_status().try_error()?;
+            self.read_status().check_bus_error()?;
         }
         Ok(())
     }

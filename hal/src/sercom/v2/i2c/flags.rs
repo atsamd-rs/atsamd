@@ -57,7 +57,7 @@ pub struct Status {
 }
 
 impl Status {
-    pub fn try_error(self) -> Result<(), Error> {
+    pub fn check_bus_error(self) -> Result<(), Error> {
         if self.buserr() {
             Err(Error::BusError)
         } else if self.arblost() {

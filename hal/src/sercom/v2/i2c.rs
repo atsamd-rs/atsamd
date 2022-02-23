@@ -243,7 +243,7 @@ fn i2c_send_with_dma<A: AnyConfig, C: AnyChannel<Status = Ready>>(i2c: I2c<A>, c
     let (chan0, buffer, i2c) = transfer.wait();
 
     // Check for errors that may have occured during the transfer.
-    i2c.read_status().try_error()?;
+    i2c.read_status().check_bus_error()?;
 }
 ```
 
