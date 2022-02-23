@@ -41,22 +41,17 @@
 //! // SAMx5x version
 //! type Pads = i2c::Pads<Sercom0, IoSet1, Sda, Scl>;
 //! ```
-#![cfg_attr(
-    not(feature = "samd11"),
-    doc = "
-Alternatively, you can use the `PadsFromIds` alias to define a set of
-`Pads` in terms of [`PinId`]s instead of [`Pin`]s. This is useful when you
-don't have [`Pin`] aliases pre-defined.
-
-```no_run
-use atsamd_hal::gpio::v2::{PA08, PA09};
-use atsamd_hal::sercom::v2::{Sercom0, i2c};
-
-type Pads = i2c::PadsFromIds<Sercom0, PA08, PA09>;
-```
-
-"
-)]
+//!
+//! Alternatively, you can use the [`PadsFromIds`] alias to define a set of
+//! `Pads` in terms of [`PinId`]s instead of [`Pin`]s. This is useful when you
+//! don't have [`Pin`] aliases pre-defined.
+//!
+//! ```no_run
+//! use atsamd_hal::gpio::v2::{PA08, PA09};
+//! use atsamd_hal::sercom::v2::{Sercom0, i2c};
+//!
+//! type Pads = i2c::PadsFromIds<Sercom0, PA08, PA09>;
+//! ```
 //!
 //! Instances of [`Pads`] are created using the [`new`](Pads::new) method. Both
 //! [`v1::Pin`] and [`v2::Pin`] types are accepted here.

@@ -22,7 +22,7 @@ where
 }
 
 #[cfg(feature = "samd11")]
-impl<S, DI, CI> Pads<S, Pad<S, Pad0, DI>, Pad<S, Pad1, CI>>
+impl<S, DI, CI> PadsFromIds<S, DI, CI>
 where
     S: Sercom,
     DI: GetPad<S, Pad0>,
@@ -80,6 +80,35 @@ where
 //=============================================================================
 // PadsFromIds
 //=============================================================================
+
+/// Define a set of [`Pads`] using [`PinId`]s instead of [`Pin`]s
+///
+/// In some cases, it is more convenient to specify a set of `Pads` using
+/// `PinId`s rather than `Pin`s. This alias makes it easier to do so.
+///
+/// The first type parameter is the [`Sercom`], while the remaining two are
+/// [`PinId`]s representing the corresponding type
+/// parameters of [`Pads`], i.e. `SDA` & `SCL`.
+///
+/// ```
+/// use atsamd_hal::pac::Peripherals;
+/// use atsamd_hal::gpio::v2::{PA08, PA09, Pins};
+/// use atsamd_hal::sercom::v2::{Sercom0, i2c};
+/// use atsamd_hal::typelevel::NoneT;
+///
+/// pub type Pads = i2c::PadsFromIds<Sercom0, PA08, PA09>;
+///
+/// pub fn create_pads() -> Pads {
+///     let peripherals = Peripherals::take().unwrap();
+///     let pins = Pins::new(peripherals.PORT);
+///     i2c::Pads::default().sda(pins.pa08).scl(pins.pa09)
+/// }
+/// ```
+///
+/// [`Pin`]: crate::gpio::v2::Pin
+/// [`PinId`]: crate::gpio::v2::PinId
+#[cfg(feature = "samd11")]
+pub type PadsFromIds<S, SDA, SCL> = Pads<S, Pad<S, Pad0, SDA>, Pad<S, Pad1, SCL>>;
 
 /// Define a set of [`Pads`] using [`PinId`]s instead of [`Pin`]s
 ///
