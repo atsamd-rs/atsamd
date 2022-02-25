@@ -4,6 +4,7 @@
 - Add a `bsp_peripherals!` macro and fix a bug in `bsp_pins!` (#515)
 - Updated to 2021 edition, updated dependencies, removed unused dependencies (#562)
 - updated HAL to be compatible with PAC updates due to svd2rust upgrade
+- Add an `sercom::v2::i2c` API
 
 # v0.14.0
 

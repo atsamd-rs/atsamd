@@ -144,8 +144,8 @@ where
     /// Change the [`CharSize`] to [`DynCharSize`]. The UART's character
     /// size will be changed to the default [`CharSizeEnum::EightBit`], and can
     /// then be changed dynamically on an enabled [`Uart`] without changing
-    /// the underlying [`Config`]'s type through the [`reconfigure`](Uart::
-    /// reconfigure) method.
+    /// the underlying [`Config`]'s type through the
+    /// [`reconfigure`](Uart::reconfigure) method.
     #[inline]
     pub fn dyn_char_size(mut self) -> Config<P, DynCharSize> {
         self.registers.set_char_size(CharSizeEnum::EightBit);

@@ -1,4 +1,4 @@
-#![allow(broken_intra_doc_links)]
+#![allow(rustdoc::broken_intra_doc_links)]
 //! A [`Future`]-like interface for SPI transactions
 //!
 //! An [`SpiFuture`] takes ownership of an [`Spi`] `struct` and a `[u8]`-like

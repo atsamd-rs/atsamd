@@ -16,11 +16,14 @@
 //! struct is responsible for enforcing these constraints.
 //!
 //!
-//! A `Pads` type takes five type parameters. The first specifies the `Sercom`,
-//! while the remaining four, `DI`, `DO`, `CK` and `SS`, represent the Data In,
-//! Data Out, Sclk and SS pads respectively. Each of the remaining type
-//! parameters is an [`OptionalPad`] and defaults to [`NoneT`]. Aliases defining
-//! the pad types can be provided by the [`bsp_pins!`] macro.
+//! A `Pads` type takes five or six type parameters, depending on the chip.The
+//! first type always specifies the `Sercom`. On SAMx5x chips, the second type
+//! specifies the `IoSet`. The remaining four, `DI`, `DO`, `CK` and `SS`,
+//! represent the Data In, Data Out, Sclk and SS pads respectively. Each of the
+//! remaining type parameters is an [`OptionalPad`] and defaults to [`NoneT`]. A
+//! [`Pad`] is just a [`Pin`] configured in the correct [`PinMode`] that
+//! implements [`IsPad`]. The [`bsp_pins!`](crate::bsp_pins) macro can be
+//! used to define convenient type aliases for [`Pad`] types.
 //!
 //! ```
 //! use atsamd_hal::gpio::v2::{PA08, PA09, AlternateC};
@@ -36,23 +39,22 @@
     doc = "
 Alternatively, you can use the [`PadsFromIds`] alias to define a set of
 `Pads` in terms of [`PinId`]s instead of `Pin`s. This is useful when you
-don't have `Pin` aliases pre-defined.
+don't have [`Pin`] aliases pre-defined.
 
 ```
 use atsamd_hal::gpio::v2::{PA08, PA09};
 use atsamd_hal::sercom::v2::{Sercom0, uart};
-use atsamd_hal::typelevel::NoneT;
 
-type Pads = uart::PadsFromIds<Sercom0, PA09, PA09>;
+type Pads = uart::PadsFromIds<Sercom0, PA08, PA09>;
 ```
 
 "
 )]
 //!
-//! Instaces of [`Pads`] are created using the builder pattern. Start by
+//! Instances of [`Pads`] are created using the builder pattern. Start by
 //! creating an empty set of [`Pads`] using [`Default`]. Then pass each
-//! respective [`Pin`] using the corresponding methods. Both `v1::Pin` and
-//! `v2::Pin` types are accepted here.
+//! respective [`Pin`] using the corresponding methods. Both [`v1::Pin`] and
+//! [`v2::Pin`] types are accepted here.
 //!
 //! On SAMD21 and SAMx5x chips, the builder methods automatically convert each
 //! pin to the correct [`PinMode`]. But for SAMD11 chips, users must manually
@@ -334,6 +336,8 @@ type Pads = uart::PadsFromIds<Sercom0, PA09, PA09>;
 //! [`reconfigure`]: Uart::reconfigure
 //! [`bsp_pins`]: crate::bsp_pins
 //! [`Pin`]: crate::gpio::v2::pin::Pin
+//! [`v1::Pin`]: crate::gpio::v1::Pin
+//! [`v2::Pin`]: crate::gpio::v2::pin::Pin
 //! [`PinId`]: crate::gpio::v2::pin::PinId
 //! [`PinMode`]: crate::gpio::v2::pin::PinMode
 //! [`split`]: Uart::split
@@ -357,20 +361,20 @@ be enabled. Please refer to the [`dmac`](crate::dmac) module-level
 documentation for more information.
 
 ```
-/// Assume channel0 and channel1 are configured `dmac::Channel`s,
-/// rx is a Uart<C, RxDuplex>, and tx is a Uart<C, TxDuplex>.
+// Assume channel0 and channel1 are configured `dmac::Channel`s,
+// rx is a Uart<C, RxDuplex>, and tx is a Uart<C, TxDuplex>.
 
 /// Create data to send
 let tx_buffer: [u8; 50] = [0xff; 50];
 let rx_buffer: [u8; 100] = [0xab; 100];
 
-/// Launch transmit transfer
-let tx_dma = tx.send_with_dma(&mut tx_buffer, channel0, ());
+// Launch transmit transfer
+let tx_dma = tx.send_with_dma(&mut tx_buffer, channel0, |_| {});
 
-/// Launch receive transfer
-let rx_dma = rx.receive_with_dma(&mut rx_buffer, channel1, ());
+// Launch receive transfer
+let rx_dma = rx.receive_with_dma(&mut rx_buffer, channel1, |_| {});
 
-/// Wait for transfers to complete and reclaim resources
+// Wait for transfers to complete and reclaim resources
 let (chan0, tx_buffer, tx) = tx_dma.wait();
 let (chan1, rx, rx_buffer) = rx_dma.wait();
 ```

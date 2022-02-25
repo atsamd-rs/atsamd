@@ -1,5 +1,8 @@
 # Unreleased
 
+- Update `i2c_master` convenience function to use the new `sercom::v2::i2c` API
+- Add an `i2c` example
+
 # v0.7.0
 
 - remove extraneous `embedded-hal` dependencies from BSPs

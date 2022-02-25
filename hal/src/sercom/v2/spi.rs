@@ -45,23 +45,33 @@
 //! type Pads = spi::Pads<Sercom0, IoSet1, Miso, NoneT, Sclk>;
 //! ```
 //!
-//! Alternatively, you can use the [`PadsFromIds`] alias to define a set of
-//! `Pads` in terms of [`PinId`]s instead of `Pin`s. This is useful when you
-//! don't have `Pin` aliases pre-defined.
-//!
-//! ```
-//! use atsamd_hal::gpio::v2::{PA08, PA09};
-//! use atsamd_hal::sercom::v2::{Sercom0, spi};
-//! use atsamd_hal::typelevel::NoneT;
-//!
-//! // SAMx5x-specific imports
-//! use atsamd_hal::sercom::v2::pad::IoSet1;
-//!
-//! // SAMD11/SAMD21 version
-//! type Pads = spi::PadsFromIds<Sercom0, PA08, NoneT, PA09>;
-//! // SAMx5x version
-//! type Pads = spi::PadsFromIds<Sercom0, IoSet1, PA08, NoneT, PA09>;
-//! ```
+//! [`enable`]: Config::enable
+//! [`gpio`]: crate::gpio::v2
+//! [`Pin`]: crate::gpio::v2::pin::Pin
+//! [`PinId`]: crate::gpio::v2::pin::PinId
+//! [`PinMode`]: crate::gpio::v2::pin::PinMode
+#![cfg_attr(
+    not(feature = "samd11"),
+    doc = "
+Alternatively, you can use the `PadsFromIds` alias to define a set of
+`Pads` in terms of [`PinId`]s instead of [`Pin`]s. This is useful when you
+don't have [`Pin`] aliases pre-defined.
+
+```
+use atsamd_hal::gpio::v2::{PA08, PA09};
+use atsamd_hal::sercom::v2::{Sercom0, spi};
+use atsamd_hal::typelevel::NoneT;
+
+// SAMx5x-specific imports
+use atsamd_hal::sercom::v2::pad::IoSet1;
+
+// SAMD21 version
+type Pads = spi::PadsFromIds<Sercom0, PA08, NoneT, PA09>;
+// SAMx5x version
+type Pads = spi::PadsFromIds<Sercom0, IoSet1, PA08, NoneT, PA09>;
+```
+"
+)]
 //!
 //! Instances of `Pads` are created using the builder pattern. Start by creating
 //! an empty set of `Pads` using [`Default`]. Then pass each respective `Pin`
