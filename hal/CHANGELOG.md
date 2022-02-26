@@ -2,6 +2,7 @@
 
 - Fix failing `bsp_pins!` invocation with no aliases (#605 fixes #599)
 - Add Advanced Encryption Standard (AES) peripheral support including RustCrypto compatible backend
+- Improve the architecture of `SpiFuture` (#577)
 
 # v0.15.1
 
