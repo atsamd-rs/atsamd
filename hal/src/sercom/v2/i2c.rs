@@ -362,6 +362,7 @@ impl<C: AnyConfig> I2c<C> {
             .start_dma_read(address, xfer_len)
     }
 
+    #[cfg(feature = "dma")]
     #[inline]
     pub(super) fn check_bus_status(&self) -> Result<(), Error> {
         self.config.as_ref().registers.check_bus_status()
