@@ -779,6 +779,31 @@ where
         self.change()
     }
 
+    /// Return the transaction length, in bytes
+    ///
+    /// This function is valid for all chips and SPI configurations. It returns
+    /// the number of bytes in a single SPI transaction.
+    #[cfg(any(feature = "samd11", feature = "samd21"))]
+    #[inline]
+    pub fn transaction_length(&self) -> u8 {
+        Z::BYTES
+    }
+
+    /// Return the transaction length, in bytes
+    ///
+    /// This function is valid for all chips and SPI configurations. It returns
+    /// the number of bytes in a single SPI transaction.
+    #[cfg(feature = "min-samd51g")]
+    #[inline]
+    pub fn transaction_length(&self) -> u8 {
+        use typenum::Unsigned;
+        if Z::U8 == DynLength::U8 {
+            self.regs.get_length()
+        } else {
+            Z::U8
+        }
+    }
+
     /// Get the clock polarity
     #[inline]
     pub fn get_cpol(&self) -> Polarity {
@@ -1176,6 +1201,15 @@ where
             config: self.config.into().length(),
             capability: self.capability,
         }
+    }
+
+    /// Return the transaction length, in bytes
+    ///
+    /// This function is valid for all chips and SPI configurations. It returns
+    /// the number of bytes in a single SPI transaction.
+    #[inline]
+    pub fn transaction_length(&self) -> u8 {
+        self.config.as_ref().transaction_length()
     }
 
     /// Update the SPI configuration.
