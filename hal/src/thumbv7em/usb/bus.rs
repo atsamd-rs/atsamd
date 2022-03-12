@@ -859,15 +859,6 @@ impl Inner {
                 bank1.clear_transfer_complete();
                 dbgprint!("ep {} WRITE DONE\n", ep);
                 ep_in_complete |= mask;
-                // Continuing (and hence not setting masks to indicate complete
-                // OUT transfers) is necessary for operation to proceed beyond
-                // the device-address + descriptor stage. The authors suspect a
-                // deadlock caused by waiting on a write when handling a read
-                // somewhere in an underlying class or control crate, but we
-                // can't be sure. Either way, if a write has finished, we only
-                // set the flag for a completed write on that endpoint index.
-                // Future polls will handle the reads.
-                continue;
             }
             drop(bank1);
 
