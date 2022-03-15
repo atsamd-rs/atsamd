@@ -18,9 +18,9 @@ mod app {
     use super::*;
     use bsp::hal;
     use hal::clock::{ClockGenId, ClockSource, GenericClockController};
+    use hal::gpio::{v2::PB08, Output, Pin, PushPull};
     use hal::pac::Peripherals;
     use hal::rtc::{Count32Mode, Duration, Rtc};
-    use hal::gpio::{Pin, Output, PushPull, v2::PB08};
 
     #[local]
     struct Local {}
