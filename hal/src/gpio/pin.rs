@@ -1065,9 +1065,9 @@ macro_rules! declare_pins {
 
 declare_pins!(
     A {
-        #[cfg(not(feature = "samd11", feature = "samd21el", feature = "samd21gl"))]
+        #[cfg(not(any(feature = "samd11", feature = "samd21el", feature = "samd21gl")))]
         (PA00, 00),
-        #[cfg(not(feature = "samd11", feature = "samd21el", feature = "samd21gl"))]
+        #[cfg(not(any(feature = "samd11", feature = "samd21el", feature = "samd21gl")))]
         (PA01, 01),
         (PA02, 02),
         #[cfg(not(feature = "samd11c"))]
@@ -1110,7 +1110,7 @@ declare_pins!(
         (PA25, 25),
         #[cfg(not(feature = "samd11"))]
         (PA27, 27),
-        #[cfg(any(feature = "samd11", feature = "samd21"), not(feature = "samd21el"))]
+        #[cfg(all(any(feature = "samd11", feature = "samd21"), not(feature = "samd21el")))]
         (PA28, 28),
         (PA30, 30),
         (PA31, 31),
@@ -1160,9 +1160,9 @@ declare_pins!(
         (PB20, 20),
         #[cfg(feature = "min-samd51n")]
         (PB21, 21),
-        #[cfg(any(feature = "min-samd21g", feature = "min-samd51g"), not(feature = "samd21gl"))]
+        #[cfg(all(any(feature = "min-samd21g", feature = "min-samd51g"), not(feature = "samd21gl")))]
         (PB22, 22),
-        #[cfg(any(feature = "min-samd21g", feature = "min-samd51g"), not(feature = "samd21gl"))]
+        #[cfg(all(any(feature = "min-samd21g", feature = "min-samd51g"), not(feature = "samd21gl")))]
         (PB23, 23),
         #[cfg(feature = "min-samd51n")]
         (PB24, 24),
