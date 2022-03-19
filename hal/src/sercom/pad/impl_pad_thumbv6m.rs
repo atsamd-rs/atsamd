@@ -111,11 +111,11 @@ macro_rules! pad_table {
 }
 
 pad_table!(
-    #[cfg(feature = "samd21")]
+    #[cfg(all(feature = "samd21",not(any(feature = "samd21el", feature = "samd21gl"))))]
     PA00 {
         D: (Sercom1, Pad0),
     }
-    #[cfg(feature = "samd21")]
+    #[cfg(all(feature = "samd21",not(any(feature = "samd21el", feature = "samd21gl"))))]
     PA01 {
         D: (Sercom1, Pad1),
     }
