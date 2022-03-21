@@ -852,40 +852,28 @@ impl Inner {
 
             let idx = ep as usize;
 
-            let bank1 = self
-                .bank1(EndpointAddress::from_parts(idx, UsbDirection::In))
-                .unwrap();
-            if bank1.is_transfer_complete() {
-                bank1.clear_transfer_complete();
-                dbgprint!("ep {} WRITE DONE\n", ep);
-                ep_in_complete |= mask;
-                // Continuing (and hence not setting masks to indicate complete
-                // OUT transfers) is necessary for operation to proceed beyond
-                // the device-address + descriptor stage. The authors suspect a
-                // deadlock caused by waiting on a write when handling a read
-                // somewhere in an underlying class or control crate, but we
-                // can't be sure. Either way, if a write has finished, we only
-                // set the flag for a completed write on that endpoint index.
-                // Future polls will handle the reads.
-                continue;
-            }
-            drop(bank1);
-
-            let bank0 = self
-                .bank0(EndpointAddress::from_parts(idx, UsbDirection::Out))
-                .unwrap();
-            if bank0.received_setup_interrupt() {
-                dbgprint!("ep {} GOT SETUP\n", ep);
-                ep_setup |= mask;
-                // usb-device crate:
-                //  "This event should continue to be reported until the packet
-                // is read." So we don't clear the flag here,
-                // instead it is cleared in the read handler.
+            if let Ok(bank1) = self.bank1(EndpointAddress::from_parts(idx, UsbDirection::In)) {
+                if bank1.is_transfer_complete() {
+                    bank1.clear_transfer_complete();
+                    dbgprint!("ep {} WRITE DONE\n", ep);
+                    ep_in_complete |= mask;
+                }
             }
 
-            if bank0.is_transfer_complete() {
-                dbgprint!("ep {} READABLE\n", ep);
-                ep_out |= mask;
+            if let Ok(bank0) = self.bank0(EndpointAddress::from_parts(idx, UsbDirection::Out)) {
+                if bank0.received_setup_interrupt() {
+                    dbgprint!("ep {} GOT SETUP\n", ep);
+                    ep_setup |= mask;
+                    // usb-device crate:
+                    //  "This event should continue to be reported until the
+                    //  packet is read." So we don't clear the flag here,
+                    //  instead it is cleared in the read handler.
+                }
+
+                if bank0.is_transfer_complete() {
+                    dbgprint!("ep {} READABLE\n", ep);
+                    ep_out |= mask;
+                }
             }
         }
 
