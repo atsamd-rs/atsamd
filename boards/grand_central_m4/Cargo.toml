@@ -58,5 +58,15 @@ chip = "ATSAMD51P20A"
 name = "blinky_basic"
 
 [[example]]
+name = "neopixel_blink"
+
+[[example]]
+name = "neopixel_rainbow"
+
+[[example]]
 name = "usb_serial"
 required-features = ["usb"]
+
+# remove once the hal is updated
+[patch.crates-io]
+atsamd-hal = { path = "../../hal" }

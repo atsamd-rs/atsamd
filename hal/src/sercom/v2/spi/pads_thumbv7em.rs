@@ -53,6 +53,11 @@ impl Dopo for NoneT {
 impl Dopo for Pad0 {
     const DOPO: Option<u8> = Some(0);
 }
+
+impl Dopo for Pad1 {
+    const DOPO: Option<u8> = Some(1);
+}
+
 impl Dopo for Pad3 {
     const DOPO: Option<u8> = Some(2);
 }
