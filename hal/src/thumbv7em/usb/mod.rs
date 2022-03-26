@@ -1,6 +1,6 @@
 //! USB Device support
 
-use crate::gpio;
+use crate::gpio::v2::{AlternateH, Pin, PA23, PA24, PA25};
 
 pub use usb_device;
 
@@ -10,12 +10,11 @@ pub use self::bus::UsbBus;
 mod devicedesc;
 use self::devicedesc::Descriptors;
 
-/// Default SOF pad
-#[allow(deprecated)]
-pub type SofPad = gpio::v1::Pa23<gpio::v1::PfH>;
-/// Default USB D- pad
-#[allow(deprecated)]
-pub type DmPad = gpio::v1::Pa24<gpio::v1::PfH>;
-/// Default USB D+ pad
-#[allow(deprecated)]
-pub type DpPad = gpio::v1::Pa25<gpio::v1::PfH>;
+/// Emit SOF at 1Khz on this pin
+pub type SofPad = Pin<PA23, AlternateH>;
+
+/// USB D-
+pub type DmPad = Pin<PA24, AlternateH>;
+
+/// USB D+
+pub type DpPad = Pin<PA25, AlternateH>;
