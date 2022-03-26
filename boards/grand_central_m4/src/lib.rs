@@ -36,348 +36,442 @@ hal::bsp_peripherals!(
 
 hal::bsp_pins!(
         PA02 {
+            /// Analog pin 0
+            /// Can act as a true analog output as it has a DAC (which is not
+            /// currently supported by this hal) as well as input.
             name: a0
         }
         PA05 {
+            /// Analog pin 1
+            /// Can act as a true analog output as it has a DAC (which is not
+            /// currently supported by this hal) as well as input.
             name: a1
         }
         PB03 {
+            /// Analog pin 2
             name: a2
         }
         PC00 {
+            /// Analog pin 3
             name: a3
         }
         PC01 {
+            /// Analog pin 4
             name: a4
         }
         PC02 {
+            /// Analog pin 5
             name: a5
         }
         PC03 {
+            /// Analog pin 6
             name: a6
         }
         PB04 {
+            /// Analog pin 7
             name: a7
         }
         PB05 {
+            /// Analog pin 8
             name: a8
         }
         PB06 {
+            /// Analog pin 9
             name: a9
         }
         PB07 {
+            /// Analog pin 10
             name: a10
         }
         PB08 {
+            /// Analog pin 11
             name: a11
         }
         PB09 {
+            /// Analog pin 12
             name: a12
         }
         PA04 {
+            /// Analog pin 13
             name: a13
         }
         PA06 {
+            /// Analog pin 14
             name: a14
         }
         PA07 {
+            /// Analog pin 15
             name: a15
         }
         PB25 {
+            /// Digital pin 0, rx
             name: d0
             aliases: {
                 AlternateC: UartRx,
             }
         }
         PB24 {
+            /// Digital pin 1, tx
             name: d1
             aliases: {
                 AlternateC: UartTx,
             }
         }
         PC18 {
+            /// Digital pin 2
             name: d2
         }
         PC19 {
+            /// Digital pin 3
             name: d3
         }
         PC20 {
+            /// Digital pin 4
             name: d4
         }
         PC21 {
+            /// Digital pin 5
             name: d5
         }
         PD20 {
+            /// Digital pin 6
             name: d6
         }
         PD21 {
+            /// Digital pin 7
             name: d7
         }
         PB18 {
+            /// Digital pin 8
             name: d8
         }
         PB02 {
+            /// Digital pin 9
             name: d9
         }
         PB22 {
+            /// Digital pin 10
             name: d10
         }
         PB23 {
+            /// Digital pin 11
             name: d11
         }
         PB00 {
+            /// Digital pin 12
             name: d12
         }
         PB01 {
+            /// Digital pin 13, red LED
             name: d13
             aliases: {
                 PushPullOutput: RedLed,
             }
         }
         PB16 {
+            /// Digital pin 14, tx3
             name: d14
             aliases: {
                 AlternateC: UartTx3,
             }
         }
         PB17 {
+            /// Digital pin 15, rx3
             name: d15
             aliases: {
                 AlternateC: UartRx3,
             }
         }
         PC22 {
+            /// Digital pin 16, tx2
             name: d16
             aliases: {
                 AlternateC: UartTx2,
             }
         }
         PC23 {
+            /// Digital pin 17, rx2
             name: d17
             aliases: {
                 AlternateC: UartRx2,
             }
         }
         PB12 {
+            /// Digital pin 18, tx1
             name: d18
             aliases: {
                 AlternateC: UartTx1,
             }
         }
         PB13 {
+            /// Digital pin 19, rx1
             name: d19
             aliases: {
                 AlternateC: UartRx1,
             }
         }
         PB20 {
+            /// Digital pin 20, I2C data line
             name: d20
             aliases: {
                 AlternateC: Sda,
             }
         }
         PB21 {
+            /// Digital pin 21, I2C clock line
             name: d21
             aliases: {
                 AlternateC: Scl,
             }
         }
         PD12 {
+            /// Digital pin 22
             name: d22
         }
         PA15 {
+            /// Digital pin 23
             name: d23
         }
         PC17 {
+            /// Digital pin 24, I2C clock line 1
             name: d24
             aliases: {
-                AlternateC: Scl2,
+                AlternateC: Scl1,
             }
         }
         PC16 {
+            /// Digital pin 25, I2C data line 1
             name: d25
             aliases: {
-                AlternateC: Sda2,
+                AlternateC: Sda1,
             }
         }
         PA12 {
+            /// Digital pin 26
             name: d26
         }
         PA13 {
+            /// Digital pin 27
             name: d27
         }
         PA14 {
+            /// Digital pin 28
             name: d28
         }
         PB19 {
+            /// Digital pin 29
             name: d29
         }
         PA23 {
+            /// Digital pin 30
             name: d30
         }
         PA22 {
+            /// Digital pin 31
             name: d31
         }
         PA21 {
+            /// Digital pin 32
             name: d32
         }
         PA20 {
+            /// Digital pin 33
             name: d33
         }
         PA19 {
+            /// Digital pin 34
             name: d34
         }
         PA18 {
+            /// Digital pin 35
             name: d35
         }
         PA17 {
+            /// Digital pin 36
             name: d36
         }
         PA16 {
+            /// Digital pin 37
             name: d37
         }
         PB15 {
+            /// Digital pin 38
             name: d38
         }
         PB14 {
+            /// Digital pin 39
             name: d39
         }
         PC13 {
+            /// Digital pin 40
             name: d40
         }
         PC12 {
+            /// Digital pin 41
             name: d41
         }
         PC15 {
+            /// Digital pin 42
             name: d42
         }
         PC14 {
+            /// Digital pin 43
             name: d43
         }
         PC11 {
+            /// Digital pin 44
             name: d44
         }
         PC10 {
+            /// Digital pin 45
             name: d45
         }
         PC06 {
+            /// Digital pin 46
             name: d46
         }
         PC07 {
+            /// Digital pin 47
             name: d47
         }
         PC04 {
+            /// Digital pin 48
             name: d48
         }
         PC05 {
+            /// Digital pin 49
             name: d49
         }
         PD11 {
+            /// Digital pin 50, SPI MISO
             name: d50
             aliases: {
                 AlternateC: Miso,
             }
         }
         PD08 {
+            /// Digital pin 51, SPI MOSI
             name: d51
             aliases: {
                 AlternateC: Mosi,
             }
         }
         PD09 {
+            /// Digital pin 52, SPI SCLK
             name: d52
             aliases: {
                 AlternateC: Sclk,
             }
         }
         PD10 {
+            /// Digital pin 53
             name: d53
-            aliases: {
-                AlternateC: Ss,
-            }
         }
         PA08 {
+            /// Flash data 0
             name: flash_d0
             aliases: {
-                AlternateD: FlashD0
+                AlternateD: FlashD0,
             }
         }
         PA09 {
+            /// Flash data 1
             name: flash_d1
             aliases: {
-                AlternateD: FlashD1
+                AlternateD: FlashD1,
             }
         }
         PA10 {
+            /// Flash data 2
             name: flash_d2
             aliases: {
-                AlternateD: FlashD2
+                AlternateD: FlashD2,
             }
         }
         PA11 {
+            /// Flash data 3
             name: flash_d3
             aliases: {
-                AlternateD: FlashD3
+                AlternateD: FlashD3,
             }
         }
         PB10 {
+            /// SPI clock for the external flash
             name: flash_sck
             aliases: {
-                AlternateD: FlashSclk
+                AlternateD: FlashSclk,
             }
         }
         PB11 {
+            /// SPI chip select for the external flash
             name: flash_cs
             aliases: {
-                PushPullOutput: FlashCs
+                PushPullOutput: FlashCs,
             }
         }
         PC24 {
+            /// Neopixel data
             name: neopixel
         }
         PC30 {
+            /// tx LED
             name: led_tx
         }
         PC31 {
+            /// rx LED
             name: led_rx
         }
         PB26 {
+            /// SD card SPI MOSI
             name: sd_mosi
             aliases: {
                 AlternateC: SdMosi,
             }
         }
         PB29 {
+            /// SD card SPI MISO
             name: sd_miso
             aliases: {
                 AlternateC: SdMiso,
             }
         }
         PB27 {
+            /// SD card SPI SCLK
             name: sd_sclk
             aliases: {
                 AlternateC: SdSclk,
             }
         }
         PB28 {
+            /// SD card SPI chip select
             name: sd_cs
+            aliases: {
+                PushPullOutput: SdCs,
+            }
         }
         PB31 {
-            name: sd_card_detect,
+            /// SD card detect
+            name: sd_card_detect
+            aliases: {
+                PullUpInput: SdCardDetect,
+            }
         }
         PA03 {
+            /// AREF pin - has 1uF capacitor to ground
             name: aref
         }
         PA24 {
+            /// The USB D- pad
             name: usb_dm
             aliases: {
-                AlternateG: UsbDm
+                AlternateG: UsbDm,
             }
         }
         PA25 {
+            /// The USB D+ pad
             name: usb_dp
             aliases: {
-                AlternateG: UsbDp
+                AlternateG: UsbDp,
             }
         }
 );
