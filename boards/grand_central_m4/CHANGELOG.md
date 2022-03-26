@@ -1,5 +1,7 @@
 # Unreleased
 
+- Update to GPIO V2.
+
 # v0.5.0
 
 - update to `atsamd-hal-0.14` and other latest dependencies (#564)
