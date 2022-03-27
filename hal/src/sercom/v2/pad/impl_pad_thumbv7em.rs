@@ -270,12 +270,16 @@ pad_table!(
     }
     #[cfg(feature = "min-samd51n")]
     PB20 {
-        C: (Sercom3, Pad0, IoSet2),
+        // According to Grand Central M4, PB20 is I2C-capable. This disagrees with datasheet
+        // table 6-8.
+        C: (Sercom3, Pad0, IoSet2) + I2C,
         D: (Sercom7, Pad1, IoSet4),
     }
     #[cfg(feature = "min-samd51n")]
     PB21 {
-        C: (Sercom3, Pad1, IoSet2),
+        // According to Grand Central M4, PB21 is I2C-capable. This disagrees with datasheet
+        // table 6-8.
+        C: (Sercom3, Pad1, IoSet2) + I2C,
         D: (Sercom7, Pad0, IoSet4),
     }
     PB22 {
