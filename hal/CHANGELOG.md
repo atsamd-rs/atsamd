@@ -5,6 +5,7 @@
 - Updated to 2021 edition, updated dependencies, removed unused dependencies (#562)
 - updated HAL to be compatible with PAC updates due to svd2rust upgrade
 - Add an `sercom::v2::i2c` API
+- Modified traits to support the Grand Central M4 Express.
 
 # v0.14.0
 
