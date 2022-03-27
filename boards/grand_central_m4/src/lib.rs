@@ -344,21 +344,21 @@ hal::bsp_pins!(
         }
         PD11 {
             /// Digital pin 50, SPI MISO
-            name: d50
+            name: miso
             aliases: {
                 AlternateC: Miso,
             }
         }
         PD08 {
             /// Digital pin 51, SPI MOSI
-            name: d51
+            name: mosi
             aliases: {
                 AlternateC: Mosi,
             }
         }
         PD09 {
             /// Digital pin 52, SPI SCLK
-            name: d52
+            name: sclk
             aliases: {
                 AlternateC: Sclk,
             }

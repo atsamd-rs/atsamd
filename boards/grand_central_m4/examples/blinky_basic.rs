@@ -12,7 +12,7 @@ use panic_halt as _;
 #[cfg(feature = "use_semihosting")]
 use panic_semihosting as _;
 
-use bsp::entry;
+use bsp::{entry, pin_alias};
 use hal::clock::GenericClockController;
 use hal::prelude::*;
 use pac::{CorePeripherals, Peripherals};
@@ -32,7 +32,7 @@ fn main() -> ! {
         &mut peripherals.NVMCTRL,
     );
     let pins = bsp::Pins::new(peripherals.PORT);
-    let mut red_led = pins.d13.into_push_pull_output();
+    let mut red_led: bsp::RedLed = pin_alias!(pins.red_led).into();
     let mut delay = Delay::new(core.SYST, &mut clocks);
     loop {
         delay.delay_ms(200u16);
