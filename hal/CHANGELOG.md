@@ -1,5 +1,14 @@
-# Unreleased Changes
+# v0.15.0
 
+- Remove deprecated modules:
+  - Remove `gpio::v1`, `sercom::v1` module, promote `gpio::v2` to `gpio` and `sercom::v2` to `sercom`.
+  - Remove deprecated `hal` in favour of `ehal`
+  - Remove deprecated `target_device` in favour of `pac`
+  - Remove deprecated `spi_common` module
+  - Remove deprecated `common` module
+  - Remove deprecated `samd51`, `same51`, `same53`, `same54` modules
+  - Remove deprecated `SpinTimer`
+  - Provide the necessary fixes to support those changes.
 - Cleanup most `clippy` lints
 - Update `seq_macro` and remove `replace_with` dependencies (#568)
 - Add a `bsp_peripherals!` macro and fix a bug in `bsp_pins!` (#515)

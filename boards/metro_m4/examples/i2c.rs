@@ -1,4 +1,4 @@
-//! This example showcases the i2c::v2 module.
+//! This example showcases the i2c module.
 
 #![no_std]
 #![no_main]
@@ -21,7 +21,7 @@ use hal::clock::GenericClockController;
 use hal::dmac::{DmaController, PriorityLevel};
 use hal::ehal::blocking::i2c::WriteRead;
 use hal::prelude::*;
-use hal::sercom::v2::i2c;
+use hal::sercom::i2c;
 
 const LENGTH: usize = 1;
 const ADDRESS: u8 = 0x77;

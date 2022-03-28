@@ -2,7 +2,7 @@ use atsamd_hal::{
     clock::{GenericClockController, Sercom6CoreClock},
     pac::{MCLK, QSPI, SERCOM6},
     qspi,
-    sercom::v2::{spi, IoSet1, Sercom6},
+    sercom::{spi, IoSet1, Sercom6},
     time::{Hertz, U32Ext},
     typelevel::NoneT,
 };

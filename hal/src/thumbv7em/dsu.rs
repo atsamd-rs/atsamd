@@ -5,7 +5,7 @@
 //! - Run a CRC32 checksum over memory
 #![warn(missing_docs)]
 
-use crate::target_device::{DSU, PAC};
+use crate::pac::{DSU, PAC};
 
 /// Device Service Unit
 pub struct Dsu {

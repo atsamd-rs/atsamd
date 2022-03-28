@@ -1,5 +1,5 @@
 use crate::clock;
-use crate::hal::{Pwm, PwmPin};
+use crate::ehal::{Pwm, PwmPin};
 use crate::time::Hertz;
 use crate::timer_params::TimerParams;
 

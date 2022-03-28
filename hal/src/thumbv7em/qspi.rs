@@ -1,5 +1,5 @@
 use crate::{
-    gpio::v2::{AlternateH, AnyPin, Pin, PA08, PA09, PA10, PA11, PB10, PB11},
+    gpio::{AlternateH, AnyPin, Pin, PA08, PA09, PA10, PA11, PB10, PB11},
     pac::qspi::instrframe,
     pac::{MCLK, QSPI},
 };

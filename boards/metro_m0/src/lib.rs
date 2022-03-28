@@ -9,7 +9,7 @@ pub use hal::pac;
 
 use hal::clock::GenericClockController;
 use hal::prelude::*;
-use hal::sercom::v2::{i2c, spi, uart, Sercom0, Sercom3, Sercom4, Sercom5};
+use hal::sercom::{i2c, spi, uart, Sercom0, Sercom3, Sercom4, Sercom5};
 use hal::time::{Hertz, MegaHertz};
 
 #[cfg(feature = "usb")]
