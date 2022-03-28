@@ -47,9 +47,9 @@ fn main() -> ! {
     };
 
     unsafe {
-        USB_SERIAL = Some(SerialPort::new(&bus_allocator));
+        USB_SERIAL = Some(SerialPort::new(bus_allocator));
         USB_BUS = Some(
-            UsbDeviceBuilder::new(&bus_allocator, UsbVidPid(0x16c0, 0x27dd))
+            UsbDeviceBuilder::new(bus_allocator, UsbVidPid(0x16c0, 0x27dd))
                 .manufacturer("Fake company")
                 .product("Serial port")
                 .serial_number("TEST")
@@ -77,8 +77,8 @@ static mut USB_SERIAL: Option<SerialPort<UsbBus>> = None;
 
 fn poll_usb() {
     unsafe {
-        USB_BUS.as_mut().map(|usb_dev| {
-            USB_SERIAL.as_mut().map(|serial| {
+        if let Some(usb_dev) = USB_BUS.as_mut() {
+            if let Some(serial) = USB_SERIAL.as_mut() {
                 usb_dev.poll(&mut [serial]);
                 let mut buf = [0u8; 64];
 
@@ -87,11 +87,11 @@ fn poll_usb() {
                         if i >= count {
                             break;
                         }
-                        serial.write(&[c.clone()]).ok();
+                        serial.write(&[*c]).ok();
                     }
                 };
-            });
-        });
+            };
+        };
     };
 }
 

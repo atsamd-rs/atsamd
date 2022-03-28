@@ -15,6 +15,8 @@
 //! between pins. However, by doing so, pins must now be tracked at run-time,
 //! and each pin has a non-zero memory footprint.
 
+#![allow(clippy::bool_comparison)]
+
 pub mod pin;
 pub use pin::*;
 

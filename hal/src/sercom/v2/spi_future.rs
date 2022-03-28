@@ -204,6 +204,7 @@ type Data = u32;
 //=============================================================================
 
 /// Trait used to verify the [`SpiFuture`] buffer length
+#[allow(clippy::len_without_is_empty)]
 pub trait CheckBufLen: AnySpi {
     #[cfg(feature = "min-samd51g")]
     /// [`Spi`] transaction length
@@ -457,7 +458,7 @@ where
         let _ = self.spi.as_ref().read_flags_errors()?;
         let buf = self.buf.as_ref();
         if let Some(buf) = buf.get(self.sent..) {
-            let mut data = buf.into_iter();
+            let mut data = buf.iter();
             let mut bytes = [0; 4];
             let mut iter = bytes.iter_mut();
             for _ in 0..self.spi.step() {
@@ -487,7 +488,7 @@ where
         let buf = self.buf.as_mut();
         if self.rcvd < self.sent {
             let buf = unsafe { buf.get_unchecked_mut(self.rcvd..) };
-            let mut data = buf.into_iter();
+            let mut data = buf.iter_mut();
             let word = unsafe { self.spi.as_mut().read_data() as u32 };
             let bytes = word.to_le_bytes();
             let mut iter = bytes.iter();

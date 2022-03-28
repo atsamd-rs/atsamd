@@ -98,6 +98,7 @@ use modular_bitfield::prelude::*;
 
 /// Useable beat sizes for DMA transfers
 #[derive(Clone, Copy, BitfieldSpecifier)]
+#[bits = 2]
 pub enum BeatSize {
     /// Byte = [`u8`](core::u8)
     Byte = 0x00,
@@ -105,11 +106,15 @@ pub enum BeatSize {
     HalfWord = 0x01,
     /// Word = [`u32`](core::u32)
     Word = 0x02,
-    #[doc(hidden)]
-    _Reserved = 0x03,
 }
+
 /// Convert 8, 16 and 32 bit types
 /// into [`BeatSize`](BeatSize)
+///
+/// # Safety
+///
+/// This trait should not be implemented outside of the crate-provided
+/// implementations
 pub unsafe trait Beat: Sealed {
     /// Convert to BeatSize enum
     const BEATSIZE: BeatSize;
@@ -140,6 +145,15 @@ impl_beat!(
 //==============================================================================
 
 /// Buffer useable by the DMAC.
+///
+/// # Safety
+///
+/// This trait should only be implemented for valid DMAC sources/sinks. That is,
+/// you need to make sure that:
+/// * `dma_ptr` points to a valid memory location useable by the DMAC
+/// * `incrementing` is correct for the source/sink. For example, an `&[u8]` of
+///   size one is not incrementing.
+/// * `buffer_len` is correct for the source/sink.
 pub unsafe trait Buffer {
     /// DMAC beat size
     type Beat: Beat;

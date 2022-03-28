@@ -550,7 +550,7 @@ impl UsbBus {
 
 impl Inner {
     fn usb(&self) -> &DEVICE {
-        unsafe { &(*USB::ptr()).device() }
+        unsafe { (*USB::ptr()).device() }
     }
 
     fn set_stall<EP: Into<EndpointAddress>>(&self, ep: EP, stall: bool) {

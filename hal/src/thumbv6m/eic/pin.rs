@@ -188,7 +188,7 @@ where
     Pin<I, M>: ExternalInterrupt,
 {
     fn id(&self) -> ExternalInterruptID {
-        Pin::<I, M>::id(self.as_ref())
+        Pin::<I, M>::id(self)
     }
 }
 

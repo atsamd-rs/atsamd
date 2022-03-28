@@ -740,7 +740,7 @@ where
         F: FnOnce(&mut SpecificConfig<C>),
     {
         self.config.as_mut().registers.enable_peripheral(false);
-        update(&mut self.config.as_mut());
+        update(self.config.as_mut());
         self.config.as_mut().registers.enable_peripheral(true);
     }
 }
