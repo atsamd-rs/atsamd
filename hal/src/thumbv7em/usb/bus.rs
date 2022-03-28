@@ -8,7 +8,7 @@
 use super::Descriptors;
 use crate::calibration::{usb_transn_cal, usb_transp_cal, usb_trim_cal};
 use crate::clock;
-use crate::gpio::v2::{AlternateH, AnyPin, Pin, PA24, PA25};
+use crate::gpio::{AlternateH, AnyPin, Pin, PA24, PA25};
 use crate::pac;
 use crate::pac::usb::DEVICE;
 use crate::pac::{MCLK, USB};

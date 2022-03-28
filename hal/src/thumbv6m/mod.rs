@@ -22,5 +22,3 @@ pub mod watchdog;
 #[cfg(feature = "usb")]
 #[cfg(feature = "samd21")]
 pub mod usb;
-
-pub(crate) mod sercom;

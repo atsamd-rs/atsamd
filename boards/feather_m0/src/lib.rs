@@ -8,7 +8,7 @@ pub use hal::ehal;
 pub use hal::pac;
 
 use hal::clock::GenericClockController;
-use hal::sercom::v2::{
+use hal::sercom::{
     i2c, spi,
     uart::{self, BaudMode, Oversampling},
 };

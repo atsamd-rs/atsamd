@@ -2,32 +2,124 @@
 //!
 //! The SERCOM module is used to configure the SERCOM peripherals as USART, SPI
 //! or I2C interfaces.
-//!
-//! ## Versions
-//!
-//! There are currently two versions of the SERCOM module. The inital SERCOM API
-//! was based on a macro-heavy implementation. The discussion in issue
-//! [#214](https://github.com/atsamd-rs/atsamd/issues/214) spurred the creation
-//! of a new module with less macro-use and a refactored API.
-//!
-//! The new module is provided in [v2]. The old module was removed, but a
-//! compatibility shim is provided in [v1] to support existing code.
-//!
-//! ## Migration
-//!
-//! The [v2] module will eventually replace [v1]. New users are encouraged to
-//! use [v2] instead of [v1].
-//!
-//! The new [`v2::spi`] and [`v2::uart`] modules are substantially more
-//! configurable and safe than the existing, [`v1::spi`] and [`v1::uart`]
-//! modules. To assist in migration, the [`v2::spi::Pads`] and
-//! [`v2::uart::Pads`] structs accept both [`v1::Pin`]s and [`v2::Pin`]s.
-//!
-//! [`Pad`]: v2::pads::Pad
-//! [`v1::Pin`]: crate::gpio::v1::Pin
-//! [`v2::Pin`]: crate::gpio::v2::pin::Pin
+#![cfg_attr(
+    feature = "min-samd51g",
+    doc = "
+# Undocumented features
+ 
+The ATSAMx5x chips contain certain features that aren't documented in the datasheet. 
+These features are implemented in the HAL based on experimentation with certain boards
+which have verifiably demonstrated that those features work as intended.
 
-pub mod v1;
-pub use v1::*;
+* [`UndocIoSet1`](pad::UndocIoSet1): Implement an undocumented `IoSet` for PA16, PA17,
+PB22 & PB23 configured for [`Sercom1`]. The pygamer & feather_m4 use this combination,
+but it is not listed as valid in the datasheet.
 
-pub mod v2;
+* [`UndocIoSet2`](pad::UndocIoSet2): Implement an undocumented `IoSet` for PA00, PA01,
+PB22 & PB23 configured for [`Sercom1`]. The itsybitsy_m4 uses this combination, but it is
+not listed as valid in the datasheet.
+
+* [`PB02`] is I2C-capable according to metro_m4. As such, [`PB02`]
+implements [`IsI2cPad`].
+
+* [`PB03`] is I2C-capable according to metro_m4. As such, [`PB03`]
+implements [`IsI2cPad`](pad::IsI2cPad).
+
+[`PB02`]: crate::gpio::pin::PB02
+[`PB03`]: crate::gpio::pin::PB03
+[`IsI2cPad`]: pad::IsI2cPad
+"
+)]
+
+use core::ops::Deref;
+
+use paste::paste;
+use seq_macro::seq;
+
+use crate::pac;
+
+#[cfg(feature = "min-samd51g")]
+use pac::MCLK as APB_CLK_CTRL;
+#[cfg(any(feature = "samd11", feature = "samd21"))]
+use pac::PM as APB_CLK_CTRL;
+
+use pac::{sercom0, SERCOM0, SERCOM1};
+#[cfg(any(feature = "samd21", feature = "min-samd51g"))]
+use pac::{SERCOM2, SERCOM3};
+#[cfg(any(feature = "min-samd21g", feature = "min-samd51g"))]
+use pac::{SERCOM4, SERCOM5};
+#[cfg(feature = "min-samd51n")]
+use pac::{SERCOM6, SERCOM7};
+
+#[cfg(feature = "dma")]
+use crate::dmac::TriggerSource;
+
+use crate::typelevel::Sealed;
+
+pub mod pad;
+pub use pad::*;
+
+pub mod i2c;
+pub mod spi;
+pub mod spi_future;
+pub mod uart;
+
+#[cfg(feature = "dma")]
+pub mod dma;
+
+//==============================================================================
+//  Sercom
+//==============================================================================
+
+/// Type-level `enum` representing a Serial Communication Interface (SERCOM)
+pub trait Sercom: Sealed + Deref<Target = sercom0::RegisterBlock> {
+    /// SERCOM number
+    const NUM: usize;
+    /// RX Trigger source for DMA transactions
+    #[cfg(feature = "dma")]
+    const DMA_RX_TRIGGER: TriggerSource;
+    /// TX trigger source for DMA transactions
+    #[cfg(feature = "dma")]
+    const DMA_TX_TRIGGER: TriggerSource;
+    /// Enable the corresponding APB clock
+    fn enable_apb_clock(&mut self, ctrl: &APB_CLK_CTRL);
+}
+
+macro_rules! sercom {
+    ( $apbmask:ident: ($start:literal, $end:literal) ) => {
+        seq!(N in $start..=$end {
+            paste! {
+                /// Type alias for the corresponding SERCOM instance
+                pub type Sercom~N = SERCOM~N;
+                impl Sealed for Sercom~N {}
+                impl Sercom for Sercom~N {
+                    const NUM: usize = N;
+                    #[cfg(feature = "dma")]
+                    const DMA_RX_TRIGGER: TriggerSource = TriggerSource::[<SERCOM~N _RX>];
+                    #[cfg(feature = "dma")]
+                    const DMA_TX_TRIGGER: TriggerSource = TriggerSource::[<SERCOM~N _TX>];
+                    #[inline]
+                    fn enable_apb_clock(&mut self, ctrl: &APB_CLK_CTRL) {
+                        ctrl.$apbmask.modify(|_, w| w.[<sercom~N _>]().set_bit());
+                    }
+                }
+            }
+        });
+    };
+}
+
+#[cfg(any(feature = "samd11", feature = "samd21"))]
+sercom!(apbcmask: (0, 1));
+#[cfg(feature = "samd21")]
+sercom!(apbcmask: (2, 3));
+#[cfg(feature = "min-samd21g")]
+sercom!(apbcmask: (4, 5));
+
+#[cfg(feature = "min-samd51g")]
+sercom!(apbamask: (0, 1));
+#[cfg(feature = "min-samd51g")]
+sercom!(apbbmask: (2, 3));
+#[cfg(feature = "min-samd51g")]
+sercom!(apbdmask: (4, 5));
+#[cfg(feature = "min-samd51n")]
+sercom!(apbdmask: (6, 7));

@@ -6,7 +6,7 @@ use atsamd_hal::{
     ehal::serial::{Read, Write},
     pac::{interrupt, MCLK, SERCOM0},
     prelude::nb,
-    sercom::v2::{uart, IoSet2, Sercom0},
+    sercom::{uart, IoSet2, Sercom0},
     time::{Hertz, U32Ext},
 };
 use bbqueue::{self, BBBuffer, Consumer, Producer};
@@ -288,10 +288,8 @@ impl Wifi {
 /// Imports necessary for using `wifi_singleton`.
 pub mod wifi_prelude {
     pub use crate::wifi::*;
-    pub use atsamd_hal::gpio::Port;
     pub use atsamd_hal::pac::SERCOM0;
     pub use atsamd_hal::pac::{interrupt, MCLK};
-    pub use atsamd_hal::sercom::{Sercom0Pad0, Sercom0Pad2, UART0};
     pub use bbqueue::{BBBuffer, Producer};
 
     pub use cortex_m::interrupt::CriticalSection;

@@ -22,9 +22,9 @@
 
 pub mod smart_eeprom;
 
-pub use crate::target_device::nvmctrl::ctrla::PRM_A;
-use crate::target_device::nvmctrl::ctrlb::CMD_AW;
-use crate::target_device::NVMCTRL;
+pub use crate::pac::nvmctrl::ctrla::PRM_A;
+use crate::pac::nvmctrl::ctrlb::CMD_AW;
+use crate::pac::NVMCTRL;
 use core::num::NonZeroU32;
 use core::ops::Range;
 

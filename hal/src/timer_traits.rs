@@ -1,4 +1,4 @@
-use crate::hal::timer::{CountDown, Periodic};
+use crate::ehal::timer::{CountDown, Periodic};
 use crate::time;
 
 /// Trait for timers that can enable & disable an interrupt that fires

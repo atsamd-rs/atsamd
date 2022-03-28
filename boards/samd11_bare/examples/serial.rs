@@ -17,7 +17,7 @@ use hal::delay::Delay;
 use hal::pac::{CorePeripherals, Peripherals};
 
 use hal::pac::gclk::{clkctrl::GEN_A, genctrl::SRC_A};
-use hal::sercom::v2::{
+use hal::sercom::{
     uart::{self, BaudMode, Oversampling},
     Sercom0,
 };

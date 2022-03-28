@@ -32,9 +32,9 @@ This crate can support other variants in a similar fashion; pull requests for th
 
 ## Examples?
 
-Check out the metro_m0 board support crate examples:
+Check out the `feather_m0` board support crate examples:
 
-https://github.com/atsamd-rs/atsamd/tree/master/boards/metro_m0/examples
+https://github.com/atsamd-rs/atsamd/tree/master/boards/feather_m0/examples
 
 ## License
 
