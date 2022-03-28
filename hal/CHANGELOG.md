@@ -1,6 +1,7 @@
 # v0.15.0
 
-- Remove deprecated modules:
+- Rework USB API
+- Remove deprecated modules ([#480](https://github.com/atsamd-rs/atsamd/pull/480)) :
   - Remove `gpio::v1`, `sercom::v1` module, promote `gpio::v2` to `gpio` and `sercom::v2` to `sercom`.
   - Remove deprecated `hal` in favour of `ehal`
   - Remove deprecated `target_device` in favour of `pac`
