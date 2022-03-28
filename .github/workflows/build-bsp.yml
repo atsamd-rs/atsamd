@@ -51,6 +51,8 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         name: Clippy ${{ matrix.bsp }}
         args: --all-features --manifest-path=boards/${{ matrix.bsp }}/Cargo.toml
+        env:
+          RUSTFLAGS: -D warnings -D errors
 
   build_hal:
     runs-on: ubuntu-latest
