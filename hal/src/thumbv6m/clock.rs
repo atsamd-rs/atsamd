@@ -3,6 +3,8 @@
 //! before you can set up most of the peripherals on the atsamd21 device.
 //! The other types in this module are used to enforce at compile time
 //! that the peripherals have been correctly configured.
+#![allow(clippy::from_over_into)]
+
 use crate::pac::gclk::clkctrl::GEN_A::*;
 use crate::pac::gclk::clkctrl::ID_A::*;
 use crate::pac::gclk::genctrl::SRC_A::*;
@@ -64,10 +66,8 @@ impl State {
             if divider >= 2_u16.pow(5) {
                 divisor_invalid = true;
             }
-        } else {
-            if divider >= 2_u16.pow(8) {
-                divisor_invalid = true;
-            }
+        } else if divider >= 2_u16.pow(8) {
+            divisor_invalid = true;
         }
         if divisor_invalid {
             panic!("invalid divisor {} for GCLK {}", divider, gclk as u8);

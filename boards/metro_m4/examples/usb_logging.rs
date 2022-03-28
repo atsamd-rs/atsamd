@@ -51,9 +51,9 @@ fn main() -> ! {
     };
 
     unsafe {
-        USB_SERIAL = Some(SerialPort::new(&bus_allocator));
+        USB_SERIAL = Some(SerialPort::new(bus_allocator));
         USB_BUS = Some(
-            UsbDeviceBuilder::new(&bus_allocator, UsbVidPid(0x2222, 0x3333))
+            UsbDeviceBuilder::new(bus_allocator, UsbVidPid(0x2222, 0x3333))
                 .manufacturer("Fake company")
                 .product("Serial port")
                 .serial_number("TEST")
@@ -81,11 +81,11 @@ fn main() -> ! {
 
         // Turn off interrupts so we don't fight with the interrupt
         cortex_m::interrupt::free(|_| unsafe {
-            USB_BUS.as_mut().map(|_| {
-                USB_SERIAL.as_mut().map(|serial| {
+            if USB_BUS.as_mut().is_some() {
+                if let Some(serial) = USB_SERIAL.as_mut() {
                     let _ = serial.write("Hello USB\n".as_bytes());
-                });
-            })
+                }
+            }
         });
     }
 }
@@ -96,15 +96,15 @@ static mut USB_SERIAL: Option<SerialPort<UsbBus>> = None;
 
 fn poll_usb() {
     unsafe {
-        USB_BUS.as_mut().map(|usb_dev| {
-            USB_SERIAL.as_mut().map(|serial| {
+        if let Some(usb_dev) = USB_BUS.as_mut() {
+            if let Some(serial) = USB_SERIAL.as_mut() {
                 usb_dev.poll(&mut [serial]);
 
                 // Make the other side happy
                 let mut buf = [0u8; 16];
                 let _ = serial.read(&mut buf);
-            });
-        });
+            };
+        }
     };
 }
 

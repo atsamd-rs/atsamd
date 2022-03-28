@@ -7,7 +7,7 @@
 //! notion of virtual pages and it handles physical page reallocation and
 //! erasing automatically underneath.
 //!
-//! From a user perspective, SmartEERPOM behaves just like a piece of memory in
+//! From a user perspective, SmartEEPROM behaves just like a piece of memory in
 //! RAM but it is non-volatile. Data does not get lost between resets/power
 //! cycles.
 //!
@@ -22,7 +22,7 @@
 //! default, `SBLK` property is set to `0`, effectively disabling SmartEEPROM.
 //!
 //! One of possible safe ways to change user page content is to use `OpenOCD`
-//! custom commmands. `atsame5x`'s `OpenOCD` driver supports `atsame5 userpage`
+//! custom commands. `atsame5x`'s `OpenOCD` driver supports `atsame5 userpage`
 //! command. To access it from GDB, it has to be preceded with a `monitor`
 //! clause.
 //!
@@ -64,7 +64,7 @@ impl Sealed for Unlocked {}
 /// being retrieved from HW registers.
 #[derive(Debug)]
 pub enum SmartEepromRetrievalFailure {
-    /// SmartEERPOM is disabled and user page is misconfigured. [`More details
+    /// SmartEEPROM is disabled and user page is misconfigured. [`More details
     /// in module-level documentation`](self).
     Disabled,
     /// Support for disabled automatic page reallocation is not implemented.
@@ -164,7 +164,8 @@ impl<'a, T: SmartEepromState> SmartEeprom<'a, T> {
     /// [`Underlying pointed type`](SmartEepromPointableSize) can be either
     /// [`u8`], [`u16`] or [`u32`].
     ///
-    /// Unsafety:
+    /// # Safety
+    ///
     /// `NVMCTRL.SEESTAT.BUSY` register must be 0 before memory access can be
     /// performed.
     pub unsafe fn get_slice<TP: SmartEepromPointableSize>(&self) -> &[TP] {
@@ -212,7 +213,8 @@ impl<'a> SmartEeprom<'a, Unlocked> {
     /// [`Underlying pointed type`](SmartEepromPointableSize) can be either
     /// [`u8`], [`u16`] or [`u32`].
     ///
-    /// Unsafety:
+    /// # Safety
+    ///
     /// `NVMCTRL.SEESTAT.BUSY` register must be 0 before memory access can be
     /// performed.
     pub unsafe fn get_mut_slice<TP: SmartEepromPointableSize>(&mut self) -> &mut [TP] {

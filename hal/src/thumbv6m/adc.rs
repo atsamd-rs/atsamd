@@ -32,6 +32,7 @@ impl Adc<ADC> {
     /// * 1 sample
     /// * 1/2 gain
     /// * 1/2 VDDANA reference voltage
+    #[allow(clippy::self_named_constructors)]
     pub fn adc(adc: ADC, pm: &mut PM, clocks: &mut GenericClockController) -> Self {
         pm.apbcmask.modify(|_, w| w.adc_().set_bit());
 

@@ -166,6 +166,7 @@ impl From<DynPinMode> for ModeFields {
 /// The SAMx5x PACs have a GROUP type to represent each [`PORT`] group, but the
 /// SAMD11 and SAMD21 PACs do not. Manually re-implement it here.
 #[repr(C)]
+#[allow(clippy::upper_case_acronyms)]
 pub(super) struct GROUP {
     dir: DIR,
     dirclr: DIRCLR,

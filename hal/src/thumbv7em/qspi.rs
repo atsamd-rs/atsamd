@@ -30,6 +30,7 @@ pub struct Qspi<MODE> {
 impl Qspi<OneShot> {
     /// Enable the clocks for the qspi peripheral in single data rate mode
     /// assuming 120mhz system clock, for 4mhz spi mode 0 operation.
+    #[allow(clippy::too_many_arguments)]
     pub fn new(
         mclk: &mut MCLK,
         qspi: QSPI,

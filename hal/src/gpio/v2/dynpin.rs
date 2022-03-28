@@ -410,14 +410,20 @@ impl DynPin {
     #[inline]
     fn _write(&mut self, bit: bool) -> Result<(), Error> {
         match self.mode {
-            DynPinMode::Output(_) => Ok(self.regs.write_pin(bit)),
+            DynPinMode::Output(_) => {
+                self.regs.write_pin(bit);
+                Ok(())
+            }
             _ => Err(Error::InvalidPinType),
         }
     }
     #[inline]
     fn _toggle(&mut self) -> Result<(), Error> {
         match self.mode {
-            DynPinMode::Output(_) => Ok(self.regs.toggle_pin()),
+            DynPinMode::Output(_) => {
+                self.regs.toggle_pin();
+                Ok(())
+            }
             _ => Err(Error::InvalidPinType),
         }
     }

@@ -36,5 +36,7 @@ fn main() -> ! {
         .configure_gclk_divider_and_source(GCLK2, 12, DPLL0, false)
         .unwrap();
     let _ = pins.d7.into_alternate::<M>();
-    loop {}
+    loop {
+        cortex_m::asm::wfi();
+    }
 }
