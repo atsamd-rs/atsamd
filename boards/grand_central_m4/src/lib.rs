@@ -12,7 +12,7 @@ pub use cortex_m_rt::entry;
 use hal::{
     clock::GenericClockController,
     qspi::{OneShot, Qspi},
-    sercom::v2::{
+    sercom::{
         i2c, spi,
         uart::{self, BaudMode, Oversampling},
         IoSet2,

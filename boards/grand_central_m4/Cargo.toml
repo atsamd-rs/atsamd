@@ -20,7 +20,7 @@ version = "0.7"
 optional = true
 
 [dependencies.atsamd-hal]
-version = "0.14"
+version = "0.15"
 default-features = false
 
 [dependencies.usb-device]
