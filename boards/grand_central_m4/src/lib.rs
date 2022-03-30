@@ -5,8 +5,6 @@ pub use hal::ehal;
 pub use hal::pac;
 
 #[cfg(feature = "rt")]
-extern crate cortex_m_rt;
-#[cfg(feature = "rt")]
 pub use cortex_m_rt::entry;
 
 use hal::{
