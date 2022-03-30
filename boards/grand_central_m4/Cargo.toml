@@ -58,9 +58,6 @@ chip = "ATSAMD51P20A"
 name = "blinky_basic"
 
 [[example]]
-name = "neopixel_blink"
-
-[[example]]
 name = "neopixel_rainbow"
 
 [[example]]
