@@ -1,6 +1,6 @@
 # Unreleased
 
-- Update to GPIO V2.
+- update to `atsamd-hal-0.15` (v2 drivers of peripherals and removal of deprecated things)
 
 # v0.5.0
 
