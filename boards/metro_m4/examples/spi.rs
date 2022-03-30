@@ -10,7 +10,7 @@ use panic_halt as _;
 #[cfg(feature = "use_semihosting")]
 use panic_semihosting as _;
 
-use bsp::entry;
+use bsp::{entry, periph_alias};
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
 use hal::pac::{CorePeripherals, Peripherals};
@@ -34,10 +34,10 @@ fn main() -> ! {
     let miso = pins.miso;
     let mosi = pins.mosi;
     let sclk = pins.sclk;
-    let sercom2 = peripherals.SERCOM2;
+    let spi_sercom = periph_alias!(peripherals.spi_sercom);
     let mclk = &mut peripherals.MCLK;
 
-    let mut spi = bsp::spi_master(&mut clocks, 3.mhz(), sercom2, mclk, sclk, mosi, miso);
+    let mut spi = bsp::spi_master(&mut clocks, 3.mhz(), spi_sercom, mclk, sclk, mosi, miso);
 
     loop {
         for byte in b"Hello, world!" {
