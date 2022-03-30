@@ -1,4 +1,8 @@
 #![no_std]
+#![deny(missing_docs)]
+
+//! Board support crate for Adafruit's Grand Central M4 Express,
+//! an ATSAMD51-based board in an Arduino Mega form factor.
 
 pub use atsamd_hal as hal;
 pub use hal::ehal;
@@ -591,6 +595,7 @@ pub fn uart(
 }
 
 #[cfg(feature = "usb")]
+/// Convenience function for setting up USB
 pub fn usb_allocator(
     usb: pac::USB,
     clocks: &mut GenericClockController,
