@@ -1,4 +1,8 @@
 #![no_std]
+#![deny(missing_docs)]
+
+//! Board support crate for Adafruit's Feather M4 Express,
+//! an ATSAMD51-based board in an Feather form factor.
 
 #[cfg(feature = "rt")]
 pub use cortex_m_rt::entry;
