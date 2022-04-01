@@ -39,7 +39,7 @@
 //! > use cortex_m::singleton;
 //! >
 //! > let hasharea: &'static mut HashArea =
-//! >     singleton!(: HashArea = HashArea::default()).unwrap();
+//! > singleton!(: HashArea = HashArea::default()).unwrap();
 //! > ```
 
 //!
