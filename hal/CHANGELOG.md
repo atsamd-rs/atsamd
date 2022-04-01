@@ -1,3 +1,7 @@
+# Unreleased Changes
+
+- Add support for L-Variant of the SAMD21D
+
 # v0.15.0
 
 - Rework USB API

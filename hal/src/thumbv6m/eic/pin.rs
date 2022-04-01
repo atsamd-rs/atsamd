@@ -236,6 +236,7 @@ ei!(ExtInt[7] {
 
 #[cfg(feature = "samd21")]
 ei!(ExtInt[0] {
+    #[cfg(not(any(feature = "samd21el", feature = "samd21gl")))]
     PA00,
     PA16,
     #[cfg(feature = "min-samd21j")]
@@ -246,6 +247,7 @@ ei!(ExtInt[0] {
 
 #[cfg(feature = "samd21")]
 ei!(ExtInt[1] {
+    #[cfg(not(any(feature = "samd21el", feature = "samd21gl")))]
     PA01,
     PA17,
     #[cfg(feature = "min-samd21j")]
@@ -310,6 +312,7 @@ ei!(ExtInt[7] {
 
 #[cfg(feature = "samd21")]
 ei!(ExtInt[8] {
+    #[cfg(not(feature = "samd21el"))]
     PA28,
     #[cfg(feature = "min-samd21g")]
     PB08,
