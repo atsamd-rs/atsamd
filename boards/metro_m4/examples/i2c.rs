@@ -10,9 +10,9 @@ use panic_semihosting as _;
 
 use metro_m4 as bsp;
 
-use bsp::{periph_alias, entry};
 use bsp::hal;
 use bsp::pac;
+use bsp::{entry, periph_alias};
 
 use cortex_m::asm;
 use pac::Peripherals;
