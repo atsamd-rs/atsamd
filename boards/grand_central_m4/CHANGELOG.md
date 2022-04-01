@@ -1,5 +1,7 @@
 # Unreleased
 
+- update to `atsamd-hal-0.15` (v2 drivers of peripherals and removal of deprecated things)
+
 # v0.5.0
 
 - update to `atsamd-hal-0.14` and other latest dependencies (#564)
