@@ -10,7 +10,7 @@ use panic_semihosting as _;
 
 use metro_m4 as bsp;
 
-use bsp::entry;
+use bsp::{periph_alias, entry};
 use bsp::hal;
 use bsp::pac;
 

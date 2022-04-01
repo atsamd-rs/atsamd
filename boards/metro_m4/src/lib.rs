@@ -1,4 +1,9 @@
 #![no_std]
+#![deny(missing_docs)]
+
+//! Board support crate for Adafruit's Metro M4 Express,
+//! an ATSAMD51-based board in an 'Arduino compatible'
+//! shape and pinout
 
 pub use atsamd_hal as hal;
 pub use hal::ehal;
