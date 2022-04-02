@@ -1,5 +1,9 @@
 # Unreleased
 
+- Update .cargo/config
+
+# v0.12.0
+
 - Update `lib.rs` and examples to reflect removal of `v1` APIs and promotion of `v2` APIs
 - Update `i2c_master` convenience function to use the new `sercom::v2::i2c` API
 - Add an `i2c` example
