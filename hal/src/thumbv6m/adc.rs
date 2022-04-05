@@ -217,3 +217,19 @@ adc_pins! {
     PB06: 14,
     PB07: 15
 }
+
+#[cfg(feature = "samd21el")]
+adc_pins! {
+    PB02: 10,
+    PB03: 11,
+    PB04: 12,
+    PB05: 13
+}
+
+#[cfg(feature = "samd21gl")]
+adc_pins! {
+    PB00: 8,
+    PB01: 9,
+    PB04: 12,
+    PB05: 13
+}
