@@ -20,7 +20,7 @@ use cortex_m::interrupt::free as disable_interrupts;
 use eg::mono_font::{ascii::FONT_6X12, MonoTextStyle};
 use eg::pixelcolor::Rgb565;
 use eg::prelude::*;
-use eg::text::Text;
+use eg::text::{Baseline, Text};
 
 use heapless::{consts::U256, String};
 
@@ -131,10 +131,11 @@ fn clear(display: &mut wio::LCD) {
 }
 
 fn write<'a, T: Into<&'a str>>(display: &mut wio::LCD, text: T, pos: Point) {
-    Text::new(
+    Text::with_baseline(
         text.into(),
         pos,
         MonoTextStyle::new(&FONT_6X12, Rgb565::WHITE),
+        Baseline::Top,
     )
     .draw(display)
     .ok()
