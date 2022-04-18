@@ -10,7 +10,7 @@ use bsp::hal;
 use bsp::pac;
 use feather_m4 as bsp;
 
-use bsp::entry;
+use bsp::{entry, periph_alias, pin_alias};
 use hal::clock::GenericClockController;
 use hal::dmac::{DmaController, PriorityLevel};
 use hal::prelude::*;
@@ -33,7 +33,8 @@ fn main() -> ! {
     let pins = bsp::Pins::new(peripherals.PORT);
 
     // Take RX and TX pins
-    let (rx_pin, tx_pin) = (pins.d0, pins.d1);
+    let uart_rx = pin_alias!(pins.uart_rx);
+    let uart_tx = pin_alias!(pins.uart_tx);
 
     // Setup DMA channels for later use
     let mut dmac = DmaController::init(dmac, &mut peripherals.PM);
@@ -42,14 +43,16 @@ fn main() -> ! {
     let chan0 = channels.0.init(PriorityLevel::LVL0);
     let chan1 = channels.1.init(PriorityLevel::LVL0);
 
+    let uart_sercom = periph_alias!(peripherals.uart_sercom);
+
     // Setup UART peripheral
     let uart = bsp::uart(
         &mut clocks,
         9600.hz(),
-        peripherals.SERCOM5,
+        uart_sercom,
         &mut mclk,
-        rx_pin,
-        tx_pin,
+        uart_rx,
+        uart_tx,
     );
 
     // Split uart in rx + tx halves
