@@ -1,11 +1,14 @@
 #![no_std]
+#![deny(missing_docs)]
+
+//! Board support crate for Adafruit's Metro M4 Express,
+//! an ATSAMD51-based board in an 'Arduino compatible'
+//! shape and pinout
 
 pub use atsamd_hal as hal;
 pub use hal::ehal;
 pub use hal::pac;
 
-#[cfg(feature = "rt")]
-extern crate cortex_m_rt;
 #[cfg(feature = "rt")]
 pub use cortex_m_rt::entry;
 
@@ -15,7 +18,7 @@ use hal::{
     sercom::{
         i2c, spi,
         uart::{self, BaudMode, Oversampling},
-        IoSet1, IoSet6, Sercom2, Sercom3, Sercom5,
+        IoSet1, IoSet6,
     },
     time::Hertz,
 };
@@ -24,6 +27,12 @@ use pac::MCLK;
 
 #[cfg(feature = "usb")]
 use hal::usb::{usb_device::bus::UsbBusAllocator, UsbBus};
+
+hal::bsp_peripherals!(
+    SERCOM2 { SpiSercom }
+    SERCOM3 { UartSercom }
+    SERCOM5 { I2cSercom }
+);
 
 hal::bsp_pins!(
     PA02 {
@@ -227,7 +236,7 @@ hal::bsp_pins!(
 /// SPI pads for the labelled SPI peripheral
 ///
 /// You can use these pads with other, user-defined [`spi::Config`]urations.
-pub type SpiPads = spi::Pads<Sercom2, IoSet1, Miso, Mosi, Sclk>;
+pub type SpiPads = spi::Pads<SpiSercom, IoSet1, Miso, Mosi, Sclk>;
 
 /// SPI master for the labelled SPI peripheral
 ///
@@ -240,7 +249,7 @@ pub type Spi = spi::Spi<spi::Config<SpiPads>, spi::Duplex>;
 pub fn spi_master(
     clocks: &mut GenericClockController,
     baud: impl Into<Hertz>,
-    sercom2: pac::SERCOM2,
+    sercom: SpiSercom,
     mclk: &mut pac::MCLK,
     sclk: impl Into<Sclk>,
     mosi: impl Into<Mosi>,
@@ -251,7 +260,7 @@ pub fn spi_master(
     let freq = clock.freq();
     let (miso, mosi, sclk) = (miso.into(), mosi.into(), sclk.into());
     let pads = spi::Pads::default().data_in(miso).data_out(mosi).sclk(sclk);
-    spi::Config::new(mclk, sercom2, pads, freq)
+    spi::Config::new(mclk, sercom, pads, freq)
         .baud(baud)
         .spi_mode(spi::MODE_0)
         .enable()
@@ -286,7 +295,7 @@ pub fn qspi_master(
 /// I2C pads for the labelled I2C peripheral
 ///
 /// You can use these pads with other, user-defined [`i2c::Config`]urations.
-pub type I2cPads = i2c::Pads<Sercom5, IoSet6, Sda, Scl>;
+pub type I2cPads = i2c::Pads<I2cSercom, IoSet6, Sda, Scl>;
 
 /// I2C master for the labelled I2C peripheral
 ///
@@ -300,7 +309,7 @@ pub type I2c = i2c::I2c<i2c::Config<I2cPads>>;
 pub fn i2c_master(
     clocks: &mut GenericClockController,
     baud: impl Into<Hertz>,
-    sercom: Sercom5,
+    sercom: I2cSercom,
     mclk: &mut pac::MCLK,
     sda: impl Into<Sda>,
     scl: impl Into<Scl>,
@@ -316,7 +325,7 @@ pub fn i2c_master(
 }
 
 /// UART Pads for the labelled UART peripheral
-pub type UartPads = uart::Pads<Sercom3, IoSet1, UartRx, UartTx>;
+pub type UartPads = uart::Pads<UartSercom, IoSet1, UartRx, UartTx>;
 
 /// UART device for the labelled RX & TX pins
 pub type Uart = uart::Uart<uart::Config<UartPads>, uart::Duplex>;
@@ -326,7 +335,7 @@ pub type Uart = uart::Uart<uart::Config<UartPads>, uart::Duplex>;
 pub fn uart(
     clocks: &mut GenericClockController,
     baud: impl Into<Hertz>,
-    sercom3: pac::SERCOM3,
+    sercom: UartSercom,
     mclk: &mut pac::MCLK,
     uart_rx: impl Into<UartRx>,
     uart_tx: impl Into<UartTx>,
@@ -335,12 +344,13 @@ pub fn uart(
     let clock = &clocks.sercom3_core(&gclk0).unwrap();
     let baud = baud.into();
     let pads = uart::Pads::default().rx(uart_rx.into()).tx(uart_tx.into());
-    uart::Config::new(mclk, sercom3, pads, clock.freq())
+    uart::Config::new(mclk, sercom, pads, clock.freq())
         .baud(baud, BaudMode::Fractional(Oversampling::Bits16))
         .enable()
 }
 
 #[cfg(feature = "usb")]
+/// Convenience function for setting up USB
 pub fn usb_allocator(
     usb: pac::USB,
     clocks: &mut GenericClockController,

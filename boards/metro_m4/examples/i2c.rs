@@ -10,9 +10,9 @@ use panic_semihosting as _;
 
 use metro_m4 as bsp;
 
-use bsp::entry;
 use bsp::hal;
 use bsp::pac;
+use bsp::{entry, periph_alias};
 
 use cortex_m::asm;
 use pac::Peripherals;
@@ -57,7 +57,8 @@ fn main() -> ! {
     let gclk0 = clocks.gclk0();
     let sercom5_clock = &clocks.sercom5_core(&gclk0).unwrap();
     let pads = i2c::Pads::new(sda, scl);
-    let mut i2c = i2c::Config::new(&mclk, peripherals.SERCOM5, pads, sercom5_clock.freq())
+    let i2c_sercom = periph_alias!(peripherals.i2c_sercom);
+    let mut i2c = i2c::Config::new(&mclk, i2c_sercom, pads, sercom5_clock.freq())
         .baud(100.khz())
         .enable();
 
