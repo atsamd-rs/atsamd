@@ -1,6 +1,7 @@
 # Unreleased Changes
 
 - Add support for L-Variant of the SAMD21D
+- Fix failing `bsp_pins!` invocation with no aliases (#605 fixes #599)
 
 # v0.15.0
 
