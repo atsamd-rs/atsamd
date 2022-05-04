@@ -1,6 +1,6 @@
-// This blinks the onboard RGB led through SPI to the NINA-W102 Wi-Fi module where the RGB led sits
-// The example uses the wifi_nina library to control the WiFi on the NINA-W102 when it
-// runs the Arduino nina-fw firmware which is installed by default on all Arduino MKR 1010s: https://github.com/arduino/nina-fw
+// This blinks the onboard RGB led through SPI to the NINA-W102 Wi-Fi module
+// where the RGB led sits The example uses the wifi_nina library to control the
+// WiFi on the NINA-W102 when it runs the Arduino nina-fw firmware which is installed by default on all Arduino MKR 1010s: https://github.com/arduino/nina-fw
 
 #![no_std]
 #![no_main]
@@ -65,7 +65,8 @@ fn main() -> ! {
     let mut wifi = wifi_nina::Wifi::new(spi_transport);
 
     // Full power is too strong to look at :)
-    // let rgb = [[255, 0, 0], [0, 255, 0], [0, 0, 255], [255, 255, 255], [0, 0, 0]];
+    // let rgb = [[255, 0, 0], [0, 255, 0], [0, 0, 255], [255, 255, 255], [0, 0,
+    // 0]];
     let rgb = [[64, 0, 0], [0, 64, 0], [0, 0, 64], [64, 64, 64], [0, 0, 0]];
     let mut current = 0;
 

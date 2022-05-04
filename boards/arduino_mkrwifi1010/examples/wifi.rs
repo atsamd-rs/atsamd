@@ -1,6 +1,6 @@
-// This connects to WiFI through SPI to the NINA-W102 Wi-Fi module using the wifi_nina library.
-// This works when the NINA-W102 runs the Arduino nina-fw firmware which is installed by default
-// on all Arduino MKR 1010s: https://github.com/arduino/nina-fw
+// This connects to WiFI through SPI to the NINA-W102 Wi-Fi module using the
+// wifi_nina library. This works when the NINA-W102 runs the Arduino nina-fw
+// firmware which is installed by default on all Arduino MKR 1010s: https://github.com/arduino/nina-fw
 // The example then prints out various debug messages to the USB serial
 
 #![no_std]
@@ -132,7 +132,8 @@ fn main() -> ! {
     let mut client_result = wifi.new_client();
     if let Ok(client) = &mut client_result {
         // We'll make a request directly to an IP of http://ifconfig.co/country (IP found by doing nslookup ifconfig.co on 2022-05-04, hopefully it continues to work.)
-        // An alternative is to add DNS functionality to wifi_nina which has partial support for it implemented, but I haven't tried that
+        // An alternative is to add DNS functionality to wifi_nina which has partial
+        // support for it implemented, but I haven't tried that
         let connection_result = client.connect_ipv4(
             &mut wifi,
             no_std_net::Ipv4Addr::new(188, 114, 96, 2),
@@ -184,7 +185,8 @@ fn main() -> ! {
     usbserial_write!("Connection status of WiFi (after HTTP connection closed above):\r\n");
 
     loop {
-        // Since our other delay moved into SpiTransport cycle_delay was the easiest way to slow down the loop a bit
+        // Since our other delay moved into SpiTransport cycle_delay was the easiest way
+        // to slow down the loop a bit
         cycle_delay(30 * 1024 * 1024);
 
         let connection_state =
