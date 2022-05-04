@@ -8,6 +8,10 @@
       "tier": 2,
       "build": "cargo build --examples --features=unproven,usb"
     },
+    "arduino_mkrwifi1010": {
+      "tier": 2,
+      "build": "cargo build --examples --features=unproven,usb"
+    },
     "arduino_mkrzero": {
       "tier": 2,
       "build": "cargo build --examples --features=unproven,usb"
