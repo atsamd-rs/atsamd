@@ -44,7 +44,7 @@ fn main() -> ! {
     );
 
     let mut serial = SerialPort::new(&usb_bus);
-    let mut led = pins.led.into_push_pull_output();
+    let mut led: bsp::Led = pins.d6.into();
 
     let mut usb_dev = UsbDeviceBuilder::new(&usb_bus, UsbVidPid(0x2222, 0x3333))
         .manufacturer("Fake company")

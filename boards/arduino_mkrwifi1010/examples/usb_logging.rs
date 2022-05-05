@@ -33,7 +33,7 @@ fn main() -> ! {
         &mut peripherals.NVMCTRL,
     );
     let pins = bsp::Pins::new(peripherals.PORT);
-    let mut led: bsp::Led = pins.led.into();
+    let mut led: bsp::Led = pins.d6.into();
 
     let bus_allocator = unsafe {
         USB_ALLOCATOR = Some(bsp::usb_allocator(

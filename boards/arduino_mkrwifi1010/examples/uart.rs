@@ -30,7 +30,7 @@ fn main() -> ! {
     let pins = bsp::Pins::new(peripherals.PORT);
     let mut delay = hal::delay::Delay::new(core.SYST, &mut clocks);
 
-    let mut red_led = pins.led.into_push_pull_output();
+    let mut red_led: bsp::Led = pins.d6.into_push_pull_output();
 
     // Setup UART peripheral.
     let mut uart = bsp::uart(

@@ -93,7 +93,7 @@ fn main() -> ! {
     let spi = bsp::nina_spi_master(
         &mut clocks,
         MegaHertz(8),
-        peripherals.SERCOM2,
+        peripherals.SERCOM4,
         &mut peripherals.PM,
         pins.nina_sck,
         pins.nina_mosi,
