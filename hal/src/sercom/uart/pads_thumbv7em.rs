@@ -1,46 +1,42 @@
 //! UART pad definitions for thumbv7em targets
 
+use super::{AnyConfig, Capability, CharSize, Config, Duplex, Rx, Tx};
+use crate::{
+    gpio::AnyPin,
+    sercom::*,
+    typelevel::{NoneT, Sealed},
+};
 use core::marker::PhantomData;
 
-use crate::pac::sercom0::usart_int::ctrla::{RXPO_A, TXPO_A};
-
-use super::{AnyConfig, Capability, CharSize, Config, Duplex, Rx, Tx};
-use crate::sercom::*;
-use crate::typelevel::{NoneT, Sealed};
-
-use crate::gpio::AnyPin;
-
 //=============================================================================
-// Rxpo
+// RxpoTxpo
 //=============================================================================
 
-/// Control the `RXPO` field as a function of the [`PadNum`] type
-pub trait Rxpo: Sealed {
-    /// Corresponding variant from the PAC `enum`
-    const RXPO: RXPO_A;
-}
-
-impl Rxpo for Pad0 {
-    const RXPO: RXPO_A = RXPO_A::PAD0;
-}
-impl Rxpo for Pad1 {
-    const RXPO: RXPO_A = RXPO_A::PAD1;
-}
-impl Rxpo for Pad2 {
-    const RXPO: RXPO_A = RXPO_A::PAD2;
-}
-impl Rxpo for Pad3 {
-    const RXPO: RXPO_A = RXPO_A::PAD3;
-}
-
-impl Rxpo for NoneT {
-    /// This value is arbitrary and meaningless for [`NoneT`]
-    const RXPO: RXPO_A = RXPO_A::PAD0;
-}
-
-/// Lift the implementations of [`Rxpo`] from [`OptionalPadNum`]s to the
+/// Configure the `RXPO` and `TXPO` fields based on a set of [`Pads`]
+///
+/// According to the datasheet, the `RXPO` and `TXPO` values specify which
+/// SERCOM pads are used for various functions. Moreover, depending on which
+/// pads are actually in use, only certain combinations of these values make
+/// sense and are valid.
+///
+/// This trait is implemented for valid, four-tuple combinations of
+/// [`OptionalPadNum`]s. Those implementations are then lifted to the
 /// corresponding [`Pads`] types.
-impl<S, I, RX, TX, RTS, CTS> Rxpo for Pads<S, I, RX, TX, RTS, CTS>
+///
+/// To satisfy this trait, the combination of [`OptionalPadNum`]s must specify
+/// [`PadNum`] for at least one of `RX` and `TX`. Furthermore, no
+/// two [`PadNum`]s can conflict.
+pub trait RxpoTxpo {
+    /// `RXPO` field value
+    const RXPO: u8;
+
+    /// `RXPO` field value
+    const TXPO: u8;
+}
+
+/// Lift the implementations of [`RxpoTxpo`] from four-tuples of
+/// [`OptionalPadNum`]s to the corresponding [`Pads`] types.
+impl<S, I, RX, TX, RTS, CTS> RxpoTxpo for Pads<S, I, RX, TX, RTS, CTS>
 where
     S: Sercom,
     I: IoSet,
@@ -48,44 +44,113 @@ where
     TX: OptionalPad,
     RTS: OptionalPad,
     CTS: OptionalPad,
-    RX::PadNum: Rxpo,
+    (RX::PadNum, TX::PadNum, RTS::PadNum, CTS::PadNum): RxpoTxpo,
 {
-    const RXPO: RXPO_A = RX::PadNum::RXPO;
+    const RXPO: u8 = <(RX::PadNum, TX::PadNum, RTS::PadNum, CTS::PadNum)>::RXPO;
+    const TXPO: u8 = <(RX::PadNum, TX::PadNum, RTS::PadNum, CTS::PadNum)>::TXPO;
 }
 
 //=============================================================================
-// Txpo
+// Implement RxpoTxpo
 //=============================================================================
 
-/// Control the `TXPO` field as a function of the [`PadNum`] type
-pub trait Txpo: Sealed {
-    /// Corresponding variant from the PAC `enum`
-    const TXPO: TXPO_A;
-}
+/// Filter [`PadNum`] permutations and implement [`RxpoTxpo`]
+    #[rustfmt::skip]
+    macro_rules! impl_rxpotxpo {
+    // This is the entry pattern. Start by checking RTS and CTS.
+    ($RX:ident, $TX:ident, $RTS:ident, $CTS:ident) => { impl_rxpotxpo!(@check_rts_cts, $RX, $TX, $RTS, $CTS); };
+    
+    // Check whether RTS and CTS form a valid pair.
+    // They both must be the correct pad or absent.
+    (@check_rts_cts, $RX:ident, $TX:ident, NoneT, NoneT) => { impl_rxpotxpo!(@rxpo, $RX, $TX, NoneT, NoneT); };
+    (@check_rts_cts, $RX:ident, $TX:ident, Pad2, NoneT) => { impl_rxpotxpo!(@rxpo, $RX, $TX, Pad2, NoneT); };
+    (@check_rts_cts, $RX:ident, $TX:ident, NoneT, Pad3) => { impl_rxpotxpo!(@rxpo, $RX, $TX, NoneT, Pad3); };
+    (@check_rts_cts, $RX:ident, $TX:ident, Pad2, Pad3) => { impl_rxpotxpo!(@rxpo, $RX, $TX, Pad2, Pad3); };
+    
+    // If RTS and CTS are not valid, fall through to this pattern.
+    (@check_rts_cts, $RX:ident, $TX:ident, $RTS:ident, $CTS:ident) => { };
+    
+    // Assign RXPO based on RX.
+    // Our options are exhaustive, so no fall through pattern is needed.
+    (@rxpo, NoneT, $TX:ident, $RTS:ident, $CTS:ident) => { impl_rxpotxpo!(@txpo, NoneT, $TX, $RTS, $CTS, 0); };
+    (@rxpo, Pad0,  $TX:ident, $RTS:ident, $CTS:ident) => { impl_rxpotxpo!(@txpo, Pad0,  $TX, $RTS, $CTS, 0); };
+    (@rxpo, Pad1,  $TX:ident, $RTS:ident, $CTS:ident) => { impl_rxpotxpo!(@txpo, Pad1,  $TX, $RTS, $CTS, 1); };
+    (@rxpo, Pad2,  $TX:ident, $RTS:ident, $CTS:ident) => { impl_rxpotxpo!(@txpo, Pad2,  $TX, $RTS, $CTS, 2); };
+    (@rxpo, Pad3,  $TX:ident, $RTS:ident, $CTS:ident) => { impl_rxpotxpo!(@txpo, Pad3,  $TX, $RTS, $CTS, 3); };
+    
+    // Assign TXPO based on TX, RTS and CTS
+    (@txpo, $RX:ident, NoneT, NoneT, NoneT, $RXPO:literal) => { impl_rxpotxpo!(@filter, $RX, NoneT, NoneT, NoneT, $RXPO, 0); };
+    (@txpo, $RX:ident, NoneT, Pad2, NoneT, $RXPO:literal) => { impl_rxpotxpo!(@filter, $RX, NoneT, Pad2, NoneT, $RXPO, 3); };
+    (@txpo, $RX:ident, NoneT, Pad2, Pad3, $RXPO:literal) => { impl_rxpotxpo!(@filter, $RX, NoneT, Pad2, Pad3, $RXPO, 2); };
+    (@txpo, $RX:ident, Pad0, NoneT, NoneT, $RXPO:literal) => { impl_rxpotxpo!(@filter, $RX, Pad0, NoneT, NoneT, $RXPO, 0); };
+    (@txpo, $RX:ident, Pad0, Pad2, NoneT, $RXPO:literal) => { impl_rxpotxpo!(@filter, $RX, Pad0, Pad2, NoneT, $RXPO, 3); };
+    (@txpo, $RX:ident, Pad0, Pad2, Pad3, $RXPO:literal) => { impl_rxpotxpo!(@filter, $RX, Pad0, Pad2, Pad3, $RXPO, 2); };
+    
+    // If TX is not valid, fall through to this pattern.
+    (@txpo, $RX:ident, $TX:ident, $RTS:ident, $CTS:ident, $RXPO:literal) => { };
+    
+    // Filter any remaining permutations that conflict.
+    (@filter, NoneT, NoneT, $RTS:ident, $CTS:ident, $RXPO:literal, $TXPO:literal) => { }; // RX and TX both NoneT
+    (@filter, Pad0, Pad0, $RTS:ident, $CTS:ident, $RXPO:literal, $TXPO:literal) => { }; // RX and TX both Pad0
+    (@filter, Pad2, $TX:ident, Pad2, $CTS:ident, $RXPO:literal, $TXPO:literal) => { }; // RX can't share a pad with RTS
+    (@filter, Pad3, $TX:ident, $RTS:ident, Pad3, $RXPO:literal, $TXPO:literal) => { }; // RX can't share a pad with CTS
+    (@filter, Pad1, $TX:ident, $RTS:ident, $CTS:ident, 1, 0) => { }; // RX can't be Pad1 if TXPO is 0 because of XCK conflict
+    (@filter, Pad1, $TX:ident, $RTS:ident, $CTS:ident, 1, 3) => { }; // RX can't be Pad1 if TXPO is 3 because of XCK conflict
 
-impl Txpo for Pad0 {
-    const TXPO: TXPO_A = TXPO_A::TXPO_2;
-}
+    // If there are no conflicts, fall through to this pattern
+    (@filter, $RX:ident, $TX:ident, $RTS:ident, $CTS:ident, $RXPO:literal, $TXPO:literal) => { impl_rxpotxpo!(@implement, $RX, $TX, $RTS, $CTS, $RXPO, $TXPO); };
+    
+    // Implement RxpoTxpo
+    (@implement, $RX:ident, $TX:ident, $RTS:ident, $CTS:ident, $RXPO:literal, $TXPO:literal) => {
+        impl RxpoTxpo for ($RX, $TX, $RTS, $CTS) {
+        const RXPO: u8 = $RXPO;
+        const TXPO: u8 = $TXPO;
+        }
+    };
+    }
 
-impl Txpo for NoneT {
-    /// This value is arbitrary and meaningless for [`NoneT`]
-    const TXPO: TXPO_A = TXPO_A::TXPO_2;
-}
+/// Try to implement [`RxpoTxpo`] on all possible 4-tuple permutations of
+/// [`OptionalPadNum`]s.
+///
+/// The leading `()` token tree stores a growing permutation of [`PadNum`]s.
+/// When it reaches four [`PadNum`]s, try to implement [`RxpoTxpo`].
+///
+/// The next `[]` token tree is a list of possible [`PadNum`]s to append to the
+/// growing permutation. Loop through this list and append each option to the
+/// permutation.
+///
+/// The final, optional `[]` token tree exists to temporarily store the entire
+/// list before pushing it down for the next permutation element.
+macro_rules! padnum_permutations {
+    // If we have built up four [`PadNum`]s, try to implement [`RxpoTxpo`].
+    // Ignore the remaining list of [`PadNum`]s.
+    (
+        ( $RX:ident $TX:ident $RTS:ident $CTS:ident ) [ $( $Pads:ident )* ]
+    ) => {
+        impl_rxpotxpo!($RX, $TX, $RTS, $CTS);
+    };
+    // If we only have one list of [`PadNum`]s, duplicate it, to save it for the
+    // next permutation element.
+    (
+        ( $($Perm:ident)* ) [ $($Pads:ident)+ ]
+    ) => {
+        padnum_permutations!( ( $($Perm)* ) [ $($Pads)+ ] [ $($Pads)+ ] );
+    };
+    (
+        ( $($Perm:ident)* ) [ $Head:ident $($Tail:ident)* ] [ $($Pads:ident)+ ]
+    ) => {
+        // Append the first [`PadNum`] from the list, then push down to the next
+        // permutation element.
+        padnum_permutations!( ( $($Perm)* $Head ) [ $($Pads)+ ] );
 
-/// Lift the implementations of [`Txpo`] from [`OptionalPadNum`]s to the
-/// corresponding [`Pads`] types.
-impl<S, I, RX, TX, RTS, CTS> Txpo for Pads<S, I, RX, TX, RTS, CTS>
-where
-    S: Sercom,
-    I: IoSet,
-    RX: OptionalPad,
-    TX: OptionalPad,
-    RTS: OptionalPad,
-    CTS: OptionalPad,
-    TX::PadNum: Txpo,
-{
-    const TXPO: TXPO_A = TX::PadNum::TXPO;
-}
+        // Loop through the remaining [`PadNum`]s to do the same thing for each.
+        padnum_permutations!( ( $($Perm)* ) [ $($Tail)* ] [ $($Pads)+ ] );
+    };
+    // Once the list of [`PadNum`]s is empty, we're done with this element.
+    ( ( $($Perm:ident)* ) [ ] [ $($Pads:ident)+ ] ) => { };
+    }
+
+padnum_permutations!( () [NoneT Pad0 Pad1 Pad2 Pad3] );
 
 //=============================================================================
 // Pads
@@ -139,7 +204,6 @@ where
     pub fn rx<Id>(self, pin: impl AnyPin<Id = Id>) -> Pads<S, I, Pad<S, Id>, TX, RTS, CTS>
     where
         Id: GetPad<S>,
-        Id::PadNum: Rxpo,
         Pad<S, Id>: InIoSet<I>,
     {
         Pads {
@@ -157,7 +221,6 @@ where
     pub fn tx<Id>(self, pin: impl AnyPin<Id = Id>) -> Pads<S, I, RX, Pad<S, Id>, RTS, CTS>
     where
         Id: GetPad<S>,
-        Id::PadNum: Txpo,
         Pad<S, Id>: InIoSet<I>,
     {
         Pads {
@@ -322,7 +385,7 @@ where
 /// be configured through those traits.
 ///
 /// [`Config`]: crate::sercom::uart::Config
-pub trait ValidPads: PadSet + Rxpo + Txpo {
+pub trait ValidPads: PadSet + RxpoTxpo {
     type Capability: Capability;
 }
 
@@ -332,7 +395,7 @@ where
     I: IoSet,
     RX: SomePad,
     RTS: OptionalPad,
-    Self: PadSet + Rxpo + Txpo,
+    Self: PadSet + RxpoTxpo,
 {
     type Capability = Rx;
 }
@@ -343,7 +406,7 @@ where
     I: IoSet,
     TX: SomePad,
     CTS: OptionalPad,
-    Self: PadSet + Rxpo + Txpo,
+    Self: PadSet + RxpoTxpo,
 {
     type Capability = Tx;
 }
@@ -356,7 +419,7 @@ where
     TX: SomePad,
     RTS: OptionalPad,
     CTS: OptionalPad,
-    Self: PadSet + Rxpo + Txpo,
+    Self: PadSet + RxpoTxpo,
 {
     type Capability = Duplex;
 }
