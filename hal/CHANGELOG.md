@@ -1,5 +1,6 @@
 # Unreleased Changes
 
+- Fix `sercom::uart` pad definitions to reject pads conflicting with XCK.
 - Add support for L-Variant of the SAMD21D
 
 # v0.15.0
