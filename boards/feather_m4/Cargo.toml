@@ -40,6 +40,7 @@ panic-semihosting = "0.5"
 smart-leds = "0.3"
 ws2812-timer-delay = "0.3"
 heapless = "0.7"
+embassy = { version = "0.1.0", git = "https://github.com/embassy-rs/embassy.git" }
 
 [features]
 # ask the HAL to enable atsamd51j support
@@ -93,3 +94,7 @@ required-features = ["unproven", "usb"]
 [[example]]
 name = "i2c"
 required-features = ["atsamd-hal/dma"]
+
+[[example]]
+name = "async_timer"
+required-features = ["atsamd-hal/async", "atsamd-hal/nightly"]

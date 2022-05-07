@@ -48,6 +48,7 @@ nom = { version = "5", default-features = false }
 heapless = "0.7"
 panic-halt = "0.2"
 panic-semihosting = "0.5"
+embassy = {version = "0.1.0", git = "https://github.com/embassy-rs/embassy.git" }
 
 [features]
 # ask the HAL to enable atsamd21g support
@@ -144,3 +145,7 @@ required-features = ["dma"]
 [[example]]
 name = "i2c"
 required-features = ["dma"]
+
+[[example]]
+name = "async_timer"
+required-features = ["atsamd-hal/async", "atsamd-hal/nightly"]
