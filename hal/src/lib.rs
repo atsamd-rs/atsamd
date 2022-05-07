@@ -1,4 +1,8 @@
 #![no_std]
+#![cfg_attr(
+    feature = "nightly",
+    feature(generic_associated_types, type_alias_impl_trait)
+)]
 
 pub use embedded_hal as ehal;
 
@@ -96,6 +100,11 @@ pub mod sleeping_delay;
 pub mod time;
 pub mod timer_params;
 pub mod timer_traits;
+
+#[cfg(feature = "async")]
+pub mod async_hal;
+#[cfg(feature = "async")]
+pub use async_hal::*;
 
 #[cfg(all(feature = "unproven", feature = "dma"))]
 pub mod dmac;

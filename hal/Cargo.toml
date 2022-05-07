@@ -21,6 +21,7 @@ rust-version = "1.56"
 features = ["samd21g", "samd21g-rt", "unproven", "usb"]
 
 [dependencies]
+atomic-polyfill = "0.1.8"
 bitfield = "0.13"
 bitflags = "1.2.1"
 cortex-m = "0.7"
@@ -60,6 +61,30 @@ version = "0.3"
 [dependencies.void]
 default-features = false
 version = "1.0"
+
+[dependencies.embassy]
+version = "0.1.0"
+optional = true
+git = "https://github.com/embassy-rs/embassy.git"
+
+[dependencies.embassy-hal-common]
+version = "0.1.0"
+optional = true
+git = "https://github.com/embassy-rs/embassy.git"
+
+[dependencies.embedded-hal-async]
+version = "0.1.0-alpha.0"
+package = "embedded-hal"
+optional = true
+
+[dependencies.critical-section]
+version = "0.2.7"
+optional = true
+
+[dependencies.futures]
+version = "0.3.21"
+optional = true
+default-features = false
 
 # Each of the supported chips is listed as an optional dependency here.
 # This makes it available when the corresponding feature name is referenced.
@@ -217,6 +242,7 @@ min-samd51g = []
 min-samd51j = ["min-samd51g"]
 min-samd51n = ["min-samd51j"]
 min-samd51p = ["min-samd51n"]
+
 unproven = ["embedded-hal/unproven"]
 use_rtt = ["jlink_rtt"]
 usb = ["usb-device"]
@@ -225,3 +251,13 @@ max-channels = ["dma"]
 sdmmc = ["embedded-sdmmc"]
 rtic = ["rtic-monotonic", "fugit"]
 enable_unsafe_aes_newblock_cipher = []
+
+async = [
+    "embassy",
+    "embassy-hal-common",
+    "futures",
+    "critical-section",
+    "unproven"
+]
+
+nightly = ["embedded-hal-async", "embassy/nightly"]
