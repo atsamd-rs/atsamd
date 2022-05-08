@@ -56,21 +56,20 @@ where
 //=============================================================================
 
 /// Filter [`PadNum`] permutations and implement [`RxpoTxpo`]
-    #[rustfmt::skip]
-    macro_rules! impl_rxpotxpo {
+macro_rules! impl_rxpotxpo {
     // This is the entry pattern. Start by checking RTS and CTS.
     ($RX:ident, $TX:ident, $RTS:ident, $CTS:ident) => { impl_rxpotxpo!(@check_rts_cts, $RX, $TX, $RTS, $CTS); };
-    
+
     // Check whether RTS and CTS form a valid pair.
     // They both must be the correct pad or absent.
     (@check_rts_cts, $RX:ident, $TX:ident, NoneT, NoneT) => { impl_rxpotxpo!(@rxpo, $RX, $TX, NoneT, NoneT); };
     (@check_rts_cts, $RX:ident, $TX:ident, Pad2, NoneT) => { impl_rxpotxpo!(@rxpo, $RX, $TX, Pad2, NoneT); };
     (@check_rts_cts, $RX:ident, $TX:ident, NoneT, Pad3) => { impl_rxpotxpo!(@rxpo, $RX, $TX, NoneT, Pad3); };
     (@check_rts_cts, $RX:ident, $TX:ident, Pad2, Pad3) => { impl_rxpotxpo!(@rxpo, $RX, $TX, Pad2, Pad3); };
-    
+
     // If RTS and CTS are not valid, fall through to this pattern.
     (@check_rts_cts, $RX:ident, $TX:ident, $RTS:ident, $CTS:ident) => { };
-    
+
     // Assign RXPO based on RX.
     // Our options are exhaustive, so no fall through pattern is needed.
     (@rxpo, NoneT, $TX:ident, $RTS:ident, $CTS:ident) => { impl_rxpotxpo!(@txpo, NoneT, $TX, $RTS, $CTS, 0); };
@@ -78,17 +77,17 @@ where
     (@rxpo, Pad1,  $TX:ident, $RTS:ident, $CTS:ident) => { impl_rxpotxpo!(@txpo, Pad1,  $TX, $RTS, $CTS, 1); };
     (@rxpo, Pad2,  $TX:ident, $RTS:ident, $CTS:ident) => { impl_rxpotxpo!(@txpo, Pad2,  $TX, $RTS, $CTS, 2); };
     (@rxpo, Pad3,  $TX:ident, $RTS:ident, $CTS:ident) => { impl_rxpotxpo!(@txpo, Pad3,  $TX, $RTS, $CTS, 3); };
-    
+
     // Assign TXPO based on TX and RTS
     (@txpo, $RX:ident, NoneT, NoneT, $CTS:ident, $RXPO:literal) => { impl_rxpotxpo!(@filter, $RX, NoneT, NoneT, $CTS, $RXPO, 0); };
     (@txpo, $RX:ident, NoneT, Pad2, $CTS:ident, $RXPO:literal) => { impl_rxpotxpo!(@filter, $RX, NoneT, Pad2, $CTS, $RXPO, 2); };
     (@txpo, $RX:ident, Pad0, NoneT, $CTS:ident, $RXPO:literal) => { impl_rxpotxpo!(@filter, $RX, Pad0, NoneT, $CTS, $RXPO, 0); };
     (@txpo, $RX:ident, Pad2, NoneT, $CTS:ident, $RXPO:literal) => { impl_rxpotxpo!(@filter, $RX, Pad2, NoneT, $CTS, $RXPO, 1); };
     (@txpo, $RX:ident, Pad0, Pad2, $CTS:ident, $RXPO:literal) => { impl_rxpotxpo!(@filter, $RX, Pad0, Pad2, $CTS, $RXPO, 2); };
-    
+
     // If TX is not valid, fall through to this pattern.
     (@txpo, $RX:ident, $TX:ident, $RTS:ident, $CTS:ident, $RXPO:literal) => { };
-    
+
     // Filter any remaining permutations that conflict.
     (@filter, NoneT, NoneT, $RTS:ident, $CTS:ident, $RXPO:literal, $TXPO:literal) => { }; // RX and TX both NoneT
     (@filter, Pad0, Pad0, $RTS:ident, $CTS:ident, $RXPO:literal, $TXPO:literal) => { }; // RX and TX both Pad0
@@ -99,16 +98,18 @@ where
     (@filter, Pad3, $TX:ident, $RTS:ident, $CTS:ident, 1, $TXPO:literal) => { }; // RX can't be Pad3 when TXPO is 1 because of XCK conflict
 
     // If there are no conflicts, fall through to this pattern
-    (@filter, $RX:ident, $TX:ident, $RTS:ident, $CTS:ident, $RXPO:literal, $TXPO:literal) => { impl_rxpotxpo!(@implement, $RX, $TX, $RTS, $CTS, $RXPO, $TXPO); };
-    
+    (@filter, $RX:ident, $TX:ident, $RTS:ident, $CTS:ident, $RXPO:literal, $TXPO:literal) => {
+        impl_rxpotxpo!(@implement, $RX, $TX, $RTS, $CTS, $RXPO, $TXPO);
+    };
+
     // If there are no conflicts, fall through to this pattern and implement RxpoTxpo
     (@implement, $RX:ident, $TX:ident, $RTS:ident, $CTS:ident, $RXPO:literal, $TXPO:literal) => {
         impl RxpoTxpo for ($RX, $TX, $RTS, $CTS) {
-        const RXPO: u8 = $RXPO;
-        const TXPO: u8 = $TXPO;
+            const RXPO: u8 = $RXPO;
+            const TXPO: u8 = $TXPO;
         }
     };
-    }
+}
 
 /// Try to implement [`RxpoTxpo`] on all possible 4-tuple permutations of
 /// [`OptionalPadNum`]s.
