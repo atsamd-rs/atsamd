@@ -36,10 +36,10 @@ use bsp::hal::{
     clock::GenericClockController,
     delay::Delay,
     ehal::blocking::delay::DelayMs,
-    gpio::v2::{Pin, PushPullOutput, PA22},
+    gpio::{Pin, PushPullOutput, PA22},
     pac::{self, interrupt, CorePeripherals, Peripherals},
     prelude::*,
-    sercom::v2::{
+    sercom::{
         uart::{self, BaudMode, Flags, Oversampling},
         IoSet3, Sercom0,
     },
