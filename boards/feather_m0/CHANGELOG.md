@@ -1,5 +1,8 @@
 # Unreleased
 
+# v0.12.1
+
+- Update to `atsamd-hal` version `0.15.1`
 - Update .cargo/config
 
 # v0.12.0
