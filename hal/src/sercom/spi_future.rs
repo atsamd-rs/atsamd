@@ -30,8 +30,8 @@
 //! Create an `SpiFuture` like so
 //!
 //! ```
-//! use atsamd_hal::sercom::v2::spi::AnySpi;
-//! use atsamd_hal::sercom::v2::spi_future::SpiFuture;
+//! use atsamd_hal::sercom::spi::AnySpi;
+//! use atsamd_hal::sercom::spi_future::SpiFuture;
 //!
 //! fn wake_up() {
 //!     //...
@@ -43,9 +43,8 @@
 //! }
 //! ```
 //!
-//! Like real [`Future`]s, `SpiFuture`s are lazy. Nothing happens until calling
-//! [`start`]. Doing so will enable the `DRE` and `RXC` interrupts and begin the
-//! transaction.
+//! `SpiFuture`s are lazy; nothing happens until calling [`start`]. Doing so
+//! will enable the `DRE` and `RXC` interrupts and begin the transaction.
 //!
 //! ```
 //! use atsamd_hal::sercom::spi::AnySpi;
@@ -223,9 +222,10 @@
 //! [RTIC]: https://rtic.rs/
 //! [`bytemuck`]: https://docs.rs/bytemuck
 
+use core::cmp::min;
 use core::task::Poll;
 
-use super::spi::{AnySpi, Error, Flags, SpecificSpi};
+use super::spi::{AnySpi, Capability, DynCapability, Error, Flags, SpecificSpi};
 
 #[cfg(any(feature = "samd11", feature = "samd21"))]
 type Data = u16;
@@ -250,7 +250,7 @@ type Data = u32;
 /// a NOP.
 ///
 /// [`Spi`]: super::spi::Spi
-/// [`Pin`]: crate::gpio::v2::pin::Pin
+/// [`Pin`]: crate::gpio::pin::Pin
 /// [`assert_ss`]: AsSpi::assert_ss
 /// [`deassert_ss`]: AsSpi::assert_ss
 pub trait AsSpi {
@@ -313,7 +313,7 @@ pub trait AsSpi {
     /// }
     /// ```
     ///
-    /// [`Pin`]: crate::gpio::v2::pin::Pin
+    /// [`Pin`]: crate::gpio::pin::Pin
     #[inline]
     fn assert_ss(&mut self) {}
 
@@ -333,7 +333,7 @@ pub trait AsSpi {
     /// }
     /// ```
     ///
-    /// [`Pin`]: crate::gpio::v2::pin::Pin
+    /// [`Pin`]: crate::gpio::pin::Pin
     #[inline]
     fn deassert_ss(&mut self) {}
 }
@@ -424,26 +424,35 @@ where
     B: AsRef<[u8]> + AsMut<[u8]> + 'static,
     W: FnOnce() + 'static,
 {
+    const CAP: DynCapability = <R::Spi as AnySpi>::Capability::DYN;
+
     #[inline]
     fn step(&self) -> usize {
         let len = self.resource.spi().transaction_length() as usize;
-        if len > 4 {
-            4
-        } else {
-            len
-        }
+        min(len, 4)
     }
 
     /// Start the [`SpiFuture`] transaction
     ///
     /// This will assert the SS pin, if present, and enable the `DRE` and `RXC`
     /// interrupts.
+    ///
+    /// When the [`Spi`] struct is [`Tx`]-only, this will also perform reads of
+    /// the `DATA` register to clear any accumulated overflow errors. Omitting
+    /// this step would lead to spurious `RXC` interrupts.
     #[inline]
     pub fn start(&mut self) {
         self.resource.assert_ss();
-        self.resource
-            .spi_mut()
-            .enable_interrupts(Flags::DRE | Flags::RXC);
+        let spi = self.resource.spi_mut();
+        if Self::CAP == DynCapability::Tx {
+            // Clear any existing RXC or BUFOVF flags
+            unsafe {
+                spi.read_data();
+                spi.read_data();
+                spi.read_data();
+            }
+        }
+        spi.enable_interrupts(Flags::DRE | Flags::RXC);
     }
 
     /// Send the next set of bytes from the buffer
@@ -456,7 +465,12 @@ where
         let step = self.step();
         let spi = self.resource.spi_mut();
         let buf = self.buf.as_ref();
-        let _ = spi.read_flags_errors()?;
+        match spi.read_status().check_errors() {
+            Ok(()) => {}
+            // Ignore overflow errors if we are only transmitting
+            Err(Error::Overflow) if Self::CAP == DynCapability::Tx => {}
+            Err(err) => return Err(err),
+        }
         if let Some(buf) = buf.get(self.sent..) {
             let mut data = buf.iter();
             let mut bytes = [0; 4];
@@ -477,7 +491,7 @@ where
         Ok(())
     }
 
-    /// Received the next set of bytes and write them to the buffer
+    /// Receive the next set of bytes and write them to the buffer
     ///
     /// This method should be called from the `RXC` interrupt handler. Once all
     /// bytes of the transaction have been received, this function will
@@ -488,7 +502,12 @@ where
         let step = self.step();
         let spi = self.resource.spi_mut();
         let buf = self.buf.as_mut();
-        let _ = spi.read_flags_errors()?;
+        match spi.read_status().check_errors() {
+            Ok(()) => {}
+            // Ignore overflow errors if we are only transmitting
+            Err(Error::Overflow) if Self::CAP == DynCapability::Tx => {}
+            Err(err) => return Err(err),
+        }
         if self.rcvd < self.sent {
             let buf = unsafe { buf.get_unchecked_mut(self.rcvd..) };
             let mut data = buf.into_iter();
@@ -533,7 +552,8 @@ where
     /// If the transaction is complete, this function will consume the
     /// [`SpiFuture`] and return the resource and buffer.
     ///
-    /// If the transaction is not complete, it will return `Err(self)`.
+    /// If the transaction is not complete, it will return the future as an
+    /// `Err`.
     #[inline]
     pub fn free(self) -> Result<(R, B), Self> {
         if self.rcvd >= self.buf.as_ref().len() {
