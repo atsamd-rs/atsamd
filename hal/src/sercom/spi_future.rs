@@ -381,7 +381,7 @@ where
     #[inline]
     pub fn new(resource: R, buf: B) -> Self {
         let buf_len = buf.as_ref().len();
-        let spi_len = resource.spi().transaction_length() as usize;
+        let spi_len = resource.spi().get_length() as usize;
         if (spi_len > 4 && buf_len != spi_len) || (spi_len <= 4 && buf_len % spi_len != 0) {
             panic!("Invalid SpiFuture buffer length");
         }
@@ -428,7 +428,7 @@ where
 
     #[inline]
     fn step(&self) -> usize {
-        let len = self.resource.spi().transaction_length() as usize;
+        let len = self.resource.spi().get_length() as usize;
         min(len, 4)
     }
 
@@ -436,22 +436,10 @@ where
     ///
     /// This will assert the SS pin, if present, and enable the `DRE` and `RXC`
     /// interrupts.
-    ///
-    /// When the [`Spi`] struct is [`Tx`]-only, this will also perform reads of
-    /// the `DATA` register to clear any accumulated overflow errors. Omitting
-    /// this step would lead to spurious `RXC` interrupts.
     #[inline]
     pub fn start(&mut self) {
         self.resource.assert_ss();
         let spi = self.resource.spi_mut();
-        if Self::CAP == DynCapability::Tx {
-            // Clear any existing RXC or BUFOVF flags
-            unsafe {
-                spi.read_data();
-                spi.read_data();
-                spi.read_data();
-            }
-        }
         spi.enable_interrupts(Flags::DRE | Flags::RXC);
     }
 
@@ -482,7 +470,7 @@ where
                 }
             }
             let word = u32::from_le_bytes(bytes);
-            unsafe { spi.write_data(word as Data) };
+            spi._write_data(word as Data);
             self.sent += step;
         }
         if self.sent >= buf.len() {
@@ -509,9 +497,9 @@ where
             Err(err) => return Err(err),
         }
         if self.rcvd < self.sent {
-            let buf = unsafe { buf.get_unchecked_mut(self.rcvd..) };
+            let buf = buf.get_mut(self.rcvd..).unwrap();
             let mut data = buf.into_iter();
-            let word = unsafe { spi.read_data() as u32 };
+            let word = spi._read_data() as u32;
             let bytes = word.to_le_bytes();
             let mut iter = bytes.iter();
             for _ in 0..step {

@@ -234,13 +234,13 @@ pub use pins::*;
 
 /// SPI pads for the labelled SPI peripheral
 ///
-/// You can use these pads with other, user-defined [`spi::Config`]urations.
+/// You can use these pads with other, user-defined configurations.
 pub type SpiPads = spi::Pads<SpiSercom, Miso, Mosi, Sclk>;
 
 /// SPI master for the labelled SPI peripheral
 ///
 /// This type implements [`FullDuplex<u8>`](ehal::spi::FullDuplex).
-pub type Spi = spi::Spi<spi::Config<SpiPads>, spi::Duplex>;
+pub type Spi = spi::Spi<SpiPads>;
 
 /// Convenience for setting up the labelled SPI peripheral.
 /// This powers up the SPI SERCOM and configures it for use as an
@@ -259,7 +259,7 @@ pub fn spi_master(
     let freq = clock.freq();
     let (miso, mosi, sclk) = (miso.into(), mosi.into(), sclk.into());
     let pads = spi::Pads::default().data_in(miso).data_out(mosi).sclk(sclk);
-    spi::Config::new(pm, sercom, pads, freq)
+    spi::Spi::config(pm, sercom, pads, freq)
         .baud(baud)
         .spi_mode(spi::MODE_0)
         .enable()

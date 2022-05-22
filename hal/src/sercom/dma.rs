@@ -277,15 +277,14 @@ where
 // SPI DMA transfers
 //=============================================================================
 
-unsafe impl<C, A> Buffer for Spi<C, A>
+unsafe impl<P, M, Z> Buffer for Spi<P, M, Z>
 where
-    C: spi::ValidConfig,
-    C::OpMode: spi::MasterMode,
-    C::Size: spi::AtomicSize<Word = C::Word>,
-    C::Word: Beat,
-    A: spi::Capability,
+    P: spi::ValidPads,
+    M: spi::MasterMode,
+    Z: spi::AtomicSize,
+    Z::Word: Beat,
 {
-    type Beat = C::Word;
+    type Beat = Z::Word;
 
     #[inline]
     fn dma_ptr(&mut self) -> *mut Self::Beat {
@@ -303,11 +302,13 @@ where
     }
 }
 
-impl<C, A> Spi<C, A>
+impl<P, M, Z> Spi<P, M, Z>
 where
-    C: spi::ValidConfig,
-    A: spi::Transmit,
-    Self: Buffer<Beat = C::Word>,
+    P: spi::ValidPads,
+    P::Capability: spi::Transmit,
+    M: spi::OpMode,
+    Z: spi::Size,
+    Self: Buffer<Beat = Z::Word>,
 {
     /// Transform an [`Spi`] into a DMA [`Transfer`]) and
     /// start a send transaction.
@@ -320,7 +321,7 @@ where
     ) -> Transfer<Channel<Ch::Id, Busy>, BufferPair<B, Self>, W>
     where
         Ch: AnyChannel<Status = Ready>,
-        B: Buffer<Beat = C::Word> + 'static,
+        B: Buffer<Beat = Z::Word> + 'static,
         W: FnOnce(CallbackStatus) + 'static,
     {
         channel
@@ -337,15 +338,17 @@ where
         // for `B`, and the fact that the buffer length of an `Spi` is always 1.
         let xfer = unsafe { Transfer::new_unchecked(channel, buf, self, false) };
         xfer.with_waker(waker)
-            .begin(C::Sercom::DMA_TX_TRIGGER, trigger_action)
+            .begin(P::Sercom::DMA_TX_TRIGGER, trigger_action)
     }
 }
 
-impl<C, A> Spi<C, A>
+impl<P, M, Z> Spi<P, M, Z>
 where
-    C: spi::ValidConfig,
-    A: spi::Receive,
-    Self: Buffer<Beat = C::Word>,
+    P: spi::ValidPads,
+    P::Capability: spi::Receive,
+    M: spi::OpMode,
+    Z: spi::Size,
+    Self: Buffer<Beat = Z::Word>,
 {
     /// Transform an [`Spi`] into a DMA [`Transfer`]) and
     /// start a receive transaction.
@@ -358,7 +361,7 @@ where
     ) -> Transfer<Channel<Ch::Id, Busy>, BufferPair<Self, B>, W>
     where
         Ch: AnyChannel<Status = Ready>,
-        B: Buffer<Beat = C::Word> + 'static,
+        B: Buffer<Beat = Z::Word> + 'static,
         W: FnOnce(CallbackStatus) + 'static,
     {
         channel
@@ -375,6 +378,6 @@ where
         // for `B`, and the fact that the buffer length of an `Spi` is always 1.
         let xfer = unsafe { Transfer::new_unchecked(channel, self, buf, false) };
         xfer.with_waker(waker)
-            .begin(C::Sercom::DMA_RX_TRIGGER, trigger_action)
+            .begin(P::Sercom::DMA_RX_TRIGGER, trigger_action)
     }
 }

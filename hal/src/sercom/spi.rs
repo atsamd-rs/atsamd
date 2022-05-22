@@ -312,18 +312,23 @@ let (chan0, _, spi, _) = dma_transfer.wait();
 "
 )]
 
+//=============================================================================
+// Imports
+//=============================================================================
+
 use core::marker::PhantomData;
 
-use bitflags::bitflags;
-use embedded_hal::spi;
-pub use embedded_hal::spi::{Phase, Polarity, MODE_0, MODE_1, MODE_2, MODE_3};
+use num_traits::{AsPrimitive, PrimInt};
 
-use crate::sercom::*;
+use crate::sercom::{Sercom, APB_CLK_CTRL};
 use crate::time::Hertz;
-use crate::typelevel::{Is, NoneT, Sealed};
+use crate::typelevel::{Is, Sealed};
 
 mod reg;
-use reg::Registers;
+pub use reg::*;
+
+mod config;
+pub use config::*;
 
 //=============================================================================
 // Chip-specific imports
@@ -362,6 +367,8 @@ pub mod lengths {
     });
 }
 
+mod impl_ehal_common;
+
 #[cfg(any(feature = "samd11", feature = "samd21"))]
 #[path = "spi/impl_ehal_thumbv6m.rs"]
 pub mod impl_ehal;
@@ -370,79 +377,99 @@ pub mod impl_ehal;
 #[path = "spi/impl_ehal_thumbv7em.rs"]
 pub mod impl_ehal;
 
-//=============================================================================
-// BitOrder
-//=============================================================================
+//==============================================================================
+// DynCapability
+//==============================================================================
 
-/// Define the bit order of transactions
-#[repr(u8)]
-#[derive(Copy, Clone, PartialEq, Eq)]
-pub enum BitOrder {
-    LsbFirst,
-    MsbFirst,
+#[derive(Clone, Copy, PartialEq, Eq)]
+pub enum DynCapability {
+    Rx,
+    Tx,
+    Duplex,
 }
 
-//=============================================================================
-// Flags
-//=============================================================================
+impl Sealed for DynCapability {}
 
-bitflags! {
-    /// Interrupt bit flags for SPI transactions
-    ///
-    /// The available interrupt flags are `DRE`, `RXC`, `TXC`, `SSL` and
-    /// `ERROR`. The binary format of the underlying bits exactly matches the
-    /// `INTFLAG` register.
-    pub struct Flags: u8 {
-        const DRE = 0x01;
-        const TXC = 0x02;
-        const RXC = 0x04;
-        const SSL = 0x08;
-        const ERROR = 0x80;
-    }
-}
+//==============================================================================
+// Capability
+//==============================================================================
 
-//=============================================================================
-// Status
-//=============================================================================
-
-bitflags! {
-    /// Status bit flags for SPI transactions
-    ///
-    /// The available status flags are `BUFOVF` and `LENERR`. The binary format
-    /// of the underlying bits exactly matches the `STATUS` register.
-    pub struct Status: u16 {
-        const BUFOVF = 0x0004;
-        const LENERR = 0x0800;
-    }
-}
-
-impl Status {
-    /// Check the [`Status`] flags for [`Error`] conditions
-    pub fn check_errors(&self) -> Result<(), Error> {
-        // Buffer overflow has priority
-        if self.contains(Status::BUFOVF) {
-            Err(Error::Overflow)
-        } else if self.contains(Status::LENERR) {
-            Err(Error::LengthError)
-        } else {
-            Ok(())
-        }
-    }
-}
-
-//=============================================================================
-// Error
-//=============================================================================
-
-/// Error `enum` for SPI transactions
+/// Type-level enum representing the simplex or duplex transaction capability
 ///
-/// The SPI peripheral only has two error types, buffer overflow and transaction
-/// length error.
-#[derive(Debug)]
-pub enum Error {
-    Overflow,
-    LengthError,
+/// The available, type-level variants are [`Rx`], [`Tx`] and [`Duplex`]. See
+/// the [type-level enum] documentation for more details.
+///
+/// [type-level enum]: crate::typelevel#type-level-enums
+pub trait Capability: Sealed + Default {
+    const DYN: DynCapability;
 }
+
+/// Type-level variant of the [`Capability`] enum for simplex, [`Receive`]-only
+/// transactions
+///
+/// [`Spi`] structs are `Rx` when the `DO` (Data Out) type is [`NoneT`] in the
+/// corresponding [`Pads`] struct.
+///
+/// While the [`Tx`] and [`Duplex`] structs are zero-sized, this struct is not.
+/// Because an SPI master must initiate all transactions, using it in a simplex,
+/// [`Receive`]-only context is slightly complicated. In that case, the [`Spi`]
+/// struct must track whether a transaction needs to be started or is already in
+/// progress. This struct contains a `bool` to track that progress.
+#[derive(Default)]
+pub struct Rx {
+    pub(super) in_progress: bool,
+}
+
+/// Type-level variant of the [`Capability`] enum for simplex, [`Transmit`]-only
+/// transactions
+///
+/// [`Spi`] structs are `Tx` when the `DI` (Data In) type is [`NoneT`] in the
+/// corresponding [`Pads`] struct.
+#[derive(Default)]
+pub struct Tx;
+
+/// Type-level variant of the [`Capability`] enum for duplex transactions
+///
+/// [`Spi`] structs are `Duplex` when both the `DI` and `DO` [`Pads`] are
+/// [`SomePad`].
+/// corresponding [`Pads`] struct.
+#[derive(Default)]
+pub struct Duplex;
+
+macro_rules! impl_capability {
+    ( $( $Cap: ident ),+ ) => {
+        $(
+            impl Sealed for $Cap {}
+            impl Capability for $Cap {
+                const DYN: DynCapability = DynCapability::$Cap;
+            }
+        )+
+    };
+}
+
+impl_capability!(Rx, Tx, Duplex);
+
+//=============================================================================
+// Receive
+//=============================================================================
+
+/// Sub-set of [`Capability`] variants that can receive data, i.e. [`Rx`] and
+/// [`Duplex`]
+pub trait Receive: Capability {}
+
+impl Receive for Rx {}
+impl Receive for Duplex {}
+
+//=============================================================================
+// Transmit
+//=============================================================================
+
+/// Sub-set of [`Capability`] variants that can transmit dat, i.e. [`Tx`] and
+/// [`Duplex`]
+pub trait Transmit: Capability {}
+
+impl Transmit for Tx {}
+impl Transmit for Duplex {}
 
 //=============================================================================
 // Operating mode
@@ -507,14 +534,6 @@ impl MasterMode for MasterHWSS {}
 // Size
 //=============================================================================
 
-/// Type alias for the width of the `DATA` register
-#[cfg(any(feature = "samd11", feature = "samd21"))]
-pub type DataWidth = u16;
-
-/// Type alias for the width of the `DATA` register
-#[cfg(feature = "min-samd51g")]
-pub type DataWidth = u32;
-
 /// Trait alias whose definition varies by chip
 ///
 /// On SAMD11 and SAMD21 chips, this represents the [`CharSize`].
@@ -553,605 +572,22 @@ pub trait AtomicSize: Size {}
 impl<C: CharSize> AtomicSize for C {}
 
 #[cfg(feature = "min-samd51g")]
-seq!(N in 1..=4 {
+seq_macro::seq!(N in 1..=4 {
     impl AtomicSize for lengths::U~N {}
 });
 
 //==============================================================================
-// Capability
+// NonAtomicSize
 //==============================================================================
 
-#[derive(Clone, Copy, PartialEq, Eq)]
-pub enum DynCapability {
-    Rx,
-    Tx,
-    Duplex,
-}
-
-impl Sealed for DynCapability {}
-
-/// Type-level enum representing the simplex or duplex transaction capability
-///
-/// The available, type-level variants are [`Rx`], [`Tx`] and [`Duplex`]. See
-/// the [type-level enum] documentation for more details.
-///
-/// [type-level enum]: crate::typelevel#type-level-enums
-pub trait Capability: Sealed + Default {
-    const DYN: DynCapability;
-}
-
-/// Sub-set of [`Capability`] variants that can receive data, i.e. [`Rx`] and
-/// [`Duplex`]
-pub trait Receive: Capability {}
-
-/// Sub-set of [`Capability`] variants that can transmit dat, i.e. [`Tx`] and
-/// [`Duplex`]
-pub trait Transmit: Capability {}
-
-/// Type-level variant of the [`Capability`] enum for simplex, [`Receive`]-only
-/// transactions
-///
-/// [`Spi`] structs are `Rx` when the `DO` (Data Out) type is [`NoneT`] in the
-/// corresponding [`Pads`] struct.
-///
-/// While the [`Tx`] and [`Duplex`] structs are zero-sized, this struct is not.
-/// Because an SPI master must initiate all transactions, using it in a simplex,
-/// [`Receive`]-only context is slightly complicated. In that case, the [`Spi`]
-/// struct must track whether a transaction needs to be started or is already in
-/// progress. This struct contains a `bool` to track that progress.
-#[derive(Default)]
-pub struct Rx {
-    pub(super) in_progress: bool,
-}
-
-impl Sealed for Rx {}
-impl Capability for Rx {
-    const DYN: DynCapability = DynCapability::Rx;
-}
-impl Receive for Rx {}
-
-/// Type-level variant of the [`Capability`] enum for simplex, [`Transmit`]-only
-/// transactions
-///
-/// [`Spi`] structs are `Tx` when the `DI` (Data In) type is [`NoneT`] in the
-/// corresponding [`Pads`] struct.
-#[derive(Default)]
-pub struct Tx;
-
-impl Sealed for Tx {}
-impl Capability for Tx {
-    const DYN: DynCapability = DynCapability::Tx;
-}
-impl Transmit for Tx {}
-
-/// Type-level variant of the [`Capability`] enum for duplex transactions
-///
-/// [`Spi`] structs are `Duplex` when both the `DI` and `DO` [`Pads`] are
-/// [`SomePad`].
-/// corresponding [`Pads`] struct.
-#[derive(Default)]
-pub struct Duplex;
-
-impl Sealed for Duplex {}
-impl Capability for Duplex {
-    const DYN: DynCapability = DynCapability::Duplex;
-}
-impl Receive for Duplex {}
-impl Transmit for Duplex {}
-
-//=============================================================================
-// Config
-//=============================================================================
-
-/// A configurable SPI peripheral in its disabled state
-///
-/// See the [module-level](super) documentation for more details on declaring
-/// and instantiating `Pads` types.
-pub struct Config<P, M = Master, Z = DefaultSize>
-where
-    P: ValidPads,
-    M: OpMode,
-    Z: Size,
-{
-    regs: Registers<P::Sercom>,
-    pads: P,
-    mode: PhantomData<M>,
-    size: PhantomData<Z>,
-    freq: Hertz,
-}
-
-impl<P: ValidPads> Config<P> {
-    /// Create a new [`Config`] in the default configuration.
-    #[inline]
-    fn default(sercom: P::Sercom, pads: P, freq: impl Into<Hertz>) -> Self {
-        let mut regs = Registers { sercom };
-        regs.reset();
-        regs.set_op_mode(Master::MODE, Master::MSSEN);
-        regs.set_dipo_dopo(P::DIPO_DOPO);
-        #[cfg(any(feature = "samd11", feature = "samd21"))]
-        regs.set_char_size(EightBit::BITS);
-        #[cfg(feature = "min-samd51g")]
-        regs.set_length(1);
-        Self {
-            regs,
-            pads,
-            mode: PhantomData,
-            size: PhantomData,
-            freq: freq.into(),
-        }
-    }
-
-    /// Create a new [`Config`] in the default configuration
-    ///
-    /// This function will enable the corresponding APB clock, reset the
-    /// [`Sercom`] peripheral, and return a [`Config`] in the default
-    /// configuration. The default [`OpMode`] is [`Master`], while the default
-    /// [`Size`] is an
-    #[cfg_attr(
-        any(feature = "samd11", feature = "samd21"),
-        doc = "[`EightBit`] [`CharSize`]"
-    )]
-    #[cfg_attr(feature = "min-samd51g", doc = "`EightBit` `CharSize`")]
-    /// for SAMD11 and SAMD21 chips or a
-    #[cfg_attr(any(feature = "samd11", feature = "samd21"), doc = "`Length` of `U1`")]
-    #[cfg_attr(feature = "min-samd51g", doc = "[`Length`] of `U1`")]
-    /// for SAMx5x chips. Note that [`Config`] takes ownership of both the
-    /// PAC [`Sercom`] struct as well as the [`Pads`].
-    ///
-    /// Users must configure GCLK manually. The `freq` parameter represents the
-    /// GCLK frequency for this [`Sercom`] instance.
-    #[inline]
-    pub fn new(
-        apb_clk_ctrl: &APB_CLK_CTRL,
-        mut sercom: P::Sercom,
-        pads: P,
-        freq: impl Into<Hertz>,
-    ) -> Self {
-        sercom.enable_apb_clock(apb_clk_ctrl);
-        Self::default(sercom, pads, freq)
-    }
-}
-
-impl<P, M, Z> Config<P, M, Z>
-where
-    P: ValidPads,
-    M: OpMode,
-    Z: Size,
-{
-    /// Change the [`OpMode`] or [`Size`]
-    #[inline]
-    fn change<M2, Z2>(self) -> Config<P, M2, Z2>
-    where
-        M2: OpMode,
-        Z2: Size,
-    {
-        Config {
-            regs: self.regs,
-            pads: self.pads,
-            mode: PhantomData,
-            size: PhantomData,
-            freq: self.freq,
-        }
-    }
-
-    /// Obtain a reference to the PAC `SERCOM` struct
-    ///
-    /// Directly accessing the `SERCOM` could break the invariants of the
-    /// type-level tracking in this module, so it is unsafe.
-    #[inline]
-    pub unsafe fn sercom(&self) -> &P::Sercom {
-        &self.regs.sercom
-    }
-
-    /// Trigger the [`Sercom`]'s SWRST and return a [`Config`] in the
-    /// default configuration.
-    #[inline]
-    pub fn reset(self) -> Config<P> {
-        Config::default(self.regs.sercom, self.pads, self.freq)
-    }
-
-    /// Consume the [`Config`], reset the peripheral, and return the [`Sercom`]
-    /// and [`Pads`]
-    #[inline]
-    pub fn free(mut self) -> (P::Sercom, P) {
-        self.regs.reset();
-        (self.regs.sercom, self.pads)
-    }
-
-    /// Obtain a pointer to the `DATA` register. Necessary for DMA transfers.
-    #[inline]
-    #[cfg(feature = "dma")]
-    pub(super) fn data_ptr(&self) -> *mut Z::Word {
-        self.regs.data_ptr::<Z>()
-    }
-
-    /// Change the [`OpMode`]
-    #[inline]
-    pub fn op_mode<M2: OpMode>(mut self) -> Config<P, M2, Z> {
-        self.regs.set_op_mode(M2::MODE, M2::MSSEN);
-        self.change()
-    }
-
-    /// Change the [`CharSize`] using the builder pattern
-    #[cfg(any(feature = "samd11", feature = "samd21"))]
-    #[inline]
-    pub fn char_size<C2: CharSize>(mut self) -> Config<P, M, C2> {
-        self.regs.set_char_size(C2::BITS);
-        self.change()
-    }
-
-    /// Change the transaction [`Length`] using the builder pattern
-    ///
-    /// To use a run-time dynamic length, set the [`Length`] type to
-    /// [`DynLength`] and then use the [`dyn_length`] method.
-    ///
-    /// [`dyn_length`]: Config::dyn_length
-    #[cfg(feature = "min-samd51g")]
-    #[inline]
-    pub fn length<L2: Length>(mut self) -> Config<P, M, L2> {
-        self.regs.set_length(L2::U8);
-        self.change()
-    }
-
-    /// Return the transaction length, in bytes
-    ///
-    /// This function is valid for all chips and SPI configurations. It returns
-    /// the number of bytes in a single SPI transaction.
-    #[cfg(any(feature = "samd11", feature = "samd21"))]
-    #[inline]
-    pub fn transaction_length(&self) -> u8 {
-        Z::BYTES
-    }
-
-    /// Return the transaction length, in bytes
-    ///
-    /// This function is valid for all chips and SPI configurations. It returns
-    /// the number of bytes in a single SPI transaction.
-    #[cfg(feature = "min-samd51g")]
-    #[inline]
-    pub fn transaction_length(&self) -> u8 {
-        use typenum::Unsigned;
-        if Z::U8 == DynLength::U8 {
-            self.regs.get_length()
-        } else {
-            Z::U8
-        }
-    }
-
-    /// Get the clock polarity
-    #[inline]
-    pub fn get_cpol(&self) -> Polarity {
-        self.regs.get_cpol()
-    }
-
-    /// Set the clock polarity
-    #[inline]
-    pub fn set_cpol(&mut self, cpol: Polarity) {
-        self.regs.set_cpol(cpol);
-    }
-
-    /// Set the clock polarity using the builder pattern
-    #[inline]
-    pub fn cpol(mut self, cpol: Polarity) -> Self {
-        self.set_cpol(cpol);
-        self
-    }
-
-    /// Get the clock phase
-    #[inline]
-    pub fn get_cpha(&self) -> Phase {
-        self.regs.get_cpha()
-    }
-
-    /// Set the clock phase
-    #[inline]
-    pub fn set_cpha(&mut self, cpha: Phase) {
-        self.regs.set_cpha(cpha)
-    }
-
-    /// Set the clock phase using the builder pattern
-    #[inline]
-    pub fn cpha(mut self, cpha: Phase) -> Self {
-        self.set_cpha(cpha);
-        self
-    }
-
-    /// Get the SPI mode (clock polarity & phase)
-    #[inline]
-    pub fn get_spi_mode(&self) -> spi::Mode {
-        self.regs.get_spi_mode()
-    }
-
-    /// Set the SPI mode (clock polarity & phase)
-    #[inline]
-    pub fn set_spi_mode(&mut self, mode: spi::Mode) {
-        self.regs.set_spi_mode(mode);
-    }
-
-    /// Set the SPI mode (clock polarity & phase) using the builder pattern
-    #[inline]
-    pub fn spi_mode(mut self, mode: spi::Mode) -> Self {
-        self.set_spi_mode(mode);
-        self
-    }
-
-    /// Get the bit order of transmission (MSB/LSB first)
-    ///
-    /// This only affects the order of bits within each byte. Bytes are always
-    /// transferred in little endian order from the 32-bit DATA register.
-    #[inline]
-    pub fn get_bit_order(&self) -> BitOrder {
-        self.regs.get_bit_order()
-    }
-
-    /// Set the bit order of transmission (MSB/LSB first) using the builder
-    /// pattern
-    ///
-    /// This only affects the order of bits within each byte. Bytes are always
-    /// transferred in little endian order from the 32-bit DATA register.
-    #[inline]
-    pub fn set_bit_order(&mut self, order: BitOrder) {
-        self.regs.set_bit_order(order);
-    }
-
-    /// Set the bit order of transmission (MSB/LSB first) using the builder
-    /// pattern
-    ///
-    /// This only affects the order of bits within each byte. Bytes are always
-    /// transferred in little endian order from the 32-bit DATA register.
-    #[inline]
-    pub fn bit_order(mut self, order: BitOrder) -> Self {
-        self.set_bit_order(order);
-        self
-    }
-
-    /// Get the baud rate
-    ///
-    /// The returned baud rate may not exactly match what was set.
-    #[inline]
-    pub fn get_baud(&mut self) -> Hertz {
-        self.regs.get_baud(self.freq)
-    }
-
-    /// Set the baud rate
-    ///
-    /// This function will calculate the best BAUD register setting based on the
-    /// stored GCLK frequency and desired baud rate. The maximum baud rate is
-    /// half the GCLK frequency. The minimum baud rate is the GCLK frequency /
-    /// 512. Values outside this range will saturate at the extremes.
-    #[inline]
-    pub fn set_baud(&mut self, baud: impl Into<Hertz>) {
-        self.regs.set_baud(self.freq, baud);
-    }
-
-    /// Set the baud rate using the builder API
-    ///
-    /// This function will calculate the best BAUD register setting based on the
-    /// stored GCLK frequency and desired baud rate. The maximum baud rate is
-    /// half the GCLK frequency. The minimum baud rate is the GCLK frequency /
-    /// 512. Values outside this range will saturate at the extremes.
-    #[inline]
-    pub fn baud(mut self, baud: impl Into<Hertz>) -> Self {
-        self.set_baud(baud);
-        self
-    }
-
-    /// Read the enabled state of the immediate buffer overflow notification
-    ///
-    /// If set to true, an [`Error::Overflow`] will be issued as soon as an
-    /// overflow occurs. Otherwise, it will not be issued until its place within
-    /// the data stream.
-    #[inline]
-    pub fn get_ibon(&self) -> bool {
-        self.regs.get_ibon()
-    }
-
-    /// Enable or disable the immediate buffer overflow notification
-    ///
-    /// If set to true, an [`Error::Overflow`] will be issued as soon as an
-    /// overflow occurs. Otherwise, it will not be issued until its place within
-    /// the data stream.
-    #[inline]
-    pub fn set_ibon(&mut self, enabled: bool) {
-        self.regs.set_ibon(enabled);
-    }
-
-    /// Enable or disable the immediate buffer overflow notification using the
-    /// builder API
-    ///
-    /// If set to true, an [`Error::Overflow`] will be issued as soon as an
-    /// overflow occurs. Otherwise, it will not be issued until its place within
-    /// the data stream.
-    #[inline]
-    pub fn ibon(mut self, enabled: bool) -> Self {
-        self.set_ibon(enabled);
-        self
-    }
-
-    /// Read the enable state of run in standby mode
-    #[inline]
-    pub fn get_run_in_standby(&self) -> bool {
-        self.regs.get_run_in_standby()
-    }
-
-    /// Enable or disable run in standby mode
-    #[inline]
-    pub fn set_run_in_standby(&mut self, enabled: bool) {
-        self.regs.set_run_in_standby(enabled);
-    }
-
-    /// Enable or disable run in standby mode using the builder API
-    #[inline]
-    pub fn run_in_standby(mut self, enabled: bool) -> Self {
-        self.set_run_in_standby(enabled);
-        self
-    }
-
-    /// Enable the SPI peripheral
-    ///
-    /// SPI transactions are not possible until the peripheral is enabled.
-    /// This function is limited to [`ValidConfig`]s.
-    #[inline]
-    pub fn enable(mut self) -> Spi<Self, P::Capability>
-    where
-        Self: ValidConfig,
-    {
-        self.regs.rx_enable();
-        self.regs.enable();
-        Spi {
-            config: self,
-            capability: P::Capability::default(),
-        }
-    }
-}
+/// Marker trait for [`Size`]s that can't be completed in one transaction
+#[cfg(feature = "min-samd51g")]
+pub trait NonAtomicSize: Size<Word = u8> {}
 
 #[cfg(feature = "min-samd51g")]
-impl<P, M> Config<P, M, DynLength>
-where
-    P: ValidPads,
-    M: OpMode,
-{
-    /// Get the transaction length
-    #[inline]
-    pub fn get_dyn_length(&self) -> u8 {
-        self.regs.get_length()
-    }
-
-    /// Set the transaction length
-    ///
-    /// Write the LENGTH register to set the transaction length. If the length
-    /// is zero, it will be set to 1.
-    #[inline]
-    pub fn set_dyn_length(&mut self, length: u8) {
-        self.regs.set_length(length);
-    }
-
-    /// Set the transaction length using the builder API
-    ///
-    /// Write the LENGTH register to set the transaction length. If the length
-    /// is zero, it will be set to 1.
-    #[inline]
-    pub fn dyn_length(mut self, length: u8) -> Self {
-        self.set_dyn_length(length);
-        self
-    }
-}
-
-//=============================================================================
-// AnyConfig
-//=============================================================================
-
-/// Type class for all possible [`Config`] types
-///
-/// This trait uses the [`AnyKind`] trait pattern to create a [type class] for
-/// [`Config`] types. See the `AnyKind` documentation for more details on the
-/// pattern.
-///
-/// In addition to the normal, `AnyKind` associated types. This trait also
-/// copies the [`Sercom`], [`Capability`] and [`Word`] types, to make it easier
-/// to apply bounds to these types at the next level of abstraction.
-///
-/// [`AnyKind`]: crate::typelevel#anykind-trait-pattern
-/// [type class]: crate::typelevel#type-classes
-pub trait AnyConfig: Is<Type = SpecificConfig<Self>> {
-    type Sercom: Sercom;
-    type Pads: ValidPads<Sercom = Self::Sercom, Capability = Self::Capability>;
-    type Capability: Capability;
-    type OpMode: OpMode;
-    type Size: Size<Word = Self::Word>;
-    type Word: 'static;
-}
-
-/// Type alias to recover the specific [`Config`] type from an implementation of
-/// [`AnyConfig`]
-pub type SpecificConfig<C> =
-    Config<<C as AnyConfig>::Pads, <C as AnyConfig>::OpMode, <C as AnyConfig>::Size>;
-
-impl<P, M, Z> Sealed for Config<P, M, Z>
-where
-    P: ValidPads,
-    M: OpMode,
-    Z: Size,
-{
-}
-
-impl<P, M, Z> AnyConfig for Config<P, M, Z>
-where
-    P: ValidPads,
-    M: OpMode,
-    Z: Size,
-{
-    type Sercom = P::Sercom;
-    type Pads = P;
-    type Capability = P::Capability;
-    type OpMode = M;
-    type Size = Z;
-    type Word = Z::Word;
-}
-
-impl<P, M, Z> AsRef<Self> for Config<P, M, Z>
-where
-    P: ValidPads,
-    M: OpMode,
-    Z: Size,
-{
-    #[inline]
-    fn as_ref(&self) -> &Self {
-        self
-    }
-}
-
-impl<P, M, Z> AsMut<Self> for Config<P, M, Z>
-where
-    P: ValidPads,
-    M: OpMode,
-    Z: Size,
-{
-    #[inline]
-    fn as_mut(&mut self) -> &mut Self {
-        self
-    }
-}
-
-//=============================================================================
-// ValidConfig
-//=============================================================================
-
-/// Marker trait for valid SPI [`Config`]urations
-///
-/// A functional SPI peripheral must have, at a minimum, an SCLK pad and
-/// either a Data In or a Data Out pad. Dependeing on the [`OpMode`], an SS
-/// pad may also be required.
-///
-/// The `ValidConfig` trait is implemented only for valid combinations of
-/// [`Pads`] and [`OpMode`]. No [`Config`] is valid if the SCK pad is [`NoneT`]
-/// or if both the Data In and Data Out pads are `NoneT`. When in [`Master`]
-/// `OpMode`, the `SS` pad must be `NoneT`, while in [`MasterHWSS`] or
-/// [`Slave`] [`OpMode`], the SS pad must be [`SomePad`].
-pub trait ValidConfig: AnyConfig {}
-
-impl<P, Z> ValidConfig for Config<P, Master, Z>
-where
-    P: ValidPads<SS = NoneT>,
-    Z: Size,
-{
-}
-
-impl<P, Z> ValidConfig for Config<P, MasterHWSS, Z>
-where
-    P: ValidPads,
-    Z: Size,
-    P::SS: SomePad,
-{
-}
-
-impl<P, Z> ValidConfig for Config<P, Slave, Z>
-where
-    P: ValidPads,
-    Z: Size,
-    P::SS: SomePad,
-{
-}
+seq_macro::seq!(N in 5..=255 {
+    impl NonAtomicSize for typenum::U~N {}
+});
 
 //=============================================================================
 // Spi
@@ -1161,42 +597,81 @@ where
 ///
 /// See the [`impl_ehal`] documentation for details on the implementations of
 /// the embedded HAL traits, which vary based on [`Size`] and [`Capability`].
-pub struct Spi<C, A>
+pub struct Spi<P, M = Master, Z = DefaultSize>
 where
-    C: ValidConfig,
-    A: Capability,
+    P: ValidPads,
+    M: OpMode,
+    Z: Size,
 {
-    config: C,
-    capability: A,
+    regs: Registers<P::Sercom>,
+    pads: P,
+    capability: P::Capability,
+    mode: PhantomData<M>,
+    size: PhantomData<Z>,
+    freq: Hertz,
 }
 
-/// Get a shared reference to the underlying [`Config`] struct
-///
-/// This can be used to call the various `get_*` functions on `Config`
-impl<C, A> AsRef<SpecificConfig<C>> for Spi<C, A>
-where
-    C: ValidConfig,
-    A: Capability,
-{
+impl<P: ValidPads> Spi<P> {
     #[inline]
-    fn as_ref(&self) -> &SpecificConfig<C> {
-        self.config.as_ref()
+    pub fn config(
+        apb_clk_ctrl: &APB_CLK_CTRL,
+        sercom: P::Sercom,
+        pads: P,
+        freq: impl Into<Hertz>,
+    ) -> Config<P> {
+        Config::new(apb_clk_ctrl, sercom, pads, freq)
     }
 }
 
-impl<C, A> Spi<C, A>
+impl<P, M, Z> Spi<P, M, Z>
 where
-    C: ValidConfig,
-    A: Capability,
+    P: ValidPads,
+    M: OpMode,
+    Z: Size,
 {
+    /// Obtain a reference to the PAC `SERCOM` struct
+    ///
+    /// Directly accessing the `SERCOM` could break the invariants of the
+    /// type-level tracking in this module, so it is unsafe.
+    #[inline]
+    pub unsafe fn sercom(&self) -> &P::Sercom {
+        &self.regs.sercom
+    }
+
     /// Obtain a pointer to the `DATA` register. Necessary for DMA transfers.
     #[inline]
     #[cfg(feature = "dma")]
-    pub(super) fn data_ptr(&self) -> *mut C::Word
-    where
-        C::Size: Size<Word = C::Word>,
-    {
-        self.config.as_ref().data_ptr()
+    pub(super) fn data_ptr(&self) -> *mut Word<Z> {
+        self.regs.data_ptr::<Z>()
+    }
+
+    /// Return the transaction length, in bytes
+    ///
+    /// This function is valid for all chips and SPI configurations. It returns
+    /// the number of bytes in a single SPI transaction.
+    #[inline]
+    pub fn get_length(&self) -> u8 {
+        #[cfg(any(feature = "samd11", feature = "samd21"))]
+        let result = Z::BYTES;
+        #[cfg(feature = "min-samd51g")]
+        let result = match Z::static_length() {
+            Some(length) => length.get(),
+            None => self.regs.get_length(),
+        };
+        result
+    }
+
+    #[cfg(feature = "min-samd51g")]
+    #[inline]
+    fn change_length<L: Length>(self) -> Spi<P, M, L> {
+        Spi {
+            regs: self.regs,
+            pads: self.pads,
+            capability: self.capability,
+            mode: self.mode,
+            size: PhantomData,
+            freq: self.freq,
+        }
     }
 
     /// Change the transaction [`Length`]
@@ -1205,25 +680,25 @@ where
     /// dangerous. If you have sent or received *any* bytes at the current
     /// [`Length`], you **must** wait for a TXC flag before changing to a new
     /// [`Length`].
-    #[inline]
     #[cfg(feature = "min-samd51g")]
-    pub fn length<L: Length>(self) -> Spi<Config<C::Pads, C::OpMode, L>, A>
-    where
-        Config<C::Pads, C::OpMode, L>: ValidConfig,
-    {
-        Spi {
-            config: self.config.into().length(),
-            capability: self.capability,
-        }
+    #[inline]
+    pub fn length<L: StaticLength>(mut self) -> Spi<P, M, L> {
+        self.regs.set_length(L::LENGTH);
+        self.change_length()
     }
 
-    /// Return the transaction length, in bytes
+    /// Change the transaction [`Length`]
     ///
-    /// This function is valid for all chips and SPI configurations. It returns
-    /// the number of bytes in a single SPI transaction.
+    /// Changing the transaction [`Length`] while is enabled is permissible but
+    /// dangerous. If you have sent or received *any* bytes at the current
+    /// [`Length`], you **must** wait for a TXC flag before changing to a new
+    /// [`Length`].
+    #[cfg(feature = "min-samd51g")]
     #[inline]
-    pub fn transaction_length(&self) -> u8 {
-        self.config.as_ref().transaction_length()
+    pub fn dyn_length(mut self, length: u8) -> Spi<P, M, DynLength> {
+        let length = if length > 0 { length } else { 1 };
+        self.regs.set_length(length);
+        self.change_length()
     }
 
     /// Update the SPI configuration.
@@ -1232,60 +707,77 @@ where
     /// some registers are enable-protected. This may interrupt any ongoing
     /// transactions.
     #[inline]
-    pub fn reconfigure(&mut self, update: impl FnOnce(&mut SpecificConfig<C>)) {
-        self.config.as_mut().regs.disable();
-        update(self.config.as_mut());
-        self.config.as_mut().regs.enable();
+    pub fn reconfigure(&mut self, update: impl FnOnce(&mut Reconfig)) {
+        self.regs.disable();
+        let ctrla = self.regs.get_ctrla();
+        let baud = self.regs.get_baud(self.freq);
+        let mut reconfig = Reconfig { ctrla, baud };
+        update(&mut reconfig);
+        self.regs.set_ctrla(reconfig.ctrla);
+        self.regs.set_baud(self.freq, reconfig.baud);
+        self.regs.enable();
     }
 
     /// Enable interrupts for the specified flags
     #[inline]
     pub fn enable_interrupts(&mut self, flags: Flags) {
-        self.config.as_mut().regs.enable_interrupts(flags)
+        self.regs.enable_interrupts(flags)
     }
 
     /// Disable interrupts for the specified flags
     #[inline]
     pub fn disable_interrupts(&mut self, flags: Flags) {
-        self.config.as_mut().regs.disable_interrupts(flags);
+        self.regs.disable_interrupts(flags);
     }
 
     /// Read the interrupt flags
     #[inline]
     pub fn read_flags(&self) -> Flags {
-        self.config.as_ref().regs.read_flags()
+        self.regs.read_flags()
     }
 
     /// Clear the corresponding interrupt flags
     ///
-    /// Only the ERROR, SSL and TXC flags can be cleared.
+    /// Only the `ERROR`, `SSL` and `TXC` flags can be cleared.
     ///
-    /// **Note:** The implementation of of [`serial::Write::flush`] waits on and
-    /// clears the `TXC` flag. Manually clearing this flag could cause it to
-    /// hang indefinitely.
+    /// **⚠️Warning⚠️:** The implementation of of [`serial::Write::flush`] waits
+    /// on and clears the `TXC` flag. Manually clearing this flag could
+    /// cause it to hang indefinitely.
     ///
     /// [`serial::Write::flush`]: embedded_hal::serial::Write::flush
     #[inline]
     pub fn clear_flags(&mut self, flags: Flags) {
-        self.config.as_mut().regs.clear_flags(flags);
+        self.regs.clear_flags(flags);
     }
 
     /// Read the error status flags
     #[inline]
     pub fn read_status(&self) -> Status {
-        self.config.as_ref().regs.read_status()
+        self.regs.read_status()
     }
 
     /// Clear the corresponding error status flags
     #[inline]
     pub fn clear_status(&mut self, status: Status) {
-        self.config.as_mut().regs.clear_status(status);
+        self.regs.clear_status(status);
     }
 
     /// Try to read the interrupt flags, but first check the error status flags.
     #[inline]
     pub fn read_flags_errors(&self) -> Result<Flags, Error> {
-        self.config.as_ref().regs.read_flags_errors()
+        self.regs.read_flags_errors()
+    }
+
+    /// Private interface to read from the DATA register
+    #[inline]
+    pub(super) fn _read_data(&mut self) -> DataWidth {
+        self.regs.read_data()
+    }
+
+    /// Private interface to write to the DATA register
+    #[inline]
+    pub(super) fn _write_data(&mut self, data: DataWidth) {
+        self.regs.write_data(data);
     }
 
     /// Read from the DATA register
@@ -1295,7 +787,7 @@ where
     /// this module.
     #[inline]
     pub unsafe fn read_data(&mut self) -> DataWidth {
-        self.config.as_mut().regs.read_data()
+        self._read_data()
     }
 
     /// Write to the DATA register
@@ -1305,44 +797,34 @@ where
     /// module.
     #[inline]
     pub unsafe fn write_data(&mut self, data: DataWidth) {
-        self.config.as_mut().regs.write_data(data);
+        self._write_data(data);
     }
 
-    /// Disable the SPI peripheral and return the [`Config`] struct
+    /// Reset the SPI peripheral and return the [`Config`] struct
     #[inline]
-    pub fn disable(mut self) -> C {
-        self.config.as_mut().regs.rx_disable();
-        self.config.as_mut().regs.disable();
-        self.config
+    pub fn disable(mut self) -> (P::Sercom, P) {
+        self.regs.reset();
+        (self.regs.sercom, self.pads)
     }
 }
 
 #[cfg(feature = "min-samd51g")]
-impl<C, A> Spi<C, A>
+impl<P, M> Spi<P, M, DynLength>
 where
-    C: ValidConfig<Size = DynLength>,
-    A: Capability,
+    P: ValidPads,
+    M: OpMode,
 {
-    /// Return the current transaction length
+    /// Change the transaction [`Length`]
     ///
-    /// Read the LENGTH register to determine the current transaction length
-    #[inline]
-    pub fn get_dyn_length(&self) -> u8 {
-        self.config.as_ref().get_dyn_length()
-    }
-
-    /// Set the transaction length
-    ///
-    /// Write the LENGTH register to set the transaction length. Panics if the
-    /// length is zero.
-    ///
-    /// Changing the transaction `LENGTH` while is enabled is permissible but
+    /// Changing the transaction [`Length`] while is enabled is permissible but
     /// dangerous. If you have sent or received *any* bytes at the current
-    /// `LENGTH`, you **must** wait for a TXC flag before changing to a new
-    /// `LENGTH`.
+    /// [`Length`], you **must** wait for a TXC flag before changing to a new
+    /// [`Length`].
+    #[cfg(feature = "min-samd51g")]
     #[inline]
     pub fn set_dyn_length(&mut self, length: u8) {
-        self.config.as_mut().set_dyn_length(length);
+        let length = if length > 0 { length } else { 1 };
+        self.regs.set_length(length);
     }
 }
 
@@ -1365,29 +847,22 @@ where
 /// [type class]: crate::typelevel#type-classes
 pub trait AnySpi: Is<Type = SpecificSpi<Self>> {
     type Sercom: Sercom;
-    type Pads: ValidPads;
+    type Pads: ValidPads<Sercom = Self::Sercom, Capability = Self::Capability>;
     type Capability: Capability;
     type OpMode: OpMode;
-    type Size: Size;
-    type Word: 'static;
-    type Config: ValidConfig<
-        Sercom = Self::Sercom,
-        Pads = Self::Pads,
-        Capability = Self::Capability,
-        OpMode = Self::OpMode,
-        Size = Self::Size,
-        Word = Self::Word,
-    >;
+    type Size: Size<Word = Self::Word>;
+    type Word: PrimInt + AsPrimitive<DataWidth>;
 }
 
 /// Type alias to recover the specific [`Spi`] type from an implementation of
 /// [`AnySpi`]
-pub type SpecificSpi<S> = Spi<<S as AnySpi>::Config, <S as AnySpi>::Capability>;
+pub type SpecificSpi<S> = Spi<<S as AnySpi>::Pads, <S as AnySpi>::OpMode, <S as AnySpi>::Size>;
 
-impl<C, A> AsRef<Self> for Spi<C, A>
+impl<P, M, Z> AsRef<Self> for Spi<P, M, Z>
 where
-    C: ValidConfig,
-    A: Capability,
+    P: ValidPads,
+    M: OpMode,
+    Z: Size,
 {
     #[inline]
     fn as_ref(&self) -> &Self {
@@ -1395,10 +870,11 @@ where
     }
 }
 
-impl<C, A> AsMut<Self> for Spi<C, A>
+impl<P, M, Z> AsMut<Self> for Spi<P, M, Z>
 where
-    C: ValidConfig,
-    A: Capability,
+    P: ValidPads,
+    M: OpMode,
+    Z: Size,
 {
     #[inline]
     fn as_mut(&mut self) -> &mut Self {
@@ -1406,19 +882,24 @@ where
     }
 }
 
-impl<C, A> Sealed for Spi<C, A>
+impl<P, M, Z> Sealed for Spi<P, M, Z>
 where
-    C: ValidConfig,
-    A: Capability,
+    P: ValidPads,
+    M: OpMode,
+    Z: Size,
 {
 }
 
-impl<C: ValidConfig> AnySpi for Spi<C, C::Capability> {
-    type Sercom = C::Sercom;
-    type Pads = C::Pads;
-    type Capability = C::Capability;
-    type OpMode = C::OpMode;
-    type Size = C::Size;
-    type Word = C::Word;
-    type Config = C;
+impl<P, M, Z> AnySpi for Spi<P, M, Z>
+where
+    P: ValidPads,
+    M: OpMode,
+    Z: Size,
+{
+    type Sercom = P::Sercom;
+    type Pads = P;
+    type Capability = P::Capability;
+    type OpMode = M;
+    type Size = Z;
+    type Word = Z::Word;
 }

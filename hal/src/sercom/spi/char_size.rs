@@ -4,6 +4,8 @@
 //! [`Config`]: super::Config
 //! [`Size`]: super::Size
 
+use num_traits::{AsPrimitive, PrimInt};
+
 use crate::typelevel::Sealed;
 
 //=============================================================================
@@ -22,9 +24,9 @@ use crate::typelevel::Sealed;
 ///
 /// [type-level enum]: crate::typelevel#type-level-enums
 /// [type-level function]: crate::typelevel#type-level-functions
-pub trait CharSize: Sealed {
+pub trait CharSize: Sealed + Default {
     /// Word size for the character size
-    type Word: 'static;
+    type Word: PrimInt + AsPrimitive<u16>;
 
     /// Register bit pattern for the corresponding `CharSize`
     const BITS: u8;
@@ -38,10 +40,12 @@ pub trait CharSize: Sealed {
 pub type Word<C> = <C as CharSize>::Word;
 
 /// [`CharSize`] variant for 8-bit transactions
-pub enum EightBit {}
+#[derive(Default)]
+pub struct EightBit;
 
 /// [`CharSize`] variant for 9-bit transactions
-pub enum NineBit {}
+#[derive(Default)]
+pub struct NineBit;
 
 impl Sealed for EightBit {}
 impl CharSize for EightBit {

@@ -1,6 +1,7 @@
 use core::convert::TryInto;
 
-use embedded_hal::spi;
+use bitflags::bitflags;
+use embedded_hal::spi::{Phase, Polarity};
 
 #[cfg(any(feature = "samd11", feature = "samd21"))]
 use crate::pac::sercom0::SPI;
@@ -15,7 +16,119 @@ use crate::pac::sercom0::spim::ctrla::MODE_A;
 use crate::sercom::Sercom;
 use crate::time::Hertz;
 
-use super::{BitOrder, DataWidth, Error, Flags, Phase, Polarity, Status};
+//=============================================================================
+// BitOrder
+//=============================================================================
+
+/// Define the bit order of transactions
+#[repr(u8)]
+#[derive(Copy, Clone, PartialEq, Eq)]
+pub enum BitOrder {
+    MsbFirst,
+    LsbFirst,
+}
+
+//=============================================================================
+// Flags
+//=============================================================================
+
+bitflags! {
+    /// Interrupt bit flags for SPI transactions
+    ///
+    /// The available interrupt flags are `DRE`, `RXC`, `TXC`, `SSL` and
+    /// `ERROR`. The binary format of the underlying bits exactly matches the
+    /// `INTFLAG` register.
+    pub struct Flags: u8 {
+        const DRE = 0x01;
+        const TXC = 0x02;
+        const RXC = 0x04;
+        const SSL = 0x08;
+        const ERROR = 0x80;
+    }
+}
+
+//=============================================================================
+// Status
+//=============================================================================
+
+bitflags! {
+    /// Status bit flags for SPI transactions
+    ///
+    /// The available status flags are `BUFOVF` and `LENERR`. The binary format
+    /// of the underlying bits exactly matches the `STATUS` register.
+    pub struct Status: u16 {
+        const BUFOVF = 0x0004;
+        const LENERR = 0x0800;
+    }
+}
+
+impl Status {
+    /// Check the [`Status`] flags for [`Error`] conditions
+    pub fn check_errors(&self) -> Result<(), Error> {
+        // Buffer overflow has priority
+        if self.contains(Status::BUFOVF) {
+            Err(Error::Overflow)
+        } else if self.contains(Status::LENERR) {
+            Err(Error::LengthError)
+        } else {
+            Ok(())
+        }
+    }
+}
+
+//=============================================================================
+// Error
+//=============================================================================
+
+/// Error `enum` for SPI transactions
+///
+/// The SPI peripheral only has two error types, buffer overflow and transaction
+/// length error.
+#[derive(Debug)]
+pub enum Error {
+    Overflow,
+    LengthError,
+}
+
+//=============================================================================
+// DataWidth
+//=============================================================================
+
+/// Type alias for the width of the `DATA` register
+#[cfg(any(feature = "samd11", feature = "samd21"))]
+pub type DataWidth = u16;
+
+/// Type alias for the width of the `DATA` register
+#[cfg(feature = "min-samd51g")]
+pub type DataWidth = u32;
+
+//==============================================================================
+// CtrlA
+//==============================================================================
+
+pub(super) struct CtrlA {
+    pub bit_order: BitOrder,
+    pub cpol: Polarity,
+    pub cpha: Phase,
+    pub dipo: u8,
+    pub dopo: u8,
+    pub ibon: bool,
+    pub run_in_standby: bool,
+}
+
+impl CtrlA {
+    pub fn default(dipo: u8, dopo: u8) -> Self {
+        Self {
+            bit_order: BitOrder::MsbFirst,
+            cpol: Polarity::IdleLow,
+            cpha: Phase::CaptureOnFirstTransition,
+            dipo,
+            dopo,
+            ibon: false,
+            run_in_standby: false,
+        }
+    }
+}
 
 //==============================================================================
 // Registers
@@ -59,16 +172,6 @@ impl<S: Sercom> Registers<S> {
     /// Get a pointer to the `DATA` register
     pub fn data_ptr<Z: super::Size>(&self) -> *mut Z::Word {
         self.spi().data.as_ptr() as *mut _
-    }
-
-    /// Configure the DIPO and DOPO values
-    #[inline]
-    pub fn set_dipo_dopo(&mut self, dipo_dopo: (u8, u8)) {
-        let (dipo, dopo) = dipo_dopo;
-        self.spi().ctrla.modify(|_, w| unsafe {
-            w.dipo().bits(dipo);
-            w.dopo().bits(dopo)
-        });
     }
 
     /// Configure the SPI operating mode
@@ -117,98 +220,60 @@ impl<S: Sercom> Registers<S> {
             .modify(|_, w| unsafe { w.chsize().bits(bits) });
     }
 
-    /// Get the clock polarity
-    #[inline]
-    pub fn get_cpol(&self) -> Polarity {
-        let cpol = self.spi().ctrla.read().cpol().bit();
-        match cpol {
-            false => Polarity::IdleLow,
-            true => Polarity::IdleHigh,
+    pub fn get_ctrla(&self) -> CtrlA {
+        let raw = self.spi().ctrla.read();
+        let bit_order = if raw.dord().bit_is_clear() {
+            BitOrder::MsbFirst
+        } else {
+            BitOrder::LsbFirst
+        };
+        let cpol = if raw.cpol().bit_is_clear() {
+            Polarity::IdleLow
+        } else {
+            Polarity::IdleHigh
+        };
+        let cpha = if raw.cpha().bit_is_clear() {
+            Phase::CaptureOnFirstTransition
+        } else {
+            Phase::CaptureOnSecondTransition
+        };
+        let dipo = raw.dipo().bits();
+        let dopo = raw.dopo().bits();
+        let ibon = raw.ibon().bit();
+        let run_in_standby = raw.runstdby().bit();
+        CtrlA {
+            bit_order,
+            cpol,
+            cpha,
+            dipo,
+            dopo,
+            ibon,
+            run_in_standby,
         }
     }
 
-    /// Set the clock polarity
-    #[inline]
-    pub fn set_cpol(&mut self, cpol: Polarity) {
-        let cpol = match cpol {
-            Polarity::IdleLow => false,
-            Polarity::IdleHigh => true,
-        };
-        self.spi().ctrla.modify(|_, w| w.cpol().bit(cpol));
-    }
-
-    /// Get the clock phase
-    #[inline]
-    pub fn get_cpha(&self) -> Phase {
-        let cpha = self.spi().ctrla.read().cpha().bit();
-        match cpha {
-            false => Phase::CaptureOnFirstTransition,
-            true => Phase::CaptureOnSecondTransition,
-        }
-    }
-
-    /// Set the clock phase
-    #[inline]
-    pub fn set_cpha(&mut self, cpha: Phase) {
-        let cpha = match cpha {
-            Phase::CaptureOnFirstTransition => false,
-            Phase::CaptureOnSecondTransition => true,
-        };
-        self.spi().ctrla.modify(|_, w| w.cpha().bit(cpha));
-    }
-
-    /// Get the SPI mode (clock polarity & phase)
-    #[inline]
-    pub fn get_spi_mode(&self) -> spi::Mode {
-        let reg = self.spi().ctrla.read();
-        let cpol = reg.cpol().bit();
-        let cpha = reg.cpha().bit();
-        let polarity = match cpol {
-            false => Polarity::IdleLow,
-            true => Polarity::IdleHigh,
-        };
-        let phase = match cpha {
-            false => Phase::CaptureOnFirstTransition,
-            true => Phase::CaptureOnSecondTransition,
-        };
-        spi::Mode { polarity, phase }
-    }
-
-    /// Set the SPI mode (clock polarity & phase)
-    #[inline]
-    pub fn set_spi_mode(&mut self, mode: spi::Mode) {
-        let cpol = match mode.polarity {
-            Polarity::IdleLow => false,
-            Polarity::IdleHigh => true,
-        };
-        let cpha = match mode.phase {
-            Phase::CaptureOnFirstTransition => false,
-            Phase::CaptureOnSecondTransition => true,
-        };
+    pub fn set_ctrla(&mut self, ctrla: CtrlA) {
         self.spi().ctrla.modify(|_, w| {
-            w.cpol().bit(cpol);
-            w.cpha().bit(cpha)
+            match ctrla.bit_order {
+                BitOrder::LsbFirst => w.dord().clear_bit(),
+                BitOrder::MsbFirst => w.dord().set_bit(),
+            };
+            match ctrla.cpol {
+                Polarity::IdleLow => w.cpol().clear_bit(),
+                Polarity::IdleHigh => w.cpol().set_bit(),
+            };
+            match ctrla.cpha {
+                Phase::CaptureOnFirstTransition => w.cpha().clear_bit(),
+                Phase::CaptureOnSecondTransition => w.cpha().set_bit(),
+            };
+            #[allow(unused_unsafe)]
+            unsafe {
+                w.dipo().bits(ctrla.dipo)
+            };
+            unsafe { w.dopo().bits(ctrla.dopo) };
+            w.ibon().bit(ctrla.ibon);
+            w.runstdby().bit(ctrla.run_in_standby)
         });
-    }
-
-    /// Get the bit order of transmission (MSB/LSB first)
-    #[inline]
-    pub fn get_bit_order(&self) -> BitOrder {
-        let order = self.spi().ctrla.read().dord().bits();
-        match order {
-            false => BitOrder::MsbFirst,
-            true => BitOrder::LsbFirst,
-        }
-    }
-
-    /// Set the bit order of transmission (MSB/LSB first)
-    #[inline]
-    pub fn set_bit_order(&mut self, order: BitOrder) {
-        let order = match order {
-            BitOrder::MsbFirst => false,
-            BitOrder::LsbFirst => true,
-        };
-        self.spi().ctrla.modify(|_, w| w.dord().bit(order));
     }
 
     /// Get the baud rate
@@ -228,30 +293,6 @@ impl<S: Sercom> Registers<S> {
         self.spi()
             .baud
             .modify(|_, w| unsafe { w.baud().bits(bits) });
-    }
-
-    /// Get the enable state of the immediate buffer overflow notification
-    #[inline]
-    pub fn get_ibon(&self) -> bool {
-        self.spi().ctrla.read().ibon().bit()
-    }
-
-    /// Set the enable state of the immediate buffer overflow notification
-    #[inline]
-    pub fn set_ibon(&mut self, enabled: bool) {
-        self.spi().ctrla.modify(|_, w| w.ibon().bit(enabled));
-    }
-
-    /// Get run in standby mode
-    #[inline]
-    pub fn get_run_in_standby(&self) -> bool {
-        self.spi().ctrla.read().runstdby().bit()
-    }
-
-    /// Set run in standby mode
-    #[inline]
-    pub fn set_run_in_standby(&mut self, set: bool) {
-        self.spi().ctrla.modify(|_, w| w.runstdby().bit(set));
     }
 
     /// Enable interrupts for the specified flags
@@ -274,13 +315,6 @@ impl<S: Sercom> Registers<S> {
     #[inline]
     pub fn rx_enable(&mut self) {
         self.spi().ctrlb.modify(|_, w| w.rxen().set_bit());
-        while self.spi().syncbusy.read().ctrlb().bit_is_set() {}
-    }
-
-    /// Disable the receiver
-    #[inline]
-    pub fn rx_disable(&mut self) {
-        self.spi().ctrlb.modify(|_, w| w.rxen().clear_bit());
         while self.spi().syncbusy.read().ctrlb().bit_is_set() {}
     }
 

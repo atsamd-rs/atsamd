@@ -58,7 +58,7 @@ pub struct SDCard {
 }
 
 pub type SdPads = spi::Pads<Sercom6, IoSet1, SdMiso, SdMosi, SdSck>;
-pub type SdSpi = spi::Spi<spi::Config<SdPads>, spi::Duplex>;
+pub type SdSpi = spi::Spi<SdPads>;
 type Controller<TS> = embedded_sdmmc::Controller<SdMmcSpi<SdSpi, SdCs>, TS>;
 
 /// An initialized SPI SDMMC controller.
@@ -104,7 +104,7 @@ impl SDCard {
             .data_out(self.mosi)
             .data_in(self.miso)
             .sclk(self.sck);
-        let spi = spi::Config::new(mclk, sercom6, pads, sercom6_clk.freq())
+        let spi = spi::Spi::config(mclk, sercom6, pads, sercom6_clk.freq())
             .spi_mode(spi::MODE_0)
             .baud(400.khz())
             .enable();
