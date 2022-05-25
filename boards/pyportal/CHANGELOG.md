@@ -1,5 +1,11 @@
 # Unreleased
 
+# v0.10.0
+
+- update to `atsamd-hal` to 0.15.1 and `cortex-m-rt` to 0.7.1
+- Added usb feature to bsp, and example
+- Added display feature to bsp and example
+
 # v0.9.0
 
 - update to `atsamd-hal-0.14` and other latest dependencies (#564)
