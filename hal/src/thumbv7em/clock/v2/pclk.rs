@@ -99,9 +99,9 @@ impl<P: PclkId> PclkToken<P> {
 /// ```
 pub mod ids {
 
-    pub use crate::sercom::v2::{Sercom0, Sercom1, Sercom2, Sercom3, Sercom4, Sercom5};
+    pub use crate::sercom::{Sercom0, Sercom1, Sercom2, Sercom3, Sercom4, Sercom5};
     #[cfg(feature = "min-samd51n")]
-    pub use crate::sercom::v2::{Sercom6, Sercom7};
+    pub use crate::sercom::{Sercom6, Sercom7};
 
     pub use super::super::dfll::DfllId;
     pub use super::super::dpll::{Dpll0Id, Dpll1Id};

@@ -26,7 +26,7 @@
 //! #         dpll::Dpll,
 //! #         pclk::Pclk
 //! #     },
-//! #     gpio::v2::Pins,
+//! #     gpio::Pins,
 //! #     pac::Peripherals,
 //! #     time::U32Ext,
 //! # };
@@ -178,7 +178,7 @@ pub fn test() {
             pclk::Pclk,
             xosc::{CrystalCurrent, Xosc},
         },
-        gpio::v2::Pins,
+        gpio::Pins,
         pac::Peripherals,
         time::U32Ext,
     };

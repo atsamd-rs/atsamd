@@ -100,7 +100,7 @@ pub struct Clocks {
 /// let pclk_sercom1 = Pclk::enable(tokens.pclks.sercom1, clocks.gclk0);
 /// ```
 ///
-/// [`Sercom1`]: crate::sercom::v2::Sercom1
+/// [`Sercom1`]: crate::sercom::Sercom1
 pub struct Tokens {
     /// Tokens to create [`apb::ApbClk`]s
     pub apbs: apb::ApbTokens,

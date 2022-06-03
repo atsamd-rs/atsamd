@@ -7,7 +7,7 @@ use typenum::U0;
 use crate::pac::osc32kctrl::xosc32k::{CGM_A, STARTUP_A};
 use crate::pac::osc32kctrl::{RegisterBlock, STATUS, XOSC32K};
 
-use crate::gpio::v2::{FloatingDisabled, Pin, PA00, PA01};
+use crate::gpio::{FloatingDisabled, Pin, PA00, PA01};
 use crate::time::Hertz;
 use crate::typelevel::{Counter, Decrement, Increment, PrivateDecrement, PrivateIncrement, Sealed};
 

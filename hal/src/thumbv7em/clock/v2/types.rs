@@ -4,7 +4,7 @@
 //! The `ahb`, `apb` and `pclk` modules each define structs that are
 //! generic over a type parameter representing a peripheral. Some peripheral
 //! modules already define suitable types for this purpose. For example,
-//! [`sercom::v2`] defines the [`Sercom0`], [`Sercom1`], etc. types. But other
+//! [`sercom`] defines the [`Sercom0`], [`Sercom1`], etc. types. But other
 //! peripherals are either not yet implemented in the HAL or do not define a
 //! suitable type. This module defines a type for such peripherals. If/when a
 //! suitable type is added for a given peripheral, the type defined here should
@@ -13,16 +13,16 @@
 //! [`ahb`]: super::ahb
 //! [`apb`]: super::apb
 //! [`pclk`]: super::pclk
-//! [`sercom::v2`]: crate::sercom::v2
-//! [`Sercom0`]: crate::sercom::v2::Sercom0
-//! [`Sercom1`]: crate::sercom::v2::Sercom1
+//! [`sercom`]: crate::sercom
+//! [`Sercom0`]: crate::sercom::Sercom0
+//! [`Sercom1`]: crate::sercom::Sercom1
 
 use crate::typelevel::Sealed;
 
 #[cfg(feature = "min-samd51g")]
-pub use crate::sercom::v2::{Sercom0, Sercom1, Sercom2, Sercom3, Sercom4, Sercom5};
+pub use crate::sercom::{Sercom0, Sercom1, Sercom2, Sercom3, Sercom4, Sercom5};
 #[cfg(feature = "min-samd51n")]
-pub use crate::sercom::v2::{Sercom6, Sercom7};
+pub use crate::sercom::{Sercom6, Sercom7};
 
 macro_rules! create_types {
     (

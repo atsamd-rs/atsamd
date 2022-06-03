@@ -26,7 +26,7 @@ use typenum::U0;
 use crate::pac::oscctrl::xoscctrl::{CFDPRESC_A, STARTUP_A};
 use crate::pac::oscctrl::{RegisterBlock, XOSCCTRL};
 
-use crate::gpio::v2::{FloatingDisabled, Pin, PinId, PA14, PA15, PB22, PB23};
+use crate::gpio::{FloatingDisabled, Pin, PinId, PA14, PA15, PB22, PB23};
 use crate::time::Hertz;
 use crate::typelevel::{Counter, Sealed};
 

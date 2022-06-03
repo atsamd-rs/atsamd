@@ -35,7 +35,7 @@
 //! ```no_run
 //! # use atsamd_hal::{
 //! #     clock::v2::{gclk::Gclk, gclkio::GclkOut, retrieve_clocks, pclk::Pclk},
-//! #     gpio::v2::Pins,
+//! #     gpio::Pins,
 //! #     pac::Peripherals,
 //! # };
 //! let mut pac = Peripherals::take().unwrap();

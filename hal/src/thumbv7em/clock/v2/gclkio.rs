@@ -10,7 +10,7 @@
 //! ```no_run
 //! # use atsamd_hal::{
 //! #     clock::v2::{gclkio::GclkOut, retrieve_clocks},
-//! #     gpio::v2::Pins,
+//! #     gpio::Pins,
 //! #     pac::Peripherals,
 //! # };
 //! let mut pac = Peripherals::take().unwrap();
@@ -40,7 +40,7 @@
 //! #     pac.MCLK,
 //! #     &mut pac.NVMCTRL,
 //! # );
-//! # let pins = atsamd_hal::gpio::v2::Pins::new(pac.PORT);
+//! # let pins = atsamd_hal::gpio::Pins::new(pac.PORT);
 //! let gclk_in3 = GclkIn::enable(tokens.gclk_io.gclk_in3, pins.pb17, 48.mhz());
 //! let (gclk3, gclk_in3) = Gclk::new(tokens.gclks.gclk3, gclk_in3);
 //! let gclk3 = gclk3.enable();
@@ -61,7 +61,7 @@ use paste::paste;
 use seq_macro::seq;
 use typenum::U0;
 
-use crate::gpio::v2::{self as gpio, AlternateM, AnyPin, Pin, PinId};
+use crate::gpio::{self as gpio, AlternateM, AnyPin, Pin, PinId};
 use crate::time::Hertz;
 use crate::typelevel::{Counter, Decrement, Increment, PrivateDecrement, PrivateIncrement, Sealed};
 
