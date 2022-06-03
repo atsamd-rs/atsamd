@@ -146,9 +146,22 @@ impl OscUlp1k {
     ///
     /// This clock is derived from the [`Enabled`] [`OscUlpBase`] clock.
     ///
-    /// ```
-    /// let token = tokens.osculp.osculp1k;
-    /// let (osculp1k, osculp) = OscUlp1k::enable(token, osculp);
+    /// ```no_run
+    /// # use atsamd_hal::pac::Peripherals;
+    /// # use atsamd_hal::clock::v2::por_state;
+    /// # use atsamd_hal::clock::v2::osculp32k::OscUlp1k;
+    /// # let mut pac = Peripherals::take().unwrap();
+    /// # let (mut buses, clocks, tokens) = por_state(
+    /// #     pac.OSCCTRL,
+    /// #     pac.OSC32KCTRL,
+    /// #     pac.GCLK,
+    /// #     pac.MCLK,
+    /// #     &mut pac.NVMCTRL,
+    /// # );
+    /// let (osculp1k, osculp) = OscUlp1k::enable(
+    ///     tokens.osculp.osculp1k,
+    ///     clocks.osculp_base
+    /// );
     /// ```
     #[inline]
     pub fn enable<N: Increment>(
@@ -197,9 +210,22 @@ impl OscUlp32k {
     ///
     /// This clock is derived from the [`Enabled`] [`OscUlpBase`] clock.
     ///
-    /// ```
-    /// let token = tokens.osculp.osculp32k;
-    /// let (osculp1k, osculp) = OscUlp1k::enable(token, osculp);
+    /// ```no_run
+    /// # use atsamd_hal::pac::Peripherals;
+    /// # use atsamd_hal::clock::v2::por_state;
+    /// # use atsamd_hal::clock::v2::osculp32k::OscUlp32k;
+    /// # let mut pac = Peripherals::take().unwrap();
+    /// # let (mut buses, clocks, tokens) = por_state(
+    /// #     pac.OSCCTRL,
+    /// #     pac.OSC32KCTRL,
+    /// #     pac.GCLK,
+    /// #     pac.MCLK,
+    /// #     &mut pac.NVMCTRL,
+    /// # );
+    /// let (osculp32k, osculp) = OscUlp32k::enable(
+    ///     tokens.osculp.osculp32k,
+    ///     clocks.osculp_base
+    /// );
     /// ```
     #[inline]
     pub fn enable<N: Increment>(

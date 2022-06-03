@@ -93,9 +93,14 @@ pub struct Clocks {
 /// For example, to enable the peripheral channel clock for [`Sercom1`], you
 /// must provide the corresponding [`PclkToken`](pclk::PclkToken).
 ///
-/// ```
-/// use atsamd_hal::thumbv7em::clock::v2::{self as clock, pclk::Pclk};
-///
+/// ```no_run
+/// # use atsamd_hal::clock::v2::{self as clock, pclk::Pclk};
+/// # let mut pac = atsamd_hal::pac::Peripherals::take().unwrap();
+/// # let oscctrl = pac.OSCCTRL;
+/// # let osc32kctrl = pac.OSC32KCTRL;
+/// # let gclk = pac.GCLK;
+/// # let mclk = pac.MCLK;
+/// # let nvmctrl = &mut pac.NVMCTRL;
 /// let (buses, clocks, tokens) = clock::por_state(oscctrl, osc32kctrl, gclk, mclk, nvmctrl);
 /// let pclk_sercom1 = Pclk::enable(tokens.pclks.sercom1, clocks.gclk0);
 /// ```
@@ -147,8 +152,14 @@ pub struct Tokens {
 /// frequency to 120 MHz. Finally, the main clock, [`Gclk0`](gclk::Gclk0) is
 /// swapped to use `Dpll0` instead of the `Dfll`.
 ///
-/// ```
-/// use atsamd_hal::thumbv7em::clock::v2::{self as clock, gclk, pclk, dpll};
+/// ```no_run
+/// # use atsamd_hal::clock::v2::{self as clock, gclk, pclk, dpll};
+/// # let mut pac = atsamd_hal::pac::Peripherals::take().unwrap();
+/// # let oscctrl = pac.OSCCTRL;
+/// # let osc32kctrl = pac.OSC32KCTRL;
+/// # let gclk = pac.GCLK;
+/// # let mclk = pac.MCLK;
+/// # let nvmctrl = &mut pac.NVMCTRL;
 ///
 /// let (_buses, clocks, tokens) = clock::por_state(oscctrl, osc32kctrl, gclk, mclk, nvmctrl);
 /// let (gclk5, dfll) = gclk::Gclk::new(tokens.gclks.gclk5, clocks.dfll);

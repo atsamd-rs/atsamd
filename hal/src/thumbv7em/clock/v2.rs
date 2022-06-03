@@ -18,20 +18,22 @@
 //! # use atsamd_hal::{
 //! #     clock::v1,
 //! #     clock::v2::{
-//! #         retrieve_clocks,
-//! #         apb::{ApbClk, ApbToken, Trng},
+//! #         por_state,
+//! #         apb::{ApbClk, ApbToken},
 //! #         gclkio::{GclkIn, GclkOut},
-//! #         xosc::Xosc,
+//! #         xosc::{CrystalCurrent, Xosc},
 //! #         gclk::{Gclk, Gclk1Div},
 //! #         dpll::Dpll,
-//! #         pclk::Pclk
+//! #         pclk::Pclk,
+//! #         types::Trng,
 //! #     },
 //! #     gpio::Pins,
 //! #     pac::Peripherals,
 //! #     time::U32Ext,
 //! # };
+//!
 //! let mut pac = Peripherals::take().unwrap();
-//! let (gclk0, dfll, osculp32k, tokens) = retrieve_clocks(
+//! let (mut buses, clocks, tokens) = por_state(
 //!     pac.OSCCTRL,
 //!     pac.OSC32KCTRL,
 //!     pac.GCLK,
@@ -43,20 +45,28 @@
 //!
 //! // Asynchronous clocking domain
 //! // Xosc0 (8 MHz) set up using pins PA14 and PA15
-//! let xosc0 = Xosc::from_crystal(tokens.xosc0, pins.pa14, pins.pa15, 8.mhz()).enable();
+//! let xosc0 = Xosc::from_crystal(
+//!     tokens.xosc0,
+//!     pins.pa14,
+//!     pins.pa15,
+//!     8.mhz(),
+//!     CrystalCurrent::Low
+//! ).enable();
 //!
 //! // Dfll (48 MHz) -> Gclk1 (48 MHz / 24) -> 2 MHz
-//! let (gclk1, dfll) = Gclk::new(tokens.gclks.gclk1, dfll);
+//! let (gclk1, dfll) = Gclk::new(tokens.gclks.gclk1, clocks.dfll);
 //! let _gclk1 = gclk1.div(Gclk1Div::Div(24)).enable();
 //!
 //! // Xosc based Dpll OutFreq: InFreq * (int + frac / 32) / (2 * (1 + predivider))
 //! // Xosc (8 MHz) -> Dpll0 (8 MHz * (50 + 0 / 32) / (2 * (1 + 1)) -> 100 MHz
-//! let (dpll0, _xosc0) = Dpll::from_xosc(tokens.dpll0, xosc0, 1);
-//! let dpll0 = dpll0.set_loop_div(50, 0).enable();
+//! let (dpll0, _xosc0) = Dpll::from_xosc0(tokens.dpll0, xosc0, 1);
+//! let dpll0 = dpll0.set_loop_div(50, 0)
+//!     .enable()
+//!     .unwrap_or_else(|_| panic!("Dpll did not pass assertion checks!"));
 //!
 //! // Swap Dfll (48 MHz) for Dpll0 (100 MHz) in Gclk0
 //! // Gclk0 drives MCLK and CPU, it can be neither disabled nor deconstructed
-//! let (gclk0, _dfll, _dpll0) = gclk0.swap(dfll, dpll0);
+//! let (gclk0, _dfll, _dpll0) = clocks.gclk0.swap(dfll, dpll0);
 //!
 //! //// Output Gclk0 on a pin PB14
 //! let (_gclk_out0, gclk0) =
@@ -67,14 +77,14 @@
 //!
 //! // Clocking API V1 compatibility layer:
 //! // Access to pac::MCLK
-//! let (_, _, _, mclk) = unsafe { tokens.pac.steal() };
+//! let (_, _, _, mclk) = unsafe { clocks.pac.steal() };
 //! // v2's Pclks are convertible to v1's CoreClocks
 //! let sercom0_core_clock: v1::Sercom0CoreClock = sercom0_pclk.into();
 //!
 //! // Synchronous clocking domain (v1's MCLK)
 //! // Synchronous clocks are also expressed by typestates
 //! let trng_apb: ApbToken<Trng> = tokens.apbs.trng;
-//! let trng_apb: ApbClk<Trng> = trng_apb.enable();
+//! let trng_apb: ApbClk<Trng> = buses.apb.enable(trng_apb);
 //! ```
 //!
 //! More information on technicalities regarding implementation and principles

@@ -389,9 +389,28 @@ impl Xosc1k {
     ///
     /// This clock is derived from the [`Enabled`] [`XoscBase`] clock.
     ///
-    /// ```
-    /// let token = tokens.xosc32k.base
-    /// let base = XoscBase::from_clock(token, pins.pa00).enable();
+    /// ```no_run
+    /// # use atsamd_hal::{
+    /// #     pac::Peripherals,
+    /// #     clock::v2::{
+    /// #         por_state,
+    /// #         xosc32k::{XoscBase, Xosc1k},
+    /// #     },
+    /// #     gpio::Pins,
+    /// # };
+    /// # let mut pac = Peripherals::take().unwrap();
+    /// # let (mut buses, clocks, tokens) = por_state(
+    /// #     pac.OSCCTRL,
+    /// #     pac.OSC32KCTRL,
+    /// #     pac.GCLK,
+    /// #     pac.MCLK,
+    /// #     &mut pac.NVMCTRL,
+    /// # );
+    /// # let pins = Pins::new(pac.PORT);
+    /// let base = XoscBase::from_clock(
+    ///     tokens.xosc32k.base,
+    ///     pins.pa00
+    /// ).enable();
     /// let (xosc1k, base) = Xosc1k::enable(tokens.xosc32k.xosc1k, base);
     /// ```
     #[inline]
@@ -449,10 +468,29 @@ impl Xosc32k {
     ///
     /// This clock is derived from the [`Enabled`] [`XoscBase`] clock.
     ///
-    /// ```
-    /// let token = tokens.xosc32k.base
-    /// let base = XoscBase::from_clock(token, pins.pa00).enable();
-    /// let (xosc32k, base) = Xosc1k::enable(tokens.xosc32k.xosc32k, base);
+    /// ```no_run
+    /// # use atsamd_hal::{
+    /// #     pac::Peripherals,
+    /// #     clock::v2::{
+    /// #         por_state,
+    /// #         xosc32k::{XoscBase, Xosc32k},
+    /// #     },
+    /// #     gpio::Pins,
+    /// # };
+    /// # let mut pac = Peripherals::take().unwrap();
+    /// # let (mut buses, clocks, tokens) = por_state(
+    /// #     pac.OSCCTRL,
+    /// #     pac.OSC32KCTRL,
+    /// #     pac.GCLK,
+    /// #     pac.MCLK,
+    /// #     &mut pac.NVMCTRL,
+    /// # );
+    /// # let pins = Pins::new(pac.PORT);
+    /// let base = XoscBase::from_clock(
+    ///     tokens.xosc32k.base,
+    ///     pins.pa00
+    /// ).enable();
+    /// let (xosc32k, base) = Xosc32k::enable(tokens.xosc32k.xosc32k, base);
     /// ```
     #[inline]
     pub fn enable<M, N>(

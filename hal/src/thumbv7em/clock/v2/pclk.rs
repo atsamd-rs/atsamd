@@ -95,7 +95,7 @@ impl<P: PclkId> PclkToken<P> {
 /// using a wildcard (`*`) without importing anything else, i.e.
 ///
 /// ```
-/// use pclk::ids::*;
+/// use atsamd_hal::clock::v2::pclk::ids::*;
 /// ```
 pub mod ids {
 
