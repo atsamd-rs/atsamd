@@ -1,9 +1,29 @@
 # Unreleased Changes
 
+# v0.15.1
+
+- Fix `sercom::uart` pad definitions to reject pads conflicting with XCK.
+- Add support for L-Variant of the SAMD21D
+
+# v0.15.0
+
+- Rework USB API
+- Remove deprecated modules ([#480](https://github.com/atsamd-rs/atsamd/pull/480)) :
+  - Remove `gpio::v1`, `sercom::v1` module, promote `gpio::v2` to `gpio` and `sercom::v2` to `sercom`.
+  - Remove deprecated `hal` in favour of `ehal`
+  - Remove deprecated `target_device` in favour of `pac`
+  - Remove deprecated `spi_common` module
+  - Remove deprecated `common` module
+  - Remove deprecated `samd51`, `same51`, `same53`, `same54` modules
+  - Remove deprecated `SpinTimer`
+  - Provide the necessary fixes to support those changes.
+- Cleanup most `clippy` lints
 - Update `seq_macro` and remove `replace_with` dependencies (#568)
 - Add a `bsp_peripherals!` macro and fix a bug in `bsp_pins!` (#515)
 - Updated to 2021 edition, updated dependencies, removed unused dependencies (#562)
 - updated HAL to be compatible with PAC updates due to svd2rust upgrade
+- Add an `sercom::v2::i2c` API
+- Modified traits to support the Grand Central M4 Express.
 
 # v0.14.0
 

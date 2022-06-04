@@ -1,11 +1,5 @@
 #![no_std]
 
-#[deprecated(
-    since = "0.13.0",
-    note = "`atsamd_hal::hal` is deprecated and will be removed in a future release. \
-    Use `atsamd_hal::ehal` instead"
-)]
-pub use embedded_hal as hal;
 pub use embedded_hal as ehal;
 
 pub use paste;
@@ -67,14 +61,6 @@ pub use atsame54n as pac;
 #[cfg(feature = "same54p")]
 pub use atsame54p as pac;
 
-#[deprecated(
-    since = "0.13.0",
-    note = "`atsamd_hal::target_device` is deprecated and will be removed in a future release. \
-    Use `atsamd_hal::pac` instead"
-)]
-#[cfg(not(feature = "library"))]
-pub use pac as target_device;
-
 #[cfg(feature = "use_rtt")]
 pub use jlink_rtt;
 
@@ -107,8 +93,6 @@ pub mod rtc;
 #[cfg(feature = "device")]
 pub mod sercom;
 pub mod sleeping_delay;
-#[cfg(feature = "device")]
-pub mod spi_common;
 pub mod time;
 pub mod timer_params;
 pub mod timer_traits;
@@ -134,103 +118,6 @@ pub use crate::thumbv6m::*;
 pub mod thumbv7em;
 #[cfg(feature = "min-samd51g")]
 pub use crate::thumbv7em::*;
-
-// This module maintains backwards compatibility for the v1 SERCOM pads API
-#[cfg(feature = "device")]
-pub mod pad {
-    pub use crate::sercom::v1::pads::PadPin;
-}
-
-// This module maintains backwards compatibility within this major release
-#[deprecated(
-    since = "0.13.0",
-    note = "The `common` module is deprecated and will be removed in a future
-    release. Directly use modules from atsamd_hal instead."
-)]
-#[macro_use]
-pub mod common {
-    #[cfg(feature = "device")]
-    pub use crate::delay;
-    #[cfg(feature = "device")]
-    pub use crate::gpio;
-    #[cfg(feature = "device")]
-    pub use crate::prelude;
-    #[cfg(feature = "device")]
-    pub use crate::rtc;
-    #[cfg(feature = "device")]
-    pub use crate::sercom;
-    pub use crate::sleeping_delay;
-    #[cfg(feature = "device")]
-    #[allow(deprecated)]
-    pub use crate::spi_common;
-    pub use crate::time;
-    pub use crate::timer_params;
-    pub use crate::timer_traits;
-
-    #[cfg(all(feature = "unproven", feature = "dma"))]
-    pub use crate::dmac;
-
-    #[cfg(any(feature = "samd11", feature = "samd21"))]
-    pub use crate::thumbv6m;
-    #[cfg(any(feature = "samd11", feature = "samd21"))]
-    pub use crate::thumbv6m::*;
-
-    #[cfg(feature = "min-samd51g")]
-    pub use crate::thumbv7em;
-    #[cfg(feature = "min-samd51g")]
-    pub use crate::thumbv7em::*;
-
-    #[cfg(feature = "device")]
-    pub use crate::pad;
-}
-
-// The following modules are included purely for backward compatibility reasons.
-// Whenever major breaking changes are made to the HAL next, these modules
-// should be removed.
-
-#[cfg(feature = "samd51")]
-#[deprecated(
-    since = "0.13.0",
-    note = "The `samd51` module is deprecated and will be removed in a future
-    release."
-)]
-pub mod samd51 {
-    #[cfg(feature = "unproven")]
-    pub use crate::pwm;
-}
-
-#[deprecated(
-    since = "0.13.0",
-    note = "The `same51` module is deprecated and will be removed in a future
-    release."
-)]
-#[cfg(feature = "same51")]
-pub mod same51 {
-    #[cfg(feature = "unproven")]
-    pub use crate::pwm;
-}
-
-#[deprecated(
-    since = "0.13.0",
-    note = "The `same53` module is deprecated and will be removed in a future
-    release."
-)]
-#[cfg(feature = "same53")]
-pub mod same53 {
-    #[cfg(feature = "unproven")]
-    pub use crate::pwm;
-}
-
-#[deprecated(
-    since = "0.13.0",
-    note = "The `same54` module is deprecated and will be removed in a future
-    release."
-)]
-#[cfg(feature = "same54")]
-pub mod same54 {
-    #[cfg(feature = "unproven")]
-    pub use crate::pwm;
-}
 
 #[macro_use]
 mod bsp_peripherals_macro;

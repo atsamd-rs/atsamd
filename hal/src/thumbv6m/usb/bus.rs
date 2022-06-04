@@ -8,7 +8,7 @@
 use super::Descriptors;
 use crate::calibration::{usb_transn_cal, usb_transp_cal, usb_trim_cal};
 use crate::clock;
-use crate::gpio::v2::{AlternateG, AnyPin, Pin, PA24, PA25};
+use crate::gpio::{AlternateG, AnyPin, Pin, PA24, PA25};
 use crate::pac;
 use crate::pac::usb::DEVICE;
 use crate::pac::{PM, USB};
@@ -394,13 +394,6 @@ impl<'a> Bank<'a, OutBank> {
             .write(|w| w.trcpt0().set_bit().trfail0().set_bit());
     }
 
-    /// Checks if data has been received. Returns true for failed transfers
-    /// as well as successful transfers.
-    #[inline]
-    fn is_transfer_complete(&self) -> bool {
-        self.epintflag(self.index()).read().trcpt0().bit()
-    }
-
     /// Returns true if a Received Setup interrupt has occurred.
     /// This indicates that the read buffer holds a SETUP packet.
     #[inline]
@@ -586,7 +579,6 @@ impl UsbBus {
         dp_pad: impl AnyPin<Id = PA25>,
         _usb: USB,
     ) -> Self {
-        dbgprint!("******** UsbBus::new\n");
         pm.apbbmask.modify(|_, w| w.usb_().set_bit());
 
         let desc = RefCell::new(Descriptors::new());
@@ -607,17 +599,11 @@ impl UsbBus {
 
 impl Inner {
     fn usb(&self) -> &DEVICE {
-        unsafe { &(*USB::ptr()).device() }
+        unsafe { (*USB::ptr()).device() }
     }
 
     fn set_stall<EP: Into<EndpointAddress>>(&self, ep: EP, stall: bool) {
         let ep = ep.into();
-        dbgprint!(
-            "UsbBus::stall={} for {:?} {}\n",
-            stall,
-            ep.direction(),
-            ep.index()
-        );
         if ep.is_out() {
             if let Ok(mut bank) = self.bank0(ep) {
                 bank.set_stall(stall);
@@ -625,47 +611,6 @@ impl Inner {
         } else if let Ok(mut bank) = self.bank1(ep) {
             bank.set_stall(stall);
         }
-    }
-
-    #[allow(unused_variables)]
-    fn print_epstatus(&self, ep: usize, label: &str) {
-        let status = self.epstatus(ep).read();
-        let epint = self.epintflag(ep).read();
-        let intflag = self.usb().intflag.read();
-
-        #[allow(unused_mut)]
-        let mut desc = self.desc.borrow_mut();
-
-        dbgprint!("ep{} status {}:\n    bk1rdy={} stallrq1={} stall1={} trcpt1={} trfail1={} byte_count1={} multi_packet_size1={}\n    bk0rdy={} stallrq0={} stall0={} trcpt0={} trfail0={} byte_count0={} multi_packet_size0={}\n    curbk={} dtglin={} dtglout={} rxstp={}   lpmsusp={} lpmnyet={} ramacer={} uprsm={} eorsm={} wakeup={} eorst={} sof={} suspend={}\n",
-                ep, label,
-                status.bk1rdy().bit() as u8,
-                status.stallrq1().bit() as u8,
-                epint.stall1().bit() as u8,
-                epint.trcpt1().bit() as u8,
-                epint.trfail1().bit() as u8,
-                desc.bank(ep, 1).get_byte_count(),
-                desc.bank(ep, 1).get_multi_packet_size(),
-                status.bk0rdy().bit() as u8,
-                status.stallrq0().bit() as u8,
-                epint.stall0().bit() as u8,
-                epint.trcpt0().bit() as u8,
-                epint.trfail0().bit() as u8,
-                desc.bank(ep, 0).get_byte_count(),
-                desc.bank(ep, 0).get_multi_packet_size(),
-                status.curbk().bit() as u8,
-                status.dtglin().bit() as u8,
-                status.dtglout().bit() as u8,
-                epint.rxstp().bit() as u8,
-                intflag.lpmsusp().bit() as u8,
-                intflag.lpmnyet().bit() as u8,
-                intflag.ramacer().bit() as u8,
-                intflag.uprsm().bit() as u8,
-                intflag.eorsm().bit() as u8,
-                intflag.wakeup().bit() as u8,
-                intflag.eorst().bit() as u8,
-                intflag.sof().bit() as u8,
-                intflag.suspend().bit() as u8,
-                  );
     }
 }
 
@@ -679,7 +624,6 @@ enum FlushConfigMode {
 
 impl Inner {
     fn enable(&mut self) {
-        dbgprint!("UsbBus::enable\n");
         let usb = self.usb();
         usb.ctrla.modify(|_, w| w.swrst().set_bit());
         while usb.syncbusy.read().swrst().bit_is_set() {}
@@ -795,16 +739,12 @@ impl Inner {
     /// protocol_reset is called by the USB HAL when it detects the host has
     /// performed a USB reset.
     fn protocol_reset(&self) {
-        dbgprint!("UsbBus::reset\n");
         self.flush_eps(FlushConfigMode::ProtocolReset);
     }
 
-    fn suspend(&self) {
-        dbgprint!("UsbBus::suspend\n");
-    }
-    fn resume(&self) {
-        dbgprint!("UsbBus::resume\n");
-    }
+    fn suspend(&self) {}
+
+    fn resume(&self) {}
 
     fn alloc_ep(
         &mut self,
@@ -831,15 +771,6 @@ impl Inner {
 
         let buffer = self.buffers.borrow_mut().allocate_buffer(allocated_size)?;
 
-        dbgprint!(
-            "UsbBus::alloc_ep dir={:?} addr={:?} type={:?} max_packet_size={} interval={}\n",
-            dir,
-            addr,
-            ep_type,
-            max_packet_size,
-            interval
-        );
-
         let mut endpoints = self.endpoints.borrow_mut();
 
         let idx = match addr {
@@ -857,13 +788,10 @@ impl Inner {
             buffer,
         )?;
 
-        dbgprint!("alloc_ep -> {:?}\n", addr);
-
         Ok(addr)
     }
 
     fn set_device_address(&self, addr: u8) {
-        dbgprint!("UsbBus::set_device_address addr={}\n", addr);
         self.usb()
             .dadd
             .write(|w| unsafe { w.dadd().bits(addr).adden().set_bit() });
@@ -882,71 +810,75 @@ impl Inner {
         if intflags.eorst().bit() {
             // end of reset interrupt
             self.usb().intflag.write(|w| w.eorst().set_bit());
-            dbgprint!("PollResult::Reset\n");
             return PollResult::Reset;
         }
         // As the suspend & wakup interrupts/states cannot distinguish between
         // unconnected & unsuspended, we do not handle them to avoid spurious
         // transitions.
 
-        let intbits = self.usb().epintsmry.read().bits();
-        if intbits == 0 {
-            return PollResult::None;
-        }
-
         let mut ep_out = 0;
         let mut ep_in_complete = 0;
         let mut ep_setup = 0;
 
+        let intbits = self.usb().epintsmry.read().bits();
+
         for ep in 0..8u16 {
             let mask = 1 << ep;
-            if (intbits & mask) == 0 {
-                continue;
-            }
 
             let idx = ep as usize;
 
-            let bank1 = self
-                .bank1(EndpointAddress::from_parts(idx, UsbDirection::In))
-                .unwrap();
-            if bank1.is_transfer_complete() {
-                bank1.clear_transfer_complete();
-                dbgprint!("ep {} WRITE DONE\n", ep);
-                ep_in_complete |= mask;
-                // Continuing (and hence not setting masks to indicate complete
-                // OUT transfers) is necessary for operation to proceed beyond
-                // the device-address + descriptor stage. The authors suspect a
-                // deadlock caused by waiting on a write when handling a read
-                // somewhere in an underlying class or control crate, but we
-                // can't be sure. Either way, if a write has finished, we only
-                // set the flag for a completed write on that endpoint index.
-                // Future polls will handle the reads.
-                continue;
-            }
-            drop(bank1);
-
-            let bank0 = self
-                .bank0(EndpointAddress::from_parts(idx, UsbDirection::Out))
-                .unwrap();
-            if bank0.received_setup_interrupt() {
-                dbgprint!("ep {} GOT SETUP\n", ep);
-                ep_setup |= mask;
-                // usb-device crate:
-                //  "This event should continue to be reported until the packet
-                // is read." So we don't clear the flag here,
-                // instead it is cleared in the read handler.
+            if (intbits & mask) != 0 {
+                if let Ok(bank1) = self.bank1(EndpointAddress::from_parts(idx, UsbDirection::In)) {
+                    if bank1.is_transfer_complete() {
+                        bank1.clear_transfer_complete();
+                        ep_in_complete |= mask;
+                    }
+                }
             }
 
-            if bank0.is_transfer_complete() {
-                dbgprint!("ep {} READABLE\n", ep);
-                ep_out |= mask;
+            // Can't test intbits, because bk0rdy doesn't interrupt
+            if let Ok(bank0) = self.bank0(EndpointAddress::from_parts(idx, UsbDirection::Out)) {
+                if bank0.received_setup_interrupt() {
+                    ep_setup |= mask;
+
+                    // The RXSTP interrupt is not cleared here, because doing so
+                    // would allow the USB hardware to overwrite the received
+                    // data, potentially before it is `read()` - see SAMD21
+                    // datasheet "32.6.2.6 Management of SETUP Transactions".
+                    // Setup events are only relevant for control endpoints, and
+                    // in typical USB devices, endpoint 0 is the only control
+                    // endpoint. The usb-device `poll()` method, which calls
+                    // this `poll()`, will immediately `read()` endpoint 0 when
+                    // its setup bit is set.
+                }
+
+                // Clear the transfer complete and transfer failed interrupt flags
+                // so that execution leaves the USB interrupt until the host makes
+                // another transaction.  The transfer failed flag may have been set
+                // if an OUT transaction wasn't read() from the endpoint by the
+                // Class; the hardware will have NAKed (unless the endpoint is
+                // isochronous) and the host may retry.
+                bank0.clear_transfer_complete();
+
+                // Use the bk0rdy flag via is_ready() to indicate that data has been
+                // received successfully, rather than the interrupting trcpt0 via
+                // is_transfer_ready(), because data may have been received on an
+                // earlier poll() which cleared trcpt0.  bk0rdy is cleared in the
+                // endpoint read().
+                if bank0.is_ready() {
+                    ep_out |= mask;
+                }
             }
         }
 
-        PollResult::Data {
-            ep_out,
-            ep_in_complete,
-            ep_setup,
+        if ep_out == 0 && ep_in_complete == 0 && ep_setup == 0 {
+            PollResult::None
+        } else {
+            PollResult::Data {
+                ep_out,
+                ep_in_complete,
+                ep_setup,
+            }
         }
     }
 
@@ -955,13 +887,6 @@ impl Inner {
 
         if bank.is_ready() {
             // Waiting for the host to pick up the existing data
-            dbgprint!(
-                "UsbBus::write {} bytes {:?} to ep {:?} -> BUSY trcpt1={}\n",
-                buf.len(),
-                buf,
-                ep,
-                bank.is_transfer_complete()
-            );
             return Err(UsbError::WouldBlock);
         }
 
@@ -969,14 +894,6 @@ impl Inner {
 
         bank.clear_transfer_complete();
         bank.set_ready(true); // ready to be sent
-
-        dbgprint!(
-            "UsbBus::write {} bytes {:?} to ep {:?} -> {:?}\n",
-            buf.len(),
-            buf,
-            ep,
-            size
-        );
 
         size
     }
@@ -992,30 +909,10 @@ impl Inner {
                 bank.clear_received_setup_interrupt();
             }
 
-            // self.print_epstatus(idx, "read");
-
             bank.clear_transfer_complete();
             bank.set_ready(false);
 
-            drop(bank);
-
-            match size {
-                Ok(size) => {
-                    //dbgprint!("UsbBus::read {} bytes ok", size);
-                    dbgprint!(
-                        "UsbBus::read {} bytes from ep {:?} -> {:?}\n",
-                        size,
-                        ep,
-                        &buf[..size as usize]
-                    );
-                    Ok(size)
-                }
-                Err(err) => {
-                    dbgprint!("UsbBus::read from ep {:?} -> {:?}\n", ep, err);
-                    self.print_epstatus(ep.index(), "after read");
-                    Err(err)
-                }
-            }
+            size
         } else {
             Err(UsbError::WouldBlock)
         }

@@ -1,5 +1,5 @@
 use crate::{
-    gpio::v2::{AlternateH, AnyPin, Pin, PA08, PA09, PA10, PA11, PB10, PB11},
+    gpio::{AlternateH, AnyPin, Pin, PA08, PA09, PA10, PA11, PB10, PB11},
     pac::qspi::instrframe,
     pac::{MCLK, QSPI},
 };
@@ -30,6 +30,7 @@ pub struct Qspi<MODE> {
 impl Qspi<OneShot> {
     /// Enable the clocks for the qspi peripheral in single data rate mode
     /// assuming 120mhz system clock, for 4mhz spi mode 0 operation.
+    #[allow(clippy::too_many_arguments)]
     pub fn new(
         mclk: &mut MCLK,
         qspi: QSPI,

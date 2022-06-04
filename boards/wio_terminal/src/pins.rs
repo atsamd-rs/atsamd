@@ -6,7 +6,7 @@ use super::sound::{Buzzer, Microphone};
 use super::storage::{QSPIFlash, SDCard};
 use super::wifi::WifiPins;
 
-/// [`Pin`](atsamd_hal::gpio::v2::Pin) aliases defined by the
+/// [`Pin`](atsamd_hal::gpio::Pin) aliases defined by the
 /// [`bsp_pins!`](atsamd_hal::bsp_pins) macro
 pub mod aliases {
     atsamd_hal::bsp_pins!(

@@ -248,8 +248,8 @@
 //! ```
 //! [RTIC]: https://rtic.rs
 
-// This is necessary until modular_bitfield fixes all their unused brace warnings
-#![allow(unused_braces)]
+// This is necessary until modular_bitfield fixes all their identity_op warnings
+#![allow(clippy::identity_op)]
 
 use modular_bitfield::prelude::*;
 

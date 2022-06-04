@@ -1,5 +1,6 @@
 #![no_std]
 #![no_main]
+#![allow(clippy::bool_comparison)]
 
 use bsp::ehal;
 use bsp::hal;
@@ -49,9 +50,9 @@ fn main() -> ! {
     };
 
     unsafe {
-        USB_SERIAL = Some(SerialPort::new(&bus_allocator));
+        USB_SERIAL = Some(SerialPort::new(bus_allocator));
         USB_BUS = Some(
-            UsbDeviceBuilder::new(&bus_allocator, UsbVidPid(0x16c0, 0x27dd))
+            UsbDeviceBuilder::new(bus_allocator, UsbVidPid(0x16c0, 0x27dd))
                 .manufacturer("Fake company")
                 .product("Serial port")
                 .serial_number("TEST")
@@ -98,27 +99,25 @@ fn main() -> ! {
                     false
                 }
             };
-            let is_signature_valid = match pukcc.zp_ecdsa_verify_signature::<curves::Nist256p>(
-                &generated_signature,
-                &HASH,
-                &ecdsa::PUBLIC_KEY,
-            ) {
-                Ok(_) => true,
-                Err(_) => false,
-            };
-
-            // Break signature
-            generated_signature[14] = generated_signature[14].wrapping_sub(1);
-
-            let is_broken_signature_invalid = match pukcc
+            let is_signature_valid = pukcc
                 .zp_ecdsa_verify_signature::<curves::Nist256p>(
                     &generated_signature,
                     &HASH,
                     &ecdsa::PUBLIC_KEY,
-                ) {
-                Err(_) => true,
-                Ok(_) => false,
-            };
+                )
+                .is_ok();
+
+            // Break signature
+            generated_signature[14] = generated_signature[14].wrapping_sub(1);
+
+            let is_broken_signature_invalid = pukcc
+                .zp_ecdsa_verify_signature::<curves::Nist256p>(
+                    &generated_signature,
+                    &HASH,
+                    &ecdsa::PUBLIC_KEY,
+                )
+                .is_err();
+
             serial_writeln!(
                 "{:>2}: {:<5} | {:<5} | {:<5}",
                 i,
@@ -158,7 +157,7 @@ fn main() -> ! {
             };
             let is_signature_valid = match pukcc.modular_exponentiation(
                 reference_signature,
-                &exp_mod::PUBLIC_EXPONENT,
+                exp_mod::PUBLIC_EXPONENT,
                 modulus,
                 ExpModMode::Regular,
                 ExpModWindowSize::One,
@@ -186,7 +185,7 @@ fn main() -> ! {
                 broken_reference_signature[broken_reference_signature.len() - 1].wrapping_sub(1);
             let is_broken_signature_invalid = match pukcc.modular_exponentiation(
                 &broken_reference_signature[broken_reference_signature.len() - modulus.len()..],
-                &exp_mod::PUBLIC_EXPONENT,
+                exp_mod::PUBLIC_EXPONENT,
                 modulus,
                 ExpModMode::Regular,
                 ExpModWindowSize::One,
@@ -242,8 +241,8 @@ where
     T: Fn(&mut SerialPort<UsbBus>) -> R,
 {
     usb_free(|_| unsafe {
-        let mut usb_serial = USB_SERIAL.as_mut().expect("UsbSerial not initialized");
-        borrower(&mut usb_serial)
+        let usb_serial = USB_SERIAL.as_mut().expect("UsbSerial not initialized");
+        borrower(usb_serial)
     })
 }
 
@@ -299,8 +298,8 @@ macro_rules! serial_writeln {
 
 fn poll_usb() {
     unsafe {
-        USB_BUS.as_mut().map(|usb_dev| {
-            USB_SERIAL.as_mut().map(|serial| {
+        if let Some(usb_dev) = USB_BUS.as_mut() {
+            if let Some(serial) = USB_SERIAL.as_mut() {
                 usb_dev.poll(&mut [serial]);
                 let mut buf = [0u8; 64];
 
@@ -309,11 +308,11 @@ fn poll_usb() {
                         if i >= count {
                             break;
                         }
-                        serial.write(&[c.clone()]).unwrap();
+                        serial.write(&[*c]).unwrap();
                     }
                 };
-            });
-        });
+            };
+        };
     };
 }
 
@@ -341,7 +340,7 @@ mod exp_mod {
     pub const PUBLIC_EXPONENT: &[u8] = &[0x01, 0x00, 0x01];
 
     /// Vector of tuples of (modulus, private_exponent, expected_signature)
-    pub const RSA_VECTOR: [(&'static [u8], &'static [u8], &'static [u8]); 8] = [
+    pub const RSA_VECTOR: [(&[u8], &[u8], &[u8]); 8] = [
         // RSA512
         (
             &[

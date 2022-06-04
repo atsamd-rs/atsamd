@@ -67,9 +67,9 @@ fn main() -> ! {
         USB_ALLOCATOR.as_ref().unwrap()
     };
     unsafe {
-        USB_SERIAL = Some(SerialPort::new(&bus_allocator));
+        USB_SERIAL = Some(SerialPort::new(bus_allocator));
         USB_BUS = Some(
-            UsbDeviceBuilder::new(&bus_allocator, UsbVidPid(0x16c0, 0x27dd))
+            UsbDeviceBuilder::new(bus_allocator, UsbVidPid(0x16c0, 0x27dd))
                 .manufacturer("Fake company")
                 .product("Serial port")
                 .serial_number("TEST")
@@ -109,16 +109,16 @@ static mut RTC: Option<rtc::Rtc<rtc::ClockMode>> = None;
 
 fn write_serial(bytes: &[u8]) {
     unsafe {
-        USB_SERIAL.as_mut().map(|serial| {
+        if let Some(serial) = USB_SERIAL.as_mut() {
             serial.write(bytes).unwrap();
-        });
+        };
     }
 }
 
 fn poll_usb() {
     unsafe {
-        USB_BUS.as_mut().map(|usb_dev| {
-            USB_SERIAL.as_mut().map(|serial| {
+        if let Some(usb_dev) = USB_BUS.as_mut() {
+            if let Some(serial) = USB_SERIAL.as_mut() {
                 usb_dev.poll(&mut [serial]);
                 let mut buf = [0u8; 32];
 
@@ -133,7 +133,7 @@ fn poll_usb() {
                             Ok((remaining, time)) => {
                                 buffer = remaining;
                                 disable_interrupts(|_| {
-                                    RTC.as_mut().map(|rtc| {
+                                    if let Some(rtc) = RTC.as_mut() {
                                         rtc.set_time(rtc::Datetime {
                                             seconds: time.second as u8,
                                             minutes: time.minute as u8,
@@ -142,15 +142,15 @@ fn poll_usb() {
                                             month: 0,
                                             year: 0,
                                         });
-                                    });
+                                    };
                                 });
                             }
                             _ => break,
                         };
                     }
                 };
-            });
-        });
+            };
+        };
     };
 }
 

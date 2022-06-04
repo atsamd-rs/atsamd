@@ -9,7 +9,7 @@ use panic_halt as _;
 #[cfg(feature = "use_semihosting")]
 use panic_semihosting as _;
 
-use bsp::entry;
+use bsp::{entry, periph_alias, pin_alias};
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
 use hal::pac::gclk::genctrl::SRC_A;
@@ -32,16 +32,18 @@ fn main() -> ! {
     clocks.configure_gclk_divider_and_source(GEN_A::GCLK2, 1, SRC_A::DFLL, false);
 
     let pins = bsp::Pins::new(peripherals.PORT);
+    let uart_rx = pin_alias!(pins.uart_rx);
+    let uart_tx = pin_alias!(pins.uart_tx);
     let mut delay = Delay::new(core.SYST, &mut clocks);
+    let uart_sercom = periph_alias!(peripherals.uart_sercom);
 
-    let (tx, rx) = (pins.d1, pins.d0);
     let mut uart = bsp::uart(
         &mut clocks,
         Hertz(19200),
-        peripherals.SERCOM5,
+        uart_sercom,
         &mut peripherals.MCLK,
-        rx,
-        tx,
+        uart_rx,
+        uart_tx,
     );
 
     loop {

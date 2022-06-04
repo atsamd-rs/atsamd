@@ -10,7 +10,7 @@ use panic_halt as _;
 #[cfg(feature = "use_semihosting")]
 use panic_semihosting as _;
 
-use bsp::entry;
+use bsp::{entry, periph_alias, pin_alias};
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
 use hal::pac::{CorePeripherals, Peripherals};
@@ -29,16 +29,18 @@ fn main() -> ! {
     );
 
     let pins = bsp::Pins::new(peripherals.PORT);
-    let (rx_pin, tx_pin) = (pins.d0, pins.d1);
+    let uart_rx = pin_alias!(pins.uart_rx);
+    let uart_tx = pin_alias!(pins.uart_tx);
     let mut delay = Delay::new(core.SYST, &mut clocks);
+    let uart_sercom = periph_alias!(peripherals.uart_sercom);
 
     let mut uart = bsp::uart(
         &mut clocks,
         9600.hz(),
-        peripherals.SERCOM3,
+        uart_sercom,
         &mut peripherals.MCLK,
-        rx_pin,
-        tx_pin,
+        uart_rx,
+        uart_tx,
     );
 
     loop {

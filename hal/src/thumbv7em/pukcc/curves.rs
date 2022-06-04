@@ -109,61 +109,61 @@ pub trait Curve {
     /// That is:
     /// - lengths of slices are following the requirements
     /// - slices are 4 aligned
-    fn verify_curve() -> Result<(), CurveVerficationFailure> {
+    fn verify_curve() -> Result<(), CurveVerificationFailure> {
         if Self::MOD_LENGTH % 4 != 0 || Self::SCALAR_LENGTH % 4 != 0 {
-            return Err(CurveVerficationFailure::LengthsAreNotAlignedTo4);
+            return Err(CurveVerificationFailure::LengthsAreNotAlignedTo4);
         }
         if Self::MODULO_P.len() != (Self::MOD_LENGTH + 4).into() {
-            return Err(CurveVerficationFailure::IncorrectSliceLength {
+            return Err(CurveVerificationFailure::IncorrectSliceLength {
                 faulty_slice: "MODULO_P",
                 expected_length: (Self::MOD_LENGTH + 4).into(),
                 actual_length: Self::MODULO_P.len(),
             });
         }
         if Self::A_CURVE.len() != (Self::MOD_LENGTH + 4).into() {
-            return Err(CurveVerficationFailure::IncorrectSliceLength {
+            return Err(CurveVerificationFailure::IncorrectSliceLength {
                 faulty_slice: "A_CURVE",
                 expected_length: (Self::MOD_LENGTH + 4).into(),
                 actual_length: Self::A_CURVE.len(),
             });
         }
         if Self::B_CURVE.len() != (Self::MOD_LENGTH + 4).into() {
-            return Err(CurveVerficationFailure::IncorrectSliceLength {
+            return Err(CurveVerificationFailure::IncorrectSliceLength {
                 faulty_slice: "B_CURVE",
                 expected_length: (Self::MOD_LENGTH + 4).into(),
                 actual_length: Self::B_CURVE.len(),
             });
         }
         if Self::BASE_POINT_A_X.len() != (Self::MOD_LENGTH + 4).into() {
-            return Err(CurveVerficationFailure::IncorrectSliceLength {
+            return Err(CurveVerificationFailure::IncorrectSliceLength {
                 faulty_slice: "BASE_POINT_A_X",
                 expected_length: (Self::MOD_LENGTH + 4).into(),
                 actual_length: Self::BASE_POINT_A_X.len(),
             });
         }
         if Self::BASE_POINT_A_Y.len() != (Self::MOD_LENGTH + 4).into() {
-            return Err(CurveVerficationFailure::IncorrectSliceLength {
+            return Err(CurveVerificationFailure::IncorrectSliceLength {
                 faulty_slice: "BASE_POINT_A_Y",
                 expected_length: (Self::MOD_LENGTH + 4).into(),
                 actual_length: Self::BASE_POINT_A_Y.len(),
             });
         }
         if Self::BASE_POINT_A_Z.len() != (Self::MOD_LENGTH + 4).into() {
-            return Err(CurveVerficationFailure::IncorrectSliceLength {
+            return Err(CurveVerificationFailure::IncorrectSliceLength {
                 faulty_slice: "BASE_POINT_A_Z",
                 expected_length: (Self::MOD_LENGTH + 4).into(),
                 actual_length: Self::BASE_POINT_A_Z.len(),
             });
         }
         if Self::ORDER_POINT.len() != (Self::SCALAR_LENGTH + 4).into() {
-            return Err(CurveVerficationFailure::IncorrectSliceLength {
+            return Err(CurveVerificationFailure::IncorrectSliceLength {
                 faulty_slice: "ORDER_POINT",
                 expected_length: (Self::SCALAR_LENGTH + 4).into(),
                 actual_length: Self::ORDER_POINT.len(),
             });
         }
         if Self::CNS.len() != (Self::SCALAR_LENGTH + 12).into() {
-            return Err(CurveVerficationFailure::IncorrectSliceLength {
+            return Err(CurveVerificationFailure::IncorrectSliceLength {
                 faulty_slice: "CNS",
                 expected_length: (Self::SCALAR_LENGTH + 12).into(),
                 actual_length: Self::CNS.len(),
@@ -177,7 +177,7 @@ pub trait Curve {
 /// [`Curve::verify_curve`] function
 #[allow(missing_docs)]
 #[derive(Debug)]
-pub enum CurveVerficationFailure {
+pub enum CurveVerificationFailure {
     IncorrectSliceLength {
         faulty_slice: &'static str,
         expected_length: usize,

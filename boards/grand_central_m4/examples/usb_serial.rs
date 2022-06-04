@@ -27,12 +27,14 @@ use cortex_m::interrupt::free as disable_interrupts;
 use cortex_m::peripheral::NVIC;
 use hal::clock::GenericClockController;
 use hal::pac::{interrupt, CorePeripherals, Peripherals};
-use hal::timer::SpinTimer;
+use hal::prelude::*;
+use hal::timer::TimerCounter;
 use hal::usb::UsbBus;
 use smart_leds::{colors, hsv::RGB8, SmartLedsWrite};
 use usb_device::bus::UsbBusAllocator;
 use usb_device::prelude::*;
 use usbd_serial::{SerialPort, USB_CLASS_CDC};
+use ws2812_timer_delay as ws2812;
 
 #[entry]
 fn main() -> ! {
@@ -45,18 +47,24 @@ fn main() -> ! {
         &mut peripherals.OSCCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = bsp::Pins::new(peripherals.PORT).split();
+    let gclk0 = clocks.gclk0();
+    let tc2_3 = clocks.tc2_tc3(&gclk0).unwrap();
+    let mut timer = TimerCounter::tc3_(&tc2_3, peripherals.TC3, &mut peripherals.MCLK);
+    timer.start(3.mhz());
 
-    let timer = SpinTimer::new(4);
-    let mut neopixel = pins.neopixel.init(timer, &mut pins.port);
-
+    let pins = bsp::Pins::new(peripherals.PORT);
+    let neopixel_pin = pins.neopixel.into_push_pull_output();
+    let mut neopixel = ws2812::Ws2812::new(timer, neopixel_pin);
     let _ = neopixel.write((0..5).map(|_| RGB8::default()));
 
     let bus_allocator = unsafe {
-        USB_ALLOCATOR = Some(
-            pins.usb
-                .init(peripherals.USB, &mut clocks, &mut peripherals.MCLK),
-        );
+        USB_ALLOCATOR = Some(bsp::usb_allocator(
+            peripherals.USB,
+            &mut clocks,
+            &mut peripherals.MCLK,
+            pins.usb_dm,
+            pins.usb_dp,
+        ));
         USB_ALLOCATOR.as_ref().unwrap()
     };
 

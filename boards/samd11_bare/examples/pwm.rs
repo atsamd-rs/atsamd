@@ -13,7 +13,7 @@ use bsp::{hal, pac};
 use bsp::entry;
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
-use hal::gpio::v2::*;
+use hal::gpio::*;
 use hal::prelude::*;
 use hal::pwm::{Channel, Pwm0};
 use pac::{CorePeripherals, Peripherals};
