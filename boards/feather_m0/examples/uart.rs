@@ -1,4 +1,4 @@
-//! This example showcases the uart::v2 module.
+//! This example showcases the uart module.
 
 #![no_std]
 #![no_main]

@@ -39,7 +39,7 @@
 //! > use cortex_m::singleton;
 //! >
 //! > let hasharea: &'static mut HashArea =
-//! >     singleton!(: HashArea = HashArea::default()).unwrap();
+//! > singleton!(: HashArea = HashArea::default()).unwrap();
 //! > ```
 
 //!
@@ -471,6 +471,7 @@ bitfield::bitfield! {
     /// all the regions or via the `bitmask` argument
     /// narrow it down to the specific set of [`RegionNum`]
     /// of interest.
+    #[derive(Default)]
     pub struct Interrupt(u32);
     impl Debug;
     u8;
@@ -518,11 +519,6 @@ impl Interrupt {
     #[inline]
     pub fn get_rhc_int(&self) -> RegionHashCompleted {
         RegionHashCompleted::from_bits_truncate(self.get_rhc())
-    }
-}
-impl Default for Interrupt {
-    fn default() -> Self {
-        Interrupt(0)
     }
 }
 

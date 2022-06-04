@@ -1,6 +1,6 @@
 [package]
 name = "atsamd-hal"
-version = "0.14.0"
+version = "0.15.1"
 authors = [
     "Wez Furlong <wez@wezfurlong.org>",
     "Paul Sajna <sajattack@gmail.com>",
@@ -62,82 +62,82 @@ version = "1.0"
 # We use a feature named "samdFOO" to pull in the dependency named "atsamdFOO"
 [dependencies.atsamd11c]
 path = "../pac/atsamd11c"
-version = "0.11"
+version = "0.12"
 optional = true
 
 [dependencies.atsamd11d]
 path = "../pac/atsamd11d"
-version = "0.11"
+version = "0.12"
 optional = true
 
 [dependencies.atsamd21e]
 path = "../pac/atsamd21e"
-version = "0.11"
+version = "0.12"
 optional = true
 
 [dependencies.atsamd21g]
 path = "../pac/atsamd21g"
-version = "0.11"
+version = "0.12"
 optional = true
 
 [dependencies.atsamd21j]
 path = "../pac/atsamd21j"
-version = "0.11"
+version = "0.12"
 optional = true
 
 [dependencies.atsamd51g]
 path = "../pac/atsamd51g"
-version = "0.11"
+version = "0.12"
 optional = true
 
 [dependencies.atsamd51j]
 path = "../pac/atsamd51j"
-version = "0.11"
+version = "0.12"
 optional = true
 
 [dependencies.atsamd51n]
 path = "../pac/atsamd51n"
-version = "0.11"
+version = "0.12"
 optional = true
 
 [dependencies.atsamd51p]
 path = "../pac/atsamd51p"
-version = "0.11"
+version = "0.12"
 optional = true
 
 [dependencies.atsame51g]
 path = "../pac/atsame51g"
-version = "0.11"
+version = "0.12"
 optional = true
 
 [dependencies.atsame51j]
 path = "../pac/atsame51j"
-version = "0.11"
+version = "0.12"
 optional = true
 
 [dependencies.atsame51n]
 path = "../pac/atsame51n"
-version = "0.11"
+version = "0.12"
 optional = true
 
 [dependencies.atsame53j]
 path = "../pac/atsame53j"
-version = "0.11"
+version = "0.12"
 optional = true
 
 [dependencies.atsame53n]
 path = "../pac/atsame53n"
-version = "0.11"
+version = "0.12"
 optional = true
 
 [dependencies.atsame54n]
 path = "../pac/atsame54n"
-version = "0.11"
+version = "0.12"
 optional = true
 
 [dependencies.atsame54p]
 path = "../pac/atsame54p"
-version = "0.11"
+version = "0.12"
 optional = true
 
 [dependencies.embedded-sdmmc]
@@ -173,8 +173,12 @@ samd11d-rt = ["samd11d", "atsamd11d/rt"]
 samd21 = ["device"] # Convenience feature for shared configuration of samd21 chips.
 samd21e = ["atsamd21e", "samd21"]
 samd21e-rt = ["samd21e", "atsamd21e/rt"]
+samd21el = ["samd21e"]
+samd21el-rt = ["samd21e-rt", "samd21el"]
 samd21g = ["atsamd21g", "samd21", "min-samd21g"]
 samd21g-rt = ["samd21g", "atsamd21g/rt"]
+samd21gl = ["samd21g"]
+samd21gl-rt = ["samd21g-rt", "samd21gl"]
 samd21j = ["atsamd21j", "samd21", "min-samd21j"]
 samd21j-rt = ["samd21j", "atsamd21j/rt"]
 samd51 = ["device"] # Convenience feature for shared configuration of samd51 chips.

@@ -102,8 +102,8 @@ pub(super) trait Register<Id: ChId> {
         //
         // In practice, this means that the channel-specific registers should only be
         // accessed through the `with_chid` method.
-        let mut ch = &self.dmac().channel[Id::USIZE];
-        fun(&mut ch)
+        let ch = &self.dmac().channel[Id::USIZE];
+        fun(ch)
     }
 }
 

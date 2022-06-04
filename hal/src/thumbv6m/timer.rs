@@ -17,8 +17,6 @@ use crate::time::{Hertz, Nanoseconds};
 use crate::timer_traits::InterruptDrivenTimer;
 use void::Void;
 
-use cortex_m::asm::delay as cycle_delay;
-
 // Note:
 // TC3 + TC4 can be paired to make a 32-bit counter
 // TC5 + TC6 can be paired to make a 32-bit counter
@@ -186,40 +184,4 @@ tc! {
     TimerCounter3: (TC3, tc3_, Tcc2Tc3Clock),
     TimerCounter4: (TC4, tc4_, Tc4Tc5Clock),
     TimerCounter5: (TC5, tc5_, Tc4Tc5Clock),
-}
-
-#[deprecated(
-    since = "0.13.0",
-    note = "`SpinTimer` is deprecated, and will be removed in a subsequent release."
-)]
-#[derive(Clone, Copy)]
-pub struct SpinTimer {
-    cycles: u32,
-}
-
-#[allow(deprecated)]
-impl SpinTimer {
-    pub fn new(cycles: u32) -> SpinTimer {
-        SpinTimer { cycles }
-    }
-}
-
-#[allow(deprecated)]
-impl Periodic for SpinTimer {}
-
-#[allow(deprecated)]
-impl CountDown for SpinTimer {
-    type Time = u32;
-
-    fn start<T>(&mut self, cycles: T)
-    where
-        T: Into<Self::Time>,
-    {
-        self.cycles = cycles.into();
-    }
-
-    fn wait(&mut self) -> nb::Result<(), void::Void> {
-        cycle_delay(self.cycles);
-        Ok(())
-    }
 }

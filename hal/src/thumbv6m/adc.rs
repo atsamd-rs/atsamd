@@ -1,9 +1,7 @@
 //! Analogue-to-Digital Conversion
 use crate::clock::GenericClockController;
-#[allow(deprecated)]
-use crate::gpio::v1;
-use crate::gpio::v2::*;
-use crate::hal::adc::{Channel, OneShot};
+use crate::ehal::adc::{Channel, OneShot};
+use crate::gpio::*;
 use crate::pac::{adc, ADC, PM};
 
 /// Samples per reading
@@ -32,6 +30,7 @@ impl Adc<ADC> {
     /// * 1 sample
     /// * 1/2 gain
     /// * 1/2 VDDANA reference voltage
+    #[allow(clippy::self_named_constructors)]
     pub fn adc(adc: ADC, pm: &mut PM, clocks: &mut GenericClockController) -> Self {
         pm.apbcmask.modify(|_, w| w.adc_().set_bit());
 
@@ -178,20 +177,6 @@ macro_rules! adc_pins {
     }
 }
 
-/// Implement [`Channel`] for [`v1::Pin`]s based on the implementations for
-/// `v2` [`Pin`]s
-#[allow(deprecated)]
-impl<I> Channel<ADC> for v1::Pin<I, v1::PfB>
-where
-    I: PinId,
-    Pin<I, AlternateB>: Channel<ADC, ID = u8>,
-{
-    type ID = u8;
-    fn channel() -> u8 {
-        Pin::<I, AlternateB>::channel()
-    }
-}
-
 #[cfg(feature = "samd11")]
 adc_pins! {
     PA02: 0,
@@ -231,4 +216,20 @@ adc_pins! {
     PB05: 13,
     PB06: 14,
     PB07: 15
+}
+
+#[cfg(feature = "samd21el")]
+adc_pins! {
+    PB02: 10,
+    PB03: 11,
+    PB04: 12,
+    PB05: 13
+}
+
+#[cfg(feature = "samd21gl")]
+adc_pins! {
+    PB00: 8,
+    PB01: 9,
+    PB04: 12,
+    PB05: 13
 }

@@ -1,6 +1,6 @@
 use atsamd_hal::clock::GenericClockController;
 use atsamd_hal::pac::{self, MCLK, SERCOM2};
-use atsamd_hal::sercom::v2::{uart, IoSet2, Sercom2};
+use atsamd_hal::sercom::{uart, IoSet2, Sercom2};
 use atsamd_hal::time::Hertz;
 
 #[cfg(feature = "usb")]

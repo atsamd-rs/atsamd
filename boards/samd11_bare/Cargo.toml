@@ -1,6 +1,6 @@
 [package]
 name = "samd11_bare"
-version = "0.7.0"
+version = "0.8.1"
 authors = ["Jesse Braham <jesse@beta7.io>"]
 description = "Support crate for the ATSAMD11C"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
@@ -9,16 +9,21 @@ repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
 edition = "2018"
 
+# for cargo flash
+[package.metadata]
+chip = "ATSAMD11C14A"
+
 [dependencies.cortex-m-rt]
 version = "0.7"
 optional = true
 
 [dependencies.atsamd-hal]
 path = "../../hal"
-version = "0.14"
+version = "0.15.1"
 default-features = false
 
 [dev-dependencies]
+cortex-m = "0.7"
 panic-halt = "0.2"
 panic-semihosting = "0.5"
 panic-probe = "0.2.0"
@@ -34,9 +39,8 @@ use_semihosting = []
 [profile.release]
 debug = true
 
-# for cargo flash
-[package.metadata]
-chip = "ATSAMD11C14A"
+[profile.dev]
+opt-level = "s"
 
 [[example]]
 name = "adc"
@@ -54,3 +58,7 @@ name = "serial"
 
 [[example]]
 name = "timer"
+
+[[example]]
+name = "i2c"
+required-features = ["atsamd-hal/dma"]

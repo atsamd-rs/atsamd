@@ -4,10 +4,10 @@
 
 /// # Helper macro to give meaningful names to peripherals
 ///
-/// The [`pac::Peripherals`] struct refers to each peripheral by its datasheet
-/// name. However, in the context of a BSP, peripherals can often be given more
-/// meaningful names. This macro gives BSP authors a convenient way to provide
-/// custom names for each peripheral.
+/// The [`pac::Peripherals`](crate::pac::Peripherals) struct refers to each
+/// peripheral by its datasheet name. However, in the context of a BSP,
+/// peripherals can often be given more meaningful names. This macro gives BSP
+/// authors a convenient way to provide custom names for each peripheral.
 ///
 /// ## Calling the macro
 ///

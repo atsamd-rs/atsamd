@@ -16,7 +16,7 @@ use cortex_m_semihosting::hprintln;
 use bsp::entry;
 use hal::adc::Adc;
 use hal::clock::GenericClockController;
-use hal::gpio::v2::B;
+use hal::gpio::B;
 use hal::prelude::*;
 use pac::gclk::pchctrl::GEN_A::GCLK11;
 use pac::{CorePeripherals, Peripherals};

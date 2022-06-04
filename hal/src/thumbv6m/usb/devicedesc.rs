@@ -203,7 +203,7 @@ pub struct Descriptors {
 }
 
 impl Debug for Descriptors {
-    fn fmt(&self, fmt: &mut Formatter) -> FmtResult {
+    fn fmt(&self, fmt: &mut Formatter<'_>) -> FmtResult {
         for ep in 0..8 {
             write!(fmt, "\nep{}: {:?}", ep, &self.desc[ep])?;
         }
