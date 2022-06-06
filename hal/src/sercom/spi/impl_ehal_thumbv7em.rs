@@ -336,7 +336,9 @@ where
 
     #[inline]
     fn transfer<'w>(&mut self, buf: &'w mut [u8]) -> Result<&'w [u8], Error> {
-        assert_eq!(buf.len(), L::USIZE);
+        if buf.len() != L::USIZE {
+            panic!("Slice length does not equal SPI transfer length");
+        }
         let sercom = unsafe { self.config.as_ref().sercom() };
         transfer_slice(sercom, buf)
     }
@@ -352,7 +354,7 @@ where
 /// [`Transfer`]: blocking::spi::Transfer
 impl<P, M, A> blocking::spi::Transfer<u8> for Spi<Config<P, M, DynLength>, A>
 where
-    Config<P, M, DynLength>: ValidConfig,
+    Config<P, M, DynLength>: ValidConfig<Size = DynLength>,
     P: ValidPads,
     M: OpMode,
     A: Receive,
@@ -361,7 +363,9 @@ where
 
     #[inline]
     fn transfer<'w>(&mut self, buf: &'w mut [u8]) -> Result<&'w [u8], Error> {
-        assert_eq!(buf.len(), self.get_dyn_length() as usize);
+        if buf.len() != self.get_dyn_length() as usize {
+            panic!("Slice length does not equal SPI transfer length");
+        }
         let sercom = unsafe { self.config.as_ref().sercom() };
         transfer_slice(sercom, buf)
     }
@@ -524,7 +528,7 @@ where
 /// [`Write`]: blocking::spi::Write
 impl<P, M> blocking::spi::Write<u8> for Spi<Config<P, M, DynLength>, Duplex>
 where
-    Config<P, M, DynLength>: ValidConfig,
+    Config<P, M, DynLength>: ValidConfig<Size = DynLength>,
     P: ValidPads,
     M: OpMode,
 {
@@ -553,7 +557,7 @@ where
 /// [`Write`]: blocking::spi::Write
 impl<P, M> blocking::spi::Write<u8> for Spi<Config<P, M, DynLength>, Tx>
 where
-    Config<P, M, DynLength>: ValidConfig,
+    Config<P, M, DynLength>: ValidConfig<Size = DynLength>,
     P: ValidPads,
     M: OpMode,
 {
@@ -723,8 +727,8 @@ fn transfer_slice<'w>(sercom: &RegisterBlock, buf: &'w mut [u8]) -> Result<&'w [
 /// If `duplex` is false, buffer overflow errors are ignored
 fn write_slice(sercom: &RegisterBlock, buf: &[u8], duplex: bool) -> Result<(), Error> {
     let mut to_send = buf.iter();
-    let mut to_recv: usize = to_send.len();
-    while to_recv > 0 {
+    let mut to_recv: usize = if duplex { to_send.len() } else { 0 };
+    loop {
         let errors = sercom.spim().status.read();
         if duplex && errors.bufovf().bit_is_set() {
             return Err(Error::Overflow);
@@ -733,7 +737,6 @@ fn write_slice(sercom: &RegisterBlock, buf: &[u8], duplex: bool) -> Result<(), E
             return Err(Error::LengthError);
         }
         let flags = sercom.spim().intflag.read();
-        // Send the word
         if to_send.len() > 0 && flags.dre().bit_is_set() {
             let mut bytes = [0; 4];
             for byte in &mut bytes {
@@ -745,10 +748,13 @@ fn write_slice(sercom: &RegisterBlock, buf: &[u8], duplex: bool) -> Result<(), E
             let word = u32::from_le_bytes(bytes);
             sercom.spim().data.write(|w| unsafe { w.data().bits(word) });
         }
-        if duplex && to_recv > to_send.len() && flags.rxc().bit_is_set() {
+        if to_recv > to_send.len() && flags.rxc().bit_is_set() {
             sercom.spim().data.read().data().bits();
             let diff = to_recv - to_send.len();
             to_recv -= if diff < 4 { diff } else { 4 };
+        }
+        if to_recv == 0 && to_send.len() == 0 {
+            break;
         }
     }
     Ok(())

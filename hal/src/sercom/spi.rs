@@ -312,7 +312,6 @@ let (chan0, _, spi, _) = dma_transfer.wait();
 "
 )]
 
-use core::convert::TryFrom;
 use core::marker::PhantomData;
 
 use bitflags::bitflags;
@@ -417,15 +416,13 @@ bitflags! {
     }
 }
 
-/// Convert [`Status`] flags into the corresponding [`Error`] variants
-impl TryFrom<Status> for () {
-    type Error = Error;
-    #[inline]
-    fn try_from(status: Status) -> Result<(), Error> {
+impl Status {
+    /// Check the [`Status`] flags for [`Error`] conditions
+    pub fn check_errors(&self) -> Result<(), Error> {
         // Buffer overflow has priority
-        if status.contains(Status::BUFOVF) {
+        if self.contains(Status::BUFOVF) {
             Err(Error::Overflow)
-        } else if status.contains(Status::LENERR) {
+        } else if self.contains(Status::LENERR) {
             Err(Error::LengthError)
         } else {
             Ok(())
@@ -564,13 +561,24 @@ seq!(N in 1..=4 {
 // Capability
 //==============================================================================
 
+#[derive(Clone, Copy, PartialEq, Eq)]
+pub enum DynCapability {
+    Rx,
+    Tx,
+    Duplex,
+}
+
+impl Sealed for DynCapability {}
+
 /// Type-level enum representing the simplex or duplex transaction capability
 ///
 /// The available, type-level variants are [`Rx`], [`Tx`] and [`Duplex`]. See
 /// the [type-level enum] documentation for more details.
 ///
 /// [type-level enum]: crate::typelevel#type-level-enums
-pub trait Capability: Sealed + Default {}
+pub trait Capability: Sealed + Default {
+    const DYN: DynCapability;
+}
 
 /// Sub-set of [`Capability`] variants that can receive data, i.e. [`Rx`] and
 /// [`Duplex`]
@@ -597,7 +605,9 @@ pub struct Rx {
 }
 
 impl Sealed for Rx {}
-impl Capability for Rx {}
+impl Capability for Rx {
+    const DYN: DynCapability = DynCapability::Rx;
+}
 impl Receive for Rx {}
 
 /// Type-level variant of the [`Capability`] enum for simplex, [`Transmit`]-only
@@ -609,7 +619,9 @@ impl Receive for Rx {}
 pub struct Tx;
 
 impl Sealed for Tx {}
-impl Capability for Tx {}
+impl Capability for Tx {
+    const DYN: DynCapability = DynCapability::Tx;
+}
 impl Transmit for Tx {}
 
 /// Type-level variant of the [`Capability`] enum for duplex transactions
@@ -621,7 +633,9 @@ impl Transmit for Tx {}
 pub struct Duplex;
 
 impl Sealed for Duplex {}
-impl Capability for Duplex {}
+impl Capability for Duplex {
+    const DYN: DynCapability = DynCapability::Duplex;
+}
 impl Receive for Duplex {}
 impl Transmit for Duplex {}
 
@@ -777,6 +791,31 @@ where
     pub fn length<L2: Length>(mut self) -> Config<P, M, L2> {
         self.regs.set_length(L2::U8);
         self.change()
+    }
+
+    /// Return the transaction length, in bytes
+    ///
+    /// This function is valid for all chips and SPI configurations. It returns
+    /// the number of bytes in a single SPI transaction.
+    #[cfg(any(feature = "samd11", feature = "samd21"))]
+    #[inline]
+    pub fn transaction_length(&self) -> u8 {
+        Z::BYTES
+    }
+
+    /// Return the transaction length, in bytes
+    ///
+    /// This function is valid for all chips and SPI configurations. It returns
+    /// the number of bytes in a single SPI transaction.
+    #[cfg(feature = "min-samd51g")]
+    #[inline]
+    pub fn transaction_length(&self) -> u8 {
+        use typenum::Unsigned;
+        if Z::U8 == DynLength::U8 {
+            self.regs.get_length()
+        } else {
+            Z::U8
+        }
     }
 
     /// Get the clock polarity
@@ -1016,10 +1055,10 @@ where
 /// [type class]: crate::typelevel#type-classes
 pub trait AnyConfig: Is<Type = SpecificConfig<Self>> {
     type Sercom: Sercom;
-    type Pads: ValidPads<Sercom = Self::Sercom>;
+    type Pads: ValidPads<Sercom = Self::Sercom, Capability = Self::Capability>;
     type Capability: Capability;
     type OpMode: OpMode;
-    type Size: Size;
+    type Size: Size<Word = Self::Word>;
     type Word: 'static;
 }
 
@@ -1178,6 +1217,15 @@ where
         }
     }
 
+    /// Return the transaction length, in bytes
+    ///
+    /// This function is valid for all chips and SPI configurations. It returns
+    /// the number of bytes in a single SPI transaction.
+    #[inline]
+    pub fn transaction_length(&self) -> u8 {
+        self.config.as_ref().transaction_length()
+    }
+
     /// Update the SPI configuration.
     ///
     /// Calling this method will temporarily disable the SERCOM peripheral, as
@@ -1270,11 +1318,9 @@ where
 }
 
 #[cfg(feature = "min-samd51g")]
-impl<P, M, A> Spi<Config<P, M, DynLength>, A>
+impl<C, A> Spi<C, A>
 where
-    P: ValidPads,
-    M: OpMode,
-    Config<P, M, DynLength>: ValidConfig,
+    C: ValidConfig<Size = DynLength>,
     A: Capability,
 {
     /// Return the current transaction length
@@ -1282,7 +1328,7 @@ where
     /// Read the LENGTH register to determine the current transaction length
     #[inline]
     pub fn get_dyn_length(&self) -> u8 {
-        self.config.get_dyn_length()
+        self.config.as_ref().get_dyn_length()
     }
 
     /// Set the transaction length
@@ -1296,7 +1342,7 @@ where
     /// `LENGTH`.
     #[inline]
     pub fn set_dyn_length(&mut self, length: u8) {
-        self.config.set_dyn_length(length);
+        self.config.as_mut().set_dyn_length(length);
     }
 }
 
@@ -1324,7 +1370,14 @@ pub trait AnySpi: Is<Type = SpecificSpi<Self>> {
     type OpMode: OpMode;
     type Size: Size;
     type Word: 'static;
-    type Config: ValidConfig<Sercom = Self::Sercom>;
+    type Config: ValidConfig<
+        Sercom = Self::Sercom,
+        Pads = Self::Pads,
+        Capability = Self::Capability,
+        OpMode = Self::OpMode,
+        Size = Self::Size,
+        Word = Self::Word,
+    >;
 }
 
 /// Type alias to recover the specific [`Spi`] type from an implementation of
@@ -1360,14 +1413,10 @@ where
 {
 }
 
-impl<C, A> AnySpi for Spi<C, A>
-where
-    C: ValidConfig,
-    A: Capability,
-{
+impl<C: ValidConfig> AnySpi for Spi<C, C::Capability> {
     type Sercom = C::Sercom;
     type Pads = C::Pads;
-    type Capability = A;
+    type Capability = C::Capability;
     type OpMode = C::OpMode;
     type Size = C::Size;
     type Word = C::Word;

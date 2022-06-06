@@ -1,5 +1,7 @@
 # Unreleased Changes
 
+- Improve the architecture of `SpiFuture` (#577)
+
 # v0.15.1
 
 - Fix `sercom::uart` pad definitions to reject pads conflicting with XCK.

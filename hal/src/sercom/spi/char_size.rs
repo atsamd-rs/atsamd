@@ -28,6 +28,9 @@ pub trait CharSize: Sealed {
 
     /// Register bit pattern for the corresponding `CharSize`
     const BITS: u8;
+
+    /// Number of bytes in an SPI transaction
+    const BYTES: u8;
 }
 
 /// Type alias to recover the [`Word`](CharSize::Word) type from an
@@ -44,10 +47,12 @@ impl Sealed for EightBit {}
 impl CharSize for EightBit {
     type Word = u8;
     const BITS: u8 = 0;
+    const BYTES: u8 = 1;
 }
 
 impl Sealed for NineBit {}
 impl CharSize for NineBit {
     type Word = u16;
     const BITS: u8 = 1;
+    const BYTES: u8 = 2;
 }
