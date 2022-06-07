@@ -57,7 +57,6 @@ fn main() -> ! {
                 .manufacturer("Fake company")
                 .product("Twitchy Mousey")
                 .serial_number("TEST")
-                .device_class(0xEF) // misc
                 .build(),
         );
     }
