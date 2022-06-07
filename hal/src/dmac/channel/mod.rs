@@ -252,19 +252,18 @@ impl<Id: ChId> Channel<Id, Ready> {
         // Configure the trigger source and trigger action
         // SAFETY: This is actually safe because we are writing the correct enum value
         // (imported from the PAC) into the register
-        unsafe {
-            #[cfg(any(feature = "samd11", feature = "samd21"))]
-            self.regs.chctrlb.modify(|_, w| {
-                w.trigsrc().bits(trig_src as u8);
-                w.trigact().bits(trig_act as u8)
-            });
 
-            #[cfg(feature = "min-samd51g")]
-            self.regs.chctrla.modify(|_, w| {
-                w.trigsrc().bits(trig_src as u8);
-                w.trigact().bits(trig_act as u8)
-            });
-        }
+        #[cfg(any(feature = "samd11", feature = "samd21"))]
+        self.regs.chctrlb.modify(|_, w| {
+            w.trigsrc().variant(trig_src);
+            w.trigact().variant(trig_act)
+        });
+
+        #[cfg(feature = "min-samd51g")]
+        self.regs.chctrla.modify(|_, w| {
+            w.trigsrc().variant(trig_src);
+            w.trigact().variant(trig_act)
+        });
 
         // Start channel
         self.regs.chctrla.modify(|_, w| w.enable().set_bit());
