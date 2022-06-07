@@ -243,7 +243,7 @@ macro_rules! reg_proxy {
                     // to the bit controlled by the channel.
                     self.dmac
                         .[< $reg:lower >]
-                        .modify(|_, w| unsafe { w.bits((bit as u32) << Id::U8) });
+                        .write(|w| unsafe { w.bits((bit as u32) << Id::U8) });
                 }
             }
         }

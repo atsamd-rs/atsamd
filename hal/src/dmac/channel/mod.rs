@@ -250,9 +250,6 @@ impl<Id: ChId> Channel<Id, Ready> {
         trig_act: TriggerAction,
     ) -> Channel<Id, Busy> {
         // Configure the trigger source and trigger action
-        // SAFETY: This is actually safe because we are writing the correct enum value
-        // (imported from the PAC) into the register
-
         #[cfg(any(feature = "samd11", feature = "samd21"))]
         self.regs.chctrlb.modify(|_, w| {
             w.trigsrc().variant(trig_src);
