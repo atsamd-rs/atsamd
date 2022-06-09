@@ -18,9 +18,9 @@ use atsamd_hal::{
     },
     ehal::serial::Read as _,
     ehal::serial::Write,
-    gpio::v2::{Pins, PA04, PA05},
+    gpio::{Pins, PA04, PA05},
     rtc::{ClockMode, Rtc},
-    sercom::v2::{
+    sercom::{
         uart::{self, BaudMode, Flags, Oversampling},
         IoSet3, Sercom0,
     },
@@ -133,7 +133,7 @@ mod app {
         // Setup a peripheral channel to power up `Uart` from `Gclk0`
         let (pclk_sercom0, _gclk0) = Pclk::enable(tokens.pclks.sercom0, gclk0);
 
-        use atsamd_hal::sercom::v2::uart;
+        use atsamd_hal::sercom::uart;
 
         let pads = uart::Pads::default().rx(pins.pa05).tx(pins.pa04);
         // In the future, the `Uart` will take ownership of the `Pclk` and will
