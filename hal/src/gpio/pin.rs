@@ -1650,9 +1650,17 @@ macro_rules! __define_pin_alias_macro {
             #[macro_export]
             macro_rules! pin_alias {
                 $(
+                    // Always provide an identity "alias"
+                    ( $pins:ident . $name ) => { $pins.$name };
+                )+
+                $(
                     $(
                         ( $pins:ident . $alias ) => {
                             {
+                                // Since attributes can't apply to expressions, only
+                                // items, apply any attributes to a dummy macro. This
+                                // lets us ensure the alias is only valid when the
+                                // corresponding attributes are valid.
                                 $( #[$attr] )*
                                 macro_rules! [<pin_alias_ $alias>] {
                                     () => { $pins.$name };
