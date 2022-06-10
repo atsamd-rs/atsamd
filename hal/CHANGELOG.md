@@ -43,6 +43,8 @@
 - Add Device Service Unit (DSU), Non-volatile Controller (NVM), SmartEEPROM support (#526)
 - Expand Public Key Cryptography Controller (PUKCC) to support modular
   exponentiation (RSA) (#544)
+- Add Advanced Encryption Standard (AES) peripheral support including RustCrypto compatible backend
+
 ---
 
 Changelog tracking started at v0.13
