@@ -200,13 +200,13 @@ pub use pins::*;
 
 /// SPI pads for the labelled SPI peripheral
 ///
-/// You can use these pads with other, user-defined [`spi::Config`]urations.
+/// You can use these pads with other, user-defined configurations.
 pub type SpiPads = spi::Pads<Sercom4, Miso, Mosi, Sclk>;
 
 /// SPI master for the labelled SPI peripheral
 ///
 /// This type implements [`FullDuplex<u8>`](ehal::spi::FullDuplex).
-pub type Spi = spi::Spi<spi::Config<SpiPads>, spi::Duplex>;
+pub type Spi = spi::Spi<SpiPads>;
 
 /// Convenience for setting up the 2x3 header block for SPI.
 /// This powers up SERCOM4 and configures it for use as an
@@ -229,7 +229,7 @@ pub fn spi_master(
     let freq = clock.freq();
     let (miso, mosi, sclk) = (miso.into(), mosi.into(), sclk.into());
     let pads = spi::Pads::default().data_in(miso).data_out(mosi).sclk(sclk);
-    spi::Config::new(pm, sercom4, pads, freq)
+    spi::Spi::config(pm, sercom4, pads, freq)
         .baud(baud)
         .spi_mode(spi::MODE_0)
         .enable()
@@ -241,7 +241,7 @@ pub type FlashPads = spi::Pads<Sercom5, FlashMiso, FlashMosi, FlashSclk>;
 /// SPI master for the labelled SPI peripheral
 ///
 /// This type implements [`FullDuplex<u8>`](ehal::spi::FullDuplex).
-pub type FlashSpi = (spi::Spi<spi::Config<FlashPads>, spi::Duplex>, FlashCs);
+pub type FlashSpi = (spi::Spi<FlashPads>, FlashCs);
 
 /// Convenience for accessing the on-board SPI Flash device.
 /// This powers up SERCOM5 and configures it for use as an
@@ -260,7 +260,7 @@ pub fn flash_spi_master(
     let freq = clock.freq();
     let (miso, mosi, sclk, mut cs) = (miso.into(), mosi.into(), sclk.into(), cs.into());
     let pads = spi::Pads::default().data_in(miso).data_out(mosi).sclk(sclk);
-    let spi = spi::Config::new(pm, sercom5, pads, freq)
+    let spi = spi::Spi::config(pm, sercom5, pads, freq)
         .baud(MegaHertz(48))
         .spi_mode(spi::MODE_0)
         .enable();

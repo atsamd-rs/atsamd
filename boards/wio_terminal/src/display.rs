@@ -37,7 +37,7 @@ pub struct Display {
 }
 
 pub type LcdPads = spi::Pads<Sercom7, IoSet4, NoneT, LcdMosi, LcdSck>;
-pub type LcdSpi = spi::Spi<spi::Config<LcdPads>, spi::Tx>;
+pub type LcdSpi = spi::Spi<LcdPads>;
 
 /// Type alias for the ILI9341 LCD display.
 pub type LCD = Ili9341<SPIInterface<LcdSpi, LcdDc, LcdCs>, LcdReset>;
@@ -60,7 +60,7 @@ impl Display {
         let gclk0 = clocks.gclk0();
         let clock = &clocks.sercom7_core(&gclk0).ok_or(())?;
         let pads = spi::Pads::default().data_out(self.mosi).sclk(self.sck);
-        let spi = spi::Config::new(mclk, sercom7, pads, clock.freq())
+        let spi = spi::Spi::config(mclk, sercom7, pads, clock.freq())
             .spi_mode(spi::MODE_0)
             .baud(baud)
             .enable();

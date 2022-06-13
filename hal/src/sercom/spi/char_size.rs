@@ -4,6 +4,8 @@
 //! [`Config`]: super::Config
 //! [`Size`]: super::Size
 
+use num_traits::{AsPrimitive, PrimInt};
+
 use crate::typelevel::Sealed;
 
 //=============================================================================
@@ -22,12 +24,15 @@ use crate::typelevel::Sealed;
 ///
 /// [type-level enum]: crate::typelevel#type-level-enums
 /// [type-level function]: crate::typelevel#type-level-functions
-pub trait CharSize: Sealed {
+pub trait CharSize: Sealed + Default {
     /// Word size for the character size
-    type Word: 'static;
+    type Word: PrimInt + AsPrimitive<u16>;
 
     /// Register bit pattern for the corresponding `CharSize`
     const BITS: u8;
+
+    /// Number of bytes in an SPI transaction
+    const BYTES: u8;
 }
 
 /// Type alias to recover the [`Word`](CharSize::Word) type from an
@@ -35,19 +40,23 @@ pub trait CharSize: Sealed {
 pub type Word<C> = <C as CharSize>::Word;
 
 /// [`CharSize`] variant for 8-bit transactions
-pub enum EightBit {}
+#[derive(Default)]
+pub struct EightBit;
 
 /// [`CharSize`] variant for 9-bit transactions
-pub enum NineBit {}
+#[derive(Default)]
+pub struct NineBit;
 
 impl Sealed for EightBit {}
 impl CharSize for EightBit {
     type Word = u8;
     const BITS: u8 = 0;
+    const BYTES: u8 = 1;
 }
 
 impl Sealed for NineBit {}
 impl CharSize for NineBit {
     type Word = u16;
     const BITS: u8 = 1;
+    const BYTES: u8 = 2;
 }
