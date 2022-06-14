@@ -199,7 +199,7 @@ impl<Id: ChId, S: Status> Channel<Id, S> {
 
     #[inline]
     fn _trigger_private(&mut self) {
-        self.regs.swtrigctrl.write_bit(true);
+        self.regs.swtrigctrl.set_bit();
     }
 }
 
