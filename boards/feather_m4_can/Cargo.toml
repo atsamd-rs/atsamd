@@ -13,7 +13,7 @@ documentation = "https://atsamd-rs.github.io/atsamd/atsamd51j/feather_m4/"
 
 # for cargo flash
 [package.metadata]
-chip = "ATSAME51J19A"
+chip = "ATSAMD51J19A"
 
 [dependencies.cortex-m-rt]
 version = "0.7"
