@@ -50,7 +50,7 @@ mod app {
         let mut device = cx.device;
 
         // Get the clocks & tokens
-        let (_buses, clocks, tokens) = clock::por_state(
+        let (_buses, clocks, tokens) = clock::clock_system_at_reset(
             device.OSCCTRL,
             device.OSC32KCTRL,
             device.GCLK,
@@ -70,8 +70,7 @@ mod app {
         let gclk1 = gclk1.div(Gclk1Div::Div(24)).enable();
 
         // Output `Gclk1` on PB15 pin
-        let (_gclk_out1, gclk1) =
-            GclkOut::enable(tokens.gclk_io.gclk_out1, pins.pb15, gclk1, false);
+        let (_gclk_out1, gclk1) = GclkOut::enable(tokens.gclk_io.gclk_out1, pins.pb15, gclk1);
 
         // Setup a peripheral channel to power up `Dpll0` from `Gclk1`
         let (pclk_dpll0, gclk1) = Pclk::enable(tokens.pclks.dpll0, gclk1);
@@ -79,15 +78,13 @@ mod app {
         // Configure `Dpll0` with `2 * 60 + 0/32 = 120 MHz` frequency
         let dpll0 = Dpll::from_pclk(tokens.dpll0, pclk_dpll0)
             .set_loop_div(60, 0)
-            .enable()
-            .unwrap_or_else(|_| panic!("Dpll0 failed to pass assertions"));
+            .enable();
 
         // Swap source of `Gclk0` from Dfll to Dpll0, `48 Mhz -> 120 MHz`
         let (gclk0, _dfll, _dpll0) = clocks.gclk0.swap(dfll, dpll0);
 
         // Output `Gclk0` on pin PB14
-        let (_gclk_out0, gclk0) =
-            GclkOut::enable(tokens.gclk_io.gclk_out0, pins.pb14, gclk0, false);
+        let (_gclk_out0, gclk0) = GclkOut::enable(tokens.gclk_io.gclk_out0, pins.pb14, gclk0);
 
         // Setup a peripheral channel to power up `Dpll1` from `Gclk1`
         let (pclk_dpll1, _gclk1) = Pclk::enable(tokens.pclks.dpll1, gclk1);
@@ -95,15 +92,13 @@ mod app {
         // Configure `Dpll1` with `2 * 50 + 0/32 = 100 MHz` frequency
         let dpll1 = Dpll::from_pclk(tokens.dpll1, pclk_dpll1)
             .set_loop_div(50, 0)
-            .enable()
-            .unwrap_or_else(|_| panic!("Dpll1 failed to pass assertions"));
+            .enable();
 
         // Output `Dpll1` on PB20 pin via `Gclk6`, divided by 200 resulting in 0.5 MHz
         // output frequency
         let (gclk6, _dpll1) = Gclk::new(tokens.gclks.gclk6, dpll1);
         let gclk6 = gclk6.div(GclkDiv::Div(200)).enable();
-        let (_gclk_out6, _gclk6) =
-            GclkOut::enable(tokens.gclk_io.gclk_out6, pins.pb12, gclk6, false);
+        let (_gclk_out6, _gclk6) = GclkOut::enable(tokens.gclk_io.gclk_out6, pins.pb12, gclk6);
 
         // Configure `Xosc32k` with both outputs (1kHz, 32kHz) activated
         let xosc_base = XoscBase::from_crystal(tokens.xosc32k.base, pins.pa00, pins.pa01)
@@ -118,8 +113,7 @@ mod app {
         // output frequency
         let (gclk2, _xosc32k) = Gclk::new(tokens.gclks.gclk2, xosc32k);
         let gclk2 = gclk2.div(GclkDiv::Div(2)).enable();
-        let (_gclk_out2, _gclk2) =
-            GclkOut::enable(tokens.gclk_io.gclk_out2, pins.pb16, gclk2, false);
+        let (_gclk_out2, _gclk2) = GclkOut::enable(tokens.gclk_io.gclk_out2, pins.pb16, gclk2);
 
         // Output `OscUlp32k` on PB11 pin via `Gclk5`, without any division resulting in
         // 32 kHz output frequency
@@ -127,8 +121,7 @@ mod app {
             OscUlp32k::enable(tokens.osculp.osculp32k, clocks.osculp_base);
         let (gclk5, _osculp32k) = Gclk::new(tokens.gclks.gclk5, osculp32k);
         let gclk5 = gclk5.enable();
-        let (_gclk_out5, _gclk5) =
-            GclkOut::enable(tokens.gclk_io.gclk_out5, pins.pb11, gclk5, false);
+        let (_gclk_out5, _gclk5) = GclkOut::enable(tokens.gclk_io.gclk_out5, pins.pb11, gclk5);
 
         // Setup a peripheral channel to power up `Uart` from `Gclk0`
         let (pclk_sercom0, _gclk0) = Pclk::enable(tokens.pclks.sercom0, gclk0);
