@@ -548,7 +548,7 @@ where
         self.token.set_source_clock(I::DYN);
         match I::DYN {
             DynDpllSourceId::Xosc0 | DynDpllSourceId::Xosc1 => {
-                self.token.set_source_div(self.prediv / 2)
+                self.token.set_source_div(self.prediv / 2 - 1)
             }
             _ => {}
         }
