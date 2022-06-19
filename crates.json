@@ -36,6 +36,10 @@
       "tier": 1,
       "build": "cargo build --examples --all-features"
     },
+    "feather_m4_can": {
+      "tier": 1,
+      "build": "cargo build --examples --all-features"
+    },
     "gemma_m0": {
       "tier": 2,
       "build": "cargo build --examples --features=unproven"
