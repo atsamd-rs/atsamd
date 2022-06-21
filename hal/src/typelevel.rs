@@ -750,28 +750,22 @@ impl<U: Unsigned, B: Bit> Sealed for UInt<U, B> {}
 /// built from this root implementation.
 pub trait Counter: Sealed {}
 
-/// Mapping from an instance of [`Counter`] to its successor
+/// Trait mapping each [`Counter`] type to its successor
 ///
-/// This trait provides both type-level and value-level functions to map from an
-/// instance of [`Counter`] to its successor. See the documentation on
-/// [type-level functions](#type-level-functions) for more details.
-///
-/// The actual implementation is contained within the `PrivateIncrement` trait.
-/// Access to the implementation is restricted to types in this crate, so that
-/// safe interfaces can be built on top.
+/// This trait maps each type implementing [`Counter`] to its corresponding
+/// successor type. The actual implementation of this trait is contained within
+/// `PrivateIncrement`. Access to `PrivateIncrement` is restricted, so that safe
+/// HAL APIs can be built with it.
 pub trait Increment: PrivateIncrement {}
 
 impl<T: PrivateIncrement> Increment for T {}
 
-/// Mapping from an instance of [`Counter`] to its predecessor
+/// Trait mapping each [`Counter`] type to its predecessor
 ///
-/// This trait provides both type-level and value-level functions to map from an
-/// instance of [`Counter`] to its predecessor. See the documentation on
-/// [type-level functions](#type-level-functions) for more details.
-///
-/// The actual implementation is contained within the `PrivateDecrement` trait.
-/// Access to the implementation is restricted to types in this crate, so that
-/// safe interfaces can be built on top.
+/// This trait maps each type implementing [`Counter`] to its corresponding
+/// predecessor type. The actual implementation of this trait is contained within
+/// `PrivateDecrement`. Access to `PrivateDecrement` is restricted, so that safe
+/// HAL APIs can be built with it.
 pub trait Decrement: PrivateDecrement {}
 
 impl<T: PrivateDecrement> Decrement for T {}
