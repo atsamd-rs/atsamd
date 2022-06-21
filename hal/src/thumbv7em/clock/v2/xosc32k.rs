@@ -392,7 +392,7 @@ impl Xosc1k {
     /// ```no_run
     /// # use atsamd_hal::clock::v2::clock_system_at_reset;
     /// # use atsamd_hal::clock::v2::xosc32k::{XoscBase, Xosc1k};
-    /// # use atsamd_hal::gpio::v2::Pins;
+    /// # use atsamd_hal::gpio::Pins;
     /// # use atsamd_hal::pac::Peripherals;
     /// # let mut pac = Peripherals::take().unwrap();
     /// let (buses, clocks, tokens) = clock_system_at_reset(
@@ -467,7 +467,7 @@ impl Xosc32k {
     /// ```no_run
     /// # use atsamd_hal::clock::v2::clock_system_at_reset;
     /// # use atsamd_hal::clock::v2::xosc32k::{XoscBase, Xosc32k};
-    /// # use atsamd_hal::gpio::v2::Pins;
+    /// # use atsamd_hal::gpio::Pins;
     /// # use atsamd_hal::pac::Peripherals;
     /// # let mut pac = Peripherals::take().unwrap();
     /// let (buses, clocks, tokens) = clock_system_at_reset(

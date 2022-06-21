@@ -190,7 +190,7 @@
 //!         pclk::Pclk,
 //!         xosc::{Xosc, CrystalCurrent},
 //!     },
-//!     gpio::v2::Pins,
+//!     gpio::Pins,
 //!     pac::Peripherals,
 //!     time::U32Ext,
 //! };
@@ -207,9 +207,9 @@
 //!
 //! Next, we access the [`Tokens`] struct to extract the corresponding
 //! [`XoscToken`](xosc::XoscToken) for XOSC0, and we trade the PAC `PORT` struct
-//! for the [`gpio::Pins`](crate::gpio::v2::Pins) struct to access the GPIO
+//! for the [`gpio::Pins`](crate::gpio::Pins) struct to access the GPIO
 //! pins. We can then call `Xosc::from_crystal` to trade the token and
-//! [`Pin`](crate::gpio::v2::Pin)s to yield an instance of
+//! [`Pin`](crate::gpio::Pin)s to yield an instance of
 //! [`Xosc0`](xosc::Xosc0). In doing so, we also provide the external oscillator
 //! frequency and the desired level of current to use with the crystal. In this
 //! case, we will use a low [`CrystalCurrent`](xosc::CrystalCurrent).
@@ -358,7 +358,7 @@
 //!
 //! Finally, we would like to output GCLK0 to a GPIO pin. Doing so takes a
 //! similar approach to the `Pclk` above. But this time, we must also provide a
-//! corresponding GPIO [`Pin`](crate::gpio::v2::Pin), in this case `PB14`. And,
+//! corresponding GPIO [`Pin`](crate::gpio::Pin), in this case `PB14`. And,
 //! as with the `Pclk` above, creating a [`GclkOut`](gclkio::GclkOut) clock will
 //! increment the dependent clock count of the `EnabledGclk0`.
 //!
@@ -378,7 +378,7 @@
 //!         pclk::Pclk,
 //!         xosc::{CrystalCurrent, Xosc},
 //!     },
-//!     gpio::v2::Pins,
+//!     gpio::Pins,
 //!     pac::Peripherals,
 //!     time::U32Ext,
 //! };
