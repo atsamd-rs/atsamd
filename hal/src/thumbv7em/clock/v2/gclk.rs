@@ -19,14 +19,14 @@
 //! - A DPLL ([`Dpll`])
 //!
 //! The output clock can be:
-//! - A direct clock output ([`GclkOut`])
+//! - A direct clock output to a GPIO pin ([`GclkOut`])
 //! - A peripheral channel clock ([`Pclk`])
 //!
 //! ## Example
 //!
 //! The configuration of a [`Gclk`] is best shown with an example. However, the
 //! example assumes you are already familiar with the basics of the `clock`
-//! module. See the [module-level documentation](super) for an overview.
+//! module. See the [`clock` module documentation](super) for an overview.
 //!
 //! Suppose we start with the default clock tree after power-on reset.
 //!
@@ -89,12 +89,12 @@
 //! let gclk_in1 = GclkIn::enable(tokens.gclk_io.gclk_in1, pins.pb15, 24.mhz());
 //! ```
 //!
-//! We can then call `Gclk::new` with a [`GclkToken`] and our `GclkIn` to
-//! produce a [`Gclk`], in this case [`Gclk1`]. At this point, notice that
-//! [`Gclk<G, I>`] takes two type parameters. `G` is a [`GclkId`] number, which
-//! identifies which of the 12 generators this `Gclk` represents. `I` is an `Id`
-//! type indicating the clock [`Source`] driving the `Gclk`, which must be a
-//! valid [`GclkSourceId`]. [`Gclk1<I>`], then, is simply an alias for
+//! We can then call [`Gclk::new`] with a [`GclkToken`] and our instance of
+//! [`GclkIn`] to produce a [`Gclk`], in this case [`Gclk1`]. At this point,
+//! notice that [`Gclk<G, I>`] takes two type parameters. `G` is a [`GclkId`]
+//! type identifying which of the 12 generators this `Gclk` represents. `I` is
+//! an `Id` type indicating the clock [`Source`] driving the `Gclk`, which must
+//! be a valid [`GclkSourceId`]. [`Gclk1<I>`], is simply an alias for
 //! `Gclk<Gclk1Id, I>`.
 //!
 //! ```ignore
@@ -123,7 +123,7 @@
 //! Once [`Gclk1`] is enabled, we can use it to enable the [`Pclk`] for
 //! [`Sercom0`]. This follows the usual pattern. We provide a [`PclkToken`] and
 //! the [`EnabledGclk1`]. In return, we get an enabled [`Pclk`] and the
-//! [`EnabledGclk1`] counter is incremented.
+//! [`EnabledGclk1`] counter is [`Increment`]ed.
 //!
 //! ```ignore
 //! let (pclk_sercom0, gclk1) = Pclk::enable(tokens.pclks.sercom0, gclk1);
@@ -151,7 +151,7 @@
 //! [`GclkOutToken`], the GPIO [`Pin`] and the [`EnabledGclk2`] to yield a
 //! [`GclkOut`].
 //!
-//! ```
+//! ```ignore
 //! let (gclk_out2, gclk2) = GclkOut::enable(tokens.gclk_io.gclk_out2, pins.pa16, gclk2);
 //! ```
 //!
@@ -201,12 +201,12 @@
 //! We model the master clock's dependence on [`Gclk0`] by setting its dependent
 //! clock count to [`U1`] in [`clock_system_at_reset`]. Consequently, because
 //! there is no way to safely decrement the count, the [`EnabledGclk0`] can
-//! never be disabled.
+//! never be [`disable`]d.
 //!
 //! Additionally, we provide functions to change the clock [`Source`], divider,
-//! etc.  on [`EnabledGclk0`], but we restrict them to the case where `N = U1`.
+//! etc. on [`EnabledGclk0`], but we restrict them to the case where `N = U1`.
 //! This prevents users from changing its [`Source`] or divider if any *other,
-//! additional* clock depends on it, besides the master clock.
+//! additional* clock depends on it (besides the master clock).
 //!
 //! [`clock_system_at_reset`]: super::clock_system_at_reset
 //! [`Xosc`]: super::xosc::Xosc
@@ -225,7 +225,9 @@
 //! [`Pins`]: crate::gpio::Pins
 //! [`Pin`]: crate::gpio::Pin
 //! [`Sercom0`]: crate::sercom::Sercom0
+//! [`disable`]: EnabledGclk::disable
 
+use core::cmp::max;
 use core::marker::PhantomData;
 
 use paste::paste;
@@ -237,7 +239,7 @@ use crate::pac::gclk::genctrl::DIVSEL_A;
 use crate::pac::NVMCTRL;
 
 use crate::pac::gclk::genctrl::SRC_A;
-use crate::pac::gclk::{RegisterBlock, GENCTRL};
+use crate::pac::gclk::GENCTRL;
 use crate::time::Hertz;
 use crate::typelevel::{Counter, Decrement, Increment, PrivateIncrement, Sealed};
 
@@ -253,11 +255,34 @@ use super::{Enabled, Source};
 // GclkToken
 //==============================================================================
 
-/// A [`GclkToken`] equals a hardware register
-/// Provide a safe register interface for [`Gclk`]s
+/// Singleton token that can be exchanged for a [`Gclk`]
 ///
-/// This `struct` takes ownership of a [`GclkNum`] and provides an API to
-/// access the corresponding registers
+/// As explained in the [`clock` module documentation](super), instances of
+/// various `Token` types can be exchanged for actual clock types. They
+/// typically represent clocks that are disabled at power-on reset.
+///
+/// [`GclkToken`]s are no different. All [`Gclk`]s other than [`Gclk0`] are
+/// disabled at power-on reset. To use a [`Gclk`], you must first exchange the
+/// token for an actual clock with [`Gclk::new`].
+///
+/// [`GclkToken`] is generic over the [`GclkId`], where each corresponding token
+/// represents one of the 12 respective [`Gclk`]s.
+//
+// # Internal notes
+//
+// `GclkToken` is generic over the `GclkId`, and each corresponding instance is
+// a singleton. There should never be more than one instance of `GclkToken` with
+// a given `GclkId`, because `GclkToken` relies on this fact for memory safety.
+//
+// Users see `GclkToken` as merely an opaque token. but internally, `GclkToken`
+// is also used as a register interface. The tokens are zero-sized, so they can
+// be carried by all clock types without introducing any memory bloat.
+//
+// As part of that register interface, each `GclkToken` can access its
+// corresponding `GENCTRL` register. That each `GclkToken` is a singleton
+// guarantees each corresponding register is written from only one location.
+// This allows `GclkToken` to be `Sync`, even though the PAC `GCLK` struct is
+// not.
 pub struct GclkToken<G: GclkId> {
     gen: PhantomData<G>,
 }
@@ -267,50 +292,41 @@ impl<G: GclkId> GclkToken<G> {
     ///
     /// # Safety
     ///
-    /// Users must never create two simulatenous instances of this `struct` with
-    /// the same [`GclkNum`]
+    /// Each `GclkToken`s is a singleton. There must never be two simulatenous
+    /// instances with the same [`GclkId`].
     #[inline]
     pub(super) unsafe fn new() -> Self {
         GclkToken { gen: PhantomData }
     }
 
-    /// Used to mask out the correct bit based on [`GclkNum`]
-    #[inline]
-    fn mask(&self) -> u16 {
-        1 << G::NUM
-    }
+    /// SYNCBUSY register mask for the corresponding GCLK
+    const MASK: u16 = 1 << G::NUM;
 
-    /// Provides the base pointer to the [`Gclk`] registers
-    ///
-    /// # Safety
-    ///
-    /// Only one [GclkToken] accessible at any given time
-    #[inline]
-    fn gclk(&self) -> &RegisterBlock {
-        unsafe { &*pac::GCLK::ptr() }
-    }
-
-    /// Provides a pointer to the individual Generator Control [`GENCTRL`]
-    /// registers
-    ///
-    /// Each GCLK 0 to 11 has its own Generator Control [`GENCTRL`] register
-    /// controlling the settings of that specific generator
+    /// Provide a reference to the corresponding [`GENCTRL`] register
     #[inline]
     fn genctrl(&self) -> &GENCTRL {
-        &self.gclk().genctrl[G::NUM]
+        // Safety: `GENCTRL` is not `Sync`, because it has interior mutability.
+        // However, each `GclkToken` represents only one of the 12 GCLKs, and
+        // this function only ever returns a reference to the corresponding
+        // `GENCTRL`, so there is no risk of accessing the same register from
+        // multiple execution contexts. Division of the PAC `GCLK` struct into
+        // individual `GclkTokens`s based on `GclkId` is what lets us make
+        // each `GclkToken` `Sync`.
+        let gclk = unsafe { &*pac::GCLK::ptr() };
+        &gclk.genctrl[G::NUM]
     }
 
     /// Block until synchronization has completed
     ///
-    /// Used for any registers annotated with
-    ///
-    /// * "Write-Synchronized"
-    /// * "Read-Synchronized"
-    ///
-    /// in the Property field
+    /// Reads or writes to synchronized fields must be accompanied by a check of
+    /// the `SYNCBUSY` register. See the datasheet for more details.
     #[inline]
     fn wait_syncbusy(&self) {
-        while self.gclk().syncbusy.read().genctrl().bits() & self.mask() != 0 {}
+        // Safety: We are only reading from the `SYNCBUSY` register, and we are
+        // only observing the bit corresponding to this particular `GclkId`, so
+        // there is no risk of memory corruption.
+        let gclk = unsafe { &*pac::GCLK::ptr() };
+        while gclk.syncbusy.read().genctrl().bits() & Self::MASK != 0 {}
     }
 
     /// Set the clock source for the [`Gclk`] generator
@@ -320,9 +336,23 @@ impl<G: GclkId> GclkToken<G> {
         self.wait_syncbusy();
     }
 
-    /// When dividing an input clock with a odd division factor the duty-cycle
-    /// is not 50-50, enabling this ensures 50-50 duty-cycle on the
-    /// resulting generator clock
+    /// Set the [`GclkDivider`] value
+    ///
+    /// Use the internal interface of [`GclkDivider`] to set the `DIV` and
+    /// `DIVSEL` fields of the `GENCTRL` register.
+    #[inline]
+    fn set_div(&mut self, div: G::Divider) {
+        let (divsel, div) = div.divsel_div();
+        // Safety: The `DIVSEL` and `DIV` values are derived from the
+        // `GclkDivider` type, so they are guaranteed to be valid.
+        self.genctrl().modify(|_, w| unsafe {
+            w.divsel().variant(divsel);
+            w.div().bits(div)
+        });
+        self.wait_syncbusy();
+    }
+
+    /// Output a 50-50 duty-cycle clock when using an odd division factor
     #[inline]
     fn improve_duty_cycle(&mut self, flag: bool) {
         self.genctrl().modify(|_, w| w.idc().bit(flag));
@@ -336,46 +366,36 @@ impl<G: GclkId> GclkToken<G> {
         self.wait_syncbusy();
     }
 
-    /// Enable output of the generator clock on GCLK_IO pins
+    /// Enable ouput of the [`Gclk`] on a GPIO [`Pin`]
+    ///
+    /// [`Pin`]: crate::gpio::Pin
     #[inline]
     fn enable_gclk_out(&mut self) {
         self.genctrl().modify(|_, w| w.oe().set_bit());
         self.wait_syncbusy();
     }
 
-    /// Set the divider for the [`Gclk`]
+    /// Disable ouput of the [`Gclk`] on a GPIO [`Pin`]
     ///
-    /// [`Gclk0`] and [`Gclk2`] to [`Gclk11`] has 8 division factor bits
-    /// [`Gclk1`] has 16 division factor bits
-    #[inline]
-    fn set_div(&mut self, div: G::DividerType) {
-        // Get the divsel variant and the divider value
-        let (variant, div) = div.get_inner();
-        self.genctrl().modify(|_, w| unsafe {
-            w.divsel().variant(variant);
-            w.div().bits(div)
-        });
-        self.wait_syncbusy();
-    }
-
-    /// Deactivate outputting generator clock over `GCLK_IO` pins
+    /// If a corresponding [`Pin`] is in the [`AlternateM`] mode, it's logic
+    /// level will depend on the [`output_off_value`].
     ///
-    /// Pin state depends on the `polarity` value set when the output was
-    /// enabled with [`enable_gclk_out`]
+    /// [`Pin`]: crate::gpio::Pin
+    /// [`AlternateM`]: crate::gpio::AlternateM
     #[inline]
     fn disable_gclk_out(&mut self) {
         self.genctrl().modify(|_, w| w.oe().clear_bit());
         self.wait_syncbusy();
     }
 
-    /// Enable the clock generator
+    /// Enable the [`Gclk`]
     #[inline]
     fn enable(&mut self) {
         self.genctrl().modify(|_, w| w.genen().set_bit());
         self.wait_syncbusy();
     }
 
-    /// Disable the clock generator
+    /// Disable the [`Gclk`]
     #[inline]
     fn disable(&mut self) {
         self.genctrl().modify(|_, w| w.genen().clear_bit());
@@ -384,14 +404,15 @@ impl<G: GclkId> GclkToken<G> {
 }
 
 //==============================================================================
-// GclkId
+// DynGclkId
 //==============================================================================
 
-/// Value-level equivalent of [`GclkId`]
+/// Value-level enum identifying one of 12 possible [`Gclk`]s
 ///
-/// This is the value-level version of the type-level `enum` [`GclkId`]. It
-/// selects among the 12 possible GCLKs.
-#[allow(missing_docs)]
+/// The variants of this enum identify one of the 12 possible generic clock
+/// generators.
+///
+/// `DynGclkId` is the value-level equivalent of [`GclkId`].
 pub enum DynGclkId {
     Gclk0,
     Gclk1,
@@ -407,155 +428,131 @@ pub enum DynGclkId {
     Gclk11,
 }
 
-/// Type-level `enum` for GCLK identifiers
+//==============================================================================
+// GclkId
+//==============================================================================
+
+/// Type-level enum identifying one of 12 possible [`Gclk`]s
 ///
-/// See the documentation / on [type-level enums] for more details on the
-/// pattern.
+/// The types implementing this trait, i.e. [`Gclk0Id`] - [`Gclk11Id`], are
+/// type-level variants of `GclkId`, and they identify one of the 12 possible
+/// generic clock generators.
 ///
+/// `GclkId` is the type-level equivalent of [`DynGclkId`]. See the
+/// documentation on [type-level programming] and specifically
+/// [type-level enums] for more details.
+///
+/// [type-level programming]: crate::typelevel
 /// [type-level enums]: crate::typelevel#type-level-enum
 pub trait GclkId: Sealed {
     /// Corresponding variant of [`DynGclkId`]
     const DYN: DynGclkId;
     /// Corresponding numeric index
     const NUM: usize;
-    /// Corresponding divider type
+    /// Corresponding [`GclkDivider`] type
     ///
-    /// [`Gclk1`] can have a larger divider than the other [`Gclk`]s. The
-    /// [`GclkDivider`] trait abstracts over these details.
-    type DividerType: GclkDivider;
+    /// [`Gclk1`] uses [`Gclk1Div`], while all other [`Gclk`]s use [`GclkDiv`].
+    type Divider: GclkDivider;
 }
 
-/// Type-level variant representing the identity of GCLK0
+/// Type-level variant of [`GclkId`] representing the identity of GCLK0
 ///
-/// This type is a member of several [type-level enums]. See the documentation
-/// on [type-level enums] for more details on the pattern.
+/// See the documentation on [type-level programming] and specifically
+/// [type-level enums] for more details.
 ///
+/// [type-level programming]: crate::typelevel
 /// [type-level enums]: crate::typelevel#type-level-enum
 pub enum Gclk0Id {}
 impl Sealed for Gclk0Id {}
 impl GclkId for Gclk0Id {
     const DYN: DynGclkId = DynGclkId::Gclk0;
     const NUM: usize = 0;
-    type DividerType = GclkDiv;
+    type Divider = GclkDiv;
 }
 
-/// Type-level variant representing the identity of GCLK1
+/// Type-level variant of [`GclkId`] representing the identity of GCLK1
 ///
-/// This type is a member of several [type-level enums]. See the documentation
-/// on [type-level enums] for more details on the pattern.
+/// See the documentation on [type-level programming] and specifically
+/// [type-level enums] for more details.
 ///
+/// [type-level programming]: crate::typelevel
 /// [type-level enums]: crate::typelevel#type-level-enum
 pub enum Gclk1Id {}
 impl Sealed for Gclk1Id {}
 impl GclkId for Gclk1Id {
     const DYN: DynGclkId = DynGclkId::Gclk1;
     const NUM: usize = 1;
-    type DividerType = Gclk1Div;
+    type Divider = Gclk1Div;
 }
 
 seq!(N in 2..=11 {
     paste! {
-        /// Type-level variant representing the identity of the corresponding GCLK
+        /// Type-level variant of [`GclkId`] representing the identity of
+        #[doc = "GCLK" N]
         ///
-        /// This type is a member of several [type-level enums]. See the documentation
-        /// on [type-level enums] for more details on the pattern.
+        /// See the documentation on [type-level programming] and specifically
+        /// [type-level enums] for more details.
         ///
+        /// [type-level programming]: crate::typelevel
         /// [type-level enums]: crate::typelevel#type-level-enum
         pub enum [<Gclk N Id>] {}
         impl Sealed for [<Gclk N Id>] {}
         impl GclkId for [<Gclk N Id>] {
             const DYN: DynGclkId = DynGclkId::Gclk~N;
             const NUM: usize = N;
-            type DividerType = GclkDiv;
+            type Divider = GclkDiv;
         }
     }
 });
 
 //==============================================================================
-// Div
+// GclkDivider
 //==============================================================================
 
-/// Trait for [`GclkDiv`] providing the inner components
+/// Trait unifying the two [`Gclk`] divider types, [`GclkDiv`] and [`Gclk1Div`]
+///
+/// Choosing a [`Gclk`] division factor can be complicated. [`Gclk1`] can accept
+/// a 16-bit divider value, while all other [`Gclk`]s only take an 8-bit value.
+/// Moreover, the set of valid clock dividers does not form a contiguous range.
+/// For example, the valid set of dividers for most [`Gclk`]s is 1-256 and 512.
+///
+/// The [`Gclk1Div`] and [`GclkDiv`] enums provide simple and intuitive
+/// user-facing interfaces to choose the *actual* clock divider value. This
+/// trait, on the other hand, provides an internal-facing interface used by HAL
+/// authors to extract the clock divider and convert it to the corresponding
+/// `DIVSEL` and `DIV` register fields. Users should have no reason to interact
+/// with this trait directly.
 pub trait GclkDivider: Sealed + Default + Copy {
-    /// Returns both the divider mode [`DIVSEL_A`] and the divider value
-    fn get_inner(&self) -> (DIVSEL_A, u16);
-    /// Returns the divider value
-    fn get_div(&self) -> u32;
+    /// Returns the actual clock divider value as a `u32`
+    fn divider(&self) -> u32;
+    /// Return the corresponding `DIVSEL` and and `DIV` register fields
+    fn divsel_div(&self) -> (DIVSEL_A, u16);
 }
 
-/// Enum expressing all possible division factors for all [`Gclk`]s except
-/// [`Gclk1`]
+//==============================================================================
+// GclkDiv
+//==============================================================================
+
+/// Enum for the clock division factor of all [`Gclk`]s other than [`Gclk1`]
 ///
-/// Represents a generic clock generator divider
-///
-/// * `Div(u8)` expresses the divider directly
-/// * `Div2Pow8` equals a division factor of `2^8 = 256`
-/// * `Div2Pow9` equals a division factor of `2^9 = 512`
-///
-/// ## Background
-///
-/// Division is interpreted differently depending on state of `DIVSEL` flag
-///
-/// In `DIVSEL` mode `DIV1` (register value 0) the division factor is directly
-/// interpreted from the `DIV` register.  The division factor is a u8 value
-///
-/// In `DIVSEL` mode `DIV2` (register value 1) the division factor is calculated
-/// as
-///
-/// ```text
-/// division_factor = 2.pow(1 + DIV_register)
-/// ```
-///
-/// The maximum division factor is 512 even though the register could be able to
-/// express much larger dividers. Hardware ignores any larger value, effectively
-/// constrained at max division factor.
-///
-/// See the datasheet for more details
+/// Choosing a [`Gclk`] division factor can be complicated, because the set of
+/// valid values is not contiguous. For clocks other than [`Gclk1`], the
+/// division factor can be 1-256 or 512. `GclkDiv` provides an enum interface to
+/// enforce validity of the division factor. See the datasheet for more details.
 #[derive(Clone, Copy)]
 pub enum GclkDiv {
-    /// Express the division factor directly, both 0 and 1 perform no division
-    /// of the clock
+    /// Use a literal division factor
+    ///
+    /// All values in the range `[1-255]` are valid. Zero is also valid, but it
+    /// is interpreted as `1`.
     Div(u8),
-    /// Provides a division factor of `2^8 = 256`
+    /// Use a division factor of `2^8 = 256`
     Div2Pow8,
-    /// Provides a division factor of `2^9 = 512`
+    /// Use a division factor of `2^9 = 512`
     Div2Pow9,
 }
 
-/// Enum expressing all possible division factors for [`Gclk1`]
-///
-/// Represents [`Gclk1`] clock generator divider
-///
-/// Division is interpreted differently depending on state of `DIVSEL` flag
-///
-/// In `DIVSEL` mode `DIV1` (register value 0) the division factor is directly
-/// interpreted from the `DIV` register.  The division factor is a u16 value
-///
-/// In `DIVSEL` mode `DIV2` (register value 1) the division factor is calculated
-/// as
-///
-/// ```text
-/// division_factor = 2.pow(1 + DIV_register)
-/// ```
-///
-/// The maximum division factor is 131072 even though the register could be able
-/// to express much larger dividers. Hardware ignores any larger value,
-/// effectively constrained at max division factor.
-///
-/// See the datasheet for more details
-#[derive(Clone, Copy)]
-pub enum Gclk1Div {
-    /// Express the division factor directly, both 0 and 1 perform no division
-    /// of the clock
-    Div(u16),
-    /// Provides a division factor of `2^16 = 65536`
-    Div2Pow16,
-    /// Provides a division factor of `2^17 = 131072`
-    Div2Pow17,
-}
-
 impl Sealed for GclkDiv {}
-impl Sealed for Gclk1Div {}
 
 impl Default for GclkDiv {
     #[inline]
@@ -563,6 +560,51 @@ impl Default for GclkDiv {
         Self::Div(0)
     }
 }
+
+impl GclkDivider for GclkDiv {
+    #[inline]
+    fn divider(&self) -> u32 {
+        match self {
+            GclkDiv::Div(div) => (*div).into(),
+            GclkDiv::Div2Pow8 => 256,
+            GclkDiv::Div2Pow9 => 512,
+        }
+    }
+
+    #[inline]
+    fn divsel_div(&self) -> (DIVSEL_A, u16) {
+        match self {
+            GclkDiv::Div(div) => (DIVSEL_A::DIV1, (*div).into()),
+            GclkDiv::Div2Pow8 => (DIVSEL_A::DIV2, 7),
+            GclkDiv::Div2Pow9 => (DIVSEL_A::DIV2, 8),
+        }
+    }
+}
+
+//==============================================================================
+// Gclk1Div
+//==============================================================================
+
+/// Enum for the clock division factor of [`Gclk1`] only
+///
+/// Choosing the [`Gclk1`] division factor can be complicated, because the set
+/// of valid values is not contiguous. For [`Gclk1`], the division factor can be
+/// 1-65536 or 131072. `Gclk1Div` provides an enum interface to enforce validity
+/// of the division factor. See the datasheet for more details.
+#[derive(Clone, Copy)]
+pub enum Gclk1Div {
+    /// Use a literal division factor
+    ///
+    /// All values in the range `[1-65535]` are valid. Zero is also valid, but
+    /// it is interpreted as `1`.
+    Div(u16),
+    /// Use a division factor of `2^16 = 65536`
+    Div2Pow16,
+    /// Use a division factor of `2^17 = 131072`
+    Div2Pow17,
+}
+
+impl Sealed for Gclk1Div {}
 
 impl Default for Gclk1Div {
     #[inline]
@@ -573,75 +615,35 @@ impl Default for Gclk1Div {
 
 impl GclkDivider for Gclk1Div {
     #[inline]
-    fn get_div(&self) -> u32 {
+    fn divider(&self) -> u32 {
         match self {
-            // Maximum reach of DIV1 mode is 65535
             Gclk1Div::Div(div) => (*div).into(),
-            // Set the divider to be 65536
-            // 2^(1 + 15) = 65536
             Gclk1Div::Div2Pow16 => 65536,
-            // Set the divider to be 131072
-            // 2^(1 + 16) = 131072
             Gclk1Div::Div2Pow17 => 131072,
         }
     }
 
     #[inline]
-    fn get_inner(&self) -> (DIVSEL_A, u16) {
+    fn divsel_div(&self) -> (DIVSEL_A, u16) {
         match self {
-            // Maximum reach of DIV1 mode is 65535
             Gclk1Div::Div(div) => (DIVSEL_A::DIV1, *div),
-            // Set the divider to be 65536
-            // 2^(1 + 15) = 65536
             Gclk1Div::Div2Pow16 => (DIVSEL_A::DIV2, 15),
-            // Set the divider to be 131072
-            // 2^(1 + 16) = 131072
             Gclk1Div::Div2Pow17 => (DIVSEL_A::DIV2, 16),
         }
     }
 }
 
-impl GclkDivider for GclkDiv {
-    #[inline]
-    fn get_div(&self) -> u32 {
-        match self {
-            // Maximum reach of DIV1 mode is 255
-            GclkDiv::Div(div) => (*div).into(),
-            // Set the divider to be 256
-            // 2^(1 + 7) = 256
-            GclkDiv::Div2Pow8 => 256,
-            // Set the divider to be 512
-            // 2^(1 + 8) = 512
-            GclkDiv::Div2Pow9 => 512,
-        }
-    }
-
-    #[inline]
-    fn get_inner(&self) -> (DIVSEL_A, u16) {
-        match self {
-            // Maximum reach of DIV1 mode is 255
-            GclkDiv::Div(div) => (DIVSEL_A::DIV1, (*div).into()),
-            // Set the divider to be 256
-            // 2^(1 + 7) = 256
-            GclkDiv::Div2Pow8 => (DIVSEL_A::DIV2, 7),
-            // Set the divider to be 512
-            // 2^(1 + 8) = 512
-            GclkDiv::Div2Pow9 => (DIVSEL_A::DIV2, 8),
-        }
-    }
-}
-
 //==============================================================================
-// GclkSourceId
+// DynGclkSourceId
 //==============================================================================
 
-/// Value-level enum of GCLK sources
+/// Value-level enum of possible clock sources for a [`Gclk`]
 ///
-/// This is the value-level equivalent of the [`GclkSourceId`]
-/// [type-level enum]. It lists all possible [`Source`]s for each [`Gclk`].
+/// The variants of this enum identify one of nine possible clock sources for
+/// a given [`Gclk`].
 ///
-/// [type-level enum]: crate::typelevel#type-level-enum
-#[allow(missing_docs)]
+/// `DynGclkSourceId` is the value-level equivalent of [`GclkSourceId`].
+#[derive(Copy, Clone, PartialEq, Eq)]
 pub enum DynGclkSourceId {
     Dfll,
     Dpll0,
@@ -672,11 +674,22 @@ impl From<DynGclkSourceId> for SRC_A {
     }
 }
 
-/// Type-level `enum` for GCLK sources
+//==============================================================================
+// GclkSourceId
+//==============================================================================
+
+/// Value-level enum of possible clock [`Source`]s for a [`Gclk`]
 ///
-/// See the documentation / on [type-level enums] for more details on the
-/// pattern.
+/// The types implementing this trait are type-level variants of `GclkSourceId`,
+/// and they identify one of nine possible clock [`Source`]s for a given
+/// [`Gclk`]. All implementers of this trait are `Id` types, which are described
+/// in more detail in the [`clock` module documentation](super).
 ///
+/// `GclkSourceId` is the type-level equivalent of [`DynGclkSourceId`]. See the
+/// documentation on [type-level programming] and specifically
+/// [type-level enums] for more details.
+///
+/// [type-level programming]: crate::typelevel
 /// [type-level enums]: crate::typelevel#type-level-enum
 pub trait GclkSourceId {
     /// Corresponding variant of [`DynGclkSourceId`]
@@ -715,39 +728,82 @@ impl GclkSourceId for Xosc32kId {
 // Gclk
 //==============================================================================
 
-/// This struct represents a disabled [`Gclk`] - generic clock generator
+/// Generic clock generator used to distribute clocks to various peripherals
 ///
-/// It is generic over:
-/// - a numeric variant (available variants: [`GclkId`] implementors - eg.
-///   [`GclkId3`])
-/// - a current signal source (expressed via source's marker type)
+/// A generic clock generator acts as a branch in the clock tree. It can connect
+/// a root or branch clock to other branch or leaf clocks. In particular, all
+/// peripheral [`Pclk`]s must be derived from a `Gclk`.
+///
+/// The type parameter `G` is a [`GclkId`] that determines which of the 12
+/// generators this [`Gclk`] represents ([`Gclk0`] - [`Gclk11`]). The type
+/// parameter `I` represents the `Id` type for the clock [`Source`] driving this
+/// `Gclk`. It must be one of the valid [`GclkSourceId`]s. See the
+/// [`clock` module documentation](super) for more detail on `Id` types.
+///
+/// On its own, an instance of `Gclk` does not represent an enabled clock
+/// generator. Instead, it must first be wrapped with [`Enabled`], which
+/// implements compile-time safety of the clock tree.
+///
+/// Because the terminal call to [`enable`] consumes the `Gclk` and returns an
+/// [`EnabledGclk`], the remaining API uses the builder pattern, where each
+/// method takes and returns `self` by value, allowing them to be easily
+/// chained.
+///
+/// See the [module-level documentation](self) for an example of creating,
+/// configuring and using a `Gclk`.
+///
+/// [`Pclk`]: super::pclk::Pclk
+/// [`enable`]: Gclk::enable
 pub struct Gclk<G, I>
 where
     G: GclkId,
     I: GclkSourceId,
 {
-    /// Unique [`GclkToken`]
     token: GclkToken<G>,
-    /// Clock source feeding the [`Gclk`]
     src: PhantomData<I>,
-    /// Frequency of the clock source [`Gclk.src`] feeding the [`Gclk`]
     src_freq: Hertz,
-    /// [`Gclk`] divider, modifying the [`Gclk.src_freq`]uency; affecting the
-    /// output frequency
-    div: G::DividerType,
-    /// State of `GclkOut` pins when GCLK_IO is disabled
+    div: G::Divider,
     output_off_value: bool,
-    /// Improve duty cycle, used to ensure 50-50 duty cycle with odd dividers
     improve_duty_cycle: bool,
 }
 
+/// An [`Enabled`] [`Gclk`]
+///
+/// As described in the [`clock` module documentation](super), the [`Enabled`]
+/// wrapper implements compile-time clock tree safety by tracking the number of
+/// downstream clocks dependent on this [`Gclk`] and restricts access to the
+/// underlying [`Gclk`] to prevent misuse.
+///
+/// As with [`Enabled`], the default value for `N` is `U0`. Stated differently,
+/// if left unspecified, the number of dependent clocks is assumed to be zero.
 pub type EnabledGclk<G, I, N = U0> = Enabled<Gclk<G, I>, N>;
 
-seq!(G in 0..=11 {
+/// Type alias for the corresponding [`Gclk`]
+///
+/// As mentioned in the [module-level documentation](self), `Gclk0` is special,
+/// because it provides the processor master clock. We represent this by
+/// permanently [`Increment`]ing the depdent clock count of [`EnabledGclk0`],
+/// which prevents it from ever being disabled. Accordingly, we also provide a
+/// few special methods on [`EnabledGclk0`] to configure the `Gclk` while it is
+/// actively running.
+pub type Gclk0<I> = Gclk<Gclk0Id, I>;
+
+/// Type aliase for the corresponding [`EnabledGclk`]
+///
+/// As mentioned in the [module-level documentation](self), `Gclk0` is special,
+/// because it provides the processor master clock. We represent this by
+/// permanently [`Increment`]ing the depdent clock count of [`EnabledGclk0`],
+/// which prevents it from ever being disabled. Accordingly, we also provide a
+/// few special methods on [`EnabledGclk0`] to configure the `Gclk` while it is
+/// actively running.
+pub type EnabledGclk0<I, N = U0> = EnabledGclk<Gclk0Id, I, N>;
+
+seq!(G in 1..=11 {
     paste! {
         /// Type alias for the corresponding [`Gclk`]
         pub type Gclk~G<I> = Gclk<[<Gclk G Id>], I>;
 
+        /// Type aliase for the corresponding [`EnabledGclk`]
         pub type EnabledGclk~G<I, N = U0> = EnabledGclk<[<Gclk G Id>], I, N>;
     }
 });
@@ -759,7 +815,17 @@ where
 {
     /// Create a new [`Gclk`]
     ///
-    /// Hardware calls are deferred until the call to [`Gclk::enable`]
+    /// Creating a [`Gclk`] does not modify any of the hardware registers. It
+    /// only serves to [`Increment`] the [`Source`]'s dependent clock count and
+    /// create a struct to track the GCLK configuration.
+    ///
+    /// The configuration data is stored until the user calls [`enable`]. At
+    /// that point, all of the registers are written according to the
+    /// initialization procedures specified in the datasheet, and an
+    /// [`EnabledGclk`] is returned. The `Gclk` is not active or useful until
+    /// that point.
+    ///
+    /// [`enable`]: Gclk::enable
     #[inline]
     pub fn new<S>(token: GclkToken<G>, source: S) -> (Gclk<G, I>, S::Inc)
     where
@@ -769,14 +835,17 @@ where
             token,
             src: PhantomData,
             src_freq: source.freq(),
-            div: G::DividerType::default(),
+            div: G::Divider::default(),
             output_off_value: false,
             improve_duty_cycle: false,
         };
         (config, source.inc())
     }
 
-    /// Deconstruct the [`Gclk`] and return the inner [`GclkToken`]
+    /// Consume the [`Gclk`] and free its corresponding resources
+    ///
+    /// Freeing a [`Gclk`] returns the corresponding [`GclkToken`] and
+    /// [`Decrement`]s the [`Source`]'s depdendent clock count.
     #[inline]
     pub fn free<S>(self, source: S) -> (GclkToken<G>, S::Dec)
     where
@@ -785,10 +854,19 @@ where
         (self.token, source.dec())
     }
 
-    /// Swap [`Gclk`] source
+    /// Swap the [`Gclk`]'s [`Source`]
     ///
-    /// Provided a [`GclkSource`] the [`Gclk`] is updated,
-    /// the old clock source token released and returned
+    /// A clock [`Source`] is required when creating a [`Gclk`] with [`new`],
+    /// which [`Increment`]s the `Source`'s depdendent clock count. Changing
+    /// the `Source` would normally require [`free`]ing the [`GclkToken`] and
+    /// old `Source` before creating a [`new`] `Gclk` with a new `Source`.
+    ///
+    /// Alternatively, the calls to [`free`] and [`new`] can be combined with
+    /// `swap`. The depdendent clock count for the `Old` `Source` will be
+    /// [`Decrement`]ed, while the `New` `Source` will be [`Increment`]ed.
+    ///
+    /// [`new`]: Gclk::new
+    /// [`free`]: Gclk::free
     #[inline]
     pub fn swap<Old, New>(self, old: Old, new: New) -> (Gclk<G, New::Id>, Old::Dec, New::Inc)
     where
@@ -809,56 +887,71 @@ where
         (config, old, new)
     }
 
-    /// Set the state of [`GclkOut`](super::gclkio::GclkOut) pins when GCLK_IO
-    /// output is disabled
+    /// Set the state of [`GclkOut`] pins when GCLK_IO output is disabled
+    ///
+    /// A [`Gclk`] can be output to a [`gpio`] [`Pin`] by creating an instance
+    /// of [`GclkOut`]. Each `GclkOut` will consume a corresponding `Pin` and
+    /// convert it to the correct peripheral function mode ([`AlternateM`]).
+    ///
+    /// This function will set the output state of any `Pin` configured in
+    /// `AlternateM` mode (either manually or as part of `GclkOut`) when the
+    /// `Gclk` is *disabled*. To enable the `Gclk` output, users must create a
+    /// [`GclkOut`] using an [`EnabledGclk`].
+    ///
+    /// See the [`GclkOut`] documentation for more details.
+    ///
+    /// [`GclkOut`]: super::gclkio::GclkOut
+    /// [`gpio`]: crate::gpio
+    /// [`Pin`]: crate::gpio::Pin
+    /// [`AlternateM`]: crate::gpio::AlternateM
     #[inline]
     pub fn output_off_value(mut self, high: bool) -> Self {
         self.output_off_value = high;
         self
     }
 
-    /// When dividing an input clock with a odd division factor the duty-cycle
-    /// is not 50-50, enabling this ensures 50-50 duty-cycle on the
-    /// resulting generator clock
+    /// Output a 50-50 duty cycle clock when using an odd [`GclkDivider`]
     #[inline]
     pub fn improve_duty_cycle(mut self, flag: bool) -> Self {
         self.improve_duty_cycle = flag;
         self
     }
 
-    /// Returns the actual frequency of the [`Gclk`]
+    /// Return the [`Gclk`] ouput frequency
     ///
-    /// The division factor set via `.div(GclkDiv)` stores the *actual* desired
-    /// division factor, while hardware expresses this a bit differently
-    /// under the hood
-    ///
-    /// Hardware has two modes, see [`GclkDiv`] and [`Gclk1Div`], where the
-    /// `DIVSEL` register sets if the division factor is directly stored in
-    /// register or if calculated as done in [`Gclk1Div`]
-    ///
-    /// A division factor of 0 is valid from the hardware point of view,
-    /// equal to a division factor of 1, meaning "no division/passthrough"
+    /// The output frequency is the [`Source`] frequency divided by the
+    /// [`GclkDivider`]. The divider supplied to [`Gclk::div`] is either a
+    /// [`GclkDiv`] or [`Gclk1Div`] enum representing all of the valid divider
+    /// options for the given [`Gclk`].
     #[inline]
     pub fn freq(&self) -> Hertz {
-        // Handle the allowed case with DIV-field set to zero
-        let div = self.div.get_div();
-        match div {
-            0 => Hertz(self.src_freq.0),
-            _ => Hertz(self.src_freq.0 / div),
-        }
+        let div = max(1, self.div.divider());
+        Hertz(self.src_freq.0 / div)
     }
 
-    /// Set the desired [`Gclk`] clock divider
+    /// Set the [`GclkDivider`] value
     ///
-    /// See [`GclkDiv`] for possible divider factors
+    /// Set the clock division factor from [`Source`] to [`Gclk`] output. This
+    /// takes either a [`GclkDiv`] or [`Gclk1Div`] enum, restricting the
+    /// possible division factors to only the valid ones for the given [`Gclk`].
+    /// See the [`GclkDivider`] trait for more details.
     #[inline]
-    pub fn div(mut self, div: G::DividerType) -> Self {
+    pub fn div(mut self, div: G::Divider) -> Self {
         self.div = div;
         self
     }
 
-    /// Enabling a [`Gclk`] modifies hardware to match the configuration
-    /// stored within.
+    /// Enable the [`Gclk`], so that it can be used as a clock [`Source`]
+    ///
+    /// As mentioned when creating a [`new`] `Gclk`, no hardware registers are
+    /// actually modified until this call. Rather, the desired configuration is
+    /// stored internally, and the [`Gclk`] is initialized and configured here
+    /// according to the datasheet.
+    ///
+    /// The returned value is an [`EnabledGclk`] that can be used as a clock
+    /// [`Source`] for other clocks.
+    ///
+    /// [`new`]: Gclk::new
     #[inline]
     pub fn enable(mut self) -> EnabledGclk<G, I> {
         self.token.set_source(I::DYN);
@@ -870,23 +963,19 @@ where
     }
 }
 
-/// The [`Gclk`] generic clock generator
-///
-/// Provide methods for enable and disable gclk_out to
-/// [`GclkOutSource`][super::sources::GclkOutSource]
 impl<G, I, N> EnabledGclk<G, I, N>
 where
     G: GclkId,
     I: GclkSourceId,
     N: Counter,
 {
-    /// Enable the [`Gclk`] clock output to GPIO pins
+    /// Enable the [`Gclk`] output to GPIO pins
     #[inline]
     pub(super) fn enable_gclk_out(&mut self) {
         self.0.token.enable_gclk_out();
     }
 
-    /// Disable the [`Gclk`] clock output to GPIO pins
+    /// Disable the [`Gclk`] output to GPIO pins
     #[inline]
     pub(super) fn disable_gclk_out(&mut self) {
         self.0.token.disable_gclk_out();
@@ -898,8 +987,10 @@ where
     G: GclkId,
     I: GclkSourceId,
 {
-    /// Disable the [`Gclk`], possible
-    /// when nothing depends on the `Gclk`
+    /// Disable the [`Gclk`]
+    ///
+    /// This method is only implemented for `N = U0`, which means the clock can
+    /// only be disabled when no other clocks depend on this [`Gclk`].
     #[inline]
     pub fn disable(mut self) -> Gclk<G, I> {
         self.0.token.disable();
@@ -907,12 +998,26 @@ where
     }
 }
 
+/// Special methods for an [`Enabled`] [`Gclk0`]
+///
+/// [`Gclk0`] is special, because it drives the processor's master clock, which
+/// can never be disabled. As discussed in the [module-level documentation],
+/// this fact is represented by permanently [`Increment`]ing the dependent clock
+/// count for [`EnabledGclk0`]. Thus, the minimum value for `N` is `U1` and
+/// [`Gclk0`] can never be [`disable`]d.
+///
+/// These methods represent actions that can be taken when `N = U1`, i.e. the
+/// depdendent clock count is at its minimum value. This is the only time it's
+/// safe to [`swap`] the [`Gclk0`] [`Source`] or change its [`GclkDivider`]
+/// value.
+///
+/// [module-level documentation]: self
+/// [`disable`]: EnabledGclk::disable
+/// [`swap`]: Gclk::swap
 impl<I: GclkSourceId> EnabledGclk0<I, U1> {
-    /// Swap source for [`Gclk0`]
+    /// Swap the clock [`Source`] for [`Gclk0`]
     ///
-    /// [`Gclk0`] is special since it always has `Mclk`
-    /// as a dependency, with only one dependency (`Mclk`)
-    /// allow to swap the clock source.
+    /// See [`Gclk::swap`] documentation for more details.
     #[inline]
     pub fn swap<Old, New>(
         self,
@@ -928,9 +1033,9 @@ impl<I: GclkSourceId> EnabledGclk0<I, U1> {
         (config.enable().inc(), old, new)
     }
 
-    /// Set the desired [`Gclk`] clock divider
+    /// Set the [`GclkDivider`] value for [`Gclk0`]
     ///
-    /// See [`GclkDiv`] for possible divider factors
+    /// See [`Gclk::div`] documentation for more details.
     #[inline]
     pub fn div(self, div: GclkDiv) -> Self {
         let mut config = self.0.div(div);
@@ -938,9 +1043,7 @@ impl<I: GclkSourceId> EnabledGclk0<I, U1> {
         Enabled::new(config)
     }
 
-    /// When dividing an input clock with a odd division factor the duty-cycle
-    /// is not 50-50, enabling this ensures 50-50 duty-cycle on the
-    /// resulting generator clock
+    /// Output a 50-50 duty cycle clock when using an odd [`GclkDivider`]
     #[inline]
     pub fn improve_duty_cycle(self, flag: bool) -> Self {
         let mut config = self.0.improve_duty_cycle(flag);
@@ -968,27 +1071,32 @@ where
 }
 
 //==============================================================================
-// Gclks
+// Tokens
 //==============================================================================
 
 seq!(N in 1..=11 {
     paste! {
-        /// [`Gclk`] tokens ensuring there only exists one instance of each [`Gclk`]
+        /// Set of [`GclkToken`]s representing the disabled [`Gclk`]s at
+        /// power-on reset
         pub struct Tokens {
-            #( /// GclkToken for the corresponding GCLK
-               pub gclk~N: GclkToken<[<Gclk N Id>]>, )*
+            #(
+                /// [`GclkToken`] for
+                #[doc = "[`Gclk" N "`]"]
+                pub gclk~N: GclkToken<[<Gclk N Id>]>,
+            )*
         }
 
         impl Tokens {
+            /// Create the set of [`GclkToken`]s
+            ///
+            /// Safety: All of the invariants required by `GclkToken::new` must
+            /// be upheld here as well
             #[inline]
-            pub(super) fn new(nvmctrl: &mut NVMCTRL) -> Self {
+            pub(super) unsafe fn new(nvmctrl: &mut NVMCTRL) -> Self {
                 // Use auto wait states
                 nvmctrl.ctrla.modify(|_, w| w.autows().set_bit());
-                // Return all tokens when initially created
-                unsafe {
-                    Tokens {
-                        #( gclk~N: GclkToken::new(), )*
-                    }
+                Tokens {
+                    #( gclk~N: GclkToken::new(), )*
                 }
             }
         }
