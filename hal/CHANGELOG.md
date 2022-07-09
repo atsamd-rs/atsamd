@@ -1,5 +1,6 @@
 # Unreleased Changes
 
+- Correct thumbv6 DFLL multiplier to fix USB clock correction
 - Fix failing `bsp_pins!` invocation with no aliases (#605 fixes #599)
 - Add Advanced Encryption Standard (AES) peripheral support including RustCrypto compatible backend
 - Add embedded-hal `InputPin` trait to EIC pins
