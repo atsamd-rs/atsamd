@@ -9,7 +9,7 @@ use atsamd_hal::{
     clock::v2::{
         self as clock,
         dpll::Dpll,
-        gclk::{Gclk, Gclk1Div, GclkDiv},
+        gclk::{Gclk, GclkDiv8, GclkDiv16},
         gclkio::GclkOut,
         osculp32k::OscUlp32k,
         pclk::Pclk,
@@ -67,7 +67,7 @@ mod app {
 
         // Take `Dfll` 48 MHz, divide down to `2 MHz` through `Gclk1`
         let (gclk1, dfll) = Gclk::new(tokens.gclks.gclk1, clocks.dfll);
-        let gclk1 = gclk1.div(Gclk1Div::Div(24)).enable();
+        let gclk1 = gclk1.div(GclkDiv16::Div(24)).enable();
 
         // Output `Gclk1` on PB15 pin
         let (_gclk_out1, gclk1) = GclkOut::enable(tokens.gclk_io.gclk_out1, pins.pb15, gclk1);
@@ -97,7 +97,7 @@ mod app {
         // Output `Dpll1` on PB20 pin via `Gclk6`, divided by 200 resulting in 0.5 MHz
         // output frequency
         let (gclk6, _dpll1) = Gclk::new(tokens.gclks.gclk6, dpll1);
-        let gclk6 = gclk6.div(GclkDiv::Div(200)).enable();
+        let gclk6 = gclk6.div(GclkDiv8::Div(200)).enable();
         let (_gclk_out6, _gclk6) = GclkOut::enable(tokens.gclk_io.gclk_out6, pins.pb12, gclk6);
 
         // Configure `Xosc32k` with both outputs (1kHz, 32kHz) activated
@@ -112,7 +112,7 @@ mod app {
         // Output `Xosc32k` on PB16 pin via `Gclk2`, divided by 2 resulting in 16 kHz
         // output frequency
         let (gclk2, _xosc32k) = Gclk::new(tokens.gclks.gclk2, xosc32k);
-        let gclk2 = gclk2.div(GclkDiv::Div(2)).enable();
+        let gclk2 = gclk2.div(GclkDiv8::Div(2)).enable();
         let (_gclk_out2, _gclk2) = GclkOut::enable(tokens.gclk_io.gclk_out2, pins.pb16, gclk2);
 
         // Output `OscUlp32k` on PB11 pin via `Gclk5`, without any division resulting in
