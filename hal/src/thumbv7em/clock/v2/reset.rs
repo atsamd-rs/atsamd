@@ -99,7 +99,7 @@ pub struct Tokens {
     /// Tokens to create [`gclkio::GclkIo`]s
     pub gclk_io: gclkio::Tokens,
     /// Tokens to create [`gclk::Gclk`]
-    pub gclks: gclk::Tokens,
+    pub gclks: gclk::GclkTokens,
     /// Tokens to create [`pclk::Pclk`]s
     pub pclks: pclk::Tokens,
     /// Tokens to create [`rtcosc::RtcOsc`]
@@ -160,7 +160,7 @@ pub fn clock_system_at_reset(
             dpll0: dpll::DpllToken::new(),
             dpll1: dpll::DpllToken::new(),
             gclk_io: gclkio::Tokens::new(),
-            gclks: gclk::Tokens::new(nvmctrl),
+            gclks: gclk::GclkTokens::new(nvmctrl),
             pclks: pclk::Tokens::new(),
             rtcosc: rtcosc::RtcOscToken::new(),
             xosc0: xosc::XoscToken::new(),

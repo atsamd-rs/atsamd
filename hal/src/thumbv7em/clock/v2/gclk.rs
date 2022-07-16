@@ -62,7 +62,7 @@
 //! use atsamd_hal::{
 //!     clock::v2::{
 //!         clock_system_at_reset,
-//!         gclk::{Gclk, GclkDiv, Gclk1Div},
+//!         gclk::{Gclk, GclkDiv8, GclkDiv16},
 //!         gclkio::{GclkIn, GclkOut},
 //!         pclk::Pclk,
 //!     },
@@ -110,13 +110,13 @@
 //! that it can be chained with the call to `Gclk::enable`.
 //!
 //! ```ignore
-//! let gclk1 = gclk1.div(Gclk1Div::Div(2)).enable();
+//! let gclk1 = gclk1.div(GclkDiv16::Div(2)).enable();
 //! ```
 //!
 //! Note that the divider value supplied to `Gclk::div` must be wrapped by the
-//! [`Gclk1Div`] enum. This is for a few different reasons. First, [`Gclk1`]
+//! [`GclkDiv16`] enum. This is for a few different reasons. First, [`Gclk1`]
 //! accepts a wider range of divider values than the other [`Gclk`]s, which use
-//! [`GclkDiv`] instead. Second, the actual divider value is controlled by two
+//! [`GclkDiv8`] instead. Second, the actual divider value is controlled by two
 //! register fields, and the set of valid values is best expressed as a Rust
 //! enum. These two enums are connected by the [`GclkDivider`] trait.
 //!
@@ -143,7 +143,7 @@
 //!
 //!
 //! ```ignore
-//! let gclk2 = gclk2.div(GclkDiv::Div(4)).enable();
+//! let gclk2 = gclk2.div(GclkDiv8::Div(4)).enable();
 //! let (pclk_sercom1, gclk2) = Pclk::enable(tokens.pclks.sercom1, gclk2);
 //! ```
 //!
@@ -161,7 +161,7 @@
 //! use atsamd_hal::{
 //!     clock::v2::{
 //!         clock_system_at_reset,
-//!         gclk::{Gclk, GclkDiv, Gclk1Div},
+//!         gclk::{Gclk, GclkDiv8, GclkDiv16},
 //!         gclkio::{GclkIn, GclkOut},
 //!         pclk::Pclk,
 //!     },
@@ -181,10 +181,10 @@
 //! let pins = Pins::new(pac.PORT);
 //! let gclk_in1 = GclkIn::enable(tokens.gclk_io.gclk_in1, pins.pb15, 24.mhz());
 //! let (gclk1, gclk_in1) = Gclk::new(tokens.gclks.gclk1, gclk_in1);
-//! let gclk1 = gclk1.div(Gclk1Div::Div(2)).enable();
+//! let gclk1 = gclk1.div(GclkDiv16::Div(2)).enable();
 //! let (pclk_sercom0, gclk1) = Pclk::enable(tokens.pclks.sercom0, gclk1);
 //! let (gclk2, gclk1) = Gclk::new(tokens.gclks.gclk2, gclk1);
-//! let gclk2 = gclk2.div(GclkDiv::Div(4)).enable();
+//! let gclk2 = gclk2.div(GclkDiv8::Div(4)).enable();
 //! let (pclk_sercom1, gclk2) = Pclk::enable(tokens.pclks.sercom1, gclk2);
 //! let (gclk_out2, gclk2) = GclkOut::enable(tokens.gclk_io.gclk_out2, pins.pa16, gclk2);
 //! ```
@@ -451,7 +451,7 @@ pub trait GclkId: Sealed {
     const NUM: usize;
     /// Corresponding [`GclkDivider`] type
     ///
-    /// [`Gclk1`] uses [`Gclk1Div`], while all other [`Gclk`]s use [`GclkDiv`].
+    /// [`Gclk1`] uses [`GclkDiv16`], while all other [`Gclk`]s use [`GclkDiv8`].
     type Divider: GclkDivider;
 }
 
@@ -467,7 +467,7 @@ impl Sealed for Gclk0Id {}
 impl GclkId for Gclk0Id {
     const DYN: DynGclkId = DynGclkId::Gclk0;
     const NUM: usize = 0;
-    type Divider = GclkDiv;
+    type Divider = GclkDiv8;
 }
 
 /// Type-level variant of [`GclkId`] representing the identity of GCLK1
@@ -482,7 +482,7 @@ impl Sealed for Gclk1Id {}
 impl GclkId for Gclk1Id {
     const DYN: DynGclkId = DynGclkId::Gclk1;
     const NUM: usize = 1;
-    type Divider = Gclk1Div;
+    type Divider = GclkDiv16;
 }
 
 seq!(N in 2..=11 {
@@ -500,7 +500,7 @@ seq!(N in 2..=11 {
         impl GclkId for [<Gclk N Id>] {
             const DYN: DynGclkId = DynGclkId::Gclk~N;
             const NUM: usize = N;
-            type Divider = GclkDiv;
+            type Divider = GclkDiv8;
         }
     }
 });
@@ -509,14 +509,15 @@ seq!(N in 2..=11 {
 // GclkDivider
 //==============================================================================
 
-/// Trait unifying the two [`Gclk`] divider types, [`GclkDiv`] and [`Gclk1Div`]
+/// Trait unifying the two [`Gclk`] divider types, [`GclkDiv8`] and
+/// [`GclkDiv16`]
 ///
 /// Choosing a [`Gclk`] division factor can be complicated. [`Gclk1`] can accept
 /// a 16-bit divider value, while all other [`Gclk`]s only take an 8-bit value.
 /// Moreover, the set of valid clock dividers does not form a contiguous range.
 /// For example, the valid set of dividers for most [`Gclk`]s is 1-256 and 512.
 ///
-/// The [`Gclk1Div`] and [`GclkDiv`] enums provide simple and intuitive
+/// The [`GclkDiv8`] and [`GclkDiv16`] enums provide simple and intuitive
 /// user-facing interfaces to choose the *actual* clock divider value. This
 /// trait, on the other hand, provides an internal-facing interface used by HAL
 /// authors to extract the clock divider and convert it to the corresponding
@@ -530,17 +531,18 @@ pub trait GclkDivider: Sealed + Default + Copy {
 }
 
 //==============================================================================
-// GclkDiv
+// GclkDiv8
 //==============================================================================
 
 /// Enum for the clock division factor of all [`Gclk`]s other than [`Gclk1`]
 ///
 /// Choosing a [`Gclk`] division factor can be complicated, because the set of
 /// valid values is not contiguous. For clocks other than [`Gclk1`], the
-/// division factor can be 1-256 or 512. `GclkDiv` provides an enum interface to
-/// enforce validity of the division factor. See the datasheet for more details.
+/// division factor can be 1-256 or 512. `GclkDiv8` provides an enum interface
+/// to enforce validity of the division factor. See the datasheet for more
+/// details.
 #[derive(Clone, Copy)]
-pub enum GclkDiv {
+pub enum GclkDiv8 {
     /// Use a literal division factor
     ///
     /// All values in the range `[1-255]` are valid. Zero is also valid, but it
@@ -552,47 +554,47 @@ pub enum GclkDiv {
     Div2Pow9,
 }
 
-impl Sealed for GclkDiv {}
+impl Sealed for GclkDiv8 {}
 
-impl Default for GclkDiv {
+impl Default for GclkDiv8 {
     #[inline]
     fn default() -> Self {
         Self::Div(0)
     }
 }
 
-impl GclkDivider for GclkDiv {
+impl GclkDivider for GclkDiv8 {
     #[inline]
     fn divider(&self) -> u32 {
         match self {
-            GclkDiv::Div(div) => (*div).into(),
-            GclkDiv::Div2Pow8 => 256,
-            GclkDiv::Div2Pow9 => 512,
+            GclkDiv8::Div(div) => (*div).into(),
+            GclkDiv8::Div2Pow8 => 256,
+            GclkDiv8::Div2Pow9 => 512,
         }
     }
 
     #[inline]
     fn divsel_div(&self) -> (DIVSEL_A, u16) {
         match self {
-            GclkDiv::Div(div) => (DIVSEL_A::DIV1, (*div).into()),
-            GclkDiv::Div2Pow8 => (DIVSEL_A::DIV2, 7),
-            GclkDiv::Div2Pow9 => (DIVSEL_A::DIV2, 8),
+            GclkDiv8::Div(div) => (DIVSEL_A::DIV1, (*div).into()),
+            GclkDiv8::Div2Pow8 => (DIVSEL_A::DIV2, 7),
+            GclkDiv8::Div2Pow9 => (DIVSEL_A::DIV2, 8),
         }
     }
 }
 
 //==============================================================================
-// Gclk1Div
+// GclkDiv16
 //==============================================================================
 
 /// Enum for the clock division factor of [`Gclk1`] only
 ///
 /// Choosing the [`Gclk1`] division factor can be complicated, because the set
 /// of valid values is not contiguous. For [`Gclk1`], the division factor can be
-/// 1-65536 or 131072. `Gclk1Div` provides an enum interface to enforce validity
-/// of the division factor. See the datasheet for more details.
+/// 1-65536 or 131072. `GclkDiv16` provides an enum interface to enforce
+/// validity of the division factor. See the datasheet for more details.
 #[derive(Clone, Copy)]
-pub enum Gclk1Div {
+pub enum GclkDiv16 {
     /// Use a literal division factor
     ///
     /// All values in the range `[1-65535]` are valid. Zero is also valid, but
@@ -604,31 +606,31 @@ pub enum Gclk1Div {
     Div2Pow17,
 }
 
-impl Sealed for Gclk1Div {}
+impl Sealed for GclkDiv16 {}
 
-impl Default for Gclk1Div {
+impl Default for GclkDiv16 {
     #[inline]
     fn default() -> Self {
         Self::Div(0)
     }
 }
 
-impl GclkDivider for Gclk1Div {
+impl GclkDivider for GclkDiv16 {
     #[inline]
     fn divider(&self) -> u32 {
         match self {
-            Gclk1Div::Div(div) => (*div).into(),
-            Gclk1Div::Div2Pow16 => 65536,
-            Gclk1Div::Div2Pow17 => 131072,
+            GclkDiv16::Div(div) => (*div).into(),
+            GclkDiv16::Div2Pow16 => 65536,
+            GclkDiv16::Div2Pow17 => 131072,
         }
     }
 
     #[inline]
     fn divsel_div(&self) -> (DIVSEL_A, u16) {
         match self {
-            Gclk1Div::Div(div) => (DIVSEL_A::DIV1, *div),
-            Gclk1Div::Div2Pow16 => (DIVSEL_A::DIV2, 15),
-            Gclk1Div::Div2Pow17 => (DIVSEL_A::DIV2, 16),
+            GclkDiv16::Div(div) => (DIVSEL_A::DIV1, *div),
+            GclkDiv16::Div2Pow16 => (DIVSEL_A::DIV2, 15),
+            GclkDiv16::Div2Pow17 => (DIVSEL_A::DIV2, 16),
         }
     }
 }
@@ -921,7 +923,7 @@ where
     ///
     /// The output frequency is the [`Source`] frequency divided by the
     /// [`GclkDivider`]. The divider supplied to [`Gclk::div`] is either a
-    /// [`GclkDiv`] or [`Gclk1Div`] enum representing all of the valid divider
+    /// [`GclkDiv8`] or [`GclkDiv16`] enum representing all of the valid divider
     /// options for the given [`Gclk`].
     #[inline]
     pub fn freq(&self) -> Hertz {
@@ -932,7 +934,7 @@ where
     /// Set the [`GclkDivider`] value
     ///
     /// Set the clock division factor from [`Source`] to [`Gclk`] output. This
-    /// takes either a [`GclkDiv`] or [`Gclk1Div`] enum, restricting the
+    /// takes either a [`GclkDiv8`] or [`GclkDiv16`] enum, restricting the
     /// possible division factors to only the valid ones for the given [`Gclk`].
     /// See the [`GclkDivider`] trait for more details.
     #[inline]
@@ -1037,7 +1039,7 @@ impl<I: GclkSourceId> EnabledGclk0<I, U1> {
     ///
     /// See [`Gclk::div`] documentation for more details.
     #[inline]
-    pub fn div(self, div: GclkDiv) -> Self {
+    pub fn div(self, div: GclkDiv8) -> Self {
         let mut config = self.0.div(div);
         config.token.set_div(div);
         Enabled::new(config)
@@ -1078,7 +1080,7 @@ seq!(N in 1..=11 {
     paste! {
         /// Set of [`GclkToken`]s representing the disabled [`Gclk`]s at
         /// power-on reset
-        pub struct Tokens {
+        pub struct GclkTokens {
             #(
                 /// [`GclkToken`] for
                 #[doc = "[`Gclk" N "`]"]
@@ -1086,7 +1088,7 @@ seq!(N in 1..=11 {
             )*
         }
 
-        impl Tokens {
+        impl GclkTokens {
             /// Create the set of [`GclkToken`]s
             ///
             /// Safety: All of the invariants required by `GclkToken::new` must
@@ -1095,7 +1097,7 @@ seq!(N in 1..=11 {
             pub(super) unsafe fn new(nvmctrl: &mut NVMCTRL) -> Self {
                 // Use auto wait states
                 nvmctrl.ctrla.modify(|_, w| w.autows().set_bit());
-                Tokens {
+                GclkTokens {
                     #( gclk~N: GclkToken::new(), )*
                 }
             }
