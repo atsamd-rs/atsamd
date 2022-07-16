@@ -680,7 +680,7 @@ impl From<DynGclkSourceId> for SRC_A {
 // GclkSourceId
 //==============================================================================
 
-/// Value-level enum of possible clock [`Source`]s for a [`Gclk`]
+/// Type-level enum of possible clock [`Source`]s for a [`Gclk`]
 ///
 /// The types implementing this trait are type-level variants of `GclkSourceId`,
 /// and they identify one of nine possible clock [`Source`]s for a given
