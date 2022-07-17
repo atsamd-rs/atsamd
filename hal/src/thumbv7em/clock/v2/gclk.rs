@@ -443,7 +443,7 @@ pub enum DynGclkId {
 /// [type-level enums] for more details.
 ///
 /// [type-level programming]: crate::typelevel
-/// [type-level enums]: crate::typelevel#type-level-enum
+/// [type-level enums]: crate::typelevel#type-level-enums
 pub trait GclkId: Sealed {
     /// Corresponding variant of [`DynGclkId`]
     const DYN: DynGclkId;
@@ -461,7 +461,7 @@ pub trait GclkId: Sealed {
 /// [type-level enums] for more details.
 ///
 /// [type-level programming]: crate::typelevel
-/// [type-level enums]: crate::typelevel#type-level-enum
+/// [type-level enums]: crate::typelevel#type-level-enums
 pub enum Gclk0Id {}
 impl Sealed for Gclk0Id {}
 impl GclkId for Gclk0Id {
@@ -476,7 +476,7 @@ impl GclkId for Gclk0Id {
 /// [type-level enums] for more details.
 ///
 /// [type-level programming]: crate::typelevel
-/// [type-level enums]: crate::typelevel#type-level-enum
+/// [type-level enums]: crate::typelevel#type-level-enums
 pub enum Gclk1Id {}
 impl Sealed for Gclk1Id {}
 impl GclkId for Gclk1Id {
@@ -494,7 +494,7 @@ seq!(N in 2..=11 {
         /// [type-level enums] for more details.
         ///
         /// [type-level programming]: crate::typelevel
-        /// [type-level enums]: crate::typelevel#type-level-enum
+        /// [type-level enums]: crate::typelevel#type-level-enums
         pub enum [<Gclk N Id>] {}
         impl Sealed for [<Gclk N Id>] {}
         impl GclkId for [<Gclk N Id>] {
@@ -692,7 +692,7 @@ impl From<DynGclkSourceId> for SRC_A {
 /// [type-level enums] for more details.
 ///
 /// [type-level programming]: crate::typelevel
-/// [type-level enums]: crate::typelevel#type-level-enum
+/// [type-level enums]: crate::typelevel#type-level-enums
 pub trait GclkSourceId {
     /// Corresponding variant of [`DynGclkSourceId`]
     const DYN: DynGclkSourceId;
@@ -805,7 +805,7 @@ seq!(G in 1..=11 {
         /// Type alias for the corresponding [`Gclk`]
         pub type Gclk~G<I> = Gclk<[<Gclk G Id>], I>;
 
-        /// Type aliase for the corresponding [`EnabledGclk`]
+        /// Type alias for the corresponding [`EnabledGclk`]
         pub type EnabledGclk~G<I, N = U0> = EnabledGclk<[<Gclk G Id>], I, N>;
     }
 });
