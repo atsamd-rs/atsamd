@@ -101,7 +101,7 @@
 //! let (gclk1, gclk_in1) = Gclk::new(tokens.gclks.gclk1, gclk_in1);
 //! ```
 //!
-//! The call to `Gclk::new` also increments the dependent clock count for the
+//! The call to `Gclk::new` also increments the [`Counter`] for
 //! [`EnabledGclkIn`], which we have seen is critical for clock tree safety.
 //!
 //! While we have created a [`Gclk`], we have not yet enabled it. But before
@@ -198,10 +198,10 @@
 //! divider while disabled, [`Gclk0`] can never be disabled, so we provide this
 //! functionality on [`EnabledGclk0`] instead.
 //!
-//! We model the master clock's dependence on [`Gclk0`] by setting its dependent
-//! clock count to [`U1`] in [`clock_system_at_reset`]. Consequently, because
-//! there is no way to safely decrement the count, the [`EnabledGclk0`] can
-//! never be [`disable`]d.
+//! We model the master clock's dependence on [`Gclk0`] by setting its
+//! [`Enabled`] [`Counter`] to [`U1`] in [`clock_system_at_reset`]. This
+//! prevents users from ever disabling [`EnabledGclk0`], because there is no way
+//! to [`Decrement`] its [`Counter`] to [`U0`].
 //!
 //! Additionally, we provide functions to change the clock [`Source`], divider,
 //! etc. on [`EnabledGclk0`], but we restrict them to the case where `N = U1`.
@@ -225,7 +225,6 @@
 //! [`Pins`]: crate::gpio::Pins
 //! [`Pin`]: crate::gpio::Pin
 //! [`Sercom0`]: crate::sercom::Sercom0
-//! [`disable`]: EnabledGclk::disable
 
 use core::cmp::max;
 use core::marker::PhantomData;
@@ -776,8 +775,8 @@ where
 /// downstream clocks dependent on this [`Gclk`] and restricts access to the
 /// underlying [`Gclk`] to prevent misuse.
 ///
-/// As with [`Enabled`], the default value for `N` is `U0`. Stated differently,
-/// if left unspecified, the number of dependent clocks is assumed to be zero.
+/// As with [`Enabled`], the default value for `N` is `U0`; if left unspecified,
+/// the [`Counter`] is assumed to be zero.
 pub type EnabledGclk<G, I, N = U0> = Enabled<Gclk<G, I>, N>;
 
 /// Type alias for the corresponding [`Gclk`]
@@ -818,8 +817,8 @@ where
     /// Create a new [`Gclk`]
     ///
     /// Creating a [`Gclk`] does not modify any of the hardware registers. It
-    /// only serves to [`Increment`] the [`Source`]'s dependent clock count and
-    /// create a struct to track the GCLK configuration.
+    /// only serves to [`Increment`] the [`Source`]'s [`Enabled`] [`Counter`]
+    /// and create a struct to track the GCLK configuration.
     ///
     /// The configuration data is stored until the user calls [`enable`]. At
     /// that point, all of the registers are written according to the
@@ -1004,17 +1003,16 @@ where
 ///
 /// [`Gclk0`] is special, because it drives the processor's master clock, which
 /// can never be disabled. As discussed in the [module-level documentation],
-/// this fact is represented by permanently [`Increment`]ing the dependent clock
-/// count for [`EnabledGclk0`]. Thus, the minimum value for `N` is `U1` and
-/// [`Gclk0`] can never be [`disable`]d.
+/// this fact is represented by permanently [`Increment`]ing the [`Counter`] for
+/// [`EnabledGclk0`]. Thus, the minimum value for `N` is `U1` and
+/// [`EnabledGclk0`] can never be disabled.
 ///
 /// These methods represent actions that can be taken when `N = U1`, i.e. the
-/// depdendent clock count is at its minimum value. This is the only time it's
+/// [`Enabled`] [`Counter`] is at its minimum value. This is the only time it's
 /// safe to [`swap`] the [`Gclk0`] [`Source`] or change its [`GclkDivider`]
 /// value.
 ///
 /// [module-level documentation]: self
-/// [`disable`]: EnabledGclk::disable
 /// [`swap`]: Gclk::swap
 impl<I: GclkSourceId> EnabledGclk0<I, U1> {
     /// Swap the clock [`Source`] for [`Gclk0`]

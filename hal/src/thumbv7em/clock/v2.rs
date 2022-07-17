@@ -41,9 +41,8 @@
 //! differently, if clock `B` is derived from, and dependent on, clock `A`, then
 //! clock `A` **must not** be disabled while clock `B` is still in use.
 //!
-//! This module accomplishes clock-tree safety by tracking each clock's
-//! dependents at compile-time. Specifically, it tracks the total number of
-//! dependent clocks using type-level integers from the [`typenum`] crate.
+//! This module enforces clock-tree safety by using a [type-level] [`Counter`]
+//! to track the number of dependents for a given [`Enabled`] clock [`Source`].
 //!
 //! To fully understand the architecture of this module, it is important to
 //! first understand a few important concepts.
@@ -80,35 +79,36 @@
 //! Specifically, the `enable` methods for these clocks yield an instance of
 //! [`Enabled<T, N>`], which provides two useful features. First, it restricts
 //! access to the underlying clock type, `T`, so that it cannot be placed in an
-//! invalid state. And second, it provides a compile-time integer, `N`, to track
-//! the number of clocks that are derived from, and therefore dependent on, this
-//! clock. We generally refer to `N` as the depdendent clock count. If a given
-//! `Enabled` clock has `N > `[`U0`], then it usually cannot be modified or
-//! disabled.
+//! invalid state. And second, it uses type-level [`Unsigned`] integers from the
+//! [`typenum`] crate to implement a compile-time [`Counter`], `N`, that tracks
+//! the number of downstream clocks derived from, and therefore dependent on,
+//! this clock. We generally refer to `N` as the [`Enabled`] [`Counter`]. If a
+//! given [`Enabled`] clock has `N > `[`U0`], then it usually cannot be modified
+//! or disabled.
 //!
-//! Management of the dependent clock count is done using the [`Increment`] and
-//! [`Decrement`] traits, which map the type-level integers from [`typenum`] to
-//! their respective successors and predecessors.
+//! Changing the [`Enabled`] [`Counter`] is done using the [`Increment`] and
+//! [`Decrement`] traits, which map the [`Unsigned`] integers to their
+//! respective successors and predecessors.
 //!
 //! ### `Id` types
 //!
 //! Many of the clock types in this module have type parameters reflecting
 //! compile-time choices that influence the available APIs. For instance, the
 //! [`Xosc`] type takes a type parameter for the [`xosc::Mode`], which specifies
-//! whether the `Xosc` is derived from an external clock or a crystal oscillator.
-//! Accordingly, settings related to the crystal oscillator are only available
-//! in [`CrystalMode`].
+//! whether the [`Xosc`] is derived from an external clock or a crystal
+//! oscillator. Accordingly, settings related to the crystal oscillator are only
+//! available in [`CrystalMode`].
 //!
 //! While these type parameters are important and necessary for configuration of
 //! the clock itself, they are not necessary when referring to the clock more
 //! broadly. For instance, a downstream clock does not need to know which
-//! `xosc::Mode` is in use, but it does need to know that it is being driven by
-//! an `Xosc`.
+//! [`xosc::Mode`] is in use, but it does need to know that it is being driven
+//! by an [`Xosc`].
 //!
 //! Throughout this module, we define a series of `Id` types that represent the
 //! *identity* of a given clock rather than the clock itself. This is like the
-//! distinction between a passport and a person. A passport represents the
-//! identity of a person, not the person itself.
+//! distinction between a passport and a person. A passport identifies a person,
+//! regardless of changes to their clothes or hair.
 //!
 //! ### `Source` trait
 //!
@@ -139,11 +139,11 @@
 //! To resolve the data race issue, we introduce two different types. Each
 //! distinct peripheral bus clock has its own clock type, i.e. [`AhbClk<A>`] and
 //! [`ApbClk<A>`], where the type parameter `A` represents the corresponding
-//! peripheral. Creating each `AhbClk` or `ApbClk` enables the corresponding
+//! peripheral. Creating each [`AhbClk`] or [`ApbClk`] enables the corresponding
 //! clock, while destroying it disables the clock. However, to create or destroy
-//! an `AhbClk` or `ApbClk`, you must first have access to a separate type
+//! an [`AhbClk`] or [`ApbClk`], you must first have access to a separate type
 //! representing the bus itself, the [`Ahb`] and [`Apb`] types. Creating an
-//! `AhbClk` requires `&mut Ahb`, which guarantees exclusive access to the bus
+//! [`AhbClk`] requires `&mut Ahb`, which guarantees exclusive access to the bus
 //! registers and resolves the data race.
 //!
 //! ## Getting started
@@ -183,27 +183,27 @@
 //! - The [`OscUlpBase`] clock, which is always running and cannot be disabled.
 //!   It can feed the derived [`OscUlp1k`] and [`OscUlp32k`] clocks.
 //!
-//! Note that bus clocks are not wrapped in `Enabled`, because they can never be
+//! Note that bus clocks are not wrapped in [`Enabled`], because they can never be
 //! used to drive downstream clocks. The other three clocks, on the other hand,
 //! are all wrapped in [`Enabled`].
 //!
-//! The `Dfll` is configured as `Enabled<Dfll<OpenLoop>, U1>`, which represents
-//! fact that `Gclk0` is dependent on it. `Gclk0` is configured as
-//! `Enabled<Gclk0<DfllId>, U1>`, which indicates that it is derived from the
-//! `Dfll` (note the use of `DfllId` as an `Id` type) and has one dependent
+//! The [`Dfll`] is configured as `Enabled<Dfll<OpenLoop>, U1>`, which
+//! represents fact that [`Gclk0`] is dependent on it. [`Gclk0`] is configured
+//! as `Enabled<Gclk0<DfllId>, U1>`, which indicates that it is derived from the
+//! [`Dfll`] (note the use of [`DfllId`] as an `Id` type) and has one dependent
 //! clock of its own. The dependent clock is, of course, the processor master
 //! clock.
 //!
-//! `Gclk0` can be configured to use a different base clock, which would allow
-//! you to reduce the `Dfll` dependent clock count from `U1` to `U0` and disable
-//! it. However, the same is not true for `Gclk0`. Because the master clock has
-//! no representation in this module, the `Enabled` `Gclk0` can *never* be
-//! reduced to zero depdendent clocks, which neatly models that the master clock
-//! can never be disabled.
+//! [`Gclk0`] can be configured to use a different base clock, which would allow
+//! you to reduce the [`Dfll`] [`Enabled`] [`Counter`] from [`U1`] to [`U0`] and
+//! disable it. However, the same is not true for [`Gclk0`]. Because the master
+//! clock has no representation in this module, the [`Counter`] for
+//! [`EnabledGclk0`] can *never* be reduced to [`U0`], which neatly models that
+//! the master clock can never be disabled.
 //!
-//! Finally, the `OscUlpBase` clock is modelled as `Enabled<OscUlpBase, U0>`,
-//! because it has no dependent clocks at power-on reset. However, it still
-//! cannot be disabled, because no such `.disable()` method is provided.
+//! Finally, the [`OscUlpBase`] clock is modelled as `Enabled<OscUlpBase, U0>`,
+//! because it has no dependent clocks at power-on reset. However, it can never
+//! be disabled, so we do not provide any `.disable()` method.
 //!
 //! The [`Tokens`] struct contains all of the available `Token`s, which
 //! represent clocks that are disabled at power-on reset. Each `Token` can be
@@ -268,7 +268,7 @@
 //! create an instance of [`Xosc0`]. Note that `Xosc0<M>` is merely an alias for
 //! `Xosc<Xosc0Id, M>`. Here, [`Xosc0Id`] represents the *identity* of the XOSC0
 //! clock, rather than the clock itself, and `M` represents the XOSC
-//! [`xosc::Mode`].
+//! [`Mode`](xosc::Mode).
 //!
 //! Next, we access the [`Tokens`] struct to extract the corresponding
 //! [`XoscToken`] for XOSC0, and we trade the PAC `PORT` struct for the
@@ -311,15 +311,15 @@
 //! [`Xosc32kId`] and [`GclkId`] types implement this trait.
 //!
 //! As before, we access the [`Tokens`] struct and use the corresponding
-//! [`DpllToken`] when creating an instance of `Dpll`. However, unlike before,
+//! [`DpllToken`] when creating an instance of [`Dpll`]. However, unlike before,
 //! we are creating a new clock-tree relationship that must be tracked by the
-//! type system. Because DPLL0 will now depend on XOSC0, we must increment the
-//! count of dependent clocks in the [`EnabledXosc0`] struct.
+//! type system. Because DPLL0 will now depend on XOSC0, we must [`Increment`]
+//! the [`Enabled`] [`Counter`] for [`EnabledXosc0`].
 //!
 //! Thus, to create an instance of `Dpll0<XoscId0>`, we must provide the
-//! `EnabledXosc0`, so that its `U0` type parameter can be incremented to `U1`.
-//! The `Dpll::from_xosc0` method takes ownership of the `EnabledXosc0` and
-//! returns it with this modified type parameter.
+//! [`EnabledXosc0`], so that its [`U0`] type parameter can be incremented to
+//! [`U1`]. The `Dpll::from_xosc0` method takes ownership of the
+//! [`EnabledXosc0`] and returns it with this modified type parameter.
 //!
 //! ```ignore
 //! let (dpll0, xosc0) = Dpll::from_xosc0(tokens.dpll0, xosc0);
@@ -328,7 +328,7 @@
 //! the XOSC clock down from 8 MHz to 2 MHz, so that it is within the valid
 //! input frequency range for the DPLL. Then, we multiple the 2 MHz clock by 50
 //! for a 100 MHz output. We do not need fractional mutiplication here, so the
-//! fractional multiplier is zero. Finally, we can enable the `Dpll`, yielding
+//! fractional multiplier is zero. Finally, we can enable the [`Dpll`], yielding
 //! an instance of `EnabledDpll0<XoscId0>`.
 //!
 //! ```ignore
@@ -349,13 +349,14 @@
 //! ```
 //!
 //! Our next task will be to swap GCLK0 from the 48 MHz DFLL to the 100 MHz
-//! DPLL. To do that, we will use the special `swap` method on [`EnabledGclk0`]
-//! to change the base clock without disabling GCLK0 or the master clock.
+//! DPLL. To do that, we will use the special [`swap`] method on
+//! [`EnabledGclk0`] to change the base clock without disabling GCLK0 or the
+//! master clock.
 //!
-//! This time we will be performing two simultaneous modifications of dependent
-//! clock counts. We will be decreasing the [`EnabledDfll`] count from [`U1`] to
-//! [`U0`], and we will be increasing the [`EnabledDpll0`] count from `U0` to
-//! `U1`. Again, we need to provide both the DFLL and DPLL clocks, so that their
+//! This time we will be modifying two [`Enabled`] [`Counter`]s simultaneously.
+//! We will [`Decrement`] the [`EnabledDfll`] count from [`U1`] to [`U0`], and
+//! we will [`Increment`] the [`EnabledDpll0`] count from [`U0`] to [`U1`].
+//! Again, we need to provide both the DFLL and DPLL clocks, so that their
 //! type parameters can be changed.
 //!
 //! ```ignore
@@ -387,15 +388,15 @@
 //! To enable the APB clock for SERCOM0, we must access the [`Apb`] bus struct.
 //! We provide an [`ApbToken`] to the [`Apb::enable`] method and receive an
 //! [`ApbClk`] in return. APB clocks do not depend on any other clocks, so there
-//! is no need to increment any existing dependent clock count.
+//! is no need to increment any [`Enabled`] [`Counter`].
 //!
 //! ```ignore
 //! let apb_sercom0 = buses.apb.enable(tokens.apbs.sercom0);
 //! ```
 //!
 //! To enable a peripheral channel clock for SERCOM0, we must provide the
-//! corresponding [`PclkToken`], as well as the instance of `EnabledGclk0`, so
-//! that its counter can be incremented. The resulting clock has the type
+//! corresponding [`PclkToken`], as well as the instance of [`EnabledGclk0`], so
+//! that its [`Counter`] can be incremented. The resulting clock has the type
 //! `Pclk<Sercom0, Gclk0Id>`.
 //!
 //! ```ignore
@@ -404,18 +405,18 @@
 //!
 //! Like [`Dpll<D, I>`], [`Pclk<P, I>`] also takes two type parameters. The
 //! first represents the corresponding peripheral, while the second is again an
-//! `Id` type representing the [`Source`] driving the `Pclk`, which is
+//! `Id` type representing the [`Source`] driving the [`Pclk`], which is
 //! restricted by the [`PclkSourceId`] trait. Because peripheral channel clocks
-//! can only be driven by GCLKs, `PclkSourceId` is effectively synonymous with
+//! can only be driven by GCLKs, [`PclkSourceId`] is effectively synonymous with
 //! the [`GclkId`] trait. Furthermore, like the [`AhbClk`] and [`ApbClk`] types,
-//! a `Pclk` is always a leaf in the clock tree. In can never drive another
+//! a [`Pclk`] is always a leaf in the clock tree. In can never drive another
 //! clock, so it is never placed inside an [`Enabled`] struct.
 //!
 //! Finally, we would like to output GCLK0 to a GPIO pin. Doing so takes a
-//! similar approach to the `Pclk` above. But this time, we must also provide a
-//! corresponding GPIO [`Pin`], in this case `PB14`. And, as with the `Pclk`
-//! above, creating a [`GclkOut`] clock will increment the dependent clock count
-//! of the `EnabledGclk0`.
+//! similar approach to the [`Pclk`] above. But this time, we must also provide a
+//! corresponding GPIO [`Pin`], in this case `PB14`. And, as with the [`Pclk`]
+//! above, creating a [`GclkOut`] clock will [`Increment`] the [`Counter`] for
+//! [`EnabledGclk0`].
 //!
 //! ```ignore
 //! let (gclk_out0, gclk0) = GclkOut::enable(tokens.gclk_io.gclk_out0, pins.pb14, gclk0);
@@ -497,6 +498,7 @@
 //! [`Gclk0`]: gclk::Gclk0
 //! [`GclkId`]: gclk::GclkId
 //! [`EnabledGclk0`]: gclk::EnabledGclk0
+//! [`swap`]: gclk::EnabledGclk0::swap
 //!
 //! [`GclkIn`]: gclkio::GclkIn
 //! [`GclkOut`]: gclkio::GclkOut
@@ -525,6 +527,7 @@
 //!
 //! [`Xosc32kId`]: xosc32k::Xosc32kId
 //!
+//! [type-level]: crate::typelevel
 //! [`Increment`]: crate::typelevel::Increment
 //! [`Decrement`]: crate::typelevel::Decrement
 //!
@@ -559,37 +562,51 @@ pub use reset::*;
 /// Implementers of this type can drive downstream clocks in the clock tree.
 /// Typically, implementors are [`Enabled`] clocks. The `Id` associated type
 /// maps to the corresponding `Id` type of the implementer.
-///
-/// For example, `Enabled<Gclk5<DfllId>>` would implement
-/// `Source<Id = Gclk5Id>`.
 pub trait Source: Sealed {
     /// Corresponding `Id` type for the implementer
     ///
-    /// For example, the corresponding `Id` type for `Enabled<Gclk5<DfllId>>`
-    /// would be [`Gclk5Id`].
+    /// A given implementer of [`Source`] might have type parameters
+    /// representing its configuration. For instance, [`EnabledDfll<M>`] has a
+    /// type parameter to track its control loop [`Mode`]. However, a downstream
+    /// clock typically does not care about such configuration. It only needs to
+    /// know *which* upstream clock is its [`Source`].
     ///
-    /// [`Gclk5Id`]: gclk::Gclk5Id
+    /// `Id` types exist to fill this role. They represent the *identity* of a
+    /// given clock, regardless of any configuration. This is like the
+    /// distinction between a passport and a person. A passport identifies a
+    /// person, regardless of changes to their clothes or hair.
+    ///
+    /// Thus, [`EnabledDfll<M>`] implements [`Source`] with `Id = `[`DfllId`],
+    /// regardless of `M`.
+    ///
+    /// [`EnabledDfll<M>`]: dfll::EnabledDfll
+    /// [`Mode`]: dfll::Mode
+    /// [`DfllId`]: dfll::DfllId
     type Id;
 
-    /// Returns the frequency of the clock source
+    /// Return the frequency of the clock source
     fn freq(&self) -> Hertz;
 }
 
-/// An enabled clock with compile-time counting of downstream users
+/// An enabled clock with a compile-time [`Counter`] of downstream users
 ///
 /// This struct is a wrapper around other clock types from this module. It
 /// represents a clock that has been enabled, and it maintains a compile-time
-/// count of its uses by downstream clocks in the clock tree.
+/// [`Counter`] of downstream, dependent clocks in the clock tree.
 ///
 /// Compile-time counting allows the API to enforce when clocks may be enabled
 /// or disabled. In particular, most clocks can only be disabled when their
-/// counter is zero. However, there are exceptions, most notably [`Gclk0`],
-/// which can never be disabled, because it is the main clock.
+/// [`Counter`] is [`U0`]. However, there are exceptions, most notably
+/// [`EnabledGclk0`], which can never be disabled, because it feeds the
+/// processor's master clock.
 ///
-/// The count is maintained using the [`Counter`] trait, along with type-level,
-/// [`Unsigned`] integers from the [`typenum`] crate.
+/// The type parameter `N` represents the [`Counter`]. It is implemented using
+/// [`Unsigned`] integers from the [`typenum`] crate, and it is modified using
+/// the [`Increment`] and [`Decrement`] traits.
 ///
-/// [`Gclk0`]: gclk::Gclk0
+/// [`EnabledGclk0`]: gclk::EnabledGclk0
+/// [`Increment`]: crate::typelevel::Increment
+/// [`Decrement`]: crate::typelevel::Decrement
 pub struct Enabled<T, N: Counter = U0>(pub(crate) T, N);
 
 impl<T, N: Counter> Sealed for Enabled<T, N> {}

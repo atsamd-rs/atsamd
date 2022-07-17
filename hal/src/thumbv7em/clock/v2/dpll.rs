@@ -71,8 +71,8 @@
 //! First, we would like to divide down the 48 MHz output of the [`Dfll`] to
 //! produce a valid input frequency for the [`Dpll`]. We start by feeding the
 //! already-[`Enabled`] [`Dfll`] to [`Gclk1`] with a [`GclkDivider`] of 24,
-//! producing a 2 MHz output frequency. This has the side effect of increasing
-//! the dependent clock count for the [`EnabledDfll`].
+//! producing a 2 MHz output frequency. This has the side effect of
+//! [`Increment`]ing the [`Counter`] for [`EnabledDfll`].
 //!
 //! ```ignore
 //! let (gclk1, dfll) = Gclk::new(tokens.gclks.gclk1, clocks.dfll);
@@ -80,7 +80,7 @@
 //! ```
 //!
 //! Next, we use the output of [`Gclk1`] to enable the peripheral channel clock
-//! ([`Pclk`]) for [`Dpll0`]. This increases the dependent clock count for
+//! ([`Pclk`]) for [`Dpll0`]. This [`Increment`]s the [`Counter`] for
 //! [`EnabledGclk1`].
 //!
 //! ```ignore
@@ -494,19 +494,21 @@ pub trait DpllSourceId<D: DpllId> {
     /// Corresponding [`Pclk`] type, if it exists
     ///
     /// Creating a [`Dpll`] driven by an [`Xosc`] or the [`Xosc32k`] will
-    /// increase the [`Source`] clock's dependent clock count and return the
-    /// `Source` to the user. However, when driven by a [`Pclk`], the [`Dpll`]
-    /// must take ownership of the `Pclk` for the duration of its existence.
+    /// [`Increment`] the [`Source`] clock's [`Enabled`] [`Counter`] and return
+    /// the [`Source`] to the user. However, when driven by a [`Pclk`], the
+    /// [`Dpll`] must take ownership of the [`Pclk`] for the duration of its
+    /// existence.
     ///
-    /// For each implementer of `DpllSourceId`, this associated type represents
-    /// the type that should be stored along with the `Dpll` throughout its
-    /// existence. Effectively, this associated type is a [type-level function]
-    /// mapping the `DpllSourceId` type to a corresponding storage type.
+    /// For each implementer of [`DpllSourceId`], this associated type
+    /// represents the type that should be stored along with the [`Dpll`]
+    /// throughout its existence. Effectively, this associated type is a
+    /// [type-level function] mapping the [`DpllSourceId`] type to a
+    /// corresponding storage type.
     ///
-    /// When the `Source` is a `Pclk`, the `DpllSourceId` type is a [`GclkId`],
-    /// and this associated type maps to the full `Pclk` type.  Alternatively,
-    /// when the `Source` is anything other than a `Pclk`, this associated type
-    /// maps to `()`, indicating that there is nothing to store.
+    /// When driven by a [`Pclk`], the [`DpllSourceId`] type is a [`GclkId`],
+    /// and this associated type maps to the full [`Pclk`] type. Alternatively,
+    /// when the [`Source`] is anything other than a [`Pclk`], this associated
+    /// type maps to `()`, indicating that there is nothing to store.
     ///
     /// [`Xosc`]: super::xosc::Xosc
     /// [`Xosc32k`]: super::xosc32k::Xosc32k
@@ -591,8 +593,8 @@ pub type Dpll1<M> = Dpll<Dpll1Id, M>;
 /// downstream clocks dependent on this [`Dpll`] and restricts access to the
 /// underlying [`Dpll`] to prevent misuse.
 ///
-/// As with [`Enabled`], the default value for `N` is `U0`. Stated differently,
-/// if left unspecified, the number of dependent clocks is assumed to be zero.
+/// As with [`Enabled`], the default value for `N` is `U0`; if left unspecified,
+/// the [`Counter`] is assumed to be zero.
 pub type EnabledDpll<D, I, N = U0> = Enabled<Dpll<D, I>, N>;
 
 /// Type alias for the corresponding [`EnabledDpll`]
