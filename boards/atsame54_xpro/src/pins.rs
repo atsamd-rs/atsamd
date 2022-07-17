@@ -359,9 +359,9 @@ hal::bsp_pins!(
         }
     }
     PB31 {
-        name: button
+        name: pb31
         aliases: {
-            PullUpInput: UserSw0Button
+            PullUpInput: Sw0Button
         }
     }
     PC01 {
