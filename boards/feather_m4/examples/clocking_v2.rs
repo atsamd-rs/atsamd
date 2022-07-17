@@ -77,7 +77,7 @@ mod app {
 
         // Configure `Dpll0` with `2 * 60 + 0/32 = 120 MHz` frequency
         let dpll0 = Dpll::from_pclk(tokens.dpll0, pclk_dpll0)
-            .set_loop_div(60, 0)
+            .loop_div(60, 0)
             .enable();
 
         // Swap source of `Gclk0` from Dfll to Dpll0, `48 Mhz -> 120 MHz`
@@ -91,7 +91,7 @@ mod app {
 
         // Configure `Dpll1` with `2 * 50 + 0/32 = 100 MHz` frequency
         let dpll1 = Dpll::from_pclk(tokens.dpll1, pclk_dpll1)
-            .set_loop_div(50, 0)
+            .loop_div(50, 0)
             .enable();
 
         // Output `Dpll1` on PB20 pin via `Gclk6`, divided by 200 resulting in 0.5 MHz

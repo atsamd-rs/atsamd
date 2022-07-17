@@ -332,7 +332,7 @@
 //! an instance of `EnabledDpll0<XoscId0>`.
 //!
 //! ```ignore
-//! let dpll0 = dpll0.set_prediv(4).set_loop_div(50, 0).enable();
+//! let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
 //! ```
 //!
 //! So far, our clock tree looks like this
@@ -456,7 +456,7 @@
 //! )
 //! .enable();
 //! let (dpll0, xosc0) = Dpll::from_xosc0(tokens.dpll0, xosc0);
-//! let dpll0 = dpll0.set_prediv(4).set_loop_div(50, 0).enable();
+//! let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
 //! let (gclk0, dfll, dpll0) = clocks.gclk0.swap(clocks.dfll, dpll0);
 //! let dfll_token = dfll.disable().free();
 //! let apb_sercom0 = buses.apb.enable(tokens.apbs.sercom0);
@@ -653,7 +653,7 @@ fn test() {
     )
     .enable();
     let (dpll0, _xosc0) = Dpll::from_xosc0(tokens.dpll0, xosc0);
-    let dpll0 = dpll0.set_prediv(4).set_loop_div(50, 0).enable();
+    let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
     let (gclk0, dfll, _dpll0) = clocks.gclk0.swap(clocks.dfll, dpll0);
     let _dfll_token = dfll.disable().free();
     let _apb_sercom0 = buses.apb.enable(tokens.apbs.sercom0);
