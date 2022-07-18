@@ -31,7 +31,7 @@ fn main() -> ! {
     delay.delay_ms(400u16);
 
     let pins = bsp::Pins::new(peripherals.PORT);
-    let mut led = pins.led.into_push_pull_output();
+    let mut led = bsp::pin_alias!(pins.led).into_push_pull_output();
 
     let mut wdt = Watchdog::new(peripherals.WDT);
     wdt.start(WatchdogTimeout::Cycles256 as u8);
