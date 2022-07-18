@@ -4,31 +4,26 @@ use super::hal;
 
 hal::bsp_pins!(
     PA02 {
-        name: pa02
         aliases: {
             AlternateB: AdcDac
         }
     }
     PA03 {
-        name: pa03
         aliases: {
             AlternateB: Ext2AdcMinus
         }
     }
     PA04 {
-        name: pa04
         aliases: {
             AlternateD: Ext1UsartTx
         }
     }
     PA05 {
-        name: pa05
         aliases: {
             AlternateD: Ext1UsartRx
         }
     }
     PA06 {
-        name: pa06
         aliases: {
             FloatingInput: Ext1Gpio1In
             PushPullOutput: Ext1Gpio1Out
@@ -36,7 +31,6 @@ hal::bsp_pins!(
         }
     }
     PA07 {
-        name: pa07
         aliases: {
             FloatingInput: Ext1Gpio2In
             PushPullOutput: Ext1Gpio2Out
@@ -44,87 +38,74 @@ hal::bsp_pins!(
         }
     }
     PA08 {
-        name: pa08
         aliases: {
             AlternateH: QspiData0
         }
     }
     PA09 {
-        name: pa09
         aliases: {
             AlternateH: QspiData1
         }
     }
     PA10 {
-        name: pa10
         aliases: {
             AlternateH: QspiData2
         }
     }
     PA11 {
-        name: pa11
         aliases: {
             AlternateH: QspiData3
         }
     }
     PA12 {
-        name: pa12
         aliases: {
             AlternateK: PccVsync
             AlternateL: EthRxd1
         }
     }
     PA13 {
-        name: pa13
         aliases: {
             AlternateK: PccHsync
             AlternateL: EthRxd0
         }
     }
     PA14 {
-        name: pa14
         aliases: {
             AlternateK: PccPclk
             AlternateL: EthRefClk
         }
     }
     PA15 {
-        name: pa15
         aliases: {
             AlternateK: PccXclk
             AlternateL: EthRxer
         }
     }
     PA16 {
-        name: pa16
         aliases: {
             AlternateB: QtButton
             AlternateK: PccDout00
         }
     }
     PA17 {
-        name: pa17
         aliases: {
             AlternateK: PccDout01
             AlternateL: EthTxen
         }
     }
     PA18 {
-        name: pa18
         aliases: {
             AlternateK: PccDout02
             AlternateL: EthTxd0
         }
     }
     PA19 {
-        name: pa19
         aliases: {
             AlternateK: PccDout03
             AlternateL: EthTxd1
         }
     }
     PA20 {
-        name: pa20
         aliases: {
             AlternateI: SdCmd
             AlternateJ: I2sFs0
@@ -132,7 +113,6 @@ hal::bsp_pins!(
         }
     }
     PA21 {
-        name: pa21
         aliases: {
             AlternateI: SdClk
             AlternateJ: I2sSdo
@@ -140,7 +120,6 @@ hal::bsp_pins!(
         }
     }
     PA22 {
-        name: pa22
         aliases: {
             AlternateC: Ext1TwiSda
             AlternateJ: I2sSdi
@@ -148,7 +127,6 @@ hal::bsp_pins!(
         }
     }
     PA23 {
-        name: pa23
         aliases: {
             AlternateC: Ext1TwiScl
             AlternateJ: I2sFs1
@@ -156,235 +134,197 @@ hal::bsp_pins!(
         }
     }
     PA24 {
-        name: pa24
         aliases: {
             AlternateH: UsbDm
         }
     }
     PA25 {
-        name: pa25
         aliases: {
             AlternateH: UsbDp
         }
     }
     PA27 {
-        name: pa27
         aliases: {
             PushPullOutput: Ext1SpiCsB
         }
     }
     PA30 {
-        name: pa30
         aliases: {
             AlternateH: Swclk
         }
     }
     PA31 {
-        name: pa31
         aliases: {
             AlternateH: Swdio
         }
     }
     PB00 {
-        name: pb00
         aliases: {
             AlternateB: Ext2AdcPlus
         }
     }
     PB01 {
-        name: pb01
         aliases: {
             FloatingInput: Ext2Gpio1In
             PushPullOutput: Ext2Gpio1Out
         }
     }
     PB02 {
-        name: pb02
         aliases: {
             PushPullOutput: Ext2SpiCsB
         }
     }
     PB04 {
-        name: pb04
         aliases: {
             AlternateB: Ext1AdcPlus
         }
     }
     PB05 {
-        name: pb05
         aliases: {
             AlternateB: Ext1AdcMinus
         }
     }
     PB06 {
-        name: pb06
         aliases: {
             FloatingInput: Ext2Gpio2In
             PushPullOutput: Ext2Gpio2Out
         }
     }
     PB07 {
-        name: pb07
         aliases: {
             FloatingInput: Ext1IrqGpioIn
             PushPullOutput: Ext1IrqGpioOut
         }
     }
     PB08 {
-        name: pb08
         aliases: {
             AlternateE: Ext1PwmPlus
         }
     }
     PB09 {
-        name: pb09
         aliases: {
             AlternateE: Ext1PwmMinus
         }
     }
     PB10 {
-        name: pb10
         aliases: {
             AlternateH: QspiSck
         }
     }
     PB11 {
-        name: pb11
         aliases: {
             AlternateH: QspiScs
         }
     }
     PB12 {
-        name: pb12
         aliases: {
             AlternateH: Ata6561Tx
         }
     }
     PB13 {
-        name: pb13
         aliases: {
             AlternateH: Ata6561Rx
         }
     }
     PB14 {
-        name: pb14
         aliases: {
             AlternateF: Ext2PwmPlus
             AlternateK: PccDout08
         }
     }
     PB15 {
-        name: pb15
         aliases: {
             AlternateF: Ext2PwmMinus
             AlternateK: PccDout09
         }
     }
     PB16 {
-        name: pb16
         aliases: {
             AlternateC: Ext2UsartTx
         }
     }
     PB17 {
-        name: pb17
         aliases: {
             AlternateC: Ext2UsartRx
         }
     }
     PB18 {
-        name: pb18
         aliases: {
             AlternateI: SdData0
         }
     }
     PB19 {
-        name: pb19
         aliases: {
             AlternateI: SdData1
         }
     }
     PB20 {
-        name: pb20
         aliases: {
             AlternateI: SdData2
         }
     }
     PB21 {
-        name: pb21
         aliases: {
             AlternateI: SdData3
         }
     } 
     PB24 {
-        name: pb24
         aliases: {
             AlternateD: EdbgUartRx
         }
     }
     PB25 {
-        name: pb25
         aliases: {
             AlternateD: EdbgUartTx
         }
     }
     PB26 {
-        name: pb26
         aliases: {
             AlternateD: Ext1SpiSck
         }
     }
     PB27 {
-        name: pb27
         aliases: {
             AlternateD: Ext1SpiMosi
         }
     }
     PB28 {
-        name: pb28
         aliases: {
             AlternateD: Ext1SpiCsA
         }
     }
     PB29 {
-        name: pb29
         aliases: {
             AlternateD: Ext1SpiMiso
         }
     }
     PB30 {
-        name: pb30
         aliases: {
             AlternateH: Swo
         }
     }
     PB31 {
-        name: pb31
         aliases: {
             PullUpInput: Sw0Button
         }
     }
     PC01 {
-        name: pc01
         aliases: {
             FloatingInput: Ext3Gpio1In
             PushPullOutput: Ext3Gpio1Out
         }
     }
     PC02 {
-        name: pc02
         aliases: {
             AlternateB: Ext3AdcPlus
         }
     }
     PC03 {
-        name: pc03
         aliases: {
             AlternateB: Ext3AdcMinus
         }
     }
     PC04 {
-        name: pc04
         aliases: {
             AlternateC: Ext2SpiMosi
             AlternateC: Ext3SpiMosi
@@ -392,7 +332,6 @@ hal::bsp_pins!(
         }
     }
     PC05 {
-        name: pc05
         aliases: {
             AlternateC: Ext2SpiSck
             AlternateC: Ext3SpiSck
@@ -400,14 +339,12 @@ hal::bsp_pins!(
         }
     }
     PC06 {
-        name: pc06
         aliases: {
             AlternateC: Ext2SpiCsA
             
         }
     }
     PC07 {
-        name: pc07
         aliases: {
             AlternateC: Ext2SpiMiso
             AlternateC: Ext3SpiMiso
@@ -415,40 +352,34 @@ hal::bsp_pins!(
         }
     }
     PC10 {
-        name: pc10
         aliases: {
             FloatingInput: Ext3Gpio2In
             PushPullOutput: Ext3Gpio2Out
         }
     }
     PC11 {
-        name: pc11
         aliases: {
             PushPullOutput: PccPwdn
             AlternateL: EthGmdc
         }
     }
     PC12 {
-        name: pc12
         aliases: {
             PushPullOutput: PccReset
             AlternateL: EthGmdio
         }
     }
     PC13 {
-        name: pc13
         aliases: {
             PushPullOutput: Ata6561Standby
         }
     }
     PC14 {
-        name: pc14
         aliases: {
             PushPullOutput: Ext3SpiCsA
         }
     }
     PC16 {
-        name: pc16
         aliases: {
             AlternateG: PdecPhaseA
             FloatingInput: EdbgGpio0In
@@ -456,7 +387,6 @@ hal::bsp_pins!(
         }
     }
     PC17 {
-        name: pc17
         aliases: {
             AlternateG: PdecPhaseB
             FloatingInput: EdbgGpio1In
@@ -464,7 +394,6 @@ hal::bsp_pins!(
         }
     }
     PC18 {
-        name: pc18
         aliases: {
             PushPullOutput: Led
             AlternateG: PdecIndex
@@ -473,93 +402,78 @@ hal::bsp_pins!(
         }
     }
     PC20 {
-        name: pc20
         aliases: {
             AlternateL: EthCrsDv
         }
     }
     PC21 {
-        name: pc21
         aliases: {
             FloatingInput: EthReset
         }
     }
     PC22 {
-        name: pc22
         aliases: {
             AlternateC: Ext3UsartTx
         }
     }
     PC23 {
-        name: pc23
         aliases: {
             AlternateC: Ext3UsartRx
         }
     }
     PC30 {
-        name: pc30
         aliases: {
             FloatingInput: Ext3IrqGpioIn
             PushPullOutput: Ext3IrqGpioOut
         }
     }
     PC31 {
-        name: pc31
         aliases: {
             PushPullOutput: Ext3SpiCsB
         }
     }
     PD00 {
-        name: pd00
         aliases: {
             FloatingInput: Ext2IrqGpioIn
             PushPullOutput: Ext2IrqGpioOut
         }
     }
     PD01 {
-        name: pd01
         aliases: {
             PushPullOutput: DgiSpiCs
         }
     }
     PD08 {
-        name: pd08
         aliases: {
             AlternateC: DgiI2cSda
         }
     }
     PD09 {
-        name: pd09
         aliases: {
             AlternateC: DgiI2cScl
         }
     }
     PD10 {
-        name: pd10
         aliases: {
             AlternateF: Ext3PwmPlus
         }
     }
     PD11 {
-        name: pd11
         aliases: {
             AlternateF: Ext3PwmMinus
         }
     }
     PD12 {
-        name: pd12
         aliases: {
             FloatingInput: EthInterrupt
         }
     }
     PD20 {
-        name: pd20
         aliases: {
             AlternateI: SdCd
         }
     }
     PD21 {
-        name: pd21
         aliases: {
             AlternateI: SdWp
         }
@@ -654,29 +568,6 @@ hal::bsp_pins!(
 //     pin sd_cmd_i2s_fs0 = a20,
 //     pin sd_cd = d20,
 //     pin sd_wp = d21,
-
-//     // PCC Camera Connector
-//     // pin pcc_vsync = a12,
-//     // pin pcc_hsync = a13,
-//     // pin pcc_pclk = a14,
-//     // pin pcc_xclk = a15,
-//     // pin pcc_dout7 = a23,
-//     // pin pcc_dout6 = a22,
-//     // pin pcc_dout5 = a21,
-//     // pin pcc_dout4 = a20,
-//     // pin pcc_dout3 = a19,
-//     // pin pcc_dout2 = a18,
-//     // pin pcc_dout1 = a17,
-//     // pin pcc_dout0 = a16,
-//     // pin pcc_dout9 = b15,
-//     // pin pcc_dout8 = b14,
-//     // pin pcc_reset = c12,
-//     // pin pcc_pwdn = c11,
-
-//     // Position Decoder Header
-//     pin pdec_phase_a = c16,
-//     pin pdec_phase_b = c17,
-//     // pin pdec_index = c18,    // same as led
 
 //     pin vbat = b3,
 
