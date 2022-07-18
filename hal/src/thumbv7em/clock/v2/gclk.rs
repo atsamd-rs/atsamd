@@ -1,4 +1,4 @@
-//! # GCLK - Generic Clock Controller
+//! # Generic Clock Controllers
 //!
 //! ## Overview
 //!
@@ -783,9 +783,9 @@ pub type EnabledGclk<G, I, N = U0> = Enabled<Gclk<G, I>, N>;
 ///
 /// As mentioned in the [module-level documentation](self), `Gclk0` is special,
 /// because it provides the processor master clock. We represent this by
-/// permanently [`Increment`]ing the depdent clock count of [`EnabledGclk0`],
-/// which prevents it from ever being disabled. Accordingly, we also provide a
-/// few special methods on [`EnabledGclk0`] to configure the `Gclk` while it is
+/// permanently [`Increment`]ing the [`Counter`] for [`EnabledGclk0`], which
+/// prevents it from ever being disabled. Accordingly, we also provide a few
+/// special methods on [`EnabledGclk0`] to configure the `Gclk` while it is
 /// actively running.
 pub type Gclk0<I> = Gclk<Gclk0Id, I>;
 
@@ -793,9 +793,9 @@ pub type Gclk0<I> = Gclk<Gclk0Id, I>;
 ///
 /// As mentioned in the [module-level documentation](self), `Gclk0` is special,
 /// because it provides the processor master clock. We represent this by
-/// permanently [`Increment`]ing the depdent clock count of [`EnabledGclk0`],
-/// which prevents it from ever being disabled. Accordingly, we also provide a
-/// few special methods on [`EnabledGclk0`] to configure the `Gclk` while it is
+/// permanently [`Increment`]ing the [`Counter`] for [`EnabledGclk0`], which
+/// prevents it from ever being disabled. Accordingly, we also provide a few
+/// special methods on [`EnabledGclk0`] to configure the `Gclk` while it is
 /// actively running.
 pub type EnabledGclk0<I, N = U0> = EnabledGclk<Gclk0Id, I, N>;
 
@@ -846,7 +846,7 @@ where
     /// Consume the [`Gclk`] and free its corresponding resources
     ///
     /// Freeing a [`Gclk`] returns the corresponding [`GclkToken`] and
-    /// [`Decrement`]s the [`Source`]'s depdendent clock count.
+    /// [`Decrement`]s the [`Source`]'s [`Enable`] [`Counter`].
     #[inline]
     pub fn free<S>(self, source: S) -> (GclkToken<G>, S::Dec)
     where
@@ -858,13 +858,13 @@ where
     /// Swap the [`Gclk`]'s [`Source`]
     ///
     /// A clock [`Source`] is required when creating a [`Gclk`] with [`new`],
-    /// which [`Increment`]s the `Source`'s depdendent clock count. Changing
-    /// the `Source` would normally require [`free`]ing the [`GclkToken`] and
-    /// old `Source` before creating a [`new`] `Gclk` with a new `Source`.
+    /// which [`Increment`]s the `Source`'s [`Enabled`] [`Counter`]. Changing
+    /// the [`Source`] would normally require [`free`]ing the [`GclkToken`] and
+    /// old [`Source`] before creating a [`new`] `Gclk` with a new [`Source`].
     ///
     /// Alternatively, the calls to [`free`] and [`new`] can be combined with
-    /// `swap`. The depdendent clock count for the `Old` `Source` will be
-    /// [`Decrement`]ed, while the `New` `Source` will be [`Increment`]ed.
+    /// `swap`. The [`Enabled`] [`Counter`] for the `Old` [`Source`] will be
+    /// [`Decrement`]ed, while the `New` [`Source`] will be [`Increment`]ed.
     ///
     /// [`new`]: Gclk::new
     /// [`free`]: Gclk::free
