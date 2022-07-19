@@ -5,26 +5,31 @@ use super::hal;
 hal::bsp_pins!(
     PA02 {
         aliases: {
-            AlternateB: AdcDac
+            AlternateB: AdcDacHeader
+            AlternateB: Adc0Analog0
         }
     }
     PA03 {
         aliases: {
             AlternateB: Ext2AdcMinus
+            AlternateB: Adc0Analog1
         }
     }
     PA04 {
         aliases: {
+            AlternateB: Adc0Analog4
             AlternateD: Ext1UsartTx
         }
     }
     PA05 {
         aliases: {
+            AlternateB: Adc0Analog5
             AlternateD: Ext1UsartRx
         }
     }
     PA06 {
         aliases: {
+            AlternateB: Adc0Analog6
             FloatingInput: Ext1Gpio1In
             PushPullOutput: Ext1Gpio1Out
             AlternateD: Ext1UsartRts
@@ -34,6 +39,7 @@ hal::bsp_pins!(
         aliases: {
             FloatingInput: Ext1Gpio2In
             PushPullOutput: Ext1Gpio2Out
+            AlternateB: Adc0Analog7
             AlternateD: Ext1UsartCts
         }
     }
@@ -177,32 +183,40 @@ hal::bsp_pins!(
     PB04 {
         aliases: {
             AlternateB: Ext1AdcPlus
+            AlternateB: Adc1Analog6
         }
     }
     PB05 {
         aliases: {
             AlternateB: Ext1AdcMinus
+            AlternateB: Adc1Analog7
         }
     }
     PB06 {
         aliases: {
             FloatingInput: Ext2Gpio2In
             PushPullOutput: Ext2Gpio2Out
+            AlternateB: Adc1Analog8
         }
     }
     PB07 {
         aliases: {
             FloatingInput: Ext1IrqGpioIn
             PushPullOutput: Ext1IrqGpioOut
+            AlternateB: Adc1Analog9
         }
     }
     PB08 {
         aliases: {
+            AlternateB: Adc0Analog2
+            AlternateB: Adc1Analog0
             AlternateE: Ext1PwmPlus
         }
     }
     PB09 {
         aliases: {
+            AlternateB: Adc0Analog3
+            AlternateB: Adc1Analog1
             AlternateE: Ext1PwmMinus
         }
     }
@@ -317,11 +331,13 @@ hal::bsp_pins!(
     PC02 {
         aliases: {
             AlternateB: Ext3AdcPlus
+            AlternateB: Adc1Analog4
         }
     }
     PC03 {
         aliases: {
             AlternateB: Ext3AdcMinus
+            AlternateB: Adc1Analog5
         }
     }
     PC04 {
@@ -435,11 +451,13 @@ hal::bsp_pins!(
         aliases: {
             FloatingInput: Ext2IrqGpioIn
             PushPullOutput: Ext2IrqGpioOut
+            AlternateB: Adc1Analog14
         }
     }
     PD01 {
         aliases: {
             PushPullOutput: DgiSpiCs
+            AlternateB: Adc1Analog15
         }
     }
     PD08 {
