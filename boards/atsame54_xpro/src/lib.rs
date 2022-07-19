@@ -10,3 +10,4 @@ pub use pins::*;
 pub use cortex_m_rt::entry;
 
 pub mod pins;
+pub mod sercom_pads;
