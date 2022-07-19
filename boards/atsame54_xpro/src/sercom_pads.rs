@@ -31,7 +31,7 @@ hal::bsp_peripherals!(
 );
 
 /// UART pads for the extension 1 connection
-pub type Ext1UartPads = uart::Pads<Ext1UartSercom, IoSet3, Ext1UsartRx, Ext1UsartTx>;
+pub type Ext1UartPads = uart::Pads<Ext1UartSercom, IoSet3, Ext1UartRx, Ext1UartTx>;
 
 /// Extension 1 UART device
 pub type Ext1Uart = uart::Uart<uart::Config<Ext1UartPads>, uart::Duplex>;
@@ -42,8 +42,8 @@ pub fn ext1_uart(
     baud: impl Into<Hertz>,
     ext1_uart_sercom: Ext1UartSercom,
     mclk: &mut pac::MCLK,
-    uart_rx: impl Into<Ext1UsartRx>,
-    uart_tx: impl Into<Ext1UsartTx>,
+    uart_rx: impl Into<Ext1UartRx>,
+    uart_tx: impl Into<Ext1UartTx>,
 ) -> Ext1Uart {
     let gclk0 = clocks.gclk0();
     let clock = clocks.sercom0_core(&gclk0).unwrap();
@@ -56,7 +56,7 @@ pub fn ext1_uart(
 
 /// UART pads for the extension 1 connection with flow control
 pub type Ext1FlowControlUartPads =
-    uart::Pads<Ext1UartSercom, IoSet3, Ext1UsartRx, Ext1UsartTx, Ext1UsartRts, Ext1UsartCts>;
+    uart::Pads<Ext1UartSercom, IoSet3, Ext1UartRx, Ext1UartTx, Ext1UartRts, Ext1UartCts>;
 
 /// Extension 1 UART device with flow control
 pub type Ext1FlowControlUart = uart::Uart<uart::Config<Ext1FlowControlUartPads>, uart::Duplex>;
@@ -67,10 +67,10 @@ pub fn ext1_flow_control_uart(
     baud: impl Into<Hertz>,
     ext1_uart_sercom: Ext1UartSercom,
     mclk: &mut pac::MCLK,
-    uart_rx: impl Into<Ext1UsartRx>,
-    uart_tx: impl Into<Ext1UsartTx>,
-    uart_rts: impl Into<Ext1UsartRts>,
-    uart_cts: impl Into<Ext1UsartCts>,
+    uart_rx: impl Into<Ext1UartRx>,
+    uart_tx: impl Into<Ext1UartTx>,
+    uart_rts: impl Into<Ext1UartRts>,
+    uart_cts: impl Into<Ext1UartCts>,
 ) -> Ext1FlowControlUart {
     let gclk0 = clocks.gclk0();
     let clock = clocks.sercom0_core(&gclk0).unwrap();
@@ -86,7 +86,7 @@ pub fn ext1_flow_control_uart(
 }
 
 /// UART pads for the extension 3 connection
-pub type Ext3UartPads = uart::Pads<Ext3UartSercom, IoSet2, Ext3UsartRx, Ext3UsartTx>;
+pub type Ext3UartPads = uart::Pads<Ext3UartSercom, IoSet2, Ext3UartRx, Ext3UartTx>;
 
 /// Extension 3 UART device
 pub type Ext3Uart = uart::Uart<uart::Config<Ext3UartPads>, uart::Duplex>;
@@ -97,8 +97,8 @@ pub fn ext3_uart(
     baud: impl Into<Hertz>,
     ext3_uart_sercom: Ext3UartSercom,
     mclk: &mut pac::MCLK,
-    uart_rx: impl Into<Ext3UsartRx>,
-    uart_tx: impl Into<Ext3UsartTx>,
+    uart_rx: impl Into<Ext3UartRx>,
+    uart_tx: impl Into<Ext3UartTx>,
 ) -> Ext3Uart {
     let gclk0 = clocks.gclk0();
     let clock = clocks.sercom1_core(&gclk0).unwrap();
@@ -186,7 +186,7 @@ pub fn ext1_spi(
 }
 
 /// UART pads for the extension 2 connection
-pub type Ext2UartPads = uart::Pads<Ext2UartSercom, IoSet1, Ext2UsartRx, Ext2UsartTx>;
+pub type Ext2UartPads = uart::Pads<Ext2UartSercom, IoSet1, Ext2UartRx, Ext2UartTx>;
 
 /// Extension 2 UART device
 pub type Ext2Uart = uart::Uart<uart::Config<Ext2UartPads>, uart::Duplex>;
@@ -197,8 +197,8 @@ pub fn ext2_uart(
     baud: impl Into<Hertz>,
     ext2_uart_sercom: Ext2UartSercom,
     mclk: &mut pac::MCLK,
-    uart_rx: impl Into<Ext2UsartRx>,
-    uart_tx: impl Into<Ext2UsartTx>,
+    uart_rx: impl Into<Ext2UartRx>,
+    uart_tx: impl Into<Ext2UartTx>,
 ) -> Ext2Uart {
     let gclk0 = clocks.gclk0();
     let clock = clocks.sercom5_core(&gclk0).unwrap();
