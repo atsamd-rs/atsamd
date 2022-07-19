@@ -1,18 +1,18 @@
 //! SAM E54 XPlained Pro Sercom Pad Definitions
-//! 
-//! These type definitions are used by the Sam E54 Xplained Pro for its various Sercom functions to Ext 1, 2, and 3, 
+//!
+//! These type definitions are used by the Sam E54 Xplained Pro for its various Sercom functions to Ext 1, 2, and 3,
 //! as well as the DGI and EDBG ports.
-
 
 use super::hal;
 use super::pins::*;
-use hal::sercom::{uart, i2c, spi};
-use hal::sercom::{Sercom0, Sercom1, Sercom2, Sercom3, Sercom4, Sercom5, Sercom6, Sercom7};
+use hal::sercom::{i2c, spi, uart};
 use hal::sercom::{IoSet1, IoSet2, IoSet3, IoSet4};
+use hal::sercom::{Sercom0, Sercom1, Sercom2, Sercom3, Sercom4, Sercom5, Sercom6, Sercom7};
 
 pub type Ext1UartPads = uart::Pads<Sercom0, IoSet3, Ext1UsartRx, Ext1UsartTx>;
 
-pub type Ext1UartFlowControlPads = uart::Pads<Sercom0, IoSet3, Ext1UsartRx, Ext1UsartTx, Ext1UsartRts, Ext1UsartCts>;
+pub type Ext1FlowControlUartPads =
+    uart::Pads<Sercom0, IoSet3, Ext1UsartRx, Ext1UsartTx, Ext1UsartRts, Ext1UsartCts>;
 
 pub type Ext3UartPads = uart::Pads<Sercom1, IoSet2, Ext3UsartRx, Ext3UsartTx>;
 
