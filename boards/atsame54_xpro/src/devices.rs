@@ -63,6 +63,7 @@ pub type Ext1FlowControlUartPads =
 pub type Ext1FlowControlUart = uart::Uart<uart::Config<Ext1FlowControlUartPads>, uart::Duplex>;
 
 /// Set up the extension 1 UART device with flow control
+#[allow(clippy::too_many_arguments)]
 pub fn ext1_flow_control_uart(
     clocks: &mut GenericClockController,
     baud: impl Into<Hertz>,
