@@ -482,19 +482,3 @@ hal::bsp_pins!(
         }
     }
 );
-
-hal::bsp_peripherals!(
-    SERCOM0 { Ext1Uart }
-    SERCOM0 { Ext1FlowControlUart }
-    SERCOM1 { Ext3Uart }
-    SERCOM2 { EdbgUart }
-    SERCOM3 { Ext1I2c }
-    SERCOM4 { Ext1Spi }
-    SERCOM5 { Ext2Uart }
-    SERCOM6 { Ext2Spi }
-    SERCOM6 { Ext3Spi }
-    SERCOM6 { DgiSpi }
-    SERCOM7 { Ext2I2c }
-    SERCOM7 { Ext3I2c }
-    SERCOM7 { DgiI2c }
-);
