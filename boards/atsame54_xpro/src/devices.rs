@@ -1,7 +1,8 @@
-//! SAM E54 XPlained Pro Sercom Pad Definitions
+//! SAM E54 XPlained Pro sercom device definitions
 //!
-//! These type definitions are used by the Sam E54 Xplained Pro for its various Sercom functions to Ext 1, 2, and 3,
-//! as well as the DGI and EDBG ports.
+//! These type definitions are used by the Sam E54 Xplained Pro for its
+//! various Sercom functions in extensions 1, 2, and 3,
+//! as well as the DGI and EDBG ports and USB connections.
 
 use super::hal;
 use super::pins::*;
