@@ -1,8 +1,9 @@
 [package]
 name = "atsame54_xpro"
-version = "0.4.0"
+version = "0.5.0"
 authors = [
-    "Karsten Große <karsten.grosse@sympatron.de>"
+    "Karsten Große <karsten.grosse@sympatron.de>",
+    "John Little <johngigantic@gmail.com>"
 ]
 description = "Board Support crate for the SAM E54 Xplained Pro Evaluation Kit"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
@@ -26,7 +27,7 @@ optional = true
 
 [dev-dependencies]
 panic-halt = "0.2"
-panic-semihosting = "0.5"
+panic-semihosting = "0.6"
 
 [features]
 default = ["rt", "atsamd-hal/same54p", "atsamd-hal/unproven"]
