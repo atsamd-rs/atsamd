@@ -439,10 +439,10 @@ hal::bsp_pins!(
         }
     }
     PC11 {
-        /// PC11: PCC PWDN pin, or Ethernet GMDC pin
+        /// PC11: PCC PWDN pin, or Ethernet MDC pin
         aliases: {
             PushPullOutput: PccPwdn
-            AlternateL: EthGmdc
+            AlternateL: EthMdc
         }
     }
     PC12 {
@@ -576,13 +576,13 @@ hal::bsp_pins!(
         }
     }
     PD20 {
-        /// PD20: SD card CD pin
+        /// PD20: SD card card detect pin
         aliases: {
             AlternateI: SdCd
         }
     }
     PD21 {
-        /// PD21: SD card WP pin
+        /// PD21: SD card write protect pin
         aliases: {
             AlternateI: SdWp
         }
