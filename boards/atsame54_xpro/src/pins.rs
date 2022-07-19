@@ -290,7 +290,7 @@ hal::bsp_pins!(
     }
     PB28 {
         aliases: {
-            AlternateD: Ext1SpiCsA
+            PushPullOutput: Ext1SpiCsA
         }
     }
     PB29 {
@@ -340,7 +340,7 @@ hal::bsp_pins!(
     }
     PC06 {
         aliases: {
-            AlternateC: Ext2SpiCsA
+            PushPullOutput: Ext2SpiCsA
         }
     }
     PC07 {

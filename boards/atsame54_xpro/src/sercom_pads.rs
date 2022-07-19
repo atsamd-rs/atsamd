@@ -160,7 +160,31 @@ pub fn ext1_i2c(
 
 
 /// SPI pads for the extension 1 connection
-pub type Ext1SpiPads = spi::Pads<Ext1SpiSercom, IoSet4, Ext1SpiMiso, Ext1SpiMosi, Ext1SpiSck, Ext1SpiCsA>;
+pub type Ext1SpiPads = spi::Pads<Ext1SpiSercom, IoSet4, Ext1SpiMiso, Ext1SpiMosi, Ext1SpiSck>;
+
+/// Extension 1 SPI device
+pub type Ext1Spi = spi::Spi<spi::Config<Ext1SpiPads>, spi::Duplex>;
+
+/// Set up the extension 1 SPI device
+pub fn ext1_spi(
+    clocks: &mut GenericClockController,
+    baud: impl Into<Hertz>,
+    ext1_spi_sercom: Ext1SpiSercom,
+    mclk: &mut pac::MCLK,
+    miso: impl Into<Ext1SpiMiso>,
+    mosi: impl Into<Ext1SpiMosi>,
+    sck: impl Into<Ext1SpiSck>
+) -> Ext1Spi {
+    let gclk0 = clocks.gclk0();
+    let clock = clocks.sercom4_core(&gclk0).unwrap();
+    let freq = clock.freq();
+    let (miso, mosi, sck) = (miso.into(), mosi.into(), sck.into());
+    let pads = spi::Pads::default().data_in(miso).data_out(mosi).sclk(sck);
+    spi::Config::new(mclk, ext1_spi_sercom, pads, freq)
+        .baud(baud)
+        .spi_mode(spi::MODE_0)
+        .enable()
+}
 
 
 /// UART pads for the extension 2 connection
@@ -169,7 +193,7 @@ pub type Ext2UartPads = uart::Pads<Ext2UartSercom, IoSet1, Ext2UsartRx, Ext2Usar
 /// Extension 2 UART device
 pub type Ext2Uart = uart::Uart<uart::Config<Ext2UartPads>, uart::Duplex>;
 
-/// Set up the extension UART device
+/// Set up the extension 2 UART device
 pub fn ext2_uart(
     clocks: &mut GenericClockController,
     baud: impl Into<Hertz>,
@@ -188,15 +212,86 @@ pub fn ext2_uart(
 }
 
 /// SPI pads for the extension 2 connection
-pub type Ext2SpiPads = spi::Pads<Ext2SpiSercom, IoSet2, Ext2SpiMiso, Ext2SpiMosi, Ext2SpiSck, Ext2SpiCsA>;
+pub type Ext2SpiPads = spi::Pads<Ext2SpiSercom, IoSet2, Ext2SpiMiso, Ext2SpiMosi, Ext2SpiSck>;
+
+/// Extension 1 SPI device
+pub type Ext2Spi = spi::Spi<spi::Config<Ext2SpiPads>, spi::Duplex>;
+
+/// Set up the extension 2 SPI device
+pub fn ext2_spi(
+    clocks: &mut GenericClockController,
+    baud: impl Into<Hertz>,
+    ext2_spi_sercom: Ext2SpiSercom,
+    mclk: &mut pac::MCLK,
+    miso: impl Into<Ext2SpiMiso>,
+    mosi: impl Into<Ext2SpiMosi>,
+    sck: impl Into<Ext2SpiSck>
+) -> Ext2Spi {
+    let gclk0 = clocks.gclk0();
+    let clock = clocks.sercom6_core(&gclk0).unwrap();
+    let freq = clock.freq();
+    let (miso, mosi, sck) = (miso.into(), mosi.into(), sck.into());
+    let pads = spi::Pads::default().data_in(miso).data_out(mosi).sclk(sck);
+    spi::Config::new(mclk, ext2_spi_sercom, pads, freq)
+        .baud(baud)
+        .spi_mode(spi::MODE_0)
+        .enable()
+}
 
 
 /// SPI pads for the extension 3 connection
-pub type Ext3SpiPads = spi::Pads<Ext3SpiSercom, IoSet2, Ext3SpiMiso, Ext3SpiMosi, Ext3SpiSck, Ext3SpiCsA>;
+pub type Ext3SpiPads = spi::Pads<Ext3SpiSercom, IoSet2, Ext3SpiMiso, Ext3SpiMosi, Ext3SpiSck>;
 
+/// Extension 3 SPI device
+pub type Ext3Spi = spi::Spi<spi::Config<Ext3SpiPads>, spi::Duplex>;
+
+/// Set up the extension 3 SPI device
+pub fn ext3_spi(
+    clocks: &mut GenericClockController,
+    baud: impl Into<Hertz>,
+    ext3_spi_sercom: Ext3SpiSercom,
+    mclk: &mut pac::MCLK,
+    miso: impl Into<Ext3SpiMiso>,
+    mosi: impl Into<Ext3SpiMosi>,
+    sck: impl Into<Ext3SpiSck>
+) -> Ext3Spi {
+    let gclk0 = clocks.gclk0();
+    let clock = clocks.sercom6_core(&gclk0).unwrap();
+    let freq = clock.freq();
+    let (miso, mosi, sck) = (miso.into(), mosi.into(), sck.into());
+    let pads = spi::Pads::default().data_in(miso).data_out(mosi).sclk(sck);
+    spi::Config::new(mclk, ext3_spi_sercom, pads, freq)
+        .baud(baud)
+        .spi_mode(spi::MODE_0)
+        .enable()
+}
 
 /// SPI pads for the DGI connection
-pub type DgiSpiPads = spi::Pads<DgiSpiSercom, IoSet2, DgiSpiMiso, DgiSpiMosi, DgiSpiSck, DgiSpiCs>;
+pub type DgiSpiPads = spi::Pads<DgiSpiSercom, IoSet2, DgiSpiMiso, DgiSpiMosi, DgiSpiSck>;
+
+/// DGI SPI device
+pub type DgiSpi = spi::Spi<spi::Config<DgiSpiPads>, spi::Duplex>;
+
+/// Set up the DGI SPI device
+pub fn dgi_spi(
+    clocks: &mut GenericClockController,
+    baud: impl Into<Hertz>,
+    dgi_spi_sercom: DgiSpiSercom,
+    mclk: &mut pac::MCLK,
+    miso: impl Into<DgiSpiMiso>,
+    mosi: impl Into<DgiSpiMosi>,
+    sck: impl Into<DgiSpiSck>
+) -> DgiSpi {
+    let gclk0 = clocks.gclk0();
+    let clock = clocks.sercom6_core(&gclk0).unwrap();
+    let freq = clock.freq();
+    let (miso, mosi, sck) = (miso.into(), mosi.into(), sck.into());
+    let pads = spi::Pads::default().data_in(miso).data_out(mosi).sclk(sck);
+    spi::Config::new(mclk, dgi_spi_sercom, pads, freq)
+        .baud(baud)
+        .spi_mode(spi::MODE_0)
+        .enable()
+}
 
 
 /// I2C pads for the extension 2 connection
