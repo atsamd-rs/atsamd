@@ -364,3 +364,25 @@ pub fn dgi_i2c(
     let pads = i2c::Pads::new(sda.into(), scl.into());
     i2c::Config::new(mclk, dgi_i2c_sercom, pads, freq).baud(baud).enable()
 }
+
+
+#[cfg(feature = "usb")]
+use hal::usb::{UsbBus, usb_device::bus::UsbBusAllocator};
+
+/// Convenience for setting up the USB
+#[cfg(feature = "usb")]
+pub fn usb_allocator(
+    usb: pac::USB,
+    clocks: &mut GenericClockController,
+    mclk: &mut pac::MCLK,
+    dm: impl Into<UsbDm>,
+    dp: impl Into<UsbDp>,
+) -> UsbBusAllocator<UsbBus> {
+    use pac::gclk::{genctrl::SRC_A, pchctrl::GEN_A};
+
+    clocks.configure_gclk_divider_and_source(GEN_A::GCLK2, 1, SRC_A::DFLL, false);
+    let usb_gclk = clocks.get_gclk(GEN_A::GCLK2).unwrap();
+    let usb_clock = &clocks.usb(&usb_gclk).unwrap();
+    let (dm, dp) = (dm.into(), dp.into());
+    UsbBusAllocator::new(UsbBus::new(usb_clock, mclk, dm, dp, usb))
+}
