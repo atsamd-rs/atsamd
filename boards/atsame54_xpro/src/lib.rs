@@ -8,5 +8,5 @@ pub use pins::*;
 #[cfg(feature = "rt")]
 pub use cortex_m_rt::entry;
 
-pub mod pins;
 pub mod devices;
+pub mod pins;
