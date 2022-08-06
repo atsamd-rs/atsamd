@@ -329,7 +329,7 @@
 //!     └── GCLK0 (100 MHz)
 //!         ├── Main clock (100 MHz)
 //!         ├── SERCOM0 peripheral clock
-//!         └── Ouput to GPIO pin
+//!         └── Output to GPIO pin
 //! ```
 //!
 //! We will use an external crystal oscillator running at 8 MHz to feed a DPLL,
@@ -429,6 +429,12 @@
 //! `EnabledXosc0`, so that its `U0` type parameter can be incremented to `U1`.
 //! The `Dpll::from_xosc0` method takes ownership of the `EnabledXosc0` and
 //! returns it with this modified type parameter.
+//!
+//! This is the essence of clock safety in this module. Once the `Counter` has
+//! been incremeneted to `U1`, the `EnabledXosc0` can no longer be modified or
+//! disabled. All further code can guarantee this invariant is upheld. To modify
+//! the `EnabledXosc0`, we would first have to use `Dpll::free` to disable the
+//! DPLL and [`Decrement`] the `Counter` back to `U0`.
 //!
 //! ```no_run
 //! # use atsamd_hal::{
