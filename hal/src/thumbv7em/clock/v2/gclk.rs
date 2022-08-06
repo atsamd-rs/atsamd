@@ -789,15 +789,15 @@ pub type EnabledGclk<G, I, N = U0> = Enabled<Gclk<G, I>, N>;
 /// actively running.
 pub type Gclk0<I> = Gclk<Gclk0Id, I>;
 
-/// Type aliase for the corresponding [`EnabledGclk`]
+/// Type alias for the corresponding [`EnabledGclk`]
 ///
 /// As mentioned in the [module-level documentation](self), `Gclk0` is special,
 /// because it provides the processor master clock. We represent this by
 /// permanently [`Increment`]ing the [`Counter`] for [`EnabledGclk0`], which
-/// prevents it from ever being disabled. Accordingly, we also provide a few
-/// special methods on [`EnabledGclk0`] to configure the `Gclk` while it is
-/// actively running.
-pub type EnabledGclk0<I, N = U0> = EnabledGclk<Gclk0Id, I, N>;
+/// prevents it from ever being disabled. Thus, the default value for `N` is
+/// [`U1`] instead of [`U0`]. Accordingly, we also provide a few special methods
+/// on [`EnabledGclk0`] to configure the `Gclk` while it is actively running.
+pub type EnabledGclk0<I, N = U1> = EnabledGclk<Gclk0Id, I, N>;
 
 seq!(G in 1..=11 {
     paste! {
