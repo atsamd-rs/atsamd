@@ -176,7 +176,7 @@ use crate::pac::oscctrl::dpll::dpllctrlb::REFCLK_A;
 use crate::time::Hertz;
 use crate::typelevel::{Counter, Decrement, Increment, Sealed};
 
-use super::gclk::{GclkId, GclkSourceId};
+use super::gclk::GclkId;
 use super::pclk::{Pclk, PclkId};
 use super::xosc::{Xosc0Id, Xosc1Id};
 use super::xosc32k::Xosc32kId;
@@ -874,7 +874,7 @@ where
     ///
     /// [`new`]: Dpll::new
     #[inline]
-    pub fn enable(mut self) -> EnabledDpll<D, I> {
+    pub fn enable(self) -> EnabledDpll<D, I> {
         let input_freq = self.input_freq();
         let output_freq = self.output_freq();
         if input_freq < 32_000 || input_freq > 3_200_000 {
@@ -883,6 +883,17 @@ where
         if output_freq < 96_000_000 || output_freq > 200_000_000 {
             panic!("Invalid DPLL output frequency");
         }
+        // Safety: We just checked that the input and output clock frequencies
+        // are within the valid ranges specified in the datasheet
+        unsafe { self.enable_unchecked() }
+    }
+
+    /// Enable the [`Dpll`] without validating the input & output frequencies
+    ///
+    /// This is equivalent to calling [`Dpll::enable`] but without the checks on
+    /// input and output frequencies.
+    #[inline]
+    pub unsafe fn enable_unchecked(mut self) -> EnabledDpll<D, I> {
         self.token.set_source_clock(I::DYN);
         if I::DYN == DynDpllSourceId::Xosc0 || I::DYN == DynDpllSourceId::Xosc1 {
             self.token.set_prediv(self.prediv)
@@ -938,7 +949,7 @@ where
 
 impl<D, I, N> Source for EnabledDpll<D, I, N>
 where
-    D: DpllId + GclkSourceId,
+    D: DpllId,
     I: DpllSourceId<D>,
     N: Counter,
 {
