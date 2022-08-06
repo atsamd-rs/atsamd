@@ -2,7 +2,7 @@
 //!
 //! ## Overview
 //!
-//! The `dpll` module prodives access to the two digital phase-locked loops
+//! The `dpll` module provides access to the two digital phase-locked loops
 //! (DPLLs) within the `OSCCTRL` peripheral.
 //!
 //! A DPLL is used to multiply clock frequencies. It takes a lower-frequency
