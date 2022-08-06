@@ -18,133 +18,240 @@
 //! fully dynamic API has been discussed, but nothing has been developed so far.
 //! </p>
 //!
-//! There are a few basic clock categories in the ATSAMD clock tree.
-//! Specifically, there are:
-//! - Root clocks derived from internal clocks, external clocks or crystal
-//!   oscillators:
-//!     - The internal, 48 MHz DFLL ([`dfll`])
-//!     - The internal, ultra-low power oscillator ([`osculp32k`])
-//!     - An external clock or crystal oscillator ([`GclkIn`], [`xosc`], [`xosc32k`])
-//! - Branch clocks that modify and distribute clocks:
-//!     - Generic clock generators ([`gclk`])
-//!     - Digital phase-locked loops ([`dpll`])
-//! - Leaf clocks that drive peripherals or external clock outputs:
-//!     - Peripheral channel clocks ([`pclk`])
-//!     - The real-time clock oscillator ([`rtcosc`])
-//!     - External clock ouputs ([`GclkOut`])
-//! - Bus clocks derived from the processor's master clock:
-//!     - AHB clocks ([`ahb`])
-//!     - APB clocks ([`apb`])
+//! The sections that follow provide an explanation of key concepts in the
+//! module. We highly recommend users read through them to better understand the
+//! `clock` module API. A [complete example](self#getting-started) is also
+//! provided.
 //!
-//! To safely create and use a clock tree, it is critical that root and branch
-//! clocks not be disabled while leaf clocks are still active. Stated
-//! differently, if clock `B` is derived from, and dependent on, clock `A`, then
-//! clock `A` **must not** be disabled while clock `B` is still in use.
+//! ## Clock safety
 //!
-//! This module enforces clock-tree safety by using a [type-level] [`Counter`]
-//! to track the number of dependents for a given [`Enabled`] clock [`Source`].
+//! A clock tree represents dependencies among clocks, where producer clocks
+//! feed consumer clocks. Root clocks are the original producers, as they are
+//! derived from oscillators or external clocks. Branch clocks are both
+//! producers and consumers, since they modify and distribute clocks. And leaf
+//! clocks are consumers only; they drive peripherals or external clock outputs
+//! but do not feed other clocks.
 //!
-//! To fully understand the architecture of this module, it is important to
-//! first understand a few important concepts.
+//! To safely create and use a clock tree, it is critical that producer clocks
+//! not be modified or disabled while their consumer clocks are still in active
+//! use. Stated differently, if clock `B` consumes clock `A`, then clock `A`
+//! **must not** be modified or disabled while clock `B` is still in use.
 //!
-//! ## Concepts
+//! Notice that this requirement mimics the principle of "aliased XOR mutable"
+//! underlying the Rust borrow checker. A producer clock can only be modified if
+//! it is not "borrowed" (consumed) by any other clocks.
 //!
-//! The following sections will explain key concpets used throughout the `clock`
-//! module.
+//! The following sections will review the various type-level programming
+//! techniques used to enforce this principle in the `clock` module.
 //!
-//! ### Tokens
+//! ## Clock state machines
 //!
-//! To ensure compile-time safety of the clock tree, it is important that we
-//! make a type-level distinction between enabled and disabled clocks.
-//! Throughout this module, disabled clocks are represented as singleton `Token`
-//! structs that can be exchanged for an actual clock type. Each `Token` is a
-//! singleton, which means there is only ever one copy in existence at a time.
-//! Multiple, identical `Token`s cannot be created without `unsafe`.
+//! Each available clock is represented in Rust as a unique, singleton object.
+//! Users cannot create two instances of the same clock without using `unsafe`.
 //!
-//! ### `Enabled` wrapper
+//! However, a given clock is not always represented with the same **type**.
+//! Specifically, each clock has at least two representations, one for the
+//! configured and enabled clock, and another for the unconfigured and disabled
+//! clock.
 //!
-//! Bus clocks and leaves in the clock tree cannot be used as a source for
-//! other, downstream clocks. Accordingly, these clocks convert directly from
-//! a `Token` to an enabled clock type with a call to an `enable` method. For
-//! example, [`PclkToken`]s are converted to enabled [`Pclk`]s with the
-//! [`Pclk::enable`] method. A similar statement can be made for [`GclkOut`],
-//! [`AhbClk`] and [`ApbClk`].
+//! These states are represented in Rust using distinct types, forming a
+//! type-level state machine. Moreover, the disabled state is always represented
+//! by a `Token` type. As the name implies, `Token`s have no functionality on
+//! their own; they can only be exchanged for a different type representing
+//! another state.
 //!
-//! On the other hand, root and branch clocks in the tree **can** be used as a
-//! source for downstream clocks, so we must enforce clock tree safety by
-//! tracking those downstream clocks at compile-time. We do so by wrapping fully
-//! configured and enabled clocks with a common, dedicated wrapper struct
-//! designed for this purpose.
+//! ## Clock relationships
 //!
-//! Specifically, the `enable` methods for these clocks yield an instance of
-//! [`Enabled<T, N>`], which provides two useful features. First, it restricts
-//! access to the underlying clock type, `T`, so that it cannot be placed in an
-//! invalid state. And second, it uses type-level [`Unsigned`] integers from the
-//! [`typenum`] crate to implement a compile-time [`Counter`], `N`, that tracks
-//! the number of downstream clocks derived from, and therefore dependent on,
-//! this clock. We generally refer to `N` as the [`Enabled`] [`Counter`]. If a
-//! given [`Enabled`] clock has `N > `[`U0`], then it usually cannot be modified
-//! or disabled.
+//! In general, there are two classes of clock in ATSAMD chips. Some clocks map
+//! one-to-one (1:1) to a specific bus or peripheral. This is true for the AHB
+//! clocks ([`AhbClk`]s), APB clocks ([`ApbClk`]s), GCLK inputs ([`GclkIn`]s),
+//! GCLK outputs ([`GclkOut`]s), peripheral channel clocks ([`Pclk`]s), and RTC
+//! oscillator ([`RtcOsc`]). Other clocks form one-to-many (1:N) relationships,
+//! like the external crystal oscillator ([`Xosc`]), the 48 MHz DFLL ([`Dfll`])
+//! or the two DPLLs ([`Dpll`]).
 //!
-//! Changing the [`Enabled`] [`Counter`] is done using the [`Increment`] and
-//! [`Decrement`] traits, which map the [`Unsigned`] integers to their
-//! respective successors and predecessors.
+//! The `clock` module uses a distinct approach for each class.
+//!
+//! ### 1:1 clocks
+//!
+//! One-to-one relationships are easily modelled in Rust using move semantics.
+//! For example, an enabled peripheral channel clock is represented as a
+//! [`Pclk`] object. The respective peripheral API can move the `Pclk` and take
+//! ownership of it. In that case, the `Pclk` acts as proof that the peripheral
+//! clock is enabled, and the transfer of ownership prevents users from
+//! modifying or disabling the `Pclk` while it is in use by the peripheral.
+//!
+//! One-to-one clocks generally have little to no configuration. They are
+//! typically converted directly from disabled `Token` types to fully enabled
+//! clock types. For example, the `Pclk` type has only two methods,
+//! [`Pclk::enable`] and [`Pclk::disable`], which convert [`PclkToken`]s to
+//! `Pclk`s and vice versa.
+//!
+//! ### 1:N clocks
+//!
+//! One-to-many relationships are more difficult to model in Rust.
+//!
+//! As discussed above, we are trying to create something akin to "aliased XOR
+//! mutable", where producer clocks cannot be modified while used by consumer
+//! clocks. A natural approach would be to use the Rust borrow checker directly.
+//! In that case, consumer clocks would hold `&Producer` references to the
+//! `Producer` clock object. The existence of outstanding shared borrows would
+//! naturally prevent users from calling `Producer` methods taking `&mut self`.
+//!
+//! Unfortunately, while this approach could work, there is a critical problem
+//! with disastrous consequences for ergonomics. To satisfy the Rust borrow
+//! checker, `Producer` clock objects *could not be moved* while `&Producer`
+//! references were still held by consumer clocks.
+//!
+//! However, this restriction is unnecessary. A `Producer` clock object is
+//! merely a semantic object representing the "idea" of a producer clock. And
+//! "borrowing" the producer is not meant to protect memory from corruption.
+//! Rather, our goal is only to restrict the `Producer` API, to prevent it from
+//! being modified or disabled once it has been connected to a consumer. We
+//! don't need to permanently hold the `Producer` object in place to do that.
+//!
+//! It is possible to build a `clock` API based on the borrow checker, but it
+//! would be extremely frustrating to use in practice, because of restrictions
+//! on the movement of `Producer` objects.
+//!
+//! Instead, the `clock` module takes a different approach. It uses type-level
+//! programming to track, at compile-time, the number of consumer clocks, N,
+//! fed by a particular producer clock. With this approach, we can move
+//! `Producer` objects while still making them impossible to modify if N > 0.
+//!
+//! The following sections will describe the implementation of this strategy.
+//!
+//! ## Tracking N at compile-time for 1:N clocks
+//!
+//! We have two specific goals. We need to both track the number of consumer
+//! clocks, N, that are actively using a given producer clock. And we need to
+//! restrict the producer clock API when N > 0.
+//!
+//! ### A compile-time `Counter`
+//!
+//! First, we need to develop some way to track the number of consumer clocks,
+//! N, within the type system. To accomplish this, we need both a way to
+//! represent N in the type system and a way to increase or decrease N when
+//! making or breaking connections in the clock tree.
+//!
+//! To represent N, we can use type-level, [`Unsigned`] integers from the
+//! [`typenum`] crate (i.e. [`U0`], [`U1`], etc). And we can use a type
+//! *parameter*, `N`, to represent some unknown, type-level number.
+//!
+//! Next, we need a way to increase or decrease the type parameter `N`. The
+//! [`typenum`] crate provides type aliases [`Add1`] and [`Sub1`] that map from
+//! each `Unsigned` integer to its successor and predecessor types,
+//! respectively. We can leverage these to create our own compile-time
+//! [`Counter`] that we [`Increment`] or [`Decrement`]. These three traits form
+//! the foundation for our strategy for handling 1:N clocks in this module.
+//!
+//! ### The `Enabled` wrapper
+//!
+//! Our representation of a 1:N producer clock is [`Enabled<T, N>`], which is a
+//! wrapper struct that pairs some *enabled* clock type `T` with a [`Counter`]
+//! type `N`. The wrapper restricts access to the underlying clock type, `T`,
+//! allowing us to selectively define methods when `N = U0`.
+//!
+//! Moreover, because the `Counter` trait is defined generally, for any set of
+//! types that can be ordered, we can extend our implementation from `N` to
+//! `Enabled<T, N>`. With this approach, we can use the `Increment` and
+//! `Decrement` traits to transform not only between `U0` and `U1` but also
+//! between `Enabled<T, U0>` and `Enabled<T, U1>`.
+//!
+//! ### Acting as a clock `Source`
+//!
+//! Finally, we need to define some generic interface for interacting with 1:N
+//! producer clocks. However, when designing this interface, we need to be careful
+//! not to lose information during type-level transformations.
+//!
+//! In particular, the `Enabled` `Counter` alone is not enough for proper clock
+//! safety. If we used consumer `A` to `Increment` producer `P` from
+//! `Enabled<P, U0>` to `Enabled<P, U1>`, but then used consumer `B` to
+//! `Decrement` the producer back to `Enabled<P, U0>`, we would leave consumer
+//! `A` dangling.
+//!
+//! To solve this problem, we need some way to guarantee that a given consumer
+//! can only `Decrement` the same producer it `Increment`ed. Stated differently,
+//! we need a way to track the identity of each consumer's clock source.
+//!
+//! The [`Source`] trait is designed for this purpose. It marks
+//! [`Enabled<T, N>`] producer clocks, and it's associated type, [`Id`], is the
+//! identity type that should be stored by consumers.
+//!
+//! Given that all implementers of `Source` are instances of `Enabled<T, N>`,
+//! the naïve choice for [`Source::Id`] would be `T`. However, in a moment, we
+//! will see why this choice is not ideal.
 //!
 //! ### `Id` types
 //!
-//! Many of the clock types in this module have type parameters reflecting
-//! compile-time choices that influence the available APIs. For instance, the
-//! [`Xosc`] type takes a type parameter for the [`xosc::Mode`], which specifies
-//! whether the [`Xosc`] is derived from an external clock or a crystal
-//! oscillator. Accordingly, settings related to the crystal oscillator are only
-//! available in [`CrystalMode`].
+//! Many of the clock types in this module have additional type parameters that
+//! track the clock's configuration. For instance, the 48 MHz DFLL is
+//! represented by the [`Dfll<M>`] type. Here, the type parameter `M`
+//! represents the DFLL's control loop [`Mode`](dfll::Mode), which can either be
+//! [`OpenLoop`] or [`ClosedLoop`]. Accordingly, methods to adjust the
+//! closed-loop control parameters are only available on `Dfll<ClosedLoop>`.
 //!
 //! While these type parameters are important and necessary for configuration of
-//! the clock itself, they are not necessary when referring to the clock more
-//! broadly. For instance, a downstream clock does not need to know which
-//! [`xosc::Mode`] is in use, but it does need to know that it is being driven
-//! by an [`Xosc`].
+//! a given producer clock, they are not relevant to consumer clocks. A consumer
+//! clock does not need to know or care which loop `Mode` the DFLL is using, but
+//! it *does* need to track that its clock [`Source`] is the DFLL.
 //!
-//! Throughout this module, we define a series of `Id` types that represent the
-//! *identity* of a given clock rather than the clock itself. This is like the
+//! From this, we can see that `Enabled<Dfll<M>, N>` should not implement
+//! `Source` with `Source::Id = Dfll<M>`, because that would require consumers
+//! to needlessly track the DFLL loop `Mode`.
+//!
+//! Instead, this module defines a series of `Id` types representing the
+//! *identity* of a given clock, rather than the clock itself. This is like the
 //! distinction between a passport and a person. A passport identifies a person,
-//! regardless of changes to their clothes or hair.
+//! regardless of changes to their clothes or hair. The `Id` types serve to
+//! erase configuration information, representing only the clock's identity.
 //!
-//! ### `Source` trait
+//! For `Dfll<M>`, the corresponding `Id` type is [`DfllId`]. Thus,
+//! `Enabled<Dfll<M>, N>` implements `Source` with `Source::Id = DfllId`.
 //!
-//! The [`Source`] trait has two main purposes. First, it marks types that can
-//! act as a source to downstream clocks in the tree. And second, it maps from
-//! each clock type to its corresponding `Id` type, described above.
+//! ## Notes on memory safety
 //!
-//! For example, the type `Enabled<Dfll<OpenLoop>, U0>` implements [`Source`]
-//! with an associated `Id` type of [`DfllId`]. While the [`Dfll<M>`] type
-//! itself needs the type parameter `M` to track its loop [`Mode`](dfll::Mode),
-//! downstream clocks don't need to know or care which mode the DFLL is using.
-//! The `Id` types serve to erase such configuration, representing only the
-//! clock's identity.
+//! ### Register interfaces
 //!
-//! All implementers of [`Source`] are [`Enabled`] clocks.
+//! Although HAL users see `Token` types as merely opaque objects, internally
+//! they serve a dual purpose as the primary register interface to control the
+//! corresponding clock. Moreover, they also fundamentally restructure the way
+//! registers are accessed relative to the [PAC].
+//!
+//! Each of the four PAC clocking structs ([`OSCCTRL`], [`OSC32KCTRL`], [`GCLK`]
+//! and [`MCLK`]) is a singleton object that controls a set of MMIO registers.
+//! It is impossible to create two instances of any PAC object without `unsafe`.
+//! However, each object controls a large set of registers that can be further
+//! sub-divided into smaller sets for individual clocks. For example, the
+//! [`GCLK`] object controls registers for 12 different clock generators and 48
+//! peripheral channel clocks.
+//!
+//! `Token` types serve to break up the large PAC objects into smaller,
+//! more-targetted pieces. And in the process, they also remove the PAC objects'
+//! [interior mutability]. But this is only possible because each `Token` is
+//! *also* a singleton, and because individual clocks are configured through
+//! *mutually exclusive* sets of registers.
 //!
 //! ### Bus clocks
 //!
-//! Bus clocks are fundamentally different from the other clock types. They are
-//! derived from the processor's master clock, so they cannot be configured,
-//! only enabled or disabled. Moreover, unlike the other clocks, many distinct
-//! bus clocks are enabled or disabled from the *same* register. This presents a
-//! challenge for memory safety, because we need some way to guarantee that
-//! there are no data races. For example, if two bus clocks could modify the
-//! same register from two different execution contexts, a read/modify/write
+//! Bus clocks are fundamentally different from the other clock types in this
+//! module, because they do not use mutually exclusive registers for
+//! configuration. For instance, the registers that control [`Dpll0`] are
+//! mutually exclusive to those that control [`Dpll1`], but `ApbClk<Sercom0>`
+//! and `ApbClk<Sercom1>` share a single register.
+//!
+//! This presents a challenge for memory safety, because we need some way to
+//! guarantee that there are no data races. For example, if both
+//! `ApbClk<Sercom0>` and `ApbClk<Sercom1>` tried to modify the `APBAMASK`
+//! register from two different execution contexts, a read/modify/write
 //! operation could be preempted, leading to memory corruption.
 //!
-//! To resolve the data race issue, we introduce two different types. Each
-//! distinct peripheral bus clock has its own clock type, i.e. [`AhbClk<A>`] and
-//! [`ApbClk<A>`], where the type parameter `A` represents the corresponding
-//! peripheral. Creating each [`AhbClk`] or [`ApbClk`] enables the corresponding
-//! clock, while destroying it disables the clock. However, to create or destroy
-//! an [`AhbClk`] or [`ApbClk`], you must first have access to a separate type
-//! representing the bus itself, the [`Ahb`] and [`Apb`] types. Creating an
-//! [`AhbClk`] requires `&mut Ahb`, which guarantees exclusive access to the bus
-//! registers and resolves the data race.
+//! To prevent data races when controlling bus clocks, we introduce two new
+//! types to mediate access to the shared registers. For [`AhbClk`]s, this is
+//! the [`Ahb`] type; and for [`ApbClk`]s, this is the [`Apb`] type. In a sense,
+//! the `Ahb` and `Apb` types represent the actual corresponding buses. Thus,
+//! enabling an APB clock by converting an [`ApbToken`] into an `ApbClk`
+//! requires exclusive access to the `Apb` in the form of `&mut Apb`.
 //!
 //! ## Getting started
 //!
@@ -172,42 +279,32 @@
 //! objects, the [`Buses`], [`Clocks`] and [`Tokens`].
 //!
 //! The [`Buses`] struct contains the [`Ahb`] and [`Apb`] objects, which
-//! represent the corresponding AHB and APB buses.
+//! represent the corresponding AHB and APB buses. See the [notes on memory
+//! safety](self#notes-on-memory-safety) for more details on these types.
 //!
 //! The [`Clocks`] struct contains all of the clocks that are enabled and
-//! running at power-on reset, namely:
+//! running at power-on reset, specifically:
 //! - All of the [`AhbClks`]
 //! - Some of the [`ApbClks`]
-//! - The 48 MHz [`Dfll`], running in [`OpenLoop`] mode
-//! - [`Gclk0`], sourced by the `Dfll`, which feeds the processor's master clock
-//! - The [`OscUlpBase`] clock, which is always running and cannot be disabled.
-//!   It can feed the derived [`OscUlp1k`] and [`OscUlp32k`] clocks.
-//!
-//! Note that bus clocks are not wrapped in [`Enabled`], because they can never be
-//! used to drive downstream clocks. The other three clocks, on the other hand,
-//! are all wrapped in [`Enabled`].
-//!
-//! The [`Dfll`] is configured as `Enabled<Dfll<OpenLoop>, U1>`, which
-//! represents fact that [`Gclk0`] is dependent on it. [`Gclk0`] is configured
-//! as `Enabled<Gclk0<DfllId>, U1>`, which indicates that it is derived from the
-//! [`Dfll`] (note the use of [`DfllId`] as an `Id` type) and has one dependent
-//! clock of its own. The dependent clock is, of course, the processor master
-//! clock.
-//!
-//! [`Gclk0`] can be configured to use a different base clock, which would allow
-//! you to reduce the [`Dfll`] [`Enabled`] [`Counter`] from [`U1`] to [`U0`] and
-//! disable it. However, the same is not true for [`Gclk0`]. Because the master
-//! clock has no representation in this module, the [`Counter`] for
-//! [`EnabledGclk0`] can *never* be reduced to [`U0`], which neatly models that
-//! the master clock can never be disabled.
-//!
-//! Finally, the [`OscUlpBase`] clock is modelled as `Enabled<OscUlpBase, U0>`,
-//! because it has no dependent clocks at power-on reset. However, it can never
-//! be disabled, so we do not provide any `.disable()` method.
+//! - The 48 MHz [`Dfll`], running in [`OpenLoop`] mode, represented as as
+//!   `Enabled<Dfll<OpenLoop>, U1>`. `N = U1` here because [`Gclk0`] consumes
+//!   it. See [above](self#tracking-n-at-compile-time-for-1n-clocks) for
+//!   details on [`Enabled<T, N>`] and [`Counter`] types.
+//! - [`Gclk0`], sourced by the `Dfll` and represented as
+//!   `Enabled<Gclk0<DfllId>, U1>`. Note the use of [`DfllId`] as an
+//!   [`Id` type](self#id-types) here. Although `Gclk0` is not consumed by any
+//!   clock represented in this module, it *is* consumed by the processor's main
+//!   clock. We represent this by setting `N = U1`, which we use to restrict the
+//!   available API. Specifically, [`EnabledGclk0`] has special methods not
+//!   available to other [`Gclk`]s.
+//! - The [`OscUlpBase`] clock, which can act as a [`Source`] for the
+//!   [`OscUlp1k`] and [`OscUlp32k`] clocks. It has no consumers at power-on
+//!   reset, so it is represented as `Enabled<OscUlpBase, U0>`. However, it can
+//!   never be disabled, so we provide no `.disable()` method.
 //!
 //! The [`Tokens`] struct contains all of the available `Token`s, which
-//! represent clocks that are disabled at power-on reset. Each `Token` can be
-//! exchanged for a corresponding clock object.
+//! [represent clocks that are disabled](self#clock-state-machines) at power-on
+//! reset. Each `Token` can be exchanged for a corresponding clock object.
 //!
 //! ## Example clock tree
 //!
@@ -221,9 +318,7 @@
 //! ```text
 //! DFLL (48 MHz)
 //! └── GCLK0 (48 MHz)
-//!     └── Master clock (48 MHz)
-//!
-//! OSCULP base clock
+//!     └── Main clock (48 MHz)
 //! ```
 //!
 //! Our goal will be a clock tree that looks like this:
@@ -232,11 +327,9 @@
 //! XOSC0 (8 MHz)
 //! └── DPLL0 (100 MHz)
 //!     └── GCLK0 (100 MHz)
-//!         ├── Master clock (100 MHz)
+//!         ├── Main clock (100 MHz)
 //!         ├── SERCOM0 peripheral clock
 //!         └── Ouput to GPIO pin
-//!
-//! OSCULP base clock
 //! ```
 //!
 //! We will use an external crystal oscillator running at 8 MHz to feed a DPLL,
@@ -247,7 +340,7 @@
 //! First, let's import some of the necessary types. We will see what each type
 //! represents in turn.
 //!
-//! ```
+//! ```no_run
 //! use atsamd_hal::{
 //!     clock::v2::{
 //!         clock_system_at_reset,
@@ -266,9 +359,9 @@
 //! the two XOSC clocks we will use. Suppose an external crystal is attached to
 //! pins `PA14` and `PA15`. These pins feed the XOSC0 clock, so we will want to
 //! create an instance of [`Xosc0`]. Note that `Xosc0<M>` is merely an alias for
-//! `Xosc<Xosc0Id, M>`. Here, [`Xosc0Id`] represents the *identity* of the XOSC0
-//! clock, rather than the clock itself, and `M` represents the XOSC
-//! [`Mode`](xosc::Mode).
+//! `Xosc<Xosc0Id, M>`. Here, [`Xosc0Id`] represents the
+//! [*identity*](self#id-types) of the XOSC0 clock, rather than the clock
+//! itself, and `M` represents the XOSC [`Mode`](xosc::Mode).
 //!
 //! Next, we access the [`Tokens`] struct to extract the corresponding
 //! [`XoscToken`] for XOSC0, and we trade the PAC `PORT` struct for the
@@ -283,9 +376,25 @@
 //! alias for `Enabled<Xosc0<M>, N>`. In this case, we get
 //! `EnabledXosc0<CrystalMode, U0>`.
 //!
-//! ```ignore
+//! ```no_run
+//! # use atsamd_hal::{
+//! #     clock::v2::{
+//! #         clock_system_at_reset,
+//! #         xosc::{Xosc, CrystalCurrent},
+//! #     },
+//! #     gpio::Pins,
+//! #     pac::Peripherals,
+//! #     time::U32Ext,
+//! # };
+//! # let mut pac = Peripherals::take().unwrap();
+//! # let (buses, clocks, tokens) = clock_system_at_reset(
+//! #     pac.OSCCTRL,
+//! #     pac.OSC32KCTRL,
+//! #     pac.GCLK,
+//! #     pac.MCLK,
+//! #     &mut pac.NVMCTRL,
+//! # );
 //! let pins = Pins::new(pac.PORT);
-//!
 //! let xosc0 = Xosc::from_crystal(
 //!     tokens.xosc0,
 //!     pins.pa14,
@@ -303,35 +412,89 @@
 //! Also note that, like before, `Dpll0<I>` and `Dpll1<I>` are aliases for
 //! `Dpll<Dpll0Id, I>` and `Dpll<Dpll1Id, I>`. [`Dpll0Id`] and [`Dpll1Id`]
 //! represent the *identity* of the respective DPLL, while `I` represents the
-//! `Id` type for the [`Source`] driving the DPLL. In this particular case, we
-//! aim to create an instance of `Dpll0<Xosc0Id>`.
+//! [`Id` type](self#id-types) for the [`Source`] driving the DPLL. In this
+//! particular case, we aim to create an instance of `Dpll0<Xosc0Id>`.
 //!
 //! Only certain clocks can drive the DPLL, so `I` is constrained by the
 //! [`DpllSourceId`] trait. Specifically, only the [`Xosc0Id`], [`Xosc1Id`],
 //! [`Xosc32kId`] and [`GclkId`] types implement this trait.
 //!
 //! As before, we access the [`Tokens`] struct and use the corresponding
-//! [`DpllToken`] when creating an instance of [`Dpll`]. However, unlike before,
+//! [`DpllToken`] when creating an instance of `Dpll`. However, unlike before,
 //! we are creating a new clock-tree relationship that must be tracked by the
 //! type system. Because DPLL0 will now depend on XOSC0, we must [`Increment`]
 //! the [`Enabled`] [`Counter`] for [`EnabledXosc0`].
 //!
 //! Thus, to create an instance of `Dpll0<XoscId0>`, we must provide the
-//! [`EnabledXosc0`], so that its [`U0`] type parameter can be incremented to
-//! [`U1`]. The `Dpll::from_xosc0` method takes ownership of the
-//! [`EnabledXosc0`] and returns it with this modified type parameter.
+//! `EnabledXosc0`, so that its `U0` type parameter can be incremented to `U1`.
+//! The `Dpll::from_xosc0` method takes ownership of the `EnabledXosc0` and
+//! returns it with this modified type parameter.
 //!
-//! ```ignore
+//! ```no_run
+//! # use atsamd_hal::{
+//! #     clock::v2::{
+//! #         clock_system_at_reset,
+//! #         dpll::Dpll,
+//! #         xosc::{Xosc, CrystalCurrent},
+//! #     },
+//! #     gpio::Pins,
+//! #     pac::Peripherals,
+//! #     time::U32Ext,
+//! # };
+//! # let mut pac = Peripherals::take().unwrap();
+//! # let (buses, clocks, tokens) = clock_system_at_reset(
+//! #     pac.OSCCTRL,
+//! #     pac.OSC32KCTRL,
+//! #     pac.GCLK,
+//! #     pac.MCLK,
+//! #     &mut pac.NVMCTRL,
+//! # );
+//! # let pins = Pins::new(pac.PORT);
+//! # let xosc0 = Xosc::from_crystal(
+//! #     tokens.xosc0,
+//! #     pins.pa14,
+//! #     pins.pa15,
+//! #     8.mhz(),
+//! #     CrystalCurrent::Low,
+//! # ).enable();
 //! let (dpll0, xosc0) = Dpll::from_xosc0(tokens.dpll0, xosc0);
 //! ```
-//! Next, we set the DPLL predivider and loop parameters. We must first divide
+//! Next, we set the DPLL pre-divider and loop divider. We must pre-divide
 //! the XOSC clock down from 8 MHz to 2 MHz, so that it is within the valid
-//! input frequency range for the DPLL. Then, we multiple the 2 MHz clock by 50
-//! for a 100 MHz output. We do not need fractional mutiplication here, so the
-//! fractional multiplier is zero. Finally, we can enable the [`Dpll`], yielding
-//! an instance of `EnabledDpll0<XoscId0>`.
+//! input frequency range for the DPLL. Then, we set the DPLL loop divider, so
+//! that it will multiply the 2 MHz clock by 50 for a 100 MHz output. We do not
+//! need fractional mutiplication here, so the fractional loop divider is zero.
+//! Finally, we can enable the `Dpll`, yielding an instance of
+//! `EnabledDpll0<XoscId0>`.
 //!
-//! ```ignore
+//! ```no_run
+//! # use atsamd_hal::{
+//! #     clock::v2::{
+//! #         clock_system_at_reset,
+//! #         dpll::Dpll,
+//! #         xosc::{Xosc, CrystalCurrent},
+//! #     },
+//! #     gpio::Pins,
+//! #     pac::Peripherals,
+//! #     time::U32Ext,
+//! # };
+//! # let mut pac = Peripherals::take().unwrap();
+//! # let (buses, clocks, tokens) = clock_system_at_reset(
+//! #     pac.OSCCTRL,
+//! #     pac.OSC32KCTRL,
+//! #     pac.GCLK,
+//! #     pac.MCLK,
+//! #     &mut pac.NVMCTRL,
+//! # );
+//! # let pins = Pins::new(pac.PORT);
+//! # let xosc0 = Xosc::from_crystal(
+//! #     tokens.xosc0,
+//! #     pins.pa14,
+//! #     pins.pa15,
+//! #     8.mhz(),
+//! #     CrystalCurrent::Low,
+//! # ).enable();
+//! # let (dpll0, xosc0) = Dpll::from_xosc0(tokens.dpll0, xosc0);
 //! let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
 //! ```
 //!
@@ -340,33 +503,88 @@
 //! ```text
 //! DFLL (48 MHz)
 //! └── GCLK0 (48 MHz)
-//!     └── Master clock (48 MHz)
+//!     └── Main clock (48 MHz)
 //!
 //! XOSC0 (8 MHz)
 //! └── DPLL0 (100 MHz)
-//!
-//! OSCULP base clock
 //! ```
 //!
 //! Our next task will be to swap GCLK0 from the 48 MHz DFLL to the 100 MHz
 //! DPLL. To do that, we will use the special [`swap`] method on
 //! [`EnabledGclk0`] to change the base clock without disabling GCLK0 or the
-//! master clock.
+//! main clock.
 //!
 //! This time we will be modifying two [`Enabled`] [`Counter`]s simultaneously.
-//! We will [`Decrement`] the [`EnabledDfll`] count from [`U1`] to [`U0`], and
-//! we will [`Increment`] the [`EnabledDpll0`] count from [`U0`] to [`U1`].
+//! We will [`Decrement`] the [`EnabledDfll`] count from `U1` to `U0`, and
+//! we will [`Increment`] the [`EnabledDpll0`] count from `U0` to `U1`.
 //! Again, we need to provide both the DFLL and DPLL clocks, so that their
 //! type parameters can be changed.
 //!
-//! ```ignore
+//! ```no_run
+//! # use atsamd_hal::{
+//! #     clock::v2::{
+//! #         clock_system_at_reset,
+//! #         dpll::Dpll,
+//! #         xosc::{Xosc, CrystalCurrent},
+//! #     },
+//! #     gpio::Pins,
+//! #     pac::Peripherals,
+//! #     time::U32Ext,
+//! # };
+//! # let mut pac = Peripherals::take().unwrap();
+//! # let (buses, clocks, tokens) = clock_system_at_reset(
+//! #     pac.OSCCTRL,
+//! #     pac.OSC32KCTRL,
+//! #     pac.GCLK,
+//! #     pac.MCLK,
+//! #     &mut pac.NVMCTRL,
+//! # );
+//! # let pins = Pins::new(pac.PORT);
+//! # let xosc0 = Xosc::from_crystal(
+//! #     tokens.xosc0,
+//! #     pins.pa14,
+//! #     pins.pa15,
+//! #     8.mhz(),
+//! #     CrystalCurrent::Low,
+//! # ).enable();
+//! # let (dpll0, xosc0) = Dpll::from_xosc0(tokens.dpll0, xosc0);
+//! # let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
 //! let (gclk0, dfll, dpll0) = clocks.gclk0.swap(clocks.dfll, dpll0);
 //! ```
 //!
 //! At this point, the DFLL is completely unused, so it can be disbled and
 //! deconstructed, leaving only the [`DfllToken`].
 //!
-//! ```ignore
+//! ```no_run
+//! # use atsamd_hal::{
+//! #     clock::v2::{
+//! #         clock_system_at_reset,
+//! #         dpll::Dpll,
+//! #         xosc::{Xosc, CrystalCurrent},
+//! #     },
+//! #     gpio::Pins,
+//! #     pac::Peripherals,
+//! #     time::U32Ext,
+//! # };
+//! # let mut pac = Peripherals::take().unwrap();
+//! # let (buses, clocks, tokens) = clock_system_at_reset(
+//! #     pac.OSCCTRL,
+//! #     pac.OSC32KCTRL,
+//! #     pac.GCLK,
+//! #     pac.MCLK,
+//! #     &mut pac.NVMCTRL,
+//! # );
+//! # let pins = Pins::new(pac.PORT);
+//! # let xosc0 = Xosc::from_crystal(
+//! #     tokens.xosc0,
+//! #     pins.pa14,
+//! #     pins.pa15,
+//! #     8.mhz(),
+//! #     CrystalCurrent::Low,
+//! # ).enable();
+//! # let (dpll0, xosc0) = Dpll::from_xosc0(tokens.dpll0, xosc0);
+//! # let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
+//! # let (gclk0, dfll, dpll0) = clocks.gclk0.swap(clocks.dfll, dpll0);
 //! let dfll_token = dfll.disable().free();
 //! ```
 //!
@@ -376,21 +594,49 @@
 //! XOSC0 (8 MHz)
 //! └── DPLL0 (100 MHz)
 //!     └── GCLK0 (100 MHz)
-//!         └── Master clock (100 MHz)
-//!
-//! OSCULP base clock
+//!         └── Main clock (100 MHz)
 //! ```
 //!
 //! We have the clocks set up, but we're not using them for anything other than
-//! the master clock. Our final steps will create SERCOM APB and peripheral
+//! the main clock. Our final steps will create SERCOM APB and peripheral
 //! clocks and will output the raw GCLK0 to a GPIO pin.
 //!
 //! To enable the APB clock for SERCOM0, we must access the [`Apb`] bus struct.
 //! We provide an [`ApbToken`] to the [`Apb::enable`] method and receive an
-//! [`ApbClk`] in return. APB clocks do not depend on any other clocks, so there
-//! is no need to increment any [`Enabled`] [`Counter`].
+//! [`ApbClk`] in return. APB clocks are [1:1 clocks](self#clock-relationships),
+//! so the `ApbClk` is not wrapped with [`Enabled`].
 //!
-//! ```ignore
+//! ```no_run
+//! # use atsamd_hal::{
+//! #     clock::v2::{
+//! #         clock_system_at_reset,
+//! #         dpll::Dpll,
+//! #         xosc::{Xosc, CrystalCurrent},
+//! #     },
+//! #     gpio::Pins,
+//! #     pac::Peripherals,
+//! #     time::U32Ext,
+//! # };
+//! # let mut pac = Peripherals::take().unwrap();
+//! # let (mut buses, clocks, tokens) = clock_system_at_reset(
+//! #     pac.OSCCTRL,
+//! #     pac.OSC32KCTRL,
+//! #     pac.GCLK,
+//! #     pac.MCLK,
+//! #     &mut pac.NVMCTRL,
+//! # );
+//! # let pins = Pins::new(pac.PORT);
+//! # let xosc0 = Xosc::from_crystal(
+//! #     tokens.xosc0,
+//! #     pins.pa14,
+//! #     pins.pa15,
+//! #     8.mhz(),
+//! #     CrystalCurrent::Low,
+//! # ).enable();
+//! # let (dpll0, xosc0) = Dpll::from_xosc0(tokens.dpll0, xosc0);
+//! # let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
+//! # let (gclk0, dfll, dpll0) = clocks.gclk0.swap(clocks.dfll, dpll0);
+//! # let dfll_token = dfll.disable().free();
 //! let apb_sercom0 = buses.apb.enable(tokens.apbs.sercom0);
 //! ```
 //!
@@ -399,18 +645,48 @@
 //! that its [`Counter`] can be incremented. The resulting clock has the type
 //! `Pclk<Sercom0, Gclk0Id>`.
 //!
-//! ```ignore
+//! ```no_run
+//! # use atsamd_hal::{
+//! #     clock::v2::{
+//! #         clock_system_at_reset,
+//! #         dpll::Dpll,
+//! #         pclk::Pclk,
+//! #         xosc::{Xosc, CrystalCurrent},
+//! #     },
+//! #     gpio::Pins,
+//! #     pac::Peripherals,
+//! #     time::U32Ext,
+//! # };
+//! # let mut pac = Peripherals::take().unwrap();
+//! # let (mut buses, clocks, tokens) = clock_system_at_reset(
+//! #     pac.OSCCTRL,
+//! #     pac.OSC32KCTRL,
+//! #     pac.GCLK,
+//! #     pac.MCLK,
+//! #     &mut pac.NVMCTRL,
+//! # );
+//! # let pins = Pins::new(pac.PORT);
+//! # let xosc0 = Xosc::from_crystal(
+//! #     tokens.xosc0,
+//! #     pins.pa14,
+//! #     pins.pa15,
+//! #     8.mhz(),
+//! #     CrystalCurrent::Low,
+//! # ).enable();
+//! # let (dpll0, xosc0) = Dpll::from_xosc0(tokens.dpll0, xosc0);
+//! # let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
+//! # let (gclk0, dfll, dpll0) = clocks.gclk0.swap(clocks.dfll, dpll0);
+//! # let dfll_token = dfll.disable().free();
+//! # let apb_sercom0 = buses.apb.enable(tokens.apbs.sercom0);
 //! let (pclk_sercom0, gclk0) = Pclk::enable(tokens.pclks.sercom0, gclk0);
 //! ```
 //!
 //! Like [`Dpll<D, I>`], [`Pclk<P, I>`] also takes two type parameters. The
 //! first represents the corresponding peripheral, while the second is again an
-//! `Id` type representing the [`Source`] driving the [`Pclk`], which is
-//! restricted by the [`PclkSourceId`] trait. Because peripheral channel clocks
-//! can only be driven by GCLKs, [`PclkSourceId`] is effectively synonymous with
-//! the [`GclkId`] trait. Furthermore, like the [`AhbClk`] and [`ApbClk`] types,
-//! a [`Pclk`] is always a leaf in the clock tree. In can never drive another
-//! clock, so it is never placed inside an [`Enabled`] struct.
+//! [`Id` type](self#id-types) representing the [`Source`] driving the [`Pclk`],
+//! which is restricted by the [`PclkSourceId`] trait. Because peripheral
+//! channel clocks can only be driven by GCLKs, [`PclkSourceId`] is effectively
+//! synonymous with the [`GclkId`] trait.
 //!
 //! Finally, we would like to output GCLK0 to a GPIO pin. Doing so takes a
 //! similar approach to the [`Pclk`] above. But this time, we must also provide a
@@ -418,7 +694,41 @@
 //! above, creating a [`GclkOut`] clock will [`Increment`] the [`Counter`] for
 //! [`EnabledGclk0`].
 //!
-//! ```ignore
+//! ```no_run
+//! # use atsamd_hal::{
+//! #     clock::v2::{
+//! #         clock_system_at_reset,
+//! #         dpll::Dpll,
+//! #         gclkio::GclkOut,
+//! #         pclk::Pclk,
+//! #         xosc::{Xosc, CrystalCurrent},
+//! #     },
+//! #     gpio::Pins,
+//! #     pac::Peripherals,
+//! #     time::U32Ext,
+//! # };
+//! # let mut pac = Peripherals::take().unwrap();
+//! # let (mut buses, clocks, tokens) = clock_system_at_reset(
+//! #     pac.OSCCTRL,
+//! #     pac.OSC32KCTRL,
+//! #     pac.GCLK,
+//! #     pac.MCLK,
+//! #     &mut pac.NVMCTRL,
+//! # );
+//! # let pins = Pins::new(pac.PORT);
+//! # let xosc0 = Xosc::from_crystal(
+//! #     tokens.xosc0,
+//! #     pins.pa14,
+//! #     pins.pa15,
+//! #     8.mhz(),
+//! #     CrystalCurrent::Low,
+//! # ).enable();
+//! # let (dpll0, xosc0) = Dpll::from_xosc0(tokens.dpll0, xosc0);
+//! # let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
+//! # let (gclk0, dfll, dpll0) = clocks.gclk0.swap(clocks.dfll, dpll0);
+//! # let dfll_token = dfll.disable().free();
+//! # let apb_sercom0 = buses.apb.enable(tokens.apbs.sercom0);
+//! # let (pclk_sercom0, gclk0) = Pclk::enable(tokens.pclks.sercom0, gclk0);
 //! let (gclk_out0, gclk0) = GclkOut::enable(tokens.gclk_io.gclk_out0, pins.pb14, gclk0);
 //! ```
 //!
@@ -465,6 +775,13 @@
 //! let (gclk_out0, gclk0) = GclkOut::enable(tokens.gclk_io.gclk_out0, pins.pb14, gclk0);
 //! ```
 //!
+//! [PAC]: crate::pac
+//! [`OSCCTRL`]: crate::pac::OSCCTRL
+//! [`OSC32KCTRL`]: crate::pac::OSC32KCTRL
+//! [`GCLK`]: crate::pac::GCLK
+//! [`MCLK`]: crate::pac::MCLK
+//! [`Peripherals::steal`]: crate::pac::Peripherals::steal
+//!
 //! [`Ahb`]: ahb::Ahb
 //! [`AhbClk`]: ahb::AhbClk
 //! [`AhbClk<A>`]: ahb::AhbClk
@@ -484,6 +801,7 @@
 //! [`DfllToken`]: dfll::DfllToken
 //! [`EnabledDfll`]: dfll::EnabledDfll
 //! [`OpenLoop`]: dfll::OpenLoop
+//! [`ClosedLoop`]: dfll::ClosedLoop
 //!
 //! [`Dpll`]: dpll::Dpll
 //! [`Dpll<D, I>`]: dpll::Dpll
@@ -510,8 +828,11 @@
 //! [`Pclk`]: pclk::Pclk
 //! [`Pclk<P, I>`]: pclk::Pclk
 //! [`Pclk::enable`]: pclk::Pclk::enable
+//! [`Pclk::disable`]: pclk::Pclk::disable
 //! [`PclkSourceId`]: pclk::PclkSourceId
 //! [`PclkToken`]: pclk::PclkToken
+//!
+//! [`RtcOsc`]: rtcosc::RtcOsc
 //!
 //! [`Xosc`]: xosc::Xosc
 //! [`Xosc::from_crystal`]: xosc::Xosc::from_crystal
@@ -531,10 +852,16 @@
 //! [`Increment`]: crate::typelevel::Increment
 //! [`Decrement`]: crate::typelevel::Decrement
 //!
+//! [`Id`]: Source::Id
+//!
 //! [`gpio::Pins`]: crate::gpio::Pins
 //! [`Pin`]: crate::gpio::Pin
 //!
 //! [`U1`]: typenum::U1
+//! [`Add1`]: typenum::Add1
+//! [`Sub1`]: typenum::Sub1
+//!
+//! [interior mutability]: https://doc.rust-lang.org/reference/interior-mutability.html
 
 use typenum::{Unsigned, U0};
 
@@ -598,7 +925,7 @@ pub trait Source: Sealed {
 /// or disabled. In particular, most clocks can only be disabled when their
 /// [`Counter`] is [`U0`]. However, there are exceptions, most notably
 /// [`EnabledGclk0`], which can never be disabled, because it feeds the
-/// processor's master clock.
+/// processor's main clock.
 ///
 /// The type parameter `N` represents the [`Counter`]. It is implemented using
 /// [`Unsigned`] integers from the [`typenum`] crate, and it is modified using
