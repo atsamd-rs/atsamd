@@ -5,22 +5,23 @@
 //! The generic clock controller is central to the clocking system in ATSAMD
 //! chips. It provides 12 generic clock generators to modify and distribute
 //! clocks to other peripherals. Within the clock tree, these clock generators
-//! act as the branch clocks connecting internal or external root or branch
+//! act as the branch clocks, connecting internal or external root or branch
 //! clocks to other branch or leaf clocks.
 //!
 //! Each clock generator takes an input clock, optionally divides it, and
 //! produces an output clock. The input clock can be:
 //!
+//! - A GPIO input ([`Pin`])
 //! - An external crystal oscillator ([`Xosc`])
-//! - A direct clock input ([`GclkIn`])
-//! - Generic clock generator #1 ([`Gclk1`])
+//! - An external 32 kHz oscillator ([`Xosc32k`])
 //! - The ultra-low power 32 kHz oscillator ([`OscUlp32k`])
-//! - The DFLL ([`Dfll`])
+//! - The 48 MHz DFLL ([`Dfll`])
 //! - A DPLL ([`Dpll`])
+//! - Generic clock generator #1 ([`Gclk1`])
 //!
 //! The output clock can be:
-//! - A direct clock output to a GPIO pin ([`GclkOut`])
 //! - A peripheral channel clock ([`Pclk`])
+//! - A GPIO pin ([`GclkOut`])
 //!
 //! ## Example
 //!
@@ -33,9 +34,7 @@
 //! ```text
 //! DFLL (48 MHz)
 //! └── GCLK0 (48 MHz)
-//!     └── Master clock (48 MHz)
-//!
-//! OSCULP base clock
+//!     └── Main clock (48 MHz)
 //! ```
 //!
 //! We would like to transform it to a clock tree like this:
@@ -43,16 +42,14 @@
 //! ```text
 //! DFLL (48 MHz)
 //! └── GCLK0 (48 MHz)
-//!     └── Master clock (48 MHz)
+//!     └── Main clock (48 MHz)
 //!
-//! GCLK_IN1 (24 MHz)
+//! GCLK_IN1 (PB14, 24 MHz)
 //! └── GCLK1 (12 MHz)
 //!     ├── SERCOM0
 //!     └── GCLK2 (3 MHz)
 //!         ├── SERCOM1
-//!         └── GCLK_OUT2
-//!
-//! OSCULP base clock
+//!         └── GCLK_OUT2 (PA16, 3 MHz)
 //! ```
 //!
 //! Let's start by using [`clock_system_at_reset`] to access the HAL clocking
@@ -62,15 +59,13 @@
 //! use atsamd_hal::{
 //!     clock::v2::{
 //!         clock_system_at_reset,
-//!         gclk::{Gclk, GclkDiv8, GclkDiv16},
-//!         gclkio::{GclkIn, GclkOut},
+//!         gclk::{Gclk, GclkDiv8, GclkDiv16, GclkOut},
 //!         pclk::Pclk,
 //!     },
 //!     gpio::Pins,
 //!     pac::Peripherals,
 //!     time::U32Ext,
 //! };
-//!
 //! let mut pac = Peripherals::take().unwrap();
 //! let (mut buses, clocks, tokens) = clock_system_at_reset(
 //!     pac.OSCCTRL,
@@ -82,34 +77,67 @@
 //! let pins = Pins::new(pac.PORT);
 //! ```
 //!
-//! Next, we create an instance of [`GclkIn`] from the [`GclkInToken`], GPIO
-//! [`Pin`] and frequency in [`Hertz`].
+//! Next, we use [`Gclk::from_pin`] to create a [`Gclk`] from a [`GclkToken`],
+//! GPIO [`Pin`] and frequency, in [`Hertz`]. In this case, we create an
+//! instance of [`Gclk1`].
 //!
-//! ```ignore
-//! let gclk_in1 = GclkIn::enable(tokens.gclk_io.gclk_in1, pins.pb15, 24.mhz());
+//! At this point, notice that [`Gclk<G, I>`] takes two type parameters. `G` is
+//! a [`GclkId`] identifying which of the 12 generators this `Gclk` represents.
+//! [`Gclk1<I>`] is simply an alias for `Gclk<Gclk1Id, I>`. `I` is an
+//! [`Id` type](super#id-types) identifying the input clock, which must be a
+//! valid [`GclkSourceId`]. In this case, `I` is [`PB14`](gpio::PB14), which is
+//! a `GclkSourceId` for `Gclk1`, because it implements [`GclkIo`] with
+//! [`GclkIo::GclkId`]` = Gclk1Id`.
+//!
+//! ```no_run
+//! # use atsamd_hal::{
+//! #     clock::v2::{
+//! #         clock_system_at_reset,
+//! #         gclk::{Gclk, GclkDiv8, GclkDiv16, GclkOut},
+//! #         pclk::Pclk,
+//! #     },
+//! #     gpio::Pins,
+//! #     pac::Peripherals,
+//! #     time::U32Ext,
+//! # };
+//! # let mut pac = Peripherals::take().unwrap();
+//! # let (mut buses, clocks, tokens) = clock_system_at_reset(
+//! #     pac.OSCCTRL,
+//! #     pac.OSC32KCTRL,
+//! #     pac.GCLK,
+//! #     pac.MCLK,
+//! #     &mut pac.NVMCTRL,
+//! # );
+//! # let pins = Pins::new(pac.PORT);
+//! let gclk1 = Gclk::from_pin(tokens.gclks.gclk1, pins.pb15, 24.mhz());
 //! ```
-//!
-//! We can then call [`Gclk::new`] with a [`GclkToken`] and our instance of
-//! [`GclkIn`] to produce a [`Gclk`], in this case [`Gclk1`]. At this point,
-//! notice that [`Gclk<G, I>`] takes two type parameters. `G` is a [`GclkId`]
-//! type identifying which of the 12 generators this `Gclk` represents. `I` is
-//! an `Id` type indicating the clock [`Source`] driving the `Gclk`, which must
-//! be a valid [`GclkSourceId`]. [`Gclk1<I>`], is simply an alias for
-//! `Gclk<Gclk1Id, I>`.
-//!
-//! ```ignore
-//! let (gclk1, gclk_in1) = Gclk::new(tokens.gclks.gclk1, gclk_in1);
-//! ```
-//!
-//! The call to `Gclk::new` also increments the [`Counter`] for
-//! [`EnabledGclkIn`], which we have seen is critical for clock tree safety.
 //!
 //! While we have created a [`Gclk`], we have not yet enabled it. But before
 //! doing so, we would like to set the divider to reduce the input frequency of
-//! 48 MHz to a 24 MHz output. We call `Gclk::div`, which uses a builder API, so
+//! 24 MHz to a 12 MHz output. We call `Gclk::div`, which uses a builder API, so
 //! that it can be chained with the call to `Gclk::enable`.
 //!
-//! ```ignore
+//! ```no_run
+//! # use atsamd_hal::{
+//! #     clock::v2::{
+//! #         clock_system_at_reset,
+//! #         gclk::{Gclk, GclkDiv8, GclkDiv16, GclkOut},
+//! #         pclk::Pclk,
+//! #     },
+//! #     gpio::Pins,
+//! #     pac::Peripherals,
+//! #     time::U32Ext,
+//! # };
+//! # let mut pac = Peripherals::take().unwrap();
+//! # let (mut buses, clocks, tokens) = clock_system_at_reset(
+//! #     pac.OSCCTRL,
+//! #     pac.OSC32KCTRL,
+//! #     pac.GCLK,
+//! #     pac.MCLK,
+//! #     &mut pac.NVMCTRL,
+//! # );
+//! # let pins = Pins::new(pac.PORT);
+//! # let gclk1 = Gclk::from_pin(tokens.gclks.gclk1, pins.pb15, 24.mhz());
 //! let gclk1 = gclk1.div(GclkDiv16::Div(2)).enable();
 //! ```
 //!
@@ -118,41 +146,132 @@
 //! accepts a wider range of divider values than the other [`Gclk`]s, which use
 //! [`GclkDiv8`] instead. Second, the actual divider value is controlled by two
 //! register fields, and the set of valid values is best expressed as a Rust
-//! enum. These two enums are connected by the [`GclkDivider`] trait.
+//! enum. The `GclkDiv8` and `GclkDiv16` enums are connected by the
+//! [`GclkDivider`] trait.
 //!
 //! Once [`Gclk1`] is enabled, we can use it to enable the [`Pclk`] for
 //! [`Sercom0`]. This follows the usual pattern. We provide a [`PclkToken`] and
 //! the [`EnabledGclk1`]. In return, we get an enabled [`Pclk`] and the
-//! [`EnabledGclk1`] counter is [`Increment`]ed.
+//! [`EnabledGclk1`] [`Counter`] is [`Increment`]ed.
 //!
-//! ```ignore
+//! ```no_run
+//! # use atsamd_hal::{
+//! #     clock::v2::{
+//! #         clock_system_at_reset,
+//! #         gclk::{Gclk, GclkDiv8, GclkDiv16, GclkOut},
+//! #         pclk::Pclk,
+//! #     },
+//! #     gpio::Pins,
+//! #     pac::Peripherals,
+//! #     time::U32Ext,
+//! # };
+//! # let mut pac = Peripherals::take().unwrap();
+//! # let (mut buses, clocks, tokens) = clock_system_at_reset(
+//! #     pac.OSCCTRL,
+//! #     pac.OSC32KCTRL,
+//! #     pac.GCLK,
+//! #     pac.MCLK,
+//! #     &mut pac.NVMCTRL,
+//! # );
+//! # let pins = Pins::new(pac.PORT);
+//! # let gclk1 = Gclk::from_pin(tokens.gclks.gclk1, pins.pb15, 24.mhz());
+//! # let gclk1 = gclk1.div(GclkDiv16::Div(2)).enable();
 //! let (pclk_sercom0, gclk1) = Pclk::enable(tokens.pclks.sercom0, gclk1);
 //! ```
 //!
-//! Next, we create an instance of [`Gclk2`], using [`Gclk1`] as its [`Source`].
-//! However, keep in mind that this is only true for [`Gclk1`]. No other
-//! [`Gclk`] can act as a [`Source`] for another [`Gclk`].
+//! Next, we use [`Gclk1`] as a clock [`Source`] to create an instance of
+//! [`Gclk2`] with [`Gclk::from_source`]. However, keep in mind that this is
+//! only true for [`Gclk1`]. No other [`Gclk`] can act as a [`Source`] for
+//! another [`Gclk`].
 //!
-//! ```ignore
-//! let (gclk2, gclk1) = Gclk::new(tokens.gclks.gclk2, gclk1);
+//! ```no_run
+//! # use atsamd_hal::{
+//! #     clock::v2::{
+//! #         clock_system_at_reset,
+//! #         gclk::{Gclk, GclkDiv8, GclkDiv16, GclkOut},
+//! #         pclk::Pclk,
+//! #     },
+//! #     gpio::Pins,
+//! #     pac::Peripherals,
+//! #     time::U32Ext,
+//! # };
+//! # let mut pac = Peripherals::take().unwrap();
+//! # let (mut buses, clocks, tokens) = clock_system_at_reset(
+//! #     pac.OSCCTRL,
+//! #     pac.OSC32KCTRL,
+//! #     pac.GCLK,
+//! #     pac.MCLK,
+//! #     &mut pac.NVMCTRL,
+//! # );
+//! # let pins = Pins::new(pac.PORT);
+//! # let gclk1 = Gclk::from_pin(tokens.gclks.gclk1, pins.pb15, 24.mhz());
+//! # let gclk1 = gclk1.div(GclkDiv16::Div(2)).enable();
+//! # let (pclk_sercom0, gclk1) = Pclk::enable(tokens.pclks.sercom0, gclk1);
+//! let (gclk2, gclk1) = Gclk::from_source(tokens.gclks.gclk2, gclk1);
 //! ```
 //!
 //! The pattern repeats now. We divide [`Gclk1`] by 4 to produce the [`Gclk2`]
 //! output. Then we enable it to produce an [`EnabledGclk2`] and use it to yield
 //! another [`Pclk`].
 //!
-//!
-//! ```ignore
+//! ```no_run
+//! # use atsamd_hal::{
+//! #     clock::v2::{
+//! #         clock_system_at_reset,
+//! #         gclk::{Gclk, GclkDiv8, GclkDiv16, GclkOut},
+//! #         pclk::Pclk,
+//! #     },
+//! #     gpio::Pins,
+//! #     pac::Peripherals,
+//! #     time::U32Ext,
+//! # };
+//! # let mut pac = Peripherals::take().unwrap();
+//! # let (mut buses, clocks, tokens) = clock_system_at_reset(
+//! #     pac.OSCCTRL,
+//! #     pac.OSC32KCTRL,
+//! #     pac.GCLK,
+//! #     pac.MCLK,
+//! #     &mut pac.NVMCTRL,
+//! # );
+//! # let pins = Pins::new(pac.PORT);
+//! # let gclk1 = Gclk::from_pin(tokens.gclks.gclk1, pins.pb15, 24.mhz());
+//! # let gclk1 = gclk1.div(GclkDiv16::Div(2)).enable();
+//! # let (pclk_sercom0, gclk1) = Pclk::enable(tokens.pclks.sercom0, gclk1);
+//! # let (gclk2, gclk1) = Gclk::from_source(tokens.gclks.gclk2, gclk1);
 //! let gclk2 = gclk2.div(GclkDiv8::Div(4)).enable();
 //! let (pclk_sercom1, gclk2) = Pclk::enable(tokens.pclks.sercom1, gclk2);
 //! ```
 //!
-//! Finally, we output [`Gclk2`] directly to a GPIO pin. We supply a
-//! [`GclkOutToken`], the GPIO [`Pin`] and the [`EnabledGclk2`] to yield a
-//! [`GclkOut`].
+//! Finally, we output [`Gclk2`] directly to a GPIO pin. We supply the GPIO
+//! [`Pin`] and the [`EnabledGclk2`] to yield a [`GclkOut`].
 //!
-//! ```ignore
-//! let (gclk_out2, gclk2) = GclkOut::enable(tokens.gclk_io.gclk_out2, pins.pa16, gclk2);
+//! ```no_run
+//! # use atsamd_hal::{
+//! #     clock::v2::{
+//! #         clock_system_at_reset,
+//! #         gclk::{Gclk, GclkDiv8, GclkDiv16, GclkOut},
+//! #         pclk::Pclk,
+//! #     },
+//! #     gpio::Pins,
+//! #     pac::Peripherals,
+//! #     time::U32Ext,
+//! # };
+//! # let mut pac = Peripherals::take().unwrap();
+//! # let (mut buses, clocks, tokens) = clock_system_at_reset(
+//! #     pac.OSCCTRL,
+//! #     pac.OSC32KCTRL,
+//! #     pac.GCLK,
+//! #     pac.MCLK,
+//! #     &mut pac.NVMCTRL,
+//! # );
+//! # let pins = Pins::new(pac.PORT);
+//! # let gclk1 = Gclk::from_pin(tokens.gclks.gclk1, pins.pb15, 24.mhz());
+//! # let gclk1 = gclk1.div(GclkDiv16::Div(2)).enable();
+//! # let (pclk_sercom0, gclk1) = Pclk::enable(tokens.pclks.sercom0, gclk1);
+//! # let (gclk2, gclk1) = Gclk::from_source(tokens.gclks.gclk2, gclk1);
+//! # let gclk2 = gclk2.div(GclkDiv8::Div(4)).enable();
+//! # let (pclk_sercom1, gclk2) = Pclk::enable(tokens.pclks.sercom1, gclk2);
+//! let (gclk_out2, gclk2) = GclkOut::enable(pins.pa16, gclk2);
 //! ```
 //!
 //! The full example is provided below.
@@ -161,15 +280,13 @@
 //! use atsamd_hal::{
 //!     clock::v2::{
 //!         clock_system_at_reset,
-//!         gclk::{Gclk, GclkDiv8, GclkDiv16},
-//!         gclkio::{GclkIn, GclkOut},
+//!         gclk::{Gclk, GclkDiv8, GclkDiv16, GclkOut},
 //!         pclk::Pclk,
 //!     },
 //!     gpio::Pins,
 //!     pac::Peripherals,
 //!     time::U32Ext,
 //! };
-//!
 //! let mut pac = Peripherals::take().unwrap();
 //! let (mut buses, clocks, tokens) = clock_system_at_reset(
 //!     pac.OSCCTRL,
@@ -179,51 +296,43 @@
 //!     &mut pac.NVMCTRL,
 //! );
 //! let pins = Pins::new(pac.PORT);
-//! let gclk_in1 = GclkIn::enable(tokens.gclk_io.gclk_in1, pins.pb15, 24.mhz());
-//! let (gclk1, gclk_in1) = Gclk::new(tokens.gclks.gclk1, gclk_in1);
+//! let gclk1 = Gclk::from_pin(tokens.gclks.gclk1, pins.pb15, 24.mhz());
 //! let gclk1 = gclk1.div(GclkDiv16::Div(2)).enable();
 //! let (pclk_sercom0, gclk1) = Pclk::enable(tokens.pclks.sercom0, gclk1);
-//! let (gclk2, gclk1) = Gclk::new(tokens.gclks.gclk2, gclk1);
+//! let (gclk2, gclk1) = Gclk::from_source(tokens.gclks.gclk2, gclk1);
 //! let gclk2 = gclk2.div(GclkDiv8::Div(4)).enable();
 //! let (pclk_sercom1, gclk2) = Pclk::enable(tokens.pclks.sercom1, gclk2);
-//! let (gclk_out2, gclk2) = GclkOut::enable(tokens.gclk_io.gclk_out2, pins.pa16, gclk2);
+//! let (gclk_out2, gclk2) = GclkOut::enable(pins.pa16, gclk2);
 //! ```
 //!
 //! ## `Gclk0`
 //!
 //! [`Gclk0`] is significant and special relative to the other [`Gclk`]s. It is
-//! the clock generator for the processor's master clock, so it can never be
+//! the clock generator for the processor's main clock, so it can never be
 //! disabled. Consequently, it has a special API not available to the other
-//! [`Gclk`]s. While normal [`Gclk`]s can only change their clock [`Source`] or
-//! divider while disabled, [`Gclk0`] can never be disabled, so we provide this
+//! `Gclk`s. While normal `Gclk`s can only change their clock [`Source`] or
+//! divider while disabled, `Gclk0` can never be disabled, so we provide this
 //! functionality on [`EnabledGclk0`] instead.
 //!
-//! We model the master clock's dependence on [`Gclk0`] by setting its
-//! [`Enabled`] [`Counter`] to [`U1`] in [`clock_system_at_reset`]. This
-//! prevents users from ever disabling [`EnabledGclk0`], because there is no way
-//! to [`Decrement`] its [`Counter`] to [`U0`].
+//! We model the main clock's dependence on `Gclk0` by setting its [`Enabled`]
+//! [`Counter`] to [`U1`] in [`clock_system_at_reset`]. This prevents users from
+//! ever disabling `EnabledGclk0`, because there is no way to [`Decrement`] its
+//! `Counter` to [`U0`].
 //!
-//! Additionally, we provide functions to change the clock [`Source`], divider,
-//! etc. on [`EnabledGclk0`], but we restrict them to the case where `N = U1`.
-//! This prevents users from changing its [`Source`] or divider if any *other,
-//! additional* clock depends on it (besides the master clock).
+//! Additionally, we provide functions to change the clock `Source`, divider,
+//! etc. on `EnabledGclk0`, but we restrict them to the case where `N = U1`.
+//! This prevents users from changing its `Source` or divider if any *other,
+//! additional* clock depends on it (besides the main clock).
 //!
 //! [`clock_system_at_reset`]: super::clock_system_at_reset
 //! [`Xosc`]: super::xosc::Xosc
-//! [`GclkIn`]: super::gclkio::GclkIn
+//! [`Xosc32k`]: super::xosc32k::Xosc32k
 //! [`OscUlp32k`]: super::osculp32k::OscUlp32k
 //! [`Dfll`]: super::dfll::Dfll
 //! [`Dpll`]: super::dpll::Dpll
-//! [`GclkInToken`]: super::gclkio::GclkInToken
-//! [`GclkIn`]: super::gclkio::GclkIn
-//! [`EnabledGclkIn`]: super::gclkio::EnabledGclkIn
-//! [`GclkOutToken`]: super::gclkio::GclkOutToken
-//! [`GclkOut`]: super::gclkio::GclkOut
 //! [`PclkToken`]: super::pclk::PclkToken
 //! [`Pclk`]: super::pclk::Pclk
-//! [`gpio`]: crate::gpio
 //! [`Pins`]: crate::gpio::Pins
-//! [`Pin`]: crate::gpio::Pin
 //! [`Sercom0`]: crate::sercom::Sercom0
 
 use core::cmp::max;
@@ -237,14 +346,14 @@ use crate::pac;
 use crate::pac::gclk::genctrl::DIVSEL_A;
 use crate::pac::NVMCTRL;
 
+use crate::gpio::{self, AlternateM, AnyPin, Pin, PinId};
 use crate::pac::gclk::genctrl::SRC_A;
 use crate::pac::gclk::GENCTRL;
 use crate::time::Hertz;
-use crate::typelevel::{Counter, Decrement, Increment, PrivateIncrement, Sealed};
+use crate::typelevel::{Counter, Decrement, Increment, PrivateDecrement, PrivateIncrement, Sealed};
 
 use super::dfll::DfllId;
 use super::dpll::{Dpll0Id, Dpll1Id};
-use super::gclkio::GclkInId;
 use super::osculp32k::OscUlp32kId;
 use super::xosc::{Xosc0Id, Xosc1Id};
 use super::xosc32k::Xosc32kId;
@@ -262,7 +371,7 @@ use super::{Enabled, Source};
 ///
 /// [`GclkToken`]s are no different. All [`Gclk`]s other than [`Gclk0`] are
 /// disabled at power-on reset. To use a [`Gclk`], you must first exchange the
-/// token for an actual clock with [`Gclk::new`].
+/// token for an actual clock with [`Gclk::from_source`] or [`Gclk::from_pin`].
 ///
 /// [`GclkToken`] is generic over the [`GclkId`], where each corresponding token
 /// represents one of the 12 respective [`Gclk`]s.
@@ -328,7 +437,7 @@ impl<G: GclkId> GclkToken<G> {
         while gclk.syncbusy.read().genctrl().bits() & Self::MASK != 0 {}
     }
 
-    /// Set the clock source for the [`Gclk`] generator
+    /// Set the clock source for this [`Gclk`]
     #[inline]
     fn set_source(&mut self, source: DynGclkSourceId) {
         self.genctrl().modify(|_, w| w.src().variant(source.into()));
@@ -365,22 +474,17 @@ impl<G: GclkId> GclkToken<G> {
         self.wait_syncbusy();
     }
 
-    /// Enable ouput of the [`Gclk`] on a GPIO [`Pin`]
-    ///
-    /// [`Pin`]: crate::gpio::Pin
+    /// Enable [`Gclk`] output to a GPIO [`Pin`]
     #[inline]
     fn enable_gclk_out(&mut self) {
         self.genctrl().modify(|_, w| w.oe().set_bit());
         self.wait_syncbusy();
     }
 
-    /// Disable ouput of the [`Gclk`] on a GPIO [`Pin`]
+    /// Disable [`Gclk`] output on a GPIO [`Pin`]
     ///
     /// If a corresponding [`Pin`] is in the [`AlternateM`] mode, it's logic
     /// level will depend on the [`output_off_value`].
-    ///
-    /// [`Pin`]: crate::gpio::Pin
-    /// [`AlternateM`]: crate::gpio::AlternateM
     #[inline]
     fn disable_gclk_out(&mut self) {
         self.genctrl().modify(|_, w| w.oe().clear_bit());
@@ -446,7 +550,7 @@ pub enum DynGclkId {
 pub trait GclkId: Sealed {
     /// Corresponding variant of [`DynGclkId`]
     const DYN: DynGclkId;
-    /// Corresponding numeric index
+    /// Corresponding numeric index (0..12)
     const NUM: usize;
     /// Corresponding [`GclkDivider`] type
     ///
@@ -635,6 +739,61 @@ impl GclkDivider for GclkDiv16 {
 }
 
 //==============================================================================
+// GclkIo
+//==============================================================================
+
+/// Trait mapping each [`PinId`] to its corresponding [`GclkId`] when it can be
+/// used as a [`Gclk`] input or output
+///
+/// If a given [`PinId`] can be used as a [`Gclk`] input or output, it can only
+/// be used with one specific [`GclkId`]. This trait provides a mapping from a
+/// `PinId` to its corresponding `GclkId`.
+pub trait GclkIo: PinId {
+    /// Corresponding [`GclkId`] for this [`PinId`]
+    type GclkId: GclkId;
+}
+
+// These implementations are much easier to read with `#[rustfmt::skip]`
+#[rustfmt::skip]
+mod gclkio_impl {
+
+    use super::*;
+
+    impl GclkIo for gpio::PA10 { type GclkId = Gclk4Id; }
+    impl GclkIo for gpio::PA11 { type GclkId = Gclk5Id; }
+    impl GclkIo for gpio::PA14 { type GclkId = Gclk0Id; }
+    impl GclkIo for gpio::PA15 { type GclkId = Gclk1Id; }
+    impl GclkIo for gpio::PA16 { type GclkId = Gclk2Id; }
+    impl GclkIo for gpio::PA17 { type GclkId = Gclk3Id; }
+    impl GclkIo for gpio::PA27 { type GclkId = Gclk1Id; }
+    impl GclkIo for gpio::PA30 { type GclkId = Gclk0Id; }
+    impl GclkIo for gpio::PB10 { type GclkId = Gclk4Id; }
+    impl GclkIo for gpio::PB11 { type GclkId = Gclk5Id; }
+    #[cfg(feature = "min-samd51j")]
+    impl GclkIo for gpio::PB12 { type GclkId = Gclk6Id; }
+    #[cfg(feature = "min-samd51j")]
+    impl GclkIo for gpio::PB13 { type GclkId = Gclk7Id; }
+    #[cfg(feature = "min-samd51j")]
+    impl GclkIo for gpio::PB14 { type GclkId = Gclk0Id; }
+    #[cfg(feature = "min-samd51j")]
+    impl GclkIo for gpio::PB15 { type GclkId = Gclk1Id; }
+    #[cfg(feature = "min-samd51j")]
+    impl GclkIo for gpio::PB16 { type GclkId = Gclk2Id; }
+    #[cfg(feature = "min-samd51j")]
+    impl GclkIo for gpio::PB17 { type GclkId = Gclk3Id; }
+    #[cfg(feature = "min-samd51n")]
+    impl GclkIo for gpio::PB18 { type GclkId = Gclk4Id; }
+    #[cfg(feature = "min-samd51n")]
+    impl GclkIo for gpio::PB19 { type GclkId = Gclk5Id; }
+    #[cfg(feature = "min-samd51n")]
+    impl GclkIo for gpio::PB20 { type GclkId = Gclk6Id; }
+    #[cfg(feature = "min-samd51n")]
+    impl GclkIo for gpio::PB21 { type GclkId = Gclk7Id; }
+    impl GclkIo for gpio::PB22 { type GclkId = Gclk0Id; }
+    impl GclkIo for gpio::PB23 { type GclkId = Gclk1Id; }
+}
+
+//==============================================================================
 // DynGclkSourceId
 //==============================================================================
 
@@ -709,7 +868,7 @@ impl GclkSourceId for Dpll1Id {
 impl GclkSourceId for Gclk1Id {
     const DYN: DynGclkSourceId = DynGclkSourceId::Gclk1;
 }
-impl GclkSourceId for GclkInId {
+impl<I: GclkIo> GclkSourceId for I {
     const DYN: DynGclkSourceId = DynGclkSourceId::GclkIn;
 }
 impl GclkSourceId for OscUlp32kId {
@@ -726,6 +885,31 @@ impl GclkSourceId for Xosc32kId {
 }
 
 //==============================================================================
+// NotGclkIo
+//==============================================================================
+
+/// Type-level enum of [`GclkSourceId`] types that are not a [`GclkIo`]
+///
+/// The datasheet notes that a [`Gclk`] can use a GPIO [`Pin`] as either input
+/// or output, but not both. Stated differently, you cannot create a [`GclkOut`]
+/// from a `Gclk` where the [`GclkSourceId`] is a [`PinId`].
+///
+/// This trait acts as a [type-level enum] narrowing [`GclkSourceId`] to exclude
+/// any types which implement [`GclkIo`].
+///
+/// [type-level enum]: crate::typelevel#type-level-enums
+pub trait NotGclkIo: GclkSourceId {}
+
+impl NotGclkIo for DfllId {}
+impl NotGclkIo for Dpll0Id {}
+impl NotGclkIo for Dpll1Id {}
+impl NotGclkIo for Gclk1Id {}
+impl NotGclkIo for OscUlp32kId {}
+impl NotGclkIo for Xosc0Id {}
+impl NotGclkIo for Xosc1Id {}
+impl NotGclkIo for Xosc32kId {}
+
+//==============================================================================
 // Gclk
 //==============================================================================
 
@@ -738,8 +922,10 @@ impl GclkSourceId for Xosc32kId {
 /// The type parameter `G` is a [`GclkId`] that determines which of the 12
 /// generators this [`Gclk`] represents ([`Gclk0`] - [`Gclk11`]). The type
 /// parameter `I` represents the `Id` type for the clock [`Source`] driving this
-/// `Gclk`. It must be one of the valid [`GclkSourceId`]s. See the
-/// [`clock` module documentation](super) for more detail on `Id` types.
+/// `Gclk`. It must be one of the valid [`GclkSourceId`]s. Alternatively, if the
+/// `Gclk` is driven by a [GPIO](gpio) [`Pin`], then `I` is a [`PinId`]
+/// implementing [`GclkIo`]. See the [`clock` module documentation](super) for
+/// more detail on `Id` types.
 ///
 /// On its own, an instance of `Gclk` does not represent an enabled clock
 /// generator. Instead, it must first be wrapped with [`Enabled`], which
@@ -782,7 +968,7 @@ pub type EnabledGclk<G, I, N = U0> = Enabled<Gclk<G, I>, N>;
 /// Type alias for the corresponding [`Gclk`]
 ///
 /// As mentioned in the [module-level documentation](self), `Gclk0` is special,
-/// because it provides the processor master clock. We represent this by
+/// because it provides the processor main clock. We represent this by
 /// permanently [`Increment`]ing the [`Counter`] for [`EnabledGclk0`], which
 /// prevents it from ever being disabled. Accordingly, we also provide a few
 /// special methods on [`EnabledGclk0`] to configure the `Gclk` while it is
@@ -792,7 +978,7 @@ pub type Gclk0<I> = Gclk<Gclk0Id, I>;
 /// Type alias for the corresponding [`EnabledGclk`]
 ///
 /// As mentioned in the [module-level documentation](self), `Gclk0` is special,
-/// because it provides the processor master clock. We represent this by
+/// because it provides the processor main clock. We represent this by
 /// permanently [`Increment`]ing the [`Counter`] for [`EnabledGclk0`], which
 /// prevents it from ever being disabled. Thus, the default value for `N` is
 /// [`U1`] instead of [`U0`]. Accordingly, we also provide a few special methods
@@ -814,7 +1000,7 @@ where
     G: GclkId,
     I: GclkSourceId,
 {
-    /// Create a new [`Gclk`]
+    /// Create a new [`Gclk`] from a clock [`Source`]
     ///
     /// Creating a [`Gclk`] does not modify any of the hardware registers. It
     /// only serves to [`Increment`] the [`Source`]'s [`Enabled`] [`Counter`]
@@ -828,7 +1014,7 @@ where
     ///
     /// [`enable`]: Gclk::enable
     #[inline]
-    pub fn new<S>(token: GclkToken<G>, source: S) -> (Gclk<G, I>, S::Inc)
+    pub fn from_source<S>(token: GclkToken<G>, source: S) -> (Gclk<G, I>, S::Inc)
     where
         S: Source<Id = I> + Increment,
     {
@@ -843,71 +1029,95 @@ where
         (config, source.inc())
     }
 
+    // Modify the source of an existing clock
+    //
+    // This is a helper function for swapping Gclk0 to different clock sources.
+    fn change_source<N: GclkSourceId>(mut self, freq: Hertz) -> Gclk<G, N> {
+        self.token.set_source(N::DYN);
+        Gclk {
+            token: self.token,
+            src: PhantomData,
+            src_freq: freq,
+            div: self.div,
+            output_off_value: self.output_off_value,
+            improve_duty_cycle: self.improve_duty_cycle,
+        }
+    }
+
     /// Consume the [`Gclk`] and free its corresponding resources
     ///
     /// Freeing a [`Gclk`] returns the corresponding [`GclkToken`] and
     /// [`Decrement`]s the [`Source`]'s [`Enable`] [`Counter`].
     #[inline]
-    pub fn free<S>(self, source: S) -> (GclkToken<G>, S::Dec)
+    pub fn free_source<S>(self, source: S) -> (GclkToken<G>, S::Dec)
     where
         S: Source<Id = I> + Decrement,
     {
         (self.token, source.dec())
     }
+}
 
-    /// Swap the [`Gclk`]'s [`Source`]
+impl<G, I> Gclk<G, I>
+where
+    G: GclkId,
+    I: GclkIo<GclkId = G>,
+{
+    /// Create a new [`Gclk`] from a GPIO [`Pin`]
     ///
-    /// A clock [`Source`] is required when creating a [`Gclk`] with [`new`],
-    /// which [`Increment`]s the `Source`'s [`Enabled`] [`Counter`]. Changing
-    /// the [`Source`] would normally require [`free`]ing the [`GclkToken`] and
-    /// old [`Source`] before creating a [`new`] `Gclk` with a new [`Source`].
+    /// Creating a [`Gclk`] does not modify any of the hardware registers. It
+    /// only serves to consume the [`Pin`] and create a struct to track the GCLK
+    /// configuration.
     ///
-    /// Alternatively, the calls to [`free`] and [`new`] can be combined with
-    /// `swap`. The [`Enabled`] [`Counter`] for the `Old` [`Source`] will be
-    /// [`Decrement`]ed, while the `New` [`Source`] will be [`Increment`]ed.
+    /// The configuration data is stored until the user calls [`enable`]. At
+    /// that point, all of the registers are written according to the
+    /// initialization procedures specified in the datasheet, and an
+    /// [`EnabledGclk`] is returned. The `Gclk` is not active or useful until
+    /// that point.
     ///
-    /// [`new`]: Gclk::new
-    /// [`free`]: Gclk::free
-    #[inline]
-    pub fn swap<Old, New>(self, old: Old, new: New) -> (Gclk<G, New::Id>, Old::Dec, New::Inc)
+    /// [`enable`]: Gclk::enable
+    pub fn from_pin<P>(token: GclkToken<G>, pin: P, freq: impl Into<Hertz>) -> Self
     where
-        Old: Source<Id = I> + Decrement,
-        New: Source + Increment,
-        New::Id: GclkSourceId,
+        P: AnyPin<Id = I>,
     {
-        let config = Gclk {
-            token: self.token,
+        // Convert the Pin to AlternateM mode and then drop it
+        // We will recreate the Pin when freeing the Gclk
+        let _ = pin.into().into_mode::<AlternateM>();
+        Gclk {
+            token,
             src: PhantomData,
-            src_freq: new.freq(),
-            div: self.div,
-            output_off_value: self.output_off_value,
-            improve_duty_cycle: self.improve_duty_cycle,
-        };
-        let old = old.dec();
-        let new = new.inc();
-        (config, old, new)
+            src_freq: freq.into(),
+            div: G::Divider::default(),
+            output_off_value: false,
+            improve_duty_cycle: false,
+        }
     }
 
-    /// Set the state of [`GclkOut`] pins when GCLK_IO output is disabled
+    /// Consume the [`Gclk`] and free its corresponding resources
     ///
-    /// A [`Gclk`] can be output to a [`gpio`] [`Pin`] by creating an instance
-    /// of [`GclkOut`]. Each `GclkOut` will consume a corresponding `Pin` and
-    /// convert it to the correct peripheral function mode ([`AlternateM`]).
+    /// Freeing a [`Gclk`] returns the corresponding [`GclkToken`] and GPIO
+    /// [`Pin`].
+    pub fn free_pin(self) -> (GclkToken<G>, Pin<I, AlternateM>) {
+        // Safety: We know the Pin was dropped in AlternateM mode on
+        // creation of this Gclk, so we can safely recreate it here.
+        let pin = unsafe { Pin::new() };
+        (self.token, pin)
+    }
+}
+
+impl<G, I> Gclk<G, I>
+where
+    G: GclkId,
+    I: GclkSourceId,
+{
+    /// Set the [`GclkDivider`] value
     ///
-    /// This function will set the output state of any `Pin` configured in
-    /// `AlternateM` mode (either manually or as part of `GclkOut`) when the
-    /// `Gclk` is *disabled*. To enable the `Gclk` output, users must create a
-    /// [`GclkOut`] using an [`EnabledGclk`].
-    ///
-    /// See the [`GclkOut`] documentation for more details.
-    ///
-    /// [`GclkOut`]: super::gclkio::GclkOut
-    /// [`gpio`]: crate::gpio
-    /// [`Pin`]: crate::gpio::Pin
-    /// [`AlternateM`]: crate::gpio::AlternateM
+    /// Set the clock division factor from input to output. This takes either a
+    /// [`GclkDiv8`] or [`GclkDiv16`] enum, restricting the possible division
+    /// factors to only the valid ones for the given [`Gclk`]. See the
+    /// [`GclkDivider`] trait for more details.
     #[inline]
-    pub fn output_off_value(mut self, high: bool) -> Self {
-        self.output_off_value = high;
+    pub fn div(mut self, div: G::Divider) -> Self {
+        self.div = div;
         self
     }
 
@@ -920,43 +1130,49 @@ where
 
     /// Return the [`Gclk`] ouput frequency
     ///
-    /// The output frequency is the [`Source`] frequency divided by the
-    /// [`GclkDivider`]. The divider supplied to [`Gclk::div`] is either a
-    /// [`GclkDiv8`] or [`GclkDiv16`] enum representing all of the valid divider
-    /// options for the given [`Gclk`].
+    /// This is the input frequency divided by the [`GclkDivider`].
     #[inline]
     pub fn freq(&self) -> Hertz {
         let div = max(1, self.div.divider());
         Hertz(self.src_freq.0 / div)
     }
 
-    /// Set the [`GclkDivider`] value
+    /// Set the state of [`GclkOut`] pins when [`GclkIo`] output is disabled
     ///
-    /// Set the clock division factor from [`Source`] to [`Gclk`] output. This
-    /// takes either a [`GclkDiv8`] or [`GclkDiv16`] enum, restricting the
-    /// possible division factors to only the valid ones for the given [`Gclk`].
-    /// See the [`GclkDivider`] trait for more details.
+    /// The output off value (OOV) determines the logic level of a [GPIO](gpio)
+    /// [`Pin`] (configured as a [`GclkIo`] output) when the [`Gclk`] is
+    /// disabled **OR** the [`GclkOut`] is disabled.
+    ///
+    /// As mentioned in the [`Gclk`] documentation, configuration options are
+    /// not usually applied until the call to [`Gclk::enable`]. However, because
+    /// the OOV is relevant when the `Gclk` is *disabled*, we make an exception.
+    /// When calling this function, the new OOV will take effect immediately.
+    ///
+    /// However, remember that the `Pin` is not controlled by the `Gclk` unless
+    /// the `Pin` is configured in [`AlternateM`] mode. `Pin`s are automatically
+    /// set to `AlternateM` mode when calling [`GclkOut::enable`], but by that
+    /// point, the OOV is irrelevant. If you need the `Pin` to be set to its
+    /// OOV, you must *manually* set it to `AlternateM` mode before constructing
+    /// the `GclkOut`.
     #[inline]
-    pub fn div(mut self, div: G::Divider) -> Self {
-        self.div = div;
+    pub fn output_off_value(mut self, high: bool) -> Self {
+        self.output_off_value = high;
+        self.token.output_off_value(high);
         self
     }
 
     /// Enable the [`Gclk`], so that it can be used as a clock [`Source`]
     ///
-    /// As mentioned when creating a [`new`] `Gclk`, no hardware registers are
+    /// As mentioned in the [`Gclk`] documentation, no hardware registers are
     /// actually modified until this call. Rather, the desired configuration is
     /// stored internally, and the [`Gclk`] is initialized and configured here
     /// according to the datasheet.
     ///
     /// The returned value is an [`EnabledGclk`] that can be used as a clock
     /// [`Source`] for other clocks.
-    ///
-    /// [`new`]: Gclk::new
     #[inline]
     pub fn enable(mut self) -> EnabledGclk<G, I> {
         self.token.set_source(I::DYN);
-        self.token.output_off_value(self.output_off_value);
         self.token.improve_duty_cycle(self.improve_duty_cycle);
         self.token.set_div(self.div);
         self.token.enable();
@@ -970,13 +1186,13 @@ where
     I: GclkSourceId,
     N: Counter,
 {
-    /// Enable the [`Gclk`] output to GPIO pins
+    /// Enable [`Gclk`] output to a GPIO pins
     #[inline]
     pub(super) fn enable_gclk_out(&mut self) {
         self.0.token.enable_gclk_out();
     }
 
-    /// Disable the [`Gclk`] output to GPIO pins
+    /// Disable [`Gclk`] output to GPIO pins
     #[inline]
     pub(super) fn disable_gclk_out(&mut self) {
         self.0.token.disable_gclk_out();
@@ -1001,7 +1217,7 @@ where
 
 /// Special methods for an [`Enabled`] [`Gclk0`]
 ///
-/// [`Gclk0`] is special, because it drives the processor's master clock, which
+/// [`Gclk0`] is special, because it drives the processor's main clock, which
 /// can never be disabled. As discussed in the [module-level documentation],
 /// this fact is represented by permanently [`Increment`]ing the [`Counter`] for
 /// [`EnabledGclk0`]. Thus, the minimum value for `N` is `U1` and
@@ -1009,46 +1225,129 @@ where
 ///
 /// These methods represent actions that can be taken when `N = U1`, i.e. the
 /// [`Enabled`] [`Counter`] is at its minimum value. This is the only time it's
-/// safe to [`swap`] the [`Gclk0`] [`Source`] or change its [`GclkDivider`]
-/// value.
+/// safe to change the [`Gclk0`] [`Source`] or change its [`GclkDivider`] value.
 ///
 /// [module-level documentation]: self
-/// [`swap`]: Gclk::swap
 impl<I: GclkSourceId> EnabledGclk0<I, U1> {
-    /// Swap the clock [`Source`] for [`Gclk0`]
+    /// Swap [`Gclk0`] from one clock [`Source`] to another
     ///
-    /// See [`Gclk::swap`] documentation for more details.
+    /// `Gclk0` will remain fully enabled during the swap.
     #[inline]
-    pub fn swap<Old, New>(
-        self,
-        old: Old,
-        new: New,
-    ) -> (EnabledGclk0<New::Id, U1>, Old::Dec, New::Inc)
+    pub fn swap_sources<O, N>(self, old: O, new: N) -> (EnabledGclk0<N::Id, U1>, O::Dec, N::Inc)
     where
-        Old: Source<Id = I> + Decrement,
-        New: Source + Increment,
-        New::Id: GclkSourceId,
+        O: Source<Id = I> + Decrement,
+        N: Source + Increment,
+        N::Id: GclkSourceId,
     {
-        let (config, old, new) = self.0.swap(old, new);
-        (config.enable().inc(), old, new)
+        let gclk = self.0.change_source(new.freq());
+        let enabled = Enabled::new(gclk);
+        let old = old.dec();
+        let new = new.inc();
+        (enabled, old, new)
+    }
+
+    /// Swap [`Gclk0`] from one [`GclkIo`] [`Pin`] to another
+    ///
+    /// `Gclk0` will remain fully enabled during the swap.
+    #[inline]
+    pub fn swap_pins<N>(
+        self,
+        new: N,
+        freq: impl Into<Hertz>,
+    ) -> (EnabledGclk0<N::Id, U1>, Pin<I, AlternateM>)
+    where
+        I: GclkIo<GclkId = Gclk0Id>,
+        N: AnyPin,
+        N::Id: GclkIo<GclkId = Gclk0Id>,
+    {
+        // Safety: We know the old Pin was dropped in AlternateM mode on
+        // creation of this Gclk, so we can safely recreate it here.
+        let old = unsafe { Pin::new() };
+        // Convert the new Pin to AlternateM mode and then drop it
+        // We will recreate the new Pin when freeing the Gclk
+        let _ = new.into().into_mode::<AlternateM>();
+        let gclk = self.0.change_source(freq.into());
+        let enabled = Enabled::new(gclk);
+        (enabled, old)
+    }
+
+    /// Swap [`Gclk0`] from a clock [`Source`] to a [`GclkIo`] [`Pin`]
+    ///
+    /// `Gclk0` will remain fully enabled during the swap.
+    #[inline]
+    pub fn swap_source_for_pin<O, N>(
+        self,
+        old: O,
+        new: N,
+        freq: impl Into<Hertz>,
+    ) -> (EnabledGclk0<N::Id, U1>, O::Dec)
+    where
+        O: Source<Id = I> + Decrement,
+        N: AnyPin,
+        N::Id: GclkIo<GclkId = Gclk0Id>,
+    {
+        let old = old.dec();
+        // Convert the new Pin to AlternateM mode and then drop it
+        // We will recreate the new Pin when freeing the Gclk
+        let _ = new.into().into_mode::<AlternateM>();
+        let gclk = self.0.change_source(freq.into());
+        let enabled = Enabled::new(gclk);
+        (enabled, old)
+    }
+
+    /// Swap [`Gclk0`] from a [`GclkIo`] [`Pin`] to a clock [`Source`]
+    ///
+    /// `Gclk0` will remain fully enabled during the swap.
+    #[inline]
+    pub fn swap_pin_for_source<N>(
+        self,
+        new: N,
+    ) -> (EnabledGclk0<N::Id, U1>, Pin<I, AlternateM>, N::Inc)
+    where
+        I: GclkIo<GclkId = Gclk0Id>,
+        N: Source + Increment,
+        N::Id: GclkSourceId,
+    {
+        let gclk = self.0.change_source(new.freq());
+        // Safety: We know the old Pin was dropped in AlternateM mode on
+        // creation of this Gclk, so we can safely recreate it here.
+        let old = unsafe { Pin::new() };
+        let new = new.inc();
+        let enabled = Enabled::new(gclk);
+        (enabled, old, new)
     }
 
     /// Set the [`GclkDivider`] value for [`Gclk0`]
     ///
     /// See [`Gclk::div`] documentation for more details.
     #[inline]
-    pub fn div(self, div: GclkDiv8) -> Self {
-        let mut config = self.0.div(div);
-        config.token.set_div(div);
-        Enabled::new(config)
+    pub fn div(&mut self, div: GclkDiv8) {
+        self.0.div = div;
+        self.0.token.set_div(div);
     }
 
     /// Output a 50-50 duty cycle clock when using an odd [`GclkDivider`]
     #[inline]
-    pub fn improve_duty_cycle(self, flag: bool) -> Self {
-        let mut config = self.0.improve_duty_cycle(flag);
-        config.token.improve_duty_cycle(flag);
-        Enabled::new(config)
+    pub fn improve_duty_cycle(&mut self, flag: bool) {
+        self.0.improve_duty_cycle = flag;
+        self.0.token.improve_duty_cycle(flag);
+    }
+
+    /// Return the [`Gclk0`] frequency
+    ///
+    /// See [`Gclk::freq`] documentation for more details.
+    #[inline]
+    pub fn freq(&self) -> Hertz {
+        self.0.freq()
+    }
+
+    /// Set the state of [`GclkOut`] pins when [`GclkIo`] output is disabled
+    ///
+    /// See [`Gclk::output_off_value`] documentation for more details.
+    #[inline]
+    pub fn output_off_value(&mut self, high: bool) {
+        self.0.output_off_value = high;
+        self.0.token.output_off_value(high);
     }
 }
 
@@ -1102,3 +1401,80 @@ seq!(N in 1..=11 {
         }
     }
 });
+
+//==============================================================================
+// GclkOut
+//==============================================================================
+
+/// A GPIO [`Pin`] configured as a [`Gclk`] output
+///
+/// The existence of this struct serves as proof that the corresponding [`Gclk`]
+/// is [`Enabled`] and that it has been output to [`PinId`] `I`.
+///
+/// See the [module-level documentation](self) for an example of creating a
+/// [`GclkOut`] from an [`EnabledGclk`].
+pub struct GclkOut<I: GclkIo> {
+    pin: Pin<I, AlternateM>,
+    freq: Hertz,
+}
+
+impl<G, I> GclkOut<I>
+where
+    G: GclkId,
+    I: GclkIo<GclkId = G>,
+{
+    /// Create and enable a [`GclkOut`] from an [`EnabledGclk`]
+    ///
+    /// Enabling [`GclkIo`] output will [`Increment`] the `EnabledGclk`
+    /// [`Counter`], which will prevent it from being disabled while the
+    /// `GclkOut` exists.
+    ///
+    /// Note that a given [`Gclk`] can only use [`GclkIo`] for input **or**
+    /// output, but not both simultaneously. The [`NotGclkIo`] trait exists to
+    /// enforce this requirement.
+    ///
+    /// Finally, when a [`GclkOut`] is disabled, but the [`Pin`] is still in
+    /// [`AlternateM`] mode, it takes the "output off value" of the `Gclk`. See
+    /// the [`Gclk::output_off_value`] documentation for more details.
+    #[inline]
+    pub fn enable<P, S, N>(
+        pin: P,
+        mut gclk: EnabledGclk<G, S, N>,
+    ) -> (GclkOut<I>, EnabledGclk<G, S, N::Inc>)
+    where
+        P: AnyPin<Id = I>,
+        S: NotGclkIo,
+        N: Increment,
+    {
+        let pin = pin.into().into_mode();
+        let freq = gclk.freq();
+        gclk.enable_gclk_out();
+        let gclk_out = GclkOut { pin, freq };
+        (gclk_out, gclk.inc())
+    }
+
+    /// Return the frequency of the corresponding [`Gclk`]
+    #[inline]
+    pub fn freq(&self) -> Hertz {
+        self.freq
+    }
+
+    /// Disable a [`GclkOut`] and free its resources
+    ///
+    /// Disabling [`GclkIo`] output will [`Decrement`] the `EnabledGclk`
+    /// [`Counter`]. When a [`GclkOut`] is disabled, but the [`Pin`] is still in
+    /// [`AlternateM`] mode, it takes the "output off value" of the `Gclk`. See
+    /// the [`Gclk::output_off_value`] documentation for more details.
+    #[inline]
+    pub fn disable<S, N>(
+        self,
+        mut gclk: EnabledGclk<G, S, N>,
+    ) -> (Pin<I, AlternateM>, EnabledGclk<G, S, N::Dec>)
+    where
+        S: NotGclkIo,
+        N: Decrement,
+    {
+        gclk.disable_gclk_out();
+        (self.pin, gclk.dec())
+    }
+}

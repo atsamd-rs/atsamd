@@ -64,11 +64,11 @@
 //!
 //! In general, there are two classes of clock in ATSAMD chips. Some clocks map
 //! one-to-one (1:1) to a specific bus or peripheral. This is true for the AHB
-//! clocks ([`AhbClk`]s), APB clocks ([`ApbClk`]s), GCLK inputs ([`GclkIn`]s),
-//! GCLK outputs ([`GclkOut`]s), peripheral channel clocks ([`Pclk`]s), and RTC
-//! oscillator ([`RtcOsc`]). Other clocks form one-to-many (1:N) relationships,
-//! like the external crystal oscillator ([`Xosc`]), the 48 MHz DFLL ([`Dfll`])
-//! or the two DPLLs ([`Dpll`]).
+//! clocks ([`AhbClk`]s), APB clocks ([`ApbClk`]s), GCLK outputs ([`GclkOut`]s),
+//! peripheral channel clocks ([`Pclk`]s), and RTC oscillator ([`RtcOsc`]).
+//! Other clocks form one-to-many (1:N) relationships, like the external crystal
+//! oscillator ([`Xosc`]), the 48 MHz DFLL ([`Dfll`]) or the two DPLLs
+//! ([`Dpll`]).
 //!
 //! The `clock` module uses a distinct approach for each class.
 //!
@@ -345,7 +345,7 @@
 //!     clock::v2::{
 //!         clock_system_at_reset,
 //!         dpll::Dpll,
-//!         gclkio::GclkOut,
+//!         gclk::GclkOut,
 //!         pclk::Pclk,
 //!         xosc::{Xosc, CrystalCurrent},
 //!     },
@@ -516,7 +516,7 @@
 //! ```
 //!
 //! Our next task will be to swap GCLK0 from the 48 MHz DFLL to the 100 MHz
-//! DPLL. To do that, we will use the special [`swap`] method on
+//! DPLL. To do that, we will use the special [`swap_sources`] method on
 //! [`EnabledGclk0`] to change the base clock without disabling GCLK0 or the
 //! main clock.
 //!
@@ -555,7 +555,7 @@
 //! # ).enable();
 //! # let (dpll0, xosc0) = Dpll::from_xosc0(tokens.dpll0, xosc0);
 //! # let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
-//! let (gclk0, dfll, dpll0) = clocks.gclk0.swap(clocks.dfll, dpll0);
+//! let (gclk0, dfll, dpll0) = clocks.gclk0.swap_sources(clocks.dfll, dpll0);
 //! ```
 //!
 //! At this point, the DFLL is completely unused, so it can be disbled and
@@ -590,7 +590,7 @@
 //! # ).enable();
 //! # let (dpll0, xosc0) = Dpll::from_xosc0(tokens.dpll0, xosc0);
 //! # let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
-//! # let (gclk0, dfll, dpll0) = clocks.gclk0.swap(clocks.dfll, dpll0);
+//! # let (gclk0, dfll, dpll0) = clocks.gclk0.swap_sources(clocks.dfll, dpll0);
 //! let dfll_token = dfll.disable().free();
 //! ```
 //!
@@ -641,7 +641,7 @@
 //! # ).enable();
 //! # let (dpll0, xosc0) = Dpll::from_xosc0(tokens.dpll0, xosc0);
 //! # let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
-//! # let (gclk0, dfll, dpll0) = clocks.gclk0.swap(clocks.dfll, dpll0);
+//! # let (gclk0, dfll, dpll0) = clocks.gclk0.swap_sources(clocks.dfll, dpll0);
 //! # let dfll_token = dfll.disable().free();
 //! let apb_sercom0 = buses.apb.enable(tokens.apbs.sercom0);
 //! ```
@@ -681,7 +681,7 @@
 //! # ).enable();
 //! # let (dpll0, xosc0) = Dpll::from_xosc0(tokens.dpll0, xosc0);
 //! # let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
-//! # let (gclk0, dfll, dpll0) = clocks.gclk0.swap(clocks.dfll, dpll0);
+//! # let (gclk0, dfll, dpll0) = clocks.gclk0.swap_sources(clocks.dfll, dpll0);
 //! # let dfll_token = dfll.disable().free();
 //! # let apb_sercom0 = buses.apb.enable(tokens.apbs.sercom0);
 //! let (pclk_sercom0, gclk0) = Pclk::enable(tokens.pclks.sercom0, gclk0);
@@ -705,7 +705,7 @@
 //! #     clock::v2::{
 //! #         clock_system_at_reset,
 //! #         dpll::Dpll,
-//! #         gclkio::GclkOut,
+//! #         gclk::GclkOut,
 //! #         pclk::Pclk,
 //! #         xosc::{Xosc, CrystalCurrent},
 //! #     },
@@ -731,11 +731,11 @@
 //! # ).enable();
 //! # let (dpll0, xosc0) = Dpll::from_xosc0(tokens.dpll0, xosc0);
 //! # let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
-//! # let (gclk0, dfll, dpll0) = clocks.gclk0.swap(clocks.dfll, dpll0);
+//! # let (gclk0, dfll, dpll0) = clocks.gclk0.swap_sources(clocks.dfll, dpll0);
 //! # let dfll_token = dfll.disable().free();
 //! # let apb_sercom0 = buses.apb.enable(tokens.apbs.sercom0);
 //! # let (pclk_sercom0, gclk0) = Pclk::enable(tokens.pclks.sercom0, gclk0);
-//! let (gclk_out0, gclk0) = GclkOut::enable(tokens.gclk_io.gclk_out0, pins.pb14, gclk0);
+//! let (gclk_out0, gclk0) = GclkOut::enable(pins.pb14, gclk0);
 //! ```
 //!
 //! We have arrived at our final, desired clock tree. Putting the whole example
@@ -746,7 +746,7 @@
 //!     clock::v2::{
 //!         clock_system_at_reset,
 //!         dpll::Dpll,
-//!         gclkio::GclkOut,
+//!         gclk::GclkOut,
 //!         pclk::Pclk,
 //!         xosc::{CrystalCurrent, Xosc},
 //!     },
@@ -774,11 +774,11 @@
 //! .enable();
 //! let (dpll0, xosc0) = Dpll::from_xosc0(tokens.dpll0, xosc0);
 //! let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
-//! let (gclk0, dfll, dpll0) = clocks.gclk0.swap(clocks.dfll, dpll0);
+//! let (gclk0, dfll, dpll0) = clocks.gclk0.swap_sources(clocks.dfll, dpll0);
 //! let dfll_token = dfll.disable().free();
 //! let apb_sercom0 = buses.apb.enable(tokens.apbs.sercom0);
 //! let (pclk_sercom0, gclk0) = Pclk::enable(tokens.pclks.sercom0, gclk0);
-//! let (gclk_out0, gclk0) = GclkOut::enable(tokens.gclk_io.gclk_out0, pins.pb14, gclk0);
+//! let (gclk_out0, gclk0) = GclkOut::enable(pins.pb14, gclk0);
 //! ```
 //!
 //! [PAC]: crate::pac
@@ -822,10 +822,8 @@
 //! [`Gclk0`]: gclk::Gclk0
 //! [`GclkId`]: gclk::GclkId
 //! [`EnabledGclk0`]: gclk::EnabledGclk0
-//! [`swap`]: gclk::EnabledGclk0::swap
-//!
-//! [`GclkIn`]: gclkio::GclkIn
-//! [`GclkOut`]: gclkio::GclkOut
+//! [`swap_sources`]: gclk::EnabledGclk0::swap_sources
+//! [`GclkOut`]: gclk::GclkOut
 //!
 //! [`OscUlpBase`]: osculp32k::OscUlpBase
 //! [`OscUlp1k`]: osculp32k::OscUlp1k
@@ -879,7 +877,6 @@ pub mod apb;
 pub mod dfll;
 pub mod dpll;
 pub mod gclk;
-pub mod gclkio;
 pub mod osculp32k;
 pub mod pclk;
 pub mod rtcosc;
@@ -976,7 +973,7 @@ fn test() {
     use crate::{
         clock::v2::{
             dpll::Dpll,
-            gclkio::GclkOut,
+            gclk::GclkOut,
             pclk::Pclk,
             xosc::{CrystalCurrent, Xosc},
         },
@@ -1004,9 +1001,9 @@ fn test() {
     .enable();
     let (dpll0, _xosc0) = Dpll::from_xosc0(tokens.dpll0, xosc0);
     let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
-    let (gclk0, dfll, _dpll0) = clocks.gclk0.swap(clocks.dfll, dpll0);
+    let (gclk0, dfll, _dpll0) = clocks.gclk0.swap_sources(clocks.dfll, dpll0);
     let _dfll_token = dfll.disable().free();
     let _apb_sercom0 = buses.apb.enable(tokens.apbs.sercom0);
     let (_pclk_sercom0, gclk0) = Pclk::enable(tokens.pclks.sercom0, gclk0);
-    let (_gclk_out0, _gclk0) = GclkOut::enable(tokens.gclk_io.gclk_out0, pins.pb14, gclk0);
+    let (_gclk_out0, _gclk0) = GclkOut::enable(pins.pb14, gclk0);
 }

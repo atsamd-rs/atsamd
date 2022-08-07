@@ -96,8 +96,6 @@ pub struct Tokens {
     pub dpll0: dpll::DpllToken<dpll::Dpll0Id>,
     /// Token to create [`dpll::Dpll1`]
     pub dpll1: dpll::DpllToken<dpll::Dpll1Id>,
-    /// Tokens to create [`gclkio::GclkIo`]s
-    pub gclk_io: gclkio::Tokens,
     /// Tokens to create [`gclk::Gclk`]
     pub gclks: gclk::GclkTokens,
     /// Tokens to create [`pclk::Pclk`]s
@@ -145,7 +143,7 @@ pub fn clock_system_at_reset(
             mclk,
         };
         let dfll = Enabled::<_>::new(dfll::Dfll::in_open_mode(dfll::DfllToken::new()));
-        let (gclk0, dfll) = gclk::Gclk0::new(gclk::GclkToken::new(), dfll);
+        let (gclk0, dfll) = gclk::Gclk0::from_source(gclk::GclkToken::new(), dfll);
         let gclk0 = Enabled::new(gclk0);
         let clocks = Clocks {
             pac,
@@ -159,7 +157,6 @@ pub fn clock_system_at_reset(
             apbs: apb::ApbTokens::new(),
             dpll0: dpll::DpllToken::new(),
             dpll1: dpll::DpllToken::new(),
-            gclk_io: gclkio::Tokens::new(),
             gclks: gclk::GclkTokens::new(nvmctrl),
             pclks: pclk::PclkTokens::new(),
             rtcosc: rtcosc::RtcOscToken::new(),
