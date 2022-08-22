@@ -1,5 +1,6 @@
 # Unreleased
 
+- Fix end-of-line glyph loss in usb_serial_display example
 - Fix display frequency in examples that did not work
 - Fix display offsets in buttons example
 - Fix buttons by re-enabling debounce code
