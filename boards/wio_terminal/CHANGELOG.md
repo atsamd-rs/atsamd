@@ -1,5 +1,7 @@
 # Unreleased
 
+- Fix display frequency in examples that did not work
+
 # v0.6.1
 
 - Update to `atsamd-hal` version `0.15.1`

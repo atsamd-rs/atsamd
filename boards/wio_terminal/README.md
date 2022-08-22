@@ -24,6 +24,11 @@ This project is made possible thanks to the following crates:
 * [Wio Terminal wiki](https://wiki.seeedstudio.com/Wio-Terminal-Getting-Started/)
 * [Wio Terminal user manual](https://files.seeedstudio.com/wiki/Wio-Terminal/res/Wio-Terminal-User-Manual.pdf)
 
+## Display
+
+The ILI9341 datasheet suggests that the maximum speed would be 10 MHz, but
+this is conservative and based on low voltage sources.  58 MHz is used in the BSP examples.
+
 ## Wifi
 
 If you want to use the Wifi features of this crate, you must have updated the wifi core firmware to at least version `2.0.1`. You
