@@ -422,19 +422,19 @@
 //! As before, we access the [`Tokens`] struct and use the corresponding
 //! [`DpllToken`] when creating an instance of `Dpll`. However, unlike before,
 //! we are creating a new clock-tree relationship that must be tracked by the
-//! type system. Because DPLL0 will now depend on XOSC0, we must [`Increment`]
+//! type system. Because DPLL0 will now consume XOSC0, we must [`Increment`]
 //! the [`Enabled`] [`Counter`] for [`EnabledXosc0`].
 //!
 //! Thus, to create an instance of `Dpll0<XoscId0>`, we must provide the
 //! `EnabledXosc0`, so that its `U0` type parameter can be incremented to `U1`.
-//! The `Dpll::from_xosc0` method takes ownership of the `EnabledXosc0` and
+//! The `Dpll::from_source` method takes ownership of the `EnabledXosc0` and
 //! returns it with this modified type parameter.
 //!
 //! This is the essence of clock safety in this module. Once the `Counter` has
 //! been incremeneted to `U1`, the `EnabledXosc0` can no longer be modified or
 //! disabled. All further code can guarantee this invariant is upheld. To modify
-//! the `EnabledXosc0`, we would first have to use `Dpll::free` to disable the
-//! DPLL and [`Decrement`] the `Counter` back to `U0`.
+//! the `EnabledXosc0`, we would first have to use `Dpll::free_source` to
+//! disable the DPLL and [`Decrement`] the `Counter` back to `U0`.
 //!
 //! ```no_run
 //! # use atsamd_hal::{
@@ -463,7 +463,7 @@
 //! #     8.mhz(),
 //! #     CrystalCurrent::Low,
 //! # ).enable();
-//! let (dpll0, xosc0) = Dpll::from_xosc0(tokens.dpll0, xosc0);
+//! let (dpll0, xosc0) = Dpll::from_source(tokens.dpll0, xosc0);
 //! ```
 //! Next, we set the DPLL pre-divider and loop divider. We must pre-divide
 //! the XOSC clock down from 8 MHz to 2 MHz, so that it is within the valid
@@ -500,7 +500,7 @@
 //! #     8.mhz(),
 //! #     CrystalCurrent::Low,
 //! # ).enable();
-//! # let (dpll0, xosc0) = Dpll::from_xosc0(tokens.dpll0, xosc0);
+//! # let (dpll0, xosc0) = Dpll::from_source(tokens.dpll0, xosc0);
 //! let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
 //! ```
 //!
@@ -553,7 +553,7 @@
 //! #     8.mhz(),
 //! #     CrystalCurrent::Low,
 //! # ).enable();
-//! # let (dpll0, xosc0) = Dpll::from_xosc0(tokens.dpll0, xosc0);
+//! # let (dpll0, xosc0) = Dpll::from_source(tokens.dpll0, xosc0);
 //! # let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
 //! let (gclk0, dfll, dpll0) = clocks.gclk0.swap_sources(clocks.dfll, dpll0);
 //! ```
@@ -588,7 +588,7 @@
 //! #     8.mhz(),
 //! #     CrystalCurrent::Low,
 //! # ).enable();
-//! # let (dpll0, xosc0) = Dpll::from_xosc0(tokens.dpll0, xosc0);
+//! # let (dpll0, xosc0) = Dpll::from_source(tokens.dpll0, xosc0);
 //! # let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
 //! # let (gclk0, dfll, dpll0) = clocks.gclk0.swap_sources(clocks.dfll, dpll0);
 //! let dfll_token = dfll.disable().free();
@@ -639,7 +639,7 @@
 //! #     8.mhz(),
 //! #     CrystalCurrent::Low,
 //! # ).enable();
-//! # let (dpll0, xosc0) = Dpll::from_xosc0(tokens.dpll0, xosc0);
+//! # let (dpll0, xosc0) = Dpll::from_source(tokens.dpll0, xosc0);
 //! # let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
 //! # let (gclk0, dfll, dpll0) = clocks.gclk0.swap_sources(clocks.dfll, dpll0);
 //! # let dfll_token = dfll.disable().free();
@@ -679,7 +679,7 @@
 //! #     8.mhz(),
 //! #     CrystalCurrent::Low,
 //! # ).enable();
-//! # let (dpll0, xosc0) = Dpll::from_xosc0(tokens.dpll0, xosc0);
+//! # let (dpll0, xosc0) = Dpll::from_source(tokens.dpll0, xosc0);
 //! # let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
 //! # let (gclk0, dfll, dpll0) = clocks.gclk0.swap_sources(clocks.dfll, dpll0);
 //! # let dfll_token = dfll.disable().free();
@@ -729,7 +729,7 @@
 //! #     8.mhz(),
 //! #     CrystalCurrent::Low,
 //! # ).enable();
-//! # let (dpll0, xosc0) = Dpll::from_xosc0(tokens.dpll0, xosc0);
+//! # let (dpll0, xosc0) = Dpll::from_source(tokens.dpll0, xosc0);
 //! # let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
 //! # let (gclk0, dfll, dpll0) = clocks.gclk0.swap_sources(clocks.dfll, dpll0);
 //! # let dfll_token = dfll.disable().free();
@@ -772,7 +772,7 @@
 //!     CrystalCurrent::Low,
 //! )
 //! .enable();
-//! let (dpll0, xosc0) = Dpll::from_xosc0(tokens.dpll0, xosc0);
+//! let (dpll0, xosc0) = Dpll::from_source(tokens.dpll0, xosc0);
 //! let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
 //! let (gclk0, dfll, dpll0) = clocks.gclk0.swap_sources(clocks.dfll, dpll0);
 //! let dfll_token = dfll.disable().free();
@@ -887,17 +887,21 @@ pub mod xosc32k;
 mod reset;
 pub use reset::*;
 
-/// Marks clock types that can act as a source for downstream clocks
+/// Marks [`Enabled`] 1:N producer clocks that can act as a clock source
 ///
-/// Implementers of this type can drive downstream clocks in the clock tree.
-/// Typically, implementors are [`Enabled`] clocks. The `Id` associated type
-/// maps to the corresponding `Id` type of the implementer.
+/// Implementers of this type act as producer clocks and feed consumer clocks in
+/// the clock tree. All implementors are [`Enabled`], 1:N clocks. The `Id`
+/// associated type maps to the corresponding [`Id` type](self#id-types) of the
+/// implementer.
+///
+/// See the documentation on [`Source` clocks](self#acting-as-a-clock-source)
+/// for more details.
 pub trait Source: Sealed {
     /// Corresponding `Id` type for the implementer
     ///
     /// A given implementer of [`Source`] might have type parameters
     /// representing its configuration. For instance, [`EnabledDfll<M>`] has a
-    /// type parameter to track its control loop [`Mode`]. However, a downstream
+    /// type parameter to track its control loop [`Mode`]. However, a consumer
     /// clock typically does not care about such configuration. It only needs to
     /// know *which* upstream clock is its [`Source`].
     ///
@@ -909,6 +913,8 @@ pub trait Source: Sealed {
     /// Thus, [`EnabledDfll<M>`] implements [`Source`] with `Id = `[`DfllId`],
     /// regardless of `M`.
     ///
+    /// See the documentation on [`Id` types](self#id-types) for more details.
+    ///
     /// [`EnabledDfll<M>`]: dfll::EnabledDfll
     /// [`Mode`]: dfll::Mode
     /// [`DfllId`]: dfll::DfllId
@@ -918,21 +924,22 @@ pub trait Source: Sealed {
     fn freq(&self) -> Hertz;
 }
 
-/// An enabled clock with a compile-time [`Counter`] of downstream users
+/// An enabled, 1:N clock with a compile-time [`Counter`] for N
 ///
 /// This struct is a wrapper around other clock types from this module. It
-/// represents a clock that has been enabled, and it maintains a compile-time
-/// [`Counter`] of downstream, dependent clocks in the clock tree.
+/// represents a clock, `T`, that has been enabled, and it maintains a
+/// compile-time [`Counter`], `N`, of its consumer clocks in the clock tree.
 ///
-/// Compile-time counting allows the API to enforce when clocks may be enabled
-/// or disabled. In particular, most clocks can only be disabled when their
-/// [`Counter`] is [`U0`]. However, there are exceptions, most notably
-/// [`EnabledGclk0`], which can never be disabled, because it feeds the
-/// processor's main clock.
+/// Compile-time counting allows the API to restrict when clocks may be modified
+/// or disabled. For example, `Enabled` clocks can only be disabled when their
+/// `Counter` is [`U0`].
 ///
-/// The type parameter `N` represents the [`Counter`]. It is implemented using
-/// [`Unsigned`] integers from the [`typenum`] crate, and it is modified using
-/// the [`Increment`] and [`Decrement`] traits.
+/// The type-level [`Counter`] is implemented using [`Unsigned`] integers from
+/// the [`typenum`] crate, and it is modified using the [`Increment`] and
+/// [`Decrement`] traits.
+///
+/// See the [`Enabled` wrapper documentation](self#the-enabled-wrapper) for more
+/// details.
 ///
 /// [`EnabledGclk0`]: gclk::EnabledGclk0
 /// [`Increment`]: crate::typelevel::Increment
@@ -999,7 +1006,7 @@ fn test() {
         CrystalCurrent::Low,
     )
     .enable();
-    let (dpll0, _xosc0) = Dpll::from_xosc0(tokens.dpll0, xosc0);
+    let (dpll0, _xosc0) = Dpll::from_source(tokens.dpll0, xosc0);
     let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
     let (gclk0, dfll, _dpll0) = clocks.gclk0.swap_sources(clocks.dfll, dpll0);
     let _dfll_token = dfll.disable().free();

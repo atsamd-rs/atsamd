@@ -314,7 +314,7 @@
 //! divider while disabled, `Gclk0` can never be disabled, so we provide this
 //! functionality on [`EnabledGclk0`] instead.
 //!
-//! We model the main clock's dependence on `Gclk0` by setting its [`Enabled`]
+//! We model the main clock's consumption of `Gclk0` by setting its [`Enabled`]
 //! [`Counter`] to [`U1`] in [`clock_system_at_reset`]. This prevents users from
 //! ever disabling `EnabledGclk0`, because there is no way to [`Decrement`] its
 //! `Counter` to [`U0`].
@@ -322,7 +322,7 @@
 //! Additionally, we provide functions to change the clock `Source`, divider,
 //! etc. on `EnabledGclk0`, but we restrict them to the case where `N = U1`.
 //! This prevents users from changing its `Source` or divider if any *other,
-//! additional* clock depends on it (besides the main clock).
+//! additional* clock consumes it (besides the main clock).
 //!
 //! [`clock_system_at_reset`]: super::clock_system_at_reset
 //! [`Xosc`]: super::xosc::Xosc
@@ -742,12 +742,12 @@ impl GclkDivider for GclkDiv16 {
 // GclkIo
 //==============================================================================
 
-/// Trait mapping each [`PinId`] to its corresponding [`GclkId`] when it can be
-/// used as a [`Gclk`] input or output
+/// Trait mapping each [`PinId`] to its corresponding [`GclkId`] when used as a
+/// [`Gclk`] input or output
 ///
 /// If a given [`PinId`] can be used as a [`Gclk`] input or output, it can only
-/// be used with one specific [`GclkId`]. This trait provides a mapping from a
-/// `PinId` to its corresponding `GclkId`.
+/// be used with one specific [`GclkId`]. This trait provides a mapping from
+/// such a `PinId` to its corresponding `GclkId`.
 pub trait GclkIo: PinId {
     /// Corresponding [`GclkId`] for this [`PinId`]
     type GclkId: GclkId;
@@ -958,8 +958,8 @@ where
 ///
 /// As described in the [`clock` module documentation](super), the [`Enabled`]
 /// wrapper implements compile-time clock tree safety by tracking the number of
-/// downstream clocks dependent on this [`Gclk`] and restricts access to the
-/// underlying [`Gclk`] to prevent misuse.
+/// clocks consuming this [`Gclk`] and restricts access to the underlying
+/// [`Gclk`] to prevent misuse.
 ///
 /// As with [`Enabled`], the default value for `N` is `U0`; if left unspecified,
 /// the [`Counter`] is assumed to be zero.
@@ -994,68 +994,6 @@ seq!(G in 1..=11 {
         pub type EnabledGclk~G<I, N = U0> = EnabledGclk<[<Gclk G Id>], I, N>;
     }
 });
-
-impl<G, I> Gclk<G, I>
-where
-    G: GclkId,
-    I: GclkSourceId,
-{
-    /// Create a new [`Gclk`] from a clock [`Source`]
-    ///
-    /// Creating a [`Gclk`] does not modify any of the hardware registers. It
-    /// only serves to [`Increment`] the [`Source`]'s [`Enabled`] [`Counter`]
-    /// and create a struct to track the GCLK configuration.
-    ///
-    /// The configuration data is stored until the user calls [`enable`]. At
-    /// that point, all of the registers are written according to the
-    /// initialization procedures specified in the datasheet, and an
-    /// [`EnabledGclk`] is returned. The `Gclk` is not active or useful until
-    /// that point.
-    ///
-    /// [`enable`]: Gclk::enable
-    #[inline]
-    pub fn from_source<S>(token: GclkToken<G>, source: S) -> (Gclk<G, I>, S::Inc)
-    where
-        S: Source<Id = I> + Increment,
-    {
-        let config = Gclk {
-            token,
-            src: PhantomData,
-            src_freq: source.freq(),
-            div: G::Divider::default(),
-            output_off_value: false,
-            improve_duty_cycle: false,
-        };
-        (config, source.inc())
-    }
-
-    // Modify the source of an existing clock
-    //
-    // This is a helper function for swapping Gclk0 to different clock sources.
-    fn change_source<N: GclkSourceId>(mut self, freq: Hertz) -> Gclk<G, N> {
-        self.token.set_source(N::DYN);
-        Gclk {
-            token: self.token,
-            src: PhantomData,
-            src_freq: freq,
-            div: self.div,
-            output_off_value: self.output_off_value,
-            improve_duty_cycle: self.improve_duty_cycle,
-        }
-    }
-
-    /// Consume the [`Gclk`] and free its corresponding resources
-    ///
-    /// Freeing a [`Gclk`] returns the corresponding [`GclkToken`] and
-    /// [`Decrement`]s the [`Source`]'s [`Enable`] [`Counter`].
-    #[inline]
-    pub fn free_source<S>(self, source: S) -> (GclkToken<G>, S::Dec)
-    where
-        S: Source<Id = I> + Decrement,
-    {
-        (self.token, source.dec())
-    }
-}
 
 impl<G, I> Gclk<G, I>
 where
@@ -1109,6 +1047,62 @@ where
     G: GclkId,
     I: GclkSourceId,
 {
+    /// Create a new [`Gclk`] from a clock [`Source`]
+    ///
+    /// Creating a [`Gclk`] does not modify any of the hardware registers. It
+    /// only serves to [`Increment`] the [`Source`]'s [`Enabled`] [`Counter`]
+    /// and create a struct to track the GCLK configuration.
+    ///
+    /// The configuration data is stored until the user calls [`enable`]. At
+    /// that point, all of the registers are written according to the
+    /// initialization procedures specified in the datasheet, and an
+    /// [`EnabledGclk`] is returned. The `Gclk` is not active or useful until
+    /// that point.
+    ///
+    /// [`enable`]: Gclk::enable
+    #[inline]
+    pub fn from_source<S>(token: GclkToken<G>, source: S) -> (Gclk<G, I>, S::Inc)
+    where
+        S: Source<Id = I> + Increment,
+    {
+        let config = Gclk {
+            token,
+            src: PhantomData,
+            src_freq: source.freq(),
+            div: G::Divider::default(),
+            output_off_value: false,
+            improve_duty_cycle: false,
+        };
+        (config, source.inc())
+    }
+
+    // Modify the source of an existing clock
+    //
+    // This is a helper function for swapping Gclk0 to different clock sources.
+    fn change_source<N: GclkSourceId>(mut self, freq: Hertz) -> Gclk<G, N> {
+        self.token.set_source(N::DYN);
+        Gclk {
+            token: self.token,
+            src: PhantomData,
+            src_freq: freq,
+            div: self.div,
+            output_off_value: self.output_off_value,
+            improve_duty_cycle: self.improve_duty_cycle,
+        }
+    }
+
+    /// Consume the [`Gclk`] and free its corresponding resources
+    ///
+    /// Freeing a [`Gclk`] returns the corresponding [`GclkToken`] and
+    /// [`Decrement`]s the [`Source`]'s [`Enabled`] [`Counter`].
+    #[inline]
+    pub fn free_source<S>(self, source: S) -> (GclkToken<G>, S::Dec)
+    where
+        S: Source<Id = I> + Decrement,
+    {
+        (self.token, source.dec())
+    }
+
     /// Set the [`GclkDivider`] value
     ///
     /// Set the clock division factor from input to output. This takes either a
@@ -1207,7 +1201,7 @@ where
     /// Disable the [`Gclk`]
     ///
     /// This method is only implemented for `N = U0`, which means the clock can
-    /// only be disabled when no other clocks depend on this [`Gclk`].
+    /// only be disabled when no other clocks consume this [`Gclk`].
     #[inline]
     pub fn disable(mut self) -> Gclk<G, I> {
         self.0.token.disable();

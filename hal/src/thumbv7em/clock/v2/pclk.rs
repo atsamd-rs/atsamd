@@ -121,7 +121,7 @@ impl<P: PclkId> PclkToken<P> {
     /// Each `PclkToken`s is a singleton. There must never be two simulatenous
     /// instances with the same [`PclkId`].
     #[inline]
-    unsafe fn new() -> Self {
+    pub(super) unsafe fn new() -> Self {
         PclkToken { pclk: PhantomData }
     }
 
@@ -212,7 +212,7 @@ use ids::*;
 /// The example below shows the pattern that should be used to match against the
 /// appended tokens.
 ///
-/// ```
+/// ```ignore
 /// macro_rules! some_macro {
 ///     (
 ///         $first_arg:tt,
@@ -425,12 +425,14 @@ impl<G: GclkId> PclkSourceId for G {}
 ///
 /// `Pclk`s cannot act as general purpose clock [`Source`]s; rather, they map
 /// 1:1 with corresponding peripherals. Thus, enabled `Pclk`s do not need a
-/// compile-time [`Counter`] of dependent clocks, so they are not wrapped with
+/// compile-time [`Counter`] of consumer clocks, so they are not wrapped with
 /// [`Enabled`]. Enabled `Pclk`s are created directly from [`PclkToken`]s with
 /// [`Pclk::enable`].
 ///
 /// See the [module-level documentation](self) for an example.
 ///
+/// [`Enabled`]: super::Enabled
+/// [`Counter`]: super::Counter
 /// [`Gclk`]: super::gclk::Gclk
 /// [`EnabledGclk`]: super::gclk::EnabledGclk
 /// [`DFLL`]: super::dfll
@@ -450,6 +452,14 @@ where
     P: PclkId,
     I: PclkSourceId,
 {
+    pub(super) fn new(token: PclkToken<P>, freq: Hertz) -> Self {
+        Self {
+            token,
+            src: PhantomData,
+            freq,
+        }
+    }
+
     /// Create and enable a [`Pclk`]
     ///
     /// Creating a [`Pclk`] immediately enables the corresponding peripheral
@@ -458,6 +468,8 @@ where
     ///
     /// Note that the [`Source`] will always be an [`EnabledGclk`].
     ///
+    /// [`Enabled`]: super::Enabled
+    /// [`Counter`]: super::Counter
     /// [`EnabledGclk`]: super::gclk::EnabledGclk
     #[inline]
     pub fn enable<S>(mut token: PclkToken<P>, gclk: S) -> (Self, S::Inc)
@@ -467,11 +479,7 @@ where
         let freq = gclk.freq();
         token.set_source(I::DYN);
         token.enable();
-        let pclk = Pclk {
-            token,
-            src: PhantomData,
-            freq,
-        };
+        let pclk = Pclk::new(token, freq);
         (pclk, gclk.inc())
     }
 
@@ -480,6 +488,8 @@ where
     /// Consume the [`Pclk`], release the [`PclkToken`], and [`Decrement`] the
     /// [`EnabledGclk`]'s [`Counter`]
     ///
+    /// [`Enabled`]: super::Enabled
+    /// [`Counter`]: super::Counter
     /// [`EnabledGclk`]: super::gclk::EnabledGclk
     #[inline]
     pub fn disable<S>(mut self, gclk: S) -> (PclkToken<P>, S::Dec)

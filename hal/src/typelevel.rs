@@ -745,9 +745,9 @@ impl<U: Unsigned, B: Bit> Sealed for UInt<U, B> {}
 /// This trait marks a set of types related through [`Increment`] and
 /// [`Decrement`]. As a set, the types are isomorphic to the natural numbers.
 ///
-/// The [`typelevel`] module provides an implementation over the [`Unsigned`]
-/// integers from [`typenum`]. All further implementations of `Counter` are
-/// built from this root implementation.
+/// The [`typelevel`](super) module provides an implementation over the
+/// [`Unsigned`] integers from [`typenum`]. All further implementations of
+/// `Counter` are built from this root implementation.
 pub trait Counter: Sealed {}
 
 /// Trait mapping each [`Counter`] type to its successor

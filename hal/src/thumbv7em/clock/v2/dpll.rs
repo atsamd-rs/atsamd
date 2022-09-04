@@ -74,8 +74,25 @@
 //! producing a 2 MHz output frequency. This has the side effect of
 //! [`Increment`]ing the [`Counter`] for [`EnabledDfll`].
 //!
-//! ```ignore
-//! let (gclk1, dfll) = Gclk::new(tokens.gclks.gclk1, clocks.dfll);
+//! ```no_run
+//! # use atsamd_hal::{
+//! #     clock::v2::{
+//! #         clock_system_at_reset,
+//! #         dpll::Dpll,
+//! #         gclk::{Gclk, GclkDiv16},
+//! #         pclk::Pclk,
+//! #     },
+//! #     pac::Peripherals,
+//! # };
+//! # let mut pac = Peripherals::take().unwrap();
+//! # let (buses, clocks, tokens) = clock_system_at_reset(
+//! #     pac.OSCCTRL,
+//! #     pac.OSC32KCTRL,
+//! #     pac.GCLK,
+//! #     pac.MCLK,
+//! #     &mut pac.NVMCTRL,
+//! # );
+//! let (gclk1, dfll) = Gclk::from_source(tokens.gclks.gclk1, clocks.dfll);
 //! let gclk1 = gclk1.div(GclkDiv16::Div(24)).enable();
 //! ```
 //!
@@ -83,7 +100,26 @@
 //! ([`Pclk`]) for [`Dpll0`]. This [`Increment`]s the [`Counter`] for
 //! [`EnabledGclk1`].
 //!
-//! ```ignore
+//! ```no_run
+//! # use atsamd_hal::{
+//! #     clock::v2::{
+//! #         clock_system_at_reset,
+//! #         dpll::Dpll,
+//! #         gclk::{Gclk, GclkDiv16},
+//! #         pclk::Pclk,
+//! #     },
+//! #     pac::Peripherals,
+//! # };
+//! # let mut pac = Peripherals::take().unwrap();
+//! # let (buses, clocks, tokens) = clock_system_at_reset(
+//! #     pac.OSCCTRL,
+//! #     pac.OSC32KCTRL,
+//! #     pac.GCLK,
+//! #     pac.MCLK,
+//! #     &mut pac.NVMCTRL,
+//! # );
+//! # let (gclk1, dfll) = Gclk::from_source(tokens.gclks.gclk1, clocks.dfll);
+//! # let gclk1 = gclk1.div(GclkDiv16::Div(24)).enable();
 //! let (pclk_dpll0, gclk1) = Pclk::enable(tokens.pclks.dpll0, gclk1);
 //! ```
 //!
@@ -92,7 +128,27 @@
 //! to 100 and enable the [`Dpll`]. This will multiply the 2 MHz input clock to
 //! produce a 200 MHz output clock.
 //!
-//! ```ignore
+//! ```no_run
+//! # use atsamd_hal::{
+//! #     clock::v2::{
+//! #         clock_system_at_reset,
+//! #         dpll::Dpll,
+//! #         gclk::{Gclk, GclkDiv16},
+//! #         pclk::Pclk,
+//! #     },
+//! #     pac::Peripherals,
+//! # };
+//! # let mut pac = Peripherals::take().unwrap();
+//! # let (buses, clocks, tokens) = clock_system_at_reset(
+//! #     pac.OSCCTRL,
+//! #     pac.OSC32KCTRL,
+//! #     pac.GCLK,
+//! #     pac.MCLK,
+//! #     &mut pac.NVMCTRL,
+//! # );
+//! # let (gclk1, dfll) = Gclk::from_source(tokens.gclks.gclk1, clocks.dfll);
+//! # let gclk1 = gclk1.div(GclkDiv16::Div(24)).enable();
+//! # let (pclk_dpll0, gclk1) = Pclk::enable(tokens.pclks.dpll0, gclk1);
 //! let dpll0 = Dpll::from_pclk(tokens.dpll0, pclk_dpll0)
 //!     .loop_div(100, 0)
 //!     .enable();
@@ -116,9 +172,32 @@
 //! swap the [`EnabledGclk0`], which feeds the processor master clock, from the
 //! 48 MHz [`EnabledDfll`] to the 200 MHz [`EnabledDpll0`].
 //!
-//! ```ignore
+//! ```no_run
+//! # use atsamd_hal::{
+//! #     clock::v2::{
+//! #         clock_system_at_reset,
+//! #         dpll::Dpll,
+//! #         gclk::{Gclk, GclkDiv16},
+//! #         pclk::Pclk,
+//! #     },
+//! #     pac::Peripherals,
+//! # };
+//! # let mut pac = Peripherals::take().unwrap();
+//! # let (buses, clocks, tokens) = clock_system_at_reset(
+//! #     pac.OSCCTRL,
+//! #     pac.OSC32KCTRL,
+//! #     pac.GCLK,
+//! #     pac.MCLK,
+//! #     &mut pac.NVMCTRL,
+//! # );
+//! # let (gclk1, dfll) = Gclk::from_source(tokens.gclks.gclk1, clocks.dfll);
+//! # let gclk1 = gclk1.div(GclkDiv16::Div(24)).enable();
+//! # let (pclk_dpll0, gclk1) = Pclk::enable(tokens.pclks.dpll0, gclk1);
+//! # let dpll0 = Dpll::from_pclk(tokens.dpll0, pclk_dpll0)
+//! #     .loop_div(100, 0)
+//! #     .enable();
 //! while !dpll0.is_ready() {}
-//! let (gclk0, dfll, dpll0) = clocks.gclk0.swap(dfll, dpll0);
+//! let (gclk0, dfll, dpll0) = clocks.gclk0.swap_sources(dfll, dpll0);
 //! ```
 //!
 //! We have now achieved the disired clock tree. The complete example is
@@ -142,14 +221,14 @@
 //!     pac.MCLK,
 //!     &mut pac.NVMCTRL,
 //! );
-//! let (gclk1, dfll) = Gclk::new(tokens.gclks.gclk1, clocks.dfll);
+//! let (gclk1, dfll) = Gclk::from_source(tokens.gclks.gclk1, clocks.dfll);
 //! let gclk1 = gclk1.div(GclkDiv16::Div(24)).enable();
 //! let (pclk_dpll0, gclk1) = Pclk::enable(tokens.pclks.dpll0, gclk1);
 //! let dpll0 = Dpll::from_pclk(tokens.dpll0, pclk_dpll0)
 //!     .loop_div(100, 0)
 //!     .enable();
 //! while !dpll0.is_ready() {}
-//! let (gclk0, dfll, dpll0) = clocks.gclk0.swap(dfll, dpll0);
+//! let (gclk0, dfll, dpll0) = clocks.gclk0.swap_sources(dfll, dpll0);
 //! ```
 //!
 //! [`clock` module documentation]: super
@@ -164,8 +243,6 @@
 
 use core::marker::PhantomData;
 
-use paste::paste;
-use seq_macro::seq;
 use typenum::U0;
 
 use crate::pac::oscctrl::dpll::{dpllstatus, dpllsyncbusy, DPLLCTRLA, DPLLCTRLB, DPLLRATIO};
@@ -177,8 +254,8 @@ use crate::time::Hertz;
 use crate::typelevel::{Counter, Decrement, Increment, Sealed};
 
 use super::gclk::GclkId;
-use super::pclk::{Pclk, PclkId};
-use super::xosc::{Xosc0Id, Xosc1Id};
+use super::pclk::{Pclk, PclkId, PclkToken};
+use super::xosc::{Xosc0Id, Xosc1Id, XoscId};
 use super::xosc32k::Xosc32kId;
 use super::{Enabled, Source};
 
@@ -194,7 +271,7 @@ use super::{Enabled, Source};
 ///
 /// [`DpllToken`]s are no different. Both [`Dpll`]s are disabled at power-on
 /// reset. To use a [`Dpll`], you must first exchange the token for an actual
-/// clock with one of the `Dpll::from_*` functions.
+/// clock with [`Dpll::from_pclk`] or [`Dpll::from_source`].
 ///
 /// [`DpllToken`] is generic over the [`DpllId`], where each corresponding token
 /// represents one of the two respective [`Dpll`]s.
@@ -488,51 +565,22 @@ impl From<DynDpllSourceId> for REFCLK_A {
 ///
 /// [type-level programming]: crate::typelevel
 /// [type-level enums]: crate::typelevel#type-level-enums
-pub trait DpllSourceId<D: DpllId> {
+pub trait DpllSourceId {
     /// Corresponding variant of [`DynDpllSourceId`]
     const DYN: DynDpllSourceId;
-    /// Corresponding [`Pclk`] type, if it exists
-    ///
-    /// Creating a [`Dpll`] driven by an [`Xosc`] or the [`Xosc32k`] will
-    /// [`Increment`] the [`Source`] clock's [`Enabled`] [`Counter`] and return
-    /// the [`Source`] to the user. However, when driven by a [`Pclk`], the
-    /// [`Dpll`] must take ownership of the [`Pclk`] for the duration of its
-    /// existence.
-    ///
-    /// For each implementer of [`DpllSourceId`], this associated type
-    /// represents the type that should be stored along with the [`Dpll`]
-    /// throughout its existence. Effectively, this associated type is a
-    /// [type-level function] mapping the [`DpllSourceId`] type to a
-    /// corresponding storage type.
-    ///
-    /// When driven by a [`Pclk`], the [`DpllSourceId`] type is a [`GclkId`],
-    /// and this associated type maps to the full [`Pclk`] type. Alternatively,
-    /// when the [`Source`] is anything other than a [`Pclk`], this associated
-    /// type maps to `()`, indicating that there is nothing to store.
-    ///
-    /// [`Xosc`]: super::xosc::Xosc
-    /// [`Xosc32k`]: super::xosc32k::Xosc32k
-    /// [type-level function]: crate::typelevel#type-level-functions
-    type Pclk;
 }
 
-impl<D: DpllId + PclkId, G: GclkId> DpllSourceId<D> for G {
+impl<G: GclkId> DpllSourceId for G {
     const DYN: DynDpllSourceId = DynDpllSourceId::Pclk;
-    type Pclk = Pclk<D, G>;
 }
-
-seq!(N in 0..=1 {
-    paste! {
-        impl<D: DpllId> DpllSourceId<D> for [<Xosc N Id>] {
-            const DYN: DynDpllSourceId = DynDpllSourceId::Xosc~N;
-            type Pclk = ();
-        }
-    }
-});
-
-impl<D: DpllId> DpllSourceId<D> for Xosc32kId {
+impl DpllSourceId for Xosc0Id {
+    const DYN: DynDpllSourceId = DynDpllSourceId::Xosc0;
+}
+impl DpllSourceId for Xosc1Id {
+    const DYN: DynDpllSourceId = DynDpllSourceId::Xosc1;
+}
+impl DpllSourceId for Xosc32kId {
     const DYN: DynDpllSourceId = DynDpllSourceId::Xosc32k;
-    type Pclk = ();
 }
 
 //==============================================================================
@@ -548,7 +596,8 @@ impl<D: DpllId> DpllSourceId<D> for Xosc32kId {
 /// instances this `Dpll` represents ([`Dpll0`] or [`Dpll1`]). The type
 /// parameter `I` represents the `Id` type for the clock [`Source`] driving this
 /// `Dpll`. It must be one of the valid [`DpllSourceId`]s. See the
-/// [`clock` module documentation](super) for more detail on `Id` types.
+/// [`clock` module documentation](super) for more detail on
+/// [`Id` types](super#id-types).
 ///
 /// On its own, an instance of `Dpll` does not represent an enabled DPLL.
 /// Instead, it must first be wrapped with [`Enabled`], which implements
@@ -566,9 +615,10 @@ impl<D: DpllId> DpllSourceId<D> for Xosc32kId {
 pub struct Dpll<D, I>
 where
     D: DpllId,
-    I: DpllSourceId<D>,
+    I: DpllSourceId,
 {
     token: DpllToken<D>,
+    src: PhantomData<I>,
     src_freq: Hertz,
     mult: u16,
     frac: u8,
@@ -576,7 +626,6 @@ where
     wake_up_fast: bool,
     on_demand: bool,
     run_standby: bool,
-    pclk: I::Pclk,
     prediv: u16,
 }
 
@@ -590,8 +639,8 @@ pub type Dpll1<M> = Dpll<Dpll1Id, M>;
 ///
 /// As described in the [`clock` module documentation](super), the [`Enabled`]
 /// wrapper implements compile-time clock tree safety by tracking the number of
-/// downstream clocks dependent on this [`Dpll`] and restricts access to the
-/// underlying [`Dpll`] to prevent misuse.
+/// clocks consuming this [`Dpll`] and restricts access to the underlying
+/// [`Dpll`] to prevent misuse.
 ///
 /// As with [`Enabled`], the default value for `N` is `U0`; if left unspecified,
 /// the [`Counter`] is assumed to be zero.
@@ -611,7 +660,7 @@ where
     /// Create a [`Dpll`] from a [`Pclk`]
     ///
     /// Creating a [`Dpll`] does not modify any of the hardware registers. It
-    /// only serves to create a struct to track the DPLL configuration.
+    /// only creates a struct to track the DPLL configuration.
     ///
     /// The configuration data is stored until the user calls [`enable`]. At
     /// that point, all of the registers are written according to the
@@ -622,36 +671,46 @@ where
     /// [`enable`]: Dpll::enable
     #[inline]
     pub fn from_pclk(token: DpllToken<D>, pclk: Pclk<D, G>) -> Self {
+        // Drop the `Pclk` here. We can recreate it later
+        Dpll::new(token, pclk.freq(), 1)
+    }
+
+    /// Consume the [`Dpll`], release the [`DpllToken`], and return the [`Pclk`]
+    #[inline]
+    pub fn free_pclk(self) -> (DpllToken<D>, Pclk<D, G>) {
+        // Safety: We dropped the `Pclk` when creating this `Dpll`.
+        // We can safely recreate it here.
+        let token = unsafe { PclkToken::new() };
+        let pclk = Pclk::new(token, self.src_freq);
+        (self.token, pclk)
+    }
+}
+
+impl<D, I> Dpll<D, I>
+where
+    D: DpllId,
+    I: DpllSourceId,
+{
+    fn new(token: DpllToken<D>, src_freq: Hertz, prediv: u16) -> Self {
         Self {
             token,
-            src_freq: pclk.freq(),
+            src: PhantomData,
+            src_freq,
             mult: 1,
             frac: 0,
             lock_bypass: false,
             wake_up_fast: false,
             on_demand: true,
             run_standby: false,
-            pclk,
-            prediv: 0,
+            prediv,
         }
     }
 
-    /// Consume the [`Dpll`], release the [`DpllToken`], and return the [`Pclk`]
-    #[inline]
-    pub fn free(self) -> (DpllToken<D>, Pclk<D, G>) {
-        (self.token, self.pclk)
-    }
-}
-
-impl<D> Dpll<D, Xosc32kId>
-where
-    D: DpllId,
-{
-    /// Create a [`Dpll`] from an [`Xosc32k`](super::xosc32k::Xosc32k)
+    /// Create a [`Dpll`] from a clock [`Source`]
     ///
     /// Creating a [`Dpll`] does not modify any of the hardware registers. It
-    /// only serves to [`Increment`] the `Xosc32k` [`Enabled`] [`Counter`] and
-    /// create a struct to track the DPLL configuration.
+    /// only creates a struct to track the DPLL configuration and [`Increment`]s
+    /// the [`Source`] [`Enabled`] [`Counter`].
     ///
     /// The configuration data is stored until the user calls [`enable`]. At
     /// that point, all of the registers are written according to the
@@ -659,123 +718,63 @@ where
     /// [`EnabledDpll`] is returned. The `Dpll` is not active or useful until
     /// that point.
     ///
+    /// Note that, when the [`Dpll`] is driven by an [`Xosc`], there is an extra
+    /// clock divider between the `Xosc` output and the input to the actual
+    /// phase-locked loop. This allows the [`Xosc`] frequency to be above the
+    /// maximum DPLL input frequency of 3.2 MHz.
+    ///
+    /// The `Xosc` pre-divider can be set to any *even* value in the range
+    /// `[2, 4096]`. It defaults to the minimum value of 2, but it can be
+    /// changed with the [`Dpll::prediv`] method.
+    ///
+    /// [`Xosc`]: super::xosc::Xosc
     /// [`enable`]: Dpll::enable
     #[inline]
-    pub fn from_xosc32k<S>(token: DpllToken<D>, xosc32k: S) -> (Self, S::Inc)
+    pub fn from_source<S>(token: DpllToken<D>, source: S) -> (Self, S::Inc)
     where
-        S: Source<Id = Xosc32kId> + Increment,
+        S: Source<Id = I> + Increment,
     {
-        let dpll = Self {
-            token,
-            src_freq: xosc32k.freq(),
-            mult: 1,
-            frac: 0,
-            lock_bypass: false,
-            wake_up_fast: false,
-            on_demand: true,
-            run_standby: false,
-            pclk: (),
-            prediv: 0,
+        let prediv = match I::DYN {
+            DynDpllSourceId::Xosc0 | DynDpllSourceId::Xosc1 => 2,
+            _ => 1,
         };
-        (dpll, xosc32k.inc())
+        let dpll = Dpll::new(token, source.freq(), prediv);
+        (dpll, source.inc())
     }
 
     /// Consume the [`Dpll`], release the [`DpllToken`], and [`Decrement`] the
-    /// [`Xosc32k`] [`Enabled`] [`Counter`]
-    ///
-    /// [`Xosc32k`]: super::xosc32k::Xosc32k
+    /// [`Source`] [`Enabled`] [`Counter`]
     #[inline]
-    pub fn free<S>(self, xosc32k: S) -> (DpllToken<D>, S::Dec)
+    pub fn free_source<S>(self, source: S) -> (DpllToken<D>, S::Dec)
     where
-        S: Source<Id = Xosc32kId> + Decrement,
+        S: Source<Id = I> + Decrement,
     {
-        (self.token, xosc32k.dec())
+        (self.token, source.dec())
     }
 }
 
-seq!(N in 0..=1 {
-    paste! {
-        impl<D: DpllId> Dpll<D, [<Xosc N Id>]> {
-            /// Create a [`Dpll`] from an external oscillator
-            ///
-            /// Creating a [`Dpll`] does not modify any of the hardware
-            /// registers. It only serves to [`Increment`] the `Xosc`
-            /// [`Enabled`] [`Counter`] and create a struct to track the DPLL
-            /// configuration.
-            ///
-            /// The configuration data is stored until the user calls
-            /// [`enable`]. At that point, all of the registers are written
-            /// according to the initialization procedures specified in the
-            /// datasheet, and an [`EnabledDpll`] is returned. The `Dpll` is not
-            /// active or useful until that point.
-            ///
-            /// Note that, when the [`Dpll`] is driven by an [`Xosc`], there is
-            /// an extra clock divider between the `Xosc` output and the input
-            /// to the actual phase-locked loop. This allows the [`Xosc`]
-            /// frequency to be above the maximum DPLL input frequency of
-            /// 3.2 MHz.
-            ///
-            /// The pre-divider can be set to any *even* value in the range
-            /// `[2, 4096]`. It defaults to the minimum value of 2, but it can
-            /// be changed with the `prediv` method.
-            ///
-            /// [`enable`]: Dpll::enable
-            /// [`Xosc`]: super::xosc::Xosc
-            #[inline]
-            pub fn from_xosc~N<S>(token: DpllToken<D>, xosc: S) -> (Self, S::Inc)
-            where
-                S: Source<Id = [<Xosc N Id>]> + Increment,
-            {
-                let dpll = Self {
-                    token,
-                    src_freq: xosc.freq(),
-                    mult: 1,
-                    frac: 0,
-                    lock_bypass: false,
-                    wake_up_fast: false,
-                    on_demand: true,
-                    run_standby: false,
-                    pclk: (),
-                    prediv: 2,
-                };
-                (dpll, xosc.inc())
-            }
-
-            /// Set the [`Xosc`] pre-division factor
-            ///
-            /// The [`Xosc`] output frequency is divided down before it enters
-            /// the actual phase-locked loop. This pre-division factor must be
-            /// an *even* number in the range `[2, 4096]`.
-            ///
-            /// [`Xosc`]: super::xosc::Xosc
-            #[inline]
-            pub fn prediv(mut self, prediv: u16) -> Self {
-                if prediv < 2 || prediv > 4096 || prediv % 2 != 0 {
-                    panic!("prediv must be an even number in the interval [2, 4096]");
-                }
-                self.prediv = prediv;
-                self
-            }
-
-            /// Consume the [`Dpll`], release the [`DpllToken`], and [`Decrement`] the
-            /// [`Xosc`] [`Enabled`] [`Counter`]
-            ///
-            /// [`Xosc`]: super::xosc::Xosc
-            #[inline]
-            pub fn free<S>(self, xosc: S) -> (DpllToken<D>, S::Dec)
-            where
-                S: Source<Id = [<Xosc N Id>]> + Decrement,
-            {
-                (self.token, xosc.dec())
-            }
+impl<D: DpllId, X: XoscId + DpllSourceId> Dpll<D, X> {
+    /// Set the [`Xosc`] pre-division factor
+    ///
+    /// The [`Xosc`] output frequency is divided down before it enters the
+    /// actual phase-locked loop. This function will panic if the pre-division
+    /// factor is not an *even* number in the range `[2, 4096]`.
+    ///
+    /// [`Xosc`]: super::xosc::Xosc
+    #[inline]
+    pub fn prediv(mut self, prediv: u16) -> Self {
+        if prediv < 2 || prediv > 4096 || prediv % 2 != 0 {
+            panic!("prediv must be an even number in the interval [2, 4096]");
         }
+        self.prediv = prediv;
+        self
     }
-});
+}
 
 impl<D, I> Dpll<D, I>
 where
     D: DpllId,
-    I: DpllSourceId<D>,
+    I: DpllSourceId,
 {
     /// Set the [`Dpll`] loop divider, which is also the frequency
     /// multiplication factor
@@ -858,7 +857,7 @@ where
 
     /// Enable the [`Dpll`], so that it can be used as a clock [`Source`]
     ///
-    /// As mentioned when creating a [`new`] `Dpll`, no hardware registers are
+    /// As mentioned when creating a new `Dpll`, no hardware registers are
     /// actually modified until this call. Rather, the desired configuration is
     /// stored internally, and the [`Dpll`] is initialized and configured here
     /// according to the datasheet.
@@ -871,8 +870,6 @@ where
     /// Specifically, the input frequency must be between 32 kHz and 3.2 MHz,
     /// while the output frequency must be between 96 MHz and 200 MHz. If either
     /// frequency is invalid, this call will panic.
-    ///
-    /// [`new`]: Dpll::new
     #[inline]
     pub fn enable(self) -> EnabledDpll<D, I> {
         let input_freq = self.input_freq();
@@ -890,8 +887,10 @@ where
 
     /// Enable the [`Dpll`] without validating the input & output frequencies
     ///
-    /// This is equivalent to calling [`Dpll::enable`] but without the checks on
-    /// input and output frequencies.
+    /// Safety: This is equivalent to calling [`Dpll::enable`] but without the
+    /// checks on input and output frequencies. Using frequencies outside the
+    /// ranges specified in the datasheet may not work and could cause clocking
+    /// problems.
     #[inline]
     pub unsafe fn enable_unchecked(mut self) -> EnabledDpll<D, I> {
         self.token.set_source_clock(I::DYN);
@@ -911,12 +910,12 @@ where
 impl<D, I> EnabledDpll<D, I>
 where
     D: DpllId,
-    I: DpllSourceId<D>,
+    I: DpllSourceId,
 {
     /// Disable the [`Dpll`]
     ///
     /// This method is only implemented for `N = U0`, which means the clock can
-    /// only be disabled when no other clocks depend on this [`Dpll`].
+    /// only be disabled when no other clocks consume this [`Dpll`].
     #[inline]
     pub fn disable(mut self) -> Dpll<D, I> {
         self.0.token.disable();
@@ -927,7 +926,7 @@ where
 impl<D, I, N> EnabledDpll<D, I, N>
 where
     D: DpllId,
-    I: DpllSourceId<D>,
+    I: DpllSourceId,
     N: Counter,
 {
     /// Test whether the [`Dpll`] is locked
@@ -950,7 +949,7 @@ where
 impl<D, I, N> Source for EnabledDpll<D, I, N>
 where
     D: DpllId,
-    I: DpllSourceId<D>,
+    I: DpllSourceId,
     N: Counter,
 {
     type Id = D;
