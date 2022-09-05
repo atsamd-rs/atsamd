@@ -1,22 +1,208 @@
-//! # Xosc - External oscillator
+//! # External multipurpose crystal oscillator controller
 //!
-//! A signal source for [`Gclks`][super::gclk] and [`Dplls`][super::dpll].
+//! ## Overview
 //!
-//! There are two external oscillators that are available:
-//! - [`Enabled`]`<`[`Xosc`]`<`[`marker::Xosc0`]`, _>>`: [`Xosc0`]
-//! - [`Enabled`]`<`[`Xosc`]`<`[`marker::Xosc1`]`, _>>`: [`Xosc1`]
+//! The `xosc` module provides access to the two external crystal oscillator
+//! controllers (XOSCs) within the `OSCCTRL` peripheral.
 //!
-//! There are two modes of operation that are available:
-//! - [`Enabled`]`<`[`Xosc`]`<_, `[`CrystalMode`]`>>`: Xosc is being powered by
-//!   an external crystal (2 pins)
-//! - [`Enabled`]`<`[`Xosc`]`<_, `[`ClockMode`]`>>`: Xosc is being powered by an
-//!   external signal (1 pin)
+//! Each XOSC peripheral can operate in two [`Mode`]s. It can accept an external
+//! clock or can interface with an crystal oscillator. In both cases, the clock
+//! must be in the 8-48 MHz range.
 //!
-//! To construct a Xosc in a proper mode use an appropriate construction
-//! function:
-//! - [`Xosc::from_clock`]
-//! - [`Xosc::from_crystal`]
-//! Then, enable it with a [`Xosc::enable`] function call
+//! When used with an external clock, only one GPIO [`Pin`] is required, but
+//! when used with a crystal oscillator, two GPIO `Pin`s are required. The
+//! [`XIn`] `Pin` is used in both `Mode`s, while the [`XOut`] `Pin` is only
+//! used in [`CrystalMode`].
+//!
+//! When operating in [`CrystalMode`], the XOSC peripheral provides several
+//! configuration options to increase stability or reduce power consumption of
+//! the crystal.
+//!
+//! The XOSC peripheral can also detect failure of the clock or crystal; and if
+//! failure occurs, it can automatically switch to a safe, backup clock derived
+//! from the [DFLL].
+//!
+//! Creating and configuring an [`Xosc`] proceeds according to the principles
+//! outlined in the [`clock` module documentation]. It is best shown with an
+//! example.
+//!
+//! ## Example
+//!
+//! Let's start by using [`clock_system_at_reset`] to access the HAL clocking
+//! structs. We'll also need access to the GPIO [`Pins`].
+//!
+//! ```no_run
+//! use atsamd_hal::{
+//!     clock::v2::{
+//!         clock_system_at_reset,
+//!         xosc::{CrystalCurrent, SafeClockDiv, StartUpDelay, Xosc},
+//!     },
+//!     gpio::Pins,
+//!     pac::Peripherals,
+//!     time::U32Ext,
+//! };
+//! let mut pac = Peripherals::take().unwrap();
+//! let pins = Pins::new(pac.PORT);
+//! let (buses, clocks, tokens) = clock_system_at_reset(
+//!     pac.OSCCTRL,
+//!     pac.OSC32KCTRL,
+//!     pac.GCLK,
+//!     pac.MCLK,
+//!     &mut pac.NVMCTRL,
+//! );
+//! ```
+//!
+//! Next, we can create and configure the [`Xosc`] in one long chain of methods,
+//! using the provided builder API. The final call to [`Xosc::enable`] yields an
+//! [`EnabledXosc`] that can act as a clock [`Source`] for other clocks in the
+//! tree.
+//!
+//! ```no_run
+//! # use atsamd_hal::{
+//! #     clock::v2::{
+//! #         clock_system_at_reset,
+//! #         xosc::{CrystalCurrent, SafeClockDiv, StartUpDelay, Xosc},
+//! #     },
+//! #     gpio::Pins,
+//! #     pac::Peripherals,
+//! #     time::U32Ext,
+//! # };
+//! # let mut pac = Peripherals::take().unwrap();
+//! # let pins = Pins::new(pac.PORT);
+//! # let (buses, clocks, tokens) = clock_system_at_reset(
+//! #     pac.OSCCTRL,
+//! #     pac.OSC32KCTRL,
+//! #     pac.GCLK,
+//! #     pac.MCLK,
+//! #     &mut pac.NVMCTRL,
+//! # );
+//! let mut xosc = Xosc::from_crystal(tokens.xosc0, pins.pa14, pins.pa15, 20.mhz())
+//!     .current(CrystalCurrent::Medium)
+//!     .loop_control(true)
+//!     .low_buf_gain(true)
+//!     .start_up_delay(StartUpDelay::Delay488us)
+//!     .enable();
+//! ```
+//!
+//! We start by calling [`Xosc::from_crystal`], and we provide the corresponding
+//! [`XIn`] and [`XOut`] [`Pin`]s, as well as the nominal crystal frequency. We
+//! then set the [`CrystalCurrent`] level to `Medium`. The default current level
+//! for a 20 MHz signal is actually `High`, but we opt for a lower current under
+//! the assumption that our crystal's capacitive load is small. Next, we turn on
+//! automatic loop control, which should save power, but we also set
+//! `LOWBUFGAIN` to `1`. Counterintuitively, this actually _increases_ the
+//! crystal amplitude, which increases power consumption, but it also improves
+//! stability. We then apply a 488 μs start up delay, to allow the clock to
+//! stabilize before it is applied to any logic. Finally, we enable the `Xosc`.
+//!
+//! Next, we wait until the `Xosc` is stable and ready to be used as a clock
+//! [`Source`].
+//!
+//! ```no_run
+//! # use atsamd_hal::{
+//! #     clock::v2::{
+//! #         clock_system_at_reset,
+//! #         xosc::{CrystalCurrent, SafeClockDiv, StartUpDelay, Xosc},
+//! #     },
+//! #     gpio::Pins,
+//! #     pac::Peripherals,
+//! #     time::U32Ext,
+//! # };
+//! # let mut pac = Peripherals::take().unwrap();
+//! # let pins = Pins::new(pac.PORT);
+//! # let (buses, clocks, tokens) = clock_system_at_reset(
+//! #     pac.OSCCTRL,
+//! #     pac.OSC32KCTRL,
+//! #     pac.GCLK,
+//! #     pac.MCLK,
+//! #     &mut pac.NVMCTRL,
+//! # );
+//! # let mut xosc = Xosc::from_crystal(tokens.xosc0, pins.pa14, pins.pa15, 20.mhz())
+//! #     .current(CrystalCurrent::Medium)
+//! #     .loop_control(true)
+//! #     .low_buf_gain(true)
+//! #     .start_up_delay(StartUpDelay::Delay488us)
+//! #     .enable();
+//! while !xosc.is_ready() {}
+//! ```
+//!
+//! Once the clock is stable, we can also enable failure detection. To do so, we
+//! must provide the [`EnabledDfll`] to act as the backup safe clock. We can
+//! also select a divider for the safe clock, so that it loosely matches the
+//! `Xosc` frequency. In thise case, we divide the 48 MHz [`Dfll`] down to
+//! 24 MHz, which is the closest option to 20 MHz.
+//!
+//! ```no_run
+//! # use atsamd_hal::{
+//! #     clock::v2::{
+//! #         clock_system_at_reset,
+//! #         xosc::{CrystalCurrent, SafeClockDiv, StartUpDelay, Xosc},
+//! #     },
+//! #     gpio::Pins,
+//! #     pac::Peripherals,
+//! #     time::U32Ext,
+//! # };
+//! # let mut pac = Peripherals::take().unwrap();
+//! # let pins = Pins::new(pac.PORT);
+//! # let (buses, clocks, tokens) = clock_system_at_reset(
+//! #     pac.OSCCTRL,
+//! #     pac.OSC32KCTRL,
+//! #     pac.GCLK,
+//! #     pac.MCLK,
+//! #     &mut pac.NVMCTRL,
+//! # );
+//! # let mut xosc = Xosc::from_crystal(tokens.xosc0, pins.pa14, pins.pa15, 20.mhz())
+//! #     .current(CrystalCurrent::Medium)
+//! #     .loop_control(true)
+//! #     .low_buf_gain(true)
+//! #     .start_up_delay(StartUpDelay::Delay488us)
+//! #     .enable();
+//! # while !xosc.is_ready() {}
+//! xosc.enable_failure_detection(clocks.dfll, SafeClockDiv::Div2);
+//! ```
+//!
+//! In the event of a clock failure, the [`Xosc`] would be automatically
+//! switched to the safe clock, and [`EnabledXosc::has_failed`] would return
+//! true. If the problem were later resolved, the `Xosc` could be switched back
+//! to the crystal with [`EnabledXosc::switch_back`].
+//!
+//! The complete example is provided below.
+//!
+//! ```no_run
+//! use atsamd_hal::{
+//!     clock::v2::{
+//!         clock_system_at_reset,
+//!         xosc::{CrystalCurrent, SafeClockDiv, StartUpDelay, Xosc},
+//!     },
+//!     gpio::Pins,
+//!     pac::Peripherals,
+//!     time::U32Ext,
+//! };
+//! let mut pac = Peripherals::take().unwrap();
+//! let pins = Pins::new(pac.PORT);
+//! let (buses, clocks, tokens) = clock_system_at_reset(
+//!     pac.OSCCTRL,
+//!     pac.OSC32KCTRL,
+//!     pac.GCLK,
+//!     pac.MCLK,
+//!     &mut pac.NVMCTRL,
+//! );
+//! let mut xosc = Xosc::from_crystal(tokens.xosc0, pins.pa14, pins.pa15, 20.mhz())
+//!     .current(CrystalCurrent::Medium)
+//!     .loop_control(true)
+//!     .low_buf_gain(true)
+//!     .start_up_delay(StartUpDelay::Delay488us)
+//!     .enable();
+//! while !xosc.is_ready() {}
+//! xosc.enable_failure_detection(clocks.dfll, SafeClockDiv::Div2);
+//! ```
+//!
+//! [`Pins`]: crate::gpio::Pins
+//! [`clock` module documentation]: super
+//! [`clock_system_at_reset`]: super::clock_system_at_reset
+//! [DFLL]: super::dfll
+//! [`Dfll`]: super::dfll::Dfll
+//! [`EnabledDfll`]: super::dfll::EnabledDfll
 
 use core::marker::PhantomData;
 
@@ -26,9 +212,9 @@ use crate::pac::oscctrl::{self, XOSCCTRL};
 
 use crate::gpio::{FloatingDisabled, Pin, PinId, PA14, PA15, PB22, PB23};
 use crate::time::Hertz;
-use crate::typelevel::{Counter, Decrement, Increment, PrivateDecrement, PrivateIncrement, Sealed};
+use crate::typelevel::{Counter, Decrement, Increment, Sealed};
 
-use super::dfll::{self, EnabledDfll};
+use super::dfll::DfllId;
 use super::{Enabled, Source};
 
 //==============================================================================
@@ -58,7 +244,7 @@ use super::{Enabled, Source};
 // is also used as a register interface. The tokens are zero-sized, so they can
 // be carried by all clock types without introducing any memory bloat.
 //
-// As part of that register interface, each `GclkToken` can access its
+// As part of that register interface, each `XoscToken` can access its
 // corresponding `XOSCCTRL` register. That each `XoscToken` is a singleton
 // guarantees each corresponding register is written from only one location.
 // This allows `XoscToken` to be `Sync`, even though the PAC `OSCCTRL` struct is
@@ -79,6 +265,7 @@ impl<X: XoscId> XoscToken<X> {
         Self { id: PhantomData }
     }
 
+    /// Return a reference to the corresponding XOSCCTRL register
     #[inline]
     fn xoscctrl(&self) -> &XOSCCTRL {
         // Safety: `XOSCCTRL` is not `Sync`, because it has interior mutability.
@@ -92,6 +279,7 @@ impl<X: XoscId> XoscToken<X> {
         &oscctrl.xoscctrl[X::NUM]
     }
 
+    /// Read the STATUS register
     #[inline]
     fn status(&self) -> oscctrl::status::R {
         // Safety: We are only reading from the `STATUS` register, so there is
@@ -100,60 +288,31 @@ impl<X: XoscId> XoscToken<X> {
         oscctrl.status.read()
     }
 
+    /// Check whether the XOSC is stable and ready
     #[inline]
     fn is_ready(&self) -> bool {
         let mask = 1 << X::NUM;
         self.status().bits() & mask != 0
     }
 
+    /// Check whether the XOSC has triggered failure detection
     #[inline]
     fn has_failed(&self) -> bool {
         let mask = 1 << (X::NUM + 2);
         self.status().bits() & mask != 0
     }
 
+    /// Check whether the XOSC has been switched to the safe clock
     #[inline]
     fn is_switched(&self) -> bool {
         let mask = 1 << (X::NUM + 4);
         self.status().bits() & mask != 0
     }
 
+    /// Reset the XOSCCTRL register
     #[inline]
     fn reset(&self) {
         self.xoscctrl().reset();
-    }
-
-    /// Set the safe clock prescaler divider to 2^N
-    ///
-    /// To monitor the XOSC clock/oscillator, the safe clock frequency must be
-    /// less than 4x the XOSC frequency. The safe clock is derived from the DFLL
-    /// and is normally 48 MHz. This prescaler can be used to lower the safe
-    /// clock frequency.
-    ///
-    /// The actual prescaler is 2^N, where N is in the range `0..16`. If
-    /// `N >= 16`, it will be set to 15.
-    #[inline]
-    fn set_safe_clock_divider(&mut self, n: u8) {
-        let n = if n < 16 { n } else { 15 };
-        // Safety: The PAC enum is incomplete. The prescaler field has 4 bits,
-        // but the enum only allows setting a value of N up to 7. It is safe to
-        // set N up to 15.
-        self.xoscctrl()
-            .modify(|_, w| unsafe { w.cfdpresc().bits(n) });
-    }
-
-    /// Set the start up delay before the XOSC is continuously monitored
-    ///
-    /// During the start up period, the XOSC is masked to prevent clock
-    /// instability from propagating to the digital logic. During this time,
-    /// clock failure detection is disabled.
-    ///
-    /// The startup delay is set to 2^N OSCULP32K clock cyces, where N is in the
-    /// range `0..16`. If `N >= 16`, it will be set to 15.
-    #[inline]
-    fn set_start_up_delay(&mut self, n: u8) {
-        let n = if n < 16 { n } else { 15 };
-        self.xoscctrl().modify(|_, w| w.startup().bits(n));
     }
 
     /// Switch from the safe clock back to the XOSC clock/oscillator
@@ -164,10 +323,17 @@ impl<X: XoscId> XoscToken<X> {
         self.xoscctrl().modify(|_, w| w.swben().set_bit());
     }
 
-    /// Enable clock failure detection
+    /// Enable clock failure detection and set the safe clock divider
     #[inline]
-    fn enable_failure_detection(&mut self) {
-        self.xoscctrl().modify(|_, w| w.cfden().set_bit());
+    fn enable_failure_detection(&mut self, div: SafeClockDiv) {
+        // Safety: The divider is guaranteed to be in the valid range 0..16.
+        // The PAC is wrong here. It seems to think the field is 4 bits wide and
+        // the set of valid values is only 0..8. The `bits` method should really
+        // be safe here, just like it is for the `STARTUP` field.
+        self.xoscctrl().modify(|_, w| unsafe {
+            w.cfdpresc().bits(div as u8);
+            w.cfden().set_bit()
+        });
     }
 
     /// Disable clock failure detection
@@ -176,51 +342,55 @@ impl<X: XoscId> XoscToken<X> {
         self.xoscctrl().modify(|_, w| w.cfden().clear_bit());
     }
 
+    /// Set most of the fields in the XOSCCTRL register
     #[inline]
-    fn set_loop_control(&mut self, loop_control: bool) {
-        self.xoscctrl().modify(|_, w| w.enalc().bit(loop_control));
-    }
-
-    #[inline]
-    fn set_current(&mut self, current: CrystalCurrent) {
+    fn set_xoscctrl(&mut self, settings: Settings) {
+        let xtalen = settings.mode == DynMode::CrystalMode;
         // Safety: The `IMULT` and `IPTAT` values come from the
         // `CrystalCurrent`, so they are guaranteed to be valid.
         self.xoscctrl().modify(|_, w| unsafe {
-            w.imult().bits(current.imult());
-            w.iptat().bits(current.iptat())
+            w.startup().bits(settings.start_up as u8);
+            w.enalc().bit(settings.loop_control);
+            w.imult().bits(settings.current.imult());
+            w.iptat().bits(settings.current.iptat());
+            w.lowbufgain().bit(settings.low_buf_gain);
+            w.ondemand().bit(settings.on_demand);
+            w.runstdby().bit(settings.run_standby);
+            w.xtalen().bit(xtalen)
         });
     }
 
-    #[inline]
-    fn set_low_buf_gain(&mut self, low_buf_gain: bool) {
-        self.xoscctrl()
-            .modify(|_, w| w.lowbufgain().bit(low_buf_gain));
-    }
-
-    #[inline]
-    fn set_on_demand(&mut self, on_demand: bool) {
-        self.xoscctrl().modify(|_, w| w.ondemand().bit(on_demand));
-    }
-
-    #[inline]
-    fn set_run_standby(&mut self, run_standby: bool) {
-        self.xoscctrl().modify(|_, w| w.runstdby().bit(run_standby));
-    }
-
-    #[inline]
-    fn set_xtalen(&mut self, xtalen: bool) {
-        self.xoscctrl().modify(|_, w| w.xtalen().bit(xtalen));
-    }
-
+    /// Enable the XOSC
     #[inline]
     fn enable(&mut self) {
-        self.xoscctrl().modify(|_, w| w.enable().bit(true));
+        self.xoscctrl().modify(|_, w| w.enable().set_bit());
     }
 
+    /// Disable the XOSC
     #[inline]
     fn disable(&mut self) {
-        self.xoscctrl().modify(|_, w| w.enable().bit(false));
+        self.xoscctrl().modify(|_, w| w.enable().clear_bit());
     }
+}
+
+//==============================================================================
+// Settings
+//==============================================================================
+
+// Collection of XOSCCTRL register fields
+//
+// All of these fields are set in a single write to XOSCCTRL during the call to
+// [`Xosc::enable`]. The remaining fields are only modified after it has been
+// enabled.
+#[derive(Clone, Copy)]
+struct Settings {
+    start_up: StartUpDelay,
+    loop_control: bool,
+    current: CrystalCurrent,
+    low_buf_gain: bool,
+    on_demand: bool,
+    run_standby: bool,
+    mode: DynMode,
 }
 
 //==============================================================================
@@ -233,8 +403,7 @@ impl<X: XoscId> XoscToken<X> {
 /// type-level variants of `XoscId`, and they identify one of two possible
 /// external crystal oscillators.
 ///
-/// `XoscId` is the type-level equivalent of [`DynXoscId`]. See the
-/// documentation on [type-level programming] and specifically
+/// See the documentation on [type-level programming] and specifically
 /// [type-level enums] for more details.
 ///
 /// [type-level programming]: crate::typelevel
@@ -286,17 +455,87 @@ impl XoscId for Xosc1Id {
 // XIn & XOut
 //==============================================================================
 
-/// Type alias for Xosc Input pin
+/// Type alias for the [`Xosc`] input [`Pin`]
 pub type XIn<X> = Pin<<X as XoscId>::XIn, FloatingDisabled>;
 
-/// Type alias for Xosc Output pin
+/// Type alias for the [`Xosc`] output [`Pin`]
 pub type XOut<X> = Pin<<X as XoscId>::XOut, FloatingDisabled>;
+
+//==============================================================================
+// SafeClockDiv
+//==============================================================================
+
+/// Division factor for the safe clock prescaler
+///
+/// If an [`Xosc`] clock failure is detected, the hardware will switch to a safe
+/// clock derived from the [`Dfll`]. This enum sets the divider between the
+/// 48 MHz DFLL and the safe clock frequency. The divider can be any value of
+/// 2^N, with N in the range `0..16`.
+///
+///[`Dfll`]: super::dfll::Dfll
+#[repr(u8)]
+#[derive(Clone, Copy, Default, PartialEq, Eq)]
+pub enum SafeClockDiv {
+    #[default]
+    Div1,
+    Div2,
+    Div4,
+    Div8,
+    Div16,
+    Div32,
+    Div64,
+    Div128,
+    Div256,
+    Div512,
+    Div1024,
+    Div2048,
+    Div4096,
+    Div8192,
+    Div16384,
+    Div32768,
+}
+
+//==============================================================================
+// StartUpDelay
+//==============================================================================
+
+/// Start up delay before continuous [`Xosc`] monitoring takes effect
+///
+/// After a hard reset or waking from sleep, the [`Xosc`] output will remained
+/// masked for the start up period, to ensure an unstable clock is not
+/// propagated into the digital logic.
+///
+/// The start up delay is counted using the [`OscUlp32k`] clock, and the delay
+/// is equal to 2^N clock cycles, where N is selectable in the range `0..16`.
+///
+/// [`OscUlp32k`]: super::osculp32k::OscUlp32k
+#[repr(u8)]
+#[derive(Clone, Copy, Default, PartialEq, Eq)]
+pub enum StartUpDelay {
+    #[default]
+    Delay31us,
+    Delay62us,
+    Delay122us,
+    Delay244us,
+    Delay488us,
+    Delay977us,
+    Delay2ms,
+    Delay4ms,
+    Delay8ms,
+    Delay16ms,
+    Delay31ms,
+    Delay63ms,
+    Delay125ms,
+    Delay250ms,
+    Delay500ms,
+    Delay1s,
+}
 
 //==============================================================================
 // CrystalCurrent
 //==============================================================================
 
-/// Crystal current settings
+/// Crystal current level
 ///
 /// This struct represents an abstraction over the datasheet table for the
 /// `IMULT` and `IPTAT` register fields, which control the current used when an
@@ -307,9 +546,10 @@ pub type XOut<X> = Pin<<X as XoscId>::XOut, FloatingDisabled>;
 /// each frequency range, it also acknowledges some flexibility in that choice.
 /// Specifically, it notes that users can save power by selecting the next-lower
 /// frequency range if the capacitive load is small.
-#[derive(Clone, Copy, PartialEq, Eq)]
+#[derive(Clone, Copy, Default, PartialEq, Eq)]
 pub enum CrystalCurrent {
     /// Used only in [`ClockMode`] to represent the default register values
+    #[default]
     Zero,
     /// Typically used for 8 MHz oscillators
     Low,
@@ -346,139 +586,168 @@ impl CrystalCurrent {
 }
 
 //==============================================================================
+// DynMode
+//==============================================================================
+
+/// Value-level enum identifying one of two possible [`Xosc`] operating modes
+///
+/// An [`Xosc`] can be sourced from either an external clock or crystal
+/// oscillator. The variants of this enum identify one of these two possible
+/// operating modes.
+///
+/// `DynMode` is the value-level equivalent of [`Mode`].
+#[derive(Clone, Copy, Default, PartialEq, Eq)]
+pub enum DynMode {
+    #[default]
+    ClockMode,
+    CrystalMode,
+}
+
+//==============================================================================
 // Mode
 //==============================================================================
 
-/// Type-level `enum` for the [`Xosc`] operation mode
+/// Type-level `enum` for the [`Xosc`] operating mode
 ///
 /// An [`Xosc`] can be sourced from either an external clock or a cyrstal
-/// oscillator. This type-level `enum` provides the type-level variants
-/// [`ClockMode`] and [`CrystalMode`].
+/// oscillator. This type-level `enum` provides two type-level variants,
+/// [`ClockMode`] and [`CrystalMode`], representing these operating modes.
 ///
-/// See the [type-level enum] documentation for more details on the pattern.
+/// `Mode` is the type-level equivalent of [`DynMode`]. See the documentation on
+/// [type-level programming] and specifically [type-level enums] for more
+/// details.
 ///
-/// [type-level enum]: crate::typelevel#type-level-enum
+/// [type-level programming]: crate::typelevel
+/// [type-level enums]: crate::typelevel#type-level-enums
 pub trait Mode: Sealed {
-    /// `XTALEN` field for the corresponding mode
-    const XTALEN: bool;
-    /// Get the [`CrystalCurrent`]
-    fn current(&self) -> CrystalCurrent;
-    /// Get the loop control bit
-    fn loop_control(&self) -> bool;
-    /// Get the low buf gain bit
-    fn low_buf_gain(&self) -> bool;
+    /// Corresponding variant of [`DynMode`]
+    const DYN: DynMode;
 }
 
 //==============================================================================
 // ClockMode
 //==============================================================================
 
-/// Type-level variant of the [`Xosc`] operation [`Mode`]
+/// Type-level variant of the [`Xosc`] operating [`Mode`]
 ///
 /// Represents the [`Xosc`] configured to use an externally provided clock.
 ///
-/// See the [type-level enum] documentation for more details on the pattern.
+/// See the documentation on [type-level programming] and specifically
+/// [type-level enums] for more details.
 ///
-/// [type-level enum]: crate::typelevel#type-level-enum
-pub struct ClockMode;
+/// [type-level programming]: crate::typelevel
+/// [type-level enums]: crate::typelevel#type-level-enums
+pub enum ClockMode {}
 
 impl Sealed for ClockMode {}
 
 impl Mode for ClockMode {
-    const XTALEN: bool = false;
-    #[inline]
-    fn current(&self) -> CrystalCurrent {
-        CrystalCurrent::Zero
-    }
-    #[inline]
-    fn loop_control(&self) -> bool {
-        false
-    }
-    #[inline]
-    fn low_buf_gain(&self) -> bool {
-        false
-    }
+    const DYN: DynMode = DynMode::ClockMode;
 }
 
 //==============================================================================
 // CrystalMode
 //==============================================================================
 
-/// Type-level variant of the [`Xosc`] operation [`Mode`]
+/// Type-level variant of the [`Xosc`] operating [`Mode`]
 ///
 /// Represents the [`Xosc`] configured to use an external crystal oscillator.
 ///
-/// See the [type-level enum] documentation for more details on the pattern.
+/// See the documentation on [type-level programming] and specifically
+/// [type-level enums] for more details.
 ///
-/// [type-level enum]: crate::typelevel#type-level-enum
-pub struct CrystalMode {
-    current: CrystalCurrent,
-    loop_control: bool,
-    low_buf_gain: bool,
-}
+/// [type-level programming]: crate::typelevel
+/// [type-level enums]: crate::typelevel#type-level-enums
+pub enum CrystalMode {}
 
 impl Sealed for CrystalMode {}
 
 impl Mode for CrystalMode {
-    const XTALEN: bool = true;
-    #[inline]
-    fn current(&self) -> CrystalCurrent {
-        self.current
-    }
-    #[inline]
-    fn loop_control(&self) -> bool {
-        self.loop_control
-    }
-    #[inline]
-    fn low_buf_gain(&self) -> bool {
-        self.low_buf_gain
-    }
+    const DYN: DynMode = DynMode::CrystalMode;
 }
 
 //==============================================================================
 // Xosc
 //==============================================================================
 
-/// Struct representing a disabled external oscillator
+/// An external multipurpose crystal oscillator controller
 ///
-/// It is generic over:
-/// - a numeric variant (available variants: [`marker::Xosc0`],
-///   [`marker::Xosc1`])
-/// - a mode of operation (available modes: [`ClockMode`], [`CrystalMode`])
+/// An `Xosc` interfaces with either an external clock or external crystal
+/// oscillator and delivers the resulting clock to the rest of the clock system.
+///
+/// The type parameter `X` is a [`XoscId`] that determines which of the two
+/// instances this `Xosc` represents ([`Xosc0`] or [`Xosc1`]). The type
+/// parameter `M` represents the operating [`Mode`], either [`ClockMode`] or
+/// [`CrystalMode`].
+///
+/// On its own, an instance of `Xosc` does not represent an enabled XOSC.
+/// Instead, it must first be wrapped with [`Enabled`], which implements
+/// compile-time safety of the clock tree.
+///
+/// Because the terminal call to [`enable`] consumes the `Xosc` and returns an
+/// [`EnabledXosc`], the remaining API uses the builder pattern, where each
+/// method takes and returns `self` by value, allowing them to be easily
+/// chained.
+///
+/// See the [module-level documentation](self) for an example of creating,
+/// configuring and using an `Xosc`.
+///
+/// [`enable`]: Xosc::enable
 pub struct Xosc<X, M>
 where
     X: XoscId,
     M: Mode,
 {
     token: XoscToken<X>,
-    mode: M,
+    mode: PhantomData<M>,
     freq: Hertz,
-    start_up: u8,
-    on_demand: bool,
-    run_standby: bool,
+    settings: Settings,
 }
 
-/// Alias for the corresponding [`Xosc`]
+/// Type alias for the corresponding [`Xosc`]
 pub type Xosc0<M> = Xosc<Xosc0Id, M>;
 
-/// Alias for the corresponding [`Xosc`]
+/// Type alias for the corresponding [`Xosc`]
 pub type Xosc1<M> = Xosc<Xosc1Id, M>;
 
+/// An [`Enabled`] [`Xosc`]
+///
+/// As described in the [`clock` module documentation](super), the [`Enabled`]
+/// wrapper implements compile-time clock tree safety by tracking the number of
+/// consumer clocks and restricting access to the underlying [`Xosc`] to prevent
+/// modification while in use.
+///
+/// As with [`Enabled`], the default value for `N` is `U0`; if left unspecified,
+/// the [`Counter`] is assumed to be zero.
 pub type EnabledXosc<X, M, N = U0> = Enabled<Xosc<X, M>, N>;
 
+/// Type alias for the corresponding [`EnabledXosc`]
 pub type EnabledXosc0<M, N = U0> = EnabledXosc<Xosc0Id, M, N>;
 
+/// Type alias for the corresponding [`EnabledXosc`]
 pub type EnabledXosc1<M, N = U0> = EnabledXosc<Xosc1Id, M, N>;
 
 impl<X: XoscId> Xosc<X, ClockMode> {
+    /// Create an [`Xosc`] from an external clock, taking ownership of the
+    /// [`XIn`] [`Pin`]
+    ///
+    /// Creating a [`Xosc`] does not modify any of the hardware registers. It
+    /// only creates a struct to track the configuration. The configuration data
+    /// is stored until the user calls [`enable`]. At that point, all of the
+    /// registers are written according to the initialization procedures
+    /// specified in the datasheet, and an [`EnabledXosc`] is returned. The
+    /// `Xosc` is not active or useful until that point.
+    ///
+    /// [`enable`]: Xosc::enable
     #[inline]
     pub fn from_clock(token: XoscToken<X>, xin: impl Into<XIn<X>>, freq: impl Into<Hertz>) -> Self {
         // Convert `XIn` to the correct `PinMode` and then drop it.
         // We can recreate it when freeing the `Xosc`
         let _xin: XIn<X> = xin.into();
-        Xosc::new(token, ClockMode, freq.into())
+        Xosc::new(token, freq.into())
     }
 
+    /// Consume the [`Xosc`] and release the [`XoscToken`] and [`XIn`] [`Pin`]
     #[inline]
     pub fn free_clock(self) -> (XoscToken<X>, XIn<X>) {
         // Safety: We dropped the `Pin` on construction of the `Xosc`,
@@ -489,34 +758,33 @@ impl<X: XoscId> Xosc<X, ClockMode> {
 }
 
 impl<X: XoscId> Xosc<X, CrystalMode> {
-    /// Construct a [`Xosc`] from a two pin crystal oscillator signal
+    /// Create an [`Xosc`] from an external crystal oscillator, taking ownership
+    /// of the [`XIn`] and [`XOut`] [`Pin`]s.
     ///
-    /// The crystal oscillator frequency must be supported, for valid
-    /// frequencies see [`CrystalCurrent`].
+    /// Creating a [`Xosc`] does not modify any of the hardware registers. It
+    /// only creates a struct to track the configuration. The configuration data
+    /// is stored until the user calls [`enable`]. At that point, all of the
+    /// registers are written according to the initialization procedures
+    /// specified in the datasheet, and an [`EnabledXosc`] is returned. The
+    /// `Xosc` is not active or useful until that point.
     ///
-    /// By default `Amplitude Loop Control` is set, see
-    /// [`Xosc::set_loop_control`]
+    /// [`enable`]: Xosc::enable
     #[inline]
     pub fn from_crystal(
         token: XoscToken<X>,
         xin: impl Into<XIn<X>>,
         xout: impl Into<XOut<X>>,
         freq: impl Into<Hertz>,
-        current: CrystalCurrent,
     ) -> Self {
         // Convert `XIn` and `Xout` to the correct `PinMode` and then drop them.
         // We can recreate them when freeing the `Xosc`
         let _xin: XIn<X> = xin.into();
         let _xout: XOut<X> = xout.into();
-        let mode = CrystalMode {
-            current,
-            loop_control: false,
-            low_buf_gain: false,
-        };
-        Xosc::new(token, mode, freq.into())
+        Xosc::new(token, freq.into())
     }
 
-    /// Deconstruct the Xosc and return the inner XoscToken
+    /// Consume the [`Xosc`] and release the [`XoscToken`], [`XIn`] and [`XOut`]
+    /// [`Pin`]s
     #[inline]
     pub fn free_crystal(self) -> (XoscToken<X>, XIn<X>, XOut<X>) {
         // Safety: We dropped the `Pin`s on construction of the `Xosc`,
@@ -526,33 +794,32 @@ impl<X: XoscId> Xosc<X, CrystalMode> {
         (self.token, xin, xout)
     }
 
-    /// Sets the current drive strength for the crystal
-    ///
-    /// See [CrystalCurrent] for possible values
+    /// Set the [`CrystalCurrent`] drive strength
     #[inline]
-    pub fn set_current(mut self, current: CrystalCurrent) -> Self {
-        self.mode.current = current;
+    pub fn current(mut self, current: CrystalCurrent) -> Self {
+        self.settings.current = current;
         self
     }
 
-    /// Controls the automatic loop control
+    /// Toggle automatic loop control
     ///
-    /// Recommended option, ensures the crystal is not overdriven,
-    /// and lowers power consumption. See datasheet c. 54.13 p. 1811
+    /// If enabled, the hardware will automatically adjust the oscillator
+    /// amplitude. In most cases, this will lower power consumption.
     #[inline]
-    pub fn set_loop_control(mut self, enalc: bool) -> Self {
-        self.mode.loop_control = enalc;
+    pub fn loop_control(mut self, loop_control: bool) -> Self {
+        self.settings.loop_control = loop_control;
         self
     }
 
-    /// If `LOWBUFGAIN`is set when `ENALC` is enabled,
-    /// the oscillators amplitude is increased by approximately a factor 2.
+    /// Modify the oscillator amplitude when automatic loop control is enabled
     ///
-    /// Default value (0) should be used together with low amplitude
-    /// oscillators. Can be used to solve stability issues.
+    /// The datasheet name for this setting is very misleading. When automatic
+    /// loop control is enabled, setting the `LOWBUFGAIN` field to `1` will
+    /// _increase_ the oscillator amplitude by a factor of appoximately 2. This
+    /// can help solve stability issues.
     #[inline]
-    pub fn set_low_buf_gain(mut self, lowbufgain: bool) -> Self {
-        self.mode.low_buf_gain = lowbufgain;
+    pub fn low_buf_gain(mut self, low_buf_gain: bool) -> Self {
+        self.settings.low_buf_gain = low_buf_gain;
         self
     }
 }
@@ -563,21 +830,36 @@ where
     M: Mode,
 {
     #[inline]
-    fn new(token: XoscToken<X>, mode: M, freq: Hertz) -> Self {
-        let start_up = 0;
-        let on_demand = true;
-        let run_standby = false;
+    fn new(token: XoscToken<X>, freq: Hertz) -> Self {
+        let current = match freq.0 {
+            8_000_000 => CrystalCurrent::Low,
+            8_000_001..=16_000_000 => CrystalCurrent::Medium,
+            16_000_001..=24_000_000 => CrystalCurrent::High,
+            24_000_001..=48_000_000 => CrystalCurrent::ExtraHigh,
+            _ => panic!("The XOSC input frequency must be 8-48 MHz"),
+        };
+        let current = match M::DYN {
+            DynMode::ClockMode => CrystalCurrent::Zero,
+            DynMode::CrystalMode => current,
+        };
+        let settings = Settings {
+            start_up: StartUpDelay::Delay31us,
+            loop_control: false,
+            current,
+            low_buf_gain: false,
+            on_demand: true,
+            run_standby: false,
+            mode: M::DYN,
+        };
         Self {
             token,
-            mode,
+            mode: PhantomData,
             freq,
-            start_up,
-            on_demand,
-            run_standby,
+            settings,
         }
     }
 
-    /// Returns the frequency of the oscillator
+    /// Return the clock or crystal frequency
     #[inline]
     pub fn freq(&self) -> Hertz {
         self.freq
@@ -588,49 +870,49 @@ where
     /// During the start up period, the [`Xosc`] is masked to prevent clock
     /// instability from propagating to the digital logic. During this time,
     /// clock failure detection is disabled.
-    ///
-    /// The startup delay is set to 2^N OSCULP32K clock cyces, where N is in the
-    /// range `0..16`. If `N >= 16`, it will be set to 15.
     #[inline]
-    pub fn set_start_up_delay(mut self, n: u8) -> Self {
-        self.start_up = n;
-        self
-    }
-    /// Controls the on demand functionality of the clock source
-    ///
-    /// Only starts the clock source when a peripheral uses it
-    ///
-    /// If cleared the clock will be always active
-    /// See Datasheet c. 13.5 for details
-    #[inline]
-    pub fn set_on_demand(mut self, on_demand: bool) -> Self {
-        self.on_demand = on_demand;
+    pub fn start_up_delay(mut self, delay: StartUpDelay) -> Self {
+        self.settings.start_up = delay;
         self
     }
 
-    /// Controls the clock source behaviour during standby
+    /// Control the [`Xosc`] on-demand behavior
     ///
-    /// See Datasheet c. 28.6.2
+    /// When the on-demand is enabled, the [`Xosc`] will only run in Idle or
+    /// Standby sleep modes if it is requested by a peripheral. Otherwise, its
+    /// behavior is dependent on the run-standby setting.
     #[inline]
-    pub fn set_run_standby(mut self, run_standby: bool) -> Self {
-        self.run_standby = run_standby;
+    pub fn on_demand(mut self, on_demand: bool) -> Self {
+        self.settings.on_demand = on_demand;
         self
     }
 
-    /// Modify hardware to realise the desired state
-    /// stored within the [`Xosc`]
+    /// Control the [`Xosc`] behaviour in Standby sleep mode
     ///
-    /// Returns the enabled Xosc
+    /// When `RUNSTDBY` is disabled, the [`Xosc`] will never run in Standby
+    /// sleep mode unless `ONDEMAND` is enabled and the `Xosc` is requested by a
+    /// peripheral. When `RUNSTDBY` is enabled, the `Xosc` will run in Standby
+    /// sleep mode, but it can still be disabled if `ONDEMAND` is enabled and
+    /// the `Xosc` is not requested.
+    #[inline]
+    pub fn run_standby(mut self, run_standby: bool) -> Self {
+        self.settings.run_standby = run_standby;
+        self
+    }
+
+    /// Enable the [`Xosc`], so that it can be used as a clock [`Source`]
+    ///
+    /// As mentioned when creating a new `Xosc`, no hardware registers are
+    /// actually modified until this call. Rather, the desired configuration is
+    /// stored internally, and the `Xosc` is initialized and configured here
+    /// according to the datasheet.
+    ///
+    /// The returned value is an [`EnabledXosc`] that can be used as a clock
+    /// [`Source`] for other clocks.
     #[inline]
     pub fn enable(mut self) -> EnabledXosc<X, M> {
         self.token.reset();
-        self.token.set_xtalen(M::XTALEN);
-        self.token.set_start_up_delay(self.start_up);
-        self.token.set_on_demand(self.on_demand);
-        self.token.set_run_standby(self.run_standby);
-        self.token.set_loop_control(self.mode.loop_control());
-        self.token.set_low_buf_gain(self.mode.low_buf_gain());
-        self.token.set_current(self.mode.current());
+        self.token.set_xoscctrl(self.settings);
         self.token.enable();
         Enabled::new(self)
     }
@@ -643,7 +925,8 @@ where
 {
     /// Disable the [`Xosc`]
     ///
-    /// Only possible when nothing uses the `Xosc`
+    /// This method is only implemented for `N = U0`, which means the clock can
+    /// only be disabled when no other clocks consume this [`Xosc`].
     #[inline]
     pub fn disable(mut self) -> Xosc<X, M> {
         self.0.token.disable();
@@ -658,9 +941,44 @@ where
     N: Counter,
 {
     /// Check whether the [`Xosc`] is stable and ready to be used as a clock
-    /// source
+    /// [`Source`]
     pub fn is_ready(&self) -> bool {
         self.0.token.is_ready()
+    }
+
+    /// Enable continuous monitoring of the [`Xosc`] for clock failure
+    ///
+    /// Failure detection will continuously monitor the [`Xosc`] to verify it is
+    /// still running. In the event of a failure, the `Xosc` output will be
+    /// switched to the "safe clock".
+    ///
+    /// The safe clock is derived from the DFLL, which runs at 48 MHz. The XOSC
+    /// peripheral provides a prescaler to divide down the 48 MHz DFLL to better
+    /// match the clock it replaces. The prescaler division factor can be any
+    /// power of two, `2^N`, with `N` in the range `0..16`.
+    ///
+    /// For example, if the [`Xosc`] input frequency is 16 MHz, a reasonable
+    /// divider would be 4, becuase the safe clock frequency would be 12 MHz,
+    /// which is closest to 16 MHz.
+    ///
+    /// Note that clock failure is triggered when four safe clock periods pass
+    /// without seeing a rising & falling edge pair on the XOSC clock. Once
+    /// failure is detected, the corresponding bit in the `STATUS` register will
+    /// go high and an interrupt will be triggered.
+    ///
+    /// If the external clock can be fixed, the `Xosc` can be switched back to
+    /// it using [`EnabledXosc::switch_back`].
+    ///
+    /// Because the safe clock makes use of the DFLL, the `Xosc` must register
+    /// as a consumer of the [`EnabledDfll`] and [`Increment`] its [`Counter`].
+    ///
+    /// [`EnabledDfll`]: super::dfll::EnabledDfll
+    pub fn enable_failure_detection<S>(&mut self, dfll: S, div: SafeClockDiv) -> S::Inc
+    where
+        S: Source<Id = DfllId> + Increment,
+    {
+        self.0.token.enable_failure_detection(div);
+        dfll.inc()
     }
 
     /// Check whether the [`Xosc`] has triggered clock failure detection
@@ -682,46 +1000,6 @@ where
         self.0.token.is_switched()
     }
 
-    /// Enable continuous monitoring of the [`Xosc`] for clock failure
-    ///
-    /// Failure detection will continuously monitor the [`Xosc`] to verify it is
-    /// still running. In the event of a failure, the [`Xosc`] output will be
-    /// switched to the "safe clock".
-    ///
-    /// The safe clock is derived from the DFLL, which runs at 48 MHz. The XOSC
-    /// peripheral provides a prescaler to divide down the 48 MHz DFLL to better
-    /// match the clock it replaces. The prescaler division factor can be any
-    /// power of two, `2^N`, with `N` in the range `0..16`. If `N >= 16`, it
-    /// will be set to `15`.
-    ///
-    /// For example, if the [`Xosc`] input frequency is 8 MHz, a reasonable
-    /// choice of `N` would be `N = 3`, becuase the safe clock frequency would
-    /// be 6 MHz, which is closest to 8 MHz.
-    ///
-    /// Note that clock failure is triggered when four safe clock periods pass
-    /// without seeing a rising & falling edge pair on the XOSC clock. Once
-    /// failure is detected, the corresponding bit in the `STATUS` register will
-    /// go high and an interrupt will be triggered.
-    ///
-    /// If the external clock can be fixed, the [`Xosc`] can be switched
-    /// back to it using [`EnabledXosc::switch_back`].
-    ///
-    /// Because the safe clock makes use of the DFLL, users must register as a
-    /// consumer of the [`EnabledDfll`] and [`Increment`] its [`Counter`].
-    pub fn enable_failure_detection<DM, DN>(
-        &mut self,
-        dfll: EnabledDfll<DM, DN>,
-        n: u8,
-    ) -> EnabledDfll<DM, DN::Inc>
-    where
-        DM: dfll::Mode,
-        DN: Counter + Increment,
-    {
-        self.0.token.set_safe_clock_divider(n);
-        self.0.token.enable_failure_detection();
-        return dfll.inc();
-    }
-
     /// Attempt to switch from the safe clock back to the external clock
     ///
     /// This function will set the switch back bit (`SWBEN`) in the `XOSCCTRL`
@@ -738,16 +1016,14 @@ where
     ///
     /// Once failure monitoring is disabled, the DFLL is no longer used as the
     /// safe clock, so the [`EnabledDfll`] [`Counter`] can be [`Decrement`]ed.
-    pub fn disable_failure_detection<DM, DN>(
-        &mut self,
-        dfll: EnabledDfll<DM, DN>,
-    ) -> EnabledDfll<DM, DN::Dec>
+    ///
+    /// [`EnabledDfll`]: super::dfll::EnabledDfll
+    pub fn disable_failure_detection<S>(&mut self, dfll: S) -> S::Dec
     where
-        DM: dfll::Mode,
-        DN: Counter + Decrement,
+        S: Source<Id = DfllId> + Decrement,
     {
         self.0.token.disable_failure_detection();
-        return dfll.dec();
+        dfll.dec()
     }
 }
 

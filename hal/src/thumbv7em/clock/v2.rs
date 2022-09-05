@@ -347,7 +347,7 @@
 //!         dpll::Dpll,
 //!         gclk::GclkOut,
 //!         pclk::Pclk,
-//!         xosc::{Xosc, CrystalCurrent},
+//!         xosc::Xosc,
 //!     },
 //!     gpio::Pins,
 //!     pac::Peripherals,
@@ -367,9 +367,7 @@
 //! [`XoscToken`] for XOSC0, and we trade the PAC `PORT` struct for the
 //! [`gpio::Pins`] struct to access the GPIO pins. We can then call
 //! [`Xosc::from_crystal`] to trade the token and [`Pin`]s to yield an instance
-//! of [`Xosc0`]. In doing so, we also provide the external oscillator frequency
-//! and the desired level of current to use with the crystal. In this case, we
-//! will use a low [`CrystalCurrent`].
+//! of [`Xosc0`]. In doing so, we also provide the oscillator frequency.
 //!
 //! Finally, we can chain a call to the [`Xosc::enable`] method to enable the
 //! XOSC and return an instance of [`EnabledXosc0<M, N>`], which is simply an
@@ -380,7 +378,7 @@
 //! # use atsamd_hal::{
 //! #     clock::v2::{
 //! #         clock_system_at_reset,
-//! #         xosc::{Xosc, CrystalCurrent},
+//! #         xosc::Xosc,
 //! #     },
 //! #     gpio::Pins,
 //! #     pac::Peripherals,
@@ -400,7 +398,6 @@
 //!     pins.pa14,
 //!     pins.pa15,
 //!     8.mhz(),
-//!     CrystalCurrent::Low,
 //! ).enable();
 //! ```
 //!
@@ -441,7 +438,7 @@
 //! #     clock::v2::{
 //! #         clock_system_at_reset,
 //! #         dpll::Dpll,
-//! #         xosc::{Xosc, CrystalCurrent},
+//! #         xosc::Xosc,
 //! #     },
 //! #     gpio::Pins,
 //! #     pac::Peripherals,
@@ -461,7 +458,6 @@
 //! #     pins.pa14,
 //! #     pins.pa15,
 //! #     8.mhz(),
-//! #     CrystalCurrent::Low,
 //! # ).enable();
 //! let (dpll0, xosc0) = Dpll::from_source(tokens.dpll0, xosc0);
 //! ```
@@ -478,7 +474,7 @@
 //! #     clock::v2::{
 //! #         clock_system_at_reset,
 //! #         dpll::Dpll,
-//! #         xosc::{Xosc, CrystalCurrent},
+//! #         xosc::Xosc,
 //! #     },
 //! #     gpio::Pins,
 //! #     pac::Peripherals,
@@ -498,7 +494,6 @@
 //! #     pins.pa14,
 //! #     pins.pa15,
 //! #     8.mhz(),
-//! #     CrystalCurrent::Low,
 //! # ).enable();
 //! # let (dpll0, xosc0) = Dpll::from_source(tokens.dpll0, xosc0);
 //! let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
@@ -531,7 +526,7 @@
 //! #     clock::v2::{
 //! #         clock_system_at_reset,
 //! #         dpll::Dpll,
-//! #         xosc::{Xosc, CrystalCurrent},
+//! #         xosc::Xosc,
 //! #     },
 //! #     gpio::Pins,
 //! #     pac::Peripherals,
@@ -551,7 +546,6 @@
 //! #     pins.pa14,
 //! #     pins.pa15,
 //! #     8.mhz(),
-//! #     CrystalCurrent::Low,
 //! # ).enable();
 //! # let (dpll0, xosc0) = Dpll::from_source(tokens.dpll0, xosc0);
 //! # let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
@@ -566,7 +560,7 @@
 //! #     clock::v2::{
 //! #         clock_system_at_reset,
 //! #         dpll::Dpll,
-//! #         xosc::{Xosc, CrystalCurrent},
+//! #         xosc::Xosc,
 //! #     },
 //! #     gpio::Pins,
 //! #     pac::Peripherals,
@@ -586,7 +580,6 @@
 //! #     pins.pa14,
 //! #     pins.pa15,
 //! #     8.mhz(),
-//! #     CrystalCurrent::Low,
 //! # ).enable();
 //! # let (dpll0, xosc0) = Dpll::from_source(tokens.dpll0, xosc0);
 //! # let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
@@ -617,7 +610,7 @@
 //! #     clock::v2::{
 //! #         clock_system_at_reset,
 //! #         dpll::Dpll,
-//! #         xosc::{Xosc, CrystalCurrent},
+//! #         xosc::Xosc,
 //! #     },
 //! #     gpio::Pins,
 //! #     pac::Peripherals,
@@ -637,7 +630,6 @@
 //! #     pins.pa14,
 //! #     pins.pa15,
 //! #     8.mhz(),
-//! #     CrystalCurrent::Low,
 //! # ).enable();
 //! # let (dpll0, xosc0) = Dpll::from_source(tokens.dpll0, xosc0);
 //! # let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
@@ -657,7 +649,7 @@
 //! #         clock_system_at_reset,
 //! #         dpll::Dpll,
 //! #         pclk::Pclk,
-//! #         xosc::{Xosc, CrystalCurrent},
+//! #         xosc::Xosc,
 //! #     },
 //! #     gpio::Pins,
 //! #     pac::Peripherals,
@@ -677,7 +669,6 @@
 //! #     pins.pa14,
 //! #     pins.pa15,
 //! #     8.mhz(),
-//! #     CrystalCurrent::Low,
 //! # ).enable();
 //! # let (dpll0, xosc0) = Dpll::from_source(tokens.dpll0, xosc0);
 //! # let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
@@ -707,7 +698,7 @@
 //! #         dpll::Dpll,
 //! #         gclk::GclkOut,
 //! #         pclk::Pclk,
-//! #         xosc::{Xosc, CrystalCurrent},
+//! #         xosc::Xosc,
 //! #     },
 //! #     gpio::Pins,
 //! #     pac::Peripherals,
@@ -727,7 +718,6 @@
 //! #     pins.pa14,
 //! #     pins.pa15,
 //! #     8.mhz(),
-//! #     CrystalCurrent::Low,
 //! # ).enable();
 //! # let (dpll0, xosc0) = Dpll::from_source(tokens.dpll0, xosc0);
 //! # let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
@@ -748,7 +738,7 @@
 //!         dpll::Dpll,
 //!         gclk::GclkOut,
 //!         pclk::Pclk,
-//!         xosc::{CrystalCurrent, Xosc},
+//!         xosc::Xosc,
 //!     },
 //!     gpio::Pins,
 //!     pac::Peripherals,
@@ -769,7 +759,6 @@
 //!     pins.pa14,
 //!     pins.pa15,
 //!     8.mhz(),
-//!     CrystalCurrent::Low,
 //! )
 //! .enable();
 //! let (dpll0, xosc0) = Dpll::from_source(tokens.dpll0, xosc0);
@@ -848,7 +837,6 @@
 //! [`EnabledXosc0`]: xosc::EnabledXosc0
 //! [`EnabledXosc0<M, N>`]: xosc::EnabledXosc0
 //! [`CrystalMode`]: xosc::CrystalMode
-//! [`CrystalCurrent`]: xosc::CrystalCurrent
 //!
 //! [`Xosc32kId`]: xosc32k::Xosc32kId
 //!
@@ -978,12 +966,7 @@ impl<T, N: Counter> Counter for Enabled<T, N> {}
 #[allow(dead_code)]
 fn test() {
     use crate::{
-        clock::v2::{
-            dpll::Dpll,
-            gclk::GclkOut,
-            pclk::Pclk,
-            xosc::{CrystalCurrent, Xosc},
-        },
+        clock::v2::{dpll::Dpll, gclk::GclkOut, pclk::Pclk, xosc::Xosc},
         gpio::Pins,
         pac::Peripherals,
         time::U32Ext,
@@ -998,14 +981,7 @@ fn test() {
         &mut pac.NVMCTRL,
     );
     let pins = Pins::new(pac.PORT);
-    let xosc0 = Xosc::from_crystal(
-        tokens.xosc0,
-        pins.pa14,
-        pins.pa15,
-        8.mhz(),
-        CrystalCurrent::Low,
-    )
-    .enable();
+    let xosc0 = Xosc::from_crystal(tokens.xosc0, pins.pa14, pins.pa15, 8.mhz()).enable();
     let (dpll0, _xosc0) = Dpll::from_source(tokens.dpll0, xosc0);
     let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
     let (gclk0, dfll, _dpll0) = clocks.gclk0.swap_sources(clocks.dfll, dpll0);
