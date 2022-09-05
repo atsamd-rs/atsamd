@@ -29,8 +29,6 @@
 //! DFLL (48 MHz)
 //! └── GCLK0 (48 MHz)
 //!     └── Master clock (48 MHz)
-//!
-//! OSCULP base clock
 //! ```
 //!
 //! We would like to transform it to a clock tree like this:
@@ -41,8 +39,6 @@
 //!     └── DPLL (200 MHz)
 //!         └── GCLK0 (200 MHz)
 //!             └── Master clock (200 MHz)
-//!
-//! OSCULP base clock
 //! ```
 //!
 //! Let's start by using [`clock_system_at_reset`] to access the HAL clocking
@@ -639,8 +635,8 @@ pub type Dpll1<M> = Dpll<Dpll1Id, M>;
 ///
 /// As described in the [`clock` module documentation](super), the [`Enabled`]
 /// wrapper implements compile-time clock tree safety by tracking the number of
-/// clocks consuming this [`Dpll`] and restricts access to the underlying
-/// [`Dpll`] to prevent misuse.
+/// consumer clocks and restricting access to the underlying [`Dpll`] to prevent
+/// modification while in use.
 ///
 /// As with [`Enabled`], the default value for `N` is `U0`; if left unspecified,
 /// the [`Counter`] is assumed to be zero.
