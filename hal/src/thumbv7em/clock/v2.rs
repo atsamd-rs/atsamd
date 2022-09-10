@@ -297,10 +297,10 @@
 //!   clock. We represent this by setting `N = U1`, which we use to restrict the
 //!   available API. Specifically, [`EnabledGclk0`] has special methods not
 //!   available to other [`Gclk`]s.
-//! - The [`OscUlpBase`] clock, which can act as a [`Source`] for the
+//! - The [`OscUlp32kBase`] clock, which can act as a [`Source`] for the
 //!   [`OscUlp1k`] and [`OscUlp32k`] clocks. It has no consumers at power-on
-//!   reset, so it is represented as `Enabled<OscUlpBase, U0>`. However, it can
-//!   never be disabled, so we provide no `.disable()` method.
+//!   reset, so it is represented as `Enabled<OscUlp32kBase, U0>`. However, it
+//!   can never be disabled, so we provide no `.disable()` method.
 //!
 //! The [`Tokens`] struct contains all of the available `Token`s, which
 //! [represent clocks that are disabled](self#clock-state-machines) at power-on
@@ -814,7 +814,7 @@
 //! [`swap_sources`]: gclk::EnabledGclk0::swap_sources
 //! [`GclkOut`]: gclk::GclkOut
 //!
-//! [`OscUlpBase`]: osculp32k::OscUlpBase
+//! [`OscUlp32kBase`]: osculp32k::OscUlp32kBase
 //! [`OscUlp1k`]: osculp32k::OscUlp1k
 //! [`OscUlp32k`]: osculp32k::OscUlp32k
 //!

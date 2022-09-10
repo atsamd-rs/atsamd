@@ -55,8 +55,8 @@ pub struct Buses {
 /// This type represents the clocks as they are configured at power-on reset.
 /// The main clock, [`Gclk0`](gclk::Gclk0), runs at 48 MHz using the
 /// [`Dfll`](dfll::Dfll) in [`OpenLoop`](dfll::OpenLoop) [`Mode`](dfll::Mode).
-/// The ultra-low power [base oscillator](osculp32k::OscUlpBase) is also enabled
-/// and running, as it can never be disabled.
+/// The ultra-low power [base oscillator](osculp32k::OscUlp32kBase) is also
+/// enabled and running, as it can never be disabled.
 ///
 /// As described in the [top-level](super::super) documentation for the `clock`
 /// module, only [`Enabled`] clocks can be used as a [`Source`] for downstream
@@ -77,7 +77,7 @@ pub struct Clocks {
     pub dfll: Enabled<dfll::Dfll<dfll::OpenLoop>, U1>,
     /// Always-enabled base oscillator for the [`OscUlp1k`](osculp32k::OscUlp1k)
     /// and [`OscUlp32k`](osculp32k::OscUlp32k) clocks.
-    pub osculp_base: Enabled<osculp32k::OscUlpBase>,
+    pub osculp32k_base: Enabled<osculp32k::OscUlp32kBase>,
 }
 
 /// Type-level tokens for unused clocks at power-on reset
@@ -106,11 +106,11 @@ pub struct Tokens {
     pub xosc0: xosc::XoscToken<xosc::Xosc0Id>,
     /// Token to create [`xosc::Xosc1`]
     pub xosc1: xosc::XoscToken<xosc::Xosc1Id>,
-    /// Tokens to create [`xosc32k::XoscBase`], [`xosc32k::Xosc1k`] and
+    /// Tokens to create [`xosc32k::Xosc32kBase`], [`xosc32k::Xosc1k`] and
     /// [`xosc32k::Xosc32k`]
-    pub xosc32k: xosc32k::Tokens,
+    pub xosc32k: xosc32k::Xosc32kTokens,
     /// Tokens to create [`osculp32k::OscUlp1k`] and [`osculp32k::OscUlp32k`]
-    pub osculp: osculp32k::Tokens,
+    pub osculp32k: osculp32k::OscUlp32kTokens,
 }
 
 /// Consume the PAC clocking structs and return a HAL-level
@@ -151,7 +151,7 @@ pub fn clock_system_at_reset(
             apbs: apb::ApbClks::new(),
             gclk0,
             dfll,
-            osculp_base: osculp32k::OscUlpBase::new(),
+            osculp32k_base: osculp32k::OscUlp32kBase::new(),
         };
         let tokens = Tokens {
             apbs: apb::ApbTokens::new(),
@@ -162,8 +162,8 @@ pub fn clock_system_at_reset(
             rtcosc: rtcosc::RtcOscToken::new(),
             xosc0: xosc::XoscToken::new(),
             xosc1: xosc::XoscToken::new(),
-            xosc32k: xosc32k::Tokens::new(),
-            osculp: osculp32k::Tokens::new(),
+            xosc32k: xosc32k::Xosc32kTokens::new(),
+            osculp32k: osculp32k::OscUlp32kTokens::new(),
         };
         (buses, clocks, tokens)
     }
