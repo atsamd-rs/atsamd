@@ -865,7 +865,8 @@ where
         self.freq
     }
 
-    /// Set the start up delay before the [`Xosc`] is continuously monitored
+    /// Set the start up delay before the [`Xosc`] is unmasked and continuously
+    /// monitored
     ///
     /// During the start up period, the [`Xosc`] is masked to prevent clock
     /// instability from propagating to the digital logic. During this time,
@@ -887,7 +888,7 @@ where
         self
     }
 
-    /// Control the [`Xosc`] behaviour in Standby sleep mode
+    /// Control the [`Xosc`] behavior in Standby sleep mode
     ///
     /// When `RUNSTDBY` is disabled, the [`Xosc`] will never run in Standby
     /// sleep mode unless `ONDEMAND` is enabled and the `Xosc` is requested by a
@@ -942,6 +943,7 @@ where
 {
     /// Check whether the [`Xosc`] is stable and ready to be used as a clock
     /// [`Source`]
+    #[inline]
     pub fn is_ready(&self) -> bool {
         self.0.token.is_ready()
     }
@@ -973,6 +975,7 @@ where
     /// as a consumer of the [`EnabledDfll`] and [`Increment`] its [`Counter`].
     ///
     /// [`EnabledDfll`]: super::dfll::EnabledDfll
+    #[inline]
     pub fn enable_failure_detection<S>(&mut self, dfll: S, div: SafeClockDiv) -> S::Inc
     where
         S: Source<Id = DfllId> + Increment,
@@ -988,6 +991,7 @@ where
     /// falling edge pair on the XOSC clock.
     ///
     /// See [`EnabledXosc::enable_failure_detection`] for more details.
+    #[inline]
     pub fn has_failed(&self) -> bool {
         self.0.token.has_failed()
     }
@@ -996,6 +1000,7 @@ where
     ///
     /// Returns `true` if the [`Xosc`] has been switched to the safe clock. This
     /// will only occur if clock failure detection is enabled.
+    #[inline]
     pub fn is_switched(&self) -> bool {
         self.0.token.is_switched()
     }
@@ -1008,6 +1013,7 @@ where
     ///
     /// Users can check whether switching back was successful by checking the
     /// `STATUS` register with [`EnabledXosc::is_switched`].
+    #[inline]
     pub fn switch_back(&mut self) {
         self.0.token.switch_back()
     }
@@ -1018,6 +1024,7 @@ where
     /// safe clock, so the [`EnabledDfll`] [`Counter`] can be [`Decrement`]ed.
     ///
     /// [`EnabledDfll`]: super::dfll::EnabledDfll
+    #[inline]
     pub fn disable_failure_detection<S>(&mut self, dfll: S) -> S::Dec
     where
         S: Source<Id = DfllId> + Decrement,
