@@ -13,7 +13,7 @@ use atsamd_hal::{
         osculp32k::OscUlp32k,
         pclk::Pclk,
         rtcosc::RtcOsc,
-        xosc32k::{ControlGainMode, Xosc1k, Xosc32k, XoscBase},
+        xosc32k::{ControlGainMode, Xosc1k, Xosc32k, Xosc32kBase},
     },
     ehal::serial::Read as _,
     ehal::serial::Write,
@@ -100,13 +100,13 @@ mod app {
         let (_gclk_out6, _gclk6) = GclkOut::enable(pins.pb12, gclk6);
 
         // Configure `Xosc32k` with both outputs (1kHz, 32kHz) activated
-        let xosc_base = XoscBase::from_crystal(tokens.xosc32k.base, pins.pa00, pins.pa01)
+        let xosc32k_base = Xosc32kBase::from_crystal(tokens.xosc32k.base, pins.pa00, pins.pa01)
             .control_gain_mode(ControlGainMode::HighSpeed)
             .on_demand(false)
             .run_standby(true)
             .enable();
-        let (xosc1k, xosc_base) = Xosc1k::enable(tokens.xosc32k.xosc1k, xosc_base);
-        let (xosc32k, _xosc_base) = Xosc32k::enable(tokens.xosc32k.xosc32k, xosc_base);
+        let (xosc1k, xosc32k_base) = Xosc1k::enable(tokens.xosc32k.xosc1k, xosc32k_base);
+        let (xosc32k, _xosc32k_base) = Xosc32k::enable(tokens.xosc32k.xosc32k, xosc32k_base);
 
         // Output `Xosc32k` on PB16 pin via `Gclk2`, divided by 2 resulting in 16 kHz
         // output frequency
@@ -117,7 +117,7 @@ mod app {
         // Output `OscUlp32k` on PB11 pin via `Gclk5`, without any division resulting in
         // 32 kHz output frequency
         let (osculp32k, _osculp_base) =
-            OscUlp32k::enable(tokens.osculp.osculp32k, clocks.osculp_base);
+            OscUlp32k::enable(tokens.osculp32k.osculp32k, clocks.osculp32k_base);
         let (gclk5, _osculp32k) = Gclk::from_source(tokens.gclks.gclk5, osculp32k);
         let gclk5 = gclk5.enable();
         let (_gclk_out5, _gclk5) = GclkOut::enable(pins.pb11, gclk5);
