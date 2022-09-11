@@ -1,29 +1,129 @@
-//! # APBx bus clocks
+//! # Advanced peripheral bus clocks
 //!
-//! This module provides abstractions allowing to deal with a synchronous
-//! clocking domain, specifically modules clocked via APB bus. It provides type
-//! representation for disabled and enabled synchronous clocks available through
-//! APB bus and means of switching.
+//! ## Overview
 //!
-//! - [`ApbToken<T>`] type represents a disabled clock for a peripheral of type
-//!   `T`: [`ApbType`]
-//! - [`ApbClk<T>`] type represents an enabled clock for a peripheral of type
-//!   `T:` [`ApbType`]
+//! APB clocks facilitate communication between the processor core and
+//! peripherals on the APB bus. To communicate with a peripheral, the
+//! corresponding APB clock must be enabled, which is done by setting a bit in
+//! one of the four `APBXMASK` registers.
 //!
-//! One can enable a peripheral `T` synchronous clock via
-//! [`ApbToken<T>::enable`] `->` [`ApbClk<T>`] method.
+//! In this module, *enabled* APB clocks are represented by the [`ApbClk<A>`]
+//! struct, where the type parameter `A` is a type that implements [`ApbId`] and
+//! corresponds to one of the bits in an `APBXMASK` register.
 //!
-//! One can disable a peripheral `T` synchronous clock via
-//! [`ApbClk<T>::disable`] `->` [`ApbToken<T>`] method.
+//! While most other clocks in the `clock` module are configured through
+//! mutually exclusive registers, the [`ApbClk`]s share the four `APBXMASK`
+//! registers. This presents a challenge for memory safety. Specifically, if we
+//! allowed unrestricted access to the corresponding `APBXMASK` register through
+//! each `ApbClk`, we could create data races.
 //!
-//! Clocks in a default state are provided
-//! - in an instance of a struct [`ApbClks`]
-//! - in a field [`crate::clock::v2::Tokens::apbs`]
-//! - in a return value of [`crate::clock::v2::retrieve_clocks`]
+//! To solve this problem, we restrict access to the `APBXMASK` registers using
+//! the [`Apb`] type. `Apb` was created to act as a gateway to the `APBXMASK`
+//! registers, allowing us to use `&mut Apb` as compile-time proof of exclusive
+//! access to them.
+//!
+//! ## Example
+//!
+//! Enabling and disabling the [`ApbClk`]s proceeds according to the principles
+//! outlined in the [`clock` module documentation]. It is best shown with an
+//! example.
+//!
+//! Let's start by using [`clock_system_at_reset`] to access the HAL clocking
+//! structs.
+//!
+//! ```no_run
+//! use atsamd_hal::{
+//!     clock::v2::{
+//!         clock_system_at_reset,
+//!     },
+//!     pac::Peripherals,
+//! };
+//! let mut pac = Peripherals::take().unwrap();
+//! let (mut buses, clocks, tokens) = clock_system_at_reset(
+//!     pac.OSCCTRL,
+//!     pac.OSC32KCTRL,
+//!     pac.GCLK,
+//!     pac.MCLK,
+//!     &mut pac.NVMCTRL,
+//! );
+//! ```
+//!
+//! Some APB clocks are enabled at power-on reset. We can find these in the
+//! [`Clocks`] struct.
+//!
+//! ```no_run
+//! # use atsamd_hal::{
+//! #     clock::v2::{
+//! #         clock_system_at_reset,
+//! #     },
+//! #     pac::Peripherals,
+//! # };
+//! # let mut pac = Peripherals::take().unwrap();
+//! # let (mut buses, clocks, tokens) = clock_system_at_reset(
+//! #     pac.OSCCTRL,
+//! #     pac.OSC32KCTRL,
+//! #     pac.GCLK,
+//! #     pac.MCLK,
+//! #     &mut pac.NVMCTRL,
+//! # );
+//! let apb_port = clocks.apbs.port;
+//! ```
+//!
+//! Other APB clocks are disabled at power-on reset. To enable these, we must
+//! have access to the [`Apb`] bus type, which is found in the [`Buses`] struct.
+//! As described above, [`Apb`] mediates access to the shared `APBXMASK`
+//! registers. We call [`Apb::enable`] to convert an [`ApbToken`] into the
+//! corresponding [`ApbClk`]. The existence of each `ApbClk` type represents
+//! proof that the corresponding APB clock has been enabled.
+//!
+//! ```no_run
+//! # use atsamd_hal::{
+//! #     clock::v2::{
+//! #         clock_system_at_reset,
+//! #     },
+//! #     pac::Peripherals,
+//! # };
+//! # let mut pac = Peripherals::take().unwrap();
+//! # let (mut buses, clocks, tokens) = clock_system_at_reset(
+//! #     pac.OSCCTRL,
+//! #     pac.OSC32KCTRL,
+//! #     pac.GCLK,
+//! #     pac.MCLK,
+//! #     &mut pac.NVMCTRL,
+//! # );
+//! # let apb_port = clocks.apbs.port;
+//! let apb_sercom0 = buses.apb.enable(tokens.apbs.sercom0);
+//! ```
+//!
+//! The complete example is shown below.
+//!
+//! ```no_run
+//! use atsamd_hal::{
+//!     clock::v2::{
+//!         clock_system_at_reset,
+//!     },
+//!     pac::Peripherals,
+//! };
+//! let mut pac = Peripherals::take().unwrap();
+//! let (mut buses, clocks, tokens) = clock_system_at_reset(
+//!     pac.OSCCTRL,
+//!     pac.OSC32KCTRL,
+//!     pac.GCLK,
+//!     pac.MCLK,
+//!     &mut pac.NVMCTRL,
+//! );
+//! let apb_port = clocks.apbs.port;
+//! let apb_sercom0 = buses.apb.enable(tokens.apbs.sercom0);
+//! ```
+//!
+//! [`clock` module documentation]: super
+//! [`clock_system_at_reset`]: super::clock_system_at_reset
+//! [`Clocks`]: super::Clocks
+//! [`Buses`]: super::Buses
 
 use core::marker::PhantomData;
 
-use bitflags::bitflags;
+use bitflags;
 use paste::paste;
 
 use crate::pac::{mclk, MCLK};
@@ -36,16 +136,12 @@ use super::types::*;
 // Registers
 //==============================================================================
 
-/// APB mask controller
+/// APB clock controller
 ///
-/// This struct mediates access to the APB `MASK` registers. Each bit in the
-/// APB `MASK` registers is represented as a type-level variant of [`ApbId`].
-/// And each APB clock is represented as either an `ApbToken<A>` or an
-/// `ApbClk<A>`, where `A: ApbId`. `ApbClk` represents an enabled APB clock,
-/// while `ApbToken` represents a disabled APB clock.
-///
-/// Use the [`enable`](self::enable) and [`disable`](self::disable) methods to
-/// convert tokens into clocks and vice versa.
+/// As described in the [module-level documentation](self), this struct mediates
+/// access to the shared `APBXMASK` registers. Users can convert a disabled
+/// [`ApbToken<A>`] into an enabled [`ApbClk<A>`] using [`Apb::enable`], and
+/// vice versa with [`Apb::disable`].
 pub struct Apb(());
 
 impl Apb {
@@ -56,6 +152,10 @@ impl Apb {
 
     #[inline]
     fn mclk(&self) -> &mclk::RegisterBlock {
+        // Safety: The `Apb` type is a singleton and has exclusive access to the
+        // `APBXMASK` registers. It also removes the interior mutability of
+        // `MCLK` by requiring `&mut self` to modify any registers. This lets us
+        // make `Apb` `Sync` even when `MCLK` is not.
         unsafe { &*MCLK::ptr() }
     }
 
@@ -80,22 +180,22 @@ impl Apb {
     }
 
     #[inline]
-    fn enable_mask(&mut self, mask: DynApbMask) {
+    fn enable_mask(&mut self, mask: ApbMask) {
         unsafe {
             match mask {
-                DynApbMask::A(mask) => {
+                ApbMask::A(mask) => {
                     self.apbamask()
                         .modify(|r, w| w.bits(r.bits() | mask.bits()));
                 }
-                DynApbMask::B(mask) => {
+                ApbMask::B(mask) => {
                     self.apbbmask()
                         .modify(|r, w| w.bits(r.bits() | mask.bits()));
                 }
-                DynApbMask::C(mask) => {
+                ApbMask::C(mask) => {
                     self.apbcmask()
                         .modify(|r, w| w.bits(r.bits() | mask.bits()));
                 }
-                DynApbMask::D(mask) => {
+                ApbMask::D(mask) => {
                     self.apbdmask()
                         .modify(|r, w| w.bits(r.bits() | mask.bits()));
                 }
@@ -104,22 +204,22 @@ impl Apb {
     }
 
     #[inline]
-    fn disable_mask(&mut self, mask: DynApbMask) {
+    fn disable_mask(&mut self, mask: ApbMask) {
         unsafe {
             match mask {
-                DynApbMask::A(mask) => {
+                ApbMask::A(mask) => {
                     self.apbamask()
                         .modify(|r, w| w.bits(r.bits() & !mask.bits()));
                 }
-                DynApbMask::B(mask) => {
+                ApbMask::B(mask) => {
                     self.apbbmask()
                         .modify(|r, w| w.bits(r.bits() & !mask.bits()));
                 }
-                DynApbMask::C(mask) => {
+                ApbMask::C(mask) => {
                     self.apbcmask()
                         .modify(|r, w| w.bits(r.bits() & !mask.bits()));
                 }
-                DynApbMask::D(mask) => {
+                ApbMask::D(mask) => {
                     self.apbdmask()
                         .modify(|r, w| w.bits(r.bits() & !mask.bits()));
                 }
@@ -150,22 +250,22 @@ impl Apb {
 }
 
 //==============================================================================
-// DynApbId & DynApbMask
+// DynApbId & ApbMask
 //==============================================================================
 
-/// Selection of APB register masks
+/// A mask corresponding to one of the APB bridge registers
 ///
-/// The mask within each variant is a [`bitflags`] struct with a binary
-/// representation matching the corresponding APB `MASK` register.
+/// Each variant is a [`bitflags`] struct with a binary representation exactly
+/// matching the corresponding APB `MASK` register.
 #[allow(missing_docs)]
-pub enum DynApbMask {
-    A(DynApbAMask),
-    B(DynApbBMask),
-    C(DynApbCMask),
-    D(DynApbDMask),
+enum ApbMask {
+    A(ApbAMask),
+    B(ApbBMask),
+    C(ApbCMask),
+    D(ApbDMask),
 }
 
-macro_rules! define_dyn_apb_id_masks {
+macro_rules! define_apb_types {
     (
         $(
             $Reg:ident {
@@ -176,11 +276,13 @@ macro_rules! define_dyn_apb_id_masks {
             }
         )+
     ) => {
-        /// Value-level `enum` of all APB clocks
+        /// Value-level enum identifying a single APB clock
         ///
-        /// This is the value-level version of the [type-level enum] [`AhbId`].
+        /// Each variant of this enum corresponds to a specific bit in one of
+        /// the four `APBXMASK` registers and identifies one of many possible
+        /// APB clocks, which can vary by chip.
         ///
-        /// [type-level enum]: crate::typelevel#type-level-enum
+        /// `DynApbId` is the value-level equivalent of [`ApbId`].
         #[repr(u8)]
         pub enum DynApbId {
             $(
@@ -203,15 +305,15 @@ macro_rules! define_dyn_apb_id_masks {
 
         paste! {
             $(
-                bitflags! {
+                bitflags::bitflags! {
                     #[
                         doc =
                             "APB bridge `" $Reg "` register mask\n"
                             "\n"
                             "This is a [`bitflags`] struct with a binary representation "
-                            "that exactly matches the `APB" $Reg "MASK` register."
+                            "exactly matching the `APB" $Reg "MASK` register."
                     ]
-                    pub struct [<DynApb $Reg Mask>]: u32 {
+                    struct [<Apb $Reg Mask>]: u32 {
                         $(
                             $( #[$( $cfg )+] )?
                             #[allow(missing_docs)]
@@ -222,7 +324,7 @@ macro_rules! define_dyn_apb_id_masks {
 
             )+
 
-            impl From<DynApbId> for DynApbMask {
+            impl From<DynApbId> for ApbMask {
                 #[inline]
                 fn from(id: DynApbId) -> Self {
                     use DynApbId::*;
@@ -230,7 +332,7 @@ macro_rules! define_dyn_apb_id_masks {
                         $(
                             $(
                                 $( #[$( $cfg )+] )?
-                                $Type => DynApbMask::$Reg([<DynApb $Reg Mask>]::[<$Type:upper>]),
+                                $Type => ApbMask::$Reg([<Apb $Reg Mask>]::[<$Type:upper>]),
                             )+
                         )+
                     }
@@ -240,7 +342,7 @@ macro_rules! define_dyn_apb_id_masks {
     };
 }
 
-define_dyn_apb_id_masks!(
+define_apb_types!(
     A {
         Pac = 0,
         Pm = 1,
@@ -317,14 +419,21 @@ define_dyn_apb_id_masks!(
 // ApbId
 //==============================================================================
 
-/// Type-level `enum` for APB clocks
+/// Type-level enum identifying one of the possible APB clocks
 ///
-/// See the documentation on [type-level enums] for more details on the pattern.
-/// The value-level equivalent is [`DynApbId`].
+/// The types implementing this trait are type-level variants of `ApbId`, and
+/// they identify one of the many possible APB clocks, which can vary by chip.
+/// Each type corresponds to a specific bit in one of the four `APBXMASK`
+/// registers.
 ///
-/// [type-level enums]: crate::typelevel#type-level-enum
+/// `ApbId` is the type-level equivalent of [`DynApbId`]. See the documentation
+/// on [type-level programming] and specifically [type-level enums] for more
+/// details.
+///
+/// [type-level programming]: crate::typelevel
+/// [type-level enums]: crate::typelevel#type-level-enums
 pub trait ApbId: Sealed {
-    /// Corresponding [`DynApbId`] bit mask
+    /// Corresponding variant of [`DynApbId`]
     const DYN: DynApbId;
 }
 
@@ -332,16 +441,26 @@ pub trait ApbId: Sealed {
 // ApbToken
 //==============================================================================
 
-/// A type representing a synchronous peripheral clock in a disabled state
+/// Singleton token that can be exchanged for an [`ApbClk`]
+///
+/// As explained in the [`clock` module documentation](super), instances of
+/// various `Token` types can be exchanged for actual clock types. They
+/// represent clocks that are disabled.
+///
+/// The type parameter `A` is an [`ApbId`] indicating which APB clock is
+/// represented by this token. To enable the corresponding APB clock, use the
+/// [`Apb::enable`] method.
 pub struct ApbToken<A: ApbId> {
     id: PhantomData<A>,
 }
 
 impl<A: ApbId> ApbToken<A> {
-    /// Constructor
+    /// Create a new instance of [`ApbToken`]
     ///
-    /// Unsafe: There should always be only a single instance thereof. It is
-    /// being provided by a framework in a [`ApbClks`] struct instance
+    /// # Safety
+    ///
+    /// Each `ApbToken` is a singleton. There must never be two simulatenous
+    /// instances with the same [`ApbId`].
     #[inline]
     unsafe fn new() -> Self {
         ApbToken { id: PhantomData }
@@ -352,7 +471,11 @@ impl<A: ApbId> ApbToken<A> {
 // ApbClk
 //==============================================================================
 
-/// A type representing a synchronous peripheral clock in an enabled state
+/// An enabled APB clock
+///
+/// An [`ApbClk`] represents an enabled APB clock. The type parameter `A` is an
+/// [`ApbId`], which corresponds to a particular bit in the `APBXMASK`
+/// registers. An `ApbClk` can be disabled with the [`Apb::disable`] method.
 pub struct ApbClk<A: ApbId> {
     token: ApbToken<A>,
 }
@@ -373,7 +496,7 @@ impl<A: ApbId> ApbClk<A> {
 // ApbTokens
 //==============================================================================
 
-#[allow(missing_docs)]
+/// Set of [`ApbToken`]s for APB clocks that are disabled at power-on reset
 pub struct ApbTokens {
     pub freq_m: ApbToken<FreqM>,
     pub sercom0: ApbToken<Sercom0>,
@@ -420,6 +543,13 @@ pub struct ApbTokens {
 }
 
 impl ApbTokens {
+    /// Create the set of [`ApbToken`]s
+    ///
+    /// # Safety
+    ///
+    /// All of the invariants required by `ApbToken::new` must be upheld here as
+    /// well.
+    #[inline]
     pub(super) unsafe fn new() -> Self {
         Self {
             freq_m: ApbToken::new(),
@@ -472,7 +602,7 @@ impl ApbTokens {
 // ApbClks
 //==============================================================================
 
-#[allow(missing_docs)]
+/// Set of [`ApbClk`]s for APB clocks that are enabled at power-on reset
 pub struct ApbClks {
     pub pac: ApbClk<Pac>,
     pub pm: ApbClk<Pm>,
@@ -497,6 +627,12 @@ pub struct ApbClks {
 }
 
 impl ApbClks {
+    /// Create the set of [`ApbClk`]s
+    ///
+    /// # Safety
+    ///
+    /// All of the invariants required by `ApbToken::new` must be upheld here as
+    /// well.
     #[inline]
     pub(super) unsafe fn new() -> Self {
         ApbClks {

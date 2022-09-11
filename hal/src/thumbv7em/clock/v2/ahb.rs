@@ -1,28 +1,130 @@
-//! # AHB bus clocks
+//! # Advanced high performance bus clocks
 //!
-//! This module provides abstractions allowing to deal with a synchronous
-//! clocking domain, specifically modules clocked via AHB bus. It provides type
-//! representation for disabled and enabled synchronous clocks available through
-//! AHB bus and means of switching.
+//! ## Overview
 //!
-//! - [`AhbToken<T>`] type represents a disabled clock for a peripheral of type
-//!   `T`: [`AhbType`]
-//! - [`AhbClk<T>`] type represents an enabled clock for a peripheral of type
-//!   `T:` [`AhbType`]
+//! AHB clocks facilitate communication between the processor core and
+//! peripherals on the AHB bus. To communicate with a peripheral, the
+//! corresponding AHB clock must be enabled, which is done by setting a bit in
+//! the `AHBMASK` register.
 //!
-//! One can enable a peripheral `T` synchronous clock via
-//! [`AhbToken<T>::enable`] `->` [`AhbClk<T>`] method.
+//! In this module, *enabled* AHB clocks are represented by the [`AhbClk<A>`]
+//! struct, where the type parameter `A` is a type that implements [`AhbId`] and
+//! corresponds to one of the bits in the `AHBMASK` register.
 //!
-//! One can disable a peripheral `T` synchronous clock via
-//! [`AhbClk<T>::disable`] `->` [`AhbToken<T>`] method.
+//! While most other clocks in the `clock` module are configured through
+//! mutually exclusive registers, the [`AhbClk`]s share the four `AHBMASK`
+//! registers. This presents a challenge for memory safety. Specifically, if we
+//! allowed unrestricted access to the `AHBMASK` register through each `AhbClk`,
+//! we could create data races.
 //!
-//! Clocks in a default state are provided
-//! - in an instance of a struct [`AhbClks`]
-//! - in a field [`crate::clock::v2::Tokens::ahbs`]
-//! - in a return value of [`crate::clock::v2::retrieve_clocks`]
+//! To solve this problem, we restrict access to the `AHBMASK` register using
+//! the [`Ahb`] type. `Ahb` was created to act as a gateway to the `AHBMASK`
+//! register, allowing us to use `&mut Ahb` as compile-time proof of exclusive
+//! access to it.
+//!
+//! ## Example
+//!
+//! Enabling and disabling the [`AhbClk`]s proceeds according to the principles
+//! outlined in the [`clock` module documentation]. It is best shown with an
+//! example.
+//!
+//! Let's start by using [`clock_system_at_reset`] to access the HAL clocking
+//! structs.
+//!
+//! ```no_run
+//! use atsamd_hal::{
+//!     clock::v2::{
+//!         clock_system_at_reset,
+//!     },
+//!     pac::Peripherals,
+//! };
+//! let mut pac = Peripherals::take().unwrap();
+//! let (mut buses, clocks, tokens) = clock_system_at_reset(
+//!     pac.OSCCTRL,
+//!     pac.OSC32KCTRL,
+//!     pac.GCLK,
+//!     pac.MCLK,
+//!     &mut pac.NVMCTRL,
+//! );
+//! ```
+//!
+//! All AHB clocks are enabled at power-on reset. We can find them in the
+//! [`Clocks`] struct.
+//!
+//! ```no_run
+//! # use atsamd_hal::{
+//! #     clock::v2::{
+//! #         clock_system_at_reset,
+//! #     },
+//! #     pac::Peripherals,
+//! # };
+//! # let mut pac = Peripherals::take().unwrap();
+//! # let (mut buses, clocks, tokens) = clock_system_at_reset(
+//! #     pac.OSCCTRL,
+//! #     pac.OSC32KCTRL,
+//! #     pac.GCLK,
+//! #     pac.MCLK,
+//! #     &mut pac.NVMCTRL,
+//! # );
+//! let ahb_qspi = clocks.ahbs.qspi;
+//! ```
+//!
+//! To disable an `AhbClk`, we must have access to the [`Ahb`] bus type, which
+//! is found in the [`Buses`] struct. As described above, [`Ahb`] mediates
+//! access to the shared `AHBMASK` register. We call [`Ahb::disable`] to convert
+//! an [`AhbClk`] into the corresponding [`AhbToken`].
+//!
+//! ```no_run
+//! # use atsamd_hal::{
+//! #     clock::v2::{
+//! #         clock_system_at_reset,
+//! #     },
+//! #     pac::Peripherals,
+//! # };
+//! # let mut pac = Peripherals::take().unwrap();
+//! # let (mut buses, clocks, tokens) = clock_system_at_reset(
+//! #     pac.OSCCTRL,
+//! #     pac.OSC32KCTRL,
+//! #     pac.GCLK,
+//! #     pac.MCLK,
+//! #     &mut pac.NVMCTRL,
+//! # );
+//! # let ahb_qspi = clocks.ahbs.qspi;
+//! let ahb_qspi = buses.ahb.disable(ahb_qspi);
+//! ```
+//!
+//! To reenable an `AhbClk`, users must save the `AhbToken` and use it when
+//! calling [`Ahb::enable`].
+//!
+//! The complete example is shown below.
+//!
+//! ```no_run
+//! use atsamd_hal::{
+//!     clock::v2::{
+//!         clock_system_at_reset,
+//!     },
+//!     pac::Peripherals,
+//! };
+//! let mut pac = Peripherals::take().unwrap();
+//! let (mut buses, clocks, tokens) = clock_system_at_reset(
+//!     pac.OSCCTRL,
+//!     pac.OSC32KCTRL,
+//!     pac.GCLK,
+//!     pac.MCLK,
+//!     &mut pac.NVMCTRL,
+//! );
+//! let ahb_qspi = clocks.ahbs.qspi;
+//! let ahb_qspi = buses.ahb.disable(ahb_qspi);
+//! ```
+//!
+//! [`clock` module documentation]: super
+//! [`clock_system_at_reset`]: super::clock_system_at_reset
+//! [`Clocks`]: super::Clocks
+//! [`Buses`]: super::Buses
+
 use core::marker::PhantomData;
 
-use bitflags::bitflags;
+use bitflags;
 use paste::paste;
 
 use crate::pac::{mclk, MCLK};
@@ -33,33 +135,12 @@ use super::types::*;
 // Ahb
 //==============================================================================
 
-/// AHB mask controller
+/// AHB clock controller
 ///
-/// This struct mediates access to the `AHBMASK` register. Each bit in the
-/// `AHBMASK` register is represented as a type-level variant of [`AhbId`]. And
-/// each AHB clock is represented as either an `AhbToken<A>` or an `AhbClk<A>`,
-/// where `A: AhbId`. `AhbClk` represents an enabled AHB clock, while `AhbToken`
-/// represents a disabled AHB clock.
-///
-/// **NOTE:** All AHB clocks are enabled by default at power-on reset.
-///
-/// Use the [`enable`](self::enable) and [`disable`](self::disable) methods to
-/// convert tokens into clocks and vice versa.
-///
-/// ```no_run
-/// # use atsamd_hal::clock::v2::clock_system_at_reset;
-/// # use atsamd_hal::pac::Peripherals;
-/// # let mut pac = Peripherals::take().unwrap();
-/// let (mut buses, clocks, tokens) = clock_system_at_reset(
-///     pac.OSCCTRL,
-///     pac.OSC32KCTRL,
-///     pac.GCLK,
-///     pac.MCLK,
-///     &mut pac.NVMCTRL,
-/// );
-/// // We do not need USB, so disable the USB AHB clock
-/// let usb = buses.ahb.disable(clocks.ahbs.usb);
-/// ```
+/// As described in the [module-level documentation](self), this struct mediates
+/// access to the shared `AHBMASK` register. Users can convert a disabled
+/// [`AhbToken<A>`] into an enabled [`AhbClk<A>`] using [`Ahb::enable`], and
+/// vice versa with [`Ahb::disable`].
 pub struct Ahb(());
 
 impl Ahb {
@@ -70,6 +151,10 @@ impl Ahb {
 
     #[inline]
     fn mclk(&self) -> &mclk::RegisterBlock {
+        // Safety: The `Ahb` type is a singleton and has exclusive access to the
+        // `AHBMASK` register. It also removes the interior mutability of `MCLK`
+        // by requiring `&mut self` to modify any registers. This lets us make
+        // `Ahb` `Sync` even when `MCLK` is not.
         unsafe { &*MCLK::ptr() }
     }
 
@@ -79,13 +164,13 @@ impl Ahb {
     }
 
     #[inline]
-    fn enable_mask(&mut self, mask: DynAhbMask) {
+    fn enable_mask(&mut self, mask: AhbMask) {
         self.ahbmask()
             .modify(|r, w| unsafe { w.bits(r.bits() | mask.bits()) });
     }
 
     #[inline]
-    fn disable_mask(&mut self, mask: DynAhbMask) {
+    fn disable_mask(&mut self, mask: AhbMask) {
         self.ahbmask()
             .modify(|r, w| unsafe { w.bits(r.bits() & !mask.bits()) });
     }
@@ -116,12 +201,18 @@ impl Ahb {
 // AhbId
 //==============================================================================
 
-/// Type-level `enum` for AHB clock types
+/// Type-level enum identifying one of the possible AHB clocks
 ///
-/// See the documentation on [type-level enums] for more details on the pattern.
-/// The value-level equivalent is [`DynAhbId`].
+/// The types implementing this trait are type-level variants of `AhbId`, and
+/// they identify one of the possible AHB clocks, which can vary by chip. Each
+/// type corresponds to a specific bit in the `AHBMASK` register.
 ///
-/// [type-level enums]: crate::typelevel#type-level-enum
+/// `AhbId` is the type-level equivalent of [`DynAhbId`]. See the documentation
+/// on [type-level programming] and specifically [type-level enums] for more
+/// details.
+///
+/// [type-level programming]: crate::typelevel
+/// [type-level enums]: crate::typelevel#type-level-enums
 pub trait AhbId: crate::typelevel::Sealed {
     /// Corresponding [`DynAhbId`]
     const DYN: DynAhbId;
@@ -131,19 +222,26 @@ pub trait AhbId: crate::typelevel::Sealed {
 // AhbToken
 //==============================================================================
 
-/// A singleton type representing a disabled AHB clock
+/// Singleton token that can be exchanged for an [`AhbClk`]
 ///
-/// An `AhbToken` can be exchanged for an enabled [`AhbClk`] using the
-/// [`Ahb::enable`] function.
+/// As explained in the [`clock` module documentation](super), instances of
+/// various `Token` types can be exchanged for actual clock types. They
+/// represent clocks that are disabled.
+///
+/// The type parameter `A` is an [`AhbId`] indicating which AHB clock is
+/// represented by this token. To enable the corresponding AHB clock, use the
+/// [`Ahb::enable`] method.
 pub struct AhbToken<A: AhbId> {
     id: PhantomData<A>,
 }
 
 impl<A: AhbId> AhbToken<A> {
-    /// Create an `AhbToken`
+    /// Create a new instance of [`AhbToken`]
     ///
-    /// SAFETY: There should be *exactly one* instance of `AhbToken` for each
-    /// [`AhbId`] type.
+    /// # Safety
+    ///
+    /// Each `AhbToken` is a singleton. There must never be two simulatenous
+    /// instances with the same [`AhbId`].
     #[inline]
     unsafe fn new() -> Self {
         AhbToken { id: PhantomData }
@@ -154,10 +252,11 @@ impl<A: AhbId> AhbToken<A> {
 // AhbClk
 //==============================================================================
 
-/// A singleton type representing an enabled AHB clock
+/// An enabled AHB clock
 ///
-/// An `AhbClk` can be disabled, returning an [`AhbToken`], using the
-/// [`Ahb::disable`] function.
+/// An [`AhbClk`] represents an enabled AHB clock. The type parameter `A` is an
+/// [`AhbId`], which corresponds to a particular bit in the `AHBMASK`
+/// register. An `AhbClk` can be disabled with the [`Ahb::disable`] method.
 pub struct AhbClk<A: AhbId> {
     token: AhbToken<A>,
 }
@@ -178,10 +277,7 @@ impl<A: AhbId> AhbClk<A> {
 // DynAhbId & AhbClks
 //==============================================================================
 
-/// Root level macro generating all type definitions and trait implementations.
-/// Among other things, it defines and populates an [`AhbClks`] struct with
-/// appropriate fields.
-macro_rules! ahb_clks {
+macro_rules! define_ahb_types {
     (
         $(
             $( #[$( $cfg:tt )+] )?
@@ -189,12 +285,12 @@ macro_rules! ahb_clks {
         )+
     ) => {
         paste! {
-            bitflags! {
+            bitflags::bitflags! {
                 /// AHB clock register mask
                 ///
                 /// This is a [`bitflags`] struct with a binary representation
-                /// that exactly matches the `AHBMASK` register.
-                pub struct DynAhbMask: u32 {
+                /// exactly matching the `AHBMASK` register.
+                struct AhbMask: u32 {
                     $(
                         $( #[$( $cfg )+] )?
                         #[allow(missing_docs)]
@@ -203,15 +299,13 @@ macro_rules! ahb_clks {
                 }
             }
 
-            /// Value-level representation of AHB clocks
+            /// Value-level enum identifying a single AHB clock
             ///
-            /// This is the value-level version of the [type-level enum]
-            /// [`AhbId`].
+            /// Each variant of this enum corresponds to a specific bit in the
+            /// `AHBMASK` register and identifies one of the possible AHB
+            /// clocks, which can vary by chip.
             ///
-            /// It can be cast to an integer type, like `u8`, to recover each
-            /// clock's bit number within the `AHBMASK` register.
-            ///
-            /// [type-level enum]: crate::typelevel#type-level-enum
+            /// `DynAhbId` is the value-level equivalent of [`AhbId`].
             #[repr(u8)]
             pub enum DynAhbId {
                 $(
@@ -221,13 +315,13 @@ macro_rules! ahb_clks {
                 )+
             }
 
-            impl From<DynAhbId> for DynAhbMask {
+            impl From<DynAhbId> for AhbMask {
                 #[inline]
-                fn from(id: DynAhbId) -> DynAhbMask {
+                fn from(id: DynAhbId) -> AhbMask {
                     match id {
                         $(
                             $( #[$( $cfg )+] )?
-                            DynAhbId::$Type => DynAhbMask::[<$Type:upper>],
+                            DynAhbId::$Type => AhbMask::[<$Type:upper>],
                         )+
                     }
                 }
@@ -240,27 +334,29 @@ macro_rules! ahb_clks {
                 }
             )+
 
-            /// Struct aggregating [`AhbClk`] type instances representing
-            /// default states of synchronous peripheral clocks
+            /// Set of all [`AhbClk`]s
+            ///
+            /// All [`AhbClk`]s are enabled at power-on reset.
             #[allow(missing_docs)]
             pub struct AhbClks {
                 $(
                     $( #[$( $cfg )+] )?
-                    pub [<$Type:lower>]: AhbClk<$Type>,
+                    pub [<$Type:snake>]: AhbClk<$Type>,
                 )+
             }
             impl AhbClks {
-                /// Create instances of all [`AhbClk`]s
+                /// Create the set of [`AhbClk`]s
                 ///
-                /// SAFETY: Each `AhbClk` must be a singleton, so this function
-                /// must not be called more than once if any prior `AhbClk`s
-                /// still exist.
+                /// # Safety
+                ///
+                /// All of the invariants required by `AhbToken::new` must be
+                /// upheld here as well.
                 #[inline]
                 pub(super) unsafe fn new() -> Self {
                     AhbClks {
                         $(
                             $( #[$( $cfg )+] )?
-                            [<$Type:lower>]: AhbClk::new(AhbToken::new()),
+                            [<$Type:snake>]: AhbClk::new(AhbToken::new()),
                         )+
                     }
                 }
@@ -269,7 +365,7 @@ macro_rules! ahb_clks {
     };
 }
 
-ahb_clks!(
+define_ahb_types!(
     Hpb0 = 0,
     Hpb1 = 1,
     Hpb2 = 2,
