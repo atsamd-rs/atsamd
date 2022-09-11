@@ -57,7 +57,7 @@
 //! );
 //! ```
 //!
-//! Next, we can extract the [`EnabledOscUlp32kBase`] clock from the `Clocks`
+//! Next, we can extract the [`EnabledOscUlp32kBase`] clock from the [`Clocks`]
 //! struct and use it to enable the [`OscUlp1k`] and [`OscUlp32k`] clocks.
 //!
 //! ```no_run
@@ -159,6 +159,7 @@
 //!
 //! [`clock` module documentation]: super
 //! [`clock_system_at_reset`]: super::clock_system_at_reset
+//! [`Clocks`]: super::Clocks
 
 use typenum::U0;
 

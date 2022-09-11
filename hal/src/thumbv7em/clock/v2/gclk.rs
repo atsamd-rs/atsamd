@@ -1382,8 +1382,10 @@ seq!(N in 1..=11 {
         impl GclkTokens {
             /// Create the set of [`GclkToken`]s
             ///
-            /// Safety: All of the invariants required by `GclkToken::new` must
-            /// be upheld here as well
+            /// # Safety
+            ///
+            /// All of the invariants required by `GclkToken::new` must be
+            /// upheld here as well.
             #[inline]
             pub(super) unsafe fn new(nvmctrl: &mut NVMCTRL) -> Self {
                 // Use auto wait states
