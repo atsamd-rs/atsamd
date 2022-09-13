@@ -560,8 +560,8 @@ fn configure_and_enable_dfll48m(sysctrl: &mut SYSCTRL, use_external_crystal: boo
         sysctrl.dfllmul.write(|w| unsafe {
             w.cstep().bits(coarse / 4);
             w.fstep().bits(10);
-            // scaling factor between the clocks
-            w.mul().bits((48_000_000u32 / 32768) as u16)
+            // scaling factor for 1 kHz USB SOF signal
+            w.mul().bits((48_000_000u32 / 1000) as u16)
         });
 
         // Turn it on
@@ -575,11 +575,7 @@ fn configure_and_enable_dfll48m(sysctrl: &mut SYSCTRL, use_external_crystal: boo
             // chill cycle disable
             w.ccdis().set_bit();
 
-            // usb correction is not set due to instability issues around
-            // USB bus resets. TODO(twitchyliquid64): Maybe switch to OSC8M?
-            //
-            // TODO usb correction (still active for samd11??)
-            #[cfg(feature = "samd11")]
+            // usb correction
             w.usbcrm().set_bit();
 
             // bypass coarse lock (have calibration data)
