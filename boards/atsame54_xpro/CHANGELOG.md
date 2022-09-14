@@ -1,5 +1,14 @@
 # Unreleased
 
+# v0.5.0
+- update to `atsamd-hal-0.15`
+- update to to `panic-semihosting-0.6`
+- added functions to create all sercom devices and pads using the XPro extensions 1, 2, and 3
+- Changed pin types to use their correct alternate definitions instead of using GPIO functions
+- Removed the structs of pin sets which relied on old pin definitions
+
+---
+
 # v0.4.0
 
 - update to `atsamd-hal-0.14` and other latest dependencies (#564)
