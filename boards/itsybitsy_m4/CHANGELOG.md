@@ -1,5 +1,8 @@
-# Unreleased
+# 0.8.0
 
+- update hal dependency to v0.15
+  - Removed use of i2c v1 API
+  - Make use of the `bsp::peripherals!` macro to alias SERCOM 1,2 and 3
 - Updated to 2021 edition, updated dependencies, removed unused dependencies (#562)
 - add `sercom_interrupt` example to show how to
   - manually configure sercom for uart operation
