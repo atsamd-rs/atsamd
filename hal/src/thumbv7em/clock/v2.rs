@@ -988,5 +988,5 @@ fn test() {
     let _dfll_token = dfll.disable().free();
     let _apb_sercom0 = buses.apb.enable(tokens.apbs.sercom0);
     let (_pclk_sercom0, gclk0) = Pclk::enable(tokens.pclks.sercom0, gclk0);
-    let (_gclk_out0, _gclk0) = GclkOut::enable(pins.pb14, gclk0);
+    let (_gclk_out0, _gclk0) = GclkOut::enable(pins.pa30, gclk0);
 }
