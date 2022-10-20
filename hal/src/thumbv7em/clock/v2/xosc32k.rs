@@ -390,28 +390,24 @@ impl Xosc1k {
     /// This clock is derived from the [`Enabled`] [`XoscBase`] clock.
     ///
     /// ```no_run
-    /// # use atsamd_hal::{
-    /// #     pac::Peripherals,
-    /// #     clock::v2::{
-    /// #         por_state,
-    /// #         xosc32k::{XoscBase, Xosc1k},
-    /// #     },
-    /// #     gpio::Pins,
-    /// # };
+    /// # use atsamd_hal::clock::v2::clock_system_at_reset;
+    /// # use atsamd_hal::clock::v2::xosc32k::{XoscBase, Xosc1k};
+    /// # use atsamd_hal::gpio::v2::Pins;
+    /// # use atsamd_hal::pac::Peripherals;
     /// # let mut pac = Peripherals::take().unwrap();
-    /// # let (mut buses, clocks, tokens) = por_state(
-    /// #     pac.OSCCTRL,
-    /// #     pac.OSC32KCTRL,
-    /// #     pac.GCLK,
-    /// #     pac.MCLK,
-    /// #     &mut pac.NVMCTRL,
-    /// # );
-    /// # let pins = Pins::new(pac.PORT);
-    /// let base = XoscBase::from_clock(
+    /// let (buses, clocks, tokens) = clock_system_at_reset(
+    ///     pac.OSCCTRL,
+    ///     pac.OSC32KCTRL,
+    ///     pac.GCLK,
+    ///     pac.MCLK,
+    ///     &mut pac.NVMCTRL,
+    /// );
+    /// let pins = Pins::new(pac.PORT);
+    /// let xosc_base = XoscBase::from_clock(
     ///     tokens.xosc32k.base,
-    ///     pins.pa00
+    ///     pins.pa00,
     /// ).enable();
-    /// let (xosc1k, base) = Xosc1k::enable(tokens.xosc32k.xosc1k, base);
+    /// let (xosc1k, base) = Xosc1k::enable(tokens.xosc32k.xosc1k, xosc_base);
     /// ```
     #[inline]
     pub fn enable<M, N>(
@@ -469,28 +465,24 @@ impl Xosc32k {
     /// This clock is derived from the [`Enabled`] [`XoscBase`] clock.
     ///
     /// ```no_run
-    /// # use atsamd_hal::{
-    /// #     pac::Peripherals,
-    /// #     clock::v2::{
-    /// #         por_state,
-    /// #         xosc32k::{XoscBase, Xosc32k},
-    /// #     },
-    /// #     gpio::Pins,
-    /// # };
+    /// # use atsamd_hal::clock::v2::clock_system_at_reset;
+    /// # use atsamd_hal::clock::v2::xosc32k::{XoscBase, Xosc32k};
+    /// # use atsamd_hal::gpio::v2::Pins;
+    /// # use atsamd_hal::pac::Peripherals;
     /// # let mut pac = Peripherals::take().unwrap();
-    /// # let (mut buses, clocks, tokens) = por_state(
-    /// #     pac.OSCCTRL,
-    /// #     pac.OSC32KCTRL,
-    /// #     pac.GCLK,
-    /// #     pac.MCLK,
-    /// #     &mut pac.NVMCTRL,
-    /// # );
-    /// # let pins = Pins::new(pac.PORT);
-    /// let base = XoscBase::from_clock(
+    /// let (buses, clocks, tokens) = clock_system_at_reset(
+    ///     pac.OSCCTRL,
+    ///     pac.OSC32KCTRL,
+    ///     pac.GCLK,
+    ///     pac.MCLK,
+    ///     &mut pac.NVMCTRL,
+    /// );
+    /// let pins = Pins::new(pac.PORT);
+    /// let xosc_base = XoscBase::from_clock(
     ///     tokens.xosc32k.base,
-    ///     pins.pa00
+    ///     pins.pa00,
     /// ).enable();
-    /// let (xosc32k, base) = Xosc32k::enable(tokens.xosc32k.xosc32k, base);
+    /// let (xosc32k, base) = Xosc32k::enable(tokens.xosc32k.xosc32k, xosc_base);
     /// ```
     #[inline]
     pub fn enable<M, N>(

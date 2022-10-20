@@ -48,9 +48,9 @@ pub struct Buses {
 
 /// Enabled clocks at power-on reset
 ///
-/// This type is constructed using the [`por_state`] function, which consumes
-/// the PAC-level clocking structs and returns the HAL-level clocking structs in
-/// their reset state.
+/// This type is constructed using the [`clock_system_at_reset`] function, which
+/// consumes the PAC-level clocking structs and returns the HAL-level clocking
+/// structs in their reset state.
 ///
 /// This type represents the clocks as they are configured at power-on reset.
 /// The main clock, [`Gclk0`](gclk::Gclk0), runs at 48 MHz using the
@@ -82,30 +82,13 @@ pub struct Clocks {
 
 /// Type-level tokens for unused clocks at power-on reset
 ///
-/// This type is constructed using the [`por_state`] function, which consumes
-/// the PAC-level clocking structs and returns the HAL-level clocking structs in
-/// their reset state.
+/// This type is constructed using the [`clock_system_at_reset`] function, which
+/// consumes the PAC-level clocking structs and returns the HAL-level clocking
+/// structs in their reset state.
 ///
 /// As described in the [top-level](super::super) documentation for the `clock`
 /// module, token types are used to guanrantee the uniqueness of each clock. To
 /// configure or enable a clock, you must provide the corresponding token.
-///
-/// For example, to enable the peripheral channel clock for [`Sercom1`], you
-/// must provide the corresponding [`PclkToken`](pclk::PclkToken).
-///
-/// ```no_run
-/// # use atsamd_hal::clock::v2::{self as clock, pclk::Pclk};
-/// # let mut pac = atsamd_hal::pac::Peripherals::take().unwrap();
-/// # let oscctrl = pac.OSCCTRL;
-/// # let osc32kctrl = pac.OSC32KCTRL;
-/// # let gclk = pac.GCLK;
-/// # let mclk = pac.MCLK;
-/// # let nvmctrl = &mut pac.NVMCTRL;
-/// let (buses, clocks, tokens) = clock::por_state(oscctrl, osc32kctrl, gclk, mclk, nvmctrl);
-/// let pclk_sercom1 = Pclk::enable(tokens.pclks.sercom1, clocks.gclk0);
-/// ```
-///
-/// [`Sercom1`]: crate::sercom::Sercom1
 pub struct Tokens {
     /// Tokens to create [`apb::ApbClk`]s
     pub apbs: apb::ApbTokens,
@@ -137,45 +120,10 @@ pub struct Tokens {
 ///
 /// This function consumes the [`OSCCTRL`], [`OSC32KCTRL`], [`GCLK`] and
 /// [`MCLK`] PAC structs and returns the [`Buses`], [`Clocks`] and [`Tokens`].
-/// The `Buses` provide access to enable or disable the AHB and APB bus clocks.
-/// The `Clocks` represent the set of [`Enabled`] clocks at reset. And the
-/// `Tokens` can be used to configure and enable the remaining clocks.
 ///
-/// For example, the following code demonstrates a number of common operations.
-/// First, the PAC structs are traded for HAL types. Next, the GCLK5 token is
-/// used to create an instance of [`Gclk5`], sourced from the already running
-/// [`Dfll`](dfll::Dfll). The [`GclkDivider`](gclk::GclkDivider) is set to 24,
-/// and `Gclk5` is [`Enabled`] with a 2 MHz output frequency. Next, `Gclk5` is
-/// used as the [`Pclk`](pclk::Pclk) [`Source`] for [`Dpll0`](dpll::Dpll0). Once
-/// the peripheral channel clock has been enabled, the `Dpll0` itself can be
-/// created from it. The loop divider is set to 60, which raises the output
-/// frequency to 120 MHz. Finally, the main clock, [`Gclk0`](gclk::Gclk0) is
-/// swapped to use `Dpll0` instead of the `Dfll`.
-///
-/// ```no_run
-/// # use atsamd_hal::clock::v2::{self as clock, gclk, pclk, dpll};
-/// # let mut pac = atsamd_hal::pac::Peripherals::take().unwrap();
-/// # let oscctrl = pac.OSCCTRL;
-/// # let osc32kctrl = pac.OSC32KCTRL;
-/// # let gclk = pac.GCLK;
-/// # let mclk = pac.MCLK;
-/// # let nvmctrl = &mut pac.NVMCTRL;
-///
-/// let (_buses, clocks, tokens) = clock::por_state(oscctrl, osc32kctrl, gclk, mclk, nvmctrl);
-/// let (gclk5, dfll) = gclk::Gclk::new(tokens.gclks.gclk5, clocks.dfll);
-/// let gclk5 = gclk5.div(gclk::GclkDiv::Div(24)).enable();
-/// let (pclk_dpll0, gclk5) = pclk::Pclk::enable(tokens.pclks.dpll0, gclk5);
-/// let dpll0 = dpll::Dpll0::from_pclk(tokens.dpll0, pclk_dpll0)
-///     .set_loop_div(60, 0)
-///     .enable()
-///     .unwrap_or_else(|_| panic!("Dpll did not pass assertion checks!"));
-/// let (gclk0, dfll, dpll0) = clocks.gclk0.swap(dfll, dpll0);
-/// ```
-///
-/// See the [top-level](super::super) documentation of the `clock` module for
-/// more details.
+/// See the [module-level documentation](super) for more details.
 #[inline]
-pub fn por_state(
+pub fn clock_system_at_reset(
     oscctrl: OSCCTRL,
     osc32kctrl: OSC32KCTRL,
     gclk: GCLK,

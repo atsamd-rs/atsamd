@@ -88,25 +88,7 @@ impl DpllId for Dpll1Id {
 }
 
 //==============================================================================
-// RawPredivider
-//==============================================================================
-
-/// Raw predivider for DPLLs sourced by an [`Xosc`](super::xosc::Xosc)
-///
-/// Represents a 10-bit value used to set the clock division factor for DPLLs
-/// sourced by an `Xosc`. The actual divider can be calculated with the formula:
-///
-/// ```text
-/// f_DPLL = f_XOSC / (2 * (raw_prediv + 1))
-/// ```
-///
-/// This value is relevant only for a [`Dpll`] that is driven by an
-/// [`Xosc`](super::xosc::Xosc). For other clock sources, the clock divider is
-/// equal to 1.
-pub type RawPredivider = u16;
-
-//==============================================================================
-// DpllSourceId
+// DynDpllSourceId
 //==============================================================================
 
 /// Value-level version of [`DpllSourceId`]
@@ -135,6 +117,10 @@ impl From<DynDpllSourceId> for REFCLK_A {
     }
 }
 
+//==============================================================================
+// DpllSourceId
+//==============================================================================
+
 /// Type-level `enum` for DPLL sources
 ///
 /// See the documentation on [type-level enums] for more details on the
@@ -146,17 +132,11 @@ pub trait DpllSourceId<D: DpllId> {
     const DYN: DynDpllSourceId;
     /// Corresponding [`Pclk`] type if the DPLL source is a peripheral clock
     type Pclk;
-    /// Convert the raw predivider to the actual divider
-    fn predivider(raw_prediv: RawPredivider) -> u32;
 }
 
 impl<D: DpllId + PclkId, G: GclkId> DpllSourceId<D> for G {
     const DYN: DynDpllSourceId = DynDpllSourceId::Pclk;
     type Pclk = Pclk<D, G>;
-    #[inline]
-    fn predivider(_: RawPredivider) -> u32 {
-        1
-    }
 }
 
 seq!(N in 0..=1 {
@@ -164,10 +144,6 @@ seq!(N in 0..=1 {
         impl<D: DpllId> DpllSourceId<D> for [<Xosc N Id>] {
             const DYN: DynDpllSourceId = DynDpllSourceId::Xosc~N;
             type Pclk = ();
-            #[inline]
-            fn predivider(raw_prediv: RawPredivider) -> u32 {
-                2 * (1 + raw_prediv as u32)
-            }
         }
     }
 });
@@ -175,10 +151,6 @@ seq!(N in 0..=1 {
 impl<D: DpllId> DpllSourceId<D> for Xosc32kId {
     const DYN: DynDpllSourceId = DynDpllSourceId::Xosc32k;
     type Pclk = ();
-    #[inline]
-    fn predivider(_: RawPredivider) -> u32 {
-        1
-    }
 }
 
 //==============================================================================
@@ -351,7 +323,7 @@ where
     wake_up_fast: bool,
     on_demand: bool,
     pclk: I::Pclk,
-    raw_prediv: RawPredivider,
+    prediv: u16,
 }
 
 impl<D, G> Dpll<D, G>
@@ -376,7 +348,7 @@ where
             wake_up_fast: false,
             on_demand: true,
             pclk,
-            raw_prediv: 1,
+            prediv: 1,
         }
     }
 
@@ -412,7 +384,7 @@ where
             wake_up_fast: false,
             on_demand: true,
             pclk: (),
-            raw_prediv: 1,
+            prediv: 1,
         };
         (dpll, xosc32k.inc())
     }
@@ -442,7 +414,6 @@ seq!(N in 0..=1 {
             pub fn from_xosc~N<S>(
                 token: DpllToken<D>,
                 xosc: S,
-                raw_prediv: RawPredivider,
             ) -> (Self, S::Inc)
             where
                 S: Source<Id = [<Xosc N Id>]> + Increment,
@@ -459,15 +430,18 @@ seq!(N in 0..=1 {
                     wake_up_fast: false,
                     on_demand: true,
                     pclk: (),
-                    raw_prediv,
+                    prediv: 2,
                 };
                 (dpll, xosc.inc())
             }
 
             /// Set the raw predivider, see [`RawPredivider`]
             #[inline]
-            pub fn set_raw_prediv(mut self, raw_prediv: RawPredivider) -> Self {
-                self.raw_prediv = raw_prediv;
+            pub fn set_prediv(mut self, prediv: u16) -> Self {
+                if prediv < 2 || prediv > 4096 || prediv % 2 != 0 {
+                    panic!("prediv must be an even number in the interval [2, 4096]");
+                }
+                self.prediv = prediv;
                 self
             }
 
@@ -544,47 +518,37 @@ where
         self
     }
 
+    #[inline]
+    fn input_freq(&self) -> u32 {
+        self.src_freq.0 / self.prediv as u32
+    }
+
+    #[inline]
+    fn output_freq(&self) -> u32 {
+        self.input_freq() * (self.mult as u32 + self.frac as u32 / 32)
+    }
+
     /// Return the frequency of the [`Dpll`]
     #[inline]
     pub fn freq(&self) -> Hertz {
-        Hertz(
-            self.src_freq.0 / I::predivider(self.raw_prediv)
-                * (self.mult as u32 + self.frac as u32 / 32),
-        )
+        Hertz(self.output_freq())
     }
 
     /// Enables [`Dpll`] and performs assertions in local configuration
     ///
     /// - Performs HW register writes
     #[inline]
-    pub fn enable(self) -> Result<EnabledDpll<D, I>, Self> {
-        let predivider = I::predivider(self.raw_prediv);
-        let input_frequency = self.src_freq.0 / predivider;
-        let output_frequency = self.freq().0;
-
-        // If Xosc mode: Predivider should be within a range <2, 2048>
-        // Else: Predivider should be 1
-        if (1..=2048).contains(&predivider)
-            && (32_000..=3_200_000).contains(&input_frequency)
-            && (96_000_000..=200_000_000).contains(&output_frequency)
-        {
-            unsafe { Ok(self.force_enable()) }
-        } else {
-            Err(self)
+    pub fn enable(mut self) -> EnabledDpll<D, I> {
+        if !(32_000..=3_200_000).contains(&self.input_freq()) {
+            panic!("Invalid DPLL input frequency");
         }
-    }
-
-    /// Forcibly enables [`Dpll`] without additional checks in local
-    /// configuration
-    ///
-    /// - Performs HW register writes
-    #[inline]
-    pub unsafe fn force_enable(mut self) -> EnabledDpll<D, I> {
-        // Enable the specified mode
+        if !(96_000_000..=200_000_000).contains(&self.output_freq()) {
+            panic!("Invalid DPLL output frequency");
+        }
         self.token.set_source_clock(I::DYN);
         match I::DYN {
             DynDpllSourceId::Xosc0 | DynDpllSourceId::Xosc1 => {
-                self.token.set_source_div(self.raw_prediv)
+                self.token.set_source_div(self.prediv / 2)
             }
             _ => {}
         }
@@ -593,7 +557,6 @@ where
         self.token.set_lock_bypass(self.lock_bypass);
         self.token.set_wake_up_fast(self.wake_up_fast);
         self.token.set_on_demand(self.on_demand);
-        // Enable the [`Dpll`]
         self.token.enable();
         Enabled::new(self)
     }

@@ -47,16 +47,16 @@ use super::types::*;
 /// convert tokens into clocks and vice versa.
 ///
 /// ```no_run
+/// # use atsamd_hal::clock::v2::clock_system_at_reset;
 /// # use atsamd_hal::pac::Peripherals;
-/// # use atsamd_hal::clock::v2::por_state;
 /// # let mut pac = Peripherals::take().unwrap();
-/// # let (mut buses, clocks, _) = por_state(
-/// #     pac.OSCCTRL,
-/// #     pac.OSC32KCTRL,
-/// #     pac.GCLK,
-/// #     pac.MCLK,
-/// #     &mut pac.NVMCTRL,
-/// # );
+/// let (mut buses, clocks, tokens) = clock_system_at_reset(
+///     pac.OSCCTRL,
+///     pac.OSC32KCTRL,
+///     pac.GCLK,
+///     pac.MCLK,
+///     &mut pac.NVMCTRL,
+/// );
 /// // We do not need USB, so disable the USB AHB clock
 /// let usb = buses.ahb.disable(clocks.ahbs.usb);
 /// ```

@@ -9,12 +9,12 @@
 //!
 //! ```no_run
 //! # use atsamd_hal::{
-//! #     clock::v2::{gclkio::GclkOut, por_state},
+//! #     clock::v2::{gclkio::GclkOut, clock_system_at_reset},
 //! #     gpio::Pins,
 //! #     pac::Peripherals,
 //! # };
 //! let mut pac = Peripherals::take().unwrap();
-//! let (_, clocks, tokens) = por_state(
+//! let (buses, clocks, tokens) = clock_system_at_reset(
 //!     pac.OSCCTRL,
 //!     pac.OSC32KCTRL,
 //!     pac.GCLK,
@@ -22,7 +22,7 @@
 //!     &mut pac.NVMCTRL,
 //! );
 //! let pins = Pins::new(pac.PORT);
-//! let (gclk_out0, gclk0) = GclkOut::enable(tokens.gclk_io.gclk_out0, pins.pb14, clocks.gclk0, false);
+//! let (gclk_out0, gclk0) = GclkOut::enable(tokens.gclk_io.gclk_out0, pins.pb14, clocks.gclk0);
 //! ```
 //!
 //! Setting up a [`GclkIn`] pin to receive a 48 MHz signal on pin PB17:
@@ -33,7 +33,7 @@
 //! #     time::U32Ext,
 //! # };
 //! # let mut pac = atsamd_hal::pac::Peripherals::take().unwrap();
-//! # let (_, clocks, tokens) = atsamd_hal::clock::v2::por_state(
+//! # let (buses, clocks, tokens) = atsamd_hal::clock::v2::clock_system_at_reset(
 //! #     pac.OSCCTRL,
 //! #     pac.OSC32KCTRL,
 //! #     pac.GCLK,
@@ -318,7 +318,6 @@ where
         token: GclkOutToken<G>,
         pin: impl AnyPin<Id = I>,
         mut gclk: EnabledGclk<G, S, N>,
-        polarity: bool,
     ) -> (GclkOut<G, I>, EnabledGclk<G, S, N::Inc>)
     where
         S: GclkSourceId,
@@ -326,7 +325,7 @@ where
     {
         let freq = gclk.freq();
         let pin = pin.into().into_alternate();
-        gclk.enable_gclk_out(polarity);
+        gclk.enable_gclk_out();
         let gclk_out = GclkOut { token, freq, pin };
         (gclk_out, gclk.inc())
     }
