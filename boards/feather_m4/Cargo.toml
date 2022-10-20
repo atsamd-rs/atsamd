@@ -51,7 +51,6 @@ usb = ["atsamd-hal/usb", "usb-device"]
 dma = ["atsamd-hal/dma", "unproven"]
 max-channels = ["dma", "atsamd-hal/dma"]
 
-
 [profile.dev]
 incremental = false
 codegen-units = 1
@@ -94,7 +93,3 @@ required-features = ["unproven", "usb"]
 [[example]]
 name = "i2c"
 required-features = ["atsamd-hal/dma"]
-
-[[example]]
-name = "async_timer"
-required-features = ["atsamd-hal/async", "atsamd-hal/nightly"]
