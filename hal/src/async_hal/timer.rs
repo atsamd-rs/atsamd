@@ -4,11 +4,13 @@ use crate::{
 };
 use atomic_polyfill::AtomicBool;
 use core::{
+    future::poll_fn,
     sync::atomic::Ordering,
     task::{Poll, Waker},
 };
-use embassy::{interrupt::InterruptExt, waitqueue::AtomicWaker};
-use futures::future::poll_fn;
+use cortex_m::interrupt::InterruptNumber;
+use cortex_m_interrupt::NvicInterruptHandle;
+use embassy_sync::waitqueue::AtomicWaker;
 
 #[cfg(any(feature = "samd11", feature = "samd21"))]
 use crate::thumbv6m::timer;
@@ -31,9 +33,6 @@ use timer::{Count16, TimerCounter};
 
 #[doc(hidden)]
 pub trait AsyncCount16: Count16 + Sealed {
-    /// Interrupt handler for this TC
-    type Interrupt: ::embassy::interrupt::InterruptExt;
-
     /// Index of this TC in the `STATE` tracker
     const STATE_ID: usize;
 
@@ -47,18 +46,17 @@ pub trait AsyncCount16: Count16 + Sealed {
     /// the interrupt flag (to prevent re-firing). This method should ONLY be
     /// able to be called while an [`AsyncTimer`] holds an unique reference
     /// to the underlying `TC` peripheral.
-    unsafe fn on_interrupt(_: *mut ());
+    fn on_interrupt();
 }
 
 macro_rules! impl_async_count16 {
         ($(($TC: ident, $id: expr)),+) => {
             $(
                 impl AsyncCount16 for $TC {
-                    type Interrupt = crate::interrupt::$TC;
                     const STATE_ID: usize = $id;
 
-                    unsafe fn on_interrupt(_: *mut ()) {
-                        let tc = crate::pac::Peripherals::steal().$TC;
+                    fn on_interrupt() {
+                        let tc = unsafe{ crate::pac::Peripherals::steal().$TC};
                         let intflag = &tc.count_16().intflag;
 
                         if intflag.read().ovf().bit_is_set() {
@@ -94,28 +92,44 @@ impl_async_count16!((TC2, 0), (TC3, 1), (TC4, 2), (TC5, 3));
 #[cfg(feature = "min-samd51j")]
 const NUM_TIMERS: usize = 4;
 
-impl<T: AsyncCount16> TimerCounter<T> {
+impl<T> TimerCounter<T>
+where
+    T: AsyncCount16,
+{
     /// Transform a [`TimerCounter`] into an [`AsyncTimer`]
     #[inline]
-    pub fn as_async<'a, 'self_mut: 'a>(
-        &'self_mut mut self,
-        irq: &'a mut T::Interrupt,
-    ) -> AsyncTimer<'a, T> {
-        irq.set_handler(T::on_interrupt);
-        irq.enable();
+    pub fn into_async<I, N>(mut self, irq: I) -> AsyncTimer<T, N>
+    where
+        I: NvicInterruptHandle<InterruptNumber = N>,
+        N: InterruptNumber,
+    {
+        let irq_number = irq.number();
+        irq.register(T::on_interrupt);
+        unsafe { cortex_m::peripheral::NVIC::unmask(irq_number) };
         self.enable_interrupt();
 
-        AsyncTimer { timer: self, irq }
+        AsyncTimer {
+            timer: self,
+            irq_number,
+        }
     }
 }
 
 /// Wrapper around a [`TimerCounter`] with an `async` interface
-pub struct AsyncTimer<'a, T: AsyncCount16> {
-    timer: &'a mut TimerCounter<T>,
-    irq: &'a mut T::Interrupt,
+pub struct AsyncTimer<T, I>
+where
+    T: AsyncCount16,
+    I: InterruptNumber,
+{
+    timer: TimerCounter<T>,
+    irq_number: I,
 }
 
-impl<'a, T: AsyncCount16> AsyncTimer<'a, T> {
+impl<T, I> AsyncTimer<T, I>
+where
+    T: AsyncCount16,
+    I: InterruptNumber,
+{
     /// Delay asynchronously
     #[inline]
     pub async fn delay(&mut self, count: impl Into<Nanoseconds>) {
@@ -134,11 +148,14 @@ impl<'a, T: AsyncCount16> AsyncTimer<'a, T> {
     }
 }
 
-impl<'a, T: AsyncCount16> Drop for AsyncTimer<'a, T> {
+impl<T, I> Drop for AsyncTimer<T, I>
+where
+    T: AsyncCount16,
+    I: InterruptNumber,
+{
     #[inline]
     fn drop(&mut self) {
-        self.irq.remove_handler();
-        self.irq.disable();
+        cortex_m::peripheral::NVIC::mask(self.irq_number);
     }
 }
 
