@@ -24,7 +24,7 @@ features = ["samd21g", "samd21g-rt", "unproven", "usb"]
 atomic-polyfill = "0.1.8"
 bitfield = "0.13"
 bitflags = "1.2.1"
-cortex-m = "0.7"
+cortex-m = { version = "0.7", features = ["critical-section-single-core"] }
 embedded-hal = "0.2"
 modular-bitfield = "0.11"
 nb = "1.0"
@@ -62,18 +62,8 @@ version = "0.3"
 default-features = false
 version = "1.0"
 
-[dependencies.embassy]
-version = "0.1.0"
-optional = true
-git = "https://github.com/embassy-rs/embassy.git"
-
-[dependencies.embassy-hal-common]
-version = "0.1.0"
-optional = true
-git = "https://github.com/embassy-rs/embassy.git"
-
 [dependencies.embedded-hal-async]
-version = "0.1.0-alpha.0"
+version = "0.1.0-alph"
 package = "embedded-hal"
 optional = true
 
@@ -81,10 +71,21 @@ optional = true
 version = "0.2.7"
 optional = true
 
+[dependencies.embassy-sync]
+version = "0.1"
+optional = true
+git = "https://github.com/embassy-rs/embassy.git"
+# path = "../../../rust-projects/embassy/embassy-sync"
+
 [dependencies.futures]
 version = "0.3.21"
 optional = true
 default-features = false
+
+[dependencies.cortex-m-interrupt]
+version = "0.1"
+git = "https://github.com/datdenkikniet/cortex-m-interrupt"
+optional = true
 
 # Each of the supported chips is listed as an optional dependency here.
 # This makes it available when the corresponding feature name is referenced.
@@ -253,11 +254,11 @@ rtic = ["rtic-monotonic", "fugit"]
 enable_unsafe_aes_newblock_cipher = []
 
 async = [
-    "embassy",
-    "embassy-hal-common",
+    "cortex-m-interrupt",
     "futures",
     "critical-section",
-    "unproven"
+    "unproven",
+    "embassy-sync",
 ]
 
-nightly = ["embedded-hal-async", "embassy/nightly"]
+nightly = ["embedded-hal-async"]

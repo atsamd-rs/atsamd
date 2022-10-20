@@ -1,8 +1,5 @@
 #![no_std]
-#![cfg_attr(
-    feature = "nightly",
-    feature(generic_associated_types, type_alias_impl_trait)
-)]
+#![cfg_attr(feature = "nightly", feature(type_alias_impl_trait))]
 
 pub use embedded_hal as ehal;
 
@@ -105,6 +102,9 @@ pub mod timer_traits;
 pub mod async_hal;
 #[cfg(feature = "async")]
 pub use async_hal::*;
+
+#[cfg(feature = "async")]
+pub use cortex_m_interrupt::{self, take_exception, take_nvic_interrupt};
 
 #[cfg(all(feature = "unproven", feature = "dma"))]
 pub mod dmac;
