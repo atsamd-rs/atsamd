@@ -425,7 +425,9 @@ clock_generator!(
     (tcc0_tcc1, Tcc0Tcc1Clock, TCC0_TCC1, Tcc0Tcc1),
     (tc2_tc3, Tc2Tc3Clock, TC2_TC3, Tc2Tc3),
     (tcc2_tcc3, Tcc2Tcc3Clock, TCC2_TCC3, Tcc2Tcc3),
+    #[cfg(feature = "min-samd51j")]
     (tc4_tc5, Tc4Tc5Clock, TC4_TC5, Tc4Tc5),
+    #[cfg(feature = "min-samd51j")]
     (tcc4, Tcc4Clock, TCC4, Tcc4),
     #[cfg(feature = "min-samd51n")]
     (tc6_tc7, Tc6Tc7Clock, TC6_TC7, Tc6Tc7),
@@ -465,7 +467,9 @@ clock_generator!(
     (ac, AcClock, AC, Ac),
     (ccl, CclClock, CCL, Ccl),
     (dac, DacClock, DAC, Dac),
+    #[cfg(feature = "min-samd51j")]
     (i2s0, I2S0Clock, I2S0, I2S0),
+    #[cfg(feature = "min-samd51j")]
     (i2s1, I2S1Clock, I2S1, I2S1),
     (sdhc0, Sdhc0Clock, SDHC0, Sdhc0),
     #[cfg(feature = "min-samd51n")]
