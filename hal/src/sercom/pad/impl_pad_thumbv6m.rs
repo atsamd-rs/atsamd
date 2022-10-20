@@ -317,11 +317,11 @@ pad_table!(
     PB17 {
         C: (Sercom5, Pad1) + I2C,
     }
-    #[cfg(feature = "min-samd21g")]
+    #[cfg(all(feature = "min-samd21g", not(feature = "samd21gl")))]
     PB22 {
         D: (Sercom5, Pad2),
     }
-    #[cfg(feature = "min-samd21g")]
+    #[cfg(all(feature = "min-samd21g", not(feature = "samd21gl")))]
     PB23 {
         D: (Sercom5, Pad3),
     }

@@ -315,7 +315,7 @@ ei!(ExtInt[6] {
     PA22,
     #[cfg(feature = "min-samd21j")]
     PB06,
-    #[cfg(feature = "min-samd21g")]
+    #[cfg(all(feature = "min-samd21g", not(feature = "samd21gl")))]
     PB22,
 });
 
@@ -325,7 +325,7 @@ ei!(ExtInt[7] {
     PA23,
     #[cfg(feature = "min-samd21j")]
     PB07,
-    #[cfg(feature = "min-samd21g")]
+    #[cfg(all(feature = "min-samd21g", not(feature = "samd21gl")))]
     PB23,
 });
 
