@@ -133,6 +133,26 @@ impl DfllToken {
     }
 
     #[inline]
+    fn set_usb_clock_recovery_mode(&mut self, value: bool) {
+        self.dfllctrlb().modify(|_, w| w.usbcrm().bit(value));
+        self.wait_sync_dfllctrlb();
+    }
+
+    #[inline]
+    fn set_quick_lock(&mut self, value: bool) {
+        // QLDIS is Quick Lock Disable register; thus value has to be negated
+        self.dfllctrlb().modify(|_, w| w.qldis().bit(!value));
+        self.wait_sync_dfllctrlb();
+    }
+
+    #[inline]
+    fn set_chill_cycle(&mut self, value: bool) {
+        // CCDIS is Chill Cycle Disable register; thus value has to be negated
+        self.dfllctrlb().modify(|_, w| w.ccdis().bit(!value));
+        self.wait_sync_dfllctrlb();
+    }
+
+    #[inline]
     fn set_mode(&mut self, mode: DynMode) {
         let bit = match mode {
             DynMode::OpenLoop => false,
@@ -192,12 +212,8 @@ pub enum DynMode {
 ///
 /// [type-level enum]: crate::typelevel#type-level-enum
 pub trait Mode: Sealed {
-    /// Corresponding [`DynMode`]
-    const DYN: DynMode;
-    /// Get the coarse maximum step (only valid in [`ClosedLoop`] mode)
-    fn coarse_max_step(&self) -> CoarseMaxStep;
-    /// Get the fine maximum step (only valid in [`ClosedLoop`] mode)
-    fn fine_max_step(&self) -> FineMaxStep;
+    fn enable(&self, token: &mut DfllToken);
+    fn freq(&self) -> Hertz;
 }
 
 /// Type-level variant of [`Mode`] representing open loop operation of the DFLL
@@ -205,19 +221,106 @@ pub trait Mode: Sealed {
 /// See the [type-level enum] documentation for more details on the pattern.
 ///
 /// [type-level enum]: crate::typelevel#type-level-enum
-pub struct OpenLoop(());
+pub struct OpenLoop;
 
 impl Sealed for OpenLoop {}
 
 impl Mode for OpenLoop {
-    const DYN: DynMode = DynMode::OpenLoop;
-    #[inline]
-    fn coarse_max_step(&self) -> CoarseMaxStep {
-        0
+    fn enable(&self, token: &mut DfllToken) {
+        token.set_mode(DynMode::OpenLoop);
     }
-    #[inline]
-    fn fine_max_step(&self) -> FineMaxStep {
-        0
+
+    fn freq(&self) -> Hertz {
+        48.mhz().into()
+    }
+}
+
+pub trait ClosedLoopSubmode {
+    fn enable(&self, token: &mut DfllToken);
+    fn freq(&self) -> Hertz;
+}
+
+pub struct FromPclk<G: GclkId> {
+    pclk: Pclk<DfllId, G>,
+    mult_factor: MultFactor,
+    chill_cycle: bool,
+    quick_lock: bool,
+}
+
+impl<G: GclkId> FromPclk<G> {
+    // 54.13.4 Digital Frequency Locked Loop (DFLL48M) Characteristics
+    //
+    // Table 54-51. DFLL48M Characteristics - Closed Loop Mode
+    //
+    // Input reference frequency:
+    // - Min: 732 Hz
+    // - Typical: 32_768 Hz
+    // - Max: 33 kHz
+    //
+    // Notes:
+    //
+    // 1. These values are based on simulation. They are not covered by production
+    // test limits or characterization.
+    //
+    // 2. To ensure that the device stays
+    // within the maximum allowed clock frequency, any reference clock for the DFLL
+    // in close loop must be within 2% error accuracy.
+    pub fn new(pclk: Pclk<DfllId, G>, mult_factor: MultFactor) -> Self {
+        let pclk_freq = pclk.freq().0;
+        if pclk_freq < 700 || pclk_freq > 33_000 {
+            panic!("Invalid Pclk<DfllId, _> input frequency");
+        }
+        unsafe { Self::new_unchecked(pclk, mult_factor) }
+    }
+
+    pub unsafe fn new_unchecked(pclk: Pclk<DfllId, G>, mult_factor: MultFactor) -> Self {
+        Self {
+            pclk,
+            mult_factor,
+            chill_cycle: true,
+            quick_lock: true,
+        }
+    }
+    pub fn chill_cycle(mut self, value: bool) -> Self {
+        self.chill_cycle = value;
+        self
+    }
+    pub fn quick_lock(mut self, value: bool) -> Self {
+        self.quick_lock = value;
+        self
+    }
+}
+
+impl<G: GclkId> ClosedLoopSubmode for FromPclk<G> {
+    fn enable(&self, token: &mut DfllToken) {
+        token.set_usb_clock_recovery_mode(false);
+        token.set_mult_factor(self.mult_factor);
+        token.set_chill_cycle(self.chill_cycle);
+        token.set_chill_cycle(self.quick_lock);
+    }
+
+    fn freq(&self) -> Hertz {
+        Hertz(self.pclk.freq().0 * self.mult_factor as u32)
+    }
+}
+
+struct FromUsb;
+
+impl ClosedLoopSubmode for FromUsb {
+    fn enable(&self, token: &mut DfllToken) {
+        token.set_usb_clock_recovery_mode(true);
+        // 48 MHz / 1 kHz (1 ms SOF for USB)
+        //
+        // See Datasheet, `USB Clock Recovery Mode` in 28.6.4.2
+        token.set_mult_factor(48_000);
+        // Datasheet recommends using chill cycle and quick lock for USB based closed
+        // loop mode
+        token.set_chill_cycle(true);
+        token.set_quick_lock(true);
+    }
+
+    fn freq(&self) -> Hertz {
+        48.mhz().into()
     }
 }
 
@@ -231,23 +334,24 @@ impl Mode for OpenLoop {
 /// See the [type-level enum] documentation for more details on the pattern.
 ///
 /// [type-level enum]: crate::typelevel#type-level-enum
-pub struct ClosedLoop<G: GclkId> {
-    pclk: Pclk<DfllId, G>,
-    coarse_max_step: CoarseMaxStep,
-    fine_max_step: FineMaxStep,
+pub struct ClosedLoop<M> {
+    pub mode: M,
+    pub coarse_max_step: CoarseMaxStep,
+    pub fine_max_step: FineMaxStep,
 }
 
-impl<G: GclkId> Sealed for ClosedLoop<G> {}
+impl<M> Sealed for ClosedLoop<M> {}
 
-impl<G: GclkId> Mode for ClosedLoop<G> {
-    const DYN: DynMode = DynMode::ClosedLoop;
-    #[inline]
-    fn coarse_max_step(&self) -> CoarseMaxStep {
-        self.coarse_max_step
+impl<M: ClosedLoopSubmode> Mode for ClosedLoop<M> {
+    fn enable(&self, token: &mut DfllToken) {
+        self.mode.enable(token);
+        token.set_coarse_max_step(self.coarse_max_step);
+        token.set_fine_max_step(self.fine_max_step);
+        token.set_mode(DynMode::ClosedLoop);
     }
-    #[inline]
-    fn fine_max_step(&self) -> FineMaxStep {
-        self.fine_max_step
+
+    fn freq(&self) -> Hertz {
+        self.mode.freq()
     }
 }
 
@@ -260,9 +364,7 @@ impl<G: GclkId> Mode for ClosedLoop<G> {
 /// It is generic over the supported modes of operation
 pub struct Dfll<M: Mode> {
     token: DfllToken,
-    freq: Hertz,
     mode: M,
-    mult_factor: MultFactor,
     run_standby: bool,
     on_demand_mode: bool,
 }
@@ -271,7 +373,7 @@ impl<M: Mode> Dfll<M> {
     /// Returns the frequency of the [`Dfll`]
     #[inline]
     pub fn freq(&self) -> Hertz {
-        Hertz(self.freq.0 * self.mult_factor as u32)
+        self.mode.freq()
     }
 
     /// Controls the clock source behaviour during standby
@@ -298,67 +400,33 @@ impl<M: Mode> Dfll<M> {
     /// within
     #[inline]
     pub fn enable(mut self) -> EnabledDfll<M> {
-        if M::DYN == DynMode::ClosedLoop {
-            self.token.set_coarse_max_step(self.mode.coarse_max_step());
-            self.token.set_fine_max_step(self.mode.fine_max_step());
-        }
-        self.token.set_mode(M::DYN);
+        self.mode.enable(&mut self.token);
         self.token.set_on_demand_mode(self.on_demand_mode);
         self.token.set_run_standby(self.run_standby);
-        self.token.set_mult_factor(self.mult_factor);
         self.token.enable();
         Enabled::new(self)
     }
-}
 
-impl Dfll<OpenLoop> {
-    /// Constructs a builder of [`Dfll`] in an [`OpenLoop`]. To affect the
-    /// hardware, it requires an additional call to [`Dfll::enable`]
     #[inline]
-    pub fn in_open_mode(token: DfllToken) -> Dfll<OpenLoop> {
-        Self {
+    pub fn new(token: DfllToken, mode: M) -> Self {
+        let dfll = Self {
             token,
-            freq: 48.mhz().into(),
-            mode: OpenLoop(()),
-            mult_factor: 1,
+            mode,
             run_standby: false,
             on_demand_mode: true,
-        }
+        };
+
+        dfll
     }
 
     /// Release the resources
     #[inline]
-    pub fn free(self) -> DfllToken {
-        self.token
+    pub fn free(self) -> (DfllToken, M) {
+        (self.token, self.mode)
     }
 }
 
-impl<G: GclkId> Dfll<ClosedLoop<G>> {
-    /// Constructs a builder of [`Dfll`] in a [`ClosedLoop`]. To affect the
-    /// hardware, it requires an additional call to [`Dfll::enable`]
-    #[inline]
-    pub fn in_closed_mode(
-        token: DfllToken,
-        pclk: Pclk<DfllId, G>,
-        mult_factor: MultFactor,
-        coarse_max_step: CoarseMaxStep,
-        fine_max_step: FineMaxStep,
-    ) -> Dfll<ClosedLoop<G>> {
-        let freq = pclk.freq();
-        let mode = ClosedLoop {
-            pclk,
-            coarse_max_step,
-            fine_max_step,
-        };
-        Self {
-            token,
-            freq,
-            mode,
-            mult_factor,
-            run_standby: false,
-            on_demand_mode: true,
-        }
-    }
+impl<G: GclkId> Dfll<ClosedLoop<FromPclk<G>>> {
     /// Set a multiplication factor for an input frequency
     ///
     /// Consult datasheet regarding what kind of set of parameters is acceptable
@@ -366,9 +434,11 @@ impl<G: GclkId> Dfll<ClosedLoop<G>> {
     /// be incorrect
     #[inline]
     pub fn set_mult_factor(&mut self, mult_factor: MultFactor) {
-        self.mult_factor = mult_factor;
+        self.mode.mode.mult_factor = mult_factor;
     }
+}
 
+impl<M: ClosedLoopSubmode> Dfll<ClosedLoop<M>> {
     /// Set a maximum step size allowed during a process a frequency tuning for
     /// a coarse parameter.
     ///
@@ -390,12 +460,6 @@ impl<G: GclkId> Dfll<ClosedLoop<G>> {
     pub fn set_fine_max_step(&mut self, fine_max_step: FineMaxStep) {
         self.mode.fine_max_step = fine_max_step;
     }
-
-    /// Release the resources
-    #[inline]
-    pub fn free(self) -> (DfllToken, Pclk<DfllId, G>) {
-        (self.token, self.mode.pclk)
-    }
 }
 
 impl<M: Mode> EnabledDfll<M> {
@@ -409,51 +473,21 @@ impl<M: Mode> EnabledDfll<M> {
 
 pub type EnabledDfll<M, N = U0> = Enabled<Dfll<M>, N>;
 
-impl EnabledDfll<OpenLoop, U1> {
+impl<OldM: Mode> EnabledDfll<OldM, U1> {
     /// Special, helper method allowing to change a mode of [`Dfll`] operation
     /// in place. It is implemented only for an enabled [`Dfll`] having a single
     /// user (which is a [`Gclk0`]). Without it, it becomes unwieldy to change a
     /// mode of a [`Dfll`] actively used by [`Gclk0`], which is a very common
     /// scenario
     #[inline]
-    pub fn to_closed_mode<G: GclkId>(
+    pub fn to_mode<NewM: Mode>(
         self,
         gclk0: EnabledGclk0<DfllId, U1>,
-        reference_clk: Pclk<DfllId, G>,
-        multiplication_factor: MultFactor,
-        coarse_maximum_step: CoarseMaxStep,
-        fine_maximum_step: FineMaxStep,
-    ) -> (EnabledDfll<ClosedLoop<G>, U1>, EnabledGclk0<DfllId, U1>) {
-        let token = self.0.free();
-        let dfll = Dfll::in_closed_mode(
-            token,
-            reference_clk,
-            multiplication_factor,
-            coarse_maximum_step,
-            fine_maximum_step,
-        );
-        (dfll.enable().inc(), gclk0)
-    }
-}
-
-impl<G: GclkId> EnabledDfll<ClosedLoop<G>, U1> {
-    /// Special, helper method allowing to change a mode of [`Dfll`] operation
-    /// in place. It is implemented only for an enabled [`Dfll`] having a single
-    /// user (which is a [`Gclk0`]). Without it, it becomes unwieldy to change a
-    /// mode of a [`Dfll`] actively used by [`Gclk0`], which is a very common
-    /// scenario
-    #[inline]
-    pub fn to_open_mode(
-        self,
-        gclk0: EnabledGclk0<DfllId, U1>,
-    ) -> (
-        EnabledDfll<OpenLoop, U1>,
-        EnabledGclk0<DfllId, U1>,
-        Pclk<DfllId, G>,
-    ) {
-        let (token, pclk) = self.0.free();
-        let dfll = Dfll::in_open_mode(token);
-        (dfll.enable().inc(), gclk0, pclk)
+        mode: NewM,
+    ) -> (EnabledDfll<NewM, U1>, OldM, EnabledGclk0<DfllId, U1>) {
+        let (token, old_mode) = self.0.free();
+        let dfll = Dfll::new(token, mode);
+        (dfll.enable().inc(), old_mode, gclk0)
     }
 }
 

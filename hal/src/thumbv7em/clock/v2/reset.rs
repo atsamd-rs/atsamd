@@ -142,7 +142,7 @@ pub fn clock_system_at_reset(
             gclk,
             mclk,
         };
-        let dfll = Enabled::<_>::new(dfll::Dfll::in_open_mode(dfll::DfllToken::new()));
+        let dfll = Enabled::<_>::new(dfll::Dfll::new(dfll::DfllToken::new(), dfll::OpenLoop));
         let (gclk0, dfll) = gclk::Gclk0::from_source(gclk::GclkToken::new(), dfll);
         let gclk0 = Enabled::new(gclk0);
         let clocks = Clocks {
