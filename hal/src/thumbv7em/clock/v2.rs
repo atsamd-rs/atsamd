@@ -858,7 +858,7 @@
 use typenum::{Unsigned, U0};
 
 use crate::time::Hertz;
-use crate::typelevel::{Counter, PrivateDecrement, PrivateIncrement, Sealed};
+use crate::typelevel::{PrivateDecrement, PrivateIncrement, Sealed};
 
 pub mod ahb;
 pub mod apb;
@@ -932,11 +932,11 @@ pub trait Source: Sealed {
 /// [`EnabledGclk0`]: gclk::EnabledGclk0
 /// [`Increment`]: crate::typelevel::Increment
 /// [`Decrement`]: crate::typelevel::Decrement
-pub struct Enabled<T, N: Counter = U0>(pub(crate) T, N);
+pub struct Enabled<T, N = U0>(pub(crate) T, N);
 
-impl<T, N: Counter> Sealed for Enabled<T, N> {}
+impl<T, N> Sealed for Enabled<T, N> {}
 
-impl<T, N: Unsigned + Counter> Enabled<T, N> {
+impl<T, N: Unsigned> Enabled<T, N> {
     #[inline]
     pub(crate) fn new(t: T) -> Self {
         Enabled(t, N::default())
@@ -960,8 +960,6 @@ impl<T, N: PrivateDecrement> PrivateDecrement for Enabled<T, N> {
         Enabled(self.0, self.1.dec())
     }
 }
-
-impl<T, N: Counter> Counter for Enabled<T, N> {}
 
 #[allow(dead_code)]
 fn test() {

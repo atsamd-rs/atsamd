@@ -212,7 +212,7 @@ use crate::pac::oscctrl::{self, XOSCCTRL};
 
 use crate::gpio::{FloatingDisabled, Pin, PinId, PA14, PA15, PB22, PB23};
 use crate::time::Hertz;
-use crate::typelevel::{Counter, Decrement, Increment, Sealed};
+use crate::typelevel::{Decrement, Increment, Sealed};
 
 use super::dfll::DfllId;
 use super::{Enabled, Source};
@@ -939,7 +939,6 @@ impl<X, M, N> EnabledXosc<X, M, N>
 where
     X: XoscId,
     M: Mode,
-    N: Counter,
 {
     /// Check whether the [`Xosc`] is stable and ready to be used as a clock
     /// [`Source`]
@@ -1042,7 +1041,6 @@ impl<X, M, N> Source for EnabledXosc<X, M, N>
 where
     X: XoscId,
     M: Mode,
-    N: Counter,
 {
     type Id = X;
 

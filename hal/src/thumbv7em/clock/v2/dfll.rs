@@ -14,7 +14,7 @@
 use typenum::{U0, U1};
 
 use crate::time::{Hertz, U32Ext};
-use crate::typelevel::{Counter, PrivateIncrement, Sealed};
+use crate::typelevel::{PrivateIncrement, Sealed};
 
 use super::gclk::{EnabledGclk0, GclkId};
 use super::pclk::Pclk;
@@ -461,7 +461,7 @@ impl<G: GclkId> EnabledDfll<ClosedLoop<G>, U1> {
 // Source
 //==============================================================================
 
-impl<M: Mode, N: Counter> Source for EnabledDfll<M, N> {
+impl<M: Mode, N> Source for EnabledDfll<M, N> {
     type Id = DfllId;
 
     #[inline]

@@ -350,7 +350,7 @@ use crate::pac::osc32kctrl::{status, CFDCTRL, XOSC32K};
 
 use crate::gpio::{FloatingDisabled, Pin, PA00, PA01};
 use crate::time::Hertz;
-use crate::typelevel::{Counter, Decrement, Increment, PrivateDecrement, PrivateIncrement, Sealed};
+use crate::typelevel::{Decrement, Increment, PrivateDecrement, PrivateIncrement, Sealed};
 
 use super::osculp32k::OscUlp32kId;
 use super::{Enabled, Source};
@@ -984,7 +984,7 @@ impl<M: Mode> EnabledXosc32kBase<M> {
     }
 }
 
-impl<M: Mode, N: Counter> EnabledXosc32kBase<M, N> {
+impl<M: Mode, N> EnabledXosc32kBase<M, N> {
     /// Check whether the XOSC32K is stable and ready to be used as a clock
     /// [`Source`]
     #[inline]
@@ -1184,7 +1184,7 @@ impl EnabledXosc1k {
     }
 }
 
-impl<N: Counter> Source for EnabledXosc1k<N> {
+impl<N> Source for EnabledXosc1k<N> {
     type Id = Xosc1kId;
 
     #[inline]
@@ -1255,7 +1255,7 @@ impl EnabledXosc32k {
     }
 }
 
-impl<N: Counter> Source for EnabledXosc32k<N> {
+impl<N> Source for EnabledXosc32k<N> {
     type Id = Xosc32kId;
 
     #[inline]

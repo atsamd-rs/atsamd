@@ -636,8 +636,6 @@ use core::ops::{Add, Sub};
 use typenum::{Add1, Bit, Sub1, UInt, Unsigned, B1, U0};
 
 mod private {
-    use super::Counter;
-
     /// Super trait used to mark traits with an exhaustive set of
     /// implementations
     pub trait Sealed {}
@@ -651,17 +649,17 @@ mod private {
     impl Sealed for f32 {}
 
     /// Mapping from an instance of [`Counter`] to its successor
-    pub trait Increment: Counter {
+    pub trait Increment {
         /// Successor type of `Self`
-        type Inc: Counter;
+        type Inc;
         /// Consume an instance of `Self` and return its successor
         fn inc(self) -> Self::Inc;
     }
 
     /// Mapping from an instance of [`Counter`] to its predecessor
-    pub trait Decrement: Counter {
+    pub trait Decrement {
         /// Predecessor type of `Self`
-        type Dec: Counter;
+        type Dec;
         /// Consume an instance of `Self` and return its predecessor
         fn dec(self) -> Self::Dec;
     }
@@ -740,16 +738,6 @@ impl Sealed for U0 {}
 /// Implement `Sealed` for all type-level, [`Unsigned`] integers *except* [`U0`]
 impl<U: Unsigned, B: Bit> Sealed for UInt<U, B> {}
 
-/// Marker trait for countable types
-///
-/// This trait marks a set of types related through [`Increment`] and
-/// [`Decrement`]. As a set, the types are isomorphic to the natural numbers.
-///
-/// The [`typelevel`](super) module provides an implementation over the
-/// [`Unsigned`] integers from [`typenum`]. All further implementations of
-/// `Counter` are built from this root implementation.
-pub trait Counter: Sealed {}
-
 /// Trait mapping each [`Counter`] type to its successor
 ///
 /// This trait maps each type implementing [`Counter`] to its corresponding
@@ -770,12 +758,10 @@ pub trait Decrement: PrivateDecrement {}
 
 impl<T: PrivateDecrement> Decrement for T {}
 
-impl<N: Unsigned + Sealed> Counter for N {}
-
 impl<N> PrivateIncrement for N
 where
-    N: Sealed + Unsigned + Add<B1>,
-    Add1<N>: Sealed + Unsigned,
+    N: Unsigned + Add<B1>,
+    Add1<N>: Unsigned,
 {
     type Inc = Add1<N>;
     #[inline]
@@ -786,8 +772,8 @@ where
 
 impl<N> PrivateDecrement for N
 where
-    N: Sealed + Unsigned + Sub<B1>,
-    Sub1<N>: Sealed + Unsigned,
+    N: Unsigned + Sub<B1>,
+    Sub1<N>: Unsigned,
 {
     type Dec = Sub1<N>;
     #[inline]

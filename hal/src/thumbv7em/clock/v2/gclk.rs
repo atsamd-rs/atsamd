@@ -350,7 +350,7 @@ use crate::gpio::{self, AlternateM, AnyPin, Pin, PinId};
 use crate::pac::gclk::genctrl::SRC_A;
 use crate::pac::gclk::GENCTRL;
 use crate::time::Hertz;
-use crate::typelevel::{Counter, Decrement, Increment, PrivateDecrement, PrivateIncrement, Sealed};
+use crate::typelevel::{Decrement, Increment, PrivateDecrement, PrivateIncrement, Sealed};
 
 use super::dfll::DfllId;
 use super::dpll::{Dpll0Id, Dpll1Id};
@@ -1178,7 +1178,6 @@ impl<G, I, N> EnabledGclk<G, I, N>
 where
     G: GclkId,
     I: GclkSourceId,
-    N: Counter,
 {
     /// Enable [`Gclk`] output to a GPIO pins
     #[inline]
@@ -1353,7 +1352,6 @@ impl<G, I, N> Source for EnabledGclk<G, I, N>
 where
     G: GclkId,
     I: GclkSourceId,
-    N: Counter,
 {
     type Id = G;
 

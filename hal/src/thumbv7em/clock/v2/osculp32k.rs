@@ -166,7 +166,7 @@ use typenum::U0;
 use crate::pac::osc32kctrl::OSCULP32K;
 
 use crate::time::Hertz;
-use crate::typelevel::{Counter, Decrement, Increment, PrivateDecrement, PrivateIncrement, Sealed};
+use crate::typelevel::{Decrement, Increment, PrivateDecrement, PrivateIncrement, Sealed};
 
 use super::{Enabled, Source};
 
@@ -318,7 +318,7 @@ impl OscUlp32kBase {
     }
 }
 
-impl<N: Counter> EnabledOscUlp32kBase<N> {
+impl<N> EnabledOscUlp32kBase<N> {
     /// Override the factory-default calibration value
     #[inline]
     pub fn set_calibration(&mut self, calib: u8) {
@@ -409,7 +409,7 @@ impl EnabledOscUlp1k {
     }
 }
 
-impl<N: Counter> Source for EnabledOscUlp1k<N> {
+impl<N> Source for EnabledOscUlp1k<N> {
     type Id = OscUlp1kId;
 
     #[inline]
@@ -472,7 +472,7 @@ impl EnabledOscUlp32k {
     }
 }
 
-impl<N: Counter> Source for EnabledOscUlp32k<N> {
+impl<N> Source for EnabledOscUlp32k<N> {
     type Id = OscUlp32kId;
 
     #[inline]

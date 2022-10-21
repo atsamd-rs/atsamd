@@ -247,7 +247,7 @@ use crate::pac::oscctrl::DPLL;
 use crate::pac::oscctrl::dpll::dpllctrlb::REFCLK_A;
 
 use crate::time::Hertz;
-use crate::typelevel::{Counter, Decrement, Increment, Sealed};
+use crate::typelevel::{Decrement, Increment, Sealed};
 
 use super::gclk::GclkId;
 use super::pclk::{Pclk, PclkId, PclkToken};
@@ -923,7 +923,6 @@ impl<D, I, N> EnabledDpll<D, I, N>
 where
     D: DpllId,
     I: DpllSourceId,
-    N: Counter,
 {
     /// Test whether the [`Dpll`] is locked
     #[inline]
@@ -946,7 +945,6 @@ impl<D, I, N> Source for EnabledDpll<D, I, N>
 where
     D: DpllId,
     I: DpllSourceId,
-    N: Counter,
 {
     type Id = D;
 
