@@ -76,13 +76,13 @@ pub mod pins {
                 AlternateC: UartTx
             }
         }
-        PA15 {
-            /// Pin 5, PWM capable
-            name: d5
-            aliases: {
-                AlternateE: D5Pwm
-            }
-        }
+        // PA15 {
+        //     /// Pin 5, PWM capable
+        //     name: d5
+        //     aliases: {
+        //         AlternateE: D5Pwm
+        //     }
+        // }
         PA20 {
             /// Pin 6, PWM capable
             name: d6
@@ -109,7 +109,7 @@ pub mod pins {
             /// Pin 12, PWM capable
             name: d12
         }
-        PA17 {
+        PA15 {
             /// Pin 13, which is also attached to the red LED. PWM capable.
             name: d13
             aliases: {

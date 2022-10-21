@@ -10,5 +10,5 @@ rustflags = [
 ]
 
 [target.thumbv6m-none-eabi]
-runner = 'arm-none-eabi-gdb'
-#runner = 'probe-run --chip ATSAMD21G18A'
+# runner = 'arm-none-eabi-gdb'
+runner = 'probe-run --chip ATSAMD21G18A'
