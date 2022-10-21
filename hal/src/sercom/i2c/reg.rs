@@ -27,7 +27,7 @@ impl<S: Sercom> Registers<S> {
 
     /// Helper function to access the underlying `I2CM` from the given `SERCOM`
     #[inline]
-    fn i2c_master(&self) -> &pac::sercom0::I2CM {
+    pub(crate) fn i2c_master(&self) -> &pac::sercom0::I2CM {
         self.sercom.i2cm()
     }
 
@@ -209,9 +209,9 @@ impl<S: Sercom> Registers<S> {
         }
     }
 
-    /// Start a blocking write transaction
+    /// Start a write transaction. May be used by [`start_write_blocking`], or an async method.
     #[inline]
-    pub(super) fn start_write_blocking(&mut self, addr: u8) -> Result<(), Error> {
+    pub(super) fn start_write(&mut self, addr: u8) -> Result<(), Error> {
         if self.get_smart_mode() {
             self.disable();
             self.set_smart_mode(false);
@@ -228,14 +228,21 @@ impl<S: Sercom> Registers<S> {
                 .write(|w| w.addr().bits(encode_write_address(addr)));
         }
 
+        Ok(())
+    }
+
+    /// Start a blocking write transaction
+    #[inline]
+    pub(super) fn start_write_blocking(&mut self, addr: u8) -> Result<(), Error> {
+        self.start_write(addr)?;
+
         // wait for transmission to complete
         while !self.i2c_master().intflag.read().mb().bit_is_set() {}
         self.read_status().check_bus_error()
     }
 
-    /// Start a blocking read transaction
-    #[inline]
-    pub(super) fn start_read_blocking(&mut self, addr: u8) -> Result<(), Error> {
+    /// Start a write transaction. May be used by [`start_write_blocking`], or an async method.
+    pub(super) fn start_read(&mut self, addr: u8) -> Result<(), Error> {
         if self.get_smart_mode() {
             self.disable();
             self.set_smart_mode(false);
@@ -255,6 +262,14 @@ impl<S: Sercom> Registers<S> {
                 .addr
                 .write(|w| w.addr().bits(encode_read_address(addr)));
         }
+
+        Ok(())
+    }
+
+    /// Start a blocking read transaction
+    #[inline]
+    pub(super) fn start_read_blocking(&mut self, addr: u8) -> Result<(), Error> {
+        self.start_read(addr)?;
 
         // wait for transmission to complete
         loop {
@@ -348,11 +363,16 @@ impl<S: Sercom> Registers<S> {
     }
 
     #[inline]
+    pub(super) fn write_one(&mut self, byte: u8) {
+        unsafe {
+            self.i2c_master().data.write(|w| w.bits(byte));
+        }
+    }
+
+    #[inline]
     pub(super) fn send_bytes(&mut self, bytes: &[u8]) -> Result<(), Error> {
         for b in bytes {
-            unsafe {
-                self.i2c_master().data.write(|w| w.bits(*b));
-            }
+            self.write_one(*b);
 
             loop {
                 let intflag = self.i2c_master().intflag.read();
@@ -367,15 +387,20 @@ impl<S: Sercom> Registers<S> {
 
     #[inline]
     pub(super) fn read_one(&mut self) -> u8 {
-        while !self.i2c_master().intflag.read().sb().bit_is_set() {}
         self.i2c_master().data.read().bits()
+    }
+
+    #[inline]
+    pub(super) fn read_one_blocking(&mut self) -> u8 {
+        while !self.i2c_master().intflag.read().sb().bit_is_set() {}
+        self.read_one()
     }
 
     #[inline]
     pub(super) fn fill_buffer(&mut self, buffer: &mut [u8]) -> Result<(), Error> {
         // Some manual iterator gumph because we need to ack bytes after the first.
         let mut iter = buffer.iter_mut();
-        *iter.next().expect("buffer len is at least 1") = self.read_one();
+        *iter.next().expect("buffer len is at least 1") = self.read_one_blocking();
 
         loop {
             match iter.next() {
@@ -383,7 +408,7 @@ impl<S: Sercom> Registers<S> {
                 Some(dest) => {
                     // Ack the last byte so that we can receive another one
                     self.cmd_read();
-                    *dest = self.read_one();
+                    *dest = self.read_one_blocking();
                 }
             }
         }

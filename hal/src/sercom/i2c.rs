@@ -276,6 +276,12 @@ pub use config::*;
 
 mod impl_ehal;
 
+#[cfg(feature = "async")]
+mod async_api;
+
+#[cfg(feature = "async")]
+pub use async_api::*;
+
 /// Word size for an I2C message
 pub type Word = u8;
 
@@ -359,9 +365,8 @@ impl<C: AnyConfig> I2c<C> {
             .start_dma_read(address, xfer_len)
     }
 
-    #[cfg(feature = "dma")]
     #[inline]
-    pub(super) fn check_bus_status(&self) -> Result<(), Error> {
+    pub(crate) fn check_bus_status(&self) -> Result<(), Error> {
         self.config.as_ref().registers.check_bus_status()
     }
 

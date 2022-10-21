@@ -81,3 +81,16 @@ pub enum Error {
     Nack,
     Timeout,
 }
+
+#[cfg(feature = "nightly")]
+impl embedded_hal_async::i2c::Error for Error {
+    fn kind(&self) -> embedded_hal_async::i2c::ErrorKind {
+        use embedded_hal_async::i2c::{ErrorKind, NoAcknowledgeSource};
+        match self {
+            Error::ArbitrationLost => ErrorKind::ArbitrationLoss,
+            Error::BusError => ErrorKind::Bus,
+            Error::LengthError | Error::Timeout => ErrorKind::Overrun,
+            Error::Nack => ErrorKind::NoAcknowledge(NoAcknowledgeSource::Unknown),
+        }
+    }
+}
