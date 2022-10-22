@@ -276,6 +276,12 @@ pub use config::*;
 
 mod impl_ehal;
 
+#[cfg(feature = "async")]
+mod async_api;
+
+#[cfg(feature = "async")]
+pub use async_api::*;
+
 /// Word size for an I2C message
 pub type Word = u8;
 

@@ -36,8 +36,7 @@ use core::ops::Deref;
 use paste::paste;
 use seq_macro::seq;
 
-use crate::pac;
-use pac::sercom0;
+use crate::pac::{self, Peripherals};
 
 #[cfg(feature = "thumbv7")]
 use pac::MCLK as APB_CLK_CTRL;
@@ -76,6 +75,17 @@ pub trait Sercom: Sealed + Deref<Target = sercom0::RegisterBlock> {
     const DMA_TX_TRIGGER: TriggerSource;
     /// Enable the corresponding APB clock
     fn enable_apb_clock(&mut self, ctrl: &APB_CLK_CTRL);
+    /// Get a reference to the sercom from a
+    /// [`Peripherals`](crate::pac::Peripherals) block
+    fn reg_block(peripherals: &mut Peripherals) -> &crate::pac::sercom0::RegisterBlock;
+    /// Interrupt handler for async I2C operarions
+    #[cfg(feature = "async")]
+    fn on_interrupt_i2c();
+    /// Get a reference to this [`Sercom`]'s associated Waker
+    #[cfg(feature = "async")]
+    fn waker() -> &'static embassy_sync::waitqueue::AtomicWaker {
+        &waker::WAKERS[Self::NUM]
+    }
 }
 
 macro_rules! sercom {
@@ -92,13 +102,40 @@ macro_rules! sercom {
                 #[cfg(feature = "has-" sercom~N)]
                 impl Sercom for Sercom~N {
                     const NUM: usize = N;
+
                     #[cfg(feature = "dma")]
                     const DMA_RX_TRIGGER: TriggerSource = TriggerSource::[<SERCOM~N _RX>];
+
                     #[cfg(feature = "dma")]
                     const DMA_TX_TRIGGER: TriggerSource = TriggerSource::[<SERCOM~N _TX>];
+
                     #[inline]
                     fn enable_apb_clock(&mut self, ctrl: &APB_CLK_CTRL) {
                         ctrl.$apbmask.modify(|_, w| w.[<sercom~N _>]().set_bit());
+                    }
+
+                    #[inline]
+                    fn reg_block(peripherals: &mut Peripherals) -> &crate::pac::sercom0::RegisterBlock {
+                        &*peripherals.SERCOM~N
+                    }
+
+                    /// Interrupt handler for async I2C operarions
+                    /// TODO the ISR gets called twice on every MB request???
+                    #[cfg(feature = "async")]
+                    #[inline]
+                    fn on_interrupt_i2c(){
+                        use self::i2c::Flags;
+                        let mut peripherals = unsafe { crate::pac::Peripherals::steal() };
+                        let i2cm = Self::reg_block(&mut peripherals).i2cm();
+                        let flags_to_check = Flags::MB | Flags::SB | Flags::ERROR;
+                        let flags_pending = Flags::from_bits_truncate(i2cm.intflag.read().bits());
+
+                        // Disable interrupts, but don't clear the flags. The future will take care of
+                        // clearing flags and re-enabling interrupts when woken.
+                        if flags_to_check.contains(flags_pending) {
+                            i2cm.intenclr.write(|w| unsafe { w.bits(flags_pending.bits()) } );
+                            waker::WAKERS[Self::NUM].wake();
+                        }
                     }
                 }
             }
@@ -115,3 +152,20 @@ sercom!(apbamask: (0, 1));
 sercom!(apbbmask: (2, 3));
 #[cfg(feature = "thumbv7")]
 sercom!(apbdmask: (4, 7));
+
+#[cfg(feature = "samd11")]
+const NUM_SERCOM: usize = 2;
+#[cfg(feature = "samd21e")]
+const NUM_SERCOM: usize = 4;
+#[cfg(any(feature = "min-samd21g", feature = "samd51g", feature = "samd51j"))]
+const NUM_SERCOM: usize = 6;
+#[cfg(feature = "min-samd51n")]
+const NUM_SERCOM: usize = 8;
+
+#[cfg(feature = "async")]
+pub(super) mod waker {
+    use embassy_sync::waitqueue::AtomicWaker;
+    #[allow(clippy::declare_interior_mutable_const)]
+    const NEW_WAKER: AtomicWaker = AtomicWaker::new();
+    pub(super) static WAKERS: [AtomicWaker; super::NUM_SERCOM] = [NEW_WAKER; super::NUM_SERCOM];
+}

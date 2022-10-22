@@ -43,6 +43,7 @@ git = "https://github.com/datdenkikniet/cortex-m-interrupt.git"
 
 [dev-dependencies]
 cortex-m-rtic = "1.1.3"
+fugit = "0.3.6"
 cortex-m = "0.7"
 usbd-serial = "0.1"
 cortex-m-semihosting = "0.3"
@@ -53,6 +54,9 @@ nom = { version = "5", default-features = false }
 heapless = "0.7"
 panic-halt = "0.2"
 panic-semihosting = "0.5"
+defmt = "0.3"
+defmt-rtt = "0.3"
+panic-probe = "0.3"
 
 [features]
 # ask the HAL to enable atsamd21g support
@@ -152,6 +156,10 @@ required-features = ["dma"]
 
 [[example]]
 name = "async_timer"
+required-features = ["atsamd-hal/async", "atsamd-hal/rtic", "cortex-m-interrupt"]
+
+[[example]]
+name = "async_i2c"
 required-features = ["atsamd-hal/async", "atsamd-hal/rtic", "cortex-m-interrupt"]
 
 [patch.crates-io]

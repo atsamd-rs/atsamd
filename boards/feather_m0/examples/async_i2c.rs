@@ -2,24 +2,21 @@
 #![no_main]
 #![feature(type_alias_impl_trait)]
 
-#[cfg(not(feature = "use_semihosting"))]
-use panic_halt as _;
-#[cfg(feature = "use_semihosting")]
-use panic_semihosting as _;
+use panic_probe as _;
+use defmt_rtt as _;
 
 #[rtic::app(device = bsp::pac, dispatchers = [I2S])]
 mod app {
     use bsp::{hal, pac, pin_alias};
     use feather_m0 as bsp;
     use hal::{
-        async_hal::timer::AsyncTimer,
+        prelude::*,
         clock::{enable_internal_32kosc, ClockGenId, ClockSource, GenericClockController},
         ehal::digital::v2::ToggleableOutputPin,
-        pac::TC4,
         rtc::{Count32Mode, Rtc},
-        thumbv6m::timer::TimerCounter,
-        time::Milliseconds,
+        sercom::i2c::{self,Config, I2cFuture},
     };
+    use fugit::MillisDuration;
 
     #[monotonic(binds = RTC, default = true)]
     type Monotonic = Rtc<Count32Mode>;
@@ -29,7 +26,7 @@ mod app {
 
     #[local]
     struct Local {
-        timer: AsyncTimer<TC4, pac::Interrupt>,
+        i2c: I2cFuture<Config<bsp::I2cPads>, bsp::pac::Interrupt>,
         red_led: bsp::RedLed,
     }
 
@@ -47,7 +44,10 @@ mod app {
         let pins = bsp::Pins::new(peripherals.PORT);
         let red_led: bsp::RedLed = pin_alias!(pins.red_led).into();
 
-        let tc4_irq = cortex_m_interrupt::take_nvic_interrupt!(pac::Interrupt::TC4, 2);
+        // Take SDA and SCL
+        let (sda, scl) = (pins.sda, pins.scl);
+
+        let sercom3_irq = cortex_m_interrupt::take_nvic_interrupt!(pac::Interrupt::SERCOM3, 2);
         // tc4_irq.set_priority(2);
 
         enable_internal_32kosc(&mut peripherals.SYSCTRL);
@@ -60,26 +60,36 @@ mod app {
         let rtc_clock = clocks.rtc(&timer_clock).unwrap();
         let rtc = Rtc::count32_mode(peripherals.RTC, rtc_clock.freq(), &mut peripherals.PM);
 
-        // configure a clock for the TC4 and TC5 peripherals
-        let tc45 = &clocks.tc4_tc5(&timer_clock).unwrap();
+        let gclk0 = clocks.gclk0();
+        let sercom3_clock = &clocks.sercom3_core(&gclk0).unwrap();
+        let pads = i2c::Pads::new(sda, scl);
+        let i2c = i2c::Config::new(&peripherals.PM, peripherals.SERCOM3, pads, sercom3_clock.freq())
+            .baud(100.khz())
+            .enable().into_async(sercom3_irq);
 
-        // instantiate a timer object for the TC4 peripheral
-        let timer = TimerCounter::tc4_(tc45, peripherals.TC4, &mut peripherals.PM);
-        let timer = timer.into_async(tc4_irq);
+
         async_task::spawn().ok();
 
-        (Shared {}, Local { timer, red_led }, init::Monotonics(rtc))
+        (Shared {}, Local { i2c, red_led }, init::Monotonics(rtc))
     }
 
-    #[task(local = [timer, red_led])]
+    #[task(local = [i2c, red_led])]
     async fn async_task(cx: async_task::Context) {
-        let timer = cx.local.timer;
+        let i2c = cx.local.i2c;
         let red_led = cx.local.red_led;
 
         loop {
-            timer.delay(Milliseconds(500)).await;
+            defmt::info!("Sending 1 byte to I2C...");
+            // This test is based on the BMP388 barometer. Feel free to use any I2C peripheral
+            // you have on hand.
+            i2c.write(0x76, &[0x00]).await.unwrap();
+            
+            let mut buffer = [0x00; 1];
+            defmt::info!("Reading 1 byte from I2C...");
+            i2c.read(0x76, &mut buffer).await.unwrap();
+            defmt::info!("Chip ID is: {:#x}", buffer[0]);
             red_led.toggle().unwrap();
-            cortex_m::asm::wfi();
+            crate::app::monotonics::delay(MillisDuration::<u32>::from_ticks(500).convert()).await;
         }
     }
 }

@@ -100,7 +100,7 @@ where
     #[inline]
     pub fn into_async<I, N>(mut self, irq: I) -> AsyncTimer<T, N>
     where
-        I: NvicInterruptHandle<InterruptNumber = N>,
+        I: NvicInterruptHandle<N>,
         N: InterruptNumber,
     {
         let irq_number = irq.number();

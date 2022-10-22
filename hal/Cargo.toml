@@ -93,8 +93,7 @@ atsame54n = {version = "0.13.0", path = "../pac/atsame54n", optional = true}
 atsame54p = {version = "0.13.0", path = "../pac/atsame54p", optional = true}
 
 [dependencies.embedded-hal-async]
-version = "0.1.0-alph"
-package = "embedded-hal"
+version = "0.1.0-alpha.2"
 optional = true
 
 [dependencies.critical-section]
@@ -105,12 +104,6 @@ optional = true
 version = "0.1"
 optional = true
 git = "https://github.com/embassy-rs/embassy.git"
-# path = "../../../rust-projects/embassy/embassy-sync"
-
-[dependencies.futures]
-version = "0.3.21"
-optional = true
-default-features = false
 
 [dependencies.cortex-m-interrupt]
 version = "0.1"
@@ -214,7 +207,6 @@ usb = ["usb-device"]
 use_rtt = ["jlink_rtt"]
 async = [
     "cortex-m-interrupt",
-    "futures",
     "critical-section",
     "unproven",
     "embassy-sync",
