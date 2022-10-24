@@ -2,8 +2,8 @@
 //!
 //! ## Overview
 //!
-//! The `xosc32k` module provides access to the 32 kHz external crystal oscillator
-//! controller (XOSC32K) within the `OSC32KCTRL` peripheral.
+//! The `xosc32k` module provides access to the 32 kHz external crystal
+//! oscillator controller (XOSC32K) within the `OSC32KCTRL` peripheral.
 //!
 //! The peripheral can operate in two [`Mode`]s. It can accept an external
 //! clock, or it can interface with an crystal oscillator. In both cases, the
@@ -33,7 +33,7 @@
 //! `ENABLE` bit. The call to [`Xosc32kBase::enable`] returns a 1:N [`Enabled`]
 //! clock [`Source`], which can be consumed by both the [`Xosc32k`] and
 //! [`Xosc1k`] clocks. Enabling either of these two clocks will [`Increment`]
-//! the [`EnabledXosc32kBase`] [`Counter`], preventing it from being disabled.
+//! the [`EnabledXosc32kBase`] counter, preventing it from being disabled.
 //! Note that `Xosc32k` and `Xosc1k` are themselves 1:N clocks as well.
 //!
 //! ## Clock failure detection and write lock
@@ -155,7 +155,7 @@
 //! ```
 //!
 //! With the [`EnabledXosc32kBase`] clock in hand, we can enable the [`Xosc1k`]
-//! and [`Xosc32k`], each of which [`Increment`]s the [`Enabled`] [`Counter`].
+//! and [`Xosc32k`], each of which [`Increment`]s the [`Enabled`] counter.
 //! Once we are satisfied with the configuration, we can call `write_lock` to
 //! lock the XOSC32K configuration at the hardware level. Doing so also consumes
 //! the `EnabledXosc32kBase` clock, which eliminates any ability to change the
@@ -368,7 +368,6 @@ use super::{Enabled, Source};
 /// The [`Xosc32kBase`] clock is disabled at power-on reset. To use it, you must
 /// first exchange the token for an actual clock with
 /// [`Xosc32kBase::from_clock`] or [`Xosc32kBase::from_crystal`].
-///
 // # Internal notes
 //
 // There should never be more than one instance of `Xosc32kBaseToken`, because
@@ -413,7 +412,6 @@ pub struct Xosc32kToken(());
 ///
 /// Clock failure detection is disabled at power-on reset. To use it, you must
 /// first enable it by exchanging the token with [`Xosc32kCfd::enable`].
-///
 // # Internal notes
 //
 // There should never be more than one instance of `Xosc32kCfdToken`, because
@@ -806,7 +804,7 @@ pub struct Xosc32kBase<M: Mode> {
 /// underlying type to prevent misuse.
 ///
 /// As with [`Enabled`], the default value for `N` is `U0`; if left unspecified,
-/// the [`Counter`] is assumed to be zero.
+/// the counter is assumed to be zero.
 pub type EnabledXosc32kBase<M, N = U0> = Enabled<Xosc32kBase<M>, N>;
 
 impl Xosc32kBase<ClockMode> {
@@ -1026,7 +1024,7 @@ impl<M: Mode, N> EnabledXosc32kBase<M, N> {
 ///
 /// Because the safe clock makes use of the `OscUlp32k`, the `Xosc32kCfd` must
 /// register as a consumer of the [`EnabledOscUlp32k`] and [`Increment`] its
-/// [`Counter`].
+/// counter.
 ///
 /// [`OscUlp32k`]: super::osculp32k::OscUlp32k
 /// [`EnabledOscUlp32k`]: super::osculp32k::EnabledOscUlp32k
@@ -1039,7 +1037,7 @@ impl Xosc32kCfd {
     ///
     /// Because the safe clock makes use of the [`OscUlp32k`], the `Xosc32kCfd`
     /// must register as a consumer of the [`EnabledOscUlp32k`] and
-    /// [`Increment`] its [`Counter`].
+    /// [`Increment`] its counter.
     ///
     /// [`OscUlp32k`]: super::osculp32k::OscUlp32k
     /// [`EnabledOscUlp32k`]: super::osculp32k::EnabledOscUlp32k
@@ -1089,7 +1087,7 @@ impl Xosc32kCfd {
     /// Disable continuous monitoring of the XOSC32K for clock failure
     ///
     /// Once failure monitoring is disabled, the [`OscUlp32k`] is no longer used
-    /// as the safe clock, so the [`EnabledOscUlp32k`] [`Counter`] can be
+    /// as the safe clock, so the [`EnabledOscUlp32k`] counter can be
     /// [`Decrement`]ed.
     ///
     /// [`OscUlp32k`]: super::osculp32k::OscUlp32k
@@ -1145,13 +1143,13 @@ pub struct Xosc1k {
 /// type to prevent misuse.
 ///
 /// As with [`Enabled`], the default value for `N` is `U0`; if left unspecified,
-/// the [`Counter`] is assumed to be zero.
+/// the counter is assumed to be zero.
 pub type EnabledXosc1k<N = U0> = Enabled<Xosc1k, N>;
 
 impl Xosc1k {
     /// Enable 1 kHz output from the [`Xosc32kBase`] clock
     ///
-    /// This will [`Increment`] the [`EnabledXosc32kBase`] [`Counter`].
+    /// This will [`Increment`] the [`EnabledXosc32kBase`] counter.
     #[inline]
     pub fn enable<M, N>(
         token: Xosc1kToken,
@@ -1169,7 +1167,7 @@ impl Xosc1k {
 impl EnabledXosc1k {
     /// Disable 1 kHz output from the [`Xosc32kBase`] clock
     ///
-    /// This will [`Decrement`] the [`EnabledXosc32kBase`] [`Counter`].
+    /// This will [`Decrement`] the [`EnabledXosc32kBase`] counter.
     #[inline]
     pub fn disable<M, N>(
         self,
@@ -1216,13 +1214,13 @@ pub struct Xosc32k {
 /// underlying type to prevent misuse.
 ///
 /// As with [`Enabled`], the default value for `N` is `U0`; if left unspecified,
-/// the [`Counter`] is assumed to be zero.
+/// the counter is assumed to be zero.
 pub type EnabledXosc32k<N = U0> = Enabled<Xosc32k, N>;
 
 impl Xosc32k {
     /// Enable 32 kHz output from the [`Xosc32kBase`] clock
     ///
-    /// This will [`Increment`] the [`EnabledXosc32kBase`] [`Counter`].
+    /// This will [`Increment`] the [`EnabledXosc32kBase`] counter.
     #[inline]
     pub fn enable<M, N>(
         token: Xosc32kToken,
@@ -1240,7 +1238,7 @@ impl Xosc32k {
 impl EnabledXosc32k {
     /// Disable 1 kHz output from the [`Xosc32kBase`] clock
     ///
-    /// This will [`Decrement`] the [`EnabledXosc32kBase`] [`Counter`].
+    /// This will [`Decrement`] the [`EnabledXosc32kBase`] counter.
     #[inline]
     pub fn disable<M, N>(
         self,

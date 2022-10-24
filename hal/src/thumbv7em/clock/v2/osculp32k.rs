@@ -303,7 +303,7 @@ pub struct OscUlp32kBase {
 /// so we do not provide a `disable` method.
 ///
 /// As with [`Enabled`], the default value for `N` is `U0`; if left unspecified,
-/// the [`Counter`] is assumed to be zero.
+/// the counter is assumed to be zero.
 pub type EnabledOscUlp32kBase<N = U0> = Enabled<OscUlp32kBase, N>;
 
 impl OscUlp32kBase {
@@ -378,13 +378,13 @@ pub struct OscUlp1k {
 /// underlying type to prevent misuse.
 ///
 /// As with [`Enabled`], the default value for `N` is `U0`; if left unspecified,
-/// the [`Counter`] is assumed to be zero.
+/// the counter is assumed to be zero.
 pub type EnabledOscUlp1k<N = U0> = Enabled<OscUlp1k, N>;
 
 impl OscUlp1k {
     /// Enable 1 kHz output from the [`OscUlp32kBase`] clock
     ///
-    /// This will [`Increment`] the [`EnabledOscUlp32kBase`] [`Counter`].
+    /// This will [`Increment`] the [`EnabledOscUlp32kBase`] counter.
     #[inline]
     pub fn enable<N: Increment>(
         token: OscUlp1kToken,
@@ -398,7 +398,7 @@ impl OscUlp1k {
 impl EnabledOscUlp1k {
     /// Disable 1 kHz output from the [`OscUlp32kBase`] clock
     ///
-    /// This will [`Decrement`] the [`EnabledOscUlp32kBase`] [`Counter`].
+    /// This will [`Decrement`] the [`EnabledOscUlp32kBase`] counter.
     #[inline]
     pub fn disable<N: Decrement>(
         self,
@@ -441,13 +441,13 @@ pub struct OscUlp32k {
 /// underlying type to prevent misuse.
 ///
 /// As with [`Enabled`], the default value for `N` is `U0`; if left unspecified,
-/// the [`Counter`] is assumed to be zero.
+/// the counter is assumed to be zero.
 pub type EnabledOscUlp32k<N = U0> = Enabled<OscUlp32k, N>;
 
 impl OscUlp32k {
     /// Enable 32 kHz output from the [`OscUlp32kBase`] clock
     ///
-    /// This will [`Increment`] the [`EnabledOscUlp32kBase`] [`Counter`].
+    /// This will [`Increment`] the [`EnabledOscUlp32kBase`] counter.
     #[inline]
     pub fn enable<N: Increment>(
         token: OscUlp32kToken,
@@ -461,7 +461,7 @@ impl OscUlp32k {
 impl EnabledOscUlp32k {
     /// Disable 32 kHz output from the [`OscUlp32kBase`] clock
     ///
-    /// This will [`Decrement`] the [`EnabledOscUlp32kBase`] [`Counter`].
+    /// This will [`Decrement`] the [`EnabledOscUlp32kBase`] counter.
     #[inline]
     pub fn disable<N: Decrement>(
         self,

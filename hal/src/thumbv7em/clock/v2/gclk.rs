@@ -152,7 +152,7 @@
 //! Once [`Gclk1`] is enabled, we can use it to enable the [`Pclk`] for
 //! [`Sercom0`]. This follows the usual pattern. We provide a [`PclkToken`] and
 //! the [`EnabledGclk1`]. In return, we get an enabled [`Pclk`] and the
-//! [`EnabledGclk1`] [`Counter`] is [`Increment`]ed.
+//! [`EnabledGclk1`] counter is [`Increment`]ed.
 //!
 //! ```no_run
 //! # use atsamd_hal::{
@@ -315,7 +315,7 @@
 //! functionality on [`EnabledGclk0`] instead.
 //!
 //! We model the main clock's consumption of `Gclk0` by setting its [`Enabled`]
-//! [`Counter`] to [`U1`] in [`clock_system_at_reset`]. This prevents users from
+//! counter to [`U1`] in [`clock_system_at_reset`]. This prevents users from
 //! ever disabling `EnabledGclk0`, because there is no way to [`Decrement`] its
 //! `Counter` to [`U0`].
 //!
@@ -554,7 +554,8 @@ pub trait GclkId: Sealed {
     const NUM: usize;
     /// Corresponding [`GclkDivider`] type
     ///
-    /// [`Gclk1`] uses [`GclkDiv16`], while all other [`Gclk`]s use [`GclkDiv8`].
+    /// [`Gclk1`] uses [`GclkDiv16`], while all other [`Gclk`]s use
+    /// [`GclkDiv8`].
     type Divider: GclkDivider;
 }
 
@@ -962,14 +963,14 @@ where
 /// [`Gclk`] to prevent misuse.
 ///
 /// As with [`Enabled`], the default value for `N` is `U0`; if left unspecified,
-/// the [`Counter`] is assumed to be zero.
+/// the counter is assumed to be zero.
 pub type EnabledGclk<G, I, N = U0> = Enabled<Gclk<G, I>, N>;
 
 /// Type alias for the corresponding [`Gclk`]
 ///
 /// As mentioned in the [module-level documentation](self), `Gclk0` is special,
 /// because it provides the processor main clock. We represent this by
-/// permanently [`Increment`]ing the [`Counter`] for [`EnabledGclk0`], which
+/// permanently [`Increment`]ing the counter for [`EnabledGclk0`], which
 /// prevents it from ever being disabled. Accordingly, we also provide a few
 /// special methods on [`EnabledGclk0`] to configure the `Gclk` while it is
 /// actively running.
@@ -979,7 +980,7 @@ pub type Gclk0<I> = Gclk<Gclk0Id, I>;
 ///
 /// As mentioned in the [module-level documentation](self), `Gclk0` is special,
 /// because it provides the processor main clock. We represent this by
-/// permanently [`Increment`]ing the [`Counter`] for [`EnabledGclk0`], which
+/// permanently [`Increment`]ing the counter for [`EnabledGclk0`], which
 /// prevents it from ever being disabled. Thus, the default value for `N` is
 /// [`U1`] instead of [`U0`]. Accordingly, we also provide a few special methods
 /// on [`EnabledGclk0`] to configure the `Gclk` while it is actively running.
@@ -1050,7 +1051,7 @@ where
     /// Create a new [`Gclk`] from a clock [`Source`]
     ///
     /// Creating a [`Gclk`] does not modify any of the hardware registers. It
-    /// only serves to [`Increment`] the [`Source`]'s [`Enabled`] [`Counter`]
+    /// only serves to [`Increment`] the [`Source`]'s [`Enabled`] counter
     /// and create a struct to track the GCLK configuration.
     ///
     /// The configuration data is stored until the user calls [`enable`]. At
@@ -1094,7 +1095,7 @@ where
     /// Consume the [`Gclk`] and free its corresponding resources
     ///
     /// Freeing a [`Gclk`] returns the corresponding [`GclkToken`] and
-    /// [`Decrement`]s the [`Source`]'s [`Enabled`] [`Counter`].
+    /// [`Decrement`]s the [`Source`]'s [`Enabled`] counter.
     #[inline]
     pub fn free_source<S>(self, source: S) -> (GclkToken<G>, S::Dec)
     where
@@ -1212,12 +1213,12 @@ where
 ///
 /// [`Gclk0`] is special, because it drives the processor's main clock, which
 /// can never be disabled. As discussed in the [module-level documentation],
-/// this fact is represented by permanently [`Increment`]ing the [`Counter`] for
+/// this fact is represented by permanently [`Increment`]ing the counter for
 /// [`EnabledGclk0`]. Thus, the minimum value for `N` is `U1` and
 /// [`EnabledGclk0`] can never be disabled.
 ///
 /// These methods represent actions that can be taken when `N = U1`, i.e. the
-/// [`Enabled`] [`Counter`] is at its minimum value. This is the only time it's
+/// [`Enabled`] counter is at its minimum value. This is the only time it's
 /// safe to change the [`Gclk0`] [`Source`] or change its [`GclkDivider`] value.
 ///
 /// [module-level documentation]: self
@@ -1420,7 +1421,7 @@ where
     /// Create and enable a [`GclkOut`] from an [`EnabledGclk`]
     ///
     /// Enabling [`GclkIo`] output will [`Increment`] the `EnabledGclk`
-    /// [`Counter`], which will prevent it from being disabled while the
+    /// counter, which will prevent it from being disabled while the
     /// `GclkOut` exists.
     ///
     /// Note that a given [`Gclk`] can only use [`GclkIo`] for input **or**
@@ -1456,7 +1457,7 @@ where
     /// Disable a [`GclkOut`] and free its resources
     ///
     /// Disabling [`GclkIo`] output will [`Decrement`] the `EnabledGclk`
-    /// [`Counter`]. When a [`GclkOut`] is disabled, but the [`Pin`] is still in
+    /// counter. When a [`GclkOut`] is disabled, but the [`Pin`] is still in
     /// [`AlternateM`] mode, it takes the "output off value" of the `Gclk`. See
     /// the [`Gclk::output_off_value`] documentation for more details.
     #[inline]

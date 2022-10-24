@@ -68,7 +68,7 @@
 //! produce a valid input frequency for the [`Dpll`]. We start by feeding the
 //! already-[`Enabled`] [`Dfll`] to [`Gclk1`] with a [`GclkDivider`] of 24,
 //! producing a 2 MHz output frequency. This has the side effect of
-//! [`Increment`]ing the [`Counter`] for [`EnabledDfll`].
+//! [`Increment`]ing the counter for [`EnabledDfll`].
 //!
 //! ```no_run
 //! # use atsamd_hal::{
@@ -93,7 +93,7 @@
 //! ```
 //!
 //! Next, we use the output of [`Gclk1`] to enable the peripheral channel clock
-//! ([`Pclk`]) for [`Dpll0`]. This [`Increment`]s the [`Counter`] for
+//! ([`Pclk`]) for [`Dpll0`]. This [`Increment`]s the counter for
 //! [`EnabledGclk1`].
 //!
 //! ```no_run
@@ -639,7 +639,7 @@ pub type Dpll1<M> = Dpll<Dpll1Id, M>;
 /// modification while in use.
 ///
 /// As with [`Enabled`], the default value for `N` is `U0`; if left unspecified,
-/// the [`Counter`] is assumed to be zero.
+/// the counter is assumed to be zero.
 pub type EnabledDpll<D, I, N = U0> = Enabled<Dpll<D, I>, N>;
 
 /// Type alias for the corresponding [`EnabledDpll`]
@@ -706,7 +706,7 @@ where
     ///
     /// Creating a [`Dpll`] does not modify any of the hardware registers. It
     /// only creates a struct to track the DPLL configuration and [`Increment`]s
-    /// the [`Source`] [`Enabled`] [`Counter`].
+    /// the [`Source`] [`Enabled`] counter.
     ///
     /// The configuration data is stored until the user calls [`enable`]. At
     /// that point, all of the registers are written according to the
@@ -739,7 +739,7 @@ where
     }
 
     /// Consume the [`Dpll`], release the [`DpllToken`], and [`Decrement`] the
-    /// [`Source`] [`Enabled`] [`Counter`]
+    /// [`Source`] [`Enabled`] counter
     #[inline]
     pub fn free_source<S>(self, source: S) -> (DpllToken<D>, S::Dec)
     where

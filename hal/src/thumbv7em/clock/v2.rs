@@ -127,7 +127,7 @@
 //! clocks, N, that are actively using a given producer clock. And we need to
 //! restrict the producer clock API when N > 0.
 //!
-//! ### A compile-time `Counter`
+//! ### A compile-time counter
 //!
 //! First, we need to develop some way to track the number of consumer clocks,
 //! N, within the type system. To accomplish this, we need both a way to
@@ -141,31 +141,31 @@
 //! Next, we need a way to increase or decrease the type parameter `N`. The
 //! [`typenum`] crate provides type aliases [`Add1`] and [`Sub1`] that map from
 //! each `Unsigned` integer to its successor and predecessor types,
-//! respectively. We can leverage these to create our own compile-time
-//! [`Counter`] that we [`Increment`] or [`Decrement`]. These three traits form
-//! the foundation for our strategy for handling 1:N clocks in this module.
+//! respectively. We can leverage these to create our own type with a counter
+//! that we [`Increment`] or [`Decrement`] in compile-time. These two traits
+//! form the foundation for our strategy for handling 1:N clocks in this module.
 //!
 //! ### The `Enabled` wrapper
 //!
 //! Our representation of a 1:N producer clock is [`Enabled<T, N>`], which is a
-//! wrapper struct that pairs some *enabled* clock type `T` with a [`Counter`]
-//! type `N`. The wrapper restricts access to the underlying clock type, `T`,
-//! allowing us to selectively define methods when `N = U0`.
+//! wrapper struct that pairs some *enabled* clock type `T` with a type `N`
+//! which represents a consumer count. The wrapper restricts access to the
+//! underlying clock type, `T`, allowing us to selectively define methods when
+//! `N = U0`; that is when there is no consumers of a given producer clock.
 //!
-//! Moreover, because the `Counter` trait is defined generally, for any set of
-//! types that can be ordered, we can extend our implementation from `N` to
-//! `Enabled<T, N>`. With this approach, we can use the `Increment` and
-//! `Decrement` traits to transform not only between `U0` and `U1` but also
-//! between `Enabled<T, U0>` and `Enabled<T, U1>`.
+//! It implements [`Increment`] and [`Decrement`] traits so type transformations
+//! like one from `Enabled<T, U0>` to `Enabled<T, U1>` are possible. These are
+//! available only for within a HAL crate so consumer count cannot be
+//! arbitrarily changed.
 //!
 //! ### Acting as a clock `Source`
 //!
 //! Finally, we need to define some generic interface for interacting with 1:N
-//! producer clocks. However, when designing this interface, we need to be careful
-//! not to lose information during type-level transformations.
+//! producer clocks. However, when designing this interface, we need to be
+//! careful not to lose information during type-level transformations.
 //!
-//! In particular, the `Enabled` `Counter` alone is not enough for proper clock
-//! safety. If we used consumer `A` to `Increment` producer `P` from
+//! In particular, the `Enabled` counter type alone is not enough for proper
+//! clock safety. If we used consumer `A` to `Increment` producer `P` from
 //! `Enabled<P, U0>` to `Enabled<P, U1>`, but then used consumer `B` to
 //! `Decrement` the producer back to `Enabled<P, U0>`, we would leave consumer
 //! `A` dangling.
@@ -288,12 +288,12 @@
 //! - Some of the [`ApbClks`]
 //! - The 48 MHz [`Dfll`], running in [`OpenLoop`] mode, represented as as
 //!   `Enabled<Dfll<OpenLoop>, U1>`. `N = U1` here because [`Gclk0`] consumes
-//!   it. See [above](self#tracking-n-at-compile-time-for-1n-clocks) for
-//!   details on [`Enabled<T, N>`] and [`Counter`] types.
+//!   it. See [above](self#tracking-n-at-compile-time-for-1n-clocks) for details
+//!   on [`Enabled<T, N>`].
 //! - [`Gclk0`], sourced by the `Dfll` and represented as
-//!   `Enabled<Gclk0<DfllId>, U1>`. Note the use of [`DfllId`] as an
-//!   [`Id` type](self#id-types) here. Although `Gclk0` is not consumed by any
-//!   clock represented in this module, it *is* consumed by the processor's main
+//!   `Enabled<Gclk0<DfllId>, U1>`. Note the use of [`DfllId`] as an [`Id`
+//!   type](self#id-types) here. Although `Gclk0` is not consumed by any clock
+//!   represented in this module, it *is* consumed by the processor's main
 //!   clock. We represent this by setting `N = U1`, which we use to restrict the
 //!   available API. Specifically, [`EnabledGclk0`] has special methods not
 //!   available to other [`Gclk`]s.
@@ -420,18 +420,18 @@
 //! [`DpllToken`] when creating an instance of `Dpll`. However, unlike before,
 //! we are creating a new clock-tree relationship that must be tracked by the
 //! type system. Because DPLL0 will now consume XOSC0, we must [`Increment`]
-//! the [`Enabled`] [`Counter`] for [`EnabledXosc0`].
+//! the [`Enabled`] counter for [`EnabledXosc0`].
 //!
 //! Thus, to create an instance of `Dpll0<XoscId0>`, we must provide the
 //! `EnabledXosc0`, so that its `U0` type parameter can be incremented to `U1`.
 //! The `Dpll::from_source` method takes ownership of the `EnabledXosc0` and
 //! returns it with this modified type parameter.
 //!
-//! This is the essence of clock safety in this module. Once the `Counter` has
-//! been incremeneted to `U1`, the `EnabledXosc0` can no longer be modified or
-//! disabled. All further code can guarantee this invariant is upheld. To modify
-//! the `EnabledXosc0`, we would first have to use `Dpll::free_source` to
-//! disable the DPLL and [`Decrement`] the `Counter` back to `U0`.
+//! This is the essence of clock safety in this module. Once the counter type
+//! has been incremeneted to `U1`, the `EnabledXosc0` can no longer be modified
+//! or disabled. All further code can guarantee this invariant is upheld. To
+//! modify the `EnabledXosc0`, we would first have to use `Dpll::free_source` to
+//! disable the DPLL and [`Decrement`] the counter back to `U0`.
 //!
 //! ```no_run
 //! # use atsamd_hal::{
@@ -515,7 +515,7 @@
 //! [`EnabledGclk0`] to change the base clock without disabling GCLK0 or the
 //! main clock.
 //!
-//! This time we will be modifying two [`Enabled`] [`Counter`]s simultaneously.
+//! This time we will be modifying two [`Enabled`] counters simultaneously.
 //! We will [`Decrement`] the [`EnabledDfll`] count from `U1` to `U0`, and
 //! we will [`Increment`] the [`EnabledDpll0`] count from `U0` to `U1`.
 //! Again, we need to provide both the DFLL and DPLL clocks, so that their
@@ -640,7 +640,7 @@
 //!
 //! To enable a peripheral channel clock for SERCOM0, we must provide the
 //! corresponding [`PclkToken`], as well as the instance of [`EnabledGclk0`], so
-//! that its [`Counter`] can be incremented. The resulting clock has the type
+//! that its counter can be incremented. The resulting clock has the type
 //! `Pclk<Sercom0, Gclk0Id>`.
 //!
 //! ```no_run
@@ -686,9 +686,9 @@
 //! synonymous with the [`GclkId`] trait.
 //!
 //! Finally, we would like to output GCLK0 to a GPIO pin. Doing so takes a
-//! similar approach to the [`Pclk`] above. But this time, we must also provide a
-//! corresponding GPIO [`Pin`], in this case `PB14`. And, as with the [`Pclk`]
-//! above, creating a [`GclkOut`] clock will [`Increment`] the [`Counter`] for
+//! similar approach to the [`Pclk`] above. But this time, we must also provide
+//! a corresponding GPIO [`Pin`], in this case `PB14`. And, as with the [`Pclk`]
+//! above, creating a [`GclkOut`] clock will [`Increment`] the counter for
 //! [`EnabledGclk0`].
 //!
 //! ```no_run
@@ -912,17 +912,17 @@ pub trait Source: Sealed {
     fn freq(&self) -> Hertz;
 }
 
-/// An enabled, 1:N clock with a compile-time [`Counter`] for N
+/// An enabled, 1:N clock with a compile-time counter for N
 ///
 /// This struct is a wrapper around other clock types from this module. It
 /// represents a clock, `T`, that has been enabled, and it maintains a
-/// compile-time [`Counter`], `N`, of its consumer clocks in the clock tree.
+/// compile-time counter, `N`, of its consumer clocks in the clock tree.
 ///
 /// Compile-time counting allows the API to restrict when clocks may be modified
 /// or disabled. For example, `Enabled` clocks can only be disabled when their
-/// `Counter` is [`U0`].
+/// counter is [`U0`].
 ///
-/// The type-level [`Counter`] is implemented using [`Unsigned`] integers from
+/// The type-level counter is implemented using [`Unsigned`] integers from
 /// the [`typenum`] crate, and it is modified using the [`Increment`] and
 /// [`Decrement`] traits.
 ///

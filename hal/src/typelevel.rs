@@ -648,7 +648,7 @@ mod private {
     impl Sealed for i32 {}
     impl Sealed for f32 {}
 
-    /// Mapping from an instance of [`Counter`] to its successor
+    /// Mapping from an instance of a countable type to its successor
     pub trait Increment {
         /// Successor type of `Self`
         type Inc;
@@ -656,7 +656,7 @@ mod private {
         fn inc(self) -> Self::Inc;
     }
 
-    /// Mapping from an instance of [`Counter`] to its predecessor
+    /// Mapping from an instance of a countable type to its predecessor
     pub trait Decrement {
         /// Predecessor type of `Self`
         type Dec;
@@ -738,20 +738,20 @@ impl Sealed for U0 {}
 /// Implement `Sealed` for all type-level, [`Unsigned`] integers *except* [`U0`]
 impl<U: Unsigned, B: Bit> Sealed for UInt<U, B> {}
 
-/// Trait mapping each [`Counter`] type to its successor
+/// Trait mapping each countable type to its successor
 ///
-/// This trait maps each type implementing [`Counter`] to its corresponding
-/// successor type. The actual implementation of this trait is contained within
-/// `PrivateIncrement`. Access to `PrivateIncrement` is restricted, so that safe
-/// HAL APIs can be built with it.
+/// This trait maps each countable type to its corresponding successor type. The
+/// actual implementation of this trait is contained within `PrivateIncrement`.
+/// Access to `PrivateIncrement` is restricted, so that safe HAL APIs can be
+/// built with it.
 pub trait Increment: PrivateIncrement {}
 
 impl<T: PrivateIncrement> Increment for T {}
 
-/// Trait mapping each [`Counter`] type to its predecessor
+/// Trait mapping each countable type to its predecessor
 ///
-/// This trait maps each type implementing [`Counter`] to its corresponding
-/// predecessor type. The actual implementation of this trait is contained within
+/// This trait maps each countable type to its corresponding predecessor type.
+/// The actual implementation of this trait is contained within
 /// `PrivateDecrement`. Access to `PrivateDecrement` is restricted, so that safe
 /// HAL APIs can be built with it.
 pub trait Decrement: PrivateDecrement {}

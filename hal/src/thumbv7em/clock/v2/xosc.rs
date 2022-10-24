@@ -718,7 +718,7 @@ pub type Xosc1<M> = Xosc<Xosc1Id, M>;
 /// modification while in use.
 ///
 /// As with [`Enabled`], the default value for `N` is `U0`; if left unspecified,
-/// the [`Counter`] is assumed to be zero.
+/// the counter is assumed to be zero.
 pub type EnabledXosc<X, M, N = U0> = Enabled<Xosc<X, M>, N>;
 
 /// Type alias for the corresponding [`EnabledXosc`]
@@ -971,7 +971,7 @@ where
     /// it using [`EnabledXosc::switch_back`].
     ///
     /// Because the safe clock makes use of the DFLL, the `Xosc` must register
-    /// as a consumer of the [`EnabledDfll`] and [`Increment`] its [`Counter`].
+    /// as a consumer of the [`EnabledDfll`] and [`Increment`] its counter.
     ///
     /// [`EnabledDfll`]: super::dfll::EnabledDfll
     #[inline]
@@ -1020,7 +1020,7 @@ where
     /// Disable continuous monitoring of the [`Xosc`] for clock failure
     ///
     /// Once failure monitoring is disabled, the DFLL is no longer used as the
-    /// safe clock, so the [`EnabledDfll`] [`Counter`] can be [`Decrement`]ed.
+    /// safe clock, so the [`EnabledDfll`] counter can be [`Decrement`]ed.
     ///
     /// [`EnabledDfll`]: super::dfll::EnabledDfll
     #[inline]

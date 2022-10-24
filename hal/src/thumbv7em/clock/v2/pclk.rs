@@ -33,7 +33,7 @@
 //!
 //! The following example shows how to enable the [`Pclk`] for [`Sercom0`]. It
 //! derives the [`Sercom0`] clock from [`EnabledGclk0`], which is already
-//! running at power-on reset. In doing so, the [`EnabledGclk0`] [`Counter`] is
+//! running at power-on reset. In doing so, the [`EnabledGclk0`] counter is
 //! [`Increment`]ed.
 //!
 //! ```no_run
@@ -60,7 +60,6 @@
 //! [`EnabledGclk0`]: super::gclk::EnabledGclk0
 //! [`clock` module documentation]: super
 //! [`clock::v2::types`]: super::types
-//! [`Counter`]: crate::typelevel::Counter
 //! [`Sercom`]: crate::sercom::Sercom
 
 use core::marker::PhantomData;
@@ -425,14 +424,13 @@ impl<G: GclkId> PclkSourceId for G {}
 ///
 /// `Pclk`s cannot act as general purpose clock [`Source`]s; rather, they map
 /// 1:1 with corresponding peripherals. Thus, enabled `Pclk`s do not need a
-/// compile-time [`Counter`] of consumer clocks, so they are not wrapped with
+/// compile-time counter of consumer clocks, so they are not wrapped with
 /// [`Enabled`]. Enabled `Pclk`s are created directly from [`PclkToken`]s with
 /// [`Pclk::enable`].
 ///
 /// See the [module-level documentation](self) for an example.
 ///
 /// [`Enabled`]: super::Enabled
-/// [`Counter`]: super::Counter
 /// [`Gclk`]: super::gclk::Gclk
 /// [`EnabledGclk`]: super::gclk::EnabledGclk
 /// [`DFLL`]: super::dfll
@@ -464,12 +462,11 @@ where
     ///
     /// Creating a [`Pclk`] immediately enables the corresponding peripheral
     /// channel clock. It also [`Increment`]s the [`Source`]'s [`Enabled`]
-    /// [`Counter`].
+    /// counter.
     ///
     /// Note that the [`Source`] will always be an [`EnabledGclk`].
     ///
     /// [`Enabled`]: super::Enabled
-    /// [`Counter`]: super::Counter
     /// [`EnabledGclk`]: super::gclk::EnabledGclk
     #[inline]
     pub fn enable<S>(mut token: PclkToken<P>, gclk: S) -> (Self, S::Inc)
@@ -486,10 +483,9 @@ where
     /// Disable and destroy a [`Pclk`]
     ///
     /// Consume the [`Pclk`], release the [`PclkToken`], and [`Decrement`] the
-    /// [`EnabledGclk`]'s [`Counter`]
+    /// [`EnabledGclk`]'s counter
     ///
     /// [`Enabled`]: super::Enabled
-    /// [`Counter`]: super::Counter
     /// [`EnabledGclk`]: super::gclk::EnabledGclk
     #[inline]
     pub fn disable<S>(mut self, gclk: S) -> (PclkToken<P>, S::Dec)

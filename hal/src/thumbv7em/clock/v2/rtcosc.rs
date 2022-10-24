@@ -136,8 +136,7 @@ impl<I: RtcSourceId> RtcOsc<I> {
     /// Consume the [`RtcOscToken`] and return the [`RtcOsc`]
     ///
     /// Enabling the `RtcOsc` will [`Increment`] the
-    /// [`Counter`](crate::typelevel::Counter) of the
-    /// [`Enabled`](super::Enabled) clock [`Source`].
+    /// counter of the [`Enabled`](super::Enabled) clock [`Source`].
     #[inline]
     pub fn enable<S>(mut token: RtcOscToken, source: S) -> (Self, S::Inc)
     where
@@ -154,8 +153,7 @@ impl<I: RtcSourceId> RtcOsc<I> {
     /// Consume the [`RtcOsc`] and return the [`RtcOscToken`]
     ///
     /// Disabling the `RtcOsc` will [`Decrement`] the
-    /// [`Counter`](crate::typelevel::Counter) of its
-    /// [`Enabled`](super::Enabled) clock [`Source`].
+    /// counter of its [`Enabled`](super::Enabled) clock [`Source`].
     #[inline]
     pub fn disable<S>(mut self, source: S) -> (RtcOscToken, S::Dec)
     where
