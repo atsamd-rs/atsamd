@@ -237,8 +237,8 @@
 //! # let (xosc1k, xosc32k_base) = Xosc1k::enable(tokens.xosc32k.xosc1k, xosc32k_base);
 //! # let (xosc32k, xosc32k_base) = Xosc32k::enable(tokens.xosc32k.xosc32k, xosc32k_base);
 //! # xosc32k_base.write_lock();
-//! let (osculp32k, osculp_base) =
-//!     OscUlp32k::enable(tokens.osculp.osculp32k, clocks.osculp_base);
+//! let (osculp32k, osculp32k_base) =
+//!     OscUlp32k::enable(tokens.osculp32k.osculp32k, clocks.osculp32k_base);
 //! let (mut cfd, osculp32k) =
 //!     Xosc32kCfd::enable(tokens.xosc32k.cfd, osculp32k, SafeClockDiv::Div1);
 //! ```
@@ -278,8 +278,8 @@
 //! # let (xosc1k, xosc32k_base) = Xosc1k::enable(tokens.xosc32k.xosc1k, xosc32k_base);
 //! # let (xosc32k, xosc32k_base) = Xosc32k::enable(tokens.xosc32k.xosc32k, xosc32k_base);
 //! # xosc32k_base.write_lock();
-//! # let (osculp32k, osculp_base) =
-//! #     OscUlp32k::enable(tokens.osculp.osculp32k, clocks.osculp_base);
+//! # let (osculp32k, osculp32k_base) =
+//! #     OscUlp32k::enable(tokens.osculp32k.osculp32k, clocks.osculp32k_base);
 //! # let (mut cfd, osculp32k) =
 //! #     Xosc32kCfd::enable(tokens.xosc32k.cfd, osculp32k, SafeClockDiv::Div1);
 //! if cfd.has_failed() && cfd.is_switched() {
@@ -319,8 +319,8 @@
 //! let (xosc1k, xosc32k_base) = Xosc1k::enable(tokens.xosc32k.xosc1k, xosc32k_base);
 //! let (xosc32k, xosc32k_base) = Xosc32k::enable(tokens.xosc32k.xosc32k, xosc32k_base);
 //! xosc32k_base.write_lock();
-//! let (osculp32k, osculp_base) =
-//!     OscUlp32k::enable(tokens.osculp.osculp32k, clocks.osculp_base);
+//! let (osculp32k, osculp32k_base) =
+//!     OscUlp32k::enable(tokens.osculp32k.osculp32k, clocks.osculp32k_base);
 //! let (mut cfd, osculp32k) =
 //!     Xosc32kCfd::enable(tokens.xosc32k.cfd, osculp32k, SafeClockDiv::Div1);
 //! if cfd.has_failed() && cfd.is_switched() {
