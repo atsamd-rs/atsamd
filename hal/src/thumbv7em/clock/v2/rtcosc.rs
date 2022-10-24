@@ -99,7 +99,7 @@ impl From<DynRtcSourceId> for RTCSEL_A {
 ///
 /// [type-level enum]: crate::typelevel#type-level-enum
 pub trait RtcSourceId {
-    /// Corresponding [`DynSourceId`]
+    /// Corresponding [`DynRtcSourceId`]
     const DYN: DynRtcSourceId;
     /// Clock source frequency, either 1 kHz or 32 kHz
     const FREQ: Hertz;
