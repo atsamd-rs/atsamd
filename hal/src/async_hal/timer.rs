@@ -174,12 +174,18 @@ mod impl_ehal {
         type Error = Infallible;
         type DelayMsFuture<'a> = impl Future<Output = Result<(), Self::Error>> + 'a where Self: 'a;
         fn delay_ms(&mut self, ms: u32) -> Self::DelayMsFuture<'_> {
-            async move { Ok(self.delay(ms.ms()).await) }
+            async move {
+                self.delay(ms.ms()).await;
+                Ok(())
+            }
         }
 
         type DelayUsFuture<'a> = impl Future<Output = Result<(), Self::Error>> + 'a where Self: 'a;
         fn delay_us(&mut self, us: u32) -> Self::DelayUsFuture<'_> {
-            async move { Ok(self.delay(us.us()).await) }
+            async move {
+                self.delay(us.us()).await;
+                Ok(())
+            }
         }
     }
 }

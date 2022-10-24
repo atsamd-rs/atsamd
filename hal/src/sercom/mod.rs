@@ -161,7 +161,11 @@ macro_rules! sercom {
                         use self::uart::Flags;
                         unsafe {
                             let mut peripherals = crate::pac::Peripherals::steal();
+
+                            #[cfg(any(feature = "samd11", feature = "samd21"))]
                             let uart = Self::reg_block(&mut peripherals).usart();
+                            #[cfg(feature = "min-samd51g")]
+                            let uart = Self::reg_block(&mut peripherals).usart_int();
 
                             let flags_pending = Flags::from_bits_unchecked(uart.intflag.read().bits());
                             let enabled_flags = Flags::from_bits_unchecked(uart.intenset.read().bits());
@@ -194,12 +198,19 @@ sercom!(apbbmask: (2, 3));
 #[cfg(feature = "thumbv7")]
 sercom!(apbdmask: (4, 7));
 
+#[allow(dead_code)]
 #[cfg(feature = "samd11")]
 const NUM_SERCOM: usize = 2;
+
+#[allow(dead_code)]
 #[cfg(feature = "samd21e")]
 const NUM_SERCOM: usize = 4;
+
+#[allow(dead_code)]
 #[cfg(any(feature = "min-samd21g", feature = "samd51g", feature = "samd51j"))]
 const NUM_SERCOM: usize = 6;
+
+#[allow(dead_code)]
 #[cfg(feature = "min-samd51n")]
 const NUM_SERCOM: usize = 8;
 
