@@ -209,7 +209,8 @@ impl<S: Sercom> Registers<S> {
         }
     }
 
-    /// Start a write transaction. May be used by [`start_write_blocking`], or an async method.
+    /// Start a write transaction. May be used by [`start_write_blocking`], or
+    /// an async method.
     #[inline]
     pub(super) fn start_write(&mut self, addr: u8) -> Result<(), Error> {
         if self.get_smart_mode() {
@@ -241,7 +242,8 @@ impl<S: Sercom> Registers<S> {
         self.read_status().check_bus_error()
     }
 
-    /// Start a write transaction. May be used by [`start_write_blocking`], or an async method.
+    /// Start a write transaction. May be used by [`start_write_blocking`], or
+    /// an async method.
     pub(super) fn start_read(&mut self, addr: u8) -> Result<(), Error> {
         if self.get_smart_mode() {
             self.disable();

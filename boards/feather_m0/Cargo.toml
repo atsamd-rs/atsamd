@@ -162,5 +162,9 @@ required-features = ["atsamd-hal/async", "atsamd-hal/rtic", "cortex-m-interrupt"
 name = "async_i2c"
 required-features = ["atsamd-hal/async", "atsamd-hal/rtic", "cortex-m-interrupt"]
 
+[[example]]
+name = "async_uart"
+required-features = ["atsamd-hal/async", "atsamd-hal/rtic", "cortex-m-interrupt"]
+
 [patch.crates-io]
 cortex-m-rtic = { git = "https://github.com/rtic-rs/cortex-m-rtic.git", branch = "async-2022" }

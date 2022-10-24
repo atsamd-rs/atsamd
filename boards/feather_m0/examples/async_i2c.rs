@@ -2,21 +2,21 @@
 #![no_main]
 #![feature(type_alias_impl_trait)]
 
-use panic_probe as _;
 use defmt_rtt as _;
+use panic_probe as _;
 
 #[rtic::app(device = bsp::pac, dispatchers = [I2S])]
 mod app {
     use bsp::{hal, pac, pin_alias};
     use feather_m0 as bsp;
+    use fugit::MillisDuration;
     use hal::{
-        prelude::*,
         clock::{enable_internal_32kosc, ClockGenId, ClockSource, GenericClockController},
         ehal::digital::v2::ToggleableOutputPin,
+        prelude::*,
         rtc::{Count32Mode, Rtc},
-        sercom::i2c::{self,Config, I2cFuture},
+        sercom::i2c::{self, Config, I2cFuture},
     };
-    use fugit::MillisDuration;
 
     #[monotonic(binds = RTC, default = true)]
     type Monotonic = Rtc<Count32Mode>;
@@ -63,10 +63,15 @@ mod app {
         let gclk0 = clocks.gclk0();
         let sercom3_clock = &clocks.sercom3_core(&gclk0).unwrap();
         let pads = i2c::Pads::new(sda, scl);
-        let i2c = i2c::Config::new(&peripherals.PM, peripherals.SERCOM3, pads, sercom3_clock.freq())
-            .baud(100.khz())
-            .enable().into_async(sercom3_irq);
-
+        let i2c = i2c::Config::new(
+            &peripherals.PM,
+            peripherals.SERCOM3,
+            pads,
+            sercom3_clock.freq(),
+        )
+        .baud(100.khz())
+        .enable()
+        .into_async(sercom3_irq);
 
         async_task::spawn().ok();
 
@@ -80,10 +85,10 @@ mod app {
 
         loop {
             defmt::info!("Sending 1 byte to I2C...");
-            // This test is based on the BMP388 barometer. Feel free to use any I2C peripheral
-            // you have on hand.
+            // This test is based on the BMP388 barometer. Feel free to use any I2C
+            // peripheral you have on hand.
             i2c.write(0x76, &[0x00]).await.unwrap();
-            
+
             let mut buffer = [0x00; 1];
             defmt::info!("Reading 1 byte from I2C...");
             i2c.read(0x76, &mut buffer).await.unwrap();

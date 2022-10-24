@@ -93,7 +93,8 @@ where
         Ok(())
     }
 
-    /// Asynchronously write from a buffer, then read into a buffer. This is an extremely common pattern: writing a register address, then
+    /// Asynchronously write from a buffer, then read into a buffer. This is an
+    /// extremely common pattern: writing a register address, then
     /// read its value from the slave.
     #[inline]
     pub async fn write_read(
@@ -114,14 +115,24 @@ where
 
     async fn wait_flags(&mut self, flags_to_wait: Flags) {
         core::future::poll_fn(|cx| {
-            S::waker().register(cx.waker());
-            self.i2c.enable_interrupts(flags_to_wait);
-            let flags_to_check = self.i2c.config.as_ref().registers.read_flags();
+            // Scope maybe_pending so we don't forget to re-poll the register later down.
+            {
+                let maybe_pending = self.i2c.config.as_ref().registers.read_flags();
+                if flags_to_wait.intersects(maybe_pending) {
+                    return Poll::Ready(());
+                }
+            }
 
-            if !flags_to_wait.intersects(flags_to_check) {
+            self.i2c.disable_interrupts(Flags::all());
+            // By convention, I2C uses the sercom's RX waker.
+            S::rx_waker().register(cx.waker());
+            self.i2c.enable_interrupts(flags_to_wait);
+            let maybe_pending = self.i2c.config.as_ref().registers.read_flags();
+
+            if !flags_to_wait.intersects(maybe_pending) {
                 Poll::Pending
             } else {
-                Poll::Ready(flags_to_check)
+                Poll::Ready(())
             }
         })
         .await;
@@ -133,8 +144,31 @@ where
     C: AnyConfig,
     N: InterruptNumber,
 {
+    #[inline]
     fn drop(&mut self) {
         cortex_m::peripheral::NVIC::mask(self.irq_number);
+    }
+}
+
+impl<C, N> AsRef<I2c<C>> for I2cFuture<C, N>
+where
+    C: AnyConfig,
+    N: InterruptNumber,
+{
+    #[inline]
+    fn as_ref(&self) -> &I2c<C> {
+        &self.i2c
+    }
+}
+
+impl<C, N> AsMut<I2c<C>> for I2cFuture<C, N>
+where
+    C: AnyConfig,
+    N: InterruptNumber,
+{
+    #[inline]
+    fn as_mut(&mut self) -> &mut I2c<C> {
+        &mut self.i2c
     }
 }
 
@@ -159,18 +193,21 @@ mod impl_ehal {
     {
         type ReadFuture<'a> = impl Future<Output = Result<(), Self::Error>> + 'a where Self: 'a;
 
+        #[inline]
         fn read<'a>(&'a mut self, address: u8, buffer: &'a mut [u8]) -> Self::ReadFuture<'a> {
             self.read(address, buffer)
         }
 
         type WriteFuture<'a> = impl Future<Output = Result<(), Self::Error>> + 'a where Self: 'a;
 
+        #[inline]
         fn write<'a>(&'a mut self, address: u8, bytes: &'a [u8]) -> Self::WriteFuture<'a> {
             self.write(address, bytes)
         }
 
         type WriteReadFuture<'a> = impl Future<Output = Result<(), Self::Error>> + 'a where Self: 'a;
 
+        #[inline]
         fn write_read<'a>(
             &'a mut self,
             address: u8,
@@ -182,6 +219,7 @@ mod impl_ehal {
 
         type TransactionFuture<'a, 'b> = impl Future<Output = Result<(), Self::Error>> + 'a where Self: 'a, 'b: 'a;
 
+        #[inline]
         fn transaction<'a, 'b>(
             &'a mut self,
             address: u8,

@@ -411,6 +411,11 @@ pub use config::*;
 
 pub mod impl_ehal;
 
+#[cfg(feature = "async")]
+mod async_api;
+#[cfg(feature = "async")]
+pub use async_api::*;
+
 use crate::{sercom::*, typelevel::Sealed};
 use core::{convert::TryInto, marker::PhantomData};
 use num_traits::AsPrimitive;
@@ -507,6 +512,10 @@ pub trait Receive: Capability {}
 /// capability, but not both
 pub trait Simplex: Capability {}
 
+/// Type-level enum representing a UART that is *not* half of a split
+/// [`Duplex`]
+pub trait SingleOwner: Capability {}
+
 /// Marker type representing a UART that has both transmit and receive
 /// capability
 pub enum Duplex {}
@@ -523,6 +532,7 @@ impl Capability for Duplex {
 }
 impl Receive for Duplex {}
 impl Transmit for Duplex {}
+impl SingleOwner for Duplex {}
 
 /// Marker type representing a UART that can only receive
 pub enum Rx {}
@@ -539,6 +549,7 @@ impl Capability for Rx {
 }
 impl Receive for Rx {}
 impl Simplex for Rx {}
+impl SingleOwner for Rx {}
 
 /// Marker type representing a UART that can only transmit
 pub enum Tx {}
@@ -555,6 +566,7 @@ impl Capability for Tx {
 }
 impl Transmit for Tx {}
 impl Simplex for Tx {}
+impl SingleOwner for Tx {}
 
 /// Marker type representing the Rx half of a  [`Duplex`] UART
 pub enum RxDuplex {}
