@@ -12,7 +12,7 @@ mod app {
     use bsp::{hal, pac, pin_alias};
     use feather_m0 as bsp;
     use hal::{
-        async_hal::timer::AsyncTimer,
+        async_hal::timer::TimerFuture,
         clock::{enable_internal_32kosc, ClockGenId, ClockSource, GenericClockController},
         ehal::digital::v2::ToggleableOutputPin,
         pac::TC4,
@@ -29,7 +29,7 @@ mod app {
 
     #[local]
     struct Local {
-        timer: AsyncTimer<TC4, pac::Interrupt>,
+        timer: TimerFuture<TC4, pac::Interrupt>,
         red_led: bsp::RedLed,
     }
 
@@ -65,7 +65,7 @@ mod app {
 
         // instantiate a timer object for the TC4 peripheral
         let timer = TimerCounter::tc4_(tc45, peripherals.TC4, &mut peripherals.PM);
-        let timer = timer.into_async(tc4_irq);
+        let timer = timer.into_future(tc4_irq);
         async_task::spawn().ok();
 
         (Shared {}, Local { timer, red_led }, init::Monotonics(rtc))

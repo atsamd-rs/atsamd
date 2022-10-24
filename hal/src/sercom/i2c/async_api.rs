@@ -11,8 +11,9 @@ where
     C: AnyConfig<Sercom = S>,
     S: Sercom,
 {
+    /// Turn an [`I2c`] into an [`I2cFuture`]
     #[inline]
-    pub fn into_async<I, N>(self, irq: I) -> I2cFuture<C, N>
+    pub fn into_future<I, N>(self, irq: I) -> I2cFuture<C, N>
     where
         I: NvicInterruptHandle<N>,
         N: InterruptNumber,

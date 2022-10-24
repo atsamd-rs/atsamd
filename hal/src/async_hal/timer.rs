@@ -96,9 +96,9 @@ impl<T> TimerCounter<T>
 where
     T: AsyncCount16,
 {
-    /// Transform a [`TimerCounter`] into an [`AsyncTimer`]
+    /// Transform a [`TimerCounter`] into an [`TimerFuture`]
     #[inline]
-    pub fn into_async<I, N>(mut self, irq: I) -> AsyncTimer<T, N>
+    pub fn into_future<I, N>(mut self, irq: I) -> TimerFuture<T, N>
     where
         I: NvicInterruptHandle<N>,
         N: InterruptNumber,
@@ -108,7 +108,7 @@ where
         unsafe { cortex_m::peripheral::NVIC::unmask(irq_number) };
         self.enable_interrupt();
 
-        AsyncTimer {
+        TimerFuture {
             timer: self,
             irq_number,
         }
@@ -116,7 +116,7 @@ where
 }
 
 /// Wrapper around a [`TimerCounter`] with an `async` interface
-pub struct AsyncTimer<T, I>
+pub struct TimerFuture<T, I>
 where
     T: AsyncCount16,
     I: InterruptNumber,
@@ -125,7 +125,7 @@ where
     irq_number: I,
 }
 
-impl<T, I> AsyncTimer<T, I>
+impl<T, I> TimerFuture<T, I>
 where
     T: AsyncCount16,
     I: InterruptNumber,
@@ -148,7 +148,7 @@ where
     }
 }
 
-impl<T, I> Drop for AsyncTimer<T, I>
+impl<T, I> Drop for TimerFuture<T, I>
 where
     T: AsyncCount16,
     I: InterruptNumber,
@@ -156,6 +156,31 @@ where
     #[inline]
     fn drop(&mut self) {
         cortex_m::peripheral::NVIC::mask(self.irq_number);
+    }
+}
+
+#[cfg(feature = "nightly")]
+mod impl_ehal {
+    use super::*;
+    use crate::time::U32Ext;
+    use core::{convert::Infallible, future::Future};
+    use embedded_hal_async::delay::DelayUs;
+
+    impl<T, I> DelayUs for TimerFuture<T, I>
+    where
+        T: AsyncCount16,
+        I: InterruptNumber,
+    {
+        type Error = Infallible;
+        type DelayMsFuture<'a> = impl Future<Output = Result<(), Self::Error>> + 'a where Self: 'a;
+        fn delay_ms(&mut self, ms: u32) -> Self::DelayMsFuture<'_> {
+            async move { Ok(self.delay(ms.ms()).await) }
+        }
+
+        type DelayUsFuture<'a> = impl Future<Output = Result<(), Self::Error>> + 'a where Self: 'a;
+        fn delay_us(&mut self, us: u32) -> Self::DelayUsFuture<'_> {
+            async move { Ok(self.delay(us.us()).await) }
+        }
     }
 }
 

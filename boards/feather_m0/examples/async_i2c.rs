@@ -71,7 +71,7 @@ mod app {
         )
         .baud(100.khz())
         .enable()
-        .into_async(sercom3_irq);
+        .into_future(sercom3_irq);
 
         async_task::spawn().ok();
 

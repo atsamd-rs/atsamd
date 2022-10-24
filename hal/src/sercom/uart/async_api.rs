@@ -16,9 +16,11 @@ where
     D: SingleOwner,
     S: Sercom,
 {
-    /// Turn a [`Uart`] into a [`UartFuture`]. This method is only available
+    /// Turn a [`Uart`] into a [`UartFuture`]. This method is only available for
+    /// [`Uart`]s which have a [`Tx`](crate::sercom::uart::Tx),
+    /// [`Rx`](crate::sercom::uart::Rx) or [`Duplex`] [`Capability`].
     #[inline]
-    pub fn into_async<I, N>(self, irq: I) -> UartFuture<C, D, N>
+    pub fn into_future<I, N>(self, irq: I) -> UartFuture<C, D, N>
     where
         I: NvicInterruptHandle<N>,
         N: InterruptNumber,
@@ -49,7 +51,7 @@ where
     C: ValidConfig,
     N: InterruptNumber,
 {
-    /// Split the [`UartFuture`] into [`RxDuplex`]and [`TxDuplex`] halves
+    /// Split the [`UartFuture`] into [`RxDuplex`]and [`TxDuplex`] halves.
     #[inline]
     pub fn split(self) -> (UartFuture<C, RxDuplex, N>, UartFuture<C, TxDuplex, N>) {
         let config = unsafe { core::ptr::read(&self.uart.config) };

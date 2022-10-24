@@ -66,7 +66,7 @@ mod app {
             uart_rx,
             uart_tx,
         )
-        .into_async(sercom0_irq)
+        .into_future(sercom0_irq)
         .split();
 
         send_bytes::spawn().ok();
