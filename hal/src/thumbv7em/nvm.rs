@@ -119,7 +119,7 @@ pub enum PhysicalBank {
     B,
 }
 
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Debug, Copy, Clone)]
 /// Flash banks identified by which one we boot from.
 ///
 /// Memory layout:
