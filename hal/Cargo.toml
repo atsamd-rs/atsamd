@@ -95,6 +95,7 @@ atsame54p = {version = "0.13.0", path = "../pac/atsame54p", optional = true}
 [dependencies.embedded-hal-async]
 version = "0.1.0-alpha.2"
 optional = true
+git = "https://github.com/rust-embedded/embedded-hal"
 
 [dependencies.critical-section]
 version = "0.2.7"

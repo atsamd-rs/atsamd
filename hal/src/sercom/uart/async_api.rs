@@ -95,7 +95,7 @@ where
     S: Sercom,
     DataReg: AsPrimitive<C::Word>,
 {
-    /// Read a single [`Word`](uart::Word) from the UART.
+    /// Read a single [`Word`](crate::sercom::uart::Word) from the UART.
     #[inline]
     pub async fn read_word(&mut self) -> Result<C::Word, Error> {
         self.wait_flags_rx(Flags::RXC).await;
@@ -103,9 +103,10 @@ where
         Ok(unsafe { self.uart.read_data().as_() })
     }
 
-    /// Read the specified number of [`Word`](uart::Word)s into a buffer.
-    /// In case of an error, returns `Err(Error, usize)` where the `usize`
-    /// represents the number of valid words read before the error occured.
+    /// Read the specified number of [`Word`](crate::sercom::uart::Word)s into a
+    /// buffer. In case of an error, returns `Err(Error, usize)` where the
+    /// `usize` represents the number of valid words read before the error
+    /// occured.
     #[inline]
     pub async fn read(&mut self, buffer: &mut [C::Word]) -> Result<(), (Error, usize)> {
         for (i, word) in buffer.iter_mut().enumerate() {
@@ -156,15 +157,15 @@ where
     N: InterruptNumber,
     S: Sercom,
 {
-    /// Write a single [`Word`](uart::Word) to the UART.
+    /// Write a single [`Word`](crate::sercom::uart::Word) to the UART.
     #[inline]
     pub async fn write_word(&mut self, word: C::Word) {
         self.wait_flags_tx(Flags::DRE).await;
         unsafe { self.uart.write_data(word.as_()) };
     }
 
-    /// Write the specified number of [`Word`](uart::Word)s from a buffer to the
-    /// UART.
+    /// Write the specified number of [`Word`](crate::sercom::uart::Word)s from
+    /// a buffer to the UART.
     #[inline]
     pub async fn write(&mut self, buffer: &[C::Word]) {
         for word in buffer {

@@ -1,3 +1,6 @@
+//! This example shows a safe API to
+//! execute a memory-to-memory DMA transfer
+
 #![no_std]
 #![no_main]
 #![feature(type_alias_impl_trait)]
@@ -7,16 +10,15 @@ use panic_probe as _;
 
 #[rtic::app(device = bsp::pac, dispatchers = [I2S])]
 mod app {
-    use bsp::{hal, pac, pin_alias};
+    use bsp::{hal, pac};
     use feather_m0 as bsp;
-    use fugit::MillisDuration;
     use hal::{
         clock::{enable_internal_32kosc, ClockGenId, ClockSource, GenericClockController},
-        dmac::{Ch0, Channel, DmaController, PriorityLevel, ReadyFuture},
-        ehal::digital::v2::ToggleableOutputPin,
-        prelude::*,
+        dmac::{
+            Ch0, Channel, DmaController, PriorityLevel, ReadyFuture, Transfer, TriggerAction,
+            TriggerSource,
+        },
         rtc::{Count32Mode, Rtc},
-        sercom::i2c::{self, Config, I2cFuture},
     };
 
     #[monotonic(binds = RTC, default = true)]
@@ -27,8 +29,7 @@ mod app {
 
     #[local]
     struct Local {
-        i2c: I2cFuture<Config<bsp::I2cPads>, bsp::pac::Interrupt, Channel<Ch0, ReadyFuture>>,
-        red_led: bsp::RedLed,
+        channel: Channel<Ch0, ReadyFuture>,
     }
 
     #[init]
@@ -42,14 +43,6 @@ mod app {
             &mut peripherals.SYSCTRL,
             &mut peripherals.NVMCTRL,
         );
-        let pins = bsp::Pins::new(peripherals.PORT);
-        let red_led: bsp::RedLed = pin_alias!(pins.red_led).into();
-
-        // Take SDA and SCL
-        let (sda, scl) = (pins.sda, pins.scl);
-
-        let sercom3_irq = cortex_m_interrupt::take_nvic_interrupt!(pac::Interrupt::SERCOM3, 2);
-        // tc4_irq.set_priority(2);
 
         enable_internal_32kosc(&mut peripherals.SYSCTRL);
         let timer_clock = clocks
@@ -71,43 +64,43 @@ mod app {
         let channels = dmac.split();
 
         // Initialize DMA Channel 0
-        let channel0 = channels.0.init(PriorityLevel::LVL0);
-
-        let gclk0 = clocks.gclk0();
-        let sercom3_clock = &clocks.sercom3_core(&gclk0).unwrap();
-        let pads = i2c::Pads::new(sda, scl);
-        let i2c = i2c::Config::new(
-            &peripherals.PM,
-            peripherals.SERCOM3,
-            pads,
-            sercom3_clock.freq(),
-        )
-        .baud(100.khz())
-        .enable()
-        .into_future(sercom3_irq)
-        .with_dma_channel(channel0);
+        let channel = channels.0.init(PriorityLevel::LVL0);
 
         async_task::spawn().ok();
-
-        (Shared {}, Local { i2c, red_led }, init::Monotonics(rtc))
+        (Shared {}, Local { channel }, init::Monotonics(rtc))
     }
 
-    #[task(local = [i2c, red_led])]
+    #[task(local = [channel])]
     async fn async_task(cx: async_task::Context) {
-        let i2c = cx.local.i2c;
-        let red_led = cx.local.red_led;
+        let async_task::LocalResources { channel } = cx.local;
+
+        let mut source = [0xff; 50];
+        let mut dest = [0x0; 50];
+
+        defmt::info!(
+            "Launching a DMA transfer.\n\tSource: {}\n\tDestination: {}",
+            &source,
+            &dest
+        );
+
+        Transfer::transfer_future(
+            channel,
+            &mut source,
+            &mut dest,
+            TriggerSource::DISABLE,
+            TriggerAction::BLOCK,
+        )
+        .await
+        .unwrap();
+
+        defmt::info!(
+            "Finished DMA transfer.\n\tSource: {}\n\tDestination: {}",
+            &source,
+            &dest
+        );
 
         loop {
-            defmt::info!("Sending 0x00 to I2C device...");
-            // This test is based on the BMP388 barometer. Feel free to use any I2C
-            // peripheral you have on hand.
-            i2c.write(0x76, &[0x00]).await.unwrap();
-
-            let mut buffer = [0x00; 1];
-            i2c.read(0x76, &mut buffer).await.unwrap();
-            defmt::info!("Read byte: {:#x}", buffer[0]);
-            red_led.toggle().unwrap();
-            crate::app::monotonics::delay(MillisDuration::<u32>::from_ticks(500).convert()).await;
+            cortex_m::asm::wfi();
         }
     }
 }

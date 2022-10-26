@@ -84,9 +84,10 @@
 //! transaction, that will now run uninterrupted until it is stopped.
 
 use super::{
-    channel::{AnyChannel, Busy, CallbackStatus, Channel, ChannelId, InterruptFlags, Ready},
+    channel::{AnyChannel, Busy, Channel, ChannelId, InterruptFlags, Ready},
     dma_controller::{ChId, TriggerAction, TriggerSource},
-    BlockTransferControl, DmacDescriptor, Error, Result, DESCRIPTOR_SECTION,
+    BlockTransferControl, DmacDescriptor, Error, ReadyChannel, ReadyFuture, Result,
+    DESCRIPTOR_SECTION,
 };
 use crate::typelevel::{Is, Sealed};
 use core::{ptr::null_mut, sync::atomic};
@@ -303,22 +304,22 @@ where
 // TODO change source and dest types to Pin? (see https://docs.rust-embedded.org/embedonomicon/dma.html#immovable-buffers)
 /// DMA transfer, owning the resources until the transfer is done and
 /// [`Transfer::wait`] is called.
-pub struct Transfer<Chan, Buf, W = ()>
+pub struct Transfer<Chan, Buf>
 where
     Buf: AnyBufferPair,
     Chan: AnyChannel,
 {
     chan: Chan,
     buffers: Buf,
-    waker: Option<W>,
     complete: bool,
 }
 
-impl<C, S, D> Transfer<C, BufferPair<S, D>>
+impl<C, S, D, R> Transfer<C, BufferPair<S, D>>
 where
     S: Buffer + 'static,
     D: Buffer<Beat = S::Beat> + 'static,
-    C: AnyChannel<Status = Ready>,
+    C: AnyChannel<Status = R>,
+    R: ReadyChannel,
 {
     /// Safely construct a new `Transfer`. To guarantee memory safety, both
     /// buffers are required to be `'static`.
@@ -329,9 +330,10 @@ where
     /// (as opposed to slices), then it is recommended to use the
     /// [`Transfer::new_from_arrays`] method instead.
     ///
-    /// # Panics
+    /// # Errors
     ///
-    /// Panics if both buffers have a length > 1 and are not of equal length.
+    /// Returns [`Error::LengthMismatch`](super::Error::LengthMismatch) if both
+    /// buffers have a length > 1 and are not of equal length.
     #[allow(clippy::new_ret_no_self)]
     #[inline]
     pub fn new(
@@ -348,7 +350,7 @@ where
     }
 }
 
-impl<S, D, C, W> Transfer<C, BufferPair<S, D>, W>
+impl<S, D, C> Transfer<C, BufferPair<S, D>>
 where
     S: Buffer,
     D: Buffer<Beat = S::Beat>,
@@ -426,11 +428,12 @@ where
     }
 }
 
-impl<C, S, D> Transfer<C, BufferPair<S, D>>
+impl<C, S, D, R> Transfer<C, BufferPair<S, D>>
 where
     S: Buffer,
     D: Buffer<Beat = S::Beat>,
-    C: AnyChannel<Status = Ready>,
+    C: AnyChannel<Status = R>,
+    R: ReadyChannel,
 {
     /// Construct a new `Transfer` without checking for memory safety.
     ///
@@ -463,7 +466,7 @@ where
         Transfer {
             buffers,
             chan,
-            waker: None,
+
             complete: false,
         }
     }
@@ -475,38 +478,17 @@ where
     D: Buffer<Beat = S::Beat>,
     C: AnyChannel<Status = Ready>,
 {
-    /// Append a waker to the transfer. This will be called when the DMAC
-    /// interrupt is called.
-    #[inline]
-    pub fn with_waker<W: FnOnce(CallbackStatus) + 'static>(
-        self,
-        waker: W,
-    ) -> Transfer<C, BufferPair<S, D>, W> {
-        Transfer {
-            buffers: self.buffers,
-            chan: self.chan,
-            complete: self.complete,
-            waker: Some(waker),
-        }
-    }
-}
-
-impl<C, S, D, W> Transfer<C, BufferPair<S, D>, W>
-where
-    S: Buffer,
-    D: Buffer<Beat = S::Beat>,
-    C: AnyChannel<Status = Ready>,
-{
-    /// Begin DMA transfer. If [TriggerSource::DISABLE](TriggerSource::DISABLE)
-    /// is used, a software trigger will be issued to the DMA channel to
-    /// launch the transfer. Is is therefore not necessary, in most cases,
-    /// to manually issue a software trigger to the channel.
+    /// Begin DMA transfer in blocking mode. If
+    /// [TriggerSource::DISABLE](TriggerSource::DISABLE) is used, a software
+    /// trigger will be issued to the DMA channel to launch the transfer. Is
+    /// is therefore not necessary, in most cases, to manually issue a
+    /// software trigger to the channel.
     #[inline]
     pub fn begin(
         mut self,
         trig_src: TriggerSource,
         trig_act: TriggerAction,
-    ) -> Transfer<Channel<ChannelId<C>, Busy>, BufferPair<S, D>, W> {
+    ) -> Transfer<Channel<ChannelId<C>, Busy>, BufferPair<S, D>> {
         // Reset the complete flag before triggering the transfer.
         // This way an interrupt handler could set complete to true
         // before this function returns.
@@ -521,16 +503,119 @@ where
         Transfer {
             buffers: self.buffers,
             chan,
-            waker: self.waker,
             complete: self.complete,
         }
     }
+
+    /// Free the [`Transfer`] and return the resources it holds.
+    ///
+    /// Similar to [`stop`](Transfer::stop), but it acts on a [`Transfer`]
+    /// holding a [`Ready`] channel, so there is no need to explicitly stop the
+    /// transfer.
+    pub fn free(self) -> (Channel<ChannelId<C>, Ready>, S, D) {
+        (
+            self.chan.into(),
+            self.buffers.source,
+            self.buffers.destination,
+        )
+    }
 }
 
-impl<B, C, const N: usize> Transfer<C, BufferPair<&'static mut [B; N]>>
+impl<C, S, D> Transfer<C, BufferPair<S, D>>
+where
+    S: Buffer,
+    D: Buffer<Beat = S::Beat>,
+    C: AnyChannel<Status = ReadyFuture>,
+{
+    /// Begin DMA transfer using `async` operation.
+    ///
+    /// If [TriggerSource::DISABLE](TriggerSource::DISABLE) is used, a software
+    /// trigger will be issued to the DMA channel to launch the transfer. Is
+    /// is therefore not necessary, in most cases, to manually issue a
+    /// software trigger to the channel.
+    ///
+    /// # Safety
+    ///
+    /// In `async` mode, a [`Transfer`] does NOT require `'static` source and
+    /// destination buffers. This, in t
+    ///heory, makes [`transfer_future`
+    ///](Transfer::transfer_future) an `unsafe` function,
+    ///although it is marked as safe (for ergonomics).
+    ///
+    /// This means that, as an user, you **must** ensure that the [`Future`]
+    /// returned by this function may never be forgotten through [`forget`].
+    /// [`Channel`]s implement [`Drop`] and will automatically s
+    ///top any ongoing transfers to guarantee that the memor
+    ///y occupied by the now-dropped buffers may
+    /// not be corrupted by running transfers. This also means
+    /// memory, memory, memory, memory, that should you [`forget`] this
+    /// [`Future`] after it is first [`poll`] call, the transfer will keep
+    /// running, ruining the now-reclaimed memory, as well as the rest of
+    /// your day.
+    ///
+    /// * `await`ing is fine: the [`Future`] will run to completion.
+    /// * Dropping an incomplete transfer is also fine. Dropping can happen,
+    /// for example, if the transfer doesn't complete before a timeout
+    /// expires.
+    ///
+    /// [`forget`]: core::mem::forget
+    /// [`Future`]: core::future::Future
+    /// [`poll`]: core::future::Future::poll
+    #[cfg(feature = "async")]
+    #[inline]
+    pub async fn transfer_future(
+        chan: &mut C,
+        mut source: S,
+        mut dest: D,
+        trig_src: TriggerSource,
+        trig_act: TriggerAction,
+    ) -> Result<()> {
+        use crate::dmac::waker::WAKERS;
+        use core::task::Poll;
+
+        Self::check_buffer_pair(&source, &dest)?;
+        unsafe { Self::fill_descriptor(&mut source, &mut dest, false) };
+        let chan = chan.as_mut();
+
+        chan.disable_interrupts(InterruptFlags::new().with_susp(true));
+
+        atomic::fence(atomic::Ordering::Release);
+        unsafe {
+            chan._start_private(trig_src, trig_act);
+        }
+
+        core::future::poll_fn(|cx| {
+            if chan.xfer_complete() {
+                chan.as_mut()
+                    .check_and_clear_interrupts(InterruptFlags::new().with_tcmpl(true));
+
+                return Poll::Ready(());
+            }
+
+            WAKERS[C::Id::USIZE].register(cx.waker());
+            let flags = InterruptFlags::new().with_terr(true).with_tcmpl(true);
+            chan.enable_interrupts(flags);
+
+            if chan.xfer_complete() {
+                chan.disable_interrupts(flags);
+                chan.as_mut()
+                    .check_and_clear_interrupts(InterruptFlags::new().with_tcmpl(true));
+                return Poll::Ready(());
+            }
+
+            Poll::Pending
+        })
+        .await;
+
+        chan.xfer_success()
+    }
+}
+
+impl<B, C, R, const N: usize> Transfer<C, BufferPair<&'static mut [B; N]>>
 where
     B: 'static + Beat,
-    C: AnyChannel<Status = Ready>,
+    C: AnyChannel<Status = R>,
+    R: ReadyChannel,
 {
     /// Create a new `Transfer` from static array references of the same type
     /// and length. When two array references are available (instead of slice
@@ -549,7 +634,7 @@ where
     }
 }
 
-impl<S, D, C, W> Transfer<C, BufferPair<S, D>, W>
+impl<S, D, C> Transfer<C, BufferPair<S, D>>
 where
     S: Buffer,
     D: Buffer<Beat = S::Beat>,
@@ -642,14 +727,12 @@ where
         };
 
         let old_buffers = core::mem::replace(&mut self.buffers, new_buffers);
-
         self.chan.as_mut().restart();
-
         Ok((old_buffers.source, old_buffers.destination))
     }
 
     /// Modify a completed transfer with a new `destination`, then restart.
-
+    ///
     /// Returns a Result containing the destination from the
     /// completed transfer. Returns `Err(_)` if the buffer lengths are
     /// mismatched or if the previous transfer has not yet completed.
@@ -667,14 +750,12 @@ where
         }
 
         let old_destination = core::mem::replace(&mut self.buffers.destination, destination);
-
         self.chan.as_mut().restart();
-
         Ok(old_destination)
     }
 
     /// Modify a completed transfer with a new `source`, then restart.
-
+    ///
     /// Returns a Result containing the source from the
     /// completed transfer. Returns `Err(_)` if the buffer lengths are
     /// mismatched or if the previous transfer has not yet completed.
@@ -692,9 +773,7 @@ where
         }
 
         let old_source = core::mem::replace(&mut self.buffers.source, source);
-
         self.chan.as_mut().restart();
-
         Ok(old_source)
     }
 
@@ -710,28 +789,5 @@ where
         atomic::fence(atomic::Ordering::Acquire); // ▼
 
         (chan, self.buffers.source, self.buffers.destination)
-    }
-}
-
-impl<S, D, C, W> Transfer<C, BufferPair<S, D>, W>
-where
-    S: Buffer,
-    D: Buffer<Beat = S::Beat>,
-    C: AnyChannel<Status = Busy>,
-    W: FnOnce(CallbackStatus) + 'static,
-{
-    /// This function should be put inside the DMAC interrupt handler.
-    /// It will take care of calling the [`Transfer`]'s waker (if it exists).
-    #[inline]
-    pub fn callback(&mut self) {
-        let status = self.chan.as_mut().callback();
-
-        if let CallbackStatus::TransferComplete = status {
-            self.complete = true;
-        }
-
-        if let Some(w) = self.waker.take() {
-            w(status)
-        }
     }
 }

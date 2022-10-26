@@ -6,7 +6,7 @@
 use crate::{
     dmac::{
         self,
-        channel::{AnyChannel, Busy, CallbackStatus, Channel, InterruptFlags, Ready},
+        channel::{AnyChannel, Busy, Channel, InterruptFlags, Ready},
         transfer::BufferPair,
         Beat, Buffer, Transfer, TriggerAction,
     },
@@ -77,18 +77,16 @@ impl<C: i2c::AnyConfig> I2c<C> {
     ///
     /// It is recommended that you check for errors after the transfer is
     /// complete by calling [`read_status`](I2c::read_status).
-    pub fn receive_with_dma<Ch, B, W>(
+    pub fn receive_with_dma<Ch, B>(
         self,
         address: u8,
         _ready_token: I2cBusReady,
         buf: B,
         mut channel: Ch,
-        waker: W,
-    ) -> Transfer<Channel<Ch::Id, Busy>, BufferPair<Self, B>, W>
+    ) -> Transfer<Channel<Ch::Id, Busy>, BufferPair<Self, B>>
     where
         Ch: AnyChannel<Status = Ready>,
         B: Buffer<Beat = i2c::Word> + 'static,
-        W: FnOnce(CallbackStatus) + 'static,
     {
         let len = buf.buffer_len();
         assert!(len > 0 && len <= 255);
@@ -106,9 +104,7 @@ impl<C: i2c::AnyConfig> I2c<C> {
         // SAFETY: This is safe because the of the `'static` bound check
         // for `B`, and the fact that the buffer length of an `I2c` is always 1.
         let xfer = unsafe { dmac::Transfer::new_unchecked(channel, self, buf, false) };
-        let mut xfer = xfer
-            .with_waker(waker)
-            .begin(C::Sercom::DMA_RX_TRIGGER, trigger_action);
+        let mut xfer = xfer.begin(C::Sercom::DMA_RX_TRIGGER, trigger_action);
 
         // SAFETY: we borrow the source from under a `Busy` transfer. While the type
         // system believes the transfer is running, we haven't enabled it in the
@@ -131,12 +127,10 @@ impl<C: i2c::AnyConfig> I2c<C> {
         _ready_token: I2cBusReady,
         buf: B,
         mut channel: Ch,
-        waker: W,
-    ) -> Transfer<Channel<Ch::Id, Busy>, BufferPair<B, Self>, W>
+    ) -> Transfer<Channel<Ch::Id, Busy>, BufferPair<B, Self>>
     where
         Ch: AnyChannel<Status = Ready>,
         B: Buffer<Beat = i2c::Word> + 'static,
-        W: FnOnce(CallbackStatus) + 'static,
     {
         let len = buf.buffer_len();
         assert!(len > 0 && len <= 255);
@@ -154,9 +148,7 @@ impl<C: i2c::AnyConfig> I2c<C> {
         // SAFETY: This is safe because the of the `'static` bound check
         // for `B`, and the fact that the buffer length of an `I2c` is always 1.
         let xfer = unsafe { dmac::Transfer::new_unchecked(channel, buf, self, false) };
-        let mut xfer = xfer
-            .with_waker(waker)
-            .begin(C::Sercom::DMA_TX_TRIGGER, trigger_action);
+        let mut xfer = xfer.begin(C::Sercom::DMA_TX_TRIGGER, trigger_action);
 
         // SAFETY: we borrow the source from under a `Busy` transfer. While the type
         // system believes the transfer is running, we haven't enabled it in the
@@ -206,16 +198,14 @@ where
     /// Transform an [`Uart`] into a DMA [`Transfer`]) and
     /// start receiving into the provided buffer.
     #[inline]
-    pub fn receive_with_dma<Ch, B, W>(
+    pub fn receive_with_dma<Ch, B>(
         self,
         buf: B,
         mut channel: Ch,
-        waker: W,
-    ) -> Transfer<Channel<Ch::Id, Busy>, BufferPair<Self, B>, W>
+    ) -> Transfer<Channel<Ch::Id, Busy>, BufferPair<Self, B>>
     where
         Ch: AnyChannel<Status = Ready>,
         B: Buffer<Beat = C::Word> + 'static,
-        W: FnOnce(CallbackStatus) + 'static,
     {
         channel
             .as_mut()
@@ -230,8 +220,7 @@ where
         // SAFETY: This is safe because the of the `'static` bound check
         // for `B`, and the fact that the buffer length of an `Uart` is always 1.
         let xfer = unsafe { dmac::Transfer::new_unchecked(channel, self, buf, false) };
-        xfer.with_waker(waker)
-            .begin(C::Sercom::DMA_RX_TRIGGER, trigger_action)
+        xfer.begin(C::Sercom::DMA_RX_TRIGGER, trigger_action)
     }
 }
 
@@ -244,16 +233,14 @@ where
     /// Transform an [`Uart`] into a DMA [`Transfer`]) and
     /// start sending the provided buffer.
     #[inline]
-    pub fn send_with_dma<Ch, B, W>(
+    pub fn send_with_dma<Ch, B>(
         self,
         buf: B,
         mut channel: Ch,
-        waker: W,
-    ) -> Transfer<Channel<Ch::Id, Busy>, BufferPair<B, Self>, W>
+    ) -> Transfer<Channel<Ch::Id, Busy>, BufferPair<B, Self>>
     where
         Ch: AnyChannel<Status = Ready>,
         B: Buffer<Beat = C::Word> + 'static,
-        W: FnOnce(CallbackStatus) + 'static,
     {
         channel
             .as_mut()
@@ -268,8 +255,7 @@ where
         // SAFETY: This is safe because the of the `'static` bound check
         // for `B`, and the fact that the buffer length of an `Uart` is always 1.
         let xfer = unsafe { dmac::Transfer::new_unchecked(channel, buf, self, false) };
-        xfer.with_waker(waker)
-            .begin(C::Sercom::DMA_TX_TRIGGER, trigger_action)
+        xfer.begin(C::Sercom::DMA_TX_TRIGGER, trigger_action)
     }
 }
 
@@ -312,16 +298,14 @@ where
     /// Transform an [`Spi`] into a DMA [`Transfer`]) and
     /// start a send transaction.
     #[inline]
-    pub fn send_with_dma<Ch, B, W>(
+    pub fn send_with_dma<Ch, B>(
         self,
         buf: B,
         mut channel: Ch,
-        waker: W,
-    ) -> Transfer<Channel<Ch::Id, Busy>, BufferPair<B, Self>, W>
+    ) -> Transfer<Channel<Ch::Id, Busy>, BufferPair<B, Self>>
     where
         Ch: AnyChannel<Status = Ready>,
         B: Buffer<Beat = C::Word> + 'static,
-        W: FnOnce(CallbackStatus) + 'static,
     {
         channel
             .as_mut()
@@ -336,8 +320,7 @@ where
         // SAFETY: This is safe because the of the `'static` bound check
         // for `B`, and the fact that the buffer length of an `Spi` is always 1.
         let xfer = unsafe { Transfer::new_unchecked(channel, buf, self, false) };
-        xfer.with_waker(waker)
-            .begin(C::Sercom::DMA_TX_TRIGGER, trigger_action)
+        xfer.begin(C::Sercom::DMA_TX_TRIGGER, trigger_action)
     }
 }
 
@@ -350,16 +333,14 @@ where
     /// Transform an [`Spi`] into a DMA [`Transfer`]) and
     /// start a receive transaction.
     #[inline]
-    pub fn receive_with_dma<Ch, B, W>(
+    pub fn receive_with_dma<Ch, B>(
         self,
         buf: B,
         mut channel: Ch,
-        waker: W,
-    ) -> Transfer<Channel<Ch::Id, Busy>, BufferPair<Self, B>, W>
+    ) -> Transfer<Channel<Ch::Id, Busy>, BufferPair<Self, B>>
     where
         Ch: AnyChannel<Status = Ready>,
         B: Buffer<Beat = C::Word> + 'static,
-        W: FnOnce(CallbackStatus) + 'static,
     {
         channel
             .as_mut()
@@ -374,7 +355,6 @@ where
         // SAFETY: This is safe because the of the `'static` bound check
         // for `B`, and the fact that the buffer length of an `Spi` is always 1.
         let xfer = unsafe { Transfer::new_unchecked(channel, self, buf, false) };
-        xfer.with_waker(waker)
-            .begin(C::Sercom::DMA_RX_TRIGGER, trigger_action)
+        xfer.begin(C::Sercom::DMA_RX_TRIGGER, trigger_action)
     }
 }

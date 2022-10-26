@@ -10,7 +10,7 @@ use crate::time::Hertz;
 const MASTER_ACT_READ: u8 = 2;
 const MASTER_ACT_STOP: u8 = 3;
 
-pub(super) struct Registers<S: Sercom> {
+pub(in super::super) struct Registers<S: Sercom> {
     pub sercom: S,
 }
 
@@ -297,7 +297,7 @@ impl<S: Sercom> Registers<S> {
     /// and STOP are automatically generated.
     #[cfg(feature = "dma")]
     #[inline]
-    pub(super) fn start_dma_write(&mut self, address: u8, xfer_len: u8) {
+    pub(in super::super) fn start_dma_write(&mut self, address: u8, xfer_len: u8) {
         if !self.get_smart_mode() {
             self.disable();
             self.set_smart_mode(true);
@@ -322,7 +322,7 @@ impl<S: Sercom> Registers<S> {
     /// STOP are automatically generated.
     #[cfg(feature = "dma")]
     #[inline]
-    pub(super) fn start_dma_read(&mut self, address: u8, xfer_len: u8) {
+    pub(in super::super) fn start_dma_read(&mut self, address: u8, xfer_len: u8) {
         if !self.get_smart_mode() {
             self.disable();
             self.set_smart_mode(true);

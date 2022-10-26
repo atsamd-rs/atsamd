@@ -301,7 +301,7 @@ pub enum InactiveTimeout {
 
 /// Abstraction over a I2C peripheral, allowing to perform I2C transactions.
 pub struct I2c<C: AnyConfig> {
-    config: C,
+    pub(super) config: C,
 }
 
 impl<C: AnyConfig> I2c<C> {

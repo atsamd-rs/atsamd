@@ -41,9 +41,11 @@ panic-rtt-target = { version = "0.1.1", features = ["cortex-m"] }
 cortex-m-semihosting = "0.3"
 rtt-target = { version = "0.3.0", features = ["cortex-m"] }
 smart-leds = "0.3"
+embassy = {version = "0.1.0", git = "https://github.com/embassy-rs/embassy.git" }
 
 [dev-dependencies.ws2812-timer-delay]
 version = "0.3"
+
 
 [features]
 # ask the HAL to enable atsamd51j support
@@ -101,3 +103,11 @@ required-features = ["usb", "unproven"]
 [[example]]
 name = "i2c"
 required-features = ["atsamd-hal/dma"]
+
+[[example]]
+name = "dmac_async"
+required-features = [
+	"atsamd-hal/dma",
+	"atsamd-hal/async",
+	"atsamd-hal/nightly"
+]

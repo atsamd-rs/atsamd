@@ -39,7 +39,6 @@ use core::marker::PhantomData;
 use modular_bitfield::prelude::*;
 
 mod reg;
-
 use reg::RegisterBlock;
 
 #[cfg(feature = "thumbv7")]
@@ -48,20 +47,60 @@ use super::dma_controller::{BurstLength, FifoThreshold};
 //==============================================================================
 // Channel Status
 //==============================================================================
-pub trait Status: Sealed {}
+pub trait Status: Sealed {
+    type Uninitialized: Status;
+    type Ready: Status;
+}
 
 /// Uninitialized channel
 pub enum Uninitialized {}
 impl Sealed for Uninitialized {}
-impl Status for Uninitialized {}
+impl Status for Uninitialized {
+    type Uninitialized = Uninitialized;
+    type Ready = Ready;
+}
+
 /// Initialized and ready to transfer channel
 pub enum Ready {}
 impl Sealed for Ready {}
-impl Status for Ready {}
+impl Status for Ready {
+    type Uninitialized = Uninitialized;
+    type Ready = Ready;
+}
+
 /// Busy channel
 pub enum Busy {}
 impl Sealed for Busy {}
-impl Status for Busy {}
+impl Status for Busy {
+    type Uninitialized = Uninitialized;
+    type Ready = Ready;
+}
+
+/// Uninitialized [`Channel`] configured for `async` operation
+#[cfg(feature = "async")]
+pub enum UninitializedFuture {}
+#[cfg(feature = "async")]
+impl Sealed for UninitializedFuture {}
+#[cfg(feature = "async")]
+impl Status for UninitializedFuture {
+    type Uninitialized = UninitializedFuture;
+    type Ready = ReadyFuture;
+}
+
+/// Initialized and ready to transfer in `async` operation
+#[cfg(feature = "async")]
+pub enum ReadyFuture {}
+#[cfg(feature = "async")]
+impl Sealed for ReadyFuture {}
+#[cfg(feature = "async")]
+impl Status for ReadyFuture {
+    type Uninitialized = UninitializedFuture;
+    type Ready = ReadyFuture;
+}
+
+pub trait ReadyChannel: Status {}
+impl ReadyChannel for Ready {}
+impl ReadyChannel for ReadyFuture {}
 
 //==============================================================================
 // AnyChannel
@@ -117,8 +156,9 @@ where
 //==============================================================================
 // Channel
 //==============================================================================
+
 /// DMA channel, capable of executing
-/// [`Transfer`](super::transfer::Transfer)s.
+/// [`Transfer`](crate::dmac::transfer::Transfer)s.
 pub struct Channel<Id: ChId, S: Status> {
     regs: RegisterBlock<Id>,
     _status: PhantomData<S>,
@@ -126,6 +166,15 @@ pub struct Channel<Id: ChId, S: Status> {
 
 #[inline]
 pub(super) fn new_chan<Id: ChId>(_id: PhantomData<Id>) -> Channel<Id, Uninitialized> {
+    Channel {
+        regs: RegisterBlock::new(_id),
+        _status: PhantomData,
+    }
+}
+
+#[cfg(feature = "async")]
+#[inline]
+pub(super) fn new_chan_future<Id: ChId>(_id: PhantomData<Id>) -> Channel<Id, UninitializedFuture> {
     Channel {
         regs: RegisterBlock::new(_id),
         _status: PhantomData,
@@ -141,7 +190,7 @@ impl<Id: ChId, S: Status> Channel<Id, S> {
     ///
     /// A `Channel` with a `Ready` status
     #[inline]
-    pub fn init(mut self, lvl: PriorityLevel) -> Channel<Id, Ready> {
+    pub fn init(mut self, lvl: PriorityLevel) -> Channel<Id, S::Ready> {
         // Software reset the channel for good measure
         self._reset_private();
 
@@ -152,10 +201,7 @@ impl<Id: ChId, S: Status> Channel<Id, S> {
         #[cfg(feature = "thumbv7")]
         self.regs.chprilvl.modify(|_, w| w.prilvl().bits(lvl as u8));
 
-        Channel {
-            regs: self.regs,
-            _status: PhantomData,
-        }
+        self.change_status()
     }
 
     /// Selectively enable interrupts
@@ -191,6 +237,17 @@ impl<Id: ChId, S: Status> Channel<Id, S> {
     }
 
     #[inline]
+    pub(super) fn change_status<N: Status>(self) -> Channel<Id, N> {
+        // SAFETY: Safe as longa as `RegisterBlock` doesn't implement
+        // `Drop`. Otherwise it could lead to a double-free.
+        let regs = unsafe { core::ptr::read(&self.regs) };
+        Channel {
+            regs,
+            _status: PhantomData,
+        }
+    }
+
+    #[inline]
     fn _reset_private(&mut self) {
         // Reset the channel to its startup state and wait for reset to complete
         self.regs.chctrla.modify(|_, w| w.swrst().set_bit());
@@ -201,20 +258,37 @@ impl<Id: ChId, S: Status> Channel<Id, S> {
     fn _trigger_private(&mut self) {
         self.regs.swtrigctrl.set_bit();
     }
+
+    /// Stop transfer on channel whether or not the transfer has completed
+    pub(crate) fn stop(&mut self) {
+        self.regs.chctrla.modify(|_, w| w.enable().clear_bit());
+    }
+
+    /// Returns whether or not the transfer is complete.
+    #[inline]
+    pub(crate) fn xfer_complete(&mut self) -> bool {
+        !self.regs.chctrla.read().enable().bit_is_set()
+    }
+
+    /// Returns whether the transfer's success status.
+    pub(crate) fn xfer_success(&mut self) -> super::Result<()> {
+        let is_ok = self.regs.chintflag.read().terr().bit_is_clear();
+        is_ok.then_some(()).ok_or(super::Error::TransferError)
+    }
 }
 
-/// These methods may only be used on a `Ready` DMA channel
-impl<Id: ChId> Channel<Id, Ready> {
+impl<Id, R> Channel<Id, R>
+where
+    Id: ChId,
+    R: ReadyChannel,
+{
     /// Issue a software reset to the channel. This will return the channel to
     /// its startup state
     #[inline]
-    pub fn reset(mut self) -> Channel<Id, Uninitialized> {
+    pub fn reset(mut self) -> Channel<Id, R::Uninitialized> {
         self._reset_private();
 
-        Channel {
-            regs: self.regs,
-            _status: PhantomData,
-        }
+        self.change_status()
     }
 
     /// Set the FIFO threshold length. The channel will wait until it has
@@ -238,17 +312,19 @@ impl<Id: ChId> Channel<Id, Ready> {
             .modify(|_, w| w.burstlen().bits(burst_length as u8));
     }
 
-    /// Start transfer on channel using the specified trigger source.
+    /// Start the transfer.
     ///
-    /// # Return
+    /// # Safety
     ///
-    /// A `Channel` with a `Busy` status.
+    /// This function is unsafe because it starts the transfer without changing
+    /// the channel status to [`Busy`]. A [`Ready`] channel which is actively
+    /// transferring should NEVER be leaked.
     #[inline]
-    pub(crate) fn start(
-        mut self,
+    pub(super) unsafe fn _start_private(
+        &mut self,
         trig_src: TriggerSource,
         trig_act: TriggerAction,
-    ) -> Channel<Id, Busy> {
+    ) {
         // Configure the trigger source and trigger action
         #[cfg(feature = "thumbv6")]
         self.regs.chctrlb.modify(|_, w| {
@@ -269,11 +345,25 @@ impl<Id: ChId> Channel<Id, Ready> {
         if trig_src == TriggerSource::DISABLE {
             self._trigger_private();
         }
+    }
+}
 
-        Channel {
-            regs: self.regs,
-            _status: PhantomData,
+impl<Id: ChId> Channel<Id, Ready> {
+    /// Start transfer on channel using the specified trigger source.
+    ///
+    /// # Return
+    ///
+    /// A `Channel` with a `Busy` status.
+    #[inline]
+    pub(crate) fn start(
+        mut self,
+        trig_src: TriggerSource,
+        trig_act: TriggerAction,
+    ) -> Channel<Id, Busy> {
+        unsafe {
+            self._start_private(trig_src, trig_act);
         }
+        self.change_status()
     }
 }
 
@@ -285,13 +375,8 @@ impl<Id: ChId> Channel<Id, Busy> {
         self._trigger_private();
     }
 
-    /// Returns whether or not the transfer is complete.
-    #[inline]
-    pub(crate) fn xfer_complete(&mut self) -> bool {
-        !self.regs.chctrla.read().enable().bit_is_set()
-    }
-
-    /// Stop transfer on channel whether or not the transfer has completed
+    /// Stop transfer on channel whether or not the transfer has completed, and
+    /// return the resources it holds.
     ///
     /// # Return
     ///
@@ -299,34 +384,9 @@ impl<Id: ChId> Channel<Id, Busy> {
     /// [`Transfer`](super::transfer::Transfer)
     #[inline]
     pub(crate) fn free(mut self) -> Channel<Id, Ready> {
-        self.regs.chctrla.modify(|_, w| w.enable().clear_bit());
+        self.stop();
         while !self.xfer_complete() {}
-        Channel {
-            regs: self.regs,
-            _status: PhantomData,
-        }
-    }
-
-    #[inline]
-    pub(super) fn callback(&mut self) -> CallbackStatus {
-        // Transfer complete
-        if self.regs.chintflag.read().tcmpl().bit_is_set() {
-            self.regs.chintflag.modify(|_, w| w.tcmpl().set_bit());
-            return CallbackStatus::TransferComplete;
-        }
-        // Transfer error
-        else if self.regs.chintflag.read().terr().bit_is_set() {
-            self.regs.chintflag.modify(|_, w| w.terr().set_bit());
-            return CallbackStatus::TransferError;
-        }
-        // Channel suspended
-        else if self.regs.chintflag.read().susp().bit_is_set() {
-            self.regs.chintflag.modify(|_, w| w.susp().set_bit());
-            return CallbackStatus::TransferSuspended;
-        }
-        // Default to error if for some reason there was in interrupt
-        // flag raised
-        CallbackStatus::TransferError
+        self.change_status()
     }
 
     /// Restart transfer using previously-configured trigger source and action
@@ -337,11 +397,15 @@ impl<Id: ChId> Channel<Id, Busy> {
 }
 
 impl<Id: ChId> From<Channel<Id, Ready>> for Channel<Id, Uninitialized> {
-    fn from(item: Channel<Id, Ready>) -> Self {
-        Channel {
-            regs: item.regs,
-            _status: PhantomData,
-        }
+    fn from(mut item: Channel<Id, Ready>) -> Self {
+        item._reset_private();
+        item.change_status()
+    }
+}
+
+impl<Id: ChId, S: Status> Drop for Channel<Id, S> {
+    fn drop(&mut self) {
+        self.stop();
     }
 }
 

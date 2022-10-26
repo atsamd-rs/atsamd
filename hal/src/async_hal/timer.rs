@@ -31,7 +31,10 @@ use crate::pac::{TC4, TC5};
 
 use timer::{Count16, TimerCounter};
 
-#[doc(hidden)]
+/// Trait enabling the use of a Timer/Counter in async mode. Specifically, this
+/// trait enables us to register a `TC*` interrupt as a waker for timer futures.
+///
+/// **⚠️ Warning** This trait should not be implemented outside of this crate!
 pub trait AsyncCount16: Count16 + Sealed {
     /// Index of this TC in the `STATE` tracker
     const STATE_ID: usize;
@@ -44,7 +47,7 @@ pub trait AsyncCount16: Count16 + Sealed {
     /// peripheral instance to check the interrupt flags. The only
     /// modifications it is allowed to apply to the peripheral is to clear
     /// the interrupt flag (to prevent re-firing). This method should ONLY be
-    /// able to be called while an [`AsyncTimer`] holds an unique reference
+    /// able to be called while a [`TimerFuture`] holds an unique reference
     /// to the underlying `TC` peripheral.
     fn on_interrupt();
 }
