@@ -789,7 +789,7 @@ where
         if int < 1 || int > 0x2000 {
             panic!("Invalid integer part of the DPLL loop divider")
         }
-        if int > 31 {
+        if frac > 31 {
             panic!("Invalid fractional part of the DPLL loop divider")
         }
         self.mult = int;
