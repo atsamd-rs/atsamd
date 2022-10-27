@@ -59,6 +59,12 @@ pub mod uart;
 #[cfg(feature = "dma")]
 pub mod dma;
 
+#[cfg(all(feature = "dma", feature = "async"))]
+mod async_dma;
+
+#[cfg(all(feature = "dma", feature = "async"))]
+pub use async_dma::*;
+
 //==============================================================================
 //  Sercom
 //==============================================================================
@@ -90,6 +96,10 @@ pub trait Sercom: Sealed + Deref<Target = sercom0::RegisterBlock> {
     /// Interrupt handler for async UART operarions
     #[cfg(feature = "async")]
     fn on_interrupt_uart();
+
+    /// Interrupt handler for async SPI operarions
+    #[cfg(feature = "async")]
+    fn on_interrupt_spi();
 
     /// Get a reference to this [`Sercom`]'s associated RX Waker
     #[cfg(feature = "async")]
@@ -144,7 +154,7 @@ macro_rules! sercom {
                         use self::i2c::Flags;
                         let mut peripherals = unsafe { crate::pac::Peripherals::steal() };
                         let i2cm = Self::reg_block(&mut peripherals).i2cm();
-                        let flags_to_check = Flags::MB | Flags::SB | Flags::ERROR;
+                        let flags_to_check = Flags::all();
                         let flags_pending = Flags::from_bits_truncate(i2cm.intflag.read().bits());
 
                         // Disable interrupts, but don't clear the flags. The future will take care of
@@ -178,6 +188,32 @@ macro_rules! sercom {
                             }
 
                             if (Flags::TX & enabled_flags).intersects(flags_pending) {
+                                Self::tx_waker().wake();
+                            }
+                        }
+                    }
+
+                    #[cfg(feature = "async")]
+                    #[inline]
+                    fn on_interrupt_spi(){
+                        use self::spi::{Flags};
+                        unsafe {
+                            let mut peripherals = crate::pac::Peripherals::steal();
+
+                            let spi = Self::reg_block(&mut peripherals).spi();
+
+                            let flags_pending = Flags::from_bits_truncate(spi.intflag.read().bits());
+                            let enabled_flags = Flags::from_bits_truncate(spi.intenset.read().bits());
+
+                            // Disable interrupts, but don't clear the flags. The future will take care of
+                            // clearing flags and re-enabling interrupts when woken.
+                            if (Flags::RX & enabled_flags).contains(flags_pending) {
+                                spi.intenclr.write(|w| w.bits(flags_pending.bits()));
+                                Self::rx_waker().wake();
+                            }
+
+                            if (Flags::TX & enabled_flags).contains(flags_pending) {
+                                spi.intenclr.write(|w| w.bits(flags_pending.bits()));
                                 Self::tx_waker().wake();
                             }
                         }

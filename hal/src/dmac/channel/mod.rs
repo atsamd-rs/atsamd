@@ -158,7 +158,8 @@ where
 //==============================================================================
 
 /// DMA channel, capable of executing
-/// [`Transfer`](crate::dmac::transfer::Transfer)s.
+/// [`Transfer`](crate::dmac::transfer::Transfer)s. Ongoing DMA transfers are
+/// automatically stopped when a [`Channel`] is dropped.
 pub struct Channel<Id: ChId, S: Status> {
     regs: RegisterBlock<Id>,
     _status: PhantomData<S>,
@@ -238,11 +239,8 @@ impl<Id: ChId, S: Status> Channel<Id, S> {
 
     #[inline]
     pub(super) fn change_status<N: Status>(self) -> Channel<Id, N> {
-        // SAFETY: Safe as longa as `RegisterBlock` doesn't implement
-        // `Drop`. Otherwise it could lead to a double-free.
-        let regs = unsafe { core::ptr::read(&self.regs) };
         Channel {
-            regs,
+            regs: self.regs,
             _status: PhantomData,
         }
     }
@@ -400,12 +398,6 @@ impl<Id: ChId> From<Channel<Id, Ready>> for Channel<Id, Uninitialized> {
     fn from(mut item: Channel<Id, Ready>) -> Self {
         item._reset_private();
         item.change_status()
-    }
-}
-
-impl<Id: ChId, S: Status> Drop for Channel<Id, S> {
-    fn drop(&mut self) {
-        self.stop();
     }
 }
 

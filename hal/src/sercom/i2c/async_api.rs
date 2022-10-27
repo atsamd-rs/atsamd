@@ -7,7 +7,7 @@ use crate::{
 };
 use core::task::Poll;
 use cortex_m::interrupt::InterruptNumber;
-use cortex_m_interrupt::NvicInterruptHandle;
+use cortex_m_interrupt::NvicInterruptRegistration;
 
 impl<C, S> I2c<C>
 where
@@ -18,11 +18,11 @@ where
     #[inline]
     pub fn into_future<I, N>(self, irq: I) -> I2cFuture<C, N>
     where
-        I: NvicInterruptHandle<N>,
+        I: NvicInterruptRegistration<N>,
         N: InterruptNumber,
     {
         let irq_number = irq.number();
-        irq.register(S::on_interrupt_i2c);
+        irq.occupy(S::on_interrupt_i2c);
         unsafe { cortex_m::peripheral::NVIC::unmask(irq_number) };
 
         I2cFuture {
@@ -33,6 +33,9 @@ where
     }
 }
 
+/// `async` version of [`I2c`].
+///
+/// Create this struct by calling [`I2c::into_future`](I2c::into_future).
 pub struct I2cFuture<C, N, D = NoneT>
 where
     C: AnyConfig,
@@ -43,9 +46,6 @@ where
     dma_channel: D,
 }
 
-/// `async` version of [`I2c`].
-///
-/// Create this struct by calling [`I2c::into_future`](I2c::into_future).
 impl<C, N, S> I2cFuture<C, N, NoneT>
 where
     C: AnyConfig<Sercom = S>,
@@ -264,75 +264,10 @@ mod impl_ehal {
 #[cfg(feature = "dma")]
 mod dma {
     use super::*;
-    use crate::dmac::{AnyChannel, Beat, Buffer, ReadyFuture, Transfer, TriggerAction};
-    use core::ops::Range;
+    use crate::dmac::{AnyChannel, Buffer, ReadyFuture, Transfer, TriggerAction};
+    use crate::sercom::async_dma::{ImmutableSlice, SercomPtr};
 
-    // Implementation detail to make async I2C-DMA transfers work. Should not be
-    // used outside of this crate.
-    #[doc(hidden)]
-    pub struct ImmutableSlice(Range<*mut u8>);
-
-    impl ImmutableSlice {
-        #[inline]
-        fn from_slice(slice: &[u8]) -> Self {
-            let ptrs = slice.as_ptr_range();
-
-            let ptrs = Range {
-                start: ptrs.start.cast_mut(),
-                end: ptrs.end.cast_mut(),
-            };
-
-            ImmutableSlice(ptrs)
-        }
-    }
-
-    unsafe impl Buffer for ImmutableSlice {
-        type Beat = u8;
-        #[inline]
-        fn dma_ptr(&mut self) -> *mut Self::Beat {
-            if self.incrementing() {
-                self.0.end
-            } else {
-                self.0.start
-            }
-        }
-
-        #[inline]
-        fn incrementing(&self) -> bool {
-            self.buffer_len() > 1
-        }
-
-        #[inline]
-        fn buffer_len(&self) -> usize {
-            self.0.end as usize - self.0.start as usize
-        }
-    }
-
-    // Implementation detail to make async SERCOM-DMA transfers work. Should not be
-    // used outside of this crate.
-    #[doc(hidden)]
-    pub struct SercomPtr<T: Beat>(*mut T);
-
-    unsafe impl<T: Beat> Buffer for SercomPtr<T> {
-        type Beat = T;
-
-        #[inline]
-        fn dma_ptr(&mut self) -> *mut Self::Beat {
-            self.0
-        }
-
-        #[inline]
-        fn incrementing(&self) -> bool {
-            false
-        }
-
-        #[inline]
-        fn buffer_len(&self) -> usize {
-            1
-        }
-    }
-
-    impl<'a, C, N, S, D> I2cFuture<C, N, D>
+    impl<C, N, S, D> I2cFuture<C, N, D>
     where
         C: AnyConfig<Sercom = S>,
         S: Sercom,
@@ -372,7 +307,7 @@ mod dma {
                 trigger_action,
             )
             .await
-            .map_err(i2c::Error::DmaError)?;
+            .map_err(i2c::Error::Dma)?;
 
             Ok(())
         }
@@ -405,7 +340,7 @@ mod dma {
                 trigger_action,
             )
             .await
-            .map_err(i2c::Error::DmaError)?;
+            .map_err(i2c::Error::Dma)?;
 
             Ok(())
         }

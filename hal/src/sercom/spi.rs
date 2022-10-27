@@ -371,6 +371,11 @@ pub mod impl_ehal;
 #[path = "spi/impl_ehal_thumbv7em.rs"]
 pub mod impl_ehal;
 
+#[cfg(feature = "async")]
+mod async_api;
+#[cfg(feature = "async")]
+pub use async_api::*;
+
 //=============================================================================
 // BitOrder
 //=============================================================================
@@ -388,6 +393,15 @@ pub enum BitOrder {
 // Flags
 //=============================================================================
 
+const DRE: u8 = 0x01;
+const TXC: u8 = 0x02;
+const RXC: u8 = 0x04;
+const SSL: u8 = 0x08;
+const ERROR: u8 = 0x80;
+
+pub const RX_FLAG_MASK: u8 = RXC;
+pub const TX_FLAG_MASK: u8 = DRE | TXC;
+
 bitflags! {
     /// Interrupt bit flags for SPI transactions
     ///
@@ -395,12 +409,17 @@ bitflags! {
     /// `ERROR`. The binary format of the underlying bits exactly matches the
     /// `INTFLAG` register.
     pub struct Flags: u8 {
-        const DRE = 0x01;
-        const TXC = 0x02;
-        const RXC = 0x04;
-        const SSL = 0x08;
-        const ERROR = 0x80;
+        const DRE = DRE;
+        const TXC = TXC;
+        const RXC = RXC;
+        const SSL = SSL;
+        const ERROR = ERROR;
     }
+}
+
+impl Flags {
+    pub(super) const RX: Self = unsafe { Self::from_bits_unchecked(RX_FLAG_MASK) };
+    pub(super) const TX: Self = unsafe { Self::from_bits_unchecked(TX_FLAG_MASK) };
 }
 
 //=============================================================================
@@ -447,6 +466,21 @@ impl TryFrom<Status> for () {
 pub enum Error {
     Overflow,
     LengthError,
+    #[cfg(feature = "dma")]
+    Dma(crate::dmac::Error),
+}
+
+#[cfg(all(feature = "async", feature = "nightly"))]
+impl embedded_hal_async::spi::Error for Error {
+    fn kind(&self) -> embedded_hal_async::spi::ErrorKind {
+        use embedded_hal_async::spi::ErrorKind;
+
+        match self {
+            Error::Overflow => ErrorKind::Overrun,
+            Error::LengthError => ErrorKind::Other,
+            _ => ErrorKind::Other,
+        }
+    }
 }
 
 //=============================================================================

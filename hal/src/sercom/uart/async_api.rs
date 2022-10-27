@@ -7,7 +7,7 @@ use crate::sercom::{
 };
 use core::{marker::PhantomData, task::Poll};
 use cortex_m::interrupt::InterruptNumber;
-use cortex_m_interrupt::NvicInterruptHandle;
+use cortex_m_interrupt::NvicInterruptRegistration;
 use num_traits::AsPrimitive;
 
 impl<C, D, S> Uart<C, D>
@@ -22,11 +22,11 @@ where
     #[inline]
     pub fn into_future<I, N>(self, irq: I) -> UartFuture<C, D, N>
     where
-        I: NvicInterruptHandle<N>,
+        I: NvicInterruptRegistration<N>,
         N: InterruptNumber,
     {
         let irq_number = irq.number();
-        irq.register(S::on_interrupt_uart);
+        irq.occupy(S::on_interrupt_uart);
         unsafe { cortex_m::peripheral::NVIC::unmask(irq_number) };
 
         UartFuture {
@@ -36,6 +36,9 @@ where
     }
 }
 
+/// `async` version of [`Uart`].
+///
+/// Create this struct by calling [`I2c::into_future`](I2c::into_future).
 pub struct UartFuture<C, D, N>
 where
     C: ValidConfig,
@@ -90,6 +93,47 @@ where
 impl<C, D, N, S> UartFuture<C, D, N>
 where
     C: ValidConfig<Sercom = S>,
+    D: Capability,
+    N: InterruptNumber,
+    S: Sercom,
+{
+    #[inline]
+    async fn wait_flags(&mut self, flags_to_wait: Flags) {
+        let flags_to_wait = flags_to_wait & unsafe { Flags::from_bits_unchecked(D::FLAG_MASK) };
+
+        core::future::poll_fn(|cx| {
+            // Scope maybe_pending so we don't forget to re-poll the register later down.
+            {
+                let maybe_pending = self.uart.as_ref().registers.read_flags();
+                if flags_to_wait.intersects(maybe_pending) {
+                    return Poll::Ready(());
+                }
+            }
+
+            if flags_to_wait.intersects(Flags::RX) {
+                self.uart.disable_interrupts(Flags::RX);
+                S::rx_waker().register(cx.waker());
+            }
+            if flags_to_wait.intersects(Flags::TX) {
+                self.uart.disable_interrupts(Flags::RX);
+                S::tx_waker().register(cx.waker());
+            }
+            self.uart.enable_interrupts(flags_to_wait);
+            let maybe_pending = self.uart.as_ref().registers.read_flags();
+
+            if !flags_to_wait.intersects(maybe_pending) {
+                Poll::Pending
+            } else {
+                Poll::Ready(())
+            }
+        })
+        .await;
+    }
+}
+
+impl<C, D, N, S> UartFuture<C, D, N>
+where
+    C: ValidConfig<Sercom = S>,
     D: Receive,
     N: InterruptNumber,
     S: Sercom,
@@ -98,7 +142,7 @@ where
     /// Read a single [`Word`](crate::sercom::uart::Word) from the UART.
     #[inline]
     pub async fn read_word(&mut self) -> Result<C::Word, Error> {
-        self.wait_flags_rx(Flags::RXC).await;
+        self.wait_flags(Flags::RXC).await;
         self.uart.read_status().try_into()?;
         Ok(unsafe { self.uart.read_data().as_() })
     }
@@ -121,33 +165,6 @@ where
         }
         Ok(())
     }
-
-    #[inline]
-    async fn wait_flags_rx(&mut self, flags_to_wait: Flags) {
-        let flags_to_wait = flags_to_wait & unsafe { Flags::from_bits_unchecked(D::FLAG_MASK) };
-
-        core::future::poll_fn(|cx| {
-            // Scope maybe_pending so we don't forget to re-poll the register later down.
-            {
-                let maybe_pending = self.uart.as_ref().registers.read_flags();
-                if flags_to_wait.intersects(maybe_pending) {
-                    return Poll::Ready(());
-                }
-            }
-
-            self.uart.disable_interrupts(Flags::RX);
-            S::rx_waker().register(cx.waker());
-            self.uart.enable_interrupts(flags_to_wait);
-            let maybe_pending = self.uart.as_ref().registers.read_flags();
-
-            if !flags_to_wait.intersects(maybe_pending) {
-                Poll::Pending
-            } else {
-                Poll::Ready(())
-            }
-        })
-        .await;
-    }
 }
 
 impl<C, D, N, S> UartFuture<C, D, N>
@@ -160,7 +177,7 @@ where
     /// Write a single [`Word`](crate::sercom::uart::Word) to the UART.
     #[inline]
     pub async fn write_word(&mut self, word: C::Word) {
-        self.wait_flags_tx(Flags::DRE).await;
+        self.wait_flags(Flags::DRE).await;
         unsafe { self.uart.write_data(word.as_()) };
     }
 
@@ -171,33 +188,6 @@ where
         for word in buffer {
             self.write_word(*word).await;
         }
-    }
-
-    #[inline]
-    async fn wait_flags_tx(&mut self, flags_to_wait: Flags) {
-        let flags_to_wait = flags_to_wait & unsafe { Flags::from_bits_unchecked(D::FLAG_MASK) };
-
-        core::future::poll_fn(|cx| {
-            // Scope maybe_pending so we don't forget to re-poll the register later down.
-            {
-                let maybe_pending = self.uart.as_ref().registers.read_flags();
-                if flags_to_wait.intersects(maybe_pending) {
-                    return Poll::Ready(());
-                }
-            }
-
-            self.uart.disable_interrupts(Flags::TX);
-            S::tx_waker().register(cx.waker());
-            self.uart.enable_interrupts(flags_to_wait);
-            let flags_to_check = self.uart.as_ref().registers.read_flags();
-
-            if !flags_to_wait.intersects(flags_to_check) {
-                Poll::Pending
-            } else {
-                Poll::Ready(())
-            }
-        })
-        .await;
     }
 }
 

@@ -9,7 +9,7 @@ use core::{
     task::{Poll, Waker},
 };
 use cortex_m::interrupt::InterruptNumber;
-use cortex_m_interrupt::NvicInterruptHandle;
+use cortex_m_interrupt::NvicInterruptRegistration;
 use embassy_sync::waitqueue::AtomicWaker;
 
 #[cfg(any(feature = "samd11", feature = "samd21"))]
@@ -103,11 +103,11 @@ where
     #[inline]
     pub fn into_future<I, N>(mut self, irq: I) -> TimerFuture<T, N>
     where
-        I: NvicInterruptHandle<N>,
+        I: NvicInterruptRegistration<N>,
         N: InterruptNumber,
     {
         let irq_number = irq.number();
-        irq.register(T::on_interrupt);
+        irq.occupy(T::on_interrupt);
         unsafe { cortex_m::peripheral::NVIC::unmask(irq_number) };
         self.enable_interrupt();
 

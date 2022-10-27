@@ -320,3 +320,10 @@ impl<Id: ChId> RegisterBlock<Id> {
         }
     }
 }
+
+impl<Id: ChId> Drop for RegisterBlock<Id> {
+    fn drop(&mut self) {
+        // Stop any potentially ongoing transfers
+        self.chctrla.modify(|_, w| w.enable().clear_bit());
+    }
+}

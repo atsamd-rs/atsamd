@@ -37,9 +37,10 @@ version = "0.3"
 optional = true
 
 [dependencies.cortex-m-interrupt]
-version = "0.1"
+version = "0.2.1-git"
 optional = true
-git = "https://github.com/datdenkikniet/cortex-m-interrupt.git"
+git = "https://github.com/jbeaurivage/cortex-m-interrupt.git"
+branch = "atomic-polyfill"
 
 [dev-dependencies]
 cortex-m-rtic = "1.1.3"
