@@ -7,13 +7,12 @@ use panic_probe as _;
 
 #[rtic::app(device = bsp::pac, dispatchers = [I2S])]
 mod app {
-    use bsp::{hal, pac, pin_alias};
+    use bsp::{hal, pac};
     use feather_m0 as bsp;
     use fugit::MillisDuration;
     use hal::{
         clock::{enable_internal_32kosc, ClockGenId, ClockSource, GenericClockController},
         dmac::{Ch0, Channel, DmaController, PriorityLevel, ReadyFuture},
-        ehal::digital::v2::ToggleableOutputPin,
         prelude::*,
         rtc::{Count32Mode, Rtc},
         sercom::i2c::{self, Config, I2cFuture},
@@ -28,7 +27,6 @@ mod app {
     #[local]
     struct Local {
         i2c: I2cFuture<Config<bsp::I2cPads>, bsp::pac::Interrupt, Channel<Ch0, ReadyFuture>>,
-        red_led: bsp::RedLed,
     }
 
     #[init]
@@ -42,8 +40,8 @@ mod app {
             &mut peripherals.SYSCTRL,
             &mut peripherals.NVMCTRL,
         );
+
         let pins = bsp::Pins::new(peripherals.PORT);
-        let red_led: bsp::RedLed = pin_alias!(pins.red_led).into();
 
         // Take SDA and SCL
         let (sda, scl) = (pins.sda, pins.scl);
@@ -89,13 +87,12 @@ mod app {
 
         async_task::spawn().ok();
 
-        (Shared {}, Local { i2c, red_led }, init::Monotonics(rtc))
+        (Shared {}, Local { i2c }, init::Monotonics(rtc))
     }
 
-    #[task(local = [i2c, red_led])]
+    #[task(local = [i2c])]
     async fn async_task(cx: async_task::Context) {
         let i2c = cx.local.i2c;
-        let red_led = cx.local.red_led;
 
         loop {
             defmt::info!("Sending 0x00 to I2C device...");
@@ -106,7 +103,6 @@ mod app {
             let mut buffer = [0x00; 1];
             i2c.read(0x76, &mut buffer).await.unwrap();
             defmt::info!("Read byte: {:#x}", buffer[0]);
-            red_led.toggle().unwrap();
             crate::app::monotonics::delay(MillisDuration::<u32>::from_ticks(500).convert()).await;
         }
     }

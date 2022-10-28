@@ -39,8 +39,7 @@ optional = true
 [dependencies.cortex-m-interrupt]
 version = "0.2.1-git"
 optional = true
-git = "https://github.com/jbeaurivage/cortex-m-interrupt.git"
-branch = "atomic-polyfill"
+git = "https://github.com/datdenkikniet/cortex-m-interrupt.git"
 
 [dev-dependencies]
 cortex-m-rtic = "1.1.3"
@@ -169,7 +168,7 @@ required-features = ["dma", "atsamd-hal/async", "atsamd-hal/rtic", "cortex-m-int
 
 [[example]]
 name = "async_uart"
-required-features = ["atsamd-hal/async", "atsamd-hal/rtic", "cortex-m-interrupt"]
+required-features = ["dma", "atsamd-hal/async", "atsamd-hal/rtic", "cortex-m-interrupt"]
 
 [patch.crates-io]
 cortex-m-rtic = { git = "https://github.com/rtic-rs/cortex-m-rtic.git", branch = "async-2022" }

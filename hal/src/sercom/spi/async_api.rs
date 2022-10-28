@@ -1,5 +1,4 @@
 use crate::{
-    dmac::{AnyChannel, ReadyFuture},
     sercom::{
         spi::{Capability, Error, Flags, Receive, Spi, Transmit, ValidConfig},
         Sercom,
@@ -62,8 +61,9 @@ where
     S: Sercom,
 {
     /// Add a DMA channel for receiving transactions
+    #[cfg(feature = "dma")]
     #[inline]
-    pub fn with_rx_dma_channel<Chan: AnyChannel<Status = ReadyFuture>>(
+    pub fn with_rx_dma_channel<Chan: crate::dmac::AnyChannel<Status = crate::dmac::ReadyFuture>>(
         self,
         rx_channel: Chan,
     ) -> SpiFuture<C, A, N, Chan, T> {
@@ -76,8 +76,9 @@ where
     }
 
     /// Add a DMA channel for sending transactions
+    #[cfg(feature = "dma")]
     #[inline]
-    pub fn with_tx_dma_channel<Chan: AnyChannel<Status = ReadyFuture>>(
+    pub fn with_tx_dma_channel<Chan: crate::dmac::AnyChannel<Status = crate::dmac::ReadyFuture>>(
         self,
         tx_channel: Chan,
     ) -> SpiFuture<C, A, N, R, Chan> {
@@ -253,9 +254,12 @@ mod impl_ehal {
     {
         type FlushFuture<'a> = impl Future<Output= Result<(), Self::Error>> + 'a where Self: 'a;
 
-        fn flush<'a>(&'a mut self) -> Self::FlushFuture<'a> {
+        fn flush(&mut self) -> Self::FlushFuture<'_> {
             // Wait for all transactions to complete, ignoring buffer overflow errors.
-            async { Ok(self.wait_flags(Flags::TXC | Flags::RXC).await) }
+            async {
+                self.wait_flags(Flags::TXC | Flags::RXC).await;
+                Ok(())
+            }
         }
     }
 
@@ -358,15 +362,14 @@ mod impl_ehal {
 
 #[cfg(feature = "dma")]
 mod dma {
+    use super::*;
     use crate::{
-        dmac::{Beat, Buffer, Transfer, TriggerAction},
+        dmac::{AnyChannel, Beat, ReadyFuture},
         sercom::{
+            async_dma::{read_dma, write_dma, SercomPtr},
             spi::{self, Size},
-            ImmutableSlice, SercomPtr,
         },
     };
-
-    use super::*;
 
     impl<C, A, N, S, R, T> SpiFuture<C, A, N, R, T>
     where
@@ -396,29 +399,14 @@ mod dma {
     {
         /// Read words into a buffer asynchronously, using DMA.
         #[inline]
-        pub async fn read(&mut self, buffer: &mut [C::Word]) -> Result<(), Error> {
-            // SAFETY: Using SercomPtr and ImmutableSlice is safe because we hold on
-            // to &mut self and words as long as the transfer hasn't completed.
+        pub async fn read(&mut self, words: &mut [C::Word]) -> Result<(), Error> {
+            // SAFETY: Using SercomPtr is safe because we hold on
+            // to &mut self as long as the transfer hasn't completed.
             let spi_ptr = self.sercom_ptr();
 
-            let len = buffer.buffer_len();
-            assert!(len > 0 && len <= 255);
-
-            #[cfg(feature = "min-samd51g")]
-            let trigger_action = TriggerAction::BURST;
-
-            #[cfg(any(feature = "samd11", feature = "samd21"))]
-            let trigger_action = TriggerAction::BEAT;
-
-            Transfer::transfer_future(
-                &mut self.rx_channel,
-                spi_ptr,
-                buffer,
-                C::Sercom::DMA_RX_TRIGGER,
-                trigger_action,
-            )
-            .await
-            .map_err(spi::Error::Dma)?;
+            read_dma::<_, S>(&mut self.rx_channel, spi_ptr, words)
+                .await
+                .map_err(spi::Error::Dma)?;
 
             Ok(())
         }
@@ -441,26 +429,10 @@ mod dma {
             // SAFETY: Using SercomPtr and ImmutableSlice is safe because we hold on
             // to &mut self and words as long as the transfer hasn't completed.
             let spi_ptr = self.sercom_ptr();
-            let words = ImmutableSlice::from_slice(words);
 
-            let len = words.buffer_len();
-            assert!(len > 0 && len <= 255);
-
-            #[cfg(feature = "min-samd51g")]
-            let trigger_action = TriggerAction::BURST;
-
-            #[cfg(any(feature = "samd11", feature = "samd21"))]
-            let trigger_action = TriggerAction::BEAT;
-
-            Transfer::transfer_future(
-                &mut self.tx_channel,
-                words,
-                spi_ptr,
-                C::Sercom::DMA_TX_TRIGGER,
-                trigger_action,
-            )
-            .await
-            .map_err(spi::Error::Dma)?;
+            write_dma::<_, S>(&mut self.tx_channel, spi_ptr, words)
+                .await
+                .map_err(spi::Error::Dma)?;
 
             Ok(())
         }

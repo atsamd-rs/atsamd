@@ -1,9 +1,12 @@
-use crate::sercom::{
-    uart::{
-        Capability, DataReg, Duplex, Error, Flags, Receive, RxDuplex, SingleOwner, Transmit,
-        TxDuplex, Uart, ValidConfig,
+use crate::{
+    sercom::{
+        uart::{
+            Capability, DataReg, Duplex, Error, Flags, Receive, RxDuplex, SingleOwner, Transmit,
+            TxDuplex, Uart, ValidConfig,
+        },
+        Sercom,
     },
-    Sercom,
+    typelevel::NoneT,
 };
 use core::{marker::PhantomData, task::Poll};
 use cortex_m::interrupt::InterruptNumber;
@@ -32,6 +35,8 @@ where
         UartFuture {
             uart: self,
             irq_number,
+            rx_channel: NoneT,
+            tx_channel: NoneT,
         }
     }
 }
@@ -39,7 +44,7 @@ where
 /// `async` version of [`Uart`].
 ///
 /// Create this struct by calling [`I2c::into_future`](I2c::into_future).
-pub struct UartFuture<C, D, N>
+pub struct UartFuture<C, D, N, R = NoneT, T = NoneT>
 where
     C: ValidConfig,
     D: Capability,
@@ -47,16 +52,24 @@ where
 {
     uart: Uart<C, D>,
     irq_number: N,
+    rx_channel: R,
+    tx_channel: T,
 }
 
-impl<C, N> UartFuture<C, Duplex, N>
+impl<C, N, R, T> UartFuture<C, Duplex, N, R, T>
 where
     C: ValidConfig,
     N: InterruptNumber,
 {
     /// Split the [`UartFuture`] into [`RxDuplex`]and [`TxDuplex`] halves.
     #[inline]
-    pub fn split(self) -> (UartFuture<C, RxDuplex, N>, UartFuture<C, TxDuplex, N>) {
+    #[allow(clippy::type_complexity)]
+    pub fn split(
+        self,
+    ) -> (
+        UartFuture<C, RxDuplex, N, R, NoneT>,
+        UartFuture<C, TxDuplex, N, NoneT, T>,
+    ) {
         let config = unsafe { core::ptr::read(&self.uart.config) };
         (
             UartFuture {
@@ -65,6 +78,8 @@ where
                     capability: PhantomData,
                 },
                 irq_number: self.irq_number,
+                rx_channel: self.rx_channel,
+                tx_channel: NoneT,
             },
             UartFuture {
                 uart: Uart {
@@ -72,6 +87,8 @@ where
                     capability: PhantomData,
                 },
                 irq_number: self.irq_number,
+                tx_channel: self.tx_channel,
+                rx_channel: NoneT,
             },
         )
     }
@@ -79,18 +96,23 @@ where
     /// Join [`RxDuplex`] and [`TxDuplex`] halves back into a full
     /// `UartFuture<C, Duplex>`
     #[inline]
-    pub fn join(rx: UartFuture<C, RxDuplex, N>, _tx: UartFuture<C, TxDuplex, N>) -> Self {
+    pub fn join(
+        rx: UartFuture<C, RxDuplex, N, R, NoneT>,
+        tx: UartFuture<C, TxDuplex, N, NoneT, T>,
+    ) -> Self {
         Self {
             uart: Uart {
                 config: rx.uart.config,
                 capability: PhantomData,
             },
             irq_number: rx.irq_number,
+            rx_channel: rx.rx_channel,
+            tx_channel: tx.tx_channel,
         }
     }
 }
 
-impl<C, D, N, S> UartFuture<C, D, N>
+impl<C, D, N, S, R, T> UartFuture<C, D, N, R, T>
 where
     C: ValidConfig<Sercom = S>,
     D: Capability,
@@ -131,7 +153,7 @@ where
     }
 }
 
-impl<C, D, N, S> UartFuture<C, D, N>
+impl<C, D, N, S, R, T> UartFuture<C, D, N, R, T>
 where
     C: ValidConfig<Sercom = S>,
     D: Receive,
@@ -139,6 +161,21 @@ where
     S: Sercom,
     DataReg: AsPrimitive<C::Word>,
 {
+    /// Add a DMA channel for receiving words
+    #[cfg(feature = "dma")]
+    #[inline]
+    pub fn with_rx_dma_channel<Chan: crate::dmac::AnyChannel<Status = crate::dmac::ReadyFuture>>(
+        self,
+        rx_channel: Chan,
+    ) -> UartFuture<C, D, N, Chan, T> {
+        UartFuture {
+            uart: self.uart,
+            irq_number: self.irq_number,
+            tx_channel: self.tx_channel,
+            rx_channel,
+        }
+    }
+
     /// Read a single [`Word`](crate::sercom::uart::Word) from the UART.
     #[inline]
     pub async fn read_word(&mut self) -> Result<C::Word, Error> {
@@ -146,11 +183,20 @@ where
         self.uart.read_status().try_into()?;
         Ok(unsafe { self.uart.read_data().as_() })
     }
+}
 
+impl<C, D, N, S, T> UartFuture<C, D, N, NoneT, T>
+where
+    C: ValidConfig<Sercom = S>,
+    D: Receive,
+    N: InterruptNumber,
+    S: Sercom,
+    DataReg: AsPrimitive<C::Word>,
+{
     /// Read the specified number of [`Word`](crate::sercom::uart::Word)s into a
-    /// buffer. In case of an error, returns `Err(Error, usize)` where the
-    /// `usize` represents the number of valid words read before the error
-    /// occured.
+    /// buffer, word by word. In case of an error, returns `Err(Error, usize)`
+    /// where the `usize` represents the number of valid words read before
+    /// the error occured.
     #[inline]
     pub async fn read(&mut self, buffer: &mut [C::Word]) -> Result<(), (Error, usize)> {
         for (i, word) in buffer.iter_mut().enumerate() {
@@ -167,22 +213,45 @@ where
     }
 }
 
-impl<C, D, N, S> UartFuture<C, D, N>
+impl<C, D, N, S, R, T> UartFuture<C, D, N, R, T>
 where
     C: ValidConfig<Sercom = S>,
     D: Transmit,
     N: InterruptNumber,
     S: Sercom,
 {
+    /// Add a DMA channel for sending words
+    #[cfg(feature = "dma")]
+    #[inline]
+    pub fn with_tx_dma_channel<Chan: crate::dmac::AnyChannel<Status = crate::dmac::ReadyFuture>>(
+        self,
+        tx_channel: Chan,
+    ) -> UartFuture<C, D, N, R, Chan> {
+        UartFuture {
+            uart: self.uart,
+            irq_number: self.irq_number,
+            rx_channel: self.rx_channel,
+            tx_channel,
+        }
+    }
+
     /// Write a single [`Word`](crate::sercom::uart::Word) to the UART.
     #[inline]
     pub async fn write_word(&mut self, word: C::Word) {
         self.wait_flags(Flags::DRE).await;
         unsafe { self.uart.write_data(word.as_()) };
     }
+}
 
+impl<C, D, N, S, R> UartFuture<C, D, N, R, NoneT>
+where
+    C: ValidConfig<Sercom = S>,
+    D: Transmit,
+    N: InterruptNumber,
+    S: Sercom,
+{
     /// Write the specified number of [`Word`](crate::sercom::uart::Word)s from
-    /// a buffer to the UART.
+    /// a buffer to the UART, word by word.
     #[inline]
     pub async fn write(&mut self, buffer: &[C::Word]) {
         for word in buffer {
@@ -191,7 +260,7 @@ where
     }
 }
 
-impl<C, D, N> AsRef<Uart<C, D>> for UartFuture<C, D, N>
+impl<C, D, N, R, T> AsRef<Uart<C, D>> for UartFuture<C, D, N, R, T>
 where
     C: ValidConfig,
     D: Capability,
@@ -202,7 +271,7 @@ where
     }
 }
 
-impl<C, D, N> AsMut<Uart<C, D>> for UartFuture<C, D, N>
+impl<C, D, N, R, T> AsMut<Uart<C, D>> for UartFuture<C, D, N, R, T>
 where
     C: ValidConfig,
     D: Capability,
@@ -210,5 +279,78 @@ where
 {
     fn as_mut(&mut self) -> &mut Uart<C, D> {
         &mut self.uart
+    }
+}
+
+#[cfg(feature = "dma")]
+mod dma {
+    use super::*;
+    use crate::{
+        dmac::{AnyChannel, Beat, ReadyFuture},
+        sercom::{
+            async_dma::{read_dma, write_dma, SercomPtr},
+            uart,
+        },
+    };
+
+    impl<C, A, N, S, R, T> UartFuture<C, A, N, R, T>
+    where
+        C: ValidConfig<Sercom = S>,
+        C::Word: Beat,
+        A: Capability,
+        N: InterruptNumber,
+        S: Sercom + 'static,
+    {
+        fn sercom_ptr(&self) -> SercomPtr<C::Word> {
+            SercomPtr(self.uart.data_ptr())
+        }
+    }
+
+    impl<C, D, N, S, R, T> UartFuture<C, D, N, R, T>
+    where
+        C: ValidConfig<Sercom = S>,
+        C::Word: Beat,
+        D: Receive,
+        N: InterruptNumber,
+        S: Sercom + 'static,
+        DataReg: AsPrimitive<C::Word>,
+        R: AnyChannel<Status = ReadyFuture>,
+    {
+        /// Read the specified number of [`Word`](crate::sercom::uart::Word)s
+        /// into a buffer using DMA.
+        #[inline]
+        pub async fn read(&mut self, words: &mut [C::Word]) -> Result<(), Error> {
+            // SAFETY: Using SercomPtr is safe because we hold on
+            // to &mut self as long as the transfer hasn't completed.
+            let uart_ptr = self.sercom_ptr();
+
+            read_dma::<_, S>(&mut self.rx_channel, uart_ptr, words)
+                .await
+                .map_err(uart::Error::Dma)?;
+
+            Ok(())
+        }
+    }
+
+    impl<C, D, N, S, R, T> UartFuture<C, D, N, R, T>
+    where
+        C: ValidConfig<Sercom = S>,
+        C::Word: Beat,
+        D: Transmit,
+        N: InterruptNumber,
+        S: Sercom + 'static,
+        T: AnyChannel<Status = ReadyFuture>,
+    {
+        /// Write words from a buffer asynchronously, using DMA.
+        #[inline]
+        pub async fn write(&mut self, words: &[C::Word]) {
+            // SAFETY: Using SercomPtr is safe because we hold on
+            // to &mut self as long as the transfer hasn't completed.
+            let uart_ptr = self.sercom_ptr();
+
+            write_dma::<_, S>(&mut self.tx_channel, uart_ptr, words)
+                .await
+                .expect("DMA error");
+        }
     }
 }

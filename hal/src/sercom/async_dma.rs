@@ -4,11 +4,19 @@
 //! See the [`mod@uart`], [`mod@i2c`] and [`mod@spi`] modules for the
 //! corresponding DMA transfer implementations.
 
-use crate::dmac::{Beat, Buffer};
+use crate::dmac::{AnyChannel, Beat, Buffer, Error, ReadyFuture, Transfer, TriggerAction};
 use core::ops::Range;
 
-// Implementation detail to make async I2C-DMA transfers work. Should not be
-// used outside of this crate.
+use super::Sercom;
+
+/// Wrapper type over an `&[T]` that can be used as a source buffer for DMA
+/// transfers. This is an implementation detail to make async SERCOM-DMA
+/// transfers work. Should not be used outside of this crate.
+///
+/// # Safety
+///
+/// [`ImmutableSlice`]s should only ever be used as **source** buffers for DMA
+/// transfers, and never as destination buffers.
 #[doc(hidden)]
 pub struct ImmutableSlice<T: Beat>(Range<*mut T>);
 
@@ -48,8 +56,10 @@ unsafe impl<T: Beat> Buffer for ImmutableSlice<T> {
     }
 }
 
-// Implementation detail to make async SERCOM-DMA transfers work. Should not be
-// used outside of this crate.
+/// Wrapper type over Sercom instances to get around lifetime issues when using
+/// one as a DMA source/destination buffer. This is an implementation detail to
+/// make async SERCOM-DMA transfers work. Should not be used outside of this
+/// crate.
 #[doc(hidden)]
 pub struct SercomPtr<T: Beat>(pub(in super::super) *mut T);
 
@@ -70,4 +80,50 @@ unsafe impl<T: Beat> Buffer for SercomPtr<T> {
     fn buffer_len(&self) -> usize {
         1
     }
+}
+
+pub(super) async fn read_dma<T: Beat, S: Sercom>(
+    channel: &mut impl AnyChannel<Status = ReadyFuture>,
+    sercom_ptr: SercomPtr<T>,
+    words: &mut [T],
+) -> Result<(), Error> {
+    #[cfg(feature = "min-samd51g")]
+    let trigger_action = TriggerAction::BURST;
+
+    #[cfg(any(feature = "samd11", feature = "samd21"))]
+    let trigger_action = TriggerAction::BEAT;
+
+    Transfer::transfer_future(
+        channel,
+        sercom_ptr,
+        words,
+        S::DMA_RX_TRIGGER,
+        trigger_action,
+    )
+    .await
+}
+
+pub(super) async fn write_dma<T: Beat, S: Sercom>(
+    channel: &mut impl AnyChannel<Status = ReadyFuture>,
+    sercom_ptr: SercomPtr<T>,
+    words: &[T],
+) -> Result<(), Error> {
+    // SAFETY: Using ImmutableSlice is safe because we hold on
+    // to words as long as the transfer hasn't completed.
+    let words = ImmutableSlice::from_slice(words);
+
+    #[cfg(feature = "min-samd51g")]
+    let trigger_action = TriggerAction::BURST;
+
+    #[cfg(any(feature = "samd11", feature = "samd21"))]
+    let trigger_action = TriggerAction::BEAT;
+
+    Transfer::transfer_future(
+        channel,
+        words,
+        sercom_ptr,
+        S::DMA_TX_TRIGGER,
+        trigger_action,
+    )
+    .await
 }

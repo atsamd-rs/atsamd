@@ -97,6 +97,9 @@ pub enum Error {
     InconsistentSyncField,
     /// Detected a collision
     CollisionDetected,
+    /// DMA error
+    #[cfg(feature = "dma")]
+    Dma(crate::dmac::Error),
 }
 
 impl TryFrom<Status> for () {
@@ -131,6 +134,8 @@ impl From<Error> for Status {
             Overflow => Status::BUFOVF,
             InconsistentSyncField => Status::ISF,
             CollisionDetected => Status::COLL,
+            // Don't try to convert a DMA error into a [`Status`]
+            _ => unreachable!(),
         }
     }
 }

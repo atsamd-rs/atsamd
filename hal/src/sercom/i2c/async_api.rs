@@ -264,8 +264,8 @@ mod impl_ehal {
 #[cfg(feature = "dma")]
 mod dma {
     use super::*;
-    use crate::dmac::{AnyChannel, Buffer, ReadyFuture, Transfer, TriggerAction};
-    use crate::sercom::async_dma::{ImmutableSlice, SercomPtr};
+    use crate::dmac::{AnyChannel, ReadyFuture};
+    use crate::sercom::async_dma::{read_dma, write_dma, SercomPtr};
 
     impl<C, N, S, D> I2cFuture<C, N, D>
     where
@@ -286,28 +286,14 @@ mod dma {
             // SAFETY: Using SercomPtr and ImmutableSlice is safe because we hold on
             // to &mut self and bytes as long as the transfer hasn't completed.
             let i2c_ptr = self.sercom_ptr();
-            let bytes = ImmutableSlice::from_slice(bytes);
 
-            let len = bytes.buffer_len();
+            let len = bytes.len();
             assert!(len > 0 && len <= 255);
-
-            #[cfg(feature = "min-samd51g")]
-            let trigger_action = TriggerAction::BURST;
-
-            #[cfg(any(feature = "samd11", feature = "samd21"))]
-            let trigger_action = TriggerAction::BEAT;
-
             self.i2c.start_dma_write(address, len as u8);
 
-            Transfer::transfer_future(
-                &mut self.dma_channel,
-                bytes,
-                i2c_ptr,
-                C::Sercom::DMA_TX_TRIGGER,
-                trigger_action,
-            )
-            .await
-            .map_err(i2c::Error::Dma)?;
+            write_dma::<_, S>(&mut self.dma_channel, i2c_ptr, bytes)
+                .await
+                .map_err(i2c::Error::Dma)?;
 
             Ok(())
         }
@@ -317,30 +303,17 @@ mod dma {
         pub async fn read(&mut self, address: u8, buffer: &mut [u8]) -> Result<(), i2c::Error> {
             self.i2c.init_dma_transfer()?;
 
-            // SAFETY: Using SercomPtr and ImmutableSlice is safe because we hold on
-            // to &mut self and bytes as long as the transfer hasn't completed.
+            // SAFETY: Using SercomPtr is safe because we hold on
+            // to &mut self as long as the transfer hasn't completed.
             let i2c_ptr = self.sercom_ptr();
 
-            let len = buffer.buffer_len();
+            let len = buffer.len();
             assert!(len > 0 && len <= 255);
-
-            #[cfg(feature = "min-samd51g")]
-            let trigger_action = TriggerAction::BURST;
-
-            #[cfg(any(feature = "samd11", feature = "samd21"))]
-            let trigger_action = TriggerAction::BEAT;
-
             self.i2c.start_dma_read(address, len as u8);
 
-            Transfer::transfer_future(
-                &mut self.dma_channel,
-                i2c_ptr,
-                buffer,
-                C::Sercom::DMA_RX_TRIGGER,
-                trigger_action,
-            )
-            .await
-            .map_err(i2c::Error::Dma)?;
+            read_dma::<_, S>(&mut self.dma_channel, i2c_ptr, buffer)
+                .await
+                .map_err(i2c::Error::Dma)?;
 
             Ok(())
         }

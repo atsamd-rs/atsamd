@@ -62,9 +62,6 @@ pub mod dma;
 #[cfg(all(feature = "dma", feature = "async"))]
 mod async_dma;
 
-#[cfg(all(feature = "dma", feature = "async"))]
-pub use async_dma::*;
-
 //==============================================================================
 //  Sercom
 //==============================================================================
