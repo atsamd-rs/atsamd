@@ -83,8 +83,7 @@ mod app {
             &dest
         );
 
-        Transfer::transfer_future(
-            channel,
+        channel.transfer_future(
             &mut source,
             &mut dest,
             TriggerSource::DISABLE,

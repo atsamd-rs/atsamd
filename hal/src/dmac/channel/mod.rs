@@ -257,6 +257,11 @@ impl<Id: ChId, S: Status> Channel<Id, S> {
         self.regs.swtrigctrl.set_bit();
     }
 
+    #[inline]
+    fn _enable_private(&mut self) {
+        self.regs.chctrla.modify(|_, w| w.enable().set_bit());
+    }
+
     /// Stop transfer on channel whether or not the transfer has completed
     pub(crate) fn stop(&mut self) {
         self.regs.chctrla.modify(|_, w| w.enable().clear_bit());
@@ -324,6 +329,18 @@ where
         trig_act: TriggerAction,
     ) {
         // Configure the trigger source and trigger action
+        self.configure_trigger(trig_src, trig_act);
+        self._enable_private();
+
+        // If trigger source is DISABLE, manually trigger transfer
+        if trig_src == TriggerSource::DISABLE {
+            self._trigger_private();
+        }
+    }
+
+    #[inline]
+    pub(super) fn configure_trigger(&mut self, trig_src: TriggerSource, trig_act: TriggerAction) {
+        // Configure the trigger source and trigger action
         #[cfg(feature = "thumbv6")]
         self.regs.chctrlb.modify(|_, w| {
             w.trigsrc().variant(trig_src);
@@ -335,14 +352,6 @@ where
             w.trigsrc().variant(trig_src);
             w.trigact().variant(trig_act)
         });
-
-        // Start channel
-        self.regs.chctrla.modify(|_, w| w.enable().set_bit());
-
-        // If trigger source is DISABLE, manually trigger transfer
-        if trig_src == TriggerSource::DISABLE {
-            self._trigger_private();
-        }
     }
 }
 
@@ -390,7 +399,7 @@ impl<Id: ChId> Channel<Id, Busy> {
     /// Restart transfer using previously-configured trigger source and action
     #[inline]
     pub(crate) fn restart(&mut self) {
-        self.regs.chctrla.modify(|_, w| w.enable().set_bit());
+        self._enable_private();
     }
 }
 
@@ -398,6 +407,114 @@ impl<Id: ChId> From<Channel<Id, Ready>> for Channel<Id, Uninitialized> {
     fn from(mut item: Channel<Id, Ready>) -> Self {
         item._reset_private();
         item.change_status()
+    }
+}
+
+#[cfg(feature = "async")]
+impl<Id: ChId> Channel<Id, ReadyFuture> {
+    /// Begin DMA transfer using `async` operation.
+    ///
+    /// If [TriggerSource::DISABLE](TriggerSource::DISABLE) is used, a software
+    /// trigger will be issued to the DMA channel to launch the transfer. Is
+    /// is therefore not necessary, in most cases, to manually issue a
+    /// software trigger to the channel.
+    ///
+    /// # Safety
+    ///
+    /// In `async` mode, a transfer does NOT require `'static` source and
+    /// destination buffers. This, in theory, makes
+    /// [`transfer_future`](Channel::transfer_future) an `unsafe` function,
+    /// although it is marked as safe (for ergonomics).
+    ///
+    /// This means that, as an user, you **must** ensure that the [`Future`]
+    /// returned by this function may never be forgotten through [`forget`].
+    /// [`Channel`]s implement [`Drop`] and will automatically s
+    ///top any ongoing transfers to guarantee that the memor
+    ///y occupied by the now-dropped buffers may
+    /// not be corrupted by running transfers. This also means
+    /// memory, memory, memory, memory, that should you [`forget`] this
+    /// [`Future`] after it is first [`poll`] call, the transfer will keep
+    /// running, ruining the now-reclaimed memory, as well as the rest of
+    /// your day.
+    ///
+    /// * `await`ing is fine: the [`Future`] will run to completion.
+    /// * Dropping an incomplete transfer is also fine. Dropping can happen,
+    /// for example, if the transfer doesn't complete before a timeout
+    /// expires.
+    ///
+    /// [`forget`]: core::mem::forget
+    /// [`Future`]: core::future::Future
+    /// [`poll`]: core::future::Future::poll
+    #[cfg(feature = "async")]
+    #[inline]
+    pub async fn transfer_future<S, D>(
+        &mut self,
+        mut source: S,
+        mut dest: D,
+        trig_src: TriggerSource,
+        trig_act: TriggerAction,
+    ) -> Result<(), super::Error>
+    where
+        S: super::Buffer,
+        D: super::Buffer<Beat = S::Beat>,
+    {
+        use crate::dmac::waker::WAKERS;
+        use core::sync::atomic;
+        use core::task::Poll;
+
+        super::Transfer::<Self, super::transfer::BufferPair<S, D>>::check_buffer_pair(
+            &source, &dest,
+        )?;
+        unsafe {
+            super::Transfer::<Self, super::transfer::BufferPair<S, D>>::fill_descriptor(
+                &mut source,
+                &mut dest,
+                false,
+            )
+        };
+
+        self.disable_interrupts(
+            InterruptFlags::new()
+                .with_susp(true)
+                .with_tcmpl(true)
+                .with_terr(true),
+        );
+
+        self.stop();
+        self.configure_trigger(trig_src, trig_act);
+        let mut triggered = false;
+
+        core::future::poll_fn(|cx| {
+            atomic::fence(atomic::Ordering::Release);
+            self._enable_private();
+
+            if !triggered && trig_src == TriggerSource::DISABLE {
+                triggered = true;
+                self._trigger_private();
+            }
+
+            let flags_to_check = InterruptFlags::new().with_tcmpl(true).with_terr(true);
+
+            if self.check_and_clear_interrupts(flags_to_check).tcmpl() {
+                return Poll::Ready(());
+            }
+
+            WAKERS[Id::USIZE].register(cx.waker());
+            self.enable_interrupts(flags_to_check);
+
+            if self.check_and_clear_interrupts(flags_to_check).tcmpl() {
+                self.disable_interrupts(flags_to_check);
+
+                return Poll::Ready(());
+            }
+
+            Poll::Pending
+        })
+        .await;
+
+        // TODO this will always return Ok(()) currently since we unconditionally clear
+        // ERROR
+        self.xfer_success()
     }
 }
 

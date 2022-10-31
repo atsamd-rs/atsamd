@@ -278,14 +278,8 @@ reg_proxy!(swtrigctrl, bit, rw);
 /// within registers that should be readable/writable by specific
 /// [`Channel`]s are exposed.
 ///
-/// # Safety
-///
-/// Don't implement [`Drop`] for this struct, because we do a
-/// [`read`](core::ptr::read)
-/// in [`change_status`](super::Channel::change_status) without
-/// [`forget`](core::mem::forget)ting one of them. Dropping both
-/// [`RegisterBlock`]s without forgetting one of them could lead to a
-/// double-free.
+/// This struct implements [`Drop`]. Dropping this struct will stop
+/// any ongoing transfers for the channel which it represents.
 #[allow(dead_code)]
 pub(super) struct RegisterBlock<Id: ChId> {
     pub chctrla: ChctrlaProxy<Id, CHCTRLA>,

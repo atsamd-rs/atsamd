@@ -100,9 +100,9 @@ mod app {
             // peripheral you have on hand.
             i2c.write(0x76, &[0x00]).await.unwrap();
 
-            let mut buffer = [0x00; 1];
+            let mut buffer = [0xff; 4];
             i2c.read(0x76, &mut buffer).await.unwrap();
-            defmt::info!("Read byte: {:#x}", buffer[0]);
+            defmt::info!("Read buffer: {:#x}", buffer);
             crate::app::monotonics::delay(MillisDuration::<u32>::from_ticks(500).convert()).await;
         }
     }

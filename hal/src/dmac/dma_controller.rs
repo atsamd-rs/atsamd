@@ -97,7 +97,7 @@ with_num_channels!(define_channels_struct_future);
 /// Initialized DMA Controller
 pub struct DmaController<I = NoneT> {
     dmac: DMAC,
-    interrupts: I,
+    _interrupts: I,
 }
 
 /// Mask representing which priority levels should be enabled/disabled
@@ -254,7 +254,7 @@ impl<T> DmaController<T> {
         interrupts.occupy(on_interrupt);
         DmaController {
             dmac: self.dmac,
-            interrupts: Interrupts::new(interrupt_number),
+            _interrupts: Interrupts::new(interrupt_number),
         }
     }
 
@@ -306,7 +306,7 @@ impl DmaController<NoneT> {
         dmac.ctrl.modify(|_, w| w.dmaenable().set_bit());
         Self {
             dmac,
-            interrupts: NoneT,
+            _interrupts: NoneT,
         }
     }
 

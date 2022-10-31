@@ -4,7 +4,7 @@
 //! See the [`mod@uart`], [`mod@i2c`] and [`mod@spi`] modules for the
 //! corresponding DMA transfer implementations.
 
-use crate::dmac::{AnyChannel, Beat, Buffer, Error, ReadyFuture, Transfer, TriggerAction};
+use crate::dmac::{AnyChannel, Beat, Buffer, Error, ReadyFuture, TriggerAction};
 use core::ops::Range;
 
 use super::Sercom;
@@ -93,14 +93,10 @@ pub(super) async fn read_dma<T: Beat, S: Sercom>(
     #[cfg(any(feature = "samd11", feature = "samd21"))]
     let trigger_action = TriggerAction::BEAT;
 
-    Transfer::transfer_future(
-        channel,
-        sercom_ptr,
-        words,
-        S::DMA_RX_TRIGGER,
-        trigger_action,
-    )
-    .await
+    channel
+        .as_mut()
+        .transfer_future(sercom_ptr, words, S::DMA_RX_TRIGGER, trigger_action)
+        .await
 }
 
 pub(super) async fn write_dma<T: Beat, S: Sercom>(
@@ -118,12 +114,8 @@ pub(super) async fn write_dma<T: Beat, S: Sercom>(
     #[cfg(any(feature = "samd11", feature = "samd21"))]
     let trigger_action = TriggerAction::BEAT;
 
-    Transfer::transfer_future(
-        channel,
-        words,
-        sercom_ptr,
-        S::DMA_TX_TRIGGER,
-        trigger_action,
-    )
-    .await
+    channel
+        .as_mut()
+        .transfer_future(words, sercom_ptr, S::DMA_TX_TRIGGER, trigger_action)
+        .await
 }

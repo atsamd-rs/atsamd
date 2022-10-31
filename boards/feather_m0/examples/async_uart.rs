@@ -15,6 +15,8 @@ mod app {
         prelude::*,
         rtc::{Count32Mode, Rtc},
         sercom::uart::{Config, RxDuplex, TxDuplex, UartFuture},
+        dmac::{DmaController, PriorityLevel, Channel, ReadyFuture, Ch0, Ch1},
+        typelevel::NoneT,
     };
 
     #[monotonic(binds = RTC, default = true)]
@@ -25,8 +27,8 @@ mod app {
 
     #[local]
     struct Local {
-        uart_rx: UartFuture<Config<bsp::UartPads>, RxDuplex, bsp::pac::Interrupt>,
-        uart_tx: UartFuture<Config<bsp::UartPads>, TxDuplex, bsp::pac::Interrupt>,
+        uart_rx: UartFuture<Config<bsp::UartPads>, RxDuplex, bsp::pac::Interrupt, Channel<Ch0, ReadyFuture>, NoneT>,
+        uart_tx: UartFuture<Config<bsp::UartPads>, TxDuplex, bsp::pac::Interrupt, NoneT, Channel<Ch1, ReadyFuture>>,
     }
 
     #[init]
@@ -54,6 +56,19 @@ mod app {
             .unwrap();
         clocks.configure_standby(ClockGenId::GCLK2, true);
 
+        // Initialize DMA Controller
+        let dmac = DmaController::init(peripherals.DMAC, &mut peripherals.PM);
+        // Get handle to IRQ
+        let dmac_irq = cortex_m_interrupt::take_nvic_interrupt!(pac::Interrupt::DMAC, 3);
+        // Turn dmac into an async controller
+        let mut dmac = dmac.into_future(dmac_irq);
+        // Get individual handles to DMA channels
+        let channels = dmac.split();
+
+        // Initialize DMA Channels 0 and 1
+        let channel0 = channels.0.init(PriorityLevel::LVL0);
+        let channel1 = channels.1.init(PriorityLevel::LVL0);
+
         // Setup RTC monotonic
         let rtc_clock = clocks.rtc(&timer_clock).unwrap();
         let rtc = Rtc::count32_mode(peripherals.RTC, rtc_clock.freq(), &mut peripherals.PM);
@@ -67,6 +82,8 @@ mod app {
             uart_tx,
         )
         .into_future(sercom0_irq)
+        .with_rx_dma_channel(channel0)
+        .with_tx_dma_channel(channel1)
         .split();
 
         send_bytes::spawn().ok();
@@ -75,17 +92,18 @@ mod app {
         (Shared {}, Local { uart_rx, uart_tx }, init::Monotonics(rtc))
     }
 
-    #[task(local = [uart_tx], priority = 2)]
+    #[task(local = [uart_tx], priority = 1)]
     async fn send_bytes(cx: send_bytes::Context) {
         let uart = cx.local.uart_tx;
 
         loop {
-            uart.write(&[0x00; 4]).await;
+            uart.write(&[0x00; 10]).await;
+            defmt::info!("Sent 10 bytes");
             crate::app::monotonics::delay(MillisDuration::<u32>::from_ticks(500).convert()).await;
         }
     }
 
-    #[task(local = [uart_rx], priority = 3)]
+    #[task(local = [uart_rx], priority = 2)]
     async fn receive_bytes(cx: receive_bytes::Context) {
         let uart = cx.local.uart_rx;
         uart.as_mut().flush_rx_buffer();
