@@ -14,9 +14,8 @@ mod app {
         clock::{enable_internal_32kosc, ClockGenId, ClockSource, GenericClockController},
         prelude::*,
         rtc::{Count32Mode, Rtc},
-        sercom::uart::{Config, RxDuplex, TxDuplex, UartFuture},
-        dmac::{DmaController, PriorityLevel, Channel, ReadyFuture, Ch0, Ch1},
-        typelevel::NoneT,
+        sercom::uart::{Config, UartFutureRxDuplexDma, UartFutureTxDuplexDma},
+        dmac::{DmaController, PriorityLevel, Ch0, Ch1},
     };
 
     #[monotonic(binds = RTC, default = true)]
@@ -27,8 +26,8 @@ mod app {
 
     #[local]
     struct Local {
-        uart_rx: UartFuture<Config<bsp::UartPads>, RxDuplex, bsp::pac::Interrupt, Channel<Ch0, ReadyFuture>, NoneT>,
-        uart_tx: UartFuture<Config<bsp::UartPads>, TxDuplex, bsp::pac::Interrupt, NoneT, Channel<Ch1, ReadyFuture>>,
+        uart_rx: UartFutureRxDuplexDma<Config<bsp::UartPads>, Ch0>,
+        uart_tx: UartFutureTxDuplexDma<Config<bsp::UartPads>, Ch1>,
     }
 
     #[init]

@@ -1,8 +1,9 @@
 use crate::{
+    pac::Interrupt,
     sercom::{
         uart::{
-            Capability, DataReg, Duplex, Error, Flags, Receive, RxDuplex, SingleOwner, Transmit,
-            TxDuplex, Uart, ValidConfig,
+            Capability, DataReg, Duplex, Error, Flags, Receive, Rx, RxDuplex, SingleOwner,
+            Transmit, Tx, TxDuplex, Uart, ValidConfig,
         },
         Sercom,
     },
@@ -41,6 +42,18 @@ where
     }
 }
 
+impl<C, D, N> UartFuture<C, D, N>
+where
+    C: ValidConfig,
+    D: SingleOwner,
+    N: InterruptNumber,
+{
+    /// Return the underlying [`Uart`].
+    pub fn free(self) -> Uart<C, D> {
+        self.uart
+    }
+}
+
 /// `async` version of [`Uart`].
 ///
 /// Create this struct by calling [`I2c::into_future`](I2c::into_future).
@@ -55,6 +68,57 @@ where
     rx_channel: R,
     tx_channel: T,
 }
+
+/// Convenience type for a [`UartFuture`] with RX and TX capabilities
+pub type UartFutureDuplex<C> = UartFuture<C, Duplex, Interrupt>;
+
+/// Convenience type for a RX-only [`UartFuture`].
+pub type UartFutureHalfRx<C> = UartFuture<C, Rx, Interrupt>;
+
+/// Convenience type for the RX half of a [`Duplex`] [`UartFuture`].
+pub type UartFutureRx<C> = UartFuture<C, RxDuplex, Interrupt>;
+
+/// Convenience type for a TX-only [`UartFuture`].
+pub type UartFutureTx<C> = UartFuture<C, Tx, Interrupt>;
+
+/// Convenience type for the TX half of a [`Duplex`] [`UartFuture`].
+pub type UartFutureTxDuplex<C> = UartFuture<C, TxDuplex, Interrupt>;
+
+#[cfg(feature = "dma")]
+/// Convenience type for a [`UartFuture`] with RX and TX capabilities in DMA
+/// mode. The type parameter `R` represents the RX DMA channel ID (`ChX`), and
+/// `T` represents the TX DMA channel ID.
+pub type UartFutureDuplexDma<C, R, T> = UartFuture<
+    C,
+    Duplex,
+    Interrupt,
+    crate::dmac::Channel<R, crate::dmac::ReadyFuture>,
+    crate::dmac::Channel<T, crate::dmac::ReadyFuture>,
+>;
+
+#[cfg(feature = "dma")]
+/// Convenience type for a RX-only [`UartFuture`] in DMA mode.
+/// The type parameter `R` represents the RX DMA channel ID (`ChX`).
+pub type UartFutureRxDma<C, R> =
+    UartFuture<C, Rx, Interrupt, crate::dmac::Channel<R, crate::dmac::ReadyFuture>, NoneT>;
+
+#[cfg(feature = "dma")]
+/// Convenience type for the RX half of a [`Duplex`] [`UartFuture`] in DMA mode.
+/// The type parameter `R` represents the RX DMA channel ID (`ChX`).
+pub type UartFutureRxDuplexDma<C, R> =
+    UartFuture<C, RxDuplex, Interrupt, crate::dmac::Channel<R, crate::dmac::ReadyFuture>, NoneT>;
+
+#[cfg(feature = "dma")]
+/// Convenience type for a TX-only [`UartFuture`] in DMA mode.
+/// The type parameter `T` represents the TX DMA channel ID (`ChX`).
+pub type UartFutureTxDma<C, T> =
+    UartFuture<C, Tx, Interrupt, NoneT, crate::dmac::Channel<T, crate::dmac::ReadyFuture>>;
+
+#[cfg(feature = "dma")]
+/// Convenience type for the TX half of a [`Duplex`] [`UartFuture`] in DMA mode.
+/// The type parameter `T` represents the TX DMA channel ID (`ChX`).
+pub type UartFutureTxDuplexDma<C, T> =
+    UartFuture<C, TxDuplex, Interrupt, NoneT, crate::dmac::Channel<T, crate::dmac::ReadyFuture>>;
 
 impl<C, N, R, T> UartFuture<C, Duplex, N, R, T>
 where

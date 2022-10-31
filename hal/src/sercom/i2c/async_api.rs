@@ -1,4 +1,5 @@
 use crate::{
+    pac::Interrupt,
     sercom::{
         i2c::{self, AnyConfig, Flags, I2c},
         Sercom,
@@ -46,6 +47,12 @@ where
     dma_channel: D,
 }
 
+#[cfg(feature = "dma")]
+/// Convenience type for a [`I2cFuture`] in DMA
+/// mode. The type parameter `I` represents the DMA channel ID (`ChX`).
+pub type I2cFutureDma<C, I> =
+    I2cFuture<C, Interrupt, crate::dmac::Channel<I, crate::dmac::ReadyFuture>>;
+
 impl<C, N, S> I2cFuture<C, N, NoneT>
 where
     C: AnyConfig<Sercom = S>,
@@ -63,6 +70,11 @@ where
             irq_number: self.irq_number,
             dma_channel,
         }
+    }
+
+    /// Return the underlying [`I2c`].
+    pub fn free(self) -> I2c<C> {
+        self.i2c
     }
 
     /// Asynchronously write from a buffer.

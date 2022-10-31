@@ -12,10 +12,10 @@ mod app {
     use fugit::MillisDuration;
     use hal::{
         clock::{enable_internal_32kosc, ClockGenId, ClockSource, GenericClockController},
-        dmac::{Ch0, Channel, DmaController, PriorityLevel, ReadyFuture},
+        dmac::{Ch0, DmaController, PriorityLevel},
         prelude::*,
         rtc::{Count32Mode, Rtc},
-        sercom::i2c::{self, Config, I2cFuture},
+        sercom::i2c::{self, Config, I2cFutureDma},
     };
 
     #[monotonic(binds = RTC, default = true)]
@@ -26,7 +26,7 @@ mod app {
 
     #[local]
     struct Local {
-        i2c: I2cFuture<Config<bsp::I2cPads>, bsp::pac::Interrupt, Channel<Ch0, ReadyFuture>>,
+        i2c: I2cFutureDma<Config<bsp::I2cPads>, Ch0>,
     }
 
     #[init]

@@ -1,6 +1,7 @@
 use crate::{
+    pac::Interrupt,
     sercom::{
-        spi::{Capability, Error, Flags, Receive, Spi, Transmit, ValidConfig},
+        spi::{Capability, Duplex, Error, Flags, Receive, Rx, Spi, Transmit, Tx, ValidConfig},
         Sercom,
     },
     typelevel::NoneT,
@@ -53,6 +54,39 @@ where
     tx_channel: T,
 }
 
+/// Convenience type for a [`SpiFuture`] with RX and TX capabilities
+pub type SpiFutureDuplex<C> = SpiFuture<C, Duplex, Interrupt>;
+
+/// Convenience type for a [`SpiFuture`] with RX capabilities
+pub type SpiFutureRx<C> = SpiFuture<C, Rx, Interrupt>;
+
+/// Convenience type for a [`SpiFuture`] with TX capabilities
+pub type SpiFutureTx<C> = SpiFuture<C, Tx, Interrupt>;
+
+#[cfg(feature = "dma")]
+/// Convenience type for a [`SpiFuture`] with RX and TX capabilities in DMA
+/// mode. The type parameter `R` represents the RX DMA channel ID (`ChX`), and
+/// `T` represents the TX DMA channel ID.
+pub type SpiFutureDuplexDma<C, R, T> = SpiFuture<
+    C,
+    Duplex,
+    Interrupt,
+    crate::dmac::Channel<R, crate::dmac::ReadyFuture>,
+    crate::dmac::Channel<T, crate::dmac::ReadyFuture>,
+>;
+
+#[cfg(feature = "dma")]
+/// Convenience type for a [`SpiFuture`] with RX capabilities in DMA mode. The
+/// type parameter `R` represents the RX DMA channel ID (`ChX`).
+pub type SpiFutureRxDma<C, R> =
+    SpiFuture<C, Rx, Interrupt, crate::dmac::Channel<R, crate::dmac::ReadyFuture>, NoneT>;
+
+#[cfg(feature = "dma")]
+/// Convenience type for a [`SpiFuture`] with TX capabilities in DMA mode. The
+/// type parameter `T` represents the TX DMA channel ID (`ChX`).
+pub type SpiFutureTxDma<C, T> =
+    SpiFuture<C, Tx, Interrupt, NoneT, crate::dmac::Channel<T, crate::dmac::ReadyFuture>>;
+
 impl<C, A, N, S, R, T> SpiFuture<C, A, N, R, T>
 where
     C: ValidConfig<Sercom = S>,
@@ -60,34 +94,9 @@ where
     N: InterruptNumber,
     S: Sercom,
 {
-    /// Add a DMA channel for receiving transactions
-    #[cfg(feature = "dma")]
-    #[inline]
-    pub fn with_rx_dma_channel<Chan: crate::dmac::AnyChannel<Status = crate::dmac::ReadyFuture>>(
-        self,
-        rx_channel: Chan,
-    ) -> SpiFuture<C, A, N, Chan, T> {
-        SpiFuture {
-            spi: self.spi,
-            irq_number: self.irq_number,
-            tx_channel: self.tx_channel,
-            rx_channel,
-        }
-    }
-
-    /// Add a DMA channel for sending transactions
-    #[cfg(feature = "dma")]
-    #[inline]
-    pub fn with_tx_dma_channel<Chan: crate::dmac::AnyChannel<Status = crate::dmac::ReadyFuture>>(
-        self,
-        tx_channel: Chan,
-    ) -> SpiFuture<C, A, N, R, Chan> {
-        SpiFuture {
-            spi: self.spi,
-            irq_number: self.irq_number,
-            rx_channel: self.rx_channel,
-            tx_channel,
-        }
+    /// Return the underlying [`Spi`].
+    pub fn free(self) -> Spi<C, A> {
+        self.spi
     }
 
     #[inline]
@@ -152,6 +161,21 @@ where
     N: InterruptNumber,
     S: Sercom,
 {
+    #[cfg(feature = "dma")]
+    /// Add a DMA channel for receiving transactions
+    #[inline]
+    pub fn with_rx_dma_channel<Chan: crate::dmac::AnyChannel<Status = crate::dmac::ReadyFuture>>(
+        self,
+        rx_channel: Chan,
+    ) -> SpiFuture<C, A, N, Chan, T> {
+        SpiFuture {
+            spi: self.spi,
+            irq_number: self.irq_number,
+            tx_channel: self.tx_channel,
+            rx_channel,
+        }
+    }
+
     /// Read a single word asynchronously.
     #[inline]
     pub async fn read_word(&mut self) -> Result<C::Word, Error> {
@@ -191,6 +215,20 @@ where
     N: InterruptNumber,
     S: Sercom,
 {
+    #[cfg(feature = "dma")]
+    /// Add a DMA channel for sending transactions
+    #[inline]
+    pub fn with_tx_dma_channel<Chan: crate::dmac::AnyChannel<Status = crate::dmac::ReadyFuture>>(
+        self,
+        tx_channel: Chan,
+    ) -> SpiFuture<C, A, N, R, Chan> {
+        SpiFuture {
+            spi: self.spi,
+            irq_number: self.irq_number,
+            rx_channel: self.rx_channel,
+            tx_channel,
+        }
+    }
     /// Write a single word asynchronously.
     pub async fn write_word(&mut self, word: C::Word) -> Result<(), Error> {
         self.wait_flags(Flags::DRE).await;
@@ -221,6 +259,30 @@ where
             futures::join!(tx_half.write_word(to_send), rx_half.read_word());
         core::mem::forget(rx_half);
         write_res.and(read_res)
+    }
+}
+
+impl<C, A, N> AsRef<Spi<C, A>> for SpiFuture<C, A, N>
+where
+    C: ValidConfig,
+    A: Capability,
+    N: InterruptNumber,
+{
+    #[inline]
+    fn as_ref(&self) -> &Spi<C, A> {
+        &self.spi
+    }
+}
+
+impl<C, A, N> AsMut<Spi<C, A>> for SpiFuture<C, A, N>
+where
+    C: ValidConfig,
+    A: Capability,
+    N: InterruptNumber,
+{
+    #[inline]
+    fn as_mut(&mut self) -> &mut Spi<C, A> {
+        &mut self.spi
     }
 }
 
