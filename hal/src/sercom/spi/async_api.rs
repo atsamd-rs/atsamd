@@ -1,7 +1,10 @@
 use crate::{
     pac::Interrupt,
     sercom::{
-        spi::{Capability, Duplex, Error, Flags, Receive, Rx, Spi, Transmit, Tx, ValidConfig},
+        spi::{
+            Capability, DataWidth, Duplex, Error, Flags, Receive, Rx, Spi, Transmit, Tx,
+            ValidConfig,
+        },
         Sercom,
     },
     typelevel::NoneT,
@@ -135,8 +138,8 @@ where
 impl<C, A, N, S, T> SpiFuture<C, A, N, NoneT, T>
 where
     C: ValidConfig<Sercom = S>,
-    C::Word: PrimInt + AsPrimitive<u16>,
-    u16: AsPrimitive<C::Word>,
+    C::Word: PrimInt + AsPrimitive<DataWidth>,
+    DataWidth: AsPrimitive<C::Word>,
     A: Receive,
     N: InterruptNumber,
     S: Sercom,
@@ -155,8 +158,8 @@ where
 impl<C, A, N, S, R, T> SpiFuture<C, A, N, R, T>
 where
     C: ValidConfig<Sercom = S>,
-    C::Word: PrimInt + AsPrimitive<u16>,
-    u16: AsPrimitive<C::Word>,
+    C::Word: PrimInt + AsPrimitive<DataWidth>,
+    DataWidth: AsPrimitive<C::Word>,
     A: Receive,
     N: InterruptNumber,
     S: Sercom,
@@ -189,8 +192,8 @@ where
 impl<C, A, N, S, R> SpiFuture<C, A, N, R, NoneT>
 where
     C: ValidConfig<Sercom = S>,
-    C::Word: PrimInt + AsPrimitive<u16>,
-    u16: AsPrimitive<C::Word>,
+    C::Word: PrimInt + AsPrimitive<DataWidth>,
+    DataWidth: AsPrimitive<C::Word>,
     A: Transmit,
     N: InterruptNumber,
     S: Sercom,
@@ -209,8 +212,8 @@ where
 impl<C, A, N, S, R, T> SpiFuture<C, A, N, R, T>
 where
     C: ValidConfig<Sercom = S>,
-    C::Word: PrimInt + AsPrimitive<u16>,
-    u16: AsPrimitive<C::Word>,
+    C::Word: PrimInt + AsPrimitive<DataWidth>,
+    DataWidth: AsPrimitive<C::Word>,
     A: Transmit,
     N: InterruptNumber,
     S: Sercom,
@@ -243,8 +246,8 @@ where
 impl<C, A, N, S> SpiFuture<C, A, N>
 where
     C: ValidConfig<Sercom = S>,
-    C::Word: PrimInt + AsPrimitive<u16>,
-    u16: AsPrimitive<C::Word>,
+    C::Word: PrimInt + AsPrimitive<DataWidth>,
+    DataWidth: AsPrimitive<C::Word>,
     A: Receive + Transmit,
     N: InterruptNumber,
     S: Sercom,
@@ -296,8 +299,8 @@ mod impl_ehal {
     impl<C, A, N, S> ErrorType for SpiFuture<C, A, N>
     where
         C: ValidConfig<Sercom = S>,
-        C::Word: PrimInt + AsPrimitive<u16>,
-        u16: AsPrimitive<C::Word>,
+        C::Word: PrimInt + AsPrimitive<DataWidth>,
+        DataWidth: AsPrimitive<C::Word>,
         A: Capability,
         N: InterruptNumber,
         S: Sercom,
@@ -308,8 +311,8 @@ mod impl_ehal {
     impl<C, A, N, S> SpiBusFlush for SpiFuture<C, A, N>
     where
         C: ValidConfig<Sercom = S>,
-        C::Word: PrimInt + AsPrimitive<u16>,
-        u16: AsPrimitive<C::Word>,
+        C::Word: PrimInt + AsPrimitive<DataWidth>,
+        DataWidth: AsPrimitive<C::Word>,
         A: Capability,
         N: InterruptNumber,
         S: Sercom,
@@ -328,8 +331,8 @@ mod impl_ehal {
     impl<C, A, N, S, W> SpiBusWrite<W> for SpiFuture<C, A, N>
     where
         C: ValidConfig<Sercom = S, Word = W>,
-        C::Word: PrimInt + AsPrimitive<u16>,
-        u16: AsPrimitive<C::Word>,
+        C::Word: PrimInt + AsPrimitive<DataWidth>,
+        DataWidth: AsPrimitive<C::Word>,
         A: Transmit,
         N: InterruptNumber,
         S: Sercom + 'static,
@@ -344,8 +347,8 @@ mod impl_ehal {
     impl<C, A, N, S, W> SpiBusRead<W> for SpiFuture<C, A, N>
     where
         C: ValidConfig<Sercom = S, Word = W>,
-        C::Word: PrimInt + AsPrimitive<u16>,
-        u16: AsPrimitive<C::Word>,
+        C::Word: PrimInt + AsPrimitive<DataWidth>,
+        DataWidth: AsPrimitive<C::Word>,
         A: Receive,
         N: InterruptNumber,
         S: Sercom + 'static,
@@ -360,8 +363,8 @@ mod impl_ehal {
     impl<C, A, N, S, W> SpiBus<W> for SpiFuture<C, A, N>
     where
         C: ValidConfig<Sercom = S, Word = W>,
-        C::Word: PrimInt + AsPrimitive<u16>,
-        u16: AsPrimitive<C::Word>,
+        C::Word: PrimInt + AsPrimitive<DataWidth>,
+        DataWidth: AsPrimitive<C::Word>,
         A: Transmit + Receive,
         N: InterruptNumber,
         S: Sercom + 'static,
@@ -436,9 +439,9 @@ mod dma {
     impl<C, A, N, S, R, T> SpiFuture<C, A, N, R, T>
     where
         C: ValidConfig<Sercom = S>,
-        C::Word: PrimInt + AsPrimitive<u16> + Beat,
+        C::Word: PrimInt + AsPrimitive<DataWidth> + Beat,
         C::Size: Size<Word = C::Word>,
-        u16: AsPrimitive<C::Word>,
+        DataWidth: AsPrimitive<C::Word>,
         A: Capability,
         N: InterruptNumber,
         S: Sercom + 'static,
@@ -451,9 +454,9 @@ mod dma {
     impl<C, A, N, S, R, T> SpiFuture<C, A, N, R, T>
     where
         C: ValidConfig<Sercom = S>,
-        C::Word: PrimInt + AsPrimitive<u16> + Beat,
+        C::Word: PrimInt + AsPrimitive<DataWidth> + Beat,
         C::Size: Size<Word = C::Word>,
-        u16: AsPrimitive<C::Word>,
+        DataWidth: AsPrimitive<C::Word>,
         A: Receive,
         N: InterruptNumber,
         S: Sercom + 'static,
@@ -477,9 +480,9 @@ mod dma {
     impl<C, A, N, S, R, T> SpiFuture<C, A, N, R, T>
     where
         C: ValidConfig<Sercom = S>,
-        C::Word: PrimInt + AsPrimitive<u16> + Beat,
+        C::Word: PrimInt + AsPrimitive<DataWidth> + Beat,
         C::Size: Size<Word = C::Word>,
-        u16: AsPrimitive<C::Word>,
+        DataWidth: AsPrimitive<C::Word>,
         A: Transmit,
         N: InterruptNumber,
         S: Sercom + 'static,

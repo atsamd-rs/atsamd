@@ -15,7 +15,7 @@ mod app {
     use hal::{
         clock::{enable_internal_32kosc, ClockGenId, ClockSource, GenericClockController},
         dmac::{
-            Ch0, Channel, DmaController, PriorityLevel, ReadyFuture, Transfer, TriggerAction,
+            self, Ch0, Channel, DmaController, PriorityLevel, ReadyFuture, TriggerAction,
             TriggerSource,
         },
         rtc::{Count32Mode, Rtc},
@@ -57,7 +57,7 @@ mod app {
         // Initialize DMA Controller
         let dmac = DmaController::init(peripherals.DMAC, &mut peripherals.PM);
         // Get handle to IRQ
-        let dmac_irq = cortex_m_interrupt::take_nvic_interrupt!(pac::Interrupt::DMAC, 2);
+        let dmac_irq = dmac::Interrupts::new(cortex_m_interrupt::take_nvic_interrupt!(pac::Interrupt::DMAC, 2));
         // Turn dmac into an async controller
         let mut dmac = dmac.into_future(dmac_irq);
         // Get individual handles to DMA channels

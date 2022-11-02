@@ -12,7 +12,7 @@ mod app {
     use fugit::MillisDuration;
     use hal::{
         clock::{enable_internal_32kosc, ClockGenId, ClockSource, GenericClockController},
-        dmac::{Ch0, Ch1, DmaController, PriorityLevel},
+        dmac::{self, Ch0, Ch1, DmaController, PriorityLevel},
         prelude::*,
         rtc::{Count32Mode, Rtc},
         sercom::uart::{Config, UartFutureRxDuplexDma, UartFutureTxDuplexDma},
@@ -58,7 +58,7 @@ mod app {
         // Initialize DMA Controller
         let dmac = DmaController::init(peripherals.DMAC, &mut peripherals.PM);
         // Get handle to IRQ
-        let dmac_irq = cortex_m_interrupt::take_nvic_interrupt!(pac::Interrupt::DMAC, 3);
+        let dmac_irq = dmac::Interrupts::new(cortex_m_interrupt::take_nvic_interrupt!(pac::Interrupt::DMAC, 3));
         // Turn dmac into an async controller
         let mut dmac = dmac.into_future(dmac_irq);
         // Get individual handles to DMA channels

@@ -197,7 +197,10 @@ macro_rules! sercom {
                         unsafe {
                             let mut peripherals = crate::pac::Peripherals::steal();
 
+                            #[cfg(any(feature = "samd11", feature = "samd21"))]
                             let spi = Self::reg_block(&mut peripherals).spi();
+                            #[cfg(feature = "min-samd51g")]
+                            let spi = Self::reg_block(&mut peripherals).spim();
 
                             let flags_pending = Flags::from_bits_truncate(spi.intflag.read().bits());
                             let enabled_flags = Flags::from_bits_truncate(spi.intenset.read().bits());

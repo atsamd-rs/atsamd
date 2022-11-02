@@ -247,17 +247,13 @@ impl<T> DmaController<T> {
     /// interrupt sources.
     #[cfg(feature = "async")]
     #[inline]
-    pub fn into_future<I, N>(self, interrupts: I) -> DmaController<super::async_api::Interrupts<N>>
-    where
-        I: cortex_m_interrupt::NvicInterruptRegistration<N>,
-        N: cortex_m::interrupt::InterruptNumber,
-    {
-        use super::async_api::{on_interrupt, Interrupts};
-        let interrupt_number = interrupts.number();
-        interrupts.occupy(on_interrupt);
+    pub fn into_future<N: cortex_m::interrupt::InterruptNumber>(
+        self,
+        interrupts: super::async_api::Interrupts<N>,
+    ) -> DmaController<super::async_api::Interrupts<N>> {
         DmaController {
             dmac: self.dmac,
-            _interrupts: Interrupts::new(interrupt_number),
+            _interrupts: interrupts,
         }
     }
 
