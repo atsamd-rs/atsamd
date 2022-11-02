@@ -12,10 +12,10 @@ mod app {
     use fugit::MillisDuration;
     use hal::{
         clock::{enable_internal_32kosc, ClockGenId, ClockSource, GenericClockController},
+        dmac::{Ch0, Ch1, DmaController, PriorityLevel},
         prelude::*,
         rtc::{Count32Mode, Rtc},
         sercom::uart::{Config, UartFutureRxDuplexDma, UartFutureTxDuplexDma},
-        dmac::{DmaController, PriorityLevel, Ch0, Ch1},
     };
 
     #[monotonic(binds = RTC, default = true)]

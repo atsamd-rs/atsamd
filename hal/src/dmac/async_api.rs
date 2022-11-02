@@ -1,23 +1,5 @@
-use crate::dmac::waker::WAKERS;
+use crate::{dmac::waker::WAKERS, util::BitIter};
 use cortex_m::interrupt::InterruptNumber;
-
-// BitIter shamelessly stolen from embassy:
-// https://github.com/embassy-rs/embassy/blob/3d1501c02038e5fe6f6d3b72bd18bd7a52595a77/embassy-stm32/src/exti.rs#L67
-struct BitIter(u32);
-
-impl Iterator for BitIter {
-    type Item = u32;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        match self.0.trailing_zeros() {
-            32 => None,
-            b => {
-                self.0 &= !(1 << b);
-                Some(b)
-            }
-        }
-    }
-}
 
 #[cfg(any(feature = "samd11", feature = "samd21"))]
 mod thumbv6m {

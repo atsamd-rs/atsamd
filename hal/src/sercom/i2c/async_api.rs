@@ -1,5 +1,4 @@
 use crate::{
-    pac::Interrupt,
     sercom::{
         i2c::{self, AnyConfig, Flags, I2c},
         Sercom,
@@ -28,8 +27,8 @@ where
 
         I2cFuture {
             i2c: self,
-            irq_number,
-            dma_channel: NoneT,
+            _irq_number: irq_number,
+            _dma_channel: NoneT,
         }
     }
 }
@@ -43,15 +42,15 @@ where
     N: InterruptNumber,
 {
     pub(in super::super) i2c: I2c<C>,
-    irq_number: N,
-    dma_channel: D,
+    _irq_number: N,
+    _dma_channel: D,
 }
 
 #[cfg(feature = "dma")]
 /// Convenience type for a [`I2cFuture`] in DMA
 /// mode. The type parameter `I` represents the DMA channel ID (`ChX`).
 pub type I2cFutureDma<C, I> =
-    I2cFuture<C, Interrupt, crate::dmac::Channel<I, crate::dmac::ReadyFuture>>;
+    I2cFuture<C, crate::pac::Interrupt, crate::dmac::Channel<I, crate::dmac::ReadyFuture>>;
 
 impl<C, N, S> I2cFuture<C, N, NoneT>
 where
@@ -67,8 +66,8 @@ where
     ) -> I2cFuture<C, N, D> {
         I2cFuture {
             i2c: self.i2c,
-            irq_number: self.irq_number,
-            dma_channel,
+            _irq_number: self._irq_number,
+            _dma_channel: dma_channel,
         }
     }
 
@@ -303,7 +302,7 @@ mod dma {
             assert!(len > 0 && len <= 255);
             self.i2c.start_dma_write(address, len as u8);
 
-            write_dma::<_, S>(&mut self.dma_channel, i2c_ptr, bytes)
+            write_dma::<_, S>(&mut self._dma_channel, i2c_ptr, bytes)
                 .await
                 .map_err(i2c::Error::Dma)?;
 
@@ -323,7 +322,7 @@ mod dma {
             assert!(len > 0 && len <= 255);
             self.i2c.start_dma_read(address, len as u8);
 
-            read_dma::<_, S>(&mut self.dma_channel, i2c_ptr, buffer)
+            read_dma::<_, S>(&mut self._dma_channel, i2c_ptr, buffer)
                 .await
                 .map_err(i2c::Error::Dma)?;
 

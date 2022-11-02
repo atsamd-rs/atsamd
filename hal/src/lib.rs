@@ -5,6 +5,7 @@ pub use embedded_hal as ehal;
 pub use fugit;
 pub use paste;
 pub mod typelevel;
+mod util;
 
 #[cfg(not(any(feature = "library", feature = "device")))]
 compile_error!(

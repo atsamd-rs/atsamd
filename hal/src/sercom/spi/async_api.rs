@@ -32,9 +32,9 @@ where
 
         SpiFuture {
             spi: self,
-            irq_number,
-            rx_channel: NoneT,
-            tx_channel: NoneT,
+            _irq_number: irq_number,
+            _rx_channel: NoneT,
+            _tx_channel: NoneT,
         }
     }
 }
@@ -49,9 +49,9 @@ where
     N: InterruptNumber,
 {
     spi: Spi<C, A>,
-    irq_number: N,
-    rx_channel: R,
-    tx_channel: T,
+    _irq_number: N,
+    _rx_channel: R,
+    _tx_channel: T,
 }
 
 /// Convenience type for a [`SpiFuture`] with RX and TX capabilities
@@ -170,9 +170,9 @@ where
     ) -> SpiFuture<C, A, N, Chan, T> {
         SpiFuture {
             spi: self.spi,
-            irq_number: self.irq_number,
-            tx_channel: self.tx_channel,
-            rx_channel,
+            _irq_number: self._irq_number,
+            _tx_channel: self._tx_channel,
+            _rx_channel: rx_channel,
         }
     }
 
@@ -224,9 +224,9 @@ where
     ) -> SpiFuture<C, A, N, R, Chan> {
         SpiFuture {
             spi: self.spi,
-            irq_number: self.irq_number,
-            rx_channel: self.rx_channel,
-            tx_channel,
+            _irq_number: self._irq_number,
+            _rx_channel: self._rx_channel,
+            _tx_channel: tx_channel,
         }
     }
     /// Write a single word asynchronously.
@@ -466,7 +466,7 @@ mod dma {
             // to &mut self as long as the transfer hasn't completed.
             let spi_ptr = self.sercom_ptr();
 
-            read_dma::<_, S>(&mut self.rx_channel, spi_ptr, words)
+            read_dma::<_, S>(&mut self._rx_channel, spi_ptr, words)
                 .await
                 .map_err(spi::Error::Dma)?;
 
@@ -492,7 +492,7 @@ mod dma {
             // to &mut self and words as long as the transfer hasn't completed.
             let spi_ptr = self.sercom_ptr();
 
-            write_dma::<_, S>(&mut self.tx_channel, spi_ptr, words)
+            write_dma::<_, S>(&mut self._tx_channel, spi_ptr, words)
                 .await
                 .map_err(spi::Error::Dma)?;
 

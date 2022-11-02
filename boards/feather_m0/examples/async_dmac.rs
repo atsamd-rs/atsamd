@@ -83,14 +83,15 @@ mod app {
             &dest
         );
 
-        channel.transfer_future(
-            &mut source,
-            &mut dest,
-            TriggerSource::DISABLE,
-            TriggerAction::BLOCK,
-        )
-        .await
-        .unwrap();
+        channel
+            .transfer_future(
+                &mut source,
+                &mut dest,
+                TriggerSource::DISABLE,
+                TriggerAction::BLOCK,
+            )
+            .await
+            .unwrap();
 
         defmt::info!(
             "Finished DMA transfer.\n\tSource: {}\n\tDestination: {}",

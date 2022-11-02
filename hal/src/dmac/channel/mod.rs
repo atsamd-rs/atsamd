@@ -480,7 +480,6 @@ impl<Id: ChId> Channel<Id, ReadyFuture> {
                 .with_terr(true),
         );
 
-        self.stop();
         self.configure_trigger(trig_src, trig_act);
         let mut triggered = false;
 
@@ -512,7 +511,9 @@ impl<Id: ChId> Channel<Id, ReadyFuture> {
         })
         .await;
 
-        // TODO this will always return Ok(()) currently since we unconditionally clear
+        // Defensively disable channel
+        self.stop();
+        // TODO currently this will always return Ok(()) since we unconditionally clear
         // ERROR
         self.xfer_success()
     }

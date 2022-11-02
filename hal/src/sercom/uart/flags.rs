@@ -135,6 +135,7 @@ impl From<Error> for Status {
             InconsistentSyncField => Status::ISF,
             CollisionDetected => Status::COLL,
             // Don't try to convert a DMA error into a [`Status`]
+            #[cfg(feature = "dma")]
             _ => unreachable!(),
         }
     }
