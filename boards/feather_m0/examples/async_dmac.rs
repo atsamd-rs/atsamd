@@ -57,7 +57,10 @@ mod app {
         // Initialize DMA Controller
         let dmac = DmaController::init(peripherals.DMAC, &mut peripherals.PM);
         // Get handle to IRQ
-        let dmac_irq = dmac::Interrupts::new(cortex_m_interrupt::take_nvic_interrupt!(pac::Interrupt::DMAC, 2));
+        let dmac_irq = dmac::Interrupts::new(cortex_m_interrupt::take_nvic_interrupt!(
+            pac::Interrupt::DMAC,
+            2
+        ));
         // Turn dmac into an async controller
         let mut dmac = dmac.into_future(dmac_irq);
         // Get individual handles to DMA channels

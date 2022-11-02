@@ -2,8 +2,8 @@
 #![no_main]
 #![feature(type_alias_impl_trait)]
 
-use panic_probe as _;
 use defmt_rtt as _;
+use panic_probe as _;
 
 #[rtic::app(device = bsp::pac, dispatchers = [I2S])]
 mod app {
