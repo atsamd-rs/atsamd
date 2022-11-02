@@ -1,10 +1,10 @@
-use crate::clock::EicClock;
-use crate::pac;
+use crate::{clock::EicClock, pac, typelevel::NoneT};
 
 pub mod pin;
 
-pub struct EIC {
+pub struct EIC<N = NoneT> {
     eic: pac::EIC,
+    _irq_number: N,
 }
 
 impl EIC {
@@ -16,6 +16,52 @@ impl EIC {
             cortex_m::asm::nop();
         }
 
-        EIC { eic }
+        EIC {
+            eic,
+            _irq_number: NoneT,
+        }
     }
+
+    #[cfg(feature = "async")]
+    pub fn into_future<I, Q>(self, irq: I) -> EIC<Q>
+    where
+        I: cortex_m_interrupt::NvicInterruptRegistration<Q>,
+        Q: cortex_m::interrupt::InterruptNumber,
+    {
+        let irq_number = irq.number();
+        irq.occupy(async_api::on_interrupt);
+        unsafe {
+            cortex_m::peripheral::NVIC::unmask(irq_number);
+        }
+
+        EIC {
+            eic: self.eic,
+            _irq_number: irq_number,
+        }
+    }
+}
+
+#[cfg(feature = "async")]
+mod async_api {
+    use super::pin::NUM_CHANNELS;
+    use super::*;
+    use crate::util::BitIter;
+    use embassy_sync::waitqueue::AtomicWaker;
+
+    pub(super) fn on_interrupt() {
+        let eic = unsafe { pac::Peripherals::steal().EIC };
+
+        let pending_interrupts = BitIter(eic.intflag.read().bits());
+        for channel in pending_interrupts {
+            let mask = 1 << channel;
+            // Disable the interrupt but don't clear; will be cleared
+            // when future is next polled.
+            unsafe { eic.intenclr.write(|w| w.bits(mask)) };
+            WAKERS[channel as usize].wake();
+        }
+    }
+
+    #[allow(clippy::declare_interior_mutable_const)]
+    const NEW_WAKER: AtomicWaker = AtomicWaker::new();
+    pub(super) static WAKERS: [AtomicWaker; NUM_CHANNELS] = [NEW_WAKER; NUM_CHANNELS];
 }

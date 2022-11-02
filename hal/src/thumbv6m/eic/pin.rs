@@ -1,9 +1,13 @@
+use super::EIC;
 #[cfg(feature = "unproven")]
 use crate::ehal::digital::v2::InputPin;
-use crate::gpio::{
-    self, pin::*, AnyPin, FloatingInterrupt, PinMode, PullDownInterrupt, PullUpInterrupt,
+use crate::{
+    gpio::{
+        self, pin::*, AnyPin, FloatingInterrupt, PinId, PinMode, PullDownInterrupt, PullUpInterrupt,
+    },
+    pac,
 };
-use crate::pac;
+use core::mem::ManuallyDrop;
 
 use super::EIC;
 
@@ -18,13 +22,13 @@ pub trait EicPin {
     type PullDown;
 
     /// Configure a pin as a floating external interrupt
-    fn into_floating_ei(self) -> Self::Floating;
+    fn into_floating_ei(self, eic: &mut EIC) -> Self::Floating;
 
     /// Configure a pin as pulled-up external interrupt
-    fn into_pull_up_ei(self) -> Self::PullUp;
+    fn into_pull_up_ei(self, eic: &mut EIC) -> Self::PullUp;
 
     /// Configure a pin as pulled-down external interrupt
-    fn into_pull_down_ei(self) -> Self::PullDown;
+    fn into_pull_down_ei(self, eic: &mut EIC) -> Self::PullDown;
 }
 
 pub type Sense = pac::eic::config::SENSE0SELECT_A;
@@ -52,47 +56,53 @@ macro_rules! ei {
 crate::paste::item! {
     /// Represents a numbered external interrupt. The external interrupt is generic
     /// over any pin, only the EicPin implementations in this module make sense.
-    pub struct [<$PadType $num>]<GPIO>
+    pub struct [<$PadType $num>]<GPIO, I = crate::typelevel::NoneT>
     where
         GPIO: AnyPin,
     {
+        eic: ManuallyDrop<EIC<I>>,
         _pin: Pin<GPIO::Id, GPIO::Mode>,
     }
 
     // impl !Send for [<$PadType $num>]<GPIO> {}
     // impl !Sync for [<$PadType $num>]<GPIO> {}
 
-    impl<GPIO: AnyPin> [<$PadType $num>]<GPIO> {
+    impl<GPIO: AnyPin, I> [<$PadType $num>]<GPIO, I> {
         /// Construct pad from the appropriate pin in any mode.
         /// You may find it more convenient to use the `into_pad` trait
         /// and avoid referencing the pad type.
-        pub fn new(pin: GPIO) -> Self {
+        pub fn new(pin: GPIO, eic: &mut super::EIC<I>) -> [<$PadType $num>]<GPIO, I> {
+            let eic = unsafe {
+                ManuallyDrop::new(core::ptr::read(eic as *const _))
+            };
+
             [<$PadType $num>]{
-                _pin:pin.into()
+                _pin:pin.into(),
+                eic,
             }
         }
 
         /// Configure the eic with options for this external interrupt
-        pub fn enable_event(&mut self, eic: &mut EIC) {
-            eic.eic.evctrl.modify(|_, w| {
+        pub fn enable_event(&mut self) {
+            self.eic.eic.evctrl.modify(|_, w| {
                 w.[<extinteo $num>]().set_bit()
             });
         }
 
-        pub fn enable_interrupt(&mut self, eic: &mut EIC) {
-            eic.eic.intenset.modify(|_, w| {
+        pub fn enable_interrupt(&mut self) {
+            self.eic.eic.intenset.modify(|_, w| {
                 w.[<extint $num>]().set_bit()
             });
         }
 
-        pub fn enable_interrupt_wake(&mut self, eic: &mut EIC) {
-            eic.eic.wakeup.modify(|_, w| {
+        pub fn enable_interrupt_wake(&mut self) {
+            self.eic.eic.wakeup.modify(|_, w| {
                 w.[<wakeupen $num>]().set_bit()
             })
         }
 
-        pub fn disable_interrupt(&mut self, eic: &mut EIC) {
-            eic.eic.intenclr.modify(|_, w| {
+        pub fn disable_interrupt(&mut self) {
+            self.eic.eic.intenclr.modify(|_, w| {
                 w.[<extint $num>]().set_bit()
             });
         }
@@ -107,10 +117,10 @@ crate::paste::item! {
             });
         }
 
-        pub fn sense(&mut self, _eic: &mut EIC, sense: Sense) {
+        pub fn sense(&mut self, sense: Sense) {
             // Which of the two config blocks this eic config is in
             let offset = ($num >> 3) & 0b0001;
-            let config = unsafe { &(*pac::EIC::ptr()).config[offset] };
+            let config = &self.eic.eic.config[offset];
 
             config.modify(|_, w| unsafe {
                 // Which of the eight eic configs in this config block
@@ -128,10 +138,10 @@ crate::paste::item! {
             });
         }
 
-        pub fn filter(&mut self, _eic: &mut EIC, filter: bool) {
+        pub fn filter(&mut self, filter: bool) {
             // Which of the two config blocks this eic config is in
             let offset = ($num >> 3) & 0b0001;
-            let config = unsafe { &(*pac::EIC::ptr()).config[offset] };
+            let config = &self.eic.eic.config[offset];
 
             config.modify(|_, w| {
                 // Which of the eight eic configs in this config block
@@ -148,16 +158,54 @@ crate::paste::item! {
                 }
             });
         }
-    }
 
-    impl<GPIO: AnyPin> ExternalInterrupt for [<$PadType $num>]<GPIO> {
         fn id(&self) -> ExternalInterruptID {
             $num
         }
     }
 
+    #[cfg(feature = "async")]
+    impl<GPIO, I> [<$PadType $num>]<GPIO, I>
+    where
+        GPIO: AnyPin,
+        Self: InputPin<Error = core::convert::Infallible>,
+        I: cortex_m::interrupt::InterruptNumber,
+    {
+        pub async fn wait(&mut self, sense: Sense)
+        {
+            use core::{task::Poll, future::poll_fn};
+            self.disable_interrupt();
+
+            match sense {
+                Sense::HIGH => if self.is_high().unwrap() { return; },
+                Sense::LOW => if self.is_low().unwrap() { return; },
+                _ => (),
+            }
+
+            self.sense(sense);
+            poll_fn(|cx| {
+                if self.is_interrupt() {
+                    self.clear_interrupt();
+                    self.disable_interrupt();
+                    return Poll::Ready(());
+                }
+
+                super::async_api::WAKERS[$num].register(cx.waker());
+                self.enable_interrupt();
+
+                if self.is_interrupt(){
+                    self.clear_interrupt();
+                    self.disable_interrupt();
+                    return Poll::Ready(());
+                }
+
+                Poll::Pending
+            }).await;
+        }
+    }
+
     #[cfg(feature = "unproven")]
-    impl<GPIO, C> InputPin for [<$PadType $num>]<GPIO>
+    impl<GPIO, C, I> InputPin for [<$PadType $num>]<GPIO, I>
     where
         GPIO: AnyPin<Mode = Interrupt<C>>,
         C: InterruptConfig,
@@ -180,16 +228,16 @@ crate::paste::item! {
             type PullUp = [<$PadType $num>]<Pin<gpio::$PinType, PullUpInterrupt>>;
             type PullDown = [<$PadType $num>]<Pin<gpio::$PinType, PullDownInterrupt>>;
 
-            fn into_floating_ei(self) -> Self::Floating {
-                [<$PadType $num>]::new(self.into_floating_interrupt())
+            fn into_floating_ei(self, eic: &mut super::EIC) -> Self::Floating {
+                [<$PadType $num>]::new(self.into_floating_interrupt(), eic)
             }
 
-            fn into_pull_up_ei(self) -> Self::PullUp {
-                [<$PadType $num>]::new(self.into_pull_up_interrupt())
+            fn into_pull_up_ei(self, eic: &mut super::EIC) -> Self::PullUp {
+                [<$PadType $num>]::new(self.into_pull_up_interrupt(), eic)
             }
 
-            fn into_pull_down_ei(self) -> Self::PullDown {
-                [<$PadType $num>]::new(self.into_pull_down_interrupt())
+            fn into_pull_down_ei(self, eic: &mut super::EIC) -> Self::PullDown {
+                [<$PadType $num>]::new(self.into_pull_down_interrupt(), eic)
             }
         }
 
@@ -245,6 +293,9 @@ mod impls {
         PA09,
     });
 }
+
+#[cfg(feature = "samd11")]
+pub const NUM_CHANNELS: usize = 8;
 
 // SAMD21
 
