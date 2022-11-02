@@ -219,6 +219,69 @@ crate::paste::item! {
         }
     }
 
+    #[cfg(all(feature = "async", feature = "nightly"))]
+    impl<GPIO, I> embedded_hal_alpha::digital::ErrorType for [<$PadType $num>]<GPIO, I>
+    where
+        GPIO: AnyPin,
+        Self: InputPin<Error = core::convert::Infallible>,
+        I: cortex_m::interrupt::InterruptNumber,
+    {
+        type Error = core::convert::Infallible;
+    }
+
+    #[cfg(all(feature = "async", feature = "nightly"))]
+    impl<GPIO, I> embedded_hal_async::digital::Wait for [<$PadType $num>]<GPIO, I>
+    where
+        GPIO: AnyPin,
+        Self: InputPin<Error = core::convert::Infallible>,
+        I: cortex_m::interrupt::InterruptNumber,
+    {
+        type WaitForHighFuture<'a> = impl core::future::Future<Output = Result<(), Self::Error>> + 'a where Self: 'a;
+
+        fn wait_for_high<'a>(&'a mut self) -> Self::WaitForHighFuture<'a> {
+            async {
+                self.wait(Sense::HIGH).await;
+                Ok(())
+            }
+        }
+
+        type WaitForLowFuture<'a> = impl core::future::Future<Output = Result<(), Self::Error>> +'a where Self: 'a;
+
+        fn wait_for_low<'a>(&'a mut self) -> Self::WaitForLowFuture<'a> {
+            async{
+                self.wait(Sense::LOW).await;
+                Ok(())
+            }
+        }
+
+        type WaitForRisingEdgeFuture<'a> = impl core::future::Future<Output = Result<(), Self::Error>> +'a where Self: 'a;
+
+        fn wait_for_rising_edge<'a>(&'a mut self) -> Self::WaitForRisingEdgeFuture<'a> {
+            async {
+                self.wait(Sense::RISE).await;
+                Ok(())
+            }
+        }
+
+        type WaitForFallingEdgeFuture<'a> = impl core::future::Future<Output = Result<(), Self::Error>> +'a where Self: 'a;
+
+        fn wait_for_falling_edge<'a>(&'a mut self) -> Self::WaitForFallingEdgeFuture<'a> {
+            async {
+                self.wait(Sense::FALL).await;
+                Ok(())
+            }
+        }
+
+        type WaitForAnyEdgeFuture<'a> = impl core::future::Future<Output = Result<(), Self::Error>> +'a where Self: 'a;
+
+        fn wait_for_any_edge<'a>(&'a mut self) -> Self::WaitForAnyEdgeFuture<'a> {
+            async {
+                self.wait(Sense::BOTH).await;
+                Ok(())
+            }
+        }
+    }
+
     $(
         $(#[$attr])*
         impl<M: PinMode> EicPin for Pin<gpio::$PinType, M> {
