@@ -92,6 +92,10 @@ atsame53n = {version = "0.13.0", path = "../pac/atsame53n", optional = true}
 atsame54n = {version = "0.13.0", path = "../pac/atsame54n", optional = true}
 atsame54p = {version = "0.13.0", path = "../pac/atsame54p", optional = true}
 
+[dependencies.defmt]
+version = "0.3"
+optional = true
+
 [dependencies.embedded-hal-async]
 version = "0.2.0-alpha.0"
 optional = true
