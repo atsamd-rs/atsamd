@@ -100,6 +100,7 @@ impl Status for ReadyFuture {
 
 pub trait ReadyChannel: Status {}
 impl ReadyChannel for Ready {}
+#[cfg(feature = "async")]
 impl ReadyChannel for ReadyFuture {}
 
 //==============================================================================
