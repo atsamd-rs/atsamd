@@ -5,7 +5,7 @@ use crate::{
             Capability, DataWidth, Duplex, Error, Flags, Receive, Rx, Spi, Transmit, Tx,
             ValidConfig,
         },
-        Sercom,
+        InterruptNumbers, Interrupts, Sercom,
     },
     typelevel::NoneT,
 };
@@ -20,22 +20,43 @@ where
     A: Capability,
     S: Sercom,
 {
-    /// Turn a [`Uart`] into a [`UartFuture`]. This method is only available for
-    /// [`Uart`]s which have a [`Tx`](crate::sercom::uart::Tx),
-    /// [`Rx`](crate::sercom::uart::Rx) or [`Duplex`] [`Capability`].
+    /// Turn an [`Spi`] into a [`SpiFuture`].
+    #[cfg(any(feature = "samd11", feature = "samd21"))]
     #[inline]
-    pub fn into_future<I, N>(self, irq: I) -> SpiFuture<C, A, N>
+    pub fn into_future<N, I>(self, interrupts: Interrupts<N, I>) -> SpiFuture<C, A, N>
     where
         I: NvicInterruptRegistration<N>,
         N: InterruptNumber,
     {
-        let irq_number = irq.number();
-        irq.occupy(S::on_interrupt_spi);
-        unsafe { cortex_m::peripheral::NVIC::unmask(irq_number) };
+        let irq_numbers = interrupts.occupy(S::on_interrupt_i2c);
 
         SpiFuture {
             spi: self,
-            _irq_number: irq_number,
+            _irqs: irq_numbers,
+            _rx_channel: NoneT,
+            _tx_channel: NoneT,
+        }
+    }
+
+    /// Turn an [`Spi`] into an [`SpiFuture`]
+    #[cfg(feature = "min-samd51g")]
+    #[inline]
+    pub fn into_future<N, N0, N1, N2, NOther>(
+        self,
+        interrupts: Interrupts<N, N0, N1, N2, NOther>,
+    ) -> SpiFuture<C, A, N>
+    where
+        N: InterruptNumber,
+        N0: NvicInterruptRegistration<N>,
+        N1: NvicInterruptRegistration<N>,
+        N2: NvicInterruptRegistration<N>,
+        NOther: NvicInterruptRegistration<N>,
+    {
+        let irq_numbers = interrupts.occupy(S::on_interrupt_i2c);
+
+        SpiFuture {
+            spi: self,
+            _irqs: irq_numbers,
             _rx_channel: NoneT,
             _tx_channel: NoneT,
         }
@@ -52,7 +73,7 @@ where
     N: InterruptNumber,
 {
     spi: Spi<C, A>,
-    _irq_number: N,
+    _irqs: InterruptNumbers<N>,
     _rx_channel: R,
     _tx_channel: T,
 }
@@ -173,7 +194,7 @@ where
     ) -> SpiFuture<C, A, N, Chan, T> {
         SpiFuture {
             spi: self.spi,
-            _irq_number: self._irq_number,
+            _irqs: self._irqs,
             _tx_channel: self._tx_channel,
             _rx_channel: rx_channel,
         }
@@ -227,7 +248,7 @@ where
     ) -> SpiFuture<C, A, N, R, Chan> {
         SpiFuture {
             spi: self.spi,
-            _irq_number: self._irq_number,
+            _irqs: self._irqs,
             _rx_channel: self._rx_channel,
             _tx_channel: tx_channel,
         }

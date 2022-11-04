@@ -15,7 +15,10 @@ mod app {
         dmac::{self, Ch0, Ch1, DmaController, PriorityLevel},
         prelude::*,
         rtc::{Count32Mode, Rtc},
-        sercom::spi::{Config, SpiFutureDuplexDma},
+        sercom::{
+            spi::{Config, SpiFutureDuplexDma},
+            Interrupts,
+        },
     };
 
     #[monotonic(binds = RTC, default = true)]
@@ -46,7 +49,10 @@ mod app {
         // Take SPI pins
         let (miso, mosi, sclk) = (pins.miso, pins.mosi, pins.sclk);
 
-        let sercom4_irq = cortex_m_interrupt::take_nvic_interrupt!(pac::Interrupt::SERCOM4, 2);
+        let sercom4_irq = Interrupts::new(cortex_m_interrupt::take_nvic_interrupt!(
+            pac::Interrupt::SERCOM4,
+            2
+        ));
         // tc4_irq.set_priority(2);
 
         enable_internal_32kosc(&mut peripherals.SYSCTRL);

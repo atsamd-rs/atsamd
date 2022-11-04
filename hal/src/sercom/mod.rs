@@ -102,14 +102,14 @@ pub trait Sercom: Sealed + Deref<Target = sercom0::RegisterBlock> {
     #[cfg(feature = "async")]
     #[inline]
     fn rx_waker() -> &'static embassy_sync::waitqueue::AtomicWaker {
-        &waker::RX_WAKERS[Self::NUM]
+        &async_api::RX_WAKERS[Self::NUM]
     }
 
     /// Get a reference to this [`Sercom`]'s associated TX Waker
     #[cfg(feature = "async")]
     #[inline]
     fn tx_waker() -> &'static embassy_sync::waitqueue::AtomicWaker {
-        &waker::TX_WAKERS[Self::NUM]
+        &async_api::TX_WAKERS[Self::NUM]
     }
 }
 
@@ -251,7 +251,11 @@ const NUM_SERCOM: usize = 6;
 const NUM_SERCOM: usize = 8;
 
 #[cfg(feature = "async")]
-pub(super) mod waker {
+pub(super) mod async_api {
+    use core::marker::PhantomData;
+    use cortex_m::interrupt::InterruptNumber;
+    use cortex_m_interrupt::NvicInterruptRegistration;
+
     use embassy_sync::waitqueue::AtomicWaker;
     #[allow(clippy::declare_interior_mutable_const)]
     const NEW_WAKER: AtomicWaker = AtomicWaker::new();
@@ -260,4 +264,128 @@ pub(super) mod waker {
     pub(super) static RX_WAKERS: [AtomicWaker; super::NUM_SERCOM] = [NEW_WAKER; super::NUM_SERCOM];
     /// Waker for a TX event.
     pub(super) static TX_WAKERS: [AtomicWaker; super::NUM_SERCOM] = [NEW_WAKER; super::NUM_SERCOM];
+
+    #[cfg(any(feature = "samd11", feature = "samd21"))]
+    mod thumbv6m {
+
+        use super::*;
+
+        pub struct Interrupts<N, I>
+        where
+            N: InterruptNumber,
+            I: NvicInterruptRegistration<N>,
+        {
+            sercom: I,
+            _num: PhantomData<N>,
+        }
+
+        impl<N, I> Interrupts<N, I>
+        where
+            N: InterruptNumber,
+            I: NvicInterruptRegistration<N>,
+        {
+            pub fn new(sercom: I) -> Self {
+                Self {
+                    sercom,
+                    _num: PhantomData,
+                }
+            }
+
+            /// Occupy all IRQs with the same handler function
+            pub(in super::super) fn occupy(self, handler: fn()) -> InterruptNumbers<N> {
+                let num = self.sercom.number();
+                self.sercom.occupy(handler);
+                unsafe { cortex_m::peripheral::NVIC::unmask(num) };
+
+                InterruptNumbers { _irq: num }
+            }
+        }
+
+        #[derive(Clone)]
+        pub(in super::super) struct InterruptNumbers<N: InterruptNumber> {
+            _irq: N,
+        }
+    }
+
+    #[cfg(any(feature = "samd11", feature = "samd21"))]
+    pub use thumbv6m::*;
+
+    #[cfg(feature = "min-samd51g")]
+    mod thumbv7em {
+        use super::*;
+
+        pub struct Interrupts<N, N0, N1, N2, NOther>
+        where
+            N: InterruptNumber,
+            N0: NvicInterruptRegistration<N>,
+            N1: NvicInterruptRegistration<N>,
+            N2: NvicInterruptRegistration<N>,
+            NOther: NvicInterruptRegistration<N>,
+        {
+            sercom_0: N0,
+            sercom_1: N1,
+            sercom_2: N2,
+            sercom_other: NOther,
+            _num: PhantomData<N>,
+        }
+
+        impl<N, N0, N1, N2, NOther> Interrupts<N, N0, N1, N2, NOther>
+        where
+            N: InterruptNumber,
+            N0: NvicInterruptRegistration<N>,
+            N1: NvicInterruptRegistration<N>,
+            N2: NvicInterruptRegistration<N>,
+            NOther: NvicInterruptRegistration<N>,
+        {
+            pub fn new(sercom_0: N0, sercom_1: N1, sercom_2: N2, sercom_other: NOther) -> Self {
+                Self {
+                    sercom_0,
+                    sercom_1,
+                    sercom_2,
+                    sercom_other,
+                    _num: PhantomData,
+                }
+            }
+
+            /// Occupy all IRQs with the same handler function
+            pub(in super::super) fn occupy(self, handler: fn()) -> InterruptNumbers<N> {
+                let n_0 = self.sercom_0.number();
+                self.sercom_0.occupy(handler);
+                unsafe { cortex_m::peripheral::NVIC::unmask(n_0) };
+
+                let n_1 = self.sercom_1.number();
+                self.sercom_1.occupy(handler);
+                unsafe { cortex_m::peripheral::NVIC::unmask(n_1) };
+
+                let n_2 = self.sercom_2.number();
+                self.sercom_2.occupy(handler);
+                unsafe { cortex_m::peripheral::NVIC::unmask(n_2) };
+
+                let n_other = self.sercom_other.number();
+                self.sercom_other.occupy(handler);
+                unsafe { cortex_m::peripheral::NVIC::unmask(n_other) };
+
+                InterruptNumbers {
+                    _irq_0: n_0,
+                    _irq_1: n_1,
+                    _irq_2: n_2,
+                    _irq_other: n_other,
+                }
+            }
+        }
+
+        #[derive(Clone)]
+        pub(in super::super) struct InterruptNumbers<N: InterruptNumber> {
+            _irq_0: N,
+            _irq_1: N,
+            _irq_2: N,
+            _irq_other: N,
+        }
+    }
+
+    #[cfg(feature = "min-samd51g")]
+    pub use thumbv7em::*;
 }
+
+#[cfg(feature = "async")]
+pub use async_api::*;

@@ -20,6 +20,7 @@ mod thumbv6m {
         pub fn new<I: NvicInterruptRegistration<N>>(interrupt: I) -> Self {
             let interrupt_number = interrupt.number();
             interrupt.occupy(on_interrupt);
+            unsafe { cortex_m::peripheral::NVIC::unmask(interrupt_number) };
             Self {
                 _interrupt_number: interrupt_number,
             }
@@ -106,18 +107,23 @@ mod thumbv7em {
         {
             let n_0 = dmac_0.number();
             dmac_0.occupy(on_interrupt_0);
+            unsafe { cortex_m::peripheral::NVIC::unmask(n_0) };
 
             let n_1 = dmac_1.number();
             dmac_1.occupy(on_interrupt_1);
+            unsafe { cortex_m::peripheral::NVIC::unmask(n_1) };
 
             let n_2 = dmac_2.number();
             dmac_2.occupy(on_interrupt_2);
+            unsafe { cortex_m::peripheral::NVIC::unmask(n_2) };
 
             let n_3 = dmac_3.number();
             dmac_3.occupy(on_interrupt_3);
+            unsafe { cortex_m::peripheral::NVIC::unmask(n_3) };
 
             let n_other = dmac_other.number();
             dmac_other.occupy(on_interrupt_other);
+            unsafe { cortex_m::peripheral::NVIC::unmask(n_other) };
 
             Self {
                 _interrupt_0: n_0,

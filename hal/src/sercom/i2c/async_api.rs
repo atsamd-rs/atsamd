@@ -1,7 +1,7 @@
 use crate::{
     sercom::{
         i2c::{self, AnyConfig, Flags, I2c},
-        Sercom,
+        InterruptNumbers, Interrupts, Sercom,
     },
     typelevel::NoneT,
 };
@@ -15,19 +15,41 @@ where
     S: Sercom,
 {
     /// Turn an [`I2c`] into an [`I2cFuture`]
+    #[cfg(any(feature = "samd11", feature = "samd21"))]
     #[inline]
-    pub fn into_future<I, N>(self, irq: I) -> I2cFuture<C, N>
+    pub fn into_future<N, I>(self, interrupts: Interrupts<N, I>) -> I2cFuture<C, N>
     where
         I: NvicInterruptRegistration<N>,
         N: InterruptNumber,
     {
-        let irq_number = irq.number();
-        irq.occupy(S::on_interrupt_i2c);
-        unsafe { cortex_m::peripheral::NVIC::unmask(irq_number) };
+        let irq_numbers = interrupts.occupy(S::on_interrupt_i2c);
 
         I2cFuture {
             i2c: self,
-            _irq_number: irq_number,
+            _irqs: irq_numbers,
+            _dma_channel: NoneT,
+        }
+    }
+
+    // Turn an [`I2c`] into an [`I2cFuture`]
+    #[cfg(feature = "min-samd51g")]
+    #[inline]
+    pub fn into_future<N, N0, N1, N2, NOther>(
+        self,
+        interrupts: Interrupts<N, N0, N1, N2, NOther>,
+    ) -> I2cFuture<C, N>
+    where
+        N: InterruptNumber,
+        N0: NvicInterruptRegistration<N>,
+        N1: NvicInterruptRegistration<N>,
+        N2: NvicInterruptRegistration<N>,
+        NOther: NvicInterruptRegistration<N>,
+    {
+        let irq_numbers = interrupts.occupy(S::on_interrupt_i2c);
+
+        I2cFuture {
+            i2c: self,
+            _irqs: irq_numbers,
             _dma_channel: NoneT,
         }
     }
@@ -42,7 +64,7 @@ where
     N: InterruptNumber,
 {
     pub(in super::super) i2c: I2c<C>,
-    _irq_number: N,
+    _irqs: InterruptNumbers<N>,
     _dma_channel: D,
 }
 
@@ -66,7 +88,7 @@ where
     ) -> I2cFuture<C, N, D> {
         I2cFuture {
             i2c: self.i2c,
-            _irq_number: self._irq_number,
+            _irqs: self._irqs,
             _dma_channel: dma_channel,
         }
     }

@@ -5,7 +5,7 @@ use crate::{
             Capability, DataReg, Duplex, Error, Flags, Receive, Rx, RxDuplex, SingleOwner,
             Transmit, Tx, TxDuplex, Uart, ValidConfig,
         },
-        Sercom,
+        InterruptNumbers, Interrupts, Sercom,
     },
     typelevel::NoneT,
 };
@@ -23,19 +23,44 @@ where
     /// Turn a [`Uart`] into a [`UartFuture`]. This method is only available for
     /// [`Uart`]s which have a [`Tx`](crate::sercom::uart::Tx),
     /// [`Rx`](crate::sercom::uart::Rx) or [`Duplex`] [`Capability`].
+    #[cfg(any(feature = "samd11", feature = "samd21"))]
     #[inline]
-    pub fn into_future<I, N>(self, irq: I) -> UartFuture<C, D, N>
+    pub fn into_future<N, I>(self, interrupts: Interrupts<N, I>) -> UartFuture<C, D, N>
     where
         I: NvicInterruptRegistration<N>,
         N: InterruptNumber,
     {
-        let irq_number = irq.number();
-        irq.occupy(S::on_interrupt_uart);
-        unsafe { cortex_m::peripheral::NVIC::unmask(irq_number) };
+        let irq_numbers = interrupts.occupy(S::on_interrupt_i2c);
 
         UartFuture {
             uart: self,
-            irq_number,
+            _irqs: irq_numbers,
+            rx_channel: NoneT,
+            tx_channel: NoneT,
+        }
+    }
+
+    /// Turn a [`Uart`] into a [`UartFuture`]. This method is only available for
+    /// [`Uart`]s which have a [`Tx`](crate::sercom::uart::Tx),
+    /// [`Rx`](crate::sercom::uart::Rx) or [`Duplex`] [`Capability`].
+    #[cfg(feature = "min-samd51g")]
+    #[inline]
+    pub fn into_future<N, N0, N1, N2, NOther>(
+        self,
+        interrupts: Interrupts<N, N0, N1, N2, NOther>,
+    ) -> UartFuture<C, D, N>
+    where
+        N: InterruptNumber,
+        N0: NvicInterruptRegistration<N>,
+        N1: NvicInterruptRegistration<N>,
+        N2: NvicInterruptRegistration<N>,
+        NOther: NvicInterruptRegistration<N>,
+    {
+        let irq_numbers = interrupts.occupy(S::on_interrupt_i2c);
+
+        UartFuture {
+            uart: self,
+            _irqs: irq_numbers,
             rx_channel: NoneT,
             tx_channel: NoneT,
         }
@@ -64,7 +89,7 @@ where
     N: InterruptNumber,
 {
     uart: Uart<C, D>,
-    irq_number: N,
+    _irqs: InterruptNumbers<N>,
     rx_channel: R,
     tx_channel: T,
 }
@@ -141,7 +166,7 @@ where
                     config: self.uart.config,
                     capability: PhantomData,
                 },
-                irq_number: self.irq_number,
+                _irqs: self._irqs.clone(),
                 rx_channel: self.rx_channel,
                 tx_channel: NoneT,
             },
@@ -150,7 +175,7 @@ where
                     config,
                     capability: PhantomData,
                 },
-                irq_number: self.irq_number,
+                _irqs: self._irqs,
                 tx_channel: self.tx_channel,
                 rx_channel: NoneT,
             },
@@ -169,7 +194,7 @@ where
                 config: rx.uart.config,
                 capability: PhantomData,
             },
-            irq_number: rx.irq_number,
+            _irqs: rx._irqs,
             rx_channel: rx.rx_channel,
             tx_channel: tx.tx_channel,
         }
@@ -234,7 +259,7 @@ where
     ) -> UartFuture<C, D, N, Chan, T> {
         UartFuture {
             uart: self.uart,
-            irq_number: self.irq_number,
+            _irqs: self._irqs,
             tx_channel: self.tx_channel,
             rx_channel,
         }
@@ -293,7 +318,7 @@ where
     ) -> UartFuture<C, D, N, R, Chan> {
         UartFuture {
             uart: self.uart,
-            irq_number: self.irq_number,
+            _irqs: self._irqs,
             rx_channel: self.rx_channel,
             tx_channel,
         }

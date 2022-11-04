@@ -15,7 +15,10 @@ mod app {
         dmac::{self, Ch0, Ch1, DmaController, PriorityLevel},
         prelude::*,
         rtc::{Count32Mode, Rtc},
-        sercom::uart::{Config, UartFutureRxDuplexDma, UartFutureTxDuplexDma},
+        sercom::{
+            uart::{Config, UartFutureRxDuplexDma, UartFutureTxDuplexDma},
+            Interrupts,
+        },
     };
 
     #[monotonic(binds = RTC, default = true)]
@@ -47,7 +50,10 @@ mod app {
         let (uart_rx, uart_tx) = (pin_alias!(pins.uart_rx), pin_alias!(pins.uart_tx));
         let uart_sercom = periph_alias!(peripherals.uart_sercom);
 
-        let sercom0_irq = cortex_m_interrupt::take_nvic_interrupt!(pac::Interrupt::SERCOM0, 4);
+        let sercom0_irq = Interrupts::new(cortex_m_interrupt::take_nvic_interrupt!(
+            pac::Interrupt::SERCOM0,
+            4
+        ));
 
         enable_internal_32kosc(&mut peripherals.SYSCTRL);
         let timer_clock = clocks

@@ -21,24 +21,6 @@ impl EIC {
             _irq_number: NoneT,
         }
     }
-
-    #[cfg(feature = "async")]
-    pub fn into_future<I, Q>(self, irq: I) -> EIC<Q>
-    where
-        I: cortex_m_interrupt::NvicInterruptRegistration<Q>,
-        Q: cortex_m::interrupt::InterruptNumber,
-    {
-        let irq_number = irq.number();
-        irq.occupy(async_api::on_interrupt);
-        unsafe {
-            cortex_m::peripheral::NVIC::unmask(irq_number);
-        }
-
-        EIC {
-            eic: self.eic,
-            _irq_number: irq_number,
-        }
-    }
 }
 
 #[cfg(feature = "async")]
@@ -47,6 +29,25 @@ mod async_api {
     use super::*;
     use crate::util::BitIter;
     use embassy_sync::waitqueue::AtomicWaker;
+
+    impl EIC {
+        pub fn into_future<I, Q>(self, irq: I) -> EIC<Q>
+        where
+            I: cortex_m_interrupt::NvicInterruptRegistration<Q>,
+            Q: cortex_m::interrupt::InterruptNumber,
+        {
+            let irq_number = irq.number();
+            irq.occupy(async_api::on_interrupt);
+            unsafe {
+                cortex_m::peripheral::NVIC::unmask(irq_number);
+            }
+
+            EIC {
+                eic: self.eic,
+                _irq_number: irq_number,
+            }
+        }
+    }
 
     pub(super) fn on_interrupt() {
         let eic = unsafe { pac::Peripherals::steal().EIC };

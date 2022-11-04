@@ -15,7 +15,10 @@ mod app {
         dmac::{self, Ch0, DmaController, PriorityLevel},
         prelude::*,
         rtc::{Count32Mode, Rtc},
-        sercom::i2c::{self, Config, I2cFutureDma},
+        sercom::{
+            i2c::{self, Config, I2cFutureDma},
+            Interrupts,
+        },
     };
 
     #[monotonic(binds = RTC, default = true)]
@@ -46,7 +49,10 @@ mod app {
         // Take SDA and SCL
         let (sda, scl) = (pins.sda, pins.scl);
 
-        let sercom3_irq = cortex_m_interrupt::take_nvic_interrupt!(pac::Interrupt::SERCOM3, 2);
+        let sercom3_irq = Interrupts::new(cortex_m_interrupt::take_nvic_interrupt!(
+            pac::Interrupt::SERCOM3,
+            2
+        ));
         // tc4_irq.set_priority(2);
 
         enable_internal_32kosc(&mut peripherals.SYSCTRL);
