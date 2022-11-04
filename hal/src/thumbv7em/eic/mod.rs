@@ -1,4 +1,4 @@
-use crate::{clock::EicClock, pac, typelevel::NoneT};
+use crate::{clock::EicClock, pac};
 
 pub mod pin;
 
@@ -55,9 +55,8 @@ pub fn init_with_ulp32k(mclk: &mut pac::MCLK, _clock: EicClock, eic: pac::EIC) -
 }
 
 /// A configured External Interrupt Controller.
-pub struct EIC<N = NoneT> {
+pub struct EIC {
     eic: pac::EIC,
-    _irq_number: N,
 }
 
 impl From<ConfigurableEIC> for EIC {
@@ -67,10 +66,7 @@ impl From<ConfigurableEIC> for EIC {
             cortex_m::asm::nop();
         }
 
-        Self {
-            eic: eic.eic,
-            _irq_number: NoneT,
-        }
+        Self { eic: eic.eic }
     }
 }
 
@@ -79,28 +75,7 @@ mod async_api {
     use super::pin::NUM_CHANNELS;
     use super::*;
     use crate::util::BitIter;
-    use cortex_m::interrupt::InterruptNumber;
-    use cortex_m_interrupt::NvicInterruptRegistration;
     use embassy_sync::waitqueue::AtomicWaker;
-
-    impl EIC {
-        pub fn into_future<I, Q>(self, irq: I) -> EIC<Q>
-        where
-            I: NvicInterruptRegistration<Q>,
-            Q: InterruptNumber,
-        {
-            let irq_number = irq.number();
-            irq.occupy(on_interrupt);
-            unsafe {
-                cortex_m::peripheral::NVIC::unmask(irq_number);
-            }
-
-            EIC {
-                eic: self.eic,
-                _irq_number: irq_number,
-            }
-        }
-    }
 
     pub(super) fn on_interrupt() {
         let eic = unsafe { pac::Peripherals::steal().EIC };

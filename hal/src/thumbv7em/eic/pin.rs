@@ -6,6 +6,7 @@ use crate::{
         self, pin::*, AnyPin, FloatingInterrupt, PinId, PinMode, PullDownInterrupt, PullUpInterrupt,
     },
     pac,
+    typelevel::NoneT,
 };
 use core::mem::ManuallyDrop;
 
@@ -55,31 +56,36 @@ macro_rules! ei {
 crate::paste::item! {
     /// Represents a numbered external interrupt. The external interrupt is generic
     /// over any pin, only the EicPin implementations in this module make sense.
-    pub struct [<$PadType $num>]<GPIO, I = crate::typelevel::NoneT>
+    pub struct [<$PadType $num>]<GPIO, I = NoneT>
     where
         GPIO: AnyPin,
     {
-        eic: ManuallyDrop<EIC<I>>,
+        eic: ManuallyDrop<EIC>,
         _pin: Pin<GPIO::Id, GPIO::Mode>,
+        _irq_number: I,
     }
 
     // impl !Send for [<$PadType $num>]<GPIO> {};
     // impl !Sync for [<$PadType $num>]<GPIO> {}}
 
-    impl<GPIO: AnyPin, I> [<$PadType $num>]<GPIO, I> {
+    impl<GPIO: AnyPin> [<$PadType $num>]<GPIO, NoneT>{
         /// Construct pad from the appropriate pin in any mode.
         /// You may find it more convenient to use the `into_pad` trait
         /// and avoid referencing the pad type.
-        pub fn new(pin: GPIO, eic: &mut EIC<I>) -> Self {
+        pub fn new(pin: GPIO, eic: &mut EIC) -> Self {
             let eic = unsafe {
                 ManuallyDrop::new(core::ptr::read(eic as *const _))
             };
 
             [<$PadType $num>]{
                 _pin: pin.into(),
-                eic
+                eic,
+                _irq_number: crate::typelevel::NoneT,
             }
         }
+    }
+
+    impl<GPIO: AnyPin, I> [<$PadType $num>]<GPIO, I> {
 
         pub fn enable_event(&mut self) {
             self.eic.eic.evctrl.modify(|_, w| unsafe {
@@ -159,6 +165,27 @@ crate::paste::item! {
 
         fn id(&self) -> ExternalInterruptID {
             $num
+        }
+
+        /// Turn an EIC pin into a pin usable as a [`Future`](core::future::Future).
+        /// The correct interrupt source is needed.
+        #[cfg(feature = "async")]
+        pub fn into_future<Q, N>(self, irq: Q) -> [<$PadType $num>]<GPIO, N>
+        where
+            Q: cortex_m_interrupt::NvicInterruptRegistration<N>,
+            N: cortex_m::interrupt::InterruptNumber,
+        {
+            let irq_number = irq.number();
+            irq.occupy(super::async_api::on_interrupt);
+            unsafe {
+                cortex_m::peripheral::NVIC::unmask(irq_number);
+            }
+
+            [<$PadType $num>] {
+                _pin: self._pin,
+                eic: self.eic,
+                _irq_number: irq_number,
+            }
         }
     }
 
