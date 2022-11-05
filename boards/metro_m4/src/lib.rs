@@ -6,8 +6,8 @@
 //! shape and pinout
 
 pub use atsamd_hal as hal;
-pub use hal::pac;
 pub use hal::ehal;
+pub use hal::pac;
 
 #[cfg(feature = "rt")]
 pub use cortex_m_rt::entry;
