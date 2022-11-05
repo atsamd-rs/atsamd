@@ -55,7 +55,6 @@ debug = true
 lto = true
 
 [profile.release]
-debug = true
 lto = true
 opt-level = 3
 
@@ -93,7 +92,7 @@ name = "trng"
 
 [[example]]
 name = "usb_logging"
-required-features = ["usb"]
+required-features = ["usb", "unproven"]
 
 [[example]]
 name = "i2c"

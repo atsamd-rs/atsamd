@@ -6,8 +6,8 @@
 //! shape and pinout
 
 pub use atsamd_hal as hal;
-pub use hal::ehal;
 pub use hal::pac;
+pub use hal::ehal;
 
 #[cfg(feature = "rt")]
 pub use cortex_m_rt::entry;
@@ -358,8 +358,11 @@ pub fn usb_allocator(
     dm: impl Into<UsbDm>,
     dp: impl Into<UsbDp>,
 ) -> UsbBusAllocator<UsbBus> {
-    let gclk0 = clocks.gclk0();
-    let clock = &clocks.usb(&gclk0).unwrap();
+    use pac::gclk::{genctrl::SRC_A, pchctrl::GEN_A};
+
+    clocks.configure_gclk_divider_and_source(GEN_A::GCLK2, 1, SRC_A::DFLL, false);
+    let usb_gclk = clocks.get_gclk(GEN_A::GCLK2).unwrap();
+    let usb_clock = &clocks.usb(&usb_gclk).unwrap();
     let (dm, dp) = (dm.into(), dp.into());
-    UsbBusAllocator::new(UsbBus::new(clock, mclk, dm, dp, usb))
+    UsbBusAllocator::new(UsbBus::new(usb_clock, mclk, dm, dp, usb))
 }
