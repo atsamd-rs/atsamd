@@ -264,7 +264,7 @@ where
     }
 }
 
-impl<C, A, N, S> SpiFuture<C, A, N>
+impl<C, A, N, S, R, T> SpiFuture<C, A, N, R, T>
 where
     C: ValidConfig<Sercom = S>,
     C::Word: PrimInt + AsPrimitive<DataWidth>,
@@ -317,7 +317,7 @@ mod impl_ehal {
     use core::future::Future;
     use embedded_hal_async::spi::{ErrorType, SpiBus, SpiBusFlush, SpiBusRead, SpiBusWrite};
 
-    impl<C, A, N, S> ErrorType for SpiFuture<C, A, N>
+    impl<C, A, N, S, R, T> ErrorType for SpiFuture<C, A, N, R, T>
     where
         C: ValidConfig<Sercom = S>,
         C::Word: PrimInt + AsPrimitive<DataWidth>,
@@ -329,7 +329,7 @@ mod impl_ehal {
         type Error = Error;
     }
 
-    impl<C, A, N, S> SpiBusFlush for SpiFuture<C, A, N>
+    impl<C, A, N, S, R, T> SpiBusFlush for SpiFuture<C, A, N, R, T>
     where
         C: ValidConfig<Sercom = S>,
         C::Word: PrimInt + AsPrimitive<DataWidth>,
@@ -365,6 +365,25 @@ mod impl_ehal {
         }
     }
 
+    #[cfg(feature = "dma")]
+    impl<C, A, N, S, W, R, T> SpiBusWrite<W> for SpiFuture<C, A, N, R, T>
+    where
+        C: ValidConfig<Sercom = S, Word = W>,
+        C::Word: PrimInt + AsPrimitive<DataWidth> + crate::dmac::Beat,
+        C::Size: crate::sercom::spi::Size<Word = C::Word>,
+        DataWidth: AsPrimitive<C::Word>,
+        A: Transmit,
+        N: InterruptNumber,
+        S: Sercom + 'static,
+        T: crate::dmac::AnyChannel<Status = crate::dmac::ReadyFuture>,
+    {
+        type WriteFuture<'a> = impl Future<Output= Result<(), Self::Error>> + 'a where Self: 'a;
+
+        fn write<'a>(&'a mut self, words: &'a [C::Word]) -> Self::WriteFuture<'a> {
+            self.write(words)
+        }
+    }
+
     impl<C, A, N, S, W> SpiBusRead<W> for SpiFuture<C, A, N>
     where
         C: ValidConfig<Sercom = S, Word = W>,
@@ -381,7 +400,26 @@ mod impl_ehal {
         }
     }
 
-    impl<C, A, N, S, W> SpiBus<W> for SpiFuture<C, A, N>
+    #[cfg(feature = "dma")]
+    impl<C, A, N, S, W, R, T> SpiBusRead<W> for SpiFuture<C, A, N, R, T>
+    where
+        C: ValidConfig<Sercom = S, Word = W>,
+        C::Word: PrimInt + AsPrimitive<DataWidth> + crate::dmac::Beat,
+        C::Size: crate::sercom::spi::Size<Word = C::Word>,
+        DataWidth: AsPrimitive<C::Word>,
+        A: Receive,
+        N: InterruptNumber,
+        S: Sercom + 'static,
+        R: crate::dmac::AnyChannel<Status = crate::dmac::ReadyFuture>,
+    {
+        type ReadFuture<'a> = impl Future<Output= Result<(), Self::Error>> + 'a where Self: 'a;
+
+        fn read<'a>(&'a mut self, words: &'a mut [C::Word]) -> Self::ReadFuture<'a> {
+            self.read(words)
+        }
+    }
+
+    impl<C, A, N, S, W, R, T> SpiBus<W> for SpiFuture<C, A, N, R, T>
     where
         C: ValidConfig<Sercom = S, Word = W>,
         C::Word: PrimInt + AsPrimitive<DataWidth>,
@@ -389,6 +427,7 @@ mod impl_ehal {
         A: Transmit + Receive,
         N: InterruptNumber,
         S: Sercom + 'static,
+        SpiFuture<C, A, N, R, T>: SpiBusWrite<W> + SpiBusRead<W> + ErrorType<Error = Error>,
     {
         type TransferFuture<'a> = impl Future<Output= Result<(), Self::Error>> + 'a where Self: 'a;
 

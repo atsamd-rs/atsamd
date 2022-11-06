@@ -233,7 +233,7 @@ mod impl_ehal {
     use core::future::Future;
     use embedded_hal_async::i2c::{ErrorType, I2c as I2cTrait, Operation};
 
-    impl<C, N> ErrorType for I2cFuture<C, N>
+    impl<C, N, D> ErrorType for I2cFuture<C, N, D>
     where
         C: AnyConfig,
         N: InterruptNumber,
@@ -245,6 +245,60 @@ mod impl_ehal {
     where
         C: AnyConfig,
         N: InterruptNumber,
+    {
+        type ReadFuture<'a> = impl Future<Output = Result<(), Self::Error>> + 'a where Self: 'a;
+
+        #[inline]
+        fn read<'a>(&'a mut self, address: u8, buffer: &'a mut [u8]) -> Self::ReadFuture<'a> {
+            self.read(address, buffer)
+        }
+
+        type WriteFuture<'a> = impl Future<Output = Result<(), Self::Error>> + 'a where Self: 'a;
+
+        #[inline]
+        fn write<'a>(&'a mut self, address: u8, bytes: &'a [u8]) -> Self::WriteFuture<'a> {
+            self.write(address, bytes)
+        }
+
+        type WriteReadFuture<'a> = impl Future<Output = Result<(), Self::Error>> + 'a where Self: 'a;
+
+        #[inline]
+        fn write_read<'a>(
+            &'a mut self,
+            address: u8,
+            wr_buffer: &'a [u8],
+            rd_buffer: &'a mut [u8],
+        ) -> Self::WriteReadFuture<'a> {
+            self.write_read(address, wr_buffer, rd_buffer)
+        }
+
+        type TransactionFuture<'a, 'b> = impl Future<Output = Result<(), Self::Error>> + 'a where Self: 'a, 'b: 'a;
+
+        #[inline]
+        fn transaction<'a, 'b>(
+            &'a mut self,
+            address: u8,
+            operations: &'a mut [embedded_hal_async::i2c::Operation<'b>],
+        ) -> Self::TransactionFuture<'a, 'b> {
+            async move {
+                for op in operations {
+                    match op {
+                        Operation::Read(buf) => self.read(address, buf).await?,
+                        Operation::Write(buf) => self.write(address, buf).await?,
+                    }
+                }
+
+                Ok(())
+            }
+        }
+    }
+
+    #[cfg(feature = "dma")]
+    impl<C, N, D> I2cTrait for I2cFuture<C, N, D>
+    where
+        C: AnyConfig,
+        N: InterruptNumber,
+        D: crate::dmac::AnyChannel<Status = crate::dmac::ReadyFuture>,
     {
         type ReadFuture<'a> = impl Future<Output = Result<(), Self::Error>> + 'a where Self: 'a;
 
