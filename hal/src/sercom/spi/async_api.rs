@@ -202,7 +202,7 @@ where
 
     /// Read a single word asynchronously.
     #[inline]
-    pub async fn read_word(&mut self) -> Result<C::Word, Error> {
+    async fn read_word(&mut self) -> Result<C::Word, Error> {
         self.wait_flags(Flags::RXC).await;
         self.spi.read_flags_errors()?;
         let word = unsafe { self.spi.read_data().as_() };
@@ -225,6 +225,10 @@ where
         for word in words {
             self.write_word(*word).await?;
         }
+
+        // Wait for transmission to complete. If we don't do that, we might return too
+        // early and disable the CS line, resulting in a corrupted transfer.
+        self.wait_flags(Flags::TXC).await;
 
         Ok(())
     }
@@ -254,7 +258,7 @@ where
         }
     }
     /// Write a single word asynchronously.
-    pub async fn write_word(&mut self, word: C::Word) -> Result<(), Error> {
+    async fn write_word(&mut self, word: C::Word) -> Result<(), Error> {
         self.wait_flags(Flags::DRE).await;
         self.spi.read_flags_errors()?;
         unsafe {
@@ -274,7 +278,7 @@ where
     S: Sercom,
 {
     /// Read and write a single word to the bus simultaneously.
-    pub async fn simultaneous_word(&mut self, to_send: C::Word) -> Result<C::Word, Error> {
+    async fn simultaneous_word(&mut self, to_send: C::Word) -> Result<C::Word, Error> {
         // TODO SAFETY prove that this really safe?
         let mut rx_half = unsafe { core::ptr::read(self) };
         let tx_half = self;
@@ -449,7 +453,13 @@ mod impl_ehal {
                     let (write_res, read_res) =
                         futures::join!(tx_half.write(write), rx_half.read(read));
                     core::mem::forget(rx_half);
-                    write_res.and(read_res)
+                    write_res.and(read_res)?;
+
+                    // Wait for transmission to complete. If we don't do that, we might return too
+                    // early and disable the CS line, resulting in a corrupted transfer.
+                    tx_half.wait_flags(Flags::TXC).await;
+
+                    Ok(())
                 }
                 // TODO if read is longer than write, we keep sending zeros.
                 // Should make this configurable.
@@ -478,6 +488,10 @@ mod impl_ehal {
                     self.write_word(*word).await?;
                     *word = self.read_word().await?;
                 }
+
+                // Wait for transmission to complete. If we don't do that, we might return too
+                // early and disable the CS line, resulting in a corrupted transfer.
+                self.wait_flags(Flags::TXC).await;
 
                 Ok(())
             }
@@ -558,6 +572,10 @@ mod dma {
             write_dma::<_, S>(&mut self._tx_channel, spi_ptr, words)
                 .await
                 .map_err(spi::Error::Dma)?;
+
+            // Wait for transmission to complete. If we don't do that, we might return too
+            // early and disable the CS line, resulting in a corrupted transfer.
+            self.wait_flags(Flags::TXC).await;
 
             Ok(())
         }
