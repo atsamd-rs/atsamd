@@ -219,6 +219,7 @@ crate::paste::item! {
                 if self.is_interrupt() {
                     self.clear_interrupt();
                     self.disable_interrupt();
+                    self.sense(Sense::NONE);
                     return Poll::Ready(());
                 }
 
@@ -228,6 +229,7 @@ crate::paste::item! {
                 if self.is_interrupt(){
                     self.clear_interrupt();
                     self.disable_interrupt();
+                    self.sense(Sense::NONE);
                     return Poll::Ready(());
                 }
 
