@@ -122,44 +122,50 @@ crate::paste::item! {
         }
 
         pub fn sense(&mut self, sense: Sense) {
-            // Which of the two config blocks this eic config is in
-            let offset = ($num >> 3) & 0b0001;
-            let config = &self.eic.eic.config[offset];
+            self.eic.with_disable(|e| {
+                // Which of the two config blocks this eic config is in
+                let offset = ($num >> 3) & 0b0001;
+                let config = &e.config[offset];
 
-            config.modify(|_, w| unsafe {
-                // Which of the eight eic configs in this config block
-                match $num & 0b111 {
-                    0b000 => w.sense0().bits(sense as u8),
-                    0b001 => w.sense1().bits(sense as u8),
-                    0b010 => w.sense2().bits(sense as u8),
-                    0b011 => w.sense3().bits(sense as u8),
-                    0b100 => w.sense4().bits(sense as u8),
-                    0b101 => w.sense5().bits(sense as u8),
-                    0b110 => w.sense6().bits(sense as u8),
-                    0b111 => w.sense7().bits(sense as u8),
-                    _ => unreachable!(),
-                }
-            });
+                config.modify(|_, w| unsafe {
+                    // Which of the eight eic configs in this config block
+                    match $num & 0b111 {
+                        0b000 => w.sense0().bits(sense as u8),
+                        0b001 => w.sense1().bits(sense as u8),
+                        0b010 => w.sense2().bits(sense as u8),
+                        0b011 => w.sense3().bits(sense as u8),
+                        0b100 => w.sense4().bits(sense as u8),
+                        0b101 => w.sense5().bits(sense as u8),
+                        0b110 => w.sense6().bits(sense as u8),
+                        0b111 => w.sense7().bits(sense as u8),
+                        _ => unreachable!(),
+                    }
+                });
+        });
+
+
         }
 
         pub fn filter(&mut self, filter: bool) {
-            // Which of the two config blocks this eic config is in
-            let offset = ($num >> 3) & 0b0001;
-            let config = &self.eic.eic.config[offset];
+            self.eic.with_disable(|e| {
+                // Which of the two config blocks this eic config is in
+                let offset = ($num >> 3) & 0b0001;
+                let config = &e.config[offset];
 
-            config.modify(|_, w| {
-                // Which of the eight eic configs in this config block
-                match $num & 0b111 {
-                    0b000 => w.filten0().bit(filter),
-                    0b001 => w.filten1().bit(filter),
-                    0b010 => w.filten2().bit(filter),
-                    0b011 => w.filten3().bit(filter),
-                    0b100 => w.filten4().bit(filter),
-                    0b101 => w.filten5().bit(filter),
-                    0b110 => w.filten6().bit(filter),
-                    0b111 => w.filten7().bit(filter),
-                    _ => unreachable!(),
-                }
+                config.modify(|_, w| {
+                    // Which of the eight eic configs in this config block
+                    match $num & 0b111 {
+                        0b000 => w.filten0().bit(filter),
+                        0b001 => w.filten1().bit(filter),
+                        0b010 => w.filten2().bit(filter),
+                        0b011 => w.filten3().bit(filter),
+                        0b100 => w.filten4().bit(filter),
+                        0b101 => w.filten5().bit(filter),
+                        0b110 => w.filten6().bit(filter),
+                        0b111 => w.filten7().bit(filter),
+                        _ => unreachable!(),
+                    }
+                });
             });
         }
 
@@ -201,11 +207,12 @@ crate::paste::item! {
             use core::{task::Poll, future::poll_fn};
             self.disable_interrupt();
 
-            match sense {
-                Sense::HIGH => if self.is_high().unwrap() { return; },
-                Sense::LOW => if self.is_low().unwrap() { return; },
-                _ => (),
-            }
+
+            // match sense {
+            //     Sense::LOW => { defmt::debug!("LOW"); },
+            //     Sense::HIGH => { defmt::debug!("HIGH"); },
+            //     _ => (),
+            // }
 
             self.sense(sense);
             poll_fn(|cx| {

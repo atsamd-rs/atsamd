@@ -59,6 +59,31 @@ pub struct EIC {
     eic: pac::EIC,
 }
 
+impl EIC {
+    /// Run the provided closure with the EIC peripheral disabled. The
+    /// enable-protected registers, such as CONFIGx, should be accessed through
+    /// this method.
+    ///
+    /// # Caution
+    ///
+    /// You should not re-enable the provided EIC PAC object inside the provided
+    /// closure.
+    fn with_disable(&mut self, fun: impl Fn(&mut pac::EIC)) {
+        self.eic.ctrla.modify(|_, w| w.enable().clear_bit());
+        self.enable_sync();
+        fun(&mut self.eic);
+        self.eic.ctrla.modify(|_, w| w.enable().set_bit());
+        self.enable_sync();
+    }
+
+    /// Busy-wait until SYNCBUSY.ENABLE clears
+    fn enable_sync(&mut self) {
+        while self.eic.syncbusy.read().enable().bit_is_set() {
+            core::hint::spin_loop();
+        }
+    }
+}
+
 impl From<ConfigurableEIC> for EIC {
     fn from(eic: ConfigurableEIC) -> Self {
         eic.eic.ctrla.modify(|_, w| w.enable().set_bit());
