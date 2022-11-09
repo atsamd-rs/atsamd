@@ -61,6 +61,7 @@ unsafe impl<T: Beat> Buffer for ImmutableSlice<T> {
 /// make async SERCOM-DMA transfers work. Should not be used outside of this
 /// crate.
 #[doc(hidden)]
+#[derive(Clone)]
 pub struct SercomPtr<T: Beat>(pub(in super::super) *mut T);
 
 unsafe impl<T: Beat> Buffer for SercomPtr<T> {

@@ -1,10 +1,7 @@
 use crate::{
     pac::Interrupt,
     sercom::{
-        spi::{
-            Capability, DataWidth, Duplex, Error, Flags, Receive, Rx, Spi, Transmit, Tx,
-            ValidConfig,
-        },
+        spi::{Capability, DataWidth, Duplex, Error, Flags, Rx, Spi, Tx, ValidConfig},
         InterruptNumbers, Interrupts, Sercom,
     },
     typelevel::NoneT,
@@ -20,11 +17,16 @@ where
     A: Capability,
     S: Sercom,
 {
-    /// Turn an [`Spi`] into a [`SpiFuture`].
+    /// Turn an [`Spi`] into a [`SpiFuture`]. In cases where the underlying
+    /// [`Spi`] is [`Duplex`], reading words need to be accompanied with sending
+    /// a no-op word. By default it is set to 0x00, but you can configure it
+    /// by using the [`nop_word`](SpiFuture::nop_word) method.
     #[cfg(any(feature = "samd11", feature = "samd21"))]
     #[inline]
     pub fn into_future<N, I>(self, interrupts: Interrupts<N, I>) -> SpiFuture<C, A, N>
     where
+        C::Word: Copy,
+        u8: AsPrimitive<C::Word>,
         I: NvicInterruptRegistration<N>,
         N: InterruptNumber,
     {
@@ -32,13 +34,17 @@ where
 
         SpiFuture {
             spi: self,
+            nop_word: 0x00_u8.as_(),
             _irqs: irq_numbers,
             _rx_channel: NoneT,
             _tx_channel: NoneT,
         }
     }
 
-    /// Turn an [`Spi`] into an [`SpiFuture`]
+    /// Turn an [`Spi`] into an [`SpiFuture`]. In cases where the underlying
+    /// [`Spi`] is [`Duplex`], reading words need to be accompanied with sending
+    /// a no-op word. By default it is set to 0x00, but you can configure it
+    /// by using the [`nop_word`](SpiFuture::nop_word) method.
     #[cfg(feature = "min-samd51g")]
     #[inline]
     pub fn into_future<N, N0, N1, N2, NOther>(
@@ -46,6 +52,8 @@ where
         interrupts: Interrupts<N, N0, N1, N2, NOther>,
     ) -> SpiFuture<C, A, N>
     where
+        C::Word: Copy,
+        u8: AsPrimitive<C::Word>,
         N: InterruptNumber,
         N0: NvicInterruptRegistration<N>,
         N1: NvicInterruptRegistration<N>,
@@ -56,6 +64,7 @@ where
 
         SpiFuture {
             spi: self,
+            nop_word: 0x00_u8.as_(),
             _irqs: irq_numbers,
             _rx_channel: NoneT,
             _tx_channel: NoneT,
@@ -73,6 +82,7 @@ where
     N: InterruptNumber,
 {
     spi: Spi<C, A>,
+    nop_word: C::Word,
     _irqs: InterruptNumbers<N>,
     _rx_channel: R,
     _tx_channel: T,
@@ -123,6 +133,11 @@ where
         self.spi
     }
 
+    /// Configure the no-op word to send when doing read-only transactions.
+    pub fn nop_word(&mut self, word: C::Word) {
+        self.nop_word = word;
+    }
+
     #[inline]
     async fn wait_flags(&mut self, flags_to_wait: Flags) {
         core::future::poll_fn(|cx| {
@@ -156,137 +171,80 @@ where
     }
 }
 
-impl<C, A, N, S, T> SpiFuture<C, A, N, NoneT, T>
+impl<C, N, S> SpiFuture<C, Duplex, N>
 where
     C: ValidConfig<Sercom = S>,
     C::Word: PrimInt + AsPrimitive<DataWidth>,
     DataWidth: AsPrimitive<C::Word>,
-    A: Receive,
     N: InterruptNumber,
     S: Sercom,
 {
-    /// Read words into a buffer asynchronously, word by word
+    /// Read words into a buffer asynchronously, word by word. Since we are
+    /// using a [`Duplex`] [`SpiFuture`], we need to send a word simultaneously
+    /// while receiving one. This `no-op` word is configurable via the
+    /// [`nop_word`](Self::nop_word) method.
     #[inline]
     pub async fn read(&mut self, buffer: &mut [C::Word]) -> Result<(), Error> {
-        for byte in buffer {
-            *byte = self.read_word().await?;
+        for byte in buffer.iter_mut() {
+            *byte = self.simultaneous_word(self.nop_word).await?;
         }
 
         Ok(())
     }
-}
 
-impl<C, A, N, S, R, T> SpiFuture<C, A, N, R, T>
-where
-    C: ValidConfig<Sercom = S>,
-    C::Word: PrimInt + AsPrimitive<DataWidth>,
-    DataWidth: AsPrimitive<C::Word>,
-    A: Receive,
-    N: InterruptNumber,
-    S: Sercom,
-{
-    #[cfg(feature = "dma")]
-    /// Add a DMA channel for receiving transactions
-    #[inline]
-    pub fn with_rx_dma_channel<Chan: crate::dmac::AnyChannel<Status = crate::dmac::ReadyFuture>>(
-        self,
-        rx_channel: Chan,
-    ) -> SpiFuture<C, A, N, Chan, T> {
-        SpiFuture {
-            spi: self.spi,
-            _irqs: self._irqs,
-            _tx_channel: self._tx_channel,
-            _rx_channel: rx_channel,
-        }
-    }
-
-    /// Read a single word asynchronously.
-    #[inline]
-    async fn read_word(&mut self) -> Result<C::Word, Error> {
-        self.wait_flags(Flags::RXC).await;
-        self.spi.read_flags_errors()?;
-        let word = unsafe { self.spi.read_data().as_() };
-        Ok(word)
-    }
-}
-
-impl<C, A, N, S, R> SpiFuture<C, A, N, R, NoneT>
-where
-    C: ValidConfig<Sercom = S>,
-    C::Word: PrimInt + AsPrimitive<DataWidth>,
-    DataWidth: AsPrimitive<C::Word>,
-    A: Transmit,
-    N: InterruptNumber,
-    S: Sercom,
-{
     /// Write words from a buffer asynchronously, word by word
     #[inline]
     pub async fn write(&mut self, words: &[C::Word]) -> Result<(), Error> {
+        // When in Duplex mode, read as many words as we write to avoid buffer overflows
         for word in words {
-            self.write_word(*word).await?;
+            let _ = self.simultaneous_word(*word).await?;
         }
-
-        // Wait for transmission to complete. If we don't do that, we might return too
-        // early and disable the CS line, resulting in a corrupted transfer.
-        self.wait_flags(Flags::TXC).await;
 
         Ok(())
     }
 }
 
-impl<C, A, N, S, R, T> SpiFuture<C, A, N, R, T>
+impl<C, N, S, R, T> SpiFuture<C, Duplex, N, R, T>
 where
     C: ValidConfig<Sercom = S>,
     C::Word: PrimInt + AsPrimitive<DataWidth>,
     DataWidth: AsPrimitive<C::Word>,
-    A: Transmit,
-    N: InterruptNumber,
-    S: Sercom,
-{
-    #[cfg(feature = "dma")]
-    /// Add a DMA channel for sending transactions
-    #[inline]
-    pub fn with_tx_dma_channel<Chan: crate::dmac::AnyChannel<Status = crate::dmac::ReadyFuture>>(
-        self,
-        tx_channel: Chan,
-    ) -> SpiFuture<C, A, N, R, Chan> {
-        SpiFuture {
-            spi: self.spi,
-            _irqs: self._irqs,
-            _rx_channel: self._rx_channel,
-            _tx_channel: tx_channel,
-        }
-    }
-    /// Write a single word asynchronously.
-    async fn write_word(&mut self, word: C::Word) -> Result<(), Error> {
-        self.wait_flags(Flags::DRE).await;
-        self.spi.read_flags_errors()?;
-        unsafe {
-            self.spi.write_data(word.as_());
-        }
-        Ok(())
-    }
-}
-
-impl<C, A, N, S, R, T> SpiFuture<C, A, N, R, T>
-where
-    C: ValidConfig<Sercom = S>,
-    C::Word: PrimInt + AsPrimitive<DataWidth>,
-    DataWidth: AsPrimitive<C::Word>,
-    A: Receive + Transmit,
     N: InterruptNumber,
     S: Sercom,
 {
     /// Read and write a single word to the bus simultaneously.
-    async fn simultaneous_word(&mut self, to_send: C::Word) -> Result<C::Word, Error> {
-        // TODO SAFETY prove that this really safe?
-        let mut rx_half = unsafe { core::ptr::read(self) };
-        let tx_half = self;
+    pub async fn simultaneous_word(&mut self, to_send: C::Word) -> Result<C::Word, Error> {
+        self.wait_flags(Flags::DRE).await;
+        self.spi.read_flags_errors()?;
+        unsafe {
+            self.spi.write_data(to_send.as_());
+        }
 
-        let (write_res, read_res) =
-            futures::join!(tx_half.write_word(to_send), rx_half.read_word());
-        core::mem::forget(rx_half);
-        write_res.and(read_res)
+        self.wait_flags(Flags::TXC).await;
+
+        self.wait_flags(Flags::RXC).await;
+        let word = unsafe { self.spi.read_data().as_() };
+
+        Ok(word)
+    }
+
+    /// Perform a transfer, word by word. No-op words will be written if `read`
+    /// is longer than `write`. Extra words are ignored if `write` is longer
+    /// than `read`.
+    async fn transfer_word_by_word(
+        &mut self,
+        read: &mut [C::Word],
+        write: &[C::Word],
+    ) -> Result<(), Error> {
+        let nop_word = self.nop_word;
+        for (r, w) in read
+            .iter_mut()
+            .zip(write.iter().chain(core::iter::repeat(&nop_word)))
+        {
+            *r = self.simultaneous_word(*w).await?;
+        }
+
+        Ok(())
     }
 }
 
@@ -317,7 +275,7 @@ where
 #[cfg(feature = "nightly")]
 mod impl_ehal {
     use super::*;
-    use crate::sercom::spi::Error;
+    use crate::sercom::spi::{Error, Size};
     use core::future::Future;
     use embedded_hal_async::spi::{ErrorType, SpiBus, SpiBusFlush, SpiBusRead, SpiBusWrite};
 
@@ -353,12 +311,11 @@ mod impl_ehal {
         }
     }
 
-    impl<C, A, N, S, W> SpiBusWrite<W> for SpiFuture<C, A, N>
+    impl<C, N, S, W> SpiBusWrite<W> for SpiFuture<C, Duplex, N>
     where
         C: ValidConfig<Sercom = S, Word = W>,
         C::Word: PrimInt + AsPrimitive<DataWidth>,
         DataWidth: AsPrimitive<C::Word>,
-        A: Transmit,
         N: InterruptNumber,
         S: Sercom + 'static,
     {
@@ -370,15 +327,15 @@ mod impl_ehal {
     }
 
     #[cfg(feature = "dma")]
-    impl<C, A, N, S, W, R, T> SpiBusWrite<W> for SpiFuture<C, A, N, R, T>
+    impl<C, N, S, W, R, T> SpiBusWrite<W> for SpiFuture<C, Duplex, N, R, T>
     where
         C: ValidConfig<Sercom = S, Word = W>,
         C::Word: PrimInt + AsPrimitive<DataWidth> + crate::dmac::Beat,
         C::Size: crate::sercom::spi::Size<Word = C::Word>,
         DataWidth: AsPrimitive<C::Word>,
-        A: Transmit,
         N: InterruptNumber,
         S: Sercom + 'static,
+        R: crate::dmac::AnyChannel<Status = crate::dmac::ReadyFuture>,
         T: crate::dmac::AnyChannel<Status = crate::dmac::ReadyFuture>,
     {
         type WriteFuture<'a> = impl Future<Output= Result<(), Self::Error>> + 'a where Self: 'a;
@@ -388,12 +345,11 @@ mod impl_ehal {
         }
     }
 
-    impl<C, A, N, S, W> SpiBusRead<W> for SpiFuture<C, A, N>
+    impl<C, N, S, W> SpiBusRead<W> for SpiFuture<C, Duplex, N>
     where
         C: ValidConfig<Sercom = S, Word = W>,
         C::Word: PrimInt + AsPrimitive<DataWidth>,
         DataWidth: AsPrimitive<C::Word>,
-        A: Receive,
         N: InterruptNumber,
         S: Sercom + 'static,
     {
@@ -405,16 +361,16 @@ mod impl_ehal {
     }
 
     #[cfg(feature = "dma")]
-    impl<C, A, N, S, W, R, T> SpiBusRead<W> for SpiFuture<C, A, N, R, T>
+    impl<C, N, S, W, R, T> SpiBusRead<W> for SpiFuture<C, Duplex, N, R, T>
     where
         C: ValidConfig<Sercom = S, Word = W>,
         C::Word: PrimInt + AsPrimitive<DataWidth> + crate::dmac::Beat,
         C::Size: crate::sercom::spi::Size<Word = C::Word>,
         DataWidth: AsPrimitive<C::Word>,
-        A: Receive,
         N: InterruptNumber,
         S: Sercom + 'static,
         R: crate::dmac::AnyChannel<Status = crate::dmac::ReadyFuture>,
+        T: crate::dmac::AnyChannel<Status = crate::dmac::ReadyFuture>,
     {
         type ReadFuture<'a> = impl Future<Output= Result<(), Self::Error>> + 'a where Self: 'a;
 
@@ -423,15 +379,14 @@ mod impl_ehal {
         }
     }
 
-    impl<C, A, N, S, W, R, T> SpiBus<W> for SpiFuture<C, A, N, R, T>
+    impl<C, N, S, W> SpiBus<W> for SpiFuture<C, Duplex, N>
     where
         C: ValidConfig<Sercom = S, Word = W>,
         C::Word: PrimInt + AsPrimitive<DataWidth>,
         DataWidth: AsPrimitive<C::Word>,
-        A: Transmit + Receive,
         N: InterruptNumber,
         S: Sercom + 'static,
-        SpiFuture<C, A, N, R, T>: SpiBusWrite<W> + SpiBusRead<W> + ErrorType<Error = Error>,
+        Self: SpiBusWrite<W> + SpiBusRead<W> + ErrorType<Error = Error>,
     {
         type TransferFuture<'a> = impl Future<Output= Result<(), Self::Error>> + 'a where Self: 'a;
 
@@ -440,41 +395,7 @@ mod impl_ehal {
             read: &'a mut [W],
             write: &'a [W],
         ) -> Self::TransferFuture<'a> {
-            async {
-                // If `read` and `write` are the same length, we can send everything at once.
-                // This way we can use DMA transfers. If they are different
-                // lengths, we need to send word by word, so that we can pad
-                // `write` if it is longer than `read`.
-                if write.len() == read.len() {
-                    // TODO SAFETY prove that this really safe?
-                    let mut rx_half = unsafe { core::ptr::read(self) };
-                    let tx_half = self;
-
-                    let (write_res, read_res) =
-                        futures::join!(tx_half.write(write), rx_half.read(read));
-                    core::mem::forget(rx_half);
-                    write_res.and(read_res)?;
-
-                    // Wait for transmission to complete. If we don't do that, we might return too
-                    // early and disable the CS line, resulting in a corrupted transfer.
-                    tx_half.wait_flags(Flags::TXC).await;
-
-                    Ok(())
-                }
-                // TODO if read is longer than write, we keep sending zeros.
-                // Should make this configurable.
-                else {
-                    // Pad `write` if it is longer than `read`
-                    for (r, w) in read
-                        .iter_mut()
-                        .zip(write.iter().chain(core::iter::repeat(&0.as_())))
-                    {
-                        *r = self.simultaneous_word(*w).await?;
-                    }
-
-                    Ok(())
-                }
-            }
+            self.transfer_word_by_word(read, write)
         }
 
         type TransferInPlaceFuture<'a> = impl Future<Output= Result<(), Self::Error>> + 'a where Self: 'a;
@@ -483,15 +404,52 @@ mod impl_ehal {
             &'a mut self,
             words: &'a mut [W],
         ) -> Self::TransferInPlaceFuture<'a> {
+            // Can only ever do word-by-word to avoid DMA race conditions
             async {
                 for word in words {
-                    self.write_word(*word).await?;
-                    *word = self.read_word().await?;
+                    let read = self.simultaneous_word(*word).await?;
+                    *word = read;
                 }
 
-                // Wait for transmission to complete. If we don't do that, we might return too
-                // early and disable the CS line, resulting in a corrupted transfer.
-                self.wait_flags(Flags::TXC).await;
+                Ok(())
+            }
+        }
+    }
+
+    #[cfg(feature = "dma")]
+    impl<C, N, W, S, R, T> SpiBus<W> for SpiFuture<C, Duplex, N, R, T>
+    where
+        C: ValidConfig<Sercom = S, Word = W>,
+        C::Word: PrimInt + AsPrimitive<DataWidth> + crate::dmac::Beat + Copy,
+        C::Size: Size<Word = C::Word>,
+        DataWidth: AsPrimitive<C::Word>,
+        N: InterruptNumber,
+        R: crate::dmac::AnyChannel<Status = crate::dmac::ReadyFuture>,
+        T: crate::dmac::AnyChannel<Status = crate::dmac::ReadyFuture>,
+        S: Sercom + 'static,
+    {
+        type TransferFuture<'a> = impl Future<Output= Result<(), Self::Error>> + 'a where Self: 'a;
+
+        fn transfer<'a>(
+            &'a mut self,
+            read: &'a mut [W],
+            write: &'a [W],
+        ) -> Self::TransferFuture<'a> {
+            self.transfer_dma(Some(read), Some(write))
+        }
+
+        type TransferInPlaceFuture<'a> = impl Future<Output= Result<(), Self::Error>> + 'a where Self: 'a;
+
+        fn transfer_in_place<'a>(
+            &'a mut self,
+            words: &'a mut [W],
+        ) -> Self::TransferInPlaceFuture<'a> {
+            // Can only ever do word-by-word to avoid DMA race conditions
+            async {
+                for word in words {
+                    let read = self.simultaneous_word(*word).await?;
+                    *word = read;
+                }
 
                 Ok(())
             }
@@ -506,78 +464,168 @@ mod dma {
         dmac::{AnyChannel, Beat, ReadyFuture},
         sercom::{
             async_dma::{read_dma, write_dma, SercomPtr},
-            spi::{self, Size},
+            spi::Size,
         },
     };
 
-    impl<C, A, N, S, R, T> SpiFuture<C, A, N, R, T>
+    impl<C, N, S, R> SpiFuture<C, Rx, N, R, NoneT>
+    where
+        C: ValidConfig<Sercom = S>,
+        C::Word: PrimInt + AsPrimitive<DataWidth>,
+        DataWidth: AsPrimitive<C::Word>,
+        N: InterruptNumber,
+        S: Sercom,
+    {
+        /// Add a DMA channel for receiving transactions
+        #[inline]
+        pub fn with_rx_dma_channel<Chan: AnyChannel<Status = ReadyFuture>>(
+            self,
+            rx_channel: Chan,
+        ) -> SpiFuture<C, Rx, N, Chan, NoneT> {
+            SpiFuture {
+                spi: self.spi,
+                nop_word: self.nop_word,
+                _irqs: self._irqs,
+                _tx_channel: self._tx_channel,
+                _rx_channel: rx_channel,
+            }
+        }
+    }
+
+    impl<C, N, S, T> SpiFuture<C, Tx, N, NoneT, T>
+    where
+        C: ValidConfig<Sercom = S>,
+        C::Word: PrimInt + AsPrimitive<DataWidth>,
+        DataWidth: AsPrimitive<C::Word>,
+        N: InterruptNumber,
+        S: Sercom,
+    {
+        /// Add a DMA channel for receiving transactions
+        #[inline]
+        pub fn with_tx_dma_channel<Chan: AnyChannel<Status = ReadyFuture>>(
+            self,
+            tx_channel: Chan,
+        ) -> SpiFuture<C, Tx, N, NoneT, Chan> {
+            SpiFuture {
+                spi: self.spi,
+                nop_word: self.nop_word,
+                _irqs: self._irqs,
+                _rx_channel: self._rx_channel,
+                _tx_channel: tx_channel,
+            }
+        }
+    }
+
+    impl<C, N, S, R, T> SpiFuture<C, Duplex, N, R, T>
+    where
+        C: ValidConfig<Sercom = S>,
+        C::Word: PrimInt + AsPrimitive<DataWidth>,
+        DataWidth: AsPrimitive<C::Word>,
+        N: InterruptNumber,
+        S: Sercom,
+    {
+        /// Add a DMA channel for receiving transactions
+        #[inline]
+        pub fn with_dma_channels<ChanRx, ChanTx>(
+            self,
+            rx_channel: ChanRx,
+            tx_channel: ChanTx,
+        ) -> SpiFuture<C, Duplex, N, ChanRx, ChanTx>
+        where
+            ChanRx: AnyChannel<Status = ReadyFuture>,
+            ChanTx: AnyChannel<Status = ReadyFuture>,
+        {
+            SpiFuture {
+                spi: self.spi,
+                nop_word: self.nop_word,
+                _irqs: self._irqs,
+                _rx_channel: rx_channel,
+                _tx_channel: tx_channel,
+            }
+        }
+    }
+
+    impl<C, N, S, R, T> SpiFuture<C, Duplex, N, R, T>
     where
         C: ValidConfig<Sercom = S>,
         C::Word: PrimInt + AsPrimitive<DataWidth> + Beat,
         C::Size: Size<Word = C::Word>,
         DataWidth: AsPrimitive<C::Word>,
-        A: Capability,
         N: InterruptNumber,
+        R: AnyChannel<Status = ReadyFuture>,
+        T: AnyChannel<Status = ReadyFuture>,
         S: Sercom + 'static,
     {
         fn sercom_ptr(&self) -> SercomPtr<C::Word> {
             SercomPtr(self.spi.data_ptr())
         }
-    }
 
-    impl<C, A, N, S, R, T> SpiFuture<C, A, N, R, T>
-    where
-        C: ValidConfig<Sercom = S>,
-        C::Word: PrimInt + AsPrimitive<DataWidth> + Beat,
-        C::Size: Size<Word = C::Word>,
-        DataWidth: AsPrimitive<C::Word>,
-        A: Receive,
-        N: InterruptNumber,
-        S: Sercom + 'static,
-        R: AnyChannel<Status = ReadyFuture>,
-    {
-        /// Read words into a buffer asynchronously, using DMA.
+        /// Simultaneously transfer words in and out of the SPI bus.
+        ///
+        /// If `read` and `write` are the same length, we can send everything at
+        /// once, and thus DMA transfers can be utilized. If they are of
+        /// different lengths, we need to send word by word, so that we
+        /// can pad `write` if it is longer than `read`.
+        ///
+        /// One or both of `read` and `write` can be specified. In any case,
+        /// words will simultaneously be sent and received, to avoid buffer
+        /// overflow errors. If `write` is omitted, `self.nop_word` will be
+        /// sent. If `read` is omitted, the words sent by the device will still
+        /// be read, but immediately discarded.
         #[inline]
-        pub async fn read(&mut self, words: &mut [C::Word]) -> Result<(), Error> {
-            // SAFETY: Using SercomPtr is safe because we hold on
-            // to &mut self as long as the transfer hasn't completed.
-            let spi_ptr = self.sercom_ptr();
+        pub(super) async fn transfer_dma(
+            &mut self,
+            read: Option<&mut [C::Word]>,
+            write: Option<&[C::Word]>,
+        ) -> Result<(), Error> {
+            assert!(read.is_some() || write.is_some());
 
-            read_dma::<_, S>(&mut self._rx_channel, spi_ptr, words)
-                .await
-                .map_err(spi::Error::Dma)?;
+            let dma_capable = if let (Some(r), Some(w)) = (read.as_ref(), write.as_ref()) {
+                r.len() == w.len()
+            } else {
+                true
+            };
+
+            if dma_capable {
+                let maybe_source = [self.nop_word];
+                // Use a random value as the sink buffer since we're just going to discard if we
+                // don't need it
+                let mut maybe_sink = [0xFF.as_()];
+
+                let source = write.unwrap_or(&maybe_source);
+                let sink = read.unwrap_or(&mut maybe_sink);
+                let spi_ptr = self.sercom_ptr();
+
+                let tx_fut = write_dma::<_, S>(&mut self._rx_channel, spi_ptr.clone(), source);
+                let rx_fut = read_dma::<_, S>(&mut self._tx_channel, spi_ptr, sink);
+
+                let (write_res, read_res) = futures::join!(rx_fut, tx_fut);
+                write_res.and(read_res).map_err(Error::Dma)?;
+                self.spi.read_flags_errors()?;
+
+                // Wait for transmission to complete. If we don't do that, we might return too
+                // early and disable the CS line, resulting in a corrupted transfer.
+                self.wait_flags(Flags::TXC).await;
+            }
+            // If there is a length mismatch, we need to do the transfer word by word.
+            else {
+                self.transfer_word_by_word(read.unwrap(), write.unwrap())
+                    .await?;
+            }
 
             Ok(())
         }
-    }
 
-    impl<C, A, N, S, R, T> SpiFuture<C, A, N, R, T>
-    where
-        C: ValidConfig<Sercom = S>,
-        C::Word: PrimInt + AsPrimitive<DataWidth> + Beat,
-        C::Size: Size<Word = C::Word>,
-        DataWidth: AsPrimitive<C::Word>,
-        A: Transmit,
-        N: InterruptNumber,
-        S: Sercom + 'static,
-        T: AnyChannel<Status = ReadyFuture>,
-    {
+        /// Read words into a buffer asynchronously, using DMA.
+        #[inline]
+        pub async fn read(&mut self, words: &mut [C::Word]) -> Result<(), Error> {
+            self.transfer_dma(Some(words), None).await
+        }
+
         /// Write words from a buffer asynchronously, using DMA.
         #[inline]
         pub async fn write(&mut self, words: &[C::Word]) -> Result<(), Error> {
-            // SAFETY: Using SercomPtr and ImmutableSlice is safe because we hold on
-            // to &mut self and words as long as the transfer hasn't completed.
-            let spi_ptr = self.sercom_ptr();
-
-            write_dma::<_, S>(&mut self._tx_channel, spi_ptr, words)
-                .await
-                .map_err(spi::Error::Dma)?;
-
-            // Wait for transmission to complete. If we don't do that, we might return too
-            // early and disable the CS line, resulting in a corrupted transfer.
-            self.wait_flags(Flags::TXC).await;
-
-            Ok(())
+            self.transfer_dma(None, Some(words)).await
         }
     }
 }
