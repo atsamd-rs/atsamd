@@ -83,11 +83,26 @@ unsafe impl<T: Beat> Buffer for SercomPtr<T> {
     }
 }
 
+/// Perform a SERCOM DMA read with a provided `&mut [T]`
 pub(super) async fn read_dma<T: Beat, S: Sercom>(
     channel: &mut impl AnyChannel<Status = ReadyFuture>,
     sercom_ptr: SercomPtr<T>,
     words: &mut [T],
 ) -> Result<(), Error> {
+    read_dma_buffer::<_, _, S>(channel, sercom_ptr, words).await
+}
+
+/// Perform a SERCOM DMA read with a provided [`Buffer`]
+pub(super) async fn read_dma_buffer<T, B, S>(
+    channel: &mut impl AnyChannel<Status = ReadyFuture>,
+    sercom_ptr: SercomPtr<T>,
+    buf: B,
+) -> Result<(), Error>
+where
+    T: Beat,
+    B: Buffer<Beat = T>,
+    S: Sercom,
+{
     #[cfg(feature = "min-samd51g")]
     let trigger_action = TriggerAction::BURST;
 
@@ -96,10 +111,11 @@ pub(super) async fn read_dma<T: Beat, S: Sercom>(
 
     channel
         .as_mut()
-        .transfer_future(sercom_ptr, words, S::DMA_RX_TRIGGER, trigger_action)
+        .transfer_future(sercom_ptr, buf, S::DMA_RX_TRIGGER, trigger_action)
         .await
 }
 
+/// Perform a SERCOM DMA write with a provided `&[T]`
 pub(super) async fn write_dma<T: Beat, S: Sercom>(
     channel: &mut impl AnyChannel<Status = ReadyFuture>,
     sercom_ptr: SercomPtr<T>,
@@ -109,6 +125,20 @@ pub(super) async fn write_dma<T: Beat, S: Sercom>(
     // to words as long as the transfer hasn't completed.
     let words = ImmutableSlice::from_slice(words);
 
+    write_dma_buffer::<_, _, S>(channel, sercom_ptr, words).await
+}
+
+/// Perform a SERCOM DMA write with a provided [`Buffer`]
+pub(super) async fn write_dma_buffer<T, B, S>(
+    channel: &mut impl AnyChannel<Status = ReadyFuture>,
+    sercom_ptr: SercomPtr<T>,
+    buf: B,
+) -> Result<(), Error>
+where
+    T: Beat,
+    B: Buffer<Beat = T>,
+    S: Sercom,
+{
     #[cfg(feature = "min-samd51g")]
     let trigger_action = TriggerAction::BURST;
 
@@ -117,6 +147,6 @@ pub(super) async fn write_dma<T: Beat, S: Sercom>(
 
     channel
         .as_mut()
-        .transfer_future(words, sercom_ptr, S::DMA_TX_TRIGGER, trigger_action)
+        .transfer_future(buf, sercom_ptr, S::DMA_TX_TRIGGER, trigger_action)
         .await
 }

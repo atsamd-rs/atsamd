@@ -88,6 +88,18 @@ where
     _tx_channel: T,
 }
 
+#[cfg(feature = "defmt")]
+impl<C, A, N, R, T> defmt::Format for SpiFuture<C, A, N, R, T>
+where
+    C: ValidConfig,
+    A: Capability,
+    N: InterruptNumber,
+{
+    fn format(&self, f: defmt::Formatter) {
+        defmt::write!(f, "SpiFuture defmt shim\n");
+    }
+}
+
 /// Convenience type for a [`SpiFuture`] with RX and TX capabilities
 pub type SpiFutureDuplex<C> = SpiFuture<C, Duplex, Interrupt>;
 
@@ -461,12 +473,48 @@ mod impl_ehal {
 mod dma {
     use super::*;
     use crate::{
-        dmac::{AnyChannel, Beat, ReadyFuture},
+        dmac::{AnyChannel, Beat, Buffer, ReadyFuture},
         sercom::{
-            async_dma::{read_dma, write_dma, SercomPtr},
+            async_dma::{read_dma, read_dma_buffer, write_dma, write_dma_buffer, SercomPtr},
             spi::Size,
         },
     };
+
+    struct DummyBuffer<T: Beat> {
+        word: T,
+        length: usize,
+    }
+
+    /// Sink/source buffer to use for unidirectional SPI-DMA transfers.
+    ///
+    /// When reading/writing from a [`Duplex`] [`SpiFuture`] with DMA enabled,
+    /// we must always read and write the same number of words, regardless of
+    /// whether we care about the result (ie, for [`write`], we discard the read
+    /// words, whereas for [`read`], we must send a no-op word).
+    ///
+    /// This [`Buffer`] implementation provides a source/sink for a single word,
+    /// but with a variable length.
+    impl<T: Beat> DummyBuffer<T> {
+        fn new(word: T, length: usize) -> Self {
+            Self { word, length }
+        }
+    }
+
+    unsafe impl<T: Beat> Buffer for DummyBuffer<T> {
+        type Beat = T;
+
+        fn incrementing(&self) -> bool {
+            false
+        }
+
+        fn buffer_len(&self) -> usize {
+            self.length
+        }
+
+        fn dma_ptr(&mut self) -> *mut Self::Beat {
+            &mut self.word as *mut _
+        }
+    }
 
     impl<C, N, S, R> SpiFuture<C, Rx, N, R, NoneT>
     where
@@ -580,38 +628,54 @@ mod dma {
         ) -> Result<(), Error> {
             assert!(read.is_some() || write.is_some());
 
-            let dma_capable = if let (Some(r), Some(w)) = (read.as_ref(), write.as_ref()) {
-                r.len() == w.len()
-            } else {
-                true
-            };
+            let spi_ptr = self.sercom_ptr();
 
-            if dma_capable {
-                let maybe_source = [self.nop_word];
-                // Use a random value as the sink buffer since we're just going to discard if we
-                // don't need it
-                let mut maybe_sink = [0xFF.as_()];
+            match (read, write) {
+                (Some(r), Some(w)) => {
+                    if r.len() == w.len() {
+                        let tx_fut = write_dma::<_, S>(&mut self._rx_channel, spi_ptr.clone(), w);
+                        let rx_fut = read_dma::<_, S>(&mut self._tx_channel, spi_ptr, r);
 
-                let source = write.unwrap_or(&maybe_source);
-                let sink = read.unwrap_or(&mut maybe_sink);
-                let spi_ptr = self.sercom_ptr();
+                        let (read_res, write_res) = futures::join!(rx_fut, tx_fut);
+                        write_res.and(read_res).map_err(Error::Dma)?;
+                    } else {
+                        // Short circuit if we got a length mismatch, as we have to send word by
+                        // word
+                        self.transfer_word_by_word(r, w).await?;
+                        return Ok(());
+                    }
+                }
 
-                let tx_fut = write_dma::<_, S>(&mut self._rx_channel, spi_ptr.clone(), source);
-                let rx_fut = read_dma::<_, S>(&mut self._tx_channel, spi_ptr, sink);
+                (Some(r), None) => {
+                    let source = DummyBuffer::new(self.nop_word, r.len());
+                    let rx_fut = read_dma::<_, S>(&mut self._rx_channel, spi_ptr.clone(), r);
+                    let tx_fut =
+                        write_dma_buffer::<_, _, S>(&mut self._tx_channel, spi_ptr, source);
 
-                let (write_res, read_res) = futures::join!(rx_fut, tx_fut);
-                write_res.and(read_res).map_err(Error::Dma)?;
-                self.spi.read_flags_errors()?;
+                    let (read_res, write_res) = futures::join!(rx_fut, tx_fut);
+                    write_res.and(read_res).map_err(Error::Dma)?;
+                }
 
-                // Wait for transmission to complete. If we don't do that, we might return too
-                // early and disable the CS line, resulting in a corrupted transfer.
-                self.wait_flags(Flags::TXC).await;
+                (None, Some(w)) => {
+                    // Use a random value as the sink buffer since we're just going to discard the
+                    // read words
+                    let sink = DummyBuffer::new(0xFF.as_(), w.len());
+                    let rx_fut =
+                        read_dma_buffer::<_, _, S>(&mut self._rx_channel, spi_ptr.clone(), sink);
+                    let tx_fut = write_dma::<_, S>(&mut self._tx_channel, spi_ptr, w);
+
+                    let (read_res, write_res) = futures::join!(rx_fut, tx_fut);
+                    write_res.and(read_res).map_err(Error::Dma)?;
+                }
+
+                _ => panic!("Must provide at lease one buffer"),
             }
-            // If there is a length mismatch, we need to do the transfer word by word.
-            else {
-                self.transfer_word_by_word(read.unwrap(), write.unwrap())
-                    .await?;
-            }
+
+            self.spi.read_flags_errors()?;
+
+            // Wait for transmission to complete. If we don't do that, we might return too
+            // early and disable the CS line, resulting in a corrupted transfer.
+            self.wait_flags(Flags::TXC).await;
 
             Ok(())
         }

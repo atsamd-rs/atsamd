@@ -1,4 +1,7 @@
-use crate::{dmac::waker::WAKERS, util::BitIter};
+use crate::{
+    dmac::{waker::WAKERS, TriggerSource},
+    util::BitIter,
+};
 use cortex_m::interrupt::InterruptNumber;
 use cortex_m_interrupt::NvicInterruptRegistration;
 
@@ -57,6 +60,8 @@ mod thumbv6m {
 
                 if wake {
                     dmac.chctrla.modify(|_, w| w.enable().clear_bit());
+                    dmac.chctrlb
+                        .modify(|_, w| w.trigsrc().variant(TriggerSource::DISABLE));
                     WAKERS[pend_channel as usize].wake();
                 }
             }
@@ -156,31 +161,28 @@ mod thumbv7em {
         };
 
         if wake {
-            dmac.channel[channel]
-                .chctrla
-                .modify(|_, w| w.enable().clear_bit());
+            dmac.channel[channel].chctrla.modify(|_, w| {
+                w.enable().clear_bit();
+                w.trigsrc().variant(TriggerSource::DISABLE)
+            });
             WAKERS[channel].wake();
         }
     }
 
     fn on_interrupt_0() {
-        const CHANNEL: usize = 0;
-        on_interrupt(CHANNEL);
+        on_interrupt(0);
     }
 
     fn on_interrupt_1() {
-        const CHANNEL: usize = 1;
-        on_interrupt(CHANNEL);
+        on_interrupt(1);
     }
 
     fn on_interrupt_2() {
-        const CHANNEL: usize = 2;
-        on_interrupt(CHANNEL);
+        on_interrupt(2);
     }
 
     fn on_interrupt_3() {
-        const CHANNEL: usize = 3;
-        on_interrupt(CHANNEL);
+        on_interrupt(3);
     }
 
     fn on_interrupt_other() {
