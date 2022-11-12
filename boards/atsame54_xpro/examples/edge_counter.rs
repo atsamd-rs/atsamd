@@ -1,7 +1,7 @@
 //! examples/edge_counter.rs
 //! The edge counter example demonstrates a simple interrupt-based
 //! application using the RTIC library with two primary tasks.
-//! The interrupting task will increment the shared counter variable when the 
+//! The interrupting task will increment the shared counter variable when the
 //! SAME54 XPlained Pro user button (SW0) is pressed, and spawn the blink task.
 //! The blink task will toggle the LED, and print the shared counter variable
 //! to the user's console if connected via the real time transfer protocol.
@@ -20,19 +20,15 @@ use rtic::app;
 mod app {
     use atsame54_xpro as bsp;
     use bsp::hal;
-    use hal::prelude::*;
+    use hal::clock::GenericClockController;
     use hal::eic;
     use hal::eic::pin::*;
-    use hal::clock::GenericClockController;
-    use rtt_target::{rtt_init_print, rprintln};
+    use hal::prelude::*;
+    use rtt_target::{rprintln, rtt_init_print};
 
-    hal::bsp_pins!(
-        PB31 {
-            aliases: {
-                PullUpInterrupt: IntButton
-            }
-        }
-    );
+    hal::bsp_pins!(PB31 {
+        aliases: { PullUpInterrupt: IntButton }
+    });
 
     #[shared]
     struct SharedData {
@@ -57,7 +53,7 @@ mod app {
             &mut device.MCLK,
             &mut device.OSC32KCTRL,
             &mut device.OSCCTRL,
-            &mut device.NVMCTRL
+            &mut device.NVMCTRL,
         );
 
         let pins = bsp::Pins::new(device.PORT);
@@ -67,11 +63,7 @@ mod app {
 
         let gclk0 = GenericClockController::gclk0(&mut clocks);
         let eic_clock = GenericClockController::eic(&mut clocks, &gclk0).unwrap();
-        let mut cfg_eic = eic::init_with_ulp32k(
-            &mut device.MCLK,
-            eic_clock,
-            device.EIC
-        );
+        let mut cfg_eic = eic::init_with_ulp32k(&mut device.MCLK, eic_clock, device.EIC);
 
         // TODO: The current method of getting the button ID is not working,
         // so the button interrupt ID, equal to 15, is hard-coded in.
@@ -83,7 +75,11 @@ mod app {
         button.enable_interrupt(&mut cfg_eic);
         cfg_eic.finalize();
 
-        (SharedData {count}, LocalData {led, button}, init::Monotonics())
+        (
+            SharedData { count },
+            LocalData { led, button },
+            init::Monotonics(),
+        )
     }
 
     #[task(binds=EIC_EXTINT_15, local=[button], shared=[count])]
@@ -101,8 +97,6 @@ mod app {
 
     #[idle]
     fn idle(_cx: idle::Context) -> ! {
-        loop {
-
-        }
+        loop {}
     }
 }
