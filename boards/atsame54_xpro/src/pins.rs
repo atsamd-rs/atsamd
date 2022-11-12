@@ -571,8 +571,11 @@ hal::bsp_pins!(
     }
     PD12 {
         /// PD12: Ethernet interrupt pin
+        /// The Ethernet interrupt pin is configured active low by default,
+        /// but can be configured as active high by modifying the register
+        /// setting 1F.9 on the onboard KSZ8091 ethernet transceiver IC.
         aliases: {
-            FloatingInput: EthInterrupt
+            PullUpInterrupt: EthInterrupt
         }
     }
     PD20 {
