@@ -1,5 +1,9 @@
 # Unreleased
 
+# v0.5.1
+- Add an RTIC-based edge counter application
+- Change the Ethernet Interrupt button from a FloatingInput type to PullUpInterrupt
+
 # v0.5.0
 - update to `atsamd-hal-0.15`
 - update to to `panic-semihosting-0.6`
