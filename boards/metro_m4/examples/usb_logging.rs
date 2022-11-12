@@ -7,11 +7,6 @@ use bsp::ehal;
 use bsp::hal;
 use bsp::pac;
 
-#[cfg(not(feature = "use_semihosting"))]
-use panic_halt as _;
-#[cfg(feature = "use_semihosting")]
-use panic_semihosting as _;
-
 use cortex_m::asm::delay as cycle_delay;
 use cortex_m::peripheral::NVIC;
 use ehal::digital::v2::ToggleableOutputPin;
@@ -23,6 +18,11 @@ use bsp::entry;
 use hal::clock::GenericClockController;
 use hal::usb::UsbBus;
 use pac::{interrupt, CorePeripherals, Peripherals};
+
+#[cfg(not(feature = "use_semihosting"))]
+use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
 
 #[entry]
 fn main() -> ! {
@@ -37,7 +37,7 @@ fn main() -> ! {
     );
 
     let pins = bsp::Pins::new(peripherals.PORT);
-    let mut red_led = pins.d13.into_push_pull_output();
+    let mut red_led: bsp::RedLed = pins.d13.into();
 
     let bus_allocator = unsafe {
         USB_ALLOCATOR = Some(bsp::usb_allocator(
@@ -78,7 +78,6 @@ fn main() -> ! {
     loop {
         cycle_delay(5 * 1024 * 1024);
         red_led.toggle().unwrap();
-
         // Turn off interrupts so we don't fight with the interrupt
         cortex_m::interrupt::free(|_| unsafe {
             if USB_BUS.as_mut().is_some() {
