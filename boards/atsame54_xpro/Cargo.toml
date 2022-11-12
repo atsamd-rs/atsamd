@@ -28,12 +28,16 @@ optional = true
 [dev-dependencies]
 panic-halt = "0.2"
 panic-semihosting = "0.6"
+cortex-m-rtic = "1.1"
+atsame54p = "0.12"
+rtt-target = { version = "0.3", features = ["cortex-m"] }
 
 [features]
 default = ["rt", "atsamd-hal/same54p", "atsamd-hal/unproven"]
 rt = ["cortex-m-rt", "atsamd-hal/same54p-rt"]
 unproven = ["atsamd-hal/unproven"]
 usb = ["atsamd-hal/usb", "usb-device"]
+rtic = ["atsamd-hal/rtic"]
 
 [profile.dev]
 incremental = false
@@ -47,3 +51,6 @@ opt-level = "s"
 
 [[example]]
 name = "blinky_basic"
+
+[[example]]
+name = "edge_counter"
