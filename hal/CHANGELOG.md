@@ -1,5 +1,6 @@
 # Unreleased Changes
 
+- Fix `ExternalInterrupt` implementations for `eic`
 - Fix for incorrect feature gates for pins of `samd21gl` chip
 - Fix bug in `dmac` where software trigger would not work
 - Correct thumbv6 DFLL multiplier to fix USB clock correction

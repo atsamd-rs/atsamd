@@ -148,6 +148,12 @@ crate::paste::item! {
         }
     }
 
+    impl<GPIO: AnyPin> ExternalInterrupt for [<$PadType $num>]<GPIO> {
+        fn id(&self) -> ExternalInterruptID {
+            $num
+        }
+    }
+
     #[cfg(feature = "unproven")]
     impl<GPIO, C> InputPin for [<$PadType $num>]<GPIO>
     where
@@ -186,7 +192,7 @@ crate::paste::item! {
         }
 
         $(#[$attr])*
-        impl ExternalInterrupt for gpio::$PinType {
+        impl<M: PinMode> ExternalInterrupt for Pin<gpio::$PinType, M> {
             fn id(&self) -> ExternalInterruptID {
                 $num
             }
@@ -195,17 +201,6 @@ crate::paste::item! {
 }
 
     };
-}
-
-impl<I, M> ExternalInterrupt for Pin<I, M>
-where
-    I: PinId,
-    M: PinMode,
-    Pin<I, M>: ExternalInterrupt,
-{
-    fn id(&self) -> ExternalInterruptID {
-        Pin::<I, M>::id(self)
-    }
 }
 
 // The SAMD11 and SAMD21 devices have different ExtInt designations. Just for
