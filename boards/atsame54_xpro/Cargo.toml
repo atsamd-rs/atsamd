@@ -1,6 +1,6 @@
 [package]
 name = "atsame54_xpro"
-version = "0.5.0"
+version = "0.5.1"
 authors = [
     "Karsten Große <karsten.grosse@sympatron.de>",
     "John Little <johngigantic@gmail.com>"
@@ -31,6 +31,7 @@ panic-semihosting = "0.6"
 cortex-m-rtic = "1.1"
 atsame54p = "0.12"
 rtt-target = { version = "0.3", features = ["cortex-m"] }
+systick-monotonic = "1.0"
 
 [features]
 default = ["rt", "atsamd-hal/same54p", "atsamd-hal/unproven"]

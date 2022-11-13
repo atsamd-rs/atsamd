@@ -1,6 +1,7 @@
 # Unreleased
 
 # v0.5.1
+- Add an RTIC and systick-based blinky application
 - Add an RTIC-based edge counter application
 - Change the Ethernet Interrupt button from a FloatingInput type to PullUpInterrupt
 
