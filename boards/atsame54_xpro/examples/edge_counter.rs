@@ -24,6 +24,7 @@ mod app {
     use hal::eic;
     use hal::eic::pin::*;
     use hal::prelude::*;
+
     use rtt_target::{rprintln, rtt_init_print};
 
     hal::bsp_pins!(PB31 {
@@ -57,23 +58,18 @@ mod app {
         );
 
         let pins = bsp::Pins::new(device.PORT);
-        let led = bsp::pin_alias!(pins.led).into_push_pull_output();
         let mut button = bsp::pin_alias!(pins.button).into_pull_up_ei();
-        let count: i32 = 0;
+        let led = bsp::pin_alias!(pins.led).into_push_pull_output();
 
         let gclk0 = GenericClockController::gclk0(&mut clocks);
         let eic_clock = GenericClockController::eic(&mut clocks, &gclk0).unwrap();
         let mut cfg_eic = eic::init_with_ulp32k(&mut device.MCLK, eic_clock, device.EIC);
-
-        // TODO: The current method of getting the button ID is not working,
-        // so the button interrupt ID, equal to 15, is hard-coded in.
-        let button_interrupt_id = 15;
-        // let button_interrupt_id = button.id();
-
-        cfg_eic.button_debounce_pins(&[button_interrupt_id]);
+        cfg_eic.button_debounce_pins(&[button.id()]);
         button.sense(&mut cfg_eic, Sense::FALL);
         button.enable_interrupt(&mut cfg_eic);
         cfg_eic.finalize();
+
+        let count: i32 = 0;
 
         (
             SharedData { count },
