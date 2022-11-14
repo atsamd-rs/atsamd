@@ -20,7 +20,6 @@ optional = true
 [dependencies.atsamd-hal]
 version = "0.15"
 default-features = false
-path = "../../hal"
 
 [dependencies.usb-device]
 version = "0.2"
@@ -56,3 +55,7 @@ name = "blinky_basic"
 
 [[example]]
 name = "edge_counter"
+
+[patch.crates-io]
+atsamd-hal = { path = "../../hal" }
+atsame54p = { path = "../../pac/atsame54p" }
