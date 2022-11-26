@@ -1,4 +1,4 @@
-#![warn(missing_docs)]
+//#![warn(missing_docs)]
 //! # Digital Frequency Locked Loop
 //!
 //! Dfll is an internal 48 MHz oscillator that provides two different modes of
@@ -139,13 +139,17 @@
 //!
 //! [`clock_system_at_reset`]: super::clock_system_at_reset
 //! [`clock` module documentation]: super
+
+use core::marker::PhantomData;
+
 use typenum::{U0, U1};
 
 use crate::time::{Hertz, U32Ext};
-use crate::typelevel::{PrivateIncrement, Sealed};
+use crate::typelevel::{NoneT, PrivateIncrement, Sealed};
+//use crate::usb::UsbSofClk;
 
 use super::gclk::{EnabledGclk0, GclkId};
-use super::pclk::Pclk;
+use super::pclk::{Pclk, PclkToken};
 use super::{Enabled, Source};
 
 //==============================================================================
@@ -281,10 +285,10 @@ impl DfllToken {
     }
 
     #[inline]
-    fn set_mode(&mut self, mode: DynMode) {
+    fn set_mode(&mut self, mode: Mode) {
         let bit = match mode {
-            DynMode::OpenLoop => false,
-            DynMode::ClosedLoop => true,
+            Mode::OpenLoop => false,
+            Mode::ClosedLoop => true,
         };
         self.dfllctrlb().modify(|_, w| w.mode().bit(bit));
         self.wait_sync_dfllctrlb();
@@ -326,74 +330,159 @@ type FineMaxStep = u8;
 /// Value-level version of [`Mode`]
 ///
 /// Represents the loop mode of the DFLL
-#[allow(missing_docs)]
 #[derive(Copy, Clone, PartialEq, Eq)]
-pub enum DynMode {
+enum Mode {
     OpenLoop,
     ClosedLoop,
 }
 
-/// Type-level `enum` for the [`Dfll`] loop mode
-///
-/// The DFLL can operate in either [`OpenLoop`] mode or [`ClosedLoop`] mode.
-/// See the [type-level enum] documentation for more details on the pattern.
-///
-/// [type-level enum]: crate::typelevel#type-level-enum
-pub trait Mode: Sealed {
-    /// Performs a mode specific HW register writes. Should not be called by an
-    /// end user.
-    fn enable(&self, token: &mut DfllToken);
-    /// Calculates the output frequency of Dfll for given mode
-    fn freq(&self) -> Hertz;
+//==============================================================================
+// UsbSofId
+//==============================================================================
+
+pub enum UsbSofId {}
+
+//==============================================================================
+// DynDfllSource
+//==============================================================================
+
+#[derive(Copy, Clone, PartialEq, Eq)]
+pub enum DynDfllSourceId {
+    Pclk,
+    UsbSof,
 }
 
-/// Type-level variant of [`Mode`] representing open loop operation of the DFLL
-///
-/// See the [type-level enum] documentation for more details on the pattern.
-///
-/// [type-level enum]: crate::typelevel#type-level-enum
-pub struct OpenLoop;
+//==============================================================================
+// DfllSourceId
+//==============================================================================
 
-impl Sealed for OpenLoop {}
-
-impl Mode for OpenLoop {
-    fn enable(&self, token: &mut DfllToken) {
-        token.set_mode(DynMode::OpenLoop);
-    }
-
-    fn freq(&self) -> Hertz {
-        48.mhz().into()
-    }
+pub trait DfllSourceId {
+    const DYN: DynDfllSourceId;
 }
 
-/// Type-level `enum` for the [`Dfll`] loop mode
-///
-/// The DFLL can operate in either [`OpenLoop`] mode or [`ClosedLoop`] mode.
-/// See the [type-level enum] documentation for more details on the pattern.
-///
-/// [type-level enum]: crate::typelevel#type-level-enum
-pub trait ClosedLoopSubmode {
-    /// Performs a submode specific HW register writes. Should not be called by
-    /// an end user.
-    fn enable(&self, token: &mut DfllToken);
-    /// Calculates the output frequency of Dfll for given submode
-    fn freq(&self) -> Hertz;
+impl<G: GclkId> DfllSourceId for G {
+    const DYN: DynDfllSourceId = DynDfllSourceId::Pclk;
 }
 
-/// Type-level variant of [`ClosedLoopSubmode`] representing a Dfll's closed
-/// loop submode in which a dedicated [`Pclk`]`<`[`DfllId`]`, _>` is being used
-/// as a source of reference clock.
-///
-/// More details regarding the usage together with example code can be found in
-/// [module-level documentation](self).
-pub struct FromPclk<G: GclkId> {
-    pclk: Pclk<DfllId, G>,
+impl DfllSourceId for UsbSofId {
+    const DYN: DynDfllSourceId = DynDfllSourceId::UsbSof;
+}
+
+//==============================================================================
+// OptionalDfllSourceId
+//==============================================================================
+
+pub trait OptionalDfllSourceId {
+    const DYN: Option<DynDfllSourceId>;
+}
+
+impl OptionalDfllSourceId for NoneT {
+    const DYN: Option<DynDfllSourceId> = None;
+}
+
+impl<I: SomeDfllSourceId> OptionalDfllSourceId for I {
+    const DYN: Option<DynDfllSourceId> = Some(I::DYN);
+}
+
+//==============================================================================
+// SomeDfllSourceId
+//==============================================================================
+
+pub trait SomeDfllSourceId: DfllSourceId {}
+
+impl<I: DfllSourceId> SomeDfllSourceId for I {}
+
+//==============================================================================
+// Settings
+//==============================================================================
+
+struct Settings {
+    src_freq: Hertz,
     mult_factor: MultFactor,
     chill_cycle: bool,
     quick_lock: bool,
+    coarse_max_step: CoarseMaxStep,
+    fine_max_step: FineMaxStep,
+    run_standby: bool,
+    on_demand_mode: bool,
 }
 
-impl<G: GclkId> FromPclk<G> {
+impl Default for Settings {
+    fn default() -> Self {
+        Settings {
+            src_freq: Hertz(48_000_000),
+            mult_factor: 1,
+            chill_cycle: true,
+            quick_lock: true,
+            coarse_max_step: 1,
+            fine_max_step: 1,
+            run_standby: false,
+            on_demand_mode: true,
+        }
+    }
+}
+
+//==============================================================================
+// Dfll
+//==============================================================================
+
+/// Struct representing a [`Dfll`] abstraction
+///
+/// It is generic over the supported modes of operation
+pub struct Dfll<I: OptionalDfllSourceId = NoneT> {
+    token: DfllToken,
+    src: PhantomData<I>,
+    settings: Settings,
+}
+
+impl<I: OptionalDfllSourceId> Dfll<I> {
+    fn new(token: DfllToken, settings: Settings) -> Self {
+        Self {
+            token,
+            src: PhantomData,
+            settings,
+        }
+    }
+}
+
+impl Dfll {
+    /// Create [`Dfll`] in a mode `M`
+    ///
+    /// Creating a [`Dfll`] does not modify any of the hardware registers. It
+    /// only creates a struct to track the `Dfll` configuration.
+    ///
+    /// The configuration data is stored until the user calls [`Dfll::enable`].
+    /// At that point, all of the registers are written according to the
+    /// initialization procedures specified in the datasheet, and an
+    /// [`EnabledDfll`] is returned. The `Dpll` is not active or useful until
+    /// that point.
+    #[inline]
+    pub fn open_loop(token: DfllToken) -> Self {
+        let settings = Settings::default();
+        Self::new(token, settings)
+    }
+
+    /// Release the resources
+    #[inline]
+    pub fn free(self) -> DfllToken {
+        self.token
+    }
+}
+
+impl Dfll<UsbSofId> {
+    pub fn from_usb(token: DfllToken) -> Self {
+        let mut settings = Settings::default();
+        settings.src_freq = Hertz(1_000);
+        settings.mult_factor = 48_000;
+        Self::new(token, settings)
+    }
+
+    pub fn free(self) -> DfllToken {
+        self.token
+    }
+}
+
+impl<G: GclkId> Dfll<G> {
     /// Constructor for Pclk based closed loop submode. It derives
     /// multiplication factor from a frequency of provided [`Pclk`] so the
     /// output frequency is as close to 48 MHz as possible.
@@ -407,7 +496,7 @@ impl<G: GclkId> FromPclk<G> {
     ///
     /// See the datasheet for more details (54.13.4 Digital Frequency Locked
     /// Loop (DFLL48M) Characteristics)
-    pub fn new(pclk: Pclk<DfllId, G>) -> Self {
+    pub fn from_pclk(token: DfllToken, pclk: Pclk<DfllId, G>) -> Self {
         let pclk_freq = pclk.freq().0;
         let min_pclk_freq = 48.mhz().0 / MultFactor::MAX as u32;
 
@@ -417,7 +506,7 @@ impl<G: GclkId> FromPclk<G> {
 
         // Cast is fine because division result cannot be greater than u16::MAX
         let mult_factor = (48.mhz().0 / pclk_freq) as u16;
-        unsafe { Self::new_unchecked(pclk, mult_factor) }
+        unsafe { Self::from_pclk_unchecked(token, pclk, mult_factor) }
     }
 
     /// Constructor for Pclk based closed loop submode.
@@ -426,144 +515,75 @@ impl<G: GclkId> FromPclk<G> {
     /// Correctness of input parameters is assumed:
     /// - `pclk` frequency in range `[732, 33_000`] Hz
     /// - `mult_factor` cannot yield out-of-spec output frequency for Dfll
-    pub unsafe fn new_unchecked(pclk: Pclk<DfllId, G>, mult_factor: MultFactor) -> Self {
-        Self {
-            pclk,
-            mult_factor,
-            chill_cycle: true,
-            quick_lock: true,
-        }
+    pub unsafe fn from_pclk_unchecked(
+        token: DfllToken,
+        pclk: Pclk<DfllId, G>,
+        mult_factor: MultFactor,
+    ) -> Self {
+        let mut settings = Settings::default();
+        settings.src_freq = pclk.freq();
+        settings.mult_factor = mult_factor;
+        Self::new(token, settings)
+    }
+
+    pub fn free(self) -> (DfllToken, Pclk<DfllId, G>) {
+        let pclk = unsafe { Pclk::new(PclkToken::new(), self.settings.src_freq) };
+        (self.token, pclk)
     }
 
     /// Controls the chill cycle functionality. Default value is `true`
-    pub fn set_chill_cycle(mut self, value: bool) -> Self {
-        self.chill_cycle = value;
+    pub fn chill_cycle(mut self, value: bool) -> Self {
+        self.settings.chill_cycle = value;
         self
     }
 
     /// Controls quick lock functionality. Default value is `true`
-    pub fn set_quick_lock(mut self, value: bool) -> Self {
-        self.quick_lock = value;
+    pub fn quick_lock(mut self, value: bool) -> Self {
+        self.settings.quick_lock = value;
         self
     }
 }
 
-impl<G: GclkId> ClosedLoopSubmode for FromPclk<G> {
-    fn enable(&self, token: &mut DfllToken) {
-        token.set_usb_clock_recovery_mode(false);
-        token.set_mult_factor(self.mult_factor);
-        token.set_chill_cycle(self.chill_cycle);
-        token.set_chill_cycle(self.quick_lock);
-    }
-
-    fn freq(&self) -> Hertz {
-        Hertz(self.pclk.freq().0 * self.mult_factor as u32)
-    }
-}
-
-/// Type-level variant of [`ClosedLoopSubmode`] representing a Dfll's closed
-/// loop submode in which a reference clock is derived from SOF bits showing up
-/// every 1ms on a (configured) USB bus
-///
-/// More details regarding the usage together with example code can be found in
-/// [module-level documentation](self).
-// TODO: 54.15; Table 54-68; allegedly fine step value must be 0xA for USB mode?
-pub struct FromUsb;
-
-impl ClosedLoopSubmode for FromUsb {
-    fn enable(&self, token: &mut DfllToken) {
-        token.set_usb_clock_recovery_mode(true);
-        // 48 MHz / 1 kHz (1 ms SOF for USB)
-        //
-        // See Datasheet, `USB Clock Recovery Mode` in 28.6.4.2
-        token.set_mult_factor(48_000);
-        // Datasheet recommends using chill cycle and quick lock for USB based closed
-        // loop mode
-        token.set_chill_cycle(true);
-        token.set_quick_lock(true);
-    }
-
-    fn freq(&self) -> Hertz {
-        48.mhz().into()
-    }
-}
-
-/// Type-level variant of [`Mode`] representing closed loop operation of the
-/// DFLL
-///
-/// In closed loop operation, depending on the submode the DFLL output is
-/// referenced either to the its [`Pclk`] ([`FromPclk`] submode) or derived from
-/// USB bus ([`FromUsb`] submode).
-///
-/// See the [type-level enum] documentation for more details on the pattern.
-///
-/// More details regarding the usage together with example code can be found in
-/// [module-level documentation](self).
-///
-/// [type-level enum]: crate::typelevel#type-level-enum
-pub struct ClosedLoop<M> {
-    /// Closed loop submode
-    ///
-    /// [`ClosedLoopSubmode`] implementing struct is expected
-    pub mode: M,
-    /// Maximum step size allowed during a process a frequency tuning for
+impl<I: SomeDfllSourceId> Dfll<I> {
+    /// Set a maximum step size allowed during a process a frequency tuning for
     /// a coarse parameter.
     ///
     /// Consult datasheet regarding what kind of set of parameters is acceptable
     /// (c. 28.6.4.1, Closed-Loop Operation). Otherwise, [`Dfll`] behavior might
     /// be incorrect
-    pub coarse_max_step: CoarseMaxStep,
-    /// Maximum step size allowed during a process a frequency tuning for
+    #[inline]
+    pub fn coarse_max_step(mut self, coarse_max_step: CoarseMaxStep) -> Self {
+        self.settings.coarse_max_step = coarse_max_step;
+        self
+    }
+
+    /// Set a maximum step size allowed during a process a frequency tuning for
     /// a fine parameter.
     ///
     /// Consult datasheet regarding what kind of set of parameters is acceptable
     /// (c. 28.6.4.1, Closed-Loop Operation). Otherwise, [`Dfll`] behavior might
     /// be incorrect
-    pub fine_max_step: FineMaxStep,
-}
-
-impl<M> Sealed for ClosedLoop<M> {}
-
-impl<M: ClosedLoopSubmode> Mode for ClosedLoop<M> {
-    fn enable(&self, token: &mut DfllToken) {
-        self.mode.enable(token);
-        token.set_coarse_max_step(self.coarse_max_step);
-        token.set_fine_max_step(self.fine_max_step);
-        token.set_mode(DynMode::ClosedLoop);
-    }
-
-    fn freq(&self) -> Hertz {
-        self.mode.freq()
+    #[inline]
+    pub fn fine_max_step(mut self, fine_max_step: FineMaxStep) -> Self {
+        self.settings.fine_max_step = fine_max_step;
+        self
     }
 }
 
-//==============================================================================
-// Dfll
-//==============================================================================
-
-/// Struct representing a [`Dfll`] abstraction
-///
-/// It is generic over the supported modes of operation
-pub struct Dfll<M: Mode> {
-    token: DfllToken,
-    mode: M,
-    run_standby: bool,
-    on_demand_mode: bool,
-}
-
-impl<M: Mode> Dfll<M> {
-    /// Returns the frequency of the [`Dfll`]
+impl<I: OptionalDfllSourceId> Dfll<I> {
     #[inline]
     pub fn freq(&self) -> Hertz {
-        self.mode.freq()
+        // Valid for all modes based on default values
+        Hertz(self.settings.src_freq.0 * self.settings.mult_factor as u32)
     }
 
     /// Controls the clock source behaviour during standby
     ///
     /// See Datasheet c. 28.6.4.1
     #[inline]
-    pub fn set_run_standby(&mut self, value: bool) {
-        self.run_standby = value;
+    pub fn run_standby(mut self, value: bool) -> Self {
+        self.settings.run_standby = value;
+        self
     }
 
     /// Controls the on demand functionality of the clock source
@@ -574,83 +594,50 @@ impl<M: Mode> Dfll<M> {
     /// See Datasheet c. 13.5 for general information; 28.6.4.1 for [`Dfll`]
     /// specific details
     #[inline]
-    pub fn set_on_demand_mode(&mut self, value: bool) {
-        self.on_demand_mode = value;
+    pub fn on_demand_mode(mut self, value: bool) -> Self {
+        self.settings.on_demand_mode = value;
+        self
     }
 
     /// Enables [`Dfll`]
     ///
     /// This method modifies hardware to match the configuration stored within
     #[inline]
-    pub fn enable(mut self) -> EnabledDfll<M> {
-        self.mode.enable(&mut self.token);
-        self.token.set_on_demand_mode(self.on_demand_mode);
-        self.token.set_run_standby(self.run_standby);
+    pub fn enable(mut self) -> EnabledDfll<I> {
+        match I::DYN {
+            None => {
+                self.token.set_mode(Mode::OpenLoop);
+            }
+            Some(id) => {
+                self.token.set_mode(Mode::ClosedLoop);
+                match id {
+                    DynDfllSourceId::Pclk => {
+                        self.token.set_mult_factor(self.settings.mult_factor);
+                        self.token.set_chill_cycle(self.settings.chill_cycle);
+                        self.token.set_chill_cycle(self.settings.quick_lock);
+                    }
+                    DynDfllSourceId::UsbSof => {
+                        self.token.set_usb_clock_recovery_mode(true);
+                        self.token.set_mult_factor(48_000);
+                        self.token.set_chill_cycle(true);
+                        self.token.set_quick_lock(true);
+                    }
+                }
+                self.token
+                    .set_coarse_max_step(self.settings.coarse_max_step);
+                self.token.set_fine_max_step(self.settings.fine_max_step);
+            }
+        }
+        self.token.set_on_demand_mode(self.settings.on_demand_mode);
+        self.token.set_run_standby(self.settings.run_standby);
         self.token.enable();
         Enabled::new(self)
     }
-
-    /// Create [`Dfll`] in a mode `M`
-    ///
-    /// Creating a [`Dfll`] does not modify any of the hardware registers. It
-    /// only creates a struct to track the `Dfll` configuration.
-    ///
-    /// The configuration data is stored until the user calls [`Dfll::enable`].
-    /// At that point, all of the registers are written according to the
-    /// initialization procedures specified in the datasheet, and an
-    /// [`EnabledDfll`] is returned. The `Dpll` is not active or useful until
-    /// that point.
-    #[inline]
-    pub fn new(token: DfllToken, mode: M) -> Self {
-        let dfll = Self {
-            token,
-            mode,
-            run_standby: false,
-            on_demand_mode: true,
-        };
-
-        dfll
-    }
-
-    /// Release the resources
-    #[inline]
-    pub fn free(self) -> (DfllToken, M) {
-        (self.token, self.mode)
-    }
 }
 
-impl<M: ClosedLoopSubmode> Dfll<ClosedLoop<M>> {
-    /// Set a maximum step size allowed during a process a frequency tuning for
-    /// a coarse parameter.
-    ///
-    /// Consult datasheet regarding what kind of set of parameters is acceptable
-    /// (c. 28.6.4.1, Closed-Loop Operation). Otherwise, [`Dfll`] behavior might
-    /// be incorrect
-    #[inline]
-    pub fn set_coarse_max_step(&mut self, coarse_max_step: CoarseMaxStep) {
-        self.mode.coarse_max_step = coarse_max_step;
-    }
-
-    /// Set a maximum step size allowed during a process a frequency tuning for
-    /// a fine parameter.
-    ///
-    /// Consult datasheet regarding what kind of set of parameters is acceptable
-    /// (c. 28.6.4.1, Closed-Loop Operation). Otherwise, [`Dfll`] behavior might
-    /// be incorrect
-    #[inline]
-    pub fn set_fine_max_step(&mut self, fine_max_step: FineMaxStep) {
-        self.mode.fine_max_step = fine_max_step;
-    }
-}
-
-impl<M: Mode> EnabledDfll<M> {
-    /// Disable the [`Dfll`]
-    #[inline]
-    pub fn disable(mut self) -> Dfll<M> {
-        self.0.token.disable();
-        self.0
-    }
-}
+//==============================================================================
+// EnabledDfll
+//==============================================================================
 
 /// An [`Enabled`] [`Dfll`]
 ///
@@ -661,23 +648,30 @@ impl<M: Mode> EnabledDfll<M> {
 ///
 /// As with [`Enabled`], the default value for `N` is `U0`; if left unspecified,
 /// the counter is assumed to be zero.
-pub type EnabledDfll<M, N = U0> = Enabled<Dfll<M>, N>;
+pub type EnabledDfll<I = NoneT, N = U0> = Enabled<Dfll<I>, N>;
 
-impl<OldM: Mode> EnabledDfll<OldM, U1> {
-    /// Helper method allowing to change a mode of [`Dfll`] operation in place.
-    ///
-    /// It is implemented only for an enabled [`Dfll`] having a single user
-    /// (which is a [`EnabledGclk0`]). Without it, it becomes unwieldy to change
-    /// a mode of a [`Dfll`], which is a very common use case.
+impl<I: OptionalDfllSourceId> EnabledDfll<I> {
+    /// Disable the [`Dfll`]
     #[inline]
-    pub fn to_mode<NewM: Mode>(
+    pub fn disable(mut self) -> Dfll<I> {
+        self.0.token.disable();
+        self.0
+    }
+}
+
+impl<Old: OptionalDfllSourceId> EnabledDfll<Old, U1> {
+    #[inline]
+    pub fn into_mode<New, F, R>(
         self,
-        gclk0: EnabledGclk0<DfllId, U1>,
-        mode: NewM,
-    ) -> (EnabledDfll<NewM, U1>, OldM, EnabledGclk0<DfllId, U1>) {
-        let (token, old_mode) = self.0.free();
-        let dfll = Dfll::new(token, mode);
-        (dfll.enable().inc(), old_mode, gclk0)
+        _gclk0: &mut EnabledGclk0<DfllId, U1>,
+        f: F,
+    ) -> (EnabledDfll<New, U1>, R)
+    where
+        New: OptionalDfllSourceId,
+        F: FnOnce(Dfll<Old>) -> (Dfll<New>, R),
+    {
+        let (dfll, r) = f(self.0);
+        (dfll.enable().inc(), r)
     }
 }
 
@@ -685,7 +679,7 @@ impl<OldM: Mode> EnabledDfll<OldM, U1> {
 // Source
 //==============================================================================
 
-impl<M: Mode, N> Source for EnabledDfll<M, N> {
+impl<I: OptionalDfllSourceId, N> Source for EnabledDfll<I, N> {
     type Id = DfllId;
 
     #[inline]

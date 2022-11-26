@@ -74,7 +74,7 @@ pub struct Clocks {
     /// Main system clock, driven at 48 MHz by the DFLL in open loop mode
     pub gclk0: Enabled<gclk::Gclk0<dfll::DfllId>, U1>,
     /// DFLL48 in open loop mode
-    pub dfll: Enabled<dfll::Dfll<dfll::OpenLoop>, U1>,
+    pub dfll: Enabled<dfll::Dfll, U1>,
     /// Always-enabled base oscillator for the [`OscUlp1k`](osculp32k::OscUlp1k)
     /// and [`OscUlp32k`](osculp32k::OscUlp32k) clocks.
     pub osculp32k_base: Enabled<osculp32k::OscUlp32kBase>,
@@ -142,7 +142,7 @@ pub fn clock_system_at_reset(
             gclk,
             mclk,
         };
-        let dfll = Enabled::<_>::new(dfll::Dfll::new(dfll::DfllToken::new(), dfll::OpenLoop));
+        let dfll = Enabled::<_>::new(dfll::Dfll::open_loop(dfll::DfllToken::new()));
         let (gclk0, dfll) = gclk::Gclk0::from_source(gclk::GclkToken::new(), dfll);
         let gclk0 = Enabled::new(gclk0);
         let clocks = Clocks {
