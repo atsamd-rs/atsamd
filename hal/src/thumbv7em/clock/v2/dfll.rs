@@ -358,14 +358,18 @@ pub enum DynDfllSourceId {
 
 pub trait DfllSourceId {
     const DYN: DynDfllSourceId;
+    #[doc(hidden)]
+    type ExtraSettings: Settings;
 }
 
 impl<G: GclkId> DfllSourceId for G {
     const DYN: DynDfllSourceId = DynDfllSourceId::Pclk;
+    type ExtraSettings = settings::Pclk;
 }
 
 impl DfllSourceId for UsbSofId {
     const DYN: DynDfllSourceId = DynDfllSourceId::UsbSof;
+    type ExtraSettings = ();
 }
 
 //==============================================================================
@@ -374,14 +378,18 @@ impl DfllSourceId for UsbSofId {
 
 pub trait OptionalDfllSourceId {
     const DYN: Option<DynDfllSourceId>;
+    #[doc(hidden)]
+    type ModeSettings: Settings;
 }
 
 impl OptionalDfllSourceId for NoneT {
     const DYN: Option<DynDfllSourceId> = None;
+    type ModeSettings = ();
 }
 
 impl<I: SomeDfllSourceId> OptionalDfllSourceId for I {
     const DYN: Option<DynDfllSourceId> = Some(I::DYN);
+    type ModeSettings = settings::ClosedLoop<I::ExtraSettings>;
 }
 
 //==============================================================================
@@ -396,31 +404,129 @@ impl<I: DfllSourceId> SomeDfllSourceId for I {}
 // Settings
 //==============================================================================
 
-struct Settings {
-    src_freq: Hertz,
-    mult_factor: MultFactor,
-    chill_cycle: bool,
-    quick_lock: bool,
-    coarse_max_step: CoarseMaxStep,
-    fine_max_step: FineMaxStep,
-    run_standby: bool,
-    on_demand_mode: bool,
-}
+mod settings {
+    use super::{CoarseMaxStep, FineMaxStep, Hertz, MultFactor};
 
-impl Default for Settings {
-    fn default() -> Self {
-        Settings {
-            src_freq: Hertz(48_000_000),
-            mult_factor: 1,
-            chill_cycle: true,
-            quick_lock: true,
-            coarse_max_step: 1,
-            fine_max_step: 1,
-            run_standby: false,
-            on_demand_mode: true,
+    pub struct Concrete {
+        pub src_freq: Hertz,
+        pub mult_factor: MultFactor,
+        pub chill_cycle: bool,
+        pub quick_lock: bool,
+        pub coarse_max_step: CoarseMaxStep,
+        pub fine_max_step: FineMaxStep,
+        pub run_standby: bool,
+        pub on_demand_mode: bool,
+    }
+
+    impl Default for Concrete {
+        fn default() -> Self {
+            Concrete {
+                src_freq: Hertz(48_000_000),
+                mult_factor: 1,
+                chill_cycle: true,
+                quick_lock: true,
+                coarse_max_step: 1,
+                fine_max_step: 1,
+                run_standby: false,
+                on_demand_mode: true,
+            }
+        }
+    }
+
+    pub struct Generic<T: Settings> {
+        pub mode: T,
+        pub run_standby: bool,
+        pub on_demand_mode: bool,
+    }
+
+    impl<T: Settings> Generic<T> {
+        pub fn new(mode: T) -> Self {
+            Self {
+                mode,
+                run_standby: false,
+                on_demand_mode: true,
+            }
+        }
+    }
+
+    pub struct ClosedLoop<T: Settings> {
+        pub extra: T,
+        pub coarse_max_step: CoarseMaxStep,
+        pub fine_max_step: FineMaxStep,
+    }
+
+    impl<T: Settings> ClosedLoop<T> {
+        pub fn new(extra: T) -> Self {
+            Self {
+                extra,
+                coarse_max_step: 1,
+                fine_max_step: 1,
+            }
+        }
+    }
+
+    pub struct Pclk {
+        pub pclk_freq: Hertz,
+        pub mult_factor: MultFactor,
+        pub chill_cycle: bool,
+        pub quick_lock: bool,
+    }
+
+    impl Pclk {
+        pub fn new(pclk_freq: Hertz, mult_factor: MultFactor) -> Self {
+            Self {
+                pclk_freq,
+                mult_factor,
+                chill_cycle: true,
+                quick_lock: true,
+            }
+        }
+    }
+
+    pub trait Settings {
+        fn settings(&self) -> Concrete;
+    }
+
+    impl Settings for () {
+        fn settings(&self) -> Concrete {
+            Concrete::default()
+        }
+    }
+
+    impl Settings for Pclk {
+        fn settings(&self) -> Concrete {
+            Concrete {
+                src_freq: self.pclk_freq,
+                mult_factor: self.mult_factor,
+                chill_cycle: self.chill_cycle,
+                quick_lock: self.quick_lock,
+                ..Concrete::default()
+            }
+        }
+    }
+
+    impl<T: Settings> Settings for ClosedLoop<T> {
+        fn settings(&self) -> Concrete {
+            Concrete {
+                coarse_max_step: self.coarse_max_step,
+                fine_max_step: self.fine_max_step,
+                ..self.extra.settings()
+            }
+        }
+    }
+
+    impl<T: Settings> Settings for Generic<T> {
+        fn settings(&self) -> Concrete {
+            Concrete {
+                run_standby: self.run_standby,
+                on_demand_mode: self.on_demand_mode,
+                ..self.mode.settings()
+            }
         }
     }
 }
+
+use settings::Settings;
 
 //==============================================================================
 // Dfll
@@ -432,11 +538,12 @@ impl Default for Settings {
 pub struct Dfll<I: OptionalDfllSourceId = NoneT> {
     token: DfllToken,
     src: PhantomData<I>,
-    settings: Settings,
+    settings: settings::Generic<I::ModeSettings>,
 }
 
 impl<I: OptionalDfllSourceId> Dfll<I> {
-    fn new(token: DfllToken, settings: Settings) -> Self {
+    fn new(token: DfllToken, mode: I::ModeSettings) -> Self {
+        let settings = settings::Generic::new(mode);
         Self {
             token,
             src: PhantomData,
@@ -458,8 +565,7 @@ impl Dfll {
     /// that point.
     #[inline]
     pub fn open_loop(token: DfllToken) -> Self {
-        let settings = Settings::default();
-        Self::new(token, settings)
+        Self::new(token, ())
     }
 
     /// Release the resources
@@ -471,9 +577,7 @@ impl Dfll {
 
 impl Dfll<UsbSofId> {
     pub fn from_usb(token: DfllToken) -> Self {
-        let mut settings = Settings::default();
-        settings.src_freq = Hertz(1_000);
-        settings.mult_factor = 48_000;
+        let settings = settings::ClosedLoop::new(());
         Self::new(token, settings)
     }
 
@@ -520,26 +624,25 @@ impl<G: GclkId> Dfll<G> {
         pclk: Pclk<DfllId, G>,
         mult_factor: MultFactor,
     ) -> Self {
-        let mut settings = Settings::default();
-        settings.src_freq = pclk.freq();
-        settings.mult_factor = mult_factor;
-        Self::new(token, settings)
+        let extra = settings::Pclk::new(pclk.freq(), mult_factor);
+        let mode = settings::ClosedLoop::new(extra);
+        Self::new(token, mode)
     }
 
     pub fn free(self) -> (DfllToken, Pclk<DfllId, G>) {
-        let pclk = unsafe { Pclk::new(PclkToken::new(), self.settings.src_freq) };
+        let pclk = unsafe { Pclk::new(PclkToken::new(), self.settings.mode.extra.pclk_freq) };
         (self.token, pclk)
     }
 
     /// Controls the chill cycle functionality. Default value is `true`
     pub fn chill_cycle(mut self, value: bool) -> Self {
-        self.settings.chill_cycle = value;
+        self.settings.mode.extra.chill_cycle = value;
         self
     }
 
     /// Controls quick lock functionality. Default value is `true`
     pub fn quick_lock(mut self, value: bool) -> Self {
-        self.settings.quick_lock = value;
+        self.settings.mode.extra.quick_lock = value;
         self
     }
 }
@@ -553,7 +656,7 @@ impl<I: SomeDfllSourceId> Dfll<I> {
     /// be incorrect
     #[inline]
     pub fn coarse_max_step(mut self, coarse_max_step: CoarseMaxStep) -> Self {
-        self.settings.coarse_max_step = coarse_max_step;
+        self.settings.mode.coarse_max_step = coarse_max_step;
         self
     }
 
@@ -565,7 +668,7 @@ impl<I: SomeDfllSourceId> Dfll<I> {
     /// be incorrect
     #[inline]
     pub fn fine_max_step(mut self, fine_max_step: FineMaxStep) -> Self {
-        self.settings.fine_max_step = fine_max_step;
+        self.settings.mode.fine_max_step = fine_max_step;
         self
     }
 }
@@ -574,7 +677,8 @@ impl<I: OptionalDfllSourceId> Dfll<I> {
     #[inline]
     pub fn freq(&self) -> Hertz {
         // Valid for all modes based on default values
-        Hertz(self.settings.src_freq.0 * self.settings.mult_factor as u32)
+        let concrete = self.settings.settings();
+        Hertz(concrete.src_freq.0 * concrete.mult_factor as u32)
     }
 
     /// Controls the clock source behaviour during standby
@@ -604,6 +708,7 @@ impl<I: OptionalDfllSourceId> Dfll<I> {
     /// This method modifies hardware to match the configuration stored within
     #[inline]
     pub fn enable(mut self) -> EnabledDfll<I> {
+        let concrete = self.settings.settings();
         match I::DYN {
             None => {
                 self.token.set_mode(Mode::OpenLoop);
@@ -612,9 +717,9 @@ impl<I: OptionalDfllSourceId> Dfll<I> {
                 self.token.set_mode(Mode::ClosedLoop);
                 match id {
                     DynDfllSourceId::Pclk => {
-                        self.token.set_mult_factor(self.settings.mult_factor);
-                        self.token.set_chill_cycle(self.settings.chill_cycle);
-                        self.token.set_chill_cycle(self.settings.quick_lock);
+                        self.token.set_mult_factor(concrete.mult_factor);
+                        self.token.set_chill_cycle(concrete.chill_cycle);
+                        self.token.set_chill_cycle(concrete.quick_lock);
                     }
                     DynDfllSourceId::UsbSof => {
                         self.token.set_usb_clock_recovery_mode(true);
@@ -623,13 +728,12 @@ impl<I: OptionalDfllSourceId> Dfll<I> {
                         self.token.set_quick_lock(true);
                     }
                 }
-                self.token
-                    .set_coarse_max_step(self.settings.coarse_max_step);
-                self.token.set_fine_max_step(self.settings.fine_max_step);
+                self.token.set_coarse_max_step(concrete.coarse_max_step);
+                self.token.set_fine_max_step(concrete.fine_max_step);
             }
         }
-        self.token.set_on_demand_mode(self.settings.on_demand_mode);
-        self.token.set_run_standby(self.settings.run_standby);
+        self.token.set_on_demand_mode(concrete.on_demand_mode);
+        self.token.set_run_standby(concrete.run_standby);
         self.token.enable();
         Enabled::new(self)
     }
