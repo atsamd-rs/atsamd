@@ -300,10 +300,6 @@ pub trait DfllSourceId {
     /// Corresponding variant of [`DynDfllSourceId`]
     const DYN: DynDfllSourceId;
 
-    // Resource type to store for the duration of [`Dfll`]'s existence
-    #[doc(hidden)]
-    type Resource;
-
     /// [`settings`] type for the reference clock source
     #[doc(hidden)]
     type Settings: Settings;
@@ -311,13 +307,11 @@ pub trait DfllSourceId {
 
 impl<G: GclkId> DfllSourceId for G {
     const DYN: DynDfllSourceId = DynDfllSourceId::Pclk;
-    type Resource = Pclk<DfllId, G>;
-    type Settings = settings::Pclk;
+    type Settings = settings::Pclk<G>;
 }
 
 impl DfllSourceId for UsbSofId {
     const DYN: DynDfllSourceId = DynDfllSourceId::UsbSof;
-    type Resource = ();
     type Settings = settings::Usb;
 }
 
@@ -333,10 +327,6 @@ pub trait OptionalDfllSourceId {
     /// reference clock, the [`Dfll`] is in open-loop mode.
     const DYN: Option<DynDfllSourceId>;
 
-    // Resource type to store for the duration of [`Dfll`]'s existence
-    #[doc(hidden)]
-    type Resource;
-
     /// [`settings`] type for the operating mode
     #[doc(hidden)]
     type Settings: Settings;
@@ -344,13 +334,11 @@ pub trait OptionalDfllSourceId {
 
 impl OptionalDfllSourceId for NoneT {
     const DYN: Option<DynDfllSourceId> = None;
-    type Resource = ();
     type Settings = settings::OpenLoop;
 }
 
 impl<I: SomeDfllSourceId> OptionalDfllSourceId for I {
     const DYN: Option<DynDfllSourceId> = Some(I::DYN);
-    type Resource = I::Resource;
     type Settings = settings::ClosedLoop<I::Settings>;
 }
 
@@ -379,7 +367,8 @@ impl<I: DfllSourceId> SomeDfllSourceId for I {}
 ///
 /// [`Dfll`]: super::Dfll
 mod settings {
-    use super::{CoarseMaxStep, FineMaxStep, Hertz, MultFactor};
+    use super::super::pclk;
+    use super::{CoarseMaxStep, DfllId, FineMaxStep, GclkId, Hertz, MultFactor};
 
     /// Collection of all possible [`Dfll`] settings
     ///
@@ -494,27 +483,27 @@ mod settings {
     /// Collection of [`Dfll`] settings when used in closed-loop mode with a
     /// [`Pclk`] reference
     ///
-    /// This struct stores the [`Pclk`] frequency and multiplication factor,
-    /// which determine the precise [`Dfll`] frequency, as well as flags to
-    /// control the chill-cycle and quick-lock features. Note that these flags
-    /// indicates whether the feature is *enabled*, while the corresponding
-    /// register bits indicate whether the feature is *disabled*.
+    /// This struct stores the [`Pclk`] and multiplication factor, which
+    /// determine the precise [`Dfll`] frequency, as well as flags to control
+    /// the chill-cycle and quick-lock features. Note that these flags indicate
+    /// whether the feature is *enabled*, while the corresponding register bits
+    /// indicate whether the feature is *disabled*.
     ///
     /// [`Dfll`]: super::Dfll
-    /// [`Pclk`]: super::Pclk
-    pub struct Pclk {
-        pub pclk_freq: Hertz,
+    /// [`Pclk`]: pclk::Pclk
+    pub struct Pclk<G: GclkId> {
+        pub pclk: pclk::Pclk<DfllId, G>,
         pub mult_factor: MultFactor,
         pub chill_cycle: bool,
         pub quick_lock: bool,
     }
 
-    impl Pclk {
+    impl<G: GclkId> Pclk<G> {
         /// Create a new instance of [`Pclk`] with default settings
         #[inline]
-        pub fn new(pclk_freq: Hertz, mult_factor: MultFactor) -> Self {
+        pub fn new(pclk: pclk::Pclk<DfllId, G>, mult_factor: MultFactor) -> Self {
             Self {
-                pclk_freq,
+                pclk,
                 mult_factor,
                 chill_cycle: true,
                 quick_lock: true,
@@ -585,11 +574,11 @@ mod settings {
         }
     }
 
-    impl Settings for Pclk {
+    impl<G: GclkId> Settings for Pclk<G> {
         #[inline]
         fn all(&self) -> All {
             All {
-                src_freq: self.pclk_freq,
+                src_freq: self.pclk.freq(),
                 mult_factor: self.mult_factor,
                 chill_cycle: self.chill_cycle,
                 quick_lock: self.quick_lock,
@@ -610,19 +599,14 @@ use settings::Settings;
 /// It is generic over the supported modes of operation
 pub struct Dfll<I: OptionalDfllSourceId = NoneT> {
     token: DfllToken,
-    resource: I::Resource,
     settings: settings::Minimum<I::Settings>,
 }
 
 impl<I: OptionalDfllSourceId> Dfll<I> {
     #[inline]
-    fn new(token: DfllToken, resource: I::Resource, mode: I::Settings) -> Self {
+    fn new(token: DfllToken, mode: I::Settings) -> Self {
         let settings = settings::Minimum::new(mode);
-        Self {
-            token,
-            resource,
-            settings,
-        }
+        Self { token, settings }
     }
 }
 
@@ -639,7 +623,7 @@ impl Dfll {
     /// that point.
     #[inline]
     pub fn open_loop(token: DfllToken) -> Self {
-        Self::new(token, (), settings::OpenLoop)
+        Self::new(token, settings::OpenLoop)
     }
 
     /// Release the resources
@@ -653,7 +637,7 @@ impl Dfll<UsbSofId> {
     #[inline]
     pub fn from_usb(token: DfllToken) -> Self {
         let settings = settings::ClosedLoop::new(settings::Usb);
-        Self::new(token, (), settings)
+        Self::new(token, settings)
     }
 
     #[inline]
@@ -702,14 +686,14 @@ impl<G: GclkId> Dfll<G> {
         pclk: Pclk<DfllId, G>,
         mult_factor: MultFactor,
     ) -> Self {
-        let source = settings::Pclk::new(pclk.freq(), mult_factor);
+        let source = settings::Pclk::new(pclk, mult_factor);
         let mode = settings::ClosedLoop::new(source);
-        Self::new(token, pclk, mode)
+        Self::new(token, mode)
     }
 
     #[inline]
     pub fn free(self) -> (DfllToken, Pclk<DfllId, G>) {
-        (self.token, self.resource)
+        (self.token, self.settings.mode.source.pclk)
     }
 
     /// Controls the chill cycle functionality. Default value is `true`
