@@ -146,7 +146,7 @@ use crate::time::Hertz;
 use crate::typelevel::{NoneT, PrivateIncrement, Sealed};
 
 use super::gclk::{EnabledGclk0, GclkId};
-use super::pclk::{Pclk, PclkToken};
+use super::pclk::Pclk;
 use super::{Enabled, Source};
 
 //==============================================================================
@@ -189,7 +189,7 @@ impl DfllToken {
 
     #[inline]
     fn oscctrl(&self) -> &crate::pac::oscctrl::RegisterBlock {
-        // SAFETY: The `Token` types in the `clock` module only ever use shared
+        // Safety: The `Token` types in the `clock` module only ever use shared
         // references when dealing with MMIO registers wrapped in `UnsafeCell`s,
         // so it is safe to conjure a new one.
         unsafe { &*crate::pac::OSCCTRL::ptr() }
@@ -240,7 +240,9 @@ impl DfllToken {
         });
         self.wait_sync_dfllctrlb();
         if settings.closed_loop {
-            self.dfllmul().modify(|_, w| unsafe {
+            self.dfllmul().modify(|_, w|
+            // Safety: All bit patterns are valid for these fields
+            unsafe {
                 w.mul().bits(settings.mult_factor);
                 w.cstep().bits(settings.coarse_max_step);
                 w.fstep().bits(settings.fine_max_step)
@@ -298,6 +300,10 @@ pub trait DfllSourceId {
     /// Corresponding variant of [`DynDfllSourceId`]
     const DYN: DynDfllSourceId;
 
+    // Resource type to store for the duration of [`Dfll`]'s existence
+    #[doc(hidden)]
+    type Resource;
+
     /// [`settings`] type for the reference clock source
     #[doc(hidden)]
     type Settings: Settings;
@@ -305,11 +311,13 @@ pub trait DfllSourceId {
 
 impl<G: GclkId> DfllSourceId for G {
     const DYN: DynDfllSourceId = DynDfllSourceId::Pclk;
+    type Resource = Pclk<DfllId, G>;
     type Settings = settings::Pclk;
 }
 
 impl DfllSourceId for UsbSofId {
     const DYN: DynDfllSourceId = DynDfllSourceId::UsbSof;
+    type Resource = ();
     type Settings = settings::Usb;
 }
 
@@ -325,6 +333,10 @@ pub trait OptionalDfllSourceId {
     /// reference clock, the [`Dfll`] is in open-loop mode.
     const DYN: Option<DynDfllSourceId>;
 
+    // Resource type to store for the duration of [`Dfll`]'s existence
+    #[doc(hidden)]
+    type Resource;
+
     /// [`settings`] type for the operating mode
     #[doc(hidden)]
     type Settings: Settings;
@@ -332,11 +344,13 @@ pub trait OptionalDfllSourceId {
 
 impl OptionalDfllSourceId for NoneT {
     const DYN: Option<DynDfllSourceId> = None;
+    type Resource = ();
     type Settings = settings::OpenLoop;
 }
 
 impl<I: SomeDfllSourceId> OptionalDfllSourceId for I {
     const DYN: Option<DynDfllSourceId> = Some(I::DYN);
+    type Resource = I::Resource;
     type Settings = settings::ClosedLoop<I::Settings>;
 }
 
@@ -596,14 +610,19 @@ use settings::Settings;
 /// It is generic over the supported modes of operation
 pub struct Dfll<I: OptionalDfllSourceId = NoneT> {
     token: DfllToken,
+    resource: I::Resource,
     settings: settings::Minimum<I::Settings>,
 }
 
 impl<I: OptionalDfllSourceId> Dfll<I> {
     #[inline]
-    fn new(token: DfllToken, mode: I::Settings) -> Self {
+    fn new(token: DfllToken, resource: I::Resource, mode: I::Settings) -> Self {
         let settings = settings::Minimum::new(mode);
-        Self { token, settings }
+        Self {
+            token,
+            resource,
+            settings,
+        }
     }
 }
 
@@ -620,7 +639,7 @@ impl Dfll {
     /// that point.
     #[inline]
     pub fn open_loop(token: DfllToken) -> Self {
-        Self::new(token, settings::OpenLoop)
+        Self::new(token, (), settings::OpenLoop)
     }
 
     /// Release the resources
@@ -634,7 +653,7 @@ impl Dfll<UsbSofId> {
     #[inline]
     pub fn from_usb(token: DfllToken) -> Self {
         let settings = settings::ClosedLoop::new(settings::Usb);
-        Self::new(token, settings)
+        Self::new(token, (), settings)
     }
 
     #[inline]
@@ -667,7 +686,7 @@ impl<G: GclkId> Dfll<G> {
         }
         // Cast is fine because division result cannot be greater than u16::MAX
         let mult_factor = (48_000_000 / freq) as u16;
-        // SAFETY: The multiplication factor is guaranteed to be valid
+        // Safety: The multiplication factor is guaranteed to be valid
         unsafe { Self::from_pclk_unchecked(token, pclk, mult_factor) }
     }
 
@@ -685,13 +704,12 @@ impl<G: GclkId> Dfll<G> {
     ) -> Self {
         let source = settings::Pclk::new(pclk.freq(), mult_factor);
         let mode = settings::ClosedLoop::new(source);
-        Self::new(token, mode)
+        Self::new(token, pclk, mode)
     }
 
     #[inline]
     pub fn free(self) -> (DfllToken, Pclk<DfllId, G>) {
-        let pclk = unsafe { Pclk::new(PclkToken::new(), self.settings.mode.source.pclk_freq) };
-        (self.token, pclk)
+        (self.token, self.resource)
     }
 
     /// Controls the chill cycle functionality. Default value is `true`
