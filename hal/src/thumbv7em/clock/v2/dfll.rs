@@ -140,13 +140,10 @@
 //! [`clock_system_at_reset`]: super::clock_system_at_reset
 //! [`clock` module documentation]: super
 
-use core::marker::PhantomData;
-
 use typenum::{U0, U1};
 
-use crate::time::{Hertz, U32Ext};
+use crate::time::Hertz;
 use crate::typelevel::{NoneT, PrivateIncrement, Sealed};
-//use crate::usb::UsbSofClk;
 
 use super::gclk::{EnabledGclk0, GclkId};
 use super::pclk::{Pclk, PclkToken};
@@ -192,6 +189,9 @@ impl DfllToken {
 
     #[inline]
     fn oscctrl(&self) -> &crate::pac::oscctrl::RegisterBlock {
+        // SAFETY: The `Token` types in the `clock` module only ever use shared
+        // references when dealing with MMIO registers wrapped in `UnsafeCell`s,
+        // so it is safe to conjure a new one.
         unsafe { &*crate::pac::OSCCTRL::ptr() }
     }
 
@@ -203,12 +203,6 @@ impl DfllToken {
     #[inline]
     fn dfllctrlb(&self) -> &crate::pac::oscctrl::DFLLCTRLB {
         &self.oscctrl().dfllctrlb
-    }
-
-    #[allow(dead_code)]
-    #[inline]
-    fn dfllval(&self) -> &crate::pac::oscctrl::DFLLVAL {
-        &self.oscctrl().dfllval
     }
 
     #[inline]
@@ -231,25 +225,32 @@ impl DfllToken {
         while self.dfllsync().read().dfllmul().bit() {}
     }
 
-    #[allow(dead_code)]
-    #[inline]
-    fn wait_sync_dfllval(&self) {
-        while self.dfllsync().read().dfllval().bit() {}
-    }
-
     #[inline]
     fn wait_sync_dfllctrlb(&self) {
         while self.dfllsync().read().dfllctrlb().bit() {}
     }
 
     #[inline]
-    fn set_on_demand_mode(&mut self, value: bool) {
-        self.dfllctrla().modify(|_, w| w.ondemand().bit(value));
-    }
-
-    #[inline]
-    fn set_run_standby(&mut self, value: bool) {
-        self.dfllctrla().modify(|_, w| w.runstdby().bit(value));
+    fn configure(&mut self, settings: settings::All) {
+        self.dfllctrlb().modify(|_, w| {
+            w.mode().bit(settings.closed_loop);
+            w.usbcrm().bit(settings.usb_recovery);
+            w.ccdis().bit(!settings.chill_cycle);
+            w.qldis().bit(!settings.quick_lock)
+        });
+        self.wait_sync_dfllctrlb();
+        if settings.closed_loop {
+            self.dfllmul().modify(|_, w| unsafe {
+                w.mul().bits(settings.mult_factor);
+                w.cstep().bits(settings.coarse_max_step);
+                w.fstep().bits(settings.fine_max_step)
+            });
+            self.wait_sync_dfllmul();
+        }
+        self.dfllctrla().modify(|_, w| {
+            w.runstdby().bit(settings.run_standby);
+            w.ondemand().bit(settings.on_demand)
+        });
     }
 
     #[inline]
@@ -263,56 +264,6 @@ impl DfllToken {
         self.dfllctrla().modify(|_, w| w.enable().clear_bit());
         self.wait_sync_enable();
     }
-
-    #[inline]
-    fn set_usb_clock_recovery_mode(&mut self, value: bool) {
-        self.dfllctrlb().modify(|_, w| w.usbcrm().bit(value));
-        self.wait_sync_dfllctrlb();
-    }
-
-    #[inline]
-    fn set_quick_lock(&mut self, value: bool) {
-        // QLDIS is Quick Lock Disable register; thus value has to be negated
-        self.dfllctrlb().modify(|_, w| w.qldis().bit(!value));
-        self.wait_sync_dfllctrlb();
-    }
-
-    #[inline]
-    fn set_chill_cycle(&mut self, value: bool) {
-        // CCDIS is Chill Cycle Disable register; thus value has to be negated
-        self.dfllctrlb().modify(|_, w| w.ccdis().bit(!value));
-        self.wait_sync_dfllctrlb();
-    }
-
-    #[inline]
-    fn set_mode(&mut self, mode: Mode) {
-        let bit = match mode {
-            Mode::OpenLoop => false,
-            Mode::ClosedLoop => true,
-        };
-        self.dfllctrlb().modify(|_, w| w.mode().bit(bit));
-        self.wait_sync_dfllctrlb();
-    }
-
-    #[inline]
-    fn set_fine_max_step(&mut self, value: u8) {
-        self.dfllmul()
-            .modify(|_, w| unsafe { w.fstep().bits(value) });
-        self.wait_sync_dfllmul();
-    }
-
-    #[inline]
-    fn set_coarse_max_step(&mut self, value: u8) {
-        self.dfllmul()
-            .modify(|_, w| unsafe { w.cstep().bits(value) });
-        self.wait_sync_dfllmul();
-    }
-
-    #[inline]
-    fn set_mult_factor(&mut self, value: u16) {
-        self.dfllmul().modify(|_, w| unsafe { w.mul().bits(value) });
-        self.wait_sync_dfllmul();
-    }
 }
 
 //==============================================================================
@@ -322,19 +273,6 @@ impl DfllToken {
 type MultFactor = u16;
 type CoarseMaxStep = u8;
 type FineMaxStep = u8;
-
-//==============================================================================
-// Mode
-//==============================================================================
-
-/// Value-level version of [`Mode`]
-///
-/// Represents the loop mode of the DFLL
-#[derive(Copy, Clone, PartialEq, Eq)]
-enum Mode {
-    OpenLoop,
-    ClosedLoop,
-}
 
 //==============================================================================
 // UsbSofId
@@ -357,19 +295,22 @@ pub enum DynDfllSourceId {
 //==============================================================================
 
 pub trait DfllSourceId {
+    /// Corresponding variant of [`DynDfllSourceId`]
     const DYN: DynDfllSourceId;
+
+    /// [`settings`] type for the reference clock source
     #[doc(hidden)]
-    type SourceSettings: Settings;
+    type Settings: Settings;
 }
 
 impl<G: GclkId> DfllSourceId for G {
     const DYN: DynDfllSourceId = DynDfllSourceId::Pclk;
-    type SourceSettings = settings::Pclk;
+    type Settings = settings::Pclk;
 }
 
 impl DfllSourceId for UsbSofId {
     const DYN: DynDfllSourceId = DynDfllSourceId::UsbSof;
-    type SourceSettings = settings::Usb;
+    type Settings = settings::Usb;
 }
 
 //==============================================================================
@@ -377,19 +318,26 @@ impl DfllSourceId for UsbSofId {
 //==============================================================================
 
 pub trait OptionalDfllSourceId {
+    /// Optional variant of [`DynDfllSourceId`]
+    ///
+    /// When there is [`Some`] [`DynDfllSourceId`], it specifies the [`Dfll`]'s
+    /// reference clock source in closed-loop mode. Otherwise, when there is no
+    /// reference clock, the [`Dfll`] is in open-loop mode.
     const DYN: Option<DynDfllSourceId>;
+
+    /// [`settings`] type for the operating mode
     #[doc(hidden)]
-    type ModeSettings: Settings;
+    type Settings: Settings;
 }
 
 impl OptionalDfllSourceId for NoneT {
     const DYN: Option<DynDfllSourceId> = None;
-    type ModeSettings = settings::OpenLoop;
+    type Settings = settings::OpenLoop;
 }
 
 impl<I: SomeDfllSourceId> OptionalDfllSourceId for I {
     const DYN: Option<DynDfllSourceId> = Some(I::DYN);
-    type ModeSettings = settings::ClosedLoop<I::SourceSettings>;
+    type Settings = settings::ClosedLoop<I::Settings>;
 }
 
 //==============================================================================
@@ -404,18 +352,37 @@ impl<I: DfllSourceId> SomeDfllSourceId for I {}
 // Settings
 //==============================================================================
 
+/// Store and retrieve [`Dfll`] settings in different modes
+///
+/// Many of the [`Dfll`] settings are not valid or required in every operating
+/// mode. This module provides a framework to store only the minimum required
+/// settings for each mode in a generic way. Specifically, the [`Minimum`]
+/// struct stores the few settings relevant in all modes, along with a generic,
+/// mode-specific type. The [`Settings`] trait unifies all concrete instances
+/// of [`Minimum`] by providing a function to return a collection of [`All`]
+/// settings. Each sub-struct within [`Minimum`] implements [`Settings`] and is
+/// responsible for filling the relevent fields of [`All`].
+///
+/// [`Dfll`]: super::Dfll
 mod settings {
     use super::{CoarseMaxStep, FineMaxStep, Hertz, MultFactor};
 
+    /// Collection of all possible [`Dfll`] settings
+    ///
+    /// This struct is returned by the [`Settings`] trait.
+    ///
+    /// [`Dfll`]: super::Dfll
     pub struct All {
         pub src_freq: Hertz,
+        pub closed_loop: bool,
+        pub usb_recovery: bool,
         pub mult_factor: MultFactor,
         pub chill_cycle: bool,
         pub quick_lock: bool,
         pub coarse_max_step: CoarseMaxStep,
         pub fine_max_step: FineMaxStep,
         pub run_standby: bool,
-        pub on_demand_mode: bool,
+        pub on_demand: bool,
     }
 
     impl Default for All {
@@ -423,36 +390,66 @@ mod settings {
         fn default() -> Self {
             All {
                 src_freq: Hertz(48_000_000),
+                closed_loop: false,
+                usb_recovery: false,
                 mult_factor: 1,
                 chill_cycle: true,
                 quick_lock: true,
                 coarse_max_step: 1,
                 fine_max_step: 1,
                 run_standby: false,
-                on_demand_mode: true,
+                on_demand: true,
             }
         }
     }
 
+    /// Collection of [`Dfll`] settings containing only the minimum required
+    /// for the specific mode
+    ///
+    /// Many [`Dfll`] settings are not valid or required in every operating
+    /// mode. This struct provides a framework to store and retrieve only the
+    /// minimum settings for each mode in a generic way.
+    ///
+    /// Specifically, it stores flags for the `RUNSTDBY` and `ONDEMAND` fields,
+    /// which are relevant in every mode, and it stores a collection of
+    /// mode-specific types, `T`. This can be either [`OpenLoop`] or
+    /// [`ClosedLoop`], which both implement the [`Settings`] trait.
+    ///
+    /// [`Dfll`]: super::Dfll
     pub struct Minimum<T: Settings> {
         pub mode: T,
         pub run_standby: bool,
-        pub on_demand_mode: bool,
+        pub on_demand: bool,
     }
 
     impl<T: Settings> Minimum<T> {
+        /// Create a new instance of [`Minimum`] with default settings
         #[inline]
         pub fn new(mode: T) -> Self {
             Self {
                 mode,
                 run_standby: false,
-                on_demand_mode: true,
+                on_demand: true,
             }
         }
     }
 
+    /// Collection of settings specific to open-loop [`Dfll`] operation
+    ///
+    /// Right now, this struct is empty, as none of the settings are relevant to
+    /// open-loop operation.
+    ///
+    /// [`Dfll`]: super::Dfll
     pub struct OpenLoop;
 
+    /// Collection of settings specific to closed-loop [`Dfll`] operation
+    ///
+    /// This struct stores the maximum step size for the coarse and fine
+    /// adjustments in closed-loop mode. It also stores an additional type, `T`,
+    /// containing settings specific to the reference clock source, which can be
+    /// either [`Pclk`] or [`Usb`]. Both implement the [`Settings`] trait.
+    ///
+    /// [`Dfll`]: super::Dfll
     pub struct ClosedLoop<T: Settings> {
         pub source: T,
         pub coarse_max_step: CoarseMaxStep,
@@ -460,6 +457,7 @@ mod settings {
     }
 
     impl<T: Settings> ClosedLoop<T> {
+        /// Create a new instance of [`ClosedLoop`] with default settings
         #[inline]
         pub fn new(source: T) -> Self {
             Self {
@@ -470,8 +468,27 @@ mod settings {
         }
     }
 
+    /// Collection of settings specific to [`Dfll`] USB recovery mode
+    ///
+    /// Right now, this struct is empty, because none of the settings are
+    /// specific to USB recovery mode. However, its implementation of
+    /// [`Settings`] fills both the `src_freq` and `mult_factor` fields of
+    /// [`All`], because these are constant and known for USB recovery mode.
+    ///
+    /// [`Dfll`]: super::Dfll
     pub struct Usb;
 
+    /// Collection of [`Dfll`] settings when used in closed-loop mode with a
+    /// [`Pclk`] reference
+    ///
+    /// This struct stores the [`Pclk`] frequency and multiplication factor,
+    /// which determine the precise [`Dfll`] frequency, as well as flags to
+    /// control the chill-cycle and quick-lock features. Note that these flags
+    /// indicates whether the feature is *enabled*, while the corresponding
+    /// register bits indicate whether the feature is *disabled*.
+    ///
+    /// [`Dfll`]: super::Dfll
+    /// [`Pclk`]: super::Pclk
     pub struct Pclk {
         pub pclk_freq: Hertz,
         pub mult_factor: MultFactor,
@@ -480,6 +497,7 @@ mod settings {
     }
 
     impl Pclk {
+        /// Create a new instance of [`Pclk`] with default settings
         #[inline]
         pub fn new(pclk_freq: Hertz, mult_factor: MultFactor) -> Self {
             Self {
@@ -491,7 +509,24 @@ mod settings {
         }
     }
 
+    /// Generic interface to convert the [`Minimum`] settings into a collection
+    /// of [`All`] settings
+    ///
+    /// Because many of the [`Dfll`] settings are not valid or relevant in every
+    /// operating mode, we only want to store the [`Minimum`] required settings
+    /// for each. To do so, we must have a generic interface to retrieve
+    /// settings in every mode.
+    ///
+    /// This trait provides a recursive interface to yield a collection of
+    /// [`All`] [`Dfll`] settings. Each implementer of [`Settings`] is required
+    /// to fill its respective fields of [`All`] and recursively defer other
+    /// fields to any sub-structs. At the bottom of the stack, structs can defer
+    /// to the [`Default`] settings for [`All`].
+    ///
+    /// [`Dfll`]: super::Dfll
     pub trait Settings {
+        /// Fill the respective fields of [`All`] and recursively defer any
+        /// remaining fields to sub-structs or the [`Default`] settings
         fn all(&self) -> All;
     }
 
@@ -500,7 +535,7 @@ mod settings {
         fn all(&self) -> All {
             All {
                 run_standby: self.run_standby,
-                on_demand_mode: self.on_demand_mode,
+                on_demand: self.on_demand,
                 ..self.mode.all()
             }
         }
@@ -517,6 +552,7 @@ mod settings {
         #[inline]
         fn all(&self) -> All {
             All {
+                closed_loop: true,
                 coarse_max_step: self.coarse_max_step,
                 fine_max_step: self.fine_max_step,
                 ..self.source.all()
@@ -528,6 +564,7 @@ mod settings {
         #[inline]
         fn all(&self) -> All {
             All {
+                usb_recovery: true,
                 src_freq: Hertz(1_000),
                 mult_factor: 48_000,
                 ..All::default()
@@ -560,19 +597,14 @@ use settings::Settings;
 /// It is generic over the supported modes of operation
 pub struct Dfll<I: OptionalDfllSourceId = NoneT> {
     token: DfllToken,
-    src: PhantomData<I>,
-    settings: settings::Minimum<I::ModeSettings>,
+    settings: settings::Minimum<I::Settings>,
 }
 
 impl<I: OptionalDfllSourceId> Dfll<I> {
     #[inline]
-    fn new(token: DfllToken, mode: I::ModeSettings) -> Self {
+    fn new(token: DfllToken, mode: I::Settings) -> Self {
         let settings = settings::Minimum::new(mode);
-        Self {
-            token,
-            src: PhantomData,
-            settings,
-        }
+        Self { token, settings }
     }
 }
 
@@ -628,15 +660,15 @@ impl<G: GclkId> Dfll<G> {
     /// Loop (DFLL48M) Characteristics)
     #[inline]
     pub fn from_pclk(token: DfllToken, pclk: Pclk<DfllId, G>) -> Self {
-        let pclk_freq = pclk.freq().0;
-        let min_pclk_freq = 48.mhz().0 / MultFactor::MAX as u32;
-
-        if pclk_freq < min_pclk_freq || pclk_freq > 33_000 {
+        const MIN: u32 = 48_000_000 / MultFactor::MAX as u32;
+        const MAX: u32 = 33_000;
+        let freq = pclk.freq().0;
+        if freq < MIN || freq > MAX {
             panic!("Invalid Pclk<DfllId, _> input frequency");
         }
-
         // Cast is fine because division result cannot be greater than u16::MAX
-        let mult_factor = (48.mhz().0 / pclk_freq) as u16;
+        let mult_factor = (48_000_000 / freq) as u16;
+        // SAFETY: The multiplication factor is guaranteed to be valid
         unsafe { Self::from_pclk_unchecked(token, pclk, mult_factor) }
     }
 
@@ -729,8 +761,8 @@ impl<I: OptionalDfllSourceId> Dfll<I> {
     /// See Datasheet c. 13.5 for general information; 28.6.4.1 for [`Dfll`]
     /// specific details
     #[inline]
-    pub fn on_demand_mode(mut self, value: bool) -> Self {
-        self.settings.on_demand_mode = value;
+    pub fn on_demand(mut self, value: bool) -> Self {
+        self.settings.on_demand = value;
         self
     }
 
@@ -739,25 +771,7 @@ impl<I: OptionalDfllSourceId> Dfll<I> {
     /// This method modifies hardware to match the configuration stored within
     #[inline]
     pub fn enable(mut self) -> EnabledDfll<I> {
-        let settings = self.settings.all();
-        match I::DYN {
-            None => {
-                self.token.set_mode(Mode::OpenLoop);
-            }
-            Some(id) => {
-                self.token.set_mode(Mode::ClosedLoop);
-                if let DynDfllSourceId::UsbSof = id {
-                    self.token.set_usb_clock_recovery_mode(true);
-                }
-                self.token.set_mult_factor(settings.mult_factor);
-                self.token.set_chill_cycle(settings.chill_cycle);
-                self.token.set_quick_lock(settings.quick_lock);
-                self.token.set_coarse_max_step(settings.coarse_max_step);
-                self.token.set_fine_max_step(settings.fine_max_step);
-            }
-        }
-        self.token.set_on_demand_mode(settings.on_demand_mode);
-        self.token.set_run_standby(settings.run_standby);
+        self.token.configure(self.settings.all());
         self.token.enable();
         Enabled::new(self)
     }
