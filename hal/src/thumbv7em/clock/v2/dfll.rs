@@ -411,9 +411,9 @@ mod settings {
     /// minimum settings for each mode in a generic way.
     ///
     /// Specifically, it stores flags for the `RUNSTDBY` and `ONDEMAND` fields,
-    /// which are relevant in every mode, and it stores a collection of
-    /// mode-specific types, `T`. This can be either [`OpenLoop`] or
-    /// [`ClosedLoop`], which both implement the [`Settings`] trait.
+    /// which are relevant in every mode, and it stores a mode-specific type,
+    /// `T`. This can be either [`OpenLoop`] or [`ClosedLoop`], which both
+    /// implement the [`Settings`] trait.
     ///
     /// [`Dfll`]: super::Dfll
     pub struct Minimum<T: Settings> {
@@ -470,10 +470,9 @@ mod settings {
 
     /// Collection of settings specific to [`Dfll`] USB recovery mode
     ///
-    /// Right now, this struct is empty, because none of the settings are
-    /// specific to USB recovery mode. However, its implementation of
-    /// [`Settings`] fills both the `src_freq` and `mult_factor` fields of
-    /// [`All`], because these are constant and known for USB recovery mode.
+    /// Right now, this struct is empty, but its implementation of [`Settings`]
+    /// fills several fields of [`All`] with known, constant values for USB
+    /// recovery mode.
     ///
     /// [`Dfll`]: super::Dfll
     pub struct Usb;
