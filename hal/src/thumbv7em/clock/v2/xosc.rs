@@ -233,22 +233,6 @@ use super::{Enabled, Source};
 ///
 /// [`XoscToken`] is generic over the [`XoscId`], where each corresponding token
 /// represents one of the two respective [`Xosc`]s.
-//
-// # Internal notes
-//
-// `XoscToken` is generic over the `XoscId`, and each corresponding instance is
-// a singleton. There should never be more than one instance of `XoscToken` with
-// a given `XoscId`, because `XoscToken` relies on this fact for memory safety.
-//
-// Users see `XoscToken` as merely an opaque token. but internally, `XoscToken`
-// is also used as a register interface. The tokens are zero-sized, so they can
-// be carried by all clock types without introducing any memory bloat.
-//
-// As part of that register interface, each `XoscToken` can access its
-// corresponding `XOSCCTRL` register. That each `XoscToken` is a singleton
-// guarantees each corresponding register is written from only one location.
-// This allows `XoscToken` to be `Sync`, even though the PAC `OSCCTRL` struct is
-// not.
 pub struct XoscToken<X: XoscId> {
     id: PhantomData<X>,
 }
@@ -259,7 +243,8 @@ impl<X: XoscId> XoscToken<X> {
     /// # Safety
     ///
     /// Each `XoscToken`s is a singleton. There must never be two simulatenous
-    /// instances with the same [`XoscId`].
+    /// instances with the same [`XoscId`]. See the notes on `Token` types and
+    /// memory safety in the root of the `clock` module for more details.
     #[inline]
     pub(super) unsafe fn new() -> Self {
         Self { id: PhantomData }
@@ -268,15 +253,11 @@ impl<X: XoscId> XoscToken<X> {
     /// Return a reference to the corresponding XOSCCTRL register
     #[inline]
     fn xoscctrl(&self) -> &XOSCCTRL {
-        // Safety: `XOSCCTRL` is not `Sync`, because it has interior mutability.
-        // However, each `XoscToken` represents only one of two XOSCs, and
-        // this function only ever returns a reference to the corresponding
-        // `XOSCCTRL`, so there is no risk of accessing the same register from
-        // multiple execution contexts. Division of the PAC `OSCCTRL` struct
-        // into individual `XoscTokens`s based on `XoscId` is what lets us make
-        // each `XoscToken` `Sync`.
-        let oscctrl = unsafe { &*crate::pac::OSCCTRL::ptr() };
-        &oscctrl.xoscctrl[X::NUM]
+        // Safety: Each `XoscToken` only has access to a mutually exclusive set
+        // of registers for the corresponding `XoscId`, and we use a shared
+        // reference to the register block. See the notes on `Token` types and
+        // memory safety in the root of the `clock` module for more details.
+        unsafe { &(*crate::pac::OSCCTRL::ptr()).xoscctrl[X::NUM] }
     }
 
     /// Read the STATUS register

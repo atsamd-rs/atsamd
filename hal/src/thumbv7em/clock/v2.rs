@@ -875,6 +875,59 @@ pub mod xosc32k;
 mod reset;
 pub use reset::*;
 
+// `Token` types and memory safety
+//
+// Each of the PAC [`Peripherals`] is a zero-sized, singleton struct that
+// mediates access to the MMIO hardware registers. It is not possible to create
+// two instances of any peripheral without causing a run-time panic. These
+// structs implement [`Deref`] by conjuring a pointer to the corresponding
+// register block, and each register within the block is represented by a
+// `vcell::VolatileCell`. Because each register is wrapped in a `VolatileCell`,
+// it is safe to both read and write them through shared references. However,
+// because a read/modify/write operation is not atomic, the [`Peripherals`]
+// structs do not implement [`Sync`].
+//
+// This is a reasonable approach for the PAC, since it is generated from an
+// SVD file. However, it is not the ideal structure for our HAL API. In
+// particular, each [`Peripherals`] struct represents an entire peripheral,
+// rather than a particular functional unit. In the HAL, we want our API to
+// focus on functional units, so we need to define our own abstraction for
+// registers, which will involve `unsafe` code.
+//
+// In the `clock` module, we represent each functional unit with a
+// corresponding `Token` type. Just like the [`Peripherals`], each `Token` type
+// is meant to be a singleton. However, unlike the PAC, we do not have to
+// allow users to create `Token`s directly. Instead, we can have users exchange
+// [`Peripherals`] for the `Token`s. Because each PAC struct is a singleton, we
+// can guarantee each `Token` will be a singleton as well. With this approach,
+// we don't need to implement our own run-time panicking; we simply extend the
+// existing guarantees of the PAC.
+//
+// To implement a memory safe API, we must ensure that all `Token` types access
+// mutually exclusive sets of registers. In that way, we guarantee no two
+// `Token` types can access the same register. Moreover, in contrast to the PAC
+// [`Peripherals`], we can make our `Token`s [`Sync`] if we remove all interior
+// mutability and guarantee that writing or modifying a register requires
+// ownership or an `&mut` reference.
+//
+// Thus, our `Token`-based API should be memory safe if we always obey the
+// following requirements:
+//   - It should be `unsafe` to create a `Token` type unless it is created in
+//     exchange for the corresponding PAC peripheral struct.
+//   - Each `Token` type should have access to a mutually exclusive set of
+//     registers relative to the other `Token`s.
+//   - Writing or modifying a register should always require ownership of, or
+//     an `&mut` reference to, the corresponding `Token`.
+//   - When conjuring references to PAC registers or register blocks, we should
+//     *only* use shared, `&` references. There is no need to use exclusive,
+//     `&mut` references, because each register is wrapped in a `VolatileCell`.
+//     Moreover, using `&mut` references could cause UB, if we accidentally
+//     create two simultaneous references to the same register block from
+//     different `Tokens`.
+//
+// [`Peripherals`]: crate::pac::Peripherals
+// [`Deref`]: core::ops::Deref
+
 /// Marks [`Enabled`] 1:N producer clocks that can act as a clock source
 ///
 /// Implementers of this type act as producer clocks and feed consumer clocks in

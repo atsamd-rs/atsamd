@@ -368,19 +368,6 @@ use super::{Enabled, Source};
 /// The [`Xosc32kBase`] clock is disabled at power-on reset. To use it, you must
 /// first exchange the token for an actual clock with
 /// [`Xosc32kBase::from_clock`] or [`Xosc32kBase::from_crystal`].
-// # Internal notes
-//
-// There should never be more than one instance of `Xosc32kBaseToken`, because
-// `Xosc32kBaseToken` relies on this fact for memory safety.
-//
-// Users see `Xosc32kBaseToken` as merely an opaque token. but internally, it is
-// also used as a register interface. The token is zero-sized, so it can
-// be carried by clock types without introducing any memory bloat.
-//
-// As part of that register interface, the `Xosc32kBaseToken` can access the
-// `XOSC32K` register. That `Xosc32kBaseToken` is a singleton guarantees the
-// register is written from only one location. This allows `Xosc32kBaseToken` to
-// be `Sync`, even though the PAC `OSC32KCTRL` struct is not.
 pub struct Xosc32kBaseToken(());
 
 /// Singleton token that can be exchanged for [`Xosc1k`]
@@ -412,19 +399,6 @@ pub struct Xosc32kToken(());
 ///
 /// Clock failure detection is disabled at power-on reset. To use it, you must
 /// first enable it by exchanging the token with [`Xosc32kCfd::enable`].
-// # Internal notes
-//
-// There should never be more than one instance of `Xosc32kCfdToken`, because
-// `Xosc32kCfdToken` relies on this fact for memory safety.
-//
-// Users see `Xosc32kCfdToken` as merely an opaque token. but internally, it is
-// also used as a register interface. The token is zero-sized, so it can
-// be carried by clock types without introducing any memory bloat.
-//
-// As part of that register interface, the `Xosc32kCfdToken` can access the
-// `CFDCTRL` register. That `Xosc32kCfdToken` is a singleton guarantees the
-// register is written from only one location. This allows `Xosc32kCfdToken` to
-// be `Sync`, even though the PAC `OSC32KCTRL` struct is not.
 pub struct Xosc32kCfdToken(());
 
 /// Set of tokens representing the disabled XOSC32K clocks power-on reset
@@ -438,8 +412,11 @@ pub struct Xosc32kTokens {
 impl Xosc32kTokens {
     /// Create the set of tokens
     ///
-    /// Safety: There must never be more than one instance of each token at any
-    /// given time.
+    /// # Safety
+    ///
+    /// There must never be more than one instance of these tokens at any given
+    /// time. See the notes on `Token` types and memory safety in the root of
+    /// the `clock` module for more details.
     pub(super) unsafe fn new() -> Self {
         Self {
             base: Xosc32kBaseToken(()),
@@ -467,11 +444,10 @@ impl Xosc32kBaseToken {
 
     #[inline]
     fn xosc32k(&self) -> &XOSC32K {
-        // Safety: The `Xosc32kBaseToken` is the only `Token` that can access
-        // the `XOSC32K` register. This allows us to make `Xosc32kBaseToken`
-        // `Sync` even when `XOSC32K` is not.
-        let osc32kctrl = unsafe { &*crate::pac::OSC32KCTRL::ptr() };
-        &osc32kctrl.xosc32k
+        // Safety: The `Xosc32kBaseToken` has exclusive access to the `XOSC32K`
+        // register. See the notes on `Token` types and memory safety in the
+        // root of the `clock` module for more details.
+        unsafe { &(*crate::pac::OSC32KCTRL::ptr()).xosc32k }
     }
 
     /// Reset the XOSC32K register
@@ -559,9 +535,9 @@ impl Xosc32kCfdToken {
 
     #[inline]
     fn cfdctrl(&self) -> &CFDCTRL {
-        // Safety: The `Xosc32kCfdToken` is the only `Token` that can access the
-        // `CFDCTRL` register. This allows us to make `Xosc32kCfdToken` `Sync`
-        // even when `CFDCTRL` is not.
+        // Safety: The `Xosc32kCfdToken` has exclusive access to the `CFDCTRL`
+        // register. See the notes on `Token` types and memory safety in the
+        // root of the `clock` module for more details.
         let osc32kctrl = unsafe { &*crate::pac::OSC32KCTRL::ptr() };
         &osc32kctrl.cfdctrl
     }

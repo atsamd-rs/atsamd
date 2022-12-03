@@ -92,22 +92,6 @@ use super::Source;
 ///
 /// [`PclkToken`] is generic over the [`PclkId`], where each token represents a
 /// corresponding peripheral clock channel.
-//
-// # Internal notes
-//
-// `PclkToken` is generic over the `PclkId`, and each corresponding instance is
-// a singleton. There should never be more than one instance of `PclkToken` with
-// a given `PclkId`, because `PclkToken` relies on this fact for memory safety.
-//
-// Users see `PclkToken` as merely an opaque token. but internally, `PclkToken`
-// is also used as a register interface. The tokens are zero-sized, so they can
-// be carried by all clock types without introducing any memory bloat.
-//
-// As part of that register interface, each `PclkToken` can access its
-// corresponding `PCHCTRL` register. That each `PclkToken` is a singleton
-// guarantees each corresponding register is written from only one location.
-// This allows `PclkToken` to be `Sync`, even though the PAC `GCLK`
-// struct is not.
 pub struct PclkToken<P: PclkId> {
     pclk: PhantomData<P>,
 }
@@ -118,7 +102,8 @@ impl<P: PclkId> PclkToken<P> {
     /// # Safety
     ///
     /// Each `PclkToken`s is a singleton. There must never be two simulatenous
-    /// instances with the same [`PclkId`].
+    /// instances with the same [`PclkId`]. See the notes on `Token` types and
+    /// memory safety in the root of the `clock` module for more details.
     #[inline]
     pub(super) unsafe fn new() -> Self {
         PclkToken { pclk: PhantomData }
@@ -127,13 +112,10 @@ impl<P: PclkId> PclkToken<P> {
     /// Access the corresponding `PCHCTRL` register
     #[inline]
     fn pchctrl(&self) -> &pac::gclk::PCHCTRL {
-        // Safety: `GCLK` is not `Sync`, because it has interior mutability.
-        // However, each `PclkToken` represents only one of the 48 peripheral
-        // channel clocks, and this function only ever returns a reference to
-        // the corresponding `PCHCTRL` register, so there is no risk of
-        // accessing the same register from multiple execution contexts.
-        // Division of the PAC `GCLK` struct into individual `Token` types is
-        // what lets us make each `PclkToken` `Sync`.
+        // Safety: Each `PclkToken` only has access to a mutually exclusive set
+        // of registers for the corresponding `PclkId`, and we use a shared
+        // reference to the register block. See the notes on `Token` types and
+        // memory safety in the root of the `clock` module for more details.
         unsafe { &(*pac::GCLK::PTR).pchctrl[P::DYN as usize] }
     }
 
@@ -534,8 +516,9 @@ macro_rules! define_pclk_tokens_struct {
         impl PclkTokens {
             /// Create the set of [`PclkToken`]s
             ///
-            /// Safety: All of the invariants required by `PclkToken::new` must
-            /// be upheld here as well
+            /// # Safety
+            ///
+            /// All invariants required by `PclkToken::new` must be upheld here
             #[inline]
             pub(super) fn new() -> Self {
                 unsafe {

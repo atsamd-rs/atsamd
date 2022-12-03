@@ -375,22 +375,6 @@ use super::{Enabled, Source};
 ///
 /// [`GclkToken`] is generic over the [`GclkId`], where each corresponding token
 /// represents one of the 12 respective [`Gclk`]s.
-//
-// # Internal notes
-//
-// `GclkToken` is generic over the `GclkId`, and each corresponding instance is
-// a singleton. There should never be more than one instance of `GclkToken` with
-// a given `GclkId`, because `GclkToken` relies on this fact for memory safety.
-//
-// Users see `GclkToken` as merely an opaque token. but internally, `GclkToken`
-// is also used as a register interface. The tokens are zero-sized, so they can
-// be carried by all clock types without introducing any memory bloat.
-//
-// As part of that register interface, each `GclkToken` can access its
-// corresponding `GENCTRL` register. That each `GclkToken` is a singleton
-// guarantees each corresponding register is written from only one location.
-// This allows `GclkToken` to be `Sync`, even though the PAC `GCLK` struct is
-// not.
 pub struct GclkToken<G: GclkId> {
     gen: PhantomData<G>,
 }
@@ -401,7 +385,8 @@ impl<G: GclkId> GclkToken<G> {
     /// # Safety
     ///
     /// Each `GclkToken`s is a singleton. There must never be two simulatenous
-    /// instances with the same [`GclkId`].
+    /// instances with the same [`GclkId`]. See the notes on `Token` types and
+    /// memory safety in the root of the `clock` module for more details.
     #[inline]
     pub(super) unsafe fn new() -> Self {
         GclkToken { gen: PhantomData }
@@ -413,15 +398,11 @@ impl<G: GclkId> GclkToken<G> {
     /// Provide a reference to the corresponding [`GENCTRL`] register
     #[inline]
     fn genctrl(&self) -> &GENCTRL {
-        // Safety: `GENCTRL` is not `Sync`, because it has interior mutability.
-        // However, each `GclkToken` represents only one of the 12 GCLKs, and
-        // this function only ever returns a reference to the corresponding
-        // `GENCTRL`, so there is no risk of accessing the same register from
-        // multiple execution contexts. Division of the PAC `GCLK` struct into
-        // individual `GclkTokens`s based on `GclkId` is what lets us make
-        // each `GclkToken` `Sync`.
-        let gclk = unsafe { &*pac::GCLK::ptr() };
-        &gclk.genctrl[G::NUM]
+        // Safety: Each `GclkToken` only has access to a mutually exclusive set
+        // of registers for the corresponding `GclkId`, and we use a shared
+        // reference to the register block. See the notes on `Token` types and
+        // memory safety in the root of the `clock` module for more details.
+        unsafe { &(*pac::GCLK::ptr()).genctrl[G::NUM] }
     }
 
     /// Block until synchronization has completed

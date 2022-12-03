@@ -219,8 +219,11 @@ pub struct OscUlp32kTokens {
 impl OscUlp32kTokens {
     /// Create the set of tokens
     ///
-    /// Safety: There must never be more than one instance of each token at any
-    /// given time.
+    /// # Safety
+    ///
+    /// There must never be more than one instance of each token at any given
+    /// time. See the notes on `Token` types and memory safety in the root of
+    /// the `clock` module for more details.
     pub(super) unsafe fn new() -> Self {
         Self {
             osculp1k: OscUlp1kToken(()),
@@ -232,15 +235,16 @@ impl OscUlp32kTokens {
 impl OscUlp32kBaseToken {
     #[inline]
     fn osculp32k(&self) -> &OSCULP32K {
-        // Safety: The `OscUlp32kBaseToken` is the only `Token` that can access
-        // the `OSCULP32K` register. This allows us to make `OscUlp32kBaseToken`
-        // `Sync` even when `OSCULP32K` is not.
+        // Safety: The `OscUlp32kBaseToken` has exclusive access to the
+        // `OSCULP32K` register. See the notes on `Token` types and memory
+        // safety in the root of the `clock` module for more details.
         unsafe { &(*crate::pac::OSC32KCTRL::ptr()).osculp32k }
     }
 
     /// Set the calibration
     #[inline]
     fn set_calibration(&mut self, calib: u8) {
+        // Safety: All bit patterns are valid for this field
         self.osculp32k()
             .modify(|_, w| unsafe { w.calib().bits(calib) });
     }
@@ -309,8 +313,12 @@ pub type EnabledOscUlp32kBase<N = U0> = Enabled<OscUlp32kBase, N>;
 impl OscUlp32kBase {
     /// Create the ultra-low power base oscillator
     ///
-    /// Safety: There must never be more than one instance of this struct at any
-    /// given time.
+    /// # Safety
+    ///
+    /// Because an `OscUlp32kBase` contains an `OscUlp32kBaseToken`, there must
+    /// never be more than one instance of this struct at any given time. See
+    /// the notes on `Token` types and memory safety in the root of the `clock`
+    /// module for more details.
     #[inline]
     pub(super) unsafe fn new() -> EnabledOscUlp32kBase {
         let token = OscUlp32kBaseToken(());

@@ -144,33 +144,39 @@ use super::types::*;
 pub struct Ahb(());
 
 impl Ahb {
+    /// Create a new instance of [`Ahb`]
+    ///
+    /// # Safety
+    ///
+    /// Because the `Ahb` mediates access to the `AHBMASK` register, it must be
+    /// a singleton. There must never be two simulatenous instances of it at a
+    /// time. See the notes on `Token` types and memory safety in the root of
+    /// the `clock` module for more details.
     #[inline]
     pub(super) unsafe fn new() -> Self {
         Self(())
     }
 
     #[inline]
-    fn mclk(&self) -> &mclk::RegisterBlock {
-        // Safety: The `Ahb` type is a singleton and has exclusive access to the
-        // `AHBMASK` register. It also removes the interior mutability of `MCLK`
-        // by requiring `&mut self` to modify any registers. This lets us make
-        // `Ahb` `Sync` even when `MCLK` is not.
-        unsafe { &*MCLK::ptr() }
-    }
-
-    #[inline]
     fn ahbmask(&mut self) -> &mclk::AHBMASK {
-        &self.mclk().ahbmask
+        // Safety: The `Ahb` type has exclusive access to the `AHBMASK`
+        // register. See the notes on `Token` types and memory safety in the
+        // root of the `clock` module for more details.
+        unsafe { &(*MCLK::ptr()).ahbmask }
     }
 
     #[inline]
     fn enable_mask(&mut self, mask: AhbMask) {
+        // Safety: The mask bits are derived from a `bitflags` struct, so they
+        // are guaranteed to be valid.
         self.ahbmask()
             .modify(|r, w| unsafe { w.bits(r.bits() | mask.bits()) });
     }
 
     #[inline]
     fn disable_mask(&mut self, mask: AhbMask) {
+        // Safety: The mask bits are derived from a `bitflags` struct, so they
+        // are guaranteed to be valid.
         self.ahbmask()
             .modify(|r, w| unsafe { w.bits(r.bits() & !mask.bits()) });
     }
@@ -241,7 +247,8 @@ impl<A: AhbId> AhbToken<A> {
     /// # Safety
     ///
     /// Each `AhbToken` is a singleton. There must never be two simulatenous
-    /// instances with the same [`AhbId`].
+    /// instances with the same [`AhbId`]. See the notes on `Token` types and
+    /// memory safety in the root of the `clock` module for more details.
     #[inline]
     unsafe fn new() -> Self {
         AhbToken { id: PhantomData }
@@ -349,8 +356,7 @@ macro_rules! define_ahb_types {
                 ///
                 /// # Safety
                 ///
-                /// All of the invariants required by `AhbToken::new` must be
-                /// upheld here as well.
+                /// All invariants of `AhbToken::new` must be upheld here.
                 #[inline]
                 pub(super) unsafe fn new() -> Self {
                     AhbClks {

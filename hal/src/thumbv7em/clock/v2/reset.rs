@@ -128,9 +128,7 @@ pub fn clock_system_at_reset(
     mclk: MCLK,
     nvmctrl: &mut NVMCTRL,
 ) -> (Buses, Clocks, Tokens) {
-    // Safe because no bus, clock or token struct is instantiated more than once
-    // We also know that the PAC structs cannot be obtained more than once
-    // without `unsafe` code
+    // Safety: No bus, clock or token is instantiated more than once
     unsafe {
         let buses = Buses {
             ahb: ahb::Ahb::new(),

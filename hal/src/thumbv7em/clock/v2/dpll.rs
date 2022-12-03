@@ -271,22 +271,6 @@ use super::{Enabled, Source};
 ///
 /// [`DpllToken`] is generic over the [`DpllId`], where each corresponding token
 /// represents one of the two respective [`Dpll`]s.
-//
-// # Internal notes
-//
-// `DpllToken` is generic over the `DpllId`, and each corresponding instance is
-// a singleton. There should never be more than one instance of `DpllToken` with
-// a given `DpllId`, because `DpllToken` relies on this fact for memory safety.
-//
-// Users see `DpllToken` as merely an opaque token. but internally, `DpllToken`
-// is also used as a register interface. The tokens are zero-sized, so they can
-// be carried by all clock types without introducing any memory bloat.
-//
-// As part of that register interface, each `DpllToken` can access its
-// corresponding `DPLL*` registers. That each `DpllToken` is a singleton
-// guarantees each corresponding set of registers is written from only one
-// location. This allows `DpllToken` to be `Sync`, even though the PAC `OSCCTRL`
-// struct is not.
 pub struct DpllToken<D: DpllId> {
     dpll: PhantomData<D>,
 }
@@ -306,13 +290,10 @@ impl<D: DpllId> DpllToken<D> {
     /// Access the corresponding PAC `DPLL` struct
     #[inline]
     fn dpll(&self) -> &DPLL {
-        // Safety: `OSCCTRL` is not `Sync`, because it has interior mutability.
-        // However, each `DpllToken` represents only one of the two DPLLs, and
-        // this function only ever returns a reference to the corresponding
-        // `DPLL*` registers, so there is no risk of accessing the same register
-        // from multiple execution contexts. Division of the PAC `OSCCTRL`
-        // struct into individual `Token` types is what lets us make each
-        // `DpllToken` `Sync`.
+        // Safety: Each `DpllToken` only has access to a mutually exclusive set
+        // of registers for the corresponding `DpllId`, and we use a shared
+        // reference to the register block. See the notes on `Token` types and
+        // memory safety in the root of the `clock` module for more details.
         unsafe { &(*crate::pac::OSCCTRL::ptr()).dpll[D::NUM] }
     }
 
@@ -883,9 +864,11 @@ where
 
     /// Enable the [`Dpll`] without validating the input & output frequencies
     ///
-    /// Safety: This is equivalent to calling [`Dpll::enable`] but without the
-    /// checks on input and output frequencies. Using frequencies outside the
-    /// ranges specified in the datasheet may not work and could cause clocking
+    /// # Safety
+    ///
+    /// This is equivalent to calling [`Dpll::enable`] but without the checks on
+    /// input and output frequencies. Using frequencies outside the ranges
+    /// specified in the datasheet may not work and could cause clocking
     /// problems.
     #[inline]
     pub unsafe fn enable_unchecked(mut self) -> EnabledDpll<D, I> {

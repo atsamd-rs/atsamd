@@ -145,6 +145,14 @@ use super::types::*;
 pub struct Apb(());
 
 impl Apb {
+    /// Create a new instance of [`Apb`]
+    ///
+    /// # Safety
+    ///
+    /// Because the `Apb` mediates access to the `APBMASK` registers, it must be
+    /// a singleton. There must never be two simulatenous instances of it at a
+    /// time. See the notes on `Token` types and memory safety in the root of
+    /// the `clock` module for more details.
     #[inline]
     pub(super) unsafe fn new() -> Self {
         Self(())
@@ -152,10 +160,10 @@ impl Apb {
 
     #[inline]
     fn mclk(&self) -> &mclk::RegisterBlock {
-        // Safety: The `Apb` type is a singleton and has exclusive access to the
-        // `APBXMASK` registers. It also removes the interior mutability of
-        // `MCLK` by requiring `&mut self` to modify any registers. This lets us
-        // make `Apb` `Sync` even when `MCLK` is not.
+        // Safety: The `Apb` type has exclusive access to the `APBXMASK`
+        // registers, and it uses a shared reference to the register block. See
+        // the notes on `Token` types and memory safety in the root of the
+        // `clock` module for more details.
         unsafe { &*MCLK::ptr() }
     }
 
@@ -181,6 +189,8 @@ impl Apb {
 
     #[inline]
     fn enable_mask(&mut self, mask: ApbMask) {
+        // Safety: The mask bits are derived from a `bitflags` struct, so they
+        // are guaranteed to be valid.
         unsafe {
             match mask {
                 ApbMask::A(mask) => {
@@ -205,6 +215,8 @@ impl Apb {
 
     #[inline]
     fn disable_mask(&mut self, mask: ApbMask) {
+        // Safety: The mask bits are derived from a `bitflags` struct, so they
+        // are guaranteed to be valid.
         unsafe {
             match mask {
                 ApbMask::A(mask) => {
@@ -460,7 +472,8 @@ impl<A: ApbId> ApbToken<A> {
     /// # Safety
     ///
     /// Each `ApbToken` is a singleton. There must never be two simulatenous
-    /// instances with the same [`ApbId`].
+    /// instances with the same [`ApbId`]. See the notes on `Token` types and
+    /// memory safety in the root of the `clock` module for more details.
     #[inline]
     unsafe fn new() -> Self {
         ApbToken { id: PhantomData }
@@ -547,8 +560,7 @@ impl ApbTokens {
     ///
     /// # Safety
     ///
-    /// All of the invariants required by `ApbToken::new` must be upheld here as
-    /// well.
+    /// All invariants required by `ApbToken::new` must be upheld here as well.
     #[inline]
     pub(super) unsafe fn new() -> Self {
         Self {
@@ -631,8 +643,7 @@ impl ApbClks {
     ///
     /// # Safety
     ///
-    /// All of the invariants required by `ApbToken::new` must be upheld here as
-    /// well.
+    /// All invariants required by `ApbToken::new` must be upheld here as well.
     #[inline]
     pub(super) unsafe fn new() -> Self {
         ApbClks {
