@@ -142,21 +142,22 @@
 //! [`typenum`] crate provides type aliases [`Add1`] and [`Sub1`] that map from
 //! each `Unsigned` integer to its successor and predecessor types,
 //! respectively. We can leverage these to create our own type with a counter
-//! that we [`Increment`] or [`Decrement`] in compile-time. These two traits
+//! that we [`Increment`] or [`Decrement`] at compile-time. These two traits
 //! form the foundation for our strategy for handling 1:N clocks in this module.
 //!
 //! ### The `Enabled` wrapper
 //!
 //! Our representation of a 1:N producer clock is [`Enabled<T, N>`], which is a
 //! wrapper struct that pairs some *enabled* clock type `T` with a type `N`
-//! which represents a consumer count. The wrapper restricts access to the
+//! representing a consumer count. The wrapper restricts access to the
 //! underlying clock type, `T`, allowing us to selectively define methods when
-//! `N = U0`; that is when there is no consumers of a given producer clock.
+//! `N = U0`, that is, when there are no consumers of a given producer clock.
 //!
-//! It implements [`Increment`] and [`Decrement`] traits so type transformations
-//! like one from `Enabled<T, U0>` to `Enabled<T, U1>` are possible. These are
-//! available only for within a HAL crate so consumer count cannot be
-//! arbitrarily changed.
+//! The [`Enabled`] type itself implements [`Increment`] and [`Decrement`] as
+//! well, which allows type-level transformations to increment or decrement the
+//! counter, e.g. `Enabled<T, U0>` to `Enabled<T, U1>`. Such transformations can
+//! only be performed within the HAL; so users cannot change the consumer count
+//! arbitrarily.
 //!
 //! ### Acting as a clock `Source`
 //!
@@ -185,20 +186,20 @@
 //! ### `Id` types
 //!
 //! Many of the clock types in this module have additional type parameters that
-//! track the clock's configuration. For instance, the 48 MHz DFLL is
-//! represented by the [`Dfll<M>`] type. Here, the type parameter `M`
-//! represents the DFLL's control loop [`Mode`](dfll::Mode), which can either be
-//! [`OpenLoop`] or [`ClosedLoop`]. Accordingly, methods to adjust the
-//! closed-loop control parameters are only available on `Dfll<ClosedLoop>`.
+//! track the clock's configuration. For instance, [`Xosc0<M>`] represents one
+//! of the external crystal oscillators. Here, the type parameter `M` represents
+//! the XOSC's [`Mode`](xosc::Mode), which can either be [`CrystalMode`] or
+//! [`ClockMode`]. Accordingly, methods to adjust the crystal current, etc. are
+//! only available on `Xosc0<CrystalMode>`.
 //!
 //! While these type parameters are important and necessary for configuration of
 //! a given producer clock, they are not relevant to consumer clocks. A consumer
-//! clock does not need to know or care which loop `Mode` the DFLL is using, but
-//! it *does* need to track that its clock [`Source`] is the DFLL.
+//! clock does not need to know or care which `Mode` the XOSC is using, but
+//! it *does* need to track that its clock [`Source`] is XOSC0.
 //!
-//! From this, we can see that `Enabled<Dfll<M>, N>` should not implement
-//! `Source` with `Source::Id = Dfll<M>`, because that would require consumers
-//! to needlessly track the DFLL loop `Mode`.
+//! From this, we can see that `Enabled<Xosc0<M>, N>` should not implement
+//! `Source` with `Source::Id = Xosc0<M>`, because that would require consumers
+//! to needlessly track the XOSC `Mode`.
 //!
 //! Instead, this module defines a series of `Id` types representing the
 //! *identity* of a given clock, rather than the clock itself. This is like the
@@ -206,8 +207,8 @@
 //! regardless of changes to their clothes or hair. The `Id` types serve to
 //! erase configuration information, representing only the clock's identity.
 //!
-//! For `Dfll<M>`, the corresponding `Id` type is [`DfllId`]. Thus,
-//! `Enabled<Dfll<M>, N>` implements `Source` with `Source::Id = DfllId`.
+//! For `Xosc0<M>`, the corresponding `Id` type is [`Xosc0Id`]. Thus,
+//! `Enabled<Xosc0<M>, N>` implements `Source` with `Source::Id = Xosc0Id`.
 //!
 //! ## Notes on memory safety
 //!
@@ -286,8 +287,8 @@
 //! running at power-on reset, specifically:
 //! - All of the [`AhbClks`]
 //! - Some of the [`ApbClks`]
-//! - The 48 MHz [`Dfll`], running in [`OpenLoop`] mode, represented as as
-//!   `Enabled<Dfll<OpenLoop>, U1>`. `N = U1` here because [`Gclk0`] consumes
+//! - The 48 MHz [`Dfll`], running in open-loop mode, represented as as
+//!   `Enabled<Dfll, U1>`. `N = U1` here because [`Gclk0`] consumes
 //!   it. See [above](self#tracking-n-at-compile-time-for-1n-clocks) for details
 //!   on [`Enabled<T, N>`].
 //! - [`Gclk0`], sourced by the `Dfll` and represented as
@@ -795,8 +796,6 @@
 //! [`DfllId`]: dfll::DfllId
 //! [`DfllToken`]: dfll::DfllToken
 //! [`EnabledDfll`]: dfll::EnabledDfll
-//! [`OpenLoop`]: dfll::OpenLoop
-//! [`ClosedLoop`]: dfll::ClosedLoop
 //!
 //! [`Dpll`]: dpll::Dpll
 //! [`Dpll<D, I>`]: dpll::Dpll
@@ -837,6 +836,7 @@
 //! [`EnabledXosc0`]: xosc::EnabledXosc0
 //! [`EnabledXosc0<M, N>`]: xosc::EnabledXosc0
 //! [`CrystalMode`]: xosc::CrystalMode
+//! [`ClockMode`]: xosc::ClockMode
 //!
 //! [`Xosc32kId`]: xosc32k::Xosc32kId
 //!
@@ -941,9 +941,9 @@ pub trait Source: Sealed {
     /// Corresponding `Id` type for the implementer
     ///
     /// A given implementer of [`Source`] might have type parameters
-    /// representing its configuration. For instance, [`EnabledDfll<M>`] has a
-    /// type parameter to track its control loop [`Mode`]. However, a consumer
-    /// clock typically does not care about such configuration. It only needs to
+    /// representing its configuration. For instance, [`EnabledXosc0<M>`] has a
+    /// type parameter to track its [`Mode`]. However, a consumer clock
+    /// typically does not care about such configuration. It only needs to
     /// know *which* upstream clock is its [`Source`].
     ///
     /// `Id` types exist to fill this role. They represent the *identity* of a
@@ -951,14 +951,14 @@ pub trait Source: Sealed {
     /// distinction between a passport and a person. A passport identifies a
     /// person, regardless of changes to their clothes or hair.
     ///
-    /// Thus, [`EnabledDfll<M>`] implements [`Source`] with `Id = `[`DfllId`],
+    /// Thus, [`EnabledXosc0<M>`] implements [`Source`] with `Id = `[`Xosc0Id`],
     /// regardless of `M`.
     ///
     /// See the documentation on [`Id` types](self#id-types) for more details.
     ///
-    /// [`EnabledDfll<M>`]: dfll::EnabledDfll
-    /// [`Mode`]: dfll::Mode
-    /// [`DfllId`]: dfll::DfllId
+    /// [`EnabledXosc0<M>`]: xosc::EnabledXosc0
+    /// [`Mode`]: xosc::Mode
+    /// [`Xosc0Id`]: xosc::Xosc0Id
     type Id;
 
     /// Return the frequency of the clock source
