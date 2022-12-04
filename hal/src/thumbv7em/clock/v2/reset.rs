@@ -41,6 +41,17 @@ impl Pac {
     }
 }
 
+/// Bus clock objects
+///
+/// This type is constructed using the [`clock_system_at_reset`] function, which
+/// consumes the PAC-level clocking structs and returns the HAL-level clocking
+/// structs in their reset state.
+///
+/// This type contains the [bus clocks](super#bus-clocks), which are a necessary
+/// to implement memory safety for the [`AhbClk`]s and [`ApbClk`]s.
+///
+/// [`AhbClk`]: super::ahb::AhbClk
+/// [`ApbClk`]: super::apb::ApbClk
 pub struct Buses {
     pub ahb: ahb::Ahb,
     pub apb: apb::Apb,
