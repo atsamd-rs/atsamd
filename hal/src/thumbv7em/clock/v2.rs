@@ -425,7 +425,7 @@
 //!
 //! Thus, to create an instance of `Dpll0<XoscId0>`, we must provide the
 //! `EnabledXosc0`, so that its `U0` type parameter can be incremented to `U1`.
-//! The `Dpll::from_source` method takes ownership of the `EnabledXosc0` and
+//! The `Dpll::from_xosc0` method takes ownership of the `EnabledXosc0` and
 //! returns it with this modified type parameter.
 //!
 //! This is the essence of clock safety in this module. Once the counter type
@@ -460,7 +460,7 @@
 //! #     pins.pa15,
 //! #     8.mhz(),
 //! # ).enable();
-//! let (dpll0, xosc0) = Dpll::from_source(tokens.dpll0, xosc0);
+//! let (dpll0, xosc0) = Dpll::from_xosc0(tokens.dpll0, xosc0);
 //! ```
 //! Next, we set the DPLL pre-divider and loop divider. We must pre-divide
 //! the XOSC clock down from 8 MHz to 2 MHz, so that it is within the valid
@@ -496,7 +496,7 @@
 //! #     pins.pa15,
 //! #     8.mhz(),
 //! # ).enable();
-//! # let (dpll0, xosc0) = Dpll::from_source(tokens.dpll0, xosc0);
+//! # let (dpll0, xosc0) = Dpll::from_xosc0(tokens.dpll0, xosc0);
 //! let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
 //! ```
 //!
@@ -548,7 +548,7 @@
 //! #     pins.pa15,
 //! #     8.mhz(),
 //! # ).enable();
-//! # let (dpll0, xosc0) = Dpll::from_source(tokens.dpll0, xosc0);
+//! # let (dpll0, xosc0) = Dpll::from_xosc0(tokens.dpll0, xosc0);
 //! # let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
 //! let (gclk0, dfll, dpll0) = clocks.gclk0.swap_sources(clocks.dfll, dpll0);
 //! ```
@@ -582,7 +582,7 @@
 //! #     pins.pa15,
 //! #     8.mhz(),
 //! # ).enable();
-//! # let (dpll0, xosc0) = Dpll::from_source(tokens.dpll0, xosc0);
+//! # let (dpll0, xosc0) = Dpll::from_xosc0(tokens.dpll0, xosc0);
 //! # let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
 //! # let (gclk0, dfll, dpll0) = clocks.gclk0.swap_sources(clocks.dfll, dpll0);
 //! let dfll_token = dfll.disable().free();
@@ -632,7 +632,7 @@
 //! #     pins.pa15,
 //! #     8.mhz(),
 //! # ).enable();
-//! # let (dpll0, xosc0) = Dpll::from_source(tokens.dpll0, xosc0);
+//! # let (dpll0, xosc0) = Dpll::from_xosc0(tokens.dpll0, xosc0);
 //! # let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
 //! # let (gclk0, dfll, dpll0) = clocks.gclk0.swap_sources(clocks.dfll, dpll0);
 //! # let dfll_token = dfll.disable().free();
@@ -671,7 +671,7 @@
 //! #     pins.pa15,
 //! #     8.mhz(),
 //! # ).enable();
-//! # let (dpll0, xosc0) = Dpll::from_source(tokens.dpll0, xosc0);
+//! # let (dpll0, xosc0) = Dpll::from_xosc0(tokens.dpll0, xosc0);
 //! # let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
 //! # let (gclk0, dfll, dpll0) = clocks.gclk0.swap_sources(clocks.dfll, dpll0);
 //! # let dfll_token = dfll.disable().free();
@@ -720,7 +720,7 @@
 //! #     pins.pa15,
 //! #     8.mhz(),
 //! # ).enable();
-//! # let (dpll0, xosc0) = Dpll::from_source(tokens.dpll0, xosc0);
+//! # let (dpll0, xosc0) = Dpll::from_xosc0(tokens.dpll0, xosc0);
 //! # let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
 //! # let (gclk0, dfll, dpll0) = clocks.gclk0.swap_sources(clocks.dfll, dpll0);
 //! # let dfll_token = dfll.disable().free();
@@ -762,7 +762,7 @@
 //!     8.mhz(),
 //! )
 //! .enable();
-//! let (dpll0, xosc0) = Dpll::from_source(tokens.dpll0, xosc0);
+//! let (dpll0, xosc0) = Dpll::from_xosc0(tokens.dpll0, xosc0);
 //! let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
 //! let (gclk0, dfll, dpll0) = clocks.gclk0.swap_sources(clocks.dfll, dpll0);
 //! let dfll_token = dfll.disable().free();
@@ -1034,7 +1034,7 @@ fn test() {
     );
     let pins = Pins::new(pac.PORT);
     let xosc0 = Xosc::from_crystal(tokens.xosc0, pins.pa14, pins.pa15, 8.mhz()).enable();
-    let (dpll0, _xosc0) = Dpll::from_source(tokens.dpll0, xosc0);
+    let (dpll0, _xosc0) = Dpll::from_xosc0(tokens.dpll0, xosc0);
     let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
     let (gclk0, dfll, _dpll0) = clocks.gclk0.swap_sources(clocks.dfll, dpll0);
     let _dfll_token = dfll.disable().free();
