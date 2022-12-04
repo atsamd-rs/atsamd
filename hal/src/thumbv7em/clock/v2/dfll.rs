@@ -12,13 +12,13 @@
 //! provided by a GCLK, through the DFLL peripheral channel clock, or it can be
 //! provided by the USB start-of-frame signal.
 //!
-//! The DFLL is represented by the [`Dfll`] type. When the [`Dfll`] is in
+//! The DFLL is represented by the [`Dfll`] type. When the DFLL is in
 //! closed-loop mode, it looks like many of the other clocks in the `clock`
 //! module; it takes an input clock and produces an output clock. And like those
 //! other clocks, [`Dfll<I>`] takes a type parameter to represent the
-//! [`Id` type](super#id-types) of its clock source. However, when the [`Dfll`]
-//! is in open-loop mode, it instead looks more like the [`OscUlp32k`] clock,
-//! which doesn't require a type parameter to track its configuration or source.
+//! [`Id` type](super#id-types) of its clock source. However, when the DFLL is
+//! in open-loop mode, it instead looks more like the [`OscUlp32k`] clock, which
+//! doesn't require a type parameter to track its configuration or source.
 //!
 //! To handle both of these configurations simultaneously, we leverage the
 //! [`OptionalKind`] pattern to express the notion of an optional type
@@ -358,7 +358,7 @@ type FineMaxStep = u8;
 // DfllId
 //==============================================================================
 
-/// `[`Id` type](super#id-types) representing the identity of the DFLL clock
+/// [`Id` type](super#id-types) representing the identity of the DFLL clock
 pub enum DfllId {}
 
 impl Sealed for DfllId {}
@@ -367,7 +367,7 @@ impl Sealed for DfllId {}
 // UsbSofId
 //==============================================================================
 
-/// `[`Id` type](super#id-types) representing the identity of the USB
+/// [`Id` type](super#id-types) representing the identity of the USB
 /// start-of-frame clock
 pub enum UsbSofId {}
 
@@ -472,9 +472,9 @@ impl<I: SomeDfllSourceId> OptionalDfllSourceId for I {
 /// Type-level equivalent of `Some(DfllSourceId)`
 ///
 /// There is no practical difference between this trait and [`DfllSourceId`]. It
-/// exists only to emphasize the constraint of an [`OptionalDfllSourceId`] type
-/// to non-[`NoneT`] types. See documentation of the [`OptionalKind`] pattern
-/// for more details.
+/// exists only to emphasize when an [`OptionalDfllSourceId`] type is
+/// constrained to non-[`NoneT`] types. See documentation of the
+/// [`OptionalKind`] pattern for more details.
 ///
 /// [`OptionalKind`]: crate::typelevel#optionalkind-trait-pattern
 pub trait SomeDfllSourceId: DfllSourceId {}
@@ -985,7 +985,7 @@ impl<I: OptionalDfllSourceId> Dfll<I> {
     ///
     /// As mentioned when creating a new `Dfll`, no hardware registers are
     /// actually modified until this call. Rather, the desired configuration is
-    /// stored internally, and the [`Dfll`] is initialized and configured here
+    /// stored internally, and the `Dfll` is initialized and configured here
     /// according to the datasheet.
     ///
     /// The returned value is an [`EnabledDfll`] that can be used as a clock
@@ -1023,6 +1023,18 @@ impl<I: OptionalDfllSourceId> EnabledDfll<I> {
 }
 
 impl EnabledGclk0<DfllId, U1> {
+    /// Reconfigure the [`Dfll`] while it remains enabled as the master clock
+    /// source
+    ///
+    /// Take ownership of an [`EnabledDfll`] and reconfigure it according to a
+    /// user-supplied closure, `F`. The transformation may also change the
+    /// [`Dfll`] type parameter from `Old` to `New`. The closure may optionally
+    /// return some additional type, `R`.
+    ///
+    /// See the [`dfll` module documentation] for more details on why and how
+    /// this function would be used.
+    ///
+    /// [`dfll` module documentation]: super::dfll#dfll-gclk0-and-the-systems-master-clock
     #[inline]
     pub fn reconfigure_dfll<Old, New, F, R>(
         &mut self,
