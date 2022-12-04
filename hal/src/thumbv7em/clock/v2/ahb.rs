@@ -12,8 +12,8 @@
 //! corresponds to one of the bits in the `AHBMASK` register.
 //!
 //! While most other clocks in the `clock` module are configured through
-//! mutually exclusive registers, the [`AhbClk`]s share the four `AHBMASK`
-//! registers. This presents a challenge for memory safety. Specifically, if we
+//! mutually exclusive registers, the [`AhbClk`]s share a single `AHBMASK`
+//! register. This presents a challenge for memory safety. Specifically, if we
 //! allowed unrestricted access to the `AHBMASK` register through each `AhbClk`,
 //! we could create data races.
 //!
