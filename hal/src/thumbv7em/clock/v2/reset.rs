@@ -54,9 +54,9 @@ pub struct Buses {
 ///
 /// This type represents the clocks as they are configured at power-on reset.
 /// The main clock, [`Gclk0`](gclk::Gclk0), runs at 48 MHz using the
-/// [`Dfll`](dfll::Dfll) in [`OpenLoop`](dfll::OpenLoop) [`Mode`](dfll::Mode).
-/// The ultra-low power [base oscillator](osculp32k::OscUlp32kBase) is also
-/// enabled and running, as it can never be disabled.
+/// [`Dfll`](dfll::Dfll) in open-loop mode. The ultra-low power
+/// [base oscillator](osculp32k::OscUlp32kBase) is also enabled and running, as
+/// it can never be disabled.
 ///
 /// As described in the [top-level](super::super) documentation for the `clock`
 /// module, only [`Enabled`] clocks can be used as a [`Source`] for downstream

@@ -830,6 +830,7 @@
 //! [`Xosc::from_crystal`]: xosc::Xosc::from_crystal
 //! [`Xosc::enable`]: xosc::Xosc::enable
 //! [`Xosc0`]: xosc::Xosc0
+//! [`Xosc0<M>`]: xosc::Xosc0
 //! [`Xosc0Id`]: xosc::Xosc0Id
 //! [`Xosc1Id`]: xosc::Xosc1Id
 //! [`XoscToken`]: xosc::XoscToken

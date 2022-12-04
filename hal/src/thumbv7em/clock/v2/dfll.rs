@@ -139,7 +139,7 @@
 //!
 //! ```no_run
 //! # use atsamd_hal::{
-//! #     clock::v2::{clock_system_at_reset, dfll::Dfll, xosc::Xosc},
+//! #     clock::v2::{clock_system_at_reset, dfll::Dfll, pclk::Pclk, xosc::Xosc},
 //! #     gpio::Pins,
 //! #     pac::Peripherals,
 //! #     time::U32Ext,
@@ -228,7 +228,7 @@
 //! [`Gclk0`]: super::gclk::Gclk0
 //! [`Decrement`]: crate::typelevel::Decrement
 //! [`OscUlp32k`]: super::osculp32k::OscUlp32k
-/// [`OptionalKind`]: crate::typelevel#optionalkind-trait-pattern
+//! [`OptionalKind`]: crate::typelevel#optionalkind-trait-pattern
 use typenum::{U0, U1};
 
 use crate::time::Hertz;
@@ -485,19 +485,21 @@ impl<I: DfllSourceId> SomeDfllSourceId for I {}
 // Settings
 //==============================================================================
 
-/// Store and retrieve [`Dfll`] settings in different modes
-///
-/// Many of the [`Dfll`] settings are not valid or required in every operating
-/// mode. This module provides a framework to store only the minimum required
-/// settings for each mode in a generic way. Specifically, the [`Minimum`]
-/// struct stores the few settings relevant in all modes, along with a generic,
-/// mode-specific type. The [`Settings`] trait unifies all concrete instances
-/// of [`Minimum`] by providing a function to return a collection of [`All`]
-/// settings. Each sub-struct within [`Minimum`] implements [`Settings`] and is
-/// responsible for filling the relevent fields of [`All`].
-///
-/// [`Dfll`]: super::Dfll
 mod settings {
+    //! Store and retrieve [`Dfll`] settings in different modes
+    //!
+    //! Many of the [`Dfll`] settings are not valid or required in every
+    //! operating mode. This module provides a framework to store only the
+    //! minimum required settings for each mode in a generic way. Specifically,
+    //! the [`Minimum`] struct stores the few settings relevant in all modes,
+    //! along with a generic, mode-specific type. The [`Settings`] trait unifies
+    //! all concrete instances of [`Minimum`] by providing a function to return
+    //! a collection of [`All`] settings. Each sub-struct within [`Minimum`]
+    //! implements [`Settings`] and is responsible for filling the relevent
+    //! fields of [`All`].
+    //!
+    //! [`Dfll`]: super::Dfll
+
     use super::super::pclk;
     use super::{CoarseMaxStep, DfllId, FineMaxStep, GclkId, Hertz, MultFactor};
 
