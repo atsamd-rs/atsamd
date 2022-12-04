@@ -1,5 +1,16 @@
 # Unreleased Changes
 
+- Fix `ExternalInterrupt` implementations for `eic`
+- Fix for incorrect feature gates for pins of `samd21gl` chip
+- Fix bug in `dmac` where software trigger would not work
+- Correct thumbv6 DFLL multiplier to fix USB clock correction
+- Fix failing `bsp_pins!` invocation with no aliases (#605 fixes #599)
+- Add Advanced Encryption Standard (AES) peripheral support including RustCrypto compatible backend
+- Add embedded-hal `InputPin` trait to EIC pins
+
+# v0.15.1
+
+- Fix `sercom::uart` pad definitions to reject pads conflicting with XCK.
 - Add support for L-Variant of the SAMD21D
 
 # v0.15.0
@@ -40,6 +51,7 @@
 - Add Device Service Unit (DSU), Non-volatile Controller (NVM), SmartEEPROM support (#526)
 - Expand Public Key Cryptography Controller (PUKCC) to support modular
   exponentiation (RSA) (#544)
+
 ---
 
 Changelog tracking started at v0.13

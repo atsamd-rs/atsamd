@@ -7,18 +7,18 @@ pub use cortex_m_rt::entry;
 use crate::ehal::timer::CountDown;
 pub use atsamd_hal as hal;
 pub use hal::ehal;
-use hal::ehal::timer::Periodic;
 
 pub use hal::{
     clock::GenericClockController,
-    dbgprint, pac,
+    dbgprint,
+    ehal::timer::Periodic,
+    pac,
     qspi::{OneShot, Qspi},
-    sercom::v2::{
-        spi,
+    sercom::{
+        i2c, spi,
         uart::{self, BaudMode, Oversampling},
-        IoSet3, Sercom1, Sercom3, UndocIoSet2,
+        IoSet1, IoSet3, UndocIoSet2,
     },
-    sercom::I2CMaster2,
     time::Hertz,
 };
 use pac::MCLK;
@@ -27,6 +27,12 @@ use pac::MCLK;
 use hal::usb::usb_device::bus::UsbBusAllocator;
 #[cfg(feature = "usb")]
 pub use hal::usb::UsbBus;
+
+hal::bsp_peripherals!(
+    SERCOM1 { SpiSercom }
+    SERCOM2 { I2cSercom }
+    SERCOM3 { UartSercom }
+);
 
 hal::bsp_pins!(
     PA02 {
@@ -282,29 +288,40 @@ pub fn qspi_master(
     )
 }
 
-/// I2C master for the labelled SDA & SCL pins
-pub type I2C = I2CMaster2<Sda, Scl>;
+/// I2C pads for the labelled I2C peripheral
+///
+/// You can use these pads with other, user-defined [`i2c::Config`]urations.
+pub type I2cPads = i2c::Pads<I2cSercom, IoSet1, Sda, Scl>;
+
+/// I2C master for the labelled I2C peripheral
+///
+/// This type implements [`Read`](ehal::blocking::i2c::Read),
+/// [`Write`](ehal::blocking::i2c::Write) and
+/// [`WriteRead`](ehal::blocking::i2c::WriteRead).
+pub type I2c = i2c::I2c<i2c::Config<I2cPads>>;
 
 /// Convenience for setting up the labelled SDA, SCL pins to
 /// operate as an I2C master running at the specified frequency.
 pub fn i2c_master(
     clocks: &mut GenericClockController,
     baud: impl Into<Hertz>,
-    sercom2: pac::SERCOM2,
+    sercom: I2cSercom,
     mclk: &mut pac::MCLK,
     sda: impl Into<Sda>,
     scl: impl Into<Scl>,
-) -> I2C {
+) -> I2c {
     let gclk0 = clocks.gclk0();
     let clock = &clocks.sercom2_core(&gclk0).unwrap();
+    let freq = clock.freq();
     let baud = baud.into();
-    let sda = sda.into();
-    let scl = scl.into();
-    I2CMaster2::new(clock, baud, sercom2, mclk, sda, scl)
+    let pads = i2c::Pads::new(sda.into(), scl.into());
+    i2c::Config::new(mclk, sercom, pads, freq)
+        .baud(baud)
+        .enable()
 }
 
 /// UART Pads for the labelled UART peripheral
-pub type UartPads = uart::Pads<Sercom3, IoSet3, UartRx, UartTx>;
+pub type UartPads = uart::Pads<UartSercom, IoSet3, UartRx, UartTx>;
 
 /// UART device for the labelled RX & TX pins
 pub type Uart = uart::Uart<uart::Config<UartPads>, uart::Duplex>;
@@ -314,7 +331,7 @@ pub type Uart = uart::Uart<uart::Config<UartPads>, uart::Duplex>;
 pub fn uart(
     clocks: &mut GenericClockController,
     baud: impl Into<Hertz>,
-    sercom3: pac::SERCOM3,
+    sercom3: UartSercom,
     mclk: &mut pac::MCLK,
     uart_rx: impl Into<UartRx>,
     uart_tx: impl Into<UartTx>,
@@ -361,7 +378,7 @@ pub fn dotstar_bitbang<T: CountDown + Periodic>(
 /// SPI pads for the labelled SPI peripheral
 ///
 /// You can use these pads with other, user-defined [`spi::Config`]urations.
-pub type SpiPads = spi::Pads<Sercom1, UndocIoSet2, Miso, Mosi, Sck>;
+pub type SpiPads = spi::Pads<SpiSercom, UndocIoSet2, Miso, Mosi, Sck>;
 
 /// SPI master for the labelled SPI peripheral
 ///
@@ -374,7 +391,7 @@ pub type Spi = spi::Spi<spi::Config<SpiPads>, spi::Duplex>;
 pub fn spi_master(
     clocks: &mut GenericClockController,
     baud: impl Into<Hertz>,
-    sercom1: pac::SERCOM1,
+    sercom1: SpiSercom,
 
     mclk: &mut pac::MCLK,
     sck: impl Into<Sck>,

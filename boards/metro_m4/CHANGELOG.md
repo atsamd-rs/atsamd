@@ -1,5 +1,10 @@
 # Unreleased
 
+- Correction to the clock in the usb convenience function
+
+# v0.11.1
+
+- Update to `atsamd-hal` version `0.15.1`
 - Make use of `bsp_peripherals` macro
 
 # v0.11.0

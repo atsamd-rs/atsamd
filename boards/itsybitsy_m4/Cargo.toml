@@ -1,6 +1,6 @@
 [package]
 name = "itsybitsy_m4"
-version = "0.7.0"
+version = "0.8.0"
 authors = [
     "Nic Hartley <nxh9052@rit.edu>",
     "Tom <twitchyliquid64@ciphersink.net>",
@@ -23,7 +23,7 @@ version = "0.7"
 optional = true
 
 [dependencies.atsamd-hal]
-version = "0.14"
+version = "0.15"
 default-features = false
 
 [dependencies.usb-device]
@@ -34,7 +34,7 @@ optional = true
 cortex-m = "0.7"
 usbd-serial = "0.1"
 panic-halt = "0.2"
-panic-semihosting = "0.5"
+panic-semihosting = "0.6"
 
 [features]
 # ask the HAL to enable atsamd51g support

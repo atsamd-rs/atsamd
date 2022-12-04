@@ -1,6 +1,6 @@
 [package]
 name = "wio_terminal"
-version = "0.6.0"
+version = "0.6.1"
 authors = [
     "Jesse Braham <jesse@beta7.io>",
     "Tom <twitchyliquid64@ciphersink.net>"
@@ -45,7 +45,7 @@ seeed-erpc = { version = "0.1.1", optional = true }
 
 [dependencies.atsamd-hal]
 path = "../../hal"
-version = "0.15"
+version = "0.15.1"
 default-features = false
 
 [dev-dependencies]

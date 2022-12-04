@@ -1,6 +1,6 @@
 [package]
 name = "atsamd-hal"
-version = "0.15.0"
+version = "0.15.1"
 authors = [
     "Wez Furlong <wez@wezfurlong.org>",
     "Paul Sajna <sajattack@gmail.com>",
@@ -32,6 +32,10 @@ rand_core = "0.6"
 seq-macro = "0.3"
 typenum = "1.12.0"
 vcell = "0.1"
+# AES related
+aes = "0.7.5"
+cipher = "0.3"
+opaque-debug = "0.3.0"
 
 [dependencies.jlink_rtt]
 optional = true
@@ -220,3 +224,4 @@ dma = ["unproven"]
 max-channels = ["dma"]
 sdmmc = ["embedded-sdmmc"]
 rtic = ["rtic-monotonic", "fugit"]
+enable_unsafe_aes_newblock_cipher = []
