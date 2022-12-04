@@ -295,7 +295,7 @@ impl<D: DpllId> DpllToken<D> {
         // of registers for the corresponding `DpllId`, and we use a shared
         // reference to the register block. See the notes on `Token` types and
         // memory safety in the root of the `clock` module for more details.
-        unsafe { &(*crate::pac::OSCCTRL::ptr()).dpll[D::NUM] }
+        unsafe { &(*crate::pac::OSCCTRL::PTR).dpll[D::NUM] }
     }
 
     /// Access the corresponding DPLLCTRLA register
@@ -454,7 +454,7 @@ pub enum DynDpllId {
 ///
 /// [type-level programming]: crate::typelevel
 /// [type-level enums]: crate::typelevel#type-level-enums
-pub trait DpllId: Sealed {
+pub trait DpllId: Sealed + PclkId {
     /// Corresponding variant of [`DynDpllId`]
     const DYN: DynDpllId;
     /// Corresponding numeric index
@@ -632,7 +632,7 @@ pub type EnabledDpll1<I, N = U0> = EnabledDpll<Dpll1Id, I, N>;
 
 impl<D, G> Dpll<D, G>
 where
-    D: DpllId + PclkId,
+    D: DpllId,
     G: GclkId,
 {
     /// Create a [`Dpll`] from a [`Pclk`]
@@ -843,6 +843,8 @@ where
     /// The returned value is an [`EnabledDpll`] that can be used as a clock
     /// [`Source`] for other clocks.
     ///
+    /// # Panics
+    ///
     /// This function will also check that the input and output clock
     /// frequencies fall within the valid ranges specified in the datasheet.
     /// Specifically, the input frequency must be between 32 kHz and 3.2 MHz,
@@ -858,21 +860,17 @@ where
         if output_freq < 96_000_000 || output_freq > 200_000_000 {
             panic!("Invalid DPLL output frequency");
         }
-        // Safety: We just checked that the input and output clock frequencies
-        // are within the valid ranges specified in the datasheet
-        unsafe { self.enable_unchecked() }
+        self.enable_unchecked()
     }
 
     /// Enable the [`Dpll`] without validating the input & output frequencies
-    ///
-    /// # Safety
     ///
     /// This is equivalent to calling [`Dpll::enable`] but without the checks on
     /// input and output frequencies. Using frequencies outside the ranges
     /// specified in the datasheet may not work and could cause clocking
     /// problems.
     #[inline]
-    pub unsafe fn enable_unchecked(mut self) -> EnabledDpll<D, I> {
+    pub fn enable_unchecked(mut self) -> EnabledDpll<D, I> {
         self.token.set_source_clock(I::DYN);
         if I::DYN == DynDpllSourceId::Xosc0 || I::DYN == DynDpllSourceId::Xosc1 {
             self.token.set_prediv(self.prediv)

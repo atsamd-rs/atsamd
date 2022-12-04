@@ -270,7 +270,7 @@ impl DfllToken {
         // of registers for the DFLL, and we use a shared reference to the
         // register block. See the notes on `Token` types and memory safety in
         // the root of the `clock` module for more details.
-        unsafe { &*crate::pac::OSCCTRL::ptr() }
+        unsafe { &*crate::pac::OSCCTRL::PTR }
     }
 
     #[inline]

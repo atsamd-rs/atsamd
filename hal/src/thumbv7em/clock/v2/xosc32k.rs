@@ -341,8 +341,6 @@
 //! [`is_switched`]: Xosc32kCfd::is_switched
 //! [`switch_back`]: Xosc32kCfd::switch_back
 
-use core::marker::PhantomData;
-
 use typenum::U0;
 
 use crate::pac::osc32kctrl::xosc32k::{CGM_A, STARTUP_A};
@@ -432,8 +430,7 @@ impl Xosc32kBaseToken {
     fn status(&self) -> status::R {
         // Safety: We are only reading from the `STATUS` register, so there is
         // no risk of memory corruption.
-        let osc32kctrl = unsafe { &*crate::pac::OSC32KCTRL::ptr() };
-        osc32kctrl.status.read()
+        unsafe { (*crate::pac::OSC32KCTRL::PTR).status.read() }
     }
 
     /// Check whether the XOSC32K is stable and ready
@@ -447,7 +444,7 @@ impl Xosc32kBaseToken {
         // Safety: The `Xosc32kBaseToken` has exclusive access to the `XOSC32K`
         // register. See the notes on `Token` types and memory safety in the
         // root of the `clock` module for more details.
-        unsafe { &(*crate::pac::OSC32KCTRL::ptr()).xosc32k }
+        unsafe { &(*crate::pac::OSC32KCTRL::PTR).xosc32k }
     }
 
     /// Reset the XOSC32K register
@@ -517,8 +514,7 @@ impl Xosc32kCfdToken {
     fn status(&self) -> status::R {
         // Safety: We are only reading from the `STATUS` register, so there is
         // no risk of memory corruption.
-        let osc32kctrl = unsafe { &*crate::pac::OSC32KCTRL::ptr() };
-        osc32kctrl.status.read()
+        unsafe { (*crate::pac::OSC32KCTRL::PTR).status.read() }
     }
 
     /// Check whether the XOSC32K has triggered failure detection
@@ -538,8 +534,7 @@ impl Xosc32kCfdToken {
         // Safety: The `Xosc32kCfdToken` has exclusive access to the `CFDCTRL`
         // register. See the notes on `Token` types and memory safety in the
         // root of the `clock` module for more details.
-        let osc32kctrl = unsafe { &*crate::pac::OSC32KCTRL::ptr() };
-        &osc32kctrl.cfdctrl
+        unsafe { &(*crate::pac::OSC32KCTRL::PTR).cfdctrl }
     }
 
     /// Enable clock failure detection and set the safe clock divider
@@ -722,6 +717,8 @@ pub enum DynMode {
 /// [type-level enums]: crate::typelevel#type-level-enums
 pub trait Mode: Sealed {
     const DYN: DynMode;
+    #[doc(hidden)]
+    type Pins;
 }
 
 /// Type-level variant of the XOSC32K operating [`Mode`]
@@ -737,6 +734,7 @@ pub enum ClockMode {}
 impl Sealed for ClockMode {}
 impl Mode for ClockMode {
     const DYN: DynMode = DynMode::ClockMode;
+    type Pins = XIn32;
 }
 
 /// Type-level variant of the XOSC32K operating [`Mode`]
@@ -752,6 +750,7 @@ pub enum CrystalMode {}
 impl Sealed for CrystalMode {}
 impl Mode for CrystalMode {
     const DYN: DynMode = DynMode::CrystalMode;
+    type Pins = (XIn32, XOut32);
 }
 
 //==============================================================================
@@ -768,7 +767,7 @@ impl Mode for CrystalMode {
 /// [module-level documentation](super) for details and examples.
 pub struct Xosc32kBase<M: Mode> {
     token: Xosc32kBaseToken,
-    mode: PhantomData<M>,
+    pins: M::Pins,
     settings: Settings,
 }
 
@@ -798,18 +797,15 @@ impl Xosc32kBase<ClockMode> {
     /// [`enable`]: Xosc32kBase::enable
     #[inline]
     pub fn from_clock(token: Xosc32kBaseToken, xin32: impl Into<XIn32>) -> Self {
-        let _xin32: XIn32 = xin32.into();
-        Self::new(token)
+        let pins = xin32.into();
+        Self::new(token, pins)
     }
 
     /// Consume the [`Xosc32kBase`] and release the [`Xosc32kBaseToken`] and
     /// [`XIn32`] [`Pin`]
     #[inline]
-    pub fn free_clock(self) -> (Xosc32kBaseToken, XIn32) {
-        // Safety: We dropped the `Pin`son construction of the `Xosc`,
-        // so we can safely recreate it here.
-        let xin32 = unsafe { Pin::new() };
-        (self.token, xin32)
+    pub fn free(self) -> (Xosc32kBaseToken, XIn32) {
+        (self.token, self.pins)
     }
 }
 
@@ -832,19 +828,15 @@ impl Xosc32kBase<CrystalMode> {
         xin32: impl Into<XIn32>,
         xout32: impl Into<XOut32>,
     ) -> Self {
-        let _xin32: XIn32 = xin32.into();
-        let _xout32: XOut32 = xout32.into();
-        Self::new(token)
+        let pins = (xin32.into(), xout32.into());
+        Self::new(token, pins)
     }
 
     /// Consume the [`Xosc32kBase`] and release the [`Xosc32kBaseToken`],
     /// [`XIn32`] and [`XOut32`] [`Pin`]s
     #[inline]
-    pub fn free_crystal(self) -> (Xosc32kBaseToken, XIn32, XOut32) {
-        // Safety: We dropped the `Pin`s on construction of the `Xosc`,
-        // so we can safely recreate them here.
-        let xin32 = unsafe { Pin::new() };
-        let xout32 = unsafe { Pin::new() };
+    pub fn free(self) -> (Xosc32kBaseToken, XIn32, XOut32) {
+        let (xin32, xout32) = self.pins;
         (self.token, xin32, xout32)
     }
 
@@ -858,7 +850,7 @@ impl Xosc32kBase<CrystalMode> {
 
 impl<M: Mode> Xosc32kBase<M> {
     #[inline]
-    fn new(token: Xosc32kBaseToken) -> Self {
+    fn new(token: Xosc32kBaseToken, pins: M::Pins) -> Self {
         let settings = Settings {
             start_up: StartUpDelay::Delay63ms,
             cgm: ControlGainMode::Standard,
@@ -868,7 +860,7 @@ impl<M: Mode> Xosc32kBase<M> {
         };
         Self {
             token,
-            mode: PhantomData,
+            pins,
             settings,
         }
     }

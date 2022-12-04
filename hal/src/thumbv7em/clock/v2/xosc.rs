@@ -257,7 +257,7 @@ impl<X: XoscId> XoscToken<X> {
         // of registers for the corresponding `XoscId`, and we use a shared
         // reference to the register block. See the notes on `Token` types and
         // memory safety in the root of the `clock` module for more details.
-        unsafe { &(*crate::pac::OSCCTRL::ptr()).xoscctrl[X::NUM] }
+        unsafe { &(*crate::pac::OSCCTRL::PTR).xoscctrl[X::NUM] }
     }
 
     /// Read the STATUS register
@@ -265,8 +265,7 @@ impl<X: XoscId> XoscToken<X> {
     fn status(&self) -> oscctrl::status::R {
         // Safety: We are only reading from the `STATUS` register, so there is
         // no risk of memory corruption.
-        let oscctrl = unsafe { &*crate::pac::OSCCTRL::ptr() };
-        oscctrl.status.read()
+        unsafe { (*crate::pac::OSCCTRL::PTR).status.read() }
     }
 
     /// Check whether the XOSC is stable and ready
@@ -603,6 +602,8 @@ pub enum DynMode {
 pub trait Mode: Sealed {
     /// Corresponding variant of [`DynMode`]
     const DYN: DynMode;
+    #[doc(hidden)]
+    type Pins<X: XoscId>;
 }
 
 //==============================================================================
@@ -624,6 +625,7 @@ impl Sealed for ClockMode {}
 
 impl Mode for ClockMode {
     const DYN: DynMode = DynMode::ClockMode;
+    type Pins<X: XoscId> = XIn<X>;
 }
 
 //==============================================================================
@@ -645,6 +647,7 @@ impl Sealed for CrystalMode {}
 
 impl Mode for CrystalMode {
     const DYN: DynMode = DynMode::CrystalMode;
+    type Pins<X: XoscId> = (XIn<X>, XOut<X>);
 }
 
 //==============================================================================
@@ -680,7 +683,7 @@ where
     M: Mode,
 {
     token: XoscToken<X>,
-    mode: PhantomData<M>,
+    pins: M::Pins<X>,
     freq: Hertz,
     settings: Settings,
 }
@@ -722,19 +725,14 @@ impl<X: XoscId> Xosc<X, ClockMode> {
     /// [`enable`]: Xosc::enable
     #[inline]
     pub fn from_clock(token: XoscToken<X>, xin: impl Into<XIn<X>>, freq: impl Into<Hertz>) -> Self {
-        // Convert `XIn` to the correct `PinMode` and then drop it.
-        // We can recreate it when freeing the `Xosc`
-        let _xin: XIn<X> = xin.into();
-        Xosc::new(token, freq.into())
+        let pins = xin.into();
+        Xosc::new(token, pins, freq.into())
     }
 
     /// Consume the [`Xosc`] and release the [`XoscToken`] and [`XIn`] [`Pin`]
     #[inline]
-    pub fn free_clock(self) -> (XoscToken<X>, XIn<X>) {
-        // Safety: We dropped the `Pin` on construction of the `Xosc`,
-        // so we can safely recreate it here.
-        let xin = unsafe { Pin::new() };
-        (self.token, xin)
+    pub fn free(self) -> (XoscToken<X>, XIn<X>) {
+        (self.token, self.pins)
     }
 }
 
@@ -757,21 +755,15 @@ impl<X: XoscId> Xosc<X, CrystalMode> {
         xout: impl Into<XOut<X>>,
         freq: impl Into<Hertz>,
     ) -> Self {
-        // Convert `XIn` and `Xout` to the correct `PinMode` and then drop them.
-        // We can recreate them when freeing the `Xosc`
-        let _xin: XIn<X> = xin.into();
-        let _xout: XOut<X> = xout.into();
-        Xosc::new(token, freq.into())
+        let pins = (xin.into(), xout.into());
+        Xosc::new(token, pins, freq.into())
     }
 
     /// Consume the [`Xosc`] and release the [`XoscToken`], [`XIn`] and [`XOut`]
     /// [`Pin`]s
     #[inline]
-    pub fn free_crystal(self) -> (XoscToken<X>, XIn<X>, XOut<X>) {
-        // Safety: We dropped the `Pin`s on construction of the `Xosc`,
-        // so we can safely recreate them here.
-        let xin = unsafe { Pin::new() };
-        let xout = unsafe { Pin::new() };
+    pub fn free(self) -> (XoscToken<X>, XIn<X>, XOut<X>) {
+        let (xin, xout) = self.pins;
         (self.token, xin, xout)
     }
 
@@ -811,7 +803,7 @@ where
     M: Mode,
 {
     #[inline]
-    fn new(token: XoscToken<X>, freq: Hertz) -> Self {
+    fn new(token: XoscToken<X>, pins: M::Pins<X>, freq: Hertz) -> Self {
         let current = match freq.0 {
             8_000_000 => CrystalCurrent::Low,
             8_000_001..=16_000_000 => CrystalCurrent::Medium,
@@ -834,7 +826,7 @@ where
         };
         Self {
             token,
-            mode: PhantomData,
+            pins,
             freq,
             settings,
         }

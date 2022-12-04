@@ -238,7 +238,7 @@ impl OscUlp32kBaseToken {
         // Safety: The `OscUlp32kBaseToken` has exclusive access to the
         // `OSCULP32K` register. See the notes on `Token` types and memory
         // safety in the root of the `clock` module for more details.
-        unsafe { &(*crate::pac::OSC32KCTRL::ptr()).osculp32k }
+        unsafe { &(*crate::pac::OSC32KCTRL::PTR).osculp32k }
     }
 
     /// Set the calibration

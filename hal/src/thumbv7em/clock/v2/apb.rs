@@ -164,7 +164,7 @@ impl Apb {
         // registers, and it uses a shared reference to the register block. See
         // the notes on `Token` types and memory safety in the root of the
         // `clock` module for more details.
-        unsafe { &*MCLK::ptr() }
+        unsafe { &*MCLK::PTR }
     }
 
     #[inline]

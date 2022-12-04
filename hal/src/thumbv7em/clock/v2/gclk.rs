@@ -402,7 +402,7 @@ impl<G: GclkId> GclkToken<G> {
         // of registers for the corresponding `GclkId`, and we use a shared
         // reference to the register block. See the notes on `Token` types and
         // memory safety in the root of the `clock` module for more details.
-        unsafe { &(*pac::GCLK::ptr()).genctrl[G::NUM] }
+        unsafe { &(*pac::GCLK::PTR).genctrl[G::NUM] }
     }
 
     /// Block until synchronization has completed
@@ -414,8 +414,8 @@ impl<G: GclkId> GclkToken<G> {
         // Safety: We are only reading from the `SYNCBUSY` register, and we are
         // only observing the bit corresponding to this particular `GclkId`, so
         // there is no risk of memory corruption.
-        let gclk = unsafe { &*pac::GCLK::ptr() };
-        while gclk.syncbusy.read().genctrl().bits() & Self::MASK != 0 {}
+        let syncbusy = unsafe { &(*pac::GCLK::PTR).syncbusy };
+        while syncbusy.read().genctrl().bits() & Self::MASK != 0 {}
     }
 
     /// Set the clock source for this [`Gclk`]

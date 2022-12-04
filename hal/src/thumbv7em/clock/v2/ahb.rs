@@ -162,7 +162,7 @@ impl Ahb {
         // Safety: The `Ahb` type has exclusive access to the `AHBMASK`
         // register. See the notes on `Token` types and memory safety in the
         // root of the `clock` module for more details.
-        unsafe { &(*MCLK::ptr()).ahbmask }
+        unsafe { &(*MCLK::PTR).ahbmask }
     }
 
     #[inline]
