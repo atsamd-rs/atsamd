@@ -281,7 +281,8 @@ impl<D: DpllId> DpllToken<D> {
     /// # Safety
     ///
     /// Each `DpllToken`s is a singleton. There must never be two simulatenous
-    /// instances with the same [`DpllId`].
+    /// instances with the same [`DpllId`]. See the notes on `Token` types and
+    /// memory safety in the root of the `clock` module for more details.
     #[inline]
     pub(super) unsafe fn new() -> Self {
         Self { dpll: PhantomData }
