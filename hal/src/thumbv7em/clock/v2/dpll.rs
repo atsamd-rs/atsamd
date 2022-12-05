@@ -512,33 +512,33 @@ pub trait DpllSourceId {
     /// Corresponding variant of [`DynDpllSourceId`]
     const DYN: DynDpllSourceId;
 
-    /// Source-specific settings type
+    /// Reference-specific settings type
     #[doc(hidden)]
-    type Source<D: DpllId>: settings::Source;
+    type Reference<D: DpllId>: settings::Reference;
 }
 
 impl<G: GclkId> DpllSourceId for G {
     const DYN: DynDpllSourceId = DynDpllSourceId::Pclk;
-    type Source<D: DpllId> = settings::Pclk<D, G>;
+    type Reference<D: DpllId> = settings::Pclk<D, G>;
 }
 impl DpllSourceId for Xosc0Id {
     const DYN: DynDpllSourceId = DynDpllSourceId::Xosc0;
-    type Source<D: DpllId> = settings::Xosc;
+    type Reference<D: DpllId> = settings::Xosc;
 }
 impl DpllSourceId for Xosc1Id {
     const DYN: DynDpllSourceId = DynDpllSourceId::Xosc1;
-    type Source<D: DpllId> = settings::Xosc;
+    type Reference<D: DpllId> = settings::Xosc;
 }
 impl DpllSourceId for Xosc32kId {
     const DYN: DynDpllSourceId = DynDpllSourceId::Xosc32k;
-    type Source<D: DpllId> = settings::Xosc32k;
+    type Reference<D: DpllId> = settings::Xosc32k;
 }
 
 //==============================================================================
 // Settings
 //==============================================================================
 
-/// [`Dpll`] settings relevant to all clock sources
+/// [`Dpll`] settings relevant to all reference clocks
 #[derive(Copy, Clone)]
 struct Settings {
     mult: u16,
@@ -549,12 +549,12 @@ struct Settings {
     run_standby: bool,
 }
 
-/// Store and retrieve [`Dpll`] settings for different clock sources
+/// Store and retrieve [`Dpll`] settings for different reference clocks
 mod settings {
     use super::super::pclk;
     use super::{DpllId, GclkId, Hertz};
 
-    /// [`Dpll`] settings when sourced from a [`Pclk`]
+    /// [`Dpll`] settings when referenced to a [`Pclk`]
     ///
     /// [`Dpll`]: super::Dpll
     /// [`Pclk`]: pclk::Pclk
@@ -562,7 +562,7 @@ mod settings {
         pub pclk: pclk::Pclk<D, G>,
     }
 
-    /// [`Dpll`] settings when sourced from an [`Xosc`]
+    /// [`Dpll`] settings when referenced to an [`Xosc`]
     ///
     /// [`Dpll`]: super::Dpll
     /// [`Xosc`]: super::super::xosc::Xosc
@@ -571,19 +571,19 @@ mod settings {
         pub prediv: u16,
     }
 
-    /// [`Dpll`] settings when sourced from an [`Xosc32k`]
+    /// [`Dpll`] settings when referenced to an [`Xosc32k`]
     ///
     /// [`Dpll`]: super::Dpll
     /// [`Xosc32k`]: super::super::xosc32k::Xosc32k
     pub struct Xosc32k;
 
-    /// Generic interface to get the frequency and predivider of a clock source
-    pub trait Source {
+    /// Generic interface for the frequency and predivider of a reference clock
+    pub trait Reference {
         fn freq(&self) -> Hertz;
         fn prediv(&self) -> u16;
     }
 
-    impl<D: DpllId, G: GclkId> Source for Pclk<D, G> {
+    impl<D: DpllId, G: GclkId> Reference for Pclk<D, G> {
         #[inline]
         fn freq(&self) -> Hertz {
             self.pclk.freq()
@@ -594,7 +594,7 @@ mod settings {
         }
     }
 
-    impl Source for Xosc {
+    impl Reference for Xosc {
         #[inline]
         fn freq(&self) -> Hertz {
             self.freq
@@ -605,7 +605,7 @@ mod settings {
         }
     }
 
-    impl Source for Xosc32k {
+    impl Reference for Xosc32k {
         #[inline]
         fn freq(&self) -> Hertz {
             Hertz(32_768)
@@ -652,7 +652,7 @@ where
     I: DpllSourceId,
 {
     token: DpllToken<D>,
-    source: I::Source<D>,
+    reference: I::Reference<D>,
     settings: Settings,
 }
 
@@ -667,7 +667,7 @@ where
     D: DpllId,
     I: DpllSourceId,
 {
-    fn new(token: DpllToken<D>, source: I::Source<D>) -> Self {
+    fn new(token: DpllToken<D>, reference: I::Reference<D>) -> Self {
         let settings = Settings {
             mult: 1,
             frac: 0,
@@ -678,7 +678,7 @@ where
         };
         Self {
             token,
-            source,
+            reference,
             settings,
         }
     }
@@ -703,14 +703,14 @@ where
     /// [`enable`]: Dpll::enable
     #[inline]
     pub fn from_pclk(token: DpllToken<D>, pclk: Pclk<D, G>) -> Self {
-        let source = settings::Pclk { pclk };
-        Dpll::new(token, source)
+        let reference = settings::Pclk { pclk };
+        Dpll::new(token, reference)
     }
 
     /// Consume the [`Dpll`], release the [`DpllToken`], and return the [`Pclk`]
     #[inline]
     pub fn free(self) -> (DpllToken<D>, Pclk<D, G>) {
-        (self.token, self.source.pclk)
+        (self.token, self.reference.pclk)
     }
 }
 
@@ -741,16 +741,16 @@ seq!(N in 0..2 {
             /// [`Xosc`]: super::xosc::Xosc
             /// [`enable`]: Dpll::enable
             #[inline]
-            pub fn from_xosc~N<S>(token: DpllToken<D>, xosc: S) -> (Self, S::Inc)
+            pub fn from_xosc~N<S>(token: DpllToken<D>, source: S) -> (Self, S::Inc)
             where
                 S: Source<Id = [<Xosc N Id>]> + Increment,
             {
-                let source = settings::Xosc {
-                    freq: xosc.freq(),
+                let reference = settings::Xosc {
+                    freq: source.freq(),
                     prediv: 2,
                 };
-                let dpll = Dpll::new(token, source);
-                (dpll, xosc.inc())
+                let dpll = Dpll::new(token, reference);
+                (dpll, source.inc())
             }
 
             /// Consume the [`Dpll`], release the [`DpllToken`], and [`Decrement`] the
@@ -771,7 +771,7 @@ seq!(N in 0..2 {
 impl<D: DpllId, X: XoscId + DpllSourceId> Dpll<D, X>
 where
     D: DpllId,
-    X: XoscId + DpllSourceId<Source<D> = settings::Xosc>,
+    X: XoscId + DpllSourceId<Reference<D> = settings::Xosc>,
 {
     /// Set the [`Xosc`] pre-division factor
     ///
@@ -782,7 +782,7 @@ where
     /// [`Xosc`]: super::xosc::Xosc
     #[inline]
     pub fn prediv(mut self, prediv: u16) -> Self {
-        self.source.prediv = prediv;
+        self.reference.prediv = prediv;
         self
     }
 }
@@ -803,12 +803,12 @@ impl<D: DpllId> Dpll<D, Xosc32kId> {
     /// [`Xosc32k`]: super::xosc32k::Xosc32k
     /// [`enable`]: Dpll::enable
     #[inline]
-    pub fn from_xosc32k<S>(token: DpllToken<D>, xosc32k: S) -> (Self, S::Inc)
+    pub fn from_xosc32k<S>(token: DpllToken<D>, source: S) -> (Self, S::Inc)
     where
         S: Source<Id = Xosc32kId> + Increment,
     {
         let dpll = Dpll::new(token, settings::Xosc32k);
-        (dpll, xosc32k.inc())
+        (dpll, source.inc())
     }
 
     /// Consume the [`Dpll`], release the [`DpllToken`], and [`Decrement`] the
@@ -894,8 +894,8 @@ where
 
     #[inline]
     fn input_freq(&self) -> u32 {
-        use settings::Source;
-        self.source.freq().0 / self.source.prediv() as u32
+        use settings::Reference;
+        self.reference.freq().0 / self.reference.prediv() as u32
     }
 
     #[inline]
@@ -947,8 +947,8 @@ where
     /// problems.
     #[inline]
     pub fn enable_unchecked(mut self) -> EnabledDpll<D, I> {
-        use settings::Source;
-        let prediv = self.source.prediv();
+        use settings::Reference;
+        let prediv = self.reference.prediv();
         self.token.configure(I::DYN, self.settings, prediv);
         self.token.enable();
         Enabled::new(self)
