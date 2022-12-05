@@ -346,7 +346,6 @@
 //!     clock::v2::{
 //!         clock_system_at_reset,
 //!         dpll::Dpll,
-//!         gclk::GclkOut,
 //!         pclk::Pclk,
 //!         xosc::Xosc,
 //!     },
@@ -687,17 +686,15 @@
 //! synonymous with the [`GclkId`] trait.
 //!
 //! Finally, we would like to output GCLK0 to a GPIO pin. Doing so takes a
-//! similar approach to the [`Pclk`] above. But this time, we must also provide
-//! a corresponding GPIO [`Pin`], in this case `PB14`. And, as with the [`Pclk`]
-//! above, creating a [`GclkOut`] clock will [`Increment`] the counter for
-//! [`EnabledGclk0`].
+//! slightly different approach. This time, we provide a GPIO [`Pin`] to the
+//! [`Gclk`], which creates a [`GclkOut`] and [`Increment`]s the consumer count
+//! for [`EnabledGclk0`].
 //!
 //! ```no_run
 //! # use atsamd_hal::{
 //! #     clock::v2::{
 //! #         clock_system_at_reset,
 //! #         dpll::Dpll,
-//! #         gclk::GclkOut,
 //! #         pclk::Pclk,
 //! #         xosc::Xosc,
 //! #     },
@@ -726,7 +723,7 @@
 //! # let dfll_token = dfll.disable().free();
 //! # let apb_sercom0 = buses.apb.enable(tokens.apbs.sercom0);
 //! # let (pclk_sercom0, gclk0) = Pclk::enable(tokens.pclks.sercom0, gclk0);
-//! let (gclk_out0, gclk0) = GclkOut::enable(pins.pb14, gclk0);
+//! let (gclk0, gclk0_out) = gclk0.enable_gclk_out(pins.pb14);
 //! ```
 //!
 //! We have arrived at our final, desired clock tree. Putting the whole example
@@ -737,7 +734,6 @@
 //!     clock::v2::{
 //!         clock_system_at_reset,
 //!         dpll::Dpll,
-//!         gclk::GclkOut,
 //!         pclk::Pclk,
 //!         xosc::Xosc,
 //!     },
@@ -768,7 +764,7 @@
 //! let dfll_token = dfll.disable().free();
 //! let apb_sercom0 = buses.apb.enable(tokens.apbs.sercom0);
 //! let (pclk_sercom0, gclk0) = Pclk::enable(tokens.pclks.sercom0, gclk0);
-//! let (gclk_out0, gclk0) = GclkOut::enable(pins.pb14, gclk0);
+//! let (gclk0, gclk0_out) = gclk0.enable_gclk_out(pins.pb14);
 //! ```
 //!
 //! [PAC]: crate::pac
@@ -1018,7 +1014,7 @@ impl<T, N: PrivateDecrement> PrivateDecrement for Enabled<T, N> {
 #[allow(dead_code)]
 fn test() {
     use crate::{
-        clock::v2::{dpll::Dpll, gclk::GclkOut, pclk::Pclk, xosc::Xosc},
+        clock::v2::{dpll::Dpll, pclk::Pclk, xosc::Xosc},
         gpio::Pins,
         pac::Peripherals,
         time::U32Ext,
@@ -1040,5 +1036,5 @@ fn test() {
     let _dfll_token = dfll.disable().free();
     let _apb_sercom0 = buses.apb.enable(tokens.apbs.sercom0);
     let (_pclk_sercom0, gclk0) = Pclk::enable(tokens.pclks.sercom0, gclk0);
-    let (_gclk_out0, _gclk0) = GclkOut::enable(pins.pa30, gclk0);
+    let (_gclk0, _gclk0_out) = gclk0.enable_gclk_out(pins.pa30);
 }

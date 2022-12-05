@@ -59,7 +59,7 @@
 //! use atsamd_hal::{
 //!     clock::v2::{
 //!         clock_system_at_reset,
-//!         gclk::{Gclk, GclkDiv8, GclkDiv16, GclkOut},
+//!         gclk::{Gclk, GclkDiv8, GclkDiv16},
 //!         pclk::Pclk,
 //!     },
 //!     gpio::Pins,
@@ -93,7 +93,7 @@
 //! # use atsamd_hal::{
 //! #     clock::v2::{
 //! #         clock_system_at_reset,
-//! #         gclk::{Gclk, GclkDiv8, GclkDiv16, GclkOut},
+//! #         gclk::{Gclk, GclkDiv8, GclkDiv16},
 //! #         pclk::Pclk,
 //! #     },
 //! #     gpio::Pins,
@@ -121,7 +121,7 @@
 //! # use atsamd_hal::{
 //! #     clock::v2::{
 //! #         clock_system_at_reset,
-//! #         gclk::{Gclk, GclkDiv8, GclkDiv16, GclkOut},
+//! #         gclk::{Gclk, GclkDiv8, GclkDiv16},
 //! #         pclk::Pclk,
 //! #     },
 //! #     gpio::Pins,
@@ -158,7 +158,7 @@
 //! # use atsamd_hal::{
 //! #     clock::v2::{
 //! #         clock_system_at_reset,
-//! #         gclk::{Gclk, GclkDiv8, GclkDiv16, GclkOut},
+//! #         gclk::{Gclk, GclkDiv8, GclkDiv16},
 //! #         pclk::Pclk,
 //! #     },
 //! #     gpio::Pins,
@@ -188,7 +188,7 @@
 //! # use atsamd_hal::{
 //! #     clock::v2::{
 //! #         clock_system_at_reset,
-//! #         gclk::{Gclk, GclkDiv8, GclkDiv16, GclkOut},
+//! #         gclk::{Gclk, GclkDiv8, GclkDiv16},
 //! #         pclk::Pclk,
 //! #     },
 //! #     gpio::Pins,
@@ -218,7 +218,7 @@
 //! # use atsamd_hal::{
 //! #     clock::v2::{
 //! #         clock_system_at_reset,
-//! #         gclk::{Gclk, GclkDiv8, GclkDiv16, GclkOut},
+//! #         gclk::{Gclk, GclkDiv8, GclkDiv16},
 //! #         pclk::Pclk,
 //! #     },
 //! #     gpio::Pins,
@@ -243,13 +243,13 @@
 //! ```
 //!
 //! Finally, we output [`Gclk2`] directly to a GPIO pin. We supply the GPIO
-//! [`Pin`] and the [`EnabledGclk2`] to yield a [`GclkOut`].
+//! [`Pin`] to the [`EnabledGclk2`] to yield a [`GclkOut`].
 //!
 //! ```no_run
 //! # use atsamd_hal::{
 //! #     clock::v2::{
 //! #         clock_system_at_reset,
-//! #         gclk::{Gclk, GclkDiv8, GclkDiv16, GclkOut},
+//! #         gclk::{Gclk, GclkDiv8, GclkDiv16},
 //! #         pclk::Pclk,
 //! #     },
 //! #     gpio::Pins,
@@ -271,7 +271,7 @@
 //! # let (gclk2, gclk1) = Gclk::from_source(tokens.gclks.gclk2, gclk1);
 //! # let gclk2 = gclk2.div(GclkDiv8::Div(4)).enable();
 //! # let (pclk_sercom1, gclk2) = Pclk::enable(tokens.pclks.sercom1, gclk2);
-//! let (gclk_out2, gclk2) = GclkOut::enable(pins.pa16, gclk2);
+//! let (gclk2, gclk2_out) = gclk2.enable_gclk_out(pins.pa16);
 //! ```
 //!
 //! The full example is provided below.
@@ -280,7 +280,7 @@
 //! use atsamd_hal::{
 //!     clock::v2::{
 //!         clock_system_at_reset,
-//!         gclk::{Gclk, GclkDiv8, GclkDiv16, GclkOut},
+//!         gclk::{Gclk, GclkDiv8, GclkDiv16},
 //!         pclk::Pclk,
 //!     },
 //!     gpio::Pins,
@@ -302,7 +302,7 @@
 //! let (gclk2, gclk1) = Gclk::from_source(tokens.gclks.gclk2, gclk1);
 //! let gclk2 = gclk2.div(GclkDiv8::Div(4)).enable();
 //! let (pclk_sercom1, gclk2) = Pclk::enable(tokens.pclks.sercom1, gclk2);
-//! let (gclk_out2, gclk2) = GclkOut::enable(pins.pa16, gclk2);
+//! let (gclk2, gclk2_out) = gclk2.enable_gclk_out(pins.pa16);
 //! ```
 //!
 //! ## `Gclk0`
@@ -1126,10 +1126,12 @@ where
     ///
     /// However, remember that the `Pin` is not controlled by the `Gclk` unless
     /// the `Pin` is configured in [`AlternateM`] mode. `Pin`s are automatically
-    /// set to `AlternateM` mode when calling [`GclkOut::enable`], but by that
+    /// set to `AlternateM` mode when calling [`enable_gclk_out`], but by that
     /// point, the OOV is irrelevant. If you need the `Pin` to be set to its
     /// OOV, you must *manually* set it to `AlternateM` mode before constructing
     /// the `GclkOut`.
+    ///
+    /// [`enable_gclk_out`]: EnabledGclk::enable_gclk_out
     #[inline]
     pub fn output_off_value(mut self, high: bool) -> Self {
         self.output_off_value = high;
@@ -1153,24 +1155,6 @@ where
         self.token.set_div(self.div);
         self.token.enable();
         Enabled::new(self)
-    }
-}
-
-impl<G, I, N> EnabledGclk<G, I, N>
-where
-    G: GclkId,
-    I: GclkSourceId,
-{
-    /// Enable [`Gclk`] output to a GPIO pins
-    #[inline]
-    pub(super) fn enable_gclk_out(&mut self) {
-        self.0.token.enable_gclk_out();
-    }
-
-    /// Disable [`Gclk`] output to GPIO pins
-    #[inline]
-    pub(super) fn disable_gclk_out(&mut self) {
-        self.0.token.disable_gclk_out();
     }
 }
 
@@ -1399,7 +1383,19 @@ where
     G: GclkId,
     I: GclkIo<GclkId = G>,
 {
-    /// Create and enable a [`GclkOut`] from an [`EnabledGclk`]
+    /// Return the frequency of the corresponding [`Gclk`]
+    #[inline]
+    pub fn freq(&self) -> Hertz {
+        self.freq
+    }
+}
+
+impl<G, S, N> EnabledGclk<G, S, N>
+where
+    G: GclkId,
+    S: NotGclkIo,
+{
+    /// Create and enable a [`GclkOut`]
     ///
     /// Enabling [`GclkIo`] output will [`Increment`] the `EnabledGclk`
     /// counter, which will prevent it from being disabled while the
@@ -1413,44 +1409,35 @@ where
     /// [`AlternateM`] mode, it takes the "output off value" of the `Gclk`. See
     /// the [`Gclk::output_off_value`] documentation for more details.
     #[inline]
-    pub fn enable<P, S, N>(
-        pin: P,
-        mut gclk: EnabledGclk<G, S, N>,
-    ) -> (GclkOut<I>, EnabledGclk<G, S, N::Inc>)
+    pub fn enable_gclk_out<P>(mut self, pin: P) -> (EnabledGclk<G, S, N::Inc>, GclkOut<P::Id>)
     where
-        P: AnyPin<Id = I>,
-        S: NotGclkIo,
         N: Increment,
+        P: AnyPin,
+        P::Id: GclkIo<GclkId = G>,
     {
         let pin = pin.into().into_mode();
-        let freq = gclk.freq();
-        gclk.enable_gclk_out();
+        let freq = self.freq();
+        self.0.token.enable_gclk_out();
         let gclk_out = GclkOut { pin, freq };
-        (gclk_out, gclk.inc())
+        (self.inc(), gclk_out)
     }
 
-    /// Return the frequency of the corresponding [`Gclk`]
-    #[inline]
-    pub fn freq(&self) -> Hertz {
-        self.freq
-    }
-
-    /// Disable a [`GclkOut`] and free its resources
+    /// Disable a [`GclkOut`] and free its [`Pin`]
     ///
-    /// Disabling [`GclkIo`] output will [`Decrement`] the `EnabledGclk`
+    /// Disabling [`GclkIo`] output will [`Decrement`] the [`EnabledGclk`]
     /// counter. When a [`GclkOut`] is disabled, but the [`Pin`] is still in
     /// [`AlternateM`] mode, it takes the "output off value" of the `Gclk`. See
     /// the [`Gclk::output_off_value`] documentation for more details.
     #[inline]
-    pub fn disable<S, N>(
-        self,
-        mut gclk: EnabledGclk<G, S, N>,
-    ) -> (Pin<I, AlternateM>, EnabledGclk<G, S, N::Dec>)
+    pub fn disable_gclk_out<I>(
+        mut self,
+        gclk_out: GclkOut<I>,
+    ) -> (EnabledGclk<G, S, N::Dec>, Pin<I, AlternateM>)
     where
-        S: NotGclkIo,
         N: Decrement,
+        I: GclkIo<GclkId = G>,
     {
-        gclk.disable_gclk_out();
-        (self.pin, gclk.dec())
+        self.0.token.disable_gclk_out();
+        (self.dec(), gclk_out.pin)
     }
 }
