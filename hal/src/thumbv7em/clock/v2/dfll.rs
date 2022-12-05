@@ -164,6 +164,35 @@
 //!     .enable();
 //! ```
 //!
+//! The entire example is provided below.
+//!
+//! ```no_run
+//! use atsamd_hal::{
+//!     clock::v2::{clock_system_at_reset, dfll::Dfll, pclk::Pclk, xosc::Xosc},
+//!     gpio::Pins,
+//!     pac::Peripherals,
+//!     time::U32Ext,
+//! };
+//! let mut pac = Peripherals::take().unwrap();
+//! let pins = Pins::new(pac.PORT);
+//! let (buses, clocks, tokens) = clock_system_at_reset(
+//!     pac.OSCCTRL,
+//!     pac.OSC32KCTRL,
+//!     pac.GCLK,
+//!     pac.MCLK,
+//!     &mut pac.NVMCTRL,
+//! );
+//! let xosc0 = Xosc::from_clock(tokens.xosc0, pins.pa14, 24.mhz()).enable();
+//! let (gclk0, dfll, _xosc0) = clocks.gclk0.swap_sources(clocks.dfll, xosc0);
+//! let token_dfll = dfll.disable().free();
+//! let (pclk_dfll, _gclk0) = Pclk::enable(tokens.pclks.dfll, gclk0);
+//! let dfll = Dfll::from_pclk(token_dfll, pclk_dfll)
+//!     .coarse_max_step(1)
+//!     .fine_max_step(10)
+//!     .quick_lock(false)
+//!     .enable();
+//! ```
+//!
 //! # [`Dfll`], [`Gclk0`], and the system's master clock
 //!
 //! At power-on reset, the master clock (which is run by [`Gclk0`]) is sourced
