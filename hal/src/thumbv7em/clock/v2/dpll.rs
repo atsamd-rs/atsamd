@@ -332,10 +332,10 @@ impl<D: DpllId> DpllToken<D> {
     }
 
     #[inline]
-    fn configure(&mut self, source: DynDpllSourceId, settings: settings::All) {
+    fn configure(&mut self, id: DynDpllSourceId, settings: Settings, prediv: u16) {
         // Convert the actual predivider to the `div` register field value
-        let div = match source {
-            DynDpllSourceId::Xosc0 | DynDpllSourceId::Xosc1 => settings.prediv / 2 - 1,
+        let div = match id {
+            DynDpllSourceId::Xosc0 | DynDpllSourceId::Xosc1 => prediv / 2 - 1,
             _ => 0,
         };
         self.ctrlb().modify(|_, w| {
@@ -343,7 +343,7 @@ impl<D: DpllId> DpllToken<D> {
             // An invalid value could produce an invalid clock frequency, but
             // that does not break memory safety.
             unsafe { w.div().bits(div) };
-            w.refclk().variant(source.into());
+            w.refclk().variant(id.into());
             w.lbypass().bit(settings.lock_bypass);
             w.wuf().bit(settings.wake_up_fast)
         });
@@ -511,8 +511,10 @@ impl From<DynDpllSourceId> for REFCLK_A {
 pub trait DpllSourceId {
     /// Corresponding variant of [`DynDpllSourceId`]
     const DYN: DynDpllSourceId;
+
+    /// Source-specific settings type
     #[doc(hidden)]
-    type Source<D: DpllId>: Settings;
+    type Source<D: DpllId>: settings::Source;
 }
 
 impl<G: GclkId> DpllSourceId for G {
@@ -536,84 +538,21 @@ impl DpllSourceId for Xosc32kId {
 // Settings
 //==============================================================================
 
-mod settings {
-    //! Store and retrieve [`Dpll`] settings with different sources
-    //!
-    //! Some of the [`Dpll`] settings are not valid or required for every
-    //! clock source. This module provides a framework to store only the
-    //! minimum required settings for each source in a generic way.
-    //! Specifically, the [`Minimum`] struct stores the settings relevant for
-    //! all sources, along with a generic, source-specific type. The
-    //! [`Settings`] trait unifies all concrete instances of [`Minimum`] by
-    //! providing a function to return a collection of [`All`] settings.
-    //!
-    //! [`Dpll`]: super::Dpll
+/// [`Dpll`] settings relevant to all clock sources
+#[derive(Copy, Clone)]
+struct Settings {
+    mult: u16,
+    frac: u8,
+    lock_bypass: bool,
+    wake_up_fast: bool,
+    on_demand: bool,
+    run_standby: bool,
+}
 
+/// Store and retrieve [`Dpll`] settings for different clock sources
+mod settings {
     use super::super::pclk;
     use super::{DpllId, GclkId, Hertz};
-
-    /// Collection of all possible [`Dpll`] settings
-    ///
-    /// This struct is returned by the [`Settings`] trait.
-    ///
-    /// [`Dpll`]: super::Dpll
-    pub struct All {
-        pub src_freq: Hertz,
-        pub prediv: u16,
-        pub mult: u16,
-        pub frac: u8,
-        pub lock_bypass: bool,
-        pub wake_up_fast: bool,
-        pub on_demand: bool,
-        pub run_standby: bool,
-    }
-
-    impl Default for All {
-        fn default() -> Self {
-            All {
-                src_freq: Hertz(0),
-                prediv: 1,
-                mult: 1,
-                frac: 0,
-                lock_bypass: false,
-                wake_up_fast: false,
-                on_demand: true,
-                run_standby: false,
-            }
-        }
-    }
-
-    /// Collection of [`Dpll`] settings containing only the minimum required
-    /// for the specific source
-    ///
-    /// Some [`Dpll`] settings are not valid or required for every clock source.
-    /// This struct provides a framework to store and retrieve only the
-    /// minimum settings for each source in a generic way.
-    ///
-    /// [`Dpll`]: super::Dpll
-    pub struct Minimum<S: Settings> {
-        pub source: S,
-        pub mult: u16,
-        pub frac: u8,
-        pub lock_bypass: bool,
-        pub wake_up_fast: bool,
-        pub on_demand: bool,
-        pub run_standby: bool,
-    }
-
-    impl<S: Settings> Minimum<S> {
-        pub fn new(source: S) -> Self {
-            Self {
-                source,
-                mult: 1,
-                frac: 0,
-                lock_bypass: false,
-                wake_up_fast: false,
-                on_demand: true,
-                run_standby: false,
-            }
-        }
-    }
 
     /// [`Dpll`] settings when sourced from a [`Pclk`]
     ///
@@ -638,77 +577,45 @@ mod settings {
     /// [`Xosc32k`]: super::super::xosc32k::Xosc32k
     pub struct Xosc32k;
 
-    /// Generic interface to convert the [`Minimum`] settings into a collection
-    /// of [`All`] settings
-    ///
-    /// Because some of the [`Dpll`] settings are not valid or relevant for
-    /// every clock source, we only want to store the [`Minimum`] required
-    /// settings for each. To do so, we must have a generic interface to
-    /// retrieve settings in every mode.
-    ///
-    /// This trait provides a recursive interface to yield a collection of
-    /// [`All`] [`Dpll`] settings. Each implementer of [`Settings`] is required
-    /// to fill its respective fields of [`All`] and recursively defer other
-    /// fields to any sub-structs. At the bottom of the stack, structs can defer
-    /// to the [`Default`] settings for [`All`].
-    ///
-    /// [`Dpll`]: super::Dpll
-    pub trait Settings {
-        /// Fill the respective fields of [`All`] and recursively defer any
-        /// remaining fields to sub-structs or the [`Default`] settings
-        fn all(&self) -> All;
+    /// Generic interface to get the frequency and predivider of a clock source
+    pub trait Source {
+        fn freq(&self) -> Hertz;
+        fn prediv(&self) -> u16;
     }
 
-    impl<S: Settings> Settings for Minimum<S> {
+    impl<D: DpllId, G: GclkId> Source for Pclk<D, G> {
         #[inline]
-        fn all(&self) -> All {
-            All {
-                mult: self.mult,
-                frac: self.frac,
-                lock_bypass: self.lock_bypass,
-                wake_up_fast: self.wake_up_fast,
-                on_demand: self.on_demand,
-                run_standby: self.run_standby,
-                ..self.source.all()
-            }
+        fn freq(&self) -> Hertz {
+            self.pclk.freq()
+        }
+        #[inline]
+        fn prediv(&self) -> u16 {
+            1
         }
     }
 
-    impl<D: DpllId, G: GclkId> Settings for Pclk<D, G> {
+    impl Source for Xosc {
         #[inline]
-        fn all(&self) -> All {
-            All {
-                src_freq: self.pclk.freq(),
-                prediv: 1,
-                ..All::default()
-            }
+        fn freq(&self) -> Hertz {
+            self.freq
+        }
+        #[inline]
+        fn prediv(&self) -> u16 {
+            self.prediv
         }
     }
 
-    impl Settings for Xosc {
+    impl Source for Xosc32k {
         #[inline]
-        fn all(&self) -> All {
-            All {
-                src_freq: self.freq,
-                prediv: self.prediv,
-                ..All::default()
-            }
+        fn freq(&self) -> Hertz {
+            Hertz(32_768)
         }
-    }
-
-    impl Settings for Xosc32k {
         #[inline]
-        fn all(&self) -> All {
-            All {
-                src_freq: Hertz(32_768),
-                prediv: 1,
-                ..All::default()
-            }
+        fn prediv(&self) -> u16 {
+            1
         }
     }
 }
-
-use settings::Settings;
 
 //==============================================================================
 // Dpll
@@ -745,7 +652,8 @@ where
     I: DpllSourceId,
 {
     token: DpllToken<D>,
-    settings: settings::Minimum<I::Source<D>>,
+    source: I::Source<D>,
+    settings: Settings,
 }
 
 /// Type alias for the corresponding [`Dpll`]
@@ -760,8 +668,19 @@ where
     I: DpllSourceId,
 {
     fn new(token: DpllToken<D>, source: I::Source<D>) -> Self {
-        let settings = settings::Minimum::new(source);
-        Self { token, settings }
+        let settings = Settings {
+            mult: 1,
+            frac: 0,
+            lock_bypass: false,
+            wake_up_fast: false,
+            on_demand: true,
+            run_standby: false,
+        };
+        Self {
+            token,
+            source,
+            settings,
+        }
     }
 }
 
@@ -791,7 +710,7 @@ where
     /// Consume the [`Dpll`], release the [`DpllToken`], and return the [`Pclk`]
     #[inline]
     pub fn free(self) -> (DpllToken<D>, Pclk<D, G>) {
-        (self.token, self.settings.source.pclk)
+        (self.token, self.source.pclk)
     }
 }
 
@@ -863,7 +782,7 @@ where
     /// [`Xosc`]: super::xosc::Xosc
     #[inline]
     pub fn prediv(mut self, prediv: u16) -> Self {
-        self.settings.source.prediv = prediv;
+        self.source.prediv = prediv;
         self
     }
 }
@@ -975,8 +894,8 @@ where
 
     #[inline]
     fn input_freq(&self) -> u32 {
-        let settings = self.settings.all();
-        settings.src_freq.0 / settings.prediv as u32
+        use settings::Source;
+        self.source.freq().0 / self.source.prediv() as u32
     }
 
     #[inline]
@@ -1028,7 +947,9 @@ where
     /// problems.
     #[inline]
     pub fn enable_unchecked(mut self) -> EnabledDpll<D, I> {
-        self.token.configure(I::DYN, self.settings.all());
+        use settings::Source;
+        let prediv = self.source.prediv();
+        self.token.configure(I::DYN, self.settings, prediv);
         self.token.enable();
         Enabled::new(self)
     }
