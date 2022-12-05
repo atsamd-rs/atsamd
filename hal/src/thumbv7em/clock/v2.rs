@@ -852,7 +852,7 @@
 //!
 //! [interior mutability]: https://doc.rust-lang.org/reference/interior-mutability.html
 
-use typenum::{Unsigned, U0};
+use typenum::U0;
 
 use crate::time::Hertz;
 use crate::typelevel::{PrivateDecrement, PrivateIncrement, Sealed};
@@ -986,7 +986,7 @@ pub struct Enabled<T, N = U0>(pub(crate) T, N);
 
 impl<T, N> Sealed for Enabled<T, N> {}
 
-impl<T, N: Unsigned> Enabled<T, N> {
+impl<T, N: Default> Enabled<T, N> {
     #[inline]
     pub(crate) fn new(t: T) -> Self {
         Enabled(t, N::default())

@@ -193,29 +193,25 @@
 //!     .enable();
 //! ```
 //!
-//! # [`Dfll`], [`Gclk0`], and the system's master clock
-//!
-//! At power-on reset, the master clock (which is run by [`Gclk0`]) is sourced
-//! from the [`Dfll`] in open-loop mode. We can see this from the type signature
-//! of the corresponding items in the [`Clocks`] struct, i.e. `EnabledDfll<U1>`
-//! and `EnabledGclk0<DfllId, U1>`.
+//! # Reconfiguring an [`EnabledDfll`]
 //!
 //! In some cases, users may want to reconfigure the DFLL while it remains
-//! enabled as the master clock source. For instance, a user may want to
-//! use the DFLL in its closed-loop, USB recovery mode. However, doing so would
-//! normally be impossible. Because the master clock can never be disabled, it
-//! would be impossible to [`Decrement`] the [`EnabledDfll`] consumer count and
-//! release the [`Dfll`] without first swapping [`Gclk0`] to some other,
-//! temporary clock [`Source`]. For this reason, we provide the
-//! [`EnabledGclk0::reconfigure_dfll`] function to reconfigure the [`Dfll`]
-//! while still in use.
+//! enabled. For instance, a user may want to place the DFLL in its closed-loop,
+//! USB recovery mode while in use by the system's master clock. However, doing
+//! so would normally be impossible, because you must disable the [`Dfll`] to
+//! change its [`DfllSourceId`]. For this reason, we define a special
+//! [`reconfigure`] function on [`EnabledDfll`]. This API does not break any
+//! invariants of the clock tree, because the DFLL never changes frequency nor
+//! is it disabled. And, by design, consumers of the DFLL aren't affected by its
+//! configuration (see the discussion on [`Id` types]).
 //!
 //! Consider the following example. As above, we start with the clocks in their
-//! default configuration at power-on reset. We then call the `reconfigure_dfll`
-//! function, which takes two arguments: the existing, [`EnabledDfll`], and
-//! closure to transform the old [`Dfll`] into a new one. The `reconfigure_dfll`
-//! function is responsible for applying this closure without disabling the
-//! DFLL.
+//! default configuration at power-on reset. Remember that the [`Dfll`] is used
+//! by the system master clock at power-on reset. At this point, we would like
+//! to reconfigure it, to enable USB recovery. We call the `reconfigure`
+//! function, which takes a closure to transform the old [`Dfll`] into a new
+//! one. The `reconfigure` function is responsible for applying this closure
+//! without disabling the DFLL.
 //!
 //! ```no_run
 //! use atsamd_hal::{
@@ -230,7 +226,7 @@
 //!     pac.MCLK,
 //!     &mut pac.NVMCTRL,
 //! );
-//! let (dfll, _) = clocks.gclk0.reconfigure_dfll(clocks.dfll, |dfll| {
+//! let dfll = clocks.dfll.reconfigure(|dfll| {
 //!     let token = dfll.free();
 //!     let dfll = Dfll::from_usb(token)
 //!         .coarse_max_step(1)
@@ -242,28 +238,31 @@
 //!
 //! Note that the user may also wish to return some other object from the
 //! closure. To do so, the expected return type for the closure is actually
-//! `(Dfll<New>, R)`, where `R` is an arbitrary return type set by the user. In
+//! `(Dfll<J>, R)`, where `R` is an arbitrary return type set by the user. In
 //! the example above, we don't make use of this feature, so `R = ()`. However,
 //! if the DFLL had been in closed-loop mode and sourced from a [`Pclk`], `R`
 //! could have been used to return the [`Pclk`] to the user.
 //!
 //! [`clock_system_at_reset`]: super::clock_system_at_reset
 //! [`clock` module documentation]: super
+//! [`Id` types]: super#id-types
 //! [`Clocks`]: super::Clocks
 //! [`Tokens`]: super::Tokens
 //! [`Pins`]: crate::gpio::Pins
 //! [`Xosc`]: super::xosc::Xosc
 //! [`EnabledXosc`]: super::xosc::EnabledXosc
 //! [`Gclk0`]: super::gclk::Gclk0
+//! [`EnabledGclk0`]: super::gclk::EnabledGclk0
 //! [`Decrement`]: crate::typelevel::Decrement
 //! [`OscUlp32k`]: super::osculp32k::OscUlp32k
 //! [`OptionalKind`]: crate::typelevel#optionalkind-trait-pattern
-use typenum::{U0, U1};
+//! [`reconfigure`]: EnabledDfll::reconfigure
 
 use crate::time::Hertz;
-use crate::typelevel::{NoneT, PrivateIncrement, Sealed};
+use crate::typelevel::{NoneT, Sealed};
+use typenum::U0;
 
-use super::gclk::{EnabledGclk0, GclkId};
+use super::gclk::GclkId;
 use super::pclk::Pclk;
 use super::{Enabled, Source};
 
@@ -1051,32 +1050,30 @@ impl<I: OptionalDfllSourceId> EnabledDfll<I> {
     }
 }
 
-impl EnabledGclk0<DfllId, U1> {
-    /// Reconfigure the [`Dfll`] while it remains enabled as the master clock
-    /// source
+impl<I, N> EnabledDfll<I, N>
+where
+    I: OptionalDfllSourceId,
+    N: Default,
+{
+    /// Reconfigure the [`Dfll`] while it remains enabled
     ///
     /// Take ownership of an [`EnabledDfll`] and reconfigure it according to a
     /// user-supplied closure, `F`. The transformation may also change the
-    /// [`Dfll`] type parameter from `Old` to `New`. The closure may optionally
+    /// [`Dfll`] type parameter from `I` to `J`. The closure may optionally
     /// return some additional type, `R`.
     ///
     /// See the [`dfll` module documentation] for more details on why and how
     /// this function would be used.
     ///
-    /// [`dfll` module documentation]: super::dfll#dfll-gclk0-and-the-systems-master-clock
-    #[inline]
-    pub fn reconfigure_dfll<Old, New, F, R>(
-        &mut self,
-        dfll: EnabledDfll<Old, U1>,
-        f: F,
-    ) -> (EnabledDfll<New, U1>, R)
+    /// [`dfll` module documentation]: super::dfll#reconfiguring-an-enableddfll
+    pub fn reconfigure<J, F, R>(self, f: F) -> (EnabledDfll<J, N>, R)
     where
-        Old: OptionalDfllSourceId,
-        New: OptionalDfllSourceId,
-        F: FnOnce(Dfll<Old>) -> (Dfll<New>, R),
+        J: OptionalDfllSourceId,
+        F: FnOnce(Dfll<I>) -> (Dfll<J>, R),
     {
-        let (dfll, r) = f(dfll.0);
-        (dfll.enable().inc(), r)
+        let (dfll, r) = f(self.0);
+        let dfll = Enabled::new(dfll.enable().0);
+        (dfll, r)
     }
 }
 
