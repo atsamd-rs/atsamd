@@ -472,6 +472,23 @@ impl<G: GclkId> GclkToken<G> {
         self.wait_syncbusy();
     }
 
+    #[inline]
+    fn configure(&mut self, id: DynGclkSourceId, settings: Settings<G>) {
+        let (divsel, div) = settings.div.divsel_div();
+        self.genctrl().modify(|_, w| {
+            // Safety: The `DIVSEL` and `DIV` values are derived from the
+            // `GclkDivider` type, so they are guaranteed to be valid.
+            unsafe {
+                w.divsel().variant(divsel);
+                w.div().bits(div);
+            };
+            w.src().variant(id.into());
+            w.idc().bit(settings.improve_duty_cycle);
+            w.oov().bit(settings.output_off_value)
+        });
+        self.wait_syncbusy();
+    }
+
     /// Enable the [`Gclk`]
     #[inline]
     fn enable(&mut self) {
@@ -776,6 +793,26 @@ mod gclkio_impl {
 }
 
 //==============================================================================
+// Gclk0Io
+//==============================================================================
+
+/// Set of [`PinId`]s whose implementations of [`GclkIo`] map to [`Gclk0Id`]
+///
+/// This is effectively a trait alias for [`PinId`]s that implement [`GclkIo`]
+/// with a `GclkId` associated type of [`Gclk0Id`], i.e.
+/// `GclkIo<GclkId = Gclk0Id>`. The trait is useful to simply some function
+/// signatures and to help type inference in a few cases.
+pub trait Gclk0Io
+where
+    Self: Sized,
+    Self: GclkIo<GclkId = Gclk0Id>,
+    Self: GclkSourceId<Resource = Pin<Self, AlternateM>>,
+{
+}
+
+impl<I: GclkIo<GclkId = Gclk0Id>> Gclk0Io for I {}
+
+//==============================================================================
 // DynGclkSourceId
 //==============================================================================
 
@@ -836,34 +873,50 @@ impl From<DynGclkSourceId> for SRC_A {
 pub trait GclkSourceId {
     /// Corresponding variant of [`DynGclkSourceId`]
     const DYN: DynGclkSourceId;
+
+    /// Resource to store in the [`Gclk`]
+    ///
+    /// Maps to the corresponding [`Pin`] for [`GclkIo`] types. In all other
+    /// cases, there is nothing to store, so it is `()`.
+    #[doc(hidden)]
+    type Resource;
 }
 
 impl GclkSourceId for DfllId {
     const DYN: DynGclkSourceId = DynGclkSourceId::Dfll;
+    type Resource = ();
 }
 impl GclkSourceId for Dpll0Id {
     const DYN: DynGclkSourceId = DynGclkSourceId::Dpll0;
+    type Resource = ();
 }
 impl GclkSourceId for Dpll1Id {
     const DYN: DynGclkSourceId = DynGclkSourceId::Dpll1;
+    type Resource = ();
 }
 impl GclkSourceId for Gclk1Id {
     const DYN: DynGclkSourceId = DynGclkSourceId::Gclk1;
+    type Resource = ();
 }
 impl<I: GclkIo> GclkSourceId for I {
     const DYN: DynGclkSourceId = DynGclkSourceId::GclkIn;
+    type Resource = Pin<I, AlternateM>;
 }
 impl GclkSourceId for OscUlp32kId {
     const DYN: DynGclkSourceId = DynGclkSourceId::OscUlp32k;
+    type Resource = ();
 }
 impl GclkSourceId for Xosc0Id {
     const DYN: DynGclkSourceId = DynGclkSourceId::Xosc0;
+    type Resource = ();
 }
 impl GclkSourceId for Xosc1Id {
     const DYN: DynGclkSourceId = DynGclkSourceId::Xosc1;
+    type Resource = ();
 }
 impl GclkSourceId for Xosc32kId {
     const DYN: DynGclkSourceId = DynGclkSourceId::Xosc32k;
+    type Resource = ();
 }
 
 //==============================================================================
@@ -880,16 +933,38 @@ impl GclkSourceId for Xosc32kId {
 /// any types which implement [`GclkIo`].
 ///
 /// [type-level enum]: crate::typelevel#type-level-enums
-pub trait NotGclkIo: GclkSourceId {}
+pub trait NotGclkIo: GclkSourceId<Resource = ()> {}
 
-impl NotGclkIo for DfllId {}
-impl NotGclkIo for Dpll0Id {}
-impl NotGclkIo for Dpll1Id {}
-impl NotGclkIo for Gclk1Id {}
-impl NotGclkIo for OscUlp32kId {}
-impl NotGclkIo for Xosc0Id {}
-impl NotGclkIo for Xosc1Id {}
-impl NotGclkIo for Xosc32kId {}
+impl<I: GclkSourceId<Resource = ()>> NotGclkIo for I {}
+
+//==============================================================================
+// Settings
+//==============================================================================
+
+/// Collection of [`Gclk`] settings to configure on enable
+struct Settings<G: GclkId> {
+    div: G::Divider,
+    output_off_value: bool,
+    improve_duty_cycle: bool,
+}
+
+impl<G: GclkId> Clone for Settings<G> {
+    fn clone(&self) -> Self {
+        *self
+    }
+}
+
+impl<G: GclkId> Copy for Settings<G> {}
+
+impl<G: GclkId> Default for Settings<G> {
+    fn default() -> Self {
+        Settings {
+            div: G::Divider::default(),
+            output_off_value: false,
+            improve_duty_cycle: false,
+        }
+    }
+}
 
 //==============================================================================
 // Gclk
@@ -929,11 +1004,9 @@ where
     I: GclkSourceId,
 {
     token: GclkToken<G>,
-    src: PhantomData<I>,
+    resource: I::Resource,
     src_freq: Hertz,
-    div: G::Divider,
-    output_off_value: bool,
-    improve_duty_cycle: bool,
+    settings: Settings<G>,
 }
 
 /// An [`Enabled`] [`Gclk`]
@@ -999,16 +1072,11 @@ where
     where
         P: AnyPin<Id = I>,
     {
-        // Convert the Pin to AlternateM mode and then drop it
-        // We will recreate the Pin when freeing the Gclk
-        let _ = pin.into().into_mode::<AlternateM>();
         Gclk {
             token,
-            src: PhantomData,
+            resource: pin.into().into_mode(),
             src_freq: freq.into(),
-            div: G::Divider::default(),
-            output_off_value: false,
-            improve_duty_cycle: false,
+            settings: Settings::default(),
         }
     }
 
@@ -1017,17 +1085,14 @@ where
     /// Freeing a [`Gclk`] returns the corresponding [`GclkToken`] and GPIO
     /// [`Pin`].
     pub fn free_pin(self) -> (GclkToken<G>, Pin<I, AlternateM>) {
-        // Safety: We know the Pin was dropped in AlternateM mode on
-        // creation of this Gclk, so we can safely recreate it here.
-        let pin = unsafe { Pin::new() };
-        (self.token, pin)
+        (self.token, self.resource)
     }
 }
 
 impl<G, I> Gclk<G, I>
 where
     G: GclkId,
-    I: GclkSourceId,
+    I: NotGclkIo,
 {
     /// Create a new [`Gclk`] from a clock [`Source`]
     ///
@@ -1049,28 +1114,11 @@ where
     {
         let config = Gclk {
             token,
-            src: PhantomData,
+            resource: (),
             src_freq: source.freq(),
-            div: G::Divider::default(),
-            output_off_value: false,
-            improve_duty_cycle: false,
+            settings: Settings::default(),
         };
         (config, source.inc())
-    }
-
-    // Modify the source of an existing clock
-    //
-    // This is a helper function for swapping Gclk0 to different clock sources.
-    fn change_source<N: GclkSourceId>(mut self, freq: Hertz) -> Gclk<G, N> {
-        self.token.set_source(N::DYN);
-        Gclk {
-            token: self.token,
-            src: PhantomData,
-            src_freq: freq,
-            div: self.div,
-            output_off_value: self.output_off_value,
-            improve_duty_cycle: self.improve_duty_cycle,
-        }
     }
 
     /// Consume the [`Gclk`] and free its corresponding resources
@@ -1078,11 +1126,35 @@ where
     /// Freeing a [`Gclk`] returns the corresponding [`GclkToken`] and
     /// [`Decrement`]s the [`Source`]'s [`Enabled`] counter.
     #[inline]
-    pub fn free_source<S>(self, source: S) -> (GclkToken<G>, S::Dec)
+    pub fn free<S>(self, source: S) -> (GclkToken<G>, S::Dec)
     where
         S: Source<Id = I> + Decrement,
     {
         (self.token, source.dec())
+    }
+}
+
+impl<G, I> Gclk<G, I>
+where
+    G: GclkId,
+    I: GclkSourceId,
+{
+    /// Modify the source of an existing clock
+    ///
+    /// This is a helper function for swapping Gclk0 to different clock sources.
+    fn change_source<N: GclkSourceId>(
+        mut self,
+        resource: N::Resource,
+        freq: Hertz,
+    ) -> (Gclk<G, N>, I::Resource) {
+        self.token.set_source(N::DYN);
+        let gclk = Gclk {
+            token: self.token,
+            resource,
+            src_freq: freq,
+            settings: self.settings,
+        };
+        (gclk, self.resource)
     }
 
     /// Set the [`GclkDivider`] value
@@ -1093,14 +1165,14 @@ where
     /// [`GclkDivider`] trait for more details.
     #[inline]
     pub fn div(mut self, div: G::Divider) -> Self {
-        self.div = div;
+        self.settings.div = div;
         self
     }
 
     /// Output a 50-50 duty cycle clock when using an odd [`GclkDivider`]
     #[inline]
     pub fn improve_duty_cycle(mut self, flag: bool) -> Self {
-        self.improve_duty_cycle = flag;
+        self.settings.improve_duty_cycle = flag;
         self
     }
 
@@ -1109,7 +1181,7 @@ where
     /// This is the input frequency divided by the [`GclkDivider`].
     #[inline]
     pub fn freq(&self) -> Hertz {
-        let div = max(1, self.div.divider());
+        let div = max(1, self.settings.div.divider());
         Hertz(self.src_freq.0 / div)
     }
 
@@ -1134,7 +1206,7 @@ where
     /// [`enable_gclk_out`]: EnabledGclk::enable_gclk_out
     #[inline]
     pub fn output_off_value(mut self, high: bool) -> Self {
-        self.output_off_value = high;
+        self.settings.output_off_value = high;
         self.token.output_off_value(high);
         self
     }
@@ -1150,9 +1222,7 @@ where
     /// [`Source`] for other clocks.
     #[inline]
     pub fn enable(mut self) -> EnabledGclk<G, I> {
-        self.token.set_source(I::DYN);
-        self.token.improve_duty_cycle(self.improve_duty_cycle);
-        self.token.set_div(self.div);
+        self.token.configure(I::DYN, self.settings);
         self.token.enable();
         Enabled::new(self)
     }
@@ -1196,84 +1266,70 @@ impl<I: GclkSourceId> EnabledGclk0<I, U1> {
     where
         O: Source<Id = I> + Decrement,
         N: Source + Increment,
-        N::Id: GclkSourceId,
+        N::Id: NotGclkIo,
     {
-        let gclk = self.0.change_source(new.freq());
+        let (gclk, _) = self.0.change_source((), new.freq());
         let enabled = Enabled::new(gclk);
-        let old = old.dec();
-        let new = new.inc();
-        (enabled, old, new)
+        (enabled, old.dec(), new.inc())
     }
 
     /// Swap [`Gclk0`] from one [`GclkIo`] [`Pin`] to another
     ///
     /// `Gclk0` will remain fully enabled during the swap.
     #[inline]
-    pub fn swap_pins<N>(
+    pub fn swap_pins<P>(
         self,
-        new: N,
+        pin: P,
         freq: impl Into<Hertz>,
-    ) -> (EnabledGclk0<N::Id, U1>, Pin<I, AlternateM>)
+    ) -> (EnabledGclk0<P::Id, U1>, Pin<I, AlternateM>)
     where
-        I: GclkIo<GclkId = Gclk0Id>,
-        N: AnyPin,
-        N::Id: GclkIo<GclkId = Gclk0Id>,
+        I: Gclk0Io,
+        P: AnyPin,
+        P::Id: Gclk0Io,
     {
-        // Safety: We know the old Pin was dropped in AlternateM mode on
-        // creation of this Gclk, so we can safely recreate it here.
-        let old = unsafe { Pin::new() };
-        // Convert the new Pin to AlternateM mode and then drop it
-        // We will recreate the new Pin when freeing the Gclk
-        let _ = new.into().into_mode::<AlternateM>();
-        let gclk = self.0.change_source(freq.into());
+        let pin = pin.into().into_mode();
+        let (gclk, pin) = self.0.change_source(pin, freq.into());
         let enabled = Enabled::new(gclk);
-        (enabled, old)
+        (enabled, pin)
     }
 
     /// Swap [`Gclk0`] from a clock [`Source`] to a [`GclkIo`] [`Pin`]
     ///
     /// `Gclk0` will remain fully enabled during the swap.
     #[inline]
-    pub fn swap_source_for_pin<O, N>(
+    pub fn swap_source_for_pin<S, P>(
         self,
-        old: O,
-        new: N,
+        source: S,
+        pin: P,
         freq: impl Into<Hertz>,
-    ) -> (EnabledGclk0<N::Id, U1>, O::Dec)
+    ) -> (EnabledGclk0<P::Id, U1>, S::Dec)
     where
-        O: Source<Id = I> + Decrement,
-        N: AnyPin,
-        N::Id: GclkIo<GclkId = Gclk0Id>,
+        S: Source<Id = I> + Decrement,
+        P: AnyPin,
+        P::Id: Gclk0Io,
     {
-        let old = old.dec();
-        // Convert the new Pin to AlternateM mode and then drop it
-        // We will recreate the new Pin when freeing the Gclk
-        let _ = new.into().into_mode::<AlternateM>();
-        let gclk = self.0.change_source(freq.into());
+        let pin = pin.into().into_mode();
+        let (gclk, _) = self.0.change_source(pin, freq.into());
         let enabled = Enabled::new(gclk);
-        (enabled, old)
+        (enabled, source.dec())
     }
 
     /// Swap [`Gclk0`] from a [`GclkIo`] [`Pin`] to a clock [`Source`]
     ///
     /// `Gclk0` will remain fully enabled during the swap.
     #[inline]
-    pub fn swap_pin_for_source<N>(
+    pub fn swap_pin_for_source<S>(
         self,
-        new: N,
-    ) -> (EnabledGclk0<N::Id, U1>, Pin<I, AlternateM>, N::Inc)
+        source: S,
+    ) -> (EnabledGclk0<S::Id, U1>, Pin<I, AlternateM>, S::Inc)
     where
-        I: GclkIo<GclkId = Gclk0Id>,
-        N: Source + Increment,
-        N::Id: GclkSourceId,
+        I: Gclk0Io,
+        S: Source + Increment,
+        S::Id: NotGclkIo,
     {
-        let gclk = self.0.change_source(new.freq());
-        // Safety: We know the old Pin was dropped in AlternateM mode on
-        // creation of this Gclk, so we can safely recreate it here.
-        let old = unsafe { Pin::new() };
-        let new = new.inc();
+        let (gclk, pin) = self.0.change_source((), source.freq());
         let enabled = Enabled::new(gclk);
-        (enabled, old, new)
+        (enabled, pin, source.inc())
     }
 
     /// Set the [`GclkDivider`] value for [`Gclk0`]
@@ -1281,14 +1337,14 @@ impl<I: GclkSourceId> EnabledGclk0<I, U1> {
     /// See [`Gclk::div`] documentation for more details.
     #[inline]
     pub fn div(&mut self, div: GclkDiv8) {
-        self.0.div = div;
+        self.0.settings.div = div;
         self.0.token.set_div(div);
     }
 
     /// Output a 50-50 duty cycle clock when using an odd [`GclkDivider`]
     #[inline]
     pub fn improve_duty_cycle(&mut self, flag: bool) {
-        self.0.improve_duty_cycle = flag;
+        self.0.settings.improve_duty_cycle = flag;
         self.0.token.improve_duty_cycle(flag);
     }
 
@@ -1305,7 +1361,7 @@ impl<I: GclkSourceId> EnabledGclk0<I, U1> {
     /// See [`Gclk::output_off_value`] documentation for more details.
     #[inline]
     pub fn output_off_value(&mut self, high: bool) {
-        self.0.output_off_value = high;
+        self.0.settings.output_off_value = high;
         self.0.token.output_off_value(high);
     }
 }
