@@ -140,7 +140,7 @@
 //!
 //! Next, we need a way to increase or decrease the type parameter `N`. The
 //! [`typenum`] crate provides type aliases [`Add1`] and [`Sub1`] that map from
-//! each `Unsigned` integer to its successor and predecessor types,
+//! each [`Unsigned`] integer to its successor and predecessor types,
 //! respectively. We can leverage these to create our own type with a counter
 //! that we [`Increment`] or [`Decrement`] at compile-time. These two traits
 //! form the foundation for our strategy for handling 1:N clocks in this module.
@@ -849,6 +849,7 @@
 //! [`U1`]: typenum::U1
 //! [`Add1`]: typenum::Add1
 //! [`Sub1`]: typenum::Sub1
+//! [`Unsigned`]: typenum::Unsigned
 //!
 //! [interior mutability]: https://doc.rust-lang.org/reference/interior-mutability.html
 
@@ -913,8 +914,8 @@ pub use reset::*;
 //     exchange for the corresponding PAC peripheral struct.
 //   - Each `Token` type should have access to a mutually exclusive set of
 //     registers relative to the other `Token`s.
-//   - Writing or modifying a register should always require ownership of, or
-//     an `&mut` reference to, the corresponding `Token`.
+//   - Writing or modifying a register should always require ownership of, or an
+//     `&mut` reference to, the corresponding `Token`.
 //   - When conjuring references to PAC registers or register blocks, we should
 //     *only* use shared, `&` references. There is no need to use exclusive,
 //     `&mut` references, because each register is wrapped in a `VolatileCell`.
@@ -982,6 +983,7 @@ pub trait Source: Sealed {
 /// [`EnabledGclk0`]: gclk::EnabledGclk0
 /// [`Increment`]: crate::typelevel::Increment
 /// [`Decrement`]: crate::typelevel::Decrement
+/// [`Unsigned`]: typenum::Unsigned
 pub struct Enabled<T, N = U0>(pub(crate) T, N);
 
 impl<T, N> Sealed for Enabled<T, N> {}
