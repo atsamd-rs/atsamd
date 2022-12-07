@@ -197,25 +197,37 @@
 //!
 //! In some cases, users may want to reconfigure the DFLL while it remains
 //! enabled. For instance, a user may want to place the DFLL in its closed-loop,
-//! USB recovery mode while in use by the system's master clock. However, doing
-//! so would normally be impossible, because you must disable the [`Dfll`] to
-//! change its [`DfllSourceId`]. For this reason, we define a special
-//! [`reconfigure`] function on [`EnabledDfll`]. This API does not break any
-//! invariants of the clock tree, because the DFLL never changes frequency nor
-//! is it disabled. And, by design, consumers of the DFLL aren't affected by its
+//! USB recovery mode while in use by the system's master clock. It would
+//! normally be impossible to do so with other clocks in the `clock` module,
+//! because changing the clock source would break an invariant of the clock
+//! tree. However, the DFLL is special, because its output frequency is always
+//! 48 MHz. Moreover, by design, consumers of the DFLL aren't affected by its
 //! configuration (see the discussion on [`Id` types]).
+//!
+//! For this reason, we define a special [`change_source`] function on
+//! [`EnabledDfll`]. It will consume the `EnabledDfll` and transform it to use
+//! a different [`OptionalDfllSourceId`]. Note that [`change_source`] takes and
+//! returns a [`Resource`] type for the corresponding `Id` type. The `Resource`
+//! type for [`GclkId`]s is a [`Pclk`], because it needs to be stored by the
+//! [`Dfll`]. The `Resource` type for both [`NoneT`] and [`UsbSofId`] is `()`,
+//! because they don't need to store anything.
 //!
 //! Consider the following example. As above, we start with the clocks in their
 //! default configuration at power-on reset. Remember that the [`Dfll`] is used
-//! by the system master clock at power-on reset. At this point, we would like
-//! to reconfigure it, to enable USB recovery. We call the `reconfigure`
-//! function, which takes a closure to transform the old [`Dfll`] into a new
-//! one. The `reconfigure` function is responsible for applying this closure
-//! without disabling the DFLL.
+//! by the system master clock. At this point, we would like to reconfigure it
+//! to use USB recovery mode. We call the `change_source` function, which takes
+//! the [`Resource`] type for [`UsbSofId`], which is `()` and a closure to
+//! modify the [`Dfll`] before the new settings are applied. The `change_source`
+//! function is responsible for applying this closure without disabling the
+//! DFLL. The return value is a tuple containing the reconfigured DFLL and the
+//! old [`Resource`] type, which is again `()` for [`NoneT`].
 //!
 //! ```no_run
 //! use atsamd_hal::{
-//!     clock::v2::{clock_system_at_reset, dfll::Dfll},
+//!     clock::v2::{
+//!         clock_system_at_reset,
+//!         dfll::{Dfll, UsbSofId},
+//!     },
 //!     pac::Peripherals,
 //! };
 //! let mut pac = Peripherals::take().unwrap();
@@ -226,13 +238,10 @@
 //!     pac.MCLK,
 //!     &mut pac.NVMCTRL,
 //! );
-//! let dfll = clocks.dfll.reconfigure(|dfll| {
-//!     let token = dfll.free();
-//!     let dfll = Dfll::from_usb(token)
-//!         .coarse_max_step(1)
-//!         .fine_max_step(8)
-//!         .run_standby(true);
-//!     (dfll, ())
+//! let (dfll, _) = clocks.dfll.change_source::<UsbSofId, _>((), |dfll| {
+//!     dfll.set_coarse_max_step(1);
+//!     dfll.set_fine_max_step(8);
+//!     dfll.set_run_standby(true);
 //! });
 //! ```
 //!
@@ -256,7 +265,7 @@
 //! [`Decrement`]: crate::typelevel::Decrement
 //! [`OscUlp32k`]: super::osculp32k::OscUlp32k
 //! [`OptionalKind`]: crate::typelevel#optionalkind-trait-pattern
-//! [`reconfigure`]: EnabledDfll::reconfigure
+//! [`change_source`]: EnabledDfll::change_source
 
 use crate::time::Hertz;
 use crate::typelevel::{NoneT, Sealed};
@@ -586,18 +595,6 @@ mod settings {
         pub on_demand: bool,
     }
 
-    impl<T: Settings> Minimum<T> {
-        /// Create a new instance of [`Minimum`] with default settings
-        #[inline]
-        pub fn new(mode: T) -> Self {
-            Self {
-                mode,
-                run_standby: false,
-                on_demand: true,
-            }
-        }
-    }
-
     /// Collection of settings specific to open-loop [`Dfll`] operation
     ///
     /// Right now, this struct is empty, as none of the settings are relevant to
@@ -618,18 +615,6 @@ mod settings {
         pub source: T,
         pub coarse_max_step: CoarseMaxStep,
         pub fine_max_step: FineMaxStep,
-    }
-
-    impl<T: Settings> ClosedLoop<T> {
-        /// Create a new instance of [`ClosedLoop`] with default settings
-        #[inline]
-        pub fn new(source: T) -> Self {
-            Self {
-                source,
-                coarse_max_step: 1,
-                fine_max_step: 1,
-            }
-        }
     }
 
     /// Collection of settings specific to [`Dfll`] USB recovery mode
@@ -659,19 +644,6 @@ mod settings {
         pub quick_lock: bool,
     }
 
-    impl<G: GclkId> Pclk<G> {
-        /// Create a new instance of [`Pclk`] with default settings
-        #[inline]
-        pub fn new(pclk: pclk::Pclk<DfllId, G>, mult_factor: MultFactor) -> Self {
-            Self {
-                pclk,
-                mult_factor,
-                chill_cycle: true,
-                quick_lock: true,
-            }
-        }
-    }
-
     /// Generic interface to convert the [`Minimum`] settings into a collection
     /// of [`All`] settings
     ///
@@ -688,12 +660,37 @@ mod settings {
     ///
     /// [`Dfll`]: super::Dfll
     pub trait Settings {
+        /// Resource stored by the `Settings` struct
+        type Resource;
+
+        /// Construct the `Settings` struct from its resource
+        ///
+        /// Use default values for all other fields of the struct.
+        fn from_resource(resource: Self::Resource) -> Self;
+
+        /// Consume the `Settings` struct and return its resource
+        fn into_resource(self) -> Self::Resource;
+
         /// Fill the respective fields of [`All`] and recursively defer any
         /// remaining fields to sub-structs or the [`Default`] settings
         fn all(&self) -> All;
     }
 
     impl<T: Settings> Settings for Minimum<T> {
+        type Resource = T::Resource;
+        #[inline]
+        fn from_resource(resource: Self::Resource) -> Self {
+            let mode = T::from_resource(resource);
+            Self {
+                mode,
+                run_standby: false,
+                on_demand: true,
+            }
+        }
+        #[inline]
+        fn into_resource(self) -> Self::Resource {
+            self.mode.into_resource()
+        }
         #[inline]
         fn all(&self) -> All {
             All {
@@ -705,6 +702,13 @@ mod settings {
     }
 
     impl Settings for OpenLoop {
+        type Resource = ();
+        #[inline]
+        fn from_resource(_: ()) -> Self {
+            OpenLoop
+        }
+        #[inline]
+        fn into_resource(self) -> Self::Resource {}
         #[inline]
         fn all(&self) -> All {
             All::default()
@@ -712,6 +716,20 @@ mod settings {
     }
 
     impl<T: Settings> Settings for ClosedLoop<T> {
+        type Resource = T::Resource;
+        #[inline]
+        fn from_resource(resource: T::Resource) -> Self {
+            let source = T::from_resource(resource);
+            Self {
+                source,
+                coarse_max_step: 1,
+                fine_max_step: 1,
+            }
+        }
+        #[inline]
+        fn into_resource(self) -> Self::Resource {
+            self.source.into_resource()
+        }
         #[inline]
         fn all(&self) -> All {
             All {
@@ -724,6 +742,13 @@ mod settings {
     }
 
     impl Settings for Usb {
+        type Resource = ();
+        #[inline]
+        fn from_resource(_: ()) -> Self {
+            Usb
+        }
+        #[inline]
+        fn into_resource(self) -> Self::Resource {}
         #[inline]
         fn all(&self) -> All {
             All {
@@ -736,6 +761,7 @@ mod settings {
     }
 
     impl<G: GclkId> Settings for Pclk<G> {
+        type Resource = pclk::Pclk<DfllId, G>;
         #[inline]
         fn all(&self) -> All {
             All {
@@ -746,10 +772,36 @@ mod settings {
                 ..All::default()
             }
         }
+        #[inline]
+        fn from_resource(pclk: Self::Resource) -> Self {
+            // Cast is fine because division result cannot be greater than u16::MAX
+            let mult_factor = (48_000_000 / pclk.freq().0) as u16;
+            Self {
+                pclk,
+                mult_factor,
+                chill_cycle: true,
+                quick_lock: true,
+            }
+        }
+        #[inline]
+        fn into_resource(self) -> Self::Resource {
+            self.pclk
+        }
     }
 }
 
 use settings::Settings;
+
+/// [`Dfll`] resource type for the corresponding [`OptionalDfllSourceId`]
+///
+/// This type alias maps from [`OptionalDfllSourceId`] types to a corresponding
+/// resource type that the [`Dfll`] stores for its existence.
+///
+/// For [`NoneT`], when the DFLL is in open-loop mode, the resource type is
+/// merely `()`, as there is no resource to store. At the moment, [`UsbSofId`]
+/// also maps to `()`, but that may change in the future. [`GclkId`] types map
+/// to the corresponding [`Pclk`] type for the [`Dfll`].
+pub type Resource<I> = <<I as OptionalDfllSourceId>::Settings as Settings>::Resource;
 
 //==============================================================================
 // Dfll
@@ -789,8 +841,8 @@ pub struct Dfll<I: OptionalDfllSourceId = NoneT> {
 
 impl<I: OptionalDfllSourceId> Dfll<I> {
     #[inline]
-    fn new(token: DfllToken, mode: I::Settings) -> Self {
-        let settings = settings::Minimum::new(mode);
+    fn new(token: DfllToken, resource: Resource<I>) -> Self {
+        let settings = settings::Minimum::from_resource(resource);
         Self { token, settings }
     }
 }
@@ -810,7 +862,7 @@ impl Dfll {
     /// [`enable`]: Dfll::enable
     #[inline]
     pub fn open_loop(token: DfllToken) -> Self {
-        Self::new(token, settings::OpenLoop)
+        Self::new(token, ())
     }
 
     /// Consume the [`Dfll`] and release the [`DfllToken`]
@@ -841,8 +893,7 @@ impl Dfll<UsbSofId> {
     /// [`enable`]: Dfll::enable
     #[inline]
     pub fn from_usb(token: DfllToken) -> Self {
-        let settings = settings::ClosedLoop::new(settings::Usb);
-        Self::new(token, settings)
+        Self::new(token, ())
     }
 
     /// Consume the [`Dfll`] and release the [`DfllToken`]
@@ -886,10 +937,7 @@ impl<G: GclkId> Dfll<G> {
         if freq < MIN || freq > MAX {
             panic!("Invalid Pclk<DfllId, _> input frequency");
         }
-        // Cast is fine because division result cannot be greater than u16::MAX
-        let mult_factor = (48_000_000 / freq) as u16;
-        // Safety: The multiplication factor is guaranteed to be valid
-        Self::from_pclk_unchecked(token, pclk, mult_factor)
+        Self::new(token, pclk)
     }
 
     /// Create the [`Dfll`] in closed-loop mode
@@ -903,15 +951,25 @@ impl<G: GclkId> Dfll<G> {
         pclk: Pclk<DfllId, G>,
         mult_factor: MultFactor,
     ) -> Self {
-        let source = settings::Pclk::new(pclk, mult_factor);
-        let mode = settings::ClosedLoop::new(source);
-        Self::new(token, mode)
+        let mut dfll = Self::new(token, pclk);
+        dfll.settings.mode.source.mult_factor = mult_factor;
+        dfll
     }
 
     /// Consume the [`Dfll`], release the [`DfllToken`], and return the [`Pclk`]
     #[inline]
     pub fn free(self) -> (DfllToken, Pclk<DfllId, G>) {
         (self.token, self.settings.mode.source.pclk)
+    }
+
+    /// Enable or disable the [`Dfll`] chill cycle
+    ///
+    /// See the documentation of [`chill_cycle`] for more details.
+    ///
+    /// [`chill_cycle`]: Dfll::chill_cycle
+    #[inline]
+    pub fn set_chill_cycle(&mut self, value: bool) {
+        self.settings.mode.source.chill_cycle = value;
     }
 
     /// Enable or disable the [`Dfll`] chill cycle
@@ -924,8 +982,18 @@ impl<G: GclkId> Dfll<G> {
     /// details.
     #[inline]
     pub fn chill_cycle(mut self, value: bool) -> Self {
-        self.settings.mode.source.chill_cycle = value;
+        self.set_chill_cycle(value);
         self
+    }
+
+    /// Enable or disable the [`Dfll`] quick lock
+    ///
+    /// See the documentation of [`quick_lock`] for more details.
+    ///
+    /// [`quick_lock`]: Dfll::quick_lock
+    #[inline]
+    pub fn set_quick_lock(&mut self, value: bool) {
+        self.settings.mode.source.quick_lock = value;
     }
 
     /// Enable or disable the [`Dfll`] quick lock
@@ -935,12 +1003,22 @@ impl<G: GclkId> Dfll<G> {
     /// enabled by default. See the datasheet for more details.
     #[inline]
     pub fn quick_lock(mut self, value: bool) -> Self {
-        self.settings.mode.source.quick_lock = value;
+        self.set_quick_lock(value);
         self
     }
 }
 
 impl<I: SomeDfllSourceId> Dfll<I> {
+    /// Set the maximum coarse step size during closed-loop frequency tuning
+    ///
+    /// See the documentation of [`coarse_max_step`] for more details.
+    ///
+    /// [`coarse_max_step`]: Dfll::coarse_max_step
+    #[inline]
+    pub fn set_coarse_max_step(&mut self, coarse_max_step: CoarseMaxStep) {
+        self.settings.mode.coarse_max_step = coarse_max_step;
+    }
+
     /// Set the maximum coarse step size during closed-loop frequency tuning
     ///
     /// In closed-loop operation, the DFLL output frequency is continuously
@@ -954,8 +1032,18 @@ impl<I: SomeDfllSourceId> Dfll<I> {
     /// datasheet for more details.
     #[inline]
     pub fn coarse_max_step(mut self, coarse_max_step: CoarseMaxStep) -> Self {
-        self.settings.mode.coarse_max_step = coarse_max_step;
+        self.set_coarse_max_step(coarse_max_step);
         self
+    }
+
+    /// Set the maximum fine step size during closed-loop frequency tuning
+    ///
+    /// See the documentation of [`fine_max_step`] for more details.
+    ///
+    /// [`fine_max_step`]: Dfll::fine_max_step
+    #[inline]
+    pub fn set_fine_max_step(&mut self, fine_max_step: FineMaxStep) {
+        self.settings.mode.fine_max_step = fine_max_step;
     }
 
     /// Set the maximum fine step size during closed-loop frequency tuning
@@ -971,7 +1059,7 @@ impl<I: SomeDfllSourceId> Dfll<I> {
     /// datasheet for more details.
     #[inline]
     pub fn fine_max_step(mut self, fine_max_step: FineMaxStep) -> Self {
-        self.settings.mode.fine_max_step = fine_max_step;
+        self.set_fine_max_step(fine_max_step);
         self
     }
 }
@@ -989,13 +1077,33 @@ impl<I: OptionalDfllSourceId> Dfll<I> {
 
     /// Control the [`Dfll`] behavior during idle or standby sleep modes
     ///
+    /// See the documentation of [`run_standby`] for more details.
+    ///
+    /// [`run_standby`]: Dfll::run_standby
+    #[inline]
+    pub fn set_run_standby(&mut self, value: bool) {
+        self.settings.run_standby = value;
+    }
+
+    /// Control the [`Dfll`] behavior during idle or standby sleep modes
+    ///
     /// When `true`, the `Dfll` will run in standby sleep mode, but its behavior
     /// can still be modified by the on-demand setting. See the datasheet for
     /// more details.
     #[inline]
     pub fn run_standby(mut self, value: bool) -> Self {
-        self.settings.run_standby = value;
+        self.set_run_standby(value);
         self
+    }
+
+    /// Control the [`Dfll`] on-demand functionality
+    ///
+    /// See the documentation of [`on_demand`] for more details.
+    ///
+    /// [`on_demand`]: Dfll::on_demand
+    #[inline]
+    pub fn set_on_demand(&mut self, value: bool) {
+        self.settings.on_demand = value;
     }
 
     /// Control the [`Dfll`] on-demand functionality
@@ -1005,7 +1113,7 @@ impl<I: OptionalDfllSourceId> Dfll<I> {
     /// behavior in standby sleep modes. See the datasheet for more details.
     #[inline]
     pub fn on_demand(mut self, value: bool) -> Self {
-        self.settings.on_demand = value;
+        self.set_on_demand(value);
         self
     }
 
@@ -1055,25 +1163,33 @@ where
     I: OptionalDfllSourceId,
     N: Default,
 {
-    /// Reconfigure the [`Dfll`] while it remains enabled
+    /// Change the [`OptionalDfllSourceId`] of the [`Dfll`] while it remains enabled
     ///
-    /// Take ownership of an [`EnabledDfll`] and reconfigure it according to a
-    /// user-supplied closure, `F`. The transformation may also change the
-    /// [`Dfll`] type parameter from `I` to `J`. The closure may optionally
-    /// return some additional type, `R`.
+    /// Take ownership of an [`EnabledDfll`] and convert it to use a new
+    /// [`OptionalDfllSourceId`]. This both requires the new [`Resource`] type
+    /// and returns the old `Resource`. Users can also supply a closure to alter
+    /// the [`Dfll`] settings before they are applied. The closure takes
+    /// `&mut Dfll<J>` as its input, so it can only modify those settings with a
+    /// `set_` method.
     ///
     /// See the [`dfll` module documentation] for more details on why and how
     /// this function would be used.
     ///
     /// [`dfll` module documentation]: super::dfll#reconfiguring-an-enableddfll
-    pub fn reconfigure<J, F, R>(self, f: F) -> (EnabledDfll<J, N>, R)
+    pub fn change_source<J, F>(
+        self,
+        resource: Resource<J>,
+        f: F,
+    ) -> (EnabledDfll<J, N>, Resource<I>)
     where
         J: OptionalDfllSourceId,
-        F: FnOnce(Dfll<I>) -> (Dfll<J>, R),
+        F: FnOnce(&mut Dfll<J>),
     {
-        let (dfll, r) = f(self.0);
-        let dfll = Enabled::new(dfll.enable().0);
-        (dfll, r)
+        let old = self.0.settings.into_resource();
+        let mut dfll = Dfll::new(self.0.token, resource);
+        f(&mut dfll);
+        let dfll = dfll.enable().0;
+        (Enabled::new(dfll), old)
     }
 }
 
