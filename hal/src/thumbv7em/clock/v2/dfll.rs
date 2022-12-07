@@ -226,7 +226,7 @@
 //! use atsamd_hal::{
 //!     clock::v2::{
 //!         clock_system_at_reset,
-//!         dfll::{Dfll, UsbSofId},
+//!         dfll::{Dfll, FromUsb},
 //!     },
 //!     pac::Peripherals,
 //! };
@@ -238,7 +238,7 @@
 //!     pac.MCLK,
 //!     &mut pac.NVMCTRL,
 //! );
-//! let (dfll, _) = clocks.dfll.change_source::<UsbSofId, _>((), |dfll| {
+//! let (dfll, _) = clocks.dfll.into_mode(FromUsb, |dfll| {
 //!     dfll.set_coarse_max_step(1);
 //!     dfll.set_fine_max_step(8);
 //!     dfll.set_run_standby(true);
@@ -401,122 +401,113 @@ pub enum DfllId {}
 impl Sealed for DfllId {}
 
 //==============================================================================
-// UsbSofId
+// Mode types
 //==============================================================================
 
-/// [`Id` type](super#id-types) representing the identity of the USB
-/// start-of-frame clock
-pub enum UsbSofId {}
+pub struct OpenLoop;
+
+pub struct FromUsb;
+
+pub struct FromPclk<G: GclkId> {
+    pub pclk: Pclk<DfllId, G>,
+}
 
 //==============================================================================
-// DynDfllSource
+// DynReference
 //==============================================================================
 
-/// Value-level enum of possible clock sources for the [`Dfll`]
-///
-/// The variants of this enum identify one of two possible clock sources for
-/// the [`Dfll`] when operating in closed-loop mode.
-///
-/// `DynDfllSourceId` is the value-level equivalent of [`DfllSourceId`].
 #[derive(Copy, Clone, PartialEq, Eq)]
-pub enum DynDfllSourceId {
+pub enum DynReference {
     /// The DFLL is driven by a [`Pclk`]
     Pclk,
     /// The DFLL is driven by the USB start-of-frame signal
-    UsbSof,
+    Usb,
 }
 
 //==============================================================================
-// DfllSourceId
+// Reference
 //==============================================================================
 
-/// Type-level enum of possible reference clock sources for the [`Dfll`]
-///
-/// The types implementing this trait are type-level variants of `DfllSourceId`,
-/// and they identify one of two possible reference clocks for the [`Dfll`]. The
-/// implementers of this trait are `Id` types, which are described in more
-/// detail in the [`clock` module documentation](super).
-///
-/// `DfllSourceId` is the type-level equivalent of [`DynDfllSourceId`]. See the
-/// documentation on [type-level programming] and specifically
-/// [type-level enums] for more details.
-///
-/// [type-level programming]: crate::typelevel
-/// [type-level enums]: crate::typelevel#type-level-enums
-pub trait DfllSourceId {
-    /// Corresponding variant of [`DynDfllSourceId`]
-    const DYN: DynDfllSourceId;
-
-    /// [`settings`] type for the reference clock source
+pub trait Reference {
+    const DYN: DynReference;
     #[doc(hidden)]
     type Settings: Settings;
+    #[doc(hidden)]
+    fn from_settings(reference: Self::Settings) -> Self;
+    #[doc(hidden)]
+    fn into_settings(self) -> Self::Settings;
 }
 
-impl<G: GclkId> DfllSourceId for G {
-    const DYN: DynDfllSourceId = DynDfllSourceId::Pclk;
-    type Settings = settings::Pclk<G>;
-}
-
-impl DfllSourceId for UsbSofId {
-    const DYN: DynDfllSourceId = DynDfllSourceId::UsbSof;
+impl Reference for FromUsb {
+    const DYN: DynReference = DynReference::Usb;
     type Settings = settings::Usb;
+    fn from_settings(_: Self::Settings) -> Self {
+        FromUsb
+    }
+    fn into_settings(self) -> Self::Settings {
+        settings::Usb
+    }
+}
+
+impl<G: GclkId> Reference for FromPclk<G> {
+    const DYN: DynReference = DynReference::Pclk;
+    type Settings = settings::Pclk<G>;
+    fn from_settings(reference: Self::Settings) -> Self {
+        Self {
+            pclk: reference.pclk,
+        }
+    }
+    fn into_settings(self) -> Self::Settings {
+        settings::Pclk::new(self.pclk)
+    }
 }
 
 //==============================================================================
-// OptionalDfllSourceId
+// DynMode
 //==============================================================================
 
-/// Type-level equivalent of `Option<DfllSourceId>`
-///
-/// The [`Dfll`] only has a reference clock source when it is in closed-loop
-/// mode. When it is in open-loop mode, there is no reference clock. This trait
-/// serves as a way to represent an optional [`DfllSourceId`] at the type level.
-///
-/// At the value level, this would be represented by the type
-/// `Option<DynDfllSourceId>`. At the type level, we can use the
-/// [`OptionalKind`] pattern to represent the same concept. We implement this
-/// trait for both [`NoneT`], to represent open-loop mode, and all
-/// [`DfllSourceId`] types for closed-loop mode.
-///
-/// [`OptionalKind`]: crate::typelevel#optionalkind-trait-pattern
-pub trait OptionalDfllSourceId {
-    /// Optional variant of [`DynDfllSourceId`]
-    ///
-    /// When there is [`Some`] [`DynDfllSourceId`], it specifies the [`Dfll`]'s
-    /// reference clock source in closed-loop mode. Otherwise, when there is no
-    /// reference clock, the [`Dfll`] is in open-loop mode.
-    const DYN: Option<DynDfllSourceId>;
+#[derive(Copy, Clone, PartialEq, Eq)]
+pub enum DynMode {
+    OpenLoop,
+    ClosedLoop(DynReference),
+}
 
-    /// [`settings`] type for the operating mode
+//==============================================================================
+// Mode
+//==============================================================================
+
+pub trait Mode {
+    const DYN: DynMode;
     #[doc(hidden)]
     type Settings: Settings;
+    #[doc(hidden)]
+    fn from_settings(mode: Self::Settings) -> Self;
+    #[doc(hidden)]
+    fn into_settings(self) -> Self::Settings;
 }
 
-impl OptionalDfllSourceId for NoneT {
-    const DYN: Option<DynDfllSourceId> = None;
+impl Mode for OpenLoop {
+    const DYN: DynMode = DynMode::OpenLoop;
     type Settings = settings::OpenLoop;
+    fn from_settings(_: Self::Settings) -> Self {
+        OpenLoop
+    }
+    fn into_settings(self) -> Self::Settings {
+        settings::OpenLoop
+    }
 }
 
-impl<I: SomeDfllSourceId> OptionalDfllSourceId for I {
-    const DYN: Option<DynDfllSourceId> = Some(I::DYN);
-    type Settings = settings::ClosedLoop<I::Settings>;
+impl<R: Reference> Mode for R {
+    const DYN: DynMode = DynMode::ClosedLoop(R::DYN);
+    type Settings = settings::ClosedLoop<R::Settings>;
+    fn from_settings(mode: Self::Settings) -> Self {
+        R::from_settings(mode.reference)
+    }
+    fn into_settings(self) -> Self::Settings {
+        let reference = R::into_settings(self);
+        settings::ClosedLoop::new(reference)
+    }
 }
-
-//==============================================================================
-// SomeDfllSourceId
-//==============================================================================
-
-/// Type-level equivalent of `Some(DfllSourceId)`
-///
-/// There is no practical difference between this trait and [`DfllSourceId`]. It
-/// exists only to emphasize when an [`OptionalDfllSourceId`] type is
-/// constrained to non-[`NoneT`] types. See documentation of the
-/// [`OptionalKind`] pattern for more details.
-///
-/// [`OptionalKind`]: crate::typelevel#optionalkind-trait-pattern
-pub trait SomeDfllSourceId: DfllSourceId {}
-
-impl<I: DfllSourceId> SomeDfllSourceId for I {}
 
 //==============================================================================
 // Settings
@@ -595,6 +586,16 @@ mod settings {
         pub on_demand: bool,
     }
 
+    impl<T: Settings> Minimum<T> {
+        pub fn new(mode: T) -> Self {
+            Self {
+                mode,
+                run_standby: false,
+                on_demand: true,
+            }
+        }
+    }
+
     /// Collection of settings specific to open-loop [`Dfll`] operation
     ///
     /// Right now, this struct is empty, as none of the settings are relevant to
@@ -607,14 +608,24 @@ mod settings {
     ///
     /// This struct stores the maximum step size for the coarse and fine
     /// adjustments in closed-loop mode. It also stores an additional type, `T`,
-    /// containing settings specific to the reference clock source, which can be
-    /// either [`Pclk`] or [`Usb`]. Both implement the [`Settings`] trait.
+    /// containing settings specific to the reference clock, which can be either
+    /// [`Pclk`] or [`Usb`]. Both implement the [`Settings`] trait.
     ///
     /// [`Dfll`]: super::Dfll
     pub struct ClosedLoop<T: Settings> {
-        pub source: T,
+        pub reference: T,
         pub coarse_max_step: CoarseMaxStep,
         pub fine_max_step: FineMaxStep,
+    }
+
+    impl<T: Settings> ClosedLoop<T> {
+        pub fn new(reference: T) -> Self {
+            Self {
+                reference,
+                coarse_max_step: 1,
+                fine_max_step: 1,
+            }
+        }
     }
 
     /// Collection of settings specific to [`Dfll`] USB recovery mode
@@ -644,6 +655,19 @@ mod settings {
         pub quick_lock: bool,
     }
 
+    impl<G: GclkId> Pclk<G> {
+        pub fn new(pclk: pclk::Pclk<DfllId, G>) -> Self {
+            // Cast is fine because division result cannot be greater than u16::MAX
+            let mult_factor = (48_000_000 / pclk.freq().0) as u16;
+            Self {
+                pclk,
+                mult_factor,
+                chill_cycle: true,
+                quick_lock: true,
+            }
+        }
+    }
+
     /// Generic interface to convert the [`Minimum`] settings into a collection
     /// of [`All`] settings
     ///
@@ -660,37 +684,12 @@ mod settings {
     ///
     /// [`Dfll`]: super::Dfll
     pub trait Settings {
-        /// Resource stored by the `Settings` struct
-        type Resource;
-
-        /// Construct the `Settings` struct from its resource
-        ///
-        /// Use default values for all other fields of the struct.
-        fn from_resource(resource: Self::Resource) -> Self;
-
-        /// Consume the `Settings` struct and return its resource
-        fn into_resource(self) -> Self::Resource;
-
         /// Fill the respective fields of [`All`] and recursively defer any
         /// remaining fields to sub-structs or the [`Default`] settings
         fn all(&self) -> All;
     }
 
     impl<T: Settings> Settings for Minimum<T> {
-        type Resource = T::Resource;
-        #[inline]
-        fn from_resource(resource: Self::Resource) -> Self {
-            let mode = T::from_resource(resource);
-            Self {
-                mode,
-                run_standby: false,
-                on_demand: true,
-            }
-        }
-        #[inline]
-        fn into_resource(self) -> Self::Resource {
-            self.mode.into_resource()
-        }
         #[inline]
         fn all(&self) -> All {
             All {
@@ -702,13 +701,6 @@ mod settings {
     }
 
     impl Settings for OpenLoop {
-        type Resource = ();
-        #[inline]
-        fn from_resource(_: ()) -> Self {
-            OpenLoop
-        }
-        #[inline]
-        fn into_resource(self) -> Self::Resource {}
         #[inline]
         fn all(&self) -> All {
             All::default()
@@ -716,39 +708,18 @@ mod settings {
     }
 
     impl<T: Settings> Settings for ClosedLoop<T> {
-        type Resource = T::Resource;
-        #[inline]
-        fn from_resource(resource: T::Resource) -> Self {
-            let source = T::from_resource(resource);
-            Self {
-                source,
-                coarse_max_step: 1,
-                fine_max_step: 1,
-            }
-        }
-        #[inline]
-        fn into_resource(self) -> Self::Resource {
-            self.source.into_resource()
-        }
         #[inline]
         fn all(&self) -> All {
             All {
                 closed_loop: true,
                 coarse_max_step: self.coarse_max_step,
                 fine_max_step: self.fine_max_step,
-                ..self.source.all()
+                ..self.reference.all()
             }
         }
     }
 
     impl Settings for Usb {
-        type Resource = ();
-        #[inline]
-        fn from_resource(_: ()) -> Self {
-            Usb
-        }
-        #[inline]
-        fn into_resource(self) -> Self::Resource {}
         #[inline]
         fn all(&self) -> All {
             All {
@@ -761,7 +732,6 @@ mod settings {
     }
 
     impl<G: GclkId> Settings for Pclk<G> {
-        type Resource = pclk::Pclk<DfllId, G>;
         #[inline]
         fn all(&self) -> All {
             All {
@@ -772,36 +742,10 @@ mod settings {
                 ..All::default()
             }
         }
-        #[inline]
-        fn from_resource(pclk: Self::Resource) -> Self {
-            // Cast is fine because division result cannot be greater than u16::MAX
-            let mult_factor = (48_000_000 / pclk.freq().0) as u16;
-            Self {
-                pclk,
-                mult_factor,
-                chill_cycle: true,
-                quick_lock: true,
-            }
-        }
-        #[inline]
-        fn into_resource(self) -> Self::Resource {
-            self.pclk
-        }
     }
 }
 
 use settings::Settings;
-
-/// [`Dfll`] resource type for the corresponding [`OptionalDfllSourceId`]
-///
-/// This type alias maps from [`OptionalDfllSourceId`] types to a corresponding
-/// resource type that the [`Dfll`] stores for its existence.
-///
-/// For [`NoneT`], when the DFLL is in open-loop mode, the resource type is
-/// merely `()`, as there is no resource to store. At the moment, [`UsbSofId`]
-/// also maps to `()`, but that may change in the future. [`GclkId`] types map
-/// to the corresponding [`Pclk`] type for the [`Dfll`].
-pub type Resource<I> = <<I as OptionalDfllSourceId>::Settings as Settings>::Resource;
 
 //==============================================================================
 // Dfll
@@ -834,15 +778,16 @@ pub type Resource<I> = <<I as OptionalDfllSourceId>::Settings as Settings>::Reso
 ///
 /// [`enable`]: Dfll::enable
 /// [`OptionalKind`]: crate::typelevel#optionalkind-trait-pattern
-pub struct Dfll<I: OptionalDfllSourceId = NoneT> {
+pub struct Dfll<M: Mode = OpenLoop> {
     token: DfllToken,
-    settings: settings::Minimum<I::Settings>,
+    settings: settings::Minimum<M::Settings>,
 }
 
-impl<I: OptionalDfllSourceId> Dfll<I> {
+impl<M: Mode> Dfll<M> {
     #[inline]
-    fn new(token: DfllToken, resource: Resource<I>) -> Self {
-        let settings = settings::Minimum::from_resource(resource);
+    fn from_mode(token: DfllToken, mode: M) -> Self {
+        let mode = M::into_settings(mode);
+        let settings = settings::Minimum::new(mode);
         Self { token, settings }
     }
 }
@@ -862,7 +807,7 @@ impl Dfll {
     /// [`enable`]: Dfll::enable
     #[inline]
     pub fn open_loop(token: DfllToken) -> Self {
-        Self::new(token, ())
+        Self::from_mode(token, OpenLoop)
     }
 
     /// Consume the [`Dfll`] and release the [`DfllToken`]
@@ -872,7 +817,7 @@ impl Dfll {
     }
 }
 
-impl Dfll<UsbSofId> {
+impl Dfll<FromUsb> {
     /// Create the [`Dfll`] in USB recovery mode
     ///
     /// This creates the `Dfll` in closed-loop mode referenced to the USB
@@ -893,7 +838,7 @@ impl Dfll<UsbSofId> {
     /// [`enable`]: Dfll::enable
     #[inline]
     pub fn from_usb(token: DfllToken) -> Self {
-        Self::new(token, ())
+        Self::from_mode(token, FromUsb)
     }
 
     /// Consume the [`Dfll`] and release the [`DfllToken`]
@@ -903,7 +848,7 @@ impl Dfll<UsbSofId> {
     }
 }
 
-impl<G: GclkId> Dfll<G> {
+impl<G: GclkId> Dfll<FromPclk<G>> {
     /// Create the [`Dfll`] in closed-loop mode
     ///
     /// This creates the `Dfll` in closed-loop mode referenced to a [`Gclk`]
@@ -937,7 +882,7 @@ impl<G: GclkId> Dfll<G> {
         if freq < MIN || freq > MAX {
             panic!("Invalid Pclk<DfllId, _> input frequency");
         }
-        Self::new(token, pclk)
+        Self::from_mode(token, FromPclk { pclk })
     }
 
     /// Create the [`Dfll`] in closed-loop mode
@@ -951,15 +896,15 @@ impl<G: GclkId> Dfll<G> {
         pclk: Pclk<DfllId, G>,
         mult_factor: MultFactor,
     ) -> Self {
-        let mut dfll = Self::new(token, pclk);
-        dfll.settings.mode.source.mult_factor = mult_factor;
+        let mut dfll = Self::from_mode(token, FromPclk { pclk });
+        dfll.settings.mode.reference.mult_factor = mult_factor;
         dfll
     }
 
     /// Consume the [`Dfll`], release the [`DfllToken`], and return the [`Pclk`]
     #[inline]
     pub fn free(self) -> (DfllToken, Pclk<DfllId, G>) {
-        (self.token, self.settings.mode.source.pclk)
+        (self.token, self.settings.mode.reference.pclk)
     }
 
     /// Enable or disable the [`Dfll`] chill cycle
@@ -969,7 +914,7 @@ impl<G: GclkId> Dfll<G> {
     /// [`chill_cycle`]: Dfll::chill_cycle
     #[inline]
     pub fn set_chill_cycle(&mut self, value: bool) {
-        self.settings.mode.source.chill_cycle = value;
+        self.settings.mode.reference.chill_cycle = value;
     }
 
     /// Enable or disable the [`Dfll`] chill cycle
@@ -993,7 +938,7 @@ impl<G: GclkId> Dfll<G> {
     /// [`quick_lock`]: Dfll::quick_lock
     #[inline]
     pub fn set_quick_lock(&mut self, value: bool) {
-        self.settings.mode.source.quick_lock = value;
+        self.settings.mode.reference.quick_lock = value;
     }
 
     /// Enable or disable the [`Dfll`] quick lock
@@ -1008,7 +953,7 @@ impl<G: GclkId> Dfll<G> {
     }
 }
 
-impl<I: SomeDfllSourceId> Dfll<I> {
+impl<R: Reference> Dfll<R> {
     /// Set the maximum coarse step size during closed-loop frequency tuning
     ///
     /// See the documentation of [`coarse_max_step`] for more details.
@@ -1064,7 +1009,7 @@ impl<I: SomeDfllSourceId> Dfll<I> {
     }
 }
 
-impl<I: OptionalDfllSourceId> Dfll<I> {
+impl<M: Mode> Dfll<M> {
     /// Return the [`Dfll`] output frequency
     ///
     /// The output frequency will always be close to, if not exactly, 48 MHz.
@@ -1127,7 +1072,7 @@ impl<I: OptionalDfllSourceId> Dfll<I> {
     /// The returned value is an [`EnabledDfll`] that can be used as a clock
     /// [`Source`] for other clocks.
     #[inline]
-    pub fn enable(mut self) -> EnabledDfll<I> {
+    pub fn enable(mut self) -> EnabledDfll<M> {
         self.token.configure(self.settings.all());
         self.token.enable();
         Enabled::new(self)
@@ -1149,18 +1094,18 @@ impl<I: OptionalDfllSourceId> Dfll<I> {
 /// the counter is assumed to be zero.
 pub type EnabledDfll<I = NoneT, N = U0> = Enabled<Dfll<I>, N>;
 
-impl<I: OptionalDfllSourceId> EnabledDfll<I> {
+impl<M: Mode> EnabledDfll<M> {
     /// Disable the [`Dfll`]
     #[inline]
-    pub fn disable(mut self) -> Dfll<I> {
+    pub fn disable(mut self) -> Dfll<M> {
         self.0.token.disable();
         self.0
     }
 }
 
-impl<I, N> EnabledDfll<I, N>
+impl<M, N> EnabledDfll<M, N>
 where
-    I: OptionalDfllSourceId,
+    M: Mode,
     N: Default,
 {
     /// Change the [`OptionalDfllSourceId`] of the [`Dfll`] while it remains enabled
@@ -1176,17 +1121,13 @@ where
     /// this function would be used.
     ///
     /// [`dfll` module documentation]: super::dfll#reconfiguring-an-enableddfll
-    pub fn change_source<J, F>(
-        self,
-        resource: Resource<J>,
-        f: F,
-    ) -> (EnabledDfll<J, N>, Resource<I>)
+    pub fn into_mode<J, F>(self, mode: J, f: F) -> (EnabledDfll<J, N>, M)
     where
-        J: OptionalDfllSourceId,
+        J: Mode,
         F: FnOnce(&mut Dfll<J>),
     {
-        let old = self.0.settings.into_resource();
-        let mut dfll = Dfll::new(self.0.token, resource);
+        let old = M::from_settings(self.0.settings.mode);
+        let mut dfll = Dfll::from_mode(self.0.token, mode);
         f(&mut dfll);
         let dfll = dfll.enable().0;
         (Enabled::new(dfll), old)
@@ -1197,7 +1138,7 @@ where
 // Source
 //==============================================================================
 
-impl<I: OptionalDfllSourceId, N> Source for EnabledDfll<I, N> {
+impl<M: Mode, N> Source for EnabledDfll<M, N> {
     type Id = DfllId;
 
     #[inline]
