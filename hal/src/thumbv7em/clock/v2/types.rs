@@ -50,8 +50,10 @@ macro_rules! create_types {
 create_types!(Ac);
 create_types!(Adc0, Adc1);
 create_types!(Aes);
-#[cfg(feature = "has-can")]
-create_types!(Can0, Can1);
+#[cfg(feature = "has-can0")]
+create_types!(Can0);
+#[cfg(feature = "has-can1")]
+create_types!(Can1);
 create_types!(Ccl);
 create_types!(Cmcc);
 create_types!(CM4Trace);

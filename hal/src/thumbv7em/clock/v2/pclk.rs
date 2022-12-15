@@ -169,6 +169,10 @@ pub mod ids {
         SlowClk, Tc0Tc1, Tc2Tc3, Tcc0Tcc1, Tcc2Tcc3, Usb,
     };
 
+    #[cfg(feature = "has-can0")]
+    pub use super::super::types::Can0;
+    #[cfg(feature = "has-can1")]
+    pub use super::super::types::Can1;
     #[cfg(feature = "has-sdhc1")]
     pub use super::super::types::Sdhc1;
     #[cfg(all(feature = "has-tc4", feature = "has-tc5"))]
@@ -177,8 +181,6 @@ pub mod ids {
     pub use super::super::types::Tc6Tc7;
     #[cfg(feature = "has-tcc4")]
     pub use super::super::types::Tcc4;
-    #[cfg(feature = "has-can")]
-    pub use super::super::types::{Can0, Can1};
     #[cfg(feature = "has-i2s")]
     pub use super::super::types::{I2S0, I2S1};
 }
@@ -250,9 +252,9 @@ macro_rules! with_pclk_types_ids {
             (Sercom3 = 24, sercom3)
             (Tcc0Tcc1 = 25, tcc0_tcc1)
             (Tc2Tc3 = 26, tc2_tc3)
-            #[cfg(feature = "has-can")]
+            #[cfg(feature = "has-can0")]
             (Can0 = 27, can0)
-            #[cfg(feature = "has-can")]
+            #[cfg(feature = "has-can1")]
             (Can1 = 28, can1)
             (Tcc2Tcc3 = 29, tcc2_tcc3)
             #[cfg(all(feature = "has-tc4", feature = "has-tc5"))]
