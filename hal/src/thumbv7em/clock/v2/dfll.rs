@@ -12,35 +12,24 @@
 //! provided by a GCLK, through the DFLL peripheral channel clock, or it can be
 //! provided by the USB start-of-frame signal.
 //!
-//! The DFLL is represented by the [`Dfll`] type. When the DFLL is in
-//! closed-loop mode, it looks like many of the other clocks in the `clock`
-//! module; it takes an input clock and produces an output clock. And like those
-//! other clocks, [`Dfll<I>`] takes a type parameter to represent the
-//! [`Id` type](super#id-types) of its clock source. However, when the DFLL is
-//! in open-loop mode, it instead looks more like the [`OscUlp32k`] clock, which
-//! doesn't require a type parameter to track its configuration or source.
-//!
-//! To handle both of these configurations simultaneously, we leverage the
-//! [`OptionalKind`] pattern to express the notion of an optional type
-//! parameter. When the DFLL is in open-loop mode, we can set the [`Dfll<I>`]
-//! type parameter to [`NoneT`]. In fact, this is the default type for `I`,
-//! so an unqualified [`Dfll`] is in open-loop mode. Otherwise, when the DFLL is
-//! in closed-loop mode, `I` represents one of the [`DfllSourceId`] types. See
-//! the documentation of [`OptionalDfllSourceId`] for more details.
+//! The DFLL is represented by the type [`Dfll<M>`], where `M` is one of three
+//! [`Mode`] types. The default type is [`OpenLoop`], while the other two types,
+//! [`FromPclk`] and [`FromUsb`], represent closed-loop `Mode`s with the
+//! corresponding [`Reference`] clock.
 //!
 //! ## The DFLL at power-on reset
 //!
 //! Because the DFLL can produce a 48 MHz clock from an internal oscillator, it
-//! is used as the default master clock for the system at power-on reset. While
-//! most clocks are disabled at reset and represented by items in the [`Tokens`]
+//! is used as the system's default master clock at power-on reset. While most
+//! clocks are disabled at reset and represented by items in the [`Tokens`]
 //! struct, the [`Dfll`] is [`Enabled`] at reset, so it is found in the
 //! [`Clocks`] struct.
 //!
-//! At reset, the [`EnabledDfll`] is in open-loop mode and has one consumer
-//! clock, so its complete type is `EnabledDfll<U1>`. The corresponding consumer
-//! is [`Gclk0`], which is represented as `EnabledGclk0<DfllId, U1>`. The
-//! [`EnabledGclk0`] has its own consumer as well, which is the system master
-//! clock.
+//! At reset, the [`EnabledDfll`] is in [`OpenLoop`] [`Mode`] and has one
+//! consumer clock, so its complete type is `EnabledDfll<U1>`. The corresponding
+//! consumer is [`Gclk0`], which is represented as `EnabledGclk0<DfllId, U1>`.
+//! Here, the [`EnabledGclk0`] has its own consumer as well, which is the
+//! system's master clock.
 //!
 //! ## Example
 //!
@@ -127,7 +116,7 @@
 //! #     &mut pac.NVMCTRL,
 //! # );
 //! # let xosc0 = Xosc::from_clock(tokens.xosc0, pins.pa14, 24.mhz()).enable();
-//! let (gclk0, dfll, _xosc0) = clocks.gclk0.swap_sources(clocks.dfll, xosc0);
+//! let (gclk0, dfll, xosc0) = clocks.gclk0.swap_sources(clocks.dfll, xosc0);
 //! let token_dfll = dfll.disable().free();
 //! ```
 //!
@@ -154,9 +143,9 @@
 //! #     &mut pac.NVMCTRL,
 //! # );
 //! # let xosc0 = Xosc::from_clock(tokens.xosc0, pins.pa14, 24.mhz()).enable();
-//! # let (gclk0, dfll, _xosc0) = clocks.gclk0.swap_sources(clocks.dfll, xosc0);
+//! # let (gclk0, dfll, xosc0) = clocks.gclk0.swap_sources(clocks.dfll, xosc0);
 //! # let token_dfll = dfll.disable().free();
-//! let (pclk_dfll, _gclk0) = Pclk::enable(tokens.pclks.dfll, gclk0);
+//! let (pclk_dfll, gclk0) = Pclk::enable(tokens.pclks.dfll, gclk0);
 //! let dfll = Dfll::from_pclk(token_dfll, pclk_dfll)
 //!     .coarse_max_step(1)
 //!     .fine_max_step(10)
@@ -183,9 +172,9 @@
 //!     &mut pac.NVMCTRL,
 //! );
 //! let xosc0 = Xosc::from_clock(tokens.xosc0, pins.pa14, 24.mhz()).enable();
-//! let (gclk0, dfll, _xosc0) = clocks.gclk0.swap_sources(clocks.dfll, xosc0);
+//! let (gclk0, dfll, xosc0) = clocks.gclk0.swap_sources(clocks.dfll, xosc0);
 //! let token_dfll = dfll.disable().free();
-//! let (pclk_dfll, _gclk0) = Pclk::enable(tokens.pclks.dfll, gclk0);
+//! let (pclk_dfll, gclk0) = Pclk::enable(tokens.pclks.dfll, gclk0);
 //! let dfll = Dfll::from_pclk(token_dfll, pclk_dfll)
 //!     .coarse_max_step(1)
 //!     .fine_max_step(10)
@@ -204,33 +193,42 @@
 //! 48 MHz. Moreover, by design, consumers of the DFLL aren't affected by its
 //! configuration (see the discussion on [`Id` types]).
 //!
-//! For this reason, we define a special [`change_source`] function on
+//! For this reason, we define a special [`into_mode`] function on
 //! [`EnabledDfll`]. It will consume the `EnabledDfll` and transform it to use
-//! a different [`OptionalDfllSourceId`]. Note that [`change_source`] takes and
-//! returns a [`Resource`] type for the corresponding `Id` type. The `Resource`
-//! type for [`GclkId`]s is a [`Pclk`], because it needs to be stored by the
-//! [`Dfll`]. The `Resource` type for both [`NoneT`] and [`UsbSofId`] is `()`,
-//! because they don't need to store anything.
+//! a different [`Mode`].
+//!
+//! While the [`Dfll`] constructors (i.e. [`open_loop`], [`from_pclk`], and
+//! [`from_usb`]) handle the [`Mode`] type for you, [`into_mode`] is generic
+//! over the initial and final `Mode`, so it takes and returns the corresponding
+//! `Mode` types directly. Furthermore, `into_mode` also accepts a closure,
+//! allowing you to modify the [`Dfll`] before the new `Mode` is applied.
 //!
 //! Consider the following example. As above, we start with the clocks in their
 //! default configuration at power-on reset. Remember that the [`Dfll`] is used
-//! by the system master clock. At this point, we would like to reconfigure it
-//! to use USB recovery mode. We call the `change_source` function, which takes
-//! the [`Resource`] type for [`UsbSofId`], which is `()` and a closure to
-//! modify the [`Dfll`] before the new settings are applied. The `change_source`
-//! function is responsible for applying this closure without disabling the
-//! DFLL. The return value is a tuple containing the reconfigured DFLL and the
-//! old [`Resource`] type, which is again `()` for [`NoneT`].
+//! by the system's master clock. At this point, we would like to reconfigure it
+//! to use an external 32 kHz clock on pin PA10. First, we construct a [`Gclk`]
+//! from the corresponding [`gpio`] [`Pin`]. Then we enable the [`Pclk`] for the
+//! DFLL and construct an instance of [`FromPclk`]. Finally, we call
+//! `into_mode`, which takes an instance of [`FromPclk`] and returns an instance
+//! of [`OpenLoop`]. Neither [`OpenLoop`] nor [`FromUsb`] need to store a
+//! corresponding resource, so they are both effectively equivalent to the `()`
+//! type. We can also change some of the DFLL control loop settings prior to the
+//! [`Mode`] change using the closure argument to `into_mode`.
 //!
 //! ```no_run
 //! use atsamd_hal::{
 //!     clock::v2::{
 //!         clock_system_at_reset,
-//!         dfll::{Dfll, FromUsb},
+//!         dfll::{Dfll, FromPclk},
+//!         gclk::Gclk,
+//!         pclk::Pclk,
 //!     },
+//!     gpio::Pins,
 //!     pac::Peripherals,
+//!     time::U32Ext,
 //! };
 //! let mut pac = Peripherals::take().unwrap();
+//! let pins = Pins::new(pac.PORT);
 //! let (buses, mut clocks, tokens) = clock_system_at_reset(
 //!     pac.OSCCTRL,
 //!     pac.OSC32KCTRL,
@@ -238,34 +236,35 @@
 //!     pac.MCLK,
 //!     &mut pac.NVMCTRL,
 //! );
-//! let (dfll, _) = clocks.dfll.into_mode(FromUsb, |dfll| {
+//! let gclk4 = Gclk::from_pin(tokens.gclks.gclk4, pins.pa10, 32_768.hz()).enable();
+//! let (pclk, gclk4) = Pclk::enable(tokens.pclks.dfll, gclk4);
+//! let from_pclk = FromPclk { pclk };
+//! let (dfll, open_loop) = clocks.dfll.into_mode(from_pclk, |dfll| {
 //!     dfll.set_coarse_max_step(1);
 //!     dfll.set_fine_max_step(8);
+//!     dfll.set_chill_cycle(false);
 //!     dfll.set_run_standby(true);
 //! });
 //! ```
-//!
-//! Note that the user may also wish to return some other object from the
-//! closure. To do so, the expected return type for the closure is actually
-//! `(Dfll<J>, R)`, where `R` is an arbitrary return type set by the user. In
-//! the example above, we don't make use of this feature, so `R = ()`. However,
-//! if the DFLL had been in closed-loop mode and sourced from a [`Pclk`], `R`
-//! could have been used to return the [`Pclk`] to the user.
 //!
 //! [`clock_system_at_reset`]: super::clock_system_at_reset
 //! [`clock` module documentation]: super
 //! [`Id` types]: super#id-types
 //! [`Clocks`]: super::Clocks
 //! [`Tokens`]: super::Tokens
+//! [`gpio`]: crate::gpio
+//! [`Pin`]: crate::gpio::Pin
 //! [`Pins`]: crate::gpio::Pins
 //! [`Xosc`]: super::xosc::Xosc
+//! [`Gclk`]: super::gclk::Gclk
 //! [`EnabledXosc`]: super::xosc::EnabledXosc
 //! [`Gclk0`]: super::gclk::Gclk0
 //! [`EnabledGclk0`]: super::gclk::EnabledGclk0
 //! [`Decrement`]: crate::typelevel::Decrement
-//! [`OscUlp32k`]: super::osculp32k::OscUlp32k
-//! [`OptionalKind`]: crate::typelevel#optionalkind-trait-pattern
-//! [`change_source`]: EnabledDfll::change_source
+//! [`open_loop`]: Dfll::open_loop
+//! [`from_pclk`]: Dfll::from_pclk
+//! [`from_usb`]: Dfll::from_usb
+//! [`into_mode`]: EnabledDfll::into_mode
 
 use crate::time::Hertz;
 use crate::typelevel::{NoneT, Sealed};
@@ -416,6 +415,14 @@ pub struct FromPclk<G: GclkId> {
 // DynReference
 //==============================================================================
 
+/// Value-level enum identifying one of two possible reference clocks for the
+/// [`Dfll`]
+///
+/// When the [`Dfll`] is in closed-loop mode, it requires a reference clock
+/// input. The variants of this enum represent the two possible reference
+/// clocks.
+///
+/// `DynReference` is the value-level equivalent of [`Reference`].
 #[derive(Copy, Clone, PartialEq, Eq)]
 pub enum DynReference {
     /// The DFLL is driven by a [`Pclk`]
@@ -428,7 +435,21 @@ pub enum DynReference {
 // Reference
 //==============================================================================
 
+/// Type-level enum identifying one of two possible [`Dfll`] reference clocks
+///
+/// When the [`Dfll`] is in closed-loop mode, it requires a reference clock
+/// input. The types implementing this trait, i.e. [`FromPclk`] and [`FromUsb`],
+/// are type-level variants of `Reference`, and they identify one of the two
+/// possible reference clocks.
+///
+/// `Reference` is the type-level equivalent of [`DynReference`]. See the
+/// documentation on [type-level programming] and specifically
+/// [type-level enums] for more details.
+///
+/// [type-level programming]: crate::typelevel
+/// [type-level enums]: crate::typelevel#type-level-enums
 pub trait Reference {
+    /// Corresponding variant of [`DynReference`]
     const DYN: DynReference;
     #[doc(hidden)]
     type Settings: Settings;
@@ -466,6 +487,13 @@ impl<G: GclkId> Reference for FromPclk<G> {
 // DynMode
 //==============================================================================
 
+/// Value-level enum identifying the [`Dfll`] control loop mode
+///
+/// The [`Dfll`] can operate in both open-loop and closed-loop modes.
+/// Furthermore, when the DFLL is in closed-loop mode, it requires a
+/// corresponding reference clock.
+///
+/// `DynMode` is the value-level equivalent of [`Mode`].
 #[derive(Copy, Clone, PartialEq, Eq)]
 pub enum DynMode {
     OpenLoop,
@@ -476,7 +504,21 @@ pub enum DynMode {
 // Mode
 //==============================================================================
 
+/// Type-level enum identifying the [`Dfll`] control loop mode
+///
+/// The types implementing this trait, i.e. [`OpenLoop`], [`FromPclk`] and
+/// [`FromUsb`], are type-level variants of `Mode`, and they determine whether
+/// the DFLL operates in closed-loop mode, and if so, which [`Reference`] clock
+/// to use.
+///
+/// `Mode` is the type-level equivalent of [`DynMode`]. See the documentation on
+/// [type-level programming] and specifically [type-level enums] for more
+/// details.
+///
+/// [type-level programming]: crate::typelevel
+/// [type-level enums]: crate::typelevel#type-level-enums
 pub trait Mode {
+    /// Corresponding variant of [`DynMode`]
     const DYN: DynMode;
     #[doc(hidden)]
     type Settings: Settings;
@@ -753,16 +795,10 @@ use settings::Settings;
 
 /// Digital frequency-locked loop used to generate a 48 MHz clock
 ///
-/// The DFLL generates a 48 MHz clock in two different possible modes. In
-/// open-loop mode, it generates the output clock from an internal oscillator,
-/// while in closed-loop mode, it multiplies a low-frequency reference clock.
-///
-/// The type parameter `I` represents an optional [`Id` type](super#id-types)
-/// for the reference clock. When the DFLL is in open-loop mode, there is no
-/// reference clock, so `I` is [`NoneT`]. This is the default value for `I`.
-/// Alternatively, when the DFLL is in closed-loop mode, `I` is one of the
-/// [`DfllSourceId`] types. The [`OptionalDfllSourceId`] trait unifies these two
-/// possibilities and is an expression of the [`OptionalKind`] pattern.
+/// The DFLL generates a 48 MHz clock in two different possible [`Mode`]s. In
+/// [`OpenLoop`] `Mode`, it generates the output clock from an internal
+/// oscillator, while in the two closed-loop `Mode`s, it multiplies a
+/// low-frequency [`Reference`] clock.
 ///
 /// On its own, the `Dfll` type does not represent the enabled DFLL. Instead, it
 /// must first be wrapped with [`Enabled`], which implements compile-time safety
@@ -777,7 +813,6 @@ use settings::Settings;
 /// configuring and using the `Dfll`.
 ///
 /// [`enable`]: Dfll::enable
-/// [`OptionalKind`]: crate::typelevel#optionalkind-trait-pattern
 pub struct Dfll<M: Mode = OpenLoop> {
     token: DfllToken,
     settings: settings::Minimum<M::Settings>,
@@ -1108,23 +1143,23 @@ where
     M: Mode,
     N: Default,
 {
-    /// Change the [`OptionalDfllSourceId`] of the [`Dfll`] while it remains enabled
+    /// Change the [`Dfll`] [`Mode`] while it remains enabled
     ///
     /// Take ownership of an [`EnabledDfll`] and convert it to use a new
-    /// [`OptionalDfllSourceId`]. This both requires the new [`Resource`] type
-    /// and returns the old `Resource`. Users can also supply a closure to alter
-    /// the [`Dfll`] settings before they are applied. The closure takes
-    /// `&mut Dfll<J>` as its input, so it can only modify those settings with a
+    /// [`Mode`]. This requires an instance of the new `Mode` type and returns
+    /// an instance of the old `Mode` type. Users can also supply a closure to
+    /// alter the [`Dfll`] settings before they are applied. The closure takes
+    /// `&mut Dfll<T>` as its input, so it can only modify those settings with a
     /// `set_` method.
     ///
     /// See the [`dfll` module documentation] for more details on why and how
     /// this function would be used.
     ///
     /// [`dfll` module documentation]: super::dfll#reconfiguring-an-enableddfll
-    pub fn into_mode<J, F>(self, mode: J, f: F) -> (EnabledDfll<J, N>, M)
+    pub fn into_mode<T, F>(self, mode: T, f: F) -> (EnabledDfll<T, N>, M)
     where
-        J: Mode,
-        F: FnOnce(&mut Dfll<J>),
+        T: Mode,
+        F: FnOnce(&mut Dfll<T>),
     {
         let old = M::from_settings(self.0.settings.mode);
         let mut dfll = Dfll::from_mode(self.0.token, mode);
