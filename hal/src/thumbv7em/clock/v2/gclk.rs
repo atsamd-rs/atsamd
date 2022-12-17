@@ -1126,7 +1126,7 @@ where
     /// Freeing a [`Gclk`] returns the corresponding [`GclkToken`] and
     /// [`Decrement`]s the [`Source`]'s [`Enabled`] counter.
     #[inline]
-    pub fn free<S>(self, source: S) -> (GclkToken<G>, S::Dec)
+    pub fn free_source<S>(self, source: S) -> (GclkToken<G>, S::Dec)
     where
         S: Source<Id = I> + Decrement,
     {

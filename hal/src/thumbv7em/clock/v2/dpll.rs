@@ -239,8 +239,6 @@
 
 use core::marker::PhantomData;
 
-use paste::paste;
-use seq_macro::seq;
 use typenum::U0;
 
 use crate::pac::oscctrl::dpll::{dpllstatus, dpllsyncbusy, DPLLCTRLA, DPLLCTRLB, DPLLRATIO};
@@ -269,7 +267,7 @@ use super::{Enabled, Source};
 ///
 /// [`DpllToken`]s are no different. Both [`Dpll`]s are disabled at power-on
 /// reset. To use a [`Dpll`], you must first exchange the token for an actual
-/// clock with [`Dpll::from_pclk`], [`Dpll::from_xosc0`], [`Dpll::from_xosc1`],
+/// clock with [`Dpll::from_pclk`], [`Dpll::from_xosc`] or
 /// [`Dpll::from_xosc32k`].
 ///
 /// [`DpllToken`] is generic over the [`DpllId`], where each corresponding token
@@ -709,70 +707,64 @@ where
 
     /// Consume the [`Dpll`], release the [`DpllToken`], and return the [`Pclk`]
     #[inline]
-    pub fn free(self) -> (DpllToken<D>, Pclk<D, G>) {
+    pub fn free_pclk(self) -> (DpllToken<D>, Pclk<D, G>) {
         (self.token, self.reference.pclk)
     }
 }
 
-seq!(N in 0..2 {
-    paste!(
-        impl<D: DpllId> Dpll<D, [<Xosc N Id>]> {
-            /// Create a [`Dpll`] from an [`Xosc`]
-            ///
-            /// Note that, when the [`Dpll`] is driven by an [`Xosc`], there is an extra
-            /// clock divider between the `Xosc` output and the input to the actual
-            /// phase-locked loop. This allows the [`Xosc`] frequency to be above the
-            /// maximum DPLL input frequency of 3.2 MHz.
-            ///
-            /// The `Xosc` pre-divider can be set to any *even* value in the range
-            /// `[2, 4096]`. It defaults to the minimum value of 2, but it can be
-            /// changed with the [`Dpll::prediv`] method.
-            ///
-            /// Creating a [`Dpll`] does not modify any of the hardware registers. It
-            /// only creates a struct to track the DPLL configuration and [`Increment`]s
-            /// the [`Source`] [`Enabled`] counter.
-            ///
-            /// The configuration data is stored until the user calls [`enable`]. At
-            /// that point, all of the registers are written according to the
-            /// initialization procedures specified in the datasheet, and an
-            /// [`EnabledDpll`] is returned. The `Dpll` is not active or useful until
-            /// that point.
-            ///
-            /// [`Xosc`]: super::xosc::Xosc
-            /// [`enable`]: Dpll::enable
-            #[inline]
-            pub fn from_xosc~N<S>(token: DpllToken<D>, source: S) -> (Self, S::Inc)
-            where
-                S: Source<Id = [<Xosc N Id>]> + Increment,
-            {
-                let reference = settings::Xosc {
-                    freq: source.freq(),
-                    prediv: 2,
-                };
-                let dpll = Dpll::new(token, reference);
-                (dpll, source.inc())
-            }
-
-            /// Consume the [`Dpll`], release the [`DpllToken`], and [`Decrement`] the
-            /// [`EnabledXosc`] consumer count
-            ///
-            /// [`EnabledXosc`]: super::xosc::EnabledXosc
-            #[inline]
-            pub fn free<S>(self, source: S) -> (DpllToken<D>, S::Dec)
-            where
-                S: Source<Id = [<Xosc N Id>]> + Decrement,
-            {
-                (self.token, source.dec())
-            }
-        }
-    );
-});
-
-impl<D: DpllId, X: XoscId + DpllSourceId> Dpll<D, X>
+impl<D, X> Dpll<D, X>
 where
     D: DpllId,
     X: XoscId + DpllSourceId<Reference<D> = settings::Xosc>,
 {
+    /// Create a [`Dpll`] from an [`Xosc`]
+    ///
+    /// Note that, when the [`Dpll`] is driven by an [`Xosc`], there is an extra
+    /// clock divider between the `Xosc` output and the input to the actual
+    /// phase-locked loop. This allows the [`Xosc`] frequency to be above the
+    /// maximum DPLL input frequency of 3.2 MHz.
+    ///
+    /// The `Xosc` pre-divider can be set to any *even* value in the range
+    /// `[2, 4096]`. It defaults to the minimum value of 2, but it can be
+    /// changed with the [`Dpll::prediv`] method.
+    ///
+    /// Creating a [`Dpll`] does not modify any of the hardware registers. It
+    /// only creates a struct to track the DPLL configuration and [`Increment`]s
+    /// the [`Source`] [`Enabled`] counter.
+    ///
+    /// The configuration data is stored until the user calls [`enable`]. At
+    /// that point, all of the registers are written according to the
+    /// initialization procedures specified in the datasheet, and an
+    /// [`EnabledDpll`] is returned. The `Dpll` is not active or useful until
+    /// that point.
+    ///
+    /// [`Xosc`]: super::xosc::Xosc
+    /// [`enable`]: Dpll::enable
+    #[inline]
+    pub fn from_xosc<S>(token: DpllToken<D>, source: S) -> (Self, S::Inc)
+    where
+        S: Source<Id = X> + Increment,
+    {
+        let reference = settings::Xosc {
+            freq: source.freq(),
+            prediv: 2,
+        };
+        let dpll = Dpll::new(token, reference);
+        (dpll, source.inc())
+    }
+
+    /// Consume the [`Dpll`], release the [`DpllToken`], and [`Decrement`] the
+    /// [`EnabledXosc`] consumer count
+    ///
+    /// [`EnabledXosc`]: super::xosc::EnabledXosc
+    #[inline]
+    pub fn free_xosc<S>(self, source: S) -> (DpllToken<D>, S::Dec)
+    where
+        S: Source<Id = X> + Decrement,
+    {
+        (self.token, source.dec())
+    }
+
     /// Set the [`Xosc`] pre-division factor
     ///
     /// The [`Xosc`] output frequency is divided down before it enters the
@@ -782,6 +774,9 @@ where
     /// [`Xosc`]: super::xosc::Xosc
     #[inline]
     pub fn prediv(mut self, prediv: u16) -> Self {
+        if prediv % 2 != 0 || prediv < 2 || prediv > 4096 {
+            panic!("DPLL prediv must be an even integer in the range [2, 4096]")
+        }
         self.reference.prediv = prediv;
         self
     }
@@ -815,8 +810,8 @@ impl<D: DpllId> Dpll<D, Xosc32kId> {
     /// [`EnabledXosc32k`] consumer count
     ///
     /// [`EnabledXosc32k`]: super::xosc32k::EnabledXosc32k
-    #[inline]
-    pub fn free<S>(self, source: S) -> (DpllToken<D>, S::Dec)
+    /// d`] consumer count
+    pub fn free_xosc32k<S>(self, source: S) -> (DpllToken<D>, S::Dec)
     where
         S: Source<Id = Xosc32kId> + Decrement,
     {
