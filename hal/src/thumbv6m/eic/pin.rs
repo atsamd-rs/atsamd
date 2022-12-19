@@ -1,7 +1,7 @@
 #[cfg(feature = "unproven")]
 use crate::ehal::digital::v2::InputPin;
 use crate::gpio::{
-    self, pin::*, AnyPin, FloatingInterrupt, PinId, PinMode, PullDownInterrupt, PullUpInterrupt,
+    self, pin::*, AnyPin, FloatingInterrupt, PinMode, PullDownInterrupt, PullUpInterrupt,
 };
 use crate::pac;
 
