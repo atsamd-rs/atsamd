@@ -288,9 +288,9 @@
 //! - All of the [`AhbClks`]
 //! - Some of the [`ApbClks`]
 //! - The 48 MHz [`Dfll`], running in open-loop mode, represented as as
-//!   `Enabled<Dfll, U1>`. `N = U1` here because [`Gclk0`] consumes
-//!   it. See [above](self#tracking-n-at-compile-time-for-1n-clocks) for details
-//!   on [`Enabled<T, N>`].
+//!   `Enabled<Dfll, U1>`. `N = U1` here because [`Gclk0`] consumes it. See
+//!   [above](self#tracking-n-at-compile-time-for-1n-clocks) for details on
+//!   [`Enabled<T, N>`].
 //! - [`Gclk0`], sourced by the `Dfll` and represented as
 //!   `Enabled<Gclk0<DfllId>, U1>`. Note the use of [`DfllId`] as an [`Id`
 //!   type](self#id-types) here. Although `Gclk0` is not consumed by any clock
