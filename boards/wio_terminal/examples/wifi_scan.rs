@@ -45,7 +45,7 @@ fn main() -> ! {
             &mut clocks,
             peripherals.SERCOM7,
             &mut peripherals.MCLK,
-            24.mhz(),
+            58.mhz(),
             &mut delay,
         )
         .unwrap();
