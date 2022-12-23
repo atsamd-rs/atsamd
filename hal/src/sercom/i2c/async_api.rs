@@ -74,6 +74,38 @@ where
 pub type I2cFutureDma<C, I> =
     I2cFuture<C, crate::pac::Interrupt, crate::dmac::Channel<I, crate::dmac::ReadyFuture>>;
 
+impl<C, N, S, D> I2cFuture<C, N, D>
+where
+    C: AnyConfig<Sercom = S>,
+    S: Sercom,
+    N: InterruptNumber,
+{
+    async fn wait_flags(&mut self, flags_to_wait: Flags) {
+        core::future::poll_fn(|cx| {
+            // Scope maybe_pending so we don't forget to re-poll the register later down.
+            {
+                let maybe_pending = self.i2c.config.as_ref().registers.read_flags();
+                if flags_to_wait.intersects(maybe_pending) {
+                    return Poll::Ready(());
+                }
+            }
+
+            self.i2c.disable_interrupts(Flags::all());
+            // By convention, I2C uses the sercom's RX waker.
+            S::rx_waker().register(cx.waker());
+            self.i2c.enable_interrupts(flags_to_wait);
+            let maybe_pending = self.i2c.config.as_ref().registers.read_flags();
+
+            if !flags_to_wait.intersects(maybe_pending) {
+                Poll::Pending
+            } else {
+                Poll::Ready(())
+            }
+        })
+        .await;
+    }
+}
+
 impl<C, N, S> I2cFuture<C, N, NoneT>
 where
     C: AnyConfig<Sercom = S>,
@@ -166,31 +198,6 @@ where
     async fn read_one(&mut self) -> u8 {
         self.wait_flags(Flags::SB | Flags::ERROR).await;
         self.i2c.config.as_mut().registers.read_one()
-    }
-
-    async fn wait_flags(&mut self, flags_to_wait: Flags) {
-        core::future::poll_fn(|cx| {
-            // Scope maybe_pending so we don't forget to re-poll the register later down.
-            {
-                let maybe_pending = self.i2c.config.as_ref().registers.read_flags();
-                if flags_to_wait.intersects(maybe_pending) {
-                    return Poll::Ready(());
-                }
-            }
-
-            self.i2c.disable_interrupts(Flags::all());
-            // By convention, I2C uses the sercom's RX waker.
-            S::rx_waker().register(cx.waker());
-            self.i2c.enable_interrupts(flags_to_wait);
-            let maybe_pending = self.i2c.config.as_ref().registers.read_flags();
-
-            if !flags_to_wait.intersects(maybe_pending) {
-                Poll::Pending
-            } else {
-                Poll::Ready(())
-            }
-        })
-        .await;
     }
 }
 
@@ -416,6 +423,7 @@ mod dma {
             read_buf: &mut [u8],
         ) -> Result<(), i2c::Error> {
             self.write(addr, write_buf).await?;
+            // TODO may need some sort of delay here??
             self.read(addr, read_buf).await?;
             Ok(())
         }
