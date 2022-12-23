@@ -11,7 +11,7 @@ use eg::mono_font::{ascii::FONT_6X12, MonoTextStyle};
 use eg::pixelcolor::Rgb565;
 use eg::prelude::*;
 use eg::primitives::{PrimitiveStyleBuilder, Rectangle};
-use eg::text::Text;
+use eg::text::{Baseline, Text};
 
 use cortex_m::peripheral::NVIC;
 
@@ -153,10 +153,15 @@ impl<'a> Terminal<'a> {
 
         if c != '\n' {
             let mut buf = [0u8; 8];
-            Text::new(c.encode_utf8(&mut buf), self.cursor, self.text_style)
-                .draw(&mut self.display)
-                .ok()
-                .unwrap();
+            Text::with_baseline(
+                c.encode_utf8(&mut buf),
+                self.cursor,
+                self.text_style,
+                Baseline::Top,
+            )
+            .draw(&mut self.display)
+            .ok()
+            .unwrap();
 
             self.cursor.x += (FONT_6X12.character_size.width + FONT_6X12.character_spacing) as i32;
         }

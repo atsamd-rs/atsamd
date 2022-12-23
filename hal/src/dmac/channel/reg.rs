@@ -238,12 +238,22 @@ macro_rules! reg_proxy {
             {
                 #[inline]
                 #[allow(dead_code)]
-                pub fn write_bit(&mut self, bit: bool) {
+                pub fn set_bit(&mut self) {
                     // SAFETY: This is safe because we are only writing
                     // to the bit controlled by the channel.
-                    self.dmac
-                        .[< $reg:lower >]
-                        .modify(|r, w| unsafe { w.bits(r.bits() & ((bit as u32) << Id::U8)) });
+                    unsafe {
+                        self.dmac.[< $reg:lower >].modify(|r, w| w.bits(r.bits() | (1 << Id::U8)));
+                    }
+                }
+
+                #[inline]
+                #[allow(dead_code)]
+                pub fn clear_bit(&mut self) {
+                    // SAFETY: This is safe because we are only writing
+                    // to the bit controlled by the channel.
+                    unsafe {
+                        self.dmac.[< $reg:lower >].modify(|r, w| w.bits(r.bits() & !(1 << Id::U8)));
+                    }
                 }
             }
         }

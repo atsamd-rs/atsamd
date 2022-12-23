@@ -1,7 +1,12 @@
 # Unreleased Changes
 
+- Fix `ExternalInterrupt` implementations for `eic`
+- Fix for incorrect feature gates for pins of `samd21gl` chip
+- Fix bug in `dmac` where software trigger would not work
+- Correct thumbv6 DFLL multiplier to fix USB clock correction
 - Fix failing `bsp_pins!` invocation with no aliases (#605 fixes #599)
 - Add Advanced Encryption Standard (AES) peripheral support including RustCrypto compatible backend
+- Add embedded-hal `InputPin` trait to EIC pins
 
 # v0.15.1
 

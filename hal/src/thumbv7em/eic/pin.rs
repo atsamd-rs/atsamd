@@ -1,5 +1,7 @@
+#[cfg(feature = "unproven")]
+use crate::ehal::digital::v2::InputPin;
 use crate::gpio::{
-    self, pin::*, AnyPin, FloatingInterrupt, PinId, PinMode, PullDownInterrupt, PullUpInterrupt,
+    self, pin::*, AnyPin, FloatingInterrupt, PinMode, PullDownInterrupt, PullUpInterrupt,
 };
 use crate::pac;
 
@@ -146,6 +148,29 @@ crate::paste::item! {
         }
     }
 
+    impl<GPIO: AnyPin> ExternalInterrupt for [<$PadType $num>]<GPIO> {
+        fn id(&self) -> ExternalInterruptID {
+            $num
+        }
+    }
+
+    #[cfg(feature = "unproven")]
+    impl<GPIO, C> InputPin for [<$PadType $num>]<GPIO>
+    where
+        GPIO: AnyPin<Mode = Interrupt<C>>,
+        C: InterruptConfig,
+    {
+        type Error = core::convert::Infallible;
+        #[inline]
+        fn is_high(&self) -> Result<bool, Self::Error> {
+            self._pin.is_high()
+        }
+        #[inline]
+        fn is_low(&self) -> Result<bool, Self::Error> {
+            self._pin.is_low()
+        }
+    }
+
     $(
         $(#[$attr])*
         impl<M: PinMode> EicPin for Pin<gpio::$PinType, M> {
@@ -167,7 +192,8 @@ crate::paste::item! {
         }
 
         $(#[$attr])*
-        impl ExternalInterrupt for gpio::$PinType {
+        impl<M: PinMode> ExternalInterrupt for Pin<gpio::$PinType, M>
+        {
             fn id(&self) -> ExternalInterruptID {
                 $num
             }
@@ -176,17 +202,6 @@ crate::paste::item! {
 }
 
     };
-}
-
-impl<I, M> ExternalInterrupt for Pin<I, M>
-where
-    I: PinId,
-    M: PinMode,
-    Pin<I, M>: ExternalInterrupt,
-{
-    fn id(&self) -> ExternalInterruptID {
-        Pin::<I, M>::id(self)
-    }
 }
 
 ei!(ExtInt[0] {

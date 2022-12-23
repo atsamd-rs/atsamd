@@ -11,7 +11,7 @@ use eg::mono_font::{ascii::FONT_9X15, MonoTextStyle};
 use eg::pixelcolor::Rgb565;
 use eg::prelude::*;
 use eg::primitives::{PrimitiveStyleBuilder, Rectangle};
-use eg::text::Text;
+use eg::text::{Baseline, Text};
 
 use wio::entry;
 use wio::hal::clock::GenericClockController;
@@ -60,7 +60,7 @@ fn main() -> ! {
             &mut clocks,
             peripherals.SERCOM7,
             &mut peripherals.MCLK,
-            24.mhz(),
+            58.mhz(),
             &mut delay,
         )
         .unwrap();
@@ -80,7 +80,7 @@ fn main() -> ! {
                     Ok(size) => writeln!(data, "{}Mb", size / 1024 / 1024).unwrap(),
                     Err(e) => writeln!(data, "Err: {:?}", e).unwrap(),
                 }
-                Text::new(data.as_str(), Point::new(4, 2), style)
+                Text::with_baseline(data.as_str(), Point::new(4, 2), style, Baseline::Top)
                     .draw(&mut display)
                     .ok()
                     .unwrap();
@@ -88,7 +88,7 @@ fn main() -> ! {
                 if let Err(e) = print_contents(&mut cont, &mut display) {
                     let mut data = String::<U128>::new();
                     writeln!(data, "Err: {:?}", e).unwrap();
-                    Text::new(data.as_str(), Point::new(4, 20), style)
+                    Text::with_baseline(data.as_str(), Point::new(4, 20), style, Baseline::Top)
                         .draw(&mut display)
                         .ok()
                         .unwrap();
@@ -97,7 +97,7 @@ fn main() -> ! {
             Err(e) => {
                 let mut data = String::<U128>::new();
                 writeln!(data, "Error!: {:?}", e).unwrap();
-                Text::new(data.as_str(), Point::new(4, 2), style)
+                Text::with_baseline(data.as_str(), Point::new(4, 2), style, Baseline::Top)
                     .draw(&mut display)
                     .ok()
                     .unwrap();
@@ -130,10 +130,15 @@ fn print_contents(
     let out = cont.iterate_dir(&volume, &dir, |ent| {
         let mut data = String::<U128>::new();
         writeln!(data, "{} - {:?}", ent.name, ent.attributes).unwrap();
-        Text::new(data.as_str(), Point::new(4, 20 + count * 16), style)
-            .draw(lcd)
-            .ok()
-            .unwrap();
+        Text::with_baseline(
+            data.as_str(),
+            Point::new(4, 20 + count * 16),
+            style,
+            Baseline::Top,
+        )
+        .draw(lcd)
+        .ok()
+        .unwrap();
         count += 1;
     });
     cont.close_dir(&volume, dir);

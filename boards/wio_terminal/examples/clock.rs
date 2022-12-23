@@ -15,7 +15,7 @@ use eg::mono_font::{ascii::FONT_10X20, MonoTextStyle};
 use eg::pixelcolor::Rgb565;
 use eg::prelude::*;
 use eg::primitives::{PrimitiveStyleBuilder, Rectangle};
-use eg::text::Text;
+use eg::text::{Baseline, Text};
 
 use cortex_m::interrupt::free as disable_interrupts;
 use cortex_m::peripheral::NVIC;
@@ -137,7 +137,7 @@ fn main() -> ! {
             .ok()
             .unwrap();
 
-        Text::new(data.as_str(), Point::new(55, 80), style)
+        Text::with_baseline(data.as_str(), Point::new(55, 80), style, Baseline::Top)
             .draw(&mut display)
             .ok()
             .unwrap();

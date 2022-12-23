@@ -8,7 +8,7 @@ pub use hal::ehal;
 pub use hal::pac;
 
 use hal::clock::GenericClockController;
-use hal::sercom::v2::{spi, uart, Sercom1, Sercom5};
+use hal::sercom::v2::{spi, uart, Sercom1, Sercom2, Sercom5};
 use hal::sercom::I2CMaster4;
 use hal::time::Hertz;
 
@@ -136,18 +136,30 @@ hal::bsp_pins!(
     PA12 {
         /// SPI (Lefacy ICSP) 1 / NINA MOSI
         name: nina_mosi
+        aliases: {
+            AlternateC: NinaMosi
+        }
     }
     PA13 {
         /// SPI (Lefacy ICSP) 2 / NINA MISO
         name: nina_miso
+        aliases: {
+            AlternateC: NinaMiso
+        }
     }
     PA14 {
         /// SPI (Lefacy ICSP) 3 / NINA CS
         name: nina_cs
+        aliases: {
+            AlternateC: NinaCs
+        }
     }
     PA15 {
         /// SPI (Lefacy ICSP) 4 / NINA SCK
         name: nina_sck
+        aliases: {
+            AlternateC: NinaSck
+        }
     }
     PA27 {
         /// NINA GPIO0
@@ -156,10 +168,16 @@ hal::bsp_pins!(
     PA08 {
         /// NINA RESET_N
         name: nina_resetn
+        aliases: {
+            PushPullOutput: NinaResetN
+        }
     }
     PA28 {
         /// NINA ACK
         name: nina_ack
+        aliases: {
+            FloatingInput: NinaAck
+        }
     }
     PA22 {
         /// SerialNina 29: PWM, TC
@@ -277,6 +295,39 @@ pub fn spi_master(
     let pads = spi::Pads::default().data_in(miso).data_out(mosi).sclk(sclk);
 
     spi::Config::new(pm, sercom1, pads, clock.freq())
+        .baud(baud)
+        .spi_mode(spi::MODE_0)
+        .enable()
+}
+
+// SPI pads for the Nina periphral
+///
+/// You can use these pads with other, user-defined [`spi::Config`]urations.
+pub type NinaSpiPads = spi::Pads<Sercom2, NinaMiso, NinaMosi, NinaSck>;
+
+/// SPI master for the Nina peripheral
+///
+/// This type implements [`FullDuplex<u8>`](ehal::spi::FullDuplex).
+pub type NinaSpi = spi::Spi<spi::Config<NinaSpiPads>, spi::Duplex>;
+
+/// Convenience for setting up the Nina peripheral.
+/// This powers up SERCOM2 and configures it for use as an
+/// SPI Master in SPI Mode 0.
+pub fn nina_spi_master(
+    clocks: &mut GenericClockController,
+    baud: impl Into<Hertz>,
+    sercom2: pac::SERCOM2,
+    pm: &mut pac::PM,
+    sck: impl Into<NinaSck>,
+    mosi: impl Into<NinaMosi>,
+    miso: impl Into<NinaMiso>,
+) -> NinaSpi {
+    let gclk0 = clocks.gclk0();
+    let clock = clocks.sercom2_core(&gclk0).unwrap();
+    let (miso, mosi, sclk) = (miso.into(), mosi.into(), sck.into());
+    let pads = spi::Pads::default().data_in(miso).data_out(mosi).sclk(sclk);
+
+    spi::Config::new(pm, sercom2, pads, clock.freq())
         .baud(baud)
         .spi_mode(spi::MODE_0)
         .enable()

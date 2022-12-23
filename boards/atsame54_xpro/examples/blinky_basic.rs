@@ -20,7 +20,7 @@ use hal::watchdog::{Watchdog, WatchdogTimeout};
 fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
     let core = CorePeripherals::take().unwrap();
-    let mut clocks = GenericClockController::with_internal_32kosc(
+    let mut clocks = GenericClockController::with_external_32kosc(
         peripherals.GCLK,
         &mut peripherals.MCLK,
         &mut peripherals.OSC32KCTRL,
@@ -30,8 +30,8 @@ fn main() -> ! {
     let mut delay = Delay::new(core.SYST, &mut clocks);
     delay.delay_ms(400u16);
 
-    let mut pins = bsp::Pins::new(peripherals.PORT);
-    let mut led = pins.led.into_open_drain_output(&mut pins.port);
+    let pins = bsp::Pins::new(peripherals.PORT);
+    let mut led = bsp::pin_alias!(pins.led).into_push_pull_output();
 
     let mut wdt = Watchdog::new(peripherals.WDT);
     wdt.start(WatchdogTimeout::Cycles256 as u8);
