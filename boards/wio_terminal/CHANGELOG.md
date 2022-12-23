@@ -1,6 +1,10 @@
 # Unreleased
 
 - Fix display frequency in examples that did not work
+- Fix display offsets in buttons example
+- Fix buttons by re-enabling debounce code
+- Fix various documentation and clippy warnings
+- Fix Wi-Fi by delaying UART init until device reset
 
 # v0.6.1
 
