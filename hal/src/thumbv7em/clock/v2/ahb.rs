@@ -300,7 +300,6 @@ macro_rules! define_ahb_types {
                 struct AhbMask: u32 {
                     $(
                         $( #[$( $cfg )+] )?
-                        #[allow(missing_docs)]
                         const [<$Type:upper>] = 1 << $BIT;
                     )+
                 }
@@ -317,7 +316,6 @@ macro_rules! define_ahb_types {
             pub enum DynAhbId {
                 $(
                     $( #[$( $cfg )+] )?
-                    #[allow(missing_docs)]
                     $Type = $BIT,
                 )+
             }
@@ -344,7 +342,6 @@ macro_rules! define_ahb_types {
             /// Set of all [`AhbClk`]s
             ///
             /// All [`AhbClk`]s are enabled at power-on reset.
-            #[allow(missing_docs)]
             pub struct AhbClks {
                 $(
                     $( #[$( $cfg )+] )?

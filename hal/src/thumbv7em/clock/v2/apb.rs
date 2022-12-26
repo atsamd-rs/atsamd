@@ -269,7 +269,6 @@ impl Apb {
 ///
 /// Each variant is a [`bitflags`] struct with a binary representation exactly
 /// matching the corresponding APB `MASK` register.
-#[allow(missing_docs)]
 enum ApbMask {
     A(ApbAMask),
     B(ApbBMask),
@@ -300,7 +299,6 @@ macro_rules! define_apb_types {
             $(
                 $(
                     $( #[$( $cfg )+] )?
-                    #[allow(missing_docs)]
                     $Type,
                 )+
             )+
@@ -328,7 +326,6 @@ macro_rules! define_apb_types {
                     struct [<Apb $Reg Mask>]: u32 {
                         $(
                             $( #[$( $cfg )+] )?
-                            #[allow(missing_docs)]
                             const [<$Type:upper>] = 1 << $BIT;
                         )+
                     }

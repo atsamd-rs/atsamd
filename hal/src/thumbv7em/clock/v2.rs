@@ -1012,31 +1012,3 @@ impl<T, N: PrivateDecrement> PrivateDecrement for Enabled<T, N> {
         Enabled(self.0, self.1.dec())
     }
 }
-
-#[allow(dead_code)]
-fn test() {
-    use crate::{
-        clock::v2::{dpll::Dpll, pclk::Pclk, xosc::Xosc},
-        gpio::Pins,
-        pac::Peripherals,
-        time::U32Ext,
-    };
-
-    let mut pac = Peripherals::take().unwrap();
-    let (mut buses, clocks, tokens) = clock_system_at_reset(
-        pac.OSCCTRL,
-        pac.OSC32KCTRL,
-        pac.GCLK,
-        pac.MCLK,
-        &mut pac.NVMCTRL,
-    );
-    let pins = Pins::new(pac.PORT);
-    let xosc0 = Xosc::from_crystal(tokens.xosc0, pins.pa14, pins.pa15, 8.mhz()).enable();
-    let (dpll0, _xosc0) = Dpll::from_xosc(tokens.dpll0, xosc0);
-    let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
-    let (gclk0, dfll, _dpll0) = clocks.gclk0.swap_sources(clocks.dfll, dpll0);
-    let _dfll_token = dfll.disable().free();
-    let _apb_sercom0 = buses.apb.enable(tokens.apbs.sercom0);
-    let (_pclk_sercom0, gclk0) = Pclk::enable(tokens.pclks.sercom0, gclk0);
-    let (_gclk0, _gclk0_out) = gclk0.enable_gclk_out(pins.pa30);
-}
