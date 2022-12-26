@@ -18,6 +18,10 @@ optional = true
 version = "0.14"
 default-features = false
 
+[dependencies.panic-semihosting]
+version = "0.6.0"
+optional = true
+
 [dev-dependencies]
 panic-halt = "0.2"
 
@@ -26,7 +30,7 @@ panic-halt = "0.2"
 default = ["rt", "atsamd-hal/samd21e"]
 rt = ["cortex-m-rt", "atsamd-hal/samd21e-rt"]
 unproven = ["atsamd-hal/unproven"]
-use_semihosting = []
+use_semihosting = ["panic-semihosting"]
 
 # for cargo flash
 [package.metadata]

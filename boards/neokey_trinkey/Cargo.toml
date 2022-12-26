@@ -10,11 +10,14 @@ repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
 edition = "2021"
 
-[dependencies]
+[dependencies.panic-semihosting]
+version = "0.6"
+optional = true
 
 [dependencies.cortex-m-rt]
 version = "0.7"
 optional = true
+
 
 [dependencies.atsamd-hal]
 version = "0.14"
@@ -44,7 +47,7 @@ default = ["rt", "atsamd-hal/samd21e"]
 leds = ["ws2812-timer-delay", "smart-leds"]
 rt = ["cortex-m-rt", "atsamd-hal/samd21e-rt"]
 unproven = ["atsamd-hal/unproven"]
-use_semihosting = []
+use_semihosting = ["panic-semihosting"]
 usb = ["atsamd-hal/usb", "usb-device"]
 
 [[example]]

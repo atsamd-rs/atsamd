@@ -2,35 +2,35 @@
   "boards": {
     "arduino_mkr1000": {
       "tier": 2,
-      "build": "cargo build --examples --features=unproven,usb"
+      "build": "cargo build --examples --all-features"
     },
     "arduino_mkrvidor4000": {
       "tier": 2,
-      "build": "cargo build --examples --features=unproven,usb"
+      "build": "cargo build --examples --all-features"
     },
     "arduino_mkrzero": {
       "tier": 2,
-      "build": "cargo build --examples --features=unproven,usb"
+      "build": "cargo build --examples --all-features"
     },
     "arduino_nano33iot": {
       "tier": 2,
-      "build": "cargo build --examples --features=unproven,usb"
+      "build": "cargo build --examples --all-features"
     },
     "atsame54_xpro": {
       "tier": 2,
-      "build": "cargo build --examples --features=unproven,usb"
+      "build": "cargo build --examples --all-features"
     },
     "circuit_playground_express": {
       "tier": 2,
-      "build": "cargo build --examples --features=unproven,usb"
+      "build": "cargo build --examples --all-features"
     },
     "edgebadge": {
       "tier": 2,
-      "build": "cargo build --examples --features=unproven,usb"
+      "build": "cargo build --examples --all-features"
     },
     "feather_m0": {
       "tier": 1,
-      "build": "cargo build --examples --features=unproven,dma,usb,rtic,sdmmc,adalogger"
+      "build": "cargo build --examples"
     },
     "feather_m4": {
       "tier": 1,
@@ -38,71 +38,71 @@
     },
     "gemma_m0": {
       "tier": 2,
-      "build": "cargo build --examples --features=unproven"
+      "build": "cargo build --examples --all-features"
     },
     "grand_central_m4": {
       "tier": 2,
-      "build": "cargo build --examples --features=unproven,usb"
+      "build": "cargo build --examples --all-features"
     },
     "itsybitsy_m0": {
       "tier": 2,
-      "build": "cargo build --examples --features=unproven,usb,dma,sdmmc,rtic"
+      "build": "cargo build --examples --all-features"
     },
     "itsybitsy_m4": {
       "tier": 2,
-      "build": "cargo build --examples --features=unproven,usb,use_rtt"
+      "build": "cargo build --examples --all-features"
     },
     "metro_m0": {
       "tier": 1,
-      "build": "cargo build --examples --features=unproven,usb,rtic"
+      "build": "cargo build --examples --all-features"
     },
     "metro_m4": {
       "tier": 1,
-      "build": "cargo build --examples --features=unproven,usb"
+      "build": "cargo build --examples --all-features"
     },
     "neo_trinkey": {
       "tier": 2,
-      "build": "cargo build --examples --features=leds,unproven,usb"
+      "build": "cargo build --examples --all-features"
     },
     "neokey_trinkey": {
       "tier": 2,
-      "build": "cargo build --examples --features=leds,unproven,usb"
+      "build": "cargo build --examples --all-features"
     },
     "p1am_100": {
       "tier": 2,
-      "build": "cargo build --examples --features=unproven,usb"
+      "build": "cargo build --examples --all-features"
     },
     "pfza_proto1": {
       "tier": 2,
-      "build": "cargo build --examples --features=unproven"
+      "build": "cargo build --examples --all-features"
     },
     "pygamer": {
       "tier": 2,
-      "build": "cargo build --examples --features=unproven,usb,math"
+      "build": "cargo build --examples --all-features"
     },
     "pyportal": {
       "tier": 2,
-      "build": "cargo build --examples --features=unproven"
+      "build": "cargo build --examples --all-features"
     },
     "samd11_bare": {
       "tier": 1,
-      "build": "cargo build --release --examples --features=unproven,rt,use_semihosting"
+      "build": "cargo build --release --examples --all-features"
     },
     "samd21_mini": {
       "tier": 2,
-      "build": "cargo build --examples --features=unproven"
+      "build": "cargo build --examples --all-features"
     },
     "serpente": {
       "tier": 2,
-      "build": "cargo build --examples --features=unproven"
+      "build": "cargo build --examples --all-features"
     },
     "sodaq_one": {
       "tier": 2,
-      "build": "cargo build --examples --features=unproven"
+      "build": "cargo build --examples --all-features"
     },
     "sodaq_sara_aff": {
       "tier": 2,
-      "build": "cargo build --examples --features=unproven"
+      "build": "cargo build --examples --all-features"
     },
     "trellis_m4": {
       "tier": 2,
@@ -110,27 +110,27 @@
     },
     "trinket_m0": {
       "tier": 2,
-      "build": "cargo build --examples --features=unproven,usb"
+      "build": "cargo build --examples --all-features"
     },
     "wio_lite_mg126": {
       "tier": 2,
-      "build": "cargo build --examples --features=unproven,usb"
+      "build": "cargo build --examples --all-features"
     },
     "wio_lite_w600": {
       "tier": 2,
-      "build": "cargo build --examples --features=unproven,usb"
+      "build": "cargo build --examples --all-features"
     },
     "wio_terminal": {
       "tier": 1,
-      "build": "cargo build --examples --features=usb"
+      "build": "cargo build --examples --all-features"
     },
     "xiao_m0": {
       "tier": 2,
-      "build": "cargo build --examples --features=unproven,usb"
+      "build": "cargo build --examples --all-features"
     },
     "qt_py_m0": {
       "tier": 2,
-      "build": "cargo build --examples --features=unproven,usb"
+      "build": "cargo build --examples --all-features"
     }
   },
   "hal_doc_variants": {

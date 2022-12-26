@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 # Unreleased
+- Fixed the `use_semihosting` feature of the BSP
 
 # v0.2.0
 
