@@ -1,0 +1,38 @@
+name: Build HAL
+on: [push, pull_request]
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+    - name: Checkout sources
+      uses: actions/checkout@v2
+    - id: set-matrix
+      uses: ./.github/actions/prepare-HAL-matrix
+
+
+  build_hal:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout sources
+      uses: actions/checkout@v2
+    - name: Install Rust (thumbv6m)
+      run: |
+        rustup set profile minimal
+        rustup target add thumbv6m-none-eabi
+        rustup override set ${{ matrix.toolchain }}
+        rustup component add clippy
+    - name: Install Rust (thumbv7em)
+      run: |
+        rustup set profile minimal
+        rustup target add thumbv7em-none-eabihf
+        rustup override set ${{ matrix.toolchain }}
+        rustup component add clippy
+    - name: Build HAL
+      run: |
+        set -ex
+        cd hal
+        cargo build --features="library"
+
