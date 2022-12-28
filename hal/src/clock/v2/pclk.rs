@@ -68,12 +68,21 @@ use paste::paste;
 use seq_macro::seq;
 
 use crate::pac;
+
+#[cfg(feature = "samd21")]
+use crate::pac::gclk::clkctrl::GEN_A;
+#[cfg(feature = "samd51")]
 use crate::pac::gclk::pchctrl::GEN_A;
+
+#[cfg(feature = "samd21")]
+use crate::pac::gclk::CLKCTRL as CTRL;
+#[cfg(feature = "samd51")]
+use crate::pac::gclk::PCHCTRL as CTRL;
 
 use crate::time::Hertz;
 use crate::typelevel::{Decrement, Increment, Sealed};
 
-use super::gclk::{DynGclkId, GclkId};
+use super::gclk::{with_gclk_max_expr, DynGclkId, GclkId};
 use super::Source;
 
 //==============================================================================
@@ -111,30 +120,48 @@ impl<P: PclkId> PclkToken<P> {
 
     /// Access the corresponding `PCHCTRL` register
     #[inline]
-    fn pchctrl(&self) -> &pac::gclk::PCHCTRL {
+    fn ctrl(&self) -> &CTRL {
         // Safety: Each `PclkToken` only has access to a mutually exclusive set
         // of registers for the corresponding `PclkId`, and we use a shared
         // reference to the register block. See the notes on `Token` types and
         // memory safety in the root of the `clock` module for more details.
-        unsafe { &(*pac::GCLK::PTR).pchctrl[P::DYN as usize] }
+        #[cfg(feature = "samd51")]
+        unsafe {
+            &(*pac::GCLK::PTR).pchctrl[P::DYN as usize]
+        }
+        #[cfg(feature = "samd21")]
+        unsafe {
+            &(*pac::GCLK::PTR).clkctrl
+        }
     }
 
     /// Set the [`Pclk`] source
     #[inline]
-    fn set_source(&mut self, source: DynPclkSourceId) {
-        self.pchctrl().modify(|_, w| w.gen().variant(source.into()));
-    }
-
-    /// Enable the [`Pclk`]
-    #[inline]
-    fn enable(&mut self) {
-        self.pchctrl().modify(|_, w| w.chen().set_bit());
+    fn enable(&mut self, source: DynPclkSourceId) {
+        self.ctrl().write(|w| {
+            w.gen().variant(source.into());
+            #[cfg(feature = "samd21")]
+            {
+                w.clken().set_bit();
+                unsafe { w.id().bits(P::DYN as u8) }
+            }
+            #[cfg(feature = "samd51")]
+            w.chen().set_bit()
+        });
     }
 
     /// Disable the [`Pclk`]
     #[inline]
     fn disable(&mut self) {
-        self.pchctrl().modify(|_, w| w.chen().clear_bit());
+        self.ctrl().modify(|_, w| {
+            #[cfg(feature = "samd21")]
+            {
+                w.clken().clear_bit();
+                unsafe { w.id().bits(P::DYN as u8) }
+            }
+            #[cfg(feature = "samd51")]
+            w.chen().clear_bit()
+        });
     }
 }
 
@@ -161,6 +188,9 @@ pub mod ids {
     pub use crate::sercom::Sercom7;
 
     pub use super::super::dfll::DfllId;
+    //pub struct DfllId;
+    //impl crate::typelevel::Sealed for DfllId {}
+    #[cfg(feature = "samd51")]
     pub use super::super::dpll::{Dpll0Id, Dpll1Id};
 
     pub use super::super::types::{
@@ -184,7 +214,6 @@ pub mod ids {
     #[cfg(feature = "has-i2s")]
     pub use super::super::types::{I2S0, I2S1};
 }
-
 use ids::*;
 
 /// Append the list of all [`PclkId`] types and `snake_case` id names to the
@@ -226,7 +255,9 @@ macro_rules! with_pclk_types_ids {
         $some_macro!(
             $( $args )*
             (DfllId = 0, dfll)
+            #[cfg(feature = "samd51")]
             (Dpll0Id = 1, dpll0)
+            #[cfg(feature = "samd51")]
             (Dpll1Id = 2, dpll1)
             (SlowClk = 3, slow)
             (Eic = 4, eic)
@@ -365,7 +396,7 @@ pub type DynPclkSourceId = DynGclkId;
 /// Convert from [`DynPclkSourceId`] to the equivalent [PAC](crate::pac) type
 impl From<DynPclkSourceId> for GEN_A {
     fn from(source: DynPclkSourceId) -> Self {
-        seq!(N in 0..=11 {
+        with_gclk_max_expr!(N in 0..=max {
             match source {
                 #(
                     DynGclkId::Gclk~N => GEN_A::GCLK~N,
@@ -467,8 +498,7 @@ where
         S: Source<Id = I> + Increment,
     {
         let freq = gclk.freq();
-        token.set_source(I::DYN);
-        token.enable();
+        token.enable(I::DYN);
         let pclk = Pclk::new(token, freq);
         (pclk, gclk.inc())
     }
