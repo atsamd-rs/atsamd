@@ -62,7 +62,7 @@
 //! [`clock::v2::types`]: super::types
 //! [`Sercom`]: crate::sercom::Sercom
 
-use atsamd_hal_macros::hal_macro_helper;
+use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
 
 use core::marker::PhantomData;
 
@@ -70,13 +70,22 @@ use paste::paste;
 use seq_macro::seq;
 
 use crate::pac;
+
+#[hal_cfg(any("clock-d11", "clock-d21"))]
+use crate::pac::gclk::clkctrl::Genselect;
+#[hal_cfg("clock-d5x")]
 use crate::pac::gclk::pchctrl::Genselect;
+
+#[hal_cfg(any("clock-d11", "clock-d21"))]
+use crate::pac::gclk::Clkctrl as Ctrl;
+#[hal_cfg("clock-d5x")]
+use crate::pac::gclk::Pchctrl as Ctrl;
 
 use crate::time::Hertz;
 use crate::typelevel::{Decrement, Increment, Sealed};
 
 use super::Source;
-use super::gclk::{DynGclkId, GclkId};
+use super::gclk::{DynGclkId, GclkId, with_gclk_max_expr};
 
 //==============================================================================
 // PclkToken
@@ -113,31 +122,48 @@ impl<P: PclkId> PclkToken<P> {
 
     /// Access the corresponding `PCHCTRL` register
     #[inline]
-    fn pchctrl(&self) -> &pac::gclk::Pchctrl {
+    fn ctrl(&self) -> &Ctrl {
         // Safety: Each `PclkToken` only has access to a mutually exclusive set
         // of registers for the corresponding `PclkId`, and we use a shared
         // reference to the register block. See the notes on `Token` types and
         // memory safety in the root of the `clock` module for more details.
-        unsafe { (*pac::Gclk::PTR).pchctrl(P::DYN as usize) }
+        #[hal_cfg("clock-d5x")]
+        unsafe {
+            &(*pac::Gclk::PTR).pchctrl(P::DYN as usize)
+        }
+        #[hal_cfg(any("clock-d11", "clock-d21"))]
+        unsafe {
+            &(*pac::Gclk::PTR).clkctrl
+        }
     }
 
     /// Set the [`Pclk`] source
     #[inline]
-    fn set_source(&mut self, source: DynPclkSourceId) {
-        self.pchctrl()
-            .modify(|_, w| w.r#gen().variant(source.into()));
-    }
-
-    /// Enable the [`Pclk`]
-    #[inline]
-    fn enable(&mut self) {
-        self.pchctrl().modify(|_, w| w.chen().set_bit());
+    fn enable(&mut self, source: DynPclkSourceId) {
+        self.ctrl().write(|w| {
+            w.r#gen().variant(source.into());
+            #[hal_cfg(any("clock-d11", "clock-d21"))]
+            {
+                w.clken().set_bit();
+                unsafe { w.id().bits(P::DYN as u8) }
+            }
+            #[hal_cfg("clock-d5x")]
+            w.chen().set_bit()
+        });
     }
 
     /// Disable the [`Pclk`]
     #[inline]
     fn disable(&mut self) {
-        self.pchctrl().modify(|_, w| w.chen().clear_bit());
+        self.ctrl().modify(|_, w| {
+            #[hal_cfg(any("clock-d11", "clock-d21"))]
+            {
+                w.clken().clear_bit();
+                unsafe { w.id().bits(P::DYN as u8) }
+            }
+            #[hal_cfg("clock-d5x")]
+            w.chen().clear_bit()
+        });
     }
 }
 
@@ -165,6 +191,9 @@ pub mod ids {
     pub use crate::sercom::Sercom7;
 
     pub use super::super::dfll::DfllId;
+    //pub struct DfllId;
+    //impl crate::typelevel::Sealed for DfllId {}
+    #[hal_cfg("clock-d5x")]
     pub use super::super::dpll::{Dpll0Id, Dpll1Id};
 
     pub use super::super::types::{
@@ -188,7 +217,6 @@ pub mod ids {
     #[hal_cfg("i2s")]
     pub use super::super::types::{I2S0, I2S1};
 }
-
 use ids::*;
 
 /// Append the list of all [`PclkId`] types and `snake_case` id names to the
@@ -231,7 +259,9 @@ macro_rules! with_pclk_types_ids {
         $some_macro!(
             $( $args )*
             (DfllId = 0, dfll)
+            #[hal_cfg("clock-d5x")]
             (Dpll0Id = 1, dpll0)
+            #[hal_cfg("clock-d5x")]
             (Dpll1Id = 2, dpll1)
             (SlowClk = 3, slow)
             (Eic = 4, eic)
@@ -370,7 +400,7 @@ pub type DynPclkSourceId = DynGclkId;
 /// Convert from [`DynPclkSourceId`] to the equivalent [PAC](crate::pac) type
 impl From<DynPclkSourceId> for Genselect {
     fn from(source: DynPclkSourceId) -> Self {
-        seq!(N in 0..=11 {
+        with_gclk_max_expr!(N in 0..=max {
             match source {
                 #(
                     DynGclkId::Gclk~N => Genselect::Gclk~N,
@@ -472,8 +502,7 @@ where
         S: Source<Id = I> + Increment,
     {
         let freq = gclk.freq();
-        token.set_source(I::DYN);
-        token.enable();
+        token.enable(I::DYN);
         let pclk = Pclk::new(token, freq);
         (pclk, gclk.inc())
     }
