@@ -18,7 +18,7 @@
 //! ```no_run
 //! use atsamd_hal::{
 //!     pac::Peripherals,
-//!     thumbv7em::clock::v2::{clock_system_at_reset, osculp32k::OscUlp32k, rtcosc::RtcOsc},
+//!     clock::v2::{clock_system_at_reset, osculp32k::OscUlp32k, rtcosc::RtcOsc},
 //! };
 //! let mut pac = Peripherals::take().unwrap();
 //! let (buses, clocks, tokens) = clock_system_at_reset(
@@ -36,7 +36,7 @@
 //! ```no_run
 //! # use atsamd_hal::{
 //! #     pac::Peripherals,
-//! #     thumbv7em::clock::v2::{clock_system_at_reset, osculp32k::OscUlp32k, rtcosc::RtcOsc},
+//! #     clock::v2::{clock_system_at_reset, osculp32k::OscUlp32k, rtcosc::RtcOsc},
 //! # };
 //! # let mut pac = Peripherals::take().unwrap();
 //! # let (buses, clocks, tokens) = clock_system_at_reset(
@@ -54,7 +54,7 @@
 //! ```no_run
 //! # use atsamd_hal::{
 //! #     pac::Peripherals,
-//! #     thumbv7em::clock::v2::{clock_system_at_reset, osculp32k::OscUlp32k, rtcosc::RtcOsc},
+//! #     clock::v2::{clock_system_at_reset, osculp32k::OscUlp32k, rtcosc::RtcOsc},
 //! # };
 //! # let mut pac = Peripherals::take().unwrap();
 //! # let (buses, clocks, tokens) = clock_system_at_reset(
@@ -73,7 +73,7 @@
 //! ```no_run
 //! use atsamd_hal::{
 //!     pac::Peripherals,
-//!     thumbv7em::clock::v2::{clock_system_at_reset, osculp32k::OscUlp32k, rtcosc::RtcOsc},
+//!     clock::v2::{clock_system_at_reset, osculp32k::OscUlp32k, rtcosc::RtcOsc},
 //! };
 //! let mut pac = Peripherals::take().unwrap();
 //! let (buses, clocks, tokens) = clock_system_at_reset(

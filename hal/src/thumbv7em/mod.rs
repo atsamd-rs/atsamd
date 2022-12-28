@@ -2,7 +2,6 @@ pub mod aes;
 pub mod calibration;
 #[cfg(all(any(feature = "has-can0", feature = "has-can1"), feature = "can"))]
 pub mod can;
-pub mod clock;
 pub mod eic;
 pub mod pukcc;
 pub mod qspi;

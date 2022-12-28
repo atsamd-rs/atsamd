@@ -7,7 +7,6 @@ mod serial_number;
 pub use serial_number::*;
 
 pub mod calibration;
-pub mod clock;
 pub mod timer;
 
 #[cfg(feature = "unproven")]
