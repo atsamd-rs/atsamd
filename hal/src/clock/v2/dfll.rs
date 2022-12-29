@@ -266,6 +266,19 @@
 //! [`from_usb`]: Dfll::from_usb
 //! [`into_mode`]: EnabledDfll::into_mode
 
+#[cfg(feature = "samd51")]
+mod imports {
+    pub use crate::pac::oscctrl::{
+        RegisterBlock, DFLLCTRLA as DFLLCTRL, DFLLCTRLB, DFLLMUL, DFLLSYNC,
+    };
+}
+
+#[cfg(feature = "samd21")]
+mod imports {
+    pub use crate::pac::sysctrl::{RegisterBlock, DFLLCTRL, DFLLMUL, DFLLSYNC};
+}
+
+use imports::*;
 use fugit::RateExtU32;
 use typenum::U0;
 
@@ -303,51 +316,68 @@ impl DfllToken {
     }
 
     #[inline]
-    fn oscctrl(&self) -> &crate::pac::oscctrl::RegisterBlock {
+    fn reg_block(&self) -> &RegisterBlock {
         // Safety: The `DfllToken` only has access to a mutually exclusive set
         // of registers for the DFLL, and we use a shared reference to the
         // register block. See the notes on `Token` types and memory safety in
         // the root of the `clock` module for more details.
-        unsafe { &*crate::pac::OSCCTRL::PTR }
+        #[cfg(feature = "samd51")]
+        unsafe {
+            &*crate::pac::OSCCTRL::PTR
+        }
+        #[cfg(feature = "samd21")]
+        unsafe {
+            &*crate::pac::SYSCTRL::PTR
+        }
     }
 
     #[inline]
-    fn dfllctrla(&self) -> &crate::pac::oscctrl::DFLLCTRLA {
-        &self.oscctrl().dfllctrla
+    fn dfllctrl(&self) -> &DFLLCTRL {
+        #[cfg(feature = "samd51")]
+        let dfllctrl = &self.reg_block().dfllctrla;
+        #[cfg(feature = "samd21")]
+        let dfllctrl = &self.reg_block().dfllctrl;
+        dfllctrl
     }
 
+    #[cfg(feature = "samd51")]
     #[inline]
     fn dfllctrlb(&self) -> &crate::pac::oscctrl::DFLLCTRLB {
         &self.oscctrl().dfllctrlb
     }
 
     #[inline]
-    fn dfllmul(&self) -> &crate::pac::oscctrl::DFLLMUL {
-        &self.oscctrl().dfllmul
+    fn dfllmul(&self) -> &DFLLMUL {
+        &self.reg_block().dfllmul
     }
 
+    #[cfg(feature = "samd51")]
     #[inline]
-    fn dfllsync(&self) -> &crate::pac::oscctrl::DFLLSYNC {
-        &self.oscctrl().dfllsync
+    fn dfllsync(&self) -> &DFLLSYNC {
+        &self.reg_block().dfllsync
     }
 
+    #[cfg(feature = "samd51")]
     #[inline]
     fn wait_sync_enable(&self) {
         while self.dfllsync().read().enable().bit() {}
     }
 
+    #[cfg(feature = "samd51")]
     #[inline]
     fn wait_sync_dfllmul(&self) {
         while self.dfllsync().read().dfllmul().bit() {}
     }
 
+    #[cfg(feature = "samd51")]
     #[inline]
     fn wait_sync_dfllctrlb(&self) {
         while self.dfllsync().read().dfllctrlb().bit() {}
     }
 
+    #[cfg(feature = "samd51")]
     #[inline]
-    fn configure(&mut self, settings: settings::All) {
+    fn enable(&mut self, settings: settings::All) {
         self.dfllctrlb().modify(|_, w| {
             w.mode().bit(settings.closed_loop);
             w.usbcrm().bit(settings.usb_recovery);
@@ -365,21 +395,41 @@ impl DfllToken {
             });
             self.wait_sync_dfllmul();
         }
-        self.dfllctrla().modify(|_, w| {
+        self.dfllctrl().modify(|_, w| {
             w.runstdby().bit(settings.run_standby);
-            w.ondemand().bit(settings.on_demand)
+            w.ondemand().bit(settings.on_demand);
+            w.enable().set_bit()
+        });
+        self.wait_sync_enable();
+    }
+
+    #[cfg(feature = "samd21")]
+    #[inline]
+    fn enable(&mut self, settings: settings::All) {
+        if settings.closed_loop {
+            self.dfllmul().write(|w|
+            // Safety: All bit patterns are valid for these fields
+            unsafe {
+                w.mul().bits(settings.mult_factor);
+                w.cstep().bits(settings.coarse_max_step);
+                w.fstep().bits(settings.fine_max_step)
+            });
+        }
+        self.dfllctrl().write(|w| {
+            w.mode().bit(settings.closed_loop);
+            w.usbcrm().bit(settings.usb_recovery);
+            w.ccdis().bit(!settings.chill_cycle);
+            w.qldis().bit(!settings.quick_lock);
+            w.runstdby().bit(settings.run_standby);
+            w.ondemand().bit(settings.on_demand);
+            w.enable().set_bit()
         });
     }
 
     #[inline]
-    fn enable(&mut self) {
-        self.dfllctrla().modify(|_, w| w.enable().set_bit());
-        self.wait_sync_enable();
-    }
-
-    #[inline]
     fn disable(&mut self) {
-        self.dfllctrla().modify(|_, w| w.enable().clear_bit());
+        self.dfllctrl().write(|w| w.enable().clear_bit());
+        #[cfg(feature = "samd51")]
         self.wait_sync_enable();
     }
 }
@@ -390,7 +440,10 @@ impl DfllToken {
 
 type MultFactor = u16;
 type CoarseMaxStep = u8;
+#[cfg(feature = "samd51")]
 type FineMaxStep = u8;
+#[cfg(feature = "samd21")]
+type FineMaxStep = u16;
 
 //==============================================================================
 // DfllId
@@ -1111,8 +1164,7 @@ impl<M: Mode> Dfll<M> {
     /// [`Source`] for other clocks.
     #[inline]
     pub fn enable(mut self) -> EnabledDfll<M> {
-        self.token.configure(self.settings.all());
-        self.token.enable();
+        self.token.enable(self.settings.all());
         Enabled::new(self)
     }
 }

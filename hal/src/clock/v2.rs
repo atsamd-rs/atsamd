@@ -858,20 +858,20 @@ use typenum::U0;
 use crate::time::Hertz;
 use crate::typelevel::{PrivateDecrement, PrivateIncrement, Sealed};
 
-pub mod ahb;
-pub mod apb;
+//pub mod ahb;
+//pub mod apb;
 pub mod dfll;
 pub mod dpll;
 pub mod gclk;
 pub mod osculp32k;
 pub mod pclk;
-pub mod rtcosc;
+//pub mod rtcosc;
 pub mod types;
 pub mod xosc;
 pub mod xosc32k;
-
-mod reset;
-pub use reset::*;
+//
+//mod reset;
+//pub use reset::*;
 
 // `Token` types and memory safety
 //

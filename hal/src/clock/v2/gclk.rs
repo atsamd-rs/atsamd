@@ -355,9 +355,11 @@ use crate::typelevel::{Decrement, Increment, PrivateDecrement, PrivateIncrement,
 
 use super::dfll::DfllId;
 // use super::dpll::{Dpll0Id, Dpll1Id};
-// use super::osculp32k::OscUlp32kId;
-// use super::xosc::{Xosc0Id, Xosc1Id};
-// use super::xosc32k::Xosc32kId;
+use super::osculp32k::OscUlp32kId;
+use super::xosc::Xosc0Id;
+#[cfg(feature = "samd51")]
+use super::xosc::Xosc1Id;
+use super::xosc32k::Xosc32kId;
 use super::{Enabled, Source};
 
 //==============================================================================
@@ -966,30 +968,31 @@ impl GclkSourceId for DfllId {
 //    const DYN: DynGclkSourceId = DynGclkSourceId::Dpll1;
 //    type Resource = ();
 //}
-//impl GclkSourceId for Gclk1Id {
-//    const DYN: DynGclkSourceId = DynGclkSourceId::Gclk1;
-//    type Resource = ();
-//}
+impl GclkSourceId for Gclk1Id {
+    const DYN: DynGclkSourceId = DynGclkSourceId::Gclk1;
+    type Resource = ();
+}
 impl<I: GclkIo> GclkSourceId for I {
     const DYN: DynGclkSourceId = DynGclkSourceId::GclkIn;
     type Resource = Pin<I, AlternateH>;
 }
-//impl GclkSourceId for OscUlp32kId {
-//    const DYN: DynGclkSourceId = DynGclkSourceId::OscUlp32k;
-//    type Resource = ();
-//}
-//impl GclkSourceId for Xosc0Id {
-//    const DYN: DynGclkSourceId = DynGclkSourceId::Xosc0;
-//    type Resource = ();
-//}
-//impl GclkSourceId for Xosc1Id {
-//    const DYN: DynGclkSourceId = DynGclkSourceId::Xosc1;
-//    type Resource = ();
-//}
-//impl GclkSourceId for Xosc32kId {
-//    const DYN: DynGclkSourceId = DynGclkSourceId::Xosc32k;
-//    type Resource = ();
-//}
+impl GclkSourceId for OscUlp32kId {
+    const DYN: DynGclkSourceId = DynGclkSourceId::OscUlp32k;
+    type Resource = ();
+}
+impl GclkSourceId for Xosc0Id {
+    const DYN: DynGclkSourceId = DynGclkSourceId::Xosc0;
+    type Resource = ();
+}
+#[cfg(feature = "samd51")]
+impl GclkSourceId for Xosc1Id {
+    const DYN: DynGclkSourceId = DynGclkSourceId::Xosc1;
+    type Resource = ();
+}
+impl GclkSourceId for Xosc32kId {
+    const DYN: DynGclkSourceId = DynGclkSourceId::Xosc32k;
+    type Resource = ();
+}
 
 //==============================================================================
 // NotGclkIo

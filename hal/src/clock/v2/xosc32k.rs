@@ -344,14 +344,27 @@
 use fugit::RateExtU32;
 use typenum::U0;
 
-use crate::pac::osc32kctrl::xosc32k::{CGM_A, STARTUP_A};
-use crate::pac::osc32kctrl::{status, CFDCTRL, XOSC32K};
+#[cfg(feature = "samd51")]
+mod imports {
+    pub use super::super::osculp32k::OscUlp32kId;
+    pub use crate::pac::osc32kctrl::xosc32k::{CGM_A, STARTUP_A};
+    pub use crate::pac::osc32kctrl::{status::R as STATUS_R, CFDCTRL, XOSC32K};
+    pub use crate::pac::OSC32KCTRL as PERIPHERAL;
+}
+
+#[cfg(feature = "samd21")]
+mod imports {
+    pub use crate::pac::sysctrl::pclksr::R as STATUS_R;
+    pub use crate::pac::sysctrl::XOSC32K;
+    pub use crate::pac::SYSCTRL as PERIPHERAL;
+}
+
+use imports::*;
 
 use crate::gpio::{FloatingDisabled, Pin, PA00, PA01};
 use crate::time::Hertz;
 use crate::typelevel::{Decrement, Increment, PrivateDecrement, PrivateIncrement, Sealed};
 
-use super::osculp32k::OscUlp32kId;
 use super::{Enabled, Source};
 
 //==============================================================================
@@ -398,6 +411,7 @@ pub struct Xosc32kToken(());
 ///
 /// Clock failure detection is disabled at power-on reset. To use it, you must
 /// first enable it by exchanging the token with [`Xosc32kCfd::enable`].
+#[cfg(feature = "samd51")]
 pub struct Xosc32kCfdToken(());
 
 /// Set of tokens representing the disabled XOSC32K clocks power-on reset
@@ -405,6 +419,7 @@ pub struct Xosc32kTokens {
     pub base: Xosc32kBaseToken,
     pub xosc1k: Xosc1kToken,
     pub xosc32k: Xosc32kToken,
+    #[cfg(feature = "samd51")]
     pub cfd: Xosc32kCfdToken,
 }
 
@@ -421,6 +436,7 @@ impl Xosc32kTokens {
             base: Xosc32kBaseToken(()),
             xosc1k: Xosc1kToken(()),
             xosc32k: Xosc32kToken(()),
+            #[cfg(feature = "samd51")]
             cfd: Xosc32kCfdToken(()),
         }
     }
@@ -428,10 +444,17 @@ impl Xosc32kTokens {
 
 impl Xosc32kBaseToken {
     #[inline]
-    fn status(&self) -> status::R {
+    fn status(&self) -> STATUS_R {
         // Safety: We are only reading from the `STATUS` register, so there is
         // no risk of memory corruption.
-        unsafe { (*crate::pac::OSC32KCTRL::PTR).status.read() }
+        #[cfg(feature = "samd51")]
+        unsafe {
+            (*PERIPHERAL::PTR).status.read()
+        }
+        #[cfg(feature = "samd21")]
+        unsafe {
+            (*PERIPHERAL::PTR).pclksr.read()
+        }
     }
 
     /// Check whether the XOSC32K is stable and ready
@@ -445,7 +468,7 @@ impl Xosc32kBaseToken {
         // Safety: The `Xosc32kBaseToken` has exclusive access to the `XOSC32K`
         // register. See the notes on `Token` types and memory safety in the
         // root of the `clock` module for more details.
-        unsafe { &(*crate::pac::OSC32KCTRL::PTR).xosc32k }
+        unsafe { &(*PERIPHERAL::PTR).xosc32k }
     }
 
     /// Reset the XOSC32K register
@@ -456,27 +479,25 @@ impl Xosc32kBaseToken {
 
     /// Set most of the fields in the XOSC32K register
     #[inline]
-    fn set_xosc32k(&mut self, settings: Settings) {
-        let xtalen = settings.mode == DynMode::CrystalMode;
-        self.xosc32k().modify(|_, w| {
+    fn enable(&mut self, mode: DynMode, settings: Settings) {
+        let xtalen = mode == DynMode::CrystalMode;
+        self.xosc32k().write(|w| {
+            #[cfg(feature = "samd51")]
             w.cgm().variant(settings.cgm.into());
-            w.startup().variant(settings.start_up.into());
+            #[cfg(feature = "samd21")]
+            w.aampen().bit(settings.aampen);
+            unsafe { w.startup().bits(settings.start_up as u8) };
             w.ondemand().bit(settings.on_demand);
             w.runstdby().bit(settings.run_standby);
-            w.xtalen().bit(xtalen)
+            w.xtalen().bit(xtalen);
+            w.enable().set_bit()
         });
     }
 
     /// Disable the XOSC32K
     #[inline]
-    fn enable(&mut self) {
-        self.xosc32k().modify(|_, w| w.enable().set_bit());
-    }
-
-    /// Disable the XOSC32K
-    #[inline]
     fn disable(&mut self) {
-        self.xosc32k().modify(|_, w| w.enable().clear_bit());
+        self.xosc32k().write(|w| w.enable().clear_bit());
     }
 
     /// Enable the 1 kHz output
@@ -510,12 +531,13 @@ impl Xosc32kBaseToken {
     }
 }
 
+#[cfg(feature = "samd51")]
 impl Xosc32kCfdToken {
     #[inline]
-    fn status(&self) -> status::R {
+    fn status(&self) -> STATUS_R {
         // Safety: We are only reading from the `STATUS` register, so there is
         // no risk of memory corruption.
-        unsafe { (*crate::pac::OSC32KCTRL::PTR).status.read() }
+        unsafe { (*PERIPHERAL::PTR).status.read() }
     }
 
     /// Check whether the XOSC32K has triggered failure detection
@@ -535,7 +557,7 @@ impl Xosc32kCfdToken {
         // Safety: The `Xosc32kCfdToken` has exclusive access to the `CFDCTRL`
         // register. See the notes on `Token` types and memory safety in the
         // root of the `clock` module for more details.
-        unsafe { &(*crate::pac::OSC32KCTRL::PTR).cfdctrl }
+        unsafe { &(*PERIPHERAL::PTR).cfdctrl }
     }
 
     /// Enable clock failure detection and set the safe clock divider
@@ -574,10 +596,26 @@ impl Xosc32kCfdToken {
 #[derive(Clone, Copy)]
 struct Settings {
     start_up: StartUpDelay,
+    #[cfg(feature = "samd51")]
     cgm: ControlGainMode,
+    #[cfg(feature = "samd21")]
+    aampen: bool,
     on_demand: bool,
     run_standby: bool,
-    mode: DynMode,
+}
+
+impl Default for Settings {
+    fn default() -> Self {
+        Settings {
+            start_up: StartUpDelay::Delay63ms,
+            #[cfg(feature = "samd51")]
+            cgm: ControlGainMode::Standard,
+            #[cfg(feature = "samd21")]
+            aampen: false,
+            on_demand: true,
+            run_standby: false,
+        }
+    }
 }
 
 //==============================================================================
@@ -631,6 +669,7 @@ impl From<SafeClockDiv> for bool {
 /// The start up delay is counted using the [`OscUlp32k`] clock.
 ///
 /// [`OscUlp32k`]: super::osculp32k::OscUlp32k
+#[cfg(feature = "samd51")]
 #[repr(u8)]
 #[derive(Clone, Copy, Default, PartialEq, Eq)]
 pub enum StartUpDelay {
@@ -644,18 +683,19 @@ pub enum StartUpDelay {
     Delay8s,
 }
 
-impl From<StartUpDelay> for STARTUP_A {
-    fn from(delay: StartUpDelay) -> Self {
-        match delay {
-            StartUpDelay::Delay63ms => STARTUP_A::CYCLE2048,
-            StartUpDelay::Delay125ms => STARTUP_A::CYCLE4096,
-            StartUpDelay::Delay500ms => STARTUP_A::CYCLE16384,
-            StartUpDelay::Delay1s => STARTUP_A::CYCLE32768,
-            StartUpDelay::Delay2s => STARTUP_A::CYCLE65536,
-            StartUpDelay::Delay4s => STARTUP_A::CYCLE131072,
-            StartUpDelay::Delay8s => STARTUP_A::CYCLE262144,
-        }
-    }
+#[cfg(feature = "samd21")]
+#[repr(u8)]
+#[derive(Clone, Copy, Default, PartialEq, Eq)]
+pub enum StartUpDelay {
+    #[default]
+    Delay122us,
+    Delay1ms,
+    Delay63ms,
+    Delay125ms,
+    Delay500ms,
+    Delay1s,
+    Delay2s,
+    Delay4s,
 }
 
 //==============================================================================
@@ -667,12 +707,14 @@ impl From<StartUpDelay> for STARTUP_A {
 /// The XOSC32K crystal oscillator control loop has a configurable gain to allow
 /// users to trade power for speed and stability.
 #[derive(Copy, Clone, Default, PartialEq, Eq)]
+#[cfg(feature = "samd51")]
 pub enum ControlGainMode {
     #[default]
     Standard,
     HighSpeed,
 }
 
+#[cfg(feature = "samd51")]
 impl From<ControlGainMode> for CGM_A {
     fn from(cgm: ControlGainMode) -> Self {
         match cgm {
@@ -843,6 +885,7 @@ impl Xosc32kBase<CrystalMode> {
 
     /// Set the crystal oscillator [`ControlGainMode`]
     #[inline]
+    #[cfg(feature = "samd51")]
     pub fn control_gain_mode(mut self, cgm: ControlGainMode) -> Self {
         self.settings.cgm = cgm;
         self
@@ -852,13 +895,7 @@ impl Xosc32kBase<CrystalMode> {
 impl<M: Mode> Xosc32kBase<M> {
     #[inline]
     fn new(token: Xosc32kBaseToken, pins: M::Pins) -> Self {
-        let settings = Settings {
-            start_up: StartUpDelay::Delay63ms,
-            cgm: ControlGainMode::Standard,
-            on_demand: true,
-            run_standby: false,
-            mode: M::DYN,
-        };
+        let settings = Settings::default();
         Self {
             token,
             pins,
@@ -932,8 +969,7 @@ impl<M: Mode> Xosc32kBase<M> {
     #[inline]
     pub fn enable(mut self) -> EnabledXosc32kBase<M> {
         self.token.reset();
-        self.token.set_xosc32k(self.settings);
-        self.token.enable();
+        self.token.enable(M::DYN, self.settings);
         Enabled::new(self)
     }
 }
@@ -997,10 +1033,12 @@ impl<M: Mode, N> EnabledXosc32kBase<M, N> {
 ///
 /// [`OscUlp32k`]: super::osculp32k::OscUlp32k
 /// [`EnabledOscUlp32k`]: super::osculp32k::EnabledOscUlp32k
+#[cfg(feature = "Samd51")]
 pub struct Xosc32kCfd {
     token: Xosc32kCfdToken,
 }
 
+#[cfg(feature = "Samd51")]
 impl Xosc32kCfd {
     /// Enable continuous monitoring of the XOSC32K for clock failure
     ///

@@ -242,17 +242,32 @@ use core::marker::PhantomData;
 use fugit::RateExtU32;
 use typenum::U0;
 
-use crate::pac::oscctrl::dpll::{dpllstatus, dpllsyncbusy, DPLLCTRLA, DPLLCTRLB, DPLLRATIO};
-use crate::pac::oscctrl::DPLL;
+#[cfg(feature = "samd51")]
+mod imports {
+    pub use super::super::xosc::Xosc1Id;
+    pub use crate::pac::oscctrl::{
+        dpll::dpllctrlb::REFCLK_A,
+        dpll::{dpllstatus, dpllsyncbusy, DPLLCTRLA, DPLLCTRLB, DPLLRATIO},
+        DPLL,
+    };
+}
 
-use crate::pac::oscctrl::dpll::dpllctrlb::REFCLK_A;
+#[cfg(feature = "samd21")]
+mod imports {
+    pub use crate::pac::sysctrl::{
+        dpllctrlb::REFCLK_A,
+        {dpllstatus, DPLLCTRLA, DPLLCTRLB, DPLLRATIO},
+    };
+}
+
+use imports::*;
 
 use crate::time::Hertz;
 use crate::typelevel::{Decrement, Increment, Sealed};
 
 use super::gclk::GclkId;
 use super::pclk::{Pclk, PclkId};
-use super::xosc::{Xosc0Id, Xosc1Id, XoscId};
+use super::xosc::{Xosc0Id, XoscId};
 use super::xosc32k::Xosc32kId;
 use super::{Enabled, Source};
 

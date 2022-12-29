@@ -57,6 +57,18 @@ pub struct Buses {
     pub apb: apb::Apb,
 }
 
+#[cfg(feature = "samd51")]
+pub struct OscUlp32kClocks {
+    base: EnabledOscUlp32kBase,
+}
+
+#[cfg(feature = "samd21")]
+pub struct OscUlp32kClocks {
+    base: EnabledOscUlp32kBase,
+    osculp1k: EnabledOscUlp1k,
+    osculp32k: EnabledOscUlp32k,
+}
+
 /// Enabled clocks at power-on reset
 ///
 /// This type is constructed using the [`clock_system_at_reset`] function, which
@@ -88,7 +100,7 @@ pub struct Clocks {
     pub dfll: Enabled<dfll::Dfll, U1>,
     /// Always-enabled base oscillator for the [`OscUlp1k`](osculp32k::OscUlp1k)
     /// and [`OscUlp32k`](osculp32k::OscUlp32k) clocks.
-    pub osculp32k_base: Enabled<osculp32k::OscUlp32kBase>,
+    pub osculp32k: OscUlp32kClocks,
 }
 
 /// Type-level tokens for unused clocks at power-on reset
@@ -121,6 +133,7 @@ pub struct Tokens {
     /// [`xosc32k::Xosc32k`]
     pub xosc32k: xosc32k::Xosc32kTokens,
     /// Tokens to create [`osculp32k::OscUlp1k`] and [`osculp32k::OscUlp32k`]
+    #[cfg(feature = "samd51")]
     pub osculp32k: osculp32k::OscUlp32kTokens,
 }
 
@@ -154,13 +167,27 @@ pub fn clock_system_at_reset(
         let dfll = Enabled::<_>::new(dfll::Dfll::open_loop(dfll::DfllToken::new()));
         let (gclk0, dfll) = gclk::Gclk0::from_source(gclk::GclkToken::new(), dfll);
         let gclk0 = Enabled::new(gclk0);
+        #[cfg(feature = "samd51")]
+        let osculp32k_clocks = {
+            OscUlp32kClocks {
+                base: osculp32k::OscUlp32kBase::new(),
+            }
+        };
+        #[cfg(feature = "samd21")]
+        let osculp32k_clocks = {
+            OscUlp32kClocks {
+                base: osculp32k::OscUlp32kBase::new(),
+                osculp1k: Enabled::new(osculp32k::OscUlp1k::new()),
+                osculp32k: Enabled::new(osculp32k::OscUlp32k::new()),
+            }
+        };
         let clocks = Clocks {
             pac,
             ahbs: ahb::AhbClks::new(),
             apbs: apb::ApbClks::new(),
             gclk0,
             dfll,
-            osculp32k_base: osculp32k::OscUlp32kBase::new(),
+            osculp32k: osculp32k_clocks,
         };
         let tokens = Tokens {
             apbs: apb::ApbTokens::new(),
@@ -172,6 +199,7 @@ pub fn clock_system_at_reset(
             xosc0: xosc::XoscToken::new(),
             xosc1: xosc::XoscToken::new(),
             xosc32k: xosc32k::Xosc32kTokens::new(),
+            #[cfg(feature = "samd51")]
             osculp32k: osculp32k::OscUlp32kTokens::new(),
         };
         (buses, clocks, tokens)

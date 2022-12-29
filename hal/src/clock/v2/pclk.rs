@@ -69,15 +69,19 @@ use seq_macro::seq;
 
 use crate::pac;
 
-#[cfg(feature = "samd21")]
-use crate::pac::gclk::clkctrl::GEN_A;
 #[cfg(feature = "samd51")]
-use crate::pac::gclk::pchctrl::GEN_A;
+mod imports {
+    pub use crate::pac::gclk::pchctrl::GEN_A;
+    pub use crate::pac::gclk::PCHCTRL as CTRL;
+}
 
 #[cfg(feature = "samd21")]
-use crate::pac::gclk::CLKCTRL as CTRL;
-#[cfg(feature = "samd51")]
-use crate::pac::gclk::PCHCTRL as CTRL;
+mod imports {
+    pub use crate::pac::gclk::clkctrl::GEN_A;
+    pub use crate::pac::gclk::CLKCTRL as CTRL;
+}
+
+use imports::*;
 
 use crate::time::Hertz;
 use crate::typelevel::{Decrement, Increment, Sealed};
@@ -188,8 +192,6 @@ pub mod ids {
     pub use crate::sercom::Sercom7;
 
     pub use super::super::dfll::DfllId;
-    //pub struct DfllId;
-    //impl crate::typelevel::Sealed for DfllId {}
     #[cfg(feature = "samd51")]
     pub use super::super::dpll::{Dpll0Id, Dpll1Id};
 

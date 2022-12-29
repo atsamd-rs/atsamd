@@ -164,10 +164,21 @@
 use fugit::RateExtU32;
 use typenum::U0;
 
-use crate::pac::osc32kctrl::OSCULP32K;
+#[cfg(feature = "samd51")]
+mod imports {
+    pub use crate::pac::osc32kctrl::OSCULP32K;
+    pub use crate::typelevel::{Decrement, Increment, PrivateDecrement, PrivateIncrement, Sealed};
+}
+
+#[cfg(feature = "samd21")]
+mod imports {
+    pub use crate::pac::sysctrl::OSCULP32K;
+}
+
+use imports::*;
 
 use crate::time::Hertz;
-use crate::typelevel::{Decrement, Increment, PrivateDecrement, PrivateIncrement, Sealed};
+use crate::typelevel::Sealed;
 
 use super::{Enabled, Source};
 
@@ -239,7 +250,14 @@ impl OscUlp32kBaseToken {
         // Safety: The `OscUlp32kBaseToken` has exclusive access to the
         // `OSCULP32K` register. See the notes on `Token` types and memory
         // safety in the root of the `clock` module for more details.
-        unsafe { &(*crate::pac::OSC32KCTRL::PTR).osculp32k }
+        #[cfg(feature = "samd51")]
+        unsafe {
+            &(*crate::pac::OSC32KCTRL::PTR).osculp32k
+        }
+        #[cfg(feature = "samd21")]
+        unsafe {
+            &(*crate::pac::SYSCTRL::PTR).osculp32k
+        }
     }
 
     /// Set the calibration
@@ -250,24 +268,28 @@ impl OscUlp32kBaseToken {
             .modify(|_, w| unsafe { w.calib().bits(calib) });
     }
 
+    #[cfg(feature = "samd51")]
     /// Enable the 1 kHz output
     #[inline]
     fn enable_1k(&mut self) {
         self.osculp32k().modify(|_, w| w.en1k().set_bit());
     }
 
+    #[cfg(feature = "samd51")]
     /// Disable the 1 kHz output
     #[inline]
     fn disable_1k(&mut self) {
         self.osculp32k().modify(|_, w| w.en1k().clear_bit());
     }
 
+    #[cfg(feature = "samd51")]
     /// Enable the 32 kHz output
     #[inline]
     fn enable_32k(&mut self) {
         self.osculp32k().modify(|_, w| w.en32k().set_bit());
     }
 
+    #[cfg(feature = "samd51")]
     /// Disable the 32 kHz output
     #[inline]
     fn disable_32k(&mut self) {
@@ -376,6 +398,7 @@ impl Sealed for OscUlp32kId {}
 /// derived from the [`OscUlp32kBase`] clock. See the
 /// [module-level documentation](super) for details and examples.
 pub struct OscUlp1k {
+    #[allow(unused)]
     token: OscUlp1kToken,
 }
 
@@ -391,9 +414,16 @@ pub struct OscUlp1k {
 pub type EnabledOscUlp1k<N = U0> = Enabled<OscUlp1k, N>;
 
 impl OscUlp1k {
+    #[cfg(feature = "samd21")]
+    pub(super) unsafe fn new() -> Self {
+        let token = OscUlp1kToken(());
+        Self { token }
+    }
+
     /// Enable 1 kHz output from the [`OscUlp32kBase`] clock
     ///
     /// This will [`Increment`] the [`EnabledOscUlp32kBase`] counter.
+    #[cfg(feature = "samd51")]
     #[inline]
     pub fn enable<N: Increment>(
         token: OscUlp1kToken,
@@ -408,6 +438,7 @@ impl EnabledOscUlp1k {
     /// Disable 1 kHz output from the [`OscUlp32kBase`] clock
     ///
     /// This will [`Decrement`] the [`EnabledOscUlp32kBase`] counter.
+    #[cfg(feature = "samd51")]
     #[inline]
     pub fn disable<N: Decrement>(
         self,
@@ -439,6 +470,7 @@ impl<N> Source for EnabledOscUlp1k<N> {
 /// derived from the [`OscUlp32kBase`] clock. See the
 /// [module-level documentation](super) for details and examples.
 pub struct OscUlp32k {
+    #[allow(unused)]
     token: OscUlp32kToken,
 }
 
@@ -454,9 +486,16 @@ pub struct OscUlp32k {
 pub type EnabledOscUlp32k<N = U0> = Enabled<OscUlp32k, N>;
 
 impl OscUlp32k {
+    #[cfg(feature = "samd21")]
+    pub(super) unsafe fn new() -> Self {
+        let token = OscUlp32kToken(());
+        Self { token }
+    }
+
     /// Enable 32 kHz output from the [`OscUlp32kBase`] clock
     ///
     /// This will [`Increment`] the [`EnabledOscUlp32kBase`] counter.
+    #[cfg(feature = "samd51")]
     #[inline]
     pub fn enable<N: Increment>(
         token: OscUlp32kToken,
@@ -471,6 +510,7 @@ impl EnabledOscUlp32k {
     /// Disable 32 kHz output from the [`OscUlp32kBase`] clock
     ///
     /// This will [`Decrement`] the [`EnabledOscUlp32kBase`] counter.
+    #[cfg(feature = "samd51")]
     #[inline]
     pub fn disable<N: Decrement>(
         self,
