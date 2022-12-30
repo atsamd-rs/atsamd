@@ -12,7 +12,7 @@ jobs:
     - id: set-matrix
       uses: ./.github/actions/list-HAL-variants
 
-  build_hal:
+  build:
     runs-on: ubuntu-latest
     continue-on-error: ${{ matrix.toolchain == 'nightly' }}
     needs: setup
