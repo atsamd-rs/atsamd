@@ -8,7 +8,7 @@ jobs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
     - name: Checkout sources
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - id: set-matrix
       uses: ./.github/actions/list-HAL-variants
 
@@ -20,7 +20,7 @@ jobs:
       matrix: ${{fromJson(needs.setup.outputs.matrix)}}
     steps:
     - name: Checkout sources
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Install Rust
       run: |
