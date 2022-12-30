@@ -20,7 +20,6 @@ jobs:
           rustup override set ${{ matrix.toolchain }}
           rustup target add thumbv6m-none-eabi
           rustup target add thumbv7em-none-eabihf
-          rustup component add clippy
 
       - name: Generate HAL docs
         if: github.event.inputs.gen_hal_docs == 'yes'
