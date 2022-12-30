@@ -10,29 +10,40 @@ jobs:
     - name: Checkout sources
       uses: actions/checkout@v2
     - id: set-matrix
-      uses: ./.github/actions/prepare-HAL-matrix
-
+      uses: ./.github/actions/list-HAL-variants
 
   build_hal:
     runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.toolchain == 'nightly' }}
+    needs: setup
+    strategy:
+      matrix: ${{fromJson(needs.setup.outputs.matrix)}}
     steps:
     - name: Checkout sources
       uses: actions/checkout@v2
-    - name: Install Rust (thumbv6m)
+
+    - name: Install Rust
       run: |
         rustup set profile minimal
-        rustup target add thumbv6m-none-eabi
         rustup override set ${{ matrix.toolchain }}
+        target=$(cat ./crates.json | jq -Mr --arg pac "${{matrix.pac}}" -c '.hal_build_variants["${{matrix.pac}}"].target')
+        rustup target add ${target}
         rustup component add clippy
-    - name: Install Rust (thumbv7em)
-      run: |
-        rustup set profile minimal
-        rustup target add thumbv7em-none-eabihf
-        rustup override set ${{ matrix.toolchain }}
-        rustup component add clippy
-    - name: Build HAL
+
+    - name: Setup cache
+      uses: Swatinem/rust-cache@v2
+
+    - name: Build HAL for ${{ matrix.pac }}
       run: |
         set -ex
-        cd hal
-        cargo build --features="library"
+        features=$(cat ./crates.json | jq -Mr --arg pac "${{matrix.pac}}" -c '.hal_build_variants["${{matrix.pac}}"].features | join(",")')
+        target=$(cat ./crates.json | jq -Mr --arg pac "${{matrix.pac}}" -c '.hal_build_variants["${{matrix.pac}}"].target')
+        cargo build --features=${features} --target=${target} --manifest-path=./hal/Cargo.toml
 
+    - name: Clippy HAL for ${{ matrix.pac }}
+      if: ${{ matrix.toolchain == 'nightly' }}
+      run: |
+        set -ex
+        features=$(cat ./crates.json | jq -Mr --arg pac "${{matrix.pac}}" -c '.hal_build_variants["${{matrix.pac}}"].features | join(",")')
+        target=$(cat ./crates.json | jq -Mr --arg pac "${{matrix.pac}}" -c '.hal_build_variants["${{matrix.pac}}"].target')
+        cargo clippy --features=${features} --target=${target} --manifest-path=./hal/Cargo.toml

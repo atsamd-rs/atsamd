@@ -18,24 +18,12 @@ jobs:
   release-crates:
     runs-on: ubuntu-latest
     steps:
-      - name: Set up Rust
-        uses: hecrj/setup-rust-action@v1
-      - uses: actions/checkout@v2
-      - name: Install thumbv6m
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          override: true
-          toolchain: stable
-          target: thumbv6m-none-eabi
-      - name: Install thumbv7em
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          override: true
-          toolchain: stable
-          target: thumbv7em-none-eabihf
-
+      - name: Install Rust
+        run: |
+          rustup set profile minimal
+          rustup override set stable
+          rustup target add thumbv6m-none-eabi
+          rustup target add thumbv7em-none-eabihf
 
       - name: Login
         run: cargo login ${CRATES_IO_TOKEN}

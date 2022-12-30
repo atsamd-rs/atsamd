@@ -28,7 +28,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set up Rust
-        uses: hecrj/setup-rust-action@v1
+        run: |
+          rustup set profile minimal
+          rustup override set stable
       - uses: actions/checkout@v2
       - name: Setup
         shell: bash
