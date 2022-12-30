@@ -247,17 +247,22 @@ mod imports {
     pub use super::super::xosc::Xosc1Id;
     pub use crate::pac::oscctrl::{
         dpll::dpllctrlb::REFCLK_A,
-        dpll::{dpllstatus, dpllsyncbusy, DPLLCTRLA, DPLLCTRLB, DPLLRATIO},
-        DPLL,
+        dpll::dpllstatus::R as STATUS_R,
+        dpll::{dpllsyncbusy, DPLLCTRLA, DPLLCTRLB, DPLLRATIO},
+        DPLL as BLOCK,
     };
+    pub use crate::pac::OSCCTRL as PERIPHERAL;
 }
 
 #[cfg(feature = "samd21")]
 mod imports {
+    pub use crate::pac::sysctrl::RegisterBlock as BLOCK;
     pub use crate::pac::sysctrl::{
         dpllctrlb::REFCLK_A,
-        {dpllstatus, DPLLCTRLA, DPLLCTRLB, DPLLRATIO},
+        dpllstatus::R as STATUS_R,
+        {DPLLCTRLA, DPLLCTRLB, DPLLRATIO},
     };
+    pub use crate::pac::SYSCTRL as PERIPHERAL;
 }
 
 use imports::*;
@@ -307,12 +312,19 @@ impl<D: DpllId> DpllToken<D> {
 
     /// Access the corresponding PAC `DPLL` struct
     #[inline]
-    fn dpll(&self) -> &DPLL {
+    fn dpll(&self) -> &BLOCK {
         // Safety: Each `DpllToken` only has access to a mutually exclusive set
         // of registers for the corresponding `DpllId`, and we use a shared
         // reference to the register block. See the notes on `Token` types and
         // memory safety in the root of the `clock` module for more details.
-        unsafe { &(*crate::pac::OSCCTRL::PTR).dpll[D::NUM] }
+        #[cfg(feature = "samd51")]
+        unsafe {
+            &(*PERIPHERAL::PTR).dpll[D::NUM]
+        }
+        #[cfg(feature = "samd21")]
+        unsafe {
+            &(*PERIPHERAL::PTR)
+        }
     }
 
     /// Access the corresponding DPLLCTRLA register
@@ -333,6 +345,7 @@ impl<D: DpllId> DpllToken<D> {
         &self.dpll().dpllratio
     }
 
+    #[cfg(feature = "samd51")]
     /// Access the corresponding DPLLSYNCBUSY register for reading only
     #[inline]
     fn syncbusy(&self) -> dpllsyncbusy::R {
@@ -341,18 +354,20 @@ impl<D: DpllId> DpllToken<D> {
 
     /// Access the corresponding DPLLSTATUS register for reading only
     #[inline]
-    fn status(&self) -> dpllstatus::R {
+    fn status(&self) -> STATUS_R {
         self.dpll().dpllstatus.read()
     }
 
     #[inline]
-    fn configure(&mut self, id: DynDpllSourceId, settings: Settings, prediv: u16) {
+    fn enable(&mut self, id: DynDpllSourceId, settings: Settings, prediv: u16) {
         // Convert the actual predivider to the `div` register field value
         let div = match id {
-            DynDpllSourceId::Xosc0 | DynDpllSourceId::Xosc1 => prediv / 2 - 1,
+            DynDpllSourceId::Xosc0 => prediv / 2 - 1,
+            #[cfg(feature = "samd51")]
+            DynDpllSourceId::Xosc1 => prediv / 2 - 1,
             _ => 0,
         };
-        self.ctrlb().modify(|_, w| {
+        self.ctrlb().write(|w| {
             // Safety: The value is masked to the correct bit width by the PAC.
             // An invalid value could produce an invalid clock frequency, but
             // that does not break memory safety.
@@ -368,25 +383,37 @@ impl<D: DpllId> DpllToken<D> {
             w.ldr().bits(settings.mult - 1);
             w.ldrfrac().bits(settings.frac)
         });
+        #[cfg(feature = "samd51")]
         while self.syncbusy().dpllratio().bit_is_set() {}
         self.ctrla().modify(|_, w| {
             w.ondemand().bit(settings.on_demand);
-            w.runstdby().bit(settings.run_standby)
+            w.runstdby().bit(settings.run_standby);
+            w.enable().set_bit()
         });
-    }
-
-    /// Enable the [`Dpll`]
-    #[inline]
-    fn enable(&mut self) {
-        self.ctrla().modify(|_, w| w.enable().set_bit());
-        while self.syncbusy().enable().bit_is_set() {}
+        self.wait_enabled();
     }
 
     /// Disable the [`Dpll`]
     #[inline]
     fn disable(&mut self) {
         self.ctrla().modify(|_, w| w.enable().clear_bit());
+        self.wait_disabled();
+    }
+
+    #[inline]
+    fn wait_enabled(&self) {
+        #[cfg(feature = "samd51")]
         while self.syncbusy().enable().bit_is_set() {}
+        #[cfg(feature = "samd21")]
+        while self.status().enable().bit_is_clear() {}
+    }
+
+    #[inline]
+    fn wait_disabled(&self) {
+        #[cfg(feature = "samd51")]
+        while self.syncbusy().enable().bit_is_set() {}
+        #[cfg(feature = "samd21")]
+        while self.status().enable().bit_is_set() {}
     }
 
     /// Check the STATUS register to see if the clock is locked
@@ -463,10 +490,13 @@ impl DpllId for Dpll0Id {
 ///
 /// [type-level programming]: crate::typelevel
 /// [type-level enums]: crate::typelevel#type-level-enums
+#[cfg(feature = "samd51")]
 pub enum Dpll1Id {}
 
+#[cfg(feature = "samd51")]
 impl Sealed for Dpll1Id {}
 
+#[cfg(feature = "samd51")]
 impl DpllId for Dpll1Id {
     const DYN: DynDpllId = DynDpllId::Dpll1;
     const NUM: usize = 1;
@@ -489,6 +519,7 @@ pub enum DynDpllSourceId {
     /// The DPLL is driven by [`Xosc0`](super::xosc::Xosc0)
     Xosc0,
     /// The DPLL is driven by [`Xosc1`](super::xosc::Xosc1)
+    #[cfg(feature = "samd51")]
     Xosc1,
     /// The DPLL is driven by [`Xosc32k`](super::xosc32k::Xosc32k)
     Xosc32k,
@@ -496,12 +527,20 @@ pub enum DynDpllSourceId {
 
 impl From<DynDpllSourceId> for REFCLK_A {
     fn from(source: DynDpllSourceId) -> Self {
-        match source {
+        #[cfg(feature = "samd51")]
+        let refclk = match source {
             DynDpllSourceId::Pclk => REFCLK_A::GCLK,
             DynDpllSourceId::Xosc0 => REFCLK_A::XOSC0,
             DynDpllSourceId::Xosc1 => REFCLK_A::XOSC1,
             DynDpllSourceId::Xosc32k => REFCLK_A::XOSC32,
-        }
+        };
+        #[cfg(feature = "samd21")]
+        let refclk = match source {
+            DynDpllSourceId::Pclk => REFCLK_A::GCLK,
+            DynDpllSourceId::Xosc0 => REFCLK_A::REF1,
+            DynDpllSourceId::Xosc32k => REFCLK_A::REF0,
+        };
+        refclk
     }
 }
 
@@ -539,6 +578,7 @@ impl DpllSourceId for Xosc0Id {
     const DYN: DynDpllSourceId = DynDpllSourceId::Xosc0;
     type Reference<D: DpllId> = settings::Xosc;
 }
+#[cfg(feature = "samd51")]
 impl DpllSourceId for Xosc1Id {
     const DYN: DynDpllSourceId = DynDpllSourceId::Xosc1;
     type Reference<D: DpllId> = settings::Xosc;
@@ -675,6 +715,7 @@ where
 pub type Dpll0<M> = Dpll<Dpll0Id, M>;
 
 /// Type alias for the corresponding [`Dpll`]
+#[cfg(feature = "samd51")]
 pub type Dpll1<M> = Dpll<Dpll1Id, M>;
 
 impl<D, I> Dpll<D, I>
@@ -961,8 +1002,7 @@ where
     pub fn enable_unchecked(mut self) -> EnabledDpll<D, I> {
         use settings::Reference;
         let prediv = self.reference.prediv();
-        self.token.configure(I::DYN, self.settings, prediv);
-        self.token.enable();
+        self.token.enable(I::DYN, self.settings, prediv);
         Enabled::new(self)
     }
 }
@@ -986,6 +1026,7 @@ pub type EnabledDpll<D, I, N = U0> = Enabled<Dpll<D, I>, N>;
 pub type EnabledDpll0<I, N = U0> = EnabledDpll<Dpll0Id, I, N>;
 
 /// Type alias for the corresponding [`EnabledDpll`]
+#[cfg(feature = "samd51")]
 pub type EnabledDpll1<I, N = U0> = EnabledDpll<Dpll1Id, I, N>;
 
 impl<D, I> EnabledDpll<D, I>

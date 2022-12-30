@@ -127,7 +127,17 @@ use core::marker::PhantomData;
 use bitflags;
 use paste::paste;
 
-use crate::pac::{mclk, MCLK};
+#[cfg(feature = "samd51")]
+mod imports {
+    pub use crate::pac::{mclk::AHBMASK, MCLK as PERIPHERAL};
+}
+
+#[cfg(feature = "samd21")]
+mod imports {
+    pub use crate::pac::{pm::AHBMASK, PM as PERIPHERAL};
+}
+
+use imports::*;
 
 use super::types::*;
 
@@ -158,11 +168,11 @@ impl Ahb {
     }
 
     #[inline]
-    fn ahbmask(&mut self) -> &mclk::AHBMASK {
+    fn ahbmask(&mut self) -> &AHBMASK {
         // Safety: The `Ahb` type has exclusive access to the `AHBMASK`
         // register. See the notes on `Token` types and memory safety in the
         // root of the `clock` module for more details.
-        unsafe { &(*MCLK::PTR).ahbmask }
+        unsafe { &(*PERIPHERAL::PTR).ahbmask }
     }
 
     #[inline]

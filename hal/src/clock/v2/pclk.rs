@@ -192,9 +192,9 @@ pub mod ids {
     pub use crate::sercom::Sercom7;
 
     pub use super::super::dfll::DfllId;
-    #[cfg(feature = "samd51")]
-    pub use super::super::dpll::{Dpll0Id, Dpll1Id};
-
+    pub use super::super::dpll::Dpll0Id;
+    #[cfg(feature = "has-dpll1")]
+    pub use super::super::dpll::Dpll1Id;
     pub use super::super::types::{
         Ac, Adc0, Adc1, CM4Trace, Ccl, Dac, Eic, EvSys0, EvSys1, EvSys10, EvSys11, EvSys2, EvSys3,
         EvSys4, EvSys5, EvSys6, EvSys7, EvSys8, EvSys9, FreqMMeasure, FreqMReference, PDec, Sdhc0,
@@ -257,7 +257,6 @@ macro_rules! with_pclk_types_ids {
         $some_macro!(
             $( $args )*
             (DfllId = 0, dfll)
-            #[cfg(feature = "samd51")]
             (Dpll0Id = 1, dpll0)
             #[cfg(feature = "samd51")]
             (Dpll1Id = 2, dpll1)

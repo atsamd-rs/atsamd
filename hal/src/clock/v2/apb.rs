@@ -126,7 +126,19 @@ use core::marker::PhantomData;
 use bitflags;
 use paste::paste;
 
-use crate::pac::{mclk, MCLK};
+#[cfg(feature = "samd51")]
+mod imports {
+    pub use crate::pac::mclk::{RegisterBlock as BLOCK, APBAMASK, APBBMASK, APBCMASK, APBDMASK};
+    pub use crate::pac::MCLK as PERIPHERAL;
+}
+
+#[cfg(feature = "samd21")]
+mod imports {
+    pub use crate::pac::pm::{RegisterBlock as BLOCK, APBAMASK, APBBMASK, APBCMASK};
+    pub use crate::pac::PM as PERIPHERAL;
+}
+
+use imports::*;
 
 use crate::typelevel::Sealed;
 
@@ -159,31 +171,32 @@ impl Apb {
     }
 
     #[inline]
-    fn mclk(&self) -> &mclk::RegisterBlock {
+    fn mclk(&self) -> &BLOCK {
         // Safety: The `Apb` type has exclusive access to the `APBXMASK`
         // registers, and it uses a shared reference to the register block. See
         // the notes on `Token` types and memory safety in the root of the
         // `clock` module for more details.
-        unsafe { &*MCLK::PTR }
+        unsafe { &*PERIPHERAL::PTR }
     }
 
     #[inline]
-    fn apbamask(&mut self) -> &mclk::APBAMASK {
+    fn apbamask(&mut self) -> &APBAMASK {
         &self.mclk().apbamask
     }
 
     #[inline]
-    fn apbbmask(&mut self) -> &mclk::APBBMASK {
+    fn apbbmask(&mut self) -> &APBBMASK {
         &self.mclk().apbbmask
     }
 
     #[inline]
-    fn apbcmask(&mut self) -> &mclk::APBCMASK {
+    fn apbcmask(&mut self) -> &APBCMASK {
         &self.mclk().apbcmask
     }
 
     #[inline]
-    fn apbdmask(&mut self) -> &mclk::APBDMASK {
+    #[cfg(feature = "samd51")]
+    fn apbdmask(&mut self) -> &APBDMASK {
         &self.mclk().apbdmask
     }
 
@@ -205,6 +218,7 @@ impl Apb {
                     self.apbcmask()
                         .modify(|r, w| w.bits(r.bits() | mask.bits()));
                 }
+                #[cfg(feature = "samd51")]
                 ApbMask::D(mask) => {
                     self.apbdmask()
                         .modify(|r, w| w.bits(r.bits() | mask.bits()));
@@ -231,6 +245,7 @@ impl Apb {
                     self.apbcmask()
                         .modify(|r, w| w.bits(r.bits() & !mask.bits()));
                 }
+                #[cfg(feature = "samd51")]
                 ApbMask::D(mask) => {
                     self.apbdmask()
                         .modify(|r, w| w.bits(r.bits() & !mask.bits()));
@@ -273,6 +288,7 @@ enum ApbMask {
     A(ApbAMask),
     B(ApbBMask),
     C(ApbCMask),
+    #[cfg(feature = "samd51")]
     D(ApbDMask),
 }
 
@@ -351,9 +367,10 @@ macro_rules! define_apb_types {
     };
 }
 
+#[cfg(feature = "samd51")]
 define_apb_types!(
     A {
-        Pac = 0,
+        Pac0 = 0,
         Pm = 1,
         Mclk = 2,
         RstC = 3,
@@ -402,6 +419,7 @@ define_apb_types!(
         Qspi = 13,
         Ccl = 14,
     }
+    #[cfg(feature = "samd51")]
     D {
         Sercom4 = 0,
         Sercom5 = 1,
@@ -421,6 +439,52 @@ define_apb_types!(
         #[cfg(feature = "has-i2s")]
         I2S = 10,
         Pcc = 11,
+    }
+);
+
+#[cfg(feature = "samd21")]
+define_apb_types!(
+    A {
+        Pac0 = 0,
+        Pm = 1,
+        SysCtrl = 2,
+        Gclk = 3,
+        Wdt = 4,
+        Rtc = 5,
+        Eic = 6,
+    }
+    B {
+        Pac1 = 0,
+        Dsu = 1,
+        NvmCtrl = 2,
+        Port = 3,
+        Dmac = 4,
+        Usb = 5,
+    }
+    C {
+        Pac2 = 0,
+        EvSys = 1,
+        Sercom0 = 2,
+        Sercom1 = 3,
+        Sercom2 = 4,
+        Sercom3 = 5,
+        Sercom4 = 6,
+        Sercom5 = 7,
+        Tcc0 = 8,
+        Tcc1 = 9,
+        Tcc2 = 10,
+        Tc3 = 11,
+        Tc4 = 12,
+        Tc5 = 13,
+        Tc6 = 14,
+        Tc7 = 15,
+        Adc0 = 16,
+        Ac = 17,
+        Dac = 18,
+        Ptc = 19,
+        I2S = 20,
+        Ac1 = 21,
+        Tcc3 = 24,
     }
 );
 
@@ -508,10 +572,13 @@ impl<A: ApbId> ApbClk<A> {
 
 /// Set of [`ApbToken`]s for APB clocks that are disabled at power-on reset
 pub struct ApbTokens {
+    #[cfg(feature = "min-samd51g")]
     pub freq_m: ApbToken<FreqM>,
     pub sercom0: ApbToken<Sercom0>,
     pub sercom1: ApbToken<Sercom1>,
+    #[cfg(feature = "min-samd51g")]
     pub tc0: ApbToken<Tc0>,
+    #[cfg(feature = "min-samd51g")]
     pub tc1: ApbToken<Tc1>,
     pub usb: ApbToken<Usb>,
     pub ev_sys: ApbToken<EvSys>,
@@ -519,18 +586,26 @@ pub struct ApbTokens {
     pub sercom3: ApbToken<Sercom3>,
     pub tcc0: ApbToken<Tcc0>,
     pub tcc1: ApbToken<Tcc1>,
+    #[cfg(feature = "min-samd51g")]
     pub tc2: ApbToken<Tc2>,
     pub tc3: ApbToken<Tc3>,
     pub tcc2: ApbToken<Tcc2>,
     #[cfg(feature = "has-tcc3")]
     pub tcc3: ApbToken<Tcc3>,
+    #[cfg(all(feature = "thumbv6", feature = "has-tc4"))]
+    pub tc4: ApbToken<Tc4>,
     #[cfg(feature = "has-tc5")]
     pub tc5: ApbToken<Tc5>,
+    #[cfg(feature = "min-samd51g")]
     pub p_dec: ApbToken<PDec>,
     pub ac: ApbToken<Ac>,
+    #[cfg(feature = "min-samd51g")]
     pub aes: ApbToken<Aes>,
+    #[cfg(feature = "min-samd51g")]
     pub trng: ApbToken<Trng>,
+    #[cfg(feature = "min-samd51g")]
     pub icm: ApbToken<Icm>,
+    #[cfg(feature = "min-samd51g")]
     pub ccl: ApbToken<Ccl>,
     pub sercom4: ApbToken<Sercom4>,
     pub sercom5: ApbToken<Sercom5>,
@@ -545,10 +620,12 @@ pub struct ApbTokens {
     #[cfg(feature = "has-tc7")]
     pub tc7: ApbToken<Tc7>,
     pub adc0: ApbToken<Adc0>,
+    #[cfg(feature = "min-samd51g")]
     pub adc1: ApbToken<Adc1>,
     pub dac: ApbToken<Dac>,
     #[cfg(feature = "has-i2s")]
     pub i2s: ApbToken<I2S>,
+    #[cfg(feature = "min-samd51g")]
     pub pcc: ApbToken<Pcc>,
 }
 
@@ -561,6 +638,7 @@ impl ApbTokens {
     #[inline]
     pub(super) unsafe fn new() -> Self {
         Self {
+            #[cfg(feature = "min-samd51g")]
             freq_m: ApbToken::new(),
             sercom0: ApbToken::new(),
             sercom1: ApbToken::new(),
@@ -579,11 +657,16 @@ impl ApbTokens {
             tcc3: ApbToken::new(),
             #[cfg(feature = "has-tc5")]
             tc5: ApbToken::new(),
+            #[cfg(feature = "min-samd51g")]
             p_dec: ApbToken::new(),
             ac: ApbToken::new(),
+            #[cfg(feature = "min-samd51g")]
             aes: ApbToken::new(),
+            #[cfg(feature = "min-samd51g")]
             trng: ApbToken::new(),
+            #[cfg(feature = "min-samd51g")]
             icm: ApbToken::new(),
+            #[cfg(feature = "min-samd51g")]
             ccl: ApbToken::new(),
             sercom4: ApbToken::new(),
             sercom5: ApbToken::new(),
@@ -598,10 +681,12 @@ impl ApbTokens {
             #[cfg(feature = "has-tc7")]
             tc7: ApbToken::new(),
             adc0: ApbToken::new(),
+            #[cfg(feature = "min-samd51g")]
             adc1: ApbToken::new(),
             dac: ApbToken::new(),
             #[cfg(feature = "has-i2s")]
             i2s: ApbToken::new(),
+            #[cfg(feature = "min-samd51g")]
             pcc: ApbToken::new(),
         }
     }
@@ -613,12 +698,17 @@ impl ApbTokens {
 
 /// Set of [`ApbClk`]s for APB clocks that are enabled at power-on reset
 pub struct ApbClks {
-    pub pac: ApbClk<Pac>,
+    pub pac: ApbClk<Pac0>,
     pub pm: ApbClk<Pm>,
+    #[cfg(feature = "min-samd51g")]
     pub mclk: ApbClk<Mclk>,
+    #[cfg(feature = "min-samd51g")]
     pub rst_c: ApbClk<RstC>,
+    #[cfg(feature = "min-samd51g")]
     pub osc_ctrl: ApbClk<OscCtrl>,
+    #[cfg(feature = "min-samd51g")]
     pub osc32k_ctrl: ApbClk<Osc32kCtrl>,
+    #[cfg(feature = "min-samd51g")]
     pub sup_c: ApbClk<SupC>,
     pub gclk: ApbClk<Gclk>,
     pub wdt: ApbClk<Wdt>,
@@ -627,11 +717,14 @@ pub struct ApbClks {
     pub dsu: ApbClk<Dsu>,
     pub nvm_ctrl: ApbClk<NvmCtrl>,
     pub port: ApbClk<Port>,
+    #[cfg(feature = "min-samd51g")]
     pub ram_ecc: ApbClk<RamEcc>,
     #[cfg(feature = "has-gmac")]
     pub gmac: ApbClk<Gmac>,
     #[cfg(feature = "has-tc4")]
+    #[cfg(all(feature = "thumbv7", feature = "has-tc4"))]
     pub tc4: ApbClk<Tc4>,
+    #[cfg(feature = "min-samd51g")]
     pub qspi: ApbClk<Qspi>,
 }
 
@@ -646,10 +739,15 @@ impl ApbClks {
         ApbClks {
             pac: ApbClk::new(ApbToken::new()),
             pm: ApbClk::new(ApbToken::new()),
+            #[cfg(feature = "min-samd51g")]
             mclk: ApbClk::new(ApbToken::new()),
+            #[cfg(feature = "min-samd51g")]
             rst_c: ApbClk::new(ApbToken::new()),
+            #[cfg(feature = "min-samd51g")]
             osc_ctrl: ApbClk::new(ApbToken::new()),
+            #[cfg(feature = "min-samd51g")]
             osc32k_ctrl: ApbClk::new(ApbToken::new()),
+            #[cfg(feature = "min-samd51g")]
             sup_c: ApbClk::new(ApbToken::new()),
             gclk: ApbClk::new(ApbToken::new()),
             wdt: ApbClk::new(ApbToken::new()),
@@ -658,11 +756,13 @@ impl ApbClks {
             dsu: ApbClk::new(ApbToken::new()),
             nvm_ctrl: ApbClk::new(ApbToken::new()),
             port: ApbClk::new(ApbToken::new()),
+            #[cfg(feature = "min-samd51g")]
             ram_ecc: ApbClk::new(ApbToken::new()),
             #[cfg(feature = "has-gmac")]
             gmac: ApbClk::new(ApbToken::new()),
-            #[cfg(feature = "has-tc4")]
+            #[cfg(all(feature = "thumbv7", feature = "has-tc4"))]
             tc4: ApbClk::new(ApbToken::new()),
+            #[cfg(feature = "min-samd51g")]
             qspi: ApbClk::new(ApbToken::new()),
         }
     }

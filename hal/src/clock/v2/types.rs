@@ -48,14 +48,20 @@ macro_rules! create_types {
 }
 
 create_types!(Ac);
-create_types!(Adc0, Adc1);
+create_types!(Adc0);
+#[cfg(feature = "min-samd51g")]
+create_types!(Adc1);
+#[cfg(feature = "min-samd51g")]
 create_types!(Aes);
 #[cfg(feature = "has-can0")]
 create_types!(Can0);
 #[cfg(feature = "has-can1")]
 create_types!(Can1);
+#[cfg(feature = "min-samd51g")]
 create_types!(Ccl);
+#[cfg(feature = "min-samd51g")]
 create_types!(Cmcc);
+#[cfg(feature = "min-samd51g")]
 create_types!(CM4Trace);
 create_types!(Dac);
 create_types!(Dmac);
@@ -65,47 +71,74 @@ create_types!(
     EvSys, EvSys0, EvSys1, EvSys2, EvSys3, EvSys4, EvSys5, EvSys6, EvSys7, EvSys8, EvSys9, EvSys10,
     EvSys11
 );
+#[cfg(feature = "min-samd51g")]
 create_types!(FreqM);
+#[cfg(feature = "min-samd51g")]
 create_types!(FreqMMeasure);
+#[cfg(feature = "min-samd51g")]
 create_types!(FreqMReference);
 create_types!(Gclk);
 #[cfg(feature = "has-gmac")]
 create_types!(Gmac);
-create_types!(Hpb0, Hpb1, Hpb2, Hpb3);
+create_types!(Hpb0, Hpb1, Hpb2);
+#[cfg(feature = "min-samd51g")]
+create_types!(Hpb3);
+#[cfg(feature = "min-samd51g")]
 create_types!(Icm);
+#[cfg(feature = "min-samd51g")]
 create_types!(Mclk);
-create_types!(NvmCtrl, NvmCtrlSmeeProm, NvmCtrlCache);
-#[cfg(feature = "has-i2s")]
+create_types!(NvmCtrl);
+#[cfg(feature = "min-samd51g")]
+create_types!(NvmCtrlSmeeProm, NvmCtrlCache);
+#[cfg(feature = "min-samd51j")]
 create_types!(I2S, I2S0, I2S1);
+#[cfg(feature = "min-samd51g")]
 create_types!(OscCtrl);
+#[cfg(feature = "min-samd51g")]
 create_types!(Osc32kCtrl);
-create_types!(Pac);
+create_types!(Pac0);
+#[cfg(feature = "samd21")]
+create_types!(Pac1, Pac2);
+#[cfg(feature = "min-samd51g")]
 create_types!(Pcc);
+#[cfg(feature = "min-samd51g")]
 create_types!(PDec);
 create_types!(Pm);
 create_types!(Port);
+#[cfg(feature = "min-samd51g")]
 create_types!(Pukcc);
+#[cfg(feature = "min-samd51g")]
 create_types!(Qspi, Qspi2x);
+#[cfg(feature = "min-samd51g")]
 create_types!(RamEcc);
+#[cfg(feature = "min-samd51g")]
 create_types!(RstC);
 create_types!(Rtc);
+#[cfg(feature = "min-samd51g")]
 create_types!(Sdhc0);
 #[cfg(feature = "has-sdhc1")]
 create_types!(Sdhc1);
 create_types!(SlowClk);
+#[cfg(feature = "min-samd51g")]
 create_types!(SupC);
+#[cfg(feature = "min-samd51g")]
 create_types!(Tc0Tc1, Tc0, Tc1);
+#[cfg(feature = "min-samd51g")]
 create_types!(Tc2Tc3, Tc2, Tc3);
 #[cfg(all(feature = "has-tc4", feature = "has-tc5"))]
 create_types!(Tc4Tc5, Tc4, Tc5);
 #[cfg(all(feature = "has-tc6", feature = "has-tc7"))]
 create_types!(Tc6Tc7, Tc6, Tc7);
 create_types!(Tcc0Tcc1, Tcc0, Tcc1);
+#[cfg(feature = "min-samd51g")]
 create_types!(Tcc2Tcc3, Tcc2);
 #[cfg(feature = "has-tcc3")]
 create_types!(Tcc3);
 #[cfg(feature = "has-tcc4")]
 create_types!(Tcc4);
+#[cfg(feature = "samd21")]
+create_types!(Tcc2Tc3, Tcc2, Tc3);
+#[cfg(feature = "min-samd51g")]
 create_types!(Trng);
 create_types!(Usb);
 create_types!(Wdt);
