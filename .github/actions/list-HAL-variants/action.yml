@@ -1,3 +1,6 @@
+name: 'Compute HAL matrix'
+description: 'Prepares the build environment'
+
 outputs:
   matrix:
     description: "HAL Build matrix"
