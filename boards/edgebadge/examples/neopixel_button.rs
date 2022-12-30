@@ -71,13 +71,7 @@ fn main() -> ! {
 
         //finally paint the two leds at position, accel priority
         let _ = neopixel.write((0..NUM_LEDS).map(|i| {
-            if i == pos_joy {
-                hsv2rgb(Hsv {
-                    hue: color_button,
-                    sat: 255,
-                    val: 32,
-                })
-            } else if i == pos_button {
+            if i == pos_joy || i == pos_button {
                 hsv2rgb(Hsv {
                     hue: color_button,
                     sat: 255,
