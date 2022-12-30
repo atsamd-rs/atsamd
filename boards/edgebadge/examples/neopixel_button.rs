@@ -50,9 +50,7 @@ fn main() -> ! {
         for event in buttons.events() {
             match event {
                 Keys::LeftDown => {
-                    if pos_joy > 0 {
-                        pos_joy -= 1;
-                    }
+                    pos_joy = pos_joy.saturating_sub(1);
                 }
                 Keys::RightDown => {
                     if pos_joy < 4 {
@@ -60,9 +58,7 @@ fn main() -> ! {
                     }
                 }
                 Keys::BDown => {
-                    if pos_button > 0 {
-                        pos_button -= 1;
-                    }
+                    pos_button = pos_button.saturating_sub(1);
                 }
                 Keys::ADown => {
                     if pos_button < 4 {

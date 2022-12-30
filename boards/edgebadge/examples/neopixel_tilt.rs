@@ -116,10 +116,8 @@ impl TiltState {
                 if self.pos > 0 {
                     self.pos -= 1;
                 }
-            } else {
-                if self.pos < 4 {
-                    self.pos += 1;
-                }
+            } else if self.pos < 4 {
+                self.pos += 1;
             }
             self.tilt = 0;
         }
