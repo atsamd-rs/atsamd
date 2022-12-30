@@ -176,6 +176,16 @@ impl Nvm {
         Self { nvm }
     }
 
+    /// Raw access to the registers.
+    ///
+    /// # Safety
+    ///
+    /// The abstraction assumes that it has exclusive ownership of the
+    /// registers. Direct access can break such assumptions.
+    pub unsafe fn registers(&self) -> &NVMCTRL {
+        &self.nvm
+    }
+
     /// Swap the flash banks. The processor will be reset, after which the
     /// inactive bank will become the active bank.
     ///
@@ -363,6 +373,45 @@ impl Nvm {
         }
 
         TemperaturesCalibrationArea(buffer)
+    }
+
+    /// Enable security bit
+    ///
+    /// It locks the chip from external access for code security. Consult the
+    /// datasheet for more details.
+    ///
+    /// In order to disable it, chip erase command must be issued through the
+    /// debugger.
+    #[inline]
+    pub fn enable_security_bit(&mut self) -> Result<()> {
+        self.command_sync(CMD_AW::SSB);
+        self.manage_error_states()
+    }
+
+    /// Enable the chip erase lock
+    ///
+    /// It disables the chip erase capability.
+    ///
+    /// # Safety
+    ///
+    /// Together with [`Self::enable_security_bit`], it completely locks the MCU
+    /// down from any external interaction via debugger, thus effectively
+    /// *bricking the device*. Flashed firmware *must provide a way* to
+    /// execute [`Self::disable_chip_erase_lock`] method in order to enable
+    /// the debugger access again.
+    #[inline]
+    pub unsafe fn enable_chip_erase_lock(&mut self) -> Result<()> {
+        self.command_sync(CMD_AW::CELCK);
+        self.manage_error_states()
+    }
+
+    /// Disable the chip erase lock
+    ///
+    /// It enables the chip erase capability through the debugger.
+    #[inline]
+    pub fn disable_chip_erase_lock(&mut self) -> Result<()> {
+        self.command_sync(CMD_AW::CEULCK);
+        self.manage_error_states()
     }
 
     /// Enable/disable boot protection on/off
