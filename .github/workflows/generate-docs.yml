@@ -12,21 +12,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout sources
-        uses: actions/checkout@v2
-      - name: Install Rust (thumbv6m)
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          override: true
-          target: thumbv6m-none-eabi
-      - name: Install Rust (thumbv7em)
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          override: true
-          target: thumbv7em-none-eabihf
+        uses: actions/checkout@v3
+
+      - name: Install Rust
+        run: |
+          rustup set profile minimal
+          rustup override set ${{ matrix.toolchain }}
+          rustup target add thumbv6m-none-eabi
+          rustup target add thumbv7em-none-eabihf
 
       - name: Generate HAL docs
         if: github.event.inputs.gen_hal_docs == 'yes'

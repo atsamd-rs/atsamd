@@ -50,9 +50,7 @@ fn main() -> ! {
         for event in buttons.events() {
             match event {
                 Keys::LeftDown => {
-                    if pos_joy > 0 {
-                        pos_joy -= 1;
-                    }
+                    pos_joy = pos_joy.saturating_sub(1);
                 }
                 Keys::RightDown => {
                     if pos_joy < 4 {
@@ -60,9 +58,7 @@ fn main() -> ! {
                     }
                 }
                 Keys::BDown => {
-                    if pos_button > 0 {
-                        pos_button -= 1;
-                    }
+                    pos_button = pos_button.saturating_sub(1);
                 }
                 Keys::ADown => {
                     if pos_button < 4 {
@@ -75,13 +71,7 @@ fn main() -> ! {
 
         //finally paint the two leds at position, accel priority
         let _ = neopixel.write((0..NUM_LEDS).map(|i| {
-            if i == pos_joy {
-                hsv2rgb(Hsv {
-                    hue: color_button,
-                    sat: 255,
-                    val: 32,
-                })
-            } else if i == pos_button {
+            if i == pos_joy || i == pos_button {
                 hsv2rgb(Hsv {
                     hue: color_button,
                     sat: 255,
