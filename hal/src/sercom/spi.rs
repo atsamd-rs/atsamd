@@ -14,8 +14,8 @@
 //! An SPI peripheral can use up to four [`Pin`]s as [`Sercom`] pads. However,
 //! only certain `Pin` combinations are acceptable. All `Pin`s must be mapped to
 //! the same `Sercom`, and for SAMx5x chips, they must also belong to the same
-#![cfg_attr(any(feature = "samd11", feature = "samd21"), doc = "`IoSet`.")]
-#![cfg_attr(feature = "min-samd51g", doc = "[`IoSet`].")]
+#![cfg_attr(feature = "thumbv6", doc = "`IoSet`.")]
+#![cfg_attr(feature = "thumbv7", doc = "[`IoSet`].")]
 //! This HAL makes it impossible to use invalid `Pin` combinations, and the
 //! [`Pads`] struct is responsible for enforcing these constraints.
 //!
@@ -116,20 +116,20 @@ type Pads = spi::PadsFromIds<Sercom0, IoSet1, PA08, NoneT, PA09>;
 //! [`Size`] type that varies by chip. [`Size`] essentially acts as a trait
 //! alias. On SAMD11 and SAMD21 chips, it represents the
 #![cfg_attr(
-    any(feature = "samd11", feature = "samd21"),
+    feature = "thumbv6",
     doc = "[`CharSize`], which can either be [`EightBit`] or [`NineBit`]. "
 )]
 #![cfg_attr(
-    feature = "min-samd51g",
+    feature = "thumbv7",
     doc = "`CharSize`, which can either be `EightBit` or `NineBit`. "
 )]
 //! While on SAMx5x chips, it represents the transaction
-#![cfg_attr(any(feature = "samd11", feature = "samd21"), doc = "`Length`")]
-#![cfg_attr(feature = "min-samd51g", doc = "[`Length`]")]
+#![cfg_attr(feature = "thumbv6", doc = "`Length`")]
+#![cfg_attr(feature = "thumbv7", doc = "[`Length`]")]
 //! in bytes, using type-level numbers provided by the [`typenum`] crate. Valid
 //! transaction lengths, from `U1` to `U255`, are re-exported in the
-#![cfg_attr(any(feature = "samd11", feature = "samd21"), doc = "`lengths`")]
-#![cfg_attr(feature = "min-samd51g", doc = "[`lengths`]")]
+#![cfg_attr(feature = "thumbv6", doc = "`lengths`")]
+#![cfg_attr(feature = "thumbv7", doc = "[`lengths`]")]
 //! sub-module.
 //!
 //! ```
@@ -330,44 +330,44 @@ use reg::Registers;
 // Chip-specific imports
 //=============================================================================
 
-#[cfg(any(feature = "samd11", feature = "samd21"))]
+#[cfg(feature = "thumbv6")]
 use crate::pac::sercom0::spi::ctrla::MODE_A;
-#[cfg(feature = "min-samd51g")]
+#[cfg(feature = "thumbv7")]
 use crate::pac::sercom0::spim::ctrla::MODE_A;
 
-#[cfg(any(feature = "samd11", feature = "samd21"))]
+#[cfg(feature = "thumbv6")]
 #[path = "spi/pads_thumbv6m.rs"]
 mod pads;
 
-#[cfg(feature = "min-samd51g")]
+#[cfg(feature = "thumbv7")]
 #[path = "spi/pads_thumbv7em.rs"]
 mod pads;
 
 pub use pads::*;
 
-#[cfg(any(feature = "samd11", feature = "samd21"))]
+#[cfg(feature = "thumbv6")]
 #[path = "spi/char_size.rs"]
 mod size;
 
-#[cfg(feature = "min-samd51g")]
+#[cfg(feature = "thumbv7")]
 #[path = "spi/length.rs"]
 mod size;
 
 pub use size::*;
 
 /// Valid transaction [`Length`]s from the [`typenum`] crate
-#[cfg(feature = "min-samd51g")]
+#[cfg(feature = "thumbv7")]
 pub mod lengths {
     seq_macro::seq!(N in 1..=255 {
         pub use typenum::U~N;
     });
 }
 
-#[cfg(any(feature = "samd11", feature = "samd21"))]
+#[cfg(feature = "thumbv6")]
 #[path = "spi/impl_ehal_thumbv6m.rs"]
 pub mod impl_ehal;
 
-#[cfg(feature = "min-samd51g")]
+#[cfg(feature = "thumbv7")]
 #[path = "spi/impl_ehal_thumbv7em.rs"]
 pub mod impl_ehal;
 
@@ -511,37 +511,37 @@ impl MasterMode for MasterHWSS {}
 //=============================================================================
 
 /// Type alias for the width of the `DATA` register
-#[cfg(any(feature = "samd11", feature = "samd21"))]
+#[cfg(feature = "thumbv6")]
 pub type DataWidth = u16;
 
 /// Type alias for the width of the `DATA` register
-#[cfg(feature = "min-samd51g")]
+#[cfg(feature = "thumbv7")]
 pub type DataWidth = u32;
 
 /// Trait alias whose definition varies by chip
 ///
 /// On SAMD11 and SAMD21 chips, this represents the [`CharSize`].
-#[cfg(any(feature = "samd11", feature = "samd21"))]
+#[cfg(feature = "thumbv6")]
 pub trait Size: CharSize {}
 
-#[cfg(any(feature = "samd11", feature = "samd21"))]
+#[cfg(feature = "thumbv6")]
 impl<C: CharSize> Size for C {}
 
 /// Type alias for the default [`Size`] type, which varies by chip
-#[cfg(any(feature = "samd11", feature = "samd21"))]
+#[cfg(feature = "thumbv6")]
 pub type DefaultSize = EightBit;
 
 /// Trait alias whose definition varies by chip
 ///
 /// On SAMx5x chips, this represents the transaction [`Length`].
-#[cfg(feature = "min-samd51g")]
+#[cfg(feature = "thumbv7")]
 pub trait Size: Length {}
 
-#[cfg(feature = "min-samd51g")]
+#[cfg(feature = "thumbv7")]
 impl<L: Length> Size for L {}
 
 /// Type alias for the default [`Size`] type, which varies by chip
-#[cfg(feature = "min-samd51g")]
+#[cfg(feature = "thumbv7")]
 pub type DefaultSize = typenum::U1;
 
 //==============================================================================
@@ -552,10 +552,10 @@ pub type DefaultSize = typenum::U1;
 /// read or write of the `DATA` register
 pub trait AtomicSize: Size {}
 
-#[cfg(any(feature = "samd11", feature = "samd21"))]
+#[cfg(feature = "thumbv6")]
 impl<C: CharSize> AtomicSize for C {}
 
-#[cfg(feature = "min-samd51g")]
+#[cfg(feature = "thumbv7")]
 seq!(N in 1..=4 {
     impl AtomicSize for lengths::U~N {}
 });
@@ -654,9 +654,9 @@ impl<P: ValidPads> Config<P> {
         regs.reset();
         regs.set_op_mode(Master::MODE, Master::MSSEN);
         regs.set_dipo_dopo(P::DIPO_DOPO);
-        #[cfg(any(feature = "samd11", feature = "samd21"))]
+        #[cfg(feature = "thumbv6")]
         regs.set_char_size(EightBit::BITS);
-        #[cfg(feature = "min-samd51g")]
+        #[cfg(feature = "thumbv7")]
         regs.set_length(1);
         Self {
             regs,
@@ -673,14 +673,11 @@ impl<P: ValidPads> Config<P> {
     /// [`Sercom`] peripheral, and return a [`Config`] in the default
     /// configuration. The default [`OpMode`] is [`Master`], while the default
     /// [`Size`] is an
-    #[cfg_attr(
-        any(feature = "samd11", feature = "samd21"),
-        doc = "[`EightBit`] [`CharSize`]"
-    )]
-    #[cfg_attr(feature = "min-samd51g", doc = "`EightBit` `CharSize`")]
+    #[cfg_attr(feature = "thumbv6", doc = "[`EightBit`] [`CharSize`]")]
+    #[cfg_attr(feature = "thumbv7", doc = "`EightBit` `CharSize`")]
     /// for SAMD11 and SAMD21 chips or a
-    #[cfg_attr(any(feature = "samd11", feature = "samd21"), doc = "`Length` of `U1`")]
-    #[cfg_attr(feature = "min-samd51g", doc = "[`Length`] of `U1`")]
+    #[cfg_attr(feature = "thumbv6", doc = "`Length` of `U1`")]
+    #[cfg_attr(feature = "thumbv7", doc = "[`Length`] of `U1`")]
     /// for SAMx5x chips. Note that [`Config`] takes ownership of both the
     /// PAC [`Sercom`] struct as well as the [`Pads`].
     ///
@@ -759,7 +756,7 @@ where
     }
 
     /// Change the [`CharSize`] using the builder pattern
-    #[cfg(any(feature = "samd11", feature = "samd21"))]
+    #[cfg(feature = "thumbv6")]
     #[inline]
     pub fn char_size<C2: CharSize>(mut self) -> Config<P, M, C2> {
         self.regs.set_char_size(C2::BITS);
@@ -772,7 +769,7 @@ where
     /// [`DynLength`] and then use the [`dyn_length`] method.
     ///
     /// [`dyn_length`]: Config::dyn_length
-    #[cfg(feature = "min-samd51g")]
+    #[cfg(feature = "thumbv7")]
     #[inline]
     pub fn length<L2: Length>(mut self) -> Config<P, M, L2> {
         self.regs.set_length(L2::U8);
@@ -966,7 +963,7 @@ where
     }
 }
 
-#[cfg(feature = "min-samd51g")]
+#[cfg(feature = "thumbv7")]
 impl<P, M> Config<P, M, DynLength>
 where
     P: ValidPads,
@@ -1167,7 +1164,7 @@ where
     /// [`Length`], you **must** wait for a TXC flag before changing to a new
     /// [`Length`].
     #[inline]
-    #[cfg(feature = "min-samd51g")]
+    #[cfg(feature = "thumbv7")]
     pub fn length<L: Length>(self) -> Spi<Config<C::Pads, C::OpMode, L>, A>
     where
         Config<C::Pads, C::OpMode, L>: ValidConfig,
@@ -1269,7 +1266,7 @@ where
     }
 }
 
-#[cfg(feature = "min-samd51g")]
+#[cfg(feature = "thumbv7")]
 impl<P, M, A> Spi<Config<P, M, DynLength>, A>
 where
     P: ValidPads,

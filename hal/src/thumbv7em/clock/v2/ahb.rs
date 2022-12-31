@@ -380,14 +380,14 @@ define_ahb_types!(
     Usb = 10,
     Pac = 12,
     Qspi = 13,
-    #[cfg(any(feature = "same53", feature = "same54"))]
+    #[cfg(feature = "gmac")]
     Gmac = 14,
     Sdhc0 = 15,
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "sdhc1")]
     Sdhc1 = 16,
-    #[cfg(any(feature = "same51", feature = "same53", feature = "same54"))]
+    #[cfg(feature = "canp")]
     Can0 = 17,
-    #[cfg(any(feature = "same51", feature = "same53", feature = "same54"))]
+    #[cfg(feature = "canp")]
     Can1 = 18,
     Icm = 19,
     Pukcc = 20,

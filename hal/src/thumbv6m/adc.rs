@@ -200,36 +200,32 @@ adc_pins! {
     PA11: 19
 }
 
-#[cfg(feature = "min-samd21g")]
+#[cfg(feature = "pb00")]
+adc_pins! { PB00: 8 }
+
+#[cfg(feature = "pb01")]
+adc_pins! { PB01: 9 }
+
+#[cfg(feature = "pb02")]
+adc_pins! { PB02: 10 }
+
+#[cfg(feature = "pb03")]
+adc_pins! { PB03: 11 }
+
+#[cfg(feature = "pb04")]
+adc_pins! { PB04: 12 }
+
+#[cfg(feature = "pb05")]
+adc_pins! { PB05: 13 }
+
+#[cfg(feature = "pins-48")]
 adc_pins! {
-    PB02: 10,
-    PB03: 11,
     PB08: 2,
     PB09: 3
 }
 
-#[cfg(feature = "min-samd21j")]
+#[cfg(feature = "pins-64")]
 adc_pins! {
-    PB00: 8,
-    PB01: 9,
-    PB04: 12,
-    PB05: 13,
     PB06: 14,
     PB07: 15
-}
-
-#[cfg(feature = "samd21el")]
-adc_pins! {
-    PB02: 10,
-    PB03: 11,
-    PB04: 12,
-    PB05: 13
-}
-
-#[cfg(feature = "samd21gl")]
-adc_pins! {
-    PB00: 8,
-    PB01: 9,
-    PB04: 12,
-    PB05: 13
 }

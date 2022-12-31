@@ -1,20 +1,30 @@
+use paste::paste;
+use seq_macro::seq;
+
 use crate::clock;
 use crate::ehal::{Pwm, PwmPin};
+use crate::pac::PM;
 use crate::time::Hertz;
 use crate::timer_params::TimerParams;
 
-use crate::pac::{PM, TCC0};
-#[cfg(feature = "samd11")]
-use crate::pac::{TC1, TC2};
-#[cfg(feature = "samd21")]
-use crate::pac::{TC3, TC4, TC5, TCC1, TCC2};
-#[cfg(feature = "samd21j")]
-use crate::pac::{TC6, TC7};
+seq!(N in 1..=7 {
+    paste! {
+        #[cfg(feature = "" tc~N "")]
+        use crate::pac::TC~N;
+    }
+});
+
+seq!(N in 0..=2 {
+    paste! {
+        #[cfg(feature = "" tcc~N "")]
+        use crate::pac::TCC~N;
+    }
+});
 
 // Timer/Counter (TCx)
 
 macro_rules! pwm {
-    ($($TYPE:ident: ($TC:ident, $clock:ident, $apmask:ident, $apbits:ident, $wrapper:ident),)+) => {
+    ($($TYPE:ident: ($TC:ident, $clock:ident, $apmask:ident, $apbits:ident, $wrapper:ident)),+) => {
         $(
 
 pub struct $TYPE {
@@ -130,24 +140,21 @@ impl PwmPin for $TYPE {
 
 )+}}
 
-#[cfg(feature = "samd11")]
-pwm! {
-    Pwm1: (TC1, Tc1Tc2Clock, apbcmask, tc1_, Pwm1Wrapper),
-    Pwm2: (TC2, Tc1Tc2Clock, apbcmask, tc2_, Pwm2Wrapper),
-}
+#[cfg(feature = "tc1")]
+pwm! { Pwm1: (TC1, Tc1Tc2Clock, apbcmask, tc1_, Pwm1Wrapper) }
+#[cfg(feature = "tc2")]
+pwm! { Pwm2: (TC2, Tc1Tc2Clock, apbcmask, tc2_, Pwm2Wrapper) }
+#[cfg(feature = "tc3")]
+pwm! { Pwm3: (TC3, Tcc2Tc3Clock, apbcmask, tc3_, Pwm3Wrapper) }
+#[cfg(feature = "tc4")]
+pwm! { Pwm4: (TC4, Tc4Tc5Clock, apbcmask, tc4_, Pwm4Wrapper) }
+#[cfg(feature = "tc5")]
+pwm! { Pwm5: (TC5, Tc4Tc5Clock, apbcmask, tc5_, Pwm5Wrapper) }
 
-#[cfg(feature = "samd21")]
-pwm! {
-    Pwm3: (TC3, Tcc2Tc3Clock, apbcmask, tc3_, Pwm3Wrapper),
-    Pwm4: (TC4, Tc4Tc5Clock, apbcmask, tc4_, Pwm4Wrapper),
-    Pwm5: (TC5, Tc4Tc5Clock, apbcmask, tc5_, Pwm5Wrapper),
-}
-
-#[cfg(feature = "samd21j")]
-pwm! {
-    Pwm6: (TC6, Tc6Tc7Clock, apbcmask, tc6_, Pwm6Wrapper),
-    Pwm7: (TC7, Tc6Tc7Clock, apbcmask, tc7_, Pwm7Wrapper),
-}
+#[cfg(feature = "tc6")]
+pwm! { Pwm6: (TC6, Tc6Tc7Clock, apbcmask, tc6_, Pwm6Wrapper) }
+#[cfg(feature = "tc7")]
+pwm! { Pwm7: (TC7, Tc6Tc7Clock, apbcmask, tc7_, Pwm7Wrapper) }
 
 // Timer/Counter for Control Applications (TCCx)
 
@@ -160,7 +167,7 @@ pub enum Channel {
 }
 
 macro_rules! pwm_tcc {
-    ($($TYPE:ident: ($TCC:ident, $clock:ident, $apmask:ident, $apbits:ident, $wrapper:ident),)+) => {
+    ($($TYPE:ident: ($TCC:ident, $clock:ident, $apmask:ident, $apbits:ident, $wrapper:ident)),+) => {
         $(
 
 pub struct $TYPE {
@@ -276,14 +283,11 @@ impl Pwm for $TYPE {
 
 )+}}
 
-#[cfg(feature = "samd11")]
-pwm_tcc! {
-    Pwm0: (TCC0, Tcc0Clock, apbcmask, tcc0_, Pwm0Wrapper),
-}
-
-#[cfg(feature = "samd21")]
-pwm_tcc! {
-    Pwm0: (TCC0, Tcc0Tcc1Clock, apbcmask, tcc0_, Pwm0Wrapper),
-    Pwm1: (TCC1, Tcc0Tcc1Clock, apbcmask, tcc1_, Pwm1Wrapper),
-    Pwm2: (TCC2, Tcc2Tc3Clock, apbcmask, tcc2_, Pwm2Wrapper),
-}
+#[cfg(all(feature = "samd11", feature = "tcc0"))]
+pwm_tcc! { Pwm0: (TCC0, Tcc0Clock, apbcmask, tcc0_, Pwm0Wrapper) }
+#[cfg(all(feature = "samd21", feature = "tcc0"))]
+pwm_tcc! { Pwm0: (TCC0, Tcc0Tcc1Clock, apbcmask, tcc0_, Pwm0Wrapper) }
+#[cfg(feature = "tcc1")]
+pwm_tcc! { Pwm1: (TCC1, Tcc0Tcc1Clock, apbcmask, tcc1_, Pwm1Wrapper) }
+#[cfg(feature = "tcc1")]
+pwm_tcc! { Pwm2: (TCC2, Tcc2Tc3Clock, apbcmask, tcc2_, Pwm2Wrapper) }

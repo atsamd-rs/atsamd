@@ -13,53 +13,36 @@ compile_error!(
     specifying the `library` feature"
 );
 
-#[cfg(feature = "samd11c")]
-pub use atsamd11c as pac;
+#[cfg(all(feature = "library", feature = "device"))]
+compile_error!("Cannot combine `library` and `device` features");
 
-#[cfg(feature = "samd11d")]
-pub use atsamd11d as pac;
+macro_rules! define_pac {
+    ( $( ($pac:ident, $feat:literal)),+ ) => {
+        $(
+            #[cfg(feature = $feat)]
+            pub use $pac as pac;
+        )+
+    };
+}
 
-#[cfg(feature = "samd21e")]
-pub use atsamd21e as pac;
-
-#[cfg(feature = "samd21g")]
-pub use atsamd21g as pac;
-
-#[cfg(feature = "samd21j")]
-pub use atsamd21j as pac;
-
-#[cfg(feature = "samd51g")]
-pub use atsamd51g as pac;
-
-#[cfg(feature = "samd51j")]
-pub use atsamd51j as pac;
-
-#[cfg(feature = "samd51n")]
-pub use atsamd51n as pac;
-
-#[cfg(feature = "samd51p")]
-pub use atsamd51p as pac;
-
-#[cfg(feature = "same51g")]
-pub use atsame51g as pac;
-
-#[cfg(feature = "same51j")]
-pub use atsame51j as pac;
-
-#[cfg(feature = "same51n")]
-pub use atsame51n as pac;
-
-#[cfg(feature = "same53j")]
-pub use atsame53j as pac;
-
-#[cfg(feature = "same53n")]
-pub use atsame53n as pac;
-
-#[cfg(feature = "same54n")]
-pub use atsame54n as pac;
-
-#[cfg(feature = "same54p")]
-pub use atsame54p as pac;
+define_pac!(
+    (atsamd11c, "atsamd11c"),
+    (atsamd11d, "atsamd11d"),
+    (atsamd21e, "atsamd21e"),
+    (atsamd21g, "atsamd21g"),
+    (atsamd21j, "atsamd21j"),
+    (atsamd51g, "atsamd51g"),
+    (atsamd51j, "atsamd51j"),
+    (atsamd51n, "atsamd51n"),
+    (atsamd51p, "atsamd51p"),
+    (atsame51g, "atsame51g"),
+    (atsame51j, "atsame51j"),
+    (atsame51n, "atsame51n"),
+    (atsame53j, "atsame53j"),
+    (atsame53n, "atsame53n"),
+    (atsame54n, "atsame54n"),
+    (atsame54p, "atsame54p")
+);
 
 #[cfg(feature = "use_rtt")]
 pub use jlink_rtt;
@@ -97,29 +80,23 @@ pub mod time;
 pub mod timer_params;
 pub mod timer_traits;
 
-#[cfg(all(feature = "unproven", feature = "dma"))]
+#[cfg(feature = "dma")]
 pub mod dmac;
 
-#[cfg(all(feature = "usb", feature = "samd11"))]
-compile_error!("'usb' is enabled, but USB isn't supported on SAMD11");
+#[cfg(all(feature = "usb", feature = "device", not(feature = "usbp")))]
+compile_error!("The 'usb' feature is enabled, but this chip does not support USB");
 
-#[cfg(all(
-    feature = "usb",
-    not(any(feature = "samd21", feature = "min-samd51g", feature = "library"))
-))]
-compile_error!("The 'usb' feature is enabled, but not a chip with USB support");
-
-#[cfg(any(feature = "samd11", feature = "samd21"))]
+#[cfg(feature = "thumbv6")]
 #[doc(hidden)]
 pub mod thumbv6m;
-#[cfg(any(feature = "samd11", feature = "samd21"))]
+#[cfg(feature = "thumbv6")]
 #[doc(inline)]
 pub use crate::thumbv6m::*;
 
-#[cfg(feature = "min-samd51g")]
+#[cfg(feature = "thumbv7")]
 #[doc(hidden)]
 pub mod thumbv7em;
-#[cfg(feature = "min-samd51g")]
+#[cfg(feature = "thumbv7")]
 #[doc(inline)]
 pub use crate::thumbv7em::*;
 

@@ -1,17 +1,29 @@
 #![allow(non_snake_case)]
 
+use paste::paste;
+use seq_macro::seq;
+
 use crate::clock;
 use crate::ehal::{Pwm, PwmPin};
 use crate::gpio::*;
 use crate::gpio::{AlternateE, AnyPin, Pin};
+use crate::pac::MCLK;
 use crate::time::Hertz;
 use crate::timer_params::TimerParams;
 
-use crate::pac::{MCLK, TC0, TC1, TC2, TC3, TCC0, TCC1, TCC2};
-#[cfg(feature = "min-samd51j")]
-use crate::pac::{TC4, TC5, TCC3, TCC4};
-#[cfg(feature = "min-samd51n")]
-use crate::pac::{TC6, TC7};
+seq!(N in 0..=7 {
+    paste! {
+        #[cfg(feature = "" tc~N "")]
+        use crate::pac::TC~N;
+    }
+});
+
+seq!(N in 0..=4 {
+    paste! {
+        #[cfg(feature = "" tcc~N "")]
+        use crate::pac::TCC~N;
+    }
+});
 
 // Timer/Counter (TCx)
 
@@ -57,26 +69,72 @@ macro_rules! impl_tc_pinout {
     };
 }
 
+#[cfg(feature = "tc0")]
 impl_tc_pinout!(TC0Pinout: [
     (Pa5, PA05),
     (Pa9, PA09),
-    #[cfg(feature = "min-samd51j")]
+    #[cfg(feature = "pins-64")]
     (Pb31, PB31)
 ]);
-impl_tc_pinout!(TC1Pinout: [(Pa7, PA07), (Pa11, PA11)]);
-impl_tc_pinout!(TC2Pinout: [(Pa1, PA01), (Pa13, PA13), (Pa17, PA17)]);
-impl_tc_pinout!(TC3Pinout: [(Pa15, PA15), (Pa19, PA19)]);
-#[cfg(feature = "min-samd51j")]
-impl_tc_pinout!(TC4Pinout: [(Pa23, PA23), (Pb0, PB09), (Pb13, PB13)]);
-#[cfg(feature = "min-samd51j")]
-impl_tc_pinout!(TC5Pinout: [(Pa25, PA25), (Pb11, PB11), (Pb15, PB15)]);
-#[cfg(feature = "min-samd51n")]
-impl_tc_pinout!(TC6Pinout: [(Pb3, PB03), (Pb17, PB17), (Pa31, PA31)]);
-#[cfg(feature = "min-samd51n")]
-impl_tc_pinout!(TC7Pinout: [(Pa21, PA21), (Pb23, PB23), (Pb1, PB01)]);
+
+#[cfg(feature = "tc1")]
+impl_tc_pinout!(TC1Pinout: [
+    (Pa7, PA07),
+    (Pa11, PA11)
+]);
+
+#[cfg(feature = "tc2")]
+impl_tc_pinout!(TC2Pinout: [
+    #[cfg(feature = "pa01")]
+    (Pa1, PA01),
+    (Pa13, PA13),
+    (Pa17, PA17)
+]);
+
+#[cfg(feature = "tc3")]
+impl_tc_pinout!(TC3Pinout: [
+    (Pa15, PA15),
+    (Pa19, PA19)
+]);
+
+#[cfg(feature = "tc4")]
+impl_tc_pinout!(TC4Pinout: [
+    (Pa23, PA23),
+    #[cfg(feature = "pb00")]
+    (Pb0, PB09),
+    #[cfg(feature = "pins-64")]
+    (Pb13, PB13)
+]);
+
+#[cfg(feature = "tc5")]
+impl_tc_pinout!(TC5Pinout: [
+    (Pa25, PA25),
+    (Pb11, PB11),
+    #[cfg(feature = "pins-64")]
+    (Pb15, PB15)
+]);
+
+#[cfg(feature = "tc6")]
+impl_tc_pinout!(TC6Pinout: [
+    #[cfg(feature = "pb03")]
+    (Pb3, PB03),
+    #[cfg(feature = "pins-64")]
+    (Pb17, PB17),
+    #[cfg(feature = "pins-64")]
+    (Pa31, PA31)
+]);
+
+#[cfg(feature = "tc7")]
+impl_tc_pinout!(TC7Pinout: [
+    (Pa21, PA21),
+    #[cfg(feature = "pb23")]
+    (Pb23, PB23),
+    #[cfg(feature = "pb01")]
+    (Pb1, PB01)
+]);
 
 macro_rules! pwm {
-    ($($TYPE:ident: ($TC:ident, $pinout:ident, $clock:ident, $apmask:ident, $apbits:ident, $wrapper:ident),)+) => {
+    ($($TYPE:ident: ($TC:ident, $pinout:ident, $clock:ident, $apmask:ident, $apbits:ident, $wrapper:ident)),+) => {
         $(
 
 pub struct $TYPE<I: PinId> {
@@ -200,24 +258,22 @@ impl<I: PinId> PwmPin for $TYPE<I> {
 
 )+}}
 
-pwm! {
-    Pwm0: (TC0, TC0Pinout, Tc0Tc1Clock, apbamask, tc0_, Pwm0Wrapper),
-    Pwm1: (TC1, TC1Pinout, Tc0Tc1Clock, apbamask, tc1_, Pwm1Wrapper),
-    Pwm2: (TC2, TC2Pinout, Tc2Tc3Clock, apbbmask, tc2_, Pwm2Wrapper),
-    Pwm3: (TC3, TC3Pinout, Tc2Tc3Clock, apbbmask, tc3_, Pwm3Wrapper),
-}
-
-#[cfg(feature = "min-samd51j")]
-pwm! {
-    Pwm4: (TC4, TC4Pinout, Tc4Tc5Clock, apbcmask, tc4_, Pwm4Wrapper),
-    Pwm5: (TC5, TC5Pinout, Tc4Tc5Clock, apbcmask, tc5_, Pwm5Wrapper),
-}
-
-#[cfg(feature = "min-samd51n")]
-pwm! {
-    Pwm6: (TC6, TC6Pinout, Tc6Tc7Clock, apbdmask, tc6_, Pwm6Wrapper),
-    Pwm7: (TC7, TC7Pinout, Tc6Tc7Clock, apbdmask, tc7_, Pwm7Wrapper),
-}
+#[cfg(feature = "tc0")]
+pwm! { Pwm0: (TC0, TC0Pinout, Tc0Tc1Clock, apbamask, tc0_, Pwm0Wrapper) }
+#[cfg(feature = "tc1")]
+pwm! { Pwm1: (TC1, TC1Pinout, Tc0Tc1Clock, apbamask, tc1_, Pwm1Wrapper) }
+#[cfg(feature = "tc2")]
+pwm! { Pwm2: (TC2, TC2Pinout, Tc2Tc3Clock, apbbmask, tc2_, Pwm2Wrapper) }
+#[cfg(feature = "tc3")]
+pwm! { Pwm3: (TC3, TC3Pinout, Tc2Tc3Clock, apbbmask, tc3_, Pwm3Wrapper) }
+#[cfg(feature = "tc4")]
+pwm! { Pwm4: (TC4, TC4Pinout, Tc4Tc5Clock, apbcmask, tc4_, Pwm4Wrapper) }
+#[cfg(feature = "tc5")]
+pwm! { Pwm5: (TC5, TC5Pinout, Tc4Tc5Clock, apbcmask, tc5_, Pwm5Wrapper) }
+#[cfg(feature = "tc6")]
+pwm! { Pwm6: (TC6, TC6Pinout, Tc6Tc7Clock, apbdmask, tc6_, Pwm6Wrapper) }
+#[cfg(feature = "tc7")]
+pwm! { Pwm7: (TC7, TC7Pinout, Tc6Tc7Clock, apbdmask, tc7_, Pwm7Wrapper) }
 
 // Timer/Counter for Control Applications (TCCx)
 
@@ -275,6 +331,7 @@ macro_rules! impl_tcc_pinout {
     };
 }
 
+#[cfg(feature = "tcc0")]
 impl_tcc_pinout!(TCC0Pinout: [
     (Pa8, PA08, AlternateF),
     (Pa9, PA09, AlternateF),
@@ -292,64 +349,65 @@ impl_tcc_pinout!(TCC0Pinout: [
     (Pa23, PA23, AlternateG),
     (Pb10, PB10, AlternateF),
     (Pb11, PB11, AlternateF),
-    #[cfg(feature = "min-samd51j")]
+    #[cfg(feature = "pins-64")]
     (Pb12, PB12, AlternateG),
-    #[cfg(feature = "min-samd51j")]
+    #[cfg(feature = "pins-64")]
     (Pb13, PB13, AlternateG),
-    #[cfg(feature = "min-samd51j")]
+    #[cfg(feature = "pins-64")]
     (Pb14, PB14, AlternateG),
-    #[cfg(feature = "min-samd51j")]
+    #[cfg(feature = "pins-64")]
     (Pb15, PB15, AlternateG),
-    #[cfg(feature = "min-samd51j")]
+    #[cfg(feature = "pins-64")]
     (Pb16, PB16, AlternateG),
-    #[cfg(feature = "min-samd51j")]
+    #[cfg(feature = "pins-64")]
     (Pb17, PB17, AlternateG),
-    #[cfg(feature = "min-samd51j")]
+    #[cfg(feature = "pins-64")]
     (Pb30, PB30, AlternateG),
-    #[cfg(feature = "min-samd51j")]
+    #[cfg(feature = "pins-64")]
     (Pb31, PB31, AlternateG),
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     (Pc10, PC10, AlternateF),
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     (Pc11, PC11, AlternateF),
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     (Pc12, PC12, AlternateF),
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     (Pc13, PC13, AlternateF),
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     (Pc14, PC14, AlternateF),
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     (Pc15, PC15, AlternateF),
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     (Pc16, PC16, AlternateF),
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     (Pc17, PC17, AlternateF),
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     (Pc18, PC18, AlternateF),
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     (Pc19, PC19, AlternateF),
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     (Pc20, PC20, AlternateF),
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     (Pc21, PC21, AlternateF),
-    #[cfg(feature = "min-samd51p")]
+    #[cfg(feature = "pins-128")]
     (Pc4, PC04, AlternateF),
-    #[cfg(feature = "min-samd51p")]
+    #[cfg(feature = "pins-128")]
     (Pc22, PC22, AlternateF),
-    #[cfg(feature = "min-samd51p")]
+    #[cfg(feature = "pins-128")]
     (Pc23, PC23, AlternateF),
-    #[cfg(feature = "min-samd51p")]
+    #[cfg(feature = "pins-128")]
     (Pd8, PD08, AlternateF),
-    #[cfg(feature = "min-samd51p")]
+    #[cfg(feature = "pins-128")]
     (Pd9, PD09, AlternateF),
-    #[cfg(feature = "min-samd51p")]
+    #[cfg(feature = "pins-128")]
     (Pd10, PD10, AlternateF),
-    #[cfg(feature = "min-samd51p")]
+    #[cfg(feature = "pins-128")]
     (Pd11, PD11, AlternateF),
-    #[cfg(feature = "min-samd51p")]
+    #[cfg(feature = "pins-128")]
     (Pd12, PD12, AlternateF)
 ]);
 
+#[cfg(feature = "tcc1")]
 impl_tcc_pinout!(TCC1Pinout: [
     (Pa8, PA08, AlternateG),
     (Pa9, PA09, AlternateG),
@@ -369,67 +427,77 @@ impl_tcc_pinout!(TCC1Pinout: [
     (Pa23, PA23, AlternateF),
     (Pb10, PB10, AlternateG),
     (Pb11, PB11, AlternateG),
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     (Pb18, PB18, AlternateF),
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     (Pb19, PB19, AlternateF),
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     (Pb20, PB20, AlternateF),
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     (Pb21, PB21, AlternateF),
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     (Pc10, PC10, AlternateG),
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     (Pc11, PC11, AlternateG),
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     (Pc12, PC12, AlternateG),
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     (Pc13, PC13, AlternateG),
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     (Pc14, PC14, AlternateG),
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     (Pc15, PC15, AlternateG),
-    #[cfg(feature = "min-samd51p")]
+    #[cfg(feature = "pins-128")]
     (Pb26, PB26, AlternateF),
-    #[cfg(feature = "min-samd51p")]
+    #[cfg(feature = "pins-128")]
     (Pb27, PB27, AlternateF),
-    #[cfg(feature = "min-samd51p")]
+    #[cfg(feature = "pins-128")]
     (Pb28, PB28, AlternateF),
-    #[cfg(feature = "min-samd51p")]
+    #[cfg(feature = "pins-128")]
     (Pb29, PB29, AlternateF),
-    #[cfg(feature = "min-samd51p")]
+    #[cfg(feature = "pins-128")]
     (Pd20, PD20, AlternateF),
-    #[cfg(feature = "min-samd51p")]
+    #[cfg(feature = "pins-128")]
     (Pd21, PD21, AlternateF)
 ]);
 
+#[cfg(feature = "tcc2")]
 impl_tcc_pinout!(TCC2Pinout: [
     (Pa14, PA14, AlternateF),
     (Pa15, PA15, AlternateF),
     (Pa24, PA24, AlternateF),
     (Pa30, PA30, AlternateF),
     (Pa31, PA31, AlternateF),
+    #[cfg(feature = "pb02")]
     (Pb2,  PB02, AlternateF)
 ]);
 
-#[cfg(feature = "min-samd51j")]
+#[cfg(feature = "tcc3")]
 impl_tcc_pinout!(TCC3Pinout: [
+    #[cfg(feature = "pins-64")]
     (Pb12, PB12, AlternateF),
+    #[cfg(feature = "pins-64")]
     (Pb13, PB13, AlternateF),
+    #[cfg(feature = "pins-64")]
     (Pb16, PB16, AlternateF),
+    #[cfg(feature = "pins-64")]
     (Pb17, PB17, AlternateF)
 ]);
 
-#[cfg(feature = "min-samd51j")]
+#[cfg(feature = "tcc4")]
 impl_tcc_pinout!(TCC4Pinout: [
+    #[cfg(feature = "pins-64")]
     (Pb14, PB14, AlternateF),
+    #[cfg(feature = "pins-64")]
     (Pb15, PB15, AlternateF),
+    #[cfg(feature = "pins-64")]
     (Pb30, PB30, AlternateF),
+    #[cfg(feature = "pins-64")]
     (Pb31, PB31, AlternateF)
 ]);
 
 macro_rules! pwm_tcc {
-    ($($TYPE:ident: ($TCC:ident, $pinout:ident, $clock:ident, $apmask:ident, $apbits:ident, $wrapper:ident),)+) => {
+    ($($TYPE:ident: ($TCC:ident, $pinout:ident, $clock:ident, $apmask:ident, $apbits:ident, $wrapper:ident)),+) => {
         $(
 
 pub struct $TYPE<I: PinId, M: PinMode> {
@@ -555,14 +623,13 @@ impl<I: PinId, M: PinMode> Pwm for $TYPE<I, M> {
     };
 }
 
-pwm_tcc! {
-    Tcc0Pwm: (TCC0, TCC0Pinout, Tcc0Tcc1Clock, apbbmask, tcc0_, TccPwm0Wrapper),
-    Tcc1Pwm: (TCC1, TCC1Pinout, Tcc0Tcc1Clock, apbbmask, tcc1_, TccPwm1Wrapper),
-    Tcc2Pwm: (TCC2, TCC2Pinout, Tcc2Tcc3Clock, apbcmask, tcc2_, TccPwm2Wrapper),
-}
-
-#[cfg(feature = "min-samd51j")]
-pwm_tcc! {
-    Tcc3Pwm: (TCC3, TCC3Pinout, Tcc2Tcc3Clock, apbcmask, tcc3_, TccPwm3Wrapper),
-    Tcc4Pwm: (TCC4, TCC4Pinout, Tcc4Clock,     apbdmask, tcc4_, TccPwm4Wrapper),
-}
+#[cfg(feature = "tcc0")]
+pwm_tcc! { Tcc0Pwm: (TCC0, TCC0Pinout, Tcc0Tcc1Clock, apbbmask, tcc0_, TccPwm0Wrapper) }
+#[cfg(feature = "tcc1")]
+pwm_tcc! { Tcc1Pwm: (TCC1, TCC1Pinout, Tcc0Tcc1Clock, apbbmask, tcc1_, TccPwm1Wrapper) }
+#[cfg(feature = "tcc2")]
+pwm_tcc! { Tcc2Pwm: (TCC2, TCC2Pinout, Tcc2Tcc3Clock, apbcmask, tcc2_, TccPwm2Wrapper) }
+#[cfg(feature = "tcc3")]
+pwm_tcc! { Tcc3Pwm: (TCC3, TCC3Pinout, Tcc2Tcc3Clock, apbcmask, tcc3_, TccPwm3Wrapper) }
+#[cfg(feature = "tcc4")]
+pwm_tcc! { Tcc4Pwm: (TCC4, TCC4Pinout, Tcc4Clock,     apbdmask, tcc4_, TccPwm4Wrapper) }

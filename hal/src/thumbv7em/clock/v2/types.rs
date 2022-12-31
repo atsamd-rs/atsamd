@@ -17,12 +17,17 @@
 //! [`Sercom0`]: crate::sercom::Sercom0
 //! [`Sercom1`]: crate::sercom::Sercom1
 
+use paste::paste;
+use seq_macro::seq;
+
 use crate::typelevel::Sealed;
 
-#[cfg(feature = "min-samd51g")]
-pub use crate::sercom::{Sercom0, Sercom1, Sercom2, Sercom3, Sercom4, Sercom5};
-#[cfg(feature = "min-samd51n")]
-pub use crate::sercom::{Sercom6, Sercom7};
+seq!(N in 0..=7 {
+    paste! {
+        #[cfg(feature = "" sercom~N "")]
+        pub use crate::sercom::Sercom~N;
+    }
+});
 
 macro_rules! create_types {
     (
@@ -45,7 +50,7 @@ macro_rules! create_types {
 create_types!(Ac);
 create_types!(Adc0, Adc1);
 create_types!(Aes);
-#[cfg(any(feature = "same51", feature = "same53", feature = "same54"))]
+#[cfg(feature = "canp")]
 create_types!(Can0, Can1);
 create_types!(Ccl);
 create_types!(Cmcc);
@@ -62,13 +67,13 @@ create_types!(FreqM);
 create_types!(FreqMMeasure);
 create_types!(FreqMReference);
 create_types!(Gclk);
-#[cfg(any(feature = "same53", feature = "same54"))]
+#[cfg(feature = "gmac")]
 create_types!(Gmac);
 create_types!(Hpb0, Hpb1, Hpb2, Hpb3);
 create_types!(Icm);
 create_types!(Mclk);
 create_types!(NvmCtrl, NvmCtrlSmeeProm, NvmCtrlCache);
-#[cfg(feature = "min-samd51j")]
+#[cfg(feature = "i2s")]
 create_types!(I2S, I2S0, I2S1);
 create_types!(OscCtrl);
 create_types!(Osc32kCtrl);
@@ -83,20 +88,22 @@ create_types!(RamEcc);
 create_types!(RstC);
 create_types!(Rtc);
 create_types!(Sdhc0);
-#[cfg(feature = "min-samd51n")]
+#[cfg(feature = "sdhc1")]
 create_types!(Sdhc1);
 create_types!(SlowClk);
 create_types!(SupC);
 create_types!(Tc0Tc1, Tc0, Tc1);
 create_types!(Tc2Tc3, Tc2, Tc3);
-#[cfg(feature = "min-samd51j")]
+#[cfg(all(feature = "tc4", feature = "tc5"))]
 create_types!(Tc4Tc5, Tc4, Tc5);
-#[cfg(feature = "min-samd51n")]
+#[cfg(all(feature = "tc6", feature = "tc7"))]
 create_types!(Tc6Tc7, Tc6, Tc7);
 create_types!(Tcc0Tcc1, Tcc0, Tcc1);
 create_types!(Tcc2Tcc3, Tcc2);
-#[cfg(feature = "min-samd51j")]
-create_types!(Tcc3, Tcc4);
+#[cfg(feature = "tcc3")]
+create_types!(Tcc3);
+#[cfg(feature = "tcc4")]
+create_types!(Tcc4);
 create_types!(Trng);
 create_types!(Usb);
 create_types!(Wdt);

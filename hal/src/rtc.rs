@@ -21,14 +21,14 @@ pub type Duration = fugit::Duration<u32, 1, 32_768>;
 use rtic_monotonic::Monotonic;
 
 // SAMx5x imports
-#[cfg(feature = "min-samd51g")]
+#[cfg(feature = "thumbv7")]
 use crate::pac::{
     rtc::mode0::ctrla::PRESCALER_A, rtc::mode0::CTRLA as MODE0_CTRLA,
     rtc::mode2::CTRLA as MODE2_CTRLA, MCLK as PM,
 };
 
 // SAMD11/SAMD21 imports
-#[cfg(any(feature = "samd11", feature = "samd21"))]
+#[cfg(feature = "thumbv6")]
 use crate::pac::{
     rtc::mode0::ctrl::PRESCALER_A, rtc::mode0::CTRL as MODE0_CTRLA,
     rtc::mode2::CTRL as MODE2_CTRLA, PM,
@@ -112,25 +112,25 @@ impl<Mode: RtcMode> Rtc<Mode> {
 
     #[inline]
     fn mode0_ctrla(&self) -> &MODE0_CTRLA {
-        #[cfg(feature = "min-samd51g")]
+        #[cfg(feature = "thumbv7")]
         return &self.mode0().ctrla;
-        #[cfg(any(feature = "samd11", feature = "samd21"))]
+        #[cfg(feature = "thumbv6")]
         return &self.mode0().ctrl;
     }
 
     #[inline]
     fn mode2_ctrla(&self) -> &MODE2_CTRLA {
-        #[cfg(feature = "min-samd51g")]
+        #[cfg(feature = "thumbv7")]
         return &self.mode2().ctrla;
-        #[cfg(any(feature = "samd11", feature = "samd21"))]
+        #[cfg(feature = "thumbv6")]
         return &self.mode2().ctrl;
     }
 
     #[inline]
     fn sync(&self) {
-        #[cfg(feature = "min-samd51g")]
+        #[cfg(feature = "thumbv7")]
         while self.mode2().syncbusy.read().bits() != 0 {}
-        #[cfg(any(feature = "samd11", feature = "samd21"))]
+        #[cfg(feature = "thumbv6")]
         while self.mode2().status.read().syncbusy().bit_is_set() {}
     }
 
@@ -174,7 +174,7 @@ impl<Mode: RtcMode> Rtc<Mode> {
         self.sync();
 
         // enable clock sync on SAMx5x
-        #[cfg(feature = "min-samd51g")]
+        #[cfg(feature = "thumbv7")]
         {
             self.mode2_ctrla().modify(|_, w| {
                 w.clocksync().set_bit() // synchronize the CLOCK register
@@ -204,7 +204,7 @@ impl<Mode: RtcMode> Rtc<Mode> {
         });
 
         // enable clock sync on SAMx5x
-        #[cfg(feature = "min-samd51g")]
+        #[cfg(feature = "thumbv7")]
         {
             self.mode2_ctrla().modify(|_, w| {
                 w.clocksync().set_bit() // synchronize the CLOCK register
@@ -245,7 +245,7 @@ impl Rtc<Count32Mode> {
     #[inline]
     pub fn count32(&self) -> u32 {
         // synchronize this read on SAMD11/21. SAMx5x is automatically synchronized
-        #[cfg(any(feature = "samd11", feature = "samd21"))]
+        #[cfg(feature = "thumbv6")]
         {
             self.mode0().readreq.modify(|_, w| w.rcont().set_bit());
             self.sync();
@@ -307,7 +307,7 @@ impl Rtc<ClockMode> {
     /// Returns the current clock/calendar value.
     pub fn current_time(&self) -> Datetime {
         // synchronize this read on SAMD11/21. SAMx5x is automatically synchronized
-        #[cfg(any(feature = "samd11", feature = "samd21"))]
+        #[cfg(feature = "thumbv6")]
         {
             self.mode2().readreq.modify(|_, w| w.rcont().set_bit());
             self.sync();
